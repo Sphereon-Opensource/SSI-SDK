@@ -1,0 +1,19 @@
+{
+  "packages": [
+    "packages/*"
+  ],
+  "version": "0.0.1",
+  "npmClient": "yarn",
+  "command": {
+    "publish": {
+      "allowBranch": [
+        "main",
+        "master"
+      ],
+      "conventionalCommits": true,
+      "gitRemote": "origin",
+      "message": "chore(release): %s"
+    }
+  },
+  "useWorkspaces": true
+}

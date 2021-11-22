@@ -1,0 +1,79 @@
+{
+  "name": "SSI-SDK-workspace",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Sphereon SSI Typescript SDK (Workspace)",
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "lerna run build && yarn build:schema-api",
+    "build:schema-api": "lerna run extract-api && lerna run generate-plugin-schema",
+    "bootstrap": "lerna bootstrap",
+    "test:integration-build": "yarn test:integration-prepare && yarn test:integration-pretty",
+    "test:integration-prepare": "ts-node --project packages/tsconfig-base.json ./scripts/prepare-integration-tests.ts",
+    "test:integration": "yarn test:integration-build && yarn test:ci",
+    "test:ci": "jest --config=jest.json",
+    "test": "jest --verbose --config=jest.json --coverage=false",
+    "test:watch": "yarn test --watch --verbose",
+    "prettier": "prettier --write \"{packages,__tests__,!dist}/**/*.{ts,js,json,md,yml}\"",
+    "build-clean": "rimraf ./packages/*/dist ./packages/*/api ./packages/*/node_modules ./packages/*/tsconfig.tsbuildinfo && jest --clearCache",
+    "publish:latest": "lerna publish --conventional-commits --include-merged-tags --create-release github --yes --dist-tag latest --registry https://registry.npmjs.org/:_authToken=${NPM_TOKEN}",
+    "publish:next": "lerna publish --conventional-prerelease --force-publish --canary --no-git-tag-version --include-merged-tags --preid next --pre-dist-tag next --yes --registry https://registry.npmjs.org/:_authToken=${NPM_TOKEN}",
+    "publish:unstable": "lerna publish --conventional-prerelease --force-publish --canary --no-git-tag-version --include-merged-tags --preid unstable --pre-dist-tag unstable --yes --registry https://registry.npmjs.org/:_authToken=${NPM_TOKEN}"
+  },
+  "workspaces": {
+    "nohoist": [
+      "**disabled-repalce-by-package-names**"
+    ],
+    "packages": [
+      "./packages/*"
+    ]
+  },
+
+
+  "publishConfig": {
+    "access": "public"
+  },
+  "release": {
+    "branches": [
+      "master",
+      {
+        "name": "beta",
+        "prerelease": true
+      }
+    ]
+  },
+  "devDependencies": {
+    "@microsoft/api-documenter": "^7.13.62",
+    "@microsoft/api-extractor": "^7.18.15",
+    "@microsoft/api-extractor-model": "^7.13.12",
+    "@types/jest": "^27.0.2",
+    "codecov": "^3.8.3",
+    "cross-fetch": "^3.1.4",
+    "jest": "^27.3.1",
+    "jest-fetch-mock": "^3.0.3",
+    "json-schema": "^0.4.0",
+    "lerna": "^4.0.0",
+    "lerna-changelog": "^2.2.0",
+    "oas-resolver": "^2.5.6",
+    "openapi-types": "^9.3.0",
+    "prettier": "^2.4.1",
+    "pretty-quick": "^3.1.1",
+    "rimraf": "^3.0.2",
+    "semantic-release": "^18.0.0",
+    "ts-jest": "^27.0.7",
+    "ts-json-schema-generator": "^0.96.0",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
+  },
+  "engines": {
+    "node": ">= 14.0.0"
+  },
+  "prettier": {
+    "endOfLine": "auto",
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 150
+  }
+}

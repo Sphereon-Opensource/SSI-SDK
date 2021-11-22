@@ -1,0 +1,4 @@
+{
+  "files": [],
+  "references": [{ "path": "ssi-sdk-core" }, { "path": "factom-did-provider" }, { "path": "lto-did-provider" }]
+}
