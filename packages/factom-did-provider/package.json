@@ -1,0 +1,44 @@
+{
+  "name": "@sphereon/veramo-factom-did-provider",
+  "description": "Veramo Factom DID provider",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@sphereon/did-uni-client": "^0.3.3",
+    "@sphereon/ssi-sdk-core": "^0.0.1",
+    "@veramo/core": "^3.1.0",
+    "@veramo/did-manager": "^3.1.0",
+    "debug": "^4.1.1",
+    "did-jwt-vc": "^2.1.7",
+    "events": "^3.3.0",
+    "micro-base58": "^0.5.1",
+    "z-schema": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/debug": "4.1.7",
+    "did-resolver": "3.1.0",
+    "typescript": "4.4.3"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "plugin.schema.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-OpenSource/ssi-sdk.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Factom",
+    "DID",
+    "Veramo"
+  ]
+}
