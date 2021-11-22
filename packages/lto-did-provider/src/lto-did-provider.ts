@@ -125,23 +125,23 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
   }
 
   async deleteIdentifier(args: IIdentifier, context: IAgentContext<IKeyManager>): Promise<boolean> {
-    return Promise.resolve(false)
+    return Promise.reject(new Error('Not implemented yet'))
   }
 
   addKey(args: { identifier: IIdentifier; key: IKey; options?: any }, context: IAgentContext<IKeyManager>): Promise<any> {
-    return Promise.resolve(undefined)
+    return Promise.reject(new Error('Not implemented yet'))
   }
 
   removeKey(args: { identifier: IIdentifier; kid: string; options?: any }, context: IAgentContext<IKeyManager>): Promise<any> {
-    return Promise.resolve(undefined)
+    return Promise.reject(new Error('Not implemented yet'))
   }
 
   addService(args: { identifier: IIdentifier; service: IService; options?: any }, context: IAgentContext<IKeyManager>): Promise<any> {
-    return Promise.resolve(undefined)
+    return Promise.reject(new Error('Not implemented yet'))
   }
 
   removeService(args: { identifier: IIdentifier; id: string; options?: any }, context: IAgentContext<IKeyManager>): Promise<any> {
-    return Promise.resolve(undefined)
+    return Promise.reject(new Error('Not implemented yet'))
   }
 
   private didService(didAccount: Account) {
