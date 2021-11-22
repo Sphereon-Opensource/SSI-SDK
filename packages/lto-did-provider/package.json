@@ -1,0 +1,51 @@
+{
+  "name": "@sphereon/ssi-sdk-lto-did-provider",
+  "description": "Veramo LTO Network DID provider",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "private": true,
+  "dependencies": {
+    "@sphereon/lto-did-ts": "^0.1.4",
+    "lto-api": "^0.5.14",
+    "@sphereon/did-uni-client": "^0.3.3",
+    "@sphereon/ssi-sdk-core": "^0.0.1",
+    "@veramo/core": "^3.1.0",
+    "@veramo/did-manager": "^3.1.0",
+    "@veramo/kms-local": "^3.1.0",
+    "debug": "^4.1.1",
+    "did-jwt-vc": "^2.1.7",
+    "events": "^3.3.0",
+    "micro-base58": "^0.5.1",
+    "z-schema": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.7",
+    "@types/jest": "^27.0.3",
+    "@types/uuid": "^8.3.3",
+    "did-resolver": "^3.1.3",
+    "typescript": "^4.5.2"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "plugin.schema.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-OpenSource/ssi-sdk.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "SSI",
+    "LTO Network",
+    "DID",
+    "Veramo"
+  ]
+}
