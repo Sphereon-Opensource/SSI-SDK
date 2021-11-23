@@ -1,0 +1,12 @@
+#Intellij
+.idea/
+
+# Node
+**/node_modules/
+**/build
+**/dist
+
+# Lerna
+**/tsconfig.tsbuildinfo
+
+**/plugin.schema.json
