@@ -17,6 +17,11 @@ const basePath = '/agent';
 let serverAgent: IAgent;
 let restServer: Server;
 
+if (!process.env.VC_HTTP_API_AUTH_TOKEN) {
+  jest.clearAllTimers();
+  throw new Error('Authorization token must be provided');
+}
+
 const getAgent = (options?: IAgentOptions) =>
   createAgent<IVcApiIssuer>({
     ...options,
