@@ -4,7 +4,6 @@ import { createObjects } from '@veramo/cli/build/lib/objectCreator';
 jest.setTimeout(30000);
 
 import vcApiVerifierAgentLogic from './shared/vcApiVerifierAgentLogic';
-import * as path from "path";
 
 let agent: any;
 

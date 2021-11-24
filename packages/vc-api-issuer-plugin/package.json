@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-vc-api-issuer",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --build",
     "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
   },
   "license": "Apache-2.0",

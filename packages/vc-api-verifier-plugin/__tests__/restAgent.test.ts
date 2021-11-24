@@ -13,7 +13,7 @@ import * as path from "path";
 
 jest.setTimeout(30000);
 
-const port = 3002;
+const port = 3003;
 const basePath = '/agent';
 let serverAgent: IAgent;
 let restServer: Server;

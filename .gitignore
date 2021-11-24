@@ -10,3 +10,4 @@
 **/tsconfig.tsbuildinfo
 
 **/plugin.schema.json
+**/ssi-sdk-vc-api-{issuer,verifier}.api.{json,md}
