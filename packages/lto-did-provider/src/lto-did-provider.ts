@@ -140,12 +140,12 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
 
     const identifierKey = args.identifier.keys.find((key) => key.kid === args.identifier.controllerKeyId)
     if (!identifierKey) {
-      return Promise.reject(new Error('No matching key found'))
+      return Promise.reject(new Error(`No matching key found for controllerKeyId: ${args.identifier.controllerKeyId}`))
     }
 
     const privateKeyBase58 = identifierKey.privateKeyHex ? hexToBase58(identifierKey.privateKeyHex) : undefined
     if (!privateKeyBase58) {
-      return Promise.reject(new Error('No private key hex found'))
+      return Promise.reject(new Error(`No private key hex found for kid: ${identifierKey.kid}`))
     }
 
     return this.didService(privateKeyBase58)
