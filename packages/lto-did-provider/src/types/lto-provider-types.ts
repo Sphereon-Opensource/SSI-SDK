@@ -16,6 +16,10 @@ export interface ICreateIdentifierOpts {
   privateKeyHex?: string
 }
 
+export interface IAddKeyOpts {
+  verificationMethod: LtoVerificationMethod
+}
+
 export type IRequiredContext = IAgentContext<IKeyManager>
 
 export enum IDidConnectionMode {
