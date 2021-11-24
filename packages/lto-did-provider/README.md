@@ -31,7 +31,7 @@ You can add one or more verification methods to an existing DID, or you can add 
   kid: 'did:lto:1234567890abc',
   kms: 'local',
   type: 'Ed25519' as const,
-  privateKeyHex: privateKeyHex,
+  privateKeyHex,
   publicKeyHex: '27f3h29f3h7...',
 }
 
