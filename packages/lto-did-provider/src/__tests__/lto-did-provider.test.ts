@@ -1,6 +1,6 @@
 import { LtoDidProvider } from '../lto-did-provider'
 import { IDidConnectionMode, IRequiredContext } from '../types/lto-provider-types'
-import { Network, DIDService } from '@sphereon/lto-did-ts'
+import { Network, DIDService, LtoVerificationMethod } from '@sphereon/lto-did-ts'
 import { IKeyManager, IKeyManagerCreateArgs, MinimalImportableKey, ManagedKeyInfo, IIdentifier } from '@veramo/core'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 
@@ -84,7 +84,7 @@ describe('@sphereon/lto-did-provider', () => {
       {
         options: {
           privateKeyHex: PRIVATE_KEY_HEX,
-          verificationMethods: [256],
+          verificationMethods: [LtoVerificationMethod.VerificationMethod],
         },
       },
       mockContext
@@ -114,7 +114,7 @@ describe('@sphereon/lto-did-provider', () => {
         },
         key: LTO_KEY,
         options: {
-          verificationMethod: 256,
+          verificationMethod: LtoVerificationMethod.VerificationMethod,
         },
       },
       mockContext
@@ -136,7 +136,7 @@ describe('@sphereon/lto-did-provider', () => {
           },
           key: LTO_KEY,
           options: {
-            verificationMethod: 256,
+            verificationMethod: LtoVerificationMethod.VerificationMethod,
           },
         },
         mockContext
@@ -160,7 +160,7 @@ describe('@sphereon/lto-did-provider', () => {
           },
           key: LTO_KEY,
           options: {
-            verificationMethod: 256,
+            verificationMethod: LtoVerificationMethod.VerificationMethod,
           },
         },
         mockContext
@@ -184,7 +184,7 @@ describe('@sphereon/lto-did-provider', () => {
           },
           key: LTO_KEY,
           options: {
-            verificationMethod: 256,
+            verificationMethod: LtoVerificationMethod.VerificationMethod,
           },
         },
         mockContext
