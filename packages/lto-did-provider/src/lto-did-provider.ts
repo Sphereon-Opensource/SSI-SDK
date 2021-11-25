@@ -34,9 +34,9 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
     context: IRequiredContext
   ): Promise<Omit<IIdentifier, 'provider'>> {
     if (this.isUniRegistrarMode()) {
-      return await this.createIdentifierUsingUniRegistrar(context, kms, options)
+      return this.createIdentifierUsingUniRegistrar(context, kms, options)
     } else {
-      return await this.createIdentifierUsingNodeRPC(context, kms, options)
+      return this.createIdentifierUsingNodeRPC(context, kms, options)
     }
   }
 

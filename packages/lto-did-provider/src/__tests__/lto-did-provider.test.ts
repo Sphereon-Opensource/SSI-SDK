@@ -57,7 +57,7 @@ describe('@sphereon/lto-did-provider', () => {
     } as IKeyManager,
   } as IRequiredContext
 
-  it('should create identifier', async () => {
+  it('should create identifier', () => {
     const restResponse = {
       data: {
         didIdentifier: 'TestDID',
@@ -65,7 +65,7 @@ describe('@sphereon/lto-did-provider', () => {
     }
 
     // jest.spyOn(fetch, '').mockResolvedValueOnce(Promise.resolve(restResponse));
-    const identifier = await ltoDIDProvider.createIdentifier(
+    const identifier = ltoDIDProvider.createIdentifier(
       {
         options: {
           privateKeyHex: PRIVATE_KEY_HEX,
@@ -74,13 +74,13 @@ describe('@sphereon/lto-did-provider', () => {
       mockContext
     )
 
-    /*expect(provider).not.toHaveProperty('resolveDid')
-        expect(axios.post).toHaveBeenCalledWith(`${AppConfig.credencoBackendUrl}/did`, {"publicKeyBase58": "0xmyPublicKey"}, {"headers": {"Content-Type": "application/json"}});*/
-    assertExpectedIdentifier(identifier)
+
+    expect.assertions(4)
+    return assertExpectedIdentifier(identifier)
   })
 
   it('should create identifier with verificationMethods', async () => {
-    const identifier = await ltoDIDProvider.createIdentifier(
+    const identifier = ltoDIDProvider.createIdentifier(
       {
         options: {
           privateKeyHex: PRIVATE_KEY_HEX,
@@ -90,13 +90,13 @@ describe('@sphereon/lto-did-provider', () => {
       mockContext
     )
 
-    assertExpectedIdentifier(identifier)
+    return assertExpectedIdentifier(identifier)
   })
 
   it('should properly import identifier using DID manager', async () => {
-    const importedIdentifier = await didManager.didManagerImport(IDENTIFIER, mockContext)
-    assertExpectedIdentifier(importedIdentifier)
-    assertExpectedIdentifier(await didManager.didManagerGet({ did: LTO_DID }))
+    const importedIdentifier = didManager.didManagerImport(IDENTIFIER, mockContext)
+    await assertExpectedIdentifier(importedIdentifier)
+    return assertExpectedIdentifier(didManager.didManagerGet({ did: LTO_DID }))
   })
 
   it('should add verification key', async () => {
@@ -106,7 +106,8 @@ describe('@sphereon/lto-did-provider', () => {
     DIDService.prototype.addVerificationMethod = mockAddVerificationMethod
     mockAddVerificationMethod.mockReturnValue(Promise.resolve({ address }))
 
-    const result = await ltoDIDProvider.addKey(
+    await expect(
+      ltoDIDProvider.addKey(
       {
         identifier: {
           ...IDENTIFIER,
@@ -120,7 +121,7 @@ describe('@sphereon/lto-did-provider', () => {
       mockContext
     )
 
-    expect(result).toEqual(`did:lto:${address}#key`)
+    ).resolves.toEqual(`did:lto:${address}#key`)
 
     // jest.resetAllMocks();
   })
@@ -193,10 +194,10 @@ describe('@sphereon/lto-did-provider', () => {
   })
 })
 
-function assertExpectedIdentifier(identifier: Omit<IIdentifier, 'provider'>) {
-  expect(identifier).toHaveProperty('did', LTO_DID)
-  expect(identifier).toHaveProperty('controllerKeyId', LTO_KID)
-  expect(identifier).toHaveProperty('keys', [
+async function assertExpectedIdentifier(identifier: Promise<Omit<IIdentifier, 'provider'>>) {
+  await expect(identifier).resolves.toHaveProperty('did', LTO_DID)
+  await expect(identifier).resolves.toHaveProperty('controllerKeyId', LTO_KID)
+  await expect(identifier).resolves.toHaveProperty('keys', [
     {
       kid: LTO_KID,
       kms: 'local',
@@ -204,5 +205,5 @@ function assertExpectedIdentifier(identifier: Omit<IIdentifier, 'provider'>) {
       publicKeyHex: PUBLIC_KEY_HEX,
     },
   ])
-  expect(identifier).toHaveProperty('services', [])
+  return expect(identifier).resolves.toHaveProperty('services', [])
 }

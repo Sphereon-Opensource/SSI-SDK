@@ -8,7 +8,7 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@sphereon/lto-did-ts": "^0.1.4",
+    "@sphereon/lto-did-ts": "^0.1.6",
     "lto-api": "^0.5.14",
     "@sphereon/did-uni-client": "^0.3.3",
     "@sphereon/ssi-sdk-core": "^0.0.1",
