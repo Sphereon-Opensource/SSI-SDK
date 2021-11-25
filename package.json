@@ -24,7 +24,7 @@
   },
   "workspaces": {
     "nohoist": [
-      "**disabled-repalce-by-package-names**"
+      "**disabled-replace-by-package-names**"
     ],
     "packages": [
       "./packages/*"
