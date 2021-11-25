@@ -6,32 +6,52 @@
   <br>
 </h1>
 
-`Not yet documented`
+This is an SSI SDK based on the great work done by [Veramo](https://veramo.io). It contains plugins that extend the Veramo framework:
+
+- DIDs and Key management:
+  - factom: [Factom DID creation](./packages/lto-did-provider/README.md) (WIP)
+  - lto: [LTO Network DID creation and Verification Methods](./packages/lto-did-provider/README.md)
+  - ion: ION creation (WIP)
+- VC API:
+  - VC API issuer: Issue VCs using the VC (HTTP) Api
+  - VC API verifier: Verify VCs and VPs using the VC (HTTP) Api
+- Self Issued OpenID Connect v2 and OpenID Connect for Verifiable Presentations
+  - SIOPv2 (WIP)
+
+    
+#### ssi-sdk-core
+This package contains types and methods shared by the other plugins
+
+
+#### factom-did-provider
+factom-did-provider is a Veramo plugin to create DIDs on the Factom Protocol.
+
+[factom-did-provider readme](./packages/factom-did-provider/README.md)
+
+#### lto-did-provider
+Lto-did-provider is a Veramo plugin to create DIDs and to add and manage verification methods on LTO Network.
+
+[lto-did-provider readme](./packages/lto-did-provider/README.md)
+
+### DID resolution
+
+---
+**Note:**
+DID resolution is not part of this SDK. We do provide a Universal DID client you can use in Veramo, simply by using the below code when setting up the Agent:
+
+````typescript
+export const agent = createAgent<IDIDManager & CredentialIssuerLD & IKeyManager & IDataStore & IDataStoreORM & IResolver>({
+  plugins: [
+    // Other plugins
+    new DIDResolverPlugin({
+      resolver: new UniResolver({ resolveURL: 'https://dev.uniresolver.io/1.0/identifiers'} )
+    })
+  ]
+})
+````
 
 ### Lerna
 The SSI-SDK makes use of Lerna for managing multiple packages. Lerna is a tool that optimizes the workflow around managing multi-package repositories with git and npm / yarn.
-
-### packages
-The SSI-SDK contains the following packages:
-* `ssi-sdk-core`
-* `factom-did-provider`
-* `lto-did-provider`
- 
-#### ssi-sdk-core
-`Not yet documented`
-
-#### factom-did-provider
-`Not yet documented`
-
-#### Lto-did-provider
-Lto-did-provider is a Veramo plugin to create and delete DIDs and to add and manage verification methods on LTO Network.
-
-[Lto-did-provider readme](./packages/lto-did-provider/README.md)
-
-### Installation
-```shell
-yarn add SSI-SDK-workspace
-```
 
 ### Build
 ```shell
