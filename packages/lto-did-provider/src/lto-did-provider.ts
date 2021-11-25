@@ -3,7 +3,7 @@ import { IAgentContext, IIdentifier, IKey, IKeyManager, IService, TKeyType } fro
 import { Account, LTO } from 'lto-api'
 import { DIDService, hexToBase58, base58ToHex } from '@sphereon/lto-did-ts'
 import Debug from 'debug'
-import { ICreateIdentifierOpts, ILtoDidProviderOpts, IRequiredContext, IDidConnectionMode } from './types/lto-provider-types'
+import { ICreateIdentifierOpts, ILtoDidProviderOpts, IRequiredContext, IDidConnectionMode, IAddKeyOpts } from './types/lto-provider-types'
 import { UniRegistrar } from '@sphereon/did-uni-client'
 const debug = Debug('veramo:did-provider-lto')
 
@@ -86,13 +86,18 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
     const ltoAPI = new LTO(this.opts?.network)
     const providedPrivateKeyBase58 = options?.privateKeyHex ? hexToBase58(options?.privateKeyHex) : undefined
     const didAccount = providedPrivateKeyBase58 ? ltoAPI.createAccountFromPrivateKey(providedPrivateKeyBase58) : ltoAPI.createAccount()
-    const didService = this.didService(didAccount)
-    const didKey = await this.createKey(context, { kms }, didAccount, didAccount.sign.privateKey ? base58ToHex(didAccount.getPrivateSignKey()) : undefined)
+    const didService = this.didService(didAccount.getPrivateSignKey())
+    const didKey = await this.createKey(
+      context,
+      { kms },
+      didAccount,
+      didAccount.sign.privateKey ? base58ToHex(didAccount.getPrivateSignKey()) : undefined
+    )
 
     return didService
       .createDID({
         verificationMethods: undefined,
-        _didAccount: didAccount
+        _didAccount: didAccount,
         // We add the verification methods ourselves below so that we can create/import the keys into Veramo's keystore
       })
       .then((did) => {
@@ -125,27 +130,47 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
   }
 
   async deleteIdentifier(args: IIdentifier, context: IAgentContext<IKeyManager>): Promise<boolean> {
-    return Promise.resolve(false)
+    return Promise.reject(new Error('Not implemented yet'))
   }
 
-  addKey(args: { identifier: IIdentifier; key: IKey; options?: any }, context: IAgentContext<IKeyManager>): Promise<any> {
-    return Promise.resolve(undefined)
+  async addKey(args: { identifier: IIdentifier; key: IKey; options: IAddKeyOpts }, context: IAgentContext<IKeyManager>): Promise<string> {
+    if (!args.identifier.controllerKeyId) {
+      return Promise.reject(new Error('No controller key id found'))
+    }
+
+    const identifierKey = args.identifier.keys.find((key) => key.kid === args.identifier.controllerKeyId)
+    if (!identifierKey) {
+      return Promise.reject(new Error(`No matching key found for controllerKeyId: ${args.identifier.controllerKeyId}`))
+    }
+
+    const privateKeyBase58 = identifierKey.privateKeyHex ? hexToBase58(identifierKey.privateKeyHex) : undefined
+    if (!privateKeyBase58) {
+      return Promise.reject(new Error(`No private key hex found for kid: ${identifierKey.kid}`))
+    }
+
+    return this.didService(privateKeyBase58)
+      .addVerificationMethod({
+        verificationMethodPrivateKeyBase58: args.key.privateKeyHex,
+        verificationMethod: args.options.verificationMethod,
+        createVerificationDID: true,
+      })
+      .then((account) => `did:lto:${account.address}#key`)
   }
 
   removeKey(args: { identifier: IIdentifier; kid: string; options?: any }, context: IAgentContext<IKeyManager>): Promise<any> {
-    return Promise.resolve(undefined)
+    return Promise.reject(new Error('Not implemented yet'))
   }
 
   addService(args: { identifier: IIdentifier; service: IService; options?: any }, context: IAgentContext<IKeyManager>): Promise<any> {
-    return Promise.resolve(undefined)
+    return Promise.reject(new Error('Not implemented yet'))
   }
 
   removeService(args: { identifier: IIdentifier; id: string; options?: any }, context: IAgentContext<IKeyManager>): Promise<any> {
-    return Promise.resolve(undefined)
+    return Promise.reject(new Error('Not implemented yet'))
   }
 
-  private didService(didAccount: Account) {
-    return new DIDService({ ...this.opts, didPrivateKeyBase58: didAccount.getPrivateSignKey() })
+  private didService(didPrivateKeyBase58: string): DIDService {
+    return new DIDService({ ...this.opts, didPrivateKeyBase58 })
   }
 
   private async createKey(
@@ -167,6 +192,7 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
           kms: kms || this.defaultKms,
           type: keyType || 'Ed25519',
         })
+
     return key
   }
 }
