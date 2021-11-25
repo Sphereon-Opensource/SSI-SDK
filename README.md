@@ -1,10 +1,5 @@
-<!--suppress HtmlDeprecatedAttribute -->
-<h1 align="center">
-  <br>
-  <a href="https://www.sphereon.com"><img src="https://sphereon.com/content/themes/sphereon/assets/img/logo.svg" alt="Sphereon" width="400"></a>
-  <br>SSI-SDK (Typescript) 
-  <br>
-</h1>
+
+
 
 This is an SSI SDK based on the great work done by [Veramo](https://veramo.io). It contains plugins that extend the Veramo framework:
 
@@ -12,26 +7,27 @@ This is an SSI SDK based on the great work done by [Veramo](https://veramo.io). 
   - factom: [Factom DID creation](./packages/lto-did-provider/README.md) (WIP)
   - lto: [LTO Network DID creation and Verification Methods](./packages/lto-did-provider/README.md)
   - ion: ION creation (WIP)
-- VC API:
-  - VC API issuer: Issue VCs using the VC (HTTP) Api
-  - VC API verifier: Verify VCs and VPs using the VC (HTTP) Api
+- VC (HTTP) API:
+  - VC API Issuer: [Issue VCs using the VC (HTTP) Api v0.1](./packages/vc-api-issuer/README.md)
+  - VC API Verifier: [Verify VCs and VPs using the VC (HTTP) Api v0.1](./packages/vc-api-verifier/README.md)
 - Self Issued OpenID Connect v2 and OpenID Connect for Verifiable Presentations
   - SIOPv2 (WIP)
-
-    
+   
 #### ssi-sdk-core
-This package contains types and methods shared by the other plugins
-
+The [core package](./packages/ssi-sdk-core/README.md) contains types and methods shared by the other plugins
 
 #### factom-did-provider
-factom-did-provider is a Veramo plugin to create DIDs on the Factom Protocol.
-
-[factom-did-provider readme](./packages/factom-did-provider/README.md)
+The [Factom Protocol DID Provider](./packages/factom-did-provider/README.md) is a Veramo plugin to create DIDs on the Factom Protocol.
 
 #### lto-did-provider
-Lto-did-provider is a Veramo plugin to create DIDs and to add and manage verification methods on LTO Network.
+The [LTO Network DID Provider](./packages/lto-did-provider/README.md) is a Veramo plugin to create DIDs and to add and manage verification methods on LTO Network.
 
-[lto-did-provider readme](./packages/lto-did-provider/README.md)
+#### vc-api-issuer
+The [VC (HTTP) API Issuer](./packages/factom-did-provider/README.md) is a Veramo plugin to issue Verifiable Credentials using the [VC API](https://github.com/w3c-ccg/vc-api) (currently only supporting a v0.1 spec).
+
+#### vc-api-verifier
+The [VC (HTTP) API Verifier](./packages/factom-did-provider/README.md) is a Veramo plugin to verify Verifiable Credentials using the [VC API](https://github.com/w3c-ccg/vc-api) (currently only supporting a v0.1 spec).
+
 
 ### DID resolution
 
