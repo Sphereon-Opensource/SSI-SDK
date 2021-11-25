@@ -196,11 +196,13 @@ describe('@sphereon/lto-did-provider', () => {
 function assertExpectedIdentifier(identifier: Omit<IIdentifier, 'provider'>) {
   expect(identifier).toHaveProperty('did', LTO_DID)
   expect(identifier).toHaveProperty('controllerKeyId', LTO_KID)
-  expect(identifier).toHaveProperty('keys', [{
-    kid: LTO_KID,
-    kms: 'local',
-    type: 'Ed25519',
-    publicKeyHex: PUBLIC_KEY_HEX,
-  }])
+  expect(identifier).toHaveProperty('keys', [
+    {
+      kid: LTO_KID,
+      kms: 'local',
+      type: 'Ed25519',
+      publicKeyHex: PUBLIC_KEY_HEX,
+    },
+  ])
   expect(identifier).toHaveProperty('services', [])
 }
