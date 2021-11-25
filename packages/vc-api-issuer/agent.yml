@@ -70,7 +70,7 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/vc-api-issuer-plugin/dist#VcApiIssuer
+        - $require: ./packages/vc-api-issuer/dist#VcApiIssuer
           $args:
             - issueUrl: 'https://vc-api.sphereon.io/services/issue/credentials'
               # please use your own authorization token, this is only an example

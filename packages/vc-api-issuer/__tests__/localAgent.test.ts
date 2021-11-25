@@ -8,7 +8,7 @@ import vcApiIssuerAgentLogic from './shared/vcApiIssuerAgentLogic';
 let agent: any;
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/vc-api-issuer-plugin/agent.yml');
+  const config = getConfig('packages/vc-api-issuer/agent.yml');
   config.agent.$args[0].plugins[0].$args[0].authorizationToken = process.env.VC_HTTP_API_AUTH_TOKEN;
   const { localAgent } = createObjects(config, { localAgent: '/agent' });
   agent = localAgent;
