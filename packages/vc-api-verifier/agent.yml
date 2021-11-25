@@ -70,6 +70,6 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/vc-api-verifier-plugin/dist#VcApiVerifier
+        - $require: ./packages/vc-api-verifier/dist#VcApiVerifier
           $args:
             - verifyUrl: 'https://vc-api.sphereon.io/services/verify/credentials'

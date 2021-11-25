@@ -34,7 +34,7 @@ const getAgent = (options?: IAgentOptions) =>
   });
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig(path.resolve('packages/vc-api-verifier-plugin/agent.yml'));
+  const config = getConfig(path.resolve('packages/vc-api-verifier/agent.yml'));
   const { agent } = createObjects(config, { agent: '/agent' });
   serverAgent = agent;
 

@@ -8,7 +8,7 @@ import vcApiVerifierAgentLogic from './shared/vcApiVerifierAgentLogic';
 let agent: any;
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/vc-api-verifier-plugin/agent.yml');
+  const config = getConfig('packages/vc-api-verifier/agent.yml');
   const { localAgent } = createObjects(config, { localAgent: '/agent' });
   agent = localAgent;
 
