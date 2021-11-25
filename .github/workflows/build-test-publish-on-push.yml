@@ -16,6 +16,7 @@ jobs:
       GH_TOKEN: ${{secrets.GH_TOKEN}}
       GH_USER: ${{secrets.GH_USER}}
       GH_EMAIL: ${{secrets.GH_EMAIL}}
+      VC_HTTP_API_AUTH_TOKEN: ${{secrets.VC_HTTP_API_AUTH_TOKEN}}
     runs-on: ubuntu-18.04
     services:
       postgres:
@@ -58,7 +59,7 @@ jobs:
 
       - name: setup git coordinates
         run: |
-          git remote set-url origin https://Sphereon-OpenSource:$GH_TOKEN@github.com/Sphereon-OpenSource/SSI-SDK.git
+          git remote set-url origin https://Sphereon-Opensource:$GH_TOKEN@github.com/Sphereon-Opensource/ssi-sdk.git
           git config user.name $GH_USER
           git config user.email $GH_EMAIL
 
