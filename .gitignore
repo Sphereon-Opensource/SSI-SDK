@@ -2,6 +2,7 @@
 logs
 *.log
 npm-debug.log*
+lerna-debug.log
 
 # Runtime data
 pids
@@ -40,7 +41,17 @@ test/*.js
 *.map
 
 # packages
-packages/*/dist
-packages/*/tsconfig.tsbuildinfo
+/packages/*/dist
+/packages/*/tsconfig.tsbuildinfo
+/packages/*/api/*.api.json
+/packages/*/api/*.api.md
+/packages/*/coverage/
+/packages/*/node_modules/
+
+*.tsbuildinfo
 
 .idea
+.DS_STORE
+.eslintcache
+*.swp
+*~

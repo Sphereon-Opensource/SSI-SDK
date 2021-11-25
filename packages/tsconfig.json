@@ -1,4 +1,4 @@
 {
   "files": [],
-  "references": [{ "path": "ssi-sdk-core" }, { "path": "factom-did-provider" }, { "path": "lto-did-provider" }]
+  "references": [{ "path": "ssi-sdk-core" }, { "path": "factom-did-provider" }, { "path": "lto-did-provider" }, {"path":  "vc-api-issuer-plugin"}, {"path": "vc-api-verifier-plugin"}]
 }

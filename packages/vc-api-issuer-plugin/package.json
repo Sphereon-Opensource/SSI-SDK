@@ -1,0 +1,42 @@
+{
+  "name": "@sphereon/ssi-sdk-vc-api-issuer",
+  "version": "0.0.1",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "veramo": {
+    "pluginInterfaces": {
+      "IVcApiIssuer": "./src/types/IVcApiIssuer.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@veramo/core": "^3.1.0",
+    "cross-fetch": "^3.1.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.2",
+    "@veramo/cli": "^3.0.0",
+    "jest": "^27.3.1",
+    "ts-jest": "^27.0.7",
+    "typescript": "^4.4.3",
+    "prettier": "^2.4.1"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "plugin.schema.json",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-OpenSource/vc-api-issuer-plugin.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": []
+}
