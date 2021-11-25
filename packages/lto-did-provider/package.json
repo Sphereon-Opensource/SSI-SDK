@@ -5,9 +5,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc --build"
   },
-  "private": true,
   "dependencies": {
     "@sphereon/lto-did-ts": "^0.1.4",
     "lto-api": "^0.5.14",
