@@ -10,8 +10,7 @@
     }
   },
   "scripts": {
-    "build": "tsc --build",
-    "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
+    "build": "tsc --build"
   },
   "license": "Apache-2.0",
   "dependencies": {

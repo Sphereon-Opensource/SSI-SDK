@@ -1,5 +1,5 @@
 import { IAgentContext, IPluginMethodMap, VerifiableCredential } from '@veramo/core';
-import {ICredential} from "../../../ssi-sdk-core/src";
+import {ICredential} from '@sphereon/ssi-sdk-core';;
 
 export interface IVcApiIssuer extends IPluginMethodMap {
   issueCredentialUsingVcApi(args: IIssueCredentialArgs, context: IRequiredContext): Promise<VerifiableCredential>;
