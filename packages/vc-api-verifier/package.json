@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-vc-api-verifier",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,9 +21,9 @@
     "@types/jest": "^27.0.2",
     "@veramo/cli": "^3.1.0",
     "jest": "^27.3.1",
+    "prettier": "^2.4.1",
     "ts-jest": "^27.0.7",
-    "typescript": "^4.4.3",
-    "prettier": "^2.4.1"
+    "typescript": "^4.4.3"
   },
   "files": [
     "dist/**/*",
@@ -38,5 +38,13 @@
   "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
-  "keywords": ["Sphereon", "SSI", "Veramo", "W3C", "VC", "API", "Verifier"]
+  "keywords": [
+    "Sphereon",
+    "SSI",
+    "Veramo",
+    "W3C",
+    "VC",
+    "API",
+    "Verifier"
+  ]
 }
