@@ -9,19 +9,24 @@
 Lto-did-provider is a Veramo plugin to create and delete DIDs and to add and manage verification methods on LTO Network.
 
 ### createIdentifier
+
 Creating a DID means you have to create a public/private keypair first. You can do this using lto-api package or any other means to create a ed25519 keypair. We are accepting an optional ed25519 private key to keep it flexible for everyone.
 
 ```js
 const privateKeyHex = '18a58bad89...'
 
-const identifier = await ltoDIDProvider.createIdentifier({
+const identifier = await ltoDIDProvider.createIdentifier(
+  {
     options: {
       privateKeyHex,
     },
-  }, context)
+  },
+  context
+)
 ```
 
 ### addKey
+
 You can add one or more verification methods to an existing DID, or you can add them during DID creation. Internally this is accomplished using LTO Networks, associations. This means new private/public keypairs are needed. Again you can use your own ed25519 private key.
 
 ```js
@@ -45,11 +50,13 @@ You can add one or more verification methods to an existing DID, or you can add 
 ```
 
 ### Installation
+
 ```shell
 yarn add @sphereon/ssi-sdk-lto-did-provider
 ```
 
 ### Build
+
 ```shell
 yarn build
 ```

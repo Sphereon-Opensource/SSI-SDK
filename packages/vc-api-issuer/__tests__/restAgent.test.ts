@@ -39,7 +39,7 @@ const getAgent = (options?: IAgentOptions) =>
   });
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/vc-api-issuer-plugin/agent.yml');
+  const config = getConfig('packages/vc-api-issuer/agent.yml');
   config.agent.$args[0].plugins[0].$args[0].authorizationToken = process.env.VC_HTTP_API_AUTH_TOKEN;
   const { agent } = createObjects(config, { agent: '/agent' });
   serverAgent = agent;

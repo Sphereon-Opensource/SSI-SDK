@@ -18,7 +18,8 @@ export default (testContext: {
 
     afterAll(testContext.tearDown);
 
-    it('should verify', async () => {
+    // fixme: Re-enable test once Factom Testnet public API is back up
+    xit('should verify', async () => {
       const credential = {
         '@context': [
           'https://www.w3.org/2018/credentials/v1',

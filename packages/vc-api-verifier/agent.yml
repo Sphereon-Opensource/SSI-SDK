@@ -6,7 +6,7 @@ constants:
   # please use your own X25519 key, this is only an example
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
-    - issueCredentialUsingVcApi
+    - verifyCredentialUsingVcApi
 
 server:
   baseUrl:
@@ -70,8 +70,6 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/vc-api-issuer-plugin/dist#VcApiIssuer
+        - $require: ./packages/vc-api-verifier/dist#VcApiVerifier
           $args:
-            - issueUrl: 'https://vc-api.sphereon.io/services/issue/credentials'
-              # please use your own authorization token, this is only an example
-              authorizationToken: 'ey...'
+            - verifyUrl: 'https://vc-api.sphereon.io/services/verify/credentials'

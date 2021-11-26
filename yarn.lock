@@ -2098,10 +2098,10 @@
     cross-fetch "^3.1.4"
     did-resolver "^3.1.2"
 
-"@sphereon/lto-did-ts@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@sphereon/lto-did-ts/-/lto-did-ts-0.1.4.tgz#004f7a9bb983f63eb359472564c7cda75461dd6c"
-  integrity sha512-vyjTDwsGFdSVcWtjdTQUL1SODdtOv7pPjr1yHkwre4oeeA3XAa+tZzOcOiXthR3KrMOYr/T9zOvbJ11wfr6VZw==
+"@sphereon/lto-did-ts@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@sphereon/lto-did-ts/-/lto-did-ts-0.1.6.tgz#1978c57447ffb7c4aaa2c86ba8953b591bcb08e4"
+  integrity sha512-8ncLpCPiMzDo5X3t/3A+T+P2vmPqcfmdnTrAvyIGkXVqHQFR9UHMzvd8NOR6EzkS65T4L9sRVwM7hMsU1cXRtw==
   dependencies:
     "@lto-network/lto-crypto" "^1.1.1"
     "@lto-network/lto-transactions" "^1.2.12"
@@ -2700,7 +2700,7 @@
   resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.8.3.tgz#781d360c282436494b32fe7d9f7f8e64b3118aa3"
   integrity sha512-fbF6oTd4sGGy0xjHPKAt+eS2CrxJ3+6gQ3FGcBoIJR2TLAyCkCyI8JqZNy+FeON0AhVgNJoUumVoZQjBFUqHkw==
 
-"@veramo/cli@^3.0.0":
+"@veramo/cli@^3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@veramo/cli/-/cli-3.1.0.tgz#f151928799c04dab3fe6e1aec9a4d9cfaaca1406"
   integrity sha512-TJYRCnUOV+B7K4NL4nqdYftXz78tW/hJ1BuBpHdIFTOmbYe8Tg3j4bFueYmtMFtReAySrtsOcDC9GJHTTu7pBQ==
