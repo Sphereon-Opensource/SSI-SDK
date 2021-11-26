@@ -12,7 +12,7 @@ __Warning: This package still is in every early development. Breaking changes wi
 
 ---
 
-# ssi-sdk-cre
+# ssi-sdk-core
 A Veramo plugin whit types/interfaces and utility functions shared by multiple plugins 
 
 ### Installation
