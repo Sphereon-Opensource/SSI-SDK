@@ -13,7 +13,7 @@ jobs:
     env:
       NPM_TOKEN: ${{secrets.NPM_TOKEN}}
       NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      GH_TOKEN: ${{secrets.GH_TOKEN}}
+      GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       GH_USER: ${{secrets.GH_USER}}
       GH_EMAIL: ${{secrets.GH_EMAIL}}
       VC_HTTP_API_AUTH_TOKEN: ${{secrets.VC_HTTP_API_AUTH_TOKEN}}
@@ -67,6 +67,7 @@ jobs:
         run: |
           echo "@sphereon:registry=https://registry.npmjs.org/" > .npmrc
           echo "registry=https://registry.npmjs.org/" >> .npmrc
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
           npm whoami
 
       - name: publish @latest when on main
