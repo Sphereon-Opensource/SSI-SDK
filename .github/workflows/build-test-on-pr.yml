@@ -34,13 +34,12 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn bootstrap
       - run: yarn build
-      - name: run integration tests
+      - name: run CI tests
         env:
           INCLUDE_POSTGRES_TESTS: true
           POSTGRES_HOST: localhost
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: test123
           POSTGRES_PORT: 5432
-        run: yarn test:integration
-      - run: yarn lint
+        run: yarn test:ci
       - run: npx codecov
