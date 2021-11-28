@@ -1,21 +1,21 @@
-import { IAgentContext, IPluginMethodMap, VerifiableCredential } from '@veramo/core';
-import {ICredential} from '@sphereon/ssi-sdk-core';;
+import { CredentialPayload, IAgentContext, IPluginMethodMap, VerifiableCredential } from '@veramo/core'
+import { VerifiableCredentialSP } from '@sphereon/ssi-sdk-core'
 
 export interface IVcApiIssuer extends IPluginMethodMap {
-  issueCredentialUsingVcApi(args: IIssueCredentialArgs, context: IRequiredContext): Promise<VerifiableCredential>;
+  issueCredentialUsingVcApi(args: IIssueCredentialArgs, context: IRequiredContext): Promise<VerifiableCredentialSP>
 }
 
 export interface IVcApiIssuerArgs {
-  issueUrl: string;
-  authorizationToken: string;
+  issueUrl: string
+  authorizationToken: string
 }
 
 export interface IIssueCredentialArgs {
-  credential: ICredential;
+  credential: CredentialPayload
 }
 
 export enum events {
   CREDENTIAL_ISSUED = 'credentialIssued',
 }
 
-export type IRequiredContext = IAgentContext<Record<string, never>>;
+export type IRequiredContext = IAgentContext<Record<string, never>>

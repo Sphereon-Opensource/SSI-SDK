@@ -74,7 +74,6 @@ describe('@sphereon/lto-did-provider', () => {
       mockContext
     )
 
-
     expect.assertions(4)
     return assertExpectedIdentifier(identifier)
   })
@@ -108,19 +107,18 @@ describe('@sphereon/lto-did-provider', () => {
 
     await expect(
       ltoDIDProvider.addKey(
-      {
-        identifier: {
-          ...IDENTIFIER,
-          services: [],
+        {
+          identifier: {
+            ...IDENTIFIER,
+            services: [],
+          },
+          key: LTO_KEY,
+          options: {
+            verificationMethod: LtoVerificationMethod.VerificationMethod,
+          },
         },
-        key: LTO_KEY,
-        options: {
-          verificationMethod: LtoVerificationMethod.VerificationMethod,
-        },
-      },
-      mockContext
-    )
-
+        mockContext
+      )
     ).resolves.toEqual(`did:lto:${address}#key`)
 
     // jest.resetAllMocks();

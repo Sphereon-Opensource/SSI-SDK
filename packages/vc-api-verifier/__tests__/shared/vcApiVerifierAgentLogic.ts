@@ -1,22 +1,18 @@
-import { TAgent } from '@veramo/core';
-import { IVcApiVerifier } from '../../src/types/IVcApiVerifier';
+import { TAgent } from '@veramo/core'
+import { IVcApiVerifier } from '../../src/types/IVcApiVerifier'
 
-type ConfiguredAgent = TAgent<IVcApiVerifier>;
+type ConfiguredAgent = TAgent<IVcApiVerifier>
 
-export default (testContext: {
-  getAgent: () => ConfiguredAgent;
-  setup: () => Promise<boolean>;
-  tearDown: () => Promise<boolean>;
-}) => {
+export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
   describe('Verifier Agent Plugin', () => {
-    let agent: ConfiguredAgent;
+    let agent: ConfiguredAgent
 
     beforeAll(() => {
-      testContext.setup();
-      agent = testContext.getAgent();
-    });
+      testContext.setup()
+      agent = testContext.getAgent()
+    })
 
-    afterAll(testContext.tearDown);
+    afterAll(testContext.tearDown)
 
     // fixme: Re-enable test once Factom Testnet public API is back up
     xit('should verify', async () => {
@@ -43,16 +39,15 @@ export default (testContext: {
           created: '2021-11-19T11:34:47Z',
           jws: 'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..OpuzmKNsTapr-ZFN8AywcG-4jBTobh7_uaqYHUwl8oLYyhPaRH-6_I8rY4CbeuOpg2XHgRctSNnTrcOAVInxAw',
           proofPurpose: 'assertionMethod',
-          verificationMethod:
-            'did:factom:testnet:f64f6ea12a81c2d815b8aa2621c6a7ad551c15163f8eed115a2aeaf83be82da0#key-0',
+          verificationMethod: 'did:factom:testnet:f64f6ea12a81c2d815b8aa2621c6a7ad551c15163f8eed115a2aeaf83be82da0#key-0',
         },
-      };
+      }
 
       const result = await agent.verifyCredentialUsingVcApi({
         credential,
-      });
+      })
 
-      expect(result.errors).toEqual([]);
-    });
-  });
-};
+      expect(result.errors).toEqual([])
+    })
+  })
+}

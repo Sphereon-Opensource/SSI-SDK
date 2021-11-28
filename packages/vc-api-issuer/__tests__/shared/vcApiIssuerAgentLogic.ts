@@ -1,13 +1,9 @@
 import { TAgent } from '@veramo/core'
 import { IVcApiIssuer } from '../../src/types/IVcApiIssuer'
 
-type ConfiguredAgent = TAgent<IVcApiIssuer>;
+type ConfiguredAgent = TAgent<IVcApiIssuer>
 
-export default (testContext: {
-  getAgent: () => ConfiguredAgent;
-  setup: () => Promise<boolean>;
-  tearDown: () => Promise<boolean>;
-}) => {
+export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
   describe('Issuer Agent Plugin', () => {
     let agent: ConfiguredAgent
 
@@ -17,7 +13,7 @@ export default (testContext: {
     })
 
     afterAll(async () => {
-      await new Promise<void>(resolve => setTimeout(() => resolve(), 5000)); // avoid jest open handle error
+      await new Promise<void>((resolve) => setTimeout(() => resolve(), 10000)) // avoid jest open handle error
       await testContext.tearDown()
     })
 
@@ -47,9 +43,11 @@ export default (testContext: {
         type: ['VerifiableCredential', 'UniversityDegreeCredential'],
       }
 
-      return await expect(agent.issueCredentialUsingVcApi({
-        credential,
-      })).resolves.not.toBeNull()
+      return await expect(
+        agent.issueCredentialUsingVcApi({
+          credential,
+        })
+      ).resolves.not.toBeNull()
     })
   })
-};
+}
