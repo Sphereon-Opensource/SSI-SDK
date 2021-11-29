@@ -14,9 +14,7 @@
               "description": "Optional. The key handle ( {@link  IKey#kid  } ) from the internal database."
             }
           },
-          "required": [
-            "credential"
-          ],
+          "required": ["credential"],
           "description": "Encapsulates the parameters required to create a\n {@link  https://www.w3.org/TR/vc-data-model/#credentials | W3C Verifiable Credential }"
         },
         "CredentialPayload": {
@@ -53,9 +51,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "issuer"
-          ],
+          "required": ["issuer"],
           "description": "Used as input when creating Verifiable Credentials"
         },
         "IssuerType": {
@@ -67,9 +63,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "id"
-              ]
+              "required": ["id"]
             },
             {
               "type": "string"
@@ -153,13 +147,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "credentialSubject",
-            "issuanceDate",
-            "issuer",
-            "proof"
-          ],
+          "required": ["@context", "credentialSubject", "issuanceDate", "issuer", "proof"],
           "description": "Represents a signed Verifiable Credential payload (includes proof), using a JSON representation. See  {@link  https://www.w3.org/TR/vc-data-model/#credentials | VC data model }"
         },
         "VerifiableCredentialSP": {
@@ -213,13 +201,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "credentialSubject",
-            "issuanceDate",
-            "issuer",
-            "proof"
-          ],
+          "required": ["@context", "credentialSubject", "issuanceDate", "issuer", "proof"],
           "description": "Represents a signed Verifiable Credential payload (includes proof), using a JSON representation. See  {@link  https://www.w3.org/TR/vc-data-model/#credentials | VC data model }"
         },
         "ProofType": {
@@ -251,9 +233,7 @@
               "description": "Optional. The key handle ( {@link  IKey#kid  } ) from the internal database."
             }
           },
-          "required": [
-            "presentation"
-          ],
+          "required": ["presentation"],
           "description": "Encapsulates the parameters required to create a\n {@link  https://www.w3.org/TR/vc-data-model/#presentations | W3C Verifiable Presentation }"
         },
         "PresentationPayload": {
@@ -296,9 +276,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "holder"
-          ],
+          "required": ["holder"],
           "description": "Used as input when creating Verifiable Presentations"
         },
         "W3CVerifiableCredential": {
@@ -376,11 +354,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "holder",
-            "proof"
-          ],
+          "required": ["@context", "holder", "proof"],
           "description": "Represents a signed Verifiable Presentation (includes proof), using a JSON representation. See  {@link  https://www.w3.org/TR/vc-data-model/#presentations | VP data model }"
         },
         "VerifiablePresentationSP": {
@@ -440,11 +414,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "holder",
-            "proof"
-          ],
+          "required": ["@context", "holder", "proof"],
           "description": "Represents a signed Verifiable Presentation (includes proof), using a JSON representation. See  {@link  https://www.w3.org/TR/vc-data-model/#presentations | VP data model }"
         },
         "IVerifyCredentialLDArgs": {
@@ -455,9 +425,7 @@
               "description": "The json payload of the Credential according to the\n {@link  https://www.w3.org/TR/vc-data-model/#credentials | canonical model } \n\nThe signer of the Credential is chosen based on the `issuer.id` property of the `credential`"
             }
           },
-          "required": [
-            "credential"
-          ],
+          "required": ["credential"],
           "description": "Encapsulates the parameters required to verify a\n {@link  https://www.w3.org/TR/vc-data-model/#credentials | W3C Verifiable Credential }"
         },
         "IVerifyPresentationLDArgs": {
@@ -476,9 +444,7 @@
               "description": "Optional (only for JWT) string domain parameter to verify the verifiable presentation against"
             }
           },
-          "required": [
-            "presentation"
-          ],
+          "required": ["presentation"],
           "description": "Encapsulates the parameters required to verify a\n {@link  https://www.w3.org/TR/vc-data-model/#presentations | W3C Verifiable Presentation }"
         }
       },
