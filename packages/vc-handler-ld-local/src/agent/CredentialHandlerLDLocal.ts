@@ -37,6 +37,12 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   private ldCredentialModule: LdCredentialModule
   readonly schema = schema.IVcLocalIssuerJsonLd
   readonly methods: ICredentialHandlerLDLocal = {
+    // We bind to existing methods as we can act as a drop in replacement. todo: Add config support for this mode
+    createVerifiableCredentialLD: this.createVerifiableCredentialLDLocal.bind(this),
+    createVerifiablePresentationLD: this.createVerifiablePresentationLDLocal.bind(this),
+    verifyPresentationLD: this.verifyPresentationLDLocal.bind(this),
+    verifyCredentialLD: this.verifyCredentialLDLocal.bind(this),
+
     createVerifiableCredentialLDLocal: this.createVerifiableCredentialLDLocal.bind(this),
     createVerifiablePresentationLDLocal: this.createVerifiablePresentationLDLocal.bind(this),
     verifyPresentationLDLocal: this.verifyPresentationLDLocal.bind(this),
@@ -103,6 +109,11 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       ...args?.presentation,
       '@context': presentationContext,
       type: presentationType,
+    }
+    // Workaround for bug in TypeError: Cannot read property 'length' of undefined
+    //     at VeramoEd25519Signature2018.preSigningPresModification
+    if (!presentation.verifier) {
+      presentation.verifier = []
     }
 
     if (!isDefined(presentation.holder) || !presentation.holder) {
