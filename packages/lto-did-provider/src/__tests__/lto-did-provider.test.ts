@@ -8,7 +8,7 @@ const PRIVATE_KEY_HEX =
   'ea6aaeebe17557e0fe256bfce08e8224a412ea1e25a5ec8b5d69618a58bad89e89a4661e446b46401325a38d3b20582d1dd277eb448a3181012a671b7ae15837'
 const PUBLIC_KEY_HEX = '89a4661e446b46401325a38d3b20582d1dd277eb448a3181012a671b7ae15837'
 const LTO_DID = 'did:lto:3MzYSqyo8GBMsY8u8F2WEuoVXYuq6hnKzyj'
-const LTO_KID = `${LTO_DID}#key`
+const LTO_KID = `${LTO_DID}#sign`
 const SPONSOR_PRIVATE_KEY_BASE58 = '5gqCU5NbwU4gc62be39LXDDALKj8opj1KZszx7ULJc2k33kk52prn8D1H2pPPwm6QVKvkuo72YJSoUhzzmAFmDH8'
 const LTO_KEY = {
   kid: LTO_KID,
@@ -58,6 +58,7 @@ describe('@sphereon/lto-did-provider', () => {
   } as IRequiredContext
 
   it('should create identifier', () => {
+    jest.setTimeout(100000)
     const restResponse = {
       data: {
         didIdentifier: 'TestDID',
@@ -119,7 +120,7 @@ describe('@sphereon/lto-did-provider', () => {
         },
         mockContext
       )
-    ).resolves.toEqual(`did:lto:${address}#key`)
+    ).resolves.toEqual(`did:lto:${address}#sign`)
 
     // jest.resetAllMocks();
   })
