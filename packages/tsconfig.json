@@ -1,4 +1,11 @@
 {
   "files": [],
-  "references": [{ "path": "ssi-sdk-core" }, { "path": "factom-did-provider" }, { "path": "lto-did-provider" }, {"path":  "vc-api-issuer"}, {"path": "vc-api-verifier-plugin"}]
+  "references": [
+    { "path": "ssi-sdk-core" },
+    { "path": "factom-did-provider" },
+    { "path": "lto-did-provider" },
+    { "path": "vc-api-issuer" },
+    { "path": "vc-api-verifier" },
+    { "path": "did-auth-siop-op-authenticator" }
+  ]
 }
