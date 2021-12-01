@@ -36,6 +36,7 @@ export interface IAuthenticateWithDidSiopArgs {
   stateId: string;
   redirectUrl: string;
   didMethod: string;
+  customApproval?: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise<void>;
 }
 
 export interface getDidSiopAuthenticationRequestDetailsArgs {

@@ -53,7 +53,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     this.privateKey = options.privateKey;
     this.expiresIn = options.expiresIn || 6000;
     this.didMethod = options.didMethod as string || 'ethr';
-    this.op = OP.builder() // TODO should also be able to provide OP?
+    this.op = OP.builder()
       .withExpiresIn(this.expiresIn)
       .addDidMethod(this.didMethod)
       .internalSignature(this.privateKey, this.did, this.kid)
@@ -65,11 +65,17 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.authenticateWithDidSiop} */
   private async authenticateWithDidSiop(args: IAuthenticateWithDidSiopArgs, context: IRequiredContext): Promise<Response> {
     return this.getDidSiopAuthenticationRequestFromRP({stateId: args.stateId, redirectUrl: args.redirectUrl}, context)
-      .then((authenticationRequest: ParsedAuthenticationRequestURI) =>
-          this.verifyDidSiopAuthenticationRequestURI({ requestURI: authenticationRequest, didMethod: args.didMethod}, context))
-      .then((verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) =>
-          this.sendDidSiopAuthenticationResponse({verifiedAuthenticationRequest: verifiedAuthenticationRequest}, context))
-      .catch((error: unknown) => Promise.reject(error));
+    .then((authenticationRequest: ParsedAuthenticationRequestURI) =>
+        this.verifyDidSiopAuthenticationRequestURI({ requestURI: authenticationRequest, didMethod: args.didMethod}, context))
+    .then((verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
+      if (args.customApproval !== undefined) {
+        return args.customApproval(verifiedAuthenticationRequest)
+        .then(() => this.sendDidSiopAuthenticationResponse({verifiedAuthenticationRequest: verifiedAuthenticationRequest}, context))
+      } else {
+        return this.sendDidSiopAuthenticationResponse({verifiedAuthenticationRequest: verifiedAuthenticationRequest}, context)
+      }
+    })
+    .catch((error: unknown) => Promise.reject(error));
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.getDidSiopAuthenticationRequestFromRP} */

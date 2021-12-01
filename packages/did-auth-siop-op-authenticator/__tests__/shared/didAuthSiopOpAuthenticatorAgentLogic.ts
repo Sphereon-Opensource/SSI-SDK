@@ -8,6 +8,7 @@ import {
   SubjectIdentifierType,
   UrlEncodingFormat,
   VerificationMode,
+  VerifiedAuthenticationRequestWithJWT
 } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types';
 
 const nock = require('nock');
@@ -96,6 +97,7 @@ export default (testContext: {
   getAgent: () => ConfiguredAgent
   setup: () => Promise<boolean>
   tearDown: () => Promise<boolean>
+  runAuthenticateWithCustomApprovalTest: boolean
 }) => {
   describe('DID Auth SIOP OP Authenticator Agent Plugin', () => {
     let agent: ConfiguredAgent;
@@ -136,7 +138,7 @@ export default (testContext: {
 
     afterAll(testContext.tearDown);
 
-    it('should authentication with DID SIOP', async () => {
+    it('should authentication with DID SIOP without custom approval', async () => {
       const result = await agent.authenticateWithDidSiop({
         stateId,
         redirectUrl,
@@ -145,6 +147,34 @@ export default (testContext: {
 
       expect(result.status).toEqual(200)
     });
+
+    it('should authentication with DID SIOP with custom approval', async () => {
+      const result = await agent.authenticateWithDidSiop({
+        stateId,
+        redirectUrl,
+        didMethod,
+        customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
+          return Promise.resolve()
+        }
+      });
+
+      expect(result.status).toEqual(200)
+    });
+
+    if (testContext.runAuthenticateWithCustomApprovalTest) {
+      it('should not authentication with DID SIOP when custom approval fails', async () => {
+        await expect(
+            agent.authenticateWithDidSiop({
+              stateId,
+              redirectUrl,
+              didMethod,
+              customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
+                return Promise.reject(new Error('Denied'))
+              }
+            })
+        ).rejects.toThrow('Denied')
+      })
+    }
 
     it('should get authentication request from RP', async () => {
       const result = await agent.getDidSiopAuthenticationRequestFromRP({

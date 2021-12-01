@@ -65,8 +65,13 @@ const tearDown = async (): Promise<boolean> => {
   return true
 };
 
-const testContext = { getAgent, setup, tearDown };
+const testContext = {
+  getAgent,
+  setup,
+  tearDown,
+  runAuthenticateWithCustomApprovalTest: false
+};
 
 describe('REST integration tests', () => {
-  didAuthSiopOpAuthenticatorAgentLogic(testContext)
+  didAuthSiopOpAuthenticatorAgentLogic(testContext);
 });
