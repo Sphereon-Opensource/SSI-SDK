@@ -23,13 +23,3 @@ yarn add @sphereon/ssi-sdk-did-auth-siop-authenticator
 ```shell
 yarn build
 ```
-
-### Test
-The test command runs:
-* `jest`
-* `coverage`
-
-You can also run only a single section of these tests, using for example `yarn test:unit`.
-```shell
-yarn test
-```
