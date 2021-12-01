@@ -8,18 +8,20 @@
 
 ---
 
-__Warning: This package still is in every early development. Breaking changes without notice will happen at this point!__
+**Warning: This package still is in every early development. Breaking changes without notice will happen at this point!**
 
 ---
 
 A Veramo plugin to authenticate using the Self Issued OpenID Provider v2 (SIOPv2)
 
 ### Installation
+
 ```shell
 yarn add @sphereon/ssi-sdk-did-auth-siop-authenticator
 ```
 
 ### Build
+
 ```shell
 yarn build
 ```

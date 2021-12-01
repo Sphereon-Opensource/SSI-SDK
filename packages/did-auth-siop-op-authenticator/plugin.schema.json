@@ -16,11 +16,7 @@
             },
             "additionalProperties": false
           },
-          "required": [
-            "stateId",
-            "redirectUrl",
-            "didMethod"
-          ],
+          "required": ["stateId", "redirectUrl", "didMethod"],
           "description": "Arguments needed for {@link VcApiVerifier.authenticateWithDidSiop } "
         },
         "Response": {
@@ -31,9 +27,7 @@
             },
             "additionalProperties": true
           },
-          "required": [
-            "status"
-          ],
+          "required": ["status"],
           "description": "Result of {@link VcApiVerifier.authenticateWithDidSiop } "
         },
         "IGetDidSiopAuthenticationRequestFromRpArgs": {
@@ -47,10 +41,7 @@
             },
             "additionalProperties": false
           },
-          "required": [
-            "stateId",
-            "redirectUrl"
-          ],
+          "required": ["stateId", "redirectUrl"],
           "description": "Arguments needed for {@link VcApiVerifier.getDidSiopAuthenticationRequestFromRP } "
         },
         "ParsedAuthenticationRequestURI": {
@@ -73,11 +64,7 @@
             },
             "additionalProperties": false
           },
-          "required": [
-            "jwt",
-            "requestPayload",
-            "registration"
-          ],
+          "required": ["jwt", "requestPayload", "registration"],
           "description": "Result of {@link VcApiVerifier.getDidSiopAuthenticationRequestFromRP } "
         },
         "getDidSiopAuthenticationRequestDetailsArgs": {
@@ -100,10 +87,7 @@
             },
             "additionalProperties": false
           },
-          "required": [
-            "verifiedAuthenticationRequest",
-            "verifiableCredentials"
-          ],
+          "required": ["verifiedAuthenticationRequest", "verifiableCredentials"],
           "description": "Arguments needed for {@link VcApiVerifier.getDidSiopAuthenticationRequestDetails } "
         },
         "IAuthRequestDetails": {
@@ -126,10 +110,7 @@
             },
             "additionalProperties": false
           },
-          "required": [
-            "id",
-            "vpResponseOpts"
-          ],
+          "required": ["id", "vpResponseOpts"],
           "description": "Result of {@link VcApiVerifier.getDidSiopAuthenticationRequestDetails } "
         },
         "IVerifyDidSiopAuthenticationRequestUriArgs": {
@@ -146,9 +127,7 @@
             },
             "additionalProperties": false
           },
-          "required": [
-            "ParsedAuthenticationRequestURI"
-          ],
+          "required": ["ParsedAuthenticationRequestURI"],
           "description": "Arguments needed for {@link VcApiVerifier.verifyDidSiopAuthenticationRequestURI } "
         },
         "VerifiedAuthenticationRequestWithJWT": {
@@ -174,10 +153,7 @@
             },
             "additionalProperties": false
           },
-          "required": [
-            "payload",
-            "verifyOpts"
-          ],
+          "required": ["payload", "verifyOpts"],
           "description": "Result of {@link VcApiVerifier.verifyDidSiopAuthenticationRequestURI } "
         },
         "ISendDidSiopAuthenticationResponseArgs": {
@@ -197,9 +173,7 @@
             },
             "additionalProperties": false
           },
-          "required": [
-            "verifiedAuthenticationRequest"
-          ],
+          "required": ["verifiedAuthenticationRequest"],
           "description": "Arguments needed for {@link VcApiVerifier.sendDidSiopAuthenticationResponse } "
         }
       },

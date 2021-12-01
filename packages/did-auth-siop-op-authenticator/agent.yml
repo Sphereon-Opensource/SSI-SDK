@@ -10,7 +10,6 @@ constants:
       getDidSiopAuthenticationRequestDetails
       verifyDidSiopAuthenticationRequestURI
 
-
 server:
   baseUrl:
     $ref: /constants/baseUrl
@@ -75,7 +74,7 @@ agent:
       plugins:
         - $require: ./packages/did-auth-siop-op-authenticator/dist#DidAuthSiopOpAuthenticator
           $args:
-              # please use your own values, these are only an example
+            # please use your own values, these are only an example
             - did: 'did:ethr:0xcBe71d18b5F1259faA9fEE8f9a5FAbe2372BE8c9'
               kid: 'did:ethr:0xcBe71d18b5F1259faA9fEE8f9a5FAbe2372BE8c9'
               privateKey: 'ea6aaeebe1755...'
