@@ -1,0 +1,255 @@
+{
+  "IDidAuthSiopOpAuthenticator": {
+    "components": {
+      "schemas": {
+        "IAuthenticateWithDidSiopArgs": {
+          "type": "object",
+          "properties": {
+            "stateId": {
+              "type": "string"
+            },
+            "redirectUrl": {
+              "type": "string"
+            },
+            "didMethod": {
+              "type": "string"
+            },
+            "additionalProperties": false
+          },
+          "required": [
+            "stateId",
+            "redirectUrl",
+            "didMethod"
+          ],
+          "description": "Arguments needed for {@link VcApiVerifier.authenticateWithDidSiop } "
+        },
+        "Response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number"
+            },
+            "additionalProperties": true
+          },
+          "required": [
+            "status"
+          ],
+          "description": "Result of {@link VcApiVerifier.authenticateWithDidSiop } "
+        },
+        "IGetDidSiopAuthenticationRequestFromRpArgs": {
+          "type": "object",
+          "properties": {
+            "stateId": {
+              "type": "string"
+            },
+            "redirectUrl": {
+              "type": "string"
+            },
+            "additionalProperties": false
+          },
+          "required": [
+            "stateId",
+            "redirectUrl"
+          ],
+          "description": "Arguments needed for {@link VcApiVerifier.getDidSiopAuthenticationRequestFromRP } "
+        },
+        "ParsedAuthenticationRequestURI": {
+          "type": "object",
+          "properties": {
+            "jwt": {
+              "type": "string"
+            },
+            "requestPayload": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "registration": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": false
+          },
+          "required": [
+            "jwt",
+            "requestPayload",
+            "registration"
+          ],
+          "description": "Result of {@link VcApiVerifier.getDidSiopAuthenticationRequestFromRP } "
+        },
+        "getDidSiopAuthenticationRequestDetailsArgs": {
+          "type": "object",
+          "properties": {
+            "verifiedAuthenticationRequest": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "verifiableCredentials": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "additionalProperties": true
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "required": [
+            "verifiedAuthenticationRequest",
+            "verifiableCredentials"
+          ],
+          "description": "Arguments needed for {@link VcApiVerifier.getDidSiopAuthenticationRequestDetails } "
+        },
+        "IAuthRequestDetails": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "alsoKnownAs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "vpResponseOpts": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": false
+          },
+          "required": [
+            "id",
+            "vpResponseOpts"
+          ],
+          "description": "Result of {@link VcApiVerifier.getDidSiopAuthenticationRequestDetails } "
+        },
+        "IVerifyDidSiopAuthenticationRequestUriArgs": {
+          "type": "object",
+          "properties": {
+            "ParsedAuthenticationRequestURI": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "didMethod": {
+              "type": "string"
+            },
+            "additionalProperties": false
+          },
+          "required": [
+            "ParsedAuthenticationRequestURI"
+          ],
+          "description": "Arguments needed for {@link VcApiVerifier.verifyDidSiopAuthenticationRequestURI } "
+        },
+        "VerifiedAuthenticationRequestWithJWT": {
+          "type": "object",
+          "properties": {
+            "payload": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "presentationDefinitions": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "verifyOpts": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": false
+          },
+          "required": [
+            "payload",
+            "verifyOpts"
+          ],
+          "description": "Result of {@link VcApiVerifier.verifyDidSiopAuthenticationRequestURI } "
+        },
+        "ISendDidSiopAuthenticationResponseArgs": {
+          "type": "object",
+          "properties": {
+            "verifiedAuthenticationRequest": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "verifiablePresentationResponse": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": false
+          },
+          "required": [
+            "verifiedAuthenticationRequest"
+          ],
+          "description": "Arguments needed for {@link VcApiVerifier.sendDidSiopAuthenticationResponse } "
+        }
+      },
+      "methods": {
+        "authenticateWithDidSiop": {
+          "description": "Authenticate using DID Auth SIOP",
+          "arguments": {
+            "$ref": "#/components/schemas/IAuthenticateWithDidAuthSiopArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/Response"
+          }
+        },
+        "getDidSiopAuthenticationRequestFromRP": {
+          "description": "Verify credentials using the VC-HTTP-API",
+          "arguments": {
+            "$ref": "#/components/schemas/IGetAuthenticationRequestFromRPArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/ParsedAuthenticationRequestURI"
+          }
+        },
+        "getDidSiopAuthenticationRequestDetails": {
+          "description": "Verify credentials using the VC-HTTP-API",
+          "arguments": {
+            "$ref": "#/components/schemas/IGetAuthenticationRequestDetailsArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/IAuthRequestDetails"
+          }
+        },
+        "verifyDidSiopAuthenticationRequestURI": {
+          "description": "Verify credentials using the VC-HTTP-API",
+          "arguments": {
+            "$ref": "#/components/schemas/IVerifyAuthenticationRequestURIArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/VerifiedAuthenticationRequestWithJWT"
+          }
+        },
+        "sendDidSiopAuthenticationResponse": {
+          "description": "Verify credentials using the VC-HTTP-API",
+          "arguments": {
+            "$ref": "#/components/schemas/ISendAuthResponseArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/IRequiredContext"
+          }
+        }
+      }
+    }
+  }
+}

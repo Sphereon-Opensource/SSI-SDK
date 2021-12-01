@@ -8,7 +8,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "lerna run build && yarn build:schema-api",
-    "build:schema-api": "lerna run extract-api && lerna run generate-plugin-schema",
+    "build:schema-api": "lerna run --ignore @sphereon/ssi-sdk-did-auth-siop-authenticator extract-api && lerna run --ignore @sphereon/ssi-sdk-did-auth-siop-authenticator generate-plugin-schema",
     "bootstrap": "lerna bootstrap",
     "test:ci": "jest --config=jest.json",
     "test": "jest --verbose --config=jest.json --coverage=true --detectOpenHandles",

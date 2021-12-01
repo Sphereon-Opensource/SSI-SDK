@@ -11,8 +11,6 @@ import {
   PresentationLocation,
 } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
 
-import { OP } from '@sphereon/did-auth-siop/dist/main'
-
 export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   authenticateWithDidSiop(args: IAuthenticateWithDidSiopArgs, context: IRequiredContext): Promise<IResponse>;
   getDidSiopAuthenticationRequestFromRP(args: IGetDidSiopAuthenticationRequestFromRpArgs, context: IRequiredContext): Promise<ParsedAuthenticationRequestURI>;
