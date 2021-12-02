@@ -140,7 +140,7 @@ export default (testContext: {
 
     afterAll(testContext.tearDown)
 
-    it('should authentication with DID SIOP without custom approval', async () => {
+    it('should authenticate with DID SIOP without custom approval', async () => {
       const result = await agent.authenticateWithDidSiop({
         stateId,
         redirectUrl,
@@ -150,7 +150,7 @@ export default (testContext: {
       expect(result.status).toEqual(200)
     })
 
-    it('should authentication with DID SIOP with custom approval', async () => {
+    it('should authenticate with DID SIOP with custom approval', async () => {
       const result = await agent.authenticateWithDidSiop({
         stateId,
         redirectUrl,
@@ -165,7 +165,7 @@ export default (testContext: {
       expect(result.status).toEqual(200)
     })
 
-    it('should not authentication with DID SIOP with unknown custom approval key', async () => {
+    it('should not authenticate with DID SIOP with unknown custom approval key', async () => {
       const customApprovalKey = 'some_random_key'
       await expect(
         agent.authenticateWithDidSiop({
@@ -177,7 +177,7 @@ export default (testContext: {
       ).rejects.toThrow(`Custom approval not found for key: ${customApprovalKey}`)
     })
 
-    it('should not authentication with DID SIOP when custom approval fails', async () => {
+    it('should not authenticate with DID SIOP when custom approval fails', async () => {
       const denied = 'denied'
       await expect(
         agent.authenticateWithDidSiop({
@@ -193,7 +193,7 @@ export default (testContext: {
       ).rejects.toThrow(denied)
     })
 
-    it('should get authentication request from RP', async () => {
+    it('should get authenticate request from RP', async () => {
       const result = await agent.getDidSiopAuthenticationRequestFromRP({
         stateId,
         redirectUrl,
