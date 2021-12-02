@@ -43,6 +43,10 @@
     "Veramo",
     "DID",
     "SIOP",
+    "SIOPv2",
+    "OIDC4VP",
+    "Presentation Exchange",
+    "OpenID Connect",
     "Authenticator"
   ]
 }
