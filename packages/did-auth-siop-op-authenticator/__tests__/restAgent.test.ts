@@ -23,7 +23,7 @@ const getAgent = (options?: IAgentOptions) =>
     plugins: [
       new DidAuthSiopOpAuthenticator({
         did: 'did:ethr:0xcBe71d18b5F1259faA9fEE8f9a5FAbe2372BE8c9',
-        kid: 'did:ethr:0xcBe71d18b5F1259faA9fEE8f9a5FAbe2372BE8c9',
+        kid: 'did:ethr:0xcBe71d18b5F1259faA9fEE8f9a5FAbe2372BE8c9#controller',
         privateKey: 'ea6aaeebe1755...',
       }),
       new AgentRestClient({
