@@ -14,39 +14,47 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     afterAll(testContext.tearDown)
 
-    // fixme: Re-enable test once Factom Testnet public API is back up
-    xit('should verify', async () => {
+    it('should verify', async () => {
       const credential = {
-        '@context': [
-          'https://www.w3.org/2018/credentials/v1',
-          'https://www.w3.org/2018/credentials/examples/v1',
-          'https://w3id.org/vc-revocation-list-2020/v1',
+        "@context": [
+          "https://www.w3.org/2018/credentials/v1",
+          "https://sphereon-opensource.github.io/vc-contexts/myc/bedrijfsinformatie-v1.jsonld"
         ],
-        credentialSubject: {
-          degree: {
-            name: 'Bachelor of Science and Arts',
-            type: 'BachelorDegree',
-          },
-          id: 'did:factom:d366396f3ce68741bf32a8e09931d3d1c4a66007a17a26129a5f05300cbc7912',
+        "issuer": "did:factom:9d612c949afee208f664e81dc16bdb4f4eff26776ebca2e94a9f06a40d68626d",
+        "issuanceDate": "2021-12-02T02:55:39.608Z",
+        "credentialSubject": {
+          "Bedrijfsinformatie": {
+            "id": "did:lto:3MrjGusMnFspFfyVctYg3cJaNKGnaAhMZXM",
+            "naam": "Test Bedrijf",
+            "kvkNummer": "1234",
+            "rechtsvorm": "1234",
+            "straatnaam": "Kerkstraat",
+            "huisnummer": "11",
+            "postcode": "1111 AB",
+            "plaats": "Voorbeeld",
+            "bagId": "12132",
+            "datumAkteOprichting": "2020-12-30"
+          }
         },
-        id: 'http://example.gov/credentials/3732',
-        issuanceDate: '2020-03-16T22:37:26.544Z',
-        expirationDate: '2020-03-16T22:37:26.544Z',
-        issuer: 'did:factom:testnet:f64f6ea12a81c2d815b8aa2621c6a7ad551c15163f8eed115a2aeaf83be82da0',
-        type: ['VerifiableCredential', 'UniversityDegreeCredential'],
-        proof: {
-          type: 'Ed25519Signature2018',
-          created: '2021-11-19T11:34:47Z',
-          jws: 'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..OpuzmKNsTapr-ZFN8AywcG-4jBTobh7_uaqYHUwl8oLYyhPaRH-6_I8rY4CbeuOpg2XHgRctSNnTrcOAVInxAw',
-          proofPurpose: 'assertionMethod',
-          verificationMethod: 'did:factom:testnet:f64f6ea12a81c2d815b8aa2621c6a7ad551c15163f8eed115a2aeaf83be82da0#key-0',
-        },
+        "type": [
+          "VerifiableCredential",
+          "Bedrijfsinformatie"
+        ],
+        "proof": {
+          "type": "Ed25519Signature2018",
+          "created": "2021-12-02T02:55:39Z",
+          "jws": "eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..SsE_Z6iAktFvsiB1FRJT7lGMnCjHjZ6kvjmXLjJWFZG6trMlm1IJtwvGm1huRgFKfjyiB2LK3166eSboWqwPCg",
+          "proofPurpose": "assertionMethod",
+          "verificationMethod": "did:factom:9d612c949afee208f664e81dc16bdb4f4eff26776ebca2e94a9f06a40d68626d#key-0"
+        }
       }
 
+
       const result = await agent.verifyCredentialUsingVcApi({
-        credential,
+        credential
       })
 
+      expect(result.checks).toContain("proof")
       expect(result.errors).toEqual([])
     })
   })
