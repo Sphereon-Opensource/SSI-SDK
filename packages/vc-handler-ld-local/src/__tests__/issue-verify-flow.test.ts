@@ -2,16 +2,16 @@ import { CredentialHandlerLDLocal } from '../agent/CredentialHandlerLDLocal'
 import { Resolver } from 'did-resolver'
 import { ContextDoc, LdDefaultContexts, VeramoEd25519Signature2018 } from '@veramo/credential-ld'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
-import { createAgent, CredentialPayload, PresentationPayload, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
+import { createAgent, CredentialPayload, IDIDManager, IIdentifier, IKeyManager, IResolver, PresentationPayload, TAgent } from '@veramo/core'
 import { KeyManagementSystem } from '@veramo/kms-local'
 import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { CredentialIssuer, ICredentialIssuer } from '@veramo/credential-w3c'
-import { KeyDIDProvider, getDidKeyResolver } from '@veramo/did-provider-key'
+import { getDidKeyResolver, KeyDIDProvider } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { getUniResolver } from '@sphereon/did-uni-client'
 import { LtoDidProvider } from '../../../lto-did-provider/src/lto-did-provider'
 import { IDidConnectionMode } from '../../../lto-did-provider/src/types/lto-provider-types'
-import { ICredentialHandlerLDLocal } from '../types/ICredentialHandlerLDLocal'
+import { ICredentialHandlerLDLocal, MethodNames } from '../types/ICredentialHandlerLDLocal'
 
 const customContext: Record<string, ContextDoc> = {
   'custom:example.context': {
@@ -26,6 +26,7 @@ describe('credential-LD full flow', () => {
   let didLtoIdentifier: IIdentifier
   let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialIssuer & ICredentialHandlerLDLocal>
 
+  jest.setTimeout(1000000)
   beforeAll(async () => {
     agent = createAgent({
       plugins: [
@@ -51,36 +52,51 @@ describe('credential-LD full flow', () => {
         new DIDResolverPlugin({
           resolver: new Resolver({
             ...getDidKeyResolver(),
-            ...getUniResolver('lto', {resolveUrl: 'https://uniresolver.test.sphereon.io/1.0/identifiers'}),
+            ...getUniResolver('lto', { resolveUrl: 'https://uniresolver.test.sphereon.io/1.0/identifiers' }),
           }),
         }),
         new CredentialIssuer(),
         new CredentialHandlerLDLocal({
-          contextMaps: [LdDefaultContexts, customContext],
+          contextMaps: [LdDefaultContexts /*, customContext*/],
           suites: [new VeramoEd25519Signature2018()],
+          bindingOverrides: new Map([
+            // Bindings to test overrides of credential-ld plugin methods
+            ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
+            ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentationLDLocal],
+            // We test the verify methods by using the LDLocal versions directly in the tests
+          ]),
         }),
       ],
     })
     didKeyIdentifier = await agent.didManagerCreate()
-    didLtoIdentifier = await agent.didManagerImport({provider: 'did:lto', did: 'did:lto:3MzxuUh14pKJ6rJtp4QUR5PJoT6HtK28H4N',
-      controllerKeyId: 'did:lto:3MzxuUh14pKJ6rJtp4QUR5PJoT6HtK28H4N#key', keys: [
+    didLtoIdentifier = await agent.didManagerImport({
+      provider: 'did:lto',
+      did: 'did:lto:3MsS3gqXkcx9m4wYSbfprYfjdZTFmx2ofdX',
+      controllerKeyId: 'did:lto:3MsS3gqXkcx9m4wYSbfprYfjdZTFmx2ofdX#sign',
+      keys: [
         {
-          privateKeyHex: 'ea6aaeebe17557e0fe256bfce08e8224a412ea1e25a5ec8b5d69618a58bad89e89a4661e446b46401325a38d3b20582d1dd277eb448a3181012a671b7ae15837',
-          publicKeyHex: '89a4661e446b46401325a38d3b20582d1dd277eb448a3181012a671b7ae15837',
+          privateKeyHex:
+            '078c0f0eaa6510fab9f4f2cf8657b32811c53d7d98869fd0d5bd08a7ba34376b8adfdd44784dea407e088ff2437d5e2123e685a26dca91efceb7a9f4dfd81848',
+          publicKeyHex: '8adfdd44784dea407e088ff2437d5e2123e685a26dca91efceb7a9f4dfd81848',
           kms: 'local',
-          kid: 'did:lto:3MzxuUh14pKJ6rJtp4QUR5PJoT6HtK28H4N#key',
-          type: 'Ed25519'
-        }
-      ]
+          kid: 'did:lto:3MsS3gqXkcx9m4wYSbfprYfjdZTFmx2ofdX#sign',
+          type: 'Ed25519',
+        },
+      ],
     })
   })
 
   it('works with Ed25519Signature2018', async () => {
     const credentialPayload: CredentialPayload = {
       issuer: didKeyIdentifier.did,
-      '@context': ['custom:example.context'],
+      type: ['VerifiableCredential', 'AlumniCredential'],
+      '@context': ['https://www.w3.org/2018/credentials/v1', 'https://www.w3.org/2018/credentials/examples/v1'],
       credentialSubject: {
-        nothing: 'else matters',
+        id: didLtoIdentifier.did,
+        alumniOf: {
+          id: 'did:example:c276e12ec21ebfeb1f712ebc6f1',
+          name: 'Example University',
+        },
       },
     }
     const verifiableCredential = await agent.createVerifiableCredential({
@@ -90,19 +106,20 @@ describe('credential-LD full flow', () => {
 
     expect(verifiableCredential).toBeDefined()
 
-    const verifiedCredential = await agent.verifyCredential({
+    const verifiedCredential = await agent.verifyCredentialLDLocal({
       credential: verifiableCredential,
+      fetchRemoteContexts: false,
     })
 
     expect(verifiedCredential).toBe(true)
 
     const presentationPayload: PresentationPayload = {
-      holder: didLtoIdentifier.did,
+      holder: didKeyIdentifier.did,
 
       verifiableCredential: [verifiableCredential],
     }
     const verifiablePresentation = await agent.createVerifiablePresentationLDLocal({
-      keyRef: didLtoIdentifier.controllerKeyId,
+      keyRef: didKeyIdentifier.controllerKeyId,
       presentation: presentationPayload,
 
       challenge: 'test',
@@ -115,6 +132,7 @@ describe('credential-LD full flow', () => {
       presentation: verifiablePresentation,
       domain: 'test',
       challenge: 'test',
+      fetchRemoteContexts: false,
     })
 
     expect(verifiedPresentation).toBe(true)
