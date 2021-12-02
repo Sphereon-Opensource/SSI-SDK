@@ -102,7 +102,7 @@ export default (testContext: {
   getAgent: () => ConfiguredAgent
   setup: () => Promise<boolean>
   tearDown: () => Promise<boolean>
-  runAuthenticateWithCustomApprovalTest: boolean
+  isRestTest: boolean
 }) => {
   describe('DID Auth SIOP OP Authenticator Agent Plugin', () => {
     let agent: ConfiguredAgent
@@ -111,7 +111,7 @@ export default (testContext: {
       testContext.setup()
       agent = testContext.getAgent()
 
-      nock(redirectUrl).get(`?stateId=${stateId}`).times(4).reply(200, requestResultMockedText)
+      nock(redirectUrl).get(`?stateId=${stateId}`).times(5).reply(200, requestResultMockedText)
 
       const mockedParseAuthenticationRequestURIMethod = jest.fn()
       OP.prototype.parseAuthenticationRequestURI = mockedParseAuthenticationRequestURIMethod
@@ -155,28 +155,43 @@ export default (testContext: {
         stateId,
         redirectUrl,
         didMethod,
-        customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
-          return Promise.resolve()
-        },
+        customApproval: testContext.isRestTest
+          ? 'success'
+          : (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
+              return Promise.resolve()
+            },
       })
 
       expect(result.status).toEqual(200)
     })
 
-    if (testContext.runAuthenticateWithCustomApprovalTest) {
-      it('should not authentication with DID SIOP when custom approval fails', async () => {
-        await expect(
-          agent.authenticateWithDidSiop({
-            stateId,
-            redirectUrl,
-            didMethod,
-            customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
-              return Promise.reject(new Error('Denied'))
-            },
-          })
-        ).rejects.toThrow('Denied')
-      })
-    }
+    it('should not authentication with DID SIOP with unknown custom approval key', async () => {
+      const customApprovalKey = 'some_random_key'
+      await expect(
+        agent.authenticateWithDidSiop({
+          stateId,
+          redirectUrl,
+          didMethod,
+          customApproval: customApprovalKey,
+        })
+      ).rejects.toThrow(`Custom approval not found for key: ${customApprovalKey}`)
+    })
+
+    it('should not authentication with DID SIOP when custom approval fails', async () => {
+      const denied = 'denied'
+      await expect(
+        agent.authenticateWithDidSiop({
+          stateId,
+          redirectUrl,
+          didMethod,
+          customApproval: testContext.isRestTest
+            ? 'failure'
+            : (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
+                return Promise.reject(new Error(denied))
+              },
+        })
+      ).rejects.toThrow(denied)
+    })
 
     it('should get authentication request from RP', async () => {
       const result = await agent.getDidSiopAuthenticationRequestFromRP({

@@ -1,4 +1,4 @@
-import { schema } from '../index'
+import { registerCustomApprovalForDidSiopArgs, schema } from '../index'
 import { IAgentPlugin } from '@veramo/core'
 import {
   PassBy,
@@ -39,6 +39,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     getDidSiopAuthenticationRequestDetails: this.getDidSiopAuthenticationRequestDetails.bind(this),
     verifyDidSiopAuthenticationRequestURI: this.verifyDidSiopAuthenticationRequestURI.bind(this),
     sendDidSiopAuthenticationResponse: this.sendDidSiopAuthenticationResponse.bind(this),
+    registerCustomApprovalForDidSiop: this.registerCustomApprovalForDidSiop.bind(this),
   }
   private readonly op: OP
   private readonly did: string
@@ -46,6 +47,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   private readonly privateKey: string
   private readonly expiresIn: number | undefined
   private readonly didMethod: string | undefined
+  private readonly customApprovals: Record<string, (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise<void>>
 
   constructor(options: IDidAuthSiopOpAuthenticatorArgs) {
     this.did = options.did
@@ -60,6 +62,11 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       .registrationBy(PassBy.VALUE)
       .response(ResponseMode.POST)
       .build()
+    this.customApprovals = {}
+  }
+
+  private async registerCustomApprovalForDidSiop(args: registerCustomApprovalForDidSiopArgs, context: IRequiredContext): Promise<void> {
+    this.customApprovals[args.key] = args.customApproval
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.authenticateWithDidSiop} */
@@ -70,9 +77,18 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       )
       .then((verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
         if (args.customApproval !== undefined) {
-          return args
-            .customApproval(verifiedAuthenticationRequest)
-            .then(() => this.sendDidSiopAuthenticationResponse({ verifiedAuthenticationRequest: verifiedAuthenticationRequest }, context))
+          if (typeof args.customApproval === 'string') {
+            if (this.customApprovals !== undefined && this.customApprovals[args.customApproval] !== undefined) {
+              return this.customApprovals[args.customApproval](verifiedAuthenticationRequest).then(() =>
+                this.sendDidSiopAuthenticationResponse({ verifiedAuthenticationRequest: verifiedAuthenticationRequest }, context)
+              )
+            }
+            return Promise.reject(new Error(`Custom approval not found for key: ${args.customApproval}`))
+          } else {
+            return args
+              .customApproval(verifiedAuthenticationRequest)
+              .then(() => this.sendDidSiopAuthenticationResponse({ verifiedAuthenticationRequest: verifiedAuthenticationRequest }, context))
+          }
         } else {
           return this.sendDidSiopAuthenticationResponse({ verifiedAuthenticationRequest: verifiedAuthenticationRequest }, context)
         }

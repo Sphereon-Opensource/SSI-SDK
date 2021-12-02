@@ -20,6 +20,7 @@ export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
     context: IRequiredContext
   ): Promise<VerifiedAuthenticationRequestWithJWT>
   sendDidSiopAuthenticationResponse(args: ISendDidSiopAuthenticationResponseArgs, context: IRequiredContext): Promise<IResponse>
+  registerCustomApprovalForDidSiop(args: registerCustomApprovalForDidSiopArgs, context: IRequiredContext): Promise<void>
 }
 
 export interface IDidAuthSiopOpAuthenticatorArgs {
@@ -39,7 +40,7 @@ export interface IAuthenticateWithDidSiopArgs {
   stateId: string
   redirectUrl: string
   didMethod: string
-  customApproval?: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise<void>
+  customApproval?: ((verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise<void>) | string
 }
 
 export interface getDidSiopAuthenticationRequestDetailsArgs {
@@ -69,6 +70,11 @@ export interface IMatchedPresentationDefinition {
   location: PresentationLocation
   format: VerifiablePresentationTypeFormat
   presentation: VerifiablePresentation
+}
+
+export interface registerCustomApprovalForDidSiopArgs {
+  key: string
+  customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise<void>
 }
 
 export enum events {

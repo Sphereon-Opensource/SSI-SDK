@@ -24,7 +24,7 @@ const testContext = {
   getAgent,
   setup,
   tearDown,
-  runAuthenticateWithCustomApprovalTest: true,
+  isRestTest: false,
 }
 
 describe('Local integration tests', () => {

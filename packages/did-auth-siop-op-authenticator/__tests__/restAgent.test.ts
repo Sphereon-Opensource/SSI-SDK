@@ -37,6 +37,8 @@ const getAgent = (options?: IAgentOptions) =>
 const setup = async (): Promise<boolean> => {
   const config = getConfig('packages/did-auth-siop-op-authenticator/agent.yml')
   const { agent } = createObjects(config, { agent: '/agent' })
+  agent.registerCustomApprovalForDidSiop({ key: 'success', customApproval: () => Promise.resolve() })
+  agent.registerCustomApprovalForDidSiop({ key: 'failure', customApproval: () => Promise.reject(new Error('denied')) })
   serverAgent = agent
 
   const agentRouter = AgentRouter({
@@ -65,7 +67,7 @@ const testContext = {
   getAgent,
   setup,
   tearDown,
-  runAuthenticateWithCustomApprovalTest: false,
+  isRestTest: true,
 }
 
 describe('REST integration tests', () => {
