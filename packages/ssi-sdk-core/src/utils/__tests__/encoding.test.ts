@@ -7,8 +7,8 @@ describe('@sphereon/ssi-sdk-core:encoding', () => {
 
   // Hex to multibase
   it('should encode hex to multibase base58', () => {
-    expect(hexToMultibase(HEX_EXAMPLE, MultibaseFormat.BASE58)).toEqual({ value: BASE58_EXAMPLE, format: MultibaseFormat.BASE58 })
-    expect(hexToMultibase(HEX_EXAMPLE.toUpperCase(), MultibaseFormat.BASE58)).toEqual({ value: BASE58_EXAMPLE, format: MultibaseFormat.BASE58 })
+    expect(hexToMultibase(HEX_EXAMPLE, MultibaseFormat.BASE58)).toEqual({ value: MULTIBASE_EXAMPLE, format: MultibaseFormat.BASE58 })
+    expect(hexToMultibase(HEX_EXAMPLE.toUpperCase(), MultibaseFormat.BASE58)).toEqual({ value: MULTIBASE_EXAMPLE, format: MultibaseFormat.BASE58 })
   })
   it('should not encode hex to not supported multibase format', () => {
     expect(() => hexToMultibase(HEX_EXAMPLE, 'e' as never)).toThrowError()

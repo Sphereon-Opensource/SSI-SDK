@@ -8,7 +8,7 @@ export function hexToMultibase(hex: string, format: MultibaseFormat): { value: s
   if (format !== MultibaseFormat.BASE58) {
     throw new Error('Only base58 supported for now using multibase!')
   }
-  return { value: base58.encode(hexToBytes(hex)), format }
+  return { value: MultibaseFormat.BASE58 + base58.encode(hexToBytes(hex)), format }
 
   function hexToBytes(hex: string): Uint8Array {
     let bytes: number[] = []
