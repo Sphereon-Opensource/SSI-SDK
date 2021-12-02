@@ -1,12 +1,15 @@
 version: 3.0
 
 constants:
-  baseUrl: http://localhost:3337
-  port: 3337
+  baseUrl: http://localhost:3339
+  port: 3339
   # please use your own X25519 key, this is only an example
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
-    - issueCredentialUsingLocalClient
+    - createVerifiableCredentialLDLocal
+      createVerifiablePresentationLDLocal
+      verifyPresentationLDLocal
+      verifyCredentialLDLocal
 
 server:
   baseUrl:
@@ -70,8 +73,14 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/vc-handler-ld-local/dist#VcApiIssuer
+        - $require: '@veramo/credential-ld/build#VeramoLdSignature'
+        #
+        #        - $require: '@veramo/credential-ld/build#CredentialIssuerLD'
+        #          $args:
+        #            - contextMaps: []
+        #            suites: []
+        - $require: ./packages/vc-handler-ld-local/dist#CredentialHandlerLDLocal
           $args:
-            - issueUrl: 'https://vc-api.sphereon.io/services/issue/credentials'
-              # please use your own authorization token, this is only an example
-              authorizationToken: 'ey...'
+            - contextMaps: []
+              suites: []
+              bindingOverrides: []

@@ -1,6 +1,6 @@
 import { CredentialPayload, IAgentContext, IAgentPlugin, IIdentifier, IKey, IResolver, PresentationPayload } from '@veramo/core'
 
-import { schema } from '../index'
+import { IBindingOverrides, schema } from '../index'
 import { ICredentialHandlerLDLocal, IRequiredContext } from '../types/ICredentialHandlerLDLocal'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
 import {
@@ -37,22 +37,35 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   private ldCredentialModule: LdCredentialModule
   readonly schema = schema.IVcLocalIssuerJsonLd
   readonly methods: ICredentialHandlerLDLocal = {
+    // test: this.createVerifiableCredentialLDLocal.bind(this),
     // We bind to existing methods as we can act as a drop in replacement. todo: Add config support for this mode
-    createVerifiableCredentialLD: this.createVerifiableCredentialLDLocal.bind(this),
-    createVerifiablePresentationLD: this.createVerifiablePresentationLDLocal.bind(this),
+    // createVerifiableCredentialLD: this.createVerifiableCredentialLDLocal.bind(this),
+    // createVerifiablePresentationLD: this.createVerifiablePresentationLDLocal.bind(this),
     verifyPresentationLD: this.verifyPresentationLDLocal.bind(this),
     verifyCredentialLD: this.verifyCredentialLDLocal.bind(this),
-
     createVerifiableCredentialLDLocal: this.createVerifiableCredentialLDLocal.bind(this),
     createVerifiablePresentationLDLocal: this.createVerifiablePresentationLDLocal.bind(this),
     verifyPresentationLDLocal: this.verifyPresentationLDLocal.bind(this),
     verifyCredentialLDLocal: this.verifyCredentialLDLocal.bind(this),
   }
 
-  constructor(options: { contextMaps: RecordLike<OrPromise<ContextDoc>>[]; suites: VeramoLdSignature[] }) {
+  constructor(options: { contextMaps: RecordLike<OrPromise<ContextDoc>>[]; suites: VeramoLdSignature[]; bindingOverrides?: IBindingOverrides }) {
     this.ldCredentialModule = new LdCredentialModule({
       ldContextLoader: new LdContextLoader({ contextsPaths: options.contextMaps }),
       ldSuiteLoader: new LdSuiteLoader({ veramoLdSignatures: options.suites }),
+    })
+
+    this.overrideBindings(options.bindingOverrides)
+  }
+
+  private overrideBindings(overrides?: IBindingOverrides) {
+    overrides?.forEach((methodName, bindingName) => {
+      if (typeof this[methodName] === 'function') {
+        this.methods[bindingName] = this[methodName].bind(this)
+      } else {
+        throw new Error(`Method ${methodName} supplied as target for ${bindingName} is not a valid method in CredentialHandlerLDLocal`)
+      }
+      console.log(`binding: this.${bindingName}() -> CredentialHandlerLDLocal.${methodName}()`)
     })
   }
 
@@ -161,13 +174,13 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyCredentialLDLocal} */
   public async verifyCredentialLDLocal(args: IVerifyCredentialLDArgs, context: IRequiredContext): Promise<boolean> {
     const credential = args.credential
-    return this.ldCredentialModule.verifyCredential(credential, context)
+    return this.ldCredentialModule.verifyCredential(credential, context, args.fetchRemoteContexts)
   }
 
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyPresentationLDLocal} */
   public async verifyPresentationLDLocal(args: IVerifyPresentationLDArgs, context: IRequiredContext): Promise<boolean> {
     const presentation = args.presentation
-    return this.ldCredentialModule.verifyPresentation(presentation, args.challenge, args.domain, context)
+    return this.ldCredentialModule.verifyPresentation(presentation, args.challenge, args.domain, context, args.fetchRemoteContexts)
   }
 
   private async findSigningKeyWithId(
@@ -175,7 +188,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     identifier: IIdentifier,
     keyRef?: string
   ): Promise<{ signingKey: IKey; verificationMethodId: string }> {
-    const extendedKeys: _ExtendedIKey[] = await mapIdentifierKeysToDoc(identifier, 'assertionMethod', context)
+    const extendedKeys: _ExtendedIKey[] = await mapIdentifierKeysToDoc(identifier, 'verificationMethod', context)
     let supportedTypes = this.ldCredentialModule.ldSuiteLoader.getAllSignatureSuiteTypes()
     let signingKey: _ExtendedIKey | undefined
     let verificationMethodId: string

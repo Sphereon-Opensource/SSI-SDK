@@ -1,14 +1,11 @@
 import 'cross-fetch/polyfill'
-import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
-import { AgentRestClient } from '@veramo/remote-client'
+import { IAgent } from '@veramo/core'
 import express from 'express'
 import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import { ICredentialHandlerLDLocal } from '../index'
-import vcApiIssuerAgentLogic from './shared/vcApiIssuerAgentLogic'
-import { CredentialHandlerLDLocal } from '../index'
+import { LdDefaultContexts, VeramoEd25519Signature2018 } from '@veramo/credential-ld'
 
 jest.setTimeout(30000)
 
@@ -41,8 +38,9 @@ const getAgent = (options?: IAgentOptions) =>
 */
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/vc-api-issuer/agent.yml')
-  config.agent.$args[0].plugins[0].$args[0].authorizationToken = process.env.VC_HTTP_API_AUTH_TOKEN
+  const config = getConfig('packages/vc-handler-ld-local/agent.yml');
+  (config.agent.$args[0].plugins[0].$args[0].contextMaps = [LdDefaultContexts /*, customContext*/]),
+    (config.agent.$args[0].plugins[0].$args[0].suites = [new VeramoEd25519Signature2018()])
   const { agent } = createObjects(config, { agent: '/agent' })
   serverAgent = agent
 
@@ -68,11 +66,10 @@ const tearDown = async (): Promise<boolean> => {
   return true
 }
 
-const testContext = { /*getAgent, */setup, tearDown }
+const testContext = { /*getAgent, */ setup, tearDown }
 
 describe('REST integration tests', () => {
   xit('handler', () => {
     // vcApiIssuerAgentLogic(testContext)
   })
-
 })
