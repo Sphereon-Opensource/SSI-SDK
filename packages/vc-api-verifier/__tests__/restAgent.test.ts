@@ -1,6 +1,7 @@
 import 'cross-fetch/polyfill'
 import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
+// @ts-ignore
 import express from 'express'
 import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
