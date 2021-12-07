@@ -29,6 +29,22 @@ yarn build
 ```
 
 ### Test
+To run the tests a `VC_HTTP_API_AUTH_TOKEN` environment variable needs to be present with an authorization token.
+
+#### Environment Variable:
+
+- Navigate
+    - `ssi-sdk/package.json`
+    - `scripts.test`
+- Right click
+    - `Modify run configuration`
+- locate environment variable
+- Add following
+```
+VC_HTTP_API_AUTH_TOKEN=<Token>
+```
+
+`Token` should not have double or single quotes.
 
 The test command runs:
 
