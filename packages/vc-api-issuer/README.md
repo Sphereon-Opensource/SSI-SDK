@@ -45,11 +45,9 @@ You can also run only a single section of these tests, using for example `yarn t
 - Navigate 
   - `ssi-sdk/package.json`
   - `scripts.test`
-  - Right click
+- Right click
   - `Modify run configuration`
-
-- locate environment variable`
-
+- locate environment variable
 - Add following
 ```
 VC_HTTP_API_AUTH_TOKEN=<Token>
