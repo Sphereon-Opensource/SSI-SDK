@@ -15,7 +15,7 @@ point!__
 
 # SSI SDK
 
-This is an SSI SDK based on the great work done by [Veramo](https://veramo.io). The SDK is a monorepository with
+This is an SSI SDK based on the great work done by [Veramo](https://veramo.io). The SDK is a mono-repository with
 multiple packages (see lerna below). It contains plugins that extend the Veramo framework:
 
 - DIDs and Key management:
@@ -46,6 +46,9 @@ using a [W3C VC API](https://github.com/w3c-ccg/vc-api) spec based API (currentl
 The [W3C VC (HTTP) API Verifier](./packages/factom-did-provider/README.md) is a Veramo plugin to verify Verifiable
 Credentials using a [W3C VC API](https://github.com/w3c-ccg/vc-api) spec based API (currently only supporting a v0.1 spec).
 
+## waci-pex
+The [waci-pex](./packages/waci-pex/README.md) is a Veramo plugin to generate QR Code using a [WACI Presentation Exchange](https://identity.foundation/waci-presentation-exchange/#step-1-generate-qr-code) spec.
+
 ## DID resolution
 
 ---
@@ -69,10 +72,10 @@ export const agent = createAgent<IDIDManager & CredentialIssuerLD & IKeyManager 
 
 ### Lerna
 
-The SSI-SDK makes use of Lerna for managing multiple packages. Lerna is a tool that optimizes the workflow around
-managing multi-package repositories with git and npm / yarn.
+The SSI-SDK makes use of Lerna for managing multiple packages. Lerna is a tool that optimizes the workflow around managing multi-package repositories with git and npm / yarn.
 
 ### Build
+
 The below command builds all packages for you using lerna
 
 ```shell

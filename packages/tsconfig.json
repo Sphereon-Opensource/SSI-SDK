@@ -5,6 +5,7 @@
     { "path": "factom-did-provider" },
     { "path": "lto-did-provider" },
     { "path": "vc-api-issuer" },
-    { "path": "vc-api-verifier-plugin" }
+    { "path": "vc-api-verifier-plugin" },
+    { "path": "waci-pex" }
   ]
 }

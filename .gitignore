@@ -47,6 +47,7 @@ test/*.js
 /packages/*/api/*.api.md
 /packages/*/coverage/
 /packages/*/node_modules/
+/packages/*/plugin.schema.json
 
 *.tsbuildinfo
 
@@ -55,5 +56,3 @@ test/*.js
 .eslintcache
 *.swp
 *~
-/packages/vc-api-issuer/plugin.schema.json
-/packages/vc-api-verifier/plugin.schema.json
