@@ -1,5 +1,5 @@
 import { TAgent } from '@veramo/core'
-import {IQRCodeArgs, IQRCodeCreator} from '../../src'
+import { IQRCodeArgs, IQRCodeCreator } from '../../src'
 
 type qrCodeCreatorConfiguredAgent = TAgent<IQRCodeCreator>
 
@@ -19,25 +19,18 @@ export default (testContext: { getAgent: () => qrCodeCreatorConfiguredAgent; set
 
     it('should create qr code', async () => {
       const qrCodeData: IQRCodeArgs = {
-        data: "2021120800"
+        data: '2021120800',
       }
 
-      return await expect(
-        qrCodeCreator.createQRCode(qrCodeData)
-      ).resolves.not.toBeNull()
+      return await expect(qrCodeCreator.createQRCode(qrCodeData)).resolves.not.toBeNull()
     })
 
     it('should create not qr code, rather it should throw exception', async () => {
-      return await expect(
-          qrCodeCreator.createQRCode(null)
-      ).resolves.not.toBeNull()
+      return await expect(qrCodeCreator.createQRCode(null)).resolves.not.toBeNull()
     })
 
     it('should create not qr code, rather it should return error', async () => {
-      return await expect(
-          qrCodeCreator.createQRCode(null)
-      ).resolves.not.toBeNull()
+      return await expect(qrCodeCreator.createQRCode(null)).resolves.not.toBeNull()
     })
-
   })
 }
