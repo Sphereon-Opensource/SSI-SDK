@@ -1,7 +1,6 @@
 import 'cross-fetch/polyfill'
 import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
-import express from 'express'
 import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
@@ -25,10 +24,7 @@ const getAgent = (options?: IAgentOptions) =>
   createAgent<IQRCodeCreator>({
     ...options,
     plugins: [
-      new QRCodeCreator({
-        qrCodeCreatorData: 'https://vc-api.sphereon.io/services/issue/credentials',
-        authorizationToken: process.env.VC_HTTP_API_AUTH_TOKEN!,
-      }),
+      new QRCodeCreator(),
       new AgentRestClient({
         url: 'http://localhost:' + port + basePath,
         enabledMethods: serverAgent.availableMethods(),
@@ -39,7 +35,6 @@ const getAgent = (options?: IAgentOptions) =>
 
 const setup = async (): Promise<boolean> => {
   const config = getConfig('packages/waci-pex/agent.yml')
-  config.agent.$args[0].plugins[0].$args[0].authorizationToken = process.env.VC_HTTP_API_AUTH_TOKEN
   const { agent } = createObjects(config, { agent: '/agent' })
   serverAgent = agent
 
