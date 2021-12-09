@@ -105,6 +105,3 @@ agent:
       plugins:
         - $ref: /didResolver
         - $require: ./packages/did-auth-siop-op-authenticator/dist#DidAuthSiopOpAuthenticator
-          $args:
-            # please use your own values, these are only an example
-            -

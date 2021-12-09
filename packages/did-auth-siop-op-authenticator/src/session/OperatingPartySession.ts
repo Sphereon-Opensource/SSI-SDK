@@ -218,7 +218,7 @@ export class OperatingPartySession {
   }
 
   private async createOp(
-      identifier: IIdentifier, // TODO on class
+      identifier: IIdentifier,
       section: DIDDocumentSection,
       expiresIn: number,
       context: IRequiredContext

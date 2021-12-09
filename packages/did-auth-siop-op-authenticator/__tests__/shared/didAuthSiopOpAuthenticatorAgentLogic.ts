@@ -191,7 +191,7 @@ export default (testContext: {
     afterAll(testContext.tearDown)
 
     it('should add OP session', async () => {
-      const result = await agent.getDidSiopSession({
+      const result = await agent.getDidSiopSession({ // TODO ?????????
         sessionId: sessionId
       })
 
@@ -209,6 +209,29 @@ export default (testContext: {
           })
       ).rejects.toThrow(`No session found for id: ${otherSessionId}`)
     })
+
+    if (!testContext.isRestTest) {
+      it('should register custom approval function', async () => {
+        await expect(
+            agent.registerCustomApprovalForDidSiop({
+              key: "test_register",
+              customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise.resolve()
+            })
+        ).resolves.not.toThrow();
+      })
+
+      it('should remove custom approval function', async () => {
+        await agent.registerCustomApprovalForDidSiop({
+          key: "test_delete",
+          customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise.resolve()
+        })
+        const result = await agent.removeCustomApprovalForDidSiop({
+          key: "test_delete"
+        })
+
+        expect(result).toEqual(true)
+      })
+    }
 
     it('should authenticate with DID SIOP without custom approval', async () => {
       const result = await agent.authenticateWithDidSiop({

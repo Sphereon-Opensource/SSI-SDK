@@ -11,11 +11,11 @@ import {
   IAuthRequestDetails,
   ICreateDidSiopSessionArgs,
   IDidAuthSiopOpAuthenticator,
-  IDidAuthSiopOpAuthenticatorArgs,
   IGetDidSiopAuthenticationRequestDetailsArgs,
   IGetDidSiopAuthenticationRequestFromRpArgs,
   IGetDidSiopSessionArgs,
   IRegisterCustomApprovalForDidSiopArgs,
+  IRemoveCustomApprovalForDidSiopArgs,
   IRemoveDidSiopSessionArgs,
   IRequiredContext,
   ISendDidSiopAuthenticationResponseArgs,
@@ -29,22 +29,23 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   readonly schema = schema.IDidAuthSiopOpAuthenticator
   readonly methods: IDidAuthSiopOpAuthenticator = {
     getDidSiopSession: this.getDidSiopSession.bind(this),
-    addDidSiopSession: this.addDidSiopSession.bind(this),
-    removeDidSiopSession: this.removeDidSiopSession.bind(this),
+    addDidSiopSession: this.addSessionForDidSiop.bind(this),
+    removeDidSiopSession: this.removeSessionForDidSiop.bind(this),
     authenticateWithDidSiop: this.authenticateWithDidSiop.bind(this),
     getDidSiopAuthenticationRequestFromRP: this.getDidSiopAuthenticationRequestFromRP.bind(this),
     getDidSiopAuthenticationRequestDetails: this.getDidSiopAuthenticationRequestDetails.bind(this),
     verifyDidSiopAuthenticationRequestURI: this.verifyDidSiopAuthenticationRequestURI.bind(this),
     sendDidSiopAuthenticationResponse: this.sendDidSiopAuthenticationResponse.bind(this),
     registerCustomApprovalForDidSiop: this.registerCustomApprovalForDidSiop.bind(this),
+    removeCustomApprovalForDidSiop: this.removeCustomApprovalForDidSiop.bind(this)
   }
 
   private readonly sessions: Record<string, OperatingPartySession>
   private readonly customApprovals: Record<string, (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise<void>>
 
-  constructor(options: IDidAuthSiopOpAuthenticatorArgs) {
+  constructor(customApprovals?: Record<string, (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise<void>>) { // TODO maybe just one param?
     this.sessions = {}
-    this.customApprovals = options.customApprovals || {}
+    this.customApprovals = customApprovals || {}
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.getSession} */
@@ -59,11 +60,15 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     return this.sessions[args.sessionId]
   }
 
-  /** {@inheritDoc IDidAuthSiopOpAuthenticator.addDidSiopSession} */
-  private async addDidSiopSession(
+  /** {@inheritDoc IDidAuthSiopOpAuthenticator.addSessionForDidSiop} */
+  private async addSessionForDidSiop(
       args: ICreateDidSiopSessionArgs,
       context: IRequiredContext
   ): Promise<OperatingPartySession> {
+    if (this.sessions[args.sessionId] !== undefined) {
+      return Promise.reject(new Error(`Session with id: ${args.sessionId} already present`))
+    }
+
     const sessionId = args.sessionId
     const session = new OperatingPartySession({identifier: args.identifier, expiresIn: args.expiresIn, context})
     await session.init() // TODO maybe a builder to be able to async functions?
@@ -72,24 +77,32 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     return session
   }
 
-  /** {@inheritDoc IDidAuthSiopOpAuthenticator.removeDidSiopSession} */
-  private async removeDidSiopSession(
+  /** {@inheritDoc IDidAuthSiopOpAuthenticator.removeSessionForDidSiop} */
+  private async removeSessionForDidSiop(
       args: IRemoveDidSiopSessionArgs,
       context: IRequiredContext
-  ): Promise<void> {
-    this.getDidSiopSession({sessionId: args.sessionId}, context).then(() =>
-        delete this.sessions[args.sessionId]
-    )
+  ): Promise<boolean> {
+    return delete this.sessions[args.sessionId]
   }
-
-  // TODO update / edit session?
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.registerCustomApprovalForDidSiop} */
   private async registerCustomApprovalForDidSiop(
       args: IRegisterCustomApprovalForDidSiopArgs,
       context: IRequiredContext
   ): Promise<void> {
+    if (this.customApprovals[args.key] !== undefined) {
+      return Promise.reject(new Error(`Custom approval with key: ${args.key} already present`))
+    }
+
     this.customApprovals[args.key] = args.customApproval
+  }
+
+  /** {@inheritDoc IDidAuthSiopOpAuthenticator.registerCustomApprovalForDidSiop} */
+  private async removeCustomApprovalForDidSiop(
+      args: IRemoveCustomApprovalForDidSiopArgs,
+      context: IRequiredContext
+  ): Promise<boolean> {
+    return delete this.sessions[args.key]
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.authenticateWithDidSiop} */

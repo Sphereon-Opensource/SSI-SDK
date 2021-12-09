@@ -20,7 +20,7 @@ import { Params } from 'did-resolver/src/resolver';
 export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   getDidSiopSession(args: IGetDidSiopSessionArgs, context: IRequiredContext): Promise<OperatingPartySession>
   addDidSiopSession(args: ICreateDidSiopSessionArgs, context: IRequiredContext): Promise<OperatingPartySession>
-  removeDidSiopSession(args: IRemoveDidSiopSessionArgs, context: IRequiredContext): Promise<void>
+  removeDidSiopSession(args: IRemoveDidSiopSessionArgs, context: IRequiredContext): Promise<boolean>
   authenticateWithDidSiop(args: IAuthenticateWithDidSiopArgs, context: IRequiredContext): Promise<IResponse>
   getDidSiopAuthenticationRequestFromRP(
     args: IGetDidSiopAuthenticationRequestFromRpArgs,
@@ -33,10 +33,7 @@ export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   ): Promise<VerifiedAuthenticationRequestWithJWT>
   sendDidSiopAuthenticationResponse(args: ISendDidSiopAuthenticationResponseArgs, context: IRequiredContext): Promise<IResponse>
   registerCustomApprovalForDidSiop(args: IRegisterCustomApprovalForDidSiopArgs, context: IRequiredContext): Promise<void>
-}
-
-export interface IDidAuthSiopOpAuthenticatorArgs {
-  customApprovals?: Record<string, (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise<void>>
+  removeCustomApprovalForDidSiop(args: IRemoveCustomApprovalForDidSiopArgs, context: IRequiredContext): Promise<boolean>
 }
 
 export interface IOperatingPartySessionArgs {
@@ -109,6 +106,10 @@ export interface IRemoveDidSiopSessionArgs {
 export interface IRegisterCustomApprovalForDidSiopArgs {
   key: string
   customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise<void>
+}
+
+export interface IRemoveCustomApprovalForDidSiopArgs {
+  key: string
 }
 
 export interface IOpsAuthenticateWithDidSiopArgs {
