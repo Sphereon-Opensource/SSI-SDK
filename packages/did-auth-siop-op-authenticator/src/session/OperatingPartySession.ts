@@ -30,7 +30,7 @@ const fetch = require('cross-fetch')
 export class OperatingPartySession {
   public readonly id: string
   public readonly identifier: IIdentifier
-  public readonly didMethod: string // TODO just move to functions?
+  public readonly didMethod: string
   public readonly section: DIDDocumentSection
   public readonly expiresIn: number | undefined
   public readonly context: IRequiredContext
@@ -60,7 +60,7 @@ export class OperatingPartySession {
   ): Promise<Response> {
     return this.getDidSiopAuthenticationRequestFromRP({ stateId: args.stateId, redirectUrl: args.redirectUrl })
       .then((authenticationRequest: ParsedAuthenticationRequestURI) =>
-          this.verifyDidSiopAuthenticationRequestURI({ requestURI: authenticationRequest, didMethod: this.didMethod }) //TODO method from class? args.didMethod
+          this.verifyDidSiopAuthenticationRequestURI({ requestURI: authenticationRequest, didMethod: this.didMethod })
       )
       .then((verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
         if (args.customApproval !== undefined) {
