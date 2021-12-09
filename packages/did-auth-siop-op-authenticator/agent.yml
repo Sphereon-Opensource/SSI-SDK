@@ -6,11 +6,12 @@ constants:
   # please use your own X25519 key, this is only an example
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
+    - resolveDid
     - authenticateWithDidSiop
-      getDidSiopAuthenticationRequestFromRP
-      getDidSiopAuthenticationRequestDetails
-      verifyDidSiopAuthenticationRequestURI
-      sendDidSiopAuthenticationResponse
+    - getDidSiopAuthenticationRequestFromRP
+    - getDidSiopAuthenticationRequestDetails
+    - verifyDidSiopAuthenticationRequestURI
+    - sendDidSiopAuthenticationResponse
 
 server:
   baseUrl:
@@ -68,15 +69,42 @@ server:
             $ref: /constants/baseUrl
           messagingServiceEndpoint: /messaging
 
+# DID resolvers
+didResolver:
+  $require: '@veramo/did-resolver#DIDResolverPlugin'
+  $args:
+    - resolver:
+        $require: did-resolver#Resolver
+        $args:
+          - elem:
+              $ref: /universal-resolver
+            io:
+              $ref: /universal-resolver
+            ion:
+              $ref: /universal-resolver
+            sov:
+              $ref: /universal-resolver
+            ethr:
+              $ref: /ethr-did-resolver
+
+ethr-did-resolver:
+  $require: ethr-did-resolver?t=function&p=/ethr#getResolver
+  $args:
+    - infuraProjectId: 5ffc47f65c4042ce847ef66a3fa70d4c
+
+universal-resolver:
+  $require: '@veramo/did-resolver#UniversalResolver'
+  $args:
+    - url: https://dev.uniresolver.io/1.0/identifiers/
+
 # Agent
 agent:
   $require: '@veramo/core#Agent'
   $args:
     - schemaValidation: false
       plugins:
+        - $ref: /didResolver
         - $require: ./packages/did-auth-siop-op-authenticator/dist#DidAuthSiopOpAuthenticator
           $args:
             # please use your own values, these are only an example
-            - did: 'did:ethr:0xcBe71d18b5F1259faA9fEE8f9a5FAbe2372BE8c9'
-              kid: 'did:ethr:0xcBe71d18b5F1259faA9fEE8f9a5FAbe2372BE8c9#controller'
-              privateKey: 'ea6aaeebe1755...'
+            -

@@ -3188,6 +3188,16 @@
     events "^3.2.0"
     z-schema "^5.0.0"
 
+"@veramo/core@next":
+  version "3.1.1-next.17"
+  resolved "https://registry.yarnpkg.com/@veramo/core/-/core-3.1.1-next.17.tgz#e8bea5ecb7decbdee2c4b71ff93f7fc360c02829"
+  integrity sha512-HyWHIGrReE9S7YlTqpF6Rsfkown7tF1pGShchL4+1P/u450h+8h3r32ItTTLBwecYDfUFvPIz/Uu2P3f1CKHSA==
+  dependencies:
+    debug "^4.1.1"
+    did-jwt-vc "2.1.8"
+    events "^3.2.0"
+    z-schema "^5.0.0"
+
 "@veramo/credential-w3c@^3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@veramo/credential-w3c/-/credential-w3c-3.1.0.tgz#bbbd9f05ce86dc9e100b98225b505b272ebe3ef9"
@@ -5046,7 +5056,7 @@ did-jwt-vc@2.1.7:
     did-jwt "^5.7.0"
     did-resolver "^3.1.0"
 
-did-jwt-vc@^2.1.7:
+did-jwt-vc@2.1.8, did-jwt-vc@^2.1.7:
   version "2.1.8"
   resolved "https://registry.yarnpkg.com/did-jwt-vc/-/did-jwt-vc-2.1.8.tgz#849b4ce32af8e1985be5ef3399c02cac335135a3"
   integrity sha512-Xxf4Y+cvdbpHbdgYpRVmsbxscmFOuKiiYK/vWzK5vr+gCMckk/DM1KQEo0JR13K9sNW111qkjnCI+oVGLokksg==

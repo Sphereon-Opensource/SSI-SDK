@@ -10,13 +10,50 @@ import {
   VerificationMode,
   VerifiedAuthenticationRequestWithJWT,
 } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
+import { mapIdentifierKeysToDoc } from '@veramo/utils'
 
 const nock = require('nock')
+jest.mock('@veramo/utils', () => {
+  return {
+    mapIdentifierKeysToDoc: jest.fn(),
+  }
+});
 
 type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator>
 
 const didMethod = 'ethr'
-const did = `did:${didMethod}:0xcBe71d18b5F1259faA9fEE8f9a5FAbe2372BE8c9`
+const did = 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a'
+const identifier = {
+  did,
+  provider: '',
+  controllerKeyId: `${did}#controller`,
+  keys: [{
+    kid: `${did}#controller`,
+    kms: '',
+    type: 'Ed25519' as const,
+    publicKeyHex: '1e21e21e...',
+    privateKeyHex: 'eqfcvnqwdnwqn...'
+  }],
+  services: []
+}
+const authKeys = [
+  { kid: `${did}#controller`,
+    kms: "",
+    type: "Ed25519",
+    publicKeyHex: "1e21e21e...",
+    privateKeyHex: "eqfcvnqwdnwqn...",
+    meta: {
+      verificationMethod: {
+        id: `${did}#controller`,
+        type: "EcdsaSecp256k1RecoveryMethod2020",
+        controller: did,
+        blockchainAccountId: "0xB9C5714089478a327F09197987f16f9E5d936E8a@eip155:1",
+        publicKeyHex: "1e21e21e..."
+      }
+    }
+  }]
+const sessionId = 'sessionId'
+const otherSessionId = 'other_sessionId'
 const redirectUrl = 'http://example/ext/get-auth-request-url'
 const stateId = '2hAyTM7PB3SGJaeGU7QeTJ'
 const nonce = 'o5qwML7DnrcLMs9Vdizyz9'
@@ -107,11 +144,14 @@ export default (testContext: {
   describe('DID Auth SIOP OP Authenticator Agent Plugin', () => {
     let agent: ConfiguredAgent
 
-    beforeAll(() => {
-      testContext.setup()
+    beforeAll(async() => {
+      await testContext.setup()
       agent = testContext.getAgent()
 
       nock(redirectUrl).get(`?stateId=${stateId}`).times(5).reply(200, requestResultMockedText)
+
+      const mockedMapIdentifierKeysToDocMethod = mapIdentifierKeysToDoc as jest.Mock;
+      mockedMapIdentifierKeysToDocMethod.mockReturnValue(Promise.resolve(authKeys))
 
       const mockedParseAuthenticationRequestURIMethod = jest.fn()
       OP.prototype.parseAuthenticationRequestURI = mockedParseAuthenticationRequestURIMethod
@@ -136,15 +176,46 @@ export default (testContext: {
       const mockedSubmissionFromMethod = jest.fn()
       PresentationExchange.prototype.submissionFrom = mockedSubmissionFromMethod
       mockedSubmissionFromMethod.mockReturnValue(Promise.resolve({}))
+
+      await agent.addDidSiopSession({
+        sessionId: sessionId,
+        identifier,
+      })
+
+      await agent.addDidSiopSession({
+        sessionId: otherSessionId,
+        identifier,
+      })
     })
 
     afterAll(testContext.tearDown)
 
+    it('should add OP session', async () => {
+      const result = await agent.getDidSiopSession({
+        sessionId: sessionId
+      })
+
+      expect(result).not.toBeNull()
+    })
+
+    it('should remove OP session', async () => {
+      await agent.removeDidSiopSession({
+        sessionId: otherSessionId
+      })
+
+      await expect(
+          agent.getDidSiopSession({
+            sessionId: otherSessionId
+          })
+      ).rejects.toThrow(`No session found for id: ${otherSessionId}`)
+    })
+
     it('should authenticate with DID SIOP without custom approval', async () => {
       const result = await agent.authenticateWithDidSiop({
+        sessionId,
         stateId,
         redirectUrl,
-        didMethod,
+        didMethod
       })
 
       expect(result.status).toEqual(200)
@@ -152,6 +223,7 @@ export default (testContext: {
 
     it('should authenticate with DID SIOP with custom approval', async () => {
       const result = await agent.authenticateWithDidSiop({
+        sessionId,
         stateId,
         redirectUrl,
         didMethod,
@@ -169,6 +241,7 @@ export default (testContext: {
       const customApprovalKey = 'some_random_key'
       await expect(
         agent.authenticateWithDidSiop({
+          sessionId,
           stateId,
           redirectUrl,
           didMethod,
@@ -181,6 +254,7 @@ export default (testContext: {
       const denied = 'denied'
       await expect(
         agent.authenticateWithDidSiop({
+          sessionId,
           stateId,
           redirectUrl,
           didMethod,
@@ -195,6 +269,7 @@ export default (testContext: {
 
     it('should get authenticate request from RP', async () => {
       const result = await agent.getDidSiopAuthenticationRequestFromRP({
+        sessionId,
         stateId,
         redirectUrl,
       })
@@ -204,6 +279,7 @@ export default (testContext: {
 
     it('should get authentication details', async () => {
       const result = await agent.getDidSiopAuthenticationRequestDetails({
+        sessionId,
         verifiedAuthenticationRequest: createAuthenticationResponseMockedResult,
         verifiableCredentials: [],
       })
@@ -215,6 +291,7 @@ export default (testContext: {
       authenticationRequest.registration.did_methods_supported = [`did:${didMethod}:`]
 
       const result = await agent.verifyDidSiopAuthenticationRequestURI({
+        sessionId,
         requestURI: authenticationRequest,
       })
 
@@ -225,6 +302,7 @@ export default (testContext: {
       authenticationRequest.registration.did_methods_supported = []
 
       const result = await agent.verifyDidSiopAuthenticationRequestURI({
+        sessionId,
         requestURI: authenticationRequest,
         didMethod,
       })
@@ -234,6 +312,7 @@ export default (testContext: {
 
     it('should send authentication response', async () => {
       const result = await agent.sendDidSiopAuthenticationResponse({
+        sessionId,
         verifiedAuthenticationRequest: createAuthenticationResponseMockedResult,
       })
 
