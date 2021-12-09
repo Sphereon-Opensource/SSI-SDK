@@ -95,7 +95,7 @@ export class OperatingPartySession {
   public async getDidSiopAuthenticationRequestDetails(
       args: IOpsGetDidSiopAuthenticationRequestDetailsArgs,
   ): Promise<IAuthRequestDetails> {
-    // TODO args.verifiableCredentials should be the iDataStoreORM getcredentials
+    // TODO fix vc retrievement https://sphereon.atlassian.net/browse/MYC-142
     const presentationDefs = args.verifiedAuthenticationRequest.presentationDefinitions
     const verifiablePresentations = presentationDefs && presentationDefs.length > 0 ? await this.matchPresentationDefinitions(presentationDefs, args.verifiableCredentials) : []
     const didResolutionResult = args.verifiedAuthenticationRequest.didResolutionResult
