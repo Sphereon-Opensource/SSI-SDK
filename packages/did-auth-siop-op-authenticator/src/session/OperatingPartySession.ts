@@ -2,6 +2,7 @@ import { DIDDocumentSection, IIdentifier } from '@veramo/core'
 import { _ExtendedIKey, mapIdentifierKeysToDoc } from '@veramo/utils'
 import { OP, PresentationExchange } from '@sphereon/did-auth-siop/dist/main'
 import { SubmissionRequirementMatch, VerifiableCredential } from '@sphereon/pe-js'
+import { parseDid } from '../utils';
 import {
   PassBy,
   ResponseMode,
@@ -20,30 +21,38 @@ import {
   IOpsSendDidSiopAuthenticationResponseArgs,
   IOpsVerifyDidSiopAuthenticationRequestUriArgs,
   IAuthRequestDetails,
-  IMatchedPresentationDefinition, IParsedDID, IRequiredContext,
+  IMatchedPresentationDefinition,
+  IRequiredContext,
 } from '../types/IDidAuthSiopOpAuthenticator'
-// import {UniqueVerifiableCredential} from '@veramo/data-store/src/data-store-orm';
 
 const fetch = require('cross-fetch')
 
 export class OperatingPartySession {
-  private readonly identifier: IIdentifier
-  private readonly didMethod: string // TODO just move to functions?
-  private readonly section: DIDDocumentSection
-  private readonly expiresIn: number | undefined
-  private readonly context: IRequiredContext
-  private op: OP | undefined
+  public readonly id: string
+  public readonly identifier: IIdentifier
+  public readonly didMethod: string // TODO just move to functions?
+  public readonly section: DIDDocumentSection
+  public readonly expiresIn: number | undefined
+  public readonly context: IRequiredContext
+  public op: OP | undefined
 
   constructor(options: IOperatingPartySessionArgs) {
+    this.id = options.sessionId
     this.identifier = options.identifier
-    this.didMethod = this.parseDid(this.identifier.did).method
+    this.didMethod = parseDid(this.identifier.did).method
     this.expiresIn = options.expiresIn
     this.section = options.section || 'authentication'
     this.context = options.context
   }
 
   public async init() {
-    this.op = await this.createOp(this.identifier, this.section, this.expiresIn || 6000, this.context)
+    this.op = await this.createOp(
+        this.identifier,
+        this.section,
+        this.didMethod,
+        this.expiresIn || 6000,
+        this.context
+    )
   }
 
   public async authenticateWithDidSiop(
@@ -86,10 +95,9 @@ export class OperatingPartySession {
   public async getDidSiopAuthenticationRequestDetails(
       args: IOpsGetDidSiopAuthenticationRequestDetailsArgs,
   ): Promise<IAuthRequestDetails> {
+    // TODO args.verifiableCredentials should be the iDataStoreORM getcredentials
     const presentationDefs = args.verifiedAuthenticationRequest.presentationDefinitions
-    const verifiablePresentations =
-        // TODO args.verifiableCredentials should be the idatastoreorm getcredentials
-        presentationDefs && presentationDefs.length > 0 ? await this.matchPresentationDefinitions(presentationDefs, args.verifiableCredentials) : []
+    const verifiablePresentations = presentationDefs && presentationDefs.length > 0 ? await this.matchPresentationDefinitions(presentationDefs, args.verifiableCredentials) : []
     const didResolutionResult = args.verifiedAuthenticationRequest.didResolutionResult
 
     return {
@@ -102,6 +110,7 @@ export class OperatingPartySession {
   public async verifyDidSiopAuthenticationRequestURI(
       args: IOpsVerifyDidSiopAuthenticationRequestUriArgs,
   ): Promise<VerifiedAuthenticationRequestWithJWT> {
+    // TODO fix supported dids structure https://sphereon.atlassian.net/browse/MYC-141
     const didMethodsSupported = args.requestURI.registration?.did_methods_supported as string[]
     let didMethods: string[] = []
     if (didMethodsSupported && didMethodsSupported.length) {
@@ -121,7 +130,8 @@ export class OperatingPartySession {
       nonce: args.requestURI.requestPayload.nonce,
     }
 
-    return this.op!.verifyAuthenticationRequest(args.requestURI.jwt, options).catch((error: string | undefined) => Promise.reject(new Error(error)))
+    return this.op!.verifyAuthenticationRequest(args.requestURI.jwt, options)
+      .catch((error: string | undefined) => Promise.reject(new Error(error)))
   }
 
   public async sendDidSiopAuthenticationResponse(
@@ -167,24 +177,6 @@ export class OperatingPartySession {
     )
   }
 
-  // private async getPresentationExchange(
-  //     // verifiableCredentials: VerifiableCredential[]
-  // ): Promise<PresentationExchange> { //, this.context
-  //   return this.context.agent.dataStoreORMGetVerifiableCredentials({}).then(uniqueVerifiableCredentials => {
-  //     const verifiableCredentials = uniqueVerifiableCredentials.map(uniqueVerifiableCredential => uniqueVerifiableCredential.verifiableCredential)
-  //
-  //     return new PresentationExchange({
-  //       did: this.op!.authResponseOpts.did,
-  //       allVerifiableCredentials: verifiableCredentials,
-  //     })
-  //   })
-  //
-  //   // return new PresentationExchange({
-  //   //   did: this.op!.authResponseOpts.did,
-  //   //   allVerifiableCredentials: verifiableCredentials,
-  //   // })
-  // }
-
   private getPresentationExchange(
       verifiableCredentials: VerifiableCredential[]
   ): PresentationExchange {
@@ -220,6 +212,7 @@ export class OperatingPartySession {
   private async createOp(
       identifier: IIdentifier,
       section: DIDDocumentSection,
+      didMethod: string,
       expiresIn: number,
       context: IRequiredContext
   ): Promise<OP> {
@@ -229,61 +222,10 @@ export class OperatingPartySession {
 
     return OP.builder()
       .withExpiresIn(expiresIn)
-      .addDidMethod(this.didMethod)
+      .addDidMethod(didMethod)
       .internalSignature(await this.getPrivateKeyHex(identifier, section, context), identifier.did, identifier.controllerKeyId)
       .registrationBy(PassBy.VALUE)
       .response(ResponseMode.POST)
       .build()
   }
-
-  private parseDid(
-      did: string
-  ): IParsedDID {
-    const parsedDid = this.parse(did);
-    if (parsedDid === null) {
-      throw new Error('invalid did')
-    }
-
-    return parsedDid
-  }
-
-  private parse(didUrl: string): IParsedDID | null {
-    const PCT_ENCODED = '(?:%[0-9a-fA-F]{2})'
-    const ID_CHAR = `(?:[a-zA-Z0-9._-]|${PCT_ENCODED})`
-    const METHOD = '([a-z0-9]+)'
-    const METHOD_ID = `((?:${ID_CHAR}*:)*(${ID_CHAR}+))`
-    const PARAM_CHAR = '[a-zA-Z0-9_.:%-]'
-    const PARAM = `;${PARAM_CHAR}+=${PARAM_CHAR}*`
-    const PARAMS = `((${PARAM})*)`
-    const PATH = `(/[^#?]*)?`
-    const QUERY = `([?][^#]*)?`
-    const FRAGMENT = `(#.*)?`
-    const DID_MATCHER = new RegExp(`^did:${METHOD}:${METHOD_ID}${PARAMS}${PATH}${QUERY}${FRAGMENT}$`)
-
-    if (didUrl === '' || !didUrl) return null
-    const sections = didUrl.match(DID_MATCHER)
-    if (sections) {
-      const parts: IParsedDID = {
-        did: `did:${sections[1]}:${sections[2]}`,
-        method: sections[1],
-        id: sections[2],
-        didUrl,
-      }
-      if (sections[4]) {
-        const params = sections[4].slice(1).split(';')
-        parts.params = {}
-        for (const p of params) {
-          const kv = p.split('=')
-          parts.params[kv[0]] = kv[1]
-        }
-      }
-      if (sections[6]) parts.path = sections[6]
-      if (sections[7]) parts.query = sections[7].slice(1)
-      if (sections[8]) parts.fragment = sections[8].slice(1)
-      return parts
-    }
-
-    return null
-  }
-
 }

@@ -178,12 +178,7 @@ export default (testContext: {
       mockedSubmissionFromMethod.mockReturnValue(Promise.resolve({}))
 
       await agent.addDidSiopSession({
-        sessionId: sessionId,
-        identifier,
-      })
-
-      await agent.addDidSiopSession({
-        sessionId: otherSessionId,
+        sessionId,
         identifier,
       })
     })
@@ -191,14 +186,20 @@ export default (testContext: {
     afterAll(testContext.tearDown)
 
     it('should add OP session', async () => {
-      const result = await agent.getDidSiopSession({ // TODO ?????????
-        sessionId: sessionId
+      const sessionId = 'new_session_id'
+      const result = await agent.addDidSiopSession({
+        sessionId,
+        identifier,
       })
 
-      expect(result).not.toBeNull()
+      expect(result.id).toEqual(sessionId)
     })
 
     it('should remove OP session', async () => {
+      await agent.addDidSiopSession({
+        sessionId: otherSessionId,
+        identifier,
+      })
       await agent.removeDidSiopSession({
         sessionId: otherSessionId
       })

@@ -5,7 +5,6 @@ import {
   IPluginMethodMap,
   IResolver
 } from '@veramo/core'
-import { IDataStoreORM } from '@veramo/data-store';
 import { VerifiableCredential, VerifiablePresentation } from '@sphereon/pe-js'
 import {
   ParsedAuthenticationRequestURI,
@@ -15,7 +14,6 @@ import {
   PresentationLocation,
 } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
 import { OperatingPartySession } from '../session/OperatingPartySession';
-import { Params } from 'did-resolver/src/resolver';
 
 export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   getDidSiopSession(args: IGetDidSiopSessionArgs, context: IRequiredContext): Promise<OperatingPartySession>
@@ -37,10 +35,11 @@ export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
 }
 
 export interface IOperatingPartySessionArgs {
+  sessionId: string
   identifier: IIdentifier
+  context: IRequiredContext
   expiresIn?: number
   section?: DIDDocumentSection
-  context: IRequiredContext
 }
 
 export interface IAuthenticateWithDidSiopArgs {
@@ -77,8 +76,8 @@ export interface ISendDidSiopAuthenticationResponseArgs {
 
 export interface IAuthRequestDetails {
   id: string
-  alsoKnownAs?: string[]
   vpResponseOpts: VerifiablePresentationResponseOpts[]
+  alsoKnownAs?: string[]
 }
 
 export interface IResponse extends Response {}
@@ -113,7 +112,6 @@ export interface IRemoveCustomApprovalForDidSiopArgs {
 }
 
 export interface IOpsAuthenticateWithDidSiopArgs {
-  sessionId: string
   stateId: string
   redirectUrl: string
   customApprovals: Record<string, (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise<void>>
@@ -148,11 +146,13 @@ export interface IParsedDID {
   path?: string
   fragment?: string
   query?: string
-  params?: Params // TODO get params
+  params?: {
+    [index: string]: string
+  }
 }
 
 export enum events {
   DID_SIOP_AUTHENTICATED = 'didSiopAuthenticated',
 }
 
-export type IRequiredContext = IAgentContext<IResolver & IDataStoreORM>
+export type IRequiredContext = IAgentContext<IResolver>

@@ -43,7 +43,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   private readonly sessions: Record<string, OperatingPartySession>
   private readonly customApprovals: Record<string, (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise<void>>
 
-  constructor(customApprovals?: Record<string, (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise<void>>) { // TODO maybe just one param?
+  constructor(customApprovals?: Record<string, (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise<void>>) {
     this.sessions = {}
     this.customApprovals = customApprovals || {}
   }
@@ -70,8 +70,8 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     }
 
     const sessionId = args.sessionId
-    const session = new OperatingPartySession({identifier: args.identifier, expiresIn: args.expiresIn, context})
-    await session.init() // TODO maybe a builder to be able to async functions?
+    const session = new OperatingPartySession({sessionId, identifier: args.identifier, expiresIn: args.expiresIn, context})
+    await session.init()
     this.sessions[sessionId] = session
 
     return session
