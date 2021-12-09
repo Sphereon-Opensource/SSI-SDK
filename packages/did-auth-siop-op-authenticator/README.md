@@ -37,6 +37,14 @@ For this plugin a DID resolver is also required. A DID resolver can be added to 
 * verifyDidSiopAuthenticationRequestURI
 * sendDidSiopAuthenticationResponse
 
+The following functions can also be used on the session object without the need of a session id first.
+
+* authenticateWithDidSiop
+* getDidSiopAuthenticationRequestFromRP
+* getDidSiopAuthenticationRequestDetails
+* verifyDidSiopAuthenticationRequestURI
+* sendDidSiopAuthenticationResponse
+
 ## Usage
 
 ### Adding the plugin to an agent:
