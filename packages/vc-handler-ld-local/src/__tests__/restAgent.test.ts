@@ -5,7 +5,7 @@ import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import vcApiIssuerAgentLogic from './shared/vcApiIssuerAgentLogic'
+import vcHandlerLocalAgentLogic from './shared/vcHandlerLocalAgentLogic'
 import { ICredentialHandlerLDLocal } from '../types/ICredentialHandlerLDLocal'
 import { CredentialHandlerLDLocal } from '../agent/CredentialHandlerLDLocal'
 import { LdDefaultContexts } from '../ld-default-contexts'
@@ -56,5 +56,5 @@ const tearDown = async (): Promise<boolean> => {
 const testContext = { setup, tearDown }
 
 describe('REST integration tests', () => {
-  vcApiIssuerAgentLogic(testContext)
+  vcHandlerLocalAgentLogic(testContext)
 })

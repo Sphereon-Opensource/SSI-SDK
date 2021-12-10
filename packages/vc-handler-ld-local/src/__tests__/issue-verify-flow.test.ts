@@ -112,7 +112,7 @@ describe('credential-LD full flow', () => {
     })
 
     expect(verifiableCredential).toBeDefined()
-    console.log(verifiableCredential)
+    // console.log(verifiableCredential)
 
     const verifiedCredential = await agent.verifyCredentialLDLocal({
       credential: verifiableCredential,
@@ -130,7 +130,7 @@ describe('credential-LD full flow', () => {
       keyRef: didLtoIdentifier.controllerKeyId,
       presentation: presentationPayload,
       // We are overriding the purpose since the DID in this test does not have an authentication proof purpose
-      purpose: new ControllerProofPurpose({ term: 'verificationMethod'}),
+      purpose: new ControllerProofPurpose({ term: 'verificationMethod' }),
     })
 
     expect(verifiablePresentation).toBeDefined()
@@ -139,8 +139,7 @@ describe('credential-LD full flow', () => {
       presentation: verifiablePresentation,
       fetchRemoteContexts: true,
       // We are overriding the purpose since the DID in this test does not have an authentication proof purpose
-      presentationPurpose: new ControllerProofPurpose({ term: 'verificationMethod'})
-
+      presentationPurpose: new ControllerProofPurpose({ term: 'verificationMethod' }),
     })
 
     expect(verifiedPresentation).toBe(true)

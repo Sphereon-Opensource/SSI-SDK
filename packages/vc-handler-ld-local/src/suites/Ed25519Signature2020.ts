@@ -10,7 +10,6 @@ import { hexToMultibase } from '../../../ssi-sdk-core/src'
 import { MultibaseFormat } from '@sphereon/ssi-sdk-core/dist/utils/encoding'
 
 export class SphereonEd25519Signature2020 extends SphereonLdSignature {
-
   constructor() {
     super()
     // Ensure it is loaded
@@ -76,19 +75,14 @@ export class SphereonEd25519Signature2020 extends SphereonLdSignature {
     })
   }
   preVerificationCredModification(credential: VerifiableCredential): void {
-    credential['@context'] = [
-      ...asArray(credential['@context'] || []),
-      this.getContext()
-    ]
+    credential['@context'] = [...asArray(credential['@context'] || []), this.getContext()]
   }
 
   getSuiteForVerification(): any {
     return new Ed25519Signature2020()
   }
 
-  preSigningCredModification(credential: CredentialPayload): void {
-
-  }
+  preSigningCredModification(credential: CredentialPayload): void {}
 
   preDidResolutionModification(didUrl: string, didDoc: DIDDocument): void {
     // nothing to do here

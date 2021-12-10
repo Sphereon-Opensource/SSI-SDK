@@ -3,7 +3,7 @@ import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 
 jest.setTimeout(30000)
 
-import vcApiIssuerAgentLogic from './shared/vcApiIssuerAgentLogic'
+import vcHandlerLocalAgentLogic from './shared/vcHandlerLocalAgentLogic'
 import { ContextDoc, LdDefaultContexts, VeramoEd25519Signature2018 } from '@veramo/credential-ld'
 
 let agent: any
@@ -31,5 +31,5 @@ const tearDown = async (): Promise<boolean> => {
 const testContext = { setup, tearDown }
 
 describe('Local integration tests', () => {
-  vcApiIssuerAgentLogic(testContext)
+  vcHandlerLocalAgentLogic(testContext)
 })

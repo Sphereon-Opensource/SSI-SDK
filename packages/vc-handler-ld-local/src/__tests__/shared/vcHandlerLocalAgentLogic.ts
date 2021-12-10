@@ -1,23 +1,18 @@
 import { CredentialHandlerLDLocal } from '../../agent/CredentialHandlerLDLocal'
 import { Resolver } from 'did-resolver'
-import { ContextDoc, LdDefaultContexts, VeramoEd25519Signature2018 } from '@veramo/credential-ld'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
-import { createAgent, CredentialPayload, IDIDManager, IIdentifier, IKeyManager, IResolver, PresentationPayload, TAgent } from '@veramo/core'
+import { createAgent, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
 import { KeyManagementSystem } from '@veramo/kms-local'
 import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { CredentialIssuer, ICredentialIssuer } from '@veramo/credential-w3c'
 import { getDidKeyResolver, KeyDIDProvider } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
-import { getUniResolver } from '@sphereon/did-uni-client'
-import { LtoDidProvider } from '../../../../lto-did-provider/src/lto-did-provider'
-import { IDidConnectionMode } from '../../../../lto-did-provider/src/types/lto-provider-types'
 import { ICredentialHandlerLDLocal, MethodNames } from '../../types/ICredentialHandlerLDLocal'
+import { SphereonEd25519Signature2018 } from '../../suites/Ed25519Signature2018'
+import { LdDefaultContexts } from '../../ld-default-contexts'
 
-type ConfiguredAgent = TAgent<ICredentialHandlerLDLocal>
-
-export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
+export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
   describe('Issuer Agent Plugin', () => {
-
     let didKeyIdentifier: IIdentifier
     let didLtoIdentifier: IIdentifier
     let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialIssuer & ICredentialHandlerLDLocal>
@@ -33,7 +28,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           }),
           new DIDManager({
             providers: {
-              'did:key': new KeyDIDProvider({ defaultKms: 'local' })
+              'did:key': new KeyDIDProvider({ defaultKms: 'local' }),
             },
             store: new MemoryDIDStore(),
             defaultProvider: 'did:key',
@@ -46,7 +41,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           new CredentialIssuer(),
           new CredentialHandlerLDLocal({
             contextMaps: [LdDefaultContexts /*, customContext*/],
-            suites: [new VeramoEd25519Signature2018()],
+            suites: [new SphereonEd25519Signature2018()],
             bindingOverrides: new Map([
               // Bindings to test overrides of credential-ld plugin methods
               ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
@@ -60,12 +55,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     afterAll(async () => {
-      await new Promise<void>((resolve) => setTimeout(() => resolve(), 10000)) // avoid jest open handle error
+      // await new Promise<void>((resolve) => setTimeout(() => resolve(), 10000)) // avoid jest open handle error
       await testContext.tearDown()
     })
 
     it('should issue', async () => {
-      const credential ={
+      const credential = {
         issuer: didKeyIdentifier.did,
         type: ['VerifiableCredential', 'AlumniCredential'],
         '@context': ['https://www.w3.org/2018/credentials/v1', 'https://www.w3.org/2018/credentials/examples/v1'],

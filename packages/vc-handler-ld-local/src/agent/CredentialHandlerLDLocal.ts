@@ -26,7 +26,6 @@ import {
   IVerifyPresentationLDArgs,
 } from '../types/types'
 
-
 const debug = Debug('veramo:w3c:ld-credential-action-handler-local')
 
 /**
@@ -102,7 +101,14 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     try {
       const { signingKey, verificationMethodId } = await this.findSigningKeyWithId(context, identifier, args.keyRef)
 
-      return await this.ldCredentialModule.issueLDVerifiableCredential(credential, identifier.did, signingKey, verificationMethodId, args.purpose, context)
+      return await this.ldCredentialModule.issueLDVerifiableCredential(
+        credential,
+        identifier.did,
+        signingKey,
+        verificationMethodId,
+        args.purpose,
+        context
+      )
     } catch (error) {
       debug(error)
       return Promise.reject(error)
@@ -180,7 +186,14 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyPresentationLDLocal} */
   public async verifyPresentationLDLocal(args: IVerifyPresentationLDArgs, context: IRequiredContext): Promise<boolean> {
     const presentation = args.presentation
-    return this.ldCredentialModule.verifyPresentation(presentation, args.challenge, args.domain, context, args.fetchRemoteContexts, args.presentationPurpose)
+    return this.ldCredentialModule.verifyPresentation(
+      presentation,
+      args.challenge,
+      args.domain,
+      context,
+      args.fetchRemoteContexts,
+      args.presentationPurpose
+    )
   }
 
   private async findSigningKeyWithId(

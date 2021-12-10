@@ -16,7 +16,6 @@ import { LdContextLoader } from './ld-context-loader'
 import { LdSuiteLoader } from './ld-suite-loader'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
 
-
 export type RequiredAgentMethods = IResolver & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>
 
 const ProofPurpose = purposes.ProofPurpose
@@ -158,7 +157,7 @@ export class LdCredentialModule {
     verificationMethodId: string,
     challenge: string | undefined,
     domain: string | undefined,
-    purpose: typeof ProofPurpose = (!challenge && !domain) ? new AssertionProofPurpose() : new AuthenticationProofPurpose( {domain, challenge}),
+    purpose: typeof ProofPurpose = !challenge && !domain ? new AssertionProofPurpose() : new AuthenticationProofPurpose({ domain, challenge }),
     context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiablePresentationSP> {
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
@@ -184,7 +183,7 @@ export class LdCredentialModule {
     purpose: typeof ProofPurpose = new AssertionProofPurpose()
   ): Promise<boolean> {
     const verificationSuites = this.getAllVerificationSuites()
-    this.ldSuiteLoader.getAllSignatureSuites().forEach(suite => suite.preVerificationCredModification(credential) )
+    this.ldSuiteLoader.getAllSignatureSuites().forEach((suite) => suite.preVerificationCredModification(credential))
     const result = await vc.verifyCredential({
       credential,
       suite: verificationSuites,
@@ -213,8 +212,8 @@ export class LdCredentialModule {
     domain: string | undefined,
     context: IAgentContext<IResolver>,
     fetchRemoteContexts: boolean = false,
-    presentationPurpose: typeof ProofPurpose = (!challenge && !domain) ? new AssertionProofPurpose() : new AuthenticationProofPurpose(domain, challenge),
-  //AssertionProofPurpose()
+    presentationPurpose: typeof ProofPurpose = !challenge && !domain ? new AssertionProofPurpose() : new AuthenticationProofPurpose(domain, challenge)
+    //AssertionProofPurpose()
   ): Promise<boolean> {
     // console.log(JSON.stringify(presentation, null, 2))
 

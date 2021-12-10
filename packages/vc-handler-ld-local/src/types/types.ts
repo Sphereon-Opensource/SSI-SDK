@@ -12,8 +12,6 @@ import {
 } from '@veramo/core'
 import { ProofPurpose } from '@digitalcredentials/vc'
 
-
-
 /**
  * The interface definition for a plugin that can issue and verify Verifiable Credentials and Presentations
  * that use JSON-LD format.

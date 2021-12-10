@@ -67,7 +67,7 @@ export class SphereonEd25519Signature2018 extends SphereonLdSignature {
     verificationKey.signer = () => signer as any
     // verificationKey.type = this.getSupportedVerificationType()
 
-    return new Ed25519Signature2018({key: verificationKey, signer: signer })
+    return new Ed25519Signature2018({ key: verificationKey, signer: signer })
   }
 
   preVerificationCredModification(credential: VerifiableCredential): void {}
@@ -76,7 +76,7 @@ export class SphereonEd25519Signature2018 extends SphereonLdSignature {
   }
 
   preSigningCredModification(credential: CredentialPayload): void {
-    console.log(credential)
+    // console.log(credential)
     // nothing to do here
   }
 
