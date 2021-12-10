@@ -1,4 +1,5 @@
-import { IParsedDID } from '../types/IDidAuthSiopOpAuthenticator';
+import { IParsedDID } from '../types';
+
 
 export const parseDid = (
     did: string

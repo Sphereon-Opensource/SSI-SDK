@@ -8,11 +8,11 @@
 
 ---
 
-**Warning: This package still is in every early development. Breaking changes without notice will happen at this point!**
+**Warning: This package still is in very early development. Breaking changes without notice will happen at this point!**
 
 ---
 
-A Veramo operating party authentication plugin using the [Self Issued OpenID Provider v2 (SIOP)](https://github.com/Sphereon-Opensource/did-auth-siop) authentication library for having clients / people conforming to
+A Veramo authentication plugin using the [Self Issued OpenID Provider v2 (SIOP)](https://github.com/Sphereon-Opensource/did-auth-siop) authentication library for having clients / people conforming to
 the [Self Issued OpenID Provider v2 (SIOPv2)](https://openid.net/specs/openid-connect-self-issued-v2-1_0.html)
 and  [OpenID Connect for Verifiable Presentations (OIDC4VP)](https://openid.net/specs/openid-connect-4-verifiable-presentations-1_0.html)
 as specified in the OpenID Connect working group.
@@ -32,24 +32,24 @@ For this plugin a DID resolver is also required. A DID resolver can be added to 
 * registerCustomApprovalForDidSiop
 * removeCustomApprovalForDidSiop
 * authenticateWithDidSiop
-* getDidSiopAuthenticationRequestFromRP
-* getDidSiopAuthenticationRequestDetails
-* verifyDidSiopAuthenticationRequestURI
-* sendDidSiopAuthenticationResponse
+* getSiopAuthenticationRequestFromRP
+* getSiopAuthenticationRequestDetails
+* verifySiopAuthenticationRequestURI
+* sendSiopAuthenticationResponse
 
 The following functions can also be used on the session object without the need of a session id first.
 
 * authenticateWithDidSiop
-* getDidSiopAuthenticationRequestFromRP
-* getDidSiopAuthenticationRequestDetails
-* verifyDidSiopAuthenticationRequestURI
-* sendDidSiopAuthenticationResponse
+* getSiopAuthenticationRequestFromRP
+* getSiopAuthenticationRequestDetails
+* verifySiopAuthenticationRequestURI
+* sendSiopAuthenticationResponse
 
 ## Usage
 
 ### Adding the plugin to an agent:
 
-```js
+```typescript
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk-did-auth-siop-authenticator'
 
 const agent = createAgent<IDidAuthSiopOpAuthenticator & IResolver>({
@@ -67,7 +67,7 @@ const agent = createAgent<IDidAuthSiopOpAuthenticator & IResolver>({
 
 ### Get an OP session:
 
-```js
+```typescript
 const sessionId = 'example_session_id'
 const opSession = await agent.getDidSiopSession({
   sessionId
@@ -76,7 +76,7 @@ const opSession = await agent.getDidSiopSession({
 
 ### Add an OP session:
 
-```js
+```typescript
 const sessionId = 'example_session_id'
 const identifier = {
   did: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
@@ -100,7 +100,7 @@ const opSession = await agent.addDidSiopSession({
 
 ### Remove an OP session:
 
-```js
+```typescript
 const sessionId = 'example_session_id'
 const opSession = await agent.removeDidSiopSession({
   sessionId
@@ -114,14 +114,14 @@ These functions can then be used as an optional parameter. It is also possible t
 
 These custom approval functions can also be provided at agent creation.
 
-```js
+```typescript
 await agent.registerCustomApprovalForDidSiop({
   key: 'example_key',
   customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise.resolve()
 })
 ```
 
-```js
+```typescript
 const sessionId = 'example_session_id'
 const stateId = 'example_state_id'
 const redirectUrl = 'https://example.com'
@@ -136,7 +136,7 @@ const authenticationResponse = await agent.authenticateWithDidSiop({
 })
 ```
 
-```js
+```typescript
 const authenticationResponse = await agent.authenticateWithDidSiop({
   sessionId,
   stateId,
@@ -152,11 +152,11 @@ const authenticationResponse = await agent.authenticateWithDidSiop({
 
 For more detailed information see: [Self Issued OpenID Provider v2 (SIOP)](https://github.com/Sphereon-Opensource/did-auth-siop#rp-creates-the-authentication-request) 
 
-```js
+```typescript
 const sessionId = 'example_session_id'
 const stateId = 'example_state_id'
 const redirectUrl = 'https://example.com'
-const createAuthenticationResponse = await agent.getDidSiopAuthenticationRequestFromRP({
+const createAuthenticationResponse = await agent.getSiopAuthenticationRequestFromRP({
   sessionId,
   stateId,
   redirectUrl,
@@ -168,9 +168,9 @@ const createAuthenticationResponse = await agent.getDidSiopAuthenticationRequest
 For more detailed information see: [Self Issued OpenID Provider v2 (SIOP)](https://github.com/Sphereon-Opensource/did-auth-siop#op-presentation-exchange)
 
 
-```js
+```typescript
 const sessionId = 'example_session_id'
-const authenticationRequestDetailsResponse = await agent.getDidSiopAuthenticationRequestDetails({
+const authenticationRequestDetailsResponse = await agent.getSiopAuthenticationRequestDetails({
   sessionId,
   verifiedAuthenticationRequest: createAuthenticationResponse,
   verifiableCredentials: [credential],
@@ -181,9 +181,9 @@ const authenticationRequestDetailsResponse = await agent.getDidSiopAuthenticatio
 
 For more detailed information see: [Self Issued OpenID Provider v2 (SIOP)](https://github.com/Sphereon-Opensource/did-auth-siop#op-authentication-request-verification)
 
-```js
+```typescript
 const sessionId = 'example_session_id'
-const verifiedAuthenticationResponse = await agent.verifyDidSiopAuthenticationRequestURI({
+const verifiedAuthenticationResponse = await agent.verifySiopAuthenticationRequestURI({
   sessionId,
   requestURI: createAuthenticationResponse,
 })
@@ -193,9 +193,9 @@ const verifiedAuthenticationResponse = await agent.verifyDidSiopAuthenticationRe
 
 For more detailed information see: [Self Issued OpenID Provider v2 (SIOP)](https://github.com/Sphereon-Opensource/did-auth-siop#op-creates-the-authentication-response-using-the-verified-request)
 
-```js
+```typescript
 const sessionId = 'example_session_id'
-const authenticationResponse = await agent.sendDidSiopAuthenticationResponse({
+const authenticationResponse = await agent.sendSiopAuthenticationResponse({
   sessionId,
   verifiedAuthenticationRequest: verifiedAuthenticationResponse,
 })

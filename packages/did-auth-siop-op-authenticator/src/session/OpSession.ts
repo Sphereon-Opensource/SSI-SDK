@@ -2,7 +2,6 @@ import { DIDDocumentSection, IIdentifier } from '@veramo/core'
 import { _ExtendedIKey, mapIdentifierKeysToDoc } from '@veramo/utils'
 import { OP, PresentationExchange } from '@sphereon/did-auth-siop/dist/main'
 import { SubmissionRequirementMatch, VerifiableCredential } from '@sphereon/pe-js'
-import { parseDid } from '../utils';
 import {
   PassBy,
   ResponseMode,
@@ -14,76 +13,77 @@ import {
   VerificationMode,
 } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
 import {
-  IOperatingPartySessionArgs,
-  IOpsAuthenticateWithDidSiopArgs,
-  IOpsGetDidSiopAuthenticationRequestDetailsArgs,
-  IOpsGetDidSiopAuthenticationRequestFromRpArgs,
-  IOpsSendDidSiopAuthenticationResponseArgs,
-  IOpsVerifyDidSiopAuthenticationRequestUriArgs,
+  IOpSessionArgs,
+  IOpsAuthenticateWithSiopArgs,
+  IOpsGetSiopAuthenticationRequestDetailsArgs,
+  IOpsGetSiopAuthenticationRequestFromRpArgs,
+  IOpsSendSiopAuthenticationResponseArgs,
+  IOpsVerifySiopAuthenticationRequestUriArgs,
   IAuthRequestDetails,
   IMatchedPresentationDefinition,
   IRequiredContext,
 } from '../types/IDidAuthSiopOpAuthenticator'
+import { parseDid } from '@sphereon/ssi-sdk-core';
 
 const fetch = require('cross-fetch')
 
-export class OperatingPartySession {
+export class OpSession {
   public readonly id: string
   public readonly identifier: IIdentifier
   public readonly didMethod: string
-  public readonly section: DIDDocumentSection
+  public readonly verificationMethodSection: DIDDocumentSection
   public readonly expiresIn: number | undefined
   public readonly context: IRequiredContext
   public op: OP | undefined
 
-  constructor(options: IOperatingPartySessionArgs) {
+  constructor(options: IOpSessionArgs) {
     this.id = options.sessionId
     this.identifier = options.identifier
     this.didMethod = parseDid(this.identifier.did).method
     this.expiresIn = options.expiresIn
-    this.section = options.section || 'authentication'
+    this.verificationMethodSection = options.verificationMethodSection || 'authentication'
     this.context = options.context
   }
 
   public async init() {
     this.op = await this.createOp(
         this.identifier,
-        this.section,
+        this.verificationMethodSection,
         this.didMethod,
         this.expiresIn || 6000,
         this.context
     )
   }
 
-  public async authenticateWithDidSiop(
-      args: IOpsAuthenticateWithDidSiopArgs
+  public async authenticateWithSiop(
+      args: IOpsAuthenticateWithSiopArgs
   ): Promise<Response> {
-    return this.getDidSiopAuthenticationRequestFromRP({ stateId: args.stateId, redirectUrl: args.redirectUrl })
+    return this.getSiopAuthenticationRequestFromRP({ stateId: args.stateId, redirectUrl: args.redirectUrl })
       .then((authenticationRequest: ParsedAuthenticationRequestURI) =>
-          this.verifyDidSiopAuthenticationRequestURI({ requestURI: authenticationRequest, didMethod: this.didMethod })
+          this.verifySiopAuthenticationRequestURI({ requestURI: authenticationRequest, didMethod: this.didMethod })
       )
       .then((verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
         if (args.customApproval !== undefined) {
           if (typeof args.customApproval === 'string') {
             if (args.customApprovals !== undefined && args.customApprovals[args.customApproval] !== undefined) {
               return args.customApprovals[args.customApproval](verifiedAuthenticationRequest).then(() =>
-                  this.sendDidSiopAuthenticationResponse({ verifiedAuthenticationRequest: verifiedAuthenticationRequest })
+                  this.sendSiopAuthenticationResponse({ verifiedAuthenticationRequest: verifiedAuthenticationRequest })
               )
             }
             return Promise.reject(new Error(`Custom approval not found for key: ${args.customApproval}`))
           } else {
             return args.customApproval(verifiedAuthenticationRequest)
-              .then(() => this.sendDidSiopAuthenticationResponse({ verifiedAuthenticationRequest: verifiedAuthenticationRequest }))
+              .then(() => this.sendSiopAuthenticationResponse({ verifiedAuthenticationRequest: verifiedAuthenticationRequest }))
           }
         } else {
-          return this.sendDidSiopAuthenticationResponse({ verifiedAuthenticationRequest: verifiedAuthenticationRequest })
+          return this.sendSiopAuthenticationResponse({ verifiedAuthenticationRequest: verifiedAuthenticationRequest })
         }
       })
       .catch((error: unknown) => Promise.reject(error))
   }
 
-  public async getDidSiopAuthenticationRequestFromRP(
-      args: IOpsGetDidSiopAuthenticationRequestFromRpArgs,
+  public async getSiopAuthenticationRequestFromRP(
+      args: IOpsGetSiopAuthenticationRequestFromRpArgs,
   ): Promise<ParsedAuthenticationRequestURI> {
     return fetch(`${args.redirectUrl}?stateId=${args.stateId}`)
     .then(async (response: Response) =>
@@ -92,8 +92,8 @@ export class OperatingPartySession {
     .catch((error: unknown) => Promise.reject(error))
   }
 
-  public async getDidSiopAuthenticationRequestDetails(
-      args: IOpsGetDidSiopAuthenticationRequestDetailsArgs,
+  public async getSiopAuthenticationRequestDetails(
+      args: IOpsGetSiopAuthenticationRequestDetailsArgs,
   ): Promise<IAuthRequestDetails> {
     // TODO fix vc retrievement https://sphereon.atlassian.net/browse/MYC-142
     const presentationDefs = args.verifiedAuthenticationRequest.presentationDefinitions
@@ -107,8 +107,8 @@ export class OperatingPartySession {
     }
   }
 
-  public async verifyDidSiopAuthenticationRequestURI(
-      args: IOpsVerifyDidSiopAuthenticationRequestUriArgs,
+  public async verifySiopAuthenticationRequestURI(
+      args: IOpsVerifySiopAuthenticationRequestUriArgs,
   ): Promise<VerifiedAuthenticationRequestWithJWT> {
     // TODO fix supported dids structure https://sphereon.atlassian.net/browse/MYC-141
     const didMethodsSupported = args.requestURI.registration?.did_methods_supported as string[]
@@ -134,8 +134,8 @@ export class OperatingPartySession {
       .catch((error: string | undefined) => Promise.reject(new Error(error)))
   }
 
-  public async sendDidSiopAuthenticationResponse(
-      args: IOpsSendDidSiopAuthenticationResponseArgs
+  public async sendSiopAuthenticationResponse(
+      args: IOpsSendSiopAuthenticationResponseArgs
   ): Promise<Response> {
     return this.op!
       .createAuthenticationResponse(args.verifiedAuthenticationRequest, { vp: args.verifiablePresentationResponse })
@@ -188,18 +188,18 @@ export class OperatingPartySession {
 
   private async getPrivateKeyHex(
       identifier: IIdentifier,
-      section: DIDDocumentSection = 'authentication',
+      verificationMethodSection: DIDDocumentSection = 'authentication',
       context: IRequiredContext,
       keyId?: string
   ): Promise<string> {
-    const keys = await mapIdentifierKeysToDoc(identifier, section, context)
+    const keys = await mapIdentifierKeysToDoc(identifier, verificationMethodSection, context)
     if (!keys || keys.length === 0) {
-      throw new Error(`No keys found for section: ${section}`)
+      throw new Error(`No keys found for verificationMethodSection: ${verificationMethodSection}`)
     }
 
     const identifierKey = keyId ? keys.find((key: _ExtendedIKey) => key.kid === keyId || key.meta.verificationMethod.id === keyId) : keys[0]
     if (!identifierKey) {
-      throw new Error(`No matching section key found for keyId: ${keyId}`)
+      throw new Error(`No matching verificationMethodSection key found for keyId: ${keyId}`)
     }
 
     if (!identifierKey.privateKeyHex) {
@@ -211,7 +211,7 @@ export class OperatingPartySession {
 
   private async createOp(
       identifier: IIdentifier,
-      section: DIDDocumentSection,
+      verificationMethodSection: DIDDocumentSection,
       didMethod: string,
       expiresIn: number,
       context: IRequiredContext
@@ -223,7 +223,7 @@ export class OperatingPartySession {
     return OP.builder()
       .withExpiresIn(expiresIn)
       .addDidMethod(didMethod)
-      .internalSignature(await this.getPrivateKeyHex(identifier, section, context), identifier.did, identifier.controllerKeyId)
+      .internalSignature(await this.getPrivateKeyHex(identifier, verificationMethodSection, context), identifier.did, identifier.controllerKeyId)
       .registrationBy(PassBy.VALUE)
       .response(ResponseMode.POST)
       .build()
