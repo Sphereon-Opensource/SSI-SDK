@@ -4,14 +4,6 @@ import { IBindingOverrides, schema } from '../index'
 import { ICredentialHandlerLDLocal, IRequiredContext } from '../types/ICredentialHandlerLDLocal'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
 import {
-  ContextDoc,
-  ICreateVerifiableCredentialLDArgs,
-  ICreateVerifiablePresentationLDArgs,
-  IVerifyCredentialLDArgs,
-  IVerifyPresentationLDArgs,
-  VeramoLdSignature,
-} from '@veramo/credential-ld'
-import {
   _ExtendedIKey,
   extractIssuer,
   isDefined,
@@ -25,8 +17,15 @@ import { LdCredentialModule } from '../ld-credential-module'
 import { LdContextLoader } from '../ld-context-loader'
 import { LdSuiteLoader } from '../ld-suite-loader'
 import Debug from 'debug'
+import { SphereonLdSignature } from '../ld-suites'
+import {
+  ContextDoc,
+  ICreateVerifiableCredentialLDArgs,
+  ICreateVerifiablePresentationLDArgs,
+  IVerifyCredentialLDArgs,
+  IVerifyPresentationLDArgs,
+} from '../types/types'
 
-const vc = require('@digitalcredentials/vc')
 
 const debug = Debug('veramo:w3c:ld-credential-action-handler-local')
 
@@ -49,10 +48,10 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     verifyCredentialLDLocal: this.verifyCredentialLDLocal.bind(this),
   }
 
-  constructor(options: { contextMaps: RecordLike<OrPromise<ContextDoc>>[]; suites: VeramoLdSignature[]; bindingOverrides?: IBindingOverrides }) {
+  constructor(options: { contextMaps: RecordLike<OrPromise<ContextDoc>>[]; suites: SphereonLdSignature[]; bindingOverrides?: IBindingOverrides }) {
     this.ldCredentialModule = new LdCredentialModule({
       ldContextLoader: new LdContextLoader({ contextsPaths: options.contextMaps }),
-      ldSuiteLoader: new LdSuiteLoader({ veramoLdSignatures: options.suites }),
+      ldSuiteLoader: new LdSuiteLoader({ ldSignatureSuites: options.suites }),
     })
 
     this.overrideBindings(options.bindingOverrides)
@@ -103,7 +102,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     try {
       const { signingKey, verificationMethodId } = await this.findSigningKeyWithId(context, identifier, args.keyRef)
 
-      return await this.ldCredentialModule.issueLDVerifiableCredential(credential, identifier.did, signingKey, verificationMethodId, context)
+      return await this.ldCredentialModule.issueLDVerifiableCredential(credential, identifier.did, signingKey, verificationMethodId, args.purpose, context)
     } catch (error) {
       debug(error)
       return Promise.reject(error)
@@ -163,6 +162,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
         verificationMethodId,
         args.challenge,
         args.domain,
+        args.purpose,
         context
       )
     } catch (error) {
@@ -174,13 +174,13 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyCredentialLDLocal} */
   public async verifyCredentialLDLocal(args: IVerifyCredentialLDArgs, context: IRequiredContext): Promise<boolean> {
     const credential = args.credential
-    return this.ldCredentialModule.verifyCredential(credential, context, args.fetchRemoteContexts)
+    return this.ldCredentialModule.verifyCredential(credential, context, args.fetchRemoteContexts, args.purpose)
   }
 
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyPresentationLDLocal} */
   public async verifyPresentationLDLocal(args: IVerifyPresentationLDArgs, context: IRequiredContext): Promise<boolean> {
     const presentation = args.presentation
-    return this.ldCredentialModule.verifyPresentation(presentation, args.challenge, args.domain, context, args.fetchRemoteContexts)
+    return this.ldCredentialModule.verifyPresentation(presentation, args.challenge, args.domain, context, args.fetchRemoteContexts, args.presentationPurpose)
   }
 
   private async findSigningKeyWithId(
@@ -203,7 +203,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       if (keyRef) {
         debug('WARNING: no signing key was found that matches the reference provided. Searching for the first available signing key.')
       }
-      signingKey = extendedKeys.find((k) => supportedTypes.includes(k.meta.verificationMethod.type))
+      signingKey = extendedKeys.find((k) => supportedTypes.filter((value) => value.startsWith(k.meta.verificationMethod.type)))
     }
 
     if (!signingKey) throw Error(`key_not_found: No suitable signing key found for ${identifier.did}`)
