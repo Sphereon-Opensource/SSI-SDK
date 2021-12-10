@@ -185,7 +185,7 @@ export default (testContext: {
 
     afterAll(testContext.tearDown)
 
-    it('should add OP session', async () => {
+    it('should register OP session', async () => {
       const sessionId = 'new_session_id'
       const result = await agent.registerSessionForSiop({
         sessionId,
