@@ -27,7 +27,7 @@ For this plugin a DID resolver is also required. A DID resolver can be added to 
 ## Available functions
 
 * getDidSiopSession
-* addDidSiopSession
+* registerSessionForSiop
 * removeDidSiopSession
 * registerCustomApprovalForDidSiop
 * removeCustomApprovalForDidSiop
@@ -92,7 +92,7 @@ const identifier = {
   services: []
 }
 
-const opSession = await agent.addDidSiopSession({
+const opSession = await agent.registerSessionForSiop({
   sessionId,
   identifier,
 })

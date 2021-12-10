@@ -10,7 +10,7 @@ import {
   events,
   IAuthenticateWithSiopArgs,
   IAuthRequestDetails,
-  ICreateSiopSessionArgs,
+  IRegisterSiopSessionArgs,
   IDidAuthSiopOpAuthenticator,
   IGetSiopAuthenticationRequestDetailsArgs,
   IGetSiopAuthenticationRequestFromRpArgs,
@@ -30,7 +30,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   readonly schema = schema.IDidAuthSiopOpAuthenticator
   readonly methods: IDidAuthSiopOpAuthenticator = {
     getDidSiopSession: this.getSiopSession.bind(this),
-    addDidSiopSession: this.addSessionForSiop.bind(this),
+    registerSessionForSiop: this.registerSessionForSiop.bind(this),
     removeDidSiopSession: this.removeSessionForiop.bind(this),
     authenticateWithDidSiop: this.authenticateWithSiop.bind(this),
     getDidSiopAuthenticationRequestFromRP: this.getSiopAuthenticationRequestFromRP.bind(this),
@@ -62,9 +62,9 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     return this.sessions[args.sessionId]
   }
 
-  /** {@inheritDoc IDidAuthSiopOpAuthenticator.addSessionForSiop} */
-  private async addSessionForSiop(
-      args: ICreateSiopSessionArgs,
+  /** {@inheritDoc IDidAuthSiopOpAuthenticator.registerSessionForSiop} */
+  private async registerSessionForSiop(
+      args: IRegisterSiopSessionArgs,
       context: IRequiredContext
   ): Promise<OpSession> {
     const sessionId = args.sessionId || uuidv4()

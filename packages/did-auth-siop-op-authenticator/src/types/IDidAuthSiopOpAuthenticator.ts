@@ -17,7 +17,7 @@ import { OpSession } from '../session/OpSession';
 
 export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   getDidSiopSession(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
-  addDidSiopSession(args: ICreateSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
+  registerSessionForSiop(args: IRegisterSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
   removeDidSiopSession(args: IRemoveSiopSessionArgs, context: IRequiredContext): Promise<boolean>
   authenticateWithDidSiop(args: IAuthenticateWithSiopArgs, context: IRequiredContext): Promise<IResponse>
   getDidSiopAuthenticationRequestFromRP(
@@ -92,7 +92,7 @@ export interface IGetSiopSessionArgs {
   sessionId: string
 }
 
-export interface ICreateSiopSessionArgs {
+export interface IRegisterSiopSessionArgs {
   identifier: IIdentifier
   sessionId?: string
   expiresIn?: number

@@ -177,7 +177,7 @@ export default (testContext: {
       PresentationExchange.prototype.submissionFrom = mockedSubmissionFromMethod
       mockedSubmissionFromMethod.mockReturnValue(Promise.resolve({}))
 
-      await agent.addDidSiopSession({
+      await agent.registerSessionForSiop({
         sessionId,
         identifier,
       })
@@ -187,7 +187,7 @@ export default (testContext: {
 
     it('should add OP session', async () => {
       const sessionId = 'new_session_id'
-      const result = await agent.addDidSiopSession({
+      const result = await agent.registerSessionForSiop({
         sessionId,
         identifier,
       })
@@ -196,7 +196,7 @@ export default (testContext: {
     })
 
     it('should remove OP session', async () => {
-      await agent.addDidSiopSession({
+      await agent.registerSessionForSiop({
         sessionId: otherSessionId,
         identifier,
       })
