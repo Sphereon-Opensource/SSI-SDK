@@ -200,12 +200,12 @@ export default (testContext: {
         sessionId: otherSessionId,
         identifier,
       })
-      await agent.removeDidSiopSession({
+      await agent.removeSessionForSiop({
         sessionId: otherSessionId
       })
 
       await expect(
-          agent.getDidSiopSession({
+          agent.getSessionForSiop({
             sessionId: otherSessionId
           })
       ).rejects.toThrow(`No session found for id: ${otherSessionId}`)
@@ -214,7 +214,7 @@ export default (testContext: {
     if (!testContext.isRestTest) {
       it('should register custom approval function', async () => {
         await expect(
-            agent.registerCustomApprovalForDidSiop({
+            agent.registerCustomApprovalForSiop({
               key: "test_register",
               customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise.resolve()
             })
@@ -222,11 +222,11 @@ export default (testContext: {
       })
 
       it('should remove custom approval function', async () => {
-        await agent.registerCustomApprovalForDidSiop({
+        await agent.registerCustomApprovalForSiop({
           key: "test_delete",
           customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise.resolve()
         })
-        const result = await agent.removeCustomApprovalForDidSiop({
+        const result = await agent.removeCustomApprovalForSiop({
           key: "test_delete"
         })
 
@@ -235,7 +235,7 @@ export default (testContext: {
     }
 
     it('should authenticate with DID SIOP without custom approval', async () => {
-      const result = await agent.authenticateWithDidSiop({
+      const result = await agent.authenticateWithSiop({
         sessionId,
         stateId,
         redirectUrl
@@ -245,7 +245,7 @@ export default (testContext: {
     })
 
     it('should authenticate with DID SIOP with custom approval', async () => {
-      const result = await agent.authenticateWithDidSiop({
+      const result = await agent.authenticateWithSiop({
         sessionId,
         stateId,
         redirectUrl,
@@ -262,7 +262,7 @@ export default (testContext: {
     it('should not authenticate with DID SIOP with unknown custom approval key', async () => {
       const customApprovalKey = 'some_random_key'
       await expect(
-        agent.authenticateWithDidSiop({
+        agent.authenticateWithSiop({
           sessionId,
           stateId,
           redirectUrl,
@@ -274,7 +274,7 @@ export default (testContext: {
     it('should not authenticate with DID SIOP when custom approval fails', async () => {
       const denied = 'denied'
       await expect(
-        agent.authenticateWithDidSiop({
+        agent.authenticateWithSiop({
           sessionId,
           stateId,
           redirectUrl,
@@ -288,7 +288,7 @@ export default (testContext: {
     })
 
     it('should get authenticate request from RP', async () => {
-      const result = await agent.getDidSiopAuthenticationRequestFromRP({
+      const result = await agent.getSiopAuthenticationRequestFromRP({
         sessionId,
         stateId,
         redirectUrl,
@@ -298,7 +298,7 @@ export default (testContext: {
     })
 
     it('should get authentication details', async () => {
-      const result = await agent.getDidSiopAuthenticationRequestDetails({
+      const result = await agent.getSiopAuthenticationRequestDetails({
         sessionId,
         verifiedAuthenticationRequest: createAuthenticationResponseMockedResult,
         verifiableCredentials: [],
@@ -310,7 +310,7 @@ export default (testContext: {
     it('should verify authentication request URI with did methods supported provided', async () => {
       authenticationRequest.registration.did_methods_supported = [`did:${didMethod}:`]
 
-      const result = await agent.verifyDidSiopAuthenticationRequestURI({
+      const result = await agent.verifySiopAuthenticationRequestURI({
         sessionId,
         requestURI: authenticationRequest,
       })
@@ -321,7 +321,7 @@ export default (testContext: {
     it('should verify authentication request URI without did methods supported provided', async () => {
       authenticationRequest.registration.did_methods_supported = []
 
-      const result = await agent.verifyDidSiopAuthenticationRequestURI({
+      const result = await agent.verifySiopAuthenticationRequestURI({
         sessionId,
         requestURI: authenticationRequest,
       })
@@ -330,7 +330,7 @@ export default (testContext: {
     })
 
     it('should send authentication response', async () => {
-      const result = await agent.sendDidSiopAuthenticationResponse({
+      const result = await agent.sendSiopAuthenticationResponse({
         sessionId,
         verifiedAuthenticationRequest: createAuthenticationResponseMockedResult,
       })

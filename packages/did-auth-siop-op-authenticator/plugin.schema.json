@@ -178,6 +178,9 @@
         }
       },
       "methods": {
+        "getDidSiopSession": {},
+        "registerSessionForSiop": {},
+        "removeDidSiopSession": {},
         "authenticateWithDidSiop": {
           "description": "Authenticate using DID Auth SIOP",
           "arguments": {

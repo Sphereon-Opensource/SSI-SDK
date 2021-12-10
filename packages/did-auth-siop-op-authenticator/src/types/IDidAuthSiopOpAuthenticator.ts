@@ -16,22 +16,22 @@ import {
 import { OpSession } from '../session/OpSession';
 
 export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
-  getDidSiopSession(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
+  getSessionForSiop(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
   registerSessionForSiop(args: IRegisterSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
-  removeDidSiopSession(args: IRemoveSiopSessionArgs, context: IRequiredContext): Promise<boolean>
-  authenticateWithDidSiop(args: IAuthenticateWithSiopArgs, context: IRequiredContext): Promise<IResponse>
-  getDidSiopAuthenticationRequestFromRP(
+  removeSessionForSiop(args: IRemoveSiopSessionArgs, context: IRequiredContext): Promise<boolean>
+  authenticateWithSiop(args: IAuthenticateWithSiopArgs, context: IRequiredContext): Promise<IResponse>
+  getSiopAuthenticationRequestFromRP(
     args: IGetSiopAuthenticationRequestFromRpArgs,
     context: IRequiredContext
   ): Promise<ParsedAuthenticationRequestURI>
-  getDidSiopAuthenticationRequestDetails(args: IGetSiopAuthenticationRequestDetailsArgs, context: IRequiredContext): Promise<IAuthRequestDetails>
-  verifyDidSiopAuthenticationRequestURI(
+  getSiopAuthenticationRequestDetails(args: IGetSiopAuthenticationRequestDetailsArgs, context: IRequiredContext): Promise<IAuthRequestDetails>
+  verifySiopAuthenticationRequestURI(
     args: IVerifySiopAuthenticationRequestUriArgs,
     context: IRequiredContext
   ): Promise<VerifiedAuthenticationRequestWithJWT>
-  sendDidSiopAuthenticationResponse(args: ISendSiopAuthenticationResponseArgs, context: IRequiredContext): Promise<IResponse>
-  registerCustomApprovalForDidSiop(args: IRegisterCustomApprovalForSiopArgs, context: IRequiredContext): Promise<void>
-  removeCustomApprovalForDidSiop(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean>
+  sendSiopAuthenticationResponse(args: ISendSiopAuthenticationResponseArgs, context: IRequiredContext): Promise<IResponse>
+  registerCustomApprovalForSiop(args: IRegisterCustomApprovalForSiopArgs, context: IRequiredContext): Promise<void>
+  removeCustomApprovalForSiop(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean>
 }
 
 export interface IOpSessionArgs {

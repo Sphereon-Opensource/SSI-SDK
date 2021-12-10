@@ -26,12 +26,12 @@ For this plugin a DID resolver is also required. A DID resolver can be added to 
 
 ## Available functions
 
-* getDidSiopSession
+* getSessionForSiop
 * registerSessionForSiop
-* removeDidSiopSession
-* registerCustomApprovalForDidSiop
-* removeCustomApprovalForDidSiop
-* authenticateWithDidSiop
+* removeSessionForSiop
+* registerCustomApprovalForSiop
+* removeCustomApprovalForSiop
+* authenticateWithSiop
 * getSiopAuthenticationRequestFromRP
 * getSiopAuthenticationRequestDetails
 * verifySiopAuthenticationRequestURI
@@ -39,7 +39,7 @@ For this plugin a DID resolver is also required. A DID resolver can be added to 
 
 The following functions can also be used on the session object without the need of a session id first.
 
-* authenticateWithDidSiop
+* authenticateWithSiop
 * getSiopAuthenticationRequestFromRP
 * getSiopAuthenticationRequestDetails
 * verifySiopAuthenticationRequestURI
@@ -74,7 +74,7 @@ const agent = createAgent<IDidAuthSiopOpAuthenticator & IResolver>({
 
 ```typescript
 const sessionId = 'example_session_id'
-const opSession = await agent.getDidSiopSession({
+const opSession = await agent.getSessionForSiop({
   sessionId
 })
 ```
@@ -107,7 +107,7 @@ const opSession = await agent.registerSessionForSiop({
 
 ```typescript
 const sessionId = 'example_session_id'
-const opSession = await agent.removeDidSiopSession({
+const opSession = await agent.removeSessionForSiop({
   sessionId
 })
 ```
@@ -120,7 +120,7 @@ These functions can then be used as an optional parameter. It is also possible t
 These custom approval functions can also be provided at agent creation.
 
 ```typescript
-await agent.registerCustomApprovalForDidSiop({
+await agent.registerCustomApprovalForSiop({
   key: 'example_key',
   customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise.resolve()
 })
@@ -131,7 +131,7 @@ const sessionId = 'example_session_id'
 const stateId = 'example_state_id'
 const redirectUrl = 'https://example.com'
 const customApprovalKey = 'example_key'
-const authenticationResponse = await agent.authenticateWithDidSiop({
+const authenticationResponse = await agent.authenticateWithSiop({
   sessionId,
   stateId,
   redirectUrl,
@@ -140,7 +140,7 @@ const authenticationResponse = await agent.authenticateWithDidSiop({
 ```
 
 ```typescript
-const authenticationResponse = await agent.authenticateWithDidSiop({
+const authenticationResponse = await agent.authenticateWithSiop({
   sessionId,
   stateId,
   redirectUrl,
