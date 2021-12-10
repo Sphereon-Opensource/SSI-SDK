@@ -5,6 +5,7 @@ import { DIDService, hexToBase58, base58ToHex } from '@sphereon/lto-did-ts'
 import Debug from 'debug'
 import { ICreateIdentifierOpts, ILtoDidProviderOpts, IRequiredContext, IDidConnectionMode, IAddKeyOpts } from './types/lto-provider-types'
 import { UniRegistrar } from '@sphereon/did-uni-client'
+
 const debug = Debug('veramo:did-provider-lto')
 
 export class LtoDidProvider extends AbstractIdentifierProvider {
@@ -24,13 +25,7 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
   }
 
   async createIdentifier(
-    {
-      kms,
-      options,
-    }: {
-      kms?: string
-      options?: ICreateIdentifierOpts
-    },
+    { kms, options }: { kms?: string; options?: ICreateIdentifierOpts },
     context: IRequiredContext
   ): Promise<Omit<IIdentifier, 'provider'>> {
     if (this.isUniRegistrarMode()) {
