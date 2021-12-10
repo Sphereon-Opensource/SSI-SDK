@@ -58,12 +58,11 @@ describe('@sphereon/lto-did-provider', () => {
   } as IRequiredContext
 
   it('should create identifier', () => {
-    const restResponse = {
-      data: {
-        didIdentifier: 'TestDID',
-      },
-    }
-
+    // const restResponse = {
+    //   data: {
+    //     didIdentifier: 'TestDID',
+    //   },
+    // }
     // jest.spyOn(fetch, '').mockResolvedValueOnce(Promise.resolve(restResponse));
     const identifier = ltoDIDProvider.createIdentifier(
       {
@@ -73,7 +72,6 @@ describe('@sphereon/lto-did-provider', () => {
       },
       mockContext
     )
-
 
     expect.assertions(4)
     return assertExpectedIdentifier(identifier)
@@ -108,19 +106,18 @@ describe('@sphereon/lto-did-provider', () => {
 
     await expect(
       ltoDIDProvider.addKey(
-      {
-        identifier: {
-          ...IDENTIFIER,
-          services: [],
+        {
+          identifier: {
+            ...IDENTIFIER,
+            services: [],
+          },
+          key: LTO_KEY,
+          options: {
+            verificationMethod: LtoVerificationMethod.VerificationMethod,
+          },
         },
-        key: LTO_KEY,
-        options: {
-          verificationMethod: LtoVerificationMethod.VerificationMethod,
-        },
-      },
-      mockContext
-    )
-
+        mockContext
+      )
     ).resolves.toEqual(`did:lto:${address}#key`)
 
     // jest.resetAllMocks();
