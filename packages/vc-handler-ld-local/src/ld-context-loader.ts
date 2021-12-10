@@ -4,7 +4,7 @@
  * the w3c credential module.
  */
 import { isIterable, OrPromise, RecordLike } from '@veramo/utils'
-import { ContextDoc } from '@veramo/credential-ld'
+import { ContextDoc } from './types/types'
 
 export class LdContextLoader {
   private readonly contexts: Record<string, OrPromise<ContextDoc>>

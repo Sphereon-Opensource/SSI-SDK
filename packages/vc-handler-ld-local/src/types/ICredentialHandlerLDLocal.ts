@@ -3,9 +3,9 @@ import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-
 import {
   ICreateVerifiableCredentialLDArgs,
   ICreateVerifiablePresentationLDArgs,
-  IVerifyCredentialLDArgs,
-  IVerifyPresentationLDArgs,
-} from '@veramo/credential-ld'
+  IVerifyCredentialLDArgs, IVerifyPresentationLDArgs,
+} from './types'
+
 
 export interface ICredentialHandlerLDLocal extends IPluginMethodMap {
   createVerifiableCredentialLDLocal(args: ICreateVerifiableCredentialLDArgs, context: IRequiredContext): Promise<VerifiableCredentialSP>
