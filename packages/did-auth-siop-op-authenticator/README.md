@@ -79,7 +79,7 @@ const opSession = await agent.getSessionForSiop({
 })
 ```
 
-### Add an OP session:
+### Register an OP session:
 
 ```typescript
 const sessionId = 'example_session_id'
