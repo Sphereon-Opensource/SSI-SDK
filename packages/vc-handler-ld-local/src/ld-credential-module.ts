@@ -11,13 +11,18 @@ import {
 import Debug from 'debug'
 import { extendContextLoader, purposes } from '@digitalcredentials/jsonld-signatures'
 import * as vc from '@digitalcredentials/vc'
+import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
 import { LdContextLoader } from './ld-context-loader'
 import { LdSuiteLoader } from './ld-suite-loader'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
 
+
 export type RequiredAgentMethods = IResolver & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>
 
+const ProofPurpose = purposes.ProofPurpose
 const AssertionProofPurpose = purposes.AssertionProofPurpose
+const AuthenticationProofPurpose = purposes.AuthenticationProofPurpose
+// const CredentialIssuancePurpose = purposes.CredentialIssuancePurpose
 
 const debug = Debug('veramo:w3c:ld-credential-module-local')
 
@@ -46,8 +51,35 @@ export class LdCredentialModule {
       if (url.toLowerCase().startsWith('did:')) {
         const resolutionResult = await context.agent.resolveDid({ didUrl: url })
         const didDoc = resolutionResult.didDocument
+        if (!didDoc) {
+          console.log(`Could not fetch DID document with url: ${url}`)
+          return
+        }
 
-        if (!didDoc) return
+        if (url.indexOf('#') > 0 && didDoc['@context']) {
+          // Apparently we got a whole DID document, but we are looking for a verification method
+          // Todo extend to full objects in assertionMethod, authentication etc.
+          if (didDoc.verificationMethod) {
+            const verificationMethod = didDoc.verificationMethod.filter((vm) => vm.id === url)
+            if (verificationMethod.length == 1) {
+              // We have to provide a context
+              const contexts = this.ldSuiteLoader
+                .getAllSignatureSuites()
+                .filter(
+                  (x) =>
+                    x.getSupportedVerificationType() === verificationMethod[0].type || verificationMethod[0].type === 'Ed25519VerificationKey2018'
+                )
+                .map((value) => value.getContext())
+              const document = { ...verificationMethod[0], '@context': contexts }
+
+              return {
+                contextUrl: null,
+                documentUrl: url,
+                document,
+              }
+            }
+          }
+        }
 
         // currently Veramo LD suites can modify the resolution response for DIDs from
         // the document Loader. This allows to fix incompatibilities between DID Documents
@@ -100,17 +132,20 @@ export class LdCredentialModule {
     issuerDid: string,
     key: IKey,
     verificationMethodId: string,
+    purpose: typeof ProofPurpose = new CredentialIssuancePurpose(),
     context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiableCredentialSP> {
-    const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type)
-    const documentLoader = this.getDocumentLoader(context)
+    // fixme: We need to look at the verificationMethod in meta of the key, and then look up the suiteloader, as for instance ed25519 can be the 2018 or 2020 version
+    const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
+    const documentLoader = this.getDocumentLoader(context, true)
 
     // some suites can modify the incoming credential (e.g. add required contexts)W
     suite.preSigningCredModification(credential)
 
     return await vc.issue({
       credential,
-      suite: suite.getSuiteForSigning(key, issuerDid, verificationMethodId, context),
+      purpose,
+      suite: await suite.getSuiteForSigning(key, issuerDid, verificationMethodId, context),
       documentLoader,
       compactProof: false,
     })
@@ -123,10 +158,11 @@ export class LdCredentialModule {
     verificationMethodId: string,
     challenge: string | undefined,
     domain: string | undefined,
+    purpose: typeof ProofPurpose = (!challenge && !domain) ? new AssertionProofPurpose() : new AuthenticationProofPurpose( {domain, challenge}),
     context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiablePresentationSP> {
-    const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type)
-    const documentLoader = this.getDocumentLoader(context)
+    const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
+    const documentLoader = this.getDocumentLoader(context, true)
 
     suite.preSigningPresModification(presentation)
 
@@ -136,7 +172,7 @@ export class LdCredentialModule {
       challenge,
       domain,
       documentLoader,
-      purpose: new AssertionProofPurpose(),
+      purpose,
       compactProof: false,
     })
   }
@@ -144,13 +180,16 @@ export class LdCredentialModule {
   async verifyCredential(
     credential: VerifiableCredential,
     context: IAgentContext<IResolver>,
-    fetchRemoteContexts: boolean = false
+    fetchRemoteContexts: boolean = false,
+    purpose: typeof ProofPurpose = new AssertionProofPurpose()
   ): Promise<boolean> {
+    const verificationSuites = this.getAllVerificationSuites()
+    this.ldSuiteLoader.getAllSignatureSuites().forEach(suite => suite.preVerificationCredModification(credential) )
     const result = await vc.verifyCredential({
       credential,
-      suite: this.ldSuiteLoader.getAllSignatureSuites().map((x) => x.getSuiteForVerification()),
+      suite: verificationSuites,
       documentLoader: this.getDocumentLoader(context, fetchRemoteContexts),
-      purpose: new AssertionProofPurpose(),
+      purpose: purpose,
       compactProof: false,
     })
 
@@ -164,22 +203,28 @@ export class LdCredentialModule {
     throw Error('Error verifying LD Verifiable Credential')
   }
 
+  private getAllVerificationSuites() {
+    return this.ldSuiteLoader.getAllSignatureSuites().map((x) => x.getSuiteForVerification())
+  }
+
   async verifyPresentation(
     presentation: VerifiablePresentation,
     challenge: string | undefined,
     domain: string | undefined,
     context: IAgentContext<IResolver>,
-    fetchRemoteContexts: boolean = false
+    fetchRemoteContexts: boolean = false,
+    presentationPurpose: typeof ProofPurpose = (!challenge && !domain) ? new AssertionProofPurpose() : new AuthenticationProofPurpose(domain, challenge),
+  //AssertionProofPurpose()
   ): Promise<boolean> {
     // console.log(JSON.stringify(presentation, null, 2))
 
     const result = await vc.verify({
       presentation,
-      suite: this.ldSuiteLoader.getAllSignatureSuites().map((x) => x.getSuiteForVerification()),
+      suite: this.getAllVerificationSuites(),
       documentLoader: this.getDocumentLoader(context, fetchRemoteContexts),
       challenge,
       domain,
-      purpose: new AssertionProofPurpose(),
+      presentationPurpose,
       compactProof: false,
     })
 
