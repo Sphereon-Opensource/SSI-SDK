@@ -27,6 +27,7 @@ export enum SignatureTypes {
 }
 
 export enum ProofPurpose {
+  verificationMethod = 'verificationMethod',
   assertionMethod = 'assertionMethod',
   authentication = 'authentication',
   keyAgreement = 'keyAgreement',
