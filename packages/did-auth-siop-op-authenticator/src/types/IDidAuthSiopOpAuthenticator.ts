@@ -46,7 +46,6 @@ export interface IAuthenticateWithSiopArgs {
   sessionId: string
   stateId: string
   redirectUrl: string
-  didMethod: string
   customApproval?: ((verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise<void>) | string
 }
 
@@ -65,7 +64,6 @@ export interface IGetSiopAuthenticationRequestDetailsArgs {
 export interface IVerifySiopAuthenticationRequestUriArgs {
   sessionId: string
   requestURI: ParsedAuthenticationRequestURI
-  didMethod?: string
 }
 
 export interface ISendSiopAuthenticationResponseArgs {
@@ -130,7 +128,6 @@ export interface IOpsGetSiopAuthenticationRequestDetailsArgs {
 
 export interface IOpsVerifySiopAuthenticationRequestUriArgs {
   requestURI: ParsedAuthenticationRequestURI
-  didMethod?: string
 }
 
 export interface IOpsSendSiopAuthenticationResponseArgs {

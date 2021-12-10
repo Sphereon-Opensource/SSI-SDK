@@ -125,13 +125,11 @@ await agent.registerCustomApprovalForDidSiop({
 const sessionId = 'example_session_id'
 const stateId = 'example_state_id'
 const redirectUrl = 'https://example.com'
-const didMethod = 'ethr'
 const customApprovalKey = 'example_key'
 const authenticationResponse = await agent.authenticateWithDidSiop({
   sessionId,
   stateId,
   redirectUrl,
-  didMethod,
   customApproval: customApprovalKey,
 })
 ```
@@ -141,7 +139,6 @@ const authenticationResponse = await agent.authenticateWithDidSiop({
   sessionId,
   stateId,
   redirectUrl,
-  didMethod,
   customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
     return Promise.resolve()
   },

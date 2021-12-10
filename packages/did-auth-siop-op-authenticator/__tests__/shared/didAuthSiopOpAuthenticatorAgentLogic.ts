@@ -238,8 +238,7 @@ export default (testContext: {
       const result = await agent.authenticateWithDidSiop({
         sessionId,
         stateId,
-        redirectUrl,
-        didMethod
+        redirectUrl
       })
 
       expect(result.status).toEqual(200)
@@ -250,7 +249,6 @@ export default (testContext: {
         sessionId,
         stateId,
         redirectUrl,
-        didMethod,
         customApproval: testContext.isRestTest
           ? 'success'
           : (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
@@ -268,7 +266,6 @@ export default (testContext: {
           sessionId,
           stateId,
           redirectUrl,
-          didMethod,
           customApproval: customApprovalKey,
         })
       ).rejects.toThrow(`Custom approval not found for key: ${customApprovalKey}`)
@@ -281,7 +278,6 @@ export default (testContext: {
           sessionId,
           stateId,
           redirectUrl,
-          didMethod,
           customApproval: testContext.isRestTest
             ? 'failure'
             : (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
@@ -328,7 +324,6 @@ export default (testContext: {
       const result = await agent.verifyDidSiopAuthenticationRequestURI({
         sessionId,
         requestURI: authenticationRequest,
-        didMethod,
       })
 
       expect(result).toEqual(authenticationVerificationMockedResult)

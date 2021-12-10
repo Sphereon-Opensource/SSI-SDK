@@ -30,7 +30,6 @@ const fetch = require('cross-fetch')
 export class OpSession {
   public readonly id: string
   public readonly identifier: IIdentifier
-  public readonly didMethod: string
   public readonly verificationMethodSection: DIDDocumentSection
   public readonly expiresIn: number | undefined
   public readonly context: IRequiredContext
@@ -39,7 +38,6 @@ export class OpSession {
   constructor(options: IOpSessionArgs) {
     this.id = options.sessionId
     this.identifier = options.identifier
-    this.didMethod = parseDid(this.identifier.did).method
     this.expiresIn = options.expiresIn
     this.verificationMethodSection = options.verificationMethodSection || 'authentication'
     this.context = options.context
@@ -49,7 +47,7 @@ export class OpSession {
     this.op = await this.createOp(
         this.identifier,
         this.verificationMethodSection,
-        this.didMethod,
+        parseDid(this.identifier.did).method,
         this.expiresIn || 6000,
         this.context
     )
@@ -60,7 +58,7 @@ export class OpSession {
   ): Promise<Response> {
     return this.getSiopAuthenticationRequestFromRP({ stateId: args.stateId, redirectUrl: args.redirectUrl })
       .then((authenticationRequest: ParsedAuthenticationRequestURI) =>
-          this.verifySiopAuthenticationRequestURI({ requestURI: authenticationRequest, didMethod: this.didMethod })
+          this.verifySiopAuthenticationRequestURI({ requestURI: authenticationRequest })
       )
       .then((verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
         if (args.customApproval !== undefined) {
@@ -115,9 +113,9 @@ export class OpSession {
     let didMethods: string[] = []
     if (didMethodsSupported && didMethodsSupported.length) {
       didMethods = didMethodsSupported.map((value: string) => value.split(':')[1])
-    } else if (args.didMethod) {
+    } else {
       // RP mentioned no didMethods, meaning we have to let it up to the RP to see whether it will work
-      didMethods = [args.didMethod]
+      didMethods = [parseDid(this.identifier.did).method]
     }
 
     const options: VerifyAuthenticationRequestOpts = {
