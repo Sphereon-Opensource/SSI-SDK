@@ -1,6 +1,7 @@
 import { schema } from '../index'
 import { IAgentPlugin } from '@veramo/core'
 import { OpSession } from '../session/OpSession';
+import { v4 as uuidv4 } from 'uuid';
 import {
   ParsedAuthenticationRequestURI,
   VerifiedAuthenticationRequestWithJWT,
@@ -53,6 +54,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       args: IGetSiopSessionArgs,
       context: IRequiredContext
   ): Promise<OpSession> {
+    // TODO add cleaning up sessions https://sphereon.atlassian.net/browse/MYC-143
     if (this.sessions[args.sessionId] === undefined) {
       return Promise.reject(new Error(`No session found for id: ${args.sessionId}`))
     }
@@ -65,11 +67,12 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       args: ICreateSiopSessionArgs,
       context: IRequiredContext
   ): Promise<OpSession> {
-    if (this.sessions[args.sessionId] !== undefined) {
+    const sessionId = args.sessionId || uuidv4()
+
+    if (this.sessions[sessionId] !== undefined) {
       return Promise.reject(new Error(`Session with id: ${args.sessionId} already present`))
     }
 
-    const sessionId = args.sessionId
     const session = new OpSession({sessionId, identifier: args.identifier, expiresIn: args.expiresIn, context})
     await session.init()
     this.sessions[sessionId] = session

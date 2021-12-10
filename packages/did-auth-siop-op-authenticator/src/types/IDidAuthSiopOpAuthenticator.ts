@@ -93,8 +93,8 @@ export interface IGetSiopSessionArgs {
 }
 
 export interface ICreateSiopSessionArgs {
-  sessionId: string
   identifier: IIdentifier
+  sessionId?: string
   expiresIn?: number
 }
 
