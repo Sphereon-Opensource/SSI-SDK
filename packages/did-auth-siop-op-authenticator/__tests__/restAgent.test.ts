@@ -8,6 +8,10 @@ import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 import { DidAuthSiopOpAuthenticator } from '../src/agent/DidAuthSiopOpAuthenticator'
 import { IDidAuthSiopOpAuthenticator } from '../src/types/IDidAuthSiopOpAuthenticator'
+import { Resolver } from 'did-resolver'
+import { getDidKeyResolver } from '@veramo/did-provider-key'
+import { DIDResolverPlugin } from '@veramo/did-resolver'
+import { getUniResolver } from '@sphereon/did-uni-client'
 import didAuthSiopOpAuthenticatorAgentLogic from './shared/didAuthSiopOpAuthenticatorAgentLogic'
 
 jest.setTimeout(30000)
@@ -22,6 +26,13 @@ const getAgent = (options?: IAgentOptions) =>
     ...options,
     plugins: [
       new DidAuthSiopOpAuthenticator(),
+      new DIDResolverPlugin({
+        resolver: new Resolver({
+          ...getDidKeyResolver(),
+          ...getUniResolver('lto', { resolveUrl: 'https://uniresolver.test.sphereon.io/1.0/identifiers' }),
+          ...getUniResolver('factom', { resolveUrl: 'https://uniresolver.test.sphereon.io/1.0/identifiers' }),
+        }),
+      }),
       new AgentRestClient({
         url: 'http://localhost:' + port + basePath,
         enabledMethods: serverAgent.availableMethods(),

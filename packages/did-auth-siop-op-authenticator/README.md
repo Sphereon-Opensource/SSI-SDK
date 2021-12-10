@@ -51,14 +51,19 @@ The following functions can also be used on the session object without the need 
 
 ```typescript
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk-did-auth-siop-authenticator'
+import { Resolver } from 'did-resolver'
+import { getDidKeyResolver } from '@veramo/did-provider-key'
+import { DIDResolverPlugin } from '@veramo/did-resolver'
+import { getUniResolver } from '@sphereon/did-uni-client'
 
 const agent = createAgent<IDidAuthSiopOpAuthenticator & IResolver>({
   plugins: [
     new DidAuthSiopOpAuthenticator(),
     new DIDResolverPlugin({
       resolver: new Resolver({
-        ...ethrDidResolver({ infuraProjectId: INFURA_PROJECT_ID }),
-        ...webDidResolver(),
+        ...getDidKeyResolver(),
+        ...getUniResolver('lto', { resolveUrl: 'https://uniresolver.test.sphereon.io/1.0/identifiers' }),
+        ...getUniResolver('factom', { resolveUrl: 'https://uniresolver.test.sphereon.io/1.0/identifiers' }),
       }),
     }),
   ],
