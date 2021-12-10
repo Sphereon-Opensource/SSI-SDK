@@ -1,15 +1,20 @@
 import 'cross-fetch/polyfill'
-import { IAgent } from '@veramo/core'
+import { IAgent, IAgentOptions } from '@veramo/core'
 import express from 'express'
 import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import { LdDefaultContexts, VeramoEd25519Signature2018 } from '@veramo/credential-ld'
+import vcApiIssuerAgentLogic from './shared/vcApiIssuerAgentLogic'
+import { ICredentialHandlerLDLocal } from '../types/ICredentialHandlerLDLocal'
+import { CredentialHandlerLDLocal } from '../agent/CredentialHandlerLDLocal'
+import { LdDefaultContexts } from '../ld-default-contexts'
+import { SphereonEd25519Signature2018 } from '../suites/Ed25519Signature2018'
+import { SphereonEd25519Signature2020 } from '../suites/Ed25519Signature2020'
 
 jest.setTimeout(30000)
 
-const port = 3002
+const port = 4002
 const basePath = '/agent'
 let serverAgent: IAgent
 let restServer: Server
@@ -19,28 +24,10 @@ if (!process.env.VC_HTTP_API_AUTH_TOKEN) {
   throw new Error('Authorization token must be provided')
 }
 
-/*
-const getAgent = (options?: IAgentOptions) =>
-  createAgent<ICredentialHandlerLDLocal>({
-    ...options,
-    plugins: [
-      new CredentialHandlerLDLocal({
-        issueUrl: 'https://vc-api.sphereon.io/services/issue/credentials',
-        authorizationToken: process.env.VC_HTTP_API_AUTH_TOKEN!,
-      }),
-      new AgentRestClient({
-        url: 'http://localhost:' + port + basePath,
-        enabledMethods: serverAgent.availableMethods(),
-        schema: serverAgent.getSchema(),
-      }),
-    ],
-  })
-*/
-
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/vc-handler-ld-local/agent.yml');
-  (config.agent.$args[0].plugins[0].$args[0].contextMaps = [LdDefaultContexts /*, customContext*/]),
-    (config.agent.$args[0].plugins[0].$args[0].suites = [new VeramoEd25519Signature2018()])
+  const config = getConfig('packages/vc-handler-ld-local/agent.yml')
+  ;(config.agent.$args[0].plugins[0].$args[0].contextMaps = [LdDefaultContexts /*, customContext*/]),
+    (config.agent.$args[0].plugins[0].$args[0].suites = [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()])
   const { agent } = createObjects(config, { agent: '/agent' })
   serverAgent = agent
 
@@ -62,14 +49,12 @@ const setup = async (): Promise<boolean> => {
 }
 
 const tearDown = async (): Promise<boolean> => {
-  restServer.close()
+  restServer?.close()
   return true
 }
 
-const testContext = { /*getAgent, */ setup, tearDown }
+const testContext = { setup, tearDown }
 
 describe('REST integration tests', () => {
-  xit('handler', () => {
-    // vcApiIssuerAgentLogic(testContext)
-  })
+  vcApiIssuerAgentLogic(testContext)
 })

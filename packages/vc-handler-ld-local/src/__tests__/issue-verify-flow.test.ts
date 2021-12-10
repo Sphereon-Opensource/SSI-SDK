@@ -1,6 +1,5 @@
 import { CredentialHandlerLDLocal } from '../agent/CredentialHandlerLDLocal'
 import { Resolver } from 'did-resolver'
-import { ContextDoc, LdDefaultContexts, VeramoEd25519Signature2018 } from '@veramo/credential-ld'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { createAgent, CredentialPayload, IDIDManager, IIdentifier, IKeyManager, IResolver, PresentationPayload, TAgent } from '@veramo/core'
 import { KeyManagementSystem } from '@veramo/kms-local'
@@ -12,6 +11,13 @@ import { getUniResolver } from '@sphereon/did-uni-client'
 import { LtoDidProvider } from '../../../lto-did-provider/src/lto-did-provider'
 import { IDidConnectionMode } from '../../../lto-did-provider/src/types/lto-provider-types'
 import { ICredentialHandlerLDLocal, MethodNames } from '../types/ICredentialHandlerLDLocal'
+import { SphereonEd25519Signature2018 } from '../suites/Ed25519Signature2018'
+import { ContextDoc } from '../types/types'
+import { LdDefaultContexts } from '../ld-default-contexts'
+
+import { purposes } from '@digitalcredentials/jsonld-signatures'
+import { SphereonEd25519Signature2020 } from '../suites/Ed25519Signature2020'
+const ControllerProofPurpose = purposes.ControllerProofPurpose
 
 const customContext: Record<string, ContextDoc> = {
   'custom:example.context': {
@@ -53,12 +59,13 @@ describe('credential-LD full flow', () => {
           resolver: new Resolver({
             ...getDidKeyResolver(),
             ...getUniResolver('lto', { resolveUrl: 'https://uniresolver.test.sphereon.io/1.0/identifiers' }),
+            ...getUniResolver('factom', { resolveUrl: 'https://uniresolver.test.sphereon.io/1.0/identifiers' }),
           }),
         }),
         new CredentialIssuer(),
         new CredentialHandlerLDLocal({
           contextMaps: [LdDefaultContexts /*, customContext*/],
-          suites: [new VeramoEd25519Signature2018()],
+          suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
           bindingOverrides: new Map([
             // Bindings to test overrides of credential-ld plugin methods
             ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
@@ -105,36 +112,75 @@ describe('credential-LD full flow', () => {
     })
 
     expect(verifiableCredential).toBeDefined()
+    console.log(verifiableCredential)
 
     const verifiedCredential = await agent.verifyCredentialLDLocal({
       credential: verifiableCredential,
-      fetchRemoteContexts: false,
+      fetchRemoteContexts: true,
     })
 
     expect(verifiedCredential).toBe(true)
 
     const presentationPayload: PresentationPayload = {
-      holder: didKeyIdentifier.did,
+      holder: didLtoIdentifier.did,
 
       verifiableCredential: [verifiableCredential],
     }
     const verifiablePresentation = await agent.createVerifiablePresentationLDLocal({
-      keyRef: didKeyIdentifier.controllerKeyId,
+      keyRef: didLtoIdentifier.controllerKeyId,
       presentation: presentationPayload,
-
-      challenge: 'test',
-      domain: 'test',
+      // We are overriding the purpose since the DID in this test does not have an authentication proof purpose
+      purpose: new ControllerProofPurpose({ term: 'verificationMethod'}),
     })
 
     expect(verifiablePresentation).toBeDefined()
 
-    const verifiedPresentation = await agent.verifyPresentation({
+    const verifiedPresentation = await agent.verifyPresentationLDLocal({
       presentation: verifiablePresentation,
-      domain: 'test',
-      challenge: 'test',
-      fetchRemoteContexts: false,
+      fetchRemoteContexts: true,
+      // We are overriding the purpose since the DID in this test does not have an authentication proof purpose
+      presentationPurpose: new ControllerProofPurpose({ term: 'verificationMethod'})
+
     })
 
     expect(verifiedPresentation).toBe(true)
+  })
+
+  // Does not work currently as the DID had a Ed25519VerificationKey2020 and the proof is 2018
+  xit('Should verify issued credential', async () => {
+    const credential = {
+      '@context': ['https://www.w3.org/2018/credentials/v1', 'https://sphereon-opensource.github.io/vc-contexts/myc/bedrijfsinformatie-v1.jsonld'],
+      issuer: 'did:factom:9d612c949afee208f664e81dc16bdb4f4eff26776ebca2e94a9f06a40d68626d',
+      issuanceDate: '2021-12-02T02:55:39.608Z',
+      credentialSubject: {
+        Bedrijfsinformatie: {
+          id: 'did:lto:3MrjGusMnFspFfyVctYg3cJaNKGnaAhMZXM',
+          naam: 'Test Bedrijf',
+          kvkNummer: '1234',
+          rechtsvorm: '1234',
+          straatnaam: 'Kerkstraat',
+          huisnummer: '11',
+          postcode: '1111 AB',
+          plaats: 'Voorbeeld',
+          bagId: '12132',
+          datumAkteOprichting: '2020-12-30',
+        },
+      },
+      type: ['VerifiableCredential', 'Bedrijfsinformatie'],
+      proof: {
+        type: 'Ed25519Signature2018',
+        created: '2021-12-02T02:55:39Z',
+        jws: 'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..SsE_Z6iAktFvsiB1FRJT7lGMnCjHjZ6kvjmXLjJWFZG6trMlm1IJtwvGm1huRgFKfjyiB2LK3166eSboWqwPCg',
+        proofPurpose: 'assertionMethod',
+        verificationMethod: 'did:factom:9d612c949afee208f664e81dc16bdb4f4eff26776ebca2e94a9f06a40d68626d#key-0',
+      },
+    }
+
+    const verifiedCredential = await agent.verifyCredentialLDLocal({
+      credential,
+      fetchRemoteContexts: true,
+    })
+
+    expect(verifiedCredential).toBe(true)
   })
 })

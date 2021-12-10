@@ -13,7 +13,7 @@ import * as path from 'path'
 
 jest.setTimeout(30000)
 
-const port = 3003
+const port = 30078
 const basePath = '/agent'
 let serverAgent: IAgent
 let restServer: Server
@@ -56,7 +56,7 @@ const setup = async (): Promise<boolean> => {
 }
 
 const tearDown = async (): Promise<boolean> => {
-  restServer.close()
+  restServer?.close()
   return true
 }
 

@@ -28,8 +28,7 @@ const tearDown = async (): Promise<boolean> => {
   return true
 }
 
-const getAgent = () => agent
-const testContext = { getAgent, setup, tearDown }
+const testContext = { setup, tearDown }
 
 describe('Local integration tests', () => {
   vcApiIssuerAgentLogic(testContext)
