@@ -11,6 +11,7 @@ import {
   IMnemonicInfoResult,
   IMnemonicInfoStoreArgs,
   IMnemonicVerificationArgs,
+  IPartialMnemonicVerificationArgs,
   ISeedGeneratorArgs,
   schema,
 } from '../index';
@@ -24,6 +25,7 @@ export class MnemonicInfoGenerator implements IAgentPlugin {
     generateMnemonic: this.generateMnemonic.bind(this),
     generateSeed: this.generateSeed.bind(this),
     verifyMnemonic: this.verifyMnemonic.bind(this),
+    verifyPartialMnemonic: this.verifyPartialMnemonic.bind(this),
     saveMnemonicInfo: this.saveMnemonicInfo.bind(this),
     getMnemonicInfo: this.getMnemonicInfo.bind(this),
     deleteMnemonicInfo: this.deleteMnemonicInfo.bind(this),
@@ -46,7 +48,15 @@ export class MnemonicInfoGenerator implements IAgentPlugin {
   private async verifyMnemonic(args: IMnemonicVerificationArgs): Promise<IMnemonicInfoResult> {
     const mnemonicInfo = await this.getMnemonicInfo({ id: args.id, hash: args.hash });
     if (mnemonicInfo?.mnemonic) {
-      return { succeeded: JSON.stringify(mnemonicInfo.mnemonic) === JSON.stringify(args.wordlist) };
+      return { succeeded: mnemonicInfo.mnemonic.join(' ') === args.wordList?.join(' ') };
+    }
+    throw new Error('Mnemonic not found');
+  }
+
+  private async verifyPartialMnemonic(args: IPartialMnemonicVerificationArgs): Promise<IMnemonicInfoResult> {
+    const mnemonicInfo = await this.getMnemonicInfo({id: args.id, hash: args.hash});
+    if (mnemonicInfo?.mnemonic) {
+      return { succeeded: args.indexedWordList.every(indexedWord => mnemonicInfo.mnemonic?.indexOf(indexedWord[1]) === indexedWord[0]) };
     }
     throw new Error('Mnemonic not found');
   }

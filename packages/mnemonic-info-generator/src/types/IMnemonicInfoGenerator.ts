@@ -3,6 +3,7 @@ import { IPluginMethodMap } from '@veramo/core';
 export interface IMnemonicInfoGenerator extends IPluginMethodMap {
   generateMnemonic(args: IMnemonicGeneratorArgs): Promise<IMnemonicInfoResult>;
   verifyMnemonic(args: IMnemonicVerificationArgs): Promise<IMnemonicInfoResult>;
+  verifyPartialMnemonic(args: IPartialMnemonicVerificationArgs): Promise<IMnemonicInfoResult>;
   generateSeed(args: ISeedGeneratorArgs): Promise<IMnemonicInfoResult>;
   saveMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoResult>;
   getMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoResult>;
@@ -24,13 +25,25 @@ export interface IMnemonicGeneratorArgs {
 /**
  * @param { string } id - Optional user defined id for the mnemonic
  * @param { string } hash - Optional sha256 hash of the mnemonic
- * @param { string[] } wordlist - Partial list of words contained in the mnemonic.
- * It must be in the same order as in the mnemonic.
+ * @param { string[] } wordList - List containing all the words of the mnemonic in order.
  */
 export interface IMnemonicVerificationArgs {
   id?: string;
   hash?: string;
-  wordlist: string[];
+  wordList: string[];
+}
+
+/**
+ * @param { string } id - Optional user defined id for the mnemonic
+ * @param { string } hash - Optional sha256 hash of the mnemonic
+ * @param { number, string][] } indexedWordList - List partially containing the words
+ * with their indexes corresponding the position in which they appear in the mnemonic.
+ * It must be in the same order as in the mnemonic.
+ */
+export interface IPartialMnemonicVerificationArgs {
+  id?: string;
+  hash?: string;
+  indexedWordList: [number, string][];
 }
 
 /**

@@ -21,13 +21,13 @@ export default (testContext: {
     afterAll(testContext.tearDown);
 
     beforeEach(async () => {
-      mnemonicObj = await agent.generateMnemonic({ bits: 256, id: 'test id', shouldSave: true });
+      mnemonicObj = await agent.generateMnemonic({ bits: 256, id: 'test id', shouldPersist: true });
     });
 
     afterEach(async () => await agent.deleteMnemonicInfo({ hash: mnemonicObj.hash }));
 
     it('should return only the mnemonic, without saving anything into the database', async () => {
-      const mnemonicInfo = await agent.generateMnemonic({ bits: 256, shouldSave: false });
+      const mnemonicInfo = await agent.generateMnemonic({ bits: 256, shouldPersist: false });
       expect(mnemonicInfo).toEqual({ mnemonic: mnemonicInfo.mnemonic });
       const result = await agent.getMnemonicInfo({ hash: mnemonicInfo.hash });
       expect(result).toEqual({});
@@ -81,51 +81,76 @@ export default (testContext: {
       expect(await agent.getMnemonicInfo({ id: mnemonicObj.id })).toEqual(mnemonicObj);
     });
 
-    it('should return false if the words appear in the same order in mnemonic but the number of words is different', async () => {
-      const mnemonic = mnemonicObj.mnemonic;
-      const result = await agent.verifyMnemonic({
-        id: mnemonicObj.id,
-        wordlist: [mnemonic![1], mnemonic![3], mnemonic![7], mnemonic![9], mnemonic![11]],
-      });
-      expect(result).toEqual({ succeeded: false });
-    });
-
-    it('should return false if the words not appear in the same order in mnemonic and the number of words is different', async () => {
-      const mnemonic = mnemonicObj.mnemonic;
-      const result = await agent.verifyMnemonic({
-        hash: mnemonicObj.hash,
-        wordlist: [mnemonic![1], mnemonic![3], mnemonic![0], mnemonic![9], mnemonic![11]],
-      });
-      expect(result).toEqual({ succeeded: false });
-    });
-
-    it('should return true if the number and order of the words is the same', async () => {
+    it('should match the mnemonic if the words and order are the same', async () => {
       const mnemonic = mnemonicObj.mnemonic as string[];
-      const result = await agent.verifyMnemonic({
+      await expect(agent.verifyMnemonic({
         hash: mnemonicObj.hash,
-        wordlist: mnemonic,
-      });
-      expect(result).toEqual({ succeeded: true });
+        wordList: [...mnemonic]
+      })).resolves.toEqual({ succeeded: true });
     });
 
-    it('should return true if the number of words is different and order of the words is the same', async () => {
+    it('should not match the mnemonic if the words or order are not the same', async () => {
       const mnemonic = mnemonicObj.mnemonic as string[];
-      mnemonic.push(mnemonic[0]);
-      const result = await agent.verifyMnemonic({
+      mnemonic[0] = 'asdfasdfasdf';
+      await expect(agent.verifyMnemonic({
         hash: mnemonicObj.hash,
-        wordlist: mnemonic,
-      });
-      expect(result).toEqual({ succeeded: false });
+        wordList: [...mnemonic]
+      })).resolves.toEqual({ succeeded: false })
     });
 
     it('should throw exception if mnemonic does not exist', async () => {
-      const mnemonic = mnemonicObj.mnemonic;
+      const mnemonic = mnemonicObj.mnemonic as string[];
       await expect(() =>
         agent.verifyMnemonic({
           hash: 'non-existent',
-          wordlist: [mnemonic![1], mnemonic![3], mnemonic![0], mnemonic![9], mnemonic![11]],
+          wordList: [mnemonic[1], mnemonic[3], mnemonic[0], mnemonic[9], mnemonic[11]],
         })
       ).rejects.toThrowError('Mnemonic not found');
+    });
+
+    it('should match the mnemonic if the index of the words match', async () => {
+      const mnemonic = mnemonicObj.mnemonic as string[];
+      const indexedWordList: [number, string][] = [
+        [0, mnemonic[0]],
+        [1, mnemonic[1]],
+        [5, mnemonic[5]],
+        [7, mnemonic[7]],
+        [11, mnemonic[11]],
+      ];
+      await expect(agent.verifyPartialMnemonic({
+        hash: mnemonicObj.hash,
+        indexedWordList
+      })).resolves.toEqual({ succeeded: true });
+    });
+
+    it('should not match the mnemonic if the index of the words do not match', async () => {
+      const mnemonic = mnemonicObj.mnemonic as string[];
+      const indexedWordList: [number, string][] = [
+        [0, mnemonic[0]],
+        [1, mnemonic[1]],
+        [5, mnemonic[9]],
+        [7, mnemonic[7]],
+        [11, mnemonic[11]],
+      ];
+      await expect(agent.verifyPartialMnemonic({
+        hash: mnemonicObj.hash,
+        indexedWordList
+      })).resolves.toEqual({ succeeded: false });
+    });
+
+    it('should throw an exception if the mnemonic does not exist in the database', async () => {
+      const mnemonic = mnemonicObj.mnemonic as string[];
+      const indexedWordList: [number, string][] = [
+        [0, mnemonic[0]],
+        [1, mnemonic[1]],
+        [5, mnemonic[5]],
+        [7, mnemonic[7]],
+        [11, mnemonic[11]],
+      ];
+      await expect(() => agent.verifyPartialMnemonic({
+        hash: 'non-existent',
+        indexedWordList
+      })).rejects.toThrowError('Mnemonic not found')
     });
   });
 };
