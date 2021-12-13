@@ -2452,13 +2452,13 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sphereon/did-auth-siop@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.2.2.tgz#e087bcdd395d8dc5138fce91edaa660257905c52"
-  integrity sha512-PpVO6eVHMzQ4Tu2HNRk8Pqv3i1WFjd6tUE1GOI9glVc4vxMbfNXj9md/HrelkaGq/CPnEtGEfr8pob++qzCH5Q==
+"@sphereon/did-auth-siop@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.2.3.tgz#30f7e2aca2b0a0a70c0e220ce23184d8668c8ab2"
+  integrity sha512-3W5u0FonL/AdiKsAOZ5DAU9/Vt6LWma9yzWn/kK2Q2fHv8NA240+vuhn4r/Nth3h7dgSzJX6rndWElOqeJ+7+Q==
   dependencies:
     "@sphereon/did-uni-client" "^0.3.3"
-    "@sphereon/pe-js" "^0.5.0"
+    "@sphereon/pe-js" "^0.5.1"
     "@sphereon/pe-models" "^0.0.5"
     bs58 "^4.0.1"
     cross-fetch "^3.1.4"
@@ -2497,10 +2497,10 @@
     lto-api "^0.5.14"
     oas3-tools "^2.2.3"
 
-"@sphereon/pe-js@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@sphereon/pe-js/-/pe-js-0.5.0.tgz#5069824a4ea08b9c3a98098c79fd8c4e37338f17"
-  integrity sha512-4MzvHkT0pzuiozoAvI+3Xyk2HeJrAxux6NBsH0pYTeE5EglZlvzmh7W/SCd84iIrpYCTcw1u04cJ9g5er6cFdA==
+"@sphereon/pe-js@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@sphereon/pe-js/-/pe-js-0.5.1.tgz#37feef3cd29d3595319f1f9fe91d7b6e643a15d3"
+  integrity sha512-dFr5LJ5VjnHJBYuEmHNoCMs1dyzqisbwdUl9HW5avQO+G1KvzfPGwOPl5b30+eq/40USXimJZvVrRit34tSVXA==
   dependencies:
     "@sphereon/pe-models" "0.0.5"
     ajv "^8.6.3"
@@ -11555,15 +11555,15 @@ utils-merge@1.0.1:
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
 
-uuid@8.3.2, uuid@^8.0.0, uuid@^8.3.0, uuid@^8.3.2:
-  version "8.3.2"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
-  integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
-
 uuid@^3.3.2:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
+
+uuid@^8.0.0, uuid@^8.3.0, uuid@^8.3.2:
+  version "8.3.2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
+  integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 v8-to-istanbul@^8.1.0:
   version "8.1.0"
