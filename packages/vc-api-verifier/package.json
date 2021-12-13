@@ -38,5 +38,13 @@
   "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
-  "keywords": ["Sphereon", "SSI", "Veramo", "W3C", "VC", "API", "Verifier"]
+  "keywords": [
+    "Sphereon",
+    "SSI",
+    "Veramo",
+    "W3C",
+    "VC",
+    "API",
+    "Verifier"
+  ]
 }

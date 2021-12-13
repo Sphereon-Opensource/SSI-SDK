@@ -1,28 +1,28 @@
-import { getConfig } from '@veramo/cli/build/setup';
-import { createObjects } from '@veramo/cli/build/lib/objectCreator';
+import { getConfig } from '@veramo/cli/build/setup'
+import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 
-jest.setTimeout(30000);
+jest.setTimeout(30000)
 
-import vcApiIssuerAgentLogic from './shared/vcApiIssuerAgentLogic';
+import vcApiIssuerAgentLogic from './shared/vcApiIssuerAgentLogic'
 
-let agent: any;
+let agent: any
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/vc-api-issuer/agent.yml');
-  config.agent.$args[0].plugins[0].$args[0].authorizationToken = process.env.VC_HTTP_API_AUTH_TOKEN;
-  const { localAgent } = createObjects(config, { localAgent: '/agent' });
-  agent = localAgent;
+  const config = getConfig('packages/vc-api-issuer/agent.yml')
+  config.agent.$args[0].plugins[0].$args[0].authorizationToken = process.env.VC_HTTP_API_AUTH_TOKEN
+  const { localAgent } = createObjects(config, { localAgent: '/agent' })
+  agent = localAgent
 
-  return true;
-};
+  return true
+}
 
 const tearDown = async (): Promise<boolean> => {
-  return true;
-};
+  return true
+}
 
-const getAgent = () => agent;
-const testContext = { getAgent, setup, tearDown };
+const getAgent = () => agent
+const testContext = { getAgent, setup, tearDown }
 
 describe('Local integration tests', () => {
-  vcApiIssuerAgentLogic(testContext);
-});
+  vcApiIssuerAgentLogic(testContext)
+})
