@@ -46,7 +46,7 @@ using a [W3C VC API](https://github.com/w3c-ccg/vc-api) spec based API (currentl
 The [W3C VC (HTTP) API Verifier](./packages/factom-did-provider/README.md) is a Veramo plugin to verify Verifiable
 Credentials using a [W3C VC API](https://github.com/w3c-ccg/vc-api) spec based API (currently only supporting a v0.1 spec).
 
-## waci-pex
+## WACI PEx
 The [waci-pex](./packages/waci-pex/README.md) is a Veramo plugin to generate QR Code using a [WACI Presentation Exchange](https://identity.foundation/waci-presentation-exchange/#step-1-generate-qr-code) spec.
 
 ## DID resolution
