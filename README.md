@@ -73,7 +73,7 @@ plugin allows an OP to authenticate against a Relying Party using Self-Issued Op
 Connect for Verifiable Presentations, with the help of
 our [Presentation-Exchange library](https://github.com/Sphereon-Opensource/pe-js).
 
-## waci-pex
+## WACI PEx
 The [waci-pex](./packages/waci-pex/README.md) is a Veramo plugin to generate QR Code using a [WACI Presentation Exchange](https://identity.foundation/waci-presentation-exchange/#step-1-generate-qr-code) spec.
 
 ## DID resolution
