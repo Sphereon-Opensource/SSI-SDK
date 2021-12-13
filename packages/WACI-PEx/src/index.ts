@@ -1,7 +1,9 @@
 /**
  * @public
  */
+
 const schema = require('../plugin.schema.json')
 export { schema }
-export { QRCodeCreator } from './agent/QRCodeCreator'
-export * from './types/IQRCodeCreator'
+export { QRCodePlugin} from './agent/QRCodePlugin'
+export { SSIQRCode } from './agent/SSIQRCode';
+export * from './types/IQRCodePlugin'

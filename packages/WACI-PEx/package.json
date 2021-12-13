@@ -7,7 +7,7 @@
   "types": "dist/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
-      "IQRCodeCreator": "./src/types/IQRCodeCreator.ts"
+      "IQRCodePlugin": "./src/types/IQRCodePlugin.ts"
     }
   },
   "scripts": {
@@ -33,7 +33,7 @@
     "enzyme-adapter-react-16": "^1.15.6",
     "jest": "^27.3.1",
     "ts-jest": "^27.0.7",
-    "typescript": "^4.4.3",
+    "typescript": "^4.5.2",
     "prettier": "^2.4.1"
   },
   "files": [

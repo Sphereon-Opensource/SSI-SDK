@@ -1,12 +1,14 @@
 import 'cross-fetch/polyfill'
 import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
+// @ts-ignore
+import express from 'express'
 import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import { IQRCodeCreator, QRCodeCreator } from '../src'
-import qrCodeCreatorAgentLogic from './shared/qrCodeCreatorAgentLogic'
+import { IQRCodePlugin, QRCodePlugin } from '../src'
+import qrCodePluginAgentLogic from './shared/qrCodePluginAgentLogic'
 
 jest.setTimeout(30000)
 
@@ -21,10 +23,10 @@ if (!process.env.VC_HTTP_API_AUTH_TOKEN) {
 }
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IQRCodeCreator>({
+  createAgent<IQRCodePlugin>({
     ...options,
     plugins: [
-      new QRCodeCreator(),
+      new QRCodePlugin(),
       new AgentRestClient({
         url: 'http://localhost:' + port + basePath,
         enabledMethods: serverAgent.availableMethods(),
@@ -63,5 +65,5 @@ const tearDown = async (): Promise<boolean> => {
 const testContext = { getAgent, setup, tearDown }
 
 describe('REST integration tests', () => {
-  qrCodeCreatorAgentLogic(testContext)
+  qrCodePluginAgentLogic(testContext)
 })
