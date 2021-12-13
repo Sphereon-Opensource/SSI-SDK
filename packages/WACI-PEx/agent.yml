@@ -6,7 +6,7 @@ constants:
   # please use your own X25519 key, this is only an example
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
-    - createQRCode
+    - ssiQRCode
 
 server:
   baseUrl:
@@ -70,6 +70,6 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/waci-pex/dist#QRCodeCreator
+        - $require: ./packages/waci-pex/dist#QRCodePlugin
           $args:
             - qrCodeData: ''

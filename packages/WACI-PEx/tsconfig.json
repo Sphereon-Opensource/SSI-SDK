@@ -3,14 +3,7 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
-    "declarationDir": "dist",
-    "jsx": "react",
-    "types": ["jest", "node"],
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ]
+    "declarationDir": "dist"
   },
   "references": [{ "path": "../ssi-sdk-core" }]
 }
