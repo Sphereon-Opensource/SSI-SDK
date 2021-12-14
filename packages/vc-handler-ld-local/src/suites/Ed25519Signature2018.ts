@@ -1,4 +1,4 @@
-import { encodeJoseBlob } from '@veramo/utils'
+import { asArray, encodeJoseBlob } from '@veramo/utils'
 import { CredentialPayload, DIDDocument, IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
 import suiteContext2018 from 'ed25519-signature-2018-context'
 import { Ed25519Signature2018 } from '@transmute/ed25519-signature-2018'
@@ -70,7 +70,24 @@ export class SphereonEd25519Signature2018 extends SphereonLdSignature {
     return new Ed25519Signature2018({ key: verificationKey, signer: signer })
   }
 
-  preVerificationCredModification(credential: VerifiableCredential): void {}
+  preVerificationCredModification(credential: VerifiableCredential): void {
+    const vcJson = JSON.stringify(credential)
+    if (vcJson.indexOf('Ed25519Signature2018 DISABLED!!!!!') > -1) {
+      if (vcJson.indexOf(this.getContext()) === -1) {
+        credential['@context'] = [...asArray(credential['@context'] || []), this.getContext()]
+      }
+      // Gives a JSON-LD redefinement on a protected term. Probably better to not have the Es25519Signature2018 context though!
+      const v1Idx = vcJson.indexOf('https://w3id.org/security/v1')
+      if (v1Idx > -1 && Array.isArray(credential['@context'])) {
+        delete credential['@context'][v1Idx]
+      }
+      const v3Idx = vcJson.indexOf('https://w3id.org/security/v3-unstable')
+      if (v3Idx === -1 && Array.isArray(credential['@context'])) {
+        credential['@context'].push('https://w3id.org/security/v3-unstable')
+      }
+    }
+  }
+
   getSuiteForVerification(): any {
     return new Ed25519Signature2018()
   }

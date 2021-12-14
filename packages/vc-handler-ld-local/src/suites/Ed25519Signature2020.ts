@@ -1,6 +1,5 @@
 import { asArray, encodeJoseBlob } from '@veramo/utils'
 import { CredentialPayload, DIDDocument, IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
-import suiteContext2018 from 'ed25519-signature-2018-context'
 import suiteContext2020 from 'ed25519-signature-2020-context'
 import { Ed25519Signature2020 } from '@digitalcredentials/ed25519-signature-2020'
 import { Ed25519VerificationKey2020 } from '@digitalcredentials/ed25519-verification-key-2020'
@@ -75,7 +74,12 @@ export class SphereonEd25519Signature2020 extends SphereonLdSignature {
     })
   }
   preVerificationCredModification(credential: VerifiableCredential): void {
-    credential['@context'] = [...asArray(credential['@context'] || []), this.getContext()]
+    const vcJson = JSON.stringify(credential)
+    if (vcJson.indexOf('Ed25519Signature2020') > -1) {
+      if (vcJson.indexOf(this.getContext()) === -1) {
+        credential['@context'] = [...asArray(credential['@context'] || []), this.getContext()]
+      }
+    }
   }
 
   getSuiteForVerification(): any {
