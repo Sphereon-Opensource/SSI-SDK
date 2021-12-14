@@ -1,5 +1,5 @@
 import { TAgent } from '@veramo/core'
-import { IVcApiVerifier } from '../../src/types/IVcApiVerifier'
+import { IVcApiVerifier } from '../../src'
 
 type ConfiguredAgent = TAgent<IVcApiVerifier>
 

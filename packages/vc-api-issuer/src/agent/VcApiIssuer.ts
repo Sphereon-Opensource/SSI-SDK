@@ -24,14 +24,14 @@ export class VcApiIssuer implements IAgentPlugin {
 
   /** {@inheritDoc IVcApiIssuer.issueCredentialUsingVcApi} */
   private async issueCredentialUsingVcApi(args: IIssueCredentialArgs, context: IRequiredContext): Promise<VerifiableCredentialSP> {
-    const verifiableCredential = await fetch(this.issueUrl, {
+    return await fetch(this.issueUrl, {
       method: 'post',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         Authorization: `bearer ${this.authorizationToken}`,
       },
-      body: JSON.stringify({ credential: args.credential }),
+      body: JSON.stringify({credential: args.credential}),
     }).then(async (response: { status: number; text: () => string | PromiseLike<string | undefined> | undefined; json: () => string }) => {
       if (response.status >= 400) {
         throw new Error(await response.text())
@@ -41,7 +41,5 @@ export class VcApiIssuer implements IAgentPlugin {
         return verifiableCredential
       }
     })
-
-    return verifiableCredential
   }
 }
