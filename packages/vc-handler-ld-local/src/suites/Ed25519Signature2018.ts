@@ -1,10 +1,11 @@
-import { asArray, encodeJoseBlob } from '@veramo/utils'
-import { CredentialPayload, DIDDocument, IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
-import suiteContext2018 from 'ed25519-signature-2018-context'
-import { Ed25519Signature2018 } from '@transmute/ed25519-signature-2018'
-import * as u8a from 'uint8arrays'
-import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 import { Ed25519KeyPair } from '@transmute/ed25519-key-pair'
+import { Ed25519Signature2018 } from '@transmute/ed25519-signature-2018'
+import { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
+import { asArray, encodeJoseBlob } from '@veramo/utils'
+import suiteContext2018 from 'ed25519-signature-2018-context'
+import * as u8a from 'uint8arrays'
+
+import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 
 export class SphereonEd25519Signature2018 extends SphereonLdSignature {
   constructor() {
@@ -29,7 +30,7 @@ export class SphereonEd25519Signature2018 extends SphereonLdSignature {
     const controller = issuerDid
 
     // DID Key ID
-    let id = verificationMethodId
+    const id = verificationMethodId
 
     const signer = {
       // returns a JWS detached
@@ -92,12 +93,14 @@ export class SphereonEd25519Signature2018 extends SphereonLdSignature {
     return new Ed25519Signature2018()
   }
 
-  preSigningCredModification(credential: CredentialPayload): void {
+  // preSigningCredModification(credential: CredentialPayload): void {
+  preSigningCredModification(): void {
     // console.log(credential)
     // nothing to do here
   }
 
-  preDidResolutionModification(didUrl: string, didDoc: DIDDocument): void {
+  // preDidResolutionModification(didUrl: string, didDoc: DIDDocument): void {
+  preDidResolutionModification(): void {
     // nothing to do here
   }
 }

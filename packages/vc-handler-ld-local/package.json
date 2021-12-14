@@ -11,7 +11,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
+    "generate-plugin-schema": "yarn veramo dev generate-plugin-schema",
+    "fix:lint": "eslint . --fix --ext .ts",
+    "test:lint": "eslint . --ext .ts"
   },
   "dependencies": {
     "@veramo/core": "^3.1.1-next.15",
@@ -58,7 +60,13 @@
     "nock": "^13.2.1",
     "ts-jest": "^27.0.7",
     "typescript": "^4.4.3",
-    "prettier": "^2.4.1"
+    "prettier": "^2.4.1",
+    "eslint": "^7.32.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.3"
   },
   "files": [
     "dist/**/*",

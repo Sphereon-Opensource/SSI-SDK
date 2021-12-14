@@ -1,4 +1,5 @@
 import { ContextDoc, LdDefaultContexts } from '@veramo/credential-ld'
+
 import { LdContextLoader } from '../ld-context-loader'
 
 describe('credential-ld context loader', () => {

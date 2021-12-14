@@ -1,9 +1,10 @@
-import { IAgentContext, IResolver } from '@veramo/core'
 import { extendContextLoader } from '@digitalcredentials/jsonld-signatures'
 import vc from '@digitalcredentials/vc'
+import { IAgentContext, IResolver } from '@veramo/core'
+import Debug from 'debug'
+
 import { LdContextLoader } from './ld-context-loader'
 import { LdSuiteLoader } from './ld-suite-loader'
-import Debug from 'debug'
 
 const debug = Debug('veramo:w3c:ld-credential-module-local')
 
@@ -19,7 +20,7 @@ export class LdDocumentLoader {
     this.ldSuiteLoader = options.ldSuiteLoader
   }
 
-  getLoader(context: IAgentContext<IResolver>, attemptToFetchContexts: boolean = false) {
+  getLoader(context: IAgentContext<IResolver>, attemptToFetchContexts = false) {
     return extendContextLoader(async (url: string) => {
       // console.log(`resolving context for: ${url}`)
 

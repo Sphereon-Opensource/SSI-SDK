@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
+
 import { ContextDoc } from './types/types'
 
 async function _read(_path: string): Promise<ContextDoc> {

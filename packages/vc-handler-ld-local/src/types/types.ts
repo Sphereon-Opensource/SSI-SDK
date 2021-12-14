@@ -1,8 +1,8 @@
+import { purposes } from '@digitalcredentials/jsonld-signatures'
 import {
   CredentialPayload,
   IAgentContext,
   IDIDManager,
-  IKey,
   IKeyManager,
   IPluginMethodMap,
   IResolver,
@@ -10,7 +10,6 @@ import {
   VerifiableCredential,
   VerifiablePresentation,
 } from '@veramo/core'
-import { purposes } from '@digitalcredentials/jsonld-signatures'
 
 /**
  * The interface definition for a plugin that can issue and verify Verifiable Credentials and Presentations

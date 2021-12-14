@@ -1,3 +1,7 @@
+import { purposes } from '@digitalcredentials/jsonld-signatures'
+import * as vc from '@digitalcredentials/vc'
+import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
+import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
 import {
   CredentialPayload,
   IAgentContext,
@@ -9,13 +13,10 @@ import {
   VerifiablePresentation,
 } from '@veramo/core'
 import Debug from 'debug'
-import { extendContextLoader, purposes } from '@digitalcredentials/jsonld-signatures'
-import * as vc from '@digitalcredentials/vc'
-import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
+
 import { LdContextLoader } from './ld-context-loader'
-import { LdSuiteLoader } from './ld-suite-loader'
-import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
 import { LdDocumentLoader } from './ld-document-loader'
+import { LdSuiteLoader } from './ld-suite-loader'
 
 export type RequiredAgentMethods = IResolver & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>
 
@@ -100,7 +101,7 @@ export class LdCredentialModule {
   async verifyCredential(
     credential: VerifiableCredential,
     context: IAgentContext<IResolver>,
-    fetchRemoteContexts: boolean = false,
+    fetchRemoteContexts = false,
     purpose: typeof ProofPurpose = new AssertionProofPurpose(),
     checkStatus?: Function
   ): Promise<boolean> {
@@ -134,7 +135,7 @@ export class LdCredentialModule {
     challenge: string | undefined,
     domain: string | undefined,
     context: IAgentContext<IResolver>,
-    fetchRemoteContexts: boolean = false,
+    fetchRemoteContexts = false,
     presentationPurpose: typeof ProofPurpose = !challenge && !domain
       ? new AssertionProofPurpose()
       : new AuthenticationProofPurpose(domain, challenge),

@@ -1,5 +1,6 @@
-import { IAgentContext, IDIDManager, IKeyManager, IPluginMethod, IPluginMethodMap, IResolver } from '@veramo/core'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
+import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+
 import { ICreateVerifiableCredentialLDArgs, ICreateVerifiablePresentationLDArgs, IVerifyCredentialLDArgs, IVerifyPresentationLDArgs } from './types'
 
 export interface ICredentialHandlerLDLocal extends IPluginMethodMap {

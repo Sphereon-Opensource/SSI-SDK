@@ -1,8 +1,5 @@
-import { CredentialPayload, IAgentContext, IAgentPlugin, IIdentifier, IKey, IResolver, PresentationPayload } from '@veramo/core'
-
-import { IBindingOverrides, schema } from '../index'
-import { ICredentialHandlerLDLocal, IRequiredContext } from '../types/ICredentialHandlerLDLocal'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
+import { CredentialPayload, IAgentContext, IAgentPlugin, IIdentifier, IKey, IResolver, PresentationPayload } from '@veramo/core'
 import {
   _ExtendedIKey,
   extractIssuer,
@@ -13,11 +10,14 @@ import {
   processEntryToArray,
   RecordLike,
 } from '@veramo/utils'
-import { LdCredentialModule } from '../ld-credential-module'
-import { LdContextLoader } from '../ld-context-loader'
-import { LdSuiteLoader } from '../ld-suite-loader'
 import Debug from 'debug'
+
+import { IBindingOverrides, schema } from '../index'
+import { LdContextLoader } from '../ld-context-loader'
+import { LdCredentialModule } from '../ld-credential-module'
+import { LdSuiteLoader } from '../ld-suite-loader'
 import { SphereonLdSignature } from '../ld-suites'
+import { ICredentialHandlerLDLocal, IRequiredContext } from '../types/ICredentialHandlerLDLocal'
 import {
   ContextDoc,
   ICreateVerifiableCredentialLDArgs,
@@ -203,9 +203,8 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     keyRef?: string
   ): Promise<{ signingKey: IKey; verificationMethodId: string }> {
     const extendedKeys: _ExtendedIKey[] = await mapIdentifierKeysToDoc(identifier, 'verificationMethod', context)
-    let supportedTypes = this.ldCredentialModule.ldSuiteLoader.getAllSignatureSuiteTypes()
+    const supportedTypes = this.ldCredentialModule.ldSuiteLoader.getAllSignatureSuiteTypes()
     let signingKey: _ExtendedIKey | undefined
-    let verificationMethodId: string
     if (keyRef) {
       signingKey = extendedKeys.find((k) => k.kid === keyRef)
     }
@@ -221,7 +220,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     }
 
     if (!signingKey) throw Error(`key_not_found: No suitable signing key found for ${identifier.did}`)
-    verificationMethodId = signingKey.meta.verificationMethod.id
+    const verificationMethodId = signingKey.meta.verificationMethod.id
     return { signingKey, verificationMethodId }
   }
 }

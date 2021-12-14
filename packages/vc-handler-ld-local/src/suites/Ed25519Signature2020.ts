@@ -1,12 +1,13 @@
-import { asArray, encodeJoseBlob } from '@veramo/utils'
-import { CredentialPayload, DIDDocument, IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
-import suiteContext2020 from 'ed25519-signature-2020-context'
 import { Ed25519Signature2020 } from '@digitalcredentials/ed25519-signature-2020'
 import { Ed25519VerificationKey2020 } from '@digitalcredentials/ed25519-verification-key-2020'
-import * as u8a from 'uint8arrays'
-import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
-import { hexToMultibase } from '../../../ssi-sdk-core/src'
 import { MultibaseFormat } from '@sphereon/ssi-sdk-core/dist/utils/encoding'
+import { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
+import { asArray, encodeJoseBlob } from '@veramo/utils'
+import suiteContext2020 from 'ed25519-signature-2020-context'
+import * as u8a from 'uint8arrays'
+
+import { hexToMultibase } from '../../../ssi-sdk-core/src'
+import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 
 export class SphereonEd25519Signature2020 extends SphereonLdSignature {
   constructor() {
@@ -31,7 +32,7 @@ export class SphereonEd25519Signature2020 extends SphereonLdSignature {
     const controller = issuerDid
 
     // DID Key ID
-    let id = verificationMethodId
+    const id = verificationMethodId
 
     const signer = {
       // returns a JWS detached
@@ -86,9 +87,11 @@ export class SphereonEd25519Signature2020 extends SphereonLdSignature {
     return new Ed25519Signature2020()
   }
 
-  preSigningCredModification(credential: CredentialPayload): void {}
+  // preSigningCredModification(_credential: CredentialPayload): void {}
+  preSigningCredModification(): void {}
 
-  preDidResolutionModification(didUrl: string, didDoc: DIDDocument): void {
+  // preDidResolutionModification(_didUrl: string, _didDoc: DIDDocument): void {
+  preDidResolutionModification(): void {
     // nothing to do here
   }
 }

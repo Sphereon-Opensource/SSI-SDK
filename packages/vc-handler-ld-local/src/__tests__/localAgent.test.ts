@@ -1,12 +1,13 @@
-import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
+import { getConfig } from '@veramo/cli/build/setup'
 
 jest.setTimeout(30000)
 
-import vcHandlerLocalAgentLogic from './shared/vcHandlerLocalAgentLogic'
 import { LdDefaultContexts } from '../ld-default-contexts'
 import { SphereonEd25519Signature2018 } from '../suites/Ed25519Signature2018'
 import { SphereonEd25519Signature2020 } from '../suites/Ed25519Signature2020'
+
+import vcHandlerLocalAgentLogic from './shared/vcHandlerLocalAgentLogic'
 
 let agent: any
 
