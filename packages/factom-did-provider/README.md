@@ -24,7 +24,7 @@ const factomDIDProvider = new FactomDIDProvider({
 
 ### createIdentifier
 
-Creating a DID means you have to create public/private keypairs first both for the DID document itself as well as the management keys. The Factom DID Provider will store these keys using Veramo's Keymanager, so that you can use them later
+Creating a DID means you have to create public/private keypairs first both for the DID fragment itself as well as the management keys. The Factom DID Provider will store these keys using Veramo's Keymanager, so that you can use them later
 
 ```typescript
 const managementKeys = [
