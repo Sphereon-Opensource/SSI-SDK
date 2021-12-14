@@ -1,7 +1,7 @@
 import { CredentialHandlerLDLocal } from '../../agent/CredentialHandlerLDLocal'
 import { Resolver } from 'did-resolver'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
-import { createAgent, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
+import { createAgent, IDIDManager, IIdentifier, IKeyManager, IResolver, PresentationPayload, TAgent } from '@veramo/core'
 import { KeyManagementSystem } from '@veramo/kms-local'
 import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { CredentialIssuer, ICredentialIssuer } from '@veramo/credential-w3c'
@@ -9,13 +9,27 @@ import { getDidKeyResolver, KeyDIDProvider } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { ICredentialHandlerLDLocal, MethodNames } from '../../types/ICredentialHandlerLDLocal'
 import { SphereonEd25519Signature2018 } from '../../suites/Ed25519Signature2018'
+import { LtoDidProvider } from '../../../../lto-did-provider/src/lto-did-provider'
 import { LdDefaultContexts } from '../../ld-default-contexts'
+import { boaExampleVC, ltoDIDResolutionResult, ltoDIDSubjectResolutionResult_2018 } from '../mocks'
+import { getUniResolver } from '@sphereon/did-uni-client'
+import { checkStatus } from '@transmute/vc-status-rl-2020'
+import nock from 'nock'
+import { IDidConnectionMode } from '@sphereon/ssi-sdk-lto-did-provider'
+import { ControllerProofPurpose } from '../../types/types'
+const LTO_DID = 'did:lto:3MsS3gqXkcx9m4wYSbfprYfjdZTFmx2ofdX'
 
 export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
   describe('Issuer Agent Plugin', () => {
     let didKeyIdentifier: IIdentifier
     let didLtoIdentifier: IIdentifier
     let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialIssuer & ICredentialHandlerLDLocal>
+    nock('https://lto-mock/1.0/identifiers')
+      .get(`/${LTO_DID}`)
+      .times(10)
+      .reply(200, {
+        ...ltoDIDResolutionResult,
+      })
 
     beforeAll(async () => {
       agent = createAgent({
@@ -29,6 +43,12 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
           new DIDManager({
             providers: {
               'did:key': new KeyDIDProvider({ defaultKms: 'local' }),
+              'did:lto': new LtoDidProvider({
+                defaultKms: 'local',
+                connectionMode: IDidConnectionMode.NODE,
+                network: 'T',
+                sponsorPrivateKeyBase58: '5gqCU5NbwU4gc62be39LXDDALKj8opj1KZszx7ULJc2k33kk52prn8D1H2pPPwm6QVKvkuo72YJSoUhzzmAFmDH8',
+              }),
             },
             store: new MemoryDIDStore(),
             defaultProvider: 'did:key',
@@ -36,6 +56,8 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
           new DIDResolverPlugin({
             resolver: new Resolver({
               ...getDidKeyResolver(),
+              ...getUniResolver('lto', { resolveUrl: 'https://lto-mock/1.0/identifiers' }),
+              ...getUniResolver('factom', { resolveUrl: 'https://uniresolver.sphereon.io/1.0/identifiers' }),
             }),
           }),
           new CredentialIssuer(),
@@ -52,6 +74,22 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
         ],
       })
       didKeyIdentifier = await agent.didManagerCreate()
+
+      didLtoIdentifier = await agent.didManagerImport({
+        provider: 'did:lto',
+        did: LTO_DID,
+        controllerKeyId: `${LTO_DID}#sign`,
+        keys: [
+          {
+            privateKeyHex:
+              '078c0f0eaa6510fab9f4f2cf8657b32811c53d7d98869fd0d5bd08a7ba34376b8adfdd44784dea407e088ff2437d5e2123e685a26dca91efceb7a9f4dfd81848',
+            publicKeyHex: '8adfdd44784dea407e088ff2437d5e2123e685a26dca91efceb7a9f4dfd81848',
+            kms: 'local',
+            kid: `${LTO_DID}#sign`,
+            type: 'Ed25519',
+          },
+        ],
+      })
     })
 
     afterAll(async () => {
@@ -59,7 +97,7 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
       await testContext.tearDown()
     })
 
-    it('should issue', async () => {
+    it('should issue and verify a 2018 VC', async () => {
       const credential = {
         issuer: didKeyIdentifier.did,
         type: ['VerifiableCredential', 'AlumniCredential'],
@@ -73,11 +111,48 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
         },
       }
 
-      return await expect(
-        agent.createVerifiableCredentialLDLocal({
-          credential,
-        })
-      ).resolves.not.toBeNull()
+      const verifiableCredential = await agent.createVerifiableCredentialLDLocal({ credential })
+      expect(verifiableCredential).not.toBeNull()
+
+      const verified = await agent.verifyCredentialLDLocal({
+        credential: verifiableCredential,
+        fetchRemoteContexts: true,
+      })
+      expect(verified).toBeTruthy()
+    })
+
+    it('should verify a VC API issued VC with status list and create/verify a VP', async () => {
+      jest.setTimeout(100000)
+
+      const verifiableCredential = boaExampleVC
+
+      const verified = await agent.verifyCredentialLDLocal({
+        credential: verifiableCredential,
+        fetchRemoteContexts: true,
+        checkStatus,
+      })
+      expect(verified).toBeTruthy()
+
+      const presentationPayload: PresentationPayload = {
+        holder: didLtoIdentifier.did,
+        verifiableCredential: [verifiableCredential],
+      }
+      const vp = await agent.createVerifiablePresentationLDLocal({
+        presentation: presentationPayload,
+        keyRef: `${didLtoIdentifier.did}#sign`,
+        // We are overriding the purpose since the DID in this test does not have an authentication proof purpose
+        purpose: new ControllerProofPurpose({ term: 'verificationMethod' }),
+      })
+      expect(vp).toBeDefined()
+
+      const vpVerification = await agent.verifyPresentationLDLocal({
+        presentation: vp,
+        // We are overriding the purpose since the DID in this test does not have an authentication proof purpose
+        presentationPurpose: new ControllerProofPurpose({ term: 'verificationMethod' }),
+        fetchRemoteContexts: true,
+        checkStatus,
+      })
+      expect(vpVerification).toBeTruthy()
     })
   })
 }

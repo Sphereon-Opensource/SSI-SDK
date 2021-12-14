@@ -12,20 +12,19 @@ import { LtoDidProvider } from '../../../lto-did-provider/src/lto-did-provider'
 import { IDidConnectionMode } from '../../../lto-did-provider/src/types/lto-provider-types'
 import { ICredentialHandlerLDLocal, MethodNames } from '../types/ICredentialHandlerLDLocal'
 import { SphereonEd25519Signature2018 } from '../suites/Ed25519Signature2018'
-import { ContextDoc } from '../types/types'
 import { LdDefaultContexts } from '../ld-default-contexts'
 
-import { purposes } from '@digitalcredentials/jsonld-signatures'
 import { SphereonEd25519Signature2020 } from '../suites/Ed25519Signature2020'
-const ControllerProofPurpose = purposes.ControllerProofPurpose
+import nock from 'nock'
+import { bedrijfsInformatieV1, exampleV1, factomDIDResolutionResult_2018, ltoDIDResolutionResult, ltoDIDSubjectResolutionResult_2018 } from './mocks'
+import { ContextDoc, ControllerProofPurpose } from '../types/types'
 
-const customContext: Record<string, ContextDoc> = {
-  'custom:example.context': {
-    '@context': {
-      nothing: 'custom:example.context#blank',
-    },
-  },
-}
+const LTO_DID = 'did:lto:3MsS3gqXkcx9m4wYSbfprYfjdZTFmx2ofdX'
+const FACTOM_DID = 'did:factom:9d612c949afee208f664e81dc16bdb4f4eff26776ebca2e94a9f06a40d68626d'
+const customContext = new Map<string, ContextDoc>([
+  [`https://www.w3.org/2018/credentials/examples/v1`, exampleV1],
+  ['https://sphereon-opensource.github.io/vc-contexts/myc/bedrijfsinformatie-v1.jsonld', bedrijfsInformatieV1],
+])
 
 describe('credential-LD full flow', () => {
   let didKeyIdentifier: IIdentifier
@@ -58,13 +57,13 @@ describe('credential-LD full flow', () => {
         new DIDResolverPlugin({
           resolver: new Resolver({
             ...getDidKeyResolver(),
-            ...getUniResolver('lto', { resolveUrl: 'https://uniresolver.test.sphereon.io/1.0/identifiers' }),
-            ...getUniResolver('factom', { resolveUrl: 'https://uniresolver.test.sphereon.io/1.0/identifiers' }),
+            ...getUniResolver('lto', { resolveUrl: 'https://lto-mock/1.0/identifiers' }),
+            ...getUniResolver('factom', { resolveUrl: 'https://factom-mock/1.0/identifiers' }),
           }),
         }),
         new CredentialIssuer(),
         new CredentialHandlerLDLocal({
-          contextMaps: [LdDefaultContexts /*, customContext*/],
+          contextMaps: [LdDefaultContexts, customContext],
           suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
           bindingOverrides: new Map([
             // Bindings to test overrides of credential-ld plugin methods
@@ -78,15 +77,15 @@ describe('credential-LD full flow', () => {
     didKeyIdentifier = await agent.didManagerCreate()
     didLtoIdentifier = await agent.didManagerImport({
       provider: 'did:lto',
-      did: 'did:lto:3MsS3gqXkcx9m4wYSbfprYfjdZTFmx2ofdX',
-      controllerKeyId: 'did:lto:3MsS3gqXkcx9m4wYSbfprYfjdZTFmx2ofdX#sign',
+      did: LTO_DID,
+      controllerKeyId: `${LTO_DID}#sign`,
       keys: [
         {
           privateKeyHex:
             '078c0f0eaa6510fab9f4f2cf8657b32811c53d7d98869fd0d5bd08a7ba34376b8adfdd44784dea407e088ff2437d5e2123e685a26dca91efceb7a9f4dfd81848',
           publicKeyHex: '8adfdd44784dea407e088ff2437d5e2123e685a26dca91efceb7a9f4dfd81848',
           kms: 'local',
-          kid: 'did:lto:3MsS3gqXkcx9m4wYSbfprYfjdZTFmx2ofdX#sign',
+          kid: `${LTO_DID}#sign`,
           type: 'Ed25519',
         },
       ],
@@ -94,6 +93,12 @@ describe('credential-LD full flow', () => {
   })
 
   it('works with Ed25519Signature2018', async () => {
+    nock('https://lto-mock/1.0/identifiers')
+      .get(`/${LTO_DID}`)
+      .times(3)
+      .reply(200, {
+        ...ltoDIDResolutionResult,
+      })
     const credentialPayload: CredentialPayload = {
       issuer: didKeyIdentifier.did,
       type: ['VerifiableCredential', 'AlumniCredential'],
@@ -145,11 +150,23 @@ describe('credential-LD full flow', () => {
     expect(verifiedPresentation).toBe(true)
   })
 
-  // Does not work currently as the DID had a Ed25519VerificationKey2020 and the proof is 2018
-  xit('Should verify issued credential', async () => {
+  it('Should verify issued credential with Factom issuer', async () => {
+    nock('https://factom-mock/1.0/identifiers')
+      .get(`/${FACTOM_DID}`)
+      .times(3)
+      .reply(200, {
+        ...factomDIDResolutionResult_2018,
+      })
+    nock('https://lto-mock/1.0/identifiers')
+      .get(`/did:lto:3MrjGusMnFspFfyVctYg3cJaNKGnaAhMZXM`)
+      .times(3)
+      .reply(200, {
+        ...ltoDIDSubjectResolutionResult_2018,
+      })
+
     const credential = {
       '@context': ['https://www.w3.org/2018/credentials/v1', 'https://sphereon-opensource.github.io/vc-contexts/myc/bedrijfsinformatie-v1.jsonld'],
-      issuer: 'did:factom:9d612c949afee208f664e81dc16bdb4f4eff26776ebca2e94a9f06a40d68626d',
+      issuer: FACTOM_DID,
       issuanceDate: '2021-12-02T02:55:39.608Z',
       credentialSubject: {
         Bedrijfsinformatie: {
@@ -171,7 +188,7 @@ describe('credential-LD full flow', () => {
         created: '2021-12-02T02:55:39Z',
         jws: 'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..SsE_Z6iAktFvsiB1FRJT7lGMnCjHjZ6kvjmXLjJWFZG6trMlm1IJtwvGm1huRgFKfjyiB2LK3166eSboWqwPCg',
         proofPurpose: 'assertionMethod',
-        verificationMethod: 'did:factom:9d612c949afee208f664e81dc16bdb4f4eff26776ebca2e94a9f06a40d68626d#key-0',
+        verificationMethod: `${FACTOM_DID}#key-0`,
       },
     }
 
