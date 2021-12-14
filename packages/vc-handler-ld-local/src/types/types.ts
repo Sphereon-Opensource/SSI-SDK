@@ -10,7 +10,7 @@ import {
   VerifiableCredential,
   VerifiablePresentation,
 } from '@veramo/core'
-import { ProofPurpose } from '@digitalcredentials/vc'
+import { purposes } from '@digitalcredentials/jsonld-signatures'
 
 /**
  * The interface definition for a plugin that can issue and verify Verifiable Credentials and Presentations
@@ -175,6 +175,11 @@ export interface IVerifyCredentialLDArgs {
    * Use this presentation purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)
    */
   purpose?: typeof ProofPurpose
+
+  /**
+   * Check status function, to check credentials that have a credentialStatus property
+   */
+  checkStatus?: Function
 }
 
 /**
@@ -215,6 +220,11 @@ export interface IVerifyPresentationLDArgs {
    * Use this presentation purpose for the verification method in the DID when doing a check (defaualts to assertionMethod)
    */
   presentationPurpose?: typeof ProofPurpose
+
+  /**
+   * Check status function, to check credentials that have a credentialStatus property
+   */
+  checkStatus?: Function
 }
 
 /**
@@ -228,5 +238,10 @@ export interface IVerifyPresentationLDArgs {
 export type IRequiredContext = IAgentContext<IResolver & Pick<IDIDManager, 'didManagerGet'> & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>>
 
 export type ContextDoc = {
-  '@context': Record<string, any>
+  '@context': string | Record<string, any>
 }
+
+export const ProofPurpose = purposes.ProofPurpose
+export const ControllerProofPurpose = purposes.ControllerProofPurpose
+export const AssertionProofPurpose = purposes.AssertionProofPurpose
+export const AuthenticationProofPurpose = purposes.AuthenticationProofPurpose
