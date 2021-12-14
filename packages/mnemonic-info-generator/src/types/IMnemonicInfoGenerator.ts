@@ -14,12 +14,12 @@ export interface IMnemonicInfoGenerator extends IPluginMethodMap {
  * @param { 128 | 160 | 192 | 224 | 256 } bits - Affects the number of words in the mnemonic,
  * which is 12, 15, 18, 21 and 24 respectively.
  * @param { string } id - Optional user defined id for the mnemonic
- * @param { boolean } shouldPersist - Whether the mnemonic should be persisted into the database
+ * @param { boolean } persist - Whether the mnemonic should be persisted into the database
  */
 export interface IMnemonicGeneratorArgs {
   bits: 128 | 160 | 192 | 224 | 256;
   id?: string;
-  shouldPersist?: boolean;
+  persist?: boolean;
 }
 
 /**

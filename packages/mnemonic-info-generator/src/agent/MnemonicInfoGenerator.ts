@@ -39,7 +39,7 @@ export class MnemonicInfoGenerator implements IAgentPlugin {
 
   private async generateMnemonic(args: IMnemonicGeneratorArgs): Promise<IMnemonicInfoResult> {
     const mnemonic = bip39.generateMnemonic(args.bits);
-    if (args.shouldPersist) {
+    if (args.persist) {
       return await this.saveMnemonicInfo({ id: args.id, mnemonic: mnemonic.split(' ') });
     }
     return { mnemonic: mnemonic.split(' ') };

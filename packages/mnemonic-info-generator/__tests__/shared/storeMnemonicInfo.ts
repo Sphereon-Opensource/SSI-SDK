@@ -21,13 +21,13 @@ export default (testContext: {
     afterAll(testContext.tearDown);
 
     beforeEach(async () => {
-      mnemonicObj = await agent.generateMnemonic({ bits: 256, id: 'test id', shouldPersist: true });
+      mnemonicObj = await agent.generateMnemonic({ bits: 256, id: 'test id', persist: true });
     });
 
     afterEach(async () => await agent.deleteMnemonicInfo({ hash: mnemonicObj.hash }));
 
     it('should return only the mnemonic, without saving anything into the database', async () => {
-      const mnemonicInfo = await agent.generateMnemonic({ bits: 256, shouldPersist: false });
+      const mnemonicInfo = await agent.generateMnemonic({ bits: 256, persist: false });
       expect(mnemonicInfo).toEqual({ mnemonic: mnemonicInfo.mnemonic });
       const result = await agent.getMnemonicInfo({ hash: mnemonicInfo.hash });
       expect(result).toEqual({});
