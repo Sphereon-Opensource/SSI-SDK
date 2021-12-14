@@ -11,8 +11,7 @@
     }
   },
   "scripts": {
-    "build": "tsc --build",
-    "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
+    "build": "tsc --build"
   },
   "dependencies": {
     "@veramo/core": "^3.1.0",
