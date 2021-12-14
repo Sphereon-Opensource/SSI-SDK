@@ -15,13 +15,13 @@ import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
 import { LdContextLoader } from './ld-context-loader'
 import { LdSuiteLoader } from './ld-suite-loader'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
+import { LdDocumentLoader } from './ld-document-loader'
 
 export type RequiredAgentMethods = IResolver & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>
 
 const ProofPurpose = purposes.ProofPurpose
 const AssertionProofPurpose = purposes.AssertionProofPurpose
 const AuthenticationProofPurpose = purposes.AuthenticationProofPurpose
-// const CredentialIssuancePurpose = purposes.CredentialIssuancePurpose
 
 const debug = Debug('veramo:w3c:ld-credential-module-local')
 
@@ -34,96 +34,12 @@ export class LdCredentialModule {
    * - Key Manager and Verification Methods: Veramo currently implements no link between those.
    */
 
-  private ldContextLoader: LdContextLoader
   ldSuiteLoader: LdSuiteLoader
+  private ldDocumentLoader: LdDocumentLoader
 
   constructor(options: { ldContextLoader: LdContextLoader; ldSuiteLoader: LdSuiteLoader }) {
-    this.ldContextLoader = options.ldContextLoader
     this.ldSuiteLoader = options.ldSuiteLoader
-  }
-
-  getDocumentLoader(context: IAgentContext<IResolver>, attemptToFetchContexts: boolean = false) {
-    return extendContextLoader(async (url: string) => {
-      // console.log(`resolving context for: ${url}`)
-
-      // did resolution
-      if (url.toLowerCase().startsWith('did:')) {
-        const resolutionResult = await context.agent.resolveDid({ didUrl: url })
-        const didDoc = resolutionResult.didDocument
-        if (!didDoc) {
-          console.log(`Could not fetch DID document with url: ${url}`)
-          return
-        }
-
-        if (url.indexOf('#') > 0 && didDoc['@context']) {
-          // Apparently we got a whole DID document, but we are looking for a verification method
-          // Todo extend to full objects in assertionMethod, authentication etc.
-          if (didDoc.verificationMethod) {
-            const verificationMethod = didDoc.verificationMethod.filter((vm) => vm.id === url)
-            if (verificationMethod.length == 1) {
-              // We have to provide a context
-              const contexts = this.ldSuiteLoader
-                .getAllSignatureSuites()
-                .filter(
-                  (x) =>
-                    x.getSupportedVerificationType() === verificationMethod[0].type || verificationMethod[0].type === 'Ed25519VerificationKey2018'
-                )
-                .map((value) => value.getContext())
-              const document = { ...verificationMethod[0], '@context': contexts }
-
-              return {
-                contextUrl: null,
-                documentUrl: url,
-                document,
-              }
-            }
-          }
-        }
-
-        // currently Veramo LD suites can modify the resolution response for DIDs from
-        // the document Loader. This allows to fix incompatibilities between DID Documents
-        // and LD suites to be fixed specifically within the Veramo LD Suites definition
-        this.ldSuiteLoader.getAllSignatureSuites().forEach((x) => x.preDidResolutionModification(url, didDoc))
-
-        // console.log(`Returning from Documentloader: ${JSON.stringify(returnDocument)}`)
-        return {
-          contextUrl: null,
-          documentUrl: url,
-          document: didDoc,
-        }
-      }
-
-      if (this.ldContextLoader.has(url)) {
-        const contextDoc = await this.ldContextLoader.get(url)
-        return {
-          contextUrl: null,
-          documentUrl: url,
-          document: contextDoc,
-        }
-      } else {
-        if (attemptToFetchContexts) {
-          // attempt to fetch the remote context!!!! MEGA FAIL for JSON-LD.
-          debug('WARNING: attempting to fetch the doc directly for ', url)
-          try {
-            const response = await fetch(url)
-            if (response.status === 200) {
-              const document = await response.json()
-              return {
-                contextUrl: null,
-                documentUrl: url,
-                document,
-              }
-            }
-          } catch (e) {
-            debug('WARNING: unable to fetch the doc or interpret it as JSON', e)
-          }
-        }
-      }
-
-      debug(`WARNING: Possible unknown context/identifier for ${url} \n falling back to default documentLoader`)
-
-      return vc.defaultDocumentLoader(url)
-    })
+    this.ldDocumentLoader = new LdDocumentLoader(options)
   }
 
   async issueLDVerifiableCredential(
@@ -136,7 +52,7 @@ export class LdCredentialModule {
   ): Promise<VerifiableCredentialSP> {
     // fixme: We need to look at the verificationMethod in meta of the key, and then look up the suiteloader, as for instance ed25519 can be the 2018 or 2020 version
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
-    const documentLoader = this.getDocumentLoader(context, true)
+    const documentLoader = this.ldDocumentLoader.getLoader(context, true)
 
     // some suites can modify the incoming credential (e.g. add required contexts)W
     suite.preSigningCredModification(credential)
@@ -157,11 +73,16 @@ export class LdCredentialModule {
     verificationMethodId: string,
     challenge: string | undefined,
     domain: string | undefined,
-    purpose: typeof ProofPurpose = !challenge && !domain ? new AssertionProofPurpose() : new AuthenticationProofPurpose({ domain, challenge }),
+    purpose: typeof ProofPurpose = !challenge && !domain
+      ? new AssertionProofPurpose()
+      : new AuthenticationProofPurpose({
+          domain,
+          challenge,
+        }),
     context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiablePresentationSP> {
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
-    const documentLoader = this.getDocumentLoader(context, true)
+    const documentLoader = this.ldDocumentLoader.getLoader(context, true)
 
     suite.preSigningPresModification(presentation)
 
@@ -180,16 +101,18 @@ export class LdCredentialModule {
     credential: VerifiableCredential,
     context: IAgentContext<IResolver>,
     fetchRemoteContexts: boolean = false,
-    purpose: typeof ProofPurpose = new AssertionProofPurpose()
+    purpose: typeof ProofPurpose = new AssertionProofPurpose(),
+    checkStatus?: Function
   ): Promise<boolean> {
     const verificationSuites = this.getAllVerificationSuites()
     this.ldSuiteLoader.getAllSignatureSuites().forEach((suite) => suite.preVerificationCredModification(credential))
     const result = await vc.verifyCredential({
       credential,
       suite: verificationSuites,
-      documentLoader: this.getDocumentLoader(context, fetchRemoteContexts),
+      documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
       purpose: purpose,
       compactProof: false,
+      checkStatus: checkStatus,
     })
 
     if (result.verified) return true
@@ -212,7 +135,10 @@ export class LdCredentialModule {
     domain: string | undefined,
     context: IAgentContext<IResolver>,
     fetchRemoteContexts: boolean = false,
-    presentationPurpose: typeof ProofPurpose = !challenge && !domain ? new AssertionProofPurpose() : new AuthenticationProofPurpose(domain, challenge)
+    presentationPurpose: typeof ProofPurpose = !challenge && !domain
+      ? new AssertionProofPurpose()
+      : new AuthenticationProofPurpose(domain, challenge),
+    checkStatus?: Function
     //AssertionProofPurpose()
   ): Promise<boolean> {
     // console.log(JSON.stringify(presentation, null, 2))
@@ -220,11 +146,12 @@ export class LdCredentialModule {
     const result = await vc.verify({
       presentation,
       suite: this.getAllVerificationSuites(),
-      documentLoader: this.getDocumentLoader(context, fetchRemoteContexts),
+      documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
       challenge,
       domain,
       presentationPurpose,
       compactProof: false,
+      checkStatus,
     })
 
     if (result.verified) return true
