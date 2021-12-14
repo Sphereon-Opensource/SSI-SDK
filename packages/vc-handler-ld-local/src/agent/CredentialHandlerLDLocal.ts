@@ -180,7 +180,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyCredentialLDLocal} */
   public async verifyCredentialLDLocal(args: IVerifyCredentialLDArgs, context: IRequiredContext): Promise<boolean> {
     const credential = args.credential
-    return this.ldCredentialModule.verifyCredential(credential, context, args.fetchRemoteContexts, args.purpose)
+    return this.ldCredentialModule.verifyCredential(credential, context, args.fetchRemoteContexts, args.purpose, args.checkStatus)
   }
 
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyPresentationLDLocal} */
@@ -192,7 +192,8 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       args.domain,
       context,
       args.fetchRemoteContexts,
-      args.presentationPurpose
+      args.presentationPurpose,
+      args.checkStatus
     )
   }
 
