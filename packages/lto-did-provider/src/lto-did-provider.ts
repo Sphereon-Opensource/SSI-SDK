@@ -112,10 +112,10 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
           })
         }
 
-        // The #key constant for the controller key is set in stone on the LTO Network
+        // The #sign constant for the controller key is set in stone on the LTO Network
         const identifier: Omit<IIdentifier, 'provider'> = {
           did,
-          controllerKeyId: `${did}#key`,
+          controllerKeyId: `${did}#sign`,
           keys,
           services: [],
         }
@@ -149,7 +149,7 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
         verificationMethod: args.options.verificationMethod,
         createVerificationDID: true,
       })
-      .then((account) => `did:lto:${account.address}#key`)
+      .then((account) => `did:lto:${account.address}#sign`)
   }
 
   removeKey(args: { identifier: IIdentifier; kid: string; options?: any }, context: IAgentContext<IKeyManager>): Promise<any> {
@@ -179,7 +179,7 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
       ? await context.agent.keyManagerImport({
           kms: kms || this.defaultKms,
           publicKeyHex: didAccount ? base58ToHex(didAccount.getPublicSignKey()) : undefined,
-          kid: didAccount ? `did:lto:${didAccount.address}#key` : undefined,
+          kid: didAccount ? `did:lto:${didAccount.address}#sign` : undefined,
           type: keyType || 'Ed25519',
           privateKeyHex,
         })
