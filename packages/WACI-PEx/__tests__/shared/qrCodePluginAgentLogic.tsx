@@ -24,17 +24,14 @@ export default (
       await testContext.tearDown()
     })
 
-    it('should create qr code', () => {
-      let qrCodeResponse = null;
+    it('should create qr code',  () => {
       qrCodePlugin
         .ssiQRCode(QRPropsData.getQRProps())
         .then(
           qrCode => {
-            qrCodeResponse = qrCode
             expect(qrCode).not.toBeNull()
           }
         );
-      return qrCodeResponse
     })
 
   })
