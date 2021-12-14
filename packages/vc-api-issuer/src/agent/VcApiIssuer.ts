@@ -31,7 +31,7 @@ export class VcApiIssuer implements IAgentPlugin {
         'Content-Type': 'application/json',
         Authorization: `bearer ${this.authorizationToken}`,
       },
-      body: JSON.stringify({credential: args.credential}),
+      body: JSON.stringify({ credential: args.credential }),
     }).then(async (response: { status: number; text: () => string | PromiseLike<string | undefined> | undefined; json: () => string }) => {
       if (response.status >= 400) {
         throw new Error(await response.text())

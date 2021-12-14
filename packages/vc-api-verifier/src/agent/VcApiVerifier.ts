@@ -1,6 +1,6 @@
-import {IAgentPlugin} from '@veramo/core'
+import { IAgentPlugin } from '@veramo/core'
 
-import {schema} from '../index'
+import { schema } from '../index'
 import { events, IRequiredContext, IVcApiVerifier, IVcApiVerifierArgs, IVerifyCredentialArgs, IVerifyCredentialResult } from '../types/IVcApiVerifier'
 
 const fetch = require('cross-fetch')
@@ -27,18 +27,18 @@ export class VcApiVerifier implements IAgentPlugin {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({verifiableCredential: args.credential}),
+      body: JSON.stringify({ verifiableCredential: args.credential }),
     })
-    .then(async (response: { status: number; text: () => string | PromiseLike<string | undefined> | undefined; json: () => string }) => {
-      if (response.status >= 400) {
-        throw new Error(await response.text())
-      } else {
-        return response.json()
-      }
-    })
-    .then(async (verificationResult: string) => {
-      await context.agent.emit(events.CREDENTIAL_VERIFIED, verificationResult)
-      return verificationResult
-    })
+      .then(async (response: { status: number; text: () => string | PromiseLike<string | undefined> | undefined; json: () => string }) => {
+        if (response.status >= 400) {
+          throw new Error(await response.text())
+        } else {
+          return response.json()
+        }
+      })
+      .then(async (verificationResult: string) => {
+        await context.agent.emit(events.CREDENTIAL_VERIFIED, verificationResult)
+        return verificationResult
+      })
   }
 }
