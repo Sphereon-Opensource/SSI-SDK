@@ -34,6 +34,9 @@
     "README.md",
     "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
