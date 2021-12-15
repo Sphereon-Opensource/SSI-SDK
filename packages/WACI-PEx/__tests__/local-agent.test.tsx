@@ -3,12 +3,12 @@ import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 
 jest.setTimeout(30000)
 
-import qrCodePluginAgentLogic from './shared/qrCodePluginAgentLogic'
+import SsiQrCodeProviderLogic from './shared/ssi-qr-code-provider-logic'
 
 let agent: any
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/waci-pex/agent.yml')
+  const config = getConfig('packages/waci-pex/__tests__/agent.yml')
   const { localAgent } = createObjects(config, { localAgent: '/agent' })
   agent = localAgent
 
@@ -23,5 +23,5 @@ const getAgent = () => agent
 const testContext = {getAgent, setup, tearDown }
 
 describe('Local integration tests', () => {
-  qrCodePluginAgentLogic(testContext)
+  SsiQrCodeProviderLogic(testContext)
 })

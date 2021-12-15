@@ -14,7 +14,7 @@
 
 # waci-pex
 
-A `Veramo` plugin to create QR-code to Verify using `SIOPv2` or `OIDC4`. 
+A `Veramo` plugin to create SSI QR code to Verify using `SIOPv2` or `OIDC4`. This plugin component is only supporting react and react-native frameworks.
 
 ### Installation
 

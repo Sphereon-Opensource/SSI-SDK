@@ -2,6 +2,5 @@
  * @public
  */
 
-export { QRCodePlugin} from './agent/QRCodePlugin'
-export { SSIQRCode } from './agent/SSIQRCode';
-export * from './types/IQRCodePlugin'
+export * from './agent/ssi-qr-code-provider'
+export * from './types/ssi-qr-code-provider-types'
