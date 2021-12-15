@@ -6,6 +6,7 @@
     { "path": "lto-did-provider" },
     { "path": "mnemonic-info-generator" },
     { "path": "vc-api-issuer" },
-    { "path": "vc-api-verifier-plugin" }
+    { "path": "vc-api-verifier" },
+    { "path": "did-auth-siop-op-authenticator" }
   ]
 }
