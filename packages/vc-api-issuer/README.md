@@ -42,7 +42,7 @@ You can also run only a single section of these tests, using for example `yarn t
 
 #### Environment Variable:
 
-- Navigate 
+- Navigate
   - `ssi-sdk/package.json`
   - `scripts.test`
 - Right click
