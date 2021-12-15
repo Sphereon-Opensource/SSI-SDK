@@ -24,7 +24,7 @@ export default (
       await testContext.tearDown()
     })
 
-    it('should create qr code',  () => {
+    it('should create qr code', async () => {
       const ssiQrProps: SsiQrCodeProps = SsiQrCodePropsDataProvider.getQRProps();
       ssiQrCodeProvider
         .ssiQrCode(ssiQrProps)
@@ -35,7 +35,7 @@ export default (
         );
     })
 
-    it('should create qr code with props',  () => {
+    it('should create qr code with props',async () => {
       const ssiQrProps: SsiQrCodeProps = SsiQrCodePropsDataProvider.getQRProps();
       ssiQrCodeProvider
       .ssiQrCode(ssiQrProps)
@@ -46,7 +46,7 @@ export default (
       );
     })
 
-    it('should pass back the content to callback',  () => {
+    it('should pass back the content to callback',  async () => {
       const ssiQrProps: SsiQrCodeProps = SsiQrCodePropsDataProvider.getQRProps(true);
       ssiQrCodeProvider
       .ssiQrCode(ssiQrProps)
