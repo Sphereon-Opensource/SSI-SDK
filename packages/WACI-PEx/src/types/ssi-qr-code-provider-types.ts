@@ -1,13 +1,7 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import { FC } from 'react'
-// import { QRCode } from 'react'
 
-export interface IQRCodePlugin extends IPluginMethodMap {
-  ssiQRCode(qrProps: QRProps, context: IRequiredContext): Promise<FC<QRProps>>
-}
-
-export interface IQRCodePluginArgs {
-  qrCodePluginData: string
+export interface SsiQrCodeProviderTypes extends IPluginMethodMap {
+  ssiQrCode(ssiQrCodeProps: SsiQrCodeProps, context: IRequiredContext): Promise<JSX.Element>
 }
 
 export enum QRType {
@@ -27,7 +21,7 @@ export interface QRContent {
   qrValue: string
 }
 
-export interface QRProps {
+export interface SsiQrCodeProps {
   type: QRType
   did: string
   mode: QRMode
@@ -41,7 +35,7 @@ export interface QRProps {
 }
 
 export enum events {
-  QR_CODE_CREATED = 'qrCodeCreated',
+  SSI_QR_CODE_CODE_CREATED = 'SsiQrCodeCreated',
 }
 
 export type IRequiredContext = IAgentContext<Record<string, never>>
