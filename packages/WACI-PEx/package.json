@@ -1,13 +1,13 @@
 {
   "name": "@sphereon/waci-pex",
   "version": "0.0.1",
-  "description": "A QR generator veramo plugin",
+  "description": "Veramo SSI QR Code provider",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
-      "IQRCodePlugin": "./src/types/IQRCodePlugin.ts"
+      "ISsiQrCodeProvider": "./src/types/ISsiQrCodeProvider.ts"
     }
   },
   "scripts": {
@@ -39,7 +39,6 @@
     "dist/**/*",
     "src/**/*",
     "README.md",
-    "plugin.schema.json",
     "LICENSE"
   ],
   "publishConfig": {
