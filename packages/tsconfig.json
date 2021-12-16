@@ -4,8 +4,10 @@
     { "path": "ssi-sdk-core" },
     { "path": "factom-did-provider" },
     { "path": "lto-did-provider" },
+    { "path": "mnemonic-info-generator" },
     { "path": "vc-api-issuer" },
     { "path": "vc-api-verifier" },
-    { "path": "vc-handler-ld-local" }
+    { "path": "vc-handler-ld-local" },
+    { "path": "did-auth-siop-op-authenticator" }
   ]
 }
