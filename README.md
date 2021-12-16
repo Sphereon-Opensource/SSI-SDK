@@ -80,6 +80,7 @@ our [Presentation-Exchange library](https://github.com/Sphereon-Opensource/pe-js
 DID resolution is not part of this SDK. We do provide a Universal DID client you can use in Veramo, simply by using the
 below code when setting up the Agent:
 
+Using the Universal resolver for all DID methods:
 ````typescript
 export const agent = createAgent<IDIDManager & CredentialIssuerLD & IKeyManager & IDataStore & IDataStoreORM & IResolver>({
   plugins: [
@@ -87,6 +88,22 @@ export const agent = createAgent<IDIDManager & CredentialIssuerLD & IKeyManager 
     new DIDResolverPlugin({
       resolver: new UniResolver({ resolveURL: 'https://dev.uniresolver.io/1.0/identifiers' })
     })
+  ]
+})
+````
+
+Using the Universal resolver for specific DID methods and DID-key:
+````typescript
+export const agent = createAgent<IDIDManager & CredentialIssuerLD & IKeyManager & IDataStore & IDataStoreORM & IResolver>({
+  plugins: [
+    // Other plugins
+    new DIDResolverPlugin({
+      resolver: new Resolver({
+        ...getDidKeyResolver(),
+        ...getUniResolver('lto', { resolveUrl: 'https://uniresolver.test.sphereon.io/1.0/identifiers' }),
+        ...getUniResolver('factom', { resolveUrl: 'https://dev.uniresolver.io/1.0/identifiers' }),
+      }),
+    }),
   ]
 })
 ````
