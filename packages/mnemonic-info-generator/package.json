@@ -15,17 +15,20 @@
   },
   "dependencies": {
     "@veramo/core": "^3.1.0",
+    "@veramo/data-store": "^3.1.0",
     "@veramo/key-manager": "^3.1.0",
+    "@veramo/kms-local": "^3.1.0",
     "bip39": "^3.0.4"
   },
   "devDependencies": {
     "@types/bip39": "^3.0.0",
     "@types/jest": "^27.0.2",
     "@veramo/cli": "^3.1.0",
+    "ed25519-hd-key": "^1.2.0",
     "jest": "^27.0.2",
+    "prettier": "^2.4.1",
     "ts-jest": "^27.0.7",
-    "typescript": "^4.4.3",
-    "prettier": "^2.4.1"
+    "typescript": "^4.4.3"
   },
   "files": [
     "dist/**/*",

@@ -1,19 +1,19 @@
 import * as crypto from 'crypto';
-
-import { IAgentPlugin } from '@veramo/core';
+import { derivePath, getMasterKeyFromSeed, getPublicKey } from 'ed25519-hd-key';
+import { IAgentPlugin, ManagedKeyInfo } from '@veramo/core';
 import { AbstractSecretBox } from '@veramo/key-manager';
 import * as bip39 from 'bip39';
 import { Connection } from 'typeorm';
 
 import {
   DeleteResult,
-  IMnemonicGeneratorArgs,
+  IMnemonicGeneratorArgs, IMnemonicInfoKeyResult,
   IMnemonicInfoResult,
   IMnemonicInfoStoreArgs,
   IMnemonicVerificationArgs,
-  IPartialMnemonicVerificationArgs,
+  IPartialMnemonicVerificationArgs, IRequiredContext,
   ISeedGeneratorArgs,
-  schema,
+  schema, UpdateResult,
 } from '../index';
 import { IMnemonicInfoGenerator } from '../types/IMnemonicInfoGenerator';
 
@@ -29,6 +29,8 @@ export class MnemonicInfoGenerator implements IAgentPlugin {
     saveMnemonicInfo: this.saveMnemonicInfo.bind(this),
     getMnemonicInfo: this.getMnemonicInfo.bind(this),
     deleteMnemonicInfo: this.deleteMnemonicInfo.bind(this),
+    generateMasterKey: this.generateMasterKey.bind(this),
+    generateKeysFromMnemonic: this.generateKeysFromMnemonic.bind(this)
   };
 
   constructor(private dbConnection: Promise<Connection>, private secretBox?: AbstractSecretBox) {
@@ -112,5 +114,46 @@ export class MnemonicInfoGenerator implements IAgentPlugin {
       .where('id = :id', { id: args.id })
       .orWhere('hash = :hash', { hash: args.hash })
       .execute();
+  }
+
+  private async saveMasterKey(args: IMnemonicInfoStoreArgs): Promise<UpdateResult> {
+    if (args.masterKey) {
+      return (await this.dbConnection).createQueryBuilder().update(MnemonicInfo).set({ masterKey: args.masterKey })
+          .where('id = :id', { id: args.id }).orWhere('hash = :hash', { hash: args.hash }).execute();
+    }
+    throw new Error('Master Key needs to be provided.');
+  }
+
+  private async generateMasterKey(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoKeyResult> {
+    const mnemonic = (await this.getMnemonicInfo({ id: args.id, hash: args.hash })).mnemonic;
+    if (mnemonic) {
+      const seed = await bip39.mnemonicToSeed(mnemonic?.join(' '));
+      const { key, chainCode } = getMasterKeyFromSeed(seed.toString('hex'));
+      await this.saveMasterKey({ masterKey: key.toString('hex'), chainCode: chainCode.toString('hex') });
+      return { masterKey: key.toString('hex'), chainCode: chainCode.toString('hex') };
+    }
+    throw new Error('Mnemonic not found');
+  }
+
+  private async generateKeysFromMnemonic(args: IMnemonicInfoStoreArgs, context: IRequiredContext): Promise<ManagedKeyInfo> {
+    console.warn(context.agent)
+    const mnemonic = (await this.getMnemonicInfo({ id: args.id, hash: args.hash })).mnemonic;
+    if (mnemonic && context) {
+      if (args.path && args.kms) {
+        const seed = await bip39.mnemonicToSeed(mnemonic?.join(' '));
+        const { key, chainCode } = derivePath(args.path, seed.toString('hex'), args.offset);
+        const extPrivateKey = Buffer.concat([key, chainCode])
+        //TODO it doesn't seem to be using any secp256k1 library to generate the public key, need to check if it is correct
+        const publicKey = getPublicKey(key, args.withZeroBytes)
+        return await context.agent.keyManagerImport({
+          privateKeyHex: extPrivateKey.toString('hex'),
+          publicKeyHex: publicKey.toString('hex'),
+          type: "Ed25519",
+          kms: args.kms
+        })
+      }
+      throw new Error('Please provide kms and derivation path')
+    }
+    throw new Error('Master Key not found');
   }
 }

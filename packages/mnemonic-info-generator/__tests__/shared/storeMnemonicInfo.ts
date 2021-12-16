@@ -1,8 +1,8 @@
-import { TAgent } from '@veramo/core';
+import {IDataStore, IKeyManager, TAgent} from '@veramo/core';
+import { IMnemonicInfoGenerator, IMnemonicInfoResult, IRequiredContext } from '../../src/index';
+import { MinimalImportableKey, ManagedKeyInfo } from "@veramo/core/src/types/IKeyManager";
 
-import { IMnemonicInfoGenerator, IMnemonicInfoResult } from '../../src';
-
-type ConfiguredAgent = TAgent<IMnemonicInfoGenerator>;
+type ConfiguredAgent = TAgent<IMnemonicInfoGenerator & IKeyManager & IDataStore>;
 
 export default (testContext: {
   getAgent: () => ConfiguredAgent;
@@ -10,12 +10,27 @@ export default (testContext: {
   tearDown: () => Promise<boolean>;
 }) => {
   describe('database operations', () => {
+
+    const mockedContext = {
+      agent: {
+        keyManagerImport: (args: MinimalImportableKey): Promise<ManagedKeyInfo> => {
+          return Promise.resolve({
+            kid: 'test_id',
+            kms: 'local',
+            type: 'Ed25519',
+            publicKeyHex: 'publicKey'
+          })
+        }
+      } as IKeyManager
+    } as IRequiredContext
+
     let agent: ConfiguredAgent;
     let mnemonicObj: IMnemonicInfoResult;
 
     beforeAll(() => {
       testContext.setup();
       agent = testContext.getAgent();
+      console.warn(agent.availableMethods())
     });
 
     afterAll(testContext.tearDown);
@@ -150,7 +165,17 @@ export default (testContext: {
       await expect(() => agent.verifyPartialMnemonic({
         hash: 'non-existent',
         indexedWordList
-      })).rejects.toThrowError('Mnemonic not found')
+      })).rejects.toThrowError('Mnemonic not found');
     });
+
+    it('should generate the master key', async () => {
+      const mnemonicInfoKey = await agent.generateMasterKey({ hash: mnemonicObj.hash });
+      expect(mnemonicInfoKey.masterKey).toMatch(/\w{64}/);
+      expect(mnemonicInfoKey.chainCode).toMatch(/\w{64}/);
+    })
+
+    it('should generate the private and public keys', async () => {
+      await expect(agent.generateKeysFromMnemonic({ hash: mnemonicObj.hash, path: 'm/0\'', kms: 'local' })).resolves.toEqual({});
+    })
   });
 };

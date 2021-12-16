@@ -1,4 +1,5 @@
-import { IPluginMethodMap } from '@veramo/core';
+import {IAgentContext, IDataStore, IKeyManager, IPluginMethodMap, ManagedKeyInfo} from '@veramo/core';
+import {ObjectLiteral} from "typeorm/browser/common/ObjectLiteral";
 
 export interface IMnemonicInfoGenerator extends IPluginMethodMap {
   generateMnemonic(args: IMnemonicGeneratorArgs): Promise<IMnemonicInfoResult>;
@@ -8,6 +9,8 @@ export interface IMnemonicInfoGenerator extends IPluginMethodMap {
   saveMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoResult>;
   getMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoResult>;
   deleteMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<DeleteResult>;
+  generateMasterKey(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoKeyResult>;
+  generateKeysFromMnemonic(args: IMnemonicInfoStoreArgs, context: IRequiredContext): Promise<ManagedKeyInfo>
 }
 
 /**
@@ -61,6 +64,18 @@ export interface IMnemonicInfoStoreArgs {
   id?: string;
   hash?: string;
   mnemonic?: string[];
+  masterKey?: string;
+  chainCode?: string;
+  kms?: string;
+  path?: string;
+  offset?: number;
+  withZeroBytes?: boolean;
+  persist?: boolean;
+}
+
+export interface IMnemonicInfoKeyResult {
+  masterKey?: string;
+  chainCode?: string;
 }
 
 export interface DeleteResult {
@@ -68,7 +83,13 @@ export interface DeleteResult {
   affected?: number | null;
 }
 
+export interface UpdateResult extends DeleteResult {
+  generatedMaps: ObjectLiteral[];
+}
+
 export interface IMnemonicInfoResult extends IMnemonicInfoStoreArgs {
   succeeded?: boolean;
   seed?: string;
 }
+
+export type IRequiredContext = IAgentContext<IKeyManager & IDataStore>
