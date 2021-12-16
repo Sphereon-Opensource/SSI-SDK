@@ -7,10 +7,6 @@ import { KeyManagementSystem } from '@veramo/kms-local'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { Resolver } from 'did-resolver'
 
-const PUBLIC_KEY_HEX = '89a4661e446b46401325a38d3b20582d1dd277eb448a3181012a671b7ae15837'
-const LTO_DID = 'did:factom:5e2dd72ba81bb9cc50d500e148fdbcc44b09807336d3ebb9ea12451987cc4c00'
-const LTO_KID = `${LTO_DID}#sign`
-
 // const kms = new KeyManagementSystem(new MemoryPrivateKeyStore())
 const memoryDIDStore = new MemoryDIDStore()
 
