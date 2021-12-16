@@ -1,11 +1,8 @@
 import { schema } from '../index'
 import { IAgentPlugin } from '@veramo/core'
-import { OpSession } from '../session/OpSession';
-import { v4 as uuidv4 } from 'uuid';
-import {
-  ParsedAuthenticationRequestURI,
-  VerifiedAuthenticationRequestWithJWT,
-} from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
+import { OpSession } from '../session/OpSession'
+import { v4 as uuidv4 } from 'uuid'
+import { ParsedAuthenticationRequestURI, VerifiedAuthenticationRequestWithJWT } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
 import {
   events,
   IAuthenticateWithSiopArgs,
@@ -20,7 +17,7 @@ import {
   IRemoveSiopSessionArgs,
   IRequiredContext,
   ISendSiopAuthenticationResponseArgs,
-  IVerifySiopAuthenticationRequestUriArgs
+  IVerifySiopAuthenticationRequestUriArgs,
 } from '../types/IDidAuthSiopOpAuthenticator'
 
 /**
@@ -38,7 +35,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     verifySiopAuthenticationRequestURI: this.verifySiopAuthenticationRequestURI.bind(this),
     sendSiopAuthenticationResponse: this.sendSiopAuthenticationResponse.bind(this),
     registerCustomApprovalForSiop: this.registerCustomApprovalForSiop.bind(this),
-    removeCustomApprovalForSiop: this.removeCustomApprovalForSiop.bind(this)
+    removeCustomApprovalForSiop: this.removeCustomApprovalForSiop.bind(this),
   }
 
   private readonly sessions: Record<string, OpSession>
@@ -50,10 +47,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.getSiopSession} */
-  private async getSessionForSiop(
-      args: IGetSiopSessionArgs,
-      context: IRequiredContext
-  ): Promise<OpSession> {
+  private async getSessionForSiop(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession> {
     // TODO add cleaning up sessions https://sphereon.atlassian.net/browse/MYC-143
     if (this.sessions[args.sessionId] === undefined) {
       return Promise.reject(new Error(`No session found for id: ${args.sessionId}`))
@@ -63,17 +57,14 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.registerSessionForSiop} */
-  private async registerSessionForSiop(
-      args: IRegisterSiopSessionArgs,
-      context: IRequiredContext
-  ): Promise<OpSession> {
+  private async registerSessionForSiop(args: IRegisterSiopSessionArgs, context: IRequiredContext): Promise<OpSession> {
     const sessionId = args.sessionId || uuidv4()
 
     if (this.sessions[sessionId] !== undefined) {
       return Promise.reject(new Error(`Session with id: ${args.sessionId} already present`))
     }
 
-    const session = new OpSession({sessionId, identifier: args.identifier, expiresIn: args.expiresIn, context})
+    const session = new OpSession({ sessionId, identifier: args.identifier, expiresIn: args.expiresIn, context })
     await session.init()
     this.sessions[sessionId] = session
 
@@ -81,18 +72,12 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.removeSessionForiop} */
-  private async removeSessionForSiop(
-      args: IRemoveSiopSessionArgs,
-      context: IRequiredContext
-  ): Promise<boolean> {
+  private async removeSessionForSiop(args: IRemoveSiopSessionArgs, context: IRequiredContext): Promise<boolean> {
     return delete this.sessions[args.sessionId]
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.registerCustomApprovalForSiop} */
-  private async registerCustomApprovalForSiop(
-      args: IRegisterCustomApprovalForSiopArgs,
-      context: IRequiredContext
-  ): Promise<void> {
+  private async registerCustomApprovalForSiop(args: IRegisterCustomApprovalForSiopArgs, context: IRequiredContext): Promise<void> {
     if (this.customApprovals[args.key] !== undefined) {
       return Promise.reject(new Error(`Custom approval with key: ${args.key} already present`))
     }
@@ -101,69 +86,51 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.registerCustomApprovalForSiop} */
-  private async removeCustomApprovalForSiop(
-      args: IRemoveCustomApprovalForSiopArgs,
-      context: IRequiredContext
-  ): Promise<boolean> {
+  private async removeCustomApprovalForSiop(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean> {
     return delete this.sessions[args.key]
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.authenticateWithSiop} */
-  private async authenticateWithSiop(
-      args: IAuthenticateWithSiopArgs,
-      context: IRequiredContext
-  ): Promise<Response> {
-    return this.getSessionForSiop({sessionId: args.sessionId}, context).then(session =>
-        session.authenticateWithSiop({...args, customApprovals: this.customApprovals})
-          .then(async (response: Response) => {
-            await context.agent.emit(events.DID_SIOP_AUTHENTICATED, response)
-            return response
-          })
+  private async authenticateWithSiop(args: IAuthenticateWithSiopArgs, context: IRequiredContext): Promise<Response> {
+    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session) =>
+      session.authenticateWithSiop({ ...args, customApprovals: this.customApprovals }).then(async (response: Response) => {
+        await context.agent.emit(events.DID_SIOP_AUTHENTICATED, response)
+        return response
+      })
     )
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.getSiopAuthenticationRequestFromRP} */
   private async getSiopAuthenticationRequestFromRP(
-      args: IGetSiopAuthenticationRequestFromRpArgs,
-      context: IRequiredContext
+    args: IGetSiopAuthenticationRequestFromRpArgs,
+    context: IRequiredContext
   ): Promise<ParsedAuthenticationRequestURI> {
-    return this.getSessionForSiop({sessionId: args.sessionId}, context).then(session =>
-        session.getSiopAuthenticationRequestFromRP(args)
-    )
+    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session) => session.getSiopAuthenticationRequestFromRP(args))
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.getSiopAuthenticationRequestDetails} */
   private async getSiopAuthenticationRequestDetails(
-      args: IGetSiopAuthenticationRequestDetailsArgs,
-      context: IRequiredContext
+    args: IGetSiopAuthenticationRequestDetailsArgs,
+    context: IRequiredContext
   ): Promise<IAuthRequestDetails> {
-    return this.getSessionForSiop({sessionId: args.sessionId}, context).then(session =>
-        session.getSiopAuthenticationRequestDetails(args)
-    )
+    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session) => session.getSiopAuthenticationRequestDetails(args))
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.verifySiopAuthenticationRequestURI} */
   private async verifySiopAuthenticationRequestURI(
-      args: IVerifySiopAuthenticationRequestUriArgs,
-      context: IRequiredContext
+    args: IVerifySiopAuthenticationRequestUriArgs,
+    context: IRequiredContext
   ): Promise<VerifiedAuthenticationRequestWithJWT> {
-    return this.getSessionForSiop({sessionId: args.sessionId}, context).then(session =>
-        session.verifySiopAuthenticationRequestURI(args)
-    )
+    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session) => session.verifySiopAuthenticationRequestURI(args))
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.sendSiopAuthenticationResponse} */
-  private async sendSiopAuthenticationResponse(
-      args: ISendSiopAuthenticationResponseArgs,
-      context: IRequiredContext
-  ): Promise<Response> {
-    return this.getSessionForSiop({sessionId: args.sessionId}, context).then(session =>
-        session.sendSiopAuthenticationResponse(args)
-        .then(async (response: Response) => {
-          await context.agent.emit(events.DID_SIOP_AUTHENTICATED, response)
-          return response
-        })
+  private async sendSiopAuthenticationResponse(args: ISendSiopAuthenticationResponseArgs, context: IRequiredContext): Promise<Response> {
+    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session) =>
+      session.sendSiopAuthenticationResponse(args).then(async (response: Response) => {
+        await context.agent.emit(events.DID_SIOP_AUTHENTICATED, response)
+        return response
+      })
     )
   }
-
 }

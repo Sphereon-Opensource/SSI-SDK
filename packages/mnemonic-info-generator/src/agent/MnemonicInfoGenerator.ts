@@ -1,9 +1,9 @@
-import * as crypto from 'crypto';
+import * as crypto from 'crypto'
 
-import { IAgentPlugin } from '@veramo/core';
-import { AbstractSecretBox } from '@veramo/key-manager';
-import * as bip39 from 'bip39';
-import { Connection } from 'typeorm';
+import { IAgentPlugin } from '@veramo/core'
+import { AbstractSecretBox } from '@veramo/key-manager'
+import * as bip39 from 'bip39'
+import { Connection } from 'typeorm'
 
 import {
   DeleteResult,
@@ -14,13 +14,13 @@ import {
   IPartialMnemonicVerificationArgs,
   ISeedGeneratorArgs,
   schema,
-} from '../index';
-import { IMnemonicInfoGenerator } from '../types/IMnemonicInfoGenerator';
+} from '../index'
+import { IMnemonicInfoGenerator } from '../types/IMnemonicInfoGenerator'
 
-import { MnemonicInfo } from './entity/mnemonicInfo';
+import { MnemonicInfo } from './entity/mnemonicInfo'
 
 export class MnemonicInfoGenerator implements IAgentPlugin {
-  readonly schema = schema.IMnemonicInfoGenerator;
+  readonly schema = schema.IMnemonicInfoGenerator
   readonly methods: IMnemonicInfoGenerator = {
     generateMnemonic: this.generateMnemonic.bind(this),
     generateSeed: this.generateSeed.bind(this),
@@ -29,60 +29,60 @@ export class MnemonicInfoGenerator implements IAgentPlugin {
     saveMnemonicInfo: this.saveMnemonicInfo.bind(this),
     getMnemonicInfo: this.getMnemonicInfo.bind(this),
     deleteMnemonicInfo: this.deleteMnemonicInfo.bind(this),
-  };
+  }
 
   constructor(private dbConnection: Promise<Connection>, private secretBox?: AbstractSecretBox) {
     if (!secretBox) {
-      console.warn('Please provide SecretBox to the KeyStore');
+      console.warn('Please provide SecretBox to the KeyStore')
     }
   }
 
   private async generateMnemonic(args: IMnemonicGeneratorArgs): Promise<IMnemonicInfoResult> {
-    const mnemonic = bip39.generateMnemonic(args.bits);
+    const mnemonic = bip39.generateMnemonic(args.bits)
     if (args.persist) {
-      return await this.saveMnemonicInfo({ id: args.id, mnemonic: mnemonic.split(' ') });
+      return await this.saveMnemonicInfo({ id: args.id, mnemonic: mnemonic.split(' ') })
     }
-    return { mnemonic: mnemonic.split(' ') };
+    return { mnemonic: mnemonic.split(' ') }
   }
 
   private async verifyMnemonic(args: IMnemonicVerificationArgs): Promise<IMnemonicInfoResult> {
-    const mnemonicInfo = await this.getMnemonicInfo({ id: args.id, hash: args.hash });
+    const mnemonicInfo = await this.getMnemonicInfo({ id: args.id, hash: args.hash })
     if (mnemonicInfo?.mnemonic) {
-      return { succeeded: mnemonicInfo.mnemonic.join(' ') === args.wordList?.join(' ') };
+      return { succeeded: mnemonicInfo.mnemonic.join(' ') === args.wordList?.join(' ') }
     }
-    throw new Error('Mnemonic not found');
+    throw new Error('Mnemonic not found')
   }
 
   private async verifyPartialMnemonic(args: IPartialMnemonicVerificationArgs): Promise<IMnemonicInfoResult> {
-    const mnemonicInfo = await this.getMnemonicInfo({id: args.id, hash: args.hash});
+    const mnemonicInfo = await this.getMnemonicInfo({ id: args.id, hash: args.hash })
     if (mnemonicInfo?.mnemonic) {
-      return { succeeded: args.indexedWordList.every(indexedWord => mnemonicInfo.mnemonic?.indexOf(indexedWord[1]) === indexedWord[0]) };
+      return { succeeded: args.indexedWordList.every((indexedWord) => mnemonicInfo.mnemonic?.indexOf(indexedWord[1]) === indexedWord[0]) }
     }
-    throw new Error('Mnemonic not found');
+    throw new Error('Mnemonic not found')
   }
 
   private async generateSeed(args: ISeedGeneratorArgs): Promise<IMnemonicInfoResult> {
     return Promise.resolve({
       seed: await bip39.mnemonicToSeed(args.mnemonic.join(' ')).then((seed) => seed.toString('hex')),
-    });
+    })
   }
 
   private async saveMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoResult> {
     if (args.mnemonic && this.secretBox) {
-      const mnemonic = args.mnemonic.join(' ');
-      const hash = crypto.createHash('sha256').update(mnemonic).digest('hex');
-      const mnemonicInfo = new MnemonicInfo();
-      mnemonicInfo.id = args.id ? args.id : hash;
-      mnemonicInfo.hash = hash;
-      mnemonicInfo.mnemonic = await this.secretBox.encrypt(mnemonic);
-      const result = await (await this.dbConnection).getRepository(MnemonicInfo).save(mnemonicInfo);
+      const mnemonic = args.mnemonic.join(' ')
+      const hash = crypto.createHash('sha256').update(mnemonic).digest('hex')
+      const mnemonicInfo = new MnemonicInfo()
+      mnemonicInfo.id = args.id ? args.id : hash
+      mnemonicInfo.hash = hash
+      mnemonicInfo.mnemonic = await this.secretBox.encrypt(mnemonic)
+      const result = await (await this.dbConnection).getRepository(MnemonicInfo).save(mnemonicInfo)
       return Promise.resolve({
         id: result.id,
         hash: result.hash,
         mnemonic: args.mnemonic,
-      });
+      })
     } else {
-      throw new Error('Mnemonic needs to be provided.');
+      throw new Error('Mnemonic needs to be provided.')
     }
   }
 
@@ -92,16 +92,16 @@ export class MnemonicInfoGenerator implements IAgentPlugin {
       .createQueryBuilder()
       .where('id = :id', { id: args.id })
       .orWhere('hash = :hash', { hash: args.hash })
-      .getOne();
+      .getOne()
     if (mnemonicInfo?.mnemonic) {
-      const mnemonicStr = await this.secretBox?.decrypt(mnemonicInfo.mnemonic);
+      const mnemonicStr = await this.secretBox?.decrypt(mnemonicInfo.mnemonic)
       return {
         id: mnemonicInfo.id,
         hash: mnemonicInfo.hash,
         mnemonic: mnemonicStr?.split(' '),
-      };
+      }
     }
-    return {};
+    return {}
   }
 
   private async deleteMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<DeleteResult> {
@@ -111,6 +111,6 @@ export class MnemonicInfoGenerator implements IAgentPlugin {
       .from(MnemonicInfo)
       .where('id = :id', { id: args.id })
       .orWhere('hash = :hash', { hash: args.hash })
-      .execute();
+      .execute()
   }
 }

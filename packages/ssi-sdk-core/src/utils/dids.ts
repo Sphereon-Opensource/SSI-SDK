@@ -1,10 +1,7 @@
-import { IParsedDID } from '../types';
+import { IParsedDID } from '../types'
 
-
-export const parseDid = (
-    did: string
-): IParsedDID => {
-  const parsedDid = parse(did);
+export const parseDid = (did: string): IParsedDID => {
+  const parsedDid = parse(did)
   if (parsedDid === null) {
     throw new Error('invalid did')
   }
