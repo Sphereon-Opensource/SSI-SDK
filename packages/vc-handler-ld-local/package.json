@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-vc-handler-ld-local",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
   "dependencies": {
     "@veramo/core": "^3.1.1-next.15",
     "@veramo/utils": "^3.1.1-next.15",
-    "@sphereon/ssi-sdk-core": "^0.0.1",
+    "@sphereon/ssi-sdk-core": "^0.1.1",
     "@digitalcredentials/vc": "^1.1.1",
     "did-context": "^3.1.1",
     "credentials-context": "^2.0.0",
