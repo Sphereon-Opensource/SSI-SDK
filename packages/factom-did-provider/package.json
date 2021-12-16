@@ -1,5 +1,5 @@
 {
-  "name": "@sphereon/sphereon-sdk-factom-did-provider",
+  "name": "@sphereon/ssi-sdk-factom-did-provider",
   "description": "Veramo Factom DID provider",
   "version": "0.0.1",
   "main": "dist/index.js",
