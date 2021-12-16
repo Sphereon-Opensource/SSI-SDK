@@ -63,7 +63,7 @@ spec).
 
 ## JSON-LD VC/VP Handler
 
-The [JSON-LD VC/VP Handler](./packages/vc-handler-ld-local/README.md) handles issuance and verificaiton of JSON-LD based
+The [JSON-LD VC/VP Handler](./packages/vc-handler-ld-local/README.md) handles issuance and verification of JSON-LD based
 Verifiable Credentials and Verifiable Presentations
 
 ## OpenID Connect
