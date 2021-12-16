@@ -3,7 +3,7 @@ import { IAgentPlugin } from '@veramo/core'
 import { schema } from '../index'
 import { events, IRequiredContext, IVcApiVerifier, IVcApiVerifierArgs, IVerifyCredentialArgs, IVerifyCredentialResult } from '../types/IVcApiVerifier'
 
-const fetch = require('cross-fetch')
+import { fetch } from 'cross-fetch'
 
 /**
  * {@inheritDoc IVcApiVerifier}
@@ -29,14 +29,14 @@ export class VcApiVerifier implements IAgentPlugin {
       },
       body: JSON.stringify({ verifiableCredential: args.credential }),
     })
-      .then(async (response: { status: number; text: () => string | PromiseLike<string | undefined> | undefined; json: () => string }) => {
+      .then(async (response) => {
         if (response.status >= 400) {
           throw new Error(await response.text())
         } else {
           return response.json()
         }
       })
-      .then(async (verificationResult: string) => {
+      .then(async (verificationResult) => {
         await context.agent.emit(events.CREDENTIAL_VERIFIED, verificationResult)
         return verificationResult
       })
