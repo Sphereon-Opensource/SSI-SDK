@@ -5,6 +5,7 @@ import { DIDService, hexToBase58, base58ToHex } from '@sphereon/lto-did-ts'
 import Debug from 'debug'
 import { ICreateIdentifierOpts, ILtoDidProviderOpts, IRequiredContext, IDidConnectionMode, IAddKeyOpts } from './types/lto-provider-types'
 import { UniRegistrar } from '@sphereon/did-uni-client'
+
 const debug = Debug('veramo:did-provider-lto')
 
 export class LtoDidProvider extends AbstractIdentifierProvider {
@@ -24,13 +25,7 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
   }
 
   async createIdentifier(
-    {
-      kms,
-      options,
-    }: {
-      kms?: string
-      options?: ICreateIdentifierOpts
-    },
+    { kms, options }: { kms?: string; options?: ICreateIdentifierOpts },
     context: IRequiredContext
   ): Promise<Omit<IIdentifier, 'provider'>> {
     if (this.isUniRegistrarMode()) {
@@ -117,10 +112,10 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
           })
         }
 
-        // The #key constant for the controller key is set in stone on the LTO Network
+        // The #sign constant for the controller key is set in stone on the LTO Network
         const identifier: Omit<IIdentifier, 'provider'> = {
           did,
-          controllerKeyId: `${did}#key`,
+          controllerKeyId: `${did}#sign`,
           keys,
           services: [],
         }
@@ -154,7 +149,7 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
         verificationMethod: args.options.verificationMethod,
         createVerificationDID: true,
       })
-      .then((account) => `did:lto:${account.address}#key`)
+      .then((account) => `did:lto:${account.address}#sign`)
   }
 
   removeKey(args: { identifier: IIdentifier; kid: string; options?: any }, context: IAgentContext<IKeyManager>): Promise<any> {
@@ -184,7 +179,7 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
       ? await context.agent.keyManagerImport({
           kms: kms || this.defaultKms,
           publicKeyHex: didAccount ? base58ToHex(didAccount.getPublicSignKey()) : undefined,
-          kid: didAccount ? `did:lto:${didAccount.address}#key` : undefined,
+          kid: didAccount ? `did:lto:${didAccount.address}#sign` : undefined,
           type: keyType || 'Ed25519',
           privateKeyHex,
         })

@@ -12,13 +12,13 @@ export type IRequiredContext = IAgentContext<IKeyManager>
 
 export class FactomDIDProvider extends AbstractIdentifierProvider {
   private readonly defaultKms: string
-  private readonly network: string | number
+  private readonly defaultNetwork: string | number
   private readonly registrar: UniRegistrar
 
-  constructor(opts: { defaultKms: string; network: string | number; registrarUrl?: string }) {
+  constructor(opts: { defaultKms: string; defaultNetwork?: string | number; registrarUrl?: string }) {
     super()
     this.defaultKms = opts.defaultKms
-    this.network = opts.network
+    this.defaultNetwork = opts.defaultNetwork || 'MAINNET'
     this.registrar = opts.registrarUrl ? new UniRegistrar().setBaseURL(opts.registrarUrl) : new UniRegistrar()
   }
 
@@ -36,21 +36,29 @@ export class FactomDIDProvider extends AbstractIdentifierProvider {
     const nonce = options?.nonce
 
     let keys: ManagedKeyInfo[] = []
-    const didKeys = options?.didKeys.map(async (didKey) => {
-      const factomKey = await this.createKey(didKey, context, { kms })
-      const { key, ...payload } = factomKey
-      // keys.push(key);
-      return {
-        ...payload,
-        priorityRequirement: didKey.priorityRequirement || 0,
-      }
-    })
-    const managementKeys = options?.managementKeys.map(async (mgmtKey) => {
-      const factomKey = await this.createKey(mgmtKey, context, { kms })
-      const { key, ...payload } = factomKey
-      keys.push(key)
-      return { ...payload, priority: mgmtKey.priority || 0 }
-    })
+    const didKeys = !options
+      ? undefined
+      : await Promise.all(
+          options.didKeys.map(async (didKey) => {
+            const factomKey = await this.createKey(didKey, context, { kms })
+            const { key, ...payload } = factomKey
+            // keys.push(key);
+            return {
+              ...payload,
+              priorityRequirement: didKey.priorityRequirement || 0,
+            }
+          })
+        )
+    const managementKeys = !options
+      ? undefined
+      : await Promise.all(
+          options.managementKeys.map(async (mgmtKey) => {
+            const factomKey = await this.createKey(mgmtKey, context, { kms })
+            const { key, ...payload } = factomKey
+            keys.push(key)
+            return { ...payload, priority: mgmtKey.priority || 0 }
+          })
+        )
 
     const factomOpts = {
       didVersion: 'FACTOM_V1_JSON',
@@ -58,7 +66,7 @@ export class FactomDIDProvider extends AbstractIdentifierProvider {
       didKeys,
       tags,
       nonce,
-      network: this.network,
+      network: this.defaultNetwork,
     }
     // todo: add services
 
@@ -96,25 +104,30 @@ export class FactomDIDProvider extends AbstractIdentifierProvider {
   }
 
   private async createKey(
-    mgmtKey: IManagementKeyOpts | IDidKeyOpts,
+    keyArg: IManagementKeyOpts | IDidKeyOpts,
     context: IAgentContext<IKeyManager>,
     { kms }: { kms?: string; alias?: string; options?: any }
   ) {
-    const key = mgmtKey.privateKeyMultibase
+    const agentKey = keyArg.privateKeyMultibase
       ? await context.agent.keyManagerImport({
           kms: kms || this.defaultKms,
           type: 'Ed25519',
-          privateKeyHex: multibaseToHex(mgmtKey.privateKeyMultibase).value,
+          privateKeyHex: multibaseToHex(keyArg.privateKeyMultibase).value,
         })
       : await context.agent.keyManagerCreate({
           kms: kms || this.defaultKms,
           type: 'Ed25519',
         })
-    const publicKeyMultibase = hexToMultibase(key.publicKeyHex, MultibaseFormat.BASE58).value
+    let publicKeyMultibase = hexToMultibase(agentKey.publicKeyHex, MultibaseFormat.BASE58).value
+    if (!publicKeyMultibase.startsWith('z')) {
+      publicKeyMultibase = `z${publicKeyMultibase}`
+    }
+    const purpose = 'purpose' in keyArg ? keyArg.purpose : undefined
     return {
-      key,
+      key: agentKey,
       type: 'Ed25519VerificationKey2020',
-      keyIdentifier: key.kid,
+      purpose,
+      keyIdentifier: agentKey.kid,
       publicKeyMultibase,
     }
   }

@@ -9,6 +9,9 @@
   },
   "dependencies": {
     "@sphereon/lto-did-ts": "^0.1.6",
+    "@lto-network/lto-crypto": "^1.1.1",
+    "@lto-network/lto-transactions": "^1.2.12",
+    "@lto-network/signature-generator": "^1.0.0",
     "lto-api": "^0.5.14",
     "@sphereon/did-uni-client": "^0.3.3",
     "@sphereon/ssi-sdk-core": "^0.0.1",
