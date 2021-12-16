@@ -14,7 +14,7 @@ describe('credential-ld context loader', () => {
     },
   }
 
-  it('loads custom context from record', async () => {
+  it('should load custom context from record', async () => {
     expect.assertions(2)
     const loader = new LdContextLoader({ contextsPaths: [customContext] })
     expect(loader.has('https://example.com/custom/context')).toBe(true)
@@ -28,7 +28,7 @@ describe('credential-ld context loader', () => {
     })
   })
 
-  it('loads context from default map', async () => {
+  it('should load context from default map', async () => {
     expect.assertions(2)
     const loader = new LdContextLoader({ contextsPaths: [LdDefaultContexts] })
     expect(loader.has('https://www.w3.org/2018/credentials/v1')).toBe(true)
