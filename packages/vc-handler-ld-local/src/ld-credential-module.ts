@@ -51,7 +51,6 @@ export class LdCredentialModule {
     purpose: typeof ProofPurpose = new CredentialIssuancePurpose(),
     context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiableCredentialSP> {
-    // fixme: We need to look at the verificationMethod in meta of the key, and then look up the suiteloader, as for instance ed25519 can be the 2018 or 2020 version
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
     const documentLoader = this.ldDocumentLoader.getLoader(context, true)
 
