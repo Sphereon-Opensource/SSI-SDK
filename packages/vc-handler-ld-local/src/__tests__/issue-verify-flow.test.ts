@@ -93,7 +93,7 @@ describe('credential-LD full flow', () => {
     })
   })
 
-  it('works with Ed25519Signature2018', async () => {
+  it('should work with Ed25519Signature2018', async () => {
     nock('https://lto-mock/1.0/identifiers')
       .get(`/${LTO_DID}`)
       .times(3)
@@ -151,7 +151,7 @@ describe('credential-LD full flow', () => {
     expect(verifiedPresentation).toBe(true)
   })
 
-  it('Should verify issued credential with Factom issuer', async () => {
+  it('should verify issued credential with Factom issuer', async () => {
     nock('https://factom-mock/1.0/identifiers')
       .get(`/${FACTOM_DID}`)
       .times(3)
