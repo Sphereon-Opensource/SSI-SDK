@@ -26,7 +26,7 @@ multiple packages (see lerna below). It contains plugins that extend the Veramo 
     - VC API Issuer: [Issue VCs using the VC (HTTP) Api v0.1](./packages/vc-api-issuer/README.md)
     - VC API Verifier: [Verify VCs and VPs using the VC (HTTP) Api v0.1](./packages/vc-api-verifier/README.md)
     - Json-LD VC handler: [Issues and verifies JSON-LD based VCs and VPs](./packages/vc-handler-ld-local/README.md)
-- OpenID Connect:
+- OpenID Connect and Presentation Exchange:
     - SIOPv2 and
       OIDC4VP: [Self-Issued OpenID Connect and OpenID Connect for Verifiable Presentations](./packages/did-auth-siop-op-authenticator/README.md)
 
