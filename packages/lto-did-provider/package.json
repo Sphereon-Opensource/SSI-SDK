@@ -1,26 +1,26 @@
 {
   "name": "@sphereon/ssi-sdk-lto-did-provider",
   "description": "Veramo LTO Network DID provider",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --build"
   },
   "dependencies": {
-    "@sphereon/lto-did-ts": "^0.1.6",
     "@lto-network/lto-crypto": "^1.1.1",
     "@lto-network/lto-transactions": "^1.2.12",
     "@lto-network/signature-generator": "^1.0.0",
-    "lto-api": "^0.5.14",
     "@sphereon/did-uni-client": "^0.3.3",
-    "@sphereon/ssi-sdk-core": "^0.1.1",
+    "@sphereon/lto-did-ts": "^0.1.6",
+    "@sphereon/ssi-sdk-core": "^0.2.0",
     "@veramo/core": "^3.1.1-next.15",
     "@veramo/did-manager": "^3.1.1-next.15",
     "@veramo/kms-local": "^3.1.1-next.15",
     "debug": "^4.1.1",
     "did-jwt-vc": "^2.1.7",
     "events": "^3.3.0",
+    "lto-api": "^0.5.14",
     "micro-base58": "^0.5.1",
     "z-schema": "^5.0.2"
   },
