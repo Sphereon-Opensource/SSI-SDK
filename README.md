@@ -15,7 +15,7 @@ point!__
 
 # SSI SDK
 
-This is an SSI SDK based on the great work done by [Veramo](https://veramo.io). The SDK is a monorepository with
+This is an SSI SDK based on the great work done by [Veramo](https://veramo.io). The SDK is a mono-repository with
 multiple packages (see lerna below). It contains plugins that extend the Veramo framework:
 
 - DIDs and Key management:
@@ -36,13 +36,13 @@ The [core package](./packages/ssi-sdk-core/README.md) contains types and methods
 
 ## Factom DID Provider
 
-The [Factom Protocol DID Provider](./packages/factom-did-provider/README.md) can create DIDs on the
+The [Factom Protocol DID Provider](./packages/factom-did-provider/README.md) can create DIDs using the
 Factom Protocol.
 
 ## LTO Network DID Provider
 
-The [LTO Network DID Provider](./packages/lto-did-provider/README.md) can create DIDs and to add and
-manage verification methods on LTO Network.
+The [LTO Network DID Provider](./packages/lto-did-provider/README.md) can create DIDs, as well as add and
+manage verification methods using LTO Network.
 
 ## Mnemonic Seed
 
