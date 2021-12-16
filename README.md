@@ -36,32 +36,32 @@ The [core package](./packages/ssi-sdk-core/README.md) contains types and methods
 
 ## Factom DID Provider
 
-The [Factom Protocol DID Provider](./packages/factom-did-provider/README.md) is a Veramo plugin to create DIDs on the
+The [Factom Protocol DID Provider](./packages/factom-did-provider/README.md) can create DIDs on the
 Factom Protocol.
 
 ## LTO Network DID Provider
 
-The [LTO Network DID Provider](./packages/lto-did-provider/README.md) is a Veramo plugin to create DIDs and to add and
+The [LTO Network DID Provider](./packages/lto-did-provider/README.md) can create DIDs and to add and
 manage verification methods on LTO Network.
 
 ## Mnemonic Seed
 
-The [Mnemonic Seed and Key Derivation](./packages/mnemonic-info-generator/README.md) handles generations, secure storage
-of Mnemonics, the creation of a seed out of it and the derivation of keys
+The [Mnemonic Seed and Key Derivation](./packages/mnemonic-info-generator/README.md) handles generation and secure storage
+of Mnemonics, as well as the creation of a seed out of the mnemonic and the derivation of keys.
 
 ## VC API Issuer
 
-The [W3C VC (HTTP) API Issuer](./packages/factom-did-provider/README.md) is a Veramo plugin to issue Verifiable
+The [W3C VC (HTTP) API Issuer](./packages/factom-did-provider/README.md) issues Verifiable
 Credentials using a [W3C VC API](https://github.com/w3c-ccg/vc-api) spec based API (currently only supporting a v0.1
 spec).
 
 ## VC API Verifier
 
-The [W3C VC (HTTP) API Verifier](./packages/factom-did-provider/README.md) is a Veramo plugin to verify Verifiable
+The [W3C VC (HTTP) API Verifier](./packages/factom-did-provider/README.md) is a verifies Verifiable
 Credentials using a [W3C VC API](https://github.com/w3c-ccg/vc-api) spec based API (currently only supporting a v0.1
 spec).
 
-## JSON-LD VC/VP Handler
+## JSON-LD Local VC/VP Handler
 
 The [JSON-LD VC/VP Handler](./packages/vc-handler-ld-local/README.md) handles issuance and verification of JSON-LD based
 Verifiable Credentials and Verifiable Presentations
