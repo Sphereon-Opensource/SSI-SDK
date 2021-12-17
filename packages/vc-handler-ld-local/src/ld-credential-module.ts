@@ -24,7 +24,7 @@ const ProofPurpose = purposes.ProofPurpose
 const AssertionProofPurpose = purposes.AssertionProofPurpose
 const AuthenticationProofPurpose = purposes.AuthenticationProofPurpose
 
-const debug = Debug('veramo:w3c:ld-credential-module-local')
+const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 
 export class LdCredentialModule {
   /**
@@ -51,19 +51,23 @@ export class LdCredentialModule {
     purpose: typeof ProofPurpose = new CredentialIssuancePurpose(),
     context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiableCredentialSP> {
+    debug(`Issue VC method called for ${key.kid}...`)
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
     const documentLoader = this.ldDocumentLoader.getLoader(context, true)
 
     // some suites can modify the incoming credential (e.g. add required contexts)W
     suite.preSigningCredModification(credential)
 
-    return await vc.issue({
+    debug(`Issuer ${issuerDid} will create VC for ${key.kid}...`)
+    const verifiableCredential = await vc.issue({
       credential,
       purpose,
       suite: await suite.getSuiteForSigning(key, issuerDid, verificationMethodId, context),
       documentLoader,
       compactProof: false,
     })
+    debug(`Issuer ${issuerDid} created VC for ${key.kid}`)
+    return verifiableCredential
   }
 
   async signLDVerifiablePresentation(
