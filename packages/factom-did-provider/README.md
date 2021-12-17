@@ -10,17 +10,21 @@ Lto-factom-provider is a Veramo plugin to create DIDs on Factom Protocol.
 
 ### Constructor
 
-During construction of the Factom DID provider you can set the network, universal registrar URL and the Veramo default Key Management System (KMS)
+During construction of the Factom DID provider you can set the defaultNetwork, universal registrar URL and the Veramo default Key Management System (KMS)
 
 ```typescript
 import { FactomDIDProvider } from '@sphereon/veramo-factom-did-provider'
 
-const factomDIDProvider = new FactomDIDProvider({ defaultKms: 'local', network: 'testnet', registrarUrl: 'https://your.universal.registrar.here' })
+const factomDIDProvider = new FactomDIDProvider({
+  defaultKms: 'local',
+  defaultNetwork: 'testnet',
+  registrarUrl: 'https://your.universal.registrar.here',
+})
 ```
 
 ### createIdentifier
 
-Creating a DID means you have to create public/private keypairs first both for the DID document itself as well as the management keys. The Factom DID Provider will store these keys using Veramo's Keymanager, so that you can use them later
+Creating a DID means you have to create public/private keypairs first both for the DID fragment itself as well as the management keys. The Factom DID Provider will store these keys using Veramo's Keymanager, so that you can use them later
 
 ```typescript
 const managementKeys = [

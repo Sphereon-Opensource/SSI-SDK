@@ -1,9 +1,10 @@
-import {IAgentPlugin, VerifiableCredential} from '@veramo/core'
+import { IAgentPlugin } from '@veramo/core'
 
-import {schema} from '../index'
-import {events, IIssueCredentialArgs, IRequiredContext, IVcApiIssuer, IVcApiIssuerArgs} from '../types/IVcApiIssuer'
+import { schema } from '../index'
+import { events, IIssueCredentialArgs, IRequiredContext, IVcApiIssuer, IVcApiIssuerArgs } from '../types/IVcApiIssuer'
+import { VerifiableCredentialSP } from '@sphereon/ssi-sdk-core'
 
-const fetch = require('cross-fetch')
+import { fetch } from 'cross-fetch'
 
 /**
  * {@inheritDoc IVcApiIssuer}
@@ -22,7 +23,7 @@ export class VcApiIssuer implements IAgentPlugin {
   }
 
   /** {@inheritDoc IVcApiIssuer.issueCredentialUsingVcApi} */
-  private async issueCredentialUsingVcApi(args: IIssueCredentialArgs, context: IRequiredContext): Promise<VerifiableCredential> {
+  private async issueCredentialUsingVcApi(args: IIssueCredentialArgs, context: IRequiredContext): Promise<VerifiableCredentialSP> {
     return await fetch(this.issueUrl, {
       method: 'post',
       headers: {
@@ -30,8 +31,8 @@ export class VcApiIssuer implements IAgentPlugin {
         'Content-Type': 'application/json',
         Authorization: `bearer ${this.authorizationToken}`,
       },
-      body: JSON.stringify({credential: args.credential}),
-    }).then(async (response: { status: number; text: () => string | PromiseLike<string | undefined> | undefined; json: () => string }) => {
+      body: JSON.stringify({ credential: args.credential }),
+    }).then(async (response) => {
       if (response.status >= 400) {
         throw new Error(await response.text())
       } else {

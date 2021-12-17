@@ -59,6 +59,13 @@ export interface ISeedGeneratorArgs {
  * @param { string } id - Optional user defined id for the mnemonic
  * @param { string } hash - Optional sha256 hash of the mnemonic
  * @param { string[] } mnemonic - Array representation of the mnemonic string
+ * @param { string } masterKey - The master key generated from the seed
+ * @param { string } chainCode - The chain code generated with the keys
+ * @param { string } kms - The key management service to be used
+ * @param { string } path - The derivation path to be used
+ * @param { number } offset - The hardening offset of the key
+ * @param { boolean } withZeroBytes - Whether the public key should be generated with zero bytes
+ * @param { boolean } persist - Whether the information should be persisted
  */
 export interface IMnemonicInfoStoreArgs {
   id?: string;

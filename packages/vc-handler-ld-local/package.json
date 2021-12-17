@@ -1,0 +1,93 @@
+{
+  "name": "@sphereon/ssi-sdk-vc-handler-ld-local",
+  "version": "0.2.0",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "veramo": {
+    "pluginInterfaces": {
+      "IVcLocalIssuerJsonLd": "./src/types/ICredentialHandlerLDLocal.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "generate-plugin-schema": "yarn veramo dev generate-plugin-schema",
+    "fix:lint": "eslint . --fix --ext .ts",
+    "test:lint": "eslint . --ext .ts"
+  },
+  "dependencies": {
+    "@digitalcredentials/did-method-key": "^2.0.2",
+    "@digitalcredentials/did-web-resolver": "^1.0.0",
+    "@digitalcredentials/ed25519-signature-2020": "^3.0.2",
+    "@digitalcredentials/ed25519-verification-key-2020": "^3.2.2",
+    "@digitalcredentials/jsonld": "^5.2.1",
+    "@digitalcredentials/jsonld-signatures": "^9.3.1",
+    "@digitalcredentials/vc": "^1.1.1",
+    "@digitalcredentials/x25519-key-agreement-2020-context": "^1.0.0",
+    "@sphereon/ssi-sdk-core": "^0.2.0",
+    "@transmute/ed25519-key-pair": "^0.7.0-unstable.30",
+    "@transmute/ed25519-signature-2018": "^0.7.0-unstable.30",
+    "@transmute/jsonld-document-loader": "^0.2.0",
+    "@transmute/vc-status-rl-2020": "^0.7.0-unstable.30",
+    "@types/browser-or-node": "^1.3.0",
+    "@types/node": "^14.14.43",
+    "@veramo/core": "^3.1.1-next.15",
+    "@veramo/utils": "^3.1.1-next.15",
+    "browser-or-node": "^1.3.0",
+    "credentials-context": "^2.0.0",
+    "crypto-ld": "^6.0.0",
+    "did-context": "^3.1.1",
+    "ed25519-signature-2018-context": "^1.1.0",
+    "ed25519-signature-2020-context": "^1.1.0",
+    "jose": "^1.28.1",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.9"
+  },
+  "devDependencies": {
+    "@sphereon/did-uni-client": "^0.3.3",
+    "@types/jest": "^27.0.2",
+    "@types/nock": "^11.1.0",
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
+    "@veramo/cli": "^3.1.1-next.15",
+    "@veramo/credential-w3c": "^3.1.1-next.15",
+    "@veramo/data-store": "^3.1.1-next.15",
+    "@veramo/did-manager": "^3.1.1-next.15",
+    "@veramo/did-provider-key": "^3.1.1-next.15",
+    "@veramo/did-resolver": "^3.1.1-next.15",
+    "@veramo/key-manager": "^3.1.1-next.15",
+    "@veramo/kms-local": "^3.1.1-next.15",
+    "did-resolver": "^3.1.3",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-import": "^2.25.3",
+    "jest": "^27.3.1",
+    "nock": "^13.2.1",
+    "prettier": "^2.4.1",
+    "ts-jest": "^27.0.7",
+    "typescript": "^4.4.3"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "plugin.schema.json",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sphereon",
+    "SSI",
+    "Veramo",
+    "W3C",
+    "Verifiable Credentials",
+    "Verifiable Presentations",
+    "JsonLd"
+  ]
+}

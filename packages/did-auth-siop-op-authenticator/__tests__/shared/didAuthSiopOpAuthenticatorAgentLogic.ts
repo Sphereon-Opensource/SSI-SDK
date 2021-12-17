@@ -17,7 +17,7 @@ jest.mock('@veramo/utils', () => {
   return {
     mapIdentifierKeysToDoc: jest.fn(),
   }
-});
+})
 
 type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator>
 
@@ -27,31 +27,35 @@ const identifier = {
   did,
   provider: '',
   controllerKeyId: `${did}#controller`,
-  keys: [{
-    kid: `${did}#controller`,
-    kms: '',
-    type: 'Ed25519' as const,
-    publicKeyHex: '1e21e21e...',
-    privateKeyHex: 'eqfcvnqwdnwqn...'
-  }],
-  services: []
+  keys: [
+    {
+      kid: `${did}#controller`,
+      kms: '',
+      type: 'Ed25519' as const,
+      publicKeyHex: '1e21e21e...',
+      privateKeyHex: 'eqfcvnqwdnwqn...',
+    },
+  ],
+  services: [],
 }
 const authKeys = [
-  { kid: `${did}#controller`,
-    kms: "",
-    type: "Ed25519",
-    publicKeyHex: "1e21e21e...",
-    privateKeyHex: "eqfcvnqwdnwqn...",
+  {
+    kid: `${did}#controller`,
+    kms: '',
+    type: 'Ed25519',
+    publicKeyHex: '1e21e21e...',
+    privateKeyHex: 'eqfcvnqwdnwqn...',
     meta: {
       verificationMethod: {
         id: `${did}#controller`,
-        type: "EcdsaSecp256k1RecoveryMethod2020",
+        type: 'EcdsaSecp256k1RecoveryMethod2020',
         controller: did,
-        blockchainAccountId: "0xB9C5714089478a327F09197987f16f9E5d936E8a@eip155:1",
-        publicKeyHex: "1e21e21e..."
-      }
-    }
-  }]
+        blockchainAccountId: '0xB9C5714089478a327F09197987f16f9E5d936E8a@eip155:1',
+        publicKeyHex: '1e21e21e...',
+      },
+    },
+  },
+]
 const sessionId = 'sessionId'
 const otherSessionId = 'other_sessionId'
 const redirectUrl = 'http://example/ext/get-auth-request-url'
@@ -144,13 +148,13 @@ export default (testContext: {
   describe('DID Auth SIOP OP Authenticator Agent Plugin', () => {
     let agent: ConfiguredAgent
 
-    beforeAll(async() => {
+    beforeAll(async () => {
       await testContext.setup()
       agent = testContext.getAgent()
 
       nock(redirectUrl).get(`?stateId=${stateId}`).times(5).reply(200, requestResultMockedText)
 
-      const mockedMapIdentifierKeysToDocMethod = mapIdentifierKeysToDoc as jest.Mock;
+      const mockedMapIdentifierKeysToDocMethod = mapIdentifierKeysToDoc as jest.Mock
       mockedMapIdentifierKeysToDocMethod.mockReturnValue(Promise.resolve(authKeys))
 
       const mockedParseAuthenticationRequestURIMethod = jest.fn()
@@ -201,33 +205,33 @@ export default (testContext: {
         identifier,
       })
       await agent.removeSessionForSiop({
-        sessionId: otherSessionId
+        sessionId: otherSessionId,
       })
 
       await expect(
-          agent.getSessionForSiop({
-            sessionId: otherSessionId
-          })
+        agent.getSessionForSiop({
+          sessionId: otherSessionId,
+        })
       ).rejects.toThrow(`No session found for id: ${otherSessionId}`)
     })
 
     if (!testContext.isRestTest) {
       it('should register custom approval function', async () => {
         await expect(
-            agent.registerCustomApprovalForSiop({
-              key: "test_register",
-              customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise.resolve()
-            })
-        ).resolves.not.toThrow();
+          agent.registerCustomApprovalForSiop({
+            key: 'test_register',
+            customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise.resolve(),
+          })
+        ).resolves.not.toThrow()
       })
 
       it('should remove custom approval function', async () => {
         await agent.registerCustomApprovalForSiop({
-          key: "test_delete",
-          customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise.resolve()
+          key: 'test_delete',
+          customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise.resolve(),
         })
         const result = await agent.removeCustomApprovalForSiop({
-          key: "test_delete"
+          key: 'test_delete',
         })
 
         expect(result).toEqual(true)
@@ -238,7 +242,7 @@ export default (testContext: {
       const result = await agent.authenticateWithSiop({
         sessionId,
         stateId,
-        redirectUrl
+        redirectUrl,
       })
 
       expect(result.status).toEqual(200)

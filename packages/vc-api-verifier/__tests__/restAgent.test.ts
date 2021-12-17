@@ -7,13 +7,14 @@ import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import { IVcApiVerifier, VcApiVerifier } from '../src'
+import { IVcApiVerifier } from '../src/types/IVcApiVerifier'
+import { VcApiVerifier } from '../src/agent/VcApiVerifier'
 import vcApiVerifierAgentLogic from './shared/vcApiVerifierAgentLogic'
 import * as path from 'path'
 
 jest.setTimeout(30000)
 
-const port = 3003
+const port = 30078
 const basePath = '/agent'
 let serverAgent: IAgent
 let restServer: Server
@@ -56,7 +57,7 @@ const setup = async (): Promise<boolean> => {
 }
 
 const tearDown = async (): Promise<boolean> => {
-  restServer.close()
+  restServer?.close()
   return true
 }
 

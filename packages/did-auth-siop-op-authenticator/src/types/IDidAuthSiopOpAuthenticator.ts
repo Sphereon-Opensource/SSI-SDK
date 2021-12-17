@@ -1,10 +1,4 @@
-import {
-  DIDDocumentSection,
-  IAgentContext,
-  IIdentifier,
-  IPluginMethodMap,
-  IResolver
-} from '@veramo/core'
+import { DIDDocumentSection, IAgentContext, IIdentifier, IPluginMethodMap, IResolver } from '@veramo/core'
 import { VerifiableCredential, VerifiablePresentation } from '@sphereon/pe-js'
 import {
   ParsedAuthenticationRequestURI,
@@ -13,7 +7,7 @@ import {
   VerifiablePresentationTypeFormat,
   PresentationLocation,
 } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
-import { OpSession } from '../session/OpSession';
+import { OpSession } from '../session/OpSession'
 
 export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   getSessionForSiop(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession>

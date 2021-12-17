@@ -13,7 +13,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     afterAll(async () => {
-      await new Promise<void>((resolve) => setTimeout(() => resolve(), 5000)) // avoid jest open handle error
+      await new Promise<void>((resolve) => setTimeout(() => resolve(), 10000)) // avoid jest open handle error
       await testContext.tearDown()
     })
 
