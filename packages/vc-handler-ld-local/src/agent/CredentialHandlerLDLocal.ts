@@ -26,7 +26,7 @@ import {
   IVerifyPresentationLDArgs,
 } from '../types/types'
 
-const debug = Debug('veramo:w3c:ld-credential-action-handler-local')
+const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 
 /**
  * {@inheritDoc IVcLocalIssuerJsonLd}
@@ -63,7 +63,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       } else {
         throw new Error(`Method ${methodName} supplied as target for ${bindingName} is not a valid method in CredentialHandlerLDLocal`)
       }
-      console.log(`binding: this.${bindingName}() -> CredentialHandlerLDLocal.${methodName}()`)
+      debug(`binding: this.${bindingName}() -> CredentialHandlerLDLocal.${methodName}()`)
     })
   }
 
@@ -72,8 +72,8 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     args: ICreateVerifiableCredentialLDArgs,
     context: IRequiredContext
   ): Promise<VerifiableCredentialSP> {
-    // Create a deep copy to prevent signature ending up in passed in object
-    // const credentialArg = JSON.parse(JSON.stringify(args.credential))
+
+    debug('Entry of createVerifiableCredentialLDLocal')
     const credentialContext = processEntryToArray(args?.credential?.['@context'], MANDATORY_CREDENTIAL_CONTEXT)
     const credentialType = processEntryToArray(args?.credential?.type, 'VerifiableCredential')
     let issuanceDate = args?.credential?.issuanceDate || new Date().toISOString()
@@ -86,6 +86,8 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       type: credentialType,
       issuanceDate,
     }
+    //fixme: Potential PII leak
+    debug(JSON.stringify(credential))
 
     const issuer = extractIssuer(credential)
     if (!issuer || typeof issuer === 'undefined') {
@@ -94,7 +96,9 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
 
     let identifier: IIdentifier
     try {
+      debug(`Retrieving identifier for issuer ${issuer} from DID manager...`)
       identifier = await context.agent.didManagerGet({ did: issuer })
+      debug(`Identifier for issuer ${issuer} retrieved from DID manager`)
     } catch (e) {
       throw new Error(`invalid_argument: args.credential.issuer must be a DID managed by this agent. ${e}`)
     }
@@ -202,6 +206,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     identifier: IIdentifier,
     keyRef?: string
   ): Promise<{ signingKey: IKey; verificationMethodId: string }> {
+    debug(`Retrieving signing key for id ${identifier.did} keyref ${keyRef}...`)
     const extendedKeys: _ExtendedIKey[] = await mapIdentifierKeysToDoc(identifier, 'verificationMethod', context)
     const supportedTypes = this.ldCredentialModule.ldSuiteLoader.getAllSignatureSuiteTypes()
     let signingKey: _ExtendedIKey | undefined
@@ -221,6 +226,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
 
     if (!signingKey) throw Error(`key_not_found: No suitable signing key found for ${identifier.did}`)
     const verificationMethodId = signingKey.meta.verificationMethod.id
+    debug(`Signing key for id ${identifier.did} and verification method id ${verificationMethodId} found.`)
     return { signingKey, verificationMethodId }
   }
 }
