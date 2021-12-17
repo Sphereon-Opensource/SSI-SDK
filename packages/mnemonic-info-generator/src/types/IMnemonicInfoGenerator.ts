@@ -1,5 +1,5 @@
-import {IAgentContext, IDataStore, IKeyManager, IPluginMethodMap, ManagedKeyInfo} from '@veramo/core';
-import {ObjectLiteral} from "typeorm/browser/common/ObjectLiteral";
+import { IAgentContext, IDataStore, IKeyManager, IPluginMethodMap, ManagedKeyInfo } from '@veramo/core';
+import { ObjectLiteral } from "typeorm/browser/common/ObjectLiteral";
 
 export interface IMnemonicInfoGenerator extends IPluginMethodMap {
   generateMnemonic(args: IMnemonicGeneratorArgs): Promise<IMnemonicInfoResult>;

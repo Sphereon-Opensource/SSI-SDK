@@ -1,7 +1,7 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, BaseEntity, PrimaryColumn } from 'typeorm';
 
 @Entity('mnemonic_info')
-export class MnemonicInfo {
+export class MnemonicInfo extends BaseEntity {
   @PrimaryColumn({ name: 'id' })
   //@ts-ignore
   id: string;

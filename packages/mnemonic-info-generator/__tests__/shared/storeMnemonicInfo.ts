@@ -1,6 +1,5 @@
 import {IDataStore, IKeyManager, TAgent} from '@veramo/core';
-import { IMnemonicInfoGenerator, IMnemonicInfoResult, IRequiredContext } from '../../src/index';
-import { MinimalImportableKey, ManagedKeyInfo } from "@veramo/core/src/types/IKeyManager";
+import { IMnemonicInfoGenerator, IMnemonicInfoResult } from '../../src/index';
 
 type ConfiguredAgent = TAgent<IMnemonicInfoGenerator & IKeyManager & IDataStore>;
 
@@ -11,26 +10,12 @@ export default (testContext: {
 }) => {
   describe('database operations', () => {
 
-    const mockedContext = {
-      agent: {
-        keyManagerImport: (args: MinimalImportableKey): Promise<ManagedKeyInfo> => {
-          return Promise.resolve({
-            kid: 'test_id',
-            kms: 'local',
-            type: 'Ed25519',
-            publicKeyHex: 'publicKey'
-          })
-        }
-      } as IKeyManager
-    } as IRequiredContext
-
     let agent: ConfiguredAgent;
     let mnemonicObj: IMnemonicInfoResult;
 
     beforeAll(() => {
       testContext.setup();
       agent = testContext.getAgent();
-      console.warn(agent.availableMethods())
     });
 
     afterAll(testContext.tearDown);
@@ -175,7 +160,16 @@ export default (testContext: {
     })
 
     it('should generate the private and public keys', async () => {
-      await expect(agent.generateKeysFromMnemonic({ hash: mnemonicObj.hash, path: 'm/0\'', kms: 'local' })).resolves.toEqual({});
+      await expect(agent.generateKeysFromMnemonic({ hash: mnemonicObj.hash, path: 'm/0\'', kms: 'local' })).resolves.toEqual(expect.objectContaining({
+        kms: 'local',
+        meta: {
+          algorithms: [
+              'Ed25519',
+              'EdDSA'
+          ]
+        },
+        type: 'Ed25519'
+      }));
     })
   });
 };

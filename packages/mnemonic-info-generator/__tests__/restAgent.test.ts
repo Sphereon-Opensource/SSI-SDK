@@ -2,11 +2,10 @@ import 'cross-fetch/polyfill';
 import * as fs from 'fs';
 import { Server } from 'http';
 
-import { createObjects } from '@veramo/cli/build/lib/objectCreator';
-import { getConfig } from '@veramo/cli/build/setup';
-import {createAgent, IAgent, IAgentOptions, IDataStore, IKeyManager} from '@veramo/core';
+import { createAgent, IAgent, IAgentOptions, IDataStore, IKeyManager } from '@veramo/core';
 import { AgentRestClient } from '@veramo/remote-client';
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server';
+
 // @ts-ignore
 import express from 'express';
 import { Connection } from 'typeorm';
@@ -16,9 +15,11 @@ import { IMnemonicInfoGenerator } from '../src/types/IMnemonicInfoGenerator';
 import mnemonicGenerator from './shared/generateMnemonic';
 import seedGenerator from './shared/generateSeed';
 import storeSeed from './shared/storeMnemonicInfo';
-import {KeyManager} from "@veramo/key-manager";
-import {KeyStore, PrivateKeyStore} from "@veramo/data-store";
-import {KeyManagementSystem, SecretBox} from "@veramo/kms-local";
+import { KeyManager } from "@veramo/key-manager";
+import { KeyStore, PrivateKeyStore, Entities as VeramoEntities, IDataStoreORM, DataStore, DataStoreORM } from "@veramo/data-store";
+import { KeyManagementSystem, SecretBox } from "@veramo/kms-local";
+import { MnemonicInfoGenerator, Entities as SphereonEntities } from "../src/index";
+import { createConnection } from 'typeorm';
 
 jest.setTimeout(30000);
 
@@ -36,12 +37,6 @@ const getAgent = (options?: IAgentOptions) =>
   createAgent<IMnemonicInfoGenerator & IKeyManager & IDataStore>({
     ...options,
     plugins: [
-      new KeyManager({
-        store: new KeyStore(dbConnection),
-        kms: {
-          local: new KeyManagementSystem(new PrivateKeyStore(dbConnection, new SecretBox(KMS_SECRET_KEY))),
-        },
-      }),
       new AgentRestClient({
         url: 'http://localhost:' + port + basePath,
         enabledMethods: serverAgent.availableMethods(),
@@ -51,13 +46,31 @@ const getAgent = (options?: IAgentOptions) =>
   });
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('./packages/mnemonic-info-generator/agent.yml');
-  config.constants.databaseFile = databaseFile;
 
-  const { agent, db } = createObjects(config, {
-    agent: '/agent',
-    db: '/dbConnection',
-  });
+  const db = createConnection({
+    type: 'sqlite',
+    database: databaseFile,
+    synchronize: true,
+    logging: false,
+    entities: [ ...SphereonEntities , ...VeramoEntities ]
+  })
+
+  const secretBox = new SecretBox(KMS_SECRET_KEY);
+
+  const agent = createAgent<IKeyManager & IDataStore & IDataStoreORM & IMnemonicInfoGenerator>({
+    plugins: [
+      new KeyManager({
+        store: new KeyStore(db),
+        kms: {
+          local: new KeyManagementSystem(new PrivateKeyStore(db, secretBox)),
+        },
+      }),
+      new MnemonicInfoGenerator(db, secretBox),
+      new DataStore(db),
+      new DataStoreORM(db)
+    ],
+  })
+
   serverAgent = agent;
   dbConnection = db;
 
@@ -82,6 +95,7 @@ const tearDown = async (): Promise<boolean> => {
   restServer.close();
   await (await dbConnection).close();
   fs.unlinkSync(databaseFile);
+  await new Promise(resolve => setTimeout((v: void) => resolve(v), 500));
   return true;
 };
 

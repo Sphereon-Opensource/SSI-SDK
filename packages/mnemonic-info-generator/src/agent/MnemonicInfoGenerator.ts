@@ -17,7 +17,7 @@ import {
 } from '../index';
 import { IMnemonicInfoGenerator } from '../types/IMnemonicInfoGenerator';
 
-import { MnemonicInfo } from './entity/mnemonicInfo';
+import { MnemonicInfo } from './entity/MnemonicInfo';
 
 export class MnemonicInfoGenerator implements IAgentPlugin {
   readonly schema = schema.IMnemonicInfoGenerator;
@@ -136,14 +136,13 @@ export class MnemonicInfoGenerator implements IAgentPlugin {
   }
 
   private async generateKeysFromMnemonic(args: IMnemonicInfoStoreArgs, context: IRequiredContext): Promise<ManagedKeyInfo> {
-    console.warn(context.agent)
     const mnemonic = (await this.getMnemonicInfo({ id: args.id, hash: args.hash })).mnemonic;
     if (mnemonic && context) {
       if (args.path && args.kms) {
         const seed = await bip39.mnemonicToSeed(mnemonic?.join(' '));
         const { key, chainCode } = derivePath(args.path, seed.toString('hex'), args.offset);
         const extPrivateKey = Buffer.concat([key, chainCode])
-        //TODO it doesn't seem to be using any secp256k1 library to generate the public key, need to check if it is correct
+        //FIXME it doesn't use any secp256k1 library to generate the public key, so it doesn't generate an extended key
         const publicKey = getPublicKey(key, args.withZeroBytes)
         return await context.agent.keyManagerImport({
           privateKeyHex: extPrivateKey.toString('hex'),
