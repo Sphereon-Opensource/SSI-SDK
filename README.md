@@ -21,7 +21,7 @@ multiple packages (see lerna below). It contains plugins that extend the Veramo 
 - DIDs and Key management:
     - factom: [Factom DID creation](./packages/lto-did-provider/README.md) (WIP)
     - lto: [LTO Network DID creation and Verification Methods](./packages/lto-did-provider/README.md)
-    - mnemonic-seed: [Mnemonic Seed and Key Derivation](./packages/mnemonic-info-generator/README.md)
+    - mnemonic-seed: [Mnemonic Seed and Key Derivation](packages/mnemonic-seed-manager/README.md)
 - Verifiable Credentials and Presentations:
     - VC API Issuer: [Issue VCs using the VC (HTTP) Api v0.1](./packages/vc-api-issuer/README.md)
     - VC API Verifier: [Verify VCs and VPs using the VC (HTTP) Api v0.1](./packages/vc-api-verifier/README.md)
@@ -46,7 +46,7 @@ manage verification methods using LTO Network.
 
 ## Mnemonic Seed
 
-The [Mnemonic Seed and Key Derivation](./packages/mnemonic-info-generator/README.md) handles generation and secure storage
+The [Mnemonic Seed and Key Derivation](packages/mnemonic-seed-manager/README.md) handles generation and secure storage
 of Mnemonics, as well as the creation of a seed out of the mnemonic and the derivation of keys.
 
 ## VC API Issuer

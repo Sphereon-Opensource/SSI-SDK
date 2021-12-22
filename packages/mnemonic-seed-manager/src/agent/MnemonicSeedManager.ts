@@ -18,13 +18,13 @@ import {
   schema,
   UpdateResult,
 } from '../index'
-import { IMnemonicInfoGenerator } from '../types/IMnemonicInfoGenerator'
+import { IMnemonicSeedManager } from '../types/IMnemonicSeedManager'
 
 import { MnemonicInfo } from './entity/MnemonicInfo'
 
-export class MnemonicInfoGenerator implements IAgentPlugin {
+export class MnemonicSeedManager implements IAgentPlugin {
   readonly schema = schema.IMnemonicInfoGenerator
-  readonly methods: IMnemonicInfoGenerator = {
+  readonly methods: IMnemonicSeedManager = {
     generateMnemonic: this.generateMnemonic.bind(this),
     generateSeed: this.generateSeed.bind(this),
     verifyMnemonic: this.verifyMnemonic.bind(this),

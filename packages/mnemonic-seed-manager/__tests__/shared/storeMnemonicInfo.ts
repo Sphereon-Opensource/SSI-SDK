@@ -1,7 +1,7 @@
 import { IDataStore, IKeyManager, TAgent } from '@veramo/core'
-import { IMnemonicInfoGenerator, IMnemonicInfoResult } from '../../src/index'
+import { IMnemonicSeedManager, IMnemonicInfoResult } from '../../src/index'
 
-type ConfiguredAgent = TAgent<IMnemonicInfoGenerator & IKeyManager & IDataStore>
+type ConfiguredAgent = TAgent<IMnemonicSeedManager & IKeyManager & IDataStore>
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
   describe('database operations', () => {

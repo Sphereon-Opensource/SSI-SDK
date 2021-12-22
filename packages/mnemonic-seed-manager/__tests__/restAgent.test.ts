@@ -10,7 +10,7 @@ import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import express from 'express'
 import { Connection } from 'typeorm'
 
-import { IMnemonicInfoGenerator } from '../src/types/IMnemonicInfoGenerator'
+import { IMnemonicSeedManager } from '../src/types/IMnemonicSeedManager'
 
 import mnemonicGenerator from './shared/generateMnemonic'
 import seedGenerator from './shared/generateSeed'
@@ -18,7 +18,7 @@ import storeSeed from './shared/storeMnemonicInfo'
 import { KeyManager } from '@veramo/key-manager'
 import { KeyStore, PrivateKeyStore, Entities as VeramoEntities, IDataStoreORM, DataStore, DataStoreORM } from '@veramo/data-store'
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
-import { MnemonicInfoGenerator, Entities as SphereonEntities } from '../src/index'
+import { MnemonicSeedManager, Entities as SphereonEntities } from '../src/index'
 import { createConnection } from 'typeorm'
 
 jest.setTimeout(30000)
@@ -34,7 +34,7 @@ let dbConnection: Promise<Connection>
 const KMS_SECRET_KEY = 'd17c8674f5db9396f8eecccde25e882bb0336316bc411ae38dc1f3dcd7ed100f'
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IMnemonicInfoGenerator & IKeyManager & IDataStore>({
+  createAgent<IMnemonicSeedManager & IKeyManager & IDataStore>({
     ...options,
     plugins: [
       new AgentRestClient({
@@ -56,7 +56,7 @@ const setup = async (): Promise<boolean> => {
 
   const secretBox = new SecretBox(KMS_SECRET_KEY)
 
-  const agent = createAgent<IKeyManager & IDataStore & IDataStoreORM & IMnemonicInfoGenerator>({
+  const agent = createAgent<IKeyManager & IDataStore & IDataStoreORM & IMnemonicSeedManager>({
     plugins: [
       new KeyManager({
         store: new KeyStore(db),
@@ -64,7 +64,7 @@ const setup = async (): Promise<boolean> => {
           local: new KeyManagementSystem(new PrivateKeyStore(db, secretBox)),
         },
       }),
-      new MnemonicInfoGenerator(db, secretBox),
+      new MnemonicSeedManager(db, secretBox),
       new DataStore(db),
       new DataStoreORM(db),
     ],

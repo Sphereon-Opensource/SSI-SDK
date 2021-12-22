@@ -7,7 +7,7 @@ import seedGenerator from './shared/generateSeed'
 import storeSeed from './shared/storeMnemonicInfo'
 import { createAgent, IDataStore, IKeyManager } from '@veramo/core'
 import { KeyManager } from '@veramo/key-manager'
-import { IMnemonicInfoGenerator, MnemonicInfoGenerator } from '../src'
+import { IMnemonicSeedManager, MnemonicSeedManager } from '../src'
 import { KeyStore, PrivateKeyStore, Entities as VeramoEntities } from '@veramo/data-store'
 import { Entities as SphereonEntities } from './../src/index'
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
@@ -30,7 +30,7 @@ const setup = async (): Promise<boolean> => {
   })
   const secretBox = new SecretBox(KMS_SECRET_KEY)
 
-  const localAgent = createAgent<IKeyManager & IDataStore & IMnemonicInfoGenerator>({
+  const localAgent = createAgent<IKeyManager & IDataStore & IMnemonicSeedManager>({
     plugins: [
       new KeyManager({
         store: new KeyStore(db),
@@ -38,7 +38,7 @@ const setup = async (): Promise<boolean> => {
           local: new KeyManagementSystem(new PrivateKeyStore(db, secretBox)),
         },
       }),
-      new MnemonicInfoGenerator(db, secretBox),
+      new MnemonicSeedManager(db, secretBox),
     ],
   })
   agent = localAgent
