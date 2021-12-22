@@ -1,37 +1,37 @@
-import 'cross-fetch/polyfill';
-import * as fs from 'fs';
-import { Server } from 'http';
+import 'cross-fetch/polyfill'
+import * as fs from 'fs'
+import { Server } from 'http'
 
-import { createAgent, IAgent, IAgentOptions, IDataStore, IKeyManager } from '@veramo/core';
-import { AgentRestClient } from '@veramo/remote-client';
-import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server';
+import { createAgent, IAgent, IAgentOptions, IDataStore, IKeyManager } from '@veramo/core'
+import { AgentRestClient } from '@veramo/remote-client'
+import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 
 // @ts-ignore
-import express from 'express';
-import { Connection } from 'typeorm';
+import express from 'express'
+import { Connection } from 'typeorm'
 
-import { IMnemonicInfoGenerator } from '../src/types/IMnemonicInfoGenerator';
+import { IMnemonicInfoGenerator } from '../src/types/IMnemonicInfoGenerator'
 
-import mnemonicGenerator from './shared/generateMnemonic';
-import seedGenerator from './shared/generateSeed';
-import storeSeed from './shared/storeMnemonicInfo';
-import { KeyManager } from "@veramo/key-manager";
-import { KeyStore, PrivateKeyStore, Entities as VeramoEntities, IDataStoreORM, DataStore, DataStoreORM } from "@veramo/data-store";
-import { KeyManagementSystem, SecretBox } from "@veramo/kms-local";
-import { MnemonicInfoGenerator, Entities as SphereonEntities } from "../src/index";
-import { createConnection } from 'typeorm';
+import mnemonicGenerator from './shared/generateMnemonic'
+import seedGenerator from './shared/generateSeed'
+import storeSeed from './shared/storeMnemonicInfo'
+import { KeyManager } from '@veramo/key-manager'
+import { KeyStore, PrivateKeyStore, Entities as VeramoEntities, IDataStoreORM, DataStore, DataStoreORM } from '@veramo/data-store'
+import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
+import { MnemonicInfoGenerator, Entities as SphereonEntities } from '../src/index'
+import { createConnection } from 'typeorm'
 
-jest.setTimeout(30000);
+jest.setTimeout(30000)
 
-const databaseFile = 'rest-database.sqlite';
-const port = 3002;
-const basePath = '/agent';
+const databaseFile = 'rest-database.sqlite'
+const port = 3002
+const basePath = '/agent'
 
-let serverAgent: IAgent;
-let restServer: Server;
-let dbConnection: Promise<Connection>;
+let serverAgent: IAgent
+let restServer: Server
+let dbConnection: Promise<Connection>
 
-const KMS_SECRET_KEY = "d17c8674f5db9396f8eecccde25e882bb0336316bc411ae38dc1f3dcd7ed100f";
+const KMS_SECRET_KEY = 'd17c8674f5db9396f8eecccde25e882bb0336316bc411ae38dc1f3dcd7ed100f'
 
 const getAgent = (options?: IAgentOptions) =>
   createAgent<IMnemonicInfoGenerator & IKeyManager & IDataStore>({
@@ -43,19 +43,18 @@ const getAgent = (options?: IAgentOptions) =>
         schema: serverAgent.getSchema(),
       }),
     ],
-  });
+  })
 
 const setup = async (): Promise<boolean> => {
-
   const db = createConnection({
     type: 'sqlite',
     database: databaseFile,
     synchronize: true,
     logging: false,
-    entities: [ ...SphereonEntities , ...VeramoEntities ]
+    entities: [...SphereonEntities, ...VeramoEntities],
   })
 
-  const secretBox = new SecretBox(KMS_SECRET_KEY);
+  const secretBox = new SecretBox(KMS_SECRET_KEY)
 
   const agent = createAgent<IKeyManager & IDataStore & IDataStoreORM & IMnemonicInfoGenerator>({
     plugins: [
@@ -67,42 +66,42 @@ const setup = async (): Promise<boolean> => {
       }),
       new MnemonicInfoGenerator(db, secretBox),
       new DataStore(db),
-      new DataStoreORM(db)
+      new DataStoreORM(db),
     ],
   })
 
-  serverAgent = agent;
-  dbConnection = db;
+  serverAgent = agent
+  dbConnection = db
 
   const agentRouter = AgentRouter({
     exposedMethods: serverAgent.availableMethods(),
-  });
+  })
 
   const requestWithAgent = RequestWithAgentRouter({
     agent: serverAgent,
-  });
+  })
 
   return new Promise((resolve) => {
-    const app = express();
-    app.use(basePath, requestWithAgent, agentRouter);
+    const app = express()
+    app.use(basePath, requestWithAgent, agentRouter)
     restServer = app.listen(port, () => {
-      resolve(true);
-    });
-  });
-};
+      resolve(true)
+    })
+  })
+}
 
 const tearDown = async (): Promise<boolean> => {
-  restServer.close();
-  await (await dbConnection).close();
-  fs.unlinkSync(databaseFile);
-  await new Promise(resolve => setTimeout((v: void) => resolve(v), 500));
-  return true;
-};
+  restServer.close()
+  await (await dbConnection).close()
+  fs.unlinkSync(databaseFile)
+  await new Promise((resolve) => setTimeout((v: void) => resolve(v), 500))
+  return true
+}
 
-const testContext = { getAgent, setup, tearDown };
+const testContext = { getAgent, setup, tearDown }
 
 describe('REST integration tests', () => {
-  mnemonicGenerator(testContext);
-  seedGenerator(testContext);
-  storeSeed(testContext);
-});
+  mnemonicGenerator(testContext)
+  seedGenerator(testContext)
+  storeSeed(testContext)
+})

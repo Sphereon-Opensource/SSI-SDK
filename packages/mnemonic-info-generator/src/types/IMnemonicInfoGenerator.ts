@@ -1,15 +1,15 @@
-import { IAgentContext, IDataStore, IKeyManager, IPluginMethodMap, ManagedKeyInfo } from '@veramo/core';
-import { ObjectLiteral } from "typeorm/browser/common/ObjectLiteral";
+import { IAgentContext, IDataStore, IKeyManager, IPluginMethodMap, ManagedKeyInfo } from '@veramo/core'
+import { ObjectLiteral } from 'typeorm/browser/common/ObjectLiteral'
 
 export interface IMnemonicInfoGenerator extends IPluginMethodMap {
-  generateMnemonic(args: IMnemonicGeneratorArgs): Promise<IMnemonicInfoResult>;
-  verifyMnemonic(args: IMnemonicVerificationArgs): Promise<IMnemonicInfoResult>;
-  verifyPartialMnemonic(args: IPartialMnemonicVerificationArgs): Promise<IMnemonicInfoResult>;
-  generateSeed(args: ISeedGeneratorArgs): Promise<IMnemonicInfoResult>;
-  saveMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoResult>;
-  getMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoResult>;
-  deleteMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<DeleteResult>;
-  generateMasterKey(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoKeyResult>;
+  generateMnemonic(args: IMnemonicGeneratorArgs): Promise<IMnemonicInfoResult>
+  verifyMnemonic(args: IMnemonicVerificationArgs): Promise<IMnemonicInfoResult>
+  verifyPartialMnemonic(args: IPartialMnemonicVerificationArgs): Promise<IMnemonicInfoResult>
+  generateSeed(args: ISeedGeneratorArgs): Promise<IMnemonicInfoResult>
+  saveMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoResult>
+  getMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoResult>
+  deleteMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<DeleteResult>
+  generateMasterKey(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoKeyResult>
   generateKeysFromMnemonic(args: IMnemonicInfoStoreArgs, context: IRequiredContext): Promise<ManagedKeyInfo>
 }
 
@@ -20,9 +20,9 @@ export interface IMnemonicInfoGenerator extends IPluginMethodMap {
  * @param { boolean } persist - Whether the mnemonic should be persisted into the database
  */
 export interface IMnemonicGeneratorArgs {
-  bits: 128 | 160 | 192 | 224 | 256;
-  id?: string;
-  persist?: boolean;
+  bits: 128 | 160 | 192 | 224 | 256
+  id?: string
+  persist?: boolean
 }
 
 /**
@@ -31,9 +31,9 @@ export interface IMnemonicGeneratorArgs {
  * @param { string[] } wordList - List containing all the words of the mnemonic in order.
  */
 export interface IMnemonicVerificationArgs {
-  id?: string;
-  hash?: string;
-  wordList: string[];
+  id?: string
+  hash?: string
+  wordList: string[]
 }
 
 /**
@@ -44,16 +44,16 @@ export interface IMnemonicVerificationArgs {
  * It must be in the same order as in the mnemonic.
  */
 export interface IPartialMnemonicVerificationArgs {
-  id?: string;
-  hash?: string;
-  indexedWordList: [number, string][];
+  id?: string
+  hash?: string
+  indexedWordList: [number, string][]
 }
 
 /**
  * @param { string[] } mnemonic - Array representation of the mnemonic string
  */
 export interface ISeedGeneratorArgs {
-  mnemonic: string[];
+  mnemonic: string[]
 }
 /**
  * @param { string } id - Optional user defined id for the mnemonic
@@ -68,35 +68,35 @@ export interface ISeedGeneratorArgs {
  * @param { boolean } persist - Whether the information should be persisted
  */
 export interface IMnemonicInfoStoreArgs {
-  id?: string;
-  hash?: string;
-  mnemonic?: string[];
-  masterKey?: string;
-  chainCode?: string;
-  kms?: string;
-  path?: string;
-  offset?: number;
-  withZeroBytes?: boolean;
-  persist?: boolean;
+  id?: string
+  hash?: string
+  mnemonic?: string[]
+  masterKey?: string
+  chainCode?: string
+  kms?: string
+  path?: string
+  offset?: number
+  withZeroBytes?: boolean
+  persist?: boolean
 }
 
 export interface IMnemonicInfoKeyResult {
-  masterKey?: string;
-  chainCode?: string;
+  masterKey?: string
+  chainCode?: string
 }
 
 export interface DeleteResult {
-  raw: unknown;
-  affected?: number | null;
+  raw: unknown
+  affected?: number | null
 }
 
 export interface UpdateResult extends DeleteResult {
-  generatedMaps: ObjectLiteral[];
+  generatedMaps: ObjectLiteral[]
 }
 
 export interface IMnemonicInfoResult extends IMnemonicInfoStoreArgs {
-  succeeded?: boolean;
-  seed?: string;
+  succeeded?: boolean
+  seed?: string
 }
 
 export type IRequiredContext = IAgentContext<IKeyManager & IDataStore>
