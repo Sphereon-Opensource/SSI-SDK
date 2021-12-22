@@ -148,7 +148,7 @@ export class MnemonicSeedManager implements IAgentPlugin {
     if (mnemonic && context) {
       if (args.path && args.kms) {
         const seed = await bip39.mnemonicToSeed(mnemonic?.join(' '))
-        const { key, chainCode } = derivePath(args.path, seed.toString('hex'), args.offset)
+        const { key, chainCode } = derivePath(args.path, seed.toString('hex'))
         const extPrivateKey = Buffer.concat([key, chainCode])
         //FIXME it doesn't use any secp256k1 library to generate the public key, so it doesn't generate an extended key
         const publicKey = getPublicKey(key, args.withZeroBytes)

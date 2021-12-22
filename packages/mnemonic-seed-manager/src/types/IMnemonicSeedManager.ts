@@ -63,7 +63,6 @@ export interface ISeedGeneratorArgs {
  * @param { string } chainCode - The chain code generated with the keys
  * @param { string } kms - The key management service to be used
  * @param { string } path - The derivation path to be used
- * @param { number } offset - The hardening offset of the key
  * @param { boolean } withZeroBytes - Whether the public key should be generated with zero bytes
  * @param { boolean } persist - Whether the information should be persisted
  */
@@ -75,7 +74,6 @@ export interface IMnemonicInfoStoreArgs {
   chainCode?: string
   kms?: string
   path?: string
-  offset?: number
   withZeroBytes?: boolean
   persist?: boolean
 }

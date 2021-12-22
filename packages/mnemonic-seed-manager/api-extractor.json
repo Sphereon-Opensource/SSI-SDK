@@ -1,18 +1,3 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
-  "apiReport": {
-    "enabled": true,
-    "reportFolder": "./tmp",
-    "reportTempFolder": "./tmp"
-  },
-
-  "docModel": {
-    "enabled": true,
-    "apiJsonFilePath": "./tmp/<unscopedPackageName>.api.json"
-  },
-
-  "dtsRollup": {
-    "enabled": false
-  },
-  "mainEntryPointFilePath": "<projectFolder>/dist/index.d.ts"
+  "extends": "../include/api-extractor-base.json"
 }
