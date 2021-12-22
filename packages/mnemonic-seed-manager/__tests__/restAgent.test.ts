@@ -16,9 +16,9 @@ import mnemonicGenerator from './shared/generateMnemonic'
 import seedGenerator from './shared/generateSeed'
 import storeSeed from './shared/storeMnemonicInfo'
 import { KeyManager } from '@veramo/key-manager'
-import { KeyStore, PrivateKeyStore, Entities as VeramoEntities, IDataStoreORM, DataStore, DataStoreORM } from '@veramo/data-store'
+import { KeyStore, PrivateKeyStore, Entities, IDataStoreORM, DataStore, DataStoreORM } from '@veramo/data-store'
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
-import { MnemonicSeedManager, Entities as SphereonEntities } from '../src/index'
+import { MnemonicSeedManager, MnemonicSeedManagerEntities } from '../src/index'
 import { createConnection } from 'typeorm'
 
 jest.setTimeout(30000)
@@ -51,7 +51,7 @@ const setup = async (): Promise<boolean> => {
     database: databaseFile,
     synchronize: true,
     logging: false,
-    entities: [...SphereonEntities, ...VeramoEntities],
+    entities: [...MnemonicSeedManagerEntities, ...Entities],
   })
 
   const secretBox = new SecretBox(KMS_SECRET_KEY)

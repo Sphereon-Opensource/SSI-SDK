@@ -8,8 +8,8 @@ import storeSeed from './shared/storeMnemonicInfo'
 import { createAgent, IDataStore, IKeyManager } from '@veramo/core'
 import { KeyManager } from '@veramo/key-manager'
 import { IMnemonicSeedManager, MnemonicSeedManager } from '../src'
-import { KeyStore, PrivateKeyStore, Entities as VeramoEntities } from '@veramo/data-store'
-import { Entities as SphereonEntities } from './../src/index'
+import { KeyStore, PrivateKeyStore, Entities } from '@veramo/data-store'
+import { MnemonicSeedManagerEntities } from './../src/index'
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 import { createConnection } from 'typeorm'
 
@@ -26,7 +26,7 @@ const setup = async (): Promise<boolean> => {
     database: databaseFile,
     synchronize: true,
     logging: false,
-    entities: [...SphereonEntities, ...VeramoEntities],
+    entities: [...MnemonicSeedManagerEntities, ...Entities],
   })
   const secretBox = new SecretBox(KMS_SECRET_KEY)
 
