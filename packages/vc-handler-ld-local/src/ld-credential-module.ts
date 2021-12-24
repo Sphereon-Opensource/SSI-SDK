@@ -57,12 +57,13 @@ export class LdCredentialModule {
 
     // some suites can modify the incoming credential (e.g. add required contexts)W
     suite.preSigningCredModification(credential)
-
+    debug(`Signing suite will be retrieved for ${verificationMethodId}...`)
+    const signingSuite = await suite.getSuiteForSigning(key, issuerDid, verificationMethodId, context)
     debug(`Issuer ${issuerDid} will create VC for ${key.kid}...`)
     const verifiableCredential = await vc.issue({
       credential,
       purpose,
-      suite: await suite.getSuiteForSigning(key, issuerDid, verificationMethodId, context),
+      suite: signingSuite,
       documentLoader,
       compactProof: false,
     })

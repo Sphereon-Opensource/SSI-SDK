@@ -3279,15 +3279,6 @@
     "@transmute/ld-key-pair" "^0.6.1-unstable.37"
     "@transmute/x25519-key-pair" "^0.6.1-unstable.37"
 
-"@transmute/ed25519-key-pair@^0.7.0-unstable.30":
-  version "0.7.0-unstable.30"
-  resolved "https://registry.yarnpkg.com/@transmute/ed25519-key-pair/-/ed25519-key-pair-0.7.0-unstable.30.tgz#4e3f1e02aeec57318e9dbc9de1ee5fc5f452b51c"
-  integrity sha512-ylvZhvBu+UVS8BNe9YlLUz1nQBkpAd9ebAoiZkuTyvR2JiTv3B4tOKIhjSvOKc5ncmoTzBJ4oTsx35G5W9+wiA==
-  dependencies:
-    "@stablelib/ed25519" "^1.0.1"
-    "@transmute/ld-key-pair" "^0.7.0-unstable.30"
-    "@transmute/x25519-key-pair" "^0.7.0-unstable.30"
-
 "@transmute/ed25519-signature-2018@^0.7.0-unstable.27":
   version "0.7.0-unstable.28"
   resolved "https://registry.yarnpkg.com/@transmute/ed25519-signature-2018/-/ed25519-signature-2018-0.7.0-unstable.28.tgz#451118729f77745b6de71f5132d81be31c296c31"
@@ -3298,31 +3289,10 @@
     "@transmute/security-context" "^0.7.0-unstable.28"
     jsonld "5.2.0"
 
-"@transmute/ed25519-signature-2018@^0.7.0-unstable.30":
-  version "0.7.0-unstable.30"
-  resolved "https://registry.yarnpkg.com/@transmute/ed25519-signature-2018/-/ed25519-signature-2018-0.7.0-unstable.30.tgz#88c46549422135ccf5e059a55d25c1d275271173"
-  integrity sha512-tW9fFx5oqUaOZjX3fNb+lAc8PGsVqIUK8Y0O73zTHco0J9FzBvAj9UbnqcYCYrr43d+kVzR7HmHlkcpZAaa2Dw==
-  dependencies:
-    "@transmute/ed25519-key-pair" "0.7.0-unstable.2"
-    "@transmute/jose-ld" "^0.7.0-unstable.30"
-    "@transmute/security-context" "^0.7.0-unstable.30"
-    jsonld "5.2.0"
-
 "@transmute/jose-ld@^0.7.0-unstable.28":
   version "0.7.0-unstable.28"
   resolved "https://registry.yarnpkg.com/@transmute/jose-ld/-/jose-ld-0.7.0-unstable.28.tgz#91404a9073e3d93d994986d742b67f2814126c9a"
   integrity sha512-IhAInINNY/KUf3tdlyjjtl/dVBB6DzY8DoB49udFDFVmQiYPuHYQc74blO3KyryqQZPNvTSv1k0EvvQO2i3m1w==
-  dependencies:
-    "@peculiar/webcrypto" "^1.1.6"
-    "@stablelib/aes-kw" "^1.0.0"
-    "@stablelib/xchacha20poly1305" "^1.0.0"
-    base64url "^3.0.1"
-    web-streams-polyfill "^3.0.3"
-
-"@transmute/jose-ld@^0.7.0-unstable.30":
-  version "0.7.0-unstable.30"
-  resolved "https://registry.yarnpkg.com/@transmute/jose-ld/-/jose-ld-0.7.0-unstable.30.tgz#f51b1c951850436a819a1ec5936008325490485a"
-  integrity sha512-e49TiZBETF/yROYyvcJuouYeI2MoMYf3BAmpd/QTkGwzn5pDJSwHMe3rl2jRIB4WLQ3ZUvqBuBX4ZOGqrn3cQw==
   dependencies:
     "@peculiar/webcrypto" "^1.1.6"
     "@stablelib/aes-kw" "^1.0.0"
@@ -3468,14 +3438,6 @@
   dependencies:
     "@stablelib/x25519" "^1.0.0"
     "@transmute/ld-key-pair" "^0.7.0-unstable.28"
-
-"@transmute/x25519-key-pair@^0.7.0-unstable.30":
-  version "0.7.0-unstable.30"
-  resolved "https://registry.yarnpkg.com/@transmute/x25519-key-pair/-/x25519-key-pair-0.7.0-unstable.30.tgz#6f7de4477c734aa749e5c1585e7dafdc74a7428b"
-  integrity sha512-f2OdQ8/N5X10RETZ6IEIUFJcIqIP4hqcZNRutG6ZBiPGRIa7whQM4ZBOdC/BjfSSs2B+IQ9D7b/ng+LHZE5qSg==
-  dependencies:
-    "@stablelib/x25519" "^1.0.0"
-    "@transmute/ld-key-pair" "^0.7.0-unstable.30"
 
 "@trust/keyto@^0.3.7":
   version "0.3.7"
