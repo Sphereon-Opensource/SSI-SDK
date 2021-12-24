@@ -41,7 +41,7 @@ export default (
       .ssiQrCode(ssiQrProps)
       .then(
           ssiQrCode => {
-            expect(shallow(ssiQrCode).props().value).toContain(`"type":"auth","did":"${ssiQrProps.did}","mode":"didauth"`)
+            expect(shallow(ssiQrCode).props().value).toContain(`"type":"auth","mode":"didauth"`)
           }
       );
     })
@@ -52,7 +52,7 @@ export default (
       .ssiQrCode(ssiQrProps)
       .then(
           ssiQrCode => {
-            expect(shallow(ssiQrCode).props().value).toContain(`"type":"auth","did":"${ssiQrProps.did}","mode":"didauth"`)
+            expect(shallow(ssiQrCode).props().value).toContain(`"type":"auth","mode":"didauth"`)
           }
       );
     })
