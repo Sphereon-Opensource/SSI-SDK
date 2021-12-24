@@ -64,6 +64,7 @@ export interface ISeedGeneratorArgs {
  * @param { string } kms - The key management service to be used
  * @param { string } path - The derivation path to be used
  * @param { boolean } withZeroBytes - Whether the public key should be generated with zero bytes
+ * @param { 'Ed25519' | 'Secp256k1' } - The type of the key generated
  * @param { boolean } persist - Whether the information should be persisted
  */
 export interface IMnemonicInfoStoreArgs {
@@ -75,6 +76,7 @@ export interface IMnemonicInfoStoreArgs {
   kms?: string
   path?: string
   withZeroBytes?: boolean
+  type?: 'Ed25519' | 'Secp256k1'
   persist?: boolean
 }
 
