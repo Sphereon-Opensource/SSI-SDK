@@ -142,7 +142,7 @@ export class MnemonicSeedManager implements IAgentPlugin {
           await this.saveMasterKey({masterKey: key.toString('hex'), chainCode: chainCode.toString('hex')})
           return {masterKey: key.toString('hex'), chainCode: chainCode.toString('hex')}
         } else {
-          throw new Error('Not implemented yet')
+          throw new Error('Secp256k1 keys are not supported yet')
         }
       }
     }
