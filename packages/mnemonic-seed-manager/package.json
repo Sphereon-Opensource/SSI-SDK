@@ -18,9 +18,7 @@
     "@veramo/data-store": "^3.1.1-next.15",
     "@veramo/key-manager": "^3.1.1-next.15",
     "@veramo/kms-local": "^3.1.1-next.15",
-    "bip32": "^3.0.1",
-    "bip39": "^3.0.4",
-    "tiny-secp256k1": "^2.1.2"
+    "bip39": "^3.0.4"
   },
   "devDependencies": {
     "@types/bip39": "^3.0.0",

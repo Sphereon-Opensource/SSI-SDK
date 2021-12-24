@@ -2,8 +2,6 @@ import * as crypto from 'crypto'
 import { derivePath, getMasterKeyFromSeed, getPublicKey } from 'ed25519-hd-key'
 import { IAgentPlugin, ManagedKeyInfo } from '@veramo/core'
 import { AbstractSecretBox } from '@veramo/key-manager'
-import * as ecc from 'tiny-secp256k1'
-import { BIP32Factory } from "bip32"
 import * as bip39 from 'bip39'
 import { Connection } from 'typeorm'
 
@@ -139,15 +137,9 @@ export class MnemonicSeedManager implements IAgentPlugin {
     if (mnemonic) {
       const mnemonicInfo = await this.generateSeed({ mnemonic })
       if (mnemonicInfo.seed) {
-        if (args.type === 'Ed25519') {
           const {key, chainCode} = getMasterKeyFromSeed(mnemonicInfo.seed);
           await this.saveMasterKey({masterKey: key.toString('hex'), chainCode: chainCode.toString('hex')})
           return {masterKey: key.toString('hex'), chainCode: chainCode.toString('hex')}
-        } else {
-          const bip32 = BIP32Factory(ecc)
-          const masterKey = bip32.fromSeed(Buffer.from(mnemonicInfo.seed, 'hex'))
-          return { masterKey:  masterKey.privateKey?.toString('hex'), chainCode: masterKey.chainCode?.toString('hex') }
-        }
       }
     }
     throw new Error('Mnemonic not found')
