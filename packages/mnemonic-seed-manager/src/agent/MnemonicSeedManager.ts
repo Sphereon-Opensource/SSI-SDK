@@ -2,6 +2,8 @@ import * as crypto from 'crypto'
 import { derivePath, getMasterKeyFromSeed, getPublicKey } from 'ed25519-hd-key'
 import { IAgentPlugin, ManagedKeyInfo } from '@veramo/core'
 import { AbstractSecretBox } from '@veramo/key-manager'
+import * as ecc from 'tiny-secp256k1'
+import { BIP32Factory } from "bip32"
 import * as bip39 from 'bip39'
 import { Connection } from 'typeorm'
 
@@ -68,7 +70,7 @@ export class MnemonicSeedManager implements IAgentPlugin {
 
   private async generateSeed(args: ISeedGeneratorArgs): Promise<IMnemonicInfoResult> {
     return Promise.resolve({
-      seed: await bip39.mnemonicToSeed(args.mnemonic.join(' ')).then((seed) => seed.toString('hex')),
+      seed: (await bip39.mnemonicToSeed(args.mnemonic.join(' '))).toString('hex')
     })
   }
 
@@ -135,10 +137,18 @@ export class MnemonicSeedManager implements IAgentPlugin {
   private async generateMasterKey(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoKeyResult> {
     const mnemonic = (await this.getMnemonicInfo({ id: args.id, hash: args.hash })).mnemonic
     if (mnemonic) {
-      const seed = await bip39.mnemonicToSeed(mnemonic?.join(' '))
-      const { key, chainCode } = getMasterKeyFromSeed(seed.toString('hex'))
-      await this.saveMasterKey({ masterKey: key.toString('hex'), chainCode: chainCode.toString('hex') })
-      return { masterKey: key.toString('hex'), chainCode: chainCode.toString('hex') }
+      const mnemonicInfo = await this.generateSeed({ mnemonic })
+      if (mnemonicInfo.seed) {
+        if (args.type === 'Ed25519') {
+          const {key, chainCode} = getMasterKeyFromSeed(mnemonicInfo.seed);
+          await this.saveMasterKey({masterKey: key.toString('hex'), chainCode: chainCode.toString('hex')})
+          return {masterKey: key.toString('hex'), chainCode: chainCode.toString('hex')}
+        } else {
+          const bip32 = BIP32Factory(ecc)
+          const masterKey = bip32.fromSeed(Buffer.from(mnemonicInfo.seed, 'hex'))
+          return { masterKey:  masterKey.privateKey?.toString('hex'), chainCode: masterKey.chainCode?.toString('hex') }
+        }
+      }
     }
     throw new Error('Mnemonic not found')
   }
@@ -147,8 +157,8 @@ export class MnemonicSeedManager implements IAgentPlugin {
     const mnemonic = (await this.getMnemonicInfo({ id: args.id, hash: args.hash })).mnemonic
     if (mnemonic && context) {
       if (args.path && args.kms) {
-        const seed = await bip39.mnemonicToSeed(mnemonic?.join(' '))
-        const { key, chainCode } = derivePath(args.path, seed.toString('hex'))
+        const seed = (await this.generateSeed({ mnemonic })).seed as string
+        const { key, chainCode } = derivePath(args.path, seed)
         const extPrivateKey = Buffer.concat([key, chainCode])
         //FIXME it doesn't use any secp256k1 library to generate the public key, so it doesn't generate an extended key
         const publicKey = getPublicKey(key, args.withZeroBytes)
