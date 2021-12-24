@@ -1,6 +1,7 @@
-import { IPluginMethodMap } from '@veramo/core'
+import { IAgentContext, IDataStore, IKeyManager, IPluginMethodMap, ManagedKeyInfo } from '@veramo/core'
+import { ObjectLiteral } from 'typeorm/browser/common/ObjectLiteral'
 
-export interface IMnemonicInfoGenerator extends IPluginMethodMap {
+export interface IMnemonicSeedManager extends IPluginMethodMap {
   generateMnemonic(args: IMnemonicGeneratorArgs): Promise<IMnemonicInfoResult>
   verifyMnemonic(args: IMnemonicVerificationArgs): Promise<IMnemonicInfoResult>
   verifyPartialMnemonic(args: IPartialMnemonicVerificationArgs): Promise<IMnemonicInfoResult>
@@ -8,6 +9,8 @@ export interface IMnemonicInfoGenerator extends IPluginMethodMap {
   saveMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoResult>
   getMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoResult>
   deleteMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<DeleteResult>
+  generateMasterKey(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoKeyResult>
+  generateKeysFromMnemonic(args: IMnemonicInfoStoreArgs, context: IRequiredContext): Promise<ManagedKeyInfo>
 }
 
 /**
@@ -56,11 +59,30 @@ export interface ISeedGeneratorArgs {
  * @param { string } id - Optional user defined id for the mnemonic
  * @param { string } hash - Optional sha256 hash of the mnemonic
  * @param { string[] } mnemonic - Array representation of the mnemonic string
+ * @param { string } masterKey - The master key generated from the seed
+ * @param { string } chainCode - The chain code generated with the keys
+ * @param { string } kms - The key management service to be used
+ * @param { string } path - The derivation path to be used
+ * @param { boolean } withZeroBytes - Whether the public key should be generated with zero bytes
+ * @param { 'Ed25519' | 'Secp256k1' } - The type of the key generated
+ * @param { boolean } persist - Whether the information should be persisted
  */
 export interface IMnemonicInfoStoreArgs {
   id?: string
   hash?: string
   mnemonic?: string[]
+  masterKey?: string
+  chainCode?: string
+  kms?: string
+  path?: string
+  withZeroBytes?: boolean
+  type?: 'Ed25519' | 'Secp256k1'
+  persist?: boolean
+}
+
+export interface IMnemonicInfoKeyResult {
+  masterKey?: string
+  chainCode?: string
 }
 
 export interface DeleteResult {
@@ -68,7 +90,13 @@ export interface DeleteResult {
   affected?: number | null
 }
 
+export interface UpdateResult extends DeleteResult {
+  generatedMaps: ObjectLiteral[]
+}
+
 export interface IMnemonicInfoResult extends IMnemonicInfoStoreArgs {
   succeeded?: boolean
   seed?: string
 }
+
+export type IRequiredContext = IAgentContext<IKeyManager & IDataStore>

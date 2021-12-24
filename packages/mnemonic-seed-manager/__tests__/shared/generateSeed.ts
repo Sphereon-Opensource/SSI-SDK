@@ -1,8 +1,8 @@
 import { TAgent } from '@veramo/core'
 
-import { IMnemonicInfoGenerator } from '../../src'
+import { IMnemonicSeedManager } from '../../src'
 
-type ConfiguredAgent = TAgent<IMnemonicInfoGenerator>
+type ConfiguredAgent = TAgent<IMnemonicSeedManager>
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
   describe('seed generator', () => {
