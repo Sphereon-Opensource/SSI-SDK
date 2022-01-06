@@ -2,7 +2,7 @@ import { schema } from '../index'
 import { IAgentPlugin } from '@veramo/core'
 import { OpSession } from '../session/OpSession'
 import { v4 as uuidv4 } from 'uuid'
-import { ParsedAuthenticationRequestURI, VerifiedAuthenticationRequestWithJWT } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
+
 import {
   events,
   IAuthenticateWithSiopArgs,
@@ -19,6 +19,7 @@ import {
   ISendSiopAuthenticationResponseArgs,
   IVerifySiopAuthenticationRequestUriArgs,
 } from '../types/IDidAuthSiopOpAuthenticator'
+import { ParsedAuthenticationRequestURI, VerifiedAuthenticationRequestWithJWT } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
 
 /**
  * {@inheritDoc IDidAuthSiopOpAuthenticator}

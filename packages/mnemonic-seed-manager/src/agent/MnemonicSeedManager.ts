@@ -68,7 +68,7 @@ export class MnemonicSeedManager implements IAgentPlugin {
 
   private async generateSeed(args: ISeedGeneratorArgs): Promise<IMnemonicInfoResult> {
     return Promise.resolve({
-      seed: (await bip39.mnemonicToSeed(args.mnemonic.join(' '))).toString('hex')
+      seed: (await bip39.mnemonicToSeed(args.mnemonic.join(' '))).toString('hex'),
     })
   }
 
@@ -138,9 +138,9 @@ export class MnemonicSeedManager implements IAgentPlugin {
       const mnemonicInfo = await this.generateSeed({ mnemonic })
       if (mnemonicInfo.seed) {
         if (args.type === 'Ed25519') {
-          const {key, chainCode} = getMasterKeyFromSeed(mnemonicInfo.seed);
-          await this.saveMasterKey({masterKey: key.toString('hex'), chainCode: chainCode.toString('hex')})
-          return {masterKey: key.toString('hex'), chainCode: chainCode.toString('hex')}
+          const { key, chainCode } = getMasterKeyFromSeed(mnemonicInfo.seed)
+          await this.saveMasterKey({ masterKey: key.toString('hex'), chainCode: chainCode.toString('hex') })
+          return { masterKey: key.toString('hex'), chainCode: chainCode.toString('hex') }
         } else {
           throw new Error('Secp256k1 keys are not supported yet')
         }

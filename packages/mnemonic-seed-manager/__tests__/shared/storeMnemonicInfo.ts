@@ -165,7 +165,9 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should throw an error if type is different from Ed25519', async () => {
-      await expect(agent.generateMasterKey({ hash: mnemonicObj.hash, type: 'Secp256k1' })).rejects.toThrowError('Secp256k1 keys are not supported yet')
+      await expect(agent.generateMasterKey({ hash: mnemonicObj.hash, type: 'Secp256k1' })).rejects.toThrowError(
+        'Secp256k1 keys are not supported yet'
+      )
     })
 
     it('should generate the private and public keys', async () => {
