@@ -1,5 +1,5 @@
 import { DIDDocumentSection, IAgentContext, IIdentifier, IPluginMethodMap, IResolver } from '@veramo/core'
-import { VerifiableCredential, VerifiablePresentation } from '@sphereon/pe-js'
+import { IVerifiableCredential, IVerifiablePresentation } from '@sphereon/pex'
 import {
   ParsedAuthenticationRequestURI,
   VerifiedAuthenticationRequestWithJWT,
@@ -52,7 +52,7 @@ export interface IGetSiopAuthenticationRequestFromRpArgs {
 export interface IGetSiopAuthenticationRequestDetailsArgs {
   sessionId: string
   verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT
-  verifiableCredentials: VerifiableCredential[]
+  verifiableCredentials: IVerifiableCredential[]
 }
 
 export interface IVerifySiopAuthenticationRequestUriArgs {
@@ -77,7 +77,7 @@ export interface IResponse extends Response {}
 export interface IMatchedPresentationDefinition {
   location: PresentationLocation
   format: VerifiablePresentationTypeFormat
-  presentation: VerifiablePresentation
+  presentation: IVerifiablePresentation
 }
 
 export interface IGetSiopSessionArgs {
@@ -117,7 +117,7 @@ export interface IOpsGetSiopAuthenticationRequestFromRpArgs {
 
 export interface IOpsGetSiopAuthenticationRequestDetailsArgs {
   verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT
-  verifiableCredentials: VerifiableCredential[]
+  verifiableCredentials: IVerifiableCredential[]
 }
 
 export interface IOpsVerifySiopAuthenticationRequestUriArgs {

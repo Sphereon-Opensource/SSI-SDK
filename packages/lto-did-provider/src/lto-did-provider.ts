@@ -3,13 +3,7 @@ import { IAgentContext, IIdentifier, IKey, IKeyManager, IService, TKeyType } fro
 import { Account, LTO } from 'lto-api'
 import { DIDService, hexToBase58, base58ToHex } from '@sphereon/lto-did-ts'
 import Debug from 'debug'
-import {
-  ICreateIdentifierOpts,
-  ILtoDidProviderOpts,
-  IRequiredContext,
-  IDidConnectionMode,
-  IAddKeyOpts,
-} from './types/lto-provider-types'
+import { ICreateIdentifierOpts, ILtoDidProviderOpts, IRequiredContext, IDidConnectionMode, IAddKeyOpts } from './types/lto-provider-types'
 import { UniRegistrar } from '@sphereon/did-uni-client'
 
 const debug = Debug('veramo:did-provider-lto')
@@ -32,7 +26,7 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
 
   async createIdentifier(
     { kms, options }: { kms?: string; options?: ICreateIdentifierOpts },
-    context: IRequiredContext,
+    context: IRequiredContext
   ): Promise<Omit<IIdentifier, 'provider'>> {
     if (this.isUniRegistrarMode()) {
       return this.createIdentifierUsingUniRegistrar(context, kms, options)
@@ -48,7 +42,7 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
   private async createIdentifierUsingUniRegistrar(
     _context: IAgentContext<IKeyManager>,
     _kms?: string,
-    _options?: ICreateIdentifierOpts,
+    _options?: ICreateIdentifierOpts
   ): Promise<Omit<IIdentifier, 'provider'>> {
     if (!this.uniRegistrar) {
       throw new Error(`Uni registrar mode used, but no registrar is present`)
@@ -82,7 +76,7 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
   private async createIdentifierUsingNodeRPC(
     context: IAgentContext<IKeyManager>,
     kms?: string,
-    options?: ICreateIdentifierOpts,
+    options?: ICreateIdentifierOpts
   ): Promise<Omit<IIdentifier, 'provider'>> {
     const ltoAPI = new LTO(this.opts?.network)
     const providedPrivateKeyBase58 = options?.privateKeyHex ? hexToBase58(options?.privateKeyHex) : undefined
@@ -92,7 +86,7 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
       context,
       { kms },
       didAccount,
-      didAccount.sign.privateKey ? base58ToHex(didAccount.getPrivateSignKey()) : undefined,
+      didAccount.sign.privateKey ? base58ToHex(didAccount.getPrivateSignKey()) : undefined
     )
 
     return didService
@@ -180,20 +174,20 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
     { kms }: { kms?: string; alias?: string; options?: any },
     didAccount?: Account,
     privateKeyHex?: string,
-    keyType?: TKeyType,
+    keyType?: TKeyType
   ): Promise<IKey> {
     const key = privateKeyHex
       ? await context.agent.keyManagerImport({
-        kms: kms || this.defaultKms,
-        publicKeyHex: didAccount ? base58ToHex(didAccount.getPublicSignKey()) : undefined,
-        kid: didAccount ? `did:lto:${didAccount.address}#sign` : undefined,
-        type: keyType || 'Ed25519',
-        privateKeyHex,
-      })
+          kms: kms || this.defaultKms,
+          publicKeyHex: didAccount ? base58ToHex(didAccount.getPublicSignKey()) : undefined,
+          kid: didAccount ? `did:lto:${didAccount.address}#sign` : undefined,
+          type: keyType || 'Ed25519',
+          privateKeyHex,
+        })
       : await context.agent.keyManagerCreate({
-        kms: kms || this.defaultKms,
-        type: keyType || 'Ed25519',
-      })
+          kms: kms || this.defaultKms,
+          type: keyType || 'Ed25519',
+        })
 
     return key
   }

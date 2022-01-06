@@ -72,7 +72,6 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     args: ICreateVerifiableCredentialLDArgs,
     context: IRequiredContext
   ): Promise<VerifiableCredentialSP> {
-
     debug('Entry of createVerifiableCredentialLDLocal')
     const credentialContext = processEntryToArray(args?.credential?.['@context'], MANDATORY_CREDENTIAL_CONTEXT)
     const credentialType = processEntryToArray(args?.credential?.type, 'VerifiableCredential')

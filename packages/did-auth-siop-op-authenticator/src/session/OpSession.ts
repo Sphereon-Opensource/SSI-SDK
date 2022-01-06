@@ -1,7 +1,7 @@
 import { DIDDocumentSection, IIdentifier } from '@veramo/core'
 import { _ExtendedIKey, mapIdentifierKeysToDoc } from '@veramo/utils'
 import { OP, PresentationExchange } from '@sphereon/did-auth-siop/dist/main'
-import { SubmissionRequirementMatch, VerifiableCredential } from '@sphereon/pe-js'
+import { SubmissionRequirementMatch, IVerifiableCredential } from '@sphereon/pex'
 import {
   PassBy,
   ResponseMode,
@@ -138,7 +138,7 @@ export class OpSession {
 
   private async matchPresentationDefinitions(
     presentationDefs: PresentationDefinitionWithLocation[],
-    verifiableCredentials: VerifiableCredential[]
+    verifiableCredentials: IVerifiableCredential[]
   ): Promise<IMatchedPresentationDefinition[]> {
     const presentationExchange = this.getPresentationExchange(verifiableCredentials)
     return await Promise.all(
@@ -163,7 +163,7 @@ export class OpSession {
     )
   }
 
-  private getPresentationExchange(verifiableCredentials: VerifiableCredential[]): PresentationExchange {
+  private getPresentationExchange(verifiableCredentials: IVerifiableCredential[]): PresentationExchange {
     return new PresentationExchange({
       did: this.op!.authResponseOpts.did,
       allVerifiableCredentials: verifiableCredentials,
