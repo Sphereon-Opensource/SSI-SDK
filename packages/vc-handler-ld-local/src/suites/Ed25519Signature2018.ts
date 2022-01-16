@@ -1,5 +1,5 @@
 import { Ed25519KeyPair } from '@transmute/ed25519-key-pair'
-import { Ed25519Signature2018 } from '@transmute/ed25519-signature-2018'
+import { Ed25519Signature2018 } from '@sphereon/ed25519-signature-2018'
 import { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
 import { asArray, encodeJoseBlob } from '@veramo/utils'
 import suiteContext2018 from 'ed25519-signature-2018-context'

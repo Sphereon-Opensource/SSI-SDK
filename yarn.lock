@@ -2646,10 +2646,10 @@
     cross-fetch "^3.1.4"
     did-resolver "^3.1.5"
 
-"@sphereon/ed25519-signature-2018@0.7.0-unstable.1":
-  version "0.7.0-unstable.1"
-  resolved "https://registry.yarnpkg.com/@sphereon/ed25519-signature-2018/-/ed25519-signature-2018-0.7.0-unstable.1.tgz#8b666bed16669a0acfda927b408e97f594879b5c"
-  integrity sha512-+8o/HUZSsy02POmIJECV9mgtZRE1HpNuBDSXOObCLlvzkAZOpQEvvyUwiX7H95ln2l1fvT8Z6D/YkwPND+kNRw==
+"@sphereon/ed25519-signature-2018@0.7.0-unstable.2":
+  version "0.7.0-unstable.2"
+  resolved "https://registry.yarnpkg.com/@sphereon/ed25519-signature-2018/-/ed25519-signature-2018-0.7.0-unstable.2.tgz#27dc1dda35ae497e1a79384ff07a058d4415f5b1"
+  integrity sha512-EuQmoOlQEIUiihl1lvP3jF9JDbsCEFINrnT7giJhrMmZPWcaqPU/2/mUkm/an0yphANBDGS9InABnIOLXM5/VQ==
   dependencies:
     "@digitalcredentials/credentials-context" "^1.0.5"
     "@digitalcredentials/jsonld" "^5.2.1"
