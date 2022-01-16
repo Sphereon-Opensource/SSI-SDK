@@ -1,8 +1,7 @@
-import { TAgent } from '@veramo/core'
+import { IDataStore, IKeyManager, TAgent } from '@veramo/core'
+import { IMnemonicSeedManager, IMnemonicInfoResult } from '../../src/index'
 
-import { IMnemonicInfoGenerator, IMnemonicInfoResult } from '../../src'
-
-type ConfiguredAgent = TAgent<IMnemonicInfoGenerator>
+type ConfiguredAgent = TAgent<IMnemonicSeedManager & IKeyManager & IDataStore>
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
   describe('database operations', () => {
@@ -157,6 +156,30 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           indexedWordList,
         })
       ).rejects.toThrowError('Mnemonic not found')
+    })
+
+    it('should generate the master key', async () => {
+      const mnemonicInfoKey = await agent.generateMasterKey({ hash: mnemonicObj.hash, type: 'Ed25519' })
+      expect(mnemonicInfoKey.masterKey).toMatch(/\w{64}/)
+      expect(mnemonicInfoKey.chainCode).toMatch(/\w{64}/)
+    })
+
+    it('should throw an error if type is different from Ed25519', async () => {
+      await expect(agent.generateMasterKey({ hash: mnemonicObj.hash, type: 'Secp256k1' })).rejects.toThrowError(
+        'Secp256k1 keys are not supported yet'
+      )
+    })
+
+    it('should generate the private and public keys', async () => {
+      await expect(agent.generateKeysFromMnemonic({ hash: mnemonicObj.hash, path: "m/0'", kms: 'local' })).resolves.toEqual(
+        expect.objectContaining({
+          kms: 'local',
+          meta: {
+            algorithms: ['Ed25519', 'EdDSA'],
+          },
+          type: 'Ed25519',
+        })
+      )
     })
   })
 }
