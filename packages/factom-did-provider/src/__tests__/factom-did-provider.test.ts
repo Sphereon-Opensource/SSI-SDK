@@ -24,6 +24,8 @@ const didManager = new DIDManager({
 
 let agent: TAgent<IResolver & IKeyManager & IDIDManager>
 
+jest.setTimeout(100000)
+
 beforeAll(async () => {
   agent = createAgent({
     plugins: [
@@ -68,7 +70,6 @@ describe('@sphereon/factom-did-provider', () => {
   } as IRequiredContext*/
 
   it('should create identifier', () => {
-    jest.setTimeout(100000)
     const restResponse = {
       data: {
         didIdentifier: 'TestDID',
