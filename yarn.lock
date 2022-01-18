@@ -2525,6 +2525,11 @@
     colors "~1.2.1"
     string-argv "~0.3.1"
 
+"@scure/base@^1.0.0-rc1":
+  version "1.0.0-rc1"
+  resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.0.0-rc1.tgz#b45ddc88d49b13950f149fbc8d6f9c27ad594d97"
+  integrity sha512-9H5FDYu9D/X04seD9SKR6VE7/rX8AUSyMk3x6Upp+CrPv3FL6D/H3lhqMmgSZAWgAkVwr1bpeBpcxh6FSpfTbw==
+
 "@semantic-release/commit-analyzer@^9.0.2":
   version "9.0.2"
   resolved "https://registry.yarnpkg.com/@semantic-release/commit-analyzer/-/commit-analyzer-9.0.2.tgz#a78e54f9834193b55f1073fa6258eecc9a545e03"
@@ -9184,11 +9189,6 @@ methods@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
   integrity sha1-VSmk1nZUE07cxSZmVoNbD4Ua/O4=
-
-micro-base58@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/micro-base58/-/micro-base58-0.5.1.tgz#008892e621fd0d38caab3288a9dd0e65cb4b6200"
-  integrity sha512-iwqAmg66VjB2LA3BcUxyrOyqck4HLLtSzKnx2VQSnN5piQji598N15P8RRx2d6lPvJ98B1b0cl2VbvQeFeWdig==
 
 micromatch@^4.0.2, micromatch@^4.0.4:
   version "4.0.4"
