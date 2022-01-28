@@ -16,7 +16,7 @@
     "test:lint": "eslint . --ext .ts"
   },
   "dependencies": {
-    "@digitalcredentials/did-method-key": "^2.0.2",
+    "@digitalcredentials/did-method-key": "^2.0.3",
     "@digitalcredentials/did-web-resolver": "^1.0.0",
     "@digitalcredentials/ed25519-signature-2020": "^3.0.2",
     "@digitalcredentials/ed25519-verification-key-2020": "^3.2.2",
@@ -26,8 +26,9 @@
     "react-native-securerandom": "^1.0.0",
     "@digitalcredentials/vc": "^1.1.1",
     "@digitalcredentials/x25519-key-agreement-2020-context": "^1.0.0",
+    "@digitalcredentials/rdf-canonize": "^1.0.0",
     "@sphereon/ssi-sdk-core": "^0.2.0",
-    "@transmute/ed25519-key-pair": "0.7.0-unstable.35",
+    "@transmute/ed25519-key-pair": "0.7.0-unstable.40",
     "@sphereon/ed25519-signature-2018": "0.7.0-unstable.2",
     "@transmute/jsonld-document-loader": "^0.2.0",
     "@transmute/vc-status-rl-2020": "^0.7.0-unstable.35",
