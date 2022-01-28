@@ -47,6 +47,7 @@ test/*.js
 /packages/*/api/*.api.md
 /packages/*/coverage/
 /packages/*/node_modules/
+/packages/*/yarn.lock
 
 *.tsbuildinfo
 
@@ -55,3 +56,4 @@ test/*.js
 .eslintcache
 *.swp
 *~
+
