@@ -2634,6 +2634,14 @@
     cross-fetch "^3.1.4"
     did-resolver "^3.1.5"
 
+"@sphereon/did-uni-client@^0.3.3":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@sphereon/did-uni-client/-/did-uni-client-0.3.3.tgz#6005842f4fde92d129a7d36158640b5753b77e20"
+  integrity sha512-dT4HUcnxGC/HXnmWTmJCBCt3N8qFBB724kyBIpNL6kW2MuIHbLs3btrcr+C2GTye4n5g8mHz0yLPgq39Zz2rLA==
+  dependencies:
+    cross-fetch "^3.1.4"
+    did-resolver "^3.1.2"
+
 "@sphereon/ed25519-signature-2018@0.7.0-unstable.2":
   version "0.7.0-unstable.2"
   resolved "https://registry.yarnpkg.com/@sphereon/ed25519-signature-2018/-/ed25519-signature-2018-0.7.0-unstable.2.tgz#27dc1dda35ae497e1a79384ff07a058d4415f5b1"
@@ -2675,6 +2683,20 @@
     jsonpath "^1.1.1"
     nanoid "^3.1.32"
     string.prototype.matchall "^4.0.6"
+
+"@sphereon/ssi-sdk-core@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@sphereon/ssi-sdk-core/-/ssi-sdk-core-0.2.0.tgz#14a45a870ade777aeade25b70638310c579696af"
+  integrity sha512-AmoVoD7iJi7cAeTgSJfd0ubTRwAVNu/IxK84a/aM/gGIg5ahzq264JoREmR4Q2KVb1YpHGusUkNKrQe511rZng==
+  dependencies:
+    "@sphereon/did-uni-client" "^0.3.3"
+    "@veramo/core" "^3.1.1-next.15"
+    "@veramo/did-manager" "^3.1.1-next.15"
+    debug "^4.1.1"
+    did-jwt-vc "^2.1.7"
+    events "^3.3.0"
+    micro-base58 "^0.5.1"
+    z-schema "^5.0.2"
 
 "@sqltools/formatter@^1.2.2":
   version "1.2.3"
@@ -3778,6 +3800,16 @@
     events "^3.2.0"
     z-schema "^5.0.0"
 
+"@veramo/core@^3.1.1-next.15", "@veramo/core@^3.1.1-next.29+a0c7c294":
+  version "3.1.1-next.29"
+  resolved "https://registry.yarnpkg.com/@veramo/core/-/core-3.1.1-next.29.tgz#6308fec652c1193c3cdbe4fadef930918e1ff306"
+  integrity sha512-0mNk4/vvNbgIoxr8ZVy/kmZL2BjoOi24DvUbCOYhEmhIE+EDnge0pV5XKirF581EazYeYgnsEVC5OeOkjMWiIQ==
+  dependencies:
+    debug "^4.1.1"
+    did-jwt-vc "2.1.8"
+    events "^3.2.0"
+    z-schema "^5.0.0"
+
 "@veramo/credential-ld@^3.1.1-next.26+b5fcdb5f":
   version "3.1.1-next.26"
   resolved "https://registry.yarnpkg.com/@veramo/credential-ld/-/credential-ld-3.1.1-next.26.tgz#50016d4263326ed5325f88ae40095ce53e2728a0"
@@ -3852,6 +3884,14 @@
     "@veramo/core" "^3.1.1-next.26+b5fcdb5f"
     debug "^4.1.1"
 
+"@veramo/did-discovery@^3.1.1-next.29+a0c7c294":
+  version "3.1.1-next.29"
+  resolved "https://registry.yarnpkg.com/@veramo/did-discovery/-/did-discovery-3.1.1-next.29.tgz#ef344ff76b6b80d2b8badabe54ebb6971e3ac1b7"
+  integrity sha512-mUjQa7qi99DvFZV+QzWiV4LXNO1VovVRd+naDy3dLs85f2RzZNCfsR8e5Zs7cw6um99hBBI6PBmicG2UWiz4Ng==
+  dependencies:
+    "@veramo/core" "^3.1.1-next.29+a0c7c294"
+    debug "^4.1.1"
+
 "@veramo/did-jwt@^3.1.1-next.26+b5fcdb5f":
   version "3.1.1-next.26"
   resolved "https://registry.yarnpkg.com/@veramo/did-jwt/-/did-jwt-3.1.1-next.26.tgz#243ecc134614e55233604497123a48e86d7456ee"
@@ -3870,6 +3910,14 @@
   dependencies:
     "@veramo/core" "^3.1.1-next.26+b5fcdb5f"
     "@veramo/did-discovery" "^3.1.1-next.26+b5fcdb5f"
+
+"@veramo/did-manager@^3.1.1-next.15":
+  version "3.1.1-next.29"
+  resolved "https://registry.yarnpkg.com/@veramo/did-manager/-/did-manager-3.1.1-next.29.tgz#2ebf3544f23225d96d62623d8390d60cb277c875"
+  integrity sha512-uCH6a63/aKqrClOwcUbAfPcCxlT3upLdoZfbjb9nkaefzY1oOxQJPojqHDGci2MyKivZATtqZjre8A0L9EnYAw==
+  dependencies:
+    "@veramo/core" "^3.1.1-next.29+a0c7c294"
+    "@veramo/did-discovery" "^3.1.1-next.29+a0c7c294"
 
 "@veramo/did-provider-ethr@^3.1.1-next.26+b5fcdb5f":
   version "3.1.1-next.26"
@@ -5774,7 +5822,7 @@ did-resolver@3.1.3:
   resolved "https://registry.yarnpkg.com/did-resolver/-/did-resolver-3.1.3.tgz#ed530c9daa2c9925f85e9eabf258e51960db7e70"
   integrity sha512-ab8y90tSiDkTdfddXRC9Qcb1QSd568aC6+OgFTrcE4rs1vQAZOil+VqXHDu+Ff/UvhxlckPO8oJtp86iICZG0w==
 
-did-resolver@^3.1.0, did-resolver@^3.1.3, did-resolver@^3.1.5:
+did-resolver@^3.1.0, did-resolver@^3.1.2, did-resolver@^3.1.3, did-resolver@^3.1.5:
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/did-resolver/-/did-resolver-3.1.5.tgz#1a82a00fa96d64085676183bff40ebc13c88cd6a"
   integrity sha512-/4lM1vK5osnWVZ2oN9QhlWV5xOwssuLSL1MvueBc8LQWotbD5kM9XQMe7h4GydYpbh3JaWMFkOWwc9jvSZ+qgg==

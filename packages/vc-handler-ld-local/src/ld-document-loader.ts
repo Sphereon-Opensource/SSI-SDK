@@ -28,13 +28,13 @@ export class LdDocumentLoader {
 
       // did resolution
       if (url.toLowerCase().startsWith('did:')) {
-        let didDoc: DIDDocument | null;
-       /* if (url.toLowerCase().startsWith('did:key:')) {
+        let didDoc: DIDDocument | null
+        /* if (url.toLowerCase().startsWith('did:key:')) {
           // const suite = this.ldSuiteLoader.getAllSignatureSuites()[0].getSuiteForVerification();
           didDoc = await new DidKeyDriver().get({url});
         } else {*/
-          const resolutionResult = await context.agent.resolveDid({ didUrl: url })
-          didDoc = resolutionResult.didDocument
+        const resolutionResult = await context.agent.resolveDid({ didUrl: url })
+        didDoc = resolutionResult.didDocument
         // }
         if (!didDoc) {
           throw new Error(`Could not fetch DID document with url: ${url}. Did you enable the the driver?`)
