@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-vc-handler-ld-local",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,8 +22,6 @@
     "@digitalcredentials/ed25519-verification-key-2020": "^3.2.2",
     "@digitalcredentials/jsonld": "^5.2.1",
     "@digitalcredentials/jsonld-signatures": "^9.3.1",
-    "isomorphic-webcrypto": "^2.3.8",
-    "react-native-securerandom": "^1.0.0",
     "@digitalcredentials/vc": "^1.1.1",
     "@digitalcredentials/x25519-key-agreement-2020-context": "^1.0.0",
     "@digitalcredentials/rdf-canonize": "^1.0.0",
@@ -40,7 +38,9 @@
     "did-context": "^3.1.1",
     "ed25519-signature-2018-context": "^1.1.0",
     "ed25519-signature-2020-context": "^1.1.0",
+    "isomorphic-webcrypto": "^2.3.8",
     "jose": "^1.28.1",
+    "react-native-securerandom": "^1.0.0",
     "ts-node": "^8.10.2"
   },
   "devDependencies": {
