@@ -16,18 +16,21 @@ export class SsiQrCodeProvider implements IAgentPlugin {
 
   /** {@inheritDoc SsiQrCodeProviderTypes.createSsiQrCode} */
   private static async createSsiQrCode(ssiQrCodeProps: SsiQrCodeProps, context: IRequiredContext): Promise<JSX.Element> {
-    let {type, did, mode, redirectUrl, onGenerate, bgColor, fgColor, level, size, title} = ssiQrCodeProps
-    const state = shortUUID.generate()
-    const value = `{"state":"${state}","type":"${type}","did":"${did}","mode":"${mode}","redirectUrl":"${redirectUrl}"}`
+
+    let {onGenerate, bgColor, fgColor, level, size, title} = ssiQrCodeProps
+
+    const nonce = shortUUID.generate()
+    const state = ssiQrCodeProps.authenticationRequestOpts.state!
+
+    const qrValue = await ssiQrCodeProps.strategy(ssiQrCodeProps.authenticationRequestOpts).qrValue()
+
+    const value = JSON.stringify(qrValue)
 
     if (onGenerate) {
       onGenerate({
+        nonce,
         state,
-        type,
-        did,
-        mode,
-        redirectUrl,
-        qrValue: value,
+        qrValue: JSON.stringify(value),
       })
     }
 
