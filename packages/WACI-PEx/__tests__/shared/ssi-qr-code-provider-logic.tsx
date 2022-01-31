@@ -44,7 +44,7 @@ export default (
             expect(shallow(ssiQrCode).props().value).toContain(`"type":"auth","mode":"didauth"`)
           }
       );
-    })
+    });
 
     it('should pass back the content to callback',  async () => {
       const ssiQrProps: SsiQrCodeProps = SsiQrCodePropsDataProvider.getQRProps(true);
@@ -55,7 +55,7 @@ export default (
             expect(shallow(ssiQrCode).props().value).toContain(`"type":"auth","mode":"didauth"`)
           }
       );
-    })
+    });
 
-  })
+  });
 }
