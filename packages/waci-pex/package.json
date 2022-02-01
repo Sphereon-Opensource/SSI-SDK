@@ -1,0 +1,58 @@
+{
+  "name": "@sphereon/waci-pex",
+  "version": "0.0.1",
+  "description": "Veramo SSI QR Code provider",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "veramo": {
+    "pluginInterfaces": {
+      "ISsiQrCodeProvider": "./src/types/ISsiQrCodeProvider.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "dependencies": {
+    "@sphereon/did-auth-siop": "^0.2.3",
+    "@veramo/core": "^3.1.0",
+    "cross-fetch": "^3.1.4",
+    "react": "^17.0.2",
+    "react-qr-code": "^2.0.2",
+    "short-uuid": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/enzyme": "^3.10.9",
+    "@types/enzyme-adapter-react-16": "^1.0.6",
+    "@types/jest": "^27.0.1",
+    "@types/react": "^17.0.21",
+    "@types/uuid": "^8.3.1",
+    "@veramo/cli": "^3.1.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.6",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.4",
+    "typescript": "^4.4.3"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sphereon",
+    "SSI",
+    "Veramo",
+    "DIF",
+    "WACI Presentation Exchange",
+    "W3C",
+    "API"
+  ]
+}
