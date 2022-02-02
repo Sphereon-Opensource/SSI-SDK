@@ -24,19 +24,19 @@ export class SsiQrCodeProvider implements IAgentPlugin {
 
     const qrValue = await ssiQrCodeProps.strategy(ssiQrCodeProps.authenticationRequestOpts).qrValue()
 
-    const value = JSON.stringify(qrValue)
+    const uri = qrValue.encodedUri;
 
     if (onGenerate) {
       onGenerate({
         nonce,
         state,
-        qrValue: JSON.stringify(value),
+        qrValue: uri,
       })
     }
 
     await context.agent.emit(events.SSI_QR_CODE_CODE_CREATED, ssiQrCodeProps)
     // console.log("QR code created!")
 
-    return Promise.resolve(<QRCode value={value} bgColor={bgColor} fgColor={fgColor} level={level} size={size} title={title}/>)
+    return Promise.resolve(<QRCode value={uri} bgColor={bgColor} fgColor={fgColor} level={level} size={size} title={title}/>)
   }
 }
