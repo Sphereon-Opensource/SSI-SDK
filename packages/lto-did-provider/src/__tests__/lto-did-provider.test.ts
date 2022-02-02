@@ -59,11 +59,6 @@ describe('@sphereon/lto-did-provider', () => {
 
   it('should create identifier', () => {
     jest.setTimeout(100000)
-    const restResponse = {
-      data: {
-        didIdentifier: 'TestDID',
-      },
-    }
 
     // jest.spyOn(fetch, '').mockResolvedValueOnce(Promise.resolve(restResponse));
     const identifier = ltoDIDProvider.createIdentifier(

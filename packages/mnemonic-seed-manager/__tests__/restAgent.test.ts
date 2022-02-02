@@ -10,7 +10,7 @@ import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import express from 'express'
 import { Connection } from 'typeorm'
 
-import { IMnemonicSeedManager } from '../src/types/IMnemonicSeedManager'
+import { IMnemonicSeedManager, MnemonicSeedManager, MnemonicSeedManagerEntities } from '../src'
 
 import mnemonicGenerator from './shared/generateMnemonic'
 import seedGenerator from './shared/generateSeed'
@@ -18,7 +18,6 @@ import storeSeed from './shared/storeMnemonicInfo'
 import { KeyManager } from '@veramo/key-manager'
 import { KeyStore, PrivateKeyStore, Entities, IDataStoreORM, DataStore, DataStoreORM } from '@veramo/data-store'
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
-import { MnemonicSeedManager, MnemonicSeedManagerEntities } from '../src/index'
 import { createConnection } from 'typeorm'
 
 jest.setTimeout(30000)

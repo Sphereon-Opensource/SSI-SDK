@@ -70,11 +70,6 @@ describe('@sphereon/factom-did-provider', () => {
   } as IRequiredContext*/
 
   it('should create identifier', () => {
-    const restResponse = {
-      data: {
-        didIdentifier: 'TestDID',
-      },
-    }
 
     // jest.spyOn(fetch, '').mockResolvedValueOnce(Promise.resolve(restResponse));
     const identifier = factomDIDProvider.createIdentifier(
