@@ -40,28 +40,9 @@ The test command runs:
 
 You can also run only a single section of these tests, using for example `yarn test:unit`.
 
-#### Environment Variable:
-
-- Navigate
-  - `ssi-sdk/package.json`
-  - `scripts.test`
-- Right click
-  - `Modify run configuration`
-- locate environment variable
-- Add following
-```
-VC_HTTP_API_AUTH_TOKEN=<Token>
-```
-
-`Token` should not have double or single quotes.
-
-<br />
-
 ```shell
 yarn test
 ```
-
-<br />
 
 ### Utility scripts
 
