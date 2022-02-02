@@ -16,6 +16,8 @@
 
 A `Veramo` plugin to create SSI QR code to Verify using `SIOPv2` or `OIDC4`. This plugin component is only supporting react and react-native frameworks.
 
+It will be possible in future to request issuer to issue credentials.
+
 ### Installation
 
 ```shell
@@ -28,22 +30,14 @@ yarn add @sphereon/waci-pex
 yarn build
 ```
 
-### Test
+### Usage
 
-The test command runs:
+The usage scenario will include the plugin code to be integrated in the client code. A party will be requesting recipient to either:
+  1. authenticate itself to the requester
+  2. or inviting the issuer to issue a credential
 
-- `prettier`
-- `jest`
-- `coverage`
-
-You can also run only a single section of these tests, using for example `yarn test:unit`.
-
-```shell
-yarn test
-```
-
-### Utility scripts
-
-There are other utility scripts that help with development.
-
-- `yarn fix` - runs `eslint --fix` as well as `prettier` to fix code style.
+The data fields required to generate the QR code will depend on the type of request and the acceptable values. The possible `accept` value may be:
+  1. `oidc4vp`
+  2. `siop+oidc4vp`
+  3. `siopv2`
+  4. `didcomm/v2`  ( in future )
