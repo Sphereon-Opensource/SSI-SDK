@@ -1,6 +1,5 @@
 import {AcceptValue, QRContent, QRMode, SsiQrCodeProps} from '../../src'
 import {SIOP} from '@sphereon/did-auth-siop'
-import {SiopV2OverOidc4VpQRValue} from "../../src/agent/qr-utils/SiopV2OverOidc4VpQRValue";
 
 export class SsiQrCodePropsDataProvider {
   public static getQRProps(shouldAddCallBack?: boolean): SsiQrCodeProps {
@@ -27,7 +26,6 @@ export class SsiQrCodePropsDataProvider {
       accept: AcceptValue.OIDC4VP,
       mode: QRMode.DID_AUTH_SIOP_V2,
       authenticationRequestOpts: authenticationRequestOpts,
-      strategy: (authenticationRequestOpts: SIOP.AuthenticationRequestOpts) => new SiopV2OverOidc4VpQRValue(authenticationRequestOpts),
       onGenerate: shouldAddCallBack ? SsiQrCodePropsDataProvider.getOnGenerate : () => {},
       bgColor: 'white',
       fgColor: 'black',
