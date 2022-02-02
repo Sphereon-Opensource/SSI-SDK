@@ -1,10 +1,10 @@
 import {IAgentPlugin} from '@veramo/core'
 
-import {SsiQrCodeProps} from '../index'
-import {events, IRequiredContext, SsiQrCodeProviderTypes} from '../types/ssi-qr-code-provider-types'
+import {events, IRequiredContext, SsiQrCodeProps, SsiQrCodeProviderTypes} from '../types/ssi-qr-code-provider-types'
 import React from 'react'
 import QRCode from 'react-qr-code'
 import shortUUID from 'short-uuid'
+import {QrPropValue} from "./qr-utils/QrPropValue";
 
 /**
  * {@inheritDoc SsiQrCodeProviderTypes}
@@ -22,21 +22,20 @@ export class SsiQrCodeProvider implements IAgentPlugin {
     const nonce = shortUUID.generate()
     const state = ssiQrCodeProps.authenticationRequestOpts.state!
 
-    const qrValue = await ssiQrCodeProps.strategy(ssiQrCodeProps.authenticationRequestOpts).qrValue()
-
-    const uri = qrValue.encodedUri;
+    const value = await QrPropValue.qrValue(ssiQrCodeProps)
 
     if (onGenerate) {
       onGenerate({
         nonce,
         state,
-        qrValue: uri,
+        qrValue: value,
       })
     }
 
     await context.agent.emit(events.SSI_QR_CODE_CODE_CREATED, ssiQrCodeProps)
     // console.log("QR code created!")
 
-    return Promise.resolve(<QRCode value={uri} bgColor={bgColor} fgColor={fgColor} level={level} size={size} title={title}/>)
+    return Promise.resolve(<QRCode value={value} bgColor={bgColor} fgColor={fgColor} level={level} size={size} title={title}/>)
   }
+
 }
