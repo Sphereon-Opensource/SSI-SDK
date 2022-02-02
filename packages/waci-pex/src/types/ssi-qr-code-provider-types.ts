@@ -1,9 +1,9 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import {AuthenticationRequestOpts} from "@sphereon/did-auth-siop/dist/main/types/SIOP.types";
+import {SIOP} from "@sphereon/did-auth-siop/";
 import {QrPropValue} from "../agent/qr-utils/QrPropValue";
 
 export interface SsiQrCodeProviderTypes extends IPluginMethodMap {
-  ssiQrCode(ssiQrCodeProps: SsiQrCodeProps, context: IRequiredContext): Promise<JSX.Element>
+  ssiQrCode(qrPropValue: QrPropValue, context: IRequiredContext): Promise<JSX.Element>
 }
 
 export enum QRType {
@@ -30,8 +30,7 @@ export enum AcceptValue {
 export interface SsiQrCodeProps {
   accept: AcceptValue
   mode: QRMode
-  authenticationRequestOpts: AuthenticationRequestOpts
-  strategy: (authenticationRequestOpts: AuthenticationRequestOpts) => QrPropValue
+  authenticationRequestOpts: SIOP.AuthenticationRequestOpts
   onGenerate?: (content: QRContent) => void
   bgColor?: string
   fgColor?: string

@@ -41,3 +41,5 @@ The data fields required to generate the QR code will depend on the type of requ
   2. `siop+oidc4vp`
   3. `siopv2`
   4. `didcomm/v2`  ( in future )
+
+The data fields will need to be passed in `SsiQrCodeProps.authenticationRequestOpts.state` : string.

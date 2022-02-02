@@ -1,30 +1,28 @@
 import {AuthenticationRequestURI} from "@sphereon/did-auth-siop/dist/main/types/SIOP.types";
-import {RP, SIOP} from "@sphereon/did-auth-siop";
+import {SIOP, RP} from "@sphereon/did-auth-siop";
+import {SsiQrCodeProps} from "../../types/ssi-qr-code-provider-types";
 
 export abstract class QrPropValue {
 
-  private readonly _authRequestOpts: SIOP.AuthenticationRequestOpts
+  public static qrValue(ssiQrCodeProps: SsiQrCodeProps): string {
+    let qrValue: string = '';
 
-  protected constructor(authRequestOpts: SIOP.AuthenticationRequestOpts) {
-    this._authRequestOpts = authRequestOpts
+    QrPropValue
+      .url(ssiQrCodeProps.authenticationRequestOpts)
+      .then(value => qrValue = value.encodedUri);
+
+    return qrValue;
   }
 
-  public abstract validate(): boolean
+  private static async url(authenticationRequestOpts: SIOP.AuthenticationRequestOpts): Promise<AuthenticationRequestURI> {
 
-  public abstract acceptValue(): string
-
-  public async qrValue(): Promise<AuthenticationRequestURI> {
-    if (this.validate()) {
-      return await RP.fromRequestOpts(this._authRequestOpts).createAuthenticationRequest({
-        state: this._authRequestOpts.state,
-        nonce: this._authRequestOpts.nonce,
-      });
-    } else {
-      throw new Error('The object does not conform to object type mentioned by the accept value: ' + this.acceptValue())
-    }
+    return await RP
+    .fromRequestOpts(authenticationRequestOpts)
+    .createAuthenticationRequest({
+      state: authenticationRequestOpts.state,
+      nonce: authenticationRequestOpts.nonce,
+    });
   }
+
+
 }
-
-
-
-
