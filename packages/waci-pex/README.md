@@ -14,9 +14,9 @@
 
 # waci-pex
 
-A `Veramo` plugin to create SSI QR code to Verify using `SIOPv2` or `OIDC4`. This plugin component is only supporting react and react-native frameworks.
+A `Veramo` plugin to create SSI QR code and to Verify using `SIOPv2` or `OIDC4`. This plugin component is only supporting react and react-native frameworks.
 
-It will be possible in future to request issuer to issue credentials.
+It will be possible in future to request the issuer to issue credentials.
 
 ### Installation
 
@@ -32,9 +32,9 @@ yarn build
 
 ### Usage
 
-The usage scenario will include the plugin code to be integrated in the client code. A party will be requesting recipient to either:
+The usage scenario will include the plugin code to be integrated in the client code. A party will be requesting the recipient to either:
   1. authenticate itself to the requester
-  2. or inviting the issuer to issue a credential
+  2. inviting the issuer to issue a credential
 
 The data fields required to generate the QR code will depend on the type of request and the acceptable values. The possible `accept` value may be:
   1. `oidc4vp`
