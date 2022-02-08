@@ -6,7 +6,7 @@ import { asArray, encodeJoseBlob } from '@veramo/utils'
 import suiteContext2020 from 'ed25519-signature-2020-context'
 import * as u8a from 'uint8arrays'
 
-import { hexToMultibase } from '../../../ssi-sdk-core/src'
+import { hexToMultibase } from '@sphereon/ssi-sdk-core'
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 
 export class SphereonEd25519Signature2020 extends SphereonLdSignature {
