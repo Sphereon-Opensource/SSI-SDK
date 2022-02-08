@@ -2607,7 +2607,7 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sphereon/did-auth-siop@^0.2.3", "@sphereon/did-auth-siop@^0.2.5":
+"@sphereon/did-auth-siop@^0.2.5":
   version "0.2.5"
   resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.2.5.tgz#68325f4205402186581cb4051f7ba000917964dc"
   integrity sha512-SPpLkBbW4ucPbT9ScvFo/SDDaq0XIn4P63ohaMsZ9pFeQxObTxZBkZ4gDwPvzUnGUl6LhrCveSml/iiSbaugpQ==
@@ -11342,7 +11342,7 @@ react-native-securerandom@^1.0.0:
   dependencies:
     base64-js "*"
 
-react-qr-code@^2.0.2:
+react-qr-code@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/react-qr-code/-/react-qr-code-2.0.3.tgz#cc80785e08f817d1ab066ca4035262f77d049648"
   integrity sha512-6GDH0l53lksf2JgZwwcoS0D60a1OAal/GQRyNFkMBW19HjSqvtD5S20scmSQsKl+BgWM85Wd5DCcUYoHd+PZnQ==

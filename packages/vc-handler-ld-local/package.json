@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --build",
     "generate-plugin-schema": "yarn veramo dev generate-plugin-schema",
     "fix:lint": "eslint . --fix --ext .ts",
     "test:lint": "eslint . --ext .ts"
