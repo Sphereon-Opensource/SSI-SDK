@@ -1,6 +1,6 @@
 {
-  "name": "@sphereon/waci-pex",
-  "version": "0.0.1",
+  "name": "@sphereon/ssi-sdk-waci-pex",
+  "version": "0.1.0",
   "description": "Veramo SSI QR Code provider",
   "source": "src/index.ts",
   "main": "dist/index.js",
@@ -14,11 +14,11 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "^0.2.3",
+    "@sphereon/did-auth-siop": "^0.2.5",
     "@veramo/core": "3.1.1-next.26",
-    "cross-fetch": "^3.1.4",
+    "cross-fetch": "^3.1.5",
     "react": "^17.0.2",
-    "react-qr-code": "^2.0.2",
+    "react-qr-code": "^2.0.3",
     "short-uuid": "^4.2.0"
   },
   "devDependencies": {
@@ -53,6 +53,6 @@
     "DIF",
     "WACI Presentation Exchange",
     "W3C",
-    "API"
+    "QR Code"
   ]
 }

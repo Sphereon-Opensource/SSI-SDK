@@ -1,6 +1,6 @@
 import {TAgent} from '@veramo/core'
 import {SsiQrCodeProviderTypes, SsiQrCodeProps} from '../../src'
-import {SsiQrCodePropsDataProvider} from "./ssi-qr-code-props-data-provider";
+import {SsiQrCodePropsDataProvider} from "./ssiQrCodePropsDataProvider";
 import {shallow} from "enzyme";
 
 type ConfiguredAgent = TAgent<SsiQrCodeProviderTypes>

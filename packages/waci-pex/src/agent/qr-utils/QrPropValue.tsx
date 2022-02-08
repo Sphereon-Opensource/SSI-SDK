@@ -15,7 +15,6 @@ export abstract class QrPropValue {
   }
 
   private static async url(authenticationRequestOpts: SIOP.AuthenticationRequestOpts): Promise<AuthenticationRequestURI> {
-
     return await RP
     .fromRequestOpts(authenticationRequestOpts)
     .createAuthenticationRequest({

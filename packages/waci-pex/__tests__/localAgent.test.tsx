@@ -3,7 +3,7 @@ import {createObjects} from '@veramo/cli/build/lib/objectCreator'
 
 jest.setTimeout(30000)
 
-import SsiQrCodeProviderLogic from './shared/ssi-qr-code-provider-logic'
+import SsiQrCodeProviderLogic from './shared/ssiQrCodeProviderLogic'
 
 let agent: any
 
