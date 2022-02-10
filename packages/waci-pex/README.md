@@ -21,7 +21,7 @@ It will be possible in future to request the issuer to issue credentials.
 ### Installation
 
 ```shell
-yarn add @sphereon/waci-pex
+yarn add @sphereon/ssi-sdk-waci-pex
 ```
 
 ### Build
