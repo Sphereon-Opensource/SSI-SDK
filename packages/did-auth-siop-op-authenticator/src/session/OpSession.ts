@@ -1,7 +1,9 @@
-import { DIDDocumentSection, IIdentifier } from '@veramo/core'
+import { DIDDocumentSection, IIdentifier, IKey, TKeyType } from '@veramo/core'
 import { _ExtendedIKey, mapIdentifierKeysToDoc } from '@veramo/utils'
 import { OP, PresentationExchange } from '@sphereon/did-auth-siop/dist/main'
 import { SubmissionRequirementMatch, IVerifiableCredential } from '@sphereon/pex'
+import { parseDid } from '@sphereon/ssi-sdk-core'
+import { SuppliedSigner } from '@sphereon/ssi-sdk-core';
 import {
   PassBy,
   ResponseMode,
@@ -11,6 +13,7 @@ import {
   VerifyAuthenticationRequestOpts,
   VerifiablePresentationTypeFormat,
   VerificationMode,
+  KeyAlgo,
 } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
 import {
   IOpSessionArgs,
@@ -23,7 +26,6 @@ import {
   IMatchedPresentationDefinition,
   IRequiredContext,
 } from '../types/IDidAuthSiopOpAuthenticator'
-import { parseDid } from '@sphereon/ssi-sdk-core'
 
 const fetch = require('cross-fetch')
 
@@ -170,12 +172,12 @@ export class OpSession {
     })
   }
 
-  private async getPrivateKeyHex(
+  private async getKey(
     identifier: IIdentifier,
     verificationMethodSection: DIDDocumentSection = 'authentication',
     context: IRequiredContext,
     keyId?: string
-  ): Promise<string> {
+  ): Promise<IKey> {
     const keys = await mapIdentifierKeysToDoc(identifier, verificationMethodSection, context)
     if (!keys || keys.length === 0) {
       throw new Error(`No keys found for verificationMethodSection: ${verificationMethodSection}`)
@@ -186,11 +188,18 @@ export class OpSession {
       throw new Error(`No matching verificationMethodSection key found for keyId: ${keyId}`)
     }
 
-    if (!identifierKey.privateKeyHex) {
-      throw new Error(`No private key hex found for kid: ${identifierKey.kid}`)
-    }
+    return identifierKey
+  }
 
-    return Promise.resolve(identifierKey.privateKeyHex)
+  private getKeyAlgorithm(type: TKeyType): KeyAlgo {
+    switch(type) {
+      case 'Ed25519':
+        return KeyAlgo.EDDSA
+      case 'Secp256k1':
+        return KeyAlgo.ES256K
+      default:
+        throw Error('Key type not yet supported')
+    }
   }
 
   private async createOp(
@@ -204,10 +213,12 @@ export class OpSession {
       return Promise.reject(new Error(`No controller key found for identifier: ${identifier.did}`))
     }
 
+    const keyRef = await this.getKey(identifier, verificationMethodSection, context)
+
     return OP.builder()
       .withExpiresIn(expiresIn)
       .addDidMethod(didMethod)
-      .internalSignature(await this.getPrivateKeyHex(identifier, verificationMethodSection, context), identifier.did, identifier.controllerKeyId)
+      .suppliedSignature(SuppliedSigner(keyRef, context, this.getKeyAlgorithm(keyRef.type)), identifier.did, identifier.controllerKeyId)
       .registrationBy(PassBy.VALUE)
       .response(ResponseMode.POST)
       .build()

@@ -14,3 +14,4 @@ export {
   IParsedDID,
   SignatureTypes,
 } from './types'
+export { SuppliedSigner } from './signers'

@@ -15,7 +15,6 @@
     "debug": "^4.1.1",
     "did-jwt-vc": "^2.1.7",
     "events": "^3.3.0",
-    "micro-base58": "^0.5.1",
     "z-schema": "^5.0.2"
   },
   "devDependencies": {
