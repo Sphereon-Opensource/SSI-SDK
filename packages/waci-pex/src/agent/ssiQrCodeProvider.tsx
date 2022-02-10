@@ -1,6 +1,6 @@
 import {IAgentPlugin} from '@veramo/core'
 
-import {events, IRequiredContext, SsiQrCodeProps, SsiQrCodeProviderTypes} from '../types/ssi-qr-code-provider-types'
+import {events, IRequiredContext, SsiQrCodeProps, SsiQrCodeProviderTypes} from '../types/ssiQrCodeProviderTypes'
 import React from 'react'
 import QRCode from 'react-qr-code'
 import shortUUID from 'short-uuid'

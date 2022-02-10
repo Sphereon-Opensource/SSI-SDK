@@ -1,6 +1,6 @@
 import {AuthenticationRequestURI} from "@sphereon/did-auth-siop/dist/main/types/SIOP.types";
 import {SIOP, RP} from "@sphereon/did-auth-siop";
-import {SsiQrCodeProps} from "../../types/ssi-qr-code-provider-types";
+import {SsiQrCodeProps} from "../../types/ssiQrCodeProviderTypes";
 
 export abstract class QrPropValue {
 

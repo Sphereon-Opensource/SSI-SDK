@@ -3,7 +3,7 @@ import {createObjects} from '@veramo/cli/build/lib/objectCreator'
 
 jest.setTimeout(30000)
 
-import SsiQrCodeProviderLogic from './shared/ssiQrCodeProviderLogic'
+import ssiQrCodeProviderLogic from './shared/ssiQrCodeProviderLogic'
 
 let agent: any
 
@@ -23,5 +23,5 @@ const getAgent = () => agent
 const testContext = {getAgent, setup, tearDown}
 
 describe('Local integration tests', () => {
-  SsiQrCodeProviderLogic(testContext)
+  ssiQrCodeProviderLogic(testContext)
 })

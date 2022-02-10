@@ -21,7 +21,6 @@ export interface QRContent {
 }
 
 export enum AcceptValue {
-  // DID_COMM_V2 = "didcomm/v2",
   OIDC4VP = 'oidc4vp',
   SIOP_OVER_OIDC4VP = 'siop+oidc4vp',
   SIOP_V2 = 'siopv2'

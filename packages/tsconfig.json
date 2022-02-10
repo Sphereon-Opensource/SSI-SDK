@@ -9,7 +9,6 @@
     { "path": "vc-api-verifier" },
     { "path": "vc-handler-ld-local" },
     { "path": "did-auth-siop-op-authenticator" },
-    { "path": "vc-api-verifier-plugin" },
     { "path": "waci-pex" }
   ]
 }
