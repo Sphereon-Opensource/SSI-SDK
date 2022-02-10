@@ -3,16 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [0.3.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.2.0...v0.3.0) (2022-01-16)
+## [0.3.1](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.3.0...v0.3.1) (2022-01-28)
 
+**Note:** Version bump only for package @sphereon/ssi-sdk-factom-did-provider
+
+
+
+
+
+# [0.3.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.2.0...v0.3.0) (2022-01-16)
 
 ### Bug Fixes
 
-* Update test timeout for Factom ([9a934cf](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/9a934cfb507af3d5cc8629bb0e8f6fd70f785092))
-
-
-
-
+- Update test timeout for Factom ([9a934cf](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/9a934cfb507af3d5cc8629bb0e8f6fd70f785092))
 
 # [0.2.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.1.0...v0.2.0) (2021-12-16)
 

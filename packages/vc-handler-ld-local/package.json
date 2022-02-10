@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-vc-handler-ld-local",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,23 +10,23 @@
     }
   },
   "scripts": {
-    "build": "tsc",
-    "generate-plugin-schema": "yarn veramo dev generate-plugin-schema",
-    "fix:lint": "eslint . --fix --ext .ts",
-    "test:lint": "eslint . --ext .ts"
+    "build": "tsc --build",
+    "build:copyfiles": "copyfiles contexts/*.* ./dist",
+    "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
   },
   "dependencies": {
-    "@digitalcredentials/did-method-key": "^2.0.2",
+    "@digitalcredentials/did-method-key": "^2.0.3",
     "@digitalcredentials/did-web-resolver": "^1.0.0",
     "@digitalcredentials/ed25519-signature-2020": "^3.0.2",
     "@digitalcredentials/ed25519-verification-key-2020": "^3.2.2",
     "@digitalcredentials/jsonld": "^5.2.1",
     "@digitalcredentials/jsonld-signatures": "^9.3.1",
+    "@digitalcredentials/rdf-canonize": "^1.0.0",
     "@digitalcredentials/vc": "^1.1.1",
     "@digitalcredentials/x25519-key-agreement-2020-context": "^1.0.0",
     "@sphereon/ed25519-signature-2018": "0.7.0-unstable.2",
-    "@sphereon/ssi-sdk-core": "^0.3.0",
-    "@transmute/ed25519-key-pair": "0.7.0-unstable.35",
+    "@sphereon/ssi-sdk-core": "^0.2.0",
+    "@transmute/ed25519-key-pair": "0.7.0-unstable.40",
     "@transmute/jsonld-document-loader": "^0.2.0",
     "@transmute/vc-status-rl-2020": "^0.7.0-unstable.35",
     "@types/node": "^14.14.43",
@@ -56,6 +56,7 @@
     "@veramo/did-resolver": "3.1.1-next.26",
     "@veramo/key-manager": "3.1.1-next.26",
     "@veramo/kms-local": "3.1.1-next.26",
+    "copyfiles": "^2.4.1",
     "did-resolver": "^3.1.5",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
@@ -70,6 +71,7 @@
   "files": [
     "dist/**/*",
     "src/**/*",
+    "contexts",
     "README.md",
     "plugin.schema.json",
     "LICENSE"
