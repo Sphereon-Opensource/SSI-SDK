@@ -1,4 +1,4 @@
-import { DIDDocumentSection, IAgentContext, IIdentifier, IPluginMethodMap, IResolver } from '@veramo/core'
+import { DIDDocumentSection, IAgentContext, IIdentifier, IPluginMethodMap, IResolver, IKeyManager } from '@veramo/core'
 import { IVerifiableCredential, IVerifiablePresentation } from '@sphereon/pex'
 import {
   ParsedAuthenticationRequestURI,
@@ -133,4 +133,4 @@ export enum events {
   DID_SIOP_AUTHENTICATED = 'didSiopAuthenticated',
 }
 
-export type IRequiredContext = IAgentContext<IResolver>
+export type IRequiredContext = IAgentContext<IResolver & IKeyManager>

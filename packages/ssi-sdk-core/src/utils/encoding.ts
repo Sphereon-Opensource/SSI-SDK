@@ -1,4 +1,4 @@
-import * as base58 from 'micro-base58'
+const { base58 } = require('@scure/base')
 
 export enum MultibaseFormat {
   BASE58 = 'z',
