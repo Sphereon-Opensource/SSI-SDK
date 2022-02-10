@@ -19,7 +19,7 @@ import {
   ISendSiopAuthenticationResponseArgs,
   IVerifySiopAuthenticationRequestUriArgs,
 } from '../types/IDidAuthSiopOpAuthenticator'
-import { ParsedAuthenticationRequestURI, VerifiedAuthenticationRequestWithJWT } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
+import { SIOP } from '@sphereon/did-auth-siop'
 
 /**
  * {@inheritDoc IDidAuthSiopOpAuthenticator}
@@ -40,9 +40,9 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   }
 
   private readonly sessions: Record<string, OpSession>
-  private readonly customApprovals: Record<string, (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise<void>>
+  private readonly customApprovals: Record<string, (verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT) => Promise<void>>
 
-  constructor(customApprovals?: Record<string, (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise<void>>) {
+  constructor(customApprovals?: Record<string, (verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT) => Promise<void>>) {
     this.sessions = {}
     this.customApprovals = customApprovals || {}
   }
@@ -105,7 +105,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   private async getSiopAuthenticationRequestFromRP(
     args: IGetSiopAuthenticationRequestFromRpArgs,
     context: IRequiredContext
-  ): Promise<ParsedAuthenticationRequestURI> {
+  ): Promise<SIOP.ParsedAuthenticationRequestURI> {
     return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session) => session.getSiopAuthenticationRequestFromRP(args))
   }
 
@@ -121,7 +121,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   private async verifySiopAuthenticationRequestURI(
     args: IVerifySiopAuthenticationRequestUriArgs,
     context: IRequiredContext
-  ): Promise<VerifiedAuthenticationRequestWithJWT> {
+  ): Promise<SIOP.VerifiedAuthenticationRequestWithJWT> {
     return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session) => session.verifySiopAuthenticationRequestURI(args))
   }
 

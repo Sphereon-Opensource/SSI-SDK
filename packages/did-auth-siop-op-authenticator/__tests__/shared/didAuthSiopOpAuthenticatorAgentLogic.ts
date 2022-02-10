@@ -1,5 +1,5 @@
 import { TAgent } from '@veramo/core'
-import { OP, PresentationExchange } from '@sphereon/did-auth-siop/dist/main'
+import { OP, PresentationExchange } from '@sphereon/did-auth-siop'
 import { IDidAuthSiopOpAuthenticator } from '../../src/types/IDidAuthSiopOpAuthenticator'
 import {
   ResponseContext,
