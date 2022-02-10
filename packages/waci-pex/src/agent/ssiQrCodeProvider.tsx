@@ -19,18 +19,17 @@ export class SsiQrCodeProvider implements IAgentPlugin {
     const {onGenerate, bgColor, fgColor, level, size, title} = ssiQrCodeProps
 
     const nonce = shortUUID.generate()
-    const state = ssiQrCodeProps.authenticationRequestOpts.state!
 
     const value = await QrPropValue.qrValue(ssiQrCodeProps)
 
     if (onGenerate) {
+      const state = ssiQrCodeProps?.authenticationRequestOpts?.state
       onGenerate({
         nonce,
         state,
         qrValue: value,
       })
     }
-
     await context.agent.emit(events.SSI_QR_CODE_CODE_CREATED, ssiQrCodeProps)
 
     return <QRCode value={value} bgColor={bgColor} fgColor={fgColor} level={level} size={size} title={title}/>

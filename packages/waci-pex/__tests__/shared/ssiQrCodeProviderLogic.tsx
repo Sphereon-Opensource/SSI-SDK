@@ -47,7 +47,7 @@ export default (
     });
 
     it('should pass back the content to callback',  async () => {
-      const ssiQrProps: SsiQrCodeProps = new SsiQrCodePropsDataProvider().getQRProps(true);
+      const ssiQrProps: SsiQrCodeProps = new SsiQrCodePropsDataProvider().getQRProps();
       ssiQrCodeProvider
       .ssiQrCode(ssiQrProps)
       .then(

@@ -1,20 +1,25 @@
-import {RP, SIOP} from "@sphereon/did-auth-siop";
+import {RP} from "@sphereon/did-auth-siop";
 import {SsiQrCodeProps} from "../../types/ssiQrCodeProviderTypes";
 import {AuthenticationRequestURI} from "@sphereon/did-auth-siop/dist/main/types/SIOP.types";
 
 export class QrPropValue {
 
-  public static async qrValue(ssiQrCodeProps: SsiQrCodeProps): Promise<string> {
-    const authenticationRequestOpts: SIOP.AuthenticationRequestOpts = ssiQrCodeProps.authenticationRequestOpts;
+  public static qrValue(ssiQrCodeProps: SsiQrCodeProps): Promise<string> {
+    let rp = RP.fromRequestOpts(ssiQrCodeProps.authenticationRequestOpts);
 
-    const authenticationRequestURI: AuthenticationRequestURI = await RP
-      .fromRequestOpts(authenticationRequestOpts)
+    return rp
       .createAuthenticationRequest({
-        state: authenticationRequestOpts.state,
-        nonce: authenticationRequestOpts.nonce,
-      });
+        state: ssiQrCodeProps.authenticationRequestOpts.state,
+        nonce: ssiQrCodeProps.authenticationRequestOpts.nonce,
+      })
+      .then((authenticationRequestURI: AuthenticationRequestURI) => {
+        return authenticationRequestURI.encodedUri
+      })
+      .catch(reason => {
+        console.log(reason);
+        return '';
+      })
 
-   return authenticationRequestURI.encodedUri;
   }
 
 }

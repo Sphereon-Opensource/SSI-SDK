@@ -14,9 +14,9 @@ export enum QRMode {
 }
 
 export interface QRContent {
-  state: string
-  nonce: string
-  qrValue: string
+  state?: string
+  nonce?: string
+  qrValue?: string
 }
 
 export enum AcceptValue {
