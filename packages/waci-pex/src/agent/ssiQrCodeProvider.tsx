@@ -21,7 +21,7 @@ export class SsiQrCodeProvider implements IAgentPlugin {
     const nonce = shortUUID.generate()
     const state = ssiQrCodeProps.authenticationRequestOpts.state!
 
-    const value = await new QrPropValue().qrValue(ssiQrCodeProps)
+    const value = await QrPropValue.qrValue(ssiQrCodeProps)
 
     if (onGenerate) {
       onGenerate({

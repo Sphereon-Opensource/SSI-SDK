@@ -25,7 +25,7 @@ export default (
     })
 
     it('should create qr code', async () => {
-      const ssiQrProps: SsiQrCodeProps = SsiQrCodePropsDataProvider.getQRProps();
+      const ssiQrProps: SsiQrCodeProps = new SsiQrCodePropsDataProvider().getQRProps();
       ssiQrCodeProvider
         .ssiQrCode(ssiQrProps)
         .then(
@@ -36,7 +36,7 @@ export default (
     })
 
     it('should create qr code with props',async () => {
-      const ssiQrProps: SsiQrCodeProps = SsiQrCodePropsDataProvider.getQRProps();
+      const ssiQrProps: SsiQrCodeProps = new SsiQrCodePropsDataProvider().getQRProps();
       ssiQrCodeProvider
       .ssiQrCode(ssiQrProps)
       .then(
@@ -47,7 +47,7 @@ export default (
     });
 
     it('should pass back the content to callback',  async () => {
-      const ssiQrProps: SsiQrCodeProps = SsiQrCodePropsDataProvider.getQRProps(true);
+      const ssiQrProps: SsiQrCodeProps = new SsiQrCodePropsDataProvider().getQRProps(true);
       ssiQrCodeProvider
       .ssiQrCode(ssiQrProps)
       .then(

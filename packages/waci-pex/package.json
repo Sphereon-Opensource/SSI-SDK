@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-waci-pex",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "Veramo SSI QR Code provider",
   "source": "src/index.ts",
   "main": "dist/index.js",
