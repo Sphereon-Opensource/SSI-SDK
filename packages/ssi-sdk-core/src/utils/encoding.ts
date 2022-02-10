@@ -1,4 +1,4 @@
-const { base58 } = require('@scure/base');
+const { base58 } = require('@scure/base')
 
 export enum MultibaseFormat {
   BASE58 = 'z',

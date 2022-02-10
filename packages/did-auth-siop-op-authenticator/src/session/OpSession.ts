@@ -3,7 +3,7 @@ import { _ExtendedIKey, mapIdentifierKeysToDoc } from '@veramo/utils'
 import { OP, PresentationExchange } from '@sphereon/did-auth-siop/dist/main'
 import { SubmissionRequirementMatch, IVerifiableCredential } from '@sphereon/pex'
 import { parseDid } from '@sphereon/ssi-sdk-core'
-import { SuppliedSigner } from '@sphereon/ssi-sdk-core';
+import { SuppliedSigner } from '@sphereon/ssi-sdk-core'
 import {
   PassBy,
   ResponseMode,
@@ -192,7 +192,7 @@ export class OpSession {
   }
 
   private getKeyAlgorithm(type: TKeyType): KeyAlgo {
-    switch(type) {
+    switch (type) {
       case 'Ed25519':
         return KeyAlgo.EDDSA
       case 'Secp256k1':
