@@ -43,3 +43,72 @@ The data fields required to generate the QR code will depend on the type of requ
   4. `didcomm/v2`  ( in future )
 
 The data fields will need to be passed in `SsiQrCodeProps.authenticationRequestOpts.state` : string.
+
+```
+import {SsiQrCodeProvider} from "@sphereon/ssi-sdk-waci-pex";
+
+// Include in the interface 
+// const agent = createAgent<...  SsiQrCodeProvider>
+
+export const createSsiQrCode = agent.createSsiQrCode;
+```
+
+```
+import { createSsiQrCode } from '../agent';
+import {QRContent, QRMode, QRType} from "@sphereon/ssi-sdk-waci-pex";
+
+```
+
+Inside Component
+```
+  qrConfig = {
+    type: QRType.AUTHENTICATION,
+    did: 'did:didMethod2021120900:didId2021120901',
+    mode: QRMode.DID_AUTH_SIOP_V2,
+    redirectUrl: 'https://example.com/qrCode/callbacks',
+    onGenerate: (content: QRContent): void => {
+      if (content != null) {
+        console.log("received object: " + content.qrValue);
+
+        /*
+        Example output of onGenerate:
+{"state":"vqKLNzmYYPDmt8YWs9ftYE","type":"auth","did":"did:ethr:0xcBe71d18b5F1259faA9fEE8f9a5FAbe2372BE8c9","mode":"didauth","redirectUrl":"https://example.com","qrValue":"{\"state\":\"vqKLNzmYYPDmt8YWs9ftYE\",\"type\":\"auth\",\"did\":\"did:ethr:0xcBe71d18b5F1259faA9fEE8f9a5FAbe2372BE8c9\",\"mode\":\"didauth\",\"redirectUrl\":\"https://example.com\"}"}
+        */
+      }
+    },
+    bgColor: 'white',
+    fgColor: 'black',
+    level: 'L',
+    size: 128,
+    title: 'title2021120903',
+  };
+
+  thisSsiQRCode = () => {
+    Promise.resolve(async () => {
+      console.log("called 2021122100");
+      const dummyQrCode = createSsiQrCode(this.qrConfig)
+        .then((qrCode: JSX.Element) => {
+          console.log("called 2021122101");
+          console.log('test' + qrCode.props)
+          //this.setState({qrCode})
+          return qrCode;
+        })
+      .catch(error => console.log('err' + error))
+      console.log("called 2021122102");
+      console.log("called 2021122103:" + dummyQrCode);
+
+      return dummyQrCode;
+    })
+  }
+```
+
+```
+  <View>
+  //...
+  {
+    createSsiQrCode() ? (
+      this.thisSsiQRCode()
+    ) : null
+  }
+  </View>
+```

@@ -4,7 +4,7 @@ import {events, IRequiredContext, SsiQrCodeProps, SsiQrCodeProviderTypes} from '
 import React from 'react'
 import QRCode from 'react-qr-code'
 import shortUUID from 'short-uuid'
-import {QrPropValue} from './qr-utils/QrPropValue';
+import {QrPropValue} from './qr-utils/qrPropValue';
 
 /**
  * {@inheritDoc SsiQrCodeProviderTypes}
@@ -21,7 +21,7 @@ export class SsiQrCodeProvider implements IAgentPlugin {
     const nonce = shortUUID.generate()
     const state = ssiQrCodeProps.authenticationRequestOpts.state!
 
-    const value = await QrPropValue.qrValue(ssiQrCodeProps)
+    const value = await new QrPropValue().qrValue(ssiQrCodeProps)
 
     if (onGenerate) {
       onGenerate({

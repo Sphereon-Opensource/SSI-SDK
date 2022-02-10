@@ -2,16 +2,17 @@ import {AuthenticationRequestURI} from "@sphereon/did-auth-siop/dist/main/types/
 import {SIOP, RP} from "@sphereon/did-auth-siop";
 import {SsiQrCodeProps} from "../../types/ssiQrCodeProviderTypes";
 
-export abstract class QrPropValue {
+export class QrPropValue {
 
-  public static qrValue(ssiQrCodeProps: SsiQrCodeProps): string {
-    let qrValue: string = '';
+  private qrValueStr: string = '';
+
+  public qrValue(ssiQrCodeProps: SsiQrCodeProps): string {
 
     QrPropValue
       .url(ssiQrCodeProps.authenticationRequestOpts)
-      .then(value => qrValue = value.encodedUri);
+      .then(value => this.qrValueStr = value.encodedUri);
 
-    return qrValue;
+    return this.qrValueStr;
   }
 
   private static async url(authenticationRequestOpts: SIOP.AuthenticationRequestOpts): Promise<AuthenticationRequestURI> {
