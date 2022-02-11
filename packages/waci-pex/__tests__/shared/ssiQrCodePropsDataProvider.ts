@@ -1,22 +1,20 @@
-import {AcceptValue, QRContent, QRMode, SsiQrCodeProps} from '../../src'
-import {SIOP} from '@sphereon/did-auth-siop'
-import {CredentialFormat, SubjectIdentifierType} from "@sphereon/did-auth-siop/dist/main/types/SIOP.types";
-
+import { AcceptValue, QRContent, QRMode, SsiQrCodeProps } from '../../src'
+import { SIOP } from '@sphereon/did-auth-siop'
+import { CredentialFormat, SubjectIdentifierType } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
 
 export class SsiQrCodePropsDataProvider {
-
   ssiQrCodeProps: SsiQrCodeProps = {
     accept: AcceptValue.OIDC4VP,
     mode: QRMode.DID_AUTH_SIOP_V2,
     authenticationRequestOpts: {
       redirectUri: 'https://example.com/qrCode/callbacks',
       requestBy: {
-        type: SIOP.PassBy.VALUE
+        type: SIOP.PassBy.VALUE,
       },
       signatureType: {
-        hexPrivateKey: "e96d4bf41709c1bf9276ed784b39d6f6ae47e7e4091f849e5ab001452340acf7",
-        did: "did:ethr:0x93e73FACcc011a8209B35d8c7950670B1a7bd902",
-        kid: "did:ethr:0x93e73FACcc011a8209B35d8c7950670B1a7bd902#controller",
+        hexPrivateKey: 'e96d4bf41709c1bf9276ed784b39d6f6ae47e7e4091f849e5ab001452340acf7',
+        did: 'did:ethr:0x93e73FACcc011a8209B35d8c7950670B1a7bd902',
+        kid: 'did:ethr:0x93e73FACcc011a8209B35d8c7950670B1a7bd902#controller',
       },
       registration: {
         didMethodsSupported: ['did:ethr:'],
@@ -26,10 +24,10 @@ export class SsiQrCodePropsDataProvider {
           type: SIOP.PassBy.VALUE,
         },
       },
-      state: "State 2022-01-31 00",
+      state: 'State 2022-01-31 00',
     },
     onGenerate: (content: QRContent) => {
-      console.log("2022021017");
+      console.log('2022021017')
       // Example output of onGenerate:
       // {
       //   "nonce": "gMWABjAANoQ3LfScAF4HPW",
@@ -43,9 +41,9 @@ export class SsiQrCodePropsDataProvider {
     level: 'L',
     size: 128,
     title: 'title2021120903',
-  };
+  }
 
   public getQRProps(): SsiQrCodeProps {
-    return this.ssiQrCodeProps;
+    return this.ssiQrCodeProps
   }
 }

@@ -1,5 +1,5 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import {SIOP} from '@sphereon/did-auth-siop';
+import { SIOP } from '@sphereon/did-auth-siop'
 
 export interface SsiQrCodeProviderTypes extends IPluginMethodMap {
   ssiQrCode(ssiQrCodeProps: SsiQrCodeProps, context: IRequiredContext): Promise<JSX.Element>
@@ -22,7 +22,7 @@ export interface QRContent {
 export enum AcceptValue {
   OIDC4VP = 'oidc4vp',
   SIOP_OVER_OIDC4VP = 'siop+oidc4vp',
-  SIOP_V2 = 'siopv2'
+  SIOP_V2 = 'siopv2',
 }
 
 export interface SsiQrCodeProps {
