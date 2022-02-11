@@ -1,4 +1,4 @@
-import { CredentialPayload, IAgentContext, IPluginMethodMap, VerifiableCredential } from '@veramo/core'
+import { CredentialPayload, IAgentContext, IPluginMethodMap } from '@veramo/core'
 import { VerifiableCredentialSP } from '@sphereon/ssi-sdk-core'
 
 export interface IVcApiIssuer extends IPluginMethodMap {
