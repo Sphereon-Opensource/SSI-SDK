@@ -2,7 +2,7 @@
 <h1 align="center">
   <br>
   <a href="https://www.sphereon.com"><img src="https://sphereon.com/content/themes/sphereon/assets/img/logo.svg" alt="Sphereon" width="400"></a>
-  <br>waci-pex (Typescript) 
+  <br>waci-pex-qr-react (Typescript) 
   <br>
 </h1>
 
@@ -12,7 +12,7 @@
 
 ---
 
-# waci-pex
+# waci-pex-qr-react
 
 A `Sphereon SSI-SDK` plugin to create an SSI QR code and to verify using `SIOPv2` or `OIDC4`. This plugin component is only supporting react and react-native frameworks.
 
@@ -21,7 +21,7 @@ It will be possible in future to request the issuer to issue credentials.
 ### Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk-waci-pex
+yarn add @sphereon/ssi-sdk-waci-pex-qr-react
 ```
 
 ### Build
@@ -49,7 +49,7 @@ The data fields will need to be passed in `SsiQrCodeProps.authenticationRequestO
 #### Importing the plugin
 
 ```
-import {SsiQrCodeProvider} from "@sphereon/ssi-sdk-waci-pex";
+import {SsiQrCodeProvider} from "@sphereon/ssi-sdk-waci-pex-qr-react";
 
 // Include in the interface
 // const agent = createAgent<...  SsiQrCodeProvider>
@@ -74,7 +74,7 @@ The function declared in agent can be imported for usage like below:
 
 ```
 import { createSsiQrCode } from '../agent';
-import {QRContent, QRMode, QRType} from "@sphereon/ssi-sdk-waci-pex";
+import {QRContent, QRMode, QRType} from "@sphereon/ssi-sdk-waci-pex-qr-react";
 
 ```
 

@@ -6,6 +6,6 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/waci-pex/dist#SsiQrCodeProvider
+        - $require: ./packages/waci-pex-qr-react/dist#SsiQrCodeProvider
           $args:
             - ssiQrCodeProps

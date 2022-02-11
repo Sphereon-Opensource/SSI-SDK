@@ -1,7 +1,7 @@
 {
-  "name": "@sphereon/ssi-sdk-waci-pex",
+  "name": "@sphereon/ssi-sdk-waci-pex-qr-react",
   "version": "0.3.3",
-  "description": "WACI PEx SSI QR Code provider",
+  "description": "WACI PEx QR Code provider (react)",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -50,6 +50,7 @@
     "Sphereon",
     "SSI",
     "DIF",
+    "React",
     "WACI PEx",
     "QR Code"
   ]

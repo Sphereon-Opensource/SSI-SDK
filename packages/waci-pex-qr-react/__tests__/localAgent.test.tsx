@@ -8,7 +8,7 @@ import ssiQrCodeProviderLogic from './shared/ssiQrCodeProviderLogic'
 let agent: any
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/waci-pex/__tests__/agent.yml')
+  const config = getConfig('packages/waci-pex-qr-react/__tests__/agent.yml')
   const {localAgent} = createObjects(config, {localAgent: '/agent'})
   agent = localAgent
 
