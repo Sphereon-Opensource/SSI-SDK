@@ -73,6 +73,9 @@ plugin allows an OP to authenticate against a Relying Party using Self-Issued Op
 Connect for Verifiable Presentations, with the help of
 our [Presentation-Exchange library](https://github.com/Sphereon-Opensource/pe-js).
 
+## WACI PEx
+The [waci-pex-qr-react](./packages/waci-pex-qr-react/README.md) is a Veramo plugin to generate a QR Code using the [WACI Presentation Exchange](https://identity.foundation/waci-presentation-exchange/#step-1-generate-qr-code) specification.
+
 ## DID resolution
 
 ---
@@ -112,8 +115,7 @@ export const agent = createAgent<IDIDManager & CredentialIssuerLD & IKeyManager 
 
 ### Lerna
 
-The SSI-SDK makes use of Lerna for managing multiple packages. Lerna is a tool that optimizes the workflow around
-managing multi-package repositories with git and npm / yarn.
+The SSI-SDK makes use of Lerna for managing multiple packages. Lerna is a tool that optimizes the workflow around managing multi-package repositories with git and npm / yarn.
 
 ### Build
 
