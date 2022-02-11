@@ -34,5 +34,4 @@ export class SsiQrCodeProvider implements IAgentPlugin {
 
     return <QRCode value={value} bgColor={bgColor} fgColor={fgColor} level={level} size={size} title={title} />
   }
-
 }
