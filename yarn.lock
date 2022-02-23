@@ -2612,22 +2612,33 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sphereon/did-auth-siop@0.2.8":
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.2.8.tgz#2828ab99c8d32ba7f5a7edbcd510e86240b3e888"
-  integrity sha512-sC9GWzEm+de4VWSdF+LOKEvr3MrAB2w2HHNGm0Nr18udft2yZ78BF0ynlb110z1SNYVIh0sggjun7b3dAfiDjQ==
+"@sphereon/did-auth-siop@0.2.9":
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.2.9.tgz#9108c18fa67c7ed2817c6768c880e7c71d652508"
+  integrity sha512-5oGy4v7jBg9SAK1ouoqybAyOZGq0T9Oe4l5HzEWJeYm2X7dyAl+T9WB6cC2+cIfu0r+D6jOVg5cJdOK9gW+h8w==
   dependencies:
     "@sphereon/did-uni-client" "^0.4.0"
     "@sphereon/pex" "^1.0.2"
     "@sphereon/pex-models" "^1.1.0"
+    "@stablelib/ed25519" "^1.0.2"
+    "@stablelib/random" "^1.0.1"
+    "@stablelib/sha256" "^1.0.1"
+    "@stablelib/x25519" "^1.0.1"
+    "@stablelib/xchacha20poly1305" "^1.0.1"
     base64url "^3.0.1"
+    bech32 "^2.0.0"
     bs58 "^4.0.1"
+    canonicalize "^1.0.8"
     cross-fetch "^3.1.5"
     did-resolver "^3.1.5"
+    elliptic "^6.5.4"
     eth-crypto "^2.1.0"
     jose "^3.20.3"
+    js-sha3 "^0.8.0"
+    multiformats "^9.4.10"
     querystring "^0.2.1"
     ts-interface-checker "^1.0.2"
+    uint8arrays "^3.0.0"
     uuid "^8.3.2"
 
 "@sphereon/did-uni-client@0.4.0", "@sphereon/did-uni-client@^0.4.0":
@@ -4999,7 +5010,7 @@ caniuse-lite@^1.0.30001286:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001298.tgz#0e690039f62e91c3ea581673d716890512e7ec52"
   integrity sha512-AcKqikjMLlvghZL/vfTHorlQsLDhGRalYf1+GmWCf5SCMziSGjRYQW/JEksj14NaYHIR6KIhrFAy0HV5C25UzQ==
 
-canonicalize@^1.0.1, canonicalize@^1.0.3, canonicalize@^1.0.5:
+canonicalize@^1.0.1, canonicalize@^1.0.3, canonicalize@^1.0.5, canonicalize@^1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/canonicalize/-/canonicalize-1.0.8.tgz#24d1f1a00ed202faafd9bf8e63352cd4450c6df1"
   integrity sha512-0CNTVCLZggSh7bc5VkX5WWPWO+cyZbNd07IHIsSXLia/eAq+r836hgk+8BKoEh7949Mda87VUOitx5OddVj64A==
