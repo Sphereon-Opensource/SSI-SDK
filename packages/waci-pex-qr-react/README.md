@@ -49,8 +49,8 @@ possible `accept` value may be:
 
 #### Importing the plugin
 
-```
-import {WaciQrCodeProvider} from "@sphereon/ssi-sdk-waci-pex-qr-react";
+```typescript
+import { WaciQrCodeProvider } from "@sphereon/ssi-sdk-waci-pex-qr-react";
 
 // Include in the interface
 // const agent = createAgent<...  WaciQrCodeProvider>
@@ -58,24 +58,24 @@ import {WaciQrCodeProvider} from "@sphereon/ssi-sdk-waci-pex-qr-react";
 
 #### Adding plugin to the agent
 
-```
+```typescript
 plugins: [
   ...
-  new WaciQrCodeProvider()
+    new WaciQrCodeProvider()
 ],
 ```
 
 #### Export for the function
 
-```
+```typescript
 export const createSsiQrCode = agent.ssiQrCode;
 ```
 
 The function declared in agent can be imported for usage like below:
 
-```
+```typescript
 import { createSsiQrCode } from '../agent';
-import {QRContent, QRType, QRType} from "@sphereon/ssi-sdk-waci-pex-qr-react";
+import { QRContent, QRType } from "@sphereon/ssi-sdk-waci-pex-qr-react";
 
 ```
 
@@ -140,7 +140,7 @@ console.log(url) // https://example.com/?oob=eyJ0eXBlIjoic2lvcHYyIiwiaWQiOiI1OTl
 
 #### For rendering add to the view
 
-```
+```jsx
   <View>
   //...
   {
