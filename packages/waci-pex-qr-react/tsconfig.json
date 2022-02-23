@@ -5,6 +5,5 @@
     "outDir": "dist",
     "declarationDir": "dist",
     "jsx": "react"
-  },
-  "references": [{ "path": "../ssi-sdk-core" }]
+  }
 }

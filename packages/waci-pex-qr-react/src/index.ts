@@ -2,5 +2,5 @@
  * @public
  */
 
-export * from './agent/ssiQrCodeProvider'
-export * from './types/ssiQrCodeProviderTypes'
+export * from './agent/WaciQrCodeProvider'
+export * from './types/WaciTypes'
