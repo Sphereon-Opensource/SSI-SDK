@@ -107,10 +107,9 @@ function getOobQrCodeProps(): OobQRProps {
 
 delegateCreateOobQRCode = () => {
   let qrCode = createOobQrCode(this.getOobQrCodeProps())
-  return qrCode
-    .then(qrCodeResolved => {
-      return qrCodeResolved
-    });
+  return qrCode.then((qrCodeResolved) => {
+    return qrCodeResolved
+  })
 }
 ```
 
@@ -126,21 +125,18 @@ On generate gives the following (example) output
     "accept": [
       "siopv2+oidc4vp"
     ]
-  },
-  "web-redirect": {
-    "status": "OK",
-    "redirectUrl": "https://example.com/handle-success?example=599f3638-b563-4937-9487-dfe55099d900"
   }
 }
 ```
 
 If you want to create the payload manually and want to do serialization yourself you can use:
 
-````typescript
-    const payload = OutOfBandMessage.createPayload(getOobQrCodeProps())
+```typescript
+const payload = OutOfBandMessage.createPayload(getOobQrCodeProps())
 const encoded = OutOfBandMessage.urlEncode(payload)
 const url = oobQRProps.oobBaseUrl + encoded
-````
+console.log(url) // https://example.com/?oob=eyJ0eXBlIjoic2lvcHYyIiwiaWQiOiI1OTlmMzYzOC1iNTYzLTQ5MzctOTQ4Ny1kZmU1NTA5OWQ5MDAiLCJmcm9tIjoiZGlkOmtleTp6cmZkamtnZmpnZmRqayIsImJvZHkiOnsiZ29hbC1jb2RlIjoic3RyZWFtbGluZWQtdnAiLCJhY2NlcHQiOlsic2lvcHYyK29pZGM0dnAiXX19 
+```
 
 #### For rendering add to the view
 
