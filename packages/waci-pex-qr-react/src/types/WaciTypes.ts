@@ -6,7 +6,7 @@ export interface WaciTypes extends IPluginMethodMap {
 
 export enum QRType {
   DID_AUTH_SIOP_V2 = 'siopv2',
-  DIDCOMM_V2_OOB = 'https://didcomm.org/out-of-band/2.0/invitation'
+  DIDCOMM_V2_OOB = 'https://didcomm.org/out-of-band/2.0/invitation',
 }
 
 export interface QRContent {
@@ -17,28 +17,32 @@ export interface QRContent {
 
 export enum GoalCode {
   STREAMLINED_VP = 'streamlined-vp',
-  STREAMLINED_VC = 'streamlined-vc'
+  STREAMLINED_VC = 'streamlined-vc',
 }
 
 export enum AcceptMode {
   OIDC4VP = 'oidc4vp',
   SIOPV2_WITH_OIDC4VP = 'siopv2+oidc4vp',
   SIOP_V2 = 'siopv2',
-  DIDCOMM_V2 = 'didcomm/v2'
+  DIDCOMM_V2 = 'didcomm/v2',
 }
 
 export enum StatusCode {
   OK = 'OK',
-  CREATED = 'CREATED'
+  CREATED = 'CREATED',
 }
 
+
+/*
+TODO: See whether we need this. Not in the spec currently
 export interface WebRedirect {
   status: StatusCode | string
   redirectUrl: string
 }
+*/
 
 export interface Body {
-  goalCode: GoalCode,
+  goalCode: GoalCode
   accept: [AcceptMode]
 }
 

@@ -4,7 +4,6 @@ import { shallow } from 'enzyme'
 
 type ConfiguredAgent = TAgent<WaciTypes>
 
-
 const oobQRProps: OobQRProps = {
   oobBaseUrl: 'https://example.com/?oob=',
   type: QRType.DID_AUTH_SIOP_V2,
@@ -38,7 +37,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should create qr code', async () => {
-
       agent.createOobQrCode(oobQRProps).then((ssiQrCode) => {
         expect(ssiQrCode).not.toBeNull()
       })
@@ -46,9 +44,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should create qr code with props', async () => {
       agent.createOobQrCode(oobQRProps).then((ssiQrCode) => {
-        expect(shallow(ssiQrCode).props().value).toEqual("https://example.com/?oob=eyJ0eXBlIjoic2lvcHYyIiwiaWQiOiI1OTlmMzYzOC1iNTYzLTQ5MzctOTQ4Ny1kZmU1NTA5OWQ5MDAiLCJmcm9tIjoiZGlkOmtleTp6cmZkamtnZmpnZmRqayIsImJvZHkiOnsiZ29hbC1jb2RlIjoic3RyZWFtbGluZWQtdnAiLCJhY2NlcHQiOlsic2lvcHYyK29pZGM0dnAiXX19")
+        expect(shallow(ssiQrCode).props().value).toEqual(
+          'https://example.com/?oob=eyJ0eXBlIjoic2lvcHYyIiwiaWQiOiI1OTlmMzYzOC1iNTYzLTQ5MzctOTQ4Ny1kZmU1NTA5OWQ5MDAiLCJmcm9tIjoiZGlkOmtleTp6cmZkamtnZmpnZmRqayIsImJvZHkiOnsiZ29hbC1jb2RlIjoic3RyZWFtbGluZWQtdnAiLCJhY2NlcHQiOlsic2lvcHYyK29pZGM0dnAiXX19'
+        )
       })
     })
-
   })
 }
