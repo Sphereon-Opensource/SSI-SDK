@@ -2612,10 +2612,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sphereon/did-auth-siop@0.2.7":
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.2.7.tgz#8ab3507583216a7a5e698af3f5e3cf8a0c9fee7b"
-  integrity sha512-OfSch21HZjfsmn1yGAUcinlm4Rc8hrNlFjgcBLyInhDNGWDgdsNYz90swb90/Q6siiZGRynOpPAmt3b2mCtvpg==
+"@sphereon/did-auth-siop@0.2.8":
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.2.8.tgz#2828ab99c8d32ba7f5a7edbcd510e86240b3e888"
+  integrity sha512-sC9GWzEm+de4VWSdF+LOKEvr3MrAB2w2HHNGm0Nr18udft2yZ78BF0ynlb110z1SNYVIh0sggjun7b3dAfiDjQ==
   dependencies:
     "@sphereon/did-uni-client" "^0.4.0"
     "@sphereon/pex" "^1.0.2"
@@ -2623,7 +2623,6 @@
     base64url "^3.0.1"
     bs58 "^4.0.1"
     cross-fetch "^3.1.5"
-    did-jwt "^5.12.3"
     did-resolver "^3.1.5"
     eth-crypto "^2.1.0"
     jose "^3.20.3"
@@ -5890,24 +5889,6 @@ did-jwt@^5.11.1, did-jwt@^5.7.0:
     bech32 "^2.0.0"
     canonicalize "^1.0.5"
     did-resolver "^3.1.3"
-    elliptic "^6.5.4"
-    js-sha3 "^0.8.0"
-    multiformats "^9.4.10"
-    uint8arrays "^3.0.0"
-
-did-jwt@^5.12.3:
-  version "5.12.3"
-  resolved "https://registry.yarnpkg.com/did-jwt/-/did-jwt-5.12.3.tgz#f4961b3d3e8f0b69c2bea08809df5e49ec3daa1d"
-  integrity sha512-/aENag1/Mu4eCwMD62X/ZOV63hkXqpRxyriJP1z/8qL44ZpdwBvvL00so+YtDcTk/xHm3t0OEe6ATvvjNYPMCA==
-  dependencies:
-    "@stablelib/ed25519" "^1.0.2"
-    "@stablelib/random" "^1.0.1"
-    "@stablelib/sha256" "^1.0.1"
-    "@stablelib/x25519" "^1.0.1"
-    "@stablelib/xchacha20poly1305" "^1.0.1"
-    bech32 "^2.0.0"
-    canonicalize "^1.0.5"
-    did-resolver "^3.1.5"
     elliptic "^6.5.4"
     js-sha3 "^0.8.0"
     multiformats "^9.4.10"
