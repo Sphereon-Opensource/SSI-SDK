@@ -32,7 +32,6 @@ export enum StatusCode {
   CREATED = 'CREATED',
 }
 
-
 /*
 TODO: See whether we need this. Not in the spec currently
 export interface WebRedirect {

@@ -65,7 +65,13 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       return Promise.reject(new Error(`Session with id: ${args.sessionId} already present`))
     }
 
-    const session = new OpSession({ sessionId, identifier: args.identifier, expiresIn: args.expiresIn, supportedDidMethods: args.supportedDidMethods, context })
+    const session = new OpSession({
+      sessionId,
+      identifier: args.identifier,
+      expiresIn: args.expiresIn,
+      supportedDidMethods: args.supportedDidMethods,
+      context,
+    })
     await session.init()
     this.sessions[sessionId] = session
 

@@ -23,7 +23,7 @@ export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   removeCustomApprovalForSiop(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean>
 }
 export interface ProvidedDidResolver {
-  didMethod: string,
+  didMethod: string
   resolver: Resolvable
 }
 

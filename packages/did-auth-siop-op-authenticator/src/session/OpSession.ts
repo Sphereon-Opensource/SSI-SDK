@@ -13,12 +13,11 @@ import {
   IOpsVerifySiopAuthenticationRequestUriArgs,
   IAuthRequestDetails,
   IMatchedPresentationDefinition,
-  IRequiredContext, ProvidedDidResolver,
+  IRequiredContext,
+  ProvidedDidResolver,
 } from '../types/IDidAuthSiopOpAuthenticator'
-import { Resolvable } from 'did-resolver'
 
 const fetch = require('cross-fetch')
-
 
 export class OpSession {
   public readonly id: string
@@ -79,7 +78,7 @@ export class OpSession {
   }
 
   public async getSiopAuthenticationRequestFromRP(args: IOpsGetSiopAuthenticationRequestFromRpArgs): Promise<SIOP.ParsedAuthenticationRequestURI> {
-    const url = args.stateId ?`${args.redirectUrl}?stateId=${args.stateId}` : args.redirectUrl
+    const url = args.stateId ? `${args.redirectUrl}?stateId=${args.stateId}` : args.redirectUrl
     return fetch(url)
       .then(async (response: Response) =>
         response.status >= 400 ? Promise.reject(new Error(await response.text())) : this.op!.parseAuthenticationRequestURI(await response.text())
@@ -134,9 +133,9 @@ export class OpSession {
   public async sendSiopAuthenticationResponse(args: IOpsSendSiopAuthenticationResponseArgs): Promise<Response> {
     const verification = {
       mode: SIOP.VerificationMode.INTERNAL,
-        resolveOpts: {
-        didMethods: [...this.supportedDidMethods, parseDid(this.identifier.did).method]
-      }
+      resolveOpts: {
+        didMethods: [...this.supportedDidMethods, parseDid(this.identifier.did).method],
+      },
     }
     return this.op!.createAuthenticationResponse(args.verifiedAuthenticationRequest, { vp: args.verifiablePresentationResponse, verification })
       .then((authResponse) => this.op!.submitAuthenticationResponse(authResponse))
@@ -236,10 +235,10 @@ export class OpSession {
       .registrationBy(SIOP.PassBy.VALUE)
       .response(SIOP.ResponseMode.POST)
     if (supportedDidMethods) {
-      supportedDidMethods.forEach(method => builder.addDidMethod(method))
+      supportedDidMethods.forEach((method) => builder.addDidMethod(method))
     }
     if (providedDidResolvers) {
-      providedDidResolvers.forEach(providedResolver => builder.addResolver(providedResolver.didMethod, providedResolver.resolver))
+      providedDidResolvers.forEach((providedResolver) => builder.addResolver(providedResolver.didMethod, providedResolver.resolver))
     }
 
     return builder.build()

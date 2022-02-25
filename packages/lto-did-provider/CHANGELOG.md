@@ -7,10 +7,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @sphereon/ssi-sdk-lto-did-provider
 
-
-
-
-
 # [0.4.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.3.4...v0.4.0) (2022-02-11)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk-lto-did-provider
