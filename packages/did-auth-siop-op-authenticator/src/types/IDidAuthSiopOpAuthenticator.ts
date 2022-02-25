@@ -2,6 +2,7 @@ import { DIDDocumentSection, IAgentContext, IIdentifier, IPluginMethodMap, IReso
 import { IVerifiableCredential, IVerifiablePresentation } from '@sphereon/pex'
 import { OpSession } from '../session/OpSession'
 import { SIOP } from '@sphereon/did-auth-siop'
+import { Resolvable } from 'did-resolver'
 
 export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   getSessionForSiop(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
@@ -21,12 +22,17 @@ export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   registerCustomApprovalForSiop(args: IRegisterCustomApprovalForSiopArgs, context: IRequiredContext): Promise<void>
   removeCustomApprovalForSiop(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean>
 }
+export interface ProvidedDidResolver {
+  didMethod: string,
+  resolver: Resolvable
+}
 
 export interface IOpSessionArgs {
   sessionId: string
   identifier: IIdentifier
   context: IRequiredContext
   supportedDidMethods?: string[]
+  providedDidResolvers?: ProvidedDidResolver[]
   expiresIn?: number
   verificationMethodSection?: DIDDocumentSection
 }

@@ -13,10 +13,12 @@ import {
   IOpsVerifySiopAuthenticationRequestUriArgs,
   IAuthRequestDetails,
   IMatchedPresentationDefinition,
-  IRequiredContext,
+  IRequiredContext, ProvidedDidResolver,
 } from '../types/IDidAuthSiopOpAuthenticator'
+import { Resolvable } from 'did-resolver'
 
 const fetch = require('cross-fetch')
+
 
 export class OpSession {
   public readonly id: string
@@ -26,10 +28,12 @@ export class OpSession {
   public readonly context: IRequiredContext
   public op: OP | undefined
   private readonly supportedDidMethods: string[]
+  private providedDidResolvers: ProvidedDidResolver[]
 
   constructor(options: IOpSessionArgs) {
     this.id = options.sessionId
     this.identifier = options.identifier
+    this.providedDidResolvers = options.providedDidResolvers || []
     this.supportedDidMethods = options.supportedDidMethods || []
     this.expiresIn = options.expiresIn
     this.verificationMethodSection = options.verificationMethodSection /*|| 'authentication'*/
@@ -41,6 +45,7 @@ export class OpSession {
       this.identifier,
       this.verificationMethodSection,
       parseDid(this.identifier.did).method,
+      this.providedDidResolvers,
       this.supportedDidMethods || [],
       this.expiresIn || 6000,
       this.context
@@ -213,6 +218,7 @@ export class OpSession {
     identifier: IIdentifier,
     verificationMethodSection: DIDDocumentSection | undefined,
     didMethod: string,
+    providedDidResolvers: ProvidedDidResolver[],
     supportedDidMethods: string[],
     expiresIn: number,
     context: IRequiredContext
@@ -231,6 +237,9 @@ export class OpSession {
       .response(SIOP.ResponseMode.POST)
     if (supportedDidMethods) {
       supportedDidMethods.forEach(method => builder.addDidMethod(method))
+    }
+    if (providedDidResolvers) {
+      providedDidResolvers.forEach(providedResolver => builder.addResolver(providedResolver.didMethod, providedResolver.resolver))
     }
 
     return builder.build()
