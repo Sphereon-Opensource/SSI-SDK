@@ -81,6 +81,7 @@ export interface IGetSiopSessionArgs {
 
 export interface IRegisterSiopSessionArgs {
   identifier: IIdentifier
+  supportedDidMethods?: string[]
   sessionId?: string
   expiresIn?: number
 }
