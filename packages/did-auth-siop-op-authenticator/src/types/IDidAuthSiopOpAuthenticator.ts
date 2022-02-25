@@ -88,6 +88,8 @@ export interface IGetSiopSessionArgs {
 
 export interface IRegisterSiopSessionArgs {
   identifier: IIdentifier
+  resolver?: Resolvable
+  perDidResolvers?: PerDidResolver[]
   supportedDidMethods?: string[]
   sessionId?: string
   expiresIn?: number

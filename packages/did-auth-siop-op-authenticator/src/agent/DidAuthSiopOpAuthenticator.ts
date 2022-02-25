@@ -69,6 +69,8 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       sessionId,
       identifier: args.identifier,
       expiresIn: args.expiresIn,
+      resolver: args.resolver,
+      perDidResolvers: args.perDidResolvers,
       supportedDidMethods: args.supportedDidMethods,
       context,
     })
