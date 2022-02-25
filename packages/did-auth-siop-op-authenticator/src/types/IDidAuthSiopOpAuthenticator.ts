@@ -26,6 +26,7 @@ export interface IOpSessionArgs {
   sessionId: string
   identifier: IIdentifier
   context: IRequiredContext
+  supportedDidMethods?: string[]
   expiresIn?: number
   verificationMethodSection?: DIDDocumentSection
 }
@@ -105,7 +106,7 @@ export interface IOpsAuthenticateWithSiopArgs {
 }
 
 export interface IOpsGetSiopAuthenticationRequestFromRpArgs {
-  stateId: string
+  stateId?: string
   redirectUrl: string
 }
 

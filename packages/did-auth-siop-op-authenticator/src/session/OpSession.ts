@@ -21,16 +21,18 @@ const fetch = require('cross-fetch')
 export class OpSession {
   public readonly id: string
   public readonly identifier: IIdentifier
-  public readonly verificationMethodSection: DIDDocumentSection
+  public readonly verificationMethodSection: DIDDocumentSection | undefined
   public readonly expiresIn: number | undefined
   public readonly context: IRequiredContext
   public op: OP | undefined
+  private readonly supportedDidMethods: string[]
 
   constructor(options: IOpSessionArgs) {
     this.id = options.sessionId
     this.identifier = options.identifier
+    this.supportedDidMethods = options.supportedDidMethods || []
     this.expiresIn = options.expiresIn
-    this.verificationMethodSection = options.verificationMethodSection || 'authentication'
+    this.verificationMethodSection = options.verificationMethodSection /*|| 'authentication'*/
     this.context = options.context
   }
 
@@ -39,6 +41,7 @@ export class OpSession {
       this.identifier,
       this.verificationMethodSection,
       parseDid(this.identifier.did).method,
+      this.supportedDidMethods || [],
       this.expiresIn || 6000,
       this.context
     )
@@ -71,7 +74,8 @@ export class OpSession {
   }
 
   public async getSiopAuthenticationRequestFromRP(args: IOpsGetSiopAuthenticationRequestFromRpArgs): Promise<SIOP.ParsedAuthenticationRequestURI> {
-    return fetch(`${args.redirectUrl}?stateId=${args.stateId}`)
+    const url = args.stateId ?`${args.redirectUrl}?stateId=${args.stateId}` : args.redirectUrl
+    return fetch(url)
       .then(async (response: Response) =>
         response.status >= 400 ? Promise.reject(new Error(await response.text())) : this.op!.parseAuthenticationRequestURI(await response.text())
       )
@@ -102,7 +106,11 @@ export class OpSession {
       didMethods = didMethodsSupported.map((value: string) => value.split(':')[1])
     } else {
       // RP mentioned no didMethods, meaning we have to let it up to the RP to see whether it will work
-      didMethods = [parseDid(this.identifier.did).method]
+      if (this.supportedDidMethods) {
+        didMethods = [parseDid(this.identifier.did).method, ...this.supportedDidMethods]
+      } else {
+        didMethods = [parseDid(this.identifier.did).method]
+      }
     }
 
     const options: SIOP.VerifyAuthenticationRequestOpts = {
@@ -119,7 +127,13 @@ export class OpSession {
   }
 
   public async sendSiopAuthenticationResponse(args: IOpsSendSiopAuthenticationResponseArgs): Promise<Response> {
-    return this.op!.createAuthenticationResponse(args.verifiedAuthenticationRequest, { vp: args.verifiablePresentationResponse })
+    const verification = {
+      mode: SIOP.VerificationMode.INTERNAL,
+        resolveOpts: {
+        didMethods: [...this.supportedDidMethods, parseDid(this.identifier.did).method]
+      }
+    }
+    return this.op!.createAuthenticationResponse(args.verifiedAuthenticationRequest, { vp: args.verifiablePresentationResponse, verification })
       .then((authResponse) => this.op!.submitAuthenticationResponse(authResponse))
       .then(async (response: Response) => {
         if (response.status >= 400) {
@@ -173,7 +187,7 @@ export class OpSession {
   ): Promise<IKey> {
     const keys = await mapIdentifierKeysToDoc(identifier, verificationMethodSection, context)
     if (!keys || keys.length === 0) {
-      throw new Error(`No keys found for verificationMethodSection: ${verificationMethodSection}`)
+      throw new Error(`No keys found for verificationMethodSection: ${verificationMethodSection} and did ${identifier.did}`)
     }
 
     const identifierKey = keyId ? keys.find((key: _ExtendedIKey) => key.kid === keyId || key.meta.verificationMethod.id === keyId) : keys[0]
@@ -197,8 +211,9 @@ export class OpSession {
 
   private async createOp(
     identifier: IIdentifier,
-    verificationMethodSection: DIDDocumentSection,
+    verificationMethodSection: DIDDocumentSection | undefined,
     didMethod: string,
+    supportedDidMethods: string[],
     expiresIn: number,
     context: IRequiredContext
   ): Promise<OP> {
@@ -208,12 +223,16 @@ export class OpSession {
 
     const keyRef = await this.getKey(identifier, verificationMethodSection, context)
 
-    return OP.builder()
+    const builder = OP.builder()
       .withExpiresIn(expiresIn)
       .addDidMethod(didMethod)
       .suppliedSignature(SuppliedSigner(keyRef, context, this.getKeyAlgorithm(keyRef.type)), identifier.did, identifier.controllerKeyId)
       .registrationBy(SIOP.PassBy.VALUE)
       .response(SIOP.ResponseMode.POST)
-      .build()
+    if (supportedDidMethods) {
+      supportedDidMethods.forEach(method => builder.addDidMethod(method))
+    }
+
+    return builder.build()
   }
 }
