@@ -121,12 +121,11 @@ export class OpSession {
       }
     }
 
+    const resolveOpts = this.resolver ? { resolver: this.resolver } : { didMethods }
     const options: SIOP.VerifyAuthenticationRequestOpts = {
       verification: {
         mode: SIOP.VerificationMode.INTERNAL,
-        resolveOpts: {
-          didMethods,
-        },
+        resolveOpts,
       },
       nonce: args.requestURI.requestPayload.nonce,
     }
@@ -240,13 +239,14 @@ export class OpSession {
       .suppliedSignature(SuppliedSigner(keyRef, context, this.getKeyAlgorithm(keyRef.type)), identifier.did, identifier.controllerKeyId)
       .registrationBy(SIOP.PassBy.VALUE)
       .response(SIOP.ResponseMode.POST)
-    if (supportedDidMethods) {
+    if (supportedDidMethods && supportedDidMethods.length > 0) {
       supportedDidMethods.forEach((method) => builder.addDidMethod(method))
     }
     if (resolver) {
+      console.log(`Resolver supplied: ${JSON.stringify(resolver)}`)
       builder.defaultResolver(resolver)
     }
-    if (providedDidResolvers) {
+    if (providedDidResolvers && providedDidResolvers.length > 0) {
       providedDidResolvers.forEach((providedResolver) => builder.addResolver(providedResolver.didMethod, providedResolver.resolver))
     }
 
