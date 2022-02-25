@@ -22,7 +22,7 @@ export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   registerCustomApprovalForSiop(args: IRegisterCustomApprovalForSiopArgs, context: IRequiredContext): Promise<void>
   removeCustomApprovalForSiop(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean>
 }
-export interface ProvidedDidResolver {
+export interface PerDidResolver {
   didMethod: string
   resolver: Resolvable
 }
@@ -32,7 +32,8 @@ export interface IOpSessionArgs {
   identifier: IIdentifier
   context: IRequiredContext
   supportedDidMethods?: string[]
-  providedDidResolvers?: ProvidedDidResolver[]
+  resolver?: Resolvable
+  perDidResolvers?: PerDidResolver[]
   expiresIn?: number
   verificationMethodSection?: DIDDocumentSection
 }

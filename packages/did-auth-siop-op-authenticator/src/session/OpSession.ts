@@ -14,8 +14,9 @@ import {
   IAuthRequestDetails,
   IMatchedPresentationDefinition,
   IRequiredContext,
-  ProvidedDidResolver,
+  PerDidResolver,
 } from '../types/IDidAuthSiopOpAuthenticator'
+import { Resolvable } from 'did-resolver'
 
 const fetch = require('cross-fetch')
 
@@ -27,12 +28,14 @@ export class OpSession {
   public readonly context: IRequiredContext
   public op: OP | undefined
   private readonly supportedDidMethods: string[]
-  private providedDidResolvers: ProvidedDidResolver[]
+  private readonly providedDidResolvers: PerDidResolver[]
+  private readonly resolver: Resolvable | undefined
 
   constructor(options: IOpSessionArgs) {
     this.id = options.sessionId
     this.identifier = options.identifier
-    this.providedDidResolvers = options.providedDidResolvers || []
+    this.resolver = options.resolver
+    this.providedDidResolvers = options.perDidResolvers || []
     this.supportedDidMethods = options.supportedDidMethods || []
     this.expiresIn = options.expiresIn
     this.verificationMethodSection = options.verificationMethodSection /*|| 'authentication'*/
@@ -44,6 +47,7 @@ export class OpSession {
       this.identifier,
       this.verificationMethodSection,
       parseDid(this.identifier.did).method,
+      this.resolver,
       this.providedDidResolvers,
       this.supportedDidMethods || [],
       this.expiresIn || 6000,
@@ -217,7 +221,8 @@ export class OpSession {
     identifier: IIdentifier,
     verificationMethodSection: DIDDocumentSection | undefined,
     didMethod: string,
-    providedDidResolvers: ProvidedDidResolver[],
+    resolver: Resolvable | undefined,
+    providedDidResolvers: PerDidResolver[],
     supportedDidMethods: string[],
     expiresIn: number,
     context: IRequiredContext
@@ -230,12 +235,16 @@ export class OpSession {
 
     const builder = OP.builder()
       .withExpiresIn(expiresIn)
+
       .addDidMethod(didMethod)
       .suppliedSignature(SuppliedSigner(keyRef, context, this.getKeyAlgorithm(keyRef.type)), identifier.did, identifier.controllerKeyId)
       .registrationBy(SIOP.PassBy.VALUE)
       .response(SIOP.ResponseMode.POST)
     if (supportedDidMethods) {
       supportedDidMethods.forEach((method) => builder.addDidMethod(method))
+    }
+    if (resolver) {
+      builder.defaultResolver(resolver)
     }
     if (providedDidResolvers) {
       providedDidResolvers.forEach((providedResolver) => builder.addResolver(providedResolver.didMethod, providedResolver.resolver))
