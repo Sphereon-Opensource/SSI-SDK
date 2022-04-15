@@ -11,11 +11,15 @@ import { ContextDoc, IVerifyBbsSignatureCredentialArgs } from '../types/types'
 import { Bls12381G2KeyPair } from "@mattrglobal/bls12381-key-pair";
 import { BbsBlsSignature2020 } from "@mattrglobal/jsonld-signatures-bbs";
 import { customLoader, securityBbsContext} from "../customDocumentLoader";
+import {AbstractKeyManagementSystem, AbstractKeyStore} from "@veramo/key-manager";
 
 const debug = Debug('sphereon:ssi-sdk:bbs-signature-module')
 
+const keyStore = null;
+
 export class BbsPlusSignatureHandlerLocal implements IAgentPlugin {
   private bbsSignatureModule: BbsSignatureModule
+  private keyStore = null;
   readonly schema = schema.IBbsSignatureHandlerLocal
   readonly methods: IBbsSignatureHandlerLocal = {
     verifyBbsSignaturePresentationLocal: this.verifyBbsSignaturePresentationLocal.bind(this),
@@ -25,12 +29,18 @@ export class BbsPlusSignatureHandlerLocal implements IAgentPlugin {
   }
 
   //TODO: fix this asap
-  constructor(options: { contextMaps: RecordLike<OrPromise<ContextDoc>>[]; suites: SphereonLdSignature[]; bindingOverrides?: IBindingOverrides }) {
-    this.bbsSignatureModule = new BbsSignatureModule({
+  constructor(options: {
+    contextMaps: RecordLike<OrPromise<ContextDoc>>[];
+    // suites: SphereonLdSignature[];
+    bindingOverrides?: IBindingOverrides;
+    store: AbstractKeyStore;
+    kms: Record<string, AbstractKeyManagementSystem>}) {
+    /*this.bbsSignatureModule = new BbsSignatureModule({
       ldContextLoader: new LdContextLoader({contextsPaths: options.contextMaps}),
       ldSuiteLoader: new LdSuiteLoader({ldSignatureSuites: options.suites}),
-    })
+    })*/
 
+    this.keyStore = keyStore;
     this.overrideBindings(options.bindingOverrides)
   }
 

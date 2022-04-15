@@ -1,4 +1,5 @@
 import { purposes } from '@digitalcredentials/jsonld-signatures'
+
 import * as vc from '@digitalcredentials/vc'
 import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
@@ -17,6 +18,10 @@ import Debug from 'debug'
 import { LdContextLoader } from './ld-context-loader'
 import { LdDocumentLoader } from './ld-document-loader'
 import { LdSuiteLoader } from './ld-suite-loader'
+import {sign, verify} from "jsonld-signatures";
+import {BbsBlsSignature2020, BbsBlsSignatureProof2020, KeyPairOptions} from "@mattrglobal/jsonld-signatures-bbs";
+import {customLoader, securityBbsContext} from "./customDocumentLoader";
+import {Bls12381G2KeyPair} from "@mattrglobal/bls12381-key-pair";
 
 export type RequiredAgentMethods = IResolver & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>
 
@@ -35,129 +40,72 @@ export class BbsSignatureModule {
     this.ldDocumentLoader = new LdDocumentLoader(options)
   }
 
-  async issueLDVerifiableCredential(
-    credential: CredentialPayload,
-    issuerDid: string,
-    key: IKey,
-    verificationMethodId: string,
-    purpose: typeof ProofPurpose = new CredentialIssuancePurpose(),
-    context: IAgentContext<RequiredAgentMethods>
-  ): Promise<VerifiableCredentialSP> {
-    debug(`Issue VC method called for ${key.kid}...`)
-    const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
-    const documentLoader = this.ldDocumentLoader.getLoader(context, true)
-
-    // some suites can modify the incoming credential (e.g. add required contexts)W
-    suite.preSigningCredModification(credential)
-    debug(`Signing suite will be retrieved for ${verificationMethodId}...`)
-    const signingSuite = await suite.getSuiteForSigning(key, issuerDid, verificationMethodId, context)
-    debug(`Issuer ${issuerDid} will create VC for ${key.kid}...`)
-    const verifiableCredential = await vc.issue({
-      credential,
-      purpose,
-      suite: signingSuite,
-      documentLoader,
-      compactProof: false,
-    })
-    debug(`Issuer ${issuerDid} created VC for ${key.kid}`)
-    return verifiableCredential
+  async verifyBbsSignaturePresentation(inputVP: VerifiablePresentation) {
+    const suite = inputVP.proof.type === 'BbsBlsSignatureProof2020' ? new BbsBlsSignatureProof2020() : new BbsBlsSignature2020();
+    const verifiedVP = await verify(inputVP, {
+      suite: suite,
+      purpose: new purposes.AssertionProofPurpose(),
+      documentLoader: customLoader
+    });
   }
 
-  async signLDVerifiablePresentation(
-    presentation: PresentationPayload,
-    holderDid: string,
-    key: IKey,
-    verificationMethodId: string,
-    challenge: string | undefined,
-    domain: string | undefined,
-    purpose: typeof ProofPurpose = !challenge && !domain
-      ? new AssertionProofPurpose()
-      : new AuthenticationProofPurpose({
-          domain,
-          challenge,
-        }),
-    context: IAgentContext<RequiredAgentMethods>
-  ): Promise<VerifiablePresentationSP> {
-    const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
-    const documentLoader = this.ldDocumentLoader.getLoader(context, true)
-
-    suite.preSigningPresModification(presentation)
-
-    return await vc.signPresentation({
-      presentation,
-      suite: suite.getSuiteForSigning(key, holderDid, verificationMethodId, context),
-      challenge,
-      domain,
-      documentLoader,
-      purpose,
-      compactProof: false,
-    })
+  async verifyBbsSignatureCredential(inputVC: VerifiableCredential) {
+    const suite = inputVC.proof.type === 'BbsBlsSignatureProof2020' ? new BbsBlsSignatureProof2020() : new BbsBlsSignature2020();
+    const verifiedVP = await verify(inputVC, {
+      suite: suite,
+      purpose: new purposes.AssertionProofPurpose(),
+      documentLoader: customLoader
+    });
   }
 
-  async verifyCredential(
-    credential: VerifiableCredential,
-    context: IAgentContext<IResolver>,
-    fetchRemoteContexts = false,
-    purpose: typeof ProofPurpose = new AssertionProofPurpose(),
-    checkStatus?: Function
-  ): Promise<boolean> {
-    const verificationSuites = this.getAllVerificationSuites()
-    this.ldSuiteLoader.getAllSignatureSuites().forEach((suite) => suite.preVerificationCredModification(credential))
-    const result = await vc.verifyCredential({
-      credential,
-      suite: verificationSuites,
-      documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
-      purpose: purpose,
-      compactProof: false,
-      checkStatus: checkStatus,
-    })
+  async signBbsSignatureCredential(inputVC: VerifiableCredential, keyPairOptions: KeyPairOptions) {
+    debug('Entry of verifyBbsSignatureCredentialLocal')
+    const hasProof: boolean = 'proof' in inputVC;
+    if (hasProof) {
+      delete inputVC.proof;
+    }
+    // const signingKeyPairJson = getFileAsJson(signingKeyPairFile);
+    const signingKeyPair = new Bls12381G2KeyPair(keyPairOptions);
 
-    if (result.verified) return true
+    const vcContext: string[] = inputVC["@context"] as string[];
+    if (vcContext) {
+      if (vcContext.indexOf(securityBbsContext) == -1) {
+        vcContext.push(securityBbsContext);
+      }
+    }
 
-    // NOT verified.
+    return await sign(inputVC, {
+      suite: new BbsBlsSignature2020({ key: signingKeyPair }),
+      purpose: new purposes.AssertionProofPurpose(),
+      documentLoader: customLoader,
+    });
+  }
 
-    // result can include raw Error
-    debug(`Error verifying LD Verifiable Credential: ${JSON.stringify(result, null, 2)}`)
-    console.log(JSON.stringify(result, null, 2))
-    throw Error('Error verifying LD Verifiable Credential')
+  async signBbsSignaturePresentation(inputVP: VerifiablePresentation, keyPairOptions: KeyPairOptions) {
+    debug('Entry of verifyBbsSignatureCredentialLocal')
+    const hasProof: boolean = 'proof' in inputVP;
+    if (hasProof) {
+      delete inputVP.proof;
+    }
+    // const signingKeyPairJson = getFileAsJson(signingKeyPairFile);
+    const signingKeyPair = new Bls12381G2KeyPair(keyPairOptions);
+
+    const vcContext: string[] = inputVP["@context"] as string[];
+    if (vcContext) {
+      if (vcContext.indexOf(securityBbsContext) == -1) {
+        vcContext.push(securityBbsContext);
+      }
+    }
+
+    return await sign(inputVP, {
+      suite: new BbsBlsSignature2020({ key: signingKeyPair }),
+      purpose: new purposes.AssertionProofPurpose(),
+      documentLoader: customLoader,
+    });
   }
 
   private getAllVerificationSuites() {
     return this.ldSuiteLoader.getAllSignatureSuites().map((x) => x.getSuiteForVerification())
   }
 
-  async verifyPresentation(
-    presentation: VerifiablePresentation,
-    challenge: string | undefined,
-    domain: string | undefined,
-    context: IAgentContext<IResolver>,
-    fetchRemoteContexts = false,
-    presentationPurpose: typeof ProofPurpose = !challenge && !domain
-      ? new AssertionProofPurpose()
-      : new AuthenticationProofPurpose(domain, challenge),
-    checkStatus?: Function
-    //AssertionProofPurpose()
-  ): Promise<boolean> {
-    // console.log(JSON.stringify(presentation, null, 2))
-
-    const result = await vc.verify({
-      presentation,
-      suite: this.getAllVerificationSuites(),
-      documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
-      challenge,
-      domain,
-      presentationPurpose,
-      compactProof: false,
-      checkStatus,
-    })
-
-    if (result.verified) return true
-
-    // NOT verified.
-
-    // result can include raw Error
-    console.log(`Error verifying LD Verifiable Presentation`)
-    console.log(JSON.stringify(result, null, 2))
-    throw Error('Error verifying LD Verifiable Presentation')
-  }
 }
