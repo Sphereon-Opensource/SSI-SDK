@@ -1,14 +1,6 @@
 import { purposes } from '@digitalcredentials/jsonld-signatures'
-import {
-  IAgentContext,
-  IDIDManager,
-  IKeyManager,
-  IPluginMethodMap,
-  IResolver,
-  VerifiableCredential,
-  VerifiablePresentation,
-} from '@veramo/core'
-import {IVerifiableCredential, IVerifiablePresentation} from "@sphereon/pex";
+import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver, VerifiableCredential, VerifiablePresentation } from '@veramo/core'
+import { IVerifiableCredential, IVerifiablePresentation } from '@sphereon/pex'
 
 /**
  * The interface definition for a plugin that can issue and verify Verifiable Credentials and Presentations
@@ -19,10 +11,10 @@ import {IVerifiableCredential, IVerifiablePresentation} from "@sphereon/pex";
  * @beta This API is likely to change without a BREAKING CHANGE notice
  */
 export interface ICredentialIssuerLD extends IPluginMethodMap {
-  verifyBbsSignaturePresentation(args:IVerifyBbsSignaturePresentationArgs, context: IRequiredContext): Promise<boolean>
-  verifyBbsSignatureCredential(args:IVerifyBbsSignatureCredentialArgs, context: IRequiredContext): Promise<boolean>
-  signBbsSignatureCredential(args:ISignBbsSignatureCredentialArgs, context: IRequiredContext): Promise<IVerifiableCredential>
-  signBbsSignaturePresentation(args:ISignBbsSignaturePresentationArgs, context: IRequiredContext): Promise<IVerifiablePresentation>
+  verifyBbsSignaturePresentation(args: IVerifyBbsSignaturePresentationArgs, context: IRequiredContext): Promise<boolean>
+  verifyBbsSignatureCredential(args: IVerifyBbsSignatureCredentialArgs, context: IRequiredContext): Promise<boolean>
+  signBbsSignatureCredential(args: ISignBbsSignatureCredentialArgs, context: IRequiredContext): Promise<IVerifiableCredential>
+  signBbsSignaturePresentation(args: ISignBbsSignaturePresentationArgs, context: IRequiredContext): Promise<IVerifiablePresentation>
 }
 
 /**
@@ -184,7 +176,6 @@ export interface ISignBbsSignaturePresentationArgs {
    */
   checkStatus?: Function
 }
-
 
 /**
  * Represents the requirements that this plugin has.

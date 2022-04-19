@@ -1,25 +1,26 @@
 import { IAgentPlugin } from '@veramo/core'
 import { OrPromise, RecordLike } from '@veramo/utils'
 import Debug from 'debug'
-import { BbsSignatureModule } from "../bbs-signature-module";
+import { BbsSignatureModule } from '../bbs-signature-module'
 import { IBindingOverrides, schema } from '../index'
 import { IBbsSignatureHandlerLocal } from '../types/IBbsSignatureHandlerLocal'
 import {
-  ContextDoc, IRequiredContext,
+  ContextDoc,
+  IRequiredContext,
   ISignBbsSignatureCredentialArgs,
   ISignBbsSignaturePresentationArgs,
   IVerifyBbsSignatureCredentialArgs,
-  IVerifyBbsSignaturePresentationArgs
+  IVerifyBbsSignaturePresentationArgs,
 } from '../types/types'
-import { AbstractKeyManagementSystem, AbstractKeyStore } from "@veramo/key-manager";
+import { AbstractKeyManagementSystem, AbstractKeyStore } from '@veramo/key-manager'
 
 const debug = Debug('sphereon:ssi-sdk:bbs-signature-module')
 
-const keyStore = null;
+const keyStore = null
 
 export class BbsPlusSignatureHandlerLocal implements IAgentPlugin {
   private bbsSignatureModule: BbsSignatureModule
-  private readonly keyStore = null;
+  private readonly keyStore = null
   readonly schema = schema.IBbsSignatureHandlerLocal
   readonly methods: IBbsSignatureHandlerLocal = {
     verifyBbsSignaturePresentationLocal: this.verifyBbsSignaturePresentationLocal.bind(this),
@@ -29,17 +30,18 @@ export class BbsPlusSignatureHandlerLocal implements IAgentPlugin {
   }
 
   constructor(options: {
-    contextMaps: RecordLike<OrPromise<ContextDoc>>[];
+    contextMaps: RecordLike<OrPromise<ContextDoc>>[]
     // suites: SphereonLdSignature[];
-    bindingOverrides?: IBindingOverrides;
-    store: AbstractKeyStore;
-    kms: Record<string, AbstractKeyManagementSystem>}) {
+    bindingOverrides?: IBindingOverrides
+    store: AbstractKeyStore
+    kms: Record<string, AbstractKeyManagementSystem>
+  }) {
     /*this.bbsSignatureModule = new BbsSignatureModule({
       ldContextLoader: new LdContextLoader({contextsPaths: options.contextMaps}),
       ldSuiteLoader: new LdSuiteLoader({ldSignatureSuites: options.suites}),
     })*/
 
-    this.keyStore = keyStore;
+    this.keyStore = keyStore
     this.overrideBindings(options.bindingOverrides)
   }
 
@@ -55,34 +57,22 @@ export class BbsPlusSignatureHandlerLocal implements IAgentPlugin {
   }
 
   /** {@inheritDoc BbsPlusSignatureHandlerLocal.verifyBbsSignaturePresentationLocal} */
-  private async verifyBbsSignaturePresentationLocal(
-      args: IVerifyBbsSignaturePresentationArgs,
-      context: IRequiredContext
-  ) {
-    return await this.bbsSignatureModule.verifyBbsSignaturePresentation(args.presentation);
+  private async verifyBbsSignaturePresentationLocal(args: IVerifyBbsSignaturePresentationArgs, context: IRequiredContext) {
+    return await this.bbsSignatureModule.verifyBbsSignaturePresentation(args.presentation)
   }
 
   /** {@inheritDoc BbsPlusSignatureHandlerLocal.verifyBbsSignaturePresentationLocal} */
-  private async verifyBbsSignatureCredentialLocal(
-      args: IVerifyBbsSignatureCredentialArgs,
-      context: IRequiredContext
-  ): Promise<void> {
-    return await this.bbsSignatureModule.verifyBbsSignatureCredential(args.credential);
+  private async verifyBbsSignatureCredentialLocal(args: IVerifyBbsSignatureCredentialArgs, context: IRequiredContext): Promise<void> {
+    return await this.bbsSignatureModule.verifyBbsSignatureCredential(args.credential)
   }
 
   /** {@inheritDoc BbsPlusSignatureHandlerLocal.signBbsSignatureCredentialLocal} */
-  private async signBbsSignatureCredentialLocal(
-      args: ISignBbsSignatureCredentialArgs,
-      context: IRequiredContext
-  ) {
-    return await this.bbsSignatureModule.signBbsSignatureCredential(args.credential, this.keyStore);
+  private async signBbsSignatureCredentialLocal(args: ISignBbsSignatureCredentialArgs, context: IRequiredContext) {
+    return await this.bbsSignatureModule.signBbsSignatureCredential(args.credential, this.keyStore)
   }
 
   /** {@inheritDoc BbsPlusSignatureHandlerLocal.signBbsSignaturePresentationLocal} */
-  private async signBbsSignaturePresentationLocal(
-      args: ISignBbsSignaturePresentationArgs,
-      context: IRequiredContext
-  ) {
-    return await this.bbsSignatureModule.signBbsSignaturePresentation(args.presentation, this.keyStore);
+  private async signBbsSignaturePresentationLocal(args: ISignBbsSignaturePresentationArgs, context: IRequiredContext) {
+    return await this.bbsSignatureModule.signBbsSignaturePresentation(args.presentation, this.keyStore)
   }
 }

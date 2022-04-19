@@ -1,11 +1,10 @@
 import { CredentialPayload, IAgentContext, IKey, IKeyManager, IResolver, PresentationPayload, VerifiableCredential } from '@veramo/core'
 import { DIDDocument } from 'did-resolver/src/resolver'
-import { TKeyType } from "./suites/Ed25519Signature2020";
+import { TKeyType } from './suites/Ed25519Signature2020'
 
 export type RequiredAgentMethods = IResolver & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>
 
 export abstract class SphereonBbsSignature {
-
   abstract getSupportedVerificationType(): string[]
 
   abstract getSupportedVeramoKeyType(): TKeyType[]

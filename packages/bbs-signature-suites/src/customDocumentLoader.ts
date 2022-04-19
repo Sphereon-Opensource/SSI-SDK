@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-import { extendContextLoader } from "jsonld-signatures";
+import { extendContextLoader } from 'jsonld-signatures'
 import {
   bbs as bbsContext,
   citizen_vocab as citizenVocab,
@@ -20,38 +20,37 @@ import {
   odrl as odrlContext,
   schemaOrg,
   v3_unstable as securityV3,
-  vc_example_vocab as vcExampleContext} from "./contexts";
+  vc_example_vocab as vcExampleContext,
+} from './contexts'
 
 export const documents: any = {
-  "https://w3id.org/security/v3-unstable": securityV3,
-  "https://www.w3id.org/security/v3-unstable": securityV3,
-  "https://www.w3.org/2018/credentials/examples/v1": vcExampleContext,
-  "https://www.w3.org/2018/credentials/v1": credentialContext,
-  "https://www.w3.org/ns/odrl.jsonld": odrlContext,
-  "https://w3id.org/security/suites/jws-2020/v1": jwsContext,
-  "https://w3id.org/citizenship/v1": citizenVocab,
-  "https://w3id.org/security/bbs/v1": bbsContext,
-  "https://schema.org": schemaOrg,
-  "https://schema.org/": schemaOrg,
-  "http://schema.org/": schemaOrg
-};
+  'https://w3id.org/security/v3-unstable': securityV3,
+  'https://www.w3id.org/security/v3-unstable': securityV3,
+  'https://www.w3.org/2018/credentials/examples/v1': vcExampleContext,
+  'https://www.w3.org/2018/credentials/v1': credentialContext,
+  'https://www.w3.org/ns/odrl.jsonld': odrlContext,
+  'https://w3id.org/security/suites/jws-2020/v1': jwsContext,
+  'https://w3id.org/citizenship/v1': citizenVocab,
+  'https://w3id.org/security/bbs/v1': bbsContext,
+  'https://schema.org': schemaOrg,
+  'https://schema.org/': schemaOrg,
+  'http://schema.org/': schemaOrg,
+}
 
 const customDocLoader = (url: string): any => {
-  const context = documents[url];
+  const context = documents[url]
 
   if (context) {
     return {
       contextUrl: null, // this is for a context via a link header
       document: context, // this is the actual document that was loaded
-      documentUrl: url // this is the actual context URL after redirects
-    };
+      documentUrl: url, // this is the actual context URL after redirects
+    }
   }
 
-  throw new Error(
-    `Error attempted to load document remotely, please cache '${url}'`
-  );
-};
+  throw new Error(`Error attempted to load document remotely, please cache '${url}'`)
+}
 
-export const customLoader = extendContextLoader(customDocLoader);
+export const customLoader = extendContextLoader(customDocLoader)
 
-export const securityBbsContext = 'https://w3id.org/security/bbs/v1';
+export const securityBbsContext = 'https://w3id.org/security/bbs/v1'

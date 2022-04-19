@@ -24,7 +24,6 @@ export class BbsDocumentLoader {
 
   getLoader(context: IAgentContext<IResolver>, attemptToFetchContexts = false) {
     return extendContextLoader(async (url: string) => {
-
       // did resolution
       if (url.toLowerCase().startsWith('did:')) {
         let didDoc: DIDDocument | null

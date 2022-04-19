@@ -1,18 +1,18 @@
-import {IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver} from '@veramo/core'
+import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 
 import {
   ISignBbsSignatureCredentialArgs,
   ISignBbsSignaturePresentationArgs,
   IVerifyBbsSignatureCredentialArgs,
-  IVerifyBbsSignaturePresentationArgs
+  IVerifyBbsSignaturePresentationArgs,
 } from './types'
-import {IVerifiableCredential, IVerifiablePresentation} from "@sphereon/pex";
+import { IVerifiableCredential, IVerifiablePresentation } from '@sphereon/pex'
 
 export interface IBbsSignatureHandlerLocal extends IPluginMethodMap {
-  verifyBbsSignaturePresentationLocal(args:IVerifyBbsSignaturePresentationArgs, context: IRequiredContext): Promise<boolean>
-  verifyBbsSignatureCredentialLocal(args:IVerifyBbsSignatureCredentialArgs, context: IRequiredContext): Promise<boolean>
-  signBbsSignatureCredentialLocal(args:ISignBbsSignatureCredentialArgs, context: IRequiredContext): Promise<IVerifiableCredential>
-  signBbsSignaturePresentationLocal(args:ISignBbsSignaturePresentationArgs, context: IRequiredContext): Promise<IVerifiablePresentation>
+  verifyBbsSignaturePresentationLocal(args: IVerifyBbsSignaturePresentationArgs, context: IRequiredContext): Promise<boolean>
+  verifyBbsSignatureCredentialLocal(args: IVerifyBbsSignatureCredentialArgs, context: IRequiredContext): Promise<boolean>
+  signBbsSignatureCredentialLocal(args: ISignBbsSignatureCredentialArgs, context: IRequiredContext): Promise<IVerifiableCredential>
+  signBbsSignaturePresentationLocal(args: ISignBbsSignaturePresentationArgs, context: IRequiredContext): Promise<IVerifiablePresentation>
 }
 
 /**
@@ -23,7 +23,7 @@ export enum MethodNames {
   verifyBbsSignaturePresentationLocal = 'verifyBbsSignaturePresentationLocal',
   verifyBbsSignatureCredentialLocal = 'verifyBbsSignatureCredentialLocal',
   signBbsSignatureCredentialLocal = 'signBbsSignatureCredentialLocal',
-  signBbsSignaturePresentationLocal = 'signBbsSignaturePresentationLocal'
+  signBbsSignaturePresentationLocal = 'signBbsSignaturePresentationLocal',
 }
 
 export type IBindingOverrides = Map<string, MethodNames>
