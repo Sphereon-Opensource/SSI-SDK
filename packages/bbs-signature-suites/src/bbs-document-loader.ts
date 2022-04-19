@@ -5,37 +5,31 @@ import { DIDDocument, IAgentContext, IResolver } from '@veramo/core'
 // import { DidKeyDriver } from '@digitalcredentials/did-method-key'
 import Debug from 'debug'
 
-import { LdContextLoader } from './ld-context-loader'
-import { LdSuiteLoader } from './ld-suite-loader'
+import { BbsContextLoader } from './bbs-context-loader'
+import { BbsSuiteLoader } from './bbs-suite-loader'
 
-const debug = Debug('veramo:w3c:ld-credential-module-local')
+const debug = Debug('veramo:w3c:bbs-credential-module-local')
 
 /**
  * Initializes a list of Veramo-wrapped LD Signature suites and exposes those to the Agent Module
  */
-export class LdDocumentLoader {
-  private ldContextLoader: LdContextLoader
-  ldSuiteLoader: LdSuiteLoader
+export class BbsDocumentLoader {
+  private bbsContextLoader: BbsContextLoader
+  bbsSuiteLoader: BbsSuiteLoader
 
-  constructor(options: { ldContextLoader: LdContextLoader; ldSuiteLoader: LdSuiteLoader }) {
-    this.ldContextLoader = options.ldContextLoader
-    this.ldSuiteLoader = options.ldSuiteLoader
+  constructor(options: { bbsContextLoader: BbsContextLoader; bbsSuiteLoader: BbsSuiteLoader }) {
+    this.bbsContextLoader = options.bbsContextLoader
+    this.bbsSuiteLoader = options.bbsSuiteLoader
   }
 
   getLoader(context: IAgentContext<IResolver>, attemptToFetchContexts = false) {
     return extendContextLoader(async (url: string) => {
-      // console.log(`resolving context for: ${url}`)
 
       // did resolution
       if (url.toLowerCase().startsWith('did:')) {
         let didDoc: DIDDocument | null
-        /* if (url.toLowerCase().startsWith('did:key:')) {
-          // const suite = this.ldSuiteLoader.getAllSignatureSuites()[0].getSuiteForVerification();
-          didDoc = await new DidKeyDriver().get({url});
-        } else {*/
         const resolutionResult = await context.agent.resolveDid({ didUrl: url })
         didDoc = resolutionResult.didDocument
-        // }
         if (!didDoc) {
           throw new Error(`Could not fetch DID document with url: ${url}. Did you enable the the driver?`)
         }
@@ -57,9 +51,9 @@ export class LdDocumentLoader {
           const component = await context.agent.getDIDComponentById({ didDocument: didDoc, didUrl: url })
           if (component && component.id) {
             // We have to provide a context
-            const contexts = this.ldSuiteLoader
+            const contexts = this.bbsSuiteLoader
               .getAllSignatureSuites()
-              .filter((x) => x.getSupportedVerificationType() === component.type /* || component.type === 'Ed25519VerificationKey2018'*/)
+              .filter((x) => x.getSupportedVerificationType() === component.type)
               .filter((value, index, self) => self.indexOf(value) === index)
               .map((value) => value.getContext())
             const fragment = { ...component, '@context': contexts }
@@ -75,9 +69,8 @@ export class LdDocumentLoader {
         // currently Veramo LD suites can modify the resolution response for DIDs from
         // the document Loader. This allows to fix incompatibilities between DID Documents
         // and LD suites to be fixed specifically within the Veramo LD Suites definition
-        this.ldSuiteLoader.getAllSignatureSuites().forEach((x) => x.preDidResolutionModification(url, didDoc as DIDDocument))
+        this.bbsSuiteLoader.getAllSignatureSuites().forEach((x) => x.preDidResolutionModification(url, didDoc as DIDDocument))
 
-        // console.log(`Returning from Documentloader: ${JSON.stringify(returnDocument)}`)
         return {
           contextUrl: null,
           documentUrl: url,
@@ -85,8 +78,8 @@ export class LdDocumentLoader {
         }
       }
 
-      if (this.ldContextLoader.has(url)) {
-        const contextDoc = await this.ldContextLoader.get(url)
+      if (this.bbsContextLoader.has(url)) {
+        const contextDoc = await this.bbsContextLoader.get(url)
         return {
           contextUrl: null,
           documentUrl: url,

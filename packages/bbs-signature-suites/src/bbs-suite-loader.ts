@@ -1,29 +1,29 @@
 import { TKeyType } from '@veramo/core'
 
-import { SphereonLdSignature } from './ld-suites'
+import { SphereonBbsSignature } from './bbs-suites'
 
 /**
- * Initializes a list of Veramo-wrapped LD Signature suites and exposes those to the Agent Module
+ * Initializes a list of Veramo-wrapped BBS Signature suites and exposes those to the Agent Module
  */
-export class LdSuiteLoader {
-  constructor(options: { ldSignatureSuites: SphereonLdSignature[] }) {
-    options.ldSignatureSuites.forEach((obj) => {
+export class BbsSuiteLoader {
+  constructor(options: { bbsSignatureSuites: SphereonBbsSignature[] }) {
+    options.bbsSignatureSuites.forEach((obj) => {
       this.signatureMap[obj.getSupportedVeramoKeyType()] = obj
       this.signatureMap[obj.getSupportedVerificationType()] = obj
     })
   }
-  private signatureMap: Record<string, SphereonLdSignature> = {}
+  private signatureMap: Record<string, SphereonBbsSignature> = {}
 
-  getSignatureSuiteForKeyType(type: TKeyType, verificationType?: string): SphereonLdSignature {
+  getSignatureSuiteForKeyType(type: TKeyType, verificationType?: string): SphereonBbsSignature {
     // Always use verification type if supplied. This is the type denoted by the DID verification method type
 
     const suite = verificationType && this.signatureMap[verificationType] ? this.signatureMap[verificationType] : this.signatureMap[type]
     if (suite) return suite
 
-    throw new Error('No Sphereon or Veramo LD Signature Suite for ' + type)
+    throw new Error('No Sphereon or Veramo BBS Signature Suite for ' + type)
   }
 
-  getAllSignatureSuites(): SphereonLdSignature[] {
+  getAllSignatureSuites(): SphereonBbsSignature[] {
     return Object.values(this.signatureMap)
   }
 

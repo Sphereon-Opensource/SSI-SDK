@@ -2,14 +2,11 @@
   "extends": "../tsconfig-base.json",
   "include": ["src/contexts.**"],
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "ES2020",
     "rootDir": "src",
     "outDir": "dist",
     "esModuleInterop": true,
     "declarationDir": "dist",
     "resolveJsonModule": true,
-    "moduleResolution": "Node"
   },
   "references": [{ "path": "../ssi-sdk-core" }]
 }

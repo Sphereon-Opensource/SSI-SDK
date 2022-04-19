@@ -1,43 +1,31 @@
 import { purposes } from '@digitalcredentials/jsonld-signatures'
 
-import * as vc from '@digitalcredentials/vc'
-import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
-import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
 import {
-  CredentialPayload,
-  IAgentContext,
-  IKey,
   IKeyManager,
   IResolver,
-  PresentationPayload,
   VerifiableCredential,
   VerifiablePresentation,
 } from '@veramo/core'
 import Debug from 'debug'
 
-import { LdContextLoader } from './ld-context-loader'
-import { LdDocumentLoader } from './ld-document-loader'
-import { LdSuiteLoader } from './ld-suite-loader'
-import {sign, verify} from "jsonld-signatures";
-import {BbsBlsSignature2020, BbsBlsSignatureProof2020, KeyPairOptions} from "@mattrglobal/jsonld-signatures-bbs";
-import {customLoader, securityBbsContext} from "./customDocumentLoader";
-import {Bls12381G2KeyPair} from "@mattrglobal/bls12381-key-pair";
+import { BbsContextLoader } from './bbs-context-loader'
+import { BbsSuiteLoader } from './bbs-suite-loader'
+import { sign, verify } from "jsonld-signatures";
+import { BbsBlsSignature2020, BbsBlsSignatureProof2020, KeyPairOptions } from "@mattrglobal/jsonld-signatures-bbs";
+import { customLoader, securityBbsContext } from "./customDocumentLoader";
+import { Bls12381G2KeyPair } from "@mattrglobal/bls12381-key-pair";
+import { BbsDocumentLoader } from "./bbs-document-loader";
 
 export type RequiredAgentMethods = IResolver & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>
 
-const ProofPurpose = purposes.ProofPurpose
-const AssertionProofPurpose = purposes.AssertionProofPurpose
-const AuthenticationProofPurpose = purposes.AuthenticationProofPurpose
-
-const debug = Debug('sphereon:ssi-sdk:bbs-sinature-module')
+const debug = Debug('sphereon:ssi-sdk:bbs-signature-module')
 
 export class BbsSignatureModule {
-  ldSuiteLoader: LdSuiteLoader
-  private ldDocumentLoader: LdDocumentLoader
-
-  constructor(options: { ldContextLoader: LdContextLoader; ldSuiteLoader: LdSuiteLoader }) {
-    this.ldSuiteLoader = options.ldSuiteLoader
-    this.ldDocumentLoader = new LdDocumentLoader(options)
+  private bbsSuiteLoader: BbsSuiteLoader
+  private documentLoader: any
+  constructor(options: { bbsContextLoader: BbsContextLoader; bbsSuiteLoader: BbsSuiteLoader }) {
+    this.bbsSuiteLoader = options.bbsSuiteLoader
+    this.documentLoader = new BbsDocumentLoader(options)
   }
 
   async verifyBbsSignaturePresentation(inputVP: VerifiablePresentation) {
@@ -105,7 +93,7 @@ export class BbsSignatureModule {
   }
 
   private getAllVerificationSuites() {
-    return this.ldSuiteLoader.getAllSignatureSuites().map((x) => x.getSuiteForVerification())
+    return this.bbsSuiteLoader.getAllSignatureSuites().map((x) => x.getSuiteForVerification())
   }
 
 }
