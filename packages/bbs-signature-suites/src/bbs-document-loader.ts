@@ -52,7 +52,7 @@ export class BbsDocumentLoader {
             // We have to provide a context
             const contexts = this.bbsSuiteLoader
               .getAllSignatureSuites()
-              .filter((x) => x.getSupportedVerificationType() === component.type)
+              .filter((x) => x.getSupportedVerificationType().includes(component.type))
               .filter((value, index, self) => self.indexOf(value) === index)
               .map((value) => value.getContext())
             const fragment = { ...component, '@context': contexts }

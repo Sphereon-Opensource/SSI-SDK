@@ -3,7 +3,7 @@ import { schemaOrg, v3_unstable, vc_example_vocab, citizen_vocab, credential_voc
 /**
  * Provides a hardcoded map of common context definitions
  */
-export const LdDefaultContexts = new Map([
+export const BbsDefaultContexts = new Map([
   ['https://w3id.org/security/v3-unstable', v3_unstable],
   ['https://www.w3id.org/security/v3-unstable', v3_unstable],
   ['https://www.w3.org/2018/credentials/examples/v1', vc_example_vocab],
