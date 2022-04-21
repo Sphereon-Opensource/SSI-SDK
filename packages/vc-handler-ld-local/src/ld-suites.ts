@@ -1,4 +1,5 @@
-import { CredentialPayload, IAgentContext, IKey, IKeyManager, IResolver, PresentationPayload, TKeyType, VerifiableCredential } from '@veramo/core'
+import { TKeyType } from './suites/BbsBlsSignature2020'
+import { CredentialPayload, IAgentContext, IKey, IKeyManager, IResolver, PresentationPayload, VerifiableCredential } from '@veramo/core'
 import { DIDDocument } from 'did-resolver/src/resolver'
 
 export type RequiredAgentMethods = IResolver & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>

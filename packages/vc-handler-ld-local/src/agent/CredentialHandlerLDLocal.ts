@@ -183,12 +183,44 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyCredentialLDLocal} */
   public async verifyCredentialLDLocal(args: IVerifyCredentialLDArgs, context: IRequiredContext): Promise<boolean> {
     const credential = args.credential
-    return this.ldCredentialModule.verifyCredential(credential, context, args.fetchRemoteContexts, args.purpose, args.checkStatus)
+    let identifier: IIdentifier
+    try {
+      let holderDid: string = null as unknown as string
+      if (args.credential.credentialSubject) {
+        if (args.credential.credentialSubject.id) {
+          holderDid = args.credential.credentialSubject.id
+        } else {
+          //fixme: Veramo is wrong about this
+          holderDid = args.credential.credentialSubject as unknown as string
+        }
+      }
+      identifier = await context.agent.didManagerGet({ did: holderDid })
+    } catch (e) {
+      throw new Error('invalid_argument: args.presentation.holder must be a DID managed by this agent')
+    }
+    const { signingKey } = await this.findSigningKeyWithId(context, identifier, args.keyRef)
+    return this.ldCredentialModule.verifyCredential(credential, context, args.fetchRemoteContexts, args.purpose, signingKey, args.checkStatus)
   }
 
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyPresentationLDLocal} */
   public async verifyPresentationLDLocal(args: IVerifyPresentationLDArgs, context: IRequiredContext): Promise<boolean> {
     const presentation = args.presentation
+    let identifier: IIdentifier
+    try {
+      let holderDid: string = null as unknown as string
+      if (presentation.credentialSubject) {
+        if (presentation.credentialSubject.id) {
+          holderDid = presentation.credentialSubject.id
+        } else {
+          //fixme: Veramo is wrong about this
+          holderDid = presentation.credentialSubject as unknown as string
+        }
+      }
+      identifier = await context.agent.didManagerGet({ did: holderDid })
+    } catch (e) {
+      throw new Error('invalid_argument: args.presentation.holder must be a DID managed by this agent')
+    }
+    const { signingKey } = await this.findSigningKeyWithId(context, identifier, args.keyRef)
     return this.ldCredentialModule.verifyPresentation(
       presentation,
       args.challenge,
@@ -196,6 +228,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       context,
       args.fetchRemoteContexts,
       args.presentationPurpose,
+      signingKey,
       args.checkStatus
     )
   }
