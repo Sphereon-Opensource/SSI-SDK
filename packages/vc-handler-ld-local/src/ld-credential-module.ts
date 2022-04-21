@@ -53,7 +53,8 @@ export class LdCredentialModule {
     purpose: typeof ProofPurpose = new CredentialIssuancePurpose(),
     context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiableCredentialSP> {
-    debug(`Issue VC method called for ${key.kid}...`)
+    console.log(`Issue VC method called for ${key.kid}...`)
+    console.log("CredentialPayload:", credential)
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
     const documentLoader = this.ldDocumentLoader.getLoader(context, true)
 
@@ -110,6 +111,7 @@ export class LdCredentialModule {
         }),
     context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiablePresentationSP> {
+    console.log("PresentationPayload:", presentation)
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
     const documentLoader = this.ldDocumentLoader.getLoader(context, true)
     suite.preSigningPresModification(presentation)
@@ -156,6 +158,7 @@ export class LdCredentialModule {
   ): Promise<boolean> {
     const verificationSuites = this.getAllVerificationSuites()
     this.ldSuiteLoader.getAllSignatureSuites().forEach((suite) => suite.preVerificationCredModification(credential))
+
     if (credential.proof.type === 'BbsBlsSignature2020') {
       if (!key) {
         throw new Error('You need to pass key (public) to be able to call this operation for bbs+ signature.')
@@ -175,14 +178,13 @@ export class LdCredentialModule {
         compactProof: false,
         checkStatus: checkStatus,
       })
-
+      console.log(JSON.stringify(result, null, 2))
       if (result.verified) return true
 
       // NOT verified.
 
       // result can include raw Error
       debug(`Error verifying LD Verifiable Credential: ${JSON.stringify(result, null, 2)}`)
-      console.log(JSON.stringify(result, null, 2))
       throw Error('Error verifying LD Verifiable Credential')
     }
   }
