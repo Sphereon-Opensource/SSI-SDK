@@ -1,5 +1,16 @@
 import { SignatureTypes, VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
-import {CredentialPayload, IAgentContext, IAgentPlugin, IIdentifier, IKey, IResolver, PresentationPayload, ProofType, VerifiableCredential, VerifiablePresentation} from '@veramo/core'
+import {
+  CredentialPayload,
+  IAgentContext,
+  IAgentPlugin,
+  IIdentifier,
+  IKey,
+  IResolver,
+  PresentationPayload,
+  ProofType,
+  VerifiableCredential,
+  VerifiablePresentation,
+} from '@veramo/core'
 import {
   _ExtendedIKey,
   extractIssuer,
@@ -12,12 +23,12 @@ import {
 } from '@veramo/utils'
 import Debug from 'debug'
 
-import {IBindingOverrides, schema} from '../index'
-import {LdContextLoader} from '../ld-context-loader'
-import {LdCredentialModule} from '../ld-credential-module'
-import {LdSuiteLoader} from '../ld-suite-loader'
-import {SphereonLdSignature} from '../ld-suites'
-import {ICredentialHandlerLDLocal, IRequiredContext} from '../types/ICredentialHandlerLDLocal'
+import { IBindingOverrides, schema } from '../index'
+import { LdContextLoader } from '../ld-context-loader'
+import { LdCredentialModule } from '../ld-credential-module'
+import { LdSuiteLoader } from '../ld-suite-loader'
+import { SphereonLdSignature } from '../ld-suites'
+import { ICredentialHandlerLDLocal, IRequiredContext } from '../types/ICredentialHandlerLDLocal'
 import {
   ContextDoc,
   ICreateVerifiableCredentialLDArgs,
@@ -183,14 +194,14 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyCredentialLDLocal} */
   public async verifyCredentialLDLocal(args: IVerifyCredentialLDArgs, context: IRequiredContext): Promise<boolean> {
     const credential = args.credential
-    const signingKey = await this.getSigningKeyFromCredentialForBbs(args.credential, context, args.keyRef);
+    const signingKey = await this.getSigningKeyFromCredentialForBbs(args.credential, context, args.keyRef)
     return this.ldCredentialModule.verifyCredential(credential, context, args.fetchRemoteContexts, args.purpose, signingKey, args.checkStatus)
   }
 
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyPresentationLDLocal} */
   public async verifyPresentationLDLocal(args: IVerifyPresentationLDArgs, context: IRequiredContext): Promise<boolean> {
     const presentation = args.presentation
-    const signingKey = await this.getSigningKeyFromPresentationForBbs(presentation, context, args.keyRef);
+    const signingKey = await this.getSigningKeyFromPresentationForBbs(presentation, context, args.keyRef)
     return this.ldCredentialModule.verifyPresentation(
       presentation,
       args.challenge,
@@ -204,30 +215,30 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   }
 
   private async getSigningKeyFromPresentationForBbs(presentation: VerifiablePresentation, context: IRequiredContext, keyRef?: string) {
-    const shouldGetKey = CredentialHandlerLDLocal.checkProofType(presentation.proof);
+    const shouldGetKey = CredentialHandlerLDLocal.checkProofType(presentation.proof)
     if (shouldGetKey) {
       let identifier: IIdentifier
       try {
-        let holderDid: string | undefined = undefined;
+        let holderDid: string | undefined = undefined
         if (presentation.holder) {
           holderDid = presentation.holder
         }
-        console.log("presentation:", holderDid)
+        console.log('presentation:', holderDid)
         if (!holderDid) {
-          throw new Error("holder did is not present")
+          throw new Error('holder did is not present')
         }
-        identifier = await context.agent.didManagerGet({did: holderDid})
+        identifier = await context.agent.didManagerGet({ did: holderDid })
       } catch (e) {
         throw new Error('invalid_argument: args.presentation.holder must be a DID managed by this agent')
       }
-      const {signingKey} = await this.findSigningKeyWithId(context, identifier, keyRef)
-      return signingKey;
+      const { signingKey } = await this.findSigningKeyWithId(context, identifier, keyRef)
+      return signingKey
     }
-    return undefined;
+    return undefined
   }
 
   private static checkProofType(proof: ProofType): boolean {
-    return  !!proof.type && proof.type === SignatureTypes.BbsBlsSignatureProof2020;
+    return !!proof.type && proof.type === SignatureTypes.BbsBlsSignatureProof2020
   }
 
   private async findSigningKeyWithId(
@@ -260,22 +271,22 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   }
 
   private async getSigningKeyFromCredentialForBbs(credential: VerifiableCredential, context: IRequiredContext, keyRef: string | undefined) {
-    const shouldGetKey = CredentialHandlerLDLocal.checkProofType(credential.proof);
+    const shouldGetKey = CredentialHandlerLDLocal.checkProofType(credential.proof)
     if (shouldGetKey) {
       let identifier: IIdentifier
       try {
         const holderDid = credential.credentialSubject.id
-        console.log("credential:", holderDid)
+        console.log('credential:', holderDid)
         if (!holderDid) {
-          throw new Error("holder did is not present")
+          throw new Error('holder did is not present')
         }
-        identifier = await context.agent.didManagerGet({did: holderDid})
+        identifier = await context.agent.didManagerGet({ did: holderDid })
       } catch (e) {
         throw new Error('invalid_argument: args.presentation.holder must be a DID managed by this agent')
       }
-      const {signingKey} = await this.findSigningKeyWithId(context, identifier, keyRef)
-      return signingKey;
+      const { signingKey } = await this.findSigningKeyWithId(context, identifier, keyRef)
+      return signingKey
     }
-    return undefined;
+    return undefined
   }
 }

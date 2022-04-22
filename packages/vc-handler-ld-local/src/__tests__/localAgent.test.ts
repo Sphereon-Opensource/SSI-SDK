@@ -8,8 +8,8 @@ import { SphereonEd25519Signature2018 } from '../suites/Ed25519Signature2018'
 import { SphereonEd25519Signature2020 } from '../suites/Ed25519Signature2020'
 
 import vcHandlerLocalAgentLogic from './shared/vcHandlerLocalAgentLogic'
-import vcHandlerLocalAgentBbsLogic from "./shared/vcHandlerLocalAgentBbsLogic";
-import {SphereonBbsBlsSignature2020} from "../suites";
+import vcHandlerLocalAgentBbsLogic from './shared/vcHandlerLocalAgentBbsLogic'
+import { SphereonBbsBlsSignature2020 } from '../suites'
 
 let agent: any
 

@@ -54,7 +54,7 @@ export class LdCredentialModule {
     context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiableCredentialSP> {
     console.log(`Issue VC method called for ${key.kid}...`)
-    console.log("CredentialPayload:", credential)
+    console.log('CredentialPayload:', credential)
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
     const documentLoader = this.ldDocumentLoader.getLoader(context, true)
 
@@ -111,7 +111,7 @@ export class LdCredentialModule {
         }),
     context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiablePresentationSP> {
-    console.log("PresentationPayload:", presentation)
+    console.log('PresentationPayload:', presentation)
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
     const documentLoader = this.ldDocumentLoader.getLoader(context, true)
     suite.preSigningPresModification(presentation)
@@ -238,23 +238,23 @@ export class LdCredentialModule {
     /**
      * BBS signature to generate the BBS proof from
      */
-    readonly signature: Uint8Array;
+    readonly signature: Uint8Array
     /**
      * Public key of the original signer of the signature
      */
-    readonly publicKey: Uint8Array;
+    readonly publicKey: Uint8Array
     /**
      * The messages that were originally signed
      */
-    readonly messages: readonly Uint8Array[];
+    readonly messages: readonly Uint8Array[]
     /**
      * The zero based indicies of which messages to reveal
      */
-    readonly revealed: readonly number[];
+    readonly revealed: readonly number[]
     /**
      * A nonce for the resulting proof
      */
-    readonly nonce: Uint8Array;
+    readonly nonce: Uint8Array
   }): Promise<Uint8Array> {
     return await blsCreateProof({
       signature: req.signature,
@@ -269,19 +269,19 @@ export class LdCredentialModule {
     /**
      * The BBS proof to verify
      */
-    readonly proof: Uint8Array;
+    readonly proof: Uint8Array
     /**
      * Public key of the signer of the proof to verify
      */
-    readonly publicKey: Uint8Array;
+    readonly publicKey: Uint8Array
     /**
      * Revealed messages to verify (TODO maybe rename this field??)
      */
-    readonly messages: readonly Uint8Array[];
+    readonly messages: readonly Uint8Array[]
     /**
      * Nonce included in the proof for the un-revealed attributes (OPTIONAL)
      */
-    readonly nonce: Uint8Array;
+    readonly nonce: Uint8Array
   }) {
     const result = await blsVerifyProof({
       proof: req.proof,

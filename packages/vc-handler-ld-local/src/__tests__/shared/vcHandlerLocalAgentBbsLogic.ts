@@ -17,7 +17,7 @@ import { LdDefaultContexts } from '../../ld-default-contexts'
 import { ICredentialHandlerLDLocal, MethodNames } from '../../types/ICredentialHandlerLDLocal'
 import { ControllerProofPurpose } from '../../types/types'
 import { boaExampleVC, ltoDIDResolutionResult } from '../mocks'
-import {SphereonBbsBlsSignature2020} from "../../suites";
+import { SphereonBbsBlsSignature2020 } from '../../suites'
 
 const LTO_DID = 'did:lto:3MsS3gqXkcx9m4wYSbfprYfjdZTFmx2ofdX'
 
@@ -114,7 +114,7 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
       }
 
       const verifiableCredential = await agent.createVerifiableCredentialLDLocal({ credential })
-      console.log("bbs verifiableCredential", verifiableCredential);
+      console.log('bbs verifiableCredential', verifiableCredential)
       expect(verifiableCredential).not.toBeNull()
 
       const verified = await agent.verifyCredentialLDLocal({
@@ -147,7 +147,7 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
         purpose: new ControllerProofPurpose({ term: 'verificationMethod' }),
       })
       expect(vp).toBeDefined()
-      console.log("bbs vp", vp);
+      console.log('bbs vp', vp)
       const vpVerification = await agent.verifyPresentationLDLocal({
         presentation: vp,
         // We are overriding the purpose since the DID in this test does not have an authentication proof purpose

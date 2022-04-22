@@ -5,9 +5,14 @@
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "veramo": {
+    "pluginInterfaces": {
+      "IBlsKeyManagementSystem ": "./src/types/IBlsKeyManagementSystem.ts"
+    }
+  },
   "scripts": {
-    "build": "tsc",
-    "extract-api": "yarn veramo dev extract-api"
+    "build": "tsc --build",
+    "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
   },
   "dependencies": {
     "@veramo/core": "3.1.1-next.26",
@@ -16,6 +21,9 @@
     "@mattrglobal/bbs-signatures": "^1.0.0"
   },
   "devDependencies": {
+    "@microsoft/api-documenter": "^7.14.1",
+    "@microsoft/api-extractor": "^7.19.4",
+    "@microsoft/api-extractor-model": "^7.15.3",
     "@types/jest": "^27.0.2",
     "@types/node": "^17.0.4",
     "@veramo/cli": "3.1.1-next.26",
@@ -26,6 +34,7 @@
   "files": [
     "dist/**/*",
     "src/**/*",
+    "plugin.schema.json",
     "README.md",
     "LICENSE"
   ],
