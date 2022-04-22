@@ -1,7 +1,6 @@
 import {
   TKeyType as VeramoTKeyType,
   IKey as VeramoIKey,
-  ManagedKeyInfo,
   MinimalImportableKey as VeramoMinimalImportableKey,
   IPluginMethodMap,
 } from '@veramo/core'
@@ -13,9 +12,9 @@ export type MinimalImportableKey = Omit<VeramoMinimalImportableKey, 'type'> & { 
 export type ManagedPrivateKey = Omit<VeramoManagedPrivateKey, 'type'> & { type: TKeyType }
 
 export interface IBlsKeyManagementSystem extends IPluginMethodMap {
-  importKey(args: Omit<MinimalImportableKey, 'kms'>): Promise<ManagedKeyInfo>
-  listKeys(): Promise<ManagedKeyInfo[]>
-  createKey({ type }: { type: TKeyType }): Promise<ManagedKeyInfo>
+  importKey(args: Omit<MinimalImportableKey, 'kms'>): Promise<Partial<IKey>>
+  listKeys(): Promise<Partial<IKey>[]>
+  createKey({ type }: { type: TKeyType }): Promise<Partial<IKey>>
   deleteKey(args: { kid: string }): Promise<boolean>
   sign({ keyRef, data }: { keyRef: Pick<IKey, 'kid'>; data: Uint8Array[] }): Promise<string>
 }

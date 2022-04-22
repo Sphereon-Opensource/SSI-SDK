@@ -1,13 +1,13 @@
-import { ManagedKeyInfo, IAgentPlugin } from '@veramo/core'
-import { generateBls12381G2KeyPair, blsSign } from '@mattrglobal/bbs-signatures'
-import { schema, IBlsKeyManagementSystem } from '../index'
+import {IAgentPlugin} from '@veramo/core'
+import {blsSign, generateBls12381G2KeyPair} from '@mattrglobal/bbs-signatures'
+import {IBlsKeyManagementSystem, schema} from '../index'
 
-import { extractPublicKeyFromSecretKey } from '@stablelib/ed25519'
+import {extractPublicKeyFromSecretKey} from '@stablelib/ed25519'
 import * as u8a from 'uint8arrays'
 import Debug from 'debug'
 
-import { AbstractKeyStore } from '../types/abstract-key-store'
-import { IKey, ImportableKey, MinimalImportableKey, TKeyType } from '../types/IIdentifier'
+import {AbstractKeyStore} from '../types/abstract-key-store'
+import {IKey, ImportableKey, MinimalImportableKey, TKeyType} from '../types/IIdentifier'
 
 const debug = Debug('veramo:kms:bls:local')
 
@@ -27,24 +27,23 @@ export class BlsKeyManagementSystem implements IAgentPlugin {
     this.keyStore = keyStore
   }
 
-  async importKey(args: Omit<MinimalImportableKey, 'kms'>): Promise<ManagedKeyInfo> {
+  async importKey(args: Omit<MinimalImportableKey, 'kms'>): Promise<Partial<IKey>> {
     if (!args.type || !args.privateKeyHex || !args.publicKeyHex) {
       throw new Error('invalid_argument: type, publicKeyHex and privateKeyHex are required to import a key')
     }
-    const managedKey = this.asManagedKeyInfo({ alias: args.kid, ...args })
+    const ikey = this.asManagedKeyInfo({ alias: args.kid, ...args })
     await this.keyStore.import(args)
-    debug('imported key', managedKey.type, managedKey.publicKeyHex)
-    return managedKey
+    debug('imported key', ikey.type, ikey.publicKeyHex)
+    return ikey
   }
 
-  async listKeys(): Promise<ManagedKeyInfo[]> {
+  async listKeys(): Promise<Partial<IKey>[]> {
     const keys = await this.keyStore.list({})
-    const managedKeys = keys.map((key) => this.asManagedKeyInfo(key as ImportableKey))
-    return managedKeys
+    return keys.map((key) => this.asManagedKeyInfo(key as ImportableKey))
   }
 
-  async createKey({ type }: { type: TKeyType }): Promise<ManagedKeyInfo> {
-    let key: ManagedKeyInfo
+  async createKey({ type }: { type: TKeyType }): Promise<Partial<IKey>> {
+    let key: Partial<IKey>
 
     switch (type) {
       case 'BLS': {
@@ -94,7 +93,7 @@ export class BlsKeyManagementSystem implements IAgentPlugin {
   /**
    * Converts a {@link ManagedPrivateKey} to {@link ManagedKeyInfo}
    */
-  private asManagedKeyInfo(arg: ImportableKey): ManagedKeyInfo {
+  private asManagedKeyInfo(arg: ImportableKey): Partial<IKey> {
     let key: Partial<IKey>
     switch (arg.type) {
       case 'BLS': {
@@ -113,6 +112,6 @@ export class BlsKeyManagementSystem implements IAgentPlugin {
       default:
         throw Error('not_supported: Key type not supported: ' + arg.type)
     }
-    return key as ManagedKeyInfo
+    return key
   }
 }
