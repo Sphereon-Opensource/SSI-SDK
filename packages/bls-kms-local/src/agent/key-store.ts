@@ -8,9 +8,7 @@ import { IKey, ManagedKeyInfo } from '../types/IIdentifier'
 const debug = Debug('veramo:typeorm:key-store')
 
 export class KeyStore implements AbstractKeyStore {
-  constructor(private dbConnection: Promise<Connection>) {
-    //super()
-  }
+  constructor(private dbConnection: Promise<Connection>) {}
 
   async get({ kid }: { kid: string }): Promise<IKey> {
     const key = await (await this.dbConnection).getRepository(Key).findOne(kid)

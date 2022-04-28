@@ -1,5 +1,5 @@
 {
-  "name": "@sphereon/ssi-sdk-bls-kms-local",
+  "name": "@sphereon/ssi-sdk-bls-key-manager",
   "description": "Sphereon KMS implementation that provides BLS crypto",
   "version": "0.5.0",
   "source": "src/index.ts",
@@ -7,7 +7,7 @@
   "types": "dist/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
-      "IBlsKeyManagementSystem ": "./src/types/IBlsKeyManagementSystem.ts"
+      "IBlsKeyManager": "./src/types/IBlsKeyManager.ts"
     }
   },
   "scripts": {
