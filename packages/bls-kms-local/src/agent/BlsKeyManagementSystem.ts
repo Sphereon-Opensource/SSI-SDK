@@ -76,12 +76,12 @@ export class BlsKeyManagementSystem implements IBlsKeyManagementSystem {
       return Buffer.from(
         await blsSign({
           keyPair: {
-            secretKey: Uint8Array.from(Buffer.from(managedKey.privateKeyHex)),
-            publicKey: Uint8Array.from(Buffer.from(managedKey.publicKeyHex)),
+            secretKey: Uint8Array.from(Buffer.from(managedKey.privateKeyHex, "hex")),
+            publicKey: Uint8Array.from(Buffer.from(managedKey.publicKeyHex, "hex")),
           },
           messages: data,
         })
-      ).toString()
+      ).toString("hex");
     }
     throw Error(`not_supported: Cannot sign using key of type ${managedKey.type}`)
   }
