@@ -2,11 +2,11 @@ import { IPluginMethodMap } from '@veramo/core';
 import {IKey, KeyMetadata, MinimalImportableKey, TKeyType} from "./IIdentifier";
 
 export interface IBlsKeyManager extends IPluginMethodMap {
-    keyManagerCreate(args: IKeyManagerCreateArgs): Promise<Partial<IKey>>;
+    keyManagerCreate(args: IKeyManagerCreateArgs): Promise<BBSKey>;
     keyManagerGetKeyManagementSystems(): Promise<Array<string>>;
     keyManagerGet({ kid }: IKeyManagerGetArgs): Promise<IKey>;
     keyManagerDelete({ kid }: IKeyManagerDeleteArgs): Promise<boolean>;
-    keyManagerImport(key: MinimalImportableKey): Promise<Partial<IKey>>;
+    keyManagerImport(key: MinimalImportableKey): Promise<BBSKey>;
     keyManagerSign(args: IKeyManagerSignArgs): Promise<string>;
 }
 
@@ -68,3 +68,5 @@ export interface IKeyManagerSignArgs {
      */
     data: Uint8Array[]
 }
+
+export type BBSKey = Partial<IKey>

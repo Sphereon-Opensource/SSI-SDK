@@ -1,4 +1,4 @@
-import { blsSign } from '@mattrglobal/bbs-signatures'
+import { blsSign } from '@mattrglobal/node-bbs-signatures'
 import { Bls12381G2KeyPair, BbsBlsSignature2020 as MattrBbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
 import { IKey, TKeyType as VeramoTKeyType, VerifiableCredential } from '@veramo/core'
 import { asArray } from '@veramo/utils'

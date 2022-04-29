@@ -1,4 +1,4 @@
-import {blsSign, generateBls12381G2KeyPair} from '@mattrglobal/bbs-signatures'
+import {blsSign, generateBls12381G2KeyPair} from '@mattrglobal/node-bbs-signatures'
 import Debug from 'debug'
 
 import {IKey, ImportableKey, ManagedKey, MinimalImportableKey, TKeyType} from '../types/IIdentifier'

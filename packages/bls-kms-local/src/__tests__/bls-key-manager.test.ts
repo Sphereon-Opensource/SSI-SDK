@@ -1,4 +1,4 @@
-import { generateBls12381G2KeyPair} from '@mattrglobal/bbs-signatures';
+import { generateBls12381G2KeyPair} from '@mattrglobal/node-bbs-signatures';
 import {BlsKeyManager} from "../agent/BlsKeyManager";
 import {MemoryKeyStore, MemoryPrivateKeyStore} from "../agent/memory-key-store";
 import {BlsKeyManagementSystem} from "../agent/BlsKeyManagementSystem";
