@@ -1,5 +1,5 @@
 import { AbstractKeyStore } from '../types/abstract-key-store'
-import { schema } from "../index";
+import {IKeyManagerVerifyArgs, schema} from "../index";
 import {
     IAgentPlugin
 } from '@veramo/core'
@@ -31,6 +31,7 @@ export class BlsKeyManager implements IAgentPlugin {
             keyManagerDelete: this.keyManagerDelete.bind(this),
             keyManagerImport: this.keyManagerImport.bind(this),
             keyManagerSign: this.keyManagerSign.bind(this),
+            keyManagerVerify: this.keyManagerVerify.bind(this)
         }
     }
 
@@ -84,5 +85,10 @@ export class BlsKeyManager implements IAgentPlugin {
         const keyInfo: IKey = await this.store.get({ kid: args.keyRef })
         const kms = this.getKms(keyInfo.kms)
         return kms.sign({ keyRef: keyInfo, data: args.data })
+    }
+
+    async keyManagerVerify(args: IKeyManagerVerifyArgs): Promise<boolean> {
+        const kms = this.getKms(args.kms);
+        return kms.verify(args);
     }
 }

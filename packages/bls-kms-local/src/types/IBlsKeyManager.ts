@@ -8,6 +8,7 @@ export interface IBlsKeyManager extends IPluginMethodMap {
     keyManagerDelete({ kid }: IKeyManagerDeleteArgs): Promise<boolean>;
     keyManagerImport(key: MinimalImportableKey): Promise<BBSKey>;
     keyManagerSign(args: IKeyManagerSignArgs): Promise<string>;
+    keyManagerVerify(args: IKeyManagerVerifyArgs): Promise<boolean>;
 }
 
 /**
@@ -67,6 +68,13 @@ export interface IKeyManagerSignArgs {
      * Data to sign
      */
     data: Uint8Array[]
+}
+
+export interface IKeyManagerVerifyArgs {
+    kms: string,
+    publicKey: Uint8Array,
+    messages: Uint8Array[],
+    signature: Uint8Array
 }
 
 export type BBSKey = Partial<IKey>

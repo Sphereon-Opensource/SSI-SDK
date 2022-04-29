@@ -1,4 +1,4 @@
-import { generateBls12381G2KeyPair, blsVerify } from '@mattrglobal/node-bbs-signatures';
+import { generateBls12381G2KeyPair } from '@mattrglobal/node-bbs-signatures';
 import {BlsKeyManager} from "../agent/BlsKeyManager";
 import {MemoryKeyStore, MemoryPrivateKeyStore} from "../agent/memory-key-store";
 import {BlsKeyManagementSystem} from "../agent/BlsKeyManagementSystem";
@@ -70,17 +70,20 @@ describe('@sphereon/ssi-sdk-bls-kms-local', () => {
                 Uint8Array.from(Buffer.from("test data"))
             ]
         });
-        await expect(blsVerify({
+        await expect(kms.keyManagerVerify({
+            kms: "local",
             publicKey: bls.publicKey,
             messages: [Uint8Array.from(Buffer.from("test data"))],
             signature: Uint8Array.from(Buffer.from(signature, "hex"))
-        })).resolves.toEqual({
-            verified: true
-        });
+        })).resolves.toBe(true);
 
     })
 
     it("should delete a bls key", async() => {
         await expect(kms.keyManagerDelete({ kid: Buffer.from(bls.publicKey).toString('hex') })).resolves.toBeTruthy();
+    })
+
+    afterAll(async() => {
+        await new Promise((resolve) => setTimeout((v: void) => resolve(v), 500))
     })
 })

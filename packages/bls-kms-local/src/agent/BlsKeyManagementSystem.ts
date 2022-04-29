@@ -1,4 +1,4 @@
-import {blsSign, generateBls12381G2KeyPair} from '@mattrglobal/node-bbs-signatures'
+import {blsSign, blsVerify, generateBls12381G2KeyPair} from '@mattrglobal/node-bbs-signatures'
 import Debug from 'debug'
 
 import {IKey, ImportableKey, ManagedKey, MinimalImportableKey, TKeyType} from '../types/IIdentifier'
@@ -15,6 +15,7 @@ export class BlsKeyManagementSystem implements IBlsKeyManagementSystem {
     createKey: this.createKey.bind(this),
     deleteKey: this.deleteKey.bind(this),
     sign: this.sign.bind(this),
+    verify: this.verify.bind(this)
   }
 
   private readonly keyStore: AbstractPrivateKeyStore
@@ -107,5 +108,9 @@ export class BlsKeyManagementSystem implements IBlsKeyManagementSystem {
         throw Error('not_supported: Key type not supported: ' + arg.type)
     }
     return key
+  }
+
+  public async verify(args: { publicKey: Uint8Array, messages: Uint8Array[], signature: Uint8Array }): Promise<boolean> {
+    return (await blsVerify(args)).verified;
   }
 }

@@ -244,6 +244,152 @@
             "data"
           ],
           "description": "Input arguments for  {@link  IBlsKeyManager.keyManagerSign | keyManagerSign }"
+        },
+        "IKeyManagerVerifyArgs": {
+          "type": "object",
+          "properties": {
+            "kms": {
+              "type": "string"
+            },
+            "publicKey": {
+              "type": "object",
+              "properties": {
+                "BYTES_PER_ELEMENT": {
+                  "type": "number"
+                },
+                "buffer": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "byteLength": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "byteLength"
+                      ]
+                    },
+                    {}
+                  ]
+                },
+                "byteLength": {
+                  "type": "number"
+                },
+                "byteOffset": {
+                  "type": "number"
+                },
+                "length": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "BYTES_PER_ELEMENT",
+                "buffer",
+                "byteLength",
+                "byteOffset",
+                "length"
+              ],
+              "additionalProperties": {
+                "type": "number"
+              }
+            },
+            "messages": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "BYTES_PER_ELEMENT": {
+                    "type": "number"
+                  },
+                  "buffer": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "byteLength": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "byteLength"
+                        ]
+                      },
+                      {}
+                    ]
+                  },
+                  "byteLength": {
+                    "type": "number"
+                  },
+                  "byteOffset": {
+                    "type": "number"
+                  },
+                  "length": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "BYTES_PER_ELEMENT",
+                  "buffer",
+                  "byteLength",
+                  "byteOffset",
+                  "length"
+                ],
+                "additionalProperties": {
+                  "type": "number"
+                }
+              }
+            },
+            "signature": {
+              "type": "object",
+              "properties": {
+                "BYTES_PER_ELEMENT": {
+                  "type": "number"
+                },
+                "buffer": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "byteLength": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "byteLength"
+                      ]
+                    },
+                    {}
+                  ]
+                },
+                "byteLength": {
+                  "type": "number"
+                },
+                "byteOffset": {
+                  "type": "number"
+                },
+                "length": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "BYTES_PER_ELEMENT",
+                "buffer",
+                "byteLength",
+                "byteOffset",
+                "length"
+              ],
+              "additionalProperties": {
+                "type": "number"
+              }
+            }
+          },
+          "required": [
+            "kms",
+            "publicKey",
+            "messages",
+            "signature"
+          ]
         }
       },
       "methods": {
@@ -302,6 +448,15 @@
           },
           "returnType": {
             "type": "string"
+          }
+        },
+        "keyManagerVerify": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IKeyManagerVerifyArgs"
+          },
+          "returnType": {
+            "type": "boolean"
           }
         }
       }
