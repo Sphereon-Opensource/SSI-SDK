@@ -20,8 +20,7 @@ export class LdSuiteLoader {
     const suite = verificationType && this.signatureMap[verificationType] ? this.signatureMap[verificationType] : this.signatureMap[type]
     if (suite) return suite
 
-    console.log('Sphereon or Veramo LD Signature Suite for ', type + ':', JSON.stringify(this.signatureMap))
-    throw new Error('No Sphereon or Veramo LD Signature Suite for ' + type + ':' + JSON.stringify(this.signatureMap))
+    throw new Error('No Sphereon or Veramo LD Signature Suite for ' + type)
   }
 
   getAllSignatureSuites(): SphereonLdSignature[] {

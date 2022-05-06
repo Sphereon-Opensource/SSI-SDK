@@ -1,8 +1,8 @@
-import { generateBls12381G2KeyPair } from '@mattrglobal/node-bbs-signatures';
+import {generateBls12381G2KeyPair} from '@mattrglobal/node-bbs-signatures';
 import {BlsKeyManager} from "../agent/BlsKeyManager";
-import {MemoryKeyStore, MemoryPrivateKeyStore} from "../agent/memory-key-store";
+import {MemoryKeyStore, MemoryPrivateKeyStore} from '@veramo/key-manager'
+import {IKey} from "@veramo/core";
 import {BlsKeyManagementSystem} from "../agent/BlsKeyManagementSystem";
-import {IKey, TKeyType} from "../types/IIdentifier";
 
 describe('@sphereon/ssi-sdk-bls-kms-local', () => {
     let bls: { publicKey: Uint8Array, secretKey: Uint8Array };
@@ -12,14 +12,13 @@ describe('@sphereon/ssi-sdk-bls-kms-local', () => {
         bls = await generateBls12381G2KeyPair();
         kms = new BlsKeyManager({ store: new MemoryKeyStore(),
             kms: {
-                local: new BlsKeyManagementSystem
-(new MemoryPrivateKeyStore()),
+                local: new BlsKeyManagementSystem(new MemoryPrivateKeyStore())
             }});
     })
 
     it('should import a BLS key', async () => {
         const myKey = {
-            type: <TKeyType> 'BLS',
+            type: 'Bls12381G2',
             privateKeyHex: Buffer.from(bls.secretKey).toString('hex'),
             publicKeyHex: Buffer.from(bls.publicKey).toString('hex')
         }
@@ -28,7 +27,7 @@ describe('@sphereon/ssi-sdk-bls-kms-local', () => {
             privateKeyHex: myKey.privateKeyHex,
             publicKeyHex: myKey.publicKeyHex,
             kms: 'local',
-            type: 'BLS'
+            type: 'Bls12381G2'
         })
         expect(key).toEqual({
             kid: myKey.publicKeyHex,
@@ -37,7 +36,7 @@ describe('@sphereon/ssi-sdk-bls-kms-local', () => {
               algorithms: ['BLS']
             },
             publicKeyHex: myKey.publicKeyHex,
-            type: 'BLS'
+            type: 'Bls12381G2'
         });
     })
 
@@ -52,10 +51,10 @@ describe('@sphereon/ssi-sdk-bls-kms-local', () => {
     it("should create a BLS key", async () => {
         await expect(kms.keyManagerCreate({
             kms: "local",
-            type: "BLS"
+            type: "Bls12381G2"
         })).resolves.toEqual(expect.objectContaining({
             kms: "local",
-            type: "BLS",
+            type: "Bls12381G2",
             meta: {
                 algorithms: ['BLS']
             }
@@ -64,19 +63,12 @@ describe('@sphereon/ssi-sdk-bls-kms-local', () => {
 
     it("should sign with a BLS key", async() => {
         const key: IKey = await kms.keyManagerGet({ kid: Buffer.from(bls.publicKey).toString('hex') }) as IKey;
-        const signature = await kms.keyManagerSign({
+        await expect(kms.keyManagerSign({
             keyRef: key.kid,
             data: [
-                Uint8Array.from(Buffer.from("test data"))
+                "test data"
             ]
-        });
-        await expect(kms.keyManagerVerify({
-            kms: "local",
-            publicKey: bls.publicKey,
-            messages: [Uint8Array.from(Buffer.from("test data"))],
-            signature: Uint8Array.from(Buffer.from(signature, "hex"))
-        })).resolves.toBe(true);
-
+        })).resolves.toBeDefined();
     })
 
     it("should delete a bls key", async() => {

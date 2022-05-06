@@ -30,4 +30,8 @@ export const LdDefaultContexts = new Map([
   ['https://w3id.org/security/suites/ed25519-2020/v1', _read('ed25519-signature-2020-v1.jsonld')],
   ['https://w3id.org/security/suites/x25519-2019/v1', _read('X25519KeyAgreementKey2019.jsonld')],
   ['https://w3id.org/vc-revocation-list-2020/v1', _read('vc-revocation-list-2020-v1.jsonld')],
+  ['https://w3id.org/security/bbs/v1', _read('bbs-bls-signature-2020-v1.jsonld')],
+  ['https://www.w3.org/2018/credentials/examples/v1', _read('w3_2018_credentials_examples_v1.jsonld')],
+  ['https://www.w3.org/ns/odrl.jsonld', _read('odrl.jsonld')],
+  ['https://w3id.org/security/bbs/v1', _read('security_bbs_v1.jsonld')],
 ])

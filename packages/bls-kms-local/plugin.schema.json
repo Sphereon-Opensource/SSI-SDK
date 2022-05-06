@@ -26,7 +26,14 @@
         },
         "TKeyType": {
           "type": "string",
-          "const": "BLS"
+          "enum": [
+            "Ed25519",
+            "Secp256k1",
+            "X25519",
+            "Bls12381G1",
+            "Bls12381G2"
+          ],
+          "description": "Cryptographic key type"
         },
         "KeyMetadata": {
           "type": "object",
@@ -145,9 +152,10 @@
           "description": "Cryptographic key"
         },
         "MinimalImportableKey": {
-          "$ref": "#/components/schemas/RequireOnly<IKey,(\"privateKeyHex\"|\"publicKeyHex\"|\"type\"|\"kms\")>"
+          "$ref": "#/components/schemas/RequireOnly<IKey,(\"privateKeyHex\"|\"type\"|\"kms\")>",
+          "description": "Represents the properties required to import a key."
         },
-        "RequireOnly<IKey,(\"privateKeyHex\"|\"publicKeyHex\"|\"type\"|\"kms\")>": {
+        "RequireOnly<IKey,(\"privateKeyHex\"|\"type\"|\"kms\")>": {
           "type": "object",
           "properties": {
             "kid": {

@@ -1,51 +1,41 @@
-import {blsSign, blsVerify, generateBls12381G2KeyPair} from '@mattrglobal/node-bbs-signatures'
+import {blsSign, generateBls12381G2KeyPair} from '@mattrglobal/node-bbs-signatures'
 import Debug from 'debug'
 
-import {IKey, ImportableKey, ManagedKey, MinimalImportableKey, TKeyType} from '../types/IIdentifier'
-import {AbstractPrivateKeyStore} from "../types/abstract-private-key-store";
-import {IBlsKeyManagementSystem} from "../types/IBlsKeyManagementSystem";
+import {IKey, ManagedKeyInfo, MinimalImportableKey, TKeyType} from '@veramo/core'
+import {AbstractPrivateKeyStore, ManagedPrivateKey} from "@veramo/key-manager";
+import {KeyManagementSystem} from "@veramo/kms-local"
 
 const debug = Debug('veramo:kms:bls:local')
 
-export class BlsKeyManagementSystem implements IBlsKeyManagementSystem {
+export class BlsKeyManagementSystem extends KeyManagementSystem {
 
-  readonly methods: IBlsKeyManagementSystem = {
-    importKey: this.importKey.bind(this),
-    listKeys: this.listKeys.bind(this),
-    createKey: this.createKey.bind(this),
-    deleteKey: this.deleteKey.bind(this),
-    sign: this.sign.bind(this),
-    verify: this.verify.bind(this)
-  }
-
-  private readonly keyStore: AbstractPrivateKeyStore
+  private readonly privateKeyStore: AbstractPrivateKeyStore;
 
   constructor(keyStore: AbstractPrivateKeyStore) {
-    this.keyStore = keyStore
+    super(keyStore);
+    this.privateKeyStore = keyStore;
   }
 
-  async importKey(args: Omit<MinimalImportableKey, 'kms'>): Promise<Partial<IKey>> {
+  async importKey(args: Exclude<MinimalImportableKey, 'kms'>): Promise<ManagedKeyInfo> {
     if (!args.type || !args.privateKeyHex || !args.publicKeyHex) {
       throw new Error('invalid_argument: type, publicKeyHex and privateKeyHex are required to import a key')
     }
-    const ikey = this.asPartialKey({ alias: args.kid, ...args })
-    await this.keyStore.import({ alias: ikey.kid, ...args })
-    debug('imported key', ikey.type, ikey.publicKeyHex)
-    return ikey
+    if (args.type === <TKeyType>'Bls12381G2') {
+      const managedKey = this.asBlsManagedKeyInfo({ alias: args.kid, privateKeyHex: args.privateKeyHex, publicKeyHex: args.publicKeyHex, type: args.type });
+      await this.privateKeyStore.import({alias: managedKey.kid, ...args})
+      debug('imported key', managedKey.type, managedKey.publicKeyHex)
+      return managedKey
+    }
+    return super.importKey(args) as Promise<ManagedKeyInfo>
   }
 
-  async listKeys(): Promise<Partial<IKey>[]> {
-    const keys = await this.keyStore.list({})
-    return keys.map((key) => this.asPartialKey(key as ImportableKey))
-  }
-
-  async createKey({ type }: { type: TKeyType }): Promise<Partial<IKey>> {
-    let key: Partial<IKey>
-
+  async createKey({ type }: { type: TKeyType }): Promise<ManagedKeyInfo> {
+    let key: ManagedKeyInfo
     switch (type) {
-      case 'BLS': {
+      case <TKeyType>'Bls12381G2': {
         const keyPairBls12381G2 = await generateBls12381G2KeyPair()
         key = await this.importKey({
+          kms: 'local',
           type,
           privateKeyHex: Buffer.from(keyPairBls12381G2.secretKey).toString("hex"),
           publicKeyHex: Buffer.from(keyPairBls12381G2.publicKey).toString("hex"),
@@ -61,56 +51,47 @@ export class BlsKeyManagementSystem implements IBlsKeyManagementSystem {
     return key
   }
 
-  async deleteKey(args: { alias: string }) {
-    return await this.keyStore.delete({ alias: args.alias })
-  }
-
-  async sign({ keyRef, data }: { keyRef: Pick<IKey, 'kid'>; data: Uint8Array[] }): Promise<string> {
-    let managedKey: ManagedKey
+  async sign({ keyRef, algorithm, data }: { keyRef: Pick<IKey, 'kid'>; algorithm?: string; data: Uint8Array | Uint8Array[] }): Promise<string> {
+    let privateKey: ManagedPrivateKey
     try {
-      managedKey = await this.keyStore.get({ alias: keyRef.kid })
+      privateKey = await this.privateKeyStore.get({ alias: keyRef.kid })
     } catch (e) {
       throw new Error(`key_not_found: No key entry found for kid=${keyRef.kid}`)
     }
 
-    if (managedKey.type === 'BLS') {
+    if (privateKey.type !== <TKeyType>'Bls12381G2' && !Array.isArray(data)) {
+      return await super.sign({keyRef, algorithm, data})
+    } else if (privateKey.type === <TKeyType>'Bls12381G2') {
+      const keyPair = {
+        keyPair: {
+          secretKey: Uint8Array.from(Buffer.from(privateKey.privateKeyHex, "hex")),
+          publicKey: Uint8Array.from(Buffer.from(keyRef.kid, "hex")),
+        },
+        messages: Array.isArray(data)? data: [data] ,
+      }
       return Buffer.from(
-        await blsSign({
-          keyPair: {
-            secretKey: Uint8Array.from(Buffer.from(managedKey.privateKeyHex, "hex")),
-            publicKey: Uint8Array.from(Buffer.from(managedKey.publicKeyHex, "hex")),
-          },
-          messages: data,
-        })
+        await blsSign(keyPair)
       ).toString("hex");
     }
-    throw Error(`not_supported: Cannot sign using key of type ${managedKey.type}`)
+    throw Error(`not_supported: Cannot sign using key of type ${privateKey.type}`)
   }
 
-  /**
-   * Converts a {@link ImportableKey} to {@link PartialKey}
-   */
-  private asPartialKey(arg: ImportableKey): Partial<IKey> {
-    let key: Partial<IKey>
-    switch (arg.type) {
-      case 'BLS': {
+  private asBlsManagedKeyInfo(args: { alias?: string, type: TKeyType, privateKeyHex: string, publicKeyHex: string }): ManagedKeyInfo {
+    let key: Partial<ManagedKeyInfo>
+    switch (args.type) {
+      case <TKeyType>'Bls12381G2':
         key = {
-          type: arg.type,
-          kid:  arg.alias || arg.publicKeyHex,
-          publicKeyHex: arg.publicKeyHex,
+          type: args.type,
+          kid:  args.alias || args.publicKeyHex,
+          publicKeyHex: args.publicKeyHex,
           meta: {
             algorithms: ['BLS'],
           },
         }
         break
-      }
       default:
-        throw Error('not_supported: Key type not supported: ' + arg.type)
+        throw Error('not_supported: Key type not supported: ' + args.type)
     }
-    return key
-  }
-
-  public async verify(args: { publicKey: Uint8Array, messages: Uint8Array[], signature: Uint8Array }): Promise<boolean> {
-    return (await blsVerify(args)).verified;
+    return key as ManagedKeyInfo
   }
 }

@@ -1,13 +1,11 @@
 import { blsSign } from '@mattrglobal/node-bbs-signatures'
 import { Bls12381G2KeyPair, BbsBlsSignature2020 as MattrBbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
-import { IKey, TKeyType as VeramoTKeyType, VerifiableCredential } from '@veramo/core'
+import { IKey, TKeyType, VerifiableCredential } from '@veramo/core'
 import { asArray } from '@veramo/utils'
 import suiteContext2020 from 'ed25519-signature-2020-context'
 import * as u8a from 'uint8arrays'
 
 import { SphereonLdSignature } from '../ld-suites'
-
-export type TKeyType = VeramoTKeyType | 'Bls12381G2'
 
 export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
   constructor() {
@@ -20,7 +18,7 @@ export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
     return 'Bls12381G2Key2020'
   }
 
-  getSupportedVeramoKeyType(): TKeyType {
+  getSupportedVeramoKeyType(): TKeyType | 'Bls12381G2' {
     return 'Bls12381G2'
   }
 

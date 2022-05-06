@@ -1,16 +1,6 @@
-import { SignatureTypes, VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
-import {
-  CredentialPayload,
-  IAgentContext,
-  IAgentPlugin,
-  IIdentifier,
-  IKey,
-  IResolver,
-  PresentationPayload,
-  ProofType,
-  VerifiableCredential,
-  VerifiablePresentation,
-} from '@veramo/core'
+import { hexToMultibase, VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
+import { CredentialPayload, IAgentContext, IAgentPlugin, IIdentifier, IKey, IResolver, PresentationPayload } from '@veramo/core'
+import { AbstractPrivateKeyStore } from '@veramo/key-manager';
 import {
   _ExtendedIKey,
   extractIssuer,
@@ -36,6 +26,10 @@ import {
   IVerifyCredentialLDArgs,
   IVerifyPresentationLDArgs,
 } from '../types/types'
+import { extendContextLoader, purposes, sign } from '@digitalcredentials/jsonld-signatures'
+import { BbsBlsSignature2020, Bls12381G2KeyPair } from '@mattrglobal/jsonld-signatures-bbs'
+import { MultibaseFormat } from '@sphereon/ssi-sdk-core/dist/utils/encoding'
+import { LdDefaultContexts } from '../ld-default-contexts'
 
 const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 
@@ -56,9 +50,11 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     createVerifiablePresentationLDLocal: this.createVerifiablePresentationLDLocal.bind(this),
     verifyPresentationLDLocal: this.verifyPresentationLDLocal.bind(this),
     verifyCredentialLDLocal: this.verifyCredentialLDLocal.bind(this),
+    createBBSVerifiableCredentialLD: this.createBBSVerifiableCredentialLD.bind(this),
   }
-
-  constructor(options: { contextMaps: RecordLike<OrPromise<ContextDoc>>[]; suites: SphereonLdSignature[]; bindingOverrides?: IBindingOverrides }) {
+  private keyStore?: AbstractPrivateKeyStore;
+  constructor(options: { contextMaps: RecordLike<OrPromise<ContextDoc>>[]; suites: SphereonLdSignature[]; bindingOverrides?: IBindingOverrides, keyStore?: AbstractPrivateKeyStore }) {
+    this.keyStore = options.keyStore;
     this.ldCredentialModule = new LdCredentialModule({
       ldContextLoader: new LdContextLoader({ contextsPaths: options.contextMaps }),
       ldSuiteLoader: new LdSuiteLoader({ ldSignatureSuites: options.suites }),
@@ -76,6 +72,98 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       }
       debug(`binding: this.${bindingName}() -> CredentialHandlerLDLocal.${methodName}()`)
     })
+  }
+
+  private customDocLoader = async (url: string) => {
+    const context = await LdDefaultContexts.get(url)
+    if (context) {
+      return {
+        contextUrl: null,
+        document: context,
+        documentUrl: url,
+      }
+    }
+    throw new Error(`Error attempted to load document remotely, please cache '${url}'`)
+  }
+  private customLoader = extendContextLoader(this.customDocLoader)
+
+  public async createBBSVerifiableCredentialLD(args: ICreateVerifiableCredentialLDArgs, context: IRequiredContext): Promise<VerifiableCredentialSP> {
+    debug('Entry of createVerifiableCredentialLDLocal')
+    const credentialContext = processEntryToArray(args?.credential?.['@context'], MANDATORY_CREDENTIAL_CONTEXT)
+    const credentialType = processEntryToArray(args?.credential?.type, 'VerifiableCredential')
+    let issuanceDate = args?.credential?.issuanceDate || new Date().toISOString()
+    if (issuanceDate instanceof Date) {
+      issuanceDate = issuanceDate.toISOString()
+    }
+    const credential: CredentialPayload = {
+      ...args?.credential,
+      '@context': credentialContext,
+      type: credentialType,
+      issuanceDate,
+    }
+    //fixme: Potential PII leak
+    debug(JSON.stringify(credential))
+
+    const issuer = extractIssuer(credential)
+    if (!issuer || typeof issuer === 'undefined') {
+      throw new Error('invalid_argument: args.credential.issuer must not be empty')
+    }
+    try {
+      // @ts-ignore
+      function _includesContext(args: { document: any; contextUrl: string }) {
+        const context = args.document['@context']
+        return context === args.contextUrl || (Array.isArray(context) && context.includes(args.contextUrl))
+      }
+      const c = this.customLoader
+      const key = await this.keyStore?.get({ alias: args.keyRef as string})
+      if (!key) {
+        throw new Error('Key not found')
+      }
+        const publicKey = args.keyRef as string;
+        const keyPair = new Bls12381G2KeyPair({
+          publicKeyBase58: hexToMultibase(publicKey, MultibaseFormat.BASE58).value.substring(1),
+          privateKeyBase58: hexToMultibase(key.privateKeyHex, MultibaseFormat.BASE58).value.substring(1),
+        })
+        //@ts-ignore
+        BbsBlsSignature2020.prototype['ensureSuiteContext'] = function (args: { document: any; addSuiteContext: boolean }): void {
+          const contextUrl = 'https://w3id.org/security/bbs/v1'
+          const document = args.document
+
+          if (_includesContext({document, contextUrl})) {
+            // document already includes the required context
+            return
+          }
+
+          if (!args.addSuiteContext) {
+            throw new TypeError(`The document to be signed must contain this suite's @context, ` + `"${contextUrl}".`)
+          }
+
+          // enforce the suite's context by adding it to the document
+          //@ts-ignore
+          const existingContext = document['@context'] || []
+          //@ts-ignore
+          document['@context'] = Array.isArray(existingContext) ? [...existingContext, contextUrl] : [existingContext, contextUrl]
+        }
+
+        //Verification method needs a valid did#publicKey
+        const suite = new BbsBlsSignature2020({
+          key: keyPair,
+          verificationMethod: `${args.credential.issuer}#${keyPair.publicKey}`
+        })
+        const singleSigned = sign(credential, {
+          suite,
+          purpose: new purposes.AssertionProofPurpose(),
+          documentLoader: c,
+        })
+        return sign(singleSigned, {
+          suite,
+          purpose: new purposes.AssertionProofPurpose(),
+          documentLoader: c,
+        })
+    } catch (error) {
+      debug(error)
+      return Promise.reject(error)
+    }
   }
 
   /** {@inheritDoc ICredentialIssuerLDLocal.createVerifiableCredentialLDLocal} */
@@ -194,14 +282,12 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyCredentialLDLocal} */
   public async verifyCredentialLDLocal(args: IVerifyCredentialLDArgs, context: IRequiredContext): Promise<boolean> {
     const credential = args.credential
-    const signingKey = await this.getSigningKeyFromCredentialForBbs(args.credential, context, args.keyRef)
-    return this.ldCredentialModule.verifyCredential(credential, context, args.fetchRemoteContexts, args.purpose, signingKey, args.checkStatus)
+    return this.ldCredentialModule.verifyCredential(credential, context, args.fetchRemoteContexts, args.purpose, args.checkStatus)
   }
 
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyPresentationLDLocal} */
   public async verifyPresentationLDLocal(args: IVerifyPresentationLDArgs, context: IRequiredContext): Promise<boolean> {
     const presentation = args.presentation
-    const signingKey = await this.getSigningKeyFromPresentationForBbs(presentation, context, args.keyRef)
     return this.ldCredentialModule.verifyPresentation(
       presentation,
       args.challenge,
@@ -209,36 +295,8 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       context,
       args.fetchRemoteContexts,
       args.presentationPurpose,
-      signingKey,
       args.checkStatus
     )
-  }
-
-  private async getSigningKeyFromPresentationForBbs(presentation: VerifiablePresentation, context: IRequiredContext, keyRef?: string) {
-    const shouldGetKey = CredentialHandlerLDLocal.checkProofType(presentation.proof)
-    if (shouldGetKey) {
-      let identifier: IIdentifier
-      try {
-        let holderDid: string | undefined = undefined
-        if (presentation.holder) {
-          holderDid = presentation.holder
-        }
-        console.log('presentation:', holderDid)
-        if (!holderDid) {
-          throw new Error('holder did is not present')
-        }
-        identifier = await context.agent.didManagerGet({ did: holderDid })
-      } catch (e) {
-        throw new Error('invalid_argument: args.presentation.holder must be a DID managed by this agent')
-      }
-      const { signingKey } = await this.findSigningKeyWithId(context, identifier, keyRef)
-      return signingKey
-    }
-    return undefined
-  }
-
-  private static checkProofType(proof: ProofType): boolean {
-    return !!proof.type && proof.type === SignatureTypes.BbsBlsSignatureProof2020
   }
 
   private async findSigningKeyWithId(
@@ -268,25 +326,5 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     const verificationMethodId = signingKey.meta.verificationMethod.id
     debug(`Signing key for id ${identifier.did} and verification method id ${verificationMethodId} found.`)
     return { signingKey, verificationMethodId }
-  }
-
-  private async getSigningKeyFromCredentialForBbs(credential: VerifiableCredential, context: IRequiredContext, keyRef: string | undefined) {
-    const shouldGetKey = CredentialHandlerLDLocal.checkProofType(credential.proof)
-    if (shouldGetKey) {
-      let identifier: IIdentifier
-      try {
-        const holderDid = credential.credentialSubject.id
-        console.log('credential:', holderDid)
-        if (!holderDid) {
-          throw new Error('holder did is not present')
-        }
-        identifier = await context.agent.didManagerGet({ did: holderDid })
-      } catch (e) {
-        throw new Error('invalid_argument: args.presentation.holder must be a DID managed by this agent')
-      }
-      const { signingKey } = await this.findSigningKeyWithId(context, identifier, keyRef)
-      return signingKey
-    }
-    return undefined
   }
 }

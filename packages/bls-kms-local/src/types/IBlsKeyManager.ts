@@ -1,5 +1,4 @@
-import { IPluginMethodMap } from '@veramo/core';
-import {IKey, KeyMetadata, MinimalImportableKey, TKeyType} from "./IIdentifier";
+import { IPluginMethodMap, IKey, KeyMetadata, MinimalImportableKey, TKeyType } from '@veramo/core';
 
 export interface IBlsKeyManager extends IPluginMethodMap {
     keyManagerCreate(args: IKeyManagerCreateArgs): Promise<BBSKey>;

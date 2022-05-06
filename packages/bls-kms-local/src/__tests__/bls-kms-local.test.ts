@@ -1,16 +1,16 @@
 import {BlsKeyManagementSystem} from '../agent/BlsKeyManagementSystem'
-import {MemoryPrivateKeyStore} from "../agent/memory-key-store";
-import {TKeyType} from "../types/IIdentifier";
-
+import {MemoryPrivateKeyStore} from '@veramo/key-manager';
 import {generateBls12381G2KeyPair} from '@mattrglobal/bbs-signatures';
+import {MinimalImportableKey, TKeyType} from "@veramo/core";
 
 describe('@sphereon/ssi-sdk-bls-kms-local', () => {
 
   it('should import a BLS key', async () => {
     const bls = await generateBls12381G2KeyPair();
     const kms = new BlsKeyManagementSystem(new MemoryPrivateKeyStore());
-    const myKey = {
-      type: <TKeyType> 'BLS',
+    const myKey: MinimalImportableKey = {
+      kms: 'local',
+      type: <TKeyType>'Bls12381G2',
       privateKeyHex: Buffer.from(bls.secretKey).toString('hex'),
       publicKeyHex: Buffer.from(bls.publicKey).toString('hex')
     }
