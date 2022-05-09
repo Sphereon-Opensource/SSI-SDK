@@ -1,4 +1,4 @@
-import {createAgent, IKey, IKeyManager, TAgent, TKeyType} from '@veramo/core'
+import {createAgent, IKey, IKeyManager, TAgent, TKeyType, IIdentifier, IDIDManager} from '@veramo/core'
 import {CredentialHandlerLDLocal} from '../../agent/CredentialHandlerLDLocal'
 import {LdDefaultContexts} from '../../ld-default-contexts'
 import {ICredentialHandlerLDLocal, MethodNames} from '../../types/ICredentialHandlerLDLocal'
@@ -6,11 +6,14 @@ import {SphereonBbsBlsSignature2020} from '../../suites'
 import {MemoryKeyStore, MemoryPrivateKeyStore} from '@veramo/key-manager'
 import {BlsKeyManager, BlsKeyManagementSystem} from "@sphereon/ssi-sdk-bls-key-manager";
 import {generateBls12381G2KeyPair} from '@mattrglobal/bbs-signatures'
+import {DIDManager, MemoryDIDStore} from '@veramo/did-manager'
+import {KeyDIDProvider} from '@veramo/did-provider-key'
 
 export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
   describe('Issuer Agent Plugin', () => {
     let key: Partial<IKey>
-    let agent: TAgent<IKeyManager & ICredentialHandlerLDLocal>
+    let agent: TAgent<IKeyManager & IDIDManager & ICredentialHandlerLDLocal>
+    let didKeyIdentifier: IIdentifier;
 
     beforeAll(async () => {
       const keyStore = new MemoryPrivateKeyStore()
@@ -21,6 +24,13 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
             kms: {
               local: new BlsKeyManagementSystem(keyStore),
             },
+          }),
+          new DIDManager({
+            providers: {
+              'did:key': new KeyDIDProvider({defaultKms: 'local'})
+            },
+            store: new MemoryDIDStore(),
+            defaultProvider: 'did:key'
           }),
           new CredentialHandlerLDLocal({
             keyStore,
@@ -34,7 +44,8 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
             ]),
           }),
         ],
-      })
+      });
+      didKeyIdentifier = await agent.didManagerCreate()
     })
 
     afterAll(async () => {
@@ -44,13 +55,13 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
 
     it('should issue a BBS+ signed 2018 VC', async () => {
       const credential = {
-        issuer: 'did:example:123',
+        issuer: didKeyIdentifier.did,
         type: ['VerifiableCredential', 'AlumniCredential'],
         '@context': ['https://www.w3.org/2018/credentials/v1', 'https://www.w3.org/2018/credentials/examples/v1'],
         credentialSubject: {
-          id: 'did:example:123',
+          id: didKeyIdentifier.did,
           alumniOf: {
-            id: 'did:example:c276e12ec21ebfeb1f712ebc6f1',
+            id: didKeyIdentifier.did,
             name: 'Example University',
           },
         },
@@ -71,13 +82,13 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
             ],
             "credentialSubject": {
               "alumniOf": {
-                "id": "did:example:c276e12ec21ebfeb1f712ebc6f1",
+                "id": didKeyIdentifier.did,
                 "name": "Example University",
               },
-              "id": "did:example:123",
+              "id": didKeyIdentifier.did,
             },
             "issuanceDate": expect.any(String),
-            "issuer": "did:example:123",
+            "issuer": didKeyIdentifier.did,
             "proof": {
               "@context": "https://w3id.org/security/v2",
               "created": expect.any(String),

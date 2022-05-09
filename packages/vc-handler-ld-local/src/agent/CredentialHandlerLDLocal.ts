@@ -28,7 +28,7 @@ import {
 } from '../types/types'
 import { extendContextLoader, purposes, sign } from '@digitalcredentials/jsonld-signatures'
 import { BbsBlsSignature2020, Bls12381G2KeyPair } from '@mattrglobal/jsonld-signatures-bbs'
-import { MultibaseFormat } from '@sphereon/ssi-sdk-core/dist/utils/encoding'
+import { MultibaseFormat } from '@sphereon/ssi-sdk-core'
 import { LdDefaultContexts } from '../ld-default-contexts'
 
 const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')

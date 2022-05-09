@@ -17,10 +17,10 @@ export class BlsKeyManagementSystem extends KeyManagementSystem {
   }
 
   async importKey(args: Exclude<MinimalImportableKey, 'kms'>): Promise<ManagedKeyInfo> {
-    if (!args.type || !args.privateKeyHex || !args.publicKeyHex) {
-      throw new Error('invalid_argument: type, publicKeyHex and privateKeyHex are required to import a key')
-    }
     if (args.type === <TKeyType>'Bls12381G2') {
+      if (!args.type || !args.privateKeyHex || !args.publicKeyHex) {
+        throw new Error('invalid_argument: type, publicKeyHex and privateKeyHex are required to import a key')
+      }
       const managedKey = this.asBlsManagedKeyInfo({ alias: args.kid, privateKeyHex: args.privateKeyHex, publicKeyHex: args.publicKeyHex, type: args.type });
       await this.privateKeyStore.import({alias: managedKey.kid, ...args})
       debug('imported key', managedKey.type, managedKey.publicKeyHex)
@@ -43,7 +43,7 @@ export class BlsKeyManagementSystem extends KeyManagementSystem {
         break
       }
       default:
-        throw Error('not_supported: Key type not supported: ' + type)
+        key = await super.createKey({ type })
     }
 
     debug('Created key', type, key.publicKeyHex)
