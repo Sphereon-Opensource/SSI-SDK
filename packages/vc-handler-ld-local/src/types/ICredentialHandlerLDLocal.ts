@@ -12,7 +12,6 @@ export interface ICredentialHandlerLDLocal extends IPluginMethodMap {
 
   verifyPresentationLDLocal(args: IVerifyPresentationLDArgs, context: IRequiredContext): Promise<boolean>
 
-  createBBSVerifiableCredentialLD(args: ICreateVerifiableCredentialLDArgs, context: IRequiredContext): Promise<VerifiableCredentialSP>
 }
 
 /**

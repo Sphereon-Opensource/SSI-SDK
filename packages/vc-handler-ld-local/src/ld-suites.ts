@@ -11,7 +11,7 @@ export abstract class SphereonLdSignature {
 
   abstract getSupportedVerificationType(): string
 
-  abstract getSupportedVeramoKeyType(): TKeyType | 'Bls12381G2'
+  abstract getSupportedVeramoKeyType(): TKeyType
 
   abstract getSuiteForSigning(key: IKey, issuerDid: string, verificationMethodId: string, context: IAgentContext<RequiredAgentMethods>): any
 

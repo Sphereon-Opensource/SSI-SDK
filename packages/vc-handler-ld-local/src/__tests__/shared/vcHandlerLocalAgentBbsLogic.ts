@@ -1,19 +1,22 @@
-import {createAgent, IKey, IKeyManager, TAgent, TKeyType, IIdentifier, IDIDManager} from '@veramo/core'
+import {createAgent, IDIDManager, IIdentifier, IKeyManager, TAgent, IResolver} from '@veramo/core'
 import {CredentialHandlerLDLocal} from '../../agent/CredentialHandlerLDLocal'
 import {LdDefaultContexts} from '../../ld-default-contexts'
 import {ICredentialHandlerLDLocal, MethodNames} from '../../types/ICredentialHandlerLDLocal'
 import {SphereonBbsBlsSignature2020} from '../../suites'
 import {MemoryKeyStore, MemoryPrivateKeyStore} from '@veramo/key-manager'
-import {BlsKeyManager, BlsKeyManagementSystem} from "@sphereon/ssi-sdk-bls-key-manager";
-import {generateBls12381G2KeyPair} from '@mattrglobal/bbs-signatures'
+import {BlsKeyManagementSystem, BlsKeyManager} from "@sphereon/ssi-sdk-bls-key-manager";
+import {VerifiableCredentialSP} from '@sphereon/ssi-sdk-core'
 import {DIDManager, MemoryDIDStore} from '@veramo/did-manager'
-import {KeyDIDProvider} from '@veramo/did-provider-key'
+import {BlsKeyDidProvider} from "../../agent/BlsKeyDidProvider";
+import {DIDResolverPlugin} from "@veramo/did-resolver";
+import {Resolver} from 'did-resolver';
+import {getDidKeyResolver} from "../../agent/BlsKeyDidResolver";
 
 export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
   describe('Issuer Agent Plugin', () => {
-    let key: Partial<IKey>
-    let agent: TAgent<IKeyManager & IDIDManager & ICredentialHandlerLDLocal>
+    let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialHandlerLDLocal>
     let didKeyIdentifier: IIdentifier;
+    let verifiableCredential: VerifiableCredentialSP;
 
     beforeAll(async () => {
       const keyStore = new MemoryPrivateKeyStore()
@@ -27,11 +30,16 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
           }),
           new DIDManager({
             providers: {
-              'did:key': new KeyDIDProvider({defaultKms: 'local'})
+              'did:key': new BlsKeyDidProvider({defaultKms: 'local'})
             },
             store: new MemoryDIDStore(),
             defaultProvider: 'did:key'
           }),
+            new DIDResolverPlugin({
+              resolver: new Resolver({
+                ...getDidKeyResolver()
+              })
+            }),
           new CredentialHandlerLDLocal({
             keyStore,
             contextMaps: [LdDefaultContexts /*, customContext*/],
@@ -45,7 +53,7 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
           }),
         ],
       });
-      didKeyIdentifier = await agent.didManagerCreate()
+      didKeyIdentifier = await agent.didManagerCreate({kms: 'local', options: { type: 'Bls12381G2'}, provider: 'did:key'})
     })
 
     afterAll(async () => {
@@ -66,15 +74,9 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
           },
         },
       }
-      const bls = await generateBls12381G2KeyPair()
-      key = await agent.keyManagerImport({
-        kms: 'local',
-        type: <TKeyType>'Bls12381G2',
-        privateKeyHex: Buffer.from(bls.secretKey).toString('hex'),
-        publicKeyHex: Buffer.from(bls.publicKey).toString('hex'),
-      })
-      //Needs a valid did to be able to verify the VC
-      await expect(agent.createBBSVerifiableCredentialLD({credential, keyRef: key.publicKeyHex})).resolves.toEqual(expect.objectContaining({
+
+      verifiableCredential = await agent.createVerifiableCredentialLD({credential, keyRef: didKeyIdentifier.keys[0].kid })
+      expect(verifiableCredential).toEqual(expect.objectContaining({
             "@context": [
                 "https://www.w3.org/2018/credentials/v1",
                 "https://www.w3.org/2018/credentials/examples/v1",
@@ -102,6 +104,10 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
               "AlumniCredential",
             ]
       }))
+    })
+
+    it('Should verify a BBS+ verifiable credential', async () => {
+      await expect(agent.verifyCredentialLDLocal({ credential: verifiableCredential })).resolves.toEqual(true);
     })
   })
 }

@@ -55,7 +55,7 @@ export class LdCredentialModule {
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
     const documentLoader = this.ldDocumentLoader.getLoader(context, true)
 
-    // some suites can modify the incoming credential (e.g. add required contexts)W
+    // some suites can modify the incoming credential (e.g. add required contexts)
     suite.preSigningCredModification(credential)
     debug(`Signing suite will be retrieved for ${verificationMethodId}...`)
     const signingSuite = await suite.getSuiteForSigning(key, issuerDid, verificationMethodId, context)

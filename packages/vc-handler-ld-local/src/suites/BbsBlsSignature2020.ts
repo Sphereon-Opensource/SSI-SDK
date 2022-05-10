@@ -1,11 +1,11 @@
-import { blsSign } from '@mattrglobal/node-bbs-signatures'
-import { Bls12381G2KeyPair, BbsBlsSignature2020 as MattrBbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
-import { IKey, TKeyType, VerifiableCredential } from '@veramo/core'
-import { asArray } from '@veramo/utils'
+import {BbsBlsSignature2020 as MattrBbsBlsSignature2020, Bls12381G2KeyPair } from '@mattrglobal/jsonld-signatures-bbs'
+import {blsSign} from '@mattrglobal/bbs-signatures';
+import {IKey, TKeyType, VerifiableCredential, IAgentContext} from '@veramo/core'
+import {asArray} from '@veramo/utils'
 import suiteContext2020 from 'ed25519-signature-2020-context'
-import * as u8a from 'uint8arrays'
 
-import { SphereonLdSignature } from '../ld-suites'
+import {RequiredAgentMethods, SphereonLdSignature} from '../ld-suites'
+import {hexToMultibase, MultibaseFormat} from "@sphereon/ssi-sdk-core";
 
 export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
   constructor() {
@@ -18,7 +18,7 @@ export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
     return 'Bls12381G2Key2020'
   }
 
-  getSupportedVeramoKeyType(): TKeyType | 'Bls12381G2' {
+  getSupportedVeramoKeyType(): TKeyType {
     return 'Bls12381G2'
   }
 
@@ -26,75 +26,73 @@ export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
     return 'https://w3id.org/security/bbs/v1'
   }
 
-  getSuiteForSigning(key: IKey, issuerDid: string, verificationMethodId: string): any {
+  getSuiteForSigning(key: IKey, issuerDid: string, verificationMethodId: string, context: IAgentContext<RequiredAgentMethods>): any {
     const controller = issuerDid
 
     // DID Key ID
     const id = verificationMethodId
-    const signer = {
-      sign: async (args: { data: Uint8Array }): Promise<Uint8Array> => {
-        if (!key.privateKeyHex) {
-          throw new Error('privateKey not found!')
-        }
-        const keyPair = {
-          publicKey: new Uint8Array(Buffer.from(key.publicKeyHex)),
-          secretKey: new Uint8Array(Buffer.from(key.privateKeyHex as string)),
-        }
-        const signature = await blsSign({
-          keyPair,
-          messages: [args.data],
-        })
-        return u8a.fromString(`${signature}`)
-      },
+
+    if (!key.privateKeyHex) {
+      throw new Error('Private key must be defined');
     }
 
     const options = {
       id: id,
       controller: controller,
-      privateKeyBase58: key.privateKeyHex as string,
-      publicKeyBase58: key.publicKeyHex,
-      signer: () => signer,
+      privateKeyBase58: hexToMultibase(key.privateKeyHex, MultibaseFormat.BASE58).value.substring(1),
+      publicKeyBase58: hexToMultibase(key.publicKeyHex, MultibaseFormat.BASE58).value.substring(1),
       type: this.getSupportedVerificationType(),
     }
-    /*const key1 = new Bls12381G2KeyPair({
-      publicKeyBase58: hexToMultibase("", MultibaseFormat.BASE58).value
-    });
-    const bbsSignature = new BbsBlsSignature2020({
-      key1
-    })*/
-    let key2: Bls12381G2KeyPair = undefined as unknown as Bls12381G2KeyPair
-    Promise.resolve(Bls12381G2KeyPair.from(options)).then((keyPair) => {
-      key2 = keyPair as Bls12381G2KeyPair
-    })
-    // createBls12381G2KeyPairFromOptions(options)
+
+    let key2: Bls12381G2KeyPair = new Bls12381G2KeyPair(options);
+
+    type KeyPairSignerOptions = { data: Uint8Array | Uint8Array[] };
+
     const options2 = {
-      //signer: KeyPairSigner;
+      signer: {
+        sign: async function(options: KeyPairSignerOptions) {
+          const keyPair = {
+            keyPair: {
+              secretKey: key2.privateKeyBuffer,
+              publicKey: key2.publicKeyBuffer,
+            },
+            messages: options.data,
+          }
+          return await blsSign(keyPair);
+        }
+      },
       key: key2,
       /**
        * A key id URL to the paired public key used for verifying the proof
        */
-      // readonly verificationMethod?: string;
-      /**
-       * The `created` date to report in generated proofs
-       */
-      // readonly date?: string | Date;
-      /**
-       * Indicates whether to use the native implementation
-       * of RDF Dataset Normalization
-       */
-      // useNativeCanonize: boolean;
-      /**
-       * Additional proof elements
-       */
-      // readonly proof?: any;
-      /**
-       * Linked Data Key class implementation
-       */
-      // readonly LDKeyClass?: any;
+      verificationMethod: verificationMethodId
     }
-    // verificationKey.type = this.getSupportedVerificationType()
-
+    this.addMethodToBbsBlsSignature2020()
     return new MattrBbsBlsSignature2020(options2)
+  }
+
+  private addMethodToBbsBlsSignature2020() {
+    function _includesContext(args: { document: any; contextUrl: string }) {
+      const context = args.document['@context']
+      return context === args.contextUrl || (Array.isArray(context) && context.includes(args.contextUrl))
+    }
+    //@ts-ignore
+    MattrBbsBlsSignature2020.prototype['ensureSuiteContext'] = function (args: { document: any; addSuiteContext: boolean }): void {
+      const contextUrl = 'https://w3id.org/security/bbs/v1'
+      const document = args.document
+
+      if (_includesContext({document, contextUrl})) {
+        return
+      }
+
+      if (!args.addSuiteContext) {
+        throw new TypeError(`The document to be signed must contain this suite's @context, ` + `"${contextUrl}".`)
+      }
+      //@ts-ignore
+      const existingContext = document['@context'] || []
+      //@ts-ignore
+      document['@context'] = Array.isArray(existingContext) ? [...existingContext, contextUrl] : [existingContext, contextUrl]
+    }
   }
 
   preVerificationCredModification(credential: VerifiableCredential): void {
