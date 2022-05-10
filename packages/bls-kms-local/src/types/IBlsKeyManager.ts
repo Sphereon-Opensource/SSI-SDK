@@ -1,13 +1,13 @@
-import { IPluginMethodMap, IKey, KeyMetadata, MinimalImportableKey, TKeyType } from '@veramo/core';
+import { IPluginMethodMap, IKey, KeyMetadata, MinimalImportableKey, TKeyType } from '@veramo/core'
 
 export interface IBlsKeyManager extends IPluginMethodMap {
-    keyManagerCreate(args: IKeyManagerCreateArgs): Promise<BBSKey>;
-    keyManagerGetKeyManagementSystems(): Promise<Array<string>>;
-    keyManagerGet({ kid }: IKeyManagerGetArgs): Promise<IKey>;
-    keyManagerDelete({ kid }: IKeyManagerDeleteArgs): Promise<boolean>;
-    keyManagerImport(key: MinimalImportableKey): Promise<BBSKey>;
-    keyManagerSign(args: IKeyManagerSignArgs): Promise<string>;
-    keyManagerVerify(args: IKeyManagerVerifyArgs): Promise<boolean>;
+  keyManagerCreate(args: IKeyManagerCreateArgs): Promise<BBSKey>
+  keyManagerGetKeyManagementSystems(): Promise<Array<string>>
+  keyManagerGet({ kid }: IKeyManagerGetArgs): Promise<IKey>
+  keyManagerDelete({ kid }: IKeyManagerDeleteArgs): Promise<boolean>
+  keyManagerImport(key: MinimalImportableKey): Promise<BBSKey>
+  keyManagerSign(args: IKeyManagerSignArgs): Promise<string>
+  keyManagerVerify(args: IKeyManagerVerifyArgs): Promise<boolean>
 }
 
 /**
@@ -15,31 +15,31 @@ export interface IBlsKeyManager extends IPluginMethodMap {
  * @public
  */
 export interface IKeyManagerCreateArgs {
-    /**
-     * Key type
-     */
-    type: TKeyType
+  /**
+   * Key type
+   */
+  type: TKeyType
 
-    /**
-     * Key Management System
-     */
-    kms: string
+  /**
+   * Key Management System
+   */
+  kms: string
 
-    /**
-     * Optional. Key meta data
-     */
-    meta?: KeyMetadata
+  /**
+   * Optional. Key meta data
+   */
+  meta?: KeyMetadata
 }
 
 /**
-* Input arguments for {@link IBlsKeyManager.keyManagerGet | keyManagerGet}
-                      * @public
-                      */
+ * Input arguments for {@link IBlsKeyManager.keyManagerGet | keyManagerGet}
+ * @public
+ */
 export interface IKeyManagerGetArgs {
-    /**
-     * Key ID
-     */
-    kid: string
+  /**
+   * Key ID
+   */
+  kid: string
 }
 
 /**
@@ -47,10 +47,10 @@ export interface IKeyManagerGetArgs {
  * @public
  */
 export interface IKeyManagerDeleteArgs {
-    /**
-     * Key ID
-     */
-    kid: string
+  /**
+   * Key ID
+   */
+  kid: string
 }
 
 /**
@@ -58,22 +58,27 @@ export interface IKeyManagerDeleteArgs {
  * @public
  */
 export interface IKeyManagerSignArgs {
-    /**
-     * The key handle, as returned during `keyManagerCreateKey`
-     */
-    keyRef: string
+  /**
+   * The key handle, as returned during `keyManagerCreateKey`
+   */
+  keyRef: string
 
-    /**
-     * Data to sign
-     */
-    data: Uint8Array[]
+  /**
+   * Data to sign
+   */
+  data: Uint8Array[]
 }
 
 export interface IKeyManagerVerifyArgs {
-    kms: string,
-    publicKey: Uint8Array,
-    messages: Uint8Array[],
-    signature: Uint8Array
+  kms: string
+  publicKey: Uint8Array
+  messages: Uint8Array[]
+  signature: Uint8Array
+}
+
+export enum KeyType {
+  Bls12381G2 = 'Bls12381G2',
 }
 
 export type BBSKey = Partial<IKey>
+export type BlsManagedKeyInfoArgs = { alias?: string; type: TKeyType; privateKeyHex: string; publicKeyHex: string }

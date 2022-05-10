@@ -1,28 +1,33 @@
-import {blsSign, generateBls12381G2KeyPair} from '@mattrglobal/node-bbs-signatures'
+import { blsSign, generateBls12381G2KeyPair } from '@mattrglobal/node-bbs-signatures'
 import Debug from 'debug'
 
-import {IKey, ManagedKeyInfo, MinimalImportableKey, TKeyType} from '@veramo/core'
-import {AbstractPrivateKeyStore, ManagedPrivateKey} from "@veramo/key-manager";
-import {KeyManagementSystem} from "@veramo/kms-local"
+import { IKey, ManagedKeyInfo, MinimalImportableKey, TKeyType } from '@veramo/core'
+import { AbstractPrivateKeyStore, ManagedPrivateKey } from '@veramo/key-manager'
+import { KeyManagementSystem } from '@veramo/kms-local'
+import { BlsManagedKeyInfoArgs, KeyType } from '../types/IBlsKeyManager'
 
 const debug = Debug('veramo:kms:bls:local')
 
 export class BlsKeyManagementSystem extends KeyManagementSystem {
-
-  private readonly privateKeyStore: AbstractPrivateKeyStore;
+  private readonly privateKeyStore: AbstractPrivateKeyStore
 
   constructor(keyStore: AbstractPrivateKeyStore) {
-    super(keyStore);
-    this.privateKeyStore = keyStore;
+    super(keyStore)
+    this.privateKeyStore = keyStore
   }
 
   async importKey(args: Exclude<MinimalImportableKey, 'kms'>): Promise<ManagedKeyInfo> {
-    if (args.type === <TKeyType>'Bls12381G2') {
+    if (args.type === KeyType.Bls12381G2) {
       if (!args.type || !args.privateKeyHex || !args.publicKeyHex) {
         throw new Error('invalid_argument: type, publicKeyHex and privateKeyHex are required to import a key')
       }
-      const managedKey = this.asBlsManagedKeyInfo({ alias: args.kid, privateKeyHex: args.privateKeyHex, publicKeyHex: args.publicKeyHex, type: args.type });
-      await this.privateKeyStore.import({alias: managedKey.kid, ...args})
+      const managedKey = this.asBlsManagedKeyInfo({
+        alias: args.kid,
+        privateKeyHex: args.privateKeyHex,
+        publicKeyHex: args.publicKeyHex,
+        type: args.type,
+      })
+      await this.privateKeyStore.import({ alias: managedKey.kid, ...args })
       debug('imported key', managedKey.type, managedKey.publicKeyHex)
       return managedKey
     }
@@ -32,13 +37,13 @@ export class BlsKeyManagementSystem extends KeyManagementSystem {
   async createKey({ type }: { type: TKeyType }): Promise<ManagedKeyInfo> {
     let key: ManagedKeyInfo
     switch (type) {
-      case <TKeyType>'Bls12381G2': {
+      case KeyType.Bls12381G2: {
         const keyPairBls12381G2 = await generateBls12381G2KeyPair()
         key = await this.importKey({
           kms: 'local',
           type,
-          privateKeyHex: Buffer.from(keyPairBls12381G2.secretKey).toString("hex"),
-          publicKeyHex: Buffer.from(keyPairBls12381G2.publicKey).toString("hex"),
+          privateKeyHex: Buffer.from(keyPairBls12381G2.secretKey).toString('hex'),
+          publicKeyHex: Buffer.from(keyPairBls12381G2.publicKey).toString('hex'),
         })
         break
       }
@@ -59,30 +64,28 @@ export class BlsKeyManagementSystem extends KeyManagementSystem {
       throw new Error(`key_not_found: No key entry found for kid=${keyRef.kid}`)
     }
 
-    if (privateKey.type !== <TKeyType>'Bls12381G2' && !Array.isArray(data)) {
-      return await super.sign({keyRef, algorithm, data})
-    } else if (privateKey.type === <TKeyType>'Bls12381G2') {
+    if (privateKey.type !== KeyType.Bls12381G2 && !Array.isArray(data)) {
+      return await super.sign({ keyRef, algorithm, data })
+    } else if (privateKey.type === KeyType.Bls12381G2) {
       const keyPair = {
         keyPair: {
-          secretKey: Uint8Array.from(Buffer.from(privateKey.privateKeyHex, "hex")),
-          publicKey: Uint8Array.from(Buffer.from(keyRef.kid, "hex")),
+          secretKey: Uint8Array.from(Buffer.from(privateKey.privateKeyHex, 'hex')),
+          publicKey: Uint8Array.from(Buffer.from(keyRef.kid, 'hex')),
         },
-        messages: Array.isArray(data)? data: [data] ,
+        messages: Array.isArray(data) ? data : [data],
       }
-      return Buffer.from(
-        await blsSign(keyPair)
-      ).toString("hex");
+      return Buffer.from(await blsSign(keyPair)).toString('hex')
     }
     throw Error(`not_supported: Cannot sign using key of type ${privateKey.type}`)
   }
 
-  private asBlsManagedKeyInfo(args: { alias?: string, type: TKeyType, privateKeyHex: string, publicKeyHex: string }): ManagedKeyInfo {
+  private asBlsManagedKeyInfo(args: BlsManagedKeyInfoArgs): ManagedKeyInfo {
     let key: Partial<ManagedKeyInfo>
     switch (args.type) {
-      case <TKeyType>'Bls12381G2':
+      case KeyType.Bls12381G2:
         key = {
           type: args.type,
-          kid:  args.alias || args.publicKeyHex,
+          kid: args.alias || args.publicKeyHex,
           publicKeyHex: args.publicKeyHex,
           meta: {
             algorithms: ['BLS'],

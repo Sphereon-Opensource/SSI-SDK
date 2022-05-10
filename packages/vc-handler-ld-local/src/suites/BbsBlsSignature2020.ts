@@ -1,21 +1,23 @@
-import {BbsBlsSignature2020 as MattrBbsBlsSignature2020, Bls12381G2KeyPair } from '@mattrglobal/jsonld-signatures-bbs'
-import {blsSign} from '@mattrglobal/bbs-signatures';
-import {IKey, TKeyType, VerifiableCredential, IAgentContext} from '@veramo/core'
-import {asArray} from '@veramo/utils'
+import { BbsBlsSignature2020 as MattrBbsBlsSignature2020, Bls12381G2KeyPair } from '@mattrglobal/jsonld-signatures-bbs'
+import { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
+import { asArray } from '@veramo/utils'
 import suiteContext2020 from 'ed25519-signature-2020-context'
 
-import {RequiredAgentMethods, SphereonLdSignature} from '../ld-suites'
-import {hexToMultibase, MultibaseFormat} from "@sphereon/ssi-sdk-core";
+import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
+import { hexToMultibase, MultibaseFormat } from '@sphereon/ssi-sdk-core'
+
+export enum VerificationType {
+  Bls12381G2Key2020 = 'Bls12381G2Key2020',
+}
 
 export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
   constructor() {
     super()
-    // Ensure it is loaded
     suiteContext2020?.constants
   }
 
   getSupportedVerificationType(): string {
-    return 'Bls12381G2Key2020'
+    return VerificationType.Bls12381G2Key2020
   }
 
   getSupportedVeramoKeyType(): TKeyType {
@@ -29,11 +31,10 @@ export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
   getSuiteForSigning(key: IKey, issuerDid: string, verificationMethodId: string, context: IAgentContext<RequiredAgentMethods>): any {
     const controller = issuerDid
 
-    // DID Key ID
     const id = verificationMethodId
 
     if (!key.privateKeyHex) {
-      throw new Error('Private key must be defined');
+      throw new Error('Private key must be defined')
     }
 
     const options = {
@@ -44,28 +45,25 @@ export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
       type: this.getSupportedVerificationType(),
     }
 
-    let key2: Bls12381G2KeyPair = new Bls12381G2KeyPair(options);
+    let key2: Bls12381G2KeyPair = new Bls12381G2KeyPair(options)
 
-    type KeyPairSignerOptions = { data: Uint8Array | Uint8Array[] };
+    type KeyPairSignerOptions = { data: Uint8Array | Uint8Array[] }
 
     const options2 = {
       signer: {
-        sign: async function(options: KeyPairSignerOptions) {
-          const keyPair = {
-            keyPair: {
-              secretKey: key2.privateKeyBuffer,
-              publicKey: key2.publicKeyBuffer,
-            },
-            messages: options.data,
+        sign: async function (options: KeyPairSignerOptions): Promise<Uint8Array> {
+          if (!key2.id) {
+            throw new Error('Kid must be present')
           }
-          return await blsSign(keyPair);
-        }
+          //Options.data needs to be cast to any because the data option does not accept arrays
+          return Buffer.from(await context.agent.keyManagerSign({ keyRef: key2.id, data: options.data as any }))
+        },
       },
       key: key2,
       /**
        * A key id URL to the paired public key used for verifying the proof
        */
-      verificationMethod: verificationMethodId
+      verificationMethod: verificationMethodId,
     }
     this.addMethodToBbsBlsSignature2020()
     return new MattrBbsBlsSignature2020(options2)
@@ -81,7 +79,7 @@ export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
       const contextUrl = 'https://w3id.org/security/bbs/v1'
       const document = args.document
 
-      if (_includesContext({document, contextUrl})) {
+      if (_includesContext({ document, contextUrl })) {
         return
       }
 
