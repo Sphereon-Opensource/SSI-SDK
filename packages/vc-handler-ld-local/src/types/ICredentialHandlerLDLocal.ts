@@ -11,7 +11,6 @@ export interface ICredentialHandlerLDLocal extends IPluginMethodMap {
   verifyCredentialLDLocal(args: IVerifyCredentialLDArgs, context: IRequiredContext): Promise<boolean>
 
   verifyPresentationLDLocal(args: IVerifyPresentationLDArgs, context: IRequiredContext): Promise<boolean>
-
 }
 
 /**

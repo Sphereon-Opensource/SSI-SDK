@@ -1,22 +1,22 @@
-import {createAgent, IDIDManager, IIdentifier, IKeyManager, TAgent, IResolver} from '@veramo/core'
-import {CredentialHandlerLDLocal} from '../../agent/CredentialHandlerLDLocal'
-import {LdDefaultContexts} from '../../ld-default-contexts'
-import {ICredentialHandlerLDLocal, MethodNames} from '../../types/ICredentialHandlerLDLocal'
-import {SphereonBbsBlsSignature2020} from '../../suites'
-import {MemoryKeyStore, MemoryPrivateKeyStore} from '@veramo/key-manager'
-import {BlsKeyManagementSystem, BlsKeyManager} from "@sphereon/ssi-sdk-bls-key-manager";
-import {VerifiableCredentialSP} from '@sphereon/ssi-sdk-core'
-import {DIDManager, MemoryDIDStore} from '@veramo/did-manager'
-import {BlsKeyDidProvider} from "../../agent/BlsKeyDidProvider";
-import {DIDResolverPlugin} from "@veramo/did-resolver";
-import {Resolver} from 'did-resolver';
-import {getDidKeyResolver} from "../../agent/BlsKeyDidResolver";
+import { createAgent, IDIDManager, IIdentifier, IKeyManager, TAgent, IResolver } from '@veramo/core'
+import { CredentialHandlerLDLocal } from '../../agent/CredentialHandlerLDLocal'
+import { LdDefaultContexts } from '../../ld-default-contexts'
+import { ICredentialHandlerLDLocal, MethodNames } from '../../types/ICredentialHandlerLDLocal'
+import { SphereonBbsBlsSignature2020 } from '../../suites'
+import { MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
+import { BlsKeyManagementSystem, BlsKeyManager } from '@sphereon/ssi-sdk-bls-key-manager'
+import { VerifiableCredentialSP } from '@sphereon/ssi-sdk-core'
+import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
+import { BlsKeyDidProvider } from '../../agent/BlsKeyDidProvider'
+import { DIDResolverPlugin } from '@veramo/did-resolver'
+import { Resolver } from 'did-resolver'
+import { getDidKeyResolver } from '../../agent/BlsKeyDidResolver'
 
 export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
   describe('Issuer Agent Plugin', () => {
     let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialHandlerLDLocal>
-    let didKeyIdentifier: IIdentifier;
-    let verifiableCredential: VerifiableCredentialSP;
+    let didKeyIdentifier: IIdentifier
+    let verifiableCredential: VerifiableCredentialSP
 
     beforeAll(async () => {
       const keyStore = new MemoryPrivateKeyStore()
@@ -30,16 +30,16 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
           }),
           new DIDManager({
             providers: {
-              'did:key': new BlsKeyDidProvider({defaultKms: 'local'})
+              'did:key': new BlsKeyDidProvider({ defaultKms: 'local' }),
             },
             store: new MemoryDIDStore(),
-            defaultProvider: 'did:key'
+            defaultProvider: 'did:key',
           }),
-            new DIDResolverPlugin({
-              resolver: new Resolver({
-                ...getDidKeyResolver()
-              })
+          new DIDResolverPlugin({
+            resolver: new Resolver({
+              ...getDidKeyResolver(),
             }),
+          }),
           new CredentialHandlerLDLocal({
             keyStore,
             contextMaps: [LdDefaultContexts /*, customContext*/],
@@ -52,8 +52,8 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
             ]),
           }),
         ],
-      });
-      didKeyIdentifier = await agent.didManagerCreate({kms: 'local', options: { type: 'Bls12381G2'}, provider: 'did:key'})
+      })
+      didKeyIdentifier = await agent.didManagerCreate({ kms: 'local', options: { type: 'Bls12381G2' }, provider: 'did:key' })
     })
 
     afterAll(async () => {
@@ -75,39 +75,38 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
         },
       }
 
-      verifiableCredential = await agent.createVerifiableCredentialLD({credential, keyRef: didKeyIdentifier.keys[0].kid })
-      expect(verifiableCredential).toEqual(expect.objectContaining({
-            "@context": [
-                "https://www.w3.org/2018/credentials/v1",
-                "https://www.w3.org/2018/credentials/examples/v1",
-                "https://w3id.org/security/bbs/v1",
-            ],
-            "credentialSubject": {
-              "alumniOf": {
-                "id": didKeyIdentifier.did,
-                "name": "Example University",
-              },
-              "id": didKeyIdentifier.did,
+      verifiableCredential = await agent.createVerifiableCredentialLD({ credential, keyRef: didKeyIdentifier.keys[0].kid })
+      expect(verifiableCredential).toEqual(
+        expect.objectContaining({
+          '@context': [
+            'https://www.w3.org/2018/credentials/v1',
+            'https://www.w3.org/2018/credentials/examples/v1',
+            'https://w3id.org/security/bbs/v1',
+          ],
+          credentialSubject: {
+            alumniOf: {
+              id: didKeyIdentifier.did,
+              name: 'Example University',
             },
-            "issuanceDate": expect.any(String),
-            "issuer": didKeyIdentifier.did,
-            "proof": {
-              "@context": "https://w3id.org/security/v2",
-              "created": expect.any(String),
-              "proofPurpose": "assertionMethod",
-              "proofValue": expect.any(String),
-              "type": "sec:BbsBlsSignature2020",
-              "verificationMethod": expect.any(String),
-            },
-            "type": [
-              "VerifiableCredential",
-              "AlumniCredential",
-            ]
-      }))
+            id: didKeyIdentifier.did,
+          },
+          issuanceDate: expect.any(String),
+          issuer: didKeyIdentifier.did,
+          proof: {
+            '@context': 'https://w3id.org/security/v2',
+            created: expect.any(String),
+            proofPurpose: 'assertionMethod',
+            proofValue: expect.any(String),
+            type: 'sec:BbsBlsSignature2020',
+            verificationMethod: expect.any(String),
+          },
+          type: ['VerifiableCredential', 'AlumniCredential'],
+        })
+      )
     })
 
     it('Should verify a BBS+ verifiable credential', async () => {
-      await expect(agent.verifyCredentialLDLocal({ credential: verifiableCredential })).resolves.toEqual(true);
+      await expect(agent.verifyCredentialLDLocal({ credential: verifiableCredential })).resolves.toEqual(true)
     })
   })
 }
