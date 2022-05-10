@@ -5,6 +5,7 @@ import suiteContext2020 from 'ed25519-signature-2020-context'
 
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 import { hexToMultibase, MultibaseFormat } from '@sphereon/ssi-sdk-core'
+import {KeyType} from "@sphereon/ssi-sdk-bls-key-manager";
 
 export enum VerificationType {
   Bls12381G2Key2020 = 'Bls12381G2Key2020',
@@ -21,7 +22,7 @@ export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
   }
 
   getSupportedVeramoKeyType(): TKeyType {
-    return 'Bls12381G2'
+    return KeyType.Bls12381G2
   }
 
   getContext(): string {
