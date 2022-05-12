@@ -69,6 +69,9 @@ export class BlsKeyManagementSystem extends KeyManagementSystem {
     if (privateKey.type !== KeyType.Bls12381G2) {
       return await super.sign({ keyRef, algorithm, data })
     } else if (privateKey.type === KeyType.Bls12381G2) {
+      if (!data || Array.isArray(data) ) {
+        throw new Error("Data must be defined and cannot be an array")
+      }
       const keyPair = {
         keyPair: {
           secretKey: Uint8Array.from(Buffer.from(privateKey.privateKeyHex, 'hex')),
