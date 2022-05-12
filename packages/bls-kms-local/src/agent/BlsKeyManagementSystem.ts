@@ -17,21 +17,23 @@ export class BlsKeyManagementSystem extends KeyManagementSystem {
   }
 
   async importKey(args: Exclude<MinimalImportableKey, 'kms'>): Promise<ManagedKeyInfo> {
-    if (args.type === KeyType.Bls12381G2) {
-      if (!args.type || !args.privateKeyHex || !args.publicKeyHex) {
-        throw new Error('invalid_argument: type, publicKeyHex and privateKeyHex are required to import a key')
-      }
-      const managedKey = this.asBlsManagedKeyInfo({
-        alias: args.kid,
-        privateKeyHex: args.privateKeyHex,
-        publicKeyHex: args.publicKeyHex,
-        type: args.type,
-      })
-      await this.privateKeyStore.import({ alias: managedKey.kid, ...args })
-      debug('imported key', managedKey.type, managedKey.publicKeyHex)
-      return managedKey
+    switch (args.type) {
+      case KeyType.Bls12381G2:
+        if (!args.type || !args.privateKeyHex || !args.publicKeyHex) {
+          throw new Error('invalid_argument: type, publicKeyHex and privateKeyHex are required to import a key')
+        }
+        const managedKey = this.asBlsManagedKeyInfo({
+          alias: args.kid,
+          privateKeyHex: args.privateKeyHex,
+          publicKeyHex: args.publicKeyHex,
+          type: args.type,
+        })
+        await this.privateKeyStore.import({ alias: managedKey.kid, ...args })
+        debug('imported key', managedKey.type, managedKey.publicKeyHex)
+        return managedKey
+      default:
+        return super.importKey(args) as Promise<ManagedKeyInfo>
     }
-    return super.importKey(args) as Promise<ManagedKeyInfo>
   }
 
   async createKey({ type }: { type: TKeyType }): Promise<ManagedKeyInfo> {
@@ -56,7 +58,7 @@ export class BlsKeyManagementSystem extends KeyManagementSystem {
     return key
   }
 
-  async sign({ keyRef, algorithm, data }: { keyRef: Pick<IKey, 'kid'>; algorithm?: string; data: Uint8Array | Uint8Array[] }): Promise<string> {
+  async sign({ keyRef, algorithm, data }: { keyRef: Pick<IKey, 'kid'>; algorithm?: string; data: Uint8Array }): Promise<string> {
     let privateKey: ManagedPrivateKey
     try {
       privateKey = await this.privateKeyStore.get({ alias: keyRef.kid })
@@ -64,7 +66,7 @@ export class BlsKeyManagementSystem extends KeyManagementSystem {
       throw new Error(`key_not_found: No key entry found for kid=${keyRef.kid}`)
     }
 
-    if (privateKey.type !== KeyType.Bls12381G2 && !Array.isArray(data)) {
+    if (privateKey.type !== KeyType.Bls12381G2) {
       return await super.sign({ keyRef, algorithm, data })
     } else if (privateKey.type === KeyType.Bls12381G2) {
       const keyPair = {
@@ -72,7 +74,7 @@ export class BlsKeyManagementSystem extends KeyManagementSystem {
           secretKey: Uint8Array.from(Buffer.from(privateKey.privateKeyHex, 'hex')),
           publicKey: Uint8Array.from(Buffer.from(keyRef.kid, 'hex')),
         },
-        messages: Array.isArray(data) ? data : [data],
+        messages: [data],
       }
       return Buffer.from(await blsSign(keyPair)).toString('hex')
     }

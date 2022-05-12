@@ -25,10 +25,9 @@ export class BlsKeyManager extends KeyManager {
   async keyManagerSign(args: IKeyManagerSignArgs): Promise<string> {
     const keyInfo: IKey = (await this.localStore.get({ kid: args.keyRef })) as IKey
     const kms = this.getLocalKms(keyInfo.kms)
-    let input: any = Array.isArray(args.data) ? args.data.map((s) => Uint8Array.from(Buffer.from(s))) : Uint8Array.from(Buffer.from(args.data))
     if (keyInfo.type === <TKeyType>KeyType.Bls12381G2) {
-      return await kms.sign({ keyRef: keyInfo, data: input })
+      return await kms.sign({ keyRef: keyInfo, data: Uint8Array.from(Buffer.from(args.data)) })
     }
-    return await super.keyManagerSign({ keyRef: args.keyRef, data: input })
+    return await super.keyManagerSign({ keyRef: args.keyRef, data: args.data })
   }
 }

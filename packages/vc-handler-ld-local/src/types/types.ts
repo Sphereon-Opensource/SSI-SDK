@@ -176,11 +176,6 @@ export interface IVerifyCredentialLDArgs {
   purpose?: typeof ProofPurpose
 
   /**
-   * Optional. The key handle ({@link IKey#kid}) from the internal database.
-   */
-  keyRef?: string
-
-  /**
    * Check status function, to check credentials that have a credentialStatus property
    */
   checkStatus?: Function
@@ -224,11 +219,6 @@ export interface IVerifyPresentationLDArgs {
    * Use this presentation purpose for the verification method in the DID when doing a check (defaualts to assertionMethod)
    */
   presentationPurpose?: typeof ProofPurpose
-
-  /**
-   * Optional. The key handle ({@link IKey#kid}) from the internal database.
-   */
-  keyRef?: string
 
   /**
    * Check status function, to check credentials that have a credentialStatus property

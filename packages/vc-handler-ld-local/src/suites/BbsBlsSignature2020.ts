@@ -38,7 +38,7 @@ export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
       throw new Error('Private key must be defined')
     }
 
-    const options = {
+    const keyPairOptions = {
       id: id,
       controller: controller,
       privateKeyBase58: hexToMultibase(key.privateKeyHex, MultibaseFormat.BASE58).value.substring(1),
@@ -46,30 +46,34 @@ export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
       type: this.getSupportedVerificationType(),
     }
 
-    let key2: Bls12381G2KeyPair = new Bls12381G2KeyPair(options)
+    let bls12381G2KeyPair: Bls12381G2KeyPair = new Bls12381G2KeyPair(keyPairOptions)
 
     type KeyPairSignerOptions = { data: Uint8Array | Uint8Array[] }
 
-    const options2 = {
+    const signatureSuiteOptions = {
       signer: {
         sign: async function (options: KeyPairSignerOptions): Promise<Uint8Array> {
-          if (!key2.id) {
+          if (!bls12381G2KeyPair.id) {
             throw new Error('Kid must be present')
           }
           //Options.data needs to be cast to any because the data option does not accept arrays
-          return Buffer.from(await context.agent.keyManagerSign({ keyRef: key2.id, data: options.data as any }))
+          return Buffer.from(await context.agent.keyManagerSign({ keyRef: bls12381G2KeyPair.id, data: options.data as any }))
         },
       },
-      key: key2,
+      key: bls12381G2KeyPair,
       /**
        * A key id URL to the paired public key used for verifying the proof
        */
       verificationMethod: verificationMethodId,
     }
     this.addMethodToBbsBlsSignature2020()
-    return new MattrBbsBlsSignature2020(options2)
+    return new MattrBbsBlsSignature2020(signatureSuiteOptions)
   }
 
+  /*
+    For some reason the methods ensureSuiteContext(...) and _includesContext(...) are missing in BbsBlsSignature2020,
+    but required to sign documents, so we had to add it on the flight to be able to sign using it.
+  */
   private addMethodToBbsBlsSignature2020() {
     function _includesContext(args: { document: any; contextUrl: string }) {
       const context = args.document['@context']
