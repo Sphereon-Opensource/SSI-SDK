@@ -5,7 +5,7 @@ import suiteContext2020 from 'ed25519-signature-2020-context'
 
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 import { hexToMultibase, MultibaseFormat } from '@sphereon/ssi-sdk-core'
-import {KeyType} from "@sphereon/ssi-sdk-bls-key-manager";
+import {KeyType} from "@sphereon/ssi-sdk-bls-kms-local";
 
 export enum VerificationType {
   Bls12381G2Key2020 = 'Bls12381G2Key2020',
