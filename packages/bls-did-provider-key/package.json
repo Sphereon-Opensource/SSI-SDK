@@ -1,0 +1,37 @@
+{
+  "name": "@sphereon/ssi-sdk-bls-did-provider-key",
+  "description": "Sphereon plugin that can enable creation and control of did:key identifiers.",
+  "version": "0.5.0",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "extract-api": "yarn veramo dev extract-api"
+  },
+  "dependencies": {
+    "@transmute/did-key.js": "^0.3.0-unstable",
+    "@veramo/core": "^3.1.2-next.84+dddaebdb",
+    "@veramo/did-manager": "^3.1.2-next.84+dddaebdb",
+    "debug": "^4.3.3",
+    "multibase": "^4.0.6",
+    "multicodec": "^3.2.1"
+  },
+  "devDependencies": {
+    "@veramo/cli": "3.1.2-next.84",
+    "@types/debug": "4.1.7"
+  },
+  "files": [
+    "build/**/*",
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "contributors": [],
+  "license": "Apache-2.0",
+  "keywords": []
+}
