@@ -1,23 +1,21 @@
-import { createAgent, IDIDManager, IIdentifier, IKeyManager, TAgent, IResolver, PresentationPayload } from '@veramo/core'
-import { CredentialHandlerLDLocal } from '../../agent/CredentialHandlerLDLocal'
-import { LdDefaultContexts } from '../../ld-default-contexts'
-import { ICredentialHandlerLDLocal, MethodNames } from '../../types/ICredentialHandlerLDLocal'
-import { SphereonBbsBlsSignature2020 } from '../../suites'
-import { MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
-import { BlsKeyManagementSystem, BlsKeyManager } from '@sphereon/ssi-sdk-bls-key-manager'
-import {VerifiableCredentialSP, VerifiablePresentationSP} from '@sphereon/ssi-sdk-core'
-import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
-import { BlsKeyDidProvider } from '../../agent/BlsKeyDidProvider'
-import { DIDResolverPlugin } from '@veramo/did-resolver'
-import { Resolver } from 'did-resolver'
-import { getDidKeyResolver } from '../../agent/BlsKeyDidResolver'
+import {createAgent, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent} from '@veramo/core'
+import {CredentialHandlerLDLocal} from '../../agent/CredentialHandlerLDLocal'
+import {LdDefaultContexts} from '../../ld-default-contexts'
+import {ICredentialHandlerLDLocal, MethodNames} from '../../types/ICredentialHandlerLDLocal'
+import {SphereonBbsBlsSignature2020} from '../../suites'
+import {MemoryKeyStore, MemoryPrivateKeyStore} from '@veramo/key-manager'
+import {BlsKeyManagementSystem, BlsKeyManager} from '@sphereon/ssi-sdk-bls-kms-local'
+import {VerifiableCredentialSP} from '@sphereon/ssi-sdk-core'
+import {DIDManager, MemoryDIDStore} from '@veramo/did-manager'
+import {BlsKeyDidProvider, getDidKeyResolver} from '@sphereon/ssi-sdk-bls-did-provider-key'
+import {DIDResolverPlugin} from '@veramo/did-resolver'
+import {Resolver} from 'did-resolver'
 
 export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
   describe('Issuer Agent Plugin', () => {
     let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialHandlerLDLocal>
     let didKeyIdentifier: IIdentifier
     let verifiableCredential: VerifiableCredentialSP
-    let verifiablePresentation: VerifiablePresentationSP
 
     beforeAll(async () => {
       const keyStore = new MemoryPrivateKeyStore()
@@ -108,19 +106,6 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
 
     it('Should verify a BBS+ verifiable credential', async () => {
       await expect(agent.verifyCredentialLDLocal({ credential: verifiableCredential })).resolves.toEqual(true)
-    })
-
-    it('Should issue a BBS+ verifiable presentation', async () => {
-      const presentationPayload: PresentationPayload = {
-        holder: didKeyIdentifier.did,
-        verifiableCredential: [verifiableCredential]
-      }
-      verifiablePresentation = await agent.createVerifiablePresentationLDLocal({ presentation: presentationPayload, keyRef: didKeyIdentifier.keys[0].kid })
-      expect(verifiablePresentation).toEqual({})
-    })
-
-    it('Should verify a BBS+ verifiable presentation', async () => {
-      await expect(agent.verifyPresentationLDLocal({ presentation: verifiablePresentation })).resolves.toEqual(true)
     })
   })
 }
