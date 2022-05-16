@@ -7,10 +7,9 @@ import {MemoryKeyStore, MemoryPrivateKeyStore} from '@veramo/key-manager'
 import {BlsKeyManagementSystem, BlsKeyManager} from '@sphereon/ssi-sdk-bls-kms-local'
 import {VerifiableCredentialSP} from '@sphereon/ssi-sdk-core'
 import {DIDManager, MemoryDIDStore} from '@veramo/did-manager'
-import {BlsKeyDidProvider} from '../../../../bls-did-provider-key/src/BlsKeyDidProvider'
+import {BlsKeyDidProvider, getDidKeyResolver} from '@sphereon/ssi-sdk-bls-did-provider-key'
 import {DIDResolverPlugin} from '@veramo/did-resolver'
 import {Resolver} from 'did-resolver'
-import {getDidKeyResolver} from '../../../../bls-did-provider-key/src/BlsKeyDidResolver'
 
 export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
   describe('Issuer Agent Plugin', () => {
