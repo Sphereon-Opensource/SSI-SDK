@@ -5,12 +5,12 @@ import {
   JoinColumn,
   BaseEntity,
   OneToMany,
-  Unique
+  Index
 } from 'typeorm'
 import { ConnectionEntity } from './ConnectionEntity'
 
 @Entity('Party')
-@Unique(['name'])
+@Index(['name'], { unique: true })
 export class PartyEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
@@ -21,4 +21,11 @@ export class PartyEntity extends BaseEntity {
   @OneToMany(() => ConnectionEntity, (connection: ConnectionEntity) => connection.party, { cascade: true })
   @JoinColumn()
   connections!: Array<ConnectionEntity>
+}
+
+export const partyEntityFrom = (name: string): PartyEntity => {
+  const partyEntity = new PartyEntity()
+  partyEntity.name = name
+
+  return partyEntity
 }

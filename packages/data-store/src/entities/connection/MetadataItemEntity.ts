@@ -6,6 +6,7 @@ import {
   ManyToOne
 } from 'typeorm'
 import { ConnectionEntity } from './ConnectionEntity'
+import { IConnectionMetadataItem } from '@sphereon/ssi-sdk-core'
 
 @Entity('ConnectionMetadata')
 export class MetadataItemEntity extends BaseEntity {
@@ -22,4 +23,12 @@ export class MetadataItemEntity extends BaseEntity {
     onDelete: 'CASCADE'
   })
   connection!: ConnectionEntity
+}
+
+export const metadataItemEntityFrom = (item: IConnectionMetadataItem): MetadataItemEntity => {
+  const metadataItem = new MetadataItemEntity()
+  metadataItem.label = item.label
+  metadataItem.value = item.value
+
+  return metadataItem
 }

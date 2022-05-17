@@ -1,7 +1,7 @@
 import {
   IConnection,
   IConnectionParty
-} from '../types/IConnectionManager'
+} from '@sphereon/ssi-sdk-core'
 
 export abstract class AbstractConnectionStore {
   abstract getParty(partyId: string): Promise<IConnectionParty>

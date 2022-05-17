@@ -1,22 +1,31 @@
+import Debug from 'debug'
 import { Connection } from 'typeorm'
-import { BaseConfigEntity } from '../entities/BaseConfigEntity'
-import { ConnectionEntity } from '../entities/ConnectionEntity'
-import { ConnectionIdentifierEntity } from '../entities/ConnectionIdentifierEntity'
-import { DidAuthConfigEntity } from '../entities/DidAuthConfigEntity'
-import { MetadataItemEntity } from '../entities/MetadataItemEntity'
-import { OpenIdConfigEntity } from '../entities/OpenIdConfigEntity'
-import { PartyEntity } from '../entities/PartyEntity'
-import { AbstractConnectionStore } from './AbstractConnectionStore'
 import {
   ConnectionConfig,
   ConnectionTypeEnum,
   IConnection,
-  IDidAuthConfig,
-  IOpenIdConfig,
-  IConnectionParty,
+  IConnectionIdentifier,
   IConnectionMetadataItem,
-  IConnectionIdentifier
-} from '../types/IConnectionManager'
+  IConnectionParty,
+  IDidAuthConfig,
+  IOpenIdConfig
+} from '@sphereon/ssi-sdk-core'
+import { AbstractConnectionStore } from '@sphereon/ssi-sdk-connection-manager'
+import { BaseConfigEntity } from '../entities/connection/BaseConfigEntity'
+import { ConnectionIdentifierEntity } from '../entities/connection/ConnectionIdentifierEntity'
+import { DidAuthConfigEntity } from '../entities/connection/DidAuthConfigEntity'
+import { MetadataItemEntity } from '../entities/connection/MetadataItemEntity'
+import { OpenIdConfigEntity } from '../entities/connection/OpenIdConfigEntity'
+import {
+  ConnectionEntity,
+  connectionEntityFrom
+} from '../entities/connection/ConnectionEntity'
+import {
+  PartyEntity,
+  partyEntityFrom
+} from '../entities/connection/PartyEntity'
+
+const debug = Debug('sphereon:typeorm:connection-store')
 
 export class ConnectionStore extends AbstractConnectionStore {
   private readonly party_relations = [
@@ -66,9 +75,8 @@ export class ConnectionStore extends AbstractConnectionStore {
       return Promise.reject(Error(`Duplicate names are not allowed. Name: ${name}`))
     }
 
-    const partyEntity = new PartyEntity()
-    partyEntity.name = name
-
+    const partyEntity = partyEntityFrom(name)
+    debug('Adding party', name)
     const createdResult = await (await this.dbConnection).getRepository(PartyEntity).save(partyEntity);
 
     return this.partyFrom(createdResult)
@@ -84,6 +92,7 @@ export class ConnectionStore extends AbstractConnectionStore {
       return Promise.reject(Error(`No party found for id: ${party.id}`))
     }
 
+    debug('Updating party', party)
     const updatedResult = await (await this.dbConnection).getRepository(PartyEntity).save(
         party,
         { transaction: true }
@@ -93,6 +102,7 @@ export class ConnectionStore extends AbstractConnectionStore {
   }
 
   removeParty = async (partyId: string): Promise<void> => {
+    debug('Removing party', partyId);
     (await this.dbConnection).getRepository(PartyEntity).delete({ id: partyId })
       .catch(error => Promise.reject(Error(`Unable to remove party with id: ${partyId}. ${error}`)))
   }
@@ -137,13 +147,9 @@ export class ConnectionStore extends AbstractConnectionStore {
       return Promise.reject(Error(`Connection type ${connection.type}, does not match for provided config`))
     }
 
-    const connectionEntity = new ConnectionEntity()
+    const connectionEntity = connectionEntityFrom(connection)
     connectionEntity.party = party
-    connectionEntity.type = connection.type
-    connectionEntity.identifier = this.connectionIdentifierEntityFrom(connection.identifier)
-    connectionEntity.config = this.configEntityFrom(connection.type, connection.config)
-    connectionEntity.metadata = connection.metadata ? connection.metadata.map((item: IConnectionMetadataItem) => this.metadataItemEntityFrom(item)) : []
-
+    debug('Adding connection', connection)
     const result = await (await this.dbConnection).getRepository(ConnectionEntity).save(connectionEntity, {
       transaction: true
     })
@@ -165,6 +171,7 @@ export class ConnectionStore extends AbstractConnectionStore {
       return Promise.reject(Error(`Connection type ${connection.type}, does not match for provided config`))
     }
 
+    debug('Updating connection', connection)
     const updatedResult = await (await this.dbConnection).getRepository(ConnectionEntity).save(
         connection,
         { transaction: true }
@@ -183,6 +190,7 @@ export class ConnectionStore extends AbstractConnectionStore {
       return Promise.reject(Error(`No connection found for id: ${connectionId}`))
     }
 
+    debug('Removing connection', connectionId);
     (await this.dbConnection).getRepository(ConnectionEntity).delete({ id: connectionId })
       .catch(error => Promise.reject(Error(`Unable to remove connection with id: ${connectionId}. ${error}`)))
   }
@@ -232,39 +240,6 @@ export class ConnectionStore extends AbstractConnectionStore {
     }
   }
 
-  private configEntityFrom = (type: ConnectionTypeEnum, config: ConnectionConfig): BaseConfigEntity => {
-    switch(type) {
-      case ConnectionTypeEnum.OPENID:
-        return this.openIdConfigEntityFrom(config as IOpenIdConfig)
-      case ConnectionTypeEnum.DIDAUTH:
-        return this.didAuthConfigEntityFrom(config as IDidAuthConfig)
-      default:
-        throw new Error('Connection type not supported')
-    }
-  }
-
-  private openIdConfigEntityFrom = (config: IOpenIdConfig): OpenIdConfigEntity => {
-    const openIdConfig = new OpenIdConfigEntity()
-    openIdConfig.clientId = config.clientId
-    openIdConfig.clientSecret = config.clientSecret
-    openIdConfig.scopes = config.scopes
-    openIdConfig.issuer = config.issuer
-    openIdConfig.redirectUrl = config.redirectUrl
-    openIdConfig.dangerouslyAllowInsecureHttpRequests = config.dangerouslyAllowInsecureHttpRequests
-    openIdConfig.clientAuthMethod = config.clientAuthMethod
-
-    return openIdConfig
-  }
-
-  private didAuthConfigEntityFrom = (config: IDidAuthConfig): DidAuthConfigEntity => {
-    const didAuthConfig = new DidAuthConfigEntity()
-    didAuthConfig.identifier = config.identifier
-    didAuthConfig.redirectUrl = config.redirectUrl
-    didAuthConfig.sessionId = config.redirectUrl + config.identifier
-
-    return didAuthConfig
-  }
-
   private hasCorrectConfig(type: ConnectionTypeEnum, config: ConnectionConfig): boolean {
     switch(type) {
       case ConnectionTypeEnum.OPENID:
@@ -277,11 +252,11 @@ export class ConnectionStore extends AbstractConnectionStore {
   }
 
   private isOpenIdConfig = (config: ConnectionConfig): config is IOpenIdConfig =>
-    'clientSecret' in config &&
-    'issuer' in config &&
-    'redirectUrl' in config &&
-    'dangerouslyAllowInsecureHttpRequests' in config &&
-    'clientAuthMethod' in config
+      'clientSecret' in config &&
+      'issuer' in config &&
+      'redirectUrl' in config &&
+      'dangerouslyAllowInsecureHttpRequests' in config &&
+      'clientAuthMethod' in config
 
   private isDidAuthConfig = (config: ConnectionConfig): config is IDidAuthConfig =>
       'identifier' in config &&
@@ -297,14 +272,6 @@ export class ConnectionStore extends AbstractConnectionStore {
     }
   }
 
-  private metadataItemEntityFrom = (item: IConnectionMetadataItem): MetadataItemEntity => {
-    const metadataItem = new MetadataItemEntity()
-    metadataItem.label = item.label
-    metadataItem.value = item.value
-
-    return metadataItem
-  }
-
   private connectionIdentifierFrom = (identifier: ConnectionIdentifierEntity): IConnectionIdentifier => {
     return {
       id: identifier.id,
@@ -312,13 +279,4 @@ export class ConnectionStore extends AbstractConnectionStore {
       correlationId: identifier.correlationId
     }
   }
-
-  private connectionIdentifierEntityFrom = (identifier: IConnectionIdentifier): ConnectionIdentifierEntity => {
-    const identifierEntity = new ConnectionIdentifierEntity()
-    identifierEntity.type = identifier.type
-    identifierEntity.correlationId = identifier.correlationId
-
-    return identifierEntity
-  }
-
 }

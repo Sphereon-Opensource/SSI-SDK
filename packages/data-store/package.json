@@ -1,32 +1,26 @@
 {
-  "name": "@sphereon/ssi-sdk-connection-manager",
+  "name": "@sphereon/ssi-sdk-data-store",
   "version": "0.5.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "veramo": {
-    "pluginInterfaces": {
-      "IConnectionManager": "./src/types/IConnectionManager.ts"
-    }
-  },
   "scripts": {
     "build": "tsc --build"
   },
   "dependencies": {
     "@sphereon/ssi-sdk-core": "^0.5.0",
-    "typeorm": "0.2.41",
-    "cross-fetch": "^3.1.5"
+    "@sphereon/ssi-sdk-connection-manager": "^0.5.0",
+    "debug": "^4.1.1",
+    "typeorm": "0.2.41"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk-data-store": "^0.5.0",
-    "@veramo/cli": "3.1.2-next.84",
+    "@types/debug": "4.1.7",
     "typescript": "^4.5.2"
   },
   "files": [
     "dist/**/*",
     "src/**/*",
     "README.md",
-    "plugin.schema.json",
     "LICENSE"
   ],
   "publishConfig": {
@@ -36,10 +30,9 @@
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
   "keywords": [
-    "Sphereon",
-    "SSI",
-    "Veramo",
-    "OpenID",
-    "Connection Manager"
+    "TypeORM",
+    "SQLite",
+    "PostgreSQL",
+    "Connection Store"
   ]
 }

@@ -1,21 +1,23 @@
-import { schema } from '../index'
 import { IAgentPlugin } from '@veramo/core'
+import { schema } from '../index'
 import { AbstractConnectionStore } from '../store/AbstractConnectionStore'
 import {
   IAddPartyArgs,
-  IConnectionParty,
   IGetPartyArgs,
   IUpdatePartyArgs,
   IGetConnectionsArgs,
   IRemovePartyArgs,
   IAddConnectionArgs,
-  IConnection,
   IConnectionManager,
   IGetConnectionArgs,
   IRemoveConnectionArgs,
   IRequiredContext,
   IUpdateConnectionArgs
 } from '../types/IConnectionManager'
+import {
+  IConnection,
+  IConnectionParty
+} from '@sphereon/ssi-sdk-core'
 
 /**
  * {@inheritDoc IConnectionManager}

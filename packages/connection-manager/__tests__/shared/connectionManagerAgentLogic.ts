@@ -1,12 +1,12 @@
 import { TAgent } from '@veramo/core'
+import { IConnectionManager } from '../../src/types/IConnectionManager'
 import {
   ConnectionIdentifierEnum,
+  ConnectionTypeEnum,
   IConnection,
   IConnectionParty,
   IOpenIdConfig
-} from '../../src/types/IConnectionManager'
-import { ConnectionTypeEnum } from '../../src/types/IConnectionManager'
-import { IConnectionManager } from '../../src/types/IConnectionManager'
+} from '@sphereon/ssi-sdk-core'
 
 type ConfiguredAgent = TAgent<IConnectionManager>
 
@@ -119,13 +119,16 @@ export default (testContext: {
       ).rejects.toThrow(`No party found for id: ${partyId}`)
     })
 
-    it('should remove party by id and its connections',async () => {
+    it('should remove party by id and its relations',async () => {
       const removeParty = await agent.addParty({ name: 'remove_party' })
       const removePartyConnection = await agent.addConnection({ partyId: removeParty.id!, connection })
 
       const result = await agent.removeParty({ partyId: removeParty.id! })
 
       expect(result).toEqual(true)
+      await expect(
+          agent.getParty({ partyId: removeParty.id! })
+      ).rejects.toThrow(`No party found for id: ${removeParty.id!}`)
       await expect(
           agent.getConnection({ connectionId: removePartyConnection.id! })
       ).rejects.toThrow(`No connection found for id: ${removePartyConnection.id!}`)
@@ -200,12 +203,16 @@ export default (testContext: {
       ).rejects.toThrow(`No connection found for id: ${connectionId}`)
     })
 
-    it('should remove connection by id',async () => {
+    it('should remove connection by id and its relations',async () => {
       const addedConnection = await agent.addConnection({ partyId: defaultParty.id!, connection })
 
       const result = await agent.removeConnection({connectionId: addedConnection.id!})
 
       expect(result).toEqual(true)
+      //TODO add relation checks
+      await expect(
+          agent.getConnection({ connectionId: addedConnection.id! })
+      ).rejects.toThrow(`No connection found for id: ${addedConnection.id!}`)
     })
 
     it('should throw error when removing connection and connection is not found',async () => {

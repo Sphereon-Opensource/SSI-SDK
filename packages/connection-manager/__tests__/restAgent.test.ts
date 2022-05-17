@@ -1,13 +1,13 @@
 import 'cross-fetch/polyfill'
 import express from 'express'
-import * as fs from 'fs';
+import fs from 'fs'
+import { Server } from 'http'
 import { Connection } from 'typeorm'
 import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import { Server } from 'http'
 import { IConnectionManager } from '../src/types/IConnectionManager'
 import connectionManagerAgentLogic from './shared/connectionManagerAgentLogic'
 

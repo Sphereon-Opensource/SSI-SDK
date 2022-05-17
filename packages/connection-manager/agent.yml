@@ -27,7 +27,7 @@ dbConnection:
       synchronize: true
       logging: false
       entities:
-         $require: './packages/connection-manager/dist?t=object#Entities'
+         $require: '@sphereon/ssi-sdk-data-store?t=object#Entities'
 
 server:
   baseUrl:
@@ -94,6 +94,6 @@ agent:
         - $require: ./packages/connection-manager/dist#ConnectionManager
           $args:
             - store:
-                $require: ./packages/connection-manager/dist#ConnectionStore
+                $require: '@sphereon/ssi-sdk-data-store#ConnectionStore'
                 $args:
                   - $ref: /dbConnection
