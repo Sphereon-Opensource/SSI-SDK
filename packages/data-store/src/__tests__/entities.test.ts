@@ -116,7 +116,6 @@ describe('Database entities test', () => {
 
   it('Should save connection with didauth config to database', async () => {
     const correlationId = 'https://example.com'
-    const identifier = 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01'
     const connection = {
       type: ConnectionTypeEnum.DIDAUTH,
       identifier: {
@@ -124,8 +123,14 @@ describe('Database entities test', () => {
         correlationId
       },
       config: {
-        identifier,
+        identifier: {
+          did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
+          provider: 'test_provider',
+          keys: [],
+          services: []
+        },
         redirectUrl: 'https://example.com',
+        stateId: 'e91f3510-5ce9-42ee-83b7-fa68ff323d27',
         sessionId: 'https://example.com/did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
       },
       metadata: [

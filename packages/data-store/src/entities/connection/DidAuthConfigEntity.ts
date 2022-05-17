@@ -19,7 +19,7 @@ export class DidAuthConfigEntity extends BaseConfigEntity {
 
 export const didAuthConfigEntityFrom = (config: IDidAuthConfig): DidAuthConfigEntity => {
   const didAuthConfig = new DidAuthConfigEntity()
-  didAuthConfig.identifier = config.identifier
+  didAuthConfig.identifier = config.identifier.did
   didAuthConfig.redirectUrl = config.redirectUrl
   didAuthConfig.sessionId = config.redirectUrl + config.identifier
 

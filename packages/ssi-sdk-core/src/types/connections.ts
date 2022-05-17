@@ -1,3 +1,5 @@
+import { IIdentifier } from '@veramo/core';
+
 export interface IConnectionParty {
   id?: string
   name: string
@@ -49,7 +51,8 @@ export interface IOpenIdConfig {
 
 export interface IDidAuthConfig {
   id?: string
-  identifier: string
+  identifier: IIdentifier
+  stateId: string
   redirectUrl: string
   sessionId: string
 }
