@@ -2,7 +2,7 @@ import { generateBls12381G2KeyPair } from '@mattrglobal/node-bbs-signatures'
 import { BlsKeyManager } from '../agent/BlsKeyManager'
 import { MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { IKey } from '@veramo/core'
-import { BlsKeyManagementSystem } from '../agent/BlsKeyManagementSystem'
+import { BlsKeyManagementSystem } from '@sphereon/ssi-sdk-bls-kms-local'
 
 describe('@sphereon/ssi-sdk-bls-kms-local', () => {
   let bls: { publicKey: Uint8Array; secretKey: Uint8Array }

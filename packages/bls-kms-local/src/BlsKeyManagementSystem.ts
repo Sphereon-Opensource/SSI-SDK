@@ -4,7 +4,7 @@ import Debug from 'debug'
 import { IKey, ManagedKeyInfo, MinimalImportableKey, TKeyType } from '@veramo/core'
 import { AbstractPrivateKeyStore, ManagedPrivateKey } from '@veramo/key-manager'
 import { KeyManagementSystem } from '@veramo/kms-local'
-import { BlsManagedKeyInfoArgs, KeyType } from '../types/IBlsKeyManager'
+import {BlsManagedKeyInfoArgs, KeyType} from "./index";
 
 const debug = Debug('veramo:kms:bls:local')
 
