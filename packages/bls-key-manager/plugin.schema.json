@@ -18,21 +18,12 @@
               "description": "Optional. Key meta data"
             }
           },
-          "required": [
-            "type",
-            "kms"
-          ],
+          "required": ["type", "kms"],
           "description": "Input arguments for  {@link  IBlsKeyManager.keyManagerCreate | keyManagerCreate }"
         },
         "TKeyType": {
           "type": "string",
-          "enum": [
-            "Ed25519",
-            "Secp256k1",
-            "X25519",
-            "Bls12381G1",
-            "Bls12381G2"
-          ],
+          "enum": ["Ed25519", "Secp256k1", "X25519", "Bls12381G1", "Bls12381G2"],
           "description": "Cryptographic key type"
         },
         "KeyMetadata": {
@@ -90,9 +81,7 @@
               "description": "Key ID"
             }
           },
-          "required": [
-            "kid"
-          ],
+          "required": ["kid"],
           "description": "Input arguments for  {@link  IBlsKeyManager.keyManagerDelete | keyManagerDelete }"
         },
         "IKeyManagerGetArgs": {
@@ -103,9 +92,7 @@
               "description": "Key ID"
             }
           },
-          "required": [
-            "kid"
-          ],
+          "required": ["kid"],
           "description": "Input arguments for  {@link  IBlsKeyManager.keyManagerGet | keyManagerGet }"
         },
         "IKey": {
@@ -143,12 +130,7 @@
               "description": "Optional. Key metadata. This should be used to determine which algorithms are supported."
             }
           },
-          "required": [
-            "kid",
-            "kms",
-            "type",
-            "publicKeyHex"
-          ],
+          "required": ["kid", "kms", "type", "publicKeyHex"],
           "description": "Cryptographic key"
         },
         "MinimalImportableKey": {
@@ -216,9 +198,7 @@
                             "type": "number"
                           }
                         },
-                        "required": [
-                          "byteLength"
-                        ]
+                        "required": ["byteLength"]
                       },
                       {}
                     ]
@@ -233,13 +213,7 @@
                     "type": "number"
                   }
                 },
-                "required": [
-                  "BYTES_PER_ELEMENT",
-                  "buffer",
-                  "byteLength",
-                  "byteOffset",
-                  "length"
-                ],
+                "required": ["BYTES_PER_ELEMENT", "buffer", "byteLength", "byteOffset", "length"],
                 "additionalProperties": {
                   "type": "number"
                 }
@@ -247,10 +221,7 @@
               "description": "Data to sign"
             }
           },
-          "required": [
-            "keyRef",
-            "data"
-          ],
+          "required": ["keyRef", "data"],
           "description": "Input arguments for  {@link  IBlsKeyManager.keyManagerSign | keyManagerSign }"
         },
         "IKeyManagerVerifyArgs": {
@@ -274,9 +245,7 @@
                           "type": "number"
                         }
                       },
-                      "required": [
-                        "byteLength"
-                      ]
+                      "required": ["byteLength"]
                     },
                     {}
                   ]
@@ -291,13 +260,7 @@
                   "type": "number"
                 }
               },
-              "required": [
-                "BYTES_PER_ELEMENT",
-                "buffer",
-                "byteLength",
-                "byteOffset",
-                "length"
-              ],
+              "required": ["BYTES_PER_ELEMENT", "buffer", "byteLength", "byteOffset", "length"],
               "additionalProperties": {
                 "type": "number"
               }
@@ -319,9 +282,7 @@
                             "type": "number"
                           }
                         },
-                        "required": [
-                          "byteLength"
-                        ]
+                        "required": ["byteLength"]
                       },
                       {}
                     ]
@@ -336,13 +297,7 @@
                     "type": "number"
                   }
                 },
-                "required": [
-                  "BYTES_PER_ELEMENT",
-                  "buffer",
-                  "byteLength",
-                  "byteOffset",
-                  "length"
-                ],
+                "required": ["BYTES_PER_ELEMENT", "buffer", "byteLength", "byteOffset", "length"],
                 "additionalProperties": {
                   "type": "number"
                 }
@@ -363,9 +318,7 @@
                           "type": "number"
                         }
                       },
-                      "required": [
-                        "byteLength"
-                      ]
+                      "required": ["byteLength"]
                     },
                     {}
                   ]
@@ -380,24 +333,13 @@
                   "type": "number"
                 }
               },
-              "required": [
-                "BYTES_PER_ELEMENT",
-                "buffer",
-                "byteLength",
-                "byteOffset",
-                "length"
-              ],
+              "required": ["BYTES_PER_ELEMENT", "buffer", "byteLength", "byteOffset", "length"],
               "additionalProperties": {
                 "type": "number"
               }
             }
           },
-          "required": [
-            "kms",
-            "publicKey",
-            "messages",
-            "signature"
-          ]
+          "required": ["kms", "publicKey", "messages", "signature"]
         }
       },
       "methods": {

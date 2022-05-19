@@ -11,7 +11,7 @@
     { "path": "did-auth-siop-op-authenticator" },
     { "path": "waci-pex-qr-react" },
     { "path": "bls-kms-local" },
-    { "path":  "bls-did-provider-key" },
+    { "path": "bls-did-provider-key" },
     { "path": "bls-key-manager" }
   ]
 }

@@ -3,7 +3,7 @@ import { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/cor
 import { asArray } from '@veramo/utils'
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 import { hexToMultibase, MultibaseFormat } from '@sphereon/ssi-sdk-core'
-import {KeyType} from "@sphereon/ssi-sdk-bls-kms-local";
+import { KeyType } from '@sphereon/ssi-sdk-bls-kms-local'
 
 export enum VerificationType {
   Bls12381G2Key2020 = 'Bls12381G2Key2020',
@@ -49,36 +49,7 @@ export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
       key: bls12381G2KeyPair,
       verificationMethod: verificationMethodId,
     }
-    this.addMethodToBbsBlsSignature2020()
     return new MattrBbsBlsSignature2020(signatureSuiteOptions)
-  }
-
-  /*
-    For some reason the methods ensureSuiteContext(...) and _includesContext(...) are missing in BbsBlsSignature2020,
-    but required to sign documents, so we had to add it on the flight to be able to sign using it.
-  */
-  private addMethodToBbsBlsSignature2020() {
-    function _includesContext(args: { document: any; contextUrl: string }) {
-      const context = args.document['@context']
-      return context === args.contextUrl || (Array.isArray(context) && context.includes(args.contextUrl))
-    }
-    //@ts-ignore
-    MattrBbsBlsSignature2020.prototype['ensureSuiteContext'] = function (args: { document: any; addSuiteContext: boolean }): void {
-      const contextUrl = 'https://w3id.org/security/bbs/v1'
-      const document = args.document
-
-      if (_includesContext({ document, contextUrl })) {
-        return
-      }
-
-      if (!args.addSuiteContext) {
-        throw new TypeError(`The document to be signed must contain this suite's @context, ` + `"${contextUrl}".`)
-      }
-      //@ts-ignore
-      const existingContext = document['@context'] || []
-      //@ts-ignore
-      document['@context'] = Array.isArray(existingContext) ? [...existingContext, contextUrl] : [existingContext, contextUrl]
-    }
   }
 
   preVerificationCredModification(credential: VerifiableCredential): void {
