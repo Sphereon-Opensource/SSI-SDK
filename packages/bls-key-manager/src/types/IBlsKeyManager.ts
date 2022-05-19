@@ -76,9 +76,4 @@ export interface IKeyManagerVerifyArgs {
   signature: Uint8Array
 }
 
-export enum KeyType {
-  Bls12381G2 = 'Bls12381G2',
-}
-
 export type BBSKey = Partial<IKey>
-export type BlsManagedKeyInfoArgs = { alias?: string; type: TKeyType; privateKeyHex: string; publicKeyHex: string }

@@ -1,5 +1,6 @@
-const schema = require('../plugin.schema.json')
-export { schema }
-export { BlsKeyManager } from './agent/BlsKeyManager'
-export { BlsKeyManagementSystem } from './agent/BlsKeyManagementSystem'
-export * from './types/IBlsKeyManager'
+import { TKeyType } from '@veramo/core'
+export { BlsKeyManagementSystem } from './BlsKeyManagementSystem'
+export type BlsManagedKeyInfoArgs = { alias?: string; type: TKeyType; privateKeyHex: string; publicKeyHex: string }
+export enum KeyType {
+  Bls12381G2 = 'Bls12381G2',
+}

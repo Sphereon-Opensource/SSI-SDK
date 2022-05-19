@@ -8,14 +8,14 @@ export const startsWithMap: Record<string, Function> = {
   'did:key:z6Mk': resolveED25519,
   'did:key:z6LS': resolveX25519,
   'did:key:zQ3s': resolveSecp256k1,
-  'did:key:zUC7': resolveBls12381G2
+  'did:key:zUC7': resolveBls12381G2,
 }
 
 const resolveDidKey: DIDResolver = async (
-    didUrl: string,
-    _parsed: ParsedDID,
-    _resolver: Resolvable,
-    options: DIDResolutionOptions,
+  didUrl: string,
+  _parsed: ParsedDID,
+  _resolver: Resolvable,
+  options: DIDResolutionOptions
 ): Promise<DIDResolutionResult> => {
   try {
     const startsWith = _parsed.did.substring(0, 12)

@@ -1,4 +1,4 @@
-import { BlsKeyManagementSystem } from '../agent/BlsKeyManagementSystem'
+import { BlsKeyManagementSystem } from '../BlsKeyManagementSystem'
 import { MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { generateBls12381G2KeyPair } from '@mattrglobal/bbs-signatures'
 import { MinimalImportableKey, TKeyType } from '@veramo/core'

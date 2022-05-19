@@ -4,7 +4,7 @@ import Debug from 'debug'
 import { IKey, ManagedKeyInfo, MinimalImportableKey, TKeyType } from '@veramo/core'
 import { AbstractPrivateKeyStore, ManagedPrivateKey } from '@veramo/key-manager'
 import { KeyManagementSystem } from '@veramo/kms-local'
-import { BlsManagedKeyInfoArgs, KeyType } from '../types/IBlsKeyManager'
+import { BlsManagedKeyInfoArgs, KeyType } from './index'
 
 const debug = Debug('veramo:kms:bls:local')
 
@@ -69,8 +69,8 @@ export class BlsKeyManagementSystem extends KeyManagementSystem {
     if (privateKey.type !== KeyType.Bls12381G2) {
       return await super.sign({ keyRef, algorithm, data })
     } else if (privateKey.type === KeyType.Bls12381G2) {
-      if (!data || Array.isArray(data) ) {
-        throw new Error("Data must be defined and cannot be an array")
+      if (!data || Array.isArray(data)) {
+        throw new Error('Data must be defined and cannot be an array')
       }
       const keyPair = {
         keyPair: {

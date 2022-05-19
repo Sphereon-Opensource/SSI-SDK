@@ -1,15 +1,17 @@
-import {createAgent, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent} from '@veramo/core'
-import {CredentialHandlerLDLocal} from '../../agent/CredentialHandlerLDLocal'
-import {LdDefaultContexts} from '../../ld-default-contexts'
-import {ICredentialHandlerLDLocal, MethodNames} from '../../types/ICredentialHandlerLDLocal'
-import {SphereonBbsBlsSignature2020} from '../../suites'
-import {MemoryKeyStore, MemoryPrivateKeyStore} from '@veramo/key-manager'
-import {BlsKeyManagementSystem, BlsKeyManager} from '@sphereon/ssi-sdk-bls-kms-local'
-import {VerifiableCredentialSP} from '@sphereon/ssi-sdk-core'
-import {DIDManager, MemoryDIDStore} from '@veramo/did-manager'
-import {BlsKeyDidProvider, getDidKeyResolver} from '@sphereon/ssi-sdk-bls-did-provider-key'
-import {DIDResolverPlugin} from '@veramo/did-resolver'
-import {Resolver} from 'did-resolver'
+import { createAgent, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
+import { CredentialHandlerLDLocal } from '../../agent/CredentialHandlerLDLocal'
+import { LdDefaultContexts } from '../../ld-default-contexts'
+import { ICredentialHandlerLDLocal, MethodNames } from '../../types/ICredentialHandlerLDLocal'
+import { SphereonBbsBlsSignature2020 } from '../../suites'
+import { MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
+import { BlsKeyManager } from '@sphereon/ssi-sdk-bls-key-manager'
+import { BlsKeyManagementSystem } from '@sphereon/ssi-sdk-bls-kms-local'
+import { VerifiableCredentialSP } from '@sphereon/ssi-sdk-core'
+import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
+import { BlsKeyDidProvider, getDidKeyResolver } from '@sphereon/ssi-sdk-bls-did-provider-key'
+import { DIDResolverPlugin } from '@veramo/did-resolver'
+import { Resolver } from 'did-resolver'
+import { AssertionProofPurpose } from '../../types/types'
 
 export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
   describe('Issuer Agent Plugin', () => {
@@ -52,7 +54,11 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
           }),
         ],
       })
-      didKeyIdentifier = await agent.didManagerCreate({ kms: 'local', options: { type: 'Bls12381G2' }, provider: 'did:key' })
+      didKeyIdentifier = await agent.didManagerCreate({
+        kms: 'local',
+        options: { type: 'Bls12381G2' },
+        provider: 'did:key',
+      })
     })
 
     afterAll(async () => {
@@ -62,44 +68,66 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
 
     it('should issue a BBS+ signed 2018 VC', async () => {
       const credential = {
+        '@context': ['https://www.w3.org/2018/credentials/v1', 'https://w3id.org/citizenship/v1', 'https://w3id.org/security/bbs/v1'],
+        id: 'https://issuer.oidp.uscis.gov/credentials/83627465',
+        type: ['VerifiableCredential', 'PermanentResidentCard'],
         issuer: didKeyIdentifier.did,
-        type: ['VerifiableCredential', 'AlumniCredential'],
-        '@context': ['https://www.w3.org/2018/credentials/v1', 'https://www.w3.org/2018/credentials/examples/v1'],
+        identifier: '83627465',
+        name: 'Permanent Resident Card',
+        description: 'Government of Example Permanent Resident Card.',
+        issuanceDate: '2019-12-03T12:19:52Z',
+        expirationDate: '2029-12-03T12:19:52Z',
         credentialSubject: {
-          id: didKeyIdentifier.did,
-          alumniOf: {
-            id: didKeyIdentifier.did,
-            name: 'Example University',
-          },
+          type: ['PermanentResident', 'Person'],
+          givenName: 'JOHN',
+          familyName: 'SMITH',
+          gender: 'Male',
+          image: 'data:image/png;base64,iVBORw0KGgokJggg==',
+          residentSince: '2015-01-01',
+          lprCategory: 'C09',
+          lprNumber: '999-999-999',
+          commuterClassification: 'C1',
+          birthCountry: 'Bahamas',
+          birthDate: '1958-07-17',
         },
       }
 
-      verifiableCredential = await agent.createVerifiableCredentialLD({ credential, keyRef: didKeyIdentifier.keys[0].kid })
+      verifiableCredential = await agent.createVerifiableCredentialLD({
+        credential,
+        keyRef: didKeyIdentifier.keys[0].kid,
+        purpose: new AssertionProofPurpose(),
+      })
       expect(verifiableCredential).toEqual(
         expect.objectContaining({
-          '@context': [
-            'https://www.w3.org/2018/credentials/v1',
-            'https://www.w3.org/2018/credentials/examples/v1',
-            'https://w3id.org/security/bbs/v1',
-          ],
+          '@context': ['https://www.w3.org/2018/credentials/v1', 'https://w3id.org/citizenship/v1', 'https://w3id.org/security/bbs/v1'],
           credentialSubject: {
-            alumniOf: {
-              id: didKeyIdentifier.did,
-              name: 'Example University',
-            },
-            id: didKeyIdentifier.did,
+            birthCountry: 'Bahamas',
+            birthDate: '1958-07-17',
+            commuterClassification: 'C1',
+            familyName: 'SMITH',
+            gender: 'Male',
+            givenName: 'JOHN',
+            image: 'data:image/png;base64,iVBORw0KGgokJggg==',
+            lprCategory: 'C09',
+            lprNumber: '999-999-999',
+            residentSince: '2015-01-01',
+            type: ['PermanentResident', 'Person'],
           },
-          issuanceDate: expect.any(String),
+          description: 'Government of Example Permanent Resident Card.',
+          expirationDate: '2029-12-03T12:19:52Z',
+          id: 'https://issuer.oidp.uscis.gov/credentials/83627465',
+          identifier: '83627465',
+          issuanceDate: '2019-12-03T12:19:52Z',
           issuer: didKeyIdentifier.did,
+          name: 'Permanent Resident Card',
           proof: {
-            '@context': 'https://w3id.org/security/v2',
             created: expect.any(String),
             proofPurpose: 'assertionMethod',
             proofValue: expect.any(String),
-            type: 'sec:BbsBlsSignature2020',
+            type: 'BbsBlsSignature2020',
             verificationMethod: expect.any(String),
           },
-          type: ['VerifiableCredential', 'AlumniCredential'],
+          type: ['VerifiableCredential', 'PermanentResidentCard'],
         })
       )
     })

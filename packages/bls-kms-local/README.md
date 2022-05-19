@@ -6,7 +6,6 @@
   <br>
 </h1>
 
-
 A Sphereon KMS implementation that provides Ed25519 and secp256k1 and Bls crypto.
 
 This module is an extension of [`KeyManagementSystem`](../../node_modules/@veramo/kms-local/src/key-management-system.ts) and
