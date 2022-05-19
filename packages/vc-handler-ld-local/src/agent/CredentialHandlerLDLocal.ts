@@ -109,7 +109,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       throw new Error(`invalid_argument: args.credential.issuer must be a DID managed by this agent. ${e}`)
     }
     try {
-      const {managedKey, verificationMethod} = await this.getSigningKey(identifier, args.keyRef);
+      const { managedKey, verificationMethod } = await this.getSigningKey(identifier, args.keyRef)
       const { signingKey, verificationMethodId } = await this.findSigningKeyWithId(context, identifier, args.keyRef)
       return await this.ldCredentialModule.issueLDVerifiableCredential(
         credential,
@@ -129,16 +129,16 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     let managedKey: IKey | undefined
     let verificationMethod: string | undefined
     if (keyRef) {
-      const k = await this.keyStore?.get({alias: keyRef})
+      const k = await this.keyStore?.get({ alias: keyRef })
       if (k?.privateKeyHex) {
         managedKey = {
           ...identifier.keys.find((k) => k.kid === keyRef),
-          privateKeyHex: k.privateKeyHex as string
+          privateKeyHex: k.privateKeyHex as string,
         } as IKey
         verificationMethod = `${identifier.did}#${identifier.did.substring(8)}`
       }
     }
-    return {managedKey, verificationMethod};
+    return { managedKey, verificationMethod }
   }
 
   /** {@inheritdoc ICredentialIssuerLD.createVerifiablePresentationLD} */
@@ -185,7 +185,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       throw new Error('invalid_argument: args.presentation.holder must be a DID managed by this agent')
     }
     try {
-      const {managedKey, verificationMethod} = await this.getSigningKey(identifier, args.keyRef);
+      const { managedKey, verificationMethod } = await this.getSigningKey(identifier, args.keyRef)
       const { signingKey, verificationMethodId } = await this.findSigningKeyWithId(context, identifier, args.keyRef)
 
       return await this.ldCredentialModule.signLDVerifiablePresentation(
