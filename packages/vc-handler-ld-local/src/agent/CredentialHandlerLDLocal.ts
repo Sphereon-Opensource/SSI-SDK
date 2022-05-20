@@ -109,15 +109,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       throw new Error(`invalid_argument: args.credential.issuer must be a DID managed by this agent. ${e}`)
     }
     try {
-      let managedKey: IKey | undefined
-      let verificationMethod: string | undefined
-      if (args.keyRef) {
-        const k = await this.keyStore?.get({ alias: args.keyRef })
-        if (k?.privateKeyHex) {
-          managedKey = { ...identifier.keys.find((k) => k.kid === args.keyRef), privateKeyHex: k.privateKeyHex as string } as IKey
-          verificationMethod = `${identifier.did}#${identifier.did.substring(8)}`
-        }
-      }
+      const { managedKey, verificationMethod } = await this.getSigningKey(identifier, args.keyRef)
       const { signingKey, verificationMethodId } = await this.findSigningKeyWithId(context, identifier, args.keyRef)
       return await this.ldCredentialModule.issueLDVerifiableCredential(
         credential,
@@ -131,6 +123,22 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       debug(error)
       return Promise.reject(error)
     }
+  }
+
+  private async getSigningKey(identifier: IIdentifier, keyRef?: string) {
+    let managedKey: IKey | undefined
+    let verificationMethod: string | undefined
+    if (keyRef) {
+      const k = await this.keyStore?.get({ alias: keyRef })
+      if (k?.privateKeyHex) {
+        managedKey = {
+          ...identifier.keys.find((k) => k.kid === keyRef),
+          privateKeyHex: k.privateKeyHex as string,
+        } as IKey
+        verificationMethod = `${identifier.did}#${identifier.did.substring(8)}`
+      }
+    }
+    return { managedKey, verificationMethod }
   }
 
   /** {@inheritdoc ICredentialIssuerLD.createVerifiablePresentationLD} */
@@ -177,13 +185,14 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       throw new Error('invalid_argument: args.presentation.holder must be a DID managed by this agent')
     }
     try {
+      const { managedKey, verificationMethod } = await this.getSigningKey(identifier, args.keyRef)
       const { signingKey, verificationMethodId } = await this.findSigningKeyWithId(context, identifier, args.keyRef)
 
       return await this.ldCredentialModule.signLDVerifiablePresentation(
         presentation,
         identifier.did,
-        signingKey,
-        verificationMethodId,
+        managedKey || signingKey,
+        managedKey ? (verificationMethod as string) : verificationMethodId,
         args.challenge,
         args.domain,
         args.purpose,

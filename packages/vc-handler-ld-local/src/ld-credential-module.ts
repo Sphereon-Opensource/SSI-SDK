@@ -1,7 +1,7 @@
 import { purposes } from '@digitalcredentials/jsonld-signatures'
 import * as vc from '@digitalcredentials/vc'
-import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
 import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
+import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
 import {
   CredentialPayload,
@@ -106,6 +106,13 @@ export class LdCredentialModule {
 
     suite.preSigningPresModification(presentation)
 
+    if (key.type === 'Bls12381G2') {
+      return await jsonld.sign(presentation, {
+        suite: suite.getSuiteForSigning(key, holderDid, verificationMethodId, context),
+        purpose,
+        documentLoader,
+      })
+    }
     return await vc.signPresentation({
       presentation,
       suite: suite.getSuiteForSigning(key, holderDid, verificationMethodId, context),
@@ -175,17 +182,30 @@ export class LdCredentialModule {
     //AssertionProofPurpose()
   ): Promise<boolean> {
     // console.log(JSON.stringify(presentation, null, 2))
-
-    const result = await vc.verify({
-      presentation,
-      suite: this.getAllVerificationSuites(),
-      documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
-      challenge,
-      domain,
-      presentationPurpose,
-      compactProof: false,
-      checkStatus,
-    })
+    let result
+    if (presentation.proof.type === 'BbsBlsSignature2020') {
+      //Should never be null or undefined
+      const suite = this.ldSuiteLoader
+        .getAllSignatureSuites()
+        .find((s) => s.getSupportedVeramoKeyType() === 'Bls12381G2')
+        ?.getSuiteForVerification() as BbsBlsSignature2020
+      result = await jsonld.verify(presentation, {
+        suite,
+        purpose: presentationPurpose,
+        documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
+      })
+    } else {
+      result = await vc.verify({
+        presentation,
+        suite: this.getAllVerificationSuites(),
+        documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
+        challenge,
+        domain,
+        presentationPurpose,
+        compactProof: false,
+        checkStatus,
+      })
+    }
 
     if (result.verified) return true
 
