@@ -1,5 +1,6 @@
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
 import { CredentialPayload, IAgentContext, IAgentPlugin, IIdentifier, IKey, IResolver, PresentationPayload } from '@veramo/core'
+import { AbstractPrivateKeyStore } from '@veramo/key-manager'
 import {
   _ExtendedIKey,
   extractIssuer,
@@ -46,8 +47,14 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     verifyPresentationLDLocal: this.verifyPresentationLDLocal.bind(this),
     verifyCredentialLDLocal: this.verifyCredentialLDLocal.bind(this),
   }
-
-  constructor(options: { contextMaps: RecordLike<OrPromise<ContextDoc>>[]; suites: SphereonLdSignature[]; bindingOverrides?: IBindingOverrides }) {
+  private keyStore?: AbstractPrivateKeyStore
+  constructor(options: {
+    contextMaps: RecordLike<OrPromise<ContextDoc>>[]
+    suites: SphereonLdSignature[]
+    bindingOverrides?: IBindingOverrides
+    keyStore?: AbstractPrivateKeyStore
+  }) {
+    this.keyStore = options.keyStore
     this.ldCredentialModule = new LdCredentialModule({
       ldContextLoader: new LdContextLoader({ contextsPaths: options.contextMaps }),
       ldSuiteLoader: new LdSuiteLoader({ ldSignatureSuites: options.suites }),
@@ -102,13 +109,21 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       throw new Error(`invalid_argument: args.credential.issuer must be a DID managed by this agent. ${e}`)
     }
     try {
+      let managedKey: IKey | undefined
+      let verificationMethod: string | undefined
+      if (args.keyRef) {
+        const k = await this.keyStore?.get({ alias: args.keyRef })
+        if (k?.privateKeyHex) {
+          managedKey = { ...identifier.keys.find((k) => k.kid === args.keyRef), privateKeyHex: k.privateKeyHex as string } as IKey
+          verificationMethod = `${identifier.did}#${identifier.did.substring(8)}`
+        }
+      }
       const { signingKey, verificationMethodId } = await this.findSigningKeyWithId(context, identifier, args.keyRef)
-
       return await this.ldCredentialModule.issueLDVerifiableCredential(
         credential,
         identifier.did,
-        signingKey,
-        verificationMethodId,
+        managedKey || signingKey,
+        managedKey ? (verificationMethod as string) : verificationMethodId,
         args.purpose,
         context
       )

@@ -1,5 +1,6 @@
 import { purposes } from '@digitalcredentials/jsonld-signatures'
 import * as vc from '@digitalcredentials/vc'
+import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
 import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
 import {
@@ -17,6 +18,9 @@ import Debug from 'debug'
 import { LdContextLoader } from './ld-context-loader'
 import { LdDocumentLoader } from './ld-document-loader'
 import { LdSuiteLoader } from './ld-suite-loader'
+
+//Support for Typescript added in version 9.0.0
+const jsonld = require('jsonld-signatures')
 
 export type RequiredAgentMethods = IResolver & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>
 
@@ -55,18 +59,29 @@ export class LdCredentialModule {
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
     const documentLoader = this.ldDocumentLoader.getLoader(context, true)
 
-    // some suites can modify the incoming credential (e.g. add required contexts)W
+    // some suites can modify the incoming credential (e.g. add required contexts)
     suite.preSigningCredModification(credential)
     debug(`Signing suite will be retrieved for ${verificationMethodId}...`)
     const signingSuite = await suite.getSuiteForSigning(key, issuerDid, verificationMethodId, context)
     debug(`Issuer ${issuerDid} will create VC for ${key.kid}...`)
-    const verifiableCredential = await vc.issue({
-      credential,
-      purpose,
-      suite: signingSuite,
-      documentLoader,
-      compactProof: false,
-    })
+
+    let verifiableCredential
+    //Needs to be signed using jsonld-signaures@5.0.1
+    if (key.type === 'Bls12381G2') {
+      verifiableCredential = await jsonld.sign(credential, {
+        suite: signingSuite,
+        purpose,
+        documentLoader,
+      })
+    } else {
+      verifiableCredential = await vc.issue({
+        credential,
+        purpose,
+        suite: signingSuite,
+        documentLoader,
+        compactProof: false,
+      })
+    }
     debug(`Issuer ${issuerDid} created VC for ${key.kid}`)
     return verifiableCredential
   }
@@ -111,15 +126,28 @@ export class LdCredentialModule {
   ): Promise<boolean> {
     const verificationSuites = this.getAllVerificationSuites()
     this.ldSuiteLoader.getAllSignatureSuites().forEach((suite) => suite.preVerificationCredModification(credential))
-    const result = await vc.verifyCredential({
-      credential,
-      suite: verificationSuites,
-      documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
-      purpose: purpose,
-      compactProof: false,
-      checkStatus: checkStatus,
-    })
-
+    let result
+    if (credential.proof.type === 'BbsBlsSignature2020') {
+      //Should never be null or undefined
+      const suite = this.ldSuiteLoader
+        .getAllSignatureSuites()
+        .find((s) => s.getSupportedVeramoKeyType() === 'Bls12381G2')
+        ?.getSuiteForVerification() as BbsBlsSignature2020
+      result = await jsonld.verify(credential, {
+        suite,
+        purpose: purpose,
+        documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
+      })
+    } else {
+      result = await vc.verifyCredential({
+        credential,
+        suite: verificationSuites,
+        documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
+        purpose: purpose,
+        compactProof: false,
+        checkStatus: checkStatus,
+      })
+    }
     if (result.verified) return true
 
     // NOT verified.

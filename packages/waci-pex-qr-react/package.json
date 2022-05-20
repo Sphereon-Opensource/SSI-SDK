@@ -14,7 +14,7 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@veramo/core": "3.1.1-next.26",
+    "@veramo/core": "3.1.2-next.84",
     "base64url": "^3.0.1",
     "react": "^17.0.2",
     "react-qr-code": "^2.0.3"
@@ -25,7 +25,7 @@
     "@types/jest": "^27.0.1",
     "@types/react": "^17.0.21",
     "@types/uuid": "^8.3.1",
-    "@veramo/cli": "3.1.1-next.26",
+    "@veramo/cli": "3.1.2-next.84",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
     "jest": "^27.0.6",

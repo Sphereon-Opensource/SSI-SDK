@@ -12,6 +12,7 @@ import { SphereonEd25519Signature2018 } from '../suites/Ed25519Signature2018'
 import { SphereonEd25519Signature2020 } from '../suites/Ed25519Signature2020'
 
 import vcHandlerLocalAgentLogic from './shared/vcHandlerLocalAgentLogic'
+import { SphereonBbsBlsSignature2020 } from '../suites'
 
 jest.setTimeout(30000)
 
@@ -28,7 +29,11 @@ if (!process.env.VC_HTTP_API_AUTH_TOKEN) {
 const setup = async (): Promise<boolean> => {
   const config = getConfig('packages/vc-handler-ld-local/agent.yml')
   ;(config.agent.$args[0].plugins[0].$args[0].contextMaps = [LdDefaultContexts /*, customContext*/]),
-    (config.agent.$args[0].plugins[0].$args[0].suites = [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()])
+    (config.agent.$args[0].plugins[0].$args[0].suites = [
+      new SphereonEd25519Signature2018(),
+      new SphereonEd25519Signature2020(),
+      new SphereonBbsBlsSignature2020(),
+    ])
   const { agent } = createObjects(config, { agent: '/agent' })
   serverAgent = agent
 
