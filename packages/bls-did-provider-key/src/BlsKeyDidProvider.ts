@@ -4,7 +4,7 @@ import Multibase from 'multibase'
 import Multicodec from 'multicodec'
 import Debug from 'debug'
 
-const debug = Debug('sphereon:did-key:identifier-bls-provider')
+const debug = Debug('bls-did-provider-key')
 
 type IContext = IAgentContext<IKeyManager>
 

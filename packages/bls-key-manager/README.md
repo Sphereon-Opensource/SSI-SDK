@@ -7,4 +7,4 @@
 </h1>
 
 This plugin combines multiple Key management systems and exposes a unified API to the DID manager
-and other plugins that require crypto functionality.
+and other plugins that require crypto functionality. It adds Bls keys support to the default Veramo Key Manager
