@@ -51,17 +51,17 @@ export default (testContext: {
       await testContext.setup()
       agent = testContext.getAgent()
 
-      defaultParty = await agent.addParty({ name: 'default_party' })
-      defaultPartyConnection = await agent.addConnection({ partyId: defaultParty.id!, connection })
-      defaultParty = await agent.getParty({ partyId: defaultParty.id! })
+      defaultParty = await agent.cmAddParty({ name: 'default_party' })
+      defaultPartyConnection = await agent.cmAddConnection({ partyId: defaultParty.id!, connection })
+      defaultParty = await agent.cmGetParty({ partyId: defaultParty.id! })
 
-      await agent.addConnection({ partyId: defaultParty.id!, connection })
+      await agent.cmAddConnection({ partyId: defaultParty.id!, connection })
     })
 
     afterAll(testContext.tearDown)
 
     it('should get party by id',async () => {
-      const result = await agent.getParty({ partyId: defaultParty.id! })
+      const result = await agent.cmGetParty({ partyId: defaultParty.id! })
 
       expect(result.id).toEqual(defaultParty.id)
     })
@@ -70,12 +70,12 @@ export default (testContext: {
       const partyId = 'unknownPartyId'
 
       await expect(
-          agent.getParty({ partyId })
+          agent.cmGetParty({ partyId })
       ).rejects.toThrow(`No party found for id: ${partyId}`)
     })
 
     it('should get all parties',async () => {
-      const result = await agent.getParties()
+      const result = await agent.cmGetParties()
 
       expect(result.length).toBeGreaterThan(0)
     })
@@ -83,7 +83,7 @@ export default (testContext: {
     it('should add party',async () => {
       const partyName = 'new_party'
 
-      const result = await agent.addParty({ name: partyName })
+      const result = await agent.cmAddParty({ name: partyName })
 
       expect(result.name).toEqual(partyName)
     })
@@ -91,7 +91,7 @@ export default (testContext: {
     it('should throw error when adding party with duplicate name',async () => {
       const partyName = 'default_party'
       await expect(
-        agent.addParty({ name: 'default_party' })
+        agent.cmAddParty({ name: 'default_party' })
       ).rejects.toThrow(`Duplicate names are not allowed. Name: ${partyName}`)
     })
 
@@ -102,7 +102,7 @@ export default (testContext: {
         name: partyName
       }
 
-      const result = await agent.updateParty({ party })
+      const result = await agent.cmUpdateParty({ party })
 
       expect(result.name).toEqual(partyName)
     })
@@ -115,27 +115,27 @@ export default (testContext: {
         name: 'new_name'
       }
       await expect(
-          agent.updateParty({ party })
+          agent.cmUpdateParty({ party })
       ).rejects.toThrow(`No party found for id: ${partyId}`)
     })
 
     it('should remove party by id and its relations',async () => {
-      const removeParty = await agent.addParty({ name: 'remove_party' })
-      const removePartyConnection = await agent.addConnection({ partyId: removeParty.id!, connection })
+      const removeParty = await agent.cmAddParty({ name: 'remove_party' })
+      const removePartyConnection = await agent.cmAddConnection({ partyId: removeParty.id!, connection })
 
-      const result = await agent.removeParty({ partyId: removeParty.id! })
+      const result = await agent.cmRemoveParty({ partyId: removeParty.id! })
 
       expect(result).toEqual(true)
       await expect(
-          agent.getParty({ partyId: removeParty.id! })
+          agent.cmGetParty({ partyId: removeParty.id! })
       ).rejects.toThrow(`No party found for id: ${removeParty.id!}`)
       await expect(
-          agent.getConnection({ connectionId: removePartyConnection.id! })
+          agent.cmGetConnection({ connectionId: removePartyConnection.id! })
       ).rejects.toThrow(`No connection found for id: ${removePartyConnection.id!}`)
     })
 
     it('should get connection by id',async () => {
-      const result = await agent.getConnection({ connectionId: defaultPartyConnection.id! })
+      const result = await agent.cmGetConnection({ connectionId: defaultPartyConnection.id! })
 
       expect(result.id).toEqual(defaultPartyConnection.id)
     })
@@ -144,20 +144,20 @@ export default (testContext: {
       const connectionId = 'b0b5b2f9-7d78-4533-8bc1-386e4f08dce1'
 
       await expect(
-          agent.getConnection({
+          agent.cmGetConnection({
             connectionId,
           })
       ).rejects.toThrow(`No connection found for id: ${connectionId}`)
     })
 
     it('should get all connections',async () => {
-      const result = await agent.getConnections({ partyId: defaultParty.id! })
+      const result = await agent.cmGetConnections({ partyId: defaultParty.id! })
 
       expect(result.length).toBeGreaterThan(0)
     })
 
     it('should add connection',async () => {
-      const result = await agent.addConnection({ partyId: defaultParty.id!, connection })
+      const result = await agent.cmAddConnection({ partyId: defaultParty.id!, connection })
 
       expect(result).not.toBeNull()
     })
@@ -177,7 +177,7 @@ export default (testContext: {
         }
       }
 
-      const result = await agent.updateConnection({ connection })
+      const result = await agent.cmUpdateConnection({ connection })
 
       expect((result.config as IOpenIdConfig).clientSecret).toEqual(clientSecret)
     })
@@ -199,19 +199,19 @@ export default (testContext: {
       }
 
       await expect(
-          agent.updateConnection({ connection })
+          agent.cmUpdateConnection({ connection })
       ).rejects.toThrow(`No connection found for id: ${connectionId}`)
     })
 
     it('should remove connection by id and its relations',async () => {
-      const addedConnection = await agent.addConnection({ partyId: defaultParty.id!, connection })
+      const addedConnection = await agent.cmAddConnection({ partyId: defaultParty.id!, connection })
 
-      const result = await agent.removeConnection({connectionId: addedConnection.id!})
+      const result = await agent.cmRemoveConnection({connectionId: addedConnection.id!})
 
       expect(result).toEqual(true)
       //TODO add relation checks
       await expect(
-          agent.getConnection({ connectionId: addedConnection.id! })
+          agent.cmGetConnection({ connectionId: addedConnection.id! })
       ).rejects.toThrow(`No connection found for id: ${addedConnection.id!}`)
     })
 
@@ -219,7 +219,7 @@ export default (testContext: {
       const connectionId = 'unknownConnectionId'
 
       await expect(
-          agent.removeConnection({ connectionId })
+          agent.cmRemoveConnection({ connectionId })
       ).rejects.toThrow(`No connection found for id: ${connectionId}`)
     })
   })

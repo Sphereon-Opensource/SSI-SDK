@@ -3,7 +3,7 @@ import {
   ChildEntity
 } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
-import { IOpenIdConfig } from '@sphereon/ssi-sdk-core'
+import { IBasicOpenIdConfig } from '@sphereon/ssi-sdk-core'
 
 @ChildEntity('OpenIdConfig')
 export class OpenIdConfigEntity extends BaseConfigEntity {
@@ -29,7 +29,7 @@ export class OpenIdConfigEntity extends BaseConfigEntity {
   clientAuthMethod!: 'basic' | 'post' | undefined
 }
 
-export const openIdConfigEntityFrom = (config: IOpenIdConfig): OpenIdConfigEntity => {
+export const openIdConfigEntityFrom = (config: IBasicOpenIdConfig): OpenIdConfigEntity => {
   const openIdConfig = new OpenIdConfigEntity()
   openIdConfig.clientId = config.clientId
   openIdConfig.clientSecret = config.clientSecret

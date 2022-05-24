@@ -20,16 +20,16 @@ For now the following connection types are supported:
 - DID AUTH SIOP
 
 ## Available functions
-- getParty
-- getParties
-- addParty
-- updateParty
-- removeParty
-- getConnection
-- getConnections
-- addConnection
-- updateConnection
-- removeConnection
+- cmGetParty
+- cmGetParties
+- cmAddParty
+- cmUpdateParty
+- cmRemoveParty
+- cmGetConnection
+- cmGetConnections
+- cmAddConnection
+- cmUpdateConnection
+- cmRemoveConnection
 
 ## Usage
 
@@ -57,43 +57,43 @@ const agent = createAgent<IConnectionManager>({
 ### Get a party:
 ```typescript
 const partyId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
-const result = await agent.getConnection({
+const result = await agent.cmGetConnection({
   partyId,
 })
 ```
 
 ### Get parties:
 ```typescript
-const result = await agent.getParties()
+const result = await agent.cmGetParties()
 ```
 
 ### Add a party:
 ```typescript
-const result = await agent.addParty({ name: 'Party' })
+const result = await agent.cmAddParty({ name: 'Party' })
 ```
 
 ### Update a party:
 ```typescript
 const partyId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
-const party = await agent.getConnection({
+const party = await agent.cmGetConnection({
   partyId
 }).then(party => {
   return {...party, name: 'new_name'}
 })
 
-const result = await agent.updateParty({ party })
+const result = await agent.cmUpdateParty({ party })
 ```
 
 ### Remove a party:
 ```typescript
 const partyId = 'ef6e13b2-a520-4bb6-9a13-9be529ce22b8'
-const result = await agent.removeParty({ partyId })
+const result = await agent.cmRemoveParty({ partyId })
 ```
 
 ### Get a connection:
 ```typescript
 const connectionId = 'cdfd231c-6d40-4e43-9bd0-e8c97262ffe1'
-const result = await agent.getConnection({
+const result = await agent.cmGetConnection({
   connectionId,
 })
 ```
@@ -101,7 +101,7 @@ const result = await agent.getConnection({
 ### Get connections:
 ```typescript
 const partyId = '00492d95-22b9-41c1-b475-90bf1667ae52'
-const result = await agent.getConnections({ partyId })
+const result = await agent.cmGetConnections({ partyId })
 ```
 
 ### Add a connection:
@@ -133,7 +133,7 @@ const connection: {
     }
   ]
 }
-const result = await agent.addConnection({
+const result = await agent.cmAddConnection({
   partyId,
   connection
 })
@@ -142,18 +142,18 @@ const result = await agent.addConnection({
 ### Update a connection:
 ```typescript
 const connectionId = 'cdfd231c-6d40-4e43-9bd0-e8c97262ffe1'
-const result = await agent.getConnection({
+const result = await agent.cmGetConnection({
   connectionId,
 }).then(connection => {
   return {...connection, identifier: {...connection.identifier, correlationId: 'new_id'}}
 })
-const connection = await agent.updateConnection({ connection })
+const connection = await agent.cmUpdateConnection({ connection })
 ```
 
 ### Remove a connection:
 ```typescript
 const connectionId = 'cdfd231c-6d40-4e43-9bd0-e8c97262ffe1'
-await agent.removeConnection({
+await agent.cmRemoveConnection({
   connectionId,
 })
 ```

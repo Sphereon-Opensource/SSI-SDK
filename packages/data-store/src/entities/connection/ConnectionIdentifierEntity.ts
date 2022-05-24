@@ -4,8 +4,10 @@ import {
   PrimaryGeneratedColumn,
   BaseEntity
 } from 'typeorm'
-import { ConnectionIdentifierEnum } from '@sphereon/ssi-sdk-core/dist/types'
-import { IConnectionIdentifier } from '@sphereon/ssi-sdk-core'
+import {
+  ConnectionIdentifierEnum,
+  IBasicConnectionIdentifier
+} from '@sphereon/ssi-sdk-core'
 
 @Entity('ConnectionIdentifier')
 export class ConnectionIdentifierEntity extends BaseEntity {
@@ -19,7 +21,7 @@ export class ConnectionIdentifierEntity extends BaseEntity {
   correlationId!: string
 }
 
-export const connectionIdentifierEntityFrom = (identifier: IConnectionIdentifier): ConnectionIdentifierEntity => {
+export const connectionIdentifierEntityFrom = (identifier: IBasicConnectionIdentifier): ConnectionIdentifierEntity => {
   const identifierEntity = new ConnectionIdentifierEntity()
   identifierEntity.type = identifier.type
   identifierEntity.correlationId = identifier.correlationId

@@ -21,10 +21,10 @@ import {
 } from './MetadataItemEntity'
 import { PartyEntity } from './PartyEntity'
 import {
-  ConnectionConfig,
+  BasicConnectionConfig,
   ConnectionTypeEnum,
-  IConnection,
-  IConnectionMetadataItem,
+  IBasicConnection,
+  IBasicConnectionMetadataItem,
   IDidAuthConfig,
   IOpenIdConfig
 } from '@sphereon/ssi-sdk-core'
@@ -63,17 +63,17 @@ export class ConnectionEntity extends BaseEntity {
   lastUpdatedAt!: Date
 }
 
-export const connectionEntityFrom = (connection: Omit<IConnection, 'id' | 'createdAt' | 'lastUpdatedAt' | 'config.id' | 'identifier.id'>): ConnectionEntity => {
+export const connectionEntityFrom = (connection: IBasicConnection): ConnectionEntity => {
   const connectionEntity = new ConnectionEntity()
   connectionEntity.type = connection.type
   connectionEntity.identifier = connectionIdentifierEntityFrom(connection.identifier)
   connectionEntity.config = configEntityFrom(connection.type, connection.config)
-  connectionEntity.metadata = connection.metadata ? connection.metadata.map((item: IConnectionMetadataItem) => metadataItemEntityFrom(item)) : []
+  connectionEntity.metadata = connection.metadata ? connection.metadata.map((item: IBasicConnectionMetadataItem) => metadataItemEntityFrom(item)) : []
 
   return connectionEntity
 }
 
-const configEntityFrom = (type: ConnectionTypeEnum, config: ConnectionConfig): BaseConfigEntity => {
+const configEntityFrom = (type: ConnectionTypeEnum, config: BasicConnectionConfig): BaseConfigEntity => {
   switch(type) {
     case ConnectionTypeEnum.OPENID:
       return openIdConfigEntityFrom(config as IOpenIdConfig)

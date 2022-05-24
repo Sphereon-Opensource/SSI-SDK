@@ -25,16 +25,16 @@ import {
 export class ConnectionManager implements IAgentPlugin {
   readonly schema = schema.IConnectionManager
   readonly methods: IConnectionManager = {
-    getParty: this.getParty.bind(this),
-    getParties: this.getParties.bind(this),
-    addParty: this.addParty.bind(this),
-    updateParty: this.updateParty.bind(this),
-    removeParty: this.removeParty.bind(this),
-    getConnection: this.getConnection.bind(this),
-    getConnections: this.getConnections.bind(this),
-    addConnection: this.addConnection.bind(this),
-    updateConnection: this.updateConnection.bind(this),
-    removeConnection: this.removeConnection.bind(this),
+    cmGetParty: this.cmGetParty.bind(this),
+    cmGetParties: this.cmGetParties.bind(this),
+    cmAddParty: this.cmAddParty.bind(this),
+    cmUpdateParty: this.cmUpdateParty.bind(this),
+    cmRemoveParty: this.cmRemoveParty.bind(this),
+    cmGetConnection: this.cmGetConnection.bind(this),
+    cmGetConnections: this.cmGetConnections.bind(this),
+    cmAddConnection: this.cmAddConnection.bind(this),
+    cmUpdateConnection: this.cmUpdateConnection.bind(this),
+    cmRemoveConnection: this.cmRemoveConnection.bind(this),
   }
 
   private readonly store: AbstractConnectionStore;
@@ -43,61 +43,61 @@ export class ConnectionManager implements IAgentPlugin {
     this.store = options.store
   }
 
-  /** {@inheritDoc IConnectionManager.getParty} */
-  private async getParty(args: IGetPartyArgs, context: IRequiredContext): Promise<IConnectionParty> {
+  /** {@inheritDoc IConnectionManager.cmGetParty} */
+  private async cmGetParty(args: IGetPartyArgs, context: IRequiredContext): Promise<IConnectionParty> {
     return this.store.getParty(args.partyId)
       .then(party => party)
   }
 
-  /** {@inheritDoc IConnectionManager.getParties} */
-  private async getParties(): Promise<Array<IConnectionParty>> {
+  /** {@inheritDoc IConnectionManager.cmGetParties} */
+  private async cmGetParties(): Promise<Array<IConnectionParty>> {
     return this.store.getParties()
       .then(parties => parties)
   }
 
-  /** {@inheritDoc IConnectionManager.addParty} */
-  private async addParty(args: IAddPartyArgs, context: IRequiredContext): Promise<IConnectionParty> {
+  /** {@inheritDoc IConnectionManager.cmAddParty} */
+  private async cmAddParty(args: IAddPartyArgs, context: IRequiredContext): Promise<IConnectionParty> {
     return this.store.addParty(args.name)
       .then(party => party)
   }
 
-  /** {@inheritDoc IConnectionManager.updateParty} */
-  private async updateParty(args: IUpdatePartyArgs, context: IRequiredContext): Promise<IConnectionParty> {
+  /** {@inheritDoc IConnectionManager.cmUpdateParty} */
+  private async cmUpdateParty(args: IUpdatePartyArgs, context: IRequiredContext): Promise<IConnectionParty> {
     return this.store.updateParty(args.party)
       .then(connection => connection)
   }
 
-  /** {@inheritDoc IConnectionManager.removeParty} */
-  private async removeParty(args: IRemovePartyArgs, context: IRequiredContext): Promise<boolean> {
+  /** {@inheritDoc IConnectionManager.cmRemoveParty} */
+  private async cmRemoveParty(args: IRemovePartyArgs, context: IRequiredContext): Promise<boolean> {
     return this.store.removeParty(args.partyId).then(() => true)
   }
 
-  /** {@inheritDoc IConnectionManager.getConnection} */
-  private async getConnection(args: IGetConnectionArgs, context: IRequiredContext): Promise<IConnection> {
+  /** {@inheritDoc IConnectionManager.cmGetConnection} */
+  private async cmGetConnection(args: IGetConnectionArgs, context: IRequiredContext): Promise<IConnection> {
     return this.store.getConnection(args.connectionId)
       .then(connection => connection)
   }
 
-  /** {@inheritDoc IConnectionManager.getConnections} */
-  private async getConnections(args: IGetConnectionsArgs, context: IRequiredContext): Promise<Array<IConnection>> {
+  /** {@inheritDoc IConnectionManager.cmGetConnections} */
+  private async cmGetConnections(args: IGetConnectionsArgs, context: IRequiredContext): Promise<Array<IConnection>> {
     return this.store.getConnections(args.partyId)
       .then(connections => connections)
   }
 
-  /** {@inheritDoc IConnectionManager.addConnection} */
-  private async addConnection(args: IAddConnectionArgs, context: IRequiredContext): Promise<IConnection> {
+  /** {@inheritDoc IConnectionManager.cmAddConnection} */
+  private async cmAddConnection(args: IAddConnectionArgs, context: IRequiredContext): Promise<IConnection> {
     return this.store.addConnection(args.partyId, args.connection)
       .then(connection => connection)
   }
 
-  /** {@inheritDoc IConnectionManager.updateConnection} */
-  private async updateConnection(args: IUpdateConnectionArgs, context: IRequiredContext): Promise<IConnection> {
+  /** {@inheritDoc IConnectionManager.cmUpdateConnection} */
+  private async cmUpdateConnection(args: IUpdateConnectionArgs, context: IRequiredContext): Promise<IConnection> {
     return this.store.updateConnection(args.connection)
       .then(connection => connection)
   }
 
-  /** {@inheritDoc IConnectionManager.removeConnection} */
-  private async removeConnection(args: IRemoveConnectionArgs, context: IRequiredContext): Promise<boolean> {
+  /** {@inheritDoc IConnectionManager.cmRemoveConnection} */
+  private async cmRemoveConnection(args: IRemoveConnectionArgs, context: IRequiredContext): Promise<boolean> {
     return this.store.removeConnection(args.connectionId).then(() => true)
   }
 }

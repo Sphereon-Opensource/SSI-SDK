@@ -3,7 +3,7 @@ import {
   ChildEntity
 } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
-import { IDidAuthConfig } from '@sphereon/ssi-sdk-core'
+import { IBasicDidAuthConfig } from '@sphereon/ssi-sdk-core'
 
 @ChildEntity('DidAuthConfig')
 export class DidAuthConfigEntity extends BaseConfigEntity {
@@ -17,7 +17,7 @@ export class DidAuthConfigEntity extends BaseConfigEntity {
   sessionId!: string
 }
 
-export const didAuthConfigEntityFrom = (config: IDidAuthConfig): DidAuthConfigEntity => {
+export const didAuthConfigEntityFrom = (config: IBasicDidAuthConfig): DidAuthConfigEntity => {
   const didAuthConfig = new DidAuthConfigEntity()
   didAuthConfig.identifier = config.identifier.did
   didAuthConfig.redirectUrl = config.redirectUrl

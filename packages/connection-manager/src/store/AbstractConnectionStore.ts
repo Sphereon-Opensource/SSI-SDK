@@ -1,4 +1,5 @@
 import {
+  IBasicConnection,
   IConnection,
   IConnectionParty
 } from '@sphereon/ssi-sdk-core'
@@ -11,7 +12,7 @@ export abstract class AbstractConnectionStore {
   abstract removeParty(partyId: string): Promise<void>
   abstract getConnection(connectionId: string): Promise<IConnection>
   abstract getConnections(partyId: string): Promise<Array<IConnection>>
-  abstract addConnection(partyId: string, connection: Omit<IConnection, 'id' | 'createdAt' | 'lastUpdatedAt' | 'config.id' | 'identifier.id'>): Promise<IConnection>
+  abstract addConnection(partyId: string, connection: IBasicConnection): Promise<IConnection>
   abstract updateConnection(connection: IConnection): Promise<IConnection>
   abstract removeConnection(connectionId: string): Promise<void>
 }

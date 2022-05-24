@@ -231,7 +231,7 @@ export class ConnectionStore extends AbstractConnectionStore {
       case ConnectionTypeEnum.DIDAUTH:
         return {
           id: (config as DidAuthConfigEntity).id,
-          identifier: {did: (config as DidAuthConfigEntity).identifier, provider: '', keys: [], services: []},//(config as DidAuthConfigEntity).identifier,
+          identifier: {did: (config as DidAuthConfigEntity).identifier, provider: '', keys: [], services: []},
           stateId: '',
           redirectUrl: (config as DidAuthConfigEntity).redirectUrl,
           sessionId: (config as DidAuthConfigEntity).sessionId

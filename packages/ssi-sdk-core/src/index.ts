@@ -16,11 +16,17 @@ export {
   IConnectionParty,
   ConnectionTypeEnum,
   IConnection,
+  IBasicConnection,
   ConnectionIdentifierEnum,
   IConnectionIdentifier,
+  IBasicConnectionIdentifier,
   IConnectionMetadataItem,
+  IBasicConnectionMetadataItem,
   IOpenIdConfig,
+  IBasicOpenIdConfig,
   IDidAuthConfig,
-  ConnectionConfig
+  IBasicDidAuthConfig,
+  ConnectionConfig,
+  BasicConnectionConfig
 } from './types'
 export { SuppliedSigner } from './signers'

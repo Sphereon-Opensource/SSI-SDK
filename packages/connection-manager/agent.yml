@@ -7,16 +7,16 @@ constants:
   # please use your own X25519 key, this is only an example
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
-    - getParty
-    - getParties
-    - addParty
-    - updateParty
-    - removeParty
-    - getConnection
-    - getConnections
-    - addConnection
-    - updateConnection
-    - removeConnection
+    - cmGetParty
+    - cmGetParties
+    - cmAddParty
+    - cmUpdateParty
+    - cmRemoveParty
+    - cmGetConnection
+    - cmGetConnections
+    - cmAddConnection
+    - cmUpdateConnection
+    - cmRemoveConnection
 
 dbConnection:
   $require: typeorm?t=function#createConnection
