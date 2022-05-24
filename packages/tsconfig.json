@@ -10,6 +10,9 @@
     { "path": "vc-handler-ld-local" },
     { "path": "did-auth-siop-op-authenticator" },
     { "path": "waci-pex-qr-react" },
+    { "path": "bls-kms-local" },
+    { "path": "bls-did-provider-key" },
+    { "path": "bls-key-manager" },
     { "path": "connection-manager" },
     { "path": "data-store" }
   ]
