@@ -7,7 +7,7 @@
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "yarn build:schema-api && lerna run build && yarn build:copyfiles",
+    "build": "lerna run build && yarn build:copyfiles && yarn build:schema-api",
     "build:schema-api": "lerna run extract-api && lerna run generate-plugin-schema",
     "build:copyfiles": "lerna run build:copyfiles",
     "bootstrap": "lerna bootstrap",
