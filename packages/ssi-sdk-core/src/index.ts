@@ -13,5 +13,20 @@ export {
   Descriptor,
   IParsedDID,
   SignatureTypes,
+  IConnectionParty,
+  ConnectionTypeEnum,
+  IConnection,
+  IBasicConnection,
+  ConnectionIdentifierEnum,
+  IConnectionIdentifier,
+  IBasicConnectionIdentifier,
+  IConnectionMetadataItem,
+  IBasicConnectionMetadataItem,
+  IOpenIdConfig,
+  IBasicOpenIdConfig,
+  IDidAuthConfig,
+  IBasicDidAuthConfig,
+  ConnectionConfig,
+  BasicConnectionConfig
 } from './types'
 export { SuppliedSigner } from './signers'
