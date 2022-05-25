@@ -1,4 +1,3 @@
-// import fs from 'fs'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 import { Connection } from 'typeorm'
@@ -21,7 +20,6 @@ const setup = async (): Promise<boolean> => {
 
 const tearDown = async (): Promise<boolean> => {
   await (await dbConnection).close()
-  // fs.unlinkSync('packages/connection-manager/database.sqlite')
   return true
 }
 

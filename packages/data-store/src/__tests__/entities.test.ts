@@ -1,4 +1,3 @@
-// import fs from 'fs'
 import {
   createConnection,
   Connection
@@ -18,7 +17,6 @@ import {
 
 describe('Database entities test', () => {
   let dbConnection: Connection
-  // const databaseFile = './packages/data-store/database.sqlite'
   const connection_relations = [
     'config',
     'metadata',
@@ -29,7 +27,7 @@ describe('Database entities test', () => {
     async () =>
       (dbConnection = await createConnection({
         type: 'sqlite',
-        database: ':memory:',//databaseFile,
+        database: ':memory:',
         entities: Entities
       }))
   )
@@ -41,7 +39,6 @@ describe('Database entities test', () => {
 
   afterAll(async () => {
     await dbConnection.close()
-    // fs.unlinkSync(databaseFile)
   })
 
   it('Should save party to database', async () => {
