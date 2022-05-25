@@ -1,6 +1,6 @@
 import 'cross-fetch/polyfill'
 import express from 'express'
-import fs from 'fs'
+// import fs from 'fs'
 import { Server } from 'http'
 import { Connection } from 'typeorm'
 import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
@@ -13,7 +13,7 @@ import connectionManagerAgentLogic from './shared/connectionManagerAgentLogic'
 
 jest.setTimeout(30000)
 
-const databaseFile = './packages/connection-manager/rest-database.sqlite'
+// const databaseFile = './packages/connection-manager/rest-database.sqlite'
 const port = 3002
 const basePath = '/agent'
 
@@ -35,7 +35,7 @@ const getAgent = (options?: IAgentOptions) =>
 
 const setup = async (): Promise<boolean> => {
   const config = getConfig('packages/connection-manager/agent.yml')
-  config.constants.databaseFile = databaseFile
+  // config.constants.databaseFile = databaseFile
   const { agent, db } = createObjects(config, { agent: '/agent', db: '/dbConnection' })
   serverAgent = agent
   dbConnection = db
@@ -60,7 +60,7 @@ const setup = async (): Promise<boolean> => {
 const tearDown = async (): Promise<boolean> => {
   restServer.close()
   await (await dbConnection).close()
-  fs.unlinkSync(databaseFile)
+  // fs.unlinkSync(databaseFile)
   return true
 }
 

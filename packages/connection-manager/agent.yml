@@ -22,8 +22,7 @@ dbConnection:
   $require: typeorm?t=function#createConnection
   $args:
     - type: sqlite
-      database:
-        $ref: /constants/databaseFile
+      database: ':memory:'
       synchronize: true
       logging: false
       entities:
