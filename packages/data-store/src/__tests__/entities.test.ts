@@ -156,7 +156,7 @@ describe('Database entities test', () => {
 
     expect(fromDb?.type).toEqual(connection.type)
     expect(fromDb?.identifier.correlationId).toEqual(correlationId)
-    expect((fromDb?.config as DidAuthConfigEntity).identifier).toEqual(connection.config.identifier)
+    expect((fromDb?.config as DidAuthConfigEntity).identifier).toEqual(connection.config.identifier.did)
     expect(fromDb?.metadata.length).toEqual(2)
     expect(fromDb?.metadata[0]?.value).toEqual(correlationId)
   })
