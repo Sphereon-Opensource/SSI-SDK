@@ -167,6 +167,7 @@ export default (testContext: {
       const connection = {
         ...defaultPartyConnection,
         config: {
+          id: '25a619ee-d93e-44ae-8355-ab50d18af8bd',
           clientSecret,
           clientId: '138d7bf8-c930-4c6e-b928-97d3a4928b01',
           scopes: ['auth'],
