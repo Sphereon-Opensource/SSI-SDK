@@ -13,7 +13,7 @@ export class OpenIdConfigEntity extends BaseConfigEntity {
   @Column('text', { name: 'client_secret', nullable: false })
   clientSecret!: string
 
-  @Column('text', { nullable: false })
+  @Column('simple-array', { nullable: false })
   scopes!: Array<string>
 
   @Column('text', { nullable: false })
