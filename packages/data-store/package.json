@@ -11,7 +11,7 @@
     "@sphereon/ssi-sdk-core": "^0.5.0",
     "@sphereon/ssi-sdk-connection-manager": "^0.5.0",
     "debug": "^4.1.1",
-    "typeorm": "0.2.41"
+    "typeorm": "0.2.45"
   },
   "devDependencies": {
     "@types/debug": "4.1.7",
