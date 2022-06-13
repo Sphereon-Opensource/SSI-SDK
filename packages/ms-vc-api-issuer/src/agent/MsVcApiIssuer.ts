@@ -1,9 +1,7 @@
 import { IAgentPlugin } from '@veramo/core'
 import { LogLevel, ConfidentialClientApplication } from '@azure/msal-node'
 import { schema } from '../index'
-import { IMsAuthenticationArgs, IMsVcApiIssuer, IRequiredContext } from '../types/IMsVcApiIssuer'
-
-import { fetch } from 'cross-fetch'
+import { IMsAuthenticationArgs, IMsAuthenticationResponse, IMsVcApiIssuer, IRequiredContext } from '../types/IMsVcApiIssuer'
 
 /**
  * {@inheritDoc IMsVcApiIssuer}
@@ -27,7 +25,7 @@ export class MsVcApiIssuer implements IAgentPlugin {
   }
 
   /** {@inheritDoc IMsVcApiIssuer.authenticateMsVcApi} */
-  private async authenticateMsVcApi(args: IMsAuthenticationArgs, context: IRequiredContext): Promise<String> {
+  public async authenticateMsVcApi(args: IMsAuthenticationArgs, context: IRequiredContext): Promise<IMsAuthenticationResponse> {
     var msalConfig = {
       auth: {
         clientId: this.azClientId,
@@ -82,6 +80,6 @@ export class MsVcApiIssuer implements IAgentPlugin {
         }
         console.log(`accessToken: ${accessToken}`);
       });
-      return accessToken;
+      return accessToken as IMsAuthenticationResponse;
   }
 }

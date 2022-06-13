@@ -1,7 +1,7 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 
 export interface IMsVcApiIssuer extends IPluginMethodMap {
-  authenticateMsVcApi(args: IMsAuthenticationArgs, context: IRequiredContext): Promise<String>
+  authenticateMsVcApi(args: IMsAuthenticationArgs, context: IRequiredContext): Promise<IMsAuthenticationResponse>
 }
 
 export interface IMsAuthenticationArgs {
@@ -16,3 +16,4 @@ export enum events {
 }
 
 export type IRequiredContext = IAgentContext<Record<string, never>>
+export type IMsAuthenticationResponse = String

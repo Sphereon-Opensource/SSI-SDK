@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
-      "IVcApiIssuer": "./src/types/IVcApiIssuer.ts"
+      "IMsVcApiIssuer": "./src/types/IMsVcApiIssuer.ts"
     }
   },
   "scripts": {
