@@ -20,10 +20,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should authenticate to Microsoft Azure Active Directory', async () => {
       return await expect(
         agent.authenticateMsVcApi({
-          azClientId: '3064c4d2-ccc6-40ff-a292-f1aa09b1c509',
-          azClientSecret: 'Ub-8Q~yCzpmh6ouAttSde7L0YeqajaB99gdiKaT.',
+          azClientId: '04c2bd60-cdbf-4935-80dd-110fdf473e6e',
+          azClientSecret: 'WAM8Q~rE05C9ja2TRiZ3H~TYz2W4TdMe.jpwSc~p',
           azTenantId: 'e2a42b2f-7460-4499-afc2-425315ef058a',
-          credentialManifest: 'https://beta.eu.did.msidentity.com/v1.0/e2a42b2f-7460-4499-afc2-425315ef058a/verifiableCredential/contracts/mehmetvc'
+          credentialManifest: 'https://beta.eu.did.msidentity.com/v1.0/e2a42b2f-7460-4499-afc2-425315ef058a/verifiableCredential/contracts/VerifiedCredentialExpert2'
         })
       ).resolves.not.toBeNull()
     })

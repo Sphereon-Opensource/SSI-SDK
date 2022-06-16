@@ -34,9 +34,6 @@ export class MsVcApiIssuer implements IAgentPlugin {
       },
       system: {
         loggerOptions: {
-          loggerCallback(loglevel: any, message: any, containsPii: any) {
-            console.log(message);
-          },
           piiLoggingEnabled: false,
           logLevel: LogLevel.Verbose,
         }
