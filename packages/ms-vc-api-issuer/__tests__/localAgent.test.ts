@@ -3,7 +3,8 @@ import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 
 jest.setTimeout(30000)
 
-import vcApiIssuerAgentLogic from './shared/vcApiIssuerAgentLogic'
+import vcApiIssuerUsernamePasswordAgentLogic from './shared/vcApiIssuerUsernamePasswordAgentLogic'
+import vcApiIssuerClientCredentialAgentLogic from './shared/vcApiIssuerClientCredentialAgentLogic'
 
 let agent: any
 
@@ -23,5 +24,6 @@ const getAgent = () => agent
 const testContext = { getAgent, setup, tearDown }
 
 describe('ms-vc-api-isuuer-Local integration tests', () => {
-  vcApiIssuerAgentLogic(testContext)
+  vcApiIssuerUsernamePasswordAgentLogic(testContext)
+  vcApiIssuerClientCredentialAgentLogic(testContext)
 })

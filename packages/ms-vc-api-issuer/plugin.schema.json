@@ -2,29 +2,6 @@
   "IMsVcApiIssuer": {
     "components": {
       "schemas": {
-        "IMsAuthenticationArgs": {
-          "type": "object",
-          "properties": {
-            "azClientId": {
-              "type": "string"
-            },
-            "azClientSecret": {
-              "type": "string"
-            },
-            "azTenantId": {
-              "type": "string"
-            },
-            "credentialManifest": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "azClientId",
-            "azClientSecret",
-            "azTenantId",
-            "credentialManifest"
-          ]
-        },
         "IMsAuthenticationResponse": {
           "type": "object",
           "properties": {
@@ -44,7 +21,7 @@
         "authenticateMsVcApi": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/IMsAuthenticationArgs"
+            "type": "object"
           },
           "returnType": {
             "$ref": "#/components/schemas/IMsAuthenticationResponse"
