@@ -7,21 +7,21 @@ type ConfiguredAgent = TAgent<IMsVcApiIssuer>
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
   describe('Issuer Agent Plugin', () => {
     let agent: TAgent<IMsVcApiIssuer>
-    agent = createAgent({
-      plugins:[
-      new MsVcApiIssuer({
-        authenticationType: MsAuthenticationTypeEnum.UsernamePassword,
-        authenticationArgs: {
-          azTenantId: '<tenant_id>',
-          azClientId: '<client_id>',
-          scopes: ["user.read"],
-          username: '<username>',
-          password:'<password>',
-        }})]
-    })
+
     beforeAll(async () => {
       await testContext.setup()
-      agent = testContext.getAgent()
+      agent = createAgent({
+        plugins:[
+          new MsVcApiIssuer({
+            authenticationType: MsAuthenticationTypeEnum.UsernamePassword,
+            authenticationArgs: {
+              azTenantId: '<tenant_id>',
+              azClientId: '<client_id>',
+              scopes: ["user.read"],
+              username: '<username>',
+              password:'<password>',
+            }})]
+      })
     })
 
     afterAll(async () => {
