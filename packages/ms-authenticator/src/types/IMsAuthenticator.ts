@@ -1,7 +1,7 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import { AccountInfo } from '@azure/msal-common'
 
-export interface IMsVcApiIssuer extends IPluginMethodMap {
+export interface IMsAuthenticator extends IPluginMethodMap {
   authenticateMsVcApi(): Promise<IMsAuthenticationResponse>
 }
 

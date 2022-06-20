@@ -35,6 +35,10 @@ multiple packages (see lerna below). It contains plugins that extend the Veramo 
 
 The [core package](./packages/ssi-sdk-core/README.md) contains types and methods shared by the other plugins
 
+## MS Authenticator
+
+The core package for microsoft authentication using msal library.
+
 ## Factom DID Provider
 
 The [Factom Protocol DID Provider](./packages/factom-did-provider/README.md) can create DIDs using the

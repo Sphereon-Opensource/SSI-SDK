@@ -1,17 +1,11 @@
 {
-  "name": "@sphereon/ssi-sdk-ms-vc-api-issuer",
-  "version": "0.5.0",
+  "name": "@sphereon/ms-authenticator",
+  "version": "0.0.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "veramo": {
-    "pluginInterfaces": {
-      "IMsVcApiIssuer": "./src/types/IMsVcApiIssuer.ts"
-    }
-  },
   "scripts": {
-    "build": "tsc --build",
-    "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
+    "build": "tsc"
   },
   "dependencies": {
     "@azure/msal-common": "^7.0.0",
