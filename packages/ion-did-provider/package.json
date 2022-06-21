@@ -1,0 +1,33 @@
+{
+  "name": "@sphereon/ssi-sdk-ion-did-provider",
+  "description": "Veramo ion-did based identity controller plugin.",
+  "version": "0.5.2",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@sphereon/ion-tools": "^0.1.5",
+    "@veramo/core": "3.1.2-next.84",
+    "@veramo/did-manager": "3.1.2-next.84",
+    "debug": "^4.1.1"
+  },
+  "devDependencies": {
+    "@types/debug": "4.1.7",
+    "typescript": "4.4.3"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-OpenSource/ssi-sdk.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": []
+}
