@@ -1,56 +1,44 @@
-import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import { AccountInfo } from '@azure/msal-common'
+import { IAgentContext } from '@veramo/core'
 
-export interface IMsAuthenticator extends IPluginMethodMap {
-  authenticateMsVcApi(): Promise<IMsAuthenticationResponse>
-}
-
-export interface IMsAuthenticationWrapperArgs {
-  authenticationType: MsAuthenticationTypeEnum
-  authenticationArgs:
-    | IMsAuthenticationClientCredentialArgs
-    | IMsAuthenticationUsernamePasswordArgs
-    | IMsAuthenticationAuthorizationCodeArgs
-    | IMsAuthenticationOnBehalfOfArgs
-}
-
-export interface IMsAuthenticationArgs {
+/**
+ *   azClientId: clientId of the application you're trying to login
+ *   azClientSecret: secret of the application you're trying to login
+ *   azTenantId: your MS Azure tenantId
+ *   credentialManifest: address of your credential manifest. usually in following format:
+ *    https://beta.eu.did.msidentity.com/v1.0/<tenant_id>/verifiableCredential/contracts/<verifiable_credential_schema>
+ *   authority: optional. if not provided, we'll use the azClientId to create the Tenanted format if provided should be one of these two formats:
+ *    - Tenanted: https://login.microsoftonline.com/{tenant}/, where {tenant} is either the GUID representing the tenant ID or a domain name associated with the tenant.
+ *    - Work and school accounts: https://login.microsoftonline.com/organizations/.
+ *   scopes?: scopes that you want to access via this authentication
+ *   skipCache?: whether to skip cache
+ */
+export interface IMsAuthenticationClientCredentialArgs {
   azClientId: string
   azTenantId: string
-}
-export interface IMsAuthenticationClientCredentialArgs extends IMsAuthenticationArgs {
   azClientSecret: string
   credentialManifest: string
+  authority?: string
+  scopes?: string[]
+  skipCache?: boolean
 }
-export interface IMsAuthenticationUsernamePasswordArgs extends IMsAuthenticationArgs {
-  password: string,
-  scopes: string[],
+
+/**
+ *   azClientId: clientId of the application you're trying to login
+ *   azTenantId: your MS Azure tenantId
+ *   username: username of the user
+ *   password: password of the user
+ *   scopes: scopes that you want to access via this authentication
+ *   authority: optional. if not provided, we'll use the azClientId to create the Tenanted format if provided should be one of these two formats:
+ *    - Tenanted: https://login.microsoftonline.com/{tenant}/, where {tenant} is either the GUID representing the tenant ID or a domain name associated with the tenant.
+ *    - Work and school accounts: https://login.microsoftonline.com/organizations/.
+ */
+export interface IMsAuthenticationUsernamePasswordArgs {
+  azClientId: string
+  azTenantId: string
+  password: string
+  scopes: string[]
   username: string
-}
-
-export interface IMsAuthenticationAuthorizationCodeArgs extends IMsAuthenticationArgs {
-  redirectUri: string
-  code: string
-}
-
-export interface IMsAuthenticationOnBehalfOfArgs extends IMsAuthenticationArgs {
-  oboAssertion: string
-}
-
-export interface IMsAuthenticationSilentFlowArgs extends IMsAuthenticationArgs {
-  account: AccountInfo
-}
-
-export enum events {
-  AUTHENTICATED = 'authenticated',
-}
-
-export enum MsAuthenticationTypeEnum {
-  ClientCredential= 'ClientCredential',
-  AuthorizationCode = 'AuthorizationCode',
-  UsernamePassword = 'UsernamePassword',
-  BehalfOf = 'BehalfOf',
-  Silent = 'Silent',
+  authority?: string
 }
 
 export type IRequiredContext = IAgentContext<Record<string, never>>

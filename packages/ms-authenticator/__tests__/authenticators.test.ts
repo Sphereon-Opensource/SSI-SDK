@@ -1,6 +1,6 @@
-import {ClientCredentialAuthenticator, UsernamePasswordAuthenticator} from "../src/authenticators";
+import { ClientCredentialAuthenticator, UsernamePasswordAuthenticator } from "../src";
 
-describe('@sphereon/ms-authenticator', ()=>{
+describe('@sphereon/ms-authenticator', () => {
 
   it('should authenticate using clientCredential', async () => {
 

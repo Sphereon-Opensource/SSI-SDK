@@ -1,5 +1,1 @@
-export { AuthorizationCodeAuthenticator } from './MsAuthenticator'
-export { BehalfOfAuthenticator } from './MsAuthenticator'
-export { ClientCredentialAuthenticator } from './MsAuthenticator'
-export { SilentFlowAuthenticator } from './MsAuthenticator'
-export { UsernamePasswordAuthenticator } from './MsAuthenticator'
+export * from './MsAuthenticator'

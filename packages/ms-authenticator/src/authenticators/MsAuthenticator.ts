@@ -1,30 +1,7 @@
 import { ConfidentialClientApplication, LogLevel, PublicClientApplication, UsernamePasswordRequest } from '@azure/msal-node'
-import {
-  IMsAuthenticationAuthorizationCodeArgs,
-  IMsAuthenticationClientCredentialArgs,
-  IMsAuthenticationOnBehalfOfArgs, IMsAuthenticationSilentFlowArgs,
-  IMsAuthenticationUsernamePasswordArgs,
-} from '../index'
+import { IMsAuthenticationClientCredentialArgs, IMsAuthenticationUsernamePasswordArgs } from '../index'
 
 import { fetch } from 'cross-fetch'
-
-/**
- * Not implemented yet
- * @param authenticationArgs
- * @constructor
- */
-export async function AuthorizationCodeAuthenticator(authenticationArgs: IMsAuthenticationAuthorizationCodeArgs): Promise<string> {
-  throw new Error("This authentication method is not implemented yet.")
-}
-
-/**
- * Not implemented yet
- * @param authenticationArgs
- * @constructor
- */
-export async function BehalfOfAuthenticator(authenticationArgs: IMsAuthenticationOnBehalfOfArgs): Promise<string> {
-  throw new Error("This authentication method is not implemented yet.")
-}
 
 /**
  * necessary fields are:
@@ -37,10 +14,10 @@ export async function BehalfOfAuthenticator(authenticationArgs: IMsAuthenticatio
  * @constructor
  */
 export async function ClientCredentialAuthenticator(authenticationArgs: IMsAuthenticationClientCredentialArgs): Promise<string> {
-  var msalConfig = {
+  const msalConfig = {
     auth: {
       clientId: authenticationArgs.azClientId,
-      authority: 'https://login.microsoftonline.com/' + authenticationArgs.azTenantId,
+      authority: authenticationArgs.authority ? authenticationArgs.authority : 'https://login.microsoftonline.com/' + authenticationArgs.azTenantId,
       clientSecret: authenticationArgs.azClientSecret,
     },
     system: {
@@ -53,13 +30,12 @@ export async function ClientCredentialAuthenticator(authenticationArgs: IMsAuthe
 
   const cca = new ConfidentialClientApplication(msalConfig)
   const msalClientCredentialRequest = {
-    scopes: ['3db474b9-6a0c-4840-96ac-1fceb342124f/.default'],
-    skipCache: false,
+    scopes: authenticationArgs.scopes ? authenticationArgs.scopes : ['3db474b9-6a0c-4840-96ac-1fceb342124f/.default'],
+    skipCache: authenticationArgs.skipCache ? authenticationArgs.skipCache : false
   }
   await fetch('https://login.microsoftonline.com/' + authenticationArgs.azTenantId + '/v2.0/.well-known/openid-configuration', {method: 'GET'})
   .then((res) => res.json())
   .then(async (resp) => {
-    console.log(`tenant_region_scope = ${resp.tenant_region_scope}`)
     let msIdentityHostName = 'https://beta.did.msidentity.com/v1.0/'
     if (resp.tenant_region_scope == 'EU') {
       msIdentityHostName = 'https://beta.eu.did.msidentity.com/v1.0/'
@@ -72,15 +48,13 @@ export async function ClientCredentialAuthenticator(authenticationArgs: IMsAuthe
     // get the Access Token
     try {
       const result = await cca.acquireTokenByClientCredential(msalClientCredentialRequest)
-      if (result) {
+      if (result && result.accessToken) {
         return result.accessToken
       }
     } catch {
-      console.log('failed to get access token')
-      resp.status(401).json({
-        error: 'Could not acquire credentials to access your Azure Key Vault',
-      })
-      return
+      throw {
+        error: 'Could not acquire credentials to access your Azure Key Vault:\n' + JSON.stringify(resp),
+      }
     }
     return ''
   })
@@ -88,21 +62,7 @@ export async function ClientCredentialAuthenticator(authenticationArgs: IMsAuthe
 }
 
 /**
- * Not implemented yet
- * @param authenticationArgs
- * @constructor
- */
-export async function SilentFlowAuthenticator(authenticationArgs: IMsAuthenticationSilentFlowArgs): Promise<string> {
-  throw new Error("This authentication method is not implemented yet.")
-}
-
-/**
- * necessary fields are:
- *   azClientId: clientId of the application you're trying to login
- *   azTenantId: your MS Azure tenantId
- *   username: username of the user
- *   password: password of the user
- *   scopes: scopes that you want to access via this authentication
+ * Logs in with provided authenticationArgs and returns access token
  * @param authenticationArgs
  * @constructor
  */
@@ -110,17 +70,16 @@ export async function UsernamePasswordAuthenticator(authenticationArgs: IMsAuthe
   const msalConfig = {
     auth: {
       clientId: authenticationArgs.azClientId,
-      authority: 'https://login.microsoftonline.com/' + authenticationArgs.azTenantId,
+      authority: authenticationArgs.authority ? authenticationArgs.authority : 'https://login.microsoftonline.com/' + authenticationArgs.azTenantId,
     },
   }
   const pca = new PublicClientApplication(msalConfig)
   return await pca
   .acquireTokenByUsernamePassword(authenticationArgs as UsernamePasswordRequest)
   .then((response: any) => {
-    console.log('acquired token by password grant', response)
     return response
   })
   .catch((error: any) => {
-    console.log(error)
+    throw new Error("failed to authenticate: " + error)
   })
 }
