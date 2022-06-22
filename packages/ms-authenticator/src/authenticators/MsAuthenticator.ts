@@ -1,7 +1,6 @@
-import {ConfidentialClientApplication, LogLevel, PublicClientApplication, UsernamePasswordRequest} from '@azure/msal-node'
-import {IMsAuthenticationClientCredentialArgs, IMsAuthenticationUsernamePasswordArgs} from '../index'
-
-import {fetch} from 'cross-fetch'
+import { ConfidentialClientApplication, LogLevel, PublicClientApplication, UsernamePasswordRequest } from '@azure/msal-node'
+import { IMsAuthenticationClientCredentialArgs, IMsAuthenticationUsernamePasswordArgs } from '../index'
+import { fetch } from 'cross-fetch'
 
 const EU = 'EU'
 

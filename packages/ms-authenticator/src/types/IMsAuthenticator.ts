@@ -1,4 +1,5 @@
 import { IAgentContext } from '@veramo/core'
+import { LogLevel } from '@azure/msal-node'
 
 /**
  *   azClientId: clientId of the application you're trying to login
@@ -31,7 +32,7 @@ export interface IMsAuthenticationClientCredentialArgs {
   scopes?: string[]
   skipCache?: boolean
   piiLoggingEnabled?: boolean
-  logLevel?: string
+  logLevel?: LogLevel
 }
 
 /**
