@@ -9,8 +9,17 @@ import { IAgentContext } from '@veramo/core'
  *   authority: optional. if not provided, we'll use the azClientId to create the Tenanted format if provided should be one of these two formats:
  *    - Tenanted: https://login.microsoftonline.com/{tenant}/, where {tenant} is either the GUID representing the tenant ID or a domain name associated with the tenant.
  *    - Work and school accounts: https://login.microsoftonline.com/organizations/.
+ *   region?: if present will use the provided, if not will make a request to determine the region
  *   scopes?: scopes that you want to access via this authentication
  *   skipCache?: whether to skip cache
+ *   piiLoggingEnabled?: if not provided defaults to false
+ *   logLevel?: can be one of these values:
+ *     Error = 0,
+ *     Warning = 1,
+ *     Info = 2,
+ *     Verbose = 3,
+ *     Trace = 4
+ *     if not provided defaults to LogLevel.Verbose
  */
 export interface IMsAuthenticationClientCredentialArgs {
   azClientId: string
@@ -21,6 +30,8 @@ export interface IMsAuthenticationClientCredentialArgs {
   region?: string
   scopes?: string[]
   skipCache?: boolean
+  piiLoggingEnabled?: boolean
+  logLevel?: string
 }
 
 /**

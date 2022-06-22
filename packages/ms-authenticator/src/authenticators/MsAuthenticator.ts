@@ -46,8 +46,8 @@ export async function ClientCredentialAuthenticator(authenticationArgs: IMsAuthe
     },
     system: {
       loggerOptions: {
-        piiLoggingEnabled: false,
-        logLevel: LogLevel.Verbose,
+        piiLoggingEnabled: authenticationArgs.piiLoggingEnabled? authenticationArgs.piiLoggingEnabled: false,
+        logLevel: authenticationArgs.logLevel? authenticationArgs.logLevel: LogLevel.Verbose,
       }
     }
   }
