@@ -18,6 +18,7 @@ export interface IMsAuthenticationClientCredentialArgs {
   azClientSecret: string
   credentialManifestUrl: string
   authority?: string
+  region?: string
   scopes?: string[]
   skipCache?: boolean
 }
