@@ -4,7 +4,7 @@ import { IAgentContext } from '@veramo/core'
  *   azClientId: clientId of the application you're trying to login
  *   azClientSecret: secret of the application you're trying to login
  *   azTenantId: your MS Azure tenantId
- *   credentialManifest: address of your credential manifest. usually in following format:
+ *   credentialManifestUrl: url of your credential manifest. usually in following format:
  *    https://beta.eu.did.msidentity.com/v1.0/<tenant_id>/verifiableCredential/contracts/<verifiable_credential_schema>
  *   authority: optional. if not provided, we'll use the azClientId to create the Tenanted format if provided should be one of these two formats:
  *    - Tenanted: https://login.microsoftonline.com/{tenant}/, where {tenant} is either the GUID representing the tenant ID or a domain name associated with the tenant.
@@ -16,7 +16,7 @@ export interface IMsAuthenticationClientCredentialArgs {
   azClientId: string
   azTenantId: string
   azClientSecret: string
-  credentialManifest: string
+  credentialManifestUrl: string
   authority?: string
   scopes?: string[]
   skipCache?: boolean
