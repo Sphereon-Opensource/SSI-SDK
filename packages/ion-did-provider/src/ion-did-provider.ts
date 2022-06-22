@@ -54,7 +54,7 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
     }
 
     // TODO: Long version DID is not conformant to "initial value" definition.
-    console.log(`Created (short version): ${ await did.getURI('short') }`)
+    debug(`Created (short version): ${ await did.getURI('short') }`)
     debug('Created', identifier.did)
 
     return identifier
