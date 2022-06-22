@@ -4,7 +4,7 @@ import { keyUtils as secp256k1_keyUtils } from '@transmute/did-key-secp256k1'
 import * as ION from '@sphereon/ion-tools'
 import Debug from 'debug'
 
-const debug = Debug('sphereon:did-provider-ion')
+const debug = Debug('sphereon:ion-did-provider')
 
 type IContext = IAgentContext<IKeyManager>
 
