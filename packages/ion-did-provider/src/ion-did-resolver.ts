@@ -1,7 +1,17 @@
 import * as ION from '@sphereon/ion-tools'
+import {
+  DIDResolutionResult,
+  DIDResolutionOptions,
+  DIDResolver
+} from 'did-resolver'
 
-export function IonDIDResolver() {
-  return async function(did: string) {
-    return ION.resolve(did)
-  }
+const resolveDidIon: DIDResolver = async (
+    didUrl: string,
+    options: DIDResolutionOptions,
+): Promise<DIDResolutionResult> => {
+  return ION.resolve(didUrl, options)
+}
+
+export function getDidIonResolver() {
+  return { ion: resolveDidIon }
 }
