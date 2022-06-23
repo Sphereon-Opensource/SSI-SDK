@@ -27,5 +27,17 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         })
       ).resolves.not.toBeNull()
     })
+
+    it('should request issuance from Issuer', async () => {
+      return await expect(
+        agent.issuanceRequestMsVc({
+          azClientId: '04c2bd60-cdbf-4935-80dd-110fdf473e6e',
+          azClientSecret: 'WAM8Q~rE05C9ja2TRiZ3H~TYz2W4TdMe.jpwSc~p',
+          azTenantId: 'e2a42b2f-7460-4499-afc2-425315ef058a',
+          credentialManifest: 'https://beta.eu.did.msidentity.com/v1.0/e2a42b2f-7460-4499-afc2-425315ef058a/verifiableCredential/contracts/VerifiedCredentialExpert2'
+        })
+      ).resolves.not.toBeNull()
+    })
+
   })
 }

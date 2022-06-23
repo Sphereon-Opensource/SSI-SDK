@@ -7,7 +7,7 @@ constants:
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
     - authenticateMsVcApi
-
+    - issuanceRequestMsVc
 server:
   baseUrl:
     $ref: /constants/baseUrl
