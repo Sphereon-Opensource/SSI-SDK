@@ -1,32 +1,55 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
+import { IMsAuthenticationClientCredentialArgs } from '@sphereon/ms-authenticator'
 
 export interface IMsVcApiIssuer extends IPluginMethodMap {
-  authenticateMsVcApi(args: IMsAuthenticationArgs, context: IRequiredContext): Promise<IMsAuthenticationResponse>
-  issuanceRequestMsVc(args: IMsIssuanceRequestArgs, context: IRequiredContext) : Promise<IIssueRequestResponse>
+  issuanceRequestMsVc(issuanceInfo: IIssueRequest, context: IRequiredContext) : Promise<IIssueRequestResponse>
 }
 
-export interface IMsIssuanceRequestArgs {
-}
-
-export interface IMsAuthenticationArgs {
-  azClientId: string
-  azClientSecret: string
-  azTenantId: string
-  credentialManifest: string
+export interface IIssueRequest {
+  auhenticationInfo: IMsAuthenticationClientCredentialArgs
+  issuanceConfig: IssuanceConfig
 }
 
 export interface IIssueRequestResponse {
   id: string
   requestId: string
   url: string
-  expiry: Date,
+  expiry: Date
   pin: string
 }
 
+export interface Registration {
+  clientName: string;
+}
 
-export enum events {
-  AUTHENTICATED = 'authenticated',
+export interface Headers {
+  apiKey: string;
+}
+
+export interface Callback {
+  url: string;
+  state: string;
+  headers: Headers;
+}
+
+export interface Pin {
+  value: string;
+  length: number;
+}
+
+export interface Issuance {
+  type: string;
+  manifest: string;
+  pin: Pin;
+  claims: Map<string, string>;
+}
+
+export interface IssuanceConfig {
+  authority: string;
+  includeQRCode: boolean;
+  registration: Registration;
+  callback: Callback;
+  issuance: Issuance;
 }
 
 export type IRequiredContext = IAgentContext<Record<string, never>>
-export type IMsAuthenticationResponse = String

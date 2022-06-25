@@ -1,19 +1,27 @@
 {
-  "name": "@sphereon/ms-authenticator",
+  "name": "@sphereon/ms-vc-api-issuer",
   "version": "0.1.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "veramo": {
+    "pluginInterfaces": {
+      "IMsVcApiIssuer": "./src/types/IMsVcApiIssuer.ts"
+    }
+  },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc --build",
+    "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
   },
   "dependencies": {
-    "@azure/msal-common": "^7.0.0",
-    "@azure/msal-node": "^1.10.0",
     "@veramo/core": "3.1.2-next.84",
-    "cross-fetch": "^3.1.5"
+    "cross-fetch": "^3.1.5",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2"
   },
   "devDependencies": {
+    "@sphereon/ssi-sdk-core": "C:\\\\Work\\\\ssi-sdk\\\\packages\\\\ms-authenticator\\\\sphereon-ms-authenticator-v0.1.0.tgz",
+    "@types/express-session": "^1.17.4",
     "@types/jest": "^27.0.2",
     "@veramo/cli": "3.1.2-next.84",
     "jest": "^27.3.1",
@@ -36,10 +44,13 @@
   "license": "Apache-2.0",
   "keywords": [
     "Microsoft",
-    "msal",
     "Active Directory",
     "Sphereon",
     "SSI",
-    "Veramo"
+    "Veramo",
+    "W3C",
+    "VC",
+    "API",
+    "Issuer"
   ]
 }
