@@ -35,10 +35,6 @@ multiple packages (see lerna below). It contains plugins that extend the Veramo 
 
 The [core package](./packages/ssi-sdk-core/README.md) contains types and methods shared by the other plugins
 
-## MS Authenticator
-
-The core package for microsoft authentication using msal library.
-
 ## Factom DID Provider
 
 The [Factom Protocol DID Provider](./packages/factom-did-provider/README.md) can create DIDs using the
@@ -53,6 +49,10 @@ manage verification methods using LTO Network.
 
 The [Mnemonic Seed and Key Derivation](packages/mnemonic-seed-manager/README.md) handles generation and secure storage
 of Mnemonics, as well as the creation of a seed out of the mnemonic and the derivation of keys.
+
+## Microsoft VC API Issuer
+
+Azure Active Directory (Azure AD) Verifiable Credentials allows you to issue a credential. The [Microsoft Verifiable Credential Issuer](packages/ms-vc-api-issuer/README.md) handles issuing a verifiable credential using issuer authentication info and issuer configuration. 
 
 ## VC API Issuer
 
