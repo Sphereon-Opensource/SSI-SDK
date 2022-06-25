@@ -154,15 +154,7 @@
               "$ref": "#/components/schemas/Pin"
             },
             "claims": {
-              "type": "object",
-              "properties": {
-                "size": {
-                  "type": "number"
-                }
-              },
-              "required": [
-                "size"
-              ]
+              "$ref": "#/components/schemas/CredentialSubject"
             }
           },
           "required": [
@@ -186,6 +178,9 @@
             "value",
             "length"
           ]
+        },
+        "CredentialSubject": {
+          "type": "object"
         },
         "IIssueRequestResponse": {
           "type": "object",

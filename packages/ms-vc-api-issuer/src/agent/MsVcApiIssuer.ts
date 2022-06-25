@@ -50,15 +50,15 @@ export class MsVcApiIssuer implements IAgentPlugin {
     }
 
     // here you could change the payload manifest and change the firstname and lastname
-    if ( issuanceInfo.issuanceConfig.issuance.claims ) {
-      issuanceInfo.issuanceConfig.issuance.claims = new Map<string, string>([
-        ["given_name", "Mehmet"],
-        ["family_name", "Bicak"]
-    ]);
-    }
+    issuanceInfo.issuanceConfig.issuance.claims ={
+      "given_name":"FIRSTNAME",
+      "family_name":"LASTNAME"
+   }
+
     var client_api_request_endpoint = this.msIdentityHostName + `${issuanceInfo.auhenticationInfo.azTenantId}/verifiablecredentials/request`;
 
     var payload = JSON.stringify(issuanceInfo.issuanceConfig);
+    console.log('payload' + payload);
     const fetchOptions = {
       method: 'POST',
       body: payload,

@@ -37,11 +37,15 @@ export interface Pin {
   length: number;
 }
 
+export type CredentialSubject = {
+  [x: string]: any
+}
+
 export interface Issuance {
   type: string;
   manifest: string;
   pin: Pin;
-  claims: Map<string, string>;
+  claims: CredentialSubject;
 }
 
 export interface IssuanceConfig {
