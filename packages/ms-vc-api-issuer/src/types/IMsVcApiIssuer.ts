@@ -1,12 +1,15 @@
-import { IAgentContext, IPluginMethodMap } from '@veramo/core'
+import { IAgentContext, IPluginMethodMap, IDataStoreSaveVerifiableCredentialArgs, FindClaimsArgs, FindCredentialsArgs, AuthorizedDIDContext, UniqueVerifiableCredential} from '@veramo/core'
 import { IMsAuthenticationClientCredentialArgs } from '@sphereon/ms-authenticator'
 
 export interface IMsVcApiIssuer extends IPluginMethodMap {
   issuanceRequestMsVc(issuanceInfo: IIssueRequest, context: IRequiredContext) : Promise<IIssueRequestResponse>
+  dataStoreSaveVerifiableCredential(args: IDataStoreSaveVerifiableCredentialArgs): Promise<string>
+  dataStoreORMGetVerifiableCredentialsByClaims( args: FindClaimsArgs, context: AuthorizedDIDContext ): Promise<Array<UniqueVerifiableCredential>>
+  dataStoreORMGetVerifiableCredentialsCount( args: FindCredentialsArgs, context: AuthorizedDIDContext ): Promise<number>
 }
 
 export interface IIssueRequest {
-  auhenticationInfo: IMsAuthenticationClientCredentialArgs
+  authenticationInfo: IMsAuthenticationClientCredentialArgs
   issuanceConfig: IssuanceConfig
 }
 
