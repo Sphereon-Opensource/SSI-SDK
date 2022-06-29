@@ -57,13 +57,5 @@ export default (testContext: {
       const count = await agent.dataStoreORMGetVerifiableCredentialsCount(args)
       expect(count).toEqual(1)
     })
-
-    it('should throw error when getting party and party is not found',async () => {
-      const partyId = 'unknownPartyId'
-
-      await expect(
-          agent.cmGetParty({ partyId })
-      ).rejects.toThrow(`No party found for id: ${partyId}`)
-    })
   })
 }
