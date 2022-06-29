@@ -6,9 +6,15 @@ export interface IConnectionParty {
   connections: Array<IConnection>
 }
 
+export interface IBasicConnectionParty {
+  name: string
+  connections: Array<IBasicConnection>
+}
+
 export enum ConnectionTypeEnum {
   OPENID = 'openid',
-  DIDAUTH = 'didauth'
+  DIDAUTH = 'didauth',
+  SIOPV2_OIDC4VP = 'siopv2+oidc4vp'
 }
 
 export interface IConnection {
