@@ -8,6 +8,7 @@
     { "path": "vc-api-issuer" },
     { "path": "ms-authenticator"},
     { "path": "ms-vc-api-issuer"},
+    { "path": "vc-manager" },
     { "path": "vc-api-verifier" },
     { "path": "vc-handler-ld-local" },
     { "path": "did-auth-siop-op-authenticator" },

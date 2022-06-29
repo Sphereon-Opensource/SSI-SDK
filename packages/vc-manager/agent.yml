@@ -3,10 +3,24 @@ version: 3.0
 constants:
   baseUrl: http://localhost:3335
   port: 3335
+  databaseFile: ./packages/vc-manager/database.sqlite
   # please use your own X25519 key, this is only an example
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
-    - issuanceRequestMsVc
+    - dataStoreSaveVerifiableCredential
+    - dataStoreORMGetVerifiableCredentialsByClaims
+    - dataStoreORMGetVerifiableCredentialsCount
+
+dbConnection:
+  $require: typeorm?t=function#createConnection
+  $args:
+    - type: sqlite
+      database: ':memory:'
+      synchronize: true
+      logging: false
+      entities:
+         $require: '@veramo/data-store?t=object#Entities'
+
 server:
   baseUrl:
     $ref: /constants/baseUrl
@@ -69,9 +83,13 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/ms-vc-api-issuer/dist#MsVcApiIssuer
+        - $require: ./packages/vc-manager/dist#VcManager
           $args:
-            - azClientId: '04c2bd60-cdbf-4935-80dd-110fdf473e6e'
-              azClientSecret: 'WAM8Q~rE05C9ja2TRiZ3H~TYz2W4TdMe.jpwSc~p'
-              azTenantId: 'e2a42b2f-7460-4499-afc2-425315ef058a'
-              credentialManifestUrl: 'https://beta.eu.did.msidentity.com/v1.0/e2a42b2f-7460-4499-afc2-425315ef058a/verifiableCredential/contracts/VerifiedCredentialExpert2'
+            - dataStore:
+                $require: @veramo/core#IDataStore'
+                $args:
+                  - $ref: /dbConnection
+            - dataStoreORM:
+                $require: @veramo/core#IDataStoreORM'
+                $args:
+                  - $ref: /dbConnection

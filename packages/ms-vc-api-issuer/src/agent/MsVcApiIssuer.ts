@@ -1,8 +1,7 @@
-import { IAgentPlugin, IDataStoreSaveVerifiableCredentialArgs, FindClaimsArgs, FindCredentialsArgs, AuthorizedDIDContext, UniqueVerifiableCredential } from '@veramo/core'
+import { IAgentPlugin } from '@veramo/core'
 import { IIssueRequest, IIssueRequestResponse, IMsVcApiIssuer, IRequiredContext } from '../types/IMsVcApiIssuer'
 import { v4 as uuidv4 } from 'uuid'
 import { ClientCredentialAuthenticator} from '@sphereon/ms-authenticator'
-import agent from '../index'
 
 /**
  * {@inheritDoc IMsVcApiIssuer}
@@ -10,22 +9,6 @@ import agent from '../index'
 export class MsVcApiIssuer implements IAgentPlugin {
   readonly methods: IMsVcApiIssuer = {
     issuanceRequestMsVc: this.issuanceRequestMsVc.bind(this), 
-    dataStoreSaveVerifiableCredential: this.dataStoreSaveVerifiableCredential.bind(this),
-    dataStoreORMGetVerifiableCredentialsByClaims: this.dataStoreORMGetVerifiableCredentialsByClaims.bind(this),
-    dataStoreORMGetVerifiableCredentialsCount: this.dataStoreORMGetVerifiableCredentialsCount.bind(this)
-  }
-
-  private async dataStoreSaveVerifiableCredential(args: IDataStoreSaveVerifiableCredentialArgs): Promise<string> {
-    return await agent.dataStoreSaveVerifiableCredential( args )
-  }
-
-  private async dataStoreORMGetVerifiableCredentialsByClaims(args: FindClaimsArgs, context: AuthorizedDIDContext): Promise<Array<UniqueVerifiableCredential>>{
-    return await agent.dataStoreORMGetVerifiableCredentialsByClaims( args )
-  }
-
-
-  private async dataStoreORMGetVerifiableCredentialsCount(args: FindCredentialsArgs, context: AuthorizedDIDContext): Promise<number> {
-    return await agent.dataStoreORMGetVerifiableCredentialsCount( args )
   }
 
   private msIdentityHostName = ''
