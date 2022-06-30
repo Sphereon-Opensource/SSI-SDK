@@ -40,9 +40,9 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   }
 
   private readonly sessions: Record<string, OpSession>
-  private readonly customApprovals: Record<string, (verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT) => Promise<void>>
+  private readonly customApprovals: Record<string, (verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT, sessionId: string) => Promise<void>>
 
-  constructor(customApprovals?: Record<string, (verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT) => Promise<void>>) {
+  constructor(customApprovals?: Record<string, (verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT, sessionId: string) => Promise<void>>) {
     this.sessions = {}
     this.customApprovals = customApprovals || {}
   }
