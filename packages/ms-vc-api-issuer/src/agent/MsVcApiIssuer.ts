@@ -58,7 +58,6 @@ export class MsVcApiIssuer implements IAgentPlugin {
     var client_api_request_endpoint = this.msIdentityHostName + `${issuanceInfo.auhenticationInfo.azTenantId}/verifiablecredentials/request`;
 
     var payload = JSON.stringify(issuanceInfo.issuanceConfig);
-    console.log('payload' + payload);
     const fetchOptions = {
       method: 'POST',
       body: payload,
@@ -78,9 +77,7 @@ export class MsVcApiIssuer implements IAgentPlugin {
     if ( issuanceInfo.issuanceConfig.issuance.pin ) {
       resp.pin = issuanceInfo.issuanceConfig.issuance.pin.value;   // add pin code so browser can display it
     }
-    console.log( resp );
     return resp
-//    resp.status(200).json(resp);
   }
 
   private generatePin( digits : any) {
