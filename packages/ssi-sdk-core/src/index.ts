@@ -14,6 +14,7 @@ export {
   IParsedDID,
   SignatureTypes,
   IConnectionParty,
+  IBasicConnectionParty,
   ConnectionTypeEnum,
   IConnection,
   IBasicConnection,

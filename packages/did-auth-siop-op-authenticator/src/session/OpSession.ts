@@ -64,14 +64,14 @@ export class OpSession {
         if (args.customApproval !== undefined) {
           if (typeof args.customApproval === 'string') {
             if (args.customApprovals !== undefined && args.customApprovals[args.customApproval] !== undefined) {
-              return args.customApprovals[args.customApproval](verifiedAuthenticationRequest).then(() =>
+              return args.customApprovals[args.customApproval](verifiedAuthenticationRequest, this.id).then(() =>
                 this.sendSiopAuthenticationResponse({ verifiedAuthenticationRequest: verifiedAuthenticationRequest })
               )
             }
             return Promise.reject(new Error(`Custom approval not found for key: ${args.customApproval}`))
           } else {
             return args
-              .customApproval(verifiedAuthenticationRequest)
+              .customApproval(verifiedAuthenticationRequest, this.id)
               .then(() => this.sendSiopAuthenticationResponse({ verifiedAuthenticationRequest: verifiedAuthenticationRequest }))
           }
         } else {
