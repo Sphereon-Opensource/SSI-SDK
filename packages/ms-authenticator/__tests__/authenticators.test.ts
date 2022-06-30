@@ -3,6 +3,11 @@ import * as process from "process";
 
 describe('@sphereon/ms-authenticator', () => {
 
+  console.log('#############################################')
+  console.log(process.env.SPHEREON_SSI_MSAL_CLIENT_ID || 'client_id')
+  console.log(process.env.SPHEREON_SSI_MSAL_TENANT_ID || 'tenant_id')
+  console.log('#############################################')
+
   it('should authenticate using clientCredential', async () => {
 
     return await expect(ClientCredentialAuthenticator({
