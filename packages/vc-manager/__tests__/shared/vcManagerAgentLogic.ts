@@ -40,7 +40,8 @@ export default (testContext: {
         },
       }
 
-      await agent.dataStoreSaveVerifiableCredential({ verifiableCredential: vc5 })
+      let result = await agent.dataStoreSaveVerifiableCredential({ verifiableCredential: vc5 })
+      console.log('result: ' + result)
 
       const args: FindArgs<TCredentialColumns> = {
         where: [
@@ -48,11 +49,11 @@ export default (testContext: {
             column: 'id',
             value: ['vc5'],
           },
-        ],
-        order: [{ column: 'issuanceDate', direction: 'DESC' }],
+        ]
       }
 
-      const credentials = await agent.dataStoreORMGetVerifiableCredentials(args)
+      const credentials = await agent.dataStoreORMGetVerifiableCredentialsByClaims({})
+      console.log('credentials: ' + credentials)
       expect(credentials[0].verifiableCredential.id).toEqual('vc5')
       const count = await agent.dataStoreORMGetVerifiableCredentialsCount(args)
       expect(count).toEqual(1)

@@ -1,14 +1,14 @@
 import 'cross-fetch/polyfill'
 import express from 'express'
 import { Server } from 'http'
-import { Connection } from 'typeorm'
+import { Connection, createConnection } from 'typeorm'
 import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
-import { getConfig } from '@veramo/cli/build/setup'
-import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 import { IVcManager } from '../src/types/IVcManager'
 import vcManagerAgentLogic from './shared/vcManagerAgentLogic'
+import { Entities, DataStore, DataStoreORM } from '@veramo/data-store'
+import { VcManager } from '../src'
 
 jest.setTimeout(30000)
 
@@ -32,10 +32,19 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/vc-manager/agent.yml')
-  const { agent, db } = createObjects(config, { agent: '/agent', db: '/dbConnection' })
-  serverAgent = agent
-  dbConnection = db
+  dbConnection = createConnection({
+    type: 'sqlite',
+    database: ':memory:',
+    synchronize: true,
+    logging: false,
+    entities: Entities,
+  })
+
+  const serverAgent = createAgent<IVcManager>({
+    plugins: [
+      new VcManager(new DataStore(dbConnection), new DataStoreORM(dbConnection)),
+    ],
+  })
 
   const agentRouter = AgentRouter({
     exposedMethods: serverAgent.availableMethods(),

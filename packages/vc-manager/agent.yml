@@ -86,10 +86,10 @@ agent:
         - $require: ./packages/vc-manager/dist#VcManager
           $args:
             - dataStore:
-                $require: @veramo/core#IDataStore'
+                $require: '@veramo/core#IDataStore'
                 $args:
                   - $ref: /dbConnection
             - dataStoreORM:
-                $require: @veramo/core#IDataStoreORM'
+                $require: '@veramo/core#IDataStoreORM'
                 $args:
                   - $ref: /dbConnection

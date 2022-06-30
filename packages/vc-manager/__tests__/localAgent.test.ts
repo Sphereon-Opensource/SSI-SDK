@@ -1,20 +1,31 @@
-import { getConfig } from '@veramo/cli/build/setup'
-import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import { Connection } from 'typeorm'
+import { createAgent, IDataStore, IDataStoreORM } from '@veramo/core'
+import { DataStore, DataStoreORM, Entities } from '@veramo/data-store'
+import { Connection, createConnection } from 'typeorm'
+import { VcManager } from '../src'
 
 jest.setTimeout(30000)
 
 import vcManagerAgentLogic from './shared/vcManagerAgentLogic'
+import { IVcManager } from '../src/types/IVcManager'
 
 let dbConnection: Promise<Connection>
 let agent: any
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/vc-manager/agent.yml')
-  const { localAgent, db } = createObjects(config, { localAgent: '/agent', db: '/dbConnection' })
-  agent = localAgent
-  dbConnection = db
+  dbConnection = createConnection({
+    type: 'sqlite',
+    database: ':memory:',
+    synchronize: true,
+    logging: false,
+    entities: Entities,
+  })
 
+  const localAgent = createAgent<IDataStoreORM & IDataStore & IVcManager>({
+    plugins: [
+      new VcManager(new DataStore(dbConnection), new DataStoreORM(dbConnection)),
+    ],
+  })
+  agent = localAgent
   return true
 }
 
