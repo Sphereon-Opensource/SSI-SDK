@@ -15,6 +15,7 @@
     { "path": "bls-did-provider-key" },
     { "path": "bls-key-manager" },
     { "path": "connection-manager" },
-    { "path": "data-store" }
+    { "path": "data-store" },
+    { "path": "ion-did-provider" }
   ]
 }
