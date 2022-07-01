@@ -73,7 +73,7 @@ jobs:
           echo "@sphereon:registry=https://registry.npmjs.org/" > .npmrc
           echo "registry=https://registry.npmjs.org/" >> .npmrc
           echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
-          npm whoami
+#          npm whoami
 
       - name: publish @latest when on main
         if: github.ref == 'refs/heads/main'
