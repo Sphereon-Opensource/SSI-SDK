@@ -1,7 +1,7 @@
 {
   "name": "SSI-SDK-workspace",
   "private": true,
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Sphereon SSI Typescript SDK (Workspace)",
   "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
   "author": "Sphereon <dev@sphereon.com>",
