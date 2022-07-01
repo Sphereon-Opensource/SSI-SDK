@@ -31,7 +31,7 @@
     "@sphereon/ssi-sdk-core": "^0.5.1",
     "@transmute/ed25519-key-pair": "0.7.0-unstable.62",
     "@transmute/jsonld-document-loader": "^0.7.0-unstable.62",
-    "@transmute/vc-status-rl-2020": "^0.7.0-unstable.62",
+    "@transmute/vc-status-rl-2020": "0.7.0-unstable.35",
     "@types/node": "^14.14.43",
     "@veramo/core": "3.1.2-next.84",
     "@veramo/utils": "3.1.2-next.84",
