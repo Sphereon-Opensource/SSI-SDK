@@ -50,7 +50,7 @@ possible `accept` value may be:
 #### Importing the plugin
 
 ```typescript
-import { WaciQrCodeProvider } from "@sphereon/ssi-sdk-waci-pex-qr-react";
+import { WaciQrCodeProvider } from '@sphereon/ssi-sdk-waci-pex-qr-react'
 
 // Include in the interface
 // const agent = createAgent<...  WaciQrCodeProvider>
@@ -68,15 +68,14 @@ plugins: [
 #### Export for the function
 
 ```typescript
-export const createSsiQrCode = agent.ssiQrCode;
+export const createSsiQrCode = agent.ssiQrCode
 ```
 
 The function declared in agent can be imported for usage like below:
 
 ```typescript
-import { createSsiQrCode } from '../agent';
-import { QRContent, QRType } from "@sphereon/ssi-sdk-waci-pex-qr-react";
-
+import { createSsiQrCode } from '../agent'
+import { QRContent, QRType } from '@sphereon/ssi-sdk-waci-pex-qr-react'
 ```
 
 #### Inside the component we can declare or get the values to pass to QR Code plugin
@@ -122,9 +121,7 @@ On generate gives the following (example) output
   "from": "did:key:zrfdjkgfjgfdjk",
   "body": {
     "goal-code": "streamlined-vp",
-    "accept": [
-      "siopv2+oidc4vp"
-    ]
+    "accept": ["siopv2+oidc4vp"]
   }
 }
 ```
@@ -135,16 +132,14 @@ If you want to create the payload manually and want to do serialization yourself
 const payload = OutOfBandMessage.createPayload(getOobQrCodeProps())
 const encoded = OutOfBandMessage.urlEncode(payload)
 const url = oobQRProps.oobBaseUrl + encoded
-console.log(url) // https://example.com/?oob=eyJ0eXBlIjoic2lvcHYyIiwiaWQiOiI1OTlmMzYzOC1iNTYzLTQ5MzctOTQ4Ny1kZmU1NTA5OWQ5MDAiLCJmcm9tIjoiZGlkOmtleTp6cmZkamtnZmpnZmRqayIsImJvZHkiOnsiZ29hbC1jb2RlIjoic3RyZWFtbGluZWQtdnAiLCJhY2NlcHQiOlsic2lvcHYyK29pZGM0dnAiXX19 
+console.log(url) // https://example.com/?oob=eyJ0eXBlIjoic2lvcHYyIiwiaWQiOiI1OTlmMzYzOC1iNTYzLTQ5MzctOTQ4Ny1kZmU1NTA5OWQ5MDAiLCJmcm9tIjoiZGlkOmtleTp6cmZkamtnZmpnZmRqayIsImJvZHkiOnsiZ29hbC1jb2RlIjoic3RyZWFtbGluZWQtdnAiLCJhY2NlcHQiOlsic2lvcHYyK29pZGM0dnAiXX19
 ```
 
 #### For rendering add to the view
 
 ```jsx
-  <View>
+<View>
   //...
-  {
-    this.delegateCreateOobQRCode()
-  }
-  </View>
+  {this.delegateCreateOobQRCode()}
+</View>
 ```

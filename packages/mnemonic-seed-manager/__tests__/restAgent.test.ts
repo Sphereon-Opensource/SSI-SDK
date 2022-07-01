@@ -2,7 +2,7 @@ import 'cross-fetch/polyfill'
 import * as fs from 'fs'
 import { Server } from 'http'
 
-import { createAgent, IAgent, IAgentOptions, IDataStore, IKeyManager } from '@veramo/core'
+import { createAgent, IAgent, IAgentOptions, IDataStore, IKeyManager, IDataStoreORM } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 
@@ -16,7 +16,7 @@ import mnemonicGenerator from './shared/generateMnemonic'
 import seedGenerator from './shared/generateSeed'
 import storeSeed from './shared/storeMnemonicInfo'
 import { KeyManager } from '@veramo/key-manager'
-import { KeyStore, PrivateKeyStore, Entities, IDataStoreORM, DataStore, DataStoreORM } from '@veramo/data-store'
+import { KeyStore, PrivateKeyStore, Entities, DataStore, DataStoreORM } from '@veramo/data-store'
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 import { createConnection } from 'typeorm'
 

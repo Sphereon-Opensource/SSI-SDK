@@ -7,17 +7,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @sphereon/ssi-sdk-did-auth-siop-authenticator
 
-
-
-
-
 # [0.5.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.4.0...v0.5.0) (2022-02-23)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk-did-auth-siop-authenticator
-
-
-
-
 
 # [0.4.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.3.4...v0.4.0) (2022-02-11)
 

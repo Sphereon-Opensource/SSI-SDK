@@ -1,4 +1,4 @@
-export { parseDid, multibaseToHex, hexToMultibase } from './utils'
+export { parseDid, multibaseToHex, hexToMultibase, MultibaseFormat } from './utils'
 export {
   VerifiablePresentationSP,
   UnsignedPresentationSP,
@@ -13,5 +13,21 @@ export {
   Descriptor,
   IParsedDID,
   SignatureTypes,
+  IConnectionParty,
+  IBasicConnectionParty,
+  ConnectionTypeEnum,
+  IConnection,
+  IBasicConnection,
+  ConnectionIdentifierEnum,
+  IConnectionIdentifier,
+  IBasicConnectionIdentifier,
+  IConnectionMetadataItem,
+  IBasicConnectionMetadataItem,
+  IOpenIdConfig,
+  IBasicOpenIdConfig,
+  IDidAuthConfig,
+  IBasicDidAuthConfig,
+  ConnectionConfig,
+  BasicConnectionConfig,
 } from './types'
 export { SuppliedSigner } from './signers'

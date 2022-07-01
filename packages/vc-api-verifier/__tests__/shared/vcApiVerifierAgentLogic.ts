@@ -19,30 +19,24 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should verify', async () => {
       const credential = {
-        '@context': ['https://www.w3.org/2018/credentials/v1', 'https://sphereon-opensource.github.io/vc-contexts/myc/bedrijfsinformatie-v1.jsonld'],
-        issuer: 'did:factom:9d612c949afee208f664e81dc16bdb4f4eff26776ebca2e94a9f06a40d68626d',
-        issuanceDate: '2021-12-02T02:55:39.608Z',
+        '@context': ['https://www.w3.org/2018/credentials/v1', 'https://www.w3.org/2018/credentials/examples/v1'],
         credentialSubject: {
-          Bedrijfsinformatie: {
-            id: 'did:lto:3MrjGusMnFspFfyVctYg3cJaNKGnaAhMZXM',
-            naam: 'Test Bedrijf',
-            kvkNummer: '1234',
-            rechtsvorm: '1234',
-            straatnaam: 'Kerkstraat',
-            huisnummer: '11',
-            postcode: '1111 AB',
-            plaats: 'Voorbeeld',
-            bagId: '12132',
-            datumAkteOprichting: '2020-12-30',
+          degree: {
+            name: 'Bachelor of Science and Arts',
+            type: 'BachelorDegree',
           },
+          id: 'did:example:123',
         },
-        type: ['VerifiableCredential', 'Bedrijfsinformatie'],
+        id: 'http://example.gov/credentials/3732',
+        issuanceDate: '2020-03-16T22:37:26.544Z',
+        issuer: 'did:factom:5c282b46ae5beee50812a2dd9750bf8600d5c9040891c3cc09013521b5750f82',
+        type: ['VerifiableCredential', 'UniversityDegreeCredential'],
         proof: {
           type: 'Ed25519Signature2018',
-          created: '2021-12-02T02:55:39Z',
-          jws: 'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..SsE_Z6iAktFvsiB1FRJT7lGMnCjHjZ6kvjmXLjJWFZG6trMlm1IJtwvGm1huRgFKfjyiB2LK3166eSboWqwPCg',
+          created: '2022-05-12T12:01:59Z',
+          jws: 'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..QeGMmbvX6Y9Ba6DEHj-oFmprs09ZRT4vpvMPRl6_MsndN-gGWnWFKsmNr4JMWrirnXuReKTL8oqUe5IUF9NODg',
           proofPurpose: 'assertionMethod',
-          verificationMethod: 'did:factom:9d612c949afee208f664e81dc16bdb4f4eff26776ebca2e94a9f06a40d68626d#key-0',
+          verificationMethod: 'did:factom:5c282b46ae5beee50812a2dd9750bf8600d5c9040891c3cc09013521b5750f82#key-0',
         },
       }
 

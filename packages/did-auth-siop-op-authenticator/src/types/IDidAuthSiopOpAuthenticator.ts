@@ -2,6 +2,7 @@ import { DIDDocumentSection, IAgentContext, IIdentifier, IPluginMethodMap, IReso
 import { IVerifiableCredential, IVerifiablePresentation } from '@sphereon/pex'
 import { OpSession } from '../session/OpSession'
 import { SIOP } from '@sphereon/did-auth-siop'
+import { Resolvable } from 'did-resolver'
 
 export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   getSessionForSiop(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
@@ -21,11 +22,18 @@ export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   registerCustomApprovalForSiop(args: IRegisterCustomApprovalForSiopArgs, context: IRequiredContext): Promise<void>
   removeCustomApprovalForSiop(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean>
 }
+export interface PerDidResolver {
+  didMethod: string
+  resolver: Resolvable
+}
 
 export interface IOpSessionArgs {
   sessionId: string
   identifier: IIdentifier
   context: IRequiredContext
+  supportedDidMethods?: string[]
+  resolver?: Resolvable
+  perDidResolvers?: PerDidResolver[]
   expiresIn?: number
   verificationMethodSection?: DIDDocumentSection
 }
@@ -34,7 +42,7 @@ export interface IAuthenticateWithSiopArgs {
   sessionId: string
   stateId: string
   redirectUrl: string
-  customApproval?: ((verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT) => Promise<void>) | string
+  customApproval?: ((verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT, sessionId: string) => Promise<void>) | string
 }
 
 export interface IGetSiopAuthenticationRequestFromRpArgs {
@@ -80,6 +88,9 @@ export interface IGetSiopSessionArgs {
 
 export interface IRegisterSiopSessionArgs {
   identifier: IIdentifier
+  resolver?: Resolvable
+  perDidResolvers?: PerDidResolver[]
+  supportedDidMethods?: string[]
   sessionId?: string
   expiresIn?: number
 }
@@ -90,7 +101,7 @@ export interface IRemoveSiopSessionArgs {
 
 export interface IRegisterCustomApprovalForSiopArgs {
   key: string
-  customApproval: (verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT) => Promise<void>
+  customApproval: (verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT, sessionId: string) => Promise<void>
 }
 
 export interface IRemoveCustomApprovalForSiopArgs {
@@ -100,12 +111,12 @@ export interface IRemoveCustomApprovalForSiopArgs {
 export interface IOpsAuthenticateWithSiopArgs {
   stateId: string
   redirectUrl: string
-  customApprovals: Record<string, (verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT) => Promise<void>>
-  customApproval?: ((verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT) => Promise<void>) | string
+  customApprovals: Record<string, (verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT, sessionId: string) => Promise<void>>
+  customApproval?: ((verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT, sessionId: string) => Promise<void>) | string
 }
 
 export interface IOpsGetSiopAuthenticationRequestFromRpArgs {
-  stateId: string
+  stateId?: string
   redirectUrl: string
 }
 

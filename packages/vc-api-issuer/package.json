@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-vc-api-issuer",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,12 +14,12 @@
     "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
   },
   "dependencies": {
-    "@veramo/core": "3.1.1-next.26",
+    "@veramo/core": "3.1.2-next.84",
     "cross-fetch": "^3.1.5"
   },
   "devDependencies": {
     "@types/jest": "^27.0.2",
-    "@veramo/cli": "3.1.1-next.26",
+    "@veramo/cli": "3.1.2-next.84",
     "jest": "^27.3.1",
     "prettier": "^2.4.1",
     "ts-jest": "^27.0.7",
