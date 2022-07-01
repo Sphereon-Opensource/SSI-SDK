@@ -1,4 +1,4 @@
-import { createAgent, IDataStore, IDataStoreORM } from '@veramo/core'
+import { createAgent } from '@veramo/core'
 import { DataStore, DataStoreORM, Entities } from '@veramo/data-store'
 import { Connection, createConnection } from 'typeorm'
 import { VcManager } from '../src'
@@ -19,10 +19,11 @@ const setup = async (): Promise<boolean> => {
     logging: false,
     entities: Entities,
   })
-
-  const localAgent = createAgent<IDataStoreORM & IDataStore & IVcManager>({
+  const dataStore = new DataStore(dbConnection);
+  const dataStoreORM = new DataStoreORM(dbConnection);
+  const localAgent = createAgent<IVcManager>({
     plugins: [
-      new VcManager(new DataStore(dbConnection), new DataStoreORM(dbConnection)),
+      new VcManager({ dataStore, dataStoreORM}),
     ],
   })
   agent = localAgent
@@ -41,6 +42,6 @@ const testContext = {
   tearDown
 }
 
-describe('Local integration tests', () => {
+describe('vc-manager Local integration tests', () => {
   vcManagerAgentLogic(testContext)
 })

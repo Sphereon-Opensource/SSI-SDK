@@ -15,23 +15,23 @@ export class VcManager implements IAgentPlugin {
     dataStoreORMGetVerifiableCredentialsCount: this.dataStoreORMGetVerifiableCredentialsCount.bind(this),
   }
 
-  private readonly datastore: DataStore;
-  private readonly datastoreORM: DataStoreORM;
+  private readonly dataStore: DataStore;
+  private readonly dataStoreORM: DataStoreORM;
 
-  constructor( datastore: DataStore, datastoreORM: DataStoreORM ) {
-    this.datastore = datastore
-    this.datastoreORM = datastoreORM
+  constructor(options: { dataStore: DataStore, dataStoreORM: DataStoreORM }) {
+    this.dataStore = options.dataStore
+    this.dataStoreORM = options.dataStoreORM
   }
 
   private async dataStoreSaveVerifiableCredential(args: IDataStoreSaveVerifiableCredentialArgs): Promise<string> {
-    return await this.datastore.dataStoreSaveVerifiableCredential( args )
+    return await this.dataStore.dataStoreSaveVerifiableCredential( args )
   }
 
   private async dataStoreORMGetVerifiableCredentialsByClaims(args: FindClaimsArgs, context: AuthorizedDIDContext): Promise<Array<UniqueVerifiableCredential>>{
-    return await this.datastoreORM.dataStoreORMGetVerifiableCredentialsByClaims( args, context )
+    return await this.dataStoreORM.dataStoreORMGetVerifiableCredentialsByClaims( args, context )
   }
 
   private async dataStoreORMGetVerifiableCredentialsCount(args: FindCredentialsArgs, context: AuthorizedDIDContext): Promise<number> {
-    return await this.datastoreORM.dataStoreORMGetVerifiableCredentialsCount( args, context )
+    return await this.dataStoreORM.dataStoreORMGetVerifiableCredentialsCount( args, context )
   }
 }
