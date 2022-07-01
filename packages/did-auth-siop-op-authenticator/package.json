@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-did-auth-siop-authenticator",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,7 +15,7 @@
   "dependencies": {
     "@sphereon/did-auth-siop": "0.2.11",
     "@sphereon/pex": "^1.1.2",
-    "@sphereon/ssi-sdk-core": "^0.5.1",
+    "@sphereon/ssi-sdk-core": "^0.6.0",
     "@veramo/core": "3.1.2-next.84",
     "@veramo/utils": "3.1.2-next.84",
     "cross-fetch": "^3.1.5",
