@@ -4,7 +4,7 @@
     "rootDir": "src",
     "outDir": "dist",
     "declarationDir": "dist",
-    "strictPropertyInitialization": false,
+    "strictPropertyInitialization": false
   },
   "references": [{ "path": "../ssi-sdk-core" }]
 }

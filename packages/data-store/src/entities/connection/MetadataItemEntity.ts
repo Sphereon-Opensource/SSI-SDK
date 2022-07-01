@@ -1,10 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  BaseEntity,
-  ManyToOne
-} from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne } from 'typeorm'
 import { ConnectionEntity } from './ConnectionEntity'
 import { IBasicConnectionMetadataItem } from '@sphereon/ssi-sdk-core'
 
@@ -19,8 +13,8 @@ export class MetadataItemEntity extends BaseEntity {
   @Column('text', { nullable: false })
   value!: string
 
-  @ManyToOne(() => ConnectionEntity, connection => connection.metadata, {
-    onDelete: 'CASCADE'
+  @ManyToOne(() => ConnectionEntity, (connection) => connection.metadata, {
+    onDelete: 'CASCADE',
   })
   connection!: ConnectionEntity
 }

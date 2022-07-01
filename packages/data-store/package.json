@@ -8,8 +8,8 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk-core": "^0.5.0",
-    "@sphereon/ssi-sdk-connection-manager": "^0.5.0",
+    "@sphereon/ssi-sdk-core": "^0.5.1",
+    "@sphereon/ssi-sdk-connection-manager": "^0.5.1",
     "debug": "^4.1.1",
     "typeorm": "0.2.45"
   },

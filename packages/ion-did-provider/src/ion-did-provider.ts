@@ -21,8 +21,8 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
   }
 
   async createIdentifier(
-    { kms, options }: { kms?: string; options?: any },
-    context: IContext,
+    { kms }: { kms?: string; alias?: string; options?: any },
+    context: IAgentContext<IKeyManager>
   ): Promise<Omit<IIdentifier, 'provider'>> {
     const key = await context.agent.keyManagerCreate({ kms: kms || this.defaultKms, type: 'Secp256k1' })
     // convert to JWK (note, we should have a discussion about key dependencies here)
@@ -36,15 +36,15 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
             id: key.kid.substring(0, 50),
             type: 'EcdsaSecp256k1VerificationKey2019',
             publicKeyJwk: publicJwk,
-            purposes: [ 'authentication' ]
-          }
+            purposes: ['authentication'],
+          },
         ],
-      }
-    });
+      },
+    })
 
-    const requestBody = await did.generateRequest(0);
-    const request = new ION.AnchorRequest(requestBody);
-    await request.submit();
+    const requestBody = await did.generateRequest(0)
+    const request = new ION.AnchorRequest(requestBody)
+    await request.submit()
 
     const identifier: Omit<IIdentifier, 'provider'> = {
       did: await did.getURI(),
@@ -54,7 +54,7 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
     }
 
     // TODO: Long version DID is not conformant to "initial value" definition.
-    debug(`Created (short version): ${ await did.getURI('short') }`)
+    debug(`Created (short version): ${await did.getURI('short')}`)
     debug('Created', identifier.did)
 
     return identifier
@@ -67,31 +67,19 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
     return true
   }
 
-  async addKey(
-    { identifier, key, options }: { identifier: IIdentifier; key: IKey; options?: any },
-    context: IContext,
-  ): Promise<any> {
+  async addKey({ identifier, key, options }: { identifier: IIdentifier; key: IKey; options?: any }, context: IContext): Promise<any> {
     throw new Error('Not Implemented')
   }
 
-  async addService(
-    { identifier, service, options }: { identifier: IIdentifier; service: IService; options?: any },
-    context: IContext,
-  ): Promise<any> {
+  async addService({ identifier, service, options }: { identifier: IIdentifier; service: IService; options?: any }, context: IContext): Promise<any> {
     throw new Error('Not Implemented')
   }
 
-  async removeKey(
-    args: { identifier: IIdentifier; kid: string; options?: any },
-    context: IContext,
-  ): Promise<any> {
+  async removeKey(args: { identifier: IIdentifier; kid: string; options?: any }, context: IContext): Promise<any> {
     throw new Error('Not Implemented')
   }
 
-  async removeService(
-    args: { identifier: IIdentifier; id: string; options?: any },
-    context: IContext,
-  ): Promise<any> {
+  async removeService(args: { identifier: IIdentifier; id: string; options?: any }, context: IContext): Promise<any> {
     throw new Error('Not Implemented')
   }
 }

@@ -27,7 +27,7 @@ const getAgent = () => agent
 const testContext = {
   getAgent,
   setup,
-  tearDown
+  tearDown,
 }
 
 describe('Local integration tests', () => {

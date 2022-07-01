@@ -8,7 +8,7 @@ import {
   IConnectionMetadataItem,
   IConnectionParty,
   IDidAuthConfig,
-  IOpenIdConfig
+  IOpenIdConfig,
 } from '@sphereon/ssi-sdk-core'
 import { AbstractConnectionStore } from '@sphereon/ssi-sdk-connection-manager'
 import { BaseConfigEntity } from '../entities/connection/BaseConfigEntity'
@@ -16,29 +16,14 @@ import { ConnectionIdentifierEntity } from '../entities/connection/ConnectionIde
 import { DidAuthConfigEntity } from '../entities/connection/DidAuthConfigEntity'
 import { MetadataItemEntity } from '../entities/connection/MetadataItemEntity'
 import { OpenIdConfigEntity } from '../entities/connection/OpenIdConfigEntity'
-import {
-  ConnectionEntity,
-  connectionEntityFrom
-} from '../entities/connection/ConnectionEntity'
-import {
-  PartyEntity,
-  partyEntityFrom
-} from '../entities/connection/PartyEntity'
+import { ConnectionEntity, connectionEntityFrom } from '../entities/connection/ConnectionEntity'
+import { PartyEntity, partyEntityFrom } from '../entities/connection/PartyEntity'
 
 const debug = Debug('sphereon:typeorm:connection-store')
 
 export class ConnectionStore extends AbstractConnectionStore {
-  private readonly party_relations = [
-    'connections',
-    'connections.config',
-    'connections.metadata',
-    'connections.identifier'
-  ]
-  private readonly connection_relations = [
-    'config',
-    'metadata',
-    'identifier'
-  ]
+  private readonly party_relations = ['connections', 'connections.config', 'connections.metadata', 'connections.identifier']
+  private readonly connection_relations = ['config', 'metadata', 'identifier']
 
   constructor(private dbConnection: Promise<Connection>) {
     super()
@@ -47,7 +32,7 @@ export class ConnectionStore extends AbstractConnectionStore {
   getParty = async (partyId: string): Promise<IConnectionParty> => {
     const result = await (await this.dbConnection).getRepository(PartyEntity).findOne({
       where: { id: partyId },
-      relations: this.party_relations
+      relations: this.party_relations,
     })
 
     if (!result) {
@@ -59,16 +44,16 @@ export class ConnectionStore extends AbstractConnectionStore {
 
   getParties = async (): Promise<Array<IConnectionParty>> => {
     const result = await (await this.dbConnection).getRepository(PartyEntity).find({
-      relations: this.party_relations
-    });
+      relations: this.party_relations,
+    })
 
-    return result.map(party => this.partyFrom(party))
+    return result.map((party) => this.partyFrom(party))
   }
 
   addParty = async (name: string): Promise<IConnectionParty> => {
     const result = await (await this.dbConnection).getRepository(PartyEntity).findOne({
       where: { name },
-      relations: this.party_relations
+      relations: this.party_relations,
     })
 
     if (result) {
@@ -77,7 +62,7 @@ export class ConnectionStore extends AbstractConnectionStore {
 
     const partyEntity = partyEntityFrom(name)
     debug('Adding party', name)
-    const createdResult = await (await this.dbConnection).getRepository(PartyEntity).save(partyEntity);
+    const createdResult = await (await this.dbConnection).getRepository(PartyEntity).save(partyEntity)
 
     return this.partyFrom(createdResult)
   }
@@ -85,7 +70,7 @@ export class ConnectionStore extends AbstractConnectionStore {
   updateParty = async (party: IConnectionParty): Promise<IConnectionParty> => {
     const result = await (await this.dbConnection).getRepository(PartyEntity).findOne({
       where: { id: party.id },
-      relations: this.party_relations
+      relations: this.party_relations,
     })
 
     if (!result) {
@@ -93,24 +78,23 @@ export class ConnectionStore extends AbstractConnectionStore {
     }
 
     debug('Updating party', party)
-    const updatedResult = await (await this.dbConnection).getRepository(PartyEntity).save(
-        party,
-        { transaction: true }
-    );
+    const updatedResult = await (await this.dbConnection).getRepository(PartyEntity).save(party, { transaction: true })
 
     return this.partyFrom(updatedResult)
   }
 
   removeParty = async (partyId: string): Promise<void> => {
-    debug('Removing party', partyId);
-    (await this.dbConnection).getRepository(PartyEntity).delete({ id: partyId })
-      .catch(error => Promise.reject(Error(`Unable to remove party with id: ${partyId}. ${error}`)))
+    debug('Removing party', partyId)
+    ;(await this.dbConnection)
+      .getRepository(PartyEntity)
+      .delete({ id: partyId })
+      .catch((error) => Promise.reject(Error(`Unable to remove party with id: ${partyId}. ${error}`)))
   }
 
   getConnection = async (connectionId: string): Promise<IConnection> => {
     const result = await (await this.dbConnection).getRepository(ConnectionEntity).findOne({
       where: { id: connectionId },
-      relations: this.connection_relations
+      relations: this.connection_relations,
     })
 
     if (!result) {
@@ -123,20 +107,20 @@ export class ConnectionStore extends AbstractConnectionStore {
   getConnections = async (partyId: string): Promise<Array<IConnection>> => {
     const result = await (await this.dbConnection).getRepository(PartyEntity).findOne({
       where: { id: partyId },
-      relations: this.party_relations
+      relations: this.party_relations,
     })
 
     if (!result) {
       return Promise.reject(Error(`No party found for id: ${partyId}`))
     }
 
-    return result.connections.map(connection => this.connectionFrom(connection))
+    return result.connections.map((connection) => this.connectionFrom(connection))
   }
 
   addConnection = async (partyId: string, connection: IConnection): Promise<IConnection> => {
     const party = await (await this.dbConnection).getRepository(PartyEntity).findOne({
       where: { id: partyId },
-      relations: this.party_relations
+      relations: this.party_relations,
     })
 
     if (!party) {
@@ -151,7 +135,7 @@ export class ConnectionStore extends AbstractConnectionStore {
     connectionEntity.party = party
     debug('Adding connection', connection)
     const result = await (await this.dbConnection).getRepository(ConnectionEntity).save(connectionEntity, {
-      transaction: true
+      transaction: true,
     })
 
     return this.connectionFrom(result)
@@ -160,7 +144,7 @@ export class ConnectionStore extends AbstractConnectionStore {
   updateConnection = async (connection: IConnection): Promise<IConnection> => {
     const result = await (await this.dbConnection).getRepository(ConnectionEntity).findOne({
       where: { id: connection.id },
-      relations: this.connection_relations
+      relations: this.connection_relations,
     })
 
     if (!result) {
@@ -172,10 +156,7 @@ export class ConnectionStore extends AbstractConnectionStore {
     }
 
     debug('Updating connection', connection)
-    const updatedResult = await (await this.dbConnection).getRepository(ConnectionEntity).save(
-        connection,
-        { transaction: true }
-    );
+    const updatedResult = await (await this.dbConnection).getRepository(ConnectionEntity).save(connection, { transaction: true })
 
     return this.connectionFrom(updatedResult)
   }
@@ -183,23 +164,25 @@ export class ConnectionStore extends AbstractConnectionStore {
   removeConnection = async (connectionId: string): Promise<void> => {
     const connection = await (await this.dbConnection).getRepository(ConnectionEntity).findOne({
       where: { id: connectionId },
-      relations: this.connection_relations
+      relations: this.connection_relations,
     })
 
     if (!connection) {
       return Promise.reject(Error(`No connection found for id: ${connectionId}`))
     }
 
-    debug('Removing connection', connectionId);
-    (await this.dbConnection).getRepository(ConnectionEntity).delete({ id: connectionId })
-      .catch(error => Promise.reject(Error(`Unable to remove connection with id: ${connectionId}. ${error}`)))
+    debug('Removing connection', connectionId)
+    ;(await this.dbConnection)
+      .getRepository(ConnectionEntity)
+      .delete({ id: connectionId })
+      .catch((error) => Promise.reject(Error(`Unable to remove connection with id: ${connectionId}. ${error}`)))
   }
 
   private partyFrom = (party: PartyEntity): IConnectionParty => {
     return {
       id: party.id,
       name: party.name,
-      connections: party.connections ? party.connections.map((connection: ConnectionEntity) => this.connectionFrom(connection)) : []
+      connections: party.connections ? party.connections.map((connection: ConnectionEntity) => this.connectionFrom(connection)) : [],
     }
   }
 
@@ -211,12 +194,12 @@ export class ConnectionStore extends AbstractConnectionStore {
       config: this.configFrom(connection.type, connection.config),
       metadata: connection.metadata ? connection.metadata.map((item: MetadataItemEntity) => this.metadataItemFrom(item)) : [],
       createdAt: connection.createdAt,
-      lastUpdatedAt: connection.createdAt
+      lastUpdatedAt: connection.createdAt,
     }
   }
 
   private configFrom = (type: ConnectionTypeEnum, config: BaseConfigEntity): ConnectionConfig => {
-    switch(type) {
+    switch (type) {
       case ConnectionTypeEnum.OPENID:
         return {
           id: (config as OpenIdConfigEntity).id,
@@ -231,10 +214,10 @@ export class ConnectionStore extends AbstractConnectionStore {
       case ConnectionTypeEnum.DIDAUTH:
         return {
           id: (config as DidAuthConfigEntity).id,
-          identifier: {did: (config as DidAuthConfigEntity).identifier, provider: '', keys: [], services: []},
+          identifier: { did: (config as DidAuthConfigEntity).identifier, provider: '', keys: [], services: [] },
           stateId: '',
           redirectUrl: (config as DidAuthConfigEntity).redirectUrl,
-          sessionId: (config as DidAuthConfigEntity).sessionId
+          sessionId: (config as DidAuthConfigEntity).sessionId,
         }
       default:
         throw new Error('Connection type not supported')
@@ -242,7 +225,7 @@ export class ConnectionStore extends AbstractConnectionStore {
   }
 
   private hasCorrectConfig(type: ConnectionTypeEnum, config: ConnectionConfig): boolean {
-    switch(type) {
+    switch (type) {
       case ConnectionTypeEnum.OPENID:
         return this.isOpenIdConfig(config)
       case ConnectionTypeEnum.DIDAUTH:
@@ -253,23 +236,20 @@ export class ConnectionStore extends AbstractConnectionStore {
   }
 
   private isOpenIdConfig = (config: ConnectionConfig): config is IOpenIdConfig =>
-      'clientSecret' in config &&
-      'issuer' in config &&
-      'redirectUrl' in config &&
-      'dangerouslyAllowInsecureHttpRequests' in config &&
-      'clientAuthMethod' in config
+    'clientSecret' in config &&
+    'issuer' in config &&
+    'redirectUrl' in config &&
+    'dangerouslyAllowInsecureHttpRequests' in config &&
+    'clientAuthMethod' in config
 
   private isDidAuthConfig = (config: ConnectionConfig): config is IDidAuthConfig =>
-      'identifier' in config &&
-      'stateId' in config &&
-      'redirectUrl' in config &&
-      'sessionId' in config
+    'identifier' in config && 'stateId' in config && 'redirectUrl' in config && 'sessionId' in config
 
   private metadataItemFrom = (item: MetadataItemEntity): IConnectionMetadataItem => {
     return {
       id: item.id,
       label: item.label,
-      value: item.value
+      value: item.value,
     }
   }
 
@@ -277,7 +257,7 @@ export class ConnectionStore extends AbstractConnectionStore {
     return {
       id: identifier.id,
       type: identifier.type,
-      correlationId: identifier.correlationId
+      correlationId: identifier.correlationId,
     }
   }
 }

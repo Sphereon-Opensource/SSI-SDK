@@ -1,8 +1,4 @@
-import {
-  IBasicConnection,
-  IConnection,
-  IConnectionParty
-} from '@sphereon/ssi-sdk-core'
+import { IBasicConnection, IConnection, IConnectionParty } from '@sphereon/ssi-sdk-core'
 
 export abstract class AbstractConnectionStore {
   abstract getParty(partyId: string): Promise<IConnectionParty>

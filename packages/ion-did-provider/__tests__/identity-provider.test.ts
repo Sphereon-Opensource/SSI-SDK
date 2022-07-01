@@ -4,4 +4,3 @@ describe('dummy', () => {
     expect(a).toEqual(100)
   })
 })
-
