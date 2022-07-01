@@ -7,7 +7,7 @@ Note:
 For installing also add @sphereon/react-native-argon2
 
 ```shell
-yarn add @sphereon/react-native argon2
+yarn add @sphereon/react-native-argon2
 ```
 
 And add the following to the podfile
