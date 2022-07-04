@@ -14,8 +14,8 @@ export class MsVcApiIssuer implements IAgentPlugin {
 
   /** {@inheritDoc IMsVcApiIssuer.issuanceRequestMsVc} */
   private async issuanceRequestMsVc(issuanceInfo: IIssueRequest, context: IRequiredContext): Promise<IIssueRequestResponse> {
-    var accessToken = await ClientCredentialAuthenticator(issuanceInfo.auhenticationInfo);
-    await fetch('https://login.microsoftonline.com/' + issuanceInfo.auhenticationInfo.azTenantId + '/v2.0/.well-known/openid-configuration', { method: 'GET' })
+    var accessToken = await ClientCredentialAuthenticator(issuanceInfo.authenticationInfo);
+    await fetch('https://login.microsoftonline.com/' + issuanceInfo.authenticationInfo.azTenantId + '/v2.0/.well-known/openid-configuration', { method: 'GET' })
       .then(res => res.json())
       .then(async (resp) => {
         this.msIdentityHostName = "https://beta.did.msidentity.com/v1.0/";
@@ -23,13 +23,13 @@ export class MsVcApiIssuer implements IAgentPlugin {
           this.msIdentityHostName = "https://beta.eu.did.msidentity.com/v1.0/";
         }
         // Check that the Credential Manifest URL is in the same tenant Region and throw an error if it's not
-        if (!issuanceInfo.auhenticationInfo.credentialManifestUrl.startsWith(this.msIdentityHostName)) {
+        if (!issuanceInfo.authenticationInfo.credentialManifestUrl.startsWith(this.msIdentityHostName)) {
           throw new Error(`Error in config file. CredentialManifest URL configured for wrong tenant region. Should start with:` + this.msIdentityHostName);
         }
       });
 
     // Config Request and App Config File should be a parameter to this function
-    if (!issuanceInfo.auhenticationInfo.azTenantId) {
+    if (!issuanceInfo.authenticationInfo.azTenantId) {
       throw new Error('The config.json file is missing.')
     }
 
@@ -55,7 +55,7 @@ export class MsVcApiIssuer implements IAgentPlugin {
       "family_name":"LASTNAME"
    }
 
-    var client_api_request_endpoint = this.msIdentityHostName + `${issuanceInfo.auhenticationInfo.azTenantId}/verifiablecredentials/request`;
+    var client_api_request_endpoint = this.msIdentityHostName + `${issuanceInfo.authenticationInfo.azTenantId}/verifiablecredentials/request`;
 
     var payload = JSON.stringify(issuanceInfo.issuanceConfig);
     const fetchOptions = {

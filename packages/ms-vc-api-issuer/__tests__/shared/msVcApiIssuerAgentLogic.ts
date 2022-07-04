@@ -21,7 +21,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       var requestConfigFile = '../../config/issuance_request_config.json';
       var issuanceConfig = require( requestConfigFile );  
       var issuanceRequest : IIssueRequest = {
-        auhenticationInfo: {
+        authenticationInfo: {
           azClientId: '04c2bd60-cdbf-4935-80dd-110fdf473e6e',
           azClientSecret: 'WAM8Q~rE05C9ja2TRiZ3H~TYz2W4TdMe.jpwSc~p',
           azTenantId: 'e2a42b2f-7460-4499-afc2-425315ef058a',

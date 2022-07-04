@@ -21,6 +21,6 @@ const tearDown = async (): Promise<boolean> => {
 const getAgent = () => agent
 const testContext = { getAgent, setup, tearDown }
 
-describe('Local integration tests ms-vc-issuer', () => {
+describe('Local integration tests', () => {
   msVcApiIssuerAgentLogic(testContext)
 })

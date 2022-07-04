@@ -6,7 +6,7 @@ export interface IMsVcApiIssuer extends IPluginMethodMap {
 }
 
 export interface IIssueRequest {
-  auhenticationInfo: IMsAuthenticationClientCredentialArgs
+  authenticationInfo: IMsAuthenticationClientCredentialArgs
   issuanceConfig: IssuanceConfig
 }
 
