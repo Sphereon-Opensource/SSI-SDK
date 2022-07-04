@@ -19,7 +19,7 @@
     "express-session": "^1.17.2"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk-core": "C:\\\\Work\\\\ssi-sdk\\\\packages\\\\ms-authenticator\\\\sphereon-ms-authenticator-v0.1.0.tgz",
+    "@sphereon/ms-authenticator": "^0.5.1",
     "@types/express-session": "^1.17.4",
     "@types/jest": "^27.0.2",
     "@veramo/cli": "3.1.2-next.84",
