@@ -1,13 +1,13 @@
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
+import msVcApiIssuerAgentLogic from './shared/msVcApiIssuerAgentLogic'
 
 jest.setTimeout(30000)
-
-import msVcApiIssuerAgentLogic from './shared/msVcApiIssuerAgentLogic'
 
 let agent: any
 
 const setup = async (): Promise<boolean> => {
+  console.log('TESTTTTTTTT Local')
   const config = getConfig('packages/ms-vc-api-issuer/agent.yml')
   const { localAgent } = createObjects(config, { localAgent: '/agent' })
   agent = localAgent
@@ -21,6 +21,6 @@ const tearDown = async (): Promise<boolean> => {
 const getAgent = () => agent
 const testContext = { getAgent, setup, tearDown }
 
-describe('Local integration tests', () => {
+describe('TESTTTTTTTT Local integration tests', () => {
   msVcApiIssuerAgentLogic(testContext)
 })
