@@ -62,6 +62,6 @@ const testContext = {
   tearDown,
 }
 
-describe('TESTTTTTTTT REST integration tests', () => {
+describe('REST integration tests', () => {
   msVcApiIssuerAgentLogic(testContext)
 })

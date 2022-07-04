@@ -7,7 +7,7 @@ jest.setTimeout(30000)
 let agent: any
 
 const setup = async (): Promise<boolean> => {
-  console.log('TESTTTTTTTT Local')
+  console.log('Local')
   const config = getConfig('packages/ms-vc-api-issuer/agent.yml')
   const { localAgent } = createObjects(config, { localAgent: '/agent' })
   agent = localAgent
@@ -21,6 +21,6 @@ const tearDown = async (): Promise<boolean> => {
 const getAgent = () => agent
 const testContext = { getAgent, setup, tearDown }
 
-describe('TESTTTTTTTT Local integration tests', () => {
+describe('Local integration tests', () => {
   msVcApiIssuerAgentLogic(testContext)
 })
