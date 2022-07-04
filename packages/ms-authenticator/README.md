@@ -14,7 +14,7 @@
 
 # ms-authenticator
 
-A Veramo plugin to authenticate using the Microsoft Authentication Library (MSAL). 
+A Veramo plugin to authenticate using the Microsoft Authentication Library (MSAL).
 
 ### Installation
 

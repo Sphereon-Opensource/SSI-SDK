@@ -26,7 +26,7 @@ dbConnection:
       synchronize: true
       logging: false
       entities:
-         $require: '@sphereon/ssi-sdk-data-store?t=object#Entities'
+        $require: '@sphereon/ssi-sdk-data-store?t=object#Entities'
 
 server:
   baseUrl:

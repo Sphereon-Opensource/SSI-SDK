@@ -1,7 +1,4 @@
-import {
-  Column,
-  ChildEntity
-} from 'typeorm'
+import { Column, ChildEntity } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
 import { IBasicDidAuthConfig } from '@sphereon/ssi-sdk-core'
 
@@ -10,7 +7,7 @@ export class DidAuthConfigEntity extends BaseConfigEntity {
   @Column('text', { nullable: false })
   identifier!: string
 
-  @Column('text', { name: 'redirect_url'})
+  @Column('text', { name: 'redirect_url' })
   redirectUrl!: string
 
   @Column('text', { name: 'session_id', nullable: false })

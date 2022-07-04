@@ -4,26 +4,26 @@ import { fetch } from 'cross-fetch'
 
 const EU = 'EU'
 
-const HTTP_METHOD_GET = 'GET';
+const HTTP_METHOD_GET = 'GET'
 
-const MS_IDENTITY_HOST_NAME_NONE_EU = 'https://beta.did.msidentity.com/v1.0/';
-const MS_IDENTITY_HOST_NAME_EU = 'https://beta.eu.did.msidentity.com/v1.0/';
-const MS_LOGIN_PREFIX = 'https://login.microsoftonline.com/';
-const MS_LOGIN_OPENID_CONFIG_POSTFIX = '/v2.0/.well-known/openid-configuration';
-const MS_CLIENT_CREDENTIAL_DEFAULT_SCOPE = '3db474b9-6a0c-4840-96ac-1fceb342124f/.default';
+const MS_IDENTITY_HOST_NAME_NONE_EU = 'https://beta.did.msidentity.com/v1.0/'
+const MS_IDENTITY_HOST_NAME_EU = 'https://beta.eu.did.msidentity.com/v1.0/'
+const MS_LOGIN_PREFIX = 'https://login.microsoftonline.com/'
+const MS_LOGIN_OPENID_CONFIG_POSTFIX = '/v2.0/.well-known/openid-configuration'
+const MS_CLIENT_CREDENTIAL_DEFAULT_SCOPE = '3db474b9-6a0c-4840-96ac-1fceb342124f/.default'
 
-const ERROR_CREDENTIAL_MANIFEST_REGION = `Error in config file. CredentialManifest URL configured for wrong tenant region. Should start with:`;
+const ERROR_CREDENTIAL_MANIFEST_REGION = `Error in config file. CredentialManifest URL configured for wrong tenant region. Should start with:`
 const ERROR_ACQUIRE_ACCESS_TOKEN_FOR_CLIENT = 'Could not acquire credentials to access your Azure Key Vault:\n'
-const ERROR_FAILED_AUTHENTICATION = 'failed to authenticate: ';
+const ERROR_FAILED_AUTHENTICATION = 'failed to authenticate: '
 
 async function getClientRegion(azTenantId: string): Promise<string> {
-  let region = EU;
-  await fetch(MS_LOGIN_PREFIX + azTenantId + MS_LOGIN_OPENID_CONFIG_POSTFIX, {method: HTTP_METHOD_GET})
-  .then((res) => res.json())
-  .then(async (resp) => {
-    region = resp.tenant_region_scope;
-  })
-  return region;
+  let region = EU
+  await fetch(MS_LOGIN_PREFIX + azTenantId + MS_LOGIN_OPENID_CONFIG_POSTFIX, { method: HTTP_METHOD_GET })
+    .then((res) => res.json())
+    .then(async (resp) => {
+      region = resp.tenant_region_scope
+    })
+  return region
 }
 
 /**
@@ -45,19 +45,19 @@ export async function ClientCredentialAuthenticator(authenticationArgs: IMsAuthe
     },
     system: {
       loggerOptions: {
-        piiLoggingEnabled: authenticationArgs.piiLoggingEnabled? authenticationArgs.piiLoggingEnabled: false,
-        logLevel: authenticationArgs.logLevel? authenticationArgs.logLevel: LogLevel.Verbose,
-      }
-    }
+        piiLoggingEnabled: authenticationArgs.piiLoggingEnabled ? authenticationArgs.piiLoggingEnabled : false,
+        logLevel: authenticationArgs.logLevel ? authenticationArgs.logLevel : LogLevel.Verbose,
+      },
+    },
   }
 
   const cca = new ConfidentialClientApplication(msalConfig)
   const msalClientCredentialRequest = {
     scopes: authenticationArgs.scopes ? authenticationArgs.scopes : [MS_CLIENT_CREDENTIAL_DEFAULT_SCOPE],
-    skipCache: authenticationArgs.skipCache ? authenticationArgs.skipCache : false
+    skipCache: authenticationArgs.skipCache ? authenticationArgs.skipCache : false,
   }
   const region = authenticationArgs.region ? authenticationArgs.region : await getClientRegion(authenticationArgs.azTenantId)
-  const msIdentityHostName = region === EU ? MS_IDENTITY_HOST_NAME_EU : MS_IDENTITY_HOST_NAME_NONE_EU;
+  const msIdentityHostName = region === EU ? MS_IDENTITY_HOST_NAME_EU : MS_IDENTITY_HOST_NAME_NONE_EU
   // Check that the Credential Manifest URL is in the same tenant Region and throw an error if it's not
   if (!authenticationArgs.credentialManifestUrl.startsWith(msIdentityHostName)) {
     throw new Error(ERROR_CREDENTIAL_MANIFEST_REGION + msIdentityHostName)
@@ -91,11 +91,11 @@ export async function UsernamePasswordAuthenticator(authenticationArgs: IMsAuthe
   }
   const pca = new PublicClientApplication(msalConfig)
   return await pca
-  .acquireTokenByUsernamePassword(authenticationArgs as UsernamePasswordRequest)
-  .then((response: any) => {
-    return response
-  })
-  .catch((error: any) => {
-    throw new Error(ERROR_FAILED_AUTHENTICATION + error)
-  })
+    .acquireTokenByUsernamePassword(authenticationArgs as UsernamePasswordRequest)
+    .then((response: any) => {
+      return response
+    })
+    .catch((error: any) => {
+      throw new Error(ERROR_FAILED_AUTHENTICATION + error)
+    })
 }

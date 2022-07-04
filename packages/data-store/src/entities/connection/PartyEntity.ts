@@ -1,12 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  JoinColumn,
-  BaseEntity,
-  OneToMany,
-  Index
-} from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, BaseEntity, OneToMany, Index } from 'typeorm'
 import { ConnectionEntity } from './ConnectionEntity'
 
 @Entity('Party')

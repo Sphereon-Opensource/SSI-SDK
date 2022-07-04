@@ -28,6 +28,6 @@ export {
   IDidAuthConfig,
   IBasicDidAuthConfig,
   ConnectionConfig,
-  BasicConnectionConfig
+  BasicConnectionConfig,
 } from './types'
 export { SuppliedSigner } from './signers'

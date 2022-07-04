@@ -1,12 +1,5 @@
-import {
-  IAgentContext,
-  IPluginMethodMap
-} from '@veramo/core'
-import {
-  IBasicConnection,
-  IConnection,
-  IConnectionParty
-} from '@sphereon/ssi-sdk-core'
+import { IAgentContext, IPluginMethodMap } from '@veramo/core'
+import { IBasicConnection, IConnection, IConnectionParty } from '@sphereon/ssi-sdk-core'
 
 export interface IConnectionManager extends IPluginMethodMap {
   cmGetParty(args: IGetPartyArgs, context: IRequiredContext): Promise<IConnectionParty>

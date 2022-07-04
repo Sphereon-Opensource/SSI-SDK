@@ -1,34 +1,21 @@
-import {
-  createConnection,
-  Connection
-} from 'typeorm'
-import {
-  ConnectionTypeEnum,
-  ConnectionIdentifierEnum
-} from '@sphereon/ssi-sdk-core'
+import { createConnection, Connection } from 'typeorm'
+import { ConnectionTypeEnum, ConnectionIdentifierEnum } from '@sphereon/ssi-sdk-core'
 import { Entities } from '../index'
 import { PartyEntity } from '../entities/connection/PartyEntity'
 import { OpenIdConfigEntity } from '../entities/connection/OpenIdConfigEntity'
 import { DidAuthConfigEntity } from '../entities/connection/DidAuthConfigEntity'
-import {
-  ConnectionEntity,
-  connectionEntityFrom
-} from '../entities/connection/ConnectionEntity'
+import { ConnectionEntity, connectionEntityFrom } from '../entities/connection/ConnectionEntity'
 
 describe('Database entities test', () => {
   let dbConnection: Connection
-  const connection_relations = [
-    'config',
-    'metadata',
-    'identifier'
-  ]
+  const connection_relations = ['config', 'metadata', 'identifier']
 
   beforeAll(
     async () =>
       (dbConnection = await createConnection({
         type: 'sqlite',
         database: ':memory:',
-        entities: Entities
+        entities: Entities,
       }))
   )
 
@@ -45,10 +32,10 @@ describe('Database entities test', () => {
     const party = new PartyEntity()
     party.name = 'test_name'
 
-    await dbConnection.getRepository(PartyEntity).save(party);
+    await dbConnection.getRepository(PartyEntity).save(party)
 
     const fromDb = await dbConnection.getRepository(PartyEntity).findOne({
-      where: { name: party.name }
+      where: { name: party.name },
     })
     expect(fromDb?.name).toEqual(party.name)
   })
@@ -57,13 +44,11 @@ describe('Database entities test', () => {
     const partyName = 'unique_name'
     const party = new PartyEntity()
     party.name = partyName
-    await dbConnection.getRepository(PartyEntity).save(party);
+    await dbConnection.getRepository(PartyEntity).save(party)
 
     const party2 = new PartyEntity()
     party2.name = partyName
-    await expect(
-        dbConnection.getRepository(PartyEntity).save(party2)
-    ).rejects.toThrowError('SQLITE_CONSTRAINT: UNIQUE constraint failed: Party.name')
+    await expect(dbConnection.getRepository(PartyEntity).save(party2)).rejects.toThrowError('SQLITE_CONSTRAINT: UNIQUE constraint failed: Party.name')
   })
 
   it('Should save connection with openid config to database', async () => {
@@ -72,7 +57,7 @@ describe('Database entities test', () => {
       type: ConnectionTypeEnum.OPENID,
       identifier: {
         type: ConnectionIdentifierEnum.URL,
-        correlationId
+        correlationId,
       },
       config: {
         clientId: '138d7bf8-c930-4c6e-b928-97d3a4928b01',
@@ -81,27 +66,27 @@ describe('Database entities test', () => {
         issuer: 'https://example.com/app-test',
         redirectUrl: 'app:/callback',
         dangerouslyAllowInsecureHttpRequests: true,
-        clientAuthMethod: 'post' as const
+        clientAuthMethod: 'post' as const,
       },
       metadata: [
         {
           label: 'Authorization URL',
-          value: correlationId
+          value: correlationId,
         },
         {
           label: 'Scope',
-          value: 'Authorization'
-        }
-      ]
+          value: 'Authorization',
+        },
+      ],
     }
     const connectionEntity = connectionEntityFrom(connection)
     await dbConnection.getRepository(ConnectionEntity).save(connectionEntity, {
-      transaction: true
+      transaction: true,
     })
 
     const fromDb = await dbConnection.getRepository(ConnectionEntity).findOne({
       where: { type: connection.type },
-      relations: connection_relations
+      relations: connection_relations,
     })
 
     expect(fromDb?.type).toEqual(connection.type)
@@ -117,14 +102,14 @@ describe('Database entities test', () => {
       type: ConnectionTypeEnum.DIDAUTH,
       identifier: {
         type: ConnectionIdentifierEnum.URL,
-        correlationId
+        correlationId,
       },
       config: {
         identifier: {
           did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
           provider: 'test_provider',
           keys: [],
-          services: []
+          services: [],
         },
         redirectUrl: 'https://example.com',
         stateId: 'e91f3510-5ce9-42ee-83b7-fa68ff323d27',
@@ -133,22 +118,22 @@ describe('Database entities test', () => {
       metadata: [
         {
           label: 'Authorization URL',
-          value: correlationId
+          value: correlationId,
         },
         {
           label: 'Scope',
-          value: 'Authorization'
-        }
-      ]
+          value: 'Authorization',
+        },
+      ],
     }
     const connectionEntity = connectionEntityFrom(connection)
     await dbConnection.getRepository(ConnectionEntity).save(connectionEntity, {
-      transaction: true
+      transaction: true,
     })
 
     const fromDb = await dbConnection.getRepository(ConnectionEntity).findOne({
       where: { type: connection.type },
-      relations: connection_relations
+      relations: connection_relations,
     })
 
     expect(fromDb?.type).toEqual(connection.type)

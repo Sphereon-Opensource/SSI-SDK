@@ -63,7 +63,7 @@ const tearDown = async (): Promise<boolean> => {
 const testContext = {
   getAgent,
   setup,
-  tearDown
+  tearDown,
 }
 
 describe('REST integration tests', () => {
