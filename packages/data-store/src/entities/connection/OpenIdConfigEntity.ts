@@ -1,7 +1,4 @@
-import {
-  Column,
-  ChildEntity
-} from 'typeorm'
+import { Column, ChildEntity } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
 import { IBasicOpenIdConfig } from '@sphereon/ssi-sdk-core'
 

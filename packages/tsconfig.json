@@ -6,7 +6,7 @@
     { "path": "lto-did-provider" },
     { "path": "mnemonic-seed-manager" },
     { "path": "vc-api-issuer" },
-    { "path": "ms-authenticator"},
+    { "path": "ms-authenticator" },
     { "path": "ms-vc-api-issuer"},
     { "path": "vc-api-verifier" },
     { "path": "vc-handler-ld-local" },
@@ -16,6 +16,7 @@
     { "path": "bls-did-provider-key" },
     { "path": "bls-key-manager" },
     { "path": "connection-manager" },
-    { "path": "data-store" }
+    { "path": "data-store" },
+    { "path": "ion-did-provider" }
   ]
 }

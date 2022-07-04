@@ -1,7 +1,7 @@
 {
   "name": "SSI-SDK-workspace",
   "private": true,
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Sphereon SSI Typescript SDK (Workspace)",
   "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
   "author": "Sphereon <dev@sphereon.com>",
@@ -40,6 +40,17 @@
         "prerelease": true
       }
     ]
+  },
+  "resolutions": {
+    "@veramo/core": "3.1.2-next.84",
+    "@veramo/credential-w3c": "3.1.2-next.84",
+    "@veramo/data-store": "3.1.2-next.84",
+    "@veramo/did-jwt": "3.1.2-next.84",
+    "@veramo/credential-ld": "3.1.2-next.84",
+    "@veramo/did-manager": "3.1.2-next.84",
+    "@veramo/kms-local": "3.1.2-next.84"
+
+
   },
   "devDependencies": {
     "@microsoft/api-documenter": "^7.14.1",

@@ -15,17 +15,21 @@
 SSI-SDK data storage based on TypeORM. This package provides several plugins that relate to data storage.
 
 ## Available stores
+
 - Connection Store
 
 ### Connection Store
+
 A store that exposes simple store/get methods for connection parties and connections.
 
 ## Installation
+
 ```shell
 yarn add @sphereon/ssi-sdk-connection-manager
 ```
 
 ## Build
+
 ```shell
 yarn build
 ```

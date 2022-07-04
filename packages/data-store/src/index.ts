@@ -14,5 +14,5 @@ export const Entities = [
   DidAuthConfigEntity,
   MetadataItemEntity,
   OpenIdConfigEntity,
-  PartyEntity
+  PartyEntity,
 ]

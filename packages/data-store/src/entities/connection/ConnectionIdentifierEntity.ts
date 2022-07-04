@@ -1,13 +1,5 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  BaseEntity
-} from 'typeorm'
-import {
-  ConnectionIdentifierEnum,
-  IBasicConnectionIdentifier
-} from '@sphereon/ssi-sdk-core'
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm'
+import { ConnectionIdentifierEnum, IBasicConnectionIdentifier } from '@sphereon/ssi-sdk-core'
 
 @Entity('ConnectionIdentifier')
 export class ConnectionIdentifierEntity extends BaseEntity {
@@ -15,7 +7,7 @@ export class ConnectionIdentifierEntity extends BaseEntity {
   id!: string
 
   @Column('simple-enum', { nullable: false })
-  type!: ConnectionIdentifierEnum;
+  type!: ConnectionIdentifierEnum
 
   @Column('text', { name: 'correlation_id', nullable: false })
   correlationId!: string

@@ -18,7 +18,7 @@ export class BlsKeyManagementSystem extends KeyManagementSystem {
 
   async importKey(args: Exclude<MinimalImportableKey, 'kms'>): Promise<ManagedKeyInfo> {
     switch (args.type) {
-      case KeyType.Bls12381G2:
+      case KeyType.Bls12381G2.toString():
         if (!args.type || !args.privateKeyHex || !args.publicKeyHex) {
           throw new Error('invalid_argument: type, publicKeyHex and privateKeyHex are required to import a key')
         }

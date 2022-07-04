@@ -1,4 +1,4 @@
-import { IIdentifier } from '@veramo/core';
+import { IIdentifier } from '@veramo/core'
 
 export interface IConnectionParty {
   id: string
@@ -14,7 +14,7 @@ export interface IBasicConnectionParty {
 export enum ConnectionTypeEnum {
   OPENID = 'openid',
   DIDAUTH = 'didauth',
-  SIOPV2_OIDC4VP = 'siopv2+oidc4vp'
+  SIOPV2_OIDC4VP = 'siopv2+oidc4vp',
 }
 
 export interface IConnection {
@@ -36,7 +36,7 @@ export interface IBasicConnection {
 
 export enum ConnectionIdentifierEnum {
   DID = 'did',
-  URL = 'url'
+  URL = 'url',
 }
 
 export interface IConnectionIdentifier {

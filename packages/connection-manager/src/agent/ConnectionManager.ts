@@ -12,12 +12,9 @@ import {
   IGetConnectionArgs,
   IRemoveConnectionArgs,
   IRequiredContext,
-  IUpdateConnectionArgs
+  IUpdateConnectionArgs,
 } from '../types/IConnectionManager'
-import {
-  IConnection,
-  IConnectionParty
-} from '@sphereon/ssi-sdk-core'
+import { IConnection, IConnectionParty } from '@sphereon/ssi-sdk-core'
 
 /**
  * {@inheritDoc IConnectionManager}
@@ -37,7 +34,7 @@ export class ConnectionManager implements IAgentPlugin {
     cmRemoveConnection: this.cmRemoveConnection.bind(this),
   }
 
-  private readonly store: AbstractConnectionStore;
+  private readonly store: AbstractConnectionStore
 
   constructor(options: { store: AbstractConnectionStore }) {
     this.store = options.store
@@ -45,26 +42,22 @@ export class ConnectionManager implements IAgentPlugin {
 
   /** {@inheritDoc IConnectionManager.cmGetParty} */
   private async cmGetParty(args: IGetPartyArgs, context: IRequiredContext): Promise<IConnectionParty> {
-    return this.store.getParty(args.partyId)
-      .then(party => party)
+    return this.store.getParty(args.partyId).then((party) => party)
   }
 
   /** {@inheritDoc IConnectionManager.cmGetParties} */
   private async cmGetParties(): Promise<Array<IConnectionParty>> {
-    return this.store.getParties()
-      .then(parties => parties)
+    return this.store.getParties().then((parties) => parties)
   }
 
   /** {@inheritDoc IConnectionManager.cmAddParty} */
   private async cmAddParty(args: IAddPartyArgs, context: IRequiredContext): Promise<IConnectionParty> {
-    return this.store.addParty(args.name)
-      .then(party => party)
+    return this.store.addParty(args.name).then((party) => party)
   }
 
   /** {@inheritDoc IConnectionManager.cmUpdateParty} */
   private async cmUpdateParty(args: IUpdatePartyArgs, context: IRequiredContext): Promise<IConnectionParty> {
-    return this.store.updateParty(args.party)
-      .then(connection => connection)
+    return this.store.updateParty(args.party).then((connection) => connection)
   }
 
   /** {@inheritDoc IConnectionManager.cmRemoveParty} */
@@ -74,26 +67,22 @@ export class ConnectionManager implements IAgentPlugin {
 
   /** {@inheritDoc IConnectionManager.cmGetConnection} */
   private async cmGetConnection(args: IGetConnectionArgs, context: IRequiredContext): Promise<IConnection> {
-    return this.store.getConnection(args.connectionId)
-      .then(connection => connection)
+    return this.store.getConnection(args.connectionId).then((connection) => connection)
   }
 
   /** {@inheritDoc IConnectionManager.cmGetConnections} */
   private async cmGetConnections(args: IGetConnectionsArgs, context: IRequiredContext): Promise<Array<IConnection>> {
-    return this.store.getConnections(args.partyId)
-      .then(connections => connections)
+    return this.store.getConnections(args.partyId).then((connections) => connections)
   }
 
   /** {@inheritDoc IConnectionManager.cmAddConnection} */
   private async cmAddConnection(args: IAddConnectionArgs, context: IRequiredContext): Promise<IConnection> {
-    return this.store.addConnection(args.partyId, args.connection)
-      .then(connection => connection)
+    return this.store.addConnection(args.partyId, args.connection).then((connection) => connection)
   }
 
   /** {@inheritDoc IConnectionManager.cmUpdateConnection} */
   private async cmUpdateConnection(args: IUpdateConnectionArgs, context: IRequiredContext): Promise<IConnection> {
-    return this.store.updateConnection(args.connection)
-      .then(connection => connection)
+    return this.store.updateConnection(args.connection).then((connection) => connection)
   }
 
   /** {@inheritDoc IConnectionManager.cmRemoveConnection} */

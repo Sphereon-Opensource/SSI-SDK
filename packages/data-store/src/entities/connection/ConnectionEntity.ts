@@ -8,17 +8,11 @@ import {
   ManyToOne,
   OneToMany,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
-import {
-  ConnectionIdentifierEntity,
-  connectionIdentifierEntityFrom
-} from './ConnectionIdentifierEntity'
-import {
-  MetadataItemEntity,
-  metadataItemEntityFrom
-} from './MetadataItemEntity'
+import { ConnectionIdentifierEntity, connectionIdentifierEntityFrom } from './ConnectionIdentifierEntity'
+import { MetadataItemEntity, metadataItemEntityFrom } from './MetadataItemEntity'
 import { PartyEntity } from './PartyEntity'
 import {
   BasicConnectionConfig,
@@ -26,7 +20,7 @@ import {
   IBasicConnection,
   IBasicConnectionMetadataItem,
   IDidAuthConfig,
-  IOpenIdConfig
+  IOpenIdConfig,
 } from '@sphereon/ssi-sdk-core'
 import { openIdConfigEntityFrom } from './OpenIdConfigEntity'
 import { didAuthConfigEntityFrom } from './DidAuthConfigEntity'
@@ -36,7 +30,7 @@ export class ConnectionEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum',{ nullable: false })
+  @Column('simple-enum', { nullable: false })
   type!: ConnectionTypeEnum
 
   @OneToOne((type: ConnectionIdentifierEntity) => ConnectionIdentifierEntity, { cascade: true })
@@ -49,14 +43,14 @@ export class ConnectionEntity extends BaseEntity {
 
   @OneToMany(() => MetadataItemEntity, (metadata: MetadataItemEntity) => metadata.connection, { cascade: true })
   @JoinColumn()
-  metadata!: Array<MetadataItemEntity>;
+  metadata!: Array<MetadataItemEntity>
 
-  @ManyToOne(() => PartyEntity, party => party.connections, {
-    onDelete: 'CASCADE'
+  @ManyToOne(() => PartyEntity, (party) => party.connections, {
+    onDelete: 'CASCADE',
   })
   party!: PartyEntity
 
-  @CreateDateColumn({ type: 'datetime', name: 'created_at', nullable: false  })
+  @CreateDateColumn({ type: 'datetime', name: 'created_at', nullable: false })
   createdAt!: Date
 
   @UpdateDateColumn({ type: 'datetime', name: 'last_updated_at', nullable: false })
@@ -74,7 +68,7 @@ export const connectionEntityFrom = (connection: IBasicConnection): ConnectionEn
 }
 
 const configEntityFrom = (type: ConnectionTypeEnum, config: BasicConnectionConfig): BaseConfigEntity => {
-  switch(type) {
+  switch (type) {
     case ConnectionTypeEnum.OPENID:
       return openIdConfigEntityFrom(config as IOpenIdConfig)
     case ConnectionTypeEnum.DIDAUTH:
