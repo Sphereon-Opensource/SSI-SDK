@@ -32,4 +32,5 @@ const testContext = {
 
 describe('Local integration tests', () => {
   connectionManagerAgentLogic(testContext)
-})
+}
+)
