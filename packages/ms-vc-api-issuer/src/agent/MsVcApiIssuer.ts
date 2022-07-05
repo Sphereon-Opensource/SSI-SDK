@@ -15,7 +15,7 @@ export class MsVcApiIssuer implements IAgentPlugin {
   /** {@inheritDoc IMsVcApiIssuer.issuanceRequestMsVc} */
   private async issuanceRequestMsVc(issuanceInfo: IIssueRequest, context: IRequiredContext): Promise<IIssueRequestResponse> {
     var accessToken = await ClientCredentialAuthenticator(issuanceInfo.authenticationInfo);
-    await fetch('https://login.microsoftonline.com/${issuanceInfo.authenticationInfo.azTenantId}/v2.0/.well-known/openid-configuration', { method: 'GET' })
+    await fetch(`https://login.microsoftonline.com/${issuanceInfo.authenticationInfo.azTenantId}/v2.0/.well-known/openid-configuration`, { method: 'GET' })
       .then(res => res.json())
       .then(async (resp) => {
         this.msIdentityHostName = "https://beta.did.msidentity.com/v1.0/";
@@ -55,7 +55,7 @@ export class MsVcApiIssuer implements IAgentPlugin {
       "family_name":"LASTNAME"
    }
 
-    var client_api_request_endpoint = this.msIdentityHostName + `${issuanceInfo.authenticationInfo.azTenantId}/verifiablecredentials/request`;
+    var client_api_request_endpoint = `${this.msIdentityHostName}${issuanceInfo.authenticationInfo.azTenantId}/verifiablecredentials/request`;
 
     var payload = JSON.stringify(issuanceInfo.issuanceConfig);
     const fetchOptions = {
