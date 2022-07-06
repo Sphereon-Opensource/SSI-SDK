@@ -5,14 +5,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [0.6.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.5.1...v0.6.0) (2022-07-01)
 
-
 ### Bug Fixes
 
-* Fix unit tests for VC API ([f3c5eea](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f3c5eea0cf6a020c5885b2c9d6104694ded9d0e5))
-
-
-
-
+- Fix unit tests for VC API ([f3c5eea](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f3c5eea0cf6a020c5885b2c9d6104694ded9d0e5))
 
 # [0.5.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.4.0...v0.5.0) (2022-02-23)
 
