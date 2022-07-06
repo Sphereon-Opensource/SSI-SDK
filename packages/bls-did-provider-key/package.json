@@ -9,10 +9,10 @@
     "extract-api": "yarn veramo dev extract-api"
   },
   "dependencies": {
+    "@transmute/did-key-bls12381": "^0.3.0-unstable.8",
     "@transmute/did-key-ed25519": "^0.3.0-unstable.8",
     "@transmute/did-key-secp256k1": "^0.3.0-unstable.8",
     "@transmute/did-key-x25519": "^0.3.0-unstable.8",
-    "@transmute/did-key-bls12381": "^0.3.0-unstable.8",
     "@veramo/core": "3.1.2-next.84",
     "@veramo/did-manager": "3.1.2-next.84",
     "debug": "^4.3.3",
@@ -20,8 +20,8 @@
     "multicodec": "^3.2.1"
   },
   "devDependencies": {
-    "@veramo/cli": "3.1.2-next.84",
-    "@types/debug": "4.1.7"
+    "@types/debug": "4.1.7",
+    "@veramo/cli": "3.1.2-next.84"
   },
   "files": [
     "dist/**/*",
