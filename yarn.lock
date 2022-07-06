@@ -3122,10 +3122,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sphereon/did-auth-siop@0.2.12-next.3":
-  version "0.2.12-next.3"
-  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.2.12-next.3.tgz#741f72d16bedf76bc184e6149aa7bcd0114b9dee"
-  integrity sha512-GdC2akaNUrm3DtPkjSsio2rki0oZKlvaj8+XcZ8x+tlRmkuhMHwV6/KMYqUxcXHUnF2baz58TT5jqdQgGlrAfA==
+"@sphereon/did-auth-siop@0.2.12-next.4":
+  version "0.2.12-next.4"
+  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.2.12-next.4.tgz#c834f4dc830ad2572372575a0c1563482cef8801"
+  integrity sha512-RDnI2BhuZs45YhThYEx06EUS/RbsCEHIVLweFDtiXG4Q8xlB5Teguu74LsN+Xf3YnBCEq8IidJsQO5B9e26pUg==
   dependencies:
     "@sphereon/did-uni-client" "^0.4.0"
     "@sphereon/pex" "^1.1.2"
