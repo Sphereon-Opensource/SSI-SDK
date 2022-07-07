@@ -1,6 +1,6 @@
 import { TAgent } from '@veramo/core'
 import { IMsVcApiIssuer, IIssueRequest, IIssueRequestResponse } from '../../src/types/IMsVcApiIssuer'
-// import { MsVcApiIssuer } from '../../src/agent/MsVcApiIssuer'
+import { MsVcApiIssuer } from '../../src/agent/MsVcApiIssuer'
 import * as MsAuthenticator from '@sphereon/ms-authenticator'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -19,28 +19,20 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     let agent: ConfiguredAgent
 
     beforeAll(async () => {
+      jest.mock('@sphereon/ms-authenticator', () => {
+        return {
+          ClientCredentialAuthenticator:jest.fn().mockResolvedValue('ey...'),
+          checkMsIdentityHostname: jest.fn().mockResolvedValue(MsAuthenticator.MS_IDENTITY_HOST_NAME_EU)
+        }
+      })
+
       await testContext.setup()
       agent = testContext.getAgent()
 
-      console.log('mockAuthenticationMethod')
-      const mockAuthenticationMethod = jest.fn()
-      MsAuthenticator.ClientCredentialAuthenticator.prototype = mockAuthenticationMethod
-      mockAuthenticationMethod.mockResolvedValue('ey...')
-
-
-      // console.log('mockCheckMsIdentityHostnameMethod')
-      // console.log(' MsAuthenticator.checkMsIdentityHostname.prototype: ' +  MsAuthenticator.checkMsIdentityHostname.prototype)
-      // const mockCheckMsIdentityHostnameMethod = jest.fn()
-      // MsAuthenticator.checkMsIdentityHostname.prototype = mockCheckMsIdentityHostnameMethod
-      // mockCheckMsIdentityHostnameMethod.mockResolvedValue(MsAuthenticator.MS_IDENTITY_HOST_NAME_EU)
+      jest.spyOn(MsVcApiIssuer.prototype, 'fetchIssuanceRequestMs')
+      .mockResolvedValue(requestIssuanceResponse)
       
-      // console.log(' MsAuthenticator.checkMsIdentityHostname.prototype: ' +  MsAuthenticator.checkMsIdentityHostname.prototype)
-
-      // jest.spyOn(MsVcApiIssuer.prototype, 'fetchIssuanceRequestMs')
-      // .mockResolvedValue(requestIssuanceResponse)
-      
-      // console.log('jest.spyOn is done')
- 
+      console.log('jest.spyOn is done')
     })
 
     afterAll(async () => {
