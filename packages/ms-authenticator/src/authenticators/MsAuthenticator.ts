@@ -47,7 +47,6 @@ export async function checkMsIdentityHostname(authenticationArgs: IMsAuthenticat
  * @constructor
  */
 export async function ClientCredentialAuthenticator(authenticationArgs: IMsAuthenticationClientCredentialArgs): Promise<string> {
-  console.log('ClientCredentialAuthenticator called')
   const msalConfig = {
     auth: {
       clientId: authenticationArgs.azClientId,
@@ -68,9 +67,7 @@ export async function ClientCredentialAuthenticator(authenticationArgs: IMsAuthe
     skipCache: authenticationArgs.skipCache ? authenticationArgs.skipCache : false,
   }
   
-  console.log('Before checkMsIdentityHostname')
   checkMsIdentityHostname(authenticationArgs)
-  console.log('After checkMsIdentityHostname')
 
   // get the Access Token
   try {
