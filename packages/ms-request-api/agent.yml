@@ -69,9 +69,9 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/ms-vc-api-issuer/dist#MsVcApiIssuer
+        - $require: ./packages/ms-request-api/dist#MsVcApiIssuer
           $args:
-            - azClientId: '04c2bd60-cdbf-4935-80dd-110fdf473e6e'
-              azClientSecret: 'WAM8Q~rE05C9ja2TRiZ3H~TYz2W4TdMe.jpwSc~p'
-              azTenantId: 'e2a42b2f-7460-4499-afc2-425315ef058a'
-              credentialManifestUrl: 'https://beta.eu.did.msidentity.com/v1.0/e2a42b2f-7460-4499-afc2-425315ef058a/verifiableCredential/contracts/VerifiedCredentialExpert2'
+            - azClientId: 'azClientId'
+              azClientSecret: 'azClientSecret'
+              azTenantId: 'azTenantId'
+              credentialManifestUrl: 'credentialManifestUrl'

@@ -30,7 +30,7 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/ms-vc-api-issuer/agent.yml')
+  const config = getConfig('packages/ms-request-api/agent.yml')
   const { agent } = createObjects(config, { agent: '/agent'})
   serverAgent = agent
 

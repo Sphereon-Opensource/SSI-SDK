@@ -16,7 +16,7 @@ var requestIssuanceResponse : IIssueRequestResponse = {
 
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
-  describe('@sphereon/ms-vc-api-issuer', () => {
+  describe('@sphereon/ms-request-api', () => {
     let agent: ConfiguredAgent
 
     beforeAll(async () => {
@@ -27,14 +27,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           generatePin: jest.fn().mockResolvedValue(6363)
         }
       })
-      
+
       jest.mock('@sphereon/ms-authenticator', () => {
         return {
           ClientCredentialAuthenticator: jest.fn().mockResolvedValue('ey...'),
           checkMsIdentityHostname: jest.fn().mockResolvedValue(MsAuthenticator.MS_IDENTITY_HOST_NAME_EU)
         }
       })
-      
+
       await testContext.setup()
       agent = testContext.getAgent()
 
@@ -46,7 +46,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should request issuance from Issuer', async () => {
-    
+
       var requestConfigFile = '../../config/issuance_request_config.json';
       var issuanceConfig = require( requestConfigFile );
       var issuanceRequest : IIssueRequest = {
@@ -75,7 +75,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       issuanceRequest.issuanceConfig.issuance.claims = {
         "given_name":"FIRSTNAME",
         "family_name":"LASTNAME"
-     }    
+     }
     return await expect(
         agent.issuanceRequestMsVc(issuanceRequest)
       ).resolves.not.toBeNull

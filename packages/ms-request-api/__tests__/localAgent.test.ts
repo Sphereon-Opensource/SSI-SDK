@@ -7,7 +7,7 @@ jest.setTimeout(30000)
 let agent: any
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/ms-vc-api-issuer/agent.yml')
+  const config = getConfig('packages/ms-request-api/agent.yml')
   const { localAgent } = createObjects(config, { localAgent: '/agent' })
   agent = localAgent
   return true

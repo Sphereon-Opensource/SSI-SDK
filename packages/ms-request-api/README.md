@@ -2,7 +2,7 @@
 <h1 align="center">
   <br>
   <a href="https://www.sphereon.com"><img src="https://sphereon.com/content/themes/sphereon/assets/img/logo.svg" alt="Sphereon" width="400"></a>
-  <br>Microsoft Azure Active Directory Issuer (Typescript) 
+  <br>Microsoft Azure Active Directory Issuer Request API (Typescript) 
   <br>
 </h1>
 
@@ -12,14 +12,14 @@
 
 ---
 
-# ms-authenticator
+# ms-request-api
 
-A Veramo plugin to issue VC using the Microsoft Request Service API. 
+Azure Active Directory (Azure AD) Verifiable Credentials allows you to issue a credential. This is a Veramo plugin that  handles issuing a verifiable credential using issuer authentication info and issuer configuration.
 
 ### Installation
 
 ```shell
-yarn add @sphereon/ms-vc-api-issuer
+yarn add @sphereon/ms-request-api
 ```
 
 ### Build
