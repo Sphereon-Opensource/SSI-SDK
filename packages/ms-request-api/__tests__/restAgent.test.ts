@@ -6,8 +6,8 @@ import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import { IMsVcApiIssuer } from '../src/types/IMsVcApiIssuer'
-import msVcApiIssuerAgentLogic from './shared/msVcApiIssuerAgentLogic'
+import { IMsRequestApi } from '../src/types/IMsRequestApi'
+import msRequestApiAgentLogic from './shared/msRequestApiAgentLogic'
 
 jest.setTimeout(30000)
 
@@ -18,7 +18,7 @@ let serverAgent: IAgent
 let restServer: Server
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IMsVcApiIssuer>({
+  createAgent<IMsRequestApi>({
     ...options,
     plugins: [
       new AgentRestClient({
@@ -63,5 +63,5 @@ const testContext = {
 }
 
 describe('REST integration tests', () => {
-  msVcApiIssuerAgentLogic(testContext)
+  msRequestApiAgentLogic(testContext)
 })

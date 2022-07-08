@@ -1,4 +1,4 @@
-import { IIssueRequest, IIssueRequestResponse } from "./types/IMsVcApiIssuer";
+import { IIssueRequest, IIssueRequestResponse } from "./types/IMsRequestApi";
 
 export async function fetchIssuanceRequestMs(issuanceInfo: IIssueRequest, accessToken: string, msIdentityHostName: string): Promise<IIssueRequestResponse> {
     var client_api_request_endpoint = `${msIdentityHostName}${issuanceInfo.authenticationInfo.azTenantId}/verifiablecredentials/request`;

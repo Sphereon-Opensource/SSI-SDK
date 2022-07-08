@@ -3,6 +3,6 @@
  */
 const schema = require('../plugin.schema.json')
 export { schema }
-export { MsVcApiIssuer } from './agent/MsVcApiIssuer'
-export * from './types/IMsVcApiIssuer'
+export { MsRequestApi } from './agent/MsRequestApi'
+export * from './types/IMsRequestApi'
 export * from './IssuerUtil'

@@ -1,17 +1,17 @@
 import { IAgentPlugin } from '@veramo/core'
-import { IIssueRequest, IIssueRequestResponse, IMsVcApiIssuer, IRequiredContext } from '../types/IMsVcApiIssuer'
+import { IIssueRequest, IIssueRequestResponse, IMsRequestApi, IRequiredContext } from '../types/IMsRequestApi'
 import { ClientCredentialAuthenticator, checkMsIdentityHostname } from '@sphereon/ms-authenticator'
 import { fetchIssuanceRequestMs, generatePin } from '../IssuerUtil';
 /**
- * {@inheritDoc IMsVcApiIssuer}
+ * {@inheritDoc IMsRequestApi}
  */
-export class MsVcApiIssuer implements IAgentPlugin {
-  readonly methods: IMsVcApiIssuer = {
+export class MsRequestApi implements IAgentPlugin {
+  readonly methods: IMsRequestApi = {
     issuanceRequestMsVc: this.issuanceRequestMsVc.bind(this)
   }
 
 
-  /** {@inheritDoc IMsVcApiIssuer.issuanceRequestMsVc} */
+  /** {@inheritDoc IMsRequestApi.issuanceRequestMsVc} */
   private async issuanceRequestMsVc(issuanceInfo: IIssueRequest, context: IRequiredContext): Promise<IIssueRequestResponse> {
     var accessToken = await ClientCredentialAuthenticator(issuanceInfo.authenticationInfo);
 

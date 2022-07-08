@@ -1,10 +1,10 @@
 
 import { TAgent } from '@veramo/core'
-import { IMsVcApiIssuer, IIssueRequest, IIssueRequestResponse } from '../../src/types/IMsVcApiIssuer'
+import { IMsRequestApi, IIssueRequest, IIssueRequestResponse } from '../../src/types/IMsRequestApi'
 import * as MsAuthenticator from '@sphereon/ms-authenticator'
 import { v4 as uuidv4 } from 'uuid'
 
-type ConfiguredAgent = TAgent<IMsVcApiIssuer>
+type ConfiguredAgent = TAgent<IMsRequestApi>
 var requestIssuanceResponse : IIssueRequestResponse = {
   requestId: '2e5c6fae-218c-4c7b-8440-df5454f908e9',
   url: 'www.google.com',

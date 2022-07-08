@@ -69,7 +69,7 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/ms-request-api/dist#MsVcApiIssuer
+        - $require: ./packages/ms-request-api/dist#MsRequestApi
           $args:
             - azClientId: {process.env.AZ_CLIENT_ID}
               azClientSecret: {process.env.AZ_CLIENT_SECRET}
