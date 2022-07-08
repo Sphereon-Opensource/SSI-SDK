@@ -71,7 +71,7 @@ agent:
       plugins:
         - $require: ./packages/ms-request-api/dist#MsVcApiIssuer
           $args:
-            - azClientId: 'azClientId'
-              azClientSecret: 'azClientSecret'
-              azTenantId: 'azTenantId'
-              credentialManifestUrl: 'credentialManifestUrl'
+            - azClientId: {process.env.AZ_CLIENT_ID}
+              azClientSecret: {process.env.AZ_CLIENT_SECRET}
+              azTenantId: {process.env.AZ_TENANT_ID}
+              credentialManifestUrl: {process.env.CREDENTIAL_MANIFEST_URL}
