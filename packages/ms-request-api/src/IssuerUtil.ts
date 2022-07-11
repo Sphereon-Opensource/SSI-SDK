@@ -17,7 +17,7 @@ export async function fetchIssuanceRequestMs(issuanceInfo: IIssueRequest, access
     return await response.json();
 }
 
-export function generatePin(digits: any) {
+export function generatePin(digits: number) {
     var add = 1, max = 12 - add;
     max = Math.pow(10, digits + add);
     var min = max / 10; // Math.pow(10, n) basically
