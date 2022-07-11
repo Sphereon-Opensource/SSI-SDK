@@ -1,7 +1,7 @@
 import { IAgentPlugin } from '@veramo/core'
 import { IIssueRequest, IIssueRequestResponse, IMsRequestApi, IRequiredContext } from '../types/IMsRequestApi'
 import { ClientCredentialAuthenticator, checkMsIdentityHostname } from '@sphereon/ms-authenticator'
-import { generatePin } from '../IssuerUtil';
+import { generatePin, fetchIssuanceRequestMs } from '../IssuerUtil';
 /**
  * {@inheritDoc IMsRequestApi}
  */
@@ -12,7 +12,7 @@ export class MsRequestApi implements IAgentPlugin {
 
 
   /** {@inheritDoc IMsRequestApi.issuanceRequestMsVc} */
-  private async issuanceRequestMsVc(issuanceInfo: IIssueRequest, fetchFunction: Function, context: IRequiredContext): Promise<IIssueRequestResponse> {
+  private async issuanceRequestMsVc(issuanceInfo: IIssueRequest, context: IRequiredContext): Promise<IIssueRequestResponse> {
     var accessToken = await ClientCredentialAuthenticator(issuanceInfo.authenticationInfo);
 
     var msIdentityHostName = await checkMsIdentityHostname(issuanceInfo.authenticationInfo);
@@ -28,7 +28,7 @@ export class MsRequestApi implements IAgentPlugin {
       issuanceInfo.issuanceConfig.issuance.pin.value = generatePin(issuanceInfo.issuanceConfig.issuance.pin.length);
     }
 
-    var resp = await fetchFunction(issuanceInfo, accessToken, msIdentityHostName)
+    var resp = await fetchIssuanceRequestMs(issuanceInfo, accessToken, msIdentityHostName)
 
     // the response from the VC Request API call is returned to the caller (the UI). It contains the URI to the request which Authenticator can download after
     // it has scanned the QR code. If the payload requested the VC Request service to create the QR code that is returned as well

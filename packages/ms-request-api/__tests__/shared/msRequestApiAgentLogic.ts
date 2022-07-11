@@ -1,19 +1,18 @@
-
-import { TAgent } from '@veramo/core'
-import { IMsRequestApi, IIssueRequest, IIssueRequestResponse } from '../../src/types/IMsRequestApi'
 import * as MsAuthenticator from '@sphereon/ms-authenticator'
+import { fetchIssuanceRequestMs } from '../../src/IssuerUtil'
+import { IMsRequestApi, IIssueRequest, IIssueRequestResponse } from '../../src/types/IMsRequestApi'
+import { TAgent } from '@veramo/core'
 import { v4 as uuidv4 } from 'uuid'
 
 type ConfiguredAgent = TAgent<IMsRequestApi>
-var requestIssuanceResponse : IIssueRequestResponse = {
+var requestIssuanceResponse: IIssueRequestResponse = {
   requestId: '2e5c6fae-218c-4c7b-8440-df5454f908e9',
   url: 'www.google.com',
   expiry: new Date(1655935606),
   id: 'fbef933e-f786-4b85-b1c8-6679346dc55d',
   pin: '3683'
 
- }
-
+}
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
   describe('@sphereon/ms-request-api', () => {
@@ -34,7 +33,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           checkMsIdentityHostname: jest.fn().mockResolvedValue(MsAuthenticator.MS_IDENTITY_HOST_NAME_EU)
         }
       })
-
       await testContext.setup()
       agent = testContext.getAgent()
 
@@ -46,10 +44,9 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should request issuance from Issuer', async () => {
-
       var requestConfigFile = '../../config/issuance_request_config.json';
-      var issuanceConfig = require( requestConfigFile );
-      var issuanceRequest : IIssueRequest = {
+      var issuanceConfig = require(requestConfigFile);
+      var issuanceRequest: IIssueRequest = {
         authenticationInfo: {
           azClientId: 'AzClientID',
           azClientSecret: 'AzClientSecret',
@@ -73,12 +70,16 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       // here you could change the payload manifest
       issuanceRequest.issuanceConfig.issuance.claims = {
-        "given_name":"FIRSTNAME",
-        "family_name":"LASTNAME"
-     }
+        "given_name": "FIRSTNAME",
+        "family_name": "LASTNAME"
+      }
+
+      const fetchIssuanceRequestMsMock = jest.fn().mockResolvedValue(requestIssuanceResponse);
+      fetchIssuanceRequestMs.prototype = fetchIssuanceRequestMsMock
+
     return await expect(
         agent.issuanceRequestMsVc(issuanceRequest)
-      ).resolves.not.toBeNull
+      ).resolves.toEqual(requestIssuanceResponse)
     })
 
   })
