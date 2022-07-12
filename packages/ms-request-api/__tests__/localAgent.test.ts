@@ -1,6 +1,6 @@
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import msVcApiIssuerAgentLogic from './shared/msVcApiIssuerAgentLogic'
+import msRequestApiAgentLogic from './shared/msRequestApiAgentLogic'
 
 jest.setTimeout(30000)
 
@@ -21,5 +21,5 @@ const getAgent = () => agent
 const testContext = { getAgent, setup, tearDown }
 
 describe('Local integration tests', () => {
-  msVcApiIssuerAgentLogic(testContext)
+  msRequestApiAgentLogic(testContext)
 })
