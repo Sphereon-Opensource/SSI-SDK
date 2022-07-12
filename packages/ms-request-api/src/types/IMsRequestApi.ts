@@ -2,7 +2,7 @@ import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import { IMsAuthenticationClientCredentialArgs } from '@sphereon/ms-authenticator'
 
 export interface IMsRequestApi extends IPluginMethodMap {
-  issuanceRequestMsVc(clientIssueRequest: IClientIssueRequest, context: IRequiredContext) : Promise<IIssueRequestResponse>
+  issuanceRequestMsVc(clientIssueRequest: IClientIssueRequest, context: IRequiredContext): Promise<IIssueRequestResponse>
 }
 
 export interface IClientIssueRequest {
@@ -12,17 +12,17 @@ export interface IClientIssueRequest {
 }
 
 export interface IClientIssuanceConfig {
-  authority: string;
-  includeQRCode: boolean;
-  registration: Registration;
-  callback: Callback;
-  issuance: IClientIssuance;
+  authority: string
+  includeQRCode: boolean
+  registration: Registration
+  callback: Callback
+  issuance: IClientIssuance
 }
 
 export interface IClientIssuance {
-  type: string;
-  manifest: string;
-  pin: Pin;
+  type: string
+  manifest: string
+  pin: Pin
 }
 
 export interface IIssueRequest {
@@ -39,22 +39,22 @@ export interface IIssueRequestResponse {
 }
 
 export interface Registration {
-  clientName: string;
+  clientName: string
 }
 
 export interface Headers {
-  apiKey: string;
+  apiKey: string
 }
 
 export interface Callback {
-  url: string;
-  state: string;
-  headers: Headers;
+  url: string
+  state: string
+  headers: Headers
 }
 
 export interface Pin {
-  value: string;
-  length: number;
+  value: string
+  length: number
 }
 
 export type CredentialSubject = {
@@ -62,18 +62,18 @@ export type CredentialSubject = {
 }
 
 export interface Issuance {
-  type: string;
-  manifest: string;
-  pin: Pin;
-  claims: CredentialSubject;
+  type: string
+  manifest: string
+  pin: Pin
+  claims: CredentialSubject
 }
 
 export interface IssuanceConfig {
-  authority: string;
-  includeQRCode: boolean;
-  registration: Registration;
-  callback: Callback;
-  issuance: Issuance;
+  authority: string
+  includeQRCode: boolean
+  registration: Registration
+  callback: Callback
+  issuance: Issuance
 }
 
 export type IRequiredContext = IAgentContext<Record<string, never>>

@@ -71,7 +71,7 @@ agent:
       plugins:
         - $require: ./packages/ms-request-api/dist#MsRequestApi
           $args:
-            - azClientId: {process.env.AZ_CLIENT_ID}
-              azClientSecret: {process.env.AZ_CLIENT_SECRET}
-              azTenantId: {process.env.AZ_TENANT_ID}
-              credentialManifestUrl: {process.env.CREDENTIAL_MANIFEST_URL}
+            - azClientId: { process.env.AZ_CLIENT_ID }
+              azClientSecret: { process.env.AZ_CLIENT_SECRET }
+              azTenantId: { process.env.AZ_TENANT_ID }
+              credentialManifestUrl: { process.env.CREDENTIAL_MANIFEST_URL }

@@ -10,8 +10,7 @@ var requestIssuanceResponse: IIssueRequestResponse = {
   url: 'www.google.com',
   expiry: new Date(1655935606),
   id: 'fbef933e-f786-4b85-b1c8-6679346dc55d',
-  pin: '3683'
-
+  pin: '3683',
 }
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
@@ -19,23 +18,21 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     let agent: ConfiguredAgent
 
     beforeAll(async () => {
-
       jest.mock('../../src/IssuerUtil', () => {
         return {
           fetchIssuanceRequestMs: jest.fn().mockResolvedValue(requestIssuanceResponse),
-          generatePin: jest.fn().mockResolvedValue(6363)
+          generatePin: jest.fn().mockResolvedValue(6363),
         }
       })
 
       jest.mock('@sphereon/ms-authenticator', () => {
         return {
           ClientCredentialAuthenticator: jest.fn().mockResolvedValue('ey...'),
-          checkMsIdentityHostname: jest.fn().mockResolvedValue(MsAuthenticator.MS_IDENTITY_HOST_NAME_EU)
+          checkMsIdentityHostname: jest.fn().mockResolvedValue(MsAuthenticator.MS_IDENTITY_HOST_NAME_EU),
         }
       })
       await testContext.setup()
       agent = testContext.getAgent()
-
     })
 
     afterAll(async () => {
@@ -44,43 +41,38 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should request issuance from Issuer', async () => {
-      var requestConfigFile = '../../config/issuance_request_config.json';
-      var issuanceConfig: IClientIssuanceConfig = require(requestConfigFile);
+      var requestConfigFile = '../../config/issuance_request_config.json'
+      var issuanceConfig: IClientIssuanceConfig = require(requestConfigFile)
       var clientIssueRequest: IClientIssueRequest = {
         authenticationInfo: {
           azClientId: 'AzClientID',
           azClientSecret: 'AzClientSecret',
           azTenantId: 'AzTenantId',
-          credentialManifestUrl: 'CredentialManifestUrl'
+          credentialManifestUrl: 'CredentialManifestUrl',
         },
         clientIssuanceConfig: issuanceConfig,
         claims: {
-          "given_name": "FIRSTNAME",
-          "family_name": "LASTNAME"
-        }
+          given_name: 'FIRSTNAME',
+          family_name: 'LASTNAME',
+        },
       }
 
       // modify the callback method to make it easier to debug
       // with tools like ngrok since the URI changes all the time
       // this way you don't need to modify the callback URL in the payload every time
       // ngrok changes the URI
-      clientIssueRequest.clientIssuanceConfig.callback.url = `https://6270-2a02-a458-e71a-1-68b4-31d2-b44f-12b.eu.ngrok.io/api/issuer/issuance-request-callback`;
+      clientIssueRequest.clientIssuanceConfig.callback.url = `https://6270-2a02-a458-e71a-1-68b4-31d2-b44f-12b.eu.ngrok.io/api/issuer/issuance-request-callback`
 
-      clientIssueRequest.clientIssuanceConfig.registration.clientName = "Sphereon Node.js SDK API Issuer";
+      clientIssueRequest.clientIssuanceConfig.registration.clientName = 'Sphereon Node.js SDK API Issuer'
 
       // modify payload with new state, the state is used to be able to update the UI when callbacks are received from the VC Service
-      var id = uuidv4();
-      clientIssueRequest.clientIssuanceConfig.callback.state = id;
+      var id = uuidv4()
+      clientIssueRequest.clientIssuanceConfig.callback.state = id
 
-      const fetchIssuanceRequestMsMock = jest.fn().mockResolvedValue(requestIssuanceResponse);
+      const fetchIssuanceRequestMsMock = jest.fn().mockResolvedValue(requestIssuanceResponse)
       fetchIssuanceRequestMs.prototype = fetchIssuanceRequestMsMock
 
-    return await expect(
-        agent.issuanceRequestMsVc(clientIssueRequest)
-      ).resolves.not.toBeNull
+      return await expect(agent.issuanceRequestMsVc(clientIssueRequest)).resolves.not.toBeNull
     })
-
   })
 }
-
-

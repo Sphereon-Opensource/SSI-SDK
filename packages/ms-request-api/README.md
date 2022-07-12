@@ -14,7 +14,7 @@
 
 # ms-request-api
 
-Azure Active Directory (Azure AD) Verifiable Credentials allows you to issue a credential. This is a Veramo plugin that  handles issuing a verifiable credential using issuer authentication info and issuer configuration.
+Azure Active Directory (Azure AD) Verifiable Credentials allows you to issue a credential. This is a Veramo plugin that handles issuing a verifiable credential using issuer authentication info and issuer configuration.
 
 ### Installation
 
