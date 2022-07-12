@@ -2,7 +2,27 @@ import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import { IMsAuthenticationClientCredentialArgs } from '@sphereon/ms-authenticator'
 
 export interface IMsRequestApi extends IPluginMethodMap {
-  issuanceRequestMsVc(issuanceInfo: IIssueRequest, context: IRequiredContext) : Promise<IIssueRequestResponse>
+  issuanceRequestMsVc(clientIssueRequest: IClientIssueRequest, context: IRequiredContext) : Promise<IIssueRequestResponse>
+}
+
+export interface IClientIssueRequest {
+  authenticationInfo: IMsAuthenticationClientCredentialArgs
+  clientIssuanceConfig: IClientIssuanceConfig
+  claims: CredentialSubject
+}
+
+export interface IClientIssuanceConfig {
+  authority: string;
+  includeQRCode: boolean;
+  registration: Registration;
+  callback: Callback;
+  issuance: IClientIssuance;
+}
+
+export interface IClientIssuance {
+  type: string;
+  manifest: string;
+  pin: Pin;
 }
 
 export interface IIssueRequest {

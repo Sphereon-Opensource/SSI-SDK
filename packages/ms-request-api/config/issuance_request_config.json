@@ -17,10 +17,6 @@
     "pin": {
       "value": "123456",
       "length": 4
-    },
-    "claims": {
-      "given_name": "FIRSTNAME",
-      "family_name": "LASTNAME"
     }
   }
 }
