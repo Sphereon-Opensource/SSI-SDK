@@ -64,3 +64,4 @@ test/*.js
 /packages/vc-api-verifier/plugin.schema.json
 /packages/connection-manager/plugin.schema.json
 /packages/bls-key-manager/plugin.schema.json
+/packages/ms-request-api/plugin.schema.json
