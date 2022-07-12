@@ -6,6 +6,8 @@ const EU = 'EU'
 
 const HTTP_METHOD_GET = 'GET'
 
+// Event though there are many regions, MS has only 2 identity host names (EU and NONE_EU)
+// https://docs.microsoft.com/en-us/azure/active-directory/verifiable-credentials/whats-new#are-there-any-changes-to-the-way-that-we-use-the-request-api-as-a-result-of-this-move
 export const MS_IDENTITY_HOST_NAME_NONE_EU = 'https://beta.did.msidentity.com/v1.0/'
 export const MS_IDENTITY_HOST_NAME_EU = 'https://beta.eu.did.msidentity.com/v1.0/'
 const MS_LOGIN_PREFIX = 'https://login.microsoftonline.com/'
@@ -66,7 +68,7 @@ export async function ClientCredentialAuthenticator(authenticationArgs: IMsAuthe
     scopes: authenticationArgs.scopes ? authenticationArgs.scopes : [MS_CLIENT_CREDENTIAL_DEFAULT_SCOPE],
     skipCache: authenticationArgs.skipCache ? authenticationArgs.skipCache : false,
   }
-  
+
   checkMsIdentityHostname(authenticationArgs)
 
   // get the Access Token
