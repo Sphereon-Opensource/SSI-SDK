@@ -1,7 +1,7 @@
 import 'cross-fetch/polyfill'
 import express from 'express'
 import { Server } from 'http'
-import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
+import { IAgent, createAgent, IAgentOptions, IDataStore, IDataStoreORM } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
@@ -18,7 +18,7 @@ let serverAgent: IAgent
 let restServer: Server
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IMsRequestApi>({
+  createAgent<IMsRequestApi & IDataStore & IDataStoreORM>({
     ...options,
     plugins: [
       new AgentRestClient({
