@@ -6,8 +6,10 @@ const EU = 'EU'
 
 const HTTP_METHOD_GET = 'GET'
 
-const MS_IDENTITY_HOST_NAME_NONE_EU = 'https://beta.did.msidentity.com/v1.0/'
-const MS_IDENTITY_HOST_NAME_EU = 'https://beta.eu.did.msidentity.com/v1.0/'
+// Event though there are many regions, MS has only 2 identity host names (EU and NONE_EU)
+// https://docs.microsoft.com/en-us/azure/active-directory/verifiable-credentials/whats-new#are-there-any-changes-to-the-way-that-we-use-the-request-api-as-a-result-of-this-move
+export const MS_IDENTITY_HOST_NAME_NONE_EU = 'https://beta.did.msidentity.com/v1.0/'
+export const MS_IDENTITY_HOST_NAME_EU = 'https://beta.eu.did.msidentity.com/v1.0/'
 const MS_LOGIN_PREFIX = 'https://login.microsoftonline.com/'
 const MS_LOGIN_OPENID_CONFIG_POSTFIX = '/v2.0/.well-known/openid-configuration'
 const MS_CLIENT_CREDENTIAL_DEFAULT_SCOPE = '3db474b9-6a0c-4840-96ac-1fceb342124f/.default'
@@ -24,6 +26,16 @@ async function getClientRegion(azTenantId: string): Promise<string> {
       region = resp.tenant_region_scope
     })
   return region
+}
+
+export async function checkMsIdentityHostname(authenticationArgs: IMsAuthenticationClientCredentialArgs): Promise<string> {
+  const region = authenticationArgs.region ? authenticationArgs.region : await getClientRegion(authenticationArgs.azTenantId)
+  const msIdentityHostName = region === EU ? MS_IDENTITY_HOST_NAME_EU : MS_IDENTITY_HOST_NAME_NONE_EU
+  // Check that the Credential Manifest URL is in the same tenant Region and throw an error if it's not
+  if (!authenticationArgs.credentialManifestUrl.startsWith(msIdentityHostName)) {
+    throw new Error(ERROR_CREDENTIAL_MANIFEST_REGION + msIdentityHostName)
+  }
+  return msIdentityHostName
 }
 
 /**
@@ -56,12 +68,8 @@ export async function ClientCredentialAuthenticator(authenticationArgs: IMsAuthe
     scopes: authenticationArgs.scopes ? authenticationArgs.scopes : [MS_CLIENT_CREDENTIAL_DEFAULT_SCOPE],
     skipCache: authenticationArgs.skipCache ? authenticationArgs.skipCache : false,
   }
-  const region = authenticationArgs.region ? authenticationArgs.region : await getClientRegion(authenticationArgs.azTenantId)
-  const msIdentityHostName = region === EU ? MS_IDENTITY_HOST_NAME_EU : MS_IDENTITY_HOST_NAME_NONE_EU
-  // Check that the Credential Manifest URL is in the same tenant Region and throw an error if it's not
-  if (!authenticationArgs.credentialManifestUrl.startsWith(msIdentityHostName)) {
-    throw new Error(ERROR_CREDENTIAL_MANIFEST_REGION + msIdentityHostName)
-  }
+
+  checkMsIdentityHostname(authenticationArgs)
 
   // get the Access Token
   try {

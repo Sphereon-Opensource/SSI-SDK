@@ -54,9 +54,9 @@ manage verification methods using LTO Network.
 The [Mnemonic Seed and Key Derivation](packages/mnemonic-seed-manager/README.md) handles generation and secure storage
 of Mnemonics, as well as the creation of a seed out of the mnemonic and the derivation of keys.
 
-## Microsoft VC API Issuer
+## Microsoft Request API 
 
-Azure Active Directory (Azure AD) Verifiable Credentials allows you to issue a credential. The [Microsoft Verifiable Credential Issuer](packages/ms-vc-api-issuer/README.md) handles issuing a verifiable credential using issuer authentication info and issuer configuration. 
+Azure Active Directory (Azure AD) Verifiable Credentials allows you to issue a credential. The [Microsoft Verifiable Credential Issuer](packages/ms-request-api/README.md) handles issuing a verifiable credential using issuer authentication info and issuer configuration. 
 
 ## VC API Issuer
 
