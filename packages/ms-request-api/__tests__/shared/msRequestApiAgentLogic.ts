@@ -130,6 +130,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(credentials[0].verifiableCredential.id).toEqual('vc5')
       const count = await localAgent.dataStoreORMGetVerifiableCredentialsCount(args)
       expect(count).toEqual(1)
+      await (await dbConnection).close()
     })
   })
 }
