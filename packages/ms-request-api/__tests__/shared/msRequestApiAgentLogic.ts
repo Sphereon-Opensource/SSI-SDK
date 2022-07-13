@@ -6,9 +6,9 @@ import { createAgent, TAgent , IDataStore, IDataStoreORM, VerifiableCredential, 
 import { Entities, DataStore, DataStoreORM } from '@veramo/data-store'
 import { createConnection } from 'typeorm'
 
-type ConfiguredAgent = TAgent<IMsRequestApi & IDataStore & IDataStoreORM >;
-const did1 = 'did:test:111';
-const did2 = 'did:test:222';
+type ConfiguredAgent = TAgent<IMsRequestApi & IDataStore & IDataStoreORM>
+const did1 = 'did:test:111'
+const did2 = 'did:test:222'
 var requestIssuanceResponse: IIssueRequestResponse = {
   requestId: '2e5c6fae-218c-4c7b-8440-df5454f908e9',
   url: 'www.google.com',
