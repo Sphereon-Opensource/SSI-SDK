@@ -2,7 +2,7 @@ import * as MsAuthenticator from '@sphereon/ms-authenticator'
 import { fetchIssuanceRequestMs } from '../../src/IssuerUtil'
 import { IMsRequestApi, IIssueRequestResponse, IClientIssueRequest, IClientIssuanceConfig } from '../../src/types/IMsRequestApi'
 import { v4 as uuidv4 } from 'uuid'
-import { createAgent, TAgent , IDataStore, IDataStoreORM, VerifiableCredential, FindArgs, TCredentialColumns} from '@veramo/core'
+import { createAgent, TAgent, IDataStore, IDataStoreORM, VerifiableCredential, FindArgs, TCredentialColumns } from '@veramo/core'
 import { Entities, DataStore, DataStoreORM } from '@veramo/data-store'
 import { createConnection } from 'typeorm'
 
@@ -80,7 +80,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should store credential and retrieve by id', async () => {
-
       const dbConnection = createConnection({
         type: 'sqlite',
         database: ':memory:',
@@ -88,11 +87,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         logging: false,
         entities: Entities,
       })
-      const localAgent = createAgent<IDataStore & IDataStoreORM >({
-        plugins: [
-          new DataStore(dbConnection),
-          new DataStoreORM(dbConnection)
-        ],
+      const localAgent = createAgent<IDataStore & IDataStoreORM>({
+        plugins: [new DataStore(dbConnection), new DataStoreORM(dbConnection)],
       })
 
       const vc5: VerifiableCredential = {
@@ -123,7 +119,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             column: 'id',
             value: ['vc5'],
           },
-        ]
+        ],
       }
 
       const credentials = await localAgent.dataStoreORMGetVerifiableCredentialsByClaims({})
