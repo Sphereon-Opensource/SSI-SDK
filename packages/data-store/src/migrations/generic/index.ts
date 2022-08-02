@@ -1,4 +1,4 @@
-import { CreateConnections1 } from './1-CreateConnections'
+import { CreateConnections1659463079429 } from './1-CreateConnections'
 
 /**
  * The migrations array that SHOULD be used when initializing a TypeORM database connection.
@@ -7,6 +7,4 @@ import { CreateConnections1 } from './1-CreateConnections'
  *
  * @public
  */
-export const dataStoreMigrations = [
-  CreateConnections1,
-]
+export const DataStoreMigrations = [CreateConnections1659463079429]

@@ -6,9 +6,9 @@ export class BaseConfigEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @CreateDateColumn({name: 'created_at', nullable: false })
+  @CreateDateColumn({ name: 'created_at', nullable: false })
   createdAt!: Date
 
-  @UpdateDateColumn({name: 'last_updated_at', nullable: false })
+  @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
   lastUpdatedAt!: Date
 }

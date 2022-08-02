@@ -1,1 +1,1 @@
-export { dataStoreMigrations } from './generic'
+export { DataStoreMigrations } from './generic'

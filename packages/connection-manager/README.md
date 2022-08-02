@@ -39,16 +39,19 @@ For now the following connection types are supported:
 ### Adding the plugin to an agent:
 
 ```typescript
+import { migrations, Entities } from '@veramo/data-store'
 import DataStoreConnectionEntities from '@sphereon/ssi-sdk-connection-manager'
+import { DataStoreMigrations } from '@sphereon/ssi-sdk-data-store'
+
 const dbConnection = createConnection({
   type: 'react-native',
   database: 'app.sqlite',
   location: 'default',
-  logging: true,
+  logging: false,
   synchronize: false,
   migrationsRun: true,
-  migrations: [...dataStoreMigrations, ...migrations],
-  entities: [ ...DataStoreConnectionEntities, ...Entities],
+  migrations: [...DataStoreMigrations, ...migrations],
+  entities: [...DataStoreConnectionEntities, ...Entities],
 })
 
 const agent = createAgent<IConnectionManager>({

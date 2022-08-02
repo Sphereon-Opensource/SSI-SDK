@@ -26,7 +26,7 @@ dbConnection:
       synchronize: false
       migrationsRun: true
       migrations:
-        $require: '@sphereon/ssi-sdk-data-store?t=object#dataStoreMigrations'
+        $require: '@sphereon/ssi-sdk-data-store?t=object#DataStoreMigrations'
       logging: false
       entities:
         $require: '@sphereon/ssi-sdk-data-store?t=object#DataStoreConnectionEntities'

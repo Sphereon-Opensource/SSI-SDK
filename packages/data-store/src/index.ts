@@ -16,3 +16,5 @@ export const DataStoreConnectionEntities = [
   OpenIdConfigEntity,
   PartyEntity,
 ]
+
+export { DataStoreMigrations } from './migrations'
