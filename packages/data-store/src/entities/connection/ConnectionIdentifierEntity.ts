@@ -6,7 +6,7 @@ export class ConnectionIdentifierEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum', { nullable: false })
+  @Column('simple-enum', { name: 'connectionType', nullable: false, enum: ConnectionIdentifierEnum })
   type!: ConnectionIdentifierEnum
 
   @Column('text', { name: 'correlation_id', nullable: false })

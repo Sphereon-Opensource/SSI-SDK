@@ -4,7 +4,7 @@ import { IBasicDidAuthConfig } from '@sphereon/ssi-sdk-core'
 
 @ChildEntity('DidAuthConfig')
 export class DidAuthConfigEntity extends BaseConfigEntity {
-  @Column('text', { nullable: false })
+  @Column('text', { name: 'identifier', nullable: false })
   identifier!: string
 
   @Column('text', { name: 'redirect_url' })

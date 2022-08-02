@@ -7,7 +7,7 @@ export class PartyEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('text', { nullable: false })
+  @Column('text', { name: 'name', nullable: false })
   name!: string
 
   @OneToMany(() => ConnectionEntity, (connection: ConnectionEntity) => connection.party, { cascade: true })

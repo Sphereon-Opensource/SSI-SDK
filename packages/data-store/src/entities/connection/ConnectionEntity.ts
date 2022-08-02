@@ -30,7 +30,7 @@ export class ConnectionEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum', { nullable: false })
+  @Column('simple-enum', { name: 'connection_type', nullable: false, enum: ConnectionTypeEnum })
   type!: ConnectionTypeEnum
 
   @OneToOne((type: ConnectionIdentifierEntity) => ConnectionIdentifierEntity, { cascade: true })
@@ -50,10 +50,10 @@ export class ConnectionEntity extends BaseEntity {
   })
   party!: PartyEntity
 
-  @CreateDateColumn({ type: 'datetime', name: 'created_at', nullable: false })
+  @CreateDateColumn({name: 'created_at', nullable: false })
   createdAt!: Date
 
-  @UpdateDateColumn({ type: 'datetime', name: 'last_updated_at', nullable: false })
+  @UpdateDateColumn({name: 'last_updated_at', nullable: false })
   lastUpdatedAt!: Date
 }
 
