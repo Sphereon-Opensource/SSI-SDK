@@ -21,7 +21,7 @@ import {
   IBasicConnectionMetadataItem,
   IDidAuthConfig,
   IOpenIdConfig,
-} from '@sphereon/ssi-sdk-core'
+} from '../../types/connections'
 import { openIdConfigEntityFrom } from './OpenIdConfigEntity'
 import { didAuthConfigEntityFrom } from './DidAuthConfigEntity'
 
@@ -30,14 +30,14 @@ export class ConnectionEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum', { nullable: false })
+  @Column('simple-enum', { nullable: false, enum: ConnectionTypeEnum })
   type!: ConnectionTypeEnum
 
-  @OneToOne((type: ConnectionIdentifierEntity) => ConnectionIdentifierEntity, { cascade: true })
+  @OneToOne(() => ConnectionIdentifierEntity, { cascade: true })
   @JoinColumn()
   identifier!: ConnectionIdentifierEntity
 
-  @OneToOne((type: BaseConfigEntity) => BaseConfigEntity, { cascade: true })
+  @OneToOne((type) => BaseConfigEntity, { cascade: true })
   @JoinColumn()
   config!: BaseConfigEntity
 
@@ -50,10 +50,10 @@ export class ConnectionEntity extends BaseEntity {
   })
   party!: PartyEntity
 
-  @CreateDateColumn({ type: 'datetime', name: 'created_at', nullable: false })
+  @CreateDateColumn({ name: 'created_at', nullable: false })
   createdAt!: Date
 
-  @UpdateDateColumn({ type: 'datetime', name: 'last_updated_at', nullable: false })
+  @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
   lastUpdatedAt!: Date
 }
 
