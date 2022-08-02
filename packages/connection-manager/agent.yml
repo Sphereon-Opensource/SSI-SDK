@@ -23,10 +23,13 @@ dbConnection:
   $args:
     - type: sqlite
       database: ':memory:'
-      synchronize: true
+      synchronize: false
+      migrationsRun: true
+      migrations:
+        $require: '@sphereon/ssi-sdk-data-store?t=object#dataStoreMigrations'
       logging: false
       entities:
-        $require: '@sphereon/ssi-sdk-data-store?t=object#Entities'
+        $require: '@sphereon/ssi-sdk-data-store?t=object#DataStoreConnectionEntities'
 
 server:
   baseUrl:

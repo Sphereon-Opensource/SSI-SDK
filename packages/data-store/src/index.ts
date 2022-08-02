@@ -7,7 +7,7 @@ import { OpenIdConfigEntity } from './entities/connection/OpenIdConfigEntity'
 import { PartyEntity } from './entities/connection/PartyEntity'
 
 export { ConnectionStore } from './connection/ConnectionStore'
-export const Entities = [
+export const DataStoreConnectionEntities = [
   BaseConfigEntity,
   ConnectionEntity,
   ConnectionIdentifierEntity,

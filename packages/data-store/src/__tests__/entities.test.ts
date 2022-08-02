@@ -1,10 +1,11 @@
 import { createConnection, Connection } from 'typeorm'
 import { ConnectionTypeEnum, ConnectionIdentifierEnum } from '@sphereon/ssi-sdk-core'
-import { Entities } from '../index'
+import { DataStoreConnectionEntities } from '../index'
 import { PartyEntity } from '../entities/connection/PartyEntity'
 import { OpenIdConfigEntity } from '../entities/connection/OpenIdConfigEntity'
 import { DidAuthConfigEntity } from '../entities/connection/DidAuthConfigEntity'
 import { ConnectionEntity, connectionEntityFrom } from '../entities/connection/ConnectionEntity'
+import { dataStoreMigrations } from '../migrations'
 
 describe('Database entities test', () => {
   let dbConnection: Connection
@@ -15,13 +16,16 @@ describe('Database entities test', () => {
       (dbConnection = await createConnection({
         type: 'sqlite',
         database: ':memory:',
-        entities: Entities,
+        migrationsRun: true,
+        migrations: dataStoreMigrations,
+        synchronize: false,
+        entities: DataStoreConnectionEntities,
       }))
   )
 
   beforeEach(async () => {
     await dbConnection.dropDatabase()
-    await dbConnection.synchronize()
+    await dbConnection.runMigrations()
   })
 
   afterAll(async () => {

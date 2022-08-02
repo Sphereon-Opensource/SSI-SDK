@@ -1,5 +1,5 @@
 import { ConnectionOptions } from 'typeorm'
-import { Entities as ConnectionEntities } from '../index'
+import { DataStoreConnectionEntities } from '../index'
 
 /**
  * Do Not use these connections in production!. They are only here to create/test migration files!
@@ -12,7 +12,7 @@ export default [
     migrationsRun: false,
     synchronize: false,
     logging: ['error', 'info', 'warn', 'log'],
-    entities: [...ConnectionEntities],
+    entities: [...DataStoreConnectionEntities],
   },
   {
     type: 'postgres',
@@ -21,6 +21,6 @@ export default [
     migrationsRun: false,
     synchronize: false,
     logging: ['error', 'info', 'warn', 'log'],
-    entities: [...ConnectionEntities],
+    entities: [...DataStoreConnectionEntities],
   },
 ] as ConnectionOptions[]
