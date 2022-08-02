@@ -11,7 +11,7 @@ describe('Database entities test', () => {
   const connection_relations = ['config', 'metadata', 'identifier']
 
   beforeEach(async () => {
-    (dbConnection = await createConnection({
+    dbConnection = await createConnection({
       type: 'sqlite',
       database: ':memory:',
       logging: 'all',
@@ -19,7 +19,7 @@ describe('Database entities test', () => {
       migrations: DataStoreMigrations,
       synchronize: false,
       entities: DataStoreConnectionEntities,
-    }))
+    })
     // await dbConnection.dropDatabase()
     await dbConnection.runMigrations()
     await dbConnection.showMigrations()

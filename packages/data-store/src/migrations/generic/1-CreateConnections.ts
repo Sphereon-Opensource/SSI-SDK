@@ -12,11 +12,11 @@ export class CreateConnections1659463079429 implements MigrationInterface {
     if (dbType === 'postgres') {
       debug(`using postgres migration file`)
       const mig = new CreateConnections1659463079428()
-      return  mig.up(queryRunner)
+      return mig.up(queryRunner)
     } else if (dbType === 'sqlite' || 'react-native') {
       debug(`using sqlite/react-native migration file`)
       const mig = new CreateConnections1659463069549()
-      return  mig.up(queryRunner)
+      return mig.up(queryRunner)
     } else {
       throw new Error(
         "Migrations are currently only supported for sqlite, react-native and postgres. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now"

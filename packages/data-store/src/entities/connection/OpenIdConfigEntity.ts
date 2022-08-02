@@ -4,10 +4,10 @@ import { IBasicOpenIdConfig } from '@sphereon/ssi-sdk-core'
 
 @ChildEntity('OpenIdConfig')
 export class OpenIdConfigEntity extends BaseConfigEntity {
-  @Column('text', { name: 'client_id', nullable: false })
+  @Column({ name: 'client_id', length: 255, nullable: false })
   clientId!: string
 
-  @Column('text', { name: 'client_secret', nullable: false })
+  @Column({ name: 'client_secret', length: 255, nullable: false })
   clientSecret!: string
 
   @Column('simple-array', { name: 'scopes', nullable: false })

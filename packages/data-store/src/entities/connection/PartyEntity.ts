@@ -1,12 +1,12 @@
 import { BaseEntity, Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { ConnectionEntity } from './ConnectionEntity'
 
-@Entity({ name: 'Party', withoutRowid: true })
+@Entity('Party')
 export class PartyEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('text', { name: 'name', nullable: false, unique: true })
+  @Column({ name: 'name', length: 255, nullable: false, unique: true })
   name!: string
 
   @OneToMany(() => ConnectionEntity, (connection: ConnectionEntity) => connection.party, { cascade: true })

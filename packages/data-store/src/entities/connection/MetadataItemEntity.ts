@@ -7,10 +7,10 @@ export class MetadataItemEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('text', { name: 'label', nullable: false })
+  @Column({ name: 'label', length: 255, nullable: false })
   label!: string
 
-  @Column('text', { name: 'value', nullable: false })
+  @Column({ name: 'value', length: 255, nullable: false })
   value!: string
 
   @ManyToOne(() => ConnectionEntity, (connection) => connection.metadata, {
