@@ -49,7 +49,7 @@ describe('Database entities test', () => {
 
     const party2 = new PartyEntity()
     party2.name = partyName
-    await expect(dbConnection.getRepository(PartyEntity).save(party2)).rejects.toThrowError('SQLITE_CONSTRAINT: UNIQUE constraint failed: Party.party_name')
+    await expect(dbConnection.getRepository(PartyEntity).save(party2)).rejects.toThrowError('SQLITE_CONSTRAINT: UNIQUE constraint failed: Party.name')
   })
 
   it('Should save connection with openid config to database', async () => {
