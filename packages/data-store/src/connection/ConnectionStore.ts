@@ -18,6 +18,7 @@ import { MetadataItemEntity } from '../entities/connection/MetadataItemEntity'
 import { OpenIdConfigEntity } from '../entities/connection/OpenIdConfigEntity'
 import { ConnectionEntity, connectionEntityFrom } from '../entities/connection/ConnectionEntity'
 import { PartyEntity, partyEntityFrom } from '../entities/connection/PartyEntity'
+import { OrPromise } from '@veramo/utils'
 
 const debug = Debug('sphereon:typeorm:connection-store')
 
@@ -25,8 +26,11 @@ export class ConnectionStore extends AbstractConnectionStore {
   private readonly party_relations = ['connections', 'connections.config', 'connections.metadata', 'connections.identifier']
   private readonly connection_relations = ['config', 'metadata', 'identifier']
 
-  constructor(private dbConnection: Promise<Connection>) {
+  private dbConnection: OrPromise<Connection>
+
+  constructor(dbConnection: OrPromise<Connection>) {
     super()
+    this.dbConnection = dbConnection
   }
 
   getParty = async (partyId: string): Promise<IConnectionParty> => {

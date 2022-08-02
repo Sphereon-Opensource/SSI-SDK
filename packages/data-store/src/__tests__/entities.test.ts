@@ -10,24 +10,22 @@ describe('Database entities test', () => {
   let dbConnection: Connection
   const connection_relations = ['config', 'metadata', 'identifier']
 
-  beforeAll(
-    async () =>
-      (dbConnection = await createConnection({
-        type: 'sqlite',
-        database: ':memory:',
-        migrationsRun: true,
-        migrations: DataStoreMigrations,
-        synchronize: false,
-        entities: DataStoreConnectionEntities,
-      }))
-  )
-
   beforeEach(async () => {
-    await dbConnection.dropDatabase()
+    (dbConnection = await createConnection({
+      type: 'sqlite',
+      database: ':memory:',
+      logging: 'all',
+      migrationsRun: false,
+      migrations: DataStoreMigrations,
+      synchronize: false,
+      entities: DataStoreConnectionEntities,
+    }))
+    // await dbConnection.dropDatabase()
     await dbConnection.runMigrations()
+    await dbConnection.showMigrations()
   })
 
-  afterAll(async () => {
+  afterEach(async () => {
     await dbConnection.close()
   })
 
@@ -51,7 +49,7 @@ describe('Database entities test', () => {
 
     const party2 = new PartyEntity()
     party2.name = partyName
-    await expect(dbConnection.getRepository(PartyEntity).save(party2)).rejects.toThrowError('SQLITE_CONSTRAINT: UNIQUE constraint failed: Party.name')
+    await expect(dbConnection.getRepository(PartyEntity).save(party2)).rejects.toThrowError('SQLITE_CONSTRAINT: UNIQUE constraint failed: Party.party_name')
   })
 
   it('Should save connection with openid config to database', async () => {
