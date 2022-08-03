@@ -119,7 +119,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result).toEqual(true)
       await expect(agent.cmGetParty({ partyId: removeParty.id! })).rejects.toThrow(`No party found for id: ${removeParty.id!}`)
       await expect(agent.cmGetConnection({ connectionId: removePartyConnection.id! })).rejects.toThrow(
-        `No connection found for id: ${removePartyConnection.id!}`,
+        `No connection found for id: ${removePartyConnection.id!}`
       )
     })
 
@@ -135,7 +135,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await expect(
         agent.cmGetConnection({
           connectionId,
-        }),
+        })
       ).rejects.toThrow(`No connection found for id: ${connectionId}`)
     })
 
@@ -253,10 +253,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       parties = await agent.cmGetParties()
       expect(parties.length).toEqual(origSize + 1)
-
     })
-
-
   })
 }
 
