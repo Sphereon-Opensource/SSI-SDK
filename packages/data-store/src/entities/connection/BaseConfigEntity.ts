@@ -1,8 +1,13 @@
 import { BaseEntity, CreateDateColumn, Entity, PrimaryGeneratedColumn, TableInheritance, UpdateDateColumn } from 'typeorm'
 
+export enum BaseConfigType {
+  OPENID = 'OpenIdConfig',
+  DIDAUTH = 'DidAuthConfig',
+}
+
 @Entity('BaseConfigEntity')
-@TableInheritance({ column: { type: 'varchar', name: 'discriminator' } })
-export class BaseConfigEntity extends BaseEntity {
+@TableInheritance({ column: { type: 'simple-enum', enum: BaseConfigType, name: 'type' } })
+export abstract class BaseConfigEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 

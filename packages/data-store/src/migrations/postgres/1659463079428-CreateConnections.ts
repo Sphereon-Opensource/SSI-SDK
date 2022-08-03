@@ -4,10 +4,11 @@ export class CreateConnections1659463079428 implements MigrationInterface {
   name = 'CreateConnections1659463079428'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`CREATE TYPE "public"."BaseConfigEntity_type_enum" AS ENUM('OpenIdConfig', 'DidAuthConfig')`)
     await queryRunner.query(
-      `CREATE TABLE "BaseConfigEntity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "client_id" character varying(255), "client_secret" character varying(255), "scopes" text, "issuer" text, "redirect_url" text, "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "identifier" text, "session_id" character varying(255), "discriminator" character varying NOT NULL, CONSTRAINT "PK_f4f093a5148e5be75324145a58b" PRIMARY KEY ("id"))`
+      `CREATE TABLE "BaseConfigEntity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "client_id" character varying(255), "client_secret" character varying(255), "scopes" text, "issuer" text, "redirect_url" text, "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "identifier" text, "session_id" character varying(255), "type" "public"."BaseConfigEntity_type_enum" NOT NULL, CONSTRAINT "PK_f4f093a5148e5be75324145a58b" PRIMARY KEY ("id"))`
     )
-    await queryRunner.query(`CREATE INDEX "IDX_f7b965b3fbbb48c88fd48ade58" ON "BaseConfigEntity" ("discriminator") `)
+    await queryRunner.query(`CREATE INDEX "IDX_228953a09ee91bbac6e28b7345" ON "BaseConfigEntity" ("type") `)
     await queryRunner.query(`CREATE TYPE "public"."ConnectionIdentifier_connection_identifier_enum" AS ENUM('did', 'url')`)
     await queryRunner.query(
       `CREATE TABLE "ConnectionIdentifier" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "connection_identifier" "public"."ConnectionIdentifier_connection_identifier_enum" NOT NULL, "correlation_id" text NOT NULL, CONSTRAINT "PK_402720c2bc286daafb8a0b09dd3" PRIMARY KEY ("id"))`
@@ -47,7 +48,8 @@ export class CreateConnections1659463079428 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "ConnectionMetadata"`)
     await queryRunner.query(`DROP TABLE "ConnectionIdentifier"`)
     await queryRunner.query(`DROP TYPE "public"."ConnectionIdentifier_connection_identifier_enum"`)
-    await queryRunner.query(`DROP INDEX "public"."IDX_f7b965b3fbbb48c88fd48ade58"`)
+    await queryRunner.query(`DROP INDEX "public"."IDX_228953a09ee91bbac6e28b7345"`)
     await queryRunner.query(`DROP TABLE "BaseConfigEntity"`)
+    await queryRunner.query(`DROP TYPE "public"."BaseConfigEntity_type_enum"`)
   }
 }

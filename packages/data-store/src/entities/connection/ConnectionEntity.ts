@@ -37,7 +37,7 @@ export class ConnectionEntity extends BaseEntity {
   @JoinColumn()
   identifier!: ConnectionIdentifierEntity
 
-  @OneToOne(() => BaseConfigEntity, { cascade: true })
+  @OneToOne((type) => BaseConfigEntity, { cascade: true })
   @JoinColumn()
   config!: BaseConfigEntity
 

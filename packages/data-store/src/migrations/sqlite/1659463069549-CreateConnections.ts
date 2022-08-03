@@ -5,9 +5,9 @@ export class CreateConnections1659463069549 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "BaseConfigEntity" ("id" varchar PRIMARY KEY NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "client_id" varchar(255), "client_secret" varchar(255), "scopes" text, "issuer" text, "redirect_url" text, "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "identifier" text, "session_id" varchar(255), "discriminator" varchar NOT NULL)`
+      `CREATE TABLE "BaseConfigEntity" ("id" varchar PRIMARY KEY NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "client_id" varchar(255), "client_secret" varchar(255), "scopes" text, "issuer" text, "redirect_url" text, "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "identifier" text, "session_id" varchar(255), "type" varchar CHECK( "type" IN ('OpenIdConfig','DidAuthConfig') ) NOT NULL)`
     )
-    await queryRunner.query(`CREATE INDEX "IDX_f7b965b3fbbb48c88fd48ade58" ON "BaseConfigEntity" ("discriminator") `)
+    await queryRunner.query(`CREATE INDEX "IDX_228953a09ee91bbac6e28b7345" ON "BaseConfigEntity" ("type") `)
     await queryRunner.query(
       `CREATE TABLE "ConnectionIdentifier" ("id" varchar PRIMARY KEY NOT NULL, "connection_identifier" varchar CHECK( "connection_identifier" IN ('did','url') ) NOT NULL, "correlation_id" text NOT NULL)`
     )
@@ -59,7 +59,7 @@ export class CreateConnections1659463069549 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "Party"`)
     await queryRunner.query(`DROP TABLE "ConnectionMetadata"`)
     await queryRunner.query(`DROP TABLE "ConnectionIdentifier"`)
-    await queryRunner.query(`DROP INDEX "IDX_f7b965b3fbbb48c88fd48ade58"`)
+    await queryRunner.query(`DROP INDEX "IDX_228953a09ee91bbac6e28b7345"`)
     await queryRunner.query(`DROP TABLE "BaseConfigEntity"`)
   }
 }

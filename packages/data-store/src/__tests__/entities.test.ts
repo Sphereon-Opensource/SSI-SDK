@@ -22,7 +22,7 @@ describe('Database entities test', () => {
     })
     // await dbConnection.dropDatabase()
     await dbConnection.runMigrations()
-    await dbConnection.showMigrations()
+    expect(await dbConnection.showMigrations()).toBeFalsy()
   })
 
   afterEach(async () => {
