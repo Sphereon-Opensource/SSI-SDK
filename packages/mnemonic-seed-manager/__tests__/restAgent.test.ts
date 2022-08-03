@@ -10,13 +10,13 @@ import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import express from 'express'
 import { Connection } from 'typeorm'
 
-import { IMnemonicSeedManager, MnemonicSeedManager, MnemonicSeedManagerEntities } from '../src'
+import { IMnemonicSeedManager, MnemonicSeedManager, MnemonicSeedManagerEntities, MnemonicSeedManagerMigrations } from '../src'
 
 import mnemonicGenerator from './shared/generateMnemonic'
 import seedGenerator from './shared/generateSeed'
 import storeSeed from './shared/storeMnemonicInfo'
 import { KeyManager } from '@veramo/key-manager'
-import { KeyStore, PrivateKeyStore, Entities, DataStore, DataStoreORM } from '@veramo/data-store'
+import { KeyStore, PrivateKeyStore, Entities, DataStore, DataStoreORM, migrations } from '@veramo/data-store'
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 import { createConnection } from 'typeorm'
 
@@ -48,9 +48,11 @@ const setup = async (): Promise<boolean> => {
   const db = createConnection({
     type: 'sqlite',
     database: databaseFile,
-    synchronize: true,
+    synchronize: false,
     logging: false,
     entities: [...MnemonicSeedManagerEntities, ...Entities],
+    migrations: [...MnemonicSeedManagerMigrations, ...migrations],
+    migrationsRun: true,
   })
 
   const secretBox = new SecretBox(KMS_SECRET_KEY)
