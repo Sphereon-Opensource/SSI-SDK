@@ -42,7 +42,7 @@ describe('Database entities test', () => {
   })
 
   it('Should enforce unique name for a party', async () => {
-    const partyName = 'unique_name'
+    const partyName = 'non_unique_name'
     const party = new PartyEntity()
     party.name = partyName
     await dbConnection.getRepository(PartyEntity).save(party)
