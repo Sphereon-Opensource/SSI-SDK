@@ -131,8 +131,8 @@ export class ConnectionStore extends AbstractConnectionStore {
       return Promise.reject(Error(`No party found for id: ${partyId}`))
     }
 
-    if (!this.hasCorrectConfig(connection.type, connection.config)) {
-      return Promise.reject(Error(`Connection type ${connection.type}, does not match for provided config`))
+    if (!this.hasCorrectConfig(connection.connectionType, connection.config)) {
+      return Promise.reject(Error(`Connection type ${connection.connectionType}, does not match for provided config`))
     }
 
     const connectionEntity = connectionEntityFrom(connection)
@@ -155,8 +155,8 @@ export class ConnectionStore extends AbstractConnectionStore {
       return Promise.reject(Error(`No connection found for id: ${connection.id}`))
     }
 
-    if (!this.hasCorrectConfig(connection.type, connection.config)) {
-      return Promise.reject(Error(`Connection type ${connection.type}, does not match for provided config`))
+    if (!this.hasCorrectConfig(connection.connectionType, connection.config)) {
+      return Promise.reject(Error(`Connection type ${connection.connectionType}, does not match for provided config`))
     }
 
     debug('Updating connection', connection)
@@ -193,9 +193,9 @@ export class ConnectionStore extends AbstractConnectionStore {
   private connectionFrom = (connection: ConnectionEntity): IConnection => {
     return {
       id: connection.id,
-      type: connection.type,
+      connectionType: connection.connectionType,
       identifier: this.connectionIdentifierFrom(connection.identifier),
-      config: this.configFrom(connection.type, connection.config),
+      config: this.configFrom(connection.connectionType, connection.config),
       metadata: connection.metadata ? connection.metadata.map((item: MetadataItemEntity) => this.metadataItemFrom(item)) : [],
       createdAt: connection.createdAt,
       lastUpdatedAt: connection.createdAt,
@@ -260,7 +260,7 @@ export class ConnectionStore extends AbstractConnectionStore {
   private connectionIdentifierFrom = (identifier: ConnectionIdentifierEntity): IConnectionIdentifier => {
     return {
       id: identifier.id,
-      type: identifier.type,
+      connectionIdentifier: identifier.connectionIdentifier,
       correlationId: identifier.correlationId,
     }
   }

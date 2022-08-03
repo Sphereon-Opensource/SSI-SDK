@@ -6,8 +6,8 @@ export class ConnectionIdentifierEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum', { nullable: false, enum: ConnectionIdentifierEnum })
-  type!: ConnectionIdentifierEnum
+  @Column('simple-enum', { nullable: false, name: 'connection_identifier', enum: ConnectionIdentifierEnum })
+  connectionIdentifier!: ConnectionIdentifierEnum
 
   @Column('text', { name: 'correlation_id', nullable: false })
   correlationId!: string
@@ -15,7 +15,7 @@ export class ConnectionIdentifierEntity extends BaseEntity {
 
 export const connectionIdentifierEntityFrom = (identifier: IBasicConnectionIdentifier): ConnectionIdentifierEntity => {
   const identifierEntity = new ConnectionIdentifierEntity()
-  identifierEntity.type = identifier.type
+  identifierEntity.connectionIdentifier = identifier.connectionIdentifier
   identifierEntity.correlationId = identifier.correlationId
 
   return identifierEntity

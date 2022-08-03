@@ -1,7 +1,7 @@
 import { BaseEntity, CreateDateColumn, Entity, PrimaryGeneratedColumn, TableInheritance, UpdateDateColumn } from 'typeorm'
 
 @Entity('BaseConfigEntity')
-@TableInheritance({ column: { type: 'varchar', name: 'type' } })
+@TableInheritance({ column: { type: 'varchar', name: 'discriminator' } })
 export class BaseConfigEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string

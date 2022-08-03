@@ -30,14 +30,14 @@ export class ConnectionEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum', { nullable: false, enum: ConnectionTypeEnum })
-  type!: ConnectionTypeEnum
+  @Column('simple-enum', { nullable: false, name: 'connection_type', enum: ConnectionTypeEnum })
+  connectionType!: ConnectionTypeEnum
 
-  @OneToOne((type: ConnectionIdentifierEntity) => ConnectionIdentifierEntity, { cascade: true })
+  @OneToOne(() => ConnectionIdentifierEntity, { cascade: true })
   @JoinColumn()
   identifier!: ConnectionIdentifierEntity
 
-  @OneToOne((type: BaseConfigEntity) => BaseConfigEntity, { cascade: true })
+  @OneToOne(() => BaseConfigEntity, { cascade: true })
   @JoinColumn()
   config!: BaseConfigEntity
 
@@ -59,9 +59,9 @@ export class ConnectionEntity extends BaseEntity {
 
 export const connectionEntityFrom = (connection: IBasicConnection): ConnectionEntity => {
   const connectionEntity = new ConnectionEntity()
-  connectionEntity.type = connection.type
+  connectionEntity.connectionType = connection.connectionType
   connectionEntity.identifier = connectionIdentifierEntityFrom(connection.identifier)
-  connectionEntity.config = configEntityFrom(connection.type, connection.config)
+  connectionEntity.config = configEntityFrom(connection.connectionType, connection.config)
   connectionEntity.metadata = connection.metadata ? connection.metadata.map((item: IBasicConnectionMetadataItem) => metadataItemEntityFrom(item)) : []
 
   return connectionEntity

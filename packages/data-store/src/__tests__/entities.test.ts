@@ -14,7 +14,7 @@ describe('Database entities test', () => {
     dbConnection = await createConnection({
       type: 'sqlite',
       database: ':memory:',
-      logging: 'all',
+      // logging: 'all',
       migrationsRun: false,
       migrations: DataStoreMigrations,
       synchronize: false,
@@ -55,9 +55,9 @@ describe('Database entities test', () => {
   it('Should save connection with openid config to database', async () => {
     const correlationId = 'https://example.com'
     const connection = {
-      type: ConnectionTypeEnum.OPENID,
+      connectionType: ConnectionTypeEnum.OPENID,
       identifier: {
-        type: ConnectionIdentifierEnum.URL,
+        connectionIdentifier: ConnectionIdentifierEnum.URL,
         correlationId,
       },
       config: {
@@ -86,11 +86,11 @@ describe('Database entities test', () => {
     })
 
     const fromDb = await dbConnection.getRepository(ConnectionEntity).findOne({
-      where: { type: connection.type },
+      where: { connectionType: connection.connectionType },
       relations: connection_relations,
     })
 
-    expect(fromDb?.type).toEqual(connection.type)
+    expect(fromDb?.connectionType).toEqual(connection.connectionType)
     expect(fromDb?.identifier.correlationId).toEqual(correlationId)
     expect((fromDb?.config as OpenIdConfigEntity).clientId).toEqual(connection.config.clientId)
     expect(fromDb?.metadata.length).toEqual(2)
@@ -100,9 +100,9 @@ describe('Database entities test', () => {
   it('Should save connection with didauth config to database', async () => {
     const correlationId = 'https://example.com'
     const connection = {
-      type: ConnectionTypeEnum.DIDAUTH,
+      connectionType: ConnectionTypeEnum.DIDAUTH,
       identifier: {
-        type: ConnectionIdentifierEnum.URL,
+        connectionIdentifier: ConnectionIdentifierEnum.URL,
         correlationId,
       },
       config: {
@@ -133,11 +133,11 @@ describe('Database entities test', () => {
     })
 
     const fromDb = await dbConnection.getRepository(ConnectionEntity).findOne({
-      where: { type: connection.type },
+      where: { connectionType: connection.connectionType },
       relations: connection_relations,
     })
 
-    expect(fromDb?.type).toEqual(connection.type)
+    expect(fromDb?.connectionType).toEqual(connection.connectionType)
     expect(fromDb?.identifier.correlationId).toEqual(correlationId)
     expect((fromDb?.config as DidAuthConfigEntity).identifier).toEqual(connection.config.identifier.did)
     expect(fromDb?.metadata.length).toEqual(2)
