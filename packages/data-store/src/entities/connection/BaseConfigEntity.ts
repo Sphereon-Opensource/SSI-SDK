@@ -1,8 +1,7 @@
 import { BaseEntity, CreateDateColumn, Entity, PrimaryGeneratedColumn, TableInheritance, UpdateDateColumn } from 'typeorm'
-import { BaseConfigType } from '@sphereon/ssi-sdk-core'
 
 @Entity('BaseConfigEntity')
-@TableInheritance({ column: { type: 'simple-enum', enum: BaseConfigType, name: 'type' } })
+@TableInheritance({ column: { type: 'varchar', name: 'type' } })
 export abstract class BaseConfigEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string

@@ -1,8 +1,8 @@
 import { ChildEntity, Column } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
-import { BaseConfigType, IBasicDidAuthConfig } from '@sphereon/ssi-sdk-core'
+import { IBasicDidAuthConfig } from '@sphereon/ssi-sdk-core'
 
-@ChildEntity(BaseConfigType.DIDAUTH)
+@ChildEntity('DidAuthConfig')
 export class DidAuthConfigEntity extends BaseConfigEntity {
   @Column('text', { name: 'identifier', nullable: false })
   identifier!: string

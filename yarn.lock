@@ -3235,6 +3235,29 @@
   resolved "https://registry.yarnpkg.com/@sphereon/react-native-argon2/-/react-native-argon2-2.0.6.tgz#602abb96d6d41a7f0778a3323940fca0b4fa13ed"
   integrity sha512-5RkIzhfeDw12p1t2BcQQJyYmgtPE3CQDPLwPfwpnVGamG5R8tY4FhJRNScGzRzttHw6tbBWC1acZ2IM0swEmUQ==
 
+"@sphereon/ssi-sdk-connection-manager@^0.6.1-unstable.82":
+  version "0.6.1-unstable.82"
+  resolved "https://registry.yarnpkg.com/@sphereon/ssi-sdk-connection-manager/-/ssi-sdk-connection-manager-0.6.1-unstable.82.tgz#c3d8524f9eec3fab9d49066211cf15aa95ff62d7"
+  integrity sha512-hspHcq6Ko6D6fvrM6M5vz9iBYQusjtf2v03U7FwVTNQ414OJhdVVz7T1c3dVaHQXByCxp7vkq/TIFkclBtt9vQ==
+  dependencies:
+    "@sphereon/ssi-sdk-core" "^0.6.1-unstable.82+0148dea"
+    cross-fetch "^3.1.5"
+    typeorm "0.2.45"
+
+"@sphereon/ssi-sdk-core@^0.6.1-unstable.82", "@sphereon/ssi-sdk-core@^0.6.1-unstable.82+0148dea":
+  version "0.6.1-unstable.82"
+  resolved "https://registry.yarnpkg.com/@sphereon/ssi-sdk-core/-/ssi-sdk-core-0.6.1-unstable.82.tgz#cfebdad3a7085327c849452952a7c6fae6c850fa"
+  integrity sha512-k3rBsOSw5VmJZXof1tSmL+wb2D6BpburxqovknltUCx7z3AabCV4Mhv2a6WA041H/Pcuaqk6nPDOwLqxiY1ZtA==
+  dependencies:
+    "@scure/base" "^1.0.0-rc1"
+    "@sphereon/did-uni-client" "^0.4.0"
+    "@veramo/core" "3.1.2-next.84"
+    "@veramo/did-manager" "3.1.2-next.84"
+    debug "^4.1.1"
+    did-jwt-vc "^2.1.7"
+    events "^3.3.0"
+    z-schema "^5.0.2"
+
 "@sqltools/formatter@^1.2.2":
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/@sqltools/formatter/-/formatter-1.2.3.tgz#1185726610acc37317ddab11c3c7f9066966bd20"

@@ -30,7 +30,7 @@ export class ConnectionEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum', { nullable: false, name: 'connection_type', enum: ConnectionTypeEnum })
+  @Column('simple-enum', { nullable: false, name: 'connection_type' /*, enum: ConnectionTypeEnum */ })
   connectionType!: ConnectionTypeEnum
 
   @OneToOne(() => ConnectionIdentifierEntity, { cascade: true })

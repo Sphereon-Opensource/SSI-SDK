@@ -1,8 +1,8 @@
 import { ChildEntity, Column } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
-import { BaseConfigType, IBasicOpenIdConfig } from '@sphereon/ssi-sdk-core'
+import { IBasicOpenIdConfig } from '@sphereon/ssi-sdk-core'
 
-@ChildEntity(BaseConfigType.OPENID)
+@ChildEntity('OpenIdConfig')
 export class OpenIdConfigEntity extends BaseConfigEntity {
   @Column({ name: 'client_id', length: 255, nullable: false })
   clientId!: string
