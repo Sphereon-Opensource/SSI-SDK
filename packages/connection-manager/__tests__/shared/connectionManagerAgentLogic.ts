@@ -57,7 +57,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     afterAll(testContext.tearDown)
 
-    /*  it('should get party by id', async () => {
+    it('should get party by id', async () => {
       const result = await agent.cmGetParty({ partyId: defaultParty.id! })
 
       expect(result.id).toEqual(defaultParty.id)
@@ -68,7 +68,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       await expect(agent.cmGetParty({ partyId })).rejects.toThrow(`No party found for id: ${partyId}`)
     })
-*/
+
     it('should get all parties', async () => {
       const result = await agent.cmGetParties()
 
@@ -151,8 +151,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result).not.toBeNull()
     })
 
-    // FIXME: The discriminator is not present on the interface, hence this will result in a constraint violation, which only became apparent when more strict checks where enabled
-    xit('should update connection config by id', async () => {
+    it('should update connection config by id', async () => {
       const clientSecret = '423af84c-bfb5-4605-bf6f-3b088d2ff0da'
       const connection = {
         ...defaultPartyConnection,
@@ -256,101 +255,3 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
   })
 }
-
-/*
-
-const addDefaultConnections = async () => {
-  console.log('addDefaultConnections()')
-
-  let parties: IConnectionParty[] = []
-  try {
-    parties = await cmGetParties()
-  } catch (error) {
-    console.log(error)
-  }
-  // const parties = await cmGetParties()
-
-  if (!parties) {
-    console.log('#parties: NONE')
-  } else {
-    console.log('#parties: ' + parties.length)
-  }
-
-  const sphereonName = 'Sphereon'
-  const sphereon = parties.find((party: IConnectionParty) => party.name === sphereonName)
-  if (!sphereon) {
-    cmAddParty({ name: sphereonName }).then(async (party: IConnectionParty) => {
-      if (!party) {
-        return
-      }
-
-      const connection = {
-        type: ConnectionTypeEnum.OPENID,
-        identifier: {
-          type: ConnectionIdentifierEnum.URL,
-          correlationId: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet'
-        },
-        config: {
-          clientId: 'ssi-wallet',
-          clientSecret: '45de05ae-fefb-49a9-962d-46905df7ed65',
-          issuer: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet',
-          serviceConfiguration: {
-            authorizationEndpoint: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet/protocol/openid-connect/auth',
-            tokenEndpoint: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet/protocol/openid-connect/token'
-          },
-          redirectUrl: 'com.sphereon.ssi.wallet:/callback',
-          dangerouslyAllowInsecureHttpRequests: true,
-          clientAuthMethod: 'post' as const,
-          scopes: ['openid']
-        },
-        metadata: [
-          {
-            label: 'Connection URL',
-            value: 'https://auth-test.sphereon.com'
-          }
-        ]
-      }
-      await cmAddConnection({ partyId: party.id, connection })
-    })
-  }
-
-  const firm24Name = 'Firm24'
-  const firm24 = parties.find((party: IConnectionParty) => party.name === firm24Name)
-  if (!firm24) {
-    cmAddParty({ name: firm24Name }).then(async (party: IConnectionParty) => {
-      if (!party) {
-        return
-      }
-
-      const connection = {
-        type: ConnectionTypeEnum.OPENID,
-        identifier: {
-          type: ConnectionIdentifierEnum.URL,
-          correlationId: 'https://shr.docarama.com/api/oidc/'
-        },
-        config: {
-          clientId: 'sphereon',
-          clientSecret: '261b1e80-7e30-42c9-afde-6403f9f4ec19',
-          // TODO we can either pass in an issuer or serviceConfiguration
-          issuer: 'https://shr.docarama.com/api/oidc/', // TODO should also only have serviceConfiguration
-          serviceConfiguration: {
-            authorizationEndpoint: 'https://shr.docarama.com/api/oidc/auth',
-            tokenEndpoint: 'https://shr.docarama.com/api/oidc/token'
-          },
-          redirectUrl: 'com.sphereon.ssi.wallet:/callback',
-          dangerouslyAllowInsecureHttpRequests: true,
-          clientAuthMethod: 'post' as const,
-          scopes: ['openid', 'organizations', 'session']
-        },
-        metadata: [
-          {
-            label: 'Connection URL',
-            value: 'https://shr.docarama.com'
-          }
-        ]
-      }
-      await cmAddConnection({ partyId: party.id, connection })
-    })
-  }
-}
-*/

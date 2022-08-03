@@ -26,7 +26,7 @@ describe('Database entities test', () => {
       synchronize: false,
       entities: DataStoreConnectionEntities,
     })
-    // await dbConnection.dropDatabase()
+
     await dbConnection.runMigrations()
     expect(await dbConnection.showMigrations()).toBeFalsy()
   })

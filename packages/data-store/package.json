@@ -5,14 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc --build",
-    "typeorm": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js --config src/migrations/internal-migrations-ormconfig.ts",
-    "typeorm-sqlite:migration:generate": "npm run typeorm -- migration:generate -c migration-sqlite -d src/migrations/sqlite -n",
-    "typeorm-sqlite:migration:run": "npm run typeorm -- migration:run -c migration-sqlite",
-    "typeorm-rn:migration:generate": "npm run typeorm -- migration:generate -c migration-react-native -d src/migrations/react-native -n",
-    "typeorm-rn:migration:run": "npm run typeorm -- migration:run -c migration-react-native",
-    "typeorm-postgres:migration:generate": "npm run typeorm -- migration:generate -c migration-postgres -d src/migrations/postgres -n",
-    "typeorm-postgres:migration:run": "npm run typeorm -- migration:run -c migration-postgres"
+    "build": "tsc --build"
   },
   "dependencies": {
     "@sphereon/ssi-sdk-connection-manager": "^0.6.0",

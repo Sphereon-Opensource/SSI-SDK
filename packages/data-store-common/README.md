@@ -2,7 +2,7 @@
 <h1 align="center">
   <br>
   <a href="https://www.sphereon.com"><img src="https://sphereon.com/content/themes/sphereon/assets/img/logo.svg" alt="Sphereon" width="400"></a>
-  <br>Data Store (Typescript) 
+  <br>Data Store Common (Typescript) 
   <br>
 </h1>
 
@@ -12,7 +12,7 @@
 
 ---
 
-SSI-SDK data storage entities based on TypeORM. This package provides entities that relate to data storage. Please note they need to be used with the @sphereon/data-store and @sphereon/connection-manager packages
+SSI-SDK data storage common entities and interfaces based on TypeORM. This package provides entities that relate to data storage. Please note they need to be used with the @sphereon/data-store and @sphereon/connection-manager packages
 
 ## Installation
 
