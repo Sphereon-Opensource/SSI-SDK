@@ -21,7 +21,7 @@ import {
   IBasicConnectionMetadataItem,
   IDidAuthConfig,
   IOpenIdConfig,
-} from '@sphereon/ssi-sdk-core'
+} from '../../types/connections'
 import { openIdConfigEntityFrom } from './OpenIdConfigEntity'
 import { didAuthConfigEntityFrom } from './DidAuthConfigEntity'
 
@@ -30,8 +30,8 @@ export class ConnectionEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum', { nullable: false, name: 'connection_type' /*, enum: ConnectionTypeEnum */ })
-  connectionType!: ConnectionTypeEnum
+  @Column('simple-enum', { nullable: false, enum: ConnectionTypeEnum })
+  type!: ConnectionTypeEnum
 
   @OneToOne(() => ConnectionIdentifierEntity, { cascade: true })
   @JoinColumn()
@@ -59,9 +59,9 @@ export class ConnectionEntity extends BaseEntity {
 
 export const connectionEntityFrom = (connection: IBasicConnection): ConnectionEntity => {
   const connectionEntity = new ConnectionEntity()
-  connectionEntity.connectionType = connection.connectionType
+  connectionEntity.type = connection.type
   connectionEntity.identifier = connectionIdentifierEntityFrom(connection.identifier)
-  connectionEntity.config = configEntityFrom(connection.connectionType, connection.config)
+  connectionEntity.config = configEntityFrom(connection.type, connection.config)
   connectionEntity.metadata = connection.metadata ? connection.metadata.map((item: IBasicConnectionMetadataItem) => metadataItemEntityFrom(item)) : []
 
   return connectionEntity

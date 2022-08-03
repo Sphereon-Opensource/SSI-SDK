@@ -1,6 +1,13 @@
 import { TAgent } from '@veramo/core'
 import { IConnectionManager } from '../../src/types/IConnectionManager'
-import { ConnectionIdentifierEnum, ConnectionTypeEnum, IBasicConnection, IConnection, IConnectionParty, IOpenIdConfig } from '@sphereon/ssi-sdk-core'
+import {
+  ConnectionIdentifierEnum,
+  ConnectionTypeEnum,
+  IBasicConnection,
+  IConnection,
+  IConnectionParty,
+  IOpenIdConfig,
+} from '@sphereon/ssi-sdk-data-store-common'
 
 type ConfiguredAgent = TAgent<IConnectionManager>
 
@@ -11,9 +18,9 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     let defaultPartyConnection: IConnection
 
     const connection: IBasicConnection = {
-      connectionType: ConnectionTypeEnum.OPENID,
+      type: ConnectionTypeEnum.OPENID,
       identifier: {
-        connectionIdentifier: ConnectionIdentifierEnum.URL,
+        type: ConnectionIdentifierEnum.URL,
         correlationId: 'https://example.com',
       },
       config: {

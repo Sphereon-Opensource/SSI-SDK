@@ -1,16 +1,9 @@
 import { Connection, createConnection } from 'typeorm'
-
-import {
-  ConnectionEntity,
-  connectionEntityFrom,
-  ConnectionIdentifierEnum,
-  ConnectionTypeEnum,
-  DataStoreConnectionEntities,
-  DataStoreMigrations,
-  DidAuthConfigEntity,
-  OpenIdConfigEntity,
-  PartyEntity,
-} from '../../../data-store-common'
+import { ConnectionIdentifierEnum, ConnectionTypeEnum, DataStoreConnectionEntities, DataStoreMigrations } from '../index'
+import { PartyEntity } from '../entities/connection/PartyEntity'
+import { OpenIdConfigEntity } from '../entities/connection/OpenIdConfigEntity'
+import { DidAuthConfigEntity } from '../entities/connection/DidAuthConfigEntity'
+import { ConnectionEntity, connectionEntityFrom } from '../entities/connection/ConnectionEntity'
 
 describe('Database entities test', () => {
   let dbConnection: Connection

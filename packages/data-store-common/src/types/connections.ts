@@ -23,7 +23,7 @@ export enum ConnectionTypeEnum {
 
 export interface IConnection {
   id: string
-  connectionType: ConnectionTypeEnum
+  type: ConnectionTypeEnum
   identifier: IConnectionIdentifier
   config: ConnectionConfig
   metadata?: Array<IConnectionMetadataItem>
@@ -32,7 +32,7 @@ export interface IConnection {
 }
 
 export interface IBasicConnection {
-  connectionType: ConnectionTypeEnum
+  type: ConnectionTypeEnum
   identifier: IBasicConnectionIdentifier
   config: BasicConnectionConfig
   metadata?: Array<IBasicConnectionMetadataItem>
@@ -45,7 +45,7 @@ export enum ConnectionIdentifierEnum {
 
 export interface IConnectionIdentifier {
   id: string
-  connectionIdentifier: ConnectionIdentifierEnum
+  type: ConnectionIdentifierEnum
   correlationId: string
 }
 export declare type IBasicConnectionIdentifier = Omit<IConnectionIdentifier, 'id'>

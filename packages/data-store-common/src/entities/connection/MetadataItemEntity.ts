@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne } from 'typeorm'
 import { ConnectionEntity } from './ConnectionEntity'
-import { IBasicConnectionMetadataItem } from '@sphereon/ssi-sdk-core'
+import { IBasicConnectionMetadataItem } from '../../types/connections'
 
 @Entity('ConnectionMetadata')
 export class MetadataItemEntity extends BaseEntity {

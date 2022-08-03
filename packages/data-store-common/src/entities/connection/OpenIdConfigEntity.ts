@@ -1,6 +1,6 @@
 import { ChildEntity, Column } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
-import { IBasicOpenIdConfig } from '@sphereon/ssi-sdk-core'
+import { IBasicOpenIdConfig } from '../../types/connections'
 
 @ChildEntity('OpenIdConfig')
 export class OpenIdConfigEntity extends BaseConfigEntity {

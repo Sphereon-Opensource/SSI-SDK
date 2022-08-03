@@ -1,6 +1,6 @@
 import { ChildEntity, Column } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
-import { IBasicDidAuthConfig } from '@sphereon/ssi-sdk-core'
+import { IBasicDidAuthConfig } from '../../types/connections'
 
 @ChildEntity('DidAuthConfig')
 export class DidAuthConfigEntity extends BaseConfigEntity {

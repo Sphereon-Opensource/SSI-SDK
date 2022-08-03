@@ -1,24 +1,26 @@
 import Debug from 'debug'
 import { Connection } from 'typeorm'
+import { OrPromise } from '@veramo/utils'
+import { AbstractConnectionStore } from '@sphereon/ssi-sdk-connection-manager'
 import {
+  BaseConfigEntity,
   ConnectionConfig,
+  ConnectionEntity,
+  connectionEntityFrom,
+  ConnectionIdentifierEntity,
   ConnectionTypeEnum,
+  DidAuthConfigEntity,
   IConnection,
   IConnectionIdentifier,
   IConnectionMetadataItem,
   IConnectionParty,
   IDidAuthConfig,
   IOpenIdConfig,
-} from '@sphereon/ssi-sdk-core'
-import { AbstractConnectionStore } from '@sphereon/ssi-sdk-connection-manager'
-import { BaseConfigEntity } from '../entities/connection/BaseConfigEntity'
-import { ConnectionIdentifierEntity } from '../entities/connection/ConnectionIdentifierEntity'
-import { DidAuthConfigEntity } from '../entities/connection/DidAuthConfigEntity'
-import { MetadataItemEntity } from '../entities/connection/MetadataItemEntity'
-import { OpenIdConfigEntity } from '../entities/connection/OpenIdConfigEntity'
-import { ConnectionEntity, connectionEntityFrom } from '../entities/connection/ConnectionEntity'
-import { PartyEntity, partyEntityFrom } from '../entities/connection/PartyEntity'
-import { OrPromise } from '@veramo/utils'
+  MetadataItemEntity,
+  OpenIdConfigEntity,
+  PartyEntity,
+  partyEntityFrom,
+} from '@sphereon/ssi-sdk-data-store-common'
 
 const debug = Debug('sphereon:typeorm:connection-store')
 
@@ -131,8 +133,8 @@ export class ConnectionStore extends AbstractConnectionStore {
       return Promise.reject(Error(`No party found for id: ${partyId}`))
     }
 
-    if (!this.hasCorrectConfig(connection.connectionType, connection.config)) {
-      return Promise.reject(Error(`Connection type ${connection.connectionType}, does not match for provided config`))
+    if (!this.hasCorrectConfig(connection.type, connection.config)) {
+      return Promise.reject(Error(`Connection type ${connection.type}, does not match for provided config`))
     }
 
     const connectionEntity = connectionEntityFrom(connection)
@@ -155,8 +157,8 @@ export class ConnectionStore extends AbstractConnectionStore {
       return Promise.reject(Error(`No connection found for id: ${connection.id}`))
     }
 
-    if (!this.hasCorrectConfig(connection.connectionType, connection.config)) {
-      return Promise.reject(Error(`Connection type ${connection.connectionType}, does not match for provided config`))
+    if (!this.hasCorrectConfig(connection.type, connection.config)) {
+      return Promise.reject(Error(`Connection type ${connection.type}, does not match for provided config`))
     }
 
     debug('Updating connection', connection)
@@ -194,9 +196,9 @@ export class ConnectionStore extends AbstractConnectionStore {
   private connectionFrom = (connection: ConnectionEntity): IConnection => {
     return {
       id: connection.id,
-      connectionType: connection.connectionType,
+      type: connection.type,
       identifier: this.connectionIdentifierFrom(connection.identifier),
-      config: this.configFrom(connection.connectionType, connection.config),
+      config: this.configFrom(connection.type, connection.config),
       metadata: connection.metadata ? connection.metadata.map((item: MetadataItemEntity) => this.metadataItemFrom(item)) : [],
       createdAt: connection.createdAt,
       lastUpdatedAt: connection.createdAt,
@@ -259,7 +261,7 @@ export class ConnectionStore extends AbstractConnectionStore {
   private connectionIdentifierFrom = (identifier: ConnectionIdentifierEntity): IConnectionIdentifier => {
     return {
       id: identifier.id,
-      connectionIdentifier: identifier.connectionIdentifier,
+      type: identifier.type,
       correlationId: identifier.correlationId,
     }
   }

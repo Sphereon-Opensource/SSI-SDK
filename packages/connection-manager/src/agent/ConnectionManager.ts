@@ -14,7 +14,7 @@ import {
   IRequiredContext,
   IUpdateConnectionArgs,
 } from '../types/IConnectionManager'
-import { IConnection, IConnectionParty } from '@sphereon/ssi-sdk-core'
+import { IConnection, IConnectionParty } from '@sphereon/ssi-sdk-data-store-common'
 
 /**
  * {@inheritDoc IConnectionManager}

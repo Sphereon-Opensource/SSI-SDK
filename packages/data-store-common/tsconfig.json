@@ -6,12 +6,5 @@
     "declarationDir": "dist",
     "strictPropertyInitialization": false
   },
-  "references": [
-    {
-      "path": "../connection-manager"
-    },
-    {
-      "path": "../data-store-common"
-    }
-  ]
+  "references": []
 }
