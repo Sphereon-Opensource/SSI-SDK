@@ -29,5 +29,6 @@ export {
   IBasicDidAuthConfig,
   ConnectionConfig,
   BasicConnectionConfig,
+  BaseConfigType,
 } from './types'
 export { SuppliedSigner } from './signers'

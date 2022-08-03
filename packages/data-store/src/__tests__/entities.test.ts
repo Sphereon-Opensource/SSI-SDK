@@ -1,5 +1,5 @@
-import { createConnection, Connection } from 'typeorm'
-import { ConnectionTypeEnum, ConnectionIdentifierEnum } from '@sphereon/ssi-sdk-core'
+import { Connection, createConnection } from 'typeorm'
+import { ConnectionIdentifierEnum, ConnectionTypeEnum } from '@sphereon/ssi-sdk-core'
 import { DataStoreConnectionEntities, DataStoreMigrations } from '../index'
 import { PartyEntity } from '../entities/connection/PartyEntity'
 import { OpenIdConfigEntity } from '../entities/connection/OpenIdConfigEntity'

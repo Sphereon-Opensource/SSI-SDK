@@ -160,6 +160,7 @@ export class ConnectionStore extends AbstractConnectionStore {
     }
 
     debug('Updating connection', connection)
+    // FIXME: The discriminator is not present on the interface, hence this will result in a constraint violation, which only became apparent when more strict checks where enabled
     const updatedResult = await (await this.dbConnection).getRepository(ConnectionEntity).save(connection, { transaction: true })
 
     return this.connectionFrom(updatedResult)
@@ -240,14 +241,12 @@ export class ConnectionStore extends AbstractConnectionStore {
   }
 
   private isOpenIdConfig = (config: ConnectionConfig): config is IOpenIdConfig =>
-    'clientSecret' in config &&
-    'issuer' in config &&
-    'redirectUrl' in config &&
+    'clientSecret' in config && 'issuer' in config && 'redirectUrl' in config /*&&
     'dangerouslyAllowInsecureHttpRequests' in config &&
-    'clientAuthMethod' in config
+    'clientAuthMethod' in config*/
 
   private isDidAuthConfig = (config: ConnectionConfig): config is IDidAuthConfig =>
-    'identifier' in config && 'stateId' in config && 'redirectUrl' in config && 'sessionId' in config
+    'identifier' in config /*&& 'stateId' in config */ && 'redirectUrl' in config && 'sessionId' in config
 
   private metadataItemFrom = (item: MetadataItemEntity): IConnectionMetadataItem => {
     return {

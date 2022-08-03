@@ -1,9 +1,5 @@
 import { BaseEntity, CreateDateColumn, Entity, PrimaryGeneratedColumn, TableInheritance, UpdateDateColumn } from 'typeorm'
-
-export enum BaseConfigType {
-  OPENID = 'OpenIdConfig',
-  DIDAUTH = 'DidAuthConfig',
-}
+import { BaseConfigType } from '@sphereon/ssi-sdk-core'
 
 @Entity('BaseConfigEntity')
 @TableInheritance({ column: { type: 'simple-enum', enum: BaseConfigType, name: 'type' } })
