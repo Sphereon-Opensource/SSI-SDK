@@ -4,6 +4,7 @@ export class CreateConnections1659463069549 implements MigrationInterface {
   name = 'CreateConnections1659463069549'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    console.log("migration: Start SQLite up")
     await queryRunner.query(
       `CREATE TABLE "BaseConfigEntity" ("id" varchar PRIMARY KEY NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "client_id" varchar(255), "client_secret" varchar(255), "scopes" text, "issuer" text, "redirect_url" text, "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "identifier" text, "session_id" varchar(255), "type" varchar NOT NULL)`
     )
@@ -36,6 +37,7 @@ export class CreateConnections1659463069549 implements MigrationInterface {
     )
     await queryRunner.query(`DROP TABLE "Connection"`)
     await queryRunner.query(`ALTER TABLE "temporary_Connection" RENAME TO "Connection"`)
+    console.log("migration: End SQLite up")
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

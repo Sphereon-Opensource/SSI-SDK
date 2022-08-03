@@ -7,7 +7,13 @@ export class CreateConnections1659463079429 implements MigrationInterface {
   name = 'CreateConnections1659463079429'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    debug(`creating connections tables`)
+    console.log("****************************")
+    console.log("****************************")
+    console.log("****************************")
+    console.log(`migration: creating connections tables`)
+    console.log("****************************")
+    console.log("****************************")
+    console.log("****************************")
     const dbType = queryRunner.connection.driver.options.type
     if (dbType === 'postgres') {
       console.log(`using postgres migration file`)

@@ -119,7 +119,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result).toEqual(true)
       await expect(agent.cmGetParty({ partyId: removeParty.id! })).rejects.toThrow(`No party found for id: ${removeParty.id!}`)
       await expect(agent.cmGetConnection({ connectionId: removePartyConnection.id! })).rejects.toThrow(
-        `No connection found for id: ${removePartyConnection.id!}`
+        `No connection found for id: ${removePartyConnection.id!}`,
       )
     })
 
@@ -135,7 +135,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await expect(
         agent.cmGetConnection({
           connectionId,
-        })
+        }),
       ).rejects.toThrow(`No connection found for id: ${connectionId}`)
     })
 
@@ -208,5 +208,152 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       await expect(agent.cmRemoveConnection({ connectionId })).rejects.toThrow(`No connection found for id: ${connectionId}`)
     })
+
+    it('should succeed adding a default connection', async () => {
+      let parties = await agent.cmGetParties()
+      const origSize = parties.length
+
+      const sphereonName = 'Sphereon'
+      const sphereon = parties.find((party: IConnectionParty) => party.name === sphereonName)
+      if (!sphereon) {
+        await agent.cmAddParty({ name: sphereonName }).then(async (party: IConnectionParty) => {
+          if (!party) {
+            return
+          }
+
+          const connection = {
+            type: ConnectionTypeEnum.OPENID,
+            identifier: {
+              type: ConnectionIdentifierEnum.URL,
+              correlationId: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet',
+            },
+            config: {
+              clientId: 'ssi-wallet',
+              clientSecret: '45de05ae-fefb-49a9-962d-46905df7ed65',
+              issuer: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet',
+              serviceConfiguration: {
+                authorizationEndpoint: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet/protocol/openid-connect/auth',
+                tokenEndpoint: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet/protocol/openid-connect/token',
+              },
+              redirectUrl: 'com.sphereon.ssi.wallet:/callback',
+              dangerouslyAllowInsecureHttpRequests: true,
+              clientAuthMethod: 'post' as const,
+              scopes: ['openid'],
+            },
+            metadata: [
+              {
+                label: 'Connection URL',
+                value: 'https://auth-test.sphereon.com',
+              },
+            ],
+          }
+          await agent.cmAddConnection({ partyId: party.id, connection })
+        })
+      }
+
+      parties = await agent.cmGetParties()
+      expect(parties.length).toEqual(origSize + 1)
+
+    })
+
+
   })
 }
+
+/*
+
+const addDefaultConnections = async () => {
+  console.log('addDefaultConnections()')
+
+  let parties: IConnectionParty[] = []
+  try {
+    parties = await cmGetParties()
+  } catch (error) {
+    console.log(error)
+  }
+  // const parties = await cmGetParties()
+
+  if (!parties) {
+    console.log('#parties: NONE')
+  } else {
+    console.log('#parties: ' + parties.length)
+  }
+
+  const sphereonName = 'Sphereon'
+  const sphereon = parties.find((party: IConnectionParty) => party.name === sphereonName)
+  if (!sphereon) {
+    cmAddParty({ name: sphereonName }).then(async (party: IConnectionParty) => {
+      if (!party) {
+        return
+      }
+
+      const connection = {
+        type: ConnectionTypeEnum.OPENID,
+        identifier: {
+          type: ConnectionIdentifierEnum.URL,
+          correlationId: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet'
+        },
+        config: {
+          clientId: 'ssi-wallet',
+          clientSecret: '45de05ae-fefb-49a9-962d-46905df7ed65',
+          issuer: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet',
+          serviceConfiguration: {
+            authorizationEndpoint: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet/protocol/openid-connect/auth',
+            tokenEndpoint: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet/protocol/openid-connect/token'
+          },
+          redirectUrl: 'com.sphereon.ssi.wallet:/callback',
+          dangerouslyAllowInsecureHttpRequests: true,
+          clientAuthMethod: 'post' as const,
+          scopes: ['openid']
+        },
+        metadata: [
+          {
+            label: 'Connection URL',
+            value: 'https://auth-test.sphereon.com'
+          }
+        ]
+      }
+      await cmAddConnection({ partyId: party.id, connection })
+    })
+  }
+
+  const firm24Name = 'Firm24'
+  const firm24 = parties.find((party: IConnectionParty) => party.name === firm24Name)
+  if (!firm24) {
+    cmAddParty({ name: firm24Name }).then(async (party: IConnectionParty) => {
+      if (!party) {
+        return
+      }
+
+      const connection = {
+        type: ConnectionTypeEnum.OPENID,
+        identifier: {
+          type: ConnectionIdentifierEnum.URL,
+          correlationId: 'https://shr.docarama.com/api/oidc/'
+        },
+        config: {
+          clientId: 'sphereon',
+          clientSecret: '261b1e80-7e30-42c9-afde-6403f9f4ec19',
+          // TODO we can either pass in an issuer or serviceConfiguration
+          issuer: 'https://shr.docarama.com/api/oidc/', // TODO should also only have serviceConfiguration
+          serviceConfiguration: {
+            authorizationEndpoint: 'https://shr.docarama.com/api/oidc/auth',
+            tokenEndpoint: 'https://shr.docarama.com/api/oidc/token'
+          },
+          redirectUrl: 'com.sphereon.ssi.wallet:/callback',
+          dangerouslyAllowInsecureHttpRequests: true,
+          clientAuthMethod: 'post' as const,
+          scopes: ['openid', 'organizations', 'session']
+        },
+        metadata: [
+          {
+            label: 'Connection URL',
+            value: 'https://shr.docarama.com'
+          }
+        ]
+      }
+      await cmAddConnection({ partyId: party.id, connection })
+    })
+  }
+}
+*/
