@@ -17,6 +17,7 @@
     { "path": "bls-key-manager" },
     { "path": "connection-manager" },
     { "path": "data-store" },
-    { "path": "ion-did-provider" }
+    { "path": "ion-did-provider" },
+    { "path": "domain-linkage-verifier" }
   ]
 }
