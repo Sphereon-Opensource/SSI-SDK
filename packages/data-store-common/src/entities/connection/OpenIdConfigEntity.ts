@@ -1,19 +1,19 @@
-import { Column, ChildEntity } from 'typeorm'
+import { ChildEntity, Column } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
-import { IBasicOpenIdConfig } from '@sphereon/ssi-sdk-core'
+import { IBasicOpenIdConfig } from '../../types/connections'
 
 @ChildEntity('OpenIdConfig')
 export class OpenIdConfigEntity extends BaseConfigEntity {
-  @Column('text', { name: 'client_id', nullable: false })
+  @Column({ name: 'client_id', length: 255, nullable: false })
   clientId!: string
 
-  @Column('text', { name: 'client_secret', nullable: false })
+  @Column({ name: 'client_secret', length: 255, nullable: false })
   clientSecret!: string
 
   @Column('simple-array', { nullable: false })
   scopes!: Array<string>
 
-  @Column('text', { nullable: false })
+  @Column('text', { name: 'issuer', nullable: false })
   issuer!: string
 
   @Column('text', { name: 'redirect_url', nullable: false })

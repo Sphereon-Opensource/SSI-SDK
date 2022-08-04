@@ -1,30 +1,37 @@
-import { createConnection, Connection } from 'typeorm'
-import { ConnectionTypeEnum, ConnectionIdentifierEnum } from '@sphereon/ssi-sdk-core'
-import { Entities } from '../index'
-import { PartyEntity } from '../entities/connection/PartyEntity'
-import { OpenIdConfigEntity } from '../entities/connection/OpenIdConfigEntity'
-import { DidAuthConfigEntity } from '../entities/connection/DidAuthConfigEntity'
-import { ConnectionEntity, connectionEntityFrom } from '../entities/connection/ConnectionEntity'
+import { Connection, createConnection } from 'typeorm'
+
+import {
+  ConnectionEntity,
+  connectionEntityFrom,
+  ConnectionIdentifierEnum,
+  ConnectionTypeEnum,
+  DataStoreConnectionEntities,
+  DataStoreMigrations,
+  DidAuthConfigEntity,
+  OpenIdConfigEntity,
+  PartyEntity,
+} from '../../../data-store-common'
 
 describe('Database entities test', () => {
   let dbConnection: Connection
   const connection_relations = ['config', 'metadata', 'identifier']
 
-  beforeAll(
-    async () =>
-      (dbConnection = await createConnection({
-        type: 'sqlite',
-        database: ':memory:',
-        entities: Entities,
-      }))
-  )
-
   beforeEach(async () => {
-    await dbConnection.dropDatabase()
-    await dbConnection.synchronize()
+    dbConnection = await createConnection({
+      type: 'sqlite',
+      database: ':memory:',
+      // logging: 'all',
+      migrationsRun: false,
+      migrations: DataStoreMigrations,
+      synchronize: false,
+      entities: DataStoreConnectionEntities,
+    })
+
+    await dbConnection.runMigrations()
+    expect(await dbConnection.showMigrations()).toBeFalsy()
   })
 
-  afterAll(async () => {
+  afterEach(async () => {
     await dbConnection.close()
   })
 
@@ -41,7 +48,7 @@ describe('Database entities test', () => {
   })
 
   it('Should enforce unique name for a party', async () => {
-    const partyName = 'unique_name'
+    const partyName = 'non_unique_name'
     const party = new PartyEntity()
     party.name = partyName
     await dbConnection.getRepository(PartyEntity).save(party)

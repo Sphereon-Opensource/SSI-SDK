@@ -6,5 +6,5 @@
     "declarationDir": "dist",
     "strictPropertyInitialization": false
   },
-  "references": [{ "path": "../ssi-sdk-core" }]
+  "references": [{ "path": "../data-store-common" }]
 }

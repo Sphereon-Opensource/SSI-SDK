@@ -7,8 +7,8 @@ import seedGenerator from './shared/generateSeed'
 import storeSeed from './shared/storeMnemonicInfo'
 import { createAgent, IDataStore, IKeyManager } from '@veramo/core'
 import { KeyManager } from '@veramo/key-manager'
-import { IMnemonicSeedManager, MnemonicSeedManager, MnemonicSeedManagerEntities } from '../src'
-import { KeyStore, PrivateKeyStore, Entities } from '@veramo/data-store'
+import { IMnemonicSeedManager, MnemonicSeedManager, MnemonicSeedManagerEntities, MnemonicSeedManagerMigrations } from '../src'
+import { KeyStore, PrivateKeyStore, Entities, migrations } from '@veramo/data-store'
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 import { createConnection } from 'typeorm'
 
@@ -23,9 +23,11 @@ const setup = async (): Promise<boolean> => {
   const db = createConnection({
     type: 'sqlite',
     database: databaseFile,
-    synchronize: true,
+    synchronize: false,
     logging: false,
     entities: [...MnemonicSeedManagerEntities, ...Entities],
+    migrations: [...MnemonicSeedManagerMigrations, ...migrations],
+    migrationsRun: true,
   })
   const secretBox = new SecretBox(KMS_SECRET_KEY)
 

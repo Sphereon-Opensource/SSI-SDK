@@ -20,7 +20,7 @@ import {
 } from '../index'
 import { IMnemonicSeedManager } from '../types/IMnemonicSeedManager'
 
-import { MnemonicInfo } from './entity/MnemonicInfo'
+import { MnemonicEntity } from '../entities/MnemonicEntity'
 
 export class MnemonicSeedManager implements IAgentPlugin {
   readonly schema = schema.IMnemonicInfoGenerator
@@ -76,11 +76,11 @@ export class MnemonicSeedManager implements IAgentPlugin {
     if (args.mnemonic && this.secretBox) {
       const mnemonic = args.mnemonic.join(' ')
       const hash = crypto.createHash('sha256').update(mnemonic).digest('hex')
-      const mnemonicInfo = new MnemonicInfo()
+      const mnemonicInfo = new MnemonicEntity()
       mnemonicInfo.id = args.id ? args.id : hash
       mnemonicInfo.hash = hash
       mnemonicInfo.mnemonic = await this.secretBox.encrypt(mnemonic)
-      const result = await (await this.dbConnection).getRepository(MnemonicInfo).save(mnemonicInfo)
+      const result = await (await this.dbConnection).getRepository(MnemonicEntity).save(mnemonicInfo)
       return Promise.resolve({
         id: result.id,
         hash: result.hash,
@@ -93,7 +93,7 @@ export class MnemonicSeedManager implements IAgentPlugin {
 
   private async getMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoResult> {
     const mnemonicInfo = await (await this.dbConnection)
-      .getRepository(MnemonicInfo)
+      .getRepository(MnemonicEntity)
       .createQueryBuilder()
       .where('id = :id', { id: args.id })
       .orWhere('hash = :hash', { hash: args.hash })
@@ -113,7 +113,7 @@ export class MnemonicSeedManager implements IAgentPlugin {
     return (await this.dbConnection)
       .createQueryBuilder()
       .delete()
-      .from(MnemonicInfo)
+      .from(MnemonicEntity)
       .where('id = :id', { id: args.id })
       .orWhere('hash = :hash', { hash: args.hash })
       .execute()
@@ -123,7 +123,7 @@ export class MnemonicSeedManager implements IAgentPlugin {
     if (args.masterKey) {
       return (await this.dbConnection)
         .createQueryBuilder()
-        .update(MnemonicInfo)
+        .update(MnemonicEntity)
         .set({ masterKey: args.masterKey })
         .where('id = :id', { id: args.id })
         .orWhere('hash = :hash', { hash: args.hash })

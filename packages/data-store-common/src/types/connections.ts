@@ -1,4 +1,8 @@
 import { IIdentifier } from '@veramo/core'
+export enum BaseConfigType {
+  OPENID = 'OpenIdConfig',
+  DIDAUTH = 'DidAuthConfig',
+}
 
 export interface IConnectionParty {
   id: string

@@ -15,6 +15,7 @@
     { "path": "bls-kms-local" },
     { "path": "bls-did-provider-key" },
     { "path": "bls-key-manager" },
+    { "path": "data-store-common" },
     { "path": "connection-manager" },
     { "path": "data-store" },
     { "path": "ion-did-provider" }
