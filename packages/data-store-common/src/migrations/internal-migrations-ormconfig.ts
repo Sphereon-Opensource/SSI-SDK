@@ -15,16 +15,6 @@ export default [
     entities: [...DataStoreConnectionEntities],
   },
   {
-    type: 'react-native',
-    name: 'migration-react-native',
-    database: 'migration.react-native.sqlite',
-    location: 'default',
-    migrationsRun: false,
-    synchronize: false,
-    logging: ['error', 'info', 'warn', 'log'],
-    entities: [...DataStoreConnectionEntities],
-  },
-  {
     type: 'postgres',
     name: 'migration-postgres',
     database: 'migration-postgres',
