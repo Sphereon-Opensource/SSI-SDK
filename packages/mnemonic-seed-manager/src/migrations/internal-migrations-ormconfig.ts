@@ -1,5 +1,5 @@
 import { ConnectionOptions } from 'typeorm'
-import { MnemonicSeedManagerEntities } from '../index'
+import { MnemonicSeedManagerEntities, MnemonicSeedManagerMigrations } from '../index'
 
 /**
  * Do Not use these connections in production!. They are only here to create/test migration files!
@@ -13,6 +13,7 @@ export default [
     synchronize: false,
     logging: ['error', 'info', 'warn', 'log'],
     entities: [...MnemonicSeedManagerEntities],
+    migrations: [ ...MnemonicSeedManagerMigrations]
   },
   {
     type: 'postgres',
@@ -22,5 +23,6 @@ export default [
     synchronize: false,
     logging: ['error', 'info', 'warn', 'log'],
     entities: [...MnemonicSeedManagerEntities],
+    migrations: [ ...MnemonicSeedManagerMigrations]
   },
 ] as ConnectionOptions[]

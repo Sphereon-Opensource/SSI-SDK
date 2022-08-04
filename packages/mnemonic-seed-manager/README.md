@@ -62,3 +62,15 @@ that we also support Postgres. Obviously you need to have a Postgresql database 
 - Update the index.ts file in the respective directory to include the migration. Users will import that file as their
   migrations entrypoint from their TypeORM config.
 - If you wish to check whether applying the migration works you can execute the respective
+
+
+### Applying migrations
+
+There is an example sqlite file in the root called migration.sqlite.
+We use the sqlite file to keep track of changes we made and to ensure there are no incidental changes by a developer
+changing an entity,
+
+This file is kept up to date by applying the command: `yarn typeorm-sqlite:migration:run`
+The same can be done for a local Postgres database using the command `"typeorm-postgres:migration:run"`
+
+You can look at package.json or https://typeorm.io/migrations to apply migrations to your own database(s)
