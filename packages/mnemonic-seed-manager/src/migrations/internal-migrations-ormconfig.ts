@@ -13,7 +13,7 @@ export default [
     synchronize: false,
     logging: ['error', 'info', 'warn', 'log'],
     entities: [...MnemonicSeedManagerEntities],
-    migrations: [ ...MnemonicSeedManagerMigrations]
+    migrations: [...MnemonicSeedManagerMigrations],
   },
   {
     type: 'postgres',
@@ -23,6 +23,6 @@ export default [
     synchronize: false,
     logging: ['error', 'info', 'warn', 'log'],
     entities: [...MnemonicSeedManagerEntities],
-    migrations: [ ...MnemonicSeedManagerMigrations]
+    migrations: [...MnemonicSeedManagerMigrations],
   },
 ] as ConnectionOptions[]

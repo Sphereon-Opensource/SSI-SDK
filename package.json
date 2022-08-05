@@ -49,9 +49,9 @@
     "@veramo/credential-ld": "3.1.2-next.84",
     "@veramo/utils": "3.1.2-next.84",
     "@veramo/did-manager": "3.1.2-next.84",
-    "@veramo/kms-local": "3.1.2-next.84"
-
-
+    "@veramo/kms-local": "3.1.2-next.84",
+    "@mattrglobal/node-bbs-signatures": "0.11.0",
+    "@mattrglobal/bbs-signatures": "1.0.0"
   },
   "devDependencies": {
     "@microsoft/api-documenter": "^7.14.1",

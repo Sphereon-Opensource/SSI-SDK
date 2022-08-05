@@ -13,7 +13,7 @@ export default [
     synchronize: false,
     logging: ['error', 'info', 'warn', 'log'],
     entities: [...DataStoreConnectionEntities],
-    migrations: [ ...DataStoreMigrations]
+    migrations: [...DataStoreMigrations],
   },
   {
     type: 'postgres',
@@ -23,6 +23,6 @@ export default [
     synchronize: false,
     logging: ['error', 'info', 'warn', 'log'],
     entities: [...DataStoreConnectionEntities],
-    migrations: [ ...DataStoreMigrations]
+    migrations: [...DataStoreMigrations],
   },
 ] as ConnectionOptions[]
