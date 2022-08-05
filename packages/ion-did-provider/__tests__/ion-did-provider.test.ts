@@ -1,10 +1,9 @@
-import { createAgent, IKeyManager } from '@veramo/core'
+import { createAgent, IIdentifier, IKey, IKeyManager } from '@veramo/core'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { KeyManagementSystem } from '@veramo/kms-local'
 import { IonDIDProvider } from '../src'
 import { VerificationRelationship } from '../src/types/ion-provider-types'
-
 
 const ionDIDProvider = new IonDIDProvider({
   defaultKms: 'mem',
@@ -27,37 +26,43 @@ const agent = createAgent<IKeyManager, DIDManager>({
   ],
 })
 
-
 describe('@sphereon/ion-did-provider', () => {
   it('should create identifier', async () => {
     jest.setTimeout(100000)
 
-    const identifier = await agent.didManagerCreate({
-        options: {
-          anchor: false,
-          recoveryKey: {
-            kid: 'recovery-test'
-          },
-          updateKey: {
-            kid: 'update-test'
-          },
-          verificationMethods: [
-            {
-              kid: 'did1-test',
-              purposes: [ VerificationRelationship.authentication, VerificationRelationship.assertionMethod]
-            },
-            {
-              kid: 'did2-test',
-              purposes: [ VerificationRelationship.keyAgreement]
-            }
-          ]
+    const identifier: IIdentifier = await agent.didManagerCreate({
+      options: {
+        anchor: false,
+        recoveryKey: {
+          kid: 'recovery-test',
         },
+        updateKey: {
+          kid: 'update-test',
+        },
+        verificationMethods: [
+          {
+            kid: 'did1-test',
+            purposes: [VerificationRelationship.authentication, VerificationRelationship.assertionMethod],
+          },
+          {
+            kid: 'did2-test',
+            purposes: [VerificationRelationship.keyAgreement],
+          },
+        ],
       },
-    )
+    })
 
     expect(identifier).toBeDefined()
-    console.log(JSON.stringify(identifier.did, null, 2))
+    console.log(identifier.did)
+    console.log(JSON.stringify(identifier.keys, null, 2))
+    expect(identifier.keys.length).toBe(4)
 
-    console.log(JSON.stringify(await agent.didManagerGet(identifier)), null, 2)
+    console.log(JSON.stringify(await agent.didManagerGet(identifier), null, 2))
+
+    expect(identifier.keys[0]).toMatchObject<Partial<IKey>>({
+      kms: 'mem',
+      kid: 'recovery-test',
+      meta: { relation: 'recovery' },
+    })
   })
 })
