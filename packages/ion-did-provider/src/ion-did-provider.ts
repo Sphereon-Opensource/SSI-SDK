@@ -1,17 +1,36 @@
-import { IAgentContext, IIdentifier, IKey, IKeyManager, IService, ManagedKeyInfo } from '@veramo/core'
+import {
+  IAgentContext,
+  IIdentifier,
+  IKey,
+  IKeyManager,
+  IService,
+  ManagedKeyInfo,
+  MinimalImportableKey,
+} from '@veramo/core'
 import { AbstractIdentifierProvider } from '@veramo/did-manager'
 import { keyUtils as secp256k1_keyUtils } from '@transmute/did-key-secp256k1'
 import * as ION from '@decentralized-identity/ion-tools'
 import Debug from 'debug'
-import { ICreateIdentifierOpts, KeyType, VerificationRelationship } from './types/ion-provider-types'
+import {
+  ICreateIdentifierOpts,
+  IIonKeyPair,
+  IIonPublicKey,
+  IKeyOpts,
+  KeyType,
+  VerificationRelationship,
+} from './types/ion-provider-types'
+
+import { generateKeyPair as generateSigningKeyPair } from '@stablelib/ed25519'
+
+import * as u8a from 'uint8arrays'
+import { randomBytes } from '@ethersproject/random'
 
 const debug = Debug('sphereon:ion-did-provider')
 
 type IContext = IAgentContext<IKeyManager>
 
 
-interface IIonPublicKey {
-}
+
 
 /**
  * {@link @veramo/did-manager#DIDManager} identifier provider for `did:ion` identifiers
@@ -30,50 +49,44 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
     { kms, options, alias }: { kms?: string; alias?: string; options?: ICreateIdentifierOpts },
     context: IAgentContext<IKeyManager>,
   ): Promise<Omit<IIdentifier, 'provider'>> {
-    //todo: We need to do something with the recovery and update keypairs from the ION create call in Veramo
+
+
+    // No options or no key options, results in us creating a single authentication key only
+    const keyOpts = options?.keyOpts ? options?.keyOpts : [{
+      type: KeyType.Secp256k1,
+      purposes: [VerificationRelationship.authentication],
+    }]
 
     const keys: ManagedKeyInfo[] = []
     const ionPublicKeys: IIonPublicKey[] = []
-
-    if (!options?.keyOpts || options.keyOpts.length == 0) {
-      // No options or no key options, results in us creating a single authentication key only
-      const controllerKey = await context.agent.keyManagerCreate({
-        kms: kms || this.defaultKms,
-        type: KeyType.Secp256k1,
-      })
-      keys.push(controllerKey)
-      ionPublicKeys.push(this.createIonPublicKey(controllerKey, [VerificationRelationship.authentication]))
-    } else {
-      // Options present, so either create or import keys depending on the values
-      for (const keyOpt of options.keyOpts) {
-        const importableKey = keyOpt.key
-        if (importableKey) {
-          importableKey.kms = kms || this.defaultKms
-          importableKey.kid = keyOpt.kid ? keyOpt.kid : importableKey.kid
-          // It would be nice if we also could provide a kid/alias on key creation and not only for key import
-
-          // Check is not at the top of the if branch because we potentially updated the kid in the previous line
-          if (importableKey.type ! in Object.values(KeyType)) {
-            return Promise.reject(`Key type ${importableKey.type} for key ${importableKey.kid} is not supported for ION`)
-          }
-        }
-
-        const key = importableKey ? await context.agent.keyManagerImport(importableKey) : await context.agent.keyManagerCreate({
-          kms: kms || this.defaultKms,
-          type: KeyType.Secp256k1,
-        })
-
-        keys.push(key)
-        ionPublicKeys.push(this.createIonPublicKey(key, keyOpt.purposes))
-      }
+    const ionKeyPairs: IIonKeyPair[] = []
+    for (const keyOpt of keyOpts) {
+      const key = await this.importKeyPair({ kms, options: keyOpt }, context)
+      keys.push(key)
+      ionPublicKeys.push(this.createIonPublicKey(key, keyOpt.purposes))
+      ionKeyPairs.push(this.toIonKeyPair(key))
     }
 
+    //todo: We need to do something with the recovery and update keypairs from the ION create call in Veramo and split content keys from them as well
     const did = new ION.DID({
+      ops: [
+        {
+          operation: 'create',
+          content: {
+            publicKeys: ionPublicKeys.length == 1 ? [ionPublicKeys[0]] : ionPublicKeys.slice(1)
+          },
+          recovery: ionKeyPairs[0],
+          update: ionKeyPairs[0],
+        },
+      ],
+    })
+
+    /*const did = new ION.DID({
       content: {
         publicKeys: ionPublicKeys,
       },
     })
-
+*/
     await did.generateRequest(0).then((requestBody: any) =>
       new ION.AnchorRequest(requestBody).submit(),
     )
@@ -150,7 +163,7 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
   }
 
   private createIonPublicKey(key: ManagedKeyInfo, purposes: VerificationRelationship[]): IIonPublicKey {
-    const publicJwk = secp256k1_keyUtils.publicKeyJwkFromPublicKeyHex(key.publicKeyHex)
+    const publicKeyJwk = secp256k1_keyUtils.publicKeyJwkFromPublicKeyHex(key.publicKeyHex)
 
     const id = key.kid.substring(0, 50) // ION restricts the id to 50 chars. Ideally we can also provide kids for key creation in Veramo
     if (id.length != key.kid.length) {
@@ -160,8 +173,20 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
     return {
       id,
       type: 'EcdsaSecp256k1VerificationKey2019',
-      publicKeyJwk: publicJwk,
+      publicKeyJwk,
       purposes,
+    }
+  }
+
+
+  private toIonKeyPair(key: MinimalImportableKey | IKey) : IIonKeyPair {
+    const privateJwk = secp256k1_keyUtils.privateKeyJwkFromPrivateKeyHex(key.privateKeyHex!)
+    const publicJwk = secp256k1_keyUtils.publicKeyJwkFromPublicKeyHex(key.publicKeyHex!)
+    delete  privateJwk.kid
+    delete  publicJwk.kid
+    return {
+      privateJwk,
+      publicJwk
     }
   }
 
@@ -176,4 +201,53 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
     })
   }
 
+
+  /**
+   * We generate and import our own keys. First we want to be able to asign Key IDs, which Veramo doesn;t support on creation. Next we need the private key for ION
+   * @param type
+   * @param kms
+   * @param options
+   * @param alias
+   * @param context
+   * @private
+   */
+  private async importKeyPair({
+                                kms,
+                                options,
+                              }: { kms?: string; options?: IKeyOpts }, context: IAgentContext<IKeyManager>): Promise<IKey> {
+    const kid = options?.kid ? options?.kid : options?.key?.kid
+    const type = options?.type ? options.type : KeyType.Secp256k1
+    const privateKeyHex = options?.key ? options.key.privateKeyHex : this.generatePrivateKeyHex(type)
+    const key: IKey = await context.agent.keyManagerImport({
+      kms: kms || this.defaultKms,
+      type,
+      privateKeyHex,
+      kid,
+    })
+    key.privateKeyHex = privateKeyHex
+
+    debug('Created key', type, kid, key.publicKeyHex)
+
+    return key
+  }
+
+  private generatePrivateKeyHex(type: KeyType) {
+    let privateKeyHex: string
+
+    switch (type) {
+      case KeyType.Ed25519: {
+        const keyPairEd25519 = generateSigningKeyPair()
+        privateKeyHex = u8a.toString(keyPairEd25519.secretKey, 'base16')
+        break
+      }
+      case KeyType.Secp256k1: {
+        const privateBytes = randomBytes(32)
+        privateKeyHex = u8a.toString(privateBytes, 'base16')
+        break
+      }
+      default:
+        throw Error('not_supported: Key type not supported: ' + type)
+    }
+    return privateKeyHex
+  }
 }
