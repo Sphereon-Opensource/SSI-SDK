@@ -1,12 +1,4 @@
-import {
-  IAgentContext,
-  IIdentifier,
-  IKey,
-  IKeyManager,
-  IService,
-  ManagedKeyInfo,
-  MinimalImportableKey,
-} from '@veramo/core'
+import { IAgentContext, IIdentifier, IKey, IKeyManager, IService, ManagedKeyInfo, MinimalImportableKey } from '@veramo/core'
 import { AbstractIdentifierProvider } from '@veramo/did-manager'
 import { keyUtils as secp256k1_keyUtils } from '@transmute/did-key-secp256k1'
 import * as ION from '@decentralized-identity/ion-tools'
@@ -15,8 +7,10 @@ import {
   ICreateIdentifierOpts,
   IIonKeyPair,
   IIonPublicKey,
-  IKeyOpts,
+  KeyIdentifierRelation,
+  KeyOpts,
   KeyType,
+  VerificationMethod,
   VerificationRelationship,
 } from './types/ion-provider-types'
 
@@ -29,76 +23,91 @@ const debug = Debug('sphereon:ion-did-provider')
 
 type IContext = IAgentContext<IKeyManager>
 
-
-
-
 /**
  * {@link @veramo/did-manager#DIDManager} identifier provider for `did:ion` identifiers
  * @public
  */
 export class IonDIDProvider extends AbstractIdentifierProvider {
-  private defaultKms: string
+  private readonly defaultKms: string
 
   constructor(options: { defaultKms: string }) {
     super()
     this.defaultKms = options.defaultKms
   }
 
-
   async createIdentifier(
     { kms, options, alias }: { kms?: string; alias?: string; options?: ICreateIdentifierOpts },
-    context: IAgentContext<IKeyManager>,
+    context: IAgentContext<IKeyManager>
   ): Promise<Omit<IIdentifier, 'provider'>> {
+    const recoveryKey = await this.importKey(
+      {
+        kms,
+        relation: KeyIdentifierRelation.RECOVERY,
+        options: options?.recoveryKey,
+      },
+      context
+    )
+    const updateKey = await this.importKey(
+      {
+        kms,
+        relation: KeyIdentifierRelation.UPDATE,
+        options: options?.updateKey,
+      },
+      context
+    )
 
+    // No options or no key options, results in generating a single key as the only authentication verification method in the DID
+    const verificationMethods = options?.verificationMethods
+      ? options.verificationMethods
+      : [
+          {
+            type: KeyType.Secp256k1,
+            purposes: [VerificationRelationship.authentication],
+          },
+        ]
 
-    // No options or no key options, results in us creating a single authentication key only
-    const keyOpts = options?.keyOpts ? options?.keyOpts : [{
-      type: KeyType.Secp256k1,
-      purposes: [VerificationRelationship.authentication],
-    }]
-
-    const keys: ManagedKeyInfo[] = []
+    const keys: ManagedKeyInfo[] = [recoveryKey, updateKey]
     const ionPublicKeys: IIonPublicKey[] = []
     const ionKeyPairs: IIonKeyPair[] = []
-    for (const keyOpt of keyOpts) {
-      const key = await this.importKeyPair({ kms, options: keyOpt }, context)
+    for (const verificationMethod of verificationMethods) {
+      const key = await this.importKey(
+        {
+          kms,
+          relation: KeyIdentifierRelation.DID,
+          options: verificationMethod,
+        },
+        context
+      )
       keys.push(key)
-      ionPublicKeys.push(this.createIonPublicKey(key, keyOpt.purposes))
+      ionPublicKeys.push(this.createIonPublicKey(key, verificationMethod.purposes))
       ionKeyPairs.push(this.toIonKeyPair(key))
     }
 
-    //todo: We need to do something with the recovery and update keypairs from the ION create call in Veramo and split content keys from them as well
+    const services = options?.services ? options.services : []
     const did = new ION.DID({
       ops: [
         {
           operation: 'create',
           content: {
-            publicKeys: ionPublicKeys.length == 1 ? [ionPublicKeys[0]] : ionPublicKeys.slice(1)
+            publicKeys: ionPublicKeys,
+            services,
           },
-          recovery: ionKeyPairs[0],
-          update: ionKeyPairs[0],
+          recovery: recoveryKey as MinimalImportableKey,
+          update: updateKey as MinimalImportableKey,
         },
       ],
     })
 
-    /*const did = new ION.DID({
-      content: {
-        publicKeys: ionPublicKeys,
-      },
-    })
-*/
-    await did.generateRequest(0).then((requestBody: any) =>
-      new ION.AnchorRequest(requestBody).submit(),
-    )
-    /*const requestBody = await did.generateRequest(0)
-    const request = new ION.AnchorRequest(requestBody)
-    await request.submit()
-*/
+    await did
+      .generateRequest(0)
+      // .filter(options?.anchor == undefined || options.anchor)
+      .then((requestBody: any) => new ION.AnchorRequest(requestBody).submit())
+
     const identifier: Omit<IIdentifier, 'provider'> = {
       did: await did.getURI(),
-      controllerKeyId: keys[0].kid,
-      keys: keys,
-      services: [],
+      controllerKeyId: updateKey.kid,
+      keys,
+      services,
     }
 
     // TODO: Long version DID is not conformant to "initial value" definition.
@@ -115,11 +124,7 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
     return true
   }
 
-  async addKey({
-                 identifier,
-                 key,
-                 options,
-               }: { identifier: IIdentifier; key: IKey; options?: any }, context: IContext): Promise<any> {
+  async addKey({ identifier, key, options }: { identifier: IIdentifier; key: IKey; options?: any }, context: IContext): Promise<any> {
     const did = this.ionDid(identifier)
 
     let updateOperation = await did.generateOperation('update', {
@@ -140,17 +145,10 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
       }]*/
     })
 
-    await did.generateRequest(updateOperation).then((requestBody: any) =>
-      new ION.AnchorRequest(requestBody).submit(),
-    )
-
+    await did.generateRequest(updateOperation).then((requestBody: any) => new ION.AnchorRequest(requestBody).submit())
   }
 
-  async addService({
-                     identifier,
-                     service,
-                     options,
-                   }: { identifier: IIdentifier; service: IService; options?: any }, context: IContext): Promise<any> {
+  async addService({ identifier, service, options }: { identifier: IIdentifier; service: IService; options?: any }, context: IContext): Promise<any> {
     throw new Error('Not Implemented')
   }
 
@@ -178,15 +176,14 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
     }
   }
 
-
-  private toIonKeyPair(key: MinimalImportableKey | IKey) : IIonKeyPair {
+  private toIonKeyPair(key: MinimalImportableKey | IKey): IIonKeyPair {
     const privateJwk = secp256k1_keyUtils.privateKeyJwkFromPrivateKeyHex(key.privateKeyHex!)
     const publicJwk = secp256k1_keyUtils.publicKeyJwkFromPublicKeyHex(key.publicKeyHex!)
-    delete  privateJwk.kid
-    delete  publicJwk.kid
+    delete privateJwk.kid
+    delete publicJwk.kid
     return {
       privateJwk,
-      publicJwk
+      publicJwk,
     }
   }
 
@@ -201,9 +198,10 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
     })
   }
 
-
   /**
-   * We generate and import our own keys. First we want to be able to asign Key IDs, which Veramo doesn;t support on creation. Next we need the private key for ION
+   * We optionally generate and then import our own keys.
+   *
+   * Reason for this is that we want to be able to assign Key IDs (kid), which Veramo doesn't support on creation. Next we need the private key for ION
    * @param type
    * @param kms
    * @param options
@@ -211,22 +209,25 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
    * @param context
    * @private
    */
-  private async importKeyPair({
-                                kms,
-                                options,
-                              }: { kms?: string; options?: IKeyOpts }, context: IAgentContext<IKeyManager>): Promise<IKey> {
-    const kid = options?.kid ? options?.kid : options?.key?.kid
-    const type = options?.type ? options.type : KeyType.Secp256k1
+  private async importKey(
+    { kms, relation, options }: { kms?: string; relation: KeyIdentifierRelation; options?: KeyOpts | VerificationMethod },
+    context: IAgentContext<IKeyManager>
+  ): Promise<IKey> {
+    const kid = options?.kid ? options.kid : options?.key?.kid
+    const type = options?.type ? options.type : options?.key?.type ? (options.key.type as KeyType) : KeyType.Secp256k1
     const privateKeyHex = options?.key ? options.key.privateKeyHex : this.generatePrivateKeyHex(type)
+    const meta = options?.key?.meta ? options.key.meta : {}
+    meta['relation'] = relation
     const key: IKey = await context.agent.keyManagerImport({
       kms: kms || this.defaultKms,
       type,
       privateKeyHex,
       kid,
+      meta,
     })
     key.privateKeyHex = privateKeyHex
 
-    debug('Created key', type, kid, key.publicKeyHex)
+    debug('Created key', type, relation, kid, key.publicKeyHex)
 
     return key
   }
