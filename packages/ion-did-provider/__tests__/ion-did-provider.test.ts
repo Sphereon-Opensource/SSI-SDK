@@ -27,14 +27,14 @@ describe('@sphereon/ion-did-provider', () => {
     const mockContext = {
       agent: {
         keyManagerCreate(_args: IKeyManagerCreateArgs): Promise<ManagedKeyInfo> {
-          return Promise.resolve({ publicKeyHex: 'aabbcc', kid: 'testKid' } as ManagedKeyInfo)
+          return Promise.resolve({ publicKeyHex: 'aabbcc', kid: 'testKid2' } as ManagedKeyInfo)
         },
         keyManagerImport(args: MinimalImportableKey): Promise<ManagedKeyInfo> {
           return Promise.resolve({
             publicKeyHex: args.publicKeyHex || 'aabbcc',
             type: args.type,
             kms: args.kms,
-            kid: args.kid || 'testKid',
+            kid: args.kid || 'testKid2',
           })
         },
       } as IKeyManager,
