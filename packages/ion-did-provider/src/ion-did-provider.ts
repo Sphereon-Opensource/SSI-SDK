@@ -92,8 +92,8 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
             publicKeys: ionPublicKeys,
             services,
           },
-          recovery: recoveryKey as MinimalImportableKey,
-          update: updateKey as MinimalImportableKey,
+          recovery: this.toIonKeyPair(recoveryKey),
+          update: this.toIonKeyPair(updateKey),
         },
       ],
     })
