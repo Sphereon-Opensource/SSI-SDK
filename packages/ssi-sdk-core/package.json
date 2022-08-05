@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk-core",
   "description": "SSI SDK Core & Interfaces",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@scure/base": "^1.0.0-rc1",
-    "@sphereon/did-uni-client": "^0.4.0",
     "@sphereon/did-auth-siop": "^0.2.12",
+    "@sphereon/did-uni-client": "^0.4.0",
     "@veramo/core": "3.1.2-next.84",
     "@veramo/did-manager": "3.1.2-next.84",
     "debug": "^4.1.1",
