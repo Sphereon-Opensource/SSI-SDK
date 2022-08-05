@@ -63,7 +63,6 @@ that we also support Postgres. Obviously you need to have a Postgresql database 
   migrations entrypoint from their TypeORM config.
 - If you wish to check whether applying the migration works you can execute the respective
 
-
 ### Applying migrations
 
 There is an example sqlite file in the root called migration.sqlite.
