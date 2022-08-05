@@ -32,6 +32,8 @@ node_modules
 # Optional npm cache directory
 .npm
 
+.npmrc
+
 # Optional REPL history
 .node_repl_history
 
@@ -56,7 +58,10 @@ test/*.js
 .eslintcache
 *.swp
 *~
+
 /packages/mnemonic-seed-manager/plugin.schema.json
 /packages/vc-api-issuer/plugin.schema.json
 /packages/vc-api-verifier/plugin.schema.json
 /packages/connection-manager/plugin.schema.json
+/packages/bls-key-manager/plugin.schema.json
+/packages/ms-request-api/plugin.schema.json

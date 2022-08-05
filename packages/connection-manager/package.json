@@ -14,9 +14,9 @@
     "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk-core": "^0.6.0",
-    "cross-fetch": "^3.1.5",
-    "typeorm": "0.2.45"
+    "@sphereon/ssi-sdk-data-store-common": "^0.6.0",
+    "typeorm": "0.2.45",
+    "cross-fetch": "^3.1.5"
   },
   "devDependencies": {
     "@veramo/cli": "3.1.2-next.84",

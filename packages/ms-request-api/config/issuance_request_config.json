@@ -1,0 +1,22 @@
+{
+  "authority": "did:ion:EiBsIGdahUlYlPolJYL4BQgvmVjeRR-qbdmxP0Uvd-kZ7A:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJiZTNkNDVmN2FhYWI0MzViOTY3NjMwN2Y4MzA1NjZlZnZjU2lnbmluZ0tleS0xNWQxYSIsInB1YmxpY0tleUp3ayI6eyJjcnYiOiJzZWNwMjU2azEiLCJrdHkiOiJFQyIsIngiOiI1RWpyc2FwREZRQ3hlOXRjRGRwZlFoVkFKMHdQQnpLZXdKM3Z5bXpTQ3BZIiwieSI6IjM2b2RWZHpiNWllLUM5N1dEUE5VZEtQWmlOMHNJdFlYOFZsYWRvTmQ1aVkifSwicHVycG9zZXMiOlsiYXV0aGVudGljYXRpb24iLCJhc3NlcnRpb25NZXRob2QiXSwidHlwZSI6IkVjZHNhU2VjcDI1NmsxVmVyaWZpY2F0aW9uS2V5MjAxOSJ9XSwic2VydmljZXMiOlt7ImlkIjoibGlua2VkZG9tYWlucyIsInNlcnZpY2VFbmRwb2ludCI6eyJvcmlnaW5zIjpbImh0dHBzOi8vc3BoZXJlb24uY29tLyJdfSwidHlwZSI6IkxpbmtlZERvbWFpbnMifSx7ImlkIjoiaHViIiwic2VydmljZUVuZHBvaW50Ijp7Imluc3RhbmNlcyI6WyJodHRwczovL2JldGEuaHViLm1zaWRlbnRpdHkuY29tL3YxLjAvZTJhNDJiMmYtNzQ2MC00NDk5LWFmYzItNDI1MzE1ZWYwNThhIl19LCJ0eXBlIjoiSWRlbnRpdHlIdWIifV19fV0sInVwZGF0ZUNvbW1pdG1lbnQiOiJFaUNzRHpGaUJIVDJhSURjeEsxTVM3d1U5VUFJNzJEOW55Y05lUmlHbEVhUEdBIn0sInN1ZmZpeERhdGEiOnsiZGVsdGFIYXNoIjoiRWlEMzRFY1pZcGV0WXdOZkh2WXh3dmw5MHhuRk14VG1MNk9zWFNnR2otYkNfQSIsInJlY292ZXJ5Q29tbWl0bWVudCI6IkVpRGFQS3F4WEl1b2pOU083bndjQjVQNURxNFhUZGlDdnJfZEF6NFhxS19wUVEifX0",
+  "includeQRCode": false,
+  "registration": {
+    "clientName": "Verifiable Credential Expert Sample"
+  },
+  "callback": {
+    "url": "https://7d93-2a02-a458-e71a-1-c4bf-628e-cc16-cff.eu.ngrok.io/api/issuer/issuanceCallback",
+    "state": "...set at runtime...",
+    "headers": {
+      "api-key": "OPTIONAL API-KEY for ISSUANCE CALLBACK API"
+    }
+  },
+  "issuance": {
+    "type": "VerifiedCredentialExpert",
+    "manifest": "https://beta.eu.did.msidentity.com/v1.0/e2a42b2f-7460-4499-afc2-425315ef058a/verifiableCredential/contracts/VerifiedCredentialExpert2",
+    "pin": {
+      "value": "123456",
+      "length": 4
+    }
+  }
+}

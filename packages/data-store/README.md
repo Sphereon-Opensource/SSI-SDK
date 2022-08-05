@@ -25,7 +25,7 @@ A store that exposes simple store/get methods for connection parties and connect
 ## Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk-connection-manager
+yarn add @sphereon/ssi-sdk-data-store
 ```
 
 ## Build
@@ -33,3 +33,7 @@ yarn add @sphereon/ssi-sdk-connection-manager
 ```shell
 yarn build
 ```
+
+## Module developers
+
+We use TypeORM migrations to support database changes over time. See the @sphereon/ssi-sdk-data-store-common package for more information.

@@ -7,10 +7,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @sphereon/ssi-sdk-ion-did-provider
 
-
-
-
-
 ## 1.0.0 (2021-03-30)
 
 **Note:** Initial Release
