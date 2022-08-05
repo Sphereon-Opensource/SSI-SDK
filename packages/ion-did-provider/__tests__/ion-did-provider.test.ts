@@ -9,7 +9,6 @@ const PRIVATE_KEY_HEX =
 const PUBLIC_KEY_HEX = '89a4661e446b46401325a38d3b20582d1dd277eb448a3181012a671b7ae15837'
 */
 
-
 // const kms = new KeyManagementSystem(new MemoryPrivateKeyStore())
 const memoryDIDStore = new MemoryDIDStore()
 
@@ -24,40 +23,42 @@ const didManager = new DIDManager({
 })
 
 describe('@sphereon/ion-did-provider', () => {
-    const mockContext = {
-      agent: {
-        keyManagerCreate(_args: IKeyManagerCreateArgs): Promise<ManagedKeyInfo> {
-          return Promise.resolve({ publicKeyHex: 'aabbcc', kid: 'testKid2' } as ManagedKeyInfo)
-        },
-        keyManagerImport(args: MinimalImportableKey): Promise<ManagedKeyInfo> {
-          return Promise.resolve({
-            publicKeyHex: args.publicKeyHex || 'aabbcc',
-            type: args.type,
-            kms: args.kms,
-            kid: args.kid || 'testKid2',
-          })
-        },
-      } as IKeyManager,
-    } as IRequiredContext
+  const mockContext = {
+    agent: {
+      keyManagerCreate(_args: IKeyManagerCreateArgs): Promise<ManagedKeyInfo> {
+        return Promise.resolve({ publicKeyHex: 'aabbcc', kid: 'testKid2' } as ManagedKeyInfo)
+      },
+      keyManagerImport(args: MinimalImportableKey): Promise<ManagedKeyInfo> {
+        return Promise.resolve({
+          publicKeyHex: args.publicKeyHex || 'aabbcc',
+          type: args.type,
+          kms: args.kms,
+          kid: args.kid || 'testKid2',
+        })
+      },
+    } as IKeyManager,
+  } as IRequiredContext
 
-    it('should create identifier', async () => {
-      jest.setTimeout(100000)
+  it('should create identifier', async () => {
+    jest.setTimeout(100000)
 
-      // jest.spyOn(fetch, '').mockResolvedValueOnce(Promise.resolve(restResponse));
-      const identifier = await ionDIDProvider.createIdentifier(
-        {
-          options: {},
-        },
-        mockContext,
-      )
+    // jest.spyOn(fetch, '').mockResolvedValueOnce(Promise.resolve(restResponse));
+    const identifier = await ionDIDProvider.createIdentifier(
+      {
+        options: {},
+      },
+      mockContext
+    )
 
-      expect(identifier).toBeDefined()
-      console.log(await didManager.didManagerGet(identifier))
-      // expect.assertions(4)
-      // return assertExpectedIdentifier(identifier)
-    })
-  }
-)
+    expect(identifier).toBeDefined()
+    if (didManager == null) {
+      console.log("nothing")
+    }
+    // console.log(await didManager.didManagerGet(identifier))
+    // expect.assertions(4)
+    // return assertExpectedIdentifier(identifier)
+  })
+})
 /*
 
 async function assertExpectedIdentifier(identifier: Promise<Omit<IIdentifier, 'provider'>>) {
@@ -73,6 +74,3 @@ async function assertExpectedIdentifier(identifier: Promise<Omit<IIdentifier, 'p
   ])
   return expect(identifier).resolves.toHaveProperty('services', [])
   */
-
-
-

@@ -1,18 +1,22 @@
 import { IAgentContext, IKeyManager, IService, MinimalImportableKey } from '@veramo/core'
 
-export interface IKeyOpts {
+export interface VerificationMethod extends KeyOpts {
   purposes: VerificationRelationship[] // In sidetree these are called purposes, but in DID-Core Verification Relationships
+}
+
+export interface KeyOpts {
   kid?: string // Key ID to assign in case we are importing a key
   key?: MinimalImportableKey // Optional key to import. If not specified a key with random kid will be created
   type?: KeyType // The key type. Defaults to Secp256k1
 }
 
-
 export interface ICreateIdentifierOpts {
-  keyOpts?: IKeyOpts[]
+  verificationMethods?: VerificationMethod[]
+  recoveryKey?: KeyOpts
+  updateKey?: KeyOpts
   services?: IService[]
+  anchor?: boolean
 }
-
 
 export interface IIonPublicKey {
   id: string
@@ -28,47 +32,53 @@ export enum VerificationRelationship {
   keyAgreement = 'keyAgreement',
   assertionMethod = 'assertionMethod',
   capabilityDelegation = 'capabilityDelegation',
-  capabilityInvocation = 'capabilityInvocation'
+  capabilityInvocation = 'capabilityInvocation',
 }
 
 export enum KeyType {
   Ed25519 = 'Ed25519',
-  Secp256k1 = 'Secp256k1'
+  Secp256k1 = 'Secp256k1',
 }
 
+export enum KeyIdentifierRelation {
+  RECOVERY = 'recovery',
+  UPDATE = 'update',
+  DID = 'did',
+}
 
 export interface IIonKeyPair {
-  publicJwk: ISecp256k1PublicKeyJwk;
-  privateJwk: ISecp256k1PrivateKeyJwk;
+  publicJwk: ISecp256k1PublicKeyJwk
+  privateJwk: ISecp256k1PrivateKeyJwk
 }
 
 /** Secp256k1 Private Key  */
 export interface ISecp256k1PrivateKeyJwk {
   /** key type */
-  kty: string;
+  kty: string
   /** curve */
-  crv: string;
+  crv: string
   /** private point */
-  d: string;
+  d: string
   /** public point */
-  x: string;
+  x: string
   /** public point */
-  y: string;
+  y: string
   /** key id */
-  kid: string;
+  kid: string
 }
+
 /** Secp256k1 Public Key  */
 export interface ISecp256k1PublicKeyJwk {
   /** key type */
-  kty: string;
+  kty: string
   /** curve */
-  crv: string;
+  crv: string
   /** public point */
-  x: string;
+  x: string
   /** public point */
-  y: string;
+  y: string
   /** key id */
-  kid: string;
+  kid: string
 }
 
 export type IRequiredContext = IAgentContext<IKeyManager>
