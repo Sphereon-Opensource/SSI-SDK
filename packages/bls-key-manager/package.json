@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk-bls-key-manager",
   "description": "Sphereon BLS Key Manager plugin for Veramo",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,7 +17,7 @@
   "dependencies": {
     "@mattrglobal/bbs-signatures": "1.0.0",
     "@mattrglobal/node-bbs-signatures": "0.11.0",
-    "@sphereon/ssi-sdk-bls-kms-local": "^0.6.0",
+    "@sphereon/ssi-sdk-bls-kms-local": "^0.7.0",
     "@veramo/core": "3.1.2-next.84"
   },
   "devDependencies": {
