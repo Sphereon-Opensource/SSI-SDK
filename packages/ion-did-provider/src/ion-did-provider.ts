@@ -18,6 +18,8 @@ import { generateKeyPair as generateSigningKeyPair } from '@stablelib/ed25519'
 
 import * as u8a from 'uint8arrays'
 import { randomBytes } from '@ethersproject/random'
+import crypto from 'crypto'
+import base64url from 'base64url'
 
 const debug = Debug('sphereon:ion-did-provider')
 
@@ -92,6 +94,7 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
             publicKeys: ionPublicKeys,
             services,
           },
+          // TODO: Add nonce support to JWKs: https://identity.foundation/sidetree/spec/#jwk-nonce
           recovery: this.toIonKeyPair(recoveryKey),
           update: this.toIonKeyPair(updateKey),
         },
@@ -104,8 +107,9 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
       .then((requestBody: any) => new ION.AnchorRequest(requestBody).submit())
 
     const identifier: Omit<IIdentifier, 'provider'> = {
-      did: await did.getURI(),
+      did: await did.getURI('short'),
       controllerKeyId: updateKey.kid,
+      alias: await did.getURI('long'),
       keys,
       services,
     }
@@ -125,27 +129,38 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
   }
 
   async addKey({ identifier, key, options }: { identifier: IIdentifier; key: IKey; options?: any }, context: IContext): Promise<any> {
+    const updateKey = this.ionUpdateKey(identifier.keys)
+    if (!updateKey) {
+      return Promise.reject(Error(`Could not retrieve current update key for identifier ${identifier.did}`))
+    }
+
     const did = this.ionDid(identifier)
-
-    let updateOperation = await did.generateOperation('update', {
-      // removePublicKeys: ["key-1"],
-      addPublicKeys: [
-        {
-          id: key.kid,
-          type: 'EcdsaSecp256k1VerificationKey2019',
-          publicKeyJwk: secp256k1_keyUtils.publicKeyJwkFromPublicKeyHex(key.publicKeyHex),
-          purposes: ['authentication'],
+    const updateOperation = {
+      operation: 'update',
+      previous: {
+        update: {
+          publicJwk: updateKey?.publicKeyJwk,
         },
-      ],
-      /*removeServices: ["some-service-1"],
-      addServices: [{
-        "id": "some-service-2",
-        "type": "SomeServiceType",
-        "serviceEndpoint": "http://www.example.com"
-      }]*/
-    })
+      },
+      // TODO: Add nonce support to JWKs: https://identity.foundation/sidetree/spec/#jwk-nonce
+      update: {
+        publicJwk: updateKey?.publicKeyJwk,
+      },
+      content: {
+        addPublicKeys: [
+          {
+            ...this.createIonPublicKey(key, [VerificationRelationship.capabilityDelegation]),
+          }
+        ],
+      },
+    }
 
-    await did.generateRequest(updateOperation).then((requestBody: any) => new ION.AnchorRequest(requestBody).submit())
+    await did
+      .generateRequest(updateOperation, { signer: new KmsSigner(context, did, updateKey.id) })
+      .then((requestBody: any) => new ION.AnchorRequest(requestBody).submit())
+
+    return `${identifier.did}#${key.kid}`
+
   }
 
   async addService({ identifier, service, options }: { identifier: IIdentifier; service: IService; options?: any }, context: IContext): Promise<any> {
@@ -162,6 +177,7 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
 
   private createIonPublicKey(key: ManagedKeyInfo, purposes: VerificationRelationship[]): IIonPublicKey {
     const publicKeyJwk = secp256k1_keyUtils.publicKeyJwkFromPublicKeyHex(key.publicKeyHex)
+    delete publicKeyJwk.kid
 
     const id = key.kid.substring(0, 50) // ION restricts the id to 50 chars. Ideally we can also provide kids for key creation in Veramo
     if (id.length != key.kid.length) {
@@ -177,8 +193,8 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
   }
 
   private toIonKeyPair(key: MinimalImportableKey | IKey): IIonKeyPair {
-    const privateJwk = secp256k1_keyUtils.privateKeyJwkFromPrivateKeyHex(key.privateKeyHex!)
-    const publicJwk = secp256k1_keyUtils.publicKeyJwkFromPublicKeyHex(key.publicKeyHex!)
+    const privateJwk = key.privateKeyHex ? secp256k1_keyUtils.privateKeyJwkFromPrivateKeyHex(key.privateKeyHex!) : null
+    const publicJwk = key.publicKeyHex ? secp256k1_keyUtils.publicKeyJwkFromPublicKeyHex(key.publicKeyHex!) : null
     delete privateJwk.kid
     delete publicJwk.kid
     return {
@@ -188,14 +204,44 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
   }
 
   private ionDid(identifier: IIdentifier) {
-    // fixme purpose is fixed. We either need to get it from metadata or resolve the current DID doc
-    const publicKeys = identifier.keys.flatMap((key) => this.createIonPublicKey(key, [VerificationRelationship.authentication]))
+    const publicKeys = this.ionKeysOfType(identifier.keys, KeyIdentifierRelation.DID)
+    const recoveryKey = this.ionRecoveryKey(identifier.keys)
+    const recoveryPublicJwk = recoveryKey!.publicKeyJwk
+    delete recoveryPublicJwk.kid
+    const updateKey = this.ionUpdateKey(identifier.keys)
+    const updatePublicJwk = updateKey!.publicKeyJwk
+    delete updatePublicJwk.kid
 
     return new ION.DID({
-      content: {
-        publicKeys,
-      },
+      ops: [
+        {
+          operation: 'create',
+          content: {
+            publicKeys,
+            /*services,*/
+          },
+          recovery: { publicJwk: recoveryPublicJwk },
+          update: { publicJwk: updatePublicJwk },
+        },
+      ],
     })
+  }
+
+  private ionRecoveryKey(keys: IKey[]): IIonPublicKey | null {
+    return this.ionKeysOfType(keys, KeyIdentifierRelation.RECOVERY)[0]
+  }
+
+  private ionUpdateKey(keys: IKey[]): IIonPublicKey | null {
+    return this.ionKeysOfType(keys, KeyIdentifierRelation.UPDATE)[0]
+  }
+
+  private ionKeysOfType(keys: IKey[], relation: KeyIdentifierRelation): IIonPublicKey[] {
+    return keys
+      .filter((key) => key.meta?.relation === relation)
+      .flatMap((key) => {
+        const purposes: VerificationRelationship[] = key.meta!['purposes'] ? key.meta!['purposes'] : []
+        return this.createIonPublicKey(key, purposes)
+      })
   }
 
   /**
@@ -218,6 +264,9 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
     const privateKeyHex = options?.key ? options.key.privateKeyHex : this.generatePrivateKeyHex(type)
     const meta = options?.key?.meta ? options.key.meta : {}
     meta['relation'] = relation
+    if (options && 'purposes' in options) {
+      meta['purposes'] = options.purposes
+    }
     const key: IKey = await context.agent.keyManagerImport({
       kms: kms || this.defaultKms,
       type,
@@ -250,5 +299,28 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
         throw Error('not_supported: Key type not supported: ' + type)
     }
     return privateKeyHex
+  }
+}
+
+class KmsSigner {
+  constructor(private context: IContext, private did: string, private kid: string) {}
+
+  async sign(header: any, content: any): Promise<string> {
+    if (!header) {
+      header = {
+        alg: 'ES256K',
+      }
+    }
+    const headerKid = `${this.did}#${this.kid}`
+    console.log(`kid: ${headerKid}`)
+
+    const encodedHeader = base64url.encode(JSON.stringify(header))
+    const encodedPayload = base64url.encode(JSON.stringify(content))
+    const toBeSigned = encodedHeader + '.' + encodedPayload
+    const message = u8a.fromString(toBeSigned)
+    const digest = crypto.createHash('sha256').update(message).digest('binary')
+    const sigObj = await this.context.agent.keyManagerSign({ keyRef: this.kid, algorithm: header.alg, data: digest })
+    const encodedSignature = base64url.encode(sigObj)
+    return encodedHeader + '.' + encodedPayload + '.' + encodedSignature
   }
 }
