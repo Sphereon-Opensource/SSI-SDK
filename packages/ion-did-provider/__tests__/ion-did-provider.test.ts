@@ -26,9 +26,11 @@ const agent = createAgent<IKeyManager, DIDManager>({
   ],
 })
 
+jest.setTimeout(1000000)
+
 describe('@sphereon/ion-did-provider', () => {
   it('should create identifier', async () => {
-    jest.setTimeout(100000)
+    jest.setTimeout(1000000)
 
     const identifier: IIdentifier = await agent.didManagerCreate({
       options: {
@@ -64,5 +66,10 @@ describe('@sphereon/ion-did-provider', () => {
       kid: 'recovery-test',
       meta: { relation: 'recovery' },
     })
+
+    const newKey = await agent.keyManagerCreate({ kms: 'mem', type: 'Secp256k1' })
+    const result = await agent.didManagerAddKey({ did: identifier.did, key: newKey, kid: 'test-add-key' })
+
+    console.log(result)
   })
 })
