@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk-ion-did-provider",
   "description": "Veramo ion-did based identity controller plugin.",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
