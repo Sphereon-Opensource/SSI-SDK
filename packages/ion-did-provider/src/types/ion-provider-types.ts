@@ -1,5 +1,5 @@
-import { IAgentContext, IKeyManager, IService, MinimalImportableKey } from '@veramo/core'
-import { JwkEs256k, IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
+import { IAgentContext, IKey, IKeyManager, IService, MinimalImportableKey } from '@veramo/core'
+import { IonPublicKeyPurpose, IonPublicKeyModel, JwkEs256k } from '@decentralized-identity/ion-sdk'
 
 export type IContext = IAgentContext<IKeyManager>
 
@@ -20,6 +20,10 @@ export interface ICreateIdentifierOpts {
   services?: IService[]
   actionId: number // Unique number denoting the action. Used for ordering internally. Suggested to use current timestamp
   anchor?: boolean
+}
+
+export interface IAddKeyOpts extends IUpdateOpts {
+  purposes: IonPublicKeyPurpose[] // In sidetree these are called purposes, but in DID-Core Verification Relationships
 }
 
 export interface IUpdateOpts {
@@ -49,9 +53,18 @@ export enum IonDidForm {
   SHORT = 'short',
 }
 
-export interface IIonKeyPair {
+export interface IIonJwkPair {
   publicKeyJwk?: JwkEs256k
   privateKeyJwk?: JwkEs256k
+}
+
+export interface IKeyRotation {
+  currentVeramoKey: IKey
+  currentIonKey: IonPublicKeyModel
+  currentJwk: JwkEs256k
+  nextIonKey: IonPublicKeyModel
+  nextJwk: JwkEs256k
+  nextVeramoKey: IKey
 }
 
 export type IRequiredContext = IAgentContext<IKeyManager>

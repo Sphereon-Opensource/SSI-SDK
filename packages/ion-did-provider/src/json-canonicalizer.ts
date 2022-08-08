@@ -8,7 +8,7 @@ export class JsonCanonicalizer {
    */
   static asString(content: unknown): string {
     if (content == null) {
-       throw Error("Null content received in canonicalizer")
+      throw Error('Null content received in canonicalizer')
     }
     // We need to remove all properties with `undefined` as value so that JCS canonicalization will not produce invalid JSON.
     const contentWithoutUndefinedProperties = JsonCanonicalizer.removeAllUndefinedProperties(content)
