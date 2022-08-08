@@ -1,7 +1,10 @@
 import { IAgentContext, IKeyManager, IService, MinimalImportableKey } from '@veramo/core'
+import { JwkEs256k, IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
+
+export type IContext = IAgentContext<IKeyManager>
 
 export interface VerificationMethod extends KeyOpts {
-  purposes: VerificationRelationship[] // In sidetree these are called purposes, but in DID-Core Verification Relationships
+  purposes: IonPublicKeyPurpose[] // In sidetree these are called purposes, but in DID-Core Verification Relationships
 }
 
 export interface KeyOpts {
@@ -15,24 +18,19 @@ export interface ICreateIdentifierOpts {
   recoveryKey?: KeyOpts
   updateKey?: KeyOpts
   services?: IService[]
+  actionId: number // Unique number denoting the action. Used for ordering internally. Suggested to use current timestamp
   anchor?: boolean
 }
 
-export interface IIonPublicKey {
-  id: string
-  type: string
-  publicKeyJwk: any
-  // In sidetree these are called purposes, but in DID-Core Verification Relationships
-  purposes: VerificationRelationship[]
+export interface IUpdateOpts {
+  actionId: number // Unique number denoting the action. Used for ordering internally. Suggested to use current timestamp
 }
 
-// see: https://w3c.github.io/did-core/#verification-relationships
-export enum VerificationRelationship {
-  authentication = 'authentication',
-  keyAgreement = 'keyAgreement',
-  assertionMethod = 'assertionMethod',
-  capabilityDelegation = 'capabilityDelegation',
-  capabilityInvocation = 'capabilityInvocation',
+export interface IonKeyMetadata {
+  purposes?: IonPublicKeyPurpose[]
+  actionId: number // Unique number denoting the action. Used for ordering internally. Suggested to use current timestamp
+  relation: KeyIdentifierRelation
+  commitment?: string // Commitment value in case this is an update or recovery key. Used to get latest update/recovery keys
 }
 
 export enum KeyType {
@@ -46,39 +44,14 @@ export enum KeyIdentifierRelation {
   DID = 'did',
 }
 
+export enum IonDidForm {
+  LONG = 'long',
+  SHORT = 'short',
+}
+
 export interface IIonKeyPair {
-  publicJwk: ISecp256k1PublicKeyJwk
-  privateJwk: ISecp256k1PrivateKeyJwk
-}
-
-/** Secp256k1 Private Key  */
-export interface ISecp256k1PrivateKeyJwk {
-  /** key type */
-  kty: string
-  /** curve */
-  crv: string
-  /** private point */
-  d: string
-  /** public point */
-  x: string
-  /** public point */
-  y: string
-  /** key id */
-  kid: string
-}
-
-/** Secp256k1 Public Key  */
-export interface ISecp256k1PublicKeyJwk {
-  /** key type */
-  kty: string
-  /** curve */
-  crv: string
-  /** public point */
-  x: string
-  /** public point */
-  y: string
-  /** key id */
-  kid: string
+  publicKeyJwk?: JwkEs256k
+  privateKeyJwk?: JwkEs256k
 }
 
 export type IRequiredContext = IAgentContext<IKeyManager>

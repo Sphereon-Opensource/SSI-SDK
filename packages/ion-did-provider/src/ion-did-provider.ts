@@ -1,29 +1,49 @@
-import { IAgentContext, IIdentifier, IKey, IKeyManager, IService, ManagedKeyInfo, MinimalImportableKey } from '@veramo/core'
+import {
+  DIDResolutionResult,
+  IAgentContext,
+  IIdentifier,
+  IKey,
+  IKeyManager,
+  IService,
+  ManagedKeyInfo,
+} from '@veramo/core'
 import { AbstractIdentifierProvider } from '@veramo/did-manager'
-import { keyUtils as secp256k1_keyUtils } from '@transmute/did-key-secp256k1'
-import * as ION from '@decentralized-identity/ion-tools'
+
 import Debug from 'debug'
 import {
+  IContext,
   ICreateIdentifierOpts,
-  IIonKeyPair,
-  IIonPublicKey,
+  IonDidForm,
+  IonKeyMetadata,
+  IUpdateOpts,
   KeyIdentifierRelation,
   KeyOpts,
   KeyType,
   VerificationMethod,
-  VerificationRelationship,
 } from './types/ion-provider-types'
 
-import { generateKeyPair as generateSigningKeyPair } from '@stablelib/ed25519'
+import { IonSigner } from './ion-signer'
+import { resolveDidIonFromIdentifier } from './ion-did-resolver'
 
-import * as u8a from 'uint8arrays'
-import { randomBytes } from '@ethersproject/random'
-import crypto from 'crypto'
-import base64url from 'base64url'
+import { IonPublicKeyModel, IonPublicKeyPurpose, IonRequest } from '@decentralized-identity/ion-sdk'
+import {
+  createIonPublicKey,
+  generatePrivateKeyHex,
+  getActionId,
+  ionDidSuffixFromLong,
+  ionLongFormDidFromCreation,
+  ionPublicKeyToCommitment,
+  ionRecoveryKey,
+  ionShortFormDidFromLong,
+  ionUpdateKey,
+  tmpMemoryKey,
+  toIonPublicKeyJwk,
+  toJwkEs256k,
+} from './functions'
+import { IonProofOfWork } from './IonPow'
 
-const debug = Debug('sphereon:ion-did-provider')
+const debug = Debug('veramo:ion-did-provider')
 
-type IContext = IAgentContext<IKeyManager>
 
 /**
  * {@link @veramo/did-manager#DIDManager} identifier provider for `did:ion` identifiers
@@ -31,93 +51,109 @@ type IContext = IAgentContext<IKeyManager>
  */
 export class IonDIDProvider extends AbstractIdentifierProvider {
   private readonly defaultKms: string
+  private readonly ionPoW: IonProofOfWork
 
   constructor(options: { defaultKms: string }) {
     super()
     this.defaultKms = options.defaultKms
+    this.ionPoW = new IonProofOfWork()
   }
 
   async createIdentifier(
     { kms, options, alias }: { kms?: string; alias?: string; options?: ICreateIdentifierOpts },
-    context: IAgentContext<IKeyManager>
+    context: IAgentContext<IKeyManager>,
   ): Promise<Omit<IIdentifier, 'provider'>> {
+    const actionId = getActionId(options?.actionId)
+
     const recoveryKey = await this.importKey(
       {
         kms,
+        actionId,
         relation: KeyIdentifierRelation.RECOVERY,
         options: options?.recoveryKey,
       },
-      context
+      context,
     )
     const updateKey = await this.importKey(
       {
         kms,
+        actionId,
         relation: KeyIdentifierRelation.UPDATE,
         options: options?.updateKey,
       },
-      context
+      context,
     )
 
     // No options or no key options, results in generating a single key as the only authentication verification method in the DID
     const verificationMethods = options?.verificationMethods
       ? options.verificationMethods
       : [
-          {
-            type: KeyType.Secp256k1,
-            purposes: [VerificationRelationship.authentication],
-          },
-        ]
+        {
+          type: KeyType.Secp256k1,
+          purposes: [IonPublicKeyPurpose.Authentication],
+        },
+      ]
 
-    const keys: ManagedKeyInfo[] = [recoveryKey, updateKey]
-    const ionPublicKeys: IIonPublicKey[] = []
-    const ionKeyPairs: IIonKeyPair[] = []
+    const veramoKeys: ManagedKeyInfo[] = [recoveryKey, updateKey]
+    const ionPublicKeys: IonPublicKeyModel[] = []
     for (const verificationMethod of verificationMethods) {
       const key = await this.importKey(
         {
           kms,
+          actionId,
           relation: KeyIdentifierRelation.DID,
           options: verificationMethod,
         },
-        context
+        context,
       )
-      keys.push(key)
-      ionPublicKeys.push(this.createIonPublicKey(key, verificationMethod.purposes))
-      ionKeyPairs.push(this.toIonKeyPair(key))
+      veramoKeys.push(key)
+      ionPublicKeys.push(createIonPublicKey(key, verificationMethod.purposes))
     }
 
-    const services = options?.services ? options.services : []
-    const did = new ION.DID({
-      ops: [
-        {
-          operation: 'create',
-          content: {
-            publicKeys: ionPublicKeys,
-            services,
-          },
-          // TODO: Add nonce support to JWKs: https://identity.foundation/sidetree/spec/#jwk-nonce
-          recovery: this.toIonKeyPair(recoveryKey),
-          update: this.toIonKeyPair(updateKey),
-        },
-      ],
-    })
+    const services = options?.services ? options.services : undefined
 
-    await did
-      .generateRequest(0)
-      // .filter(options?.anchor == undefined || options.anchor)
-      .then((requestBody: any) => new ION.AnchorRequest(requestBody).submit())
+    // TODO: Add nonce support to JWKs: https://identity.foundation/sidetree/spec/#jwk-nonce
+    const createInput = {
+      recoveryKey: toIonPublicKeyJwk(recoveryKey.publicKeyHex),
+      updateKey: toIonPublicKeyJwk(updateKey.publicKeyHex),
+      document: {
+        publicKeys: ionPublicKeys,
+        services,
+      },
+    }
+    const longFormDid = ionLongFormDidFromCreation(createInput)
+    const shortFormDid = ionShortFormDidFromLong(longFormDid)
+    if (!options?.anchor) {
+      debug(`Not anchoring DID ${shortFormDid} as anchoring was not enabled`)
+    } else {
+      const request = IonRequest.createCreateRequest(createInput)
+
+      console.log(`did: ${longFormDid}`)
+      console.log('###############')
+      console.log('requestBody (Create):')
+      console.log(JSON.stringify(request, null, 2))
+      console.log('###############')
+
+      const response = await this.ionPoW.submit(JSON.stringify(request))
+
+      console.log('###############')
+      console.log('response (Create):')
+      console.log(JSON.stringify(response, null, 2))
+      console.log('###############')
+    }
+
+    console.log(`--- LONG create:  ${longFormDid}`)
 
     const identifier: Omit<IIdentifier, 'provider'> = {
-      did: await did.getURI('short'),
+      did: longFormDid,
       controllerKeyId: updateKey.kid,
-      alias: await did.getURI('long'),
-      keys,
-      services,
+      alias: shortFormDid,
+      keys: veramoKeys,
+
+      services: services ? services : [],
     }
 
-    // TODO: Long version DID is not conformant to "initial value" definition.
-    debug(`Created (short version): ${await did.getURI('short')}`)
-    debug('Created', identifier.did)
-
+    debug('Created DID (short, long form): ', identifier.alias, identifier.did)
     return identifier
   }
 
@@ -128,42 +164,99 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
     return true
   }
 
-  async addKey({ identifier, key, options }: { identifier: IIdentifier; key: IKey; options?: any }, context: IContext): Promise<any> {
-    const updateKey = this.ionUpdateKey(identifier.keys)
-    if (!updateKey) {
-      return Promise.reject(Error(`Could not retrieve current update key for identifier ${identifier.did}`))
+  private async getAssertedDidDocument(identifier: IIdentifier, didForm: IonDidForm = IonDidForm.LONG): Promise<DIDResolutionResult> {
+    const didDocument = await resolveDidIonFromIdentifier(identifier, didForm)
+    if (!didDocument) {
+      return Promise.reject(Error(`Could not resolve existing DID document for did ${identifier.did}`))
     }
-
-    const did = this.ionDid(identifier)
-    const updateOperation = {
-      operation: 'update',
-      previous: {
-        update: {
-          publicJwk: updateKey?.publicKeyJwk,
-        },
-      },
-      // TODO: Add nonce support to JWKs: https://identity.foundation/sidetree/spec/#jwk-nonce
-      update: {
-        publicJwk: updateKey?.publicKeyJwk,
-      },
-      content: {
-        addPublicKeys: [
-          {
-            ...this.createIonPublicKey(key, [VerificationRelationship.capabilityDelegation]),
-          }
-        ],
-      },
-    }
-
-    await did
-      .generateRequest(updateOperation, { signer: new KmsSigner(context, did, updateKey.id) })
-      .then((requestBody: any) => new ION.AnchorRequest(requestBody).submit())
-
-    return `${identifier.did}#${key.kid}`
-
+    return didDocument
   }
 
-  async addService({ identifier, service, options }: { identifier: IIdentifier; service: IService; options?: any }, context: IContext): Promise<any> {
+  private async rotateUpdateOrRecoveryKey(
+    {
+      identifier,
+      commitment,
+      relation,
+      kms,
+      options,
+      actionId,
+    }: {
+      identifier: IIdentifier
+      commitment: string
+      actionId: number
+      relation: KeyIdentifierRelation
+      kms?: string
+      alias?: string
+      options?: KeyOpts
+    },
+    context: IAgentContext<IKeyManager>,
+  ) {
+    const currentKey =
+      relation == KeyIdentifierRelation.UPDATE ? ionUpdateKey(identifier.keys, commitment) : ionRecoveryKey(identifier.keys, commitment)
+    const currentJwk = toJwkEs256k(currentKey.publicKeyJwk)
+    //todo alias
+    const nextVeramoKey = await this.importKey({ kms, actionId, relation, options }, context)
+    const nextKey = createIonPublicKey(nextVeramoKey, [])
+    const nextJwk = toIonPublicKeyJwk(nextVeramoKey.publicKeyHex)
+
+    return { currentKey, currentJwk, nextJwk, nextKey }
+  }
+
+  async addKey({
+                 identifier,
+                 key,
+                 options,
+               }: { identifier: IIdentifier; key: IKey; options?: IUpdateOpts }, context: IContext): Promise<any> {
+
+    const didResolution = await this.getAssertedDidDocument(identifier, IonDidForm.LONG)
+    const currentUpdateKey = ionUpdateKey(identifier.keys, didResolution.didDocumentMetadata.method.updateCommitment)
+    const commitment = ionPublicKeyToCommitment(currentUpdateKey)
+    const actionId = getActionId(options?.actionId)
+
+    console.log(`DID Resolution:\r\n${JSON.stringify(didResolution)}`)
+
+    const rotation = await this.rotateUpdateOrRecoveryKey(
+      {
+        identifier,
+        commitment,
+        relation: KeyIdentifierRelation.UPDATE,
+        actionId,
+        kms: key.kms ? key.kms : this.defaultKms,
+        options: { },
+      },
+      context,
+    )
+
+    /*
+    // const updateKey = ionUpdateKey(identifier.keys, didResolution.didDocumentMetadata.method.updateCommitment)
+    if (!rotation.currentJwk) {
+      return Promise.reject(Error(`Could not retrieve current update key for identifier ${identifier.did}`))
+    }
+*/
+
+    const request = await IonRequest.createUpdateRequest({
+      didSuffix: ionDidSuffixFromLong(identifier.did),
+      updatePublicKey: rotation.currentJwk,
+      nextUpdatePublicKey: rotation.nextJwk,
+      signer: new IonSigner(context, rotation.currentKey.id),
+      publicKeysToAdd: [
+        {
+          ...createIonPublicKey(key, [IonPublicKeyPurpose.CapabilityDelegation]),
+        },
+      ],
+    })
+
+    const response = await this.ionPoW.submit(JSON.stringify(request))
+
+    console.log(JSON.stringify(response, null, 2))
+    return `${identifier.did}#${key.kid}`
+  }
+
+  async addService({
+                     identifier,
+                     service,
+                     options,
+                   }: { identifier: IIdentifier; service: IService; options?: any }, context: IContext): Promise<any> {
     throw new Error('Not Implemented')
   }
 
@@ -175,98 +268,82 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
     throw new Error('Not Implemented')
   }
 
-  private createIonPublicKey(key: ManagedKeyInfo, purposes: VerificationRelationship[]): IIonPublicKey {
-    const publicKeyJwk = secp256k1_keyUtils.publicKeyJwkFromPublicKeyHex(key.publicKeyHex)
-    delete publicKeyJwk.kid
-
-    const id = key.kid.substring(0, 50) // ION restricts the id to 50 chars. Ideally we can also provide kids for key creation in Veramo
-    if (id.length != key.kid.length) {
-      debug(`Key kid ${key.kid} has been truncated to 50 chars to support ION!`)
-    }
-
-    return {
-      id,
-      type: 'EcdsaSecp256k1VerificationKey2019',
-      publicKeyJwk,
-      purposes,
-    }
-  }
-
-  private toIonKeyPair(key: MinimalImportableKey | IKey): IIonKeyPair {
-    const privateJwk = key.privateKeyHex ? secp256k1_keyUtils.privateKeyJwkFromPrivateKeyHex(key.privateKeyHex!) : null
-    const publicJwk = key.publicKeyHex ? secp256k1_keyUtils.publicKeyJwkFromPublicKeyHex(key.publicKeyHex!) : null
-    delete privateJwk.kid
-    delete publicJwk.kid
-    return {
-      privateJwk,
-      publicJwk,
-    }
-  }
-
-  private ionDid(identifier: IIdentifier) {
-    const publicKeys = this.ionKeysOfType(identifier.keys, KeyIdentifierRelation.DID)
-    const recoveryKey = this.ionRecoveryKey(identifier.keys)
+  /*
+  private async ionOps(identifier: IIdentifier) {
+    const publicKeys = ionKeysOfType(identifier.keys, KeyIdentifierRelation.DID)
+    const recoveryKey = ionRecoveryKey(identifier.keys, 'genesis')
     const recoveryPublicJwk = recoveryKey!.publicKeyJwk
-    delete recoveryPublicJwk.kid
-    const updateKey = this.ionUpdateKey(identifier.keys)
+    const updateKey = ionUpdateKey(identifier.keys, 'genesis')
     const updatePublicJwk = updateKey!.publicKeyJwk
-    delete updatePublicJwk.kid
 
-    return new ION.DID({
-      ops: [
-        {
-          operation: 'create',
-          content: {
-            publicKeys,
-            /*services,*/
-          },
-          recovery: { publicJwk: recoveryPublicJwk },
-          update: { publicJwk: updatePublicJwk },
+    // fixme: Get services
+    // Ensure we get the LONG form create
+    // const resolution = await resolveDidIonFromIdentifier(identifier, IonDidForm.LONG)
+    // const didDocument = resolution.didDocument
+
+    return [
+      {
+        operation: 'create',
+        content: {
+          publicKeys,
+          // services: []
         },
-      ],
-    })
+        recovery: { publicJwk: recoveryPublicJwk },
+        update: { publicJwk: updatePublicJwk },
+      },
+    ]
   }
-
-  private ionRecoveryKey(keys: IKey[]): IIonPublicKey | null {
-    return this.ionKeysOfType(keys, KeyIdentifierRelation.RECOVERY)[0]
-  }
-
-  private ionUpdateKey(keys: IKey[]): IIonPublicKey | null {
-    return this.ionKeysOfType(keys, KeyIdentifierRelation.UPDATE)[0]
-  }
-
-  private ionKeysOfType(keys: IKey[], relation: KeyIdentifierRelation): IIonPublicKey[] {
-    return keys
-      .filter((key) => key.meta?.relation === relation)
-      .flatMap((key) => {
-        const purposes: VerificationRelationship[] = key.meta!['purposes'] ? key.meta!['purposes'] : []
-        return this.createIonPublicKey(key, purposes)
-      })
-  }
+*/
 
   /**
    * We optionally generate and then import our own keys.
    *
-   * Reason for this is that we want to be able to assign Key IDs (kid), which Veramo doesn't support on creation. Next we need the private key for ION
-   * @param type
+   * Reason for this is that we want to be able to assign Key IDs (kid), which Veramo supports on import, but not creation. The net result is that we do not support keys which have been created from keyManagerCreate
    * @param kms
+   * @param actionId
+   * @param relation
    * @param options
-   * @param alias
    * @param context
    * @private
    */
   private async importKey(
-    { kms, relation, options }: { kms?: string; relation: KeyIdentifierRelation; options?: KeyOpts | VerificationMethod },
-    context: IAgentContext<IKeyManager>
+    {
+      kms,
+      actionId,
+      relation,
+      options,
+    }: { kms?: string; actionId: number; relation: KeyIdentifierRelation; options?: KeyOpts | VerificationMethod },
+    context: IAgentContext<IKeyManager>,
   ): Promise<IKey> {
     const kid = options?.kid ? options.kid : options?.key?.kid
     const type = options?.type ? options.type : options?.key?.type ? (options.key.type as KeyType) : KeyType.Secp256k1
-    const privateKeyHex = options?.key ? options.key.privateKeyHex : this.generatePrivateKeyHex(type)
+
+
     const meta = options?.key?.meta ? options.key.meta : {}
-    meta['relation'] = relation
-    if (options && 'purposes' in options) {
-      meta['purposes'] = options.purposes
+    const ionMeta: IonKeyMetadata = {
+      relation,
+      actionId,
     }
+    if (options && 'purposes' in options) {
+      ionMeta.purposes = options.purposes
+    }
+    let privateKeyHex: string
+    if (options?.key) {
+      if (!options.key.privateKeyHex) {
+        throw new Error(`We need to have a private key when importing a recovery or update key. Key ${kid} did not have one`)
+      }
+      privateKeyHex = options.key.privateKeyHex
+    } else {
+      privateKeyHex = generatePrivateKeyHex(type)
+    }
+    if (relation === KeyIdentifierRelation.RECOVERY || relation === KeyIdentifierRelation.UPDATE) {
+
+      // We need a commitment for these keys. As they are based on the publicKey let's create an in mem key
+      const tmpKey = await tmpMemoryKey(type, privateKeyHex, kid!, kms ? kms : this.defaultKms, ionMeta)
+      ionMeta.commitment = tmpKey.meta!.ion.commitment
+    }
+    meta.ion = ionMeta
+
     const key: IKey = await context.agent.keyManagerImport({
       kms: kms || this.defaultKms,
       type,
@@ -274,53 +351,11 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
       kid,
       meta,
     })
-    key.privateKeyHex = privateKeyHex
+    // We need it in case we are importing it again in the same call
+    // key.privateKeyHex = privateKeyHex
 
     debug('Created key', type, relation, kid, key.publicKeyHex)
 
     return key
-  }
-
-  private generatePrivateKeyHex(type: KeyType) {
-    let privateKeyHex: string
-
-    switch (type) {
-      case KeyType.Ed25519: {
-        const keyPairEd25519 = generateSigningKeyPair()
-        privateKeyHex = u8a.toString(keyPairEd25519.secretKey, 'base16')
-        break
-      }
-      case KeyType.Secp256k1: {
-        const privateBytes = randomBytes(32)
-        privateKeyHex = u8a.toString(privateBytes, 'base16')
-        break
-      }
-      default:
-        throw Error('not_supported: Key type not supported: ' + type)
-    }
-    return privateKeyHex
-  }
-}
-
-class KmsSigner {
-  constructor(private context: IContext, private did: string, private kid: string) {}
-
-  async sign(header: any, content: any): Promise<string> {
-    if (!header) {
-      header = {
-        alg: 'ES256K',
-      }
-    }
-    const headerKid = `${this.did}#${this.kid}`
-    console.log(`kid: ${headerKid}`)
-
-    const encodedHeader = base64url.encode(JSON.stringify(header))
-    const encodedPayload = base64url.encode(JSON.stringify(content))
-    const toBeSigned = encodedHeader + '.' + encodedPayload
-    const message = u8a.fromString(toBeSigned)
-    const digest = crypto.createHash('sha256').update(message).digest('binary')
-    const sigObj = await this.context.agent.keyManagerSign({ keyRef: this.kid, algorithm: header.alg, data: digest })
-    const encodedSignature = base64url.encode(sigObj)
-    return encodedHeader + '.' + encodedPayload + '.' + encodedSignature
   }
 }
