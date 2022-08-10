@@ -5,6 +5,8 @@ import canonicalize from 'canonicalize'
 export class JsonCanonicalizer {
   /**
    * Canonicalizes the given content as a string
+   * @param The content to canonicalize
+   * @return The canonicalized content
    */
   static asString(content: unknown): string {
     if (content == null) {
@@ -19,7 +21,7 @@ export class JsonCanonicalizer {
     return canonicalizedString
   }
   /**
-   * Removes all properties within the given object with `undefined` as value.
+   * Removes all properties within the given object with `undefined` as value as that would mess up the validity
    */
   private static removeAllUndefinedProperties(content: any): unknown {
     for (const key in content) {
