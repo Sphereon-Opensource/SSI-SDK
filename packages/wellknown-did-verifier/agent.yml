@@ -6,6 +6,8 @@ constants:
   # please use your own X25519 key, this is only an example
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
+    - registerSignatureValidation
+    - removeSignatureValidation
     - verifyDomainLinkage
     - verifyDidConfigurationResource
 
@@ -65,12 +67,41 @@ server:
             $ref: /constants/baseUrl
           messagingServiceEndpoint: /messaging
 
+didResolver:
+  $require: '@veramo/did-resolver#DIDResolverPlugin'
+  $args:
+    - resolver:
+        $require: did-resolver#Resolver
+        $args:
+          - web:
+              $ref: /web-did-resolver
+            key:
+              $ref: /did-key-resolver
+            elem:
+              $ref: /universal-resolver
+            io:
+              $ref: /universal-resolver
+            ion:
+              $ref: /universal-resolver
+            sov:
+              $ref: /universal-resolver
+
+universal-resolver:
+  $require: '@veramo/did-resolver#UniversalResolver'
+  $args:
+    - url: https://dev.uniresolver.io/1.0/identifiers/
+
+did-key-resolver:
+  $require: '@veramo/did-provider-key?t=function&p=/key#getDidKeyResolver'
+
+web-did-resolver:
+  $require: web-did-resolver?t=function&p=/web#getResolver
+
 # Agent
 agent:
   $require: '@veramo/core#Agent'
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/connection-manager/dist#DomainLinkageVerifier
-
-// TODO add resolver
+        - $ref: /didResolver
+        - $require: ./packages/wellknown-did-verifier/dist#WellKnownDidVerifier

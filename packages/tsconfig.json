@@ -19,6 +19,6 @@
     { "path": "connection-manager" },
     { "path": "data-store" },
     { "path": "ion-did-provider" },
-    { "path": "domain-linkage-verifier" }
+    { "path": "wellknown-did-verifier" },
   ]
 }
