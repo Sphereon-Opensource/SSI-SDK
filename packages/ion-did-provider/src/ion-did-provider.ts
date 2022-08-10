@@ -35,7 +35,7 @@ import {
   toJwkEs256k,
   truncateKidIfNeeded,
 } from './functions'
-import { IonProofOfWork } from './IonPow'
+import { IonPoW } from '@sphereon/ion-pow'
 
 const debug = Debug('veramo:ion-did-provider')
 
@@ -45,12 +45,12 @@ const debug = Debug('veramo:ion-did-provider')
  */
 export class IonDIDProvider extends AbstractIdentifierProvider {
   private readonly defaultKms: string
-  private readonly ionPoW: IonProofOfWork
+  private readonly ionPoW: IonPoW
 
   constructor(options: { defaultKms: string }) {
     super()
     this.defaultKms = options.defaultKms
-    this.ionPoW = new IonProofOfWork()
+    this.ionPoW = new IonPoW()
   }
 
   /** {@inheritDoc @veramo/veramo-core#IDIDManager.didManagerCreate} */
