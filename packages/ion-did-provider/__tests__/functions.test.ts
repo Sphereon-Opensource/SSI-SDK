@@ -52,14 +52,14 @@ describe('functions: ionKeys', () => {
   it('temp recovery Memory Key should be deterministic and have a commitment ', async () => {
     const tmpKey = await tempMemoryKey(KeyType.Secp256k1, PRIVATE_RECOVERY_KEY_HEX, 'test-recovery-kid', 'test-recovery-kms', {
       relation: KeyIdentifierRelation.RECOVERY,
-      actionId: 2,
+      actionTimestamp: 2,
     })
     expect(tmpKey).toMatchObject<ManagedKeyInfo>({
       kid: 'test-recovery-kid',
       kms: 'test-recovery-kms',
       meta: {
         ion: {
-          actionId: 2,
+          actionTimestamp: 2,
           commitment: 'EiDAQXSi7HcjJVBYAKdO2zrM4HfybmBBCWsl6PQPJ_jklA',
           relation: 'recovery',
         },
@@ -72,14 +72,14 @@ describe('functions: ionKeys', () => {
   it('temp update Memory Key should be deterministic and have a commitment ', async () => {
     const tmpKey = await tempMemoryKey(KeyType.Secp256k1, PRIVATE_UPDATE_KEY_HEX, 'test-update-kid', 'test-update-kms', {
       relation: KeyIdentifierRelation.UPDATE,
-      actionId: 4,
+      actionTimestamp: 4,
     })
     expect(tmpKey).toMatchObject<ManagedKeyInfo>({
       kid: 'test-update-kid',
       kms: 'test-update-kms',
       meta: {
         ion: {
-          actionId: 4,
+          actionTimestamp: 4,
           commitment: 'EiBzp7YhN9mhUcZsFdxnf-lwkRU-hVbBtZWsVoJHV6jkwA',
           relation: 'update',
         },
