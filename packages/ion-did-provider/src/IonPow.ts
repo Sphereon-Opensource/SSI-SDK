@@ -20,7 +20,7 @@ export class IonProofOfWork {
       throw new Error(`Get challenge service not available at ${this.challengeEndpoint}`)
     }
     const challengeBody = await challengeResponse.json()
-    console.log(`challenge body:\r\n${JSON.stringify(challengeBody, null, 2)}`)
+    debug(`challenge body:\r\n${JSON.stringify(challengeBody, null, 2)}`)
 
     const challengeNonce: string = challengeBody.challengeNonce
     const largestAllowedHash: string = challengeBody.largestAllowedHash
@@ -69,8 +69,8 @@ export class IonProofOfWork {
       throw Error(`${solutionResponse.status}: ${solutionResponse.statusText}. Body: ${JSON.stringify(solutionBody, null, 2)}`)
     }
 
-    console.log(`Successful registration`)
-    console.log(solutionBody)
+    debug(`Successful registration`)
+    debug(solutionBody)
     return solutionBody
   }
 
