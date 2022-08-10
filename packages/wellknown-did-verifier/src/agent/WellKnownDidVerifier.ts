@@ -35,9 +35,9 @@ export class WellKnownDidVerifier implements IAgentPlugin {
   private readonly signatureVerifications: Record<string, (args: IVerifyCallbackArgs) => Promise<IVerifyCredentialResult>>
   private readonly onlyVerifyServiceDids: boolean
 
-  constructor(args: IWellKnownDidVerifierOptionsArgs) {
-    this.signatureVerifications = args.signatureVerifications || {}
-    this.onlyVerifyServiceDids = args.onlyVerifyServiceDids || false
+  constructor(args?: IWellKnownDidVerifierOptionsArgs) {
+    this.signatureVerifications = args && args.signatureVerifications || {}
+    this.onlyVerifyServiceDids = args && args.onlyVerifyServiceDids || false
   }
 
   /** {@inheritDoc IWellKnownDidVerifier.registerSignatureVerification} */
