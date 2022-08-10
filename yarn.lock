@@ -3244,6 +3244,16 @@
     fast-text-encoding "^1.0.3"
     isomorphic-webcrypto "^2.3.8"
 
+"@sphereon/ion-pow@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@sphereon/ion-pow/-/ion-pow-0.1.0.tgz#b15588510e2b2036f196b5929eb58f13b329d15f"
+  integrity sha512-ehhWdgnFgoWqT52isn1MJYysDz2xI7bLLFIUo0HvVTyQk4ZSs9npQ60rvuaQosQXQ8jH2xsGrlip8+1xgmpXyg==
+  dependencies:
+    cross-fetch "^3.1.5"
+    debug "^4.1.1"
+    hash-wasm "^4.9.0"
+    uint8arrays "^3.1.0"
+
 "@sphereon/lto-did-ts@0.1.8-unstable.0":
   version "0.1.8-unstable.0"
   resolved "https://registry.yarnpkg.com/@sphereon/lto-did-ts/-/lto-did-ts-0.1.8-unstable.0.tgz#831fe98c759c2b27dd57807c5def88eb998b0a95"
