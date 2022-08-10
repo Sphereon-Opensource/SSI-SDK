@@ -5,8 +5,6 @@ import { KeyIdentifierRelation, KeyType } from '../src/types/ion-provider-types'
 const PRIVATE_RECOVERY_KEY_HEX = '7c90c0575643d09a370c35021c91e9d8af2c968c5f3a4bf73802693511a55b9f'
 const PRIVATE_UPDATE_KEY_HEX = '7288a92f6219c873446abd1f8d26fcbbe1caa5274b47f6f086ef3e7e75dcad8b'
 const PRIVATE_DID_KEY_HEX = '06eb9e64569203679b36f834a4d9725c989d32a7fb52c341eae3517b3aff8ee6'
-// const PRIVATE_DID_ADD_KEY1_HEX = '42f5d6cbb8af0b484453e19193b6d89e814f1ce66d2c1428271c94ff5465d627'
-// const PRIVATE_DID_ADD_KEY2_HEX = 'abebf433281c5bb86ff8a271d2a464e528437041322a58fb8c14815763cfc189'
 
 describe('functions: key generator', () => {
   it('Secp256k1 should generate random keys', () => {

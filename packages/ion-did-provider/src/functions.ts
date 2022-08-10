@@ -52,24 +52,6 @@ export const toIonPublicKeyJwk = (publicKeyHex: string): JwkEs256k => {
 }
 
 /**
- * Generates a JWK pair from a Veramo key
- *
- * @param key The Veramo Key
- * @return The JWK pair
- */
-
-/*
-export function toIonJwkPair(key: MinimalImportableKey | IKey): IIonJwkPair {
-  const privateJwk = key.privateKeyHex ? toIonPrivateKeyJwk(key.privateKeyHex) : undefined
-  const publicJwk = key.publicKeyHex ? toIonPublicKeyJwk(key.publicKeyHex) : undefined
-  return {
-    privateKeyJwk: privateJwk,
-    publicKeyJwk: publicJwk,
-  }
-}
-*/
-
-/**
  * Computes the ION Commitment value from a ION public key
  *
  * @param ionKey The ion public key
