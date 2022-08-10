@@ -40,14 +40,6 @@ export class WellKnownDidVerifier implements IAgentPlugin {
     this.onlyVerifyServiceDids = args.onlyVerifyServiceDids || false
   }
 
-  // constructor(
-  //     signatureVerifications?: Record<string, (args: IVerifyCallbackArgs) => Promise<IVerifyCredentialResult>>,
-  //     onlyVerifyServiceDids?: boolean
-  // ) {
-  //   this.signatureVerifications = signatureVerifications || {}
-  //   this.onlyVerifyServiceDids = onlyVerifyServiceDids || false
-  // }
-
   /** {@inheritDoc IWellKnownDidVerifier.registerSignatureVerification} */
   private async registerSignatureVerification(args: IRegisterSignatureVerificationArgs, context: IRequiredContext): Promise<void> {
     if (this.signatureVerifications[args.key] !== undefined) {
