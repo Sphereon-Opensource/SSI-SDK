@@ -10,8 +10,7 @@
     }
   },
   "scripts": {
-    "build": "tsc --build",
-    "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
+    "build": "tsc --build"
   },
   "dependencies": {
     "@sphereon/wellknown-dids-client": "^0.1.0"
