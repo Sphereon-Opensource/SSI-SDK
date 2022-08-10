@@ -1,16 +1,16 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne } from 'typeorm'
 import { ConnectionEntity } from './ConnectionEntity'
-import { IBasicConnectionMetadataItem } from '@sphereon/ssi-sdk-core'
+import { IBasicConnectionMetadataItem } from '../../types/connections'
 
 @Entity('ConnectionMetadata')
 export class MetadataItemEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('text', { nullable: false })
+  @Column({ name: 'label', length: 255, nullable: false })
   label!: string
 
-  @Column('text', { nullable: false })
+  @Column({ name: 'value', length: 255, nullable: false })
   value!: string
 
   @ManyToOne(() => ConnectionEntity, (connection) => connection.metadata, {

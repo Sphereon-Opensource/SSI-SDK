@@ -1,23 +1,26 @@
 import Debug from 'debug'
 import { Connection } from 'typeorm'
+import { OrPromise } from '@veramo/utils'
+import { AbstractConnectionStore } from '@sphereon/ssi-sdk-connection-manager'
 import {
+  BaseConfigEntity,
   ConnectionConfig,
+  ConnectionEntity,
+  connectionEntityFrom,
+  ConnectionIdentifierEntity,
   ConnectionTypeEnum,
+  DidAuthConfigEntity,
   IConnection,
   IConnectionIdentifier,
   IConnectionMetadataItem,
   IConnectionParty,
   IDidAuthConfig,
   IOpenIdConfig,
-} from '@sphereon/ssi-sdk-core'
-import { AbstractConnectionStore } from '@sphereon/ssi-sdk-connection-manager'
-import { BaseConfigEntity } from '../entities/connection/BaseConfigEntity'
-import { ConnectionIdentifierEntity } from '../entities/connection/ConnectionIdentifierEntity'
-import { DidAuthConfigEntity } from '../entities/connection/DidAuthConfigEntity'
-import { MetadataItemEntity } from '../entities/connection/MetadataItemEntity'
-import { OpenIdConfigEntity } from '../entities/connection/OpenIdConfigEntity'
-import { ConnectionEntity, connectionEntityFrom } from '../entities/connection/ConnectionEntity'
-import { PartyEntity, partyEntityFrom } from '../entities/connection/PartyEntity'
+  MetadataItemEntity,
+  OpenIdConfigEntity,
+  PartyEntity,
+  partyEntityFrom,
+} from '@sphereon/ssi-sdk-data-store-common'
 
 const debug = Debug('sphereon:typeorm:connection-store')
 
@@ -25,8 +28,11 @@ export class ConnectionStore extends AbstractConnectionStore {
   private readonly party_relations = ['connections', 'connections.config', 'connections.metadata', 'connections.identifier']
   private readonly connection_relations = ['config', 'metadata', 'identifier']
 
-  constructor(private dbConnection: Promise<Connection>) {
+  private dbConnection: OrPromise<Connection>
+
+  constructor(dbConnection: OrPromise<Connection>) {
     super()
+    this.dbConnection = dbConnection
   }
 
   getParty = async (partyId: string): Promise<IConnectionParty> => {
@@ -236,14 +242,10 @@ export class ConnectionStore extends AbstractConnectionStore {
   }
 
   private isOpenIdConfig = (config: ConnectionConfig): config is IOpenIdConfig =>
-    'clientSecret' in config &&
-    'issuer' in config &&
-    'redirectUrl' in config &&
-    'dangerouslyAllowInsecureHttpRequests' in config &&
-    'clientAuthMethod' in config
+    'clientSecret' in config && 'issuer' in config && 'redirectUrl' in config
 
   private isDidAuthConfig = (config: ConnectionConfig): config is IDidAuthConfig =>
-    'identifier' in config && 'stateId' in config && 'redirectUrl' in config && 'sessionId' in config
+    'identifier' in config && 'redirectUrl' in config && 'sessionId' in config
 
   private metadataItemFrom = (item: MetadataItemEntity): IConnectionMetadataItem => {
     return {

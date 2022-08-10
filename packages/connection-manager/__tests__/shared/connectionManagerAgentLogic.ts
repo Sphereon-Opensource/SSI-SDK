@@ -1,6 +1,13 @@
 import { TAgent } from '@veramo/core'
 import { IConnectionManager } from '../../src/types/IConnectionManager'
-import { ConnectionIdentifierEnum, ConnectionTypeEnum, IConnection, IConnectionParty, IOpenIdConfig } from '@sphereon/ssi-sdk-core'
+import {
+  ConnectionIdentifierEnum,
+  ConnectionTypeEnum,
+  IBasicConnection,
+  IConnection,
+  IConnectionParty,
+  IOpenIdConfig,
+} from '@sphereon/ssi-sdk-data-store-common'
 
 type ConfiguredAgent = TAgent<IConnectionManager>
 
@@ -10,7 +17,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     let defaultParty: IConnectionParty
     let defaultPartyConnection: IConnection
 
-    const connection = {
+    const connection: IBasicConnection = {
       type: ConnectionTypeEnum.OPENID,
       identifier: {
         type: ConnectionIdentifierEnum.URL,
@@ -199,6 +206,52 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const connectionId = 'unknownConnectionId'
 
       await expect(agent.cmRemoveConnection({ connectionId })).rejects.toThrow(`No connection found for id: ${connectionId}`)
+    })
+
+    it('should succeed adding a default connection', async () => {
+      let parties = await agent.cmGetParties()
+      const origSize = parties.length
+
+      const sphereonName = 'Sphereon'
+      const sphereon = parties.find((party: IConnectionParty) => party.name === sphereonName)
+      if (!sphereon) {
+        await agent.cmAddParty({ name: sphereonName }).then(async (party: IConnectionParty) => {
+          if (!party) {
+            return
+          }
+
+          const connection = {
+            type: ConnectionTypeEnum.OPENID,
+            identifier: {
+              type: ConnectionIdentifierEnum.URL,
+              correlationId: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet',
+            },
+            config: {
+              clientId: 'ssi-wallet',
+              clientSecret: '45de05ae-fefb-49a9-962d-46905df7ed65',
+              issuer: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet',
+              serviceConfiguration: {
+                authorizationEndpoint: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet/protocol/openid-connect/auth',
+                tokenEndpoint: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet/protocol/openid-connect/token',
+              },
+              redirectUrl: 'com.sphereon.ssi.wallet:/callback',
+              dangerouslyAllowInsecureHttpRequests: true,
+              clientAuthMethod: 'post' as const,
+              scopes: ['openid'],
+            },
+            metadata: [
+              {
+                label: 'Connection URL',
+                value: 'https://auth-test.sphereon.com',
+              },
+            ],
+          }
+          await agent.cmAddConnection({ partyId: party.id, connection })
+        })
+      }
+
+      parties = await agent.cmGetParties()
+      expect(parties.length).toEqual(origSize + 1)
     })
   })
 }

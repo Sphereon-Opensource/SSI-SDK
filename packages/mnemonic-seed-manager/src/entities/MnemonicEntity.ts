@@ -1,14 +1,14 @@
 import { Column, Entity, BaseEntity, PrimaryColumn } from 'typeorm'
 
-@Entity('mnemonic_info')
-export class MnemonicInfo extends BaseEntity {
+@Entity('Mnemonic')
+export class MnemonicEntity extends BaseEntity {
   @PrimaryColumn({ name: 'id' })
   //@ts-ignore
   id: string
-  @Column({ name: 'hash' })
+  @Column({ name: 'hash', unique: true })
   //@ts-ignore
   hash: string
-  @Column({ name: 'mnemonic' })
+  @Column({ name: 'mnemonic', unique: true })
   //@ts-ignore
   mnemonic: string
   @Column({ name: 'master_key', default: null })

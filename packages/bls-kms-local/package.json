@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk-bls-kms-local",
   "description": "Sphereon KMS BLS local to support bls keys",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,8 +10,8 @@
     "generate-plugin-schema": "yarn veramo dev extract-api"
   },
   "dependencies": {
-    "@mattrglobal/bbs-signatures": "^1.0.0",
-    "@mattrglobal/node-bbs-signatures": "^0.13.0",
+    "@mattrglobal/bbs-signatures": "1.0.0",
+    "@mattrglobal/node-bbs-signatures": "0.11.0",
     "@veramo/core": "3.1.2-next.84"
   },
   "devDependencies": {
