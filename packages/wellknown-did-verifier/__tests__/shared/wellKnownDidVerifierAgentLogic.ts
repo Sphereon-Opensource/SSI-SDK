@@ -32,7 +32,9 @@ export default (testContext: {
     afterAll(testContext.tearDown)
 
     it('should verify domain linkage with signature verification key', async () => {
-      nock('https://example.com').get('/.well-known/did-configuration.json').times(3).reply(200, DID_CONFIGURATION);
+      nock('https://example.com').get('/.well-known/did-configuration.json')
+        .times(3)
+        .reply(200, DID_CONFIGURATION);
 
       const result = await agent.verifyDomainLinkage({
         didUrl: DID,
@@ -43,7 +45,9 @@ export default (testContext: {
     })
 
     it('should only verify service DIDs when onlyVerifyServiceDids set to true', async () => {
-      nock('https://example.com').get('/.well-known/did-configuration.json').times(3).reply(200, DID_CONFIGURATION);
+      nock('https://example.com').get('/.well-known/did-configuration.json')
+        .times(3)
+        .reply(200, DID_CONFIGURATION);
 
       const result = await agent.verifyDomainLinkage({
         didUrl: DID,
@@ -123,7 +127,7 @@ export default (testContext: {
     if (!testContext.isRestTest) {
       it('should verify domain linkage with signature verification callback', async () => {
         nock('https://example.com').get('/.well-known/did-configuration.json')
-          .times(1)
+          .times(3)
           .reply(200, DID_CONFIGURATION);
 
         const result = await agent.verifyDomainLinkage({
@@ -162,7 +166,9 @@ export default (testContext: {
       })
 
       it('should verify DID configuration resource with signature verification callback', async () => {
-        nock('https://example.com').get('/.well-known/did-configuration.json').times(1).reply(200, DID_CONFIGURATION);
+        nock('https://example.com').get('/.well-known/did-configuration.json')
+          .times(1)
+          .reply(200, DID_CONFIGURATION);
 
         const result = await agent.verifyDidConfigurationResource({
           signatureVerification: () => Promise.resolve({ verified: true }),
