@@ -7,7 +7,7 @@ import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import { IWellKnownDidVerifier } from '../src/types/IWellKnownDidVerifier';
+import { IWellKnownDidVerifier } from '../src/types/IWellKnownDidVerifier'
 import { ServiceTypesEnum } from '@sphereon/wellknown-dids-client/dist/types'
 import wellKnownDidVerifierAgentLogic from './shared/wellKnownDidVerifierAgentLogic'
 
@@ -35,18 +35,18 @@ const setup = async (): Promise<boolean> => {
   const config = getConfig('packages/wellknown-did-verifier/agent.yml')
   const { agent } = createObjects(config, { agent: '/agent' })
 
-  await agent.registerSignatureVerification({
-    signatureVerificationKey: 'verified',
-    signatureVerification: () => Promise.resolve({ verified: true })
-  }, null)
+  await agent.registerSignatureVerification(
+    {
+      signatureVerificationKey: 'verified',
+      signatureVerification: () => Promise.resolve({ verified: true }),
+    },
+    null
+  )
 
-  const DID = 'did:key:z6MkoTHsgNNrby8JzCNQ1iRLyW5QQ6R8Xuu6AA8igGrMVPUM';
-  const ORIGIN = 'https://example.com';
+  const DID = 'did:key:z6MkoTHsgNNrby8JzCNQ1iRLyW5QQ6R8Xuu6AA8igGrMVPUM'
+  const ORIGIN = 'https://example.com'
   const DOCUMENT = {
-    '@context': [
-        'https://www.w3.org/ns/did/v1',
-      'https://identity.foundation/.well-known/did-configuration/v1'
-    ],
+    '@context': ['https://www.w3.org/ns/did/v1', 'https://identity.foundation/.well-known/did-configuration/v1'],
     id: DID,
     verificationMethod: [
       {
@@ -74,7 +74,7 @@ const setup = async (): Promise<boolean> => {
         serviceEndpoint: ORIGIN,
       },
     ],
-  };
+  }
 
   agent.resolveDid = jest.fn().mockReturnValue(Promise.resolve({ didDocument: DOCUMENT }))
 

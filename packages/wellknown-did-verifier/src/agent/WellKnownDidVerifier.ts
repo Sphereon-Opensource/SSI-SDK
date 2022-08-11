@@ -1,7 +1,4 @@
-import {
-  IAgentPlugin,
-  DIDResolutionResult
-} from '@veramo/core'
+import { IAgentPlugin, DIDResolutionResult } from '@veramo/core'
 import { WellKnownDidVerifier as Verifier } from '@sphereon/wellknown-dids-client'
 import {
   IDomainLinkageValidation,
@@ -29,15 +26,15 @@ export class WellKnownDidVerifier implements IAgentPlugin {
     registerSignatureVerification: this.registerSignatureVerification.bind(this),
     removeSignatureVerification: this.removeSignatureVerification.bind(this),
     verifyDomainLinkage: this.verifyDomainLinkage.bind(this),
-    verifyDidConfigurationResource: this.verifyDidConfigurationResource.bind(this)
+    verifyDidConfigurationResource: this.verifyDidConfigurationResource.bind(this),
   }
 
   private readonly signatureVerifications: Record<string, (args: IVerifyCallbackArgs) => Promise<IVerifyCredentialResult>>
   private readonly onlyVerifyServiceDids: boolean
 
   constructor(args?: IWellKnownDidVerifierOptionsArgs) {
-    this.signatureVerifications = args && args.signatureVerifications || {}
-    this.onlyVerifyServiceDids = args && args.onlyVerifyServiceDids || false
+    this.signatureVerifications = (args && args.signatureVerifications) || {}
+    this.onlyVerifyServiceDids = (args && args.onlyVerifyServiceDids) || false
   }
 
   /** {@inheritDoc IWellKnownDidVerifier.registerSignatureVerification} */
@@ -57,22 +54,21 @@ export class WellKnownDidVerifier implements IAgentPlugin {
   /** {@inheritDoc IWellKnownDidVerifier.verifyDomainLinkage} */
   private async verifyDomainLinkage(args: IVerifyDomainLinkageArgs, context: IRequiredContext): Promise<IDomainLinkageValidation> {
     const signatureVerification: (args: IVerifyCallbackArgs) => Promise<IVerifyCredentialResult> =
-        (typeof args.signatureVerification === 'string')
-            ? await this.getSignatureVerification(args.signatureVerification)
-            : args.signatureVerification as (args: IVerifyCallbackArgs) => Promise<IVerifyCredentialResult>
+      typeof args.signatureVerification === 'string'
+        ? await this.getSignatureVerification(args.signatureVerification)
+        : (args.signatureVerification as (args: IVerifyCallbackArgs) => Promise<IVerifyCredentialResult>)
 
-    return context.agent.resolveDid({ didUrl: args.didUrl })
-      .then((didResolutionResult: DIDResolutionResult) => {
-        if (!didResolutionResult.didDocument) {
-          return Promise.reject(Error(`Unable to resolve did: ${args.didUrl}`))
-        }
+    return context.agent.resolveDid({ didUrl: args.didUrl }).then((didResolutionResult: DIDResolutionResult) => {
+      if (!didResolutionResult.didDocument) {
+        return Promise.reject(Error(`Unable to resolve did: ${args.didUrl}`))
+      }
 
-        return new Verifier().verifyDomainLinkage({
-          didDocument: didResolutionResult.didDocument,
-          verifySignatureCallback: signatureVerification,
-          onlyVerifyServiceDid: args.onlyVerifyServiceDids || this.onlyVerifyServiceDids
-        })
+      return new Verifier().verifyDomainLinkage({
+        didDocument: didResolutionResult.didDocument,
+        verifySignatureCallback: signatureVerification,
+        onlyVerifyServiceDid: args.onlyVerifyServiceDids || this.onlyVerifyServiceDids,
       })
+    })
   }
 
   /** {@inheritDoc IWellKnownDidVerifier.verifyDidConfigurationResource} */
@@ -86,15 +82,15 @@ export class WellKnownDidVerifier implements IAgentPlugin {
     }
 
     const signatureVerification: (args: IVerifyCallbackArgs) => Promise<IVerifyCredentialResult> =
-        (typeof args.signatureVerification === 'string')
-            ? await this.getSignatureVerification(args.signatureVerification)
-            : args.signatureVerification as (args: IVerifyCallbackArgs) => Promise<IVerifyCredentialResult>
+      typeof args.signatureVerification === 'string'
+        ? await this.getSignatureVerification(args.signatureVerification)
+        : (args.signatureVerification as (args: IVerifyCallbackArgs) => Promise<IVerifyCredentialResult>)
 
     return new Verifier().verifyResource({
       verifySignatureCallback: signatureVerification,
       configuration: args.configuration,
       origin: args.origin,
-      did: args.did
+      did: args.did,
     })
   }
 

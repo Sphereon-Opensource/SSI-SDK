@@ -11,18 +11,18 @@ const setup = async (): Promise<boolean> => {
   const config = getConfig('packages/wellknown-did-verifier/agent.yml')
   const { localAgent } = createObjects(config, { localAgent: '/agent' })
 
-  await localAgent.registerSignatureVerification({
-    signatureVerificationKey: 'verified',
-    signatureVerification: () => Promise.resolve({ verified: true })
-  }, null)
+  await localAgent.registerSignatureVerification(
+    {
+      signatureVerificationKey: 'verified',
+      signatureVerification: () => Promise.resolve({ verified: true }),
+    },
+    null
+  )
 
-  const DID = 'did:key:z6MkoTHsgNNrby8JzCNQ1iRLyW5QQ6R8Xuu6AA8igGrMVPUM';
-  const ORIGIN = 'https://example.com';
+  const DID = 'did:key:z6MkoTHsgNNrby8JzCNQ1iRLyW5QQ6R8Xuu6AA8igGrMVPUM'
+  const ORIGIN = 'https://example.com'
   const DOCUMENT = {
-    '@context': [
-        'https://www.w3.org/ns/did/v1',
-      'https://identity.foundation/.well-known/did-configuration/v1'
-    ],
+    '@context': ['https://www.w3.org/ns/did/v1', 'https://identity.foundation/.well-known/did-configuration/v1'],
     id: DID,
     verificationMethod: [
       {
@@ -50,7 +50,7 @@ const setup = async (): Promise<boolean> => {
         serviceEndpoint: ORIGIN,
       },
     ],
-  };
+  }
 
   localAgent.resolveDid = jest.fn().mockReturnValue(Promise.resolve({ didDocument: DOCUMENT }))
 
