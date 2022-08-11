@@ -24,12 +24,12 @@ export interface IWellKnownDidVerifierOptionsArgs {
 }
 
 export interface IRegisterSignatureVerificationArgs {
-  key: string
+  signatureVerificationKey: string
   signatureVerification: (args: IVerifyCallbackArgs) => Promise<IVerifyCredentialResult>
 }
 
 export interface IRemoveSignatureVerificationArgs {
-  key: string
+  signatureVerificationKey: string
 }
 
 export interface IVerifyDomainLinkageArgs {

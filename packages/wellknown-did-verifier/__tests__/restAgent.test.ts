@@ -36,7 +36,7 @@ const setup = async (): Promise<boolean> => {
   const { agent } = createObjects(config, { agent: '/agent' })
 
   await agent.registerSignatureVerification({
-    key: 'verified',
+    signatureVerificationKey: 'verified',
     signatureVerification: () => Promise.resolve({ verified: true })
   }, null)
 

@@ -42,16 +42,16 @@ export class WellKnownDidVerifier implements IAgentPlugin {
 
   /** {@inheritDoc IWellKnownDidVerifier.registerSignatureVerification} */
   private async registerSignatureVerification(args: IRegisterSignatureVerificationArgs, context: IRequiredContext): Promise<void> {
-    if (this.signatureVerifications[args.key] !== undefined) {
-      return Promise.reject(new Error(`Signature validation with key: ${args.key} already present`))
+    if (this.signatureVerifications[args.signatureVerificationKey] !== undefined) {
+      return Promise.reject(new Error(`Signature validation with key: ${args.signatureVerificationKey} already present`))
     }
 
-    this.signatureVerifications[args.key] = args.signatureVerification
+    this.signatureVerifications[args.signatureVerificationKey] = args.signatureVerification
   }
 
   /** {@inheritDoc IWellKnownDidVerifier.removeSignatureVerification} */
   private async removeSignatureVerification(args: IRemoveSignatureVerificationArgs, context: IRequiredContext): Promise<boolean> {
-    return delete this.signatureVerifications[args.key]
+    return delete this.signatureVerifications[args.signatureVerificationKey]
   }
 
   /** {@inheritDoc IWellKnownDidVerifier.verifyDomainLinkage} */

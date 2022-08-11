@@ -12,7 +12,7 @@ const setup = async (): Promise<boolean> => {
   const { localAgent } = createObjects(config, { localAgent: '/agent' })
 
   await localAgent.registerSignatureVerification({
-    key: 'verified',
+    signatureVerificationKey: 'verified',
     signatureVerification: () => Promise.resolve({ verified: true })
   }, null)
 
