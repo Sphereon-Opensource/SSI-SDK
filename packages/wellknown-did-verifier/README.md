@@ -12,7 +12,7 @@
 
 ---
 
-A `Sphereon SSI-SDK` plugin to verify relationships between the controller of an origin and a DID and to verify DID configuration resources.
+A `Sphereon SSI-SDK` plugin to verify relationships between the controller of an origin and a DID conforming to the DIF [spec for well-known DID Configurations](https://identity.foundation/.well-known/resources/did-configuration/)   It is written in Typescript and can be compiled to any target JavaScript version.
 
 ## Available functions
 * registerSignatureValidation
@@ -42,9 +42,11 @@ const agent = createAgent<IWellKnownDidVerifier>({
 
 ### Register signature verification callback:
 
+Registers a callback function to be called within the verification process, to verify the signature of the credentials within the DID configuration resource.
+
 ```typescript
 agent.registerSignatureVerification({
-  key: 'example_key',
+  signatureVerificationKey: 'example_key',
   signatureVerification: () => Promise.resolve({ verified: true })
 })
   .then(() => console.log('success'))
@@ -53,13 +55,18 @@ agent.registerSignatureVerification({
 
 ### Remove signature verification callback:
 
+Removes a registered callback function.
+
 ```typescript
-agent.removeSignatureVerification({ key: 'example_key' })
+agent.removeSignatureVerification({ signatureVerificationKey: 'example_key' })
   .then(() => console.log('success'))
   .catch(() => console.log('failed'))
 ```
 
 ### Verify domain linkage:
+
+Verifies the relationship between the controller of an origin and a given DID. 
+Option available to only verify the service DID.
 
 ```typescript
 agent.verifyDomainLinkage({
@@ -72,12 +79,16 @@ agent.verifyDomainLinkage({
 
 ### Verify DID configuration resource:
 
-You can either pass in a DID configuration resource or fetch it remotely by setting a secure well-known location (origin). 
+Verifies a DID configuration resource and domain linkage credentials it holds.
+
+You can either pass in a DID configuration resource or fetch it remotely by setting a secure well-known location (origin).
+Option available to only verify a given DID.
 
 ```typescript
 agent.verifyDidConfigurationResource({
   signatureVerification: () => Promise.resolve({ verified: true }),
-  origin: 'https://example.com'
+  origin: 'https://example.com',
+  did: 'did:key:z6MkoTHsgNNrby8JzCNQ1iRLyW5QQ6R8Xuu6AA8igGrMVPUM#foo'
 })
 .then((result: IResourceValidation) => console.log(result.status))
 ```
