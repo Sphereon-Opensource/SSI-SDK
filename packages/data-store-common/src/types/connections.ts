@@ -27,8 +27,8 @@ export interface IConnection {
   identifier: IConnectionIdentifier
   config: ConnectionConfig
   metadata?: Array<IConnectionMetadataItem>
-  createdAt: Date
-  lastUpdatedAt: Date
+  createdAt: string
+  lastUpdatedAt: string
 }
 
 export interface IBasicConnection {
