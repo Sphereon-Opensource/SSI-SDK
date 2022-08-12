@@ -1,15 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToOne,
-  JoinColumn,
-  BaseEntity,
-  ManyToOne,
-  OneToMany,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
 import { ConnectionIdentifierEntity, connectionIdentifierEntityFrom } from './ConnectionIdentifierEntity'
 import { MetadataItemEntity, metadataItemEntityFrom } from './MetadataItemEntity'
@@ -24,12 +13,10 @@ import {
 } from '../../types/connections'
 import { openIdConfigEntityFrom } from './OpenIdConfigEntity'
 import { didAuthConfigEntityFrom } from './DidAuthConfigEntity'
+import { AbstractBaseEntity } from './AbstractBaseEntity'
 
 @Entity('Connection')
-export class ConnectionEntity extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id!: string
-
+export class ConnectionEntity extends AbstractBaseEntity {
   @Column('simple-enum', { nullable: false, enum: ConnectionTypeEnum })
   type!: ConnectionTypeEnum
 
@@ -41,7 +28,7 @@ export class ConnectionEntity extends BaseEntity {
   @JoinColumn()
   config!: BaseConfigEntity
 
-  @OneToMany(() => MetadataItemEntity, (metadata: MetadataItemEntity) => metadata.connection, { cascade: true })
+  @OneToMany(() => MetadataItemEntity, (metadata: MetadataItemEntity) => metadata.connection, { cascade: true, eager: true })
   @JoinColumn()
   metadata!: Array<MetadataItemEntity>
 
@@ -49,12 +36,6 @@ export class ConnectionEntity extends BaseEntity {
     onDelete: 'CASCADE',
   })
   party!: PartyEntity
-
-  @CreateDateColumn({ name: 'created_at', nullable: false })
-  createdAt!: Date
-
-  @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
-  lastUpdatedAt!: Date
 }
 
 export const connectionEntityFrom = (connection: IBasicConnection): ConnectionEntity => {

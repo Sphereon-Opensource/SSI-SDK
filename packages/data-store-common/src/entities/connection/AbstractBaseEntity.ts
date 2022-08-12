@@ -1,8 +1,6 @@
-import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn, TableInheritance } from 'typeorm'
+import { BaseEntity, BeforeInsert, BeforeUpdate, Column, PrimaryGeneratedColumn } from 'typeorm'
 
-@Entity('BaseConfigEntity')
-@TableInheritance({ column: { type: 'varchar', name: 'type' } })
-export abstract class BaseConfigEntity extends BaseEntity {
+export abstract class AbstractBaseEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 

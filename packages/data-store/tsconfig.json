@@ -8,10 +8,10 @@
   },
   "references": [
     {
-      "path": "../connection-manager"
+      "path": "../data-store-common"
     },
     {
-      "path": "../data-store-common"
+      "path": "../connection-manager"
     }
   ]
 }

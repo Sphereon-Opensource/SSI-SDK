@@ -1,5 +1,5 @@
 import { TAgent } from '@veramo/core'
-import { IConnectionManager } from '../../src/types/IConnectionManager'
+import { IConnectionManager } from '@sphereon/ssi-sdk-connection-manager'
 import {
   ConnectionIdentifierEnum,
   ConnectionTypeEnum,
@@ -151,7 +151,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result).not.toBeNull()
     })
 
-    it('should update connection config by id', async () => {
+    it('should update connection config', async () => {
       const clientSecret = '423af84c-bfb5-4605-bf6f-3b088d2ff0da'
       const connection = {
         ...defaultPartyConnection,
@@ -168,7 +168,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
 
       const result = await agent.cmUpdateConnection({ connection })
-
       expect((result.config as IOpenIdConfig).clientSecret).toEqual(clientSecret)
     })
 

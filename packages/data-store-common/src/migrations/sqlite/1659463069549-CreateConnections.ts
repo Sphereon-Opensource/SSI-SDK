@@ -5,7 +5,7 @@ export class CreateConnections1659463069549 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "BaseConfigEntity" ("id" varchar PRIMARY KEY NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "client_id" varchar(255), "client_secret" varchar(255), "scopes" text, "issuer" text, "redirect_url" text, "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "identifier" text, "session_id" varchar(255), "type" varchar NOT NULL)`
+      `CREATE TABLE "BaseConfigEntity" ("id" varchar PRIMARY KEY NOT NULL, "created_at" varchar NOT NULL, "last_updated_at" varchar NOT NULL, "client_id" varchar(255), "client_secret" varchar(255), "scopes" text, "issuer" text, "redirect_url" text, "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "identifier" text, "session_id" varchar(255), "type" varchar NOT NULL)`
     )
     await queryRunner.query(`CREATE INDEX "IDX_BaseConfigEntity_type" ON "BaseConfigEntity" ("type") `)
     await queryRunner.query(
@@ -18,7 +18,7 @@ export class CreateConnections1659463069549 implements MigrationInterface {
       `CREATE TABLE "Party" ("id" varchar PRIMARY KEY NOT NULL, "name" varchar(255) NOT NULL, CONSTRAINT "UQ_Party_name" UNIQUE ("name"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "Connection" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('openid','didauth','siopv2+oidc4vp') ) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "identifierId" varchar, "configId" varchar, "partyId" varchar, CONSTRAINT "REL_Connection_identifierId" UNIQUE ("identifierId"), CONSTRAINT "REL_Connection_configId" UNIQUE ("configId"))`
+      `CREATE TABLE "Connection" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('openid','didauth','siopv2+oidc4vp') ) NOT NULL, "created_at" varchar NOT NULL, "last_updated_at" varchar NOT NULL, "identifierId" varchar, "configId" varchar, "partyId" varchar, CONSTRAINT "REL_Connection_identifierId" UNIQUE ("identifierId"), CONSTRAINT "REL_Connection_configId" UNIQUE ("configId"))`
     )
     await queryRunner.query(
       `CREATE TABLE "temporary_ConnectionMetadata" ("id" varchar PRIMARY KEY NOT NULL, "label" varchar(255) NOT NULL, "value" varchar(255) NOT NULL, "connectionId" varchar, CONSTRAINT "FK_ConnectionMetadata_connectionId" FOREIGN KEY ("connectionId") REFERENCES "Connection" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
@@ -41,7 +41,7 @@ export class CreateConnections1659463069549 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`ALTER TABLE "Connection" RENAME TO "temporary_Connection"`)
     await queryRunner.query(
-      `CREATE TABLE "Connection" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('openid','didauth','siopv2+oidc4vp') ) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "identifierId" varchar, "configId" varchar, "partyId" varchar, CONSTRAINT "REL_Connection_identifierId" UNIQUE ("identifierId"), CONSTRAINT "REL_Connection_configId" UNIQUE ("configId"))`
+      `CREATE TABLE "Connection" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('openid','didauth','siopv2+oidc4vp') ) NOT NULL, "created_at" varchar NOT NULL, "last_updated_at" varchar NOT NULL, "identifierId" varchar, "configId" varchar, "partyId" varchar, CONSTRAINT "REL_Connection_identifierId" UNIQUE ("identifierId"), CONSTRAINT "REL_Connection_configId" UNIQUE ("configId"))`
     )
     await queryRunner.query(
       `INSERT INTO "Connection"("id", "type", "created_at", "last_updated_at", "identifierId", "configId", "partyId") SELECT "id", "type", "created_at", "last_updated_at", "identifierId", "configId", "partyId" FROM "temporary_Connection"`
