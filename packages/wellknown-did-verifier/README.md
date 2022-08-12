@@ -71,7 +71,7 @@ Option available to only verify the service DID.
 ```typescript
 agent
   .verifyDomainLinkage({
-    didUrl: 'did:key:z6MkoTHsgNNrby8JzCNQ1iRLyW5QQ6R8Xuu6AA8igGrMVPUM#foo',
+    did: 'did:key:z6MkoTHsgNNrby8JzCNQ1iRLyW5QQ6R8Xuu6AA8igGrMVPUM',
     signatureVerification: 'verified',
     onlyVerifyServiceDids: false,
   })

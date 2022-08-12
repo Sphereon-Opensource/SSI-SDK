@@ -58,9 +58,9 @@ export class WellKnownDidVerifier implements IAgentPlugin {
         ? await this.getSignatureVerification(args.signatureVerification)
         : (args.signatureVerification as (args: IVerifyCallbackArgs) => Promise<IVerifyCredentialResult>)
 
-    return context.agent.resolveDid({ didUrl: args.didUrl }).then((didResolutionResult: DIDResolutionResult) => {
+    return context.agent.resolveDid({ didUrl: args.did }).then((didResolutionResult: DIDResolutionResult) => {
       if (!didResolutionResult.didDocument) {
-        return Promise.reject(Error(`Unable to resolve did: ${args.didUrl}`))
+        return Promise.reject(Error(`Unable to resolve did: ${args.did}`))
       }
 
       return new Verifier().verifyDomainLinkage({

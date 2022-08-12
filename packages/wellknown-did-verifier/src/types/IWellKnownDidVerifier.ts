@@ -29,7 +29,7 @@ export interface IRemoveSignatureVerificationArgs {
 }
 
 export interface IVerifyDomainLinkageArgs {
-  didUrl: string
+  did: string
   signatureVerification: ((args: IVerifyCallbackArgs) => Promise<IVerifyCredentialResult>) | string
   onlyVerifyServiceDids?: boolean
 }
