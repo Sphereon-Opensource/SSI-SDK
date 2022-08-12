@@ -7,6 +7,8 @@ on:
       - 'develop'
       - 'feature/**'
       - 'feat/**'
+      - 'fixes/**'
+      - 'fix/**'
 
 jobs:
   build-test-publish:
@@ -84,5 +86,5 @@ jobs:
         run: yarn publish:next
 
       - name: publish @unstable when on unstable branch
-        if: startsWith(github.ref, 'refs/heads/feat')
+        if: startsWith(github.ref, 'refs/heads/feat') || startsWith(github.ref, 'refs/heads/fix')
         run: yarn publish:unstable
