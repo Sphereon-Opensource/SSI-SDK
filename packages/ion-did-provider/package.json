@@ -8,9 +8,18 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@sphereon/ion-tools": "0.1.0-sphereon.1",
+    "@decentralized-identity/ion-sdk": "^0.5.0",
+    "@sphereon/ion-pow": "^0.1.0",
+    "@transmute/did-key-secp256k1": "0.2.1-unstable.42",
+    "hash-wasm": "^4.9.0",
+    "@ethersproject/random": "^5.6.1",
+    "@stablelib/ed25519": "^1.0.2",
+    "uint8arrays": "^3.1.0",
+    "base64url": "^3.0.1",
     "@veramo/core": "3.1.2-next.84",
     "@veramo/did-manager": "3.1.2-next.84",
+    "@veramo/key-manager": "3.1.2-next.84",
+    "@veramo/kms-local": "3.1.2-next.84",
     "debug": "^4.1.1"
   },
   "devDependencies": {
