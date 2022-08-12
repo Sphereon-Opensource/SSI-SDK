@@ -4,10 +4,15 @@
   ],
   "version": "0.7.0",
   "npmClient": "yarn",
+  "changelog": {
+    "repo": "sphereon-opensource/ssi-sdk",
+    "cacheDir": ".changelog"
+  },
   "command": {
     "publish": {
       "allowBranch": [
         "main",
+        "next",
         "master"
       ],
       "conventionalCommits": true,
