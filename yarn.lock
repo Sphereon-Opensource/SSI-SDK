@@ -3284,11 +3284,6 @@
     nanoid "^3.3.4"
     string.prototype.matchall "^4.0.7"
 
-"@sphereon/react-native-argon2@^2.0.6":
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/@sphereon/react-native-argon2/-/react-native-argon2-2.0.6.tgz#602abb96d6d41a7f0778a3323940fca0b4fa13ed"
-  integrity sha512-5RkIzhfeDw12p1t2BcQQJyYmgtPE3CQDPLwPfwpnVGamG5R8tY4FhJRNScGzRzttHw6tbBWC1acZ2IM0swEmUQ==
-
 "@sphereon/wellknown-dids-client@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@sphereon/wellknown-dids-client/-/wellknown-dids-client-0.1.0.tgz#b682cfad2086513564dbde3df1388a2fd865f3be"
