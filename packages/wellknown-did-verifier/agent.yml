@@ -1,0 +1,105 @@
+version: 3.0
+
+constants:
+  baseUrl: http://localhost:3335
+  port: 3335
+  methods:
+    - registerSignatureValidation
+    - removeSignatureValidation
+    - verifyDomainLinkage
+    - verifyDidConfigurationResource
+
+server:
+  baseUrl:
+    $ref: /constants/baseUrl
+  port:
+    $ref: /constants/port
+  use:
+    # CORS
+    - - $require: 'cors'
+
+    # Add agent to the request object
+    - - $require: '@veramo/remote-server?t=function#RequestWithAgentRouter'
+        $args:
+          - agent:
+              $ref: /agent
+
+    # API base path
+    - - /agent
+      - $require: '@veramo/remote-server?t=function#apiKeyAuth'
+        $args:
+          # Please configure your own API key. This is used when executing agent methods through ${baseUrl}/agent or ${baseUrl}/api-docs
+          - apiKey: test123
+      - $require: '@veramo/remote-server?t=function#AgentRouter'
+        $args:
+          - exposedMethods:
+              $ref: /constants/methods
+
+    # Open API schema
+    - - /open-api.json
+      - $require: '@veramo/remote-server?t=function#ApiSchemaRouter'
+        $args:
+          - basePath: :3335/agent
+            securityScheme: bearer
+            apiName: Agent
+            apiVersion: '1.0.0'
+            exposedMethods:
+              $ref: /constants/methods
+
+    # Swagger docs
+    - - /api-docs
+      - $require: swagger-ui-express?t=object#serve
+      - $require: swagger-ui-express?t=function#setup
+        $args:
+          - null
+          - swaggerOptions:
+              url: '/open-api.json'
+
+  # Execute during server initialization
+  init:
+    - $require: '@veramo/remote-server?t=function#createDefaultDid'
+      $args:
+        - agent:
+            $ref: /agent
+          baseUrl:
+            $ref: /constants/baseUrl
+          messagingServiceEndpoint: /messaging
+
+didResolver:
+  $require: '@veramo/did-resolver#DIDResolverPlugin'
+  $args:
+    - resolver:
+        $require: did-resolver#Resolver
+        $args:
+          - web:
+              $ref: /web-did-resolver
+            key:
+              $ref: /did-key-resolver
+            elem:
+              $ref: /universal-resolver
+            io:
+              $ref: /universal-resolver
+            ion:
+              $ref: /universal-resolver
+            sov:
+              $ref: /universal-resolver
+
+universal-resolver:
+  $require: '@veramo/did-resolver#UniversalResolver'
+  $args:
+    - url: https://dev.uniresolver.io/1.0/identifiers/
+
+did-key-resolver:
+  $require: '@veramo/did-provider-key?t=function&p=/key#getDidKeyResolver'
+
+web-did-resolver:
+  $require: web-did-resolver?t=function&p=/web#getResolver
+
+# Agent
+agent:
+  $require: '@veramo/core#Agent'
+  $args:
+    - schemaValidation: false
+      plugins:
+        - $ref: /didResolver
+        - $require: ./packages/wellknown-did-verifier/dist#WellKnownDidVerifier
