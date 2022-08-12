@@ -5,7 +5,7 @@ export class CreateConnections1659463079428 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "BaseConfigEntity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "client_id" character varying(255), "client_secret" character varying(255), "scopes" text, "issuer" text, "redirect_url" text, "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "identifier" text, "session_id" character varying(255), "type" character varying NOT NULL, CONSTRAINT "PK_BaseConfigEntity_id" PRIMARY KEY ("id"))`
+      `CREATE TABLE "BaseConfigEntity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" character varying NOT NULL, "last_updated_at" character varying NOT NULL, "client_id" character varying(255), "client_secret" character varying(255), "scopes" text, "issuer" text, "redirect_url" text, "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "identifier" text, "session_id" character varying(255), "type" character varying NOT NULL, CONSTRAINT "PK_BaseConfigEntity_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(`CREATE INDEX "IDX_BaseConfigEntity_type" ON "BaseConfigEntity" ("type") `)
     await queryRunner.query(`CREATE TYPE "public"."ConnectionIdentifier_type_enum" AS ENUM('did', 'url')`)
@@ -20,7 +20,7 @@ export class CreateConnections1659463079428 implements MigrationInterface {
     )
     await queryRunner.query(`CREATE TYPE "public"."Connection_type_enum" AS ENUM('openid', 'didauth', 'siopv2+oidc4vp')`)
     await queryRunner.query(
-      `CREATE TABLE "Connection" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."Connection_type_enum" NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "identifierId" uuid, "configId" uuid, "partyId" uuid, CONSTRAINT "REL_Connection_identifierId" UNIQUE ("identifierId"), CONSTRAINT "REL_Connection_configId" UNIQUE ("configId"), CONSTRAINT "PK_Connection_id" PRIMARY KEY ("id"))`
+      `CREATE TABLE "Connection" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."Connection_type_enum" NOT NULL, "created_at" character varying NOT NULL, "last_updated_at" character varying NOT NULL, "identifierId" uuid, "configId" uuid, "partyId" uuid, CONSTRAINT "REL_Connection_identifierId" UNIQUE ("identifierId"), CONSTRAINT "REL_Connection_configId" UNIQUE ("configId"), CONSTRAINT "PK_Connection_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
       `ALTER TABLE "ConnectionMetadata" ADD CONSTRAINT "FK_ConnectionMetadata_connectionId" FOREIGN KEY ("connectionId") REFERENCES "Connection"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
