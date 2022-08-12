@@ -45,7 +45,7 @@ Registers a callback function to be called within the verification process, to v
 ```typescript
 agent
   .registerSignatureVerification({
-    signatureVerificationKey: 'example_key',
+    callbackName: 'example_key',
     signatureVerification: () => Promise.resolve({ verified: true }),
   })
   .then(() => console.log('success'))
@@ -58,7 +58,7 @@ Removes a registered callback function.
 
 ```typescript
 agent
-  .removeSignatureVerification({ signatureVerificationKey: 'example_key' })
+  .removeSignatureVerification({ callbackName: 'example_key' })
   .then(() => console.log('success'))
   .catch(() => console.log('failed'))
 ```

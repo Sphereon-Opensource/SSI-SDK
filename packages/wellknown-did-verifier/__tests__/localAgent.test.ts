@@ -13,7 +13,7 @@ const setup = async (): Promise<boolean> => {
 
   await localAgent.registerSignatureVerification(
     {
-      signatureVerificationKey: 'verified',
+      callbackName: 'verified',
       signatureVerification: () => Promise.resolve({ verified: true }),
     },
     null

@@ -37,7 +37,7 @@ const setup = async (): Promise<boolean> => {
 
   await agent.registerSignatureVerification(
     {
-      signatureVerificationKey: 'verified',
+      callbackName: 'verified',
       signatureVerification: () => Promise.resolve({ verified: true }),
     },
     null

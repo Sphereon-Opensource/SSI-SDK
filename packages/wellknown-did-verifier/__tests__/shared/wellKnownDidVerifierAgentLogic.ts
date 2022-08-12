@@ -35,7 +35,7 @@ export default (testContext: {
       nock('https://example.com').get('/.well-known/did-configuration.json').times(3).reply(200, DID_CONFIGURATION)
 
       const result = await agent.verifyDomainLinkage({
-        didUrl: DID,
+        did: DID,
         signatureVerification: 'verified',
       })
 
@@ -46,7 +46,7 @@ export default (testContext: {
       nock('https://example.com').get('/.well-known/did-configuration.json').times(3).reply(200, DID_CONFIGURATION)
 
       const result = await agent.verifyDomainLinkage({
-        didUrl: DID,
+        did: DID,
         signatureVerification: 'verified',
         onlyVerifyServiceDids: true,
       })
@@ -58,7 +58,7 @@ export default (testContext: {
       const signatureVerificationKey = 'unknown'
       await expect(
         agent.verifyDomainLinkage({
-          didUrl: DID,
+          did: DID,
           signatureVerification: signatureVerificationKey,
         })
       ).rejects.toThrow(`Signature validation not found for key: ${signatureVerificationKey}`)
@@ -121,7 +121,7 @@ export default (testContext: {
         nock('https://example.com').get('/.well-known/did-configuration.json').times(3).reply(200, DID_CONFIGURATION)
 
         const result = await agent.verifyDomainLinkage({
-          didUrl: DID,
+          did: DID,
           signatureVerification: () => Promise.resolve({ verified: true }),
         })
 
@@ -129,28 +129,28 @@ export default (testContext: {
       })
 
       it('should register signature verification', async () => {
-        const signatureVerificationKey = 'new'
+        const callbackName = 'new'
         await agent.registerSignatureVerification({
-          signatureVerificationKey,
+          callbackName,
           signatureVerification: () => Promise.resolve({ verified: true }),
         })
 
         await expect(
           agent.registerSignatureVerification({
-            signatureVerificationKey,
+            callbackName,
             signatureVerification: () => Promise.resolve({ verified: true }),
           })
-        ).rejects.toThrow(`Signature validation with key: ${signatureVerificationKey} already present`)
+        ).rejects.toThrow(`Signature validation with key: ${callbackName} already present`)
       })
 
       it('should remove signature verification', async () => {
-        const signatureVerificationKey = 'remove'
+        const callbackName = 'remove'
         await agent.registerSignatureVerification({
-          signatureVerificationKey,
+          callbackName,
           signatureVerification: () => Promise.resolve({ verified: true }),
         })
 
-        const result = await agent.removeSignatureVerification({ signatureVerificationKey })
+        const result = await agent.removeSignatureVerification({ callbackName })
 
         expect(result).toEqual(true)
       })
