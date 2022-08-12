@@ -2,6 +2,7 @@
   "files": [],
   "references": [
     { "path": "ssi-sdk-core" },
+    { "path": "data-store-common" },
     { "path": "factom-did-provider" },
     { "path": "lto-did-provider" },
     { "path": "mnemonic-seed-manager" },
@@ -15,7 +16,6 @@
     { "path": "bls-kms-local" },
     { "path": "bls-did-provider-key" },
     { "path": "bls-key-manager" },
-    { "path": "data-store-common" },
     { "path": "connection-manager" },
     { "path": "data-store" },
     { "path": "ion-did-provider" },

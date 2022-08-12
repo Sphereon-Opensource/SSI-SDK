@@ -28,7 +28,7 @@ export class ConnectionEntity extends AbstractBaseEntity {
   @JoinColumn()
   config!: BaseConfigEntity
 
-  @OneToMany(() => MetadataItemEntity, (metadata: MetadataItemEntity) => metadata.connection, { cascade: true })
+  @OneToMany(() => MetadataItemEntity, (metadata: MetadataItemEntity) => metadata.connection, { cascade: true, eager: true })
   @JoinColumn()
   metadata!: Array<MetadataItemEntity>
 

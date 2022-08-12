@@ -7,7 +7,7 @@ import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import { IConnectionManager } from '../src/types/IConnectionManager'
+import { IConnectionManager } from '../../src/types/IConnectionManager'
 import connectionManagerAgentLogic from './shared/connectionManagerAgentLogic'
 
 jest.setTimeout(30000)

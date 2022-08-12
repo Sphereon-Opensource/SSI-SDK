@@ -148,12 +148,12 @@ export class ConnectionStore extends AbstractConnectionStore {
   }
 
   updateConnection = async (connection: IConnection): Promise<IConnection> => {
-    const result = await (await this.dbConnection).getRepository(ConnectionEntity).findOne({
+    const existingConnection = await (await this.dbConnection).getRepository(ConnectionEntity).findOne({
       where: { id: connection.id },
       relations: this.connection_relations,
     })
 
-    if (!result) {
+    if (!existingConnection) {
       return Promise.reject(Error(`No connection found for id: ${connection.id}`))
     }
 
@@ -161,8 +161,14 @@ export class ConnectionStore extends AbstractConnectionStore {
       return Promise.reject(Error(`Connection type ${connection.type}, does not match for provided config`))
     }
 
+    // We need to merge properties and ensure consistent ids
+    const updatedConfig = { ...existingConnection.config, ...connection.config }
+    const updatedConnection = { ...existingConnection, ...connection }
+    updatedConnection.config = updatedConfig
+    updatedConfig.id = existingConnection.config.id
+
     debug('Updating connection', connection)
-    const updatedResult = await (await this.dbConnection).getRepository(ConnectionEntity).save(connection, { transaction: true })
+    const updatedResult = await (await this.dbConnection).getRepository(ConnectionEntity).save(updatedConnection, { transaction: true })
 
     return this.connectionFrom(updatedResult)
   }

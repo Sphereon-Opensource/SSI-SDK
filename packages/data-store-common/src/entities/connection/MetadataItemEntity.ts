@@ -14,7 +14,7 @@ export class MetadataItemEntity extends BaseEntity {
   value!: string
 
   @ManyToOne(() => ConnectionEntity, (connection) => connection.metadata, {
-    onDelete: 'CASCADE',
+    cascade: false,
   })
   connection!: ConnectionEntity
 }
