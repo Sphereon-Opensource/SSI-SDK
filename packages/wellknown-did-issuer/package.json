@@ -1,0 +1,44 @@
+{
+  "name": "@sphereon/ssi-sdk-wellknown-did-issuer",
+  "version": "0.7.0",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "veramo": {
+    "pluginInterfaces": {
+      "IWellknownDidIssuer": "./src/types/IWellKnownDidIssuer.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "dependencies": {
+    "@sphereon/wellknown-dids-client": "^0.1.0"
+  },
+  "devDependencies": {
+    "@veramo/cli": "3.1.2-next.84",
+    "nock": "^13.2.9",
+    "typescript": "4.6.4"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "plugin.schema.json",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "DID",
+    "Domain Linkage",
+    "DID Configuration Resource",
+    "Issuer",
+    "Well-Known DIDs",
+    "Verifiable Credential"
+  ]
+}
