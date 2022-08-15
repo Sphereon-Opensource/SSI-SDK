@@ -1,5 +1,5 @@
 import { TAgent } from '@veramo/core'
-import { IConnectionManager } from '@sphereon/ssi-sdk-connection-manager'
+import { IConnectionManager } from '../../types/IConnectionManager'
 import {
   ConnectionIdentifierEnum,
   ConnectionTypeEnum,
