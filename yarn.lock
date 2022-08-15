@@ -3193,7 +3193,37 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sphereon/did-auth-siop@0.2.12", "@sphereon/did-auth-siop@^0.2.12":
+"@sphereon/did-auth-siop@0.2.13":
+  version "0.2.13"
+  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.2.13.tgz#270d80d1e1d86cc12271961fda281ff4400a95cd"
+  integrity sha512-ZFT+CoFGXsWcEnBvnagMuREtWI70P0MNTclYwCMHXlUgDYscJBu84RDXV3g0ONX0N4X3KFPCZHgtLXceg1dQGw==
+  dependencies:
+    "@sphereon/did-uni-client" "^0.4.0"
+    "@sphereon/pex" "^1.1.3"
+    "@sphereon/pex-models" "^1.1.0"
+    "@stablelib/ed25519" "^1.0.2"
+    "@stablelib/random" "^1.0.1"
+    "@stablelib/sha256" "^1.0.1"
+    "@stablelib/x25519" "^1.0.2"
+    "@stablelib/xchacha20poly1305" "^1.0.1"
+    base64url "^3.0.1"
+    bech32 "^2.0.0"
+    bs58 "^4.0.1"
+    canonicalize "^1.0.8"
+    cross-fetch "^3.1.5"
+    did-jwt "6.2.0"
+    did-resolver "^3.2.2"
+    elliptic "^6.5.4"
+    eth-crypto "^2.3.0"
+    jose "3.20.3"
+    js-sha3 "^0.8.0"
+    multiformats "^9.7.1"
+    querystring "^0.2.1"
+    ts-interface-checker "^1.0.2"
+    uint8arrays "^3.1.0"
+    uuid "^8.3.2"
+
+"@sphereon/did-auth-siop@^0.2.12":
   version "0.2.12"
   resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.2.12.tgz#e8e036ab8a7f03f16dbdff2dbf5aedd3012fbb8f"
   integrity sha512-HbyLcCyRQmovCXkP1yvjYCHyCD5RqHgvSZKMkM9Co7FvElu6jtxG64stgXnqQ+xQF3Q9saEetGPWHDwMBqaI4Q==
@@ -3270,6 +3300,19 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@sphereon/pex-models/-/pex-models-1.1.0.tgz#716898344fd07400bbffaa0c34a1f7ecdda14166"
   integrity sha512-kMslWspdqwuXGBFxOPXTAK8HlIHycBR/locYHMlYmyvdnau6bp40JXk2zviBRVOPfe8N3Dv2p5IPAjMk3pT77A==
+
+"@sphereon/pex@1.1.3", "@sphereon/pex@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@sphereon/pex/-/pex-1.1.3.tgz#450d3a839c92c60942439378314791fdff88e3a9"
+  integrity sha512-9k+g3zDAfIwmzbmZ9sfdgIpm7OCTURDprmpgCNGda5aAxRvErEZOakn3vsT5y6ac3g8Os2QolZi4bEYyuvKq3w==
+  dependencies:
+    "@sphereon/pex-models" "^1.1.0"
+    ajv "^8.11.0"
+    ajv-formats "^2.1.1"
+    jsonpath "^1.1.1"
+    jwt-decode "^3.1.2"
+    nanoid "^3.3.4"
+    string.prototype.matchall "^4.0.7"
 
 "@sphereon/pex@^1.1.2":
   version "1.1.2"
@@ -6734,6 +6777,24 @@ did-jwt@5.11.1:
     elliptic "^6.5.4"
     js-sha3 "^0.8.0"
     multiformats "^9.4.10"
+    uint8arrays "^3.0.0"
+
+did-jwt@6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/did-jwt/-/did-jwt-6.2.0.tgz#5c4009871ad1ad85ec80c14c501a52991a16e7a1"
+  integrity sha512-BokZHvwStx4K5s3a/0TXs649b1Tjl5S9X4X80gQjdkQFlg33Z0qh/DTfctDI8dWyapMR69yUPtMlLdDxwWQEQQ==
+  dependencies:
+    "@stablelib/ed25519" "^1.0.2"
+    "@stablelib/random" "^1.0.1"
+    "@stablelib/sha256" "^1.0.1"
+    "@stablelib/x25519" "^1.0.2"
+    "@stablelib/xchacha20poly1305" "^1.0.1"
+    bech32 "^2.0.0"
+    canonicalize "^1.0.8"
+    did-resolver "^3.2.2"
+    elliptic "^6.5.4"
+    js-sha3 "^0.8.0"
+    multiformats "^9.6.5"
     uint8arrays "^3.0.0"
 
 did-jwt@^5.11.1, did-jwt@^5.12.3:
@@ -11187,7 +11248,7 @@ multicodec@^3.0.0, multicodec@^3.2.1:
     uint8arrays "^3.0.0"
     varint "^6.0.0"
 
-multiformats@^9.4.10, multiformats@^9.4.2, multiformats@^9.6.5, multiformats@^9.7.0:
+multiformats@^9.4.10, multiformats@^9.4.2, multiformats@^9.6.5, multiformats@^9.7.0, multiformats@^9.7.1:
   version "9.7.1"
   resolved "https://registry.yarnpkg.com/multiformats/-/multiformats-9.7.1.tgz#ab348e5fd6f8e7fb3fd56033211bda48854e2173"
   integrity sha512-TaVmGEBt0fhxiNJMGphBfB+oGvUxFs8KgGvgl8d3C+GWtrFcvXdJ2196eg+dYhmSFClmgFfSfJEklo+SZzdNuw==
