@@ -3,8 +3,24 @@ version: 3.0
 constants:
   baseUrl: http://localhost:3335
   port: 3335
+  databaseFile: ./database.sqlite # TODO in mem db
   methods:
     - registerSignatureValidation
+
+# Database
+dbConnection:
+  $require: typeorm?t=function#createConnection
+  $args:
+    - type: sqlite
+      database:
+        $ref: /constants/databaseFile
+      synchronize: false
+      migrationsRun: true
+      migrations:
+        $require: '@veramo/data-store?t=object#migrations'
+      logging: false
+      entities:
+        $require: '@veramo/data-store?t=object#Entities'
 
 server:
   baseUrl:
@@ -62,10 +78,20 @@ server:
             $ref: /constants/baseUrl
           messagingServiceEndpoint: /messaging
 
+# DID Manager
+didManager:
+  $require: '@veramo/did-manager#DIDManager'
+  $args:
+    - store:
+        $require: '@veramo/data-store#DIDStore'
+        $args:
+          - $ref: /dbConnection
+
 # Agent
 agent:
   $require: '@veramo/core#Agent'
   $args:
     - schemaValidation: false
       plugins:
+        - $ref: /didManager
         - $require: ./packages/wellknown-did-issuer/dist#WellKnownDidIssuer
