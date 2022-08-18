@@ -1,15 +1,24 @@
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
+import wellKnownDidIssuerAgentLogic from './shared/wellKnownDidIssuerAgentLogic'
 
 jest.setTimeout(30000)
-
-import didAuthSiopOpAuthenticatorAgentLogic from './shared/didAuthSiopOpAuthenticatorAgentLogic'
 
 let agent: any
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/did-auth-siop-op-authenticator/agent.yml')
+  const config = getConfig('packages/wellknown-did-issuer/agent.yml')
   const { localAgent } = createObjects(config, { localAgent: '/agent' })
+
+  localAgent.didManagerGet = jest.fn().mockReturnValue(Promise.resolve({
+    did: 'did:key:abc',
+    services: [{
+      id: 'did:key:abc',
+      type: 'LinkedDomains',
+      serviceEndpoint: 'https://example.com'
+    }]
+  }))
+
   agent = localAgent
 
   return true
@@ -28,5 +37,5 @@ const testContext = {
 }
 
 describe('Local integration tests', () => {
-  didAuthSiopOpAuthenticatorAgentLogic(testContext)
+  wellKnownDidIssuerAgentLogic(testContext)
 })
