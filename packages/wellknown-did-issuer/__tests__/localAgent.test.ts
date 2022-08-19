@@ -10,6 +10,15 @@ const setup = async (): Promise<boolean> => {
   const config = getConfig('packages/wellknown-did-issuer/agent.yml')
   const { localAgent } = createObjects(config, { localAgent: '/agent' })
 
+  localAgent.didManagerGet = jest.fn().mockReturnValue(Promise.resolve({
+    did: 'did:key:abc',
+    services: [{
+      id: 'did:key:abc',
+      type: 'LinkedDomains',
+      serviceEndpoint: 'https://example.com'
+    }]
+  }))
+
   agent = localAgent
 
   return true

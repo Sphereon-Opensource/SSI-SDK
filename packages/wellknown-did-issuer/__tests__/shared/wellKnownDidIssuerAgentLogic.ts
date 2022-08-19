@@ -28,32 +28,23 @@ export default (testContext: {
 
     afterAll(testContext.tearDown)
 
+
+
+
     it('should issue test', async () => {
-      await agent.issueDidConfigurationResource({
-        issuances: [
-          {
-            did: 'did:key:abc0123456789',
-            origin: 'https://example.com',
-            issuanceDate: new Date().toISOString(),
-            expirationDate: new Date(new Date().getFullYear() + 10, new Date().getMonth(), new Date().getDay()).toISOString(),
-            options: { proofFormat: ProofFormatTypesEnum.JSON_LD },
-          },
-          // {
-          //   did: 'did:key:abc0123456789',
-          //   origin: 'https://example.com',
-          //   issuanceDate: new Date().toISOString(),
-          //   expirationDate: new Date(new Date().getFullYear() + 10, new Date().getMonth(), new Date().getDay()).toISOString(),
-          //   options: { proofFormat: ProofFormatTypesEnum.JSON_WEB_TOKEN },
-          // },
-        ],
+      const x = await agent.issueDidConfigurationResource({
+        did: 'did:key:abc',
+        origin: 'https://example.com',
+        issuanceDate: new Date().toISOString(),
+        expirationDate: new Date().toISOString(),
+        options: { proofFormat: ProofFormatTypesEnum.JSON_WEB_TOKEN }
       })
-      .then((result: any) => console.log(result))
-      .catch((error: any) => console.log(error))
+      console.log(x)
     })
-
-    if (!testContext.isRestTest) {
-
-    }
+    //
+    // if (!testContext.isRestTest) {
+    //
+    // }
 
   })
 }

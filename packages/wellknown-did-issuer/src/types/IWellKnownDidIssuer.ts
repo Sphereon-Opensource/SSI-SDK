@@ -2,6 +2,7 @@ import {
   IDidConfigurationResource,
   IIssueCallbackArgs,
   IIssueDomainLinkageCredentialArgs,
+  IIssueDomainLinkageCredentialOptions,
   ISignedDomainLinkageCredential,
 } from '@sphereon/wellknown-dids-client/dist/types'
 import { IAgentContext, IPluginMethodMap, IDIDManager, IKeyManager } from '@veramo/core'
@@ -26,10 +27,31 @@ export interface IRemoveCredentialIssuanceArgs {
   callbackName: string
 }
 
+// export interface IIssueDidConfigurationResourceArgs {
+//   did: string
+//   origin: string
+//   issuanceDate?: string;
+//   expirationDate: string;
+//   options: IIssueDomainLinkageCredentialOptions;
+//   issueCallback?: (args: IIssueCallbackArgs) => Promise<ISignedDomainLinkageCredential | string>
+// }
+
 export interface IIssueDidConfigurationResourceArgs {
+  issuances: Array<IIssuanceArgs>
+}
+
+export interface IIssuanceArgs {
   did: string
-  origins: Array<string>
+  origin: string
+  issuanceDate?: string;
+  expirationDate: string;
+  options: IIssueDomainLinkageCredentialOptions;
   issueCallback?: (args: IIssueCallbackArgs) => Promise<ISignedDomainLinkageCredential | string>
+}
+
+export interface IAddLinkedDomainsServiceArgs {
+  did: string,
+  origin: string
 }
 
 export type IRequiredContext = IAgentContext<Pick<IDIDManager, 'didManagerGet' | 'didManagerAddService'> & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>>

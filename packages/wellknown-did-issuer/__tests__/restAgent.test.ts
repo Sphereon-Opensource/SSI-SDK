@@ -34,6 +34,15 @@ const setup = async (): Promise<boolean> => {
   const config = getConfig('packages/wellknown-did-issuer/agent.yml')
   const { agent } = createObjects(config, { agent: '/agent' })
 
+  agent.didManagerGet = jest.fn().mockReturnValue(Promise.resolve({
+    did: 'did:key:abc',
+    services: [{
+      id: 'did:key:abc',
+      type: 'LinkedDomains',
+      serviceEndpoint: 'https://example.com'
+    }]
+  }))
+
   serverAgent = agent
 
   const agentRouter = AgentRouter({
