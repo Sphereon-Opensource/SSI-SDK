@@ -1,9 +1,9 @@
-import { DIDDocument } from 'did-resolver';
-import u8a from 'uint8arrays';
+import { DIDDocument } from 'did-resolver'
+import u8a from 'uint8arrays'
 
 export const keyToDidDoc = (pubKeyBytes: Uint8Array, fingerprint: string): DIDDocument => {
-  const did = `did:key:${fingerprint}`;
-  const keyId = `${did}#${fingerprint}`;
+  const did = `did:key:${fingerprint}`
+  const keyId = `${did}#${fingerprint}`
   return {
     id: did,
     verificationMethod: [
@@ -18,6 +18,6 @@ export const keyToDidDoc = (pubKeyBytes: Uint8Array, fingerprint: string): DIDDo
     assertionMethod: [keyId],
     capabilityDelegation: [keyId],
     capabilityInvocation: [keyId],
-  };
+  }
 }
 export default { keyToDidDoc }

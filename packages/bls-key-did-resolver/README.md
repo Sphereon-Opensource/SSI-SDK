@@ -6,5 +6,5 @@
   <br>
 </h1>
 
-This plugin combines multiple DID key resolvers and exposes a unified API to resolve DIDs. 
+This plugin combines multiple DID key resolvers and exposes a unified API to resolve DIDs.
 It adds Bls keys support to key-did-resolver package.
