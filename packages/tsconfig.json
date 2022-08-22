@@ -14,6 +14,7 @@
     { "path": "waci-pex-qr-react" },
     { "path": "bls-kms-local" },
     { "path": "bls-did-provider-key" },
+    { "path": "bls-key-did-resolver" },
     { "path": "bls-key-manager" },
     { "path": "data-store-common" },
     { "path": "connection-manager" },
