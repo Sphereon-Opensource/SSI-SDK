@@ -10,10 +10,10 @@
   "dependencies": {
     "multibase": "~4.0.2",
     "uint8arrays": "^2.0.5",
-    "varint": "^6.0.0",
-    "key-did-resolver": "^1.4.4"
+    "varint": "^6.0.0"
   },
   "devDependencies": {
+    "@types/node": "^18.7.11",
     "@types/varint": "^6.0.0"
   },
   "files": [

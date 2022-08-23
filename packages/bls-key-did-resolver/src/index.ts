@@ -1,8 +1,8 @@
 import varint from 'varint'
 import multibase from 'multibase'
-import secp256k1 from 'key-did-resolver'
-import ed25519 from 'key-did-resolver'
+import ed25519 from './ed25519'
 import bls12381g2 from './bls12381g2'
+import secp256k1 from './secp256k1'
 import { ParsedDID, Resolvable, DIDResolutionOptions, DIDResolutionResult, ResolverRegistry } from 'did-resolver'
 
 const DID_LD_JSON = 'application/did+ld+json'
