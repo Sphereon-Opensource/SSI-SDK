@@ -3274,20 +3274,20 @@
     fast-text-encoding "^1.0.3"
     isomorphic-webcrypto "^2.3.8"
 
-"@sphereon/ion-pow@^0.1.9-unstable.5":
-  version "0.1.9-unstable.5"
-  resolved "https://registry.yarnpkg.com/@sphereon/ion-pow/-/ion-pow-0.1.9-unstable.5.tgz#e5922950c92b1cc0435257c6080167cf78b326ec"
-  integrity sha512-rs+OgHVr0alTNo9yhBTwlaTSspIJi8G3jCEzeXPNvF3P3xEJNt+PCstcqCjxk1v2z8ndr9c7/XVLn+8RpQT1kA==
+"@sphereon/ion-pow@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@sphereon/ion-pow/-/ion-pow-0.2.0.tgz#e275c00a04d699b786f02792364eb77bc65f7d0b"
+  integrity sha512-SpEG4mV5D+K/jrqGI9QSBPPKO5+Kpu6F3cINBKbWiz+ZI4boWwz9JAdNspD45YnnMqTbR14CDEGtHwOaHboJQg==
   dependencies:
-    "@sphereon/isomorphic-argon2" "^0.1.1-unstable.1"
+    "@sphereon/isomorphic-argon2" "^1.0.0"
     cross-fetch "^3.1.5"
     debug "^4.3.4"
     uint8arrays "^3.1.0"
 
-"@sphereon/isomorphic-argon2@^0.1.1-unstable.1":
-  version "0.1.1-unstable.1"
-  resolved "https://registry.yarnpkg.com/@sphereon/isomorphic-argon2/-/isomorphic-argon2-0.1.1-unstable.1.tgz#4c56d4097805539f70cde68aad78d99c21e5e37d"
-  integrity sha512-tfkppizgvltJTStGhSQIru9TpDnc/6RQ5UjmzSr5ybsvJj2FLeePL741Qh5uUPiSeICnzVqZT6oniIBCVV+vTw==
+"@sphereon/isomorphic-argon2@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@sphereon/isomorphic-argon2/-/isomorphic-argon2-1.0.0.tgz#82e22a84c2aa389d2297416a6ba4512b27937201"
+  integrity sha512-k63y0CzQYRH/EEOLx/u9O6oDFzZ6aiPTraGtwm29Fi0k630oy8xnYxi6xCdObicn+LLO0tCxGMFRtH/cXJHJlA==
   dependencies:
     argon2-browser "^1.18.0"
     uint8arrays "^3.1.0"
