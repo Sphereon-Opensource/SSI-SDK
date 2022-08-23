@@ -3274,24 +3274,22 @@
     fast-text-encoding "^1.0.3"
     isomorphic-webcrypto "^2.3.8"
 
-"@sphereon/ion-pow@^0.1.1-unstable.3":
-  version "0.1.1-unstable.3"
-  resolved "https://registry.yarnpkg.com/@sphereon/ion-pow/-/ion-pow-0.1.1-unstable.3.tgz#872957f6716c87186d80787ded811b7e117850f5"
-  integrity sha512-x4jhXpxsMxM3JYxP+04mjhv1lO0zBKPJEGPfRrDkuxHv2pX49Zm8Oky5K96KQyzJwMAlqSWWfHUQk2628NaWWw==
+"@sphereon/ion-pow@^0.1.9-unstable.5":
+  version "0.1.9-unstable.5"
+  resolved "https://registry.yarnpkg.com/@sphereon/ion-pow/-/ion-pow-0.1.9-unstable.5.tgz#e5922950c92b1cc0435257c6080167cf78b326ec"
+  integrity sha512-rs+OgHVr0alTNo9yhBTwlaTSspIJi8G3jCEzeXPNvF3P3xEJNt+PCstcqCjxk1v2z8ndr9c7/XVLn+8RpQT1kA==
   dependencies:
-    "@sphereon/isomorphic-argon2" "^0.1.0-unstable.5"
+    "@sphereon/isomorphic-argon2" "^0.1.1-unstable.1"
     cross-fetch "^3.1.5"
-    debug "^4.1.1"
+    debug "^4.3.4"
     uint8arrays "^3.1.0"
 
-"@sphereon/isomorphic-argon2@^0.1.0-unstable.5":
-  version "0.1.0-unstable.5"
-  resolved "https://registry.yarnpkg.com/@sphereon/isomorphic-argon2/-/isomorphic-argon2-0.1.0-unstable.5.tgz#193b4ab07dbeae0562a75a1a8999e2feb17304c6"
-  integrity sha512-iv9UOCzFtNiTdVCcXXKODRZrq5xY3+EeMY4H3bXwlTPwa9A2qc8kv3i7ZZme15A46V+boP2hMsTXxrLANUyQ/A==
+"@sphereon/isomorphic-argon2@^0.1.1-unstable.1":
+  version "0.1.1-unstable.1"
+  resolved "https://registry.yarnpkg.com/@sphereon/isomorphic-argon2/-/isomorphic-argon2-0.1.1-unstable.1.tgz#4c56d4097805539f70cde68aad78d99c21e5e37d"
+  integrity sha512-tfkppizgvltJTStGhSQIru9TpDnc/6RQ5UjmzSr5ybsvJj2FLeePL741Qh5uUPiSeICnzVqZT6oniIBCVV+vTw==
   dependencies:
-    "@sphereon/react-native-argon2" "^2.0.6"
     argon2-browser "^1.18.0"
-    path-browserify "^1.0.1"
     uint8arrays "^3.1.0"
 
 "@sphereon/lto-did-ts@0.1.8-unstable.0":
@@ -3336,11 +3334,6 @@
     jwt-decode "^3.1.2"
     nanoid "^3.3.4"
     string.prototype.matchall "^4.0.7"
-
-"@sphereon/react-native-argon2@^2.0.6":
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/@sphereon/react-native-argon2/-/react-native-argon2-2.0.6.tgz#602abb96d6d41a7f0778a3323940fca0b4fa13ed"
-  integrity sha512-5RkIzhfeDw12p1t2BcQQJyYmgtPE3CQDPLwPfwpnVGamG5R8tY4FhJRNScGzRzttHw6tbBWC1acZ2IM0swEmUQ==
 
 "@sphereon/wellknown-dids-client@^0.1.0":
   version "0.1.0"
@@ -12340,11 +12333,6 @@ passport@^0.5.0, passport@^0.5.2:
   dependencies:
     passport-strategy "1.x.x"
     pause "0.0.1"
-
-path-browserify@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-1.0.1.tgz#d98454a9c3753d5790860f16f68867b9e46be1fd"
-  integrity sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==
 
 path-exists@^3.0.0:
   version "3.0.0"
