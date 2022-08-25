@@ -72,19 +72,6 @@ constructor(connection: Promise<Connection>) {
             'did:key': new BlsKeyDidProvider({
               defaultKms: 'local',
             }),
-            'did:web': new WebDIDProvider({
-              defaultKms: 'local',
-            }),
-            'did:factom': new FactomDIDProvider({
-              defaultKms: 'local',
-              defaultNetwork: 'MAINNET',
-              registrarUrl: 'https://uniregistrar.test.sphereon.io',
-            }),
-            'did:lto': new LtoDidProvider({
-              defaultKms: 'local',
-              connectionMode: IDidConnectionMode.NODE,
-              registrarUrl: 'https://uniregistrar.test.sphereon.io',
-            }),
           },
         }),
         new CredentialIssuer(),
@@ -95,14 +82,7 @@ constructor(connection: Promise<Connection>) {
         }),
         new DIDResolverPlugin({
           resolver: new Resolver({
-            ...keyDidResolver(),
-            ...webDidResolver(),
-            ...getUniResolver('factom', {
-              resolveUrl: RESOLVER_URL,
-            }),
-            ...getUniResolver('lto', {
-              resolveUrl: RESOLVER_URL,
-            }),
+            ...keyDidResolver()
           }),
         }),
       ],
