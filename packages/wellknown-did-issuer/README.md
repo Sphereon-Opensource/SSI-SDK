@@ -32,7 +32,7 @@ talk about the integration with veramo for retrieving dids and saving VC's
 ### Adding the plugin to an agent:
 
 ```typescript
-import { IWellKnownDidIssuer, WellKnownDidIssuer } from '@sphereon/ssi-sdk-wellknown-did-verifier'
+import { IWellKnownDidIssuer, WellKnownDidIssuer } from '@sphereon/ssi-sdk-wellknown-did-issuer'
 
 const agent = createAgent<IWellKnownDidIssuer>({
   plugins: [
