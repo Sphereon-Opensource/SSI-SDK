@@ -15,7 +15,8 @@
   "dependencies": {
     "@sphereon/wellknown-dids-client": "^0.1.1",
     "did-jwt-vc": "^2.1.9",
-    "typeorm": "0.2.45"
+    "typeorm": "0.2.45",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@veramo/cli": "3.1.2-next.84",

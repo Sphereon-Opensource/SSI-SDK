@@ -11,6 +11,7 @@ import { OrPromise } from '@veramo/utils'
 import { normalizeCredential } from 'did-jwt-vc'
 import { Service } from 'did-resolver/lib/resolver'
 import { Connection } from 'typeorm'
+import { v4 as uuidv4 } from 'uuid'
 import { DidConfigurationResourceEntity, createCredentialEntity, didConfigurationResourceFrom } from '../entities/DidConfigurationResourceEntity'
 import {
   IAddLinkedDomainsServiceArgs,
@@ -187,17 +188,14 @@ export class WellKnownDidIssuer implements IAgentPlugin {
       .didManagerGet({ did })
       .catch(() => Promise.reject(Error('DID cannot be found')))
       .then(async (identifier: IIdentifier) => {
-        const linkedDomainsServicesCount = identifier.services
-          ? identifier.services.filter(
-              // TODO we should also check for the origins in the serviceEndpoint objects when we start supporting multiple origins
-              (service: Service) => service.type === ServiceTypesEnum.LINKED_DOMAINS && service.serviceEndpoint === args.origin
-            ).length
-          : 0
-        if (linkedDomainsServicesCount === 0) {
+        if (!identifier.services || identifier.services.filter(
+            // TODO we should also check for the origins in the serviceEndpoint objects when we start supporting multiple origins
+            (service: Service) => service.type === ServiceTypesEnum.LINKED_DOMAINS && service.serviceEndpoint === args.origin
+        ).length === 0) {
           await context.agent.didManagerAddService({
             did: identifier.did,
             service: {
-              id: args.serviceId || `LinkedDomains${linkedDomainsServicesCount + 1}`,
+              id: args.serviceId || uuidv4(),
               type: ServiceTypesEnum.LINKED_DOMAINS,
               // TODO We should support a serviceEndpoint object here when we update to Veramo 3.1.6.next-165 or higher, as then we can support multiple origins
               serviceEndpoint: args.origin,
