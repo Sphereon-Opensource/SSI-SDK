@@ -119,41 +119,41 @@
       },
       "methods": {
         "addLinkedDomainsService": {
-          "description": "",
+          "description": "Adds a LinkedDomains service to the DID",
           "arguments": {
             "$ref": "#/components/schemas/IAddLinkedDomainsServiceArgs"
           }
         },
         "getDidConfigurationResource": {
-          "description": "",
+          "description": "Retrieves a DID configuration resource from the database",
           "arguments": {
             "$ref": "#/components/schemas/IGetDidConfigurationResourceArgs"
           },
           "returnType": "object"
         },
         "issueDidConfigurationResource": {
-          "description": "",
+          "description": "Issues a DID configuration resource",
           "arguments": {
             "$ref": "#/components/schemas/IAddLinkedDomainsServiceArgs"
           },
           "returnType": "object"
         },
         "issueDomainLinkageCredential": {
-          "description": "",
+          "description": "Retrieves a domain linkage credential",
           "arguments": {
             "$ref": "#/components/schemas/IIssueDomainLinkageCredentialArgs"
           },
           "returnType": "object"
         },
         "removeCredentialIssuance": {
-          "description": "",
+          "description": "Removes a registered callback",
           "arguments": {
             "$ref": "#/components/schemas/IRemoveCredentialIssuanceArgs"
           },
           "returnType": "boolean"
         },
         "saveDidConfigurationResource": {
-          "description": "",
+          "description": "Saves a DID configuration resource to the database",
           "arguments": {
             "$ref": "#/components/schemas/ISaveDidConfigurationResourceArgs"
           }
