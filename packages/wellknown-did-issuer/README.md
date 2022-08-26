@@ -14,9 +14,6 @@
 
 A `Sphereon SSI-SDK` plugin to create DID configuration resources and domain linkage credentials conforming to the DIF [spec for well-known DID Configurations](https://identity.foundation/.well-known/resources/did-configuration/). It is written in Typescript and can be compiled to any target JavaScript version.
 
-TODO
-talk about the integration with veramo for retrieving dids and saving VC's
-
 ## Available functions
 
 - addLinkedDomainsService
