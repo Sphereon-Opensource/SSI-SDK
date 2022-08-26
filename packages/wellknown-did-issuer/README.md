@@ -70,7 +70,7 @@ agent
 
 ### Issue DID configuration resource:
 
-Issues a DID configuration resource. Can optionally save it to a database using the ```save``` flag.
+Issues a DID configuration resource. Can optionally save it to a database using the `save` flag.
 
 ```typescript
 agent
@@ -85,7 +85,7 @@ agent
       },
     ],
     credentialIssuance: 'example_key',
-    save: true
+    save: true,
   })
   .then((result: IDidConfiguration) => console.log(result))
   .catch(() => console.log('failed'))
@@ -98,7 +98,7 @@ Get a DID configuration resource from the database.
 ```typescript
 agent
   .getDidConfigurationResource({
-    origin: 'https://example.com' 
+    origin: 'https://example.com',
   })
   .then((result: IDidConfiguration) => console.log(result))
   .catch(() => console.log('failed'))
@@ -112,14 +112,14 @@ Saves a DID configuration resource to a database.
 agent
   .saveDidConfigurationResource({
     origin: 'https://example.com',
-    didConfiguration
+    didConfiguration,
   })
   .then((result: IResourceValidation) => console.log(result.status))
 ```
 
 ### Issue domain linkage credential:
 
-Issues a domain linkage credential. Can optionally save it to a database using the ```save``` flag.
+Issues a domain linkage credential. Can optionally save it to a database using the `save` flag.
 
 ```typescript
 agent
@@ -130,7 +130,7 @@ agent
     expirationDate: new Date().toISOString(),
     options: { proofFormat: ProofFormatTypesEnum.JSON_WEB_TOKEN },
     credentialIssuance: 'example_key',
-    save: true
+    save: true,
   })
   .then((result: IResourceValidation) => console.log(result.status))
 ```
@@ -144,7 +144,7 @@ agent
   .addLinkedDomainsService({
     did: 'did:key:example',
     origin: 'https://example.com',
-    servideId: 'linkedDomains1'
+    servideId: 'linkedDomains1',
   })
   .then((result: IResourceValidation) => console.log(result.status))
 ```
