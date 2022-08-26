@@ -3,24 +3,34 @@ version: 3.0
 constants:
   baseUrl: http://localhost:3335
   port: 3335
-  databaseFile: ./database.sqlite # TODO in mem db
   methods:
-    - registerSignatureValidation
+    - addLinkedDomainsService
+    - getDidConfigurationResource
+    - issueDidConfigurationResource
+    - issueDomainLinkageCredential
+    - registerCredentialIssuance
+    - removeCredentialIssuance
+    - saveDidConfigurationResource
 
-# Database
 dbConnection:
   $require: typeorm?t=function#createConnection
   $args:
     - type: sqlite
-      database:
-        $ref: /constants/databaseFile
+      database: ':memory:'
       synchronize: false
       migrationsRun: true
       migrations:
-        $require: '@veramo/data-store?t=object#migrations'
-      logging: false
+        $require: './packages/ssi-sdk-core/dist?t=function#flattenMigrations'
+        $args:
+          - migrations:
+              - $require: '@veramo/data-store?t=object#migrations'
+              - $require: './packages/wellknown-did-issuer/dist?t=object#WellknownDidIssuerMigrations'
       entities:
-        $require: '@veramo/data-store?t=object#Entities'
+        $require: './packages/ssi-sdk-core/dist?t=function#flattenEntities'
+        $args:
+          - entities:
+              - $require: '@veramo/data-store?t=object#Entities'
+              - $require: './packages/wellknown-did-issuer/dist?t=object#WellknownDidIssuerEntities'
 
 server:
   baseUrl:
@@ -84,8 +94,6 @@ didManager:
   $args:
     - store:
         $require: '@veramo/data-store#DIDStore'
-        $args:
-          - $ref: /dbConnection
 
 # Agent
 agent:
@@ -94,4 +102,9 @@ agent:
     - schemaValidation: false
       plugins:
         - $ref: /didManager
+        - $require: '@veramo/data-store#DataStore'
+          $args:
+            - $ref: /dbConnection
         - $require: ./packages/wellknown-did-issuer/dist#WellKnownDidIssuer
+          $args:
+            - $ref: /dbConnection

@@ -2,7 +2,7 @@
 <h1 align="center">
   <br>
   <a href="https://www.sphereon.com"><img src="https://sphereon.com/content/themes/sphereon/assets/img/logo.svg" alt="Sphereon" width="400"></a>
-  <br>Well-Known DID Verifier (Typescript) 
+  <br>Well-Known DID Issuer (Typescript) 
   <br>
 </h1>
 
@@ -12,14 +12,20 @@
 
 ---
 
-A `Sphereon SSI-SDK` plugin to verify relationships between the controller of an origin and a DID conforming to the DIF [spec for well-known DID Configurations](https://identity.foundation/.well-known/resources/did-configuration/) It is written in Typescript and can be compiled to any target JavaScript version.
+A `Sphereon SSI-SDK` plugin to create DID configuration resources and domain linkage credentials conforming to the DIF [spec for well-known DID Configurations](https://identity.foundation/.well-known/resources/did-configuration/). It is written in Typescript and can be compiled to any target JavaScript version.
+
+TODO
+talk about the integration with veramo for retrieving dids and saving VC's
 
 ## Available functions
 
-- registerSignatureValidation
-- removeSignatureValidation
-- verifyDomainLinkage
-- verifyDidConfigurationResource
+- addLinkedDomainsService
+- getDidConfigurationResource
+- issueDidConfigurationResource
+- issueDomainLinkageCredential
+- registerCredentialIssuance
+- removeCredentialIssuance
+- saveDidConfigurationResource
 
 ## Usage
 
@@ -31,66 +37,114 @@ import { IWellKnownDidIssuer, WellKnownDidIssuer } from '@sphereon/ssi-sdk-wellk
 const agent = createAgent<IWellKnownDidIssuer>({
   plugins: [
     new WellKnownDidIssuer({
-      signatureVerifications: { verified: () => Promise.resolve({ verified: true }) },
-      onlyVerifyServiceDids: true,
+      credentialIssuances: { issueVc: () => Promise.resolve({ ...vc }) },
     }),
   ],
 })
 ```
 
-### Register signature verification callback:
+### Register credential issuance callback:
 
-Registers a callback function to be called within the verification process, to verify the signature of the credentials within the DID configuration resource.
+Registers a callback function.
 
 ```typescript
 agent
-  .registerSignatureVerification({
+  .registerCredentialIssuance({
     callbackName: 'example_key',
-    signatureVerification: () => Promise.resolve({ verified: true }),
+    credentialIssuance: () => Promise.resolve({ ...vc }),
   })
   .then(() => console.log('success'))
   .catch(() => console.log('failed'))
 ```
 
-### Remove signature verification callback:
+### Remove credential issuance callback:
 
 Removes a registered callback function.
 
 ```typescript
 agent
-  .removeSignatureVerification({ callbackName: 'example_key' })
+  .removeCredentialIssuance({ callbackName: 'example_key' })
   .then(() => console.log('success'))
   .catch(() => console.log('failed'))
 ```
 
-### Verify domain linkage:
+### Issue DID configuration resource:
 
-Verifies the relationship between the controller of an origin and a given DID.
-Option available to only verify the service DID.
+Issues a DID configuration resource. Can optionally save it to a database using the ```save``` flag.
 
 ```typescript
 agent
-  .verifyDomainLinkage({
-    did: 'did:key:z6MkoTHsgNNrby8JzCNQ1iRLyW5QQ6R8Xuu6AA8igGrMVPUM',
-    signatureVerification: 'verified',
-    onlyVerifyServiceDids: false,
+  .issueDidConfigurationResource({
+    issuances: [
+      {
+        did: DID,
+        origin: ORIGIN,
+        issuanceDate: new Date().toISOString(),
+        expirationDate: new Date().toISOString(),
+        options: { proofFormat: ProofFormatTypesEnum.JSON_WEB_TOKEN },
+      },
+    ],
+    credentialIssuance: 'example_key',
+    save: true
   })
-  .then((result: IDomainLinkageValidation) => console.log(result.status))
+  .then((result: IDidConfiguration) => console.log(result))
+  .catch(() => console.log('failed'))
 ```
 
-### Verify DID configuration resource:
+### Get DID configuration resource:
 
-Verifies a DID configuration resource and domain linkage credentials it holds.
-
-You can either pass in a DID configuration resource or fetch it remotely by setting a secure well-known location (origin).
-Option available to only verify a given DID.
+Get a DID configuration resource from the database.
 
 ```typescript
 agent
-  .verifyDidConfigurationResource({
-    signatureVerification: () => Promise.resolve({ verified: true }),
+  .getDidConfigurationResource({
+    origin: 'https://example.com' 
+  })
+  .then((result: IDidConfiguration) => console.log(result))
+  .catch(() => console.log('failed'))
+```
+
+### Save DID configuration resource:
+
+Saves a DID configuration resource to a database.
+
+```typescript
+agent
+  .saveDidConfigurationResource({
     origin: 'https://example.com',
-    did: 'did:key:z6MkoTHsgNNrby8JzCNQ1iRLyW5QQ6R8Xuu6AA8igGrMVPUM#foo',
+    didConfiguration
+  })
+  .then((result: IResourceValidation) => console.log(result.status))
+```
+
+### Issue domain linkage credential:
+
+Issues a domain linkage credential. Can optionally save it to a database using the ```save``` flag.
+
+```typescript
+agent
+  .issueDomainLinkageCredential({
+    did: DID,
+    origin: ORIGIN,
+    issuanceDate: new Date().toISOString(),
+    expirationDate: new Date().toISOString(),
+    options: { proofFormat: ProofFormatTypesEnum.JSON_WEB_TOKEN },
+    credentialIssuance: 'example_key',
+    save: true
+  })
+  .then((result: IResourceValidation) => console.log(result.status))
+```
+
+### Add linked domains service:
+
+Adds a LinkedDomains service to a DID.
+
+```typescript
+agent
+  .addLinkedDomainsService({
+    did: 'did:key:example',
+    origin: 'https://example.com',
+    servideId: 'linkedDomains1'
   })
   .then((result: IResourceValidation) => console.log(result.status))
 ```
@@ -98,7 +152,7 @@ agent
 ## Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk-wellknown-did-verifier
+yarn add @sphereon/ssi-sdk-wellknown-did-issuer
 ```
 
 ## Build

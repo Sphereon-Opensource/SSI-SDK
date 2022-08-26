@@ -1,23 +1,30 @@
-import { IAgentPlugin, IIdentifier } from '@veramo/core'
-import { WellKnownDidIssuer as Issuer } from '@sphereon/wellknown-dids-client'
+import { parseDid } from '@sphereon/ssi-sdk-core'
 import {
+  DomainLinkageCredential,
   IDidConfigurationResource,
-  IIssueCallbackArgs,
-  IIssueDomainLinkageCredentialArgs,
-  ISignedDomainLinkageCredential,
+  IssuanceCallback,
   ServiceTypesEnum,
-} from '@sphereon/wellknown-dids-client/dist/types'
-import { schema } from '../index'
+  WellKnownDidIssuer as Issuer,
+} from '@sphereon/wellknown-dids-client'
+import { IAgentPlugin, IIdentifier, VerifiableCredential } from '@veramo/core'
+import { OrPromise } from '@veramo/utils'
+import { normalizeCredential } from 'did-jwt-vc'
+import { Service } from 'did-resolver/lib/resolver'
+import { Connection } from 'typeorm'
+import { DidConfigurationResourceEntity, createCredentialEntity, didConfigurationResourceFrom } from '../entities/DidConfigurationResourceEntity'
 import {
   IAddLinkedDomainsServiceArgs,
   IWellKnownDidIssuer,
   IWellKnownDidIssuerOptionsArgs,
   IRegisterIssueCredentialArgs,
   IRemoveCredentialIssuanceArgs,
-  IRequiredContext,
-  IIssueDidConfigurationResourceArgs
+  RequiredContext,
+  IIssueDidConfigurationResourceArgs,
+  IIssueDomainLinkageCredentialArgs,
+  IGetDidConfigurationResourceArgs,
+  ISaveDidConfigurationResourceArgs,
 } from '../types/IWellKnownDidIssuer'
-import { Service } from 'did-resolver/lib/resolver';
+import { schema } from '../index'
 
 /**
  * {@inheritDoc IWellKnownDidIssuer}
@@ -25,98 +32,208 @@ import { Service } from 'did-resolver/lib/resolver';
 export class WellKnownDidIssuer implements IAgentPlugin {
   readonly schema = schema.IWellKnownDidVerifier
   readonly methods: IWellKnownDidIssuer = {
-    registerCredentialIssuance: this.registerCredentialIssuance.bind(this),
-    removeCredentialIssuance: this.removeCredentialIssuance.bind(this),
+    addLinkedDomainsService: this.addLinkedDomainsService.bind(this),
+    getDidConfigurationResource: this.getDidConfigurationResource.bind(this),
     issueDidConfigurationResource: this.issueDidConfigurationResource.bind(this),
     issueDomainLinkageCredential: this.issueDomainLinkageCredential.bind(this),
-    addLinkedDomainsService: this.addLinkedDomainsService.bind(this),
+    registerCredentialIssuance: this.registerCredentialIssuance.bind(this),
+    removeCredentialIssuance: this.removeCredentialIssuance.bind(this),
+    saveDidConfigurationResource: this.saveDidConfigurationResource.bind(this),
   }
 
-  private readonly credentialIssuances: Record<string, (args: IIssueCallbackArgs) => Promise<ISignedDomainLinkageCredential | string>>
+  private readonly credentialIssuances: Record<string, IssuanceCallback>
+  private readonly didConfigurationResourceRelations = ['linkedDids']
 
-  constructor(args?: IWellKnownDidIssuerOptionsArgs) {
+  constructor(private dbConnection: OrPromise<Connection>, args?: IWellKnownDidIssuerOptionsArgs) {
     this.credentialIssuances = (args && args.credentialIssuances) || {}
   }
 
   /** {@inheritDoc IWellKnownDidIssuer.registerSignatureVerification} */
-  private async registerCredentialIssuance(args: IRegisterIssueCredentialArgs, context: IRequiredContext): Promise<void> {
+  private async registerCredentialIssuance(args: IRegisterIssueCredentialArgs, context: RequiredContext): Promise<void> {
     if (this.credentialIssuances[args.callbackName] !== undefined) {
-      return Promise.reject(new Error(`Credential issuance with key: ${args.callbackName} already present`))
+      return Promise.reject(new Error(`Credential issuance with callbackName: ${args.callbackName} already present`))
     }
 
     this.credentialIssuances[args.callbackName] = args.credentialIssuance
   }
 
   /** {@inheritDoc IWellKnownDidIssuer.removeSignatureVerification} */
-  private async removeCredentialIssuance(args: IRemoveCredentialIssuanceArgs, context: IRequiredContext): Promise<boolean> {
+  private async removeCredentialIssuance(args: IRemoveCredentialIssuanceArgs, context: RequiredContext): Promise<boolean> {
     return delete this.credentialIssuances[args.callbackName]
   }
 
   /** {@inheritDoc IWellKnownDidIssuer.issueDidConfigurationResource} */
-  private async issueDidConfigurationResource(args: IIssueDidConfigurationResourceArgs, context: IRequiredContext): Promise<IDidConfigurationResource> {
-    // if (new URL(args.origin).origin !== args.origin) {
-    //   return Promise.reject(Error('Origin is not valid'))
-    // }
-    //
-    // if (new URL(args.origin).protocol !== 'https:') {
-    //   return Promise.reject('Origin is not secure')
-    // }
+  private async issueDidConfigurationResource(
+    args: IIssueDidConfigurationResourceArgs,
+    context: RequiredContext
+  ): Promise<IDidConfigurationResource> {
+    if (!args.issuances.every((issuance: IIssueDomainLinkageCredentialArgs) => issuance.origin === args.issuances[0].origin)) {
+      return Promise.reject(Error('All credentials should be issued for the same origin'))
+    }
 
-    // TODO check if any origin is suplied
+    // TODO We should combine all origins into one service when we update to Veramo 3.1.6.next-165 or higher, as then we can support multiple origins
+    const addServices = args.issuances.map((issuance: IIssueDomainLinkageCredentialArgs) =>
+      this.addLinkedDomainsService(
+        {
+          did: issuance.did,
+          origin: issuance.origin,
+          serviceId: issuance.serviceId,
+        },
+        context
+      )
+    )
 
-    // TODO do i check if there is already a service for the given origin?
-
-    // TODO parse did
-
-    const addServices = args.issuances.map(issuance => this.addLinkedDomainsService({
-      did: issuance.did,
-      origin: issuance.origin
-    }, context))
-
-    return Promise.all(addServices)
-      .then(() => new Issuer().issueDidConfigurationResource({
-        issuances: args.issuances
-      })
-      .catch((error: Error) => Promise.reject(Error(`Unable to issue DID configuration resource. Error: ${error.message}`)))
+    return Promise.all(addServices).then(async () =>
+      new Issuer()
+        .issueDidConfigurationResource({
+          issuances: await this.mapIssuances(args.issuances),
+          issueCallback:
+            typeof args.credentialIssuance === 'string' ? await this.getCredentialIssuance(args.credentialIssuance) : args.credentialIssuance,
+        })
+        .then(async (didConfigurationResource: IDidConfigurationResource) => {
+          if (args.save) {
+            // TODO add support for multiple origins when we upgrade Veramo version
+            await this.saveDidConfigurationResource({ origin: args.issuances[0].origin, didConfigurationResource }, context)
+          }
+          return didConfigurationResource
+        })
+        .catch((error: Error) => Promise.reject(Error(`Unable to issue DID configuration resource. Error: ${error.message}`)))
     )
   }
 
-  public async issueDomainLinkageCredential(args: IIssueDomainLinkageCredentialArgs): Promise<ISignedDomainLinkageCredential | string> {
-    return new Issuer().issueDomainLinkageCredential({
-      did: args.did,
+  /** {@inheritDoc IWellKnownDidIssuer.saveDidConfigurationResource} */
+  public async saveDidConfigurationResource(args: ISaveDidConfigurationResourceArgs, context: RequiredContext): Promise<void> {
+    const didConfigurationEntity = {
       origin: args.origin,
-      issuanceDate: args.issuanceDate,
-      expirationDate: args.expirationDate,
-      options: args.options
-    })
-    .catch((error: Error) => Promise.reject(Error(`Unable to issue credential for DID: ${args.did}. Error: ${error.message}`)))
+      context: args.didConfigurationResource['@context'],
+      linkedDids: args.didConfigurationResource.linked_dids.map((credential: DomainLinkageCredential) =>
+        createCredentialEntity(this.normalizeCredential(credential))
+      ),
+    }
+
+    await (await this.dbConnection).getRepository(DidConfigurationResourceEntity).save(didConfigurationEntity, { transaction: true })
   }
 
-  public async addLinkedDomainsService(args: IAddLinkedDomainsServiceArgs, context: IRequiredContext): Promise<void> {
+  /** {@inheritDoc IWellKnownDidIssuer.getDidConfigurationResource} */
+  public async getDidConfigurationResource(args: IGetDidConfigurationResourceArgs, context: RequiredContext): Promise<IDidConfigurationResource> {
+    const result = await (await this.dbConnection).getRepository(DidConfigurationResourceEntity).findOne({
+      where: { origin: args.origin },
+      relations: this.didConfigurationResourceRelations,
+    })
+
+    if (!result) {
+      return Promise.reject(Error(`No DID configuration resource found for origin: ${args.origin}`))
+    }
+
+    return didConfigurationResourceFrom(result)
+  }
+
+  /** {@inheritDoc IWellKnownDidIssuer.issueDomainLinkageCredential} */
+  public async issueDomainLinkageCredential(args: IIssueDomainLinkageCredentialArgs, context: RequiredContext): Promise<DomainLinkageCredential> {
+    const did: string = parseDid(args.did).did
+
     if (new URL(args.origin).origin !== args.origin) {
       return Promise.reject(Error('Origin is not valid'))
     }
 
     if (new URL(args.origin).protocol !== 'https:') {
-      return Promise.reject('Origin is not secure')
+      return Promise.reject(Error('Origin is not secure'))
     }
 
-    context.agent.didManagerGet({ did: args.did })
+    if (args.issuanceDate && isNaN(Date.parse(args.issuanceDate))) {
+      return Promise.reject(Error('IssuanceDate is not a valid date'))
+    }
+
+    if (isNaN(Date.parse(args.expirationDate))) {
+      return Promise.reject(Error('ExpirationDate is not a valid date'))
+    }
+
+    const credentialIssuance: IssuanceCallback =
+      typeof args.credentialIssuance === 'string'
+        ? await this.getCredentialIssuance(args.credentialIssuance)
+        : (args.credentialIssuance as IssuanceCallback)
+
+    return new Issuer()
+      .issueDomainLinkageCredential({
+        did,
+        origin: args.origin,
+        issuanceDate: args.issuanceDate,
+        expirationDate: args.expirationDate,
+        options: args.options,
+        issueCallback: credentialIssuance,
+      })
+      .then(async (credential: DomainLinkageCredential) => {
+        if (args.save) {
+          await this.saveDomainLinkageCredential(credential, context)
+        }
+        return credential
+      })
+      .catch((error: Error) => Promise.reject(Error(`Unable to issue domain linkage credential for DID: ${did}. Error: ${error.message}`)))
+  }
+
+  /** {@inheritDoc IWellKnownDidIssuer.addLinkedDomainsService} */
+  public async addLinkedDomainsService(args: IAddLinkedDomainsServiceArgs, context: RequiredContext): Promise<void> {
+    const did: string = parseDid(args.did).did
+
+    if (new URL(args.origin).origin !== args.origin) {
+      return Promise.reject(Error('Origin is not valid'))
+    }
+
+    if (new URL(args.origin).protocol !== 'https:') {
+      return Promise.reject(Error('Origin is not secure'))
+    }
+
+    context.agent
+      .didManagerGet({ did })
       .catch(() => Promise.reject(Error('DID cannot be found')))
       .then(async (identifier: IIdentifier) => {
-        if (!identifier.services || identifier.services.filter((service: Service) => service.type = ServiceTypesEnum.LINKED_DOMAINS).length === 0) {
+        const linkedDomainsServicesCount = identifier.services
+          ? identifier.services.filter(
+              // TODO we should also check for the origins in the serviceEndpoint objects when we start supporting multiple origins
+              (service: Service) => service.type === ServiceTypesEnum.LINKED_DOMAINS && service.serviceEndpoint === args.origin
+            ).length
+          : 0
+        if (linkedDomainsServicesCount === 0) {
           await context.agent.didManagerAddService({
             did: identifier.did,
             service: {
-              id: identifier.did,
+              id: args.serviceId || `LinkedDomains${linkedDomainsServicesCount + 1}`,
               type: ServiceTypesEnum.LINKED_DOMAINS,
-              // TODO We should support a serviceEndpoint object here when we update Veramo, as then we can support multiple origins
-              serviceEndpoint: args.origin
-            }
+              // TODO We should support a serviceEndpoint object here when we update to Veramo 3.1.6.next-165 or higher, as then we can support multiple origins
+              serviceEndpoint: args.origin,
+            },
           })
         }
       })
       .catch((error: Error) => Promise.reject(Error(`Unable to add LinkedDomains service to DID: ${args.did}. Error: ${error.message}`)))
   }
 
+  private async getCredentialIssuance(callbackName: string): Promise<IssuanceCallback> {
+    if (this.credentialIssuances[callbackName] === undefined) {
+      return Promise.reject(new Error(`Credential issuance not found for callbackName: ${callbackName}`))
+    }
+
+    return this.credentialIssuances[callbackName]
+  }
+
+  private async saveDomainLinkageCredential(credential: DomainLinkageCredential, context: RequiredContext): Promise<string> {
+    return context.agent.dataStoreSaveVerifiableCredential({ verifiableCredential: this.normalizeCredential(credential) })
+  }
+
+  private normalizeCredential(credential: DomainLinkageCredential): VerifiableCredential {
+    return typeof credential === 'string' ? normalizeCredential(credential) : credential
+  }
+
+  private async mapIssuances(issuances: Array<IIssueDomainLinkageCredentialArgs>): Promise<Array<IIssueDomainLinkageCredentialArgs>> {
+    const promises = issuances.map(async (issuance: IIssueDomainLinkageCredentialArgs) => {
+      return {
+        ...issuance,
+        issueCallback:
+          typeof issuance.credentialIssuance === 'string'
+            ? await this.getCredentialIssuance(issuance.credentialIssuance)
+            : issuance.credentialIssuance,
+      }
+    })
+    return Promise.all(promises)
+  }
 }

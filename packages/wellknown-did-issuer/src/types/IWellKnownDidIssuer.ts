@@ -1,57 +1,64 @@
 import {
+  DomainLinkageCredential,
   IDidConfigurationResource,
-  IIssueCallbackArgs,
-  IIssueDomainLinkageCredentialArgs,
   IIssueDomainLinkageCredentialOptions,
-  ISignedDomainLinkageCredential,
-} from '@sphereon/wellknown-dids-client/dist/types'
-import { IAgentContext, IPluginMethodMap, IDIDManager, IKeyManager } from '@veramo/core'
+  IssuanceCallback,
+} from '@sphereon/wellknown-dids-client'
+import { IAgentContext, IPluginMethodMap, IDIDManager } from '@veramo/core'
 
 export interface IWellKnownDidIssuer extends IPluginMethodMap {
-  registerCredentialIssuance(args: IRegisterIssueCredentialArgs, context: IRequiredContext): Promise<void>,
-  removeCredentialIssuance(args: IRemoveCredentialIssuanceArgs, context: IRequiredContext): Promise<boolean>,
-  issueDidConfigurationResource(args: IIssueDidConfigurationResourceArgs, context: IRequiredContext): Promise<IDidConfigurationResource>,
-  issueDomainLinkageCredential(args: IIssueDomainLinkageCredentialArgs): Promise<ISignedDomainLinkageCredential | string>
+  addLinkedDomainsService(args: IAddLinkedDomainsServiceArgs, context: RequiredContext): Promise<void>
+  getDidConfigurationResource(args: IGetDidConfigurationResourceArgs, context: RequiredContext): Promise<IDidConfigurationResource>
+  issueDidConfigurationResource(args: IIssueDidConfigurationResourceArgs, context: RequiredContext): Promise<IDidConfigurationResource>
+  issueDomainLinkageCredential(args: IIssueDomainLinkageCredentialArgs, context: RequiredContext): Promise<DomainLinkageCredential>
+  registerCredentialIssuance(args: IRegisterIssueCredentialArgs, context: RequiredContext): Promise<void>
+  removeCredentialIssuance(args: IRemoveCredentialIssuanceArgs, context: RequiredContext): Promise<boolean>
+  saveDidConfigurationResource(args: ISaveDidConfigurationResourceArgs, context: RequiredContext): Promise<void>
 }
 
 export interface IWellKnownDidIssuerOptionsArgs {
-  credentialIssuances?: Record<string, (args: IIssueCallbackArgs) => Promise<ISignedDomainLinkageCredential | string>>
+  credentialIssuances?: Record<string, IssuanceCallback>
 }
 
 export interface IRegisterIssueCredentialArgs {
   callbackName: string
-  credentialIssuance: (args: IIssueCallbackArgs) => Promise<ISignedDomainLinkageCredential | string>
+  credentialIssuance: IssuanceCallback
 }
 
 export interface IRemoveCredentialIssuanceArgs {
   callbackName: string
 }
 
-// export interface IIssueDidConfigurationResourceArgs {
-//   did: string
-//   origin: string
-//   issuanceDate?: string;
-//   expirationDate: string;
-//   options: IIssueDomainLinkageCredentialOptions;
-//   issueCallback?: (args: IIssueCallbackArgs) => Promise<ISignedDomainLinkageCredential | string>
-// }
-
 export interface IIssueDidConfigurationResourceArgs {
-  issuances: Array<IIssuanceArgs>
+  issuances: Array<IIssueDomainLinkageCredentialArgs>
+  credentialIssuance?: string | IssuanceCallback
+  save?: boolean
 }
 
-export interface IIssuanceArgs {
+export interface IIssueDomainLinkageCredentialArgs {
   did: string
   origin: string
-  issuanceDate?: string;
-  expirationDate: string;
-  options: IIssueDomainLinkageCredentialOptions;
-  issueCallback?: (args: IIssueCallbackArgs) => Promise<ISignedDomainLinkageCredential | string>
+  serviceId?: string
+  issuanceDate?: string
+  expirationDate: string
+  save?: boolean
+  options: IIssueDomainLinkageCredentialOptions
+  credentialIssuance?: string | IssuanceCallback
+}
+
+export interface IGetDidConfigurationResourceArgs {
+  origin: string
 }
 
 export interface IAddLinkedDomainsServiceArgs {
-  did: string,
+  did: string
   origin: string
+  serviceId?: string
 }
 
-export type IRequiredContext = IAgentContext<Pick<IDIDManager, 'didManagerGet' | 'didManagerAddService'> & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>>
+export interface ISaveDidConfigurationResourceArgs {
+  origin: string
+  didConfigurationResource: IDidConfigurationResource
+}
+
+export type RequiredContext = IAgentContext<IDIDManager>

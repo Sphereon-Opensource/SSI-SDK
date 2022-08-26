@@ -4,7 +4,8 @@
     "rootDir": "src",
     "outDir": "dist",
     "declarationDir": "dist",
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "noUnusedLocals": false
   },
   "references": []
 }

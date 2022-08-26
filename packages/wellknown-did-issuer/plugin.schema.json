@@ -2,31 +2,161 @@
   "IWellKnownDidIssuer": {
     "components": {
       "schemas": {
-        "IVerifyDomainLinkageArgs": {
+        "IIssueDidConfigurationResourceArgs": {
           "type": "object",
           "properties": {
-            "didUrl": {
+            "issuances": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "additionalProperties": true
+                }
+              }
+            },
+            "credentialIssuance": {
               "type": "string"
             },
-            "signatureVerification": {
-              "type": "string"
-            },
-            "onlyVerifyServiceDids": {
+            "save": {
               "type": "boolean"
             },
             "additionalProperties": false
           },
-          "required": ["didUrl", "signatureVerification"],
-          "description": "Arguments needed for {@link IWellKnownDidVerifier.verifyDomainLinkage } "
+          "required": ["issuances", "credentialIssuance"],
+          "description": "Arguments needed for {@link IWellKnownDidIssuer.addLinkedDomainsService } "
+        },
+        "IIssueDomainLinkageCredentialArgs": {
+          "type": "object",
+          "properties": {
+            "did": {
+              "type": "string"
+            },
+            "origin": {
+              "type": "string"
+            },
+            "serviceId": {
+              "type": "string"
+            },
+            "issuanceDate": {
+              "type": "date"
+            },
+            "expirationDate": {
+              "type": "date"
+            },
+            "save": {
+              "type": "boolean"
+            },
+            "options": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "credentialIssuance": {
+              "type": "string"
+            },
+            "additionalProperties": false
+          },
+          "required": ["did", "origin", "expirationDate", "options"],
+          "description": "Arguments needed for {@link IWellKnownDidIssuer.issueDomainLinkageCredential } "
+        },
+        "IGetDidConfigurationResourceArgs": {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "type": "string"
+            },
+            "additionalProperties": false
+          },
+          "required": ["origin"],
+          "description": "Arguments needed for {@link IWellKnownDidIssuer.getDidConfigurationResource } "
+        },
+        "IAddLinkedDomainsServiceArgs": {
+          "type": "object",
+          "properties": {
+            "did": {
+              "type": "string"
+            },
+            "origin": {
+              "type": "string"
+            },
+            "serviceId": {
+              "type": "string"
+            },
+            "additionalProperties": false
+          },
+          "required": ["did", "origin"],
+          "description": "Arguments needed for {@link IWellKnownDidIssuer.addLinkedDomainsService } "
+        },
+        "ISaveDidConfigurationResourceArgs": {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "type": "string"
+            },
+            "didConfigurationResource": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": false
+          },
+          "required": ["did", "origin"],
+          "description": "Arguments needed for {@link IWellKnownDidIssuer.saveDidConfigurationResource } "
+        },
+        "IRemoveCredentialIssuanceArgs": {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "callbackName": "string"
+            },
+            "additionalProperties": false
+          },
+          "required": ["callbackName"],
+          "description": "Arguments needed for {@link IWellKnownDidIssuer.removeCredentialIssuance } "
         }
       },
       "methods": {
-        "verifyDomainLinkage": {
-          "description": "Verifies the relationship between the controller of an origin and a DID",
+        "addLinkedDomainsService": {
+          "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/IVerifyDomainLinkageArgs"
+            "$ref": "#/components/schemas/IAddLinkedDomainsServiceArgs"
+          }
+        },
+        "getDidConfigurationResource": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IGetDidConfigurationResourceArgs"
           },
           "returnType": "object"
+        },
+        "issueDidConfigurationResource": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IAddLinkedDomainsServiceArgs"
+          },
+          "returnType": "object"
+        },
+        "issueDomainLinkageCredential": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IIssueDomainLinkageCredentialArgs"
+          },
+          "returnType": "object"
+        },
+        "removeCredentialIssuance": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IRemoveCredentialIssuanceArgs"
+          },
+          "returnType": "boolean"
+        },
+        "saveDidConfigurationResource": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/ISaveDidConfigurationResourceArgs"
+          }
         }
       }
     }
