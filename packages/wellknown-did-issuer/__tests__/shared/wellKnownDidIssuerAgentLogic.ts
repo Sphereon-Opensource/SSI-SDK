@@ -263,55 +263,63 @@ export default (testContext: {
     })
 
     it('should throw error when issueing domain linkage VC with invalid origin', async () => {
+      const ORIGIN = 'https://example.com/other'
+
       await expect(
         agent.issueDomainLinkageCredential({
           did: DID,
-          origin: 'https://example.com/other',
+          origin: ORIGIN,
           issuanceDate: new Date().toISOString(),
           expirationDate: new Date().toISOString(),
           options: { proofFormat: ProofFormatTypesEnum.JSON_WEB_TOKEN },
           credentialIssuance: 'issueJwt',
         })
-      ).rejects.toThrow('Origin is not valid')
+      ).rejects.toThrow(`Origin ${ORIGIN} is not valid`)
     })
 
     it('should throw error when issueing domain linkage VC with insecure origin', async () => {
+      const ORIGIN = 'http://example.com'
+
       await expect(
         agent.issueDomainLinkageCredential({
           did: DID,
-          origin: 'http://example.com',
+          origin: ORIGIN,
           issuanceDate: new Date().toISOString(),
           expirationDate: new Date().toISOString(),
           options: { proofFormat: ProofFormatTypesEnum.JSON_WEB_TOKEN },
           credentialIssuance: 'issueJwt',
         })
-      ).rejects.toThrow('Origin is not secure')
+      ).rejects.toThrow(`Origin ${ORIGIN} is not a https URL`)
     })
 
     it('should throw error when issueing domain linkage VC with invalid issuance date', async () => {
+      const ISSUANCE_DATE = 'invalid_date'
+
       await expect(
         agent.issueDomainLinkageCredential({
           did: DID,
           origin: ORIGIN,
-          issuanceDate: 'invalid_date',
+          issuanceDate: ISSUANCE_DATE,
           expirationDate: new Date().toISOString(),
           options: { proofFormat: ProofFormatTypesEnum.JSON_WEB_TOKEN },
           credentialIssuance: 'issueJwt',
         })
-      ).rejects.toThrow('IssuanceDate is not a valid date')
+      ).rejects.toThrow(`IssuanceDate ${ISSUANCE_DATE} is not a valid date`)
     })
 
     it('should throw error when issueing domain linkage VC with invalid expiration date', async () => {
+      const EXPIRATION_DATE = 'invalid_date'
+
       await expect(
         agent.issueDomainLinkageCredential({
           did: DID,
           origin: ORIGIN,
           issuanceDate: new Date().toISOString(),
-          expirationDate: 'invalid_date',
+          expirationDate: EXPIRATION_DATE,
           options: { proofFormat: ProofFormatTypesEnum.JSON_WEB_TOKEN },
           credentialIssuance: 'issueJwt',
         })
-      ).rejects.toThrow('ExpirationDate is not a valid date')
+      ).rejects.toThrow(`ExpirationDate ${EXPIRATION_DATE} is not a valid date`)
     })
 
     it('should throw error when adding service with invalid url origin', async () => {
@@ -324,21 +332,25 @@ export default (testContext: {
     })
 
     it('should throw error when adding service with invalid origin', async () => {
+      const ORIGIN = 'http://example.com/other'
+
       await expect(
         agent.addLinkedDomainsService({
           did: DID,
-          origin: 'http://example.com/other',
+          origin: ORIGIN,
         })
-      ).rejects.toThrow('Origin is not valid')
+      ).rejects.toThrow(`Origin ${ORIGIN} is not valid`)
     })
 
     it('should throw error when adding service with insecure origin', async () => {
+      const ORIGIN = 'http://example.com'
+
       await expect(
         agent.addLinkedDomainsService({
           did: DID,
-          origin: 'http://example.com',
+          origin: ORIGIN,
         })
-      ).rejects.toThrow('Origin is not secure')
+      ).rejects.toThrow(`Origin ${ORIGIN} is not a https URL`)
     })
 
     if (!testContext.isRestTest) {

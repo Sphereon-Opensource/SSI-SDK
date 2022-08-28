@@ -15,10 +15,13 @@ constants:
 dbConnection:
   $require: typeorm?t=function#createConnection
   $args:
-    - type: sqlite
-      database: ':memory:'
+    - type: postgres
+      database: "postgres"
       synchronize: false
+      port: 5433
       migrationsRun: true
+      username: "postgres"
+      password: "postgres"
       migrations:
         $require: './packages/ssi-sdk-core/dist?t=function#flattenMigrations'
         $args:
@@ -26,9 +29,9 @@ dbConnection:
               - $require: '@veramo/data-store?t=object#migrations'
               - $require: './packages/wellknown-did-issuer/dist?t=object#WellknownDidIssuerMigrations'
       entities:
-        $require: './packages/ssi-sdk-core/dist?t=function#flattenEntities'
+        $require: './packages/ssi-sdk-core/dist?t=function#flattenArray'
         $args:
-          - entities:
+          - items:
               - $require: '@veramo/data-store?t=object#Entities'
               - $require: './packages/wellknown-did-issuer/dist?t=object#WellknownDidIssuerEntities'
 

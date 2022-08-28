@@ -46,7 +46,7 @@ export class WellKnownDidIssuer implements IAgentPlugin {
   private readonly didConfigurationResourceRelations = ['linkedDids']
 
   constructor(private dbConnection: OrPromise<Connection>, args?: IWellKnownDidIssuerOptionsArgs) {
-    this.credentialIssuances = (args && args.credentialIssuances) || {}
+    this.credentialIssuances = args && args.credentialIssuances || {}
   }
 
   /** {@inheritDoc IWellKnownDidIssuer.registerSignatureVerification} */
@@ -134,19 +134,19 @@ export class WellKnownDidIssuer implements IAgentPlugin {
     const did: string = parseDid(args.did).did
 
     if (new URL(args.origin).origin !== args.origin) {
-      return Promise.reject(Error('Origin is not valid'))
+      return Promise.reject(Error(`Origin ${args.origin} is not valid`))
     }
 
     if (new URL(args.origin).protocol !== 'https:') {
-      return Promise.reject(Error('Origin is not secure'))
+      return Promise.reject(Error(`Origin ${args.origin} is not a https URL`))
     }
 
     if (args.issuanceDate && isNaN(Date.parse(args.issuanceDate))) {
-      return Promise.reject(Error('IssuanceDate is not a valid date'))
+      return Promise.reject(Error(`IssuanceDate ${args.issuanceDate} is not a valid date`))
     }
 
     if (isNaN(Date.parse(args.expirationDate))) {
-      return Promise.reject(Error('ExpirationDate is not a valid date'))
+      return Promise.reject(Error(`ExpirationDate ${args.expirationDate} is not a valid date`))
     }
 
     const credentialIssuance: IssuanceCallback =
@@ -177,11 +177,11 @@ export class WellKnownDidIssuer implements IAgentPlugin {
     const did: string = parseDid(args.did).did
 
     if (new URL(args.origin).origin !== args.origin) {
-      return Promise.reject(Error('Origin is not valid'))
+      return Promise.reject(Error(`Origin ${args.origin} is not valid`))
     }
 
     if (new URL(args.origin).protocol !== 'https:') {
-      return Promise.reject(Error('Origin is not secure'))
+      return Promise.reject(Error(`Origin ${args.origin} is not a https URL`))
     }
 
     context.agent
