@@ -1,4 +1,4 @@
-import { ValidationStatusEnum } from '@sphereon/wellknown-dids-client/dist/types'
+import { ValidationStatusEnum } from '@sphereon/wellknown-dids-client'
 import { TAgent, IResolver } from '@veramo/core'
 import { IWellKnownDidVerifier } from '../../src/types/IWellKnownDidVerifier'
 

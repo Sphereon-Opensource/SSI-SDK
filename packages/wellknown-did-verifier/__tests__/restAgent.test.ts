@@ -8,7 +8,7 @@ import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 import { IWellKnownDidVerifier } from '../src/types/IWellKnownDidVerifier'
-import { ServiceTypesEnum } from '@sphereon/wellknown-dids-client/dist/types'
+import { ServiceTypesEnum } from '@sphereon/wellknown-dids-client'
 import wellKnownDidVerifierAgentLogic from './shared/wellKnownDidVerifierAgentLogic'
 
 jest.setTimeout(30000)
