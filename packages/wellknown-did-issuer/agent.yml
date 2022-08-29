@@ -1,0 +1,110 @@
+version: 3.0
+
+constants:
+  baseUrl: http://localhost:3335
+  port: 3335
+  methods:
+    - addLinkedDomainsService
+    - getDidConfigurationResource
+    - issueDidConfigurationResource
+    - issueDomainLinkageCredential
+    - registerCredentialIssuance
+    - removeCredentialIssuance
+    - saveDidConfigurationResource
+
+dbConnection:
+  $require: typeorm?t=function#createConnection
+  $args:
+    - type: sqlite
+      database: ':memory:'
+      synchronize: false
+      migrationsRun: true
+      migrations:
+        $require: './packages/ssi-sdk-core/dist?t=function#flattenMigrations'
+        $args:
+          - migrations:
+              - $require: '@veramo/data-store?t=object#migrations'
+              - $require: './packages/wellknown-did-issuer/dist?t=object#WellknownDidIssuerMigrations'
+      entities:
+        $require: './packages/ssi-sdk-core/dist?t=function#flattenArray'
+        $args:
+          - items:
+              - $require: '@veramo/data-store?t=object#Entities'
+              - $require: './packages/wellknown-did-issuer/dist?t=object#WellknownDidIssuerEntities'
+
+server:
+  baseUrl:
+    $ref: /constants/baseUrl
+  port:
+    $ref: /constants/port
+  use:
+    # CORS
+    - - $require: 'cors'
+
+    # Add agent to the request object
+    - - $require: '@veramo/remote-server?t=function#RequestWithAgentRouter'
+        $args:
+          - agent:
+              $ref: /agent
+
+    # API base path
+    - - /agent
+      - $require: '@veramo/remote-server?t=function#apiKeyAuth'
+        $args:
+          # Please configure your own API key. This is used when executing agent methods through ${baseUrl}/agent or ${baseUrl}/api-docs
+          - apiKey: test123
+      - $require: '@veramo/remote-server?t=function#AgentRouter'
+        $args:
+          - exposedMethods:
+              $ref: /constants/methods
+
+    # Open API schema
+    - - /open-api.json
+      - $require: '@veramo/remote-server?t=function#ApiSchemaRouter'
+        $args:
+          - basePath: :3335/agent
+            securityScheme: bearer
+            apiName: Agent
+            apiVersion: '1.0.0'
+            exposedMethods:
+              $ref: /constants/methods
+
+    # Swagger docs
+    - - /api-docs
+      - $require: swagger-ui-express?t=object#serve
+      - $require: swagger-ui-express?t=function#setup
+        $args:
+          - null
+          - swaggerOptions:
+              url: '/open-api.json'
+
+  # Execute during server initialization
+  init:
+    - $require: '@veramo/remote-server?t=function#createDefaultDid'
+      $args:
+        - agent:
+            $ref: /agent
+          baseUrl:
+            $ref: /constants/baseUrl
+          messagingServiceEndpoint: /messaging
+
+# DID Manager
+didManager:
+  $require: '@veramo/did-manager#DIDManager'
+  $args:
+    - store:
+        $require: '@veramo/data-store#DIDStore'
+
+# Agent
+agent:
+  $require: '@veramo/core#Agent'
+  $args:
+    - schemaValidation: false
+      plugins:
+        - $ref: /didManager
+        - $require: '@veramo/data-store#DataStore'
+          $args:
+            - $ref: /dbConnection
+        - $require: ./packages/wellknown-did-issuer/dist#WellKnownDidIssuer
+          $args:
+            - $ref: /dbConnection

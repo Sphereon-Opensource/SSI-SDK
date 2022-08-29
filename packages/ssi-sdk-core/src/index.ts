@@ -1,4 +1,4 @@
-export { parseDid, multibaseToHex, hexToMultibase, MultibaseFormat } from './utils'
+export { flattenArray, flattenMigrations, parseDid, multibaseToHex, hexToMultibase, MultibaseFormat } from './utils'
 export {
   VerifiablePresentationSP,
   UnsignedPresentationSP,

@@ -1,10 +1,9 @@
 import {
   IDidConfigurationResource,
   IDomainLinkageValidation,
-  IVerifyCallbackArgs,
-  IVerifyCredentialResult,
   IResourceValidation,
-} from '@sphereon/wellknown-dids-client/dist/types'
+  VerifyCallback,
+} from '@sphereon/wellknown-dids-client'
 import { IAgentContext, IPluginMethodMap, IResolver } from '@veramo/core'
 
 export interface IWellKnownDidVerifier extends IPluginMethodMap {
@@ -15,13 +14,13 @@ export interface IWellKnownDidVerifier extends IPluginMethodMap {
 }
 
 export interface IWellKnownDidVerifierOptionsArgs {
-  signatureVerifications?: Record<string, (args: IVerifyCallbackArgs) => Promise<IVerifyCredentialResult>>
+  signatureVerifications?: Record<string, VerifyCallback>
   onlyVerifyServiceDids?: boolean
 }
 
 export interface IRegisterSignatureVerificationArgs {
   callbackName: string
-  signatureVerification: (args: IVerifyCallbackArgs) => Promise<IVerifyCredentialResult>
+  signatureVerification: VerifyCallback
 }
 
 export interface IRemoveSignatureVerificationArgs {
@@ -30,12 +29,12 @@ export interface IRemoveSignatureVerificationArgs {
 
 export interface IVerifyDomainLinkageArgs {
   did: string
-  signatureVerification: ((args: IVerifyCallbackArgs) => Promise<IVerifyCredentialResult>) | string
+  signatureVerification: VerifyCallback | string
   onlyVerifyServiceDids?: boolean
 }
 
 export interface IVerifyDidConfigurationResourceArgs {
-  signatureVerification: ((args: IVerifyCallbackArgs) => Promise<IVerifyCredentialResult>) | string
+  signatureVerification: VerifyCallback | string
   configuration?: IDidConfigurationResource
   origin?: string
   did?: string
