@@ -64,9 +64,8 @@ const setup = async (): Promise<boolean> => {
       {
         id: `${DID}#foo`,
         type: ServiceTypesEnum.LINKED_DOMAINS,
-        serviceEndpoint: {
-          origins: [ORIGIN, ORIGIN],
-        },
+        // TODO add support to test multiple origins, needs Veramo version update
+        serviceEndpoint: ORIGIN,
       },
       {
         id: `${DID}#bar`,
