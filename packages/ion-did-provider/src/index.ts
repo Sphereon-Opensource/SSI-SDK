@@ -6,3 +6,4 @@
  */
 export { IonDIDProvider } from './ion-did-provider'
 export { getDidIonResolver } from './ion-did-resolver'
+export * from './types/ion-provider-types'

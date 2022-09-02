@@ -1,4 +1,4 @@
-import { IParsedDID } from '../types'
+import { IParsedDID } from '@sphereon/ssi-types'
 
 export const parseDid = (did: string): IParsedDID => {
   const parsedDid = parse(did)

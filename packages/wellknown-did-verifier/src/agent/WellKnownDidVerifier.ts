@@ -1,10 +1,5 @@
 import { IAgentPlugin, DIDResolutionResult } from '@veramo/core'
-import {
-  WellKnownDidVerifier as Verifier,
-  IDomainLinkageValidation,
-  IResourceValidation,
-  VerifyCallback,
-} from '@sphereon/wellknown-dids-client'
+import { WellKnownDidVerifier as Verifier, IDomainLinkageValidation, IResourceValidation, VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { schema } from '../index'
 import {
   IWellKnownDidVerifier,
@@ -32,8 +27,8 @@ export class WellKnownDidVerifier implements IAgentPlugin {
   private readonly onlyVerifyServiceDids: boolean
 
   constructor(args?: IWellKnownDidVerifierOptionsArgs) {
-    this.signatureVerifications = args && args.signatureVerifications || {}
-    this.onlyVerifyServiceDids = args && args.onlyVerifyServiceDids || false
+    this.signatureVerifications = (args && args.signatureVerifications) || {}
+    this.onlyVerifyServiceDids = (args && args.onlyVerifyServiceDids) || false
   }
 
   /** {@inheritDoc IWellKnownDidVerifier.registerSignatureVerification} */
@@ -57,7 +52,7 @@ export class WellKnownDidVerifier implements IAgentPlugin {
     const signatureVerification: VerifyCallback =
       typeof args.signatureVerification === 'string'
         ? await this.getSignatureVerification(args.signatureVerification)
-        : args.signatureVerification as VerifyCallback
+        : (args.signatureVerification as VerifyCallback)
 
     return context.agent.resolveDid({ didUrl: args.did }).then((didResolutionResult: DIDResolutionResult) => {
       if (!didResolutionResult.didDocument) {
@@ -85,7 +80,7 @@ export class WellKnownDidVerifier implements IAgentPlugin {
     const signatureVerification: VerifyCallback =
       typeof args.signatureVerification === 'string'
         ? await this.getSignatureVerification(args.signatureVerification)
-        : args.signatureVerification as VerifyCallback
+        : (args.signatureVerification as VerifyCallback)
 
     return new Verifier().verifyResource({
       verifySignatureCallback: signatureVerification,

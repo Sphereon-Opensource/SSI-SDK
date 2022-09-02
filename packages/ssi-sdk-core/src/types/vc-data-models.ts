@@ -8,33 +8,11 @@ import {
   ProofType,
   CredentialStatus,
 } from '@veramo/core'
-import { PresentationSubmission } from './presentation-exchange'
+
+import { IProofPurpose, IProofType, PresentationSubmission } from '@sphereon/ssi-types'
 
 export type W3CVerifiablePresentationSP = VerifiablePresentation | VerifiablePresentationSP | CompactJWT
 export type W3CVerifiableCredentialSP = VerifiableCredential | VerifiableCredentialSP | CompactJWT
-
-export enum SignatureTypes {
-  Ed25519Signature2018 = 'Ed25519Signature2018',
-  Ed25519Signature2020 = 'Ed25519Signature2020',
-  EcdsaSecp256k1Signature2019 = 'EcdsaSecp256k1Signature2019',
-  EcdsaSecp256k1RecoverySignature2020 = 'EcdsaSecp256k1RecoverySignature2020',
-  JsonWebSignature2020 = 'JsonWebSignature2020',
-  RsaSignature2018 = 'RsaSignature2018',
-  GpgSignature2020 = 'GpgSignature2020',
-  JcsEd25519Signature2020 = 'JcsEd25519Signature2020',
-  BbsBlsSignatureProof2020 = 'BbsBlsSignatureProof2020',
-  BbsBlsBoundSignatureProof2020 = 'BbsBlsBoundSignatureProof2020',
-}
-
-export enum ProofPurpose {
-  verificationMethod = 'verificationMethod',
-  assertionMethod = 'assertionMethod',
-  authentication = 'authentication',
-  keyAgreement = 'keyAgreement',
-  contractAgreement = 'contactAgreement',
-  capabilityInvocation = 'capabilityInvocation',
-  capabilityDelegation = 'capabilityDelegation',
-}
 
 export interface CredentialStatusSP extends CredentialStatus {
   id: string
@@ -56,9 +34,9 @@ export interface CredentialStatusSP extends CredentialStatus {
 }*/
 
 export interface CredentialProofSP extends ProofType {
-  type: string | SignatureTypes // The proof type
+  type: string | IProofType // The proof type
   created: string // The ISO8601 date-time string for creation
-  proofPurpose: ProofPurpose | string // The specific intent for the proof
+  proofPurpose: IProofPurpose | string // The specific intent for the proof
   verificationMethod: string // A set of parameters required to independently verify the proof
   challenge?: string // A challenge to protect against replay attacks
   domain?: string // A string restricting the (usage of a) proof to the domain and protects against replay attacks
