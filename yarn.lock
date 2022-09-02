@@ -3113,7 +3113,7 @@
     colors "~1.2.1"
     string-argv "~0.3.1"
 
-"@scure/base@^1.0.0-rc1":
+"@scure/base@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.1.tgz#ebb651ee52ff84f420097055f4bf46cfba403938"
   integrity sha512-ZxOhsSyxYwLJj3pLZCefNitxsj093tb2vq90mp2txoYeBqbcjDjqFhyM8eUjq/uFm6zJ+mUuqxlS2FkuSY1MTA==
@@ -3224,7 +3224,7 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sphereon/did-auth-siop@0.2.13", "@sphereon/did-auth-siop@^0.2.12":
+"@sphereon/did-auth-siop@0.2.13":
   version "0.2.13"
   resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.2.13.tgz#270d80d1e1d86cc12271961fda281ff4400a95cd"
   integrity sha512-ZFT+CoFGXsWcEnBvnagMuREtWI70P0MNTclYwCMHXlUgDYscJBu84RDXV3g0ONX0N4X3KFPCZHgtLXceg1dQGw==
@@ -3323,10 +3323,10 @@
     nanoid "^3.3.4"
     string.prototype.matchall "^4.0.7"
 
-"@sphereon/wellknown-dids-client@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@sphereon/wellknown-dids-client/-/wellknown-dids-client-0.1.0.tgz#b682cfad2086513564dbde3df1388a2fd865f3be"
-  integrity sha512-JpXTVCZQCGvKPhJ4KJ2bkklo/MnAoUrsfMN6C65FgLu9VznLM3pEMB/IbqHk4yJ8OWIg8zeOc5s2G2YiGxaQ1A==
+"@sphereon/wellknown-dids-client@^0.1.1":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@sphereon/wellknown-dids-client/-/wellknown-dids-client-0.1.2.tgz#b10e41533624e74515d39caffafa90f12e9279b7"
+  integrity sha512-svj/awJqgAyYwFXpK54V8xXqZvuadlBjDwar3LCNjLCanL9146P3LXwKn0aw9Ep6ZFvtatrdIulpWRKvQ3c9Ag==
   dependencies:
     "@sphereon/ssi-sdk-core" "^0.7.0"
     cross-fetch "^3.1.5"
