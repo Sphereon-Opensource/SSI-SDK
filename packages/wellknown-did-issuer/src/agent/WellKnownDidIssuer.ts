@@ -46,7 +46,7 @@ export class WellKnownDidIssuer implements IAgentPlugin {
   private readonly didConfigurationResourceRelations = ['linkedDids']
 
   constructor(private dbConnection: OrPromise<Connection>, args?: IWellKnownDidIssuerOptionsArgs) {
-    this.credentialIssuances = args && args.credentialIssuances || {}
+    this.credentialIssuances = (args && args.credentialIssuances) || {}
   }
 
   /** {@inheritDoc IWellKnownDidIssuer.registerSignatureVerification} */
@@ -188,10 +188,13 @@ export class WellKnownDidIssuer implements IAgentPlugin {
       .didManagerGet({ did })
       .catch(() => Promise.reject(Error('DID cannot be found')))
       .then(async (identifier: IIdentifier) => {
-        if (!identifier.services || identifier.services.filter(
+        if (
+          !identifier.services ||
+          identifier.services.filter(
             // TODO we should also check for the origins in the serviceEndpoint objects when we start supporting multiple origins
             (service: Service) => service.type === ServiceTypesEnum.LINKED_DOMAINS && service.serviceEndpoint === args.origin
-        ).length === 0) {
+          ).length === 0
+        ) {
           await context.agent.didManagerAddService({
             did: identifier.did,
             service: {

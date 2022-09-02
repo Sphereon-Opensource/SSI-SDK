@@ -1,9 +1,4 @@
-import {
-  IDidConfigurationResource,
-  IDomainLinkageValidation,
-  IResourceValidation,
-  VerifyCallback,
-} from '@sphereon/wellknown-dids-client'
+import { IDidConfigurationResource, IDomainLinkageValidation, IResourceValidation, VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { IAgentContext, IPluginMethodMap, IResolver } from '@veramo/core'
 
 export interface IWellKnownDidVerifier extends IPluginMethodMap {
