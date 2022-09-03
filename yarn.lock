@@ -3113,7 +3113,7 @@
     colors "~1.2.1"
     string-argv "~0.3.1"
 
-"@scure/base@^1.0.0-rc1", "@scure/base@^1.1.1":
+"@scure/base@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.1.tgz#ebb651ee52ff84f420097055f4bf46cfba403938"
   integrity sha512-ZxOhsSyxYwLJj3pLZCefNitxsj093tb2vq90mp2txoYeBqbcjDjqFhyM8eUjq/uFm6zJ+mUuqxlS2FkuSY1MTA==
@@ -3224,7 +3224,7 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sphereon/did-auth-siop@0.2.13", "@sphereon/did-auth-siop@^0.2.12":
+"@sphereon/did-auth-siop@0.2.13":
   version "0.2.13"
   resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.2.13.tgz#270d80d1e1d86cc12271961fda281ff4400a95cd"
   integrity sha512-ZFT+CoFGXsWcEnBvnagMuREtWI70P0MNTclYwCMHXlUgDYscJBu84RDXV3g0ONX0N4X3KFPCZHgtLXceg1dQGw==
@@ -3323,27 +3323,17 @@
     nanoid "^3.3.4"
     string.prototype.matchall "^4.0.7"
 
-"@sphereon/ssi-sdk-core@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@sphereon/ssi-sdk-core/-/ssi-sdk-core-0.7.0.tgz#6ab10610a6afcbcf801f9fa25201ca84b74bd06f"
-  integrity sha512-H3iN+mnU9eP8ztQGUX8V8hbAAgtiSVj2eJqFOddFp/xNYW0K2jBiuuJWV7QvIGata7zwVXt93UEa+XqRmum1kw==
-  dependencies:
-    "@scure/base" "^1.0.0-rc1"
-    "@sphereon/did-auth-siop" "^0.2.12"
-    "@sphereon/did-uni-client" "^0.4.0"
-    "@veramo/core" "3.1.2-next.84"
-    "@veramo/did-manager" "3.1.2-next.84"
-    debug "^4.1.1"
-    did-jwt-vc "^2.1.7"
-    events "^3.3.0"
-    z-schema "^5.0.2"
+"@sphereon/ssi-types@^0.8.1-next.2":
+  version "0.8.1-next.2"
+  resolved "https://registry.yarnpkg.com/@sphereon/ssi-types/-/ssi-types-0.8.1-next.2.tgz#968e77c3e714c81d0130bf9e8c98aaae258d4c80"
+  integrity sha512-RfoHritsJci+T1KiXezwElGzEnYBS1VfLMPBhDIr5yWFwmimBFyJE+dynB4+/9rtKHwNnZzbpLRnIWKJeeoWqQ==
 
-"@sphereon/wellknown-dids-client@^0.1.1", "@sphereon/wellknown-dids-client@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@sphereon/wellknown-dids-client/-/wellknown-dids-client-0.1.2.tgz#b10e41533624e74515d39caffafa90f12e9279b7"
-  integrity sha512-svj/awJqgAyYwFXpK54V8xXqZvuadlBjDwar3LCNjLCanL9146P3LXwKn0aw9Ep6ZFvtatrdIulpWRKvQ3c9Ag==
+"@sphereon/wellknown-dids-client@^0.1.3-unstable.0":
+  version "0.1.3-unstable.0"
+  resolved "https://registry.yarnpkg.com/@sphereon/wellknown-dids-client/-/wellknown-dids-client-0.1.3-unstable.0.tgz#b4e43f453e9341d9422028ec71518d39c541b9bd"
+  integrity sha512-Od+8fHxLNMOwOEYiGIyzeHytvfiOdQfyv2f2LD7ZywXdzu0jX8me5hFm8CXC/vODWv3l2jlgHwG8rfBvnrkIdg==
   dependencies:
-    "@sphereon/ssi-sdk-core" "^0.7.0"
+    "@sphereon/ssi-types" "^0.8.1-next.2"
     cross-fetch "^3.1.5"
     jwt-decode "^3.1.2"
 
