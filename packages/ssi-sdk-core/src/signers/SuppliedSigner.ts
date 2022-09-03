@@ -1,5 +1,3 @@
-import { Signer } from '@sphereon/did-auth-siop/dist/main/types/JWT.types'
-import { KeyAlgo } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
 import { IKey, IAgentContext, IKeyManager } from '@veramo/core'
 
 export function SuppliedSigner(keyRef: Pick<IKey, 'kid'>, context: IAgentContext<IKeyManager>, algorithm: KeyAlgo): Signer {
@@ -8,4 +6,17 @@ export function SuppliedSigner(keyRef: Pick<IKey, 'kid'>, context: IAgentContext
 
     return await context.agent.keyManagerSign({ keyRef: keyRef.kid, algorithm, data: input })
   }
+}
+export declare type Signer = (data: string | Uint8Array) => Promise<EcdsaSignature | string>
+
+export declare enum KeyAlgo {
+  EDDSA = 'EdDSA',
+  RS256 = 'RS256',
+  ES256 = 'ES256',
+  ES256K = 'ES256K',
+}
+export interface EcdsaSignature {
+  r: string
+  s: string
+  recoveryParam?: number | null
 }
