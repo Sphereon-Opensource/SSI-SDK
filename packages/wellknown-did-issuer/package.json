@@ -13,8 +13,9 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@sphereon/wellknown-dids-client": "^0.1.1",
-    "did-jwt-vc": "^2.1.9",
+    "@sphereon/ssi-types": "^0.8.0",
+    "@sphereon/wellknown-dids-client": "^0.1.2",
+    "did-jwt-vc": "2.1.14",
     "typeorm": "0.2.45",
     "uuid": "^8.3.2"
   },

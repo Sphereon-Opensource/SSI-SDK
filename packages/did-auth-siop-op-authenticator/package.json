@@ -15,6 +15,7 @@
   "dependencies": {
     "@sphereon/did-auth-siop": "0.2.13",
     "@sphereon/pex": "1.1.3",
+    "@sphereon/ssi-types": "^0.8.0",
     "@sphereon/ssi-sdk-core": "^0.8.0",
     "@veramo/core": "3.1.2-next.84",
     "@veramo/utils": "3.1.2-next.84",

@@ -7,5 +7,5 @@
     "strictPropertyInitialization": false,
     "noUnusedLocals": false
   },
-  "references": [{ "path": "../ssi-sdk-core" }]
+  "references": [{ "path": "../ssi-types" }]
 }
