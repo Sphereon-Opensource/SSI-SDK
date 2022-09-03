@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-data-store",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,8 +8,8 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk-connection-manager": "^0.7.0",
-    "@sphereon/ssi-sdk-data-store-common": "^0.7.0",
+    "@sphereon/ssi-sdk-connection-manager": "^0.8.0",
+    "@sphereon/ssi-sdk-data-store-common": "^0.8.0",
     "@veramo/utils": "3.1.2-next.84",
     "debug": "^4.1.1",
     "typeorm": "0.2.45"

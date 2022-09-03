@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk-bls-did-provider-key",
   "description": "Sphereon plugin that can enable creation and control of did:key identifiers.",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
