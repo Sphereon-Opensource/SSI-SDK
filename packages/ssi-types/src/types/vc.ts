@@ -11,7 +11,7 @@ export interface ICredential {
   // If sub is present, the value MUST be used to set the value of the id property of credentialSubject of the new credential JSON object.
   credentialSubject: ICredentialSubject
   // If jti is present, the value MUST be used to set the value of the id property of the new JSON object.
-  id: string
+  id?: string
   '@context': ICredentialContextType[] | ICredentialContextType
   credentialStatus?: ICredentialStatus
   credentialSchema?: undefined | ICredentialSchemaType | ICredentialSchemaType[]
@@ -76,6 +76,7 @@ export interface IHasProof {
 export type IVerifiableCredential = ICredential & IHasProof
 
 export interface IPresentation {
+  id?: string
   '@context': ICredentialContextType | ICredentialContextType[]
   type: string[]
   verifiableCredential: IVerifiableCredential[]
