@@ -76,6 +76,7 @@ export interface IHasProof {
 export type IVerifiableCredential = ICredential & IHasProof
 
 export interface IPresentation {
+  id?: string
   '@context': ICredentialContextType | ICredentialContextType[]
   type: string[]
   verifiableCredential: IVerifiableCredential[]
