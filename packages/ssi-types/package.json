@@ -7,8 +7,15 @@
   "scripts": {
     "build": "tsc --build"
   },
+  "dependencies": {
+    "jwt-decode": "^3.1.2"
+  },
   "devDependencies": {
-    "typescript": "4.6.4"
+    "typescript": "4.6.4",
+    "@types/jest": "^27.0.2",
+    "jest": "^27.3.1",
+    "prettier": "^2.4.1",
+    "ts-jest": "^27.0.7"
   },
   "files": [
     "dist/**/*",
@@ -23,5 +30,11 @@
   "repository": "git@github.com:Sphereon-OpenSource/ssi-sdk.git",
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
-  "keywords": []
+  "keywords": [
+    "SSI",
+    "Common Credential Types",
+    "Credential Mapping",
+    "Verifiable Credentials",
+    "DIDs"
+  ]
 }
