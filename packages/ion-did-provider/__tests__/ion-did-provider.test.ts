@@ -4,8 +4,7 @@ import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-m
 import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
 import { KeyManagementSystem } from '@veramo/kms-local'
 import { IonDIDProvider } from '../src'
-import { ICreateIdentifierOpts, KeyType } from '../src/types/ion-provider-types'
-import { generatePrivateKeyHex } from '../src/functions'
+import { ICreateIdentifierOpts } from '../src/types/ion-provider-types'
 
 const ionDIDProvider = new IonDIDProvider({
   defaultKms: 'mem',
@@ -36,11 +35,11 @@ const PRIVATE_DID3_KEY_HEX = 'abebf433281c5bb86ff8a271d2a464e528437041322a58fb8c
 const PRIVATE_DID4_KEY_HEX = '7dd923e40f4615ac496119f7e793cc2899e99b64b88ca8603db986700089532b'
 
 // Generate a new private key in hex format if needed, using the following method:
-console.log(generatePrivateKeyHex(KeyType.Secp256k1))
+// console.log(generatePrivateKeyHex(KeyType.Secp256k1))
 
 describe('@sphereon/ion-did-provider', () => {
   it('should create identifier', async () => {
-    const options: ICreateIdentifierOpts = createIdentifierOpts as ICreateIdentifierOpts
+    const options: ICreateIdentifierOpts = createIdentifierOpts
     const identifier: IIdentifier = await agent.didManagerCreate({ options })
 
     expect(identifier).toBeDefined()
@@ -204,7 +203,7 @@ function existingDidConfig(anchor: boolean = false, kid: string, privateDIDKeyHe
 }
 
 const createIdentifierOpts = {
-  anchor: true,
+  anchor: false,
   recoveryKey: {
     kid: 'recovery-test',
   },
@@ -213,18 +212,19 @@ const createIdentifierOpts = {
   },
   verificationMethods: [
     {
-      kid: 'key1',
+      kid: 'did1-test',
       purposes: [IonPublicKeyPurpose.Authentication, IonPublicKeyPurpose.AssertionMethod],
-      key: {
-        privateKeyHex: '88a62d50de38dc22f5b4e7cc80d68a0f421ea489dda0e3bd5c165f08ce46e666',
       },
+    {
+      kid: 'did2-test',
+      purposes: [IonPublicKeyPurpose.KeyAgreement],
     },
   ],
   services: [
     {
-      id: 'ld',
+      id: 'bar',
       type: 'LinkedDomains',
-      serviceEndpoint: 'https://ldtest.sphereon.com',
+      serviceEndpoint: 'https://bar.example.com',
     },
   ],
 }
