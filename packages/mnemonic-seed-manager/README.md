@@ -59,7 +59,7 @@ that we also support Postgres. Obviously you need to have a Postgresql database 
   - `yarn run typeorm-sqlite:migration:generate NameOfYourMigration`
 - Check in the src/migrations folders to find a file in the respective sqlite/postgres folder which contains _
   NameOfYourMigration_
-- Update the index.ts file in the respective directory to include the migration. Users will import that file as their
+- Update the credential-mapper.ts file in the respective directory to include the migration. Users will import that file as their
   migrations entrypoint from their TypeORM config.
 - If you wish to check whether applying the migration works you can execute the respective
 
