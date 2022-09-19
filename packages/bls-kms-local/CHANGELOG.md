@@ -7,10 +7,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @sphereon/ssi-sdk-bls-kms-local
 
-
-
-
-
 # [0.7.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.6.0...v0.7.0) (2022-08-05)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk-bls-kms-local

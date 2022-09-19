@@ -1,6 +1,8 @@
 import { PresentationSubmission } from './pex'
 import { IProofPurpose, IProofType } from './did'
 
+export type AdditionalClaims = Record<string, any>
+
 export interface ICredential {
   // If exp is present, the UNIX timestamp MUST be converted to an [XMLSCHEMA11-2] date-time, and MUST be used to set the value of the expirationDate property of credentialSubject of the new JSON object.
   expirationDate?: string
@@ -9,7 +11,7 @@ export interface ICredential {
   // If nbf is present, the UNIX timestamp MUST be converted to an [XMLSCHEMA11-2] date-time, and MUST be used to set the value of the issuanceDate property of the new JSON object.
   issuanceDate: string
   // If sub is present, the value MUST be used to set the value of the id property of credentialSubject of the new credential JSON object.
-  credentialSubject: ICredentialSubject
+  credentialSubject: ICredentialSubject & AdditionalClaims
   // If jti is present, the value MUST be used to set the value of the id property of the new JSON object.
   id?: string
   '@context': ICredentialContextType[] | ICredentialContextType
@@ -19,21 +21,18 @@ export interface ICredential {
   name?: string
   type: string[]
 
-  [x: string]: unknown
+  [x: string]: any
 }
 
 export interface ICredentialSubject {
   id?: string
-
-  [x: string]: unknown
 }
 
-export type ICredentialContextType = ICredentialContext | string
+export type ICredentialContextType = (ICredentialContext & AdditionalClaims) | string
 
 export interface ICredentialContext {
   name?: string
   did?: string
-  [x: string]: unknown
 }
 
 export type ICredentialSchemaType = ICredentialSchema | string
@@ -54,8 +53,6 @@ export interface IProof {
   jws?: string // JWS based proof
   nonce?: string // Similar to challenge. A nonce to protect against replay attacks, used in some ZKP proofs
   requiredRevealStatements?: string[] // The parts of the proof that must be revealed in a derived proof
-
-  [x: string]: string | string[] | undefined
 }
 
 export interface ICredentialStatus {
@@ -66,7 +63,7 @@ export interface ICredentialStatus {
 export interface IIssuer {
   id: string
 
-  [x: string]: unknown
+  [x: string]: any
 }
 
 export interface IHasProof {
@@ -79,9 +76,11 @@ export interface IPresentation {
   id?: string
   '@context': ICredentialContextType | ICredentialContextType[]
   type: string[]
-  verifiableCredential: IVerifiableCredential[]
+  verifiableCredential: IVerifiableCredential[] // we relax to ICredential for internal decoded stable representations without proofs
   presentation_submission?: PresentationSubmission
   holder?: string
+
+  [x: string]: any
 }
 
 export type IVerifiablePresentation = IPresentation & IHasProof
@@ -90,36 +89,59 @@ export interface WrappedVerifiableCredential {
   /**
    * Original VC that we've received
    */
-  original: string | JwtWrappedVerifiableCredential | IVerifiableCredential
+  original: OriginalVerifiableCredential
   /**
    * In case of JWT credential it will be the decoded version. In other cases it will be the same as original one
    */
-  decoded: JwtWrappedVerifiableCredential | IVerifiableCredential
+  decoded: JwtDecodedVerifiableCredential | IVerifiableCredential
   /**
-   * Type of this credential. Supported types are json-ld and jwt
+   * Type of this credential. Supported types are json-ld and jwt (decoded/encoded)
    */
-  type: VerifiableDataExchangeType
+  type: OriginalType
   /**
-   * created based on https://www.w3.org/TR/vc-data-model/#jwt-decoding
+   * The claim format, typically used during exchange transport protocols
    */
-  internalCredential: ICredential
+  format: ClaimFormat
+  /**
+   * Internal stable representation of a Credential without Proofs, created based on https://www.w3.org/TR/vc-data-model/#jwt-decoding
+   */
+  credential: ICredential
 }
 
 export interface WrappedVerifiablePresentation {
-  original: string | JwtWrappedVerifiablePresentation | IVerifiablePresentation
-  decoded: JwtWrappedVerifiablePresentation | IVerifiablePresentation
-  type: VerifiableDataExchangeType
-  internalPresentation: InternalPresentation
+  /**
+   * Original VP that we've received
+   */
+  original: OriginalVerifiablePresentation
+  /**
+   * In case of JWT VP it will be the decoded version. In other cases it will be the same as original one
+   */
+  decoded: JwtDecodedVerifiablePresentation | IVerifiablePresentation
+  /**
+   * Type of this Presentation. Supported types are json-ld and jwt (decoded/encoded)
+   */
+  type: OriginalType
+  /**
+   * The claim format, typically used during exchange transport protocols
+   */
+  format: ClaimFormat
+  /**
+   * Internal stable representation of a Presentation without proofs, created based on https://www.w3.org/TR/vc-data-model/#jwt-decoding
+   */
+  presentation: UniformVerifiablePresentation
+  /**
+   * Wrapped Verifiable Credentials belonging to the Presentation
+   */
   vcs: WrappedVerifiableCredential[]
 }
 
-export enum VerifiableDataExchangeType {
-  JSONLD,
-  JWT_ENCODED,
-  JWT_DECODED,
+export enum OriginalType {
+  JSONLD = 'json-ld',
+  JWT_ENCODED = 'jwt-encoded',
+  JWT_DECODED = 'jwt-decoded',
 }
 
-export interface InternalPresentation {
+export interface UniformVerifiablePresentation {
   '@context': ICredentialContextType | ICredentialContextType[]
   type: string[]
   verifiableCredential: WrappedVerifiableCredential[]
@@ -127,20 +149,30 @@ export interface InternalPresentation {
   holder?: string
 }
 
-export interface JwtWrappedVerifiableCredential {
+export interface JwtDecodedVerifiableCredential {
   vc: ICredential
   exp: string
   iss: string
   nbf: string
   sub: string
   jti: string
+
+  [x: string]: any
 }
 
-export interface JwtWrappedVerifiablePresentation {
+export interface JwtDecodedVerifiablePresentation {
   vp: IVerifiablePresentation
   exp: string
   iss: string
   nbf: string
   sub: string
   jti: string
+
+  [x: string]: any
 }
+
+export type ClaimFormat = 'jwt' | 'jwt_vc' | 'jwt_vp' | 'ldp' | 'ldp_vc' | 'ldp_vp' | string
+
+export type OriginalVerifiableCredential = IVerifiableCredential | JwtDecodedVerifiableCredential | string
+export type OriginalVerifiablePresentation = IPresentation | JwtDecodedVerifiablePresentation | string
+export type Original = OriginalVerifiablePresentation | OriginalVerifiableCredential
