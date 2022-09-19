@@ -18,10 +18,10 @@ function getFileAsJson(path: string) {
 }
 
 describe('Encoding - Decoding', () => {
-  const jwtVp: OriginalVerifiablePresentation = getFile('packages/ssi-types/__tests__/dif_pe_examples/vp/vp_universityDegree.jwt')
-  const jwtVc: OriginalVerifiableCredential = getFile('packages/ssi-types/__tests__/dif_pe_examples/vc/vc_universityDegree.jwt')
-  const ldpVp: OriginalVerifiablePresentation = getFileAsJson('packages/ssi-types/__tests__/dif_pe_examples/vp/vp_general.json')
-  const ldpVc: OriginalVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/dif_pe_examples/vc/vc-driverLicense.json')
+  const jwtVp: OriginalVerifiablePresentation = getFile('packages/ssi-types/__tests__/vc_vp_examples/vp/vp_universityDegree.jwt')
+  const jwtVc: OriginalVerifiableCredential = getFile('packages/ssi-types/__tests__/vc_vp_examples/vc/vc_universityDegree.jwt')
+  const ldpVp: OriginalVerifiablePresentation = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vp/vp_general.json')
+  const ldpVc: OriginalVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vc/vc-driverLicense.json')
 
   const decodedJwtVp = CredentialMapper.decodeVerifiablePresentation(jwtVp) as JwtDecodedVerifiablePresentation
   const decodedJwtVc = CredentialMapper.decodeVerifiableCredential(jwtVc) as JwtDecodedVerifiableCredential

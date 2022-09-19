@@ -214,7 +214,7 @@ const createIdentifierOpts = {
     {
       kid: 'did1-test',
       purposes: [IonPublicKeyPurpose.Authentication, IonPublicKeyPurpose.AssertionMethod],
-      },
+    },
     {
       kid: 'did2-test',
       purposes: [IonPublicKeyPurpose.KeyAgreement],
