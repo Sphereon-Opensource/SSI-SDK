@@ -143,7 +143,7 @@ describe('Wrapped VP', () => {
     const vp = CredentialMapper.toWrappedVerifiablePresentation(jsonLdVpAsStr)
     // vp should be decoded
     expect(vp.original).toEqual(jsonLdVpAsStr)
-    expect((vp.decoded as IVerifiablePresentation).verifiableCredential[1].issuer).toEqual('did:foo:123')
+    expect(((vp.decoded as IVerifiablePresentation).verifiableCredential[1] as IVerifiableCredential).issuer).toEqual('did:foo:123')
     expect(vp.type).toEqual(OriginalType.JSONLD)
     expect(vp.format).toEqual('ldp_vp')
     expect(vp.presentation.verifiableCredential[1].credential.issuer).toEqual('did:foo:123')
@@ -153,7 +153,7 @@ describe('Wrapped VP', () => {
     const vp = CredentialMapper.toWrappedVerifiablePresentation(jsonLdVp)
     // vp should be decoded
     expect(vp.original).toEqual(jsonLdVp)
-    expect((vp.decoded as IVerifiablePresentation).verifiableCredential[1].issuer).toEqual('did:foo:123')
+    expect(((vp.decoded as IVerifiablePresentation).verifiableCredential[1] as IVerifiableCredential).issuer).toEqual('did:foo:123')
     expect(vp.type).toEqual(OriginalType.JSONLD)
     expect(vp.format).toEqual('ldp_vp')
     expect(vp.presentation.verifiableCredential[1].credential.issuer).toEqual('did:foo:123')

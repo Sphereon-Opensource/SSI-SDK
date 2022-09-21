@@ -119,7 +119,7 @@ describe('Uniform VP claims', () => {
     // vp should be decoded
     expect(vp.holder).toEqual('did:example:ebfeb1f712ebc6f1c276e12ec21')
     // vc should be decoded for a uniform vp
-    expect(vp.verifiableCredential[0].credentialSubject.degree.type).toEqual('BachelorDegree')
+    expect((vp.verifiableCredential[0] as IVerifiableCredential).credentialSubject.degree.type).toEqual('BachelorDegree')
   })
 
   it('JWT Decoded VP should populate response', () => {
@@ -129,19 +129,19 @@ describe('Uniform VP claims', () => {
     // vp should be decoded
     expect(vp.holder).toEqual('did:example:ebfeb1f712ebc6f1c276e12ec21')
     // vc should be decoded for a uniform vp
-    expect(vp.verifiableCredential[0].credentialSubject.degree.type).toEqual('BachelorDegree')
+    expect((vp.verifiableCredential[0] as IVerifiableCredential).credentialSubject.degree.type).toEqual('BachelorDegree')
   })
 
   it('JSON-LD VP String should populate response', () => {
     const jsonLdVpAsStr = getFile('./packages/ssi-types/__tests__/vc_vp_examples/vp/vp_subject_is_holder.json')
     const vp = CredentialMapper.toUniformPresentation(jsonLdVpAsStr)
     // vp should be decoded
-    expect(vp.verifiableCredential[0].issuer).toEqual('did:example:123')
+    expect((vp.verifiableCredential[0] as IVerifiableCredential).issuer).toEqual('did:example:123')
   })
   it('JSON-LD VP Object should populate response', () => {
     const jsonLdVp = getFileAsJson('./packages/ssi-types/__tests__/vc_vp_examples/vp/vp_subject_is_holder.json')
     const vp = CredentialMapper.toUniformPresentation(jsonLdVp)
     // vp should be decoded
-    expect(vp.verifiableCredential[0].issuer).toEqual('did:example:123')
+    expect((vp.verifiableCredential[0] as IVerifiableCredential).issuer).toEqual('did:example:123')
   })
 })

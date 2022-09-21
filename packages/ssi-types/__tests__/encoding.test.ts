@@ -37,7 +37,7 @@ describe('Encoding - Decoding', () => {
   })
 
   it('Decoded JsonLd VP should have sub', () => {
-    expect(decodedLdpVp.verifiableCredential[1].issuer).toEqual('did:foo:123')
+    expect((decodedLdpVp.verifiableCredential[1] as IVerifiableCredential).issuer).toEqual('did:foo:123')
   })
   it('Decoded Jsonld VC should have sub', () => {
     expect(decodedLdpVc.issuer).toEqual('did:key:z6MkuDyqwjCVhFFQEZdS5utguwYD2KRig2PEb9qbfP9iqwn9')

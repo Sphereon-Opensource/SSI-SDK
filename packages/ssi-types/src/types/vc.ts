@@ -97,6 +97,11 @@ export interface IPresentation {
 
 export type IVerifiablePresentation = IPresentation & IHasProof
 
+/**
+ * Represents a signed Verifiable Presentation (includes proof), in either JSON or compact JWT format.
+ * See {@link https://www.w3.org/TR/vc-data-model/#presentations | VC data model}
+ * See {@link https://www.w3.org/TR/vc-data-model/#proof-formats | proof formats}
+ */
 export type W3CVerifiablePresentation = IVerifiablePresentation | CompactJWT
 
 export interface WrappedVerifiableCredential {
