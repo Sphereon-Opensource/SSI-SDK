@@ -97,6 +97,8 @@ export interface IPresentation {
 
 export type IVerifiablePresentation = IPresentation & IHasProof
 
+export type W3CVerifiablePresentation = IPresentation | CompactJWT
+
 export interface WrappedVerifiableCredential {
   /**
    * Original VC that we've received
@@ -185,6 +187,6 @@ export interface JwtDecodedVerifiablePresentation {
 
 export type ClaimFormat = 'jwt' | 'jwt_vc' | 'jwt_vp' | 'ldp' | 'ldp_vc' | 'ldp_vp' | string
 
-export type OriginalVerifiableCredential = IVerifiableCredential | JwtDecodedVerifiableCredential | CompactJWT
-export type OriginalVerifiablePresentation = IPresentation | JwtDecodedVerifiablePresentation | CompactJWT
+export type OriginalVerifiableCredential = W3CVerifiableCredential | JwtDecodedVerifiableCredential
+export type OriginalVerifiablePresentation = W3CVerifiablePresentation | JwtDecodedVerifiablePresentation
 export type Original = OriginalVerifiablePresentation | OriginalVerifiableCredential
