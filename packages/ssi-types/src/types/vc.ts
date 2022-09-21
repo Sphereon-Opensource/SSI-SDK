@@ -72,11 +72,23 @@ export interface IHasProof {
 
 export type IVerifiableCredential = ICredential & IHasProof
 
+/**
+ * Represents a Json Web Token in compact form.
+ */
+export type CompactJWT = string
+
+/**
+ * Represents a signed Verifiable Credential (includes proof), in either JSON or compact JWT format.
+ * See {@link https://www.w3.org/TR/vc-data-model/#credentials | VC data model}
+ * See {@link https://www.w3.org/TR/vc-data-model/#proof-formats | proof formats}
+ */
+export type W3CVerifiableCredential = IVerifiableCredential | CompactJWT
+
 export interface IPresentation {
   id?: string
   '@context': ICredentialContextType | ICredentialContextType[]
   type: string[]
-  verifiableCredential: IVerifiableCredential[] // we relax to ICredential for internal decoded stable representations without proofs
+  verifiableCredential: W3CVerifiableCredential[] // we relax to ICredential for internal decoded stable representations without proofs
   presentation_submission?: PresentationSubmission
   holder?: string
 
@@ -173,6 +185,6 @@ export interface JwtDecodedVerifiablePresentation {
 
 export type ClaimFormat = 'jwt' | 'jwt_vc' | 'jwt_vp' | 'ldp' | 'ldp_vc' | 'ldp_vp' | string
 
-export type OriginalVerifiableCredential = IVerifiableCredential | JwtDecodedVerifiableCredential | string
-export type OriginalVerifiablePresentation = IPresentation | JwtDecodedVerifiablePresentation | string
+export type OriginalVerifiableCredential = IVerifiableCredential | JwtDecodedVerifiableCredential | CompactJWT
+export type OriginalVerifiablePresentation = IPresentation | JwtDecodedVerifiablePresentation | CompactJWT
 export type Original = OriginalVerifiablePresentation | OriginalVerifiableCredential
