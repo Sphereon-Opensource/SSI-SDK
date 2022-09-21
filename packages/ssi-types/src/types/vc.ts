@@ -97,7 +97,7 @@ export interface IPresentation {
 
 export type IVerifiablePresentation = IPresentation & IHasProof
 
-export type W3CVerifiablePresentation = IPresentation | CompactJWT
+export type W3CVerifiablePresentation = IVerifiablePresentation | CompactJWT
 
 export interface WrappedVerifiableCredential {
   /**
