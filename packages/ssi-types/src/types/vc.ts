@@ -53,6 +53,7 @@ export interface IProof {
   jws?: string // JWS based proof
   nonce?: string // Similar to challenge. A nonce to protect against replay attacks, used in some ZKP proofs
   requiredRevealStatements?: string[] // The parts of the proof that must be revealed in a derived proof
+  [x: string]: unknown
 }
 
 export interface ICredentialStatus {
@@ -72,11 +73,23 @@ export interface IHasProof {
 
 export type IVerifiableCredential = ICredential & IHasProof
 
+/**
+ * Represents a Json Web Token in compact form.
+ */
+export type CompactJWT = string
+
+/**
+ * Represents a signed Verifiable Credential (includes proof), in either JSON or compact JWT format.
+ * See {@link https://www.w3.org/TR/vc-data-model/#credentials | VC data model}
+ * See {@link https://www.w3.org/TR/vc-data-model/#proof-formats | proof formats}
+ */
+export type W3CVerifiableCredential = IVerifiableCredential | CompactJWT
+
 export interface IPresentation {
   id?: string
   '@context': ICredentialContextType | ICredentialContextType[]
   type: string[]
-  verifiableCredential: IVerifiableCredential[] // we relax to ICredential for internal decoded stable representations without proofs
+  verifiableCredential: W3CVerifiableCredential[] // we relax to ICredential for internal decoded stable representations without proofs
   presentation_submission?: PresentationSubmission
   holder?: string
 
@@ -84,6 +97,13 @@ export interface IPresentation {
 }
 
 export type IVerifiablePresentation = IPresentation & IHasProof
+
+/**
+ * Represents a signed Verifiable Presentation (includes proof), in either JSON or compact JWT format.
+ * See {@link https://www.w3.org/TR/vc-data-model/#presentations | VC data model}
+ * See {@link https://www.w3.org/TR/vc-data-model/#proof-formats | proof formats}
+ */
+export type W3CVerifiablePresentation = IVerifiablePresentation | CompactJWT
 
 export interface WrappedVerifiableCredential {
   /**
@@ -173,6 +193,6 @@ export interface JwtDecodedVerifiablePresentation {
 
 export type ClaimFormat = 'jwt' | 'jwt_vc' | 'jwt_vp' | 'ldp' | 'ldp_vc' | 'ldp_vp' | string
 
-export type OriginalVerifiableCredential = IVerifiableCredential | JwtDecodedVerifiableCredential | string
-export type OriginalVerifiablePresentation = IPresentation | JwtDecodedVerifiablePresentation | string
+export type OriginalVerifiableCredential = W3CVerifiableCredential | JwtDecodedVerifiableCredential
+export type OriginalVerifiablePresentation = W3CVerifiablePresentation | JwtDecodedVerifiablePresentation
 export type Original = OriginalVerifiablePresentation | OriginalVerifiableCredential
