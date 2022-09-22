@@ -53,6 +53,7 @@ export interface IProof {
   jws?: string // JWS based proof
   nonce?: string // Similar to challenge. A nonce to protect against replay attacks, used in some ZKP proofs
   requiredRevealStatements?: string[] // The parts of the proof that must be revealed in a derived proof
+
   [x: string]: any // Any because we want to be able to access value1.value2.value3, which unknown does not allow for without a cast
 }
 
