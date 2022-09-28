@@ -35,7 +35,6 @@ describe('Wrapped VC claims', () => {
 
   it('should throw an error if expiration date and exp are different in JWT vc', () => {
     const jwtVc: IVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vp/vp_general.json').verifiableCredential[0]
-    const subject = <ICredentialSubject>jwtVc['vc' as keyof IVerifiableCredential].credentialSubject
     jwtVc['exp' as keyof IVerifiableCredential] = (+new Date()).toString()
     ;(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).expirationDate = (+new Date(
       (jwtVc['exp' as keyof IVerifiableCredential] as string) + 2
