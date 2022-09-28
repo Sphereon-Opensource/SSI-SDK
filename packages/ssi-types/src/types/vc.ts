@@ -3,23 +3,25 @@ import { IProofPurpose, IProofType } from './did'
 
 export type AdditionalClaims = Record<string, any>
 
+export type IIssuerId = string
+
 export interface ICredential {
-  // If exp is present, the UNIX timestamp MUST be converted to an [XMLSCHEMA11-2] date-time, and MUST be used to set the value of the expirationDate property of credentialSubject of the new JSON object.
-  expirationDate?: string
+  '@context': ICredentialContextType | ICredentialContextType[]
+  type: string[]
+  credentialSchema?: undefined | ICredentialSchemaType | ICredentialSchemaType[]
   // If iss is present, the value MUST be used to set the issuer property of the new credential JSON object or the holder property of the new presentation JSON object.
-  issuer: string | IIssuer
+  issuer: IIssuerId | IIssuer
   // If nbf is present, the UNIX timestamp MUST be converted to an [XMLSCHEMA11-2] date-time, and MUST be used to set the value of the issuanceDate property of the new JSON object.
   issuanceDate: string
   // If sub is present, the value MUST be used to set the value of the id property of credentialSubject of the new credential JSON object.
-  credentialSubject: ICredentialSubject & AdditionalClaims
+  credentialSubject: (ICredentialSubject & AdditionalClaims) | (ICredentialSubject & AdditionalClaims)[]
+  // If exp is present, the UNIX timestamp MUST be converted to an [XMLSCHEMA11-2] date-time, and MUST be used to set the value of the expirationDate property of credentialSubject of the new JSON object.
+  expirationDate?: string
   // If jti is present, the value MUST be used to set the value of the id property of the new JSON object.
   id?: string
-  '@context': ICredentialContextType[] | ICredentialContextType
   credentialStatus?: ICredentialStatus
-  credentialSchema?: undefined | ICredentialSchemaType | ICredentialSchemaType[]
   description?: string
   name?: string
-  type: string[]
 
   [x: string]: any
 }

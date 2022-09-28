@@ -188,15 +188,20 @@ export class CredentialMapper {
     // Since this is a credential, we delete any proof just to be sure (should not occur on JWT, but better safe than sorry)
     delete credential.proof
 
+    const subjects = Array.isArray(credential.credentialSubject) ? credential.credentialSubject : [credential.credentialSubject]
     if (decoded.exp) {
-      const expDate = credential.credentialSubject?.expirationDate
-      const jwtExp = parseInt(decoded.exp.toString())
-      // fix seconds to millisecs for the date
-      const expDateAsStr = jwtExp < 9999999999 ? new Date(jwtExp * 1000).toISOString().replace(/\.000Z/, 'Z') : new Date(jwtExp).toISOString()
-      if (expDate && expDate !== expDateAsStr) {
-        throw new Error(`Inconsistent expiration dates between JWT claim (${expDateAsStr}) and VC value (${expDate})`)
+      for (let i = 0; i < subjects.length; i++) {
+        const expDate = subjects[i].expirationDate
+        const jwtExp = parseInt(decoded.exp.toString())
+        // fix seconds to millisecs for the date
+        const expDateAsStr = jwtExp < 9999999999 ? new Date(jwtExp * 1000).toISOString().replace(/\.000Z/, 'Z') : new Date(jwtExp).toISOString()
+        if (expDate && expDate !== expDateAsStr) {
+          throw new Error(`Inconsistent expiration dates between JWT claim (${expDateAsStr}) and VC value (${expDate})`)
+        }
+        Array.isArray(credential.credentialSubject)
+          ? (credential.credentialSubject[i].expirationDate = expDateAsStr)
+          : (credential.credentialSubject.expirationDate = expDateAsStr)
       }
-      credential.credentialSubject.expirationDate = expDateAsStr
     }
 
     if (decoded.nbf) {
@@ -227,11 +232,15 @@ export class CredentialMapper {
     }
 
     if (decoded.sub) {
-      const csId = credential.credentialSubject?.id
-      if (csId && csId !== decoded.sub) {
-        throw new Error(`Inconsistent credential subject ids between JWT claim (${decoded.sub}) and VC value (${csId})`)
+      for (let i = 0; i < subjects.length; i++) {
+        const csId = subjects[i].id
+        if (csId && csId !== decoded.sub) {
+          throw new Error(`Inconsistent credential subject ids between JWT claim (${decoded.sub}) and VC value (${csId})`)
+        }
+        Array.isArray(credential.credentialSubject)
+          ? (credential.credentialSubject[i].id = decoded.sub)
+          : (credential.credentialSubject.id = decoded.sub)
       }
-      credential.credentialSubject.id = decoded.sub
     }
     if (decoded.jti) {
       const id = credential.id
