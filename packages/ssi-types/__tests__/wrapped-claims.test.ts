@@ -1,5 +1,13 @@
 import * as fs from 'fs'
-import { CredentialMapper, ICredential, IVerifiableCredential, IVerifiablePresentation, OriginalType, WrappedVerifiablePresentation } from '../src'
+import {
+  CredentialMapper,
+  ICredential,
+  ICredentialSubject,
+  IVerifiableCredential,
+  IVerifiablePresentation,
+  OriginalType,
+  WrappedVerifiablePresentation,
+} from '../src'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -14,9 +22,7 @@ describe('Wrapped VC claims', () => {
     const jwtVc: IVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vp/vp_general.json').verifiableCredential[0]
     jwtVc['exp' as keyof IVerifiableCredential] = (+new Date()).toString()
     const vc = CredentialMapper.toWrappedVerifiableCredential(jwtVc)
-    expect(vc.credential.credentialSubject.expirationDate).toEqual(
-      new Date(parseInt(jwtVc['exp' as keyof IVerifiableCredential] as string)).toISOString()
-    )
+    expect(vc.credential.expirationDate).toEqual(new Date(parseInt(jwtVc['exp' as keyof IVerifiableCredential] as string)).toISOString())
   })
 
   it('should set expiration date if exp is present in JWT vc as number', () => {
@@ -24,19 +30,20 @@ describe('Wrapped VC claims', () => {
 
     jwtVc['exp' as keyof IVerifiableCredential] = new Date().valueOf()
     const vc = CredentialMapper.toWrappedVerifiableCredential(jwtVc)
-    expect(vc.credential.credentialSubject.expirationDate).toEqual(new Date(jwtVc['exp' as keyof IVerifiableCredential] as string).toISOString())
+    expect(vc.credential.expirationDate).toEqual(new Date(jwtVc['exp' as keyof IVerifiableCredential] as string).toISOString())
   })
 
   it('should throw an error if expiration date and exp are different in JWT vc', () => {
     const jwtVc: IVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vp/vp_general.json').verifiableCredential[0]
+    const subject = <ICredentialSubject>jwtVc['vc' as keyof IVerifiableCredential].credentialSubject
     jwtVc['exp' as keyof IVerifiableCredential] = (+new Date()).toString()
-    ;(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).credentialSubject.expirationDate = (+new Date(
+    ;(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).expirationDate = (+new Date(
       (jwtVc['exp' as keyof IVerifiableCredential] as string) + 2
     )).toString()
     expect(() => CredentialMapper.toWrappedVerifiableCredential(jwtVc)).toThrowError(
       `Inconsistent expiration dates between JWT claim (${new Date(
         parseInt(jwtVc['exp' as keyof IVerifiableCredential] as string)
-      ).toISOString()}) and VC value (${(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).credentialSubject.expirationDate})`
+      ).toISOString()}) and VC value (${(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).expirationDate})`
     )
   })
 
@@ -81,18 +88,18 @@ describe('Wrapped VC claims', () => {
 
   it('should set credentialSubject.id if sub is present in JWT vc', () => {
     const jwtVc: IVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vp/vp_general.json').verifiableCredential[0]
-    jwtVc['sub' as keyof IVerifiableCredential] = (<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).credentialSubject.id
+    const subject = <ICredentialSubject>jwtVc.vc.credentialSubject
+    jwtVc['sub' as keyof IVerifiableCredential] = subject.id
     const vc = CredentialMapper.toWrappedVerifiableCredential(jwtVc)
-    expect(vc.credential.credentialSubject.id).toEqual(jwtVc['sub' as keyof IVerifiableCredential])
+    expect(!Array.isArray(vc.credential.credentialSubject) && vc.credential.credentialSubject.id).toEqual(jwtVc['sub' as keyof IVerifiableCredential])
   })
 
   it('should throw an error if credentialSubject.id and sub are different in JWT vc', () => {
     const jwtVc: IVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vp/vp_general.json').verifiableCredential[0]
     jwtVc['sub' as keyof IVerifiableCredential] = 'did:test:123'
+    const subject = <ICredentialSubject>jwtVc.vc.credentialSubject
     expect(() => CredentialMapper.toWrappedVerifiableCredential(jwtVc)).toThrowError(
-      `Inconsistent credential subject ids between JWT claim (${jwtVc['sub' as keyof IVerifiableCredential]}) and VC value (${
-        (<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).credentialSubject.id
-      })`
+      `Inconsistent credential subject ids between JWT claim (${jwtVc['sub' as keyof IVerifiableCredential]}) and VC value (${subject.id})`
     )
   })
 

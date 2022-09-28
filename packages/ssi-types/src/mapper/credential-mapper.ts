@@ -188,20 +188,15 @@ export class CredentialMapper {
     // Since this is a credential, we delete any proof just to be sure (should not occur on JWT, but better safe than sorry)
     delete credential.proof
 
-    const subjects = Array.isArray(credential.credentialSubject) ? credential.credentialSubject : [credential.credentialSubject]
     if (decoded.exp) {
-      for (let i = 0; i < subjects.length; i++) {
-        const expDate = subjects[i].expirationDate
-        const jwtExp = parseInt(decoded.exp.toString())
-        // fix seconds to millisecs for the date
-        const expDateAsStr = jwtExp < 9999999999 ? new Date(jwtExp * 1000).toISOString().replace(/\.000Z/, 'Z') : new Date(jwtExp).toISOString()
-        if (expDate && expDate !== expDateAsStr) {
-          throw new Error(`Inconsistent expiration dates between JWT claim (${expDateAsStr}) and VC value (${expDate})`)
-        }
-        Array.isArray(credential.credentialSubject)
-          ? (credential.credentialSubject[i].expirationDate = expDateAsStr)
-          : (credential.credentialSubject.expirationDate = expDateAsStr)
+      const expDate = credential.expirationDate
+      const jwtExp = parseInt(decoded.exp.toString())
+      // fix seconds to millisecs for the date
+      const expDateAsStr = jwtExp < 9999999999 ? new Date(jwtExp * 1000).toISOString().replace(/\.000Z/, 'Z') : new Date(jwtExp).toISOString()
+      if (expDate && expDate !== expDateAsStr) {
+        throw new Error(`Inconsistent expiration dates between JWT claim (${expDateAsStr}) and VC value (${expDate})`)
       }
+      credential.expirationDate = expDateAsStr
     }
 
     if (decoded.nbf) {
@@ -232,6 +227,7 @@ export class CredentialMapper {
     }
 
     if (decoded.sub) {
+      const subjects = Array.isArray(credential.credentialSubject) ? credential.credentialSubject : [credential.credentialSubject]
       for (let i = 0; i < subjects.length; i++) {
         const csId = subjects[i].id
         if (csId && csId !== decoded.sub) {
