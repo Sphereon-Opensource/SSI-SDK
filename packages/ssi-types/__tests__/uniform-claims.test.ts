@@ -1,6 +1,5 @@
 import * as fs from 'fs'
-import { CredentialMapper, ICredential, IVerifiableCredential } from '../src'
-import { ICredentialSubject } from '../dist'
+import { CredentialMapper, ICredential, IVerifiableCredential, ICredentialSubject } from '../src'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
