@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { CredentialMapper, ICredential, IVerifiableCredential } from '../src'
+import { CredentialMapper, ICredential, IVerifiableCredential, ICredentialSubject } from '../src'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -14,7 +14,7 @@ describe('Uniform VC claims', () => {
     const jwtVc: IVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vp/vp_general.json').verifiableCredential[0]
     jwtVc['exp' as keyof IVerifiableCredential] = (+new Date()).toString()
     const vc = CredentialMapper.toUniformCredential(jwtVc)
-    expect(vc.credentialSubject.expirationDate).toEqual(new Date(parseInt(jwtVc['exp' as keyof IVerifiableCredential] as string)).toISOString())
+    expect(vc.expirationDate).toEqual(new Date(parseInt(jwtVc['exp' as keyof IVerifiableCredential] as string)).toISOString())
   })
 
   it('should set expiration date if exp is present in JWT vc as number', () => {
@@ -22,19 +22,19 @@ describe('Uniform VC claims', () => {
 
     jwtVc['exp' as keyof IVerifiableCredential] = new Date().valueOf()
     const vc = CredentialMapper.toUniformCredential(jwtVc)
-    expect(vc.credentialSubject.expirationDate).toEqual(new Date(jwtVc['exp' as keyof IVerifiableCredential] as string).toISOString())
+    expect(vc.expirationDate).toEqual(new Date(jwtVc['exp' as keyof IVerifiableCredential] as string).toISOString())
   })
 
   it('should throw an error if expiration date and exp are different in JWT vc', () => {
     const jwtVc: IVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vp/vp_general.json').verifiableCredential[0]
     jwtVc['exp' as keyof IVerifiableCredential] = (+new Date()).toString()
-    ;(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).credentialSubject.expirationDate = (+new Date(
+    ;(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).expirationDate = (+new Date(
       (jwtVc['exp' as keyof IVerifiableCredential] as string) + 2
     )).toString()
     expect(() => CredentialMapper.toUniformCredential(jwtVc)).toThrowError(
       `Inconsistent expiration dates between JWT claim (${new Date(
         parseInt(jwtVc['exp' as keyof IVerifiableCredential] as string)
-      ).toISOString()}) and VC value (${(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).credentialSubject.expirationDate})`
+      ).toISOString()}) and VC value (${(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).expirationDate})`
     )
   })
 
@@ -79,9 +79,9 @@ describe('Uniform VC claims', () => {
 
   it('should set credentialSubject.id if sub is present in JWT vc', () => {
     const jwtVc: IVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vp/vp_general.json').verifiableCredential[0]
-    jwtVc['sub' as keyof IVerifiableCredential] = (<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).credentialSubject.id
+    jwtVc['sub' as keyof IVerifiableCredential] = (<ICredentialSubject>(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).credentialSubject).id
     const vc = CredentialMapper.toUniformCredential(jwtVc)
-    expect(vc.credentialSubject.id).toEqual(jwtVc['sub' as keyof IVerifiableCredential])
+    expect(!Array.isArray(vc.credentialSubject) && vc.credentialSubject.id).toEqual(jwtVc['sub' as keyof IVerifiableCredential])
   })
 
   it('should throw an error if credentialSubject.id and sub are different in JWT vc', () => {
@@ -89,7 +89,7 @@ describe('Uniform VC claims', () => {
     jwtVc['sub' as keyof IVerifiableCredential] = 'did:test:123'
     expect(() => CredentialMapper.toUniformCredential(jwtVc)).toThrowError(
       `Inconsistent credential subject ids between JWT claim (${jwtVc['sub' as keyof IVerifiableCredential]}) and VC value (${
-        (<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).credentialSubject.id
+        (<ICredentialSubject>(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).credentialSubject).id
       })`
     )
   })
@@ -119,7 +119,8 @@ describe('Uniform VP claims', () => {
     // vp should be decoded
     expect(vp.holder).toEqual('did:example:ebfeb1f712ebc6f1c276e12ec21')
     // vc should be decoded for a uniform vp
-    expect((vp.verifiableCredential[0] as IVerifiableCredential).credentialSubject.degree.type).toEqual('BachelorDegree')
+    const vc = vp.verifiableCredential[0] as IVerifiableCredential
+    expect(!Array.isArray(vc.credentialSubject) && vc.credentialSubject.degree.type).toEqual('BachelorDegree')
   })
 
   it('JWT Decoded VP should populate response', () => {
@@ -129,7 +130,8 @@ describe('Uniform VP claims', () => {
     // vp should be decoded
     expect(vp.holder).toEqual('did:example:ebfeb1f712ebc6f1c276e12ec21')
     // vc should be decoded for a uniform vp
-    expect((vp.verifiableCredential[0] as IVerifiableCredential).credentialSubject.degree.type).toEqual('BachelorDegree')
+    const vc = vp.verifiableCredential[0] as IVerifiableCredential
+    expect(!Array.isArray(vc.credentialSubject) && vc.credentialSubject.degree.type).toEqual('BachelorDegree')
   })
 
   it('JSON-LD VP String should populate response', () => {
