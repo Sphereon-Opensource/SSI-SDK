@@ -124,7 +124,7 @@ export interface WrappedVerifiableCredential {
   /**
    * The claim format, typically used during exchange transport protocols
    */
-  format: ClaimFormat
+  format: CredentialFormat
   /**
    * Internal stable representation of a Credential without Proofs, created based on https://www.w3.org/TR/vc-data-model/#jwt-decoding
    */
@@ -147,7 +147,7 @@ export interface WrappedVerifiablePresentation {
   /**
    * The claim format, typically used during exchange transport protocols
    */
-  format: ClaimFormat
+  format: PresentationFormat
   /**
    * Internal stable representation of a Presentation without proofs, created based on https://www.w3.org/TR/vc-data-model/#jwt-decoding
    */
@@ -194,7 +194,9 @@ export interface JwtDecodedVerifiablePresentation {
   [x: string]: any
 }
 
-export type ClaimFormat = 'jwt' | 'jwt_vc' | 'jwt_vp' | 'ldp' | 'ldp_vc' | 'ldp_vp' | string
+export type CredentialFormat = 'jwt' | 'ldp' | 'jwt_vc' | 'ldp_vc' | string
+export type PresentationFormat = 'jwt' | 'ldp' | 'jwt_vp' | 'ldp_vp' | string
+export type ClaimFormat = CredentialFormat | PresentationFormat
 
 export type OriginalVerifiableCredential = W3CVerifiableCredential | JwtDecodedVerifiableCredential
 export type OriginalVerifiablePresentation = W3CVerifiablePresentation | JwtDecodedVerifiablePresentation

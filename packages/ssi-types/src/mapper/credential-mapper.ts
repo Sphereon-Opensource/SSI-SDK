@@ -1,5 +1,4 @@
 import {
-  ClaimFormat,
   ICredential,
   IPresentation,
   IVerifiableCredential,
@@ -8,7 +7,7 @@ import {
   JwtDecodedVerifiablePresentation,
   OriginalType,
   OriginalVerifiableCredential,
-  OriginalVerifiablePresentation,
+  OriginalVerifiablePresentation, PresentationFormat,
   WrappedVerifiableCredential,
   WrappedVerifiablePresentation,
 } from '../types'
@@ -46,7 +45,7 @@ export class CredentialMapper {
     const isJwtDecoded: boolean = CredentialMapper.isJwtDecodedPresentation(original)
 
     const type = isJwtEncoded ? OriginalType.JWT_ENCODED : isJwtDecoded ? OriginalType.JWT_DECODED : OriginalType.JSONLD
-    const format: ClaimFormat = isJwtDecoded || isJwtEncoded ? 'jwt_vp' : 'ldp_vp'
+    const format: PresentationFormat = isJwtDecoded || isJwtEncoded ? 'jwt_vp' : 'ldp_vp'
     const decoded = CredentialMapper.decodeVerifiablePresentation(original)
     const vp: IPresentation =
       isJwtEncoded || isJwtDecoded
