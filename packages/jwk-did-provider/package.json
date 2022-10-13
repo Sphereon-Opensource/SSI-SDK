@@ -1,0 +1,42 @@
+{
+  "name": "@sphereon/ssi-sdk-jwk-did-provider",
+  "description": "Veramo jwk-did based identity controller plugin.",
+  "version": "0.8.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@stablelib/ed25519": "^1.0.2",
+    "@transmute/did-key-secp256k1": "0.2.1-unstable.42",
+    "@veramo/core": "3.1.2-next.84",
+    "@veramo/did-manager": "3.1.2-next.84",
+    "@veramo/key-manager": "3.1.2-next.84",
+    "@veramo/kms-local": "3.1.2-next.84",
+    "base64url": "^3.0.1",
+    "debug": "^4.1.1",
+    "jose": "^4.10.0"
+  },
+  "devDependencies": {
+    "@types/debug": "4.1.7",
+    "typescript": "4.6.4"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-OpenSource/ssi-sdk.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "JWK",
+    "DID",
+    "Veramo"
+  ]
+}

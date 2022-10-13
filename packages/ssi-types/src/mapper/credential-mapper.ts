@@ -7,7 +7,8 @@ import {
   JwtDecodedVerifiablePresentation,
   OriginalType,
   OriginalVerifiableCredential,
-  OriginalVerifiablePresentation, PresentationFormat,
+  OriginalVerifiablePresentation,
+  PresentationFormat,
   WrappedVerifiableCredential,
   WrappedVerifiablePresentation,
 } from '../types'
