@@ -194,9 +194,9 @@ export interface JwtDecodedVerifiablePresentation {
   [x: string]: any
 }
 
-export type ClaimFormat = CredentialFormat | PresentationFormat
 export type CredentialFormat = 'jwt' | 'ldp' | 'jwt_vc' | 'ldp_vc' | string
 export type PresentationFormat = 'jwt' | 'ldp' | 'jwt_vp' | 'ldp_vp' | string
+export type ClaimFormat = CredentialFormat | PresentationFormat
 
 export type OriginalVerifiableCredential = W3CVerifiableCredential | JwtDecodedVerifiableCredential
 export type OriginalVerifiablePresentation = W3CVerifiablePresentation | JwtDecodedVerifiablePresentation
