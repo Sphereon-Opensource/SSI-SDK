@@ -4,7 +4,7 @@ export interface IKeyOpts {
   kid?: string // Key ID to assign in case we are importing a key
   key?: MinimalImportableKey // Optional key to import. If not specified a key with random kid will be created
   type?: KeyType // The key type. Defaults to Secp256k1
-  use?: KeyUse
+  use?: KeyUse // The key use
 }
 
 export interface ICreateIdentifierArgs {
