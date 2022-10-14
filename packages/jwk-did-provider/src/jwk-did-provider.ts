@@ -46,7 +46,7 @@ export class JwkDIDProvider extends AbstractIdentifierProvider {
 
     const identifier: Omit<IIdentifier, 'provider'> = {
       did: `did:jwk:${base64url(JSON.stringify(jwk))}`,
-      controllerKeyId: key.kid,
+      controllerKeyId: '#0',
       keys: [key],
       services: [],
     }
@@ -84,25 +84,21 @@ export class JwkDIDProvider extends AbstractIdentifierProvider {
   /**
    * We optionally generate and then import our own keys.
    *
-   * Reason for this is that we want to be able to assign Key IDs (kid), which Veramo supports on import, but not creation. The net result is that we do not support keys which have been created from keyManagerCreate
-   *
-   * @param kms The KMS to use
-   * @param options Allows to set a kid for the new key
+   * @param args The key arguments
    * @param context The Veramo agent context
    * @private
    */
   private async importProvidedOrGeneratedKey(args: IImportProvidedOrGeneratedKeyArgs, context: IRequiredContext): Promise<IKey> {
-    const kid = args.options?.kid ? args.options.kid : args.options?.key?.kid
     const type = args.options?.type ? args.options.type : args.options?.key?.type ? (args.options.key.type as KeyType) : KeyType.Secp256k1
 
-    if (args.options?.use && args.options?.use === KeyUse.Encryption && type === KeyType.Ed25519) {
+    if (args.options && args.options?.use === KeyUse.Encryption && type === KeyType.Ed25519) {
       throw new Error('Ed25519 keys are only valid for signatures')
     }
 
     let privateKeyHex: string
     if (args.options?.key) {
       if (!args.options.key.privateKeyHex) {
-        throw new Error(`We need to have a private key when importing a recovery or update key. Key ${kid ? kid : ''} did not have one`)
+        throw new Error(`We need to have a private key when importing a key`)
       }
       privateKeyHex = args.options.key.privateKeyHex
     } else {
@@ -112,8 +108,7 @@ export class JwkDIDProvider extends AbstractIdentifierProvider {
     return context.agent.keyManagerImport({
       kms: args.kms || this.defaultKms,
       type,
-      privateKeyHex,
-      kid,
+      privateKeyHex
     })
   }
 }

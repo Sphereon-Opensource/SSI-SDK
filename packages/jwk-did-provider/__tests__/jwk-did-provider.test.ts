@@ -40,9 +40,20 @@ describe('@sphereon/jwk-did-provider', () => {
     expect(identifier.keys.length).toBe(1)
   })
 
+  it('should create consistent identifier with provided key', async () => {
+    const options = {
+      key: {
+        privateKeyHex: PRIVATE_KEY_HEX,
+      },
+    }
+    const identifier: IIdentifier = await agent.didManagerCreate({ options })
+
+    expect(identifier).toBeDefined()
+    expect(identifier.did).toBe('did:jwk:eyJrdHkiOiJvY3QiLCJrIjoiQktJOHRNZzVBYXpDNnctRkpabGhEZURLNnNKZ3Y0N1FYbi1RTHFyQS1jalhUZFNFRzVUUk5DVFRLdmpzRHBsMjI1cV9wLU9sbmhEVlpjWFUyUUcwdm1NIn0')
+  })
+
   it('should remove identifier', async () => {
     const options = {
-      kid: 'remove-test',
       key: {
         privateKeyHex: PRIVATE_KEY_HEX,
       },
@@ -77,30 +88,12 @@ describe('@sphereon/jwk-did-provider', () => {
     expect(identifier.keys[0].type).toBe(KeyType.Ed25519)
   })
 
-  it('should import key with kid', async () => {
-    const kid = 'kid-test'
-    const options = {
-      kid: 'kid-test',
-      key: {
-        privateKeyHex: PRIVATE_KEY_HEX,
-      },
-    }
-    const identifier: IIdentifier = await agent.didManagerCreate({ options })
-
-    expect(identifier).toBeDefined()
-    expect(identifier.keys.length).toBe(1)
-    expect(identifier.keys[0].kid).toBe(kid)
-    expect(identifier.controllerKeyId).toBe(kid)
-  })
-
   it('should throw error when importing key without privateKeyHex', async () => {
-    const kid = 'key-test'
     const options = {
-      kid,
       key: {},
     }
     await expect(agent.didManagerCreate({ options })).rejects.toThrow(
-      `We need to have a private key when importing a recovery or update key. Key ${kid} did not have one`
+      'We need to have a private key when importing a key'
     )
   })
 
