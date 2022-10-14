@@ -4,6 +4,7 @@ export interface IKeyOpts {
   kid?: string // Key ID to assign in case we are importing a key
   key?: MinimalImportableKey // Optional key to import. If not specified a key with random kid will be created
   type?: KeyType // The key type. Defaults to Secp256k1
+  use?: KeyUse
 }
 
 export interface ICreateIdentifierArgs {
@@ -45,5 +46,11 @@ export enum KeyType {
   Ed25519 = 'Ed25519',
   Secp256k1 = 'Secp256k1',
 }
+
+export enum KeyUse {
+  Encryption = 'enc',
+  Signature = 'sig',
+}
+
 
 export type IRequiredContext = IAgentContext<IKeyManager>

@@ -2,7 +2,7 @@ import { createAgent, IIdentifier, IKeyManager } from '@veramo/core'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { KeyManagementSystem } from '@veramo/kms-local'
-import { JwkDIDProvider } from '../src'
+import { JwkDIDProvider, KeyUse } from '../src'
 import { KeyType } from '../src/types/jwk-provider-types'
 
 const DID_METHOD = 'did:jwk'
@@ -94,12 +94,24 @@ describe('@sphereon/jwk-did-provider', () => {
   })
 
   it('should throw error when importing key without privateKeyHex', async () => {
+    const kid = 'key-test'
     const options = {
-      kid: 'key-test',
+      kid,
       key: {},
     }
     await expect(agent.didManagerCreate({ options })).rejects.toThrow(
-      `We need to have a private key when importing a recovery or update key. Key ${'key-test'} did not have one`
+      `We need to have a private key when importing a recovery or update key. Key ${kid} did not have one`
     )
   })
+
+  it('should throw error for keys Ed25519 with key usage encryption', async () => {
+    const options = {
+      type: KeyType.Ed25519,
+      use: KeyUse.Encryption
+    }
+    await expect(agent.didManagerCreate({ options })).rejects.toThrow(
+        'Ed25519 keys are only valid for signatures'
+    )
+  })
+
 })

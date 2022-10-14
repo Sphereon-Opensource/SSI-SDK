@@ -4,13 +4,14 @@ import base64url from 'base64url'
 import * as jose from 'jose'
 import { generatePrivateKeyHex } from '../src/functions'
 import {
+  IAddKeyArgs,
+  IAddServiceArgs,
+  ICreateIdentifierArgs,
+  IImportProvidedOrGeneratedKeyArgs,
+  IRemoveKeyArgs,
   IRequiredContext,
   KeyType,
-  ICreateIdentifierArgs,
-  IAddKeyArgs,
-  IRemoveKeyArgs,
-  IImportProvidedOrGeneratedKeyArgs,
-  IAddServiceArgs,
+  KeyUse,
 } from './types/jwk-provider-types'
 import Debug from 'debug'
 
@@ -38,6 +39,10 @@ export class JwkDIDProvider extends AbstractIdentifierProvider {
       context
     )
     const jwk = await jose.exportJWK(Uint8Array.from(Buffer.from(key.publicKeyHex, 'hex')))
+
+    if (args.options?.use) {
+      jwk.use = args.options?.use
+    }
 
     const identifier: Omit<IIdentifier, 'provider'> = {
       did: `did:jwk:${base64url(JSON.stringify(jwk))}`,
@@ -89,6 +94,10 @@ export class JwkDIDProvider extends AbstractIdentifierProvider {
   private async importProvidedOrGeneratedKey(args: IImportProvidedOrGeneratedKeyArgs, context: IRequiredContext): Promise<IKey> {
     const kid = args.options?.kid ? args.options.kid : args.options?.key?.kid
     const type = args.options?.type ? args.options.type : args.options?.key?.type ? (args.options.key.type as KeyType) : KeyType.Secp256k1
+
+    if (args.options?.use && args.options?.use === KeyUse.Encryption && type === KeyType.Ed25519) {
+      throw new Error('Ed25519 keys are only valid for signatures')
+    }
 
     let privateKeyHex: string
     if (args.options?.key) {
