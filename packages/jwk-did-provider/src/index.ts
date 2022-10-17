@@ -5,5 +5,4 @@
  * @packageDocumentation
  */
 export { JwkDIDProvider } from './jwk-did-provider'
-export { getDidJwkResolver } from './jwk-did-resolver'
 export * from './types/jwk-provider-types'
