@@ -49,7 +49,7 @@ describe('@sphereon/jwk-did-provider', () => {
     const identifier: IIdentifier = await agent.didManagerCreate({ options })
 
     expect(identifier).toBeDefined()
-    expect(identifier.did).toBe('did:jwk:eyJrdHkiOiJvY3QiLCJrIjoiQktJOHRNZzVBYXpDNnctRkpabGhEZURLNnNKZ3Y0N1FYbi1RTHFyQS1jalhUZFNFRzVUUk5DVFRLdmpzRHBsMjI1cV9wLU9sbmhEVlpjWFUyUUcwdm1NIn0')
+    expect(identifier.did).toBe('did:jwk:eyJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCS0k4dE1nNUFhekM2dy1GSlpsaERlREs2c0pndjQ3UVhuLVFMcXJBLWNnIiwieSI6IjEwM1VoQnVVMFRRazB5cjQ3QTZaZHR1YXY2ZmpwWjRRMVdYRjFOa0J0TDQifQ')
   })
 
   it('should remove identifier', async () => {
