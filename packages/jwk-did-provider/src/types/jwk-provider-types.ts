@@ -61,4 +61,8 @@ export enum KeyType {
   OKP = 'OKP'
 }
 
+export enum VerificationType {
+  JsonWebKey2020 = 'JsonWebKey2020'
+}
+
 export type IRequiredContext = IAgentContext<IKeyManager>
