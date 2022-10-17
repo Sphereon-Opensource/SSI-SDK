@@ -35,7 +35,6 @@ const agent = createAgent<IKeyManager, DIDManager>({
 
 describe('@sphereon/jwk-did-resolver', () => {
   it('should resolve did:jwk', async () => {
-    //did:jwk:eyJrdHkiOiJvY3QiLCJrIjoiOE10VndzU0VDOU5abFd2WWlLalpTSlhUWG1FMU5maHFEdkpPeGg0a1RkVSJ9
     const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: 'did:jwk:eyJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCS2NlRjMwbHBTNkptT1RsS09LQVdudGtKdVRCSzNGX1JoaXlEcTRtdm9jIiwieSI6Im9WY1phQnpiSFJ2UW5iSXhwRWRXbVlRMGtSRm42ajVDRkVQcGxvX09ON1UifQ' })
 
     expect(didResolutionResult.didResolutionMetadata).not.toBeNull()
