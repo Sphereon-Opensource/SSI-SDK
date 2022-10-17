@@ -2,7 +2,7 @@ import { IAgentContext, IIdentifier, IKey, IKeyManager, IService, MinimalImporta
 
 export interface IKeyOpts {
   key?: MinimalImportableKey // Optional key to import. If not specified a key with random kid will be created
-  type?: KeyType // The key type. Defaults to Secp256k1
+  type?: Key // The key type. Defaults to Secp256k1
   use?: KeyUse // The key use
 }
 
@@ -41,7 +41,7 @@ export interface IImportProvidedOrGeneratedKeyArgs {
   options?: IKeyOpts
 }
 
-export enum KeyType {
+export enum Key {
   Ed25519 = 'Ed25519',
   Secp256k1 = 'Secp256k1',
 }
@@ -51,5 +51,14 @@ export enum KeyUse {
   Signature = 'sig',
 }
 
+export enum KeyCurve {
+  Secp256k1 = 'secp256k1',
+  Ed25519 = 'Ed25519'
+}
+
+export enum KeyType {
+  EC = 'EC',
+  OKP = 'OKP'
+}
 
 export type IRequiredContext = IAgentContext<IKeyManager>

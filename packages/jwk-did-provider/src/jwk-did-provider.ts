@@ -1,8 +1,7 @@
 import { IIdentifier, IKey } from '@veramo/core'
 import { AbstractIdentifierProvider } from '@veramo/did-manager'
 import base64url from 'base64url'
-import * as jose from 'jose'
-import { generatePrivateKeyHex } from '../src/functions'
+import { generateJwk, generatePrivateKeyHex } from '../src/functions'
 import {
   IAddKeyArgs,
   IAddServiceArgs,
@@ -10,7 +9,7 @@ import {
   IImportProvidedOrGeneratedKeyArgs,
   IRemoveKeyArgs,
   IRequiredContext,
-  KeyType,
+  Key,
   KeyUse,
 } from './types/jwk-provider-types'
 import Debug from 'debug'
@@ -38,12 +37,8 @@ export class JwkDIDProvider extends AbstractIdentifierProvider {
       },
       context
     )
-    const jwk = await jose.exportJWK(Uint8Array.from(Buffer.from(key.publicKeyHex, 'hex')))
-
-    if (args.options?.use) {
-      jwk.use = args.options?.use
-    }
-
+    // TODO test key type
+    const jwk: JsonWebKey = generateJwk(key.publicKeyHex, key.type as Key, args.options?.use)
     const identifier: Omit<IIdentifier, 'provider'> = {
       did: `did:jwk:${base64url(JSON.stringify(jwk))}`,
       controllerKeyId: '#0',
@@ -89,9 +84,9 @@ export class JwkDIDProvider extends AbstractIdentifierProvider {
    * @private
    */
   private async importProvidedOrGeneratedKey(args: IImportProvidedOrGeneratedKeyArgs, context: IRequiredContext): Promise<IKey> {
-    const type = args.options?.type ? args.options.type : args.options?.key?.type ? (args.options.key.type as KeyType) : KeyType.Secp256k1
+    const type = args.options?.type ? args.options.type : args.options?.key?.type ? (args.options.key.type as Key) : Key.Secp256k1
 
-    if (args.options && args.options?.use === KeyUse.Encryption && type === KeyType.Ed25519) {
+    if (args.options && args.options?.use === KeyUse.Encryption && type === Key.Ed25519) {
       throw new Error('Ed25519 keys are only valid for signatures')
     }
 

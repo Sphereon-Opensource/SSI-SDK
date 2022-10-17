@@ -3,7 +3,7 @@ import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { KeyManagementSystem } from '@veramo/kms-local'
 import { JwkDIDProvider, KeyUse } from '../src'
-import { KeyType } from '../src/types/jwk-provider-types'
+import { Key } from '../src/types/jwk-provider-types'
 
 const DID_METHOD = 'did:jwk'
 // Generate a new private key in hex format if needed, using the following method:
@@ -71,21 +71,21 @@ describe('@sphereon/jwk-did-provider', () => {
   })
 
   it('should create identifier with Secp256k1 key', async () => {
-    const options = { type: KeyType.Secp256k1 }
+    const options = { type: Key.Secp256k1 }
     const identifier: IIdentifier = await agent.didManagerCreate({ options })
 
     expect(identifier).toBeDefined()
     expect(identifier.keys.length).toBe(1)
-    expect(identifier.keys[0].type).toBe(KeyType.Secp256k1)
+    expect(identifier.keys[0].type).toBe(Key.Secp256k1)
   })
 
   it('should create identifier with Ed25519 key', async () => {
-    const options = { type: KeyType.Ed25519 }
+    const options = { type: Key.Ed25519 }
     const identifier: IIdentifier = await agent.didManagerCreate({ options })
 
     expect(identifier).toBeDefined()
     expect(identifier.keys.length).toBe(1)
-    expect(identifier.keys[0].type).toBe(KeyType.Ed25519)
+    expect(identifier.keys[0].type).toBe(Key.Ed25519)
   })
 
   it('should throw error when importing key without privateKeyHex', async () => {
@@ -99,7 +99,7 @@ describe('@sphereon/jwk-did-provider', () => {
 
   it('should throw error for keys Ed25519 with key usage encryption', async () => {
     const options = {
-      type: KeyType.Ed25519,
+      type: Key.Ed25519,
       use: KeyUse.Encryption
     }
     await expect(agent.didManagerCreate({ options })).rejects.toThrow(

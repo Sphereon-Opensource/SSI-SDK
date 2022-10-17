@@ -1,11 +1,11 @@
 import { generatePrivateKeyHex } from '../src/functions'
-import { KeyType } from '../src/types/jwk-provider-types'
+import { Key } from '../src/types/jwk-provider-types'
 
 describe('functions: key generator', () => {
   it('Secp256k1 should generate random keys', () => {
-    const key1 = generatePrivateKeyHex(KeyType.Secp256k1)
-    const key2 = generatePrivateKeyHex(KeyType.Secp256k1)
-    const key3 = generatePrivateKeyHex(KeyType.Secp256k1)
+    const key1 = generatePrivateKeyHex(Key.Secp256k1)
+    const key2 = generatePrivateKeyHex(Key.Secp256k1)
+    const key3 = generatePrivateKeyHex(Key.Secp256k1)
     expect(key1).toBeDefined()
     expect(key2).toBeDefined()
     expect(key3).toBeDefined()
@@ -13,13 +13,13 @@ describe('functions: key generator', () => {
     expect(key2).not.toBe(key3)
   })
   it('Secp256k1 should result in hex length 64', () => {
-    expect(generatePrivateKeyHex(KeyType.Secp256k1).length).toBe(64)
+    expect(generatePrivateKeyHex(Key.Secp256k1).length).toBe(64)
   })
 
   it('Ed25519 should generate random keys', () => {
-    const key1 = generatePrivateKeyHex(KeyType.Ed25519)
-    const key2 = generatePrivateKeyHex(KeyType.Ed25519)
-    const key3 = generatePrivateKeyHex(KeyType.Ed25519)
+    const key1 = generatePrivateKeyHex(Key.Ed25519)
+    const key2 = generatePrivateKeyHex(Key.Ed25519)
+    const key3 = generatePrivateKeyHex(Key.Ed25519)
     expect(key1).toBeDefined()
     expect(key2).toBeDefined()
     expect(key3).toBeDefined()
@@ -27,6 +27,6 @@ describe('functions: key generator', () => {
     expect(key2).not.toBe(key3)
   })
   it('Ed25519 should result in hex length 128', () => {
-    expect(generatePrivateKeyHex(KeyType.Ed25519).length).toBe(128)
+    expect(generatePrivateKeyHex(Key.Ed25519).length).toBe(128)
   })
 })
