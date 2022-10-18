@@ -14,6 +14,7 @@ Enabling creating and resolving of `did:jwk` entities, conforming to the [spec f
 
 - createIdentifier
 - deleteIdentifier
+- resolveDidJwk
 
 ## Usage
 
@@ -56,7 +57,15 @@ const identifier: IIdentifier = await agent.didManagerCreate({
 Deleting an identifier is straightforward:
 
 ```typescript
-const deleted = await agent.didManagerDelete({ did: identifier.did })
+const deleted: boolean = await agent.didManagerDelete({ did: identifier.did })
+```
+
+### Resolving a DID
+
+The example below resolves a did:jwk to DIDResolutionResult.
+
+```typescript
+const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: 'did:jwk:ey....' })
 ```
 
 ## Installation
