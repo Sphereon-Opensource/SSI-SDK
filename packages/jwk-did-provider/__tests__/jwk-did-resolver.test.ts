@@ -1,99 +1,80 @@
-import { createAgent, DIDResolutionResult, IKeyManager } from '@veramo/core'
-import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
+import { createAgent, DIDResolutionResult } from '@veramo/core'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
-import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
-import { KeyManagementSystem } from '@veramo/kms-local'
 import { Resolver } from 'did-resolver'
-import { getDidJwkResolver, JwkDIDProvider } from '../src'
+import { getDidJwkResolver, VerificationType } from '../src'
 
-const DID_METHOD = 'did:jwk'
-
-const jwkDIDProvider = new JwkDIDProvider({
-  defaultKms: 'mem',
-})
-
-const agent = createAgent<IKeyManager, DIDManager>({
+const agent = createAgent({
   plugins: [
     new DIDResolverPlugin({
       resolver: new Resolver({...getDidJwkResolver()})
-    }),
-    new KeyManager({
-      store: new MemoryKeyStore(),
-      kms: {
-        mem: new KeyManagementSystem(new MemoryPrivateKeyStore()),
-      },
-    }),
-    new DIDManager({
-      providers: {
-        [DID_METHOD]: jwkDIDProvider,
-      },
-      defaultProvider: DID_METHOD,
-      store: new MemoryDIDStore(),
-    }),
-  ],
+    })
+  ]
 })
 
 describe('@sphereon/jwk-did-resolver', () => {
-  it('should resolve did:jwk', async () => {
-    const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: 'did:jwk:eyJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCS2NlRjMwbHBTNkptT1RsS09LQVdudGtKdVRCSzNGX1JoaXlEcTRtdm9jIiwieSI6Im9WY1phQnpiSFJ2UW5iSXhwRWRXbVlRMGtSRm42ajVDRkVQcGxvX09ON1UifQ' })
-
-    expect(didResolutionResult.didResolutionMetadata).toBeDefined()
-    expect(didResolutionResult.didDocument).toBeDefined()
-  })
-
   it('should resolve with did resolution metadata', async () => {
-    const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: 'did:jwk:eyJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCS2NlRjMwbHBTNkptT1RsS09LQVdudGtKdVRCSzNGX1JoaXlEcTRtdm9jIiwieSI6Im9WY1phQnpiSFJ2UW5iSXhwRWRXbVlRMGtSRm42ajVDRkVQcGxvX09ON1UifQ' })
+    const identifier = 'eyJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCS2NlRjMwbHBTNkptT1RsS09LQVdudGtKdVRCSzNGX1JoaXlEcTRtdm9jIiwieSI6Im9WY1phQnpiSFJ2UW5iSXhwRWRXbVlRMGtSRm42ajVDRkVQcGxvX09ON1UifQ'
+    const did = `did:jwk:${identifier}`
+
+    const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
 
     expect(didResolutionResult.didResolutionMetadata).toBeDefined()
-    expect(didResolutionResult.didDocument).toBeDefined()
-    expect(didResolutionResult.didResolutionMetadata.contentType).toBeDefined()
-    expect(didResolutionResult.didResolutionMetadata.pattern).toBeDefined()
+    expect(didResolutionResult.didResolutionMetadata.contentType).toEqual('application/did+ld+json')
+    expect(didResolutionResult.didResolutionMetadata.pattern).toEqual('^(did:jwk:.+)$')
     expect(didResolutionResult.didResolutionMetadata.did).toBeDefined()
-    expect(didResolutionResult.didResolutionMetadata.did.didString).toBeDefined()
-    expect(didResolutionResult.didResolutionMetadata.did.methodSpecificId).toBeDefined()
-    expect(didResolutionResult.didResolutionMetadata.did.method).toBeDefined()
+    expect(didResolutionResult.didResolutionMetadata.did.didString).toEqual(did)
+    expect(didResolutionResult.didResolutionMetadata.did.methodSpecificId).toEqual(identifier)
+    expect(didResolutionResult.didResolutionMetadata.did.method).toEqual('jwk')
   })
 
-  it('should resolve to correct did document', async () => {
-    const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: 'did:jwk:eyJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCS2NlRjMwbHBTNkptT1RsS09LQVdudGtKdVRCSzNGX1JoaXlEcTRtdm9jIiwieSI6Im9WY1phQnpiSFJ2UW5iSXhwRWRXbVlRMGtSRm42ajVDRkVQcGxvX09ON1UifQ' })
+  it('should resolve to correct did document with no use', async () => {
+    const did = 'did:jwk:eyJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCS2NlRjMwbHBTNkptT1RsS09LQVdudGtKdVRCSzNGX1JoaXlEcTRtdm9jIiwieSI6Im9WY1phQnpiSFJ2UW5iSXhwRWRXbVlRMGtSRm42ajVDRkVQcGxvX09ON1UifQ'
+
+    const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
 
     expect(didResolutionResult.didDocument).toBeDefined()
-    expect(didResolutionResult!.didDocument!['@context']).toBeDefined()
-    expect(didResolutionResult!.didDocument!.id).toBeDefined()
-    expect(didResolutionResult!.didDocument!.verificationMethod).toBeDefined()
-    expect(didResolutionResult!.didDocument!.assertionMethod).toBeDefined()
-    expect(didResolutionResult!.didDocument!.authentication).toBeDefined()
-    expect(didResolutionResult!.didDocument!.capabilityInvocation).toBeDefined()
-    expect(didResolutionResult!.didDocument!.capabilityDelegation).toBeDefined()
-    expect(didResolutionResult!.didDocument!.keyAgreement).toBeDefined()
+    expect(didResolutionResult!.didDocument!['@context']).toEqual([
+      "https://www.w3.org/ns/did/v1",
+      "https://w3id.org/security/suites/jws-2020/v1"
+    ])
+    expect(didResolutionResult.didDocument!.id).toEqual(did)
+    expect(didResolutionResult.didDocument!.verificationMethod).toBeDefined()
+    expect(didResolutionResult.didDocument!.verificationMethod!.length).toEqual(1)
+    expect(didResolutionResult.didDocument!.verificationMethod![0].id).toEqual('#0')
+    expect(didResolutionResult.didDocument!.verificationMethod![0].type).toEqual(VerificationType.JsonWebKey2020)
+    expect(didResolutionResult.didDocument!.verificationMethod![0].controller).toEqual(did)
+    expect(didResolutionResult.didDocument!.verificationMethod![0].publicKeyJwk).toBeDefined()
+    expect(didResolutionResult.didDocument!.assertionMethod).toEqual([`${did}#0`])
+    expect(didResolutionResult.didDocument!.authentication).toEqual([`${did}#0`])
+    expect(didResolutionResult.didDocument!.capabilityInvocation).toEqual([`${did}#0`])
+    expect(didResolutionResult.didDocument!.capabilityDelegation).toEqual([`${did}#0`])
+    expect(didResolutionResult.didDocument!.keyAgreement).toEqual([`${did}#0`])
   })
 
   it('should resolve to correct did document with use encryption', async () => {
-    const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: 'did:jwk:eyJ1c2UiOiJlbmMiLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCRnhTU29XTnBCOElYVktUYk44U0xNbVlVeThTSG1Ybk9lb050RHB1QVpNIiwieSI6InBWRmxxSlJqNkNNaFljZ3dqVTk2eko3V09mWk9GWXpScE1selZGT0NKcFEifQ' })
+    const did = 'did:jwk:eyJ1c2UiOiJlbmMiLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCRnhTU29XTnBCOElYVktUYk44U0xNbVlVeThTSG1Ybk9lb050RHB1QVpNIiwieSI6InBWRmxxSlJqNkNNaFljZ3dqVTk2eko3V09mWk9GWXpScE1selZGT0NKcFEifQ'
+
+    const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
 
     expect(didResolutionResult.didDocument).toBeDefined()
-    expect(didResolutionResult!.didDocument!['@context']).toBeDefined()
-    expect(didResolutionResult!.didDocument!.id).toBeDefined()
-    expect(didResolutionResult!.didDocument!.verificationMethod).toBeDefined()
-    expect(didResolutionResult!.didDocument?.assertionMethod).toBeUndefined()
-    expect(didResolutionResult!.didDocument?.authentication).toBeUndefined()
-    expect(didResolutionResult!.didDocument?.capabilityInvocation).toBeUndefined()
-    expect(didResolutionResult!.didDocument?.capabilityDelegation).toBeUndefined()
-    expect(didResolutionResult!.didDocument!.keyAgreement).toBeDefined()
+    expect(didResolutionResult.didDocument?.assertionMethod).toBeUndefined()
+    expect(didResolutionResult.didDocument?.authentication).toBeUndefined()
+    expect(didResolutionResult.didDocument?.capabilityInvocation).toBeUndefined()
+    expect(didResolutionResult.didDocument?.capabilityDelegation).toBeUndefined()
+    expect(didResolutionResult.didDocument!.keyAgreement).toEqual([`${did}#0`])
   })
 
   it('should resolve to correct did document with use signature', async () => {
-    const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: 'did:jwk:eyJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCUEVwN2lKU2dFREVGZGZpUEJTMnlQbWU4ZzB1UFNZQS14S1VJb1hWdEpvIiwieSI6InhwckRtMExLWGpxSUtGNjI1VGJjN3FhZEVTY1FDSVk1bTlITGkzbmtHT0UifQ' })
+    const did = 'did:jwk:eyJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCUEVwN2lKU2dFREVGZGZpUEJTMnlQbWU4ZzB1UFNZQS14S1VJb1hWdEpvIiwieSI6InhwckRtMExLWGpxSUtGNjI1VGJjN3FhZEVTY1FDSVk1bTlITGkzbmtHT0UifQ'
+
+    const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
 
     expect(didResolutionResult.didDocument).toBeDefined()
-    expect(didResolutionResult!.didDocument!['@context']).toBeDefined()
-    expect(didResolutionResult!.didDocument!.id).toBeDefined()
-    expect(didResolutionResult!.didDocument!.verificationMethod).toBeDefined()
-    expect(didResolutionResult!.didDocument!.assertionMethod).toBeDefined()
-    expect(didResolutionResult!.didDocument!.authentication).toBeDefined()
-    expect(didResolutionResult!.didDocument!.capabilityInvocation).toBeDefined()
-    expect(didResolutionResult!.didDocument!.capabilityDelegation).toBeDefined()
-    expect(didResolutionResult!.didDocument?.keyAgreement).toBeUndefined()
+    expect(didResolutionResult.didDocument!.assertionMethod).toEqual([`${did}#0`])
+    expect(didResolutionResult.didDocument!.authentication).toEqual([`${did}#0`])
+    expect(didResolutionResult.didDocument!.capabilityInvocation).toEqual([`${did}#0`])
+    expect(didResolutionResult.didDocument!.capabilityDelegation).toEqual([`${did}#0`])
+    expect(didResolutionResult.didDocument?.keyAgreement).toBeUndefined()
   })
 
 })
