@@ -25,9 +25,9 @@ The options object when creating an identifier is as follows:
 
 ```typescript
 export interface KeyOpts {
-  kid?: string // Key ID to assign in case we are importing or creating a key
   key?: MinimalImportableKey // Optional key to import. If not specified a key with random kid will be created
-  type?: KeyType // The key type. Defaults to Secp256k1
+  type?: Key // The key type. Defaults to Secp256k1
+  use?: KeyUse // The key use
 }
 ```
 
@@ -45,7 +45,6 @@ The example below generates a JWK DID using imported keys.
 
 ```typescript
 const identifier: IIdentifier = await agent.didManagerCreate({
-  kid: 'uniqueValue',
   key: {
     privateKeyHex: '06eb9e64569203679b36f834a4d9725c989d32a7fb52c341eae3517b3aff8ee6',
   }
