@@ -30,14 +30,11 @@ export const generatePrivateKeyHex = (type: Key): string => {
  * @return Base64Url encoded value
  */
 export const hex2base64url = (value: string) => {
-  const buffer = Buffer.from(value, 'hex');
-  const base64 = buffer.toString('base64');
-  const base64url = base64
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=/g, "");
+  const buffer = Buffer.from(value, 'hex')
+  const base64 = buffer.toString('base64')
+  const base64url = base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
 
-  return base64url;
+  return base64url
 }
 
 /**
@@ -69,8 +66,8 @@ const generateSecp256k1Jwk = (publicKeyHex: string, use?: KeyUse): JsonWebKey =>
     ...(use && { use }),
     kty: KeyType.EC,
     crv: KeyCurve.Secp256k1,
-    x: hex2base64url(publicKeyHex.substr(0, 64)),
-    y: hex2base64url(publicKeyHex.substr(64, 64))
+    x: hex2base64url(publicKeyHex.substr(2, 64)),
+    y: hex2base64url(publicKeyHex.substr(66, 64)),
   }
 }
 
@@ -85,6 +82,6 @@ const generateEd25519Jwk = (publicKeyHex: string, use?: KeyUse): JsonWebKey => {
     ...(use && { use }),
     kty: KeyType.OKP,
     crv: KeyCurve.Ed25519,
-    x: hex2base64url(publicKeyHex.substr(0, 64))
+    x: hex2base64url(publicKeyHex.substr(0, 64)),
   }
 }

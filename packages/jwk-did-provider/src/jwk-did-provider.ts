@@ -103,7 +103,7 @@ export class JwkDIDProvider extends AbstractIdentifierProvider {
     return context.agent.keyManagerImport({
       kms: args.kms || this.defaultKms,
       type,
-      privateKeyHex
+      privateKeyHex,
     })
   }
 }
