@@ -65,4 +65,14 @@ export enum VerificationType {
   JsonWebKey2020 = 'JsonWebKey2020',
 }
 
+// https://datatracker.ietf.org/doc/html/rfc8812#section-3
+// https://datatracker.ietf.org/doc/html/rfc8812#section-4
+export enum VocabType {
+  Jose = 'https://www.iana.org/assignments/jose#',
+}
+
+export enum ContextType {
+  DidDocument = 'https://www.w3.org/ns/did/v1',
+}
+
 export type IRequiredContext = IAgentContext<IKeyManager>

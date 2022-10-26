@@ -1,7 +1,7 @@
 import { createAgent, DIDResolutionResult } from '@veramo/core'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { Resolver } from 'did-resolver'
-import { getDidJwkResolver, VerificationType } from '../src'
+import { ContextType, getDidJwkResolver, VerificationType, VocabType } from '../src'
 
 const agent = createAgent({
   plugins: [
@@ -34,8 +34,10 @@ describe('@sphereon/jwk-did-resolver', () => {
 
     expect(didResolutionResult.didDocument).toBeDefined()
     expect(didResolutionResult!.didDocument!['@context']).toEqual([
-      "https://www.w3.org/ns/did/v1",
-      "https://w3id.org/security/suites/jws-2020/v1"
+      ContextType.DidDocument,
+      {
+        '@vocab': VocabType.Jose,
+      }
     ])
     expect(didResolutionResult.didDocument!.id).toEqual(did)
     expect(didResolutionResult.didDocument!.verificationMethod).toBeDefined()
@@ -44,11 +46,7 @@ describe('@sphereon/jwk-did-resolver', () => {
     expect(didResolutionResult.didDocument!.verificationMethod![0].type).toEqual(VerificationType.JsonWebKey2020)
     expect(didResolutionResult.didDocument!.verificationMethod![0].controller).toEqual(did)
     expect(didResolutionResult.didDocument!.verificationMethod![0].publicKeyJwk).toBeDefined()
-    expect(didResolutionResult.didDocument!.assertionMethod).toEqual([`${did}#0`])
-    expect(didResolutionResult.didDocument!.authentication).toEqual([`${did}#0`])
-    expect(didResolutionResult.didDocument!.capabilityInvocation).toEqual([`${did}#0`])
-    expect(didResolutionResult.didDocument!.capabilityDelegation).toEqual([`${did}#0`])
-    expect(didResolutionResult.didDocument!.keyAgreement).toEqual([`${did}#0`])
+    expect(didResolutionResult.didDocument!.keyAgreement).toBeUndefined()
   })
 
   it('should resolve to correct did document with use encryption', async () => {
@@ -57,11 +55,7 @@ describe('@sphereon/jwk-did-resolver', () => {
     const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
 
     expect(didResolutionResult.didDocument).toBeDefined()
-    expect(didResolutionResult.didDocument?.assertionMethod).toBeUndefined()
-    expect(didResolutionResult.didDocument?.authentication).toBeUndefined()
-    expect(didResolutionResult.didDocument?.capabilityInvocation).toBeUndefined()
-    expect(didResolutionResult.didDocument?.capabilityDelegation).toBeUndefined()
-    expect(didResolutionResult.didDocument!.keyAgreement).toEqual([`${did}#0`])
+    expect(didResolutionResult.didDocument!.keyAgreement).toEqual(['#0'])
   })
 
   it('should resolve to correct did document with use signature', async () => {
@@ -70,10 +64,6 @@ describe('@sphereon/jwk-did-resolver', () => {
     const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
 
     expect(didResolutionResult.didDocument).toBeDefined()
-    expect(didResolutionResult.didDocument!.assertionMethod).toEqual([`${did}#0`])
-    expect(didResolutionResult.didDocument!.authentication).toEqual([`${did}#0`])
-    expect(didResolutionResult.didDocument!.capabilityInvocation).toEqual([`${did}#0`])
-    expect(didResolutionResult.didDocument!.capabilityDelegation).toEqual([`${did}#0`])
     expect(didResolutionResult.didDocument?.keyAgreement).toBeUndefined()
   })
 

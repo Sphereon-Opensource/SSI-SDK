@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk-jwk-did-provider",
   "description": "Veramo jwk-did based identity controller plugin.",
-  "version": "0.8.0",
+  "version": "0.8.0-bramtest",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

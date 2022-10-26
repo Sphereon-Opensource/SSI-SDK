@@ -58,8 +58,6 @@ describe('@sphereon/jwk-did-provider comparison', () => {
   })
 
   it('test resolution', async () => {
-
-
     const jwk = {
       kid: 'urn:ietf:params:oauth:jwk-thumbprint:sha-256:VmU0yXoR5Jgaoz6SDzt-awKL22Gbfoo2Wvk-cayLxlI',
       kty: 'EC',
@@ -75,9 +73,7 @@ describe('@sphereon/jwk-did-provider comparison', () => {
     const did = `did:jwk:${base64url.encode(JSON.stringify(jwk))}`
     console.log(did)
 
-
     // Resolution
-
     const comparisonDidDoc = await method.toDidDocument(jwk)
 
     console.log(JSON.stringify(comparisonDidDoc, null, 2))
@@ -86,14 +82,11 @@ describe('@sphereon/jwk-did-provider comparison', () => {
 
     const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did})
 
-
     console.log(JSON.stringify(didResolutionResult.didDocument, null, 2))
     expect(didResolutionResult.didDocument).toEqual(comparisonDidDoc)
-
   })
 
   it('Creation from privateKeyHex', async () => {
-
     const privateKeyHex = 'e8fa0da4d6e7dcdf77b70e4fb0e304bb7cbcb3aeddf33257f0e007a602a46d42'
     const options = {
       key: {
@@ -121,11 +114,8 @@ describe('@sphereon/jwk-did-provider comparison', () => {
       publicKeyJwk: jwk,
       type: "JsonWebKey2020"
     }
+
     expect(didResolutionResult!.didDocument!.verificationMethod).toEqual([verificationMethod])
-
-    expect(await method.resolve(did)).toEqual(didResolutionResult!.didDocument)
-
-    // TODO: Investigate why we are creating all the verification method relationships, whilst orie is not creating any except for the verification method itself based on our did. This could be another cause for the problems we are seeing
-
+    expect(didResolutionResult!.didDocument).toEqual(await method.resolve(did))
   })
 })

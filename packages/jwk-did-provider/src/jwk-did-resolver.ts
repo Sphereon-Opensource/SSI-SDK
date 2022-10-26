@@ -1,13 +1,18 @@
 import { IParsedDID, parseDid } from '@sphereon/ssi-types'
 import base64url from 'base64url'
 import { DIDResolutionOptions, DIDResolutionResult, DIDResolver, JsonWebKey } from 'did-resolver'
-import { KeyUse, VerificationType } from './types/jwk-provider-types'
+import {
+  ContextType,
+  KeyUse,
+  VerificationType,
+  VocabType
+} from './types/jwk-provider-types'
 
 export const resolveDidJwk: DIDResolver = async (didUrl: string, options?: DIDResolutionOptions): Promise<DIDResolutionResult> => {
   return resolve(didUrl, options)
 }
 
-const resolve = async (didUrl: string, options?: DIDResolutionOptions) => {
+const resolve = async (didUrl: string, options?: DIDResolutionOptions): Promise<DIDResolutionResult> => {
   let parsedDid: IParsedDID
   try {
     parsedDid = parseDid(didUrl)
@@ -27,7 +32,7 @@ const resolve = async (didUrl: string, options?: DIDResolutionOptions) => {
   }
 
   // We need this since DIDResolutionResult does not allow for an object in the array
-  const context = [ "https://www.w3.org/ns/did/v1", {"@vocab": "https://www.iana.org/assignments/jose#"} ] as never
+  const context = [ ContextType.DidDocument, { '@vocab': VocabType.Jose } ] as never
 
   const didResolution: DIDResolutionResult = {
     didResolutionMetadata: {
@@ -51,11 +56,11 @@ const resolve = async (didUrl: string, options?: DIDResolutionOptions) => {
           publicKeyJwk: jwk,
         },
       ],
-      ...(jwk.use !== KeyUse.Encryption && { assertionMethod: ['#0'] }),
-      ...(jwk.use !== KeyUse.Encryption && { authentication: ['#0'] }),
-      ...(jwk.use !== KeyUse.Encryption && { capabilityInvocation: ['#0'] }),
-      ...(jwk.use !== KeyUse.Encryption && { capabilityDelegation: ['#0'] }),
-      ...((jwk.use && jwk.use === KeyUse.Encryption) && { keyAgreement: ['#0'] }),
+      ...((jwk.use && jwk.use !== KeyUse.Encryption || jwk.alg) && { assertionMethod: ['#0'] }),
+      ...((jwk.use && jwk.use !== KeyUse.Encryption || jwk.alg) && { authentication: ['#0'] }),
+      ...((jwk.use && jwk.use !== KeyUse.Encryption || jwk.alg) && { capabilityInvocation: ['#0'] }),
+      ...((jwk.use && jwk.use !== KeyUse.Encryption || jwk.alg) && { capabilityDelegation: ['#0'] }),
+      ...(jwk.use && jwk.use === KeyUse.Encryption && { keyAgreement: ['#0'] }),
     },
     didDocumentMetadata: {},
   }
@@ -63,7 +68,7 @@ const resolve = async (didUrl: string, options?: DIDResolutionOptions) => {
   return didResolution
 }
 
-const errorResponseFrom = async (error: string) => {
+const errorResponseFrom = async (error: string): Promise<DIDResolutionResult> => {
   return {
     didResolutionMetadata: {
       error,
