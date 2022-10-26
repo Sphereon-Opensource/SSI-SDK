@@ -1,4 +1,4 @@
-import { DIDResolutionResult, IAgentContext, IIdentifier, IKey, IKeyManager, IService, ManagedKeyInfo } from '@veramo/core'
+import { DIDDocument, DIDResolutionResult, IAgentContext, IIdentifier, IKey, IKeyManager, IService, ManagedKeyInfo } from '@veramo/core'
 import { AbstractIdentifierProvider } from '@veramo/did-manager'
 
 import Debug from 'debug'
@@ -131,6 +131,14 @@ export class IonDIDProvider extends AbstractIdentifierProvider {
 
     debug('Created DID (short, long form): ', identifier.alias, identifier.did)
     return identifier
+  }
+
+  /** {@inheritDoc @veramo/veramo-core#IDIDManager.didManagerUpdate} */
+  async updateIdentifier?(
+      args: { did: string, document: Partial<DIDDocument>, options?: { [x: string]: any } },
+      context: IAgentContext<IKeyManager>,
+  ): Promise<IIdentifier> {
+    throw new Error("not implemented yet")
   }
 
   /** {@inheritDoc @veramo/veramo-core#IDIDManager.didManagerDelete} */

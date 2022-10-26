@@ -1,9 +1,9 @@
 import * as crypto from 'crypto'
-import { derivePath, getMasterKeyFromSeed, getPublicKey } from 'ed25519-hd-key'
-import { IAgentPlugin, ManagedKeyInfo } from '@veramo/core'
-import { AbstractSecretBox } from '@veramo/key-manager'
+import {derivePath, getMasterKeyFromSeed, getPublicKey} from 'ed25519-hd-key'
+import {IAgentPlugin, ManagedKeyInfo} from '@veramo/core'
+import {AbstractSecretBox} from '@veramo/key-manager'
 import * as bip39 from 'bip39'
-import { Connection } from 'typeorm'
+import {DataSource} from 'typeorm'
 
 import {
   DeleteResult,
@@ -18,9 +18,9 @@ import {
   schema,
   UpdateResult,
 } from '../index'
-import { IMnemonicSeedManager } from '../types/IMnemonicSeedManager'
+import {IMnemonicSeedManager} from '../types/IMnemonicSeedManager'
 
-import { MnemonicEntity } from '../entities/MnemonicEntity'
+import {MnemonicEntity} from '../entities/MnemonicEntity'
 
 export class MnemonicSeedManager implements IAgentPlugin {
   readonly schema = schema.IMnemonicInfoGenerator
@@ -36,7 +36,7 @@ export class MnemonicSeedManager implements IAgentPlugin {
     generateKeysFromMnemonic: this.generateKeysFromMnemonic.bind(this),
   }
 
-  constructor(private dbConnection: Promise<Connection>, private secretBox?: AbstractSecretBox) {
+  constructor(private dbConnection: Promise<DataSource>, private secretBox?: AbstractSecretBox) {
     if (!secretBox) {
       console.warn('Please provide SecretBox to the KeyStore')
     }

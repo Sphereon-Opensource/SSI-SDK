@@ -1,24 +1,23 @@
 import 'cross-fetch/polyfill'
 import * as fs from 'fs'
-import { Server } from 'http'
+import {Server} from 'http'
 
-import { createAgent, IAgent, IAgentOptions, IDataStore, IKeyManager, IDataStoreORM } from '@veramo/core'
-import { AgentRestClient } from '@veramo/remote-client'
-import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
+import {createAgent, IAgent, IAgentOptions, IDataStore, IDataStoreORM, IKeyManager} from '@veramo/core'
+import {AgentRestClient} from '@veramo/remote-client'
+import {AgentRouter, RequestWithAgentRouter} from '@veramo/remote-server'
 
 // @ts-ignore
 import express from 'express'
-import { Connection } from 'typeorm'
+import {DataSource} from 'typeorm'
 
-import { IMnemonicSeedManager, MnemonicSeedManager, MnemonicSeedManagerEntities, MnemonicSeedManagerMigrations } from '../src'
+import {IMnemonicSeedManager, MnemonicSeedManager, MnemonicSeedManagerEntities, MnemonicSeedManagerMigrations} from '../src'
 
 import mnemonicGenerator from './shared/generateMnemonic'
 import seedGenerator from './shared/generateSeed'
 import storeSeed from './shared/storeMnemonicInfo'
-import { KeyManager } from '@veramo/key-manager'
-import { KeyStore, PrivateKeyStore, Entities, DataStore, DataStoreORM, migrations } from '@veramo/data-store'
-import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
-import { createConnection } from 'typeorm'
+import {KeyManager} from '@veramo/key-manager'
+import {DataStore, DataStoreORM, Entities, KeyStore, migrations, PrivateKeyStore} from '@veramo/data-store'
+import {KeyManagementSystem, SecretBox} from '@veramo/kms-local'
 
 jest.setTimeout(30000)
 
@@ -28,7 +27,7 @@ const basePath = '/agent'
 
 let serverAgent: IAgent
 let restServer: Server
-let dbConnection: Promise<Connection>
+let dbConnection: Promise<DataSource>
 
 const KMS_SECRET_KEY = 'd17c8674f5db9396f8eecccde25e882bb0336316bc411ae38dc1f3dcd7ed100f'
 
@@ -45,7 +44,7 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const db = createConnection({
+  const db = new DataSource({
     type: 'sqlite',
     database: databaseFile,
     synchronize: false,
@@ -53,7 +52,7 @@ const setup = async (): Promise<boolean> => {
     entities: [...MnemonicSeedManagerEntities, ...Entities],
     migrations: [...MnemonicSeedManagerMigrations, ...migrations],
     migrationsRun: true,
-  })
+  }).initialize()
 
   const secretBox = new SecretBox(KMS_SECRET_KEY)
 
@@ -93,7 +92,8 @@ const setup = async (): Promise<boolean> => {
 
 const tearDown = async (): Promise<boolean> => {
   restServer.close()
-  await (await dbConnection).close()
+  await (await dbConnection).dropDatabase()
+  await (await dbConnection).destroy()
   fs.unlinkSync(databaseFile)
   await new Promise((resolve) => setTimeout((v: void) => resolve(v), 500))
   return true

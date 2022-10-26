@@ -4,7 +4,7 @@ import { IMsRequestApi, IIssueRequestResponse, IClientIssueRequest, IClientIssua
 import { v4 as uuidv4 } from 'uuid'
 import { createAgent, TAgent, IDataStore, IDataStoreORM, VerifiableCredential, FindArgs, TCredentialColumns } from '@veramo/core'
 import { Entities, DataStore, DataStoreORM } from '@veramo/data-store'
-import { createConnection } from 'typeorm'
+import { DataSource } from 'typeorm'
 
 type ConfiguredAgent = TAgent<IMsRequestApi & IDataStore & IDataStoreORM>
 const did1 = 'did:test:111'
@@ -80,7 +80,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should store credential and retrieve by id', async () => {
-      const dbConnection = createConnection({
+      const dbConnection = new DataSource({
         type: 'sqlite',
         database: ':memory:',
         synchronize: true,

@@ -1,5 +1,5 @@
 import { AbstractIdentifierProvider } from '@veramo/did-manager'
-import { IAgentContext, IIdentifier, IKey, IKeyManager, IService, TKeyType } from '@veramo/core'
+import { DIDDocument, IAgentContext, IIdentifier, IKey, IKeyManager, IService, TKeyType } from '@veramo/core'
 import { Account, LTO } from 'lto-api'
 import { DIDService, hexToBase58, base58ToHex } from '@sphereon/lto-did-ts'
 import Debug from 'debug'
@@ -122,6 +122,14 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
         debug('Created', identifier.did)
         return identifier
       })
+  }
+
+  /** {@inheritDoc @veramo/veramo-core#IDIDManager.didManagerUpdate} */
+  async updateIdentifier?(
+      args: { did: string, document: Partial<DIDDocument>, options?: { [x: string]: any } },
+      context: IAgentContext<IKeyManager>,
+  ): Promise<IIdentifier> {
+    throw new Error("not implemented yet")
   }
 
   async deleteIdentifier(args: IIdentifier, context: IAgentContext<IKeyManager>): Promise<boolean> {

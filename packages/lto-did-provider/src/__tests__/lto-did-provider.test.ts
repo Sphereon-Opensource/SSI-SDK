@@ -75,6 +75,8 @@ describe('@sphereon/lto-did-provider', () => {
   })
 
   it('should create identifier with verificationMethods', async () => {
+    jest.setTimeout(100000)
+
     const identifier = ltoDIDProvider.createIdentifier(
       {
         options: {
