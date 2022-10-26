@@ -52,10 +52,10 @@ export class JwkDIDProvider extends AbstractIdentifierProvider {
 
   /** {@inheritDoc @veramo/veramo-core#IDIDManager.didManagerUpdate} */
   async updateIdentifier?(
-      args: { did: string, document: Partial<DIDDocument>, options?: { [x: string]: any } },
-      context: IAgentContext<IKeyManager>,
+    args: { did: string; document: Partial<DIDDocument>; options?: { [x: string]: any } },
+    context: IAgentContext<IKeyManager>
   ): Promise<IIdentifier> {
-    throw new Error("not implemented yet")
+    throw new Error('not implemented yet')
   }
 
   /** {@inheritDoc @veramo/veramo-core#IDIDManager.didManagerDelete} */
@@ -111,7 +111,7 @@ export class JwkDIDProvider extends AbstractIdentifierProvider {
     return context.agent.keyManagerImport({
       kms: args.kms || this.defaultKms,
       type,
-      privateKeyHex
+      privateKeyHex,
     })
   }
 }

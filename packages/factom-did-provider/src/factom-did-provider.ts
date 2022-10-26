@@ -85,10 +85,10 @@ export class FactomDIDProvider extends AbstractIdentifierProvider {
 
   /** {@inheritDoc @veramo/veramo-core#IDIDManager.didManagerUpdate} */
   async updateIdentifier?(
-      args: { did: string, document: Partial<DIDDocument>, options?: { [x: string]: any } },
-      context: IAgentContext<IKeyManager>,
+    args: { did: string; document: Partial<DIDDocument>; options?: { [x: string]: any } },
+    context: IAgentContext<IKeyManager>
   ): Promise<IIdentifier> {
-    throw new Error("not implemented yet")
+    throw new Error('not implemented yet')
   }
 
   async deleteIdentifier(args: IIdentifier, context: IAgentContext<IKeyManager>): Promise<boolean> {

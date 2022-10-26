@@ -30,7 +30,7 @@
     "enzyme-adapter-react-16": "^1.15.6",
     "jest": "^28.1.2",
     "ts-jest": "^28.0.5",
-    "typescript": "^4.7.4"
+    "typescript": "^4.6.4"
   },
   "files": [
     "dist/**/*",

@@ -8,7 +8,7 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "typeorm": "0.2.45",
+    "typeorm": "0.3.10",
     "@scure/base": "^1.1.1",
     "@sphereon/ssi-types": "^0.8.0",
     "@veramo/core": "4.0.2-next.19"

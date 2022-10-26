@@ -1,23 +1,23 @@
 import 'cross-fetch/polyfill'
 import * as fs from 'fs'
-import {Server} from 'http'
+import { Server } from 'http'
 
-import {createAgent, IAgent, IAgentOptions, IDataStore, IDataStoreORM, IKeyManager} from '@veramo/core'
-import {AgentRestClient} from '@veramo/remote-client'
-import {AgentRouter, RequestWithAgentRouter} from '@veramo/remote-server'
+import { createAgent, IAgent, IAgentOptions, IDataStore, IDataStoreORM, IKeyManager } from '@veramo/core'
+import { AgentRestClient } from '@veramo/remote-client'
+import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 
 // @ts-ignore
 import express from 'express'
-import {DataSource} from 'typeorm'
+import { DataSource } from 'typeorm'
 
-import {IMnemonicSeedManager, MnemonicSeedManager, MnemonicSeedManagerEntities, MnemonicSeedManagerMigrations} from '../src'
+import { IMnemonicSeedManager, MnemonicSeedManager, MnemonicSeedManagerEntities, MnemonicSeedManagerMigrations } from '../src'
 
 import mnemonicGenerator from './shared/generateMnemonic'
 import seedGenerator from './shared/generateSeed'
 import storeSeed from './shared/storeMnemonicInfo'
-import {KeyManager} from '@veramo/key-manager'
-import {DataStore, DataStoreORM, Entities, KeyStore, migrations, PrivateKeyStore} from '@veramo/data-store'
-import {KeyManagementSystem, SecretBox} from '@veramo/kms-local'
+import { KeyManager } from '@veramo/key-manager'
+import { DataStore, DataStoreORM, Entities, KeyStore, migrations, PrivateKeyStore } from '@veramo/data-store'
+import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 
 jest.setTimeout(30000)
 

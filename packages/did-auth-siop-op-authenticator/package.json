@@ -13,8 +13,8 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "file:../../../did-auth-siop/",
-    "@sphereon/pex": "1.1.3",
+    "@sphereon/did-auth-siop": "0.2.14",
+    "@sphereon/pex": "1.1.4",
     "@sphereon/ssi-sdk-core": "^0.8.0",
     "@sphereon/ssi-types": "^0.8.0",
     "@veramo/core": "4.0.2-next.19",
@@ -22,14 +22,14 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@sphereon/did-uni-client": "^0.4.0",
+    "@sphereon/did-uni-client": "^0.5.0",
     "@veramo/cli": "4.0.2-next.19",
     "@veramo/did-provider-key": "4.0.2-next.19",
     "@veramo/did-resolver": "4.0.2-next.19",
     "@veramo/utils": "4.0.2-next.19",
     "did-resolver": "^4.0.1",
     "nock": "^13.2.1",
-    "typescript": "^4.5.2"
+    "typescript": "^4.6.4"
   },
   "files": [
     "dist/**/*",

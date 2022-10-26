@@ -1,7 +1,7 @@
 import { IParsedDID, parseDid } from '@sphereon/ssi-types'
 import base64url from 'base64url'
 import { DIDResolutionOptions, DIDResolutionResult, DIDResolver, JsonWebKey } from 'did-resolver'
-import { KeyUse, VerificationType } from './types/jwk-provider-types';
+import { KeyUse, VerificationType } from './types/jwk-provider-types'
 
 export const resolveDidJwk: DIDResolver = async (didUrl: string, options?: DIDResolutionOptions): Promise<DIDResolutionResult> => {
   return resolve(didUrl, options)
@@ -33,22 +33,19 @@ const resolve = async (didUrl: string, options?: DIDResolutionOptions) => {
       did: {
         didString: parsedDid.did,
         methodSpecificId: parsedDid.id,
-        method: 'jwk'
-      }
+        method: 'jwk',
+      },
     },
     didDocument: {
-      "@context": [
-        "https://www.w3.org/ns/did/v1",
-        "https://w3id.org/security/suites/jws-2020/v1"
-      ],
+      '@context': ['https://www.w3.org/ns/did/v1', 'https://w3id.org/security/suites/jws-2020/v1'],
       id: parsedDid.did,
       verificationMethod: [
         {
           id: '#0',
           type: VerificationType.JsonWebKey2020,
           controller: parsedDid.did,
-          publicKeyJwk: jwk
-        }
+          publicKeyJwk: jwk,
+        },
       ],
       ...(jwk.use !== KeyUse.Encryption && { assertionMethod: [`${parsedDid.did}#0`] }),
       ...(jwk.use !== KeyUse.Encryption && { authentication: [`${parsedDid.did}#0`] }),
@@ -56,7 +53,7 @@ const resolve = async (didUrl: string, options?: DIDResolutionOptions) => {
       ...(jwk.use !== KeyUse.Encryption && { capabilityDelegation: [`${parsedDid.did}#0`] }),
       ...((!jwk.use || jwk.use === KeyUse.Encryption) && { keyAgreement: [`${parsedDid.did}#0`] }),
     },
-    didDocumentMetadata: {}
+    didDocumentMetadata: {},
   }
 
   return didResolution
@@ -65,10 +62,10 @@ const resolve = async (didUrl: string, options?: DIDResolutionOptions) => {
 const errorResponseFrom = async (error: string) => {
   return {
     didResolutionMetadata: {
-      error
+      error,
     },
     didDocument: null,
-    didDocumentMetadata: {}
+    didDocumentMetadata: {},
   }
 }
 

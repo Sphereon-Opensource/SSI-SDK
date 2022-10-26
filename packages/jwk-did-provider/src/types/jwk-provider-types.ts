@@ -53,16 +53,16 @@ export enum KeyUse {
 
 export enum KeyCurve {
   Secp256k1 = 'secp256k1',
-  Ed25519 = 'Ed25519'
+  Ed25519 = 'Ed25519',
 }
 
 export enum KeyType {
   EC = 'EC',
-  OKP = 'OKP'
+  OKP = 'OKP',
 }
 
 export enum VerificationType {
-  JsonWebKey2020 = 'JsonWebKey2020'
+  JsonWebKey2020 = 'JsonWebKey2020',
 }
 
 export type IRequiredContext = IAgentContext<IKeyManager>

@@ -13,7 +13,7 @@
     "varint": "^6.0.0"
   },
   "devDependencies": {
-    "@types/node": "^18.7.11",
+    "@types/node": "^16.18.2",
     "@types/varint": "^6.0.0"
   },
   "files": [
