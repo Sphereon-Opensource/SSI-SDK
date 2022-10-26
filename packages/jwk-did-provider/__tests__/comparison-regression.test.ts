@@ -88,6 +88,7 @@ describe('@sphereon/jwk-did-provider comparison', () => {
 
 
     console.log(JSON.stringify(didResolutionResult.didDocument, null, 2))
+    expect(didResolutionResult.didDocument).toEqual(comparisonDidDoc)
 
   })
 
@@ -122,7 +123,7 @@ describe('@sphereon/jwk-did-provider comparison', () => {
     }
     expect(didResolutionResult!.didDocument!.verificationMethod).toEqual([verificationMethod])
 
-    expect(method.resolve(did)).toEqual(didResolutionResult!.didDocument)
+    expect(await method.resolve(did)).toEqual(didResolutionResult!.didDocument)
 
     // TODO: Investigate why we are creating all the verification method relationships, whilst orie is not creating any except for the verification method itself based on our did. This could be another cause for the problems we are seeing
 
