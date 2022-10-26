@@ -6,14 +6,15 @@ import { getDidJwkResolver, VerificationType } from '../src'
 const agent = createAgent({
   plugins: [
     new DIDResolverPlugin({
-      resolver: new Resolver({...getDidJwkResolver()})
-    })
-  ]
+      resolver: new Resolver({ ...getDidJwkResolver() }),
+    }),
+  ],
 })
 
 describe('@sphereon/jwk-did-resolver', () => {
   it('should resolve with did resolution metadata', async () => {
-    const identifier = 'eyJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCS2NlRjMwbHBTNkptT1RsS09LQVdudGtKdVRCSzNGX1JoaXlEcTRtdm9jIiwieSI6Im9WY1phQnpiSFJ2UW5iSXhwRWRXbVlRMGtSRm42ajVDRkVQcGxvX09ON1UifQ'
+    const identifier =
+      'eyJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCS2NlRjMwbHBTNkptT1RsS09LQVdudGtKdVRCSzNGX1JoaXlEcTRtdm9jIiwieSI6Im9WY1phQnpiSFJ2UW5iSXhwRWRXbVlRMGtSRm42ajVDRkVQcGxvX09ON1UifQ'
     const did = `did:jwk:${identifier}`
 
     const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
@@ -28,15 +29,13 @@ describe('@sphereon/jwk-did-resolver', () => {
   })
 
   it('should resolve to correct did document with no use', async () => {
-    const did = 'did:jwk:eyJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCS2NlRjMwbHBTNkptT1RsS09LQVdudGtKdVRCSzNGX1JoaXlEcTRtdm9jIiwieSI6Im9WY1phQnpiSFJ2UW5iSXhwRWRXbVlRMGtSRm42ajVDRkVQcGxvX09ON1UifQ'
+    const did =
+      'did:jwk:eyJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCS2NlRjMwbHBTNkptT1RsS09LQVdudGtKdVRCSzNGX1JoaXlEcTRtdm9jIiwieSI6Im9WY1phQnpiSFJ2UW5iSXhwRWRXbVlRMGtSRm42ajVDRkVQcGxvX09ON1UifQ'
 
     const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
 
     expect(didResolutionResult.didDocument).toBeDefined()
-    expect(didResolutionResult!.didDocument!['@context']).toEqual([
-      "https://www.w3.org/ns/did/v1",
-      "https://w3id.org/security/suites/jws-2020/v1"
-    ])
+    expect(didResolutionResult!.didDocument!['@context']).toEqual(['https://www.w3.org/ns/did/v1', 'https://w3id.org/security/suites/jws-2020/v1'])
     expect(didResolutionResult.didDocument!.id).toEqual(did)
     expect(didResolutionResult.didDocument!.verificationMethod).toBeDefined()
     expect(didResolutionResult.didDocument!.verificationMethod!.length).toEqual(1)
@@ -52,7 +51,8 @@ describe('@sphereon/jwk-did-resolver', () => {
   })
 
   it('should resolve to correct did document with use encryption', async () => {
-    const did = 'did:jwk:eyJ1c2UiOiJlbmMiLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCRnhTU29XTnBCOElYVktUYk44U0xNbVlVeThTSG1Ybk9lb050RHB1QVpNIiwieSI6InBWRmxxSlJqNkNNaFljZ3dqVTk2eko3V09mWk9GWXpScE1selZGT0NKcFEifQ'
+    const did =
+      'did:jwk:eyJ1c2UiOiJlbmMiLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCRnhTU29XTnBCOElYVktUYk44U0xNbVlVeThTSG1Ybk9lb050RHB1QVpNIiwieSI6InBWRmxxSlJqNkNNaFljZ3dqVTk2eko3V09mWk9GWXpScE1selZGT0NKcFEifQ'
 
     const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
 
@@ -65,7 +65,8 @@ describe('@sphereon/jwk-did-resolver', () => {
   })
 
   it('should resolve to correct did document with use signature', async () => {
-    const did = 'did:jwk:eyJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCUEVwN2lKU2dFREVGZGZpUEJTMnlQbWU4ZzB1UFNZQS14S1VJb1hWdEpvIiwieSI6InhwckRtMExLWGpxSUtGNjI1VGJjN3FhZEVTY1FDSVk1bTlITGkzbmtHT0UifQ'
+    const did =
+      'did:jwk:eyJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCUEVwN2lKU2dFREVGZGZpUEJTMnlQbWU4ZzB1UFNZQS14S1VJb1hWdEpvIiwieSI6InhwckRtMExLWGpxSUtGNjI1VGJjN3FhZEVTY1FDSVk1bTlITGkzbmtHT0UifQ'
 
     const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
 
@@ -76,5 +77,4 @@ describe('@sphereon/jwk-did-resolver', () => {
     expect(didResolutionResult.didDocument!.capabilityDelegation).toEqual([`${did}#0`])
     expect(didResolutionResult.didDocument?.keyAgreement).toBeUndefined()
   })
-
 })

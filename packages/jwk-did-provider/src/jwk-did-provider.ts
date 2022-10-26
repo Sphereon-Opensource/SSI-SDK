@@ -1,4 +1,4 @@
-import { IIdentifier, IKey } from '@veramo/core'
+import { DIDDocument, IAgentContext, IIdentifier, IKey, IKeyManager } from '@veramo/core'
 import { AbstractIdentifierProvider } from '@veramo/did-manager'
 import base64url from 'base64url'
 import { generateJwk, generatePrivateKeyHex } from '../src/functions'
@@ -48,6 +48,14 @@ export class JwkDIDProvider extends AbstractIdentifierProvider {
 
     debug('Created DID: ', identifier.did)
     return identifier
+  }
+
+  /** {@inheritDoc @veramo/veramo-core#IDIDManager.didManagerUpdate} */
+  async updateIdentifier?(
+    args: { did: string; document: Partial<DIDDocument>; options?: { [x: string]: any } },
+    context: IAgentContext<IKeyManager>
+  ): Promise<IIdentifier> {
+    throw new Error('not implemented yet')
   }
 
   /** {@inheritDoc @veramo/veramo-core#IDIDManager.didManagerDelete} */
@@ -103,7 +111,7 @@ export class JwkDIDProvider extends AbstractIdentifierProvider {
     return context.agent.keyManagerImport({
       kms: args.kms || this.defaultKms,
       type,
-      privateKeyHex
+      privateKeyHex,
     })
   }
 }

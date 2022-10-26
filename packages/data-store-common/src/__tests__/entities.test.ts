@@ -1,4 +1,4 @@
-import { Connection, createConnection } from 'typeorm'
+import { DataSource } from 'typeorm'
 import { ConnectionIdentifierEnum, ConnectionTypeEnum, DataStoreConnectionEntities, DataStoreMigrations } from '../index'
 import { PartyEntity } from '../entities/connection/PartyEntity'
 import { OpenIdConfigEntity } from '../entities/connection/OpenIdConfigEntity'
@@ -6,11 +6,11 @@ import { DidAuthConfigEntity } from '../entities/connection/DidAuthConfigEntity'
 import { ConnectionEntity, connectionEntityFrom } from '../entities/connection/ConnectionEntity'
 
 describe('Database entities test', () => {
-  let dbConnection: Connection
+  let dbConnection: DataSource
   const connection_relations = ['config', 'metadata', 'identifier']
 
   beforeEach(async () => {
-    dbConnection = await createConnection({
+    dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',
       // logging: 'all',
@@ -18,13 +18,13 @@ describe('Database entities test', () => {
       migrations: DataStoreMigrations,
       synchronize: false,
       entities: DataStoreConnectionEntities,
-    })
+    }).initialize()
     await dbConnection.runMigrations()
     expect(await dbConnection.showMigrations()).toBeFalsy()
   })
 
   afterEach(async () => {
-    await dbConnection.close()
+    await (await dbConnection).destroy()
   })
 
   it('Should save party to database', async () => {

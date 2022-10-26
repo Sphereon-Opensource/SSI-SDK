@@ -20,7 +20,6 @@
     { "path": "data-store-common" },
     { "path": "connection-manager" },
     { "path": "data-store" },
-    { "path": "ion-did-provider" },
     { "path": "wellknown-did-verifier" },
     { "path": "jwk-did-provider" }
   ]

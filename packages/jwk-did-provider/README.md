@@ -48,7 +48,7 @@ The example below generates a JWK DID using imported keys.
 const identifier: IIdentifier = await agent.didManagerCreate({
   key: {
     privateKeyHex: '06eb9e64569203679b36f834a4d9725c989d32a7fb52c341eae3517b3aff8ee6',
-  }
+  },
 })
 ```
 

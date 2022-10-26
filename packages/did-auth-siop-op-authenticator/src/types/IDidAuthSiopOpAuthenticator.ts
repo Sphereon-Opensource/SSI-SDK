@@ -1,5 +1,5 @@
 import { DIDDocumentSection, IAgentContext, IIdentifier, IPluginMethodMap, IResolver, IKeyManager } from '@veramo/core'
-import { IVerifiableCredential, IVerifiablePresentation } from '@sphereon/pex'
+import { IVerifiableCredential, IVerifiablePresentation } from '@sphereon/ssi-types'
 import { OpSession } from '../session/OpSession'
 import { SIOP } from '@sphereon/did-auth-siop'
 import { Resolvable } from 'did-resolver'
