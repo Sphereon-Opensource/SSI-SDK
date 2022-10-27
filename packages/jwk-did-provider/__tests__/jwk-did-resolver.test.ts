@@ -39,7 +39,7 @@ describe('@sphereon/jwk-did-resolver', () => {
       ContextType.DidDocument,
       {
         '@vocab': VocabType.Jose,
-      }
+      },
     ])
     expect(didResolutionResult.didDocument!.id).toEqual(did)
     expect(didResolutionResult.didDocument!.verificationMethod).toBeDefined()

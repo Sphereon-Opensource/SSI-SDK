@@ -1,7 +1,7 @@
 import { DIDDocument, IAgentContext, IIdentifier, IKey, IKeyManager } from '@veramo/core'
 import { AbstractIdentifierProvider } from '@veramo/did-manager'
 import base64url from 'base64url'
-import { generateJwk, generatePrivateKeyHex } from '../src/functions'
+import { determineUse, generateJwk, generatePrivateKeyHex } from '../src/functions'
 import {
   IAddKeyArgs,
   IAddServiceArgs,
@@ -37,8 +37,11 @@ export class JwkDIDProvider extends AbstractIdentifierProvider {
       },
       context
     )
+
+    const use = determineUse(key.type, args?.options?.use)
+
     // TODO test key type
-    const jwk: JsonWebKey = generateJwk(key.publicKeyHex, key.type as Key, args.options?.use)
+    const jwk: JsonWebKey = generateJwk(key.publicKeyHex, key.type as Key, use)
     const identifier: Omit<IIdentifier, 'provider'> = {
       did: `did:jwk:${base64url(JSON.stringify(jwk))}`,
       controllerKeyId: '#0',

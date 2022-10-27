@@ -1,12 +1,7 @@
 import { IParsedDID, parseDid } from '@sphereon/ssi-types'
 import base64url from 'base64url'
 import { DIDResolutionOptions, DIDResolutionResult, DIDResolver, JsonWebKey } from 'did-resolver'
-import {
-  ContextType,
-  KeyUse,
-  VerificationType,
-  VocabType
-} from './types/jwk-provider-types'
+import { ContextType, ENC_KEY_ALGS, KeyUse, SIG_KEY_ALGS, VerificationType, VocabType } from './types/jwk-provider-types'
 
 export const resolveDidJwk: DIDResolver = async (didUrl: string, options?: DIDResolutionOptions): Promise<DIDResolutionResult> => {
   return resolve(didUrl, options)
@@ -32,7 +27,11 @@ const resolve = async (didUrl: string, options?: DIDResolutionOptions): Promise<
   }
 
   // We need this since DIDResolutionResult does not allow for an object in the array
-  const context = [ ContextType.DidDocument, { '@vocab': VocabType.Jose } ] as never
+  const context = [ContextType.DidDocument, { '@vocab': VocabType.Jose }] as never
+
+  // We add the alg check to ensure max compatibility with implementations that do not export the use property
+  const enc = (jwk.use && jwk.use === KeyUse.Encryption) || (jwk.alg && ENC_KEY_ALGS.includes(jwk.alg))
+  const sig = (jwk.use && jwk.use === KeyUse.Signature) || (jwk.alg && SIG_KEY_ALGS.includes(jwk.alg))
 
   const didResolution: DIDResolutionResult = {
     didResolutionMetadata: {
@@ -56,11 +55,11 @@ const resolve = async (didUrl: string, options?: DIDResolutionOptions): Promise<
           publicKeyJwk: jwk,
         },
       ],
-      ...((jwk.use && jwk.use !== KeyUse.Encryption || jwk.alg) && { assertionMethod: ['#0'] }),
-      ...((jwk.use && jwk.use !== KeyUse.Encryption || jwk.alg) && { authentication: ['#0'] }),
-      ...((jwk.use && jwk.use !== KeyUse.Encryption || jwk.alg) && { capabilityInvocation: ['#0'] }),
-      ...((jwk.use && jwk.use !== KeyUse.Encryption || jwk.alg) && { capabilityDelegation: ['#0'] }),
-      ...(jwk.use && jwk.use === KeyUse.Encryption && { keyAgreement: ['#0'] }),
+      ...(sig && { assertionMethod: ['#0'] }),
+      ...(sig && { authentication: ['#0'] }),
+      ...(sig && { capabilityInvocation: ['#0'] }),
+      ...(sig && { capabilityDelegation: ['#0'] }),
+      ...(enc && { keyAgreement: ['#0'] }),
     },
     didDocumentMetadata: {},
   }
