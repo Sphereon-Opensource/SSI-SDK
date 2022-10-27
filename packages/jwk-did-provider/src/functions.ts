@@ -17,6 +17,7 @@ export const generatePrivateKeyHex = (type: Key): string => {
       const keyPairEd25519 = generateSigningKeyPair()
       return u8a.toString(keyPairEd25519.secretKey, 'base16')
     }
+    case Key.Secp256r1:
     case Key.Secp256k1: {
       const privateBytes = randomBytes(32)
       return u8a.toString(privateBytes, 'base16')
