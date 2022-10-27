@@ -13,11 +13,10 @@ import {
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
 
 const nock = require('nock')
-jest.mock('@veramo/utils', () => {
-  return {
-    mapIdentifierKeysToDoc: jest.fn(),
-  }
-})
+jest.mock('@veramo/utils', () => ({
+  ...jest.requireActual('@veramo/utils'),
+  mapIdentifierKeysToDoc: jest.fn(),
+}))
 
 type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator>
 

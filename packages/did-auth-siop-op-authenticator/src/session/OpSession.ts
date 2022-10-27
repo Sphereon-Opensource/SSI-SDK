@@ -1,8 +1,8 @@
 import { DIDDocumentSection, IIdentifier, IKey, TKeyType } from '@veramo/core'
 import { _ExtendedIKey, mapIdentifierKeysToDoc } from '@veramo/utils'
 import { OP, PresentationExchange, SIOP } from '@sphereon/did-auth-siop'
-import { SubmissionRequirementMatch, IVerifiableCredential } from '@sphereon/pex'
-import { parseDid } from '@sphereon/ssi-types'
+import { SubmissionRequirementMatch } from '@sphereon/pex'
+import { IVerifiableCredential, parseDid } from '@sphereon/ssi-types'
 import { SuppliedSigner } from '@sphereon/ssi-sdk-core'
 import {
   IOpSessionArgs,

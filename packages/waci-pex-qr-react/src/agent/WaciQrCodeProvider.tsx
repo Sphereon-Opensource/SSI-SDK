@@ -26,6 +26,7 @@ export class WaciQrCodeProvider implements IAgentPlugin {
     }
     await context.agent.emit(events.WACI_OOB_QR_CODE_CODE_CREATED, { props: oobQRProps, payload })
 
+    // @ts-ignore
     return <QRCode value={url} bgColor={bgColor} fgColor={fgColor} level={level} size={size} title={title} />
   }
 }

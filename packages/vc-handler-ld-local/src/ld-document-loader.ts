@@ -2,7 +2,6 @@ import { extendContextLoader } from '@digitalcredentials/jsonld-signatures'
 import vc from '@digitalcredentials/vc'
 import { DIDDocument, IAgentContext, IResolver } from '@veramo/core'
 
-// import { DidKeyDriver } from '@digitalcredentials/did-method-key'
 import Debug from 'debug'
 
 import { LdContextLoader } from './ld-context-loader'
@@ -55,7 +54,7 @@ export class LdDocumentLoader {
         if (url.indexOf('#') > 0 && didDoc['@context']) {
           // Apparently we got a whole DID document, but we are looking for a verification method
           const component = await context.agent.getDIDComponentById({ didDocument: didDoc, didUrl: url })
-          if (component && component.id) {
+          if (component && typeof component !== 'string' && component.id) {
             // We have to provide a context
             const contexts = this.ldSuiteLoader
               .getAllSignatureSuites()

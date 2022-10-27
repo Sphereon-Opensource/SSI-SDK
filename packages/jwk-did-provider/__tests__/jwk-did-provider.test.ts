@@ -49,7 +49,9 @@ describe('@sphereon/jwk-did-provider', () => {
     const identifier: IIdentifier = await agent.didManagerCreate({ options })
 
     expect(identifier).toBeDefined()
-    expect(identifier.did).toBe('did:jwk:eyJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJvankweURrQnJNTHJENFVsbVdFTjRNcnF3bUNfanRCZWY1QXVxc0Q1eU5jIiwieSI6IlRkU0VHNVRSTkNUVEt2anNEcGwyMjVxX3AtT2xuaERWWmNYVTJRRzB2bU0ifQ')
+    expect(identifier.did).toBe(
+      'did:jwk:eyJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJvankweURrQnJNTHJENFVsbVdFTjRNcnF3bUNfanRCZWY1QXVxc0Q1eU5jIiwieSI6IlRkU0VHNVRSTkNUVEt2anNEcGwyMjVxX3AtT2xuaERWWmNYVTJRRzB2bU0ifQ'
+    )
   })
 
   it('should remove identifier', async () => {
@@ -92,19 +94,14 @@ describe('@sphereon/jwk-did-provider', () => {
     const options = {
       key: {},
     }
-    await expect(agent.didManagerCreate({ options })).rejects.toThrow(
-      'We need to have a private key when importing a key'
-    )
+    await expect(agent.didManagerCreate({ options })).rejects.toThrow('We need to have a private key when importing a key')
   })
 
   it('should throw error for keys Ed25519 with key usage encryption', async () => {
     const options = {
       type: Key.Ed25519,
-      use: KeyUse.Encryption
+      use: KeyUse.Encryption,
     }
-    await expect(agent.didManagerCreate({ options })).rejects.toThrow(
-        'Ed25519 keys are only valid for signatures'
-    )
+    await expect(agent.didManagerCreate({ options })).rejects.toThrow('Ed25519 keys are only valid for signatures')
   })
-
 })
