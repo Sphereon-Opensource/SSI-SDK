@@ -10,9 +10,6 @@ import base64url from 'base64url'
 const method = require('@or13/did-jwk')
 
 const DID_METHOD = 'did:jwk'
-// Generate a new private key in hex format if needed, using the following method:
-// console.log(generatePrivateKeyHex(KeyType.Secp256k1))
-// const PRIVATE_KEY_HEX = '7dd923e40f4615ac496119f7e793cc2899e99b64b88ca8603db986700089532b'
 
 const jwkDIDProvider = new JwkDIDProvider({
   defaultKms: 'mem',
@@ -41,21 +38,12 @@ const agent = createAgent<IKeyManager, DIDManager>({
 
 describe('@sphereon/jwk-did-provider comparison ES256k', () => {
   it('external JWK should result in equal DID Document', async () => {
-    // const client = method.create({});
     const { privateKeyJwk, publicKeyJwk } = await method.generateKeyPair('ES256K')
 
-    console.log(JSON.stringify(privateKeyJwk, null, 2))
-    console.log(JSON.stringify(publicKeyJwk, null, 2))
     const did = await method.toDid(publicKeyJwk)
-    console.log(did)
-
     const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
 
-    // We append the relationships, since the other lib does not take into account the use
     const comparisonDidDoc = await method.toDidDocument(publicKeyJwk)
-    console.log(JSON.stringify(comparisonDidDoc, null, 2))
-    console.log(JSON.stringify(didResolutionResult, null, 2))
-    // We add the relationships to our
     expect(didResolutionResult.didDocument).toEqual(comparisonDidDoc)
   })
 
@@ -70,21 +58,11 @@ describe('@sphereon/jwk-did-provider comparison ES256k', () => {
       // d: "9-CUAh2TXjCmjp5WVBdwHny3liSIEmwa2zZdFonq_Yw"
     }
 
-    const publicKeyHex = `04${base64url.decode(jwk.x, 'hex')}${base64url.decode(jwk.y, 'hex')}`
-    console.log(publicKeyHex)
     const did = `did:jwk:${base64url.encode(JSON.stringify(jwk))}`
-    console.log(did)
 
     // Resolution
     const comparisonDidDoc = await method.toDidDocument(jwk)
-
-    console.log(JSON.stringify(comparisonDidDoc, null, 2))
-    console.log('-----------------')
-    console.log(JSON.stringify(await method.resolve(did)))
-
     const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
-
-    console.log(JSON.stringify(didResolutionResult.didDocument, null, 2))
     expect(didResolutionResult.didDocument).toEqual(comparisonDidDoc)
   })
 
@@ -102,9 +80,7 @@ describe('@sphereon/jwk-did-provider comparison ES256k', () => {
       'did:jwk:eyJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJmYjY5SEE2M244ZENKd0RmaVJONGxacUtVVU1odHYyZE5BemdjUjJNY0ZBIiwieSI6Ikd3amFWNHpuSm1EZDBOdFlSWGdJeW5aOFlyWDRqN0lzLXFselFuekppclEifQ'
     expect(identifier.did).toBe(did)
 
-    console.log(JSON.stringify(await method.resolve(did), null, 2))
     const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
-    console.log(JSON.stringify(didResolutionResult.didDocument, null, 2))
 
     const jwk = {
       kty: 'EC',
@@ -135,21 +111,11 @@ describe('@sphereon/jwk-did-provider comparison ES256k', () => {
 
 describe('@sphereon/jwk-did-provider comparison ES256', () => {
   it('external JWK should result in equal DID Document', async () => {
-    // const client = method.create({});
-    const { privateKeyJwk, publicKeyJwk } = await method.generateKeyPair('ES256')
-
-    console.log(JSON.stringify(privateKeyJwk, null, 2))
-    console.log(JSON.stringify(publicKeyJwk, null, 2))
+    const { publicKeyJwk } = await method.generateKeyPair('ES256')
     const did = await method.toDid(publicKeyJwk)
-    console.log(did)
 
     const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
-
-    // We append the relationships, since the other lib does not take into account the use
     const comparisonDidDoc = await method.toDidDocument(publicKeyJwk)
-    console.log(JSON.stringify(comparisonDidDoc, null, 2))
-    console.log(JSON.stringify(didResolutionResult, null, 2))
-    // We add the relationships to our
     expect(didResolutionResult.didDocument).toEqual(comparisonDidDoc)
   })
 
@@ -164,21 +130,11 @@ describe('@sphereon/jwk-did-provider comparison ES256', () => {
       // d: "9-CUAh2TXjCmjp5WVBdwHny3liSIEmwa2zZdFonq_Yw"
     }
 
-    const publicKeyHex = `04${base64url.decode(jwk.x, 'hex')}${base64url.decode(jwk.y, 'hex')}`
-    console.log(publicKeyHex)
     const did = `did:jwk:${base64url.encode(JSON.stringify(jwk))}`
-    console.log(did)
 
     // Resolution
     const comparisonDidDoc = await method.toDidDocument(jwk)
-
-    console.log(JSON.stringify(comparisonDidDoc, null, 2))
-    console.log('-----------------')
-    console.log(JSON.stringify(await method.resolve(did)))
-
     const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
-
-    console.log(JSON.stringify(didResolutionResult.didDocument, null, 2))
     expect(didResolutionResult.didDocument).toEqual(comparisonDidDoc)
   })
 
@@ -197,10 +153,7 @@ describe('@sphereon/jwk-did-provider comparison ES256', () => {
       'did:jwk:eyJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IktQalQxY0IwYU1XclBzVGp3cmdtMEhwSVNwUHZ6aGpyVGxfakVLQVhrUSIsInkiOiJpeVlGZnRwZXl5dk9FTUtjR01pOFpvT3BjVy1ULU4yc2szUl9FaVZYQmdzIn0'
     expect(identifier.did).toBe(did)
 
-    console.log(JSON.stringify(await method.resolve(did), null, 2))
     const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
-    console.log(JSON.stringify(didResolutionResult.didDocument, null, 2))
-
     const jwk = {
       kty: 'EC',
       use: 'sig',

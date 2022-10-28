@@ -1,11 +1,12 @@
 import { IAgentContext, IIdentifier, IKey, IKeyManager, IService, MinimalImportableKey } from '@veramo/core'
 
 export interface IKeyOpts {
-  key?: WithRequiredProperty<Partial<MinimalImportableKey>, 'privateKeyHex'> // Optional key to import. If not specified a key with random kid will be created
+  key?: WithRequiredProperty<Partial<MinimalImportableKey>, 'privateKeyHex'> // Optional key to import with only privateKeyHex mandatory. If not specified a key with random kid will be created
   type?: Key // The key type. Defaults to Secp256k1
   use?: KeyUse // The key use
 }
 
+// Needed to make a single property required
 type WithRequiredProperty<Type, Key extends keyof Type> = Type & {
   [Property in Key]-?: Type[Property]
 }

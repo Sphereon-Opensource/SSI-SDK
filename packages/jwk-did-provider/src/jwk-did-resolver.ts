@@ -7,15 +7,17 @@ export const resolveDidJwk: DIDResolver = async (didUrl: string, options?: DIDRe
   return resolve(didUrl, options)
 }
 
-const resolve = async (didUrl: string, options?: DIDResolutionOptions): Promise<DIDResolutionResult> => {
+const resolve = async (didUrl: string, _options?: DIDResolutionOptions): Promise<DIDResolutionResult> => {
   let parsedDid: IParsedDID
   try {
     parsedDid = parseDid(didUrl)
   } catch (error: unknown) {
+    // Error from did resolution spec
     return errorResponseFrom('invalidDid')
   }
 
   if (parsedDid.method !== 'jwk') {
+    // Error from did resolution spec
     return errorResponseFrom('unsupportedDidMethod')
   }
 
@@ -23,6 +25,7 @@ const resolve = async (didUrl: string, options?: DIDResolutionOptions): Promise<
   try {
     jwk = JSON.parse(base64url.decode(parsedDid.id, 'UTF-8'))
   } catch (error: unknown) {
+    // Error from did resolution spec
     return errorResponseFrom('invalidDid')
   }
 

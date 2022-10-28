@@ -3,11 +3,9 @@ import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { KeyManagementSystem } from '@veramo/kms-local'
 import { JwkDIDProvider, KeyUse } from '../src'
-import { Key } from '../src/types/jwk-provider-types'
+import { Key } from '../src'
 
 const DID_METHOD = 'did:jwk'
-// Generate a new private key in hex format if needed, using the following method:
-// console.log(generatePrivateKeyHex(KeyType.Secp256k1))
 const PRIVATE_KEY_HEX = '7dd923e40f4615ac496119f7e793cc2899e99b64b88ca8603db986700089532b'
 
 const jwkDIDProvider = new JwkDIDProvider({
