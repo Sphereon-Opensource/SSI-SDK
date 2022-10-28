@@ -3,11 +3,9 @@ import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { KeyManagementSystem } from '@veramo/kms-local'
 import { JwkDIDProvider, KeyUse } from '../src'
-import { Key } from '../src/types/jwk-provider-types'
+import { Key } from '../src'
 
 const DID_METHOD = 'did:jwk'
-// Generate a new private key in hex format if needed, using the following method:
-// console.log(generatePrivateKeyHex(KeyType.Secp256k1))
 const PRIVATE_KEY_HEX = '7dd923e40f4615ac496119f7e793cc2899e99b64b88ca8603db986700089532b'
 
 const jwkDIDProvider = new JwkDIDProvider({
@@ -50,7 +48,7 @@ describe('@sphereon/jwk-did-provider', () => {
 
     expect(identifier).toBeDefined()
     expect(identifier.did).toBe(
-      'did:jwk:eyJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCS0k4dE1nNUFhekM2dy1GSlpsaERlREs2c0pndjQ3UVhuLVFMcXJBLWNnIiwieSI6IjEwM1VoQnVVMFRRazB5cjQ3QTZaZHR1YXY2ZmpwWjRRMVdYRjFOa0J0TDQifQ'
+      'did:jwk:eyJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJvankweURrQnJNTHJENFVsbVdFTjRNcnF3bUNfanRCZWY1QXVxc0Q1eU5jIiwieSI6IlRkU0VHNVRSTkNUVEt2anNEcGwyMjVxX3AtT2xuaERWWmNYVTJRRzB2bU0ifQ'
     )
   })
 

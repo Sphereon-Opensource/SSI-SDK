@@ -1,21 +1,23 @@
 import { IParsedDID, parseDid } from '@sphereon/ssi-types'
 import base64url from 'base64url'
 import { DIDResolutionOptions, DIDResolutionResult, DIDResolver, JsonWebKey } from 'did-resolver'
-import { KeyUse, VerificationType } from './types/jwk-provider-types'
+import { ContextType, ENC_KEY_ALGS, KeyUse, SIG_KEY_ALGS, VerificationType, VocabType } from './types/jwk-provider-types'
 
 export const resolveDidJwk: DIDResolver = async (didUrl: string, options?: DIDResolutionOptions): Promise<DIDResolutionResult> => {
   return resolve(didUrl, options)
 }
 
-const resolve = async (didUrl: string, options?: DIDResolutionOptions) => {
+const resolve = async (didUrl: string, _options?: DIDResolutionOptions): Promise<DIDResolutionResult> => {
   let parsedDid: IParsedDID
   try {
     parsedDid = parseDid(didUrl)
   } catch (error: unknown) {
+    // Error from did resolution spec
     return errorResponseFrom('invalidDid')
   }
 
   if (parsedDid.method !== 'jwk') {
+    // Error from did resolution spec
     return errorResponseFrom('unsupportedDidMethod')
   }
 
@@ -23,8 +25,16 @@ const resolve = async (didUrl: string, options?: DIDResolutionOptions) => {
   try {
     jwk = JSON.parse(base64url.decode(parsedDid.id, 'UTF-8'))
   } catch (error: unknown) {
+    // Error from did resolution spec
     return errorResponseFrom('invalidDid')
   }
+
+  // We need this since DIDResolutionResult does not allow for an object in the array
+  const context = [ContextType.DidDocument, { '@vocab': VocabType.Jose }] as never
+
+  // We add the alg check to ensure max compatibility with implementations that do not export the use property
+  const enc = (jwk.use && jwk.use === KeyUse.Encryption) || (jwk.alg && ENC_KEY_ALGS.includes(jwk.alg))
+  const sig = (jwk.use && jwk.use === KeyUse.Signature) || (jwk.alg && SIG_KEY_ALGS.includes(jwk.alg))
 
   const didResolution: DIDResolutionResult = {
     didResolutionMetadata: {
@@ -36,8 +46,9 @@ const resolve = async (didUrl: string, options?: DIDResolutionOptions) => {
         method: 'jwk',
       },
     },
+
     didDocument: {
-      '@context': ['https://www.w3.org/ns/did/v1', 'https://w3id.org/security/suites/jws-2020/v1'],
+      '@context': context,
       id: parsedDid.did,
       verificationMethod: [
         {
@@ -47,11 +58,11 @@ const resolve = async (didUrl: string, options?: DIDResolutionOptions) => {
           publicKeyJwk: jwk,
         },
       ],
-      ...(jwk.use !== KeyUse.Encryption && { assertionMethod: [`${parsedDid.did}#0`] }),
-      ...(jwk.use !== KeyUse.Encryption && { authentication: [`${parsedDid.did}#0`] }),
-      ...(jwk.use !== KeyUse.Encryption && { capabilityInvocation: [`${parsedDid.did}#0`] }),
-      ...(jwk.use !== KeyUse.Encryption && { capabilityDelegation: [`${parsedDid.did}#0`] }),
-      ...((!jwk.use || jwk.use === KeyUse.Encryption) && { keyAgreement: [`${parsedDid.did}#0`] }),
+      ...(sig && { assertionMethod: ['#0'] }),
+      ...(sig && { authentication: ['#0'] }),
+      ...(sig && { capabilityInvocation: ['#0'] }),
+      ...(sig && { capabilityDelegation: ['#0'] }),
+      ...(enc && { keyAgreement: ['#0'] }),
     },
     didDocumentMetadata: {},
   }
@@ -59,7 +70,7 @@ const resolve = async (didUrl: string, options?: DIDResolutionOptions) => {
   return didResolution
 }
 
-const errorResponseFrom = async (error: string) => {
+const errorResponseFrom = async (error: string): Promise<DIDResolutionResult> => {
   return {
     didResolutionMetadata: {
       error,
