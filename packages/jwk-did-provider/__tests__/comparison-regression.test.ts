@@ -38,7 +38,7 @@ const agent = createAgent<IKeyManager, DIDManager>({
 
 describe('@sphereon/jwk-did-provider comparison ES256k', () => {
   it('external JWK should result in equal DID Document', async () => {
-    const { privateKeyJwk, publicKeyJwk } = await method.generateKeyPair('ES256K')
+    const { publicKeyJwk } = await method.generateKeyPair('ES256K')
 
     const did = await method.toDid(publicKeyJwk)
     const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
@@ -55,7 +55,7 @@ describe('@sphereon/jwk-did-provider comparison ES256k', () => {
       alg: 'ES256K',
       x: 'lglTr5VNye5utTm0wKFpzduHFfuZOQmZU8xzvGmP0vU',
       y: 'onYhSokMMFxsDcyqhlAx9scMuoa19TRv2gFUyKhMlRI',
-      // d: "9-CUAh2TXjCmjp5WVBdwHny3liSIEmwa2zZdFonq_Yw"
+      // d: "9-CUAh2TXjCmjp5WVBdwHny3liSIEmwa2zZdFonq_Yw" // Needed in case we want to test with private key
     }
 
     const did = `did:jwk:${base64url.encode(JSON.stringify(jwk))}`

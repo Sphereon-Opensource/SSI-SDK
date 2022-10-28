@@ -90,7 +90,7 @@ const assertProperKeyLength = (keyHex: string, expectedKeyLength: number) => {
  * @return The JWK
  */
 const toSecp256k1Jwk = (publicKeyHex: string, use?: KeyUse): JsonWebKey => {
-  assertProperKeyLength(publicKeyHex, 64)
+  assertProperKeyLength(publicKeyHex, 130)
   return {
     ...(use !== undefined && { use }),
     kty: KeyType.EC,
