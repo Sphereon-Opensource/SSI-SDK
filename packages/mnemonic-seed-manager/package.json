@@ -19,10 +19,10 @@
     "typeorm-postgres:migration:run": "npm run typeorm -- migration:run -c migration-postgres"
   },
   "dependencies": {
-    "@veramo/core": "4.0.2-next.19",
-    "@veramo/data-store": "4.0.2-next.19",
-    "@veramo/key-manager": "4.0.2-next.19",
-    "@veramo/kms-local": "4.0.2-next.19",
+    "@veramo/core": "4.1.1",
+    "@veramo/data-store": "4.1.1",
+    "@veramo/key-manager": "4.1.1",
+    "@veramo/kms-local": "4.1.1",
     "bip39": "^3.0.4",
     "typeorm": "0.3.10"
   },
@@ -30,7 +30,7 @@
     "@types/bip39": "^3.0.0",
     "@types/jest": "^27.0.2",
     "@types/node": "^17.0.4",
-    "@veramo/cli": "4.0.2-next.19",
+    "@veramo/cli": "4.1.1",
     "ed25519-hd-key": "^1.2.0",
     "jest": "^27.0.2",
     "prettier": "^2.4.1",

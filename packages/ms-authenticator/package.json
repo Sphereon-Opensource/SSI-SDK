@@ -10,12 +10,12 @@
   "dependencies": {
     "@azure/msal-common": "^7.0.0",
     "@azure/msal-node": "^1.10.0",
-    "@veramo/core": "4.0.2-next.19",
+    "@veramo/core": "4.1.1",
     "cross-fetch": "^3.1.5"
   },
   "devDependencies": {
     "@types/jest": "^27.0.2",
-    "@veramo/cli": "4.0.2-next.19",
+    "@veramo/cli": "4.1.1",
     "jest": "^27.3.1",
     "prettier": "^2.4.1",
     "ts-jest": "^27.0.7",

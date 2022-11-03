@@ -13,8 +13,8 @@
     "typeorm-postgres:migration:run": "npm run typeorm -- migration:run -c migration-postgres"
   },
   "dependencies": {
-    "@veramo/core": "4.0.2-next.19",
-    "@veramo/utils": "4.0.2-next.19",
+    "@veramo/core": "4.1.1",
+    "@veramo/utils": "4.1.1",
     "debug": "^4.3.4",
     "typeorm": "0.3.10"
   },
