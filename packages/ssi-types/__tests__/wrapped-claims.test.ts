@@ -39,7 +39,7 @@ describe('Wrapped VC claims', () => {
     ;(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).expirationDate = (+new Date(
       (jwtVc['exp' as keyof IVerifiableCredential] as string) + 2
     )).toString()
-    expect(() => CredentialMapper.toWrappedVerifiableCredential(jwtVc)).toThrowError(
+    expect(() => CredentialMapper.toWrappedVerifiableCredential(jwtVc, {maxTimeSkewInMS: 0})).toThrowError(
       `Inconsistent expiration dates between JWT claim (${new Date(
         parseInt(jwtVc['exp' as keyof IVerifiableCredential] as string)
       ).toISOString()}) and VC value (${(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).expirationDate})`
@@ -78,7 +78,7 @@ describe('Wrapped VC claims', () => {
     const nbf = new Date().valueOf()
     jwtVc['nbf' as keyof IVerifiableCredential] = nbf / 1000
     ;(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).issuanceDate = new Date(+new Date() + 2).toISOString()
-    expect(() => CredentialMapper.toWrappedVerifiableCredential(jwtVc)).toThrowError(
+    expect(() => CredentialMapper.toWrappedVerifiableCredential(jwtVc, {maxTimeSkewInMS: 10})).toThrowError(
       `Inconsistent issuance dates between JWT claim (${new Date(nbf).toISOString().replace(/\.\d\d\dZ/, 'Z')}) and VC value (${
         (<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).issuanceDate
       })`

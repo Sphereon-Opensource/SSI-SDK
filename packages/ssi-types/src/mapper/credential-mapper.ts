@@ -189,7 +189,7 @@ export class CredentialMapper {
     // Since this is a credential, we delete any proof just to be sure (should not occur on JWT, but better safe than sorry)
     delete credential.proof
 
-    const maxSkewInMS = opts?.maxTimeSkewInMS ? opts.maxTimeSkewInMS : 999
+    const maxSkewInMS = opts?.maxTimeSkewInMS !== undefined ? opts.maxTimeSkewInMS : 999
 
     if (decoded.exp) {
       const expDate = credential.expirationDate
