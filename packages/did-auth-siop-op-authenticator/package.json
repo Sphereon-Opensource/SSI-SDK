@@ -13,10 +13,10 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.2.14",
-    "@sphereon/pex": "1.1.4",
+    "@sphereon/did-auth-siop": "0.2.15-unstable.0",
+    "@sphereon/pex": "2.0.0-unstable.3",
     "@sphereon/ssi-sdk-core": "^0.8.0",
-    "@sphereon/ssi-types": "0.8.1-next.6",
+    "@sphereon/ssi-types": "0.8.1-next.31",
     "@veramo/core": "4.0.2-next.19",
     "cross-fetch": "^3.1.5",
     "uuid": "^8.3.2"

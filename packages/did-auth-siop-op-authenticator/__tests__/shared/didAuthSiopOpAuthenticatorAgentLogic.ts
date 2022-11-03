@@ -1,7 +1,10 @@
 import { TAgent } from '@veramo/core'
 import { OP, PresentationExchange } from '@sphereon/did-auth-siop'
-import { IDidAuthSiopOpAuthenticator } from '../../src/types/IDidAuthSiopOpAuthenticator'
+import { IDidAuthSiopOpAuthenticator, IMatchedPresentationDefinition } from '../../src/types/IDidAuthSiopOpAuthenticator'
+
 import {
+  PresentationDefinitionWithLocation,
+  PresentationLocation,
   ResponseContext,
   ResponseMode,
   ResponseType,
@@ -11,6 +14,7 @@ import {
   VerifiedAuthenticationRequestWithJWT,
 } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
+import { OpSession } from '../../src'
 
 const nock = require('nock')
 jest.mock('@veramo/utils', () => ({
@@ -339,6 +343,70 @@ export default (testContext: {
       })
 
       expect(result.status).toEqual(200)
+    })
+
+    const pds: PresentationDefinitionWithLocation[] = [
+      {
+        definition: {
+          id: 'Credentials',
+          input_descriptors: [
+            {
+              id: 'ID Card Credential',
+              schema: [
+                {
+                  uri: 'https://www.w3.org/2018/credentials/examples/v1/IDCardCredential',
+                },
+              ],
+              constraints: {
+                fields: [
+                  {
+                    path: ['$.issuer.id'],
+                    purpose: 'We can only verify bank accounts if they are attested by a source.',
+                    filter: {
+                      type: 'string',
+                      pattern: 'did:example:issuer',
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+        location: PresentationLocation.ID_TOKEN,
+      },
+    ]
+
+    const vcs = [
+      {
+        id: 'https://example.com/credentials/1872',
+        type: ['VerifiableCredential', 'IDCardCredential'],
+        '@context': ['https://www.w3.org/2018/credentials/v1', 'https://www.w3.org/2018/credentials/examples/v1/IDCardCredential'],
+        issuer: {
+          id: 'did:example:issuer',
+        },
+        issuanceDate: '2010-01-01T19:23:24Z',
+        credentialSubject: {
+          given_name: 'Fredrik',
+          family_name: 'Stremberg',
+          birthdate: '1949-01-22',
+        },
+        proof: {
+          type: 'RsaSignature2018',
+          created: '2018-09-14T21:19:10Z',
+          proofPurpose: 'authentication',
+          verificationMethod: 'did:example:ebfeb1f712ebc6f1c276e12ec21#keys-1',
+          challenge: '1f44d55f-f161-4938-a659-f8026467f126',
+          domain: '4jt78h47fh47',
+          jws: 'eyJhbGciOiJSUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..kTCYt5XsITJX1CxPCT8yAV-TVIw5WEuts01mq-pQy7UJiN5mgREEMGlv50aqzpqh4Qq_PbChOMqsLfRoPsnsgxD-WUcX16dUOqV0G_zS245-kronKb78cPktb3rk-BuQy72IFLN25DYuNzVBAh4vGHSrQyHUGlcTwLtjPAnKb78',
+        },
+      },
+    ]
+
+    it('should match single vc', async () => {
+      const sessionId = 'new_session_id'
+      const session: OpSession = await agent.getSessionForSiop({ sessionId })
+      const result: IMatchedPresentationDefinition[] = await session.matchPresentationDefinitions(pds, vcs)
+      expect(result).toEqual([])
     })
   })
 }

@@ -1,18 +1,18 @@
 import { DIDDocumentSection, IIdentifier, IKey, TKeyType } from '@veramo/core'
 import { _ExtendedIKey, mapIdentifierKeysToDoc } from '@veramo/utils'
 import { OP, PresentationExchange, SIOP } from '@sphereon/did-auth-siop'
-import { SubmissionRequirementMatch } from '@sphereon/pex'
-import { IVerifiableCredential, parseDid } from '@sphereon/ssi-types'
+import { Status, SubmissionRequirementMatch } from '@sphereon/pex'
+import { IProofPurpose, IProofType, IVerifiableCredential, IVerifiablePresentation, parseDid } from '@sphereon/ssi-types'
 import { SuppliedSigner } from '@sphereon/ssi-sdk-core'
 import {
-  IOpSessionArgs,
+  IAuthRequestDetails,
+  IMatchedPresentationDefinition,
   IOpsAuthenticateWithSiopArgs,
+  IOpSessionArgs,
   IOpsGetSiopAuthenticationRequestDetailsArgs,
   IOpsGetSiopAuthenticationRequestFromRpArgs,
   IOpsSendSiopAuthenticationResponseArgs,
   IOpsVerifySiopAuthenticationRequestUriArgs,
-  IAuthRequestDetails,
-  IMatchedPresentationDefinition,
   IRequiredContext,
   PerDidResolver,
 } from '../types/IDidAuthSiopOpAuthenticator'
@@ -100,7 +100,7 @@ export class OpSession {
     return {
       id: didResolutionResult.didDocument!.id,
       alsoKnownAs: didResolutionResult.didDocument!.alsoKnownAs,
-      vpResponseOpts: verifiablePresentations,
+      vpResponseOpts: verifiablePresentations as SIOP.VerifiablePresentationResponseOpts[]
     }
   }
 
@@ -152,14 +152,34 @@ export class OpSession {
       .catch((error: unknown) => Promise.reject(error))
   }
 
-  private async matchPresentationDefinitions(
+  async matchPresentationDefinitions(
     presentationDefs: SIOP.PresentationDefinitionWithLocation[],
     verifiableCredentials: IVerifiableCredential[]
   ): Promise<IMatchedPresentationDefinition[]> {
     const presentationExchange = this.getPresentationExchange(verifiableCredentials)
     return await Promise.all(
       presentationDefs.map(async (presentationDef: SIOP.PresentationDefinitionWithLocation) => {
+        //Probably swallowing errors (original code)
         const checked = await presentationExchange.selectVerifiableCredentialsForSubmission(presentationDef.definition)
+
+        // (code from did-auth-siop)
+        if (!presentationDef.definition) {
+          throw new Error('no presentation definition')
+        } else if (!verifiableCredentials || (verifiableCredentials as IVerifiableCredential[]).length === 0) {
+          throw new Error(`no VCs were provided`)
+        }
+        const selectResults = presentationExchange.pex.selectFrom(
+          presentationDef.definition,
+          // fixme holder dids and limited disclosure
+          verifiableCredentials as any,
+          [presentationExchange.did],
+          []
+        )
+        if (selectResults.areRequiredCredentialsPresent == Status.ERROR) {
+          throw new Error(`message: ${'no matching credentials'}, details: ${JSON.stringify(selectResults.errors)}`)
+        }
+
+        // original code
         if (checked.errors && checked.errors.length > 0) {
           return Promise.reject(new Error(JSON.stringify(checked.errors)))
         }
@@ -169,7 +189,48 @@ export class OpSession {
           return Promise.reject(new Error(JSON.stringify(checked.errors)))
         }
 
-        const verifiablePresentation = await presentationExchange.submissionFrom(presentationDef.definition, verifiableCredentials)
+        // did-auth-siop code
+        if (!presentationDef.definition) {
+          throw new Error('pd not valid')
+        }
+        function sign(params: any): IVerifiablePresentation {
+          console.log('##### SIGN CALLBACK IMPLEMENTATION NEEDED FOR VP')
+          console.log(params)
+          return params.presentation
+        }
+        const challenge = void 0
+        const domain = void 0
+        // fixme: this needs to be configurable
+        const signOptions = {
+          proofOptions: {
+            proofPurpose: IProofPurpose.authentication,
+            type: IProofType.EcdsaSecp256k1Signature2019,
+            challenge,
+            domain,
+          },
+          signatureOptions: {
+            verificationMethod: `${presentationExchange.did}#key`,
+            keyEncoding: 'Hex',
+          },
+        }
+        const t = await presentationExchange.pex.verifiablePresentationFromAsync(
+          presentationDef.definition,
+          verifiableCredentials as any,
+          (params) => sign(params) as any,
+          signOptions as any
+        )
+        console.log(t)
+        presentationExchange
+          .submissionFrom(presentationDef.definition, verifiableCredentials as any)
+          .then((v) => {
+            console.log(v)
+          })
+          .catch((e) => {
+            console.error(e)
+          })
+
+        // original code
+        const verifiablePresentation = await presentationExchange.submissionFrom(presentationDef.definition, verifiableCredentials as any)
         return {
           location: presentationDef.location,
           format: SIOP.VerifiablePresentationTypeFormat.LDP_VP,
@@ -182,7 +243,7 @@ export class OpSession {
   private getPresentationExchange(verifiableCredentials: IVerifiableCredential[]): PresentationExchange {
     return new PresentationExchange({
       did: this.op!.authResponseOpts.did,
-      allVerifiableCredentials: verifiableCredentials,
+      allVerifiableCredentials: verifiableCredentials as any,
     })
   }
 
