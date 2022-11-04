@@ -77,12 +77,13 @@ describe('@sphereon/jwk-did-provider comparison ES256k', () => {
     const identifier: IIdentifier = await agent.didManagerCreate({ options })
 
     const did =
-      'did:jwk:eyJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJmYjY5SEE2M244ZENKd0RmaVJONGxacUtVVU1odHYyZE5BemdjUjJNY0ZBIiwieSI6Ikd3amFWNHpuSm1EZDBOdFlSWGdJeW5aOFlyWDRqN0lzLXFselFuekppclEifQ'
+      'did:jwk:eyJhbGciOiJFUzI1NksiLCJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJmYjY5SEE2M244ZENKd0RmaVJONGxacUtVVU1odHYyZE5BemdjUjJNY0ZBIiwieSI6Ikd3amFWNHpuSm1EZDBOdFlSWGdJeW5aOFlyWDRqN0lzLXFselFuekppclEifQ'
     expect(identifier.did).toBe(did)
 
     const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
 
     const jwk = {
+      alg: 'ES256K',
       kty: 'EC',
       use: 'sig',
       crv: 'secp256k1',
@@ -91,7 +92,7 @@ describe('@sphereon/jwk-did-provider comparison ES256k', () => {
     }
     const verificationMethod = {
       controller:
-        'did:jwk:eyJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJmYjY5SEE2M244ZENKd0RmaVJONGxacUtVVU1odHYyZE5BemdjUjJNY0ZBIiwieSI6Ikd3amFWNHpuSm1EZDBOdFlSWGdJeW5aOFlyWDRqN0lzLXFselFuekppclEifQ',
+        'did:jwk:eyJhbGciOiJFUzI1NksiLCJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJmYjY5SEE2M244ZENKd0RmaVJONGxacUtVVU1odHYyZE5BemdjUjJNY0ZBIiwieSI6Ikd3amFWNHpuSm1EZDBOdFlSWGdJeW5aOFlyWDRqN0lzLXFselFuekppclEifQ',
       id: '#0',
       publicKeyJwk: jwk,
       type: 'JsonWebKey2020',
@@ -150,11 +151,12 @@ describe('@sphereon/jwk-did-provider comparison ES256', () => {
     const identifier: IIdentifier = await agent.didManagerCreate({ options })
 
     const did =
-      'did:jwk:eyJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IktQalQxY0IwYU1XclBzVGp3cmdtMEhwSVNwUHZ6aGpyVGxfakVLQVhrUSIsInkiOiJpeVlGZnRwZXl5dk9FTUtjR01pOFpvT3BjVy1ULU4yc2szUl9FaVZYQmdzIn0'
+      'did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiS1BqVDFjQjBhTVdyUHNUandyZ20wSHBJU3BQdnpoanJUbF9qRUtBWGtRIiwieSI6Iml5WUZmdHBleXl2T0VNS2NHTWk4Wm9PcGNXLVQtTjJzazNSX0VpVlhCZ3MifQ'
     expect(identifier.did).toBe(did)
 
     const didResolutionResult: DIDResolutionResult = await agent.resolveDid({ didUrl: did })
     const jwk = {
+      alg: 'ES256',
       kty: 'EC',
       use: 'sig',
       crv: 'P-256',
@@ -163,7 +165,7 @@ describe('@sphereon/jwk-did-provider comparison ES256', () => {
     }
     const verificationMethod = {
       controller:
-        'did:jwk:eyJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IktQalQxY0IwYU1XclBzVGp3cmdtMEhwSVNwUHZ6aGpyVGxfakVLQVhrUSIsInkiOiJpeVlGZnRwZXl5dk9FTUtjR01pOFpvT3BjVy1ULU4yc2szUl9FaVZYQmdzIn0',
+        'did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiS1BqVDFjQjBhTVdyUHNUandyZ20wSHBJU3BQdnpoanJUbF9qRUtBWGtRIiwieSI6Iml5WUZmdHBleXl2T0VNS2NHTWk4Wm9PcGNXLVQtTjJzazNSX0VpVlhCZ3MifQ',
       id: '#0',
       publicKeyJwk: jwk,
       type: 'JsonWebKey2020',
