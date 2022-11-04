@@ -1,6 +1,6 @@
 import { TAgent } from '@veramo/core'
 import { OP } from '@sphereon/did-auth-siop'
-import { IDidAuthSiopOpAuthenticator, IMatchedPresentationDefinition } from '../../src/types/IDidAuthSiopOpAuthenticator'
+import { IDidAuthSiopOpAuthenticator, IMatchedPresentationDefinition } from '../../src'
 
 import {
   ResponseContext,
