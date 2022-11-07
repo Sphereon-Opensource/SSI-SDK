@@ -321,6 +321,7 @@ export default (testContext: {
       })
 
       expect(result).toEqual({
+        alsoKnownAs: undefined,
         id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
         vpResponseOpts: vpMultiple,
       })
