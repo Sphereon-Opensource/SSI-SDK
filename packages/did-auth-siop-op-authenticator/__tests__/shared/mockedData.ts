@@ -118,7 +118,6 @@ export const vpSingle = [
     location: 'id_token',
     presentation: {
       '@context': ['https://www.w3.org/2018/credentials/v1', 'https://identity.foundation/presentation-exchange/submission/v1'],
-      holder: undefined, //needs to be fixed
       presentation_submission: {
         definition_id: 'Credentials',
         descriptor_map: [
@@ -166,7 +165,6 @@ export const vpMultiple = [
     location: 'id_token',
     presentation: {
       '@context': ['https://www.w3.org/2018/credentials/v1', 'https://identity.foundation/presentation-exchange/submission/v1'],
-      holder: undefined, //needs to be fixed
       presentation_submission: {
         definition_id: 'Credentials',
         descriptor_map: [

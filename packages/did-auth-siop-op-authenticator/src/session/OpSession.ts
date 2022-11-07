@@ -152,7 +152,7 @@ export class OpSession {
       .catch((error: unknown) => Promise.reject(error))
   }
 
-  public async matchPresentationDefinitions(
+  private async matchPresentationDefinitions(
     presentationDefs: SIOP.PresentationDefinitionWithLocation[],
     verifiableCredentials: IVerifiableCredential[]
   ): Promise<IMatchedPresentationDefinition[]> {

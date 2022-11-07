@@ -1,6 +1,6 @@
 import { TAgent } from '@veramo/core'
 import { OP } from '@sphereon/did-auth-siop'
-import { IDidAuthSiopOpAuthenticator, IMatchedPresentationDefinition } from '../../src'
+import { IDidAuthSiopOpAuthenticator } from '../../src'
 
 import {
   ResponseContext,
@@ -12,7 +12,6 @@ import {
   VerifiedAuthenticationRequestWithJWT,
 } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
-import { OpSession } from '../../src'
 import { pdMultiple, pdSingle, vcs, vpMultiple, vpSingle } from './mockedData'
 
 const nock = require('nock')
@@ -295,14 +294,36 @@ export default (testContext: {
       expect(result).toEqual(authenticationRequest)
     })
 
-    it('should get authentication details', async () => {
+    it('should get authentication details with single credential', async () => {
       const result = await agent.getSiopAuthenticationRequestDetails({
         sessionId,
-        verifiedAuthenticationRequest: createAuthenticationResponseMockedResult,
-        verifiableCredentials: [],
+        verifiedAuthenticationRequest: {
+          ...createAuthenticationResponseMockedResult,
+          presentationDefinitions: pdSingle,
+        },
+        verifiableCredentials: vcs,
       })
 
-      expect(result.id).toEqual(did)
+      expect(result).toEqual({
+        id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
+        vpResponseOpts: vpSingle,
+      })
+    })
+
+    it('should get authentication details with multiple credentials', async () => {
+      const result = await agent.getSiopAuthenticationRequestDetails({
+        sessionId,
+        verifiedAuthenticationRequest: {
+          ...createAuthenticationResponseMockedResult,
+          presentationDefinitions: pdMultiple,
+        },
+        verifiableCredentials: vcs,
+      })
+
+      expect(result).toEqual({
+        id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
+        vpResponseOpts: vpMultiple,
+      })
     })
 
     it('should verify authentication request URI with did methods supported provided', async () => {
@@ -334,20 +355,6 @@ export default (testContext: {
       })
 
       expect(result.status).toEqual(200)
-    })
-
-    it('should match single vc', async () => {
-      const sessionId = 'new_session_id'
-      const session: OpSession = await agent.getSessionForSiop({ sessionId })
-      const result: IMatchedPresentationDefinition[] = await session.matchPresentationDefinitions(pdSingle, vcs)
-      expect(result).toEqual(vpSingle)
-    })
-
-    it('should match multiple vcs', async () => {
-      const sessionId = 'new_session_id'
-      const session: OpSession = await agent.getSessionForSiop({ sessionId })
-      const result: IMatchedPresentationDefinition[] = await session.matchPresentationDefinitions(pdMultiple, vcs)
-      expect(result).toEqual(vpMultiple)
     })
   })
 }
