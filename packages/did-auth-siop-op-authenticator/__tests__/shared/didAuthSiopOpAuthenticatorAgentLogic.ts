@@ -1,6 +1,7 @@
 import { TAgent } from '@veramo/core'
-import { OP, PresentationExchange } from '@sphereon/did-auth-siop'
-import { IDidAuthSiopOpAuthenticator } from '../../src/types/IDidAuthSiopOpAuthenticator'
+import { OP } from '@sphereon/did-auth-siop'
+import { IDidAuthSiopOpAuthenticator } from '../../src'
+
 import {
   ResponseContext,
   ResponseMode,
@@ -11,6 +12,7 @@ import {
   VerifiedAuthenticationRequestWithJWT,
 } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
+import { pdMultiple, pdSingle, vcs, vpMultiple, vpSingle } from './mockedData'
 
 const nock = require('nock')
 jest.mock('@veramo/utils', () => ({
@@ -172,14 +174,6 @@ export default (testContext: {
       OP.prototype.submitAuthenticationResponse = mockSubmitAuthenticationResponseMethod
       mockSubmitAuthenticationResponseMethod.mockReturnValue(Promise.resolve({ status: 200, statusText: 'example_value' }))
 
-      const mockedSelectVerifiableCredentialsForSubmissionMethod = jest.fn()
-      PresentationExchange.prototype.selectVerifiableCredentialsForSubmission = mockedSelectVerifiableCredentialsForSubmissionMethod
-      mockedSelectVerifiableCredentialsForSubmissionMethod.mockReturnValue(Promise.resolve({ errors: [], matches: ['match'] }))
-
-      const mockedSubmissionFromMethod = jest.fn()
-      PresentationExchange.prototype.submissionFrom = mockedSubmissionFromMethod
-      mockedSubmissionFromMethod.mockReturnValue(Promise.resolve({}))
-
       await agent.registerSessionForSiop({
         sessionId,
         identifier,
@@ -300,14 +294,37 @@ export default (testContext: {
       expect(result).toEqual(authenticationRequest)
     })
 
-    it('should get authentication details', async () => {
+    it('should get authentication details with single credential', async () => {
       const result = await agent.getSiopAuthenticationRequestDetails({
         sessionId,
-        verifiedAuthenticationRequest: createAuthenticationResponseMockedResult,
-        verifiableCredentials: [],
+        verifiedAuthenticationRequest: {
+          ...createAuthenticationResponseMockedResult,
+          presentationDefinitions: pdSingle,
+        },
+        verifiableCredentials: vcs,
       })
 
-      expect(result.id).toEqual(did)
+      expect(result).toEqual({
+        id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
+        vpResponseOpts: vpSingle,
+      })
+    })
+
+    it('should get authentication details with multiple credentials', async () => {
+      const result = await agent.getSiopAuthenticationRequestDetails({
+        sessionId,
+        verifiedAuthenticationRequest: {
+          ...createAuthenticationResponseMockedResult,
+          presentationDefinitions: pdMultiple,
+        },
+        verifiableCredentials: vcs,
+      })
+
+      expect(result).toEqual({
+        alsoKnownAs: undefined,
+        id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
+        vpResponseOpts: vpMultiple,
+      })
     })
 
     it('should verify authentication request URI with did methods supported provided', async () => {

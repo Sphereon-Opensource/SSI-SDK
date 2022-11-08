@@ -100,7 +100,7 @@ export class OpSession {
     return {
       id: didResolutionResult.didDocument!.id,
       alsoKnownAs: didResolutionResult.didDocument!.alsoKnownAs,
-      vpResponseOpts: verifiablePresentations,
+      vpResponseOpts: verifiablePresentations as SIOP.VerifiablePresentationResponseOpts[],
     }
   }
 
@@ -169,7 +169,10 @@ export class OpSession {
           return Promise.reject(new Error(JSON.stringify(checked.errors)))
         }
 
-        const verifiablePresentation = await presentationExchange.submissionFrom(presentationDef.definition, verifiableCredentials)
+        const verifiablePresentation = await presentationExchange.submissionFrom(
+          presentationDef.definition,
+          checked.verifiableCredential as IVerifiableCredential[]
+        )
         return {
           location: presentationDef.location,
           format: SIOP.VerifiablePresentationTypeFormat.LDP_VP,
