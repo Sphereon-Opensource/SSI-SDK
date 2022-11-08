@@ -246,8 +246,9 @@ export class CredentialMapper {
             throw new Error(`Inconsistent issuers between JWT claim (${decoded.iss}) and VC value (${issuer.id})`)
           }
         }
+      } else {
+        credential.issuer = decoded.iss
       }
-      credential.issuer = decoded.iss
     }
 
     if (decoded.sub) {

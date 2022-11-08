@@ -1,5 +1,11 @@
 import * as fs from 'fs'
-import { CredentialMapper, ICredential, IVerifiableCredential, ICredentialSubject } from '../src'
+import {
+  CredentialMapper,
+  ICredential,
+  IVerifiableCredential,
+  ICredentialSubject,
+  W3CVerifiableCredential,
+} from '../src'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -109,6 +115,18 @@ describe('Uniform VC claims', () => {
         (<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).id
       })`
     )
+  })
+
+  it('should work with jsonLD VC from Diwala', () => {
+    const ldpVc: IVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vc/vc_edu-plugfest-diwala.json')
+    const vc = CredentialMapper.toUniformCredential(ldpVc)
+    expect(vc.issuanceDate).toEqual("2022-11-04T12:32:03Z")
+  })
+
+  it('should work with jwt VC from Velocity', () => {
+    const jwtVc: W3CVerifiableCredential = getFile('packages/ssi-types/__tests__/vc_vp_examples/vc/vc_edu-plugfest-velocity.jwt')
+    const vc = CredentialMapper.toUniformCredential(jwtVc)
+    expect(vc.issuanceDate).toEqual("2022-11-07T21:29:29Z")
   })
 })
 

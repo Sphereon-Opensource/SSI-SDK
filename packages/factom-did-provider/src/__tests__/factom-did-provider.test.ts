@@ -69,7 +69,7 @@ describe('@sphereon/factom-did-provider', () => {
     } as IKeyManager,
   } as IRequiredContext*/
 
-  it('should create identifier', () => {
+  xit('should create identifier', () => {
     // jest.spyOn(fetch, '').mockResolvedValueOnce(Promise.resolve(restResponse));
     const identifier = factomDIDProvider.createIdentifier(
       {
