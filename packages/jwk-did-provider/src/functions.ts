@@ -92,6 +92,7 @@ const assertProperKeyLength = (keyHex: string, expectedKeyLength: number) => {
 const toSecp256k1Jwk = (publicKeyHex: string, use?: KeyUse): JsonWebKey => {
   assertProperKeyLength(publicKeyHex, 130)
   return {
+    alg: 'ES256K',
     ...(use !== undefined && { use }),
     kty: KeyType.EC,
     crv: KeyCurve.Secp256k1,
@@ -113,6 +114,7 @@ const toSecp256r1Jwk = (publicKeyHex: string, use?: KeyUse): JsonWebKey => {
   const key = secp256r1.keyFromPublic(publicKey, 'hex')
   const pubPoint = key.getPublic()
   return {
+    alg: 'ES256',
     ...(use !== undefined && { use }),
     kty: KeyType.EC,
     crv: KeyCurve.P_256,
@@ -130,6 +132,7 @@ const toSecp256r1Jwk = (publicKeyHex: string, use?: KeyUse): JsonWebKey => {
 const toEd25519Jwk = (publicKeyHex: string, use?: KeyUse): JsonWebKey => {
   assertProperKeyLength(publicKeyHex, 64)
   return {
+    alg: 'EdDSA',
     ...(use !== undefined && { use }),
     kty: KeyType.OKP,
     crv: KeyCurve.Ed25519,

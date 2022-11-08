@@ -123,7 +123,7 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
       expect(verified).toBeTruthy()
     })
 
-    it('should verify a VC API issued VC with status list and create/verify a VP', async () => {
+    xit('should verify a VC API issued VC with status list and create/verify a VP', async () => {
       jest.setTimeout(100000)
 
       const verifiableCredential = boaExampleVC

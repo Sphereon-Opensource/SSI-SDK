@@ -12,7 +12,7 @@
   "dependencies": {
     "@mattrglobal/bbs-signatures": "1.0.0",
     "@mattrglobal/node-bbs-signatures": "0.11.0",
-    "@veramo/core": "4.0.2-next.19"
+    "@veramo/core": "4.1.1"
   },
   "devDependencies": {
     "@microsoft/api-documenter": "^7.14.1",
@@ -20,7 +20,7 @@
     "@microsoft/api-extractor-model": "^7.15.3",
     "@types/jest": "^27.0.2",
     "@types/node": "^17.0.4",
-    "@veramo/cli": "4.0.2-next.19",
+    "@veramo/cli": "4.1.1",
     "jest": "^27.0.2",
     "prettier": "^2.4.1",
     "ts-jest": "^27.0.7"

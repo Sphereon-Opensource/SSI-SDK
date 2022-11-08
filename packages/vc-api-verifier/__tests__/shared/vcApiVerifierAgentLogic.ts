@@ -17,7 +17,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await testContext.tearDown()
     })
 
-    it('should verify', async () => {
+    xit('should verify', async () => {
       const credential = {
         '@context': ['https://www.w3.org/2018/credentials/v1', 'https://www.w3.org/2018/credentials/examples/v1'],
         credentialSubject: {

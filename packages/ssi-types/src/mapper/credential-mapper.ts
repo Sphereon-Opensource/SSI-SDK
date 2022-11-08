@@ -40,7 +40,10 @@ export class CredentialMapper {
     }
   }
 
-  static toWrappedVerifiablePresentation(presentation: OriginalVerifiablePresentation): WrappedVerifiablePresentation {
+  static toWrappedVerifiablePresentation(
+    presentation: OriginalVerifiablePresentation,
+    opts?: { maxTimeSkewInMS?: number }
+  ): WrappedVerifiablePresentation {
     const original = presentation
     const isJwtEncoded: boolean = CredentialMapper.isJwtEncoded(original)
     const isJwtDecoded: boolean = CredentialMapper.isJwtDecodedPresentation(original)
@@ -50,9 +53,9 @@ export class CredentialMapper {
     const decoded = CredentialMapper.decodeVerifiablePresentation(original)
     const vp: IPresentation =
       isJwtEncoded || isJwtDecoded
-        ? CredentialMapper.jwtDecodedPresentationToUniformPresentation(decoded as JwtDecodedVerifiablePresentation, false)
+        ? CredentialMapper.jwtDecodedPresentationToUniformPresentation(decoded as JwtDecodedVerifiablePresentation, false, opts)
         : (decoded as IPresentation)
-    const vcs: WrappedVerifiableCredential[] = CredentialMapper.toWrappedVerifiableCredentials(vp.verifiableCredential)
+    const vcs: WrappedVerifiableCredential[] = CredentialMapper.toWrappedVerifiableCredentials(vp.verifiableCredential, opts)
 
     // todo: We probably want to add proofs as well
     return {
@@ -68,11 +71,17 @@ export class CredentialMapper {
     }
   }
 
-  static toWrappedVerifiableCredentials(verifiableCredentials: OriginalVerifiableCredential[]): WrappedVerifiableCredential[] {
-    return verifiableCredentials.map(CredentialMapper.toWrappedVerifiableCredential)
+  static toWrappedVerifiableCredentials(
+    verifiableCredentials: OriginalVerifiableCredential[],
+    opts?: { maxTimeSkewInMS?: number }
+  ): WrappedVerifiableCredential[] {
+    return verifiableCredentials.map((vc) => CredentialMapper.toWrappedVerifiableCredential(vc, opts))
   }
 
-  static toWrappedVerifiableCredential(verifiableCredential: OriginalVerifiableCredential): WrappedVerifiableCredential {
+  static toWrappedVerifiableCredential(
+    verifiableCredential: OriginalVerifiableCredential,
+    opts?: { maxTimeSkewInMS?: number }
+  ): WrappedVerifiableCredential {
     const original = verifiableCredential
 
     const decoded = CredentialMapper.decodeVerifiableCredential(verifiableCredential)
@@ -83,7 +92,7 @@ export class CredentialMapper {
 
     const credential =
       isJwtDecoded || isJwtDecoded
-        ? CredentialMapper.jwtDecodedCredentialToUniformCredential(decoded as JwtDecodedVerifiableCredential)
+        ? CredentialMapper.jwtDecodedCredentialToUniformCredential(decoded as JwtDecodedVerifiableCredential, opts)
         : (decoded as ICredential)
     const format = isJwtDecoded || isJwtDecoded ? 'jwt_vc' : 'ldp_vc'
     //todo: We probably want to add proofs as well
@@ -112,19 +121,26 @@ export class CredentialMapper {
     return (<JwtDecodedVerifiablePresentation>original)['vp'] !== undefined && (<JwtDecodedVerifiablePresentation>original)['iss'] !== undefined
   }
 
-  static jwtEncodedPresentationToUniformPresentation(jwt: string, makeCredentialsUniform: boolean = true): IPresentation {
-    return CredentialMapper.jwtDecodedPresentationToUniformPresentation(jwt_decode(jwt), makeCredentialsUniform)
+  static jwtEncodedPresentationToUniformPresentation(
+    jwt: string,
+    makeCredentialsUniform: boolean = true,
+    opts?: { maxTimeSkewInMS?: number }
+  ): IPresentation {
+    return CredentialMapper.jwtDecodedPresentationToUniformPresentation(jwt_decode(jwt), makeCredentialsUniform, opts)
   }
 
   static jwtDecodedPresentationToUniformPresentation(
     decoded: JwtDecodedVerifiablePresentation,
-    makeCredentialsUniform: boolean = true
+    makeCredentialsUniform: boolean = true,
+    opts?: { maxTimeSkewInMS?: number }
   ): IPresentation {
     const presentation: IPresentation = {
       ...(decoded.vp as IPresentation),
     }
     if (makeCredentialsUniform) {
-      presentation.verifiableCredential = decoded.vp.verifiableCredential.map(CredentialMapper.toUniformCredential) as IVerifiableCredential[] // We cast it because we IPresentation needs a VC. The internal Credential doesn't have the required Proof anymore (that is intended)
+      presentation.verifiableCredential = decoded.vp.verifiableCredential.map((vc) =>
+        CredentialMapper.toUniformCredential(vc, opts)
+      ) as IVerifiableCredential[] // We cast it because we IPresentation needs a VC. The internal Credential doesn't have the required Proof anymore (that is intended)
     }
     // Since this is a presentation, we delete any proof just to be sure (should not occur on JWT, but better safe than sorry)
     delete presentation.proof
@@ -148,7 +164,7 @@ export class CredentialMapper {
     return presentation
   }
 
-  static toUniformCredential(verifiableCredential: OriginalVerifiableCredential): ICredential {
+  static toUniformCredential(verifiableCredential: OriginalVerifiableCredential, opts?: { maxTimeSkewInMS?: number }): ICredential {
     const original = verifiableCredential
     const decoded = CredentialMapper.decodeVerifiableCredential(verifiableCredential)
 
@@ -156,13 +172,13 @@ export class CredentialMapper {
     const isJwtDecoded: boolean = CredentialMapper.isJwtDecodedCredential(original)
 
     if (isJwtDecoded || isJwtEncoded) {
-      return CredentialMapper.jwtDecodedCredentialToUniformCredential(decoded as JwtDecodedVerifiableCredential)
+      return CredentialMapper.jwtDecodedCredentialToUniformCredential(decoded as JwtDecodedVerifiableCredential, opts)
     } else {
       return decoded as ICredential
     }
   }
 
-  static toUniformPresentation(presentation: OriginalVerifiablePresentation): IPresentation {
+  static toUniformPresentation(presentation: OriginalVerifiablePresentation, opts?: { maxTimeSkewInMS?: number }): IPresentation {
     const original = presentation
     const decoded = CredentialMapper.decodeVerifiablePresentation(original)
     const isJwtEncoded: boolean = CredentialMapper.isJwtEncoded(original)
@@ -171,22 +187,24 @@ export class CredentialMapper {
       isJwtEncoded || isJwtDecoded
         ? CredentialMapper.jwtDecodedPresentationToUniformPresentation(decoded as JwtDecodedVerifiablePresentation, false)
         : (decoded as IPresentation)
-    uniformPresentation.verifiableCredential = uniformPresentation.verifiableCredential?.map(
-      CredentialMapper.toUniformCredential
+    uniformPresentation.verifiableCredential = uniformPresentation.verifiableCredential?.map((vc) =>
+      CredentialMapper.toUniformCredential(vc, opts)
     ) as IVerifiableCredential[] // We cast it because we IPresentation needs a VC. The internal Credential doesn't have the required Proof anymore (that is intended)
     return uniformPresentation
   }
 
-  static jwtEncodedCredentialToUniformCredential(jwt: string): ICredential {
-    return CredentialMapper.jwtDecodedCredentialToUniformCredential(jwt_decode(jwt))
+  static jwtEncodedCredentialToUniformCredential(jwt: string, opts?: { maxTimeSkewInMS?: number }): ICredential {
+    return CredentialMapper.jwtDecodedCredentialToUniformCredential(jwt_decode(jwt), opts)
   }
 
-  static jwtDecodedCredentialToUniformCredential(decoded: JwtDecodedVerifiableCredential): ICredential {
+  static jwtDecodedCredentialToUniformCredential(decoded: JwtDecodedVerifiableCredential, opts?: { maxTimeSkewInMS?: number }): ICredential {
     const credential: ICredential = {
       ...(decoded.vc as ICredential),
     }
     // Since this is a credential, we delete any proof just to be sure (should not occur on JWT, but better safe than sorry)
     delete credential.proof
+
+    const maxSkewInMS = opts?.maxTimeSkewInMS !== undefined ? opts.maxTimeSkewInMS : 999
 
     if (decoded.exp) {
       const expDate = credential.expirationDate
@@ -194,7 +212,10 @@ export class CredentialMapper {
       // fix seconds to millisecs for the date
       const expDateAsStr = jwtExp < 9999999999 ? new Date(jwtExp * 1000).toISOString().replace(/\.000Z/, 'Z') : new Date(jwtExp).toISOString()
       if (expDate && expDate !== expDateAsStr) {
-        throw new Error(`Inconsistent expiration dates between JWT claim (${expDateAsStr}) and VC value (${expDate})`)
+        const diff = Math.abs(new Date(expDateAsStr).getTime() - new Date(expDate).getTime())
+        if (!maxSkewInMS || diff > maxSkewInMS) {
+          throw new Error(`Inconsistent expiration dates between JWT claim (${expDateAsStr}) and VC value (${expDate})`)
+        }
       }
       credential.expirationDate = expDateAsStr
     }
@@ -205,7 +226,10 @@ export class CredentialMapper {
       // fix seconds to millisecs for the date
       const nbfDateAsStr = jwtNbf < 9999999999 ? new Date(jwtNbf * 1000).toISOString().replace(/\.000Z/, 'Z') : new Date(jwtNbf).toISOString()
       if (issuanceDate && issuanceDate !== nbfDateAsStr) {
-        throw new Error(`Inconsistent issuance dates between JWT claim (${nbfDateAsStr}) and VC value (${issuanceDate})`)
+        const diff = Math.abs(new Date(nbfDateAsStr).getTime() - new Date(issuanceDate).getTime())
+        if (!maxSkewInMS || diff > maxSkewInMS) {
+          throw new Error(`Inconsistent issuance dates between JWT claim (${nbfDateAsStr}) and VC value (${issuanceDate})`)
+        }
       }
       credential.issuanceDate = nbfDateAsStr
     }
@@ -222,8 +246,9 @@ export class CredentialMapper {
             throw new Error(`Inconsistent issuers between JWT claim (${decoded.iss}) and VC value (${issuer.id})`)
           }
         }
+      } else {
+        credential.issuer = decoded.iss
       }
-      credential.issuer = decoded.iss
     }
 
     if (decoded.sub) {
