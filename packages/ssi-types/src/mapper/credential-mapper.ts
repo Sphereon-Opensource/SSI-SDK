@@ -66,6 +66,7 @@ export class CredentialMapper {
       presentation: {
         ...vp,
         verifiableCredential: vcs, // We overwrite the credentials with wrapped versions, making it an InternalVerifiablePresentation. Note: we keep the singular key name of the vc data model
+        type: vp.type? vp.type: vp['@type']
       },
       vcs,
     }

@@ -5,7 +5,7 @@ export type AdditionalClaims = Record<string, any>
 
 export type IIssuerId = string
 
-export interface ICredential {
+export interface ICredentialWithType {
   '@context': ICredentialContextType | ICredentialContextType[]
   type: string[]
   credentialSchema?: undefined | ICredentialSchemaType | ICredentialSchemaType[]
@@ -19,12 +19,37 @@ export interface ICredential {
   expirationDate?: string
   // If jti is present, the value MUST be used to set the value of the id property of the new JSON object.
   id?: string
+  '@id'?: string
   credentialStatus?: ICredentialStatus
   description?: string
   name?: string
 
   [x: string]: any
 }
+
+export interface ICredentialWithAtType {
+  '@context': ICredentialContextType | ICredentialContextType[]
+  '@type': string[]
+  credentialSchema?: undefined | ICredentialSchemaType | ICredentialSchemaType[]
+  // If iss is present, the value MUST be used to set the issuer property of the new credential JSON object or the holder property of the new presentation JSON object.
+  issuer: IIssuerId | IIssuer
+  // If nbf is present, the UNIX timestamp MUST be converted to an [XMLSCHEMA11-2] date-time, and MUST be used to set the value of the issuanceDate property of the new JSON object.
+  issuanceDate: string
+  // If sub is present, the value MUST be used to set the value of the id property of credentialSubject of the new credential JSON object.
+  credentialSubject: (ICredentialSubject & AdditionalClaims) | (ICredentialSubject & AdditionalClaims)[]
+  // If exp is present, the UNIX timestamp MUST be converted to an [XMLSCHEMA11-2] date-time, and MUST be used to set the value of the expirationDate property of credentialSubject of the new JSON object.
+  expirationDate?: string
+  // If jti is present, the value MUST be used to set the value of the id property of the new JSON object.
+  id?: string
+  '@id'?: string
+  credentialStatus?: ICredentialStatus
+  description?: string
+  name?: string
+
+  [x: string]: any
+}
+
+export type ICredential = ICredentialWithType | ICredentialWithAtType
 
 export interface ICredentialSubject {
   id?: string
@@ -88,8 +113,9 @@ export type CompactJWT = string
  */
 export type W3CVerifiableCredential = IVerifiableCredential | CompactJWT
 
-export interface IPresentation {
+export interface IPresentationWithType {
   id?: string
+  '@id'?: string
   '@context': ICredentialContextType | ICredentialContextType[]
   type: string[]
   verifiableCredential: W3CVerifiableCredential[] // we relax to ICredential for internal decoded stable representations without proofs
@@ -98,6 +124,20 @@ export interface IPresentation {
 
   [x: string]: any
 }
+
+export interface IPresentationWithAtType {
+  id?: string
+  '@id'?: string
+  '@context': ICredentialContextType | ICredentialContextType[]
+  '@type': string[]
+  verifiableCredential: W3CVerifiableCredential[] // we relax to ICredential for internal decoded stable representations without proofs
+  presentation_submission?: PresentationSubmission
+  holder?: string
+
+  [x: string]: any
+}
+
+export type IPresentation = IPresentationWithType | IPresentationWithAtType
 
 export type IVerifiablePresentation = IPresentation & IHasProof
 
