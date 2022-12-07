@@ -1,6 +1,6 @@
 import { ChildEntity, Column } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
-import { IBasicOpenIdConfig } from '../../types/connections'
+import { BasicOpenIdConfig } from '../../types/connections'
 
 @ChildEntity('OpenIdConfig')
 export class OpenIdConfigEntity extends BaseConfigEntity {
@@ -26,7 +26,7 @@ export class OpenIdConfigEntity extends BaseConfigEntity {
   clientAuthMethod!: 'basic' | 'post' | undefined
 }
 
-export const openIdConfigEntityFrom = (config: IBasicOpenIdConfig): OpenIdConfigEntity => {
+export const openIdConfigEntityFrom = (config: BasicOpenIdConfig): OpenIdConfigEntity => {
   const openIdConfig = new OpenIdConfigEntity()
   openIdConfig.clientId = config.clientId
   openIdConfig.clientSecret = config.clientSecret

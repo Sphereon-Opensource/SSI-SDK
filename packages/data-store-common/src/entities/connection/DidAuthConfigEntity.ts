@@ -1,6 +1,6 @@
 import { ChildEntity, Column } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
-import { IBasicDidAuthConfig } from '../../types/connections'
+import { BasicDidAuthConfig } from '../../types/connections'
 
 @ChildEntity('DidAuthConfig')
 export class DidAuthConfigEntity extends BaseConfigEntity {
@@ -14,7 +14,7 @@ export class DidAuthConfigEntity extends BaseConfigEntity {
   sessionId!: string
 }
 
-export const didAuthConfigEntityFrom = (config: IBasicDidAuthConfig): DidAuthConfigEntity => {
+export const didAuthConfigEntityFrom = (config: BasicDidAuthConfig): DidAuthConfigEntity => {
   const didAuthConfig = new DidAuthConfigEntity()
   didAuthConfig.identifier = config.identifier.did
   didAuthConfig.redirectUrl = config.redirectUrl

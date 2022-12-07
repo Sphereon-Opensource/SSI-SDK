@@ -7,13 +7,11 @@ export enum BaseConfigType {
 export interface IConnectionParty {
   id: string
   name: string
+  alias: string
+  uri: string
   connections: Array<IConnection>
 }
-
-export interface IBasicConnectionParty {
-  name: string
-  connections: Array<IBasicConnection>
-}
+export declare type BasicConnectionParty = Omit<IConnectionParty, 'id'>;
 
 export enum ConnectionTypeEnum {
   OPENID = 'openid',
@@ -33,9 +31,9 @@ export interface IConnection {
 
 export interface IBasicConnection {
   type: ConnectionTypeEnum
-  identifier: IBasicConnectionIdentifier
+  identifier: BasicConnectionIdentifier
   config: BasicConnectionConfig
-  metadata?: Array<IBasicConnectionMetadataItem>
+  metadata?: Array<BasicConnectionMetadataItem>
 }
 
 export enum ConnectionIdentifierEnum {
@@ -48,14 +46,14 @@ export interface IConnectionIdentifier {
   type: ConnectionIdentifierEnum
   correlationId: string
 }
-export declare type IBasicConnectionIdentifier = Omit<IConnectionIdentifier, 'id'>
+export declare type BasicConnectionIdentifier = Omit<IConnectionIdentifier, 'id'>
 
 export interface IConnectionMetadataItem {
   id: string
   label: string
   value: string
 }
-export declare type IBasicConnectionMetadataItem = Omit<IConnectionMetadataItem, 'id'>
+export declare type BasicConnectionMetadataItem = Omit<IConnectionMetadataItem, 'id'>
 
 export interface IOpenIdConfig {
   id: string
@@ -67,7 +65,7 @@ export interface IOpenIdConfig {
   dangerouslyAllowInsecureHttpRequests: boolean
   clientAuthMethod: 'basic' | 'post' | undefined
 }
-export declare type IBasicOpenIdConfig = Omit<IOpenIdConfig, 'id'>
+export declare type BasicOpenIdConfig = Omit<IOpenIdConfig, 'id'>
 
 export interface IDidAuthConfig {
   id: string
@@ -76,7 +74,7 @@ export interface IDidAuthConfig {
   redirectUrl: string
   sessionId: string
 }
-export declare type IBasicDidAuthConfig = Omit<IDidAuthConfig, 'id'>
+export declare type BasicDidAuthConfig = Omit<IDidAuthConfig, 'id'>
 
 export declare type ConnectionConfig = IOpenIdConfig | IDidAuthConfig
-export declare type BasicConnectionConfig = IBasicDidAuthConfig | IBasicOpenIdConfig
+export declare type BasicConnectionConfig = BasicDidAuthConfig | BasicOpenIdConfig

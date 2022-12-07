@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm'
-import { ConnectionIdentifierEnum, IBasicConnectionIdentifier } from '../../types/connections'
+import { ConnectionIdentifierEnum, BasicConnectionIdentifier } from '../../types/connections'
 
 @Entity('ConnectionIdentifier')
 export class ConnectionIdentifierEntity extends BaseEntity {
@@ -13,7 +13,7 @@ export class ConnectionIdentifierEntity extends BaseEntity {
   correlationId!: string
 }
 
-export const connectionIdentifierEntityFrom = (identifier: IBasicConnectionIdentifier): ConnectionIdentifierEntity => {
+export const connectionIdentifierEntityFrom = (identifier: BasicConnectionIdentifier): ConnectionIdentifierEntity => {
   const identifierEntity = new ConnectionIdentifierEntity()
   identifierEntity.type = identifier.type
   identifierEntity.correlationId = identifier.correlationId

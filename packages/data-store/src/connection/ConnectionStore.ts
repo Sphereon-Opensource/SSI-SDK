@@ -188,6 +188,8 @@ export class ConnectionStore extends AbstractConnectionStore {
     return {
       id: party.id,
       name: party.name,
+      alias: party.alias,
+      uri: party.uri,
       connections: party.connections ? party.connections.map((connection: ConnectionEntity) => this.connectionFrom(connection)) : [],
     }
   }

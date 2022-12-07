@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne } from 'typeorm'
 import { ConnectionEntity } from './ConnectionEntity'
-import { IBasicConnectionMetadataItem } from '../../types/connections'
+import { BasicConnectionMetadataItem } from '../../types/connections'
 
 @Entity('ConnectionMetadata')
 export class MetadataItemEntity extends BaseEntity {
@@ -19,7 +19,7 @@ export class MetadataItemEntity extends BaseEntity {
   connection!: ConnectionEntity
 }
 
-export const metadataItemEntityFrom = (item: IBasicConnectionMetadataItem): MetadataItemEntity => {
+export const metadataItemEntityFrom = (item: BasicConnectionMetadataItem): MetadataItemEntity => {
   const metadataItem = new MetadataItemEntity()
   metadataItem.label = item.label
   metadataItem.value = item.value

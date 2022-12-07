@@ -9,6 +9,12 @@ export class PartyEntity extends BaseEntity {
   @Column({ length: 255, nullable: false, unique: true })
   name!: string
 
+  @Column({ length: 255, nullable: false, unique: true })
+  alias!: string
+
+  @Column({ length: 255, nullable: false, unique: false })
+  uri!: string
+
   @OneToMany(() => ConnectionEntity, (connection: ConnectionEntity) => connection.party, { cascade: true })
   @JoinColumn()
   connections!: Array<ConnectionEntity>
