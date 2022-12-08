@@ -51,8 +51,8 @@ describe('Database entities test', () => {
 
     const party2 = new PartyEntity()
     party2.name = partyName
-    party.alias = 'unique_alias2'
-    party.uri = 'example.com'
+    party2.alias = 'unique_alias2'
+    party2.uri = 'example.com'
     await expect(dbConnection.getRepository(PartyEntity).save(party2)).rejects.toThrowError('SQLITE_CONSTRAINT: UNIQUE constraint failed: Party.name')
   })
 
