@@ -236,15 +236,15 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       let parties = await agent.cmGetParties()
       const origSize = parties.length
 
-      const party = {
+      const args = {
         name: 'Sphereon',
         alias: 'Sphereon_alias',
         uri: 'example.com'
       }
 
-      const sphereon = parties.find((party: IConnectionParty) => party.name === party.name)
+      const sphereon = parties.find((party: IConnectionParty) => party.name === args.name)
       if (!sphereon) {
-        await agent.cmAddParty(party).then(async (party: IConnectionParty) => {
+        await agent.cmAddParty(args).then(async (party: IConnectionParty) => {
           if (!party) {
             return
           }
