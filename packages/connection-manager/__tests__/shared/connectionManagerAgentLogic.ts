@@ -98,7 +98,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should throw error when adding party with duplicate name', async () => {
       const party = {
         name: 'default_party',
-        alias: 'default_party_alias',
+        alias: 'default_party_new_alias',
         uri: 'example.com'
       }
       const partyName = 'default_party'
