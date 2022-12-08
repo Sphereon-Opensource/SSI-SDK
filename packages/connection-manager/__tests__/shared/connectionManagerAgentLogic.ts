@@ -7,7 +7,7 @@ import {
   IConnection,
   IConnectionParty,
   IOpenIdConfig,
-} from '@sphereon/ssi-sdk-data-store-common'
+} from '../../../data-store-common/src'
 
 type ConfiguredAgent = TAgent<IConnectionManager>
 

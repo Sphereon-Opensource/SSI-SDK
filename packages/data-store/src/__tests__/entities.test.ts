@@ -10,7 +10,7 @@ import {
   DidAuthConfigEntity,
   OpenIdConfigEntity,
   PartyEntity,
-} from '../../../data-store-common'
+} from '../../../data-store-common/src'
 
 describe('Database entities test', () => {
   let dbConnection: Connection
