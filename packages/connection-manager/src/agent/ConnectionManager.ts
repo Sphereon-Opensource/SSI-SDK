@@ -42,7 +42,7 @@ export class ConnectionManager implements IAgentPlugin {
 
   /** {@inheritDoc IConnectionManager.cmGetParty} */
   private async cmGetParty(args: IGetPartyArgs, context: IRequiredContext): Promise<IConnectionParty> {
-    return this.store.getParty(args.partyId)
+    return this.store.getParty(args)
   }
 
   /** {@inheritDoc IConnectionManager.cmGetParties} */
@@ -52,41 +52,41 @@ export class ConnectionManager implements IAgentPlugin {
 
   /** {@inheritDoc IConnectionManager.cmAddParty} */
   private async cmAddParty(args: IAddPartyArgs, context: IRequiredContext): Promise<IConnectionParty> {
-    return this.store.addParty(args.name)
+    return this.store.addParty(args)
   }
 
   /** {@inheritDoc IConnectionManager.cmUpdateParty} */
   private async cmUpdateParty(args: IUpdatePartyArgs, context: IRequiredContext): Promise<IConnectionParty> {
-    return this.store.updateParty(args.party)
+    return this.store.updateParty(args)
   }
 
   /** {@inheritDoc IConnectionManager.cmRemoveParty} */
   private async cmRemoveParty(args: IRemovePartyArgs, context: IRequiredContext): Promise<boolean> {
-    return this.store.removeParty(args.partyId).then(() => true)
+    return this.store.removeParty(args).then(() => true)
   }
 
   /** {@inheritDoc IConnectionManager.cmGetConnection} */
   private async cmGetConnection(args: IGetConnectionArgs, context: IRequiredContext): Promise<IConnection> {
-    return this.store.getConnection(args.connectionId)
+    return this.store.getConnection(args)
   }
 
   /** {@inheritDoc IConnectionManager.cmGetConnections} */
   private async cmGetConnections(args: IGetConnectionsArgs, context: IRequiredContext): Promise<Array<IConnection>> {
-    return this.store.getConnections(args.partyId)
+    return this.store.getConnections(args)
   }
 
   /** {@inheritDoc IConnectionManager.cmAddConnection} */
   private async cmAddConnection(args: IAddConnectionArgs, context: IRequiredContext): Promise<IConnection> {
-    return this.store.addConnection(args.partyId, args.connection)
+    return this.store.addConnection(args)
   }
 
   /** {@inheritDoc IConnectionManager.cmUpdateConnection} */
   private async cmUpdateConnection(args: IUpdateConnectionArgs, context: IRequiredContext): Promise<IConnection> {
-    return this.store.updateConnection(args.connection)
+    return this.store.updateConnection(args)
   }
 
   /** {@inheritDoc IConnectionManager.cmRemoveConnection} */
   private async cmRemoveConnection(args: IRemoveConnectionArgs, context: IRequiredContext): Promise<boolean> {
-    return this.store.removeConnection(args.connectionId).then(() => true)
+    return this.store.removeConnection(args).then(() => true)
   }
 }

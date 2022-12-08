@@ -4,6 +4,11 @@ export enum BaseConfigType {
   DIDAUTH = 'DidAuthConfig',
 }
 
+export enum ConnectionRoleEnum {
+  ISSUER = 'issuer',
+  VERIFIER = 'verifier'
+}
+
 export interface IConnectionParty {
   id: string
   name: string
@@ -78,3 +83,9 @@ export declare type BasicDidAuthConfig = Omit<IDidAuthConfig, 'id'>
 
 export declare type ConnectionConfig = IOpenIdConfig | IDidAuthConfig
 export declare type BasicConnectionConfig = BasicDidAuthConfig | BasicOpenIdConfig
+
+export interface IPartyEntityFromArgs {
+  name: string
+  alias: string
+  uri: string
+}

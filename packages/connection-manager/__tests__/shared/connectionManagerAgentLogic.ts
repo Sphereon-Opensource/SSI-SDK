@@ -48,7 +48,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await testContext.setup()
       agent = testContext.getAgent()
 
-      defaultParty = await agent.cmAddParty({ name: 'default_party' })
+      const party = {
+        name: 'default_party',
+        alias: 'default_party_alias',
+        uri: 'example.com'
+      }
+
+      defaultParty = await agent.cmAddParty(party)
       defaultPartyConnection = await agent.cmAddConnection({ partyId: defaultParty.id!, connection })
       defaultParty = await agent.cmGetParty({ partyId: defaultParty.id! })
 
@@ -76,17 +82,30 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should add party', async () => {
-      const partyName = 'new_party'
+      const party = {
+        name: 'new_party',
+        alias: 'new_party_alias',
+        uri: 'example.com'
+      }
 
-      const result = await agent.cmAddParty({ name: partyName })
+      const result = await agent.cmAddParty(party)
 
-      expect(result.name).toEqual(partyName)
+      expect(result.name).toEqual(party.name)
+      expect(result.alias).toEqual(party.alias)
+      expect(result.uri).toEqual(party.uri)
     })
 
     it('should throw error when adding party with duplicate name', async () => {
+      const party = {
+        name: 'default_party',
+        alias: 'default_party_alias',
+        uri: 'example.com'
+      }
       const partyName = 'default_party'
-      await expect(agent.cmAddParty({ name: 'default_party' })).rejects.toThrow(`Duplicate names are not allowed. Name: ${partyName}`)
+      await expect(agent.cmAddParty(party)).rejects.toThrow(`Duplicate names are not allowed. Name: ${partyName}`)
     })
+
+    // TODO duplicate alias
 
     it('should update party by id', async () => {
       const partyName = 'updated_party'
@@ -111,7 +130,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should remove party by id and its relations', async () => {
-      const removeParty = await agent.cmAddParty({ name: 'remove_party' })
+      const party = {
+        name: 'remove_party',
+        alias: 'remove_party_alias',
+        uri: 'example.com'
+      }
+      const removeParty = await agent.cmAddParty(party)
       const removePartyConnection = await agent.cmAddConnection({ partyId: removeParty.id!, connection })
 
       const result = await agent.cmRemoveParty({ partyId: removeParty.id! })
@@ -212,10 +236,15 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       let parties = await agent.cmGetParties()
       const origSize = parties.length
 
-      const sphereonName = 'Sphereon'
-      const sphereon = parties.find((party: IConnectionParty) => party.name === sphereonName)
+      const party = {
+        name: 'Sphereon',
+        alias: 'Sphereon_alias',
+        uri: 'example.com'
+      }
+
+      const sphereon = parties.find((party: IConnectionParty) => party.name === party.name)
       if (!sphereon) {
-        await agent.cmAddParty({ name: sphereonName }).then(async (party: IConnectionParty) => {
+        await agent.cmAddParty(party).then(async (party: IConnectionParty) => {
           if (!party) {
             return
           }
