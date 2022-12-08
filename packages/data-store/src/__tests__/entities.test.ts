@@ -38,6 +38,8 @@ describe('Database entities test', () => {
   it('Should save party to database', async () => {
     const party = new PartyEntity()
     party.name = 'test_name'
+    party.alias = 'test_alias'
+    party.uri = 'example.com'
 
     await dbConnection.getRepository(PartyEntity).save(party)
 
@@ -51,10 +53,14 @@ describe('Database entities test', () => {
     const partyName = 'non_unique_name'
     const party = new PartyEntity()
     party.name = partyName
+    party.alias = 'unique_alias1'
+    party.uri = 'example.com'
     await dbConnection.getRepository(PartyEntity).save(party)
 
     const party2 = new PartyEntity()
     party2.name = partyName
+    party.alias = 'unique_alias1'
+    party.uri = 'example.com'
     await expect(dbConnection.getRepository(PartyEntity).save(party2)).rejects.toThrowError('SQLITE_CONSTRAINT: UNIQUE constraint failed: Party.name')
   })
 

@@ -30,6 +30,8 @@ describe('Database entities test', () => {
   it('Should save party to database', async () => {
     const party = new PartyEntity()
     party.name = 'test_name'
+    party.alias = 'test_alias'
+    party.uri = 'example.com'
 
     await dbConnection.getRepository(PartyEntity).save(party)
 
