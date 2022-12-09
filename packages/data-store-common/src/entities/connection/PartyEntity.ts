@@ -10,11 +10,11 @@ export class PartyEntity extends BaseEntity {
   @Column({ length: 255, nullable: false, unique: true })
   name!: string
 
-  @Column({ length: 255, nullable: true, unique: true })
+  @Column({ length: 255, nullable: false, unique: true })
   alias!: string
 
   @Column({ length: 255, nullable: true, unique: false })
-  uri!: string
+  uri?: string
 
   @OneToMany(() => ConnectionEntity, (connection: ConnectionEntity) => connection.party, { cascade: true })
   @JoinColumn()
