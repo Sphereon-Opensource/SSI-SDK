@@ -56,6 +56,21 @@ describe('Database entities test', () => {
     await expect(dbConnection.getRepository(PartyEntity).save(party2)).rejects.toThrowError('SQLITE_CONSTRAINT: UNIQUE constraint failed: Party.name')
   })
 
+  it('Should enforce unique alias for a party', async () => {
+    const partyAlias = 'non_unique_alias'
+    const party = new PartyEntity()
+    party.name = 'unique_name1'
+    party.alias = partyAlias
+    party.uri = 'example.com'
+    await dbConnection.getRepository(PartyEntity).save(party)
+
+    const party2 = new PartyEntity()
+    party2.name = 'unique_name2'
+    party2.alias = partyAlias
+    party2.uri = 'example.com'
+    await expect(dbConnection.getRepository(PartyEntity).save(party2)).rejects.toThrowError('SQLITE_CONSTRAINT: UNIQUE constraint failed: Party.alias')
+  })
+
   it('Should save connection with openid config to database', async () => {
     const correlationId = 'https://example.com'
     const connection = {

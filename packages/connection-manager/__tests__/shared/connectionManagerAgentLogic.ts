@@ -107,6 +107,18 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await expect(agent.cmAddParty(party)).rejects.toThrow(` Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
     })
 
+    it('should throw error when adding party with duplicate alias', async () => {
+      const name = 'default_new_party'
+      const alias = 'default_party_alias'
+      const party = {
+        name,
+        alias,
+        uri: 'example.com'
+      }
+
+      await expect(agent.cmAddParty(party)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
+    })
+
     it('should update party by id', async () => {
       const partyName = 'updated_party'
       const party = {
