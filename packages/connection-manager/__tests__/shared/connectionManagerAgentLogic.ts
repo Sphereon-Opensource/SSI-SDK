@@ -105,8 +105,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await expect(agent.cmAddParty(party)).rejects.toThrow(`Duplicate names are not allowed. Name: ${partyName}`)
     })
 
-    // TODO duplicate alias
-
     it('should update party by id', async () => {
       const partyName = 'updated_party'
       const party = {
