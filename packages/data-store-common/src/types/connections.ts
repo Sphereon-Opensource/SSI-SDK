@@ -87,5 +87,5 @@ export declare type BasicConnectionConfig = BasicDidAuthConfig | BasicOpenIdConf
 export interface IPartyEntityFromArgs {
   name: string
   alias: string
-  uri: string
+  uri?: string
 }
