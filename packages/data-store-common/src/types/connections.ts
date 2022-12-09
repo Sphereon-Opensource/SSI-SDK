@@ -13,7 +13,7 @@ export interface IConnectionParty {
   id: string
   name: string
   alias: string
-  uri: string
+  uri?: string
   connections: Array<IConnection>
 }
 export declare type BasicConnectionParty = Omit<IConnectionParty, 'id'>;

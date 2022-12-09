@@ -21,7 +21,7 @@ export interface IGetPartyArgs {
 export interface IAddPartyArgs {
   name: string
   alias: string
-  uri: string
+  uri?: string
 }
 
 export interface IUpdatePartyArgs {
