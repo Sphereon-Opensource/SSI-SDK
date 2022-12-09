@@ -95,15 +95,6 @@ export class ConnectionStore extends AbstractConnectionStore {
       return Promise.reject(Error(`No party found for id: ${party.id}`))
     }
 
-    const resultDuplicate = await (await this.dbConnection).getRepository(PartyEntity).findOne({
-      where: [{ name: party.name }, { alias: party.alias }],
-      relations: this.party_relations,
-    })
-
-    if (resultDuplicate) {
-      return Promise.reject(Error(`Duplicate names or aliases are not allowed. Name: ${party.name}, Alias: ${party.alias}`))
-    }
-
     debug('Updating party', party)
     const updatedResult = await (await this.dbConnection).getRepository(PartyEntity).save(party, { transaction: true })
 
