@@ -145,7 +145,7 @@ export class ConnectionStore extends AbstractConnectionStore {
       return Promise.reject(Error(`No party found for id: ${partyId}`))
     }
 
-    if (!this.hasCorrectConfig(connection.type, connection.config)) { // TODO fix
+    if (!this.hasCorrectConfig(connection.type, connection.config)) {
       return Promise.reject(Error(`Connection type ${connection.type}, does not match for provided config`))
     }
 
