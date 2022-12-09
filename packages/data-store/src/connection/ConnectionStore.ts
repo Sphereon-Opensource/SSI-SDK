@@ -70,12 +70,12 @@ export class ConnectionStore extends AbstractConnectionStore {
 
   addParty = async ({ name, alias, uri }: IAddPartyArgs): Promise<IConnectionParty> => {
     const result = await (await this.dbConnection).getRepository(PartyEntity).findOne({
-      where: { name },
+      where: [{ name }, { alias }],
       relations: this.party_relations,
     })
 
     if (result) {
-      return Promise.reject(Error(`Duplicate names are not allowed. Name: ${name}`))
+      return Promise.reject(Error(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`))
     }
 
     const partyEntity = partyEntityFrom({ name, alias, uri })
