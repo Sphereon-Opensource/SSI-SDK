@@ -18,7 +18,7 @@ import {
   BasicConnectionConfig,
   ConnectionTypeEnum,
   IBasicConnection,
-  IBasicConnectionMetadataItem,
+  BasicConnectionMetadataItem,
   IDidAuthConfig,
   IOpenIdConfig,
 } from '../../types/connections'
@@ -30,7 +30,7 @@ export class ConnectionEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum', { nullable: false, enum: ConnectionTypeEnum })
+  @Column('simple-enum', { nullable: false, enum: ConnectionTypeEnum})
   type!: ConnectionTypeEnum
 
   @OneToOne(() => ConnectionIdentifierEntity, { cascade: true })
@@ -62,7 +62,7 @@ export const connectionEntityFrom = (connection: IBasicConnection): ConnectionEn
   connectionEntity.type = connection.type
   connectionEntity.identifier = connectionIdentifierEntityFrom(connection.identifier)
   connectionEntity.config = configEntityFrom(connection.type, connection.config)
-  connectionEntity.metadata = connection.metadata ? connection.metadata.map((item: IBasicConnectionMetadataItem) => metadataItemEntityFrom(item)) : []
+  connectionEntity.metadata = connection.metadata ? connection.metadata.map((item: BasicConnectionMetadataItem) => metadataItemEntityFrom(item)) : []
 
   return connectionEntity
 }

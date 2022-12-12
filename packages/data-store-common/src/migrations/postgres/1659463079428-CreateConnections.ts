@@ -16,7 +16,7 @@ export class CreateConnections1659463079428 implements MigrationInterface {
       `CREATE TABLE "ConnectionMetadata" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "label" character varying(255) NOT NULL, "value" character varying(255) NOT NULL, "connectionId" uuid, CONSTRAINT "PK_ConnectionMetadata_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "Party" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying(255) NOT NULL, CONSTRAINT "UQ_Party_name" UNIQUE ("name"), CONSTRAINT "PK_Party_id" PRIMARY KEY ("id"))`
+      `CREATE TABLE "Party" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying(255) NOT NULL, "alias" character varying(255) NOT NULL, "uri" character varying(255), CONSTRAINT "UQ_Party_name" UNIQUE ("name"), CONSTRAINT "PK_Party_id" PRIMARY KEY ("id"), CONSTRAINT "UQ_Party_alias" UNIQUE ("alias"))`
     )
     await queryRunner.query(`CREATE TYPE "public"."Connection_type_enum" AS ENUM('openid', 'didauth', 'siopv2+oidc4vp')`)
     await queryRunner.query(

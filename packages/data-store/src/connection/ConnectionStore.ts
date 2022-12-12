@@ -1,9 +1,9 @@
 import Debug from 'debug'
 import { Connection } from 'typeorm'
 import { OrPromise } from '@veramo/utils'
-import { AbstractConnectionStore } from '@sphereon/ssi-sdk-connection-manager'
 import {
   BaseConfigEntity,
+  BasicConnectionConfig,
   ConnectionConfig,
   ConnectionEntity,
   connectionEntityFrom,
@@ -21,6 +21,18 @@ import {
   PartyEntity,
   partyEntityFrom,
 } from '@sphereon/ssi-sdk-data-store-common'
+import {
+  AbstractConnectionStore,
+  IAddConnectionArgs,
+  IAddPartyArgs,
+  IGetConnectionArgs,
+  IGetConnectionsArgs,
+  IGetPartyArgs,
+  IRemoveConnectionArgs,
+  IRemovePartyArgs,
+  IUpdateConnectionArgs,
+  IUpdatePartyArgs
+} from '@sphereon/ssi-sdk-connection-manager'
 
 const debug = Debug('sphereon:typeorm:connection-store')
 
@@ -35,7 +47,7 @@ export class ConnectionStore extends AbstractConnectionStore {
     this.dbConnection = dbConnection
   }
 
-  getParty = async (partyId: string): Promise<IConnectionParty> => {
+  getParty = async ({ partyId }: IGetPartyArgs): Promise<IConnectionParty> => {
     const result = await (await this.dbConnection).getRepository(PartyEntity).findOne({
       where: { id: partyId },
       relations: this.party_relations,
@@ -56,24 +68,24 @@ export class ConnectionStore extends AbstractConnectionStore {
     return result.map((party) => this.partyFrom(party))
   }
 
-  addParty = async (name: string): Promise<IConnectionParty> => {
+  addParty = async ({ name, alias, uri }: IAddPartyArgs): Promise<IConnectionParty> => {
     const result = await (await this.dbConnection).getRepository(PartyEntity).findOne({
-      where: { name },
+      where: [{ name }, { alias }],
       relations: this.party_relations,
     })
 
     if (result) {
-      return Promise.reject(Error(`Duplicate names are not allowed. Name: ${name}`))
+      return Promise.reject(Error(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`))
     }
 
-    const partyEntity = partyEntityFrom(name)
+    const partyEntity = partyEntityFrom({ name, alias, uri })
     debug('Adding party', name)
     const createdResult = await (await this.dbConnection).getRepository(PartyEntity).save(partyEntity)
 
     return this.partyFrom(createdResult)
   }
 
-  updateParty = async (party: IConnectionParty): Promise<IConnectionParty> => {
+  updateParty = async ({ party }: IUpdatePartyArgs): Promise<IConnectionParty> => {
     const result = await (await this.dbConnection).getRepository(PartyEntity).findOne({
       where: { id: party.id },
       relations: this.party_relations,
@@ -89,7 +101,7 @@ export class ConnectionStore extends AbstractConnectionStore {
     return this.partyFrom(updatedResult)
   }
 
-  removeParty = async (partyId: string): Promise<void> => {
+  removeParty = async ({ partyId }: IRemovePartyArgs): Promise<void> => {
     debug('Removing party', partyId)
     ;(await this.dbConnection)
       .getRepository(PartyEntity)
@@ -97,7 +109,7 @@ export class ConnectionStore extends AbstractConnectionStore {
       .catch((error) => Promise.reject(Error(`Unable to remove party with id: ${partyId}. ${error}`)))
   }
 
-  getConnection = async (connectionId: string): Promise<IConnection> => {
+  getConnection = async ({ connectionId }: IGetConnectionArgs): Promise<IConnection> => {
     const result = await (await this.dbConnection).getRepository(ConnectionEntity).findOne({
       where: { id: connectionId },
       relations: this.connection_relations,
@@ -110,7 +122,7 @@ export class ConnectionStore extends AbstractConnectionStore {
     return this.connectionFrom(result)
   }
 
-  getConnections = async (partyId: string): Promise<Array<IConnection>> => {
+  getConnections = async ({ partyId }: IGetConnectionsArgs): Promise<Array<IConnection>> => {
     const result = await (await this.dbConnection).getRepository(PartyEntity).findOne({
       where: { id: partyId },
       relations: this.party_relations,
@@ -123,7 +135,7 @@ export class ConnectionStore extends AbstractConnectionStore {
     return result.connections.map((connection) => this.connectionFrom(connection))
   }
 
-  addConnection = async (partyId: string, connection: IConnection): Promise<IConnection> => {
+  addConnection = async ({ connection, partyId }: IAddConnectionArgs): Promise<IConnection> => {
     const party = await (await this.dbConnection).getRepository(PartyEntity).findOne({
       where: { id: partyId },
       relations: this.party_relations,
@@ -147,7 +159,7 @@ export class ConnectionStore extends AbstractConnectionStore {
     return this.connectionFrom(result)
   }
 
-  updateConnection = async (connection: IConnection): Promise<IConnection> => {
+  updateConnection = async ({ connection }: IUpdateConnectionArgs): Promise<IConnection> => {
     const result = await (await this.dbConnection).getRepository(ConnectionEntity).findOne({
       where: { id: connection.id },
       relations: this.connection_relations,
@@ -167,7 +179,7 @@ export class ConnectionStore extends AbstractConnectionStore {
     return this.connectionFrom(updatedResult)
   }
 
-  removeConnection = async (connectionId: string): Promise<void> => {
+  removeConnection = async ({ connectionId }: IRemoveConnectionArgs): Promise<void> => {
     const connection = await (await this.dbConnection).getRepository(ConnectionEntity).findOne({
       where: { id: connectionId },
       relations: this.connection_relations,
@@ -188,6 +200,8 @@ export class ConnectionStore extends AbstractConnectionStore {
     return {
       id: party.id,
       name: party.name,
+      alias: party.alias,
+      uri: party.uri,
       connections: party.connections ? party.connections.map((connection: ConnectionEntity) => this.connectionFrom(connection)) : [],
     }
   }
@@ -230,7 +244,7 @@ export class ConnectionStore extends AbstractConnectionStore {
     }
   }
 
-  private hasCorrectConfig(type: ConnectionTypeEnum, config: ConnectionConfig): boolean {
+  private hasCorrectConfig(type: ConnectionTypeEnum, config: BasicConnectionConfig): boolean {
     switch (type) {
       case ConnectionTypeEnum.OPENID:
         return this.isOpenIdConfig(config)
@@ -241,10 +255,10 @@ export class ConnectionStore extends AbstractConnectionStore {
     }
   }
 
-  private isOpenIdConfig = (config: ConnectionConfig): config is IOpenIdConfig =>
+  private isOpenIdConfig = (config: BasicConnectionConfig): config is IOpenIdConfig =>
     'clientSecret' in config && 'issuer' in config && 'redirectUrl' in config
 
-  private isDidAuthConfig = (config: ConnectionConfig): config is IDidAuthConfig =>
+  private isDidAuthConfig = (config: BasicConnectionConfig): config is IDidAuthConfig =>
     'identifier' in config && 'redirectUrl' in config && 'sessionId' in config
 
   private metadataItemFrom = (item: MetadataItemEntity): IConnectionMetadataItem => {
