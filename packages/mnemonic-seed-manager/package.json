@@ -23,8 +23,9 @@
     "@veramo/data-store": "4.2.0",
     "@veramo/key-manager": "4.2.0",
     "@veramo/kms-local": "4.2.0",
+    "@veramo/utils": "4.2.0",
     "bip39": "^3.0.4",
-    "typeorm": "0.3.10"
+    "typeorm": "^0.3.10"
   },
   "devDependencies": {
     "@types/bip39": "^3.0.0",

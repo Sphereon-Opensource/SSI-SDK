@@ -6,7 +6,5 @@
     "esModuleInterop": true,
     "declarationDir": "dist"
   },
-  "references": [
-    { "path": "../ssi-sdk-core" }
-  ]
+  "references": [{ "path": "../ssi-sdk-core" }]
 }

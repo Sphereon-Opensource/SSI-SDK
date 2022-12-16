@@ -12,7 +12,7 @@
     "@sphereon/ssi-sdk-data-store-common": "^0.8.0",
     "@veramo/utils": "4.2.0",
     "debug": "^4.3.4",
-    "typeorm": "0.3.10"
+    "typeorm": "^0.3.10"
   },
   "devDependencies": {
     "@types/debug": "4.1.7",

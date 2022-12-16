@@ -52,6 +52,7 @@
     "@veramo/kms-local": "4.2.0"
   },
   "devDependencies": {
+    "@digitalcredentials/jsonld": "^5.2.1",
     "@microsoft/api-documenter": "^7.14.1",
     "@microsoft/api-extractor": "^7.19.4",
     "@microsoft/api-extractor-model": "^7.15.3",

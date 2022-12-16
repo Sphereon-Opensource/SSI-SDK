@@ -31,7 +31,7 @@ import {
   IRemoveConnectionArgs,
   IRemovePartyArgs,
   IUpdateConnectionArgs,
-  IUpdatePartyArgs
+  IUpdatePartyArgs,
 } from '@sphereon/ssi-sdk-connection-manager'
 
 const debug = Debug('sphereon:typeorm:connection-store')

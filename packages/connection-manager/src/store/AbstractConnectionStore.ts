@@ -8,7 +8,7 @@ import {
   IRemoveConnectionArgs,
   IRemovePartyArgs,
   IUpdateConnectionArgs,
-  IUpdatePartyArgs
+  IUpdatePartyArgs,
 } from '../types/IAbstractConnectionStore'
 
 export abstract class AbstractConnectionStore {
