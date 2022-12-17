@@ -1,4 +1,4 @@
-import * as MsAuthenticator from '@sphereon/ms-authenticator'
+import * as MsAuthenticator from '../../../ms-authenticator/src'
 import { fetchIssuanceRequestMs } from '../../src/IssuerUtil'
 import { IMsRequestApi, IIssueRequestResponse, IClientIssueRequest, IClientIssuanceConfig } from '../../src/types/IMsRequestApi'
 import { v4 as uuidv4 } from 'uuid'

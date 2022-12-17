@@ -6,7 +6,7 @@ import { SphereonBbsBlsSignature2020 } from '../../suites'
 import { MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { BlsKeyManager } from '@sphereon/ssi-sdk-bls-key-manager'
 import { BlsKeyManagementSystem } from '@sphereon/ssi-sdk-bls-kms-local'
-import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
+import { VerifiableCredentialSP, VerifiablePresentationSP } from '../../../../ssi-sdk-core/src'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { BlsKeyDidProvider, getDidKeyResolver } from '@sphereon/ssi-sdk-bls-did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
@@ -134,7 +134,7 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
     })
 
     it('Should verify a BBS+ verifiable credential', async () => {
-      await expect(agent.verifyCredentialLDLocal({ credential: verifiableCredential })).resolves.toEqual(true)
+      await expect(agent.verifyCredentialLDLocal({ credential: verifiableCredential, fetchRemoteContexts: false })).resolves.toEqual(true)
     })
 
     it('Should create a BBS+ verifiable presentation', async () => {

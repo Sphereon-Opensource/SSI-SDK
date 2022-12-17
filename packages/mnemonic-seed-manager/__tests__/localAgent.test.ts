@@ -10,16 +10,17 @@ import { KeyManager } from '@veramo/key-manager'
 import { IMnemonicSeedManager, MnemonicSeedManager, MnemonicSeedManagerEntities, MnemonicSeedManagerMigrations } from '../src'
 import { Entities, KeyStore, migrations, PrivateKeyStore } from '@veramo/data-store'
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
+import { OrPromise } from '@veramo/utils'
 
 jest.setTimeout(30000)
 
 const KMS_SECRET_KEY = 'd17c8674f5db9396f8eecccde25e882bb0336316bc411ae38dc1f3dcd7ed100f'
 let databaseFile = 'database.sqlite'
-let dbConnection: Promise<DataSource>
+let dbConnection: OrPromise<DataSource>
 let agent: any
 
 const setup = async (): Promise<boolean> => {
-  const db = new DataSource({
+  const db: OrPromise<DataSource> = new DataSource({
     type: 'sqlite',
     database: databaseFile,
     synchronize: false,

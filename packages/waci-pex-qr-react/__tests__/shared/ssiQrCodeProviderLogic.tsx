@@ -1,6 +1,10 @@
 import { TAgent } from '@veramo/core'
 import { AcceptMode, GoalCode, OobPayload, OobQRProps, QRType, WaciTypes } from '../../src'
-import { shallow } from 'enzyme'
+import { render, screen } from '@testing-library/react'
+// @ts-ignore
+import React from 'react'
+
+
 
 type ConfiguredAgent = TAgent<WaciTypes>
 
@@ -14,6 +18,7 @@ const oobQRProps: OobQRProps = {
     accept: [AcceptMode.SIOPV2_WITH_OIDC4VP],
   },
   onGenerate: (oobQRProps: OobQRProps, payload: OobPayload) => {
+    render(<div data-testid="test-div">{oobQRProps.from}</div>);
     console.log(payload)
   },
   bgColor: 'white',
@@ -37,16 +42,25 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should create qr code', async () => {
-      agent.createOobQrCode(oobQRProps).then((ssiQrCode) => {
+      await agent.createOobQrCode(oobQRProps).then((ssiQrCode) => {
         expect(ssiQrCode).not.toBeNull()
       })
     })
 
+
     it('should create qr code with props', async () => {
-      agent.createOobQrCode(oobQRProps).then((ssiQrCode) => {
-        expect(shallow(ssiQrCode).props().value).toEqual(
+
+      await agent.createOobQrCode(oobQRProps).then(async (ssiQrCode) => {
+        render(ssiQrCode);
+
+        // The on generate created a div with test id 'test' and did:key value
+        const div = screen.queryByTestId("test-div")
+        expect(div!.childNodes[0]!.textContent).toEqual('did:key:zrfdjkgfjgfdjk')
+
+        expect(ssiQrCode.props.value).toEqual(
           'https://example.com/?oob=eyJ0eXBlIjoic2lvcHYyIiwiaWQiOiI1OTlmMzYzOC1iNTYzLTQ5MzctOTQ4Ny1kZmU1NTA5OWQ5MDAiLCJmcm9tIjoiZGlkOmtleTp6cmZkamtnZmpnZmRqayIsImJvZHkiOnsiZ29hbC1jb2RlIjoic3RyZWFtbGluZWQtdnAiLCJhY2NlcHQiOlsic2lvcHYyK29pZGM0dnAiXX19'
         )
+        screen.debug()
       })
     })
   })

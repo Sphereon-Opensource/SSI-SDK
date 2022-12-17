@@ -51,7 +51,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const party = {
         name: 'default_party',
         alias: 'default_party_alias',
-        uri: 'example.com'
+        uri: 'example.com',
       }
 
       defaultParty = await agent.cmAddParty(party)
@@ -85,7 +85,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const party = {
         name: 'new_party',
         alias: 'new_party_alias',
-        uri: 'example.com'
+        uri: 'example.com',
       }
 
       const result = await agent.cmAddParty(party)
@@ -101,7 +101,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const party = {
         name,
         alias,
-        uri: 'example.com'
+        uri: 'example.com',
       }
 
       await expect(agent.cmAddParty(party)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
@@ -113,7 +113,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const party = {
         name,
         alias,
-        uri: 'example.com'
+        uri: 'example.com',
       }
 
       await expect(agent.cmAddParty(party)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
@@ -169,7 +169,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const party = {
         name: 'remove_party',
         alias: 'remove_party_alias',
-        uri: 'example.com'
+        uri: 'example.com',
       }
       const removeParty = await agent.cmAddParty(party)
       const removePartyConnection = await agent.cmAddConnection({ partyId: removeParty.id!, connection })
@@ -275,7 +275,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const args = {
         name: 'Sphereon',
         alias: 'Sphereon_alias',
-        uri: 'example.com'
+        uri: 'example.com',
       }
 
       const sphereon = parties.find((party: IConnectionParty) => party.name === args.name)

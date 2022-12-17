@@ -7,6 +7,7 @@ import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { KeyManagementSystem } from '@veramo/kms-local'
 import { Resolver } from 'did-resolver'
+// @ts-ignore
 import nock from 'nock'
 
 import { LtoDidProvider } from '../../../lto-did-provider/src/lto-did-provider'

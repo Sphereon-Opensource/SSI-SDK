@@ -6,10 +6,5 @@
     "esModuleInterop": true,
     "declarationDir": "dist"
   },
-  "references": [
-    { "path": "../ssi-sdk-core" },
-    { "path": "../bls-kms-local" },
-    { "path": "../bls-key-manager" },
-    { "path": "../bls-did-provider-key" }
-  ]
+  "references": [{ "path": "../ssi-sdk-core" }]
 }

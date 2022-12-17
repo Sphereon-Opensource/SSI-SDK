@@ -5,11 +5,12 @@ import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 import { getConfig } from '@veramo/cli/build/setup'
 import { IAgent } from '@veramo/core'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
+// @ts-ignore
 import express from 'express'
 
 import { LdDefaultContexts } from '../ld-default-contexts'
-import { SphereonEd25519Signature2018 } from '../suites/Ed25519Signature2018'
-import { SphereonEd25519Signature2020 } from '../suites/Ed25519Signature2020'
+import { SphereonEd25519Signature2018 } from '../suites'
+import { SphereonEd25519Signature2020 } from '../suites'
 
 import vcHandlerLocalAgentLogic from './shared/vcHandlerLocalAgentLogic'
 import { SphereonBbsBlsSignature2020 } from '../suites'

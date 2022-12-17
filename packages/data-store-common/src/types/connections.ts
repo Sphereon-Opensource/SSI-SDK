@@ -6,7 +6,7 @@ export enum BaseConfigType {
 
 export enum ConnectionRoleEnum {
   ISSUER = 'issuer',
-  VERIFIER = 'verifier'
+  VERIFIER = 'verifier',
 }
 
 export interface IConnectionParty {
@@ -16,7 +16,7 @@ export interface IConnectionParty {
   uri?: string
   connections: Array<IConnection>
 }
-export declare type BasicConnectionParty = Omit<IConnectionParty, 'id'>;
+export declare type BasicConnectionParty = Omit<IConnectionParty, 'id'>
 
 export enum ConnectionTypeEnum {
   OPENID = 'openid',
