@@ -9,8 +9,8 @@ import {
   SubjectIdentifierType,
   UrlEncodingFormat,
   VerificationMode,
-  VerifiedAuthenticationRequestWithJWT,
-} from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
+  VerifiedAuthorizationRequest,
+} from '@sphereon/did-auth-siop'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
 import { pdMultiple, pdSingle, vcs, vpMultiple, vpSingle } from './mockedData'
 
@@ -108,7 +108,7 @@ const authenticationVerificationMockedResult = {
   payload: {},
   verifyOpts: {},
 }
-const createAuthenticationResponseMockedResult = {
+const createAuthorizationResponseMockedResult = {
   didResolutionResult: {
     didResolutionMetadata: {},
     didDocument: {
@@ -158,21 +158,21 @@ export default (testContext: {
       const mockedMapIdentifierKeysToDocMethod = mapIdentifierKeysToDoc as jest.Mock
       mockedMapIdentifierKeysToDocMethod.mockReturnValue(Promise.resolve(authKeys))
 
-      const mockedParseAuthenticationRequestURIMethod = jest.fn()
-      OP.prototype.parseAuthenticationRequestURI = mockedParseAuthenticationRequestURIMethod
-      mockedParseAuthenticationRequestURIMethod.mockReturnValue(Promise.resolve(authenticationRequest))
+      const mockedparseAuthorizationRequestURIMethod = jest.fn()
+      OP.prototype.parseAuthorizationRequestURI = mockedparseAuthorizationRequestURIMethod
+      mockedparseAuthorizationRequestURIMethod.mockReturnValue(Promise.resolve(authenticationRequest))
 
-      const mockedVerifyAuthenticationRequestMethod = jest.fn()
-      OP.prototype.verifyAuthenticationRequest = mockedVerifyAuthenticationRequestMethod
-      mockedVerifyAuthenticationRequestMethod.mockReturnValue(Promise.resolve(authenticationVerificationMockedResult))
+      const mockedverifyAuthorizationRequestMethod = jest.fn()
+      OP.prototype.verifyAuthorizationRequest = mockedverifyAuthorizationRequestMethod
+      mockedverifyAuthorizationRequestMethod.mockReturnValue(Promise.resolve(authenticationVerificationMockedResult))
 
-      const mockedCreateAuthenticationResponse = jest.fn()
-      OP.prototype.createAuthenticationResponse = mockedCreateAuthenticationResponse
-      mockedCreateAuthenticationResponse.mockReturnValue(Promise.resolve(createAuthenticationResponseMockedResult))
+      const mockedcreateAuthorizationResponse = jest.fn()
+      OP.prototype.createAuthorizationResponse = mockedcreateAuthorizationResponse
+      mockedcreateAuthorizationResponse.mockReturnValue(Promise.resolve(createAuthorizationResponseMockedResult))
 
-      const mockSubmitAuthenticationResponseMethod = jest.fn()
-      OP.prototype.submitAuthenticationResponse = mockSubmitAuthenticationResponseMethod
-      mockSubmitAuthenticationResponseMethod.mockReturnValue(Promise.resolve({ status: 200, statusText: 'example_value' }))
+      const mocksubmitAuthorizationResponseMethod = jest.fn()
+      OP.prototype.submitAuthorizationResponse = mocksubmitAuthorizationResponseMethod
+      mocksubmitAuthorizationResponseMethod.mockReturnValue(Promise.resolve({ status: 200, statusText: 'example_value' }))
 
       await agent.registerSessionForSiop({
         sessionId,
@@ -213,7 +213,7 @@ export default (testContext: {
         await expect(
           agent.registerCustomApprovalForSiop({
             key: 'test_register',
-            customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise.resolve(),
+            customApproval: (verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => Promise.resolve(),
           })
         ).resolves.not.toThrow()
       })
@@ -221,7 +221,7 @@ export default (testContext: {
       it('should remove custom approval function', async () => {
         await agent.registerCustomApprovalForSiop({
           key: 'test_delete',
-          customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise.resolve(),
+          customApproval: (verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => Promise.resolve(),
         })
         const result = await agent.removeCustomApprovalForSiop({
           key: 'test_delete',
@@ -248,7 +248,7 @@ export default (testContext: {
         redirectUrl,
         customApproval: testContext.isRestTest
           ? 'success'
-          : (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
+          : (verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => {
               return Promise.resolve()
             },
       })
@@ -277,7 +277,7 @@ export default (testContext: {
           redirectUrl,
           customApproval: testContext.isRestTest
             ? 'failure'
-            : (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
+            : (verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => {
                 return Promise.reject(new Error(denied))
               },
         })
@@ -297,8 +297,8 @@ export default (testContext: {
     it('should get authentication details with single credential', async () => {
       const result = await agent.getSiopAuthenticationRequestDetails({
         sessionId,
-        verifiedAuthenticationRequest: {
-          ...createAuthenticationResponseMockedResult,
+        verifiedAuthorizationRequest: {
+          ...createAuthorizationResponseMockedResult,
           presentationDefinitions: pdSingle,
         },
         verifiableCredentials: vcs,
@@ -313,8 +313,8 @@ export default (testContext: {
     it('should get authentication details with multiple credentials', async () => {
       const result = await agent.getSiopAuthenticationRequestDetails({
         sessionId,
-        verifiedAuthenticationRequest: {
-          ...createAuthenticationResponseMockedResult,
+        verifiedAuthorizationRequest: {
+          ...createAuthorizationResponseMockedResult,
           presentationDefinitions: pdMultiple,
         },
         verifiableCredentials: vcs,
@@ -330,7 +330,7 @@ export default (testContext: {
     it('should verify authentication request URI with did methods supported provided', async () => {
       authenticationRequest.registration.did_methods_supported = [`did:${didMethod}:`]
 
-      const result = await agent.verifySiopAuthenticationRequestURI({
+      const result = await agent.verifySiopAuthorizationRequestURI({
         sessionId,
         requestURI: authenticationRequest,
       })
@@ -341,7 +341,7 @@ export default (testContext: {
     it('should verify authentication request URI without did methods supported provided', async () => {
       authenticationRequest.registration.did_methods_supported = []
 
-      const result = await agent.verifySiopAuthenticationRequestURI({
+      const result = await agent.verifySiopAuthorizationRequestURI({
         sessionId,
         requestURI: authenticationRequest,
       })
@@ -350,9 +350,9 @@ export default (testContext: {
     })
 
     it('should send authentication response', async () => {
-      const result = await agent.sendSiopAuthenticationResponse({
+      const result = await agent.sendSiopAuthorizationResponse({
         sessionId,
-        verifiedAuthenticationRequest: createAuthenticationResponseMockedResult,
+        verifiedAuthorizationRequest: createAuthorizationResponseMockedResult,
       })
 
       expect(result.status).toEqual(200)

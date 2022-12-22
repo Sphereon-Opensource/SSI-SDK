@@ -125,7 +125,7 @@ These custom approval functions can also be provided at agent creation.
 ```typescript
 await agent.registerCustomApprovalForSiop({
   key: 'example_key',
-  customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise.resolve(),
+  customApproval: (verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => Promise.resolve(),
 })
 ```
 
@@ -147,7 +147,7 @@ const authenticationResponse = await agent.authenticateWithSiop({
   sessionId,
   stateId,
   redirectUrl,
-  customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
+  customApproval: (verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => {
     return Promise.resolve()
   },
 })
@@ -161,7 +161,7 @@ For more detailed information see: [Self Issued OpenID Provider v2 (SIOP)](https
 const sessionId = 'example_session_id'
 const stateId = 'example_state_id'
 const redirectUrl = 'https://example.com'
-const createAuthenticationResponse = await agent.getSiopAuthenticationRequestFromRP({
+const createAuthorizationResponse = await agent.getSiopAuthenticationRequestFromRP({
   sessionId,
   stateId,
   redirectUrl,
@@ -176,7 +176,7 @@ For more detailed information see: [Self Issued OpenID Provider v2 (SIOP)](https
 const sessionId = 'example_session_id'
 const authenticationRequestDetailsResponse = await agent.getSiopAuthenticationRequestDetails({
   sessionId,
-  verifiedAuthenticationRequest: createAuthenticationResponse,
+  verifiedAuthenticationRequest: createAuthorizationResponse,
   verifiableCredentials: [credential],
 })
 ```
@@ -189,7 +189,7 @@ For more detailed information see: [Self Issued OpenID Provider v2 (SIOP)](https
 const sessionId = 'example_session_id'
 const verifiedAuthenticationResponse = await agent.verifySiopAuthenticationRequestURI({
   sessionId,
-  requestURI: createAuthenticationResponse,
+  requestURI: createAuthorizationResponse,
 })
 ```
 

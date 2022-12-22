@@ -1,4 +1,4 @@
-import { PresentationDefinitionWithLocation, PresentationLocation } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
+import { PresentationDefinitionWithLocation, PresentationDefinitionLocation } from '@sphereon/did-auth-siop'
 
 export const pdSingle: PresentationDefinitionWithLocation[] = [
   {
@@ -26,7 +26,7 @@ export const pdSingle: PresentationDefinitionWithLocation[] = [
         },
       ],
     },
-    location: PresentationLocation.ID_TOKEN,
+    location: PresentationDefinitionLocation.TOPLEVEL_PRESENTATION_DEF,
   },
 ]
 
@@ -59,7 +59,7 @@ export const pdMultiple: PresentationDefinitionWithLocation[] = [
         },
       ],
     },
-    location: PresentationLocation.ID_TOKEN,
+    location: PresentationDefinitionLocation.TOPLEVEL_PRESENTATION_DEF,
   },
 ]
 

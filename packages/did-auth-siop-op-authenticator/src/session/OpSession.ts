@@ -1,16 +1,30 @@
 import { DIDDocumentSection, IIdentifier, IKey, TKeyType } from '@veramo/core'
 import { _ExtendedIKey, mapIdentifierKeysToDoc } from '@veramo/utils'
-import { OP, PresentationExchange, SIOP } from '@sphereon/did-auth-siop'
+import {
+  OP,
+  PresentationExchange,
+  VerifiedAuthorizationRequest,
+  ParsedAuthorizationRequestURI,
+  VerifiablePresentationTypeFormat,
+  VerifiablePresentationWithLocation,
+  VerifyAuthorizationRequestOpts,
+  VerificationMode,
+  SigningAlgo,
+  PassBy,
+  Verification,
+  ResponseMode,
+  PresentationDefinitionWithLocation,
+} from '@sphereon/did-auth-siop'
 import { SubmissionRequirementMatch } from '@sphereon/pex'
-import { IVerifiableCredential, parseDid } from '@sphereon/ssi-types'
+import {IVerifiableCredential, IVerifiablePresentation, parseDid} from '@sphereon/ssi-types'
 import { SuppliedSigner } from '@sphereon/ssi-sdk-core'
 import {
   IOpSessionArgs,
   IOpsAuthenticateWithSiopArgs,
-  IOpsGetSiopAuthenticationRequestDetailsArgs,
-  IOpsGetSiopAuthenticationRequestFromRpArgs,
-  IOpsSendSiopAuthenticationResponseArgs,
-  IOpsVerifySiopAuthenticationRequestUriArgs,
+  IOpsGetSiopAuthorizationRequestDetailsArgs,
+  IOpsGetSiopAuthorizationRequestFromRpArgs,
+  IOpsSendSiopAuthorizationResponseArgs,
+  IOpsVerifySiopAuthorizationRequestUriArgs,
   IAuthRequestDetails,
   IMatchedPresentationDefinition,
   IRequiredContext,
@@ -47,7 +61,6 @@ export class OpSession {
       this.identifier,
       this.verificationMethodSection,
       parseDid(this.identifier.did).method,
-      this.resolver,
       this.providedDidResolvers,
       this.supportedDidMethods || [],
       this.expiresIn || 6000,
@@ -57,10 +70,10 @@ export class OpSession {
 
   public async authenticateWithSiop(args: IOpsAuthenticateWithSiopArgs): Promise<Response> {
     return this.getSiopAuthenticationRequestFromRP({ stateId: args.stateId, redirectUrl: args.redirectUrl })
-      .then((authenticationRequest: SIOP.ParsedAuthenticationRequestURI) =>
+      .then((authenticationRequest: ParsedAuthorizationRequestURI) =>
         this.verifySiopAuthenticationRequestURI({ requestURI: authenticationRequest })
       )
-      .then((verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT) => {
+      .then((verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => {
         if (args.customApproval !== undefined) {
           if (typeof args.customApproval === 'string') {
             if (args.customApprovals !== undefined && args.customApprovals[args.customApproval] !== undefined) {
@@ -81,35 +94,35 @@ export class OpSession {
       .catch((error: unknown) => Promise.reject(error))
   }
 
-  public async getSiopAuthenticationRequestFromRP(args: IOpsGetSiopAuthenticationRequestFromRpArgs): Promise<SIOP.ParsedAuthenticationRequestURI> {
+  public async getSiopAuthenticationRequestFromRP(args: IOpsGetSiopAuthorizationRequestFromRpArgs): Promise<ParsedAuthorizationRequestURI> {
     const url = args.stateId ? `${args.redirectUrl}?stateId=${args.stateId}` : args.redirectUrl
     return fetch(url)
       .then(async (response: Response) =>
-        response.status >= 400 ? Promise.reject(new Error(await response.text())) : this.op!.parseAuthenticationRequestURI(await response.text())
+        response.status >= 400 ? Promise.reject(new Error(await response.text())) : this.op!.parseAuthorizationRequestURI(await response.text())
       )
       .catch((error: unknown) => Promise.reject(error))
   }
 
-  public async getSiopAuthenticationRequestDetails(args: IOpsGetSiopAuthenticationRequestDetailsArgs): Promise<IAuthRequestDetails> {
+  public async getSiopAuthorizationRequestDetails(args: IOpsGetSiopAuthorizationRequestDetailsArgs): Promise<IAuthRequestDetails> {
     // TODO fix vc retrievement https://sphereon.atlassian.net/browse/MYC-142
-    const presentationDefs = args.verifiedAuthenticationRequest.presentationDefinitions
+    const presentationDefs = args.verifiedAuthorizationRequest.presentationDefinitions
     const verifiablePresentations =
       presentationDefs && presentationDefs.length > 0 ? await this.matchPresentationDefinitions(presentationDefs, args.verifiableCredentials) : []
-    const didResolutionResult = args.verifiedAuthenticationRequest.didResolutionResult
+    const didResolutionResult = args.verifiedAuthorizationRequest.didResolutionResult
 
     return {
       id: didResolutionResult.didDocument!.id,
       alsoKnownAs: didResolutionResult.didDocument!.alsoKnownAs,
-      vpResponseOpts: verifiablePresentations as SIOP.VerifiablePresentationResponseOpts[],
+      vpResponseOpts: verifiablePresentations as unknown as VerifiablePresentationWithLocation[],
     }
   }
 
   public async verifySiopAuthenticationRequestURI(
-    args: IOpsVerifySiopAuthenticationRequestUriArgs
-  ): Promise<SIOP.VerifiedAuthenticationRequestWithJWT> {
+    args: IOpsVerifySiopAuthorizationRequestUriArgs
+  ): Promise<VerifiedAuthorizationRequest> {
     // TODO fix supported dids structure https://sphereon.atlassian.net/browse/MYC-141
     const didMethodsSupported = args.requestURI.registration?.did_methods_supported as string[]
-    let didMethods: string[] = []
+    let didMethods: string[]
     if (didMethodsSupported && didMethodsSupported.length) {
       didMethods = didMethodsSupported.map((value: string) => value.split(':')[1])
     } else {
@@ -122,26 +135,34 @@ export class OpSession {
     }
 
     const resolveOpts = this.resolver ? { resolver: this.resolver } : { didMethods }
-    const options: SIOP.VerifyAuthenticationRequestOpts = {
+    const options: VerifyAuthorizationRequestOpts = {
       verification: {
-        mode: SIOP.VerificationMode.INTERNAL,
+        mode: VerificationMode.INTERNAL,
         resolveOpts,
       },
-      nonce: args.requestURI.requestPayload.nonce,
+      nonce: args.requestURI.authorizationRequestPayload.nonce,
     }
 
-    return this.op!.verifyAuthenticationRequest(args.requestURI.jwt, options).catch((error: string | undefined) => Promise.reject(new Error(error)))
+    return this.op!.verifyAuthorizationRequest(args.requestURI.requestObjectJwt!, options).catch((error: string | undefined) => Promise.reject(new Error(error)))
   }
 
-  public async sendSiopAuthenticationResponse(args: IOpsSendSiopAuthenticationResponseArgs): Promise<Response> {
-    const verification = {
-      mode: SIOP.VerificationMode.INTERNAL,
+  public async sendSiopAuthenticationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
+    const verification: Verification  = {
+      mode: VerificationMode.INTERNAL,
       resolveOpts: {
-        didMethods: [...this.supportedDidMethods, parseDid(this.identifier.did).method],
-      },
+        resolver: this.resolver
+      }
     }
-    return this.op!.createAuthenticationResponse(args.verifiedAuthenticationRequest, { vp: args.verifiablePresentationResponse, verification })
-      .then((authResponse) => this.op!.submitAuthenticationResponse(authResponse))
+
+    return this.op!.createAuthorizationResponse(
+        args.verifiedAuthenticationRequest,
+        {
+          verification,
+          presentationExchange: {
+            vps: args.verifiablePresentationResponse
+          }
+        })
+      .then((authResponse) => this.op!.submitAuthorizationResponse(authResponse))
       .then(async (response: Response) => {
         if (response.status >= 400) {
           return Promise.reject(new Error(`Error ${response.status}: ${response.statusText || (await response.text())}`))
@@ -153,38 +174,42 @@ export class OpSession {
   }
 
   private async matchPresentationDefinitions(
-    presentationDefs: SIOP.PresentationDefinitionWithLocation[],
+    presentationDefs: PresentationDefinitionWithLocation[],
     verifiableCredentials: IVerifiableCredential[]
   ): Promise<IMatchedPresentationDefinition[]> {
-    const presentationExchange = this.getPresentationExchange(verifiableCredentials)
     return await Promise.all(
-      presentationDefs.map(async (presentationDef: SIOP.PresentationDefinitionWithLocation) => {
-        const checked = await presentationExchange.selectVerifiableCredentialsForSubmission(presentationDef.definition)
-        if (checked.errors && checked.errors.length > 0) {
-          return Promise.reject(new Error(JSON.stringify(checked.errors)))
-        }
+      presentationDefs.map(this.mapper(verifiableCredentials))
+    )
+  }
 
-        const matches: SubmissionRequirementMatch[] | undefined = checked.matches
-        if (matches && matches.length == 0) {
-          return Promise.reject(new Error(JSON.stringify(checked.errors)))
-        }
+  private mapper(verifiableCredentials: IVerifiableCredential[]) {
+    return async (presentationDef: PresentationDefinitionWithLocation): Promise<IMatchedPresentationDefinition>  => {
+      const presentationExchange = this.getPresentationExchange(verifiableCredentials)
+      const checked = await presentationExchange.selectVerifiableCredentialsForSubmission(presentationDef.definition)
+      if (checked.errors && checked.errors.length > 0) {
+        return Promise.reject(new Error(JSON.stringify(checked.errors)))
+      }
 
-        const verifiablePresentation = await presentationExchange.submissionFrom(
+      const matches: SubmissionRequirementMatch[] | undefined = checked.matches
+      if (matches && matches.length == 0) {
+        return Promise.reject(new Error(JSON.stringify(checked.errors)))
+      }
+
+      const verifiablePresentation = await presentationExchange.submissionFrom(
           presentationDef.definition,
           checked.verifiableCredential as IVerifiableCredential[]
-        )
-        return {
+      )
+      return {
           location: presentationDef.location,
-          format: SIOP.VerifiablePresentationTypeFormat.LDP_VP,
-          presentation: verifiablePresentation,
+          format: VerifiablePresentationTypeFormat.LDP_VP,
+          presentation: verifiablePresentation as IVerifiablePresentation,
         }
-      })
-    )
+    };
   }
 
   private getPresentationExchange(verifiableCredentials: IVerifiableCredential[]): PresentationExchange {
     return new PresentationExchange({
-      did: this.op!.authResponseOpts.did,
+      did: this.op!.createResponseOptions.did,
       allVerifiableCredentials: verifiableCredentials,
     })
   }
@@ -208,12 +233,12 @@ export class OpSession {
     return identifierKey
   }
 
-  private getKeyAlgorithm(type: TKeyType): SIOP.KeyAlgo {
+  private getKeyAlgorithm(type: TKeyType): SigningAlgo {
     switch (type) {
       case 'Ed25519':
-        return SIOP.KeyAlgo.EDDSA
+        return SigningAlgo.EDDSA
       case 'Secp256k1':
-        return SIOP.KeyAlgo.ES256K
+        return SigningAlgo.ES256K
       default:
         throw Error('Key type not yet supported')
     }
@@ -223,7 +248,6 @@ export class OpSession {
     identifier: IIdentifier,
     verificationMethodSection: DIDDocumentSection | undefined,
     didMethod: string,
-    resolver: Resolvable | undefined,
     providedDidResolvers: PerDidResolver[],
     supportedDidMethods: string[],
     expiresIn: number,
@@ -239,15 +263,15 @@ export class OpSession {
       .withExpiresIn(expiresIn)
 
       .addDidMethod(didMethod)
-      .suppliedSignature(SuppliedSigner(keyRef, context, this.getKeyAlgorithm(keyRef.type)), identifier.did, identifier.controllerKeyId)
-      .registrationBy(SIOP.PassBy.VALUE)
-      .response(SIOP.ResponseMode.POST)
+      .suppliedSignature(SuppliedSigner(keyRef, context, this.getKeyAlgorithm(keyRef.type)), identifier.did, identifier.controllerKeyId, this.getKeyAlgorithm(keyRef.type))
+      .registration({
+        registrationBy: {
+          passBy: PassBy.VALUE
+        }
+      })
+      .response(ResponseMode.POST)
     if (supportedDidMethods && supportedDidMethods.length > 0) {
       supportedDidMethods.forEach((method) => builder.addDidMethod(method))
-    }
-    if (resolver) {
-      console.log(`Resolver supplied: ${JSON.stringify(resolver)}`)
-      builder.defaultResolver(resolver)
     }
     if (providedDidResolvers && providedDidResolvers.length > 0) {
       providedDidResolvers.forEach((providedResolver) => builder.addResolver(providedResolver.didMethod, providedResolver.resolver))

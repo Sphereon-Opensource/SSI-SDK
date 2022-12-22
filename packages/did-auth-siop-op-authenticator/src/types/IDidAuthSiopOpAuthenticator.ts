@@ -1,7 +1,8 @@
 import { DIDDocumentSection, IAgentContext, IIdentifier, IPluginMethodMap, IResolver, IKeyManager } from '@veramo/core'
-import { IVerifiableCredential, IVerifiablePresentation } from '@sphereon/ssi-types'
+import { IPresentation, IVerifiableCredential } from '@sphereon/ssi-types'
 import { OpSession } from '../session/OpSession'
-import { SIOP } from '@sphereon/did-auth-siop'
+import { ParsedAuthorizationRequestURI, VerifiedAuthorizationRequest, VerifiablePresentationWithLocation, PresentationDefinitionLocation, VerifiablePresentationTypeFormat } from '@sphereon/did-auth-siop'
+
 import { Resolvable } from 'did-resolver'
 
 export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
@@ -12,12 +13,12 @@ export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   getSiopAuthenticationRequestFromRP(
     args: IGetSiopAuthenticationRequestFromRpArgs,
     context: IRequiredContext
-  ): Promise<SIOP.ParsedAuthenticationRequestURI>
-  getSiopAuthenticationRequestDetails(args: IGetSiopAuthenticationRequestDetailsArgs, context: IRequiredContext): Promise<IAuthRequestDetails>
-  verifySiopAuthenticationRequestURI(
+  ): Promise<ParsedAuthorizationRequestURI>
+  getSiopAuthenticationRequestDetails(args: IGetSiopAuthorizationRequestDetailsArgs, context: IRequiredContext): Promise<IAuthRequestDetails>
+  verifySiopAuthorizationRequestURI(
     args: IVerifySiopAuthenticationRequestUriArgs,
     context: IRequiredContext
-  ): Promise<SIOP.VerifiedAuthenticationRequestWithJWT>
+  ): Promise<VerifiedAuthorizationRequest>
   sendSiopAuthenticationResponse(args: ISendSiopAuthenticationResponseArgs, context: IRequiredContext): Promise<IResponse>
   registerCustomApprovalForSiop(args: IRegisterCustomApprovalForSiopArgs, context: IRequiredContext): Promise<void>
   removeCustomApprovalForSiop(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean>
@@ -42,7 +43,7 @@ export interface IAuthenticateWithSiopArgs {
   sessionId: string
   stateId: string
   redirectUrl: string
-  customApproval?: ((verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT, sessionId: string) => Promise<void>) | string
+  customApproval?: ((verifiedAuthenticationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>) | string
 }
 
 export interface IGetSiopAuthenticationRequestFromRpArgs {
@@ -51,35 +52,35 @@ export interface IGetSiopAuthenticationRequestFromRpArgs {
   redirectUrl: string
 }
 
-export interface IGetSiopAuthenticationRequestDetailsArgs {
+export interface IGetSiopAuthorizationRequestDetailsArgs {
   sessionId: string
-  verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT
+  verifiedAuthorizationRequest: VerifiedAuthorizationRequest
   verifiableCredentials: IVerifiableCredential[]
 }
 
 export interface IVerifySiopAuthenticationRequestUriArgs {
   sessionId: string
-  requestURI: SIOP.ParsedAuthenticationRequestURI
+  requestURI: ParsedAuthorizationRequestURI
 }
 
 export interface ISendSiopAuthenticationResponseArgs {
   sessionId: string
-  verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT
-  verifiablePresentationResponse?: SIOP.VerifiablePresentationResponseOpts[]
+  verifiedAuthenticationRequest: VerifiedAuthorizationRequest
+  verifiablePresentationResponse?: VerifiablePresentationWithLocation[]
 }
 
 export interface IAuthRequestDetails {
   id: string
-  vpResponseOpts: SIOP.VerifiablePresentationResponseOpts[]
+  vpResponseOpts: VerifiablePresentationWithLocation[]
   alsoKnownAs?: string[]
 }
 
 export interface IResponse extends Response {}
 
 export interface IMatchedPresentationDefinition {
-  location: SIOP.PresentationLocation
-  format: SIOP.VerifiablePresentationTypeFormat
-  presentation: IVerifiablePresentation
+  location: PresentationDefinitionLocation
+  format: VerifiablePresentationTypeFormat
+  presentation: IPresentation
 }
 
 export interface IGetSiopSessionArgs {
@@ -101,7 +102,7 @@ export interface IRemoveSiopSessionArgs {
 
 export interface IRegisterCustomApprovalForSiopArgs {
   key: string
-  customApproval: (verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT, sessionId: string) => Promise<void>
+  customApproval: (verifiedAuthenticationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>
 }
 
 export interface IRemoveCustomApprovalForSiopArgs {
@@ -111,27 +112,27 @@ export interface IRemoveCustomApprovalForSiopArgs {
 export interface IOpsAuthenticateWithSiopArgs {
   stateId: string
   redirectUrl: string
-  customApprovals: Record<string, (verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT, sessionId: string) => Promise<void>>
-  customApproval?: ((verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT, sessionId: string) => Promise<void>) | string
+  customApprovals: Record<string, (verifiedAuthenticationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>
+  customApproval?: ((verifiedAuthenticationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>) | string
 }
 
-export interface IOpsGetSiopAuthenticationRequestFromRpArgs {
+export interface IOpsGetSiopAuthorizationRequestFromRpArgs {
   stateId?: string
   redirectUrl: string
 }
 
-export interface IOpsGetSiopAuthenticationRequestDetailsArgs {
-  verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT
+export interface IOpsGetSiopAuthorizationRequestDetailsArgs {
+  verifiedAuthorizationRequest: VerifiedAuthorizationRequest
   verifiableCredentials: IVerifiableCredential[]
 }
 
-export interface IOpsVerifySiopAuthenticationRequestUriArgs {
-  requestURI: SIOP.ParsedAuthenticationRequestURI
+export interface IOpsVerifySiopAuthorizationRequestUriArgs {
+  requestURI: ParsedAuthorizationRequestURI
 }
 
-export interface IOpsSendSiopAuthenticationResponseArgs {
-  verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT
-  verifiablePresentationResponse?: SIOP.VerifiablePresentationResponseOpts[]
+export interface IOpsSendSiopAuthorizationResponseArgs {
+  verifiedAuthenticationRequest: VerifiedAuthorizationRequest
+  verifiablePresentationResponse?: VerifiablePresentationWithLocation[]
 }
 
 export enum events {
