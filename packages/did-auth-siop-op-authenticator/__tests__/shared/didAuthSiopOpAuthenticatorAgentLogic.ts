@@ -141,6 +141,9 @@ const createAuthorizationResponseMockedResult: VerifiedAuthorizationRequest = {
       resolveOpts: {},
     },
   },
+  authorizationRequest: new AuthorizationRequest,
+  versions: [],
+  payload: undefined
 }
 
 export default (testContext: {
