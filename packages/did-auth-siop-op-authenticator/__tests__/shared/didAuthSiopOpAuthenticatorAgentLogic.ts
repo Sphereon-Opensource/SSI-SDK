@@ -10,6 +10,7 @@ import {
   UrlEncodingFormat,
   VerificationMode,
   VerifiedAuthorizationRequest,
+  ParsedAuthorizationRequestURI
 } from '@sphereon/did-auth-siop'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
 import { pdMultiple, pdSingle, vcs, vpMultiple, vpSingle } from './mockedData'
@@ -85,11 +86,12 @@ const registration = {
   subject_identifiers_supported: SubjectIdentifierType.DID,
   credential_formats_supported: [],
 }
-const authenticationRequest = {
+const authenticationRequest: ParsedAuthorizationRequestURI = {
   encodedUri: 'uri_example',
   encodingFormat: UrlEncodingFormat.FORM_URL_ENCODED,
-  jwt: 'ey...',
-  requestPayload: {
+  scheme: 'scheme2022122200',
+  requestObjectJwt: 'ey...',
+  authorizationRequestPayload: {
     response_type: ResponseType.ID_TOKEN,
     scope,
     client_id: did,
@@ -108,7 +110,8 @@ const authenticationVerificationMockedResult = {
   payload: {},
   verifyOpts: {},
 }
-const createAuthorizationResponseMockedResult = {
+
+const createAuthorizationResponseMockedResult: VerifiedAuthorizationRequest = {
   didResolutionResult: {
     didResolutionMetadata: {},
     didDocument: {
@@ -123,7 +126,7 @@ const createAuthorizationResponseMockedResult = {
     controller: did,
   },
   jwt: 'ey...',
-  payload: {
+  authorizationRequestPayload: {
     scope,
     response_type: ResponseType.ID_TOKEN,
     client_id: did,
