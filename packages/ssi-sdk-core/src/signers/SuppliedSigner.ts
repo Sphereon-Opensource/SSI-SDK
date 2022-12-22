@@ -1,4 +1,4 @@
-import { SigningAlgo } from '@Sphereon/did-auth-siop'
+import { SigningAlgo } from '@sphereon/did-auth-siop'
 import { IKey, IAgentContext, IKeyManager } from '@veramo/core'
 
 export function SuppliedSigner(keyRef: Pick<IKey, 'kid'>, context: IAgentContext<IKeyManager>, algorithm: SigningAlgo): Signer {
