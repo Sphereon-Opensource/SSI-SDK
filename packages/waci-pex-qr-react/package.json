@@ -25,7 +25,7 @@
     "@types/uuid": "^8.3.4",
     "@veramo/cli": "4.2.0",
     "react-dom": "^18.2.0",
-    "jsdom" :  "^20.0.3",
+    "jsdom": "^20.0.3",
     "global-jsdom": "^8.6.0",
     "jest-environment-jsdom": "^29.3.1",
     "@testing-library/react": "^13.4.0",

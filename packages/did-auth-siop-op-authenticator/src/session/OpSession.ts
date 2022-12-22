@@ -16,7 +16,7 @@ import {
   PresentationDefinitionWithLocation,
 } from '@sphereon/did-auth-siop'
 import { SubmissionRequirementMatch } from '@sphereon/pex'
-import {IVerifiableCredential, IVerifiablePresentation, parseDid} from '@sphereon/ssi-types'
+import { IVerifiableCredential, IVerifiablePresentation, parseDid } from '@sphereon/ssi-types'
 import { SuppliedSigner } from '@sphereon/ssi-sdk-core'
 import {
   IOpSessionArgs,
@@ -147,7 +147,7 @@ export class OpSession {
   }
 
   public async sendSiopAuthenticationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
-    const verification: Verification  = {
+    const verification: Verification = {
       mode: VerificationMode.INTERNAL,
       resolveOpts: {
         resolver: this.resolver

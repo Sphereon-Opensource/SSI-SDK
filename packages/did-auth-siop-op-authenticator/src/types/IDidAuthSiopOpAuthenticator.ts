@@ -1,7 +1,13 @@
 import { DIDDocumentSection, IAgentContext, IIdentifier, IPluginMethodMap, IResolver, IKeyManager } from '@veramo/core'
 import { IPresentation, IVerifiableCredential } from '@sphereon/ssi-types'
 import { OpSession } from '../session/OpSession'
-import { ParsedAuthorizationRequestURI, VerifiedAuthorizationRequest, VerifiablePresentationWithLocation, PresentationDefinitionLocation, VerifiablePresentationTypeFormat } from '@sphereon/did-auth-siop'
+import {
+  ParsedAuthorizationRequestURI,
+  VerifiedAuthorizationRequest,
+  VerifiablePresentationWithLocation,
+  PresentationDefinitionLocation,
+  VerifiablePresentationTypeFormat,
+} from '@sphereon/did-auth-siop'
 
 import { Resolvable } from 'did-resolver'
 

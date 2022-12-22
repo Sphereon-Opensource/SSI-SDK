@@ -54,7 +54,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         render(ssiQrCode);
 
         // The on generate created a div with test id 'test' and did:key value
-        const div = screen.queryByTestId("test-div")
+        const div = screen.queryByTestId('test-div')
         expect(div!.childNodes[0]!.textContent).toEqual('did:key:zrfdjkgfjgfdjk')
 
         expect(ssiQrCode.props.value).toEqual(
