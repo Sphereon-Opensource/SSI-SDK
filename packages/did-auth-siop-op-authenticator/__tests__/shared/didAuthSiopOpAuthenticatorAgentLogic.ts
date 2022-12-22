@@ -141,7 +141,7 @@ const createAuthorizationResponseMockedResult: VerifiedAuthorizationRequest = {
       resolveOpts: {},
     },
   },
-  authorizationRequest: new AuthorizationRequest,
+  authorizationRequest: null,
   versions: [],
   payload: undefined
 }
