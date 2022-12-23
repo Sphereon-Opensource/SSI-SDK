@@ -370,7 +370,16 @@ export default (testContext: {
     it('should send authentication response', async () => {
       const result = await agent.sendSiopAuthorizationResponse({
         sessionId,
-        verifiedAuthorizationRequest: createAuthorizationResponseMockedResult,
+        verifiedAuthorizationRequest: {
+          ...createAuthorizationResponseMockedResult,
+          presentationDefinitions: pdMultiple,
+          authorizationRequest: {} as AuthorizationRequest,
+          versions: [],
+          authorizationRequestPayload: {
+
+          },
+          payload: {}
+        },
       })
 
       expect(result.status).toEqual(200)
