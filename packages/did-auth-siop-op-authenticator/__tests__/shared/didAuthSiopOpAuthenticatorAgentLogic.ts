@@ -1,6 +1,6 @@
 import { TAgent } from '@veramo/core'
-import { OP } from '@sphereon/did-auth-siop'
-import { IDidAuthSiopOpAuthenticator } from '../../src'
+import { OP, AuthorizationRequest } from '@sphereon/did-auth-siop'
+import {IDidAuthSiopOpAuthenticator, IGetSiopAuthorizationRequestDetailsArgs} from '../../src'
 
 import {
   ResponseContext,
@@ -111,7 +111,7 @@ const authenticationVerificationMockedResult = {
   verifyOpts: {},
 }
 
-const createAuthorizationResponseMockedResult: VerifiedAuthorizationRequest = {
+const createAuthorizationResponseMockedResult = {
   didResolutionResult: {
     didResolutionMetadata: {},
     didDocument: {
@@ -140,10 +140,7 @@ const createAuthorizationResponseMockedResult: VerifiedAuthorizationRequest = {
       mode: VerificationMode.INTERNAL,
       resolveOpts: {},
     },
-  },
-  authorizationRequest: null,
-  versions: [],
-  payload: undefined
+  }
 }
 
 export default (testContext: {
@@ -301,14 +298,21 @@ export default (testContext: {
     })
 
     it('should get authentication details with single credential', async () => {
-      const result = await agent.getSiopAuthenticationRequestDetails({
+      let authorizationRequestArgs: IGetSiopAuthorizationRequestDetailsArgs = {
         sessionId,
         verifiedAuthorizationRequest: {
           ...createAuthorizationResponseMockedResult,
           presentationDefinitions: pdSingle,
+          authorizationRequest: {} as AuthorizationRequest,
+          versions: [],
+          authorizationRequestPayload: {
+
+          },
+          payload: {}
         },
         verifiableCredentials: vcs,
-      })
+      };
+      const result = await agent.getSiopAuthenticationRequestDetails(authorizationRequestArgs)
 
       expect(result).toEqual({
         id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
@@ -317,14 +321,22 @@ export default (testContext: {
     })
 
     it('should get authentication details with multiple credentials', async () => {
-      const result = await agent.getSiopAuthenticationRequestDetails({
+      let authorizationRequestArgs: IGetSiopAuthorizationRequestDetailsArgs = {
         sessionId,
         verifiedAuthorizationRequest: {
           ...createAuthorizationResponseMockedResult,
           presentationDefinitions: pdMultiple,
+          authorizationRequest: {} as AuthorizationRequest,
+          versions: [],
+          authorizationRequestPayload: {
+
+          },
+          payload: {}
         },
         verifiableCredentials: vcs,
-      })
+      };
+
+      const result = await agent.getSiopAuthenticationRequestDetails(authorizationRequestArgs)
 
       expect(result).toEqual({
         alsoKnownAs: undefined,
