@@ -3,6 +3,6 @@
  */
 const schema = require('../plugin.schema.json')
 export { schema }
-export { DidAuthSiopOpAuthenticator } from './agent/DidAuthSiopOpAuthenticator'
+export { DidAuthSiopOpAuthorizer } from './agent/DidAuthSiopOpAuthorizer'
 export { OpSession } from './session/OpSession'
-export * from './types/IDidAuthSiopOpAuthenticator'
+export * from './types/IDidAuthSiopOpAuthorizer'

@@ -1,5 +1,5 @@
 {
-  "IDidAuthSiopOpAuthenticator": {
+  "IDidAuthSiopOpAuthorizer": {
     "components": {
       "schemas": {
         "IGetSiopSessionArgs": {

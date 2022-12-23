@@ -1,6 +1,6 @@
 import { TAgent } from '@veramo/core'
 import { OP, AuthorizationRequest } from '@sphereon/did-auth-siop'
-import {IDidAuthSiopOpAuthenticator, IGetSiopAuthorizationRequestDetailsArgs} from '../../src'
+import {IDidAuthSiopOpAuthorizer, IGetSiopAuthorizationRequestDetailsArgs} from '../../src'
 
 import {
   ResponseContext,
@@ -21,7 +21,7 @@ jest.mock('@veramo/utils', () => ({
   mapIdentifierKeysToDoc: jest.fn(),
 }))
 
-type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator>
+type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthorizer>
 
 const didMethod = 'ethr'
 const did = 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a'
@@ -86,7 +86,7 @@ const registration = {
   subject_identifiers_supported: SubjectIdentifierType.DID,
   credential_formats_supported: [],
 }
-const authenticationRequest: ParsedAuthorizationRequestURI = {
+const authorizationRequest: ParsedAuthorizationRequestURI = {
   encodedUri: 'uri_example',
   encodingFormat: UrlEncodingFormat.FORM_URL_ENCODED,
   scheme: 'scheme2022122200',
@@ -106,7 +106,7 @@ const authenticationRequest: ParsedAuthorizationRequestURI = {
   },
   registration,
 }
-const authenticationVerificationMockedResult = {
+const authorizationVerificationMockedResult = {
   payload: {},
   verifyOpts: {},
 }
@@ -163,11 +163,11 @@ export default (testContext: {
 
       const mockedparseAuthorizationRequestURIMethod = jest.fn()
       OP.prototype.parseAuthorizationRequestURI = mockedparseAuthorizationRequestURIMethod
-      mockedparseAuthorizationRequestURIMethod.mockReturnValue(Promise.resolve(authenticationRequest))
+      mockedparseAuthorizationRequestURIMethod.mockReturnValue(Promise.resolve(authorizationRequest))
 
       const mockedverifyAuthorizationRequestMethod = jest.fn()
       OP.prototype.verifyAuthorizationRequest = mockedverifyAuthorizationRequestMethod
-      mockedverifyAuthorizationRequestMethod.mockReturnValue(Promise.resolve(authenticationVerificationMockedResult))
+      mockedverifyAuthorizationRequestMethod.mockReturnValue(Promise.resolve(authorizationVerificationMockedResult))
 
       const mockedcreateAuthorizationResponse = jest.fn()
       OP.prototype.createAuthorizationResponse = mockedcreateAuthorizationResponse
@@ -235,7 +235,7 @@ export default (testContext: {
     }
 
     it('should authenticate with DID SIOP without custom approval', async () => {
-      const result = await agent.authenticateWithSiop({
+      const result = await agent.authorizeWithSiop({
         sessionId,
         stateId,
         redirectUrl,
@@ -245,7 +245,7 @@ export default (testContext: {
     })
 
     it('should authenticate with DID SIOP with custom approval', async () => {
-      const result = await agent.authenticateWithSiop({
+      const result = await agent.authorizeWithSiop({
         sessionId,
         stateId,
         redirectUrl,
@@ -262,7 +262,7 @@ export default (testContext: {
     it('should not authenticate with DID SIOP with unknown custom approval key', async () => {
       const customApprovalKey = 'some_random_key'
       await expect(
-        agent.authenticateWithSiop({
+        agent.authorizeWithSiop({
           sessionId,
           stateId,
           redirectUrl,
@@ -274,7 +274,7 @@ export default (testContext: {
     it('should not authenticate with DID SIOP when custom approval fails', async () => {
       const denied = 'denied'
       await expect(
-        agent.authenticateWithSiop({
+        agent.authorizeWithSiop({
           sessionId,
           stateId,
           redirectUrl,
@@ -288,13 +288,13 @@ export default (testContext: {
     })
 
     it('should get authenticate request from RP', async () => {
-      const result = await agent.getSiopAuthenticationRequestFromRP({
+      const result = await agent.getSiopAuthorizationRequestFromRP({
         sessionId,
         stateId,
         redirectUrl,
       })
 
-      expect(result).toEqual(authenticationRequest)
+      expect(result).toEqual(authorizationRequest)
     })
 
     it('should get authentication details with single credential', async () => {
@@ -312,7 +312,7 @@ export default (testContext: {
         },
         verifiableCredentials: vcs,
       };
-      const result = await agent.getSiopAuthenticationRequestDetails(authorizationRequestArgs)
+      const result = await agent.getSiopAuthorizationRequestDetails(authorizationRequestArgs)
 
       expect(result).toEqual({
         id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
@@ -336,7 +336,7 @@ export default (testContext: {
         verifiableCredentials: vcs,
       };
 
-      const result = await agent.getSiopAuthenticationRequestDetails(authorizationRequestArgs)
+      const result = await agent.getSiopAuthorizationRequestDetails(authorizationRequestArgs)
 
       expect(result).toEqual({
         alsoKnownAs: undefined,
@@ -346,25 +346,25 @@ export default (testContext: {
     })
 
     it('should verify authentication request URI with did methods supported provided', async () => {
-      authenticationRequest.registration.did_methods_supported = [`did:${didMethod}:`]
+      authorizationRequest.registration.did_methods_supported = [`did:${didMethod}:`]
 
       const result = await agent.verifySiopAuthorizationRequestURI({
         sessionId,
-        requestURI: authenticationRequest,
+        requestURI: authorizationRequest,
       })
 
-      expect(result).toEqual(authenticationVerificationMockedResult)
+      expect(result).toEqual(authorizationVerificationMockedResult)
     })
 
     it('should verify authentication request URI without did methods supported provided', async () => {
-      authenticationRequest.registration.did_methods_supported = []
+      authorizationRequest.registration.did_methods_supported = []
 
       const result = await agent.verifySiopAuthorizationRequestURI({
         sessionId,
-        requestURI: authenticationRequest,
+        requestURI: authorizationRequest,
       })
 
-      expect(result).toEqual(authenticationVerificationMockedResult)
+      expect(result).toEqual(authorizationVerificationMockedResult)
     })
 
     it('should send authentication response', async () => {

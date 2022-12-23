@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
-      "IDidAuthSiopOpAuthenticator": "./src/types/IDidAuthSiopOpAuthenticator.ts"
+      "IDidAuthSiopOpAuthorizer": "./src/types/IDidAuthSiopOpAuthenticator.ts"
     }
   },
   "scripts": {
@@ -16,7 +16,7 @@
     "@sphereon/did-auth-siop": "0.3.0-unstable.1",
     "@sphereon/pex": "1.1.4",
     "@sphereon/ssi-sdk-core": "^0.8.0",
-    "@sphereon/ssi-types": "0.8.1-next.6",
+    "@sphereon/ssi-types": "^0.8.0",
     "@veramo/core": "4.2.0",
     "cross-fetch": "^3.1.5",
     "uuid": "^8.3.2"

@@ -20,7 +20,7 @@ import { IVerifiableCredential, IVerifiablePresentation, parseDid } from '@spher
 import { SuppliedSigner } from '@sphereon/ssi-sdk-core'
 import {
   IOpSessionArgs,
-  IOpsAuthenticateWithSiopArgs,
+  IOpsAuthorizeWithSiopArgs,
   IOpsGetSiopAuthorizationRequestDetailsArgs,
   IOpsGetSiopAuthorizationRequestFromRpArgs,
   IOpsSendSiopAuthorizationResponseArgs,
@@ -29,7 +29,7 @@ import {
   IMatchedPresentationDefinition,
   IRequiredContext,
   PerDidResolver,
-} from '../types/IDidAuthSiopOpAuthenticator'
+} from '../types/IDidAuthSiopOpAuthorizer'
 import { Resolvable } from 'did-resolver'
 
 const fetch = require('cross-fetch')
@@ -52,7 +52,7 @@ export class OpSession {
     this.providedDidResolvers = options.perDidResolvers || []
     this.supportedDidMethods = options.supportedDidMethods || []
     this.expiresIn = options.expiresIn
-    this.verificationMethodSection = options.verificationMethodSection /*|| 'authentication'*/
+    this.verificationMethodSection = options.verificationMethodSection
     this.context = options.context
   }
 
@@ -68,33 +68,33 @@ export class OpSession {
     )
   }
 
-  public async authenticateWithSiop(args: IOpsAuthenticateWithSiopArgs): Promise<Response> {
-    return this.getSiopAuthenticationRequestFromRP({ stateId: args.stateId, redirectUrl: args.redirectUrl })
-      .then((authenticationRequest: ParsedAuthorizationRequestURI) =>
-        this.verifySiopAuthenticationRequestURI({ requestURI: authenticationRequest })
+  public async authorizeWithSiop(args: IOpsAuthorizeWithSiopArgs): Promise<Response> {
+    return this.getSiopAuthorizationRequestFromRP({ stateId: args.stateId, redirectUrl: args.redirectUrl })
+      .then((authorizationRequest: ParsedAuthorizationRequestURI) =>
+        this.verifySiopAuthorizationRequestURI({ requestURI: authorizationRequest })
       )
-      .then((verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => {
+      .then((verifiedAuthorizationRequest: VerifiedAuthorizationRequest) => {
         if (args.customApproval !== undefined) {
           if (typeof args.customApproval === 'string') {
             if (args.customApprovals !== undefined && args.customApprovals[args.customApproval] !== undefined) {
-              return args.customApprovals[args.customApproval](verifiedAuthenticationRequest, this.id).then(() =>
-                this.sendSiopAuthenticationResponse({ verifiedAuthenticationRequest: verifiedAuthenticationRequest })
+              return args.customApprovals[args.customApproval](verifiedAuthorizationRequest, this.id).then(() =>
+                this.sendSiopAuthorizationResponse({ verifiedAuthorizationRequest: verifiedAuthorizationRequest })
               )
             }
             return Promise.reject(new Error(`Custom approval not found for key: ${args.customApproval}`))
           } else {
             return args
-              .customApproval(verifiedAuthenticationRequest, this.id)
-              .then(() => this.sendSiopAuthenticationResponse({ verifiedAuthenticationRequest: verifiedAuthenticationRequest }))
+              .customApproval(verifiedAuthorizationRequest, this.id)
+              .then(() => this.sendSiopAuthorizationResponse({ verifiedAuthorizationRequest: verifiedAuthorizationRequest }))
           }
         } else {
-          return this.sendSiopAuthenticationResponse({ verifiedAuthenticationRequest: verifiedAuthenticationRequest })
+          return this.sendSiopAuthorizationResponse({ verifiedAuthorizationRequest: verifiedAuthorizationRequest })
         }
       })
       .catch((error: unknown) => Promise.reject(error))
   }
 
-  public async getSiopAuthenticationRequestFromRP(args: IOpsGetSiopAuthorizationRequestFromRpArgs): Promise<ParsedAuthorizationRequestURI> {
+  public async getSiopAuthorizationRequestFromRP(args: IOpsGetSiopAuthorizationRequestFromRpArgs): Promise<ParsedAuthorizationRequestURI> {
     const url = args.stateId ? `${args.redirectUrl}?stateId=${args.stateId}` : args.redirectUrl
     return fetch(url)
       .then(async (response: Response) =>
@@ -117,7 +117,7 @@ export class OpSession {
     }
   }
 
-  public async verifySiopAuthenticationRequestURI(
+  public async verifySiopAuthorizationRequestURI(
     args: IOpsVerifySiopAuthorizationRequestUriArgs
   ): Promise<VerifiedAuthorizationRequest> {
     // TODO fix supported dids structure https://sphereon.atlassian.net/browse/MYC-141
@@ -146,7 +146,7 @@ export class OpSession {
     return this.op!.verifyAuthorizationRequest(args.requestURI.requestObjectJwt!, options).catch((error: string | undefined) => Promise.reject(new Error(error)))
   }
 
-  public async sendSiopAuthenticationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
+  public async sendSiopAuthorizationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
     const verification: Verification = {
       mode: VerificationMode.INTERNAL,
       resolveOpts: {
@@ -155,7 +155,7 @@ export class OpSession {
     }
 
     return this.op!.createAuthorizationResponse(
-        args.verifiedAuthenticationRequest,
+        args.verifiedAuthorizationRequest,
         {
           verification,
           presentationExchange: {

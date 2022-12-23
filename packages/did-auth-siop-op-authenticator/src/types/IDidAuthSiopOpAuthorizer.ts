@@ -11,21 +11,21 @@ import {
 
 import { Resolvable } from 'did-resolver'
 
-export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
+export interface IDidAuthSiopOpAuthorizer extends IPluginMethodMap {
   getSessionForSiop(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
   registerSessionForSiop(args: IRegisterSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
   removeSessionForSiop(args: IRemoveSiopSessionArgs, context: IRequiredContext): Promise<boolean>
-  authenticateWithSiop(args: IAuthenticateWithSiopArgs, context: IRequiredContext): Promise<IResponse>
-  getSiopAuthenticationRequestFromRP(
-    args: IGetSiopAuthenticationRequestFromRpArgs,
+  authorizeWithSiop(args: IAuthorizeWithSiopArgs, context: IRequiredContext): Promise<IResponse>
+  getSiopAuthorizationRequestFromRP(
+    args: IGetSiopAuthorizationRequestFromRpArgs,
     context: IRequiredContext
   ): Promise<ParsedAuthorizationRequestURI>
-  getSiopAuthenticationRequestDetails(args: IGetSiopAuthorizationRequestDetailsArgs, context: IRequiredContext): Promise<IAuthRequestDetails>
+  getSiopAuthorizationRequestDetails(args: IGetSiopAuthorizationRequestDetailsArgs, context: IRequiredContext): Promise<IAuthRequestDetails>
   verifySiopAuthorizationRequestURI(
-    args: IVerifySiopAuthenticationRequestUriArgs,
+    args: IVerifySiopAuthorizationRequestUriArgs,
     context: IRequiredContext
   ): Promise<VerifiedAuthorizationRequest>
-  sendSiopAuthenticationResponse(args: ISendSiopAuthenticationResponseArgs, context: IRequiredContext): Promise<IResponse>
+  sendSiopAuthorizationResponse(args: ISendSiopAuthorizationResponseArgs, context: IRequiredContext): Promise<IResponse>
   registerCustomApprovalForSiop(args: IRegisterCustomApprovalForSiopArgs, context: IRequiredContext): Promise<void>
   removeCustomApprovalForSiop(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean>
 }
@@ -45,14 +45,14 @@ export interface IOpSessionArgs {
   verificationMethodSection?: DIDDocumentSection
 }
 
-export interface IAuthenticateWithSiopArgs {
+export interface IAuthorizeWithSiopArgs {
   sessionId: string
   stateId: string
   redirectUrl: string
-  customApproval?: ((verifiedAuthenticationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>) | string
+  customApproval?: ((verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>) | string
 }
 
-export interface IGetSiopAuthenticationRequestFromRpArgs {
+export interface IGetSiopAuthorizationRequestFromRpArgs {
   sessionId: string
   stateId: string
   redirectUrl: string
@@ -64,14 +64,14 @@ export interface IGetSiopAuthorizationRequestDetailsArgs {
   verifiableCredentials: IVerifiableCredential[]
 }
 
-export interface IVerifySiopAuthenticationRequestUriArgs {
+export interface IVerifySiopAuthorizationRequestUriArgs {
   sessionId: string
   requestURI: ParsedAuthorizationRequestURI
 }
 
-export interface ISendSiopAuthenticationResponseArgs {
+export interface ISendSiopAuthorizationResponseArgs {
   sessionId: string
-  verifiedAuthenticationRequest: VerifiedAuthorizationRequest
+  verifiedAuthorizationRequest: VerifiedAuthorizationRequest
   verifiablePresentationResponse?: VerifiablePresentationWithLocation[]
 }
 
@@ -108,18 +108,18 @@ export interface IRemoveSiopSessionArgs {
 
 export interface IRegisterCustomApprovalForSiopArgs {
   key: string
-  customApproval: (verifiedAuthenticationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>
+  customApproval: (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>
 }
 
 export interface IRemoveCustomApprovalForSiopArgs {
   key: string
 }
 
-export interface IOpsAuthenticateWithSiopArgs {
+export interface IOpsAuthorizeWithSiopArgs {
   stateId: string
   redirectUrl: string
-  customApprovals: Record<string, (verifiedAuthenticationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>
-  customApproval?: ((verifiedAuthenticationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>) | string
+  customApprovals: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>
+  customApproval?: ((verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>) | string
 }
 
 export interface IOpsGetSiopAuthorizationRequestFromRpArgs {
@@ -137,12 +137,12 @@ export interface IOpsVerifySiopAuthorizationRequestUriArgs {
 }
 
 export interface IOpsSendSiopAuthorizationResponseArgs {
-  verifiedAuthenticationRequest: VerifiedAuthorizationRequest
+  verifiedAuthorizationRequest: VerifiedAuthorizationRequest
   verifiablePresentationResponse?: VerifiablePresentationWithLocation[]
 }
 
 export enum events {
-  DID_SIOP_AUTHENTICATED = 'didSiopAuthenticated',
+  DID_SIOP_AUTHORIZED = 'didSiopAuthorized',
 }
 
 export type IRequiredContext = IAgentContext<IResolver & IKeyManager>
