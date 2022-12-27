@@ -69,6 +69,14 @@ export class ConnectionStore extends AbstractConnectionStore {
   }
 
   addParty = async ({ name, alias, uri }: IAddPartyArgs): Promise<IConnectionParty> => {
+    if (!name || /^\s*$/.test(name)) {
+      return Promise.reject(Error('Blank names are not allowed'))
+    }
+
+    if (!alias || /^\s*$/.test(alias)) {
+      return Promise.reject(Error('Blank aliases are not allowed'))
+    }
+
     const result = await (await this.dbConnection).getRepository(PartyEntity).findOne({
       where: [{ name }, { alias }],
       relations: this.party_relations,
