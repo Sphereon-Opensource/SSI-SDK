@@ -14,6 +14,7 @@ import {
   Verification,
   ResponseMode,
   PresentationDefinitionWithLocation,
+  PresentationSignCallback
 } from '@sphereon/did-auth-siop'
 import { SubmissionRequirementMatch } from '@sphereon/pex'
 import { IVerifiableCredential, IVerifiablePresentation, parseDid } from '@sphereon/ssi-types'
@@ -107,7 +108,7 @@ export class OpSession {
     // TODO fix vc retrievement https://sphereon.atlassian.net/browse/MYC-142
     const presentationDefs = args.verifiedAuthorizationRequest.presentationDefinitions
     const verifiablePresentations =
-      presentationDefs && presentationDefs.length > 0 ? await this.matchPresentationDefinitions(presentationDefs, args.verifiableCredentials) : []
+      presentationDefs && presentationDefs.length > 0 ? await this.matchPresentationDefinitions(presentationDefs, args.verifiableCredentials, args.signingOptions, args.presentationSignCallback) : []
     const didResolutionResult = args.verifiedAuthorizationRequest.didResolutionResult
 
     return {
@@ -175,14 +176,24 @@ export class OpSession {
 
   private async matchPresentationDefinitions(
     presentationDefs: PresentationDefinitionWithLocation[],
-    verifiableCredentials: IVerifiableCredential[]
+    verifiableCredentials: IVerifiableCredential[],
+    options?: {
+      nonce?: string;
+      domain?: string;
+    },
+    presentationSignCallback?: PresentationSignCallback
   ): Promise<IMatchedPresentationDefinition[]> {
     return await Promise.all(
-      presentationDefs.map(this.mapper(verifiableCredentials))
+      presentationDefs.map(this.mapper(verifiableCredentials, options, presentationSignCallback))
     )
   }
 
-  private mapper(verifiableCredentials: IVerifiableCredential[]) {
+  private mapper(
+      verifiableCredentials: IVerifiableCredential[],
+      options?: {
+        nonce?: string;
+        domain?: string;
+      }, presentationSignCallback?: PresentationSignCallback) {
     return async (presentationDef: PresentationDefinitionWithLocation): Promise<IMatchedPresentationDefinition>  => {
       const presentationExchange = this.getPresentationExchange(verifiableCredentials)
       const checked = await presentationExchange.selectVerifiableCredentialsForSubmission(presentationDef.definition)
@@ -197,7 +208,9 @@ export class OpSession {
 
       const verifiablePresentation = await presentationExchange.submissionFrom(
           presentationDef.definition,
-          checked.verifiableCredential as IVerifiableCredential[]
+          checked.verifiableCredential as IVerifiableCredential[],
+          options,
+          presentationSignCallback
       )
       return {
           location: presentationDef.location,

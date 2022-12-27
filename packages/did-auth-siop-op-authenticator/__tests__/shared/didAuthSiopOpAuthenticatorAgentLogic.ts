@@ -10,10 +10,12 @@ import {
   UrlEncodingFormat,
   VerificationMode,
   VerifiedAuthorizationRequest,
-  ParsedAuthorizationRequestURI
+  ParsedAuthorizationRequestURI,
 } from '@sphereon/did-auth-siop'
+import { PresentationSignCallBackParams } from '@sphereon/pex'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
 import { pdMultiple, pdSingle, vcs, vpMultiple, vpSingle } from './mockedData'
+import { W3CVerifiablePresentation } from "@sphereon/ssi-types";
 
 const nock = require('nock')
 jest.mock('@veramo/utils', () => ({
@@ -311,6 +313,11 @@ export default (testContext: {
           payload: {}
         },
         verifiableCredentials: vcs,
+        presentationSignCallback: async (args: PresentationSignCallBackParams) => {return 'vc 202212272109' as W3CVerifiablePresentation},
+        signingOptions: {
+          nonce: 'nonce202212272050',
+          domain: 'domain202212272051'
+        },
       };
       const result = await agent.getSiopAuthorizationRequestDetails(authorizationRequestArgs)
 
@@ -334,6 +341,11 @@ export default (testContext: {
           payload: {}
         },
         verifiableCredentials: vcs,
+        presentationSignCallback: async (args: PresentationSignCallBackParams) => {return 'vc 202212272109' as W3CVerifiablePresentation},
+        signingOptions: {
+          nonce: 'nonce202212272050',
+          domain: 'domain202212272051'
+        },
       };
 
       const result = await agent.getSiopAuthorizationRequestDetails(authorizationRequestArgs)

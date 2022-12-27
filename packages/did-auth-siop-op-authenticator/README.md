@@ -32,19 +32,19 @@ For this plugin a DID resolver is also required. A DID resolver can be added to 
 - removeSessionForSiop
 - registerCustomApprovalForSiop
 - removeCustomApprovalForSiop
-- authenticateWithSiop
-- getSiopAuthenticationRequestFromRP
-- getSiopAuthenticationRequestDetails
-- verifySiopAuthenticationRequestURI
-- sendSiopAuthenticationResponse
+- authorizeWithSiop
+- getSiopAuthorizationRequestFromRP
+- getSiopAuthorizationRequestDetails
+- verifySiopAuthorizationRequestURI
+- sendSiopAuthorizationResponse
 
 The following functions can also be used on the session object without the need of a session id first.
 
-- authenticateWithSiop
-- getSiopAuthenticationRequestFromRP
-- getSiopAuthenticationRequestDetails
-- verifySiopAuthenticationRequestURI
-- sendSiopAuthenticationResponse
+- authorizeWithSiop
+- getSiopAuthorizationRequestFromRP
+- getSiopAuthorizationRequestDetails
+- verifySiopAuthorizationRequestURI
+- sendSiopAuthorizationResponse
 
 ## Usage
 
@@ -57,9 +57,9 @@ import { getDidKeyResolver } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { getUniResolver } from '@sphereon/did-uni-client'
 
-const agent = createAgent<IDidAuthSiopOpAuthenticator & IResolver>({
+const agent = createAgent<IDidAuthSiopOpAuthorizer & IResolver>({
   plugins: [
-    new DidAuthSiopOpAuthenticator(),
+    new DidAuthSiopOpAuthorizer(),
     new DIDResolverPlugin({
       resolver: new Resolver({
         ...getDidKeyResolver(),
@@ -115,7 +115,7 @@ const opSession = await agent.removeSessionForSiop({
 })
 ```
 
-### Authenticate with DID auth SIOP:
+### Authorize with DID auth SIOP:
 
 It is possible to register custom approval functions as an extra confirmation before sending the authentication response.
 These functions can then be used as an optional parameter. It is also possible to directly provide a custom approval function.
@@ -125,7 +125,7 @@ These custom approval functions can also be provided at agent creation.
 ```typescript
 await agent.registerCustomApprovalForSiop({
   key: 'example_key',
-  customApproval: (verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => Promise.resolve(),
+  customApproval: (verifiedAuthorizationRequest: VerifiedAuthorizationRequest) => Promise.resolve(),
 })
 ```
 
@@ -134,7 +134,7 @@ const sessionId = 'example_session_id'
 const stateId = 'example_state_id'
 const redirectUrl = 'https://example.com'
 const customApprovalKey = 'example_key'
-const authenticationResponse = await agent.authenticateWithSiop({
+const authorizationResponse = await agent.authorizeWithSiop({
   sessionId,
   stateId,
   redirectUrl,
@@ -143,17 +143,17 @@ const authenticationResponse = await agent.authenticateWithSiop({
 ```
 
 ```typescript
-const authenticationResponse = await agent.authenticateWithSiop({
+const authorizationResponse = await agent.authorizeWithSiop({
   sessionId,
   stateId,
   redirectUrl,
-  customApproval: (verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => {
+  customApproval: (verifiedAuthorizationRequest: VerifiedAuthorizationRequest) => {
     return Promise.resolve()
   },
 })
 ```
 
-### Get authentication request from the relying party:
+### Get authorization request from the relying party:
 
 For more detailed information see: [Self Issued OpenID Provider v2 (SIOP)](https://github.com/Sphereon-Opensource/did-auth-siop#rp-creates-the-authentication-request)
 
@@ -161,47 +161,47 @@ For more detailed information see: [Self Issued OpenID Provider v2 (SIOP)](https
 const sessionId = 'example_session_id'
 const stateId = 'example_state_id'
 const redirectUrl = 'https://example.com'
-const createAuthorizationResponse = await agent.getSiopAuthenticationRequestFromRP({
+const authorizationRequest = await agent.getSiopAuthorizationRequestFromRP({
   sessionId,
   stateId,
   redirectUrl,
 })
 ```
 
-### Get authentication request details:
+### Get authorization request details:
 
 For more detailed information see: [Self Issued OpenID Provider v2 (SIOP)](https://github.com/Sphereon-Opensource/did-auth-siop#op-presentation-exchange)
 
 ```typescript
 const sessionId = 'example_session_id'
-const authenticationRequestDetailsResponse = await agent.getSiopAuthenticationRequestDetails({
+const authorizationRequestDetailsResponse = await agent.getSiopAuthorizationRequestDetails({
   sessionId,
-  verifiedAuthenticationRequest: createAuthorizationResponse,
+  verifiedAuthorizationRequest: createAuthorizationResponse,
   verifiableCredentials: [credential],
 })
 ```
 
-### Verify authentication request URI:
+### Verify authorization request URI:
 
 For more detailed information see: [Self Issued OpenID Provider v2 (SIOP)](https://github.com/Sphereon-Opensource/did-auth-siop#op-authentication-request-verification)
 
 ```typescript
 const sessionId = 'example_session_id'
-const verifiedAuthenticationResponse = await agent.verifySiopAuthenticationRequestURI({
+const verifiedAuthorizationResponse = await agent.verifySiopAuthorizationRequestURI({
   sessionId,
   requestURI: createAuthorizationResponse,
 })
 ```
 
-### Send authentication response:
+### Send authorization response:
 
 For more detailed information see: [Self Issued OpenID Provider v2 (SIOP)](https://github.com/Sphereon-Opensource/did-auth-siop#op-creates-the-authentication-response-using-the-verified-request)
 
 ```typescript
 const sessionId = 'example_session_id'
-const authenticationResponse = await agent.sendSiopAuthenticationResponse({
+const authorizationResponse = await agent.sendSiopAuthorizationResponse({
   sessionId,
-  verifiedAuthenticationRequest: verifiedAuthenticationResponse,
+  verifiedAuthorizationRequest: verifiedAuthorizationResponse,
 })
 ```
 

@@ -7,6 +7,7 @@ import {
   VerifiablePresentationWithLocation,
   PresentationDefinitionLocation,
   VerifiablePresentationTypeFormat,
+  PresentationSignCallback
 } from '@sphereon/did-auth-siop'
 
 import { Resolvable } from 'did-resolver'
@@ -61,7 +62,12 @@ export interface IGetSiopAuthorizationRequestFromRpArgs {
 export interface IGetSiopAuthorizationRequestDetailsArgs {
   sessionId: string
   verifiedAuthorizationRequest: VerifiedAuthorizationRequest
-  verifiableCredentials: IVerifiableCredential[]
+  verifiableCredentials: IVerifiableCredential[],
+  presentationSignCallback?: PresentationSignCallback,
+  signingOptions?: {
+    nonce?: string;
+    domain?: string;
+  }
 }
 
 export interface IVerifySiopAuthorizationRequestUriArgs {
@@ -129,7 +135,12 @@ export interface IOpsGetSiopAuthorizationRequestFromRpArgs {
 
 export interface IOpsGetSiopAuthorizationRequestDetailsArgs {
   verifiedAuthorizationRequest: VerifiedAuthorizationRequest
-  verifiableCredentials: IVerifiableCredential[]
+  verifiableCredentials: IVerifiableCredential[],
+  signingOptions?: {
+    nonce?: string;
+    domain?: string;
+  },
+  presentationSignCallback?: PresentationSignCallback
 }
 
 export interface IOpsVerifySiopAuthorizationRequestUriArgs {
