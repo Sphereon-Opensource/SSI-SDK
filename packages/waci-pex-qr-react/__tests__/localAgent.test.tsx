@@ -5,7 +5,6 @@
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 
-
 jest.setTimeout(30000)
 
 import ssiQrCodeProviderLogic from './shared/ssiQrCodeProviderLogic'

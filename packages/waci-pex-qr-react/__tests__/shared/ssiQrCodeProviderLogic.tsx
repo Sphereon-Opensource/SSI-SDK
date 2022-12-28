@@ -4,8 +4,6 @@ import { render, screen } from '@testing-library/react'
 // @ts-ignore
 import React from 'react'
 
-
-
 type ConfiguredAgent = TAgent<WaciTypes>
 
 const oobQRProps: OobQRProps = {
@@ -18,7 +16,7 @@ const oobQRProps: OobQRProps = {
     accept: [AcceptMode.SIOPV2_WITH_OIDC4VP],
   },
   onGenerate: (oobQRProps: OobQRProps, payload: OobPayload) => {
-    render(<div data-testid="test-div">{oobQRProps.from}</div>);
+    render(<div data-testid="test-div">{oobQRProps.from}</div>)
     console.log(payload)
   },
   bgColor: 'white',
@@ -47,11 +45,9 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       })
     })
 
-
     it('should create qr code with props', async () => {
-
       await agent.createOobQrCode(oobQRProps).then(async (ssiQrCode) => {
-        render(ssiQrCode);
+        render(ssiQrCode)
 
         // The on generate created a div with test id 'test' and did:key value
         const div = screen.queryByTestId('test-div')
