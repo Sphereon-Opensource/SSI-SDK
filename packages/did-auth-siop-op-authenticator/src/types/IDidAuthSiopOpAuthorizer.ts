@@ -63,7 +63,6 @@ export interface IGetSiopAuthorizationRequestDetailsArgs {
   sessionId: string
   verifiedAuthorizationRequest: VerifiedAuthorizationRequest
   verifiableCredentials: IVerifiableCredential[],
-  presentationSignCallback?: PresentationSignCallback,
   signingOptions?: {
     nonce?: string;
     domain?: string;

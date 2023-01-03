@@ -4,11 +4,13 @@ import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 jest.setTimeout(30000)
 
 import didAuthSiopOpAuthenticatorAgentLogic from './shared/didAuthSiopOpAuthenticatorAgentLogic'
+import { presentationSignCallback } from './shared/mockedData'
 
 let agent: any
 
 const setup = async (): Promise<boolean> => {
   const config = getConfig('packages/did-auth-siop-op-authenticator/agent.yml')
+  config.agent.$args[0].plugins[1].$args[0] = presentationSignCallback
   const { localAgent } = createObjects(config, { localAgent: '/agent' })
   agent = localAgent
 

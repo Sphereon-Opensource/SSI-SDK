@@ -104,3 +104,6 @@ agent:
       plugins:
         - $ref: /didResolver
         - $require: ./packages/did-auth-siop-op-authenticator/dist#DidAuthSiopOpAuthorizer
+          "$args":
+            - presentationSignCallback: {}
+

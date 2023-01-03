@@ -104,11 +104,11 @@ export class OpSession {
       .catch((error: unknown) => Promise.reject(error))
   }
 
-  public async getSiopAuthorizationRequestDetails(args: IOpsGetSiopAuthorizationRequestDetailsArgs): Promise<IAuthRequestDetails> {
+  public async getSiopAuthorizationRequestDetails(args: IOpsGetSiopAuthorizationRequestDetailsArgs, presentationSignCallback: PresentationSignCallback): Promise<IAuthRequestDetails> {
     // TODO fix vc retrievement https://sphereon.atlassian.net/browse/MYC-142
     const presentationDefs = args.verifiedAuthorizationRequest.presentationDefinitions
     const verifiablePresentations =
-      presentationDefs && presentationDefs.length > 0 ? await this.matchPresentationDefinitions(presentationDefs, args.verifiableCredentials, args.signingOptions, args.presentationSignCallback) : []
+      presentationDefs && presentationDefs.length > 0 ? await this.matchPresentationDefinitions(presentationDefs, args.verifiableCredentials, presentationSignCallback, args.signingOptions) : []
     const didResolutionResult = args.verifiedAuthorizationRequest.didResolutionResult
 
     return {
@@ -177,23 +177,26 @@ export class OpSession {
   private async matchPresentationDefinitions(
     presentationDefs: PresentationDefinitionWithLocation[],
     verifiableCredentials: IVerifiableCredential[],
+    presentationSignCallback: PresentationSignCallback,
     options?: {
+      presentationSignCallback?: PresentationSignCallback
       nonce?: string;
       domain?: string;
-    },
-    presentationSignCallback?: PresentationSignCallback
+    }
   ): Promise<IMatchedPresentationDefinition[]> {
     return await Promise.all(
-      presentationDefs.map(this.mapper(verifiableCredentials, options, presentationSignCallback))
+      presentationDefs.map(this.mapper(verifiableCredentials, presentationSignCallback, options))
     )
   }
 
   private mapper(
-      verifiableCredentials: IVerifiableCredential[],
-      options?: {
-        nonce?: string;
-        domain?: string;
-      }, presentationSignCallback?: PresentationSignCallback) {
+    verifiableCredentials: IVerifiableCredential[],
+    presentationSignCallback: PresentationSignCallback,
+    options?: {
+      nonce?: string;
+      domain?: string;
+    }
+  ) {
     return async (presentationDef: PresentationDefinitionWithLocation): Promise<IMatchedPresentationDefinition>  => {
       const presentationExchange = this.getPresentationExchange(verifiableCredentials)
       const checked = await presentationExchange.selectVerifiableCredentialsForSubmission(presentationDef.definition)

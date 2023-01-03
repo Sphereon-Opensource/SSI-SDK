@@ -12,6 +12,7 @@ import { getDidKeyResolver } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { getUniResolver } from '@sphereon/did-uni-client'
 import didAuthSiopOpAuthenticatorAgentLogic from './shared/didAuthSiopOpAuthenticatorAgentLogic'
+import { presentationSignCallback } from './shared/mockedData'
 
 jest.setTimeout(30000)
 
@@ -24,7 +25,7 @@ const getAgent = (options?: IAgentOptions) =>
   createAgent<IDidAuthSiopOpAuthorizer>({
     ...options,
     plugins: [
-      new DidAuthSiopOpAuthorizer(),
+      new DidAuthSiopOpAuthorizer(presentationSignCallback),
       new DIDResolverPlugin({
         resolver: new Resolver({
           ...getDidKeyResolver(),
@@ -42,6 +43,7 @@ const getAgent = (options?: IAgentOptions) =>
 
 const setup = async (): Promise<boolean> => {
   const config = getConfig('packages/did-auth-siop-op-authenticator/agent.yml')
+  config.agent.$args[0].plugins[1].$args[0] = presentationSignCallback
   const { agent } = createObjects(config, { agent: '/agent' })
   agent.registerCustomApprovalForSiop({ key: 'success', customApproval: () => Promise.resolve() })
   agent.registerCustomApprovalForSiop({ key: 'failure', customApproval: () => Promise.reject(new Error('denied')) })

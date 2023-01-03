@@ -19,7 +19,7 @@ import {
   ISendSiopAuthorizationResponseArgs,
   IVerifySiopAuthorizationRequestUriArgs,
 } from '../types/IDidAuthSiopOpAuthorizer'
-import { VerifiedAuthorizationRequest, ParsedAuthorizationRequestURI } from '@sphereon/did-auth-siop'
+import { VerifiedAuthorizationRequest, ParsedAuthorizationRequestURI, PresentationSignCallback } from '@sphereon/did-auth-siop'
 
 export class DidAuthSiopOpAuthorizer implements IAgentPlugin {
   readonly schema = schema.IDidAuthSiopOpAuthorizer
@@ -41,12 +41,15 @@ export class DidAuthSiopOpAuthorizer implements IAgentPlugin {
     string,
     (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>
   >
+  private readonly presentationSignCallback: PresentationSignCallback;
 
   constructor(
-    customApprovals?: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>
+      presentationSignCallback: PresentationSignCallback,
+      customApprovals?: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>,
   ) {
-    this.sessions = {}
-    this.customApprovals = customApprovals || {}
+    this.sessions = {};
+    this.customApprovals = customApprovals || {};
+    this.presentationSignCallback = presentationSignCallback;
   }
 
   private async getSessionForSiop(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession> {
@@ -116,7 +119,14 @@ export class DidAuthSiopOpAuthorizer implements IAgentPlugin {
     args: IGetSiopAuthorizationRequestDetailsArgs,
     context: IRequiredContext
   ): Promise<IAuthRequestDetails> {
-    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session) => session.getSiopAuthorizationRequestDetails(args))
+    return this.getSessionForSiop(
+        {
+          sessionId: args.sessionId
+        },
+        context
+    ).then(
+        (session) => session.getSiopAuthorizationRequestDetails(args, this.presentationSignCallback)
+    )
   }
 
   private async verifySiopAuthorizationRequestURI(
