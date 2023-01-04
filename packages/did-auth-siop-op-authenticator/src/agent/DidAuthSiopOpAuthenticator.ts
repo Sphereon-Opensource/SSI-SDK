@@ -102,7 +102,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   private async authenticateWithSiop(args: IAuthenticateWithSiopArgs, context: IRequiredContext): Promise<Response> {
     return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session) =>
       session.authenticateWithSiop({ ...args, customApprovals: this.customApprovals }).then(async (response: Response) => {
-        await context.agent.emit(events.DID_SIOP_AUTHORIZED, response)
+        await context.agent.emit(events.DID_SIOP_AUTHENTICATED, response)
         return response
       })
     )
@@ -139,7 +139,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   private async sendSiopAuthorizationResponse(args: ISendSiopAuthorizationResponseArgs, context: IRequiredContext): Promise<Response> {
     return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session) =>
       session.sendSiopAuthorizationResponse(args).then(async (response: Response) => {
-        await context.agent.emit(events.DID_SIOP_AUTHORIZED, response)
+        await context.agent.emit(events.DID_SIOP_AUTHENTICATED, response)
         return response
       })
     )

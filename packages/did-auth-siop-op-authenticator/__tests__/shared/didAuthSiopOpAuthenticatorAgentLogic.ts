@@ -305,9 +305,6 @@ export default (testContext: {
           presentationDefinitions: pdSingle,
           authorizationRequest: {} as AuthorizationRequest,
           versions: [],
-          authorizationRequestPayload: {
-
-          },
           payload: {}
         },
         verifiableCredentials: vcs,
@@ -332,9 +329,6 @@ export default (testContext: {
           presentationDefinitions: pdMultiple,
           authorizationRequest: {} as AuthorizationRequest,
           versions: [],
-          authorizationRequestPayload: {
-
-          },
           payload: {}
         },
         verifiableCredentials: vcs,

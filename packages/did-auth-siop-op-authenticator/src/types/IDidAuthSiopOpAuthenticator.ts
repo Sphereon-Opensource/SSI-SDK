@@ -5,7 +5,7 @@ import {
   ParsedAuthorizationRequestURI,
   VerifiedAuthorizationRequest,
   VerifiablePresentationWithLocation,
-  PresentationDefinitionLocation,
+  PresentationLocation,
   VerifiablePresentationTypeFormat,
   PresentationSignCallback
 } from '@sphereon/did-auth-siop'
@@ -89,7 +89,7 @@ export interface IAuthRequestDetails {
 export interface IResponse extends Response {}
 
 export interface IMatchedPresentationDefinition {
-  location: PresentationDefinitionLocation
+  location: PresentationLocation
   format: VerifiablePresentationTypeFormat
   presentation: IPresentation
 }
@@ -152,7 +152,7 @@ export interface IOpsSendSiopAuthorizationResponseArgs {
 }
 
 export enum events {
-  DID_SIOP_AUTHORIZED = 'didSiopAuthorized',
+  DID_SIOP_AUTHENTICATED = 'didSiopAuthenticated',
 }
 
 export type IRequiredContext = IAgentContext<IResolver & IKeyManager>

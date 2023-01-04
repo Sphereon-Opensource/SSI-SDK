@@ -1,7 +1,8 @@
 import {
   PresentationDefinitionWithLocation,
   PresentationDefinitionLocation,
-  PresentationSignCallback
+  PresentationSignCallback,
+  PresentationLocation
 } from '@sphereon/did-auth-siop'
 
 export const pdSingle: PresentationDefinitionWithLocation[] = [
@@ -119,7 +120,7 @@ export const vcs = [
 export const vpSingle = [
   {
     format: 'ldp_vp',
-    location: 'presentation_definition',
+    location: PresentationLocation.ID_TOKEN,
     presentation: {
       '@context': ['https://www.w3.org/2018/credentials/v1', 'https://identity.foundation/presentation-exchange/submission/v1'],
       presentation_submission: {
@@ -175,7 +176,7 @@ export const vpSingle = [
 export const vpMultiple = [
   {
     format: 'ldp_vp',
-    location: 'presentation_definition',
+    location: PresentationLocation.ID_TOKEN,
     presentation: {
       '@context': ['https://www.w3.org/2018/credentials/v1', 'https://identity.foundation/presentation-exchange/submission/v1'],
       presentation_submission: {

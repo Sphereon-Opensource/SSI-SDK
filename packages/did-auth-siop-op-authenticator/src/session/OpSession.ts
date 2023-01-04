@@ -2,36 +2,38 @@ import { DIDDocumentSection, IIdentifier, IKey, TKeyType } from '@veramo/core'
 import { _ExtendedIKey, mapIdentifierKeysToDoc } from '@veramo/utils'
 import {
   OP,
-  PresentationExchange,
-  VerifiedAuthorizationRequest,
   ParsedAuthorizationRequestURI,
+  PassBy,
+  PresentationDefinitionWithLocation,
+  PresentationExchange,
+  PresentationSignCallback,
+  ResponseMode,
   VerifiablePresentationTypeFormat,
   VerifiablePresentationWithLocation,
-  VerifyAuthorizationRequestOpts,
-  VerificationMode,
-  PassBy,
   Verification,
-  ResponseMode,
-  PresentationDefinitionWithLocation,
-  PresentationSignCallback
+  VerificationMode,
+  VerifiedAuthorizationRequest,
+  VerifyAuthorizationRequestOpts,
+  PresentationLocation,
+  SigningAlgo
 } from '@sphereon/did-auth-siop'
 import { SubmissionRequirementMatch } from '@sphereon/pex'
 import { IVerifiableCredential, IVerifiablePresentation, parseDid } from '@sphereon/ssi-types'
 import { SuppliedSigner } from '@sphereon/ssi-sdk-core'
 import {
-  IOpSessionArgs,
+  IAuthRequestDetails,
+  IMatchedPresentationDefinition,
   IOpsAuthenticateWithSiopArgs,
+  IOpSessionArgs,
   IOpsGetSiopAuthorizationRequestDetailsArgs,
   IOpsGetSiopAuthorizationRequestFromRpArgs,
   IOpsSendSiopAuthorizationResponseArgs,
   IOpsVerifySiopAuthorizationRequestUriArgs,
-  IAuthRequestDetails,
-  IMatchedPresentationDefinition,
   IRequiredContext,
   PerDidResolver,
 } from '../types/IDidAuthSiopOpAuthenticator'
 import { Resolvable } from 'did-resolver'
-import {KeyAlgo} from "@sphereon/ssi-sdk-core/dist/signers/SuppliedSigner";
+import { KeyAlgo } from "@sphereon/ssi-sdk-core";
 
 const fetch = require('cross-fetch')
 
@@ -107,14 +109,14 @@ export class OpSession {
   public async getSiopAuthorizationRequestDetails(args: IOpsGetSiopAuthorizationRequestDetailsArgs, presentationSignCallback: PresentationSignCallback): Promise<IAuthRequestDetails> {
     // TODO fix vc retrievement https://sphereon.atlassian.net/browse/MYC-142
     const presentationDefs = args.verifiedAuthorizationRequest.presentationDefinitions
-    const verifiablePresentations =
+    const matchedPresentationWithPresentationDefinition =
       presentationDefs && presentationDefs.length > 0 ? await this.matchPresentationDefinitions(presentationDefs, args.verifiableCredentials, presentationSignCallback, args.signingOptions) : []
     const didResolutionResult = args.verifiedAuthorizationRequest.didResolutionResult
 
     return {
       id: didResolutionResult.didDocument!.id,
       alsoKnownAs: didResolutionResult.didDocument!.alsoKnownAs,
-      vpResponseOpts: verifiablePresentations as unknown as VerifiablePresentationWithLocation[],
+      vpResponseOpts: matchedPresentationWithPresentationDefinition as unknown as VerifiablePresentationWithLocation[],
     }
   }
 
@@ -216,7 +218,7 @@ export class OpSession {
           presentationSignCallback
       )
       return {
-          location: presentationDef.location,
+          location: PresentationLocation.ID_TOKEN,
           format: VerifiablePresentationTypeFormat.LDP_VP,
           presentation: verifiablePresentation as IVerifiablePresentation,
         }
@@ -249,12 +251,12 @@ export class OpSession {
     return identifierKey
   }
 
-  private getKeyAlgorithm(type: TKeyType): KeyAlgo {
+  private getSigningAlgo(type: TKeyType): SigningAlgo {
     switch (type) {
       case 'Ed25519':
-        return KeyAlgo.EDDSA
+        return SigningAlgo.EDDSA
       case 'Secp256k1':
-        return KeyAlgo.ES256K
+        return SigningAlgo.ES256K
       default:
         throw Error('Key type not yet supported')
     }
@@ -279,7 +281,7 @@ export class OpSession {
       .withExpiresIn(expiresIn)
 
       .addDidMethod(didMethod)
-      .suppliedSignature(SuppliedSigner(keyRef, context, this.getKeyAlgorithm(keyRef.type)), identifier.did, identifier.controllerKeyId, this.getKeyAlgorithm(keyRef.type))
+      .suppliedSignature(SuppliedSigner(keyRef, context, this.getSigningAlgo(keyRef.type) as unknown as KeyAlgo), identifier.did, identifier.controllerKeyId, this.getSigningAlgo(keyRef.type))
       .registration({
         registrationBy: {
           passBy: PassBy.VALUE
