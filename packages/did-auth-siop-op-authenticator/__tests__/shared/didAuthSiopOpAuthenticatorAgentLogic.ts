@@ -162,10 +162,14 @@ export default (testContext: {
       await testContext.setup()
       agent = testContext.getAgent()
 
-      const idCardCredential: VerifiableCredential = getFileAsJson('./packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vc/vc_idCardCredential.json')
+      const idCardCredential: VerifiableCredential = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vc/vc_idCardCredential.json'
+      )
       await agent.dataStoreSaveVerifiableCredential({ verifiableCredential: idCardCredential })
 
-      const driverLicenseCredential: VerifiableCredential = getFileAsJson('./packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vc/vc_driverLicense.json')
+      const driverLicenseCredential: VerifiableCredential = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vc/vc_driverLicense.json'
+      )
       await agent.dataStoreSaveVerifiableCredential({ verifiableCredential: driverLicenseCredential })
 
       nock(redirectUrl).get(`?stateId=${stateId}`).times(5).reply(200, requestResultMockedText)
@@ -310,8 +314,12 @@ export default (testContext: {
     })
 
     it('should get authentication details with single credential', async () => {
-      const pd_single: PresentationDefinitionWithLocation = getFileAsJson('./packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_single.json')
-      const vp_single: SIOP.VerifiablePresentationResponseOpts = getFileAsJson('./packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_single.json')
+      const pd_single: PresentationDefinitionWithLocation = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_single.json'
+      )
+      const vp_single: SIOP.VerifiablePresentationResponseOpts = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_single.json'
+      )
       vp_single.presentation.presentation_submission!.id = expect.any(String)
 
       const result: IAuthRequestDetails = await agent.getSiopAuthenticationRequestDetails({
@@ -319,26 +327,30 @@ export default (testContext: {
         verifiedAuthenticationRequest: {
           ...createAuthenticationResponseMockedResult,
           presentationDefinitions: [pd_single],
-        }
+        },
       })
 
       expect(result).toEqual({
         id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
-        vpResponseOpts: [vp_single]
+        vpResponseOpts: [vp_single],
       })
     })
 
     it('should get authentication details with multiple credentials', async () => {
-      const pd_multiple: PresentationDefinitionWithLocation = getFileAsJson('./packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_multiple.json')
-      const vp_multiple: SIOP.VerifiablePresentationResponseOpts = getFileAsJson('./packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_multiple.json')
+      const pd_multiple: PresentationDefinitionWithLocation = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_multiple.json'
+      )
+      const vp_multiple: SIOP.VerifiablePresentationResponseOpts = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_multiple.json'
+      )
       vp_multiple.presentation.presentation_submission!.id = expect.any(String)
 
-      const result: IAuthRequestDetails  = await agent.getSiopAuthenticationRequestDetails({
+      const result: IAuthRequestDetails = await agent.getSiopAuthenticationRequestDetails({
         sessionId,
         verifiedAuthenticationRequest: {
           ...createAuthenticationResponseMockedResult,
           presentationDefinitions: [pd_multiple],
-        }
+        },
       })
 
       expect(result).toEqual({

@@ -1,4 +1,13 @@
-import { DIDDocumentSection, IAgentContext, IIdentifier, IPluginMethodMap, IResolver, IKeyManager, IDataStoreORM, FindCredentialsArgs } from '@veramo/core'
+import {
+  DIDDocumentSection,
+  IAgentContext,
+  IIdentifier,
+  IPluginMethodMap,
+  IResolver,
+  IKeyManager,
+  IDataStoreORM,
+  FindCredentialsArgs,
+} from '@veramo/core'
 import { IVerifiableCredential, IVerifiablePresentation } from '@sphereon/ssi-types'
 import { OpSession } from '../session/OpSession'
 import { SIOP } from '@sphereon/did-auth-siop'

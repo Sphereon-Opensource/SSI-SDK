@@ -1,23 +1,21 @@
 {
-  "definition":{
-    "id":"Credentials",
-    "input_descriptors":[
+  "definition": {
+    "id": "Credentials",
+    "input_descriptors": [
       {
-        "id":"ID Card Credential",
-        "schema":[
+        "id": "ID Card Credential",
+        "schema": [
           {
-            "uri":"https://www.w3.org/2018/credentials/examples/v1/IDCardCredential"
+            "uri": "https://www.w3.org/2018/credentials/examples/v1/IDCardCredential"
           }
         ],
-        "constraints":{
-          "fields":[
+        "constraints": {
+          "fields": [
             {
-              "path":[
-                "$.issuer.id"
-              ],
-              "filter":{
-                "type":"string",
-                "pattern":"did:example:issuer"
+              "path": ["$.issuer.id"],
+              "filter": {
+                "type": "string",
+                "pattern": "did:example:issuer"
               }
             }
           ]
@@ -25,5 +23,5 @@
       }
     ]
   },
-  "location":"id_token"
+  "location": "id_token"
 }

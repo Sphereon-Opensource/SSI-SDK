@@ -20,7 +20,7 @@ import {
   IVerifySiopAuthenticationRequestUriArgs,
 } from '../types/IDidAuthSiopOpAuthenticator'
 import { SIOP } from '@sphereon/did-auth-siop'
-import { CredentialMapper, IVerifiableCredential } from '@sphereon/ssi-types';
+import { CredentialMapper, IVerifiableCredential } from '@sphereon/ssi-types'
 
 /**
  * {@inheritDoc IDidAuthSiopOpAuthenticator}
@@ -120,7 +120,9 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     args: IGetSiopAuthenticationRequestFromRpArgs,
     context: IRequiredContext
   ): Promise<SIOP.ParsedAuthenticationRequestURI> {
-    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session: OpSession) => session.getSiopAuthenticationRequestFromRP(args))
+    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session: OpSession) =>
+      session.getSiopAuthenticationRequestFromRP(args)
+    )
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.getSiopAuthenticationRequestDetails} */
@@ -129,9 +131,13 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     context: IRequiredContext
   ): Promise<IAuthRequestDetails> {
     const uniqueVcs: Array<UniqueVerifiableCredential> = await context.agent.dataStoreORMGetVerifiableCredentials(args.credentialFilter)
-    const verifiableCredentials: Array<IVerifiableCredential> = uniqueVcs.map((uniqueVc: UniqueVerifiableCredential) => CredentialMapper.toExternalVerifiableCredential(uniqueVc.verifiableCredential))
+    const verifiableCredentials: Array<IVerifiableCredential> = uniqueVcs.map((uniqueVc: UniqueVerifiableCredential) =>
+      CredentialMapper.toExternalVerifiableCredential(uniqueVc.verifiableCredential)
+    )
 
-    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session: OpSession) => session.getSiopAuthenticationRequestDetails({ ...args, verifiableCredentials }))
+    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session: OpSession) =>
+      session.getSiopAuthenticationRequestDetails({ ...args, verifiableCredentials })
+    )
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.verifySiopAuthenticationRequestURI} */
@@ -139,7 +145,9 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     args: IVerifySiopAuthenticationRequestUriArgs,
     context: IRequiredContext
   ): Promise<SIOP.VerifiedAuthenticationRequestWithJWT> {
-    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session: OpSession) => session.verifySiopAuthenticationRequestURI(args))
+    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session: OpSession) =>
+      session.verifySiopAuthenticationRequestURI(args)
+    )
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.sendSiopAuthenticationResponse} */

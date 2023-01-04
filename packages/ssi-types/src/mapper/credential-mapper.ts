@@ -294,18 +294,17 @@ export class CredentialMapper {
     return {
       ...verifiableCredential,
       type: verifiableCredential.type
-          ? typeof verifiableCredential.type === 'string'
-              ? [verifiableCredential.type]
-              : verifiableCredential.type
-          : ['VerifiableCredential'],
+        ? typeof verifiableCredential.type === 'string'
+          ? [verifiableCredential.type]
+          : verifiableCredential.type
+        : ['VerifiableCredential'],
       proof: {
         ...verifiableCredential.proof,
         type: verifiableCredential.proof.type,
         created: verifiableCredential.proof.created,
         proofPurpose: verifiableCredential.proof.proofPurpose,
-        verificationMethod: verifiableCredential.proof.verificationMethod
-      }
+        verificationMethod: verifiableCredential.proof.verificationMethod,
+      },
     }
   }
-
 }
