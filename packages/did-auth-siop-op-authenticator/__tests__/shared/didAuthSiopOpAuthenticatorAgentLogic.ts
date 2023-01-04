@@ -1,6 +1,6 @@
 import { TAgent } from '@veramo/core'
 import { OP, AuthorizationRequest } from '@sphereon/did-auth-siop'
-import {IDidAuthSiopOpAuthorizer, IGetSiopAuthorizationRequestDetailsArgs} from '../../src'
+import {IDidAuthSiopOpAuthenticator, IGetSiopAuthorizationRequestDetailsArgs} from '../../src'
 
 import {
   ResponseContext,
@@ -21,7 +21,7 @@ jest.mock('@veramo/utils', () => ({
   mapIdentifierKeysToDoc: jest.fn(),
 }))
 
-type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthorizer>
+type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator>
 
 const didMethod = 'ethr'
 const did = 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a'
@@ -235,7 +235,7 @@ export default (testContext: {
     }
 
     it('should authenticate with DID SIOP without custom approval', async () => {
-      const result = await agent.authorizeWithSiop({
+      const result = await agent.authenticateWithSiop({
         sessionId,
         stateId,
         redirectUrl,
@@ -245,7 +245,7 @@ export default (testContext: {
     })
 
     it('should authenticate with DID SIOP with custom approval', async () => {
-      const result = await agent.authorizeWithSiop({
+      const result = await agent.authenticateWithSiop({
         sessionId,
         stateId,
         redirectUrl,
@@ -262,7 +262,7 @@ export default (testContext: {
     it('should not authenticate with DID SIOP with unknown custom approval key', async () => {
       const customApprovalKey = 'some_random_key'
       await expect(
-        agent.authorizeWithSiop({
+        agent.authenticateWithSiop({
           sessionId,
           stateId,
           redirectUrl,
@@ -274,7 +274,7 @@ export default (testContext: {
     it('should not authenticate with DID SIOP when custom approval fails', async () => {
       const denied = 'denied'
       await expect(
-        agent.authorizeWithSiop({
+        agent.authenticateWithSiop({
           sessionId,
           stateId,
           redirectUrl,

@@ -10,7 +10,7 @@
   "dependencies": {
     "typeorm": "^0.3.10",
     "@scure/base": "^1.1.1",
-    "@sphereon/did-auth-siop": "0.3.0-unstable.1",
+    "@sphereon/did-auth-siop": "0.3.0",
     "@sphereon/ssi-types": "^0.8.0",
     "@veramo/core": "4.2.0"
   },

@@ -32,7 +32,7 @@ For this plugin a DID resolver is also required. A DID resolver can be added to 
 - removeSessionForSiop
 - registerCustomApprovalForSiop
 - removeCustomApprovalForSiop
-- authorizeWithSiop
+- authenticateWithSiop
 - getSiopAuthorizationRequestFromRP
 - getSiopAuthorizationRequestDetails
 - verifySiopAuthorizationRequestURI
@@ -40,7 +40,7 @@ For this plugin a DID resolver is also required. A DID resolver can be added to 
 
 The following functions can also be used on the session object without the need of a session id first.
 
-- authorizeWithSiop
+- authenticateWithSiop
 - getSiopAuthorizationRequestFromRP
 - getSiopAuthorizationRequestDetails
 - verifySiopAuthorizationRequestURI
@@ -57,9 +57,9 @@ import { getDidKeyResolver } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { getUniResolver } from '@sphereon/did-uni-client'
 
-const agent = createAgent<IDidAuthSiopOpAuthorizer & IResolver>({
+const agent = createAgent<IDidAuthSiopOpAuthenticator & IResolver>({
   plugins: [
-    new DidAuthSiopOpAuthorizer(),
+    new DidAuthSiopOpAuthenticator(),
     new DIDResolverPlugin({
       resolver: new Resolver({
         ...getDidKeyResolver(),
@@ -115,7 +115,7 @@ const opSession = await agent.removeSessionForSiop({
 })
 ```
 
-### Authorize with DID auth SIOP:
+### Authenticate with DID auth SIOP:
 
 It is possible to register custom approval functions as an extra confirmation before sending the authentication response.
 These functions can then be used as an optional parameter. It is also possible to directly provide a custom approval function.
@@ -134,7 +134,7 @@ const sessionId = 'example_session_id'
 const stateId = 'example_state_id'
 const redirectUrl = 'https://example.com'
 const customApprovalKey = 'example_key'
-const authorizationResponse = await agent.authorizeWithSiop({
+const authenticationResponse = await agent.authenticateWithSiop({
   sessionId,
   stateId,
   redirectUrl,
@@ -143,7 +143,7 @@ const authorizationResponse = await agent.authorizeWithSiop({
 ```
 
 ```typescript
-const authorizationResponse = await agent.authorizeWithSiop({
+const authenticationResponse = await agent.authenticateWithSiop({
   sessionId,
   stateId,
   redirectUrl,

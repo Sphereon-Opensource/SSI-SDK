@@ -6,7 +6,7 @@ constants:
   # please use your own X25519 key, this is only an example
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
-    - authorizeWithSiop
+    - authenticateWithSiop
     - getSiopAuthorizationRequestFromRP
     - getSiopAuthorizationRequestDetails
     - verifySiopAuthorizationRequestURI
@@ -103,7 +103,7 @@ agent:
     - schemaValidation: false
       plugins:
         - $ref: /didResolver
-        - $require: ./packages/did-auth-siop-op-authenticator/dist#DidAuthSiopOpAuthorizer
+        - $require: ./packages/did-auth-siop-op-authenticator/dist#DidAuthSiopOpAuthenticator
           "$args":
             - presentationSignCallback: {}
 

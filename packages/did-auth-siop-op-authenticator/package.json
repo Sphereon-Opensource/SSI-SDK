@@ -6,17 +6,17 @@
   "types": "dist/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
-      "IDidAuthSiopOpAuthorizer": "./src/types/IDidAuthSiopOpAuthorizer.ts"
+      "IDidAuthSiopOpAuthenticator": "./src/types/IDidAuthSiopOpAuthenticator.ts"
     }
   },
   "scripts": {
     "build": "tsc --build"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.3.0-unstable.1",
+    "@sphereon/did-auth-siop": "0.3.0",
     "@sphereon/pex": "1.1.4",
     "@sphereon/ssi-sdk-core": "^0.8.0",
-    "@sphereon/ssi-types": "0.8.0",
+    "@sphereon/ssi-types": "^0.8.0",
     "@veramo/core": "4.2.0",
     "cross-fetch": "^3.1.5",
     "uuid": "^8.3.2"

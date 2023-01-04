@@ -6,7 +6,7 @@ import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import { DidAuthSiopOpAuthorizer, IDidAuthSiopOpAuthorizer } from '../src'
+import { DidAuthSiopOpAuthenticator, IDidAuthSiopOpAuthenticator } from '../src'
 import { Resolver } from 'did-resolver'
 import { getDidKeyResolver } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
@@ -22,10 +22,10 @@ let serverAgent: IAgent
 let restServer: Server
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IDidAuthSiopOpAuthorizer>({
+  createAgent<IDidAuthSiopOpAuthenticator>({
     ...options,
     plugins: [
-      new DidAuthSiopOpAuthorizer(presentationSignCallback),
+      new DidAuthSiopOpAuthenticator(presentationSignCallback),
       new DIDResolverPlugin({
         resolver: new Resolver({
           ...getDidKeyResolver(),

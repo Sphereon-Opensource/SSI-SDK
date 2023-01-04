@@ -12,11 +12,11 @@ import {
 
 import { Resolvable } from 'did-resolver'
 
-export interface IDidAuthSiopOpAuthorizer extends IPluginMethodMap {
+export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   getSessionForSiop(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
   registerSessionForSiop(args: IRegisterSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
   removeSessionForSiop(args: IRemoveSiopSessionArgs, context: IRequiredContext): Promise<boolean>
-  authorizeWithSiop(args: IAuthorizeWithSiopArgs, context: IRequiredContext): Promise<IResponse>
+  authenticateWithSiop(args: IAuthenticateWithSiopArgs, context: IRequiredContext): Promise<IResponse>
   getSiopAuthorizationRequestFromRP(
     args: IGetSiopAuthorizationRequestFromRpArgs,
     context: IRequiredContext
@@ -46,7 +46,7 @@ export interface IOpSessionArgs {
   verificationMethodSection?: DIDDocumentSection
 }
 
-export interface IAuthorizeWithSiopArgs {
+export interface IAuthenticateWithSiopArgs {
   sessionId: string
   stateId: string
   redirectUrl: string
@@ -120,7 +120,7 @@ export interface IRemoveCustomApprovalForSiopArgs {
   key: string
 }
 
-export interface IOpsAuthorizeWithSiopArgs {
+export interface IOpsAuthenticateWithSiopArgs {
   stateId: string
   redirectUrl: string
   customApprovals: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>

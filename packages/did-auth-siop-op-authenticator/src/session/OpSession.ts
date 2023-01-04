@@ -21,7 +21,7 @@ import { IVerifiableCredential, IVerifiablePresentation, parseDid } from '@spher
 import { SuppliedSigner } from '@sphereon/ssi-sdk-core'
 import {
   IOpSessionArgs,
-  IOpsAuthorizeWithSiopArgs,
+  IOpsAuthenticateWithSiopArgs,
   IOpsGetSiopAuthorizationRequestDetailsArgs,
   IOpsGetSiopAuthorizationRequestFromRpArgs,
   IOpsSendSiopAuthorizationResponseArgs,
@@ -30,7 +30,7 @@ import {
   IMatchedPresentationDefinition,
   IRequiredContext,
   PerDidResolver,
-} from '../types/IDidAuthSiopOpAuthorizer'
+} from '../types/IDidAuthSiopOpAuthenticator'
 import { Resolvable } from 'did-resolver'
 
 const fetch = require('cross-fetch')
@@ -69,7 +69,7 @@ export class OpSession {
     )
   }
 
-  public async authorizeWithSiop(args: IOpsAuthorizeWithSiopArgs): Promise<Response> {
+  public async authenticateWithSiop(args: IOpsAuthenticateWithSiopArgs): Promise<Response> {
     return this.getSiopAuthorizationRequestFromRP({ stateId: args.stateId, redirectUrl: args.redirectUrl })
       .then((authorizationRequest: ParsedAuthorizationRequestURI) =>
         this.verifySiopAuthorizationRequestURI({ requestURI: authorizationRequest })
