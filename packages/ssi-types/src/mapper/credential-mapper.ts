@@ -14,6 +14,7 @@ import {
 } from '../types'
 import jwt_decode from 'jwt-decode'
 import { ObjectUtils } from '../utils'
+import { VerifiableCredential } from '@veramo/core'
 
 export class CredentialMapper {
   static decodeVerifiablePresentation(presentation: OriginalVerifiablePresentation): JwtDecodedVerifiablePresentation | IVerifiablePresentation {
@@ -272,4 +273,39 @@ export class CredentialMapper {
     }
     return credential
   }
+
+  static toExternalVerifiableCredential(verifiableCredential: VerifiableCredential): IVerifiableCredential {
+    if (!verifiableCredential.proof.type) {
+      throw new Error('Verifiable credential proof is missing a type')
+    }
+
+    if (!verifiableCredential.proof.created) {
+      throw new Error('Verifiable credential proof is missing a created date')
+    }
+
+    if (!verifiableCredential.proof.proofPurpose) {
+      throw new Error('Verifiable credential proof is missing a proof purpose')
+    }
+
+    if (!verifiableCredential.proof.verificationMethod) {
+      throw new Error('Verifiable credential proof is missing a verification method')
+    }
+
+    return {
+      ...verifiableCredential,
+      type: verifiableCredential.type
+          ? typeof verifiableCredential.type === 'string'
+              ? [verifiableCredential.type]
+              : verifiableCredential.type
+          : ['VerifiableCredential'],
+      proof: {
+        ...verifiableCredential.proof,
+        type: verifiableCredential.proof.type,
+        created: verifiableCredential.proof.created,
+        proofPurpose: verifiableCredential.proof.proofPurpose,
+        verificationMethod: verifiableCredential.proof.verificationMethod
+      }
+    }
+  }
+
 }

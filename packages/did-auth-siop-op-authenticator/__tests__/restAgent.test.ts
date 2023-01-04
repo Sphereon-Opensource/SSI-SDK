@@ -1,6 +1,7 @@
 import 'cross-fetch/polyfill'
+// @ts-ignore
 import express from 'express'
-import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
+import { IAgent, createAgent, IAgentOptions, IDataStore } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
@@ -22,7 +23,7 @@ let serverAgent: IAgent
 let restServer: Server
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IDidAuthSiopOpAuthenticator>({
+  createAgent<IDidAuthSiopOpAuthenticator & IDataStore>({
     ...options,
     plugins: [
       new DidAuthSiopOpAuthenticator(),

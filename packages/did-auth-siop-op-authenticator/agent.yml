@@ -12,6 +12,20 @@ constants:
     - verifySiopAuthenticationRequestURI
     - sendSiopAuthenticationResponse
 
+# Database
+dbConnection:
+  $require: typeorm#DataSource
+  $args:
+    - type: sqlite
+      database: ':memory:'
+      synchronize: false
+      migrationsRun: true
+      migrations:
+        $require: '@veramo/data-store?t=object#migrations'
+      logging: false
+      entities:
+        $require: '@veramo/data-store?t=object#Entities'
+
 server:
   baseUrl:
     $ref: /constants/baseUrl
@@ -104,3 +118,9 @@ agent:
       plugins:
         - $ref: /didResolver
         - $require: ./packages/did-auth-siop-op-authenticator/dist#DidAuthSiopOpAuthenticator
+        - $require: '@veramo/data-store#DataStore'
+          $args:
+            - $ref: /dbConnection
+        - $require: '@veramo/data-store#DataStoreORM'
+          $args:
+            - $ref: /dbConnection

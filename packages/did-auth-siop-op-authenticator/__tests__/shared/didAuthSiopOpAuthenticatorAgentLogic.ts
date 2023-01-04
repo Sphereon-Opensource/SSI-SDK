@@ -1,8 +1,10 @@
-import { TAgent } from '@veramo/core'
-import { OP } from '@sphereon/did-auth-siop'
-import { IDidAuthSiopOpAuthenticator } from '../../src'
+import * as fs from 'fs'
+import { IDataStore, TAgent, VerifiableCredential } from '@veramo/core'
+import { OP, SIOP } from '@sphereon/did-auth-siop'
+import { IAuthRequestDetails, IDidAuthSiopOpAuthenticator } from '../../src'
 
 import {
+  PresentationDefinitionWithLocation,
   ResponseContext,
   ResponseMode,
   ResponseType,
@@ -12,7 +14,14 @@ import {
   VerifiedAuthenticationRequestWithJWT,
 } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
-import { pdMultiple, pdSingle, vcs, vpMultiple, vpSingle } from './mockedData'
+
+function getFile(path: string) {
+  return fs.readFileSync(path, 'utf-8')
+}
+
+function getFileAsJson(path: string) {
+  return JSON.parse(getFile(path))
+}
 
 const nock = require('nock')
 jest.mock('@veramo/utils', () => ({
@@ -20,7 +29,7 @@ jest.mock('@veramo/utils', () => ({
   mapIdentifierKeysToDoc: jest.fn(),
 }))
 
-type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator>
+type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator & IDataStore>
 
 const didMethod = 'ethr'
 const did = 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a'
@@ -152,6 +161,12 @@ export default (testContext: {
     beforeAll(async () => {
       await testContext.setup()
       agent = testContext.getAgent()
+
+      const idCardCredential: VerifiableCredential = getFileAsJson('./packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vc/vc_idCardCredential.json')
+      await agent.dataStoreSaveVerifiableCredential({ verifiableCredential: idCardCredential })
+
+      const driverLicenseCredential: VerifiableCredential = getFileAsJson('./packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vc/vc_driverLicense.json')
+      await agent.dataStoreSaveVerifiableCredential({ verifiableCredential: driverLicenseCredential })
 
       nock(redirectUrl).get(`?stateId=${stateId}`).times(5).reply(200, requestResultMockedText)
 
@@ -295,35 +310,41 @@ export default (testContext: {
     })
 
     it('should get authentication details with single credential', async () => {
-      const result = await agent.getSiopAuthenticationRequestDetails({
+      const pd_single: PresentationDefinitionWithLocation = getFileAsJson('./packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_single.json')
+      const vp_single: SIOP.VerifiablePresentationResponseOpts = getFileAsJson('./packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_single.json')
+      vp_single.presentation.presentation_submission!.id = expect.any(String)
+
+      const result: IAuthRequestDetails = await agent.getSiopAuthenticationRequestDetails({
         sessionId,
         verifiedAuthenticationRequest: {
           ...createAuthenticationResponseMockedResult,
-          presentationDefinitions: pdSingle,
-        },
-        verifiableCredentials: vcs,
+          presentationDefinitions: [pd_single],
+        }
       })
 
       expect(result).toEqual({
         id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
-        vpResponseOpts: vpSingle,
+        vpResponseOpts: [vp_single]
       })
     })
 
     it('should get authentication details with multiple credentials', async () => {
-      const result = await agent.getSiopAuthenticationRequestDetails({
+      const pd_multiple: PresentationDefinitionWithLocation = getFileAsJson('./packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_multiple.json')
+      const vp_multiple: SIOP.VerifiablePresentationResponseOpts = getFileAsJson('./packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_multiple.json')
+      vp_multiple.presentation.presentation_submission!.id = expect.any(String)
+
+      const result: IAuthRequestDetails  = await agent.getSiopAuthenticationRequestDetails({
         sessionId,
         verifiedAuthenticationRequest: {
           ...createAuthenticationResponseMockedResult,
-          presentationDefinitions: pdMultiple,
-        },
-        verifiableCredentials: vcs,
+          presentationDefinitions: [pd_multiple],
+        }
       })
 
       expect(result).toEqual({
         alsoKnownAs: undefined,
         id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
-        vpResponseOpts: vpMultiple,
+        vpResponseOpts: [vp_multiple],
       })
     })
 

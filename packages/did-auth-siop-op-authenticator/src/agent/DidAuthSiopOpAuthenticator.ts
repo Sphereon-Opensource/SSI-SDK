@@ -1,5 +1,5 @@
 import { schema } from '../index'
-import { IAgentPlugin } from '@veramo/core'
+import { IAgentPlugin, UniqueVerifiableCredential } from '@veramo/core'
 import { OpSession } from '../session/OpSession'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -20,6 +20,7 @@ import {
   IVerifySiopAuthenticationRequestUriArgs,
 } from '../types/IDidAuthSiopOpAuthenticator'
 import { SIOP } from '@sphereon/did-auth-siop'
+import { CredentialMapper, IVerifiableCredential } from '@sphereon/ssi-types';
 
 /**
  * {@inheritDoc IDidAuthSiopOpAuthenticator}
@@ -106,7 +107,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.authenticateWithSiop} */
   private async authenticateWithSiop(args: IAuthenticateWithSiopArgs, context: IRequiredContext): Promise<Response> {
-    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session) =>
+    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session: OpSession) =>
       session.authenticateWithSiop({ ...args, customApprovals: this.customApprovals }).then(async (response: Response) => {
         await context.agent.emit(events.DID_SIOP_AUTHENTICATED, response)
         return response
@@ -119,7 +120,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     args: IGetSiopAuthenticationRequestFromRpArgs,
     context: IRequiredContext
   ): Promise<SIOP.ParsedAuthenticationRequestURI> {
-    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session) => session.getSiopAuthenticationRequestFromRP(args))
+    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session: OpSession) => session.getSiopAuthenticationRequestFromRP(args))
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.getSiopAuthenticationRequestDetails} */
@@ -127,7 +128,10 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     args: IGetSiopAuthenticationRequestDetailsArgs,
     context: IRequiredContext
   ): Promise<IAuthRequestDetails> {
-    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session) => session.getSiopAuthenticationRequestDetails(args))
+    const uniqueVcs: Array<UniqueVerifiableCredential> = await context.agent.dataStoreORMGetVerifiableCredentials(args.credentialFilter)
+    const verifiableCredentials: Array<IVerifiableCredential> = uniqueVcs.map((uniqueVc: UniqueVerifiableCredential) => CredentialMapper.toExternalVerifiableCredential(uniqueVc.verifiableCredential))
+
+    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session: OpSession) => session.getSiopAuthenticationRequestDetails({ ...args, verifiableCredentials }))
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.verifySiopAuthenticationRequestURI} */
@@ -135,12 +139,12 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     args: IVerifySiopAuthenticationRequestUriArgs,
     context: IRequiredContext
   ): Promise<SIOP.VerifiedAuthenticationRequestWithJWT> {
-    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session) => session.verifySiopAuthenticationRequestURI(args))
+    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session: OpSession) => session.verifySiopAuthenticationRequestURI(args))
   }
 
   /** {@inheritDoc IDidAuthSiopOpAuthenticator.sendSiopAuthenticationResponse} */
   private async sendSiopAuthenticationResponse(args: ISendSiopAuthenticationResponseArgs, context: IRequiredContext): Promise<Response> {
-    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session) =>
+    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session: OpSession) =>
       session.sendSiopAuthenticationResponse(args).then(async (response: Response) => {
         await context.agent.emit(events.DID_SIOP_AUTHENTICATED, response)
         return response
