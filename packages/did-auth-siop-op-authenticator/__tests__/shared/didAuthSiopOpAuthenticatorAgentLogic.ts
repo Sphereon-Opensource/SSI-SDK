@@ -336,6 +336,36 @@ export default (testContext: {
       })
     })
 
+    it('should get authentication details with getting specific credentials', async () => {
+      const pd_single: PresentationDefinitionWithLocation = getFileAsJson(
+          './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_single.json'
+      )
+      const vp_single: SIOP.VerifiablePresentationResponseOpts = getFileAsJson(
+          './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_single.json'
+      )
+      vp_single.presentation.presentation_submission!.id = expect.any(String)
+
+      const result: IAuthRequestDetails = await agent.getSiopAuthenticationRequestDetails({
+        sessionId,
+        verifiedAuthenticationRequest: {
+          ...createAuthenticationResponseMockedResult,
+          presentationDefinitions: [pd_single],
+        },
+        credentialFilter: {
+          where: [{
+            column: 'id',
+            value: ['https://example.com/credentials/1872']
+          }]
+        }
+      })
+
+      expect(result).toEqual({
+        id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
+        alsoKnownAs: undefined,
+        vpResponseOpts: [vp_single],
+      })
+    })
+
     it('should get authentication details with multiple credentials', async () => {
       const pd_multiple: PresentationDefinitionWithLocation = getFileAsJson(
         './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_multiple.json'
