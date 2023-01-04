@@ -9,7 +9,6 @@ import {
   VerifiablePresentationWithLocation,
   VerifyAuthorizationRequestOpts,
   VerificationMode,
-  SigningAlgo,
   PassBy,
   Verification,
   ResponseMode,
@@ -32,6 +31,7 @@ import {
   PerDidResolver,
 } from '../types/IDidAuthSiopOpAuthenticator'
 import { Resolvable } from 'did-resolver'
+import {KeyAlgo} from "@sphereon/ssi-sdk-core/dist/signers/SuppliedSigner";
 
 const fetch = require('cross-fetch')
 
@@ -249,12 +249,12 @@ export class OpSession {
     return identifierKey
   }
 
-  private getKeyAlgorithm(type: TKeyType): SigningAlgo {
+  private getKeyAlgorithm(type: TKeyType): KeyAlgo {
     switch (type) {
       case 'Ed25519':
-        return SigningAlgo.EDDSA
+        return KeyAlgo.EDDSA
       case 'Secp256k1':
-        return SigningAlgo.ES256K
+        return KeyAlgo.ES256K
       default:
         throw Error('Key type not yet supported')
     }

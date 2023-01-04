@@ -2905,7 +2905,7 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sphereon/did-auth-siop@0.3.0-unstable.1":
+"@sphereon/did-auth-siop@^0.3.0":
   version "0.3.0-unstable.1"
   resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.3.0-unstable.1.tgz#5fc1a34f078a89a24c7dfc96c80bad5c00d2cd1b"
   integrity sha512-yhN+E0dNYUb8qxXoIkN1dW46xONuoRMovZ6Jr9XZV6A2Cdb+RKOyfwQ8OCFN4B4rYZNys5WOamK6HhatrT3AQw==
@@ -3060,10 +3060,17 @@
   resolved "https://registry.yarnpkg.com/@sphereon/ssi-types/-/ssi-types-0.8.1-next.6.tgz#6a90d33c33696f0f62257ff103241c222c133303"
   integrity sha512-edmLKSfB2CEhTeur7lIaAQUPtrFSElvjoHbLcUEY2pdSTKdF26hZBrjvy1faBXAn5sjy0rj0Qv71j5L9CaWvtQ==
 
-"@sphereon/ssi-types@0.8.1-unstable.86", "@sphereon/ssi-types@^0.8.1-next.3", "@sphereon/ssi-types@^0.8.1-next.31", "@sphereon/ssi-types@^0.8.1-unstable.86+55d3de7":
+"@sphereon/ssi-types@0.8.1-unstable.86", "@sphereon/ssi-types@^0.8.1-next.3", "@sphereon/ssi-types@^0.8.1-unstable.86+55d3de7":
   version "0.8.1-unstable.86"
   resolved "https://registry.yarnpkg.com/@sphereon/ssi-types/-/ssi-types-0.8.1-unstable.86.tgz#3e465ca32170aea52ad0a4fa2035a6480974b598"
   integrity sha512-iFmPg5ohqw1FCI3R3Vn8MO32SDk9aKfFRYWsZ4U3FSrR0rR1uDldNTlNa5KtE9KJziOOl5BsMLdNNJ9L/mNzkA==
+  dependencies:
+    jwt-decode "^3.1.2"
+
+"@sphereon/ssi-types@^0.8.1-next.31":
+  version "0.8.1-unstable.135"
+  resolved "https://registry.yarnpkg.com/@sphereon/ssi-types/-/ssi-types-0.8.1-unstable.135.tgz#89ba0299c750d779edf18aabddae9c955f692a67"
+  integrity sha512-pISAFCRqjQPlOfRMAKf0tIir2DVqoZSDm6sJOkgb9q8GW9P7I5vlRFOVim+hiyAulSa6WtnttjBgrY8sZVQNRw==
   dependencies:
     jwt-decode "^3.1.2"
 
@@ -4747,10 +4754,20 @@ ajv@^6.10.0, ajv@^6.12.3, ajv@^6.12.4, ajv@^6.5.5, ajv@~6.12.6:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-ajv@^8.0.0, ajv@^8.0.1, ajv@^8.11.0, ajv@^8.11.2, ajv@^8.6.1:
+ajv@^8.0.0, ajv@^8.0.1, ajv@^8.11.0, ajv@^8.6.1:
   version "8.11.2"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.11.2.tgz#aecb20b50607acf2569b6382167b65a96008bb78"
   integrity sha512-E4bfmKAhGiSTvMfL1Myyycaub+cUEU2/IvpylXkUu7CHBkBj1f/ikdzbD7YQ6FKUbixDxeYvB/xY4fvyroDlQg==
+  dependencies:
+    fast-deep-equal "^3.1.1"
+    json-schema-traverse "^1.0.0"
+    require-from-string "^2.0.2"
+    uri-js "^4.2.2"
+
+ajv@^8.11.2:
+  version "8.12.0"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.12.0.tgz#d1a0527323e22f53562c567c00991577dfbe19d1"
+  integrity sha512-sRu1kpcO9yLtYxBKvqfTeh9KzZEwO3STyX1HT+4CaDzC6HpTGYhIhPIzj9XuKU7KYDwnaeh5hcOwjy1QuJzBPA==
   dependencies:
     fast-deep-equal "^3.1.1"
     json-schema-traverse "^1.0.0"
@@ -9818,10 +9835,15 @@ jose@^1.28.1:
   dependencies:
     "@panva/asn1.js" "^1.0.0"
 
-jose@^4.10.3, jose@^4.11.1, jose@^4.3.8, jose@^4.9.2:
+jose@^4.10.3, jose@^4.3.8, jose@^4.9.2:
   version "4.11.1"
   resolved "https://registry.yarnpkg.com/jose/-/jose-4.11.1.tgz#8f7443549befe5bddcf4bae664a9cbc1a62da4fa"
   integrity sha512-YRv4Tk/Wlug8qicwqFNFVEZSdbROCHRAC6qu/i0dyNKr5JQdoa2pIGoS04lLO/jXQX7Z9omoNewYIVIxqZBd9Q==
+
+jose@^4.11.1:
+  version "4.11.2"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-4.11.2.tgz#d9699307c02e18ff56825843ba90e2fae9f09e23"
+  integrity sha512-njj0VL2TsIxCtgzhO+9RRobBvws4oYyCM8TpvoUQwl/MbIM3NFJRR9+e6x0sS5xXaP1t6OCBkaBME98OV9zU5A==
 
 js-sdsl@^4.1.4:
   version "4.2.0"
