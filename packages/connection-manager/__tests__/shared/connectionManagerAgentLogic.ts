@@ -125,7 +125,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const party = {
         name,
         alias,
-        uri: 'example.com'
+        uri: 'example.com',
       }
 
       await expect(agent.cmAddParty(party)).rejects.toThrow('Blank aliases are not allowed')
@@ -137,7 +137,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const party = {
         name,
         alias,
-        uri: 'example.com'
+        uri: 'example.com',
       }
 
       await expect(agent.cmAddParty(party)).rejects.toThrow('Blank names are not allowed')
