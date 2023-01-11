@@ -12,6 +12,7 @@ import { VerificationMethod } from 'did-resolver'
 // @ts-ignore
 import elliptic from 'elliptic'
 import * as u8a from 'uint8arrays'
+import { hexKeyFromPEMBasedJwk } from './x509-utils'
 
 export const getFirstKeyWithRelation = async (
   identifier: IIdentifier,
@@ -91,20 +92,23 @@ export async function dereferenceDidKeysWithJwkSupport(
  * @beta This API may change without a BREAKING CHANGE notice.
  */
 export function extractPublicKeyHexWithJwkSupport(pk: _ExtendedVerificationMethod, convert = false): string {
-  if (pk.publicKeyJwk && pk.publicKeyJwk.kty === 'EC') {
-    const secp256 = new elliptic.ec(pk.publicKeyJwk.crv === 'secp256k1' ? 'secp256k1' : 'p256')
-    const prefix = pk.publicKeyJwk.crv === 'secp256k1' ? '04' : '03'
-    const x = u8a.fromString(pk.publicKeyJwk.x!, 'base64url')
-    const y = u8a.fromString(pk.publicKeyJwk.y!, 'base64url')
-    const hex = `${prefix}${u8a.toString(x, 'base16')}${u8a.toString(y, 'base16')}`
-    // We return directly as we don't want to convert the result back into Uint8Array and then convert again to hex as the elliptic lib already returns hex strings
-    return secp256.keyFromPublic(hex, 'hex').getPublic(true, 'hex')
-  } else if (pk.publicKeyJwk && pk.publicKeyJwk.crv === 'Ed25519') {
-    return u8a.toString(u8a.fromString(pk.publicKeyJwk.x!, 'base64url'), 'base16')
-  } else {
-    // delegate the other types to the original Veramo function
-    return extractPublicKeyHex(pk, convert)
+  if (pk.publicKeyJwk) {
+    if (pk.publicKeyJwk.kty === 'EC') {
+      const secp256 = new elliptic.ec(pk.publicKeyJwk.crv === 'secp256k1' ? 'secp256k1' : 'p256')
+      const prefix = pk.publicKeyJwk.crv === 'secp256k1' ? '04' : '03'
+      const x = u8a.fromString(pk.publicKeyJwk.x!, 'base64url')
+      const y = u8a.fromString(pk.publicKeyJwk.y!, 'base64url')
+      const hex = `${prefix}${u8a.toString(x, 'base16')}${u8a.toString(y, 'base16')}`
+      // We return directly as we don't want to convert the result back into Uint8Array and then convert again to hex as the elliptic lib already returns hex strings
+      return secp256.keyFromPublic(hex, 'hex').getPublic(true, 'hex')
+    } else if (pk.publicKeyJwk.crv === 'Ed25519') {
+      return u8a.toString(u8a.fromString(pk.publicKeyJwk.x!, 'base64url'), 'base16')
+    } else if (pk.publicKeyJwk.kty === 'RSA') {
+      return hexKeyFromPEMBasedJwk(pk.publicKeyJwk, 'public')
+    }
   }
+  // delegate the other types to the original Veramo function
+  return extractPublicKeyHex(pk, convert)
 }
 
 /**

@@ -60,11 +60,15 @@ export const PEMToJwk = (pem: string, visibility: KeyVisibility = 'public'): JWK
   return keyto.from(pem, 'pem').toJwk(visibility)
 }
 export const privateKeyHexFromPEM = (PEM: string) => {
-  return PEMToHex(PEM)
+  return PEMToHex(PEM, 'private')
 }
 
-export const privateKeyHexFromPEMBasedJwk = (jwk: JWK) => {
-  privateKeyHexFromPEM(jwkToPEM(jwk))
+export const hexKeyFromPEMBasedJwk = (jwk: JWK, visibility: KeyVisibility = 'public'): string => {
+  if (visibility === 'private') {
+    return privateKeyHexFromPEM(jwkToPEM(jwk, 'private'))
+  } else {
+    return publicKeyHexFromPEM(jwkToPEM(jwk, 'public'))
+  }
 }
 
 export const publicKeyHexFromPEM = (PEM: string) => {
