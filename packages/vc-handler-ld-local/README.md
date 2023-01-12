@@ -30,8 +30,6 @@ yarn build
 
 ### Test
 
-To run the tests a VC_HTTP_API_AUTH_TOKEN environment variable needs to be present with an authorization token.
-
 The test command runs:
 
 - `prettier`

@@ -97,7 +97,7 @@ describe('credential-LD full flow', () => {
   it('should work with Ed25519Signature2018', async () => {
     nock('https://lto-mock/1.0/identifiers')
       .get(`/${LTO_DID}`)
-      .times(3)
+      .times(5)
       .reply(200, {
         ...ltoDIDResolutionResult,
       })

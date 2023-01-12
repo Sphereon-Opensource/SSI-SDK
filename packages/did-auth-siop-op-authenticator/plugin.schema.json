@@ -206,7 +206,7 @@
           "required": ["sessionId", "ParsedAuthenticationRequestURI"],
           "description": "Arguments needed for {@link DidAuthSiopOpAuthenticator.verifySiopAuthenticationRequestURI } "
         },
-        "VerifiedAuthenticationRequestWithJWT": {
+        "VerifiedAuthorizationRequest": {
           "type": "object",
           "properties": {
             "payload": {
@@ -311,7 +311,7 @@
             "$ref": "#/components/schemas/IVerifySiopAuthenticationRequestUriArgs"
           },
           "returnType": {
-            "$ref": "#/components/schemas/VerifiedAuthenticationRequestWithJWT"
+            "$ref": "#/components/schemas/VerifiedAuthorizationRequest"
           }
         },
         "sendSiopAuthenticationResponse": {
