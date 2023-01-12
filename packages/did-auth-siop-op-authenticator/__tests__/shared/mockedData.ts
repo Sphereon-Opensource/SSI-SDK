@@ -1,4 +1,9 @@
-import { PresentationDefinitionWithLocation, PresentationLocation } from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
+import {
+  PresentationDefinitionWithLocation,
+  PresentationDefinitionLocation,
+  PresentationSignCallback,
+  PresentationLocation,
+} from '@sphereon/did-auth-siop'
 
 export const pdSingle: PresentationDefinitionWithLocation[] = [
   {
@@ -26,7 +31,7 @@ export const pdSingle: PresentationDefinitionWithLocation[] = [
         },
       ],
     },
-    location: PresentationLocation.ID_TOKEN,
+    location: PresentationDefinitionLocation.TOPLEVEL_PRESENTATION_DEF,
   },
 ]
 
@@ -59,7 +64,7 @@ export const pdMultiple: PresentationDefinitionWithLocation[] = [
         },
       ],
     },
-    location: PresentationLocation.ID_TOKEN,
+    location: PresentationDefinitionLocation.TOPLEVEL_PRESENTATION_DEF,
   },
 ]
 
@@ -115,7 +120,7 @@ export const vcs = [
 export const vpSingle = [
   {
     format: 'ldp_vp',
-    location: 'id_token',
+    location: PresentationLocation.ID_TOKEN,
     presentation: {
       '@context': ['https://www.w3.org/2018/credentials/v1', 'https://identity.foundation/presentation-exchange/submission/v1'],
       presentation_submission: {
@@ -128,6 +133,15 @@ export const vpSingle = [
           },
         ],
         id: expect.any(String),
+      },
+      proof: {
+        type: 'RsaSignature2018',
+        created: '2018-09-14T21:19:10Z',
+        proofPurpose: 'authentication',
+        verificationMethod: 'did:example:ebfeb1f712ebc6f1c276e12ec21#keys-1',
+        challenge: '1f44d55f-f161-4938-a659-f8026467f126',
+        domain: '4jt78h47fh47',
+        jws: 'eyJhbGciOiJSUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..kTCYt5XsITJX1CxPCT8yAV-TVIw5WEuts01mq-pQy7UJiN5mgREEMGlv50aqzpqh4Qq_PbChOMqsLfRoPsnsgxD-WUcX16dUOqV0G_zS245-kronKb78cPktb3rk-BuQy72IFLN25DYuNzVBAh4vGHSrQyHUGlcTwLtjPAnKb78',
       },
       type: ['VerifiablePresentation', 'PresentationSubmission'],
       verifiableCredential: [
@@ -162,7 +176,7 @@ export const vpSingle = [
 export const vpMultiple = [
   {
     format: 'ldp_vp',
-    location: 'id_token',
+    location: PresentationLocation.ID_TOKEN,
     presentation: {
       '@context': ['https://www.w3.org/2018/credentials/v1', 'https://identity.foundation/presentation-exchange/submission/v1'],
       presentation_submission: {
@@ -180,6 +194,15 @@ export const vpMultiple = [
           },
         ],
         id: expect.any(String),
+      },
+      proof: {
+        type: 'RsaSignature2018',
+        created: '2018-09-14T21:19:10Z',
+        proofPurpose: 'authentication',
+        verificationMethod: 'did:example:ebfeb1f712ebc6f1c276e12ec21#keys-1',
+        challenge: '1f44d55f-f161-4938-a659-f8026467f126',
+        domain: '4jt78h47fh47',
+        jws: 'eyJhbGciOiJSUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..kTCYt5XsITJX1CxPCT8yAV-TVIw5WEuts01mq-pQy7UJiN5mgREEMGlv50aqzpqh4Qq_PbChOMqsLfRoPsnsgxD-WUcX16dUOqV0G_zS245-kronKb78cPktb3rk-BuQy72IFLN25DYuNzVBAh4vGHSrQyHUGlcTwLtjPAnKb78',
       },
       type: ['VerifiablePresentation', 'PresentationSubmission'],
       verifiableCredential: [
@@ -233,3 +256,16 @@ export const vpMultiple = [
     },
   },
 ]
+
+export const presentationSignCallback: PresentationSignCallback = async (_args) => ({
+  ..._args.presentation,
+  proof: {
+    type: 'RsaSignature2018',
+    created: '2018-09-14T21:19:10Z',
+    proofPurpose: 'authentication',
+    verificationMethod: 'did:example:ebfeb1f712ebc6f1c276e12ec21#keys-1',
+    challenge: '1f44d55f-f161-4938-a659-f8026467f126',
+    domain: '4jt78h47fh47',
+    jws: 'eyJhbGciOiJSUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..kTCYt5XsITJX1CxPCT8yAV-TVIw5WEuts01mq-pQy7UJiN5mgREEMGlv50aqzpqh4Qq_PbChOMqsLfRoPsnsgxD-WUcX16dUOqV0G_zS245-kronKb78cPktb3rk-BuQy72IFLN25DYuNzVBAh4vGHSrQyHUGlcTwLtjPAnKb78',
+  },
+})

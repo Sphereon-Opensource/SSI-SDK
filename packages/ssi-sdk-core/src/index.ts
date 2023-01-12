@@ -10,4 +10,4 @@ export {
   UnsignedCredentialSP,
   ProofOptions,
 } from './types'
-export { SuppliedSigner } from './signers'
+export { KeyAlgo, SuppliedSigner } from './signers'
