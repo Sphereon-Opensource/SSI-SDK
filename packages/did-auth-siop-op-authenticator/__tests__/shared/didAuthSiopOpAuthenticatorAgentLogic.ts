@@ -1,8 +1,10 @@
-import { TAgent } from '@veramo/core'
-import { OP, AuthorizationRequest } from '@sphereon/did-auth-siop'
-import { IDidAuthSiopOpAuthenticator, IGetSiopAuthorizationRequestDetailsArgs } from '../../src'
+import * as fs from 'fs'
+import { IDataStore, TAgent, VerifiableCredential } from '@veramo/core'
+import { IAuthRequestDetails, IDidAuthSiopOpAuthenticator } from '../../src'
+import { OP, AuthorizationRequest, VerifiablePresentationWithLocation } from '@sphereon/did-auth-siop'
 
 import {
+  PresentationDefinitionWithLocation,
   ResponseContext,
   ResponseMode,
   ResponseType,
@@ -10,10 +12,17 @@ import {
   UrlEncodingFormat,
   VerificationMode,
   VerifiedAuthorizationRequest,
-  ParsedAuthorizationRequestURI,
+  ParsedAuthorizationRequestURI
 } from '@sphereon/did-auth-siop'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
-import { pdMultiple, pdSingle, vcs, vpMultiple, vpSingle } from './mockedData'
+
+function getFile(path: string) {
+  return fs.readFileSync(path, 'utf-8')
+}
+
+function getFileAsJson(path: string) {
+  return JSON.parse(getFile(path))
+}
 
 const nock = require('nock')
 jest.mock('@veramo/utils', () => ({
@@ -21,7 +30,7 @@ jest.mock('@veramo/utils', () => ({
   mapIdentifierKeysToDoc: jest.fn(),
 }))
 
-type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator>
+type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator & IDataStore>
 
 const didMethod = 'ethr'
 const did = 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a'
@@ -155,6 +164,16 @@ export default (testContext: {
     beforeAll(async () => {
       await testContext.setup()
       agent = testContext.getAgent()
+
+      const idCardCredential: VerifiableCredential = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vc/vc_idCardCredential.json'
+      )
+      await agent.dataStoreSaveVerifiableCredential({ verifiableCredential: idCardCredential })
+
+      const driverLicenseCredential: VerifiableCredential = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vc/vc_driverLicense.json'
+      )
+      await agent.dataStoreSaveVerifiableCredential({ verifiableCredential: driverLicenseCredential })
 
       nock(redirectUrl).get(`?stateId=${stateId}`).times(5).reply(200, requestResultMockedText)
 
@@ -298,52 +317,96 @@ export default (testContext: {
     })
 
     it('should get authentication details with single credential', async () => {
-      let authorizationRequestArgs: IGetSiopAuthorizationRequestDetailsArgs = {
+      const pd_single: PresentationDefinitionWithLocation = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_single.json'
+      )
+      const vp_single: VerifiablePresentationWithLocation = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_single.json'
+      )
+      vp_single.presentation.presentation_submission!.id = expect.any(String)
+
+      const result: IAuthRequestDetails = await agent.getSiopAuthorizationRequestDetails({
         sessionId,
         verifiedAuthorizationRequest: {
           ...createAuthorizationResponseMockedResult,
-          presentationDefinitions: pdSingle,
+          presentationDefinitions: [pd_single],
           authorizationRequest: {} as AuthorizationRequest,
           versions: [],
           payload: {},
         },
-        verifiableCredentials: vcs,
         signingOptions: {
           nonce: 'nonce202212272050',
           domain: 'domain202212272051',
         },
-      }
-      const result = await agent.getSiopAuthorizationRequestDetails(authorizationRequestArgs)
+      })
 
       expect(result).toEqual({
         id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
-        vpResponseOpts: vpSingle,
+        vpResponseOpts: [vp_single],
+      })
+    })
+
+    it('should get authentication details with getting specific credentials', async () => {
+      const pdSingle: PresentationDefinitionWithLocation = getFileAsJson(
+          './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_single.json'
+      )
+      const vpSingle: VerifiablePresentationWithLocation = getFileAsJson(
+          './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_single.json'
+      )
+      vpSingle.presentation.presentation_submission!.id = expect.any(String)
+
+      const result: IAuthRequestDetails = await agent.getSiopAuthorizationRequestDetails({
+        sessionId,
+        verifiedAuthorizationRequest: {
+          ...createAuthorizationResponseMockedResult,
+          presentationDefinitions: [pdSingle],
+          authorizationRequest: {} as AuthorizationRequest,
+          versions: [],
+          payload: {},
+        },
+        credentialFilter: {
+          where: [{
+            column: 'id',
+            value: ['https://example.com/credentials/1872']
+          }]
+        }
+      })
+
+      expect(result).toEqual({
+        id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
+        alsoKnownAs: undefined,
+        vpResponseOpts: [vpSingle],
       })
     })
 
     it('should get authentication details with multiple credentials', async () => {
-      let authorizationRequestArgs: IGetSiopAuthorizationRequestDetailsArgs = {
+      const pdMultiple: PresentationDefinitionWithLocation = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_multiple.json'
+      )
+      const vpMultiple: VerifiablePresentationWithLocation = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_multiple.json'
+      )
+      vpMultiple.presentation.presentation_submission!.id = expect.any(String)
+
+      const result: IAuthRequestDetails = await agent.getSiopAuthorizationRequestDetails({
         sessionId,
         verifiedAuthorizationRequest: {
           ...createAuthorizationResponseMockedResult,
-          presentationDefinitions: pdMultiple,
+          presentationDefinitions: [pdMultiple],
           authorizationRequest: {} as AuthorizationRequest,
           versions: [],
           payload: {},
         },
-        verifiableCredentials: vcs,
         signingOptions: {
           nonce: 'nonce202212272050',
           domain: 'domain202212272051',
         },
-      }
-
-      const result = await agent.getSiopAuthorizationRequestDetails(authorizationRequestArgs)
+      })
 
       expect(result).toEqual({
         alsoKnownAs: undefined,
         id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
-        vpResponseOpts: vpMultiple,
+        vpResponseOpts: [vpMultiple],
       })
     })
 
@@ -370,11 +433,15 @@ export default (testContext: {
     })
 
     it('should send authentication response', async () => {
+      const pdMultiple: PresentationDefinitionWithLocation = getFileAsJson(
+          './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_multiple.json'
+      )
+
       const result = await agent.sendSiopAuthorizationResponse({
         sessionId,
         verifiedAuthorizationRequest: {
           ...createAuthorizationResponseMockedResult,
-          presentationDefinitions: pdMultiple,
+          presentationDefinitions: [pdMultiple],
           authorizationRequest: {} as AuthorizationRequest,
           versions: [],
           authorizationRequestPayload: {},

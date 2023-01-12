@@ -104,15 +104,11 @@ export class OpSession {
       .catch((error: unknown) => Promise.reject(error))
   }
 
-  public async getSiopAuthorizationRequestDetails(
-    args: IOpsGetSiopAuthorizationRequestDetailsArgs,
-    presentationSignCallback: PresentationSignCallback
-  ): Promise<IAuthRequestDetails> {
-    // TODO fix vc retrievement https://sphereon.atlassian.net/browse/MYC-142
+  public async getSiopAuthorizationRequestDetails(args: IOpsGetSiopAuthorizationRequestDetailsArgs): Promise<IAuthRequestDetails> {
     const presentationDefs = args.verifiedAuthorizationRequest.presentationDefinitions
     const matchedPresentationWithPresentationDefinition =
       presentationDefs && presentationDefs.length > 0
-        ? await this.matchPresentationDefinitions(presentationDefs, args.verifiableCredentials, presentationSignCallback, args.signingOptions)
+        ? await this.matchPresentationDefinitions(presentationDefs, args.verifiableCredentials, args.presentationSignCallback, args.signingOptions)
         : []
     const didResolutionResult = args.verifiedAuthorizationRequest.didResolutionResult
 

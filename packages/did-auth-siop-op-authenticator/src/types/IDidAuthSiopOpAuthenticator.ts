@@ -1,4 +1,13 @@
-import { DIDDocumentSection, IAgentContext, IIdentifier, IPluginMethodMap, IResolver, IKeyManager } from '@veramo/core'
+import {
+  DIDDocumentSection,
+  IAgentContext,
+  IIdentifier,
+  IPluginMethodMap,
+  IResolver,
+  IKeyManager,
+  IDataStoreORM,
+  FindCredentialsArgs,
+} from '@veramo/core'
 import { IPresentation, IVerifiableCredential } from '@sphereon/ssi-types'
 import { OpSession } from '../session/OpSession'
 import {
@@ -56,7 +65,7 @@ export interface IGetSiopAuthorizationRequestFromRpArgs {
 export interface IGetSiopAuthorizationRequestDetailsArgs {
   sessionId: string
   verifiedAuthorizationRequest: VerifiedAuthorizationRequest
-  verifiableCredentials: IVerifiableCredential[]
+  credentialFilter?: FindCredentialsArgs
   signingOptions?: {
     nonce?: string
     domain?: string
@@ -133,7 +142,7 @@ export interface IOpsGetSiopAuthorizationRequestDetailsArgs {
     nonce?: string
     domain?: string
   }
-  presentationSignCallback?: PresentationSignCallback
+  presentationSignCallback: PresentationSignCallback
 }
 
 export interface IOpsVerifySiopAuthorizationRequestUriArgs {
@@ -149,4 +158,4 @@ export enum events {
   DID_SIOP_AUTHENTICATED = 'didSiopAuthenticated',
 }
 
-export type IRequiredContext = IAgentContext<IResolver & IKeyManager>
+export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IKeyManager>

@@ -155,18 +155,15 @@
                 "additionalProperties": true
               }
             },
-            "verifiableCredentials": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "additionalProperties": true
-                }
+            "credentialFilter": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
               }
             },
             "additionalProperties": false
           },
-          "required": ["sessionId", "verifiedAuthenticationRequest", "verifiableCredentials"],
+          "required": ["sessionId", "verifiedAuthenticationRequest"],
           "description": "Arguments needed for {@link DidAuthSiopOpAuthenticator.getSiopAuthenticationRequestDetails } "
         },
         "IAuthRequestDetails": {
