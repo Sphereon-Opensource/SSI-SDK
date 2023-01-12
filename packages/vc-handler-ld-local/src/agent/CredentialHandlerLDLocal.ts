@@ -1,16 +1,7 @@
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
 import { CredentialPayload, IAgentContext, IAgentPlugin, IIdentifier, IKey, IResolver, PresentationPayload } from '@veramo/core'
 import { AbstractPrivateKeyStore } from '@veramo/key-manager'
-import {
-  _ExtendedIKey,
-  extractIssuer,
-  isDefined,
-  MANDATORY_CREDENTIAL_CONTEXT,
-  mapIdentifierKeysToDoc,
-  OrPromise,
-  processEntryToArray,
-  RecordLike,
-} from '@veramo/utils'
+import { _ExtendedIKey, extractIssuer, isDefined, MANDATORY_CREDENTIAL_CONTEXT, OrPromise, processEntryToArray, RecordLike } from '@veramo/utils'
 import Debug from 'debug'
 
 import { IBindingOverrides, schema } from '../index'
@@ -26,6 +17,7 @@ import {
   IVerifyCredentialLDArgs,
   IVerifyPresentationLDArgs,
 } from '../types/types'
+import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-did-utils'
 
 const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 
@@ -230,7 +222,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     keyRef?: string
   ): Promise<{ signingKey: IKey; verificationMethodId: string }> {
     debug(`Retrieving signing key for id ${identifier.did} keyref ${keyRef}...`)
-    const extendedKeys: _ExtendedIKey[] = await mapIdentifierKeysToDoc(identifier, 'verificationMethod', context)
+    const extendedKeys: _ExtendedIKey[] = await mapIdentifierKeysToDocWithJwkSupport(identifier, 'verificationMethod', context)
     const supportedTypes = this.ldCredentialModule.ldSuiteLoader.getAllSignatureSuiteTypes()
     let signingKey: _ExtendedIKey | undefined
     if (keyRef) {
