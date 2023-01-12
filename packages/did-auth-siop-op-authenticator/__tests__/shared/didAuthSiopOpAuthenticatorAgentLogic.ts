@@ -1,20 +1,20 @@
 import * as fs from 'fs'
 import { IDataStore, TAgent, VerifiableCredential } from '@veramo/core'
-import { TAgent } from '@veramo/core'
-import { OP, SIOP. AuthorizationRequest } from '@sphereon/did-auth-siop'
-import { IAuthRequestDetails, IDidAuthSiopOpAuthenticator, IGetSiopAuthorizationRequestDetailsArgs } from '../../src'
-
 import {
+  AuthorizationRequest,
+  OP,
+  ParsedAuthorizationRequestURI,
   PresentationDefinitionWithLocation,
   ResponseContext,
   ResponseMode,
   ResponseType,
   SubjectIdentifierType,
   UrlEncodingFormat,
+  VerifiablePresentationWithLocation,
   VerificationMode,
   VerifiedAuthorizationRequest,
-  ParsedAuthorizationRequestURI,
 } from '@sphereon/did-auth-siop'
+import { IDidAuthSiopOpAuthenticator, IGetSiopAuthorizationRequestDetailsArgs } from '../../src'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
 
 function getFile(path: string) {
@@ -321,21 +321,20 @@ export default (testContext: {
       const pd_single: PresentationDefinitionWithLocation = getFileAsJson(
         './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_single.json'
       )
-      const vp_single: SIOP.VerifiablePresentationResponseOpts = getFileAsJson(
+      const vp_single: VerifiablePresentationWithLocation = getFileAsJson(
         './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_single.json'
       )
       vp_single.presentation.presentation_submission!.id = expect.any(String)
 
-      let authorizationRequestArgs: IGetSiopAuthorizationRequestDetailsArgs = {
+      const authorizationRequestArgs: IGetSiopAuthorizationRequestDetailsArgs = {
         sessionId,
         verifiedAuthorizationRequest: {
           ...createAuthorizationResponseMockedResult,
-          presentationDefinitions: pdSingle,
+          presentationDefinitions: [pd_single],
           authorizationRequest: {} as AuthorizationRequest,
           versions: [],
           payload: {},
         },
-        verifiableCredentials: vcs,
         signingOptions: {
           nonce: 'nonce202212272050',
           domain: 'domain202212272051',
@@ -346,20 +345,20 @@ export default (testContext: {
 
       expect(result).toEqual({
         id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
-        vpResponseOpts: vpSingle,
+        vpResponseOpts: [vp_single],
       })
     })
 
     it('should get authentication details with getting specific credentials', async () => {
       const pd_single: PresentationDefinitionWithLocation = getFileAsJson(
-          './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_single.json'
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_single.json'
       )
-      const vp_single: SIOP.VerifiablePresentationResponseOpts = getFileAsJson(
-          './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_single.json'
+      const vp_single: VerifiablePresentationWithLocation = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_single.json'
       )
       vp_single.presentation.presentation_submission!.id = expect.any(String)
 
-      const result: IAuthRequestDetails = await agent.getSiopAuthenticationRequestDetails({
+      const authorizationRequestArgs: IGetSiopAuthorizationRequestDetailsArgs = {
         sessionId,
         verifiedAuthorizationRequest: {
           ...createAuthorizationResponseMockedResult,
@@ -368,15 +367,17 @@ export default (testContext: {
           versions: [],
           payload: {},
         },
-        credentialFilter: {
-          where: [{
-            column: 'id',
-            value: ['https://example.com/credentials/1872']
-          }]
-        }
         signingOptions: {
           nonce: 'nonce202212272050',
           domain: 'domain202212272051',
+        },
+        credentialFilter: {
+          where: [
+            {
+              column: 'id',
+              value: ['https://example.com/credentials/1872'],
+            },
+          ],
         },
       }
       const result = await agent.getSiopAuthorizationRequestDetails(authorizationRequestArgs)
@@ -392,12 +393,12 @@ export default (testContext: {
       const pd_multiple: PresentationDefinitionWithLocation = getFileAsJson(
         './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_multiple.json'
       )
-      const vp_multiple: SIOP.VerifiablePresentationResponseOpts = getFileAsJson(
+      const vp_multiple: VerifiablePresentationWithLocation = getFileAsJson(
         './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_multiple.json'
       )
       vp_multiple.presentation.presentation_submission!.id = expect.any(String)
 
-      const result = await agent.getSiopAuthorizationRequestDetails({
+      const authorizationRequestArgs: IGetSiopAuthorizationRequestDetailsArgs = {
         sessionId,
         verifiedAuthorizationRequest: {
           ...createAuthorizationResponseMockedResult,
@@ -406,7 +407,6 @@ export default (testContext: {
           versions: [],
           payload: {},
         },
-        verifiableCredentials: vcs,
         signingOptions: {
           nonce: 'nonce202212272050',
           domain: 'domain202212272051',
@@ -445,11 +445,14 @@ export default (testContext: {
     })
 
     it('should send authentication response', async () => {
+      const pd_multiple: PresentationDefinitionWithLocation = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_multiple.json'
+      )
       const result = await agent.sendSiopAuthorizationResponse({
         sessionId,
         verifiedAuthorizationRequest: {
           ...createAuthorizationResponseMockedResult,
-          presentationDefinitions: pdMultiple,
+          presentationDefinitions: [pd_multiple],
           authorizationRequest: {} as AuthorizationRequest,
           versions: [],
           authorizationRequestPayload: {},

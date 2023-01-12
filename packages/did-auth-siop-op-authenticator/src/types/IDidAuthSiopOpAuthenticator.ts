@@ -64,9 +64,7 @@ export interface IGetSiopAuthorizationRequestFromRpArgs {
 
 export interface IGetSiopAuthorizationRequestDetailsArgs {
   sessionId: string
-  verifiedAuthenticationRequest: SIOP.VerifiedAuthenticationRequestWithJWT
   verifiedAuthorizationRequest: VerifiedAuthorizationRequest
-  verifiableCredentials: IVerifiableCredential[]
   signingOptions?: {
     nonce?: string
     domain?: string
@@ -82,12 +80,12 @@ export interface IVerifySiopAuthorizationRequestUriArgs {
 export interface ISendSiopAuthorizationResponseArgs {
   sessionId: string
   verifiedAuthorizationRequest: VerifiedAuthorizationRequest
-  verifiablePresentationResponse?: VerifiablePresentationWithLocation[]
+  verifiablePresentations?: VerifiablePresentationWithLocation[]
 }
 
 export interface IAuthRequestDetails {
   id: string
-  vpResponseOpts: VerifiablePresentationWithLocation[]
+  vpResponses: VerifiablePresentationWithLocation[]
   alsoKnownAs?: string[]
 }
 

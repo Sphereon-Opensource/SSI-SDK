@@ -124,7 +124,9 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       CredentialMapper.toExternalVerifiableCredential(uniqueVc.verifiableCredential)
     )
 
-    return this.getSessionForSiop(      {        sessionId: args.sessionId,      },      context).then((session) => session.getSiopAuthorizationRequestDetails(args, this.presentationSignCallback))
+    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session) =>
+      session.getSiopAuthorizationRequestDetails({ ...args, verifiableCredentials }, this.presentationSignCallback)
+    )
   }
 
   private async verifySiopAuthorizationRequestURI(

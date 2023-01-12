@@ -118,11 +118,11 @@ agent:
       plugins:
         - $ref: /didResolver
         - $require: ./packages/did-auth-siop-op-authenticator/dist#DidAuthSiopOpAuthenticator
+          $args:
+            - presentationSignCallback: { }
         - $require: '@veramo/data-store#DataStore'
           $args:
             - $ref: /dbConnection
         - $require: '@veramo/data-store#DataStoreORM'
           $args:
             - $ref: /dbConnection
-          '$args':
-            - presentationSignCallback: {}

@@ -176,7 +176,7 @@ For more detailed information see: [Self Issued OpenID Provider v2 (SIOP)](https
 const sessionId = 'example_session_id'
 const authorizationRequestDetailsResponse = await agent.getSiopAuthorizationRequestDetails({
   sessionId,
-  verifiedAuthorizationRequest: createAuthorizationResponse
+  verifiedAuthorizationRequest: createAuthorizationResponse,
 })
 ```
 

@@ -118,7 +118,7 @@ export class OpSession {
     return {
       id: didResolutionResult.didDocument!.id,
       alsoKnownAs: didResolutionResult.didDocument!.alsoKnownAs,
-      vpResponseOpts: matchedPresentationWithPresentationDefinition as unknown as VerifiablePresentationWithLocation[],
+      vpResponses: matchedPresentationWithPresentationDefinition as unknown as VerifiablePresentationWithLocation[],
     }
   }
 

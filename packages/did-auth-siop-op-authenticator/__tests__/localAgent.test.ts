@@ -4,7 +4,7 @@ import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 jest.setTimeout(30000)
 
 import didAuthSiopOpAuthenticatorAgentLogic from './shared/didAuthSiopOpAuthenticatorAgentLogic'
-import { presentationSignCallback } from './shared/mockedData'
+import { presentationSignCallback } from './shared/callback'
 
 let agent: any
 

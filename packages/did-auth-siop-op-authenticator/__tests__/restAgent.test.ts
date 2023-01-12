@@ -13,7 +13,7 @@ import { getDidKeyResolver } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { getUniResolver } from '@sphereon/did-uni-client'
 import didAuthSiopOpAuthenticatorAgentLogic from './shared/didAuthSiopOpAuthenticatorAgentLogic'
-import { presentationSignCallback } from './shared/mockedData'
+import { presentationSignCallback } from './shared/callback'
 
 jest.setTimeout(30000)
 
