@@ -1,6 +1,6 @@
 import { TAgent } from '@veramo/core'
 import { OP, AuthorizationRequest } from '@sphereon/did-auth-siop'
-import {IDidAuthSiopOpAuthenticator, IGetSiopAuthorizationRequestDetailsArgs} from '../../src'
+import { IDidAuthSiopOpAuthenticator, IGetSiopAuthorizationRequestDetailsArgs } from '../../src'
 
 import {
   ResponseContext,
@@ -10,7 +10,7 @@ import {
   UrlEncodingFormat,
   VerificationMode,
   VerifiedAuthorizationRequest,
-  ParsedAuthorizationRequestURI
+  ParsedAuthorizationRequestURI,
 } from '@sphereon/did-auth-siop'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
 import { pdMultiple, pdSingle, vcs, vpMultiple, vpSingle } from './mockedData'
@@ -140,7 +140,7 @@ const createAuthorizationResponseMockedResult = {
       mode: VerificationMode.INTERNAL,
       resolveOpts: {},
     },
-  }
+  },
 }
 
 export default (testContext: {
@@ -305,14 +305,14 @@ export default (testContext: {
           presentationDefinitions: pdSingle,
           authorizationRequest: {} as AuthorizationRequest,
           versions: [],
-          payload: {}
+          payload: {},
         },
         verifiableCredentials: vcs,
         signingOptions: {
           nonce: 'nonce202212272050',
-          domain: 'domain202212272051'
+          domain: 'domain202212272051',
         },
-      };
+      }
       const result = await agent.getSiopAuthorizationRequestDetails(authorizationRequestArgs)
 
       expect(result).toEqual({
@@ -329,14 +329,14 @@ export default (testContext: {
           presentationDefinitions: pdMultiple,
           authorizationRequest: {} as AuthorizationRequest,
           versions: [],
-          payload: {}
+          payload: {},
         },
         verifiableCredentials: vcs,
         signingOptions: {
           nonce: 'nonce202212272050',
-          domain: 'domain202212272051'
+          domain: 'domain202212272051',
         },
-      };
+      }
 
       const result = await agent.getSiopAuthorizationRequestDetails(authorizationRequestArgs)
 
@@ -377,10 +377,8 @@ export default (testContext: {
           presentationDefinitions: pdMultiple,
           authorizationRequest: {} as AuthorizationRequest,
           versions: [],
-          authorizationRequestPayload: {
-
-          },
-          payload: {}
+          authorizationRequestPayload: {},
+          payload: {},
         },
       })
 

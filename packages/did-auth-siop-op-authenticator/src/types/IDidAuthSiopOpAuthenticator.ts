@@ -7,7 +7,7 @@ import {
   VerifiablePresentationWithLocation,
   PresentationLocation,
   VerifiablePresentationTypeFormat,
-  PresentationSignCallback
+  PresentationSignCallback,
 } from '@sphereon/did-auth-siop'
 
 import { Resolvable } from 'did-resolver'
@@ -17,15 +17,9 @@ export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   registerSessionForSiop(args: IRegisterSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
   removeSessionForSiop(args: IRemoveSiopSessionArgs, context: IRequiredContext): Promise<boolean>
   authenticateWithSiop(args: IAuthenticateWithSiopArgs, context: IRequiredContext): Promise<IResponse>
-  getSiopAuthorizationRequestFromRP(
-    args: IGetSiopAuthorizationRequestFromRpArgs,
-    context: IRequiredContext
-  ): Promise<ParsedAuthorizationRequestURI>
+  getSiopAuthorizationRequestFromRP(args: IGetSiopAuthorizationRequestFromRpArgs, context: IRequiredContext): Promise<ParsedAuthorizationRequestURI>
   getSiopAuthorizationRequestDetails(args: IGetSiopAuthorizationRequestDetailsArgs, context: IRequiredContext): Promise<IAuthRequestDetails>
-  verifySiopAuthorizationRequestURI(
-    args: IVerifySiopAuthorizationRequestUriArgs,
-    context: IRequiredContext
-  ): Promise<VerifiedAuthorizationRequest>
+  verifySiopAuthorizationRequestURI(args: IVerifySiopAuthorizationRequestUriArgs, context: IRequiredContext): Promise<VerifiedAuthorizationRequest>
   sendSiopAuthorizationResponse(args: ISendSiopAuthorizationResponseArgs, context: IRequiredContext): Promise<IResponse>
   registerCustomApprovalForSiop(args: IRegisterCustomApprovalForSiopArgs, context: IRequiredContext): Promise<void>
   removeCustomApprovalForSiop(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean>
@@ -62,10 +56,10 @@ export interface IGetSiopAuthorizationRequestFromRpArgs {
 export interface IGetSiopAuthorizationRequestDetailsArgs {
   sessionId: string
   verifiedAuthorizationRequest: VerifiedAuthorizationRequest
-  verifiableCredentials: IVerifiableCredential[],
+  verifiableCredentials: IVerifiableCredential[]
   signingOptions?: {
-    nonce?: string;
-    domain?: string;
+    nonce?: string
+    domain?: string
   }
 }
 
@@ -134,11 +128,11 @@ export interface IOpsGetSiopAuthorizationRequestFromRpArgs {
 
 export interface IOpsGetSiopAuthorizationRequestDetailsArgs {
   verifiedAuthorizationRequest: VerifiedAuthorizationRequest
-  verifiableCredentials: IVerifiableCredential[],
+  verifiableCredentials: IVerifiableCredential[]
   signingOptions?: {
-    nonce?: string;
-    domain?: string;
-  },
+    nonce?: string
+    domain?: string
+  }
   presentationSignCallback?: PresentationSignCallback
 }
 

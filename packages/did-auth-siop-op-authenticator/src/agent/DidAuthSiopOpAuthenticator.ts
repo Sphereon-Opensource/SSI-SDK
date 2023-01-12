@@ -37,19 +37,16 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   }
 
   private readonly sessions: Record<string, OpSession>
-  private readonly customApprovals: Record<
-    string,
-    (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>
-  >
-  private readonly presentationSignCallback: PresentationSignCallback;
+  private readonly customApprovals: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>
+  private readonly presentationSignCallback: PresentationSignCallback
 
   constructor(
-      presentationSignCallback: PresentationSignCallback,
-      customApprovals?: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>,
+    presentationSignCallback: PresentationSignCallback,
+    customApprovals?: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>
   ) {
-    this.sessions = {};
-    this.customApprovals = customApprovals || {};
-    this.presentationSignCallback = presentationSignCallback;
+    this.sessions = {}
+    this.customApprovals = customApprovals || {}
+    this.presentationSignCallback = presentationSignCallback
   }
 
   private async getSessionForSiop(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession> {
@@ -120,13 +117,11 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     context: IRequiredContext
   ): Promise<IAuthRequestDetails> {
     return this.getSessionForSiop(
-        {
-          sessionId: args.sessionId
-        },
-        context
-    ).then(
-        (session) => session.getSiopAuthorizationRequestDetails(args, this.presentationSignCallback)
-    )
+      {
+        sessionId: args.sessionId,
+      },
+      context
+    ).then((session) => session.getSiopAuthorizationRequestDetails(args, this.presentationSignCallback))
   }
 
   private async verifySiopAuthorizationRequestURI(

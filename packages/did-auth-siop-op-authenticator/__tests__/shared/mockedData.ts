@@ -2,7 +2,7 @@ import {
   PresentationDefinitionWithLocation,
   PresentationDefinitionLocation,
   PresentationSignCallback,
-  PresentationLocation
+  PresentationLocation,
 } from '@sphereon/did-auth-siop'
 
 export const pdSingle: PresentationDefinitionWithLocation[] = [
@@ -268,4 +268,4 @@ export const presentationSignCallback: PresentationSignCallback = async (_args) 
     domain: '4jt78h47fh47',
     jws: 'eyJhbGciOiJSUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..kTCYt5XsITJX1CxPCT8yAV-TVIw5WEuts01mq-pQy7UJiN5mgREEMGlv50aqzpqh4Qq_PbChOMqsLfRoPsnsgxD-WUcX16dUOqV0G_zS245-kronKb78cPktb3rk-BuQy72IFLN25DYuNzVBAh4vGHSrQyHUGlcTwLtjPAnKb78',
   },
-});
+})
