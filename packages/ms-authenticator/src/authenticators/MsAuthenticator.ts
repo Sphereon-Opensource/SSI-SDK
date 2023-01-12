@@ -1,6 +1,6 @@
-import { ConfidentialClientApplication, LogLevel, PublicClientApplication, UsernamePasswordRequest } from '@azure/msal-node'
-import { IMsAuthenticationClientCredentialArgs, IMsAuthenticationUsernamePasswordArgs } from '../index'
-import { fetch } from 'cross-fetch'
+import {ConfidentialClientApplication, LogLevel, PublicClientApplication, UsernamePasswordRequest} from '@azure/msal-node'
+import {fetch} from 'cross-fetch'
+import {IMsAuthenticationClientCredentialArgs, IMsAuthenticationUsernamePasswordArgs} from '../index'
 
 const EU = 'EU'
 
@@ -20,11 +20,11 @@ const ERROR_FAILED_AUTHENTICATION = 'failed to authenticate: '
 
 async function getClientRegion(azTenantId: string): Promise<string> {
   let region = EU
-  await fetch(MS_LOGIN_PREFIX + azTenantId + MS_LOGIN_OPENID_CONFIG_POSTFIX, { method: HTTP_METHOD_GET })
-    .then((res) => res.json())
-    .then(async (resp) => {
-      region = resp.tenant_region_scope
-    })
+  await fetch(MS_LOGIN_PREFIX + azTenantId + MS_LOGIN_OPENID_CONFIG_POSTFIX, {method: HTTP_METHOD_GET})
+  .then((res) => res.json())
+  .then(async (resp) => {
+    region = resp.tenant_region_scope
+  })
   return region
 }
 
@@ -32,7 +32,7 @@ export async function checkMsIdentityHostname(authenticationArgs: IMsAuthenticat
   const region = authenticationArgs.region ? authenticationArgs.region : await getClientRegion(authenticationArgs.azTenantId)
   const msIdentityHostName = region === EU ? MS_IDENTITY_HOST_NAME_EU : MS_IDENTITY_HOST_NAME_NONE_EU
   // Check that the Credential Manifest URL is in the same tenant Region and throw an error if it's not
-  if (!authenticationArgs.credentialManifestUrl.startsWith(msIdentityHostName)) {
+  if (!authenticationArgs.credentialManifestUrl?.startsWith(msIdentityHostName)) {
     throw new Error(ERROR_CREDENTIAL_MANIFEST_REGION + msIdentityHostName)
   }
   return msIdentityHostName
@@ -67,9 +67,13 @@ export async function ClientCredentialAuthenticator(authenticationArgs: IMsAuthe
   const msalClientCredentialRequest = {
     scopes: authenticationArgs.scopes ? authenticationArgs.scopes : [MS_CLIENT_CREDENTIAL_DEFAULT_SCOPE],
     skipCache: authenticationArgs.skipCache ? authenticationArgs.skipCache : false,
+    resource: authenticationArgs.resource ? authenticationArgs.resource : undefined,
   }
 
-  checkMsIdentityHostname(authenticationArgs)
+  if (authenticationArgs.credentialManifestUrl != null) { // TODO ask what this is, we don't need it to log into SharePoint
+    checkMsIdentityHostname(authenticationArgs)
+  }
+
 
   // get the Access Token
   try {
@@ -99,11 +103,11 @@ export async function UsernamePasswordAuthenticator(authenticationArgs: IMsAuthe
   }
   const pca = new PublicClientApplication(msalConfig)
   return await pca
-    .acquireTokenByUsernamePassword(authenticationArgs as UsernamePasswordRequest)
-    .then((response: any) => {
-      return response
-    })
-    .catch((error: any) => {
-      throw new Error(ERROR_FAILED_AUTHENTICATION + error)
-    })
+  .acquireTokenByUsernamePassword(authenticationArgs as UsernamePasswordRequest)
+  .then((response: any) => {
+    return response
+  })
+  .catch((error: any) => {
+    throw new Error(ERROR_FAILED_AUTHENTICATION + error)
+  })
 }

@@ -1,8 +1,8 @@
-import { purposes } from '@digitalcredentials/jsonld-signatures'
+import {purposes} from '@digitalcredentials/jsonld-signatures'
 import * as vc from '@digitalcredentials/vc'
-import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
-import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
-import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
+import {CredentialIssuancePurpose} from '@digitalcredentials/vc'
+import {BbsBlsSignature2020} from '@mattrglobal/jsonld-signatures-bbs'
+import {VerifiableCredentialSP, VerifiablePresentationSP} from '@sphereon/ssi-sdk-core'
 import {
   CredentialPayload,
   IAgentContext,
@@ -15,9 +15,9 @@ import {
 } from '@veramo/core'
 import Debug from 'debug'
 
-import { LdContextLoader } from './ld-context-loader'
-import { LdDocumentLoader } from './ld-document-loader'
-import { LdSuiteLoader } from './ld-suite-loader'
+import {LdContextLoader} from './ld-context-loader'
+import {LdDocumentLoader} from './ld-document-loader'
+import {LdSuiteLoader} from './ld-suite-loader'
 
 //Support for Typescript added in version 9.0.0
 const jsonld = require('jsonld-signatures')
@@ -48,12 +48,12 @@ export class LdCredentialModule {
   }
 
   async issueLDVerifiableCredential(
-    credential: CredentialPayload,
-    issuerDid: string,
-    key: IKey,
-    verificationMethodId: string,
-    purpose: typeof ProofPurpose = new CredentialIssuancePurpose(),
-    context: IAgentContext<RequiredAgentMethods>
+      credential: CredentialPayload,
+      issuerDid: string,
+      key: IKey,
+      verificationMethodId: string,
+      purpose: typeof ProofPurpose = new CredentialIssuancePurpose(),
+      context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiableCredentialSP> {
     debug(`Issue VC method called for ${key.kid}...`)
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
@@ -87,19 +87,19 @@ export class LdCredentialModule {
   }
 
   async signLDVerifiablePresentation(
-    presentation: PresentationPayload,
-    holderDid: string,
-    key: IKey,
-    verificationMethodId: string,
-    challenge: string | undefined,
-    domain: string | undefined,
-    purpose: typeof ProofPurpose = !challenge && !domain
-      ? new AssertionProofPurpose()
-      : new AuthenticationProofPurpose({
-          domain,
-          challenge,
-        }),
-    context: IAgentContext<RequiredAgentMethods>
+      presentation: PresentationPayload,
+      holderDid: string,
+      key: IKey,
+      verificationMethodId: string,
+      challenge: string | undefined,
+      domain: string | undefined,
+      purpose: typeof ProofPurpose = !challenge && !domain
+          ? new AssertionProofPurpose()
+          : new AuthenticationProofPurpose({
+            domain,
+            challenge,
+          }),
+      context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiablePresentationSP> {
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
     const documentLoader = this.ldDocumentLoader.getLoader(context, true)
@@ -125,11 +125,11 @@ export class LdCredentialModule {
   }
 
   async verifyCredential(
-    credential: VerifiableCredential,
-    context: IAgentContext<IResolver>,
-    fetchRemoteContexts = false,
-    purpose: typeof ProofPurpose = new AssertionProofPurpose(),
-    checkStatus?: Function
+      credential: VerifiableCredential,
+      context: IAgentContext<IResolver>,
+      fetchRemoteContexts = false,
+      purpose: typeof ProofPurpose = new AssertionProofPurpose(),
+      checkStatus?: Function
   ): Promise<boolean> {
     const verificationSuites = this.getAllVerificationSuites()
     this.ldSuiteLoader.getAllSignatureSuites().forEach((suite) => suite.preVerificationCredModification(credential))
@@ -137,9 +137,9 @@ export class LdCredentialModule {
     if (credential.proof.type === 'BbsBlsSignature2020') {
       //Should never be null or undefined
       const suite = this.ldSuiteLoader
-        .getAllSignatureSuites()
-        .find((s) => s.getSupportedVeramoKeyType() === 'Bls12381G2')
-        ?.getSuiteForVerification() as BbsBlsSignature2020
+      .getAllSignatureSuites()
+      .find((s) => s.getSupportedVeramoKeyType() === 'Bls12381G2')
+      ?.getSuiteForVerification() as BbsBlsSignature2020
       result = await jsonld.verify(credential, {
         suite,
         purpose: purpose,
@@ -155,13 +155,25 @@ export class LdCredentialModule {
         checkStatus: checkStatus,
       })
     }
-    if (result.verified) return true
+    if (result.verified) {
+      result.results.forEach((item: any) => {
+        const eventData = {
+          credential: credential,
+          proof: item.proof,
+          verificationMethod: item.verificationMethod,
+          purposeResult: item.purposeResult,
+        };
+        context.agent.emit('verifyCredential-success', eventData)
+      })
+      return true
+    }
 
     // NOT verified.
 
     // result can include raw Error
     debug(`Error verifying LD Verifiable Credential: ${JSON.stringify(result, null, 2)}`)
     console.log(JSON.stringify(result, null, 2))
+    context.agent.emit('verifyCredential-failed', credential)
     throw Error('Error verifying LD Verifiable Credential')
   }
 
@@ -170,25 +182,25 @@ export class LdCredentialModule {
   }
 
   async verifyPresentation(
-    presentation: VerifiablePresentation,
-    challenge: string | undefined,
-    domain: string | undefined,
-    context: IAgentContext<IResolver>,
-    fetchRemoteContexts = false,
-    presentationPurpose: typeof ProofPurpose = !challenge && !domain
-      ? new AssertionProofPurpose()
-      : new AuthenticationProofPurpose(domain, challenge),
-    checkStatus?: Function
-    //AssertionProofPurpose()
+      presentation: VerifiablePresentation,
+      challenge: string | undefined,
+      domain: string | undefined,
+      context: IAgentContext<IResolver>,
+      fetchRemoteContexts = false,
+      presentationPurpose: typeof ProofPurpose = !challenge && !domain
+          ? new AssertionProofPurpose()
+          : new AuthenticationProofPurpose(domain, challenge),
+      checkStatus?: Function
+      //AssertionProofPurpose()
   ): Promise<boolean> {
     // console.log(JSON.stringify(presentation, null, 2))
     let result
     if (presentation.proof.type === 'BbsBlsSignature2020') {
       //Should never be null or undefined
       const suite = this.ldSuiteLoader
-        .getAllSignatureSuites()
-        .find((s) => s.getSupportedVeramoKeyType() === 'Bls12381G2')
-        ?.getSuiteForVerification() as BbsBlsSignature2020
+      .getAllSignatureSuites()
+      .find((s) => s.getSupportedVeramoKeyType() === 'Bls12381G2')
+      ?.getSuiteForVerification() as BbsBlsSignature2020
       result = await jsonld.verify(presentation, {
         suite,
         purpose: presentationPurpose,
@@ -207,13 +219,23 @@ export class LdCredentialModule {
       })
     }
 
-    if (result.verified) return true
+    if (result.verified) {
+      result.results.forEach((item: any) => {
+        const eventData = {
+          presentation: presentation,
+          proof: item.proof,
+        };
+        context.agent.emit('verifyPresentation-success', eventData)
+      })
+      return true
+    }
 
     // NOT verified.
 
     // result can include raw Error
     console.log(`Error verifying LD Verifiable Presentation`)
     console.log(JSON.stringify(result, null, 2))
+    context.agent.emit('verifyPresentation-failed', presentation)
     throw Error('Error verifying LD Verifiable Presentation')
   }
 }

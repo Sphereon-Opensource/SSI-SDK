@@ -36,6 +36,7 @@ const setup = async (): Promise<boolean> => {
       new SphereonBbsBlsSignature2020(),
     ])
   const { agent } = createObjects(config, { agent: '/agent' })
+  
   serverAgent = agent
 
   const agentRouter = AgentRouter({
