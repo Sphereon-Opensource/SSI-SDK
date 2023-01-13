@@ -107,8 +107,8 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       return await this.ldCredentialModule.issueLDVerifiableCredential(
         credential,
         identifier.did,
-        managedKey || signingKey,
-        managedKey ? (verificationMethod as string) : verificationMethodId,
+        managedKey || signingKey, // todo: signingKey does not have the private key, so would never work
+        verificationMethodId ? verificationMethodId : (verificationMethod as string),
         args.purpose,
         context
       )
@@ -184,7 +184,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       return await this.ldCredentialModule.signLDVerifiablePresentation(
         presentation,
         identifier.did,
-        signingKey || managedKey,
+        managedKey || signingKey, // todo: signingKey does not have the private key, so would never work
         verificationMethodId ? verificationMethodId : (verificationMethod as string),
         args.challenge,
         args.domain,
