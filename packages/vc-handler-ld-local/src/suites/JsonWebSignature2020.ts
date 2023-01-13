@@ -72,9 +72,9 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
       type: this.getSupportedVerificationType(),
       controller: controller,
       publicKeyJwk,
-    })
+    }, {signer: () => signer})
 
-    verificationKey.signer = () => signer
+    // verificationKey.signer = () => signer
 
     const suite = new JsonWebSignature({
       key: verificationKey,

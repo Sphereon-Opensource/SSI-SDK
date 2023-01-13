@@ -127,10 +127,10 @@ const getSigner = async (k: any, options = { detached: true }) => {
 };
 
 const applyJwa = async (k: any, options?: any) => {
-  const verifier = await getVerifier(k, options);
+  const verifier = options?.verifier ? options.verifier : await getVerifier(k, options);
   k.verifier = () => verifier as any;
   if (k.privateKey) {
-    const signer = await getSigner(k, options);
+    const signer = options?.signer ? options.signer : await getSigner(k, options);
     k.signer = () => signer as any;
   }
   return k;
@@ -184,11 +184,11 @@ export class JsonWebKey {
   ) => {
     const KeyPair = getKeyPairForType(k);
     const kp = await KeyPair.from(k as any);
-    let { detached, header } = options;
+    let { detached, header, signer, verifier } = options;
     if (detached === undefined) {
       detached = true;
     }
-    return useJwa(kp, { detached, header });
+    return useJwa(kp, { detached, header, signer, verifier });
   };
 
   public signer!: () => any;
