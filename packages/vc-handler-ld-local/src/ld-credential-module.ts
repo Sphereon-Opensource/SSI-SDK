@@ -108,14 +108,14 @@ export class LdCredentialModule {
 
     if (key.type === 'Bls12381G2') {
       return await jsonld.sign(presentation, {
-        suite: suite.getSuiteForSigning(key, holderDid, verificationMethodId, context),
+        suite: await suite.getSuiteForSigning(key, holderDid, verificationMethodId, context),
         purpose,
         documentLoader,
       })
     }
     return await vc.signPresentation({
       presentation,
-      suite: suite.getSuiteForSigning(key, holderDid, verificationMethodId, context),
+      suite: await suite.getSuiteForSigning(key, holderDid, verificationMethodId, context),
       challenge,
       domain,
       documentLoader,
