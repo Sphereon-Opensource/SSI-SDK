@@ -17,13 +17,11 @@ function getFileAsJson(path: string) {
 let agent: any
 
 const presentationSignCallback: PresentationSignCallback = async (args) => {
-  const presentationSignProof = getFileAsJson(
-      './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/psc/psc.json'
-  )
+  const presentationSignProof = getFileAsJson('./packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/psc/psc.json')
 
   return {
     ...args.presentation,
-    ...presentationSignProof
+    ...presentationSignProof,
   }
 }
 

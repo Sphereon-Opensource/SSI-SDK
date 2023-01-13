@@ -1,56 +1,46 @@
 // @ts-ignore
-import jsonld from 'jsonld';
+import jsonld from 'jsonld'
 
-import { subtle } from '@transmute/web-crypto-key-pair';
-import { JsonWebKey } from './JsonWebKeyWithRSASupport';
+import { subtle } from '@transmute/web-crypto-key-pair'
+import { JsonWebKey } from './JsonWebKeyWithRSASupport'
 
-import sec from '@transmute/security-context';
+import sec from '@transmute/security-context'
 
 const sha256 = async (data: any) => {
-  return Buffer.from(await subtle.digest('SHA-256', Buffer.from(data)));
-};
+  return Buffer.from(await subtle.digest('SHA-256', Buffer.from(data)))
+}
 
 export interface JsonWebSignatureOptions {
-  key?: JsonWebKey;
-  date?: any;
+  key?: JsonWebKey
+  date?: any
 }
 
 export class JsonWebSignature {
-  public useNativeCanonize: boolean = false;
-  public key?: JsonWebKey;
-  public proof: any;
-  public date: any;
-  public type: string = 'JsonWebSignature2020';
-  public verificationMethod?: string;
+  public useNativeCanonize: boolean = false
+  public key?: JsonWebKey
+  public proof: any
+  public date: any
+  public type: string = 'JsonWebSignature2020'
+  public verificationMethod?: string
 
   constructor(options: JsonWebSignatureOptions = {}) {
-    this.date = options.date;
+    this.date = options.date
     if (options.key) {
-      this.key = options.key;
-      this.verificationMethod = this.key.id;
+      this.key = options.key
+      this.verificationMethod = this.key.id
     }
   }
 
   ensureSuiteContext({ document }: any) {
-    const contextUrl = sec.constants.JSON_WEB_SIGNATURE_2020_V1_URL;
-    if (
-      document['@context'] === contextUrl ||
-      (Array.isArray(document['@context']) &&
-        document['@context'].includes(contextUrl))
-    ) {
+    const contextUrl = sec.constants.JSON_WEB_SIGNATURE_2020_V1_URL
+    if (document['@context'] === contextUrl || (Array.isArray(document['@context']) && document['@context'].includes(contextUrl))) {
       // document already includes the required context
-      return;
+      return
     }
-    throw new TypeError(
-      `The document to be signed must contain this suite's @context, ` +
-      `"${contextUrl}".`
-    );
+    throw new TypeError(`The document to be signed must contain this suite's @context, ` + `"${contextUrl}".`)
   }
 
-  async canonize(
-    input: any,
-    { documentLoader, expansionMap, skipExpansion }: any
-  ) {
+  async canonize(input: any, { documentLoader, expansionMap, skipExpansion }: any) {
     return jsonld.canonize(input, {
       algorithm: 'URDNA2015',
       format: 'application/n-quads',
@@ -58,68 +48,54 @@ export class JsonWebSignature {
       expansionMap,
       skipExpansion,
       useNative: this.useNativeCanonize,
-    });
+    })
   }
 
   async canonizeProof(proof: any, { documentLoader, expansionMap }: any) {
     // `jws`,`signatureValue`,`proofValue` must not be included in the proof
     // options
-    proof = { ...proof };
-    delete proof.jws;
+    proof = { ...proof }
+    delete proof.jws
     return this.canonize(proof, {
       documentLoader,
       expansionMap,
       skipExpansion: false,
-    });
+    })
   }
 
-  async createVerifyData({
-                           document,
-                           proof,
-                           documentLoader,
-                           expansionMap,
-                         }: any) {
+  async createVerifyData({ document, proof, documentLoader, expansionMap }: any) {
     // concatenate hash of c14n proof options and hash of c14n document
     const c14nProofOptions = await this.canonizeProof(proof, {
       documentLoader,
       expansionMap,
-    });
+    })
     const c14nDocument = await this.canonize(document, {
       documentLoader,
       expansionMap,
-    });
-    return Buffer.concat([
-      await sha256(c14nProofOptions),
-      await sha256(c14nDocument),
-    ]);
+    })
+    return Buffer.concat([await sha256(c14nProofOptions), await sha256(c14nDocument)])
   }
 
   async matchProof({ proof }: any) {
-    return proof.type === 'JsonWebSignature2020';
+    return proof.type === 'JsonWebSignature2020'
   }
 
   async sign({ verifyData, proof }: any) {
     try {
-      const signer: any = await this.key?.signer();
-      const detachedJws = await signer.sign({ data: verifyData });
-      proof.jws = detachedJws;
-      return proof;
+      const signer: any = await this.key?.signer()
+      const detachedJws = await signer.sign({ data: verifyData })
+      proof.jws = detachedJws
+      return proof
     } catch (e) {
-      console.warn('Failed to sign.');
-      throw e;
+      console.warn('Failed to sign.')
+      throw e
     }
   }
 
-  async createProof({
-                      document,
-                      purpose,
-                      documentLoader,
-                      expansionMap,
-                      compactProof,
-                    }: any) {
-    let proof;
+  async createProof({ document, purpose, documentLoader, expansionMap, compactProof }: any) {
+    let proof
 
-    const context = document['@context'];
+    const context = document['@context']
 
     if (this.proof) {
       // use proof JSON-LD document passed to API
@@ -127,38 +103,38 @@ export class JsonWebSignature {
         documentLoader,
         expansionMap,
         compactToRelative: false,
-      });
+      })
     } else {
       // create proof JSON-LD document
       proof = {
         '@context': context,
-      };
+      }
     }
 
     // console.log(document);
 
     // ensure proof type is set
-    proof.type = this.type;
+    proof.type = this.type
 
     // set default `now` date if not given in `proof` or `options`
-    let date = this.date;
+    let date = this.date
     if (proof.created === undefined && date === undefined) {
-      date = new Date();
+      date = new Date()
     }
 
     // ensure date is in string format
     if (date !== undefined && typeof date !== 'string') {
-      date = new Date(date).toISOString();
-      date = date.substr(0, date.length - 5) + 'Z';
+      date = new Date(date).toISOString()
+      date = date.substr(0, date.length - 5) + 'Z'
     }
 
     // add API overrides
     if (date !== undefined) {
-      proof.created = date;
+      proof.created = date
     }
     // `verificationMethod` is for newer suites, `creator` for legacy
     if (this.verificationMethod !== undefined) {
-      proof.verificationMethod = this.verificationMethod;
+      proof.verificationMethod = this.verificationMethod
     }
 
     // allow purpose to update the proof; the `proof` is in the
@@ -169,7 +145,7 @@ export class JsonWebSignature {
       suite: this,
       documentLoader,
       expansionMap,
-    });
+    })
 
     // create data to sign
     const verifyData = await this.createVerifyData({
@@ -178,7 +154,7 @@ export class JsonWebSignature {
       documentLoader,
       expansionMap,
       compactProof,
-    });
+    })
 
     // sign data
     proof = await this.sign({
@@ -187,33 +163,33 @@ export class JsonWebSignature {
       proof,
       documentLoader,
       expansionMap,
-    });
+    })
 
-    delete proof['@context'];
-    return proof;
+    delete proof['@context']
+    return proof
   }
 
   async getVerificationMethod({ proof, documentLoader, instance }: any) {
-    let { verificationMethod } = proof;
+    let { verificationMethod } = proof
 
     if (!verificationMethod) {
       // backwards compatibility support for `creator`
-      const { creator } = proof;
-      verificationMethod = creator;
+      const { creator } = proof
+      verificationMethod = creator
     }
 
     if (typeof verificationMethod === 'object') {
-      verificationMethod = verificationMethod.id;
+      verificationMethod = verificationMethod.id
     }
 
     if (!verificationMethod) {
-      throw new Error('No "verificationMethod" or "creator" found in proof.');
+      throw new Error('No "verificationMethod" or "creator" found in proof.')
     }
 
     // Note: `expansionMap` is intentionally not passed; we can safely drop
     // properties here and must allow for it
 
-    const { document } = await documentLoader(verificationMethod);
+    const { document } = await documentLoader(verificationMethod)
     const framed = await jsonld.frame(
       verificationMethod,
       {
@@ -228,37 +204,30 @@ export class JsonWebSignature {
             return {
               documentUrl: iri,
               document,
-            };
+            }
           }
-          return documentLoader(iri);
+          return documentLoader(iri)
         },
       }
-    );
+    )
 
     if (!framed || !framed.controller) {
-      throw new Error(`Verification method ${verificationMethod} not found.`);
+      throw new Error(`Verification method ${verificationMethod} not found.`)
     }
 
     if (!instance) {
-      return framed;
+      return framed
     }
 
-    return JsonWebKey.from(framed);
+    return JsonWebKey.from(framed)
   }
 
   async verifySignature({ verifyData, verificationMethod, proof }: any) {
-    const verifier = await verificationMethod.verifier();
-    return verifier.verify({ data: verifyData, signature: proof.jws });
+    const verifier = await verificationMethod.verifier()
+    return verifier.verify({ data: verifyData, signature: proof.jws })
   }
 
-  async verifyProof({
-                      proof,
-                      document,
-                      purpose,
-                      documentLoader,
-                      expansionMap,
-                      compactProof,
-                    }: any) {
+  async verifyProof({ proof, document, purpose, documentLoader, expansionMap, compactProof }: any) {
     try {
       // create data to verify
       const verifyData = await this.createVerifyData({
@@ -267,7 +236,7 @@ export class JsonWebSignature {
         documentLoader,
         expansionMap,
         compactProof,
-      });
+      })
 
       // fetch verification method
       const verificationMethod = await this.getVerificationMethod({
@@ -276,7 +245,7 @@ export class JsonWebSignature {
         documentLoader,
         expansionMap,
         instance: true, // this means we get a key pair class instance, not just json.
-      });
+      })
 
       // verify signature on data
       const verified = await this.verifySignature({
@@ -286,9 +255,9 @@ export class JsonWebSignature {
         proof,
         documentLoader,
         expansionMap,
-      });
+      })
       if (!verified) {
-        throw new Error('Invalid signature.');
+        throw new Error('Invalid signature.')
       }
 
       // ensure proof was performed for a valid purpose
@@ -298,15 +267,15 @@ export class JsonWebSignature {
         verificationMethod,
         documentLoader,
         expansionMap,
-      });
+      })
 
       if (!purposeResult.valid) {
-        throw purposeResult.error;
+        throw purposeResult.error
       }
 
-      return { verified: true, purposeResult };
+      return { verified: true, purposeResult }
     } catch (error) {
-      return { verified: false, error };
+      return { verified: false, error }
     }
   }
 }

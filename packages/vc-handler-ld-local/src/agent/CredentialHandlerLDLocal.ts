@@ -40,6 +40,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     verifyCredentialLDLocal: this.verifyCredentialLDLocal.bind(this),
   }
   private keyStore?: AbstractPrivateKeyStore
+
   constructor(options: {
     contextMaps: RecordLike<OrPromise<ContextDoc>>[]
     suites: SphereonLdSignature[]
@@ -127,7 +128,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
           ...identifier.keys.find((k) => k.kid === keyRef),
           privateKeyHex: k.privateKeyHex as string,
         } as IKey
-        verificationMethod = `${identifier.did}#${identifier.did.substring(8)}`
+        verificationMethod = `${identifier.did}#${managedKey.kid ? managedKey.kid : k.alias}`
       }
     }
     return { managedKey, verificationMethod }
@@ -183,8 +184,8 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       return await this.ldCredentialModule.signLDVerifiablePresentation(
         presentation,
         identifier.did,
-        managedKey || signingKey,
-        managedKey ? (verificationMethod as string) : verificationMethodId,
+        signingKey || managedKey,
+        verificationMethodId ? verificationMethodId : (verificationMethod as string),
         args.challenge,
         args.domain,
         args.purpose,

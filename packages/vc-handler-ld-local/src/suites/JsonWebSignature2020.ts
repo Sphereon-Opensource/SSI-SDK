@@ -67,12 +67,15 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
           x: u8a.toString(u8a.fromString(key.publicKeyHex, 'hex'), 'base64url'),
         }
 
-    const verificationKey = await JsonWebKey.from({
-      id: id,
-      type: this.getSupportedVerificationType(),
-      controller: controller,
-      publicKeyJwk,
-    }, {signer, verifier: false})
+    const verificationKey = await JsonWebKey.from(
+      {
+        id: id,
+        type: this.getSupportedVerificationType(),
+        controller: controller,
+        publicKeyJwk,
+      },
+      { signer, verifier: false }
+    )
 
     // verificationKey.signer = () => signer
 

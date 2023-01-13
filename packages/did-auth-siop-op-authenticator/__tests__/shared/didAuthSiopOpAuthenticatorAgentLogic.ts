@@ -12,7 +12,7 @@ import {
   UrlEncodingFormat,
   VerificationMode,
   VerifiedAuthorizationRequest,
-  ParsedAuthorizationRequestURI
+  ParsedAuthorizationRequestURI,
 } from '@sphereon/did-auth-siop'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
 
@@ -348,10 +348,10 @@ export default (testContext: {
 
     it('should get authentication details with getting specific credentials', async () => {
       const pdSingle: PresentationDefinitionWithLocation = getFileAsJson(
-          './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_single.json'
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_single.json'
       )
       const vpSingle: VerifiablePresentationWithLocation = getFileAsJson(
-          './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_single.json'
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_single.json'
       )
       vpSingle.presentation.presentation_submission!.id = expect.any(String)
 
@@ -365,11 +365,13 @@ export default (testContext: {
           payload: {},
         },
         credentialFilter: {
-          where: [{
-            column: 'id',
-            value: ['https://example.com/credentials/1872']
-          }]
-        }
+          where: [
+            {
+              column: 'id',
+              value: ['https://example.com/credentials/1872'],
+            },
+          ],
+        },
       })
 
       expect(result).toEqual({
@@ -434,7 +436,7 @@ export default (testContext: {
 
     it('should send authentication response', async () => {
       const pdMultiple: PresentationDefinitionWithLocation = getFileAsJson(
-          './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_multiple.json'
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_multiple.json'
       )
 
       const result = await agent.sendSiopAuthorizationResponse({
