@@ -1,8 +1,9 @@
 import { CredentialPayload, DIDDocument, IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 import * as u8a from 'uint8arrays'
-import { JsonWebKey, JsonWebSignature } from '@transmute/json-web-signature'
 import { asArray, encodeJoseBlob } from '@veramo/utils'
+import { JsonWebKey } from './impl/JsonWebKeyWithRSASupport'
+import { JsonWebSignature } from './impl/JsonWebSignatureWithRSASupport'
 
 /**
  * Veramo wrapper for the JsonWebSignature2020 suite by Transmute Industries
@@ -15,7 +16,6 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
   }
 
   getSupportedVeramoKeyType(): TKeyType {
-    // @ts-ignore
     return 'RSA'
   }
 
