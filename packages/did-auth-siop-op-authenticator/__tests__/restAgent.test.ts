@@ -1,6 +1,8 @@
+import * as fs from 'fs'
 import 'cross-fetch/polyfill'
+// @ts-ignore
 import express from 'express'
-import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
+import { IAgent, createAgent, IAgentOptions, IDataStore } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
@@ -12,17 +14,36 @@ import { getDidKeyResolver } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { getUniResolver } from '@sphereon/did-uni-client'
 import didAuthSiopOpAuthenticatorAgentLogic from './shared/didAuthSiopOpAuthenticatorAgentLogic'
-import { presentationSignCallback } from './shared/mockedData'
+import { PresentationSignCallback } from '@sphereon/did-auth-siop'
 
 jest.setTimeout(30000)
+
+function getFile(path: string) {
+  return fs.readFileSync(path, 'utf-8')
+}
+
+function getFileAsJson(path: string) {
+  return JSON.parse(getFile(path))
+}
 
 const port = 3002
 const basePath = '/agent'
 let serverAgent: IAgent
 let restServer: Server
 
+const presentationSignCallback: PresentationSignCallback = async (args) => {
+  const presentationSignProof = getFileAsJson(
+      './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/psc/psc.json'
+  )
+
+  return {
+    ...args.presentation,
+    ...presentationSignProof
+  }
+}
+
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IDidAuthSiopOpAuthenticator>({
+  createAgent<IDidAuthSiopOpAuthenticator & IDataStore>({
     ...options,
     plugins: [
       new DidAuthSiopOpAuthenticator(presentationSignCallback),

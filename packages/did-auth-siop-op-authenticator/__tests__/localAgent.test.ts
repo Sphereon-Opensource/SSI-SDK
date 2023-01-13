@@ -1,12 +1,31 @@
+import * as fs from 'fs'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
+import didAuthSiopOpAuthenticatorAgentLogic from './shared/didAuthSiopOpAuthenticatorAgentLogic'
+import { PresentationSignCallback } from '@sphereon/did-auth-siop'
 
 jest.setTimeout(30000)
 
-import didAuthSiopOpAuthenticatorAgentLogic from './shared/didAuthSiopOpAuthenticatorAgentLogic'
-import { presentationSignCallback } from './shared/mockedData'
+function getFile(path: string) {
+  return fs.readFileSync(path, 'utf-8')
+}
+
+function getFileAsJson(path: string) {
+  return JSON.parse(getFile(path))
+}
 
 let agent: any
+
+const presentationSignCallback: PresentationSignCallback = async (args) => {
+  const presentationSignProof = getFileAsJson(
+      './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/psc/psc.json'
+  )
+
+  return {
+    ...args.presentation,
+    ...presentationSignProof
+  }
+}
 
 const setup = async (): Promise<boolean> => {
   const config = getConfig('packages/did-auth-siop-op-authenticator/agent.yml')
