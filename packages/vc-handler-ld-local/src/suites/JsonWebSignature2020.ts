@@ -1,4 +1,4 @@
-import { CredentialPayload, DIDDocument, IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
+import { CredentialPayload, DIDDocument, IAgentContext, IKey, PresentationPayload, TKeyType, VerifiableCredential } from '@veramo/core'
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 import * as u8a from 'uint8arrays'
 import { asArray, encodeJoseBlob } from '@veramo/utils'
@@ -92,6 +92,11 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
 
   preSigningCredModification(credential: CredentialPayload): void {
     credential['@context'] = [...(credential['@context'] || []), this.getContext()]
+  }
+
+  preSigningPresModification(presentation: PresentationPayload): void {
+    super.preSigningPresModification(presentation)
+    presentation['@context'] = [...(presentation['@context'] || []), this.getContext()]
   }
 
   preDidResolutionModification(didUrl: string, didDoc: DIDDocument): void {
