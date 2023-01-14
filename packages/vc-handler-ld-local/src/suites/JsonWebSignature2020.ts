@@ -89,7 +89,7 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
   getSuiteForVerification(): any {
     const verifier = {
       // returns a JWS detached
-      verify: async (args: { data: Uint8Array }): Promise<boolean> => {
+      verify: async (args: { data: Uint8Array; signature: Uint8Array }): Promise<boolean> => {
         return true
       },
     }

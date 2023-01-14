@@ -123,7 +123,7 @@ const applyJwa = async (k: any, options?: any) => {
   const verifier = options?.verifier !== undefined ? options.verifier : await getVerifier(k, options)
   k.verifier = () => verifier as any
   if (k.privateKey || options?.signer !== undefined) {
-    const signer = options?.signer ? options.signer : await getSigner(k, options)
+    const signer = options?.signer !== undefined ? options.signer : await getSigner(k, options)
     k.signer = () => signer as any
   }
   return k

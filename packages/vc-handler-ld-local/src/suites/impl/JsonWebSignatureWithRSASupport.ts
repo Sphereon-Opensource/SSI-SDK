@@ -230,6 +230,10 @@ export class JsonWebSignature {
   }
 
   async verifySignature({ verifyData, verificationMethod, proof }: any) {
+    if (verificationMethod.publicKeyJwk) {
+      const key = verificationMethod.publicKeyJwk as CryptoKey
+      return await crypto.subtle.verify(key.algorithm?.name ? key.algorithm.name : 'SHA-256', key, new Uint8Array(proof.jws), verifyData)
+    }
     const verifier = await verificationMethod.verifier()
     return verifier.verify({ data: verifyData, signature: proof.jws })
   }
