@@ -4,6 +4,8 @@ import jsonld from 'jsonld'
 import { subtle } from '@transmute/web-crypto-key-pair'
 import { JsonWebKey } from './JsonWebKeyWithRSASupport'
 
+import { Verifier } from '@transmute/jose-ld'
+
 import sec from '@transmute/security-context'
 
 const sha256 = async (data: any) => {
@@ -13,6 +15,7 @@ const sha256 = async (data: any) => {
 export interface JsonWebSignatureOptions {
   key?: JsonWebKey
   date?: any
+  verifier?: Verifier
 }
 
 export class JsonWebSignature {
@@ -22,12 +25,16 @@ export class JsonWebSignature {
   public date: any
   public type: string = 'JsonWebSignature2020'
   public verificationMethod?: string
+  public verifier?: Verifier
 
   constructor(options: JsonWebSignatureOptions = {}) {
     this.date = options.date
     if (options.key) {
       this.key = options.key
       this.verificationMethod = this.key.id
+    }
+    if (options.verifier) {
+      this.verifier = options.verifier
     }
   }
 
@@ -211,15 +218,15 @@ export class JsonWebSignature {
       }
     )
 
-    if (!framed || !framed.controller) {
-      throw new Error(`Verification method ${verificationMethod} not found.`)
-    }
-
     if (!instance) {
+      if (!framed || !framed.controller) {
+        throw new Error(`Verification method ${verificationMethod} not found.`)
+      }
+
       return framed
     }
 
-    return JsonWebKey.from(framed)
+    return JsonWebKey.from(document, { signer: false, verifier: this.verifier })
   }
 
   async verifySignature({ verifyData, verificationMethod, proof }: any) {

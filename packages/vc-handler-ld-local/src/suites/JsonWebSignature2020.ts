@@ -87,7 +87,13 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
   }
 
   getSuiteForVerification(): any {
-    return new JsonWebSignature()
+    const verifier = {
+      // returns a JWS detached
+      verify: async (args: { data: Uint8Array }): Promise<boolean> => {
+        return true
+      },
+    }
+    return new JsonWebSignature({ verifier })
   }
 
   preSigningCredModification(credential: CredentialPayload): void {

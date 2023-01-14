@@ -59,6 +59,11 @@ const getVerifier = async (k: any, options = { detached: true }) => {
     }
   }
 
+  if (kty === 'RSA') {
+    // @ts-ignore
+    return JWS.createVerifier(k.verifier('RSA'), 'RS256', options)
+  }
+
   if (kty === 'EC') {
     if (crv === 'secp256k1') {
       return JWS.createVerifier(k.verifier('Ecdsa'), 'ES256K', options)
@@ -79,7 +84,7 @@ const getVerifier = async (k: any, options = { detached: true }) => {
     }
   }
 
-  throw new Error(`getVerifier does not suppport ${JSON.stringify(publicKeyJwk, null, 2)}`)
+  throw new Error(`getVerifier does not support ${JSON.stringify(publicKeyJwk, null, 2)}`)
 }
 
 const getSigner = async (k: any, options = { detached: true }) => {
@@ -89,6 +94,10 @@ const getSigner = async (k: any, options = { detached: true }) => {
     if (crv === 'Ed25519') {
       return JWS.createSigner(k.signer('EdDsa'), 'EdDSA', options)
     }
+  }
+  if (kty === 'RSA') {
+    // @ts-ignore
+    return JWS.createSigner(k.signer('RSA'), 'RS256', options)
   }
   if (kty === 'EC') {
     if (crv === 'secp256k1') {
@@ -107,7 +116,7 @@ const getSigner = async (k: any, options = { detached: true }) => {
       return JWS.createSigner(k.signer('Ecdsa'), 'ES512', options)
     }
   }
-  throw new Error(`getSigner does not suppport ${JSON.stringify(publicKeyJwk, null, 2)}`)
+  throw new Error(`getSigner does not support ${JSON.stringify(publicKeyJwk, null, 2)}`)
 }
 
 const applyJwa = async (k: any, options?: any) => {
