@@ -3,7 +3,7 @@ import jsonld from 'jsonld'
 
 import { subtle } from '@transmute/web-crypto-key-pair'
 import { JsonWebKey } from './JsonWebKeyWithRSASupport'
-
+import * as u8a from 'uint8arrays'
 import { Verifier } from '@transmute/jose-ld'
 
 import sec from '@transmute/security-context'
@@ -232,7 +232,15 @@ export class JsonWebSignature {
   async verifySignature({ verifyData, verificationMethod, proof }: any) {
     if (verificationMethod.publicKey) {
       const key = verificationMethod.publicKey as CryptoKey
-      return await subtle.verify(key.algorithm?.name ? key.algorithm.name : 'SHA-256', key, new Uint8Array(proof.jws), verifyData)
+      return await subtle.verify(
+        {
+          name: key.algorithm?.name ? key.algorithm.name : 'RSASSA-PKCS1-V1_5',
+          hash: 'SHA-256',
+        },
+        key,
+        typeof proof.jws === 'string' ? u8a.fromString(proof.jws, 'base64urlpad') : proof.jws,
+        verifyData
+      )
     }
     const verifier = await verificationMethod.verifier()
     return verifier.verify({ data: verifyData, signature: proof.jws })
