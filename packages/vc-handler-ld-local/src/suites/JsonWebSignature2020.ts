@@ -48,7 +48,7 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
         }
         const headerString = encodeJoseBlob(header)
         const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), args.data])
-        const messageString = u8a.toString(messageBuffer, 'base64')
+        const messageString = u8a.toString(messageBuffer, 'utf-8')
         const signature = await context.agent.keyManagerSign({
           keyRef: key.kid,
           algorithm: alg,

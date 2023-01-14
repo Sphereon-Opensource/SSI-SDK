@@ -238,7 +238,7 @@ export class JsonWebSignature {
           hash: 'SHA-256',
         },
         key,
-        typeof proof.jws === 'string' ? u8a.fromString(proof.jws, 'base64urlpad') : proof.jws,
+        typeof proof.jws === 'string' ? u8a.fromString(proof.jws, 'base64url') : proof.jws,
         verifyData
       )
     }
