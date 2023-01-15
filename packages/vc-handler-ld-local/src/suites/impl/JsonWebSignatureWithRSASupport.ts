@@ -236,10 +236,9 @@ export class JsonWebSignature {
     if (verificationMethod.publicKey) {
       const key = verificationMethod.publicKey as CryptoKey
       const signature = proof.jws.split('.')[2]
-      const header = proof.jws.split('.')[0]
-      const verifyDataString = u8a.toString(verifyData, 'base64url')
-      const data = `${header}.${verifyDataString}`
-      console.log(`SIG SUITE verifySig input: ${data}`)
+      const headerString = proof.jws.split('.')[0]
+      const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), verifyData])
+      console.log(`SIG SUITE verifySig input: ${u8a.toString(messageBuffer, 'utf-8')}`)
       console.log(`SIG SUITE verifySig jws: ${signature}`)
       console.log(`SIG SUITE verifySig verifyData: ${u8a.toString(verifyData, 'base64url')}`)
       return await subtle.verify(
@@ -249,7 +248,7 @@ export class JsonWebSignature {
         },
         key,
         u8a.fromString(signature, 'base64url'),
-        u8a.fromString(data, 'base64url')
+        messageBuffer
       )
     }
     const verifier = await verificationMethod.verifier()
