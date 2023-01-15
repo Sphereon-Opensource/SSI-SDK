@@ -235,15 +235,16 @@ export class JsonWebSignature {
   async verifySignature({ verifyData, verificationMethod, proof }: any) {
     if (verificationMethod.publicKey) {
       const key = verificationMethod.publicKey as CryptoKey
-      console.log(`SIG SUITE verifySig jws: ${proof.jws}`)
+      const signature = proof.jws.split('.')[2]
+      console.log(`SIG SUITE verifySig jws: ${signature}`)
       console.log(`SIG SUITE verifySig verifyData: ${u8a.toString(verifyData, 'base64url')}`)
       return await subtle.verify(
         {
           name: key.algorithm?.name ? key.algorithm.name : 'RSASSA-PKCS1-V1_5',
-          hash: 'SHA-256',
+          hash: 'SHA-256', // todo get from proof.jws header
         },
         key,
-        typeof proof.jws === 'string' ? u8a.fromString(proof.jws, 'base64url') : proof.jws,
+        u8a.fromString(signature, 'base64url'),
         verifyData
       )
     }
