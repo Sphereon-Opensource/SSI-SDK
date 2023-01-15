@@ -90,10 +90,8 @@ export class JsonWebSignature {
   async sign({ verifyData, proof }: any) {
     try {
       const signer: any = await this.key?.signer()
-      console.log(`SIG SUITE sign verifyData: ${u8a.toString(verifyData, 'base64url')}`)
       const detachedJws = await signer.sign({ data: verifyData })
       proof.jws = detachedJws
-      console.log(`SIG SUITE sign jws: ${detachedJws}`)
       return proof
     } catch (e) {
       console.warn('Failed to sign.')
@@ -164,7 +162,6 @@ export class JsonWebSignature {
       expansionMap,
       compactProof,
     })
-    console.log(`createProof verifyData: ${u8a.toString(verifyData, 'base64url')}`)
 
     // sign data
     proof = await this.sign({
@@ -238,9 +235,6 @@ export class JsonWebSignature {
       const signature = proof.jws.split('.')[2]
       const headerString = proof.jws.split('.')[0]
       const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), verifyData])
-      console.log(`SIG SUITE verifySig input: ${u8a.toString(messageBuffer, 'utf-8')}`)
-      console.log(`SIG SUITE verifySig jws: ${signature}`)
-      console.log(`SIG SUITE verifySig verifyData: ${u8a.toString(verifyData, 'base64url')}`)
       return await subtle.verify(
         {
           name: key.algorithm?.name ? key.algorithm.name : 'RSASSA-PKCS1-V1_5',
@@ -274,8 +268,6 @@ export class JsonWebSignature {
         expansionMap,
         instance: true, // this means we get a key pair class instance, not just json.
       })
-
-      console.log(`verifyProof verifyData: ${u8a.toString(verifyData, 'base64url')}`)
 
       // verify signature on data
       const verified = await this.verifySignature({
