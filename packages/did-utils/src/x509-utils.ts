@@ -17,7 +17,7 @@ export function pemCertChainTox5c(cert: string, maxDepth?: number): string[] {
    * `maxdepth` The maximum number of certificates to use from the chain.
    */
 
-  const intermediate = cert.replace(/-----[^\n]+\n?/gm, ',').replace(/\n/g, '')
+  const intermediate = cert.replace(/-----[^\n]+\n?/gm, ',').replace(/\n/g, '').replace(/\r/g, '')
   let x5c = intermediate.split(',').filter(function (c) {
     return c.length > 0
   })
