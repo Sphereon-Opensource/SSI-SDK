@@ -133,7 +133,9 @@ export async function mapIdentifierKeysToDocWithJwkSupport(
   context: IAgentContext<IResolver>,
   didDocument?: DIDDocument
 ): Promise<_ExtendedIKey[]> {
-  const keys = await mapIdentifierKeysToDoc(identifier, section, context)
+  const rsaDidWeb = identifier.keys && identifier.keys.length > 0 && identifier.keys[0].type === 'RSA' && didDocument
+  // We skip mapping in case the identifier is RSA and a did document is supplied.
+  const keys = rsaDidWeb ? [] : await mapIdentifierKeysToDoc(identifier, section, context)
   const didDoc = didDocument ? didDocument : await resolveDidOrThrow(identifier.did, context)
   // dereference all key agreement keys from DID document and normalize
   const documentKeys: VerificationMethod[] = await dereferenceDidKeysWithJwkSupport(didDoc, section, context)
