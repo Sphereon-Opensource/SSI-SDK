@@ -130,12 +130,13 @@ export function extractPublicKeyHexWithJwkSupport(pk: _ExtendedVerificationMetho
 export async function mapIdentifierKeysToDocWithJwkSupport(
   identifier: IIdentifier,
   section: DIDDocumentSection = 'keyAgreement',
-  context: IAgentContext<IResolver>
+  context: IAgentContext<IResolver>,
+  didDocument?: DIDDocument
 ): Promise<_ExtendedIKey[]> {
   const keys = await mapIdentifierKeysToDoc(identifier, section, context)
-  const didDocument = await resolveDidOrThrow(identifier.did, context)
+  const didDoc = didDocument ? didDocument : await resolveDidOrThrow(identifier.did, context)
   // dereference all key agreement keys from DID document and normalize
-  const documentKeys: VerificationMethod[] = await dereferenceDidKeysWithJwkSupport(didDocument, section, context)
+  const documentKeys: VerificationMethod[] = await dereferenceDidKeysWithJwkSupport(didDoc, section, context)
 
   const localKeys = identifier.keys.filter(isDefined)
   // finally map the didDocument keys to the identifier keys by comparing `publicKeyHex`
