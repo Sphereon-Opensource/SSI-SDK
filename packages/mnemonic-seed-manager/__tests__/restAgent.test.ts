@@ -6,7 +6,8 @@ import { createAgent, IAgent, IAgentOptions, IDataStore, IDataStoreORM, IKeyMana
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 
-import * as express from 'express'
+// @ts-ignore
+import express from 'express'
 import { DataSource } from 'typeorm'
 
 import { IMnemonicSeedManager, MnemonicSeedManager, MnemonicSeedManagerEntities, MnemonicSeedManagerMigrations } from '../src'

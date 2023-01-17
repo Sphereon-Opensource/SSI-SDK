@@ -5,7 +5,8 @@ import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 import { getConfig } from '@veramo/cli/build/setup'
 import { IAgent } from '@veramo/core'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
-import * as express from 'express'
+// @ts-ignore
+import express from 'express'
 
 import { LdDefaultContexts } from '../ld-default-contexts'
 import { SphereonBbsBlsSignature2020, SphereonEd25519Signature2018, SphereonEd25519Signature2020 } from '../suites'
