@@ -27,6 +27,7 @@ import {
   IAddPartyArgs,
   IGetConnectionArgs,
   IGetConnectionsArgs,
+  IGetPartiesArgs,
   IGetPartyArgs,
   IRemoveConnectionArgs,
   IRemovePartyArgs,
@@ -60,8 +61,9 @@ export class ConnectionStore extends AbstractConnectionStore {
     return this.partyFrom(result)
   }
 
-  getParties = async (): Promise<Array<IConnectionParty>> => {
+  getParties = async ({ filter }: IGetPartiesArgs): Promise<Array<IConnectionParty>> => {
     const result = await (await this.dbConnection).getRepository(PartyEntity).find({
+      ...(filter && { where: filter }),
       relations: this.party_relations,
     })
 

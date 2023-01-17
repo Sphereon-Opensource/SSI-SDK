@@ -81,6 +81,19 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.length).toBeGreaterThan(0)
     })
 
+    it('should get parties by filter', async () => {
+      const args = {
+        filter: [
+          { name: 'default_party' },
+          { alias: 'default_party_alias'},
+          { uri: 'example.com' }
+        ]
+      }
+      const result = await agent.cmGetParties(args)
+
+      expect(result.length).toBe(1)
+    })
+
     it('should add party', async () => {
       const party = {
         name: 'new_party',

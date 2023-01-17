@@ -1,7 +1,6 @@
 import * as fs from 'fs'
 import 'cross-fetch/polyfill'
-// @ts-ignore
-import express from 'express'
+import * as express from 'express'
 import { IAgent, createAgent, IAgentOptions, IDataStore } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { Server } from 'http'

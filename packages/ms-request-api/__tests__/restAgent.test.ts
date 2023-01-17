@@ -1,5 +1,5 @@
 import 'cross-fetch/polyfill'
-import express from 'express'
+import * as express from 'express'
 import { Server } from 'http'
 import { IAgent, createAgent, IAgentOptions, IDataStore, IDataStoreORM } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
