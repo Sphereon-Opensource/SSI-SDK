@@ -12,10 +12,7 @@
               "$ref": "#/components/schemas/IBasicConnection"
             }
           },
-          "required": [
-            "partyId",
-            "connection"
-          ]
+          "required": ["partyId", "connection"]
         },
         "IBasicConnection": {
           "type": "object",
@@ -36,19 +33,11 @@
               }
             }
           },
-          "required": [
-            "type",
-            "identifier",
-            "config"
-          ]
+          "required": ["type", "identifier", "config"]
         },
         "ConnectionTypeEnum": {
           "type": "string",
-          "enum": [
-            "openid",
-            "didauth",
-            "siopv2+oidc4vp"
-          ]
+          "enum": ["openid", "didauth", "siopv2+oidc4vp"]
         },
         "BasicConnectionIdentifier": {
           "type": "object",
@@ -60,17 +49,11 @@
               "type": "string"
             }
           },
-          "required": [
-            "type",
-            "correlationId"
-          ]
+          "required": ["type", "correlationId"]
         },
         "ConnectionIdentifierEnum": {
           "type": "string",
-          "enum": [
-            "did",
-            "url"
-          ]
+          "enum": ["did", "url"]
         },
         "BasicConnectionConfig": {
           "anyOf": [
@@ -98,12 +81,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "identifier",
-            "stateId",
-            "redirectUrl",
-            "sessionId"
-          ]
+          "required": ["identifier", "stateId", "redirectUrl", "sessionId"]
         },
         "IIdentifier": {
           "type": "object",
@@ -139,12 +117,7 @@
               "description": "Array of services"
             }
           },
-          "required": [
-            "did",
-            "provider",
-            "keys",
-            "services"
-          ],
+          "required": ["did", "provider", "keys", "services"],
           "description": "Identifier interface"
         },
         "IKey": {
@@ -182,25 +155,12 @@
               "description": "Optional. Key metadata. This should be used to determine which algorithms are supported."
             }
           },
-          "required": [
-            "kid",
-            "kms",
-            "type",
-            "publicKeyHex"
-          ],
+          "required": ["kid", "kms", "type", "publicKeyHex"],
           "description": "Cryptographic key"
         },
         "TKeyType": {
           "type": "string",
-          "enum": [
-            "Ed25519",
-            "Secp256k1",
-            "Secp256r1",
-            "X25519",
-            "Bls12381G1",
-            "Bls12381G2",
-            "RSA"
-          ],
+          "enum": ["Ed25519", "Secp256k1", "Secp256r1", "X25519", "Bls12381G1", "Bls12381G2", "RSA"],
           "description": "Cryptographic key type."
         },
         "KeyMetadata": {
@@ -245,11 +205,7 @@
               "description": "Optional. Description"
             }
           },
-          "required": [
-            "id",
-            "type",
-            "serviceEndpoint"
-          ],
+          "required": ["id", "type", "serviceEndpoint"],
           "description": "Identifier service"
         },
         "IServiceEndpoint": {
@@ -289,20 +245,10 @@
             },
             "clientAuthMethod": {
               "type": "string",
-              "enum": [
-                "basic",
-                "post"
-              ]
+              "enum": ["basic", "post"]
             }
           },
-          "required": [
-            "clientId",
-            "clientSecret",
-            "scopes",
-            "issuer",
-            "redirectUrl",
-            "dangerouslyAllowInsecureHttpRequests"
-          ]
+          "required": ["clientId", "clientSecret", "scopes", "issuer", "redirectUrl", "dangerouslyAllowInsecureHttpRequests"]
         },
         "BasicConnectionMetadataItem": {
           "type": "object",
@@ -314,10 +260,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "label",
-            "value"
-          ]
+          "required": ["label", "value"]
         },
         "IConnection": {
           "type": "object",
@@ -349,14 +292,7 @@
               "format": "date-time"
             }
           },
-          "required": [
-            "id",
-            "type",
-            "identifier",
-            "config",
-            "createdAt",
-            "lastUpdatedAt"
-          ]
+          "required": ["id", "type", "identifier", "config", "createdAt", "lastUpdatedAt"]
         },
         "IConnectionIdentifier": {
           "type": "object",
@@ -371,11 +307,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id",
-            "type",
-            "correlationId"
-          ]
+          "required": ["id", "type", "correlationId"]
         },
         "ConnectionConfig": {
           "anyOf": [
@@ -416,21 +348,10 @@
             },
             "clientAuthMethod": {
               "type": "string",
-              "enum": [
-                "basic",
-                "post"
-              ]
+              "enum": ["basic", "post"]
             }
           },
-          "required": [
-            "id",
-            "clientId",
-            "clientSecret",
-            "scopes",
-            "issuer",
-            "redirectUrl",
-            "dangerouslyAllowInsecureHttpRequests"
-          ]
+          "required": ["id", "clientId", "clientSecret", "scopes", "issuer", "redirectUrl", "dangerouslyAllowInsecureHttpRequests"]
         },
         "IDidAuthConfig": {
           "type": "object",
@@ -451,13 +372,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id",
-            "identifier",
-            "stateId",
-            "redirectUrl",
-            "sessionId"
-          ]
+          "required": ["id", "identifier", "stateId", "redirectUrl", "sessionId"]
         },
         "IConnectionMetadataItem": {
           "type": "object",
@@ -472,11 +387,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id",
-            "label",
-            "value"
-          ]
+          "required": ["id", "label", "value"]
         },
         "IAddPartyArgs": {
           "type": "object",
@@ -491,10 +402,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "name",
-            "alias"
-          ]
+          "required": ["name", "alias"]
         },
         "IConnectionParty": {
           "type": "object",
@@ -518,12 +426,7 @@
               }
             }
           },
-          "required": [
-            "id",
-            "name",
-            "alias",
-            "connections"
-          ]
+          "required": ["id", "name", "alias", "connections"]
         },
         "IGetConnectionArgs": {
           "type": "object",
@@ -532,9 +435,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "connectionId"
-          ]
+          "required": ["connectionId"]
         },
         "IGetConnectionsArgs": {
           "type": "object",
@@ -543,9 +444,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "partyId"
-          ]
+          "required": ["partyId"]
         },
         "IGetPartiesArgs": {
           "type": "object",
@@ -565,9 +464,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "partyId"
-          ]
+          "required": ["partyId"]
         },
         "IRemoveConnectionArgs": {
           "type": "object",
@@ -576,9 +473,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "connectionId"
-          ]
+          "required": ["connectionId"]
         },
         "IRemovePartyArgs": {
           "type": "object",
@@ -587,9 +482,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "partyId"
-          ]
+          "required": ["partyId"]
         },
         "IUpdateConnectionArgs": {
           "type": "object",
@@ -598,9 +491,7 @@
               "$ref": "#/components/schemas/IConnection"
             }
           },
-          "required": [
-            "connection"
-          ]
+          "required": ["connection"]
         },
         "IUpdatePartyArgs": {
           "type": "object",
@@ -609,9 +500,7 @@
               "$ref": "#/components/schemas/IConnectionParty"
             }
           },
-          "required": [
-            "party"
-          ]
+          "required": ["party"]
         }
       },
       "methods": {
