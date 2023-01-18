@@ -94,6 +94,54 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.length).toBe(1)
     })
 
+    it('should get parties by name', async () => {
+      const args = {
+        filter: [
+          { name: 'default_party' }
+        ]
+      }
+      const result = await agent.cmGetParties(args)
+
+      expect(result.length).toBe(1)
+    })
+
+    it('should get parties by alias', async () => {
+      const args = {
+        filter: [
+          { alias: 'default_party_alias'}
+        ]
+      }
+      const result = await agent.cmGetParties(args)
+
+      expect(result.length).toBe(1)
+    })
+
+    it('should get parties by uri', async () => {
+      const args = {
+        filter: [
+          { uri: 'example.com' }
+        ]
+      }
+      const result = await agent.cmGetParties(args)
+
+      expect(result.length).toBe(1)
+    })
+
+
+    it('should return no parties if filter does not match', async () => {
+      const args = {
+        filter: [
+          { name: 'no_match_party' },
+          { alias: 'no_match_party_alias'},
+          { uri: 'no_match_example.com' }
+        ]
+      }
+      const result = await agent.cmGetParties(args)
+
+      expect(result.length).toBe(0)
+    })
+
+
     it('should add party', async () => {
       const party = {
         name: 'new_party',
