@@ -1,5 +1,4 @@
-import { BaseEntity, Column,
-  CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { IPartyEntityFromArgs } from '../../types/connections'
 import { ConnectionEntity } from './ConnectionEntity'
 import { PartyIdentifierEntity, partyIdentifierEntityFrom } from './PartyIdentifierEntity'

@@ -16,7 +16,7 @@ export class CreateConnections1659463079428 implements MigrationInterface {
       `CREATE TABLE "ConnectionMetadata" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "label" character varying(255) NOT NULL, "value" character varying(255) NOT NULL, "connectionId" uuid, CONSTRAINT "PK_ConnectionMetadata_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-        `CREATE TABLE "PartyIdentifier" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."CorrelationIdentifierEnum_type_enum" NOT NULL, "correlation_id" text NOT NULL, CONSTRAINT "PK_PartyIdentifier_id" PRIMARY KEY ("id"), CONSTRAINT "UQ_Correlation_id" UNIQUE ("correlation_id"))`
+      `CREATE TABLE "PartyIdentifier" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."CorrelationIdentifierEnum_type_enum" NOT NULL, "correlation_id" text NOT NULL, CONSTRAINT "PK_PartyIdentifier_id" PRIMARY KEY ("id"), CONSTRAINT "UQ_Correlation_id" UNIQUE ("correlation_id"))`
     )
     await queryRunner.query(
       `CREATE TABLE "Party" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying(255) NOT NULL, "alias" character varying(255) NOT NULL, "uri" character varying(255), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "identifierId" uuid, CONSTRAINT "REL_Party_identifierId" UNIQUE ("identifierId"), CONSTRAINT "UQ_Party_name" UNIQUE ("name"), CONSTRAINT "PK_Party_id" PRIMARY KEY ("id"), CONSTRAINT "UQ_Party_alias" UNIQUE ("alias"))`

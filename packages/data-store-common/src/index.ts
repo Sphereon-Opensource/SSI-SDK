@@ -15,7 +15,7 @@ export const DataStoreConnectionEntities = [
   MetadataItemEntity,
   OpenIdConfigEntity,
   PartyEntity,
-  PartyIdentifierEntity
+  PartyIdentifierEntity,
 ]
 
 export {

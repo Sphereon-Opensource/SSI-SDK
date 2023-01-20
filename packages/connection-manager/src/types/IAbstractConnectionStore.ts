@@ -1,9 +1,4 @@
-import {
-  BasicPartyIdentifier,
-  IBasicConnection,
-  IConnection,
-  IConnectionParty
-} from '@sphereon/ssi-sdk-data-store-common'
+import { BasicPartyIdentifier, IBasicConnection, IConnection, IConnectionParty } from '@sphereon/ssi-sdk-data-store-common'
 import { FindPartyArgs } from './IConnectionManager'
 
 export interface IGetPartyArgs {

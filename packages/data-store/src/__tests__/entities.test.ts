@@ -43,8 +43,8 @@ describe('Database entities test', () => {
       uri: 'example.com',
       identifier: {
         type: CorrelationIdentifierEnum.URL,
-        correlationId: 'example.com'
-      }
+        correlationId: 'example.com',
+      },
     }
 
     const partyEntity: PartyEntity = partyEntityFrom(party)
@@ -65,8 +65,8 @@ describe('Database entities test', () => {
       uri: 'example.com',
       identifier: {
         type: CorrelationIdentifierEnum.URL,
-        correlationId: 'example1.com'
-      }
+        correlationId: 'example1.com',
+      },
     }
     const party1Entity: PartyEntity = partyEntityFrom(party1)
     await dbConnection.getRepository(PartyEntity).save(party1Entity)
@@ -77,11 +77,13 @@ describe('Database entities test', () => {
       uri: 'example.com',
       identifier: {
         type: CorrelationIdentifierEnum.URL,
-        correlationId: 'example2.com'
-      }
+        correlationId: 'example2.com',
+      },
     }
     const party2Entity: PartyEntity = partyEntityFrom(party2)
-    await expect(dbConnection.getRepository(PartyEntity).save(party2Entity)).rejects.toThrowError('SQLITE_CONSTRAINT: UNIQUE constraint failed: Party.name')
+    await expect(dbConnection.getRepository(PartyEntity).save(party2Entity)).rejects.toThrowError(
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: Party.name'
+    )
   })
 
   it('Should enforce unique alias for a party', async () => {
@@ -92,8 +94,8 @@ describe('Database entities test', () => {
       uri: 'example.com',
       identifier: {
         type: CorrelationIdentifierEnum.URL,
-        correlationId: 'example1.com'
-      }
+        correlationId: 'example1.com',
+      },
     }
     const party1Entity: PartyEntity = partyEntityFrom(party1)
     await dbConnection.getRepository(PartyEntity).save(party1Entity)
@@ -104,12 +106,12 @@ describe('Database entities test', () => {
       uri: 'example.com',
       identifier: {
         type: CorrelationIdentifierEnum.URL,
-        correlationId: 'example2.com'
-      }
+        correlationId: 'example2.com',
+      },
     }
     const party2Entity: PartyEntity = partyEntityFrom(party2)
     await expect(dbConnection.getRepository(PartyEntity).save(party2Entity)).rejects.toThrowError(
-        'SQLITE_CONSTRAINT: UNIQUE constraint failed: Party.alias'
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: Party.alias'
     )
   })
 
@@ -121,8 +123,8 @@ describe('Database entities test', () => {
       uri: 'example.com',
       identifier: {
         type: CorrelationIdentifierEnum.URL,
-        correlationId: correlationId
-      }
+        correlationId: correlationId,
+      },
     }
     const party1Entity: PartyEntity = partyEntityFrom(party1)
     await dbConnection.getRepository(PartyEntity).save(party1Entity)
@@ -133,11 +135,13 @@ describe('Database entities test', () => {
       uri: 'example.com',
       identifier: {
         type: CorrelationIdentifierEnum.URL,
-        correlationId: correlationId
-      }
+        correlationId: correlationId,
+      },
     }
     const party2Entity: PartyEntity = partyEntityFrom(party2)
-    await expect(dbConnection.getRepository(PartyEntity).save(party2Entity)).rejects.toThrowError('SQLITE_CONSTRAINT: UNIQUE constraint failed: PartyIdentifier.correlation_id')
+    await expect(dbConnection.getRepository(PartyEntity).save(party2Entity)).rejects.toThrowError(
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: PartyIdentifier.correlation_id'
+    )
   })
 
   it('Should save connection with openid config to database', async () => {

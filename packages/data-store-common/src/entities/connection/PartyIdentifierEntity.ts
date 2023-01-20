@@ -1,8 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm'
-import {
-  CorrelationIdentifierEnum,
-  BasicPartyIdentifier
-} from '../../types/connections'
+import { CorrelationIdentifierEnum, BasicPartyIdentifier } from '../../types/connections'
 
 @Entity('PartyIdentifier')
 export class PartyIdentifierEntity extends BaseEntity {

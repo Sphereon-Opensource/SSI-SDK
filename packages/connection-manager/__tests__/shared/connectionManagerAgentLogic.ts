@@ -54,8 +54,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         uri: 'example.com',
         identifier: {
           type: CorrelationIdentifierEnum.URL,
-          correlationId: 'example.com'
-        }
+          correlationId: 'example.com',
+        },
       }
 
       defaultParty = await agent.cmAddParty(party)
@@ -137,8 +137,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         uri: 'example.com',
         identifier: {
           type: CorrelationIdentifierEnum.URL,
-          correlationId: 'example.com'
-        }
+          correlationId: 'example_new.com',
+        },
       }
 
       const result = await agent.cmAddParty(party)
@@ -157,8 +157,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         uri: 'example.com',
         identifier: {
           type: CorrelationIdentifierEnum.URL,
-          correlationId: 'example.com'
-        }
+          correlationId: 'example.com',
+        },
       }
 
       await expect(agent.cmAddParty(party)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
@@ -173,8 +173,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         uri: 'example.com',
         identifier: {
           type: CorrelationIdentifierEnum.URL,
-          correlationId: 'example.com'
-        }
+          correlationId: 'example.com',
+        },
       }
 
       await expect(agent.cmAddParty(party)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
@@ -189,8 +189,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         uri: 'example.com',
         identifier: {
           type: CorrelationIdentifierEnum.URL,
-          correlationId: 'example.com'
-        }
+          correlationId: 'example.com',
+        },
       }
 
       await expect(agent.cmAddParty(party)).rejects.toThrow('Blank aliases are not allowed')
@@ -205,8 +205,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         uri: 'example.com',
         identifier: {
           type: CorrelationIdentifierEnum.URL,
-          correlationId: 'example.com'
-        }
+          correlationId: 'example.com',
+        },
       }
 
       await expect(agent.cmAddParty(party)).rejects.toThrow('Blank names are not allowed')
@@ -241,8 +241,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         uri: 'example.com',
         identifier: {
           type: CorrelationIdentifierEnum.URL,
-          correlationId: 'example.com'
-        }
+          correlationId: 'example_remove.com',
+        },
       }
       const removeParty = await agent.cmAddParty(party)
       const removePartyConnection = await agent.cmAddConnection({ partyId: removeParty.id!, connection })
@@ -351,8 +351,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         uri: 'example.com',
         identifier: {
           type: CorrelationIdentifierEnum.URL,
-          correlationId: 'example.com'
-        }
+          correlationId: 'example_default.com',
+        },
       }
 
       const sphereon = parties.find((party: IConnectionParty) => party.name === args.name)

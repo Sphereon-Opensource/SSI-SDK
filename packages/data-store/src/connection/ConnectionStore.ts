@@ -15,7 +15,7 @@ import {
   IConnectionMetadataItem,
   IConnectionParty,
   IDidAuthConfig,
-  IOpenIdConfig, 
+  IOpenIdConfig,
   IPartyIdentifier,
   MetadataItemEntity,
   OpenIdConfigEntity,
