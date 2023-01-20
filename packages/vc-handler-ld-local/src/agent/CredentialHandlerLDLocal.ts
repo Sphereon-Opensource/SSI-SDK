@@ -149,9 +149,9 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     }
     // Workaround for bug in TypeError: Cannot read property 'length' of undefined
     //     at VeramoEd25519Signature2018.preSigningPresModification
-    if (!presentation.verifier) {
+    /*if (!presentation.verifier) {
       presentation.verifier = []
-    }
+    }*/
 
     if (!isDefined(presentation.holder) || !presentation.holder) {
       throw new Error('invalid_argument: args.presentation.holder must not be empty')
