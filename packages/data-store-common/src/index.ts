@@ -5,6 +5,7 @@ import { DidAuthConfigEntity } from './entities/connection/DidAuthConfigEntity'
 import { MetadataItemEntity } from './entities/connection/MetadataItemEntity'
 import { OpenIdConfigEntity } from './entities/connection/OpenIdConfigEntity'
 import { PartyEntity, partyEntityFrom } from './entities/connection/PartyEntity'
+import { PartyIdentifierEntity } from './entities/connection/PartyIdentifierEntity'
 
 export const DataStoreConnectionEntities = [
   BaseConfigEntity,
@@ -14,12 +15,14 @@ export const DataStoreConnectionEntities = [
   MetadataItemEntity,
   OpenIdConfigEntity,
   PartyEntity,
+  PartyIdentifierEntity
 ]
 
 export {
   BaseConfigEntity,
   ConnectionEntity,
   ConnectionIdentifierEntity,
+  PartyIdentifierEntity,
   DidAuthConfigEntity,
   MetadataItemEntity,
   OpenIdConfigEntity,

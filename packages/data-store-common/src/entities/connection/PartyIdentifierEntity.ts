@@ -1,8 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm'
-import { CorrelationIdentifierEnum, BasicConnectionIdentifier } from '../../types/connections'
+import {
+  CorrelationIdentifierEnum,
+  BasicPartyIdentifier
+} from '../../types/connections'
 
-@Entity('ConnectionIdentifier')
-export class ConnectionIdentifierEntity extends BaseEntity {
+@Entity('PartyIdentifier')
+export class PartyIdentifierEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
@@ -13,8 +16,8 @@ export class ConnectionIdentifierEntity extends BaseEntity {
   correlationId!: string
 }
 
-export const connectionIdentifierEntityFrom = (identifier: BasicConnectionIdentifier): ConnectionIdentifierEntity => {
-  const identifierEntity = new ConnectionIdentifierEntity()
+export const partyIdentifierEntityFrom = (identifier: BasicPartyIdentifier): PartyIdentifierEntity => {
+  const identifierEntity = new PartyIdentifierEntity()
   identifierEntity.type = identifier.type
   identifierEntity.correlationId = identifier.correlationId
 

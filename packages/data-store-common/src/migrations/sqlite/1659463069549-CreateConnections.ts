@@ -15,7 +15,10 @@ export class CreateConnections1659463069549 implements MigrationInterface {
       `CREATE TABLE "ConnectionMetadata" ("id" varchar PRIMARY KEY NOT NULL, "label" varchar(255) NOT NULL, "value" varchar(255) NOT NULL, "connectionId" varchar)`
     )
     await queryRunner.query(
-      `CREATE TABLE "Party" ("id" varchar PRIMARY KEY NOT NULL, "name" varchar(255) NOT NULL, "alias" varchar(255) NOT NULL, "uri" varchar(255), CONSTRAINT "UQ_Party_name" UNIQUE ("name"), CONSTRAINT "UQ_Party_alias" UNIQUE ("alias"))`
+        `CREATE TABLE "PartyIdentifier" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('did','url') ) NOT NULL, "correlation_id" text NOT NULL)`
+    )
+    await queryRunner.query(
+      `CREATE TABLE "Party" ("id" varchar PRIMARY KEY NOT NULL, "name" varchar(255) NOT NULL, "alias" varchar(255) NOT NULL, "uri" varchar(255), "identifierId" varchar, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), CONSTRAINT "UQ_Party_name" UNIQUE ("name"), CONSTRAINT "UQ_Party_alias" UNIQUE ("alias"), CONSTRAINT "REL_Party_identifierId" UNIQUE ("identifierId"))`
     )
     await queryRunner.query(
       `CREATE TABLE "Connection" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('openid','didauth','siopv2+oidc4vp') ) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "identifierId" varchar, "configId" varchar, "partyId" varchar, CONSTRAINT "REL_Connection_identifierId" UNIQUE ("identifierId"), CONSTRAINT "REL_Connection_configId" UNIQUE ("configId"))`

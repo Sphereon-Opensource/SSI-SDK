@@ -1,7 +1,7 @@
 import { TAgent } from '@veramo/core'
 import { IConnectionManager } from '../../src/types/IConnectionManager'
 import {
-  ConnectionIdentifierEnum,
+  CorrelationIdentifierEnum,
   ConnectionTypeEnum,
   IBasicConnection,
   IConnection,
@@ -20,7 +20,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     const connection: IBasicConnection = {
       type: ConnectionTypeEnum.OPENID,
       identifier: {
-        type: ConnectionIdentifierEnum.URL,
+        type: CorrelationIdentifierEnum.URL,
         correlationId: 'https://example.com',
       },
       config: {
@@ -52,6 +52,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         name: 'default_party',
         alias: 'default_party_alias',
         uri: 'example.com',
+        identifier: {
+          type: CorrelationIdentifierEnum.URL,
+          correlationId: 'example.com'
+        }
       }
 
       defaultParty = await agent.cmAddParty(party)
@@ -131,6 +135,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         name: 'new_party',
         alias: 'new_party_alias',
         uri: 'example.com',
+        identifier: {
+          type: CorrelationIdentifierEnum.URL,
+          correlationId: 'example.com'
+        }
       }
 
       const result = await agent.cmAddParty(party)
@@ -147,6 +155,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         name,
         alias,
         uri: 'example.com',
+        identifier: {
+          type: CorrelationIdentifierEnum.URL,
+          correlationId: 'example.com'
+        }
       }
 
       await expect(agent.cmAddParty(party)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
@@ -159,6 +171,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         name,
         alias,
         uri: 'example.com',
+        identifier: {
+          type: CorrelationIdentifierEnum.URL,
+          correlationId: 'example.com'
+        }
       }
 
       await expect(agent.cmAddParty(party)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
@@ -171,6 +187,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         name,
         alias,
         uri: 'example.com',
+        identifier: {
+          type: CorrelationIdentifierEnum.URL,
+          correlationId: 'example.com'
+        }
       }
 
       await expect(agent.cmAddParty(party)).rejects.toThrow('Blank aliases are not allowed')
@@ -183,6 +203,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         name,
         alias,
         uri: 'example.com',
+        identifier: {
+          type: CorrelationIdentifierEnum.URL,
+          correlationId: 'example.com'
+        }
       }
 
       await expect(agent.cmAddParty(party)).rejects.toThrow('Blank names are not allowed')
@@ -215,6 +239,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         name: 'remove_party',
         alias: 'remove_party_alias',
         uri: 'example.com',
+        identifier: {
+          type: CorrelationIdentifierEnum.URL,
+          correlationId: 'example.com'
+        }
       }
       const removeParty = await agent.cmAddParty(party)
       const removePartyConnection = await agent.cmAddConnection({ partyId: removeParty.id!, connection })
@@ -321,6 +349,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         name: 'Sphereon',
         alias: 'Sphereon_alias',
         uri: 'example.com',
+        identifier: {
+          type: CorrelationIdentifierEnum.URL,
+          correlationId: 'example.com'
+        }
       }
 
       const sphereon = parties.find((party: IConnectionParty) => party.name === args.name)
@@ -333,7 +365,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           const connection = {
             type: ConnectionTypeEnum.OPENID,
             identifier: {
-              type: ConnectionIdentifierEnum.URL,
+              type: CorrelationIdentifierEnum.URL,
               correlationId: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet',
             },
             config: {

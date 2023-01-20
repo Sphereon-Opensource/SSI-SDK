@@ -15,10 +15,12 @@ import {
   IConnectionMetadataItem,
   IConnectionParty,
   IDidAuthConfig,
-  IOpenIdConfig,
+  IOpenIdConfig, 
+  IPartyIdentifier,
   MetadataItemEntity,
   OpenIdConfigEntity,
   PartyEntity,
+  PartyIdentifierEntity,
   partyEntityFrom,
 } from '@sphereon/ssi-sdk-data-store-common'
 import {
@@ -38,7 +40,7 @@ import {
 const debug = Debug('sphereon:typeorm:connection-store')
 
 export class ConnectionStore extends AbstractConnectionStore {
-  private readonly party_relations = ['connections', 'connections.config', 'connections.metadata', 'connections.identifier']
+  private readonly party_relations = ['identifier', 'connections', 'connections.config', 'connections.metadata', 'connections.identifier']
   private readonly connection_relations = ['config', 'metadata', 'identifier']
 
   private dbConnection: OrPromise<Connection>
@@ -70,7 +72,7 @@ export class ConnectionStore extends AbstractConnectionStore {
     return result.map((party) => this.partyFrom(party))
   }
 
-  addParty = async ({ name, alias, uri }: IAddPartyArgs): Promise<IConnectionParty> => {
+  addParty = async ({ name, alias, identifier, uri }: IAddPartyArgs): Promise<IConnectionParty> => {
     if (!name || /^\s*$/.test(name)) {
       return Promise.reject(Error('Blank names are not allowed'))
     }
@@ -88,7 +90,7 @@ export class ConnectionStore extends AbstractConnectionStore {
       return Promise.reject(Error(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`))
     }
 
-    const partyEntity = partyEntityFrom({ name, alias, uri })
+    const partyEntity = partyEntityFrom({ name, alias, identifier, uri })
     debug('Adding party', name)
     const createdResult = await (await this.dbConnection).getRepository(PartyEntity).save(partyEntity)
 
@@ -206,11 +208,20 @@ export class ConnectionStore extends AbstractConnectionStore {
       .catch((error) => Promise.reject(Error(`Unable to remove connection with id: ${connectionId}. ${error}`)))
   }
 
+  private partyIdentifierFrom = (identifier: PartyIdentifierEntity): IPartyIdentifier => {
+    return {
+      id: identifier.id,
+      type: identifier.type,
+      correlationId: identifier.correlationId,
+    }
+  }
+
   private partyFrom = (party: PartyEntity): IConnectionParty => {
     return {
       id: party.id,
       name: party.name,
       alias: party.alias,
+      identifier: this.partyIdentifierFrom(party.identifier),
       uri: party.uri,
       connections: party.connections ? party.connections.map((connection: ConnectionEntity) => this.connectionFrom(connection)) : [],
     }

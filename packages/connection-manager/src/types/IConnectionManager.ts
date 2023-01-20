@@ -1,5 +1,11 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import { IBasicConnection, IConnection, IConnectionParty, PartyEntity } from '@sphereon/ssi-sdk-data-store-common'
+import {
+  BasicPartyIdentifier,
+  IBasicConnection,
+  IConnection,
+  IConnectionParty,
+  PartyEntity
+} from '@sphereon/ssi-sdk-data-store-common'
 import { FindOptionsWhere } from 'typeorm'
 
 export interface IConnectionManager extends IPluginMethodMap {
@@ -26,6 +32,7 @@ export interface IGetPartiesArgs {
 export interface IAddPartyArgs {
   name: string
   alias: string
+  identifier: BasicPartyIdentifier
   uri?: string
 }
 

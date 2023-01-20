@@ -8,15 +8,18 @@ export class CreateConnections1659463079428 implements MigrationInterface {
       `CREATE TABLE "BaseConfigEntity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "client_id" character varying(255), "client_secret" character varying(255), "scopes" text, "issuer" text, "redirect_url" text, "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "identifier" text, "session_id" character varying(255), "type" character varying NOT NULL, CONSTRAINT "PK_BaseConfigEntity_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(`CREATE INDEX "IDX_BaseConfigEntity_type" ON "BaseConfigEntity" ("type") `)
-    await queryRunner.query(`CREATE TYPE "public"."ConnectionIdentifier_type_enum" AS ENUM('did', 'url')`)
+    await queryRunner.query(`CREATE TYPE "public"."CorrelationIdentifierEnum_type_enum" AS ENUM('did', 'url')`)
     await queryRunner.query(
-      `CREATE TABLE "ConnectionIdentifier" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."ConnectionIdentifier_type_enum" NOT NULL, "correlation_id" text NOT NULL, CONSTRAINT "PK_ConnectionIdentifier_id" PRIMARY KEY ("id"))`
+      `CREATE TABLE "ConnectionIdentifier" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."CorrelationIdentifierEnum_type_enum" NOT NULL, "correlation_id" text NOT NULL, CONSTRAINT "PK_ConnectionIdentifier_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
       `CREATE TABLE "ConnectionMetadata" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "label" character varying(255) NOT NULL, "value" character varying(255) NOT NULL, "connectionId" uuid, CONSTRAINT "PK_ConnectionMetadata_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "Party" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying(255) NOT NULL, "alias" character varying(255) NOT NULL, "uri" character varying(255), CONSTRAINT "UQ_Party_name" UNIQUE ("name"), CONSTRAINT "PK_Party_id" PRIMARY KEY ("id"), CONSTRAINT "UQ_Party_alias" UNIQUE ("alias"))`
+        `CREATE TABLE "PartyIdentifier" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."CorrelationIdentifierEnum_type_enum" NOT NULL, "correlation_id" text NOT NULL, CONSTRAINT "PK_PartyIdentifier_id" PRIMARY KEY ("id"))`
+    )
+    await queryRunner.query(
+      `CREATE TABLE "Party" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying(255) NOT NULL, "alias" character varying(255) NOT NULL, "uri" character varying(255), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "identifierId" uuid, CONSTRAINT "REL_Party_identifierId" UNIQUE ("identifierId"), CONSTRAINT "UQ_Party_name" UNIQUE ("name"), CONSTRAINT "PK_Party_id" PRIMARY KEY ("id"), CONSTRAINT "UQ_Party_alias" UNIQUE ("alias"))`
     )
     await queryRunner.query(`CREATE TYPE "public"."Connection_type_enum" AS ENUM('openid', 'didauth', 'siopv2+oidc4vp')`)
     await queryRunner.query(
