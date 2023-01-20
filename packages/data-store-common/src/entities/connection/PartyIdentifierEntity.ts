@@ -12,7 +12,7 @@ export class PartyIdentifierEntity extends BaseEntity {
   @Column('simple-enum', { nullable: false, enum: CorrelationIdentifierEnum })
   type!: CorrelationIdentifierEnum
 
-  @Column('text', { name: 'correlation_id', nullable: false })
+  @Column('text', { name: 'correlation_id', nullable: false, unique: true })
   correlationId!: string
 }
 
