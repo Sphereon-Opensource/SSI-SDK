@@ -62,7 +62,7 @@ describe('Database entities test', () => {
       uri: 'example.com',
       identifier: {
         type: CorrelationIdentifierEnum.URL,
-        correlationId: 'example.com'
+        correlationId: 'example1.com'
       }
     }
     const party1Entity: PartyEntity = partyEntityFrom(party1)
@@ -74,7 +74,7 @@ describe('Database entities test', () => {
       uri: 'example.com',
       identifier: {
         type: CorrelationIdentifierEnum.URL,
-        correlationId: 'example.com'
+        correlationId: 'example2.com'
       }
     }
     const party2Entity: PartyEntity = partyEntityFrom(party2)
@@ -89,7 +89,7 @@ describe('Database entities test', () => {
       uri: 'example.com',
       identifier: {
         type: CorrelationIdentifierEnum.URL,
-        correlationId: 'example.com'
+        correlationId: 'example1.com'
       }
     }
     const party1Entity: PartyEntity = partyEntityFrom(party1)
@@ -101,7 +101,7 @@ describe('Database entities test', () => {
       uri: 'example.com',
       identifier: {
         type: CorrelationIdentifierEnum.URL,
-        correlationId: 'example.com'
+        correlationId: 'example2.com'
       }
     }
     const party2Entity: PartyEntity = partyEntityFrom(party2)
