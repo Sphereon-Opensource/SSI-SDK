@@ -4,6 +4,7 @@ import {
   IAddPartyArgs,
   IGetConnectionArgs,
   IGetConnectionsArgs,
+  IGetPartiesArgs,
   IGetPartyArgs,
   IRemoveConnectionArgs,
   IRemovePartyArgs,
@@ -13,7 +14,7 @@ import {
 
 export abstract class AbstractConnectionStore {
   abstract getParty(args: IGetPartyArgs): Promise<IConnectionParty>
-  abstract getParties(): Promise<Array<IConnectionParty>>
+  abstract getParties(args?: IGetPartiesArgs): Promise<Array<IConnectionParty>>
   abstract addParty(args: IAddPartyArgs): Promise<IConnectionParty>
   abstract updateParty(args: IUpdatePartyArgs): Promise<IConnectionParty>
   abstract removeParty(args: IRemovePartyArgs): Promise<void>

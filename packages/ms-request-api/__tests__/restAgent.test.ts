@@ -1,4 +1,5 @@
 import 'cross-fetch/polyfill'
+// @ts-ignore
 import express from 'express'
 import { Server } from 'http'
 import { IAgent, createAgent, IAgentOptions, IDataStore, IDataStoreORM } from '@veramo/core'

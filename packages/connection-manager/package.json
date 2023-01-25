@@ -10,8 +10,7 @@
     }
   },
   "scripts": {
-    "build": "tsc --build",
-    "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
+    "build": "tsc --build"
   },
   "dependencies": {
     "@sphereon/ssi-sdk-data-store-common": "^0.8.0",
