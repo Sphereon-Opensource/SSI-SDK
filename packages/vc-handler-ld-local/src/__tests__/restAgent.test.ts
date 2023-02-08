@@ -9,11 +9,9 @@ import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import express from 'express'
 
 import { LdDefaultContexts } from '../ld-default-contexts'
-import { SphereonEd25519Signature2018 } from '../suites'
-import { SphereonEd25519Signature2020 } from '../suites'
+import { SphereonBbsBlsSignature2020, SphereonEd25519Signature2018, SphereonEd25519Signature2020 } from '../suites'
 
 import vcHandlerLocalAgentLogic from './shared/vcHandlerLocalAgentLogic'
-import { SphereonBbsBlsSignature2020 } from '../suites'
 
 jest.setTimeout(30000)
 
@@ -36,7 +34,7 @@ const setup = async (): Promise<boolean> => {
       new SphereonBbsBlsSignature2020(),
     ])
   const { agent } = createObjects(config, { agent: '/agent' })
-  
+
   serverAgent = agent
 
   const agentRouter = AgentRouter({
