@@ -3,6 +3,7 @@
   "references": [
     { "path": "ssi-types" },
     { "path": "ssi-sdk-core" },
+    { "path": "did-utils" },
     { "path": "factom-did-provider" },
     { "path": "lto-did-provider" },
     { "path": "mnemonic-seed-manager" },

@@ -1,5 +1,5 @@
 import { IAgentPlugin } from '@veramo/core'
-import { schema } from '../index'
+import { IGetPartiesArgs, schema } from '../index'
 import { AbstractConnectionStore } from '../store/AbstractConnectionStore'
 import {
   IAddPartyArgs,
@@ -46,8 +46,8 @@ export class ConnectionManager implements IAgentPlugin {
   }
 
   /** {@inheritDoc IConnectionManager.cmGetParties} */
-  private async cmGetParties(): Promise<Array<IConnectionParty>> {
-    return this.store.getParties()
+  private async cmGetParties(args?: IGetPartiesArgs): Promise<Array<IConnectionParty>> {
+    return this.store.getParties(args)
   }
 
   /** {@inheritDoc IConnectionManager.cmAddParty} */

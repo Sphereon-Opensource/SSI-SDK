@@ -14,7 +14,8 @@
     "build:copyfiles": "copyfiles contexts/*.* ./dist"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk-core": "^0.8.1-unstable.86",
+    "@sphereon/ssi-sdk-core": "^0.8.1-next.121",
+    "@sphereon/ssi-sdk-did-utils": "^0.8.1-next.121",
     "@digitalcredentials/did-method-key": "^2.0.3",
     "@digitalcredentials/did-web-resolver": "^1.0.0",
     "@digitalcredentials/ed25519-signature-2020": "^3.0.2",

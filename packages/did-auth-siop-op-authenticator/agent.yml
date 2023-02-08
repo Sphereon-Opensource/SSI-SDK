@@ -7,10 +7,24 @@ constants:
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
     - authenticateWithSiop
-    - getSiopAuthenticationRequestFromRP
-    - getSiopAuthenticationRequestDetails
-    - verifySiopAuthenticationRequestURI
-    - sendSiopAuthenticationResponse
+    - getSiopAuthorizationRequestFromRP
+    - getSiopAuthorizationRequestDetails
+    - verifySiopAuthorizationRequestURI
+    - sendSiopAuthorizationResponse
+
+# Database
+dbConnection:
+  $require: typeorm#DataSource
+  $args:
+    - type: sqlite
+      database: ':memory:'
+      synchronize: false
+      migrationsRun: true
+      migrations:
+        $require: '@veramo/data-store?t=object#migrations'
+      logging: false
+      entities:
+        $require: '@veramo/data-store?t=object#Entities'
 
 server:
   baseUrl:
@@ -104,3 +118,11 @@ agent:
       plugins:
         - $ref: /didResolver
         - $require: ./packages/did-auth-siop-op-authenticator/dist#DidAuthSiopOpAuthenticator
+          $args:
+            - presentationSignCallback: {}
+        - $require: '@veramo/data-store#DataStore'
+          $args:
+            - $ref: /dbConnection
+        - $require: '@veramo/data-store#DataStoreORM'
+          $args:
+            - $ref: /dbConnection

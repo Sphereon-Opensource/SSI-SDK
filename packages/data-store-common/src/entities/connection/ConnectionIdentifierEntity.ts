@@ -1,13 +1,13 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm'
-import { ConnectionIdentifierEnum, BasicConnectionIdentifier } from '../../types/connections'
+import { CorrelationIdentifierEnum, BasicConnectionIdentifier } from '../../types/connections'
 
 @Entity('ConnectionIdentifier')
 export class ConnectionIdentifierEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum', { nullable: false, enum: ConnectionIdentifierEnum })
-  type!: ConnectionIdentifierEnum
+  @Column('simple-enum', { nullable: false, enum: CorrelationIdentifierEnum })
+  type!: CorrelationIdentifierEnum
 
   @Column('text', { name: 'correlation_id', nullable: false })
   correlationId!: string

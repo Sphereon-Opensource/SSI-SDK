@@ -155,18 +155,15 @@
                 "additionalProperties": true
               }
             },
-            "verifiableCredentials": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "additionalProperties": true
-                }
+            "credentialFilter": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
               }
             },
             "additionalProperties": false
           },
-          "required": ["sessionId", "verifiedAuthenticationRequest", "verifiableCredentials"],
+          "required": ["sessionId", "verifiedAuthenticationRequest"],
           "description": "Arguments needed for {@link DidAuthSiopOpAuthenticator.getSiopAuthenticationRequestDetails } "
         },
         "IAuthRequestDetails": {
@@ -209,7 +206,7 @@
           "required": ["sessionId", "ParsedAuthenticationRequestURI"],
           "description": "Arguments needed for {@link DidAuthSiopOpAuthenticator.verifySiopAuthenticationRequestURI } "
         },
-        "VerifiedAuthenticationRequestWithJWT": {
+        "VerifiedAuthorizationRequest": {
           "type": "object",
           "properties": {
             "payload": {
@@ -314,7 +311,7 @@
             "$ref": "#/components/schemas/IVerifySiopAuthenticationRequestUriArgs"
           },
           "returnType": {
-            "$ref": "#/components/schemas/VerifiedAuthenticationRequestWithJWT"
+            "$ref": "#/components/schemas/VerifiedAuthorizationRequest"
           }
         },
         "sendSiopAuthenticationResponse": {

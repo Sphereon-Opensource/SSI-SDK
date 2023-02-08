@@ -13,6 +13,7 @@ export interface IConnectionParty {
   id: string
   name: string
   alias: string
+  identifier: IPartyIdentifier
   uri?: string
   connections: Array<IConnection>
 }
@@ -41,14 +42,21 @@ export interface IBasicConnection {
   metadata?: Array<BasicConnectionMetadataItem>
 }
 
-export enum ConnectionIdentifierEnum {
+export enum CorrelationIdentifierEnum {
   DID = 'did',
   URL = 'url',
 }
 
+export interface IPartyIdentifier {
+  id: string
+  type: CorrelationIdentifierEnum
+  correlationId: string
+}
+export declare type BasicPartyIdentifier = Omit<IPartyIdentifier, 'id'>
+
 export interface IConnectionIdentifier {
   id: string
-  type: ConnectionIdentifierEnum
+  type: CorrelationIdentifierEnum
   correlationId: string
 }
 export declare type BasicConnectionIdentifier = Omit<IConnectionIdentifier, 'id'>
@@ -87,5 +95,6 @@ export declare type BasicConnectionConfig = BasicDidAuthConfig | BasicOpenIdConf
 export interface IPartyEntityFromArgs {
   name: string
   alias: string
+  identifier: BasicPartyIdentifier
   uri?: string
 }
