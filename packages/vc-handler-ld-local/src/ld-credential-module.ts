@@ -159,9 +159,7 @@ export class LdCredentialModule {
       result.results.forEach((item: any) => {
         const eventData = {
           credential: credential,
-          proof: item.proof,
-          verificationMethod: item.verificationMethod,
-          purposeResult: item.purposeResult,
+          result: item,
         };
         context.agent.emit('verifyCredential-success', eventData)
       })
@@ -219,11 +217,11 @@ export class LdCredentialModule {
       })
     }
 
-    if (result.verified) {
-      result.results.forEach((item: any) => {
+    if (result.verified && result.presentationResult.verified) {
+      result.presentationResult.results.forEach((item: any) => {
         const eventData = {
           presentation: presentation,
-          proof: item.proof,
+          result: item,
         };
         context.agent.emit('verifyPresentation-success', eventData)
       })
