@@ -26,10 +26,9 @@ export interface IMsAuthenticationClientCredentialArgs {
   azClientId: string
   azTenantId: string
   azClientSecret: string
-  credentialManifestUrl?: string
+  credentialManifestUrl: string
   authority?: string
   region?: string
-  resource?: string
   scopes?: string[]
   skipCache?: boolean
   piiLoggingEnabled?: boolean
