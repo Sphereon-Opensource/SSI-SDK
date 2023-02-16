@@ -48,14 +48,14 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
         }
 
         const headerString = encodeJoseBlob(header)
-        const dataString = u8a.toString(args.data, 'base64url')
-        const messageString = `${headerString}.${dataString}`
+        const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), args.data])
+        const messageString = u8a.toString(messageBuffer, 'base64') //will be decoded to bytes in the keyManagerSign, hence the base64 arg to the method below
 
         const signature = await context.agent.keyManagerSign({
           keyRef: key.kid,
           algorithm: alg,
           data: messageString,
-          encoding: 'utf-8',
+          encoding: 'base64',
         }) // returns base64url signature
         return `${headerString}..${signature}`
       },
