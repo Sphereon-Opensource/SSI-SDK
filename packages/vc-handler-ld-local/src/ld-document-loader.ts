@@ -7,6 +7,8 @@ import Debug from 'debug'
 import { LdContextLoader } from './ld-context-loader'
 import { LdSuiteLoader } from './ld-suite-loader'
 
+import { fetch } from 'cross-fetch'
+
 const debug = Debug('veramo:w3c:ld-credential-module-local')
 
 /**
