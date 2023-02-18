@@ -72,7 +72,7 @@ export class OpSession {
         supportedDidMethods: this.supportedDidMethods || [],
         expiresIn: this.expiresIn || 6000,
         presentationSignCallback,
-        wellknownDidVerifyCallback
+        wellknownDidVerifyCallback,
       },
       this.context
     )
