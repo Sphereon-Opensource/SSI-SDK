@@ -75,7 +75,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       supportedDidMethods: args.supportedDidMethods,
       context,
     })
-    await session.init()
+    await session.init(args.presentationSignCallback)
     this.sessions[sessionId] = session
 
     return session

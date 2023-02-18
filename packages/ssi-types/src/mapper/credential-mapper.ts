@@ -15,7 +15,6 @@ import {
 import jwt_decode from 'jwt-decode'
 import { ObjectUtils } from '../utils'
 
-
 export class CredentialMapper {
   static decodeVerifiablePresentation(presentation: OriginalVerifiablePresentation): JwtDecodedVerifiablePresentation | IVerifiablePresentation {
     if (CredentialMapper.isJwtEncoded(presentation)) {

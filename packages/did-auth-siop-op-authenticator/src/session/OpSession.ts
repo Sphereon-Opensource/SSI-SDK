@@ -1,4 +1,4 @@
-import { DIDDocumentSection, IIdentifier, IKey, TKeyType } from '@veramo/core'
+import { DIDDocumentSection, IIdentifier, IKey, PresentationPayload, TKeyType } from '@veramo/core'
 import { _ExtendedIKey, mapIdentifierKeysToDoc } from '@veramo/utils'
 import {
   OP,
@@ -19,8 +19,8 @@ import {
   SupportedVersion,
   ResolveOpts,
 } from '@sphereon/did-auth-siop'
-import { SubmissionRequirementMatch } from '@sphereon/pex'
-import { IVerifiableCredential, IVerifiablePresentation, parseDid } from '@sphereon/ssi-types'
+import { PresentationSignCallBackParams, SubmissionRequirementMatch } from '@sphereon/pex'
+import { IVerifiableCredential, IVerifiablePresentation, parseDid, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { SuppliedSigner } from '@sphereon/ssi-sdk-core'
 import {
   IAuthRequestDetails,
@@ -34,8 +34,9 @@ import {
   IRequiredContext,
   PerDidResolver,
 } from '../types/IDidAuthSiopOpAuthenticator'
-import { Resolvable } from 'did-resolver'
+import { DIDResolutionOptions, DIDResolutionResult, Resolvable } from 'did-resolver'
 import { KeyAlgo } from '@sphereon/ssi-sdk-core'
+import { IVerifyCredentialResult, VerifyCallback, IVerifyCallbackArgs } from '@sphereon/wellknown-dids-client'
 
 const fetch = require('cross-fetch')
 
@@ -61,14 +62,17 @@ export class OpSession {
     this.context = options.context
   }
 
-  public async init() {
+  public async init(presentationSignCallback: PresentationSignCallback) {
     this.op = await this.createOp(
-      this.identifier,
-      this.verificationMethodSection,
-      parseDid(this.identifier.did).method,
-      this.providedDidResolvers,
-      this.supportedDidMethods || [],
-      this.expiresIn || 6000,
+      {
+        identifier: this.identifier,
+        verificationMethodSection: this.verificationMethodSection,
+        didMethod: parseDid(this.identifier.did).method,
+        providedDidResolvers: this.providedDidResolvers,
+        supportedDidMethods: this.supportedDidMethods || [],
+        expiresIn: this.expiresIn || 6000,
+        presentationSignCallback,
+      },
       this.context
     )
   }
@@ -260,18 +264,36 @@ export class OpSession {
         return SigningAlgo.EDDSA
       case 'Secp256k1':
         return SigningAlgo.ES256K
+      case 'Secp256r1':
+        return SigningAlgo.ES256
+      // @ts-ignore
+      case 'RSA':
+        return SigningAlgo.RS256
       default:
         throw Error('Key type not yet supported')
     }
   }
 
   private async createOp(
-    identifier: IIdentifier,
-    verificationMethodSection: DIDDocumentSection | undefined,
-    didMethod: string,
-    providedDidResolvers: PerDidResolver[],
-    supportedDidMethods: string[],
-    expiresIn: number,
+    {
+      identifier,
+      verificationMethodSection,
+      didMethod,
+      providedDidResolvers,
+      supportedDidMethods,
+      expiresIn,
+      presentationSignCallback,
+      wellknownDidVerifyCallback,
+    }: {
+      identifier: IIdentifier
+      verificationMethodSection: DIDDocumentSection | undefined
+      didMethod: string
+      providedDidResolvers?: PerDidResolver[]
+      supportedDidMethods: string[]
+      expiresIn: number
+      presentationSignCallback?: PresentationSignCallback
+      wellknownDidVerifyCallback?: VerifyCallback
+    },
     context: IRequiredContext
   ): Promise<OP> {
     if (!identifier.controllerKeyId) {
@@ -279,6 +301,24 @@ export class OpSession {
     }
 
     const keyRef = await this.getKey(identifier, verificationMethodSection, context)
+    const verifyCallback = wellknownDidVerifyCallback
+      ? wellknownDidVerifyCallback
+      : async (): Promise<IVerifyCredentialResult> => {
+          return { verified: true }
+        }
+
+    const presentationCallback = presentationSignCallback
+      ? presentationSignCallback
+      : async (args: PresentationSignCallBackParams): Promise<W3CVerifiablePresentation> => {
+          const presentation: PresentationPayload = args.presentation as PresentationPayload
+          const format = args.presentationDefinition.format
+          return (await context.agent.createVerifiablePresentation({
+            presentation,
+            keyRef: keyRef.kid,
+            fetchRemoteContexts: true,
+            proofFormat: format && (format.ldp || format.ldp_vp) ? 'lds' : 'jwt',
+          })) as W3CVerifiablePresentation
+        }
 
     const builder = OP.builder()
       .withExpiresIn(expiresIn)
@@ -296,11 +336,21 @@ export class OpSession {
         },
       })
       .response(ResponseMode.POST)
+      .addVerifyCallback((args: IVerifyCallbackArgs) => verifyCallback(args))
+      .withPresentationSignCallback(presentationCallback)
     if (supportedDidMethods && supportedDidMethods.length > 0) {
       supportedDidMethods.forEach((method) => builder.addDidMethod(method))
     }
     if (providedDidResolvers && providedDidResolvers.length > 0) {
       providedDidResolvers.forEach((providedResolver) => builder.addResolver(providedResolver.didMethod, providedResolver.resolver))
+    } else {
+      class Resolver implements Resolvable {
+        async resolve(didUrl: string, options?: DIDResolutionOptions): Promise<DIDResolutionResult> {
+          return await context.agent.resolveDid({ didUrl, options })
+        }
+      }
+
+      builder.customResolver = new Resolver()
     }
 
     return builder.build()

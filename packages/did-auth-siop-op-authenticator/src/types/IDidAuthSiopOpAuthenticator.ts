@@ -7,6 +7,7 @@ import {
   IKeyManager,
   IDataStoreORM,
   FindCredentialsArgs,
+  ICredentialIssuer,
 } from '@veramo/core'
 import { IPresentation, IVerifiableCredential } from '@sphereon/ssi-types'
 import { OpSession } from '../session/OpSession'
@@ -18,6 +19,7 @@ import {
   VerifiablePresentationTypeFormat,
   PresentationSignCallback,
 } from '@sphereon/did-auth-siop'
+import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 
 import { Resolvable } from 'did-resolver'
 
@@ -106,6 +108,8 @@ export interface IRegisterSiopSessionArgs {
   resolver?: Resolvable
   perDidResolvers?: PerDidResolver[]
   supportedDidMethods?: string[]
+  wellKnownDidVerifyCallback: VerifyCallback
+  presentationSignCallback: PresentationSignCallback
   sessionId?: string
   expiresIn?: number
 }
@@ -158,4 +162,4 @@ export enum events {
   DID_SIOP_AUTHENTICATED = 'didSiopAuthenticated',
 }
 
-export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IKeyManager>
+export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IKeyManager & ICredentialIssuer>
