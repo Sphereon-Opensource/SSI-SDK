@@ -16,6 +16,8 @@ import {
   VerifyAuthorizationRequestOpts,
   PresentationLocation,
   SigningAlgo,
+  SupportedVersion,
+  ResolveOpts,
 } from '@sphereon/did-auth-siop'
 import { SubmissionRequirementMatch } from '@sphereon/pex'
 import { IVerifiableCredential, IVerifiablePresentation, parseDid } from '@sphereon/ssi-types'
@@ -121,26 +123,25 @@ export class OpSession {
 
   public async verifySiopAuthorizationRequestURI(args: IOpsVerifySiopAuthorizationRequestUriArgs): Promise<VerifiedAuthorizationRequest> {
     // TODO fix supported dids structure https://sphereon.atlassian.net/browse/MYC-141
+
+    //fixme: registration can also be something else these days: client_metadata
     const didMethodsSupported = args.requestURI.registration?.did_methods_supported as string[]
     let didMethods: string[]
     if (didMethodsSupported && didMethodsSupported.length) {
       didMethods = didMethodsSupported.map((value: string) => value.split(':')[1])
     } else {
       // RP mentioned no didMethods, meaning we have to let it up to the RP to see whether it will work
-      if (this.supportedDidMethods) {
-        didMethods = [parseDid(this.identifier.did).method, ...this.supportedDidMethods]
-      } else {
-        didMethods = [parseDid(this.identifier.did).method]
-      }
+      didMethods = this.getAgentSupportedDIDMethods()
     }
 
-    const resolveOpts = this.resolver ? { resolver: this.resolver } : { didMethods }
+    const resolveOpts: ResolveOpts = this.resolver ? { resolver: this.resolver } : { subjectSyntaxTypesSupported: didMethods }
     const options: VerifyAuthorizationRequestOpts = {
       verification: {
         mode: VerificationMode.INTERNAL,
         resolveOpts,
       },
       nonce: args.requestURI.authorizationRequestPayload.nonce,
+      supportedVersions: [SupportedVersion.SIOPv2_ID1, SupportedVersion.SIOPv2_D11, SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1],
     }
 
     return this.op!.verifyAuthorizationRequest(args.requestURI.requestObjectJwt!, options).catch((error: string | undefined) =>
@@ -148,12 +149,19 @@ export class OpSession {
     )
   }
 
+  private getAgentSupportedDIDMethods() {
+    if (this.supportedDidMethods) {
+      return [parseDid(this.identifier.did).method, ...this.supportedDidMethods]
+    } else {
+      return [parseDid(this.identifier.did).method]
+    }
+  }
+
   public async sendSiopAuthorizationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
+    const resolveOpts: ResolveOpts = this.resolver ? { resolver: this.resolver } : { subjectSyntaxTypesSupported: this.getAgentSupportedDIDMethods() }
     const verification: Verification = {
       mode: VerificationMode.INTERNAL,
-      resolveOpts: {
-        resolver: this.resolver,
-      },
+      resolveOpts,
     }
 
     return this.op!.createAuthorizationResponse(args.verifiedAuthorizationRequest, {
