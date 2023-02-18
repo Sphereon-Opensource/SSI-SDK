@@ -62,7 +62,7 @@ export class OpSession {
     this.context = options.context
   }
 
-  public async init(presentationSignCallback: PresentationSignCallback) {
+  public async init(presentationSignCallback?: PresentationSignCallback, wellknownDidVerifyCallback?: VerifyCallback) {
     this.op = await this.createOp(
       {
         identifier: this.identifier,
@@ -72,6 +72,7 @@ export class OpSession {
         supportedDidMethods: this.supportedDidMethods || [],
         expiresIn: this.expiresIn || 6000,
         presentationSignCallback,
+        wellknownDidVerifyCallback
       },
       this.context
     )
