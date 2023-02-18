@@ -108,8 +108,8 @@ export interface IRegisterSiopSessionArgs {
   resolver?: Resolvable
   perDidResolvers?: PerDidResolver[]
   supportedDidMethods?: string[]
-  wellKnownDidVerifyCallback: VerifyCallback
-  presentationSignCallback: PresentationSignCallback
+  wellKnownDidVerifyCallback?: VerifyCallback
+  presentationSignCallback?: PresentationSignCallback
   sessionId?: string
   expiresIn?: number
 }
