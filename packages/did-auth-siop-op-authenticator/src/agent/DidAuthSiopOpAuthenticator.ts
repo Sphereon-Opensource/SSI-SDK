@@ -7,20 +7,24 @@ import {
   events,
   IAuthenticateWithSiopArgs,
   IAuthRequestDetails,
-  IRegisterSiopSessionArgs,
   IDidAuthSiopOpAuthenticator,
   IGetSiopAuthorizationRequestDetailsArgs,
   IGetSiopAuthorizationRequestFromRpArgs,
   IGetSiopSessionArgs,
   IRegisterCustomApprovalForSiopArgs,
+  IRegisterSiopSessionArgs,
   IRemoveCustomApprovalForSiopArgs,
   IRemoveSiopSessionArgs,
   IRequiredContext,
   ISendSiopAuthorizationResponseArgs,
   IVerifySiopAuthorizationRequestUriArgs,
 } from '../types/IDidAuthSiopOpAuthenticator'
-import { VerifiedAuthorizationRequest, ParsedAuthorizationRequestURI, PresentationSignCallback } from '@sphereon/did-auth-siop'
-import { CredentialMapper, IVerifiableCredential } from '@sphereon/ssi-types'
+import {
+  ParsedAuthorizationRequestURI,
+  PresentationSignCallback,
+  VerifiedAuthorizationRequest,
+} from '@sphereon/did-auth-siop'
+import { W3CVerifiableCredential } from '@sphereon/ssi-types'
 
 export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   readonly schema = schema.IDidAuthSiopOpAuthenticator
@@ -120,8 +124,8 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     context: IRequiredContext
   ): Promise<IAuthRequestDetails> {
     const uniqueVcs: Array<UniqueVerifiableCredential> = await context.agent.dataStoreORMGetVerifiableCredentials(args.credentialFilter)
-    const verifiableCredentials: Array<IVerifiableCredential> = uniqueVcs.map((uniqueVc: UniqueVerifiableCredential) =>
-      CredentialMapper.toExternalVerifiableCredential(uniqueVc.verifiableCredential)
+    const verifiableCredentials: W3CVerifiableCredential[] = uniqueVcs.map((uniqueVc: UniqueVerifiableCredential) =>
+      uniqueVc.verifiableCredential as W3CVerifiableCredential
     )
 
     return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session: OpSession) =>

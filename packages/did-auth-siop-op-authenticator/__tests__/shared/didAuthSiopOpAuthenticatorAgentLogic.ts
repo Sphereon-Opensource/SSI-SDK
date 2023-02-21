@@ -1,9 +1,10 @@
 import * as fs from 'fs'
 import { IDataStore, TAgent, VerifiableCredential } from '@veramo/core'
-import { IAuthRequestDetails, IDidAuthSiopOpAuthenticator } from '../../src'
-import { OP, AuthorizationRequest, VerifiablePresentationWithLocation } from '@sphereon/did-auth-siop'
-
+import { IAuthRequestDetails, IDidAuthSiopOpAuthenticator, IMatchedPresentationDefinition } from '../../src'
 import {
+  AuthorizationRequest,
+  OP,
+  ParsedAuthorizationRequestURI,
   PresentationDefinitionWithLocation,
   ResponseContext,
   ResponseMode,
@@ -12,9 +13,9 @@ import {
   UrlEncodingFormat,
   VerificationMode,
   VerifiedAuthorizationRequest,
-  ParsedAuthorizationRequestURI,
 } from '@sphereon/did-auth-siop'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
+import { CredentialMapper } from '@sphereon/ssi-types'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -320,10 +321,11 @@ export default (testContext: {
       const pd_single: PresentationDefinitionWithLocation = getFileAsJson(
         './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_single.json'
       )
-      const vp_single: VerifiablePresentationWithLocation = getFileAsJson(
+      const vp_single: IMatchedPresentationDefinition = getFileAsJson(
         './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_single.json'
       )
-      vp_single.presentation.presentation_submission!.id = expect.any(String)
+      const presentation = CredentialMapper.toWrappedVerifiablePresentation(vp_single.presentation)
+      presentation.presentation.presentation_submission!.id = expect.any(String)
 
       const result: IAuthRequestDetails = await agent.getSiopAuthorizationRequestDetails({
         sessionId,
@@ -340,9 +342,9 @@ export default (testContext: {
         },
       })
 
-      expect(result).toEqual({
+      expect(result).toMatchObject({
         id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
-        vpResponseOpts: [vp_single],
+        verifiablePresentationMatches: [vp_single],
       })
     })
 
@@ -350,10 +352,11 @@ export default (testContext: {
       const pdSingle: PresentationDefinitionWithLocation = getFileAsJson(
         './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_single.json'
       )
-      const vpSingle: VerifiablePresentationWithLocation = getFileAsJson(
+      const vpSingle: IMatchedPresentationDefinition = getFileAsJson(
         './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_single.json'
       )
-      vpSingle.presentation.presentation_submission!.id = expect.any(String)
+      const presentation = CredentialMapper.toWrappedVerifiablePresentation(vpSingle.presentation)
+      presentation.presentation.presentation_submission!.id = expect.any(String)
 
       const result: IAuthRequestDetails = await agent.getSiopAuthorizationRequestDetails({
         sessionId,
@@ -374,10 +377,10 @@ export default (testContext: {
         },
       })
 
-      expect(result).toEqual({
+      expect(result).toMatchObject({
         id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
         alsoKnownAs: undefined,
-        vpResponseOpts: [vpSingle],
+        verifiablePresentationMatches: [vpSingle],
       })
     })
 
@@ -385,10 +388,11 @@ export default (testContext: {
       const pdMultiple: PresentationDefinitionWithLocation = getFileAsJson(
         './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_multiple.json'
       )
-      const vpMultiple: VerifiablePresentationWithLocation = getFileAsJson(
+      const vpMultiple: IMatchedPresentationDefinition = getFileAsJson(
         './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_multiple.json'
       )
-      vpMultiple.presentation.presentation_submission!.id = expect.any(String)
+      const presentation = CredentialMapper.toWrappedVerifiablePresentation(vpMultiple.presentation)
+      presentation.presentation.presentation_submission!.id = expect.any(String)
 
       const result: IAuthRequestDetails = await agent.getSiopAuthorizationRequestDetails({
         sessionId,
@@ -405,10 +409,10 @@ export default (testContext: {
         },
       })
 
-      expect(result).toEqual({
+      expect(result).toMatchObject({
         alsoKnownAs: undefined,
         id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
-        vpResponseOpts: [vpMultiple],
+        verifiablePresentationMatches: [vpMultiple],
       })
     })
 

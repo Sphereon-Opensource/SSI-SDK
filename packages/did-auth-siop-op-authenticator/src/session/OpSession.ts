@@ -1,5 +1,5 @@
 import { DIDDocumentSection, IIdentifier, IKey, PresentationPayload, TKeyType } from '@veramo/core'
-import { _ExtendedIKey, mapIdentifierKeysToDoc } from '@veramo/utils'
+import { _ExtendedIKey } from '@veramo/utils'
 import {
   OP,
   ParsedAuthorizationRequestURI,
@@ -7,21 +7,20 @@ import {
   PresentationDefinitionWithLocation,
   PresentationExchange,
   PresentationSignCallback,
+  ResolveOpts,
   ResponseMode,
+  SigningAlgo,
+  SupportedVersion,
   VerifiablePresentationTypeFormat,
-  VerifiablePresentationWithLocation,
   Verification,
   VerificationMode,
   VerifiedAuthorizationRequest,
   VerifyAuthorizationRequestOpts,
-  PresentationLocation,
-  SigningAlgo,
-  SupportedVersion,
-  ResolveOpts,
+  VPTokenLocation,
 } from '@sphereon/did-auth-siop'
 import { PresentationSignCallBackParams, SubmissionRequirementMatch } from '@sphereon/pex'
-import { IVerifiableCredential, IVerifiablePresentation, parseDid, W3CVerifiablePresentation } from '@sphereon/ssi-types'
-import { SuppliedSigner } from '@sphereon/ssi-sdk-core'
+import { parseDid, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk-core'
 import {
   IAuthRequestDetails,
   IMatchedPresentationDefinition,
@@ -35,8 +34,8 @@ import {
   PerDidResolver,
 } from '../types/IDidAuthSiopOpAuthenticator'
 import { DIDResolutionOptions, DIDResolutionResult, Resolvable } from 'did-resolver'
-import { KeyAlgo } from '@sphereon/ssi-sdk-core'
-import { IVerifyCredentialResult, VerifyCallback, IVerifyCallbackArgs } from '@sphereon/wellknown-dids-client'
+import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
+import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-did-utils'
 
 const fetch = require('cross-fetch')
 
@@ -62,19 +61,23 @@ export class OpSession {
     this.context = options.context
   }
 
+
+  // fixme: This probably results in creating an OP with a DID, before we know what DID to use from the wallet, as that should be matched against the AuthRequest from the RP
   public async init(presentationSignCallback?: PresentationSignCallback, wellknownDidVerifyCallback?: VerifyCallback) {
+    const didMethod = parseDid(this.identifier.did).method
+    const supportedDidMethods = this.supportedDidMethods ? [...this.supportedDidMethods, didMethod] : [didMethod]
     this.op = await this.createOp(
       {
         identifier: this.identifier,
         verificationMethodSection: this.verificationMethodSection,
-        didMethod: parseDid(this.identifier.did).method,
+        // didMethod: parseDid(this.identifier.did).method,
         providedDidResolvers: this.providedDidResolvers,
-        supportedDidMethods: this.supportedDidMethods || [],
+        supportedDidMethods,
         expiresIn: this.expiresIn || 6000,
         presentationSignCallback,
         wellknownDidVerifyCallback,
       },
-      this.context
+      this.context,
     )
   }
 
@@ -86,7 +89,7 @@ export class OpSession {
           if (typeof args.customApproval === 'string') {
             if (args.customApprovals !== undefined && args.customApprovals[args.customApproval] !== undefined) {
               return args.customApprovals[args.customApproval](verifiedAuthorizationRequest, this.id).then(() =>
-                this.sendSiopAuthorizationResponse({ verifiedAuthorizationRequest: verifiedAuthorizationRequest })
+                this.sendSiopAuthorizationResponse({ verifiedAuthorizationRequest: verifiedAuthorizationRequest }),
               )
             }
             return Promise.reject(new Error(`Custom approval not found for key: ${args.customApproval}`))
@@ -106,7 +109,7 @@ export class OpSession {
     const url = args.stateId ? `${args.redirectUrl}?stateId=${args.stateId}` : args.redirectUrl
     return fetch(url)
       .then(async (response: Response) =>
-        response.status >= 400 ? Promise.reject(new Error(await response.text())) : this.op!.parseAuthorizationRequestURI(await response.text())
+        response.status >= 400 ? Promise.reject(new Error(await response.text())) : this.op!.parseAuthorizationRequestURI(await response.text()),
       )
       .catch((error: unknown) => Promise.reject(error))
   }
@@ -120,9 +123,10 @@ export class OpSession {
     const didResolutionResult = args.verifiedAuthorizationRequest.didResolutionResult
 
     return {
+      rpDIDDocument: didResolutionResult.didDocument ?? undefined,
       id: didResolutionResult.didDocument!.id,
       alsoKnownAs: didResolutionResult.didDocument!.alsoKnownAs,
-      vpResponseOpts: matchedPresentationWithPresentationDefinition as unknown as VerifiablePresentationWithLocation[],
+      verifiablePresentationMatches: matchedPresentationWithPresentationDefinition,
     }
   }
 
@@ -150,7 +154,7 @@ export class OpSession {
     }
 
     return this.op!.verifyAuthorizationRequest(args.requestURI.requestObjectJwt!, options).catch((error: string | undefined) =>
-      Promise.reject(new Error(error))
+      Promise.reject(new Error(error)),
     )
   }
 
@@ -172,7 +176,8 @@ export class OpSession {
     return this.op!.createAuthorizationResponse(args.verifiedAuthorizationRequest, {
       verification,
       presentationExchange: {
-        vps: args.verifiablePresentationResponse,
+        verifiablePresentations: args.verifiablePresentations ?? [],
+        // vps: args.verifiablePresentationResponse,
       },
     })
       .then((authResponse) => this.op!.submitAuthorizationResponse(authResponse))
@@ -188,24 +193,24 @@ export class OpSession {
 
   private async matchPresentationDefinitions(
     presentationDefs: PresentationDefinitionWithLocation[],
-    verifiableCredentials: IVerifiableCredential[],
+    verifiableCredentials: W3CVerifiableCredential[],
     presentationSignCallback: PresentationSignCallback,
     options?: {
       presentationSignCallback?: PresentationSignCallback
       nonce?: string
       domain?: string
-    }
+    },
   ): Promise<IMatchedPresentationDefinition[]> {
     return await Promise.all(presentationDefs.map(this.mapper(verifiableCredentials, presentationSignCallback, options)))
   }
 
   private mapper(
-    verifiableCredentials: IVerifiableCredential[],
+    verifiableCredentials: W3CVerifiableCredential[],
     presentationSignCallback: PresentationSignCallback,
     options?: {
       nonce?: string
       domain?: string
-    }
+    },
   ) {
     return async (presentationDef: PresentationDefinitionWithLocation): Promise<IMatchedPresentationDefinition> => {
       const presentationExchange = this.getPresentationExchange(verifiableCredentials)
@@ -219,32 +224,27 @@ export class OpSession {
         return Promise.reject(new Error(JSON.stringify(checked.errors)))
       }
 
-      const verifiablePresentation = await presentationExchange.submissionFrom(
+      const verifiablePresentation: W3CVerifiablePresentation = await presentationExchange.createVerifiablePresentation(
         presentationDef.definition,
-        checked.verifiableCredential as IVerifiableCredential[],
-        options,
-        presentationSignCallback
+        checked.verifiableCredential,
+        // todo: Do we want to expose more options?
+        { proofOptions: { nonce: options?.nonce, domain: options?.domain } },
+        presentationSignCallback,
       )
 
-      let format = checked.verifiableCredential[0]!.proof ? VerifiablePresentationTypeFormat.LDP_VP : VerifiablePresentationTypeFormat.JWT_VP
-      if (presentationDef.definition.format) {
-        format =
-          presentationDef.definition.format.ldp || presentationDef.definition.format.ldp_vp
-            ? VerifiablePresentationTypeFormat.LDP_VP
-            : VerifiablePresentationTypeFormat.JWT_VP
-      }
-
+      let format = typeof verifiablePresentation !== 'string' ? VerifiablePresentationTypeFormat.LDP_VP : VerifiablePresentationTypeFormat.JWT_VP
       return {
-        location: PresentationLocation.ID_TOKEN, //TODO: determine whether it needs to be id token or vp_token
+        definition: presentationDef,
+        location: VPTokenLocation.AUTHORIZATION_RESPONSE, // fixme: Inspect auth request for location, which did-auth-siop can do
         format,
-        presentation: verifiablePresentation as IVerifiablePresentation,
+        presentation: verifiablePresentation,
       }
     }
   }
 
-  private getPresentationExchange(verifiableCredentials: IVerifiableCredential[]): PresentationExchange {
+  private getPresentationExchange(verifiableCredentials: W3CVerifiableCredential[]): PresentationExchange {
     return new PresentationExchange({
-      did: this.op!.createResponseOptions.did,
+      did: this.op!.createResponseOptions.signatureType.did,
       allVerifiableCredentials: verifiableCredentials,
     })
   }
@@ -253,9 +253,9 @@ export class OpSession {
     identifier: IIdentifier,
     verificationMethodSection: DIDDocumentSection = 'authentication',
     context: IRequiredContext,
-    keyId?: string
+    keyId?: string,
   ): Promise<IKey> {
-    const keys = await mapIdentifierKeysToDoc(identifier, verificationMethodSection, context)
+    const keys = await mapIdentifierKeysToDocWithJwkSupport(identifier, verificationMethodSection, context)
     if (!keys || keys.length === 0) {
       throw new Error(`No keys found for verificationMethodSection: ${verificationMethodSection} and did ${identifier.did}`)
     }
@@ -288,7 +288,7 @@ export class OpSession {
     {
       identifier,
       verificationMethodSection,
-      didMethod,
+      // didMethod,
       providedDidResolvers,
       supportedDidMethods,
       expiresIn,
@@ -296,15 +296,15 @@ export class OpSession {
       wellknownDidVerifyCallback,
     }: {
       identifier: IIdentifier
-      verificationMethodSection: DIDDocumentSection | undefined
-      didMethod: string
+      verificationMethodSection?: DIDDocumentSection | undefined
+      // didMethod: string
       providedDidResolvers?: PerDidResolver[]
       supportedDidMethods: string[]
       expiresIn: number
       presentationSignCallback?: PresentationSignCallback
       wellknownDidVerifyCallback?: VerifyCallback
     },
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<OP> {
     if (!identifier.controllerKeyId) {
       return Promise.reject(new Error(`No controller key found for identifier: ${identifier.did}`))
@@ -314,40 +314,36 @@ export class OpSession {
     const verifyCallback = wellknownDidVerifyCallback
       ? wellknownDidVerifyCallback
       : async (): Promise<IVerifyCredentialResult> => {
-          return { verified: true }
-        }
+        return { verified: true }
+      }
 
     const presentationCallback = presentationSignCallback
       ? presentationSignCallback
       : async (args: PresentationSignCallBackParams): Promise<W3CVerifiablePresentation> => {
-          const presentation: PresentationPayload = args.presentation as PresentationPayload
-          const format = args.presentationDefinition.format
-          return (await context.agent.createVerifiablePresentation({
-            presentation,
-            keyRef: keyRef.kid,
-            fetchRemoteContexts: true,
-            proofFormat: format && (format.ldp || format.ldp_vp) ? 'lds' : 'jwt',
-          })) as W3CVerifiablePresentation
-        }
+        const presentation: PresentationPayload = args.presentation as PresentationPayload
+        const format = args.presentationDefinition.format
+        return (await context.agent.createVerifiablePresentation({
+          presentation,
+          keyRef: keyRef.kid,
+          fetchRemoteContexts: true,
+          proofFormat: format && (format.ldp || format.ldp_vp) ? 'lds' : 'jwt',
+        })) as W3CVerifiablePresentation
+      }
 
     const builder = OP.builder()
       .withExpiresIn(expiresIn)
-
-      .addDidMethod(didMethod)
+      // .addDidMethod(didMethod)
       .suppliedSignature(
         SuppliedSigner(keyRef, context, this.getSigningAlgo(keyRef.type) as unknown as KeyAlgo),
         identifier.did,
         identifier.controllerKeyId,
-        this.getSigningAlgo(keyRef.type)
-      )
-      .registration({
-        registrationBy: {
-          passBy: PassBy.VALUE,
-        },
-      })
-      .response(ResponseMode.POST)
+        this.getSigningAlgo(keyRef.type),
+      ).withRegistration({
+        passBy: PassBy.VALUE
+      }).withResponseMode(ResponseMode.POST)
       .addVerifyCallback((args: IVerifyCallbackArgs) => verifyCallback(args))
       .withPresentationSignCallback(presentationCallback)
+      .withSupportedVersions([SupportedVersion.SIOPv2_ID1, SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_D11])
     if (supportedDidMethods && supportedDidMethods.length > 0) {
       supportedDidMethods.forEach((method) => builder.addDidMethod(method))
     }

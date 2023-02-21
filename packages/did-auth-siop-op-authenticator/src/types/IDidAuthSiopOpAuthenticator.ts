@@ -1,27 +1,28 @@
 import {
   DIDDocumentSection,
+  FindCredentialsArgs,
   IAgentContext,
+  ICredentialIssuer,
+  IDataStoreORM,
   IIdentifier,
+  IKeyManager,
   IPluginMethodMap,
   IResolver,
-  IKeyManager,
-  IDataStoreORM,
-  FindCredentialsArgs,
-  ICredentialIssuer,
 } from '@veramo/core'
-import { IPresentation, IVerifiableCredential } from '@sphereon/ssi-types'
+import { W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { OpSession } from '../session/OpSession'
 import {
   ParsedAuthorizationRequestURI,
-  VerifiedAuthorizationRequest,
-  VerifiablePresentationWithLocation,
-  PresentationLocation,
-  VerifiablePresentationTypeFormat,
+  PresentationDefinitionWithLocation,
   PresentationSignCallback,
+  VerifiablePresentationTypeFormat,
+  VerifiedAuthorizationRequest,
+  VPTokenLocation,
 } from '@sphereon/did-auth-siop'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 
 import { Resolvable } from 'did-resolver'
+import { DIDDocument } from '@sphereon/did-uni-client'
 
 export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   getSessionForSiop(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
@@ -82,21 +83,23 @@ export interface IVerifySiopAuthorizationRequestUriArgs {
 export interface ISendSiopAuthorizationResponseArgs {
   sessionId: string
   verifiedAuthorizationRequest: VerifiedAuthorizationRequest
-  verifiablePresentationResponse?: VerifiablePresentationWithLocation[]
+  verifiablePresentationResponse?: W3CVerifiablePresentation[]
 }
 
 export interface IAuthRequestDetails {
+  rpDIDDocument?: DIDDocument
   id: string
-  vpResponseOpts: VerifiablePresentationWithLocation[]
+  verifiablePresentationMatches: IMatchedPresentationDefinition[]
   alsoKnownAs?: string[]
 }
 
 export interface IResponse extends Response {}
 
 export interface IMatchedPresentationDefinition {
-  location: PresentationLocation
+  location: VPTokenLocation
+  definition: PresentationDefinitionWithLocation
   format: VerifiablePresentationTypeFormat
-  presentation: IPresentation
+  presentation: W3CVerifiablePresentation
 }
 
 export interface IGetSiopSessionArgs {
@@ -141,7 +144,7 @@ export interface IOpsGetSiopAuthorizationRequestFromRpArgs {
 
 export interface IOpsGetSiopAuthorizationRequestDetailsArgs {
   verifiedAuthorizationRequest: VerifiedAuthorizationRequest
-  verifiableCredentials: IVerifiableCredential[]
+  verifiableCredentials: W3CVerifiableCredential[]
   signingOptions?: {
     nonce?: string
     domain?: string
@@ -155,7 +158,7 @@ export interface IOpsVerifySiopAuthorizationRequestUriArgs {
 
 export interface IOpsSendSiopAuthorizationResponseArgs {
   verifiedAuthorizationRequest: VerifiedAuthorizationRequest
-  verifiablePresentationResponse?: VerifiablePresentationWithLocation[]
+  verifiablePresentations?: W3CVerifiablePresentation[]
 }
 
 export enum events {
