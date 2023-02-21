@@ -16,6 +16,7 @@ import {
 } from '@sphereon/did-auth-siop'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
 import { CredentialMapper } from '@sphereon/ssi-types'
+import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-did-utils'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -31,6 +32,12 @@ jest.mock('@veramo/utils', () => ({
   mapIdentifierKeysToDoc: jest.fn(),
 }))
 
+jest.mock('@sphereon/ssi-sdk-did-utils', () => ({
+  ...jest.requireActual('@sphereon/ssi-sdk-did-utils'),
+  mapIdentifierKeysToDocWithJwkSupport: jest.fn(),
+}))
+
+
 type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator & IDataStore>
 
 const didMethod = 'ethr'
@@ -43,7 +50,7 @@ const identifier = {
     {
       kid: `${did}#controller`,
       kms: '',
-      type: 'Ed25519' as const,
+      type: 'Secp256k1' as const,
       publicKeyHex: '1e21e21e...',
       privateKeyHex: 'eqfcvnqwdnwqn...',
     },
@@ -54,7 +61,7 @@ const authKeys = [
   {
     kid: `${did}#controller`,
     kms: '',
-    type: 'Ed25519',
+    type: 'Secp256k1',
     publicKeyHex: '1e21e21e...',
     privateKeyHex: 'eqfcvnqwdnwqn...',
     meta: {
@@ -180,6 +187,9 @@ export default (testContext: {
 
       const mockedMapIdentifierKeysToDocMethod = mapIdentifierKeysToDoc as jest.Mock
       mockedMapIdentifierKeysToDocMethod.mockReturnValue(Promise.resolve(authKeys))
+
+      const mockedMapIdentifierKeysToDocMethodWithJwkSupport = mapIdentifierKeysToDocWithJwkSupport as jest.Mock
+      mockedMapIdentifierKeysToDocMethodWithJwkSupport.mockReturnValue(Promise.resolve(authKeys))
 
       const mockedparseAuthorizationRequestURIMethod = jest.fn()
       OP.prototype.parseAuthorizationRequestURI = mockedparseAuthorizationRequestURIMethod
@@ -379,7 +389,6 @@ export default (testContext: {
 
       expect(result).toMatchObject({
         id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
-        alsoKnownAs: undefined,
         verifiablePresentationMatches: [vpSingle],
       })
     })
@@ -410,7 +419,6 @@ export default (testContext: {
       })
 
       expect(result).toMatchObject({
-        alsoKnownAs: undefined,
         id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
         verifiablePresentationMatches: [vpMultiple],
       })

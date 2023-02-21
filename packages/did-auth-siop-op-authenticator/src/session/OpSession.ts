@@ -69,7 +69,7 @@ export class OpSession {
     this.op = await this.createOp(
       {
         identifier: this.identifier,
-        verificationMethodSection: this.verificationMethodSection,
+        verificationMethodSection: this.verificationMethodSection || 'authentication',
         // didMethod: parseDid(this.identifier.did).method,
         providedDidResolvers: this.providedDidResolvers,
         supportedDidMethods,
@@ -296,7 +296,7 @@ export class OpSession {
       wellknownDidVerifyCallback,
     }: {
       identifier: IIdentifier
-      verificationMethodSection?: DIDDocumentSection | undefined
+      verificationMethodSection?: DIDDocumentSection | 'authentication'
       // didMethod: string
       providedDidResolvers?: PerDidResolver[]
       supportedDidMethods: string[]
