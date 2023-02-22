@@ -50,7 +50,7 @@ export interface PerDidResolver {
 }
 
 export interface IOpSessionArgs {
-  sessionId: string
+  sessionId?: string
 
   requestJwtOrUri: string | URI
   // identifier: IIdentifier
@@ -200,3 +200,10 @@ export interface IIdentifierOpts {
   verificationMethodSection?: DIDDocumentSection
   kid?: string
 }
+
+
+export interface VerifiableCredentialsWithDefinition {
+  definition: PresentationDefinitionWithLocation,
+  credentials: W3CVerifiableCredential[]
+}
+export const DEFAULT_JWT_PROOF_TYPE = 'JwtProof2020'
