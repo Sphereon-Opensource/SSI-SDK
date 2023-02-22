@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import { IDataStore, TAgent, VerifiableCredential } from '@veramo/core'
-import { IAuthRequestDetails, IDidAuthSiopOpAuthenticator, IMatchedPresentationDefinition } from '../../src'
+import { IAuthRequestDetails, IDidAuthSiopOpAuthenticator, IPresentationWithDefinition } from '../../src'
 import {
   AuthorizationRequest,
   OP,
@@ -36,7 +36,6 @@ jest.mock('@sphereon/ssi-sdk-did-utils', () => ({
   ...jest.requireActual('@sphereon/ssi-sdk-did-utils'),
   mapIdentifierKeysToDocWithJwkSupport: jest.fn(),
 }))
-
 
 type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator & IDataStore>
 
@@ -75,13 +74,15 @@ const authKeys = [
     },
   },
 ]
+
+console.log(identifier)
 const sessionId = 'sessionId'
 const otherSessionId = 'other_sessionId'
 const redirectUrl = 'http://example/ext/get-auth-request-url'
 const stateId = '2hAyTM7PB3SGJaeGU7QeTJ'
 const nonce = 'o5qwML7DnrcLMs9Vdizyz9'
 const scope = 'openid'
-const requestResultMockedText =
+const openIDURI =
   'openid://?response_type=id_token' +
   '&scope=openid' +
   '&client_id=' +
@@ -183,7 +184,7 @@ export default (testContext: {
       )
       await agent.dataStoreSaveVerifiableCredential({ verifiableCredential: driverLicenseCredential })
 
-      nock(redirectUrl).get(`?stateId=${stateId}`).times(5).reply(200, requestResultMockedText)
+      nock(redirectUrl).get(`?stateId=${stateId}`).times(5).reply(200, openIDURI)
 
       const mockedMapIdentifierKeysToDocMethod = mapIdentifierKeysToDoc as jest.Mock
       mockedMapIdentifierKeysToDocMethod.mockReturnValue(Promise.resolve(authKeys))
@@ -207,9 +208,9 @@ export default (testContext: {
       OP.prototype.submitAuthorizationResponse = mocksubmitAuthorizationResponseMethod
       mocksubmitAuthorizationResponseMethod.mockReturnValue(Promise.resolve({ status: 200, statusText: 'example_value' }))
 
-      await agent.registerSessionForSiop({
+      await agent.siopRegisterOPSession({
         sessionId,
-        identifier,
+        requestJwtOrUri: openIDURI,
       })
     })
 
@@ -217,25 +218,25 @@ export default (testContext: {
 
     it('should register OP session', async () => {
       const sessionId = 'new_session_id'
-      const result = await agent.registerSessionForSiop({
+      const result = await agent.siopRegisterOPSession({
         sessionId,
-        identifier,
+        requestJwtOrUri: openIDURI,
       })
 
       expect(result.id).toEqual(sessionId)
     })
 
     it('should remove OP session', async () => {
-      await agent.registerSessionForSiop({
+      await agent.siopRegisterOPSession({
         sessionId: otherSessionId,
-        identifier,
+        requestJwtOrUri: openIDURI,
       })
-      await agent.removeSessionForSiop({
+      await agent.siopRemoveOPSession({
         sessionId: otherSessionId,
       })
 
       await expect(
-        agent.getSessionForSiop({
+        agent.siopGetOPSession({
           sessionId: otherSessionId,
         })
       ).rejects.toThrow(`No session found for id: ${otherSessionId}`)
@@ -244,7 +245,7 @@ export default (testContext: {
     if (!testContext.isRestTest) {
       it('should register custom approval function', async () => {
         await expect(
-          agent.registerCustomApprovalForSiop({
+          agent.siopRegisterOPCustomApproval({
             key: 'test_register',
             customApproval: (verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => Promise.resolve(),
           })
@@ -252,11 +253,11 @@ export default (testContext: {
       })
 
       it('should remove custom approval function', async () => {
-        await agent.registerCustomApprovalForSiop({
+        await agent.siopRegisterOPCustomApproval({
           key: 'test_delete',
           customApproval: (verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => Promise.resolve(),
         })
-        const result = await agent.removeCustomApprovalForSiop({
+        const result = await agent.siopRemoveOPCustomApproval({
           key: 'test_delete',
         })
 
@@ -331,7 +332,7 @@ export default (testContext: {
       const pd_single: PresentationDefinitionWithLocation = getFileAsJson(
         './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_single.json'
       )
-      const vp_single: IMatchedPresentationDefinition = getFileAsJson(
+      const vp_single: IPresentationWithDefinition = getFileAsJson(
         './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_single.json'
       )
       const presentation = CredentialMapper.toWrappedVerifiablePresentation(vp_single.presentation)
@@ -362,7 +363,7 @@ export default (testContext: {
       const pdSingle: PresentationDefinitionWithLocation = getFileAsJson(
         './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_single.json'
       )
-      const vpSingle: IMatchedPresentationDefinition = getFileAsJson(
+      const vpSingle: IPresentationWithDefinition = getFileAsJson(
         './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_single.json'
       )
       const presentation = CredentialMapper.toWrappedVerifiablePresentation(vpSingle.presentation)
@@ -397,7 +398,7 @@ export default (testContext: {
       const pdMultiple: PresentationDefinitionWithLocation = getFileAsJson(
         './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_multiple.json'
       )
-      const vpMultiple: IMatchedPresentationDefinition = getFileAsJson(
+      const vpMultiple: IPresentationWithDefinition = getFileAsJson(
         './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_multiple.json'
       )
       const presentation = CredentialMapper.toWrappedVerifiablePresentation(vpMultiple.presentation)

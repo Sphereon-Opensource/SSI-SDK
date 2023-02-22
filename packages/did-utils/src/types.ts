@@ -14,3 +14,4 @@ export interface X509Opts {
 }
 
 export const DID_PREFIX = 'did:'
+
