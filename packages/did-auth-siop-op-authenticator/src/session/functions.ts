@@ -19,51 +19,62 @@ import { _ExtendedIKey } from '@veramo/utils'
 import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
 
 export async function createPresentationSignCallback({
-                                                       presentationSignCallback,
-                                                       kid,
-                                                       context,
-                                                     }: { presentationSignCallback?: PresentationSignCallback, kid: string, context: IRequiredContext }): Promise<PresentationSignCallback> {
+  presentationSignCallback,
+  kid,
+  context,
+}: {
+  presentationSignCallback?: PresentationSignCallback
+  kid: string
+  context: IRequiredContext
+}): Promise<PresentationSignCallback> {
   return presentationSignCallback
     ? presentationSignCallback
     : async (args: PresentationSignCallBackParams): Promise<W3CVerifiablePresentation> => {
-      const presentation: PresentationPayload = args.presentation as PresentationPayload
-      const format = args.presentationDefinition.format
-      return (await context.agent.createVerifiablePresentation({
-        presentation,
-        keyRef: kid,
-        fetchRemoteContexts: true,
-        proofFormat: format && (format.ldp || format.ldp_vp) ? 'lds' : 'jwt',
-      })) as W3CVerifiablePresentation
-    }
+        const presentation: PresentationPayload = args.presentation as PresentationPayload
+        const format = args.presentationDefinition.format
+        return (await context.agent.createVerifiablePresentation({
+          presentation,
+          keyRef: kid,
+          fetchRemoteContexts: true,
+          proofFormat: format && (format.ldp || format.ldp_vp) ? 'lds' : 'jwt',
+        })) as W3CVerifiablePresentation
+      }
 }
 
 export async function createOPBuilder({
-                                        opOptions,
-                                        idOpts,
-                                        context,
-                                      }: { opOptions: IOPOptions, idOpts?: IIdentifierOpts, context: IRequiredContext }): Promise<Builder> {
+  opOptions,
+  idOpts,
+  context,
+}: {
+  opOptions: IOPOptions
+  idOpts?: IIdentifierOpts
+  context: IRequiredContext
+}): Promise<Builder> {
   const eventEmitter = opOptions.eventEmitter ?? new EventEmitter()
   const builder = OP.builder()
     .withResponseMode(opOptions.responseMode ?? ResponseMode.POST)
-    .withSupportedVersions(opOptions.supportedVersions ?? [SupportedVersion.SIOPv2_ID1, SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_D11])
+    .withSupportedVersions(
+      opOptions.supportedVersions ?? [SupportedVersion.SIOPv2_ID1, SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_D11]
+    )
     .withExpiresIn(opOptions.expiresIn ?? 300)
     .withCheckLinkedDomain(opOptions.checkLinkedDomains ?? CheckLinkedDomain.IF_PRESENT)
-    .withCustomResolver(opOptions.resolveOpts?.resolver ?? new AgentDIDResolver(context, opOptions.resolveOpts?.noUniversalResolverFallback !== false))
+    .withCustomResolver(
+      opOptions.resolveOpts?.resolver ?? new AgentDIDResolver(context, opOptions.resolveOpts?.noUniversalResolverFallback !== false)
+    )
     .withEventEmitter(eventEmitter)
     .withRegistration({
       passBy: PassBy.VALUE,
     })
 
-  const methods = opOptions.supportedDIDMethods ?? await getAgentDIDMethods(context)
-  methods.forEach(method => builder.addDidMethod(method))
-
+  const methods = opOptions.supportedDIDMethods ?? (await getAgentDIDMethods(context))
+  methods.forEach((method) => builder.addDidMethod(method))
 
   const wellknownDIDVerifyCallback = opOptions.wellknownDIDVerifyCallback
     ? opOptions.wellknownDIDVerifyCallback
     : async (args: IVerifyCallbackArgs): Promise<IVerifyCredentialResult> => {
-      const result = await context.agent.verifyCredential({ credential: args.credential, fetchRemoteContexts: true })
-      return { verified: result.verified }
-    }
+        const result = await context.agent.verifyCredential({ credential: args.credential, fetchRemoteContexts: true })
+        return { verified: result.verified }
+      }
   builder.withWellknownDIDVerifyCallback(wellknownDIDVerifyCallback)
 
   if (idOpts && idOpts.identifier) {
@@ -74,31 +85,36 @@ export async function createOPBuilder({
       SuppliedSigner(key, context, getSigningAlgo(key.type) as unknown as KeyAlgo),
       idOpts.identifier.did,
       kid,
-      getSigningAlgo(key.type),
+      getSigningAlgo(key.type)
     )
-    builder.withPresentationSignCallback(await createPresentationSignCallback({
-      presentationSignCallback: opOptions.presentationSignCallback,
-      kid,
-      context,
-    }))
+    builder.withPresentationSignCallback(
+      await createPresentationSignCallback({
+        presentationSignCallback: opOptions.presentationSignCallback,
+        kid,
+        context,
+      })
+    )
   }
   return builder
 }
 
 export async function createOP({
-                                 opOptions,
-                                 idOpts,
-                                 context,
-                               }: { opOptions: IOPOptions, idOpts?: IIdentifierOpts, context: IRequiredContext }): Promise<OP> {
+  opOptions,
+  idOpts,
+  context,
+}: {
+  opOptions: IOPOptions
+  idOpts?: IIdentifierOpts
+  context: IRequiredContext
+}): Promise<OP> {
   return (await createOPBuilder({ opOptions, idOpts, context })).build()
 }
-
 
 export async function getKey(
   identifier: IIdentifier,
   verificationMethodSection: DIDDocumentSection = 'authentication',
   context: IRequiredContext,
-  keyId?: string,
+  keyId?: string
 ): Promise<IKey> {
   const keys = await mapIdentifierKeysToDocWithJwkSupport(identifier, verificationMethodSection, context)
   if (!keys || keys.length === 0) {

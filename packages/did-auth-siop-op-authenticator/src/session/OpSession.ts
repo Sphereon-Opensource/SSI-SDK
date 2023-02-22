@@ -1,21 +1,9 @@
 import { IIdentifier } from '@veramo/core'
-import {
-  RequestObjectPayload,
-  ResolveOpts,
-  URI,
-  Verification,
-  VerificationMode,
-  VerifiedAuthorizationRequest,
-} from '@sphereon/did-auth-siop'
-import {
-  IOPOptions,
-  IOpSessionArgs,
-  IOpsSendSiopAuthorizationResponseArgs,
-  IRequiredContext,
-} from '../types/IDidAuthSiopOpAuthenticator'
+import { RequestObjectPayload, ResolveOpts, URI, Verification, VerificationMode, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
+import { IOPOptions, IOpSessionArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
 import { AgentDIDResolver, getAgentDIDMethods } from '@sphereon/ssi-sdk-did-utils'
 import { createOP } from './functions'
-
+import { OID4VP } from './OID4VP'
 
 export class OpSession {
   public readonly ts = new Date().getDate()
@@ -38,7 +26,6 @@ export class OpSession {
     return new OpSession(options)
   }
 
-
   public async getAuthorizationRequest(): Promise<VerifiedAuthorizationRequest> {
     if (!this.verifiedAuthorizationRequest) {
       const op = await createOP({ opOptions: this.options, context: this.context })
@@ -54,7 +41,6 @@ export class OpSession {
   public async getAuthorizationRequestURI(): Promise<URI> {
     return await URI.fromAuthorizationRequest((await this.getAuthorizationRequest()).authorizationRequest)
   }
-
 
   get nonce() {
     if (!this._nonce) {
@@ -78,44 +64,56 @@ export class OpSession {
   }
 
   public async getSupportedDIDMethods(didPrefix?: boolean) {
-    const agentMethods = this.options.supportedDIDMethods?.map(method => method.toLowerCase().replace('did:', ''))
+    const agentMethods = this.options.supportedDIDMethods?.map((method) => method.toLowerCase().replace('did:', ''))
     const payload = (await this.getAuthorizationRequest()).registrationMetadataPayload
-    const rpMethods = (payload?.subject_syntax_types_supported ? (Array.isArray(payload?.subject_syntax_types_supported) ? payload.subject_syntax_types_supported : [payload.subject_syntax_types_supported]) : [])
-      .map(method => method.toLowerCase().replace('did', ''))
+    const rpMethods = (
+      payload?.subject_syntax_types_supported
+        ? Array.isArray(payload?.subject_syntax_types_supported)
+          ? payload.subject_syntax_types_supported
+          : [payload.subject_syntax_types_supported]
+        : []
+    ).map((method) => method.toLowerCase().replace('did', ''))
 
     let intersection: string[]
     if (rpMethods.length === 0 || rpMethods.includes('did')) {
-      intersection = agentMethods || await getAgentDIDMethods(this.context)// fallback in case the agent methods are undefined
+      intersection = agentMethods || (await getAgentDIDMethods(this.context)) // fallback in case the agent methods are undefined
     } else if (!agentMethods || agentMethods.length === 0) {
       intersection = rpMethods
     } else {
-      intersection = agentMethods.filter(value => rpMethods.includes(value))
+      intersection = agentMethods.filter((value) => rpMethods.includes(value))
     }
     if (intersection.length === 0) {
       throw Error('No matching DID methods between agent and relying party')
     }
-    return intersection.map(value => didPrefix === false ? value : `did:${value}`)
+    return intersection.map((value) => (didPrefix === false ? value : `did:${value}`))
   }
 
   public async getSupportedIdentifiers(): Promise<IIdentifier[]> {
     // todo: we also need to check signature algo
     const methods = await this.getSupportedDIDMethods(true)
-    return await this.context.agent.didManagerFind().then(ids => ids.filter(id => methods.includes(id.provider)))
+    return await this.context.agent.didManagerFind().then((ids) => ids.filter((id) => methods.includes(id.provider)))
+  }
+
+  public async getSupportedDIDs(): Promise<string[]> {
+    return (await this.getSupportedIdentifiers()).map((id) => id.did)
   }
 
   public async getRedirectUri(): Promise<string> {
     return (await this.getMergedRequestPayload()).redirect_uri
   }
 
-
   public async isOID4VP(): Promise<boolean> {
-    return (await this.getAuthorizationRequest()).presentationDefinitions !== undefined
+    const defs = (await this.getAuthorizationRequest()).presentationDefinitions
+    return defs !== undefined && defs.length > 0
+  }
+
+  public async getOID4VP(allDIDs?: string[]): Promise<OID4VP> {
+    return await OID4VP.init(this, allDIDs ?? (await this.getSupportedDIDs()))
   }
 
   private async getMergedRequestPayload(): Promise<RequestObjectPayload> {
     return await (await this.getAuthorizationRequest()).authorizationRequest.mergedPayloads()
   }
-
 
   /* public async getSiopAuthorizationRequestFromRP(args: IOpsGetSiopAuthorizationRequestFromRpArgs): Promise<ParsedAuthorizationRequestURI> {
      const url = args.stateId ? `${args.redirectUrl}?stateId=${args.stateId}` : args.redirectUrl
@@ -126,22 +124,22 @@ export class OpSession {
        .catch((error: unknown) => Promise.reject(error))
    }*/
 
- /* public async getSiopAuthorizationRequestDetails(args: IOpsGetSiopAuthorizationRequestDetailsArgs): Promise<IAuthRequestDetails> {
-    const presentationDefs = await this.getPresentationDefinitions()
-    const verifiablePresentationMatches =
-      presentationDefs && presentationDefs.length > 0
-        ? await this.matchPresentationDefinitions(presentationDefs, args.verifiableCredentials, args.presentationSignCallback, args.signingOptions)
-        : []
-    const didResolutionResult = (await this.getAuthorizationRequest()).didResolutionResult
+  /* public async getSiopAuthorizationRequestDetails(args: IOpsGetSiopAuthorizationRequestDetailsArgs): Promise<IAuthRequestDetails> {
+     const presentationDefs = await this.getPresentationDefinitions()
+     const verifiablePresentationMatches =
+       presentationDefs && presentationDefs.length > 0
+         ? await this.matchPresentationDefinitions(presentationDefs, args.verifiableCredentials, args.presentationSignCallback, args.signingOptions)
+         : []
+     const didResolutionResult = (await this.getAuthorizationRequest()).didResolutionResult
 
-    return {
-      rpDIDDocument: didResolutionResult.didDocument ?? undefined,
-      id: didResolutionResult.didDocument!.id,
-      alsoKnownAs: didResolutionResult.didDocument!.alsoKnownAs,
-      verifiablePresentationMatches: verifiablePresentationMatches,
-    }
-  }
-*/
+     return {
+       rpDIDDocument: didResolutionResult.didDocument ?? undefined,
+       id: didResolutionResult.didDocument!.id,
+       alsoKnownAs: didResolutionResult.didDocument!.alsoKnownAs,
+       verifiablePresentationMatches: verifiablePresentationMatches,
+     }
+   }
+ */
 
   public async sendAuthorizationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
     const resolveOpts: ResolveOpts = this.options.resolveOpts ?? { resolver: new AgentDIDResolver(this.context, true) }
@@ -154,25 +152,24 @@ export class OpSession {
     }
 
     if (
-      await this.isOID4VP() &&
+      (await this.isOID4VP()) &&
       args.verifiedAuthorizationRequest.presentationDefinitions &&
       (!args.verifiablePresentations || args.verifiablePresentations.length !== args.verifiedAuthorizationRequest.presentationDefinitions.length)
     ) {
       throw Error(
-        `Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${args.verifiedAuthorizationRequest.presentationDefinitions.length}`,
+        `Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${args.verifiedAuthorizationRequest.presentationDefinitions.length}`
       )
     }
     const op = await createOP({ opOptions: this.options, idOpts: args.responseSignerOpts, context: this.context })
-
 
     const authResponse = await op.createAuthorizationResponse(await this.getAuthorizationRequest(), {
       verification,
       ...(args.verifiablePresentations
         ? {
-          presentationExchange: {
-            verifiablePresentations: args.verifiablePresentations ?? [],
-          },
-        }
+            presentationExchange: {
+              verifiablePresentations: args.verifiablePresentations ?? [],
+            },
+          }
         : {}),
     })
     const response = await op.submitAuthorizationResponse(authResponse)
@@ -238,38 +235,37 @@ export class OpSession {
     }
   */
 
-/*
-  public async authenticateWithSiop(args: IOpsAuthenticateWithSiopArgs): Promise<Response> {
-    // fixme: This flow misses several items, like VCs, creating the VPs etc
-    if (args.stateId || args.redirectUrl || this._op || true) {
-      throw Error('please use individual methods instead of authetnicateWithSiop for now!')
-    }
+  /*
+    public async authenticateWithSiop(args: IOpsAuthenticateWithSiopArgs): Promise<Response> {
+      // fixme: This flow misses several items, like VCs, creating the VPs etc
+      if (args.stateId || args.redirectUrl || this._op || true) {
+        throw Error('please use individual methods instead of authetnicateWithSiop for now!')
+      }
 
-    return this.getSiopAuthorizationRequestFromRP({ stateId: args.stateId, redirectUrl: args.redirectUrl })
-      .then((authorizationRequest: ParsedAuthorizationRequestURI) => this.verifyAuthorizationRequest({ requestURI: authorizationRequest }))
-      .then((verifiedAuthorizationRequest) => {
-        // const authDetails = await this.getSiopAuthorizationRequestDetails({ verifiedAuthorizationRequest: verifiedAuthorizationRequest, verifiableCredentials: args.})
-        if (args.customApproval !== undefined) {
-          if (typeof args.customApproval === 'string') {
-            if (args.customApprovals !== undefined && args.customApprovals[args.customApproval] !== undefined) {
-              return args.customApprovals[args.customApproval](verifiedAuthorizationRequest, this.id).then(() =>
-                this.sendSiopAuthorizationResponse({ verifiedAuthorizationRequest: verifiedAuthorizationRequest }),
+      return this.getSiopAuthorizationRequestFromRP({ stateId: args.stateId, redirectUrl: args.redirectUrl })
+        .then((authorizationRequest: ParsedAuthorizationRequestURI) => this.verifyAuthorizationRequest({ requestURI: authorizationRequest }))
+        .then((verifiedAuthorizationRequest) => {
+          // const authDetails = await this.getSiopAuthorizationRequestDetails({ verifiedAuthorizationRequest: verifiedAuthorizationRequest, verifiableCredentials: args.})
+          if (args.customApproval !== undefined) {
+            if (typeof args.customApproval === 'string') {
+              if (args.customApprovals !== undefined && args.customApprovals[args.customApproval] !== undefined) {
+                return args.customApprovals[args.customApproval](verifiedAuthorizationRequest, this.id).then(() =>
+                  this.sendSiopAuthorizationResponse({ verifiedAuthorizationRequest: verifiedAuthorizationRequest }),
+                )
+              }
+              return Promise.reject(new Error(`Custom approval not found for key: ${args.customApproval}`))
+            } else {
+              return args.customApproval(verifiedAuthorizationRequest, this.id).then(() =>
+                this.sendSiopAuthorizationResponse({
+                  verifiedAuthorizationRequest: verifiedAuthorizationRequest,
+                  verifiablePresentations: undefined /!*fixme*!/,
+                }),
               )
             }
-            return Promise.reject(new Error(`Custom approval not found for key: ${args.customApproval}`))
           } else {
-            return args.customApproval(verifiedAuthorizationRequest, this.id).then(() =>
-              this.sendSiopAuthorizationResponse({
-                verifiedAuthorizationRequest: verifiedAuthorizationRequest,
-                verifiablePresentations: undefined /!*fixme*!/,
-              }),
-            )
+            return this.sendSiopAuthorizationResponse({ verifiedAuthorizationRequest: verifiedAuthorizationRequest })
           }
-        } else {
-          return this.sendSiopAuthorizationResponse({ verifiedAuthorizationRequest: verifiedAuthorizationRequest })
-        }
-      })
-      .catch((error: unknown) => Promise.reject(error))
-  }*/
-
+        })
+        .catch((error: unknown) => Promise.reject(error))
+    }*/
 }

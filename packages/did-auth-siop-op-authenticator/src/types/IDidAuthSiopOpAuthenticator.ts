@@ -201,9 +201,8 @@ export interface IIdentifierOpts {
   kid?: string
 }
 
-
 export interface VerifiableCredentialsWithDefinition {
-  definition: PresentationDefinitionWithLocation,
+  definition: PresentationDefinitionWithLocation
   credentials: W3CVerifiableCredential[]
 }
 export const DEFAULT_JWT_PROOF_TYPE = 'JwtProof2020'

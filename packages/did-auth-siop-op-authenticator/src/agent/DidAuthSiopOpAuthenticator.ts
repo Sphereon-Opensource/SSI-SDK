@@ -13,7 +13,6 @@ import {
 } from '../types/IDidAuthSiopOpAuthenticator'
 import { PresentationSignCallback, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
 
-
 export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   readonly schema = schema.IDidAuthSiopOpAuthenticator
   readonly methods: IDidAuthSiopOpAuthenticator = {
@@ -35,7 +34,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
 
   constructor(
     presentationSignCallback?: PresentationSignCallback,
-    customApprovals?: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>,
+    customApprovals?: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>
   ) {
     this.sessions = new Map<string, OpSession>()
     this.customApprovals = customApprovals || {}
@@ -80,7 +79,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   private async siopRemoveOPCustomApproval(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean> {
     return delete this.customApprovals[args.key]
   }
-/*
+  /*
   private async authenticateWithSiop(args: IAuthenticateWithSiopArgs, context: IRequiredContext): Promise<Response> {
     return this.siopGetOPSession({ sessionId: args.sessionId }, context).then((session: OpSession) =>
       session.authenticateWithSiop({
