@@ -72,9 +72,9 @@ export class OID4VP {
     const idOpts = opts?.identifierOpts ?? { identifier: id! }
     this.assertIdentifier(idOpts.identifier)
 
-    // We are making sure to filter, in case the user submitted all credentials in the wallet/agent
+    // We are making sure to filter, in case the user submitted all credentials in the wallet/agent. We also make sure to get original formats back
     const vcs = await this.filterCredentials(selectedVerifiableCredentials.definition, {
-      verifiableCredentials: selectedVerifiableCredentials.credentials,
+      verifiableCredentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
     })
     const key = await getKey(idOpts.identifier, 'authentication', this.session.context, idOpts.kid)
     const signCallback = await createPresentationSignCallback({

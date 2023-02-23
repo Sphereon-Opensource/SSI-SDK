@@ -4,6 +4,7 @@ import { IOPOptions, IOpSessionArgs, IOpsSendSiopAuthorizationResponseArgs, IReq
 import { AgentDIDResolver, getAgentDIDMethods } from '@sphereon/ssi-sdk-did-utils'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
+import { CredentialMapper } from '@sphereon/ssi-types'
 
 export class OpSession {
   public readonly ts = new Date().getDate()
@@ -159,6 +160,10 @@ export class OpSession {
     ) {
       throw Error(`Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${request.presentationDefinitions.length}`)
     }
+
+    const verifiablePresentations = args.verifiablePresentations
+      ? args.verifiablePresentations.map((vp) => CredentialMapper.storedPresentationToOriginalFormat(vp))
+      : []
     const op = await createOP({ opOptions: this.options, idOpts: args.responseSignerOpts, context: this.context })
 
     const authResponse = await op.createAuthorizationResponse(await this.getAuthorizationRequest(), {
@@ -166,7 +171,7 @@ export class OpSession {
       ...(args.verifiablePresentations
         ? {
             presentationExchange: {
-              verifiablePresentations: args.verifiablePresentations ?? [],
+              verifiablePresentations,
             },
           }
         : {}),

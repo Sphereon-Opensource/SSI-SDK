@@ -1,6 +1,8 @@
 import {
+  DocumentFormat,
   ICredential,
   IPresentation,
+  IProof,
   IVerifiableCredential,
   IVerifiablePresentation,
   JwtDecodedVerifiableCredential,
@@ -9,6 +11,8 @@ import {
   OriginalVerifiableCredential,
   OriginalVerifiablePresentation,
   PresentationFormat,
+  W3CVerifiableCredential,
+  W3CVerifiablePresentation,
   WrappedVerifiableCredential,
   WrappedVerifiablePresentation,
 } from '../types'
@@ -270,6 +274,7 @@ export class CredentialMapper {
       }
       credential.id = decoded.jti
     }
+
     return credential
   }
 
@@ -309,5 +314,46 @@ export class CredentialMapper {
         : ['VerifiableCredential'],
       proof,
     }
+  }
+
+  static storedCredentialToOriginalFormat(credential: W3CVerifiableCredential): W3CVerifiableCredential {
+    const type: DocumentFormat = CredentialMapper.detectDocumentType(credential)
+    if (type == DocumentFormat.JWT) {
+      return CredentialMapper.toCompactJWT(credential)
+    }
+    return credential
+  }
+
+  static storedPresentationToOriginalFormat(presentation: W3CVerifiablePresentation): W3CVerifiablePresentation {
+    const type: DocumentFormat = CredentialMapper.detectDocumentType(presentation)
+    if (type == DocumentFormat.JWT) {
+      return CredentialMapper.toCompactJWT(presentation)
+    }
+    return presentation
+  }
+
+  static toCompactJWT(persistedCredential: W3CVerifiableCredential | W3CVerifiablePresentation): string {
+    if (CredentialMapper.detectDocumentType(persistedCredential) !== DocumentFormat.JWT) {
+      throw Error('Cannot convert non JWT credential to JWT')
+    }
+    if (typeof persistedCredential === 'string') {
+      return persistedCredential
+    }
+    return Array.isArray(persistedCredential.proof) ? persistedCredential.proof[0].jwt : persistedCredential.proof.jwt
+  }
+
+  static detectDocumentType(document: W3CVerifiableCredential | W3CVerifiablePresentation): DocumentFormat {
+    if (typeof document === 'string') {
+      return DocumentFormat.JWT
+    }
+    const proofs = (<IVerifiableCredential>document).proof
+    const proof: IProof = Array.isArray(proofs) ? proofs[0] : proofs
+
+    if (proof.jwt) {
+      return DocumentFormat.JWT
+    } else if (proof.type === 'EthereumEip712Signature2021') {
+      return DocumentFormat.EIP712
+    }
+    return DocumentFormat.JSONLD
   }
 }

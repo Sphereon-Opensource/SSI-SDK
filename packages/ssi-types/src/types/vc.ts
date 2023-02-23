@@ -201,3 +201,9 @@ export type ClaimFormat = CredentialFormat | PresentationFormat
 export type OriginalVerifiableCredential = W3CVerifiableCredential | JwtDecodedVerifiableCredential
 export type OriginalVerifiablePresentation = W3CVerifiablePresentation | JwtDecodedVerifiablePresentation
 export type Original = OriginalVerifiablePresentation | OriginalVerifiableCredential
+
+export const enum DocumentFormat {
+  JWT,
+  JSONLD,
+  EIP712,
+}
