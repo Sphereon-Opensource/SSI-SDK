@@ -166,8 +166,9 @@ export class OpSession {
       : []
     const op = await createOP({ opOptions: this.options, idOpts: args.responseSignerOpts, context: this.context })
 
-    const authResponse = await op.createAuthorizationResponse(await this.getAuthorizationRequest(), {
+    const responseOpts = {
       verification,
+      // ...(args.responseSignerOpts ? { signer: args.responseSignerOpts} : {}),
       ...(args.verifiablePresentations
         ? {
             presentationExchange: {
@@ -175,7 +176,11 @@ export class OpSession {
             },
           }
         : {}),
-    })
+    }
+    /*    if (!responseOpts.signer) {
+      throw Error('Signer needs to be present when creating the response')
+    }*/
+    const authResponse = await op.createAuthorizationResponse(await this.getAuthorizationRequest(), responseOpts)
     const response = await op.submitAuthorizationResponse(authResponse)
 
     if (response.status >= 400) {
