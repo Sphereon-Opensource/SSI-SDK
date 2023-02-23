@@ -55,7 +55,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     if (this.sessions.has(sessionId)) {
       return Promise.reject(new Error(`Session with id: ${args.sessionId} already present`))
     }
-    const opts = { ...args, id: sessionId, context } as Required<IOpSessionArgs>
+    const opts = { ...args, sessionId, context } as Required<IOpSessionArgs>
     if (!opts.op?.presentationSignCallback) {
       opts.op = { ...opts.op, presentationSignCallback: this.presentationSignCallback }
     }
