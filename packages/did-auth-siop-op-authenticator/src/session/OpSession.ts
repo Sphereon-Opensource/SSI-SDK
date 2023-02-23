@@ -151,14 +151,13 @@ export class OpSession {
       resolveOpts,
     }
 
+    const request = this.verifiedAuthorizationRequest!
     if (
       (await this.isOID4VP()) &&
-      args.verifiedAuthorizationRequest.presentationDefinitions &&
-      (!args.verifiablePresentations || args.verifiablePresentations.length !== args.verifiedAuthorizationRequest.presentationDefinitions.length)
+      request.presentationDefinitions &&
+      (!args.verifiablePresentations || args.verifiablePresentations.length !== request.presentationDefinitions.length)
     ) {
-      throw Error(
-        `Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${args.verifiedAuthorizationRequest.presentationDefinitions.length}`
-      )
+      throw Error(`Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${request.presentationDefinitions.length}`)
     }
     const op = await createOP({ opOptions: this.options, idOpts: args.responseSignerOpts, context: this.context })
 

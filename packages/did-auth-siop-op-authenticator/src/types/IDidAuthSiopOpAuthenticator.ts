@@ -169,7 +169,7 @@ export interface IOpsVerifySiopAuthorizationRequestUriArgs {
 
 export interface IOpsSendSiopAuthorizationResponseArgs {
   responseSignerOpts: IIdentifierOpts
-  verifiedAuthorizationRequest: VerifiedAuthorizationRequest
+  // verifiedAuthorizationRequest: VerifiedAuthorizationRequest
   verifiablePresentations?: W3CVerifiablePresentation[]
 }
 
