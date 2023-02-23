@@ -1,6 +1,11 @@
-import { DEFAULT_JWT_PROOF_TYPE, IIdentifierOpts, VerifiableCredentialsWithDefinition } from '../types/IDidAuthSiopOpAuthenticator'
+import {
+  DEFAULT_JWT_PROOF_TYPE,
+  IIdentifierOpts,
+  VerifiableCredentialsWithDefinition,
+  VerifiablePresentationWithDefinition,
+} from '../types/IDidAuthSiopOpAuthenticator'
 import { OpSession } from './OpSession'
-import { CredentialMapper, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { CredentialMapper, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { PresentationDefinitionWithLocation, PresentationExchange } from '@sphereon/did-auth-siop'
 import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
 import { ProofOptions } from '@sphereon/ssi-sdk-core'
@@ -38,14 +43,14 @@ export class OID4VP {
   public async createVerifiablePresentations(
     credentialsWithDefinitions: VerifiableCredentialsWithDefinition[],
     opts?: { proofOpts?: ProofOptions; identifierOpts?: IIdentifierOpts; holder?: string; subjectIsHolder?: boolean }
-  ): Promise<W3CVerifiablePresentation[]> {
+  ): Promise<VerifiablePresentationWithDefinition[]> {
     return await Promise.all(credentialsWithDefinitions.map((cred) => this.createVerifiablePresentation(cred, opts)))
   }
 
   public async createVerifiablePresentation(
     selectedVerifiableCredentials: VerifiableCredentialsWithDefinition,
     opts?: { proofOpts?: ProofOptions; identifierOpts?: IIdentifierOpts; holder?: string; subjectIsHolder?: boolean }
-  ): Promise<W3CVerifiablePresentation> {
+  ): Promise<VerifiablePresentationWithDefinition> {
     if (opts?.subjectIsHolder && opts?.holder) {
       throw Error('Cannot both have subject is issuer and a holder value at the same time (programming error)')
     } else if (
@@ -82,7 +87,7 @@ export class OID4VP {
       kid: determineKid(key, idOpts),
       context: this.session.context,
     })
-    return await this.getPresentationExchange(vcs.credentials).createVerifiablePresentation(
+    const presentation = await this.getPresentationExchange(vcs.credentials).createVerifiablePresentation(
       vcs.definition.definition,
       vcs.credentials,
       {
@@ -91,6 +96,13 @@ export class OID4VP {
       },
       signCallback
     )
+
+    return {
+      credentials: vcs.credentials,
+      definition: selectedVerifiableCredentials.definition,
+      presentation,
+      identifierOpts: idOpts,
+    }
   }
 
   public async filterCredentialsAgainstAllDefinitions(filterOpts?: {

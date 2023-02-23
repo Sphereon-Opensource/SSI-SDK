@@ -205,4 +205,11 @@ export interface VerifiableCredentialsWithDefinition {
   definition: PresentationDefinitionWithLocation
   credentials: W3CVerifiableCredential[]
 }
+
+export interface VerifiablePresentationWithDefinition {
+  definition: PresentationDefinitionWithLocation
+  credentials: W3CVerifiableCredential[]
+  presentation: W3CVerifiablePresentation
+  identifierOpts: IIdentifierOpts
+}
 export const DEFAULT_JWT_PROOF_TYPE = 'JwtProof2020'
