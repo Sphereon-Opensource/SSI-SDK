@@ -81,7 +81,7 @@ export async function createOPBuilder({
     const key = await getKey(idOpts.identifier, idOpts.verificationMethodSection, context, idOpts.kid)
     const kid = determineKid(key, idOpts)
 
-    builder.suppliedSignature(
+    builder.withSuppliedSignature(
       SuppliedSigner(key, context, getSigningAlgo(key.type) as unknown as KeyAlgo),
       idOpts.identifier.did,
       kid,
