@@ -1,6 +1,6 @@
 import { getUniResolver } from '@sphereon/did-uni-client'
 import { createAgent, CredentialPayload, IDIDManager, IIdentifier, IKeyManager, IResolver, PresentationPayload, TAgent } from '@veramo/core'
-import { CredentialIssuer, ICredentialIssuer } from '@veramo/credential-w3c'
+import { CredentialPlugin, ICredentialIssuer } from '@veramo/credential-w3c'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { getDidKeyResolver, KeyDIDProvider } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
@@ -33,7 +33,7 @@ describe('credential-LD full flow', () => {
   let didLtoIdentifier: IIdentifier
   let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialIssuer & ICredentialHandlerLDLocal>
 
-  jest.setTimeout(1000000)
+  // jest.setTimeout(1000000)
   beforeAll(async () => {
     agent = createAgent({
       plugins: [
@@ -63,7 +63,7 @@ describe('credential-LD full flow', () => {
             ...getUniResolver('factom', { resolveUrl: 'https://factom-mock/1.0/identifiers' }),
           }),
         }),
-        new CredentialIssuer(),
+        new CredentialPlugin(),
         new CredentialHandlerLDLocal({
           contextMaps: [LdDefaultContexts, customContext],
           suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],

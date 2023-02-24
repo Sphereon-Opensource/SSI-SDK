@@ -1,7 +1,7 @@
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 import { getConfig } from '@veramo/cli/build/setup'
 
-jest.setTimeout(30000)
+// jest.setTimeout(30000)
 
 import { LdDefaultContexts } from '../ld-default-contexts'
 import { SphereonEd25519Signature2018 } from '../suites/Ed25519Signature2018'
@@ -21,7 +21,7 @@ const setup = async (): Promise<boolean> => {
   const { localAgent } = createObjects(config, { localAgent: '/agent' })
   agent = localAgent
   agent.getSupportedVeramoKeyType = jest.fn()
-  jest.setTimeout(100000)
+  // jest.setTimeout(100000)
 
   return true
 }
