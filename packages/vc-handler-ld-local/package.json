@@ -10,8 +10,7 @@
     }
   },
   "scripts": {
-    "build": "tsc --build",
-    "build:copyfiles": "copyfiles contexts/*.* ./dist"
+    "build": "tsc"
   },
   "dependencies": {
     "@sphereon/ssi-sdk-core": "^0.8.1-next.121",
@@ -82,7 +81,6 @@
   "files": [
     "dist/**/*",
     "src/**/*",
-    "contexts",
     "README.md",
     "plugin.schema.json",
     "LICENSE"
