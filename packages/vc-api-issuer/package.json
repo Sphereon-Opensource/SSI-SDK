@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@veramo/core": "4.2.0",
+    "@sphereon/ssi-sdk-core": "0.8.0",
     "cross-fetch": "^3.1.5"
   },
   "devDependencies": {
