@@ -232,14 +232,17 @@ export class JsonWebSignature {
   async verifySignature({ verifyData, verificationMethod, proof }: any) {
     if (verificationMethod.publicKey) {
       const key = verificationMethod.publicKey as CryptoKey
+      const signature = proof.jws.split('.')[2]
+      const headerString = proof.jws.split('.')[0]
+      const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), verifyData])
       return await subtle.verify(
         {
           name: key.algorithm?.name ? key.algorithm.name : 'RSASSA-PKCS1-V1_5',
-          hash: 'SHA-256',
+          hash: 'SHA-256', // todo get from proof.jws header
         },
         key,
-        typeof proof.jws === 'string' ? u8a.fromString(proof.jws, 'base64url') : proof.jws,
-        verifyData
+        u8a.fromString(signature, 'base64url'),
+        messageBuffer
       )
     }
     const verifier = await verificationMethod.verifier()

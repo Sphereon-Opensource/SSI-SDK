@@ -14,7 +14,7 @@ import {
 } from '../types'
 import jwt_decode from 'jwt-decode'
 import { ObjectUtils } from '../utils'
-import { VerifiableCredential } from '@veramo/core'
+
 
 export class CredentialMapper {
   static decodeVerifiablePresentation(presentation: OriginalVerifiablePresentation): JwtDecodedVerifiablePresentation | IVerifiablePresentation {
@@ -274,7 +274,7 @@ export class CredentialMapper {
     return credential
   }
 
-  static toExternalVerifiableCredential(verifiableCredential: VerifiableCredential): IVerifiableCredential {
+  static toExternalVerifiableCredential(verifiableCredential: any): IVerifiableCredential {
     if (!verifiableCredential.proof.type) {
       throw new Error('Verifiable credential proof is missing a type')
     }
