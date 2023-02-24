@@ -2938,14 +2938,14 @@
     uint8arrays "^3.1.1"
     uuid "^9.0.0"
 
-"@sphereon/did-auth-siop@^0.3.0-unstable.16":
-  version "0.3.0-unstable.16"
-  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.3.0-unstable.16.tgz#bdb2d453c0e85436b8b8290d179fbab01e118ea6"
-  integrity sha512-KuIt03PMMhhmXStUZrEPHxhT0qWmkjwRn8Ol7KO9UpzvBdbyGgABLNuEkzdKw9MsYCdlSGZBp23pEnjkS1OItA==
+"@sphereon/did-auth-siop@^0.3.0-unstable.17":
+  version "0.3.0-unstable.17"
+  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.3.0-unstable.17.tgz#0f9f8d7030b2d4006f5391e9e2d369ee29e160d4"
+  integrity sha512-aRT4DpS6VL8X52jR5wnNaMO3JocYQkJ1weuEpbDAA+Ib7vELcuIQqDvT5uUxL8Mdded2Kd0HwXh48U+oEKCYUg==
   dependencies:
     "@sphereon/did-uni-client" "^0.5.1-unstable.1"
-    "@sphereon/pex" "^2.0.0-unstable.8"
-    "@sphereon/pex-models" "^1.2.0"
+    "@sphereon/pex" "^2.0.0-unstable.9"
+    "@sphereon/pex-models" "^1.2.2"
     "@sphereon/ssi-types" "0.8.1-next.194"
     "@sphereon/wellknown-dids-client" "^0.1.3-unstable.1"
     "@stablelib/ed25519" "^1.0.3"
@@ -3030,17 +3030,17 @@
   resolved "https://registry.yarnpkg.com/@sphereon/pex-models/-/pex-models-1.1.0.tgz#716898344fd07400bbffaa0c34a1f7ecdda14166"
   integrity sha512-kMslWspdqwuXGBFxOPXTAK8HlIHycBR/locYHMlYmyvdnau6bp40JXk2zviBRVOPfe8N3Dv2p5IPAjMk3pT77A==
 
-"@sphereon/pex-models@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@sphereon/pex-models/-/pex-models-1.2.0.tgz#06348e89a622470668e867795928dc926274de95"
-  integrity sha512-cvzpB12vnMNWqwVUTFifWUOjwPzT5HN2Uyu02gnvkb8+L3IMXwag0/k4oyYNPpLyQ1+WXYIzqPPPS9/zsTMbVQ==
+"@sphereon/pex-models@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@sphereon/pex-models/-/pex-models-1.2.2.tgz#85d2062693c0a9c31fb5c1be0847675141803846"
+  integrity sha512-/pGDQGs4lSK4Fuf6WzaGengb1UqNYmjRdkIC+dJT89kMktIwJLoNB2PvQHcggn3nEbmwZFB/1dgJGumAnWPYsg==
 
-"@sphereon/pex@2.0.0-unstable.8", "@sphereon/pex@^2.0.0-unstable.8":
-  version "2.0.0-unstable.8"
-  resolved "https://registry.yarnpkg.com/@sphereon/pex/-/pex-2.0.0-unstable.8.tgz#6e27a64a372c8adc76ba1fcc2e8db02f97c0f267"
-  integrity sha512-gQFiM6TxyKeRuB/UlxEWctl8uHIlEtTfVwzoDKFjhgRNbyc0jwC13j0EGpSeQaB4GVNFMDfXDexeN/6ouEK7vA==
+"@sphereon/pex@2.0.0-unstable.9", "@sphereon/pex@^2.0.0-unstable.9":
+  version "2.0.0-unstable.9"
+  resolved "https://registry.yarnpkg.com/@sphereon/pex/-/pex-2.0.0-unstable.9.tgz#04d6345f2cf5e87848f05d598100cf34323df85c"
+  integrity sha512-SBmtsj0oCSh2E1CWNhZmAE4GeWNRI1O3a+EBZnfWiIZncmA9jfisaJ2mq82jqnyEuDJbCv6FUwi4hCOi/2rtNQ==
   dependencies:
-    "@sphereon/pex-models" "^1.2.0"
+    "@sphereon/pex-models" "^1.2.2"
     "@sphereon/ssi-types" "0.8.1-next.194"
     ajv "^8.12.0"
     ajv-formats "^2.1.1"

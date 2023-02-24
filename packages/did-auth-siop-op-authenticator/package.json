@@ -13,8 +13,8 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "^0.3.0-unstable.16",
-    "@sphereon/pex": "2.0.0-unstable.8",
+    "@sphereon/did-auth-siop": "^0.3.0-unstable.17",
+    "@sphereon/pex": "2.0.0-unstable.9",
     "@sphereon/ssi-sdk-core": "^0.8.0",
     "@sphereon/ssi-types": "^0.8.0",
     "@sphereon/ssi-sdk-did-utils": "^0.8.0",
