@@ -39,7 +39,7 @@ recipient to either:
 1. authenticate itself to the requester
 2. inviting the issuer to issue a credential
 
-The data fields required to generate the QR code will depend on the type of request and the acceptable values. The
+The object fields required to generate the QR code will depend on the type of request and the acceptable values. The
 possible `accept` value may be:
 
 1. `oidc4vp`
@@ -50,10 +50,10 @@ possible `accept` value may be:
 #### Importing the plugin
 
 ```typescript
-import { WaciQrCodeProvider } from '@sphereon/ssi-sdk-waci-pex-qr-react'
+import { QrCodeProvider } from '@sphereon/ssi-sdk-waci-pex-qr-react'
 
 // Include in the interface
-// const agent = createAgent<...  WaciQrCodeProvider>
+// const agent = createAgent<...  QrCodeProvider>
 ```
 
 #### Adding plugin to the agent
@@ -61,7 +61,7 @@ import { WaciQrCodeProvider } from '@sphereon/ssi-sdk-waci-pex-qr-react'
 ```typescript
 plugins: [
   ...
-    new WaciQrCodeProvider()
+    new QrCodeProvider()
 ],
 ```
 
@@ -81,19 +81,19 @@ import { QRContent, QRType } from '@sphereon/ssi-sdk-waci-pex-qr-react'
 #### Inside the component we can declare or get the values to pass to QR Code plugin
 
 ```typescript
-import { OobPayload } from '@sphereon/ssi-sdk-waci-pex-qr-react'
+import { WaciOobProps } from '@sphereon/ssi-sdk-waci-pex-qr-react'
 
-function getOobQrCodeProps(): OobQRProps {
+function getOobQrCodeProps(): QRRenderingProps {
   return {
-    oobBaseUrl: 'https://example.com/?oob=',
-    type: QRType.DID_AUTH_SIOP_V2,
+    baseUrl: 'https://example.com/?oob=',
+    type: QRType.SIOPV2,
     id: '599f3638-b563-4937-9487-dfe55099d900',
     from: 'did:key:zrfdjkgfjgfdjk',
-    body: {
+    object: {
       goalCode: GoalCode.STREAMLINED_VP,
       accept: [AcceptMode.SIOPV2_WITH_OIDC4VP],
     },
-    onGenerate: (oobQRProps: OobQRProps, payload: OobPayload) => {
+    onGenerate: (oobQRProps: QRRenderingProps, payload: WaciOobProps) => {
       console.log(payload)
     },
     bgColor: 'white',
@@ -105,7 +105,7 @@ function getOobQrCodeProps(): OobQRProps {
 }
 
 delegateCreateOobQRCode = () => {
-  let qrCode = createOobQrCode(this.getOobQrCodeProps())
+  let qrCode = createQrCode(this.getOobQrCodeProps())
   return qrCode.then((qrCodeResolved) => {
     return qrCodeResolved
   })
@@ -119,7 +119,7 @@ On generate gives the following (example) output
   "type": "openid",
   "id": "599f3638-b563-4937-9487-dfe55099d900",
   "from": "did:key:zrfdjkgfjgfdjk",
-  "body": {
+  "object": {
     "goal-code": "streamlined-vp",
     "accept": ["siopv2+oidc4vp"]
   }
@@ -129,9 +129,9 @@ On generate gives the following (example) output
 If you want to create the payload manually and want to do serialization yourself you can use:
 
 ```typescript
-const payload = OutOfBandMessage.createPayload(getOobQrCodeProps())
-const encoded = OutOfBandMessage.urlEncode(payload)
-const url = oobQRProps.oobBaseUrl + encoded
+const payload = DidCommOutOfBandMessage.createPayload(getOobQrCodeProps())
+const encoded = DidCommOutOfBandMessage.urlEncode(payload)
+const url = oobQRProps.baseUrl + encoded
 console.log(url) // https://example.com/?oob=eyJ0eXBlIjoic2lvcHYyIiwiaWQiOiI1OTlmMzYzOC1iNTYzLTQ5MzctOTQ4Ny1kZmU1NTA5OWQ5MDAiLCJmcm9tIjoiZGlkOmtleTp6cmZkamtnZmpnZmRqayIsImJvZHkiOnsiZ29hbC1jb2RlIjoic3RyZWFtbGluZWQtdnAiLCJhY2NlcHQiOlsic2lvcHYyK29pZGM0dnAiXX19
 ```
 
