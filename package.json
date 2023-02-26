@@ -51,6 +51,7 @@
     "@veramo/utils": "4.2.0",
     "@veramo/did-manager": "4.2.0",
     "@veramo/kms-local": "4.2.0",
+    "jsonld-signatures": "npm:@digitalcredentials/jsonld-signatures@^9.3.1",
     "jsonld": "npm:@digitalcredentials/jsonld@^5.2.1"
   },
   "devDependencies": {

@@ -101,6 +101,7 @@
   "resolutions": {
     "@types/react": "18.0.12",
     "jsonld": "npm:@digitalcredentials/jsonld@^5.2.1",
+    "jsonld-signatures": "npm:@digitalcredentials/jsonld-signatures@^9.3.1",
     "@digitalcredentials/ed25519-signature-2020": "~3.0.2",
     "@digitalcredentials/ed25519-verification-key-2020": "3.2.2"
   }
