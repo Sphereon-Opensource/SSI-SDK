@@ -63,9 +63,6 @@
     "@veramo/did-manager": "4.2.0",
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",
-    "@digitalcredentials/vc": "^5.0.0",
-    "@digitalcredentials/jsonld": "^5.2.1",
-    "@digitalcredentials/jsonld-signatures": "^9.3.1",
     "did-resolver": "^4.0.1",
     "@veramo/key-manager": "4.2.0",
     "@veramo/kms-local": "4.2.0",
@@ -112,10 +109,5 @@
     "vc-js": "@digitalcredentials/vc",
     "jsonld": "@digitalcredentials/jsonld",
     "jsonld-signatures": "@digitalcredentials/jsonld-signatures"
-  },
-  "resolutions": {
-    "vc-js": "npm:@digitalcredentials/vc@^5.0.0",
-    "jsonld": "npm:@digitalcredentials/jsonld@^5.2.1",
-    "jsonld-signatures": "npm:@digitalcredentials/jsonld-signatures@^9.3.1"
   }
 }
