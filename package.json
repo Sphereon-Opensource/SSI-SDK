@@ -50,10 +50,10 @@
     "@veramo/credential-ld": "4.2.0",
     "@veramo/utils": "4.2.0",
     "@veramo/did-manager": "4.2.0",
-    "@veramo/kms-local": "4.2.0",
-    "jsonld": "npm:@digitalcredentials/jsonld@^5.2.1"
+    "@veramo/kms-local": "4.2.0"
   },
   "devDependencies": {
+    "@digitalcredentials/jsonld": "^5.2.1",
     "@microsoft/api-documenter": "^7.14.1",
     "@microsoft/api-extractor": "^7.19.4",
     "@microsoft/api-extractor-model": "^7.15.3",
