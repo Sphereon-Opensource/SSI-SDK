@@ -73,7 +73,7 @@ export class OpSession {
           ? payload.subject_syntax_types_supported
           : [payload.subject_syntax_types_supported]
         : []
-    ).map((method) => method.toLowerCase().replace('did', ''))
+    ).map((method) => method.toLowerCase().replace('did:', ''))
 
     let intersection: string[]
     if (rpMethods.length === 0 || rpMethods.includes('did')) {

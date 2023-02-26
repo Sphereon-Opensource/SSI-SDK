@@ -87,7 +87,7 @@ export class OID4VP {
       kid: determineKid(key, idOpts),
       context: this.session.context,
     })
-    const presentation = await this.getPresentationExchange(vcs.credentials).createVerifiablePresentation(
+    const presentation = await this.getPresentationExchange(vcs.credentials, this.allDIDs).createVerifiablePresentation(
       vcs.definition.definition,
       vcs.credentials,
       {
