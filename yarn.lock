@@ -2985,10 +2985,10 @@
     uint8arrays "^3.1.1"
     uuid "^9.0.0"
 
-"@sphereon/did-auth-siop@^0.3.0-unstable.18":
-  version "0.3.0-unstable.18"
-  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.3.0-unstable.18.tgz#3280816179442058b6ae239c9938e47fd643c7b0"
-  integrity sha512-19cPxEscBqPYQBJY2/w2KZm+vnT0Qj5SnknNbxTJXmEGtP4RHCqhnyyC6d9N2k9DjOJ6PZuInJ2CL74EPPAqAQ==
+"@sphereon/did-auth-siop@^0.3.0-unstable.20":
+  version "0.3.0-unstable.20"
+  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.3.0-unstable.20.tgz#8d27a5956fbbb2abf0a32729f33ad3aec1f8cdb8"
+  integrity sha512-kemhWqvJHsH9ZAIYysIOuNZU61blmyu2QUM82OCnLVDx5n5a3rHVauiP4cFM6H9RVgkTDzT20bHn69HXj4kWdw==
   dependencies:
     "@sphereon/did-uni-client" "^0.5.1-unstable.1"
     "@sphereon/pex" "^2.0.0-unstable.10"
