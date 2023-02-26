@@ -4199,10 +4199,10 @@
     uint8arrays "^3.1.1"
     uuid "^9.0.0"
 
-"@sphereon/did-auth-siop@^0.3.0-unstable.21":
-  version "0.3.0-unstable.21"
-  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.3.0-unstable.21.tgz#fd5437d1651004b5a296eaf24c5bb958afbc4eda"
-  integrity sha512-EJd7Rqh2QI3CC0LjHLHHY42de7hO/+M5nU5uRvG4NihtJ9u9oPNbhPqhOxgygMmWZssThk3VYQuKXKFxc8ZM3Q==
+"@sphereon/did-auth-siop@^0.3.0-unstable.22":
+  version "0.3.0-unstable.22"
+  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.3.0-unstable.22.tgz#c2df1d739eb32b0e45a1661d775312d123cbad1e"
+  integrity sha512-dOUOzUdpfDsjAWD4kQdfvRn+cCNHXdgKdB5vR2a91ccqeaJ8WmLKVB3TlQchUpLCAOffjLhP40rn0qf5eWk/gA==
   dependencies:
     "@sphereon/did-uni-client" "^0.5.1-unstable.1"
     "@sphereon/pex" "^2.0.0-unstable.10"
