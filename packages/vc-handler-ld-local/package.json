@@ -42,11 +42,6 @@
     "react-native-securerandom": "^1.0.0",
     "ts-node": "^8.10.2"
   },
-  "resolutions": {
-    "@types/react": "18.0.12",
-    "jsonld": "npm:@digitalcredentials/jsonld@^5.2.1",
-    "jsonld-signatures": "npm:@digitalcredentials/jsonld-signatures@^9.3.1"
-  },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.5.0",
     "@sphereon/ssi-sdk-bls-did-provider-key": "^0.9.1",
@@ -103,19 +98,10 @@
     "Verifiable Presentations",
     "JsonLd"
   ],
-  "react-native": {
-    "vc-js": "@digitalcredentials/vc",
-    "jsonld": "@digitalcredentials/jsonld",
-    "jsonld-signatures": "@digitalcredentials/jsonld-signatures"
-  },
-  "browser": {
-    "vc-js": "@digitalcredentials/vc",
-    "jsonld": "@digitalcredentials/jsonld",
-    "jsonld-signatures": "@digitalcredentials/jsonld-signatures"
-  },
   "resolutions": {
-    "vc-js": "npm:@digitalcredentials/vc@^5.0.0",
+    "@types/react": "18.0.12",
     "jsonld": "npm:@digitalcredentials/jsonld@^5.2.1",
-    "jsonld-signatures": "npm:@digitalcredentials/jsonld-signatures@^9.3.1"
+    "@digitalcredentials/ed25519-signature-2020": "~3.0.2",
+    "@digitalcredentials/ed25519-verification-key-2020": "3.2.2"
   }
 }
