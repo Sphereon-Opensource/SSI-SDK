@@ -20,7 +20,6 @@
   "devDependencies": {
     "@types/jest": "^27.0.2",
     "@veramo/cli": "4.2.0",
-    "@sphereon/ssi-sdk-core": "^0.8.0",
     "jest": "^27.3.1",
     "prettier": "^2.4.1",
     "ts-jest": "^27.0.7",
