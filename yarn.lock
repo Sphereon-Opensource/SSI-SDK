@@ -4482,7 +4482,7 @@
     events "^3.2.0"
     z-schema "^5.0.2"
 
-"@veramo/credential-eip712@^4.2.0":
+"@veramo/credential-eip712@4.2.0", "@veramo/credential-eip712@^4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@veramo/credential-eip712/-/credential-eip712-4.2.0.tgz#282d664963eb4ae2daff4553e0dcacfbf79b6370"
   integrity sha512-jPeRFH7Z/ajct4RYV56w42H8RJzrwZo476mWaFv1nVK68Yn18edqZj3xfGs1ADxpHoOW7QUPLW4oIp73+Ychsw==
@@ -4545,7 +4545,7 @@
     debug "^4.3.3"
     typeorm "^0.3.10"
 
-"@veramo/did-comm@^4.2.0":
+"@veramo/did-comm@4.2.0", "@veramo/did-comm@^4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@veramo/did-comm/-/did-comm-4.2.0.tgz#78d99bfd37608c1b5f9e2a7f17c77e23704fac72"
   integrity sha512-plnAYAXFmtEjoJE/kSxFZdVYOynNLkIUdnwkSrQOi5MPhcj8AEKQfXt8DecyIkfFCxuvdHPjEerBVbka1q7kZw==
@@ -4562,7 +4562,7 @@
     uint8arrays "^3.0.0"
     uuid "^9.0.0"
 
-"@veramo/did-discovery@^4.2.0":
+"@veramo/did-discovery@4.2.0", "@veramo/did-discovery@^4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@veramo/did-discovery/-/did-discovery-4.2.0.tgz#8a1ea358c0c2a5ab3cee4c3e498074e6b67b0455"
   integrity sha512-U2baTL/KXgj84TF7hJxvUzh8oyfEQSsWSpqbRTQITE6bbSBaZiM/ZfgHRty8wuDFMFVV/f+xbkwdkOf3nY7SpQ==
@@ -4589,7 +4589,7 @@
     "@veramo/core" "^4.2.0"
     "@veramo/did-discovery" "^4.2.0"
 
-"@veramo/did-provider-ethr@^4.2.0":
+"@veramo/did-provider-ethr@4.2.0", "@veramo/did-provider-ethr@^4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@veramo/did-provider-ethr/-/did-provider-ethr-4.2.0.tgz#17ce9adaa5e9adae298e7cee3c8099e2c4bbcb5c"
   integrity sha512-Qu0ap9YXBXY+SbKISpEgL6OFVyX4GhMkJ6+Y18e6qQpWcw7CvSevrf0JWq0V671NFhnS2on8dsJXfpbKddGHsw==
@@ -4620,7 +4620,7 @@
     multibase "^4.0.6"
     multicodec "^3.2.1"
 
-"@veramo/did-provider-web@^4.2.0":
+"@veramo/did-provider-web@4.2.0", "@veramo/did-provider-web@^4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@veramo/did-provider-web/-/did-provider-web-4.2.0.tgz#1be772a9961c4c80eff7f9e31aca65ded21a977f"
   integrity sha512-M5XdzeiIAoynb5I1oG6R+VJNI9+VmnSI0jJZ6eXpg4D1Tvyib38ehwgGFVCMsuhLsaCopA4+ZPm7U9PZWuCZ3Q==
@@ -4676,14 +4676,14 @@
     elliptic "^6.5.4"
     uint8arrays "^3.0.0"
 
-"@veramo/message-handler@^4.2.0":
+"@veramo/message-handler@4.2.0", "@veramo/message-handler@^4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@veramo/message-handler/-/message-handler-4.2.0.tgz#959273a61d00c05131fcecfd8d899cda72b966ce"
   integrity sha512-bllhDlHl/4KUwlSFJjCWEHl8EqtcA+J8Va1qxJfInAeg6+XOR7ldKrrb3MVmsreuEkzUasdwQtdjHBzZCnMzcQ==
   dependencies:
     "@veramo/core" "^4.2.0"
 
-"@veramo/remote-client@^4.2.0":
+"@veramo/remote-client@4.2.0", "@veramo/remote-client@^4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@veramo/remote-client/-/remote-client-4.2.0.tgz#3afbaaab9268bae90592fc726d1853603742f773"
   integrity sha512-XVd9V3WlGT5YVbtrXhGSRZREKvRr73p//lugy56dtGh0tNvCg8UIQW8vqYJBBTq5YjlobAkwTQHykGAkBH1bdQ==
@@ -4693,7 +4693,7 @@
     debug "^4.3.3"
     openapi-types "12.0.2"
 
-"@veramo/remote-server@^4.2.0":
+"@veramo/remote-server@4.2.0", "@veramo/remote-server@^4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@veramo/remote-server/-/remote-server-4.2.0.tgz#7ccb020914e945aafc287c5f92688e984405939d"
   integrity sha512-nSUwb3szUKYzTObW84BybdgHkvDLPWDrWJTgrZmH6BScUoRWAkz7WNkPI5Wrw3ZUHYY6iglAzPUOEWEj1cApjg==
@@ -4706,7 +4706,7 @@
     passport-http-bearer "^1.0.1"
     url-parse "^1.5.4"
 
-"@veramo/selective-disclosure@^4.2.0":
+"@veramo/selective-disclosure@4.2.0", "@veramo/selective-disclosure@^4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@veramo/selective-disclosure/-/selective-disclosure-4.2.0.tgz#c5634d6f31408ca257e9f4436ba45c17f97a7728"
   integrity sha512-yMvg0xWk1SawhgiR1HE+QRCJsrogXU3IjOCG1LX/eEhcLtgHE12BzLaX69dyh4+ZYCJGqguwODic4RzQDx2CNg==
@@ -4719,7 +4719,7 @@
     did-jwt "^6.9.0"
     uuid "^9.0.0"
 
-"@veramo/url-handler@^4.2.0":
+"@veramo/url-handler@4.2.0", "@veramo/url-handler@^4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@veramo/url-handler/-/url-handler-4.2.0.tgz#db4b0b1a62f02c25a0ca9ffca251236d522e7f79"
   integrity sha512-IfU4bPLbTPT06VGI9L+RftvcwdrDfOrM56GR6ovSkA6znswzv+uGHMs2Z+ngJof0dD6M7w5JpEdgB9ec7IGbEA==

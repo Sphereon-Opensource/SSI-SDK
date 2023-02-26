@@ -50,7 +50,20 @@
     "@veramo/credential-ld": "4.2.0",
     "@veramo/utils": "4.2.0",
     "@veramo/did-manager": "4.2.0",
-    "@veramo/kms-local": "4.2.0"
+    "@veramo/kms-local": "4.2.0",
+    "@veramo/key-manager": "4.2.0",
+    "@veramo/credential-eip712": "4.2.0",
+    "@veramo/did-comm": "4.2.0",
+    "@veramo/message-handler": "4.2.0",
+    "@veramo/did-discovery": "4.2.0",
+    "@veramo/did-provider-ethr": "4.2.0",
+    "@veramo/did-provider-key": "4.2.0",
+    "@veramo/did-provider-web": "4.2.0",
+    "@veramo/did-resolver": "4.2.0",
+    "@veramo/remote-client": "4.2.0",
+    "@veramo/remote-server": "4.2.0",
+    "@veramo/selective-disclosure": "4.2.0",
+    "@veramo/url-handler": "4.2.0"
   },
   "devDependencies": {
     "@digitalcredentials/jsonld": "^5.2.1",
