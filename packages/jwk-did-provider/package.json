@@ -13,18 +13,20 @@
     "@stablelib/ed25519": "^1.0.2",
     "@veramo/core": "4.2.0",
     "@veramo/did-manager": "4.2.0",
-    "elliptic": "^6.5.4",
     "base64url": "^3.0.1",
-    "debug": "^4.1.1"
+    "debug": "^4.3.4",
+    "did-resolver": "^4.0.1",
+    "elliptic": "^6.5.4"
   },
   "devDependencies": {
+    "@or13/did-jwk": "^0.0.4",
     "@types/debug": "4.1.7",
     "@veramo/did-resolver": "4.2.0",
     "@veramo/key-manager": "4.2.0",
     "@veramo/kms-local": "4.2.0",
-    "typescript": "4.6.4",
     "jose": "^4.10.3",
-    "@or13/did-jwk": "^0.0.4"
+    "typescript": "4.6.4",
+    "uint8arrays": "^3.1.1"
   },
   "files": [
     "dist/**/*",

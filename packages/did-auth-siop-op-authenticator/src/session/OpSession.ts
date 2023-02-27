@@ -148,7 +148,7 @@ export class OpSession {
     )
   }
 
-  public async sendSiopAuthorizationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
+  public async sendSiopAuthorizationResponse(args: IOpsSendSiogpAuthorizationResponseArgs): Promise<Response> {
     const verification: Verification = {
       mode: VerificationMode.INTERNAL,
       resolveOpts: {

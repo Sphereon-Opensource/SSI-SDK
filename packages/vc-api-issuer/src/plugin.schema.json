@@ -1,0 +1,328 @@
+{
+  "IVcApiIssuer": {
+    "components": {
+      "schemas": {
+        "IIssueCredentialArgs": {
+          "type": "object",
+          "properties": {
+            "credential": {
+              "$ref": "#/components/schemas/CredentialPayload"
+            }
+          },
+          "required": [
+            "credential"
+          ]
+        },
+        "CredentialPayload": {
+          "type": "object",
+          "properties": {
+            "issuer": {
+              "$ref": "#/components/schemas/IssuerType"
+            },
+            "credentialSubject": {
+              "$ref": "#/components/schemas/CredentialSubject"
+            },
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "@context": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "issuanceDate": {
+              "$ref": "#/components/schemas/DateType"
+            },
+            "expirationDate": {
+              "$ref": "#/components/schemas/DateType"
+            },
+            "credentialStatus": {
+              "$ref": "#/components/schemas/CredentialStatusReference"
+            },
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "issuer"
+          ],
+          "description": "Used as input when creating Verifiable Credentials"
+        },
+        "IssuerType": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ]
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "The issuer of a  {@link  VerifiableCredential }  or the holder of a  {@link  VerifiablePresentation } .\n\nThe value of the issuer property MUST be either a URI or an object containing an id property. It is RECOMMENDED that the URI in the issuer or its id be one which, if de-referenced, results in a document containing machine-readable information about the issuer that can be used to verify the information expressed in the credential.\n\nSee  {@link  https://www.w3.org/TR/vc-data-model/#issuer | Issuer data model }"
+        },
+        "CredentialSubject": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "description": "The value of the credentialSubject property is defined as a set of objects that contain one or more properties that are each related to a subject of the verifiable credential. Each object MAY contain an id.\n\nSee  {@link  https://www.w3.org/TR/vc-data-model/#credential-subject | Credential Subject }"
+        },
+        "DateType": {
+          "type": "string",
+          "description": "Represents an issuance or expiration date for Credentials / Presentations. This is used as input when creating them."
+        },
+        "CredentialStatusReference": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "type"
+          ],
+          "description": "Used for the discovery of information about the current status of a verifiable credential, such as whether it is suspended or revoked. The precise contents of the credential status information is determined by the specific `credentialStatus` type definition, and varies depending on factors such as whether it is simple to implement or if it is privacy-enhancing.\n\nSee  {@link  https://www.w3.org/TR/vc-data-model/#status | Credential Status }"
+        },
+        "VerifiableCredentialSP": {
+          "type": "object",
+          "properties": {
+            "issuer": {
+              "$ref": "#/components/schemas/IssuerType"
+            },
+            "credentialSubject": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CredentialSubject"
+                  }
+                },
+                {
+                  "$ref": "#/components/schemas/CredentialSubject"
+                }
+              ]
+            },
+            "type": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "@context": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "issuanceDate": {
+              "type": "string"
+            },
+            "expirationDate": {
+              "type": "string"
+            },
+            "credentialStatus": {
+              "$ref": "#/components/schemas/CredentialStatusSP"
+            },
+            "id": {
+              "type": "string"
+            },
+            "validFrom": {
+              "type": "string"
+            },
+            "validUntil": {
+              "type": "string"
+            },
+            "proof": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/CredentialProofSP"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CredentialProofSP"
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "@context",
+            "credentialSubject",
+            "issuanceDate",
+            "issuer",
+            "proof"
+          ]
+        },
+        "CredentialStatusSP": {
+          "type": "object",
+          "properties": {
+            "revoked": {
+              "type": "boolean"
+            },
+            "id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "revocationListIndex": {
+              "type": "string"
+            },
+            "revocationListCredential": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revoked",
+            "type"
+          ]
+        },
+        "CredentialProofSP": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/components/schemas/IProofType"
+                }
+              ]
+            },
+            "created": {
+              "type": "string"
+            },
+            "proofPurpose": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IProofPurpose"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "verificationMethod": {
+              "type": "string"
+            },
+            "challenge": {
+              "type": "string"
+            },
+            "domain": {
+              "type": "string"
+            },
+            "proofValue": {
+              "type": "string"
+            },
+            "jws": {
+              "type": "string"
+            },
+            "nonce": {
+              "type": "string"
+            },
+            "requiredRevealStatements": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "type",
+            "created",
+            "proofPurpose",
+            "verificationMethod"
+          ],
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              {
+                "not": {}
+              }
+            ]
+          }
+        },
+        "IProofType": {
+          "type": "string",
+          "enum": [
+            "Ed25519Signature2018",
+            "Ed25519Signature2020",
+            "EcdsaSecp256k1Signature2019",
+            "EcdsaSecp256k1RecoverySignature2020",
+            "JsonWebSignature2020",
+            "RsaSignature2018",
+            "GpgSignature2020",
+            "JcsEd25519Signature2020",
+            "BbsBlsSignatureProof2020",
+            "BbsBlsBoundSignatureProof2020"
+          ]
+        },
+        "IProofPurpose": {
+          "type": "string",
+          "enum": [
+            "verificationMethod",
+            "assertionMethod",
+            "authentication",
+            "keyAgreement",
+            "contactAgreement",
+            "capabilityInvocation",
+            "capabilityDelegation"
+          ]
+        }
+      },
+      "methods": {
+        "issueCredentialUsingVcApi": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IIssueCredentialArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/VerifiableCredentialSP"
+          }
+        }
+      }
+    }
+  }
+}
