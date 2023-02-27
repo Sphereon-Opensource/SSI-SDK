@@ -1,6 +1,8 @@
 import {
+  DocumentFormat,
   ICredential,
   IPresentation,
+  IProof,
   IVerifiableCredential,
   IVerifiablePresentation,
   JwtDecodedVerifiableCredential,
@@ -9,12 +11,13 @@ import {
   OriginalVerifiableCredential,
   OriginalVerifiablePresentation,
   PresentationFormat,
+  W3CVerifiableCredential,
+  W3CVerifiablePresentation,
   WrappedVerifiableCredential,
   WrappedVerifiablePresentation,
 } from '../types'
 import jwt_decode from 'jwt-decode'
 import { ObjectUtils } from '../utils'
-
 
 export class CredentialMapper {
   static decodeVerifiablePresentation(presentation: OriginalVerifiablePresentation): JwtDecodedVerifiablePresentation | IVerifiablePresentation {
@@ -271,24 +274,35 @@ export class CredentialMapper {
       }
       credential.id = decoded.jti
     }
+
     return credential
   }
 
   static toExternalVerifiableCredential(verifiableCredential: any): IVerifiableCredential {
-    if (!verifiableCredential.proof.type) {
-      throw new Error('Verifiable credential proof is missing a type')
-    }
+    let proof
+    if (verifiableCredential.proof) {
+      if (!verifiableCredential.proof.type) {
+        throw new Error('Verifiable credential proof is missing a type')
+      }
 
-    if (!verifiableCredential.proof.created) {
-      throw new Error('Verifiable credential proof is missing a created date')
-    }
+      if (!verifiableCredential.proof.created) {
+        throw new Error('Verifiable credential proof is missing a created date')
+      }
 
-    if (!verifiableCredential.proof.proofPurpose) {
-      throw new Error('Verifiable credential proof is missing a proof purpose')
-    }
+      if (!verifiableCredential.proof.proofPurpose) {
+        throw new Error('Verifiable credential proof is missing a proof purpose')
+      }
 
-    if (!verifiableCredential.proof.verificationMethod) {
-      throw new Error('Verifiable credential proof is missing a verification method')
+      if (!verifiableCredential.proof.verificationMethod) {
+        throw new Error('Verifiable credential proof is missing a verification method')
+      }
+      proof = {
+        ...verifiableCredential.proof,
+        type: verifiableCredential.proof.type,
+        created: verifiableCredential.proof.created,
+        proofPurpose: verifiableCredential.proof.proofPurpose,
+        verificationMethod: verifiableCredential.proof.verificationMethod,
+      }
     }
 
     return {
@@ -298,13 +312,48 @@ export class CredentialMapper {
           ? [verifiableCredential.type]
           : verifiableCredential.type
         : ['VerifiableCredential'],
-      proof: {
-        ...verifiableCredential.proof,
-        type: verifiableCredential.proof.type,
-        created: verifiableCredential.proof.created,
-        proofPurpose: verifiableCredential.proof.proofPurpose,
-        verificationMethod: verifiableCredential.proof.verificationMethod,
-      },
+      proof,
     }
+  }
+
+  static storedCredentialToOriginalFormat(credential: W3CVerifiableCredential): W3CVerifiableCredential {
+    const type: DocumentFormat = CredentialMapper.detectDocumentType(credential)
+    if (type == DocumentFormat.JWT) {
+      return CredentialMapper.toCompactJWT(credential)
+    }
+    return credential
+  }
+
+  static storedPresentationToOriginalFormat(presentation: W3CVerifiablePresentation): W3CVerifiablePresentation {
+    const type: DocumentFormat = CredentialMapper.detectDocumentType(presentation)
+    if (type == DocumentFormat.JWT) {
+      return CredentialMapper.toCompactJWT(presentation)
+    }
+    return presentation
+  }
+
+  static toCompactJWT(persistedCredential: W3CVerifiableCredential | W3CVerifiablePresentation): string {
+    if (CredentialMapper.detectDocumentType(persistedCredential) !== DocumentFormat.JWT) {
+      throw Error('Cannot convert non JWT credential to JWT')
+    }
+    if (typeof persistedCredential === 'string') {
+      return persistedCredential
+    }
+    return Array.isArray(persistedCredential.proof) ? persistedCredential.proof[0].jwt : persistedCredential.proof.jwt
+  }
+
+  static detectDocumentType(document: W3CVerifiableCredential | W3CVerifiablePresentation): DocumentFormat {
+    if (typeof document === 'string') {
+      return DocumentFormat.JWT
+    }
+    const proofs = (<IVerifiableCredential>document).proof
+    const proof: IProof = Array.isArray(proofs) ? proofs[0] : proofs
+
+    if (proof.jwt) {
+      return DocumentFormat.JWT
+    } else if (proof.type === 'EthereumEip712Signature2021') {
+      return DocumentFormat.EIP712
+    }
+    return DocumentFormat.JSONLD
   }
 }

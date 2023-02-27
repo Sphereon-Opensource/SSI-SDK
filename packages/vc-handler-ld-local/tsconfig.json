@@ -3,8 +3,11 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
-    "esModuleInterop": true,
-    "declarationDir": "dist"
+    "declarationDir": "dist",
+    // https://github.com/transmute-industries/vc.js/issues/60
+    "skipLibCheck": true,
+    "resolveJsonModule": true
   },
+  "include": ["src/**/*.json", "src/**/*.ts"],
   "references": [{ "path": "../ssi-sdk-core" }, { "path": "../did-utils" }]
 }

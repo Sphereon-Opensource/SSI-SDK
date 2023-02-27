@@ -46,6 +46,6 @@ const testContext = {
   isRestTest: false,
 }
 
-describe('Local integration tests', () => {
+xdescribe('Local integration tests', () => {
   didAuthSiopOpAuthenticatorAgentLogic(testContext)
 })

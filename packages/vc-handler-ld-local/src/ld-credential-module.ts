@@ -53,7 +53,7 @@ export class LdCredentialModule {
     key: IKey,
     verificationMethodId: string,
     purpose: typeof ProofPurpose = new CredentialIssuancePurpose(),
-    context: IAgentContext<RequiredAgentMethods>,
+    context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiableCredentialSP> {
     debug(`Issue VC method called for ${key.kid}...`)
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
@@ -96,10 +96,10 @@ export class LdCredentialModule {
     purpose: typeof ProofPurpose = !challenge && !domain
       ? new AssertionProofPurpose()
       : new AuthenticationProofPurpose({
-        domain,
-        challenge,
-      }),
-    context: IAgentContext<RequiredAgentMethods>,
+          domain,
+          challenge,
+        }),
+    context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiablePresentationSP> {
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
     const documentLoader = this.ldDocumentLoader.getLoader(context, true)
@@ -129,7 +129,7 @@ export class LdCredentialModule {
     context: IAgentContext<IResolver>,
     fetchRemoteContexts = false,
     purpose: typeof ProofPurpose = new AssertionProofPurpose(),
-    checkStatus?: Function,
+    checkStatus?: Function
   ): Promise<boolean> {
     const verificationSuites = this.getAllVerificationSuites()
     this.ldSuiteLoader.getAllSignatureSuites().forEach((suite) => suite.preVerificationCredModification(credential))
@@ -188,7 +188,7 @@ export class LdCredentialModule {
     presentationPurpose: typeof ProofPurpose = !challenge && !domain
       ? new AssertionProofPurpose()
       : new AuthenticationProofPurpose({ domain, challenge }),
-    checkStatus?: Function,
+    checkStatus?: Function
     //AssertionProofPurpose()
   ): Promise<boolean> {
     // console.log(JSON.stringify(presentation, null, 2))

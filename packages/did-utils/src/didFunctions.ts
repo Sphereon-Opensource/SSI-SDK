@@ -1,4 +1,5 @@
-import { DIDDocument, DIDDocumentSection, IAgentContext, IIdentifier, IResolver } from '@veramo/core'
+import { UniResolver } from '@sphereon/did-uni-client'
+import { DIDDocument, DIDDocumentSection, DIDResolutionResult, IAgentContext, IDIDManager, IIdentifier, IResolver } from '@veramo/core'
 import {
   _ExtendedIKey,
   _ExtendedVerificationMethod,
@@ -8,7 +9,7 @@ import {
   mapIdentifierKeysToDoc,
   resolveDidOrThrow,
 } from '@veramo/utils'
-import { VerificationMethod } from 'did-resolver'
+import { DIDResolutionOptions, Resolvable, VerificationMethod } from 'did-resolver'
 // @ts-ignore
 import elliptic from 'elliptic'
 import * as u8a from 'uint8arrays'
@@ -158,4 +159,29 @@ export async function mapIdentifierKeysToDocWithJwkSupport(
     .filter(isDefined)
 
   return keys.concat(extendedKeys)
+}
+
+export async function getAgentDIDMethods(context: IAgentContext<IDIDManager>) {
+  return (await context.agent.didManagerGetProviders()).map((provider) => provider.toLowerCase().replace('did:', ''))
+}
+
+export class AgentDIDResolver implements Resolvable {
+  private readonly context: IAgentContext<IResolver>
+  private readonly uniresolverFallback: boolean
+
+  constructor(context: IAgentContext<IResolver>, uniresolverFallback?: boolean) {
+    this.context = context
+    this.uniresolverFallback = uniresolverFallback === true
+  }
+
+  async resolve(didUrl: string, options?: DIDResolutionOptions): Promise<DIDResolutionResult> {
+    try {
+      return this.context.agent.resolveDid({ didUrl, options })
+    } catch (error: unknown) {
+      if (this.uniresolverFallback) {
+        return new UniResolver().resolve(didUrl, options)
+      }
+      throw error
+    }
+  }
 }

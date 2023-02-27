@@ -10,8 +10,7 @@
     }
   },
   "scripts": {
-    "build": "tsc --build",
-    "build:copyfiles": "copyfiles contexts/*.* ./dist"
+    "build": "tsc"
   },
   "dependencies": {
     "@digitalcredentials/did-method-key": "^2.0.3",
@@ -46,11 +45,6 @@
     "jose": "^1.28.1",
     "react-native-securerandom": "^1.0.0",
     "ts-node": "^8.10.2"
-  },
-  "resolutions": {
-    "@types/react": "18.0.12",
-    "jsonld": "npm:@digitalcredentials/jsonld@^5.2.1",
-    "jsonld-signatures": "npm:@digitalcredentials/jsonld-signatures@^9.3.1"
   },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.5.0",
@@ -88,7 +82,6 @@
   "files": [
     "dist/**/*",
     "src/**/*",
-    "contexts",
     "README.md",
     "plugin.schema.json",
     "LICENSE"
@@ -108,13 +101,18 @@
     "Verifiable Presentations",
     "JsonLd"
   ],
+  "resolutions": {
+    "@types/react": "18.0.12",
+    "**/@unimodules/core": "npm:expo@^45.0.8",
+    "**/@unimodules/react-native-adapter": "npm:expo@^45.0.8",
+    "**/isomorphic-webcrypto/jsonld": "npm:@digitalcredentials/jsonld@^5.2.1",
+    "**/isomorphic-webcrypto/jsonld-signatures": "npm:@digitalcredentials/jsonld-signatures@^9.3.1"
+  },
   "react-native": {
-    "vc-js": "@digitalcredentials/vc",
     "jsonld": "@digitalcredentials/jsonld",
     "jsonld-signatures": "@digitalcredentials/jsonld-signatures"
   },
   "browser": {
-    "vc-js": "@digitalcredentials/vc",
     "jsonld": "@digitalcredentials/jsonld",
     "jsonld-signatures": "@digitalcredentials/jsonld-signatures"
   }

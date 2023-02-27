@@ -1,29 +1,22 @@
 {
   "@context": {
-    "privateKeyJwk": {
-      "@id": "https://w3id.org/security#privateKeyJwk",
-      "@type": "@json"
+    "id": "@id",
+    "type": "@type",
+    "@protected": true,
+    "proof": {
+      "@id": "https://w3id.org/security#proof",
+      "@type": "@id",
+      "@container": "@graph"
     },
-    "JsonWebKey2020": {
-      "@id": "https://w3id.org/security#JsonWebKey2020",
+    "Ed25519VerificationKey2020": {
+      "@id": "https://w3id.org/security#Ed25519VerificationKey2020"
+    },
+    "Ed25519Signature2020": {
+      "@id": "https://w3id.org/security#Ed25519Signature2020",
       "@context": {
         "@protected": true,
         "id": "@id",
         "type": "@type",
-        "publicKeyJwk": {
-          "@id": "https://w3id.org/security#publicKeyJwk",
-          "@type": "@json"
-        }
-      }
-    },
-    "JsonWebSignature2020": {
-      "@id": "https://w3id.org/security#JsonWebSignature2020",
-      "@context": {
-        "@protected": true,
-
-        "id": "@id",
-        "type": "@type",
-
         "challenge": "https://w3id.org/security#challenge",
         "created": {
           "@id": "http://purl.org/dc/terms/created",
@@ -34,17 +27,15 @@
           "@id": "https://w3id.org/security#expiration",
           "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
         },
-        "jws": "https://w3id.org/security#jws",
         "nonce": "https://w3id.org/security#nonce",
         "proofPurpose": {
           "@id": "https://w3id.org/security#proofPurpose",
           "@type": "@vocab",
           "@context": {
+            "@version": 1.1,
             "@protected": true,
-
             "id": "@id",
             "type": "@type",
-
             "assertionMethod": {
               "@id": "https://w3id.org/security#assertionMethod",
               "@type": "@id",
@@ -71,6 +62,10 @@
               "@container": "@set"
             }
           }
+        },
+        "proofValue": {
+          "@id": "https://w3id.org/security#proofValue",
+          "@type": "https://w3id.org/security#multibase"
         },
         "verificationMethod": {
           "@id": "https://w3id.org/security#verificationMethod",

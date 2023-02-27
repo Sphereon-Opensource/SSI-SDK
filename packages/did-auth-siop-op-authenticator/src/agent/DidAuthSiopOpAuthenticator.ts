@@ -1,91 +1,74 @@
-import { schema } from '../index'
-import { IAgentPlugin, UniqueVerifiableCredential } from '@veramo/core'
+import { IOpSessionArgs, schema } from '../index'
+import { IAgentPlugin } from '@veramo/core'
 import { OpSession } from '../session/OpSession'
 import { v4 as uuidv4 } from 'uuid'
 
 import {
-  events,
-  IAuthenticateWithSiopArgs,
-  IAuthRequestDetails,
-  IRegisterSiopSessionArgs,
   IDidAuthSiopOpAuthenticator,
-  IGetSiopAuthorizationRequestDetailsArgs,
-  IGetSiopAuthorizationRequestFromRpArgs,
   IGetSiopSessionArgs,
   IRegisterCustomApprovalForSiopArgs,
   IRemoveCustomApprovalForSiopArgs,
   IRemoveSiopSessionArgs,
   IRequiredContext,
-  ISendSiopAuthorizationResponseArgs,
-  IVerifySiopAuthorizationRequestUriArgs,
 } from '../types/IDidAuthSiopOpAuthenticator'
-import { VerifiedAuthorizationRequest, ParsedAuthorizationRequestURI, PresentationSignCallback } from '@sphereon/did-auth-siop'
-import { CredentialMapper, IVerifiableCredential } from '@sphereon/ssi-types'
+import { PresentationSignCallback, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
 
 export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   readonly schema = schema.IDidAuthSiopOpAuthenticator
   readonly methods: IDidAuthSiopOpAuthenticator = {
-    getSessionForSiop: this.getSessionForSiop.bind(this),
-    registerSessionForSiop: this.registerSessionForSiop.bind(this),
-    removeSessionForSiop: this.removeSessionForSiop.bind(this),
-    authenticateWithSiop: this.authenticateWithSiop.bind(this),
-    getSiopAuthorizationRequestFromRP: this.getSiopAuthorizationRequestFromRP.bind(this),
+    siopGetOPSession: this.siopGetOPSession.bind(this),
+    siopRegisterOPSession: this.siopRegisterOPSession.bind(this),
+    siopRemoveOPSession: this.siopRemoveOPSession.bind(this),
+    /*authenticateWithSiop: this.authenticateWithSiop.bind(this),
+    getSiopAuthorizationRequestFromRP: this.siopGetAuthorizationRequestFromRP.bind(this),
     getSiopAuthorizationRequestDetails: this.getSiopAuthorizationRequestDetails.bind(this),
-    verifySiopAuthorizationRequestURI: this.verifySiopAuthorizationRequestURI.bind(this),
-    sendSiopAuthorizationResponse: this.sendSiopAuthorizationResponse.bind(this),
-    registerCustomApprovalForSiop: this.registerCustomApprovalForSiop.bind(this),
-    removeCustomApprovalForSiop: this.removeCustomApprovalForSiop.bind(this),
+    verifySiopAuthorizationRequestURI: this.siopVerifyAuthorizationRequestURI.bind(this),
+    sendSiopAuthorizationResponse: this.sendSiopAuthorizationResponse.bind(this),*/
+    siopRegisterOPCustomApproval: this.siopRegisterOPCustomApproval.bind(this),
+    siopRemoveOPCustomApproval: this.siopRemoveOPCustomApproval.bind(this),
   }
 
-  private readonly sessions: Record<string, OpSession>
+  private readonly sessions: Map<string, OpSession>
   private readonly customApprovals: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>
-  private readonly presentationSignCallback: PresentationSignCallback
+  private readonly presentationSignCallback?: PresentationSignCallback
 
   constructor(
-    presentationSignCallback: PresentationSignCallback,
+    presentationSignCallback?: PresentationSignCallback,
     customApprovals?: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>
   ) {
-    this.sessions = {}
+    this.sessions = new Map<string, OpSession>()
     this.customApprovals = customApprovals || {}
     this.presentationSignCallback = presentationSignCallback
   }
 
-  private async getSessionForSiop(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession> {
+  private async siopGetOPSession(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession> {
     // TODO add cleaning up sessions https://sphereon.atlassian.net/browse/MYC-143
-    if (this.sessions[args.sessionId] === undefined) {
-      return Promise.reject(new Error(`No session found for id: ${args.sessionId}`))
+    if (!this.sessions.has(args.sessionId)) {
+      throw Error(`No session found for id: ${args.sessionId}`)
     }
 
-    return this.sessions[args.sessionId]
+    return this.sessions.get(args.sessionId)!
   }
 
-  private async registerSessionForSiop(args: IRegisterSiopSessionArgs, context: IRequiredContext): Promise<OpSession> {
+  private async siopRegisterOPSession(args: Omit<IOpSessionArgs, 'context'>, context: IRequiredContext): Promise<OpSession> {
     const sessionId = args.sessionId || uuidv4()
-
-    if (this.sessions[sessionId] !== undefined) {
+    if (this.sessions.has(sessionId)) {
       return Promise.reject(new Error(`Session with id: ${args.sessionId} already present`))
     }
-
-    const session = new OpSession({
-      sessionId,
-      identifier: args.identifier,
-      expiresIn: args.expiresIn,
-      resolver: args.resolver,
-      perDidResolvers: args.perDidResolvers,
-      supportedDidMethods: args.supportedDidMethods,
-      context,
-    })
-    await session.init()
-    this.sessions[sessionId] = session
-
+    const opts = { ...args, sessionId, context } as Required<IOpSessionArgs>
+    if (!opts.op?.presentationSignCallback) {
+      opts.op = { ...opts.op, presentationSignCallback: this.presentationSignCallback }
+    }
+    const session = await OpSession.init(opts)
+    this.sessions.set(sessionId, session)
     return session
   }
 
-  private async removeSessionForSiop(args: IRemoveSiopSessionArgs, context: IRequiredContext): Promise<boolean> {
-    return delete this.sessions[args.sessionId]
+  private async siopRemoveOPSession(args: IRemoveSiopSessionArgs, context: IRequiredContext): Promise<boolean> {
+    return this.sessions.delete(args.sessionId)
   }
 
-  private async registerCustomApprovalForSiop(args: IRegisterCustomApprovalForSiopArgs, context: IRequiredContext): Promise<void> {
+  private async siopRegisterOPCustomApproval(args: IRegisterCustomApprovalForSiopArgs, context: IRequiredContext): Promise<void> {
     if (this.customApprovals[args.key] !== undefined) {
       return Promise.reject(new Error(`Custom approval with key: ${args.key} already present`))
     }
@@ -93,57 +76,56 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     this.customApprovals[args.key] = args.customApproval
   }
 
-  private async removeCustomApprovalForSiop(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean> {
-    return delete this.sessions[args.key]
+  private async siopRemoveOPCustomApproval(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean> {
+    return delete this.customApprovals[args.key]
   }
-
+  /*
   private async authenticateWithSiop(args: IAuthenticateWithSiopArgs, context: IRequiredContext): Promise<Response> {
-    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session: OpSession) =>
-      session.authenticateWithSiop({ ...args, customApprovals: this.customApprovals }).then(async (response: Response) => {
+    return this.siopGetOPSession({ sessionId: args.sessionId }, context).then((session: OpSession) =>
+      session.authenticateWithSiop({
+        ...args,
+        customApprovals: this.customApprovals,
+      }).then(async (response: Response) => {
         await context.agent.emit(events.DID_SIOP_AUTHENTICATED, response)
         return response
-      })
+      }),
     )
   }
 
-  private async getSiopAuthorizationRequestFromRP(
-    args: IGetSiopAuthorizationRequestFromRpArgs,
-    context: IRequiredContext
-  ): Promise<ParsedAuthorizationRequestURI> {
-    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session: OpSession) =>
-      session.getSiopAuthorizationRequestFromRP(args)
-    )
-  }
 
   private async getSiopAuthorizationRequestDetails(
     args: IGetSiopAuthorizationRequestDetailsArgs,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<IAuthRequestDetails> {
     const uniqueVcs: Array<UniqueVerifiableCredential> = await context.agent.dataStoreORMGetVerifiableCredentials(args.credentialFilter)
-    const verifiableCredentials: Array<IVerifiableCredential> = uniqueVcs.map((uniqueVc: UniqueVerifiableCredential) =>
-      CredentialMapper.toExternalVerifiableCredential(uniqueVc.verifiableCredential)
+    const verifiableCredentials: W3CVerifiableCredential[] = uniqueVcs.map(
+      (uniqueVc: UniqueVerifiableCredential) => uniqueVc.verifiableCredential as W3CVerifiableCredential,
     )
 
-    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session: OpSession) =>
-      session.getSiopAuthorizationRequestDetails({ ...args, verifiableCredentials, presentationSignCallback: this.presentationSignCallback })
+    return this.siopGetOPSession({ sessionId: args.sessionId }, context).then((session: OpSession) =>
+      session.getSiopAuthorizationRequestDetails({
+        ...args,
+        verifiableCredentials,
+        presentationSignCallback: this.presentationSignCallback,
+      }),
     )
   }
 
-  private async verifySiopAuthorizationRequestURI(
+  private async siopVerifyAuthorizationRequestURI(
     args: IVerifySiopAuthorizationRequestUriArgs,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<VerifiedAuthorizationRequest> {
-    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session: OpSession) =>
-      session.verifySiopAuthorizationRequestURI(args)
+    return this.siopGetOPSession({ sessionId: args.sessionId }, context).then((session: OpSession) =>
+      session.verifyAuthorizationRequest(args),
     )
   }
 
   private async sendSiopAuthorizationResponse(args: ISendSiopAuthorizationResponseArgs, context: IRequiredContext): Promise<Response> {
-    return this.getSessionForSiop({ sessionId: args.sessionId }, context).then((session: OpSession) =>
+    return this.siopGetOPSession({ sessionId: args.sessionId }, context).then((session: OpSession) =>
       session.sendSiopAuthorizationResponse(args).then(async (response: Response) => {
         await context.agent.emit(events.DID_SIOP_AUTHENTICATED, response)
         return response
-      })
+      }),
     )
-  }
+  }*/
 }

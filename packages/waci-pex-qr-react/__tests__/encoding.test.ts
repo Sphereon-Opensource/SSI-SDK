@@ -1,56 +1,22 @@
-import { AcceptMode, GoalCode, OobPayload, OobQRProps, QRType } from '../src'
-import { OutOfBandMessage } from '../src/agent/qr-utils/outOfBandMessage'
 import base64url from 'base64url'
-
-const oobQRProps: OobQRProps = {
-  oobBaseUrl: 'https://example.com/?oob=',
-  type: QRType.DID_AUTH_SIOP_V2,
-  id: '599f3638-b563-4937-9487-dfe55099d900',
-  from: 'did:key:zrfdjkgfjgfdjk',
-  body: {
-    goalCode: GoalCode.STREAMLINED_VP,
-    accept: [AcceptMode.SIOPV2_WITH_OIDC4VP],
-  },
-  onGenerate: (oobQRProps: OobQRProps, payload: OobPayload) => {
-    console.log(payload)
-  },
-  bgColor: 'white',
-  fgColor: 'black',
-  level: 'L',
-  size: 128,
-  title: 'title2021120903',
-}
+import { DidCommOutOfBandMessage } from '../src/agent/utils'
+import { oobInvitation } from './shared/fixtures'
 
 describe('SSI QR Code', () => {
-  it('should create payload object', async () => {
-    const payload = OutOfBandMessage.createPayload(oobQRProps)
-    // const encoded = OutOfBandMessage.encode(payload)
-    // const url = oobQRProps.oobBaseUrl + encoded
-
-    expect(payload).toMatchObject({
-      body: { accept: ['siopv2+oidc4vp'], goalCode: 'streamlined-vp' },
-      from: 'did:key:zrfdjkgfjgfdjk',
-      id: '599f3638-b563-4937-9487-dfe55099d900',
-      type: 'siopv2',
-    })
-  })
-
   it('should create json value', async () => {
-    const payload = OutOfBandMessage.createPayload(oobQRProps)
-    const json = OutOfBandMessage.toJson(payload)
+    const json = DidCommOutOfBandMessage.toJson(oobInvitation)
     expect(json).toMatch(
-      '{"type":"siopv2","id":"599f3638-b563-4937-9487-dfe55099d900","from":"did:key:zrfdjkgfjgfdjk","body":{"goal-code":"streamlined-vp","accept":["siopv2+oidc4vp"]}}'
+      '{"type":"https://didcomm.org/out-of-band/2.0/invitation","id":"599f3638-b563-4937-9487-dfe55099d900","from":"did:key:zrfdjkgfjgfdjk","body":{"goal_code":"streamlined-vp","accept":["didcomm/v2"]}}'
     )
   })
 
   it('should url encode and decode', async () => {
-    const payload = OutOfBandMessage.createPayload(oobQRProps)
-    const urlEncoded = OutOfBandMessage.urlEncode(payload)
+    const urlEncoded = DidCommOutOfBandMessage.urlEncode(oobInvitation)
     expect(urlEncoded).toMatch(
-      'eyJ0eXBlIjoic2lvcHYyIiwiaWQiOiI1OTlmMzYzOC1iNTYzLTQ5MzctOTQ4Ny1kZmU1NTA5OWQ5MDAiLCJmcm9tIjoiZGlkOmtleTp6cmZkamtnZmpnZmRqayIsImJvZHkiOnsiZ29hbC1jb2RlIjoic3RyZWFtbGluZWQtdnAiLCJhY2NlcHQiOlsic2lvcHYyK29pZGM0dnAiXX19'
+      'eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNTk5ZjM2MzgtYjU2My00OTM3LTk0ODctZGZlNTUwOTlkOTAwIiwiZnJvbSI6ImRpZDprZXk6enJmZGprZ2ZqZ2ZkamsiLCJib2R5Ijp7ImdvYWxfY29kZSI6InN0cmVhbWxpbmVkLXZwIiwiYWNjZXB0IjpbImRpZGNvbW0vdjIiXX19'
     )
     expect(base64url.decode(urlEncoded)).toMatch(
-      '{"type":"siopv2","id":"599f3638-b563-4937-9487-dfe55099d900","from":"did:key:zrfdjkgfjgfdjk","body":{"goal-code":"streamlined-vp","accept":["siopv2+oidc4vp"]}}'
+      '{"type":"https://didcomm.org/out-of-band/2.0/invitation","id":"599f3638-b563-4937-9487-dfe55099d900","from":"did:key:zrfdjkgfjgfdjk","body":{"goal_code":"streamlined-vp","accept":["didcomm/v2"]}}'
     )
   })
 })
