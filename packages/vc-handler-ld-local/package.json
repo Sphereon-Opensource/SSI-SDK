@@ -99,8 +99,8 @@
     "@types/react": "18.0.12",
     "**/@unimodules/core": "npm:expo@^45.0.8",
     "**/@unimodules/react-native-adapter": "npm:expo@^45.0.8",
-    "**/jsonld": "npm:@digitalcredentials/jsonld@^5.2.1",
-    "**/jsonld-signatures": "npm:@digitalcredentials/jsonld-signatures@^9.3.1"
+    "**/isomorphic-webcrypto/jsonld": "npm:@digitalcredentials/jsonld@^5.2.1",
+    "**/isomorphic-webcrypto/jsonld-signatures": "npm:@digitalcredentials/jsonld-signatures@^9.3.1"
   },
   "react-native": {
     "jsonld": "@digitalcredentials/jsonld",
