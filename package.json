@@ -7,13 +7,13 @@
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "lerna run build && yarn build:copyfiles && yarn build:schema-api",
+    "build": "lerna run build && pnpm build:copyfiles && pnpm build:schema-api",
     "build:schema-api": "lerna run extract-api && lerna run generate-plugin-schema",
     "build:copyfiles": "lerna run build:copyfiles",
     "bootstrap": "lerna bootstrap",
     "test:ci": "jest --config=jest.json",
     "test": "jest --verbose --config=jest.json --coverage=true --detectOpenHandles",
-    "test:watch": "yarn test --watch --verbose",
+    "test:watch": "pnpm test --watch --verbose",
     "test:lint": "eslint . --ext .ts",
     "prettier": "prettier --write \"{packages,__tests__,!dist}/**/*.{ts,tsx,js,json,md,yml}\"",
     "build-clean": "rimraf ./packages/*/dist ./packages/*/api ./packages/*/node_modules ./packages/*/tsconfig.tsbuildinfo && jest --clearCache",
@@ -42,7 +42,7 @@
       }
     ]
   },
-  "yarn": {
+  "pnpm": {
     "overrides": {
       "@veramo/core": "4.2.0",
       "@veramo/credential-w3c": "4.2.0",
