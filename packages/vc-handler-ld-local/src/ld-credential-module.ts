@@ -172,7 +172,7 @@ export class LdCredentialModule {
     // result can include raw Error
     debug(`Error verifying LD Verifiable Credential: ${JSON.stringify(result, null, 2)}`)
     console.log(JSON.stringify(result, null, 2))
-    context.agent.emit('verifyCredential-failed', credential)
+    context.agent.emit(events.CREDENTIAL_VERIFY_FAILED, credential)
     throw Error('Error verifying LD Verifiable Credential')
   }
 
@@ -234,7 +234,7 @@ export class LdCredentialModule {
     // result can include raw Error
     console.log(`Error verifying LD Verifiable Presentation`)
     console.log(JSON.stringify(result, null, 2))
-    context.agent.emit('verifyPresentation-failed', presentation)
+    context.agent.emit(events.PRESENTATION_VERIFY_FAILED, presentation)
     throw Error('Error verifying LD Verifiable Presentation')
   }
 }
