@@ -3,7 +3,7 @@
     "packages/*"
   ],
   "version": "0.8.0",
-  "npmClient": "pnpm",
+  "npmClient": "yarn",
   "command": {
     "publish": {
       "allowBranch": [
