@@ -3,6 +3,7 @@ import * as vc from '@digitalcredentials/vc'
 import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
 import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
+import {events} from './types/ICredentialHandlerLDLocal'
 import {
   CredentialPayload,
   IAgentContext,
@@ -161,7 +162,7 @@ export class LdCredentialModule {
           credential: credential,
           result: item,
         };
-        context.agent.emit('verifyCredential-success', eventData)
+        context.agent.emit(events.CREDENTIAL_VERIFIED, eventData)
       })
       return true
     }
@@ -223,7 +224,7 @@ export class LdCredentialModule {
           presentation: presentation,
           result: item,
         };
-        context.agent.emit('verifyPresentation-success', eventData)
+        context.agent.emit(events.PRESENTATION_VERIFIED, eventData)
       })
       return true
     }

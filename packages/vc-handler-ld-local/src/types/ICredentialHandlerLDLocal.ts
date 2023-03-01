@@ -28,6 +28,8 @@ export type IBindingOverrides = Map<string, MethodNames>
 
 export enum events {
   CREDENTIAL_ISSUED = 'credentialIssued',
+  CREDENTIAL_VERIFIED = 'credentialVerified',
+  PRESENTATION_VERIFIED = 'presentationVerified',
 }
 
 export type IRequiredContext = IAgentContext<IResolver & Pick<IDIDManager, 'didManagerGet'> & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>>
