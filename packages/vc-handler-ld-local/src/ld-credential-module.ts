@@ -3,7 +3,7 @@ import * as vc from '@digitalcredentials/vc'
 import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
 import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
-import {events} from './types/ICredentialHandlerLDLocal'
+import { events } from './types/ICredentialHandlerLDLocal'
 import {
   CredentialPayload,
   IAgentContext,
@@ -161,7 +161,7 @@ export class LdCredentialModule {
         const eventData = {
           credential: credential,
           result: item,
-        };
+        }
         context.agent.emit(events.CREDENTIAL_VERIFIED, eventData)
       })
       return true
@@ -207,11 +207,11 @@ export class LdCredentialModule {
       })
 
       if (result.verified) {
-          const eventData = {
-            presentation: presentation,
-            result: result,
-          };
-          context.agent.emit(events.PRESENTATION_VERIFIED, eventData)
+        const eventData = {
+          presentation: presentation,
+          result: result,
+        }
+        context.agent.emit(events.PRESENTATION_VERIFIED, eventData)
         return true
       }
     } else {
@@ -231,13 +231,12 @@ export class LdCredentialModule {
           const eventData = {
             presentation: presentation,
             result: item,
-          };
+          }
           context.agent.emit(events.PRESENTATION_VERIFIED, eventData)
         })
         return true
       }
     }
-
 
     // NOT verified.
 
