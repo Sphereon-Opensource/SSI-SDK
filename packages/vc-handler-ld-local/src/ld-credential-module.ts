@@ -205,6 +205,15 @@ export class LdCredentialModule {
         purpose: presentationPurpose,
         documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
       })
+
+      if (result.verified) {
+          const eventData = {
+            presentation: presentation,
+            result: result,
+          };
+          context.agent.emit(events.PRESENTATION_VERIFIED, eventData)
+        return true
+      }
     } else {
       result = await vc.verify({
         presentation,
@@ -216,18 +225,19 @@ export class LdCredentialModule {
         compactProof: false,
         checkStatus,
       })
+
+      if (result.verified && result.presentationResult.verified) {
+        result.presentationResult.results.forEach((item: any) => {
+          const eventData = {
+            presentation: presentation,
+            result: item,
+          };
+          context.agent.emit(events.PRESENTATION_VERIFIED, eventData)
+        })
+        return true
+      }
     }
 
-    if (result.verified && result.presentationResult.verified) {
-      result.presentationResult.results.forEach((item: any) => {
-        const eventData = {
-          presentation: presentation,
-          result: item,
-        };
-        context.agent.emit(events.PRESENTATION_VERIFIED, eventData)
-      })
-      return true
-    }
 
     // NOT verified.
 
