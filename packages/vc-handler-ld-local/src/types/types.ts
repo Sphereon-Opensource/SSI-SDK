@@ -1,4 +1,3 @@
-import { purposes } from '@digitalcredentials/jsonld-signatures'
 import {
   CredentialPayload,
   IAgentContext,
@@ -10,6 +9,7 @@ import {
   VerifiableCredential,
   VerifiablePresentation,
 } from '@veramo/core'
+import ProofPurpose from '../exttypes/purposes/ProofPurpose'
 
 /**
  * The interface definition for a plugin that can issue and verify Verifiable Credentials and Presentations
@@ -38,7 +38,7 @@ export interface ICredentialIssuerLD extends IPluginMethodMap {
 
   /**
    * Creates a Verifiable Credential.
-   * The payload, signer and format are chosen based on the `args` parameter.
+   * The payload, signer and format` are chosen based on the `args` parameter.
    *
    * @param args - Arguments necessary to create the Presentation.
    * @param context - This reserved param is automatically added and handled by the framework, *do not override*
@@ -114,7 +114,7 @@ export interface ICreateVerifiablePresentationLDArgs {
    */
   keyRef?: string
 
-  purpose?: typeof ProofPurpose
+  purpose?: ProofPurpose
 }
 
 /**
@@ -143,7 +143,7 @@ export interface ICreateVerifiableCredentialLDArgs {
   /**
    * Use this purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)
    */
-  purpose?: typeof ProofPurpose
+  purpose?: ProofPurpose
 }
 
 /**
@@ -173,7 +173,7 @@ export interface IVerifyCredentialLDArgs {
   /**
    * Use this presentation purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)
    */
-  purpose?: typeof ProofPurpose
+  purpose?: ProofPurpose
 
   /**
    * Check status function, to check credentials that have a credentialStatus property
@@ -218,7 +218,7 @@ export interface IVerifyPresentationLDArgs {
   /**
    * Use this presentation purpose for the verification method in the DID when doing a check (defaualts to assertionMethod)
    */
-  presentationPurpose?: typeof ProofPurpose
+  presentationPurpose?: ProofPurpose
 
   /**
    * Check status function, to check credentials that have a credentialStatus property
@@ -239,8 +239,3 @@ export type IRequiredContext = IAgentContext<IResolver & Pick<IDIDManager, 'didM
 export type ContextDoc = {
   '@context': string | Record<string, any>
 }
-
-export const ProofPurpose = purposes.ProofPurpose
-export const ControllerProofPurpose = purposes.ControllerProofPurpose
-export const AssertionProofPurpose = purposes.AssertionProofPurpose
-export const AuthenticationProofPurpose = purposes.AuthenticationProofPurpose

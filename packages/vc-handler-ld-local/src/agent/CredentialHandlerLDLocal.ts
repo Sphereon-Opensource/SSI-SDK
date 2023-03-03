@@ -18,6 +18,7 @@ import {
   IVerifyPresentationLDArgs,
 } from '../types/types'
 import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-did-utils'
+import ProofPurpose from '../exttypes/purposes/ProofPurpose'
 
 const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 
@@ -109,7 +110,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
         identifier.did,
         managedKey || signingKey, // todo: signingKey does not have the private key, so would never work
         verificationMethodId ? verificationMethodId : (verificationMethod as string),
-        args.purpose,
+        args.purpose as ProofPurpose,
         context
       )
     } catch (error) {

@@ -17,8 +17,9 @@ import { CredentialHandlerLDLocal } from '../../agent/CredentialHandlerLDLocal'
 import { LdDefaultContexts } from '../../ld-default-contexts'
 import { SphereonEd25519Signature2018 } from '../../suites'
 import { ICredentialHandlerLDLocal, MethodNames } from '../../types/ICredentialHandlerLDLocal'
-import { ControllerProofPurpose } from '../../types/types'
 import { boaExampleVC, ltoDIDResolutionResult } from '../mocks'
+import ControllerProofPurpose from '../../exttypes/purposes/ControllerProofPurpose'
+import IDcControllerProofPurpose from '../../exttypes/purposes/ControllerProofPurpose'
 
 const LTO_DID = 'did:lto:3MsS3gqXkcx9m4wYSbfprYfjdZTFmx2ofdX'
 
@@ -144,14 +145,14 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
         presentation: presentationPayload,
         keyRef: `${didLtoIdentifier.did}#sign`,
         // We are overriding the purpose since the DID in this test does not have an authentication proof purpose
-        purpose: new ControllerProofPurpose({ term: 'verificationMethod' }),
+        purpose: new ControllerProofPurpose({ term: 'verificationMethod' } as IDcControllerProofPurpose),
       })
       expect(vp).toBeDefined()
 
       const vpVerification = await agent.verifyPresentationLDLocal({
         presentation: vp,
         // We are overriding the purpose since the DID in this test does not have an authentication proof purpose
-        presentationPurpose: new ControllerProofPurpose({ term: 'verificationMethod' }),
+        presentationPurpose: new ControllerProofPurpose({ term: 'verificationMethod' } as IDcControllerProofPurpose),
         fetchRemoteContexts: true,
         checkStatus,
       })

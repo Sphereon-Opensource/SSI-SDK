@@ -1,4 +1,3 @@
-import { purposes } from '@digitalcredentials/jsonld-signatures'
 import * as vc from '@digitalcredentials/vc'
 import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
 import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
@@ -19,15 +18,15 @@ import Debug from 'debug'
 import { LdContextLoader } from './ld-context-loader'
 import { LdDocumentLoader } from './ld-document-loader'
 import { LdSuiteLoader } from './ld-suite-loader'
+import ProofPurpose from './exttypes/purposes/ProofPurpose'
+import AssertionProofPurpose from './exttypes/purposes/AssertionProofPurpose'
+import AuthenticationProofPurpose from './exttypes/purposes/AuthenticationProofPurpose'
+import IDcAuthenticationProofPurpose from "./exttypes/purposes/AuthenticationProofPurpose";
 
 //Support for Typescript added in version 9.0.0
 const jsonld = require('jsonld-signatures')
 
 export type RequiredAgentMethods = IResolver & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>
-
-const ProofPurpose = purposes.ProofPurpose
-const AssertionProofPurpose = purposes.AssertionProofPurpose
-const AuthenticationProofPurpose = purposes.AuthenticationProofPurpose
 
 const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 
@@ -53,7 +52,7 @@ export class LdCredentialModule {
     issuerDid: string,
     key: IKey,
     verificationMethodId: string,
-    purpose: typeof ProofPurpose = new CredentialIssuancePurpose(),
+    purpose: ProofPurpose = new CredentialIssuancePurpose(),
     context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiableCredentialSP> {
     debug(`Issue VC method called for ${key.kid}...`)
@@ -94,12 +93,12 @@ export class LdCredentialModule {
     verificationMethodId: string,
     challenge: string | undefined,
     domain: string | undefined,
-    purpose: typeof ProofPurpose = !challenge && !domain
+    purpose: ProofPurpose = !challenge && !domain
       ? new AssertionProofPurpose()
       : new AuthenticationProofPurpose({
           domain,
           challenge,
-        }),
+        } as IDcAuthenticationProofPurpose),
     context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiablePresentationSP> {
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
@@ -129,7 +128,7 @@ export class LdCredentialModule {
     credential: VerifiableCredential,
     context: IAgentContext<IResolver>,
     fetchRemoteContexts = false,
-    purpose: typeof ProofPurpose = new AssertionProofPurpose(),
+    purpose: ProofPurpose = new AssertionProofPurpose(),
     checkStatus?: Function
   ): Promise<boolean> {
     const verificationSuites = this.getAllVerificationSuites()
@@ -186,9 +185,9 @@ export class LdCredentialModule {
     domain: string | undefined,
     context: IAgentContext<IResolver>,
     fetchRemoteContexts = false,
-    presentationPurpose: typeof ProofPurpose = !challenge && !domain
+    presentationPurpose: ProofPurpose = !challenge && !domain
       ? new AssertionProofPurpose()
-      : new AuthenticationProofPurpose({ domain, challenge }),
+      : new AuthenticationProofPurpose({ domain, challenge } as IDcAuthenticationProofPurpose),
     checkStatus?: Function
     //AssertionProofPurpose()
   ): Promise<boolean> {
