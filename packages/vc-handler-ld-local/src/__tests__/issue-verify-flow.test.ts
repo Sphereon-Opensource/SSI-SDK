@@ -17,9 +17,11 @@ import { LdDefaultContexts } from '../ld-default-contexts'
 import { SphereonEd25519Signature2018 } from '../suites/Ed25519Signature2018'
 import { SphereonEd25519Signature2020 } from '../suites/Ed25519Signature2020'
 import { ICredentialHandlerLDLocal, MethodNames } from '../types/ICredentialHandlerLDLocal'
-import { ContextDoc, ControllerProofPurpose } from '../types/types'
+import { ContextDoc } from '../types/types'
 
 import { bedrijfsInformatieV1, exampleV1, factomDIDResolutionResult_2018, ltoDIDResolutionResult, ltoDIDSubjectResolutionResult_2018 } from './mocks'
+import ControllerProofPurpose from "../exttypes/purposes/ControllerProofPurpose";
+import IDcControllerProofPurpose from "../exttypes/purposes/ControllerProofPurpose";
 
 const LTO_DID = 'did:lto:3MsS3gqXkcx9m4wYSbfprYfjdZTFmx2ofdX'
 const FACTOM_DID = 'did:factom:9d612c949afee208f664e81dc16bdb4f4eff26776ebca2e94a9f06a40d68626d'
@@ -137,7 +139,7 @@ describe('credential-LD full flow', () => {
       keyRef: didLtoIdentifier.controllerKeyId,
       presentation: presentationPayload,
       // We are overriding the purpose since the DID in this test does not have an authentication proof purpose
-      purpose: new ControllerProofPurpose({ term: 'verificationMethod' }),
+      purpose: new ControllerProofPurpose({ term: 'verificationMethod' } as IDcControllerProofPurpose),
     })
 
     expect(verifiablePresentation).toBeDefined()
