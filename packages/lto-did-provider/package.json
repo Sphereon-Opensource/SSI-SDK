@@ -11,6 +11,7 @@
     "@lto-network/lto-crypto": "~1.1.1",
     "@lto-network/lto-transactions": "1.2.12",
     "@lto-network/signature-generator": "~1.0.0",
+    "lto-api": "^0.5.14",
     "@sphereon/did-uni-client": "^0.5.0",
     "@sphereon/lto-did-ts": "0.1.8-unstable.0",
     "@sphereon/ssi-sdk-core": "^0.8.0",
