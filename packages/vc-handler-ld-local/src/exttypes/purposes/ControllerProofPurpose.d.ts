@@ -1,4 +1,5 @@
 import IDcProofPurpose from './ProofPurpose'
+import ProofPurpose from "./ProofPurpose";
 
 export = ControllerProofPurpose
 
@@ -11,7 +12,6 @@ declare class ControllerProofPurpose extends ProofPurpose {
 
   controller: object
 
-  _termDefinedByDIDContext: boolean
   /**
    * Validates the purpose of a proof. This method is called during
    * proof verification, after the proof value has been checked against the
@@ -44,4 +44,3 @@ declare class ControllerProofPurpose extends ProofPurpose {
     error: Error
   }>
 }
-import ProofPurpose = require('./ProofPurpose')

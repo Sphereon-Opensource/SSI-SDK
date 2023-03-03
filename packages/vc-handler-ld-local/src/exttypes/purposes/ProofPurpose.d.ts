@@ -1,7 +1,7 @@
 export = ProofPurpose
 
 export interface IDcProofPurpose {
-  term?: string
+  term: string
   date: string | Date | number
   maxTimestampDelta?: number
 }
