@@ -139,7 +139,7 @@ describe('credential-LD full flow', () => {
       keyRef: didLtoIdentifier.controllerKeyId,
       presentation: presentationPayload,
       // We are overriding the purpose since the DID in this test does not have an authentication proof purpose
-      purpose: new ControllerProofPurpose({ term: 'verificationMethod' } as IDcControllerProofPurpose),
+      purpose: new ControllerProofPurpose({ term: 'verificationMethod', date: new Date(), controller: undefined} as IDcControllerProofPurpose),
     })
 
     expect(verifiablePresentation).toBeDefined()
