@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc --build"
+    "build": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
     "@sphereon/ssi-sdk-connection-manager": "^0.8.0",
