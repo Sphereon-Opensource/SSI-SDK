@@ -2,7 +2,7 @@ name: Build and Test PR
 on: [pull_request, workflow_dispatch]
 jobs:
   build-test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       VC_HTTP_API_AUTH_TOKEN: ${{secrets.VC_HTTP_API_AUTH_TOKEN}}
     services:
