@@ -114,7 +114,7 @@ export interface ICreateVerifiablePresentationLDArgs {
    */
   keyRef?: string
 
-  purpose?: typeof ProofPurpose
+  purpose?: IProofPurpose
 }
 
 /**
@@ -143,7 +143,7 @@ export interface ICreateVerifiableCredentialLDArgs {
   /**
    * Use this purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)
    */
-  purpose?: typeof ProofPurpose
+  purpose?: IProofPurpose
 }
 
 /**
@@ -173,7 +173,7 @@ export interface IVerifyCredentialLDArgs {
   /**
    * Use this presentation purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)
    */
-  purpose?: typeof ProofPurpose
+  purpose?: IProofPurpose
 
   /**
    * Check status function, to check credentials that have a credentialStatus property
@@ -218,13 +218,24 @@ export interface IVerifyPresentationLDArgs {
   /**
    * Use this presentation purpose for the verification method in the DID when doing a check (defaualts to assertionMethod)
    */
-  presentationPurpose?: typeof ProofPurpose
+  presentationPurpose?: IProofPurpose
 
   /**
    * Check status function, to check credentials that have a credentialStatus property
    */
   checkStatus?: Function
 }
+
+export interface IProofPurpose {
+  term?: string
+  date?: string | Date | number
+  maxTimestampDelta?: number
+  controller?: object
+  challenge?: string
+  domain?: string
+}
+
+
 
 /**
  * Represents the requirements that this plugin has.

@@ -6,11 +6,12 @@
   "types": "dist/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
-      "IVcLocalIssuerJsonLd": "./src/types/ICredentialHandlerLDLocal.ts"
+      "ICredentialHandlerLDLocal": "./src/types/ICredentialHandlerLDLocal.ts"
     }
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc --build --clean && tsc --build",
+    "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
   },
   "dependencies": {
     "@digitalcredentials/did-method-key": "^2.0.3",
