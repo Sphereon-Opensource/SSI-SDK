@@ -109,8 +109,8 @@
   },
   "prettier": {
     "endOfLine": "auto",
-    "singleQuote": true,
     "semi": false,
+    "singleQuote": true,
     "printWidth": 150
   }
 }
