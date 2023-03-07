@@ -53,6 +53,7 @@ export interface IProof {
   domain?: string // A string restricting the (usage of a) proof to the domain and protects against replay attacks
   proofValue?: string // One of any number of valid representations of proof values
   jws?: string // JWS based proof
+  jwt?: string //Jwt 2020 proof. Used to map a JWT VC onto a uniform presentation, and retain access to the original JWT
   nonce?: string // Similar to challenge. A nonce to protect against replay attacks, used in some ZKP proofs
   requiredRevealStatements?: string[] // The parts of the proof that must be revealed in a derived proof
 
@@ -91,8 +92,8 @@ export type W3CVerifiableCredential = IVerifiableCredential | CompactJWT
 export interface IPresentation {
   id?: string
   '@context': ICredentialContextType | ICredentialContextType[]
-  type: string[]
-  verifiableCredential: W3CVerifiableCredential[] // we relax to ICredential for internal decoded stable representations without proofs
+  type?: string | string[]
+  verifiableCredential?: W3CVerifiableCredential[]
   presentation_submission?: PresentationSubmission
   holder?: string
 
@@ -126,9 +127,9 @@ export interface WrappedVerifiableCredential {
    */
   format: CredentialFormat
   /**
-   * Internal stable representation of a Credential without Proofs, created based on https://www.w3.org/TR/vc-data-model/#jwt-decoding
+   * Internal stable representation of a Credential
    */
-  credential: ICredential
+  credential: IVerifiableCredential
 }
 
 export interface WrappedVerifiablePresentation {
@@ -165,7 +166,7 @@ export enum OriginalType {
 }
 
 export interface UniformVerifiablePresentation {
-  '@context': ICredentialContextType | ICredentialContextType[]
+  '@context': ICredentialContextType[]
   type: string[]
   verifiableCredential: WrappedVerifiableCredential[]
   presentation_submission?: PresentationSubmission
@@ -173,7 +174,7 @@ export interface UniformVerifiablePresentation {
 }
 
 export interface JwtDecodedVerifiableCredential {
-  vc: ICredential
+  vc: IVerifiableCredential
   exp: string
   iss: string
   nbf: string
