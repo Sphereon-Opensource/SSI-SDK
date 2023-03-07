@@ -26,6 +26,7 @@ export class CredentialMapper {
     if (CredentialMapper.isJwtEncoded(presentation)) {
       const payload = jwt_decode(presentation as string) as JwtDecodedVerifiablePresentation
       const header = jwt_decode(presentation as string, { header: true }) as Record<string, any>
+
       payload.vp.proof = {
         type: IProofType.JwtProof2020,
         created: payload.nbf,
@@ -83,13 +84,6 @@ export class CredentialMapper {
     }
     if (!vp || !('verifiableCredential' in vp) || !vp.verifiableCredential || vp.verifiableCredential.length === 0) {
       throw Error(`VP needs to have at least one verifiable credential at this point`)
-    }
-    if (typeof vp.type === 'string') {
-      vp.type = [vp.type]
-    }
-
-    if (typeof vp['@context'] === 'string') {
-      vp['@context'] = [vp['@context']]
     }
     const vcs: WrappedVerifiableCredential[] = CredentialMapper.toWrappedVerifiableCredentials(vp.verifiableCredential/*.map(value => value.original)*/, opts)
 

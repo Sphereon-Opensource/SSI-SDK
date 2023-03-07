@@ -166,8 +166,8 @@ export enum OriginalType {
 }
 
 export interface UniformVerifiablePresentation {
-  '@context': ICredentialContextType[]
-  type: string[]
+  '@context': ICredentialContextType | ICredentialContextType[]
+  type: string | string[]
   verifiableCredential: WrappedVerifiableCredential[]
   presentation_submission?: PresentationSubmission
   holder?: string
