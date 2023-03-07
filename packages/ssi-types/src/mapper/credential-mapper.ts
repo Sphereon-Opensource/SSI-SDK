@@ -123,13 +123,7 @@ export class CredentialMapper {
       isJwtDecoded || isJwtDecoded
         ? CredentialMapper.jwtDecodedCredentialToUniformCredential(decoded as JwtDecodedVerifiableCredential, opts)
         : (decoded as IVerifiableCredential)
-    if (typeof credential.type === 'string') {
-      credential.type = [credential.type]
-    }
 
-    if (typeof credential['@context'] === 'string') {
-      credential['@context'] = [credential['@context']]
-    }
     const format = isJwtDecoded || isJwtDecoded ? 'jwt_vc' : 'ldp_vc'
     return {
       original,
