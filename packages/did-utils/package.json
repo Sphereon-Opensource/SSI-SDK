@@ -10,7 +10,7 @@
   "dependencies": {
     "@sphereon/ssi-types": "^0.8.0",
     "@sphereon/ssi-sdk-core": "^0.8.0",
-    "@sphereon/did-uni-client": "^0.5.1-unstable.1",
+    "@sphereon/did-uni-client": "^0.6.0",
     "@veramo/core": "^4.2.0",
     "@veramo/utils": "^4.2.0",
     "elliptic": "^6.5.4",

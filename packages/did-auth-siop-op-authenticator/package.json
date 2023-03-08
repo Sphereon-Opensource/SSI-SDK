@@ -26,7 +26,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@sphereon/did-uni-client": "^0.5.1-unstable.1",
+    "@sphereon/did-uni-client": "^0.6.0",
     "@veramo/cli": "4.2.0",
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",

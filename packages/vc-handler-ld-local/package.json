@@ -47,7 +47,7 @@
     "ts-node": "^8.10.2"
   },
   "devDependencies": {
-    "@sphereon/did-uni-client": "^0.5.0",
+    "@sphereon/did-uni-client": "^0.6.0",
     "@sphereon/ssi-sdk-bls-did-provider-key": "^0.9.1",
     "@sphereon/ssi-sdk-bls-key-manager": "^0.9.1",
     "@sphereon/ssi-sdk-bls-kms-local": "^0.9.1",
