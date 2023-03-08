@@ -120,11 +120,11 @@ export class CredentialMapper {
     const type = isJwtEncoded ? OriginalType.JWT_ENCODED : isJwtDecoded ? OriginalType.JWT_DECODED : OriginalType.JSONLD
 
     const credential =
-      isJwtDecoded || isJwtDecoded
+      isJwtEncoded || isJwtDecoded
         ? CredentialMapper.jwtDecodedCredentialToUniformCredential(decoded as JwtDecodedVerifiableCredential, opts)
         : (decoded as IVerifiableCredential)
 
-    const format = isJwtDecoded || isJwtDecoded ? 'jwt_vc' : 'ldp_vc'
+    const format = isJwtEncoded || isJwtDecoded ? 'jwt_vc' : 'ldp_vc'
     return {
       original,
       decoded,
