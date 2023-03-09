@@ -41,16 +41,16 @@
     "did-context": "^3.1.1",
     "ed25519-signature-2018-context": "^1.1.0",
     "ed25519-signature-2020-context": "^1.1.0",
-    "isomorphic-webcrypto": "^2.3.8",
+    "@sphereon/isomorphic-webcrypto": "^2.4.0-unstable.1",
     "jose": "^1.28.1",
     "react-native-securerandom": "^1.0.0",
     "ts-node": "^8.10.2"
   },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.0",
-    "@sphereon/ssi-sdk-bls-did-provider-key": "^0.9.1",
-    "@sphereon/ssi-sdk-bls-key-manager": "^0.9.1",
-    "@sphereon/ssi-sdk-bls-kms-local": "^0.9.1",
+    "@sphereon/ssi-sdk-bls-did-provider-key": "^0.10.0",
+    "@sphereon/ssi-sdk-bls-key-manager": "^0.10.0",
+    "@sphereon/ssi-sdk-bls-kms-local": "^0.10.0",
     "@transmute/lds-ecdsa-secp256k1-recovery2020": "^0.0.7",
     "@types/debug": "^4.1.7",
     "@types/jest": "^27.0.2",
@@ -103,10 +103,8 @@
   ],
   "resolutions": {
     "@types/react": "18.0.12",
-    "**/@unimodules/core": "npm:expo@^45.0.8",
-    "**/@unimodules/react-native-adapter": "npm:expo@^45.0.8",
-    "**/isomorphic-webcrypto/jsonld": "npm:@digitalcredentials/jsonld@^5.2.1",
-    "**/isomorphic-webcrypto/jsonld-signatures": "npm:@digitalcredentials/jsonld-signatures@^9.3.1"
+    "jsonld": "npm:@digitalcredentials/jsonld@^5.2.1",
+    "jsonld-signatures": "npm:@digitalcredentials/jsonld-signatures@^9.3.1"
   },
   "react-native": {
     "jsonld": "@digitalcredentials/jsonld",
