@@ -1,13 +1,13 @@
 import { TAgent } from '@veramo/core'
 import { IConnectionManager } from '../../src/types/IConnectionManager'
 import {
-  ConnectionIdentifierEnum,
+  CorrelationIdentifierEnum,
   ConnectionTypeEnum,
   IBasicConnection,
   IConnection,
   IConnectionParty,
   IOpenIdConfig,
-} from '@sphereon/ssi-sdk-data-store-common'
+} from '../../../data-store-common/src'
 
 type ConfiguredAgent = TAgent<IConnectionManager>
 
@@ -20,7 +20,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     const connection: IBasicConnection = {
       type: ConnectionTypeEnum.OPENID,
       identifier: {
-        type: ConnectionIdentifierEnum.URL,
+        type: CorrelationIdentifierEnum.URL,
         correlationId: 'https://example.com',
       },
       config: {
@@ -48,7 +48,17 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await testContext.setup()
       agent = testContext.getAgent()
 
-      defaultParty = await agent.cmAddParty({ name: 'default_party' })
+      const party = {
+        name: 'default_party',
+        alias: 'default_party_alias',
+        uri: 'example.com',
+        identifier: {
+          type: CorrelationIdentifierEnum.URL,
+          correlationId: 'example.com',
+        },
+      }
+
+      defaultParty = await agent.cmAddParty(party)
       defaultPartyConnection = await agent.cmAddConnection({ partyId: defaultParty.id!, connection })
       defaultParty = await agent.cmGetParty({ partyId: defaultParty.id! })
 
@@ -75,17 +85,131 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.length).toBeGreaterThan(0)
     })
 
+    it('should get parties by filter', async () => {
+      const args = {
+        filter: [{ name: 'default_party' }, { alias: 'default_party_alias' }, { uri: 'example.com' }],
+      }
+      const result = await agent.cmGetParties(args)
+
+      expect(result.length).toBe(1)
+    })
+
+    it('should get parties by name', async () => {
+      const args = {
+        filter: [{ name: 'default_party' }],
+      }
+      const result = await agent.cmGetParties(args)
+
+      expect(result.length).toBe(1)
+    })
+
+    it('should get parties by alias', async () => {
+      const args = {
+        filter: [{ alias: 'default_party_alias' }],
+      }
+      const result = await agent.cmGetParties(args)
+
+      expect(result.length).toBe(1)
+    })
+
+    it('should get parties by uri', async () => {
+      const args = {
+        filter: [{ uri: 'example.com' }],
+      }
+      const result = await agent.cmGetParties(args)
+
+      expect(result.length).toBe(1)
+    })
+
+    it('should return no parties if filter does not match', async () => {
+      const args = {
+        filter: [{ name: 'no_match_party' }, { alias: 'no_match_party_alias' }, { uri: 'no_match_example.com' }],
+      }
+      const result = await agent.cmGetParties(args)
+
+      expect(result.length).toBe(0)
+    })
+
     it('should add party', async () => {
-      const partyName = 'new_party'
+      const party = {
+        name: 'new_party',
+        alias: 'new_party_alias',
+        uri: 'example.com',
+        identifier: {
+          type: CorrelationIdentifierEnum.URL,
+          correlationId: 'example_new.com',
+        },
+      }
 
-      const result = await agent.cmAddParty({ name: partyName })
+      const result = await agent.cmAddParty(party)
 
-      expect(result.name).toEqual(partyName)
+      expect(result.name).toEqual(party.name)
+      expect(result.alias).toEqual(party.alias)
+      expect(result.uri).toEqual(party.uri)
     })
 
     it('should throw error when adding party with duplicate name', async () => {
-      const partyName = 'default_party'
-      await expect(agent.cmAddParty({ name: 'default_party' })).rejects.toThrow(`Duplicate names are not allowed. Name: ${partyName}`)
+      const name = 'default_party'
+      const alias = 'default_party_new_alias'
+      const party = {
+        name,
+        alias,
+        uri: 'example.com',
+        identifier: {
+          type: CorrelationIdentifierEnum.URL,
+          correlationId: 'example.com',
+        },
+      }
+
+      await expect(agent.cmAddParty(party)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
+    })
+
+    it('should throw error when adding party with duplicate alias', async () => {
+      const name = 'default_new_party'
+      const alias = 'default_party_alias'
+      const party = {
+        name,
+        alias,
+        uri: 'example.com',
+        identifier: {
+          type: CorrelationIdentifierEnum.URL,
+          correlationId: 'example.com',
+        },
+      }
+
+      await expect(agent.cmAddParty(party)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
+    })
+
+    it('should throw error when adding party with blank alias', async () => {
+      const name = 'default_new_party'
+      const alias = ''
+      const party = {
+        name,
+        alias,
+        uri: 'example.com',
+        identifier: {
+          type: CorrelationIdentifierEnum.URL,
+          correlationId: 'example.com',
+        },
+      }
+
+      await expect(agent.cmAddParty(party)).rejects.toThrow('Blank aliases are not allowed')
+    })
+
+    it('should throw error when adding party with blank name', async () => {
+      const name = ''
+      const alias = 'default_party_alias'
+      const party = {
+        name,
+        alias,
+        uri: 'example.com',
+        identifier: {
+          type: CorrelationIdentifierEnum.URL,
+          correlationId: 'example.com',
+        },
+      }
+
+      await expect(agent.cmAddParty(party)).rejects.toThrow('Blank names are not allowed')
     })
 
     it('should update party by id', async () => {
@@ -111,7 +235,16 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should remove party by id and its relations', async () => {
-      const removeParty = await agent.cmAddParty({ name: 'remove_party' })
+      const party = {
+        name: 'remove_party',
+        alias: 'remove_party_alias',
+        uri: 'example.com',
+        identifier: {
+          type: CorrelationIdentifierEnum.URL,
+          correlationId: 'example_remove.com',
+        },
+      }
+      const removeParty = await agent.cmAddParty(party)
       const removePartyConnection = await agent.cmAddConnection({ partyId: removeParty.id!, connection })
 
       const result = await agent.cmRemoveParty({ partyId: removeParty.id! })
@@ -212,10 +345,19 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       let parties = await agent.cmGetParties()
       const origSize = parties.length
 
-      const sphereonName = 'Sphereon'
-      const sphereon = parties.find((party: IConnectionParty) => party.name === sphereonName)
+      const args = {
+        name: 'Sphereon',
+        alias: 'Sphereon_alias',
+        uri: 'example.com',
+        identifier: {
+          type: CorrelationIdentifierEnum.URL,
+          correlationId: 'example_default.com',
+        },
+      }
+
+      const sphereon = parties.find((party: IConnectionParty) => party.name === args.name)
       if (!sphereon) {
-        await agent.cmAddParty({ name: sphereonName }).then(async (party: IConnectionParty) => {
+        await agent.cmAddParty(args).then(async (party: IConnectionParty) => {
           if (!party) {
             return
           }
@@ -223,7 +365,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           const connection = {
             type: ConnectionTypeEnum.OPENID,
             identifier: {
-              type: ConnectionIdentifierEnum.URL,
+              type: CorrelationIdentifierEnum.URL,
               correlationId: 'https://auth-test.sphereon.com/auth/realms/ssi-wallet',
             },
             config: {

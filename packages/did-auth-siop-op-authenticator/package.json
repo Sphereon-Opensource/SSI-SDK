@@ -13,22 +13,27 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.2.13",
-    "@sphereon/pex": "1.1.3",
+    "@sphereon/did-auth-siop": "^0.3.0-unstable.24",
+    "@sphereon/wellknown-dids-client": "^0.1.3-unstable.1",
+    "@sphereon/pex": "2.0.0-unstable.11",
     "@sphereon/ssi-sdk-core": "^0.8.0",
-    "@veramo/core": "3.1.2-next.84",
-    "@veramo/utils": "3.1.2-next.84",
+    "@sphereon/ssi-sdk-did-utils": "^0.8.0",
+    "@sphereon/ssi-types": "^0.8.0",
+    "@types/uuid": "^9.0.1",
+    "@veramo/core": "4.2.0",
+    "@veramo/credential-w3c": "4.2.0",
     "cross-fetch": "^3.1.5",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@sphereon/did-uni-client": "^0.4.0",
-    "@veramo/cli": "3.1.2-next.84",
-    "@veramo/did-provider-key": "3.1.2-next.84",
-    "@veramo/did-resolver": "3.1.2-next.84",
-    "did-resolver": "^3.2.2",
+    "@sphereon/did-uni-client": "^0.6.0",
+    "@veramo/cli": "4.2.0",
+    "@veramo/did-provider-key": "4.2.0",
+    "@veramo/did-resolver": "4.2.0",
+    "@veramo/utils": "4.2.0",
+    "did-resolver": "^4.0.1",
     "nock": "^13.2.1",
-    "typescript": "^4.5.2"
+    "typescript": "^4.6.4"
   },
   "files": [
     "dist/**/*",

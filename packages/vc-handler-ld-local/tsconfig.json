@@ -3,13 +3,11 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
-    "esModuleInterop": true,
-    "declarationDir": "dist"
+    "declarationDir": "dist",
+    // https://github.com/transmute-industries/vc.js/issues/60
+    "skipLibCheck": true,
+    "resolveJsonModule": true
   },
-  "references": [
-    { "path": "../ssi-sdk-core" },
-    { "path": "../bls-kms-local" },
-    { "path": "../bls-key-manager" },
-    { "path": "../bls-did-provider-key" }
-  ]
+  "include": ["src/**/*.json", "src/**/*.ts"],
+  "references": [{ "path": "../ssi-sdk-core" }, { "path": "../did-utils" }]
 }

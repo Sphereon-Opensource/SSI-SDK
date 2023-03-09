@@ -1,25 +1,43 @@
-import { TAgent } from '@veramo/core'
-import { OP, PresentationExchange } from '@sphereon/did-auth-siop'
-import { IDidAuthSiopOpAuthenticator } from '../../src/types/IDidAuthSiopOpAuthenticator'
+import * as fs from 'fs'
+import { IDataStore, TAgent, VerifiableCredential } from '@veramo/core'
+import { IAuthRequestDetails, IDidAuthSiopOpAuthenticator, IPresentationWithDefinition } from '../../src'
 import {
+  AuthorizationRequest,
+  OP,
+  ParsedAuthorizationRequestURI,
+  PresentationDefinitionWithLocation,
   ResponseContext,
   ResponseMode,
   ResponseType,
   SubjectIdentifierType,
   UrlEncodingFormat,
   VerificationMode,
-  VerifiedAuthenticationRequestWithJWT,
-} from '@sphereon/did-auth-siop/dist/main/types/SIOP.types'
+  VerifiedAuthorizationRequest,
+} from '@sphereon/did-auth-siop'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
+import { CredentialMapper } from '@sphereon/ssi-types'
+import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-did-utils'
+
+function getFile(path: string) {
+  return fs.readFileSync(path, 'utf-8')
+}
+
+function getFileAsJson(path: string) {
+  return JSON.parse(getFile(path))
+}
 
 const nock = require('nock')
-jest.mock('@veramo/utils', () => {
-  return {
-    mapIdentifierKeysToDoc: jest.fn(),
-  }
-})
+jest.mock('@veramo/utils', () => ({
+  ...jest.requireActual('@veramo/utils'),
+  mapIdentifierKeysToDoc: jest.fn(),
+}))
 
-type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator>
+jest.mock('@sphereon/ssi-sdk-did-utils', () => ({
+  ...jest.requireActual('@sphereon/ssi-sdk-did-utils'),
+  mapIdentifierKeysToDocWithJwkSupport: jest.fn(),
+}))
+
+type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator & IDataStore>
 
 const didMethod = 'ethr'
 const did = 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a'
@@ -31,7 +49,7 @@ const identifier = {
     {
       kid: `${did}#controller`,
       kms: '',
-      type: 'Ed25519' as const,
+      type: 'Secp256k1' as const,
       publicKeyHex: '1e21e21e...',
       privateKeyHex: 'eqfcvnqwdnwqn...',
     },
@@ -42,7 +60,7 @@ const authKeys = [
   {
     kid: `${did}#controller`,
     kms: '',
-    type: 'Ed25519',
+    type: 'Secp256k1',
     publicKeyHex: '1e21e21e...',
     privateKeyHex: 'eqfcvnqwdnwqn...',
     meta: {
@@ -56,13 +74,15 @@ const authKeys = [
     },
   },
 ]
+
+console.log(identifier)
 const sessionId = 'sessionId'
 const otherSessionId = 'other_sessionId'
 const redirectUrl = 'http://example/ext/get-auth-request-url'
 const stateId = '2hAyTM7PB3SGJaeGU7QeTJ'
 const nonce = 'o5qwML7DnrcLMs9Vdizyz9'
 const scope = 'openid'
-const requestResultMockedText =
+const openIDURI =
   'openid://?response_type=id_token' +
   '&scope=openid' +
   '&client_id=' +
@@ -84,11 +104,12 @@ const registration = {
   subject_identifiers_supported: SubjectIdentifierType.DID,
   credential_formats_supported: [],
 }
-const authenticationRequest = {
+const authorizationRequest: ParsedAuthorizationRequestURI = {
   encodedUri: 'uri_example',
   encodingFormat: UrlEncodingFormat.FORM_URL_ENCODED,
-  jwt: 'ey...',
-  requestPayload: {
+  scheme: 'scheme2022122200',
+  requestObjectJwt: 'ey...',
+  authorizationRequestPayload: {
     response_type: ResponseType.ID_TOKEN,
     scope,
     client_id: did,
@@ -103,11 +124,12 @@ const authenticationRequest = {
   },
   registration,
 }
-const authenticationVerificationMockedResult = {
+const authorizationVerificationMockedResult = {
   payload: {},
   verifyOpts: {},
 }
-const createAuthenticationResponseMockedResult = {
+
+const createAuthorizationResponseMockedResult = {
   didResolutionResult: {
     didResolutionMetadata: {},
     didDocument: {
@@ -122,7 +144,7 @@ const createAuthenticationResponseMockedResult = {
     controller: did,
   },
   jwt: 'ey...',
-  payload: {
+  authorizationRequestPayload: {
     scope,
     response_type: ResponseType.ID_TOKEN,
     client_id: did,
@@ -152,38 +174,43 @@ export default (testContext: {
       await testContext.setup()
       agent = testContext.getAgent()
 
-      nock(redirectUrl).get(`?stateId=${stateId}`).times(5).reply(200, requestResultMockedText)
+      const idCardCredential: VerifiableCredential = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vc/vc_idCardCredential.json'
+      )
+      await agent.dataStoreSaveVerifiableCredential({ verifiableCredential: idCardCredential })
+
+      const driverLicenseCredential: VerifiableCredential = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vc/vc_driverLicense.json'
+      )
+      await agent.dataStoreSaveVerifiableCredential({ verifiableCredential: driverLicenseCredential })
+
+      nock(redirectUrl).get(`?stateId=${stateId}`).times(5).reply(200, openIDURI)
 
       const mockedMapIdentifierKeysToDocMethod = mapIdentifierKeysToDoc as jest.Mock
       mockedMapIdentifierKeysToDocMethod.mockReturnValue(Promise.resolve(authKeys))
 
-      const mockedParseAuthenticationRequestURIMethod = jest.fn()
-      OP.prototype.parseAuthenticationRequestURI = mockedParseAuthenticationRequestURIMethod
-      mockedParseAuthenticationRequestURIMethod.mockReturnValue(Promise.resolve(authenticationRequest))
+      const mockedMapIdentifierKeysToDocMethodWithJwkSupport = mapIdentifierKeysToDocWithJwkSupport as jest.Mock
+      mockedMapIdentifierKeysToDocMethodWithJwkSupport.mockReturnValue(Promise.resolve(authKeys))
 
-      const mockedVerifyAuthenticationRequestMethod = jest.fn()
-      OP.prototype.verifyAuthenticationRequest = mockedVerifyAuthenticationRequestMethod
-      mockedVerifyAuthenticationRequestMethod.mockReturnValue(Promise.resolve(authenticationVerificationMockedResult))
+      const mockedparseAuthorizationRequestURIMethod = jest.fn()
+      OP.prototype.parseAuthorizationRequestURI = mockedparseAuthorizationRequestURIMethod
+      mockedparseAuthorizationRequestURIMethod.mockReturnValue(Promise.resolve(authorizationRequest))
 
-      const mockedCreateAuthenticationResponse = jest.fn()
-      OP.prototype.createAuthenticationResponse = mockedCreateAuthenticationResponse
-      mockedCreateAuthenticationResponse.mockReturnValue(Promise.resolve(createAuthenticationResponseMockedResult))
+      const mockedverifyAuthorizationRequestMethod = jest.fn()
+      OP.prototype.verifyAuthorizationRequest = mockedverifyAuthorizationRequestMethod
+      mockedverifyAuthorizationRequestMethod.mockReturnValue(Promise.resolve(authorizationVerificationMockedResult))
 
-      const mockSubmitAuthenticationResponseMethod = jest.fn()
-      OP.prototype.submitAuthenticationResponse = mockSubmitAuthenticationResponseMethod
-      mockSubmitAuthenticationResponseMethod.mockReturnValue(Promise.resolve({ status: 200, statusText: 'example_value' }))
+      const mockedcreateAuthorizationResponse = jest.fn()
+      OP.prototype.createAuthorizationResponse = mockedcreateAuthorizationResponse
+      mockedcreateAuthorizationResponse.mockReturnValue(Promise.resolve(createAuthorizationResponseMockedResult))
 
-      const mockedSelectVerifiableCredentialsForSubmissionMethod = jest.fn()
-      PresentationExchange.prototype.selectVerifiableCredentialsForSubmission = mockedSelectVerifiableCredentialsForSubmissionMethod
-      mockedSelectVerifiableCredentialsForSubmissionMethod.mockReturnValue(Promise.resolve({ errors: [], matches: ['match'] }))
+      const mocksubmitAuthorizationResponseMethod = jest.fn()
+      OP.prototype.submitAuthorizationResponse = mocksubmitAuthorizationResponseMethod
+      mocksubmitAuthorizationResponseMethod.mockReturnValue(Promise.resolve({ status: 200, statusText: 'example_value' }))
 
-      const mockedSubmissionFromMethod = jest.fn()
-      PresentationExchange.prototype.submissionFrom = mockedSubmissionFromMethod
-      mockedSubmissionFromMethod.mockReturnValue(Promise.resolve({}))
-
-      await agent.registerSessionForSiop({
+      await agent.siopRegisterOPSession({
         sessionId,
-        identifier,
+        requestJwtOrUri: openIDURI,
       })
     })
 
@@ -191,25 +218,25 @@ export default (testContext: {
 
     it('should register OP session', async () => {
       const sessionId = 'new_session_id'
-      const result = await agent.registerSessionForSiop({
+      const result = await agent.siopRegisterOPSession({
         sessionId,
-        identifier,
+        requestJwtOrUri: openIDURI,
       })
 
       expect(result.id).toEqual(sessionId)
     })
 
     it('should remove OP session', async () => {
-      await agent.registerSessionForSiop({
+      await agent.siopRegisterOPSession({
         sessionId: otherSessionId,
-        identifier,
+        requestJwtOrUri: openIDURI,
       })
-      await agent.removeSessionForSiop({
+      await agent.siopRemoveOPSession({
         sessionId: otherSessionId,
       })
 
       await expect(
-        agent.getSessionForSiop({
+        agent.siopGetOPSession({
           sessionId: otherSessionId,
         })
       ).rejects.toThrow(`No session found for id: ${otherSessionId}`)
@@ -218,19 +245,19 @@ export default (testContext: {
     if (!testContext.isRestTest) {
       it('should register custom approval function', async () => {
         await expect(
-          agent.registerCustomApprovalForSiop({
+          agent.siopRegisterOPCustomApproval({
             key: 'test_register',
-            customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise.resolve(),
+            customApproval: (verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => Promise.resolve(),
           })
         ).resolves.not.toThrow()
       })
 
       it('should remove custom approval function', async () => {
-        await agent.registerCustomApprovalForSiop({
+        await agent.siopRegisterOPCustomApproval({
           key: 'test_delete',
-          customApproval: (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => Promise.resolve(),
+          customApproval: (verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => Promise.resolve(),
         })
-        const result = await agent.removeCustomApprovalForSiop({
+        const result = await agent.siopRemoveOPCustomApproval({
           key: 'test_delete',
         })
 
@@ -255,7 +282,7 @@ export default (testContext: {
         redirectUrl,
         customApproval: testContext.isRestTest
           ? 'success'
-          : (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
+          : (verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => {
               return Promise.resolve()
             },
       })
@@ -284,7 +311,7 @@ export default (testContext: {
           redirectUrl,
           customApproval: testContext.isRestTest
             ? 'failure'
-            : (verifiedAuthenticationRequest: VerifiedAuthenticationRequestWithJWT) => {
+            : (verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => {
                 return Promise.reject(new Error(denied))
               },
         })
@@ -292,51 +319,149 @@ export default (testContext: {
     })
 
     it('should get authenticate request from RP', async () => {
-      const result = await agent.getSiopAuthenticationRequestFromRP({
+      const result = await agent.getSiopAuthorizationRequestFromRP({
         sessionId,
         stateId,
         redirectUrl,
       })
 
-      expect(result).toEqual(authenticationRequest)
+      expect(result).toEqual(authorizationRequest)
     })
 
-    it('should get authentication details', async () => {
-      const result = await agent.getSiopAuthenticationRequestDetails({
+    it('should get authentication details with single credential', async () => {
+      const pd_single: PresentationDefinitionWithLocation = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_single.json'
+      )
+      const vp_single: IPresentationWithDefinition = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_single.json'
+      )
+      const presentation = CredentialMapper.toWrappedVerifiablePresentation(vp_single.presentation)
+      presentation.presentation.presentation_submission!.id = expect.any(String)
+
+      const result: IAuthRequestDetails = await agent.getSiopAuthorizationRequestDetails({
         sessionId,
-        verifiedAuthenticationRequest: createAuthenticationResponseMockedResult,
-        verifiableCredentials: [],
+        verifiedAuthorizationRequest: {
+          ...createAuthorizationResponseMockedResult,
+          presentationDefinitions: [pd_single],
+          authorizationRequest: {} as AuthorizationRequest,
+          versions: [],
+          payload: {},
+        },
+        signingOptions: {
+          nonce: 'nonce202212272050',
+          domain: 'domain202212272051',
+        },
       })
 
-      expect(result.id).toEqual(did)
+      expect(result).toMatchObject({
+        id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
+        verifiablePresentationMatches: [vp_single],
+      })
+    })
+
+    it('should get authentication details with getting specific credentials', async () => {
+      const pdSingle: PresentationDefinitionWithLocation = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_single.json'
+      )
+      const vpSingle: IPresentationWithDefinition = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_single.json'
+      )
+      const presentation = CredentialMapper.toWrappedVerifiablePresentation(vpSingle.presentation)
+      presentation.presentation.presentation_submission!.id = expect.any(String)
+
+      const result: IAuthRequestDetails = await agent.getSiopAuthorizationRequestDetails({
+        sessionId,
+        verifiedAuthorizationRequest: {
+          ...createAuthorizationResponseMockedResult,
+          presentationDefinitions: [pdSingle],
+          authorizationRequest: {} as AuthorizationRequest,
+          versions: [],
+          payload: {},
+        },
+        credentialFilter: {
+          where: [
+            {
+              column: 'id',
+              value: ['https://example.com/credentials/1872'],
+            },
+          ],
+        },
+      })
+
+      expect(result).toMatchObject({
+        id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
+        verifiablePresentationMatches: [vpSingle],
+      })
+    })
+
+    it('should get authentication details with multiple credentials', async () => {
+      const pdMultiple: PresentationDefinitionWithLocation = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_multiple.json'
+      )
+      const vpMultiple: IPresentationWithDefinition = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/vp/vp_multiple.json'
+      )
+      const presentation = CredentialMapper.toWrappedVerifiablePresentation(vpMultiple.presentation)
+      presentation.presentation.presentation_submission!.id = expect.any(String)
+
+      const result: IAuthRequestDetails = await agent.getSiopAuthorizationRequestDetails({
+        sessionId,
+        verifiedAuthorizationRequest: {
+          ...createAuthorizationResponseMockedResult,
+          presentationDefinitions: [pdMultiple],
+          authorizationRequest: {} as AuthorizationRequest,
+          versions: [],
+          payload: {},
+        },
+        signingOptions: {
+          nonce: 'nonce202212272050',
+          domain: 'domain202212272051',
+        },
+      })
+
+      expect(result).toMatchObject({
+        id: 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a',
+        verifiablePresentationMatches: [vpMultiple],
+      })
     })
 
     it('should verify authentication request URI with did methods supported provided', async () => {
-      authenticationRequest.registration.did_methods_supported = [`did:${didMethod}:`]
+      authorizationRequest.registration.did_methods_supported = [`did:${didMethod}:`]
 
-      const result = await agent.verifySiopAuthenticationRequestURI({
+      const result = await agent.verifySiopAuthorizationRequestURI({
         sessionId,
-        requestURI: authenticationRequest,
+        requestURI: authorizationRequest,
       })
 
-      expect(result).toEqual(authenticationVerificationMockedResult)
+      expect(result).toEqual(authorizationVerificationMockedResult)
     })
 
     it('should verify authentication request URI without did methods supported provided', async () => {
-      authenticationRequest.registration.did_methods_supported = []
+      authorizationRequest.registration.did_methods_supported = []
 
-      const result = await agent.verifySiopAuthenticationRequestURI({
+      const result = await agent.verifySiopAuthorizationRequestURI({
         sessionId,
-        requestURI: authenticationRequest,
+        requestURI: authorizationRequest,
       })
 
-      expect(result).toEqual(authenticationVerificationMockedResult)
+      expect(result).toEqual(authorizationVerificationMockedResult)
     })
 
     it('should send authentication response', async () => {
-      const result = await agent.sendSiopAuthenticationResponse({
+      const pdMultiple: PresentationDefinitionWithLocation = getFileAsJson(
+        './packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/pd/pd_multiple.json'
+      )
+
+      const result = await agent.sendSiopAuthorizationResponse({
         sessionId,
-        verifiedAuthenticationRequest: createAuthenticationResponseMockedResult,
+        verifiedAuthorizationRequest: {
+          ...createAuthorizationResponseMockedResult,
+          presentationDefinitions: [pdMultiple],
+          authorizationRequest: {} as AuthorizationRequest,
+          versions: [],
+          authorizationRequestPayload: {},
+          payload: {},
+        },
       })
 
       expect(result.status).toEqual(200)

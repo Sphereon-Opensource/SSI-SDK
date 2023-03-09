@@ -3,6 +3,7 @@
   "references": [
     { "path": "ssi-types" },
     { "path": "ssi-sdk-core" },
+    { "path": "did-utils" },
     { "path": "factom-did-provider" },
     { "path": "lto-did-provider" },
     { "path": "mnemonic-seed-manager" },
@@ -13,14 +14,10 @@
     { "path": "vc-handler-ld-local" },
     { "path": "did-auth-siop-op-authenticator" },
     { "path": "waci-pex-qr-react" },
-    { "path": "bls-kms-local" },
-    { "path": "bls-did-provider-key" },
-    { "path": "bls-did-resolver-key" },
-    { "path": "bls-key-manager" },
     { "path": "data-store-common" },
     { "path": "connection-manager" },
     { "path": "data-store" },
-    { "path": "ion-did-provider" },
-    { "path": "wellknown-did-verifier" }
+    { "path": "wellknown-did-verifier" },
+    { "path": "jwk-did-provider" }
   ]
 }

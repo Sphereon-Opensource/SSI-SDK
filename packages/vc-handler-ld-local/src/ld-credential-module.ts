@@ -3,6 +3,7 @@ import * as vc from '@digitalcredentials/vc'
 import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
 import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
+import { events } from './types/ICredentialHandlerLDLocal'
 import {
   CredentialPayload,
   IAgentContext,
@@ -108,14 +109,14 @@ export class LdCredentialModule {
 
     if (key.type === 'Bls12381G2') {
       return await jsonld.sign(presentation, {
-        suite: suite.getSuiteForSigning(key, holderDid, verificationMethodId, context),
+        suite: await suite.getSuiteForSigning(key, holderDid, verificationMethodId, context),
         purpose,
         documentLoader,
       })
     }
     return await vc.signPresentation({
       presentation,
-      suite: suite.getSuiteForSigning(key, holderDid, verificationMethodId, context),
+      suite: await suite.getSuiteForSigning(key, holderDid, verificationMethodId, context),
       challenge,
       domain,
       documentLoader,
@@ -155,13 +156,23 @@ export class LdCredentialModule {
         checkStatus: checkStatus,
       })
     }
-    if (result.verified) return true
+    if (result.verified) {
+      result.results.forEach((item: any) => {
+        const eventData = {
+          credential: credential,
+          result: item,
+        }
+        context.agent.emit(events.CREDENTIAL_VERIFIED, eventData)
+      })
+      return true
+    }
 
     // NOT verified.
 
     // result can include raw Error
     debug(`Error verifying LD Verifiable Credential: ${JSON.stringify(result, null, 2)}`)
     console.log(JSON.stringify(result, null, 2))
+    context.agent.emit(events.CREDENTIAL_VERIFY_FAILED, credential)
     throw Error('Error verifying LD Verifiable Credential')
   }
 
@@ -177,7 +188,7 @@ export class LdCredentialModule {
     fetchRemoteContexts = false,
     presentationPurpose: typeof ProofPurpose = !challenge && !domain
       ? new AssertionProofPurpose()
-      : new AuthenticationProofPurpose(domain, challenge),
+      : new AuthenticationProofPurpose({ domain, challenge }),
     checkStatus?: Function
     //AssertionProofPurpose()
   ): Promise<boolean> {
@@ -194,6 +205,15 @@ export class LdCredentialModule {
         purpose: presentationPurpose,
         documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
       })
+
+      if (result.verified) {
+        const eventData = {
+          presentation: presentation,
+          result: result,
+        }
+        context.agent.emit(events.PRESENTATION_VERIFIED, eventData)
+        return true
+      }
     } else {
       result = await vc.verify({
         presentation,
@@ -205,15 +225,25 @@ export class LdCredentialModule {
         compactProof: false,
         checkStatus,
       })
-    }
 
-    if (result.verified) return true
+      if (result.verified && result.presentationResult.verified) {
+        result.presentationResult.results.forEach((item: any) => {
+          const eventData = {
+            presentation: presentation,
+            result: item,
+          }
+          context.agent.emit(events.PRESENTATION_VERIFIED, eventData)
+        })
+        return true
+      }
+    }
 
     // NOT verified.
 
     // result can include raw Error
     console.log(`Error verifying LD Verifiable Presentation`)
     console.log(JSON.stringify(result, null, 2))
+    context.agent.emit(events.PRESENTATION_VERIFY_FAILED, presentation)
     throw Error('Error verifying LD Verifiable Presentation')
   }
 }

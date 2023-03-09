@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 

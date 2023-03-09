@@ -1,0 +1,27 @@
+{
+  "definition": {
+    "id": "Credentials",
+    "input_descriptors": [
+      {
+        "id": "ID Card Credential",
+        "schema": [
+          {
+            "uri": "https://www.w3.org/2018/credentials/examples/v1/IDCardCredential"
+          }
+        ],
+        "constraints": {
+          "fields": [
+            {
+              "path": ["$.issuer.id"],
+              "filter": {
+                "type": "string",
+                "pattern": "did:example:issuer"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "location": "presentation_definition"
+}

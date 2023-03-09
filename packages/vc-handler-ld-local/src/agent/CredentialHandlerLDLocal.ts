@@ -1,16 +1,7 @@
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
 import { CredentialPayload, IAgentContext, IAgentPlugin, IIdentifier, IKey, IResolver, PresentationPayload } from '@veramo/core'
 import { AbstractPrivateKeyStore } from '@veramo/key-manager'
-import {
-  _ExtendedIKey,
-  extractIssuer,
-  isDefined,
-  MANDATORY_CREDENTIAL_CONTEXT,
-  mapIdentifierKeysToDoc,
-  OrPromise,
-  processEntryToArray,
-  RecordLike,
-} from '@veramo/utils'
+import { _ExtendedIKey, extractIssuer, isDefined, MANDATORY_CREDENTIAL_CONTEXT, OrPromise, processEntryToArray, RecordLike } from '@veramo/utils'
 import Debug from 'debug'
 
 import { IBindingOverrides, schema } from '../index'
@@ -26,6 +17,7 @@ import {
   IVerifyCredentialLDArgs,
   IVerifyPresentationLDArgs,
 } from '../types/types'
+import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-did-utils'
 
 const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 
@@ -48,6 +40,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     verifyCredentialLDLocal: this.verifyCredentialLDLocal.bind(this),
   }
   private keyStore?: AbstractPrivateKeyStore
+
   constructor(options: {
     contextMaps: RecordLike<OrPromise<ContextDoc>>[]
     suites: SphereonLdSignature[]
@@ -114,8 +107,8 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       return await this.ldCredentialModule.issueLDVerifiableCredential(
         credential,
         identifier.did,
-        managedKey || signingKey,
-        managedKey ? (verificationMethod as string) : verificationMethodId,
+        managedKey || signingKey, // todo: signingKey does not have the private key, so would never work
+        verificationMethodId ? verificationMethodId : (verificationMethod as string),
         args.purpose,
         context
       )
@@ -135,7 +128,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
           ...identifier.keys.find((k) => k.kid === keyRef),
           privateKeyHex: k.privateKeyHex as string,
         } as IKey
-        verificationMethod = `${identifier.did}#${identifier.did.substring(8)}`
+        verificationMethod = `${identifier.did}#${managedKey.kid ? managedKey.kid : k.alias}`
       }
     }
     return { managedKey, verificationMethod }
@@ -156,9 +149,9 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     }
     // Workaround for bug in TypeError: Cannot read property 'length' of undefined
     //     at VeramoEd25519Signature2018.preSigningPresModification
-    if (!presentation.verifier) {
+    /*if (!presentation.verifier) {
       presentation.verifier = []
-    }
+    }*/
 
     if (!isDefined(presentation.holder) || !presentation.holder) {
       throw new Error('invalid_argument: args.presentation.holder must not be empty')
@@ -191,8 +184,8 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       return await this.ldCredentialModule.signLDVerifiablePresentation(
         presentation,
         identifier.did,
-        managedKey || signingKey,
-        managedKey ? (verificationMethod as string) : verificationMethodId,
+        managedKey || signingKey, // todo: signingKey does not have the private key, so would never work
+        verificationMethodId ? verificationMethodId : (verificationMethod as string),
         args.challenge,
         args.domain,
         args.purpose,
@@ -230,7 +223,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     keyRef?: string
   ): Promise<{ signingKey: IKey; verificationMethodId: string }> {
     debug(`Retrieving signing key for id ${identifier.did} keyref ${keyRef}...`)
-    const extendedKeys: _ExtendedIKey[] = await mapIdentifierKeysToDoc(identifier, 'verificationMethod', context)
+    const extendedKeys: _ExtendedIKey[] = await mapIdentifierKeysToDocWithJwkSupport(identifier, 'verificationMethod', context)
     const supportedTypes = this.ldCredentialModule.ldSuiteLoader.getAllSignatureSuiteTypes()
     let signingKey: _ExtendedIKey | undefined
     if (keyRef) {

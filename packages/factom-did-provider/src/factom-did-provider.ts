@@ -1,5 +1,5 @@
 import { AbstractIdentifierProvider } from '@veramo/did-manager'
-import { IAgentContext, IIdentifier, IKey, IKeyManager, IService, ManagedKeyInfo } from '@veramo/core'
+import { DIDDocument, IAgentContext, IIdentifier, IKey, IKeyManager, IService, ManagedKeyInfo } from '@veramo/core'
 import { DIDRegistrationRequestBuilder, UniRegistrar } from '@sphereon/did-uni-client'
 import Debug from 'debug'
 import { hexToMultibase, multibaseToHex } from '@sphereon/ssi-sdk-core'
@@ -81,6 +81,14 @@ export class FactomDIDProvider extends AbstractIdentifierProvider {
     }
     debug('Created', identifier.did)
     return identifier
+  }
+
+  /** {@inheritDoc @veramo/veramo-core#IDIDManager.didManagerUpdate} */
+  async updateIdentifier?(
+    args: { did: string; document: Partial<DIDDocument>; options?: { [x: string]: any } },
+    context: IAgentContext<IKeyManager>
+  ): Promise<IIdentifier> {
+    throw new Error('not implemented yet')
   }
 
   async deleteIdentifier(args: IIdentifier, context: IAgentContext<IKeyManager>): Promise<boolean> {

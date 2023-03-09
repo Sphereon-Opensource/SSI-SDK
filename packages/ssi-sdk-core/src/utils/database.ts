@@ -1,6 +1,4 @@
-import { MigrationInterface } from 'typeorm'
+export const flattenArray = <T>(args: { items: Array<T | Array<T>> }): Array<T> => args.items.flat() as Array<T>
 
-export const flattenArray = (args: { items: Array<unknown | Array<unknown>> }): Array<unknown> => args.items.flat()
-
-export const flattenMigrations = (args: { migrations: Array<MigrationInterface | Array<MigrationInterface>> }): Array<MigrationInterface> =>
-  args.migrations.flat()
+export const flattenMigrations = <T>(args: { migrations: Array<T | Array<T>> }): Array<T> =>
+  args.migrations.flat() as Array<T>

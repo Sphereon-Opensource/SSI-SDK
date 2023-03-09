@@ -10,9 +10,9 @@
   "dependencies": {
     "@sphereon/ssi-sdk-connection-manager": "^0.8.0",
     "@sphereon/ssi-sdk-data-store-common": "^0.8.0",
-    "@veramo/utils": "3.1.2-next.84",
-    "debug": "^4.1.1",
-    "typeorm": "0.2.45"
+    "@veramo/utils": "4.2.0",
+    "debug": "^4.3.4",
+    "typeorm": "^0.3.10"
   },
   "devDependencies": {
     "@types/debug": "4.1.7",

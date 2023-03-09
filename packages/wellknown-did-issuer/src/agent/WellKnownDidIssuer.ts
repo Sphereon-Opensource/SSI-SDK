@@ -1,4 +1,4 @@
-import { parseDid } from '@sphereon/ssi-sdk-core'
+import { parseDid } from '@sphereon/ssi-types'
 import {
   DomainLinkageCredential,
   IDidConfigurationResource,

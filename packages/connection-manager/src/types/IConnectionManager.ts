@@ -1,9 +1,10 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import { IBasicConnection, IConnection, IConnectionParty } from '@sphereon/ssi-sdk-data-store-common'
+import { BasicPartyIdentifier, IBasicConnection, IConnection, IConnectionParty, PartyEntity } from '@sphereon/ssi-sdk-data-store-common'
+import { FindOptionsWhere } from 'typeorm'
 
 export interface IConnectionManager extends IPluginMethodMap {
   cmGetParty(args: IGetPartyArgs, context: IRequiredContext): Promise<IConnectionParty>
-  cmGetParties(): Promise<Array<IConnectionParty>>
+  cmGetParties(args?: IGetPartiesArgs): Promise<Array<IConnectionParty>>
   cmAddParty(args: IAddPartyArgs, context: IRequiredContext): Promise<IConnectionParty>
   cmUpdateParty(args: IUpdatePartyArgs, context: IRequiredContext): Promise<IConnectionParty>
   cmRemoveParty(args: IRemovePartyArgs, context: IRequiredContext): Promise<boolean>
@@ -18,8 +19,15 @@ export interface IGetPartyArgs {
   partyId: string
 }
 
+export interface IGetPartiesArgs {
+  filter?: FindPartyArgs
+}
+
 export interface IAddPartyArgs {
   name: string
+  alias: string
+  identifier: BasicPartyIdentifier
+  uri?: string
 }
 
 export interface IUpdatePartyArgs {
@@ -50,5 +58,7 @@ export interface IUpdateConnectionArgs {
 export interface IRemoveConnectionArgs {
   connectionId: string
 }
+
+export type FindPartyArgs = FindOptionsWhere<PartyEntity>[]
 
 export type IRequiredContext = IAgentContext<never>

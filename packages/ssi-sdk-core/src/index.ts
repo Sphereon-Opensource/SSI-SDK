@@ -1,4 +1,4 @@
-export { flattenArray, flattenMigrations, parseDid, multibaseToHex, hexToMultibase, MultibaseFormat } from './utils'
+export { flattenArray, flattenMigrations, multibaseToHex, hexToMultibase, MultibaseFormat } from './utils'
 export {
   VerifiablePresentationSP,
   UnsignedPresentationSP,
@@ -10,4 +10,4 @@ export {
   UnsignedCredentialSP,
   ProofOptions,
 } from './types'
-export { SuppliedSigner } from './signers'
+export { KeyAlgo, SuppliedSigner } from './signers'

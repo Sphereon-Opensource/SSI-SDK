@@ -18,7 +18,7 @@ import {
   BasicConnectionConfig,
   ConnectionTypeEnum,
   IBasicConnection,
-  IBasicConnectionMetadataItem,
+  BasicConnectionMetadataItem,
   IDidAuthConfig,
   IOpenIdConfig,
 } from '../../types/connections'
@@ -62,7 +62,7 @@ export const connectionEntityFrom = (connection: IBasicConnection): ConnectionEn
   connectionEntity.type = connection.type
   connectionEntity.identifier = connectionIdentifierEntityFrom(connection.identifier)
   connectionEntity.config = configEntityFrom(connection.type, connection.config)
-  connectionEntity.metadata = connection.metadata ? connection.metadata.map((item: IBasicConnectionMetadataItem) => metadataItemEntityFrom(item)) : []
+  connectionEntity.metadata = connection.metadata ? connection.metadata.map((item: BasicConnectionMetadataItem) => metadataItemEntityFrom(item)) : []
 
   return connectionEntity
 }
