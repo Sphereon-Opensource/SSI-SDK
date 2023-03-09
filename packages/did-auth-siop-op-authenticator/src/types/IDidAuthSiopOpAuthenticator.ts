@@ -1,37 +1,48 @@
 import {
   DIDDocumentSection,
+  FindCredentialsArgs,
   IAgentContext,
+  ICredentialIssuer,
+  ICredentialVerifier,
+  IDataStoreORM,
+  IDIDManager,
   IIdentifier,
+  IKeyManager,
   IPluginMethodMap,
   IResolver,
-  IKeyManager,
-  IDataStoreORM,
-  FindCredentialsArgs,
 } from '@veramo/core'
-import { IPresentation, IVerifiableCredential } from '@sphereon/ssi-types'
+import { W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { OpSession } from '../session/OpSession'
 import {
+  CheckLinkedDomain,
   ParsedAuthorizationRequestURI,
-  VerifiedAuthorizationRequest,
-  VerifiablePresentationWithLocation,
-  PresentationLocation,
-  VerifiablePresentationTypeFormat,
+  PresentationDefinitionWithLocation,
   PresentationSignCallback,
+  ResolveOpts,
+  ResponseMode,
+  SupportedVersion,
+  URI,
+  VerifiablePresentationTypeFormat,
+  VerifiedAuthorizationRequest,
+  VPTokenLocation,
 } from '@sphereon/did-auth-siop'
+import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 
 import { Resolvable } from 'did-resolver'
+import { DIDDocument } from '@sphereon/did-uni-client'
+import { EventEmitter } from 'events'
 
 export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
-  getSessionForSiop(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
-  registerSessionForSiop(args: IRegisterSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
-  removeSessionForSiop(args: IRemoveSiopSessionArgs, context: IRequiredContext): Promise<boolean>
-  authenticateWithSiop(args: IAuthenticateWithSiopArgs, context: IRequiredContext): Promise<IResponse>
+  siopGetOPSession(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
+  siopRegisterOPSession(args: Omit<IOpSessionArgs, 'context'>, context: IRequiredContext): Promise<OpSession>
+  siopRemoveOPSession(args: IRemoveSiopSessionArgs, context: IRequiredContext): Promise<boolean>
+  /*authenticateWithSiop(args: IAuthenticateWithSiopArgs, context: IRequiredContext): Promise<IResponse>
   getSiopAuthorizationRequestFromRP(args: IGetSiopAuthorizationRequestFromRpArgs, context: IRequiredContext): Promise<ParsedAuthorizationRequestURI>
   getSiopAuthorizationRequestDetails(args: IGetSiopAuthorizationRequestDetailsArgs, context: IRequiredContext): Promise<IAuthRequestDetails>
   verifySiopAuthorizationRequestURI(args: IVerifySiopAuthorizationRequestUriArgs, context: IRequiredContext): Promise<VerifiedAuthorizationRequest>
-  sendSiopAuthorizationResponse(args: ISendSiopAuthorizationResponseArgs, context: IRequiredContext): Promise<IResponse>
-  registerCustomApprovalForSiop(args: IRegisterCustomApprovalForSiopArgs, context: IRequiredContext): Promise<void>
-  removeCustomApprovalForSiop(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean>
+  sendSiopAuthorizationResponse(args: ISendSiopAuthorizationResponseArgs, context: IRequiredContext): Promise<IResponse>*/
+  siopRegisterOPCustomApproval(args: IRegisterCustomApprovalForSiopArgs, context: IRequiredContext): Promise<void>
+  siopRemoveOPCustomApproval(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean>
 }
 export interface PerDidResolver {
   didMethod: string
@@ -39,14 +50,18 @@ export interface PerDidResolver {
 }
 
 export interface IOpSessionArgs {
-  sessionId: string
-  identifier: IIdentifier
+  sessionId?: string
+
+  requestJwtOrUri: string | URI
+  // identifier: IIdentifier
   context: IRequiredContext
-  supportedDidMethods?: string[]
+  op?: IOPOptions
+
+  /*supportedDidMethods?: string[]
   resolver?: Resolvable
   perDidResolvers?: PerDidResolver[]
   expiresIn?: number
-  verificationMethodSection?: DIDDocumentSection
+  verificationMethodSection?: DIDDocumentSection*/
 }
 
 export interface IAuthenticateWithSiopArgs {
@@ -80,21 +95,23 @@ export interface IVerifySiopAuthorizationRequestUriArgs {
 export interface ISendSiopAuthorizationResponseArgs {
   sessionId: string
   verifiedAuthorizationRequest: VerifiedAuthorizationRequest
-  verifiablePresentationResponse?: VerifiablePresentationWithLocation[]
+  verifiablePresentationResponse?: W3CVerifiablePresentation[]
 }
 
 export interface IAuthRequestDetails {
+  rpDIDDocument?: DIDDocument
   id: string
-  vpResponseOpts: VerifiablePresentationWithLocation[]
+  verifiablePresentationMatches: IPresentationWithDefinition[]
   alsoKnownAs?: string[]
 }
 
 export interface IResponse extends Response {}
 
-export interface IMatchedPresentationDefinition {
-  location: PresentationLocation
+export interface IPresentationWithDefinition {
+  location: VPTokenLocation
+  definition: PresentationDefinitionWithLocation
   format: VerifiablePresentationTypeFormat
-  presentation: IPresentation
+  presentation: W3CVerifiablePresentation
 }
 
 export interface IGetSiopSessionArgs {
@@ -102,10 +119,12 @@ export interface IGetSiopSessionArgs {
 }
 
 export interface IRegisterSiopSessionArgs {
-  identifier: IIdentifier
+  // identifier: IIdentifier
   resolver?: Resolvable
   perDidResolvers?: PerDidResolver[]
   supportedDidMethods?: string[]
+  wellKnownDidVerifyCallback?: VerifyCallback
+  presentationSignCallback?: PresentationSignCallback
   sessionId?: string
   expiresIn?: number
 }
@@ -136,13 +155,12 @@ export interface IOpsGetSiopAuthorizationRequestFromRpArgs {
 }
 
 export interface IOpsGetSiopAuthorizationRequestDetailsArgs {
-  verifiedAuthorizationRequest: VerifiedAuthorizationRequest
-  verifiableCredentials: IVerifiableCredential[]
+  verifiableCredentials: W3CVerifiableCredential[]
   signingOptions?: {
     nonce?: string
     domain?: string
   }
-  presentationSignCallback: PresentationSignCallback
+  identifierOpts?: IIdentifierOpts
 }
 
 export interface IOpsVerifySiopAuthorizationRequestUriArgs {
@@ -150,12 +168,48 @@ export interface IOpsVerifySiopAuthorizationRequestUriArgs {
 }
 
 export interface IOpsSendSiopAuthorizationResponseArgs {
-  verifiedAuthorizationRequest: VerifiedAuthorizationRequest
-  verifiablePresentationResponse?: VerifiablePresentationWithLocation[]
+  responseSignerOpts: IIdentifierOpts
+  // verifiedAuthorizationRequest: VerifiedAuthorizationRequest
+  verifiablePresentations?: W3CVerifiablePresentation[]
 }
 
 export enum events {
   DID_SIOP_AUTHENTICATED = 'didSiopAuthenticated',
 }
 
-export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IKeyManager>
+export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier>
+
+export interface IOPOptions {
+  responseMode?: ResponseMode
+  supportedVersions?: SupportedVersion[]
+  expiresIn?: number
+  checkLinkedDomains?: CheckLinkedDomain
+  // customResolver?: Resolver
+  eventEmitter?: EventEmitter
+  supportedDIDMethods?: string[]
+
+  wellknownDIDVerifyCallback?: VerifyCallback
+
+  presentationSignCallback?: PresentationSignCallback
+
+  resolveOpts?: ResolveOpts
+}
+
+export interface IIdentifierOpts {
+  identifier: IIdentifier
+  verificationMethodSection?: DIDDocumentSection
+  kid?: string
+}
+
+export interface VerifiableCredentialsWithDefinition {
+  definition: PresentationDefinitionWithLocation
+  credentials: W3CVerifiableCredential[]
+}
+
+export interface VerifiablePresentationWithDefinition {
+  definition: PresentationDefinitionWithLocation
+  credentials: W3CVerifiableCredential[]
+  presentation: W3CVerifiablePresentation
+  identifierOpts: IIdentifierOpts
+}
+export const DEFAULT_JWT_PROOF_TYPE = 'JwtProof2020'

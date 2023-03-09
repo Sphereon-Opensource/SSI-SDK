@@ -6,7 +6,7 @@ import {
   VerifiableCredential,
   UnsignedPresentation,
   ProofType,
-  CredentialStatus,
+  CredentialStatusReference,
 } from '@veramo/core'
 
 import { IProofPurpose, IProofType, PresentationSubmission } from '@sphereon/ssi-types'
@@ -14,7 +14,7 @@ import { IProofPurpose, IProofType, PresentationSubmission } from '@sphereon/ssi
 export type W3CVerifiablePresentationSP = VerifiablePresentation | VerifiablePresentationSP | CompactJWT
 export type W3CVerifiableCredentialSP = VerifiableCredential | VerifiableCredentialSP | CompactJWT
 
-export interface CredentialStatusSP extends CredentialStatus {
+export interface CredentialStatusSP extends CredentialStatusReference {
   id: string
   type: string
   revocationListIndex?: string
@@ -56,7 +56,7 @@ export interface UnsignedCredentialSP extends UnsignedCredential {
 }
 
 export interface VerifiableCredentialSP extends UnsignedCredentialSP {
-  proof: CredentialProofSP | CredentialProofSP[]
+  proof: CredentialProofSP | CredentialProofSP[] | ProofType
 }
 
 export interface UnsignedPresentationSP extends UnsignedPresentation {
@@ -69,5 +69,5 @@ export interface UnsignedPresentationSP extends UnsignedPresentation {
 
 export interface VerifiablePresentationSP extends UnsignedPresentationSP {
   // Last one is from Veramo
-  proof: CredentialProofSP | CredentialProofSP[] | { proof: ProofType }
+  proof: CredentialProofSP | CredentialProofSP[] | ProofType
 }

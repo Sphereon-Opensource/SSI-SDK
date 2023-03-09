@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import {
+  AdditionalClaims,
   CredentialMapper,
   ICredential,
   ICredentialSubject,
@@ -129,7 +130,7 @@ describe('Wrapped VP', () => {
     expect(vp.type).toEqual(OriginalType.JWT_ENCODED)
     expect(vp.format).toEqual('jwt_vp')
     expect(vp.presentation.holder).toEqual('did:example:ebfeb1f712ebc6f1c276e12ec21')
-    expect(vp.presentation.verifiableCredential[0].credential.nonce).toEqual('660!6345FSer')
+    expect((vp.presentation.verifiableCredential[0].credential.credentialSubject as AdditionalClaims).degree.type).toEqual('BachelorDegree')
   })
 
   it('Decoded VP should populate response', () => {
@@ -141,7 +142,7 @@ describe('Wrapped VP', () => {
     expect(vp.type).toEqual(OriginalType.JWT_DECODED)
     expect(vp.format).toEqual('jwt_vp')
     expect(vp.presentation.holder).toEqual('did:example:ebfeb1f712ebc6f1c276e12ec21')
-    expect(vp.presentation.verifiableCredential[0].credential.nonce).toEqual('660!6345FSer')
+    expect((vp.presentation.verifiableCredential[0].credential.credentialSubject as AdditionalClaims).degree.type).toEqual('BachelorDegree')
   })
 
   it('JSON-LD VP String should populate response', () => {
@@ -149,7 +150,7 @@ describe('Wrapped VP', () => {
     const vp = CredentialMapper.toWrappedVerifiablePresentation(jsonLdVpAsStr)
     // vp should be decoded
     expect(vp.original).toEqual(jsonLdVpAsStr)
-    expect(((vp.decoded as IVerifiablePresentation).verifiableCredential[1] as IVerifiableCredential).issuer).toEqual('did:foo:123')
+    expect(((vp.decoded as IVerifiablePresentation).verifiableCredential?.[1] as IVerifiableCredential).issuer).toEqual('did:foo:123')
     expect(vp.type).toEqual(OriginalType.JSONLD)
     expect(vp.format).toEqual('ldp_vp')
     expect(vp.presentation.verifiableCredential[1].credential.issuer).toEqual('did:foo:123')
@@ -159,7 +160,7 @@ describe('Wrapped VP', () => {
     const vp = CredentialMapper.toWrappedVerifiablePresentation(jsonLdVp)
     // vp should be decoded
     expect(vp.original).toEqual(jsonLdVp)
-    expect(((vp.decoded as IVerifiablePresentation).verifiableCredential[1] as IVerifiableCredential).issuer).toEqual('did:foo:123')
+    expect(((vp.decoded as IVerifiablePresentation).verifiableCredential?.[1] as IVerifiableCredential).issuer).toEqual('did:foo:123')
     expect(vp.type).toEqual(OriginalType.JSONLD)
     expect(vp.format).toEqual('ldp_vp')
     expect(vp.presentation.verifiableCredential[1].credential.issuer).toEqual('did:foo:123')
