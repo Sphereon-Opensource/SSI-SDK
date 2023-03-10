@@ -11,7 +11,8 @@ export class LdSuiteLoader {
       const veramoKeyType = obj.getSupportedVeramoKeyType()
       const verificationType = obj.getSupportedVerificationType()
       if (this.signatureMap[veramoKeyType]) {
-        throw Error(`Cannot register 2 suites for the same type ${veramoKeyType}`)
+        console.log(`Registered another signature suite ${obj} for key type: ${veramoKeyType} overriding the old one. Previous one: ${this.signatureMap[veramoKeyType]}`)
+        // throw Error(`Cannot register 2 suites for the same type ${veramoKeyType}`)
       }
       this.signatureMap[veramoKeyType] = obj
       if (verificationType !== veramoKeyType) {
@@ -34,10 +35,10 @@ export class LdSuiteLoader {
   }
 
   getAllSignatureSuites(): SphereonLdSignature[] {
-    return Object.values(this.signatureMap)
+    return [...new Set(Object.values(this.signatureMap))]
   }
 
   getAllSignatureSuiteTypes(): string[] {
-    return Object.values(this.signatureMap).map((x) => x.getSupportedVerificationType())
+    return [...new Set(Object.values(this.signatureMap).map((x) => x.getSupportedVerificationType()))]
   }
 }
