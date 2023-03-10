@@ -1,16 +1,22 @@
-import { Bls12381G2KeyPair } from '@mattrglobal/jsonld-signatures-bbs'
+// import { Bls12381G2KeyPair } from '@mattrglobal/jsonld-signatures-bbs'
 import { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
 import { asArray } from '@veramo/utils'
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
-import { hexToMultibase, MultibaseFormat } from '@sphereon/ssi-sdk-core'
 import { KeyType } from '@sphereon/ssi-sdk-bls-kms-local'
-import { SphereonBbsBlsSignatureSuite2020 } from './impl/SphereonBbsBlsSignatureSuite2020'
+import { BbsBlsSignature2020 as TMBbsBlsSignature2020 } from '@transmute/bbs-bls12381-signature-2020'
+import * as u8a from 'uint8arrays'
+import { hexToMultibase, MultibaseFormat } from '@sphereon/ssi-sdk-core'
+
+
+const blsModule = require('@transmute/bls12381-key-pair')
+// const Bls12381G2Key2020 = require('@transmute/bls12381-key-pair')
+// const fromBls12381G2Key2020 = require('@transmute/bls12381-key-pair')
 
 export enum VerificationType {
   Bls12381G2Key2020 = 'Bls12381G2Key2020',
 }
 
-export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
+export class BbsBlsSignature2020 extends SphereonLdSignature {
   constructor() {
     super()
   }
@@ -32,25 +38,29 @@ export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
 
     const id = verificationMethodId
 
+
     if (!key.privateKeyHex) {
       throw new Error('Private key must be defined')
     }
-
-    const keyPairOptions = {
+    /*const blsKey : Bls12381G2Key2020 = {
       id: id,
       controller: controller,
       privateKeyBase58: hexToMultibase(key.privateKeyHex, MultibaseFormat.BASE58).value.substring(1),
       publicKeyBase58: hexToMultibase(key.publicKeyHex, MultibaseFormat.BASE58).value.substring(1),
-      type: this.getSupportedVerificationType(),
+      type: 'Bls12381G2Key2020',
+    }*/
+    const privateKeyBase58 = hexToMultibase(key.privateKeyHex, MultibaseFormat.BASE58).value.substring(1)
+    const publicKeyBase58 =  hexToMultibase(key.publicKeyHex, MultibaseFormat.BASE58).value.substring(1)
+    // const { publicKey, privateKey } = fromBls12381G2Key2020(blsKey)
+    const keyPairOptions = {
+      id: id,
+      controller: controller,
+      publicKey: u8a.fromString(publicKeyBase58),
+      privateKey: u8a.fromString(privateKeyBase58),
+      type: 'Bls12381G2Key2020',
     }
-
-    let bls12381G2KeyPair: Bls12381G2KeyPair = new Bls12381G2KeyPair(keyPairOptions)
-
-    const signatureSuiteOptions = {
-      key: bls12381G2KeyPair,
-      verificationMethod: verificationMethodId,
-    }
-    return new SphereonBbsBlsSignatureSuite2020(signatureSuiteOptions)
+    const bls12381G2KeyPair = new blsModule.Bls12381G2KeyPair(keyPairOptions)
+    return new TMBbsBlsSignature2020({key: bls12381G2KeyPair})
   }
 
   preVerificationCredModification(credential: VerifiableCredential): void {
@@ -63,7 +73,7 @@ export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
   }
 
   getSuiteForVerification(): any {
-    return new SphereonBbsBlsSignatureSuite2020()
+    return new TMBbsBlsSignature2020()
   }
 
   // preSigningCredModification(_credential: CredentialPayload): void {}
@@ -73,4 +83,15 @@ export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
   preDidResolutionModification(): void {
     // nothing to do here
   }
-}
+}/*
+export const fromBls12381G2Key2020 = (
+  k: Bls12381G2Key2020
+): { publicKey: Uint8Array; privateKey?: Uint8Array } => {
+  const publicKey = base58.decode(k.publicKeyBase58);
+  let privateKey = undefined;
+  if (k.privateKeyBase58) {
+    privateKey = Uint8Array.from(base58.decode(k.privateKeyBase58));
+  }
+  return { publicKey, privateKey };
+};
+*/

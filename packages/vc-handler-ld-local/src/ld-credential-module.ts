@@ -1,7 +1,7 @@
 import { purposes } from '@digitalcredentials/jsonld-signatures'
 import * as vc from '@digitalcredentials/vc'
 import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
-import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
+// import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
 import { events } from './types/ICredentialHandlerLDLocal'
 import {
@@ -23,6 +23,8 @@ import { LdSuiteLoader } from './ld-suite-loader'
 // import jsigs from '@digitalcredentials/jsonld-signatures'
 //Support for Typescript added in version 9.0.0
 const jsigs = require('jsonld-signatures')
+
+import { BbsBlsSignature2020 } from '@transmute/bbs-bls12381-signature-2020'
 
 export type RequiredAgentMethods = IResolver & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>
 

@@ -1,5 +1,6 @@
 import { CredentialPayload, IAgentContext, IKey, IKeyManager, IResolver, PresentationPayload, TKeyType, VerifiableCredential } from '@veramo/core'
 import { DIDDocument } from 'did-resolver/src/resolver'
+import { OrPromise } from '@veramo/utils'
 
 export type RequiredAgentMethods = IResolver & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>
 
@@ -13,7 +14,7 @@ export abstract class SphereonLdSignature {
 
   abstract getSupportedVeramoKeyType(): TKeyType
 
-  abstract getSuiteForSigning(key: IKey, issuerDid: string, verificationMethodId: string, context: IAgentContext<RequiredAgentMethods>): any
+  abstract getSuiteForSigning(key: IKey, issuerDid: string, verificationMethodId: string, context: IAgentContext<RequiredAgentMethods>): OrPromise<any>
 
   abstract getContext(): string
 

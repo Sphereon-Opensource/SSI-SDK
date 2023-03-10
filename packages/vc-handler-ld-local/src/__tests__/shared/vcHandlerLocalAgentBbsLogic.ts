@@ -2,7 +2,7 @@ import { createAgent, IDIDManager, IIdentifier, IKeyManager, IResolver, Presenta
 import { CredentialHandlerLDLocal } from '../../agent/CredentialHandlerLDLocal'
 import { LdDefaultContexts } from '../../ld-default-contexts'
 import { ICredentialHandlerLDLocal, MethodNames } from '../../types/ICredentialHandlerLDLocal'
-import { SphereonBbsBlsSignature2020 } from '../../suites'
+import { BbsBlsSignature2020 } from '../../suites'
 import { MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { BlsKeyManager } from '@sphereon/ssi-sdk-bls-key-manager'
 import { BlsKeyManagementSystem } from '@sphereon/ssi-sdk-bls-kms-local'
@@ -45,7 +45,7 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
           new CredentialHandlerLDLocal({
             keyStore,
             contextMaps: [LdDefaultContexts /*, customContext*/],
-            suites: [new SphereonBbsBlsSignature2020()],
+            suites: [new BbsBlsSignature2020()],
             bindingOverrides: new Map([
               // Bindings to test overrides of credential-ld plugin methods
               ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],

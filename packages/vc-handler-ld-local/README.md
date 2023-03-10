@@ -75,7 +75,7 @@ constructor(connection: Promise<Connection>) {
         new CredentialIssuer(),
         new CredentialHandlerLDLocal({
           contextMaps: [LdDefaultContexts],
-          suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020(), new SphereonBbsBlsSignature2020()],
+          suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020(), new BbsBlsSignature2020()],
           keyStore: privateKeyStore
         }),
         new DIDResolverPlugin({
