@@ -45,6 +45,7 @@
     ]
   },
   "resolutions": {
+    "@veramo/cli": "4.2.0",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",
     "@veramo/data-store": "4.2.0",

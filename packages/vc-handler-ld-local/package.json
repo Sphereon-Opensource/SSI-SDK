@@ -110,14 +110,6 @@
     "@mattrglobal/jsonld-signatures-bbs/jsonld": "4.0.1",
     "**/jsonld" : "npm:@digitalcredentials/jsonld@^5.2.1"
   },
-  "react-native": {
-    "jsonld": "@digitalcredentials/jsonld",
-    "jsonld-signatures": "@digitalcredentials/jsonld-signatures"
-  },
-  "browser": {
-    "jsonld": "@digitalcredentials/jsonld",
-    "jsonld-signatures": "@digitalcredentials/jsonld-signatures"
-  },
   "peerDependencies": {
     "react-native-securerandom": "^1.0.1"
   }
