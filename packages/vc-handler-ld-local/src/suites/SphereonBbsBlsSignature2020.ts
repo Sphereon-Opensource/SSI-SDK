@@ -1,9 +1,10 @@
-import { BbsBlsSignature2020 as MattrBbsBlsSignature2020, Bls12381G2KeyPair } from '@mattrglobal/jsonld-signatures-bbs'
+import { Bls12381G2KeyPair } from '@mattrglobal/jsonld-signatures-bbs'
 import { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
 import { asArray } from '@veramo/utils'
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 import { hexToMultibase, MultibaseFormat } from '@sphereon/ssi-sdk-core'
 import { KeyType } from '@sphereon/ssi-sdk-bls-kms-local'
+import { SphereonBbsBlsSignatureSuite2020 } from './impl/SphereonBbsBlsSignatureSuite2020'
 
 export enum VerificationType {
   Bls12381G2Key2020 = 'Bls12381G2Key2020',
@@ -49,7 +50,7 @@ export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
       key: bls12381G2KeyPair,
       verificationMethod: verificationMethodId,
     }
-    return new MattrBbsBlsSignature2020(signatureSuiteOptions)
+    return new SphereonBbsBlsSignatureSuite2020(signatureSuiteOptions)
   }
 
   preVerificationCredModification(credential: VerifiableCredential): void {
@@ -62,7 +63,7 @@ export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
   }
 
   getSuiteForVerification(): any {
-    return new MattrBbsBlsSignature2020()
+    return new SphereonBbsBlsSignatureSuite2020()
   }
 
   // preSigningCredModification(_credential: CredentialPayload): void {}

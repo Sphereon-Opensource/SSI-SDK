@@ -1,12 +1,12 @@
 import { Ed25519Signature2020 } from '@digitalcredentials/ed25519-signature-2020'
 import { Ed25519VerificationKey2020 } from '@digitalcredentials/ed25519-verification-key-2020'
-import { MultibaseFormat } from '@sphereon/ssi-sdk-core/dist/utils/encoding'
+import { MultibaseFormat } from '../../../ssi-sdk-core/src'
 import { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
 import { asArray, encodeJoseBlob } from '@veramo/utils'
 import suiteContext2020 from 'ed25519-signature-2020-context'
 import * as u8a from 'uint8arrays'
 
-import { hexToMultibase } from '@sphereon/ssi-sdk-core'
+import { hexToMultibase } from '../../../ssi-sdk-core/src'
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 
 export class SphereonEd25519Signature2020 extends SphereonLdSignature {

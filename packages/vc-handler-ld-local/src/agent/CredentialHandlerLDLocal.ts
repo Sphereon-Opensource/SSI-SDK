@@ -159,7 +159,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
 
     if (args.presentation.verifiableCredential) {
       const credentials = args.presentation.verifiableCredential.map((cred) => {
-        if (typeof cred !== 'string' && cred.proof.jwt) {
+        if (typeof cred !== 'string' && cred.proof?.jwt) {
           return cred.proof.jwt
         } else {
           return cred
@@ -223,6 +223,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     keyRef?: string
   ): Promise<{ signingKey: IKey; verificationMethodId: string }> {
     debug(`Retrieving signing key for id ${identifier.did} keyref ${keyRef}...`)
+    // @ts-ignore
     const extendedKeys: _ExtendedIKey[] = await mapIdentifierKeysToDocWithJwkSupport(identifier, 'verificationMethod', context)
     const supportedTypes = this.ldCredentialModule.ldSuiteLoader.getAllSignatureSuiteTypes()
     let signingKey: _ExtendedIKey | undefined

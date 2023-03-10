@@ -22,6 +22,9 @@ import { IMnemonicSeedManager } from '../types/IMnemonicSeedManager'
 
 import { MnemonicEntity } from '../entities/MnemonicEntity'
 
+/**
+ * @public
+ */
 export class MnemonicSeedManager implements IAgentPlugin {
   readonly schema = schema.IMnemonicInfoGenerator
   readonly methods: IMnemonicSeedManager = {
