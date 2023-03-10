@@ -137,22 +137,26 @@ export class LdCredentialModule {
     purpose: typeof ProofPurpose = new AssertionProofPurpose(),
     checkStatus?: Function
   ): Promise<boolean> {
+    const opts = {type: credential.proof.type!, verificationMethod: credential.proof.verificationMethod!}
     const verificationSuites = this.getAllVerificationSuites()
     this.ldSuiteLoader.getAllSignatureSuites().forEach((suite) => suite.preVerificationCredModification(credential))
     let result
     if (credential.proof.type?.includes('BbsBlsSignature2020')) {
       //Should never be null or undefined
-      const suite = this.ldSuiteLoader
+      const suite = await this.ldSuiteLoader
         .getAllSignatureSuites()
         .find((s) => s.getSupportedVeramoKeyType() === 'Bls12381G2')
-        ?.getSuiteForVerification() as BbsBlsSignature2020
-      result = await jsigs.verify(credential, {
-        suite,
-        purpose: purpose,
-        documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
-        compactProof: true,
-      })
-    } else {
+        ?.getSuiteForVerification(opts) as BbsBlsSignature2020
+      if (suite) {
+        result = await jsigs.verify(credential, {
+          suite,
+          purpose: purpose,
+          documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
+          compactProof: true,
+        })
+      }
+    }
+    if(!result) {
       result = await vc.verifyCredential({
         credential,
         suite: verificationSuites,
@@ -200,28 +204,33 @@ export class LdCredentialModule {
   ): Promise<boolean> {
     // console.log(JSON.stringify(presentation, null, 2))
     let result
+    const opts = {type: presentation.proof.type!, verificationMethod: presentation.proof.verificationMethod!}
     if (presentation.proof.type?.includes('BbsBlsSignature2020')) {
       //Should never be null or undefined
-      const suite = this.ldSuiteLoader
+      const suite = await this.ldSuiteLoader
         .getAllSignatureSuites()
         .find((s) => s.getSupportedVeramoKeyType() === 'Bls12381G2')
-        ?.getSuiteForVerification() as BbsBlsSignature2020
-      result = await jsigs.verify(presentation, {
-        suite,
-        purpose: presentationPurpose,
-        documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
-        compactProof: true,
-      })
-
-      if (result.verified) {
-        const eventData = {
-          presentation: presentation,
-          result: result,
+        ?.getSuiteForVerification(opts) as BbsBlsSignature2020
+      if (suite) {
+        result = await jsigs.verify(presentation, {
+          suite,
+          purpose: presentationPurpose,
+          documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
+          compactProof: true,
+        })
+        if (result.verified) {
+          const eventData = {
+            presentation: presentation,
+            result: result,
+          }
+          context.agent.emit(events.PRESENTATION_VERIFIED, eventData)
+          return true
         }
-        context.agent.emit(events.PRESENTATION_VERIFIED, eventData)
-        return true
       }
-    } else {
+      // fall back to generic verify
+    }
+
+    if (!result) {
       result = await vc.verify({
         presentation,
         suite: this.getAllVerificationSuites(),

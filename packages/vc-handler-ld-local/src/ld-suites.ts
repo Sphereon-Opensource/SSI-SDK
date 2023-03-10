@@ -18,7 +18,7 @@ export abstract class SphereonLdSignature {
 
   abstract getContext(): string
 
-  abstract getSuiteForVerification(): any
+  abstract getSuiteForVerification(opts?: {type: string, verificationMethod: string}): OrPromise<any>
 
   abstract preDidResolutionModification(didUrl: string, didDoc: DIDDocument): void
 

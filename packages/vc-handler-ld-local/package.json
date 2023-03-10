@@ -14,7 +14,6 @@
     "build": "tsc"
   },
   "dependencies": {
-    "base58": "^2.0.1",
     "@digitalcredentials/did-method-key": "^2.0.3",
     "@digitalcredentials/did-web-resolver": "^1.0.0",
     "@digitalcredentials/ed25519-signature-2020": "~3.0.2",
@@ -50,9 +49,9 @@
   },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.0",
-    "@sphereon/ssi-sdk-bls-did-provider-key": "^0.10.0",
-    "@sphereon/ssi-sdk-bls-key-manager": "^0.10.0",
-    "@sphereon/ssi-sdk-bls-kms-local": "^0.10.0",
+    "@sphereon/bls-did-provider-key": "0.10.1-unstable.9",
+    "@sphereon/bls-key-manager": "0.10.1-unstable.9",
+    "@sphereon/bls-kms-local": "0.10.1-unstable.9",
     "@transmute/lds-ecdsa-secp256k1-recovery2020": "^0.0.7",
     "@types/debug": "^4.1.7",
     "@types/jest": "^27.0.2",

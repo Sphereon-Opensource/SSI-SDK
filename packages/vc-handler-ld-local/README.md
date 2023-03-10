@@ -88,7 +88,7 @@ constructor(connection: Promise<Connection>) {
   }
 ```
 
-- To support BLS+, the @sphereon/ssi-sdk-bls-\* plugins must be used, otherwise only Ed25519 plugins will be supported.
+- To support BLS+, the @sphereon/bls-\* plugins must be used, otherwise only Ed25519 plugins will be supported.
 
 ### Issue Verifiable Credentials using the Veramo agent:
 
