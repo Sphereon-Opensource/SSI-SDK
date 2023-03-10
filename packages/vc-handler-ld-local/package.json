@@ -4,13 +4,15 @@
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "veramo": {
     "pluginInterfaces": {
       "IVcLocalIssuerJsonLd": "./src/types/ICredentialHandlerLDLocal.ts"
     }
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@digitalcredentials/did-method-key": "^2.0.3",
@@ -26,16 +28,19 @@
     "@sphereon/ed25519-signature-2018": "0.7.0-unstable.2",
     "@sphereon/ssi-sdk-core": "^0.9.0",
     "@sphereon/ssi-sdk-did-utils": "^0.9.0",
-    "@transmute/ed25519-key-pair": "0.7.0-unstable.67",
+    "@transmute/ed25519-key-pair": "0.7.0-unstable.80",
+    "@transmute/jsonld": "^0.0.4",
     "@transmute/jose-ld": "0.7.0-unstable.80",
-    "@transmute/jsonld-document-loader": "^0.7.0-unstable.67",
+    "@transmute/jsonld-document-loader": "^0.7.0-unstable.80",
     "@transmute/secp256k1-key-pair": "0.7.0-unstable.80",
     "@transmute/security-context": "0.7.0-unstable.80",
-    "@transmute/vc-status-rl-2020": "0.7.0-unstable.67",
+    "@transmute/vc-status-rl-2020": "0.7.0-unstable.80",
     "@transmute/web-crypto-key-pair": "0.7.0-unstable.80",
     "@veramo/core": "4.2.0",
     "@veramo/utils": "4.2.0",
     "credentials-context": "^2.0.0",
+    "jsonld": "^4.0.1",
+    "jsonld-signatures": "^7.0.0",
     "crypto-ld": "^6.0.0",
     "debug": "^4.3.4",
     "did-context": "^3.1.1",
@@ -43,7 +48,6 @@
     "ed25519-signature-2020-context": "^1.1.0",
     "@sphereon/isomorphic-webcrypto": "^2.4.0-unstable.1",
     "jose": "^1.28.1",
-    "react-native-securerandom": "^1.0.0",
     "ts-node": "^8.10.2"
   },
   "devDependencies": {
@@ -103,8 +107,9 @@
   ],
   "resolutions": {
     "@types/react": "18.0.12",
-    "jsonld": "npm:@digitalcredentials/jsonld@^5.2.1",
-    "jsonld-signatures": "npm:@digitalcredentials/jsonld-signatures@^9.3.1"
+    "@transmute/jsonld": "^0.0.4",
+    "@mattrglobal/jsonld-signatures-bbs/jsonld": "4.0.1",
+    "**/jsonld" : "npm:@digitalcredentials/jsonld@^5.2.1"
   },
   "react-native": {
     "jsonld": "@digitalcredentials/jsonld",
@@ -113,5 +118,8 @@
   "browser": {
     "jsonld": "@digitalcredentials/jsonld",
     "jsonld-signatures": "@digitalcredentials/jsonld-signatures"
+  },
+  "peerDependencies": {
+    "react-native-securerandom": "^1.0.1"
   }
 }

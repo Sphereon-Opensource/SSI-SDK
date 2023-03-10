@@ -50,6 +50,8 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
               // Bindings to test overrides of credential-ld plugin methods
               ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
               ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentationLDLocal],
+              ['verifyCredentialLD', MethodNames.verifyCredentialLDLocal],
+              ['verifyPresentationLD', MethodNames.verifyPresentationLDLocal],
               // We test the verify methods by using the LDLocal versions directly in the tests
             ]),
           }),
