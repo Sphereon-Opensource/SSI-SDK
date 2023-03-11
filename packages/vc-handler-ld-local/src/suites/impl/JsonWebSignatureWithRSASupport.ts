@@ -1,12 +1,14 @@
 // @ts-ignore
 import jsonld from 'jsonld'
 
-import { subtle } from '@transmute/web-crypto-key-pair'
+const crypto = require('@sphereon/isomorphic-webcrypto')
 import { JsonWebKey } from './JsonWebKeyWithRSASupport'
 import * as u8a from 'uint8arrays'
 import { Verifier } from '@transmute/jose-ld'
 
 import sec from '@transmute/security-context'
+
+const subtle = crypto.subtle
 
 const sha256 = async (data: any) => {
   return Buffer.from(await subtle.digest('SHA-256', Buffer.from(data)))
