@@ -18,12 +18,7 @@
     "cross-fetch": "^3.1.5"
   },
   "devDependencies": {
-    "@types/jest": "^27.0.2",
-    "@veramo/cli": "4.2.0",
-    "jest": "^27.3.1",
-    "prettier": "^2.4.1",
-    "ts-jest": "^27.0.7",
-    "typescript": "^4.6.4"
+    "@veramo/cli": "4.2.0"
   },
   "files": [
     "dist/**/*",

@@ -18,8 +18,7 @@
     "cross-fetch": "^3.1.5",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
-    "global-fetch": "^0.2.2",
-    "typeorm": "^0.3.10"
+    "typeorm": "^0.3.12"
   },
   "devDependencies": {
     "@types/express-session": "^1.17.4",
@@ -27,8 +26,7 @@
     "@veramo/cli": "4.2.0",
     "jest": "^27.3.1",
     "prettier": "^2.4.1",
-    "ts-jest": "^27.0.7",
-    "typescript": "^4.6.4"
+    "ts-jest": "^27.0.7"
   },
   "files": [
     "dist/**/*",

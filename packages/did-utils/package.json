@@ -13,15 +13,13 @@
     "@sphereon/ssi-sdk-core": "^0.9.0",
     "@sphereon/ssi-types": "^0.9.0",
     "@trust/keyto": "^2.0.0-alpha1",
-    "@veramo/core": "^4.2.0",
-    "@veramo/utils": "^4.2.0",
+    "@veramo/core": "4.2.0",
+    "@veramo/utils": "4.2.0",
     "did-resolver": "^4.0.1",
     "elliptic": "^6.5.4",
     "uint8arrays": "^3.1.1"
   },
   "devDependencies": {
-    "@types/debug": "4.1.7",
-    "typescript": "4.6.4"
   },
   "files": [
     "dist/**/*",

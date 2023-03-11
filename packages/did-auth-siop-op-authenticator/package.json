@@ -31,9 +31,8 @@
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",
     "@veramo/utils": "4.2.0",
-    "did-resolver": "^4.0.1",
-    "nock": "^13.2.1",
-    "typescript": "^4.6.4"
+    "did-resolver": "^4.1.0",
+    "nock": "^13.2.1"
   },
   "files": [
     "dist/**/*",
