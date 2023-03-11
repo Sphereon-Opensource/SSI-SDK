@@ -2320,10 +2320,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sphereon/bls-did-provider-key@^0.10.1":
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/@sphereon/bls-did-provider-key/-/bls-did-provider-key-0.10.1.tgz#af4a6f454fb40724404a8912840cb9dd0208d17e"
-  integrity sha512-UwAjeudD0szWmB65ta4xQpTszay50cT/YY31jDA+OEvOE3l/LjXvCAf3XCJ39WLmR5ZWgIKvuG2uuheho6S3cQ==
+"@sphereon/bls-did-provider-key@^0.10.2":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@sphereon/bls-did-provider-key/-/bls-did-provider-key-0.10.2.tgz#fe77e864dcf4c34e0e8086e8111446ab3f31ae48"
+  integrity sha512-7AHmd0r/zDc75TypfuYzA7iUDjpdI7Ua8lVc8MvJJJB1yIfYSggq7/QtSRt4luNGIjOT5pvlCtGf97T/eh/dkA==
   dependencies:
     "@transmute/did-key-bls12381" "^0.3.0-unstable.10"
     "@transmute/did-key-ed25519" "^0.3.0-unstable.10"
@@ -2335,23 +2335,23 @@
     multibase "^4.0.6"
     multicodec "^3.2.1"
 
-"@sphereon/bls-key-manager@^0.10.1":
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/@sphereon/bls-key-manager/-/bls-key-manager-0.10.1.tgz#bd0c768e018f557798c3f3eee09131021fbba532"
-  integrity sha512-xG1iICIyeZX29b7UakJ7nXHtqNFUPvoVU2V14+KVuNRTJe2gihuNF7nLWqcUz0/zmaXmFZVqotj9OQeswbZEqg==
+"@sphereon/bls-key-manager@^0.10.2":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@sphereon/bls-key-manager/-/bls-key-manager-0.10.2.tgz#1a098624c6739081dd88af90881c83bd0d70e005"
+  integrity sha512-svQ13Jd6Dx88EGA79LIjknPL5TxDERWNYeB9bWYX1FIdzqmcY2AUtz43YcYF6Scm0jJaPVn6actCA7ChIFzL1w==
   dependencies:
     "@mattrglobal/bbs-signatures" "^1.1.0"
-    "@sphereon/bls-kms-local" "^0.10.1"
+    "@sphereon/bls-kms-local" "^0.10.2"
     "@veramo/core" "4.2.0"
     "@veramo/key-manager" "4.2.0"
 
-"@sphereon/bls-kms-local@^0.10.1":
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/@sphereon/bls-kms-local/-/bls-kms-local-0.10.1.tgz#773dee05c126b9da251b654aa3b00db678a61372"
-  integrity sha512-80debZSQFfYS1nBlS0IIlL37bfV6UHEaRbgdBM6xVohxnCLPo2gh0dt7R9sSdpjj3w/THtqw7MxAw0eP8tizKw==
+"@sphereon/bls-kms-local@^0.10.2":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@sphereon/bls-kms-local/-/bls-kms-local-0.10.2.tgz#e75688e19a89c97c214a4c7578a7340909bea7de"
+  integrity sha512-w4Nl1CA5hzeOjI57Ien++s4zFlSwkJvyRgt/1Mcoc2wai0Lvawu4Mh8krGu2DwqvciNQYW9pfcWZJh0IppWVQA==
   dependencies:
     "@mattrglobal/bbs-signatures" "^1.1.0"
-    "@sphereon/isomorphic-webcrypto" "^2.4.0-unstable.1"
+    "@sphereon/isomorphic-webcrypto" "^2.4.0-unstable.3"
     "@sphereon/ssi-sdk-did-utils" "^0.9.0"
     "@trust/keyto" "^2.0.0-alpha1"
     "@veramo/core" "4.2.0"
@@ -2418,16 +2418,21 @@
     fast-text-encoding "^1.0.3"
     isomorphic-webcrypto "^2.3.8"
 
-"@sphereon/isomorphic-webcrypto@^2.4.0-unstable.1":
-  version "2.4.0-unstable.1"
-  resolved "https://registry.yarnpkg.com/@sphereon/isomorphic-webcrypto/-/isomorphic-webcrypto-2.4.0-unstable.1.tgz#2be84abe1f21cb8e467845bbeaf7854b7cfbfcb3"
-  integrity sha512-aR+9q+35HhMS+ubZEasidTeQx1kvzLV2NVkp8pX0St2T13IQealTiWSyy1H2f1dF+aZZwZigy764Ps2ZEskUyw==
+"@sphereon/isomorphic-webcrypto@^2.4.0-unstable.3":
+  version "2.4.0-unstable.3"
+  resolved "https://registry.yarnpkg.com/@sphereon/isomorphic-webcrypto/-/isomorphic-webcrypto-2.4.0-unstable.3.tgz#b6125dd9b4a1f5e9ed02e5a271cf43ef7d43b260"
+  integrity sha512-Hw83SXLgZnHmeDDGwdnvIoarzcV6I3mDP/MKZtgqtf6kxB+9+50Xg8c0kSxswx8w8U+csuTuc+cYa2XVoBNJPw==
   dependencies:
     "@peculiar/webcrypto" "^1.4.1"
     asmcrypto.js "^2.3.2"
     b64-lite "^1.4.0"
     b64u-lite "^1.1.0"
-    msrcrypto "^1.5.8"
+    cipher-base "^1.0.4"
+    create-hash "^1.2.0"
+    inherits "^2.0.4"
+    md5.js "^1.3.5"
+    ripemd160 "^2.0.2"
+    sha.js "^2.4.11"
     str2buf "^1.3.0"
     webcrypto-shim "^0.1.7"
 
@@ -5156,7 +5161,7 @@ cidr-regex@^3.1.1:
   dependencies:
     ip-regex "^4.1.0"
 
-cipher-base@^1.0.0, cipher-base@^1.0.1, cipher-base@^1.0.3:
+cipher-base@^1.0.0, cipher-base@^1.0.1, cipher-base@^1.0.3, cipher-base@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/cipher-base/-/cipher-base-1.0.4.tgz#8760e4ecc272f4c363532f926d874aae2c1397de"
   integrity sha512-Kkht5ye6ZGmwv40uUDZztayT2ThLQGfnj/T71N/XzeZeo3nf8foyW7zGTsPYkEya3m5f3cAypH+qe7YOrM1U2Q==
@@ -10260,7 +10265,7 @@ marked@^4.0.10:
   resolved "https://registry.yarnpkg.com/marked/-/marked-4.2.12.tgz#d69a64e21d71b06250da995dcd065c11083bebb5"
   integrity sha512-yr8hSKa3Fv4D3jdZmtMMPghgVt6TWbk86WQaWhDloQjRSQhMMYCAro7jP7VDJrjjdV8pxVxMssXS8B8Y5DZ5aw==
 
-md5.js@^1.3.4:
+md5.js@^1.3.4, md5.js@^1.3.5:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/md5.js/-/md5.js-1.3.5.tgz#b5d07b8e3216e3e27cd728d72f70d1e6a342005f"
   integrity sha512-xitP+WxNPcTTOgnTJcrhM0xvdPepipPSf3I8EIpGKeFLjt3PlJLIDG3u8EX53ZIubkb+5U2+3rELYpEhHhzdkg==
@@ -12623,7 +12628,7 @@ rimraf@^4.4.0:
   dependencies:
     glob "^9.2.0"
 
-ripemd160@^2.0.0, ripemd160@^2.0.1:
+ripemd160@^2.0.0, ripemd160@^2.0.1, ripemd160@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/ripemd160/-/ripemd160-2.0.2.tgz#a1c1a6f624751577ba5d07914cbc92850585890c"
   integrity sha512-ii4iagi25WusVoiC4B4lq7pbXfAp3D9v5CwfkY33vffw2+pkDjY1D8GaN7spsxvCSx8dkPqOZCEZyfxcmJG2IA==
