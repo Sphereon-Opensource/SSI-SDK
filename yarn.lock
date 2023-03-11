@@ -2320,6 +2320,42 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@sphereon/bls-did-provider-key@^0.10.1":
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/@sphereon/bls-did-provider-key/-/bls-did-provider-key-0.10.1.tgz#af4a6f454fb40724404a8912840cb9dd0208d17e"
+  integrity sha512-UwAjeudD0szWmB65ta4xQpTszay50cT/YY31jDA+OEvOE3l/LjXvCAf3XCJ39WLmR5ZWgIKvuG2uuheho6S3cQ==
+  dependencies:
+    "@transmute/did-key-bls12381" "^0.3.0-unstable.10"
+    "@transmute/did-key-ed25519" "^0.3.0-unstable.10"
+    "@transmute/did-key-secp256k1" "^0.3.0-unstable.10"
+    "@transmute/did-key-x25519" "^0.3.0-unstable.10"
+    "@veramo/core" "4.2.0"
+    "@veramo/did-manager" "4.2.0"
+    debug "^4.3.4"
+    multibase "^4.0.6"
+    multicodec "^3.2.1"
+
+"@sphereon/bls-key-manager@^0.10.1":
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/@sphereon/bls-key-manager/-/bls-key-manager-0.10.1.tgz#bd0c768e018f557798c3f3eee09131021fbba532"
+  integrity sha512-xG1iICIyeZX29b7UakJ7nXHtqNFUPvoVU2V14+KVuNRTJe2gihuNF7nLWqcUz0/zmaXmFZVqotj9OQeswbZEqg==
+  dependencies:
+    "@mattrglobal/bbs-signatures" "^1.1.0"
+    "@sphereon/bls-kms-local" "^0.10.1"
+    "@veramo/core" "4.2.0"
+    "@veramo/key-manager" "4.2.0"
+
+"@sphereon/bls-kms-local@^0.10.1":
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/@sphereon/bls-kms-local/-/bls-kms-local-0.10.1.tgz#773dee05c126b9da251b654aa3b00db678a61372"
+  integrity sha512-80debZSQFfYS1nBlS0IIlL37bfV6UHEaRbgdBM6xVohxnCLPo2gh0dt7R9sSdpjj3w/THtqw7MxAw0eP8tizKw==
+  dependencies:
+    "@mattrglobal/bbs-signatures" "^1.1.0"
+    "@sphereon/isomorphic-webcrypto" "^2.4.0-unstable.1"
+    "@sphereon/ssi-sdk-did-utils" "^0.9.0"
+    "@trust/keyto" "^2.0.0-alpha1"
+    "@veramo/core" "4.2.0"
+
 "@sphereon/did-auth-siop@^0.3.0-unstable.25":
   version "0.3.0-unstable.25"
   resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.3.0-unstable.25.tgz#0932f8a59072e8e9bfee8a50e44662bd46e26e11"
@@ -2430,42 +2466,6 @@
     jwt-decode "^3.1.2"
     nanoid "^3.3.4"
     string.prototype.matchall "^4.0.8"
-
-"@sphereon/ssi-sdk-bls-did-provider-key@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@sphereon/ssi-sdk-bls-did-provider-key/-/ssi-sdk-bls-did-provider-key-0.10.0.tgz#f8f05e46300c7d64ddd635d1da1b1dc89c1730c8"
-  integrity sha512-NAwuU4EIjGeXMt8Bn2p5PaIdayXZpEoJsqKqsFFCo81B9h96Hb4Grj7GMq9P+O/U+BX+YmcannwivKa7FLYMqw==
-  dependencies:
-    "@transmute/did-key-bls12381" "^0.3.0-unstable.10"
-    "@transmute/did-key-ed25519" "^0.3.0-unstable.10"
-    "@transmute/did-key-secp256k1" "^0.3.0-unstable.10"
-    "@transmute/did-key-x25519" "^0.3.0-unstable.10"
-    "@veramo/core" "4.2.0"
-    "@veramo/did-manager" "4.2.0"
-    debug "^4.3.4"
-    multibase "^4.0.6"
-    multicodec "^3.2.1"
-
-"@sphereon/ssi-sdk-bls-key-manager@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@sphereon/ssi-sdk-bls-key-manager/-/ssi-sdk-bls-key-manager-0.10.0.tgz#264e1bb0481d7335de28f32ce67705601c61fc2a"
-  integrity sha512-0LZuCDo7+OylY/uOycJAl8UC1n1OP9umfJw9UNTIvuBZ5rW6iUVc1q3/cI/upHSSjQ+0v75MLnruQKTwWec41Q==
-  dependencies:
-    "@mattrglobal/bbs-signatures" "^1.1.0"
-    "@sphereon/ssi-sdk-bls-kms-local" "^0.10.0"
-    "@veramo/core" "4.2.0"
-    "@veramo/key-manager" "4.2.0"
-
-"@sphereon/ssi-sdk-bls-kms-local@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@sphereon/ssi-sdk-bls-kms-local/-/ssi-sdk-bls-kms-local-0.10.0.tgz#875e7e26d7a9a1432f12ac0bf6d0cd5be0c96fcc"
-  integrity sha512-7ka/qzGmzRFSmy63y6wQu1kUeOwVONpGoJ1OVJJHKjXFnS3KV+jcVYyBfeOVBkPen0/FGM5GDiWkQ0QDuArc4Q==
-  dependencies:
-    "@mattrglobal/bbs-signatures" "^1.1.0"
-    "@sphereon/isomorphic-webcrypto" "^2.4.0-unstable.1"
-    "@sphereon/ssi-sdk-did-utils" "^0.9.0"
-    "@trust/keyto" "^2.0.0-alpha1"
-    "@veramo/core" "4.2.0"
 
 "@sphereon/wellknown-dids-client@^0.1.3":
   version "0.1.3"
