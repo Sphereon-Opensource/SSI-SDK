@@ -4,10 +4,9 @@
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "type": "module",
   "veramo": {
     "pluginInterfaces": {
-      "IVcLocalIssuerJsonLd": "./src/types/ICredentialHandlerLDLocal.ts"
+      "ICredentialHandlerLDLocal": "./src/types/ICredentialHandlerLDLocal.ts"
     }
   },
   "scripts": {
