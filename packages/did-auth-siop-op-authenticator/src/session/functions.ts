@@ -27,8 +27,8 @@ export async function createPresentationSignCallback({
 }: {
   presentationSignCallback?: PresentationSignCallback
   kid: string
-  domain?: string,
-  challenge?: string,
+  domain?: string
+  challenge?: string
   context: IRequiredContext
 }): Promise<PresentationSignCallback> {
   // fixme: Remove once IPresentation in proper form is available in PEX
@@ -36,7 +36,6 @@ export async function createPresentationSignCallback({
   return presentationSignCallback
     ? presentationSignCallback
     : async (args: PresentationSignCallBackParams): Promise<W3CVerifiablePresentation> => {
-
         const presentation: PresentationPayload = args.presentation as PresentationPayload
         const format = args.presentationDefinition.format
 

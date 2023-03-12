@@ -97,7 +97,7 @@
     "@types/react": "18.0.12",
     "@transmute/jsonld": "^0.0.4",
     "@mattrglobal/jsonld-signatures-bbs/jsonld": "4.0.1",
-    "**/jsonld" : "npm:@digitalcredentials/jsonld@^5.2.1"
+    "**/jsonld": "npm:@digitalcredentials/jsonld@^5.2.1"
   },
   "peerDependencies": {
     "react-native-securerandom": "^1.0.1"

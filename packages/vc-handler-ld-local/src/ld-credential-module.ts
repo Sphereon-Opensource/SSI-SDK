@@ -3,7 +3,7 @@ import * as vc from '@digitalcredentials/vc'
 import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
 import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
-import { events } from './types/ICredentialHandlerLDLocal'
+import { events } from './types'
 import {
   CredentialPayload,
   IAgentContext,

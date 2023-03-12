@@ -10,7 +10,6 @@ import {
   VerifiablePresentation,
 } from '@veramo/core'
 
-
 /**
  * Encapsulates the parameters required to create a
  * {@link https://www.w3.org/TR/vc-data-model/#presentations | W3C Verifiable Presentation}

@@ -18,7 +18,6 @@ import {
  * @beta This API is likely to change without a BREAKING CHANGE notice
  */
 export interface ICredentialHandlerLDLocal extends IPluginMethodMap {
-
   /**
    * Creates a Verifiable Credential.
    * The payload, signer and format are chosen based on the `args` parameter.

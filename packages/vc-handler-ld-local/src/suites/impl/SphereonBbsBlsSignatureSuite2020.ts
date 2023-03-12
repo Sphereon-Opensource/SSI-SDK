@@ -10,7 +10,6 @@ export class SphereonBbsBlsSignatureSuite2020 extends BbsBlsSignature2020 {
     super(options)
   }
 
-
   /**
    * Ensures the document to be signed contains the required signature suite
    * specific `@context`, by either adding it (if `addSuiteContext` is true),
@@ -20,9 +19,9 @@ export class SphereonBbsBlsSignatureSuite2020 extends BbsBlsSignature2020 {
    * @param {object} options.document - JSON-LD document to be signed.
    * @param {boolean} options.addSuiteContext - Add suite context?
    */
-  ensureSuiteContext({ document, addSuiteContext }: { document: any, addSuiteContext: any }) {
+  ensureSuiteContext({ document, addSuiteContext }: { document: any; addSuiteContext: any }) {
     // @ts-ignore
-    const contextUrl = "https://w3id.org/security/bbs/v1"
+    const contextUrl = 'https://w3id.org/security/bbs/v1'
 
     if (_includesContext({ document, contextUrl })) {
       // document already includes the required context
@@ -30,21 +29,15 @@ export class SphereonBbsBlsSignatureSuite2020 extends BbsBlsSignature2020 {
     }
 
     if (!addSuiteContext) {
-      throw new TypeError(
-        `The document to be signed must contain this suite's @context, ` +
-        `"${contextUrl}".`)
+      throw new TypeError(`The document to be signed must contain this suite's @context, ` + `"${contextUrl}".`)
     }
 
     // enforce the suite's context by adding it to the document
     const existingContext = document['@context'] || []
 
-    document['@context'] = Array.isArray(existingContext) ?
-      [...existingContext, contextUrl] : [existingContext, contextUrl]
+    document['@context'] = Array.isArray(existingContext) ? [...existingContext, contextUrl] : [existingContext, contextUrl]
   }
-
-
 }
-
 
 /**
  * Tests whether a provided JSON-LD document includes a context URL in its
@@ -58,6 +51,5 @@ export class SphereonBbsBlsSignatureSuite2020 extends BbsBlsSignature2020 {
  */
 function _includesContext({ document, contextUrl }: { document: any; contextUrl: any }) {
   const context = document['@context']
-  return context === contextUrl ||
-    (Array.isArray(context) && context.includes(contextUrl))
+  return context === contextUrl || (Array.isArray(context) && context.includes(contextUrl))
 }
