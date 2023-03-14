@@ -1,21 +1,18 @@
 {
   "name": "@sphereon/ssi-sdk-vc-handler-ld-local",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
-      "IVcLocalIssuerJsonLd": "./src/types/ICredentialHandlerLDLocal.ts"
+      "ICredentialHandlerLDLocal": "./src/types/ICredentialHandlerLDLocal.ts"
     }
   },
   "scripts": {
-    "build": "tsc --build",
-    "build:copyfiles": "copyfiles contexts/*.* ./dist"
+    "build": "tsc"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk-core": "^0.8.1-next.121",
-    "@sphereon/ssi-sdk-did-utils": "^0.8.1-next.121",
     "@digitalcredentials/did-method-key": "^2.0.3",
     "@digitalcredentials/did-web-resolver": "^1.0.0",
     "@digitalcredentials/ed25519-signature-2020": "~3.0.2",
@@ -27,34 +24,36 @@
     "@digitalcredentials/x25519-key-agreement-2020-context": "^1.0.0",
     "@mattrglobal/jsonld-signatures-bbs": "^1.1.1",
     "@sphereon/ed25519-signature-2018": "0.7.0-unstable.2",
-    "@transmute/ed25519-key-pair": "0.7.0-unstable.67",
-    "@transmute/jsonld-document-loader": "^0.7.0-unstable.67",
-    "@transmute/vc-status-rl-2020": "0.7.0-unstable.67",
-    "@types/node": "^14.14.43",
+    "@sphereon/ssi-sdk-core": "^0.9.0",
+    "@sphereon/ssi-sdk-did-utils": "^0.9.0",
+    "@transmute/ed25519-key-pair": "0.7.0-unstable.80",
+    "@transmute/jsonld": "^0.0.4",
+    "@transmute/jose-ld": "0.7.0-unstable.80",
+    "@transmute/jsonld-document-loader": "^0.7.0-unstable.80",
+    "@transmute/secp256k1-key-pair": "0.7.0-unstable.80",
+    "@transmute/security-context": "0.7.0-unstable.80",
+    "@transmute/vc-status-rl-2020": "0.7.0-unstable.80",
+    "@transmute/web-crypto-key-pair": "0.7.0-unstable.80",
     "@veramo/core": "4.2.0",
     "@veramo/utils": "4.2.0",
     "credentials-context": "^2.0.0",
+    "jsonld": "^4.0.1",
+    "jsonld-signatures": "^7.0.0",
     "crypto-ld": "^6.0.0",
+    "debug": "^4.3.4",
     "did-context": "^3.1.1",
     "ed25519-signature-2018-context": "^1.1.0",
     "ed25519-signature-2020-context": "^1.1.0",
-    "isomorphic-webcrypto": "^2.3.8",
+    "@sphereon/isomorphic-webcrypto": "^2.4.0-unstable.3",
     "jose": "^1.28.1",
-    "react-native-securerandom": "^1.0.0",
     "ts-node": "^8.10.2"
   },
-  "resolutions": {
-    "@types/react": "18.0.12",
-    "jsonld": "npm:@digitalcredentials/jsonld@^5.2.1",
-    "jsonld-signatures": "npm:@digitalcredentials/jsonld-signatures@^9.3.1"
-  },
   "devDependencies": {
-    "@sphereon/did-uni-client": "^0.5.0",
-    "@sphereon/ssi-sdk-bls-did-provider-key": "^0.9.1",
-    "@sphereon/ssi-sdk-bls-key-manager": "^0.9.1",
-    "@sphereon/ssi-sdk-bls-kms-local": "^0.9.1",
+    "@sphereon/did-uni-client": "^0.6.0",
+    "@sphereon/bls-did-provider-key": "^0.10.2",
+    "@sphereon/bls-key-manager": "^0.10.2",
+    "@sphereon/bls-kms-local": "^0.10.2",
     "@transmute/lds-ecdsa-secp256k1-recovery2020": "^0.0.7",
-    "@types/jest": "^27.0.2",
     "@types/nock": "^11.1.0",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
@@ -64,25 +63,17 @@
     "@veramo/did-manager": "4.2.0",
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",
-    "did-resolver": "^4.0.1",
     "@veramo/key-manager": "4.2.0",
     "@veramo/kms-local": "4.2.0",
     "@veramo/utils": "4.2.0",
     "copyfiles": "^2.4.1",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-import": "^2.25.3",
-    "jest": "^27.3.1",
+    "did-resolver": "^4.1.0",
     "nock": "^13.2.1",
-    "prettier": "^2.4.1",
-    "ts-jest": "^27.0.7",
-    "typescript": "^4.6.4"
+    "uint8arrays": "^3.1.1"
   },
   "files": [
     "dist/**/*",
     "src/**/*",
-    "contexts",
     "README.md",
     "plugin.schema.json",
     "LICENSE"
@@ -102,14 +93,13 @@
     "Verifiable Presentations",
     "JsonLd"
   ],
-  "react-native": {
-    "vc-js": "@digitalcredentials/vc",
-    "jsonld": "@digitalcredentials/jsonld",
-    "jsonld-signatures": "@digitalcredentials/jsonld-signatures"
+  "resolutions": {
+    "@types/react": "18.0.12",
+    "@transmute/jsonld": "^0.0.4",
+    "@mattrglobal/jsonld-signatures-bbs/jsonld": "4.0.1",
+    "**/jsonld": "npm:@digitalcredentials/jsonld@^5.2.1"
   },
-  "browser": {
-    "vc-js": "@digitalcredentials/vc",
-    "jsonld": "@digitalcredentials/jsonld",
-    "jsonld-signatures": "@digitalcredentials/jsonld-signatures"
+  "peerDependencies": {
+    "react-native-securerandom": "^1.0.1"
   }
 }

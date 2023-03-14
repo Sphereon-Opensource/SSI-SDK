@@ -4,12 +4,12 @@ import { AbstractPrivateKeyStore } from '@veramo/key-manager'
 import { _ExtendedIKey, extractIssuer, isDefined, MANDATORY_CREDENTIAL_CONTEXT, OrPromise, processEntryToArray, RecordLike } from '@veramo/utils'
 import Debug from 'debug'
 
-import { IBindingOverrides, schema } from '../index'
+import { IBindingOverrides, IRequiredContext, schema } from '../index'
 import { LdContextLoader } from '../ld-context-loader'
 import { LdCredentialModule } from '../ld-credential-module'
 import { LdSuiteLoader } from '../ld-suite-loader'
 import { SphereonLdSignature } from '../ld-suites'
-import { ICredentialHandlerLDLocal, IRequiredContext } from '../types/ICredentialHandlerLDLocal'
+import { ICredentialHandlerLDLocal } from '../types'
 import {
   ContextDoc,
   ICreateVerifiableCredentialLDArgs,
@@ -159,7 +159,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
 
     if (args.presentation.verifiableCredential) {
       const credentials = args.presentation.verifiableCredential.map((cred) => {
-        if (typeof cred !== 'string' && cred.proof.jwt) {
+        if (typeof cred !== 'string' && cred.proof?.jwt) {
           return cred.proof.jwt
         } else {
           return cred
@@ -223,6 +223,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     keyRef?: string
   ): Promise<{ signingKey: IKey; verificationMethodId: string }> {
     debug(`Retrieving signing key for id ${identifier.did} keyref ${keyRef}...`)
+    // @ts-ignore
     const extendedKeys: _ExtendedIKey[] = await mapIdentifierKeysToDocWithJwkSupport(identifier, 'verificationMethod', context)
     const supportedTypes = this.ldCredentialModule.ldSuiteLoader.getAllSignatureSuiteTypes()
     let signingKey: _ExtendedIKey | undefined

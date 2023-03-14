@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.9.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.8.0...v0.9.0) (2023-03-09)
+
+### Bug Fixes
+
+- Fix DID handling in OP session ([926e358](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/926e358ef3eadf19fc3c8f7c9940fe6322c5ff85))
+- fix private key hex from Pem ([0204094](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/0204094e7b7fd33314a31df5d06344f54e6f6442))
+
+### Features
+
+- allow existing did document for mapping ([5f183ce](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/5f183ce655a40332a65480634b356ae8fa4d7a84))
+- allow existing did document for mapping ([4d82518](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/4d82518653ff456383561c22870856f110976aa0))
+- did utils package ([d98b358](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/d98b358ff7f9c787667b4bf48fd748ae9f58197a))
+- make sure the vc-handler-ld-local can deal with keys in JWK format ([26cff51](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/26cff511b345e412dc37586ef3c3c8fe678cd574))
+- Update SIOP OP to be in line wiht latest SIOP and also supporting late binding of identifiers ([2beea04](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/2beea04a6604d82b12ecbc11e68a9f41775c22ed))
+
 # [0.8.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.7.0...v0.8.0) (2022-09-03)
 
 ### Bug Fixes

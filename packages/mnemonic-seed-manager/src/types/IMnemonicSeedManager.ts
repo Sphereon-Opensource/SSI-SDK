@@ -1,23 +1,33 @@
 import { IAgentContext, IDataStore, IKeyManager, IPluginMethodMap, ManagedKeyInfo } from '@veramo/core'
-import { ObjectLiteral } from 'typeorm/browser/common/ObjectLiteral'
 
+/**
+ * @public
+ */
 export interface IMnemonicSeedManager extends IPluginMethodMap {
   generateMnemonic(args: IMnemonicGeneratorArgs): Promise<IMnemonicInfoResult>
+
   verifyMnemonic(args: IMnemonicVerificationArgs): Promise<IMnemonicInfoResult>
+
   verifyPartialMnemonic(args: IPartialMnemonicVerificationArgs): Promise<IMnemonicInfoResult>
+
   generateSeed(args: ISeedGeneratorArgs): Promise<IMnemonicInfoResult>
+
   saveMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoResult>
+
   getMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoResult>
+
   deleteMnemonicInfo(args: IMnemonicInfoStoreArgs): Promise<DeleteResult>
+
   generateMasterKey(args: IMnemonicInfoStoreArgs): Promise<IMnemonicInfoKeyResult>
+
   generateKeysFromMnemonic(args: IMnemonicInfoStoreArgs, context: IRequiredContext): Promise<ManagedKeyInfo>
 }
 
 /**
- * @param { 128 | 160 | 192 | 224 | 256 } bits - Affects the number of words in the mnemonic,
- * which is 12, 15, 18, 21 and 24 respectively.
- * @param { string } id - Optional user defined id for the mnemonic
- * @param { boolean } persist - Whether the mnemonic should be persisted into the database
+ * @param bits - Affects the number of words in the mnemonic, which is 12, 15, 18, 21 and 24 respectively.
+ * @param id - Optional user defined id for the mnemonic
+ * @param persist - Whether the mnemonic should be persisted into the database
+ * @public
  */
 export interface IMnemonicGeneratorArgs {
   bits: 128 | 160 | 192 | 224 | 256
@@ -26,9 +36,11 @@ export interface IMnemonicGeneratorArgs {
 }
 
 /**
- * @param { string } id - Optional user defined id for the mnemonic
- * @param { string } hash - Optional sha256 hash of the mnemonic
- * @param { string[] } wordList - List containing all the words of the mnemonic in order.
+ * @param id - Optional user defined id for the mnemonic
+ * @param hash - Optional sha256 hash of the mnemonic
+ * @param wordList - List containing all the words of the mnemonic in order.
+ *
+ * @public
  */
 export interface IMnemonicVerificationArgs {
   id?: string
@@ -37,11 +49,12 @@ export interface IMnemonicVerificationArgs {
 }
 
 /**
- * @param { string } id - Optional user defined id for the mnemonic
- * @param { string } hash - Optional sha256 hash of the mnemonic
- * @param { number, string][] } indexedWordList - List partially containing the words
+ * @param id - Optional user defined id for the mnemonic
+ * @param hash - Optional sha256 hash of the mnemonic
+ * @param indexedWordList - List partially containing the words
  * with their indexes corresponding the position in which they appear in the mnemonic.
  * It must be in the same order as in the mnemonic.
+ * @public
  */
 export interface IPartialMnemonicVerificationArgs {
   id?: string
@@ -50,22 +63,25 @@ export interface IPartialMnemonicVerificationArgs {
 }
 
 /**
- * @param { string[] } mnemonic - Array representation of the mnemonic string
+ * @param mnemonic - Array representation of the mnemonic string
+ * @public
  */
 export interface ISeedGeneratorArgs {
   mnemonic: string[]
 }
+
 /**
- * @param { string } id - Optional user defined id for the mnemonic
- * @param { string } hash - Optional sha256 hash of the mnemonic
- * @param { string[] } mnemonic - Array representation of the mnemonic string
- * @param { string } masterKey - The master key generated from the seed
- * @param { string } chainCode - The chain code generated with the keys
- * @param { string } kms - The key management service to be used
- * @param { string } path - The derivation path to be used
- * @param { boolean } withZeroBytes - Whether the public key should be generated with zero bytes
- * @param { 'Ed25519' | 'Secp256k1' } - The type of the key generated
- * @param { boolean } persist - Whether the information should be persisted
+ * @param id - Optional user defined id for the mnemonic
+ * @param hash - Optional sha256 hash of the mnemonic
+ * @param mnemonic - Array representation of the mnemonic string
+ * @param masterKey - The master key generated from the seed
+ * @param chainCode - The chain code generated with the keys
+ * @param kms - The key management service to be used
+ * @param path - The derivation path to be used
+ * @param withZeroBytes - Whether the public key should be generated with zero bytes
+ * @param type - The type of the key generated
+ * @param persist - Whether the information should be persisted
+ * @public
  */
 export interface IMnemonicInfoStoreArgs {
   id?: string
@@ -80,23 +96,45 @@ export interface IMnemonicInfoStoreArgs {
   persist?: boolean
 }
 
+/**
+ * @public
+ */
 export interface IMnemonicInfoKeyResult {
   masterKey?: string
   chainCode?: string
 }
 
+/**
+ * @public
+ */
 export interface DeleteResult {
   raw: unknown
   affected?: number | null
 }
 
+/**
+ * @public
+ */
 export interface UpdateResult extends DeleteResult {
-  generatedMaps: ObjectLiteral[]
+  generatedMaps: ObjectLiteral
 }
 
+/**
+ * @public
+ */
+export interface ObjectLiteral {
+  [key: string]: any
+}
+
+/**
+ * @public
+ */
 export interface IMnemonicInfoResult extends IMnemonicInfoStoreArgs {
   succeeded?: boolean
   seed?: string
 }
 
+/**
+ * @public
+ */
 export type IRequiredContext = IAgentContext<IKeyManager & IDataStore>

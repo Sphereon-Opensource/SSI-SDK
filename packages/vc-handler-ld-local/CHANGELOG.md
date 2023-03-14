@@ -3,6 +3,45 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.9.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.8.0...v0.9.0) (2023-03-09)
+
+### Bug Fixes
+
+- default contexts are not using node fs/path anymore ([5a87aa3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/5a87aa3eeed588b910636b358c7d718ae74f54c9))
+- default contexts are not using node fs/path anymore ([8f1b17a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/8f1b17aa12014abb393f77833f4fb8b22bfc7d2b))
+- default contexts are not using node fs/path anymore ([51fd687](https://github.com/Sphereon-Opensource/SSI-SDK/commit/51fd687fba69aaeda7e686d2ec6241fb4668e229))
+- Disable factom tests ([099a303](https://github.com/Sphereon-Opensource/SSI-SDK/commit/099a303c93d366a3714ef57384b3793b96a8fee3))
+- Fix DID handling in OP session ([926e358](https://github.com/Sphereon-Opensource/SSI-SDK/commit/926e358ef3eadf19fc3c8f7c9940fe6322c5ff85))
+- Incorrect verification method id returned when signing credentials in some cases ([bdbf4ef](https://github.com/Sphereon-Opensource/SSI-SDK/commit/bdbf4ef55e50a9d19d7998a5ceac7136034524ef))
+- Incorrect verification method id returned when signing credentials in some cases ([c508507](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c508507ddd2e35fcb377a79bad3c82d695b3d93d))
+- make sure cross-fetch is used to fetch ([7033a2e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7033a2e5a80935335e5ad7989f1c03850270a986))
+- Make sure we follow JWS detached signing for JsonWebSignature2020 ([3da5bad](https://github.com/Sphereon-Opensource/SSI-SDK/commit/3da5bad3a79efc42755e354e86ecedc76a2828eb))
+- missing awaits for signing presentations ([518b8fc](https://github.com/Sphereon-Opensource/SSI-SDK/commit/518b8fc82e26711bc6204d5e0d66bbf04b0844c1))
+- Remove workaround for verifier missing with ed25519 key ([2e97af6](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2e97af6eeab2fe0530cd12425fd6eaf72f42a012))
+- RSA fixes for suite ([b163872](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b163872e14a43b3566db1413497885cb918b982b))
+- RSA fixes for suite ([d6f57b8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d6f57b86b07a74e81c3949fa2663e5ab4732760f))
+- RSA fixes for suite ([9eb47d1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9eb47d1147d15f87bf9e6ac8861bede21a2511dc))
+- RSA fixes for suite ([834642a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/834642a3881b14195ac47f5bdd639bdaae35c7a5))
+- RSA fixes for suite ([3df79ab](https://github.com/Sphereon-Opensource/SSI-SDK/commit/3df79ab1012764ac61e6f3ac910b9a91cb19f996))
+- testing unimodules-core removal ([ffdc606](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ffdc606a95d43d831fa9fe2eabfacf47e62d1361))
+
+### Features
+
+- Add jsonwebsignature2020 context to presentations if missing ([1f3f6b5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/1f3f6b5078868ad4447a6c2e60c81160d428025e))
+- Add RSA support to JsonWebKey/Signature2020 ([94c0e73](https://github.com/Sphereon-Opensource/SSI-SDK/commit/94c0e73d6dbc9a95e74816131765e4961126e2c5))
+- Allow supplying signer/verifier ([00892e2](https://github.com/Sphereon-Opensource/SSI-SDK/commit/00892e2bb7fd279e2fdc3583cd132292708f71c6))
+- Allow supplying signer/verifier ([625ea6f](https://github.com/Sphereon-Opensource/SSI-SDK/commit/625ea6feb62a08d3ce013850c6de7da8d833bc35))
+- Allow supplying signer/verifier ([b010d7a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b010d7ac65ba49d4e85641558ce801e1c3fea730))
+- Allow to relax JWT timing checks, where the JWT claim is slightly different from the VC claim. Used for issuance and expiration dates ([85bff6d](https://github.com/Sphereon-Opensource/SSI-SDK/commit/85bff6da21dea5d8f636ea1f55b41be00b18b002))
+- did utils package ([d98b358](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d98b358ff7f9c787667b4bf48fd748ae9f58197a))
+- Jsonweb2020 sig support ([43a3adf](https://github.com/Sphereon-Opensource/SSI-SDK/commit/43a3adfbe683ee4040a293cc5b75d17a029d7c49))
+- make sure the vc-handler-ld-local can deal with keys in JWK format ([26cff51](https://github.com/Sphereon-Opensource/SSI-SDK/commit/26cff511b345e412dc37586ef3c3c8fe678cd574))
+
+### Reverts
+
+- Revert "fix: make sure to explicitly depend on @digitalcredentials VC packages" ([dae695d](https://github.com/Sphereon-Opensource/SSI-SDK/commit/dae695d9e17fb3d73bd2e264510551c060d780bb))
+- Revert "fix: make sure to explicitly depend on @digitalcredentials VC packages" ([e2be77a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e2be77aed1e518049379c3c092590382d794e660))
+
 # [0.8.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.7.0...v0.8.0) (2022-09-03)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk-vc-handler-ld-local

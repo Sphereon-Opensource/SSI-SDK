@@ -5,7 +5,7 @@
  */
 import { isIterable, OrPromise, RecordLike } from '@veramo/utils'
 
-import { ContextDoc } from './types/types'
+import { ContextDoc } from './types'
 
 export class LdContextLoader {
   private readonly contexts: Record<string, OrPromise<ContextDoc>>
