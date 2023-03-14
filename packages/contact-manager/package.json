@@ -1,0 +1,44 @@
+{
+  "name": "@sphereon/ssi-sdk-contact-manager",
+  "version": "0.8.0",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "veramo": {
+    "pluginInterfaces": {
+      "IContactManager": "./src/types/IContactManager.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "dependencies": {
+    "@sphereon/ssi-sdk-data-store": "^0.8.0",
+    "cross-fetch": "^3.1.5",
+    "typeorm": "^0.3.10"
+  },
+  "devDependencies": {
+    "@veramo/cli": "4.2.0",
+    "typescript": "^4.6.4"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "plugin.schema.json",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sphereon",
+    "SSI",
+    "Veramo",
+    "OpenID",
+    "Contact Manager"
+  ]
+}

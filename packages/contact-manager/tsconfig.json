@@ -6,5 +6,5 @@
     "declarationDir": "dist",
     "strictPropertyInitialization": false
   },
-  "references": []
+  "references": [{ "path": "../data-store" }]
 }
