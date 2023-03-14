@@ -40,52 +40,52 @@ export class ContactManager implements IAgentPlugin {
     this.store = options.store
   }
 
-  /** {@inheritDoc IContactManager.cmGetParty} */
+  /** {@inheritDoc IContactManager.cmGetContact} */
   private async cmGetContact(args: IGetContactArgs, context: IRequiredContext): Promise<IContact> {
     return this.store.getContact(args)
   }
 
-  /** {@inheritDoc IContactManager.cmGetParties} */
+  /** {@inheritDoc IContactManager.cmGetContacts} */
   private async cmGetContacts(args?: IGetContactsArgs): Promise<Array<IContact>> {
     return this.store.getContacts(args)
   }
 
-  /** {@inheritDoc IContactManager.cmAddParty} */
+  /** {@inheritDoc IContactManager.cmAddContact} */
   private async cmAddContact(args: IAddContactArgs, context: IRequiredContext): Promise<IContact> {
     return this.store.addContact(args)
   }
 
-  /** {@inheritDoc IContactManager.cmUpdateParty} */
+  /** {@inheritDoc IContactManager.cmUpdateContact} */
   private async cmUpdateContact(args: IUpdateContactArgs, context: IRequiredContext): Promise<IContact> {
     return this.store.updateContact(args)
   }
 
-  /** {@inheritDoc IContactManager.cmRemoveParty} */
+  /** {@inheritDoc IContactManager.cmRemoveContact} */
   private async cmRemoveContact(args: IRemoveContactArgs, context: IRequiredContext): Promise<boolean> {
     return this.store.removeContact(args).then(() => true)
   }
 
-  /** {@inheritDoc IContactManager.cmGetConnection} */
+  /** {@inheritDoc IContactManager.cmGetIdentity} */
   private async cmGetIdentity(args: IGetIdentityArgs, context: IRequiredContext): Promise<IIdentity> {
     return this.store.getIdentity(args)
   }
 
-  /** {@inheritDoc IContactManager.cmGetConnections} */
+  /** {@inheritDoc IContactManager.cmGetIdentities} */
   private async cmGetIdentities(args: IGetIdentitiesArgs, context: IRequiredContext): Promise<Array<IIdentity>> {
     return this.store.getIdentities(args)
   }
 
-  /** {@inheritDoc IContactManager.cmAddConnection} */
+  /** {@inheritDoc IContactManager.cmAddIdentity} */
   private async cmAddIdentity(args: IAddIdentityArgs, context: IRequiredContext): Promise<IIdentity> {
     return this.store.addIdentity(args)
   }
 
-  /** {@inheritDoc IContactManager.cmUpdateConnection} */
+  /** {@inheritDoc IContactManager.cmUpdateIdentity} */
   private async cmUpdateIdentity(args: IUpdateIdentityArgs, context: IRequiredContext): Promise<IIdentity> {
     return this.store.updateIdentity(args)
   }
 
-  /** {@inheritDoc IContactManager.cmRemoveConnection} */
+  /** {@inheritDoc IContactManager.cmRemoveIdentity} */
   private async cmRemoveIdentity(args: IRemoveIdentityArgs, context: IRequiredContext): Promise<boolean> {
     return this.store.removeIdentity(args).then(() => true) // TODO
   }
