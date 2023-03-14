@@ -625,9 +625,9 @@ describe('Database entities test', () => {
 
     // check identity
     expect(
-        await dbConnection.getRepository(IdentityEntity).findOne({
-          where: { id: savedIdentity.id },
-        })
+      await dbConnection.getRepository(IdentityEntity).findOne({
+        where: { id: savedIdentity.id },
+      })
     ).toBeNull()
 
     // check contact
@@ -714,7 +714,9 @@ describe('Database entities test', () => {
     const identityEntity: IdentityEntity = identityEntityFrom(identity)
     const savedIdentity = await dbConnection.getRepository(IdentityEntity).save(identityEntity)
     const newCorrelationId = 'new_example_did'
-    await dbConnection.getRepository(IdentityEntity).save({ ...savedIdentity, identifier: {...savedIdentity.identifier, correlationId: newCorrelationId} })
+    await dbConnection
+      .getRepository(IdentityEntity)
+      .save({ ...savedIdentity, identifier: { ...savedIdentity.identifier, correlationId: newCorrelationId } })
 
     const fromDb = await dbConnection.getRepository(IdentityEntity).findOne({
       where: {
@@ -757,7 +759,7 @@ describe('Database entities test', () => {
     const savedContact = await dbConnection.getRepository(ContactEntity).save(contactEntity)
 
     // waiting here to get a different timestamp
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 2000))
 
     const newContactName = 'new_name'
     await dbConnection.getRepository(ContactEntity).save({ ...savedContact, name: newContactName })

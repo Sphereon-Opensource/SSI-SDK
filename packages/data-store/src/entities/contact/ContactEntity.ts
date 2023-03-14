@@ -1,13 +1,14 @@
 import {
   BaseEntity,
-  BeforeInsert, BeforeUpdate,
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm'
 import { BasicContact } from '../../types/contact'
 import { IdentityEntity } from './IdentityEntity'
@@ -30,7 +31,8 @@ export class ContactEntity extends BaseEntity {
     cascade: true,
     onDelete: 'CASCADE',
     eager: true,
-    nullable: false })
+    nullable: false,
+  })
   @JoinColumn({ name: 'identityId' })
   identities!: Array<IdentityEntity>
 

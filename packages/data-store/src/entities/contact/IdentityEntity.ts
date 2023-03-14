@@ -8,7 +8,9 @@ import {
   JoinColumn,
   ManyToOne,
   Column,
-  OneToMany, BeforeInsert, BeforeUpdate,
+  OneToMany,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm'
 import { correlationIdentifierEntityFrom, CorrelationIdentifierEntity } from './CorrelationIdentifierEntity'
 import { ConnectionEntity, connectionEntityFrom } from './ConnectionEntity'
@@ -28,7 +30,7 @@ export class IdentityEntity extends BaseEntity {
     cascade: true,
     onDelete: 'CASCADE',
     eager: true,
-    nullable: false
+    nullable: false,
   })
   identifier!: CorrelationIdentifierEntity
 
@@ -43,7 +45,7 @@ export class IdentityEntity extends BaseEntity {
     cascade: true,
     onDelete: 'CASCADE',
     eager: true,
-    nullable: false
+    nullable: false,
   })
   @JoinColumn({ name: 'metadataId' })
   metadata!: Array<IdentityMetadataItemEntity>

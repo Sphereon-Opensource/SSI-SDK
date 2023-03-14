@@ -101,7 +101,7 @@ export class ContactStore extends AbstractContactStore {
 
     const updatedContact = {
       ...contact,
-      identities: result.identities
+      identities: result.identities,
     }
 
     debug('Updating contact', contact)

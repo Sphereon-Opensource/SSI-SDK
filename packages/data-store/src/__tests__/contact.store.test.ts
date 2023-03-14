@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm'
 
 import { ContactStore } from '../contact/ContactStore'
-import {CorrelationIdentifierEnum, DataStoreContactEntities, DataStoreMigrations} from '../index'
+import { CorrelationIdentifierEnum, DataStoreContactEntities, DataStoreMigrations } from '../index'
 
 describe('Database entities test', () => {
   let dbConnection: DataSource
@@ -222,20 +222,20 @@ describe('Database entities test', () => {
       alias: 'test_alias1',
       identifier: {
         type: CorrelationIdentifierEnum.DID,
-        correlationId: 'example_did1'
-      }
+        correlationId: 'example_did1',
+      },
     }
-    const savedIdentity1 = await contactStore.addIdentity({contactId: savedContact.id, identity: identity1 })
+    const savedIdentity1 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity1 })
     expect(savedIdentity1).toBeDefined()
 
     const identity2 = {
       alias: 'test_alias2',
       identifier: {
         type: CorrelationIdentifierEnum.DID,
-        correlationId: 'example_did2'
-      }
+        correlationId: 'example_did2',
+      },
     }
-    const savedIdentity2 = await contactStore.addIdentity({contactId: savedContact.id, identity: identity2 })
+    const savedIdentity2 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity2 })
     expect(savedIdentity2).toBeDefined()
 
     const contactName = 'updated_name'
@@ -282,10 +282,10 @@ describe('Database entities test', () => {
       alias: 'test_alias',
       identifier: {
         type: CorrelationIdentifierEnum.DID,
-        correlationId: 'example_did'
-      }
+        correlationId: 'example_did',
+      },
     }
-    const savedIdentity = await contactStore.addIdentity({contactId: savedContact.id, identity })
+    const savedIdentity = await contactStore.addIdentity({ contactId: savedContact.id, identity })
     expect(savedIdentity).toBeDefined()
 
     const result = await contactStore.getIdentity({ identityId: savedIdentity.id })
@@ -312,20 +312,20 @@ describe('Database entities test', () => {
       alias: 'test_alias1',
       identifier: {
         type: CorrelationIdentifierEnum.DID,
-        correlationId: 'example_did1'
-      }
+        correlationId: 'example_did1',
+      },
     }
-    const savedIdentity1 = await contactStore.addIdentity({contactId: savedContact.id, identity: identity1 })
+    const savedIdentity1 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity1 })
     expect(savedIdentity1).toBeDefined()
 
     const identity2 = {
       alias: 'test_alias2',
       identifier: {
         type: CorrelationIdentifierEnum.DID,
-        correlationId: 'example_did2'
-      }
+        correlationId: 'example_did2',
+      },
     }
-    const savedIdentity2 = await contactStore.addIdentity({contactId: savedContact.id, identity: identity2 })
+    const savedIdentity2 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity2 })
     expect(savedIdentity2).toBeDefined()
 
     const result = await contactStore.getIdentities({ contactId: savedContact.id })
@@ -346,10 +346,10 @@ describe('Database entities test', () => {
       alias: 'test_alias',
       identifier: {
         type: CorrelationIdentifierEnum.DID,
-        correlationId: 'example_did'
-      }
+        correlationId: 'example_did',
+      },
     }
-    const savedIdentity = await contactStore.addIdentity({contactId: savedContact.id, identity })
+    const savedIdentity = await contactStore.addIdentity({ contactId: savedContact.id, identity })
     expect(savedIdentity).toBeDefined()
 
     const result = await contactStore.getContact({ contactId: savedContact.id })
@@ -376,11 +376,13 @@ describe('Database entities test', () => {
       alias: correlationId,
       identifier: {
         type: CorrelationIdentifierEnum.URL,
-        correlationId
-      }
+        correlationId,
+      },
     }
 
-    await expect(contactStore.addIdentity({ contactId: savedContact.id, identity })).rejects.toThrow(`Identity with correlation type url should contain a connection`)
+    await expect(contactStore.addIdentity({ contactId: savedContact.id, identity })).rejects.toThrow(
+      `Identity with correlation type url should contain a connection`
+    )
   })
 
   it('should throw error when updating identity with invalid identifier', async () => {
@@ -397,13 +399,15 @@ describe('Database entities test', () => {
       alias: correlationId,
       identifier: {
         type: CorrelationIdentifierEnum.DID,
-        correlationId
-      }
+        correlationId,
+      },
     }
     const storedIdentity = await contactStore.addIdentity({ contactId: savedContact.id, identity })
     storedIdentity.identifier = { ...storedIdentity.identifier, type: CorrelationIdentifierEnum.URL }
 
-    await expect(contactStore.updateIdentity({ identity: storedIdentity })).rejects.toThrow(`Identity with correlation type url should contain a connection`)
+    await expect(contactStore.updateIdentity({ identity: storedIdentity })).rejects.toThrow(
+      `Identity with correlation type url should contain a connection`
+    )
   })
 
   it('should update identity by id', async () => {
@@ -419,8 +423,8 @@ describe('Database entities test', () => {
       alias: 'example_did',
       identifier: {
         type: CorrelationIdentifierEnum.DID,
-        correlationId: 'example_did'
-      }
+        correlationId: 'example_did',
+      },
     }
     const storedIdentity = await contactStore.addIdentity({ contactId: savedContact.id, identity })
     const correlationId = 'new_update_example_did'

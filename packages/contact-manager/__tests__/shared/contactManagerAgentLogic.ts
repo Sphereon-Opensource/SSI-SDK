@@ -206,8 +206,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         alias: correlationId,
         identifier: {
           type: CorrelationIdentifierEnum.DID,
-          correlationId
-        }
+          correlationId,
+        },
       }
 
       const result = await agent.cmAddIdentity({ contactId: defaultContact.id, identity })
@@ -229,11 +229,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         alias: correlationId,
         identifier: {
           type: CorrelationIdentifierEnum.URL,
-          correlationId
-        }
+          correlationId,
+        },
       }
 
-      await expect(agent.cmAddIdentity({ contactId: defaultContact.id, identity })).rejects.toThrow(`Identity with correlation type url should contain a connection`)
+      await expect(agent.cmAddIdentity({ contactId: defaultContact.id, identity })).rejects.toThrow(
+        `Identity with correlation type url should contain a connection`
+      )
     })
 
     it('should throw error when updating identity with invalid identifier', async () => {
@@ -242,8 +244,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         alias: correlationId,
         identifier: {
           type: CorrelationIdentifierEnum.DID,
-          correlationId
-        }
+          correlationId,
+        },
       }
       const result = await agent.cmAddIdentity({ contactId: defaultContact.id, identity })
       result.identifier = { ...result.identifier, type: CorrelationIdentifierEnum.URL }
@@ -257,8 +259,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         alias: 'update_example_did',
         identifier: {
           type: CorrelationIdentifierEnum.DID,
-          correlationId: 'update_example_did'
-        }
+          correlationId: 'update_example_did',
+        },
       }
       const result = await agent.cmAddIdentity({ contactId: defaultContact.id, identity })
       result.identifier = { ...result.identifier, correlationId }

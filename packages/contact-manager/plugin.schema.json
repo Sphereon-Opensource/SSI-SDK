@@ -550,7 +550,7 @@
             }
           ],
           "description": "Represents a service endpoint URL or a map of URLs"
-        },
+        }
       },
       "methods": {
         "cmGetContact": {

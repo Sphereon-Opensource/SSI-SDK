@@ -149,13 +149,13 @@ const identity = {
   metadata: [
     {
       label: 'Authorization URL',
-      value: 'https://example.com'
+      value: 'https://example.com',
     },
     {
       label: 'Scope',
-      value: 'Authorization'
-    }
-  ]
+      value: 'Authorization',
+    },
+  ],
 }
 
 const result = await agent.cmAddIdentity({

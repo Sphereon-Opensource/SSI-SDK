@@ -17,7 +17,7 @@ export class ConnectionEntity extends BaseEntity {
     cascade: true,
     onDelete: 'CASCADE',
     eager: true,
-    nullable: false
+    nullable: false,
   })
   config!: BaseConfigEntity
 
