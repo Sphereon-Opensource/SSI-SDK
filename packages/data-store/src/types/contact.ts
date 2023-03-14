@@ -47,9 +47,6 @@ export interface IBasicIdentity {
   connection?: IBasicConnection
   metadata?: Array<BasicMetadataItem>
 }
-// export type BasicIdentity = Omit<IIdentity, 'id' | 'connection.id' | 'connection.config.id' | 'createdAt' | 'lastUpdatedAt'> & {
-//   identifier: Omit<IIdentity['identifier'], 'id'>
-// }
 
 export interface IMetadataItem {
   id: string
@@ -74,7 +71,6 @@ export interface IBasicConnection {
   type: ConnectionTypeEnum
   config: BasicConnectionConfig
 }
-// export declare type BasicConnection = Omit<IConnection, 'id' | 'config.id'>
 
 export interface IOpenIdConfig {
   id: string
