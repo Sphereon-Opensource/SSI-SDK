@@ -57,7 +57,6 @@ export class IdentityEntity extends BaseEntity {
   lastUpdatedAt!: Date
 
   @ManyToOne(() => ContactEntity, (contact: ContactEntity) => contact.identities, {
-    // cascade: ['insert', 'update'],
     onDelete: 'CASCADE',
   })
   contact!: ContactEntity

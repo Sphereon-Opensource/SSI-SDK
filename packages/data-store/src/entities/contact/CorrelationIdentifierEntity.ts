@@ -14,7 +14,6 @@ export class CorrelationIdentifierEntity extends BaseEntity {
   correlationId!: string
 
   @OneToOne(() => IdentityEntity, (identity: IdentityEntity) => identity.identifier, {
-    // cascade: ['insert', 'update'],
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'identityId' })

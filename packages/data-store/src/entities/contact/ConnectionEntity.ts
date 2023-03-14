@@ -22,7 +22,6 @@ export class ConnectionEntity extends BaseEntity {
   config!: BaseConfigEntity
 
   @OneToOne(() => IdentityEntity, (identity: IdentityEntity) => identity.connection, {
-    // cascade: ['insert', 'update'],
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'identityId' })

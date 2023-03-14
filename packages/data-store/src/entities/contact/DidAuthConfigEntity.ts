@@ -15,7 +15,6 @@ export class DidAuthConfigEntity extends BaseConfigEntity {
   sessionId!: string
 
   @OneToOne(() => ConnectionEntity, (connection: ConnectionEntity) => connection.config, {
-    // cascade: ['insert', 'update'],
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'connectionId' })
