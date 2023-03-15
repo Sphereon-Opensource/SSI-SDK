@@ -1,6 +1,5 @@
 import {
   DocumentFormat,
-  ICredential,
   IPresentation,
   IProof,
   IProofPurpose,
@@ -239,7 +238,7 @@ export class CredentialMapper {
     return uniformPresentation
   }
 
-  static jwtEncodedCredentialToUniformCredential(jwt: string, opts?: { maxTimeSkewInMS?: number }): ICredential {
+  static jwtEncodedCredentialToUniformCredential(jwt: string, opts?: { maxTimeSkewInMS?: number }): IVerifiableCredential {
     return CredentialMapper.jwtDecodedCredentialToUniformCredential(jwt_decode(jwt), opts)
   }
 
