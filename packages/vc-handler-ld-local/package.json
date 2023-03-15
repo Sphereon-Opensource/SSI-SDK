@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
     "@digitalcredentials/did-method-key": "^2.0.3",
@@ -44,7 +44,7 @@
     "did-context": "^3.1.1",
     "ed25519-signature-2018-context": "^1.1.0",
     "ed25519-signature-2020-context": "^1.1.0",
-    "@sphereon/isomorphic-webcrypto": "^2.4.0-unstable.1",
+    "@sphereon/isomorphic-webcrypto": "^2.4.0-unstable.3",
     "jose": "^1.28.1",
     "ts-node": "^8.10.2"
   },
@@ -54,8 +54,6 @@
     "@sphereon/bls-key-manager": "^0.10.2",
     "@sphereon/bls-kms-local": "^0.10.2",
     "@transmute/lds-ecdsa-secp256k1-recovery2020": "^0.0.7",
-    "@types/debug": "^4.1.7",
-    "@types/jest": "^27.0.2",
     "@types/nock": "^11.1.0",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
@@ -69,16 +67,8 @@
     "@veramo/kms-local": "4.2.0",
     "@veramo/utils": "4.2.0",
     "copyfiles": "^2.4.1",
-    "did-resolver": "^4.0.1",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-import": "^2.25.3",
-    "jest": "^27.3.1",
+    "did-resolver": "^4.1.0",
     "nock": "^13.2.1",
-    "prettier": "^2.4.1",
-    "ts-jest": "^27.0.7",
-    "typescript": "^4.6.4",
     "uint8arrays": "^3.1.1"
   },
   "files": [
@@ -106,16 +96,6 @@
   "resolutions": {
     "@types/react": "18.0.12",
     "@transmute/jsonld": "^0.0.4",
-    "@mattrglobal/jsonld-signatures-bbs/jsonld": "4.0.1",
-    "**/jsonld" : "npm:@digitalcredentials/jsonld@^5.2.1"
-  },
-  "react-native": {
-    "jsonld": "@digitalcredentials/jsonld",
-    "jsonld-signatures": "@digitalcredentials/jsonld-signatures"
-  },
-  "browser": {
-    "jsonld": "@digitalcredentials/jsonld",
-    "jsonld-signatures": "@digitalcredentials/jsonld-signatures",
     "@mattrglobal/jsonld-signatures-bbs/jsonld": "4.0.1",
     "**/jsonld": "npm:@digitalcredentials/jsonld@^5.2.1"
   },

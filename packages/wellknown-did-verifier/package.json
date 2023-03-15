@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "build": "tsc --build"
+    "build": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
     "@sphereon/wellknown-dids-client": "^0.1.3",
