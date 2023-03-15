@@ -16,14 +16,13 @@ export class VpMessageHandler extends AbstractMessageHandler {
     if (message.raw) {
       try {
         const parsed = JSON.parse(message.raw)
-        if (parsed) {
-          if (parsed['jwt_vp']) {
-            message.raw = parsed['jwt_vp']
-            const jwtDecodedVp = CredentialMapper.toWrappedVerifiablePresentation(message.raw as OriginalVerifiablePresentation).decoded
-            if (jwtDecodedVp.aud) {
-              message.addMetaData({ type: 'JWT' })
-              return message
-            }
+        if (parsed && parsed['jwt_vp']) {
+          message.raw = parsed['jwt_vp']
+          const jwtDecodedVp = CredentialMapper.toWrappedVerifiablePresentation(message.raw as OriginalVerifiablePresentation).decoded
+          if (jwtDecodedVp.aud) {
+            message.addMetaData({ type: 'JWT' })
+            message.data = jwtDecodedVp // Only load data if we are going to return the message, we don't want Velocity VP's to crash in Veramo handlers due to the missing @context section
+            return message
           }
         }
       } catch (e: any) {
