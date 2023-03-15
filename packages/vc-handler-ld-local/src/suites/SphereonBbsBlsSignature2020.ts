@@ -3,7 +3,7 @@ import { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/cor
 import { asArray } from '@veramo/utils'
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 import { hexToMultibase, MultibaseFormat } from '@sphereon/ssi-sdk-core'
-import { KeyType } from '@sphereon/ssi-sdk-bls-kms-local'
+import { KeyType } from '@sphereon/bls-kms-local'
 import { SphereonBbsBlsSignatureSuite2020 } from './impl/SphereonBbsBlsSignatureSuite2020'
 
 export enum VerificationType {

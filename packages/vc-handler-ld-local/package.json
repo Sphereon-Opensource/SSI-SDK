@@ -4,10 +4,9 @@
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "type": "module",
   "veramo": {
     "pluginInterfaces": {
-      "IVcLocalIssuerJsonLd": "./src/types/ICredentialHandlerLDLocal.ts"
+      "ICredentialHandlerLDLocal": "./src/types/ICredentialHandlerLDLocal.ts"
     }
   },
   "scripts": {
@@ -51,9 +50,9 @@
   },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.0",
-    "@sphereon/ssi-sdk-bls-did-provider-key": "^0.10.0",
-    "@sphereon/ssi-sdk-bls-key-manager": "^0.10.0",
-    "@sphereon/ssi-sdk-bls-kms-local": "^0.10.0",
+    "@sphereon/bls-did-provider-key": "^0.10.2",
+    "@sphereon/bls-key-manager": "^0.10.2",
+    "@sphereon/bls-kms-local": "^0.10.2",
     "@transmute/lds-ecdsa-secp256k1-recovery2020": "^0.0.7",
     "@types/debug": "^4.1.7",
     "@types/jest": "^27.0.2",
@@ -108,7 +107,7 @@
     "@types/react": "18.0.12",
     "@transmute/jsonld": "^0.0.4",
     "@mattrglobal/jsonld-signatures-bbs/jsonld": "4.0.1",
-    "**/jsonld": "npm:@digitalcredentials/jsonld@^5.2.1"
+    "**/jsonld" : "npm:@digitalcredentials/jsonld@^5.2.1"
   },
   "react-native": {
     "jsonld": "@digitalcredentials/jsonld",
@@ -116,7 +115,9 @@
   },
   "browser": {
     "jsonld": "@digitalcredentials/jsonld",
-    "jsonld-signatures": "@digitalcredentials/jsonld-signatures"
+    "jsonld-signatures": "@digitalcredentials/jsonld-signatures",
+    "@mattrglobal/jsonld-signatures-bbs/jsonld": "4.0.1",
+    "**/jsonld": "npm:@digitalcredentials/jsonld@^5.2.1"
   },
   "peerDependencies": {
     "react-native-securerandom": "^1.0.1"

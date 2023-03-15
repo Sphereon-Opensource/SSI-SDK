@@ -4,12 +4,12 @@ import { AbstractPrivateKeyStore } from '@veramo/key-manager'
 import { _ExtendedIKey, extractIssuer, isDefined, MANDATORY_CREDENTIAL_CONTEXT, OrPromise, processEntryToArray, RecordLike } from '@veramo/utils'
 import Debug from 'debug'
 
-import { IBindingOverrides, schema } from '../index'
+import { IBindingOverrides, IRequiredContext, schema } from '../index'
 import { LdContextLoader } from '../ld-context-loader'
 import { LdCredentialModule } from '../ld-credential-module'
 import { LdSuiteLoader } from '../ld-suite-loader'
 import { SphereonLdSignature } from '../ld-suites'
-import { ICredentialHandlerLDLocal, IRequiredContext } from '../types/ICredentialHandlerLDLocal'
+import { ICredentialHandlerLDLocal } from '../types'
 import {
   ContextDoc,
   ICreateVerifiableCredentialLDArgs,

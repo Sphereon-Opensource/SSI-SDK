@@ -19,16 +19,14 @@
     "@veramo/utils": "4.2.0",
     "debug": "^4.3.4",
     "did-jwt-vc": "2.1.14",
-    "typeorm": "0.3.10",
+    "typeorm": "^0.3.12",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.7",
     "@types/uuid": "^8.3.4",
     "@veramo/cli": "4.2.0",
-    "did-resolver": "^4.0.1",
-    "nock": "^13.2.9",
-    "typescript": "4.6.4"
+    "did-resolver": "^4.1.0",
+    "nock": "^13.2.9"
   },
   "files": [
     "dist/**/*",
