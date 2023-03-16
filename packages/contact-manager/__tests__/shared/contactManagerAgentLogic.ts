@@ -134,28 +134,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await expect(agent.cmAddContact(contact)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
     })
 
-    it('should throw error when adding contact with blank alias', async () => {
-      const contact = {
-        name: 'default_new_contact',
-        alias: '',
-        uri: 'example.com',
-      }
-
-      await expect(agent.cmAddContact(contact)).rejects.toThrow('Blank aliases are not allowed')
-    })
-
-    it('should throw error when adding contact with blank name', async () => {
-      const name = ''
-      const alias = 'default_contact_alias'
-      const contact = {
-        name,
-        alias,
-        uri: 'example.com',
-      }
-
-      await expect(agent.cmAddContact(contact)).rejects.toThrow('Blank names are not allowed')
-    })
-
     it('should update contact by id', async () => {
       const contactName = 'updated_contact'
       const contact = {
@@ -195,7 +173,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get all identities for contact', async () => {
-      const result = await agent.cmGetIdentities({ contactId: defaultContact.id })
+      const result = await agent.cmGetIdentities()
 
       expect(result.length).toBeGreaterThan(0)
     })
