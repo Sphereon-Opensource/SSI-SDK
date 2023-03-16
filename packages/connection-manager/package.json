@@ -10,7 +10,8 @@
     }
   },
   "scripts": {
-    "build": "tsc --build"
+    "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
     "@sphereon/ssi-sdk-data-store-common": "^0.9.0",

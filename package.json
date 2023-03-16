@@ -8,6 +8,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "lerna run build && yarn build:copyfiles && yarn build:schema-api",
+    "build:clean": "lerna clean -y && lerna bootstrap && lerna run build-clean --concurrency 1 && yarn build:copyfiles && yarn build:schema-api",
     "build:schema-api": "lerna run extract-api && lerna run generate-plugin-schema",
     "build:copyfiles": "lerna run build:copyfiles",
     "bootstrap": "lerna bootstrap",
