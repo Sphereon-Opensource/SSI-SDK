@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "build": "tsc --build --clean && tsc --build",
+    "build": "tsc --build",
     "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
   },
   "dependencies": {

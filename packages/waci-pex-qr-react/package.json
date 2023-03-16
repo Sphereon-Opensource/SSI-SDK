@@ -11,7 +11,7 @@
     }
   },
   "scripts": {
-    "build": "tsc --build --clean && tsc --build"
+    "build": "tsc --build"
   },
   "dependencies": {
     "@veramo/core": "4.2.0",

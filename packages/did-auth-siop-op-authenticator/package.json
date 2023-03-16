@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "build": "tsc --build --clean && tsc --build"
+    "build": "tsc --build"
   },
   "dependencies": {
     "@sphereon/did-auth-siop": "^0.3.0-unstable.25",

@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "build": "tsc --build --clean && tsc --build"
+    "build": "tsc --build"
   },
   "dependencies": {
     "@sphereon/ssi-types": "^0.9.0",
