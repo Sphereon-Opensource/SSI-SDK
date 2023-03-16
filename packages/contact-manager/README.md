@@ -18,8 +18,8 @@ A Veramo contact manager plugin. This plugin manages contacts and identity confi
 
 For now the following connection types are supported:
 
-- OpenID
-- DID AUTH SIOP
+- OpenID Connect
+- Self Issued OpenID v2
 
 ## Available functions
 

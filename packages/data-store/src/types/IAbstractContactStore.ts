@@ -1,8 +1,10 @@
 import { FindOptionsWhere } from 'typeorm'
 import { ContactEntity } from '../entities/contact/ContactEntity'
+import { IdentityEntity } from '../entities/contact/IdentityEntity';
 import { IBasicIdentity, IContact, IIdentity } from './contact'
 
 export type FindContactArgs = FindOptionsWhere<ContactEntity>[]
+export type FindIdentityArgs = FindOptionsWhere<IdentityEntity>[]
 
 export interface IGetContactArgs {
   contactId: string
@@ -16,6 +18,7 @@ export interface IAddContactArgs {
   name: string
   alias: string
   uri?: string
+  identities?: Array<IBasicIdentity>
 }
 
 export interface IUpdateContactArgs {
@@ -31,7 +34,7 @@ export interface IGetIdentityArgs {
 }
 
 export interface IGetIdentitiesArgs {
-  contactId: string
+  filter?: FindIdentityArgs
 }
 
 export interface IAddIdentityArgs {

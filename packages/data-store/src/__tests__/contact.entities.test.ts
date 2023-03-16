@@ -61,6 +61,30 @@ describe('Database entities test', () => {
     expect(fromDb?.uri).toEqual(contact.uri)
   })
 
+  it('should throw error when saving contact with blank name', async () => {
+    const contact = {
+      name: '',
+      alias: 'test_alias',
+      uri: 'example.com',
+    }
+
+    const contactEntity: ContactEntity = contactEntityFrom(contact)
+
+    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrow('Blank names are not allowed')
+  })
+
+  it('should throw error when saving contact with blank alias', async () => {
+    const contact = {
+      name: 'test_name',
+      alias: '',
+      uri: 'example.com',
+    }
+
+    const contactEntity: ContactEntity = contactEntityFrom(contact)
+
+    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrow('Blank aliases are not allowed')
+  })
+
   it('Should enforce unique name for a contact', async () => {
     const contactName = 'non_unique_name'
     const contact1 = {
@@ -184,6 +208,76 @@ describe('Database entities test', () => {
     expect(fromDb?.identifier.type).toEqual(identity.identifier.type)
   })
 
+  it('should throw error when saving identity with blank alias', async () => {
+    const identity = {
+      alias: '',
+      identifier: {
+        type: CorrelationIdentifierEnum.DID,
+        correlationId: 'example_did',
+      },
+    }
+
+    const identityEntity: IdentityEntity = identityEntityFrom(identity)
+
+    await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrow('Blank aliases are not allowed')
+  })
+
+  it('should throw error when saving identity with blank correlation id', async () => {
+    const identity = {
+      alias: 'example_did',
+      identifier: {
+        type: CorrelationIdentifierEnum.DID,
+        correlationId: '',
+      },
+    }
+
+    const identityEntity: IdentityEntity = identityEntityFrom(identity)
+
+    await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrow('Blank correlation ids are not allowed')
+  })
+
+  it('should throw error when saving identity with blank metadata label', async () => {
+    const correlationId = 'example_did'
+    const identity = {
+      alias: correlationId,
+      identifier: {
+        type: CorrelationIdentifierEnum.DID,
+        correlationId,
+      },
+      metadata: [
+        {
+          label: '',
+          value: 'example_value',
+        },
+      ],
+    }
+
+    const identityEntity: IdentityEntity = identityEntityFrom(identity)
+
+    await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrow('Blank metadata labels are not allowed')
+  })
+
+  it('should throw error when saving identity with blank metadata value', async () => {
+    const correlationId = 'example_did'
+    const identity = {
+      alias: correlationId,
+      identifier: {
+        type: CorrelationIdentifierEnum.DID,
+        correlationId,
+      },
+      metadata: [
+        {
+          label: 'example_label',
+          value: '',
+        },
+      ],
+    }
+
+    const identityEntity: IdentityEntity = identityEntityFrom(identity)
+
+    await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrow('Blank metadata values are not allowed')
+  })
+
   it('Should save identity with openid connection to database', async () => {
     const correlationId = 'example.com'
     const identity = {
@@ -193,7 +287,7 @@ describe('Database entities test', () => {
         correlationId,
       },
       connection: {
-        type: ConnectionTypeEnum.OPENID,
+        type: ConnectionTypeEnum.OPENID_CONNECT,
         config: {
           clientId: '138d7bf8-c930-4c6e-b928-97d3a4928b01',
           clientSecret: '03b3955f-d020-4f2a-8a27-4e452d4e27a0',
@@ -229,7 +323,7 @@ describe('Database entities test', () => {
   })
 
   it('Should save identity with didauth connection to database', async () => {
-    const correlationId = 'example.comblabvlalalalal'
+    const correlationId = 'example.com'
     const identity = {
       alias: correlationId,
       identifier: {
@@ -237,7 +331,7 @@ describe('Database entities test', () => {
         correlationId,
       },
       connection: {
-        type: ConnectionTypeEnum.DIDAUTH,
+        type: ConnectionTypeEnum.SIOPv2,
         config: {
           identifier: {
             did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
@@ -276,7 +370,7 @@ describe('Database entities test', () => {
 
   it('Should save connection with openid config to database', async () => {
     const connection = {
-      type: ConnectionTypeEnum.OPENID,
+      type: ConnectionTypeEnum.OPENID_CONNECT,
       config: {
         clientId: '138d7bf8-c930-4c6e-b928-97d3a4928b01',
         clientSecret: '03b3955f-d020-4f2a-8a27-4e452d4e27a0',
@@ -310,7 +404,7 @@ describe('Database entities test', () => {
 
   it('Should save connection with didauth config to database', async () => {
     const connection = {
-      type: ConnectionTypeEnum.DIDAUTH,
+      type: ConnectionTypeEnum.SIOPv2,
       config: {
         identifier: {
           did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
@@ -414,7 +508,7 @@ describe('Database entities test', () => {
         correlationId,
       },
       connection: {
-        type: ConnectionTypeEnum.OPENID,
+        type: ConnectionTypeEnum.OPENID_CONNECT,
         config: {
           clientId: '138d7bf8-c930-4c6e-b928-97d3a4928b01',
           clientSecret: '03b3955f-d020-4f2a-8a27-4e452d4e27a0',
@@ -507,7 +601,7 @@ describe('Database entities test', () => {
         correlationId,
       },
       connection: {
-        type: ConnectionTypeEnum.DIDAUTH,
+        type: ConnectionTypeEnum.SIOPv2,
         config: {
           identifier: {
             did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
@@ -595,7 +689,7 @@ describe('Database entities test', () => {
         correlationId,
       },
       connection: {
-        type: ConnectionTypeEnum.DIDAUTH,
+        type: ConnectionTypeEnum.SIOPv2,
         config: {
           identifier: {
             did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',

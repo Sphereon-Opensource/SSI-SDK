@@ -17,13 +17,20 @@ import { ConnectionEntity, connectionEntityFrom } from './ConnectionEntity'
 import { BasicMetadataItem, IBasicIdentity } from '../../types/contact'
 import { ContactEntity } from './ContactEntity'
 import { IdentityMetadataItemEntity, metadataItemEntityFrom } from './IdentityMetadataItemEntity'
+import { IsNotEmpty, validate } from 'class-validator'
 
 @Entity('Identity')
 export class IdentityEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'alias', length: 255, nullable: false, unique: true })
+  @Column({
+    name: 'alias',
+    length: 255,
+    nullable: false,
+    unique: true,
+  })
+  @IsNotEmpty({ message: 'Blank aliases are not allowed' })
   alias!: string
 
   @OneToOne(() => CorrelationIdentifierEntity, (identifier: CorrelationIdentifierEntity) => identifier.identity, {
@@ -61,11 +68,24 @@ export class IdentityEntity extends BaseEntity {
   })
   contact!: ContactEntity
 
+  @Column({ name: 'contactId', nullable: true })
+  contactId!: string
+
   // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.
   @BeforeInsert()
   @BeforeUpdate()
   updateUpdatedDate() {
     this.lastUpdatedAt = new Date()
+  }
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async validate() {
+    const validation = await validate(this)
+    if (validation.length > 0) {
+      return Promise.reject(Error(validation[0].constraints?.isNotEmpty))
+    }
+    return
   }
 }
 

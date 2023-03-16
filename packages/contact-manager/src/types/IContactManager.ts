@@ -26,6 +26,7 @@ export interface IAddContactArgs {
   name: string
   alias: string
   uri?: string
+  identities?: Array<IBasicIdentity>
 }
 
 export interface IUpdateContactArgs {

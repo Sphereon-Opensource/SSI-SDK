@@ -21,7 +21,7 @@ export class CreateContacts1659463069549 implements MigrationInterface {
       `CREATE TABLE "Identity" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "contactId" varchar, CONSTRAINT "UQ_Alias" UNIQUE ("alias"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "Connection" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('openid','didauth','siopv2+oidc4vp') ) NOT NULL, "identityId" varchar, CONSTRAINT "REL_Connection_identityId" UNIQUE ("identityId"))`
+      `CREATE TABLE "Connection" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('OpenIdConnect','SIOPv2','SIOPv2+OIDC4VP') ) NOT NULL, "identityId" varchar, CONSTRAINT "REL_Connection_identityId" UNIQUE ("identityId"))`
     )
     await queryRunner.query(`DROP INDEX "IDX_BaseConfigEntity_type"`)
     await queryRunner.query(
@@ -58,7 +58,7 @@ export class CreateContacts1659463069549 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "Identity"`)
     await queryRunner.query(`ALTER TABLE "temporary_Identity" RENAME TO "Identity"`)
     await queryRunner.query(
-      `CREATE TABLE "temporary_Connection" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('openid','didauth','siopv2+oidc4vp') ) NOT NULL, "identityId" varchar, CONSTRAINT "REL_Connection_identityId" UNIQUE ("identityId"), CONSTRAINT "FK_Connection_identityId" FOREIGN KEY ("identityId") REFERENCES "Identity" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
+      `CREATE TABLE "temporary_Connection" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('OpenIdConnect','SIOPv2','SIOPv2+OIDC4VP') ) NOT NULL, "identityId" varchar, CONSTRAINT "REL_Connection_identityId" UNIQUE ("identityId"), CONSTRAINT "FK_Connection_identityId" FOREIGN KEY ("identityId") REFERENCES "Identity" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
     )
     await queryRunner.query(`INSERT INTO "temporary_Connection"("id", "type", "identityId") SELECT "id", "type", "identityId" FROM "Connection"`)
     await queryRunner.query(`DROP TABLE "Connection"`)
@@ -68,7 +68,7 @@ export class CreateContacts1659463069549 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`ALTER TABLE "Connection" RENAME TO "temporary_Connection"`)
     await queryRunner.query(
-      `CREATE TABLE "Connection" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('openid','didauth','siopv2+oidc4vp') ) NOT NULL, "identityId" varchar, CONSTRAINT "REL_Connection_identityId" UNIQUE ("identityId"))`
+      `CREATE TABLE "Connection" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('OpenIdConnect','SIOPv2','SIOPv2+OIDC4VP') ) NOT NULL, "identityId" varchar, CONSTRAINT "REL_Connection_identityId" UNIQUE ("identityId"))`
     )
     await queryRunner.query(`INSERT INTO "Connection"("id", "type", "identityId") SELECT "id", "type", "identityId" FROM "Connection"`)
     await queryRunner.query(`DROP TABLE "temporary_Connection"`)

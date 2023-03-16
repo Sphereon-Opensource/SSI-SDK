@@ -1,6 +1,7 @@
 {
   "extends": "../tsconfig-base.json",
   "compilerOptions": {
+    "emitDecoratorMetadata": true,
     "rootDir": "src",
     "outDir": "dist",
     "declarationDir": "dist",

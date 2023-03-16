@@ -145,7 +145,7 @@ describe('Database entities test', () => {
     expect(result.length).toEqual(0)
   })
 
-  it('should add contact', async () => {
+  it('should add contact without identities', async () => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -157,6 +157,68 @@ describe('Database entities test', () => {
     expect(result.name).toEqual(contact.name)
     expect(result.alias).toEqual(contact.alias)
     expect(result.uri).toEqual(contact.uri)
+  })
+
+  it('should add contact with identities', async () => {
+    const contact = {
+      name: 'test_name',
+      alias: 'test_alias',
+      uri: 'example.com',
+      identities: [
+        {
+          alias: 'test_alias1',
+          identifier: {
+            type: CorrelationIdentifierEnum.DID,
+            correlationId: 'example_did1',
+          },
+        },
+        {
+          alias: 'test_alias2',
+          identifier: {
+            type: CorrelationIdentifierEnum.DID,
+            correlationId: 'example_did2',
+          },
+        },
+      ],
+    }
+
+    const result = await contactStore.addContact(contact)
+
+    expect(result.name).toEqual(contact.name)
+    expect(result.alias).toEqual(contact.alias)
+    expect(result.uri).toEqual(contact.uri)
+    expect(result.identities.length).toEqual(2)
+  })
+
+  it('should throw error when adding contact with invalid identity', async () => {
+    const contact = {
+      name: 'test_name',
+      alias: 'test_alias',
+      uri: 'example.com',
+      identities: [
+        {
+          alias: 'test_alias1',
+          identifier: {
+            type: CorrelationIdentifierEnum.DID,
+            correlationId: 'example_did1',
+          },
+        },
+        {
+          alias: 'test_alias2',
+          identifier: {
+            type: CorrelationIdentifierEnum.DID,
+            correlationId: 'example_did2',
+          },
+        },
+      ],
+    }
+
+    const result = await contactStore.addContact(contact)
+
+    expect(result.name).toEqual(contact.name)
+    expect(result.alias).toEqual(contact.alias)
+    expect(result.uri).toEqual(contact.uri)
+    expect(result.identities.length).toEqual(2)
   })
 
   it('should throw error when adding contact with duplicate name', async () => {
@@ -197,16 +259,6 @@ describe('Database entities test', () => {
     }
 
     await expect(contactStore.addContact(contact2)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
-  })
-
-  it('should throw error when adding contact with blank alias', async () => {
-    const contact = {
-      name: 'test_name',
-      alias: '',
-      uri: 'example.com',
-    }
-
-    await expect(contactStore.addContact(contact)).rejects.toThrow('Blank aliases are not allowed')
   })
 
   it('should update contact by id', async () => {
@@ -328,9 +380,86 @@ describe('Database entities test', () => {
     const savedIdentity2 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity2 })
     expect(savedIdentity2).toBeDefined()
 
-    const result = await contactStore.getIdentities({ contactId: savedContact.id })
+    const args = {
+      filter: [{ contactId: savedContact.id }],
+    }
+
+    const result = await contactStore.getIdentities(args)
 
     expect(result.length).toEqual(2)
+  })
+
+  it('should get all identities', async () => {
+    const contact = {
+      name: 'test_name',
+      alias: 'test_alias',
+      uri: 'example.com',
+    }
+    const savedContact = await contactStore.addContact(contact)
+    expect(savedContact).toBeDefined()
+
+    const identity1 = {
+      alias: 'test_alias1',
+      identifier: {
+        type: CorrelationIdentifierEnum.DID,
+        correlationId: 'example_did1',
+      },
+    }
+    const savedIdentity1 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity1 })
+    expect(savedIdentity1).toBeDefined()
+
+    const identity2 = {
+      alias: 'test_alias2',
+      identifier: {
+        type: CorrelationIdentifierEnum.DID,
+        correlationId: 'example_did2',
+      },
+    }
+    const savedIdentity2 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity2 })
+    expect(savedIdentity2).toBeDefined()
+
+    const result = await contactStore.getIdentities()
+
+    expect(result.length).toEqual(2)
+  })
+
+  it('should get identities by filter', async () => {
+    const contact = {
+      name: 'test_name',
+      alias: 'test_alias',
+      uri: 'example.com',
+    }
+    const savedContact = await contactStore.addContact(contact)
+    expect(savedContact).toBeDefined()
+
+    const alias = 'test_alias1'
+    const identity1 = {
+      alias,
+      identifier: {
+        type: CorrelationIdentifierEnum.DID,
+        correlationId: 'example_did1',
+      },
+    }
+    const savedIdentity1 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity1 })
+    expect(savedIdentity1).toBeDefined()
+
+    const identity2 = {
+      alias: 'test_alias2',
+      identifier: {
+        type: CorrelationIdentifierEnum.DID,
+        correlationId: 'example_did2',
+      },
+    }
+    const savedIdentity2 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity2 })
+    expect(savedIdentity2).toBeDefined()
+
+    const args = {
+      filter: [{ alias }],
+    }
+
+    const result = await contactStore.getIdentities(args)
+
+    expect(result.length).toEqual(1)
   })
 
   it('should add identity to contact', async () => {

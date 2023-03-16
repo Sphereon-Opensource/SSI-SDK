@@ -66,14 +66,8 @@ export class ContactStore extends AbstractContactStore {
     return result.map((contact: ContactEntity) => this.contactFrom(contact))
   }
 
-  addContact = async ({ name, alias, uri }: IAddContactArgs): Promise<IContact> => {
-    if (!name || /^\s*$/.test(name)) {
-      return Promise.reject(Error('Blank names are not allowed'))
-    }
-
-    if (!alias || /^\s*$/.test(alias)) {
-      return Promise.reject(Error('Blank aliases are not allowed'))
-    }
+  addContact = async (args: IAddContactArgs): Promise<IContact> => {
+    const { name, alias, uri, identities } = args
 
     const result = await (await this.dbConnection).getRepository(ContactEntity).findOne({
       where: [{ name }, { alias }],
@@ -83,7 +77,19 @@ export class ContactStore extends AbstractContactStore {
       return Promise.reject(Error(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`))
     }
 
-    const contactEntity = contactEntityFrom({ name, alias, uri })
+    for (const identity of identities ?? []) {
+      if (identity.identifier.type === CorrelationIdentifierEnum.URL) {
+        if (!identity.connection) {
+          return Promise.reject(Error(`Identity with correlation type ${CorrelationIdentifierEnum.URL} should contain a connection`))
+        }
+
+        if (!this.hasCorrectConfig(identity.connection.type, identity.connection.config)) {
+          return Promise.reject(Error(`Connection type ${identity.connection.type}, does not match for provided config`))
+        }
+      }
+    }
+
+    const contactEntity = contactEntityFrom({ name, alias, uri, identities })
     debug('Adding contact', name)
     const createdResult = await (await this.dbConnection).getRepository(ContactEntity).save(contactEntity)
 
@@ -130,16 +136,12 @@ export class ContactStore extends AbstractContactStore {
     return this.identityFrom(result)
   }
 
-  getIdentities = async ({ contactId }: IGetIdentitiesArgs): Promise<Array<IIdentity>> => {
-    const result = await (await this.dbConnection).getRepository(ContactEntity).findOne({
-      where: { id: contactId },
+  getIdentities = async (args?: IGetIdentitiesArgs): Promise<Array<IIdentity>> => {
+    const result = await (await this.dbConnection).getRepository(IdentityEntity).find({
+      ...(args?.filter && { where: args?.filter }),
     })
 
-    if (!result) {
-      return Promise.reject(Error(`No contact found for id: ${contactId}`))
-    }
-
-    return result.identities.map((identity: IdentityEntity) => this.identityFrom(identity))
+    return result.map((identity: IdentityEntity) => this.identityFrom(identity))
   }
 
   addIdentity = async ({ identity, contactId }: IAddIdentityArgs): Promise<IIdentity> => {
@@ -262,7 +264,7 @@ export class ContactStore extends AbstractContactStore {
 
   private configFrom = (type: ConnectionTypeEnum, config: BaseConfigEntity): ConnectionConfig => {
     switch (type) {
-      case ConnectionTypeEnum.OPENID:
+      case ConnectionTypeEnum.OPENID_CONNECT:
         return {
           id: (config as OpenIdConfigEntity).id,
           clientId: (config as OpenIdConfigEntity).clientId,
@@ -273,7 +275,7 @@ export class ContactStore extends AbstractContactStore {
           dangerouslyAllowInsecureHttpRequests: (config as OpenIdConfigEntity).dangerouslyAllowInsecureHttpRequests,
           clientAuthMethod: (config as OpenIdConfigEntity).clientAuthMethod,
         }
-      case ConnectionTypeEnum.DIDAUTH:
+      case ConnectionTypeEnum.SIOPv2:
         return {
           id: (config as DidAuthConfigEntity).id,
           identifier: { did: (config as DidAuthConfigEntity).identifier, provider: '', keys: [], services: [] },
@@ -288,9 +290,9 @@ export class ContactStore extends AbstractContactStore {
 
   private hasCorrectConfig(type: ConnectionTypeEnum, config: BasicConnectionConfig): boolean {
     switch (type) {
-      case ConnectionTypeEnum.OPENID:
+      case ConnectionTypeEnum.OPENID_CONNECT:
         return this.isOpenIdConfig(config)
-      case ConnectionTypeEnum.DIDAUTH:
+      case ConnectionTypeEnum.SIOPv2:
         return this.isDidAuthConfig(config)
       default:
         throw new Error('Connection type not supported')

@@ -1,8 +1,8 @@
 import { IIdentifier } from '@veramo/core'
 
 export enum BaseConfigType {
-  OPENID = 'OpenIdConfig',
-  DIDAUTH = 'DidAuthConfig',
+  OPENID_CONNECT = 'OpenIdConnectConfig',
+  SIOPv2 = 'SIOPv2Config',
 }
 
 export enum ConnectionRoleEnum {
@@ -11,9 +11,9 @@ export enum ConnectionRoleEnum {
 }
 
 export enum ConnectionTypeEnum {
-  OPENID = 'openid',
-  DIDAUTH = 'didauth',
-  SIOPV2_OIDC4VP = 'siopv2+oidc4vp',
+  OPENID_CONNECT = 'OpenIdConnect',
+  SIOPv2 = 'SIOPv2',
+  SIOPV2_OIDC4VP = 'SIOPv2+OIDC4VP',
 }
 
 export enum CorrelationIdentifierEnum {
@@ -30,7 +30,12 @@ export interface IContact {
   createdAt: Date
   lastUpdatedAt: Date
 }
-export declare type BasicContact = Omit<IContact, 'id' | 'identities' | 'createdAt' | 'lastUpdatedAt'>
+export interface IBasicContact {
+  name: string
+  alias: string
+  uri?: string
+  identities?: Array<IBasicIdentity>
+}
 
 export interface IIdentity {
   id: string

@@ -10,8 +10,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { BasicContact } from '../../types/contact'
-import { IdentityEntity } from './IdentityEntity'
+import { IBasicContact, IBasicIdentity } from '../../types/contact'
+import { IdentityEntity, identityEntityFrom } from './IdentityEntity'
+import { IsNotEmpty, validate } from 'class-validator'
 
 @Entity('Contact')
 export class ContactEntity extends BaseEntity {
@@ -19,9 +20,11 @@ export class ContactEntity extends BaseEntity {
   id!: string
 
   @Column({ name: 'name', length: 255, nullable: false, unique: true })
+  @IsNotEmpty({ message: 'Blank names are not allowed' })
   name!: string
 
   @Column({ name: 'alias', length: 255, nullable: false, unique: true })
+  @IsNotEmpty({ message: 'Blank aliases are not allowed' })
   alias!: string
 
   @Column({ name: 'uri', length: 255 })
@@ -48,13 +51,26 @@ export class ContactEntity extends BaseEntity {
   updateUpdatedDate() {
     this.lastUpdatedAt = new Date()
   }
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async validate() {
+    const validation = await validate(this)
+    if (validation.length > 0) {
+      return Promise.reject(Error(validation[0].constraints?.isNotEmpty))
+    }
+    return
+  }
 }
 
-export const contactEntityFrom = (args: BasicContact): ContactEntity => {
+export const contactEntityFrom = (args: IBasicContact): ContactEntity => {
   const contactEntity = new ContactEntity()
   contactEntity.name = args.name
   contactEntity.alias = args.alias
   contactEntity.uri = args.uri
+  if (args.identities) {
+    contactEntity.identities = args.identities.map((identity: IBasicIdentity) => identityEntityFrom(identity))
+  }
 
   return contactEntity
 }

@@ -38,9 +38,9 @@ export const connectionEntityFrom = (connection: IBasicConnection): ConnectionEn
 
 const configEntityFrom = (type: ConnectionTypeEnum, config: BasicConnectionConfig): BaseConfigEntity => {
   switch (type) {
-    case ConnectionTypeEnum.OPENID:
+    case ConnectionTypeEnum.OPENID_CONNECT:
       return openIdConfigEntityFrom(config as IOpenIdConfig)
-    case ConnectionTypeEnum.DIDAUTH:
+    case ConnectionTypeEnum.SIOPv2:
       return didAuthConfigEntityFrom(config as IDidAuthConfig)
     default:
       throw new Error('Connection type not supported')
