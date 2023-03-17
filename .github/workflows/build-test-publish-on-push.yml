@@ -17,7 +17,7 @@ jobs:
       GH_USER: ${{secrets.GH_USER}}
       GH_EMAIL: ${{secrets.GH_EMAIL}}
       VC_HTTP_API_AUTH_TOKEN: ${{secrets.VC_HTTP_API_AUTH_TOKEN}}
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:10.10
