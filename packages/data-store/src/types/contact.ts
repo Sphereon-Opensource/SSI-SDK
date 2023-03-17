@@ -11,9 +11,9 @@ export enum ConnectionRoleEnum {
 }
 
 export enum ConnectionTypeEnum {
-  OPENID_CONNECT = 'OpenIdConnect',
+  OPENID_CONNECT = 'OIDC',
   SIOPv2 = 'SIOPv2',
-  SIOPV2_OIDC4VP = 'SIOPv2+OIDC4VP',
+  SIOPv2_OpenID4VP = 'SIOPv2+OpenID4VP',
 }
 
 export enum CorrelationIdentifierEnum {
