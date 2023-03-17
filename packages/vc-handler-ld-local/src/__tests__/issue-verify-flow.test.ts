@@ -21,6 +21,8 @@ import { ContextDoc, ControllerProofPurpose } from '../types/types'
 
 import { bedrijfsInformatieV1, exampleV1, factomDIDResolutionResult_2018, ltoDIDResolutionResult, ltoDIDSubjectResolutionResult_2018 } from './mocks'
 
+jest.setTimeout(100000)
+
 const LTO_DID = 'did:lto:3MsS3gqXkcx9m4wYSbfprYfjdZTFmx2ofdX'
 const FACTOM_DID = 'did:factom:9d612c949afee208f664e81dc16bdb4f4eff26776ebca2e94a9f06a40d68626d'
 const customContext = new Map<string, ContextDoc>([

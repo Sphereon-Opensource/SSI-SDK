@@ -10,7 +10,8 @@
     }
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
     "@digitalcredentials/did-method-key": "^2.0.3",
