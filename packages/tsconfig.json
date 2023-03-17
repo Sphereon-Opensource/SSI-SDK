@@ -18,6 +18,7 @@
     { "path": "connection-manager" },
     { "path": "data-store" },
     { "path": "wellknown-did-verifier" },
-    { "path": "jwk-did-provider" }
+    { "path": "jwk-did-provider" },
+    { "path": "vp-message-handler" }
   ]
 }

@@ -96,6 +96,7 @@ export interface IPresentation {
   verifiableCredential?: W3CVerifiableCredential[]
   presentation_submission?: PresentationSubmission
   holder?: string
+  verifier?: string
 
   [x: string]: any
 }
@@ -191,6 +192,8 @@ export interface JwtDecodedVerifiablePresentation {
   nbf: string
   sub: string
   jti: string
+  aud: string
+  iat: string
 
   [x: string]: any
 }

@@ -1,5 +1,6 @@
 import { ClientCredentialAuthenticator, UsernamePasswordAuthenticator } from '../src'
 import * as process from 'process'
+jest.setTimeout(100000)
 
 describe('@sphereon/ms-authenticator', () => {
   it('should authenticate using clientCredential', async () => {
