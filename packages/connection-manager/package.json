@@ -15,7 +15,7 @@
   "dependencies": {
     "@sphereon/ssi-sdk-data-store-common": "^0.9.0",
     "cross-fetch": "^3.1.5",
-    "typeorm": "^0.3.12"
+    "typeorm": "^0.3.10"
   },
   "devDependencies": {
     "@veramo/cli": "4.2.0"

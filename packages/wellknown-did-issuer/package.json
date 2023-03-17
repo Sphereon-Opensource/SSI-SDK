@@ -19,7 +19,7 @@
     "@veramo/utils": "4.2.0",
     "debug": "^4.3.4",
     "did-jwt-vc": "2.1.14",
-    "typeorm": "^0.3.12",
+    "typeorm": "^0.3.10",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
