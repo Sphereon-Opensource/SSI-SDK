@@ -173,7 +173,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get all identities for contact', async () => {
-      const result = await agent.cmGetIdentities()
+      const result = await agent.cmGetIdentities({ filter: [{ contactId: defaultContact.id}] })
 
       expect(result.length).toBeGreaterThan(0)
     })
