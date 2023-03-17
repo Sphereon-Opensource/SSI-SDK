@@ -184,6 +184,15 @@ export class CredentialMapper {
       }
       presentation.holder = decoded.iss
     }
+    if (decoded.aud) {
+      const verifier = presentation.verifier
+      if (verifier) {
+        if (verifier !== decoded.aud) {
+          throw new Error(`Inconsistent holders between JWT claim (${decoded.iss}) and VC value (${verifier})`)
+        }
+      }
+      presentation.verifier = decoded.aud
+    }
     if (decoded.jti) {
       const id = presentation.id
       if (id && id !== decoded.jti) {
@@ -208,7 +217,10 @@ export class CredentialMapper {
     }
   }
 
-  static toUniformPresentation(presentation: OriginalVerifiablePresentation, opts?: { maxTimeSkewInMS?: number }): IVerifiablePresentation {
+  static toUniformPresentation(
+    presentation: OriginalVerifiablePresentation,
+    opts?: { maxTimeSkewInMS?: number; addContextIfMissing?: boolean }
+  ): IVerifiablePresentation {
     const original = presentation
     const decoded = CredentialMapper.decodeVerifiablePresentation(original)
     const isJwtEncoded: boolean = CredentialMapper.isJwtEncoded(original)
@@ -217,6 +229,12 @@ export class CredentialMapper {
       isJwtEncoded || isJwtDecoded
         ? CredentialMapper.jwtDecodedPresentationToUniformPresentation(decoded as JwtDecodedVerifiablePresentation, false)
         : (decoded as IVerifiablePresentation)
+
+    // At time of writing Velocity Networks does not conform to specification. Adding bare minimum @context section to stop parsers from crashing and whatnot
+    if (opts?.addContextIfMissing && !uniformPresentation['@context']) {
+      uniformPresentation['@context'] = ['https://www.w3.org/2018/credentials/v1']
+    }
+
     uniformPresentation.verifiableCredential = uniformPresentation.verifiableCredential?.map((vc) =>
       CredentialMapper.toUniformCredential(vc, opts)
     ) as IVerifiableCredential[] // We cast it because we IPresentation needs a VC. The internal Credential doesn't have the required Proof anymore (that is intended)
