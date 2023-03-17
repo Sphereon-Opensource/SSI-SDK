@@ -219,7 +219,7 @@ export class CredentialMapper {
 
   static toUniformPresentation(
     presentation: OriginalVerifiablePresentation,
-    opts?: { maxTimeSkewInMS?: number; repairMissingVpContext?: boolean }
+    opts?: { maxTimeSkewInMS?: number; addContextIfMissing?: boolean }
   ): IVerifiablePresentation {
     const original = presentation
     const decoded = CredentialMapper.decodeVerifiablePresentation(original)
@@ -231,7 +231,7 @@ export class CredentialMapper {
         : (decoded as IVerifiablePresentation)
 
     // At time of writing Velocity Networks does not conform to specification. Adding bare minimum @context section to stop parsers from crashing and whatnot
-    if (opts?.repairMissingVpContext && !uniformPresentation['@context']) {
+    if (opts?.addContextIfMissing && !uniformPresentation['@context']) {
       uniformPresentation['@context'] = ['https://www.w3.org/2018/credentials/v1']
     }
 

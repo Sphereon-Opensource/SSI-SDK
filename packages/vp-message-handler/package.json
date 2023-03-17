@@ -9,8 +9,8 @@
     "generate-plugin-schema": "yarn veramo dev extract-api"
   },
   "dependencies": {
-    "@veramo/core": "^4.2.0",
-    "@veramo/message-handler": "^4.2.0",
+    "@veramo/core": "4.2.0",
+    "@veramo/message-handler": "4.2.0",
     "@sphereon/ssi-types": "^0.9.0"
   },
   "devDependencies": {
