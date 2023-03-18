@@ -1,21 +1,21 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 
 export interface IQRCodeGenerator extends IPluginMethodMap {
-  didCommOobInvitationElement(
+  qrDIDCommOobInvitationElement(
     args: CreateElementArgs<QRType.DIDCOMM_V2_OOB_INVITATION, DIDCommV2OOBInvitationData>,
     context: IRequiredContext
   ): Promise<JSX.Element>
 
-  didCommOobInvitationValue(
+  qrDIDCommOobInvitationValue(
     args: CreateValueArgs<QRType.DIDCOMM_V2_OOB_INVITATION, DIDCommV2OOBInvitationData>,
     context: IRequiredContext
   ): Promise<string>
 
-  siopv2Element(args: CreateElementArgs<QRType.SIOPV2, SIOPv2DataWithScheme>, context: IRequiredContext): Promise<JSX.Element>
+  qrSIOPv2Element(args: CreateElementArgs<QRType.SIOPV2, SIOPv2DataWithScheme>, context: IRequiredContext): Promise<JSX.Element>
 
-  siopv2Value(args: CreateValueArgs<QRType.SIOPV2, SIOPv2DataWithScheme>, context: IRequiredContext): Promise<string>
+  qrSIOPv2Value(args: CreateValueArgs<QRType.SIOPV2, SIOPv2DataWithScheme>, context: IRequiredContext): Promise<string>
 
-  uriElement(args: CreateElementArgs<QRType.URI, URIData>, context: IRequiredContext): Promise<JSX.Element>
+  qrURIElement(args: CreateElementArgs<QRType.URI, URIData>, context: IRequiredContext): Promise<JSX.Element>
 }
 
 export interface CreateValueArgs<T extends QRType, D> {
@@ -42,15 +42,6 @@ export enum QRType {
   SIOPV2 = 'openid-vc',
   DIDCOMM_V2_OOB_INVITATION = 'https://didcomm.org/out-of-band/2.0/invitation',
 }
-
-/*
-
-export interface QRContent {
-  state?: string
-  nonce?: string
-  qrValue?: string
-}
-*/
 
 export type SIOPv2Scheme = 'openid' | 'openid-vc' | string
 export interface SIOPv2DataWithScheme {

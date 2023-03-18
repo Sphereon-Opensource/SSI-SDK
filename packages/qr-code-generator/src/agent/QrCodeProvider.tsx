@@ -18,21 +18,21 @@ import { generateQRCodeReactElementImpl } from './utils/ReactQr'
  */
 export class QrCodeProvider implements IAgentPlugin {
   readonly methods: IQRCodeGenerator = {
-    didCommOobInvitationElement: QrCodeProvider.didCommOobInvitationElement.bind(this),
-    didCommOobInvitationValue: QrCodeProvider.didCommOobInvitationValue.bind(this),
-    siopv2Element: QrCodeProvider.siopv2Element.bind(this),
-    siopv2Value: QrCodeProvider.siopv2Value.bind(this),
-    uriElement: QrCodeProvider.uriElement.bind(this),
+    qrDIDCommOobInvitationElement: QrCodeProvider.qrDIDCommOobInvitationElement.bind(this),
+    qrDIDCommOobInvitationValue: QrCodeProvider.qrDIDCommOobInvitationValue.bind(this),
+    qrSIOPv2Element: QrCodeProvider.qrSIOPv2Element.bind(this),
+    qrSIOPv2Value: QrCodeProvider.qrSIOPv2Value.bind(this),
+    qrURIElement: QrCodeProvider.qrURIElement.bind(this),
   }
 
   /** {@inheritDoc IQRCodeGenerator.uriElement} */
 
-  private static async uriElement(args: CreateElementArgs<QRType.URI, URIData>, context: IRequiredContext): Promise<JSX.Element> {
+  private static async qrURIElement(args: CreateElementArgs<QRType.URI, URIData>, context: IRequiredContext): Promise<JSX.Element> {
     return generateQRCodeReactElement(args, context)
   }
 
   /** {@inheritDoc IQRCodeGenerator.didCommOobInvitationValue} */
-  private static async didCommOobInvitationValue(
+  private static async qrDIDCommOobInvitationValue(
     args: CreateValueArgs<QRType.DIDCOMM_V2_OOB_INVITATION, DIDCommV2OOBInvitationData>,
     context: IRequiredContext
   ): Promise<string> {
@@ -43,11 +43,11 @@ export class QrCodeProvider implements IAgentPlugin {
   }
 
   /** {@inheritDoc IQRCodeGenerator.didCommOobInvitationElement} */
-  private static async didCommOobInvitationElement(
+  private static async qrDIDCommOobInvitationElement(
     args: CreateElementArgs<QRType.DIDCOMM_V2_OOB_INVITATION, DIDCommV2OOBInvitationData>,
     context: IRequiredContext
   ): Promise<JSX.Element> {
-    const content = await QrCodeProvider.didCommOobInvitationValue(args, context)
+    const content = await QrCodeProvider.qrDIDCommOobInvitationValue(args, context)
     return generateQRCodeReactElementImpl(
       {
         ...args,
@@ -59,7 +59,7 @@ export class QrCodeProvider implements IAgentPlugin {
   }
 
   /** {@inheritDoc IQRCodeGenerator.siopv2Value} */
-  private static async siopv2Value(args: CreateValueArgs<QRType.SIOPV2, SIOPv2DataWithScheme>, context: IRequiredContext): Promise<string> {
+  private static async qrSIOPv2Value(args: CreateValueArgs<QRType.SIOPV2, SIOPv2DataWithScheme>, context: IRequiredContext): Promise<string> {
     const { object } = args.data
     if (typeof object === 'string') {
       return object
@@ -71,8 +71,8 @@ export class QrCodeProvider implements IAgentPlugin {
   }
 
   /** {@inheritDoc IQRCodeGenerator.siopv2Element} */
-  private static async siopv2Element(args: CreateElementArgs<QRType.SIOPV2, SIOPv2DataWithScheme>, context: IRequiredContext): Promise<JSX.Element> {
-    const content = await QrCodeProvider.siopv2Value(args, context)
+  private static async qrSIOPv2Element(args: CreateElementArgs<QRType.SIOPV2, SIOPv2DataWithScheme>, context: IRequiredContext): Promise<JSX.Element> {
+    const content = await QrCodeProvider.qrSIOPv2Value(args, context)
     return generateQRCodeReactElementImpl(
       { ...args, data: { ...args.data, object: content } } as CreateElementArgs<QRType.SIOPV2, string>,
       args,

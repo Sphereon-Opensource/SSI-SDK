@@ -21,7 +21,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should create DIDComm V2 OOB Invitation qr code value', async () => {
-      await agent.didCommOobInvitationValue(oobInvitationCreateValue).then((ssiQrCode) => {
+      await agent.qrDIDCommOobInvitationValue(oobInvitationCreateValue).then((ssiQrCode) => {
         expect(ssiQrCode).toEqual(
           'https://example.com/?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNTk5ZjM2MzgtYjU2My00OTM3LTk0ODctZGZlNTUwOTlkOTAwIiwiZnJvbSI6ImRpZDprZXk6enJmZGprZ2ZqZ2ZkamsiLCJib2R5Ijp7ImdvYWxfY29kZSI6InN0cmVhbWxpbmVkLXZwIiwiYWNjZXB0IjpbImRpZGNvbW0vdjIiXX19'
         )
@@ -29,7 +29,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should create DIDComm V2 OOB Invitation qr code with renderingProps', async () => {
-      await agent.didCommOobInvitationElement(oobInvitationCreateElement).then(async (ssiQrCode) => {
+      await agent.qrDIDCommOobInvitationElement(oobInvitationCreateElement).then(async (ssiQrCode) => {
         render(ssiQrCode)
 
         // The on generate created a div with test id 'test' and did:key value
@@ -44,13 +44,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should create SIOPv2 qr code value', async () => {
-      await agent.siopv2Value(siopv2CreateValue).then((ssiQrCode) => {
+      await agent.qrSIOPv2Value(siopv2CreateValue).then((ssiQrCode) => {
         expect(ssiQrCode).toEqual('openid-vc://?request_uri=https://test.com?id=23')
       })
     })
 
     it('should create SIOPv2 qr code with renderingProps', async () => {
-      await agent.siopv2Element(siopv2CreateElement).then(async (ssiQrCode) => {
+      await agent.qrSIOPv2Element(siopv2CreateElement).then(async (ssiQrCode) => {
         render(ssiQrCode)
 
         // The on generate created a div with test id 'test' and did:key value
