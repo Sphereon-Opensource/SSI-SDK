@@ -1,6 +1,6 @@
 import { FindOptionsWhere } from 'typeorm'
 import { ContactEntity } from '../entities/contact/ContactEntity'
-import { IdentityEntity } from '../entities/contact/IdentityEntity';
+import { IdentityEntity } from '../entities/contact/IdentityEntity'
 import { IBasicIdentity, IContact, IIdentity } from './contact'
 
 export type FindContactArgs = FindOptionsWhere<ContactEntity>[]
