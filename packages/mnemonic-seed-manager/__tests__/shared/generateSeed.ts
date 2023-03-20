@@ -8,11 +8,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
   describe('seed generator', () => {
     let agent: ConfiguredAgent
 
-    beforeAll(() => {
-      testContext.setup()
+    beforeAll(async () => {
+      await testContext.setup()
       agent = testContext.getAgent()
     })
-    afterAll(testContext.tearDown)
+    afterAll(async () => {
+      await testContext.tearDown()
+    })
 
     it('should generate a seed from a 12 word mnemonic', async () => {
       const mnemonicInfo = await agent.generateMnemonic({ bits: 128 })

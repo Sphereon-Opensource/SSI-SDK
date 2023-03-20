@@ -8,12 +8,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     let agent: ConfiguredAgent
     let mnemonicObj: IMnemonicInfoResult
 
-    beforeAll(() => {
-      testContext.setup()
+    beforeAll(async () => {
+      await testContext.setup()
       agent = testContext.getAgent()
     })
 
-    afterAll(testContext.tearDown)
+    afterAll( async () => {
+      await testContext.tearDown()
+    })
 
     beforeEach(async () => {
       mnemonicObj = await agent.generateMnemonic({ bits: 256, id: 'test id', persist: true })
