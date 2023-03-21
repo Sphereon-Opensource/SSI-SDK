@@ -86,35 +86,34 @@ export const siopv2CreateElement: CreateElementArgs<QRType.SIOPV2, SIOPv2DataWit
 }
 
 const openid4vcObjectReference: OpenID4VCIDataWithScheme = {
-  scheme: 'openid-credential-offer',
   credentialOfferUri: 'https://test.com?id=234',
 }
+
+export const credentialOffer = JSON.stringify({
+  credential_issuer: 'https://credential-issuer.example.com',
+  credentials: [
+    'UniversityDegree_JWT',
+    {
+      format: 'mso_mdoc',
+      doctype: 'org.iso.18013.5.1.mDL',
+    },
+  ],
+  grants: {
+    authorization_code: {
+      issuer_state: 'eyJhbGciOiJSU0Et...FYUaBy',
+    },
+    'urn:ietf:params:oauth:grant-type:pre-authorized_code': {
+      'pre-authorized_code': 'adhjhdjajkdkhjhdj',
+      user_pin_required: true,
+    },
+  },
+})
 
 const openid4vcObjectValue: OpenID4VCIDataWithScheme = {
   scheme: 'https',
   domain: 'test.com',
   path: '/credential-offer',
-  credentialOffer: encodeURIComponent(
-    JSON.stringify({
-      credential_issuer: 'https://credential-issuer.example.com',
-      credentials: [
-        'UniversityDegree_JWT',
-        {
-          format: 'mso_mdoc',
-          doctype: 'org.iso.18013.5.1.mDL',
-        },
-      ],
-      grants: {
-        authorization_code: {
-          issuer_state: 'eyJhbGciOiJSU0Et...FYUaBy',
-        },
-        'urn:ietf:params:oauth:grant-type:pre-authorized_code': {
-          'pre-authorized_code': 'adhjhdjajkdkhjhdj',
-          user_pin_required: true,
-        },
-      },
-    })
-  ),
+  credentialOffer,
 }
 
 const openid4vciDataReference: QRData<QRType.OIDC4VCI, OpenID4VCIDataWithScheme> = {
@@ -132,7 +131,7 @@ const openid4vciDataValue: QRData<QRType.OIDC4VCI, OpenID4VCIDataWithScheme> = {
 export const openid4vciCreateValueByReference: CreateValueArgs<QRType.OIDC4VCI, OpenID4VCIDataWithScheme> = {
   data: openid4vciDataReference,
   onGenerate: (result: ValueResult<QRType.OIDC4VCI, OpenID4VCIDataWithScheme>) => {
-    console.log(JSON.stringify(result, null, 2))
+    console.log(result, null, 2)
   },
 }
 
@@ -148,7 +147,7 @@ export const openid4vciCreateElementByReference: CreateElementArgs<QRType.OIDC4V
 export const openid4vciCreateValueByValue: CreateValueArgs<QRType.OIDC4VCI, OpenID4VCIDataWithScheme> = {
   data: openid4vciDataValue,
   onGenerate: (result: ValueResult<QRType.OIDC4VCI, OpenID4VCIDataWithScheme>) => {
-    console.log(JSON.stringify(result, null, 2))
+    console.log(result, null, 2)
   },
 }
 
@@ -156,7 +155,7 @@ export const openid4vciCreateElementByValue: CreateElementArgs<QRType.OIDC4VCI, 
   data: openid4vciDataValue,
   renderingProps,
   onGenerate: (result: ValueResult<QRType.OIDC4VCI, OpenID4VCIDataWithScheme>) => {
-    render(<div data-testid="test-div-openid4vci">{JSON.stringify(result.data.object.credentialOffer)}</div>)
+    render(<div data-testid="test-div-openid4vci">{result.data.object.credentialOffer}</div>)
     console.log(result.value)
   },
 }
