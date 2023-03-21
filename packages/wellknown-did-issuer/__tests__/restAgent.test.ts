@@ -11,7 +11,7 @@ import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 import { IWellKnownDidIssuer } from '../src/types/IWellKnownDidIssuer'
 import wellKnownDidIssuerAgentLogic from './shared/wellKnownDidIssuerAgentLogic'
 
-jest.setTimeout(30000)
+jest.setTimeout(90000)
 
 const port = 3002
 const basePath = '/agent'

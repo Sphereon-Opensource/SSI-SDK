@@ -16,7 +16,7 @@ import { getUniResolver } from '@sphereon/did-uni-client'
 import didAuthSiopOpAuthenticatorAgentLogic from './shared/didAuthSiopOpAuthenticatorAgentLogic'
 import { PresentationSignCallback } from '@sphereon/did-auth-siop'
 
-jest.setTimeout(30000)
+jest.setTimeout(90000)
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')

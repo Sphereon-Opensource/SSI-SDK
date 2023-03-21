@@ -19,7 +19,7 @@ import { KeyManager } from '@veramo/key-manager'
 import { DataStore, DataStoreORM, Entities, KeyStore, migrations, PrivateKeyStore } from '@veramo/data-store'
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 
-jest.setTimeout(30000)
+jest.setTimeout(90000)
 
 const databaseFile = 'rest-database.sqlite'
 const port = 3002

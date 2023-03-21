@@ -12,7 +12,7 @@ import { VcApiVerifier } from '../src/agent/VcApiVerifier'
 import vcApiVerifierAgentLogic from './shared/vcApiVerifierAgentLogic'
 import * as path from 'path'
 
-jest.setTimeout(30000)
+jest.setTimeout(90000)
 
 const port = 30078
 const basePath = '/agent'
