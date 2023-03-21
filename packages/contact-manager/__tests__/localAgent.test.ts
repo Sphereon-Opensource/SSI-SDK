@@ -2,7 +2,7 @@ import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 import { Connection } from 'typeorm'
 
-jest.setTimeout(90000)
+jest.setTimeout(30000)
 
 import contactManagerAgentLogic from './shared/contactManagerAgentLogic'
 

@@ -13,7 +13,7 @@ import { SphereonBbsBlsSignature2020, SphereonEd25519Signature2018, SphereonEd25
 
 import vcHandlerLocalAgentLogic from './shared/vcHandlerLocalAgentLogic'
 
-jest.setTimeout(90000)
+jest.setTimeout(30000)
 
 const port = 4002
 const basePath = '/agent'

@@ -11,7 +11,7 @@ import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 import { IContactManager } from '../src/types/IContactManager'
 import contactManagerAgentLogic from './shared/contactManagerAgentLogic'
 
-jest.setTimeout(90000)
+jest.setTimeout(30000)
 
 const port = 3002
 const basePath = '/agent'

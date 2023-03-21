@@ -1,7 +1,7 @@
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 import { getConfig } from '@veramo/cli/build/setup'
 
-jest.setTimeout(90000)
+jest.setTimeout(30000)
 
 import { LdDefaultContexts } from '../ld-default-contexts'
 import { SphereonEd25519Signature2018 } from '../suites/Ed25519Signature2018'

@@ -11,7 +11,7 @@ import { IWellKnownDidVerifier } from '../src/types/IWellKnownDidVerifier'
 import { ServiceTypesEnum } from '@sphereon/wellknown-dids-client'
 import wellKnownDidVerifierAgentLogic from './shared/wellKnownDidVerifierAgentLogic'
 
-jest.setTimeout(90000)
+jest.setTimeout(30000)
 
 const port = 3002
 const basePath = '/agent'

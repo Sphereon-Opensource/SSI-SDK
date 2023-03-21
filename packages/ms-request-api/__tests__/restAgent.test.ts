@@ -10,7 +10,7 @@ import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 import { IMsRequestApi } from '../src/types/IMsRequestApi'
 import msRequestApiAgentLogic from './shared/msRequestApiAgentLogic'
 
-jest.setTimeout(90000)
+jest.setTimeout(30000)
 
 const port = 3002
 const basePath = '/agent'

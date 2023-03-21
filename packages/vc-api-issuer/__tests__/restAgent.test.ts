@@ -11,7 +11,7 @@ import { IVcApiIssuer } from '../src'
 import { VcApiIssuer } from '../src'
 import vcApiIssuerAgentLogic from './shared/vcApiIssuerAgentLogic'
 
-jest.setTimeout(90000)
+jest.setTimeout(30000)
 
 const port = 3002
 const basePath = '/agent'

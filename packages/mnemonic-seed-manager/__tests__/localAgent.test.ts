@@ -12,7 +12,7 @@ import { Entities, KeyStore, migrations, PrivateKeyStore } from '@veramo/data-st
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 import { OrPromise } from '@veramo/utils'
 
-jest.setTimeout(90000)
+jest.setTimeout(30000)
 
 const KMS_SECRET_KEY = 'd17c8674f5db9396f8eecccde25e882bb0336316bc411ae38dc1f3dcd7ed100f'
 let databaseFile = 'database.sqlite'

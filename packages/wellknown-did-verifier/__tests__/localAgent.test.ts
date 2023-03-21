@@ -3,7 +3,7 @@ import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 import { ServiceTypesEnum } from '@sphereon/wellknown-dids-client'
 import wellKnownDidVerifierAgentLogic from './shared/wellKnownDidVerifierAgentLogic'
 
-jest.setTimeout(90000)
+jest.setTimeout(30000)
 
 let agent: any
 

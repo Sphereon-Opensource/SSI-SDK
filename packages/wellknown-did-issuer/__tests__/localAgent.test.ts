@@ -3,7 +3,7 @@ import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 import { Connection } from 'typeorm'
 import wellKnownDidIssuerAgentLogic from './shared/wellKnownDidIssuerAgentLogic'
 
-jest.setTimeout(90000)
+jest.setTimeout(30000)
 
 let agent: any
 let dbConnection: Promise<Connection>
