@@ -15,7 +15,6 @@
     { "path": "contact-manager" },
     { "path": "data-store" },
     { "path": "wellknown-did-verifier" },
-    { "path": "jwk-did-provider" },
-    { "path": "vp-message-handler" }
+    { "path": "jwk-did-provider" }
   ]
 }
