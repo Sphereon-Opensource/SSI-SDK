@@ -23,8 +23,6 @@ multiple packages (see lerna below). It contains plugins that extend the Veramo 
     - lto: [LTO Network DID creation and Verification Methods](./packages/lto-did-provider/README.md)
     - Mnemonic Seed: [Mnemonic Seed and Key Derivation](packages/mnemonic-seed-manager/README.md)
 - Verifiable Credentials and Presentations:
-    - VC API Issuer: [Issue VCs using the VC (HTTP) Api v0.1](./packages/vc-api-issuer/README.md)
-    - VC API Verifier: [Verify VCs and VPs using the VC (HTTP) Api v0.1](./packages/vc-api-verifier/README.md)
     - Json-LD VC handler: [Issues and verifies JSON-LD based VCs and VPs](./packages/vc-handler-ld-local/README.md)
 - OpenID Connect and Presentation Exchange:
     - SIOPv2 and
