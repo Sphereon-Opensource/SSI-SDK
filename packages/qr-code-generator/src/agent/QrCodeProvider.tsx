@@ -87,10 +87,10 @@ export class QrCodeProvider implements IAgentPlugin {
   }
 
   /** {@inheritDoc IQRCodeGenerator.qrOpenID4VCIElement} */
-  private static async qrOpenID4VCIElement(args: CreateElementArgs<QRType.OIDC4VCI, any>, context: IRequiredContext): Promise<JSX.Element> {
+  private static async qrOpenID4VCIElement(args: CreateElementArgs<QRType.OpenID4VCI, any>, context: IRequiredContext): Promise<JSX.Element> {
     const content = await QrCodeProvider.qrOpenID4VCIValue(args, context)
     return generateQRCodeReactElementImpl(
-      { ...args, data: { ...args.data, object: content } } as CreateElementArgs<QRType.OIDC4VCI, string>,
+      { ...args, data: { ...args.data, object: content } } as CreateElementArgs<QRType.OpenID4VCI, string>,
       args,
       context
     )
@@ -98,22 +98,18 @@ export class QrCodeProvider implements IAgentPlugin {
 
   /** {@inheritDoc IQRCodeGenerator.qrOpenID4VCIValue} */
   private static async qrOpenID4VCIValue(
-    args: CreateValueArgs<QRType.OIDC4VCI, OpenID4VCIDataWithScheme>,
+    args: CreateValueArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>,
     context: IRequiredContext
   ): Promise<string> {
     const { object } = args.data
-    if (typeof object === 'string') {
-      return object
-    }
     if (!object.credentialOffer && !object.credentialOfferUri) {
       throw new Error('Please provide credential_offer or credential_offer_uri')
     }
     const scheme = (object.scheme ?? 'openid-credential-offer://').replace('://?', '').replace('://', '') + '://'
-    const domain = object.domain ?? ''
-    const path = object.path ?? ''
+    const baseUri = object.baseUri ?? ''
     const credentialOfferUri = `?credential_offer_uri=${object.credentialOfferUri?.replace('credential_offer_uri=', '')}`
     const credentialOffer = `?credential_offer=${object.credentialOffer?.replace('credential_offer=', '')}`
     const value = object.credentialOffer ? credentialOffer : credentialOfferUri
-    return `${scheme}${domain}${path}${value}`
+    return `${scheme}${baseUri}${value}`
   }
 }

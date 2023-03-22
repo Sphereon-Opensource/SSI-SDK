@@ -17,8 +17,8 @@ export interface IQRCodeGenerator extends IPluginMethodMap {
 
   qrURIElement(args: CreateElementArgs<QRType.URI, URIData>, context: IRequiredContext): Promise<JSX.Element>
 
-  qrOpenID4VCIElement(args: CreateElementArgs<QRType.OIDC4VCI, OpenID4VCIDataWithScheme>, context: IRequiredContext): Promise<JSX.Element>
-  qrOpenID4VCIValue(args: CreateValueArgs<QRType.OIDC4VCI, OpenID4VCIDataWithScheme>, context: IRequiredContext): Promise<string>
+  qrOpenID4VCIElement(args: CreateElementArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>, context: IRequiredContext): Promise<JSX.Element>
+  qrOpenID4VCIValue(args: CreateValueArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>, context: IRequiredContext): Promise<string>
 }
 
 export interface CreateValueArgs<T extends QRType, D> {
@@ -42,7 +42,7 @@ export enum QRType {
   URI = 'uri',
   SIOPV2 = 'openid-vc',
   DIDCOMM_V2_OOB_INVITATION = 'https://didcomm.org/out-of-band/2.0/invitation',
-  OIDC4VCI = 'openid-credential-offer',
+  OpenID4VCI = 'openid-credential-offer',
 }
 
 export type SIOPv2Scheme = 'openid' | 'openid-vc' | string
@@ -54,8 +54,7 @@ export interface SIOPv2DataWithScheme {
 export type OpenID4VCIScheme = 'openid-credential-offer' | 'https' | string
 export interface OpenID4VCIDataWithScheme {
   scheme?: OpenID4VCIScheme
-  domain?: string
-  path?: string
+  baseUri?: string
   credentialOfferUri?: string
   credentialOffer?: string
 }

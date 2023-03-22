@@ -111,50 +111,49 @@ export const credentialOffer = JSON.stringify({
 
 const openid4vcObjectValue: OpenID4VCIDataWithScheme = {
   scheme: 'https',
-  domain: 'test.com',
-  path: '/credential-offer',
+  baseUri: 'test.com/credential-offer',
   credentialOffer,
 }
 
-const openid4vciDataReference: QRData<QRType.OIDC4VCI, OpenID4VCIDataWithScheme> = {
+const openid4vciDataReference: QRData<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
   object: openid4vcObjectReference,
-  type: QRType.OIDC4VCI,
+  type: QRType.OpenID4VCI,
   id: '567',
 }
 
-const openid4vciDataValue: QRData<QRType.OIDC4VCI, OpenID4VCIDataWithScheme> = {
+const openid4vciDataValue: QRData<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
   object: openid4vcObjectValue,
-  type: QRType.OIDC4VCI,
+  type: QRType.OpenID4VCI,
   id: '568',
 }
 
-export const openid4vciCreateValueByReference: CreateValueArgs<QRType.OIDC4VCI, OpenID4VCIDataWithScheme> = {
+export const openid4vciCreateValueByReference: CreateValueArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
   data: openid4vciDataReference,
-  onGenerate: (result: ValueResult<QRType.OIDC4VCI, OpenID4VCIDataWithScheme>) => {
+  onGenerate: (result: ValueResult<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>) => {
     console.log(result, null, 2)
   },
 }
 
-export const openid4vciCreateElementByReference: CreateElementArgs<QRType.OIDC4VCI, OpenID4VCIDataWithScheme> = {
+export const openid4vciCreateElementByReference: CreateElementArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
   data: openid4vciDataReference,
   renderingProps,
-  onGenerate: (result: ValueResult<QRType.OIDC4VCI, OpenID4VCIDataWithScheme>) => {
+  onGenerate: (result: ValueResult<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>) => {
     render(<div data-testid="test-div-openid4vci">{result.data.object.credentialOfferUri}</div>)
     console.log(result.value)
   },
 }
 
-export const openid4vciCreateValueByValue: CreateValueArgs<QRType.OIDC4VCI, OpenID4VCIDataWithScheme> = {
+export const openid4vciCreateValueByValue: CreateValueArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
   data: openid4vciDataValue,
-  onGenerate: (result: ValueResult<QRType.OIDC4VCI, OpenID4VCIDataWithScheme>) => {
+  onGenerate: (result: ValueResult<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>) => {
     console.log(result, null, 2)
   },
 }
 
-export const openid4vciCreateElementByValue: CreateElementArgs<QRType.OIDC4VCI, OpenID4VCIDataWithScheme> = {
+export const openid4vciCreateElementByValue: CreateElementArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
   data: openid4vciDataValue,
   renderingProps,
-  onGenerate: (result: ValueResult<QRType.OIDC4VCI, OpenID4VCIDataWithScheme>) => {
+  onGenerate: (result: ValueResult<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>) => {
     render(<div data-testid="test-div-openid4vci">{result.data.object.credentialOffer}</div>)
     console.log(result.value)
   },
