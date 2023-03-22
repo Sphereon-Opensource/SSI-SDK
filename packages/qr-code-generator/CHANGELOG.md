@@ -16,15 +16,15 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [0.8.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.7.0...v0.8.0) (2022-09-03)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk-waci-pex-qr-react
+**Note:** Version bump only for package @sphereon/ssi-sdk-qr-code-generator
 
 # [0.7.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.6.0...v0.7.0) (2022-08-05)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk-waci-pex-qr-react
+**Note:** Version bump only for package @sphereon/ssi-sdk-qr-code-generator
 
 # [0.6.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.5.1...v0.6.0) (2022-07-01)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk-waci-pex-qr-react
+**Note:** Version bump only for package @sphereon/ssi-sdk-qr-code-generator
 
 # [0.5.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.4.0...v0.5.0) (2022-02-23)
 

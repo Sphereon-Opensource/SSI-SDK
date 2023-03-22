@@ -2,27 +2,20 @@
 <h1 align="center">
   <br>
   <a href="https://www.sphereon.com"><img src="https://sphereon.com/content/themes/sphereon/assets/img/logo.svg" alt="Sphereon" width="400"></a>
-  <br>waci-pex-qr-react (Typescript) 
+  <br>qr-code-generator (Typescript) 
   <br>
 </h1>
 
----
+# qr-code-generator
 
-**Warning: This package still is in very early development. Breaking changes without notice will happen at this point!**
+A `Sphereon SSI-SDK` plugin to create an QR codes for `SIOPv2/OpenID4VP`, `DIDCommv2` and `OpenID4VCI`. 
+Next to the above specific QR types, of course you can also generate generic QR codes with this package.
 
----
-
-# waci-pex-qr-react
-
-A `Sphereon SSI-SDK` plugin to create an QR code and to verify using `SIOPv2` or `OIDC4`. This plugin component is only
-supporting react and react-native frameworks.
-
-It will be possible in future to request the issuer to issue credentials.
-
+It is tailored towards React and React-Native but also provides textual representations.
 ### Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk-waci-pex-qr-react
+yarn add @sphereon/ssi-sdk-qr-code-generator
 ```
 
 ### Build
@@ -39,18 +32,11 @@ recipient to either:
 1. authenticate itself to the requester
 2. inviting the issuer to issue a credential
 
-The object fields required to generate the QR code will depend on the type of request and the acceptable values. The
-possible `accept` value may be:
-
-1. `oidc4vp`
-2. `siopv2+oidc4vp`
-3. `siopv2`
-4. `didcomm/v2`
 
 #### Importing the plugin
 
 ```typescript
-import { QrCodeProvider } from '@sphereon/ssi-sdk-waci-pex-qr-react'
+import { QrCodeProvider } from '@sphereon/ssi-sdk-qr-code-generator'
 
 // Include in the interface
 // const agent = createAgent<...  QrCodeProvider>
@@ -62,26 +48,13 @@ import { QrCodeProvider } from '@sphereon/ssi-sdk-waci-pex-qr-react'
 plugins: [
   ...
     new QrCodeProvider()
-],
-```
-
-#### Export for the function
-
-```typescript
-export const createSsiQrCode = agent.ssiQrCode
-```
-
-The function declared in agent can be imported for usage like below:
-
-```typescript
-import { createSsiQrCode } from '../agent'
-import { QRContent, QRType } from '@sphereon/ssi-sdk-waci-pex-qr-react'
+]
 ```
 
 #### Inside the component we can declare or get the values to pass to QR Code plugin
 
 ```typescript
-import { WaciOobProps } from '@sphereon/ssi-sdk-waci-pex-qr-react'
+import { WaciOobProps } from '@sphereon/ssi-sdk-qr-code-generator'
 
 function getOobQrCodeProps(): QRRenderingProps {
   return {

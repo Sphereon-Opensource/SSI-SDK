@@ -6,6 +6,6 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/waci-pex-qr-react/dist#QrCodeProvider
+        - $require: ./packages/qr-code-generator/dist#QrCodeProvider
 #          $args:
 #            - renderingProps
