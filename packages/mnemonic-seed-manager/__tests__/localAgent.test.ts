@@ -1,14 +1,14 @@
-import {DataSource} from 'typeorm'
+import { DataSource } from 'typeorm'
 
 import mnemonicGenerator from './shared/generateMnemonic'
 import seedGenerator from './shared/generateSeed'
 import storeSeed from './shared/storeMnemonicInfo'
-import {createAgent, IDataStore, IKeyManager} from '@veramo/core'
-import {KeyManager} from '@veramo/key-manager'
-import {IMnemonicSeedManager, MnemonicSeedManager, MnemonicSeedManagerEntities, MnemonicSeedManagerMigrations} from '../src'
-import {Entities, KeyStore, migrations, PrivateKeyStore} from '@veramo/data-store'
-import {KeyManagementSystem, SecretBox} from '@veramo/kms-local'
-import {OrPromise} from '@veramo/utils'
+import { createAgent, IDataStore, IKeyManager } from '@veramo/core'
+import { KeyManager } from '@veramo/key-manager'
+import { IMnemonicSeedManager, MnemonicSeedManager, MnemonicSeedManagerEntities, MnemonicSeedManagerMigrations } from '../src'
+import { Entities, KeyStore, migrations, PrivateKeyStore } from '@veramo/data-store'
+import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
+import { OrPromise } from '@veramo/utils'
 
 jest.setTimeout(30000)
 
@@ -51,7 +51,7 @@ const tearDown = async (): Promise<boolean> => {
 
 const getAgent = () => agent
 
-const testContext = {getAgent, setup, tearDown}
+const testContext = { getAgent, setup, tearDown }
 
 describe('Local integration tests', () => {
   mnemonicGenerator(testContext)

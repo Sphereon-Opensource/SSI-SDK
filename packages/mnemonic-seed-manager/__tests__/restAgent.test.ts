@@ -1,22 +1,22 @@
 import 'cross-fetch/polyfill'
-import {Server} from 'http'
+import { Server } from 'http'
 
-import {createAgent, IAgent, IAgentOptions, IDataStore, IDataStoreORM, IKeyManager} from '@veramo/core'
-import {AgentRestClient} from '@veramo/remote-client'
-import {AgentRouter, RequestWithAgentRouter} from '@veramo/remote-server'
+import { createAgent, IAgent, IAgentOptions, IDataStore, IDataStoreORM, IKeyManager } from '@veramo/core'
+import { AgentRestClient } from '@veramo/remote-client'
+import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 
 // @ts-ignore
 import express from 'express'
-import {DataSource} from 'typeorm'
+import { DataSource } from 'typeorm'
 
-import {IMnemonicSeedManager, MnemonicSeedManager, MnemonicSeedManagerEntities, MnemonicSeedManagerMigrations} from '../src'
+import { IMnemonicSeedManager, MnemonicSeedManager, MnemonicSeedManagerEntities, MnemonicSeedManagerMigrations } from '../src'
 
 import mnemonicGenerator from './shared/generateMnemonic'
 import seedGenerator from './shared/generateSeed'
 import storeSeed from './shared/storeMnemonicInfo'
-import {KeyManager} from '@veramo/key-manager'
-import {DataStore, DataStoreORM, Entities, KeyStore, migrations, PrivateKeyStore} from '@veramo/data-store'
-import {KeyManagementSystem, SecretBox} from '@veramo/kms-local'
+import { KeyManager } from '@veramo/key-manager'
+import { DataStore, DataStoreORM, Entities, KeyStore, migrations, PrivateKeyStore } from '@veramo/data-store'
+import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 
 jest.setTimeout(30000)
 
@@ -30,16 +30,16 @@ let dbConnection: Promise<DataSource>
 const KMS_SECRET_KEY = 'd17c8674f5db9396f8eecccde25e882bb0336316bc411ae38dc1f3dcd7ed100f'
 
 const getAgent = (options?: IAgentOptions) =>
-    createAgent<IMnemonicSeedManager & IKeyManager & IDataStore>({
-      ...options,
-      plugins: [
-        new AgentRestClient({
-          url: 'http://localhost:' + port + basePath,
-          enabledMethods: serverAgent.availableMethods(),
-          schema: serverAgent.getSchema(),
-        }),
-      ],
-    })
+  createAgent<IMnemonicSeedManager & IKeyManager & IDataStore>({
+    ...options,
+    plugins: [
+      new AgentRestClient({
+        url: 'http://localhost:' + port + basePath,
+        enabledMethods: serverAgent.availableMethods(),
+        schema: serverAgent.getSchema(),
+      }),
+    ],
+  })
 
 const setup = async (): Promise<boolean> => {
   const db = new DataSource({
@@ -96,7 +96,7 @@ const tearDown = async (): Promise<boolean> => {
   return true
 }
 
-const testContext = {getAgent, setup, tearDown}
+const testContext = { getAgent, setup, tearDown }
 
 describe('REST integration tests', () => {
   mnemonicGenerator(testContext)
