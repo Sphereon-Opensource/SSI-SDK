@@ -7,17 +7,14 @@
     { "path": "factom-did-provider" },
     { "path": "lto-did-provider" },
     { "path": "mnemonic-seed-manager" },
-    { "path": "vc-api-issuer" },
     { "path": "ms-authenticator" },
     { "path": "ms-request-api" },
-    { "path": "vc-api-verifier" },
     { "path": "vc-handler-ld-local" },
     { "path": "did-auth-siop-op-authenticator" },
     { "path": "qr-code-generator" },
     { "path": "contact-manager" },
     { "path": "data-store" },
     { "path": "wellknown-did-verifier" },
-    { "path": "jwk-did-provider" },
-    { "path": "vp-message-handler" }
+    { "path": "jwk-did-provider" }
   ]
 }
