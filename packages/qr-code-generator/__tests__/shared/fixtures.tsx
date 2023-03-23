@@ -85,10 +85,6 @@ export const siopv2CreateElement: CreateElementArgs<QRType.SIOPV2, SIOPv2DataWit
   },
 }
 
-const openid4vciObjectReference: OpenID4VCIDataWithScheme = {
-  credentialOfferUri: 'https://test.com?id=234',
-}
-
 export const credentialOffer = JSON.stringify({
   credential_issuer: 'https://credential-issuer.example.com',
   credentials: [
@@ -109,16 +105,27 @@ export const credentialOffer = JSON.stringify({
   },
 })
 
+const openid4vciObjectReference: OpenID4VCIDataWithScheme = {
+  baseUri: 'test.com/resources',
+  credentialOfferUri: 'https://test.com?id=234',
+}
+
 const openid4vciObjectValue: OpenID4VCIDataWithScheme = {
   scheme: 'https',
   baseUri: 'test.com/credential-offer',
   credentialOffer,
 }
 
-const openid4vciObjectWrong: OpenID4VCIDataWithScheme = {
-  scheme:'https',
+const openid4vciObjectValid: OpenID4VCIDataWithScheme = {
+  scheme: 'https',
   baseUri: 'https://test.com/credential-offer',
-  credentialOffer
+  credentialOfferUri: 'https://test.com?id=234',
+}
+
+const openid4vciObjectWrong: OpenID4VCIDataWithScheme = {
+  scheme: 'any-scheme',
+  baseUri: 'https://test.com/credential-offer',
+  credentialOffer,
 }
 
 const openid4vciDataReference: QRData<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
@@ -136,7 +143,13 @@ const openid4vciDataValue: QRData<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> =
 const openid4vciDataWrong: QRData<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
   object: openid4vciObjectWrong,
   type: QRType.OpenID4VCI,
-  id: '569'
+  id: '569',
+}
+
+const openid4vciDataValid: QRData<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
+  object: openid4vciObjectValid,
+  type: QRType.OpenID4VCI,
+  id: '570',
 }
 
 export const openid4vciCreateValueByReference: CreateValueArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
@@ -166,7 +179,7 @@ export const openid4vciCreateValueWrong: CreateValueArgs<QRType.OpenID4VCI, Open
   data: openid4vciDataWrong,
   onGenerate: (result: ValueResult<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>) => {
     console.log(result, null, 2)
-  }
+  },
 }
 
 export const openid4vciCreateElementByValue: CreateElementArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
@@ -174,6 +187,22 @@ export const openid4vciCreateElementByValue: CreateElementArgs<QRType.OpenID4VCI
   renderingProps,
   onGenerate: (result: ValueResult<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>) => {
     render(<div data-testid="test-div-openid4vci">{result.data.object.credentialOffer}</div>)
+    console.log(result.value)
+  },
+}
+
+export const openid4vciCreateValueValid: CreateValueArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
+  data: openid4vciDataValid,
+  onGenerate: (result: ValueResult<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>) => {
+    console.log(result, null, 2)
+  },
+}
+
+export const openid4vciCreateElementValid: CreateElementArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
+  data: openid4vciDataValid,
+  renderingProps,
+  onGenerate: (result: ValueResult<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>) => {
+    render(<div data-testid="test-div-openid4vci">{result.data.object.credentialOfferUri}</div>)
     console.log(result.value)
   },
 }
