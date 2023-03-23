@@ -14,7 +14,7 @@ import {
 } from 'typeorm'
 import { correlationIdentifierEntityFrom, CorrelationIdentifierEntity } from './CorrelationIdentifierEntity'
 import { ConnectionEntity, connectionEntityFrom } from './ConnectionEntity'
-import {BasicMetadataItem, IBasicIdentity, IdentityRoleEnum} from '../../types/contact'
+import { BasicMetadataItem, IBasicIdentity, IdentityRoleEnum } from '../../types/contact'
 import { ContactEntity } from './ContactEntity'
 import { IdentityMetadataItemEntity, metadataItemEntityFrom } from './IdentityMetadataItemEntity'
 import { IsNotEmpty, validate } from 'class-validator'

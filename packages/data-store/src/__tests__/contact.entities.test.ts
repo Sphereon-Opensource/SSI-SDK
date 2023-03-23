@@ -16,7 +16,7 @@ import {
   DidAuthConfigEntity,
   ConnectionEntity,
   CorrelationIdentifierEntity,
-  IdentityMetadataItemEntity, 
+  IdentityMetadataItemEntity,
   IdentityRoleEnum,
 } from '../index'
 

@@ -1,12 +1,7 @@
 import { DataSource } from 'typeorm'
 
 import { ContactStore } from '../contact/ContactStore'
-import {
-  CorrelationIdentifierEnum,
-  DataStoreContactEntities,
-  DataStoreMigrations,
-  IdentityRoleEnum
-} from '../index'
+import { CorrelationIdentifierEnum, DataStoreContactEntities, DataStoreMigrations, IdentityRoleEnum } from '../index'
 
 describe('Database entities test', () => {
   let dbConnection: DataSource
