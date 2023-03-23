@@ -11,6 +11,7 @@ import {
   openid4vciCreateElementByValue,
   openid4vciCreateValueByReference,
   openid4vciCreateValueByValue,
+  openid4vciCreateValueWrong,
   siopv2CreateElement,
   siopv2CreateValue,
 } from './fixtures'
@@ -95,6 +96,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await agent.qrOpenID4VCIValue(openid4vciCreateValueByValue).then((ssiQrCode) => {
         expect(ssiQrCode).toEqual(`https://test.com/credential-offer?credential_offer=${credentialOffer}`)
       })
+    })
+
+    it('should fail to create OpenID4VCI qr code value - by value', async () => {
+      await expect(() => agent.qrOpenID4VCIValue(openid4vciCreateValueWrong)).rejects.toThrow(Error('The scheme should not be part of the baseUri'))
     })
 
     it('should create OpenID4VCI qr code with renderingProps - by value', async () => {

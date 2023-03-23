@@ -107,6 +107,9 @@ export class QrCodeProvider implements IAgentPlugin {
     }
     const scheme = (object.scheme ?? 'openid-credential-offer://').replace('://?', '').replace('://', '') + '://'
     const baseUri = object.baseUri ?? ''
+    if (object.scheme && baseUri.includes(object.scheme)) {
+      throw new Error("The scheme should not be part of the baseUri")
+    }
     const credentialOfferUri = `?credential_offer_uri=${object.credentialOfferUri?.replace('credential_offer_uri=', '')}`
     const credentialOffer = `?credential_offer=${object.credentialOffer?.replace('credential_offer=', '')}`
     const value = object.credentialOffer ? credentialOffer : credentialOfferUri

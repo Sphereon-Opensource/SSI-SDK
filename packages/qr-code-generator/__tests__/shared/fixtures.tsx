@@ -85,7 +85,7 @@ export const siopv2CreateElement: CreateElementArgs<QRType.SIOPV2, SIOPv2DataWit
   },
 }
 
-const openid4vcObjectReference: OpenID4VCIDataWithScheme = {
+const openid4vciObjectReference: OpenID4VCIDataWithScheme = {
   credentialOfferUri: 'https://test.com?id=234',
 }
 
@@ -109,22 +109,34 @@ export const credentialOffer = JSON.stringify({
   },
 })
 
-const openid4vcObjectValue: OpenID4VCIDataWithScheme = {
+const openid4vciObjectValue: OpenID4VCIDataWithScheme = {
   scheme: 'https',
   baseUri: 'test.com/credential-offer',
   credentialOffer,
 }
 
+const openid4vciObjectWrong: OpenID4VCIDataWithScheme = {
+  scheme:'https',
+  baseUri: 'https://test.com/credential-offer',
+  credentialOffer
+}
+
 const openid4vciDataReference: QRData<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
-  object: openid4vcObjectReference,
+  object: openid4vciObjectReference,
   type: QRType.OpenID4VCI,
   id: '567',
 }
 
 const openid4vciDataValue: QRData<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
-  object: openid4vcObjectValue,
+  object: openid4vciObjectValue,
   type: QRType.OpenID4VCI,
   id: '568',
+}
+
+const openid4vciDataWrong: QRData<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
+  object: openid4vciObjectWrong,
+  type: QRType.OpenID4VCI,
+  id: '569'
 }
 
 export const openid4vciCreateValueByReference: CreateValueArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
@@ -148,6 +160,13 @@ export const openid4vciCreateValueByValue: CreateValueArgs<QRType.OpenID4VCI, Op
   onGenerate: (result: ValueResult<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>) => {
     console.log(result, null, 2)
   },
+}
+
+export const openid4vciCreateValueWrong: CreateValueArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
+  data: openid4vciDataWrong,
+  onGenerate: (result: ValueResult<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>) => {
+    console.log(result, null, 2)
+  }
 }
 
 export const openid4vciCreateElementByValue: CreateElementArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
