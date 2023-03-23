@@ -1,7 +1,12 @@
 import { DataSource } from 'typeorm'
 
 import { ContactStore } from '../contact/ContactStore'
-import { CorrelationIdentifierEnum, DataStoreContactEntities, DataStoreMigrations } from '../index'
+import {
+  CorrelationIdentifierEnum,
+  DataStoreContactEntities,
+  DataStoreMigrations,
+  IdentityRoleEnum
+} from '../index'
 
 describe('Database entities test', () => {
   let dbConnection: DataSource
@@ -167,6 +172,7 @@ describe('Database entities test', () => {
       identities: [
         {
           alias: 'test_alias1',
+          roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
           identifier: {
             type: CorrelationIdentifierEnum.DID,
             correlationId: 'example_did1',
@@ -174,6 +180,7 @@ describe('Database entities test', () => {
         },
         {
           alias: 'test_alias2',
+          roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
           identifier: {
             type: CorrelationIdentifierEnum.DID,
             correlationId: 'example_did2',
@@ -198,6 +205,7 @@ describe('Database entities test', () => {
       identities: [
         {
           alias: 'test_alias1',
+          roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
           identifier: {
             type: CorrelationIdentifierEnum.DID,
             correlationId: 'example_did1',
@@ -205,6 +213,7 @@ describe('Database entities test', () => {
         },
         {
           alias: 'test_alias2',
+          roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
           identifier: {
             type: CorrelationIdentifierEnum.DID,
             correlationId: 'example_did2',
@@ -272,6 +281,7 @@ describe('Database entities test', () => {
 
     const identity1 = {
       alias: 'test_alias1',
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId: 'example_did1',
@@ -282,6 +292,7 @@ describe('Database entities test', () => {
 
     const identity2 = {
       alias: 'test_alias2',
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId: 'example_did2',
@@ -332,6 +343,7 @@ describe('Database entities test', () => {
 
     const identity = {
       alias: 'test_alias',
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId: 'example_did',
@@ -362,6 +374,7 @@ describe('Database entities test', () => {
 
     const identity1 = {
       alias: 'test_alias1',
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId: 'example_did1',
@@ -372,6 +385,7 @@ describe('Database entities test', () => {
 
     const identity2 = {
       alias: 'test_alias2',
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId: 'example_did2',
@@ -400,6 +414,7 @@ describe('Database entities test', () => {
 
     const identity1 = {
       alias: 'test_alias1',
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId: 'example_did1',
@@ -410,6 +425,7 @@ describe('Database entities test', () => {
 
     const identity2 = {
       alias: 'test_alias2',
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId: 'example_did2',
@@ -435,6 +451,7 @@ describe('Database entities test', () => {
     const alias = 'test_alias1'
     const identity1 = {
       alias,
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId: 'example_did1',
@@ -445,6 +462,7 @@ describe('Database entities test', () => {
 
     const identity2 = {
       alias: 'test_alias2',
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId: 'example_did2',
@@ -473,6 +491,7 @@ describe('Database entities test', () => {
 
     const identity = {
       alias: 'test_alias',
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId: 'example_did',
@@ -503,6 +522,7 @@ describe('Database entities test', () => {
     const correlationId = 'missing_connection_example'
     const identity = {
       alias: correlationId,
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.URL,
         correlationId,
@@ -526,6 +546,7 @@ describe('Database entities test', () => {
     const correlationId = 'missing_connection_example'
     const identity = {
       alias: correlationId,
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId,
@@ -550,6 +571,7 @@ describe('Database entities test', () => {
 
     const identity = {
       alias: 'example_did',
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId: 'example_did',
@@ -564,5 +586,38 @@ describe('Database entities test', () => {
 
     expect(result).not.toBeNull()
     expect(result.identifier.correlationId).toEqual(correlationId)
+  })
+
+  it('should get aggregate of identity roles on contact', async () => {
+    const contact = {
+      name: 'test_name',
+      alias: 'test_alias',
+      uri: 'example.com',
+      identities: [
+        {
+          alias: 'test_alias1',
+          roles: [IdentityRoleEnum.VERIFIER],
+          identifier: {
+            type: CorrelationIdentifierEnum.DID,
+            correlationId: 'example_did1',
+          },
+        },
+        {
+          alias: 'test_alias2',
+          roles: [IdentityRoleEnum.ISSUER],
+          identifier: {
+            type: CorrelationIdentifierEnum.DID,
+            correlationId: 'example_did2',
+          },
+        },
+      ],
+    }
+
+    const savedContact = await contactStore.addContact(contact)
+    const result = await contactStore.getContact({ contactId: savedContact.id })
+
+    expect(result.roles).toBeDefined()
+    expect(result.roles.length).toEqual(2)
+    expect(result.roles).toEqual([IdentityRoleEnum.VERIFIER, IdentityRoleEnum.ISSUER])
   })
 })
