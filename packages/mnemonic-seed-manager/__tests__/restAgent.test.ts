@@ -1,4 +1,5 @@
 import 'cross-fetch/polyfill'
+import * as fs from 'fs'
 import { Server } from 'http'
 
 import { createAgent, IAgent, IAgentOptions, IDataStore, IDataStoreORM, IKeyManager } from '@veramo/core'
@@ -20,6 +21,7 @@ import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 
 jest.setTimeout(30000)
 
+const databaseFile = 'rest-database.sqlite'
 const port = 3002
 const basePath = '/agent'
 
@@ -44,7 +46,7 @@ const getAgent = (options?: IAgentOptions) =>
 const setup = async (): Promise<boolean> => {
   const db = new DataSource({
     type: 'sqlite',
-    database: ':memory:',
+    database: databaseFile,
     synchronize: false,
     logging: false,
     entities: [...MnemonicSeedManagerEntities, ...Entities],
@@ -92,6 +94,7 @@ const tearDown = async (): Promise<boolean> => {
   restServer.close()
   await (await dbConnection).dropDatabase()
   await (await dbConnection).destroy()
+  fs.unlinkSync(databaseFile)
   await new Promise((resolve) => setTimeout((v: void) => resolve(v), 500))
   return true
 }
