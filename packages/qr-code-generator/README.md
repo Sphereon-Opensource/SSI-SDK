@@ -116,3 +116,77 @@ console.log(url) // https://example.com/?oob=eyJ0eXBlIjoic2lvcHYyIiwiaWQiOiI1OTl
   {this.delegateCreateOobQRCode()}
 </View>
 ```
+
+### OpenID4VCI example:
+
+This is the credential offer
+
+```typescript
+export const credentialOffer = JSON.stringify({
+  credential_issuer: 'https://credential-issuer.example.com',
+  credentials: [
+    'UniversityDegree_JWT',
+    {
+      format: 'mso_mdoc',
+      doctype: 'org.iso.18013.5.1.mDL',
+    },
+  ],
+  grants: {
+    authorization_code: {
+      issuer_state: 'eyJhbGciOiJSU0Et...FYUaBy',
+    },
+    'urn:ietf:params:oauth:grant-type:pre-authorized_code': {
+      'pre-authorized_code': 'adhjhdjajkdkhjhdj',
+      user_pin_required: true,
+    },
+  },
+})
+```
+
+It needs to be assigned to the credentialOffer field in the data scheme. The same can be
+done using a reference, this will require to use the credentialOfferUri property and assign
+the uri of the credential offer to it. Notice that the scheme defaults to `openid-credential-offer`
+and baseUri is optional.
+
+```typescript
+const openid4vcObjectValue: OpenID4VCIDataWithScheme = {
+  scheme: 'https',
+  baseUri: 'test.com/credential-offer',
+  credentialOffer, 
+}
+```
+Now the data scheme needs to be added to the QR code data
+
+```typescript
+const openid4vciDataValue: QRData<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
+  object: openid4vcObjectValue,
+  type: QRType.OpenID4VCI,
+  id: '568',
+}
+```
+
+So the QR code can be generated
+
+```typescript
+export const openid4vciCreateValue: CreateValueArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
+  data: openid4vciDataValue,
+  onGenerate: (result: ValueResult<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>) => {
+    console.log(result, null, 2)
+  },
+}
+```
+
+And eventually added to an app
+
+```typescript
+export const openid4vciCreateElement: CreateElementArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
+  data: openid4vciDataValue,
+  renderingProps,
+  onGenerate: (result: ValueResult<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>) => {
+    render(<div data-testid="test-div-openid4vci">{result.data.object.credentialOffer}</div>)
+    console.log(result.value)
+  },
+}
+```
+
+
