@@ -193,6 +193,9 @@ export interface IAuthenticationProofPurpose extends IControllerProofPurpose {
   domain?: string
 }
 
+/*
+  @beta
+ */
 export interface IAssertionProofPurpose extends IControllerProofPurpose {}
 
 export const ProofPurpose = purposes.ProofPurpose
