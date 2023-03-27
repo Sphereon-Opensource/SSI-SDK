@@ -43,7 +43,7 @@ export interface ICreateVerifiablePresentationLDArgs {
    */
   keyRef?: string
 
-  purpose?: IProofPurpose
+  purpose?: purposes.AuthenticationProofPurpose| purposes.ControllerProofPurpose | purposes.AssertionProofPurpose
 }
 
 /**
@@ -72,7 +72,7 @@ export interface ICreateVerifiableCredentialLDArgs {
   /**
    * Use this purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)
    */
-  purpose?: IProofPurpose
+  purpose?: purposes.AuthenticationProofPurpose| purposes.ControllerProofPurpose | purposes.AssertionProofPurpose
 }
 
 /**
@@ -102,7 +102,7 @@ export interface IVerifyCredentialLDArgs {
   /**
    * Use this presentation purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)
    */
-  purpose?: IProofPurpose
+  purpose?: purposes.AuthenticationProofPurpose| purposes.ControllerProofPurpose | purposes.AssertionProofPurpose
 
   /**
    * Check status function, to check credentials that have a credentialStatus property
@@ -147,23 +147,13 @@ export interface IVerifyPresentationLDArgs {
   /**
    * Use this presentation purpose for the verification method in the DID when doing a check (defaualts to assertionMethod)
    */
-  presentationPurpose?: IProofPurpose
+  presentationPurpose?: purposes.AuthenticationProofPurpose| purposes.ControllerProofPurpose | purposes.AssertionProofPurpose
 
   /**
    * Check status function, to check credentials that have a credentialStatus property
    */
   checkStatus?: Function
 }
-
-export interface IProofPurpose {
-  term?: string
-  date?: string | Date | number
-  maxTimestampDelta?: number
-  controller?: object
-  challenge?: string
-  domain?: string
-}
-
 
 
 /**
