@@ -145,7 +145,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     const presentation: PresentationPayload = {
       ...args?.presentation,
       '@context': presentationContext,
-      type: presentationType
+      type: presentationType,
     }
     // Workaround for bug in TypeError: Cannot read property 'length' of undefined
     //     at VeramoEd25519Signature2018.preSigningPresModification

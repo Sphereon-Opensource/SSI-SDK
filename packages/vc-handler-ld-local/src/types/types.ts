@@ -43,7 +43,7 @@ export interface ICreateVerifiablePresentationLDArgs {
    */
   keyRef?: string
 
-  purpose?: purposes.AuthenticationProofPurpose| purposes.ControllerProofPurpose | purposes.AssertionProofPurpose
+  purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose
 }
 
 /**
@@ -72,7 +72,7 @@ export interface ICreateVerifiableCredentialLDArgs {
   /**
    * Use this purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)
    */
-  purpose?: purposes.AuthenticationProofPurpose| purposes.ControllerProofPurpose | purposes.AssertionProofPurpose
+  purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose
 }
 
 /**
@@ -102,7 +102,7 @@ export interface IVerifyCredentialLDArgs {
   /**
    * Use this presentation purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)
    */
-  purpose?: purposes.AuthenticationProofPurpose| purposes.ControllerProofPurpose | purposes.AssertionProofPurpose
+  purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose
 
   /**
    * Check status function, to check credentials that have a credentialStatus property
@@ -147,14 +147,13 @@ export interface IVerifyPresentationLDArgs {
   /**
    * Use this presentation purpose for the verification method in the DID when doing a check (defaualts to assertionMethod)
    */
-  presentationPurpose?: purposes.AuthenticationProofPurpose| purposes.ControllerProofPurpose | purposes.AssertionProofPurpose
+  presentationPurpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose
 
   /**
    * Check status function, to check credentials that have a credentialStatus property
    */
   checkStatus?: Function
 }
-
 
 /**
  * Represents the requirements that this plugin has.
@@ -169,6 +168,32 @@ export type IRequiredContext = IAgentContext<IResolver & Pick<IDIDManager, 'didM
 export type ContextDoc = {
   '@context': string | Record<string, any>
 }
+
+/*
+  @beta
+ */
+export interface IProofPurpose {
+  term?: string
+  date?: string | Date | number
+  maxTimestampDelta?: number
+}
+
+/*
+  @beta
+ */
+export interface IControllerProofPurpose extends IProofPurpose {
+  controller?: object
+}
+
+/*
+  @beta
+ */
+export interface IAuthenticationProofPurpose extends IControllerProofPurpose {
+  challenge?: string
+  domain?: string
+}
+
+export interface IAssertionProofPurpose extends IControllerProofPurpose {}
 
 export const ProofPurpose = purposes.ProofPurpose
 export const ControllerProofPurpose = purposes.ControllerProofPurpose

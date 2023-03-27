@@ -8,10 +8,11 @@
 
 # qr-code-generator
 
-A `Sphereon SSI-SDK` plugin to create an QR codes for `SIOPv2/OpenID4VP`, `DIDCommv2` and `OpenID4VCI`. 
+A `Sphereon SSI-SDK` plugin to create an QR codes for `SIOPv2/OpenID4VP`, `DIDCommv2` and `OpenID4VCI`.
 Next to the above specific QR types, of course you can also generate generic QR codes with this package.
 
 It is tailored towards React and React-Native but also provides textual representations.
+
 ### Installation
 
 ```shell
@@ -32,7 +33,6 @@ recipient to either:
 1. authenticate itself to the requester
 2. inviting the issuer to issue a credential
 
-
 #### Importing the plugin
 
 ```typescript
@@ -45,10 +45,7 @@ import { QrCodeProvider } from '@sphereon/ssi-sdk-qr-code-generator'
 #### Adding plugin to the agent
 
 ```typescript
-plugins: [
-  ...
-    new QrCodeProvider()
-]
+plugins: [...new QrCodeProvider()]
 ```
 
 #### Inside the component we can declare or get the values to pass to QR Code plugin
@@ -152,9 +149,10 @@ and baseUri is optional.
 const openid4vcObjectValue: OpenID4VCIDataWithScheme = {
   scheme: 'https',
   baseUri: 'test.com/credential-offer',
-  credentialOffer, 
+  credentialOffer,
 }
 ```
+
 Now the data scheme needs to be added to the QR code data
 
 ```typescript
@@ -188,5 +186,3 @@ export const openid4vciCreateElement: CreateElementArgs<QRType.OpenID4VCI, OpenI
   },
 }
 ```
-
-

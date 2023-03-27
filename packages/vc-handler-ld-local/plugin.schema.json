@@ -14,13 +14,21 @@
               "description": "Optional. The key handle ( {@link  IKey#kid  } ) from the internal database."
             },
             "purpose": {
-              "$ref": "#/components/schemas/IProofPurpose",
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IAuthenticationProofPurpose"
+                },
+                {
+                  "$ref": "#/components/schemas/IControllerProofPurpose"
+                },
+                {
+                  "$ref": "#/components/schemas/IAssertionProofPurpose"
+                }
+              ],
               "description": "Use this purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)"
             }
           },
-          "required": [
-            "credential"
-          ],
+          "required": ["credential"],
           "description": "Encapsulates the parameters required to create a\n {@link  https://www.w3.org/TR/vc-data-model/#credentials | W3C Verifiable Credential }"
         },
         "CredentialPayload": {
@@ -57,9 +65,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "issuer"
-          ],
+          "required": ["issuer"],
           "description": "Used as input when creating Verifiable Credentials"
         },
         "IssuerType": {
@@ -71,9 +77,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "id"
-              ]
+              "required": ["id"]
             },
             {
               "type": "string"
@@ -104,13 +108,10 @@
               "type": "string"
             }
           },
-          "required": [
-            "id",
-            "type"
-          ],
+          "required": ["id", "type"],
           "description": "Used for the discovery of information about the current status of a verifiable credential, such as whether it is suspended or revoked. The precise contents of the credential status information is determined by the specific `credentialStatus` type definition, and varies depending on factors such as whether it is simple to implement or if it is privacy-enhancing.\n\nSee  {@link  https://www.w3.org/TR/vc-data-model/#status | Credential Status }"
         },
-        "IProofPurpose": {
+        "IAuthenticationProofPurpose": {
           "type": "object",
           "properties": {
             "term": {
@@ -141,6 +142,62 @@
             },
             "domain": {
               "type": "string"
+            }
+          }
+        },
+        "IControllerProofPurpose": {
+          "type": "object",
+          "properties": {
+            "term": {
+              "type": "string"
+            },
+            "date": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "maxTimestampDelta": {
+              "type": "number"
+            },
+            "controller": {
+              "type": "object"
+            }
+          }
+        },
+        "IAssertionProofPurpose": {
+          "type": "object",
+          "properties": {
+            "term": {
+              "type": "string"
+            },
+            "date": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "maxTimestampDelta": {
+              "type": "number"
+            },
+            "controller": {
+              "type": "object"
             }
           }
         },
@@ -224,13 +281,7 @@
               ]
             }
           },
-          "required": [
-            "@context",
-            "credentialSubject",
-            "issuanceDate",
-            "issuer",
-            "proof"
-          ]
+          "required": ["@context", "credentialSubject", "issuanceDate", "issuer", "proof"]
         },
         "CredentialStatusSP": {
           "type": "object",
@@ -248,10 +299,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id",
-            "type"
-          ]
+          "required": ["id", "type"]
         },
         "CredentialProofSP": {
           "type": "object",
@@ -304,12 +352,7 @@
               }
             }
           },
-          "required": [
-            "type",
-            "created",
-            "proofPurpose",
-            "verificationMethod"
-          ],
+          "required": ["type", "created", "proofPurpose", "verificationMethod"],
           "additionalProperties": {
             "anyOf": [
               {
@@ -339,7 +382,20 @@
             "GpgSignature2020",
             "JcsEd25519Signature2020",
             "BbsBlsSignatureProof2020",
-            "BbsBlsBoundSignatureProof2020"
+            "BbsBlsBoundSignatureProof2020",
+            "JwtProof2020"
+          ]
+        },
+        "IProofPurpose": {
+          "type": "string",
+          "enum": [
+            "verificationMethod",
+            "assertionMethod",
+            "authentication",
+            "keyAgreement",
+            "contactAgreement",
+            "capabilityInvocation",
+            "capabilityDelegation"
           ]
         },
         "ProofType": {
@@ -371,12 +427,20 @@
               "description": "Optional. The key handle ( {@link  IKey#kid  } ) from the internal database."
             },
             "purpose": {
-              "$ref": "#/components/schemas/IProofPurpose"
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IAuthenticationProofPurpose"
+                },
+                {
+                  "$ref": "#/components/schemas/IControllerProofPurpose"
+                },
+                {
+                  "$ref": "#/components/schemas/IAssertionProofPurpose"
+                }
+              ]
             }
           },
-          "required": [
-            "presentation"
-          ],
+          "required": ["presentation"],
           "description": "Encapsulates the parameters required to create a\n {@link  https://www.w3.org/TR/vc-data-model/#presentations | W3C Verifiable Presentation }"
         },
         "PresentationPayload": {
@@ -419,9 +483,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "holder"
-          ],
+          "required": ["holder"],
           "description": "Used as input when creating Verifiable Presentations"
         },
         "W3CVerifiableCredential": {
@@ -486,13 +548,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "credentialSubject",
-            "issuanceDate",
-            "issuer",
-            "proof"
-          ],
+          "required": ["@context", "credentialSubject", "issuanceDate", "issuer", "proof"],
           "description": "Represents a signed Verifiable Credential payload (includes proof), using a JSON representation. See  {@link  https://www.w3.org/TR/vc-data-model/#credentials | VC data model }"
         },
         "CompactJWT": {
@@ -572,13 +628,7 @@
               ]
             }
           },
-          "required": [
-            "@context",
-            "holder",
-            "proof",
-            "type",
-            "verifiableCredential"
-          ]
+          "required": ["@context", "holder", "proof", "type", "verifiableCredential"]
         },
         "W3CVerifiableCredentialSP": {
           "anyOf": [
@@ -612,11 +662,7 @@
               "description": "List of descriptors of how the claims are being mapped to presentation definition"
             }
           },
-          "required": [
-            "id",
-            "definition_id",
-            "descriptor_map"
-          ],
+          "required": ["id", "definition_id", "descriptor_map"],
           "description": "It expresses how the inputs are presented as proofs to a Verifier."
         },
         "Descriptor": {
@@ -638,11 +684,7 @@
               "description": "The Proof or JWT algorith that the proof is in"
             }
           },
-          "required": [
-            "id",
-            "path",
-            "format"
-          ],
+          "required": ["id", "path", "format"],
           "description": "descriptor map laying out the structure of the presentation submission."
         },
         "IVerifyCredentialLDArgs": {
@@ -658,7 +700,17 @@
               "default": false
             },
             "purpose": {
-              "$ref": "#/components/schemas/IProofPurpose",
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IAuthenticationProofPurpose"
+                },
+                {
+                  "$ref": "#/components/schemas/IControllerProofPurpose"
+                },
+                {
+                  "$ref": "#/components/schemas/IAssertionProofPurpose"
+                }
+              ],
               "description": "Use this presentation purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)"
             },
             "checkStatus": {
@@ -670,24 +722,17 @@
                 },
                 "arguments": {},
                 "caller": {
-                  "$ref": "#/components/schemas/interface-2023903318-10295-11759-2023903318-0-216469"
+                  "$ref": "#/components/schemas/interface-ib.es5.d.ts-10057-11521-ib.es5.d.ts-0-217681"
                 }
               },
-              "required": [
-                "prototype",
-                "length",
-                "arguments",
-                "caller"
-              ],
+              "required": ["prototype", "length", "arguments", "caller"],
               "description": "Check status function, to check credentials that have a credentialStatus property"
             }
           },
-          "required": [
-            "credential"
-          ],
+          "required": ["credential"],
           "description": "Encapsulates the parameters required to verify a\n {@link  https://www.w3.org/TR/vc-data-model/#credentials | W3C Verifiable Credential }"
         },
-        "interface-2023903318-10295-11759-2023903318-0-216469": {
+        "interface-ib.es5.d.ts-10057-11521-ib.es5.d.ts-0-217681": {
           "type": "object",
           "properties": {
             "prototype": {},
@@ -696,15 +741,10 @@
             },
             "arguments": {},
             "caller": {
-              "$ref": "#/components/schemas/interface-2023903318-10295-11759-2023903318-0-216469"
+              "$ref": "#/components/schemas/interface-ib.es5.d.ts-10057-11521-ib.es5.d.ts-0-217681"
             }
           },
-          "required": [
-            "prototype",
-            "length",
-            "arguments",
-            "caller"
-          ]
+          "required": ["prototype", "length", "arguments", "caller"]
         },
         "IVerifyPresentationLDArgs": {
           "type": "object",
@@ -727,7 +767,17 @@
               "default": false
             },
             "presentationPurpose": {
-              "$ref": "#/components/schemas/IProofPurpose",
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IAuthenticationProofPurpose"
+                },
+                {
+                  "$ref": "#/components/schemas/IControllerProofPurpose"
+                },
+                {
+                  "$ref": "#/components/schemas/IAssertionProofPurpose"
+                }
+              ],
               "description": "Use this presentation purpose for the verification method in the DID when doing a check (defaualts to assertionMethod)"
             },
             "checkStatus": {
@@ -739,21 +789,14 @@
                 },
                 "arguments": {},
                 "caller": {
-                  "$ref": "#/components/schemas/interface-2023903318-10295-11759-2023903318-0-216469"
+                  "$ref": "#/components/schemas/interface-ib.es5.d.ts-10057-11521-ib.es5.d.ts-0-217681"
                 }
               },
-              "required": [
-                "prototype",
-                "length",
-                "arguments",
-                "caller"
-              ],
+              "required": ["prototype", "length", "arguments", "caller"],
               "description": "Check status function, to check credentials that have a credentialStatus property"
             }
           },
-          "required": [
-            "presentation"
-          ],
+          "required": ["presentation"],
           "description": "Encapsulates the parameters required to verify a\n {@link  https://www.w3.org/TR/vc-data-model/#presentations | W3C Verifiable Presentation }"
         },
         "VerifiablePresentation": {
@@ -813,17 +856,13 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "holder",
-            "proof"
-          ],
+          "required": ["@context", "holder", "proof"],
           "description": "Represents a signed Verifiable Presentation (includes proof), using a JSON representation. See  {@link  https://www.w3.org/TR/vc-data-model/#presentations | VP data model }"
         }
       },
       "methods": {
         "createVerifiableCredentialLDLocal": {
-          "description": "",
+          "description": "Creates a Verifiable Credential. The payload, signer and format are chosen based on the ",
           "arguments": {
             "$ref": "#/components/schemas/ICreateVerifiableCredentialLDArgs"
           },
@@ -832,7 +871,7 @@
           }
         },
         "createVerifiablePresentationLDLocal": {
-          "description": "",
+          "description": "Creates a Verifiable Presentation. The payload, signer and format are chosen based on the ",
           "arguments": {
             "$ref": "#/components/schemas/ICreateVerifiablePresentationLDArgs"
           },
@@ -841,7 +880,7 @@
           }
         },
         "verifyCredentialLDLocal": {
-          "description": "",
+          "description": "Verifies a Verifiable Credential JWT or LDS Format.",
           "arguments": {
             "$ref": "#/components/schemas/IVerifyCredentialLDArgs"
           },
@@ -850,7 +889,7 @@
           }
         },
         "verifyPresentationLDLocal": {
-          "description": "",
+          "description": "Verifies a Verifiable Presentation JWT or LDS Format.",
           "arguments": {
             "$ref": "#/components/schemas/IVerifyPresentationLDArgs"
           },
