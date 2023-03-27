@@ -23,6 +23,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/IAssertionProofPurpose"
+                },
+                {
+                  "$ref": "#/components/schemas/IProofPurpose"
                 }
               ],
               "description": "Use this purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)"
@@ -207,6 +210,31 @@
             },
             "controller": {
               "type": "object"
+            }
+          }
+        },
+        "IProofPurpose": {
+          "type": "object",
+          "properties": {
+            "term": {
+              "type": "string"
+            },
+            "date": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "maxTimestampDelta": {
+              "type": "number"
             }
           }
         },
@@ -409,18 +437,6 @@
             "JwtProof2020"
           ]
         },
-        "IProofPurpose": {
-          "type": "string",
-          "enum": [
-            "verificationMethod",
-            "assertionMethod",
-            "authentication",
-            "keyAgreement",
-            "contactAgreement",
-            "capabilityInvocation",
-            "capabilityDelegation"
-          ]
-        },
         "ProofType": {
           "type": "object",
           "properties": {
@@ -459,6 +475,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/IAssertionProofPurpose"
+                },
+                {
+                  "$ref": "#/components/schemas/IProofPurpose"
                 }
               ]
             }
@@ -756,6 +775,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/IAssertionProofPurpose"
+                },
+                {
+                  "$ref": "#/components/schemas/IProofPurpose"
                 }
               ],
               "description": "Use this presentation purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)"
@@ -835,6 +857,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/IAssertionProofPurpose"
+                },
+                {
+                  "$ref": "#/components/schemas/IProofPurpose"
                 }
               ],
               "description": "Use this presentation purpose for the verification method in the DID when doing a check (defaualts to assertionMethod)"
