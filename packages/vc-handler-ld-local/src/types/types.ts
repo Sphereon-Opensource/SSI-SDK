@@ -43,7 +43,7 @@ export interface ICreateVerifiablePresentationLDArgs {
    */
   keyRef?: string
 
-  purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose
+  purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 }
 
 /**
@@ -72,7 +72,7 @@ export interface ICreateVerifiableCredentialLDArgs {
   /**
    * Use this purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)
    */
-  purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose
+  purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 }
 
 /**
@@ -102,7 +102,7 @@ export interface IVerifyCredentialLDArgs {
   /**
    * Use this presentation purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)
    */
-  purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose
+  purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 
   /**
    * Check status function, to check credentials that have a credentialStatus property
@@ -147,7 +147,7 @@ export interface IVerifyPresentationLDArgs {
   /**
    * Use this presentation purpose for the verification method in the DID when doing a check (defaualts to assertionMethod)
    */
-  presentationPurpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose
+  presentationPurpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 
   /**
    * Check status function, to check credentials that have a credentialStatus property
