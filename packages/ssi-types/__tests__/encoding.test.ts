@@ -37,6 +37,9 @@ describe('Encoding - Decoding', () => {
   })
 
   it('Decoded JsonLd VP should have sub', () => {
+    if (!Array.isArray(decodedLdpVp.verifiableCredential) || decodedLdpVp.verifiableCredential.length < 2) {
+      throw Error('Should have at least 2 VCs')
+    }
     expect((decodedLdpVp.verifiableCredential[1] as IVerifiableCredential).issuer).toEqual('did:foo:123')
   })
   it('Decoded Jsonld VC should have sub', () => {

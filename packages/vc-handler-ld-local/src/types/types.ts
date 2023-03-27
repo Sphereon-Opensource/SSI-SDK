@@ -4,82 +4,11 @@ import {
   IAgentContext,
   IDIDManager,
   IKeyManager,
-  IPluginMethodMap,
   IResolver,
   PresentationPayload,
   VerifiableCredential,
   VerifiablePresentation,
 } from '@veramo/core'
-
-/**
- * The interface definition for a plugin that can issue and verify Verifiable Credentials and Presentations
- * that use JSON-LD format.
- *
- * @remarks Please see {@link https://www.w3.org/TR/vc-data-model | W3C Verifiable Credentials data model}
- *
- * @beta This API is likely to change without a BREAKING CHANGE notice
- */
-export interface ICredentialIssuerLD extends IPluginMethodMap {
-  /**
-   * Creates a Verifiable Presentation.
-   * The payload, signer and format are chosen based on the `args` parameter.
-   *
-   * @param args - Arguments necessary to create the Presentation.
-   * @param context - This reserved param is automatically added and handled by the framework, *do not override*
-   *
-   * @returns - a promise that resolves to the {@link @veramo/core#VerifiablePresentation} that was requested or rejects with an error
-   * if there was a problem with the input or while getting the key to sign
-   *
-   * @remarks Please see {@link https://www.w3.org/TR/vc-data-model/#presentations | Verifiable Presentation data model }
-   *
-   * @beta This API is likely to change without a BREAKING CHANGE notice
-   */
-  createVerifiablePresentationLD(args: ICreateVerifiablePresentationLDArgs, context: IRequiredContext): Promise<VerifiablePresentation>
-
-  /**
-   * Creates a Verifiable Credential.
-   * The payload, signer and format are chosen based on the `args` parameter.
-   *
-   * @param args - Arguments necessary to create the Presentation.
-   * @param context - This reserved param is automatically added and handled by the framework, *do not override*
-   *
-   * @returns - a promise that resolves to the {@link @veramo/core#VerifiableCredential} that was requested or rejects with an error
-   * if there was a problem with the input or while getting the key to sign
-   *
-   * @remarks Please see {@link https://www.w3.org/TR/vc-data-model/#credentials | Verifiable Credential data model}
-   *
-   * @beta This API is likely to change without a BREAKING CHANGE notice
-   */
-  createVerifiableCredentialLD(args: ICreateVerifiableCredentialLDArgs, context: IRequiredContext): Promise<VerifiableCredential>
-
-  /**
-   * Verifies a Verifiable Credential JWT or LDS Format.
-   *
-   * @param args - Arguments necessary to verify a VerifiableCredential
-   * @param context - This reserved param is automatically added and handled by the framework, *do not override*
-   *
-   * @returns - a promise that resolves to the boolean true on successful verification or rejects on error
-   *
-   * @remarks Please see {@link https://www.w3.org/TR/vc-data-model/#credentials | Verifiable Credential data model}
-   *
-   * @beta This API is likely to change without a BREAKING CHANGE notice
-   */
-  verifyCredentialLD(args: IVerifyCredentialLDArgs, context: IRequiredContext): Promise<boolean>
-
-  /**
-   * Verifies a Verifiable Presentation JWT or LDS Format.
-   *
-   * @param args - Arguments necessary to verify a VerifiableCredential
-   * @param context - This reserved param is automatically added and handled by the framework, *do not override*
-   *
-   * @returns - a promise that resolves to the boolean true on successful verification or rejects on error
-   *
-   * @remarks Please see {@link https://www.w3.org/TR/vc-data-model/#presentations | Verifiable Credential data model}
-   *
-   * @beta This API is likely to change without a BREAKING CHANGE notice
-   */
-  verifyPresentationLD(args: IVerifyPresentationLDArgs, context: IRequiredContext): Promise<boolean>
-}
 
 /**
  * Encapsulates the parameters required to create a

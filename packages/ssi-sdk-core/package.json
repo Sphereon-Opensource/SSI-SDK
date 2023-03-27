@@ -1,22 +1,20 @@
 {
   "name": "@sphereon/ssi-sdk-core",
   "description": "SSI SDK Core & Interfaces",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc --build --clean && tsc --build"
+    "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
     "@scure/base": "^1.1.1",
-    "@sphereon/ssi-types": "^0.8.0",
-    "@veramo/core": "4.2.0",
-    "typeorm": "^0.3.10"
+    "@sphereon/ssi-types": "^0.9.0",
+    "@veramo/core": "4.2.0"
   },
   "devDependencies": {
-    "@types/debug": "4.1.7",
-    "did-resolver": "^4.0.1",
-    "typescript": "4.6.4"
+    "did-resolver": "^4.1.0"
   },
   "files": [
     "dist/**/*",

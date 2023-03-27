@@ -1,32 +1,28 @@
 {
   "name": "@sphereon/ssi-sdk-factom-did-provider",
   "description": "Veramo Factom DID provider",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc --build --clean && tsc --build"
+    "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/did-uni-client": "^0.5.0",
-    "@sphereon/ssi-sdk-core": "^0.8.0",
+    "@sphereon/did-uni-client": "^0.6.0",
+    "@sphereon/ssi-sdk-core": "^0.9.0",
     "@veramo/core": "4.2.0",
     "@veramo/did-manager": "4.2.0",
-    "debug": "^4.1.1",
-    "did-jwt-vc": "^2.1.7",
-    "events": "^3.3.0",
-    "z-schema": "^5.0.2"
+    "debug": "^4.3.4"
   },
   "devDependencies": {
-    "@types/debug": "4.1.7",
     "@veramo/cli": "4.2.0",
     "@veramo/data-store": "4.2.0",
     "@veramo/did-manager": "4.2.0",
     "@veramo/did-resolver": "4.2.0",
     "@veramo/key-manager": "4.2.0",
     "@veramo/kms-local": "4.2.0",
-    "did-resolver": "^4.0.1",
-    "typescript": "4.6.4"
+    "did-resolver": "^4.1.0"
   },
   "files": [
     "dist/**/*",

@@ -21,23 +21,33 @@ import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknow
 export async function createPresentationSignCallback({
   presentationSignCallback,
   kid,
+  domain,
+  challenge,
   context,
 }: {
   presentationSignCallback?: PresentationSignCallback
   kid: string
+  domain?: string
+  challenge?: string
   context: IRequiredContext
 }): Promise<PresentationSignCallback> {
+  // fixme: Remove once IPresentation in proper form is available in PEX
+  // @ts-ignore
   return presentationSignCallback
     ? presentationSignCallback
     : async (args: PresentationSignCallBackParams): Promise<W3CVerifiablePresentation> => {
         const presentation: PresentationPayload = args.presentation as PresentationPayload
         const format = args.presentationDefinition.format
-        return (await context.agent.createVerifiablePresentation({
+
+        const vp = await context.agent.createVerifiablePresentation({
           presentation,
           keyRef: kid,
+          domain,
+          challenge,
           fetchRemoteContexts: true,
           proofFormat: format && (format.ldp || format.ldp_vp) ? 'lds' : 'jwt',
-        })) as W3CVerifiablePresentation
+        })
+        return vp as W3CVerifiablePresentation
       }
 }
 

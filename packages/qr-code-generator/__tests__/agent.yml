@@ -1,0 +1,11 @@
+version: 3.0
+
+# Agent
+agent:
+  $require: '@veramo/core#Agent'
+  $args:
+    - schemaValidation: false
+      plugins:
+        - $require: ./packages/qr-code-generator/dist#QrCodeProvider
+#          $args:
+#            - renderingProps

@@ -3,7 +3,7 @@ import * as vc from '@digitalcredentials/vc'
 import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
 import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
-import { events } from './types/ICredentialHandlerLDLocal'
+import { events } from './types'
 import {
   CredentialPayload,
   IAgentContext,
@@ -20,8 +20,9 @@ import { LdContextLoader } from './ld-context-loader'
 import { LdDocumentLoader } from './ld-document-loader'
 import { LdSuiteLoader } from './ld-suite-loader'
 
+// import jsigs from '@digitalcredentials/jsonld-signatures'
 //Support for Typescript added in version 9.0.0
-const jsonld = require('jsonld-signatures')
+const jsigs = require('jsonld-signatures')
 
 export type RequiredAgentMethods = IResolver & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>
 
@@ -69,10 +70,11 @@ export class LdCredentialModule {
     let verifiableCredential
     //Needs to be signed using jsonld-signaures@5.0.1
     if (key.type === 'Bls12381G2') {
-      verifiableCredential = await jsonld.sign(credential, {
+      verifiableCredential = await jsigs.sign(credential, {
         suite: signingSuite,
         purpose,
         documentLoader,
+        compactProof: true,
       })
     } else {
       verifiableCredential = await vc.issue({
@@ -108,10 +110,11 @@ export class LdCredentialModule {
     suite.preSigningPresModification(presentation)
 
     if (key.type === 'Bls12381G2') {
-      return await jsonld.sign(presentation, {
+      return await jsigs.sign(presentation, {
         suite: await suite.getSuiteForSigning(key, holderDid, verificationMethodId, context),
         purpose,
         documentLoader,
+        compactProof: true,
       })
     }
     return await vc.signPresentation({
@@ -135,16 +138,17 @@ export class LdCredentialModule {
     const verificationSuites = this.getAllVerificationSuites()
     this.ldSuiteLoader.getAllSignatureSuites().forEach((suite) => suite.preVerificationCredModification(credential))
     let result
-    if (credential.proof.type === 'BbsBlsSignature2020') {
+    if (credential.proof.type?.includes('BbsBlsSignature2020')) {
       //Should never be null or undefined
       const suite = this.ldSuiteLoader
         .getAllSignatureSuites()
         .find((s) => s.getSupportedVeramoKeyType() === 'Bls12381G2')
         ?.getSuiteForVerification() as BbsBlsSignature2020
-      result = await jsonld.verify(credential, {
+      result = await jsigs.verify(credential, {
         suite,
         purpose: purpose,
         documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
+        compactProof: true,
       })
     } else {
       result = await vc.verifyCredential({
@@ -194,16 +198,17 @@ export class LdCredentialModule {
   ): Promise<boolean> {
     // console.log(JSON.stringify(presentation, null, 2))
     let result
-    if (presentation.proof.type === 'BbsBlsSignature2020') {
+    if (presentation.proof.type?.includes('BbsBlsSignature2020')) {
       //Should never be null or undefined
       const suite = this.ldSuiteLoader
         .getAllSignatureSuites()
         .find((s) => s.getSupportedVeramoKeyType() === 'Bls12381G2')
         ?.getSuiteForVerification() as BbsBlsSignature2020
-      result = await jsonld.verify(presentation, {
+      result = await jsigs.verify(presentation, {
         suite,
         purpose: presentationPurpose,
         documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
+        compactProof: true,
       })
 
       if (result.verified) {

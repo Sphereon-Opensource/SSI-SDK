@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.9.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.8.0...v0.9.0) (2023-03-09)
+
+### Bug Fixes
+
+- credential mapper for jtw ([f04345b](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/f04345b97ff9a78a3dff096599f0b675b3239a3e))
+- JWT claims would overwrite the issuer object in the credential. Disable Factom tests ([f41cf64](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/f41cf64790d484ad8b9721fe347e81e2153898b9))
+- Move parseDid method to ssi-types ([0b28de3](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/0b28de3de21afd0a224d3d174103e072162231ed))
+- Remove non dev dep on veramo-core ([8cb8efe](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/8cb8efec1fc97581640a8254fe412abc8fea4305))
+- Tests to allow multiple subjects for credentials ([5e407ac](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/5e407accd822ccb099677876df192e850b17ccd1))
+- Tests to allow multiple subjects for credentials ([52b1662](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/52b1662c9f7dc911f7f67d2e56a0b86cb7535c8c))
+- Tests to allow multiple subjects for credentials ([110d78e](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/110d78e29304a230359e30d6ae54cdf2cfe10882))
+
+### Features
+
+- Add jwt as signature when decoding JWT VCs/VPs ([f089ac1](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/f089ac18dc470f0b8c581b49e70e7eba64d72bc3))
+- Allow multiple subjects for credentials ([6300ccc](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/6300ccc4db803e76abeeafb489374120b983af71))
+- Create VP in OP Authenticator and allow for callbacks ([0ed86d8](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/0ed86d8d2b655a718d7c8cf1a946e0150bf877ce))
+
 # [0.8.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.7.0...v0.8.0) (2022-09-03)
 
 ### Features

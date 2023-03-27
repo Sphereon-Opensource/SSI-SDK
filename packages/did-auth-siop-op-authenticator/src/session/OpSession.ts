@@ -180,6 +180,8 @@ export class OpSession {
     /*    if (!responseOpts.signer) {
       throw Error('Signer needs to be present when creating the response')
     }*/
+    //fixme: Remove ignore once support is in ICredential
+    // @ts-ignore
     const authResponse = await op.createAuthorizationResponse(await this.getAuthorizationRequest(), responseOpts)
     const response = await op.submitAuthorizationResponse(authResponse)
 
