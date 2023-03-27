@@ -26,7 +26,7 @@ const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
  */
 export class CredentialHandlerLDLocal implements IAgentPlugin {
   private ldCredentialModule: LdCredentialModule
-  readonly schema = schema.IVcLocalIssuerJsonLd
+  readonly schema = schema.ICredentialHandlerLDLocal
   readonly methods: ICredentialHandlerLDLocal = {
     // test: this.createVerifiableCredentialLDLocal.bind(this),
     // We bind to existing methods as we can act as a drop in replacement. todo: Add config support for this mode

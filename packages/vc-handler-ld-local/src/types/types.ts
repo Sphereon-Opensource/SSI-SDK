@@ -43,7 +43,7 @@ export interface ICreateVerifiablePresentationLDArgs {
    */
   keyRef?: string
 
-  purpose?: typeof ProofPurpose
+  purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 }
 
 /**
@@ -72,7 +72,7 @@ export interface ICreateVerifiableCredentialLDArgs {
   /**
    * Use this purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)
    */
-  purpose?: typeof ProofPurpose
+  purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 }
 
 /**
@@ -102,7 +102,7 @@ export interface IVerifyCredentialLDArgs {
   /**
    * Use this presentation purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)
    */
-  purpose?: typeof ProofPurpose
+  purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 
   /**
    * Check status function, to check credentials that have a credentialStatus property
@@ -147,7 +147,7 @@ export interface IVerifyPresentationLDArgs {
   /**
    * Use this presentation purpose for the verification method in the DID when doing a check (defaualts to assertionMethod)
    */
-  presentationPurpose?: typeof ProofPurpose
+  presentationPurpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 
   /**
    * Check status function, to check credentials that have a credentialStatus property
@@ -168,6 +168,35 @@ export type IRequiredContext = IAgentContext<IResolver & Pick<IDIDManager, 'didM
 export type ContextDoc = {
   '@context': string | Record<string, any>
 }
+
+/*
+  @beta
+ */
+export interface IProofPurpose {
+  term?: string
+  date?: string | Date | number
+  maxTimestampDelta?: number
+}
+
+/*
+  @beta
+ */
+export interface IControllerProofPurpose extends IProofPurpose {
+  controller?: object
+}
+
+/*
+  @beta
+ */
+export interface IAuthenticationProofPurpose extends IControllerProofPurpose {
+  challenge?: string
+  domain?: string
+}
+
+/*
+  @beta
+ */
+export interface IAssertionProofPurpose extends IControllerProofPurpose {}
 
 export const ProofPurpose = purposes.ProofPurpose
 export const ControllerProofPurpose = purposes.ControllerProofPurpose

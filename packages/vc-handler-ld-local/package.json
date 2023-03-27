@@ -11,7 +11,8 @@
   },
   "scripts": {
     "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build:clean": "tsc --build --clean && tsc --build",
+    "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
   },
   "dependencies": {
     "@digitalcredentials/did-method-key": "^2.0.3",
