@@ -34,7 +34,7 @@ import { ConnectionEntity } from '../entities/contact/ConnectionEntity'
 import { BaseConfigEntity } from '../entities/contact/BaseConfigEntity'
 import { OpenIdConfigEntity } from '../entities/contact/OpenIdConfigEntity'
 import { DidAuthConfigEntity } from '../entities/contact/DidAuthConfigEntity'
-import { DataSource, In } from 'typeorm'
+import { DataSource } from 'typeorm'
 
 const debug = Debug('sphereon:typeorm:contact-store')
 
@@ -59,14 +59,8 @@ export class ContactStore extends AbstractContactStore {
   }
 
   getContacts = async (args?: IGetContactsArgs): Promise<Array<IContact>> => {
-    const initialResult = await (await this.dbConnection).getRepository(ContactEntity).find({
-      ...(args?.filter && { where: args?.filter }),
-    })
-
     const result = await (await this.dbConnection).getRepository(ContactEntity).find({
-      where: {
-        id: In(initialResult.map((contact: ContactEntity) => contact.id))
-      }
+      ...(args?.filter && { where: args?.filter }),
     })
 
     return result.map((contact: ContactEntity) => this.contactFrom(contact))
@@ -143,14 +137,8 @@ export class ContactStore extends AbstractContactStore {
   }
 
   getIdentities = async (args?: IGetIdentitiesArgs): Promise<Array<IIdentity>> => {
-    const initialResult = await (await this.dbConnection).getRepository(IdentityEntity).find({
-      ...(args?.filter && { where: args?.filter }),
-    })
-
     const result = await (await this.dbConnection).getRepository(IdentityEntity).find({
-      where: {
-        id: In(initialResult.map((identity: IdentityEntity) => identity.id))
-      }
+      ...(args?.filter && { where: args?.filter }),
     })
 
     return result.map((identity: IdentityEntity) => this.identityFrom(identity))
