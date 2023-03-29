@@ -85,6 +85,47 @@ describe('Database entities test', () => {
     expect(result.length).toEqual(1)
   })
 
+  it('should get whole contacts by filter', async () => {
+    const contact = {
+      name: 'test_name',
+      alias: 'test_alias',
+      uri: 'example.com',
+      identities: [
+        {
+          alias: 'test_alias1',
+          roles: [IdentityRoleEnum.ISSUER],
+          identifier: {
+            type: CorrelationIdentifierEnum.DID,
+            correlationId: 'example_did1',
+          },
+        },
+        {
+          alias: 'test_alias2',
+          roles: [IdentityRoleEnum.VERIFIER],
+          identifier: {
+            type: CorrelationIdentifierEnum.DID,
+            correlationId: 'example_did2',
+          },
+        },
+      ],
+    }
+    const savedContact = await contactStore.addContact(contact)
+    expect(savedContact).toBeDefined()
+
+    const args = {
+      filter: [{
+        identities: {
+          identifier: {
+            correlationId: 'example_did1',
+          }
+        }
+      }],
+    }
+    const result = await contactStore.getContacts(args)
+
+    expect(result[0].identities.length).toEqual(2)
+  })
+
   it('should get contacts by name', async () => {
     const contact = {
       name: 'test_name',
@@ -473,6 +514,47 @@ describe('Database entities test', () => {
     const result = await contactStore.getIdentities(args)
 
     expect(result.length).toEqual(1)
+  })
+
+  it('should get whole identities by filter', async () => {
+    const contact = {
+      name: 'test_name',
+      alias: 'test_alias',
+      uri: 'example.com',
+    }
+    const savedContact = await contactStore.addContact(contact)
+    expect(savedContact).toBeDefined()
+
+    const alias = 'test_alias1'
+    const identity1 = {
+      alias,
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+      identifier: {
+        type: CorrelationIdentifierEnum.DID,
+        correlationId: 'example_did1',
+      },
+      metadata: [
+        {
+          label: 'label1',
+          value: 'example_value',
+        },
+        {
+          label: 'label2',
+          value: 'example_value',
+        },
+      ],
+    }
+    const savedIdentity1 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity1 })
+    expect(savedIdentity1).toBeDefined()
+
+    const args = {
+      filter: [{ metadata: { label: 'label1' } }],
+    }
+
+    const result = await contactStore.getIdentities(args)
+
+    expect(result[0]).toBeDefined()
+    expect(result[0].metadata!.length).toEqual(2)
   })
 
   it('should add identity to contact', async () => {
