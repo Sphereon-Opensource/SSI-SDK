@@ -1,6 +1,11 @@
 import { TAgent } from '@veramo/core'
 import { IContactManager } from '../../src/types/IContactManager'
-import { CorrelationIdentifierEnum, IContact, IIdentity } from '../../../data-store/src'
+import {
+  CorrelationIdentifierEnum,
+  IContact,
+  IdentityRoleEnum,
+  IIdentity
+} from '../../../data-store/src'
 
 type ConfiguredAgent = TAgent<IContactManager>
 
@@ -22,6 +27,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'default_example_did'
       const identity = {
         alias: correlationId,
+        roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
         identifier: {
           type: CorrelationIdentifierEnum.DID,
           correlationId,
@@ -182,6 +188,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'new_example_did'
       const identity = {
         alias: correlationId,
+        roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
         identifier: {
           type: CorrelationIdentifierEnum.DID,
           correlationId,
@@ -205,6 +212,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'missing_connection_add_example'
       const identity = {
         alias: correlationId,
+        roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
         identifier: {
           type: CorrelationIdentifierEnum.URL,
           correlationId,
@@ -220,6 +228,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'missing_connection_update_example'
       const identity = {
         alias: correlationId,
+        roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
         identifier: {
           type: CorrelationIdentifierEnum.DID,
           correlationId,
@@ -235,6 +244,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'new_update_example_did'
       const identity = {
         alias: 'update_example_did',
+        roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
         identifier: {
           type: CorrelationIdentifierEnum.DID,
           correlationId: 'update_example_did',

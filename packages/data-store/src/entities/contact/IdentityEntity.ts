@@ -14,7 +14,7 @@ import {
 } from 'typeorm'
 import { correlationIdentifierEntityFrom, CorrelationIdentifierEntity } from './CorrelationIdentifierEntity'
 import { ConnectionEntity, connectionEntityFrom } from './ConnectionEntity'
-import { BasicMetadataItem, IBasicIdentity } from '../../types/contact'
+import { BasicMetadataItem, IBasicIdentity, IdentityRoleEnum } from '../../types/contact'
 import { ContactEntity } from './ContactEntity'
 import { IdentityMetadataItemEntity, metadataItemEntityFrom } from './IdentityMetadataItemEntity'
 import { IsNotEmpty, validate } from 'class-validator'
@@ -32,6 +32,9 @@ export class IdentityEntity extends BaseEntity {
   })
   @IsNotEmpty({ message: 'Blank aliases are not allowed' })
   alias!: string
+
+  @Column('simple-array', { name: 'roles', nullable: false })
+  roles!: Array<IdentityRoleEnum>
 
   @OneToOne(() => CorrelationIdentifierEntity, (identifier: CorrelationIdentifierEntity) => identifier.identity, {
     cascade: true,
@@ -92,6 +95,7 @@ export class IdentityEntity extends BaseEntity {
 export const identityEntityFrom = (args: IBasicIdentity): IdentityEntity => {
   const identityEntity = new IdentityEntity()
   identityEntity.alias = args.alias
+  identityEntity.roles = args.roles
   identityEntity.identifier = correlationIdentifierEntityFrom(args.identifier)
   if (args.connection) {
     identityEntity.connection = connectionEntityFrom(args.connection)

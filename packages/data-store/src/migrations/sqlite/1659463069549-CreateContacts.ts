@@ -18,7 +18,7 @@ export class CreateContacts1659463069549 implements MigrationInterface {
       `CREATE TABLE "IdentityMetadata" ("id" varchar PRIMARY KEY NOT NULL, "label" varchar(255) NOT NULL, "value" varchar(255) NOT NULL, "identityId" varchar)`
     )
     await queryRunner.query(
-      `CREATE TABLE "Identity" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "contactId" varchar, CONSTRAINT "UQ_Alias" UNIQUE ("alias"))`
+      `CREATE TABLE "Identity" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255) NOT NULL, "roles" text, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "contactId" varchar, CONSTRAINT "UQ_Alias" UNIQUE ("alias"))`
     )
     await queryRunner.query(
       `CREATE TABLE "Connection" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('OIDC','SIOPv2','SIOPv2+OpenID4VP') ) NOT NULL, "identityId" varchar, CONSTRAINT "REL_Connection_identityId" UNIQUE ("identityId"))`
@@ -50,10 +50,10 @@ export class CreateContacts1659463069549 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "IdentityMetadata"`)
     await queryRunner.query(`ALTER TABLE "temporary_IdentityMetadata" RENAME TO "IdentityMetadata"`)
     await queryRunner.query(
-      `CREATE TABLE "temporary_Identity" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "contactId" varchar, CONSTRAINT "UQ_Alias" UNIQUE ("alias"), CONSTRAINT "FK_Identity_contactId" FOREIGN KEY ("contactId") REFERENCES "Contact" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
+      `CREATE TABLE "temporary_Identity" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255) NOT NULL, "roles" text, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "contactId" varchar, CONSTRAINT "UQ_Alias" UNIQUE ("alias"), CONSTRAINT "FK_Identity_contactId" FOREIGN KEY ("contactId") REFERENCES "Contact" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
     )
     await queryRunner.query(
-      `INSERT INTO "temporary_Identity"("id", "alias", "created_at", "last_updated_at", "contactId") SELECT "id", "alias", "created_at", "last_updated_at", "contactId" FROM "Identity"`
+      `INSERT INTO "temporary_Identity"("id", "alias", "roles", "created_at", "last_updated_at", "contactId") SELECT "id", "alias", "roles", "created_at", "last_updated_at", "contactId" FROM "Identity"`
     )
     await queryRunner.query(`DROP TABLE "Identity"`)
     await queryRunner.query(`ALTER TABLE "temporary_Identity" RENAME TO "Identity"`)
@@ -75,10 +75,10 @@ export class CreateContacts1659463069549 implements MigrationInterface {
 
     await queryRunner.query(`ALTER TABLE "Identity" RENAME TO "temporary_Identity"`)
     await queryRunner.query(
-      `CREATE TABLE "Identity" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "contactId" varchar, CONSTRAINT "UQ_Alias" UNIQUE ("alias"))`
+      `CREATE TABLE "Identity" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255) NOT NULL, "roles" text, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "contactId" varchar, CONSTRAINT "UQ_Alias" UNIQUE ("alias"))`
     )
     await queryRunner.query(
-      `INSERT INTO "Identity"("id", "alias", "created_at", "last_updated_at", "contactId") SELECT "id", "alias", "created_at", "last_updated_at", "contactId" FROM "Identity"`
+      `INSERT INTO "Identity"("id", "alias", "roles","created_at", "last_updated_at", "contactId") SELECT "id", "alias", "roles","created_at", "last_updated_at", "contactId" FROM "Identity"`
     )
     await queryRunner.query(`DROP TABLE "temporary_Identity"`)
 

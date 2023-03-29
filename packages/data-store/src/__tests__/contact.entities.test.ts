@@ -17,6 +17,7 @@ import {
   ConnectionEntity,
   CorrelationIdentifierEntity,
   IdentityMetadataItemEntity,
+  IdentityRoleEnum,
 } from '../index'
 
 describe('Database entities test', () => {
@@ -133,6 +134,7 @@ describe('Database entities test', () => {
     const alias = 'non_unique_alias'
     const identity1 = {
       alias,
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId: 'unique_correlationId1',
@@ -143,6 +145,7 @@ describe('Database entities test', () => {
 
     const identity2 = {
       alias: alias,
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId: 'unique_correlationId2',
@@ -158,6 +161,7 @@ describe('Database entities test', () => {
     const correlationId = 'non_unique_correlationId'
     const identity1 = {
       alias: 'unique_alias1',
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId,
@@ -168,6 +172,7 @@ describe('Database entities test', () => {
 
     const identity2 = {
       alias: 'unique_alias2',
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId,
@@ -183,6 +188,7 @@ describe('Database entities test', () => {
     const correlationId = 'example_did'
     const identity = {
       alias: correlationId,
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId,
@@ -211,6 +217,7 @@ describe('Database entities test', () => {
   it('should throw error when saving identity with blank alias', async () => {
     const identity = {
       alias: '',
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId: 'example_did',
@@ -225,6 +232,7 @@ describe('Database entities test', () => {
   it('should throw error when saving identity with blank correlation id', async () => {
     const identity = {
       alias: 'example_did',
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId: '',
@@ -240,6 +248,7 @@ describe('Database entities test', () => {
     const correlationId = 'example_did'
     const identity = {
       alias: correlationId,
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId,
@@ -261,6 +270,7 @@ describe('Database entities test', () => {
     const correlationId = 'example_did'
     const identity = {
       alias: correlationId,
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId,
@@ -282,6 +292,7 @@ describe('Database entities test', () => {
     const correlationId = 'example.com'
     const identity = {
       alias: correlationId,
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.URL,
         correlationId,
@@ -326,6 +337,7 @@ describe('Database entities test', () => {
     const correlationId = 'example.com'
     const identity = {
       alias: correlationId,
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.URL,
         correlationId,
@@ -503,6 +515,7 @@ describe('Database entities test', () => {
     const correlationId = 'relation_example.com'
     const identity = {
       alias: correlationId,
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.URL,
         correlationId,
@@ -596,6 +609,7 @@ describe('Database entities test', () => {
     const correlationId = 'relation_example.com'
     const identity = {
       alias: correlationId,
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.URL,
         correlationId,
@@ -684,6 +698,7 @@ describe('Database entities test', () => {
     const correlationId = 'relation_example.com'
     const identity = {
       alias: correlationId,
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.URL,
         correlationId,
@@ -774,6 +789,7 @@ describe('Database entities test', () => {
     const correlationId = 'example_did'
     const identity = {
       alias: correlationId,
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId,
@@ -799,6 +815,7 @@ describe('Database entities test', () => {
     const correlationId = 'example_did'
     const identity = {
       alias: correlationId,
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId,
@@ -870,6 +887,7 @@ describe('Database entities test', () => {
     const correlationId = 'example_did'
     const identity = {
       alias: correlationId,
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId,

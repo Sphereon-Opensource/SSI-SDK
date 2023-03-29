@@ -220,6 +220,7 @@ export class ContactStore extends AbstractContactStore {
       name: contact.name,
       alias: contact.alias,
       uri: contact.uri,
+      roles: [...new Set(contact.identities?.flatMap((identity) => identity.roles))] ?? [],
       identities: contact.identities ? contact.identities.map((identity: IdentityEntity) => this.identityFrom(identity)) : [],
       createdAt: contact.createdAt,
       lastUpdatedAt: contact.lastUpdatedAt,
@@ -230,6 +231,7 @@ export class ContactStore extends AbstractContactStore {
     return {
       id: identity.id,
       alias: identity.alias,
+      roles: identity.roles,
       identifier: this.correlationIdentifierFrom(identity.identifier),
       ...(identity.connection && { connection: this.connectionFrom(identity.connection) }),
       metadata: identity.metadata ? identity.metadata.map((item: IdentityMetadataItemEntity) => this.metadataItemFrom(item)) : [],

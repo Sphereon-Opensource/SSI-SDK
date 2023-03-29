@@ -19,7 +19,7 @@ export class CreateContacts1659463079428 implements MigrationInterface {
       `CREATE TABLE "IdentityMetadata" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "label" character varying(255) NOT NULL, "value" character varying(255) NOT NULL, "identityId" uuid, CONSTRAINT "PK_IdentityMetadata_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "Identity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "alias" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "contactId" uuid, CONSTRAINT "UQ_Alias" UNIQUE ("alias"), CONSTRAINT "PK_Identity_id" PRIMARY KEY ("id"))`
+      `CREATE TABLE "Identity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "alias" character varying(255) NOT NULL, "roles" text, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "contactId" uuid, CONSTRAINT "UQ_Alias" UNIQUE ("alias"), CONSTRAINT "PK_Identity_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(`CREATE TYPE "public"."Connection_type_enum" AS ENUM('OIDC', 'SIOPv2', 'SIOPv2+OpenID4VP')`)
     await queryRunner.query(

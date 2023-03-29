@@ -1,11 +1,6 @@
 import { IIdentifier } from '@veramo/core'
 
-export enum BaseConfigType {
-  OPENID_CONNECT = 'OpenIdConnectConfig',
-  SIOPv2 = 'SIOPv2Config',
-}
-
-export enum ConnectionRoleEnum {
+export enum IdentityRoleEnum {
   ISSUER = 'issuer',
   VERIFIER = 'verifier',
 }
@@ -26,6 +21,7 @@ export interface IContact {
   name: string
   alias: string
   uri?: string
+  roles: Array<IdentityRoleEnum>
   identities: Array<IIdentity>
   createdAt: Date
   lastUpdatedAt: Date
@@ -40,6 +36,7 @@ export interface IBasicContact {
 export interface IIdentity {
   id: string
   alias: string
+  roles: Array<IdentityRoleEnum>
   identifier: ICorrelationIdentifier
   connection?: IConnection
   metadata?: Array<IMetadataItem>
@@ -48,6 +45,7 @@ export interface IIdentity {
 }
 export interface IBasicIdentity {
   alias: string
+  roles: Array<IdentityRoleEnum>
   identifier: BasicCorrelationIdentifier
   connection?: IBasicConnection
   metadata?: Array<BasicMetadataItem>
