@@ -8,7 +8,7 @@ import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import { DidAuthSiopOpAuthenticator, IDidAuthSiopOpAuthenticator } from '../src'
+import { Siopv2RelyingParty, ISiopv2RelyingParty } from '../src'
 import { Resolver } from 'did-resolver'
 import { getDidKeyResolver } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
@@ -32,7 +32,7 @@ let serverAgent: IAgent
 let restServer: Server
 
 const presentationSignCallback: PresentationSignCallback = async (args) => {
-  const presentationSignProof = getFileAsJson('./packages/did-auth-siop-op-authenticator/__tests__/vc_vp_examples/psc/psc.json')
+  const presentationSignProof = getFileAsJson('./packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/psc/psc.json')
 
   return {
     ...args.presentation,
@@ -41,10 +41,10 @@ const presentationSignCallback: PresentationSignCallback = async (args) => {
 }
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IDidAuthSiopOpAuthenticator & IDataStore>({
+  createAgent<ISiopv2RelyingParty & IDataStore>({
     ...options,
     plugins: [
-      new DidAuthSiopOpAuthenticator(presentationSignCallback),
+      new Siopv2RelyingParty(presentationSignCallback),
       new DIDResolverPlugin({
         resolver: new Resolver({
           ...getDidKeyResolver(),
@@ -61,7 +61,7 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/did-auth-siop-op-authenticator/agent.yml')
+  const config = getConfig('packages/siopv2-openid4vp-op-auth/agent.yml')
   config.agent.$args[0].plugins[1].$args[0] = presentationSignCallback
   const { agent } = createObjects(config, { agent: '/agent' })
   agent.registerCustomApprovalForSiop({ key: 'success', customApproval: () => Promise.resolve() })

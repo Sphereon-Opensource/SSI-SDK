@@ -1,0 +1,30 @@
+{
+  "definition": {
+    "id": "Credentials",
+    "input_descriptors": [
+      {
+        "id": "ID Card Credential and Driver's License",
+        "schema": [
+          {
+            "uri": "https://www.w3.org/2018/credentials/examples/v1/IDCardCredential"
+          },
+          {
+            "uri": "https://www.w3.org/2018/credentials/examples/v1/DriversLicense"
+          }
+        ],
+        "constraints": {
+          "fields": [
+            {
+              "path": ["$.issuer.id"],
+              "filter": {
+                "type": "string",
+                "pattern": "did:example:[issuer|ebfeb1f712ebc6f1c276e12ec21]"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "location": "presentation_definition"
+}

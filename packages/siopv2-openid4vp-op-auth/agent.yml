@@ -117,7 +117,7 @@ agent:
     - schemaValidation: false
       plugins:
         - $ref: /didResolver
-        - $require: ./packages/did-auth-siop-op-authenticator/dist#DidAuthSiopOpAuthenticator
+        - $require: ./packages/siopv2-openid4vp-op-auth/dist#DidAuthSiopOpAuthenticator
           $args:
             - presentationSignCallback: {}
         - $require: '@veramo/data-store#DataStore'

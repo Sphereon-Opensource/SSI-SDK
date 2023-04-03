@@ -1,0 +1,23 @@
+{
+  "name": "@sphereon/ssi-sdk-siopv2-openid4vp-common",
+  "version": "0.9.0",
+  "description": "Common SIOPv2 and OpenID4VP types between modules",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "private": false,
+  "dependencies": {
+    "@sphereon/did-auth-siop": "^0.3.0-unstable.30"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^16.18.0"
+  },
+  "files": [
+    "dist/**/*"
+  ]
+}

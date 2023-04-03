@@ -10,10 +10,14 @@
     { "path": "ms-authenticator" },
     { "path": "ms-request-api" },
     { "path": "vc-handler-ld-local" },
-    { "path": "did-auth-siop-op-authenticator" },
+    { "path": "siopv2-openid4vp-common"},
+    { "path": "siopv2-openid4vp-op-auth"},
+    { "path": "siopv2-openid4vp-rp-auth"},
+    { "path": "siopv2-openid4vp-rp-rest"},
     { "path": "qr-code-generator" },
     { "path": "contact-manager" },
     { "path": "data-store" },
+    { "path": "wellknown-did-issuer" },
     { "path": "wellknown-did-verifier" },
     { "path": "jwk-did-provider" }
   ]
