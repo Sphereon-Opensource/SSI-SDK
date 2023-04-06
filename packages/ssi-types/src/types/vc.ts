@@ -211,3 +211,6 @@ export const enum DocumentFormat {
   JSONLD,
   EIP712,
 }
+
+
+export const JWT_PROOF_TYPE_2020 = 'JwtProof2020'
