@@ -41,7 +41,7 @@ export interface ISIOPv2RP extends IPluginMethodMap {
   siopGetAuthResponseState(args: IGetAuthResponseStateArgs, context: IRequiredContext): Promise<AuthorizationResponseState | undefined>
   siopUpdateAuthRequestState(args: IUpdateRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState>
   siopDeleteAuthState(args: IDeleteAuthStateArgs, context: IRequiredContext): Promise<boolean>
-  siopVerifyAuthResponse(args: IVerifyAuthResponseStateArgs, context: IRequiredContext): Promise<VerifiedAuthorizationResponse>;
+  siopVerifyAuthResponse(args: IVerifyAuthResponseStateArgs, context: IRequiredContext): Promise<VerifiedAuthorizationResponse>
 }
 
 export interface ISiopv2RPOpts {
@@ -75,9 +75,9 @@ export interface IGetAuthResponseStateArgs {
 }
 
 export interface IUpdateRequestStateArgs {
-  definitionId: string,
-  correlationId: string,
-  state: AuthorizationRequestStateStatus,
+  definitionId: string
+  correlationId: string
+  state: AuthorizationRequestStateStatus
   error?: string
 }
 
@@ -87,11 +87,11 @@ export interface IDeleteAuthStateArgs {
 }
 
 export interface IVerifyAuthResponseStateArgs {
-  authorizationResponse: string;
+  authorizationResponse: string
   definitionId?: string
-  correlationId: string;
-  audience?: string;
-  presentationDefinitions?: PresentationDefinitionWithLocation | PresentationDefinitionWithLocation[];
+  correlationId: string
+  audience?: string
+  presentationDefinitions?: PresentationDefinitionWithLocation | PresentationDefinitionWithLocation[]
 }
 
 export interface IAuthorizationRequestPayloads {

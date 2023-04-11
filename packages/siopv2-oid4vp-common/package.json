@@ -9,7 +9,7 @@
   "license": "Apache-2.0",
   "private": false,
   "dependencies": {
-    "@sphereon/did-auth-siop": "^0.3.0-unstable.30"
+    "@sphereon/did-auth-siop": "^0.3.0-unstable.32"
   },
   "scripts": {
     "build": "tsc"

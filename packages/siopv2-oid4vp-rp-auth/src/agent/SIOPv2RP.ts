@@ -7,18 +7,16 @@ import {
   IRequiredContext,
   IRPOptions,
   ISiopRPInstanceArgs,
-  ISiopv2RPOpts, IUpdateRequestStateArgs, IVerifyAuthResponseStateArgs,
+  ISiopv2RPOpts,
+  IUpdateRequestStateArgs,
+  IVerifyAuthResponseStateArgs,
   schema,
 } from '../index'
 import { IAgentPlugin } from '@veramo/core'
 
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
 import { RPInstance } from '../RPInstance'
-import {
-  AuthorizationRequestState,
-  AuthorizationResponsePayload,
-  VerifiedAuthorizationResponse,
-} from '@sphereon/did-auth-siop/dist/main/types'
+import { AuthorizationRequestState, AuthorizationResponsePayload, VerifiedAuthorizationResponse } from '@sphereon/did-auth-siop/dist/main/types'
 import { AuthorizationResponseState, decodeUriAsJson } from '@sphereon/did-auth-siop'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk-siopv2-oid4vp-common'
 
@@ -50,7 +48,7 @@ export class SIOPv2RP implements IAgentPlugin {
 
   private async createAuthorizationRequestPayloads(
     createArgs: ICreateAuthRequestArgs,
-    context: IRequiredContext,
+    context: IRequiredContext
   ): Promise<IAuthorizationRequestPayloads> {
     return await this.getRPInstance({ definitionId: createArgs.definitionId }, context)
       .then((rp) => rp.createAuthorizationRequest(createArgs, context))
@@ -65,13 +63,15 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async siopGetRequestState(args: IGetAuthRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState | undefined> {
-    return await this.getRPInstance({ definitionId: args.definitionId }, context)
-      .then((rp) => rp.get(context).then(rp => rp.sessionManager.getRequestStateByCorrelationId(args.correlationId, args.errorOnNotFound)))
+    return await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
+      rp.get(context).then((rp) => rp.sessionManager.getRequestStateByCorrelationId(args.correlationId, args.errorOnNotFound))
+    )
   }
 
   private async siopGetResponseState(args: IGetAuthResponseStateArgs, context: IRequiredContext): Promise<AuthorizationResponseState | undefined> {
-    return await this.getRPInstance({ definitionId: args.definitionId }, context)
-      .then((rp) => rp.get(context).then(rp => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound)))
+    return await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
+      rp.get(context).then((rp) => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound))
+    )
   }
 
   private async siopUpdateRequestState(args: IUpdateRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState> {
@@ -80,33 +80,35 @@ export class SIOPv2RP implements IAgentPlugin {
     }
     return await this.getRPInstance({ definitionId: args.definitionId }, context)
       // todo: In the SIOP library we need to update the signal method to be more like this method
-      .then((rp) => rp.get(context).then(async rp => {
-        await rp.signalAuthRequestRetrieved({
-          correlationId: args.correlationId,
-          error: args.error ? new Error(args.error) : undefined,
+      .then((rp) =>
+        rp.get(context).then(async (rp) => {
+          await rp.signalAuthRequestRetrieved({
+            correlationId: args.correlationId,
+            error: args.error ? new Error(args.error) : undefined,
+          })
+          return (await rp.sessionManager.getRequestStateByCorrelationId(args.correlationId, true)) as AuthorizationRequestState
         })
-        return await rp.sessionManager.getRequestStateByCorrelationId(args.correlationId, true) as AuthorizationRequestState
-      }))
-
+      )
   }
-
 
   private async siopDeleteState(args: IGetAuthResponseStateArgs, context: IRequiredContext): Promise<boolean> {
     return await this.getRPInstance({ definitionId: args.definitionId }, context)
-      .then((rp) => rp.get(context).then(rp => rp.sessionManager.deleteStateForCorrelationId(args.correlationId))).then(() => true)
+      .then((rp) => rp.get(context).then((rp) => rp.sessionManager.deleteStateForCorrelationId(args.correlationId)))
+      .then(() => true)
   }
-
 
   private async siopVerifyAuthResponse(args: IVerifyAuthResponseStateArgs, context: IRequiredContext): Promise<VerifiedAuthorizationResponse> {
     const authResponse = decodeUriAsJson(args.authorizationResponse) as AuthorizationResponsePayload
-    return await this.getRPInstance({ definitionId: args.definitionId }, context)
-      .then((rp) => rp.get(context).then(rp => rp.verifyAuthorizationResponse(authResponse, {
-        correlationId: args.correlationId,
-        presentationDefinitions: args.presentationDefinitions,
-        audience: args.audience,
-      })))
+    return await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
+      rp.get(context).then((rp) =>
+        rp.verifyAuthorizationResponse(authResponse, {
+          correlationId: args.correlationId,
+          presentationDefinitions: args.presentationDefinitions,
+          audience: args.audience,
+        })
+      )
+    )
   }
-
 
   async getRPInstance(args: ISiopRPInstanceArgs, context: IRequiredContext): Promise<RPInstance> {
     const definitionId = args.definitionId

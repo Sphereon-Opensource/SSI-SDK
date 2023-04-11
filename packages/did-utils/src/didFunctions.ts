@@ -1,14 +1,5 @@
 import { UniResolver } from '@sphereon/did-uni-client'
-import {
-  DIDDocument,
-  DIDDocumentSection,
-  DIDResolutionResult,
-  IAgentContext,
-  IDIDManager,
-  IIdentifier,
-  IKey,
-  IResolver,
-} from '@veramo/core'
+import { DIDDocument, DIDDocumentSection, DIDResolutionResult, IAgentContext, IDIDManager, IIdentifier, IKey, IResolver } from '@veramo/core'
 import {
   _ExtendedIKey,
   _ExtendedVerificationMethod,
@@ -154,7 +145,7 @@ export async function mapIdentifierKeysToDocWithJwkSupport(
   const localKeys = identifier.keys.filter(isDefined)
   // finally map the didDocument keys to the identifier keys by comparing `publicKeyHex`
   const extendedKeys: _ExtendedIKey[] = documentKeys
-    . map((verificationMethod) => {
+    .map((verificationMethod) => {
       /*if (verificationMethod.type !== 'JsonWebKey2020') {
         return null
       }*/

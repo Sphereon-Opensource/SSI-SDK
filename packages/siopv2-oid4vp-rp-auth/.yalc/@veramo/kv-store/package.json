@@ -1,0 +1,46 @@
+{
+  "name": "@veramo/kv-store",
+  "description": "Veramo Key Value Store plugin",
+  "version": "5.1.2",
+  "main": "build/index.js",
+  "exports": "./build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest --config=../../jest.config.mjs",
+    "test:ci": "jest --config=../../jest.config.mjs",
+    "extract-api": "node ../cli/bin/veramo.js dev extract-api"
+  },
+  "dependencies": {
+    "@veramo/core-types": "5.1.2",
+    "@veramo/utils": "5.1.2",
+    "debug": "^4.3.4",
+    "events": "^3.3.0",
+    "json-buffer": "^3.0.1",
+    "typeorm": "^0.3.10",
+    "uint8arrays": "^3.1.1"
+  },
+  "files": [
+    "build/**/*",
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:uport-project/veramo.git",
+  "author": "Niels Klomp <nklomp@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Veramo",
+    "Key Value Store",
+    "keyv"
+  ],
+  "type": "module",
+  "moduleDirectories": [
+    "node_modules",
+    "src"
+  ],
+  "yalcSig": "09469f925723eeecd041caefbbb3346e"
+}

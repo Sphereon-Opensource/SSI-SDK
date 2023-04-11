@@ -4,14 +4,14 @@ import { AuthorizationResponsePayload } from '@sphereon/did-auth-siop'
 export interface ClaimPayloadCommonOpts {
   [x: string]: any
 }
-export declare enum AuthorizationRequestStateStatus {
+export enum AuthorizationRequestStateStatus {
   CREATED = 'created',
   SENT = 'sent',
   RECEIVED = 'received',
   VERIFIED = 'verified',
   ERROR = 'error',
 }
-export declare enum AuthorizationResponseStateStatus {
+export enum AuthorizationResponseStateStatus {
   CREATED = 'created',
   SENT = 'sent',
   RECEIVED = 'received',

@@ -65,8 +65,8 @@ export class ContactStore extends AbstractContactStore {
 
     const result = await (await this.dbConnection).getRepository(ContactEntity).find({
       where: {
-        id: In(initialResult.map((contact: ContactEntity) => contact.id))
-      }
+        id: In(initialResult.map((contact: ContactEntity) => contact.id)),
+      },
     })
 
     return result.map((contact: ContactEntity) => this.contactFrom(contact))
@@ -149,8 +149,8 @@ export class ContactStore extends AbstractContactStore {
 
     const result = await (await this.dbConnection).getRepository(IdentityEntity).find({
       where: {
-        id: In(initialResult.map((identity: IdentityEntity) => identity.id))
-      }
+        id: In(initialResult.map((identity: IdentityEntity) => identity.id)),
+      },
     })
 
     return result.map((identity: IdentityEntity) => this.identityFrom(identity))

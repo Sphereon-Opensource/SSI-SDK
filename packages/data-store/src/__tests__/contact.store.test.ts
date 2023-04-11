@@ -113,13 +113,15 @@ describe('Database entities test', () => {
     expect(savedContact).toBeDefined()
 
     const args = {
-      filter: [{
-        identities: {
-          identifier: {
-            correlationId: 'example_did1',
-          }
-        }
-      }],
+      filter: [
+        {
+          identities: {
+            identifier: {
+              correlationId: 'example_did1',
+            },
+          },
+        },
+      ],
     }
     const result = await contactStore.getContacts(args)
 
