@@ -12,13 +12,11 @@
 
 ---
 
-
 ## Requirements
 
 For this plugin a DID resolver is also required. A DID resolver can be added to the agent as plugin as seen in the example below.
 
 ## Available functions
-
 
 ## Usage
 

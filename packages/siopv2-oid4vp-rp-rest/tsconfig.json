@@ -6,5 +6,11 @@
     "declarationDir": "dist",
     "esModuleInterop": true
   },
-  "references": [{ "path": "../siopv2-oid4vp-common" }, { "path": "../siopv2-oid4vp-rp-auth" }, { "path": "../ssi-types" }, { "path": "../ssi-sdk-core" }, { "path": "../did-utils" }]
+  "references": [
+    { "path": "../siopv2-oid4vp-common" },
+    { "path": "../siopv2-oid4vp-rp-auth" },
+    { "path": "../ssi-types" },
+    { "path": "../ssi-sdk-core" },
+    { "path": "../did-utils" }
+  ]
 }

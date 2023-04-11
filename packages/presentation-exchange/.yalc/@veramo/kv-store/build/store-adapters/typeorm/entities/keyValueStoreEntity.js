@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7,26 +8,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.KeyValueStoreEntity = void 0;
+const typeorm_1 = require("typeorm");
 /**
  *
  * @beta This API may change without a BREAKING CHANGE notice.
  */
-let KeyValueStoreEntity = class KeyValueStoreEntity extends BaseEntity {
-    // @ts-ignore
-    key;
-    // @ts-ignore
-    data;
-    expires;
+let KeyValueStoreEntity = class KeyValueStoreEntity extends typeorm_1.BaseEntity {
 };
 __decorate([
-    PrimaryColumn()
+    (0, typeorm_1.PrimaryColumn)()
     // @ts-ignore
     ,
     __metadata("design:type", String)
 ], KeyValueStoreEntity.prototype, "key", void 0);
 __decorate([
-    Column({
+    (0, typeorm_1.Column)({
         type: 'text',
     })
     // @ts-ignore
@@ -34,7 +32,7 @@ __decorate([
     __metadata("design:type", String)
 ], KeyValueStoreEntity.prototype, "data", void 0);
 KeyValueStoreEntity = __decorate([
-    Entity('keyvaluestore')
+    (0, typeorm_1.Entity)('keyvaluestore')
 ], KeyValueStoreEntity);
-export { KeyValueStoreEntity };
+exports.KeyValueStoreEntity = KeyValueStoreEntity;
 //# sourceMappingURL=keyValueStoreEntity.js.map

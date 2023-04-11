@@ -9,8 +9,9 @@ import { CredentialMapper, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { PresentationDefinitionWithLocation, PresentationExchange } from '@sphereon/did-auth-siop'
 import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
 import { ProofOptions } from '@sphereon/ssi-sdk-core'
-import { createOID4VPPresentationSignCallback, determineKid, getKey } from './functions'
+import { createOID4VPPresentationSignCallback } from './functions'
 import { FindCredentialsArgs, IIdentifier } from '@veramo/core'
+import { determineKid, getKey } from '@sphereon/ssi-sdk-did-utils'
 
 export class OID4VP {
   private readonly session: OpSession

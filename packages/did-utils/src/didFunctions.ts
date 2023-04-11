@@ -1,5 +1,14 @@
 import { UniResolver } from '@sphereon/did-uni-client'
-import { DIDDocument, DIDDocumentSection, DIDResolutionResult, IAgentContext, IDIDManager, IIdentifier, IResolver } from '@veramo/core'
+import {
+  DIDDocument,
+  DIDDocumentSection,
+  DIDResolutionResult,
+  IAgentContext,
+  IDIDManager,
+  IIdentifier,
+  IKey,
+  IResolver,
+} from '@veramo/core'
 import {
   _ExtendedIKey,
   _ExtendedVerificationMethod,
@@ -14,6 +23,7 @@ import { DIDResolutionOptions, Resolvable, VerificationMethod } from 'did-resolv
 import elliptic from 'elliptic'
 import * as u8a from 'uint8arrays'
 import { hexKeyFromPEMBasedJwk } from './x509-utils'
+import { IDIDOptions, IIdentifierOpts } from './types'
 
 export const getFirstKeyWithRelation = async (
   identifier: IIdentifier,
@@ -144,10 +154,10 @@ export async function mapIdentifierKeysToDocWithJwkSupport(
   const localKeys = identifier.keys.filter(isDefined)
   // finally map the didDocument keys to the identifier keys by comparing `publicKeyHex`
   const extendedKeys: _ExtendedIKey[] = documentKeys
-    .map((verificationMethod) => {
-      if (verificationMethod.type !== 'JsonWebKey2020') {
+    . map((verificationMethod) => {
+      /*if (verificationMethod.type !== 'JsonWebKey2020') {
         return null
-      }
+      }*/
       const localKey = localKeys.find((localKey) => localKey.publicKeyHex === verificationMethod.publicKeyHex)
       if (localKey) {
         const { meta, ...localProps } = localKey
@@ -163,6 +173,68 @@ export async function mapIdentifierKeysToDocWithJwkSupport(
 
 export async function getAgentDIDMethods(context: IAgentContext<IDIDManager>) {
   return (await context.agent.didManagerGetProviders()).map((provider) => provider.toLowerCase().replace('did:', ''))
+}
+
+export async function getIdentifier(identifierOpts: IIdentifierOpts, context: IAgentContext<IDIDManager>): Promise<IIdentifier> {
+  if (typeof identifierOpts.identifier === 'string') {
+    return context.agent.didManagerGet({ did: identifierOpts.identifier })
+  } else if (typeof identifierOpts.identifier === 'object') {
+    return identifierOpts.identifier
+  }
+  throw Error(`Cannot get agent identifier value from options`)
+}
+
+export function getDID(identifierOpts: IIdentifierOpts): string {
+  if (typeof identifierOpts.identifier === 'string') {
+    return identifierOpts.identifier
+  } else if (typeof identifierOpts.identifier === 'object') {
+    return identifierOpts.identifier.did
+  }
+  throw Error(`Cannot get DID from identifier value`)
+}
+
+export function toDID(identifier: string | IIdentifier | Partial<IIdentifier>): string {
+  if (typeof identifier === 'string') {
+    return identifier
+  }
+  if (identifier.did) {
+    return identifier.did
+  }
+  throw Error(`No DID value present in identifier`)
+}
+
+export function toDIDs(identifiers?: (string | IIdentifier | Partial<IIdentifier>)[]): string[] {
+  if (!identifiers) {
+    return []
+  }
+  return identifiers.map(toDID)
+}
+
+export async function getKey(
+  identifier: IIdentifier,
+  verificationMethodSection: DIDDocumentSection = 'authentication',
+  context: IAgentContext<IResolver>,
+  keyId?: string
+): Promise<IKey> {
+  const keys = await mapIdentifierKeysToDocWithJwkSupport(identifier, verificationMethodSection, context)
+  if (!keys || keys.length === 0) {
+    throw new Error(`No keys found for verificationMethodSection: ${verificationMethodSection} and did ${identifier.did}`)
+  }
+
+  const identifierKey = keyId ? keys.find((key: _ExtendedIKey) => key.kid === keyId || key.meta.verificationMethod.id === keyId) : keys[0]
+  if (!identifierKey) {
+    throw new Error(`No matching verificationMethodSection key found for keyId: ${keyId}`)
+  }
+
+  return identifierKey
+}
+
+export function determineKid(key: IKey, idOpts: IIdentifierOpts): string {
+  return key.meta?.verificationMethod.id ?? idOpts.kid ?? key.kid
+}
+
+export async function getSupportedDIDMethods(didOpts: IDIDOptions, context: IAgentContext<IDIDManager>) {
+  return didOpts.supportedDIDMethods ?? (await getAgentDIDMethods(context))
 }
 
 export class AgentDIDResolver implements Resolvable {

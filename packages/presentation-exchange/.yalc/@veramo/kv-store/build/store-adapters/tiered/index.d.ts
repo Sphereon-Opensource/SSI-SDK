@@ -1,8 +1,8 @@
 /// <reference types="node" />
-import EventEmitter from 'events';
-import type { Options, Options_ } from './types.js';
-import { KeyvStore, KeyvStoredData } from '../../keyv/keyv-types.js';
-import { IKeyValueStoreAdapter } from '../../key-value-types.js';
+import { EventEmitter } from 'events';
+import type { Options, Options_ } from './types';
+import { KeyvStore, KeyvStoredData } from '../../keyv/keyv-types';
+import { IKeyValueStoreAdapter } from '../../key-value-types';
 export declare class KeyValueTieredStoreAdapter<Value> extends EventEmitter implements KeyvStore<Value>, IKeyValueStoreAdapter<Value> {
     opts: Options_;
     remote: KeyvStore<Value>;

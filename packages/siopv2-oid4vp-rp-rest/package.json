@@ -1,12 +1,14 @@
 {
-  "name": "@sphereon/ssi-sdk-siopv2-openid4vp-rp-rest",
+  "name": "@sphereon/ssi-sdk-siopv2-openid4vp-rp-rest-api",
   "version": "0.9.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build:clean": "tsc --build --clean && tsc --build",
+    "start:prod": "node build/index.js",
+    "start:dev": "ts-node __tests__/RestAPI.ts"
   },
   "dependencies": {
     "@sphereon/ssi-sdk-siopv2-oid4vp-common": "^0.9.0",
@@ -16,21 +18,19 @@
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",
     "@veramo/kv-store": "file:.yalc/@veramo/kv-store",
-    "cross-fetch": "^3.1.5",
-    "dotenv-flow": "^3.2.0",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "cross-fetch": "^3.1.5",
+    "dotenv-flow": "^3.2.0",
     "express": "^4.18.2",
     "short-uuid": "^4.2.2",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.0",
-    "@veramo/cli": "4.2.0",
-    "@veramo/did-provider-key": "4.2.0",
-    "@veramo/did-resolver": "4.2.0",
-    "@veramo/utils": "4.2.0",
+    "@sphereon/ssi-sdk-data-store-common": "^0.9.0",
+    "@sphereon/ssi-sdk-jwk-did-provider": "^0.9.0",
     "@types/body-parser": "^1.19.2",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.13",
@@ -39,8 +39,15 @@
     "@types/express": "^4.17.13",
     "@types/express-http-proxy": "^1.6.3",
     "@types/node": "^18.15.0",
+    "@veramo/cli": "4.2.0",
+    "@veramo/did-provider-ion": "4.2.0",
+    "@veramo/did-provider-key": "4.2.0",
+    "@veramo/did-provider-web": "4.2.0",
+    "@veramo/did-resolver": "4.2.0",
+    "@veramo/utils": "4.2.0",
     "did-resolver": "^4.1.0",
-    "nock": "^13.2.1"
+    "nock": "^13.2.1",
+    "ts-node": "^10.9.1"
   },
   "files": [
     "dist/**/*",

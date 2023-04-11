@@ -1,55 +1,33 @@
-import * as fs from 'fs'
 import 'cross-fetch/polyfill'
 // @ts-ignore
 import express from 'express'
-import { IAgent, createAgent, IAgentOptions, IDataStore } from '@veramo/core'
+import { createAgent, IAgent, IAgentOptions, IDataStore } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import { PresentationExchange, IPresentationExchange } from '../src'
+import { IPresentationExchange, PresentationExchange } from '../src'
 import { Resolver } from 'did-resolver'
 import { getDidKeyResolver } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
-import { getUniResolver } from '@sphereon/did-uni-client'
-import didAuthSiopOpAuthenticatorAgentLogic from './shared/presentationExchangeAgentLogic'
-import { PresentationSignCallback } from '@sphereon/did-auth-siop'
+import presentationExchangeAgentLogic from './shared/presentationExchangeAgentLogic'
 
 jest.setTimeout(30000)
-
-function getFile(path: string) {
-  return fs.readFileSync(path, 'utf-8')
-}
-
-function getFileAsJson(path: string) {
-  return JSON.parse(getFile(path))
-}
 
 const port = 3002
 const basePath = '/agent'
 let serverAgent: IAgent
 let restServer: Server
 
-const presentationSignCallback: PresentationSignCallback = async (args) => {
-  const presentationSignProof = getFileAsJson('./packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/psc/psc.json')
-
-  return {
-    ...args.presentation,
-    ...presentationSignProof,
-  }
-}
-
 const getAgent = (options?: IAgentOptions) =>
   createAgent<IPresentationExchange & IDataStore>({
     ...options,
     plugins: [
-      new PresentationExchange(presentationSignCallback),
+      new PresentationExchange(),
       new DIDResolverPlugin({
         resolver: new Resolver({
           ...getDidKeyResolver(),
-          ...getUniResolver('lto', { resolveUrl: 'https://uniresolver.test.sphereon.io/1.0/identifiers' }),
-          ...getUniResolver('factom', { resolveUrl: 'https://uniresolver.test.sphereon.io/1.0/identifiers' }),
         }),
       }),
       new AgentRestClient({
@@ -61,11 +39,11 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/siopv2-openid4vp-op-auth/agent.yml')
-  config.agent.$args[0].plugins[1].$args[0] = presentationSignCallback
+  const config = getConfig('packages/presentation-exchange/agent.yml')
+  // config.agent.$args[0].plugins[1].$args[0] = presentationSignCallback
   const { agent } = createObjects(config, { agent: '/agent' })
-  agent.registerCustomApprovalForSiop({ key: 'success', customApproval: () => Promise.resolve() })
-  agent.registerCustomApprovalForSiop({ key: 'failure', customApproval: () => Promise.reject(new Error('denied')) })
+  // agent.registerCustomApprovalForSiop({ key: 'success', customApproval: () => Promise.resolve() })
+  // agent.registerCustomApprovalForSiop({ key: 'failure', customApproval: () => Promise.reject(new Error('denied')) })
   serverAgent = agent
 
   const agentRouter = AgentRouter({
@@ -97,6 +75,6 @@ const testContext = {
   isRestTest: true,
 }
 
-xdescribe('REST integration tests', () => {
-  didAuthSiopOpAuthenticatorAgentLogic(testContext)
+describe('REST integration tests', () => {
+  presentationExchangeAgentLogic(testContext)
 })

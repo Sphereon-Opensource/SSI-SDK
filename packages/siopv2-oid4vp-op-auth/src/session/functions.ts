@@ -1,6 +1,6 @@
 import { IIdentifierOpts, IOPOptions, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
 import { EventEmitter } from 'events'
-import { AgentDIDResolver, getAgentDIDMethods, mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-did-utils'
+import { AgentDIDResolver, determineKid, getAgentDIDMethods, getKey } from '@sphereon/ssi-sdk-did-utils'
 import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk-core'
 import {
   Builder,
@@ -12,8 +12,7 @@ import {
   SigningAlgo,
   SupportedVersion,
 } from '@sphereon/did-auth-siop'
-import { DIDDocumentSection, IIdentifier, IKey, TKeyType } from '@veramo/core'
-import { _ExtendedIKey } from '@veramo/utils'
+import { TKeyType } from '@veramo/core'
 import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
 import { createPEXPresentationSignCallback } from '@sphereon/ssi-sdk-presentation-exchange'
 
@@ -29,14 +28,14 @@ export async function createOID4VPPresentationSignCallback({
   kid: string
   domain?: string
   challenge?: string
-  fetchRemoteContexts?: boolean,
+  fetchRemoteContexts?: boolean
   context: IRequiredContext
 }): Promise<PresentationSignCallback> {
   // fixme: Remove once IPresentation in proper form is available in PEX
   // @ts-ignore
   return presentationSignCallback
     ? presentationSignCallback
-    : createPEXPresentationSignCallback({kid, fetchRemoteContexts, domain, challenge}, context)
+    : createPEXPresentationSignCallback({ kid, fetchRemoteContexts, domain, challenge }, context)
 
   /*async (args: PresentationSignCallBackParams): Promise<W3CVerifiablePresentation> => {
         const presentation: PresentationPayload = args.presentation as PresentationPayload
@@ -123,6 +122,7 @@ export async function createOP({
   return (await createOPBuilder({ opOptions, idOpts, context })).build()
 }
 
+/*
 export async function getKey(
   identifier: IIdentifier,
   verificationMethodSection: DIDDocumentSection = 'authentication',
@@ -145,6 +145,7 @@ export async function getKey(
 export function determineKid(key: IKey, idOpts: IIdentifierOpts): string {
   return key.meta?.verificationMethod.id ?? idOpts.kid ?? key.kid
 }
+*/
 
 export function getSigningAlgo(type: TKeyType): SigningAlgo {
   switch (type) {

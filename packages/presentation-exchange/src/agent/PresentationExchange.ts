@@ -16,10 +16,10 @@ import { FindCredentialsArgs, IAgentPlugin } from '@veramo/core'
 
 import { IPresentationExchange } from '../types/IPresentationExchange'
 import { IKeyValueStore, IValueData, KeyValueStore } from '@veramo/kv-store'
-import { IPresentationDefinition, PEX } from '@sphereon/pex'
+import { Checked, IPresentationDefinition, PEX } from '@sphereon/pex'
 import { CredentialMapper, JWT_PROOF_TYPE_2020, W3CVerifiableCredential } from '@sphereon/ssi-types'
-import { toDIDs } from '../functions'
 import { InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
+import { toDIDs } from '@sphereon/ssi-sdk-did-utils'
 
 export class PresentationExchange implements IAgentPlugin {
   private static PEX = new PEX()
@@ -39,35 +39,30 @@ export class PresentationExchange implements IAgentPlugin {
     pexDefinitionFilterCredentialsPerInputDescriptor: this.pexDefinitionFilterCredentialsPerInputDescriptor.bind(this),
   }
 
-  constructor(
-    opts: PEXOpts,
-  ) {
-    this.defaultStore = opts.defaultStore ?? '_default'
-    this.defaultNamespace = opts.defaultNamespace ?? 'pex'
-    if (opts.stores && opts.stores instanceof Map) {
+  constructor(opts?: PEXOpts) {
+    this.defaultStore = opts?.defaultStore ?? '_default'
+    this.defaultNamespace = opts?.defaultNamespace ?? 'pex'
+    if (opts?.stores && opts.stores instanceof Map) {
       this._stores = opts.stores
-    } else if (opts.stores) {
+    } else if (opts?.stores) {
       this._stores = new Map().set(this.defaultStore, opts.stores)
     } else {
-      this._stores = new Map().set(this.defaultStore, new KeyValueStore({
-        namespace: this.defaultNamespace,
-        store: new Map<string, IPresentationDefinition>(),
-      }))
+      this._stores = new Map().set(
+        this.defaultStore,
+        new KeyValueStore({
+          namespace: this.defaultNamespace,
+          store: new Map<string, IPresentationDefinition>(),
+        })
+      )
     }
-    if (Array.isArray(opts.importDefinitions)) {
+    if (opts && Array.isArray(opts?.importDefinitions)) {
       opts.importDefinitions.forEach(this.pexStorePersistDefinition)
     }
   }
 
-
-  private async pexStoreGetDefinition({
-                                        definitionId,
-                                        storeId,
-                                        namespace,
-                                      }: IDefinitionGetArgs): Promise<IPresentationDefinition | undefined> {
+  private async pexStoreGetDefinition({ definitionId, storeId, namespace }: IDefinitionGetArgs): Promise<IPresentationDefinition | undefined> {
     return this.store({ storeId }).get(this.prefix({ namespace, definitionId }))
   }
-
 
   private async pexStoreHasDefinition({ definitionId, storeId, namespace }: IDefinitionExistsArgs): Promise<boolean> {
     return this.store({ storeId }).has(this.prefix({ namespace, definitionId }))
@@ -75,27 +70,45 @@ export class PresentationExchange implements IAgentPlugin {
 
   private async pexStorePersistDefinition(args: IDefinitionPersistArgs): Promise<IValueData<IPresentationDefinition>> {
     const { definition, ttl, storeId, namespace } = args
-    PresentationExchange.PEX.validateDefinition(definition) // throws an error in case the def is not valid
+    if (args?.validation !== false) {
+      let invalids: Checked[] = []
+
+      try {
+        const result = PresentationExchange.PEX.validateDefinition(definition) // throws an error in case the def is not valid
+        const validations = Array.isArray(result) ? result : [result]
+        invalids = validations.filter((v) => v.status === 'error')
+      } catch (error) {
+        invalids.push({
+          status: 'error',
+          message:
+            typeof error === 'string'
+              ? error
+              : typeof error === 'object' && 'message' in (error as object)
+              ? (error as Error).message
+              : 'unknown error',
+          tag: 'validation',
+        })
+      }
+      if (invalids.length > 0) {
+        throw Error(`Invalid definition. ${invalids.map((v) => v.message).toString()}`)
+      }
+    }
     const definitionId = args.definitionId ?? definition.id
     const existing = await this.store({ storeId }).getAsValueData(this.prefix({ namespace, definitionId }))
     if (!existing.value || (existing.value && args.overwriteExisting !== false)) {
-      return await this.store({ storeId })
-        .set(this.prefix({ namespace, definitionId }), definition, ttl)
+      return await this.store({ storeId }).set(this.prefix({ namespace, definitionId }), definition, ttl)
     }
     return existing
   }
 
-
-  private async pexStoreRemoveDefinition({
-                                           storeId,
-                                           definitionId,
-                                           namespace,
-                                         }: IDefinitionRemoveArgs): Promise<boolean> {
+  private async pexStoreRemoveDefinition({ storeId, definitionId, namespace }: IDefinitionRemoveArgs): Promise<boolean> {
     return this.store({ storeId }).delete(this.prefix({ namespace, definitionId }))
   }
 
-  private async pexStoreClearDefinitions({ storeId }: IDefinitionsClearArgs): Promise<void> {
-    await this.store({ storeId }).clear()
+  private async pexStoreClearDefinitions({ storeId }: IDefinitionsClearArgs): Promise<boolean> {
+    return await this.store({ storeId })
+      .clear()
+      .then(() => true)
   }
 
   async pexDefinitionVersion(presentationDefinition: IPresentationDefinition): Promise<VersionDiscoveryResult> {
@@ -105,15 +118,23 @@ export class PresentationExchange implements IAgentPlugin {
   async pexDefinitionFilterCredentials(args: IDefinitionCredentialFilterArgs, context: IRequiredContext): Promise<IPEXFilterResult> {
     const credentials = await this.pexFilterCredentials(args.credentialFilterOpts ?? {}, context)
     const holderDIDs = args.holderDIDs ? toDIDs(args.holderDIDs) : toDIDs(await context.agent.dataStoreORMGetIdentifiers())
-    const selectResults = new PEX().selectFrom(args.presentationDefinition, credentials ?? [], holderDIDs, args.limitDisclosureSignatureSuites ?? ['BbsBlsSignature2020'])
+    const selectResults = new PEX().selectFrom(
+      args.presentationDefinition,
+      credentials ?? [],
+      holderDIDs,
+      args.limitDisclosureSignatureSuites ?? ['BbsBlsSignature2020']
+    )
     return {
       id: args.presentationDefinition.id,
       selectResults,
-      filteredCredentials: selectResults.verifiableCredential?.map(vc => CredentialMapper.storedCredentialToOriginalFormat(vc)) ?? [],
+      filteredCredentials: selectResults.verifiableCredential?.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)) ?? [],
     }
   }
 
-  async pexDefinitionFilterCredentialsPerInputDescriptor(args: IDefinitionCredentialFilterArgs, context: IRequiredContext): Promise<IPEXFilterResultWithInputDescriptor[]> {
+  async pexDefinitionFilterCredentialsPerInputDescriptor(
+    args: IDefinitionCredentialFilterArgs,
+    context: IRequiredContext
+  ): Promise<IPEXFilterResultWithInputDescriptor[]> {
     const origDefinition = args.presentationDefinition
     const credentials = await this.pexFilterCredentials(args.credentialFilterOpts ?? {}, context)
     const holderDIDs = args.holderDIDs ? toDIDs(args.holderDIDs) : toDIDs(await context.agent.dataStoreORMGetIdentifiers())
@@ -125,12 +146,18 @@ export class PresentationExchange implements IAgentPlugin {
         id: inputDescriptor.id,
         input_descriptors: [inputDescriptor],
       }
-      promises.set(inputDescriptor, this.pexDefinitionFilterCredentials({
-        credentialFilterOpts: { verifiableCredentials: credentials },
-        presentationDefinition,
-        holderDIDs,
-        limitDisclosureSignatureSuites,
-      }, context))
+      promises.set(
+        inputDescriptor,
+        this.pexDefinitionFilterCredentials(
+          {
+            credentialFilterOpts: { verifiableCredentials: credentials },
+            presentationDefinition,
+            holderDIDs,
+            limitDisclosureSignatureSuites,
+          },
+          context
+        )
+      )
     })
     await Promise.all(promises.values())
     const result: IPEXFilterResultWithInputDescriptor[] = []
@@ -140,11 +167,13 @@ export class PresentationExchange implements IAgentPlugin {
     return result
   }
 
-
-  private async pexFilterCredentials(filterOpts: {
-    verifiableCredentials?: W3CVerifiableCredential[];
-    filter?: FindCredentialsArgs
-  }, context: IRequiredContext): Promise<W3CVerifiableCredential[]> {
+  private async pexFilterCredentials(
+    filterOpts: {
+      verifiableCredentials?: W3CVerifiableCredential[]
+      filter?: FindCredentialsArgs
+    },
+    context: IRequiredContext
+  ): Promise<W3CVerifiableCredential[]> {
     if (filterOpts?.verifiableCredentials && filterOpts.verifiableCredentials.length > 0) {
       return filterOpts.verifiableCredentials as W3CVerifiableCredential[]
     }
@@ -159,7 +188,6 @@ export class PresentationExchange implements IAgentPlugin {
     }
   }*/
 
-
   private store({ storeId }: { storeId?: string }): IKeyValueStore<IPresentationDefinition> {
     const store = this._stores.get(storeId ?? this.defaultStore)
     if (!store) {
@@ -172,9 +200,7 @@ export class PresentationExchange implements IAgentPlugin {
     return namespace ?? this.defaultStore
   }
 
-  private prefix({ namespace, definitionId }: { namespace?: string, definitionId: string }) {
+  private prefix({ namespace, definitionId }: { namespace?: string; definitionId: string }) {
     return `${this.namespace({ namespace })}:${definitionId}`
   }
-
-
 }

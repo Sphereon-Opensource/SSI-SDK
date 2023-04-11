@@ -1,5 +1,39 @@
-import EventEmitter from 'events';
-import JSONB from 'json-buffer';
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
+var __await = (this && this.__await) || function (v) { return this instanceof __await ? (this.v = v, this) : new __await(v); }
+var __asyncGenerator = (this && this.__asyncGenerator) || function (thisArg, _arguments, generator) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var g = generator.apply(thisArg, _arguments || []), i, q = [];
+    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
+    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
+    function fulfill(value) { resume("next", value); }
+    function reject(value) { resume("throw", value); }
+    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Keyv = void 0;
+const events_1 = require("events");
+const json_buffer_1 = __importDefault(require("json-buffer"));
 /**
  * Please note that this is code adapted from @link https://github.com/jaredwray/keyv to support Typescript and ESM in Veramo
  *
@@ -18,24 +52,15 @@ import JSONB from 'json-buffer';
  *
  * We welcome any new storage modules
  */
-export class Keyv extends EventEmitter {
-    opts;
-    namespace;
-    iterator;
+class Keyv extends events_1.EventEmitter {
     constructor(uri, options) {
         super();
-        const emitErrors = options?.emitErrors === undefined ? true : options.emitErrors;
-        uri = uri ?? options?.uri;
+        const emitErrors = (options === null || options === void 0 ? void 0 : options.emitErrors) === undefined ? true : options.emitErrors;
+        uri = uri !== null && uri !== void 0 ? uri : options === null || options === void 0 ? void 0 : options.uri;
         /*if (!uri) {
           throw Error('No URI provided')
         }*/
-        this.opts = {
-            namespace: 'keyv',
-            serialize: JSONB.stringify,
-            deserialize: JSONB.parse,
-            ...(typeof uri === 'string' ? { uri } : uri),
-            ...options,
-        };
+        this.opts = Object.assign(Object.assign({ namespace: 'keyv', serialize: json_buffer_1.default.stringify, deserialize: json_buffer_1.default.parse }, (typeof uri === 'string' ? { uri } : uri)), options);
         if (!this.opts.store) {
             if (typeof uri !== 'string') {
                 this.opts.store = uri;
@@ -57,20 +82,40 @@ export class Keyv extends EventEmitter {
         }
         this.opts.store.namespace = this.opts.namespace || 'keyv';
         this.namespace = this.opts.store.namespace;
-        const generateIterator = (iterator, keyv) => async function* () {
-            for await (const [key, raw] of typeof iterator === 'function'
-                ? iterator(keyv.store.namespace)
-                : iterator) {
-                const data = await keyv.deserialize(raw);
-                if (keyv.store.namespace && !key.includes(keyv.store.namespace)) {
-                    continue;
+        const generateIterator = (iterator, keyv) => function () {
+            return __asyncGenerator(this, arguments, function* () {
+                var _a, e_1, _b, _c;
+                try {
+                    for (var _d = true, _e = __asyncValues(typeof iterator === 'function'
+                        ? iterator(keyv.store.namespace)
+                        : iterator), _f; _f = yield __await(_e.next()), _a = _f.done, !_a;) {
+                        _c = _f.value;
+                        _d = false;
+                        try {
+                            const [key, raw] = _c;
+                            const data = yield __await(keyv.deserialize(raw));
+                            if (keyv.store.namespace && !key.includes(keyv.store.namespace)) {
+                                continue;
+                            }
+                            if (data && typeof data.expires === 'number' && Date.now() > data.expires) {
+                                keyv.delete(key);
+                                continue;
+                            }
+                            yield yield __await([keyv._getKeyUnprefix(key), data === null || data === void 0 ? void 0 : data.value]);
+                        }
+                        finally {
+                            _d = true;
+                        }
+                    }
                 }
-                if (data && typeof data.expires === 'number' && Date.now() > data.expires) {
-                    keyv.delete(key);
-                    continue;
+                catch (e_1_1) { e_1 = { error: e_1_1 }; }
+                finally {
+                    try {
+                        if (!_d && !_a && (_b = _e.return)) yield __await(_b.call(_e));
+                    }
+                    finally { if (e_1) throw e_1.error; }
                 }
-                yield [keyv._getKeyUnprefix(key), data?.value];
-            }
+            });
         };
         // Attach iterators
         // @ts-ignore
@@ -104,86 +149,92 @@ export class Keyv extends EventEmitter {
     _getKeyUnprefix(key) {
         return key.split(':').splice(1).join(':');
     }
-    async getMany(keys, options) {
-        const keyPrefixed = this._getKeyPrefixArray(keys);
-        let promise;
-        if (this.store.getMany !== undefined) {
-            promise = this.store.getMany(keyPrefixed, options); //.then(value => !!value ? value.values() : undefined)
-            // todo: Probably wise to check expired ValueData here, if the getMany does not implement this feature itself!
-        }
-        else {
-            promise = Promise.all(keyPrefixed.map(k => this.store.get(k, options)));
-        }
-        const allValues = Promise.resolve(promise);
-        const results = [];
-        return Promise.resolve(allValues).then(all => {
-            keys.forEach((key, index) => {
-                const data = all[index];
-                let result = typeof data === 'string'
-                    ? this.deserialize(data)
-                    : !!data && this.opts.compression
+    getMany(keys, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const keyPrefixed = this._getKeyPrefixArray(keys);
+            let promise;
+            if (this.store.getMany !== undefined) {
+                promise = this.store.getMany(keyPrefixed, options); //.then(value => !!value ? value.values() : undefined)
+                // todo: Probably wise to check expired ValueData here, if the getMany does not implement this feature itself!
+            }
+            else {
+                promise = Promise.all(keyPrefixed.map((k) => this.store.get(k, options)));
+            }
+            const allValues = Promise.resolve(promise);
+            const results = [];
+            return Promise.resolve(allValues)
+                .then((all) => {
+                keys.forEach((key, index) => {
+                    const data = all[index];
+                    let result = typeof data === 'string'
                         ? this.deserialize(data)
-                        : data;
-                if (result &&
-                    typeof result === 'object' &&
-                    'expires' in result &&
-                    typeof result.expires === 'number' &&
-                    Date.now() > result.expires) {
-                    this.delete(key);
-                    result = undefined;
-                }
-                const final = (options && options.raw
-                    ? result
-                    : result && typeof result === 'object' && 'value' in result
-                        ? result.value
-                        : result);
-                results.push(final);
-            });
-        }).then(() => Promise.all(results));
+                        : !!data && this.opts.compression
+                            ? this.deserialize(data)
+                            : data;
+                    if (result &&
+                        typeof result === 'object' &&
+                        'expires' in result &&
+                        typeof result.expires === 'number' &&
+                        Date.now() > result.expires) {
+                        this.delete(key);
+                        result = undefined;
+                    }
+                    const final = (options && options.raw
+                        ? result
+                        : result && typeof result === 'object' && 'value' in result
+                            ? result.value
+                            : result);
+                    results.push(final);
+                });
+            })
+                .then(() => Promise.all(results));
+        });
     }
-    async get(key, options) {
-        const isArray = Array.isArray(key);
-        return Promise.resolve()
-            .then(() => isArray
-            ? this.getMany(this._getKeyPrefixArray(key), options)
-            : this.store.get(this._getKeyPrefix(key)))
-            .then((data) => typeof data === 'string'
-            ? this.deserialize(data)
-            : this.opts.compression
+    get(key, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const isArray = Array.isArray(key);
+            return Promise.resolve()
+                .then(() => isArray
+                ? this.getMany(this._getKeyPrefixArray(key), options)
+                : this.store.get(this._getKeyPrefix(key)))
+                .then((data) => typeof data === 'string'
                 ? this.deserialize(data)
-                : data)
-            .then((data) => {
-            if (data === undefined || data === null) {
-                return undefined;
-            }
-            const rows = Array.isArray(data) ? data : [data];
-            if (isArray) {
-                const result = [];
-                for (let row of rows) {
-                    if (row === undefined || row === null) {
-                        result.push(undefined);
-                        continue;
+                : this.opts.compression
+                    ? this.deserialize(data)
+                    : data)
+                .then((data) => {
+                if (data === undefined || data === null) {
+                    return undefined;
+                }
+                const rows = Array.isArray(data) ? data : [data];
+                if (isArray) {
+                    const result = [];
+                    for (let row of rows) {
+                        if (row === undefined || row === null) {
+                            result.push(undefined);
+                            continue;
+                        }
+                        if (this.isExpired(row)) {
+                            this.delete(key).then(() => undefined);
+                            result.push(undefined);
+                        }
+                        else {
+                            result.push(options && options.raw ? row : toValue(row));
+                        }
                     }
-                    if (this.isExpired(row)) {
-                        this.delete(key).then(() => undefined);
-                        result.push(undefined);
-                    }
-                    else {
-                        result.push(options && options.raw ? row : toValue(row));
+                    return result;
+                }
+                else if (!Array.isArray(data)) {
+                    if (this.isExpired(data)) {
+                        return this.delete(key).then(() => undefined);
                     }
                 }
-                return result;
-            }
-            else if (!Array.isArray(data)) {
-                if (this.isExpired(data)) {
-                    return this.delete(key).then(() => undefined);
-                }
-            }
-            return options && options.raw
-                ? data
-                : Array.isArray(data)
-                    ? data.map((d) => toValue(d))
-                    : toValue(data);
+                return options && options.raw
+                    ? data
+                    : Array.isArray(data)
+                        ? data.map((d) => toValue(d))
+                        : toValue(data);
+            });
         });
     }
     isExpired(data) {
@@ -230,18 +281,20 @@ export class Keyv extends EventEmitter {
         }
         return Promise.allSettled(promises).then((values) => values.every((x) => x.valueOf() === true));
     }
-    async clear() {
-        return Promise.resolve().then(() => this.store.clear());
+    clear() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return Promise.resolve().then(() => this.store.clear());
+        });
     }
     has(key) {
         const keyPrefixed = this._getKeyPrefix(key);
-        return Promise.resolve().then(async () => {
+        return Promise.resolve().then(() => __awaiter(this, void 0, void 0, function* () {
             if (typeof this.store.has === 'function') {
                 return this.store.has(keyPrefixed);
             }
-            const value = await this.store.get(keyPrefixed);
+            const value = yield this.store.get(keyPrefixed);
             return value !== undefined;
-        });
+        }));
     }
     disconnect() {
         if (typeof this.store.disconnect === 'function') {
@@ -249,6 +302,7 @@ export class Keyv extends EventEmitter {
         }
     }
 }
+exports.Keyv = Keyv;
 const iterableAdapters = ['sqlite', 'postgres', 'mysql', 'mongo', 'redis', 'tiered'];
 function toValue(input) {
     return input !== null && typeof input === 'object' && 'value' in input ? input.value : input;

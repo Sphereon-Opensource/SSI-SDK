@@ -1,18 +1,12 @@
-import {
-  IKeyValueStore,
-  IKeyValueStoreOnArgs,
-  IKeyValueStoreOptions,
-  IValueData,
-} from './key-value-types.js'
-import { Keyv } from './keyv/keyv.js'
-import { KeyvDeserializedData, KeyvOptions, KeyvStoredData } from './keyv/keyv-types.js'
+import { IKeyValueStore, IKeyValueStoreOnArgs, IKeyValueStoreOptions, IValueData } from './key-value-types'
+import { Keyv } from './keyv/keyv'
+import { KeyvDeserializedData, KeyvOptions, KeyvStoredData } from './keyv/keyv-types'
 
 /**
- * Agent plugin that implements {@link @veramo/core-types#IKeyValueStore} interface
+ * Agent plugin that implements {@link @veramo/kv-store#IKeyValueStore} interface
  * @public
  */
 export class KeyValueStore<ValueType> implements IKeyValueStore<ValueType> {
-
   /**
    * The main keyv typescript port which delegates to the storage adapters and takes care of some common functionality
    *
@@ -32,9 +26,7 @@ export class KeyValueStore<ValueType> implements IKeyValueStore<ValueType> {
     return result as ValueType
   }
 
-  async getAsValueData(
-    key: string,
-  ): Promise<IValueData<ValueType>> {
+  async getAsValueData(key: string): Promise<IValueData<ValueType>> {
     const result = await this.keyv.get(key, { raw: true })
     if (result === null || result === undefined) {
       // We always return a ValueData object for this method
@@ -52,16 +44,12 @@ export class KeyValueStore<ValueType> implements IKeyValueStore<ValueType> {
     // Making sure we return the same array length as the amount of key(s) passed in
     if (result === null || result === undefined || result.length === 0) {
       result = new Array<ValueType | undefined>()
-      for (const key of keys) {
-        result.push(undefined)
-      }
+      keys.forEach(() => result.push(undefined))
     }
     return result.map((v) => (!!v ? (v as ValueType) : undefined))
   }
 
-  async getManyAsValueData(
-    keys: string[],
-  ): Promise<Array<IValueData<ValueType>>> {
+  async getManyAsValueData(keys: string[]): Promise<Array<IValueData<ValueType>>> {
     if (!keys || keys.length === 0) {
       return []
     }
@@ -70,21 +58,15 @@ export class KeyValueStore<ValueType> implements IKeyValueStore<ValueType> {
     // Making sure we return the same array length as the amount of key(s) passed in
     if (result === null || result === undefined || result.length === 0) {
       result = new Array<KeyvStoredData<ValueType>>()
-      for (const key of keys) {
-        result.push({ value: undefined, expires: undefined } as KeyvDeserializedData<ValueType>)
-      }
+      keys.forEach(() => result.push({ value: undefined, expires: undefined } as KeyvDeserializedData<ValueType>))
     }
     return result.map((v) =>
       !!v ? this.toDeserializedValueData(v) : { value: undefined, expires: undefined },
     )
   }
 
-  async set(
-    key: string, value: ValueType, ttl?: number,
-  ): Promise<IValueData<ValueType>> {
-    return this.keyv.set(key, value, ttl).then(() =>
-      this.getAsValueData(key),
-    )
+  async set(key: string, value: ValueType, ttl?: number): Promise<IValueData<ValueType>> {
+    return this.keyv.set(key, value, ttl).then(() => this.getAsValueData(key))
   }
 
   async has(key: string): Promise<boolean> {
@@ -96,7 +78,7 @@ export class KeyValueStore<ValueType> implements IKeyValueStore<ValueType> {
   }
 
   async deleteMany(keys: string[]): Promise<boolean[]> {
-    return Promise.all(keys.map(key => this.keyv.delete(key)))
+    return Promise.all(keys.map((key) => this.keyv.delete(key)))
   }
 
   async clear(): Promise<IKeyValueStore<ValueType>> {

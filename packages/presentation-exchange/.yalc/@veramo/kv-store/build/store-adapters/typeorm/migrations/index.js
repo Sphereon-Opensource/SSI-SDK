@@ -1,4 +1,7 @@
-import { CreateKVDatabaseMigration } from './1.createKVDatabase';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.kvStoreMigrations = void 0;
+const _1_createKVDatabase_1 = require("./1.createKVDatabase");
 /**
  * The migrations array that SHOULD be used when initializing a TypeORM database connection.
  *
@@ -6,7 +9,5 @@ import { CreateKVDatabaseMigration } from './1.createKVDatabase';
  *
  * @public
  */
-export const kvStoreMigrations = [
-    CreateKVDatabaseMigration
-];
+exports.kvStoreMigrations = [_1_createKVDatabase_1.CreateKVDatabaseMigration];
 //# sourceMappingURL=index.js.map

@@ -332,9 +332,7 @@ export default (testContext: {
       const pd_single: PresentationDefinitionWithLocation = getFileAsJson(
         './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_single.json'
       )
-      const vp_single: IPresentationWithDefinition = getFileAsJson(
-        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_single.json'
-      )
+      const vp_single: IPresentationWithDefinition = getFileAsJson('./packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_single.json')
       const presentation = CredentialMapper.toWrappedVerifiablePresentation(vp_single.presentation)
       presentation.presentation.presentation_submission!.id = expect.any(String)
 
@@ -363,9 +361,7 @@ export default (testContext: {
       const pdSingle: PresentationDefinitionWithLocation = getFileAsJson(
         './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_single.json'
       )
-      const vpSingle: IPresentationWithDefinition = getFileAsJson(
-        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_single.json'
-      )
+      const vpSingle: IPresentationWithDefinition = getFileAsJson('./packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_single.json')
       const presentation = CredentialMapper.toWrappedVerifiablePresentation(vpSingle.presentation)
       presentation.presentation.presentation_submission!.id = expect.any(String)
 

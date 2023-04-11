@@ -3,5 +3,5 @@
  */
 const schema = require('../plugin.schema.json')
 export { schema }
-export { Siopv2RelyingParty } from './agent/Siopv2RelyingParty'
-export * from './types/ISiopv2RelyingParty'
+export { SIOPv2RP } from './agent/SIOPv2RP'
+export * from './types/ISIOPv2RP'

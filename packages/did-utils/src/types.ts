@@ -1,3 +1,7 @@
+import { JWTVerifyOptions } from 'did-jwt'
+import { Resolvable } from 'did-resolver'
+import { DIDDocumentSection, IIdentifier } from '@veramo/core'
+
 export interface JWK extends JsonWebKey {
   x5c?: string
   x5u?: string
@@ -11,6 +15,26 @@ export interface X509Opts {
   certificatePEM?: string // Optional, as long as the certificate then is part of the certificateChainPEM
   certificateChainURL?: string // Certificate chain URL. If used this is where the certificateChainPEM will be hosted/found.
   certificateChainPEM?: string // Base64 (not url!) encoded DER certificate chain. Please provide even if certificateChainURL is used!
+}
+
+export interface ResolveOpts {
+  jwtVerifyOpts?: JWTVerifyOptions
+  resolver?: Resolvable
+  resolveUrl?: string
+  noUniversalResolverFallback?: boolean
+  subjectSyntaxTypesSupported?: string[]
+}
+
+export interface IDIDOptions {
+  resolveOpts?: ResolveOpts
+  identifierOpts: IIdentifierOpts
+  supportedDIDMethods?: string[]
+}
+
+export interface IIdentifierOpts {
+  identifier: IIdentifier | string
+  verificationMethodSection?: DIDDocumentSection
+  kid?: string
 }
 
 export const DID_PREFIX = 'did:'

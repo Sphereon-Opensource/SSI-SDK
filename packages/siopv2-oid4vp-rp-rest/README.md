@@ -27,7 +27,6 @@ For this plugin a DID resolver is also required. A DID resolver can be added to 
 
 ## Available functions
 
-
 ## Usage
 
 ### Adding the plugin to an agent:

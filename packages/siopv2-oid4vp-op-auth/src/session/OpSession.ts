@@ -103,7 +103,7 @@ export class OpSession {
     return (await this.getMergedRequestPayload()).redirect_uri
   }
 
-  public async isOID4VP(): Promise<boolean> {
+  public async hasPresentationDefinitions(): Promise<boolean> {
     const defs = (await this.getAuthorizationRequest()).presentationDefinitions
     return defs !== undefined && defs.length > 0
   }
@@ -154,7 +154,7 @@ export class OpSession {
 
     const request = this.verifiedAuthorizationRequest!
     if (
-      (await this.isOID4VP()) &&
+      (await this.hasPresentationDefinitions()) &&
       request.presentationDefinitions &&
       (!args.verifiablePresentations || args.verifiablePresentations.length !== request.presentationDefinitions.length)
     ) {

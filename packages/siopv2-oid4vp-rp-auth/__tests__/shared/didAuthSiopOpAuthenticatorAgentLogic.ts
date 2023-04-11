@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import { IDataStore, TAgent, VerifiableCredential } from '@veramo/core'
-import { IAuthRequestDetails, ISiopv2RelyingParty, IPresentationWithDefinition } from '../../src'
+import { IAuthRequestDetails, ISIOPv2RP, IPresentationWithDefinition } from '../../src'
 import {
   AuthorizationRequest,
   OP,
@@ -37,7 +37,7 @@ jest.mock('@sphereon/ssi-sdk-did-utils', () => ({
   mapIdentifierKeysToDocWithJwkSupport: jest.fn(),
 }))
 
-type ConfiguredAgent = TAgent<ISiopv2RelyingParty & IDataStore>
+type ConfiguredAgent = TAgent<ISIOPv2RP & IDataStore>
 
 const didMethod = 'ethr'
 const did = 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a'
@@ -332,9 +332,7 @@ export default (testContext: {
       const pd_single: PresentationDefinitionWithLocation = getFileAsJson(
         './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_single.json'
       )
-      const vp_single: IPresentationWithDefinition = getFileAsJson(
-        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_single.json'
-      )
+      const vp_single: IPresentationWithDefinition = getFileAsJson('./packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_single.json')
       const presentation = CredentialMapper.toWrappedVerifiablePresentation(vp_single.presentation)
       presentation.presentation.presentation_submission!.id = expect.any(String)
 
@@ -363,9 +361,7 @@ export default (testContext: {
       const pdSingle: PresentationDefinitionWithLocation = getFileAsJson(
         './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_single.json'
       )
-      const vpSingle: IPresentationWithDefinition = getFileAsJson(
-        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_single.json'
-      )
+      const vpSingle: IPresentationWithDefinition = getFileAsJson('./packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_single.json')
       const presentation = CredentialMapper.toWrappedVerifiablePresentation(vpSingle.presentation)
       presentation.presentation.presentation_submission!.id = expect.any(String)
 

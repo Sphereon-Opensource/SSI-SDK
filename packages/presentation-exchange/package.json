@@ -11,8 +11,7 @@
   },
   "scripts": {
     "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build",
-    "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
+    "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
     "@sphereon/pex": "2.0.0-unstable.13",
@@ -23,6 +22,7 @@
     "@veramo/kv-store": "file:.yalc/@veramo/kv-store"
   },
   "devDependencies": {
+    "@types/json-buffer": "^3.0.0",
     "@sphereon/did-uni-client": "^0.6.0",
     "@veramo/cli": "4.2.0",
     "@veramo/did-provider-key": "4.2.0",
@@ -30,6 +30,9 @@
     "@veramo/utils": "4.2.0",
     "did-resolver": "^4.1.0",
     "nock": "^13.2.1"
+  },
+  "resolutions": {
+    "@veramo/utils": "4.2.0"
   },
   "files": [
     "dist/**/*",

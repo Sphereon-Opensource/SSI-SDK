@@ -1,49 +1,91 @@
-import { RP } from '@sphereon/did-auth-siop'
-import { IPEXOptions, IRequiredContext, IRPOptions } from './types/ISiopv2RelyingParty'
+import { AuthorizationRequest, RP, URI } from '@sphereon/did-auth-siop'
+import { ICreateAuthRequestArgs, IPEXOptions, IRequiredContext, IRPOptions } from './types/ISIOPv2RP'
 import { IPresentationDefinition } from '@sphereon/pex'
-import { createRPBuilder } from './functions'
+import { createRPBuilder, getRequestVersion } from './functions'
+import { v4 as uuidv4 } from 'uuid'
 
 export class RPInstance {
-  private readonly context: IRequiredContext
   private _rp: RP | undefined
   private readonly _pexOptions: IPEXOptions | undefined
   private readonly _rpOptions: IRPOptions
 
-  public constructor({ rpOpts, pexOpts }: {
-    rpOpts: IRPOptions,
-    pexOpts?: IPEXOptions
-  }, context: IRequiredContext) {
+  public constructor({ rpOpts, pexOpts }: { rpOpts: IRPOptions; pexOpts?: IPEXOptions }) {
     this._rpOptions = rpOpts
     this._pexOptions = pexOpts
-    this.context = context
   }
 
-
-  public async get(): Promise<RP> {
+  public async get(context: IRequiredContext): Promise<RP> {
     if (!this._rp) {
-      const builder = await createRPBuilder({ rpOpts: this._rpOptions, pexOpts: this._pexOptions, context: this.context })
+      const builder = await createRPBuilder({
+        rpOpts: this._rpOptions,
+        pexOpts: this._pexOptions,
+        context,
+      })
       this._rp = builder.build()
     }
     return this._rp!
   }
 
-
   get rpOptions() {
     return this._rpOptions
   }
 
-
   get pexOptions() {
     return this._pexOptions
+  }
+
+  public hasDefinition(): boolean {
+    return this.definitionId !== undefined
   }
 
   get definitionId(): string | undefined {
     return this.pexOptions?.definitionId
   }
 
-  public getPresentationDefinition(): IPresentationDefinition | undefined {
-    return this.pexOptions?.definition
+  public async getPresentationDefinition(context: IRequiredContext): Promise<IPresentationDefinition | undefined> {
+    return this.definitionId
+      ? await context.agent.pexStoreGetDefinition({
+          definitionId: this.definitionId,
+          storeId: this.pexOptions?.storeId,
+          namespace: this.pexOptions?.storeNamespace,
+        })
+      : undefined
   }
 
-}
+  public async createAuthorizationRequestURI(createArgs: Omit<ICreateAuthRequestArgs, 'definitionId'>, context: IRequiredContext): Promise<URI> {
+    const { correlationId, claims, requestByReferenceURI, redirectURI } = createArgs
+    const nonce = createArgs.nonce ?? uuidv4()
+    const state = createArgs.state ?? correlationId
+    return await this.get(context).then((rp) =>
+      rp.createAuthorizationRequestURI({
+        version: getRequestVersion(this.rpOptions),
+        correlationId,
+        nonce,
+        state,
+        claims,
+        requestByReferenceURI,
+        redirectURI,
+      })
+    )
+  }
 
+  public async createAuthorizationRequest(
+    createArgs: Omit<ICreateAuthRequestArgs, 'definitionId'>,
+    context: IRequiredContext
+  ): Promise<AuthorizationRequest> {
+    const { correlationId, claims, requestByReferenceURI, redirectURI } = createArgs
+    const nonce = createArgs.nonce ?? uuidv4()
+    const state = createArgs.state ?? correlationId
+    return await this.get(context).then((rp) =>
+      rp.createAuthorizationRequest({
+        version: getRequestVersion(this.rpOptions),
+        correlationId,
+        nonce,
+        state,
+        claims,
+        requestByReferenceURI,
+        redirectURI,
+      })
+    )
+  }
+}

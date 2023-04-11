@@ -4,7 +4,6 @@ import { IPresentationExchange } from '../../src'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
 import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-did-utils'
 import { IPresentationDefinition } from '@sphereon/pex'
-import { expect } from '@jest/globals'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -29,7 +28,7 @@ type ConfiguredAgent = TAgent<IPresentationExchange & IDataStore>
 
 // const didMethod = 'ethr'
 const did = 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a'
-const identifier = {
+/*const identifier = {
   did,
   provider: '',
   controllerKeyId: `${did}#controller`,
@@ -43,7 +42,7 @@ const identifier = {
     },
   ],
   services: [],
-}
+}*/
 const authKeys = [
   {
     kid: `${did}#controller`,
@@ -62,9 +61,6 @@ const authKeys = [
     },
   },
 ]
-
-console.log(identifier)
-
 export default (testContext: {
   getAgent: () => ConfiguredAgent
   setup: () => Promise<boolean>
@@ -73,30 +69,78 @@ export default (testContext: {
 }) => {
   describe('Presentation Exchange Agent Plugin', () => {
     let agent: ConfiguredAgent
-    const singleDefinition: IPresentationDefinition = getFileAsJson('./packages/presentation-exchange/__tests__/vc_vp_examples/pd/pd_single.json')
+    const singleDefinition: IPresentationDefinition = getFileAsJson('./packages/presentation-exchange/__tests__/fixtures/pd_single.json')
     // const multiDefinition: IPresentationDefinition = getFileAsJson('./packages/presentation-exchange/__tests__/vc_vp_examples/pd/pd_multiple.json')
 
     beforeAll(async () => {
       await testContext.setup()
       agent = testContext.getAgent()
 
-
       const mockedMapIdentifierKeysToDocMethod = mapIdentifierKeysToDoc as jest.Mock
       mockedMapIdentifierKeysToDocMethod.mockReturnValue(Promise.resolve(authKeys))
 
       const mockedMapIdentifierKeysToDocMethodWithJwkSupport = mapIdentifierKeysToDocWithJwkSupport as jest.Mock
       mockedMapIdentifierKeysToDocMethodWithJwkSupport.mockReturnValue(Promise.resolve(authKeys))
-
     })
+
+    /*  afterEach(async () => {
+      await agent.pexStoreClearDefinitions()
+    })*/
 
     afterAll(testContext.tearDown)
 
-    it('should store definition', async () => {
+    it('should store valid definition', async () => {
       const storeValue = await agent.pexStorePersistDefinition({ definition: singleDefinition })
       expect(storeValue).toBeDefined()
       expect(storeValue.value).toBeDefined()
+      await expect(agent.pexStoreHasDefinition({ definitionId: singleDefinition.id })).resolves.toEqual(true)
     })
 
+    it('should not store invalid definition by default', async () => {
+      await expect(agent.pexStorePersistDefinition({ definition: { invalid: 'definition' } as unknown as IPresentationDefinition })).rejects.toThrow(
+        'Invalid definition. This is not a valid PresentationDefinition'
+      )
+    })
 
+    it('should not store invalid definition if validation is enabled', async () => {
+      await expect(
+        agent.pexStorePersistDefinition({ validation: true, definition: { invalid: 'definition' } as unknown as IPresentationDefinition })
+      ).rejects.toThrow('Invalid definition. This is not a valid PresentationDefinition')
+    })
+
+    it('should store invalid definition if validation is disabled', async () => {
+      const storeValue = await agent.pexStorePersistDefinition({
+        validation: false,
+        definition: { invalid: 'definition' } as unknown as IPresentationDefinition,
+      })
+      expect(storeValue).toBeDefined()
+      expect(storeValue.value).toBeDefined()
+      await expect(agent.pexStoreHasDefinition({ definitionId: singleDefinition.id })).resolves.toEqual(true)
+    })
+
+    it('should get definition', async () => {
+      await agent.pexStorePersistDefinition({ definition: singleDefinition })
+      await expect(agent.pexStoreGetDefinition({ definitionId: singleDefinition.id })).resolves.toEqual(singleDefinition)
+    })
+
+    it('should remove definition', async () => {
+      await agent.pexStorePersistDefinition({ definition: singleDefinition })
+      await expect(agent.pexStoreHasDefinition({ definitionId: singleDefinition.id })).resolves.toEqual(true)
+      await expect(agent.pexStoreRemoveDefinition({ definitionId: singleDefinition.id })).resolves.toEqual(true)
+      await expect(agent.pexStoreHasDefinition({ definitionId: singleDefinition.id })).resolves.toEqual(false)
+    })
+
+    it('should clear definitions', async () => {
+      await agent.pexStorePersistDefinition({ definitionId: 'c1', definition: singleDefinition })
+      await agent.pexStorePersistDefinition({ definitionId: 'c2', definition: singleDefinition })
+      await agent.pexStorePersistDefinition({ definitionId: 'c3', definition: singleDefinition })
+      await expect(agent.pexStoreHasDefinition({ definitionId: 'c1' })).resolves.toEqual(true)
+      await expect(agent.pexStoreHasDefinition({ definitionId: 'c2' })).resolves.toEqual(true)
+      await expect(agent.pexStoreHasDefinition({ definitionId: 'c3' })).resolves.toEqual(true)
+      await agent.pexStoreClearDefinitions()
+      await expect(agent.pexStoreHasDefinition({ definitionId: 'c1' })).resolves.toEqual(false)
+      await expect(agent.pexStoreHasDefinition({ definitionId: 'c2' })).resolves.toEqual(false)
+      await expect(agent.pexStoreHasDefinition({ definitionId: 'c3' })).resolves.toEqual(false)
+    })
   })
 }

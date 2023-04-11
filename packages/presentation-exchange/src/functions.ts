@@ -1,14 +1,7 @@
-import {
-  IIdentifierOpts,
-  IPEXOptions,
-  IPEXPresentationSignCallback,
-  IRequiredContext,
-} from './types/IPresentationExchange'
-import { getAgentDIDMethods } from '@sphereon/ssi-sdk-did-utils'
+import { IPEXOptions, IPEXPresentationSignCallback, IRequiredContext } from './types/IPresentationExchange'
 import { IPresentationDefinition } from '@sphereon/pex'
-import { IIdentifier, PresentationPayload } from '@veramo/core'
+import { PresentationPayload } from '@veramo/core'
 import { W3CVerifiablePresentation } from '@sphereon/ssi-types'
-
 
 /*
 export async function getPresentationDefinitionStore(pexOptions?: IPEXOptions): Promise<IKeyValueStore<IPresentationDefinition> | undefined> {
@@ -32,60 +25,29 @@ export async function getPresentationDefinition(pexOptions?: IPEXOptions): Promi
   return store && pexOptions?.definitionId ? store.get(pexOptions?.definitionId) : undefined*/
 }
 
-export function toDIDs(identifiers?: (string | IIdentifier | Partial<IIdentifier>)[]): string[] {
-  if (!identifiers) {
-    return []
-  }
-  return identifiers.map(toDID)
-}
-
-export function toDID(identifier: string | IIdentifier | Partial<IIdentifier>): string {
-  if (typeof identifier === 'string') {
-    return identifier
-  }
-  if (identifier.did) {
-    return identifier.did
-  }
-  throw Error(`No DID value present in identifier`)
-}
-
-export function getDID(identifierOpts: IIdentifierOpts): string {
-  if (typeof identifierOpts.identifier === 'string' || typeof identifierOpts.identifier === 'object') {
-    return toDID(identifierOpts.identifier)
-  }
-  throw Error(`Cannot get DID from identifier value`)
-}
-
-
-export async function getIdentifier(identifierOpts: IIdentifierOpts, context: IRequiredContext): Promise<IIdentifier> {
-  if (typeof identifierOpts.identifier === 'string') {
-    return context.agent.didManagerGet({ did: identifierOpts.identifier })
-  } else if (typeof identifierOpts.identifier === 'object') {
-    return identifierOpts.identifier
-  }
-  throw Error(`Cannot get agent identifier value from options`)
-}
-
-
-export async function getSupportedDIDMethods(opts: { supportedDIDMethods?: string[] }, context: IRequiredContext) {
-  return opts.supportedDIDMethods ?? (await getAgentDIDMethods(context))
-}
-
-
-export async function createPEXPresentationSignCallback({
-                                                          kid,
-                                                          fetchRemoteContexts,
-                                                          domain,
-                                                          challenge
-                                                        }: {
-  kid: string
-  fetchRemoteContexts?: boolean
-  domain?: string,
-  challenge?: string,
-
-}, context: IRequiredContext): Promise<IPEXPresentationSignCallback> {
-  return async ({ presentation, domain, presentationDefinition, challenge }: {
-    presentation: PresentationPayload, presentationDefinition: IPresentationDefinition, domain?: string
+export async function createPEXPresentationSignCallback(
+  {
+    kid,
+    fetchRemoteContexts,
+    domain,
+    challenge,
+  }: {
+    kid: string
+    fetchRemoteContexts?: boolean
+    domain?: string
+    challenge?: string
+  },
+  context: IRequiredContext
+): Promise<IPEXPresentationSignCallback> {
+  return async ({
+    presentation,
+    domain,
+    presentationDefinition,
+    challenge,
+  }: {
+    presentation: PresentationPayload
+    presentationDefinition: IPresentationDefinition
+    domain?: string
     challenge?: string
   }): Promise<W3CVerifiablePresentation> => {
     const format = presentationDefinition.format
@@ -101,4 +63,3 @@ export async function createPEXPresentationSignCallback({
     return vp as W3CVerifiablePresentation
   }
 }
-

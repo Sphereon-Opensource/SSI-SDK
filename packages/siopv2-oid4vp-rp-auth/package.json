@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
-      "ISiopv2RelyingParty": "./src/types/ISiopv2RelyingParty.ts"
+      "ISIOPv2RP": "./src/types/ISIOPv2RP.ts"
     }
   },
   "scripts": {
@@ -58,7 +58,7 @@
     "DID",
     "SIOP",
     "SIOPv2",
-    "OIDC4VP",
+    "OID4VP",
     "Presentation Exchange",
     "OpenID Connect",
     "Authenticator"

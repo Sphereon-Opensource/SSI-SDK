@@ -2,16 +2,17 @@ import {
   DIDDocumentSection,
   FindCredentialsArgs,
   IAgentContext,
-  IDataStoreORM, IDIDManager,
+  IDataStoreORM,
+  IDIDManager,
   IIdentifier,
-  IPluginMethodMap, PresentationPayload,
+  IPluginMethodMap,
+  PresentationPayload,
 } from '@veramo/core'
 import { W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { IKeyValueStore, IValueData } from '@veramo/kv-store'
 import { IPresentationDefinition, SelectResults } from '@sphereon/pex'
 import { PEVersion } from '@sphereon/pex/dist/main/lib/types'
 import { InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
-
 
 export interface IPresentationExchange extends IPluginMethodMap {
   pexStoreGetDefinition(args: IDefinitionGetArgs): Promise<IPresentationDefinition | undefined>
@@ -22,18 +23,21 @@ export interface IPresentationExchange extends IPluginMethodMap {
 
   pexStoreRemoveDefinition(args: IDefinitionRemoveArgs): Promise<boolean>
 
-  pexStoreClearDefinitions(args: IDefinitionsClearArgs): Promise<void>
+  pexStoreClearDefinitions(args: IDefinitionsClearArgs): Promise<boolean>
 
   pexDefinitionVersion(presentationDefinition: IPresentationDefinition): Promise<VersionDiscoveryResult>
 
   pexDefinitionFilterCredentials(args: IDefinitionCredentialFilterArgs, context: IRequiredContext): Promise<IPEXFilterResult>
 
-  pexDefinitionFilterCredentialsPerInputDescriptor(args: IDefinitionCredentialFilterArgs, context: IRequiredContext): Promise<IPEXFilterResultWithInputDescriptor[]>
+  pexDefinitionFilterCredentialsPerInputDescriptor(
+    args: IDefinitionCredentialFilterArgs,
+    context: IRequiredContext
+  ): Promise<IPEXFilterResultWithInputDescriptor[]>
 }
 
 export interface IDefinitionGetArgs {
-  definitionId: string,
-  storeId?: string,
+  definitionId: string
+  storeId?: string
   namespace?: string
 }
 
@@ -41,29 +45,28 @@ export type IDefinitionExistsArgs = IDefinitionGetArgs
 export type IDefinitionClearArgs = IDefinitionGetArgs
 export type IDefinitionRemoveArgs = IDefinitionGetArgs
 
-
 export type IDefinitionImportArgs = IDefinitionPersistArgs
 
 export interface IDefinitionPersistArgs {
-  overwriteExisting?: boolean
-  definitionId?: string
-  definition: IPresentationDefinition
-  ttl?: number
-  storeId?: string,
-  namespace?: string
+  definition: IPresentationDefinition // The actual Presentation definition to be stored/
+  definitionId?: string // Allows to define a custom key for storage. By default, the id of the definition will be used
+  overwriteExisting?: boolean // Whether to overwrite any existing definition by id. Defaults to true
+  validation?: boolean // Whether to check the definition. Defaults to true
+  ttl?: number // How long should the definition be stored in seconds. By default, it will be indefinite
+  storeId?: string // The store id to use. Allows you to use multiple different stores next to each-other
+  namespace?: string // The namespace (prefix) to use whilst storing the definition. Allows you to partition definitions
 }
 
 export interface IDefinitionsClearArgs {
-  storeId?: string,
+  storeId?: string
   // namespace?: string
 }
 
 export interface IDefinitionCredentialFilterArgs {
-  presentationDefinition: IPresentationDefinition,
-  credentialFilterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindCredentialsArgs },
-  holderDIDs?: (string | IIdentifier)[],
+  presentationDefinition: IPresentationDefinition
+  credentialFilterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindCredentialsArgs }
+  holderDIDs?: (string | IIdentifier)[]
   limitDisclosureSignatureSuites?: string[]
-
 }
 
 export interface PEXOpts {
@@ -72,7 +75,6 @@ export interface PEXOpts {
   stores?: Map<string, IKeyValueStore<IPresentationDefinition>> | IKeyValueStore<IPresentationDefinition>
   importDefinitions?: IDefinitionImportArgs[]
 }
-
 
 export interface IPEXOptions {
   // presentationVerifyCallback?: PresentationVerificationCallback
@@ -101,12 +103,10 @@ export interface VersionDiscoveryResult {
   error?: string
 }
 
-
-
-export type IPEXPresentationSignCallback = (args: IPEXPresentationSignCallBackParams) => Promise<W3CVerifiablePresentation>;
+export type IPEXPresentationSignCallback = (args: IPEXPresentationSignCallBackParams) => Promise<W3CVerifiablePresentation>
 
 export interface IPEXPresentationSignCallBackParams {
-  presentation: PresentationPayload,
+  presentation: PresentationPayload
   presentationDefinition: IPresentationDefinition
 }
 

@@ -8,7 +8,7 @@ import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import { Siopv2RelyingParty, ISiopv2RelyingParty } from '../src'
+import { SIOPv2RP, ISIOPv2RP } from '../src'
 import { Resolver } from 'did-resolver'
 import { getDidKeyResolver } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
@@ -41,10 +41,10 @@ const presentationSignCallback: PresentationSignCallback = async (args) => {
 }
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<ISiopv2RelyingParty & IDataStore>({
+  createAgent<ISIOPv2RP & IDataStore>({
     ...options,
     plugins: [
-      new Siopv2RelyingParty(presentationSignCallback),
+      new SIOPv2RP(presentationSignCallback),
       new DIDResolverPlugin({
         resolver: new Resolver({
           ...getDidKeyResolver(),
