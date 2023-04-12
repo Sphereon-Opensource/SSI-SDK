@@ -8,4 +8,4 @@ const opts: ISIOPv2RPRestAPIOpts = {
   siopBaseURI: 'http://192.168.2.18:5000',
 }
 
-new SIOPv2RPRestAPI(agent, opts)
+new SIOPv2RPRestAPI({ agent, opts })

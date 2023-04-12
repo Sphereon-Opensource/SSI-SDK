@@ -1,3 +1,4 @@
+'use strict'
 var __decorate =
   (this && this.__decorate) ||
   function (decorators, target, key, desc) {
@@ -14,21 +15,17 @@ var __metadata =
   function (k, v) {
     if (typeof Reflect === 'object' && typeof Reflect.metadata === 'function') return Reflect.metadata(k, v)
   }
-import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm'
+Object.defineProperty(exports, '__esModule', { value: true })
+exports.KeyValueStoreEntity = void 0
+const typeorm_1 = require('typeorm')
 /**
  *
  * @beta This API may change without a BREAKING CHANGE notice.
  */
-let KeyValueStoreEntity = class KeyValueStoreEntity extends BaseEntity {
-  // @ts-ignore
-  key
-  // @ts-ignore
-  data
-  expires
-}
+let KeyValueStoreEntity = class KeyValueStoreEntity extends typeorm_1.BaseEntity {}
 __decorate(
   [
-    PrimaryColumn(),
+    (0, typeorm_1.PrimaryColumn)(),
     // @ts-ignore
     __metadata('design:type', String),
   ],
@@ -38,7 +35,7 @@ __decorate(
 )
 __decorate(
   [
-    Column({
+    (0, typeorm_1.Column)({
       type: 'text',
     }),
     // @ts-ignore
@@ -48,6 +45,6 @@ __decorate(
   'data',
   void 0
 )
-KeyValueStoreEntity = __decorate([Entity('keyvaluestore')], KeyValueStoreEntity)
-export { KeyValueStoreEntity }
+KeyValueStoreEntity = __decorate([(0, typeorm_1.Entity)('keyvaluestore')], KeyValueStoreEntity)
+exports.KeyValueStoreEntity = KeyValueStoreEntity
 //# sourceMappingURL=keyValueStoreEntity.js.map

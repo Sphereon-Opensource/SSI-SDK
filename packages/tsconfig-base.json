@@ -66,5 +66,5 @@
     "declarationMap": true,
     "composite": true
   },
-  "exclude": ["**/__tests__/**/*", "**/dist/**/*"]
+  "exclude": ["**/__tests__/**/*", "**/dist/**/*", "**/.yalc/**/*"]
 }

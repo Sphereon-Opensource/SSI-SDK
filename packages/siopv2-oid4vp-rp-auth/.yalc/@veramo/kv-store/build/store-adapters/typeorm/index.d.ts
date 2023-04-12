@@ -1,11 +1,13 @@
 /// <reference types="node" />
-import EventEmitter from 'events'
+import { EventEmitter } from 'events'
 import { OrPromise } from '@veramo/utils'
 import { DataSource } from 'typeorm'
-import { KeyValueTypeORMOptions, Options_ } from './types.js'
-import { KeyvStore, KeyvStoredData } from '../../keyv/keyv-types.js'
-import { IKeyValueStoreAdapter } from '../../key-value-types.js'
-export { KeyValueTypeORMOptions } from './types.js'
+import { KeyValueTypeORMOptions, Options_ } from './types'
+import { KeyvStore, KeyvStoredData } from '../../keyv/keyv-types'
+import { IKeyValueStoreAdapter } from '../../key-value-types'
+export { KeyValueTypeORMOptions } from './types'
+export { KeyValueStoreEntity } from './entities/keyValueStoreEntity'
+export { kvStoreMigrations } from './migrations'
 export declare class KeyValueTypeORMStoreAdapter extends EventEmitter implements KeyvStore<string>, IKeyValueStoreAdapter<string> {
   private readonly dbConnection
   readonly namespace: string

@@ -1,7 +1,7 @@
 import KeyvSqlite from '@keyv/sqlite'
 
 import timekeeper from 'timekeeper'
-import { Keyv } from '../keyv/keyv.js'
+import { Keyv } from '../keyv/keyv'
 import { DataSource } from 'typeorm'
 import { KeyValueStoreEntity } from '../store-adapters/typeorm/entities/keyValueStoreEntity'
 import { KeyValueTieredStoreAdapter, KeyValueTypeORMStoreAdapter } from '../store-adapters'

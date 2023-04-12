@@ -4,7 +4,6 @@ import * as dotenv from 'dotenv-flow'
 import express, { Express, Response } from 'express'
 import cookieParser from 'cookie-parser'
 import uuid from 'short-uuid'
-// import * as core from "express-serve-static-core";
 import {
   AuthorizationRequestState,
   AuthorizationResponseState,
@@ -38,38 +37,17 @@ export interface ISIOPv2RPRestAPIOpts {
 }
 
 export class SIOPv2RPRestAPI {
-  public express: Express
+  private express: Express
   private agent: TAgent<IPresentationExchange & ISIOPv2RP>
   private _opts?: ISIOPv2RPRestAPIOpts
 
-  constructor(agent: TAgent<IPresentationExchange & ISIOPv2RP>, opts?: ISIOPv2RPRestAPIOpts) {
+  constructor(args: { agent: TAgent<IPresentationExchange & ISIOPv2RP>; express?: Express; opts?: ISIOPv2RPRestAPIOpts }) {
+    const { agent, opts } = args
     this.agent = agent
     this._opts = opts
-    dotenv.config()
-
-    this.express = express()
-    const port = this._opts?.port || process.env.PORT || 5000
-    const secret = this._opts?.cookieSigningKey || process.env.COOKIE_SIGNING_KEY
-    const hostname = this._opts?.hostname || '0.0.0.0'
-    this.express.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*')
-      // Request methods you wish to allow
-      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')
-
-      // Request headers you wish to allow
-      res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type')
-
-      // Set to true if you need the website to include cookies in the requests sent
-      // to the API (e.g. in case you use sessions)
-      res.setHeader('Access-Control-Allow-Credentials', 'true')
-      next()
-    })
-    // this.express.use(cors({ credentials: true }));
-    // this.express.use('/proxy', proxy('www.gssoogle.com'));
-    this.express.use(bodyParser.urlencoded({ extended: true }))
-    this.express.use(bodyParser.json())
-    this.express.use(cookieParser(secret))
-    this.express.listen(port as number, hostname, () => console.log(`Listening on ${hostname}, port ${port}`))
+    const existingExpress = !!args.express
+    this.express = existingExpress ? args.express! : express()
+    this.setupExpress(existingExpress)
 
     // Webapp endpoints
     this.createAuthRequestWebappEndpoint()
@@ -79,6 +57,34 @@ export class SIOPv2RPRestAPI {
     // SIOPv2 endpoints
     this.getAuthRequestSIOPv2Endpoint()
     this.verifyAuthResponseSIOPv2Endpoint()
+  }
+
+  private setupExpress(existingExpress: boolean) {
+    dotenv.config()
+    if (!existingExpress) {
+      const port = this._opts?.port || process.env.PORT || 5000
+      const secret = this._opts?.cookieSigningKey || process.env.COOKIE_SIGNING_KEY
+      const hostname = this._opts?.hostname || '0.0.0.0'
+      this.express.use((req, res, next) => {
+        res.header('Access-Control-Allow-Origin', '*')
+        // Request methods you wish to allow
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')
+
+        // Request headers you wish to allow
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type')
+
+        // Set to true if you need the website to include cookies in the requests sent
+        // to the API (e.g. in case you use sessions)
+        res.setHeader('Access-Control-Allow-Credentials', 'true')
+        next()
+      })
+      // this.express.use(cors({ credentials: true }));
+      // this.express.use('/proxy', proxy('www.gssoogle.com'));
+      this.express.use(bodyParser.urlencoded({ extended: true }))
+      this.express.use(bodyParser.json())
+      this.express.use(cookieParser(secret))
+      this.express.listen(port as number, hostname, () => console.log(`Listening on ${hostname}, port ${port}`))
+    }
   }
 
   private static sendErrorResponse(response: Response, statusCode: number, message: string) {

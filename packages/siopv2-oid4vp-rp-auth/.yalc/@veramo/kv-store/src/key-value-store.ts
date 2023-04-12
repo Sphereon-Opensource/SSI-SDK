@@ -1,9 +1,9 @@
-import { IKeyValueStore, IKeyValueStoreOnArgs, IKeyValueStoreOptions, IValueData } from './key-value-types.js'
-import { Keyv } from './keyv/keyv.js'
-import { KeyvDeserializedData, KeyvOptions, KeyvStoredData } from './keyv/keyv-types.js'
+import { IKeyValueStore, IKeyValueStoreOnArgs, IKeyValueStoreOptions, IValueData } from './key-value-types'
+import { Keyv } from './keyv/keyv'
+import { KeyvDeserializedData, KeyvOptions, KeyvStoredData } from './keyv/keyv-types'
 
 /**
- * Agent plugin that implements {@link @veramo/core-types#IKeyValueStore} interface
+ * Agent plugin that implements {@link @veramo/kv-store#IKeyValueStore} interface
  * @public
  */
 export class KeyValueStore<ValueType> implements IKeyValueStore<ValueType> {
@@ -44,9 +44,7 @@ export class KeyValueStore<ValueType> implements IKeyValueStore<ValueType> {
     // Making sure we return the same array length as the amount of key(s) passed in
     if (result === null || result === undefined || result.length === 0) {
       result = new Array<ValueType | undefined>()
-      for (const key of keys) {
-        result.push(undefined)
-      }
+      keys.forEach(() => result.push(undefined))
     }
     return result.map((v) => (!!v ? (v as ValueType) : undefined))
   }
@@ -60,9 +58,7 @@ export class KeyValueStore<ValueType> implements IKeyValueStore<ValueType> {
     // Making sure we return the same array length as the amount of key(s) passed in
     if (result === null || result === undefined || result.length === 0) {
       result = new Array<KeyvStoredData<ValueType>>()
-      for (const key of keys) {
-        result.push({ value: undefined, expires: undefined } as KeyvDeserializedData<ValueType>)
-      }
+      keys.forEach(() => result.push({ value: undefined, expires: undefined } as KeyvDeserializedData<ValueType>))
     }
     return result.map((v) => (!!v ? this.toDeserializedValueData(v) : { value: undefined, expires: undefined }))
   }

@@ -1,9 +1,8 @@
 {
   "name": "@veramo/kv-store",
   "description": "Veramo Key Value Store plugin",
-  "version": "5.1.2",
+  "version": "4.3.0",
   "main": "build/index.js",
-  "exports": "./build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
     "build": "tsc",
@@ -12,8 +11,7 @@
     "extract-api": "node ../cli/bin/veramo.js dev extract-api"
   },
   "dependencies": {
-    "@veramo/core-types": "5.1.2",
-    "@veramo/utils": "5.1.2",
+    "@veramo/utils": "4.3.0",
     "debug": "^4.3.4",
     "events": "^3.3.0",
     "json-buffer": "^3.0.1",
@@ -37,10 +35,5 @@
     "Key Value Store",
     "keyv"
   ],
-  "type": "module",
-  "moduleDirectories": [
-    "node_modules",
-    "src"
-  ],
-  "yalcSig": "09469f925723eeecd041caefbbb3346e"
+  "yalcSig": "bfd8bfc89f0050ba31664b2d7c3efc7a"
 }

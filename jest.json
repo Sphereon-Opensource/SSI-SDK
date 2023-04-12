@@ -13,6 +13,7 @@
     "!packages/cli/**",
     "!**/types/**",
     "!**/dist/**",
+    "!**/.yalc/**",
     "!**/node_modules/**/__tests__/**",
     "!**/node_modules/**/*.test.ts",
     "!**/node_modules/**",
@@ -29,7 +30,8 @@
     "\\.tsx?$": "ts-jest"
   },
   "testMatch": [
-    "**/__tests__/**/*.test.*"
+    "**/__tests__/**/*.test.*",
+    "!**/.yalc/**"
   ],
   "globals": {
     "ts-jest": {

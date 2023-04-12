@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm'
 import Debug from 'debug'
-const debug = Debug('veramo:data-store:initial-migration')
+const debug = Debug('veramo:kv-store:initial-migration')
 
 /**
  * Create the database layout for Veramo 3.0

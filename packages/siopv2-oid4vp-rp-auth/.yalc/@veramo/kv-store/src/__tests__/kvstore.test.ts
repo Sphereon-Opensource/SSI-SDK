@@ -1,6 +1,5 @@
 import { KeyValueStore } from '../key-value-store'
 import { IKeyValueStore } from '../key-value-types'
-import { beforeEach, expect } from '@jest/globals'
 
 interface TestValue {
   stringProp: string
@@ -38,7 +37,10 @@ describe('kvStore with MAP adapter', () => {
   })
   it('should get non-existing keys as undefined', async () => {
     await expect(kvStore.get('nope')).resolves.toBeUndefined()
-    await expect(kvStore.getAsValueData('nope')).resolves.toMatchObject({ value: undefined, expires: undefined })
+    await expect(kvStore.getAsValueData('nope')).resolves.toMatchObject({
+      value: undefined,
+      expires: undefined,
+    })
   })
 
   it('should get single results', async () => {

@@ -1,6 +1,6 @@
-import { IKeyValueStore, IKeyValueStoreOnArgs, IKeyValueStoreOptions, IValueData } from './key-value-types.js'
+import { IKeyValueStore, IKeyValueStoreOnArgs, IKeyValueStoreOptions, IValueData } from './key-value-types'
 /**
- * Agent plugin that implements {@link @veramo/core-types#IKeyValueStore} interface
+ * Agent plugin that implements {@link @veramo/kv-store#IKeyValueStore} interface
  * @public
  */
 export declare class KeyValueStore<ValueType> implements IKeyValueStore<ValueType> {
