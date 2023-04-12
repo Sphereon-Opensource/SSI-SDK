@@ -41,6 +41,7 @@
     "plugin.schema.json",
     "LICENSE"
   ],
+  "private": false,
   "publishConfig": {
     "access": "public"
   },

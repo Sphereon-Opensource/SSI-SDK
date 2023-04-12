@@ -8,6 +8,9 @@
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
   "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@sphereon/did-auth-siop": "^0.3.0-unstable.32"
   },

@@ -27,6 +27,7 @@
     "README.md",
     "LICENSE"
   ],
+  "private": false,
   "publishConfig": {
     "access": "public"
   },
