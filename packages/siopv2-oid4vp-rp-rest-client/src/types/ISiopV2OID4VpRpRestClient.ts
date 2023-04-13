@@ -3,7 +3,7 @@ import { IAgentContext, IPluginMethodMap, IResolver } from '@veramo/core'
 import { PresentationSubmission, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 
 export interface ISiopV2OID4VpRpRestClient extends IPluginMethodMap {
-  deleteDefinitionCorrelation(args: IDeleteDefinitionCorrelationArgs, context: IRequiredContext): Promise<any>
+  removeAuthRequestSession(args: IRemoveAuthRequestSessionArgs, context: IRequiredContext): Promise<any>
   generateAuthRequest(args: IGenerateAuthRequestArgs, context: IRequiredContext): Promise<any>
   getAuthStatus(args: IGetAuthStatusArgs, context: IRequiredContext): Promise<any>
 }
@@ -13,7 +13,7 @@ export interface IGenerateAuthRequestArgs {
   baseUrl?: string
 }
 
-export interface IDeleteDefinitionCorrelationArgs {
+export interface IRemoveAuthRequestSessionArgs {
   correlationId: string
   baseUrl?: string
   definitionId?: string

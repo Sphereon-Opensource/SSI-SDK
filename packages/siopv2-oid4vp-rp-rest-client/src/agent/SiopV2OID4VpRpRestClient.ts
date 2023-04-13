@@ -5,7 +5,7 @@ import {
   IGenerateAuthRequestURIResponse,
   IGetAuthStatusArgs,
   IRequiredContext,
-  IDeleteDefinitionCorrelationArgs,
+  IRemoveAuthRequestSessionArgs,
 } from '../index'
 import Debug from 'debug'
 import { IAgentPlugin } from '@veramo/core'
@@ -14,7 +14,7 @@ const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-client:SiopV2OID4VpRpRestClie
 // todo merge this with Niels's branch feature/siop-verifier and use those classes/definitions
 export class SiopV2OID4VpRpRestClient implements IAgentPlugin {
   readonly methods: ISiopV2OID4VpRpRestClient = {
-    deleteDefinitionCorrelation: this.deleteDefinitionCorrelation.bind(this),
+    removeAuthRequestSession: this.removeAuthRequestSession.bind(this),
     generateAuthRequest: this.generateAuthRequest.bind(this),
     getAuthStatus: this.getAuthStatus.bind(this),
   }
@@ -31,7 +31,7 @@ export class SiopV2OID4VpRpRestClient implements IAgentPlugin {
     }
   }
 
-  private async deleteDefinitionCorrelation(args: IDeleteDefinitionCorrelationArgs, context: IRequiredContext): Promise<void> {
+  private async removeAuthRequestSession(args: IRemoveAuthRequestSessionArgs, context: IRequiredContext): Promise<void> {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
     fetch(this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests/${args.correlationId}`, baseUrl), {
@@ -46,11 +46,11 @@ export class SiopV2OID4VpRpRestClient implements IAgentPlugin {
     const statueResponse = await fetch(url, {
       method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         correlationId: args.correlationId,
-        definitionId
+        definitionId,
       }),
     })
     debug(`auth status response: ${statueResponse}`)
@@ -84,13 +84,13 @@ export class SiopV2OID4VpRpRestClient implements IAgentPlugin {
     if (!baseUrl && !this.baseUrl) {
       throw new Error('No base url has been provided')
     }
-    return baseUrl? baseUrl: this.baseUrl as string
+    return baseUrl ? baseUrl : (this.baseUrl as string)
   }
 
   private checkDefinitionIdParameter(definitionId?: string): string {
     if (!definitionId && !this.definitionId) {
       throw new Error('No definition id has been provided')
     }
-    return definitionId? definitionId: this.definitionId as string
+    return definitionId ? definitionId : (this.definitionId as string)
   }
 }
