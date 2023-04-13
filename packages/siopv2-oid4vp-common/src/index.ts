@@ -1,3 +1,24 @@
 export * from './auth-model'
 export * from './utils'
-export { decodeUriAsJson, encodeJsonAsURI } from '@sphereon/did-auth-siop'
+
+// We are exporting some common class from SIOP
+export {
+  decodeUriAsJson,
+  encodeJsonAsURI,
+  AuthorizationResponsePayload,
+  AuthorizationRequestPayload,
+  CheckLinkedDomain,
+  URI,
+  AuthorizationRequestState,
+  RequestObjectPayload,
+  AuthorizationRequest,
+  AuthorizationResponse,
+  RP,
+  OP,
+  SupportedVersion,
+  SigningAlgo,
+  PresentationDefinitionWithLocation,
+  PresentationVerificationResult,
+  PresentationVerificationCallback,
+  VPTokenLocation,
+} from '@sphereon/did-auth-siop'

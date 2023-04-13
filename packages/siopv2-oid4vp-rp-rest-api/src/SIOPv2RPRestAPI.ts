@@ -228,7 +228,7 @@ export class SIOPv2RPRestAPI {
           response.statusMessage = `No definition ${definitionId}`
           return response.send()
         }
-        this.agent
+        await this.agent
           .siopVerifyAuthResponse({
             authorizationResponse,
             correlationId,
@@ -241,7 +241,7 @@ export class SIOPv2RPRestAPI {
             ],
           })
           .then((verifiedResponse: VerifiedAuthorizationResponse) => {
-            console.log('verifiedResponse: ', JSON.stringify(verifiedResponse, null, 2))
+            // console.log('verifiedResponse: ', JSON.stringify(verifiedResponse, null, 2))
 
             const wrappedPresentation = verifiedResponse?.oid4vpSubmission?.presentations[0]
             if (wrappedPresentation) {
@@ -257,12 +257,12 @@ export class SIOPv2RPRestAPI {
             }
             return response.send()
           })
-          .catch((reason) => {
+          .catch((reason: Error) => {
             console.error('verifyAuthenticationResponseJwt failed:', reason)
+            response.statusCode = 500
+            response.statusMessage = reason.message
+            return response.send()
           })
-        response.statusCode = 500
-        response.statusMessage = 'Missing Credentials'
-        return response.send()
       }
     )
   }
