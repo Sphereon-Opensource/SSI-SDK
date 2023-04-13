@@ -17,20 +17,27 @@ const agent = createAgent<IResolver>({
 describe('@sphereon/siopv2-oid4vp-rp-rest-client', () => {
   it('should call the endpoint for deleteDefinitionCorrelation', async () => {
     const authRequest = await agent.generateAuthRequest({})
-    await expect(agent.deleteDefinitionCorrelation({
+    agent.deleteDefinitionCorrelation({
       correlationId: authRequest.correlationId
-    })).toBeDefined()
-  }, 20000)
+    })
+    await new Promise(f => setTimeout(f, 5000));
+    await expect(agent.getAuthStatus({
+      correlationId: authRequest.correlationId
+    }))
+    .rejects
+    .toThrow('Statue has returned 404')
+  }, 10000)
 
   it('should call the endpoint for generateAuthRequest', async () => {
     const result = await agent.generateAuthRequest({})
     expect(result.definitionId).toEqual(definitionId)
-  }, 20000)
+  }, 5000)
 
   it('should call the endpoint for getAuthStatus', async () => {
     const authRequest = await agent.generateAuthRequest({})
-    await expect(agent.getAuthStatus({
+    const result = await agent.getAuthStatus({
       correlationId: authRequest.correlationId
-    })).toBeDefined()
-  }, 20000)
+    })
+    expect(result.status).toBe('created')
+  }, 5000)
 })

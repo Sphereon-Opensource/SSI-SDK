@@ -31,10 +31,10 @@ export class SiopV2OID4VpRpRestClient implements IAgentPlugin {
     }
   }
 
-  private async deleteDefinitionCorrelation(args: IDeleteDefinitionCorrelationArgs, context: IRequiredContext) {
+  private async deleteDefinitionCorrelation(args: IDeleteDefinitionCorrelationArgs, context: IRequiredContext): Promise<void> {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
-    return await fetch(this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests/${args.correlationId}`, baseUrl), {
+    fetch(this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests/${args.correlationId}`, baseUrl), {
       method: 'DELETE',
     })
   }
@@ -43,12 +43,11 @@ export class SiopV2OID4VpRpRestClient implements IAgentPlugin {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
     const url = this.uriWithBase('/webapp/auth-status', baseUrl)
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
-    console.log(JSON.stringify({
-      correlationId: args.correlationId,
-      definitionId
-    }))
     const statueResponse = await fetch(url, {
       method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({
         correlationId: args.correlationId,
         definitionId
@@ -59,7 +58,7 @@ export class SiopV2OID4VpRpRestClient implements IAgentPlugin {
     if (success) {
       return await statueResponse.json()
     }
-    throw Error(`calling ${url} returned ${statueResponse.status}`)
+    throw Error(`Statue has returned ${statueResponse.status}`)
   }
 
   private async generateAuthRequest(args: IGenerateAuthRequestArgs, context: IRequiredContext): Promise<IGenerateAuthRequestURIResponse> {
