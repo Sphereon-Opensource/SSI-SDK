@@ -1,3 +1,3 @@
 export * from './auth-model'
 export * from './utils'
-export { decodeUriAsJson } from '@sphereon/did-auth-siop'
+export { decodeUriAsJson, encodeJsonAsURI } from '@sphereon/did-auth-siop'

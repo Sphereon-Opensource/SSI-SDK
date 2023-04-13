@@ -11,8 +11,11 @@ import {
 import { W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import {
   AuthorizationRequestPayload,
+  AuthorizationRequestState,
+  AuthorizationResponsePayload,
   AuthorizationResponseState,
   CheckLinkedDomain,
+  ClaimPayloadCommonOpts,
   IRPSessionManager,
   PresentationDefinitionWithLocation,
   PresentationVerificationCallback,
@@ -20,6 +23,7 @@ import {
   ResponseMode,
   SupportedVersion,
   VerifiablePresentationTypeFormat,
+  VerifiedAuthorizationResponse,
   VPTokenLocation,
 } from '@sphereon/did-auth-siop'
 
@@ -30,8 +34,6 @@ import { IPresentationDefinition } from '@sphereon/pex'
 import { IDIDOptions } from '@sphereon/ssi-sdk-did-utils'
 import { IPresentationExchange } from '@sphereon/ssi-sdk-presentation-exchange'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
-import { ClaimPayloadCommonOpts } from '@sphereon/did-auth-siop/dist/main/authorization-request/types'
-import { AuthorizationRequestState, VerifiedAuthorizationResponse } from '@sphereon/did-auth-siop/dist/main/types'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk-siopv2-oid4vp-common'
 
 export interface ISIOPv2RP extends IPluginMethodMap {
@@ -87,7 +89,7 @@ export interface IDeleteAuthStateArgs {
 }
 
 export interface IVerifyAuthResponseStateArgs {
-  authorizationResponse: string
+  authorizationResponse: string | AuthorizationResponsePayload
   definitionId?: string
   correlationId: string
   audience?: string

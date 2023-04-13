@@ -11,14 +11,14 @@ export const entraAndSphereonCompatibleDef: IPresentationDefinition = {
       min: 0,
       max: 1,
       from: 'A',
-    },
+    } /*,
     {
       name: 'Microsoft Authenticator Identity',
       rule: Rules.Pick,
       min: 0,
       max: 1,
       from: 'B',
-    },
+    },*/,
   ],
   input_descriptors: [
     {
@@ -27,7 +27,7 @@ export const entraAndSphereonCompatibleDef: IPresentationDefinition = {
       name: 'Wallet Identity',
       group: ['A'],
       schema: [{ uri: 'https://sphereon-opensource.github.io/ssi-mobile-wallet/context/sphereon-wallet-identity-v1.jsonld' }],
-    },
+    } /*,
     {
       id: 'TrueIdentity',
       name: 'TrueIdentity',
@@ -50,7 +50,7 @@ export const entraAndSphereonCompatibleDef: IPresentationDefinition = {
           },
         ],
       },
-    },
+    },*/,
   ],
 }
 

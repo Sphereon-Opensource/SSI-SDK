@@ -16,8 +16,13 @@ import { IAgentPlugin } from '@veramo/core'
 
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
 import { RPInstance } from '../RPInstance'
-import { AuthorizationRequestState, AuthorizationResponsePayload, VerifiedAuthorizationResponse } from '@sphereon/did-auth-siop/dist/main/types'
-import { AuthorizationResponseState, decodeUriAsJson } from '@sphereon/did-auth-siop'
+import {
+  AuthorizationRequestState,
+  AuthorizationResponsePayload,
+  AuthorizationResponseState,
+  decodeUriAsJson,
+  VerifiedAuthorizationResponse,
+} from '@sphereon/did-auth-siop'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk-siopv2-oid4vp-common'
 
 export class SIOPv2RP implements IAgentPlugin {
@@ -98,7 +103,13 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async siopVerifyAuthResponse(args: IVerifyAuthResponseStateArgs, context: IRequiredContext): Promise<VerifiedAuthorizationResponse> {
-    const authResponse = decodeUriAsJson(args.authorizationResponse) as AuthorizationResponsePayload
+    if (!args.authorizationResponse) {
+      throw Error('No SIOPv2 Authorization Response received')
+    }
+    const authResponse =
+      typeof args.authorizationResponse === 'string'
+        ? (decodeUriAsJson(args.authorizationResponse) as AuthorizationResponsePayload)
+        : args.authorizationResponse
     return await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
       rp.get(context).then((rp) =>
         rp.verifyAuthorizationResponse(authResponse, {

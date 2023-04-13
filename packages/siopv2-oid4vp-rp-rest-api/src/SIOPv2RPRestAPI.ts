@@ -5,6 +5,7 @@ import express, { Express, Response } from 'express'
 import cookieParser from 'cookie-parser'
 import uuid from 'short-uuid'
 import {
+  AuthorizationResponsePayload,
   AuthorizationRequestState,
   AuthorizationResponseState,
   AuthorizationResponseStateStatus,
@@ -219,8 +220,9 @@ export class SIOPv2RPRestAPI {
         }
         console.log('Authorization Response (siop-sessions')
         console.log(JSON.stringify(request.body, null, 2))
-        const responseURI = request.body
-        const definition = await this.agent.pexDefinitionGet(definitionId)
+        const definition = await this.agent.pexStoreGetDefinition({ definitionId })
+        const authorizationResponse = typeof request.body === 'string' ? request.body : (request.body as AuthorizationResponsePayload)
+        console.log(`URI: ${JSON.stringify(authorizationResponse)}`)
         if (!definition) {
           response.statusCode = 404
           response.statusMessage = `No definition ${definitionId}`
@@ -228,7 +230,7 @@ export class SIOPv2RPRestAPI {
         }
         this.agent
           .siopVerifyAuthResponse({
-            authorizationResponse: responseURI,
+            authorizationResponse,
             correlationId,
             definitionId,
             presentationDefinitions: [

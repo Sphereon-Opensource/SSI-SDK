@@ -12,7 +12,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "^0.3.0-unstable.32"
+    "@sphereon/did-auth-siop": "^0.3.0-unstable.33"
   },
   "scripts": {
     "build": "tsc"

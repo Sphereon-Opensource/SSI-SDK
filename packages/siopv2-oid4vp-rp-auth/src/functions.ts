@@ -6,6 +6,7 @@ import {
   CheckLinkedDomain,
   InMemoryRPSessionManager,
   PassBy,
+  PresentationVerificationResult,
   PropertyTarget,
   ResponseMode,
   ResponseType,
@@ -18,7 +19,6 @@ import {
 } from '@sphereon/did-auth-siop'
 import { TKeyType } from '@veramo/core'
 import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
-import { PresentationVerificationResult } from '@sphereon/did-auth-siop/dist/main/authorization-response/types'
 import { IPresentationDefinition } from '@sphereon/pex'
 
 /*
