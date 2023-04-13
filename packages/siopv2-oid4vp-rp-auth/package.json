@@ -39,6 +39,7 @@
     "nock": "^13.2.1"
   },
   "files": [
+    ".yalc/**/*",
     "dist/**/*",
     "src/**/*",
     "README.md",

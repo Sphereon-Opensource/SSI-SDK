@@ -35,6 +35,7 @@
     "@veramo/utils": "4.2.0"
   },
   "files": [
+    ".yalc/**/*",
     "dist/**/*",
     "src/**/*",
     "README.md",

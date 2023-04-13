@@ -50,6 +50,7 @@
     "ts-node": "^10.9.1"
   },
   "files": [
+    ".yalc/**/*",
     "dist/**/*",
     "src/**/*",
     "README.md",
