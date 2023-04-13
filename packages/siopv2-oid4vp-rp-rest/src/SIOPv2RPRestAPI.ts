@@ -196,7 +196,7 @@ export class SIOPv2RPRestAPI {
               authRequestURI,
               authStatusURI: `${uriWithBase(this._opts?.webappAuthStatusPath ?? '/webapp/auth-status', { baseURI: this._opts?.webappBaseURI })}`,
             }
-            console.log(`Auth Request URI data: ${authRequestBody}`)
+            console.log(`Auth Request URI data to send back: ${JSON.stringify(authRequestBody)}`)
             return response.send(authRequestBody)
           })
           .catch((e: Error) => {

@@ -1,11 +1,6 @@
 import { IPresentationDefinition } from '@sphereon/pex'
 import { Rules } from '@sphereon/pex-models'
 
-export enum DefinitionIds {
-  ENTRA_VERIFIED_ID_ONLY = 'entra-only',
-  ENTRA_VERIFIED_ID_AND_SPHEREON = '9449e2db-791f-407c-b086-c21cc677d2e0',
-}
-
 export const entraAndSphereonCompatibleDef: IPresentationDefinition = {
   id: '9449e2db-791f-407c-b086-c21cc677d2e0',
   purpose: 'You need to prove your Wallet Identity data',
