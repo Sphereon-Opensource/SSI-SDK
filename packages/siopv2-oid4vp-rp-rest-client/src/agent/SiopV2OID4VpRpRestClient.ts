@@ -3,7 +3,7 @@ import {
   ISiopV2OID4VpRpRestClient,
   IGenerateAuthRequestArgs,
   IGenerateAuthRequestURIResponse,
-  IPollAuthStatusArgs,
+  IGetAuthStatusArgs,
   IRequiredContext,
   IDeleteDefinitionCorrelationArgs,
 } from '../index'
@@ -11,11 +11,12 @@ import Debug from 'debug'
 import { IAgentPlugin } from '@veramo/core'
 
 const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-client:SiopV2OID4VpRpRestClient')
+// todo merge this with Niels's branch feature/siop-verifier and use those classes/definitions
 export class SiopV2OID4VpRpRestClient implements IAgentPlugin {
   readonly methods: ISiopV2OID4VpRpRestClient = {
     deleteDefinitionCorrelation: this.deleteDefinitionCorrelation.bind(this),
     generateAuthRequest: this.generateAuthRequest.bind(this),
-    pollAuthStatus: this.pollAuthStatus.bind(this),
+    getAuthStatus: this.getAuthStatus.bind(this),
   }
 
   private readonly baseUrl?: string
@@ -31,34 +32,40 @@ export class SiopV2OID4VpRpRestClient implements IAgentPlugin {
   }
 
   private async deleteDefinitionCorrelation(args: IDeleteDefinitionCorrelationArgs, context: IRequiredContext) {
-    if (args.definitionId && this.definitionId) {
-      throw new Error('No definition id has been provided')
-    }
-    const definitionId = args.definitionId ? args.definitionId : this.definitionId
-    return await fetch(this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests/${args.correlationId}`, args.baseUrl), {
+    const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
+    const definitionId = this.checkDefinitionIdParameter(args.definitionId)
+    return await fetch(this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests/${args.correlationId}`, baseUrl), {
       method: 'DELETE',
     })
   }
 
-  private async pollAuthStatus(args: IPollAuthStatusArgs, context: IRequiredContext): Promise<any> {
-    const url = this.uriWithBase('/webapp/auth-status', args.baseUrl)
-    const pollingResponse = await fetch(url, {
+  private async getAuthStatus(args: IGetAuthStatusArgs, context: IRequiredContext): Promise<any> {
+    const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
+    const url = this.uriWithBase('/webapp/auth-status', baseUrl)
+    const definitionId = this.checkDefinitionIdParameter(args.definitionId)
+    console.log(JSON.stringify({
+      correlationId: args.correlationId,
+      definitionId
+    }))
+    const statueResponse = await fetch(url, {
       method: 'POST',
       body: JSON.stringify({
-        correlationId: args?.correlationId,
-        definitionId: args.definitionId,
+        correlationId: args.correlationId,
+        definitionId
       }),
     })
-    debug(`polling response: ${pollingResponse}`)
-    const success = pollingResponse && pollingResponse.status >= 200 && pollingResponse.status < 400
+    debug(`auth status response: ${statueResponse}`)
+    const success = statueResponse && statueResponse.status >= 200 && statueResponse.status < 400
     if (success) {
-      return await pollingResponse.json()
+      return await statueResponse.json()
     }
-    throw Error(`calling ${url} returned ${pollingResponse.status}`)
+    throw Error(`calling ${url} returned ${statueResponse.status}`)
   }
 
   private async generateAuthRequest(args: IGenerateAuthRequestArgs, context: IRequiredContext): Promise<IGenerateAuthRequestURIResponse> {
-    const url = this.uriWithBase(`/webapp/definitions/${args.definitionId}/auth-request-uri`, args.baseUrl)
+    const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
+    const definitionId = this.checkDefinitionIdParameter(args.definitionId)
+    const url = this.uriWithBase(`/webapp/definitions/${definitionId}/auth-request-uri`, baseUrl)
     const origResponse = await fetch(url)
     const success = origResponse && origResponse.status >= 200 && origResponse.status < 400
     if (success) {
@@ -72,5 +79,19 @@ export class SiopV2OID4VpRpRestClient implements IAgentPlugin {
       throw new Error('You have to provide baseUrl')
     }
     return baseUrl ? `${baseUrl}${path.startsWith('/') ? path : '/' + path}` : `${this.baseUrl}${path.startsWith('/') ? path : '/' + path}`
+  }
+
+  private checkBaseUrlParameter(baseUrl?: string): string {
+    if (!baseUrl && !this.baseUrl) {
+      throw new Error('No base url has been provided')
+    }
+    return baseUrl? baseUrl: this.baseUrl as string
+  }
+
+  private checkDefinitionIdParameter(definitionId?: string): string {
+    if (!definitionId && !this.definitionId) {
+      throw new Error('No definition id has been provided')
+    }
+    return definitionId? definitionId: this.definitionId as string
   }
 }

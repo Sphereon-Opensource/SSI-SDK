@@ -5,11 +5,11 @@ import { PresentationSubmission, W3CVerifiablePresentation } from '@sphereon/ssi
 export interface ISiopV2OID4VpRpRestClient extends IPluginMethodMap {
   deleteDefinitionCorrelation(args: IDeleteDefinitionCorrelationArgs, context: IRequiredContext): Promise<any>
   generateAuthRequest(args: IGenerateAuthRequestArgs, context: IRequiredContext): Promise<any>
-  pollAuthStatus(args: IPollAuthStatusArgs, context: IRequiredContext): Promise<any>
+  getAuthStatus(args: IGetAuthStatusArgs, context: IRequiredContext): Promise<any>
 }
 
 export interface IGenerateAuthRequestArgs {
-  definitionId: string
+  definitionId?: string
   baseUrl?: string
 }
 
@@ -19,7 +19,7 @@ export interface IDeleteDefinitionCorrelationArgs {
   definitionId?: string
 }
 
-export type IPollAuthStatusArgs = IGenerateAuthRequestURIResponse
+export type IGetAuthStatusArgs = IGenerateAuthRequestURIResponse
 
 export interface IGenerateAuthRequestURIResponse {
   correlationId: string
