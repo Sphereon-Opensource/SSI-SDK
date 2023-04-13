@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@sphereon/did-auth-siop": "^0.3.0-unstable.32",
-    "@sphereon/pex": "2.0.0-unstable.13",
+    "@sphereon/pex": "2.0.0-unstable.14",
     "@sphereon/ssi-sdk-core": "^0.9.0",
     "@sphereon/ssi-sdk-did-utils": "^0.9.0",
     "@sphereon/ssi-sdk-siopv2-oid4vp-common": "^0.9.0",

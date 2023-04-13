@@ -14,7 +14,7 @@
     { "path": "siopv2-oid4vp-common" },
     { "path": "siopv2-oid4vp-op-auth" },
     { "path": "siopv2-oid4vp-rp-auth" },
-    { "path": "siopv2-oid4vp-rp-rest" },
+    { "path": "siopv2-oid4vp-rp-rest-api" },
     { "path": "qr-code-generator" },
     { "path": "contact-manager" },
     { "path": "data-store" },

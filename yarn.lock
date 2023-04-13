@@ -2682,6 +2682,20 @@
     nanoid "^3.3.4"
     string.prototype.matchall "^4.0.8"
 
+"@sphereon/pex@2.0.0-unstable.14":
+  version "2.0.0-unstable.14"
+  resolved "https://registry.yarnpkg.com/@sphereon/pex/-/pex-2.0.0-unstable.14.tgz#13727200866206a93aa478a2e4ba651bb2024d91"
+  integrity sha512-QraUuoy6dxcZTcdK7pH6qcCAN+jJtWCfPC54eVLah7c5ogj8tuP9XYa1dSonuJ/ZUIrIvaRXB3ALSzvP3aWMhQ==
+  dependencies:
+    "@sphereon/pex-models" "^1.2.2"
+    "@sphereon/ssi-types" "^0.9.0"
+    ajv "^8.12.0"
+    ajv-formats "^2.1.1"
+    jsonpath "^1.1.1"
+    jwt-decode "^3.1.2"
+    nanoid "^3.3.4"
+    string.prototype.matchall "^4.0.8"
+
 "@sphereon/ssi-sdk-data-store-common@^0.9.0":
   version "0.9.0"
   resolved "https://registry.yarnpkg.com/@sphereon/ssi-sdk-data-store-common/-/ssi-sdk-data-store-common-0.9.0.tgz#226e23131660861d2891583d1a0084363ae21fb3"
@@ -4236,7 +4250,7 @@
     typeorm "^0.3.10"
     uint8arrays "^3.1.1"
 
-"@veramo/kv-store@file:packages/siopv2-oid4vp-rp-rest/.yalc/@veramo/kv-store":
+"@veramo/kv-store@file:packages/siopv2-oid4vp-rp-rest-api/.yalc/@veramo/kv-store":
   version "4.3.0"
   dependencies:
     "@veramo/utils" "4.3.0"
