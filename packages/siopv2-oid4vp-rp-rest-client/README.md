@@ -14,7 +14,7 @@
 
 # ssi-sdk-siopv2-oid4vp-rp-rest-client
 
-A Veramo plugin whit types/interfaces and utility functions for calling rest endpoints of OID4VP
+A SSI-SDK plugin with types/interfaces and utility functions for calling rest endpoints of OID4VP
 
 ### Installation
 
