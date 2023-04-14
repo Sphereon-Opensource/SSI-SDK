@@ -25,7 +25,7 @@ multiple packages (see lerna below). It contains plugins that extend the Veramo 
     - Json-LD VC handler: [Issues and verifies JSON-LD based VCs and VPs](./packages/vc-handler-ld-local/README.md)
 - OpenID Connect and Presentation Exchange:
     - SIOPv2 and
-      OIDC4VP: [Self-Issued OpenID Connect and OpenID Connect for Verifiable Presentations](./packages/did-auth-siop-op-authenticator/README.md)
+      OIDC4VP: [Self-Issued OpenID Connect and OpenID Connect for Verifiable Presentations](packages/siopv2-openid4vp-op-auth/README.md)
     - WACI PEx QR code: [Create QR codes for use with WACI PEx for React and React-Native](./packages/qr-code-generator/README.md)
 
 ## SSI SDK Core
@@ -74,7 +74,7 @@ Verifiable Credentials and Verifiable Presentations
 
 ## OpenID Connect
 
-The [Self-Issued OpenID Connect and OpenID Connect for Verifiable Presentations](./packages/did-auth-siop-op-authenticator/README.md)
+The [Self-Issued OpenID Connect and OpenID Connect for Verifiable Presentations](packages/siopv2-openid4vp-op-auth/README.md)
 plugin allows an OP to authenticate against a Relying Party using Self-Issued OpenID Connect and optionally OpenID
 Connect for Verifiable Presentations, with the help of
 our [Presentation-Exchange library](https://github.com/Sphereon-Opensource/pe-js).

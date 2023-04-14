@@ -33,7 +33,7 @@ export async function checkMsIdentityHostname(authenticationArgs: IMsAuthenticat
   const msIdentityHostName = region === EU ? MS_IDENTITY_HOST_NAME_EU : MS_IDENTITY_HOST_NAME_NONE_EU
   // Check that the Credential Manifest URL is in the same tenant Region and throw an error if it's not
   if (!authenticationArgs.credentialManifestUrl.startsWith(msIdentityHostName)) {
-    throw new Error(ERROR_CREDENTIAL_MANIFEST_REGION + msIdentityHostName)
+    throw new Error(ERROR_CREDENTIAL_MANIFEST_REGION + msIdentityHostName + `. value: ${authenticationArgs.credentialManifestUrl}`)
   }
   return msIdentityHostName
 }
