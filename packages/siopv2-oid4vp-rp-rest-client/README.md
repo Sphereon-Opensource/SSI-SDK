@@ -2,7 +2,7 @@
 <h1 align="center">
   <br>
   <a href="https://www.sphereon.com"><img src="https://sphereon.com/content/themes/sphereon/assets/img/logo.svg" alt="Sphereon" width="400"></a>
-  <br>SSI SDK Core (Typescript) 
+  <br>SIOPv2 OID4VP Relying Party REST Client
   <br>
 </h1>
 
