@@ -4,7 +4,7 @@ import nock from 'nock'
 import { SiopV2OID4VpRpRestClient } from '../src'
 
 const definitionId = '9449e2db-791f-407c-b086-c21cc677d2e0'
-const baseUrl = 'https://ssi-backend.sphereon.com'
+const baseUrl = 'https://my-siop-endpoint'
 
 const agent = createAgent<IResolver>({
   plugins: [new SiopV2OID4VpRpRestClient(baseUrl, definitionId)],

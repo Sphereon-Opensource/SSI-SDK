@@ -34,7 +34,7 @@ export class SiopV2OID4VpRpRestClient implements IAgentPlugin {
   private async siopClientRemoveAuthRequestSession(args: ISiopClientRemoveAuthRequestSessionArgs, context: IRequiredContext): Promise<void> {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
-    fetch(this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests/${args.correlationId}`, baseUrl), {
+    await fetch(this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests/${args.correlationId}`, baseUrl), {
       method: 'DELETE',
     })
   }
@@ -69,11 +69,7 @@ export class SiopV2OID4VpRpRestClient implements IAgentPlugin {
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
     const url = this.uriWithBase(`/webapp/definitions/${definitionId}/auth-request-uri`, baseUrl)
     const origResponse = await fetch(url)
-    const success = origResponse && origResponse.status >= 200 && origResponse.status < 400
-    if (success) {
-      return await origResponse.json()
-    }
-    throw Error(`calling ${url} returned ${origResponse.status}`)
+    return await origResponse.json()
   }
 
   private uriWithBase(path: string, baseUrl?: string): string {
