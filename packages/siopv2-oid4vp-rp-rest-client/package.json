@@ -1,0 +1,35 @@
+{
+  "name": "@sphereon/ssi-sdk-siopv2-oid4vp-rp-rest-client",
+  "description": "contains the client side to call REST endpoints of relying party",
+  "version": "0.9.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build"
+  },
+  "dependencies": {
+    "@sphereon/ssi-types": "^0.9.0",
+    "@sphereon/ssi-sdk-siopv2-oid4vp-common": "^0.9.1-unstable.109",
+    "@veramo/core": "4.2.0",
+    "cross-fetch": "^3.1.5"
+  },
+  "devDependencies": {
+    "did-resolver": "^4.1.0",
+    "nock": "^13.3.0"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "plugin.schema.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-OpenSource/ssi-sdk.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": []
+}
