@@ -1,5 +1,4 @@
 import * as u8a from 'uint8arrays'
-import * as process from 'process'
 
 export function base64ToBytes(s: string): Uint8Array {
   const inputBase64Url = s.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
@@ -11,7 +10,7 @@ export function decodeBase64url(s: string): string {
 }
 
 export function uriWithBase(path: string, opts?: { baseURI?: string; envVarName?: string }) {
-  let baseUri = `${!!opts?.baseURI ? opts.baseURI : opts?.envVarName ? process.env[opts.envVarName!] : process.env.BACKEND_BASE_URL}`
+  let baseUri = `${!!opts?.baseURI ? opts.baseURI : opts?.envVarName && process ? process.env[opts.envVarName!] : process?.env?.BACKEND_BASE_URI}`
   if (!baseUri || baseUri === 'undefined') {
     throw Error('No base URI provided as param or environment variable')
   } else if (!baseUri.startsWith('http')) {
