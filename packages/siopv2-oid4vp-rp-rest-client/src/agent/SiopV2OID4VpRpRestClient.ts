@@ -2,16 +2,16 @@ import { fetch } from 'cross-fetch'
 import {
   ISiopV2OID4VpRpRestClient,
   ISiopClientGenerateAuthRequestArgs,
-  ISiopClientGenerateAuthRequestURIResponse,
   ISiopClientGetAuthStatusArgs,
   IRequiredContext,
-  ISiopClientRemoveAuthRequestSessionArgs, ISiopClientAuthStatus,
+  ISiopClientRemoveAuthRequestSessionArgs,
 } from '../index'
 import Debug from 'debug'
 import { IAgentPlugin } from '@veramo/core'
+import { AuthStatusResponse, GenerateAuthRequestURIResponse } from '@sphereon/ssi-sdk-siopv2-oid4vp-common'
 
 const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-client:SiopV2OID4VpRpRestClient')
-// todo merge this with Niels's branch feature/siop-verifier and use those classes/definitions
+
 export class SiopV2OID4VpRpRestClient implements IAgentPlugin {
   readonly methods: ISiopV2OID4VpRpRestClient = {
     siopClientRemoveAuthRequestSession: this.siopClientRemoveAuthRequestSession.bind(this),
@@ -39,7 +39,7 @@ export class SiopV2OID4VpRpRestClient implements IAgentPlugin {
     })
   }
 
-  private async siopClientGetAuthStatus(args: ISiopClientGetAuthStatusArgs, context: IRequiredContext): Promise<ISiopClientAuthStatus> {
+  private async siopClientGetAuthStatus(args: ISiopClientGetAuthStatusArgs, context: IRequiredContext): Promise<AuthStatusResponse> {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
     const url = this.uriWithBase('/webapp/auth-status', baseUrl)
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
@@ -54,14 +54,17 @@ export class SiopV2OID4VpRpRestClient implements IAgentPlugin {
       }),
     })
     debug(`auth status response: ${statusResponse}`)
-    const success = statusResponse && statusResponse.status >= 200 && statusResponse.status < 400
-    if (success) {
+    try {
       return await statusResponse.json()
+    } catch (err) {
+      throw Error(`Status has returned ${statusResponse.status}`)
     }
-    throw Error(`Statue has returned ${statusResponse.status}`)
   }
 
-  private async siopClientGenerateAuthRequest(args: ISiopClientGenerateAuthRequestArgs, context: IRequiredContext): Promise<ISiopClientGenerateAuthRequestURIResponse> {
+  private async siopClientGenerateAuthRequest(
+    args: ISiopClientGenerateAuthRequestArgs,
+    context: IRequiredContext
+  ): Promise<GenerateAuthRequestURIResponse> {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
     const url = this.uriWithBase(`/webapp/definitions/${definitionId}/auth-request-uri`, baseUrl)
