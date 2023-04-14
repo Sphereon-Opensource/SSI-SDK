@@ -47,8 +47,6 @@ export class WellKnownDidVerifier implements IAgentPlugin {
 
   /** {@inheritDoc IWellKnownDidVerifier.verifyDomainLinkage} */
   private async verifyDomainLinkage(args: IVerifyDomainLinkageArgs, context: IRequiredContext): Promise<IDomainLinkageValidation> {
-    console.log(args.onlyVerifyServiceDids)
-
     const signatureVerification: VerifyCallback =
       typeof args.signatureVerification === 'string'
         ? await this.getSignatureVerification(args.signatureVerification)

@@ -133,7 +133,7 @@ export class LtoDidProvider extends AbstractIdentifierProvider {
   }
 
   async deleteIdentifier(args: IIdentifier, context: IAgentContext<IKeyManager>): Promise<boolean> {
-    console.log(`Onchain deletion of LTO DID not supported yet: ${args.did}`)
+    debug(`Onchain deletion of LTO DID not supported yet: ${args.did}`)
     return new Promise(() => false)
   }
 

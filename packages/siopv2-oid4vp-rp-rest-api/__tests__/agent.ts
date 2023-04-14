@@ -26,6 +26,9 @@ import { ISIOPv2RP, SIOPv2RP } from '@sphereon/ssi-sdk-siopv2-oid4vp-rp-auth'
 import { IPresentationExchange, PresentationExchange } from '@sphereon/ssi-sdk-presentation-exchange'
 import { CheckLinkedDomain } from '@sphereon/did-auth-siop'
 import { entraAndSphereonCompatibleDef, entraVerifiedIdPresentation } from './presentationDefinitions'
+import Debug from 'debug'
+
+const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-api')
 
 export const DIF_UNIRESOLVER_RESOLVE_URL = 'https://dev.uniresolver.io/1.0/identifiers'
 export const APP_ID = 'sphereon:rp-demo'
@@ -197,9 +200,9 @@ agent
     },
   })
   .then((value) => {
-    console.log(`IDENTIFIER: ${value.did}`)
+    debug(`IDENTIFIER: ${value.did}`)
   })
   .catch((reason) => {
-    console.log(`WHOOPSIE: ${reason}`)
+    debug(`error on creation:  ${reason}`)
   })
 export default agent

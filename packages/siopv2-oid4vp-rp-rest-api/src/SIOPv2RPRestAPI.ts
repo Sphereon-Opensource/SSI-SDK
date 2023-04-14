@@ -23,7 +23,8 @@ import { ISIOPv2RP } from '@sphereon/ssi-sdk-siopv2-oid4vp-rp-auth'
 import { RequestWithAgent } from './request-agent-router'
 import { TAgent } from '@veramo/core'
 import { IPresentationExchange } from '@sphereon/ssi-sdk-presentation-exchange'
-
+import Debug from 'debug'
+const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-api:ISIOPv2RPRestAPIOpts')
 export interface ISIOPv2RPRestAPIOpts {
   siopBaseURI?: string // An externally communicated base URI for SIOP endpoints. Needs to be provided via this option, or environment variable!
   webappBaseURI?: string // An externally communicated base URI for webapp endpoints. Needs to be provided via this option, or environment variable!
@@ -100,7 +101,7 @@ export class SIOPv2RPRestAPI {
         const correlationId: string = request.params.correlationId
         const definitionId: string = request.params.definitionId
         if (!correlationId || !definitionId) {
-          console.log(`No authorization request could be found for the given url. correlationId: ${correlationId}, definitionId: ${definitionId}`)
+          debug(`No authorization request could be found for the given url. correlationId: ${correlationId}, definitionId: ${definitionId}`)
           return SIOPv2RPRestAPI.sendErrorResponse(response, 404, 'No authorization request could be found')
         }
         response.statusCode = 200
@@ -111,7 +112,7 @@ export class SIOPv2RPRestAPI {
 
   private authStatusWebappEndpoint() {
     this.express.post(this._opts?.webappAuthStatusPath ?? '/webapp/auth-status', async (request: RequestWithAgent, response) => {
-      console.log('Received auth-status request...')
+      debug('Received auth-status request...')
       const correlationId: string = request.body.correlationId as string
       const definitionId: string = request.body.definitionId as string
       const requestState =
@@ -123,9 +124,7 @@ export class SIOPv2RPRestAPI {
             })
           : undefined
       if (!requestState || !definitionId || !correlationId) {
-        console.log(
-          `No authentication request mapping could be found for the given URL. correlation: ${correlationId}, definitionId: ${definitionId}`
-        )
+        debug(`No authentication request mapping could be found for the given URL. correlation: ${correlationId}, definitionId: ${definitionId}`)
         response.statusCode = 404
 
         const statusBody: AuthStatusResponse = {
@@ -158,7 +157,7 @@ export class SIOPv2RPRestAPI {
           ? { payload: await responseState.response.mergedPayloads() }
           : {}),
       }
-      console.log(`Will send auth status: ${JSON.stringify(statusBody)}`)
+      debug(`Will send auth status: ${JSON.stringify(statusBody)}`)
       if (overallState.status === AuthorizationRequestStateStatus.ERROR || overallState.status === AuthorizationResponseStateStatus.ERROR) {
         response.statusCode = 500
         return response.send(statusBody)
@@ -197,7 +196,7 @@ export class SIOPv2RPRestAPI {
               authRequestURI,
               authStatusURI: `${uriWithBase(this._opts?.webappAuthStatusPath ?? '/webapp/auth-status', { baseURI: this._opts?.webappBaseURI })}`,
             }
-            console.log(`Auth Request URI data to send back: ${JSON.stringify(authRequestBody)}`)
+            debug(`Auth Request URI data to send back: ${JSON.stringify(authRequestBody)}`)
             return response.send(authRequestBody)
           })
           .catch((e: Error) => {
@@ -215,14 +214,13 @@ export class SIOPv2RPRestAPI {
         const correlationId = request.params.correlationId
         const definitionId = request.params.definitionId
         if (!correlationId || !definitionId) {
-          console.log(`No authorization request could be found for the given url. correlationId: ${correlationId}, definitionId: ${definitionId}`)
+          debug(`No authorization request could be found for the given url. correlationId: ${correlationId}, definitionId: ${definitionId}`)
           return SIOPv2RPRestAPI.sendErrorResponse(response, 404, 'No authorization request could be found')
         }
-        console.log('Authorization Response (siop-sessions')
-        console.log(JSON.stringify(request.body, null, 2))
+        debug(`Authorization Response (siop-sessions: ${JSON.stringify(request.body, null, 2)}`)
         const definition = await this.agent.pexStoreGetDefinition({ definitionId })
         const authorizationResponse = typeof request.body === 'string' ? request.body : (request.body as AuthorizationResponsePayload)
-        console.log(`URI: ${JSON.stringify(authorizationResponse)}`)
+        debug(`URI: ${JSON.stringify(authorizationResponse)}`)
         if (!definition) {
           response.statusCode = 404
           response.statusMessage = `No definition ${definitionId}`
@@ -241,14 +239,16 @@ export class SIOPv2RPRestAPI {
             ],
           })
           .then((verifiedResponse: VerifiedAuthorizationResponse) => {
-            // console.log('verifiedResponse: ', JSON.stringify(verifiedResponse, null, 2))
-
             const wrappedPresentation = verifiedResponse?.oid4vpSubmission?.presentations[0]
             if (wrappedPresentation) {
               const credentialSubject = wrappedPresentation.presentation.verifiableCredential[0].credential.credentialSubject
-              console.log('AND WE ARE DONE!')
-              console.log(JSON.stringify(credentialSubject, null, 2))
-              console.log(JSON.stringify(wrappedPresentation.presentation, null, 2))
+              debug(
+                `AND WE ARE DONE! credentialSubject: ${JSON.stringify(credentialSubject, null, 2)}, presentation: ${JSON.stringify(
+                  wrappedPresentation.presentation,
+                  null,
+                  2
+                )}`
+              )
               response.statusCode = 200
               // todo: delete session
             } else {
@@ -274,7 +274,7 @@ export class SIOPv2RPRestAPI {
         const correlationId = request.params.correlationId
         const definitionId = request.params.definitionId
         if (!correlationId || !definitionId) {
-          console.log(`No authorization request could be found for the given url. correlationId: ${correlationId}, definitionId: ${definitionId}`)
+          debug(`No authorization request could be found for the given url. correlationId: ${correlationId}, definitionId: ${definitionId}`)
           return SIOPv2RPRestAPI.sendErrorResponse(response, 404, 'No authorization request could be found')
         }
         const requestState = await this.agent.siopGetAuthRequestState({
@@ -283,14 +283,13 @@ export class SIOPv2RPRestAPI {
           errorOnNotFound: false,
         })
         if (!requestState) {
-          console.log(
+          debug(
             `No authorization request could be found for the given url in the state manager. correlationId: ${correlationId}, definitionId: ${definitionId}`
           )
           return SIOPv2RPRestAPI.sendErrorResponse(response, 404, `No authorization request could be found`)
         }
         const requestObject = await requestState.request?.requestObject?.toJwt()
-        console.log('JWT Request object:')
-        console.log(requestObject)
+        debug(`JWT Request object: ${requestObject}`)
 
         let error: string | undefined
         try {

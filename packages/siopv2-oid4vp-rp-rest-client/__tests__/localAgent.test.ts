@@ -14,13 +14,23 @@ describe('@sphereon/siopv2-oid4vp-rp-rest-client', () => {
   it('should call the mock endpoint for siopClientRemoveAuthRequestSession', async () => {
     const correlationId = 'test-correlation-id'
     nock(`${baseUrl}/webapp/definitions/${definitionId}/auth-requests`).delete(`/${correlationId}`).times(5).reply(200, {})
-    agent.siopClientRemoveAuthRequestSession({
-      correlationId: 'test-correlation-id',
-    })
+    await expect(
+      agent.siopClientRemoveAuthRequestSession({
+        correlationId: 'test-correlation-id',
+      })
+    ).toBeDefined()
   })
 
   it('should call the mock endpoint for siopClientGenerateAuthRequest', async () => {
-    nock(`${baseUrl}/webapp/definitions/${definitionId}`).get(`/auth-request-uri`).times(5).reply(200)
+    nock(`${baseUrl}/webapp/definitions/${definitionId}`)
+      .get(`/auth-request-uri`)
+      .times(5)
+      .reply(200, {
+        correlationId: '60683696-02dd-4172-8bce-93b988bc55c3',
+        definitionId: definitionId,
+        authRequestURI: `openid-vc://?request_uri=https%3A%2F%2Fmy-siop-endpoint%2Fext%2Fdefinitions%${definitionId}%2Fauth-requests%2F60683696-02dd-4172-8bce-93b988bc55c3`,
+        authStatusURI: `${baseUrl}/webapp/auth-status`,
+      })
     await expect(agent.siopClientGenerateAuthRequest({})).toBeDefined()
   })
 
