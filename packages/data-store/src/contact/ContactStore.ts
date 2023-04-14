@@ -154,6 +154,10 @@ export class ContactStore extends AbstractContactStore {
 
       if (identity.connection) {
         await (await this.dbConnection)
+          .getRepository(BaseConfigEntity)
+          .delete(identity.connection.config.id)
+
+        await (await this.dbConnection)
           .getRepository(ConnectionEntity)
           .delete(identity.connection.id)
           .catch((error) => Promise.reject(Error(`Unable to remove identity.connection with id. ${error}`)))
@@ -264,11 +268,9 @@ export class ContactStore extends AbstractContactStore {
       return Promise.reject(Error(`No identity found for id: ${identityId}`))
     }
 
-    debug('Removing identity', identityId)
-    ;(await this.dbConnection)
-      .getRepository(IdentityEntity)
-      .delete({ id: identityId })
-      .catch((error) => Promise.reject(Error(`Unable to remove identity with id: ${identityId}. ${error}`)))
+    debug('Removing identity', identityId);
+
+    await this.deleteIdentities([identity]);
   }
 
   private contactFrom = (contact: ContactEntity): IContact => {
