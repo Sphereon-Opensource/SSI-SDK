@@ -11,7 +11,6 @@
     "build:clean": "lerna clean -y && lerna bootstrap && lerna run build:clean --concurrency 1 && yarn build:copyfiles && yarn build:schema-api",
     "build:schema-api": "lerna run extract-api && lerna run generate-plugin-schema",
     "build:copyfiles": "lerna run build:copyfiles",
-    "clean": "rimraf --glob **/dist **/coverage packages/**/node_modules node_modules packages/**/tsconfig.tsbuildinfo",
     "bootstrap": "lerna bootstrap",
     "test:ci": "jest --config=jest.json",
     "test": "jest --verbose --config=jest.json --coverage=true --detectOpenHandles",
