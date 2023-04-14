@@ -1,6 +1,6 @@
 import { fetch } from 'cross-fetch'
 import {
-  ISiopV2OID4VpRpRestClient,
+  ISIOPv2OID4VPRPRestClient,
   ISiopClientGenerateAuthRequestArgs,
   ISiopClientGetAuthStatusArgs,
   IRequiredContext,
@@ -12,8 +12,8 @@ import { AuthStatusResponse, GenerateAuthRequestURIResponse } from '@sphereon/ss
 
 const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-client:SiopV2OID4VpRpRestClient')
 
-export class SiopV2OID4VpRpRestClient implements IAgentPlugin {
-  readonly methods: ISiopV2OID4VpRpRestClient = {
+export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
+  readonly methods: ISIOPv2OID4VPRPRestClient = {
     siopClientRemoveAuthRequestSession: this.siopClientRemoveAuthRequestSession.bind(this),
     siopClientGenerateAuthRequest: this.siopClientGenerateAuthRequest.bind(this),
     siopClientGetAuthStatus: this.siopClientGetAuthStatus.bind(this),
