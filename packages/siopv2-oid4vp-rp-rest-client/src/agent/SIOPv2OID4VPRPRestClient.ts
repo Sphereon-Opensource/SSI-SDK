@@ -22,12 +22,12 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
   private readonly baseUrl?: string
   private readonly definitionId?: string
 
-  constructor(baseUrl?: string, definitionId?: string) {
-    if (baseUrl) {
-      this.baseUrl = baseUrl
+  constructor(args?: { baseUrl?: string, definitionId?: string }) {
+    if (args?.baseUrl) {
+      this.baseUrl = args.baseUrl
     }
-    if (definitionId) {
-      this.definitionId = definitionId
+    if (args?.definitionId) {
+      this.definitionId = args.definitionId
     }
   }
 
