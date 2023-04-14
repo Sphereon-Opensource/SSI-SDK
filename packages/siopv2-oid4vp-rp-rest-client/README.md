@@ -8,7 +8,7 @@
 
 ---
 
-**Warning: This package still is in every early development. Breaking changes without notice will happen at this point!**
+**Warning: This package still is in very early development. Breaking changes without notice will happen at this point!**
 
 ---
 
