@@ -11,20 +11,20 @@ const agent = createAgent<IResolver>({
 })
 
 describe('@sphereon/siopv2-oid4vp-rp-rest-client', () => {
-  it('should call the mock endpoint for deleteDefinitionCorrelation', async () => {
+  it('should call the mock endpoint for siopClientRemoveAuthRequestSession', async () => {
     const correlationId = 'test-correlation-id'
     nock(`${baseUrl}/webapp/definitions/${definitionId}/auth-requests`).delete(`/${correlationId}`).times(5).reply(200, {})
-    agent.removeAuthRequestSession({
+    agent.siopClientRemoveAuthRequestSession({
       correlationId: 'test-correlation-id',
     })
   })
 
-  it('should call the mock endpoint for generateAuthRequest', async () => {
+  it('should call the mock endpoint for siopClientGenerateAuthRequest', async () => {
     nock(`${baseUrl}/webapp/definitions/${definitionId}`).get(`/auth-request-uri`).times(5).reply(200)
-    await expect(agent.generateAuthRequest({})).toBeDefined()
+    await expect(agent.siopClientGenerateAuthRequest({})).toBeDefined()
   })
 
-  it('should call the mock endpoint for getAuthStatus', async () => {
+  it('should call the mock endpoint for siopClientGetAuthStatus', async () => {
     nock(`${baseUrl}/webapp`)
       .post(`/auth-status`, {
         correlationId: 'my-correlation-id',
@@ -33,7 +33,7 @@ describe('@sphereon/siopv2-oid4vp-rp-rest-client', () => {
       .times(5)
       .reply(200)
     await expect(
-      agent.getAuthStatus({
+      agent.siopClientGetAuthStatus({
         correlationId: 'my-correlation-id',
       })
     ).toBeDefined()

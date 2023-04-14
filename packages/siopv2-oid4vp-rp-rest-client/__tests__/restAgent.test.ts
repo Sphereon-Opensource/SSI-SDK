@@ -9,29 +9,29 @@ const agent = createAgent<IResolver>({
 })
 
 describe('@sphereon/siopv2-oid4vp-rp-rest-client', () => {
-  it('should call the endpoint for deleteDefinitionCorrelation', async () => {
-    const authRequest = await agent.generateAuthRequest({})
-    agent.removeAuthRequestSession({
+  it('should call the endpoint for siopClientRemoveAuthRequestSession', async () => {
+    const authRequest = await agent.siopClientGenerateAuthRequest({})
+    agent.siopClientRemoveAuthRequestSession({
       correlationId: authRequest.correlationId,
     })
     await new Promise((f) => setTimeout(f, 5000))
     await expect(
-      agent.getAuthStatus({
+      agent.siopClientGetAuthStatus({
         correlationId: authRequest.correlationId,
       })
     ).rejects.toThrow('Statue has returned 404')
-  }, 10000)
+  }, 7000)
 
-  it('should call the endpoint for generateAuthRequest', async () => {
-    const result = await agent.generateAuthRequest({})
+  it('should call the endpoint for siopClientGenerateAuthRequest', async () => {
+    const result = await agent.siopClientGenerateAuthRequest({})
     expect(result.definitionId).toEqual(definitionId)
-  }, 5000)
+  })
 
-  it('should call the endpoint for getAuthStatus', async () => {
-    const authRequest = await agent.generateAuthRequest({})
-    const result = await agent.getAuthStatus({
+  it('should call the endpoint for siopClientGetAuthStatus', async () => {
+    const authRequest = await agent.siopClientGenerateAuthRequest({})
+    const result = await agent.siopClientGetAuthStatus({
       correlationId: authRequest.correlationId,
     })
     expect(result.status).toBe('created')
-  }, 5000)
+  })
 })

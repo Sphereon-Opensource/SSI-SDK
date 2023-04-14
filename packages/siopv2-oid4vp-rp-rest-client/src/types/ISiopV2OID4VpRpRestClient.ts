@@ -3,25 +3,32 @@ import { IAgentContext, IPluginMethodMap, IResolver } from '@veramo/core'
 import { PresentationSubmission, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 
 export interface ISiopV2OID4VpRpRestClient extends IPluginMethodMap {
-  removeAuthRequestSession(args: IRemoveAuthRequestSessionArgs, context: IRequiredContext): Promise<any>
-  generateAuthRequest(args: IGenerateAuthRequestArgs, context: IRequiredContext): Promise<any>
-  getAuthStatus(args: IGetAuthStatusArgs, context: IRequiredContext): Promise<any>
+  siopClientRemoveAuthRequestSession(args: ISiopClientRemoveAuthRequestSessionArgs, context: IRequiredContext): Promise<any>
+  siopClientGenerateAuthRequest(args: ISiopClientGenerateAuthRequestArgs, context: IRequiredContext): Promise<any>
+  siopClientGetAuthStatus(args: ISiopClientGetAuthStatusArgs, context: IRequiredContext): Promise<any>
 }
 
-export interface IGenerateAuthRequestArgs {
+export interface ISiopClientGenerateAuthRequestArgs {
   definitionId?: string
   baseUrl?: string
 }
 
-export interface IRemoveAuthRequestSessionArgs {
+export interface ISiopClientAuthStatus {
+  status: string
+  correlationId: string
+  definitionId: string
+  lastUpdated: Date
+}
+
+export interface ISiopClientRemoveAuthRequestSessionArgs {
   correlationId: string
   baseUrl?: string
   definitionId?: string
 }
 
-export type IGetAuthStatusArgs = IGenerateAuthRequestURIResponse
+export type ISiopClientGetAuthStatusArgs = ISiopClientGenerateAuthRequestURIResponse
 
-export interface IGenerateAuthRequestURIResponse {
+export interface ISiopClientGenerateAuthRequestURIResponse {
   correlationId: string
   definitionId: string
   authRequestURI: string
@@ -29,13 +36,13 @@ export interface IGenerateAuthRequestURIResponse {
   baseUrl?: string
 }
 
-export interface IAuthStatusResponse {
+export interface ISiopClientAuthStatusResponse {
   status: AuthorizationRequestStateStatus | AuthorizationResponseStateStatus
   correlationId: string
   error?: string
   definitionId: string
   lastUpdated: number
-  payload?: AuthorizationResponsePayload // Only put in here once the status reaches Verified on the RP side
+  payload?: SiopClientAuthorizationResponsePayload // Only put in here once the status reaches Verified on the RP side
 }
 
 export declare enum AuthorizationResponseStateStatus {
@@ -54,7 +61,7 @@ export declare enum AuthorizationRequestStateStatus {
   ERROR = 'error',
 }
 
-export interface AuthorizationResponsePayload {
+export interface SiopClientAuthorizationResponsePayload {
   access_token?: string
   token_type?: string
   refresh_token?: string
