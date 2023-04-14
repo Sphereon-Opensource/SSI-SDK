@@ -1,2 +1,2 @@
-export { SiopV2OID4VpRpRestClient } from './agent/SiopV2OID4VpRpRestClient'
-export * from './types/ISiopV2OID4VpRpRestClient'
+export { SIOPv2OID4VPRPRestClient } from './agent/SIOPv2OID4VPRPRestClient'
+export * from './types/ISIOPv2OID4VPRPRestClient'
