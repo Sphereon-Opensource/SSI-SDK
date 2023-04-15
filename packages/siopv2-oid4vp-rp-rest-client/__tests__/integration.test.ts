@@ -12,8 +12,8 @@ const agent = createAgent<IResolver & ISIOPv2OID4VPRPRestClient>({
 describe('@sphereon/siopv2-oid4vp-rp-rest-client', () => {
   // disabled because the delete call hangs. Since endpoints will be updated anyway, skiping this for now
   xit('should call the endpoint for siopClientRemoveAuthRequestSession', async () => {
-    const authRequest: GenerateAuthRequestURIResponse = await agent.siopClientGenerateAuthRequest({})
-    agent.siopClientRemoveAuthRequestSession({
+    const authRequest: GenerateAuthRequestURIResponse = await agent.siopClientCreateAuthRequest({})
+    agent.siopClientRemoveAuthRequestState({
       correlationId: authRequest.correlationId,
     })
 
@@ -25,12 +25,12 @@ describe('@sphereon/siopv2-oid4vp-rp-rest-client', () => {
   })
 
   it('should call the endpoint for siopClientGenerateAuthRequest', async () => {
-    const result = await agent.siopClientGenerateAuthRequest({})
+    const result = await agent.siopClientCreateAuthRequest({})
     expect(result.definitionId).toEqual(definitionId)
   })
 
   it('should call the endpoint for siopClientGetAuthStatus', async () => {
-    const authRequest = await agent.siopClientGenerateAuthRequest({})
+    const authRequest = await agent.siopClientCreateAuthRequest({})
     const result = await agent.siopClientGetAuthStatus({
       correlationId: authRequest.correlationId,
     })

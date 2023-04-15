@@ -53,7 +53,7 @@ export class SIOPv2RPRestAPI {
     // Webapp endpoints
     this.createAuthRequestWebappEndpoint()
     this.authStatusWebappEndpoint()
-    this.deleteAuthRequestStateWebappEndpoint()
+    this.removeAuthRequestStateWebappEndpoint()
 
     // SIOPv2 endpoints
     this.getAuthRequestSIOPv2Endpoint()
@@ -93,7 +93,7 @@ export class SIOPv2RPRestAPI {
     response.status(statusCode).send(message)
   }
 
-  private deleteAuthRequestStateWebappEndpoint() {
+  private removeAuthRequestStateWebappEndpoint() {
     this.express.delete(
       this._opts?.webappDeleteAuthRequestPath ?? '/webapp/definitions/:definitionId/auth-requests/:correlationId',
       async (request, response) => {

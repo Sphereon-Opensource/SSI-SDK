@@ -14,8 +14,8 @@ const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-client:SiopV2OID4VpRpRestClie
 
 export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
   readonly methods: ISIOPv2OID4VPRPRestClient = {
-    siopClientRemoveAuthRequestSession: this.siopClientRemoveAuthRequestSession.bind(this),
-    siopClientGenerateAuthRequest: this.siopClientGenerateAuthRequest.bind(this),
+    siopClientRemoveAuthRequestState: this.siopClientRemoveAuthRequestState.bind(this),
+    siopClientCreateAuthRequest: this.siopClientCreateAuthRequest.bind(this),
     siopClientGetAuthStatus: this.siopClientGetAuthStatus.bind(this),
   }
 
@@ -31,7 +31,7 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
     }
   }
 
-  private async siopClientRemoveAuthRequestSession(args: ISiopClientRemoveAuthRequestSessionArgs, context: IRequiredContext): Promise<void> {
+  private async siopClientRemoveAuthRequestState(args: ISiopClientRemoveAuthRequestSessionArgs, context: IRequiredContext): Promise<void> {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
     await fetch(this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests/${args.correlationId}`, baseUrl), {
@@ -61,14 +61,20 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
     }
   }
 
-  private async siopClientGenerateAuthRequest(
+  private async siopClientCreateAuthRequest(
     args: ISiopClientGenerateAuthRequestArgs,
     context: IRequiredContext
   ): Promise<GenerateAuthRequestURIResponse> {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
-    const url = this.uriWithBase(`/webapp/definitions/${definitionId}/auth-request-uri`, baseUrl)
-    const origResponse = await fetch(url)
+    const url = this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests`, baseUrl)
+    const origResponse = await fetch(url,{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({})
+    })
     return await origResponse.json()
   }
 
