@@ -175,7 +175,6 @@ export class LdCredentialModule {
 
     // result can include raw Error
     debug(`Error verifying LD Verifiable Credential: ${JSON.stringify(result, null, 2)}`)
-    console.log(JSON.stringify(result, null, 2))
     context.agent.emit(events.CREDENTIAL_VERIFY_FAILED, credential)
     throw Error('Error verifying LD Verifiable Credential')
   }
@@ -196,7 +195,6 @@ export class LdCredentialModule {
     checkStatus?: Function
     //AssertionProofPurpose()
   ): Promise<boolean> {
-    // console.log(JSON.stringify(presentation, null, 2))
     let result
     if (presentation.proof.type?.includes('BbsBlsSignature2020')) {
       //Should never be null or undefined
@@ -246,8 +244,7 @@ export class LdCredentialModule {
     // NOT verified.
 
     // result can include raw Error
-    console.log(`Error verifying LD Verifiable Presentation`)
-    console.log(JSON.stringify(result, null, 2))
+    debug(`Error verifying LD Verifiable Presentation: ${JSON.stringify(result, null, 2)}`)
     context.agent.emit(events.PRESENTATION_VERIFY_FAILED, presentation)
     throw Error('Error verifying LD Verifiable Presentation')
   }
