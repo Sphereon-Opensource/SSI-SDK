@@ -107,23 +107,33 @@ describe('Database entities test', () => {
             correlationId: 'example_did2',
           },
         },
+        {
+          alias: 'test_alias3',
+          roles: [IdentityRoleEnum.HOLDER],
+          identifier: {
+            type: CorrelationIdentifierEnum.DID,
+            correlationId: 'example_did3',
+          },
+        },
       ],
     }
     const savedContact = await contactStore.addContact(contact)
     expect(savedContact).toBeDefined()
 
     const args = {
-      filter: [{
-        identities: {
-          identifier: {
-            correlationId: 'example_did1',
-          }
-        }
-      }],
+      filter: [
+        {
+          identities: {
+            identifier: {
+              correlationId: 'example_did1',
+            },
+          },
+        },
+      ],
     }
     const result = await contactStore.getContacts(args)
 
-    expect(result[0].identities.length).toEqual(2)
+    expect(result[0].identities.length).toEqual(3)
   })
 
   it('should get contacts by name', async () => {
@@ -393,6 +403,31 @@ describe('Database entities test', () => {
     expect(result).toBeDefined()
   })
 
+  it('should get holder identity by id', async () => {
+    const contact = {
+      name: 'test_name',
+      alias: 'test_alias',
+      uri: 'example.com',
+    }
+    const savedContact = await contactStore.addContact(contact)
+    expect(savedContact).toBeDefined()
+
+    const identity = {
+      alias: 'test_alias',
+      roles: [IdentityRoleEnum.HOLDER],
+      identifier: {
+        type: CorrelationIdentifierEnum.DID,
+        correlationId: 'example_did',
+      },
+    }
+    const savedIdentity = await contactStore.addIdentity({ contactId: savedContact.id, identity })
+    expect(savedIdentity).toBeDefined()
+
+    const result = await contactStore.getIdentity({ identityId: savedIdentity.id })
+
+    expect(result).toBeDefined()
+  })
+
   it('should throw error when getting identity with unknown id', async () => {
     const identityId = 'unknownIdentityId'
 
@@ -623,7 +658,7 @@ describe('Database entities test', () => {
     const correlationId = 'missing_connection_example'
     const identity = {
       alias: correlationId,
-      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER, IdentityRoleEnum.HOLDER],
       identifier: {
         type: CorrelationIdentifierEnum.DID,
         correlationId,
@@ -687,6 +722,14 @@ describe('Database entities test', () => {
             correlationId: 'example_did2',
           },
         },
+        {
+          alias: 'test_alias3',
+          roles: [IdentityRoleEnum.HOLDER],
+          identifier: {
+            type: CorrelationIdentifierEnum.DID,
+            correlationId: 'example_did3',
+          },
+        },
       ],
     }
 
@@ -694,7 +737,7 @@ describe('Database entities test', () => {
     const result = await contactStore.getContact({ contactId: savedContact.id })
 
     expect(result.roles).toBeDefined()
-    expect(result.roles.length).toEqual(2)
-    expect(result.roles).toEqual([IdentityRoleEnum.VERIFIER, IdentityRoleEnum.ISSUER])
+    expect(result.roles.length).toEqual(3)
+    expect(result.roles).toEqual([IdentityRoleEnum.VERIFIER, IdentityRoleEnum.ISSUER, IdentityRoleEnum.HOLDER])
   })
 })
