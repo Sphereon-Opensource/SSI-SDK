@@ -7,7 +7,7 @@ const definitionId = '9449e2db-791f-407c-b086-c21cc677d2e0'
 const baseUrl = 'https://my-siop-endpoint'
 
 const agent = createAgent<IResolver & ISIOPv2OID4VPRPRestClient>({
-  plugins: [new SIOPv2OID4VPRPRestClient(baseUrl, definitionId)],
+  plugins: [new SIOPv2OID4VPRPRestClient({baseUrl, definitionId})],
 })
 afterAll(() => {
   nock.cleanAll()

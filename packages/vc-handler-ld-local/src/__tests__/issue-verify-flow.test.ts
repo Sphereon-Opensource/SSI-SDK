@@ -120,7 +120,6 @@ describe('credential-LD full flow', () => {
     })
 
     expect(verifiableCredential).toBeDefined()
-    // console.log(verifiableCredential)
 
     const verifiedCredential = await agent.verifyCredentialLDLocal({
       credential: verifiableCredential,

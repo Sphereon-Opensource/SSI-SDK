@@ -120,8 +120,6 @@ export class JsonWebSignature {
       }
     }
 
-    // console.log(document);
-
     // ensure proof type is set
     proof.type = this.type
 

@@ -15,7 +15,6 @@ let agent: any
 
 const setup = async (): Promise<boolean> => {
   const config = getConfig('packages/vc-handler-ld-local/agent.yml')
-  console.log(JSON.stringify(config.agent.$args[0], null, 1))
   config.agent.$args[0].plugins[1].$args[0].contextMaps = [LdDefaultContexts]
   config.agent.$args[0].plugins[1].$args[0].suites = [SphereonEd25519Signature2018, SphereonEd25519Signature2020, SphereonBbsBlsSignature2020]
   const { localAgent } = createObjects(config, { localAgent: '/agent' })

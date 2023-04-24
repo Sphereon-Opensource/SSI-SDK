@@ -41,6 +41,7 @@ type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator & IDataStore>
 
 const didMethod = 'ethr'
 const did = 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a'
+// @ts-ignore
 const identifier = {
   did,
   provider: '',
@@ -75,7 +76,6 @@ const authKeys = [
   },
 ]
 
-console.log(identifier)
 const sessionId = 'sessionId'
 const otherSessionId = 'other_sessionId'
 const redirectUrl = 'http://example/ext/get-auth-request-url'

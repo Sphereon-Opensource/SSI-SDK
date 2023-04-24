@@ -25,8 +25,6 @@ export class LdDocumentLoader {
 
   getLoader(context: IAgentContext<IResolver>, attemptToFetchContexts = false) {
     return extendContextLoader(async (url: string) => {
-      // console.log(`resolving context for: ${url}`)
-
       // did resolution
       if (url.toLowerCase().startsWith('did:')) {
         let didDoc: DIDDocument | null
@@ -78,7 +76,6 @@ export class LdDocumentLoader {
         // and LD suites to be fixed specifically within the Veramo LD Suites definition
         this.ldSuiteLoader.getAllSignatureSuites().forEach((x) => x.preDidResolutionModification(url, didDoc as DIDDocument))
 
-        // console.log(`Returning from Documentloader: ${JSON.stringify(returnDocument)}`)
         return {
           contextUrl: null,
           documentUrl: url,

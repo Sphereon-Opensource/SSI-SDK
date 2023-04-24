@@ -68,7 +68,6 @@ export function getPresentationVerificationCallback(didOpts: IDIDOptions, contex
       fetchRemoteContexts: true,
       domain: getDID(didOpts.identifierOpts),
     })
-    console.log(`VP verification result: ${JSON.stringify(result, null, 2)}`)
     return { verified: result.verified }
   }
 
