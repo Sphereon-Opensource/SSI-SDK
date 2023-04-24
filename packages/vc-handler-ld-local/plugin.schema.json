@@ -31,9 +31,7 @@
               "description": "Use this purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)"
             }
           },
-          "required": [
-            "credential"
-          ],
+          "required": ["credential"],
           "description": "Encapsulates the parameters required to create a\n {@link  https://www.w3.org/TR/vc-data-model/#credentials | W3C Verifiable Credential }"
         },
         "CredentialPayload": {
@@ -70,9 +68,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "issuer"
-          ],
+          "required": ["issuer"],
           "description": "Used as input when creating Verifiable Credentials"
         },
         "IssuerType": {
@@ -84,9 +80,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "id"
-              ]
+              "required": ["id"]
             },
             {
               "type": "string"
@@ -117,10 +111,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id",
-            "type"
-          ],
+          "required": ["id", "type"],
           "description": "Used for the discovery of information about the current status of a verifiable credential, such as whether it is suspended or revoked. The precise contents of the credential status information is determined by the specific `credentialStatus` type definition, and varies depending on factors such as whether it is simple to implement or if it is privacy-enhancing.\n\nSee  {@link  https://www.w3.org/TR/vc-data-model/#status | Credential Status }"
         },
         "IAuthenticationProofPurpose": {
@@ -318,13 +309,7 @@
               ]
             }
           },
-          "required": [
-            "@context",
-            "credentialSubject",
-            "issuanceDate",
-            "issuer",
-            "proof"
-          ]
+          "required": ["@context", "credentialSubject", "issuanceDate", "issuer", "proof"]
         },
         "CredentialStatusSP": {
           "type": "object",
@@ -342,10 +327,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id",
-            "type"
-          ]
+          "required": ["id", "type"]
         },
         "CredentialProofSP": {
           "type": "object",
@@ -398,12 +380,7 @@
               }
             }
           },
-          "required": [
-            "type",
-            "created",
-            "proofPurpose",
-            "verificationMethod"
-          ],
+          "required": ["type", "created", "proofPurpose", "verificationMethod"],
           "additionalProperties": {
             "anyOf": [
               {
@@ -482,9 +459,7 @@
               ]
             }
           },
-          "required": [
-            "presentation"
-          ],
+          "required": ["presentation"],
           "description": "Encapsulates the parameters required to create a\n {@link  https://www.w3.org/TR/vc-data-model/#presentations | W3C Verifiable Presentation }"
         },
         "PresentationPayload": {
@@ -527,9 +502,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "holder"
-          ],
+          "required": ["holder"],
           "description": "Used as input when creating Verifiable Presentations"
         },
         "W3CVerifiableCredential": {
@@ -594,13 +567,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "credentialSubject",
-            "issuanceDate",
-            "issuer",
-            "proof"
-          ],
+          "required": ["@context", "credentialSubject", "issuanceDate", "issuer", "proof"],
           "description": "Represents a signed Verifiable Credential payload (includes proof), using a JSON representation. See  {@link  https://www.w3.org/TR/vc-data-model/#credentials | VC data model }"
         },
         "CompactJWT": {
@@ -680,13 +647,7 @@
               ]
             }
           },
-          "required": [
-            "@context",
-            "holder",
-            "proof",
-            "type",
-            "verifiableCredential"
-          ]
+          "required": ["@context", "holder", "proof", "type", "verifiableCredential"]
         },
         "W3CVerifiableCredentialSP": {
           "anyOf": [
@@ -720,11 +681,7 @@
               "description": "List of descriptors of how the claims are being mapped to presentation definition"
             }
           },
-          "required": [
-            "id",
-            "definition_id",
-            "descriptor_map"
-          ],
+          "required": ["id", "definition_id", "descriptor_map"],
           "description": "It expresses how the inputs are presented as proofs to a Verifier."
         },
         "Descriptor": {
@@ -746,11 +703,7 @@
               "description": "The Proof or JWT algorith that the proof is in"
             }
           },
-          "required": [
-            "id",
-            "path",
-            "format"
-          ],
+          "required": ["id", "path", "format"],
           "description": "descriptor map laying out the structure of the presentation submission."
         },
         "IVerifyCredentialLDArgs": {
@@ -794,18 +747,11 @@
                   "$ref": "#/components/schemas/interface-ib.es5.d.ts-10057-11521-ib.es5.d.ts-0-217681"
                 }
               },
-              "required": [
-                "prototype",
-                "length",
-                "arguments",
-                "caller"
-              ],
+              "required": ["prototype", "length", "arguments", "caller"],
               "description": "Check status function, to check credentials that have a credentialStatus property"
             }
           },
-          "required": [
-            "credential"
-          ],
+          "required": ["credential"],
           "description": "Encapsulates the parameters required to verify a\n {@link  https://www.w3.org/TR/vc-data-model/#credentials | W3C Verifiable Credential }"
         },
         "interface-ib.es5.d.ts-10057-11521-ib.es5.d.ts-0-217681": {
@@ -820,12 +766,7 @@
               "$ref": "#/components/schemas/interface-ib.es5.d.ts-10057-11521-ib.es5.d.ts-0-217681"
             }
           },
-          "required": [
-            "prototype",
-            "length",
-            "arguments",
-            "caller"
-          ]
+          "required": ["prototype", "length", "arguments", "caller"]
         },
         "IVerifyPresentationLDArgs": {
           "type": "object",
@@ -876,18 +817,11 @@
                   "$ref": "#/components/schemas/interface-ib.es5.d.ts-10057-11521-ib.es5.d.ts-0-217681"
                 }
               },
-              "required": [
-                "prototype",
-                "length",
-                "arguments",
-                "caller"
-              ],
+              "required": ["prototype", "length", "arguments", "caller"],
               "description": "Check status function, to check credentials that have a credentialStatus property"
             }
           },
-          "required": [
-            "presentation"
-          ],
+          "required": ["presentation"],
           "description": "Encapsulates the parameters required to verify a\n {@link  https://www.w3.org/TR/vc-data-model/#presentations | W3C Verifiable Presentation }"
         },
         "VerifiablePresentation": {
@@ -947,11 +881,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "holder",
-            "proof"
-          ],
+          "required": ["@context", "holder", "proof"],
           "description": "Represents a signed Verifiable Presentation (includes proof), using a JSON representation. See  {@link  https://www.w3.org/TR/vc-data-model/#presentations | VP data model }"
         }
       },

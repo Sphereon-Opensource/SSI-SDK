@@ -65,8 +65,8 @@ export class ContactStore extends AbstractContactStore {
 
     const result = await (await this.dbConnection).getRepository(ContactEntity).find({
       where: {
-        id: In(initialResult.map((contact: ContactEntity) => contact.id))
-      }
+        id: In(initialResult.map((contact: ContactEntity) => contact.id)),
+      },
     })
 
     return result.map((contact: ContactEntity) => this.contactFrom(contact))
@@ -123,9 +123,9 @@ export class ContactStore extends AbstractContactStore {
   }
 
   removeContact = async ({ contactId }: IRemoveContactArgs): Promise<void> => {
-    debug('Removing contact', contactId);
+    debug('Removing contact', contactId)
 
-    (await this.dbConnection)
+    ;(await this.dbConnection)
       .getRepository(ContactEntity)
       .findOneById(contactId)
       .then(async (contact: ContactEntity | null) => {
@@ -134,7 +134,9 @@ export class ContactStore extends AbstractContactStore {
         } else {
           await this.deleteIdentities(contact.identities)
 
-          await (await this.dbConnection)
+          await (
+            await this.dbConnection
+          )
             .getRepository(ContactEntity)
             .delete({ id: contactId })
             .catch((error) => Promise.reject(Error(`Unable to remove contact with id: ${contactId}. ${error}`)))
@@ -147,17 +149,19 @@ export class ContactStore extends AbstractContactStore {
     debug('Removing identities', identities)
 
     identities.map(async (identity: IdentityEntity) => {
-      await (await this.dbConnection)
+      await (
+        await this.dbConnection
+      )
         .getRepository(CorrelationIdentifierEntity)
         .delete(identity.identifier.id)
         .catch((error) => Promise.reject(Error(`Unable to remove identity.identifier with id: ${identity.identifier.id}. ${error}`)))
 
       if (identity.connection) {
-        await (await this.dbConnection)
-          .getRepository(BaseConfigEntity)
-          .delete(identity.connection.config.id)
+        await (await this.dbConnection).getRepository(BaseConfigEntity).delete(identity.connection.config.id)
 
-        await (await this.dbConnection)
+        await (
+          await this.dbConnection
+        )
           .getRepository(ConnectionEntity)
           .delete(identity.connection.id)
           .catch((error) => Promise.reject(Error(`Unable to remove identity.connection with id. ${error}`)))
@@ -165,14 +169,16 @@ export class ContactStore extends AbstractContactStore {
 
       if (identity.metadata) {
         identity.metadata.map(async (metadataItem: IdentityMetadataItemEntity) => {
-          await (await this.dbConnection)
+          await (
+            await this.dbConnection
+          )
             .getRepository(IdentityMetadataItemEntity)
             .delete(metadataItem.id)
             .catch((error) => Promise.reject(Error(`Unable to remove metadataItem.id with id ${metadataItem.id}. ${error}`)))
         })
       }
 
-      (await this.dbConnection)
+      ;(await this.dbConnection)
         .getRepository(IdentityEntity)
         .delete(identity.id)
         .catch((error) => Promise.reject(Error(`Unable to remove metadataItem.id with id ${identity.id}. ${error}`)))
@@ -198,8 +204,8 @@ export class ContactStore extends AbstractContactStore {
 
     const result = await (await this.dbConnection).getRepository(IdentityEntity).find({
       where: {
-        id: In(initialResult.map((identity: IdentityEntity) => identity.id))
-      }
+        id: In(initialResult.map((identity: IdentityEntity) => identity.id)),
+      },
     })
 
     return result.map((identity: IdentityEntity) => this.identityFrom(identity))
@@ -268,9 +274,9 @@ export class ContactStore extends AbstractContactStore {
       return Promise.reject(Error(`No identity found for id: ${identityId}`))
     }
 
-    debug('Removing identity', identityId);
+    debug('Removing identity', identityId)
 
-    await this.deleteIdentities([identity]);
+    await this.deleteIdentities([identity])
   }
 
   private contactFrom = (contact: ContactEntity): IContact => {

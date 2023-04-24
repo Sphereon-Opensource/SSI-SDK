@@ -69,13 +69,21 @@ export class CredentialMapper {
     originalPresentation: OriginalVerifiablePresentation,
     opts?: { maxTimeSkewInMS?: number }
   ): WrappedVerifiablePresentation {
-    const original = originalPresentation
+    const proof = CredentialMapper.getFirstProof(originalPresentation)
+    const original =
+      typeof originalPresentation !== 'string' && CredentialMapper.hasJWTProofType(originalPresentation) ? proof?.jwt : originalPresentation
+    if (!original) {
+      throw Error(
+        'Could not determine original presentation, probably it was a converted JWT presentation, that is now missing the JWT value in the proof'
+      )
+    }
+    const decoded = CredentialMapper.decodeVerifiablePresentation(original)
     const isJwtEncoded: boolean = CredentialMapper.isJwtEncoded(original)
     const isJwtDecoded: boolean = CredentialMapper.isJwtDecodedPresentation(original)
 
     const type = isJwtEncoded ? OriginalType.JWT_ENCODED : isJwtDecoded ? OriginalType.JWT_DECODED : OriginalType.JSONLD
     const format: PresentationFormat = isJwtDecoded || isJwtEncoded ? 'jwt_vp' : 'ldp_vp'
-    const decoded = CredentialMapper.decodeVerifiablePresentation(original)
+
     let vp: OriginalVerifiablePresentation
     if (isJwtEncoded || isJwtDecoded) {
       vp = CredentialMapper.jwtDecodedPresentationToUniformPresentation(decoded as JwtDecodedVerifiablePresentation, false, opts)
@@ -115,8 +123,14 @@ export class CredentialMapper {
     verifiableCredential: OriginalVerifiableCredential,
     opts?: { maxTimeSkewInMS?: number }
   ): WrappedVerifiableCredential {
-    const original = verifiableCredential
-    const decoded = CredentialMapper.decodeVerifiableCredential(verifiableCredential)
+    const proof = CredentialMapper.getFirstProof(verifiableCredential)
+    const original = CredentialMapper.hasJWTProofType(verifiableCredential) && proof ? proof.jwt ?? verifiableCredential : verifiableCredential
+    if (!original) {
+      throw Error(
+        'Could not determine original credential, probably it was a converted JWT credential, that is now missing the JWT value in the proof'
+      )
+    }
+    const decoded = CredentialMapper.decodeVerifiableCredential(original)
 
     const isJwtEncoded = CredentialMapper.isJwtEncoded(original)
     const isJwtDecoded = CredentialMapper.isJwtDecodedCredential(original)
@@ -203,9 +217,22 @@ export class CredentialMapper {
     return presentation
   }
 
-  static toUniformCredential(verifiableCredential: OriginalVerifiableCredential, opts?: { maxTimeSkewInMS?: number }): IVerifiableCredential {
-    const original = verifiableCredential
-    const decoded = CredentialMapper.decodeVerifiableCredential(verifiableCredential)
+  static toUniformCredential(
+    verifiableCredential: OriginalVerifiableCredential,
+    opts?: {
+      maxTimeSkewInMS?: number
+    }
+  ): IVerifiableCredential {
+    const original =
+      typeof verifiableCredential !== 'string' && CredentialMapper.hasJWTProofType(verifiableCredential)
+        ? CredentialMapper.getFirstProof(verifiableCredential)?.jwt
+        : verifiableCredential
+    if (!original) {
+      throw Error(
+        'Could not determine original credential from passed in credential. Probably because a JWT proof type was present, but now is not available anymore'
+      )
+    }
+    const decoded = CredentialMapper.decodeVerifiableCredential(original)
 
     const isJwtEncoded: boolean = CredentialMapper.isJwtEncoded(original)
     const isJwtDecoded: boolean = CredentialMapper.isJwtDecodedCredential(original)
@@ -221,7 +248,13 @@ export class CredentialMapper {
     presentation: OriginalVerifiablePresentation,
     opts?: { maxTimeSkewInMS?: number; addContextIfMissing?: boolean }
   ): IVerifiablePresentation {
-    const original = presentation
+    const proof = CredentialMapper.getFirstProof(presentation)
+    const original = typeof presentation !== 'string' && CredentialMapper.hasJWTProofType(presentation) ? proof?.jwt : presentation
+    if (!original) {
+      throw Error(
+        'Could not determine original presentation, probably it was a converted JWT presentation, that is now missing the JWT value in the proof'
+      )
+    }
     const decoded = CredentialMapper.decodeVerifiablePresentation(original)
     const isJwtEncoded: boolean = CredentialMapper.isJwtEncoded(original)
     const isJwtDecoded: boolean = CredentialMapper.isJwtDecodedPresentation(original)
@@ -241,7 +274,12 @@ export class CredentialMapper {
     return uniformPresentation
   }
 
-  static jwtEncodedCredentialToUniformCredential(jwt: string, opts?: { maxTimeSkewInMS?: number }): IVerifiableCredential {
+  static jwtEncodedCredentialToUniformCredential(
+    jwt: string,
+    opts?: {
+      maxTimeSkewInMS?: number
+    }
+  ): IVerifiableCredential {
     return CredentialMapper.jwtDecodedCredentialToUniformCredential(jwt_decode(jwt), opts)
   }
 
@@ -423,5 +461,24 @@ export class CredentialMapper {
       return DocumentFormat.EIP712
     }
     return DocumentFormat.JSONLD
+  }
+
+  private static hasJWTProofType(
+    document: W3CVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiableCredential | JwtDecodedVerifiablePresentation
+  ): boolean {
+    if (typeof document === 'string') {
+      return false
+    }
+    return !!CredentialMapper.getFirstProof(document)?.jwt
+  }
+
+  private static getFirstProof(
+    document: W3CVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiableCredential | JwtDecodedVerifiablePresentation
+  ): IProof | undefined {
+    if (typeof document === 'string') {
+      return undefined
+    }
+    const proofs = 'vc' in document ? document.vc.proof : 'vp' in document ? document.vp.proof : (<IVerifiableCredential>document).proof
+    return Array.isArray(proofs) ? proofs[0] : proofs
   }
 }
