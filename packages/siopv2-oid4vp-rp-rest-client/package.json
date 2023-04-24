@@ -23,6 +23,9 @@
   "devDependencies": {
     "@veramo/cli": "4.2.0",
     "did-resolver": "^4.1.0",
+    "typescript": "4.9.5",
+    "ts-node": "^10.9.1",
+    "@types/node": "^16.18.0",
     "nock": "^13.3.0"
   },
   "files": [

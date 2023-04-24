@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import { IDataStore, TAgent } from '@veramo/core'
 import { IPresentationExchange } from '../../src'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
-import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-did-utils'
+import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IPresentationDefinition } from '@sphereon/pex'
 
 function getFile(path: string) {
@@ -19,8 +19,8 @@ jest.mock('@veramo/utils', () => ({
   mapIdentifierKeysToDoc: jest.fn(),
 }))
 
-jest.mock('@sphereon/ssi-sdk-did-utils', () => ({
-  ...jest.requireActual('@sphereon/ssi-sdk-did-utils'),
+jest.mock('@sphereon/ssi-sdk-ext.did-utils', () => ({
+  ...jest.requireActual('@sphereon/ssi-sdk-ext.did-utils'),
   mapIdentifierKeysToDocWithJwkSupport: jest.fn(),
 }))
 

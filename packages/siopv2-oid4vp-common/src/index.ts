@@ -2,6 +2,9 @@ export * from './auth-model'
 export * from './utils'
 
 // We are exporting some common class from SIOP
+/**
+ * @private
+ */
 export {
   decodeUriAsJson,
   encodeJsonAsURI,

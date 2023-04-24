@@ -1,6 +1,6 @@
 import { IIdentifierOpts, IOPOptions, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
 import { EventEmitter } from 'events'
-import { AgentDIDResolver, determineKid, getAgentDIDMethods, getKey } from '@sphereon/ssi-sdk-did-utils'
+import { AgentDIDResolver, determineKid, getAgentDIDMethods, getKey } from '@sphereon/ssi-sdk-ext.did-utils'
 import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk-core'
 import {
   Builder,

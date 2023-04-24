@@ -3,7 +3,7 @@ import { IAgentContext, IPluginMethodMap, IResolver } from '@veramo/core'
 import { AuthStatusResponse, GenerateAuthRequestURIResponse } from '@sphereon/ssi-sdk-siopv2-oid4vp-common'
 
 export interface ISIOPv2OID4VPRPRestClient extends IPluginMethodMap {
-  siopClientRemoveAuthRequestState(args: ISiopClientRemoveAuthRequestSessionArgs, context: IRequiredContext): Promise<void>
+  siopClientRemoveAuthRequestState(args: ISiopClientRemoveAuthRequestSessionArgs, context: IRequiredContext): Promise<boolean>
 
   siopClientCreateAuthRequest(args: ISiopClientGenerateAuthRequestArgs, context: IRequiredContext): Promise<GenerateAuthRequestURIResponse>
 

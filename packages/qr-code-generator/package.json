@@ -7,7 +7,7 @@
   "types": "dist/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
-      "ISsiQrCodeProvider": "./src/types/ISsiQrCodeProvider.ts"
+      "IQRCodeGenerator": "./src/types/IQRCodeGenerator.ts"
     }
   },
   "scripts": {

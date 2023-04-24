@@ -19,7 +19,7 @@ import { IKeyValueStore, IValueData, KeyValueStore } from '@veramo/kv-store'
 import { Checked, IPresentationDefinition, PEX } from '@sphereon/pex'
 import { CredentialMapper, JWT_PROOF_TYPE_2020, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
-import { toDIDs } from '@sphereon/ssi-sdk-did-utils'
+import { toDIDs } from '@sphereon/ssi-sdk-ext.did-utils'
 
 export class PresentationExchange implements IAgentPlugin {
   private static PEX = new PEX()

@@ -17,7 +17,7 @@ import {
   IVerifyCredentialLDArgs,
   IVerifyPresentationLDArgs,
 } from '../types/types'
-import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-did-utils'
+import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 
 const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 

@@ -10,7 +10,6 @@
     { "path": "../siopv2-oid4vp-common" },
     { "path": "../presentation-exchange" },
     { "path": "../ssi-types" },
-    { "path": "../ssi-sdk-core" },
-    { "path": "../did-utils" }
+    { "path": "../ssi-sdk-core" }
   ]
 }

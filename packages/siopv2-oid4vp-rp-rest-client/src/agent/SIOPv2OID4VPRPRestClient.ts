@@ -5,7 +5,7 @@ import {
   ISiopClientGetAuthStatusArgs,
   IRequiredContext,
   ISiopClientRemoveAuthRequestSessionArgs,
-} from '../index'
+} from '../types/ISIOPv2OID4VPRPRestClient'
 import Debug from 'debug'
 import { IAgentPlugin } from '@veramo/core'
 import { AuthStatusResponse, GenerateAuthRequestURIResponse } from '@sphereon/ssi-sdk-siopv2-oid4vp-common'
@@ -31,12 +31,13 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
     }
   }
 
-  private async siopClientRemoveAuthRequestState(args: ISiopClientRemoveAuthRequestSessionArgs, context: IRequiredContext): Promise<void> {
+  private async siopClientRemoveAuthRequestState(args: ISiopClientRemoveAuthRequestSessionArgs, context: IRequiredContext): Promise<boolean> {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
     await fetch(this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests/${args.correlationId}`, baseUrl), {
       method: 'DELETE',
     })
+    return true
   }
 
   private async siopClientGetAuthStatus(args: ISiopClientGetAuthStatusArgs, context: IRequiredContext): Promise<AuthStatusResponse> {
@@ -68,12 +69,12 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
     const url = this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests`, baseUrl)
-    const origResponse = await fetch(url,{
+    const origResponse = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({})
+      body: JSON.stringify({}),
     })
     return await origResponse.json()
   }

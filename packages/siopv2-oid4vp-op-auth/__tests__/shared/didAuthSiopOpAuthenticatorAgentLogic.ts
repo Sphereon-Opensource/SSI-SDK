@@ -16,7 +16,7 @@ import {
 } from '@sphereon/did-auth-siop'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
 import { CredentialMapper } from '@sphereon/ssi-types'
-import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-did-utils'
+import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -32,8 +32,8 @@ jest.mock('@veramo/utils', () => ({
   mapIdentifierKeysToDoc: jest.fn(),
 }))
 
-jest.mock('@sphereon/ssi-sdk-did-utils', () => ({
-  ...jest.requireActual('@sphereon/ssi-sdk-did-utils'),
+jest.mock('@sphereon/ssi-sdk-ext.did-utils', () => ({
+  ...jest.requireActual('@sphereon/ssi-sdk-ext.did-utils'),
   mapIdentifierKeysToDocWithJwkSupport: jest.fn(),
 }))
 

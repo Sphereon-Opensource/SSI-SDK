@@ -3,9 +3,6 @@
   "references": [
     { "path": "ssi-types" },
     { "path": "ssi-sdk-core" },
-    { "path": "did-utils" },
-    { "path": "factom-did-provider" },
-    { "path": "lto-did-provider" },
     { "path": "mnemonic-seed-manager" },
     { "path": "ms-authenticator" },
     { "path": "ms-request-api" },
@@ -20,7 +17,6 @@
     { "path": "contact-manager" },
     { "path": "data-store" },
     { "path": "wellknown-did-issuer" },
-    { "path": "wellknown-did-verifier" },
-    { "path": "jwk-did-provider" }
+    { "path": "wellknown-did-verifier" }
   ]
 }

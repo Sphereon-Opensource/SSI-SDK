@@ -11,7 +11,7 @@ import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex
 import { ProofOptions } from '@sphereon/ssi-sdk-core'
 import { createOID4VPPresentationSignCallback } from './functions'
 import { FindCredentialsArgs, IIdentifier } from '@veramo/core'
-import { determineKid, getKey } from '@sphereon/ssi-sdk-did-utils'
+import { determineKid, getKey } from '@sphereon/ssi-sdk-ext.did-utils'
 
 export class OID4VP {
   private readonly session: OpSession

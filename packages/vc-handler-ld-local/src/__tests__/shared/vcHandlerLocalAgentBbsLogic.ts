@@ -1,7 +1,7 @@
 import { createAgent, IDIDManager, IIdentifier, IKeyManager, IResolver, PresentationPayload, TAgent } from '@veramo/core'
-import { CredentialHandlerLDLocal } from '../../agent/CredentialHandlerLDLocal'
+import { CredentialHandlerLDLocal } from '../../agent'
 import { LdDefaultContexts } from '../../ld-default-contexts'
-import { ICredentialHandlerLDLocal, MethodNames } from '../../types/ICredentialHandlerLDLocal'
+import { ICredentialHandlerLDLocal, MethodNames } from '../../types'
 import { SphereonBbsBlsSignature2020 } from '../../suites'
 import { MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { BlsKeyManager } from '@sphereon/bls-key-manager'
@@ -11,7 +11,7 @@ import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { BlsKeyDidProvider, getDidKeyResolver } from '@sphereon/bls-did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { Resolver } from 'did-resolver'
-import { AssertionProofPurpose } from '../../types/types'
+import { AssertionProofPurpose } from '../../types'
 
 export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
   describe('Issuer Agent Plugin', () => {

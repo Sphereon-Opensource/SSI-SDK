@@ -1,7 +1,7 @@
 import { IIdentifier } from '@veramo/core'
 import { RequestObjectPayload, ResolveOpts, URI, Verification, VerificationMode, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
 import { IOPOptions, IOpSessionArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
-import { AgentDIDResolver, getAgentDIDMethods } from '@sphereon/ssi-sdk-did-utils'
+import { AgentDIDResolver, getAgentDIDMethods } from '@sphereon/ssi-sdk-ext.did-utils'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
 import { CredentialMapper } from '@sphereon/ssi-types'
