@@ -452,7 +452,7 @@ export class CredentialMapper {
     if (typeof document === 'string') {
       return this.isJsonLdAsString(document) ? DocumentFormat.JSONLD : DocumentFormat.JWT
     }
-    const proofs = 'vc' in document ? document.vc.proof : ('vp' in document ? document.vp.proof : (<IVerifiableCredential>document).proof)
+    const proofs = 'vc' in document ? document.vc.proof : 'vp' in document ? document.vp.proof : (<IVerifiableCredential>document).proof
     const proof: IProof = Array.isArray(proofs) ? proofs[0] : proofs
 
     if (proof?.jwt) {

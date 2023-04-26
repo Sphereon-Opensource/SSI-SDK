@@ -82,14 +82,12 @@ export class OID4VP {
     const vcs = await this.filterCredentials(selectedVerifiableCredentials.definition, {
       verifiableCredentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
     })
-    selectedVerifiableCredentials.definition.definition.format
     const key = await getKey(idOpts.identifier, 'authentication', this.session.context, idOpts.kid)
     const signCallback = await createPresentationSignCallback({
       presentationSignCallback: this.session.options.presentationSignCallback,
       kid: determineKid(key, idOpts),
       context: this.session.context,
-      format: selectedVerifiableCredentials.definition.definition.format
-
+      format: selectedVerifiableCredentials.definition.definition.format,
     })
     const presentation = await this.getPresentationExchange(vcs.credentials, this.allDIDs).createVerifiablePresentation(
       vcs.definition.definition,
