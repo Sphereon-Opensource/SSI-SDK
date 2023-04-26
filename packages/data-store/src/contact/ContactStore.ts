@@ -124,7 +124,6 @@ export class ContactStore extends AbstractContactStore {
 
   removeContact = async ({ contactId }: IRemoveContactArgs): Promise<void> => {
     debug('Removing contact', contactId)
-
     ;(await this.dbConnection)
       .getRepository(ContactEntity)
       .findOneById(contactId)

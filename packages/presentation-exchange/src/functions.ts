@@ -1,23 +1,8 @@
 import { IPEXOptions, IPEXPresentationSignCallback, IRequiredContext } from './types/IPresentationExchange'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { PresentationPayload } from '@veramo/core'
-import { W3CVerifiablePresentation } from '@sphereon/ssi-types'
-
-/*
-export async function getPresentationDefinitionStore(pexOptions?: IPEXOptions): Promise<IKeyValueStore<IPresentationDefinition> | undefined> {
-  if (pexOptions && pexOptions.definitionId) {
-    if (!pexOptions.definitionStore) {
-      // yes the assignment is ugly, but we want an in-memory fallback and it cannot be re-instantiated every time
-      pexOptions.definitionStore = new KeyValueStore({
-        namespace: 'definitions',
-        store: new Map<string, IPresentationDefinition>(),
-      })
-    }
-    return pexOptions.definitionStore
-  }
-  return undefined
-}
-*/
+import { CredentialMapper, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { Format } from '@sphereon/pex-models'
 
 export async function getPresentationDefinition(pexOptions?: IPEXOptions): Promise<IPresentationDefinition | undefined> {
   return pexOptions?.definition
@@ -29,28 +14,33 @@ export async function createPEXPresentationSignCallback(
   {
     kid,
     fetchRemoteContexts,
+    format,
     domain,
     challenge,
   }: {
     kid: string
     fetchRemoteContexts?: boolean
+    format?: Format
     domain?: string
     challenge?: string
   },
-  context: IRequiredContext
+  context: IRequiredContext,
 ): Promise<IPEXPresentationSignCallback> {
   return async ({
-    presentation,
-    domain,
-    presentationDefinition,
-    challenge,
-  }: {
+                  presentation,
+                  domain,
+                  presentationDefinition,
+                  format,
+                  challenge,
+                }: {
     presentation: PresentationPayload
     presentationDefinition: IPresentationDefinition
+    format?: Format
     domain?: string
     challenge?: string
   }): Promise<W3CVerifiablePresentation> => {
-    const format = presentationDefinition.format
+    const formatOptions = format ?? presentationDefinition.format
+    const proofFormat = formatOptions && (!!formatOptions.ldp || !!formatOptions.ldp_vp) ? 'lds' : 'jwt'
 
     const vp = await context.agent.createVerifiablePresentation({
       presentation,
@@ -58,8 +48,9 @@ export async function createPEXPresentationSignCallback(
       domain,
       challenge,
       fetchRemoteContexts: fetchRemoteContexts !== undefined ? fetchRemoteContexts : true,
-      proofFormat: format && (format.ldp || format.ldp_vp) ? 'lds' : 'jwt',
+      proofFormat,
     })
-    return vp as W3CVerifiablePresentation
+    // makes sure we extract an actual JWT from the internal representation in case it is a JWT
+    return CredentialMapper.storedPresentationToOriginalFormat(vp as W3CVerifiablePresentation)
   }
 }

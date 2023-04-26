@@ -15,12 +15,14 @@ import {
 import { TKeyType } from '@veramo/core'
 import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
 import { createPEXPresentationSignCallback } from '@sphereon/ssi-sdk-presentation-exchange'
+import { Format } from '@sphereon/pex-models'
 
 export async function createOID4VPPresentationSignCallback({
   presentationSignCallback,
   kid,
   domain,
   fetchRemoteContexts,
+  format,
   challenge,
   context,
 }: {
@@ -29,13 +31,14 @@ export async function createOID4VPPresentationSignCallback({
   domain?: string
   challenge?: string
   fetchRemoteContexts?: boolean
+  format?: Format
   context: IRequiredContext
 }): Promise<PresentationSignCallback> {
   // fixme: Remove once IPresentation in proper form is available in PEX
   // @ts-ignore
   return presentationSignCallback
     ? presentationSignCallback
-    : createPEXPresentationSignCallback({ kid, fetchRemoteContexts, domain, challenge }, context)
+    : createPEXPresentationSignCallback({ kid, fetchRemoteContexts, domain, challenge, format }, context)
 
   /*async (args: PresentationSignCallBackParams): Promise<W3CVerifiablePresentation> => {
         const presentation: PresentationPayload = args.presentation as PresentationPayload
