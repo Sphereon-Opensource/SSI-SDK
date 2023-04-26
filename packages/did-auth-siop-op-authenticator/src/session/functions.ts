@@ -2,7 +2,7 @@ import { IIdentifierOpts, IOPOptions, IRequiredContext } from '../types/IDidAuth
 import { EventEmitter } from 'events'
 import { AgentDIDResolver, getAgentDIDMethods, mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-did-utils'
 import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk-core'
-import { W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { CredentialMapper, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import {
   Builder,
   CheckLinkedDomain,
@@ -13,22 +13,25 @@ import {
   SigningAlgo,
   SupportedVersion,
 } from '@sphereon/did-auth-siop'
+import { Format } from '@sphereon/pex-models'
 import { PresentationSignCallBackParams } from '@sphereon/pex'
 import { DIDDocumentSection, IIdentifier, IKey, PresentationPayload, TKeyType } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
 import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
 
 export async function createPresentationSignCallback({
-  presentationSignCallback,
-  kid,
-  domain,
-  challenge,
-  context,
-}: {
+                                                       presentationSignCallback,
+                                                       kid,
+                                                       domain,
+                                                       challenge,
+                                                       format,
+                                                       context,
+                                                     }: {
   presentationSignCallback?: PresentationSignCallback
   kid: string
   domain?: string
   challenge?: string
+  format?: Format
   context: IRequiredContext
 }): Promise<PresentationSignCallback> {
   // fixme: Remove once IPresentation in proper form is available in PEX
@@ -36,26 +39,27 @@ export async function createPresentationSignCallback({
   return presentationSignCallback
     ? presentationSignCallback
     : async (args: PresentationSignCallBackParams): Promise<W3CVerifiablePresentation> => {
-        const presentation: PresentationPayload = args.presentation as PresentationPayload
-        const format = args.presentationDefinition.format
+      const presentation: PresentationPayload = args.presentation as PresentationPayload
+      const formatOptions = args.presentationDefinition.format ?? format
+      const proofFormat = formatOptions && (formatOptions.ldp || formatOptions.ldp_vp) ? 'lds' : 'jwt'
 
-        const vp = await context.agent.createVerifiablePresentation({
-          presentation,
-          keyRef: kid,
-          domain,
-          challenge,
-          fetchRemoteContexts: true,
-          proofFormat: format && (format.ldp || format.ldp_vp) ? 'lds' : 'jwt',
-        })
-        return vp as W3CVerifiablePresentation
-      }
+      const vp = await context.agent.createVerifiablePresentation({
+        presentation,
+        keyRef: kid,
+        domain,
+        challenge,
+        fetchRemoteContexts: true,
+        proofFormat,
+      })
+      return CredentialMapper.storedPresentationToOriginalFormat(vp as W3CVerifiablePresentation)
+    }
 }
 
 export async function createOPBuilder({
-  opOptions,
-  idOpts,
-  context,
-}: {
+                                        opOptions,
+                                        idOpts,
+                                        context,
+                                      }: {
   opOptions: IOPOptions
   idOpts?: IIdentifierOpts
   context: IRequiredContext
@@ -64,12 +68,12 @@ export async function createOPBuilder({
   const builder = OP.builder()
     .withResponseMode(opOptions.responseMode ?? ResponseMode.POST)
     .withSupportedVersions(
-      opOptions.supportedVersions ?? [SupportedVersion.SIOPv2_ID1, SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_D11]
+      opOptions.supportedVersions ?? [SupportedVersion.SIOPv2_ID1, SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_D11],
     )
     .withExpiresIn(opOptions.expiresIn ?? 300)
     .withCheckLinkedDomain(opOptions.checkLinkedDomains ?? CheckLinkedDomain.IF_PRESENT)
     .withCustomResolver(
-      opOptions.resolveOpts?.resolver ?? new AgentDIDResolver(context, opOptions.resolveOpts?.noUniversalResolverFallback !== false)
+      opOptions.resolveOpts?.resolver ?? new AgentDIDResolver(context, opOptions.resolveOpts?.noUniversalResolverFallback !== false),
     )
     .withEventEmitter(eventEmitter)
     .withRegistration({
@@ -82,9 +86,9 @@ export async function createOPBuilder({
   const wellknownDIDVerifyCallback = opOptions.wellknownDIDVerifyCallback
     ? opOptions.wellknownDIDVerifyCallback
     : async (args: IVerifyCallbackArgs): Promise<IVerifyCredentialResult> => {
-        const result = await context.agent.verifyCredential({ credential: args.credential, fetchRemoteContexts: true })
-        return { verified: result.verified }
-      }
+      const result = await context.agent.verifyCredential({ credential: args.credential, fetchRemoteContexts: true })
+      return { verified: result.verified }
+    }
   builder.withWellknownDIDVerifyCallback(wellknownDIDVerifyCallback)
 
   if (idOpts && idOpts.identifier) {
@@ -95,24 +99,24 @@ export async function createOPBuilder({
       SuppliedSigner(key, context, getSigningAlgo(key.type) as unknown as KeyAlgo),
       idOpts.identifier.did,
       kid,
-      getSigningAlgo(key.type)
+      getSigningAlgo(key.type),
     )
     builder.withPresentationSignCallback(
       await createPresentationSignCallback({
         presentationSignCallback: opOptions.presentationSignCallback,
         kid,
         context,
-      })
+      }),
     )
   }
   return builder
 }
 
 export async function createOP({
-  opOptions,
-  idOpts,
-  context,
-}: {
+                                 opOptions,
+                                 idOpts,
+                                 context,
+                               }: {
   opOptions: IOPOptions
   idOpts?: IIdentifierOpts
   context: IRequiredContext
@@ -124,7 +128,7 @@ export async function getKey(
   identifier: IIdentifier,
   verificationMethodSection: DIDDocumentSection = 'authentication',
   context: IRequiredContext,
-  keyId?: string
+  keyId?: string,
 ): Promise<IKey> {
   const keys = await mapIdentifierKeysToDocWithJwkSupport(identifier, verificationMethodSection, context)
   if (!keys || keys.length === 0) {
