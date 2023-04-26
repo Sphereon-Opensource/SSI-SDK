@@ -452,12 +452,12 @@ export class CredentialMapper {
     if (typeof document === 'string') {
       return this.isJsonLdAsString(document) ? DocumentFormat.JSONLD : DocumentFormat.JWT
     }
-    const proofs = 'vc' in document ? document.vc.proof : 'vp' in document ? document.vp.proof : (<IVerifiableCredential>document).proof
+    const proofs = 'vc' in document ? document.vc.proof : ('vp' in document ? document.vp.proof : (<IVerifiableCredential>document).proof)
     const proof: IProof = Array.isArray(proofs) ? proofs[0] : proofs
 
-    if (proof.jwt) {
+    if (proof?.jwt) {
       return DocumentFormat.JWT
-    } else if (proof.type === 'EthereumEip712Signature2021') {
+    } else if (proof?.type === 'EthereumEip712Signature2021') {
       return DocumentFormat.EIP712
     }
     return DocumentFormat.JSONLD
