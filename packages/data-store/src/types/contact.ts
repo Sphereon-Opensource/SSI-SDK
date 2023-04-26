@@ -3,6 +3,7 @@ import { IIdentifier } from '@veramo/core'
 export enum IdentityRoleEnum {
   ISSUER = 'issuer',
   VERIFIER = 'verifier',
+  HOLDER = 'holder',
 }
 
 export enum ConnectionTypeEnum {
