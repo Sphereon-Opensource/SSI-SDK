@@ -12,7 +12,7 @@ import {
   IUpdateContactArgs,
   IRemoveContactArgs,
 } from '../types/IAbstractContactStore'
-import { AbstractContactStore } from '../contact/AbstractContactStore'
+import { AbstractContactStore } from './AbstractContactStore'
 import {
   BasicConnectionConfig,
   ConnectionConfig,
@@ -124,10 +124,65 @@ export class ContactStore extends AbstractContactStore {
 
   removeContact = async ({ contactId }: IRemoveContactArgs): Promise<void> => {
     debug('Removing contact', contactId)
+
     ;(await this.dbConnection)
       .getRepository(ContactEntity)
-      .delete({ id: contactId })
+      .findOneById(contactId)
+      .then(async (contact: ContactEntity | null) => {
+        if (!contact) {
+          await Promise.reject(Error(`Unable to find the contact with id to remove: ${contactId}`))
+        } else {
+          await this.deleteIdentities(contact.identities)
+
+          await (
+            await this.dbConnection
+          )
+            .getRepository(ContactEntity)
+            .delete({ id: contactId })
+            .catch((error) => Promise.reject(Error(`Unable to remove contact with id: ${contactId}. ${error}`)))
+        }
+      })
       .catch((error) => Promise.reject(Error(`Unable to remove contact with id: ${contactId}. ${error}`)))
+  }
+
+  private async deleteIdentities(identities: Array<IdentityEntity>): Promise<void> {
+    debug('Removing identities', identities)
+
+    identities.map(async (identity: IdentityEntity) => {
+      await (
+        await this.dbConnection
+      )
+        .getRepository(CorrelationIdentifierEntity)
+        .delete(identity.identifier.id)
+        .catch((error) => Promise.reject(Error(`Unable to remove identity.identifier with id: ${identity.identifier.id}. ${error}`)))
+
+      if (identity.connection) {
+        await (await this.dbConnection).getRepository(BaseConfigEntity).delete(identity.connection.config.id)
+
+        await (
+          await this.dbConnection
+        )
+          .getRepository(ConnectionEntity)
+          .delete(identity.connection.id)
+          .catch((error) => Promise.reject(Error(`Unable to remove identity.connection with id. ${error}`)))
+      }
+
+      if (identity.metadata) {
+        identity.metadata.map(async (metadataItem: IdentityMetadataItemEntity) => {
+          await (
+            await this.dbConnection
+          )
+            .getRepository(IdentityMetadataItemEntity)
+            .delete(metadataItem.id)
+            .catch((error) => Promise.reject(Error(`Unable to remove metadataItem.id with id ${metadataItem.id}. ${error}`)))
+        })
+      }
+
+      ;(await this.dbConnection)
+        .getRepository(IdentityEntity)
+        .delete(identity.id)
+        .catch((error) => Promise.reject(Error(`Unable to remove metadataItem.id with id ${identity.id}. ${error}`)))
+    })
   }
 
   getIdentity = async ({ identityId }: IGetIdentityArgs): Promise<IIdentity> => {
@@ -220,10 +275,8 @@ export class ContactStore extends AbstractContactStore {
     }
 
     debug('Removing identity', identityId)
-    ;(await this.dbConnection)
-      .getRepository(IdentityEntity)
-      .delete({ id: identityId })
-      .catch((error) => Promise.reject(Error(`Unable to remove identity with id: ${identityId}. ${error}`)))
+
+    await this.deleteIdentities([identity])
   }
 
   private contactFrom = (contact: ContactEntity): IContact => {
