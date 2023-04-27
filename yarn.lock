@@ -1543,22 +1543,10 @@
   resolved "https://registry.yarnpkg.com/@multiformats/base-x/-/base-x-4.0.1.tgz#95ff0fa58711789d53aefb2590a8b7a4e715d121"
   integrity sha512-eMk0b9ReBbV23xXU693TAIrLyeO5iTgBZGSJfpqriG8UkYvr/hC9u9pyMlAakDNHWmbhMZCDs6KQO0jzKD8OTw==
 
-"@noble/curves@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.0.0.tgz#e40be8c7daf088aaf291887cbc73f43464a92932"
-  integrity sha512-2upgEu0iLiDVDZkNLeFV2+ht0BAVgQnEmCk6JsOch9Rp8xfkMCbvbAZlA2pBHQc73dbl+vFOXfqkf4uemdn0bw==
-  dependencies:
-    "@noble/hashes" "1.3.0"
-
 "@noble/hashes@1.2.0", "@noble/hashes@^1.2.0", "@noble/hashes@~1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.2.0.tgz#a3150eeb09cc7ab207ebf6d7b9ad311a9bdbed12"
   integrity sha512-FZfhjEDbT5GRswV3C6uvLPHMiVD6lQBmpoX5+eSiPaMTXte/IKqI5dykDxzZB/WBeK/CDuQRBWarPdi3FNY2zQ==
-
-"@noble/hashes@1.3.0", "@noble/hashes@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.3.0.tgz#085fd70f6d7d9d109671090ccae1d3bec62554a1"
-  integrity sha512-ilHEACi9DwqJB0pw7kv+Apvh50jiiSyR/cQ3y4W7lOR5mhvn/50FLUfsnfJz0BDZtl/RR16kXvptiv6q1msYZg==
 
 "@noble/secp256k1@1.7.1", "@noble/secp256k1@~1.7.0":
   version "1.7.1"
@@ -2324,10 +2312,10 @@
     "@trust/keyto" "^2.0.0-alpha1"
     "@veramo/core" "4.2.0"
 
-"@sphereon/did-auth-siop@^0.3.0-unstable.41":
-  version "0.3.0-unstable.41"
-  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.3.0-unstable.41.tgz#d000fa017371fc6eb916edc56d6256f325928ce2"
-  integrity sha512-Bqng+BwgAEzeObcXdz8DsqjSGXPNCC9Qz/i4qUWrotQ/4fJDObtMq8qqk3Uv6Q6PlsCNFXO8YPvtA36cVfoy5w==
+"@sphereon/did-auth-siop@^0.3.0-unstable.42":
+  version "0.3.0-unstable.42"
+  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.3.0-unstable.42.tgz#73892daf3951814a36fa8899de688764e46a7b0e"
+  integrity sha512-U8LAlCkO/ZF5wxnga8imRxjTna+5gzFmmV8RpKtdBBW1ng2lKUgozmsCJTo2TjlPuIoU3tA8IUdUchlYy/7iZA==
   dependencies:
     "@sphereon/did-uni-client" "^0.6.0"
     "@sphereon/pex" "^2.0.0-unstable.14"
@@ -2335,7 +2323,7 @@
     "@sphereon/ssi-types" "^0.9.1-next.113"
     "@sphereon/wellknown-dids-client" "^0.1.3"
     cross-fetch "^3.1.5"
-    did-jwt "^7.0.0"
+    did-jwt "^6.11.6"
     did-resolver "^4.1.0"
     events "^3.3.0"
     language-tags "^1.0.8"
@@ -5958,17 +5946,21 @@ did-jwt@^6.11.0, did-jwt@^6.2.2, did-jwt@^6.3.0, did-jwt@^6.9.0:
     multiformats "^9.6.5"
     uint8arrays "^3.0.0"
 
-did-jwt@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/did-jwt/-/did-jwt-7.0.0.tgz#3e8d89c180513efa15d87434cf87ce23a2603a5d"
-  integrity sha512-iRA2cUfhL93gtDosez8qCRaa1Zd/8rTiutS3TdlAxSGMN6vGXP7kO6FPXvzM+rapfKBUQCAg1tOHTb70fr7gEQ==
+did-jwt@^6.11.6:
+  version "6.11.6"
+  resolved "https://registry.yarnpkg.com/did-jwt/-/did-jwt-6.11.6.tgz#3eeb30d6bd01f33bfa17089574915845802a7d44"
+  integrity sha512-OfbWknRxJuUqH6Lk0x+H1FsuelGugLbBDEwsoJnicFOntIG/A4y19fn0a8RLxaQbWQ5gXg0yDq5E2huSBiiXzw==
   dependencies:
-    "@noble/curves" "^1.0.0"
-    "@noble/hashes" "^1.3.0"
+    "@stablelib/ed25519" "^1.0.2"
+    "@stablelib/random" "^1.0.1"
+    "@stablelib/sha256" "^1.0.1"
+    "@stablelib/x25519" "^1.0.2"
     "@stablelib/xchacha20poly1305" "^1.0.1"
     bech32 "^2.0.0"
     canonicalize "^2.0.0"
     did-resolver "^4.0.0"
+    elliptic "^6.5.4"
+    js-sha3 "^0.8.0"
     multiformats "^9.6.5"
     uint8arrays "^3.0.0"
 
