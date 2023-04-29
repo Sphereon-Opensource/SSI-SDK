@@ -180,39 +180,42 @@ export class CredentialMapper {
     makeCredentialsUniform: boolean = true,
     opts?: { maxTimeSkewInMS?: number }
   ): IVerifiablePresentation {
+    const { iss, aud, jti, vp, ...rest } = decoded
+
     const presentation: IVerifiablePresentation = {
-      ...decoded.vp,
+      ...rest,
+      ...vp,
     }
     if (makeCredentialsUniform) {
-      if (!decoded.vp.verifiableCredential) {
+      if (!vp.verifiableCredential) {
         throw Error('Verifiable Presentation should have a verifiable credential at this point')
       }
-      presentation.verifiableCredential = decoded.vp.verifiableCredential.map((vc) => CredentialMapper.toUniformCredential(vc, opts))
+      presentation.verifiableCredential = vp.verifiableCredential.map((vc) => CredentialMapper.toUniformCredential(vc, opts))
     }
-    if (decoded.iss) {
+    if (iss) {
       const holder = presentation.holder
       if (holder) {
-        if (holder !== decoded.iss) {
-          throw new Error(`Inconsistent holders between JWT claim (${decoded.iss}) and VC value (${holder})`)
+        if (holder !== iss) {
+          throw new Error(`Inconsistent holders between JWT claim (${iss}) and VC value (${holder})`)
         }
       }
-      presentation.holder = decoded.iss
+      presentation.holder = iss
     }
-    if (decoded.aud) {
+    if (aud) {
       const verifier = presentation.verifier
       if (verifier) {
-        if (verifier !== decoded.aud) {
-          throw new Error(`Inconsistent holders between JWT claim (${decoded.iss}) and VC value (${verifier})`)
+        if (verifier !== aud) {
+          throw new Error(`Inconsistent holders between JWT claim (${aud}) and VC value (${verifier})`)
         }
       }
-      presentation.verifier = decoded.aud
+      presentation.verifier = aud
     }
-    if (decoded.jti) {
+    if (jti) {
       const id = presentation.id
-      if (id && id !== decoded.jti) {
-        throw new Error(`Inconsistent VP ids between JWT claim (${decoded.jti}) and VP value (${id})`)
+      if (id && id !== jti) {
+        throw new Error(`Inconsistent VP ids between JWT claim (${jti}) and VP value (${id})`)
       }
-      presentation.id = decoded.jti
+      presentation.id = jti
     }
     return presentation
   }
@@ -287,15 +290,17 @@ export class CredentialMapper {
     decoded: JwtDecodedVerifiableCredential,
     opts?: { maxTimeSkewInMS?: number }
   ): IVerifiableCredential {
+    const { exp, nbf, iss, vc, sub, jti, ...rest } = decoded
     const credential: IVerifiableCredential = {
-      ...decoded.vc,
+      ...rest,
+      ...vc,
     }
 
     const maxSkewInMS = opts?.maxTimeSkewInMS !== undefined ? opts.maxTimeSkewInMS : 999
 
-    if (decoded.exp) {
+    if (exp) {
       const expDate = credential.expirationDate
-      const jwtExp = parseInt(decoded.exp.toString())
+      const jwtExp = parseInt(exp.toString())
       // fix seconds to millisecond for the date
       const expDateAsStr = jwtExp < 9999999999 ? new Date(jwtExp * 1000).toISOString().replace(/\.000Z/, 'Z') : new Date(jwtExp).toISOString()
       if (expDate && expDate !== expDateAsStr) {
@@ -307,9 +312,9 @@ export class CredentialMapper {
       credential.expirationDate = expDateAsStr
     }
 
-    if (decoded.nbf) {
+    if (nbf) {
       const issuanceDate = credential.issuanceDate
-      const jwtNbf = parseInt(decoded.nbf.toString())
+      const jwtNbf = parseInt(nbf.toString())
       // fix seconds to millisecs for the date
       const nbfDateAsStr = jwtNbf < 9999999999 ? new Date(jwtNbf * 1000).toISOString().replace(/\.000Z/, 'Z') : new Date(jwtNbf).toISOString()
       if (issuanceDate && issuanceDate !== nbfDateAsStr) {
@@ -321,41 +326,39 @@ export class CredentialMapper {
       credential.issuanceDate = nbfDateAsStr
     }
 
-    if (decoded.iss) {
+    if (iss) {
       const issuer = credential.issuer
       if (issuer) {
         if (typeof issuer === 'string') {
-          if (issuer !== decoded.iss) {
-            throw new Error(`Inconsistent issuers between JWT claim (${decoded.iss}) and VC value (${issuer})`)
+          if (issuer !== iss) {
+            throw new Error(`Inconsistent issuers between JWT claim (${iss}) and VC value (${issuer})`)
           }
         } else {
-          if (issuer.id !== decoded.iss) {
-            throw new Error(`Inconsistent issuers between JWT claim (${decoded.iss}) and VC value (${issuer.id})`)
+          if (issuer.id !== iss) {
+            throw new Error(`Inconsistent issuers between JWT claim (${iss}) and VC value (${issuer.id})`)
           }
         }
       } else {
-        credential.issuer = decoded.iss
+        credential.issuer = iss
       }
     }
 
-    if (decoded.sub) {
+    if (sub) {
       const subjects = Array.isArray(credential.credentialSubject) ? credential.credentialSubject : [credential.credentialSubject]
       for (let i = 0; i < subjects.length; i++) {
         const csId = subjects[i].id
-        if (csId && csId !== decoded.sub) {
-          throw new Error(`Inconsistent credential subject ids between JWT claim (${decoded.sub}) and VC value (${csId})`)
+        if (csId && csId !== sub) {
+          throw new Error(`Inconsistent credential subject ids between JWT claim (${sub}) and VC value (${csId})`)
         }
-        Array.isArray(credential.credentialSubject)
-          ? (credential.credentialSubject[i].id = decoded.sub)
-          : (credential.credentialSubject.id = decoded.sub)
+        Array.isArray(credential.credentialSubject) ? (credential.credentialSubject[i].id = sub) : (credential.credentialSubject.id = sub)
       }
     }
-    if (decoded.jti) {
+    if (jti) {
       const id = credential.id
-      if (id && id !== decoded.jti) {
-        throw new Error(`Inconsistent credential ids between JWT claim (${decoded.jti}) and VC value (${id})`)
+      if (id && id !== jti) {
+        throw new Error(`Inconsistent credential ids between JWT claim (${jti}) and VC value (${id})`)
       }
-      credential.id = decoded.jti
+      credential.id = jti
     }
 
     return credential
