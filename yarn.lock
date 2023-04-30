@@ -2551,6 +2551,26 @@
     "@trust/keyto" "^2.0.0-alpha1"
     "@veramo/core" "4.2.0"
 
+"@sphereon/did-auth-siop@0.3.0-unstable.42":
+  version "0.3.0-unstable.42"
+  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.3.0-unstable.42.tgz#73892daf3951814a36fa8899de688764e46a7b0e"
+  integrity sha512-U8LAlCkO/ZF5wxnga8imRxjTna+5gzFmmV8RpKtdBBW1ng2lKUgozmsCJTo2TjlPuIoU3tA8IUdUchlYy/7iZA==
+  dependencies:
+    "@sphereon/did-uni-client" "^0.6.0"
+    "@sphereon/pex" "^2.0.0-unstable.14"
+    "@sphereon/pex-models" "^1.2.2"
+    "@sphereon/ssi-types" "^0.9.1-next.113"
+    "@sphereon/wellknown-dids-client" "^0.1.3"
+    cross-fetch "^3.1.5"
+    did-jwt "^6.11.6"
+    did-resolver "^4.1.0"
+    events "^3.3.0"
+    language-tags "^1.0.8"
+    multiformats "^11.0.2"
+    querystring "^0.2.1"
+    uint8arrays "^3.1.1"
+    uuid "^9.0.0"
+
 "@sphereon/did-auth-siop@^0.3.0-unstable.35":
   version "0.3.0-unstable.35"
   resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.3.0-unstable.35.tgz#f2cdbbc0752250e94d9b6f59144bd8c0a09a5ab4"
@@ -2560,39 +2580,6 @@
     "@sphereon/pex" "^2.0.0-unstable.14"
     "@sphereon/pex-models" "^1.2.2"
     "@sphereon/ssi-types" "^0.9.1-next.100"
-    "@sphereon/wellknown-dids-client" "^0.1.3"
-    "@stablelib/ed25519" "^1.0.3"
-    "@stablelib/random" "^1.0.2"
-    "@stablelib/sha256" "^1.0.1"
-    "@stablelib/x25519" "^1.0.3"
-    "@stablelib/xchacha20poly1305" "^1.0.1"
-    bech32 "^2.0.0"
-    bs58 "^5.0.0"
-    canonicalize "^1.0.8"
-    cross-fetch "^3.1.5"
-    did-jwt "^6.11.2"
-    did-resolver "^4.1.0"
-    elliptic "^6.5.4"
-    eth-crypto "^2.5.0"
-    events "^3.3.0"
-    jose "^4.12.0"
-    js-sha3 "^0.8.0"
-    language-tags "^1.0.8"
-    multiformats "^11.0.1"
-    querystring "^0.2.1"
-    ts-interface-checker "^1.0.2"
-    uint8arrays "^3.1.1"
-    uuid "^9.0.0"
-
-"@sphereon/did-auth-siop@^0.3.0-unstable.36":
-  version "0.3.0-unstable.36"
-  resolved "https://registry.yarnpkg.com/@sphereon/did-auth-siop/-/did-auth-siop-0.3.0-unstable.36.tgz#28c1afe6b9b3aa3bf6e416088f2c7a5375ebe66a"
-  integrity sha512-Q70ZhufI8CqVAAfAVYRNj+bttc6s2bFl2peMgcWcVryI3zamroB+8i+O+y/djgY+Ac37V5eTEXXoPHpdRLwygg==
-  dependencies:
-    "@sphereon/did-uni-client" "^0.6.0"
-    "@sphereon/pex" "^2.0.0-unstable.14"
-    "@sphereon/pex-models" "^1.2.2"
-    "@sphereon/ssi-types" "^0.9.1-next.109"
     "@sphereon/wellknown-dids-client" "^0.1.3"
     "@stablelib/ed25519" "^1.0.3"
     "@stablelib/random" "^1.0.2"
@@ -2808,7 +2795,7 @@
     did-resolver "^4.0.1"
     elliptic "^6.5.4"
 
-"@sphereon/ssi-types@^0.9.1-next.100", "@sphereon/ssi-types@^0.9.1-next.109":
+"@sphereon/ssi-types@^0.9.1-next.100", "@sphereon/ssi-types@^0.9.1-next.113":
   version "0.9.1-unstable.136"
   resolved "https://registry.yarnpkg.com/@sphereon/ssi-types/-/ssi-types-0.9.1-unstable.136.tgz#160a1ef075e01879e8fd7cac5523f3afdc0bd8c4"
   integrity sha512-ugtoM+FVBTR+lNmJvQPPLkrkaC8tPDzS5GA/A56gdCSh8YZoCh7CympVZYHKF9W0gg0lqhCd+kh09UoFUdGLQg==
@@ -11333,7 +11320,7 @@ multiformats@9.9.0, multiformats@^9.4.2, multiformats@^9.6.5, multiformats@^9.9.
   resolved "https://registry.yarnpkg.com/multiformats/-/multiformats-9.9.0.tgz#c68354e7d21037a8f1f8833c8ccd68618e8f1d37"
   integrity sha512-HoMUjhH9T8DDBNT+6xzkrd9ga/XiBI4xLr58LJACwK6G3HTOPeMz4nB4KJs33L2BelrIJa7P0VuNaVF3hMYfjg==
 
-multiformats@^11.0.1:
+multiformats@^11.0.1, multiformats@^11.0.2:
   version "11.0.2"
   resolved "https://registry.yarnpkg.com/multiformats/-/multiformats-11.0.2.tgz#b14735efc42cd8581e73895e66bebb9752151b60"
   integrity sha512-b5mYMkOkARIuVZCpvijFj9a6m5wMVLC7cf/jIPd5D/ARDOfLC5+IFkbgDXQgcU2goIsTD/O9NY4DI/Mt4OGvlg==

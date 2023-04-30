@@ -24,15 +24,15 @@ export async function createPEXPresentationSignCallback(
     domain?: string
     challenge?: string
   },
-  context: IRequiredContext,
+  context: IRequiredContext
 ): Promise<IPEXPresentationSignCallback> {
   return async ({
-                  presentation,
-                  domain,
-                  presentationDefinition,
-                  format,
-                  challenge,
-                }: {
+    presentation,
+    domain,
+    presentationDefinition,
+    format,
+    challenge,
+  }: {
     presentation: PresentationPayload
     presentationDefinition: IPresentationDefinition
     format?: Format
