@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk-did-utils",
   "description": "DID Utils",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -11,8 +11,8 @@
   "dependencies": {
     "@sphereon/did-uni-client": "^0.6.0",
     "@sphereon/jsencrypt": "3.3.2-unstable.0",
-    "@sphereon/ssi-sdk-core": "^0.9.0",
-    "@sphereon/ssi-types": "^0.9.0",
+    "@sphereon/ssi-sdk-core": "^0.10.0",
+    "@sphereon/ssi-types": "^0.10.0",
     "@trust/keyto": "^2.0.0-alpha1",
     "@veramo/core": "4.2.0",
     "@veramo/utils": "4.2.0",
@@ -20,7 +20,6 @@
     "elliptic": "^6.5.4",
     "uint8arrays": "^3.1.1"
   },
-  "devDependencies": {},
   "files": [
     "dist/**/*",
     "src/**/*",
