@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-did-auth-siop-authenticator",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,9 +16,9 @@
   "dependencies": {
     "@sphereon/did-auth-siop": "0.3.0-unstable.45",
     "@sphereon/pex": "2.0.0",
-    "@sphereon/ssi-sdk-core": "^0.9.0",
-    "@sphereon/ssi-sdk-did-utils": "^0.9.0",
-    "@sphereon/ssi-types": "^0.9.0",
+    "@sphereon/ssi-sdk-core": "^0.10.0",
+    "@sphereon/ssi-sdk-did-utils": "^0.10.0",
+    "@sphereon/ssi-types": "^0.10.0",
     "@sphereon/wellknown-dids-client": "^0.1.3",
     "@types/uuid": "^9.0.1",
     "@veramo/core": "4.2.0",

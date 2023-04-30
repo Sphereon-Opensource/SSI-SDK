@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.10.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.9.0...v0.10.0) (2023-04-30)
+
+### Bug Fixes
+
+- bbs+ fixes and updates ([84c08f1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/84c08f19f2d40ba7aef0c3b5642c99fe857a2d84))
+- bbs+ fixes and updates ([fc228a2](https://github.com/Sphereon-Opensource/SSI-SDK/commit/fc228a2e85d72e0e1118d71ed8ce6252f4bc273b))
+- bbs+ fixes and updates ([efcbf2c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/efcbf2c6a7efc68746d2fc1873fee372cc7cc94a))
+- bbs+ fixes and updates ([ae9e903](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ae9e9032b23036d44b3791da416229cd6db5b776))
+- cleanup package.json files ([aca017b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/aca017b322fa302461d7a8482f4814c7fe1b0f9d))
+- cleanup package.json files ([0cc08b6](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0cc08b6acc168b838bff48b42fdabbdea4cd0899))
+- decoded JWT VPs/VCs did not contain everything ([612b082](https://github.com/Sphereon-Opensource/SSI-SDK/commit/612b082d754eb90402160f423d939f3a6f9ec181))
+- decoded JWT VPs/VCs did not contain everything ([fd7ff68](https://github.com/Sphereon-Opensource/SSI-SDK/commit/fd7ff680bbfbfbfbf0cd4ba96948b805ac97c6dd))
+
+### Features
+
+- Add better internal handling of JWT proof values used in JsonLD converted credentials ([90004c5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/90004c5886cd3f645f979b5e81dfc03e3ff3b862))
+- Update to v2 PEX and v0.3 SIOP packages ([80398e3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/80398e36ab53ed46ebca715570242a466c83d5db))
+
 # [0.9.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.8.0...v0.9.0) (2023-03-09)
 
 ### Bug Fixes
