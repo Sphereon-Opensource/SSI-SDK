@@ -2,16 +2,18 @@ import { IIdentifierOpts, IOPOptions, IRequiredContext } from '../types/IDidAuth
 import { EventEmitter } from 'events'
 import { AgentDIDResolver, determineKid, getAgentDIDMethods, getKey } from '@sphereon/ssi-sdk-ext.did-utils'
 import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk-core'
+import { CredentialMapper, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import {
-  Builder,
   CheckLinkedDomain,
   OP,
+  OPBuilder,
   PassBy,
   PresentationSignCallback,
   ResponseMode,
   SigningAlgo,
   SupportedVersion,
 } from '@sphereon/did-auth-siop'
+import { Format } from '@sphereon/pex-models'
 import { TKeyType } from '@veramo/core'
 import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
 import { createPEXPresentationSignCallback } from '@sphereon/ssi-sdk-presentation-exchange'
@@ -24,6 +26,7 @@ export async function createOID4VPPresentationSignCallback({
   fetchRemoteContexts,
   format,
   challenge,
+  format,
   context,
 }: {
   presentationSignCallback?: PresentationSignCallback
@@ -64,7 +67,7 @@ export async function createOPBuilder({
   opOptions: IOPOptions
   idOpts?: IIdentifierOpts
   context: IRequiredContext
-}): Promise<Builder> {
+}): Promise<OPBuilder> {
   const eventEmitter = opOptions.eventEmitter ?? new EventEmitter()
   const builder = OP.builder()
     .withResponseMode(opOptions.responseMode ?? ResponseMode.POST)

@@ -8,6 +8,7 @@ import { OpSession } from './OpSession'
 import { CredentialMapper, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { PresentationDefinitionWithLocation, PresentationExchange } from '@sphereon/did-auth-siop'
 import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
+
 import { ProofOptions } from '@sphereon/ssi-sdk-core'
 import { createOID4VPPresentationSignCallback } from './functions'
 import { FindCredentialsArgs, IIdentifier } from '@veramo/core'
@@ -87,6 +88,7 @@ export class OID4VP {
       presentationSignCallback: this.session.options.presentationSignCallback,
       kid: determineKid(key, idOpts),
       context: this.session.context,
+      format: selectedVerifiableCredentials.definition.definition.format,
     })
     const presentation = await this.getPresentationExchange(vcs.credentials, this.allDIDs).createVerifiablePresentation(
       vcs.definition.definition,
