@@ -45,6 +45,8 @@ export class OID4VP {
   public async createVerifiablePresentations(
     credentialsWithDefinitions: VerifiableCredentialsWithDefinition[],
     opts?: {
+      restrictToFormats?: Format
+      restrictToDIDMethods?: string[]
       proofOpts?: ProofOptions
       identifierOpts?: IIdentifierOpts
       holderDID?: string
@@ -58,6 +60,7 @@ export class OID4VP {
     selectedVerifiableCredentials: VerifiableCredentialsWithDefinition,
     opts?: {
       restrictToFormats?: Format
+      restrictToDIDMethods?: string[]
       proofOpts?: ProofOptions
       identifierOpts?: IIdentifierOpts
       holderDID?: string
@@ -93,6 +96,7 @@ export class OID4VP {
     // We are making sure to filter, in case the user submitted all verifiableCredentials in the wallet/agent. We also make sure to get original formats back
     const vcs = await this.filterCredentials(selectedVerifiableCredentials.definition, {
       restrictToFormats: opts?.restrictToFormats,
+      restrictToDIDMethods: opts?.restrictToDIDMethods,
       filterOpts: {
         verifiableCredentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
       },
@@ -126,6 +130,7 @@ export class OID4VP {
     filterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindCredentialsArgs }
     holderDIDs?: string[]
     restrictToFormats?: Format
+    restrictToDIDMethods?: string[]
   }): Promise<VerifiableCredentialsWithDefinition[]> {
     const defs = await this.getPresentationDefinitions()
     const result: VerifiableCredentialsWithDefinition[] = []
@@ -143,6 +148,7 @@ export class OID4VP {
       filterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindCredentialsArgs }
       holderDIDs?: string[]
       restrictToFormats?: Format
+      restrictToDIDMethods?: string[]
     }
   ): Promise<VerifiableCredentialsWithDefinition> {
     return {
@@ -157,11 +163,12 @@ export class OID4VP {
       filterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindCredentialsArgs }
       holderDIDs?: string[]
       restrictToFormats?: Format
+      restrictToDIDMethods?: string[]
     }
   ): Promise<SelectResults> {
     const selectionResults: SelectResults = await this.getPresentationExchange(
       await this.getCredentials(opts?.filterOpts)
-    ).selectVerifiableCredentialsForSubmission(presentationDefinition.definition)
+    ).selectVerifiableCredentialsForSubmission(presentationDefinition.definition, opts)
     if (selectionResults.errors && selectionResults.errors.length > 0) {
       throw Error(JSON.stringify(selectionResults.errors))
     } else if (selectionResults.areRequiredCredentialsPresent === Status.ERROR) {
