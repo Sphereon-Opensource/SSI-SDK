@@ -7,7 +7,6 @@
 </h1>
 
 ---
-
 __Warning: These packages still is in very early development. Breaking changes without notice will happen at this
 point!__
 
@@ -23,13 +22,11 @@ multiple packages (see lerna below). It contains plugins that extend the Veramo 
     - lto: [LTO Network DID creation and Verification Methods](./packages/lto-did-provider/README.md)
     - Mnemonic Seed: [Mnemonic Seed and Key Derivation](packages/mnemonic-seed-manager/README.md)
 - Verifiable Credentials and Presentations:
-    - VC API Issuer: [Issue VCs using the VC (HTTP) Api v0.1](./packages/vc-api-issuer/README.md)
-    - VC API Verifier: [Verify VCs and VPs using the VC (HTTP) Api v0.1](./packages/vc-api-verifier/README.md)
     - Json-LD VC handler: [Issues and verifies JSON-LD based VCs and VPs](./packages/vc-handler-ld-local/README.md)
 - OpenID Connect and Presentation Exchange:
     - SIOPv2 and
       OIDC4VP: [Self-Issued OpenID Connect and OpenID Connect for Verifiable Presentations](./packages/did-auth-siop-op-authenticator/README.md)
-    - WACI PEx QR code: [Create QR codes for use with WACI PEx for React and React-Native](./packages/waci-pex-qr-react/README.md)
+    - WACI PEx QR code: [Create QR codes for use with WACI PEx for React and React-Native](./packages/qr-code-generator/README.md)
 
 ## SSI SDK Core
 
@@ -83,7 +80,7 @@ Connect for Verifiable Presentations, with the help of
 our [Presentation-Exchange library](https://github.com/Sphereon-Opensource/pe-js).
 
 ## WACI PEx QR React
-The [waci-pex-qr-react](./packages/waci-pex-qr-react/README.md) is a generates a QR Code for the [WACI Presentation Exchange](https://identity.foundation/waci-presentation-exchange/#step-1-generate-qr-code) specification in React or React-Native environments.
+The [qr-code-generator](./packages/qr-code-generator/README.md) is a generates a QR Code for the [WACI Presentation Exchange](https://identity.foundation/waci-presentation-exchange/#step-1-generate-qr-code) specification in React or React-Native environments.
 
 ## DID resolution
 

@@ -10,15 +10,16 @@
     }
   },
   "scripts": {
-    "build": "tsc --build"
+    "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "^0.3.0-unstable.24",
-    "@sphereon/pex": "2.0.0-unstable.11",
+    "@sphereon/did-auth-siop": "0.3.0-unstable.45",
+    "@sphereon/pex": "2.0.0",
     "@sphereon/ssi-sdk-core": "^0.9.0",
     "@sphereon/ssi-sdk-did-utils": "^0.9.0",
     "@sphereon/ssi-types": "^0.9.0",
-    "@sphereon/wellknown-dids-client": "^0.1.3-unstable.1",
+    "@sphereon/wellknown-dids-client": "^0.1.3",
     "@types/uuid": "^9.0.1",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",
@@ -31,9 +32,8 @@
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",
     "@veramo/utils": "4.2.0",
-    "did-resolver": "^4.0.1",
-    "nock": "^13.2.1",
-    "typescript": "^4.6.4"
+    "did-resolver": "^4.1.0",
+    "nock": "^13.2.1"
   },
   "files": [
     "dist/**/*",

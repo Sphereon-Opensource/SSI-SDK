@@ -1,5 +1,5 @@
 import { CredentialPayload, IAgentContext, IKey, IKeyManager, IResolver, PresentationPayload, TKeyType, VerifiableCredential } from '@veramo/core'
-import { DIDDocument } from 'did-resolver/src/resolver'
+import { DIDDocument } from 'did-resolver/lib/resolver'
 
 export type RequiredAgentMethods = IResolver & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>
 
@@ -26,7 +26,7 @@ export abstract class SphereonLdSignature {
   abstract preVerificationCredModification(credential: VerifiableCredential): void
 
   preSigningPresModification(presentation: PresentationPayload): void {
-    // TODO: Remove invalid field 'verifiers' from Presentation. Needs to be adapted for LD credentials
+    // TODO: Remove invalid field 'verifiers' from Presentation. Needs to be adapted for LD verifiableCredentials
     // Only remove empty array (vc.signPresentation will throw then)
     const sanitizedPresentation = presentation as any
     if (sanitizedPresentation?.verifier?.length == 0) {

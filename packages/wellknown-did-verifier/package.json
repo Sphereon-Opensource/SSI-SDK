@@ -10,16 +10,16 @@
     }
   },
   "scripts": {
-    "build": "tsc --build"
+    "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/wellknown-dids-client": "^0.1.3-unstable.1",
+    "@sphereon/wellknown-dids-client": "^0.1.3",
     "@veramo/core": "4.2.0"
   },
   "devDependencies": {
     "@veramo/cli": "4.2.0",
-    "nock": "^13.2.9",
-    "typescript": "4.6.4"
+    "nock": "^13.2.9"
   },
   "files": [
     "dist/**/*",

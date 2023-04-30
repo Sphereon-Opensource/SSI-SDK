@@ -4,82 +4,11 @@ import {
   IAgentContext,
   IDIDManager,
   IKeyManager,
-  IPluginMethodMap,
   IResolver,
   PresentationPayload,
   VerifiableCredential,
   VerifiablePresentation,
 } from '@veramo/core'
-
-/**
- * The interface definition for a plugin that can issue and verify Verifiable Credentials and Presentations
- * that use JSON-LD format.
- *
- * @remarks Please see {@link https://www.w3.org/TR/vc-data-model | W3C Verifiable Credentials data model}
- *
- * @beta This API is likely to change without a BREAKING CHANGE notice
- */
-export interface ICredentialIssuerLD extends IPluginMethodMap {
-  /**
-   * Creates a Verifiable Presentation.
-   * The payload, signer and format are chosen based on the `args` parameter.
-   *
-   * @param args - Arguments necessary to create the Presentation.
-   * @param context - This reserved param is automatically added and handled by the framework, *do not override*
-   *
-   * @returns - a promise that resolves to the {@link @veramo/core#VerifiablePresentation} that was requested or rejects with an error
-   * if there was a problem with the input or while getting the key to sign
-   *
-   * @remarks Please see {@link https://www.w3.org/TR/vc-data-model/#presentations | Verifiable Presentation data model }
-   *
-   * @beta This API is likely to change without a BREAKING CHANGE notice
-   */
-  createVerifiablePresentationLD(args: ICreateVerifiablePresentationLDArgs, context: IRequiredContext): Promise<VerifiablePresentation>
-
-  /**
-   * Creates a Verifiable Credential.
-   * The payload, signer and format are chosen based on the `args` parameter.
-   *
-   * @param args - Arguments necessary to create the Presentation.
-   * @param context - This reserved param is automatically added and handled by the framework, *do not override*
-   *
-   * @returns - a promise that resolves to the {@link @veramo/core#VerifiableCredential} that was requested or rejects with an error
-   * if there was a problem with the input or while getting the key to sign
-   *
-   * @remarks Please see {@link https://www.w3.org/TR/vc-data-model/#credentials | Verifiable Credential data model}
-   *
-   * @beta This API is likely to change without a BREAKING CHANGE notice
-   */
-  createVerifiableCredentialLD(args: ICreateVerifiableCredentialLDArgs, context: IRequiredContext): Promise<VerifiableCredential>
-
-  /**
-   * Verifies a Verifiable Credential JWT or LDS Format.
-   *
-   * @param args - Arguments necessary to verify a VerifiableCredential
-   * @param context - This reserved param is automatically added and handled by the framework, *do not override*
-   *
-   * @returns - a promise that resolves to the boolean true on successful verification or rejects on error
-   *
-   * @remarks Please see {@link https://www.w3.org/TR/vc-data-model/#credentials | Verifiable Credential data model}
-   *
-   * @beta This API is likely to change without a BREAKING CHANGE notice
-   */
-  verifyCredentialLD(args: IVerifyCredentialLDArgs, context: IRequiredContext): Promise<boolean>
-
-  /**
-   * Verifies a Verifiable Presentation JWT or LDS Format.
-   *
-   * @param args - Arguments necessary to verify a VerifiableCredential
-   * @param context - This reserved param is automatically added and handled by the framework, *do not override*
-   *
-   * @returns - a promise that resolves to the boolean true on successful verification or rejects on error
-   *
-   * @remarks Please see {@link https://www.w3.org/TR/vc-data-model/#presentations | Verifiable Credential data model}
-   *
-   * @beta This API is likely to change without a BREAKING CHANGE notice
-   */
-  verifyPresentationLD(args: IVerifyPresentationLDArgs, context: IRequiredContext): Promise<boolean>
-}
 
 /**
  * Encapsulates the parameters required to create a
@@ -92,7 +21,7 @@ export interface ICreateVerifiablePresentationLDArgs {
    * The json payload of the Presentation according to the
    * {@link https://www.w3.org/TR/vc-data-model/#presentations | canonical model}.
    *
-   * The signer of the Presentation is chosen based on the `holder` property
+   * The signer of the Presentation is chosen based on the `holderDID` property
    * of the `presentation`
    *
    * '@context', 'type' and 'issuanceDate' will be added automatically if omitted
@@ -114,7 +43,7 @@ export interface ICreateVerifiablePresentationLDArgs {
    */
   keyRef?: string
 
-  purpose?: typeof ProofPurpose
+  purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 }
 
 /**
@@ -143,7 +72,7 @@ export interface ICreateVerifiableCredentialLDArgs {
   /**
    * Use this purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)
    */
-  purpose?: typeof ProofPurpose
+  purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 }
 
 /**
@@ -173,10 +102,10 @@ export interface IVerifyCredentialLDArgs {
   /**
    * Use this presentation purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)
    */
-  purpose?: typeof ProofPurpose
+  purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 
   /**
-   * Check status function, to check credentials that have a credentialStatus property
+   * Check status function, to check verifiableCredentials that have a credentialStatus property
    */
   checkStatus?: Function
 }
@@ -218,10 +147,10 @@ export interface IVerifyPresentationLDArgs {
   /**
    * Use this presentation purpose for the verification method in the DID when doing a check (defaualts to assertionMethod)
    */
-  presentationPurpose?: typeof ProofPurpose
+  presentationPurpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 
   /**
-   * Check status function, to check credentials that have a credentialStatus property
+   * Check status function, to check verifiableCredentials that have a credentialStatus property
    */
   checkStatus?: Function
 }
@@ -239,6 +168,35 @@ export type IRequiredContext = IAgentContext<IResolver & Pick<IDIDManager, 'didM
 export type ContextDoc = {
   '@context': string | Record<string, any>
 }
+
+/*
+  @beta
+ */
+export interface IProofPurpose {
+  term?: string
+  date?: string | Date | number
+  maxTimestampDelta?: number
+}
+
+/*
+  @beta
+ */
+export interface IControllerProofPurpose extends IProofPurpose {
+  controller?: object
+}
+
+/*
+  @beta
+ */
+export interface IAuthenticationProofPurpose extends IControllerProofPurpose {
+  challenge?: string
+  domain?: string
+}
+
+/*
+  @beta
+ */
+export interface IAssertionProofPurpose extends IControllerProofPurpose {}
 
 export const ProofPurpose = purposes.ProofPurpose
 export const ControllerProofPurpose = purposes.ControllerProofPurpose

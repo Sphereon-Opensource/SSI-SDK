@@ -1,7 +1,7 @@
 import { Ed25519KeyPair, Ed25519VerificationKey2018 } from '@transmute/ed25519-key-pair'
 import { Secp256k1KeyPair, EcdsaSecp256k1VerificationKey2019 } from '@transmute/secp256k1-key-pair'
 
-import crypto from 'crypto'
+import crypto from '@sphereon/isomorphic-webcrypto'
 import { JWS } from '@transmute/jose-ld'
 
 import { WebCryptoKey, JsonWebKey2020, P256Key2021, P384Key2021, P521Key2021 } from '@transmute/web-crypto-key-pair'
@@ -153,7 +153,7 @@ export class JsonWebKey {
     const KeyPair = getKeyPairForKtyAndCrv(options.kty, options.crv)
     if (!options.secureRandom) {
       options.secureRandom = () => {
-        return crypto.randomBytes(32)
+        return crypto.getRandomValues(new Uint8Array(32))
       }
     }
     const kp = await KeyPair.generate({

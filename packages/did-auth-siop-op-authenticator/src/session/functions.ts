@@ -2,17 +2,18 @@ import { IIdentifierOpts, IOPOptions, IRequiredContext } from '../types/IDidAuth
 import { EventEmitter } from 'events'
 import { AgentDIDResolver, getAgentDIDMethods, mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-did-utils'
 import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk-core'
-import { W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { CredentialMapper, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import {
-  Builder,
   CheckLinkedDomain,
   OP,
+  OPBuilder,
   PassBy,
   PresentationSignCallback,
   ResponseMode,
   SigningAlgo,
   SupportedVersion,
 } from '@sphereon/did-auth-siop'
+import { Format } from '@sphereon/pex-models'
 import { PresentationSignCallBackParams } from '@sphereon/pex'
 import { DIDDocumentSection, IIdentifier, IKey, PresentationPayload, TKeyType } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
@@ -23,33 +24,39 @@ export async function createPresentationSignCallback({
   kid,
   domain,
   challenge,
+  format,
   context,
 }: {
   presentationSignCallback?: PresentationSignCallback
   kid: string
-  domain?: string,
-  challenge?: string,
+  domain?: string
+  challenge?: string
+  format?: Format
   context: IRequiredContext
 }): Promise<PresentationSignCallback> {
   // fixme: Remove once IPresentation in proper form is available in PEX
   // @ts-ignore
-  return presentationSignCallback
-    ? presentationSignCallback
-    : async (args: PresentationSignCallBackParams): Promise<W3CVerifiablePresentation> => {
+  if (presentationSignCallback) {
+    return presentationSignCallback
+  }
+  return async (args: PresentationSignCallBackParams): Promise<W3CVerifiablePresentation> => {
+    const presentation: PresentationPayload = args.presentation as PresentationPayload
+    const formatOptions = args.presentationDefinition.format ?? format
+    const proofFormat = formatOptions && (formatOptions.ldp || formatOptions.ldp_vp) ? 'lds' : 'jwt'
 
-        const presentation: PresentationPayload = args.presentation as PresentationPayload
-        const format = args.presentationDefinition.format
-
-        const vp = await context.agent.createVerifiablePresentation({
-          presentation,
-          keyRef: kid,
-          domain,
-          challenge,
-          fetchRemoteContexts: true,
-          proofFormat: format && (format.ldp || format.ldp_vp) ? 'lds' : 'jwt',
-        })
-        return vp as W3CVerifiablePresentation
-      }
+    const vp = await context.agent.createVerifiablePresentation({
+      presentation,
+      keyRef: kid,
+      domain,
+      challenge,
+      fetchRemoteContexts: true,
+      proofFormat,
+      header: {
+        kid,
+      },
+    })
+    return CredentialMapper.storedPresentationToOriginalFormat(vp as W3CVerifiablePresentation)
+  }
 }
 
 export async function createOPBuilder({
@@ -60,7 +67,7 @@ export async function createOPBuilder({
   opOptions: IOPOptions
   idOpts?: IIdentifierOpts
   context: IRequiredContext
-}): Promise<Builder> {
+}): Promise<OPBuilder> {
   const eventEmitter = opOptions.eventEmitter ?? new EventEmitter()
   const builder = OP.builder()
     .withResponseMode(opOptions.responseMode ?? ResponseMode.POST)

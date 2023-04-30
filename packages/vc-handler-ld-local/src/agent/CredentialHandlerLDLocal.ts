@@ -4,12 +4,12 @@ import { AbstractPrivateKeyStore } from '@veramo/key-manager'
 import { _ExtendedIKey, extractIssuer, isDefined, MANDATORY_CREDENTIAL_CONTEXT, OrPromise, processEntryToArray, RecordLike } from '@veramo/utils'
 import Debug from 'debug'
 
-import { IBindingOverrides, schema } from '../index'
+import { IBindingOverrides, IRequiredContext, schema } from '../index'
 import { LdContextLoader } from '../ld-context-loader'
 import { LdCredentialModule } from '../ld-credential-module'
 import { LdSuiteLoader } from '../ld-suite-loader'
 import { SphereonLdSignature } from '../ld-suites'
-import { ICredentialHandlerLDLocal, IRequiredContext } from '../types/ICredentialHandlerLDLocal'
+import { ICredentialHandlerLDLocal } from '../types'
 import {
   ContextDoc,
   ICreateVerifiableCredentialLDArgs,
@@ -26,7 +26,7 @@ const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
  */
 export class CredentialHandlerLDLocal implements IAgentPlugin {
   private ldCredentialModule: LdCredentialModule
-  readonly schema = schema.IVcLocalIssuerJsonLd
+  readonly schema = schema.ICredentialHandlerLDLocal
   readonly methods: ICredentialHandlerLDLocal = {
     // test: this.createVerifiableCredentialLDLocal.bind(this),
     // We bind to existing methods as we can act as a drop in replacement. todo: Add config support for this mode
@@ -154,12 +154,12 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     }*/
 
     if (!isDefined(presentation.holder) || !presentation.holder) {
-      throw new Error('invalid_argument: args.presentation.holder must not be empty')
+      throw new Error('invalid_argument: args.presentation.holderDID must not be empty')
     }
 
     if (args.presentation.verifiableCredential) {
       const credentials = args.presentation.verifiableCredential.map((cred) => {
-        if (typeof cred !== 'string' && cred.proof.jwt) {
+        if (typeof cred !== 'string' && cred.proof?.jwt) {
           return cred.proof.jwt
         } else {
           return cred
@@ -175,7 +175,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     try {
       identifier = await context.agent.didManagerGet({ did: presentation.holder })
     } catch (e) {
-      throw new Error('invalid_argument: args.presentation.holder must be a DID managed by this agent')
+      throw new Error('invalid_argument: args.presentation.holderDID must be a DID managed by this agent')
     }
     try {
       const { managedKey, verificationMethod } = await this.getSigningKey(identifier, args.keyRef)
@@ -223,6 +223,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     keyRef?: string
   ): Promise<{ signingKey: IKey; verificationMethodId: string }> {
     debug(`Retrieving signing key for id ${identifier.did} keyref ${keyRef}...`)
+    // @ts-ignore
     const extendedKeys: _ExtendedIKey[] = await mapIdentifierKeysToDocWithJwkSupport(identifier, 'verificationMethod', context)
     const supportedTypes = this.ldCredentialModule.ldSuiteLoader.getAllSignatureSuiteTypes()
     let signingKey: _ExtendedIKey | undefined

@@ -31,6 +31,7 @@ import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { Resolvable } from 'did-resolver'
 import { DIDDocument } from '@sphereon/did-uni-client'
 import { EventEmitter } from 'events'
+import { VerifiablePresentationResult } from '@sphereon/pex'
 
 export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   siopGetOPSession(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
@@ -206,10 +207,9 @@ export interface VerifiableCredentialsWithDefinition {
   credentials: W3CVerifiableCredential[]
 }
 
-export interface VerifiablePresentationWithDefinition {
+export interface VerifiablePresentationWithDefinition extends VerifiablePresentationResult {
   definition: PresentationDefinitionWithLocation
-  credentials: W3CVerifiableCredential[]
-  presentation: W3CVerifiablePresentation
+  verifiableCredentials: W3CVerifiableCredential[]
   identifierOpts: IIdentifierOpts
 }
 export const DEFAULT_JWT_PROOF_TYPE = 'JwtProof2020'

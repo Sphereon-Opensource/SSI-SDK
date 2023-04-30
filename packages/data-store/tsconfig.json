@@ -1,17 +1,11 @@
 {
   "extends": "../tsconfig-base.json",
   "compilerOptions": {
+    "emitDecoratorMetadata": true,
     "rootDir": "src",
     "outDir": "dist",
     "declarationDir": "dist",
     "strictPropertyInitialization": false
   },
-  "references": [
-    {
-      "path": "../connection-manager"
-    },
-    {
-      "path": "../data-store-common"
-    }
-  ]
+  "references": []
 }

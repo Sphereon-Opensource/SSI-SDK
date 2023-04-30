@@ -5,11 +5,12 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@azure/msal-common": "^7.0.0",
-    "@azure/msal-node": "^1.10.0",
+    "@azure/msal-common": "^11.0.0",
+    "@azure/msal-node": "^1.16.0",
     "@veramo/core": "4.2.0",
     "cross-fetch": "^3.1.5"
   },
@@ -18,8 +19,7 @@
     "@veramo/cli": "4.2.0",
     "jest": "^27.3.1",
     "prettier": "^2.4.1",
-    "ts-jest": "^27.0.7",
-    "typescript": "^4.6.4"
+    "ts-jest": "^27.0.7"
   },
   "files": [
     "dist/**/*",
