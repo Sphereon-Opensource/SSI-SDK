@@ -100,7 +100,7 @@ export class CredentialMapper {
 
     const presentation = {
       ...vp,
-      verifiableCredential: vcs, // We overwrite the credentials with wrapped versions, making it an InternalVerifiablePresentation. Note: we keep the singular key name of the vc data model
+      verifiableCredential: vcs, // We overwrite the verifiableCredentials with wrapped versions, making it an InternalVerifiablePresentation. Note: we keep the singular key name of the vc data model
     } as UniformVerifiablePresentation
     return {
       type,

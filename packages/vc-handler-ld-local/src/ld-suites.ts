@@ -26,7 +26,7 @@ export abstract class SphereonLdSignature {
   abstract preVerificationCredModification(credential: VerifiableCredential): void
 
   preSigningPresModification(presentation: PresentationPayload): void {
-    // TODO: Remove invalid field 'verifiers' from Presentation. Needs to be adapted for LD credentials
+    // TODO: Remove invalid field 'verifiers' from Presentation. Needs to be adapted for LD verifiableCredentials
     // Only remove empty array (vc.signPresentation will throw then)
     const sanitizedPresentation = presentation as any
     if (sanitizedPresentation?.verifier?.length == 0) {

@@ -21,7 +21,7 @@ export interface ICreateVerifiablePresentationLDArgs {
    * The json payload of the Presentation according to the
    * {@link https://www.w3.org/TR/vc-data-model/#presentations | canonical model}.
    *
-   * The signer of the Presentation is chosen based on the `holder` property
+   * The signer of the Presentation is chosen based on the `holderDID` property
    * of the `presentation`
    *
    * '@context', 'type' and 'issuanceDate' will be added automatically if omitted
@@ -105,7 +105,7 @@ export interface IVerifyCredentialLDArgs {
   purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 
   /**
-   * Check status function, to check credentials that have a credentialStatus property
+   * Check status function, to check verifiableCredentials that have a credentialStatus property
    */
   checkStatus?: Function
 }
@@ -150,7 +150,7 @@ export interface IVerifyPresentationLDArgs {
   presentationPurpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 
   /**
-   * Check status function, to check credentials that have a credentialStatus property
+   * Check status function, to check verifiableCredentials that have a credentialStatus property
    */
   checkStatus?: Function
 }

@@ -451,7 +451,7 @@
           "properties": {
             "presentation": {
               "$ref": "#/components/schemas/PresentationPayload",
-              "description": "The json payload of the Presentation according to the\n {@link  https://www.w3.org/TR/vc-data-model/#presentations | canonical model } .\n\nThe signer of the Presentation is chosen based on the `holder` property of the `presentation`\n\n'@context', 'type' and 'issuanceDate' will be added automatically if omitted"
+              "description": "The json payload of the Presentation according to the\n {@link  https://www.w3.org/TR/vc-data-model/#presentations | canonical model } .\n\nThe signer of the Presentation is chosen based on the `holderDID` property of the `presentation`\n\n'@context', 'type' and 'issuanceDate' will be added automatically if omitted"
             },
             "challenge": {
               "type": "string",
@@ -800,7 +800,7 @@
                 "arguments",
                 "caller"
               ],
-              "description": "Check status function, to check credentials that have a credentialStatus property"
+              "description": "Check status function, to check verifiableCredentials that have a credentialStatus property"
             }
           },
           "required": [
@@ -882,7 +882,7 @@
                 "arguments",
                 "caller"
               ],
-              "description": "Check status function, to check credentials that have a credentialStatus property"
+              "description": "Check status function, to check verifiableCredentials that have a credentialStatus property"
             }
           },
           "required": [

@@ -12,6 +12,7 @@ import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex
 import { ProofOptions } from '@sphereon/ssi-sdk-core'
 import { createPresentationSignCallback, determineKid, getKey } from './functions'
 import { FindCredentialsArgs, IIdentifier } from '@veramo/core'
+import { Format } from '@sphereon/pex-models'
 
 export class OID4VP {
   private readonly session: OpSession
@@ -43,23 +44,34 @@ export class OID4VP {
 
   public async createVerifiablePresentations(
     credentialsWithDefinitions: VerifiableCredentialsWithDefinition[],
-    opts?: { proofOpts?: ProofOptions; identifierOpts?: IIdentifierOpts; holder?: string; subjectIsHolder?: boolean }
+    opts?: {
+      proofOpts?: ProofOptions
+      identifierOpts?: IIdentifierOpts
+      holderDID?: string
+      subjectIsHolder?: boolean
+    }
   ): Promise<VerifiablePresentationWithDefinition[]> {
     return await Promise.all(credentialsWithDefinitions.map((cred) => this.createVerifiablePresentation(cred, opts)))
   }
 
   public async createVerifiablePresentation(
     selectedVerifiableCredentials: VerifiableCredentialsWithDefinition,
-    opts?: { proofOpts?: ProofOptions; identifierOpts?: IIdentifierOpts; holder?: string; subjectIsHolder?: boolean }
+    opts?: {
+      restrictToFormats?: Format
+      proofOpts?: ProofOptions
+      identifierOpts?: IIdentifierOpts
+      holderDID?: string
+      subjectIsHolder?: boolean
+    }
   ): Promise<VerifiablePresentationWithDefinition> {
-    if (opts?.subjectIsHolder && opts?.holder) {
-      throw Error('Cannot both have subject is issuer and a holder value at the same time (programming error)')
+    if (opts?.subjectIsHolder && opts?.holderDID) {
+      throw Error('Cannot both have subject is issuer and a holderDID value at the same time (programming error)')
     } else if (
       !selectedVerifiableCredentials ||
       !selectedVerifiableCredentials.credentials ||
       selectedVerifiableCredentials.credentials.length === 0
     ) {
-      throw Error('No verifiable credentials provided for presentation definition')
+      throw Error('No verifiable verifiableCredentials provided for presentation definition')
     }
 
     let id: IIdentifier | undefined = opts?.identifierOpts?.identifier
@@ -70,52 +82,56 @@ export class OID4VP {
         if (holder) {
           id = await this.session.context.agent.didManagerGet({ did: holder })
         }
-      } else if (opts?.holder) {
-        id = await this.session.context.agent.didManagerGet({ did: opts.holder })
+      } else if (opts?.holderDID) {
+        id = await this.session.context.agent.didManagerGet({ did: opts.holderDID })
       }
     }
 
     const idOpts = opts?.identifierOpts ?? { identifier: id! }
     this.assertIdentifier(idOpts.identifier)
 
-    // We are making sure to filter, in case the user submitted all credentials in the wallet/agent. We also make sure to get original formats back
+    // We are making sure to filter, in case the user submitted all verifiableCredentials in the wallet/agent. We also make sure to get original formats back
     const vcs = await this.filterCredentials(selectedVerifiableCredentials.definition, {
-      verifiableCredentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
+      restrictToFormats: opts?.restrictToFormats,
+      filterOpts: {
+        verifiableCredentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
+      },
     })
     const key = await getKey(idOpts.identifier, 'authentication', this.session.context, idOpts.kid)
     const signCallback = await createPresentationSignCallback({
       presentationSignCallback: this.session.options.presentationSignCallback,
       kid: determineKid(key, idOpts),
       context: this.session.context,
-      format: selectedVerifiableCredentials.definition.definition.format,
+      format: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format,
     })
-    const presentation = await this.getPresentationExchange(vcs.credentials, this.allDIDs).createVerifiablePresentation(
+    const presentationResult = await this.getPresentationExchange(vcs.credentials, this.allDIDs).createVerifiablePresentation(
       vcs.definition.definition,
       vcs.credentials,
+      signCallback,
       {
         proofOptions: opts?.proofOpts,
-        holder: idOpts.identifier.did,
-      },
-      signCallback
+        holderDID: idOpts.identifier.did,
+      }
     )
 
     return {
-      credentials: vcs.credentials,
+      ...presentationResult,
+      verifiableCredentials: vcs.credentials,
       definition: selectedVerifiableCredentials.definition,
-      presentation,
       identifierOpts: idOpts,
     }
   }
 
-  public async filterCredentialsAgainstAllDefinitions(filterOpts?: {
-    verifiableCredentials?: W3CVerifiableCredential[]
-    filter?: FindCredentialsArgs
+  public async filterCredentialsAgainstAllDefinitions(opts?: {
+    filterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindCredentialsArgs }
+    holderDIDs?: string[]
+    restrictToFormats?: Format
   }): Promise<VerifiableCredentialsWithDefinition[]> {
     const defs = await this.getPresentationDefinitions()
     const result: VerifiableCredentialsWithDefinition[] = []
     if (defs) {
       for (const definition of defs) {
-        result.push(await this.filterCredentials(definition, filterOpts))
+        result.push(await this.filterCredentials(definition, opts))
       }
     }
     return result
@@ -123,21 +139,28 @@ export class OID4VP {
 
   public async filterCredentials(
     presentationDefinition: PresentationDefinitionWithLocation,
-    filterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindCredentialsArgs }
+    opts?: {
+      filterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindCredentialsArgs }
+      holderDIDs?: string[]
+      restrictToFormats?: Format
+    }
   ): Promise<VerifiableCredentialsWithDefinition> {
     return {
       definition: presentationDefinition,
-      credentials: (await this.filterCredentialsWithSelectionStatus(presentationDefinition, filterOpts))
-        .verifiableCredential as W3CVerifiableCredential[],
+      credentials: (await this.filterCredentialsWithSelectionStatus(presentationDefinition, opts)).verifiableCredential as W3CVerifiableCredential[],
     }
   }
 
   public async filterCredentialsWithSelectionStatus(
     presentationDefinition: PresentationDefinitionWithLocation,
-    filterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindCredentialsArgs }
+    opts?: {
+      filterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindCredentialsArgs }
+      holderDIDs?: string[]
+      restrictToFormats?: Format
+    }
   ): Promise<SelectResults> {
     const selectionResults: SelectResults = await this.getPresentationExchange(
-      await this.getCredentials(filterOpts)
+      await this.getCredentials(opts?.filterOpts)
     ).selectVerifiableCredentialsForSubmission(presentationDefinition.definition)
     if (selectionResults.errors && selectionResults.errors.length > 0) {
       throw Error(JSON.stringify(selectionResults.errors))
