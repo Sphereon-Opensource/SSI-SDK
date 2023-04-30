@@ -357,7 +357,7 @@ export default (testContext: {
       })
     })
 
-    it('should get authentication details with getting specific credentials', async () => {
+    it('should get authentication details with getting specific verifiableCredentials', async () => {
       const pdSingle: PresentationDefinitionWithLocation = getFileAsJson(
         './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_single.json'
       )
@@ -390,7 +390,7 @@ export default (testContext: {
       })
     })
 
-    it('should get authentication details with multiple credentials', async () => {
+    it('should get authentication details with multiple verifiableCredentials', async () => {
       const pdMultiple: PresentationDefinitionWithLocation = getFileAsJson(
         './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_multiple.json'
       )

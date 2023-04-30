@@ -69,7 +69,7 @@ export class WellKnownDidIssuer implements IAgentPlugin {
     context: RequiredContext
   ): Promise<IDidConfigurationResource> {
     if (!args.issuances.every((issuance: IIssueDomainLinkageCredentialArgs) => issuance.origin === args.issuances[0].origin)) {
-      return Promise.reject(Error('All credentials should be issued for the same origin'))
+      return Promise.reject(Error('All verifiableCredentials should be issued for the same origin'))
     }
 
     // TODO We should combine all origins into one service when we update to Veramo 3.1.6.next-165 or higher, as then we can support multiple origins

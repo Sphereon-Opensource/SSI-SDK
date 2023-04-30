@@ -159,7 +159,7 @@ export default (testContext: {
             },
           ],
         })
-      ).rejects.toThrow('All credentials should be issued for the same origin')
+      ).rejects.toThrow('All verifiableCredentials should be issued for the same origin')
     })
 
     it('should throw error if credential issuance callbackName is not found when issueing DID configuration resource', async () => {

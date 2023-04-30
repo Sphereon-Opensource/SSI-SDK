@@ -15,7 +15,7 @@ const MS_LOGIN_OPENID_CONFIG_POSTFIX = '/v2.0/.well-known/openid-configuration'
 const MS_CLIENT_CREDENTIAL_DEFAULT_SCOPE = '3db474b9-6a0c-4840-96ac-1fceb342124f/.default'
 
 const ERROR_CREDENTIAL_MANIFEST_REGION = `Error in config file. CredentialManifest URL configured for wrong tenant region. Should start with:`
-const ERROR_ACQUIRE_ACCESS_TOKEN_FOR_CLIENT = 'Could not acquire credentials to access your Azure Key Vault:\n'
+const ERROR_ACQUIRE_ACCESS_TOKEN_FOR_CLIENT = 'Could not acquire verifiableCredentials to access your Azure Key Vault:\n'
 const ERROR_FAILED_AUTHENTICATION = 'failed to authenticate: '
 
 async function getClientRegion(azTenantId: string): Promise<string> {

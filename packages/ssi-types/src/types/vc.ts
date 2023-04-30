@@ -9,7 +9,7 @@ export interface ICredential {
   '@context': ICredentialContextType | ICredentialContextType[]
   type: string[]
   credentialSchema?: undefined | ICredentialSchemaType | ICredentialSchemaType[]
-  // If iss is present, the value MUST be used to set the issuer property of the new credential JSON object or the holder property of the new presentation JSON object.
+  // If iss is present, the value MUST be used to set the issuer property of the new credential JSON object or the holderDID property of the new presentation JSON object.
   issuer: IIssuerId | IIssuer
   // If nbf is present, the UNIX timestamp MUST be converted to an [XMLSCHEMA11-2] date-time, and MUST be used to set the value of the issuanceDate property of the new JSON object.
   issuanceDate: string

@@ -403,7 +403,7 @@ describe('Database entities test', () => {
     expect(result).toBeDefined()
   })
 
-  it('should get holder identity by id', async () => {
+  it('should get holderDID identity by id', async () => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
