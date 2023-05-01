@@ -22,7 +22,6 @@ import { InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
 import { toDIDs } from '@sphereon/ssi-sdk-ext.did-utils'
 
 export class PresentationExchange implements IAgentPlugin {
-  private static PEX = new PEX()
   private readonly _stores: Map<string, IKeyValueStore<IPresentationDefinition>>
   readonly schema = schema.IDidAuthSiopOpAuthenticator
   private readonly defaultStore: string
@@ -74,7 +73,7 @@ export class PresentationExchange implements IAgentPlugin {
       let invalids: Checked[] = []
 
       try {
-        const result = PresentationExchange.PEX.validateDefinition(definition) // throws an error in case the def is not valid
+        const result = PEX.validateDefinition(definition) // throws an error in case the def is not valid
         const validations = Array.isArray(result) ? result : [result]
         invalids = validations.filter((v) => v.status === 'error')
       } catch (error) {
@@ -112,18 +111,17 @@ export class PresentationExchange implements IAgentPlugin {
   }
 
   async pexDefinitionVersion(presentationDefinition: IPresentationDefinition): Promise<VersionDiscoveryResult> {
-    return PresentationExchange.PEX.definitionVersionDiscovery(presentationDefinition)
+    return PEX.definitionVersionDiscovery(presentationDefinition)
   }
 
   async pexDefinitionFilterCredentials(args: IDefinitionCredentialFilterArgs, context: IRequiredContext): Promise<IPEXFilterResult> {
     const credentials = await this.pexFilterCredentials(args.credentialFilterOpts ?? {}, context)
     const holderDIDs = args.holderDIDs ? toDIDs(args.holderDIDs) : toDIDs(await context.agent.dataStoreORMGetIdentifiers())
-    const selectResults = new PEX().selectFrom(
-      args.presentationDefinition,
-      credentials ?? [],
+    const selectResults = new PEX().selectFrom(args.presentationDefinition, credentials ?? [], {
+      ...args,
       holderDIDs,
-      args.limitDisclosureSignatureSuites ?? ['BbsBlsSignature2020']
-    )
+      limitDisclosureSignatureSuites: args.limitDisclosureSignatureSuites ?? ['BbsBlsSignature2020'],
+    })
     return {
       id: args.presentationDefinition.id,
       selectResults,

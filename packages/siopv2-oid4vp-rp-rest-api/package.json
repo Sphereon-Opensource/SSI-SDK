@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-siopv2-oid4vp-rp-rest-api",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,9 +11,9 @@
     "start:dev": "ts-node __tests__/RestAPI.ts"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk-siopv2-oid4vp-common": "^0.9.0",
-    "@sphereon/ssi-sdk-siopv2-oid4vp-rp-auth": "^0.9.0",
-    "@sphereon/ssi-types": "^0.9.0",
+    "@sphereon/ssi-sdk-siopv2-oid4vp-common": "^0.10.0",
+    "@sphereon/ssi-sdk-siopv2-oid4vp-rp-auth": "^0.10.0",
+    "@sphereon/ssi-types": "^0.10.0",
     "@types/uuid": "^9.0.1",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",
@@ -29,8 +29,8 @@
   },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.0",
-    "@sphereon/ssi-sdk-data-store-common": "^0.9.0",
-    "@sphereon/ssi-sdk-jwk-did-provider": "^0.9.0",
+    "@sphereon/ssi-sdk-data-store": "^0.10.0",
+    "@sphereon/ssi-sdk-jwk-did-provider": "^0.10.0",
     "@types/body-parser": "^1.19.2",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.13",

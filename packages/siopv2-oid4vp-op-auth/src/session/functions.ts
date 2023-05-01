@@ -2,7 +2,6 @@ import { IIdentifierOpts, IOPOptions, IRequiredContext } from '../types/IDidAuth
 import { EventEmitter } from 'events'
 import { AgentDIDResolver, determineKid, getAgentDIDMethods, getKey } from '@sphereon/ssi-sdk-ext.did-utils'
 import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk-core'
-import { CredentialMapper, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import {
   CheckLinkedDomain,
   OP,
@@ -17,14 +16,12 @@ import { Format } from '@sphereon/pex-models'
 import { TKeyType } from '@veramo/core'
 import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
 import { createPEXPresentationSignCallback } from '@sphereon/ssi-sdk-presentation-exchange'
-import { Format } from '@sphereon/pex-models'
 
 export async function createOID4VPPresentationSignCallback({
   presentationSignCallback,
   kid,
   domain,
   fetchRemoteContexts,
-  format,
   challenge,
   format,
   context,

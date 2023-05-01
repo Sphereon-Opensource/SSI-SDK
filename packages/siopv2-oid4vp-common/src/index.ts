@@ -18,6 +18,7 @@ export {
   AuthorizationResponse,
   RP,
   OP,
+  OPBuilder,
   SupportedVersion,
   SigningAlgo,
   PresentationDefinitionWithLocation,

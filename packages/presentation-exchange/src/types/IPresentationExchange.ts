@@ -10,9 +10,8 @@ import {
 } from '@veramo/core'
 import { W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { IKeyValueStore, IValueData } from '@veramo/kv-store'
-import { IPresentationDefinition, SelectResults } from '@sphereon/pex'
-import { PEVersion } from '@sphereon/pex/dist/main/lib/types'
-import { InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
+import { IPresentationDefinition, PEVersion, SelectResults } from '@sphereon/pex'
+import { Format, InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
 
 export interface IPresentationExchange extends IPluginMethodMap {
   pexStoreGetDefinition(args: IDefinitionGetArgs): Promise<IPresentationDefinition | undefined>
@@ -67,6 +66,8 @@ export interface IDefinitionCredentialFilterArgs {
   credentialFilterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindCredentialsArgs }
   holderDIDs?: (string | IIdentifier)[]
   limitDisclosureSignatureSuites?: string[]
+  restrictToFormats?: Format
+  restrictToDIDMethods?: string[]
 }
 
 export interface PEXOpts {
