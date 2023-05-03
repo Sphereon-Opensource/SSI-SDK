@@ -3,7 +3,6 @@
   "references": [
     { "path": "ssi-types" },
     { "path": "ssi-sdk-core" },
-    { "path": "mnemonic-seed-manager" },
     { "path": "ms-authenticator" },
     { "path": "ms-request-api" },
     { "path": "vc-handler-ld-local" },
