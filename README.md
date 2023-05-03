@@ -103,7 +103,6 @@ functionalities in Veramo.
 | [DID Utils & Key Utils](https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions) | Generic key and DID utils can be found in our [SSI SDK Crypto Extensions repo](https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions)                                              |
 | [JSON LD issuer/verified](./packages/vc-handler-ld-local)                                 | Adds JSON-LD issuance and verification for Verifiable Credentials. Integrates seamlessly with Veramo's W3C VC plugin                                                                          |
 | [QR code generator](./packages/qr-code-generator)                                         | Create generic, SIOPv2/OID4VP, OID4VCI and WACI PEX QR codes. This package specifically targets React and React-Native                                                                        |
-| [QR code generator](./packages/qr-code-generator)                                         | Create generic, SIOPv2/OID4VP, OID4VCI and WACI PEX QR codes. This package specifically targets React and React-Native                                                                        |
 
 # DID resolution
 
