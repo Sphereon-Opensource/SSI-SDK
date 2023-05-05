@@ -22,16 +22,18 @@ the REST APIs.
 
 ## OpenID for Verifiable Credentials (OID4VC)
 
-This is a new set of specification by the OpenID Foundation, that enable peer to peer authentication (SIOPv2),
-Credential Issuance (OID4VCI) and Credential Presentation/Verification (OID4VP). These SSI-SDK modules offer
-higher-level integrations for these specification than our lower level libraries,
-like [OID4VCI](https://github.com/Sphereon-OpenSource/OID4VCI), [SIOPv2 & OID4VP](https://github.com/Sphereon-Opensource/SIOP-OID4VP), [Well-known DIDs](https://github.com/Sphereon-Opensource/wellknown-did-client).
-These low-level libraries are typically not opinionated and require an implementor to do some more work like providing
-signature/key callbacks. Contrary this
+This is a new [set of specifications](https://openid.net/openid4vc/) by the [OpenID Foundation](https://openid.net/), that enable peer to peer authentication ([SIOPv2](https://openid.net/specs/openid-connect-self-issued-v2-1_0.html)),
+Credential Issuance ([OID4VCI](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html)) and Credential Presentation/Verification ([OID4VP](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)). The SSI-SDK modules offer
+higher-level and more tight integrations for these specification than our lower level libraries,
+like [OID4VCI](https://github.com/Sphereon-OpenSource/OID4VCI), [SIOPv2 & OID4VP](https://github.com/Sphereon-Opensource/SIOP-OID4VP) and [Well-known DIDs](https://github.com/Sphereon-Opensource/wellknown-did-client).
+
+These low-level libraries are typically not too opinionated and require an implementor to do some more work like providing
+signature/key callback functions. Contrary this
 SSI-SDK is more opinionated and requires you to use other modules of the SSI-SDK or Veramo to provide certain
 functionalities, like DID and key management. The benefit however is that it provides a fully working agent solution
 with a low amount of
 configuration and/or additional coding in your solution, and a rich ecosystem of plugins.
+
 If you want to test out some of these plugins, we highly recommend using
 our [Open-Source wallet](https://github.com/Sphereon-Opensource/ssi-mobile-wallet)
 and/or [SIOPv2-OID4VP demo](https://github.com/Sphereon-Opensource/SIOPv2-OpenID4VP-example) deployed
@@ -39,15 +41,15 @@ at https://ssi.sphereon.com, which are using the plugins below.
 
 | Plugin                                                                             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 |------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Presentation Exchange](./packages/presentation-exchange)                          | Allows to persist and manage v1 and v2 Presentation Definitions, as well as Verify Presentation Definitions, create Verifiable Presentations with Submission Data, select and match Credentials and DIDs all stored in the agent. Can be used in both Relying Party/Verified contexts as holder contexts                                                                                                                                        |
+| [Presentation Exchange](./packages/presentation-exchange)                          | Allows to persist and manage v1 and v2 Presentation Definitions, as well as Verify Presentation Definitions, create Verifiable Presentations with Submission Data, select and match Credentials and DIDs all stored in the agent. Can be used in both Relying Party/Verifier contexts as holder contexts                                                                                                                                        |
 | [SIOPv2 Authenticator with OID4VP support](./packages/siopv2-oid4vp-op-auth)       | OpenID Provider for a wallet/holder context, that allows the agent to authenticate with SIOPv2 against the Relying Party and optionally use OpenID4VP to transport Verifiable Credentials. It is integrated into Key Management system, DID providers and VC modules. Supports JWT and JSON-LD VCs and has support for the [JWT VC Presentation Profile](https://identity.foundation/jwt-vc-presentation-profile/)                              |
 | [SIOPv2 Relying Party logic with OID4VP support](./packages/siopv2-oid4vp-rp-auth) | Plugin for a Relying Party agent context, containing the core logic to create Authorization Requests, verify Authorization Responses, as well as handle/manage Presentation Definitions and verifications (OID4VP). It is integrated into the Key Management system, DID providers and VC modules. Supports JWT and JSON-LD VCs and has support for the [JWT VC Presentation Profile](https://identity.foundation/jwt-vc-presentation-profile/) |
 | [SIOPv2 Relying Party REST API](./packages/siopv2-oid4vp-rp-rest-api)              | Plugin for a Relying Party agent context, it exposes a REST API which allows to integrate into webapps/websites. Support sessions and multiple presentation definitions. You typically run this as a separate agent to your application, but it could be integrated if you want.                                                                                                                                                                |
 | [SIOPv2 Relying Party REST client](./packages/siopv2-oid4vp-rp-rest-client)        | Plugin for a Relying Party webapp, it exposes a REST client, allowing for easy integration and communication from the Webapp with the RESP API of the Agent. Support creating QR codes for different Presentation Definitions as well as Session Handling.                                                                                                                                                                                      |
 
-## Microsoft :registered: Entra Verified ID
+## Microsoft:registered: Entra Verified ID
 
-The below packages add direct support for Microsoft :registered: Entra Verified ID. These plugins are using Microsoft
+The below packages add direct support for Microsoft:registered: Entra Verified ID. These plugins are using Microsoft
 libraries and REST APIs.
 Please note that you do not have to use these plugins to be able to support Microsoft:registered: Authenticator, have
 your agent
@@ -60,8 +62,8 @@ support for OID4VCI, until that time you will have to use their Request API to i
 
 | Plugin                                                                                 | Description                                                                                                                              |
 |----------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
-| [Microsoft :registered: Azure :registered: Authenticator](./packages/ms-authenticator) | Plugin to authenticate using the Microsoft :registered: Authentication Library (MSAL) against Microsoft :registered: Azure :registered:. |
-| [Entra Verified ID Request API](./packages/ms-request-api)                             | Plugin to use Microsoft :registered: Entra Verified ID's Request API (REST) to issue/verify Verifiable Credentials                       |
+| [Microsoft:registered: Azure :registered: Authenticator](./packages/ms-authenticator) | Plugin to authenticate using the Microsoft:registered: Authentication Library (MSAL) against Microsoft:registered: Azure :registered:. |
+| [Entra Verified ID Request API](./packages/ms-request-api)                             | Plugin to use Microsoft:registered: Entra Verified ID's Request API (REST) to issue/verify Verifiable Credentials                       |
 
 ## Well-known DIDs
 

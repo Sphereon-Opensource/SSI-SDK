@@ -1,17 +1,19 @@
 import { fetch } from 'cross-fetch'
 import {
-  ISIOPv2OID4VPRPRestClient,
   ISiopClientGenerateAuthRequestArgs,
   ISiopClientGetAuthStatusArgs,
-  IRequiredContext,
   ISiopClientRemoveAuthRequestSessionArgs,
+  ISIOPv2OID4VPRPRestClient,
 } from '../types/ISIOPv2OID4VPRPRestClient'
 import Debug from 'debug'
 import { IAgentPlugin } from '@veramo/core'
 import { AuthStatusResponse, GenerateAuthRequestURIResponse } from '@sphereon/ssi-sdk-siopv2-oid4vp-common'
 
-const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-client:SiopV2OID4VpRpRestClient')
+const debug = Debug('sphereon:ssi-sdk-siopv2-oid4vp-rp-rest-client')
 
+/**
+ * @beta
+ */
 export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
   readonly methods: ISIOPv2OID4VPRPRestClient = {
     siopClientRemoveAuthRequestState: this.siopClientRemoveAuthRequestState.bind(this),
@@ -31,7 +33,7 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
     }
   }
 
-  private async siopClientRemoveAuthRequestState(args: ISiopClientRemoveAuthRequestSessionArgs, context: IRequiredContext): Promise<boolean> {
+  private async siopClientRemoveAuthRequestState(args: ISiopClientRemoveAuthRequestSessionArgs): Promise<boolean> {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
     await fetch(this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests/${args.correlationId}`, baseUrl), {
@@ -40,7 +42,7 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
     return true
   }
 
-  private async siopClientGetAuthStatus(args: ISiopClientGetAuthStatusArgs, context: IRequiredContext): Promise<AuthStatusResponse> {
+  private async siopClientGetAuthStatus(args: ISiopClientGetAuthStatusArgs): Promise<AuthStatusResponse> {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
     const url = this.uriWithBase('/webapp/auth-status', baseUrl)
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
@@ -63,8 +65,7 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
   }
 
   private async siopClientCreateAuthRequest(
-    args: ISiopClientGenerateAuthRequestArgs,
-    context: IRequiredContext
+    args: ISiopClientGenerateAuthRequestArgs
   ): Promise<GenerateAuthRequestURIResponse> {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)

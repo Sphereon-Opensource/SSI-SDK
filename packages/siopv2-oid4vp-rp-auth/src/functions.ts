@@ -12,6 +12,7 @@ import {
   ResponseType,
   RevocationVerification,
   RP,
+  RPBuilder,
   Scope,
   SigningAlgo,
   SubjectType,
@@ -79,7 +80,7 @@ export async function createRPBuilder(args: {
   pexOpts?: IPEXOptions | undefined
   definition?: IPresentationDefinition
   context: IRequiredContext
-}) {
+}): Promise<RPBuilder> {
   const { rpOpts, pexOpts, context } = args
   const { didOpts } = rpOpts
   const definition =

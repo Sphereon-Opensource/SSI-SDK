@@ -27,6 +27,8 @@
     "@veramo/cli": "4.2.0",
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",
+    "@veramo/remote-server": "4.2.0",
+    "@veramo/remote-client": "4.2.0",
     "@veramo/utils": "4.2.0",
     "did-resolver": "^4.1.0",
     "nock": "^13.2.1"

@@ -1,5 +1,9 @@
 {
-  "$schema": "http://json.schemastore.org/tsconfig",
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  },
   "compilerOptions": {
     /* Basic Options */
     "target": "ES6" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'. */,
@@ -60,6 +64,7 @@
 
     "resolveJsonModule": true,
     /* Experimental Options */
+    "useUnknownInCatchVariables": false,
     "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
     "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
     "preserveConstEnums": true,

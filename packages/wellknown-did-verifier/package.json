@@ -19,6 +19,8 @@
   },
   "devDependencies": {
     "@veramo/cli": "4.2.0",
+    "@veramo/remote-client": "4.2.0",
+    "@veramo/remote-server": "4.2.0",
     "nock": "^13.2.9"
   },
   "files": [

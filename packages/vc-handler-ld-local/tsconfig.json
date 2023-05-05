@@ -4,7 +4,6 @@
     "rootDir": "src",
     "outDir": "dist",
     "declarationDir": "dist",
-    // https://github.com/transmute-industries/vc.js/issues/60
     "skipLibCheck": true,
     "resolveJsonModule": true
   },

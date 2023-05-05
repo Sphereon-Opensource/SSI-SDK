@@ -14,7 +14,7 @@
 
 # ms-request-api
 
-Microsoft :registered: Entra Verified ID allows you to issue Verifiable Credentials. This SSI-SDK plugin handles issuing a verifiable credential using issuer authentication info and issuer configuration using the Entra Verified ID Request API.
+Microsoft:registered: Entra Verified ID allows you to issue Verifiable Credentials. This SSI-SDK plugin handles issuing a verifiable credential using issuer authentication info and issuer configuration using the Entra Verified ID Request API.
 
 ### Installation
 
