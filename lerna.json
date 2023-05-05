@@ -1,14 +1,22 @@
 {
-  "packages": ["packages/*"],
+  "packages": [
+    "packages/*"
+  ],
   "version": "0.10.0",
-  "npmClient": "yarn",
+  "npmClient": "pnpm",
   "command": {
     "publish": {
-      "allowBranch": ["main", "master"],
+      "allowBranch": [
+        "main",
+        "master"
+      ],
       "conventionalCommits": true,
       "gitRemote": "origin",
       "message": "chore(release): %s"
     }
   },
-  "useWorkspaces": true
+  "useWorkspaces": true,
+  "forceLocal": true,
+  "sort": true,
+  "stream": true
 }

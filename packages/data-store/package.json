@@ -7,10 +7,10 @@
   "scripts": {
     "build": "tsc --build",
     "typeorm": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js --config src/migrations/internal-migrations-ormconfig.ts",
-    "typeorm-sqlite:migration:generate": "npm run typeorm -- migration:generate -c migration-sqlite -d src/migrations/sqlite -n",
-    "typeorm-sqlite:migration:run": "npm run typeorm -- migration:run -c migration-sqlite",
-    "typeorm-postgres:migration:generate": "npm run typeorm -- migration:generate -c migration-postgres -d src/migrations/postgres -n",
-    "typeorm-postgres:migration:run": "npm run typeorm -- migration:run -c migration-postgres"
+    "typeorm-sqlite:migration:generate": "pnpm run typeorm -- migration:generate -c migration-sqlite -d src/migrations/sqlite -n",
+    "typeorm-sqlite:migration:run": "pnpm run typeorm -- migration:run -c migration-sqlite",
+    "typeorm-postgres:migration:generate": "pnpm run typeorm -- migration:generate -c migration-postgres -d src/migrations/postgres -n",
+    "typeorm-postgres:migration:run": "pnpm run typeorm -- migration:run -c migration-postgres"
   },
   "dependencies": {
     "@veramo/core": "4.2.0",

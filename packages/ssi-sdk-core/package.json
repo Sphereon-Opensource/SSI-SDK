@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@scure/base": "^1.1.1",
-    "@sphereon/ssi-types": "^0.10.0",
+    "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0"
   },
   "devDependencies": {

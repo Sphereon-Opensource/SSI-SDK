@@ -12,7 +12,7 @@
   "scripts": {
     "build": "tsc",
     "build:clean": "tsc --build --clean && tsc --build",
-    "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
+    "generate-plugin-schema": "pnpm veramo dev generate-plugin-schema"
   },
   "dependencies": {
     "@digitalcredentials/did-method-key": "^2.0.3",
@@ -27,7 +27,7 @@
     "@mattrglobal/jsonld-signatures-bbs": "^1.1.1",
     "@sphereon/ed25519-signature-2018": "0.7.0-unstable.2",
     "@sphereon/isomorphic-webcrypto": "^2.4.0-unstable.3",
-    "@sphereon/ssi-sdk-core": "^0.10.0",
+    "@sphereon/ssi-sdk-core": "workspace:*",
     "@sphereon/ssi-sdk-ext.did-utils": "^0.11.0",
     "@transmute/ed25519-key-pair": "0.7.0-unstable.80",
     "@transmute/jose-ld": "0.7.0-unstable.80",

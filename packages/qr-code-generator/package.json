@@ -24,16 +24,16 @@
     "@inrupt/jest-jsdom-polyfills": "^1.5.5",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
-    "@types/jest": "^29.4.0",
+    "@types/jest": "^27.5.2",
     "@types/react": "^18.0.28",
     "@types/uuid": "^8.3.4",
     "@veramo/cli": "4.2.0",
     "global-jsdom": "^8.7.0",
-    "jest": "^29.4.3",
-    "jest-environment-jsdom": "^29.4.3",
+    "jest": "^27.5.1",
+    "jest-environment-jsdom": "^27.5.1",
     "jsdom": "^21.1.0",
     "react-dom": "^18.2.0",
-    "ts-jest": "^29.0.5"
+    "ts-jest": "^27.1.5"
   },
   "files": [
     "dist/**/*",
