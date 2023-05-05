@@ -214,29 +214,16 @@
           }
         },
         "IProofPurpose": {
-          "type": "object",
-          "properties": {
-            "term": {
-              "type": "string"
-            },
-            "date": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                {
-                  "type": "number"
-                }
-              ]
-            },
-            "maxTimestampDelta": {
-              "type": "number"
-            }
-          }
+          "type": "string",
+          "enum": [
+            "verificationMethod",
+            "assertionMethod",
+            "authentication",
+            "keyAgreement",
+            "contactAgreement",
+            "capabilityInvocation",
+            "capabilityDelegation"
+          ]
         },
         "VerifiableCredentialSP": {
           "type": "object",
@@ -535,7 +522,7 @@
         "W3CVerifiableCredential": {
           "anyOf": [
             {
-              "$ref": "#/components/schemas/VerifiableCredential"
+              "$ref": "#/components/schemas/IVerifiableCredential"
             },
             {
               "$ref": "#/components/schemas/CompactJWT"
@@ -605,7 +592,7 @@
         },
         "CompactJWT": {
           "type": "string",
-          "description": "Represents a Json Web Token in compact form. \"header.payload.signature\""
+          "description": "Represents a Json Web Token in compact form."
         },
         "VerifiablePresentationSP": {
           "type": "object",
@@ -842,6 +829,9 @@
                   "credential": {
                     "$ref": "#/components/schemas/ICredential"
                   },
+                  "presentation": {
+                    "$ref": "#/components/schemas/IPresentation"
+                  },
                   "verified": {
                     "type": "boolean"
                   },
@@ -870,7 +860,6 @@
                   }
                 },
                 "required": [
-                  "credential",
                   "verified",
                   "log"
                 ]
@@ -887,8 +876,7 @@
             }
           },
           "required": [
-            "verified",
-            "results"
+            "verified"
           ],
           "additionalProperties": {
             "description": "Other options can be specified for verification. They will be forwarded to the lower level modules. that performt the checks"
@@ -1060,12 +1048,260 @@
             "type"
           ]
         },
+        "IPresentation": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "@context": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ICredentialContextType"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ICredentialContextType"
+                  }
+                }
+              ]
+            },
+            "type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            "verifiableCredential": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/W3CVerifiableCredential"
+              }
+            },
+            "presentation_submission": {
+              "$ref": "#/components/schemas/PresentationSubmission"
+            },
+            "holder": {
+              "type": "string"
+            },
+            "verifier": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "@context"
+          ]
+        },
+        "IVerifiableCredential": {
+          "type": "object",
+          "properties": {
+            "proof": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IProof"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IProof"
+                  }
+                }
+              ]
+            },
+            "@context": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ICredentialContextType"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ICredentialContextType"
+                  }
+                }
+              ]
+            },
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "credentialSchema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ICredentialSchemaType"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ICredentialSchemaType"
+                  }
+                }
+              ]
+            },
+            "issuer": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IIssuerId"
+                },
+                {
+                  "$ref": "#/components/schemas/IIssuer"
+                }
+              ]
+            },
+            "issuanceDate": {
+              "type": "string"
+            },
+            "credentialSubject": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "expirationDate": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "credentialStatus": {
+              "$ref": "#/components/schemas/ICredentialStatus"
+            },
+            "description": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "@context",
+            "credentialSubject",
+            "issuanceDate",
+            "issuer",
+            "proof",
+            "type"
+          ]
+        },
+        "IProof": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IProofType"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "created": {
+              "type": "string"
+            },
+            "proofPurpose": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IProofPurpose"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "verificationMethod": {
+              "type": "string"
+            },
+            "challenge": {
+              "type": "string"
+            },
+            "domain": {
+              "type": "string"
+            },
+            "proofValue": {
+              "type": "string"
+            },
+            "jws": {
+              "type": "string"
+            },
+            "jwt": {
+              "type": "string"
+            },
+            "nonce": {
+              "type": "string"
+            },
+            "requiredRevealStatements": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "type",
+            "created",
+            "proofPurpose",
+            "verificationMethod"
+          ]
+        },
         "IError": {
           "type": "object",
           "properties": {
+            "name": {
+              "type": "string"
+            },
+            "errors": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/IError"
+              }
+            },
             "message": {
               "type": "string",
-              "description": "The details of the error being throw or forwarded"
+              "description": "The details of the error being thrown or forwarded"
+            },
+            "stack": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ],
+              "description": "The stack of the error"
+            },
+            "details": {
+              "$ref": "#/components/schemas/IErrorDetails"
             },
             "errorCode": {
               "type": "string",
@@ -1073,6 +1309,20 @@
             }
           },
           "description": "An error object, which can contain a code."
+        },
+        "IErrorDetails": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            },
+            "cause": {
+              "$ref": "#/components/schemas/IError"
+            }
+          }
         },
         "IVerifyStatusResult": {
           "type": "object",

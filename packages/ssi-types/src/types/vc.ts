@@ -233,9 +233,10 @@ export interface IVerifyResult {
    */
   verified: boolean
 
-  results: [
+  results?: [
     {
-      credential: ICredential
+      credential?: ICredential
+      presentation?: IPresentation
       verified: boolean
       error?: IError
       log: [{ id: string; valid: boolean }]
@@ -262,13 +263,30 @@ export interface IVerifyResult {
  * @beta
  */
 export interface IError {
+  name?: string
+
+  errors?: IError[]
+
   /**
-   * The details of the error being throw or forwarded
+   * The details of the error being thrown or forwarded
    */
   message?: string
+
+  /**
+   * The stack of the error
+   */
+  stack?: string | string[]
+
+  details?: IErrorDetails
 
   /**
    * The code for the error being throw
    */
   errorCode?: string
+}
+
+export interface IErrorDetails {
+  code?: string
+  url?: string
+  cause?: IError
 }
