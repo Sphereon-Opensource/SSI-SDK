@@ -827,6 +827,271 @@
             "caller"
           ]
         },
+        "IVerifyResult": {
+          "type": "object",
+          "properties": {
+            "verified": {
+              "type": "boolean",
+              "description": "This value is used to transmit the global result of verification."
+            },
+            "results": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "credential": {
+                    "$ref": "#/components/schemas/ICredential"
+                  },
+                  "verified": {
+                    "type": "boolean"
+                  },
+                  "error": {
+                    "$ref": "#/components/schemas/IError"
+                  },
+                  "log": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "valid": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "valid"
+                      ]
+                    },
+                    "minItems": 1,
+                    "maxItems": 1
+                  }
+                },
+                "required": [
+                  "credential",
+                  "verified",
+                  "log"
+                ]
+              },
+              "minItems": 1,
+              "maxItems": 1
+            },
+            "statusResult": {
+              "$ref": "#/components/schemas/IVerifyStatusResult"
+            },
+            "error": {
+              "$ref": "#/components/schemas/IError",
+              "description": "Optional Error object for the but currently the machine readable errors are not exported from DID-JWT package to be imported here"
+            }
+          },
+          "required": [
+            "verified",
+            "results"
+          ],
+          "additionalProperties": {
+            "description": "Other options can be specified for verification. They will be forwarded to the lower level modules. that performt the checks"
+          }
+        },
+        "ICredential": {
+          "type": "object",
+          "properties": {
+            "@context": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ICredentialContextType"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ICredentialContextType"
+                  }
+                }
+              ]
+            },
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "credentialSchema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ICredentialSchemaType"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ICredentialSchemaType"
+                  }
+                }
+              ]
+            },
+            "issuer": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IIssuerId"
+                },
+                {
+                  "$ref": "#/components/schemas/IIssuer"
+                }
+              ]
+            },
+            "issuanceDate": {
+              "type": "string"
+            },
+            "credentialSubject": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "expirationDate": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "credentialStatus": {
+              "$ref": "#/components/schemas/ICredentialStatus"
+            },
+            "description": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "@context",
+            "type",
+            "issuer",
+            "issuanceDate",
+            "credentialSubject"
+          ]
+        },
+        "ICredentialContextType": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "did": {
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "ICredentialSchemaType": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/ICredentialSchema"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "ICredentialSchema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "IIssuerId": {
+          "type": "string"
+        },
+        "IIssuer": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "ICredentialStatus": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "type"
+          ]
+        },
+        "IError": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "description": "The details of the error being throw or forwarded"
+            },
+            "errorCode": {
+              "type": "string",
+              "description": "The code for the error being throw"
+            }
+          },
+          "description": "An error object, which can contain a code."
+        },
+        "IVerifyStatusResult": {
+          "type": "object",
+          "properties": {
+            "verified": {
+              "type": "boolean"
+            },
+            "error": {
+              "$ref": "#/components/schemas/IError",
+              "description": "Optional Error object for the but currently the machine readable errors are not exported from DID-JWT package to be imported here"
+            }
+          },
+          "required": [
+            "verified"
+          ],
+          "additionalProperties": {
+            "description": "Other options can be specified for verification. They will be forwarded to the lower level modules. that performt the checks"
+          }
+        },
         "IVerifyPresentationLDArgs": {
           "type": "object",
           "properties": {
@@ -980,7 +1245,7 @@
             "$ref": "#/components/schemas/IVerifyCredentialLDArgs"
           },
           "returnType": {
-            "type": "boolean"
+            "$ref": "#/components/schemas/IVerifyResult"
           }
         },
         "verifyPresentationLDLocal": {
@@ -989,7 +1254,7 @@
             "$ref": "#/components/schemas/IVerifyPresentationLDArgs"
           },
           "returnType": {
-            "type": "boolean"
+            "$ref": "#/components/schemas/IVerifyResult"
           }
         }
       }

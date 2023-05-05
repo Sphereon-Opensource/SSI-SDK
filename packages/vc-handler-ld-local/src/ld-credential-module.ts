@@ -19,6 +19,7 @@ import Debug from 'debug'
 import { LdContextLoader } from './ld-context-loader'
 import { LdDocumentLoader } from './ld-document-loader'
 import { LdSuiteLoader } from './ld-suite-loader'
+import { IVerifyResult } from '@sphereon/ssi-types'
 
 // import jsigs from '@digitalcredentials/jsonld-signatures'
 //Support for Typescript added in version 9.0.0
@@ -134,19 +135,21 @@ export class LdCredentialModule {
     fetchRemoteContexts = false,
     purpose: typeof ProofPurpose = new AssertionProofPurpose(),
     checkStatus?: Function
-  ): Promise<boolean> {
+  ): Promise<IVerifyResult> {
     const verificationSuites = this.getAllVerificationSuites()
     this.ldSuiteLoader.getAllSignatureSuites().forEach((suite) => suite.preVerificationCredModification(credential))
-    let result
+    let result: IVerifyResult
     if (credential.proof.type?.includes('BbsBlsSignature2020')) {
       //Should never be null or undefined
       const suite = this.ldSuiteLoader
         .getAllSignatureSuites()
         .find((s) => s.getSupportedVeramoKeyType() === 'Bls12381G2')
         ?.getSuiteForVerification() as BbsBlsSignature2020
+
+      // fixme: check signature of verify method, adjust result if needed
       result = await jsigs.verify(credential, {
         suite,
-        purpose: purpose,
+        purpose,
         documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
         compactProof: true,
       })
@@ -155,29 +158,20 @@ export class LdCredentialModule {
         credential,
         suite: verificationSuites,
         documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
-        purpose: purpose,
+        purpose,
         compactProof: false,
-        checkStatus: checkStatus,
+        checkStatus,
       })
     }
     if (result.verified) {
-      result.results.forEach((item: any) => {
-        const eventData = {
-          credential: credential,
-          result: item,
-        }
-        context.agent.emit(events.CREDENTIAL_VERIFIED, eventData)
-      })
-      return true
+      context.agent.emit(events.CREDENTIAL_VERIFIED, { credential, ...result })
+    } else {
+      // result can include raw Error
+      debug(`Error verifying LD Verifiable Credential: ${JSON.stringify(result, null, 2)}`)
+      console.log(`ERROR verifying LD VC:\n${JSON.stringify(result, null, 2)}`)
+      context.agent.emit(events.CREDENTIAL_VERIFY_FAILED, { credential, ...result })
     }
-
-    // NOT verified.
-
-    // result can include raw Error
-    debug(`Error verifying LD Verifiable Credential: ${JSON.stringify(result, null, 2)}`)
-    console.log(JSON.stringify(result, null, 2))
-    context.agent.emit(events.CREDENTIAL_VERIFY_FAILED, credential)
-    throw Error('Error verifying LD Verifiable Credential')
+    return result
   }
 
   private getAllVerificationSuites() {
@@ -195,9 +189,9 @@ export class LdCredentialModule {
       : new AuthenticationProofPurpose({ domain, challenge }),
     checkStatus?: Function
     //AssertionProofPurpose()
-  ): Promise<boolean> {
+  ): Promise<IVerifyResult> {
     // console.log(JSON.stringify(presentation, null, 2))
-    let result
+    let result: IVerifyResult
     if (presentation.proof.type?.includes('BbsBlsSignature2020')) {
       //Should never be null or undefined
       const suite = this.ldSuiteLoader
@@ -210,15 +204,6 @@ export class LdCredentialModule {
         documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
         compactProof: true,
       })
-
-      if (result.verified) {
-        const eventData = {
-          presentation: presentation,
-          result: result,
-        }
-        context.agent.emit(events.PRESENTATION_VERIFIED, eventData)
-        return true
-      }
     } else {
       result = await vc.verify({
         presentation,
@@ -230,25 +215,16 @@ export class LdCredentialModule {
         compactProof: false,
         checkStatus,
       })
-
-      if (result.verified && result.presentationResult.verified) {
-        result.presentationResult.results.forEach((item: any) => {
-          const eventData = {
-            presentation: presentation,
-            result: item,
-          }
-          context.agent.emit(events.PRESENTATION_VERIFIED, eventData)
-        })
-        return true
-      }
     }
 
-    // NOT verified.
-
-    // result can include raw Error
-    console.log(`Error verifying LD Verifiable Presentation`)
-    console.log(JSON.stringify(result, null, 2))
-    context.agent.emit(events.PRESENTATION_VERIFY_FAILED, presentation)
-    throw Error('Error verifying LD Verifiable Presentation')
+    if (result.verified && (!result.presentationResult || result.presentationResult.verified)) {
+      context.agent.emit(events.PRESENTATION_VERIFIED, { presentation, ...result })
+    } else {
+      // NOT verified.
+      console.log(`Error verifying LD Verifiable Presentation`)
+      console.log(JSON.stringify(result, null, 2))
+      context.agent.emit(events.PRESENTATION_VERIFY_FAILED, { presentation, ...result })
+    }
+    return result
   }
 }

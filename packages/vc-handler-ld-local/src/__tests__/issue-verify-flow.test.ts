@@ -128,7 +128,65 @@ describe('credential-LD full flow', () => {
       fetchRemoteContexts: true,
     })
 
-    expect(verifiedCredential).toBe(true)
+    expect(verifiedCredential).toMatchObject({
+      log: [
+        {
+          id: 'expiration',
+          valid: true,
+        },
+        {
+          id: 'valid_signature',
+          valid: true,
+        },
+        {
+          id: 'issuer_did_resolves',
+          valid: true,
+        },
+        {
+          id: 'revocation_status',
+          valid: true,
+        },
+      ],
+      results: [
+        {
+          log: [
+            {
+              id: 'expiration',
+              valid: true,
+            },
+            {
+              id: 'valid_signature',
+              valid: true,
+            },
+            {
+              id: 'issuer_did_resolves',
+              valid: true,
+            },
+            {
+              id: 'revocation_status',
+              valid: true,
+            },
+          ],
+          proof: {
+            '@context': ['https://www.w3.org/2018/credentials/v1', 'https://www.w3.org/2018/credentials/examples/v1'],
+            proofPurpose: 'assertionMethod',
+            type: 'Ed25519Signature2018',
+          },
+          purposeResult: {
+            controller: {
+              '@context': ['https://www.w3.org/ns/did/v1', 'https://w3id.org/security/suites/ed25519-2018/v1'],
+            },
+            valid: true,
+          },
+          verificationMethod: {
+            '@context': 'https://w3id.org/security/suites/ed25519-2018/v1',
+            type: 'Ed25519VerificationKey2018',
+          },
+          verified: true,
+        },
+      ],
+      verified: true,
+    })
 
     const presentationPayload: PresentationPayload = {
       holder: didLtoIdentifier.did,
@@ -151,7 +209,98 @@ describe('credential-LD full flow', () => {
       presentationPurpose: new ControllerProofPurpose({ term: 'verificationMethod' }),
     })
 
-    expect(verifiedPresentation).toBe(true)
+    expect(verifiedPresentation).toMatchObject({
+      credentialResults: [
+        {
+          log: [
+            {
+              id: 'expiration',
+              valid: true,
+            },
+            {
+              id: 'valid_signature',
+              valid: true,
+            },
+            {
+              id: 'issuer_did_resolves',
+              valid: true,
+            },
+            {
+              id: 'revocation_status',
+              valid: true,
+            },
+          ],
+          results: [
+            {
+              log: [
+                {
+                  id: 'expiration',
+                  valid: true,
+                },
+                {
+                  id: 'valid_signature',
+                  valid: true,
+                },
+                {
+                  id: 'issuer_did_resolves',
+                  valid: true,
+                },
+                {
+                  id: 'revocation_status',
+                  valid: true,
+                },
+              ],
+              proof: {
+                '@context': ['https://www.w3.org/2018/credentials/v1', 'https://www.w3.org/2018/credentials/examples/v1'],
+                proofPurpose: 'assertionMethod',
+                type: 'Ed25519Signature2018',
+              },
+              purposeResult: {
+                valid: true,
+              },
+              verificationMethod: {
+                '@context': 'https://w3id.org/security/suites/ed25519-2018/v1',
+                type: 'Ed25519VerificationKey2018',
+              },
+              verified: true,
+            },
+          ],
+          verified: true,
+        },
+      ],
+      presentationResult: {
+        results: [
+          {
+            proof: {
+              '@context': ['https://www.w3.org/2018/credentials/v1'],
+              proofPurpose: 'verificationMethod',
+              type: 'Ed25519Signature2018',
+            },
+            purposeResult: {
+              controller: {
+                '@context': 'https://www.w3.org/ns/did/v1',
+                verificationMethod: [
+                  {
+                    type: 'Ed25519VerificationKey2018',
+                  },
+                  {
+                    type: 'Ed25519VerificationKey2018',
+                  },
+                ],
+              },
+              valid: true,
+            },
+            verificationMethod: {
+              '@context': 'https://w3id.org/security/suites/ed25519-2018/v1',
+              type: 'Ed25519VerificationKey2018',
+            },
+            verified: true,
+          },
+        ],
+        verified: true,
+      },
+      verified: true,
+    })
   })
 
   it('should verify issued credential with Factom issuer', async () => {
@@ -201,6 +350,91 @@ describe('credential-LD full flow', () => {
       fetchRemoteContexts: true,
     })
 
-    expect(verifiedCredential).toBe(true)
+    expect(verifiedCredential).toMatchObject({
+      log: [
+        {
+          id: 'expiration',
+          valid: true,
+        },
+        {
+          id: 'valid_signature',
+          valid: true,
+        },
+        {
+          id: 'issuer_did_resolves',
+          valid: true,
+        },
+        {
+          id: 'revocation_status',
+          valid: true,
+        },
+      ],
+      results: [
+        {
+          log: [
+            {
+              id: 'expiration',
+              valid: true,
+            },
+            {
+              id: 'valid_signature',
+              valid: true,
+            },
+            {
+              id: 'issuer_did_resolves',
+              valid: true,
+            },
+            {
+              id: 'revocation_status',
+              valid: true,
+            },
+          ],
+          proof: {
+            '@context': [
+              'https://www.w3.org/2018/credentials/v1',
+              'https://sphereon-opensource.github.io/vc-contexts/myc/bedrijfsinformatie-v1.jsonld',
+            ],
+            type: 'Ed25519Signature2018',
+          },
+          purposeResult: {
+            controller: {
+              '@context': ['https://www.w3.org/ns/did/v1'],
+              assertionMethod: [
+                {
+                  type: 'Ed25519VerificationKey2018',
+                },
+              ],
+              authentication: [
+                {
+                  type: 'Ed25519VerificationKey2018',
+                },
+              ],
+              capabilityInvocation: [
+                {
+                  type: 'Ed25519VerificationKey2018',
+                },
+              ],
+              keyAgreement: [
+                {
+                  type: 'Ed25519VerificationKey2018',
+                },
+              ],
+              verificationMethod: [
+                {
+                  type: 'Ed25519VerificationKey2018',
+                },
+              ],
+            },
+            valid: true,
+          },
+          verificationMethod: {
+            '@context': 'https://w3id.org/security/suites/ed25519-2018/v1',
+            type: 'Ed25519VerificationKey2018',
+          },
+          verified: true,
+        },
+      ],
+      verified: true,
+    })
   })
 })
