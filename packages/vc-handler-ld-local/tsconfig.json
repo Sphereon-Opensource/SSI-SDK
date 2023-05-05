@@ -9,5 +9,15 @@
     "resolveJsonModule": true
   },
   "include": ["src/**/*.json", "src/**/*.ts"],
-  "references": [{ "path": "../ssi-sdk-core" }, { "path": "../did-utils" }]
+  "references": [
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../did-utils"
+    },
+    {
+      "path": "../agent-config"
+    }
+  ]
 }

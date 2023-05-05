@@ -1,5 +1,4 @@
-import { getConfig } from '@veramo/cli/build/setup'
-import { createObjects } from '@veramo/cli/build/lib/objectCreator'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
 import { Connection } from 'typeorm'
 import wellKnownDidIssuerAgentLogic from './shared/wellKnownDidIssuerAgentLogic'
 
@@ -9,8 +8,8 @@ let agent: any
 let dbConnection: Promise<Connection>
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/wellknown-did-issuer/agent.yml')
-  const { localAgent, db } = createObjects(config, { localAgent: '/agent', db: '/dbConnection' })
+  const config = await getConfig('packages/wellknown-did-issuer/agent.yml')
+  const { localAgent, db } = await createObjects(config, { localAgent: '/agent', db: '/dbConnection' })
   dbConnection = db
 
   const DID = 'did:key:z6MkoTHsgNNrby8JzCNQ1iRLyW5QQ6R8Xuu6AA8igGrMVPUM'

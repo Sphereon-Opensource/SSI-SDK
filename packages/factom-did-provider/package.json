@@ -16,7 +16,7 @@
     "debug": "^4.3.4"
   },
   "devDependencies": {
-    "@veramo/cli": "4.2.0",
+    "@sphereon/ssi-sdk-agent-config": "^0.10.0",
     "@veramo/data-store": "4.2.0",
     "@veramo/did-manager": "4.2.0",
     "@veramo/did-resolver": "4.2.0",

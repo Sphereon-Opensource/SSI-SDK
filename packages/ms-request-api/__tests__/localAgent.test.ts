@@ -1,5 +1,4 @@
-import { getConfig } from '@veramo/cli/build/setup'
-import { createObjects } from '@veramo/cli/build/lib/objectCreator'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
 import msRequestApiAgentLogic from './shared/msRequestApiAgentLogic'
 
 jest.setTimeout(30000)
@@ -7,8 +6,8 @@ jest.setTimeout(30000)
 let agent: any
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/ms-request-api/agent.yml')
-  const { localAgent } = createObjects(config, { localAgent: '/agent' })
+  const config = await getConfig('packages/ms-request-api/agent.yml')
+  const { localAgent } = await createObjects(config, { localAgent: '/agent' })
   agent = localAgent
   return true
 }

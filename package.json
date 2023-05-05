@@ -7,6 +7,7 @@
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
   "scripts": {
+    "preinstall": "yarn global add @veramo/cli@4.2.0",
     "build": "lerna run build && yarn build:copyfiles && yarn build:schema-api",
     "build:clean": "lerna clean -y && lerna bootstrap && lerna run build:clean --concurrency 1 && yarn build:copyfiles && yarn build:schema-api",
     "build:schema-api": "lerna run extract-api && lerna run generate-plugin-schema",

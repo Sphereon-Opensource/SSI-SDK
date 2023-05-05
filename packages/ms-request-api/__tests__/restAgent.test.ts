@@ -5,8 +5,7 @@ import { Server } from 'http'
 import { IAgent, createAgent, IAgentOptions, IDataStore, IDataStoreORM } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
-import { getConfig } from '@veramo/cli/build/setup'
-import { createObjects } from '@veramo/cli/build/lib/objectCreator'
+import { getConfig, createObjects } from '@sphereon/ssi-sdk-agent-config'
 import { IMsRequestApi } from '../src/types/IMsRequestApi'
 import msRequestApiAgentLogic from './shared/msRequestApiAgentLogic'
 
@@ -31,8 +30,8 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/ms-request-api/agent.yml')
-  const { agent } = createObjects(config, { agent: '/agent' })
+  const config = await getConfig('packages/ms-request-api/agent.yml')
+  const { agent } = await createObjects(config, { agent: '/agent' })
   serverAgent = agent
 
   const agentRouter = AgentRouter({

@@ -12,7 +12,7 @@
   "scripts": {
     "build": "tsc --build",
     "build:clean": "tsc --build --clean && tsc --build",
-    "generate-plugin-schema": "yarn veramo dev generate-plugin-schema"
+    "generate-plugin-schema": "veramo dev generate-plugin-schema"
   },
   "dependencies": {
     "@digitalcredentials/did-method-key": "^2.0.3",
@@ -59,7 +59,7 @@
     "@types/nock": "^11.1.0",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
-    "@veramo/cli": "4.2.0",
+    "@sphereon/ssi-sdk-agent-config": "^0.10.0",
     "@veramo/credential-w3c": "4.2.0",
     "@veramo/data-store": "4.2.0",
     "@veramo/did-manager": "4.2.0",
@@ -68,6 +68,8 @@
     "@veramo/key-manager": "4.2.0",
     "@veramo/kms-local": "4.2.0",
     "@veramo/utils": "4.2.0",
+    "@veramo/remote-server": "4.2.0",
+    "@veramo/remote-client": "4.2.0",
     "copyfiles": "^2.4.1",
     "did-resolver": "^4.1.0",
     "nock": "^13.2.1",

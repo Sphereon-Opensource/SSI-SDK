@@ -778,7 +778,7 @@
                 },
                 "arguments": {},
                 "caller": {
-                  "$ref": "#/components/schemas/interface-ib.es5.d.ts-10057-11521-ib.es5.d.ts-0-217681"
+                  "$ref": "#/components/schemas/interface-583035080-10057-11521-583035080-0-217681"
                 }
               },
               "required": [
@@ -795,7 +795,7 @@
           ],
           "description": "Encapsulates the parameters required to verify a\n {@link  https://www.w3.org/TR/vc-data-model/#credentials | W3C Verifiable Credential }"
         },
-        "interface-ib.es5.d.ts-10057-11521-ib.es5.d.ts-0-217681": {
+        "interface-583035080-10057-11521-583035080-0-217681": {
           "type": "object",
           "properties": {
             "prototype": {},
@@ -804,7 +804,7 @@
             },
             "arguments": {},
             "caller": {
-              "$ref": "#/components/schemas/interface-ib.es5.d.ts-10057-11521-ib.es5.d.ts-0-217681"
+              "$ref": "#/components/schemas/interface-583035080-10057-11521-583035080-0-217681"
             }
           },
           "required": [
@@ -1388,7 +1388,7 @@
                 },
                 "arguments": {},
                 "caller": {
-                  "$ref": "#/components/schemas/interface-ib.es5.d.ts-10057-11521-ib.es5.d.ts-0-217681"
+                  "$ref": "#/components/schemas/interface-583035080-10057-11521-583035080-0-217681"
                 }
               },
               "required": [
