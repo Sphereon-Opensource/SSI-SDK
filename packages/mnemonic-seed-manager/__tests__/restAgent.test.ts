@@ -1,6 +1,6 @@
 import 'cross-fetch/polyfill'
-const crypto = require('crypto');
-globalThis.crypto = crypto;
+const crypto = require('crypto')
+globalThis.crypto = crypto
 import * as fs from 'fs'
 import { Server } from 'http'
 

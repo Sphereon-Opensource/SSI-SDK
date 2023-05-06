@@ -1,5 +1,5 @@
-const crypto = require('crypto');
-globalThis.crypto = crypto;
+const crypto = require('crypto')
+globalThis.crypto = crypto
 
 import * as fs from 'fs'
 
@@ -21,7 +21,6 @@ const KMS_SECRET_KEY = 'd17c8674f5db9396f8eecccde25e882bb0336316bc411ae38dc1f3dc
 let databaseFile = 'database.sqlite'
 let dbConnection: OrPromise<DataSource>
 let agent: any
-
 
 const setup = async (): Promise<boolean> => {
   const db: OrPromise<DataSource> = new DataSource({
