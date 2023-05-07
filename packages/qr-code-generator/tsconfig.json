@@ -5,5 +5,10 @@
     "outDir": "dist",
     "declarationDir": "dist",
     "jsx": "react"
-  }
+  },
+  "references": [
+    {
+      "path": "../agent-config"
+    }
+  ]
 }

@@ -1,5 +1,5 @@
 import Debug from 'debug'
-import { OrPromise } from '@veramo/utils'
+import { OrPromise } from '@sphereon/ssi-types'
 import {
   IAddIdentityArgs,
   IGetIdentityArgs,
@@ -36,7 +36,7 @@ import { OpenIdConfigEntity } from '../entities/contact/OpenIdConfigEntity'
 import { DidAuthConfigEntity } from '../entities/contact/DidAuthConfigEntity'
 import { DataSource, In } from 'typeorm'
 
-const debug = Debug('sphereon:typeorm:contact-store')
+const debug = Debug('sphereon:ssi-sdk:contact-store')
 
 export class ContactStore extends AbstractContactStore {
   private readonly dbConnection: OrPromise<DataSource>

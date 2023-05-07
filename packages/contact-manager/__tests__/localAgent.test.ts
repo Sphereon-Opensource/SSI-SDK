@@ -1,5 +1,4 @@
-import { getConfig } from '@veramo/cli/build/setup'
-import { createObjects } from '@veramo/cli/build/lib/objectCreator'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
 import { Connection } from 'typeorm'
 
 jest.setTimeout(30000)
@@ -10,8 +9,8 @@ let dbConnection: Promise<Connection>
 let agent: any
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/contact-manager/agent.yml')
-  const { localAgent, db } = createObjects(config, { localAgent: '/agent', db: '/dbConnection' })
+  const config = await getConfig('packages/contact-manager/agent.yml')
+  const { localAgent, db } = await createObjects(config, { localAgent: '/agent', db: '/dbConnection' })
   agent = localAgent
   dbConnection = db
   await (await dbConnection).dropDatabase()

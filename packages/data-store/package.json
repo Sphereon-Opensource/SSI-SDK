@@ -14,10 +14,13 @@
   },
   "dependencies": {
     "@veramo/core": "4.2.0",
-    "@veramo/utils": "4.2.0",
+    "@sphereon/ssi-types": "^0.10.0",
     "class-validator": "^0.14.0",
     "debug": "^4.3.4",
     "typeorm": "^0.3.12"
+  },
+  "devDependencies": {
+    "sqlite3": "^5.1.6"
   },
   "files": [
     "dist/**/*",

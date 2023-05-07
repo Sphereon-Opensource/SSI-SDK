@@ -13,7 +13,7 @@
   "scripts": {
     "build": "tsc --build",
     "build:clean": "tsc --build --clean && tsc --build",
-    "generate-plugin-schema": "pnpm veramo dev generate-plugin-schema"
+    "generate-plugin-schema": "veramo dev generate-plugin-schema"
   },
   "dependencies": {
     "@sphereon/ssi-sdk-siopv2-oid4vp-common": "workspace:*",
@@ -21,7 +21,6 @@
     "cross-fetch": "^3.1.5"
   },
   "devDependencies": {
-    "@veramo/cli": "4.2.0",
     "did-resolver": "^4.1.0",
     "typescript": "4.9.5",
     "ts-node": "^10.9.1",

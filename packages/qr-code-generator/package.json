@@ -27,7 +27,7 @@
     "@types/jest": "^27.5.2",
     "@types/react": "^18.0.28",
     "@types/uuid": "^8.3.4",
-    "@veramo/cli": "4.2.0",
+    "@sphereon/ssi-sdk-agent-config": "^0.10.0",
     "global-jsdom": "^8.7.0",
     "jest": "^27.5.1",
     "jest-environment-jsdom": "^27.5.1",

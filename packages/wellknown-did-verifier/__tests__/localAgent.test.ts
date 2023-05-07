@@ -1,5 +1,5 @@
-import { getConfig } from '@veramo/cli/build/setup'
-import { createObjects } from '@veramo/cli/build/lib/objectCreator'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
+
 import { ServiceTypesEnum } from '@sphereon/wellknown-dids-client'
 import wellKnownDidVerifierAgentLogic from './shared/wellKnownDidVerifierAgentLogic'
 
@@ -8,8 +8,8 @@ jest.setTimeout(30000)
 let agent: any
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/wellknown-did-verifier/agent.yml')
-  const { localAgent } = createObjects(config, { localAgent: '/agent' })
+  const config = await getConfig('packages/wellknown-did-verifier/agent.yml')
+  const { localAgent } = await createObjects(config, { localAgent: '/agent' })
 
   await localAgent.registerSignatureVerification(
     {

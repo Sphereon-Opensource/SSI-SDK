@@ -31,7 +31,6 @@
   },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.0",
-    "@veramo/cli": "4.2.0",
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",
     "@veramo/utils": "4.2.0",

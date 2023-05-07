@@ -6,5 +6,15 @@
     "declarationDir": "dist",
     "esModuleInterop": true
   },
-  "references": [{ "path": "../ssi-types" }, { "path": "../ssi-sdk-core" }]
+  "references": [
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../agent-config"
+    }
+  ]
 }

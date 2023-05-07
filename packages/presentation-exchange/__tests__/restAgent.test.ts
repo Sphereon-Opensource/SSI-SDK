@@ -5,8 +5,7 @@ import { createAgent, IAgent, IAgentOptions, IDataStore } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
-import { getConfig } from '@veramo/cli/build/setup'
-import { createObjects } from '@veramo/cli/build/lib/objectCreator'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
 import { IPresentationExchange, PresentationExchange } from '../src'
 import { Resolver } from 'did-resolver'
 import { getDidKeyResolver } from '@veramo/did-provider-key'
@@ -39,9 +38,9 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/presentation-exchange/agent.yml')
+  const config = await getConfig('packages/presentation-exchange/agent.yml')
   // config.agent.$args[0].plugins[1].$args[0] = presentationSignCallback
-  const { agent } = createObjects(config, { agent: '/agent' })
+  const { agent } = await createObjects(config, { agent: '/agent' })
   // agent.registerCustomApprovalForSiop({ key: 'success', customApproval: () => Promise.resolve() })
   // agent.registerCustomApprovalForSiop({ key: 'failure', customApproval: () => Promise.reject(new Error('denied')) })
   serverAgent = agent

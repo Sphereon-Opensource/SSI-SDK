@@ -64,9 +64,7 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
     }
   }
 
-  private async siopClientCreateAuthRequest(
-    args: ISiopClientGenerateAuthRequestArgs
-  ): Promise<GenerateAuthRequestURIResponse> {
+  private async siopClientCreateAuthRequest(args: ISiopClientGenerateAuthRequestArgs): Promise<GenerateAuthRequestURIResponse> {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
     const url = this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests`, baseUrl)

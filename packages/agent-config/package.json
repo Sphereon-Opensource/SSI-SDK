@@ -1,5 +1,5 @@
 {
-  "name": "@sphereon/ms-authenticator",
+  "name": "@sphereon/ssi-sdk-agent-config",
   "version": "0.10.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
@@ -9,25 +9,20 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@azure/msal-common": "^11.0.0",
-    "@azure/msal-node": "^1.16.0",
-    "@veramo/core": "4.2.0",
-    "cross-fetch": "^3.1.5"
+    "jsonpointer": "^5.0.1",
+    "url-parse": "^1.5.10",
+    "yaml": "^2.2.2",
+    "@veramo/core": "4.2.0"
   },
   "devDependencies": {
-    "@types/jest": "^27.5.2",
-    "jest": "^27.5.1",
-    "prettier": "^2.4.1",
-    "ts-jest": "^27.1.5"
+    "@types/url-parse": "^1.4.8"
   },
   "files": [
     "dist/**/*",
     "src/**/*",
     "README.md",
-    "plugin.schema.json",
     "LICENSE"
   ],
-  "private": false,
   "publishConfig": {
     "access": "public"
   },
@@ -35,11 +30,8 @@
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
   "keywords": [
-    "Microsoft",
-    "msal",
-    "Active Directory",
     "Sphereon",
     "SSI",
-    "Veramo"
+    "Agent"
   ]
 }
