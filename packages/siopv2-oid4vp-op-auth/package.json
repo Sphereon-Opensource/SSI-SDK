@@ -32,8 +32,6 @@
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.0",
     "@sphereon/ssi-sdk-agent-config": "^0.10.0",
-    "@veramo/remote-client": "4.2.0",
-    "@veramo/remote-server": "4.2.0",
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",
     "@veramo/remote-client": "4.2.0",

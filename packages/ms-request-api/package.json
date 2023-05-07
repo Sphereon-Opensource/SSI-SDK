@@ -26,6 +26,7 @@
   "devDependencies": {
     "@types/uuid": "^9.0.1",
     "uuid": "^9.0.0",
+    "sqlite3": "^5.1.6",
     "@veramo/data-store": "4.2.0",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
