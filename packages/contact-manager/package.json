@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-contact-manager",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,12 +14,12 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk-data-store": "^0.10.0",
+    "@sphereon/ssi-sdk-data-store": "^0.11.0",
     "cross-fetch": "^3.1.5",
     "typeorm": "^0.3.12"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk-agent-config": "^0.10.0",
+    "@sphereon/ssi-sdk-agent-config": "^0.11.0",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0"
   },

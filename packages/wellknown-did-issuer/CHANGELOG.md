@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.11.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.10.1...v0.11.0) (2023-05-07)
+
+### Features
+
+- Create new agent-config module to replace the deps on Veramo cli, which pulls in everything ([6ac4ec0](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6ac4ec0469ef2bd2344da0a2f7e6c9673c20e232))
+- Create new agent-config module to replace the deps on Veramo cli, which pulls in everything ([673856f](https://github.com/Sphereon-Opensource/SSI-SDK/commit/673856f587885743300aaafea791e3696d9c456f))
+
 # [0.10.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.9.0...v0.10.0) (2023-04-30)
 
 ### Bug Fixes

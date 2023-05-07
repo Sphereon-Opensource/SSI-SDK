@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-agent-config",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,10 +9,10 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
+    "@veramo/core": "4.2.0",
     "jsonpointer": "^5.0.1",
     "url-parse": "^1.5.10",
-    "yaml": "^2.2.2",
-    "@veramo/core": "4.2.0"
+    "yaml": "^2.2.2"
   },
   "devDependencies": {
     "@types/url-parse": "^1.4.8"
