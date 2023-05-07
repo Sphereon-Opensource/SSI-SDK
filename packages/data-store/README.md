@@ -25,7 +25,7 @@ A store that exposes simple store/get methods for contacts and identities.
 ## Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk-data-store
+yarn add @sphereon/ssi-sdk.data-store
 ```
 
 ## Build

@@ -1,0 +1,67 @@
+{
+  "name": "@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth",
+  "version": "0.11.0",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "veramo": {
+    "pluginInterfaces": {
+      "ISIOPv2RP": "./src/types/ISIOPv2RP.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build"
+  },
+  "dependencies": {
+    "@sphereon/did-auth-siop": "^0.3.1-unstable.1",
+    "@sphereon/pex": "2.0.1",
+    "@sphereon/ssi-sdk.core": "workspace:*",
+    "@sphereon/ssi-sdk-ext.did-utils": "^0.12.0",
+    "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:*",
+    "@sphereon/ssi-sdk.presentation-exchange": "workspace:*",
+    "@sphereon/ssi-types": "workspace:*",
+    "@sphereon/wellknown-dids-client": "^0.1.3",
+    "@types/uuid": "^9.0.1",
+    "@veramo/core": "4.2.0",
+    "@veramo/credential-w3c": "4.2.0",
+    "@veramo/kv-store": "file:.yalc/@veramo/kv-store",
+    "cross-fetch": "^3.1.5",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@sphereon/did-uni-client": "^0.6.0",
+    "@veramo/did-provider-key": "4.2.0",
+    "@veramo/did-resolver": "4.2.0",
+    "@veramo/utils": "4.2.0",
+    "did-resolver": "^4.1.0",
+    "nock": "^13.2.1"
+  },
+  "files": [
+    ".yalc/**/*",
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "plugin.schema.json",
+    "LICENSE"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sphereon",
+    "SSI",
+    "Veramo",
+    "DID",
+    "SIOP",
+    "SIOPv2",
+    "OID4VP",
+    "Presentation Exchange",
+    "OpenID Connect",
+    "Authenticator"
+  ]
+}

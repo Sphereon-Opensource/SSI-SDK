@@ -1,4 +1,4 @@
-import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
+import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
 import { CredentialPayload, IAgentContext, IAgentPlugin, IIdentifier, IKey, IResolver, PresentationPayload } from '@veramo/core'
 import { AbstractPrivateKeyStore } from '@veramo/key-manager'
 import { _ExtendedIKey, extractIssuer, isDefined, MANDATORY_CREDENTIAL_CONTEXT, OrPromise, processEntryToArray, RecordLike } from '@veramo/utils'
@@ -17,7 +17,7 @@ import {
   IVerifyCredentialLDArgs,
   IVerifyPresentationLDArgs,
 } from '../types'
-import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-did-utils'
+import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IVerifyResult } from '@sphereon/ssi-types'
 
 const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')

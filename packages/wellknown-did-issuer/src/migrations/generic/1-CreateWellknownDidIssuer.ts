@@ -9,7 +9,7 @@ export class CreateWellknownDidIssuer1661162010000 implements MigrationInterface
   name = 'CreateWellknownDidIssuer1661162010000'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    debug('migration: creating mnemonic tables')
+    debug('migration: creating well-known DID tables')
     const dbType = queryRunner.connection.driver.options.type
     if (dbType === 'postgres') {
       debug('using postgres migration file')
@@ -31,7 +31,7 @@ export class CreateWellknownDidIssuer1661162010000 implements MigrationInterface
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    debug('reverting mnemonic tables')
+    debug('reverting well-known DID tables')
     const dbType = queryRunner.connection.driver.options.type
     if (dbType === 'postgres') {
       debug('using postgres migration file')

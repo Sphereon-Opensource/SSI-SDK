@@ -16,26 +16,22 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
       - name: Use Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-
-#      - name: Get yarn cache directory path
-#        id: yarn-cache-dir-path
-#        run: echo "::set-output name=dir::$(yarn cache dir)"
-#      - uses: actions/cache@v2
-#        id: yarn-cache
-#        with:
-#          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-#          key: ${{ runner.os }}-yarn-2-${{ hashFiles('**/package.json') }}
+          cache: 'pnpm'
+      - run: pnpm add -g pnpm
 
       - run: yarn install --frozen-lockfile
-      - run: yarn bootstrap
-      - run: yarn build
+      - run: pnpm install
+      - run: pnpm build
       - name: run CI tests
         env:
           INCLUDE_POSTGRES_TESTS: true
@@ -48,5 +44,5 @@ jobs:
           SPHEREON_SSI_MSAL_CLIENT_SECRET: ${{ secrets.SPHEREON_SSI_MSAL_CLIENT_SECRET }}
           SPHEREON_SSI_MSAL_USERNAME: ${{ secrets.SPHEREON_SSI_MSAL_USERNAME }}
           SPHEREON_SSI_MSAL_PASSWORD: ${{ secrets.SPHEREON_SSI_MSAL_PASSWORD }}
-        run: yarn test:ci
+        run: pnpm test:ci
       - run: npx codecov

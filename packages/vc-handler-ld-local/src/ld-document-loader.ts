@@ -25,8 +25,6 @@ export class LdDocumentLoader {
 
   getLoader(context: IAgentContext<IResolver>, attemptToFetchContexts = false) {
     return extendContextLoader(async (url: string) => {
-      // console.log(`resolving context for: ${url}`)
-
       // did resolution
       if (url.toLowerCase().startsWith('did:')) {
         let didDoc: DIDDocument | null
@@ -78,7 +76,6 @@ export class LdDocumentLoader {
         // and LD suites to be fixed specifically within the Veramo LD Suites definition
         this.ldSuiteLoader.getAllSignatureSuites().forEach((x) => x.preDidResolutionModification(url, didDoc as DIDDocument))
 
-        // console.log(`Returning from Documentloader: ${JSON.stringify(returnDocument)}`)
         return {
           contextUrl: null,
           documentUrl: url,
@@ -97,7 +94,7 @@ export class LdDocumentLoader {
         if (attemptToFetchContexts) {
           debug('WARNING: attempting to fetch the doc directly for ', url)
           try {
-            const response = await fetch(url)
+            const response = await fetch(url, { redirect: 'follow' })
             if (response.status === 200) {
               const document = await response.json()
               // fixme: The VC API returns an _id object for RL Credentials, which is not allowed, so delete it here for now
@@ -116,7 +113,7 @@ export class LdDocumentLoader {
         }
       }
 
-      debug(`WARNING: Possible unknown context/identifier for ${url} \n falling back to default documentLoader`)
+      console.log(`WARNING: Possible unknown context/identifier for ${url} \n falling back to default documentLoader`)
 
       return vc.defaultDocumentLoader(url)
     })

@@ -1,0 +1,10 @@
+{
+  "version": "v1",
+  "packages": {
+    "@veramo/kv-store": {
+      "version": "4.3.0",
+      "signature": "bfd8bfc89f0050ba31664b2d7c3efc7a",
+      "file": true
+    }
+  }
+}

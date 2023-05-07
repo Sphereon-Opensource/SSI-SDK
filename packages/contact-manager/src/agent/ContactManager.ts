@@ -14,7 +14,7 @@ import {
   IGetContactsArgs,
   IGetContactArgs,
 } from '../types/IContactManager'
-import { IContact, IIdentity, AbstractContactStore } from '@sphereon/ssi-sdk-data-store'
+import { IContact, IIdentity, AbstractContactStore } from '@sphereon/ssi-sdk.data-store'
 
 /**
  * {@inheritDoc IContactManager}

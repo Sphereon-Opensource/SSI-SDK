@@ -5,7 +5,7 @@ import { Server } from 'http'
 import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
-import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 
 import { IWellKnownDidVerifier } from '../src/types/IWellKnownDidVerifier'
 import { ServiceTypesEnum } from '@sphereon/wellknown-dids-client'

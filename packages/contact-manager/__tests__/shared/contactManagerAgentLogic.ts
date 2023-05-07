@@ -1,5 +1,5 @@
 import { TAgent } from '@veramo/core'
-import { IContactManager } from '../../src/types/IContactManager'
+import { IContactManager } from '../../src'
 import { CorrelationIdentifierEnum, IContact, IdentityRoleEnum, IIdentity } from '../../../data-store/src'
 
 type ConfiguredAgent = TAgent<IContactManager>

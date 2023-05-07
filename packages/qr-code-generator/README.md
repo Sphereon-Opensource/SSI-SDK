@@ -16,7 +16,7 @@ It is tailored towards React and React-Native but also provides textual represen
 ### Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk-qr-code-generator
+yarn add @sphereon/ssi-sdk.qr-code-generator
 ```
 
 ### Build
@@ -36,7 +36,7 @@ recipient to either:
 #### Importing the plugin
 
 ```typescript
-import { QrCodeProvider } from '@sphereon/ssi-sdk-qr-code-generator'
+import { QrCodeProvider } from '@sphereon/ssi-sdk.qr-code-generator'
 
 // Include in the interface
 // const agent = createAgent<...  QrCodeProvider>
@@ -51,7 +51,7 @@ plugins: [...new QrCodeProvider()]
 #### Inside the component we can declare or get the values to pass to QR Code plugin
 
 ```typescript
-import { WaciOobProps } from '@sphereon/ssi-sdk-qr-code-generator'
+import { WaciOobProps } from '@sphereon/ssi-sdk.qr-code-generator'
 
 function getOobQrCodeProps(): QRRenderingProps {
   return {

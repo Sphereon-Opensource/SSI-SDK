@@ -2,7 +2,7 @@ import { purposes } from '@digitalcredentials/jsonld-signatures'
 import * as vc from '@digitalcredentials/vc'
 import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
 import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
-import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
+import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
 import { events } from './types'
 import {
   CredentialPayload,
@@ -190,7 +190,6 @@ export class LdCredentialModule {
     checkStatus?: Function
     //AssertionProofPurpose()
   ): Promise<IVerifyResult> {
-    // console.log(JSON.stringify(presentation, null, 2))
     let result: IVerifyResult
     if (presentation.proof.type?.includes('BbsBlsSignature2020')) {
       //Should never be null or undefined
@@ -221,8 +220,7 @@ export class LdCredentialModule {
       context.agent.emit(events.PRESENTATION_VERIFIED, { presentation, ...result })
     } else {
       // NOT verified.
-      console.log(`Error verifying LD Verifiable Presentation`)
-      console.log(JSON.stringify(result, null, 2))
+      debug(`Error verifying LD Verifiable Presentation: ${JSON.stringify(result, null, 2)}`)
       context.agent.emit(events.PRESENTATION_VERIFY_FAILED, { presentation, ...result })
     }
     return result

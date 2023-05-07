@@ -74,27 +74,27 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [0.8.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.7.0...v0.8.0) (2022-09-03)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk-vc-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 # [0.7.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.6.0...v0.7.0) (2022-08-05)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk-vc-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 # [0.6.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.5.1...v0.6.0) (2022-07-01)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk-vc-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 # [0.5.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.4.0...v0.5.0) (2022-02-23)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk-vc-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 # [0.4.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.3.4...v0.4.0) (2022-02-11)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk-vc-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 ## [0.3.4](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.3.3...v0.3.4) (2022-02-11)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk-vc-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 ## [0.3.3](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.3.1...v0.3.3) (2022-02-10)
 
@@ -112,7 +112,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.3.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.3.0...v0.3.1) (2022-01-28)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk-vc-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 # [0.3.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.2.0...v0.3.0) (2022-01-16)
 

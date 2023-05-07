@@ -14,12 +14,12 @@
 
 # ms-request-api
 
-Azure Active Directory (Azure AD) Verifiable Credentials allows you to issue a credential. This is a Veramo plugin that handles issuing a verifiable credential using issuer authentication info and issuer configuration.
+Microsoft:registered: Entra Verified ID allows you to issue Verifiable Credentials. This SSI-SDK plugin handles issuing a verifiable credential using issuer authentication info and issuer configuration using the Entra Verified ID Request API.
 
 ### Installation
 
 ```shell
-yarn add @sphereon/ms-request-api
+yarn add @sphereon/ssi-sdk.ms-request-api
 ```
 
 ### Build

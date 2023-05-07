@@ -12,7 +12,7 @@ import {
   URIData,
 } from '../types/IQRCodeGenerator'
 import { DidCommOutOfBandMessage, generateQRCodeReactElement } from './utils'
-import { generateQRCodeReactElementImpl } from './utils/ReactQr'
+import { generateQRCodeReactElementImpl } from './utils/react-qr'
 
 /**
  * {@inheritDoc IQRCodeGenerator}

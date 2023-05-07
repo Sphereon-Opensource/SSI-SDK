@@ -11,7 +11,7 @@ This plugin allows you to run/start an Agent from a yaml configuration. Best use
 ## Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk-agent-config
+yarn add @sphereon/ssi-sdk.agent-config
 ```
 
 ## Build

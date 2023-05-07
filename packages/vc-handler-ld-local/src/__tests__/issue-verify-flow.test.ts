@@ -10,8 +10,7 @@ import { Resolver } from 'did-resolver'
 // @ts-ignore
 import nock from 'nock'
 
-import { LtoDidProvider } from '../../../lto-did-provider/src/lto-did-provider'
-import { IDidConnectionMode } from '../../../lto-did-provider/src/types/lto-provider-types'
+import { LtoDidProvider, IDidConnectionMode } from '@sphereon/ssi-sdk-ext.did-provider-lto'
 import { CredentialHandlerLDLocal } from '../agent/CredentialHandlerLDLocal'
 import { LdDefaultContexts } from '../ld-default-contexts'
 import { SphereonEd25519Signature2018 } from '../suites/Ed25519Signature2018'
@@ -121,7 +120,6 @@ describe('credential-LD full flow', () => {
     })
 
     expect(verifiableCredential).toBeDefined()
-    // console.log(verifiableCredential)
 
     const verifiedCredential = await agent.verifyCredentialLDLocal({
       credential: verifiableCredential,

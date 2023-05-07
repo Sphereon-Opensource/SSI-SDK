@@ -95,7 +95,6 @@ export class SphereonEd25519Signature2018 extends SphereonLdSignature {
 
   // preSigningCredModification(credential: CredentialPayload): void {
   preSigningCredModification(): void {
-    // console.log(credential)
     // nothing to do here
   }
 
