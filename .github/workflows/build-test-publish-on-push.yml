@@ -44,6 +44,11 @@ jobs:
       - run: pnpm build
       - name: run CI tests
         env:
+          SPHEREON_SSI_MSAL_TENANT_ID: ${{ secrets.SPHEREON_SSI_MSAL_TENANT_ID }}
+          SPHEREON_SSI_MSAL_CLIENT_ID: ${{ secrets.SPHEREON_SSI_MSAL_CLIENT_ID }}
+          SPHEREON_SSI_MSAL_CLIENT_SECRET: ${{ secrets.SPHEREON_SSI_MSAL_CLIENT_SECRET }}
+          SPHEREON_SSI_MSAL_USERNAME: ${{ secrets.SPHEREON_SSI_MSAL_USERNAME }}
+          SPHEREON_SSI_MSAL_PASSWORD: ${{ secrets.SPHEREON_SSI_MSAL_PASSWORD }}
           INCLUDE_POSTGRES_TESTS: true
           POSTGRES_HOST: localhost
           POSTGRES_USER: postgres
