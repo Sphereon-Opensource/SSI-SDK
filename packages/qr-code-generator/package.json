@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-qr-code-generator",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "description": "QR Code provider (react)",
   "source": "src/index.ts",
   "main": "dist/index.js",
@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@inrupt/jest-jsdom-polyfills": "^1.5.5",
+    "@sphereon/ssi-sdk-agent-config": "^0.11.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@types/jest": "^27.5.2",

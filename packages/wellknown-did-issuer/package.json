@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-wellknown-did-issuer",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,8 +28,6 @@
     "@types/express": "4.17.13",
     "@types/uuid": "^8.3.4",
     "@sphereon/ssi-sdk-agent-config": "workspace:*",
-    "@veramo/remote-client": "4.2.0",
-    "@veramo/remote-server": "4.2.0",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
     "did-resolver": "^4.1.0",

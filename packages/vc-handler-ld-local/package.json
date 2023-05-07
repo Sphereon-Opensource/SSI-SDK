@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-vc-handler-ld-local",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -48,14 +48,15 @@
     "jsonld-signatures": "^7.0.0"
   },
   "devDependencies": {
-    "ts-node": "^10.9.1",
     "@sphereon/ssi-sdk-ext.did-provider-key": "^0.11.1-next.4",
     "@sphereon/ssi-sdk-ext.did-provider-lto": "^0.11.1-next.4",
     "@sphereon/ssi-sdk-ext.key-manager": "^0.11.1-next.4",
     "@sphereon/ssi-sdk-ext.kms-local": "^0.11.1-next.4",
     "@sphereon/did-uni-client": "^0.6.0",
+    "@sphereon/ssi-sdk-agent-config": "^0.11.0",
     "@transmute/lds-ecdsa-secp256k1-recovery2020": "^0.0.7",
     "@types/nock": "^11.1.0",
+    "@types/node": "18.15.3",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
     "@sphereon/ssi-sdk-agent-config": "workspace:*",
@@ -67,15 +68,15 @@
     "@veramo/did-resolver": "4.2.0",
     "@veramo/key-manager": "4.2.0",
     "@veramo/kms-local": "4.2.0",
-    "@veramo/utils": "4.2.0",
-    "@veramo/remote-server": "4.2.0",
     "@veramo/remote-client": "4.2.0",
+    "@veramo/remote-server": "4.2.0",
+    "@veramo/utils": "4.2.0",
     "copyfiles": "^2.4.1",
     "did-resolver": "^4.1.0",
     "nock": "^13.2.1",
-    "uint8arrays": "^3.1.1",
-    "@types/node": "18.15.3",
-    "typescript": "4.9.5"
+    "ts-node": "^10.9.1",
+    "typescript": "4.9.5",
+    "uint8arrays": "^3.1.1"
   },
   "files": [
     "dist/**/*",
