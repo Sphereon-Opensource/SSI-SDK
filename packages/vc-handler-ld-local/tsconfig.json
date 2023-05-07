@@ -10,6 +10,9 @@
   "include": ["src/**/*.json", "src/**/*.ts"],
   "references": [
     {
+      "path": "../ssi-types"
+    },
+    {
       "path": "../ssi-sdk-core"
     },
     {

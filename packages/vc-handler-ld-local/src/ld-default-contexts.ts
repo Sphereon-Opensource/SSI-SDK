@@ -22,6 +22,8 @@ import contextVCRevocationList2020 from './contexts/vc-revocation-list-2020-v1.j
 export const LdDefaultContexts = new Map([
   ['https://www.w3.org/2018/credentials/v1', contextCredentialV1],
   ['https://w3id.org/security/bbs/v1', contextBBSV1],
+  ['https://w3id.org/did/v1', contextDidV1],
+  ['https://w3.org/ns/did/v1', contextDidV1],
   ['https://www.w3.org/ns/did/v1', contextDidV1],
   ['https://w3id.org/security/v1', contextSecurityV1],
   ['https://w3id.org/security/v2', contextSecurityV2],

@@ -19,7 +19,8 @@
     "typeorm": "^0.3.12"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk-agent-config": "^0.10.0",
+    "@sphereon/ssi-sdk-agent-config": "workspace:*",
+    "@sphereon/ssi-sdk-data-store": "workspace:*",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0"
   },

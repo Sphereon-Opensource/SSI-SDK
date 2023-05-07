@@ -93,7 +93,7 @@ export async function createObjects(config: object, pointers: Record<string, str
     const args = objectConfig['$args']
     // console.log({module, member, type, query: parsed.query})
 
-    if (module.slice(0, 2) === './') {
+    if (module.slice(0, 2) === './' || module.slice(0, 3) === '../') {
       module = resolve(module)
     }
 

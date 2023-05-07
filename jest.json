@@ -36,6 +36,9 @@
     "<rootDir>/packages/siopv2-oid4vp-rp-auth/.yalc/",
     "<rootDir>/packages/siopv2-oid4vp-rp-rest-api/.yalc/"
   ],
+  "transformIgnorePatterns": [
+    "node_modules/(?!(?:.pnpm/)?(nist-weierstrauss|multiformatsgggggg))"
+  ],
   "testMatch": [
     "**/__tests__/**/*.test.*",
     "!**/.yalc/**"

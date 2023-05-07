@@ -1,4 +1,4 @@
-import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
+import { createObjects, getConfig } from '../../agent-config/dist'
 import { Connection } from 'typeorm'
 
 jest.setTimeout(30000)
