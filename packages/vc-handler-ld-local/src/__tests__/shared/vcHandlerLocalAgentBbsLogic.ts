@@ -136,7 +136,24 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
     })
 
     it('Should verify a BBS+ verifiable credential', async () => {
-      await expect(agent.verifyCredentialLDLocal({ credential: verifiableCredential, fetchRemoteContexts: false })).resolves.toEqual(true)
+      await expect(
+        agent.verifyCredentialLDLocal({
+          credential: verifiableCredential,
+          fetchRemoteContexts: false,
+        })
+      ).resolves.toMatchObject({
+        results: [
+          {
+            proof: {
+              '@context': 'https://w3id.org/security/v2',
+              proofPurpose: 'assertionMethod',
+              type: 'sec:BbsBlsSignature2020',
+            },
+            verified: true,
+          },
+        ],
+        verified: true,
+      })
     })
 
     it('Should create a BBS+ verifiable presentation', async () => {
@@ -202,7 +219,19 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
     })
 
     it('Should verify a BBS+ verifiable presentation', async () => {
-      await expect(agent.verifyPresentationLDLocal({ presentation: verifiablePresentation })).resolves.toEqual(true)
+      await expect(agent.verifyPresentationLDLocal({ presentation: verifiablePresentation })).resolves.toMatchObject({
+        results: [
+          {
+            proof: {
+              '@context': 'https://w3id.org/security/v2',
+              proofPurpose: 'assertionMethod',
+              type: 'sec:BbsBlsSignature2020',
+            },
+            verified: true,
+          },
+        ],
+        verified: true,
+      })
     })
   })
 }

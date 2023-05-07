@@ -9,7 +9,7 @@ import { LdSuiteLoader } from './ld-suite-loader'
 
 import { fetch } from 'cross-fetch'
 
-const debug = Debug('veramo:w3c:ld-credential-module-local')
+const debug = Debug('sphereon:ssi-sdk:vc-handler-ld-local')
 
 /**
  * Initializes a list of Veramo-wrapped LD Signature suites and exposes those to the Agent Module

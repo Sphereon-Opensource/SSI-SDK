@@ -6,8 +6,8 @@ import { Connection } from 'typeorm'
 import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
-import { getConfig } from '@veramo/cli/build/setup'
-import { createObjects } from '@veramo/cli/build/lib/objectCreator'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
+
 import { IWellKnownDidIssuer } from '../src/types/IWellKnownDidIssuer'
 import wellKnownDidIssuerAgentLogic from './shared/wellKnownDidIssuerAgentLogic'
 
@@ -33,8 +33,8 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/wellknown-did-issuer/agent.yml')
-  const { agent, db } = createObjects(config, { agent: '/agent', db: '/dbConnection' })
+  const config = await getConfig('packages/wellknown-did-issuer/agent.yml')
+  const { agent, db } = await createObjects(config, { agent: '/agent', db: '/dbConnection' })
   dbConnection = db
 
   const DID = 'did:key:z6MkoTHsgNNrby8JzCNQ1iRLyW5QQ6R8Xuu6AA8igGrMVPUM'

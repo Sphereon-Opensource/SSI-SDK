@@ -7,5 +7,12 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
   },
-  "references": [{ "path": "../ms-authenticator" }]
+  "references": [
+    {
+      "path": "../ms-authenticator"
+    },
+    {
+      "path": "../agent-config"
+    }
+  ]
 }

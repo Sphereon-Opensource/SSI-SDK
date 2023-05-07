@@ -1,8 +1,8 @@
 import 'cross-fetch/polyfill'
 import { Server } from 'http'
 
-import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import { getConfig } from '@veramo/cli/build/setup'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
+
 import { IAgent } from '@veramo/core'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 // @ts-ignore
@@ -21,14 +21,14 @@ let serverAgent: IAgent
 let restServer: Server
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/vc-handler-ld-local/agent.yml')
+  const config = await getConfig('packages/vc-handler-ld-local/agent.yml')
   ;(config.agent.$args[0].plugins[0].$args[0].contextMaps = [LdDefaultContexts /*, customContext*/]),
     (config.agent.$args[0].plugins[0].$args[0].suites = [
       new SphereonEd25519Signature2018(),
       new SphereonEd25519Signature2020(),
       new SphereonBbsBlsSignature2020(),
     ])
-  const { agent } = createObjects(config, { agent: '/agent' })
+  const { agent } = await createObjects(config, { agent: '/agent' })
   serverAgent = agent
 
   const agentRouter = AgentRouter({

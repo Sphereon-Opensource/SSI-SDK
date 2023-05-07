@@ -8,5 +8,9 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false
   },
-  "references": []
+  "references": [
+    {
+      "path": "../ssi-types"
+    }
+  ]
 }

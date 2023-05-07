@@ -6,5 +6,12 @@
     "declarationDir": "dist",
     "strictPropertyInitialization": false
   },
-  "references": [{ "path": "../data-store" }]
+  "references": [
+    {
+      "path": "../data-store"
+    },
+    {
+      "path": "../agent-config"
+    }
+  ]
 }

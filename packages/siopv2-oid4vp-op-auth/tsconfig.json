@@ -5,5 +5,18 @@
     "outDir": "dist",
     "declarationDir": "dist"
   },
-  "references": [{ "path": "../ssi-types" }, { "path": "../presentation-exchange" }, { "path": "../ssi-sdk-core" }]
+  "references": [
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../did-utils"
+    },
+    {
+      "path": "../agent-config"
+    }
+  ]
 }

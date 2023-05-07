@@ -5,8 +5,8 @@ import { Server } from 'http'
 import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
-import { getConfig } from '@veramo/cli/build/setup'
-import { createObjects } from '@veramo/cli/build/lib/objectCreator'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
+
 import { IWellKnownDidVerifier } from '../src/types/IWellKnownDidVerifier'
 import { ServiceTypesEnum } from '@sphereon/wellknown-dids-client'
 import wellKnownDidVerifierAgentLogic from './shared/wellKnownDidVerifierAgentLogic'
@@ -32,8 +32,8 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/wellknown-did-verifier/agent.yml')
-  const { agent } = createObjects(config, { agent: '/agent' })
+  const config = await getConfig('packages/wellknown-did-verifier/agent.yml')
+  const { agent } = await createObjects(config, { agent: '/agent' })
 
   await agent.registerSignatureVerification(
     {

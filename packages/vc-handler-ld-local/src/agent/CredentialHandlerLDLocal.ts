@@ -9,15 +9,16 @@ import { LdContextLoader } from '../ld-context-loader'
 import { LdCredentialModule } from '../ld-credential-module'
 import { LdSuiteLoader } from '../ld-suite-loader'
 import { SphereonLdSignature } from '../ld-suites'
-import { ICredentialHandlerLDLocal } from '../types'
 import {
   ContextDoc,
   ICreateVerifiableCredentialLDArgs,
   ICreateVerifiablePresentationLDArgs,
+  ICredentialHandlerLDLocal,
   IVerifyCredentialLDArgs,
   IVerifyPresentationLDArgs,
-} from '../types/types'
+} from '../types'
 import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
+import { IVerifyResult } from '@sphereon/ssi-types'
 
 const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 
@@ -198,13 +199,13 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   }
 
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyCredentialLDLocal} */
-  public async verifyCredentialLDLocal(args: IVerifyCredentialLDArgs, context: IRequiredContext): Promise<boolean> {
+  public async verifyCredentialLDLocal(args: IVerifyCredentialLDArgs, context: IRequiredContext): Promise<IVerifyResult> {
     const credential = args.credential
     return this.ldCredentialModule.verifyCredential(credential, context, args.fetchRemoteContexts, args.purpose, args.checkStatus)
   }
 
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyPresentationLDLocal} */
-  public async verifyPresentationLDLocal(args: IVerifyPresentationLDArgs, context: IRequiredContext): Promise<boolean> {
+  public async verifyPresentationLDLocal(args: IVerifyPresentationLDArgs, context: IRequiredContext): Promise<IVerifyResult> {
     const presentation = args.presentation
     return this.ldCredentialModule.verifyPresentation(
       presentation,

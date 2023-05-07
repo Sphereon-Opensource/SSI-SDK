@@ -18,9 +18,10 @@
     "@veramo/core": "4.2.0"
   },
   "devDependencies": {
-    "@veramo/cli": "4.2.0",
+    "@sphereon/ssi-sdk-agent-config": "^0.10.0",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
+    "web-did-resolver": "^2.0.23",
     "nock": "^13.2.9"
   },
   "files": [

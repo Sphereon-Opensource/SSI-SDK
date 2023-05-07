@@ -1,6 +1,7 @@
 {
   "files": [],
   "references": [
+    { "path": "agent-config" },
     { "path": "ssi-types" },
     { "path": "ssi-sdk-core" },
     { "path": "ms-authenticator" },
