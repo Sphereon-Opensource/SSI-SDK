@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.11.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.10.1...v0.11.0) (2023-05-07)
+
+### Bug Fixes
+
+- make credential mapper a bit more resilient ([36c420e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/36c420e5070a9233568bbd389ffd8a3190e65ec7))
+- make credential mapper a bit more resilient ([ce5b487](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ce5b487d4b5831aa033615fec9e4a45c19c1f3f7))
+- make credential mapper a bit more resilient ([7248fae](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7248fae74f4d3a300bce5bdfb1180267b7bd9c2d))
+
+### Features
+
+- Create new agent-config module to replace the deps on Veramo cli, which pulls in everything ([6ac4ec0](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6ac4ec0469ef2bd2344da0a2f7e6c9673c20e232))
+- Create new agent-config module to replace the deps on Veramo cli, which pulls in everything ([673856f](https://github.com/Sphereon-Opensource/SSI-SDK/commit/673856f587885743300aaafea791e3696d9c456f))
+- instead of returning a boolean value, return an object with more information about verification of LD creds/VPs ([7df0e64](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7df0e64ad6553e8153cf96d62156867fde8e4cef))
+
 ## [0.10.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.10.0...v0.10.1) (2023-05-01)
 
 **Note:** Version bump only for package SSI-SDK-workspace
