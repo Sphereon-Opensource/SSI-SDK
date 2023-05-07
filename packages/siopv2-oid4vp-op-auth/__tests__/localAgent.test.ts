@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import didAuthSiopOpAuthenticatorAgentLogic from './shared/didAuthSiopOpAuthenticatorAgentLogic'
 import { PresentationSignCallback } from '@sphereon/did-auth-siop'
 

@@ -5,7 +5,7 @@ import { Server } from 'http'
 import { IAgent, createAgent, IAgentOptions, IDataStore, IDataStoreORM } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
-import { getConfig, createObjects } from '@sphereon/ssi-sdk-agent-config'
+import { getConfig, createObjects } from '@sphereon/ssi-sdk.agent-config'
 import { IMsRequestApi } from '../src/types/IMsRequestApi'
 import msRequestApiAgentLogic from './shared/msRequestApiAgentLogic'
 

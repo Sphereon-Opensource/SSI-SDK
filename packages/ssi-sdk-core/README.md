@@ -19,7 +19,7 @@ A Veramo plugin whit types/interfaces and utility functions shared by multiple p
 ### Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk-core
+yarn add @sphereon/ssi-sdk.core
 ```
 
 ### Build

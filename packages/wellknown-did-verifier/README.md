@@ -26,7 +26,7 @@ A `Sphereon SSI-SDK` plugin to verify relationships between the controller of an
 ### Adding the plugin to an agent:
 
 ```typescript
-import { IWellKnownDidVerifier, WellKnownDidVerifier } from '@sphereon/ssi-sdk-wellknown-did-verifier'
+import { IWellKnownDidVerifier, WellKnownDidVerifier } from '@sphereon/ssi-sdk.wellknown-did-verifier'
 
 const agent = createAgent<IWellKnownDidVerifier>({
   plugins: [
@@ -98,7 +98,7 @@ agent
 ## Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk-wellknown-did-verifier
+yarn add @sphereon/ssi-sdk.wellknown-did-verifier
 ```
 
 ## Build

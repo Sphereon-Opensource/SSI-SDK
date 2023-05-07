@@ -23,7 +23,7 @@ For this plugin a DID resolver is also required. A DID resolver can be added to 
 ### Adding the plugin to an agent:
 
 ```typescript
-import { PresentationExchange } from '@sphereon/ssi-sdk-presentation-exchange'
+import { PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { Resolver } from 'did-resolver'
 import { getDidKeyResolver } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
@@ -46,7 +46,7 @@ const agent = createAgent<IDidAuthSiopOpAuthenticator & IResolver>({
 ## Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk-presentation-exchange
+yarn add @sphereon/ssi-sdk.presentation-exchange
 ```
 
 ## Build

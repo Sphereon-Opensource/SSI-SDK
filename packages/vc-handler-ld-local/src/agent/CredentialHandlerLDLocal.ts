@@ -1,4 +1,4 @@
-import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
+import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
 import { CredentialPayload, IAgentContext, IAgentPlugin, IIdentifier, IKey, IResolver, PresentationPayload } from '@veramo/core'
 import { AbstractPrivateKeyStore } from '@veramo/key-manager'
 import { _ExtendedIKey, extractIssuer, isDefined, MANDATORY_CREDENTIAL_CONTEXT, OrPromise, processEntryToArray, RecordLike } from '@veramo/utils'

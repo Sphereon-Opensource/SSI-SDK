@@ -23,7 +23,7 @@ import {
   decodeUriAsJson,
   VerifiedAuthorizationResponse,
 } from '@sphereon/did-auth-siop'
-import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk-siopv2-oid4vp-common'
+import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 
 export class SIOPv2RP implements IAgentPlugin {
   private readonly opts: ISiopv2RPOpts

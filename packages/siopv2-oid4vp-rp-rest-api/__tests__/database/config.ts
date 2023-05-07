@@ -1,5 +1,5 @@
 import { Entities as VeramoDataStoreEntities, migrations as VeramoDataStoreMigrations } from '@veramo/data-store'
-import { DataStoreContactEntities, DataStoreMigrations } from '@sphereon/ssi-sdk-data-store'
+import { DataStoreContactEntities, DataStoreMigrations } from '@sphereon/ssi-sdk.data-store'
 import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions'
 import { KeyValueStoreEntity } from '@veramo/kv-store'
 import { kvStoreMigrations } from '@veramo/kv-store'

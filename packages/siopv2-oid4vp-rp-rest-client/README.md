@@ -19,7 +19,7 @@ A SSI-SDK plugin with types/interfaces and utility functions for calling rest en
 ### Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk-siopv2-oid4vp-rp-rest-client
+yarn add @sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-client
 ```
 
 ### Build

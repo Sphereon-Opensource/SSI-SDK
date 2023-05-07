@@ -2,7 +2,7 @@ import { Bls12381G2KeyPair } from '@mattrglobal/jsonld-signatures-bbs'
 import { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
 import { asArray } from '@veramo/utils'
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
-import { hexToMultibase, MultibaseFormat } from '@sphereon/ssi-sdk-core'
+import { hexToMultibase, MultibaseFormat } from '@sphereon/ssi-sdk.core'
 import { KeyType } from '@sphereon/ssi-sdk-ext.kms-local'
 import { SphereonBbsBlsSignatureSuite2020 } from './impl/SphereonBbsBlsSignatureSuite2020'
 

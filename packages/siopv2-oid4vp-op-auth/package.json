@@ -1,5 +1,5 @@
 {
-  "name": "@sphereon/ssi-sdk-siopv2-oid4vp-op-auth",
+  "name": "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth",
   "version": "0.11.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
@@ -17,9 +17,9 @@
     "@sphereon/did-auth-siop": "^0.3.1-unstable.1",
     "@sphereon/pex": "2.0.1",
     "@sphereon/pex-models": "2.0.2",
-    "@sphereon/ssi-sdk-presentation-exchange": "workspace:*",
-    "@sphereon/ssi-sdk-core": "workspace:*",
-    "@sphereon/ssi-sdk-ext.did-utils": "^0.11.0",
+    "@sphereon/ssi-sdk.presentation-exchange": "workspace:*",
+    "@sphereon/ssi-sdk.core": "workspace:*",
+    "@sphereon/ssi-sdk-ext.did-utils": "^0.12.0",
     "@sphereon/ssi-types": "workspace:*",
     "@sphereon/wellknown-dids-client": "^0.1.3",
     "@types/uuid": "^9.0.1",
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.0",
-    "@sphereon/ssi-sdk-agent-config": "workspace:*",
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",
     "@veramo/remote-client": "4.2.0",

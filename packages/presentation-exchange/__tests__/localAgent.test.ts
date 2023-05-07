@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import presentationExchangeAgentLogic from './shared/presentationExchangeAgentLogic'
 
 jest.setTimeout(30000)

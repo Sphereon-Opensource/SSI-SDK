@@ -1,6 +1,6 @@
 import { hexToMultibase, MultibaseFormat, multibaseToHex } from '../encoding'
 
-describe('@sphereon/ssi-sdk-core:encoding', () => {
+describe('@sphereon/ssi-sdk.core:encoding', () => {
   const BASE58_EXAMPLE = 'C3CPq7c8PY'
   const MULTIBASE_EXAMPLE = `z${BASE58_EXAMPLE}`
   const HEX_EXAMPLE = '0123456789abcdef'

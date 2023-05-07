@@ -19,7 +19,7 @@ A SSI-SDK plugin to authenticate using the Microsoft Authentication Library (MSA
 ### Installation
 
 ```shell
-yarn add @sphereon/ms-authenticator
+yarn add @sphereon/ssi-sdk.ms-authenticator
 ```
 
 ### Build

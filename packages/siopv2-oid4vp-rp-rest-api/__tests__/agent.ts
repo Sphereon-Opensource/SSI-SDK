@@ -10,7 +10,7 @@ import {
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
   SphereonJsonWebSignature2020,
-} from '@sphereon/ssi-sdk-vc-handler-ld-local'
+} from '@sphereon/ssi-sdk.vc-handler-ld-local'
 import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
 import { DIDManager } from '@veramo/did-manager'
@@ -22,8 +22,8 @@ import { KeyManager } from '@veramo/key-manager'
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 import { Resolver } from 'did-resolver'
 import { DB_CONNECTION_NAME, DB_ENCRYPTION_KEY, getDbConnection } from './database'
-import { ISIOPv2RP, SIOPv2RP } from '@sphereon/ssi-sdk-siopv2-oid4vp-rp-auth'
-import { IPresentationExchange, PresentationExchange } from '@sphereon/ssi-sdk-presentation-exchange'
+import { ISIOPv2RP, SIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import { IPresentationExchange, PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { CheckLinkedDomain } from '@sphereon/did-auth-siop'
 import { entraAndSphereonCompatibleDef, entraVerifiedIdPresentation } from './presentationDefinitions'
 import Debug from 'debug'

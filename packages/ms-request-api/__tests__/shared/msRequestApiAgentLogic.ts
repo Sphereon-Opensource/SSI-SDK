@@ -18,7 +18,7 @@ var requestIssuanceResponse: IIssueRequestResponse = {
 }
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
-  describe('@sphereon/ms-request-api', () => {
+  describe('@sphereon/ssi-sdk.ms-request-api', () => {
     let agent: ConfiguredAgent
 
     beforeAll(async () => {
@@ -29,7 +29,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         }
       })
 
-      jest.mock('@sphereon/ms-authenticator', () => {
+      jest.mock('@sphereon/ssi-sdk.ms-authenticator', () => {
         return {
           ClientCredentialAuthenticator: jest.fn().mockResolvedValue('ey...'),
           checkMsIdentityHostname: jest.fn().mockResolvedValue(MsAuthenticator.MS_IDENTITY_HOST_NAME_EU),

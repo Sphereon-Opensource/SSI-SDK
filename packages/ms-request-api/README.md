@@ -19,7 +19,7 @@ Microsoft:registered: Entra Verified ID allows you to issue Verifiable Credentia
 ### Installation
 
 ```shell
-yarn add @sphereon/ms-request-api
+yarn add @sphereon/ssi-sdk.ms-request-api
 ```
 
 ### Build

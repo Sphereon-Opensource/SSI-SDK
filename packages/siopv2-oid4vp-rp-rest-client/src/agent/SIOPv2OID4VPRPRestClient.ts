@@ -7,7 +7,7 @@ import {
 } from '../types/ISIOPv2OID4VPRPRestClient'
 import Debug from 'debug'
 import { IAgentPlugin } from '@veramo/core'
-import { AuthStatusResponse, GenerateAuthRequestURIResponse } from '@sphereon/ssi-sdk-siopv2-oid4vp-common'
+import { AuthStatusResponse, GenerateAuthRequestURIResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 
 const debug = Debug('sphereon:ssi-sdk-siopv2-oid4vp-rp-rest-client')
 

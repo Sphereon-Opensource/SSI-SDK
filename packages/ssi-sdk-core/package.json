@@ -1,5 +1,5 @@
 {
-  "name": "@sphereon/ssi-sdk-core",
+  "name": "@sphereon/ssi-sdk.core",
   "description": "SSI SDK Core & Interfaces",
   "version": "0.11.0",
   "main": "dist/index.js",

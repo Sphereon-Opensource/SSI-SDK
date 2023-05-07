@@ -1,7 +1,7 @@
 import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPDIDOptions } from './types/ISIOPv2RP'
 import { EventEmitter } from 'events'
 import { AgentDIDResolver, determineKid, getDID, getIdentifier, getKey, getSupportedDIDMethods, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
-import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk-core'
+import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import {
   CheckLinkedDomain,
   InMemoryRPSessionManager,

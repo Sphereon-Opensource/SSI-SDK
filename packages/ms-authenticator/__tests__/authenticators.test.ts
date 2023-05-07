@@ -2,7 +2,7 @@ import { ClientCredentialAuthenticator, UsernamePasswordAuthenticator } from '..
 import * as process from 'process'
 jest.setTimeout(100000)
 
-describe('@sphereon/ms-authenticator', () => {
+describe('@sphereon/ssi-sdk.ms-authenticator', () => {
   it('should authenticate using clientCredential', async () => {
     return await expect(
       ClientCredentialAuthenticator({

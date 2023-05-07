@@ -29,7 +29,7 @@ A `Sphereon SSI-SDK` plugin to create DID configuration resources and domain lin
 ### Adding the plugin to an agent:
 
 ```typescript
-import { IWellKnownDidIssuer, WellKnownDidIssuer } from '@sphereon/ssi-sdk-wellknown-did-issuer'
+import { IWellKnownDidIssuer, WellKnownDidIssuer } from '@sphereon/ssi-sdk.wellknown-did-issuer'
 
 const agent = createAgent<IWellKnownDidIssuer>({
   plugins: [
@@ -149,7 +149,7 @@ agent
 ## Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk-wellknown-did-issuer
+yarn add @sphereon/ssi-sdk.wellknown-did-issuer
 ```
 
 ## Build

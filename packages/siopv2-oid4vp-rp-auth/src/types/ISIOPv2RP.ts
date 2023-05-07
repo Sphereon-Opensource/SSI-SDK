@@ -32,9 +32,9 @@ import { DIDDocument } from '@sphereon/did-uni-client'
 import { EventEmitter } from 'events'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
-import { IPresentationExchange } from '@sphereon/ssi-sdk-presentation-exchange'
+import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
-import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk-siopv2-oid4vp-common'
+import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 
 export interface ISIOPv2RP extends IPluginMethodMap {
   siopCreateAuthRequestURI(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<string>

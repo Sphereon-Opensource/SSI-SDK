@@ -1,5 +1,5 @@
 {
-  "name": "@sphereon/ms-authenticator",
+  "name": "@sphereon/ssi-sdk.ms-authenticator",
   "version": "0.11.0",
   "source": "src/index.ts",
   "main": "dist/index.js",

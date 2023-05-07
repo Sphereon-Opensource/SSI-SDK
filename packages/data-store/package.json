@@ -1,5 +1,5 @@
 {
-  "name": "@sphereon/ssi-sdk-data-store",
+  "name": "@sphereon/ssi-sdk.data-store",
   "version": "0.11.0",
   "source": "src/index.ts",
   "main": "dist/index.js",

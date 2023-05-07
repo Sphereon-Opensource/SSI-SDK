@@ -18,11 +18,11 @@ import {
   AuthStatusResponse,
   GenerateAuthRequestURIResponse,
   uriWithBase,
-} from '@sphereon/ssi-sdk-siopv2-oid4vp-common'
-import { ISIOPv2RP } from '@sphereon/ssi-sdk-siopv2-oid4vp-rp-auth'
+} from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { RequestWithAgent } from './request-agent-router'
 import { TAgent } from '@veramo/core'
-import { IPresentationExchange } from '@sphereon/ssi-sdk-presentation-exchange'
+import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 
 export interface ISIOPv2RPRestAPIOpts {
   siopBaseURI?: string // An externally communicated base URI for SIOP endpoints. Needs to be provided via this option, or environment variable!
