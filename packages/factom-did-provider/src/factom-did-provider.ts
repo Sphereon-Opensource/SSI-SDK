@@ -6,7 +6,7 @@ import { hexToMultibase, multibaseToHex } from '@sphereon/ssi-sdk-core'
 import { ICreateIdentifierOpts, IDidKeyOpts, IManagementKeyOpts } from './types/factom-provider-types'
 import { MultibaseFormat } from '@sphereon/ssi-sdk-core/dist/utils/encoding'
 
-const debug = Debug('veramo:did-provider-factom')
+const debug = Debug('sphereon:ssi-sdk:did-provider-factom')
 
 export type IRequiredContext = IAgentContext<IKeyManager>
 

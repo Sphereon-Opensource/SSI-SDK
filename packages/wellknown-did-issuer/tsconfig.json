@@ -7,5 +7,12 @@
     "strictPropertyInitialization": false,
     "noUnusedLocals": false
   },
-  "references": [{ "path": "../ssi-types" }]
+  "references": [
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../agent-config"
+    }
+  ]
 }

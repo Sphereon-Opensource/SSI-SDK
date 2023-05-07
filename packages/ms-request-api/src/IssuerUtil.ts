@@ -1,5 +1,6 @@
 import { IIssueRequest, IIssueRequestResponse } from './types/IMsRequestApi'
 
+import { fetch } from 'cross-fetch'
 export async function fetchIssuanceRequestMs(
   issuanceInfo: IIssueRequest,
   accessToken: string,

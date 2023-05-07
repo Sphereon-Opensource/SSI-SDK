@@ -427,9 +427,9 @@ export class CredentialMapper {
   }
 
   static toCompactJWT(
-    jwtDocument: W3CVerifiableCredential | JwtDecodedVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiablePresentation
+    jwtDocument: W3CVerifiableCredential | JwtDecodedVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiablePresentation | string
   ): string {
-    if (CredentialMapper.detectDocumentType(jwtDocument) !== DocumentFormat.JWT) {
+    if (!jwtDocument || CredentialMapper.detectDocumentType(jwtDocument) !== DocumentFormat.JWT) {
       throw Error('Cannot convert non JWT credential to JWT')
     }
     if (typeof jwtDocument === 'string') {
@@ -478,7 +478,7 @@ export class CredentialMapper {
   private static getFirstProof(
     document: W3CVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiableCredential | JwtDecodedVerifiablePresentation
   ): IProof | undefined {
-    if (typeof document === 'string') {
+    if (!document || typeof document === 'string') {
       return undefined
     }
     const proofs = 'vc' in document ? document.vc.proof : 'vp' in document ? document.vp.proof : (<IVerifiableCredential>document).proof

@@ -1,3 +1,6 @@
+const crypto = require('crypto')
+globalThis.crypto = crypto
+
 import * as fs from 'fs'
 
 import { DataSource } from 'typeorm'
@@ -10,7 +13,7 @@ import { KeyManager } from '@veramo/key-manager'
 import { IMnemonicSeedManager, MnemonicSeedManager, MnemonicSeedManagerEntities, MnemonicSeedManagerMigrations } from '../src'
 import { Entities, KeyStore, migrations, PrivateKeyStore } from '@veramo/data-store'
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
-import { OrPromise } from '@veramo/utils'
+import { OrPromise } from '@sphereon/ssi-sdk-agent-config'
 
 jest.setTimeout(30000)
 

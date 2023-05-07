@@ -6,8 +6,7 @@ import { Connection } from 'typeorm'
 import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
-import { getConfig } from '@veramo/cli/build/setup'
-import { createObjects } from '@veramo/cli/build/lib/objectCreator'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
 import { IContactManager } from '../src/types/IContactManager'
 import contactManagerAgentLogic from './shared/contactManagerAgentLogic'
 
@@ -33,8 +32,8 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/contact-manager/agent.yml')
-  const { agent, db } = createObjects(config, { agent: '/agent', db: '/dbConnection' })
+  const config = await getConfig('packages/contact-manager/agent.yml')
+  const { agent, db } = await createObjects(config, { agent: '/agent', db: '/dbConnection' })
   serverAgent = agent
   dbConnection = db
 

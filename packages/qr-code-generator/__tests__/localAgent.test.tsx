@@ -2,8 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { getConfig } from '@veramo/cli/build/setup'
-import { createObjects } from '@veramo/cli/build/lib/objectCreator'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
 
 jest.setTimeout(30000)
 
@@ -12,8 +11,8 @@ import ssiQrCodeProviderLogic from './shared/ssiQrCodeProviderLogic'
 let agent: any
 
 const setup = async (): Promise<boolean> => {
-  const config = getConfig('packages/qr-code-generator/__tests__/agent.yml')
-  const { localAgent } = createObjects(config, { localAgent: '/agent' })
+  const config = await getConfig('packages/qr-code-generator/__tests__/agent.yml')
+  const { localAgent } = await createObjects(config, { localAgent: '/agent' })
   agent = localAgent
 
   return true

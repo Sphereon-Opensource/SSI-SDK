@@ -8,6 +8,7 @@ import {
   IVerifyCredentialLDArgs,
   IVerifyPresentationLDArgs,
 } from './types'
+import { IVerifyResult } from '@sphereon/ssi-types'
 
 /**
  * The interface definition for a plugin that can issue and verify Verifiable Credentials and Presentations
@@ -62,7 +63,7 @@ export interface ICredentialHandlerLDLocal extends IPluginMethodMap {
    *
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
-  verifyCredentialLDLocal(args: IVerifyCredentialLDArgs, context: IRequiredContext): Promise<boolean>
+  verifyCredentialLDLocal(args: IVerifyCredentialLDArgs, context: IRequiredContext): Promise<IVerifyResult>
 
   /**
    * Verifies a Verifiable Presentation JWT or LDS Format.
@@ -76,7 +77,7 @@ export interface ICredentialHandlerLDLocal extends IPluginMethodMap {
    *
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
-  verifyPresentationLDLocal(args: IVerifyPresentationLDArgs, context: IRequiredContext): Promise<boolean>
+  verifyPresentationLDLocal(args: IVerifyPresentationLDArgs, context: IRequiredContext): Promise<IVerifyResult>
 }
 
 /**

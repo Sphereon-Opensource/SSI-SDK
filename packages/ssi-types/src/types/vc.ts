@@ -211,3 +211,82 @@ export const enum DocumentFormat {
   JSONLD,
   EIP712,
 }
+
+export interface IVerifyStatusResult {
+  verified: boolean
+  /**
+   * Optional Error object for the
+   * but currently the machine readable errors are not exported from DID-JWT package to be imported here
+   */
+  error?: IError | undefined
+
+  /**
+   * Other options can be specified for verification.
+   * They will be forwarded to the lower level modules. that performt the checks
+   */
+  [x: string]: any
+}
+
+export interface IVerifyResult {
+  /**
+   * This value is used to transmit the global result of verification.
+   */
+  verified: boolean
+
+  results?: [
+    {
+      credential?: ICredential
+      presentation?: IPresentation
+      verified: boolean
+      error?: IError
+      log: [{ id: string; valid: boolean }]
+    }
+  ]
+
+  statusResult?: IVerifyStatusResult
+
+  /**
+   * Optional Error object for the
+   * but currently the machine readable errors are not exported from DID-JWT package to be imported here
+   */
+  error?: IError | undefined
+
+  /**
+   * Other options can be specified for verification.
+   * They will be forwarded to the lower level modules. that performt the checks
+   */
+  [x: string]: any
+}
+
+/**
+ * An error object, which can contain a code.
+ * @beta
+ */
+export interface IError {
+  name?: string
+
+  errors?: IError[]
+
+  /**
+   * The details of the error being thrown or forwarded
+   */
+  message?: string
+
+  /**
+   * The stack of the error
+   */
+  stack?: string | string[]
+
+  details?: IErrorDetails
+
+  /**
+   * The code for the error being throw
+   */
+  errorCode?: string
+}
+
+export interface IErrorDetails {
+  code?: string
+  url?: string
+  cause?: IError
+}
