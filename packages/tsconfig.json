@@ -17,6 +17,7 @@
     { "path": "contact-manager" },
     { "path": "data-store" },
     { "path": "wellknown-did-issuer" },
-    { "path": "wellknown-did-verifier" }
+    { "path": "wellknown-did-verifier" },
+    { "path": "kv-store" }
   ]
 }

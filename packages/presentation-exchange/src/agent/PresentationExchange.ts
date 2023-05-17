@@ -15,7 +15,7 @@ import {
 import { FindCredentialsArgs, IAgentPlugin } from '@veramo/core'
 
 import { IPresentationExchange } from '../types/IPresentationExchange'
-import { IKeyValueStore, IValueData, KeyValueStore } from '@veramo/kv-store'
+import { IKeyValueStore, IValueData, KeyValueStore } from '@sphereon/ssi-sdk.kv-store-temp'
 import { Checked, IPresentationDefinition, PEX } from '@sphereon/pex'
 import { CredentialMapper, JWT_PROOF_TYPE_2020, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'

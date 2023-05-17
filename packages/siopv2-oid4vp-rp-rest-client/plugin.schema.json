@@ -29,12 +29,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "correlationId",
-            "definitionId",
-            "authRequestURI",
-            "authStatusURI"
-          ]
+          "required": ["correlationId", "definitionId", "authRequestURI", "authStatusURI"]
         },
         "ISiopClientGetAuthStatusArgs": {
           "type": "object",
@@ -49,9 +44,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "correlationId"
-          ]
+          "required": ["correlationId"]
         },
         "AuthStatusResponse": {
           "type": "object",
@@ -82,32 +75,15 @@
               "$ref": "#/components/schemas/AuthorizationResponsePayload"
             }
           },
-          "required": [
-            "status",
-            "correlationId",
-            "definitionId",
-            "lastUpdated"
-          ]
+          "required": ["status", "correlationId", "definitionId", "lastUpdated"]
         },
         "AuthorizationRequestStateStatus": {
           "type": "string",
-          "enum": [
-            "created",
-            "sent",
-            "received",
-            "verified",
-            "error"
-          ]
+          "enum": ["created", "sent", "received", "verified", "error"]
         },
         "AuthorizationResponseStateStatus": {
           "type": "string",
-          "enum": [
-            "created",
-            "sent",
-            "received",
-            "verified",
-            "error"
-          ]
+          "enum": ["created", "sent", "received", "verified", "error"]
         },
         "AuthorizationResponsePayload": {
           "type": "object",
@@ -147,9 +123,7 @@
               "$ref": "#/components/schemas/PresentationSubmission"
             }
           },
-          "required": [
-            "state"
-          ]
+          "required": ["state"]
         },
         "W3CVerifiablePresentation": {
           "anyOf": [
@@ -223,10 +197,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "proof"
-          ]
+          "required": ["@context", "proof"]
         },
         "IProof": {
           "type": "object",
@@ -282,12 +253,7 @@
               }
             }
           },
-          "required": [
-            "type",
-            "created",
-            "proofPurpose",
-            "verificationMethod"
-          ]
+          "required": ["type", "created", "proofPurpose", "verificationMethod"]
         },
         "IProofType": {
           "type": "string",
@@ -446,14 +412,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "credentialSubject",
-            "issuanceDate",
-            "issuer",
-            "proof",
-            "type"
-          ]
+          "required": ["@context", "credentialSubject", "issuanceDate", "issuer", "proof", "type"]
         },
         "ICredentialSchemaType": {
           "anyOf": [
@@ -475,9 +434,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id"
-          ]
+          "required": ["id"]
         },
         "IIssuerId": {
           "type": "string"
@@ -489,9 +446,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id"
-          ]
+          "required": ["id"]
         },
         "ICredentialStatus": {
           "type": "object",
@@ -503,10 +458,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id",
-            "type"
-          ]
+          "required": ["id", "type"]
         },
         "CompactJWT": {
           "type": "string",
@@ -531,11 +483,7 @@
               "description": "List of descriptors of how the claims are being mapped to presentation definition"
             }
           },
-          "required": [
-            "id",
-            "definition_id",
-            "descriptor_map"
-          ],
+          "required": ["id", "definition_id", "descriptor_map"],
           "description": "It expresses how the inputs are presented as proofs to a Verifier."
         },
         "Descriptor": {
@@ -557,11 +505,7 @@
               "description": "The Proof or JWT algorith that the proof is in"
             }
           },
-          "required": [
-            "id",
-            "path",
-            "format"
-          ],
+          "required": ["id", "path", "format"],
           "description": "descriptor map laying out the structure of the presentation submission."
         },
         "ISiopClientRemoveAuthRequestSessionArgs": {
@@ -577,9 +521,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "correlationId"
-          ]
+          "required": ["correlationId"]
         }
       },
       "methods": {

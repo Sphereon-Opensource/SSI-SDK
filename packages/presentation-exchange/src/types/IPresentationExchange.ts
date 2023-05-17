@@ -9,7 +9,7 @@ import {
   PresentationPayload,
 } from '@veramo/core'
 import { W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
-import { IKeyValueStore, IValueData } from '@veramo/kv-store'
+import { IKeyValueStore, IValueData } from '@sphereon/ssi-sdk.kv-store-temp'
 import { IPresentationDefinition, PEVersion, SelectResults } from '@sphereon/pex'
 import { Format, InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
 

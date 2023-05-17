@@ -7,10 +7,23 @@
     "esModuleInterop": true
   },
   "references": [
-    { "path": "../siopv2-oid4vp-common" },
-    { "path": "../siopv2-oid4vp-rp-auth" },
-    { "path": "../presentation-exchange" },
-    { "path": "../ssi-types" },
-    { "path": "../ssi-sdk-core" }
+    {
+      "path": "../siopv2-oid4vp-common"
+    },
+    {
+      "path": "../siopv2-oid4vp-rp-auth"
+    },
+    {
+      "path": "../presentation-exchange"
+    },
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../kv-store"
+    }
   ]
 }

@@ -1,8 +1,8 @@
 import { Entities as VeramoDataStoreEntities, migrations as VeramoDataStoreMigrations } from '@veramo/data-store'
 import { DataStoreContactEntities, DataStoreMigrations } from '@sphereon/ssi-sdk.data-store'
 import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions'
-import { KeyValueStoreEntity } from '@veramo/kv-store'
-import { kvStoreMigrations } from '@veramo/kv-store'
+import { KeyValueStoreEntity } from '@sphereon/ssi-sdk.kv-store-temp'
+import { kvStoreMigrations } from '@sphereon/ssi-sdk.kv-store-temp'
 
 const DB_CONNECTION_NAME = 'default'
 const DB_ENCRYPTION_KEY = '29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c'
