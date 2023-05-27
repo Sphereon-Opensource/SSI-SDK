@@ -165,7 +165,7 @@ dev
       interfaces[pluginInterfaceName] = api
     }
 
-    writeFileSync(resolve('./src/plugin.schema.json'), JSON.stringify(interfaces, null, 2))
+    writeFileSync(resolve('./plugin.schema.json'), JSON.stringify(interfaces, null, 2))
   })
 
 dev
