@@ -5,6 +5,7 @@ import crypto from '@sphereon/isomorphic-webcrypto'
 import { JWS } from '@transmute/jose-ld'
 
 import { WebCryptoKey, JsonWebKey2020, P256Key2021, P384Key2021, P521Key2021 } from '@transmute/web-crypto-key-pair'
+// import { JsonWebKey, JsonWebSignature } from "@transmute/json-web-signature";
 
 export { JsonWebKey2020 }
 
@@ -61,7 +62,7 @@ const getVerifier = async (k: any, options = { detached: true }) => {
 
   if (kty === 'RSA') {
     // @ts-ignore
-    return JWS.createVerifier(k.verifier('RSA'), 'RS256', options)
+    return JWS.createVerifier(k.verifier('RSA'), 'PS256', options)
   }
 
   if (kty === 'EC') {

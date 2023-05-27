@@ -12,8 +12,7 @@
   },
   "scripts": {
     "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build",
-    "generate-plugin-schema": "veramo dev generate-plugin-schema"
+    "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
     "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:*",

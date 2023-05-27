@@ -3,29 +3,20 @@ import * as vc from '@digitalcredentials/vc'
 import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
 import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
-import { events } from './types'
-import {
-  CredentialPayload,
-  IAgentContext,
-  IKey,
-  IKeyManager,
-  IResolver,
-  PresentationPayload,
-  VerifiableCredential,
-  VerifiablePresentation,
-} from '@veramo/core'
+import { IVerifyResult } from '@sphereon/ssi-types'
+import { CredentialPayload, IAgentContext, IKey, IResolver, PresentationPayload, VerifiableCredential, VerifiablePresentation } from '@veramo/core'
 import Debug from 'debug'
 
 import { LdContextLoader } from './ld-context-loader'
 import { LdDocumentLoader } from './ld-document-loader'
 import { LdSuiteLoader } from './ld-suite-loader'
-import { IVerifyResult } from '@sphereon/ssi-types'
+import { RequiredAgentMethods } from './ld-suites'
+import { events } from './types'
 
 // import jsigs from '@digitalcredentials/jsonld-signatures'
 //Support for Typescript added in version 9.0.0
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const jsigs = require('jsonld-signatures')
-
-export type RequiredAgentMethods = IResolver & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>
 
 const ProofPurpose = purposes.ProofPurpose
 const AssertionProofPurpose = purposes.AssertionProofPurpose

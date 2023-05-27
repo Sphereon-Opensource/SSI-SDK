@@ -1,0 +1,29 @@
+{
+  "extends": "../tsconfig-base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "declarationDir": "dist",
+    "esModuleInterop": true
+  },
+  "references": [
+    {
+      "path": "../siopv2-oid4vp-common"
+    },
+    {
+      "path": "../siopv2-oid4vp-rp-auth"
+    },
+    {
+      "path": "../presentation-exchange"
+    },
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../kv-store"
+    }
+  ]
+}
