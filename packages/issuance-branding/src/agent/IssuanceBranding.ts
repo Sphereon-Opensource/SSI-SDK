@@ -11,7 +11,7 @@ import {
   IGetIssuerBrandingArgs,
   IIssuerBranding,
 } from '@sphereon/ssi-sdk.data-store'
-import { IRemoveCredentialLocaleBrandingArgs, schema } from '../index'
+import { schema } from '../index'
 import {
   IAddCredentialBrandingArgs,
   IAdditionalImageAttributes,
@@ -26,6 +26,9 @@ import {
   IAddIssuerLocaleBrandingArgs,
   IGetIssuerLocaleBrandingArgs,
   IRemoveIssuerLocaleBrandingArgs,
+  IRemoveCredentialLocaleBrandingArgs,
+  IUpdateCredentialLocaleBrandingArgs,
+  IUpdateIssuerLocaleBrandingArgs,
 } from '../types/IIssuanceBranding'
 
 /**
@@ -41,6 +44,7 @@ export class IssuanceBranding implements IAgentPlugin {
     addCredentialLocaleBranding: this.addCredentialLocaleBranding.bind(this),
     getCredentialLocaleBranding: this.getCredentialLocaleBranding.bind(this),
     removeCredentialLocaleBranding: this.removeCredentialLocaleBranding.bind(this),
+    updateCredentialLocaleBranding: this.updateCredentialLocaleBranding.bind(this),
 
     addIssuerBranding: this.addIssuerBranding.bind(this),
     getIssuerBranding: this.getIssuerBranding.bind(this),
@@ -49,6 +53,7 @@ export class IssuanceBranding implements IAgentPlugin {
     addIssuerLocaleBranding: this.addIssuerLocaleBranding.bind(this),
     getIssuerLocaleBranding: this.getIssuerLocaleBranding.bind(this),
     removeIssuerLocaleBranding: this.removeIssuerLocaleBranding.bind(this),
+    updateIssuerLocaleBranding: this.updateIssuerLocaleBranding.bind(this),
   }
 
   private readonly store: AbstractIssuanceBrandingStore
@@ -57,31 +62,11 @@ export class IssuanceBranding implements IAgentPlugin {
     this.store = options.store
   }
 
-  // private identity<Type>(arg: Type): Type {
-  //   return {  };
-  // }
-  //
-  // private identity<Type extends ICredentialBranding | IIssuerBranding>(arg: Type): Type {
-  //   return arg;
-  // }
-
-  // private async addBranding<Input extends IAddCredentialBrandingArgs | IAddIssuerBrandingArgs, Output extends ICredentialBranding | ICredentialIssuer>(arg: Input): Promise<Output> {
-  //   if ((arg as any) as IAddCredentialBrandingArgs) {
-  //     console.log('IAddCredentialBrandingArgs');
-  //     // @ts-ignore
-  //     return await this.addCredentialBranding(arg as IAddCredentialBrandingArgs) as Promise<Output>;
-  //   } else if ((arg as any) as IAddIssuerBrandingArgs) {
-  //     console.log('IAddIssuerBrandingArgs');
-  //     // @ts-ignore
-  //     return await this.addIssuerBranding(arg as IAddIssuerBrandingArgs) as Promise<Output>;
-  //   } else {
-  //     throw new Error('Invalid input type');
-  //   }
-  // }
-
   /** {@inheritDoc IIssuanceBranding.addCredentialBranding} */
   private async addCredentialBranding(args: IAddCredentialBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding> {
-    const localeBranding: Array<ILocaleBranding> = await this.setAdditionalImageAttributes(args.localeBranding)
+    const localeBranding: Array<ILocaleBranding> = await Promise.all(
+      args.localeBranding.map((localeBranding: ILocaleBranding): Promise<ILocaleBranding> => this.setAdditionalImageAttributes(localeBranding))
+    )
     const credentialBranding: IBasicCredentialBranding = {
       ...args,
       localeBranding,
@@ -102,21 +87,15 @@ export class IssuanceBranding implements IAgentPlugin {
 
   /** {@inheritDoc IIssuanceBranding.removeCredentialBranding} */
   private async removeCredentialBranding(args: IRemoveCredentialBrandingArgs, context: IRequiredContext): Promise<void> {
-
-    // await this.addBranding({
-    //   issuerCorrelationId: '',
-    //   // vcHash: '',
-    //   localeBranding: [{
-    //     alias: 'abc'
-    //   }]
-    // })
-
     return this.store.removeCredentialBranding(args)
   }
 
   /** {@inheritDoc IIssuanceBranding.addCredentialLocaleBranding} */
   private async addCredentialLocaleBranding(args: IAddCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding> {
-    const localeBranding: Array<ILocaleBranding> = await this.setAdditionalImageAttributes(args.localeBranding)
+    const localeBranding: Array<ILocaleBranding> = await Promise.all(
+      args.localeBranding.map((localeBranding: ILocaleBranding): Promise<ILocaleBranding> => this.setAdditionalImageAttributes(localeBranding))
+    )
+    //const localeBranding: Array<ILocaleBranding> = await this.setAdditionalImageAttributes(args.localeBranding)
     const addCredentialLocaleBrandingArgs: IAddCredentialLocaleBrandingArgs = {
       ...args,
       localeBranding,
@@ -135,9 +114,25 @@ export class IssuanceBranding implements IAgentPlugin {
     return this.store.removeCredentialLocaleBranding(args)
   }
 
+  /** {@inheritDoc IIssuanceBranding.updateCredentialLocaleBranding} */
+  private async updateCredentialLocaleBranding(args: IUpdateCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding> {
+    // TODO additional image attributes
+
+    // const xx = await this.setAdditionalImageAttributes(args.localeBranding)
+    // const updateCredentialLocaleBrandingArgs: IUpdateCredentialLocaleBrandingArgs = {
+    //   ...args,
+    //   localeBranding: { id: args.localeBranding.id, ...xx },
+    // }
+
+    return this.store.updateCredentialLocaleBranding(args)
+  }
+
   /** {@inheritDoc IIssuanceBranding.addIssuerBranding} */
   private async addIssuerBranding(args: IAddIssuerBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding> {
-    const localeBranding: Array<ILocaleBranding> = await this.setAdditionalImageAttributes(args.localeBranding)
+    //const localeBranding: Array<ILocaleBranding> = await this.setAdditionalImageAttributes(args.localeBranding)
+    const localeBranding: Array<ILocaleBranding> = await Promise.all(
+      args.localeBranding.map((localeBranding: ILocaleBranding): Promise<ILocaleBranding> => this.setAdditionalImageAttributes(localeBranding))
+    )
     const issuerBranding: IBasicIssuerBranding = {
       ...args,
       localeBranding,
@@ -163,7 +158,10 @@ export class IssuanceBranding implements IAgentPlugin {
 
   /** {@inheritDoc IIssuanceBranding.addIssuerLocaleBranding} */
   private async addIssuerLocaleBranding(args: IAddIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding> {
-    const localeBranding: Array<ILocaleBranding> = await this.setAdditionalImageAttributes(args.localeBranding)
+    //const localeBranding: Array<ILocaleBranding> = await this.setAdditionalImageAttributes(args.localeBranding)
+    const localeBranding: Array<ILocaleBranding> = await Promise.all(
+      args.localeBranding.map((localeBranding: ILocaleBranding): Promise<ILocaleBranding> => this.setAdditionalImageAttributes(localeBranding))
+    )
     const addIssuerLocaleBrandingArgs: IAddIssuerLocaleBrandingArgs = {
       ...args,
       localeBranding,
@@ -182,35 +180,38 @@ export class IssuanceBranding implements IAgentPlugin {
     return this.store.removeIssuerLocaleBranding(args)
   }
 
-  private async setAdditionalImageAttributes(localeBranding: Array<ILocaleBranding>): Promise<Array<ILocaleBranding>> {
-    return Promise.all(
-      localeBranding.map(
-        async (localeBranding: ILocaleBranding): Promise<ILocaleBranding> => ({
-          ...localeBranding,
-          ...(localeBranding.logo && {
-            logo: {
-              ...localeBranding.logo,
-              ...(localeBranding.logo.uri && {
-                ...(await this.getAdditionalImageAttributes(localeBranding.logo.uri)),
+  /** {@inheritDoc IIssuanceBranding.updateIssuerLocaleBranding} */
+  private async updateIssuerLocaleBranding(args: IUpdateIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding> {
+    // TODO additional image attributes
+    return this.store.updateIssuerLocaleBranding(args)
+  }
+
+  private async setAdditionalImageAttributes(localeBranding: ILocaleBranding): Promise<ILocaleBranding> {
+    return {
+      // TODO no brackets?
+      ...localeBranding,
+      ...(localeBranding.logo && {
+        logo: {
+          ...localeBranding.logo,
+          ...(localeBranding.logo.uri && {
+            ...(await this.getAdditionalImageAttributes(localeBranding.logo.uri)),
+          }),
+        },
+      }),
+      ...(localeBranding.background && {
+        background: {
+          ...localeBranding.background,
+          ...(localeBranding.background.image && {
+            image: {
+              ...localeBranding.background.image,
+              ...(localeBranding.background.image.uri && {
+                ...(await this.getAdditionalImageAttributes(localeBranding.background.image.uri)),
               }),
             },
           }),
-          ...(localeBranding.background && {
-            background: {
-              ...localeBranding.background,
-              ...(localeBranding.background.image && {
-                image: {
-                  ...localeBranding.background.image,
-                  ...(localeBranding.background.image.uri && {
-                    ...(await this.getAdditionalImageAttributes(localeBranding.background.image.uri)),
-                  }),
-                },
-              }),
-            },
-          }),
-        })
-      )
-    )
+        },
+      }),
+    }
   }
 
   private async getAdditionalImageAttributes(uri: string): Promise<IAdditionalImageAttributes> {

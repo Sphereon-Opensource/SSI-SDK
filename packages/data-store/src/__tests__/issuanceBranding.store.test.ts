@@ -12,6 +12,8 @@ import {
   IGetCredentialLocaleBrandingArgs,
   IIssuerBranding,
   ILocaleBranding,
+  IUpdateCredentialLocaleBrandingArgs,
+  IUpdateIssuerLocaleBrandingArgs,
 } from '../index'
 
 describe('Database entities test', (): void => {
@@ -406,7 +408,7 @@ describe('Database entities test', (): void => {
     const savedCredentialBranding: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding)
     expect(savedCredentialBranding).toBeDefined()
 
-    const result: Array<ILocaleBranding> = await issuanceBrandingStore.getCredentialLocaleBranding()
+    const result: Array<ICredentialBranding> = await issuanceBrandingStore.getCredentialLocaleBranding()
 
     expect(result.length).toEqual(2)
   })
@@ -441,9 +443,74 @@ describe('Database entities test', (): void => {
       ],
     }
 
-    const result: Array<ILocaleBranding> = await issuanceBrandingStore.getCredentialLocaleBranding(getCredentialLocaleBrandingArgs)
+    const result: Array<ICredentialBranding> = await issuanceBrandingStore.getCredentialLocaleBranding(getCredentialLocaleBrandingArgs)
 
     expect(result.length).toEqual(1)
+  })
+
+  it('should update credential locale branding', async (): Promise<void> => {
+    const credentialBranding: IBasicCredentialBranding = {
+      issuerCorrelationId: 'credentialCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias',
+          locale: 'en-US',
+        },
+        {
+          alias: 'credentialTypeAlias',
+          locale: 'en-GB',
+        },
+      ],
+    }
+
+    const savedCredentialBranding: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding)
+    expect(savedCredentialBranding).toBeDefined()
+
+    const updateCredentialLocaleBrandingArgs: IUpdateCredentialLocaleBrandingArgs = {
+      localeBranding: {
+        id: savedCredentialBranding.localeBranding[0].id,
+        alias: savedCredentialBranding.localeBranding[0].alias,
+        locale: 'en-NL',
+      },
+    }
+
+    const result: ICredentialBranding = await issuanceBrandingStore.updateCredentialLocaleBranding(updateCredentialLocaleBrandingArgs)
+
+    expect(result).toBeDefined()
+  })
+
+  it('should throw error when updating duplicate credential locale branding', async (): Promise<void> => {
+    const credentialBranding: IBasicCredentialBranding = {
+      issuerCorrelationId: 'credentialCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias',
+          locale: 'en-US',
+        },
+        {
+          alias: 'credentialTypeAlias',
+          locale: 'en-GB',
+        },
+      ],
+    }
+
+    const savedCredentialBranding: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding)
+    expect(savedCredentialBranding).toBeDefined()
+
+    const updateCredentialLocaleBrandingArgs: IUpdateCredentialLocaleBrandingArgs = {
+      localeBranding: {
+        id: savedCredentialBranding.localeBranding[0].id,
+        alias: savedCredentialBranding.localeBranding[0].alias,
+        locale: 'en-GB',
+      },
+    }
+
+    // TODO locale string refactor ( make var)
+    await expect(issuanceBrandingStore.updateCredentialLocaleBranding(updateCredentialLocaleBrandingArgs)).rejects.toThrowError(
+      `Credential branding: ${savedCredentialBranding.id} already contains locale: ${'en-GB'}`
+    )
   })
 
   // TODO issuer tests
@@ -584,5 +651,70 @@ describe('Database entities test', (): void => {
     const result: Array<ILocaleBranding> = await issuanceBrandingStore.getIssuerLocaleBranding()
 
     expect(result.length).toEqual(2)
+  })
+
+  // TODO 'should get specific credential locale branding for a credential branding'
+
+  it('should update issuer locale branding', async (): Promise<void> => {
+    const issuerBranding: IBasicIssuerBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      localeBranding: [
+        {
+          alias: 'issuerTypeAlias',
+          locale: 'en-US',
+        },
+        {
+          alias: 'issuerTypeAlias',
+          locale: 'en-GB',
+        },
+      ],
+    }
+
+    const savedIssuerBranding: IIssuerBranding = await issuanceBrandingStore.addIssuerBranding(issuerBranding)
+    expect(savedIssuerBranding).toBeDefined()
+
+    const updateIssuerLocaleBrandingArgs: IUpdateIssuerLocaleBrandingArgs = {
+      localeBranding: {
+        id: savedIssuerBranding.localeBranding[0].id,
+        alias: savedIssuerBranding.localeBranding[0].alias,
+        locale: 'en-NL',
+      },
+    }
+
+    const result: IIssuerBranding = await issuanceBrandingStore.updateIssuerLocaleBranding(updateIssuerLocaleBrandingArgs)
+
+    expect(result).toBeDefined()
+  })
+
+  it('should throw error when updating duplicate issuer locale branding', async (): Promise<void> => {
+    const issuerBranding: IBasicIssuerBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      localeBranding: [
+        {
+          alias: 'issuerTypeAlias',
+          locale: 'en-US',
+        },
+        {
+          alias: 'issuerTypeAlias',
+          locale: 'en-GB',
+        },
+      ],
+    }
+
+    const savedIssuerBranding: IIssuerBranding = await issuanceBrandingStore.addIssuerBranding(issuerBranding)
+    expect(savedIssuerBranding).toBeDefined()
+
+    const updateIssuerLocaleBrandingArgs: IUpdateIssuerLocaleBrandingArgs = {
+      localeBranding: {
+        id: savedIssuerBranding.localeBranding[0].id,
+        alias: savedIssuerBranding.localeBranding[0].alias,
+        locale: 'en-GB',
+      },
+    }
+
+    // TODO locale string refactor ( make var)
+    await expect(issuanceBrandingStore.updateIssuerLocaleBranding(updateIssuerLocaleBrandingArgs)).rejects.toThrowError(
+      `Issuer branding: ${savedIssuerBranding.id} already contains locale: ${'en-GB'}`
+    )
   })
 })

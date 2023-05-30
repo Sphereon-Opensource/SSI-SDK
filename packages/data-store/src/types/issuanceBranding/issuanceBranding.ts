@@ -7,7 +7,10 @@ export interface ILocaleBranding {
   description?: string
   background?: IBackgroundAttributes
   text?: ITextAttributes
+  createdAt: Date
+  lastUpdatedAt: Date
 }
+
 export interface IBasicLocaleBranding extends Omit<ILocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text'> {
   logo?: IBasicImageAttributes
   background?: IBasicBackgroundAttributes
@@ -48,6 +51,7 @@ export interface IImageDimensions {
 }
 export interface IBasicImageDimensions extends Omit<IImageDimensions, 'id'> {}
 
+// TODO combine interfaces like the entities?
 export interface ICredentialBranding {
   id: string
   issuerCorrelationId: string

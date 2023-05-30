@@ -35,8 +35,7 @@ export interface IAddCredentialLocaleBrandingArgs {
 }
 
 export interface IUpdateCredentialLocaleBrandingArgs {
-  credentialLocaleBrandingId: string // TODO some omit?
-  localeBranding: ILocaleBranding
+  localeBranding: Omit<ILocaleBranding, 'createdAt' | 'lastUpdatedAt'>
 }
 
 export interface IRemoveCredentialLocaleBrandingArgs {
@@ -70,8 +69,7 @@ export interface IAddIssuerLocaleBrandingArgs {
 }
 
 export interface IUpdateIssuerLocaleBrandingArgs {
-  issuerLocaleBrandingId: string
-  localeBranding: ILocaleBranding
+  localeBranding: Omit<ILocaleBranding, 'createdAt' | 'lastUpdatedAt'>
 }
 
 export interface IRemoveIssuerLocaleBrandingArgs {

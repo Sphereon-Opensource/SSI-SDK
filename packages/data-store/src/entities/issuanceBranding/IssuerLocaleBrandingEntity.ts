@@ -1,4 +1,4 @@
-import { ChildEntity, Index, JoinColumn, ManyToOne } from 'typeorm'
+import { ChildEntity, Column, Index, JoinColumn, ManyToOne } from 'typeorm'
 import { IBasicLocaleBranding } from '../../types'
 import { backgroundAttributesEntityFrom } from './BackgroundAttributesEntity'
 import { imageAttributesEntityFrom } from './ImageAttributesEntity'
@@ -15,6 +15,9 @@ export class IssuerLocaleBrandingEntity extends BaseLocaleBrandingEntity {
   })
   @JoinColumn({ name: 'issuerBrandingId' })
   issuerBranding!: IssuerBrandingEntity
+
+  @Column({ name: 'issuerBrandingId', nullable: false })
+  issuerBrandingId!: string
 
   // TODO use a validator to check if the nullable combination already exists
   //   @BeforeInsert()

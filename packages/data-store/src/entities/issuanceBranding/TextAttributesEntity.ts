@@ -11,7 +11,7 @@ export class TextAttributesEntity extends BaseEntity {
 }
 
 export const textAttributesEntityFrom = (args: IBasicTextAttributes): TextAttributesEntity => {
-  const textAttributesEntity = new TextAttributesEntity()
+  const textAttributesEntity: TextAttributesEntity = new TextAttributesEntity()
   textAttributesEntity.color = args.color
 
   return textAttributesEntity

@@ -12,7 +12,6 @@ import {
 } from 'typeorm'
 import { ArrayMinSize, validate } from 'class-validator'
 import { CredentialLocaleBrandingEntity, credentialLocaleBrandingEntityFrom } from './CredentialLocaleBrandingEntity'
-//import { CredentialSubjectFieldBrandingEntity } from './CredentialSubjectFieldBranding'
 import { IBasicCredentialBranding, IBasicLocaleBranding } from '../../types'
 
 @Entity('CredentialBranding')
@@ -22,9 +21,12 @@ export class CredentialBrandingEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  // TODO make this the primary key?
+  //TODO make this the primary key?
   @Column({ name: 'vcHash', length: 255, nullable: false, unique: true })
   vcHash!: string
+
+  // @PrimaryColumn({ name: 'vcHash', length: 255 })
+  // vcHash!: string;
 
   @Column({ name: 'issuerCorrelationId', length: 255, nullable: false, unique: false })
   issuerCorrelationId!: string
@@ -41,27 +43,6 @@ export class CredentialBrandingEntity extends BaseEntity {
   )
   @ArrayMinSize(1, { message: 'localeBranding cannot be empty' })
   localeBranding!: Array<CredentialLocaleBrandingEntity>
-
-  // @OneToMany(
-  //     () => CredentialSubjectFieldBrandingEntity,
-  //     (credentialSubjectFieldBranding: CredentialSubjectFieldBrandingEntity) => credentialSubjectFieldBranding.credentialBranding,
-  //     {
-  //       cascade: true,
-  //       onDelete: 'CASCADE',
-  //       eager: true,
-  //       nullable: true,
-  //     }
-  // )
-  // // @ArrayMinSize(1, { message: 'localeBranding cannot be empty' })
-  // credentialSubjectBranding?: Array<CredentialSubjectFieldBrandingEntity>
-
-  // TODO is this the place where we add CredentialSubjectFieldBrandingEntity Array?????
-  // TODO option is to
-  // add an array of field names
-  //    this array hold CredentialSubjectLocaleBranding
-  //        which holds name (field)
-  //                    image
-  // TODO also need to support no locale which should always be fetched
 
   @CreateDateColumn({ name: 'created_at', nullable: false })
   createdAt!: Date

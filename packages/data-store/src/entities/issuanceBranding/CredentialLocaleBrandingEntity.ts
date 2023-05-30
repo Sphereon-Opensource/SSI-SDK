@@ -1,4 +1,4 @@
-import { ChildEntity, Index, JoinColumn, ManyToOne } from 'typeorm'
+import { ChildEntity, Column, Index, JoinColumn, ManyToOne } from 'typeorm'
 import { IBasicLocaleBranding } from '../../types'
 import { backgroundAttributesEntityFrom } from './BackgroundAttributesEntity'
 import { CredentialBrandingEntity } from './CredentialBrandingEntity'
@@ -14,6 +14,9 @@ export class CredentialLocaleBrandingEntity extends BaseLocaleBrandingEntity {
   })
   @JoinColumn({ name: 'credentialBrandingId' })
   credentialBranding!: CredentialBrandingEntity
+
+  @Column({ name: 'credentialBrandingId', nullable: false })
+  credentialBrandingId!: string
 }
 
 export const credentialLocaleBrandingEntityFrom = (args: IBasicLocaleBranding): CredentialLocaleBrandingEntity => {

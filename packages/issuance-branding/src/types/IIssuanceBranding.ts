@@ -10,6 +10,7 @@ import {
   FindIssuerBrandingArgs,
   FindCredentialLocaleBrandingArgs,
   FindIssuerLocaleBrandingArgs,
+  ILocaleBranding as LocaleBranding,
 } from '@sphereon/ssi-sdk.data-store'
 
 export interface IIssuanceBranding extends IPluginMethodMap {
@@ -17,19 +18,19 @@ export interface IIssuanceBranding extends IPluginMethodMap {
   getCredentialBranding(args: IGetCredentialBrandingArgs): Promise<Array<ICredentialBranding>>
   updateCredentialBranding(args: IUpdateCredentialBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding>
   removeCredentialBranding(args: IRemoveCredentialBrandingArgs, context: IRequiredContext): Promise<void>
-
   addCredentialLocaleBranding(args: IAddCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding>
   getCredentialLocaleBranding(args: IGetCredentialLocaleBrandingArgs): Promise<Array<ICredentialBranding>>
   removeCredentialLocaleBranding(args: IRemoveCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<void>
+  updateCredentialLocaleBranding(args: IUpdateCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding>
 
   addIssuerBranding(args: IAddIssuerBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
   getIssuerBranding(args: IGetIssuerBrandingArgs): Promise<Array<IIssuerBranding>>
   updateIssuerBranding(args: IUpdateIssuerBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
   removeIssuerBranding(args: IRemoveIssuerBrandingArgs, context: IRequiredContext): Promise<void>
-
   addIssuerLocaleBranding(args: IAddIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
   getIssuerLocaleBranding(args: IGetIssuerLocaleBrandingArgs): Promise<Array<IIssuerBranding>>
   removeIssuerLocaleBranding(args: IRemoveIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<void>
+  updateIssuerLocaleBranding(args: IUpdateIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
 }
 
 export interface IAddCredentialBrandingArgs {
@@ -108,6 +109,14 @@ export interface IRemoveCredentialLocaleBrandingArgs {
 
 export interface IRemoveIssuerLocaleBrandingArgs {
   issuerLocaleBrandingId: string
+}
+
+export interface IUpdateCredentialLocaleBrandingArgs {
+  localeBranding: Omit<LocaleBranding, 'createdAt' | 'lastUpdatedAt'>
+}
+
+export interface IUpdateIssuerLocaleBrandingArgs {
+  localeBranding: Omit<LocaleBranding, 'createdAt' | 'lastUpdatedAt'>
 }
 
 export type IRequiredContext = IAgentContext<never>
