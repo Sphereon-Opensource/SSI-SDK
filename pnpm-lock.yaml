@@ -49,9 +49,6 @@ importers:
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
-      express:
-        specifier: ^4.18.2
-        version: 4.18.2
     devDependencies:
       '@babel/plugin-transform-modules-commonjs':
         specifier: ^7.21.5
@@ -98,6 +95,9 @@ importers:
       eslint-plugin-import:
         specifier: ^2.27.5
         version: 2.27.5(@typescript-eslint/parser@5.59.2)(eslint@8.35.0)
+      express:
+        specifier: ^4.18.2
+        version: 4.18.2
       jest:
         specifier: ^27.5.1
         version: 27.5.1(ts-node@10.9.1)

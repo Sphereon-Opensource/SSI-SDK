@@ -1,4 +1,4 @@
-import { IAgentPlugin, ICredentialIssuer } from '@veramo/core'
+import { IAgentPlugin } from '@veramo/core'
 import { extractBase64FromDataURI, downloadImage, getImageDimensions, getImageType, IImageDimensions } from '@sphereon/ssi-sdk.core'
 import {
   AbstractIssuanceBrandingStore,
