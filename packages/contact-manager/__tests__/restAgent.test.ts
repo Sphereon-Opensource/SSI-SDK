@@ -37,6 +37,10 @@ const setup = async (): Promise<boolean> => {
   serverAgent = agent
   dbConnection = db
 
+  //await (await dbConnection).dropDatabase()
+  // await (await dbConnection).runMigrations()
+  // await (await dbConnection).showMigrations()
+
   const agentRouter = AgentRouter({
     exposedMethods: serverAgent.availableMethods(),
   })

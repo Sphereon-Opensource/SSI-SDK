@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToOne, JoinColumn, BeforeInsert, BeforeUpdate } from 'typeorm'
-import { CorrelationIdentifierEnum, BasicCorrelationIdentifier } from '../../types/contact'
+import { CorrelationIdentifierEnum, BasicCorrelationIdentifier } from '../../types'
 import { IdentityEntity } from './IdentityEntity'
 import { IsNotEmpty, validate } from 'class-validator'
 

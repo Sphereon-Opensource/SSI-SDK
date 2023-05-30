@@ -54,7 +54,7 @@ const dbConnection = createConnection({
   entities: [...DataStoreConnectionEntities, ...Entities],
 })
 
-const agent = createAgent<IContactManager>({
+const agent = createAgent<IIssuanceBranding>({
   plugins: [
     new ContactManager({
       store: new ContactStore(dbConnection),

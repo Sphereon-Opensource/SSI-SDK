@@ -1,6 +1,6 @@
 import { ChildEntity, Column, JoinColumn, OneToOne } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
-import { BasicOpenIdConfig } from '../../types/contact'
+import { BasicOpenIdConfig } from '../../types'
 import { ConnectionEntity } from './ConnectionEntity'
 
 @ChildEntity('OpenIdConfig')

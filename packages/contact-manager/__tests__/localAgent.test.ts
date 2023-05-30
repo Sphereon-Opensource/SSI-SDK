@@ -13,9 +13,9 @@ const setup = async (): Promise<boolean> => {
   const { localAgent, db } = await createObjects(config, { localAgent: '/agent', db: '/dbConnection' })
   agent = localAgent
   dbConnection = db
-  await (await dbConnection).dropDatabase()
-  await (await dbConnection).runMigrations()
-  await (await dbConnection).showMigrations()
+  // await (await dbConnection).dropDatabase()
+  // await (await dbConnection).runMigrations()
+  // await (await dbConnection).showMigrations()
   return true
 }
 

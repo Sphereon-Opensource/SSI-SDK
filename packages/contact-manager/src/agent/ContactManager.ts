@@ -17,7 +17,7 @@ import {
 import { IContact, IIdentity, AbstractContactStore } from '@sphereon/ssi-sdk.data-store'
 
 /**
- * {@inheritDoc IContactManager}
+ * {@inheritDoc IIssuanceBranding}
  */
 export class ContactManager implements IAgentPlugin {
   readonly schema = schema.IContactManager
@@ -40,52 +40,52 @@ export class ContactManager implements IAgentPlugin {
     this.store = options.store
   }
 
-  /** {@inheritDoc IContactManager.cmGetContact} */
+  /** {@inheritDoc IIssuanceBranding.cmGetContact} */
   private async cmGetContact(args: IGetContactArgs, context: IRequiredContext): Promise<IContact> {
     return this.store.getContact(args)
   }
 
-  /** {@inheritDoc IContactManager.cmGetContacts} */
+  /** {@inheritDoc IIssuanceBranding.cmGetContacts} */
   private async cmGetContacts(args?: IGetContactsArgs): Promise<Array<IContact>> {
     return this.store.getContacts(args)
   }
 
-  /** {@inheritDoc IContactManager.cmAddContact} */
+  /** {@inheritDoc IIssuanceBranding.cmAddContact} */
   private async cmAddContact(args: IAddContactArgs, context: IRequiredContext): Promise<IContact> {
     return this.store.addContact(args)
   }
 
-  /** {@inheritDoc IContactManager.cmUpdateContact} */
+  /** {@inheritDoc IIssuanceBranding.cmUpdateContact} */
   private async cmUpdateContact(args: IUpdateContactArgs, context: IRequiredContext): Promise<IContact> {
     return this.store.updateContact(args)
   }
 
-  /** {@inheritDoc IContactManager.cmRemoveContact} */
+  /** {@inheritDoc IIssuanceBranding.cmRemoveContact} */
   private async cmRemoveContact(args: IRemoveContactArgs, context: IRequiredContext): Promise<boolean> {
     return this.store.removeContact(args).then(() => true)
   }
 
-  /** {@inheritDoc IContactManager.cmGetIdentity} */
+  /** {@inheritDoc IIssuanceBranding.cmGetIdentity} */
   private async cmGetIdentity(args: IGetIdentityArgs, context: IRequiredContext): Promise<IIdentity> {
     return this.store.getIdentity(args)
   }
 
-  /** {@inheritDoc IContactManager.cmGetIdentities} */
+  /** {@inheritDoc IIssuanceBranding.cmGetIdentities} */
   private async cmGetIdentities(args: IGetIdentitiesArgs, context: IRequiredContext): Promise<Array<IIdentity>> {
     return this.store.getIdentities(args)
   }
 
-  /** {@inheritDoc IContactManager.cmAddIdentity} */
+  /** {@inheritDoc IIssuanceBranding.cmAddIdentity} */
   private async cmAddIdentity(args: IAddIdentityArgs, context: IRequiredContext): Promise<IIdentity> {
     return this.store.addIdentity(args)
   }
 
-  /** {@inheritDoc IContactManager.cmUpdateIdentity} */
+  /** {@inheritDoc IIssuanceBranding.cmUpdateIdentity} */
   private async cmUpdateIdentity(args: IUpdateIdentityArgs, context: IRequiredContext): Promise<IIdentity> {
     return this.store.updateIdentity(args)
   }
 
-  /** {@inheritDoc IContactManager.cmRemoveIdentity} */
+  /** {@inheritDoc IIssuanceBranding.cmRemoveIdentity} */
   private async cmRemoveIdentity(args: IRemoveIdentityArgs, context: IRequiredContext): Promise<boolean> {
     return this.store.removeIdentity(args).then(() => true) // TODO
   }

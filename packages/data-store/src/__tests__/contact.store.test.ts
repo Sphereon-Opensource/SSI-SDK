@@ -3,11 +3,11 @@ import { DataSource } from 'typeorm'
 import { ContactStore } from '../contact/ContactStore'
 import { CorrelationIdentifierEnum, DataStoreContactEntities, DataStoreMigrations, IdentityRoleEnum } from '../index'
 
-describe('Database entities test', () => {
+describe('Database entities test', (): void => {
   let dbConnection: DataSource
   let contactStore: ContactStore
 
-  beforeEach(async () => {
+  beforeEach(async (): Promise<void> => {
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',
@@ -22,11 +22,11 @@ describe('Database entities test', () => {
     contactStore = new ContactStore(dbConnection)
   })
 
-  afterEach(async () => {
+  afterEach(async (): Promise<void> => {
     await (await dbConnection).destroy()
   })
 
-  it('should get contact by id', async () => {
+  it('should get contact by id', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -40,13 +40,13 @@ describe('Database entities test', () => {
     expect(result).toBeDefined()
   })
 
-  it('should throw error when getting contact with unknown id', async () => {
+  it('should throw error when getting contact with unknown id', async (): Promise<void> => {
     const contactId = 'unknownContactId'
 
     await expect(contactStore.getContact({ contactId })).rejects.toThrow(`No contact found for id: ${contactId}`)
   })
 
-  it('should get all contacts', async () => {
+  it('should get all contacts', async (): Promise<void> => {
     const contact1 = {
       name: 'test_name1',
       alias: 'test_alias1',
@@ -68,7 +68,7 @@ describe('Database entities test', () => {
     expect(result.length).toEqual(2)
   })
 
-  it('should get contacts by filter', async () => {
+  it('should get contacts by filter', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -85,7 +85,7 @@ describe('Database entities test', () => {
     expect(result.length).toEqual(1)
   })
 
-  it('should get whole contacts by filter', async () => {
+  it('should get whole contacts by filter', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -136,7 +136,7 @@ describe('Database entities test', () => {
     expect(result[0].identities.length).toEqual(3)
   })
 
-  it('should get contacts by name', async () => {
+  it('should get contacts by name', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -153,7 +153,7 @@ describe('Database entities test', () => {
     expect(result.length).toEqual(1)
   })
 
-  it('should get contacts by alias', async () => {
+  it('should get contacts by alias', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -170,7 +170,7 @@ describe('Database entities test', () => {
     expect(result.length).toEqual(1)
   })
 
-  it('should get contacts by uri', async () => {
+  it('should get contacts by uri', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -187,7 +187,7 @@ describe('Database entities test', () => {
     expect(result.length).toEqual(1)
   })
 
-  it('should return no contacts if filter does not match', async () => {
+  it('should return no contacts if filter does not match', async (): Promise<void> => {
     const args = {
       filter: [{ name: 'no_match_contact' }, { alias: 'no_match_contact_alias' }, { uri: 'no_match_example.com' }],
     }
@@ -196,7 +196,7 @@ describe('Database entities test', () => {
     expect(result.length).toEqual(0)
   })
 
-  it('should add contact without identities', async () => {
+  it('should add contact without identities', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -210,40 +210,7 @@ describe('Database entities test', () => {
     expect(result.uri).toEqual(contact.uri)
   })
 
-  it('should add contact with identities', async () => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
-      uri: 'example.com',
-      identities: [
-        {
-          alias: 'test_alias1',
-          roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
-          identifier: {
-            type: CorrelationIdentifierEnum.DID,
-            correlationId: 'example_did1',
-          },
-        },
-        {
-          alias: 'test_alias2',
-          roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
-          identifier: {
-            type: CorrelationIdentifierEnum.DID,
-            correlationId: 'example_did2',
-          },
-        },
-      ],
-    }
-
-    const result = await contactStore.addContact(contact)
-
-    expect(result.name).toEqual(contact.name)
-    expect(result.alias).toEqual(contact.alias)
-    expect(result.uri).toEqual(contact.uri)
-    expect(result.identities.length).toEqual(2)
-  })
-
-  it('should throw error when adding contact with invalid identity', async () => {
+  it('should add contact with identities', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -276,7 +243,40 @@ describe('Database entities test', () => {
     expect(result.identities.length).toEqual(2)
   })
 
-  it('should throw error when adding contact with duplicate name', async () => {
+  it('should throw error when adding contact with invalid identity', async (): Promise<void> => {
+    const contact = {
+      name: 'test_name',
+      alias: 'test_alias',
+      uri: 'example.com',
+      identities: [
+        {
+          alias: 'test_alias1',
+          roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+          identifier: {
+            type: CorrelationIdentifierEnum.DID,
+            correlationId: 'example_did1',
+          },
+        },
+        {
+          alias: 'test_alias2',
+          roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+          identifier: {
+            type: CorrelationIdentifierEnum.DID,
+            correlationId: 'example_did2',
+          },
+        },
+      ],
+    }
+
+    const result = await contactStore.addContact(contact)
+
+    expect(result.name).toEqual(contact.name)
+    expect(result.alias).toEqual(contact.alias)
+    expect(result.uri).toEqual(contact.uri)
+    expect(result.identities.length).toEqual(2)
+  })
+
+  it('should throw error when adding contact with duplicate name', async (): Promise<void> => {
     const name = 'test_name'
     const contact1 = {
       name,
@@ -296,7 +296,7 @@ describe('Database entities test', () => {
     await expect(contactStore.addContact(contact2)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
   })
 
-  it('should throw error when adding contact with duplicate alias', async () => {
+  it('should throw error when adding contact with duplicate alias', async (): Promise<void> => {
     const alias = 'test_alias'
     const contact1 = {
       name: 'test_name',
@@ -316,7 +316,7 @@ describe('Database entities test', () => {
     await expect(contactStore.addContact(contact2)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
   })
 
-  it('should update contact by id', async () => {
+  it('should update contact by id', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -360,7 +360,7 @@ describe('Database entities test', () => {
     expect(result.identities.length).toEqual(2)
   })
 
-  it('should throw error when updating contact with unknown id', async () => {
+  it('should throw error when updating contact with unknown id', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -378,7 +378,7 @@ describe('Database entities test', () => {
     await expect(contactStore.updateContact({ contact: updatedContact })).rejects.toThrow(`No contact found for id: ${contactId}`)
   })
 
-  it('should get identity by id', async () => {
+  it('should get identity by id', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -403,7 +403,7 @@ describe('Database entities test', () => {
     expect(result).toBeDefined()
   })
 
-  it('should get holderDID identity by id', async () => {
+  it('should get holderDID identity by id', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -428,13 +428,13 @@ describe('Database entities test', () => {
     expect(result).toBeDefined()
   })
 
-  it('should throw error when getting identity with unknown id', async () => {
+  it('should throw error when getting identity with unknown id', async (): Promise<void> => {
     const identityId = 'unknownIdentityId'
 
     await expect(contactStore.getIdentity({ identityId })).rejects.toThrow(`No identity found for id: ${identityId}`)
   })
 
-  it('should get all identities for contact', async () => {
+  it('should get all identities for contact', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -474,7 +474,7 @@ describe('Database entities test', () => {
     expect(result.length).toEqual(2)
   })
 
-  it('should get all identities', async () => {
+  it('should get all identities', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -510,7 +510,7 @@ describe('Database entities test', () => {
     expect(result.length).toEqual(2)
   })
 
-  it('should get identities by filter', async () => {
+  it('should get identities by filter', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -551,7 +551,7 @@ describe('Database entities test', () => {
     expect(result.length).toEqual(1)
   })
 
-  it('should get whole identities by filter', async () => {
+  it('should get whole identities by filter', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -592,7 +592,7 @@ describe('Database entities test', () => {
     expect(result[0].metadata!.length).toEqual(2)
   })
 
-  it('should add identity to contact', async () => {
+  it('should add identity to contact', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -616,13 +616,13 @@ describe('Database entities test', () => {
     expect(result.identities.length).toEqual(1)
   })
 
-  it('should throw error when removing identity with unknown id', async () => {
+  it('should throw error when removing identity with unknown id', async (): Promise<void> => {
     const identityId = 'unknownIdentityId'
 
     await expect(contactStore.removeIdentity({ identityId })).rejects.toThrow(`No identity found for id: ${identityId}`)
   })
 
-  it('should throw error when adding identity with invalid identifier', async () => {
+  it('should throw error when adding identity with invalid identifier', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -646,7 +646,7 @@ describe('Database entities test', () => {
     )
   })
 
-  it('should throw error when updating identity with invalid identifier', async () => {
+  it('should throw error when updating identity with invalid identifier', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -672,7 +672,7 @@ describe('Database entities test', () => {
     )
   })
 
-  it('should update identity by id', async () => {
+  it('should update identity by id', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -700,7 +700,7 @@ describe('Database entities test', () => {
     expect(result.identifier.correlationId).toEqual(correlationId)
   })
 
-  it('should get aggregate of identity roles on contact', async () => {
+  it('should get aggregate of identity roles on contact', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',

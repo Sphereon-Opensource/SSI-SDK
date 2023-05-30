@@ -1,5 +1,6 @@
-import { IContact, IIdentity } from '../types/contact'
 import {
+  IContact,
+  IIdentity,
   IAddIdentityArgs,
   IGetIdentityArgs,
   IGetIdentitiesArgs,
@@ -10,7 +11,7 @@ import {
   IGetContactsArgs,
   IRemoveContactArgs,
   IUpdateContactArgs,
-} from '../types/IAbstractContactStore'
+} from '../types'
 
 export abstract class AbstractContactStore {
   abstract getContact(args: IGetContactArgs): Promise<IContact>

@@ -1,4 +1,4 @@
-export { flattenArray, flattenMigrations, multibaseToHex, hexToMultibase, MultibaseFormat } from './utils'
+export * from './utils'
 export {
   VerifiablePresentationSP,
   UnsignedPresentationSP,
@@ -9,5 +9,6 @@ export {
   W3CVerifiablePresentationSP,
   UnsignedCredentialSP,
   ProofOptions,
+  IImageDimensions,
 } from './types'
 export { KeyAlgo, SuppliedSigner } from './signers'

@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, BeforeInsert, BeforeUpdate } from 'typeorm'
-import { BasicMetadataItem } from '../../types/contact'
+import { BasicMetadataItem } from '../../types'
 import { IdentityEntity } from './IdentityEntity'
 import { IsNotEmpty, validate } from 'class-validator'
 

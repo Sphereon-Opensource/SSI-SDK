@@ -14,7 +14,7 @@ import {
 } from 'typeorm'
 import { correlationIdentifierEntityFrom, CorrelationIdentifierEntity } from './CorrelationIdentifierEntity'
 import { ConnectionEntity, connectionEntityFrom } from './ConnectionEntity'
-import { BasicMetadataItem, IBasicIdentity, IdentityRoleEnum } from '../../types/contact'
+import { BasicMetadataItem, IBasicIdentity, IdentityRoleEnum } from '../../types'
 import { ContactEntity } from './ContactEntity'
 import { IdentityMetadataItemEntity, metadataItemEntityFrom } from './IdentityMetadataItemEntity'
 import { IsNotEmpty, validate } from 'class-validator'
@@ -97,9 +97,7 @@ export const identityEntityFrom = (args: IBasicIdentity): IdentityEntity => {
   identityEntity.alias = args.alias
   identityEntity.roles = args.roles
   identityEntity.identifier = correlationIdentifierEntityFrom(args.identifier)
-  if (args.connection) {
-    identityEntity.connection = connectionEntityFrom(args.connection)
-  }
+  identityEntity.connection = args.connection ? connectionEntityFrom(args.connection) : undefined
   identityEntity.metadata = args.metadata ? args.metadata.map((item: BasicMetadataItem) => metadataItemEntityFrom(item)) : []
 
   return identityEntity

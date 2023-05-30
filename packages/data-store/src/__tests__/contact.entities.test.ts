@@ -20,10 +20,10 @@ import {
   IdentityRoleEnum,
 } from '../index'
 
-describe('Database entities test', () => {
+describe('Database entities test', (): void => {
   let dbConnection: DataSource
 
-  beforeEach(async () => {
+  beforeEach(async (): Promise<void> => {
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',
@@ -37,11 +37,11 @@ describe('Database entities test', () => {
     expect(await dbConnection.showMigrations()).toBeFalsy()
   })
 
-  afterEach(async () => {
+  afterEach(async (): Promise<void> => {
     await (await dbConnection).destroy()
   })
 
-  it('Should save contact to database', async () => {
+  it('Should save contact to database', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -62,7 +62,7 @@ describe('Database entities test', () => {
     expect(fromDb?.uri).toEqual(contact.uri)
   })
 
-  it('should throw error when saving contact with blank name', async () => {
+  it('should throw error when saving contact with blank name', async (): Promise<void> => {
     const contact = {
       name: '',
       alias: 'test_alias',
@@ -74,7 +74,7 @@ describe('Database entities test', () => {
     await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrow('Blank names are not allowed')
   })
 
-  it('should throw error when saving contact with blank alias', async () => {
+  it('should throw error when saving contact with blank alias', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: '',
@@ -86,7 +86,7 @@ describe('Database entities test', () => {
     await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrow('Blank aliases are not allowed')
   })
 
-  it('Should enforce unique name for a contact', async () => {
+  it('Should enforce unique name for a contact', async (): Promise<void> => {
     const contactName = 'non_unique_name'
     const contact1 = {
       name: contactName,
@@ -108,7 +108,7 @@ describe('Database entities test', () => {
     )
   })
 
-  it('Should enforce unique alias for a contact', async () => {
+  it('Should enforce unique alias for a contact', async (): Promise<void> => {
     const alias = 'non_unique_alias'
     const contact1 = {
       name: 'unique_name1',
@@ -130,7 +130,7 @@ describe('Database entities test', () => {
     )
   })
 
-  it('Should enforce unique alias for an identity', async () => {
+  it('Should enforce unique alias for an identity', async (): Promise<void> => {
     const alias = 'non_unique_alias'
     const identity1 = {
       alias,
@@ -157,7 +157,7 @@ describe('Database entities test', () => {
     )
   })
 
-  it('Should enforce unique correlationId for a identity', async () => {
+  it('Should enforce unique correlationId for a identity', async (): Promise<void> => {
     const correlationId = 'non_unique_correlationId'
     const identity1 = {
       alias: 'unique_alias1',
@@ -184,7 +184,7 @@ describe('Database entities test', () => {
     )
   })
 
-  it('Should save identity to database', async () => {
+  it('Should save identity to database', async (): Promise<void> => {
     const correlationId = 'example_did'
     const identity = {
       alias: correlationId,
@@ -214,7 +214,7 @@ describe('Database entities test', () => {
     expect(fromDb?.identifier.type).toEqual(identity.identifier.type)
   })
 
-  it('should throw error when saving identity with blank alias', async () => {
+  it('should throw error when saving identity with blank alias', async (): Promise<void> => {
     const identity = {
       alias: '',
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
@@ -229,7 +229,7 @@ describe('Database entities test', () => {
     await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrow('Blank aliases are not allowed')
   })
 
-  it('should throw error when saving identity with blank correlation id', async () => {
+  it('should throw error when saving identity with blank correlation id', async (): Promise<void> => {
     const identity = {
       alias: 'example_did',
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
@@ -244,7 +244,7 @@ describe('Database entities test', () => {
     await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrow('Blank correlation ids are not allowed')
   })
 
-  it('should throw error when saving identity with blank metadata label', async () => {
+  it('should throw error when saving identity with blank metadata label', async (): Promise<void> => {
     const correlationId = 'example_did'
     const identity = {
       alias: correlationId,
@@ -266,7 +266,7 @@ describe('Database entities test', () => {
     await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrow('Blank metadata labels are not allowed')
   })
 
-  it('should throw error when saving identity with blank metadata value', async () => {
+  it('should throw error when saving identity with blank metadata value', async (): Promise<void> => {
     const correlationId = 'example_did'
     const identity = {
       alias: correlationId,
@@ -288,7 +288,7 @@ describe('Database entities test', () => {
     await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrow('Blank metadata values are not allowed')
   })
 
-  it('Should save identity with openid connection to database', async () => {
+  it('Should save identity with openid connection to database', async (): Promise<void> => {
     const correlationId = 'example.com'
     const identity = {
       alias: correlationId,
@@ -333,7 +333,7 @@ describe('Database entities test', () => {
     expect((fromDb?.connection?.config as OpenIdConfigEntity).clientId).toEqual(identity.connection.config.clientId)
   })
 
-  it('Should save identity with didauth connection to database', async () => {
+  it('Should save identity with didauth connection to database', async (): Promise<void> => {
     const correlationId = 'example.com'
     const identity = {
       alias: correlationId,
@@ -380,7 +380,7 @@ describe('Database entities test', () => {
     expect((fromDb?.connection?.config as DidAuthConfigEntity).identifier).toEqual(identity.connection.config.identifier.did)
   })
 
-  it('Should save connection with openid config to database', async () => {
+  it('Should save connection with openid config to database', async (): Promise<void> => {
     const connection = {
       type: ConnectionTypeEnum.OPENID_CONNECT,
       config: {
@@ -414,7 +414,7 @@ describe('Database entities test', () => {
     expect((fromDb?.config as OpenIdConfigEntity).clientId).toEqual(connection.config.clientId)
   })
 
-  it('Should save connection with didauth config to database', async () => {
+  it('Should save connection with didauth config to database', async (): Promise<void> => {
     const connection = {
       type: ConnectionTypeEnum.SIOPv2,
       config: {
@@ -450,7 +450,7 @@ describe('Database entities test', () => {
     expect((fromDb?.config as DidAuthConfigEntity).identifier).toEqual(connection.config.identifier.did)
   })
 
-  it('Should save openid config to database', async () => {
+  it('Should save openid config to database', async (): Promise<void> => {
     const clientId = '138d7bf8-c930-4c6e-b928-97d3a4928b01'
     const config = {
       clientId,
@@ -475,7 +475,7 @@ describe('Database entities test', () => {
     expect((fromDb as OpenIdConfigEntity).clientId).toEqual(config.clientId)
   })
 
-  it('Should save didauth config to database', async () => {
+  it('Should save didauth config to database', async (): Promise<void> => {
     const sessionId = 'https://example.com/did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01'
     const config = {
       identifier: {
@@ -502,7 +502,7 @@ describe('Database entities test', () => {
     expect((fromDb as DidAuthConfigEntity).identifier).toEqual(config.identifier.did)
   })
 
-  it('Should delete contact and all child relations', async () => {
+  it('Should delete contact and all child relations', async (): Promise<void> => {
     const contact = {
       name: 'relation_test_name',
       alias: 'relation_test_alias',
@@ -596,7 +596,7 @@ describe('Database entities test', () => {
     ).toBeNull()
   })
 
-  it('Should delete identity and all child relations', async () => {
+  it('Should delete identity and all child relations', async (): Promise<void> => {
     const contact = {
       name: 'relation_test_name',
       alias: 'relation_test_alias',
@@ -685,7 +685,7 @@ describe('Database entities test', () => {
     ).toBeNull()
   })
 
-  it('Should not delete contact when deleting identity', async () => {
+  it('Should not delete contact when deleting identity', async (): Promise<void> => {
     const contact = {
       name: 'relation_test_name',
       alias: 'relation_test_alias',
@@ -747,7 +747,7 @@ describe('Database entities test', () => {
     ).toBeDefined()
   })
 
-  it('Should set creation date when saving contact', async () => {
+  it('Should set creation date when saving contact', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -765,7 +765,7 @@ describe('Database entities test', () => {
     expect(fromDb?.createdAt).toBeDefined()
   })
 
-  it('Should not update creation date when updating contact', async () => {
+  it('Should not update creation date when updating contact', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -785,7 +785,7 @@ describe('Database entities test', () => {
     expect(fromDb?.createdAt).toEqual(savedContact?.createdAt)
   })
 
-  it('Should set creation date when saving identity', async () => {
+  it('Should set creation date when saving identity', async (): Promise<void> => {
     const correlationId = 'example_did'
     const identity = {
       alias: correlationId,
@@ -811,7 +811,7 @@ describe('Database entities test', () => {
     expect(fromDb?.createdAt).toBeDefined()
   })
 
-  it('Should not update creation date when saving identity', async () => {
+  it('Should not update creation date when saving identity', async (): Promise<void> => {
     const correlationId = 'example_did'
     const identity = {
       alias: correlationId,
@@ -841,7 +841,7 @@ describe('Database entities test', () => {
     expect(fromDb?.createdAt).toEqual(savedIdentity?.createdAt)
   })
 
-  it('Should set last updated date when saving contact', async () => {
+  it('Should set last updated date when saving contact', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -859,7 +859,7 @@ describe('Database entities test', () => {
     expect(fromDb?.lastUpdatedAt).toBeDefined()
   })
 
-  it('Should update last updated date when updating contact', async () => {
+  it('Should update last updated date when updating contact', async (): Promise<void> => {
     const contact = {
       name: 'test_name',
       alias: 'test_alias',
@@ -883,7 +883,7 @@ describe('Database entities test', () => {
     expect(fromDb?.lastUpdatedAt).not.toEqual(savedContact?.lastUpdatedAt)
   })
 
-  it('Should set last updated date when saving identity', async () => {
+  it('Should set last updated date when saving identity', async (): Promise<void> => {
     const correlationId = 'example_did'
     const identity = {
       alias: correlationId,

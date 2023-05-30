@@ -13,7 +13,6 @@
     "typeorm-postgres:migration:run": "pnpm run typeorm -- migration:run -c migration-postgres"
   },
   "dependencies": {
-    "@sphereon/ssi-types": "^0.11.0",
     "@veramo/core": "4.2.0",
     "@sphereon/ssi-types": "workspace:*",
     "class-validator": "^0.14.0",

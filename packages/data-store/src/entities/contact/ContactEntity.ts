@@ -10,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { IBasicContact, IBasicIdentity } from '../../types/contact'
+import { IBasicContact, IBasicIdentity } from '../../types'
 import { IdentityEntity, identityEntityFrom } from './IdentityEntity'
 import { IsNotEmpty, validate } from 'class-validator'
 
@@ -68,9 +68,7 @@ export const contactEntityFrom = (args: IBasicContact): ContactEntity => {
   contactEntity.name = args.name
   contactEntity.alias = args.alias
   contactEntity.uri = args.uri
-  if (args.identities) {
-    contactEntity.identities = args.identities.map((identity: IBasicIdentity) => identityEntityFrom(identity))
-  }
+  contactEntity.identities = args.identities ? args.identities.map((identity: IBasicIdentity) => identityEntityFrom(identity)) : []
 
   return contactEntity
 }

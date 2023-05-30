@@ -1,0 +1,50 @@
+{
+  "name": "@sphereon/ssi-sdk.issuance-branding",
+  "version": "0.11.0",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "veramo": {
+    "pluginInterfaces": {
+      "IIssuanceBranding": "./src/types/IIssuanceBranding.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:clean": "tsc --build --clean && tsc --build"
+  },
+  "dependencies": {
+    "@sphereon/ssi-sdk.data-store": "workspace:*",
+    "@sphereon/ssi-sdk.core": "workspace:*",
+    "typeorm": "^0.3.12"
+  },
+  "devDependencies": {
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
+    "@veramo/remote-client": "4.2.0",
+    "@veramo/remote-server": "4.2.0"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "plugin.schema.json",
+    "LICENSE"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sphereon",
+    "Veramo",
+    "Branding",
+    "Credential",
+    "Issuer",
+    "Credential Manifest",
+    "OID4VCI",
+    "SSI"
+  ]
+}
