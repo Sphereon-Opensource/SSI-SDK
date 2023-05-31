@@ -1,5 +1,5 @@
-import { ChildEntity, Column, Index, JoinColumn, ManyToOne } from 'typeorm'
-import { IBasicLocaleBranding } from '../../types'
+import { ChildEntity, Column, JoinColumn, ManyToOne, Index } from 'typeorm'
+import { IBasicCredentialLocaleBranding } from '../../types'
 import { backgroundAttributesEntityFrom } from './BackgroundAttributesEntity'
 import { CredentialBrandingEntity } from './CredentialBrandingEntity'
 import { imageAttributesEntityFrom } from './ImageAttributesEntity'
@@ -7,7 +7,9 @@ import { BaseLocaleBrandingEntity } from './BaseLocaleBrandingEntity'
 import { textAttributesEntityFrom } from './TextAttributesEntity'
 
 @ChildEntity('CredentialLocaleBranding')
-@Index(['credentialBranding', 'locale'], { unique: true })
+//@Unique('name',['credentialBranding', 'locale'], { message: 'Custom error message: Duplicate credential branding and locale combination.' })
+//@Unique(['credentialBranding', 'locale'])
+@Index('IDX_CredentialLocaleBrandingEntity_issuerBranding_locale', ['credentialBranding', 'locale'], { unique: true })
 export class CredentialLocaleBrandingEntity extends BaseLocaleBrandingEntity {
   @ManyToOne(() => CredentialBrandingEntity, (credentialBranding: CredentialBrandingEntity) => credentialBranding.localeBranding, {
     onDelete: 'CASCADE',
@@ -19,7 +21,7 @@ export class CredentialLocaleBrandingEntity extends BaseLocaleBrandingEntity {
   credentialBrandingId!: string
 }
 
-export const credentialLocaleBrandingEntityFrom = (args: IBasicLocaleBranding): CredentialLocaleBrandingEntity => {
+export const credentialLocaleBrandingEntityFrom = (args: IBasicCredentialLocaleBranding): CredentialLocaleBrandingEntity => {
   const credentialLocaleBrandingEntity: CredentialLocaleBrandingEntity = new CredentialLocaleBrandingEntity()
   credentialLocaleBrandingEntity.alias = args.alias
   credentialLocaleBrandingEntity.locale = args.locale

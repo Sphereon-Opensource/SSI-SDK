@@ -1,4 +1,3 @@
-// TODO we need the same extend structure for this interface as for the entity
 export interface ILocaleBranding {
   id: string
   alias?: string
@@ -11,11 +10,11 @@ export interface ILocaleBranding {
   lastUpdatedAt: Date
 }
 
-export interface IBasicLocaleBranding extends Omit<ILocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text'> {
-  logo?: IBasicImageAttributes
-  background?: IBasicBackgroundAttributes
-  text?: IBasicTextAttributes
-}
+// export interface IBasicLocaleBranding extends Omit<ILocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text'> {
+//   logo?: IBasicImageAttributes
+//   background?: IBasicBackgroundAttributes
+//   text?: IBasicTextAttributes
+// }
 
 export interface IImageAttributes {
   id: string
@@ -51,27 +50,39 @@ export interface IImageDimensions {
 }
 export interface IBasicImageDimensions extends Omit<IImageDimensions, 'id'> {}
 
-// TODO combine interfaces like the entities?
+export interface ICredentialLocaleBranding extends ILocaleBranding {}
+export interface IBasicCredentialLocaleBranding extends Omit<ICredentialLocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text'> {
+  logo?: IBasicImageAttributes
+  background?: IBasicBackgroundAttributes
+  text?: IBasicTextAttributes
+}
+
 export interface ICredentialBranding {
   id: string
   issuerCorrelationId: string
   vcHash: string
-  localeBranding: Array<ILocaleBranding>
+  localeBranding: Array<ICredentialLocaleBranding>
   createdAt: Date
   lastUpdatedAt: Date
 }
 export interface IBasicCredentialBranding extends Omit<ICredentialBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'localeBranding'> {
-  localeBranding: Array<IBasicLocaleBranding>
+  localeBranding: Array<IBasicCredentialLocaleBranding>
+}
+
+export interface IIssuerLocaleBranding extends ILocaleBranding {}
+export interface IBasicIssuerLocaleBranding extends Omit<IIssuerLocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text'> {
+  logo?: IBasicImageAttributes
+  background?: IBasicBackgroundAttributes
+  text?: IBasicTextAttributes
 }
 
 export interface IIssuerBranding {
   id: string
   issuerCorrelationId: string
-  localeBranding: Array<ILocaleBranding>
+  localeBranding: Array<IIssuerLocaleBranding>
   createdAt: Date
   lastUpdatedAt: Date
 }
-
 export interface IBasicIssuerBranding extends Omit<IIssuerBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'localeBranding'> {
-  localeBranding: Array<IBasicLocaleBranding>
+  localeBranding: Array<IBasicIssuerLocaleBranding>
 }

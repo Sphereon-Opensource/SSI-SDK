@@ -12,7 +12,7 @@ import {
 } from 'typeorm'
 import { IBasicContact, IBasicIdentity } from '../../types'
 import { IdentityEntity, identityEntityFrom } from './IdentityEntity'
-import { IsNotEmpty, validate } from 'class-validator'
+import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 
 @Entity('Contact')
 export class ContactEntity extends BaseEntity {
@@ -55,9 +55,9 @@ export class ContactEntity extends BaseEntity {
   @BeforeInsert()
   @BeforeUpdate()
   async validate() {
-    const validation = await validate(this)
+    const validation: Array<ValidationError> = await validate(this)
     if (validation.length > 0) {
-      return Promise.reject(Error(validation[0].constraints?.isNotEmpty))
+      return Promise.reject(Error(Object.values(validation[0].constraints!)[0]))
     }
     return
   }

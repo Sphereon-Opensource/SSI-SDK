@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToOne, JoinColumn, BeforeInsert, BeforeUpdate } from 'typeorm'
 import { CorrelationIdentifierEnum, BasicCorrelationIdentifier } from '../../types'
 import { IdentityEntity } from './IdentityEntity'
-import { IsNotEmpty, validate } from 'class-validator'
+import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 
 @Entity('CorrelationIdentifier')
 export class CorrelationIdentifierEntity extends BaseEntity {
@@ -24,9 +24,9 @@ export class CorrelationIdentifierEntity extends BaseEntity {
   @BeforeInsert()
   @BeforeUpdate()
   async validate() {
-    const validation = await validate(this)
+    const validation: Array<ValidationError> = await validate(this)
     if (validation.length > 0) {
-      return Promise.reject(Error(validation[0].constraints?.isNotEmpty))
+      return Promise.reject(Error(Object.values(validation[0].constraints!)[0]))
     }
     return
   }

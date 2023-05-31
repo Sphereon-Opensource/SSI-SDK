@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, BeforeInsert, BeforeUpdate } from 'typeorm'
 import { BasicMetadataItem } from '../../types'
 import { IdentityEntity } from './IdentityEntity'
-import { IsNotEmpty, validate } from 'class-validator'
+import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 
 @Entity('IdentityMetadata')
 export class IdentityMetadataItemEntity extends BaseEntity {
@@ -22,9 +22,9 @@ export class IdentityMetadataItemEntity extends BaseEntity {
   @BeforeInsert()
   @BeforeUpdate()
   async validate() {
-    const validation = await validate(this)
+    const validation: Array<ValidationError> = await validate(this)
     if (validation.length > 0) {
-      return Promise.reject(Error(validation[0].constraints?.isNotEmpty))
+      return Promise.reject(Error(Object.values(validation[0].constraints!)[0]))
     }
     return
   }

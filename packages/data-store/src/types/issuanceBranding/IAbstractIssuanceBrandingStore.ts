@@ -1,5 +1,11 @@
 import { FindOptionsWhere } from 'typeorm'
-import { IBasicLocaleBranding, ICredentialBranding, IIssuerBranding, ILocaleBranding } from './issuanceBranding'
+import {
+  IBasicCredentialLocaleBranding,
+  IBasicIssuerLocaleBranding,
+  ICredentialBranding,
+  IIssuerBranding,
+  ILocaleBranding
+} from './issuanceBranding'
 import { CredentialBrandingEntity } from '../../entities/issuanceBranding/CredentialBrandingEntity'
 import { IssuerBrandingEntity } from '../../entities/issuanceBranding/IssuerBrandingEntity'
 import { IssuerLocaleBrandingEntity } from '../../entities/issuanceBranding/IssuerLocaleBrandingEntity'
@@ -12,9 +18,9 @@ export type FindCredentialLocaleBrandingArgs = FindOptionsWhere<CredentialLocale
 export type FindIssuerLocaleBrandingArgs = FindOptionsWhere<IssuerLocaleBrandingEntity>[]
 
 export interface IAddCredentialBrandingArgs {
-  issuerCorrelationId: string
-  localeBranding: Array<IBasicLocaleBranding>
   vcHash: string
+  issuerCorrelationId: string
+  localeBranding: Array<IBasicCredentialLocaleBranding> //IBasicLocaleBranding
 }
 
 export interface IGetCredentialBrandingArgs {
@@ -31,7 +37,7 @@ export interface IRemoveCredentialBrandingArgs {
 
 export interface IAddCredentialLocaleBrandingArgs {
   credentialBrandingId: string
-  localeBranding: Array<IBasicLocaleBranding>
+  localeBranding: Array<IBasicCredentialLocaleBranding> //IBasicLocaleBranding
 }
 
 export interface IUpdateCredentialLocaleBrandingArgs {
@@ -48,7 +54,7 @@ export interface IGetCredentialLocaleBrandingArgs {
 
 export interface IAddIssuerBrandingArgs {
   issuerCorrelationId: string
-  localeBranding: Array<IBasicLocaleBranding>
+  localeBranding: Array<IBasicIssuerLocaleBranding> //IBasicLocaleBranding
 }
 
 export interface IGetIssuerBrandingArgs {
@@ -65,7 +71,7 @@ export interface IRemoveIssuerBrandingArgs {
 
 export interface IAddIssuerLocaleBrandingArgs {
   issuerBrandingId: string
-  localeBranding: Array<IBasicLocaleBranding>
+  localeBranding: Array<IBasicIssuerLocaleBranding> //IBasicLocaleBranding
 }
 
 export interface IUpdateIssuerLocaleBrandingArgs {

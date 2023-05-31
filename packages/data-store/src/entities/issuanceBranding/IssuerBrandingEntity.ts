@@ -10,9 +10,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { ArrayMinSize, validate, ValidationError } from 'class-validator'
+import { ArrayMinSize, IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { IssuerLocaleBrandingEntity, issuerLocaleBrandingEntityFrom } from './IssuerLocaleBrandingEntity'
-import { IBasicIssuerBranding, IBasicLocaleBranding } from '../../types'
+import { IBasicIssuerBranding, IBasicIssuerLocaleBranding } from '../../types'
 
 @Entity('IssuerBranding')
 @Index('IDX_IssuerBrandingEntity_issuerCorrelationId', ['issuerCorrelationId'])
@@ -21,6 +21,7 @@ export class IssuerBrandingEntity extends BaseEntity {
   id!: string
 
   @Column({ name: 'issuerCorrelationId', length: 255, nullable: false, unique: true })
+  @IsNotEmpty({ message: 'Blank issuerCorrelationIds are not allowed' })
   issuerCorrelationId!: string
 
   // @PrimaryColumn({ name: 'issuerCorrelationId', length: 255 })
@@ -57,7 +58,7 @@ export class IssuerBrandingEntity extends BaseEntity {
   async validate(): Promise<undefined> {
     const validation: Array<ValidationError> = await validate(this)
     if (validation.length > 0) {
-      return Promise.reject(Error(validation[0].constraints?.arrayMinSize))
+      return Promise.reject(Error(Object.values(validation[0].constraints!)[0]))
     }
     return
   }
@@ -66,7 +67,7 @@ export class IssuerBrandingEntity extends BaseEntity {
 export const issuerBrandingEntityFrom = (args: IBasicIssuerBranding): IssuerBrandingEntity => {
   const issuerBrandingEntity: IssuerBrandingEntity = new IssuerBrandingEntity()
   issuerBrandingEntity.issuerCorrelationId = args.issuerCorrelationId
-  issuerBrandingEntity.localeBranding = args.localeBranding.map((localeBranding: IBasicLocaleBranding) =>
+  issuerBrandingEntity.localeBranding = args.localeBranding.map((localeBranding: IBasicIssuerLocaleBranding) =>
     issuerLocaleBrandingEntityFrom(localeBranding)
   )
 

@@ -10,9 +10,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { ArrayMinSize, validate } from 'class-validator'
+import { ArrayMinSize, IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { CredentialLocaleBrandingEntity, credentialLocaleBrandingEntityFrom } from './CredentialLocaleBrandingEntity'
-import { IBasicCredentialBranding, IBasicLocaleBranding } from '../../types'
+import {
+  IBasicCredentialBranding,
+  IBasicCredentialLocaleBranding,
+} from '../../types'
 
 @Entity('CredentialBranding')
 @Index('IDX_CredentialBrandingEntity_vcHash', ['vcHash'])
@@ -23,12 +26,14 @@ export class CredentialBrandingEntity extends BaseEntity {
 
   //TODO make this the primary key?
   @Column({ name: 'vcHash', length: 255, nullable: false, unique: true })
+  @IsNotEmpty({ message: 'Blank vcHashes are not allowed' })
   vcHash!: string
 
   // @PrimaryColumn({ name: 'vcHash', length: 255 })
   // vcHash!: string;
 
   @Column({ name: 'issuerCorrelationId', length: 255, nullable: false, unique: false })
+  @IsNotEmpty({ message: 'Blank issuerCorrelationIds are not allowed' })
   issuerCorrelationId!: string
 
   @OneToMany(
@@ -60,9 +65,9 @@ export class CredentialBrandingEntity extends BaseEntity {
   @BeforeInsert()
   @BeforeUpdate()
   async validate(): Promise<undefined> {
-    const validation = await validate(this)
+    const validation: Array<ValidationError> = await validate(this)
     if (validation.length > 0) {
-      return Promise.reject(Error(validation[0].constraints?.arrayMinSize))
+      return Promise.reject(Error(Object.values(validation[0].constraints!)[0]))
     }
     return
   }
@@ -72,7 +77,7 @@ export const credentialBrandingEntityFrom = (args: IBasicCredentialBranding): Cr
   const credentialBrandingEntity: CredentialBrandingEntity = new CredentialBrandingEntity()
   credentialBrandingEntity.issuerCorrelationId = args.issuerCorrelationId
   credentialBrandingEntity.vcHash = args.vcHash
-  credentialBrandingEntity.localeBranding = args.localeBranding.map((localeBranding: IBasicLocaleBranding) =>
+  credentialBrandingEntity.localeBranding = args.localeBranding.map((localeBranding: IBasicCredentialLocaleBranding) =>
     credentialLocaleBrandingEntityFrom(localeBranding)
   )
 
