@@ -69,8 +69,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const result: ICredentialBranding = await agent.ibAddCredentialBranding(credentialBranding)
 
       expect(result).toBeDefined()
-      // TODO check localeBranding
-      // TODO check additional fields
+      expect(result?.localeBranding.length).toEqual(1)
+      expect(result?.localeBranding[0].logo.base64Content).toBeDefined()
+      expect(result?.localeBranding[0].logo.type).toBeDefined()
+      expect(result?.localeBranding[0].logo.dimensions).toBeDefined()
+      expect(result?.localeBranding[0].background.image.base64Content).toBeUndefined()
+      expect(result?.localeBranding[0].background.image.type).toBeDefined()
+      expect(result?.localeBranding[0].background.image.dimensions).toBeDefined()
     })
 
     it('should add credential branding with no images', async (): Promise<void> => {
@@ -101,8 +106,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const result: ICredentialBranding = await agent.ibAddCredentialBranding(credentialBranding)
 
       expect(result).toBeDefined()
-      // TODO check localeBranding
-      // TODO check additional fields
+      expect(result?.localeBranding.length).toEqual(1)
+      expect(result?.localeBranding[0].logo.base64Content).toBeUndefined()
+      expect(result?.localeBranding[0].logo.type).toBeUndefined()
+      expect(result?.localeBranding[0].logo.dimensions).toBeUndefined()
+      expect(result?.localeBranding[0].background.image.base64Content).toBeUndefined()
+      expect(result?.localeBranding[0].background.image.type).toBeUndefined()
+      expect(result?.localeBranding[0].background.image.dimensions).toBeUndefined()
     })
 
     it('should get credential branding', async (): Promise<void> => {
@@ -791,8 +801,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const result: IIssuerBranding = await agent.ibAddIssuerBranding(issuerBranding)
 
       expect(result).toBeDefined()
-      // TODO check localeBranding
-      // TODO check additional fields
+      expect(result).toBeDefined()
+      expect(result?.localeBranding.length).toEqual(1)
+      expect(result?.localeBranding[0].logo.base64Content).toBeDefined()
+      expect(result?.localeBranding[0].logo.type).toBeDefined()
+      expect(result?.localeBranding[0].logo.dimensions).toBeDefined()
+      expect(result?.localeBranding[0].background.image.base64Content).toBeUndefined()
+      expect(result?.localeBranding[0].background.image.type).toBeDefined()
+      expect(result?.localeBranding[0].background.image.dimensions).toBeDefined()
     })
 
     it('should add issuer branding with no images', async (): Promise<void> => {
@@ -822,8 +838,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const result: IIssuerBranding = await agent.ibAddIssuerBranding(issuerBranding)
 
       expect(result).toBeDefined()
-      // TODO check localeBranding
-      // TODO check additional fields
+      expect(result?.localeBranding.length).toEqual(1)
+      expect(result?.localeBranding[0].logo.base64Content).toBeUndefined()
+      expect(result?.localeBranding[0].logo.type).toBeUndefined()
+      expect(result?.localeBranding[0].logo.dimensions).toBeUndefined()
+      expect(result?.localeBranding[0].background.image.base64Content).toBeUndefined()
+      expect(result?.localeBranding[0].background.image.type).toBeUndefined()
+      expect(result?.localeBranding[0].background.image.dimensions).toBeUndefined()
     })
 
     it('should get issuer branding', async (): Promise<void> => {
