@@ -250,9 +250,9 @@ const issuerLocaleBranding: IBasicIssuerLocaleBranding = {
     color: '#000000',
   },
 }
-const result: IIssuerBranding = await agent.ibAddIssuerLocaleBranding({ 
-  issuerBrandingId: '9206de75-ade6-4ad2-bf4e-f69d2e6a0688', 
-  localeBranding: [issuerLocaleBranding] 
+const result: IIssuerBranding = await agent.ibAddIssuerLocaleBranding({
+  issuerBrandingId: '9206de75-ade6-4ad2-bf4e-f69d2e6a0688',
+  localeBranding: [issuerLocaleBranding],
 })
 ```
 
