@@ -221,6 +221,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      debug:
+        specifier: ^4.3.4
+        version: 4.3.4
       typeorm:
         specifier: ^0.3.12
         version: 0.3.12(pg@8.11.0)(sqlite3@5.1.6)(ts-node@10.9.1)

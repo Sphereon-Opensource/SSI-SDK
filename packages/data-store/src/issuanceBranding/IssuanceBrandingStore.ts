@@ -75,7 +75,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
   public getCredentialBranding = async (args?: IGetCredentialBrandingArgs): Promise<Array<ICredentialBranding>> => {
     if (args?.filter) {
       args?.filter.forEach((filter: IPartialCredentialBranding): void => {
-        if (filter.localeBranding && filter.localeBranding?.locale === undefined) {
+        if (filter.localeBranding && 'locale' in filter.localeBranding && filter.localeBranding.locale === undefined) {
           filter.localeBranding.locale = ''
         }
       })
@@ -187,7 +187,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
   public getCredentialLocaleBranding = async (args?: IGetCredentialLocaleBrandingArgs): Promise<Array<ICredentialLocaleBranding>> => {
     if (args?.filter) {
       args?.filter.forEach((filter: ICredentialLocaleBrandingFilter): void => {
-        if (filter.locale === undefined) {
+        if ('locale' in filter && filter.locale === undefined) {
           filter.locale = ''
         }
       })
@@ -276,7 +276,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
   public getIssuerBranding = async (args?: IGetIssuerBrandingArgs): Promise<Array<IIssuerBranding>> => {
     if (args?.filter) {
       args?.filter.forEach((filter: IIssuerBrandingFilter): void => {
-        if (filter.localeBranding && filter.localeBranding?.locale === undefined) {
+        if (filter.localeBranding && 'locale' in filter.localeBranding && filter.localeBranding.locale === undefined) {
           filter.localeBranding.locale = ''
         }
       })
@@ -386,7 +386,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
   public getIssuerLocaleBranding = async (args?: IGetIssuerLocaleBrandingArgs): Promise<Array<IIssuerLocaleBranding>> => {
     if (args?.filter) {
       args?.filter.forEach((filter: IIssuerLocaleBrandingFilter): void => {
-        if (filter.locale === undefined) {
+        if ('locale' in filter && filter.locale === undefined) {
           filter.locale = ''
         }
       })

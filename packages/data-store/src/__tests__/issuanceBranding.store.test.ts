@@ -708,11 +708,11 @@ describe('Issuance branding store tests', (): void => {
       vcHash: 'vcHash',
       localeBranding: [
         {
-          alias: 'credentialTypeAlias',
+          alias: 'blabla',
           locale: 'en-US',
         },
         {
-          alias: 'credentialTypeAlias',
+          alias: 'credentialTypeAlias2',
           locale: 'en-GB',
         },
       ],
@@ -958,7 +958,7 @@ describe('Issuance branding store tests', (): void => {
           locale: 'en-US',
         },
         {
-          alias: 'credentialTypeAlias',
+          alias: 'issuerAlias',
           locale: 'en-GB',
         },
       ],
@@ -976,7 +976,7 @@ describe('Issuance branding store tests', (): void => {
       issuerCorrelationId: 'issuerCorrelationId',
       localeBranding: [
         {
-          alias: 'credentialTypeAlias',
+          alias: 'issuerAlias',
           locale: 'en-US',
         },
       ],
@@ -989,7 +989,7 @@ describe('Issuance branding store tests', (): void => {
       issuerCorrelationId: 'issuerCorrelationId',
       localeBranding: [
         {
-          alias: 'credentialTypeAlias',
+          alias: 'issuerAlias',
           locale: 'en-US',
         },
       ],

@@ -48,7 +48,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'credentialTypeAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -114,7 +114,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'credentialTypeAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -156,7 +156,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'credentialTypeAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -192,7 +192,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'credentialTypeAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -229,7 +229,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'credentialTypeAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -265,7 +265,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'credentialTypeAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -308,7 +308,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'credentialTypeAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -349,7 +349,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'credentialTypeAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -369,10 +369,9 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const fromDb: ICredentialBranding = await agent.ibAddCredentialBranding(credentialBranding)
       expect(fromDb).toBeDefined()
-      //{ filter: [{ id: fromDb.localeBranding[0].id }] }
-      const result: Array<ICredentialLocaleBranding> = await agent.ibGetCredentialLocaleBranding({ filter: [{ alias: 'credentialTypeAlias' }] })
-      const result2: Array<ICredentialLocaleBranding> = await agent.ibGetCredentialLocaleBranding()
-      expect(result2).toBeDefined()
+
+      const result: Array<ICredentialLocaleBranding> = await agent.ibGetCredentialLocaleBranding({ filter: [{ id: fromDb.localeBranding[0].id }] })
+
       expect(result).toBeDefined()
       expect(result?.length).toEqual(1)
     })
@@ -386,7 +385,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'credentialTypeAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -422,7 +421,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'credentialTypeAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -464,7 +463,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'credentialTypeAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -505,7 +504,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'credentialTypeAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -542,7 +541,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'credentialTypeAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -609,7 +608,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         ...fromDb!.localeBranding[0]!,
         logo: {
           ...fromDb!.localeBranding[0]!.logo!,
-          uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+          uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
         },
         background: {
           ...fromDb!.localeBranding[0]!.background!,
@@ -645,7 +644,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'credentialTypeAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -713,7 +712,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'credentialTypeAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -739,7 +738,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         alias: 'credentialTypeAlias',
         locale: 'en-GB',
         logo: {
-          uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+          uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
           alt: 'Sphereon logo',
         },
         description: 'Sphereon credential branding',
@@ -771,7 +770,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'issuerAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -835,7 +834,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'issuerAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -878,7 +877,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'issuerAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -913,7 +912,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'issuerAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -949,7 +948,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'issuerAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -984,7 +983,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'issuerAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -1026,7 +1025,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'issuerAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -1066,7 +1065,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'issuerAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -1087,7 +1086,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const fromDb: IIssuerBranding = await agent.ibAddIssuerBranding(issuerBranding)
       expect(fromDb).toBeDefined()
 
-      const result: Array<IIssuerLocaleBranding> = await agent.ibGetIssuerLocaleBranding({ filter: [{ alias: 'issuerAlias' }] })
+      const result: Array<IIssuerLocaleBranding> = await agent.ibGetIssuerLocaleBranding({ filter: [{ id: fromDb.localeBranding[0].id }] })
 
       expect(result).toBeDefined()
       expect(result?.length).toEqual(1)
@@ -1101,7 +1100,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'issuerAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -1136,7 +1135,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'issuerAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -1177,7 +1176,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'issuerAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -1217,7 +1216,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'issuerAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -1253,7 +1252,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'issuerAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -1319,7 +1318,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         ...fromDb!.localeBranding[0]!,
         logo: {
           ...fromDb!.localeBranding[0]!.logo!,
-          uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+          uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
         },
         background: {
           ...fromDb!.localeBranding[0]!.background!,
@@ -1354,7 +1353,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'issuerAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -1421,7 +1420,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             alias: 'issuerAlias',
             locale: 'en-US',
             logo: {
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+              uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
               alt: 'Sphereon logo',
             },
             description: 'Sphereon credential branding',
@@ -1447,7 +1446,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         alias: 'issuerAlias',
         locale: 'en-GB',
         logo: {
-          uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/481px-Cat03.jpg',
+          uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
           alt: 'Sphereon logo',
         },
         description: 'Sphereon credential branding',
