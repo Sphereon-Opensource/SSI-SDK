@@ -12,11 +12,11 @@ import {
   issuerLocaleBrandingEntityFrom,
   IssuerLocaleBrandingEntity,
   IBasicCredentialLocaleBranding,
-  IBasicIssuerLocaleBranding
+  IBasicIssuerLocaleBranding,
+  IssuerBrandingEntity,
 } from '../index'
-import { IssuerBrandingEntity } from '../index'
 
-describe('Database entities test', (): void => {
+describe('Database entities tests', (): void => {
   let dbConnection: DataSource
 
   beforeEach(async (): Promise<void> => {
@@ -37,7 +37,7 @@ describe('Database entities test', (): void => {
     await (await dbConnection).destroy()
   })
 
-  // CREDENTIAL TESTS
+  // Credential tests
 
   it('Should save credential branding to database', async (): Promise<void> => {
     const credentialBranding: IBasicCredentialBranding = {
@@ -127,7 +127,8 @@ describe('Database entities test', (): void => {
       ],
     }
     const credentialBrandingEntity1: CredentialBrandingEntity = credentialBrandingEntityFrom(credentialBranding1)
-    await dbConnection.getRepository(CredentialBrandingEntity).save(credentialBrandingEntity1)
+    const repository: Repository<CredentialBrandingEntity> = await dbConnection.getRepository(CredentialBrandingEntity)
+    await repository.save(credentialBrandingEntity1)
 
     const credentialBranding2: IBasicCredentialBranding = {
       issuerCorrelationId: 'issuerCorrelationId',
@@ -141,7 +142,7 @@ describe('Database entities test', (): void => {
     }
     const credentialBrandingEntity2: CredentialBrandingEntity = credentialBrandingEntityFrom(credentialBranding2)
 
-    await expect(dbConnection.getRepository(CredentialBrandingEntity).save(credentialBrandingEntity2)).rejects.toThrowError(
+    await expect(repository.save(credentialBrandingEntity2)).rejects.toThrowError(
       'SQLITE_CONSTRAINT: UNIQUE constraint failed: CredentialBranding.vcHash'
     )
   })
@@ -222,7 +223,6 @@ describe('Database entities test', (): void => {
     expect(fromDb?.localeBranding.length).toEqual(3)
   })
 
-  // TODO we need to make sure that no locale is en empty string to trigger the unique constraint
   it('Should enforce unique locale for a credential branding', async (): Promise<void> => {
     const credentialBranding: IBasicCredentialBranding = {
       issuerCorrelationId: 'issuerCorrelationId',
@@ -231,12 +231,10 @@ describe('Database entities test', (): void => {
         {
           alias: 'credentialTypeAlias1',
           locale: 'en-US',
-          //locale: '',
         },
         {
           alias: 'credentialTypeAlias2',
           locale: 'en-US',
-          //locale: '',
         },
       ],
     }
@@ -248,8 +246,26 @@ describe('Database entities test', (): void => {
     )
   })
 
-  // TODO we need tests for getting a certain locale
-  // Think about how we want to handle retrieving of no locale. should it fetch all? or only the one without no locale??? not sure if that makes any sense
+  it('Should enforce unique null locale for a credential branding', async (): Promise<void> => {
+    const credentialBranding: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias1',
+        },
+        {
+          alias: 'credentialTypeAlias2',
+        },
+      ],
+    }
+
+    const credentialBrandingEntity: CredentialBrandingEntity = credentialBrandingEntityFrom(credentialBranding)
+
+    await expect(dbConnection.getRepository(CredentialBrandingEntity).save(credentialBrandingEntity)).rejects.toThrowError(
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: BaseLocaleBranding.credentialBrandingId, BaseLocaleBranding.locale'
+    )
+  })
 
   it('Should save credential locale branding to database', async (): Promise<void> => {
     const localeBranding: IBasicCredentialLocaleBranding = {
@@ -283,7 +299,9 @@ describe('Database entities test', (): void => {
     }
 
     const credentialLocaleBrandingEntity: CredentialLocaleBrandingEntity = credentialLocaleBrandingEntityFrom(localeBranding)
-    const fromDb: CredentialLocaleBrandingEntity = await dbConnection.getRepository(CredentialLocaleBrandingEntity).save(credentialLocaleBrandingEntity)
+    const fromDb: CredentialLocaleBrandingEntity = await dbConnection
+      .getRepository(CredentialLocaleBrandingEntity)
+      .save(credentialLocaleBrandingEntity)
 
     expect(fromDb).toBeDefined()
     expect(fromDb?.alias).toEqual(localeBranding.alias)
@@ -312,7 +330,7 @@ describe('Database entities test', (): void => {
   it('Should set creation date when saving credential locale branding', async (): Promise<void> => {
     const localeBranding: IBasicCredentialLocaleBranding = {
       alias: 'credentialAlias',
-      locale: 'en-US'
+      locale: 'en-US',
     }
 
     const credentialLocaleBrandingEntity: CredentialLocaleBrandingEntity = credentialLocaleBrandingEntityFrom(localeBranding)
@@ -327,18 +345,16 @@ describe('Database entities test', (): void => {
   })
 
   it('Should delete credential branding', async (): Promise<void> => {
-    // TODO add all children
     const credentialBranding: IBasicCredentialBranding = {
       issuerCorrelationId: 'issuerCorrelationId',
       vcHash: 'vcHash',
       localeBranding: [
         {
           alias: 'credentialTypeAlias',
-          locale: 'en-US'
+          locale: 'en-US',
         },
       ],
     }
-
 
     const credentialBrandingEntity: CredentialBrandingEntity = credentialBrandingEntityFrom(credentialBranding)
     const repository: Repository<CredentialBrandingEntity> = await dbConnection.getRepository(CredentialBrandingEntity)
@@ -355,15 +371,13 @@ describe('Database entities test', (): void => {
   })
 
   it('Should delete credential locale branding', async (): Promise<void> => {
-    // TODO this should not be able to get locale branding to 0
-    // TODO add all children
     const credentialBranding: IBasicCredentialBranding = {
       issuerCorrelationId: 'issuerCorrelationId',
       vcHash: 'vcHash',
       localeBranding: [
         {
           alias: 'issuerAlias',
-          locale: 'en-US'
+          locale: 'en-US',
         },
       ],
     }
@@ -382,17 +396,69 @@ describe('Database entities test', (): void => {
       })
     ).toBeNull()
 
-
     const result: CredentialBrandingEntity | null = await credentialBrandingRepository.findOne({ where: { id: fromDb.id } })
     expect(result?.localeBranding.length).toEqual(0)
   })
 
-  // TODO should update lastupdatedat when updating
+  it('Should update last updated date when updating credential branding', async (): Promise<void> => {
+    const credentialBranding: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias',
+          locale: 'en-US',
+        },
+      ],
+    }
 
+    const credentialBrandingEntity: CredentialBrandingEntity = credentialBrandingEntityFrom(credentialBranding)
+    const repository: Repository<CredentialBrandingEntity> = await dbConnection.getRepository(CredentialBrandingEntity)
+    const fromDb: CredentialBrandingEntity = await repository.save(credentialBrandingEntity)
+    expect(fromDb).toBeDefined()
 
+    const updatedCredentialBranding = {
+      ...fromDb,
+      vcHash: 'newVcHash',
+    }
 
+    const result: CredentialBrandingEntity = await repository.save(updatedCredentialBranding)
 
-  // ISSUER TESTS
+    expect(result).toBeDefined()
+    expect(result?.lastUpdatedAt).not.toEqual(fromDb?.lastUpdatedAt)
+  })
+
+  it('Should update last updated date when updating credential locale branding', async (): Promise<void> => {
+    const credentialBranding: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias',
+          locale: 'en-US',
+        },
+      ],
+    }
+
+    const credentialBrandingEntity: CredentialBrandingEntity = credentialBrandingEntityFrom(credentialBranding)
+    const fromDb: CredentialBrandingEntity = await dbConnection.getRepository(CredentialBrandingEntity).save(credentialBrandingEntity)
+    expect(fromDb).toBeDefined()
+    expect(fromDb?.localeBranding.length).toEqual(1)
+
+    const updatedCredentialLocaleBranding = {
+      ...fromDb.localeBranding[0],
+      alias: 'newCredentialTypeAlias',
+    }
+
+    const result: CredentialLocaleBrandingEntity = await dbConnection
+      .getRepository(CredentialLocaleBrandingEntity)
+      .save(updatedCredentialLocaleBranding)
+
+    expect(result).toBeDefined()
+    expect(result?.lastUpdatedAt).not.toEqual(fromDb?.localeBranding[0].lastUpdatedAt)
+  })
+
+  // Issuer tests
 
   it('Should save issuer branding to database', async (): Promise<void> => {
     const issuerBranding: IBasicIssuerBranding = {
@@ -479,7 +545,8 @@ describe('Database entities test', (): void => {
       ],
     }
     const issuerBrandingEntity1: IssuerBrandingEntity = issuerBrandingEntityFrom(issuerBranding1)
-    await dbConnection.getRepository(IssuerBrandingEntity).save(issuerBrandingEntity1)
+    const repository: Repository<IssuerBrandingEntity> = await dbConnection.getRepository(IssuerBrandingEntity)
+    await repository.save(issuerBrandingEntity1)
 
     const issuerBranding2: IBasicIssuerBranding = {
       issuerCorrelationId,
@@ -492,7 +559,7 @@ describe('Database entities test', (): void => {
     }
     const issuerBrandingEntity2: IssuerBrandingEntity = issuerBrandingEntityFrom(issuerBranding2)
 
-    await expect(dbConnection.getRepository(IssuerBrandingEntity).save(issuerBrandingEntity2)).rejects.toThrowError(
+    await expect(repository.save(issuerBrandingEntity2)).rejects.toThrowError(
       'SQLITE_CONSTRAINT: UNIQUE constraint failed: IssuerBranding.issuerCorrelationId'
     )
   })
@@ -550,19 +617,16 @@ describe('Database entities test', (): void => {
     expect(fromDb?.localeBranding.length).toEqual(3)
   })
 
-  // TODO we need to make sure that no locale is en empty string to trigger the unique constraint
   it('Should enforce unique locale for an issuer branding', async (): Promise<void> => {
     const issuerBranding: IBasicIssuerBranding = {
       issuerCorrelationId: 'issuerCorrelationId',
       localeBranding: [
         {
           alias: 'issuerAlias1',
-          // locale: '',
           locale: 'en-US',
         },
         {
           alias: 'issuerAlias2',
-          // locale: '',
           locale: 'en-US',
         },
       ],
@@ -575,8 +639,25 @@ describe('Database entities test', (): void => {
     )
   })
 
-  // TODO we need tests for getting a certain locale
-  // Think about how we want to handle retrieving of no locale. should it fetch all? or only the one without no locale??? not sure if that makes any sense
+  it('Should enforce unique null locale for an issuer branding', async (): Promise<void> => {
+    const issuerBranding: IBasicIssuerBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      localeBranding: [
+        {
+          alias: 'issuerAlias1',
+        },
+        {
+          alias: 'issuerAlias2',
+        },
+      ],
+    }
+
+    const issuerBrandingEntity: IssuerBrandingEntity = issuerBrandingEntityFrom(issuerBranding)
+
+    await expect(dbConnection.getRepository(IssuerBrandingEntity).save(issuerBrandingEntity)).rejects.toThrowError(
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: BaseLocaleBranding.issuerBrandingId, BaseLocaleBranding.locale'
+    )
+  })
 
   it('Should save issuer locale branding to database', async (): Promise<void> => {
     const localeBranding: IBasicIssuerLocaleBranding = {
@@ -639,7 +720,7 @@ describe('Database entities test', (): void => {
   it('Should set creation date when saving issuer locale branding', async (): Promise<void> => {
     const localeBranding: IBasicIssuerLocaleBranding = {
       alias: 'issuerAlias',
-      locale: 'en-US'
+      locale: 'en-US',
     }
 
     const issuerLocaleBrandingEntity: IssuerLocaleBrandingEntity = issuerLocaleBrandingEntityFrom(localeBranding)
@@ -654,17 +735,15 @@ describe('Database entities test', (): void => {
   })
 
   it('Should delete issuer branding', async (): Promise<void> => {
-    // TODO add all children
     const issuerBranding: IBasicIssuerBranding = {
       issuerCorrelationId: 'issuerCorrelationId',
       localeBranding: [
         {
           alias: 'issuerAlias',
-          locale: 'en-US'
+          locale: 'en-US',
         },
       ],
     }
-
 
     const issuerBrandingEntity: IssuerBrandingEntity = issuerBrandingEntityFrom(issuerBranding)
     const repository: Repository<IssuerBrandingEntity> = await dbConnection.getRepository(IssuerBrandingEntity)
@@ -681,14 +760,12 @@ describe('Database entities test', (): void => {
   })
 
   it('Should delete issuer locale branding', async (): Promise<void> => {
-    // TODO this should not be able to get locale branding to 0
-    // TODO add all children
     const issuerBranding: IBasicIssuerBranding = {
       issuerCorrelationId: 'issuerCorrelationId',
       localeBranding: [
         {
           alias: 'issuerAlias',
-          locale: 'en-US'
+          locale: 'en-US',
         },
       ],
     }
@@ -707,10 +784,61 @@ describe('Database entities test', (): void => {
       })
     ).toBeNull()
 
-
     const result: IssuerBrandingEntity | null = await issuerBrandingRepository.findOne({ where: { id: fromDb.id } })
     expect(result?.localeBranding.length).toEqual(0)
   })
 
+  it('Should update last updated date when updating issuer branding', async (): Promise<void> => {
+    const issuerBranding: IBasicIssuerBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      localeBranding: [
+        {
+          alias: 'issuerAlias',
+          locale: 'en-US',
+        },
+      ],
+    }
 
+    const issuerBrandingEntity: IssuerBrandingEntity = issuerBrandingEntityFrom(issuerBranding)
+    const repository: Repository<IssuerBrandingEntity> = await dbConnection.getRepository(IssuerBrandingEntity)
+    const fromDb: IssuerBrandingEntity = await repository.save(issuerBrandingEntity)
+    expect(fromDb).toBeDefined()
+
+    const updatedIssuerBranding = {
+      ...fromDb,
+      issuerCorrelationId: 'newIssuerCorrelationId',
+    }
+
+    const result: IssuerBrandingEntity = await repository.save(updatedIssuerBranding)
+
+    expect(result).toBeDefined()
+    expect(result?.lastUpdatedAt).not.toEqual(fromDb?.lastUpdatedAt)
+  })
+
+  it('Should update last updated date when updating issuer locale branding', async (): Promise<void> => {
+    const issuerBranding: IBasicIssuerBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      localeBranding: [
+        {
+          alias: 'issuerAlias',
+          locale: 'en-US',
+        },
+      ],
+    }
+
+    const issuerBrandingEntity: IssuerBrandingEntity = issuerBrandingEntityFrom(issuerBranding)
+    const fromDb: IssuerBrandingEntity = await dbConnection.getRepository(IssuerBrandingEntity).save(issuerBrandingEntity)
+    expect(fromDb).toBeDefined()
+    expect(fromDb?.localeBranding.length).toEqual(1)
+
+    const updatedIssuerLocaleBranding = {
+      ...fromDb.localeBranding[0],
+      alias: 'newIssuerAlias',
+    }
+
+    const result: IssuerLocaleBrandingEntity = await dbConnection.getRepository(IssuerLocaleBrandingEntity).save(updatedIssuerLocaleBranding)
+
+    expect(result).toBeDefined()
+    expect(result?.lastUpdatedAt).not.toEqual(fromDb?.localeBranding[0].lastUpdatedAt)
+  })
 })

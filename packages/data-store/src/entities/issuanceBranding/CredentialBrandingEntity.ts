@@ -12,10 +12,7 @@ import {
 } from 'typeorm'
 import { ArrayMinSize, IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { CredentialLocaleBrandingEntity, credentialLocaleBrandingEntityFrom } from './CredentialLocaleBrandingEntity'
-import {
-  IBasicCredentialBranding,
-  IBasicCredentialLocaleBranding,
-} from '../../types'
+import { IBasicCredentialBranding, IBasicCredentialLocaleBranding } from '../../types'
 
 @Entity('CredentialBranding')
 @Index('IDX_CredentialBrandingEntity_vcHash', ['vcHash'])
@@ -24,13 +21,9 @@ export class CredentialBrandingEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  //TODO make this the primary key?
   @Column({ name: 'vcHash', length: 255, nullable: false, unique: true })
   @IsNotEmpty({ message: 'Blank vcHashes are not allowed' })
   vcHash!: string
-
-  // @PrimaryColumn({ name: 'vcHash', length: 255 })
-  // vcHash!: string;
 
   @Column({ name: 'issuerCorrelationId', length: 255, nullable: false, unique: false })
   @IsNotEmpty({ message: 'Blank issuerCorrelationIds are not allowed' })

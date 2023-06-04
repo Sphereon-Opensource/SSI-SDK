@@ -1,25 +1,25 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
 import Debug from 'debug'
-import { CreateContacts1659463079428 } from '../postgres/1659463079428-CreateContacts'
-import { CreateContacts1659463069549 } from '../sqlite/1659463069549-CreateContacts'
+import { CreateIssuanceBranding1685628974232 } from '../postgres/1685628974232-CreateIssuanceBranding'
+import { CreateIssuanceBranding1685628973231 } from '../sqlite/1685628973231-CreateIssuanceBranding'
 
 const debug = Debug('sphereon:ssi-sdk:migrations')
 
-export class CreateContacts1659463079429 implements MigrationInterface {
-  name = 'CreateContacts1659463079429'
+export class CreateIssuanceBranding1659463079429 implements MigrationInterface {
+  name = 'CreateIssuanceBranding1659463079429'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    debug('migration: creating contacts tables')
+    debug('migration: creating issuance branding tables')
     const dbType = queryRunner.connection.driver.options.type
     if (dbType === 'postgres') {
       debug('using postgres migration file')
-      const mig = new CreateContacts1659463079428()
+      const mig = new CreateIssuanceBranding1685628974232()
       const up = await mig.up(queryRunner)
       debug('Migration statements executed')
       return up
     } else if (dbType === 'sqlite' || 'react-native') {
       debug('using sqlite/react-native migration file')
-      const mig = new CreateContacts1659463069549()
+      const mig = new CreateIssuanceBranding1685628973231()
       const up = await mig.up(queryRunner)
       debug('Migration statements executed')
       return up
@@ -31,17 +31,17 @@ export class CreateContacts1659463079429 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    debug('migration: reverting contacts tables')
+    debug('migration: reverting issuance branding tables')
     const dbType = queryRunner.connection.driver.options.type
     if (dbType === 'postgres') {
       debug('using postgres migration file')
-      const mig = new CreateContacts1659463079428()
+      const mig = new CreateIssuanceBranding1685628974232()
       const down = await mig.down(queryRunner)
       debug('Migration statements executed')
       return down
     } else if (dbType === 'sqlite' || 'react-native') {
       debug('using sqlite/react-native migration file')
-      const mig = new CreateContacts1659463069549()
+      const mig = new CreateIssuanceBranding1685628973231()
       const down = await mig.down(queryRunner)
       debug('Migration statements executed')
       return down

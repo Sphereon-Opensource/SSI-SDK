@@ -20,7 +20,7 @@ import {
   IdentityRoleEnum,
 } from '../index'
 
-describe('Database entities test', (): void => {
+describe('Database entities tests', (): void => {
   let dbConnection: DataSource
 
   beforeEach(async (): Promise<void> => {

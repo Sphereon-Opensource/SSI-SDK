@@ -14,19 +14,20 @@ import {
 import { ImageAttributesEntity } from './ImageAttributesEntity'
 import { BackgroundAttributesEntity } from './BackgroundAttributesEntity'
 import { TextAttributesEntity } from './TextAttributesEntity'
+import { validate, Validate, ValidationError } from 'class-validator'
+import { IsNonEmptyStringConstraint } from '../validators'
 
 @Entity('BaseLocaleBranding')
 @TableInheritance({ column: { type: 'varchar', name: 'type' } })
 export class BaseLocaleBrandingEntity extends BaseEntity {
-  // TODO we need a better name since we now also introduced fieldLocaleBranding
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
   @Column({ name: 'alias', length: 255, nullable: true, unique: false })
-  alias?: string // TODO still need a better name for this
-  // TODO should now be not null since we get duplicates with null?
-  // TODO blank validation?
-  @Column({ name: 'locale', length: 255, nullable: true, unique: false })
+  @Validate(IsNonEmptyStringConstraint, { message: 'Blank aliases are not allowed' })
+  alias?: string
+
+  @Column({ name: 'locale', length: 255, nullable: false, unique: false })
   locale?: string
 
   @OneToOne(() => ImageAttributesEntity, {
@@ -39,6 +40,7 @@ export class BaseLocaleBrandingEntity extends BaseEntity {
   logo?: ImageAttributesEntity
 
   @Column({ name: 'description', length: 255, nullable: true, unique: false })
+  @Validate(IsNonEmptyStringConstraint, { message: 'Blank descriptions are not allowed' })
   description?: string
 
   @OneToOne(() => BackgroundAttributesEntity, {
@@ -70,5 +72,15 @@ export class BaseLocaleBrandingEntity extends BaseEntity {
   @BeforeUpdate()
   updateUpdatedDate(): void {
     this.lastUpdatedAt = new Date()
+  }
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async validate(): Promise<undefined> {
+    const validation: Array<ValidationError> = await validate(this)
+    if (validation.length > 0) {
+      return Promise.reject(Error(Object.values(validation[0].constraints!)[0]))
+    }
+    return
   }
 }

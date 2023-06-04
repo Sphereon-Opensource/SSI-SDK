@@ -1,26 +1,24 @@
-import { FindOptionsWhere } from 'typeorm'
 import {
   IBasicCredentialLocaleBranding,
   IBasicIssuerLocaleBranding,
   ICredentialBranding,
+  ICredentialLocaleBrandingFilter,
   IIssuerBranding,
-  ILocaleBranding
+  IIssuerBrandingFilter,
+  IIssuerLocaleBrandingFilter,
+  ILocaleBranding,
+  ICredentialBrandingFilter,
 } from './issuanceBranding'
-import { CredentialBrandingEntity } from '../../entities/issuanceBranding/CredentialBrandingEntity'
-import { IssuerBrandingEntity } from '../../entities/issuanceBranding/IssuerBrandingEntity'
-import { IssuerLocaleBrandingEntity } from '../../entities/issuanceBranding/IssuerLocaleBrandingEntity'
-import { CredentialLocaleBrandingEntity } from '../../entities/issuanceBranding/CredentialLocaleBrandingEntity'
 
-// TODO these types assume the store is a db which is not always the case, same for contacts
-export type FindCredentialBrandingArgs = FindOptionsWhere<CredentialBrandingEntity>[]
-export type FindIssuerBrandingArgs = FindOptionsWhere<IssuerBrandingEntity>[]
-export type FindCredentialLocaleBrandingArgs = FindOptionsWhere<CredentialLocaleBrandingEntity>[]
-export type FindIssuerLocaleBrandingArgs = FindOptionsWhere<IssuerLocaleBrandingEntity>[]
+export type FindCredentialBrandingArgs = Array<ICredentialBrandingFilter>
+export type FindCredentialLocaleBrandingArgs = Array<ICredentialLocaleBrandingFilter>
+export type FindIssuerBrandingArgs = Array<IIssuerBrandingFilter>
+export type FindIssuerLocaleBrandingArgs = Array<IIssuerLocaleBrandingFilter>
 
 export interface IAddCredentialBrandingArgs {
   vcHash: string
   issuerCorrelationId: string
-  localeBranding: Array<IBasicCredentialLocaleBranding> //IBasicLocaleBranding
+  localeBranding: Array<IBasicCredentialLocaleBranding>
 }
 
 export interface IGetCredentialBrandingArgs {
@@ -37,7 +35,7 @@ export interface IRemoveCredentialBrandingArgs {
 
 export interface IAddCredentialLocaleBrandingArgs {
   credentialBrandingId: string
-  localeBranding: Array<IBasicCredentialLocaleBranding> //IBasicLocaleBranding
+  localeBranding: Array<IBasicCredentialLocaleBranding>
 }
 
 export interface IUpdateCredentialLocaleBrandingArgs {
@@ -54,7 +52,7 @@ export interface IGetCredentialLocaleBrandingArgs {
 
 export interface IAddIssuerBrandingArgs {
   issuerCorrelationId: string
-  localeBranding: Array<IBasicIssuerLocaleBranding> //IBasicLocaleBranding
+  localeBranding: Array<IBasicIssuerLocaleBranding>
 }
 
 export interface IGetIssuerBrandingArgs {
@@ -71,7 +69,7 @@ export interface IRemoveIssuerBrandingArgs {
 
 export interface IAddIssuerLocaleBrandingArgs {
   issuerBrandingId: string
-  localeBranding: Array<IBasicIssuerLocaleBranding> //IBasicLocaleBranding
+  localeBranding: Array<IBasicIssuerLocaleBranding>
 }
 
 export interface IUpdateIssuerLocaleBrandingArgs {

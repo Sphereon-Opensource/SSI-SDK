@@ -1,23 +1,15 @@
 import Debug from 'debug'
 import { DataSource, In, Not, Repository } from 'typeorm'
 import { OrPromise } from '@sphereon/ssi-types'
-import {
-  IssuerBrandingEntity,
-  issuerBrandingEntityFrom
-} from '../entities/issuanceBranding/IssuerBrandingEntity'
-import {
-  CredentialBrandingEntity,
-  credentialBrandingEntityFrom
-} from '../entities/issuanceBranding/CredentialBrandingEntity'
-import {
-  CredentialLocaleBrandingEntity,
-  credentialLocaleBrandingEntityFrom
-} from '../entities/issuanceBranding/CredentialLocaleBrandingEntity'
-import {
-  IssuerLocaleBrandingEntity,
-  issuerLocaleBrandingEntityFrom
-} from '../entities/issuanceBranding/IssuerLocaleBrandingEntity'
+import { BackgroundAttributesEntity } from '../entities/issuanceBranding/BackgroundAttributesEntity'
+import { ImageAttributesEntity } from '../entities/issuanceBranding/ImageAttributesEntity'
+import { ImageDimensionsEntity } from '../entities/issuanceBranding/ImageDimensionsEntity'
+import { IssuerBrandingEntity, issuerBrandingEntityFrom } from '../entities/issuanceBranding/IssuerBrandingEntity'
+import { CredentialBrandingEntity, credentialBrandingEntityFrom } from '../entities/issuanceBranding/CredentialBrandingEntity'
+import { CredentialLocaleBrandingEntity, credentialLocaleBrandingEntityFrom } from '../entities/issuanceBranding/CredentialLocaleBrandingEntity'
+import { IssuerLocaleBrandingEntity, issuerLocaleBrandingEntityFrom } from '../entities/issuanceBranding/IssuerLocaleBrandingEntity'
 import { BaseLocaleBrandingEntity } from '../entities/issuanceBranding/BaseLocaleBrandingEntity'
+import { TextAttributesEntity } from '../entities/issuanceBranding/TextAttributesEntity'
 import { AbstractIssuanceBrandingStore } from './AbstractIssuanceBrandingStore'
 import {
   IAddCredentialBrandingArgs,
@@ -27,11 +19,17 @@ import {
   IBasicCredentialLocaleBranding,
   IBasicIssuerLocaleBranding,
   ICredentialBranding,
+  IPartialCredentialBranding,
+  ICredentialLocaleBranding,
+  ICredentialLocaleBrandingFilter,
   IGetCredentialBrandingArgs,
   IGetCredentialLocaleBrandingArgs,
   IGetIssuerBrandingArgs,
   IGetIssuerLocaleBrandingArgs,
   IIssuerBranding,
+  IIssuerBrandingFilter,
+  IIssuerLocaleBranding,
+  IIssuerLocaleBrandingFilter,
   ILocaleBranding,
   IRemoveCredentialBrandingArgs,
   IRemoveCredentialLocaleBrandingArgs,
@@ -40,7 +38,7 @@ import {
   IUpdateCredentialBrandingArgs,
   IUpdateCredentialLocaleBrandingArgs,
   IUpdateIssuerBrandingArgs,
-  IUpdateIssuerLocaleBrandingArgs
+  IUpdateIssuerLocaleBrandingArgs,
 } from '../types'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:issuance-branding-store')
@@ -52,8 +50,6 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     super()
     this.dbConnection = dbConnection
   }
-
-  // Credential Branding
 
   public addCredentialBranding = async (args: IAddCredentialBrandingArgs): Promise<ICredentialBranding> => {
     const repository: Repository<CredentialBrandingEntity> = (await this.dbConnection).getRepository(CredentialBrandingEntity)
@@ -70,13 +66,21 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     }
 
     const credentialBrandingEntity: CredentialBrandingEntity = credentialBrandingEntityFrom(args)
-    debug('Adding credential branding', args)
+    debug('Adding credential branding', credentialBrandingEntity)
     const createdResult: CredentialBrandingEntity = await repository.save(credentialBrandingEntity)
 
     return this.credentialBrandingFrom(createdResult)
   }
 
   public getCredentialBranding = async (args?: IGetCredentialBrandingArgs): Promise<Array<ICredentialBranding>> => {
+    if (args?.filter) {
+      args?.filter.forEach((filter: IPartialCredentialBranding): void => {
+        if (filter.localeBranding && filter.localeBranding?.locale === undefined) {
+          filter.localeBranding.locale = ''
+        }
+      })
+    }
+
     debug('Getting credential branding', args)
     const result: Array<CredentialBrandingEntity> = await (await this.dbConnection).getRepository(CredentialBrandingEntity).find({
       ...(args?.filter && { where: args?.filter }),
@@ -95,11 +99,16 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
       return Promise.reject(Error(`No credential branding found for id: ${args.credentialBrandingId}`))
     }
 
+    debug('Removing credential locale branding', args.credentialBrandingId)
+    const deletions: Array<Promise<void>> = credentialBranding.localeBranding.map(async (localeBranding: CredentialLocaleBrandingEntity) =>
+      this.removeLocaleBranding(localeBranding)
+    )
+    await Promise.all(deletions)
+
     debug('Removing credential branding', args.credentialBrandingId)
     await repository.delete(args.credentialBrandingId)
   }
 
-  // TODO fix contact update, we need to keep identities
   public updateCredentialBranding = async (args: IUpdateCredentialBrandingArgs): Promise<ICredentialBranding> => {
     const repository: Repository<CredentialBrandingEntity> = (await this.dbConnection).getRepository(CredentialBrandingEntity)
     const credentialBrandingEntity: CredentialBrandingEntity | null = await repository.findOne({
@@ -110,12 +119,12 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
       return Promise.reject(Error(`No credential branding found for id: ${args.credentialBranding.id}`))
     }
 
-    const credentialBranding = {
+    const credentialBranding: Omit<ICredentialBranding, 'createdAt' | 'lastUpdatedAt'> = {
       ...args.credentialBranding,
       localeBranding: credentialBrandingEntity.localeBranding,
     }
 
-    debug('Updating credential branding', args.credentialBranding)
+    debug('Updating credential branding', credentialBranding)
     const result: CredentialBrandingEntity = await repository.save(credentialBranding, { transaction: true })
 
     return this.credentialBrandingFrom(result)
@@ -131,8 +140,6 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
       return Promise.reject(Error(`No credential branding found for id: ${args.credentialBrandingId}`))
     }
 
-    // TODO we do have unique constraints for this
-    // But this does make sure that we do not do any inserts before getting duplicates
     const locales: Array<CredentialLocaleBrandingEntity> | null = await (await this.dbConnection).getRepository(CredentialLocaleBrandingEntity).find({
       where: {
         credentialBranding: {
@@ -155,12 +162,14 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     const credentialLocaleBrandingRepository: Repository<CredentialLocaleBrandingEntity> = (await this.dbConnection).getRepository(
       CredentialLocaleBrandingEntity
     )
-    const addCredentialLocaleBranding: Array<Promise<void>> = args.localeBranding.map(async (localeBranding: IBasicCredentialLocaleBranding): Promise<void> => {
-      const credentialLocaleBrandingEntity: CredentialLocaleBrandingEntity = credentialLocaleBrandingEntityFrom(localeBranding)
-      debug('Adding credential locale branding', credentialLocaleBrandingEntity)
-      credentialLocaleBrandingEntity.credentialBranding = credentialBranding
-      await credentialLocaleBrandingRepository.save(credentialLocaleBrandingEntity, { transaction: true })
-    })
+    const addCredentialLocaleBranding: Array<Promise<void>> = args.localeBranding.map(
+      async (localeBranding: IBasicCredentialLocaleBranding): Promise<void> => {
+        const credentialLocaleBrandingEntity: CredentialLocaleBrandingEntity = credentialLocaleBrandingEntityFrom(localeBranding)
+        debug('Adding credential locale branding', credentialLocaleBrandingEntity)
+        credentialLocaleBrandingEntity.credentialBranding = credentialBranding
+        await credentialLocaleBrandingRepository.save(credentialLocaleBrandingEntity, { transaction: true })
+      }
+    )
 
     await Promise.all(addCredentialLocaleBranding)
 
@@ -175,33 +184,45 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     return this.credentialBrandingFrom(result)
   }
 
-  public getCredentialLocaleBranding = async (args?: IGetCredentialLocaleBrandingArgs): Promise<Array<ICredentialBranding>> => {
+  public getCredentialLocaleBranding = async (args?: IGetCredentialLocaleBrandingArgs): Promise<Array<ICredentialLocaleBranding>> => {
+    if (args?.filter) {
+      args?.filter.forEach((filter: ICredentialLocaleBrandingFilter): void => {
+        if (filter.locale === undefined) {
+          filter.locale = ''
+        }
+      })
+    }
+
+    debug('Getting credential locale branding', args)
     const credentialBrandingLocale: Array<CredentialLocaleBrandingEntity> | null = await (await this.dbConnection)
       .getRepository(CredentialLocaleBrandingEntity)
       .find({
         ...(args?.filter && { where: args?.filter }),
       })
 
-    return credentialBrandingLocale ? credentialBrandingLocale.map(
-      (credentialLocaleBranding: CredentialLocaleBrandingEntity) => this.localeBrandingFrom(credentialLocaleBranding) as ICredentialBranding // TODO
-    ) : []
+    return credentialBrandingLocale
+      ? credentialBrandingLocale.map(
+          (credentialLocaleBranding: CredentialLocaleBrandingEntity) => this.localeBrandingFrom(credentialLocaleBranding) as ICredentialLocaleBranding
+        )
+      : []
   }
 
   public removeCredentialLocaleBranding = async (args: IRemoveCredentialLocaleBrandingArgs): Promise<void> => {
-    const repository: Repository<CredentialLocaleBrandingEntity> = (await this.dbConnection).getRepository(CredentialLocaleBrandingEntity)
-    const credentialLocaleBranding: CredentialLocaleBrandingEntity | null = await repository.findOne({
-      where: { id: args.credentialLocaleBrandingId },
-    })
+    const credentialLocaleBranding: CredentialLocaleBrandingEntity | null = await (await this.dbConnection)
+      .getRepository(CredentialLocaleBrandingEntity)
+      .findOne({
+        where: { id: args.credentialLocaleBrandingId },
+      })
 
     if (!credentialLocaleBranding) {
       return Promise.reject(Error(`No credential locale branding found for id: ${args.credentialLocaleBrandingId}`))
     }
 
     debug('Removing credential locale branding', args.credentialLocaleBrandingId)
-    await repository.delete(args.credentialLocaleBrandingId)
+    await this.removeLocaleBranding(credentialLocaleBranding)
   }
 
-  public updateCredentialLocaleBranding = async (args: IUpdateCredentialLocaleBrandingArgs): Promise<ICredentialBranding> => {
+  public updateCredentialLocaleBranding = async (args: IUpdateCredentialLocaleBrandingArgs): Promise<ICredentialLocaleBranding> => {
     const repository: Repository<CredentialLocaleBrandingEntity> = (await this.dbConnection).getRepository(CredentialLocaleBrandingEntity)
     const result: CredentialLocaleBrandingEntity | null = await repository.findOne({
       where: { id: args.localeBranding.id },
@@ -228,10 +249,8 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     debug('Updating credential locale branding', args.localeBranding)
     const updatedResult: CredentialLocaleBrandingEntity = await repository.save(args.localeBranding, { transaction: true })
 
-    return this.localeBrandingFrom(updatedResult) as ICredentialBranding // TODO
+    return this.localeBrandingFrom(updatedResult) as ICredentialLocaleBranding
   }
-
-  // Issuer Branding
 
   public addIssuerBranding = async (args: IAddIssuerBrandingArgs): Promise<IIssuerBranding> => {
     const repository: Repository<IssuerBrandingEntity> = (await this.dbConnection).getRepository(IssuerBrandingEntity)
@@ -255,6 +274,15 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
   }
 
   public getIssuerBranding = async (args?: IGetIssuerBrandingArgs): Promise<Array<IIssuerBranding>> => {
+    if (args?.filter) {
+      args?.filter.forEach((filter: IIssuerBrandingFilter): void => {
+        if (filter.localeBranding && filter.localeBranding?.locale === undefined) {
+          filter.localeBranding.locale = ''
+        }
+      })
+    }
+
+    debug('Getting issuer branding', args)
     const result: Array<IssuerBrandingEntity> = await (await this.dbConnection).getRepository(IssuerBrandingEntity).find({
       ...(args?.filter && { where: args?.filter }),
     })
@@ -272,6 +300,12 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
       return Promise.reject(Error(`No issuer branding found for id: ${args.issuerBrandingId}`))
     }
 
+    debug('Removing issuer locale branding', args.issuerBrandingId)
+    const deletions: Array<Promise<void>> = issuerBranding.localeBranding.map(async (localeBranding: IssuerLocaleBrandingEntity) =>
+      this.removeLocaleBranding(localeBranding)
+    )
+    await Promise.all(deletions)
+
     debug('Removing issuer branding', args.issuerBrandingId)
     await repository.delete(args.issuerBrandingId)
   }
@@ -286,7 +320,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
       return Promise.reject(Error(`No issuer branding found for id: ${args.issuerBranding.id}`))
     }
 
-    const issuerBranding = {
+    const issuerBranding: Omit<IIssuerBranding, 'createdAt' | 'lastUpdatedAt'> = {
       ...args.issuerBranding,
       localeBranding: issuerBrandingEntity.localeBranding,
     }
@@ -327,12 +361,14 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     }
 
     const issuerLocaleBrandingRepository: Repository<IssuerLocaleBrandingEntity> = (await this.dbConnection).getRepository(IssuerLocaleBrandingEntity)
-    const addIssuerLocaleBranding: Array<Promise<void>> = args.localeBranding.map(async (localeBranding: IBasicIssuerLocaleBranding): Promise<void> => {
-      const issuerLocaleBrandingEntity: IssuerLocaleBrandingEntity = issuerLocaleBrandingEntityFrom(localeBranding)
-      debug('Adding issuer locale branding', issuerLocaleBrandingEntity)
-      issuerLocaleBrandingEntity.issuerBranding = issuerBranding
-      await issuerLocaleBrandingRepository.save(issuerLocaleBrandingEntity, { transaction: true })
-    })
+    const addIssuerLocaleBranding: Array<Promise<void>> = args.localeBranding.map(
+      async (localeBranding: IBasicIssuerLocaleBranding): Promise<void> => {
+        const issuerLocaleBrandingEntity: IssuerLocaleBrandingEntity = issuerLocaleBrandingEntityFrom(localeBranding)
+        debug('Adding issuer locale branding', issuerLocaleBrandingEntity)
+        issuerLocaleBrandingEntity.issuerBranding = issuerBranding
+        await issuerLocaleBrandingRepository.save(issuerLocaleBrandingEntity, { transaction: true })
+      }
+    )
 
     await Promise.all(addIssuerLocaleBranding)
 
@@ -347,33 +383,45 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     return this.issuerBrandingFrom(result)
   }
 
-  public getIssuerLocaleBranding = async (args?: IGetIssuerLocaleBrandingArgs): Promise<Array<IIssuerBranding>> => {
+  public getIssuerLocaleBranding = async (args?: IGetIssuerLocaleBrandingArgs): Promise<Array<IIssuerLocaleBranding>> => {
+    if (args?.filter) {
+      args?.filter.forEach((filter: IIssuerLocaleBrandingFilter): void => {
+        if (filter.locale === undefined) {
+          filter.locale = ''
+        }
+      })
+    }
+
+    debug('Getting issuer locale branding', args)
     const issuerLocaleBranding: Array<IssuerLocaleBrandingEntity> | null = await (await this.dbConnection)
       .getRepository(IssuerLocaleBrandingEntity)
       .find({
         ...(args?.filter && { where: args?.filter }),
       })
 
-    return issuerLocaleBranding ? issuerLocaleBranding.map(
-      (issuerLocaleBranding: IssuerLocaleBrandingEntity) => this.localeBrandingFrom(issuerLocaleBranding) as IIssuerBranding
-    ) : []
+    return issuerLocaleBranding
+      ? issuerLocaleBranding.map(
+          (issuerLocaleBranding: IssuerLocaleBrandingEntity) => this.localeBrandingFrom(issuerLocaleBranding) as IIssuerLocaleBranding
+        )
+      : []
   }
 
   public removeIssuerLocaleBranding = async (args: IRemoveIssuerLocaleBrandingArgs): Promise<void> => {
-    const repository: Repository<IssuerLocaleBrandingEntity> = (await this.dbConnection).getRepository(IssuerLocaleBrandingEntity)
-    const issuerLocaleBranding: IssuerLocaleBrandingEntity | null = await repository.findOne({
-      where: { id: args.issuerLocaleBrandingId },
-    })
+    const issuerLocaleBranding: IssuerLocaleBrandingEntity | null = await (await this.dbConnection)
+      .getRepository(IssuerLocaleBrandingEntity)
+      .findOne({
+        where: { id: args.issuerLocaleBrandingId },
+      })
 
     if (!issuerLocaleBranding) {
       return Promise.reject(Error(`No issuer locale branding found for id: ${args.issuerLocaleBrandingId}`))
     }
 
     debug('Removing issuer locale branding', args.issuerLocaleBrandingId)
-    await repository.delete(args.issuerLocaleBrandingId)
+    await this.removeLocaleBranding(issuerLocaleBranding)
   }
 
-  public updateIssuerLocaleBranding = async (args: IUpdateIssuerLocaleBrandingArgs): Promise<IIssuerBranding> => {
+  public updateIssuerLocaleBranding = async (args: IUpdateIssuerLocaleBrandingArgs): Promise<IIssuerLocaleBranding> => {
     const repository: Repository<IssuerLocaleBrandingEntity> = (await this.dbConnection).getRepository(IssuerLocaleBrandingEntity)
     const result: IssuerLocaleBrandingEntity | null = await repository.findOne({
       where: { id: args.localeBranding.id },
@@ -400,53 +448,98 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     debug('Updating issuer locale branding', args.localeBranding)
     const updatedResult: IssuerLocaleBrandingEntity = await repository.save(args.localeBranding, { transaction: true })
 
-    return this.localeBrandingFrom(updatedResult) as IIssuerBranding // TODO
+    return this.localeBrandingFrom(updatedResult) as IIssuerLocaleBranding
   }
 
   private credentialBrandingFrom = (credentialBranding: CredentialBrandingEntity): ICredentialBranding => {
-    return {
-      id: credentialBranding.id,
-      issuerCorrelationId: credentialBranding.issuerCorrelationId,
-      vcHash: credentialBranding.vcHash,
+    const result: ICredentialBranding = {
+      ...credentialBranding,
       localeBranding: credentialBranding.localeBranding.map((localeBranding: BaseLocaleBrandingEntity) => this.localeBrandingFrom(localeBranding)),
-      createdAt: credentialBranding.createdAt,
-      lastUpdatedAt: credentialBranding.lastUpdatedAt,
     }
+
+    return this.replaceNullWithUndefined(result)
   }
 
   private issuerBrandingFrom = (issuerBranding: IssuerBrandingEntity): IIssuerBranding => {
-    return {
-      id: issuerBranding.id,
-      issuerCorrelationId: issuerBranding.issuerCorrelationId,
+    const result: IIssuerBranding = {
+      ...issuerBranding,
       localeBranding: issuerBranding.localeBranding.map((localeBranding: BaseLocaleBrandingEntity) => this.localeBrandingFrom(localeBranding)),
-      createdAt: issuerBranding.createdAt,
-      lastUpdatedAt: issuerBranding.lastUpdatedAt,
     }
+
+    return this.replaceNullWithUndefined(result)
   }
 
   private localeBrandingFrom = (localeBranding: BaseLocaleBrandingEntity): ILocaleBranding => {
-    // TODO maybe add the issuer or credential branding as well
-
-    return {
-      id: localeBranding.id,
-      alias: localeBranding.alias,
-      locale: localeBranding.locale,
-      logo: localeBranding.logo,
-      description: localeBranding.description,
-      background: localeBranding.background,
-      text: localeBranding.text,
-      createdAt: localeBranding.createdAt,
-      lastUpdatedAt: localeBranding.lastUpdatedAt,
+    const result: ILocaleBranding = {
+      ...localeBranding,
+      locale: localeBranding.locale === '' ? undefined : localeBranding.locale,
     }
+
+    return this.replaceNullWithUndefined(result)
+  }
+
+  private replaceNullWithUndefined(obj: any): any {
+    if (obj === null) {
+      return undefined
+    }
+
+    if (typeof obj !== 'object') {
+      return obj
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map((value) => this.replaceNullWithUndefined(value))
+    }
+
+    const result: any = {}
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        result[key] = this.replaceNullWithUndefined(obj[key])
+      }
+    }
+    return result
   }
 
   private hasDuplicateLocales = async (localeBranding: Array<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding>): Promise<boolean> => {
-    let seen: Set<string | undefined> = new Set();
-    return localeBranding.some((localeBranding:  IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding): boolean => {
-      return seen.size === seen.add(localeBranding.locale).size;
+    let seen: Set<string | undefined> = new Set()
+    return localeBranding.some((localeBranding: IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding): boolean => {
+      return seen.size === seen.add(localeBranding.locale).size
     })
   }
 
+  private removeLocaleBranding = async (localeBranding: BaseLocaleBrandingEntity): Promise<void> => {
+    debug('Removing credential locale branding', localeBranding)
+    // Delete background image dimensions
+    if (localeBranding.background?.image?.dimensions) {
+      await (await this.dbConnection).getRepository(ImageDimensionsEntity).delete({ id: localeBranding.background?.image?.dimensions?.id })
+    }
 
+    // Delete background image
+    if (localeBranding.background?.image) {
+      await (await this.dbConnection).getRepository(ImageAttributesEntity).delete({ id: localeBranding.background?.image?.id })
+    }
 
+    // Delete background
+    if (localeBranding.background) {
+      await (await this.dbConnection).getRepository(BackgroundAttributesEntity).delete({ id: localeBranding.background?.id })
+    }
+
+    // Delete logo image dimensions
+    if (localeBranding.logo?.dimensions) {
+      await (await this.dbConnection).getRepository(ImageDimensionsEntity).delete({ id: localeBranding.logo?.dimensions?.id })
+    }
+
+    // Delete logo
+    if (localeBranding.logo) {
+      await (await this.dbConnection).getRepository(ImageAttributesEntity).delete({ id: localeBranding.logo?.id })
+    }
+
+    // Delete text
+    if (localeBranding.text) {
+      await (await this.dbConnection).getRepository(TextAttributesEntity).delete({ id: localeBranding.text?.id })
+    }
+
+    // Delete locale branding
+    await (await this.dbConnection).getRepository(CredentialLocaleBrandingEntity).delete({ id: localeBranding.id })
+  }
 }

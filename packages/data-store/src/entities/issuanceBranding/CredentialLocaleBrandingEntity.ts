@@ -7,9 +7,7 @@ import { BaseLocaleBrandingEntity } from './BaseLocaleBrandingEntity'
 import { textAttributesEntityFrom } from './TextAttributesEntity'
 
 @ChildEntity('CredentialLocaleBranding')
-//@Unique('name',['credentialBranding', 'locale'], { message: 'Custom error message: Duplicate credential branding and locale combination.' })
-//@Unique(['credentialBranding', 'locale'])
-@Index('IDX_CredentialLocaleBrandingEntity_issuerBranding_locale', ['credentialBranding', 'locale'], { unique: true })
+@Index('IDX_CredentialLocaleBrandingEntity_credentialBranding_locale', ['credentialBranding', 'locale'], { unique: true })
 export class CredentialLocaleBrandingEntity extends BaseLocaleBrandingEntity {
   @ManyToOne(() => CredentialBrandingEntity, (credentialBranding: CredentialBrandingEntity) => credentialBranding.localeBranding, {
     onDelete: 'CASCADE',
@@ -24,7 +22,7 @@ export class CredentialLocaleBrandingEntity extends BaseLocaleBrandingEntity {
 export const credentialLocaleBrandingEntityFrom = (args: IBasicCredentialLocaleBranding): CredentialLocaleBrandingEntity => {
   const credentialLocaleBrandingEntity: CredentialLocaleBrandingEntity = new CredentialLocaleBrandingEntity()
   credentialLocaleBrandingEntity.alias = args.alias
-  credentialLocaleBrandingEntity.locale = args.locale
+  credentialLocaleBrandingEntity.locale = args.locale ? args.locale : ''
   credentialLocaleBrandingEntity.logo = args.logo ? imageAttributesEntityFrom(args.logo) : undefined
   credentialLocaleBrandingEntity.description = args.description
   credentialLocaleBrandingEntity.background = args.background ? backgroundAttributesEntityFrom(args.background) : undefined

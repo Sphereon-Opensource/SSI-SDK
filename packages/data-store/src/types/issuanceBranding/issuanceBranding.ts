@@ -10,12 +10,6 @@ export interface ILocaleBranding {
   lastUpdatedAt: Date
 }
 
-// export interface IBasicLocaleBranding extends Omit<ILocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text'> {
-//   logo?: IBasicImageAttributes
-//   background?: IBasicBackgroundAttributes
-//   text?: IBasicTextAttributes
-// }
-
 export interface IImageAttributes {
   id: string
   uri?: string
@@ -27,6 +21,9 @@ export interface IImageAttributes {
 export interface IBasicImageAttributes extends Omit<IImageAttributes, 'id' | 'dimensions'> {
   dimensions?: IBasicImageDimensions
 }
+export interface IPartialImageAttributes extends Partial<Omit<IImageAttributes, 'dimensions'>> {
+  dimensions?: IPartialImageDimensions
+}
 
 export interface IBackgroundAttributes {
   id: string
@@ -36,12 +33,16 @@ export interface IBackgroundAttributes {
 export interface IBasicBackgroundAttributes extends Omit<IBackgroundAttributes, 'id' | 'image'> {
   image?: IBasicImageAttributes
 }
+export interface IPartialBackgroundAttributes extends Partial<Omit<IBackgroundAttributes, 'image'>> {
+  image?: IPartialImageAttributes
+}
 
 export interface ITextAttributes {
   id: string
   color?: string
 }
 export interface IBasicTextAttributes extends Omit<ITextAttributes, 'id'> {}
+export interface IPartialTextAttributes extends Partial<ITextAttributes> {}
 
 export interface IImageDimensions {
   id: string
@@ -49,12 +50,19 @@ export interface IImageDimensions {
   height: number
 }
 export interface IBasicImageDimensions extends Omit<IImageDimensions, 'id'> {}
+export interface IPartialImageDimensions extends Partial<IImageDimensions> {}
 
 export interface ICredentialLocaleBranding extends ILocaleBranding {}
-export interface IBasicCredentialLocaleBranding extends Omit<ICredentialLocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text'> {
+export interface IBasicCredentialLocaleBranding
+  extends Omit<ICredentialLocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text'> {
   logo?: IBasicImageAttributes
   background?: IBasicBackgroundAttributes
   text?: IBasicTextAttributes
+}
+export interface IPartialCredentialLocaleBranding extends Partial<Omit<ICredentialLocaleBranding, 'logo' | 'background' | 'text'>> {
+  logo?: IPartialImageAttributes
+  background?: IPartialBackgroundAttributes
+  text?: IPartialTextAttributes
 }
 
 export interface ICredentialBranding {
@@ -68,12 +76,21 @@ export interface ICredentialBranding {
 export interface IBasicCredentialBranding extends Omit<ICredentialBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'localeBranding'> {
   localeBranding: Array<IBasicCredentialLocaleBranding>
 }
+export interface IPartialCredentialBranding extends Partial<Omit<ICredentialBranding, 'localeBranding'>> {
+  localeBranding?: IPartialCredentialLocaleBranding
+}
 
 export interface IIssuerLocaleBranding extends ILocaleBranding {}
-export interface IBasicIssuerLocaleBranding extends Omit<IIssuerLocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text'> {
+export interface IBasicIssuerLocaleBranding
+  extends Omit<IIssuerLocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text'> {
   logo?: IBasicImageAttributes
   background?: IBasicBackgroundAttributes
   text?: IBasicTextAttributes
+}
+export interface IPartialIssuerLocaleBranding extends Partial<Omit<IIssuerLocaleBranding, 'logo' | 'background' | 'text'>> {
+  logo?: IPartialImageAttributes
+  background?: IPartialBackgroundAttributes
+  text?: IPartialTextAttributes
 }
 
 export interface IIssuerBranding {
@@ -85,4 +102,19 @@ export interface IIssuerBranding {
 }
 export interface IBasicIssuerBranding extends Omit<IIssuerBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'localeBranding'> {
   localeBranding: Array<IBasicIssuerLocaleBranding>
+}
+export interface IPartialIssuerBranding extends Partial<Omit<ICredentialBranding, 'localeBranding'>> {
+  localeBranding?: IPartialIssuerLocaleBranding
+}
+
+export interface ICredentialBrandingFilter extends IPartialCredentialBranding {}
+
+export interface ICredentialLocaleBrandingFilter extends IPartialCredentialLocaleBranding {
+  credentialBranding?: IPartialCredentialBranding
+}
+
+export interface IIssuerBrandingFilter extends IPartialIssuerBranding {}
+
+export interface IIssuerLocaleBrandingFilter extends IPartialIssuerLocaleBranding {
+  issuerBranding?: IPartialIssuerBranding
 }

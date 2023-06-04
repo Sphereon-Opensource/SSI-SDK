@@ -1,10 +1,4 @@
-import {
-  ChildEntity,
-  Column,
-  Index,
-  JoinColumn,
-  ManyToOne
-} from 'typeorm'
+import { ChildEntity, Column, Index, JoinColumn, ManyToOne } from 'typeorm'
 import { IBasicIssuerLocaleBranding } from '../../types'
 import { backgroundAttributesEntityFrom } from './BackgroundAttributesEntity'
 import { imageAttributesEntityFrom } from './ImageAttributesEntity'
@@ -28,7 +22,7 @@ export class IssuerLocaleBrandingEntity extends BaseLocaleBrandingEntity {
 export const issuerLocaleBrandingEntityFrom = (args: IBasicIssuerLocaleBranding): IssuerLocaleBrandingEntity => {
   const issuerLocaleBrandingEntity: IssuerLocaleBrandingEntity = new IssuerLocaleBrandingEntity()
   issuerLocaleBrandingEntity.alias = args.alias
-  issuerLocaleBrandingEntity.locale = args.locale
+  issuerLocaleBrandingEntity.locale = args.locale ? args.locale : ''
   issuerLocaleBrandingEntity.logo = args.logo ? imageAttributesEntityFrom(args.logo) : undefined
   issuerLocaleBrandingEntity.description = args.description
   issuerLocaleBrandingEntity.background = args.background ? backgroundAttributesEntityFrom(args.background) : undefined

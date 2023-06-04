@@ -1,6 +1,5 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import {
-  IBasicLocaleBranding,
   ICredentialBranding,
   IIssuerBranding,
   IBasicBackgroundAttributes,
@@ -11,42 +10,44 @@ import {
   FindCredentialLocaleBrandingArgs,
   FindIssuerLocaleBrandingArgs,
   ILocaleBranding as LocaleBranding,
+  IBasicTextAttributes,
+  ICredentialLocaleBranding as CredentialLocaleBranding,
+  IIssuerLocaleBranding as IssuerLocaleBranding,
 } from '@sphereon/ssi-sdk.data-store'
 
 export interface IIssuanceBranding extends IPluginMethodMap {
-  addCredentialBranding(args: IAddCredentialBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding>
-  getCredentialBranding(args: IGetCredentialBrandingArgs): Promise<Array<ICredentialBranding>>
-  updateCredentialBranding(args: IUpdateCredentialBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding>
-  removeCredentialBranding(args: IRemoveCredentialBrandingArgs, context: IRequiredContext): Promise<void>
-  addCredentialLocaleBranding(args: IAddCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding>
-  getCredentialLocaleBranding(args: IGetCredentialLocaleBrandingArgs): Promise<Array<ICredentialBranding>>
-  removeCredentialLocaleBranding(args: IRemoveCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<void>
-  updateCredentialLocaleBranding(args: IUpdateCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding>
-
-  addIssuerBranding(args: IAddIssuerBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
-  getIssuerBranding(args: IGetIssuerBrandingArgs): Promise<Array<IIssuerBranding>>
-  updateIssuerBranding(args: IUpdateIssuerBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
-  removeIssuerBranding(args: IRemoveIssuerBrandingArgs, context: IRequiredContext): Promise<void>
-  addIssuerLocaleBranding(args: IAddIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
-  getIssuerLocaleBranding(args: IGetIssuerLocaleBrandingArgs): Promise<Array<IIssuerBranding>>
-  removeIssuerLocaleBranding(args: IRemoveIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<void>
-  updateIssuerLocaleBranding(args: IUpdateIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
-}
-
-export interface IAddCredentialBrandingArgs {
-  issuerCorrelationId: string
-  vcHash: string
-  localeBranding: Array<ILocaleBranding>
+  ibAddCredentialBranding(args: IAddCredentialBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding>
+  ibGetCredentialBranding(args: IGetCredentialBrandingArgs): Promise<Array<ICredentialBranding>>
+  ibUpdateCredentialBranding(args: IUpdateCredentialBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding>
+  ibRemoveCredentialBranding(args: IRemoveCredentialBrandingArgs, context: IRequiredContext): Promise<void>
+  ibAddCredentialLocaleBranding(args: IAddCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding>
+  ibGetCredentialLocaleBranding(args: IGetCredentialLocaleBrandingArgs): Promise<Array<CredentialLocaleBranding>>
+  ibRemoveCredentialLocaleBranding(args: IRemoveCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<void>
+  ibUpdateCredentialLocaleBranding(args: IUpdateCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<CredentialLocaleBranding>
+  ibAddIssuerBranding(args: IAddIssuerBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
+  ibGetIssuerBranding(args: IGetIssuerBrandingArgs): Promise<Array<IIssuerBranding>>
+  ibUpdateIssuerBranding(args: IUpdateIssuerBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
+  ibRemoveIssuerBranding(args: IRemoveIssuerBrandingArgs, context: IRequiredContext): Promise<void>
+  ibAddIssuerLocaleBranding(args: IAddIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
+  ibGetIssuerLocaleBranding(args: IGetIssuerLocaleBrandingArgs): Promise<Array<IssuerLocaleBranding>>
+  ibRemoveIssuerLocaleBranding(args: IRemoveIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<void>
+  ibUpdateIssuerLocaleBranding(args: IUpdateIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<IssuerLocaleBranding>
 }
 
 export interface IGetCredentialBrandingArgs {
   filter?: FindCredentialBrandingArgs
 }
 
-export interface ILocaleBranding extends Omit<IBasicLocaleBranding, 'logo' | 'background'> {
+export interface ILocaleBranding {
+  alias?: string
+  locale?: string
   logo?: IImageAttributes
+  description?: string
+  text?: IBasicTextAttributes
   background?: IBackgroundAttributes
 }
+export interface ICredentialLocaleBranding extends ILocaleBranding {}
+export interface IIssuerLocaleBranding extends ILocaleBranding {}
 
 export interface IBackgroundAttributes extends Omit<IBasicBackgroundAttributes, 'image'> {
   image?: IImageAttributes
@@ -55,7 +56,7 @@ export interface IBackgroundAttributes extends Omit<IBasicBackgroundAttributes, 
 export interface IImageAttributes extends Omit<IBasicImageAttributes, 'type' | 'base64Content' | 'dimensions'> {}
 
 export interface IAdditionalImageAttributes {
-  type: string
+  type?: string
   base64Content?: string
   dimensions: IBasicImageDimensions
 }
@@ -78,21 +79,27 @@ export interface IRemoveIssuerBrandingArgs {
 
 export interface IAddIssuerBrandingArgs {
   issuerCorrelationId: string
-  localeBranding: Array<IBasicLocaleBranding>
+  localeBranding: Array<IIssuerLocaleBranding>
 }
 
 export interface IGetIssuerBrandingArgs {
   filter?: FindIssuerBrandingArgs
 }
 
+export interface IAddCredentialBrandingArgs {
+  issuerCorrelationId: string
+  vcHash: string
+  localeBranding: Array<ICredentialLocaleBranding>
+}
+
 export interface IAddCredentialLocaleBrandingArgs {
   credentialBrandingId: string
-  localeBranding: Array<IBasicLocaleBranding>
+  localeBranding: Array<ICredentialLocaleBranding>
 }
 
 export interface IAddIssuerLocaleBrandingArgs {
   issuerBrandingId: string
-  localeBranding: Array<IBasicLocaleBranding>
+  localeBranding: Array<IIssuerLocaleBranding>
 }
 
 export interface IGetCredentialLocaleBrandingArgs {

@@ -24,9 +24,6 @@ export class IssuerBrandingEntity extends BaseEntity {
   @IsNotEmpty({ message: 'Blank issuerCorrelationIds are not allowed' })
   issuerCorrelationId!: string
 
-  // @PrimaryColumn({ name: 'issuerCorrelationId', length: 255 })
-  // issuerCorrelationId!: string;
-
   @OneToMany(
     () => IssuerLocaleBrandingEntity,
     (issuerLocaleBrandingEntity: IssuerLocaleBrandingEntity) => issuerLocaleBrandingEntity.issuerBranding,
