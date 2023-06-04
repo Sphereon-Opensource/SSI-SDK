@@ -12,27 +12,30 @@
 
 ---
 
-A Veramo contact manager plugin. This plugin manages contacts and identity configurations to third parties and persists them. These configurations can then be used to establish a connection.
+A Veramo issuance branding plugin. This plugin manages issuer and credential branding and persists them. The branding can be used to display an issuer or credential.
 
-## Supported identity connection types
-
-For now the following connection types are supported:
-
-- OpenID Connect
-- Self Issued OpenID v2
+NOTE
+Credential manifest (link)
+OpenID 4 VCI (link)
 
 ## Available functions
 
-- cmGetContact
-- cmGetContacts
-- cmAddContact
-- cmUpdateContact
-- cmRemoveContact
-- cmGetIdentity
-- cmGetIdentities
-- cmAddIdentity
-- cmUpdateIdentity
-- cmRemoveIdentity
+- ibAddCredentialBranding
+- ibGetCredentialBranding
+- ibUpdateCredentialBranding
+- ibRemoveCredentialBranding
+- ibAddCredentialLocaleBranding
+- ibGetCredentialLocaleBranding
+- ibRemoveCredentialLocaleBranding
+- ibUpdateCredentialLocaleBranding
+- ibAddIssuerBranding
+- ibGetIssuerBranding
+- ibUpdateIssuerBranding
+- ibRemoveIssuerBranding
+- ibAddIssuerLocaleBranding
+- ibGetIssuerLocaleBranding
+- ibRemoveIssuerLocaleBranding
+- ibUpdateIssuerLocaleBranding
 
 ## Usage
 
@@ -40,8 +43,8 @@ For now the following connection types are supported:
 
 ```typescript
 import { migrations, Entities } from '@veramo/data-store'
-import DataStoreConnectionEntities from '@sphereon/ssi-sdk.contact-manager'
-import { ContactStore, DataStoreMigrations } from '@sphereon/ssi-sdk.data-store'
+import { IssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
+import { IssuanceBrandingStore, DataStoreMigrations, DataStoreIssuanceBrandingEntities } from '@sphereon/ssi-sdk.data-store'
 
 const dbConnection = createConnection({
   type: 'react-native',
@@ -51,19 +54,19 @@ const dbConnection = createConnection({
   synchronize: false,
   migrationsRun: true,
   migrations: [...DataStoreMigrations, ...migrations],
-  entities: [...DataStoreConnectionEntities, ...Entities],
+  entities: [...DataStoreIssuanceBrandingEntities, ...Entities],
 })
 
 const agent = createAgent<IIssuanceBranding>({
   plugins: [
-    new ContactManager({
-      store: new ContactStore(dbConnection),
+    new IssuanceBranding({
+      store: new IssuanceBrandingStore(dbConnection),
     }),
   ],
 })
 ```
 
-### Get a contact:
+### Add a credential branding:
 
 ```typescript
 const contactId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
@@ -72,118 +75,138 @@ const result = await agent.cmGetContact({
 })
 ```
 
-### Get contacts:
-
-```typescript
-const result = await agent.cmGetContacts()
-```
-
-### Add a contact:
-
-```typescript
-const result = await agent.cmAddContact({ name: 'contact_name', alias: 'contact_alias' })
-```
-
-### Update a contact:
+### Get credential branding:
 
 ```typescript
 const contactId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
-const contact = await agent
-  .cmGetContact({
-    contact,
-  })
-  .then((contact) => {
-    return { ...contact, name: 'new_name' }
-  })
-
-const result = await agent.cmUpdateContact({ contact })
-```
-
-### Remove a contact:
-
-```typescript
-const contactId = 'ef6e13b2-a520-4bb6-9a13-9be529ce22b8'
-const result = await agent.cmRemoveContact({ contactId })
-```
-
-### Get an identity:
-
-```typescript
-const identityId = 'cdfd231c-6d40-4e43-9bd0-e8c97262ffe1'
-const result = await agent.cmGetIdentity({
-  identityId,
-})
-```
-
-### Get identities:
-
-```typescript
-const contactId = '00492d95-22b9-41c1-b475-90bf1667ae52'
-const result = await agent.cmGetIdentities({ contactId })
-```
-
-### Add an identity:
-
-```typescript
-const contactId = 'a4a47842-43a7-4741-9562-0fb3a973ec98'
-const identity = {
-  alias: correlationId,
-  identifier: {
-    type: CorrelationIdentifierEnum.URL,
-    correlationId,
-  },
-  connection: {
-    type: ConnectionTypeEnum.DIDAUTH,
-    config: {
-      identifier: {
-        did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
-        provider: 'test_provider',
-        keys: [],
-        services: [],
-      },
-      redirectUrl: 'https://example.com',
-      stateId: 'e91f3510-5ce9-42ee-83b7-fa68ff323d27',
-      sessionId: 'https://example.com/did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
-    },
-  },
-  metadata: [
-    {
-      label: 'Authorization URL',
-      value: 'https://example.com',
-    },
-    {
-      label: 'Scope',
-      value: 'Authorization',
-    },
-  ],
-}
-
-const result = await agent.cmAddIdentity({
+const result = await agent.cmGetContact({
   contactId,
-  identity,
 })
 ```
 
-### Update an identity:
+### Update a credential branding:
 
 ```typescript
-const identityId = 'cdfd231c-6d40-4e43-9bd0-e8c97262ffe1'
-const identity = await agent
-  .cmGetIdentity({
-    identityId,
-  })
-  .then((identity) => {
-    return { ...identity, alias: 'new_alias' }
-  })
-const result = await agent.cmUpdateIdentity({ identity })
+const contactId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
+const result = await agent.cmGetContact({
+  contactId,
+})
 ```
 
-### Remove an identity:
+### Remove a credential branding:
 
 ```typescript
-const identityId = 'cdfd231c-6d40-4e43-9bd0-e8c97262ffe1'
-await agent.cmRemoveIdentity({
-  identityId,
+const contactId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
+const result = await agent.cmGetContact({
+  contactId,
+})
+```
+
+### Add a credential locale branding:
+
+```typescript
+const contactId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
+const result = await agent.cmGetContact({
+  contactId,
+})
+```
+
+### Get credential locale branding:
+
+```typescript
+const contactId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
+const result = await agent.cmGetContact({
+  contactId,
+})
+```
+
+### Remove a credential locale branding:
+
+```typescript
+const contactId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
+const result = await agent.cmGetContact({
+  contactId,
+})
+```
+
+### Update a credential locale branding:
+
+```typescript
+const contactId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
+const result = await agent.cmGetContact({
+  contactId,
+})
+```
+
+### Add an issuer branding:
+
+```typescript
+const contactId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
+const result = await agent.cmGetContact({
+  contactId,
+})
+```
+
+### Get issuer branding:
+
+```typescript
+const contactId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
+const result = await agent.cmGetContact({
+  contactId,
+})
+```
+
+### Update an issuer branding:
+
+```typescript
+const contactId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
+const result = await agent.cmGetContact({
+  contactId,
+})
+```
+
+### Remove an issuer branding:
+
+```typescript
+const contactId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
+const result = await agent.cmGetContact({
+  contactId,
+})
+```
+
+### Add an issuer locale branding:
+
+```typescript
+const contactId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
+const result = await agent.cmGetContact({
+  contactId,
+})
+```
+
+### Get issuer locale branding:
+
+```typescript
+const contactId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
+const result = await agent.cmGetContact({
+  contactId,
+})
+```
+
+### Remove an issuer locale branding:
+
+```typescript
+const contactId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
+const result = await agent.cmGetContact({
+  contactId,
+})
+```
+
+### Update an issuer locale branding:
+
+```typescript
+const contactId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
+const result = await agent.cmGetContact({
+  contactId,
 })
 ```
 
