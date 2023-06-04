@@ -1,5 +1,5 @@
 import { IAgentPlugin } from '@veramo/core'
-import { getImageDimensions, IImageDimensions, downloadImage, getImageType } from '@sphereon/ssi-sdk.core'
+import { downloadImage, getImageDimensions, getImageType, IImageDimensions, IImageResource } from '@sphereon/ssi-sdk.core'
 import {
   AbstractIssuanceBrandingStore,
   IAddIssuerBrandingArgs,
@@ -35,7 +35,6 @@ import {
   IUpdateCredentialLocaleBrandingArgs,
   IUpdateIssuerLocaleBrandingArgs,
 } from '../types/IIssuanceBranding'
-import { IImageResource } from '@sphereon/ssi-sdk.core/dist/types'
 import Debug from 'debug'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:issuance-branding')

@@ -11,7 +11,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build:clean": "tsc --build --clean && tsc --build",
+    "generate-plugin-schema": "veramo dev generate-plugin-schema"
   },
   "dependencies": {
     "@sphereon/ssi-sdk.data-store": "workspace:*",

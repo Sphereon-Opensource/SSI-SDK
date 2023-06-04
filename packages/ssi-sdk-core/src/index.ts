@@ -10,5 +10,6 @@ export {
   UnsignedCredentialSP,
   ProofOptions,
   IImageDimensions,
+  IImageResource
 } from './types'
 export { KeyAlgo, SuppliedSigner } from './signers'
