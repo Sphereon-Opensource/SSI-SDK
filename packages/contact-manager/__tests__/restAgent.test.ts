@@ -36,10 +36,9 @@ const setup = async (): Promise<boolean> => {
   const { agent, db } = await createObjects(config, { agent: '/agent', db: '/dbConnection' })
   serverAgent = agent
   dbConnection = db
-
-  //await (await dbConnection).dropDatabase()
-  // await (await dbConnection).runMigrations()
-  // await (await dbConnection).showMigrations()
+  await (await dbConnection).dropDatabase()
+  await (await dbConnection).runMigrations()
+  await (await dbConnection).showMigrations()
 
   const agentRouter = AgentRouter({
     exposedMethods: serverAgent.availableMethods(),
