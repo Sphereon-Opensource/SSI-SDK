@@ -97,10 +97,10 @@ The issuance-branding plugin allows you to persist branding for issuers and cred
 is no active connection possible to the external parties. It supports logo's, background attributes like an image and or color, text color and 
 additional branding information per locale.
 
-| Plugin                                            | Description                                                                    |
-|---------------------------------------------------|--------------------------------------------------------------------------------|
-| [data-store](./packages/data-store)               | TypeORM based contact store to persist and query branding (issuer, credential) |
-| [issuance-branding](./packages/issuance-branding) | Manage issuer and credential branding                                          |
+| Plugin                                            | Description                                                                              |
+|---------------------------------------------------|------------------------------------------------------------------------------------------|
+| [data-store](./packages/data-store)               | TypeORM based issuance branding store to persist and query branding (issuer, credential) |
+| [issuance-branding](./packages/issuance-branding) | Manage issuer and credential branding                                                    |
 
 ## Generic SSI plugins
 
