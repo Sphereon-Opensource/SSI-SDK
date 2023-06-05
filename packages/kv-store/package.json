@@ -17,7 +17,7 @@
     "uint8arrays": "^3.1.1"
   },
   "devDependencies": {
-    "@veramo/cli": "4.2.0",
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@types/json-buffer": "^3.0.0",
     "@types/debug": "^4.1.7",
     "keyv": "^4.5.2",

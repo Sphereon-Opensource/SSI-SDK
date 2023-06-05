@@ -1,9 +1,11 @@
 {
   "files": [],
   "references": [
+    { "path": "dev" },
     { "path": "agent-config" },
     { "path": "ssi-types" },
     { "path": "ssi-sdk-core" },
+    { "path": "w3c-vc-api" },
     { "path": "ms-authenticator" },
     { "path": "ms-request-api" },
     { "path": "vc-handler-ld-local" },
