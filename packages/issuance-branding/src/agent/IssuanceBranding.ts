@@ -98,9 +98,9 @@ export class IssuanceBranding implements IAgentPlugin {
   }
 
   /** {@inheritDoc IIssuanceBranding.ibRemoveCredentialBranding} */
-  private async ibRemoveCredentialBranding(args: IRemoveCredentialBrandingArgs, context: IRequiredContext): Promise<void> {
+  private async ibRemoveCredentialBranding(args: IRemoveCredentialBrandingArgs, context: IRequiredContext): Promise<boolean> {
     debug('Removing credential branding', args)
-    return this.store.removeCredentialBranding(args)
+    return this.store.removeCredentialBranding(args).then(() => true)
   }
 
   /** {@inheritDoc IIssuanceBranding.ibAddCredentialLocaleBranding} */
@@ -126,9 +126,9 @@ export class IssuanceBranding implements IAgentPlugin {
   }
 
   /** {@inheritDoc IIssuanceBranding.ibRemoveCredentialLocaleBranding} */
-  private async ibRemoveCredentialLocaleBranding(args: IRemoveCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<void> {
+  private async ibRemoveCredentialLocaleBranding(args: IRemoveCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<boolean> {
     debug('Removing credential locale branding', args)
-    return this.store.removeCredentialLocaleBranding(args)
+    return this.store.removeCredentialLocaleBranding(args).then(() => true)
   }
 
   /** {@inheritDoc IIssuanceBranding.ibUpdateCredentialLocaleBranding} */
@@ -177,9 +177,9 @@ export class IssuanceBranding implements IAgentPlugin {
   }
 
   /** {@inheritDoc IIssuanceBranding.inRemoveIssuerBranding} */
-  private async inRemoveIssuerBranding(args: IRemoveIssuerBrandingArgs, context: IRequiredContext): Promise<void> {
+  private async inRemoveIssuerBranding(args: IRemoveIssuerBrandingArgs, context: IRequiredContext): Promise<boolean> {
     debug('Removing issuer branding', args)
-    return this.store.removeIssuerBranding(args)
+    return this.store.removeIssuerBranding(args).then(() => true)
   }
 
   /** {@inheritDoc IIssuanceBranding.ibAddIssuerLocaleBranding} */
@@ -205,9 +205,9 @@ export class IssuanceBranding implements IAgentPlugin {
   }
 
   /** {@inheritDoc IIssuanceBranding.ibRemoveIssuerLocaleBranding} */
-  private async ibRemoveIssuerLocaleBranding(args: IRemoveIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<void> {
+  private async ibRemoveIssuerLocaleBranding(args: IRemoveIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<boolean> {
     debug('Removing issuer locale branding', args)
-    return this.store.removeIssuerLocaleBranding(args)
+    return this.store.removeIssuerLocaleBranding(args).then(() => true)
   }
 
   /** {@inheritDoc IIssuanceBranding.ibUpdateIssuerLocaleBranding} */
