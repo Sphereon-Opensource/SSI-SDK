@@ -5,57 +5,79 @@ export class CreateIssuanceBranding1685628974232 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "BaseConfigEntity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "client_id" character varying(255), "client_secret" character varying(255), "scopes" text, "issuer" character varying(255), "redirect_url" text, "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "identifier" character varying(255), "session_id" character varying(255), "type" character varying NOT NULL, "connectionId" uuid, CONSTRAINT "REL_BaseConfig_connectionId" UNIQUE ("connectionId"), CONSTRAINT "PK_BaseConfigEntity_id" PRIMARY KEY ("id"))`
-    )
-    await queryRunner.query(`CREATE INDEX "IDX_BaseConfigEntity_type" ON "BaseConfigEntity" ("type")`)
-    await queryRunner.query(`CREATE TYPE "public"."CorrelationIdentifier_type_enum" AS ENUM('did', 'url')`)
-    await queryRunner.query(
-      `CREATE TABLE "CorrelationIdentifier" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."CorrelationIdentifier_type_enum" NOT NULL, "correlation_id" text NOT NULL, "identityId" uuid, CONSTRAINT "UQ_Correlation_id" UNIQUE ("correlation_id"), CONSTRAINT "REL_CorrelationIdentifier_identityId" UNIQUE ("identityId"), CONSTRAINT "PK_CorrelationIdentifier_id" PRIMARY KEY ("id"))`
+      `CREATE TABLE "ImageDimensions" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "width" integer NOT NULL, "height" integer NOT NULL, CONSTRAINT "PK_ImageDimensions_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "Contact" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying(255) NOT NULL, "alias" character varying(255) NOT NULL, "uri" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_Name" UNIQUE ("name"), CONSTRAINT "UQ_Alias" UNIQUE ("alias"), CONSTRAINT "PK_Contact_id" PRIMARY KEY ("id"))`
+      `CREATE TABLE "ImageAttributes" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "uri" character varying(255), "base64Content " character varying(255), "type" character varying(255), "alt" character varying(255), "dimensionsId" uuid, CONSTRAINT "UQ_dimensionsId" UNIQUE ("dimensionsId"), CONSTRAINT "PK_ImageAttributes_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "IdentityMetadata" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "label" character varying(255) NOT NULL, "value" character varying(255) NOT NULL, "identityId" uuid, CONSTRAINT "PK_IdentityMetadata_id" PRIMARY KEY ("id"))`
+      `CREATE TABLE "BackgroundAttributes" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "color" character varying(255), "imageId" uuid, CONSTRAINT "UQ_imageId" UNIQUE ("imageId"), CONSTRAINT "PK_BackgroundAttributes_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "Identity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "alias" character varying(255) NOT NULL, "roles" text, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "contactId" uuid, CONSTRAINT "UQ_Alias" UNIQUE ("alias"), CONSTRAINT "PK_Identity_id" PRIMARY KEY ("id"))`
-    )
-    await queryRunner.query(`CREATE TYPE "public"."Connection_type_enum" AS ENUM('OIDC', 'SIOPv2', 'SIOPv2+OpenID4VP')`)
-    await queryRunner.query(
-      `CREATE TABLE "Connection" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."Connection_type_enum" NOT NULL, "identityId" uuid, CONSTRAINT "REL_Connection_identityId" UNIQUE ("identityId"), CONSTRAINT "PK_Connection_id" PRIMARY KEY ("id"))`
+      `CREATE TABLE "TextAttributes" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "color" character varying(255), CONSTRAINT "PK_TextAttributes_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `ALTER TABLE "BaseConfigEntity" ADD CONSTRAINT "FK_BaseConfig_connectionId" FOREIGN KEY ("connectionId") REFERENCES "Connection"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
+      `CREATE TABLE "BaseLocaleBranding" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "alias" character varying(255), "locale" character varying(255) NOT NULL, "description" character varying(255), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "credentialBrandingId" uuid, "issuerBrandingId" uuid, "type" character varying NOT NULL, "logoId" uuid, "backgroundId" uuid, "textId" uuid, CONSTRAINT "UQ_logoId" UNIQUE ("logoId"), CONSTRAINT "UQ_backgroundId" UNIQUE ("backgroundId"), CONSTRAINT "UQ_textId" UNIQUE ("textId"), CONSTRAINT "PK_BaseLocaleBranding_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `ALTER TABLE "CorrelationIdentifier" ADD CONSTRAINT "FK_CorrelationIdentifier_identityId" FOREIGN KEY ("identityId") REFERENCES "Identity"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
+      `CREATE UNIQUE INDEX "IDX_CredentialLocaleBrandingEntity_credentialBranding_locale" ON "BaseLocaleBranding" ("credentialBrandingId", "locale")`
     )
     await queryRunner.query(
-      `ALTER TABLE "IdentityMetadata" ADD CONSTRAINT "FK_IdentityMetadata_identityId" FOREIGN KEY ("identityId") REFERENCES "Identity"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
+      `CREATE UNIQUE INDEX "IDX_IssuerLocaleBrandingEntity_issuerBranding_locale" ON "BaseLocaleBranding" ("issuerBrandingId", "locale")`
+    )
+    await queryRunner.query(`CREATE INDEX "IDX_BaseLocaleBranding_type" ON "BaseLocaleBranding" ("type")`)
+    await queryRunner.query(
+      `CREATE TABLE "CredentialBranding" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "vcHash" character varying(255) NOT NULL, "issuerCorrelationId" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_vcHash" UNIQUE ("vcHash"), CONSTRAINT "PK_CredentialBranding_id" PRIMARY KEY ("id"))`
+    )
+    await queryRunner.query(`CREATE INDEX "IDX_CredentialBrandingEntity_issuerCorrelationId" ON "CredentialBranding" ("issuerCorrelationId")`)
+    await queryRunner.query(`CREATE INDEX "IDX_CredentialBrandingEntity_vcHash" ON "CredentialBranding" ("vcHash")`)
+    await queryRunner.query(
+      `CREATE TABLE "IssuerBranding" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "issuerCorrelationId" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_issuerCorrelationId" UNIQUE ("issuerCorrelationId"), CONSTRAINT "PK_IssuerBranding_id" PRIMARY KEY ("id"))`
+    )
+    await queryRunner.query(`CREATE INDEX "IDX_IssuerBrandingEntity_issuerCorrelationId" ON "IssuerBranding" ("issuerCorrelationId")`)
+    await queryRunner.query(
+      `ALTER TABLE "ImageAttributes" ADD CONSTRAINT "FK_ImageAttributes_dimensionsId" FOREIGN KEY ("dimensionsId") REFERENCES "ImageDimensions"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
     )
     await queryRunner.query(
-      `ALTER TABLE "Identity" ADD CONSTRAINT "FK_Identity_contactId" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
+      `ALTER TABLE "BackgroundAttributes" ADD CONSTRAINT "FK_BackgroundAttributes_imageId" FOREIGN KEY ("imageId") REFERENCES "ImageAttributes"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
     )
     await queryRunner.query(
-      `ALTER TABLE "Connection" ADD CONSTRAINT "FK_Connection_identityId" FOREIGN KEY ("identityId") REFERENCES "Identity"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
+      `ALTER TABLE "BaseLocaleBranding" ADD CONSTRAINT "FK_BaseLocaleBranding_logoId" FOREIGN KEY ("logoId") REFERENCES "ImageAttributes"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
+    )
+    await queryRunner.query(
+      `ALTER TABLE "BaseLocaleBranding" ADD CONSTRAINT "FK_BaseLocaleBranding_backgroundId" FOREIGN KEY ("backgroundId") REFERENCES "BackgroundAttributes"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
+    )
+    await queryRunner.query(
+      `ALTER TABLE "BaseLocaleBranding" ADD CONSTRAINT "FK_BaseLocaleBranding_textId" FOREIGN KEY ("textId") REFERENCES "TextAttributes"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
+    )
+    await queryRunner.query(
+      `ALTER TABLE "BaseLocaleBranding" ADD CONSTRAINT "FK_BaseLocaleBranding_credentialBrandingId" FOREIGN KEY ("credentialBrandingId") REFERENCES "CredentialBranding"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
+    )
+    await queryRunner.query(
+      `ALTER TABLE "BaseLocaleBranding" ADD CONSTRAINT "FK_BaseLocaleBranding_issuerBrandingId" FOREIGN KEY ("issuerBrandingId") REFERENCES "IssuerBranding"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
     )
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`ALTER TABLE "Connection" DROP CONSTRAINT "FK_Connection_identityId"`)
-    await queryRunner.query(`ALTER TABLE "Identity" DROP CONSTRAINT "FK_Identity_contactId"`)
-    await queryRunner.query(`ALTER TABLE "IdentityMetadata" DROP CONSTRAINT "FK_IdentityMetadata_identityId"`)
-    await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" DROP CONSTRAINT "FK_CorrelationIdentifier_identityId"`)
-    await queryRunner.query(`ALTER TABLE "BaseConfigEntity" DROP CONSTRAINT "FK_BaseConfig_connectionId"`)
-    await queryRunner.query(`DROP TABLE "Connection"`)
-    await queryRunner.query(`DROP TYPE "public"."Connection_type_enum"`)
-    await queryRunner.query(`DROP TABLE "Identity"`)
-    await queryRunner.query(`DROP TABLE "IdentityMetadata"`)
-    await queryRunner.query(`DROP TABLE "Contact"`)
-    await queryRunner.query(`DROP TABLE "CorrelationIdentifier"`)
-    await queryRunner.query(`DROP TYPE "public"."CorrelationIdentifier_type_enum"`)
-    await queryRunner.query(`DROP INDEX "public"."IDX_BaseConfigEntity_type"`)
-    await queryRunner.query(`DROP TABLE "BaseConfigEntity"`)
+    await queryRunner.query(`ALTER TABLE "BaseLocaleBranding" DROP CONSTRAINT "FK_BaseLocaleBranding_issuerBrandingId"`)
+    await queryRunner.query(`ALTER TABLE "BaseLocaleBranding" DROP CONSTRAINT "FK_BaseLocaleBranding_credentialBrandingId"`)
+    await queryRunner.query(`ALTER TABLE "BaseLocaleBranding" DROP CONSTRAINT "FK_BaseLocaleBranding_textId"`)
+    await queryRunner.query(`ALTER TABLE "BaseLocaleBranding" DROP CONSTRAINT "FK_BaseLocaleBranding_backgroundId"`)
+    await queryRunner.query(`ALTER TABLE "BaseLocaleBranding" DROP CONSTRAINT "FK_BaseLocaleBranding_logoId"`)
+    await queryRunner.query(`ALTER TABLE "BaseLocaleBranding" DROP CONSTRAINT "FK_BackgroundAttributes_imageId"`)
+    await queryRunner.query(`ALTER TABLE "BaseLocaleBranding" DROP CONSTRAINT "FK_ImageAttributes_dimensionsId"`)
+    await queryRunner.query(`ALTER TABLE "IssuerBranding" DROP INDEX "IDX_IssuerBrandingEntity_issuerCorrelationId"`)
+    await queryRunner.query(`DROP TABLE "IssuerBranding"`)
+    await queryRunner.query(`ALTER TABLE "CredentialBranding" DROP INDEX "IDX_CredentialBrandingEntity_vcHash"`)
+    await queryRunner.query(`ALTER TABLE "CredentialBranding" DROP INDEX "IDX_CredentialBrandingEntity_issuerCorrelationId"`)
+    await queryRunner.query(`DROP TABLE "CredentialBranding"`)
+    await queryRunner.query(`ALTER TABLE "BaseLocaleBranding" DROP INDEX "IDX_BaseLocaleBranding_type"`)
+    await queryRunner.query(`ALTER TABLE "BaseLocaleBranding" DROP INDEX "IDX_IssuerLocaleBrandingEntity_issuerBranding_locale"`)
+    await queryRunner.query(`ALTER TABLE "BaseLocaleBranding" DROP INDEX "IDX_CredentialLocaleBrandingEntity_credentialBranding_locale"`)
+    await queryRunner.query(`DROP TABLE "BaseLocaleBranding"`)
+    await queryRunner.query(`DROP TABLE "TextAttributes"`)
+    await queryRunner.query(`DROP TABLE "BackgroundAttributes"`)
+    await queryRunner.query(`DROP TABLE "ImageAttributes"`)
+    await queryRunner.query(`DROP TABLE "ImageDimensions"`)
   }
 }
