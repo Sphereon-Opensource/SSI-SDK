@@ -118,10 +118,3 @@ export interface IIssuerBrandingFilter extends IPartialIssuerBranding {}
 export interface IIssuerLocaleBrandingFilter extends IPartialIssuerLocaleBranding {
   issuerBranding?: IPartialIssuerBranding
 }
-
-// TODO so why do we want this? when i get a vc i need internet anyways, or there could be a delay between getting the issuance request and the actual vc
-export interface ICredentialSupportedBranding {
-  id?: string // TODO going to be an issue with the db id // credentialId
-  type?: string
-  localeBranding: Array<ICredentialLocaleBranding> // TODO make optional?
-}
