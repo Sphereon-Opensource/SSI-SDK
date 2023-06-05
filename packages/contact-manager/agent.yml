@@ -21,7 +21,7 @@ dbConnection:
     - type: sqlite
       database: ':memory:'
       synchronize: false
-      migrationsRun: false
+      migrationsRun: true
       migrations:
         $require: './packages/data-store?t=object#DataStoreMigrations'
       entities:
