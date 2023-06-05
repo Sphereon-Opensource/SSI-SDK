@@ -5,107 +5,101 @@ export class CreateIssuanceBranding1685628973231 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "BaseConfigEntity" ("id" varchar PRIMARY KEY NOT NULL, "client_id" varchar(255), "client_secret" varchar(255), "scopes" text, "issuer" varchar(255), "redirect_url" text, "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "identifier" varchar(255), "session_id" varchar(255), "type" varchar NOT NULL, "connectionId" varchar, CONSTRAINT "REL_BaseConfig_connectionId" UNIQUE ("connectionId"))`
-    )
-    await queryRunner.query(`CREATE INDEX "IDX_BaseConfigEntity_type" ON "BaseConfigEntity" ("type")`)
-    await queryRunner.query(
-      `CREATE TABLE "CorrelationIdentifier" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('did','url') ) NOT NULL, "correlation_id" text NOT NULL, "identityId" varchar, CONSTRAINT "UQ_Correlation_id" UNIQUE ("correlation_id"), CONSTRAINT "REL_CorrelationIdentifier_identityId" UNIQUE ("identityId"))`
+        `CREATE TABLE "ImageDimensions" ("id" varchar PRIMARY KEY NOT NULL, "width" integer NOT NULL, "height" integer NOT NULL)`
     )
     await queryRunner.query(
-      `CREATE TABLE "Contact" ("id" varchar PRIMARY KEY NOT NULL, "name" varchar(255) NOT NULL, "alias" varchar(255) NOT NULL, "uri" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), CONSTRAINT "UQ_Name" UNIQUE ("name"), CONSTRAINT "UQ_Alias" UNIQUE ("alias"))`
+        `CREATE TABLE "ImageAttributes" ("id" varchar PRIMARY KEY NOT NULL, "uri" varchar(255), "base64Content " varchar(255), "type" varchar(255), "alt" varchar(255), "dimensionsId" varchar, CONSTRAINT "UQ_dimensionsId" UNIQUE ("dimensionsId"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "IdentityMetadata" ("id" varchar PRIMARY KEY NOT NULL, "label" varchar(255) NOT NULL, "value" varchar(255) NOT NULL, "identityId" varchar)`
+        `CREATE TABLE "BackgroundAttributes" ("id" varchar PRIMARY KEY NOT NULL, "color" varchar(255), "imageId" varchar, CONSTRAINT "UQ_imageId" UNIQUE ("imageId"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "Identity" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255) NOT NULL, "roles" text, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "contactId" varchar, CONSTRAINT "UQ_Alias" UNIQUE ("alias"))`
+        `CREATE TABLE "TextAttributes" ("id" varchar PRIMARY KEY NOT NULL, "color" varchar(255))`
     )
     await queryRunner.query(
-      `CREATE TABLE "Connection" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('OIDC','SIOPv2','SIOPv2+OpenID4VP') ) NOT NULL, "identityId" varchar, CONSTRAINT "REL_Connection_identityId" UNIQUE ("identityId"))`
-    )
-    await queryRunner.query(`DROP INDEX "IDX_BaseConfigEntity_type"`)
-    await queryRunner.query(
-      `CREATE TABLE "temporary_BaseConfigEntity" ("id" varchar PRIMARY KEY NOT NULL, "client_id" varchar(255), "client_secret" varchar(255), "scopes" text, "issuer" varchar(255), "redirect_url" text, "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "identifier" varchar(255), "session_id" varchar(255), "type" varchar NOT NULL, "connectionId" varchar, CONSTRAINT "REL_BaseConfig_connectionId" UNIQUE ("connectionId"), CONSTRAINT "FK_BaseConfig_connectionId" FOREIGN KEY ("connectionId") REFERENCES "Connection" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
+        `CREATE TABLE "BaseLocaleBranding" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255), "locale" varchar(255) NOT NULL, "description" varchar(255), "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "credentialBrandingId" varchar, "issuerBrandingId" varchar, "type" varchar NOT NULL, "logoId" varchar, "backgroundId" varchar, "textId" varchar, CONSTRAINT "UQ_logoId" UNIQUE ("logoId"), CONSTRAINT "UQ_backgroundId" UNIQUE ("backgroundId"), CONSTRAINT "UQ_textId" UNIQUE ("textId"))`
     )
     await queryRunner.query(
-      `INSERT INTO "temporary_BaseConfigEntity"("id", "client_id", "client_secret", "scopes", "issuer", "redirect_url", "dangerously_allow_insecure_http_requests", "client_auth_method", "identifier", "session_id", "type", "connectionId") SELECT "id", "client_id", "client_secret", "scopes", "issuer", "redirect_url", "dangerously_allow_insecure_http_requests", "client_auth_method", "identifier", "session_id", "type", "connectionId" FROM "BaseConfigEntity"`
-    )
-    await queryRunner.query(`DROP TABLE "BaseConfigEntity"`)
-    await queryRunner.query(`ALTER TABLE "temporary_BaseConfigEntity" RENAME TO "BaseConfigEntity"`)
-    await queryRunner.query(`CREATE INDEX "IDX_BaseConfigEntity_type" ON "BaseConfigEntity" ("type")`)
-    await queryRunner.query(
-      `CREATE TABLE "temporary_CorrelationIdentifier" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('did','url') ) NOT NULL, "correlation_id" text NOT NULL, "identityId" varchar, CONSTRAINT "UQ_Correlation_id" UNIQUE ("correlation_id"), CONSTRAINT "REL_CorrelationIdentifier_identityId" UNIQUE ("identityId"), CONSTRAINT "FK_CorrelationIdentifier_identityId" FOREIGN KEY ("identityId") REFERENCES "Identity" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
+        `CREATE UNIQUE INDEX "IDX_CredentialLocaleBrandingEntity_credentialBranding_locale" ON "BaseLocaleBranding" ("credentialBrandingId", "locale")`
     )
     await queryRunner.query(
-      `INSERT INTO "temporary_CorrelationIdentifier"("id", "type", "correlation_id", "identityId") SELECT "id", "type", "correlation_id", "identityId" FROM "CorrelationIdentifier"`
-    )
-    await queryRunner.query(`DROP TABLE "CorrelationIdentifier"`)
-    await queryRunner.query(`ALTER TABLE "temporary_CorrelationIdentifier" RENAME TO "CorrelationIdentifier"`)
-    await queryRunner.query(
-      `CREATE TABLE "temporary_IdentityMetadata" ("id" varchar PRIMARY KEY NOT NULL, "label" varchar(255) NOT NULL, "value" varchar(255) NOT NULL, "identityId" varchar, CONSTRAINT "FK_IdentityMetadata_identityId" FOREIGN KEY ("identityId") REFERENCES "Identity" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
+        `CREATE UNIQUE INDEX "IDX_IssuerLocaleBrandingEntity_issuerBranding_locale" ON "BaseLocaleBranding" ("issuerBrandingId", "locale")`
     )
     await queryRunner.query(
-      `INSERT INTO "temporary_IdentityMetadata"("id", "label", "value", "identityId") SELECT "id", "label", "value", "identityId" FROM "IdentityMetadata"`
-    )
-    await queryRunner.query(`DROP TABLE "IdentityMetadata"`)
-    await queryRunner.query(`ALTER TABLE "temporary_IdentityMetadata" RENAME TO "IdentityMetadata"`)
-    await queryRunner.query(
-      `CREATE TABLE "temporary_Identity" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255) NOT NULL, "roles" text, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "contactId" varchar, CONSTRAINT "UQ_Alias" UNIQUE ("alias"), CONSTRAINT "FK_Identity_contactId" FOREIGN KEY ("contactId") REFERENCES "Contact" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
+        `CREATE INDEX "IDX_BaseLocaleBranding_type" ON "BaseLocaleBranding" ("type")`
     )
     await queryRunner.query(
-      `INSERT INTO "temporary_Identity"("id", "alias", "roles", "created_at", "last_updated_at", "contactId") SELECT "id", "alias", "roles", "created_at", "last_updated_at", "contactId" FROM "Identity"`
+        `CREATE TABLE "CredentialBranding" ("id" varchar PRIMARY KEY NOT NULL, "vcHash" varchar(255) NOT NULL, "issuerCorrelationId" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), CONSTRAINT "UQ_vcHash" UNIQUE ("vcHash"))`
     )
-    await queryRunner.query(`DROP TABLE "Identity"`)
-    await queryRunner.query(`ALTER TABLE "temporary_Identity" RENAME TO "Identity"`)
     await queryRunner.query(
-      `CREATE TABLE "temporary_Connection" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('OIDC','SIOPv2','SIOPv2+OpenID4VP') ) NOT NULL, "identityId" varchar, CONSTRAINT "REL_Connection_identityId" UNIQUE ("identityId"), CONSTRAINT "FK_Connection_identityId" FOREIGN KEY ("identityId") REFERENCES "Identity" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
+        `CREATE INDEX "IDX_CredentialBrandingEntity_issuerCorrelationId" ON "CredentialBranding" ("issuerCorrelationId")`
     )
-    await queryRunner.query(`INSERT INTO "temporary_Connection"("id", "type", "identityId") SELECT "id", "type", "identityId" FROM "Connection"`)
-    await queryRunner.query(`DROP TABLE "Connection"`)
-    await queryRunner.query(`ALTER TABLE "temporary_Connection" RENAME TO "Connection"`)
+    await queryRunner.query(
+        `CREATE INDEX "IDX_CredentialBrandingEntity_vcHash" ON "CredentialBranding" ("vcHash")`
+    )
+    await queryRunner.query(
+        `CREATE TABLE "IssuerBranding" ("id" varchar PRIMARY KEY NOT NULL, "issuerCorrelationId" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), CONSTRAINT "UQ_issuerCorrelationId" UNIQUE ("issuerCorrelationId"))`
+    )
+    await queryRunner.query(
+        `CREATE INDEX "IDX_IssuerBrandingEntity_issuerCorrelationId" ON "IssuerBranding" ("issuerCorrelationId")`
+    )
+    await queryRunner.query(
+        `CREATE TABLE "temporary_ImageAttributes" ("id" varchar PRIMARY KEY NOT NULL, "uri" varchar(255), "base64Content " varchar(255), "type" varchar(255), "alt" varchar(255), "dimensionsId" varchar, CONSTRAINT "UQ_dimensionsId" UNIQUE ("dimensionsId"), CONSTRAINT "FK_ImageAttributes_dimensionsId" FOREIGN KEY ("dimensionsId") REFERENCES "ImageDimensions" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
+    )
+    await queryRunner.query(
+        `INSERT INTO "temporary_ImageAttributes"("id", "uri", "base64Content ", "type", "alt", "dimensionsId") SELECT "id", "uri", "base64Content ", "type", "alt", "dimensionsId" FROM "ImageAttributes"`
+    )
+    await queryRunner.query(
+        `DROP TABLE "ImageAttributes"`
+    )
+    await queryRunner.query(
+        `ALTER TABLE "temporary_ImageAttributes" RENAME TO "ImageAttributes"`
+    )
+    await queryRunner.query(
+        `CREATE TABLE "temporary_BackgroundAttributes" ("id" varchar PRIMARY KEY NOT NULL, "color" varchar(255), "imageId" varchar, CONSTRAINT "UQ_imageId" UNIQUE ("imageId"), CONSTRAINT "FK_BackgroundAttributes_imageId" FOREIGN KEY ("imageId") REFERENCES "ImageAttributes" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
+    )
+    await queryRunner.query(
+        `INSERT INTO "temporary_BackgroundAttributes"("id", "color", "imageId") SELECT "id", "color", "imageId" FROM "BackgroundAttributes"`
+    )
+    await queryRunner.query(
+        `DROP TABLE "BackgroundAttributes"`
+    )
+    await queryRunner.query(
+        `ALTER TABLE "temporary_BackgroundAttributes" RENAME TO "BackgroundAttributes"`
+    )
+    await queryRunner.query(
+        `DROP INDEX "IDX_CredentialLocaleBrandingEntity_credentialBranding_locale"`
+    )
+    await queryRunner.query(
+        `DROP INDEX "IDX_IssuerLocaleBrandingEntity_issuerBranding_locale"`
+    )
+    await queryRunner.query(
+        `DROP INDEX "IDX_BaseLocaleBranding_type"`
+    )
+    await queryRunner.query(
+        `CREATE TABLE "temporary_BaseLocaleBranding" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255), "locale" varchar(255) NOT NULL, "description" varchar(255), "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "credentialBrandingId" varchar, "issuerBrandingId" varchar, "type" varchar NOT NULL, "logoId" varchar, "backgroundId" varchar, "textId" varchar, CONSTRAINT "UQ_logoId" UNIQUE ("logoId"), CONSTRAINT "UQ_backgroundId" UNIQUE ("backgroundId"), CONSTRAINT "UQ_textId" UNIQUE ("textId"), CONSTRAINT "FK_BaseLocaleBranding_logoId" FOREIGN KEY ("logoId") REFERENCES "ImageAttributes" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_BaseLocaleBranding_backgroundId" FOREIGN KEY ("backgroundId") REFERENCES "BackgroundAttributes" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_BaseLocaleBranding_textId" FOREIGN KEY ("textId") REFERENCES "TextAttributes" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_BaseLocaleBranding_credentialBrandingId" FOREIGN KEY ("credentialBrandingId") REFERENCES "CredentialBranding" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_BaseLocaleBranding_issuerBrandingId" FOREIGN KEY ("issuerBrandingId") REFERENCES "IssuerBranding" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
+    )
+    await queryRunner.query(
+        `INSERT INTO "temporary_BaseLocaleBranding"("id", "alias", "locale", "description", "created_at", "last_updated_at", "credentialBrandingId", "issuerBrandingId", "type", "logoId", "backgroundId", "textId") SELECT "id", "alias", "locale", "description", "created_at", "last_updated_at", "credentialBrandingId", "issuerBrandingId", "type", "logoId", "backgroundId", "textId" FROM "BaseLocaleBranding"`
+    )
+    await queryRunner.query(
+        `DROP TABLE "BaseLocaleBranding"`
+    )
+    await queryRunner.query(
+        `ALTER TABLE "temporary_BaseLocaleBranding" RENAME TO "BaseLocaleBranding"`
+    )
+    await queryRunner.query(
+        `CREATE UNIQUE INDEX "IDX_CredentialLocaleBrandingEntity_credentialBranding_locale" ON "BaseLocaleBranding" ("credentialBrandingId", "locale")`
+    )
+    await queryRunner.query(
+        `CREATE UNIQUE INDEX "IDX_IssuerLocaleBrandingEntity_issuerBranding_locale" ON "BaseLocaleBranding" ("issuerBrandingId", "locale")`
+    )
+    await queryRunner.query(
+        `CREATE INDEX "IDX_BaseLocaleBranding_type" ON "BaseLocaleBranding" ("type")`
+    )
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`ALTER TABLE "Connection" RENAME TO "temporary_Connection"`)
-    await queryRunner.query(
-      `CREATE TABLE "Connection" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('OIDC','SIOPv2','SIOPv2+OpenID4VP') ) NOT NULL, "identityId" varchar, CONSTRAINT "REL_Connection_identityId" UNIQUE ("identityId"))`
-    )
-    await queryRunner.query(`INSERT INTO "Connection"("id", "type", "identityId") SELECT "id", "type", "identityId" FROM "Connection"`)
-    await queryRunner.query(`DROP TABLE "temporary_Connection"`)
-
-    await queryRunner.query(`ALTER TABLE "Identity" RENAME TO "temporary_Identity"`)
-    await queryRunner.query(
-      `CREATE TABLE "Identity" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255) NOT NULL, "roles" text, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "contactId" varchar, CONSTRAINT "UQ_Alias" UNIQUE ("alias"))`
-    )
-    await queryRunner.query(
-      `INSERT INTO "Identity"("id", "alias", "roles","created_at", "last_updated_at", "contactId") SELECT "id", "alias", "roles","created_at", "last_updated_at", "contactId" FROM "Identity"`
-    )
-    await queryRunner.query(`DROP TABLE "temporary_Identity"`)
-
-    await queryRunner.query(`ALTER TABLE "IdentityMetadata" RENAME TO "temporary_IdentityMetadata"`)
-    await queryRunner.query(
-      `CREATE TABLE "IdentityMetadata" ("id" varchar PRIMARY KEY NOT NULL, "label" varchar(255) NOT NULL, "value" varchar(255) NOT NULL, "identityId" varchar)`
-    )
-    await queryRunner.query(
-      `INSERT INTO "IdentityMetadata"("id", "label", "value", "identityId") SELECT "id", "label", "value", "identityId" FROM "IdentityMetadata"`
-    )
-    await queryRunner.query(`DROP TABLE "temporary_IdentityMetadata"`)
-
-    await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" RENAME TO "temporary_CorrelationIdentifier"`)
-    await queryRunner.query(
-      `CREATE TABLE "CorrelationIdentifier" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('did','url') ) NOT NULL, "correlation_id" text NOT NULL, "identityId" varchar, CONSTRAINT "UQ_Correlation_id" UNIQUE ("correlation_id"), CONSTRAINT "REL_CorrelationIdentifier_identityId" UNIQUE ("identityId"))`
-    )
-    await queryRunner.query(
-      `INSERT INTO "CorrelationIdentifier"("id", "type", "correlation_id", "identityId") SELECT "id", "type", "correlation_id", "identityId" FROM "CorrelationIdentifier"`
-    )
-    await queryRunner.query(`DROP TABLE "temporary_CorrelationIdentifier"`)
-
-    await queryRunner.query(`DROP TABLE "Connection"`)
-    await queryRunner.query(`DROP TABLE "Identity"`)
-    await queryRunner.query(`DROP TABLE "IdentityMetadata"`)
-    await queryRunner.query(`DROP TABLE "Contact"`)
-    await queryRunner.query(`DROP TABLE "CorrelationIdentifier"`)
-    await queryRunner.query(`DROP INDEX "IDX_BaseConfigEntity_type"`)
-    await queryRunner.query(`DROP TABLE "BaseConfigEntity"`)
+      return
   }
 }

@@ -1,5 +1,5 @@
 import { DataSource, Repository } from 'typeorm'
-// import {DataStoreMigrations} from '../migrations';
+import { DataStoreMigrations } from '../migrations'
 import {
   IBasicCredentialBranding,
   IBasicIssuerBranding,
@@ -23,14 +23,14 @@ describe('Database entities tests', (): void => {
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',
-      logging: 'all',
+      //logging: 'all',
       migrationsRun: false,
-      // migrations: DataStoreMigrations,
-      synchronize: true, //false
+      migrations: DataStoreMigrations,
+      synchronize: false,
       entities: DataStoreIssuanceBrandingEntities,
     }).initialize()
-    //await dbConnection.runMigrations()
-    //expect(await dbConnection.showMigrations()).toBeFalsy()
+    await dbConnection.runMigrations()
+    expect(await dbConnection.showMigrations()).toBeFalsy()
   })
 
   afterEach(async (): Promise<void> => {

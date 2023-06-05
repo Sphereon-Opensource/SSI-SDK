@@ -4,20 +4,32 @@ constants:
   baseUrl: http://localhost:3335
   port: 3335
   methods:
-    - addCredentialBranding
-    - getCredentialBranding
-    - addIssuerBranding
-    - getIssuerBranding
+    - ibAddCredentialBranding
+    - ibGetCredentialBranding
+    - ibUpdateCredentialBranding
+    - ibRemoveCredentialBranding
+    - ibAddCredentialLocaleBranding
+    - ibGetCredentialLocaleBranding
+    - ibRemoveCredentialLocaleBranding
+    - ibUpdateCredentialLocaleBranding
+    - ibAddIssuerBranding
+    - ibGetIssuerBranding
+    - ibUpdateIssuerBranding
+    - ibRemoveIssuerBranding
+    - ibAddIssuerLocaleBranding
+    - ibGetIssuerLocaleBranding
+    - ibRemoveIssuerLocaleBranding
+    - ibUpdateIssuerLocaleBranding
 
 dbConnection:
   $require: typeorm?t=function#createConnection
   $args:
     - type: sqlite
       database: ':memory:'
-      synchronize: true # TODO false
-      migrationsRun: false # TODO false
-      #      migrations:
-      #        $require: './packages/data-store?t=object#DataStoreMigrations'
+      synchronize: false
+      migrationsRun: false
+      migrations:
+        $require: './packages/data-store?t=object#DataStoreMigrations'
       entities:
         $require: './packages/data-store?t=object#DataStoreIssuanceBrandingEntities'
 

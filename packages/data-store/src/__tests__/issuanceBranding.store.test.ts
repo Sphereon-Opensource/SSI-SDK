@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm'
 import { IssuanceBrandingStore } from '../issuanceBranding/IssuanceBrandingStore'
-//import { DataStoreMigrations } from '../migrations';
+import { DataStoreMigrations } from '../migrations'
 import {
   BackgroundAttributesEntity,
   CredentialLocaleBrandingEntity,
@@ -34,14 +34,14 @@ describe('Issuance branding store tests', (): void => {
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',
-      logging: 'all',
+      //logging: 'all',
       migrationsRun: false,
-      // migrations: DataStoreMigrations,
-      synchronize: true, //false
+      migrations: DataStoreMigrations,
+      synchronize: false,
       entities: DataStoreIssuanceBrandingEntities,
     }).initialize()
-    // await dbConnection.runMigrations()
-    // expect(await dbConnection.showMigrations()).toBeFalsy()
+    await dbConnection.runMigrations()
+    expect(await dbConnection.showMigrations()).toBeFalsy()
     issuanceBrandingStore = new IssuanceBrandingStore(dbConnection)
   })
 

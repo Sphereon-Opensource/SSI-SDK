@@ -20,10 +20,10 @@ dbConnection:
   $args:
     - type: sqlite
       database: ':memory:'
-      synchronize: true
-      #      migrationsRun: false
-      #      migrations:
-      #        $require: './packages/data-store?t=object#DataStoreMigrations'
+      synchronize: false
+      migrationsRun: false
+      migrations:
+        $require: './packages/data-store?t=object#DataStoreMigrations'
       entities:
         $require: './packages/data-store?t=object#DataStoreContactEntities'
 
