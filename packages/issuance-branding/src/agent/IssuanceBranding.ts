@@ -34,6 +34,7 @@ import {
   IRemoveCredentialLocaleBrandingArgs,
   IUpdateCredentialLocaleBrandingArgs,
   IUpdateIssuerLocaleBrandingArgs,
+  ICredentialBrandingFromArgs
 } from '../types/IIssuanceBranding'
 import Debug from 'debug'
 
@@ -53,6 +54,7 @@ export class IssuanceBranding implements IAgentPlugin {
     ibGetCredentialLocaleBranding: this.ibGetCredentialLocaleBranding.bind(this),
     ibRemoveCredentialLocaleBranding: this.ibRemoveCredentialLocaleBranding.bind(this),
     ibUpdateCredentialLocaleBranding: this.ibUpdateCredentialLocaleBranding.bind(this),
+    ibCredentialLocaleBrandingFrom: this.ibCredentialLocaleBrandingFrom.bind(this),
     ibAddIssuerBranding: this.ibAddIssuerBranding.bind(this),
     ibGetIssuerBranding: this.ibGetIssuerBranding.bind(this),
     ibUpdateIssuerBranding: this.ibUpdateIssuerBranding.bind(this),
@@ -60,7 +62,7 @@ export class IssuanceBranding implements IAgentPlugin {
     ibAddIssuerLocaleBranding: this.ibAddIssuerLocaleBranding.bind(this),
     ibGetIssuerLocaleBranding: this.ibAGetIssuerLocaleBranding.bind(this),
     ibRemoveIssuerLocaleBranding: this.ibRemoveIssuerLocaleBranding.bind(this),
-    ibUpdateIssuerLocaleBranding: this.ibUpdateIssuerLocaleBranding.bind(this),
+    ibUpdateIssuerLocaleBranding: this.ibUpdateIssuerLocaleBranding.bind(this)
   }
 
   private readonly store: AbstractIssuanceBrandingStore
@@ -224,6 +226,12 @@ export class IssuanceBranding implements IAgentPlugin {
     return this.store.updateIssuerLocaleBranding(updateIssuerLocaleBrandingArgs)
   }
 
+  /** {@inheritDoc IIssuanceBranding.ibCredentialLocaleBrandingFrom} */
+  private async ibCredentialLocaleBrandingFrom(args: ICredentialBrandingFromArgs, context: IRequiredContext): Promise<IBasicCredentialLocaleBranding> {
+    debug('get credential locale branding from', args)
+    return this.setAdditionalImageAttributes(args.localeBranding)
+  }
+
   private async setAdditionalImageAttributes(localeBranding: ILocaleBranding): Promise<ILocaleBranding> {
     return {
       ...localeBranding,
@@ -284,7 +292,7 @@ export class IssuanceBranding implements IAgentPlugin {
 
     return {
       type: imageType,
-      base64Content: resource.base64Content,
+      base64Content: `data:${imageType};base64,${resource.base64Content}`,
       dimensions,
     }
   }
@@ -310,4 +318,5 @@ export class IssuanceBranding implements IAgentPlugin {
 
     return matches[1]
   }
+
 }

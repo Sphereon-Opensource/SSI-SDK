@@ -149,12 +149,16 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(result).toBeDefined()
       expect(result.length).toEqual(1)
+      expect(result[0].createdAt).toBeDefined()
+      expect(result[0].lastUpdatedAt).toBeDefined()
       expect(result[0].localeBranding.length).toEqual(1)
       expect(result[0].localeBranding[0].logo?.dimensions).toBeDefined()
       expect(result[0].localeBranding[0].logo?.type).toBeDefined()
       expect(result[0].localeBranding[0].logo?.base64Content).toBeDefined()
       expect(result[0].localeBranding[0].background?.image?.dimensions).toBeDefined()
       expect(result[0].localeBranding[0].background?.image?.type).toBeDefined()
+      expect(result[0].localeBranding[0].createdAt).toBeDefined()
+      expect(result[0].localeBranding[0].lastUpdatedAt).toBeDefined()
     })
 
     it('should get no credential branding with no matching filter', async (): Promise<void> => {

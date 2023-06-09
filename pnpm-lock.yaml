@@ -286,8 +286,8 @@ importers:
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
-        version: link:../data-store
+        specifier: file://C:\ssi-sdk\packages\data-store\sphereon-ssi-sdk.data-store-0.113.0.tgz
+        version: file:packages/data-store/sphereon-ssi-sdk.data-store-0.113.0.tgz(ts-node@10.9.1)
       debug:
         specifier: ^4.3.4
         version: 4.3.4
@@ -19152,6 +19152,38 @@ packages:
       validator: 13.9.0
     optionalDependencies:
       commander: 9.5.0
+
+  file:packages/data-store/sphereon-ssi-sdk.data-store-0.113.0.tgz(ts-node@10.9.1):
+    resolution: {integrity: sha512-TxkPyYGPogKFZKXCVepFqovxMBhY+NxwgiyvgHhbVoCfVE8/lxHR43CaxIAWr3STtLeiJmnPx4x0aE6OS5IipQ==, tarball: file:packages/data-store/sphereon-ssi-sdk.data-store-0.113.0.tgz}
+    id: file:packages/data-store/sphereon-ssi-sdk.data-store-0.113.0.tgz
+    name: '@sphereon/ssi-sdk.data-store'
+    version: 0.113.0
+    dependencies:
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      class-validator: 0.14.0
+      debug: 4.3.4
+      typeorm: 0.3.12(sqlite3@5.1.6)(ts-node@10.9.1)
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+    dev: false
 
   github.com/uport-project/EcdsaSecp256k1RecoverySignature2020/ab0db52de6f4e6663ef271a48009ba26e688ef9b:
     resolution: {tarball: https://codeload.github.com/uport-project/EcdsaSecp256k1RecoverySignature2020/tar.gz/ab0db52de6f4e6663ef271a48009ba26e688ef9b}

@@ -12,6 +12,7 @@ constants:
     - ibGetCredentialLocaleBranding
     - ibRemoveCredentialLocaleBranding
     - ibUpdateCredentialLocaleBranding
+    - ibCredentialLocaleBrandingFrom
     - ibAddIssuerBranding
     - ibGetIssuerBranding
     - ibUpdateIssuerBranding

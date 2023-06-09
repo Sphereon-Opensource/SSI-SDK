@@ -12,7 +12,7 @@ import {
   ILocaleBranding as LocaleBranding,
   IBasicTextAttributes,
   ICredentialLocaleBranding as CredentialLocaleBranding,
-  IIssuerLocaleBranding as IssuerLocaleBranding,
+  IIssuerLocaleBranding as IssuerLocaleBranding, IBasicCredentialLocaleBranding
 } from '@sphereon/ssi-sdk.data-store'
 
 export interface IIssuanceBranding extends IPluginMethodMap {
@@ -24,6 +24,7 @@ export interface IIssuanceBranding extends IPluginMethodMap {
   ibGetCredentialLocaleBranding(args: IGetCredentialLocaleBrandingArgs): Promise<Array<CredentialLocaleBranding>>
   ibRemoveCredentialLocaleBranding(args: IRemoveCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<boolean>
   ibUpdateCredentialLocaleBranding(args: IUpdateCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<CredentialLocaleBranding>
+  ibCredentialLocaleBrandingFrom(args: ICredentialBrandingFromArgs, context: IRequiredContext): Promise<IBasicCredentialLocaleBranding>
   ibAddIssuerBranding(args: IAddIssuerBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
   ibGetIssuerBranding(args: IGetIssuerBrandingArgs): Promise<Array<IIssuerBranding>>
   ibUpdateIssuerBranding(args: IUpdateIssuerBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
@@ -124,6 +125,10 @@ export interface IUpdateCredentialLocaleBrandingArgs {
 
 export interface IUpdateIssuerLocaleBrandingArgs {
   localeBranding: Omit<LocaleBranding, 'createdAt' | 'lastUpdatedAt'>
+}
+
+export interface ICredentialBrandingFromArgs {
+  localeBranding: ICredentialLocaleBranding
 }
 
 export type IRequiredContext = IAgentContext<never>
