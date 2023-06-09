@@ -13,7 +13,7 @@ export interface ILocaleBranding {
 export interface IImageAttributes {
   id: string
   uri?: string
-  base64Content?: string
+  dataUri?: string
   mediaType?: string
   alt?: string
   dimensions?: IImageDimensions

@@ -252,7 +252,7 @@ export class IssuanceBranding implements IAgentPlugin {
               }
             : {
                 mediaType: undefined,
-                base64Content: undefined,
+                dataUri: undefined,
                 dimensions: undefined,
               }),
         },
@@ -269,7 +269,7 @@ export class IssuanceBranding implements IAgentPlugin {
                   }
                 : {
                     mediaType: undefined,
-                    base64Content: undefined,
+                    dataUri: undefined,
                     dimensions: undefined,
                   }),
             },
@@ -300,7 +300,7 @@ export class IssuanceBranding implements IAgentPlugin {
 
     return {
       mediaType,
-      base64Content: `data:${mediaType};base64,${resource.base64Content}`,
+      dataUri: `data:${mediaType};base64,${resource.base64Content}`,
       dimensions,
     }
   }

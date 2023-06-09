@@ -57,11 +57,11 @@ export interface IBackgroundAttributes extends Omit<IBasicBackgroundAttributes, 
   image?: IImageAttributes
 }
 
-export interface IImageAttributes extends Omit<IBasicImageAttributes, 'type' | 'base64Content' | 'dimensions'> {}
+export interface IImageAttributes extends Omit<IBasicImageAttributes, 'type' | 'dataUri' | 'dimensions'> {}
 
 export interface IAdditionalImageAttributes {
   mediaType?: string
-  base64Content?: string
+  dataUri?: string
   dimensions: IBasicImageDimensions
 }
 
