@@ -491,6 +491,10 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
       return obj.map((value) => this.replaceNullWithUndefined(value))
     }
 
+    if (obj instanceof Date) {
+      return obj;
+    }
+
     const result: any = {}
     for (const key in obj) {
       if (obj.hasOwnProperty(key)) {

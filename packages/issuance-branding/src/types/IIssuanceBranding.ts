@@ -14,7 +14,7 @@ import {
   ICredentialLocaleBranding as CredentialLocaleBranding,
   IIssuerLocaleBranding as IssuerLocaleBranding,
   IBasicCredentialLocaleBranding,
-  IBasicIssuerLocaleBranding
+  IBasicIssuerLocaleBranding,
 } from '@sphereon/ssi-sdk.data-store'
 
 export interface IIssuanceBranding extends IPluginMethodMap {
@@ -45,19 +45,19 @@ export interface IGetCredentialBrandingArgs {
 export interface ILocaleBranding {
   alias?: string
   locale?: string
-  logo?: IImageAttributes
+  logo?: IBasicImageAttributes //IImageAttributes
   description?: string
   text?: IBasicTextAttributes
-  background?: IBackgroundAttributes
+  background?: IBasicBackgroundAttributes //IBackgroundAttributes
 }
 export interface ICredentialLocaleBranding extends ILocaleBranding {}
 export interface IIssuerLocaleBranding extends ILocaleBranding {}
 
-export interface IBackgroundAttributes extends Omit<IBasicBackgroundAttributes, 'image'> {
-  image?: IImageAttributes
-}
+// export interface IBackgroundAttributes extends Omit<IBasicBackgroundAttributes, 'image'> {
+//   image?: IImageAttributes
+// }
 
-export interface IImageAttributes extends Omit<IBasicImageAttributes, 'type' | 'dataUri' | 'dimensions'> {}
+// export interface IImageAttributes extends Omit<IBasicImageAttributes, 'mediaType' | 'dataUri' | 'dimensions'> {}
 
 export interface IAdditionalImageAttributes {
   mediaType?: string

@@ -5,6 +5,7 @@ import {
   IAddIssuerBrandingArgs,
   IBasicCredentialBranding,
   IBasicCredentialLocaleBranding,
+  IBasicImageAttributes,
   IBasicIssuerBranding,
   IBasicIssuerLocaleBranding,
   ICredentialBranding,
@@ -35,7 +36,7 @@ import {
   IUpdateCredentialLocaleBrandingArgs,
   IUpdateIssuerLocaleBrandingArgs,
   ICredentialBrandingFromArgs,
-  IIssuerBrandingFromArgs
+  IIssuerBrandingFromArgs,
 } from '../types/IIssuanceBranding'
 import Debug from 'debug'
 
@@ -76,10 +77,11 @@ export class IssuanceBranding implements IAgentPlugin {
   /** {@inheritDoc IIssuanceBranding.ibAddCredentialBranding} */
   private async ibAddCredentialBranding(args: IAddCredentialBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding> {
     const localeBranding: Array<IBasicIssuerLocaleBranding> = await Promise.all(
-      args.localeBranding.map(
-        (localeBranding: ILocaleBranding): Promise<IBasicCredentialLocaleBranding> => this.setAdditionalImageAttributes(localeBranding)
+      args.localeBranding.map((localeBranding: ILocaleBranding): IBasicCredentialLocaleBranding | Promise<IBasicCredentialLocaleBranding> =>
+        this.setAdditionalImageAttributes(localeBranding)
       )
     )
+
     const credentialBranding: IBasicCredentialBranding = {
       ...args,
       localeBranding,
@@ -153,7 +155,10 @@ export class IssuanceBranding implements IAgentPlugin {
   }
 
   /** {@inheritDoc IIssuanceBranding.ibCredentialLocaleBrandingFrom} */
-  private async ibCredentialLocaleBrandingFrom(args: ICredentialBrandingFromArgs, context: IRequiredContext): Promise<IBasicCredentialLocaleBranding> {
+  private async ibCredentialLocaleBrandingFrom(
+    args: ICredentialBrandingFromArgs,
+    context: IRequiredContext
+  ): Promise<IBasicCredentialLocaleBranding> {
     debug('get credential locale branding from', args)
     return this.setAdditionalImageAttributes(args.localeBranding)
   }
@@ -248,7 +253,7 @@ export class IssuanceBranding implements IAgentPlugin {
           ...localeBranding.logo,
           ...(localeBranding.logo.uri
             ? {
-                ...(await this.getAdditionalImageAttributes(localeBranding.logo.uri)),
+                ...(await this.getAdditionalImageAttributes(localeBranding.logo)),
               }
             : {
                 mediaType: undefined,
@@ -265,7 +270,7 @@ export class IssuanceBranding implements IAgentPlugin {
               ...localeBranding.background.image,
               ...(localeBranding.background.image.uri
                 ? {
-                    ...(await this.getAdditionalImageAttributes(localeBranding.background.image.uri)),
+                    ...(await this.getAdditionalImageAttributes(localeBranding.background.image)),
                   }
                 : {
                     mediaType: undefined,
@@ -279,13 +284,17 @@ export class IssuanceBranding implements IAgentPlugin {
     }
   }
 
-  private async getAdditionalImageAttributes(uri: string): Promise<IAdditionalImageAttributes> {
+  private async getAdditionalImageAttributes(image: IBasicImageAttributes): Promise<IAdditionalImageAttributes> {
+    if (!image.uri) {
+      return Promise.reject(Error('Image has no uri'))
+    }
+
     const data_uri_regex: RegExp = /^data:image\/[^;]+;base64,/
-    if (data_uri_regex.test(uri)) {
-      debug('Setting additional image properties for uri', uri)
-      const base64Content: string = await this.extractBase64FromDataURI(uri)
-      const dimensions: IImageDimensions = await getImageDimensions(base64Content)
-      const mediaType: string = await this.getDataTypeFromDataURI(uri)
+    if (data_uri_regex.test(image.uri)) {
+      debug('Setting additional image properties for uri', image.uri)
+      const base64Content: string = await this.extractBase64FromDataURI(image.uri)
+      const dimensions: IImageDimensions = image.dimensions || (await getImageDimensions(base64Content))
+      const mediaType: string = image.mediaType || (await this.getDataTypeFromDataURI(image.uri))
 
       return {
         mediaType,
@@ -293,14 +302,18 @@ export class IssuanceBranding implements IAgentPlugin {
       }
     }
 
-    debug('Setting additional image properties for url', uri)
-    const resource: IImageResource = await downloadImage(uri)
-    const dimensions: IImageDimensions = await getImageDimensions(resource.base64Content)
-    const mediaType: string | undefined = resource.contentType || (await getImageMediaType(resource.base64Content))
+    debug('Setting additional image properties for url', image.uri)
+    const resource: IImageResource | undefined = !image.dataUri ? await downloadImage(image.uri) : undefined
+    const dimensions: IImageDimensions =
+      image.dimensions || (await getImageDimensions(resource?.base64Content || (await this.extractBase64FromDataURI(image.dataUri!))))
+    const mediaType: string | undefined =
+      image.mediaType ||
+      resource?.contentType ||
+      (resource?.base64Content ? await getImageMediaType(resource?.base64Content!) : await this.getDataTypeFromDataURI(image.uri))
 
     return {
       mediaType,
-      dataUri: `data:${mediaType};base64,${resource.base64Content}`,
+      dataUri: image.dataUri || `data:${mediaType};base64,${resource!.base64Content}`,
       dimensions,
     }
   }
@@ -326,5 +339,4 @@ export class IssuanceBranding implements IAgentPlugin {
 
     return matches[1]
   }
-
 }
