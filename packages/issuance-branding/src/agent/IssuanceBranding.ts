@@ -15,14 +15,13 @@ import {
   IGetIssuerBrandingArgs,
   IIssuerBranding,
   IIssuerLocaleBranding,
-  ILocaleBranding as LocaleBranding,
+  ILocaleBranding,
 } from '@sphereon/ssi-sdk.data-store'
 import { schema } from '../index'
 import {
   IAddCredentialBrandingArgs,
   IAdditionalImageAttributes,
   IIssuanceBranding,
-  ILocaleBranding,
   IRequiredContext,
   IRemoveCredentialBrandingArgs,
   IRemoveIssuerBrandingArgs,
@@ -77,8 +76,9 @@ export class IssuanceBranding implements IAgentPlugin {
   /** {@inheritDoc IIssuanceBranding.ibAddCredentialBranding} */
   private async ibAddCredentialBranding(args: IAddCredentialBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding> {
     const localeBranding: Array<IBasicIssuerLocaleBranding> = await Promise.all(
-      args.localeBranding.map((localeBranding: ILocaleBranding): IBasicCredentialLocaleBranding | Promise<IBasicCredentialLocaleBranding> =>
-        this.setAdditionalImageAttributes(localeBranding)
+      args.localeBranding.map(
+        (localeBranding: IBasicCredentialLocaleBranding): IBasicCredentialLocaleBranding | Promise<IBasicCredentialLocaleBranding> =>
+          this.setAdditionalImageAttributes(localeBranding)
       )
     )
 
@@ -111,9 +111,9 @@ export class IssuanceBranding implements IAgentPlugin {
 
   /** {@inheritDoc IIssuanceBranding.ibAddCredentialLocaleBranding} */
   private async ibAddCredentialLocaleBranding(args: IAddCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding> {
-    const localeBranding: Array<ILocaleBranding> = await Promise.all(
+    const localeBranding: Array<IBasicCredentialLocaleBranding> = await Promise.all(
       args.localeBranding.map(
-        (localeBranding: ILocaleBranding): Promise<IBasicCredentialLocaleBranding> => this.setAdditionalImageAttributes(localeBranding)
+        (localeBranding: IBasicCredentialLocaleBranding): Promise<IBasicCredentialLocaleBranding> => this.setAdditionalImageAttributes(localeBranding)
       )
     )
     const addCredentialLocaleBrandingArgs: IAddCredentialLocaleBrandingArgs = {
@@ -142,7 +142,7 @@ export class IssuanceBranding implements IAgentPlugin {
     args: IUpdateCredentialLocaleBrandingArgs,
     context: IRequiredContext
   ): Promise<ICredentialLocaleBranding> {
-    const localeBranding: Omit<LocaleBranding, 'createdAt' | 'lastUpdatedAt'> = (await this.setAdditionalImageAttributes(
+    const localeBranding: Omit<ILocaleBranding, 'createdAt' | 'lastUpdatedAt'> = (await this.setAdditionalImageAttributes(
       args.localeBranding
     )) as ICredentialLocaleBranding
     const updateCredentialLocaleBrandingArgs: IUpdateCredentialLocaleBrandingArgs = {
@@ -167,7 +167,7 @@ export class IssuanceBranding implements IAgentPlugin {
   private async ibAddIssuerBranding(args: IAddIssuerBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding> {
     const localeBranding: Array<IBasicIssuerLocaleBranding> = await Promise.all(
       args.localeBranding.map(
-        (localeBranding: ILocaleBranding): Promise<IBasicIssuerLocaleBranding> => this.setAdditionalImageAttributes(localeBranding)
+        (localeBranding: IBasicIssuerLocaleBranding): Promise<IBasicIssuerLocaleBranding> => this.setAdditionalImageAttributes(localeBranding)
       )
     )
     const issuerBranding: IBasicIssuerBranding = {
@@ -199,9 +199,9 @@ export class IssuanceBranding implements IAgentPlugin {
 
   /** {@inheritDoc IIssuanceBranding.ibAddIssuerLocaleBranding} */
   private async ibAddIssuerLocaleBranding(args: IAddIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding> {
-    const localeBranding: Array<ILocaleBranding> = await Promise.all(
+    const localeBranding: Array<IBasicIssuerLocaleBranding> = await Promise.all(
       args.localeBranding.map(
-        (localeBranding: ILocaleBranding): Promise<IBasicIssuerLocaleBranding> => this.setAdditionalImageAttributes(localeBranding)
+        (localeBranding: IBasicIssuerLocaleBranding): Promise<IBasicIssuerLocaleBranding> => this.setAdditionalImageAttributes(localeBranding)
       )
     )
     const addIssuerLocaleBrandingArgs: IAddIssuerLocaleBrandingArgs = {
@@ -227,7 +227,7 @@ export class IssuanceBranding implements IAgentPlugin {
 
   /** {@inheritDoc IIssuanceBranding.ibUpdateIssuerLocaleBranding} */
   private async ibUpdateIssuerLocaleBranding(args: IUpdateIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<IIssuerLocaleBranding> {
-    const localeBranding: Omit<LocaleBranding, 'createdAt' | 'lastUpdatedAt'> = (await this.setAdditionalImageAttributes(
+    const localeBranding: Omit<ILocaleBranding, 'createdAt' | 'lastUpdatedAt'> = (await this.setAdditionalImageAttributes(
       args.localeBranding
     )) as IIssuerLocaleBranding
     const updateIssuerLocaleBrandingArgs: IUpdateIssuerLocaleBrandingArgs = {
@@ -245,7 +245,9 @@ export class IssuanceBranding implements IAgentPlugin {
     return this.setAdditionalImageAttributes(args.localeBranding)
   }
 
-  private async setAdditionalImageAttributes(localeBranding: ILocaleBranding): Promise<ILocaleBranding> {
+  private async setAdditionalImageAttributes(
+    localeBranding: IBasicIssuerLocaleBranding | IBasicCredentialLocaleBranding
+  ): Promise<IBasicIssuerLocaleBranding | IBasicCredentialLocaleBranding> {
     return {
       ...localeBranding,
       ...(localeBranding.logo && {

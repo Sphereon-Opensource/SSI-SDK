@@ -2,15 +2,12 @@ import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import {
   ICredentialBranding,
   IIssuerBranding,
-  IBasicBackgroundAttributes,
-  IBasicImageAttributes,
   IBasicImageDimensions,
   FindCredentialBrandingArgs,
   FindIssuerBrandingArgs,
   FindCredentialLocaleBrandingArgs,
   FindIssuerLocaleBrandingArgs,
   ILocaleBranding as LocaleBranding,
-  IBasicTextAttributes,
   ICredentialLocaleBranding as CredentialLocaleBranding,
   IIssuerLocaleBranding as IssuerLocaleBranding,
   IBasicCredentialLocaleBranding,
@@ -42,23 +39,6 @@ export interface IGetCredentialBrandingArgs {
   filter?: FindCredentialBrandingArgs
 }
 
-export interface ILocaleBranding {
-  alias?: string
-  locale?: string
-  logo?: IBasicImageAttributes //IImageAttributes
-  description?: string
-  text?: IBasicTextAttributes
-  background?: IBasicBackgroundAttributes //IBackgroundAttributes
-}
-export interface ICredentialLocaleBranding extends ILocaleBranding {}
-export interface IIssuerLocaleBranding extends ILocaleBranding {}
-
-// export interface IBackgroundAttributes extends Omit<IBasicBackgroundAttributes, 'image'> {
-//   image?: IImageAttributes
-// }
-
-// export interface IImageAttributes extends Omit<IBasicImageAttributes, 'mediaType' | 'dataUri' | 'dimensions'> {}
-
 export interface IAdditionalImageAttributes {
   mediaType?: string
   dataUri?: string
@@ -83,7 +63,7 @@ export interface IRemoveIssuerBrandingArgs {
 
 export interface IAddIssuerBrandingArgs {
   issuerCorrelationId: string
-  localeBranding: Array<IIssuerLocaleBranding>
+  localeBranding: Array<IBasicIssuerLocaleBranding>
 }
 
 export interface IGetIssuerBrandingArgs {
@@ -93,17 +73,17 @@ export interface IGetIssuerBrandingArgs {
 export interface IAddCredentialBrandingArgs {
   issuerCorrelationId: string
   vcHash: string
-  localeBranding: Array<ICredentialLocaleBranding>
+  localeBranding: Array<IBasicCredentialLocaleBranding>
 }
 
 export interface IAddCredentialLocaleBrandingArgs {
   credentialBrandingId: string
-  localeBranding: Array<ICredentialLocaleBranding>
+  localeBranding: Array<IBasicCredentialLocaleBranding>
 }
 
 export interface IAddIssuerLocaleBrandingArgs {
   issuerBrandingId: string
-  localeBranding: Array<IIssuerLocaleBranding>
+  localeBranding: Array<IBasicIssuerLocaleBranding>
 }
 
 export interface IGetCredentialLocaleBrandingArgs {
@@ -131,11 +111,11 @@ export interface IUpdateIssuerLocaleBrandingArgs {
 }
 
 export interface ICredentialBrandingFromArgs {
-  localeBranding: ICredentialLocaleBranding
+  localeBranding: IBasicCredentialLocaleBranding
 }
 
 export interface IIssuerBrandingFromArgs {
-  localeBranding: IIssuerLocaleBranding
+  localeBranding: IBasicIssuerLocaleBranding
 }
 
 export type IRequiredContext = IAgentContext<never>

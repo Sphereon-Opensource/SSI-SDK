@@ -492,7 +492,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     }
 
     if (obj instanceof Date) {
-      return obj;
+      return obj
     }
 
     const result: any = {}
