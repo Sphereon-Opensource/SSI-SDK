@@ -7,9 +7,9 @@ import {
   FindIssuerBrandingArgs,
   FindCredentialLocaleBrandingArgs,
   FindIssuerLocaleBrandingArgs,
-  ILocaleBranding as LocaleBranding,
-  ICredentialLocaleBranding as CredentialLocaleBranding,
-  IIssuerLocaleBranding as IssuerLocaleBranding,
+  ILocaleBranding,
+  ICredentialLocaleBranding,
+  IIssuerLocaleBranding,
   IBasicCredentialLocaleBranding,
   IBasicIssuerLocaleBranding,
 } from '@sphereon/ssi-sdk.data-store'
@@ -20,18 +20,18 @@ export interface IIssuanceBranding extends IPluginMethodMap {
   ibUpdateCredentialBranding(args: IUpdateCredentialBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding>
   ibRemoveCredentialBranding(args: IRemoveCredentialBrandingArgs, context: IRequiredContext): Promise<boolean>
   ibAddCredentialLocaleBranding(args: IAddCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding>
-  ibGetCredentialLocaleBranding(args: IGetCredentialLocaleBrandingArgs): Promise<Array<CredentialLocaleBranding>>
+  ibGetCredentialLocaleBranding(args: IGetCredentialLocaleBrandingArgs): Promise<Array<ICredentialLocaleBranding>>
   ibRemoveCredentialLocaleBranding(args: IRemoveCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<boolean>
-  ibUpdateCredentialLocaleBranding(args: IUpdateCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<CredentialLocaleBranding>
+  ibUpdateCredentialLocaleBranding(args: IUpdateCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<ICredentialLocaleBranding>
   ibCredentialLocaleBrandingFrom(args: ICredentialBrandingFromArgs, context: IRequiredContext): Promise<IBasicCredentialLocaleBranding>
   ibAddIssuerBranding(args: IAddIssuerBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
   ibGetIssuerBranding(args: IGetIssuerBrandingArgs): Promise<Array<IIssuerBranding>>
   ibUpdateIssuerBranding(args: IUpdateIssuerBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
   ibRemoveIssuerBranding(args: IRemoveIssuerBrandingArgs, context: IRequiredContext): Promise<boolean>
   ibAddIssuerLocaleBranding(args: IAddIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
-  ibGetIssuerLocaleBranding(args: IGetIssuerLocaleBrandingArgs): Promise<Array<IssuerLocaleBranding>>
+  ibGetIssuerLocaleBranding(args: IGetIssuerLocaleBrandingArgs): Promise<Array<IIssuerLocaleBranding>>
   ibRemoveIssuerLocaleBranding(args: IRemoveIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<boolean>
-  ibUpdateIssuerLocaleBranding(args: IUpdateIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<IssuerLocaleBranding>
+  ibUpdateIssuerLocaleBranding(args: IUpdateIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<IIssuerLocaleBranding>
   ibIssuerLocaleBrandingFrom(args: IIssuerBrandingFromArgs, context: IRequiredContext): Promise<IBasicIssuerLocaleBranding>
 }
 
@@ -103,11 +103,11 @@ export interface IRemoveIssuerLocaleBrandingArgs {
 }
 
 export interface IUpdateCredentialLocaleBrandingArgs {
-  localeBranding: Omit<LocaleBranding, 'createdAt' | 'lastUpdatedAt'>
+  localeBranding: Omit<ILocaleBranding, 'createdAt' | 'lastUpdatedAt'>
 }
 
 export interface IUpdateIssuerLocaleBrandingArgs {
-  localeBranding: Omit<LocaleBranding, 'createdAt' | 'lastUpdatedAt'>
+  localeBranding: Omit<ILocaleBranding, 'createdAt' | 'lastUpdatedAt'>
 }
 
 export interface ICredentialBrandingFromArgs {
