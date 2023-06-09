@@ -21,6 +21,7 @@ constants:
     - ibGetIssuerLocaleBranding
     - ibRemoveIssuerLocaleBranding
     - ibUpdateIssuerLocaleBranding
+    - ibIssuerLocaleBrandingFrom
 
 dbConnection:
   $require: typeorm?t=function#createConnection

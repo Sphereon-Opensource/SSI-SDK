@@ -34,7 +34,8 @@ import {
   IRemoveCredentialLocaleBrandingArgs,
   IUpdateCredentialLocaleBrandingArgs,
   IUpdateIssuerLocaleBrandingArgs,
-  ICredentialBrandingFromArgs
+  ICredentialBrandingFromArgs,
+  IIssuerBrandingFromArgs
 } from '../types/IIssuanceBranding'
 import Debug from 'debug'
 
@@ -62,7 +63,8 @@ export class IssuanceBranding implements IAgentPlugin {
     ibAddIssuerLocaleBranding: this.ibAddIssuerLocaleBranding.bind(this),
     ibGetIssuerLocaleBranding: this.ibAGetIssuerLocaleBranding.bind(this),
     ibRemoveIssuerLocaleBranding: this.ibRemoveIssuerLocaleBranding.bind(this),
-    ibUpdateIssuerLocaleBranding: this.ibUpdateIssuerLocaleBranding.bind(this)
+    ibUpdateIssuerLocaleBranding: this.ibUpdateIssuerLocaleBranding.bind(this),
+    ibIssuerLocaleBrandingFrom: this.ibIssuerLocaleBrandingFrom.bind(this),
   }
 
   private readonly store: AbstractIssuanceBrandingStore
@@ -150,6 +152,12 @@ export class IssuanceBranding implements IAgentPlugin {
     return this.store.updateCredentialLocaleBranding(updateCredentialLocaleBrandingArgs)
   }
 
+  /** {@inheritDoc IIssuanceBranding.ibCredentialLocaleBrandingFrom} */
+  private async ibCredentialLocaleBrandingFrom(args: ICredentialBrandingFromArgs, context: IRequiredContext): Promise<IBasicCredentialLocaleBranding> {
+    debug('get credential locale branding from', args)
+    return this.setAdditionalImageAttributes(args.localeBranding)
+  }
+
   /** {@inheritDoc IIssuanceBranding.ibAddIssuerBranding} */
   private async ibAddIssuerBranding(args: IAddIssuerBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding> {
     const localeBranding: Array<IBasicIssuerLocaleBranding> = await Promise.all(
@@ -226,9 +234,9 @@ export class IssuanceBranding implements IAgentPlugin {
     return this.store.updateIssuerLocaleBranding(updateIssuerLocaleBrandingArgs)
   }
 
-  /** {@inheritDoc IIssuanceBranding.ibCredentialLocaleBrandingFrom} */
-  private async ibCredentialLocaleBrandingFrom(args: ICredentialBrandingFromArgs, context: IRequiredContext): Promise<IBasicCredentialLocaleBranding> {
-    debug('get credential locale branding from', args)
+  /** {@inheritDoc IIssuanceBranding.ibIssuerLocaleBrandingFrom} */
+  private async ibIssuerLocaleBrandingFrom(args: IIssuerBrandingFromArgs, context: IRequiredContext): Promise<IBasicIssuerLocaleBranding> {
+    debug('get issuer locale branding from', args)
     return this.setAdditionalImageAttributes(args.localeBranding)
   }
 
