@@ -14,7 +14,7 @@ export interface IImageAttributes {
   id: string
   uri?: string
   base64Content?: string
-  type?: string
+  mediaType?: string
   alt?: string
   dimensions?: IImageDimensions
 }

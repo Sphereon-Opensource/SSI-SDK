@@ -6,7 +6,7 @@ export class CreateIssuanceBranding1685628973231 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`CREATE TABLE "ImageDimensions" ("id" varchar PRIMARY KEY NOT NULL, "width" integer NOT NULL, "height" integer NOT NULL)`)
     await queryRunner.query(
-      `CREATE TABLE "ImageAttributes" ("id" varchar PRIMARY KEY NOT NULL, "uri" varchar(255), "base64Content " varchar(255), "type" varchar(255), "alt" varchar(255), "dimensionsId" varchar, CONSTRAINT "UQ_dimensionsId" UNIQUE ("dimensionsId"))`
+      `CREATE TABLE "ImageAttributes" ("id" varchar PRIMARY KEY NOT NULL, "uri" varchar(255), "base64Content " varchar(255), "mediaType" varchar(255), "alt" varchar(255), "dimensionsId" varchar, CONSTRAINT "UQ_dimensionsId" UNIQUE ("dimensionsId"))`
     )
     await queryRunner.query(
       `CREATE TABLE "BackgroundAttributes" ("id" varchar PRIMARY KEY NOT NULL, "color" varchar(255), "imageId" varchar, CONSTRAINT "UQ_imageId" UNIQUE ("imageId"))`
@@ -32,10 +32,10 @@ export class CreateIssuanceBranding1685628973231 implements MigrationInterface {
     )
     await queryRunner.query(`CREATE INDEX "IDX_IssuerBrandingEntity_issuerCorrelationId" ON "IssuerBranding" ("issuerCorrelationId")`)
     await queryRunner.query(
-      `CREATE TABLE "temporary_ImageAttributes" ("id" varchar PRIMARY KEY NOT NULL, "uri" varchar(255), "base64Content " varchar(255), "type" varchar(255), "alt" varchar(255), "dimensionsId" varchar, CONSTRAINT "UQ_dimensionsId" UNIQUE ("dimensionsId"), CONSTRAINT "FK_ImageAttributes_dimensionsId" FOREIGN KEY ("dimensionsId") REFERENCES "ImageDimensions" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
+      `CREATE TABLE "temporary_ImageAttributes" ("id" varchar PRIMARY KEY NOT NULL, "uri" varchar(255), "base64Content " varchar(255), "mediaType" varchar(255), "alt" varchar(255), "dimensionsId" varchar, CONSTRAINT "UQ_dimensionsId" UNIQUE ("dimensionsId"), CONSTRAINT "FK_ImageAttributes_dimensionsId" FOREIGN KEY ("dimensionsId") REFERENCES "ImageDimensions" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
     )
     await queryRunner.query(
-      `INSERT INTO "temporary_ImageAttributes"("id", "uri", "base64Content ", "type", "alt", "dimensionsId") SELECT "id", "uri", "base64Content ", "type", "alt", "dimensionsId" FROM "ImageAttributes"`
+      `INSERT INTO "temporary_ImageAttributes"("id", "uri", "base64Content ", "mediaType", "alt", "dimensionsId") SELECT "id", "uri", "base64Content ", "mediaType", "alt", "dimensionsId" FROM "ImageAttributes"`
     )
     await queryRunner.query(`DROP TABLE "ImageAttributes"`)
     await queryRunner.query(`ALTER TABLE "temporary_ImageAttributes" RENAME TO "ImageAttributes"`)
@@ -96,10 +96,10 @@ export class CreateIssuanceBranding1685628973231 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "temporary_BackgroundAttributes"`)
     await queryRunner.query(`ALTER TABLE "ImageAttributes" RENAME TO "temporary_ImageAttributes"`)
     await queryRunner.query(
-      `CREATE TABLE "ImageAttributes" ("id" varchar PRIMARY KEY NOT NULL, "uri" varchar(255), "base64Content " varchar(255), "type" varchar(255), "alt" varchar(255), "dimensionsId" varchar, CONSTRAINT "UQ_dimensionsId" UNIQUE ("dimensionsId"))`
+      `CREATE TABLE "ImageAttributes" ("id" varchar PRIMARY KEY NOT NULL, "uri" varchar(255), "base64Content " varchar(255), "mediaType" varchar(255), "alt" varchar(255), "dimensionsId" varchar, CONSTRAINT "UQ_dimensionsId" UNIQUE ("dimensionsId"))`
     )
     await queryRunner.query(
-      `INSERT INTO "ImageAttributes"("id", "uri", "base64Content ", "type", "alt", "dimensionsId") SELECT "id", "uri", "base64Content ", "type", "alt", "dimensionsId" FROM "ImageAttributes"`
+      `INSERT INTO "ImageAttributes"("id", "uri", "base64Content ", "mediaType", "alt", "dimensionsId") SELECT "id", "uri", "base64Content ", "mediaType", "alt", "dimensionsId" FROM "ImageAttributes"`
     )
     await queryRunner.query(`DROP TABLE "temporary_ImageAttributes"`)
     await queryRunner.query(`DROP INDEX "IDX_IssuerBrandingEntity_issuerCorrelationId"`)

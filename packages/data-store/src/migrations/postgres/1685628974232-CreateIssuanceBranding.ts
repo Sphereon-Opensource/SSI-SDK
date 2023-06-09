@@ -8,7 +8,7 @@ export class CreateIssuanceBranding1685628974232 implements MigrationInterface {
       `CREATE TABLE "ImageDimensions" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "width" integer NOT NULL, "height" integer NOT NULL, CONSTRAINT "PK_ImageDimensions_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "ImageAttributes" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "uri" character varying(255), "base64Content " character varying(255), "type" character varying(255), "alt" character varying(255), "dimensionsId" uuid, CONSTRAINT "UQ_dimensionsId" UNIQUE ("dimensionsId"), CONSTRAINT "PK_ImageAttributes_id" PRIMARY KEY ("id"))`
+      `CREATE TABLE "ImageAttributes" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "uri" character varying(255), "base64Content " character varying(255), "mediaType" character varying(255), "alt" character varying(255), "dimensionsId" uuid, CONSTRAINT "UQ_dimensionsId" UNIQUE ("dimensionsId"), CONSTRAINT "PK_ImageAttributes_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
       `CREATE TABLE "BackgroundAttributes" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "color" character varying(255), "imageId" uuid, CONSTRAINT "UQ_imageId" UNIQUE ("imageId"), CONSTRAINT "PK_BackgroundAttributes_id" PRIMARY KEY ("id"))`

@@ -17,9 +17,9 @@ export class ImageAttributesEntity extends BaseEntity {
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank image base64 content are not allowed' })
   base64Content?: string
 
-  @Column({ name: 'type', length: 255, nullable: true, unique: false })
+  @Column({ name: 'mediaType', length: 255, nullable: true, unique: false })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank image types are not allowed' })
-  type?: string
+  mediaType?: string
 
   @Column({ name: 'alt', length: 255, nullable: true, unique: false })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank image alts are not allowed' })
@@ -49,7 +49,7 @@ export const imageAttributesEntityFrom = (args: IBasicImageAttributes): ImageAtt
   const imageAttributesEntity: ImageAttributesEntity = new ImageAttributesEntity()
   imageAttributesEntity.uri = args.uri
   imageAttributesEntity.base64Content = args.base64Content
-  imageAttributesEntity.type = args.type
+  imageAttributesEntity.mediaType = args.mediaType
   imageAttributesEntity.alt = args.alt
   imageAttributesEntity.dimensions = args.dimensions ? imageDimensionsEntityFrom(args.dimensions) : undefined
 

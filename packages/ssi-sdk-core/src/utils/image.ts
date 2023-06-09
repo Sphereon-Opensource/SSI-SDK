@@ -3,7 +3,7 @@ import sizeOf from 'image-size'
 import { ISizeCalculationResult } from 'image-size/dist/types/interface'
 import { IImageDimensions, IImageResource } from '../types'
 
-export const getImageType = async (base64: string): Promise<string | undefined> => {
+export const getImageMediaType = async (base64: string): Promise<string | undefined> => {
   const buffer: Buffer = Buffer.from(base64, 'base64')
   const result: ISizeCalculationResult = sizeOf(buffer)
 

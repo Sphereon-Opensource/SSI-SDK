@@ -1,5 +1,5 @@
 import { IAgentPlugin } from '@veramo/core'
-import { downloadImage, getImageDimensions, getImageType, IImageDimensions, IImageResource } from '@sphereon/ssi-sdk.core'
+import { downloadImage, getImageDimensions, getImageMediaType, IImageDimensions, IImageResource } from '@sphereon/ssi-sdk.core'
 import {
   AbstractIssuanceBrandingStore,
   IAddIssuerBrandingArgs,
@@ -251,7 +251,7 @@ export class IssuanceBranding implements IAgentPlugin {
                 ...(await this.getAdditionalImageAttributes(localeBranding.logo.uri)),
               }
             : {
-                type: undefined,
+                mediaType: undefined,
                 base64Content: undefined,
                 dimensions: undefined,
               }),
@@ -268,7 +268,7 @@ export class IssuanceBranding implements IAgentPlugin {
                     ...(await this.getAdditionalImageAttributes(localeBranding.background.image.uri)),
                   }
                 : {
-                    type: undefined,
+                    mediaType: undefined,
                     base64Content: undefined,
                     dimensions: undefined,
                   }),
@@ -285,10 +285,10 @@ export class IssuanceBranding implements IAgentPlugin {
       debug('Setting additional image properties for uri', uri)
       const base64Content: string = await this.extractBase64FromDataURI(uri)
       const dimensions: IImageDimensions = await getImageDimensions(base64Content)
-      const imageType: string = await this.getDataTypeFromDataURI(uri)
+      const mediaType: string = await this.getDataTypeFromDataURI(uri)
 
       return {
-        type: imageType,
+        mediaType,
         dimensions,
       }
     }
@@ -296,11 +296,11 @@ export class IssuanceBranding implements IAgentPlugin {
     debug('Setting additional image properties for url', uri)
     const resource: IImageResource = await downloadImage(uri)
     const dimensions: IImageDimensions = await getImageDimensions(resource.base64Content)
-    const imageType: string | undefined = resource.contentType || (await getImageType(resource.base64Content))
+    const mediaType: string | undefined = resource.contentType || (await getImageMediaType(resource.base64Content))
 
     return {
-      type: imageType,
-      base64Content: `data:${imageType};base64,${resource.base64Content}`,
+      mediaType,
+      base64Content: `data:${mediaType};base64,${resource.base64Content}`,
       dimensions,
     }
   }
