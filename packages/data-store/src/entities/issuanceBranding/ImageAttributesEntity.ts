@@ -2,7 +2,7 @@ import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, One
 import { IBasicImageAttributes } from '../../types'
 import { ImageDimensionsEntity, imageDimensionsEntityFrom } from './ImageDimensionsEntity'
 import { validate, Validate, ValidationError } from 'class-validator'
-import { IsNonEmptyStringConstraint } from '../validators'
+import { isEmptyString, IsNonEmptyStringConstraint } from '../validators'
 
 @Entity('ImageAttributes')
 export class ImageAttributesEntity extends BaseEntity {
@@ -47,10 +47,10 @@ export class ImageAttributesEntity extends BaseEntity {
 
 export const imageAttributesEntityFrom = (args: IBasicImageAttributes): ImageAttributesEntity => {
   const imageAttributesEntity: ImageAttributesEntity = new ImageAttributesEntity()
-  imageAttributesEntity.uri = args.uri
-  imageAttributesEntity.dataUri = args.dataUri
-  imageAttributesEntity.mediaType = args.mediaType
-  imageAttributesEntity.alt = args.alt
+  imageAttributesEntity.uri = isEmptyString(args.uri) ? undefined : args.uri
+  imageAttributesEntity.dataUri = isEmptyString(args.dataUri) ? undefined : args.dataUri
+  imageAttributesEntity.mediaType = isEmptyString(args.mediaType) ? undefined : args.mediaType
+  imageAttributesEntity.alt = isEmptyString(args.alt) ? undefined : args.alt
   imageAttributesEntity.dimensions = args.dimensions ? imageDimensionsEntityFrom(args.dimensions) : undefined
 
   return imageAttributesEntity

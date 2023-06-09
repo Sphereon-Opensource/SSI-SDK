@@ -2,7 +2,7 @@ import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, One
 import { IBasicBackgroundAttributes } from '../../types'
 import { ImageAttributesEntity, imageAttributesEntityFrom } from './ImageAttributesEntity'
 import { validate, Validate, ValidationError } from 'class-validator'
-import { IsNonEmptyStringConstraint } from '../validators'
+import { isEmptyString, IsNonEmptyStringConstraint } from '../validators'
 
 @Entity('BackgroundAttributes')
 export class BackgroundAttributesEntity extends BaseEntity {
@@ -35,7 +35,7 @@ export class BackgroundAttributesEntity extends BaseEntity {
 
 export const backgroundAttributesEntityFrom = (args: IBasicBackgroundAttributes): BackgroundAttributesEntity => {
   const backgroundAttributesEntity: BackgroundAttributesEntity = new BackgroundAttributesEntity()
-  backgroundAttributesEntity.color = args.color
+  backgroundAttributesEntity.color = isEmptyString(args.color) ? undefined : args.color
   backgroundAttributesEntity.image = args.image ? imageAttributesEntityFrom(args.image) : undefined
 
   return backgroundAttributesEntity

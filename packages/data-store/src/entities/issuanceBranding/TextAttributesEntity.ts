@@ -1,7 +1,7 @@
 import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 import { IBasicTextAttributes } from '../../types'
 import { validate, Validate, ValidationError } from 'class-validator'
-import { IsNonEmptyStringConstraint } from '../validators'
+import { isEmptyString, IsNonEmptyStringConstraint } from '../validators'
 
 @Entity('TextAttributes')
 export class TextAttributesEntity extends BaseEntity {
@@ -25,7 +25,7 @@ export class TextAttributesEntity extends BaseEntity {
 
 export const textAttributesEntityFrom = (args: IBasicTextAttributes): TextAttributesEntity => {
   const textAttributesEntity: TextAttributesEntity = new TextAttributesEntity()
-  textAttributesEntity.color = args.color
+  textAttributesEntity.color = isEmptyString(args.color) ? undefined : args.color
 
   return textAttributesEntity
 }

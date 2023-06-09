@@ -5,6 +5,7 @@ import { imageAttributesEntityFrom } from './ImageAttributesEntity'
 import { IssuerBrandingEntity } from './IssuerBrandingEntity'
 import { BaseLocaleBrandingEntity } from './BaseLocaleBrandingEntity'
 import { textAttributesEntityFrom } from './TextAttributesEntity'
+import { isEmptyString } from '../validators'
 
 @ChildEntity('IssuerLocaleBranding')
 @Index('IDX_IssuerLocaleBrandingEntity_issuerBranding_locale', ['issuerBranding', 'locale'], { unique: true })
@@ -21,10 +22,10 @@ export class IssuerLocaleBrandingEntity extends BaseLocaleBrandingEntity {
 
 export const issuerLocaleBrandingEntityFrom = (args: IBasicIssuerLocaleBranding): IssuerLocaleBrandingEntity => {
   const issuerLocaleBrandingEntity: IssuerLocaleBrandingEntity = new IssuerLocaleBrandingEntity()
-  issuerLocaleBrandingEntity.alias = args.alias
+  issuerLocaleBrandingEntity.alias = isEmptyString(args.alias) ? undefined : args.alias
   issuerLocaleBrandingEntity.locale = args.locale ? args.locale : ''
   issuerLocaleBrandingEntity.logo = args.logo ? imageAttributesEntityFrom(args.logo) : undefined
-  issuerLocaleBrandingEntity.description = args.description
+  issuerLocaleBrandingEntity.description = isEmptyString(args.description) ? undefined : args.description
   issuerLocaleBrandingEntity.background = args.background ? backgroundAttributesEntityFrom(args.background) : undefined
   issuerLocaleBrandingEntity.text = args.text ? textAttributesEntityFrom(args.text) : undefined
 
