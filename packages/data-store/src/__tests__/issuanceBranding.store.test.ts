@@ -959,7 +959,7 @@ describe('Issuance branding store tests', (): void => {
             uri: '',
             dataUri: '',
             mediaType: '',
-            alt: ''
+            alt: '',
           },
           description: '',
           background: {
@@ -968,14 +968,14 @@ describe('Issuance branding store tests', (): void => {
               uri: '',
               mediaType: '',
               dataUri: '',
-              alt: ''
-            }
+              alt: '',
+            },
           },
           text: {
             color: '',
-          }
-        }
-      ]
+          },
+        },
+      ],
     }
 
     const result: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding)
@@ -1861,7 +1861,7 @@ describe('Issuance branding store tests', (): void => {
             uri: '',
             dataUri: '',
             mediaType: '',
-            alt: ''
+            alt: '',
           },
           description: '',
           background: {
@@ -1870,14 +1870,14 @@ describe('Issuance branding store tests', (): void => {
               uri: '',
               mediaType: '',
               dataUri: '',
-              alt: ''
-            }
+              alt: '',
+            },
           },
           text: {
             color: '',
-          }
-        }
-      ]
+          },
+        },
+      ],
     }
 
     const result: IIssuerBranding = await issuanceBrandingStore.addIssuerBranding(issuerBranding)
