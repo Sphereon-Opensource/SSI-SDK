@@ -37,6 +37,8 @@ A Veramo issuance branding plugin. This plugin manages issuer and credential bra
 
 ## Usage
 
+**NOTE: Do note that when storing empty strings, that they are treated as no value**
+
 ### Adding the plugin to an agent:
 
 ```typescript
