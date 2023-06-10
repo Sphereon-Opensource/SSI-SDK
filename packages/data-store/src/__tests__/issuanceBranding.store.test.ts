@@ -947,6 +947,55 @@ describe('Issuance branding store tests', (): void => {
     expect(result?.localeBranding.filter((localeBranding: ICredentialLocaleBranding) => localeBranding.locale === undefined).length).toEqual(1)
   })
 
+  it('should store blank strings as undefined when adding credential locale branding', async (): Promise<void> => {
+    const credentialBranding: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          alias: '',
+          locale: '',
+          logo: {
+            uri: '',
+            dataUri: '',
+            mediaType: '',
+            alt: ''
+          },
+          description: '',
+          background: {
+            color: '',
+            image: {
+              uri: '',
+              mediaType: '',
+              dataUri: '',
+              alt: ''
+            }
+          },
+          text: {
+            color: '',
+          }
+        }
+      ]
+    }
+
+    const result: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding)
+
+    expect(result).toBeDefined()
+    expect(result?.localeBranding.length).toEqual(1)
+    expect(result?.localeBranding[0].locale).toBeUndefined()
+    expect(result?.localeBranding[0].alias).toBeUndefined()
+    expect(result?.localeBranding[0].logo!.uri).toBeUndefined()
+    expect(result?.localeBranding[0].logo!.dataUri).toBeUndefined()
+    expect(result?.localeBranding[0].logo!.mediaType).toBeUndefined()
+    expect(result?.localeBranding[0].logo!.alt).toBeUndefined()
+    expect(result?.localeBranding[0].description).toBeUndefined()
+    expect(result?.localeBranding[0].background!.image!.uri).toBeUndefined()
+    expect(result?.localeBranding[0].background!.image!.dataUri).toBeUndefined()
+    expect(result?.localeBranding[0].background!.image!.mediaType).toBeUndefined()
+    expect(result?.localeBranding[0].background!.image!.alt).toBeUndefined()
+    expect(result?.localeBranding[0].text!.color).toBeUndefined()
+  })
+
   // Issuer tests
 
   it('should add issuer branding', async (): Promise<void> => {
@@ -1799,5 +1848,53 @@ describe('Issuance branding store tests', (): void => {
     expect(result).toBeDefined()
     expect(result?.localeBranding.length).toEqual(2)
     expect(result?.localeBranding.filter((localeBranding: ICredentialLocaleBranding) => localeBranding.locale === undefined).length).toEqual(1)
+  })
+
+  it('should store blank strings as undefined when adding issuer locale branding', async (): Promise<void> => {
+    const issuerBranding: IBasicIssuerBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      localeBranding: [
+        {
+          alias: '',
+          locale: '',
+          logo: {
+            uri: '',
+            dataUri: '',
+            mediaType: '',
+            alt: ''
+          },
+          description: '',
+          background: {
+            color: '',
+            image: {
+              uri: '',
+              mediaType: '',
+              dataUri: '',
+              alt: ''
+            }
+          },
+          text: {
+            color: '',
+          }
+        }
+      ]
+    }
+
+    const result: IIssuerBranding = await issuanceBrandingStore.addIssuerBranding(issuerBranding)
+
+    expect(result).toBeDefined()
+    expect(result?.localeBranding.length).toEqual(1)
+    expect(result?.localeBranding[0].locale).toBeUndefined()
+    expect(result?.localeBranding[0].alias).toBeUndefined()
+    expect(result?.localeBranding[0].logo!.uri).toBeUndefined()
+    expect(result?.localeBranding[0].logo!.dataUri).toBeUndefined()
+    expect(result?.localeBranding[0].logo!.mediaType).toBeUndefined()
+    expect(result?.localeBranding[0].logo!.alt).toBeUndefined()
+    expect(result?.localeBranding[0].description).toBeUndefined()
+    expect(result?.localeBranding[0].background!.image!.uri).toBeUndefined()
+    expect(result?.localeBranding[0].background!.image!.dataUri).toBeUndefined()
+    expect(result?.localeBranding[0].background!.image!.mediaType).toBeUndefined()
+    expect(result?.localeBranding[0].background!.image!.alt).toBeUndefined()
+    expect(result?.localeBranding[0].text!.color).toBeUndefined()
   })
 })
