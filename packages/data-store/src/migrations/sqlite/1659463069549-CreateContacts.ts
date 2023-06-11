@@ -99,7 +99,6 @@ export class CreateContacts1659463069549 implements MigrationInterface {
       `INSERT INTO "CorrelationIdentifier"("id", "type", "correlation_id", "identityId") SELECT "id", "type", "correlation_id", "identityId" FROM "CorrelationIdentifier"`
     )
     await queryRunner.query(`DROP TABLE "temporary_CorrelationIdentifier"`)
-
     await queryRunner.query(`DROP TABLE "Connection"`)
     await queryRunner.query(`DROP TABLE "Identity"`)
     await queryRunner.query(`DROP TABLE "IdentityMetadata"`)

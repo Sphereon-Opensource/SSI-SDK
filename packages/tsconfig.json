@@ -20,6 +20,7 @@
     { "path": "data-store" },
     { "path": "wellknown-did-issuer" },
     { "path": "wellknown-did-verifier" },
-    { "path": "kv-store" }
+    { "path": "kv-store" },
+    { "path": "issuance-branding" }
   ]
 }

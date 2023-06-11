@@ -1,8 +1,9 @@
 import { FindOptionsWhere } from 'typeorm'
-import { ContactEntity } from '../entities/contact/ContactEntity'
-import { IdentityEntity } from '../entities/contact/IdentityEntity'
+import { ContactEntity } from '../../entities/contact/ContactEntity'
+import { IdentityEntity } from '../../entities/contact/IdentityEntity'
 import { IBasicIdentity, IContact, IIdentity } from './contact'
 
+// TODO WAL-625 refactor types to use interfaces and not the entities as the store should be replaceable
 export type FindContactArgs = FindOptionsWhere<ContactEntity>[]
 export type FindIdentityArgs = FindOptionsWhere<IdentityEntity>[]
 

@@ -10,9 +10,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { IBasicContact, IBasicIdentity } from '../../types/contact'
+import { IBasicContact, IBasicIdentity } from '../../types'
 import { IdentityEntity, identityEntityFrom } from './IdentityEntity'
-import { IsNotEmpty, validate } from 'class-validator'
+import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 
 @Entity('Contact')
 export class ContactEntity extends BaseEntity {
@@ -55,9 +55,9 @@ export class ContactEntity extends BaseEntity {
   @BeforeInsert()
   @BeforeUpdate()
   async validate() {
-    const validation = await validate(this)
+    const validation: Array<ValidationError> = await validate(this)
     if (validation.length > 0) {
-      return Promise.reject(Error(validation[0].constraints?.isNotEmpty))
+      return Promise.reject(Error(Object.values(validation[0].constraints!)[0]))
     }
     return
   }
@@ -68,9 +68,7 @@ export const contactEntityFrom = (args: IBasicContact): ContactEntity => {
   contactEntity.name = args.name
   contactEntity.alias = args.alias
   contactEntity.uri = args.uri
-  if (args.identities) {
-    contactEntity.identities = args.identities.map((identity: IBasicIdentity) => identityEntityFrom(identity))
-  }
+  contactEntity.identities = args.identities ? args.identities.map((identity: IBasicIdentity) => identityEntityFrom(identity)) : []
 
   return contactEntity
 }
