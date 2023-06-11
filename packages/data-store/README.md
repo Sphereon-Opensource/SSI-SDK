@@ -17,10 +17,15 @@ SSI-SDK data storage based on TypeORM. This package provides several plugins tha
 ## Available stores
 
 - Contact Store
+- Issuance Branding Store
 
 ### Contact Store
 
 A store that exposes simple store/get methods for contacts and identities.
+
+### Issuance Branding Store
+
+A store that exposes simple store/get methods for issuer and credential branding.
 
 ## Installation
 

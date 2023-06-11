@@ -1,5 +1,6 @@
 import Debug from 'debug'
 import { OrPromise } from '@sphereon/ssi-types'
+import { AbstractContactStore } from './AbstractContactStore'
 import {
   IAddIdentityArgs,
   IGetIdentityArgs,
@@ -11,9 +12,6 @@ import {
   IAddContactArgs,
   IUpdateContactArgs,
   IRemoveContactArgs,
-} from '../types/IAbstractContactStore'
-import { AbstractContactStore } from './AbstractContactStore'
-import {
   BasicConnectionConfig,
   ConnectionConfig,
   ConnectionTypeEnum,
@@ -25,7 +23,7 @@ import {
   IIdentity,
   IMetadataItem,
   IOpenIdConfig,
-} from '../types/contact'
+} from '../types'
 import { ContactEntity, contactEntityFrom } from '../entities/contact/ContactEntity'
 import { IdentityEntity, identityEntityFrom } from '../entities/contact/IdentityEntity'
 import { IdentityMetadataItemEntity } from '../entities/contact/IdentityMetadataItemEntity'

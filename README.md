@@ -80,16 +80,27 @@ The packages in the SSI-SDK provide an integration into DIDs managed by agents u
 
 ## Contacts and storage
 
-The contact-manager plugin allows you to persist external agent systems like issuers and verifiers. It support multiple
+The contact-manager plugin allows you to persist external agent systems like issuers and verifiers. It supports multiple
 identifiers per contact in the form of correlationIDs, which are URIs as well as assign roles like issuers, holders,
 verifiers. Typically on a first encounter you would provide a UI to the user asking to provide a name if the protocol
-cannot already prefill a name. Then the contact get's stored, so simple names can be used instead of DIDs in a UI for
+cannot already prefill a name. Then the contact gets stored, so simple names can be used instead of DIDs in a UI for
 instance. It can also be used to manage trust when encountering a certain contact in the future.
 
-| Plugin                                        | Description                                                                          |
-|-----------------------------------------------|--------------------------------------------------------------------------------------|
-| [data-store](./packages/data-store)           | TypeORM based datastore to persist and query entities (contacts, identities for now) |
-| [contact-manager](./packages/contact-manager) | Manage contacts and their related identities                                         |
+| Plugin                                        | Description                                                                       |
+|-----------------------------------------------|-----------------------------------------------------------------------------------|
+| [data-store](./packages/data-store)           | TypeORM based contact store to persist and query entities (contacts, identities)  |
+| [contact-manager](./packages/contact-manager) | Manage contacts and their related identities                                      |
+
+## Issuance branding and storage
+
+The issuance-branding plugin allows you to persist branding for issuers and credentials. This allows for these entities to be styled even when there 
+is no active connection possible to the external parties. It supports logo's, background attributes like an image and or color, text color and 
+additional branding information per locale.
+
+| Plugin                                            | Description                                                                              |
+|---------------------------------------------------|------------------------------------------------------------------------------------------|
+| [data-store](./packages/data-store)               | TypeORM based issuance branding store to persist and query branding (issuer, credential) |
+| [issuance-branding](./packages/issuance-branding) | Manage issuer and credential branding                                                    |
 
 ## Generic SSI plugins
 
