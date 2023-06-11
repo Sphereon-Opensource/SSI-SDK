@@ -25,6 +25,9 @@ export class LdDocumentLoader {
 
   getLoader(context: IAgentContext<IResolver>, attemptToFetchContexts = false) {
     return extendContextLoader(async (url: string) => {
+      if (!url || url.trim().length === 0) {
+        throw Error('URL needs to be provided to load a context!')
+      }
       // did resolution
       if (url.toLowerCase().startsWith('did:')) {
         let didDoc: DIDDocument | null

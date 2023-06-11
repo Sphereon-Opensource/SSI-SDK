@@ -1,5 +1,5 @@
 {
-  "name": "@sphereon/ssi-sdk.w3c-vc-api",
+  "name": "@sphereon/ssi-sdk.oid4vci-issuer-rest-api",
   "version": "0.11.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
@@ -11,12 +11,15 @@
     "start:dev": "ts-node __tests__/RestAPI.ts"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk.presentation-exchange": "workspace:*",
-    "@sphereon/did-auth-siop": "^0.3.1-unstable.1",
+    "@sphereon/oid4vci-common": "0.4.1-unstable.284",
+    "@sphereon/oid4vci-issuer": "0.4.1-unstable.284",
+    "@sphereon/oid4vci-issuer-server": "0.4.1-unstable.284",
     "@sphereon/ssi-types": "workspace:*",
     "@types/uuid": "^9.0.1",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",
+    "@sphereon/ssi-sdk.oid4vci-issuer-store": "workspace:*",
+    "@sphereon/ssi-sdk.oid4vci-issuer": "workspace:*",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
@@ -31,7 +34,6 @@
     "@sphereon/did-uni-client": "^0.6.0",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-sdk-ext.did-provider-jwk": "^0.12.0",
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "^0.12.0",
     "@sphereon/ssi-sdk.vc-handler-ld-local": "workspace:*",
     "@sphereon/pex-models": "^2.0.2",
     "@sphereon/pex": "^2.0.1",
@@ -70,9 +72,6 @@
   "private": false,
   "publishConfig": {
     "access": "public"
-  },
-  "resolutions": {
-    "did-jwt": "6.11.6"
   },
   "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
   "author": "Sphereon <dev@sphereon.com>",
