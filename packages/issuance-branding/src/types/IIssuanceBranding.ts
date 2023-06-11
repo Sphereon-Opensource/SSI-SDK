@@ -18,19 +18,19 @@ export interface IIssuanceBranding extends IPluginMethodMap {
   ibAddCredentialBranding(args: IAddCredentialBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding>
   ibGetCredentialBranding(args: IGetCredentialBrandingArgs): Promise<Array<ICredentialBranding>>
   ibUpdateCredentialBranding(args: IUpdateCredentialBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding>
-  ibRemoveCredentialBranding(args: IRemoveCredentialBrandingArgs, context: IRequiredContext): Promise<boolean>
+  ibRemoveCredentialBranding(args: IRemoveCredentialBrandingArgs, context: IRequiredContext): Promise<IDeletionResult>
   ibAddCredentialLocaleBranding(args: IAddCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding>
   ibGetCredentialLocaleBranding(args: IGetCredentialLocaleBrandingArgs): Promise<Array<ICredentialLocaleBranding>>
-  ibRemoveCredentialLocaleBranding(args: IRemoveCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<boolean>
+  ibRemoveCredentialLocaleBranding(args: IRemoveCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<IDeletionResult>
   ibUpdateCredentialLocaleBranding(args: IUpdateCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<ICredentialLocaleBranding>
   ibCredentialLocaleBrandingFrom(args: ICredentialBrandingFromArgs, context: IRequiredContext): Promise<IBasicCredentialLocaleBranding>
   ibAddIssuerBranding(args: IAddIssuerBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
   ibGetIssuerBranding(args: IGetIssuerBrandingArgs): Promise<Array<IIssuerBranding>>
   ibUpdateIssuerBranding(args: IUpdateIssuerBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
-  ibRemoveIssuerBranding(args: IRemoveIssuerBrandingArgs, context: IRequiredContext): Promise<boolean>
+  ibRemoveIssuerBranding(args: IRemoveIssuerBrandingArgs, context: IRequiredContext): Promise<IDeletionResult>
   ibAddIssuerLocaleBranding(args: IAddIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<IIssuerBranding>
   ibGetIssuerLocaleBranding(args: IGetIssuerLocaleBrandingArgs): Promise<Array<IIssuerLocaleBranding>>
-  ibRemoveIssuerLocaleBranding(args: IRemoveIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<boolean>
+  ibRemoveIssuerLocaleBranding(args: IRemoveIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<IDeletionResult>
   ibUpdateIssuerLocaleBranding(args: IUpdateIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<IIssuerLocaleBranding>
   ibIssuerLocaleBrandingFrom(args: IIssuerBrandingFromArgs, context: IRequiredContext): Promise<IBasicIssuerLocaleBranding>
 }
@@ -50,7 +50,7 @@ export interface IUpdateCredentialBrandingArgs {
 }
 
 export interface IRemoveCredentialBrandingArgs {
-  credentialBrandingId: string
+  filter: FindCredentialBrandingArgs
 }
 
 export interface IUpdateIssuerBrandingArgs {
@@ -58,7 +58,7 @@ export interface IUpdateIssuerBrandingArgs {
 }
 
 export interface IRemoveIssuerBrandingArgs {
-  issuerBrandingId: string
+  filter: FindIssuerBrandingArgs
 }
 
 export interface IAddIssuerBrandingArgs {
@@ -95,11 +95,11 @@ export interface IGetIssuerLocaleBrandingArgs {
 }
 
 export interface IRemoveCredentialLocaleBrandingArgs {
-  credentialLocaleBrandingId: string
+  filter: FindCredentialLocaleBrandingArgs
 }
 
 export interface IRemoveIssuerLocaleBrandingArgs {
-  issuerLocaleBrandingId: string
+  filter: FindIssuerLocaleBrandingArgs
 }
 
 export interface IUpdateCredentialLocaleBrandingArgs {
@@ -116,6 +116,11 @@ export interface ICredentialBrandingFromArgs {
 
 export interface IIssuerBrandingFromArgs {
   localeBranding: IBasicIssuerLocaleBranding
+}
+
+export interface IDeletionResult {
+  result: boolean
+  error?: string
 }
 
 export type IRequiredContext = IAgentContext<never>

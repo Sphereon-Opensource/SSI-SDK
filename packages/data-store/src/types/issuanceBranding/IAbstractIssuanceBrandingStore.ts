@@ -30,7 +30,7 @@ export interface IUpdateCredentialBrandingArgs {
 }
 
 export interface IRemoveCredentialBrandingArgs {
-  credentialBrandingId: string
+  filter: FindCredentialBrandingArgs
 }
 
 export interface IAddCredentialLocaleBrandingArgs {
@@ -43,7 +43,7 @@ export interface IUpdateCredentialLocaleBrandingArgs {
 }
 
 export interface IRemoveCredentialLocaleBrandingArgs {
-  credentialLocaleBrandingId: string
+  filter: FindCredentialLocaleBrandingArgs
 }
 
 export interface IGetCredentialLocaleBrandingArgs {
@@ -64,7 +64,7 @@ export interface IUpdateIssuerBrandingArgs {
 }
 
 export interface IRemoveIssuerBrandingArgs {
-  issuerBrandingId: string
+  filter: FindIssuerBrandingArgs
 }
 
 export interface IAddIssuerLocaleBrandingArgs {
@@ -77,7 +77,7 @@ export interface IUpdateIssuerLocaleBrandingArgs {
 }
 
 export interface IRemoveIssuerLocaleBrandingArgs {
-  issuerLocaleBrandingId: string
+  filter: FindIssuerLocaleBrandingArgs
 }
 
 export interface IGetIssuerLocaleBrandingArgs {

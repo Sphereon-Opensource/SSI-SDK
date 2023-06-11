@@ -17,7 +17,7 @@ import {
   IIssuerLocaleBranding,
   ILocaleBranding,
 } from '@sphereon/ssi-sdk.data-store'
-import { schema } from '../index'
+import { IDeletionResult, schema } from '../index'
 import {
   IAddCredentialBrandingArgs,
   IAdditionalImageAttributes,
@@ -104,9 +104,12 @@ export class IssuanceBranding implements IAgentPlugin {
   }
 
   /** {@inheritDoc IIssuanceBranding.ibRemoveCredentialBranding} */
-  private async ibRemoveCredentialBranding(args: IRemoveCredentialBrandingArgs, context: IRequiredContext): Promise<boolean> {
+  private async ibRemoveCredentialBranding(args: IRemoveCredentialBrandingArgs, context: IRequiredContext): Promise<IDeletionResult> {
     debug('Removing credential branding', args)
-    return this.store.removeCredentialBranding(args).then(() => true)
+    return this.store
+      .removeCredentialBranding(args)
+      .then(() => ({ result: true }))
+      .catch((error: Error) => ({ result: false, error: error.message }))
   }
 
   /** {@inheritDoc IIssuanceBranding.ibAddCredentialLocaleBranding} */
@@ -132,9 +135,12 @@ export class IssuanceBranding implements IAgentPlugin {
   }
 
   /** {@inheritDoc IIssuanceBranding.ibRemoveCredentialLocaleBranding} */
-  private async ibRemoveCredentialLocaleBranding(args: IRemoveCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<boolean> {
+  private async ibRemoveCredentialLocaleBranding(args: IRemoveCredentialLocaleBrandingArgs, context: IRequiredContext): Promise<IDeletionResult> {
     debug('Removing credential locale branding', args)
-    return this.store.removeCredentialLocaleBranding(args).then(() => true)
+    return this.store
+      .removeCredentialLocaleBranding(args)
+      .then(() => ({ result: true }))
+      .catch((error: Error) => ({ result: false, error: error.message }))
   }
 
   /** {@inheritDoc IIssuanceBranding.ibUpdateCredentialLocaleBranding} */
@@ -192,9 +198,12 @@ export class IssuanceBranding implements IAgentPlugin {
   }
 
   /** {@inheritDoc IIssuanceBranding.inRemoveIssuerBranding} */
-  private async inRemoveIssuerBranding(args: IRemoveIssuerBrandingArgs, context: IRequiredContext): Promise<boolean> {
+  private async inRemoveIssuerBranding(args: IRemoveIssuerBrandingArgs, context: IRequiredContext): Promise<IDeletionResult> {
     debug('Removing issuer branding', args)
-    return this.store.removeIssuerBranding(args).then(() => true)
+    return this.store
+      .removeIssuerBranding(args)
+      .then(() => ({ result: true }))
+      .catch((error: Error) => ({ result: false, error: error.message }))
   }
 
   /** {@inheritDoc IIssuanceBranding.ibAddIssuerLocaleBranding} */
@@ -220,9 +229,12 @@ export class IssuanceBranding implements IAgentPlugin {
   }
 
   /** {@inheritDoc IIssuanceBranding.ibRemoveIssuerLocaleBranding} */
-  private async ibRemoveIssuerLocaleBranding(args: IRemoveIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<boolean> {
+  private async ibRemoveIssuerLocaleBranding(args: IRemoveIssuerLocaleBrandingArgs, context: IRequiredContext): Promise<IDeletionResult> {
     debug('Removing issuer locale branding', args)
-    return this.store.removeIssuerLocaleBranding(args).then(() => true)
+    return this.store
+      .removeIssuerLocaleBranding(args)
+      .then(() => ({ result: true }))
+      .catch((error: Error) => ({ result: false, error: error.message }))
   }
 
   /** {@inheritDoc IIssuanceBranding.ibUpdateIssuerLocaleBranding} */

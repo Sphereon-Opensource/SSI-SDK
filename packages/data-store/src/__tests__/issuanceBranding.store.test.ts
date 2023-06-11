@@ -528,7 +528,7 @@ describe('Issuance branding store tests', (): void => {
     const branding: Array<ICredentialBranding> = await issuanceBrandingStore.getCredentialBranding()
     expect(branding.length).toEqual(1)
 
-    await issuanceBrandingStore.removeCredentialBranding({ credentialBrandingId: savedCredentialBranding.id })
+    await issuanceBrandingStore.removeCredentialBranding({ filter: [{ id: savedCredentialBranding.id }] })
 
     // check background image dimensions
     expect(
@@ -582,14 +582,6 @@ describe('Issuance branding store tests', (): void => {
     const result: Array<ICredentialBranding> = await issuanceBrandingStore.getCredentialBranding()
 
     expect(result.length).toEqual(0)
-  })
-
-  it('should throw error when removing credential branding with unknown id', async (): Promise<void> => {
-    const credentialBrandingId = 'unknownId'
-
-    await expect(issuanceBrandingStore.removeCredentialBranding({ credentialBrandingId })).rejects.toThrowError(
-      `No credential branding found for id: ${credentialBrandingId}`
-    )
   })
 
   it('should add credential locale branding', async (): Promise<void> => {
@@ -844,7 +836,7 @@ describe('Issuance branding store tests', (): void => {
     const branding: Array<ICredentialBranding> = await issuanceBrandingStore.getCredentialBranding()
     expect(branding.length).toEqual(1)
 
-    await issuanceBrandingStore.removeCredentialLocaleBranding({ credentialLocaleBrandingId: savedCredentialBranding.localeBranding[0].id })
+    await issuanceBrandingStore.removeCredentialLocaleBranding({ filter: [{ id: savedCredentialBranding.localeBranding[0].id }] })
 
     // check background image dimensions
     expect(
@@ -1448,7 +1440,7 @@ describe('Issuance branding store tests', (): void => {
     const branding: Array<IIssuerBranding> = await issuanceBrandingStore.getIssuerBranding()
     expect(branding.length).toEqual(1)
 
-    await issuanceBrandingStore.removeIssuerBranding({ issuerBrandingId: savedIssuerBranding.id })
+    await issuanceBrandingStore.removeIssuerBranding({ filter: [{ id: savedIssuerBranding.id }] })
 
     // check background image dimensions
     expect(
@@ -1498,14 +1490,6 @@ describe('Issuance branding store tests', (): void => {
         where: { id: savedIssuerBranding?.localeBranding[0]?.id },
       })
     ).toBeNull()
-  })
-
-  it('should throw error when removing issuer branding with unknown id', async (): Promise<void> => {
-    const issuerBrandingId = 'unknownId'
-
-    await expect(issuanceBrandingStore.removeIssuerBranding({ issuerBrandingId })).rejects.toThrowError(
-      `No issuer branding found for id: ${issuerBrandingId}`
-    )
   })
 
   it('should add issuer locale branding', async (): Promise<void> => {
@@ -1753,7 +1737,7 @@ describe('Issuance branding store tests', (): void => {
     const branding: Array<IIssuerBranding> = await issuanceBrandingStore.getIssuerBranding()
     expect(branding.length).toEqual(1)
 
-    await issuanceBrandingStore.removeIssuerLocaleBranding({ issuerLocaleBrandingId: savedIssuerBranding.localeBranding[0].id })
+    await issuanceBrandingStore.removeIssuerLocaleBranding({ filter: [{ id: savedIssuerBranding.localeBranding[0].id }] })
 
     // check background image dimensions
     expect(
