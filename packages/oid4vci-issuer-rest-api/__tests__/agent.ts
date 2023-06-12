@@ -1,5 +1,8 @@
 import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
 import { getUniResolver } from '@sphereon/did-uni-client'
+import { CredentialIssuerMetadata } from '@sphereon/oid4vci-common'
+import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
+import { toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
 import { OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {
@@ -18,13 +21,17 @@ import { DIDManager } from '@veramo/did-manager'
 import { EthrDIDProvider } from '@veramo/did-provider-ethr'
 import { getDidIonResolver, IonDIDProvider } from '@veramo/did-provider-ion'
 import { getDidKeyResolver, KeyDIDProvider } from '@veramo/did-provider-key'
+import { WebDIDProvider } from '@veramo/did-provider-web'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { KeyManager } from '@veramo/key-manager'
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 import Debug from 'debug'
 import { Resolver } from 'did-resolver'
+import { getResolver as getDidWebResolver } from 'web-did-resolver'
 import { IPlugins } from '../src'
 import { DB_CONNECTION_NAME, DB_ENCRYPTION_KEY, getDbConnection } from './database'
+import { start } from './RestAPI'
+// import {toJwk} from "@sphereon/ssi-sdk-ext.key-utils";
 
 const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-api')
 
@@ -43,31 +50,29 @@ export enum SupportedDidMethodEnum {
   DID_ION = 'ion',
   // DID_FACTOM = 'factom',
   DID_JWK = 'jwk',
+  DID_WEB = 'web',
 }
 
-/*const COOKIE_SIGNING_KEY = '8E5er6YyAO6dIrDTm7BXYWsafBSLxzjb'
-const BACKEND_BASE_URL = 'https://nk-gx-compliance.eu.ngrok.io'
-const AUTH_REQUEST_EXPIRES_AFTER_SEC = 120*/
-const RP_PRIVATE_KEY_HEX = '851eb04ca3e2b2589d6f6a7287565816ee8e3126599bfeede8d3e93c53fb26e3'
-// const RP_DID = 'did:ion:EiAG1fCl2kHSyZv7Z1Bb1eL7b_PVbiHaoxGki-5s8PjsFQ:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJhdXRoLWtleSIsInB1YmxpY0tleUp3ayI6eyJjcnYiOiJzZWNwMjU2azEiLCJrdHkiOiJFQyIsIngiOiJmUUE3WUpNRk1qNXFET0RrS25qR1ZLNW0za1VSRFc1YnJ1TWhUa1NYSGQwIiwieSI6IlI3cVBNNEsxWHlqNkprM3M2a3I2aFNrQzlDa0ExSEFpMVFTejZqSU56dFkifSwicHVycG9zZXMiOlsiYXV0aGVudGljYXRpb24iLCJhc3NlcnRpb25NZXRob2QiXSwidHlwZSI6IkVjZHNhU2VjcDI1NmsxVmVyaWZpY2F0aW9uS2V5MjAxOSJ9XX19XSwidXBkYXRlQ29tbWl0bWVudCI6IkVpQmRpaVlrT3kyd3VOQ3Z5OWs4X1RoNzhSSlBvcy04MzZHZWpyRmJycTROZFEifSwic3VmZml4RGF0YSI6eyJkZWx0YUhhc2giOiJFaUFTdTN1NGxsRk5KRkNEbTU5VFVBS1NSLTg3QUpsNFNzWEhlS05kbVRydXp3IiwicmVjb3ZlcnlDb21taXRtZW50IjoiRWlEZXBoWHJVQVdCcWswcnFBLTI3bE1ib08zMFZZVFdoV0Y0NHBlanJyXzNOQSJ9fQ'
-// const RP_DID_SHORT = 'did:ion:EiAeobpQwEVpR-Ib9toYwbISQZZGIBck6zIUm0ZDmm9v0g'
-const RP_DID =
+// const HOSTNAME = 'dbc2023.test.sphereon.com'
+// const RP_DID_WEB = `did:web:${HOSTNAME}`
+// const RP_DID_WEB_KID = `${RP_DID_WEB}#auth-key`
+
+const RP_DID_JWK =
+  'did:jwk:eyJhbGciOiJFUzI1NksiLCJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCaXJGX0xROGtaOHVFREdxQzdSeXlUWGFRNEswelIyRE9VcF82NnN1R0xnIiwieSI6ImxUdnZMbTRlMmdSTzhmSm1ZQUp2dl8tTlpVMkk1Qjdtb3VJU2ZEZ3M3bjAifQ'
+
+const RP_DID_JWK_PRIVATE_KEY_HEX = '63d619effd0f223dcfa4f0bcdcf11a9cd9c5ececda354848261abd3a80a2911841' // generatePrivateKeyHex('Secp256k1')
+console.log(RP_DID_JWK_PRIVATE_KEY_HEX)
+const RP_ION_PRIVATE_KEY_HEX = '851eb04ca3e2b2589d6f6a7287565816ee8e3126599bfeede8d3e93c53fb26e3'
+
+const RP_DID_ION =
   'did:ion:EiAeobpQwEVpR-Ib9toYwbISQZZGIBck6zIUm0ZDmm9v0g:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJhdXRoLWtleSIsInB1YmxpY0tleUp3ayI6eyJjcnYiOiJzZWNwMjU2azEiLCJrdHkiOiJFQyIsIngiOiJmUUE3WUpNRk1qNXFET0RrS25qR1ZLNW0za1VSRFc1YnJ1TWhUa1NYSGQwIiwieSI6IlI3cVBNNEsxWHlqNkprM3M2a3I2aFNrQzlDa0ExSEFpMVFTejZqSU56dFkifSwicHVycG9zZXMiOlsiYXV0aGVudGljYXRpb24iLCJhc3NlcnRpb25NZXRob2QiXSwidHlwZSI6IkVjZHNhU2VjcDI1NmsxVmVyaWZpY2F0aW9uS2V5MjAxOSJ9XX19XSwidXBkYXRlQ29tbWl0bWVudCI6IkVpQnpwN1loTjltaFVjWnNGZHhuZi1sd2tSVS1oVmJCdFpXc1ZvSkhWNmprd0EifSwic3VmZml4RGF0YSI6eyJkZWx0YUhhc2giOiJFaUJvbWxvZ0JPOERROFdpVVFsa3diYmxuMXpsRFU2Q3Jvc01wNDRySjYzWHhBIiwicmVjb3ZlcnlDb21taXRtZW50IjoiRWlEQVFYU2k3SGNqSlZCWUFLZE8yenJNNEhmeWJtQkJDV3NsNlBRUEpfamtsQSJ9fQ'
 const PRIVATE_RECOVERY_KEY_HEX = '7c90c0575643d09a370c35021c91e9d8af2c968c5f3a4bf73802693511a55b9f'
 const PRIVATE_UPDATE_KEY_HEX = '7288a92f6219c873446abd1f8d26fcbbe1caa5274b47f6f086ef3e7e75dcad8b'
-const RP_DID_KID = `${RP_DID}#auth-key`
+// const RP_DID_ION_KID = `${RP_DID_ION}#auth-key`
 
 export const resolver = new Resolver({
-  /*// const SPHEREON_UNIRESOLVER_RESOLVE_URL = 'https://uniresolver.test.sphereon.io/1.0/identifiers'
-    ...getUniResolver('jwk', {
-        resolveUrl: DIF_UNIRESOLVER_RESOLVE_URL
-    }),
-    ...getUniResolver('ion', {
-        resolveUrl: DIF_UNIRESOLVER_RESOLVE_URL
-    }),
-    ..getUniResolver('lto', {
-        resolveUrl: SPHEREON_UNIRESOLVER_RESOLVE_URL
-    }),*/
+  ...getDidKeyResolver(),
+  ...getDidWebResolver(),
   ...getUniResolver('ethr', {
     resolveUrl: DIF_UNIRESOLVER_RESOLVE_URL,
   }),
@@ -90,9 +95,12 @@ export const didProviders = {
   [`${DID_PREFIX}:${SupportedDidMethodEnum.DID_ION}`]: new IonDIDProvider({
     defaultKms: KeyManagementSystemEnum.LOCAL,
   }),
-  /*[`${DID_PREFIX}:${SupportedDidMethodEnum.DID_JWK}`]: new JwkDIDProvider({
-      defaultKms: KeyManagementSystemEnum.LOCAL
-    })*/
+  [`${DID_PREFIX}:${SupportedDidMethodEnum.DID_WEB}`]: new WebDIDProvider({
+    defaultKms: KeyManagementSystemEnum.LOCAL,
+  }),
+  [`${DID_PREFIX}:${SupportedDidMethodEnum.DID_JWK}`]: new JwkDIDProvider({
+    defaultKms: KeyManagementSystemEnum.LOCAL,
+  }),
 }
 
 const dbConnection = getDbConnection(DB_CONNECTION_NAME)
@@ -121,21 +129,33 @@ const agent = createAgent<IPlugins>({
         userPinRequired: false,
         didOpts: {
           identifierOpts: {
-            identifier: RP_DID,
-            kid: RP_DID_KID,
+            identifier: RP_DID_JWK,
+            kid: '04062ac5fcb43c919f2e1031aa0bb472c935da4382b4cd1d83394a7febab2e18b8953bef2e6e1eda044ef1f26660026fbfff8d654d88e41ee6a2e2127c382cee7d',
           },
         },
       },
       importMetadatas: [
         {
-          correlationId: 'http://172.16.1.239:5000/test',
+          correlationId: 'https://oid4vci.ngrok.dev/test',
           overwriteExisting: true,
           metadata: {
-            credential_issuer: 'http://172.16.1.239:5000/test',
-            credential_endpoint: 'http://172.16.1.239:5000/test/credentials',
-            // token_endpoint: 'http://172.16.1.239:5000/test/token',
+            credential_issuer: 'https://oid4vci.ngrok.dev/test',
+            credential_endpoint: 'https://oid4vci.ngrok.dev/test/credentials',
+            // token_endpoint: 'https://oid4vci.ngrok.dev/test/token',
+            display: [
+              {
+                name: 'Sphereon Issuer',
+                description: 'Example OID4VCI Issuer',
+              },
+            ],
             credentials_supported: [
               {
+                display: [
+                  {
+                    name: 'Example Credential',
+                    description: 'Example Credential',
+                  },
+                ],
                 id: 'test',
                 types: ['VerifiableCredential'],
                 format: 'jwt_vc_json',
@@ -143,11 +163,45 @@ const agent = createAgent<IPlugins>({
                 cryptographic_suites_supported: ['ES256', 'ES256K', 'EdDSA'],
               },
             ],
-          },
+          } as CredentialIssuerMetadata,
+        },
+        {
+          correlationId: 'https://oid4vci.ngrok.dev/dbc2023',
+          overwriteExisting: true,
+          metadata: {
+            credential_issuer: 'https://oid4vci.ngrok.dev/dbc2023',
+            credential_endpoint: 'https://oid4vci.ngrok.dev/dbc2023/credentials',
+            // token_endpoint: 'https://oid4vci.ngrok.dev/test/token',
+            display: [
+              {
+                name: 'Dutch Blockchain',
+                description: 'Dutch Blockchain Issuer',
+              },
+            ],
+            credentials_supported: [
+              {
+                display: [
+                  {
+                    name: 'DBC Conference 2023',
+                    description: 'DBC Conference Attendee 2023',
+                  },
+                ],
+                id: 'dbc2023',
+                types: ['VerifiableCredential', 'DBCConferenceAttendee'],
+                format: 'jwt_vc_json',
+                cryptographic_binding_methods_supported: ['did:web', 'did:jwk'],
+                cryptographic_suites_supported: ['ES256', 'ES256K', 'EdDSA'],
+              },
+            ],
+          } as CredentialIssuerMetadata,
         },
       ],
     }),
-    new OID4VCIIssuer(),
+    new OID4VCIIssuer({
+      resolveOpts: {
+        resolver,
+      },
+    }),
     new CredentialPlugin(),
     new CredentialHandlerLDLocal({
       contextMaps: [LdDefaultContexts],
@@ -166,11 +220,32 @@ const agent = createAgent<IPlugins>({
   ],
 })
 
-// agent.didManagerImport({did: RP_DID, keys: })
+agent
+  .didManagerGet({ did: RP_DID_JWK })
+  .then((id) => {
+    console.log(
+      `==DID JWK existed:  \r\n${JSON.stringify(id, null, 2)}\r\nJWK:\r\n${JSON.stringify(toJwk(id.keys[0].publicKeyHex, 'Secp256k1'), null, 2)}`
+    )
+  })
+  .catch((error) => {
+    agent
+      .didManagerCreate({
+        provider: 'did:jwk',
+        alias: 'oid4vci-jwk',
+        options: {
+          key: {
+            privateKeyHex: RP_DID_JWK_PRIVATE_KEY_HEX,
+          },
+        },
+      })
+      .then((id) => console.log(`==>DID JWK created: \r\n${JSON.stringify(id, null, 2)}`))
+      .catch((e) => console.error(`==>DID JWK ERROR: ${e.message}`))
+  })
+  .then(() => start())
 agent
   .didManagerCreate({
     provider: 'did:ion',
-    alias: RP_DID,
+    alias: RP_DID_ION,
     options: {
       kid: 'auth-key',
       anchor: false,
@@ -190,7 +265,7 @@ agent
         {
           key: {
             kid: 'auth-key',
-            privateKeyHex: RP_PRIVATE_KEY_HEX,
+            privateKeyHex: RP_ION_PRIVATE_KEY_HEX,
           },
           purposes: [IonPublicKeyPurpose.Authentication, IonPublicKeyPurpose.AssertionMethod],
         },

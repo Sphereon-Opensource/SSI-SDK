@@ -8,7 +8,7 @@ import {
   IssuerCredentialDefinition,
 } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier } from '@sphereon/oid4vci-issuer/lib/types'
-import { IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
+import { IDIDOptions, ResolveOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IOID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { ICredential } from '@sphereon/ssi-types/dist'
 import {
@@ -33,6 +33,7 @@ export interface IOID4VCIIssuer extends IPluginMethodMap {
 export interface IOID4VCIIssuerOpts {
   defaultStoreId?: string
   defaultNamespace?: string
+  resolveOpts?: ResolveOpts
 }
 
 export interface IIssuerDefaultOpts extends IIssuerOptions {}

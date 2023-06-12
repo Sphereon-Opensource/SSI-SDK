@@ -75,6 +75,12 @@ export class OID4VCIIssuer implements IAgentPlugin {
     const metadataOpts = await this.getMetadataOpts({ ...args, credentialIssuer }, context)
     const metadata = await this.getIssuerMetadata({ ...args, credentialIssuer }, context)
     const issuerOpts = await this.getIssuerOpts({ ...args, credentialIssuer }, context)
+    if (!issuerOpts.didOpts?.resolveOpts) {
+      issuerOpts.didOpts.resolveOpts = { ...issuerOpts.didOpts.resolveOpts, ...this._opts.resolveOpts }
+    }
+    if (!issuerOpts.didOpts?.resolveOpts?.resolver) {
+      throw Error('A resolver is needed to resolved the Proof from the holder')
+    }
     this.instances.set(credentialIssuer, new IssuerInstance({ issuerOpts, metadataOpts, metadata }))
     return this.oid4vciGetInstance(args, context)
   }
