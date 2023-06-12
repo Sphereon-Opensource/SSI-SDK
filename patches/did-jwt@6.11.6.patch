@@ -1,0 +1,71 @@
+diff --git a/lib/index.cjs b/lib/index.cjs
+index 242873c979b9864c7b4fbb7400e4e0b6d1d58a2a..b7bdca367654398286c9e83370bd12bab7f849e5 100644
+--- a/lib/index.cjs
++++ b/lib/index.cjs
+@@ -1041,8 +1041,11 @@ const verifyJWT = function (jwt, options = {
+       }
+ 
+       did = payload.client_id;
+-    } else {
+-      did = payload.iss;
++    } else if (payload.iss?.indexOf('did:') === 0) {
++      did = payload.iss
++    } else if (header.kid?.indexOf('did:') === 0) {
++      // OID4VCI expects iss to be the client and kid, to be the DID VM
++      did = (header.kid || '').split('#')[0]
+     }
+ 
+     if (!did) {
+diff --git a/lib/index.module.js b/lib/index.module.js
+index 059e25f3b4e6ed2e8b102f7b2f3097cd54db16d1..3d9fe72d6dc0243b408232a3985f0bddc959ded3 100644
+--- a/lib/index.module.js
++++ b/lib/index.module.js
+@@ -1015,8 +1015,11 @@ const verifyJWT = function (jwt, options = {
+       }
+ 
+       did = payload.client_id;
+-    } else {
+-      did = payload.iss;
++    } else if (payload.iss?.indexOf('did:') === 0) {
++      did = payload.iss
++    } else if (header.kid?.indexOf('did:') === 0) {
++      // OID4VCI expects iss to be the client and kid, to be the DID VM
++      did = (header.kid || '').split('#')[0]
+     }
+ 
+     if (!did) {
+diff --git a/lib/index.umd.js b/lib/index.umd.js
+index f84cfb5d7e482b7918ed65f1722af5404541c9c8..1baa0e0e0437f0c7fcce67d60e5ea647b20566a2 100644
+--- a/lib/index.umd.js
++++ b/lib/index.umd.js
+@@ -1033,8 +1033,11 @@
+         }
+ 
+         did = payload.client_id;
+-      } else {
+-        did = payload.iss;
++      } else if (payload.iss?.indexOf('did:') === 0) {
++      	did = payload.iss
++      } else if (header.kid?.indexOf('did:') === 0) {
++      	// OID4VCI expects iss to be the client and kid, to be the DID VM
++      	did = (header.kid || '').split('#')[0]
+       }
+ 
+       if (!did) {
+diff --git a/src/JWT.ts b/src/JWT.ts
+index 2c6ed6a7c4f66317938530f95545243802038980..eddd0f3246dee655903ae106836a7ad92d45f473 100644
+--- a/src/JWT.ts
++++ b/src/JWT.ts
+@@ -429,8 +429,11 @@ export async function verifyJWT(
+       throw new Error(`${JWT_ERROR.INVALID_JWT}: JWT client_id is required`)
+     }
+     did = payload.client_id
+-  } else {
++  } else if (payload.iss?.indexOf('did:') === 0) {
+     did = payload.iss
++  } else if (header.kid?.indexOf('did:') === 0) {
++    // OID4VCI expects iss to be the client and kid, to be the DID VM
++    did = (header.kid || '').split('#')[0]
+   }
+ 
+   if (!did) {
