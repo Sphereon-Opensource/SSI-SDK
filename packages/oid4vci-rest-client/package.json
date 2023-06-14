@@ -13,7 +13,7 @@
   "scripts": {
     "build": "tsc --build",
     "build:clean": "tsc --build --clean && tsc --build",
-    "generate-plugin-schema": "veramo dev generate-plugin-schema"
+    "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
     "@sphereon/oid4vci-common": "0.4.1-unstable.286",
