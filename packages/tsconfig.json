@@ -1,13 +1,18 @@
 {
   "files": [],
   "references": [
+    { "path": "dev" },
     { "path": "agent-config" },
     { "path": "ssi-types" },
     { "path": "ssi-sdk-core" },
+    { "path": "w3c-vc-api" },
     { "path": "ms-authenticator" },
     { "path": "ms-request-api" },
     { "path": "vc-handler-ld-local" },
     { "path": "presentation-exchange" },
+    { "path": "oid4vci-issuer-store" },
+    { "path": "oid4vci-issuer" },
+    { "path": "oid4vci-issuer-rest-api" },
     { "path": "siopv2-oid4vp-common" },
     { "path": "siopv2-oid4vp-op-auth" },
     { "path": "siopv2-oid4vp-rp-auth" },
@@ -18,6 +23,7 @@
     { "path": "data-store" },
     { "path": "wellknown-did-issuer" },
     { "path": "wellknown-did-verifier" },
-    { "path": "kv-store" }
+    { "path": "kv-store" },
+    { "path": "issuance-branding" }
   ]
 }

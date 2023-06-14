@@ -1,0 +1,26 @@
+{
+  "extends": "../tsconfig-base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "declarationDir": "dist",
+    "esModuleInterop": true
+  },
+  "references": [
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../kv-store"
+    },
+    {
+      "path": "../oid4vci-issuer-store"
+    },
+    {
+      "path": "../oid4vci-issuer"
+    }
+  ]
+}

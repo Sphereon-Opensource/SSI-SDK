@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, BaseEntity } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
-import { BasicConnectionConfig, ConnectionTypeEnum, IBasicConnection, IDidAuthConfig, IOpenIdConfig } from '../../types/contact'
+import { BasicConnectionConfig, ConnectionTypeEnum, IBasicConnection, IDidAuthConfig, IOpenIdConfig } from '../../types'
 import { IdentityEntity } from './IdentityEntity'
 import { OpenIdConfigEntity, openIdConfigEntityFrom } from './OpenIdConfigEntity'
 import { DidAuthConfigEntity, didAuthConfigEntityFrom } from './DidAuthConfigEntity'

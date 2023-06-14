@@ -31,7 +31,7 @@ export class CreateContacts1659463079429 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    debug('reverting contacts tables')
+    debug('migration: reverting contacts tables')
     const dbType = queryRunner.connection.driver.options.type
     if (dbType === 'postgres') {
       debug('using postgres migration file')

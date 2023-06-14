@@ -13,11 +13,11 @@
     "events": "^3.3.0",
     "debug": "^4.3.4",
     "json-buffer": "^3.0.1",
-    "typeorm": "^0.3.10",
+    "typeorm": "^0.3.12",
     "uint8arrays": "^3.1.1"
   },
   "devDependencies": {
-    "@veramo/cli": "4.2.0",
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@types/json-buffer": "^3.0.0",
     "@types/debug": "^4.1.7",
     "keyv": "^4.5.2",
