@@ -58,7 +58,10 @@
               "description": "OPTIONAL. Boolean value specifying whether the Credential Issuer expects presentation of a user PIN along with the Token Request in a Pre-Authorized Code Flow. Default is false."
             }
           },
-          "required": ["pre-authorized_code", "user_pin_required"]
+          "required": [
+            "pre-authorized_code",
+            "user_pin_required"
+          ]
         },
         "CredentialOfferFormat": {
           "type": "object",
@@ -80,11 +83,18 @@
               }
             }
           },
-          "required": ["format", "types"]
+          "required": [
+            "format",
+            "types"
+          ]
         },
         "OID4VCICredentialFormat": {
           "type": "string",
-          "enum": ["jwt_vc_json", "jwt_vc_json-ld", "ldp_vc"]
+          "enum": [
+            "jwt_vc_json",
+            "jwt_vc_json-ld",
+            "ldp_vc"
+          ]
         },
         "IVCIClientCreateOfferUriResponse": {
           "type": "object",
@@ -93,7 +103,9 @@
               "type": "string"
             }
           },
-          "required": ["uri"]
+          "required": [
+            "uri"
+          ]
         }
       },
       "methods": {
