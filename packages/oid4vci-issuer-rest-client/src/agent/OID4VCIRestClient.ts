@@ -18,11 +18,11 @@ export class OID4VCIRestClient implements IAgentPlugin {
     vciClientCreateOfferUri: this.vciClientCreateOfferUri.bind(this),
   }
 
-  private readonly baseUrl?: string
+  private readonly agentBaseURL?: string
 
   constructor(args?: { baseUrl?: string }) {
     if (args?.baseUrl) {
-      this.baseUrl = args.baseUrl
+      this.agentBaseURL = args.baseUrl
     }
   }
 
@@ -30,7 +30,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
     if (!args.credentials || !args.grants) {
       throw new Error("Can't generate the credential offer url without credentials and grants params present.")
     }
-    const baseUrl = args.baseUrl || this.baseUrl
+    const baseUrl = args.baseUrl || this.agentBaseURL
     if (!baseUrl) {
       throw new Error('No base url has been provided')
     }
@@ -58,10 +58,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
     }
   }
 
-  private urlWithBase(path: string, baseUrl?: string): string {
-    if (!this.baseUrl && !baseUrl) {
-      throw new Error('You have to provide baseUrl')
-    }
-    return baseUrl ? `${baseUrl}${path.startsWith('/') ? path : `/${path}`}` : `${this.baseUrl}${path.startsWith('/') ? path : `/${path}`}`
+  private urlWithBase(path: string, baseUrl: string): string {
+    return `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`
   }
 }
