@@ -17,7 +17,7 @@ export interface IVCIClientCreateOfferUriResponse {
 
 export interface IVCIClientCreateOfferUriRequest {
   credentials: (CredentialOfferFormat | string)[]
-  grants?: Grant
+  grants: Grant
 }
 
 export type IRequiredContext = IAgentContext<never>

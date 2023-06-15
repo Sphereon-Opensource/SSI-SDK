@@ -28,17 +28,17 @@ export class OID4VCIRestClient implements IAgentPlugin {
 
   private async vciClientCreateOfferUri(args: IVCIClientCreateOfferUriRequestArgs): Promise<IVCIClientCreateOfferUriResponse> {
     if (!args.credentials || !args.grants) {
-      throw new Error("Can't generate the credential offer url without credentials and grants params present.")
+      return Promise.reject(Error("Can't generate the credential offer url without credentials and grants params present."))
     }
     const baseUrl = args.baseUrl || this.agentBaseURL
     if (!baseUrl) {
-      throw new Error('No base url has been provided')
+      return Promise.reject(Error('No base url has been provided'))
     }
     const request: IVCIClientCreateOfferUriRequest = {
       credentials: args.credentials,
       grants: args.grants,
     }
-    const url = this.urlWithBase(`webapp/credential-offers`, baseUrl)
+    const url = OID4VCIRestClient.urlWithBase(`webapp/credential-offers`, baseUrl)
     debug(`OID4VCIRestClient is going to send request: ${JSON.stringify(request)} to ${url}`)
     try {
       const origResponse = await fetch(url, {
@@ -48,7 +48,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
         },
         body: JSON.stringify(request),
       })
-      if (origResponse.status >= 400) {
+      if (!origResponse.ok) {
         return Promise.reject(Error(`request to ${url} returned ${origResponse.status}`));
       }
       return await origResponse.json()
@@ -58,7 +58,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
     }
   }
 
-  private urlWithBase(path: string, baseUrl: string): string {
+  private static urlWithBase(path: string, baseUrl: string): string {
     return `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`
   }
 }
