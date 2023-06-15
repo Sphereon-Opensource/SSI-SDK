@@ -11,26 +11,27 @@ import { IAgentPlugin } from '@veramo/core'
 const debug = Debug('sphereon:ssi-sdk.oid4vci-issuer-rest-client')
 
 /**
- * @beta
+ * {@inheritDoc IOID4VCIRestClient}
  */
 export class OID4VCIRestClient implements IAgentPlugin {
   readonly methods: IOID4VCIRestClient = {
     vciClientCreateOfferUri: this.vciClientCreateOfferUri.bind(this),
   }
 
-  private readonly agentBaseURL?: string
+  private readonly agentBaseUrl?: string
 
   constructor(args?: { baseUrl?: string }) {
     if (args?.baseUrl) {
-      this.agentBaseURL = args.baseUrl
+      this.agentBaseUrl = args.baseUrl
     }
   }
 
+  /** {@inheritDoc IOID4VCIRestClient.vciClientCreateOfferUri} */
   private async vciClientCreateOfferUri(args: IVCIClientCreateOfferUriRequestArgs): Promise<IVCIClientCreateOfferUriResponse> {
     if (!args.credentials || !args.grants) {
       return Promise.reject(Error("Can't generate the credential offer url without credentials and grants params present."))
     }
-    const baseUrl = args.baseUrl || this.agentBaseURL
+    const baseUrl = args.baseUrl || this.agentBaseUrl
     if (!baseUrl) {
       return Promise.reject(Error('No base url has been provided'))
     }
@@ -54,7 +55,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
       return await origResponse.json()
     } catch (e) {
       debug(`Error on posting to url ${url}: ${e}`)
-      throw e
+      return Promise.reject(Error(`request to ${url} returned ${e}`));
     }
   }
 
