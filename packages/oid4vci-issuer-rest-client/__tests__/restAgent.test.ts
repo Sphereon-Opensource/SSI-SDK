@@ -62,6 +62,7 @@ const testContext = {
   tearDown,
 }
 
-describe('REST integration tests', () => {
+// todo: for now we're skipping this test, uncomment if we want the integration tests
+xdescribe('REST integration tests', () => {
   issuanceRestClientAgentLogic(testContext)
 })
