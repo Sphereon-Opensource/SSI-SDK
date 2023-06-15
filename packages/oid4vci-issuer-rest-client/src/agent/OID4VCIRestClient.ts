@@ -1,21 +1,21 @@
 import { fetch } from 'cross-fetch'
 import {
   IOID4VCIRestClient,
-  IVCIClientCreateOfferUriRequest,
-  IVCIClientCreateOfferUriRequestArgs,
-  IVCIClientCreateOfferUriResponse,
+  IOID4VCIClientCreateOfferUriRequest,
+  IOID4VCIClientCreateOfferUriRequestArgs,
+  IOID4VCIClientCreateOfferUriResponse,
 } from '../types/IOID4VCIRestClient'
 import Debug from 'debug'
 import { IAgentPlugin } from '@veramo/core'
 
-const debug = Debug('sphereon:ssi-sdk.oid4vci-issuer-rest-client')
+const debug = Debug('sphereon:ssi-sdk:oid4vci:issuer:rest-client')
 
 /**
  * {@inheritDoc IOID4VCIRestClient}
  */
 export class OID4VCIRestClient implements IAgentPlugin {
   readonly methods: IOID4VCIRestClient = {
-    vciClientCreateOfferUri: this.vciClientCreateOfferUri.bind(this),
+    oid4vciClientCreateOfferUri: this.oid4vciClientCreateOfferUri.bind(this),
   }
 
   private readonly agentBaseUrl?: string
@@ -27,7 +27,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IOID4VCIRestClient.vciClientCreateOfferUri} */
-  private async vciClientCreateOfferUri(args: IVCIClientCreateOfferUriRequestArgs): Promise<IVCIClientCreateOfferUriResponse> {
+  private async oid4vciClientCreateOfferUri(args: IOID4VCIClientCreateOfferUriRequestArgs): Promise<IOID4VCIClientCreateOfferUriResponse> {
     if (!args.credentials || !args.grants) {
       return Promise.reject(Error("Can't generate the credential offer url without credentials and grants params present."))
     }
@@ -35,7 +35,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
     if (!baseUrl) {
       return Promise.reject(Error('No base url has been provided'))
     }
-    const request: IVCIClientCreateOfferUriRequest = {
+    const request: IOID4VCIClientCreateOfferUriRequest = {
       credentials: args.credentials,
       grants: args.grants,
     }
