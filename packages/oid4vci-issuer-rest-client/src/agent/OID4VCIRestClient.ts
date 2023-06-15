@@ -50,12 +50,12 @@ export class OID4VCIRestClient implements IAgentPlugin {
         body: JSON.stringify(request),
       })
       if (!origResponse.ok) {
-        return Promise.reject(Error(`request to ${url} returned ${origResponse.status}`));
+        return Promise.reject(Error(`request to ${url} returned ${origResponse.status}`))
       }
       return await origResponse.json()
     } catch (e) {
       debug(`Error on posting to url ${url}: ${e}`)
-      return Promise.reject(Error(`request to ${url} returned ${e}`));
+      return Promise.reject(Error(`request to ${url} returned ${e}`))
     }
   }
 

@@ -28,12 +28,11 @@ import { OID4VCIRestClient } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-client'
 const agent = createAgent<IOID4VCIRestClient>({
   plugins: [
     new OID4VCIRestClient({
-      baseUrl: 'my-issuer-base-url'
+      baseUrl: 'my-issuer-base-url',
     }),
   ],
 })
 ```
-
 
 ### Getting a credential offering uri:
 
@@ -46,11 +45,12 @@ const request: IVCIClientCreateOfferUriRequestArgs = {
       user_pin_required: false,
     },
   },
-  credentials: ['dbc2023']
+  credentials: ['dbc2023'],
 }
 
 const result: IVCIClientCreateOfferUriResponse = await agent.vciClientCreateOfferUri(request)
 ```
+
 ### Installation
 
 ```shell
