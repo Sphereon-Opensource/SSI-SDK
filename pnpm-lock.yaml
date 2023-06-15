@@ -663,6 +663,37 @@ importers:
         specifier: ^2.0.24
         version: 2.0.24
 
+  packages/oid4vci-issuer-rest-client:
+    dependencies:
+      '@sphereon/oid4vci-common':
+        specifier: 0.4.1-unstable.286
+        version: 0.4.1-unstable.286
+      '@veramo/core':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      cross-fetch:
+        specifier: ^3.1.5
+        version: 3.1.5
+    devDependencies:
+      '@types/node':
+        specifier: ^18.16.3
+        version: 18.16.3
+      '@veramo/remote-client':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/remote-server':
+        specifier: 4.2.0
+        version: 4.2.0(express@4.18.2)
+      nock:
+        specifier: ^13.3.0
+        version: 13.3.0
+      ts-node:
+        specifier: ^10.9.1
+        version: 10.9.1(@types/node@18.16.3)(typescript@4.9.5)
+      typescript:
+        specifier: 4.9.5
+        version: 4.9.5
+
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
@@ -5483,7 +5514,7 @@ packages:
       '@sphereon/pex-models': 2.0.2
       '@sphereon/ssi-types': link:packages/ssi-types
       '@sphereon/wellknown-dids-client': 0.1.3
-      cross-fetch: 3.1.5
+      cross-fetch: 3.1.6
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-resolver: 4.1.0
       events: 3.3.0
@@ -5499,7 +5530,7 @@ packages:
   /@sphereon/did-uni-client@0.4.0:
     resolution: {integrity: sha512-PJr0xi46iEMtQ7vJW6rAoc2T+gPT8P7q0FjVcOVI3l8so4XJ+iY+wkeF2osEFGmjVS/Q76uhcDCBXTXxPDFdcQ==}
     dependencies:
-      cross-fetch: 3.1.5
+      cross-fetch: 3.1.6
       did-resolver: 3.2.2
     transitivePeerDependencies:
       - encoding
@@ -5541,7 +5572,7 @@ packages:
     dependencies:
       '@sphereon/isomorphic-argon2': 1.0.1(@sphereon/react-native-argon2@2.0.9)(react-native@0.71.10)
       '@sphereon/react-native-argon2': 2.0.9(react-native@0.71.10)
-      cross-fetch: 3.1.5
+      cross-fetch: 3.1.6
       debug: 4.3.4
       uint8arrays: 3.1.1
     transitivePeerDependencies:
@@ -5825,7 +5856,7 @@ packages:
     resolution: {integrity: sha512-TAT24L3RoXD8ocrkTcsz7HuJmgjNjdoV6IXP1p3DdaI/GqkynytXE3J1+F7vUFMRYwY5nW2RaXSgDQhrFJemaA==}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
-      cross-fetch: 3.1.5
+      cross-fetch: 3.1.6
       jwt-decode: 3.1.2
     transitivePeerDependencies:
       - encoding
