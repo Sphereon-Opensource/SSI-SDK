@@ -1,4 +1,4 @@
-import { IAgentContext, IPluginMethodMap, IResolver } from '@veramo/core'
+import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import { CredentialOfferFormat, Grant } from '@sphereon/oid4vci-common'
 
 export interface IOID4VCIRestClient extends IPluginMethodMap {
@@ -6,8 +6,8 @@ export interface IOID4VCIRestClient extends IPluginMethodMap {
 }
 
 export interface IVCIClientCreateOfferUriRequestArgs {
-  grants?: Grant
-  credentials?: (CredentialOfferFormat | string)[]
+  grants: Grant
+  credentials: (CredentialOfferFormat | string)[]
   baseUri?: string
 }
 
@@ -20,4 +20,4 @@ export interface IVCIClientCreateOfferUriRequest {
   grants?: Grant
 }
 
-export type IRequiredContext = IAgentContext<IResolver>
+export type IRequiredContext = IAgentContext<never>

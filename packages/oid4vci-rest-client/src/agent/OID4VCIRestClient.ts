@@ -20,15 +20,15 @@ export class OID4VCIRestClient implements IAgentPlugin {
 
   private readonly baseUrl?: string
 
-  constructor(args?: { baseUrl?: string; definitionId?: string }) {
+  constructor(args?: { baseUrl?: string }) {
     if (args?.baseUrl) {
       this.baseUrl = args.baseUrl
     }
   }
 
   private async vciClientCreateOfferUri(args: IVCIClientCreateOfferUriRequestArgs): Promise<IVCIClientCreateOfferUriResponse> {
-    if (!args.credentials) {
-      throw new Error("Can't generate the credential offer uri without credentials param present.")
+    if (!args.credentials || !args.grants) {
+      throw new Error("Can't generate the credential offer url without credentials and grants params present.")
     }
     const baseUrl = this.checkBaseUrlParameter(args.baseUri)
     const request: IVCIClientCreateOfferUriRequest = {
@@ -37,7 +37,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
     if (args.grants) {
       request['grants'] = args.grants
     }
-    const url = this.uriWithBase(`webapp/credential-offers`, baseUrl)
+    const url = this.urlWithBase(`webapp/credential-offers`, baseUrl)
     debug(`OID4VCIRestClient is going to send request: ${JSON.stringify(request)} to ${url}`)
     const origResponse = await fetch(url, {
       method: 'POST',
@@ -49,7 +49,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
     return await origResponse.json()
   }
 
-  private uriWithBase(path: string, baseUrl?: string): string {
+  private urlWithBase(path: string, baseUrl?: string): string {
     if (!this.baseUrl && !baseUrl) {
       throw new Error('You have to provide baseUrl')
     }
