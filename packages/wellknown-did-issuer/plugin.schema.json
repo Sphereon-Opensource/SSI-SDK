@@ -1,0 +1,164 @@
+{
+  "IWellKnownDidIssuer": {
+    "components": {
+      "schemas": {
+        "IIssueDidConfigurationResourceArgs": {
+          "type": "object",
+          "properties": {
+            "issuances": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "additionalProperties": true
+                }
+              }
+            },
+            "credentialIssuance": {
+              "type": "string"
+            },
+            "save": {
+              "type": "boolean"
+            },
+            "additionalProperties": false
+          },
+          "required": ["issuances", "credentialIssuance"],
+          "description": "Arguments needed for {@link IWellKnownDidIssuer.addLinkedDomainsService } "
+        },
+        "IIssueDomainLinkageCredentialArgs": {
+          "type": "object",
+          "properties": {
+            "did": {
+              "type": "string"
+            },
+            "origin": {
+              "type": "string"
+            },
+            "serviceId": {
+              "type": "string"
+            },
+            "issuanceDate": {
+              "type": "date"
+            },
+            "expirationDate": {
+              "type": "date"
+            },
+            "save": {
+              "type": "boolean"
+            },
+            "options": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "credentialIssuance": {
+              "type": "string"
+            },
+            "additionalProperties": false
+          },
+          "required": ["did", "origin", "expirationDate", "options"],
+          "description": "Arguments needed for {@link IWellKnownDidIssuer.issueDomainLinkageCredential } "
+        },
+        "IGetDidConfigurationResourceArgs": {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "type": "string"
+            },
+            "additionalProperties": false
+          },
+          "required": ["origin"],
+          "description": "Arguments needed for {@link IWellKnownDidIssuer.getDidConfigurationResource } "
+        },
+        "IAddLinkedDomainsServiceArgs": {
+          "type": "object",
+          "properties": {
+            "did": {
+              "type": "string"
+            },
+            "origin": {
+              "type": "string"
+            },
+            "serviceId": {
+              "type": "string"
+            },
+            "additionalProperties": false
+          },
+          "required": ["did", "origin"],
+          "description": "Arguments needed for {@link IWellKnownDidIssuer.addLinkedDomainsService } "
+        },
+        "ISaveDidConfigurationResourceArgs": {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "type": "string"
+            },
+            "didConfigurationResource": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": false
+          },
+          "required": ["did", "origin"],
+          "description": "Arguments needed for {@link IWellKnownDidIssuer.saveDidConfigurationResource } "
+        },
+        "IRemoveCredentialIssuanceArgs": {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "callbackName": "string"
+            },
+            "additionalProperties": false
+          },
+          "required": ["callbackName"],
+          "description": "Arguments needed for {@link IWellKnownDidIssuer.removeCredentialIssuance } "
+        }
+      },
+      "methods": {
+        "addLinkedDomainsService": {
+          "description": "Adds a LinkedDomains service to the DID",
+          "arguments": {
+            "$ref": "#/components/schemas/IAddLinkedDomainsServiceArgs"
+          }
+        },
+        "getDidConfigurationResource": {
+          "description": "Retrieves a DID configuration resource from the database",
+          "arguments": {
+            "$ref": "#/components/schemas/IGetDidConfigurationResourceArgs"
+          },
+          "returnType": "object"
+        },
+        "issueDidConfigurationResource": {
+          "description": "Issues a DID configuration resource",
+          "arguments": {
+            "$ref": "#/components/schemas/IAddLinkedDomainsServiceArgs"
+          },
+          "returnType": "object"
+        },
+        "issueDomainLinkageCredential": {
+          "description": "Retrieves a domain linkage credential",
+          "arguments": {
+            "$ref": "#/components/schemas/IIssueDomainLinkageCredentialArgs"
+          },
+          "returnType": "object"
+        },
+        "removeCredentialIssuance": {
+          "description": "Removes a registered callback",
+          "arguments": {
+            "$ref": "#/components/schemas/IRemoveCredentialIssuanceArgs"
+          },
+          "returnType": "boolean"
+        },
+        "saveDidConfigurationResource": {
+          "description": "Saves a DID configuration resource to the database",
+          "arguments": {
+            "$ref": "#/components/schemas/ISaveDidConfigurationResourceArgs"
+          }
+        }
+      }
+    }
+  }
+}

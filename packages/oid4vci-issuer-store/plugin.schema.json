@@ -1,0 +1,329 @@
+{
+  "IDidAuthSiopOpAuthenticator": {
+    "components": {
+      "schemas": {
+        "IGetSiopSessionArgs": {
+          "type": "object",
+          "properties": {
+            "sessionId": {
+              "type": "string"
+            },
+            "additionalProperties": false
+          },
+          "required": ["sessionId"],
+          "description": "Arguments needed for {@link DidAuthSiopOpAuthenticator.getSessionForSiop } "
+        },
+        "IRegisterSiopSessionArgs": {
+          "type": "object",
+          "properties": {
+            "identifier": {
+              "type": "object",
+              "properties": {
+                "did": {
+                  "type": "string"
+                },
+                "alias": {
+                  "type": "string"
+                },
+                "provider": {
+                  "type": "string"
+                },
+                "controllerKeyId": {
+                  "type": "string"
+                },
+                "keys": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "additionalProperties": true
+                    }
+                  }
+                },
+                "services": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false,
+              "required": ["did", "provider", "keys", "services"]
+            },
+            "sessionId": {
+              "type": "string"
+            },
+            "expiresIn": {
+              "type": "number"
+            },
+            "additionalProperties": false
+          },
+          "required": ["identifier"],
+          "description": "Arguments needed for {@link DidAuthSiopOpAuthenticator.registerSessionForSiop } "
+        },
+        "IRemoveSiopSessionArgs": {
+          "type": "object",
+          "properties": {
+            "sessionId": {
+              "type": "string"
+            },
+            "additionalProperties": false
+          },
+          "required": ["sessionId"],
+          "description": "Arguments needed for {@link DidAuthSiopOpAuthenticator.removeSessionForSiop } "
+        },
+        "IAuthenticateWithSiopArgs": {
+          "type": "object",
+          "properties": {
+            "sessionId": {
+              "type": "string"
+            },
+            "stateId": {
+              "type": "string"
+            },
+            "redirectUrl": {
+              "type": "string"
+            },
+            "additionalProperties": false
+          },
+          "required": ["sessionId", "stateId", "redirectUrl"],
+          "description": "Arguments needed for {@link DidAuthSiopOpAuthenticator.authenticateWithSiop } "
+        },
+        "IResponse": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number"
+            },
+            "additionalProperties": true
+          },
+          "required": ["status"],
+          "description": "Result of {@link DidAuthSiopOpAuthenticator.authenticateWithSiop & DidAuthSiopOpAuthenticator.sendSiopAuthenticationResponse } "
+        },
+        "IGetSiopAuthenticationRequestFromRpArgs": {
+          "type": "object",
+          "properties": {
+            "sessionId": {
+              "type": "string"
+            },
+            "stateId": {
+              "type": "string"
+            },
+            "redirectUrl": {
+              "type": "string"
+            },
+            "additionalProperties": false
+          },
+          "required": ["sessionId", "stateId", "redirectUrl"],
+          "description": "Arguments needed for {@link DidAuthSiopOpAuthenticator.getSiopAuthenticationRequestFromRP } "
+        },
+        "ParsedAuthenticationRequestURI": {
+          "type": "object",
+          "properties": {
+            "jwt": {
+              "type": "string"
+            },
+            "requestPayload": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "registration": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": false
+          },
+          "required": ["jwt", "requestPayload", "registration"],
+          "description": "Result of {@link DidAuthSiopOpAuthenticator.getSiopAuthenticationRequestFromRP } "
+        },
+        "IGetSiopAuthenticationRequestDetailsArgs": {
+          "type": "object",
+          "properties": {
+            "sessionId": {
+              "type": "string"
+            },
+            "verifiedAuthenticationRequest": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "credentialFilter": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": false
+          },
+          "required": ["sessionId", "verifiedAuthenticationRequest"],
+          "description": "Arguments needed for {@link DidAuthSiopOpAuthenticator.getSiopAuthenticationRequestDetails } "
+        },
+        "IAuthRequestDetails": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "alsoKnownAs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "vpResponseOpts": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": false
+          },
+          "required": ["id", "vpResponseOpts"],
+          "description": "Result of {@link DidAuthSiopOpAuthenticator.getSiopAuthenticationRequestDetails } "
+        },
+        "IVerifySiopAuthenticationRequestUriArgs": {
+          "type": "object",
+          "properties": {
+            "sessionId": {
+              "type": "string"
+            },
+            "ParsedAuthenticationRequestURI": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": false
+          },
+          "required": ["sessionId", "ParsedAuthenticationRequestURI"],
+          "description": "Arguments needed for {@link DidAuthSiopOpAuthenticator.verifySiopAuthenticationRequestURI } "
+        },
+        "VerifiedAuthorizationRequest": {
+          "type": "object",
+          "properties": {
+            "payload": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "presentationDefinitions": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "verifyOpts": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": false
+          },
+          "required": ["payload", "verifyOpts"],
+          "description": "Result of {@link DidAuthSiopOpAuthenticator.verifySiopAuthenticationRequestURI } "
+        },
+        "ISendSiopAuthenticationResponseArgs": {
+          "type": "object",
+          "properties": {
+            "sessionId": {
+              "type": "string"
+            },
+            "verifiedAuthenticationRequest": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "verifiablePresentationResponse": {
+              "type": "object",
+              "properties": {
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": false
+          },
+          "required": ["sessionId", "verifiedAuthenticationRequest"],
+          "description": "Arguments needed for {@link DidAuthSiopOpAuthenticator.sendSiopAuthenticationResponse } "
+        }
+      },
+      "methods": {
+        "getSessionForSiop": {
+          "description": "Get SIOP session",
+          "arguments": {
+            "$ref": "#/components/schemas/IGetSiopSessionArgs"
+          },
+          "returnType": "object"
+        },
+        "registerSessionForSiop": {
+          "description": "Register SIOP session",
+          "arguments": {
+            "$ref": "#/components/schemas/IRegisterSiopSessionArgs"
+          },
+          "returnType": "object"
+        },
+        "removeSessionForSiop": {
+          "description": "Remove SIOP session",
+          "arguments": {
+            "$ref": "#/components/schemas/IRemoveSiopSessionArgs"
+          },
+          "returnType": "boolean"
+        },
+        "authenticateWithSiop": {
+          "description": "Authenticate using DID Auth SIOP",
+          "arguments": {
+            "$ref": "#/components/schemas/IAuthenticateWithSiopArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/Response"
+          }
+        },
+        "getSiopAuthenticationRequestFromRP": {
+          "description": "Get authentication request from RP",
+          "arguments": {
+            "$ref": "#/components/schemas/IGetSiopAuthenticationRequestFromRpArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/ParsedAuthenticationRequestURI"
+          }
+        },
+        "getSiopAuthenticationRequestDetails": {
+          "description": "Get authentication request details",
+          "arguments": {
+            "$ref": "#/components/schemas/IGetSiopAuthenticationRequestDetailsArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/IAuthRequestDetails"
+          }
+        },
+        "verifySiopAuthenticationRequestURI": {
+          "description": "Verify authentication request URI",
+          "arguments": {
+            "$ref": "#/components/schemas/IVerifySiopAuthenticationRequestUriArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/VerifiedAuthorizationRequest"
+          }
+        },
+        "sendSiopAuthenticationResponse": {
+          "description": "Send authentication response",
+          "arguments": {
+            "$ref": "#/components/schemas/ISendSiopAuthenticationResponseArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/IRequiredContext"
+          }
+        }
+      }
+    }
+  }
+}

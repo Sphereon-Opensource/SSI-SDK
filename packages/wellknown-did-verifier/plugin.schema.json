@@ -1,0 +1,34 @@
+{
+  "IWellKnownDidVerifier": {
+    "components": {
+      "schemas": {
+        "IVerifyDomainLinkageArgs": {
+          "type": "object",
+          "properties": {
+            "didUrl": {
+              "type": "string"
+            },
+            "signatureVerification": {
+              "type": "string"
+            },
+            "onlyVerifyServiceDids": {
+              "type": "boolean"
+            },
+            "additionalProperties": false
+          },
+          "required": ["didUrl", "signatureVerification"],
+          "description": "Arguments needed for {@link IWellKnownDidVerifier.verifyDomainLinkage } "
+        }
+      },
+      "methods": {
+        "verifyDomainLinkage": {
+          "description": "Verifies the relationship between the controller of an origin and a DID",
+          "arguments": {
+            "$ref": "#/components/schemas/IVerifyDomainLinkageArgs"
+          },
+          "returnType": "object"
+        }
+      }
+    }
+  }
+}
