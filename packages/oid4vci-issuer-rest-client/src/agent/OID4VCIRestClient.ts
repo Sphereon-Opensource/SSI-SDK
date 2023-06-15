@@ -30,12 +30,14 @@ export class OID4VCIRestClient implements IAgentPlugin {
     if (!args.credentials || !args.grants) {
       throw new Error("Can't generate the credential offer url without credentials and grants params present.")
     }
-    this.assertBaseUrl(args.baseUrl)
+    const baseUrl = args.baseUrl || this.baseUrl
+    if (!baseUrl) {
+      throw new Error('No base url has been provided')
+    }
     const request: IVCIClientCreateOfferUriRequest = {
       credentials: args.credentials,
       grants: args.grants,
     }
-    const baseUrl = args.baseUrl || this.baseUrl
     const url = this.urlWithBase(`webapp/credential-offers`, baseUrl)
     debug(`OID4VCIRestClient is going to send request: ${JSON.stringify(request)} to ${url}`)
     try {
@@ -61,11 +63,5 @@ export class OID4VCIRestClient implements IAgentPlugin {
       throw new Error('You have to provide baseUrl')
     }
     return baseUrl ? `${baseUrl}${path.startsWith('/') ? path : `/${path}`}` : `${this.baseUrl}${path.startsWith('/') ? path : `/${path}`}`
-  }
-
-  private assertBaseUrl(baseUrl?: string) {
-    if (!baseUrl && !this.baseUrl) {
-      throw new Error('No base url has been provided')
-    }
   }
 }
