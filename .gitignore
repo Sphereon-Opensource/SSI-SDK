@@ -59,4 +59,4 @@ test/*.js
 *.swp
 *~
 
-/packages/*/plugin.schema.json
+#/packages/*/plugin.schema.json
