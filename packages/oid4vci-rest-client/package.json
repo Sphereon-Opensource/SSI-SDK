@@ -40,5 +40,12 @@
   "repository": "git@github.com:Sphereon-OpenSource/ssi-sdk.git",
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
-  "keywords": []
+  "keywords": [
+    "oid4vci",
+    "oid",
+    "vci",
+    "rest",
+    "VerifiableCredential",
+    "SSI"
+  ]
 }
