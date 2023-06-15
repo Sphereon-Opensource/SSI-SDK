@@ -1,5 +1,5 @@
 {
-  "name": "@sphereon/ssi-sdk.oid4vci-rest-client",
+  "name": "@sphereon/ssi-sdk.oid4vci-issuer-rest-client",
   "description": "contains the client side to call REST endpoints of a Verifiable Credential Issuer",
   "version": "0.11.0",
   "source": "src/index.ts",

@@ -13,6 +13,7 @@
     { "path": "oid4vci-issuer-store" },
     { "path": "oid4vci-issuer" },
     { "path": "oid4vci-issuer-rest-api" },
+    { "path": "oid4vci-issuer-rest-client" },
     { "path": "siopv2-oid4vp-common" },
     { "path": "siopv2-oid4vp-op-auth" },
     { "path": "siopv2-oid4vp-rp-auth" },

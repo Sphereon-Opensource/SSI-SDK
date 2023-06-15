@@ -8,7 +8,7 @@ export interface IOID4VCIRestClient extends IPluginMethodMap {
 export interface IVCIClientCreateOfferUriRequestArgs {
   grants: Grant
   credentials: (CredentialOfferFormat | string)[]
-  baseUri?: string
+  baseUrl?: string
 }
 
 export interface IVCIClientCreateOfferUriResponse {

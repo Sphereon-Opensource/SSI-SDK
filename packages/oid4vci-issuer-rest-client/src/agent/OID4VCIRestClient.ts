@@ -8,7 +8,7 @@ import {
 import Debug from 'debug'
 import { IAgentPlugin } from '@veramo/core'
 
-const debug = Debug('sphereon:ssi-sdk.oid4vci-rest-client')
+const debug = Debug('sphereon:ssi-sdk.oid4vci-issuer-rest-client')
 
 /**
  * @beta
@@ -30,36 +30,42 @@ export class OID4VCIRestClient implements IAgentPlugin {
     if (!args.credentials || !args.grants) {
       throw new Error("Can't generate the credential offer url without credentials and grants params present.")
     }
-    const baseUrl = this.checkBaseUrlParameter(args.baseUri)
+    this.assertBaseUrl(args.baseUrl)
     const request: IVCIClientCreateOfferUriRequest = {
       credentials: args.credentials,
+      grants: args.grants,
     }
-    if (args.grants) {
-      request['grants'] = args.grants
-    }
+    const baseUrl = args.baseUrl || this.baseUrl
     const url = this.urlWithBase(`webapp/credential-offers`, baseUrl)
     debug(`OID4VCIRestClient is going to send request: ${JSON.stringify(request)} to ${url}`)
-    const origResponse = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    })
-    return await origResponse.json()
+    try {
+      const origResponse = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+      })
+      if (origResponse.status >= 400) {
+        return Promise.reject(Error(`request to ${url} returned ${origResponse.status}`));
+      }
+      return await origResponse.json()
+    } catch (e) {
+      debug(`Error on posting to url ${url}: ${e}`)
+      throw e
+    }
   }
 
   private urlWithBase(path: string, baseUrl?: string): string {
     if (!this.baseUrl && !baseUrl) {
       throw new Error('You have to provide baseUrl')
     }
-    return baseUrl ? `${baseUrl}${path.startsWith('/') ? path : '/' + path}` : `${this.baseUrl}${path.startsWith('/') ? path : '/' + path}`
+    return baseUrl ? `${baseUrl}${path.startsWith('/') ? path : `/${path}`}` : `${this.baseUrl}${path.startsWith('/') ? path : `/${path}`}`
   }
 
-  private checkBaseUrlParameter(baseUrl?: string): string {
+  private assertBaseUrl(baseUrl?: string) {
     if (!baseUrl && !this.baseUrl) {
       throw new Error('No base url has been provided')
     }
-    return baseUrl ? baseUrl : (this.baseUrl as string)
   }
 }
