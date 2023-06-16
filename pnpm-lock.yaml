@@ -457,11 +457,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.4.1-unstable.296
-        version: 0.4.1-unstable.296
+        specifier: 0.4.1-unstable.302
+        version: 0.4.1-unstable.302
       '@sphereon/oid4vci-issuer':
-        specifier: 0.4.1-unstable.296
-        version: 0.4.1-unstable.296
+        specifier: 0.4.1-unstable.302
+        version: 0.4.1-unstable.302
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: ^0.12.0
         version: 0.12.0
@@ -515,14 +515,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.4.1-unstable.296
-        version: 0.4.1-unstable.296
+        specifier: 0.4.1-unstable.302
+        version: 0.4.1-unstable.302
       '@sphereon/oid4vci-issuer':
-        specifier: 0.4.1-unstable.296
-        version: 0.4.1-unstable.296
+        specifier: 0.4.1-unstable.302
+        version: 0.4.1-unstable.302
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.4.1-unstable.296
-        version: 0.4.1-unstable.296
+        specifier: 0.4.1-unstable.302
+        version: 0.4.1-unstable.302
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -666,8 +666,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.4.1-unstable.296
-        version: 0.4.1-unstable.296
+        specifier: 0.4.1-unstable.302
+        version: 0.4.1-unstable.302
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -700,8 +700,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.4.1-unstable.296
-        version: 0.4.1-unstable.296
+        specifier: 0.4.1-unstable.302
+        version: 0.4.1-unstable.302
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: ^0.12.0
         version: 0.12.0
@@ -5637,8 +5637,8 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vci-common@0.4.1-unstable.296:
-    resolution: {integrity: sha512-Mt7o31iAjYT+FBYqlkYm2SQgaUjtE06jTK553aBDxPxuKF+qS03ItDbGp7/69e4Ki1TEFbr/4RZaJvvblrpHsA==}
+  /@sphereon/oid4vci-common@0.4.1-unstable.302:
+    resolution: {integrity: sha512-+fGc/66/0QdYcFi+1/m+WPxxT7iTDjskYiI4yEHP93wEPY9X429PW+RFdo37tWHvVxUFXTGFqN+dKL2H7sDm7Q==}
     engines: {node: '>=16'}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -5648,12 +5648,12 @@ packages:
       - encoding
     dev: false
 
-  /@sphereon/oid4vci-issuer-server@0.4.1-unstable.296:
-    resolution: {integrity: sha512-l8jMr8mxSc03fdTF9R+AKSLSEcE6O25yeHmm0vuhgof6wsVMyazaZHJbKcOB5ZjntYeSMmoUVRmkW3Z1d4hBKg==}
+  /@sphereon/oid4vci-issuer-server@0.4.1-unstable.302:
+    resolution: {integrity: sha512-vCKK25E63tekbUm4KErCgiWo1IS5gkX02roU0M6MtHXLtWolbOjruXgeohK1NLVeKP65u3s31WG5scWdwmWzLA==}
     engines: {node: '>=16'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.4.1-unstable.296
-      '@sphereon/oid4vci-issuer': 0.4.1-unstable.296
+      '@sphereon/oid4vci-common': 0.4.1-unstable.302
+      '@sphereon/oid4vci-issuer': 0.4.1-unstable.302
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.2
       cookie-parser: 1.4.6
@@ -5666,11 +5666,11 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.4.1-unstable.296:
-    resolution: {integrity: sha512-IJ1hVBUs5LSVqgo7EY84lK9IQcQbnH8sWPTsz7J/A4p3/8IOJa/5hX+Stbe0O9qEwFvDYZsiNFfBl5yskDqWTw==}
+  /@sphereon/oid4vci-issuer@0.4.1-unstable.302:
+    resolution: {integrity: sha512-fKg21GAswy9b9vJVe+XjH4tXS8KM0V0cwLBu4cbTd7zo5HFn8KKqoHTVp6vIaqGQ8m07xBOP6T/CoESJw2kO+A==}
     engines: {node: '>=16'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.4.1-unstable.296
+      '@sphereon/oid4vci-common': 0.4.1-unstable.302
       '@sphereon/ssi-types': link:packages/ssi-types
       uuid: 9.0.0
     transitivePeerDependencies:

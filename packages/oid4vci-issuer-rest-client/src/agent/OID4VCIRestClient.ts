@@ -34,10 +34,11 @@ export class OID4VCIRestClient implements IAgentPlugin {
     if (!args.credentials || !args.grants) {
       return Promise.reject(Error("Can't generate the credential offer url without credentials and grants params present."))
     }
-    const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
+    const baseUrl = this.assertedAgentBaseUrl(args.agentBaseUrl)
     const request: IOID4VCIClientCreateOfferUriRequest = {
       credentials: args.credentials,
       grants: args.grants,
+      ...(args.credentialDataSupplierInput && { credentialDataSupplierInput: args.credentialDataSupplierInput }),
     }
     const url = OID4VCIRestClient.urlWithBase(`webapp/credential-offers`, baseUrl)
     debug(`OID4VCIRestClient is going to send request: ${JSON.stringify(request)} to ${url}`)

@@ -6,6 +6,7 @@ import { IAgentPlugin } from '@veramo/core'
 import { getAccessTokenSignerCallback } from '../functions'
 import {
   IAssertValidAccessTokenArgs,
+  ICreateCredentialOfferURIResult,
   ICreateOfferArgs,
   IIssueCredentialArgs,
   IIssuerInstanceArgs,
@@ -35,10 +36,18 @@ export class OID4VCIIssuer implements IAgentPlugin {
     this._opts = opts ?? {}
   }
 
-  private async oid4vciCreateOfferURI(createArgs: ICreateOfferArgs, context: IRequiredContext): Promise<string> {
+  private async oid4vciCreateOfferURI(createArgs: ICreateOfferArgs, context: IRequiredContext): Promise<ICreateCredentialOfferURIResult> {
     return await this.oid4vciGetInstance(createArgs, context)
       .then((instance) => instance.get({ context }))
-      .then((issuer: VcIssuer) => issuer.createCredentialOfferURI(createArgs))
+      .then((issuer: VcIssuer) =>
+        issuer.createCredentialOfferURI(createArgs).then((response) => {
+          const result: ICreateCredentialOfferURIResult = response
+          if (this._opts.returnSessions === false) {
+            delete result.session
+          }
+          return result
+        })
+      )
   }
 
   private async oid4vciIssueCredential(issueArgs: IIssueCredentialArgs, context: IRequiredContext): Promise<CredentialResponse> {

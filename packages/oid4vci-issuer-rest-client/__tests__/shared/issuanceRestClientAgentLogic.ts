@@ -17,7 +17,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should create the url Offer Url with baseUrl', async () => {
       const result = await agent.oid4vciClientCreateOfferUri({
-        baseUrl: 'https://ssi-backend.sphereon.com',
+        agentBaseUrl: 'https://ssi-backend.sphereon.com',
         grants: {
           'urn:ietf:params:oauth:grant-type:pre-authorized_code': {
             'pre-authorized_code': '1234',

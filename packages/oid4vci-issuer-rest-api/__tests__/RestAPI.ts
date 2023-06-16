@@ -1,4 +1,5 @@
-import { CredentialDataSupplierResult } from '@sphereon/oid4vci-issuer'
+import { CredentialDataSupplier, CredentialDataSupplierResult } from '@sphereon/oid4vci-issuer'
+import { CredentialDataSupplierArgs } from '@sphereon/oid4vci-issuer/lib/types'
 import { TAgent } from '@veramo/core'
 import { IOID4VCIRestAPIOpts, IPlugins, OID4VCIRestAPI } from '../src'
 import agent from './agent'
@@ -10,16 +11,20 @@ export const opts: IOID4VCIRestAPIOpts = {
   },
 }
 
-const credentialDataSupplier = () =>
-  Promise.resolve({
+const credentialDataSupplier: CredentialDataSupplier = (args: CredentialDataSupplierArgs) => {
+  const firstName = args.credentialDataSupplierInput?.firstName ?? 'Hello'
+  const lastName = args.credentialDataSupplierInput?.lastName ?? 'DBC'
+  const email = args.credentialDataSupplierInput?.email ?? 'dbc@example.com'
+
+  return Promise.resolve({
     format: 'jwt_vc_json',
     credential: {
       '@context': ['https://www.w3.org/2018/credentials/v1'],
       type: ['VerifiableCredential', 'DBCConferenceAttendee'],
       credentialSubject: {
-        firstName: 'Hello',
-        lastName: 'DBC',
-        email: 'example@sphereon.com', // based on user form input,
+        firstName,
+        lastName,
+        email,
         event: {
           name: 'DBC Conference 2023',
           date: '2023-06-26',
@@ -27,6 +32,7 @@ const credentialDataSupplier = () =>
       },
     },
   } as unknown as CredentialDataSupplierResult)
+}
 
 export function start() {
   OID4VCIRestAPI.init({
