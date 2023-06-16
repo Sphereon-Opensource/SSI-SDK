@@ -63,6 +63,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
         tokenExpiresIn: accessTokenArgs.expirationDuration,
         cNonceExpiresIn: accessTokenArgs.expirationDuration,
         cNonces: issuer.cNonces,
+        credentialOfferSessions: issuer.credentialOfferSessions,
         accessTokenSignerCallback: getAccessTokenSignerCallback({ didOpts: instance.issuerOptions.didOpts }, context),
       })
     })
