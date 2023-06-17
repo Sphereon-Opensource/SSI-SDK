@@ -36,6 +36,12 @@ import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 
+export enum VerifiedDataMode {
+  NONE = 'none',
+  VERIFIED_PRESENTATION = 'vp',
+  VERIFIED_CREDENTIALS = 'vcs',
+}
+
 export interface ISIOPv2RP extends IPluginMethodMap {
   siopCreateAuthRequestURI(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<string>
   siopCreateAuthRequestPayloads(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<IAuthorizationRequestPayloads>
@@ -74,6 +80,7 @@ export interface IGetAuthResponseStateArgs {
   definitionId: string
   errorOnNotFound?: boolean
   progressRequestStateTo?: AuthorizationRequestStateStatus
+  includeVerifiedData?: VerifiedDataMode
 }
 
 export interface IUpdateRequestStateArgs {

@@ -10,7 +10,7 @@ import {
   ISiopv2RPOpts,
   IUpdateRequestStateArgs,
   IVerifyAuthResponseStateArgs,
-  schema,
+  schema, VerifiedDataMode,
 } from '../index'
 import { IAgentPlugin } from '@veramo/core'
 
@@ -24,6 +24,7 @@ import {
   VerifiedAuthorizationResponse,
 } from '@sphereon/did-auth-siop'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import {CompactJWT, CredentialMapper, IPresentation} from "@sphereon/ssi-types";
 
 export class SIOPv2RP implements IAgentPlugin {
   private readonly opts: ISiopv2RPOpts
@@ -74,9 +75,20 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async siopGetResponseState(args: IGetAuthResponseStateArgs, context: IRequiredContext): Promise<AuthorizationResponseState | undefined> {
-    return await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
-      rp.get(context).then((rp) => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound))
-    )
+    const responseState = await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
+        rp.get(context).then((rp) => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound))
+    );
+    if(responseState.status == AuthorizationRequestStateStatus.VERIFIED) {
+      switch (args.includeVerifiedData) {
+        case VerifiedDataMode.VERIFIED_PRESENTATION:
+          const presentation = CredentialMapper.toUniformPresentation(responseState.response.payload.vp_token as CompactJWT)
+          responseState.response.verifiedData = presentation;
+          break
+        case VerifiedDataMode.VERIFIED_CREDENTIALS:
+          break
+      }
+    }
+    return responseState
   }
 
   private async siopUpdateRequestState(args: IUpdateRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState> {

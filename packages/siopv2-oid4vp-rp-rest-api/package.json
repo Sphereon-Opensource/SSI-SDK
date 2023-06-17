@@ -14,7 +14,7 @@
     "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:*",
     "@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth": "workspace:*",
     "@sphereon/ssi-sdk.presentation-exchange": "workspace:*",
-    "@sphereon/did-auth-siop": "^0.3.1-unstable.1",
+    "@sphereon/did-auth-siop": "^0.3.2-unstable.1",
     "@sphereon/ssi-types": "workspace:*",
     "@types/uuid": "^9.0.1",
     "@veramo/core": "4.2.0",
