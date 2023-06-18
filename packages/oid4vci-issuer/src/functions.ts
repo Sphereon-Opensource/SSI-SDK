@@ -4,7 +4,7 @@ import {
     OID4VCICredentialFormat,
     UniformCredentialRequest
 } from '@sphereon/oid4vci-common'
-import {CredentialDataSupplier, VcIssuer, VcIssuerBuilder} from '@sphereon/oid4vci-issuer'
+import {CredentialDataSupplier, CredentialSignerCallback, VcIssuer, VcIssuerBuilder} from '@sphereon/oid4vci-issuer'
 import {
     getDID,
     getFirstKeyWithRelation,
@@ -127,14 +127,16 @@ export function getAccessTokenSignerCallback(
     return accessTokenSignerCallback
 }
 
-export function getCredentialSignerCallback(didOpts: IDIDOptions, context: IRequiredContext) {
+export function getCredentialSignerCallback(didOpts: IDIDOptions, context: IRequiredContext): CredentialSignerCallback<DIDDocument> {
     async function issueVCCallback({
                                        credential,
                                        credentialRequest,
+                                       jwtVerifyResult,
                                        format,
                                    }: {
         credentialRequest: UniformCredentialRequest
         credential: ICredential
+        jwtVerifyResult: JwtVerifyResult<DIDDocument>
         format?: OID4VCICredentialFormat
     }): Promise<W3CVerifiableCredential> {
         let proofFormat: ProofFormat
@@ -143,6 +145,17 @@ export function getCredentialSignerCallback(didOpts: IDIDOptions, context: IRequ
         if (!credential.issuer && didOpts.identifierOpts.identifier) {
             credential.issuer = toDID(didOpts.identifierOpts.identifier)
         }
+        const subjectIsArray = Array.isArray(credential.credentialSubject)
+        let credentialSubjects = Array.isArray(credential.credentialSubject) ? credential.credentialSubject : [credential.credentialSubject]
+        credentialSubjects = credentialSubjects.map(subject => {
+            if (!subject.id) {
+                subject.id = jwtVerifyResult.did
+            }
+            return subject
+        })
+
+        credential.credentialSubject = subjectIsArray ? credentialSubjects : credentialSubjects[0]
+
         const result = await context.agent.createVerifiableCredential({
             credential: credential as CredentialPayload,
             proofFormat,

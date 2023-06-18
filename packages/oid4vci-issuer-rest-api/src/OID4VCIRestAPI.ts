@@ -17,7 +17,7 @@ export class OID4VCIRestAPI {
   private readonly _express: Express
   private readonly _context: IRequiredContext
   private readonly _opts?: IOID4VCIRestAPIOpts
-  private readonly _restApi: OID4VCIServer
+  private readonly _restApi: OID4VCIServer<DIDDocument>
   private readonly _instance: IssuerInstance
   private readonly _issuer: VcIssuer<DIDDocument>
 
@@ -82,7 +82,7 @@ export class OID4VCIRestAPI {
       ...opts.serverOpts,
       app: this._express,
     }
-    this._restApi = new OID4VCIServer({ ...opts, issuer: this._issuer })
+    this._restApi = new OID4VCIServer<DIDDocument>({ ...opts, issuer: this._issuer })
   }
 
   public static setupExpress(opts: IOID4VCIServerOpts): Express {
@@ -131,7 +131,7 @@ export class OID4VCIRestAPI {
     return this._opts
   }
 
-  get restApi(): OID4VCIServer {
+  get restApi(): OID4VCIServer<DIDDocument> {
     return this._restApi
   }
 
