@@ -24,7 +24,8 @@ import {
   VerifiedAuthorizationResponse,
 } from '@sphereon/did-auth-siop'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import {CompactJWT, CredentialMapper, IPresentation} from "@sphereon/ssi-types";
+import {CompactJWT, CredentialMapper} from "@sphereon/ssi-types";
+import {AuthorizationResponseStateStatus} from "@sphereon/did-auth-siop/dist/types/SessionManager";
 
 export class SIOPv2RP implements IAgentPlugin {
   private readonly opts: ISiopv2RPOpts
@@ -78,7 +79,7 @@ export class SIOPv2RP implements IAgentPlugin {
     const responseState = await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
         rp.get(context).then((rp) => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound))
     );
-    if(responseState.status == AuthorizationRequestStateStatus.VERIFIED) {
+    if(responseState && responseState.status === AuthorizationResponseStateStatus.VERIFIED) {
       switch (args.includeVerifiedData) {
         case VerifiedDataMode.VERIFIED_PRESENTATION:
           const presentation = CredentialMapper.toUniformPresentation(responseState.response.payload.vp_token as CompactJWT)
