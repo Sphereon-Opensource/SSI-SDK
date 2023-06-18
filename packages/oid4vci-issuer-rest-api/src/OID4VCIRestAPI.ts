@@ -6,6 +6,7 @@ import { IOID4VCIServerOpts } from '@sphereon/oid4vci-issuer-server/lib/OID4VCIS
 import { IIssuerInstanceArgs, IssuerInstance } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { getAccessTokenKeyRef, getAccessTokenSignerCallback } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import bodyParser from 'body-parser'
+import {DIDDocument} from "did-resolver";
 import * as dotenv from 'dotenv-flow'
 import express, { Express } from 'express'
 import { IRequiredContext } from './types'
@@ -18,7 +19,7 @@ export class OID4VCIRestAPI {
   private readonly _opts?: IOID4VCIRestAPIOpts
   private readonly _restApi: OID4VCIServer
   private readonly _instance: IssuerInstance
-  private readonly _issuer: VcIssuer
+  private readonly _issuer: VcIssuer<DIDDocument>
 
   static async init(args: {
     context: IRequiredContext
@@ -63,7 +64,7 @@ export class OID4VCIRestAPI {
   }
 
   private constructor(args: {
-    issuer: VcIssuer
+    issuer: VcIssuer<DIDDocument>
     instance: IssuerInstance
     context: IRequiredContext
     issuerInstanceArgs: IIssuerInstanceArgs
@@ -138,7 +139,7 @@ export class OID4VCIRestAPI {
     return this._instance
   }
 
-  get issuer(): VcIssuer {
+  get issuer(): VcIssuer<DIDDocument> {
     return this._issuer
   }
 }

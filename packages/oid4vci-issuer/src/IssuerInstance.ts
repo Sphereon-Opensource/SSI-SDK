@@ -1,4 +1,5 @@
 import { VcIssuer } from '@sphereon/oid4vci-issuer'
+import {DIDDocument} from "@veramo/core";
 import { createVciIssuerBuilder } from './functions'
 import { CredentialIssuerMetadata } from '@sphereon/oid4vci-common'
 
@@ -6,7 +7,7 @@ import { CredentialDataSupplier } from '@sphereon/oid4vci-issuer'
 import { IIssuerOptions, IMetadataOptions, IRequiredContext } from './types/IOID4VCIIssuer'
 
 export class IssuerInstance {
-  private _issuer: VcIssuer | undefined
+  private _issuer: VcIssuer<DIDDocument> | undefined
   private readonly _metadataOptions: IMetadataOptions
   private readonly _issuerOptions: IIssuerOptions
   private readonly _metadata: CredentialIssuerMetadata
@@ -25,7 +26,7 @@ export class IssuerInstance {
     this._metadata = metadata
   }
 
-  public async get(opts: { context: IRequiredContext; credentialDataSupplier?: CredentialDataSupplier }): Promise<VcIssuer> {
+  public async get(opts: { context: IRequiredContext; credentialDataSupplier?: CredentialDataSupplier }): Promise<VcIssuer<DIDDocument>> {
     if (!this._issuer) {
       const builder = await createVciIssuerBuilder(
         {
