@@ -1,5 +1,5 @@
 import { VcIssuer } from '@sphereon/oid4vci-issuer'
-import {DIDDocument} from "@veramo/core";
+import { DIDDocument } from '@veramo/core'
 import { createVciIssuerBuilder } from './functions'
 import { CredentialIssuerMetadata } from '@sphereon/oid4vci-common'
 

@@ -6,7 +6,7 @@ import { IOID4VCIServerOpts } from '@sphereon/oid4vci-issuer-server/lib/OID4VCIS
 import { IIssuerInstanceArgs, IssuerInstance } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { getAccessTokenKeyRef, getAccessTokenSignerCallback } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import bodyParser from 'body-parser'
-import {DIDDocument} from "did-resolver";
+import { DIDDocument } from 'did-resolver'
 import * as dotenv from 'dotenv-flow'
 import express, { Express } from 'express'
 import { IRequiredContext } from './types'

@@ -2,7 +2,7 @@ import { AccessTokenResponse, CredentialResponse } from '@sphereon/oid4vci-commo
 import { assertValidAccessTokenRequest, createAccessTokenResponse } from '@sphereon/oid4vci-issuer'
 import { VcIssuer } from '@sphereon/oid4vci-issuer'
 import { IMetadataOptions } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import {DIDDocument, IAgentPlugin} from '@veramo/core'
+import { DIDDocument, IAgentPlugin } from '@veramo/core'
 import { getAccessTokenSignerCallback } from '../functions'
 import {
   IAssertValidAccessTokenArgs,
