@@ -39,6 +39,15 @@ export function start() {
   }).then((restApi) => {
     console.log('REST API STARTED: ' + restApi.instance.metadataOptions.credentialIssuer)
   })
+
+  OID4VCIRestAPI.init({
+    context: { ...agent.context, agent: agent as TAgent<IPlugins> },
+    credentialDataSupplier: credentialDataSupplierTriallGuest2023,
+    opts,
+    issuerInstanceArgs: { credentialIssuer: `${baseUrl}/triall2023` },
+  }).then((restApi) => {
+    console.log('REST API STARTED: ' + restApi.instance.metadataOptions.credentialIssuer)
+  })
 }
 
 const credentialDataSupplierDBCConference2023: CredentialDataSupplier = (args: CredentialDataSupplierArgs) => {
@@ -81,6 +90,27 @@ const credentialDataSupplierFMAGuest2023: CredentialDataSupplier = (args: Creden
         lastName,
         email,
         type: 'Future Mobility Alliance Guest',
+      },
+    },
+  } as unknown as CredentialDataSupplierResult)
+}
+
+const credentialDataSupplierTriallGuest2023: CredentialDataSupplier = (args: CredentialDataSupplierArgs) => {
+  const firstName = args.credentialDataSupplierInput?.firstName ?? 'Hello'
+  const lastName = args.credentialDataSupplierInput?.lastName ?? 'Triall'
+  const email = args.credentialDataSupplierInput?.email ?? 'triall@example.com'
+
+  return Promise.resolve({
+    format: 'jwt_vc_json',
+    credential: {
+      '@context': ['https://www.w3.org/2018/credentials/v1'],
+      type: ['VerifiableCredential', 'GuestCredential'],
+      expirationDate: new Date(+new Date() + 24 * 60 * 60 * 3600).toISOString(),
+      credentialSubject: {
+        firstName,
+        lastName,
+        email,
+        type: 'Triall Guest',
       },
     },
   } as unknown as CredentialDataSupplierResult)

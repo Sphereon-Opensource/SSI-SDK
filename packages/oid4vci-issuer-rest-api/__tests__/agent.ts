@@ -2,7 +2,7 @@ import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
 import { getUniResolver } from '@sphereon/did-uni-client'
 import { CredentialIssuerMetadata } from '@sphereon/oid4vci-common'
 import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
-import {/*generatePrivateKeyHex, */toJwk} from '@sphereon/ssi-sdk-ext.key-utils'
+import { /*generatePrivateKeyHex, */ toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
 import { OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {
@@ -63,7 +63,7 @@ const RP_DID_JWK =
   'did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiVEcySDJ4MmRXWE4zdUNxWnBxRjF5c0FQUVZESkVOX0gtQ010YmdqYi1OZyIsInkiOiI5TThOeGQwUE4yMk05bFBEeGRwRHBvVEx6MTV3ZnlaSnM2WmhLSVVKMzM4In0'
 
 const RP_DID_JWK_PRIVATE_KEY_HEX = 'f4446e5eb1201a7769cb35f02f24b06c0ac3ff49eb085f8562f06fc6c42e68cd' /*generatePrivateKeyHex('Secp256r1')*/
-console.log('============='+RP_DID_JWK_PRIVATE_KEY_HEX)
+console.log('=============' + RP_DID_JWK_PRIVATE_KEY_HEX)
 const RP_ION_PRIVATE_KEY_HEX = '851eb04ca3e2b2589d6f6a7287565816ee8e3126599bfeede8d3e93c53fb26e3'
 
 const RP_DID_ION =
@@ -217,6 +217,7 @@ const agent = createAgent<IPlugins>({
             ],
           } as CredentialIssuerMetadata,
         },
+
         {
           correlationId: `${baseUrl}/dbc2023`,
           overwriteExisting: true,
@@ -243,6 +244,10 @@ const agent = createAgent<IPlugins>({
                       alt_text:
                         'An orange block shape, with the text Dutch Blockchain Coalition next to it, portraying the logo of the Dutch Blockchain Coalition.',
                     },
+                    background_image: {
+                      url: 'https://i.ibb.co/CHqjxrJ/dbc-card-hig-res.png',
+                      alt_text: 'Connected open cubes in blue with one orange cube as a background of the card',
+                    },
                   },
                   {
                     locale: 'en-US',
@@ -251,9 +256,8 @@ const agent = createAgent<IPlugins>({
                     background_color: '#3B6F6D',
                     text_color: '#FFFFFF',
                     logo: {
-                      url: 'https://dutchblockchaincoalition.org/assets/images/icons/Logo-DBC.png',
-                      alt_text:
-                        'An orange block shape, with the text Dutch Blockchain Coalition next to it, portraying the logo of the Dutch Blockchain Coalition.',
+                      url: 'https://i.ibb.co/CHqjxrJ/dbc-card-hig-res.png',
+                      alt_text: 'Connected open cubes in blue with one orange cube as a background of the card',
                     },
                   },
                   {
@@ -263,9 +267,9 @@ const agent = createAgent<IPlugins>({
                     background_color: '#3B6F6D',
                     text_color: '#FFFFFF',
                     logo: {
-                      url: 'https://dutchblockchaincoalition.org/assets/images/icons/Logo-DBC.png',
+                      url: 'https://i.ibb.co/CHqjxrJ/dbc-card-hig-res.png',
                       alt_text:
-                        'Een blok in de kleur oranje, met de text Dutch Blockchain Coalition ernaast, dat het logo van de Dutch Blockchain Coalition weergeeft.',
+                        'Aaneengesloten open blokken in de kleur blauw, met een blok in de kleur oranje, die tesamen de achtergrond van de kaart vormen.',
                     },
                   },
                 ],
@@ -328,8 +332,12 @@ const agent = createAgent<IPlugins>({
                     description: 'Future Mobility Data Marketplace Guest credential for demo purposes.',
                     background_color: '#3B6F6D',
                     text_color: '#FFFFFF',
+                    background_image: {
+                      url: 'https://i.ibb.co/P9SpRDX/fmdm.png',
+                      alt_text: 'Multiple green bikes in a row as the card background',
+                    },
                     logo: {
-                      url: 'https://marketplace.future-mobility-alliance.org/images/extra-logos/3-FutureMobilityNetwork_logo.png',
+                      url: 'https://i.ibb.co/SdKndf4/fmdm-logo-transp.png',
                       alt_text:
                         'An green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
                     },
@@ -340,8 +348,12 @@ const agent = createAgent<IPlugins>({
                     description: 'Future Mobility Data Marketplace Guest credential for demo purposes.',
                     background_color: '#3B6F6D',
                     text_color: '#FFFFFF',
+                    background_image: {
+                      url: 'https://i.ibb.co/P9SpRDX/fmdm.png',
+                      alt_text: 'Multiple green bikes in a row as the card background',
+                    },
                     logo: {
-                      url: 'https://marketplace.future-mobility-alliance.org/images/extra-logos/3-FutureMobilityNetwork_logo.png',
+                      url: 'https://i.ibb.co/SdKndf4/fmdm-logo-transp.png',
                       alt_text:
                         'An green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
                     },
@@ -352,8 +364,12 @@ const agent = createAgent<IPlugins>({
                     description: 'Future Mobility Alliance gast credential wordt uitgegeven voor demo doeleinden.',
                     background_color: '#3B6F6D',
                     text_color: '#FFFFFF',
+                    background_image: {
+                      url: 'https://i.ibb.co/P9SpRDX/fmdm.png',
+                      alt_text: 'Meerdere groene fietsen op een rij die samen de kaart achtergrond vormen',
+                    },
                     logo: {
-                      url: 'https://marketplace.future-mobility-alliance.org/images/extra-logos/3-FutureMobilityNetwork_logo.png',
+                      url: 'https://i.ibb.co/SdKndf4/fmdm-logo-transp.png',
                       alt_text:
                         'An green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
                     },
@@ -435,6 +451,146 @@ const agent = createAgent<IPlugins>({
             ],
           } as CredentialIssuerMetadata,
         },
+        {
+          correlationId: `${baseUrl}/triall2023`,
+          overwriteExisting: true,
+          metadata: {
+            credential_issuer: `${baseUrl}/triall2023`,
+            credential_endpoint: `${baseUrl}/triall2023/credentials`,
+            // token_endpoint: 'https://oid4vci.ngrok.dev/test/token',
+            display: [
+              {
+                name: 'Triall',
+                description: 'Triall (Clinblocks B.V.) Issuer',
+              },
+            ],
+            credentials_supported: [
+              {
+                display: [
+                  {
+                    name: 'Triall guest',
+                    description: 'Triall guest credential for demo purposes.',
+                    // background_color: '#3B6F6D',
+                    text_color: '#FFFFFF',
+                    background_image: {
+                      url: 'https://i.ibb.co/8dVhGJj/Triall.png',
+                      alt_text: 'Depicting a syringe being filled from a bottle ',
+                    },
+                    logo: {
+                      url: 'https://i.ibb.co/WV6Rmsj/triall-White.png',
+                      alt_text:
+                        '9 white circles of which 5 are connected in a rectangular shape, with the text Triall next to it, portraying the logo of Triall.',
+                    },
+                  },
+                  {
+                    locale: 'en-US',
+                    name: 'Triall guest',
+                    description: 'Triall guest credential for demo purposes.',
+                    // background_color: '#3B6F6D',
+                    text_color: '#FFFFFF',
+                    background_image: {
+                      url: 'https://i.ibb.co/8dVhGJj/Triall.png',
+                      alt_text: 'Depicting a syringe being filled from a bottle ',
+                    },
+                    logo: {
+                      url: 'https://i.ibb.co/WV6Rmsj/triall-White.png',
+                      alt_text:
+                        '9 white circles of which 5 are connected in a rectangular shape, with the text Triall next to it, portraying the logo of Triall.',
+                    },
+                  },
+                  {
+                    locale: 'nl-NL',
+                    name: 'Triall gast',
+                    description: 'Triall gast credential wordt uitgegeven voor demo doeleinden.',
+                    // background_color: '#3B6F6D',
+                    text_color: '#FFFFFF',
+                    background_image: {
+                      url: 'https://i.ibb.co/8dVhGJj/Triall.png',
+                      alt_text: 'Depicting a syringe being filled from a bottle ',
+                    },
+                    logo: {
+                      url: 'https://i.ibb.co/WV6Rmsj/triall-White.png',
+                      alt_text:
+                        '9 white circles of which 5 are connected in a rectangular shape, with the text Triall next to it, portraying the logo of Triall.',
+                    },
+                  },
+                ],
+                order: ['firstName', 'lastName', 'email', 'type'],
+                credentialSubject: {
+                  firstName: {
+                    value_type: 'string',
+                    display: [
+                      {
+                        name: 'firstName',
+                      },
+                      {
+                        name: 'firstName',
+                        locale: 'en-US',
+                      },
+                      {
+                        name: 'Voornaam',
+                        locale: 'nl-NL',
+                      },
+                    ],
+                  },
+                  lastName: {
+                    value_type: 'string',
+                    display: [
+                      {
+                        name: 'lastName',
+                      },
+                      {
+                        name: 'lastName',
+                        locale: 'en-US',
+                      },
+                      {
+                        name: 'Achternaam',
+                        locale: 'nl-NL',
+                      },
+                    ],
+                  },
+                  email: {
+                    value_type: 'string',
+                    display: [
+                      {
+                        name: 'Email',
+                      },
+                      {
+                        name: 'Email',
+                        locale: 'en-US',
+                      },
+                      {
+                        name: 'Email',
+                        locale: 'nl-NL',
+                      },
+                    ],
+                  },
+                  type: {
+                    value_type: 'string',
+                    display: [
+                      {
+                        name: 'Type',
+                      },
+                      {
+                        name: 'Type',
+                        locale: 'en-US',
+                      },
+                      {
+                        name: 'Type',
+                        locale: 'nl-NL',
+                      },
+                    ],
+                  },
+                },
+                id: 'triall2023',
+                types: ['VerifiableCredential', 'GuestCredential'],
+                format: 'jwt_vc_json',
+                cryptographic_binding_methods_supported: ['did:web', 'did:jwk'],
+                cryptographic_suites_supported: ['ES256', 'ES256K', 'EdDSA'],
+              },
+            ],
+          } as CredentialIssuerMetadata,
+        },
       ],
     }),
     new OID4VCIIssuer({
@@ -461,7 +617,7 @@ const agent = createAgent<IPlugins>({
 })
 
 agent
-  .didManagerGet({ did: RP_DID_JWK})
+  .didManagerGet({ did: RP_DID_JWK })
   .then((id) => {
     console.log(
       `==DID JWK existed:  \r\n${JSON.stringify(id, null, 2)}\r\nJWK:\r\n${JSON.stringify(toJwk(id.keys[0].publicKeyHex, 'Secp256r1'), null, 2)}`
