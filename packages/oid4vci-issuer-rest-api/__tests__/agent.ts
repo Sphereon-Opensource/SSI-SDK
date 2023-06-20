@@ -2,7 +2,7 @@ import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
 import { getUniResolver } from '@sphereon/did-uni-client'
 import { CredentialIssuerMetadata } from '@sphereon/oid4vci-common'
 import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
-import { toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
+import {/*generatePrivateKeyHex, */toJwk} from '@sphereon/ssi-sdk-ext.key-utils'
 import { OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {
@@ -60,10 +60,10 @@ export enum SupportedDidMethodEnum {
 // const RP_DID_WEB_KID = `${RP_DID_WEB}#auth-key`
 
 const RP_DID_JWK =
-  'did:jwk:eyJhbGciOiJFUzI1NksiLCJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCaXJGX0xROGtaOHVFREdxQzdSeXlUWGFRNEswelIyRE9VcF82NnN1R0xnIiwieSI6ImxUdnZMbTRlMmdSTzhmSm1ZQUp2dl8tTlpVMkk1Qjdtb3VJU2ZEZ3M3bjAifQ'
+  'did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiVEcySDJ4MmRXWE4zdUNxWnBxRjF5c0FQUVZESkVOX0gtQ010YmdqYi1OZyIsInkiOiI5TThOeGQwUE4yMk05bFBEeGRwRHBvVEx6MTV3ZnlaSnM2WmhLSVVKMzM4In0'
 
-const RP_DID_JWK_PRIVATE_KEY_HEX = '63d619effd0f223dcfa4f0bcdcf11a9cd9c5ececda354848261abd3a80a2911841' // generatePrivateKeyHex('Secp256k1')
-console.log(RP_DID_JWK_PRIVATE_KEY_HEX)
+const RP_DID_JWK_PRIVATE_KEY_HEX = 'f4446e5eb1201a7769cb35f02f24b06c0ac3ff49eb085f8562f06fc6c42e68cd' /*generatePrivateKeyHex('Secp256r1')*/
+console.log('============='+RP_DID_JWK_PRIVATE_KEY_HEX)
 const RP_ION_PRIVATE_KEY_HEX = '851eb04ca3e2b2589d6f6a7287565816ee8e3126599bfeede8d3e93c53fb26e3'
 
 const RP_DID_ION =
@@ -132,7 +132,7 @@ const agent = createAgent<IPlugins>({
         didOpts: {
           identifierOpts: {
             identifier: RP_DID_JWK,
-            kid: '04062ac5fcb43c919f2e1031aa0bb472c935da4382b4cd1d83394a7febab2e18b8953bef2e6e1eda044ef1f26660026fbfff8d654d88e41ee6a2e2127c382cee7d',
+            kid: '4c6d87db1d9d597377b82a99a6a175cac00f4150c910dfc7f8232d6e08dbf8d8',
           },
         },
       },
@@ -461,19 +461,20 @@ const agent = createAgent<IPlugins>({
 })
 
 agent
-  .didManagerGet({ did: RP_DID_JWK })
+  .didManagerGet({ did: RP_DID_JWK})
   .then((id) => {
     console.log(
-      `==DID JWK existed:  \r\n${JSON.stringify(id, null, 2)}\r\nJWK:\r\n${JSON.stringify(toJwk(id.keys[0].publicKeyHex, 'Secp256k1'), null, 2)}`
+      `==DID JWK existed:  \r\n${JSON.stringify(id, null, 2)}\r\nJWK:\r\n${JSON.stringify(toJwk(id.keys[0].publicKeyHex, 'Secp256r1'), null, 2)}`
     )
   })
   .catch((error) => {
     agent
       .didManagerCreate({
         provider: 'did:jwk',
-        alias: 'oid4vci-jwk',
+        alias: 'jwk-es256',
         options: {
           key: {
+            type: 'Secp256r1',
             privateKeyHex: RP_DID_JWK_PRIVATE_KEY_HEX,
           },
         },

@@ -37,6 +37,9 @@ patchedDependencies:
   '@veramo/core@4.2.0':
     hash: c5oempznsz4br5w3tcuk2i2mau
     path: patches/@veramo__core@4.2.0.patch
+  '@veramo/credential-w3c@4.2.0':
+    hash: wuhizuafnrz3uzah2wlqaevbmi
+    path: patches/@veramo__credential-w3c@4.2.0.patch
   '@veramo/data-store@4.2.0':
     hash: feb5u2ygzsdf67qbxr2lxgqjyy
     path: patches/@veramo__data-store@4.2.0.patch
@@ -485,7 +488,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       cross-fetch:
         specifier: ^3.1.5
         version: 3.1.5
@@ -543,7 +546,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       body-parser:
         specifier: ^1.19.0
         version: 1.19.0
@@ -716,7 +719,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       cross-fetch:
         specifier: ^3.1.5
         version: 3.1.5
@@ -897,7 +900,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       cross-fetch:
         specifier: ^3.1.5
         version: 3.1.5
@@ -973,7 +976,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       cross-fetch:
         specifier: ^3.1.5
         version: 3.1.5
@@ -1028,7 +1031,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       body-parser:
         specifier: ^1.19.0
         version: 1.19.0
@@ -1360,7 +1363,7 @@ importers:
         version: 4.2.0
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       '@veramo/data-store':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(sqlite3@5.1.6)(ts-node@10.9.1)
@@ -1432,7 +1435,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       body-parser:
         specifier: ^1.19.0
         version: 1.19.0
@@ -7102,7 +7105,7 @@ packages:
       - supports-color
       - web-streams-polyfill
 
-  /@veramo/credential-w3c@4.2.0:
+  /@veramo/credential-w3c@4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi):
     resolution: {integrity: sha512-zfZnFAV2hVdwqsT0N3zBr+iHDo3i/JYFTDdNhLzKcQasz3V6NERyEtWmqv60/LPCGTufuGIqYbB+OKJrS9Ogpw==}
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -7123,6 +7126,7 @@ packages:
       - encoding
       - supports-color
       - web-streams-polyfill
+    patched: true
 
   /@veramo/data-store@4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(sqlite3@5.1.6)(ts-node@10.9.1):
     resolution: {integrity: sha512-gwinKYd//jOCXrdr2NefXOHnuUT8Vz2sHvSMFvm41UVD9QMpeKpTrTEqGoYG/eDg/1+U9aQlb+AI6bFUNNsk0Q==}

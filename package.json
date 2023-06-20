@@ -121,7 +121,8 @@
     "patchedDependencies": {
       "@veramo/core@4.2.0": "patches/@veramo__core@4.2.0.patch",
       "@veramo/data-store@4.2.0": "patches/@veramo__data-store@4.2.0.patch",
-      "did-jwt@6.11.6": "patches/did-jwt@6.11.6.patch"
+      "did-jwt@6.11.6": "patches/did-jwt@6.11.6.patch",
+      "@veramo/credential-w3c@4.2.0": "patches/@veramo__credential-w3c@4.2.0.patch"
     }
   }
 }
