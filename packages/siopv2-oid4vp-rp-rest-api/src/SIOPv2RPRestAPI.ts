@@ -5,8 +5,8 @@ import express, { Express, Response } from 'express'
 import cookieParser from 'cookie-parser'
 import uuid from 'short-uuid'
 import {
-  AuthorizationResponsePayload,
   AuthorizationRequestState,
+  AuthorizationResponsePayload,
   AuthorizationResponseState,
   AuthorizationResponseStateStatus,
   PresentationDefinitionLocation,
@@ -19,7 +19,7 @@ import {
   GenerateAuthRequestURIResponse,
   uriWithBase,
 } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import { ISIOPv2RP, VerifiedDataMode } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { RequestWithAgent } from './request-agent-router'
 import { TAgent } from '@veramo/core'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
@@ -114,6 +114,7 @@ export class SIOPv2RPRestAPI {
       console.log('Received auth-status request...')
       const correlationId: string = request.body.correlationId as string
       const definitionId: string = request.body.definitionId as string
+
       const requestState =
         correlationId && definitionId
           ? await this.agent.siopGetAuthRequestState({
@@ -138,11 +139,17 @@ export class SIOPv2RPRestAPI {
         return response.send(statusBody)
       }
 
+      let includeVerifiedData: VerifiedDataMode = VerifiedDataMode.NONE
+      if ('verifiedDataMode' in request.body) {
+        includeVerifiedData = request.body.includeVerifiedData as VerifiedDataMode
+      }
+
       let responseState
       if (requestState.status === AuthorizationRequestStateStatus.SENT) {
         responseState = await this.agent.siopGetAuthResponseState({
           correlationId,
           definitionId,
+          includeVerifiedData: includeVerifiedData,
           errorOnNotFound: false,
         })
       }

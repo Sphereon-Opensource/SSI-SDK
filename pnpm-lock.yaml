@@ -857,8 +857,8 @@ importers:
   packages/siopv2-oid4vp-common:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: ^0.3.2-unstable.1
-        version: 0.3.2-unstable.1
+        specifier: ^0.3.2-unstable.4
+        version: 0.3.2-unstable.4
       uint8arrays:
         specifier: 3.1.1
         version: 3.1.1
@@ -870,8 +870,8 @@ importers:
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: ^0.3.2-unstable.1
-        version: 0.3.2-unstable.1
+        specifier: ^0.3.2-unstable.4
+        version: 0.3.2-unstable.4
       '@sphereon/pex':
         specifier: 2.0.1
         version: 2.0.1
@@ -943,8 +943,8 @@ importers:
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: ^0.3.2-unstable.1
-        version: 0.3.2-unstable.1
+        specifier: ^0.3.2-unstable.4
+        version: 0.3.2-unstable.4
       '@sphereon/pex':
         specifier: 2.0.1
         version: 2.0.1
@@ -1007,8 +1007,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: ^0.3.2-unstable.1
-        version: 0.3.2-unstable.1
+        specifier: ^0.3.2-unstable.4
+        version: 0.3.2-unstable.4
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1417,8 +1417,8 @@ importers:
   packages/w3c-vc-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: ^0.3.2-unstable.1
-        version: 0.3.2-unstable.1
+        specifier: ^0.3.2-unstable.4
+        version: 0.3.2-unstable.4
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -5512,8 +5512,8 @@ packages:
       '@sinonjs/commons': 1.8.6
     dev: true
 
-  /@sphereon/did-auth-siop@0.3.2-unstable.1:
-    resolution: {integrity: sha512-8Nu3Qz5FBbpD1PeRK6ePn46siWPN/QR3bl42z0PS5bR+zQ/r0VOfq2O2WMBoxDEX9z2P3iN512MXmEY7NCDLWg==}
+  /@sphereon/did-auth-siop@0.3.2-unstable.4:
+    resolution: {integrity: sha512-xfWntH5ZWrcdrzSpCRLTUYdYc7G2/uSRKi1dirznECphuKjIt/0CudFRW4QAGrE7kByoUhg9RjN5yTkhfDL+0g==}
     engines: {node: '>=16'}
     dependencies:
       '@sphereon/did-uni-client': 0.6.0

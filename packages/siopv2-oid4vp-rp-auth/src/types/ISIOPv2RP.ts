@@ -39,7 +39,7 @@ import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp
 export enum VerifiedDataMode {
   NONE = 'none',
   VERIFIED_PRESENTATION = 'vp',
-  VERIFIED_CREDENTIALS = 'vcs',
+  CREDENTIAL_SUBJECT_FLATTENED = 'cs-flat',
 }
 
 export interface ISIOPv2RP extends IPluginMethodMap {

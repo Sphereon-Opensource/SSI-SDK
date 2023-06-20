@@ -10,7 +10,8 @@ import {
   ISiopv2RPOpts,
   IUpdateRequestStateArgs,
   IVerifyAuthResponseStateArgs,
-  schema, VerifiedDataMode,
+  schema,
+  VerifiedDataMode,
 } from '../index'
 import { IAgentPlugin } from '@veramo/core'
 
@@ -24,8 +25,9 @@ import {
   VerifiedAuthorizationResponse,
 } from '@sphereon/did-auth-siop'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import {CompactJWT, CredentialMapper} from "@sphereon/ssi-types";
-import {AuthorizationResponseStateStatus} from "@sphereon/did-auth-siop/dist/types/SessionManager";
+import { AdditionalClaims, CredentialMapper, ICredentialSubject, IVerifiableCredential } from '@sphereon/ssi-types'
+import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop/dist/types/SessionManager'
+import { OriginalVerifiablePresentation } from '@sphereon/ssi-types/dist'
 
 export class SIOPv2RP implements IAgentPlugin {
   private readonly opts: ISiopv2RPOpts
@@ -76,17 +78,46 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async siopGetResponseState(args: IGetAuthResponseStateArgs, context: IRequiredContext): Promise<AuthorizationResponseState | undefined> {
-    const responseState = await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
-        rp.get(context).then((rp) => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound))
-    );
-    if(responseState && responseState.status === AuthorizationResponseStateStatus.VERIFIED) {
-      switch (args.includeVerifiedData) {
-        case VerifiedDataMode.VERIFIED_PRESENTATION:
-          const presentation = CredentialMapper.toUniformPresentation(responseState.response.payload.vp_token as CompactJWT)
-          responseState.response.verifiedData = presentation;
-          break
-        case VerifiedDataMode.VERIFIED_CREDENTIALS:
-          break
+    const rpInstance = await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
+      rp.get(context).then((rp) => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound))
+    )
+    if (rpInstance === undefined) {
+      return undefined
+    }
+
+    const responseState = rpInstance as AuthorizationResponseState
+    if (
+      responseState.status === AuthorizationResponseStateStatus.VERIFIED &&
+      args.includeVerifiedData &&
+      args.includeVerifiedData !== VerifiedDataMode.NONE
+    ) {
+      if (typeof responseState.response.payload.vp_token !== 'string') {
+        // Check if vp_token is not a string
+        const presentationDecoded = CredentialMapper.decodeVerifiablePresentation(
+          responseState.response.payload.vp_token as OriginalVerifiablePresentation
+        )
+        const presentation = CredentialMapper.toUniformPresentation(presentationDecoded as OriginalVerifiablePresentation)
+        switch (args.includeVerifiedData) {
+          case VerifiedDataMode.VERIFIED_PRESENTATION:
+            responseState.response.verifiedData = presentation
+            break
+          case VerifiedDataMode.CREDENTIAL_SUBJECT_FLATTENED:
+            const allClaims: AdditionalClaims = {}
+            presentation.verifiableCredential?.forEach((credential) => {
+              const vc = credential as IVerifiableCredential
+              const credentialSubject = vc.credentialSubject as ICredentialSubject & AdditionalClaims
+              if (!('id' in allClaims)) {
+                allClaims['id'] = credentialSubject.id
+              }
+
+              Object.entries(credentialSubject).forEach(([key, value]) => {
+                if (!(key in allClaims)) {
+                  allClaims[key] = value
+                }
+              })
+            })
+            responseState.response.verifiedData = allClaims
+        }
       }
     }
     return responseState
