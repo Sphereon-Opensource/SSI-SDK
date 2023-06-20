@@ -91,33 +91,30 @@ export class SIOPv2RP implements IAgentPlugin {
       args.includeVerifiedData &&
       args.includeVerifiedData !== VerifiedDataMode.NONE
     ) {
-      if (typeof responseState.response.payload.vp_token !== 'string') {
-        // Check if vp_token is not a string
-        const presentationDecoded = CredentialMapper.decodeVerifiablePresentation(
-          responseState.response.payload.vp_token as OriginalVerifiablePresentation
-        )
-        const presentation = CredentialMapper.toUniformPresentation(presentationDecoded as OriginalVerifiablePresentation)
-        switch (args.includeVerifiedData) {
-          case VerifiedDataMode.VERIFIED_PRESENTATION:
-            responseState.response.verifiedData = presentation
-            break
-          case VerifiedDataMode.CREDENTIAL_SUBJECT_FLATTENED:
-            const allClaims: AdditionalClaims = {}
-            presentation.verifiableCredential?.forEach((credential) => {
-              const vc = credential as IVerifiableCredential
-              const credentialSubject = vc.credentialSubject as ICredentialSubject & AdditionalClaims
-              if (!('id' in allClaims)) {
-                allClaims['id'] = credentialSubject.id
-              }
+      const presentationDecoded = CredentialMapper.decodeVerifiablePresentation(
+        responseState.response.payload.vp_token as OriginalVerifiablePresentation
+      )
+      const presentation = CredentialMapper.toUniformPresentation(presentationDecoded as OriginalVerifiablePresentation)
+      switch (args.includeVerifiedData) {
+        case VerifiedDataMode.VERIFIED_PRESENTATION:
+          responseState.response.payload.verifiedData = presentation
+          break
+        case VerifiedDataMode.CREDENTIAL_SUBJECT_FLATTENED:
+          const allClaims: AdditionalClaims = {}
+          presentation.verifiableCredential?.forEach((credential) => {
+            const vc = credential as IVerifiableCredential
+            const credentialSubject = vc.credentialSubject as ICredentialSubject & AdditionalClaims
+            if (!('id' in allClaims)) {
+              allClaims['id'] = credentialSubject.id
+            }
 
-              Object.entries(credentialSubject).forEach(([key, value]) => {
-                if (!(key in allClaims)) {
-                  allClaims[key] = value
-                }
-              })
+            Object.entries(credentialSubject).forEach(([key, value]) => {
+              if (!(key in allClaims)) {
+                allClaims[key] = value
+              }
             })
-            responseState.response.verifiedData = allClaims
-        }
+          })
+          responseState.response.payload.verifiedData = allClaims
       }
     }
     return responseState

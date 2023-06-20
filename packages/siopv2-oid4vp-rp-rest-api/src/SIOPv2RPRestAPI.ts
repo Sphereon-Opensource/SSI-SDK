@@ -140,7 +140,7 @@ export class SIOPv2RPRestAPI {
       }
 
       let includeVerifiedData: VerifiedDataMode = VerifiedDataMode.NONE
-      if ('verifiedDataMode' in request.body) {
+      if ('includeVerifiedData' in request.body) {
         includeVerifiedData = request.body.includeVerifiedData as VerifiedDataMode
       }
 
@@ -164,6 +164,7 @@ export class SIOPv2RPRestAPI {
         ...(responseState && responseState.status === AuthorizationResponseStateStatus.VERIFIED
           ? { payload: await responseState.response.mergedPayloads() }
           : {}),
+
       }
       console.log(`Will send auth status: ${JSON.stringify(statusBody)}`)
       if (overallState.status === AuthorizationRequestStateStatus.ERROR || overallState.status === AuthorizationResponseStateStatus.ERROR) {
