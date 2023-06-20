@@ -9,6 +9,7 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "build": "pnpm build:js && pnpm build:copyfiles && pnpm build:api && pnpm build:schema",
+    "build:clean": "lerna clean -y && pnpm install && lerna run build:clean --concurrency 1 && pnpm build:copyfiles && pnpm build:schema",
     "build:js": "pnpm -r --stream build",
     "build:api": "pnpm -r --stream extract-api",
     "build:schema": "pnpm -r --stream generate-plugin-schema",
