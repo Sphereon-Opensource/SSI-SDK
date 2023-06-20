@@ -19,6 +19,7 @@ export class OID4VCIStore implements IAgentPlugin {
   get defaultOpts(): IIssuerDefaultOpts | undefined {
     return this._defaultOpts
   }
+
   private readonly _metadataStores: Map<string, IKeyValueStore<CredentialIssuerMetadata>>
   private readonly _optionStores: Map<string, IKeyValueStore<IIssuerOptions>>
   private readonly defaultStoreId: string
@@ -89,12 +90,19 @@ export class OID4VCIStore implements IAgentPlugin {
       )
     }
     if (opts && Array.isArray(opts?.importIssuerOpts)) {
-      opts.importIssuerOpts.forEach(this.oid4vciStorePersistIssuerOpts)
+      opts.importIssuerOpts.forEach((opt) => this.oid4vciStorePersistIssuerOpts(opt))
     }
   }
 
   private async oid4vciStoreGetIssuerOpts({ correlationId, storeId, namespace }: Ioid4vciStoreGetArgs): Promise<IIssuerOptions | undefined> {
-    return (await this.store({ stores: this._optionStores, storeId }).get(this.prefix({ namespace, correlationId }))) ?? this.defaultOpts
+    return (
+      (await this.store({ stores: this._optionStores, storeId }).get(
+        this.prefix({
+          namespace,
+          correlationId,
+        })
+      )) ?? this.defaultOpts
+    )
   }
 
   private async oid4vciStoreHasIssuerOpts({ correlationId, storeId, namespace }: Ioid4vciStoreExistsArgs): Promise<boolean> {
@@ -102,7 +110,9 @@ export class OID4VCIStore implements IAgentPlugin {
   }
 
   private async oid4vciStorePersistIssuerOpts(args: IIssuerOptsPersistArgs): Promise<IValueData<IIssuerOptions>> {
-    const { correlationId, issuerOpts, ttl, storeId, namespace } = args
+    const storeId = this.storeIdStr(args)
+    const namespace = this.namespaceStr(args)
+    const { correlationId, issuerOpts, ttl } = args
     if (args?.validation !== false) {
       //todo
     }
@@ -144,7 +154,9 @@ export class OID4VCIStore implements IAgentPlugin {
   }
 
   private async oid4vciStorePersistMetadata(args: IMetadataPersistArgs): Promise<IValueData<CredentialIssuerMetadata>> {
-    const { correlationId, metadata, ttl, storeId, namespace } = args
+    const namespace = this.namespaceStr(args)
+    const storeId = this.storeIdStr(args)
+    const { correlationId, metadata, ttl } = args
     if (args?.validation !== false) {
       //todo
     }
@@ -166,11 +178,13 @@ export class OID4VCIStore implements IAgentPlugin {
     return existing
   }
 
-  private async oid4vciStoreRemoveMetadata({ storeId, correlationId, namespace }: Ioid4vciStoreRemoveArgs): Promise<boolean> {
+  private async oid4vciStoreRemoveMetadata(args: Ioid4vciStoreRemoveArgs): Promise<boolean> {
+    const namespace = this.namespaceStr(args)
+    const storeId = this.storeIdStr(args)
     return this.store({ stores: this._metadataStores, storeId }).delete(
       this.prefix({
         namespace,
-        correlationId: correlationId,
+        correlationId: args.correlationId,
       })
     )
   }
@@ -197,19 +211,24 @@ export class OID4VCIStore implements IAgentPlugin {
     return Promise.resolve(this.defaultNamespace)
   }
 
-  private store<T extends ValueStoreType>({ stores, storeId }: { stores: Map<string, IKeyValueStore<T>>; storeId?: string }): IKeyValueStore<T> {
-    const store = stores.get(storeId ?? this.defaultStoreId)
+  private store<T extends ValueStoreType>(args: { stores: Map<string, IKeyValueStore<T>>; storeId?: string }): IKeyValueStore<T> {
+    const storeId = this.storeIdStr({ storeId: args.storeId })
+    const store = args.stores.get(storeId)
     if (!store) {
-      throw Error(`Could not get issuer metadata store: ${storeId ?? this.defaultStoreId}`)
+      throw Error(`Could not get issuer metadata store: ${storeId}`)
     }
     return store
   }
 
-  private namespace({ namespace }: { namespace?: string }): string {
-    return namespace ?? this.defaultStoreId
+  private storeIdStr({ storeId }: { storeId?: string }): string {
+    return storeId ?? this.defaultStoreId
+  }
+
+  private namespaceStr({ namespace }: { namespace?: string }): string {
+    return namespace ?? this.defaultNamespace
   }
 
   private prefix({ namespace, correlationId }: { namespace?: string; correlationId: string }) {
-    return `${this.namespace({ namespace })}:${correlationId}`
+    return `${this.namespaceStr({ namespace })}:${correlationId}`
   }
 }

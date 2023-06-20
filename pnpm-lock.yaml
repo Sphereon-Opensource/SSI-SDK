@@ -41,6 +41,9 @@ patchedDependencies:
   '@veramo/core@4.2.0':
     hash: c5oempznsz4br5w3tcuk2i2mau
     path: patches/@veramo__core@4.2.0.patch
+  '@veramo/credential-w3c@4.2.0':
+    hash: wuhizuafnrz3uzah2wlqaevbmi
+    path: patches/@veramo__credential-w3c@4.2.0.patch
   '@veramo/data-store@4.2.0':
     hash: feb5u2ygzsdf67qbxr2lxgqjyy
     path: patches/@veramo__data-store@4.2.0.patch
@@ -461,11 +464,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.4.1-unstable.304
-        version: 0.4.1-unstable.304
+        specifier: 0.4.1-unstable.308
+        version: 0.4.1-unstable.308
       '@sphereon/oid4vci-issuer':
-        specifier: 0.4.1-unstable.304
-        version: 0.4.1-unstable.304
+        specifier: 0.4.1-unstable.308
+        version: 0.4.1-unstable.308
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: ^0.12.0
         version: 0.12.0
@@ -489,7 +492,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       cross-fetch:
         specifier: ^3.1.5
         version: 3.1.5
@@ -519,14 +522,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.4.1-unstable.304
-        version: 0.4.1-unstable.304
+        specifier: 0.4.1-unstable.308
+        version: 0.4.1-unstable.308
       '@sphereon/oid4vci-issuer':
-        specifier: 0.4.1-unstable.304
-        version: 0.4.1-unstable.304
+        specifier: 0.4.1-unstable.308
+        version: 0.4.1-unstable.308
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.4.1-unstable.304
-        version: 0.4.1-unstable.304
+        specifier: 0.4.1-unstable.308
+        version: 0.4.1-unstable.308
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -547,7 +550,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       body-parser:
         specifier: ^1.19.0
         version: 1.19.0
@@ -670,8 +673,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.4.1-unstable.304
-        version: 0.4.1-unstable.304
+        specifier: 0.4.1-unstable.308
+        version: 0.4.1-unstable.308
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -704,8 +707,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.4.1-unstable.304
-        version: 0.4.1-unstable.304
+        specifier: 0.4.1-unstable.308
+        version: 0.4.1-unstable.308
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: ^0.12.0
         version: 0.12.0
@@ -720,7 +723,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       cross-fetch:
         specifier: ^3.1.5
         version: 3.1.5
@@ -901,7 +904,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       cross-fetch:
         specifier: ^3.1.5
         version: 3.1.5
@@ -977,7 +980,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       cross-fetch:
         specifier: ^3.1.5
         version: 3.1.5
@@ -1032,7 +1035,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       body-parser:
         specifier: ^1.19.0
         version: 1.19.0
@@ -1364,7 +1367,7 @@ importers:
         version: 4.2.0
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       '@veramo/data-store':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(sqlite3@5.1.6)(ts-node@10.9.1)
@@ -1436,7 +1439,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       body-parser:
         specifier: ^1.19.0
         version: 1.19.0
@@ -5641,8 +5644,8 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vci-common@0.4.1-unstable.304:
-    resolution: {integrity: sha512-AHPHyV2Lkn32WFUZTguvDnaLqEwm6pf3BeT2v9hk2NS2IlGCIOSASeiYHkTkEkZvEw3oVeins8BjS4EiNvLmsQ==}
+  /@sphereon/oid4vci-common@0.4.1-unstable.308:
+    resolution: {integrity: sha512-zFiBN6fTpGansNQ5i82wpSrOlvsicRg6UUW/9wZp8exWPzPVZBU1gsKbp+QgoNWK+4qgC3w1Kfr2ZQ+oYjzgfw==}
     engines: {node: '>=16'}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -5652,12 +5655,12 @@ packages:
       - encoding
     dev: false
 
-  /@sphereon/oid4vci-issuer-server@0.4.1-unstable.304:
-    resolution: {integrity: sha512-v+j9T0mO4398J5MN9Rs/hBWdiQeKa/0tfwv31uR6etAOjJUpIRPwX9g2PfkQc0mubeNzp2zoq6FxuK7QYose4Q==}
+  /@sphereon/oid4vci-issuer-server@0.4.1-unstable.308:
+    resolution: {integrity: sha512-p5fMOq3nDlSnMbNZJ/aMsk00JRsZRV1KWuLq78LpwbRAl/7uSyOOCnY1+cQlbjAzaDFageXQlkixC1uCNovgbA==}
     engines: {node: '>=16'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.4.1-unstable.304
-      '@sphereon/oid4vci-issuer': 0.4.1-unstable.304
+      '@sphereon/oid4vci-common': 0.4.1-unstable.308
+      '@sphereon/oid4vci-issuer': 0.4.1-unstable.308
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.2
       cookie-parser: 1.4.6
@@ -5670,11 +5673,11 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.4.1-unstable.304:
-    resolution: {integrity: sha512-Te1/6Ah9itvw72Tr2sSbIXLMUlA3AcDLE8mz8ivLLtTAyVVfQVTsPGPZ+rt/PRBXXMREQ0oLGzRj6mNkhWp68w==}
+  /@sphereon/oid4vci-issuer@0.4.1-unstable.308:
+    resolution: {integrity: sha512-94hwnrSfOYJrvL6LOpQhDMT3qGcs3iPbEAbI+b4AfY9Yf5kai1WQvBnkMECgnbAJUjpItkQ38uyvh+j7yJO7zA==}
     engines: {node: '>=16'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.4.1-unstable.304
+      '@sphereon/oid4vci-common': 0.4.1-unstable.308
       '@sphereon/ssi-types': link:packages/ssi-types
       uuid: 9.0.0
     transitivePeerDependencies:
@@ -7106,7 +7109,7 @@ packages:
       - supports-color
       - web-streams-polyfill
 
-  /@veramo/credential-w3c@4.2.0:
+  /@veramo/credential-w3c@4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi):
     resolution: {integrity: sha512-zfZnFAV2hVdwqsT0N3zBr+iHDo3i/JYFTDdNhLzKcQasz3V6NERyEtWmqv60/LPCGTufuGIqYbB+OKJrS9Ogpw==}
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -7127,6 +7130,7 @@ packages:
       - encoding
       - supports-color
       - web-streams-polyfill
+    patched: true
 
   /@veramo/data-store@4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(sqlite3@5.1.6)(ts-node@10.9.1):
     resolution: {integrity: sha512-gwinKYd//jOCXrdr2NefXOHnuUT8Vz2sHvSMFvm41UVD9QMpeKpTrTEqGoYG/eDg/1+U9aQlb+AI6bFUNNsk0Q==}

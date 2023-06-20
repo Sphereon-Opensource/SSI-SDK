@@ -2,7 +2,7 @@ import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
 import { getUniResolver } from '@sphereon/did-uni-client'
 import { CredentialIssuerMetadata } from '@sphereon/oid4vci-common'
 import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
-import { toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
+import {/*generatePrivateKeyHex, */toJwk} from '@sphereon/ssi-sdk-ext.key-utils'
 import { OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {
@@ -39,6 +39,8 @@ export const DIF_UNIRESOLVER_RESOLVE_URL = 'https://dev.uniresolver.io/1.0/ident
 export const APP_ID = 'sphereon:rp-demo'
 export const DID_PREFIX = 'did'
 
+export const baseUrl = 'https://oid4vci.ngrok.dev'
+
 export enum KeyManagementSystemEnum {
   LOCAL = 'local',
 }
@@ -58,17 +60,17 @@ export enum SupportedDidMethodEnum {
 // const RP_DID_WEB_KID = `${RP_DID_WEB}#auth-key`
 
 const RP_DID_JWK =
-  'did:jwk:eyJhbGciOiJFUzI1NksiLCJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCaXJGX0xROGtaOHVFREdxQzdSeXlUWGFRNEswelIyRE9VcF82NnN1R0xnIiwieSI6ImxUdnZMbTRlMmdSTzhmSm1ZQUp2dl8tTlpVMkk1Qjdtb3VJU2ZEZ3M3bjAifQ'
+  'did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiVEcySDJ4MmRXWE4zdUNxWnBxRjF5c0FQUVZESkVOX0gtQ010YmdqYi1OZyIsInkiOiI5TThOeGQwUE4yMk05bFBEeGRwRHBvVEx6MTV3ZnlaSnM2WmhLSVVKMzM4In0'
 
-const RP_DID_JWK_PRIVATE_KEY_HEX = '63d619effd0f223dcfa4f0bcdcf11a9cd9c5ececda354848261abd3a80a2911841' // generatePrivateKeyHex('Secp256k1')
-console.log(RP_DID_JWK_PRIVATE_KEY_HEX)
+const RP_DID_JWK_PRIVATE_KEY_HEX = 'f4446e5eb1201a7769cb35f02f24b06c0ac3ff49eb085f8562f06fc6c42e68cd' /*generatePrivateKeyHex('Secp256r1')*/
+console.log('============='+RP_DID_JWK_PRIVATE_KEY_HEX)
 const RP_ION_PRIVATE_KEY_HEX = '851eb04ca3e2b2589d6f6a7287565816ee8e3126599bfeede8d3e93c53fb26e3'
 
 const RP_DID_ION =
   'did:ion:EiAeobpQwEVpR-Ib9toYwbISQZZGIBck6zIUm0ZDmm9v0g:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJhdXRoLWtleSIsInB1YmxpY0tleUp3ayI6eyJjcnYiOiJzZWNwMjU2azEiLCJrdHkiOiJFQyIsIngiOiJmUUE3WUpNRk1qNXFET0RrS25qR1ZLNW0za1VSRFc1YnJ1TWhUa1NYSGQwIiwieSI6IlI3cVBNNEsxWHlqNkprM3M2a3I2aFNrQzlDa0ExSEFpMVFTejZqSU56dFkifSwicHVycG9zZXMiOlsiYXV0aGVudGljYXRpb24iLCJhc3NlcnRpb25NZXRob2QiXSwidHlwZSI6IkVjZHNhU2VjcDI1NmsxVmVyaWZpY2F0aW9uS2V5MjAxOSJ9XX19XSwidXBkYXRlQ29tbWl0bWVudCI6IkVpQnpwN1loTjltaFVjWnNGZHhuZi1sd2tSVS1oVmJCdFpXc1ZvSkhWNmprd0EifSwic3VmZml4RGF0YSI6eyJkZWx0YUhhc2giOiJFaUJvbWxvZ0JPOERROFdpVVFsa3diYmxuMXpsRFU2Q3Jvc01wNDRySjYzWHhBIiwicmVjb3ZlcnlDb21taXRtZW50IjoiRWlEQVFYU2k3SGNqSlZCWUFLZE8yenJNNEhmeWJtQkJDV3NsNlBRUEpfamtsQSJ9fQ'
 const PRIVATE_RECOVERY_KEY_HEX = '7c90c0575643d09a370c35021c91e9d8af2c968c5f3a4bf73802693511a55b9f'
 const PRIVATE_UPDATE_KEY_HEX = '7288a92f6219c873446abd1f8d26fcbbe1caa5274b47f6f086ef3e7e75dcad8b'
-// const RP_DID_ION_KID = `${RP_DID_ION}#auth-key`
+const RP_DID_ION_KID = `${RP_DID_ION}#auth-key`
 
 export const resolver = new Resolver({
   ...getDidKeyResolver(),
@@ -130,52 +132,102 @@ const agent = createAgent<IPlugins>({
         didOpts: {
           identifierOpts: {
             identifier: RP_DID_JWK,
-            kid: '04062ac5fcb43c919f2e1031aa0bb472c935da4382b4cd1d83394a7febab2e18b8953bef2e6e1eda044ef1f26660026fbfff8d654d88e41ee6a2e2127c382cee7d',
+            kid: '4c6d87db1d9d597377b82a99a6a175cac00f4150c910dfc7f8232d6e08dbf8d8',
           },
         },
       },
+      instanceOpts: [
+        {
+          credentialIssuer: `${baseUrl}/sphereonDISABLED`,
+          issuerOpts: {
+            didOpts: {
+              identifierOpts: {
+                identifier: RP_DID_ION,
+                kid: RP_DID_ION_KID,
+              },
+            },
+          },
+        },
+      ],
+      importIssuerOpts: [
+        {
+          correlationId: `${baseUrl}/sphereonDISABLED`,
+          issuerOpts: {
+            didOpts: {
+              identifierOpts: {
+                identifier: RP_DID_ION,
+                kid: RP_DID_ION_KID,
+              },
+            },
+          },
+        },
+      ],
+
       importMetadatas: [
         {
-          correlationId: 'https://oid4vci.ngrok.dev/test',
+          correlationId: `${baseUrl}/sphereon`,
           overwriteExisting: true,
           metadata: {
-            credential_issuer: 'https://oid4vci.ngrok.dev/test',
-            credential_endpoint: 'https://oid4vci.ngrok.dev/test/credentials',
+            credential_issuer: `${baseUrl}/sphereon`,
+            credential_endpoint: `${baseUrl}/sphereon/credentials`,
             // token_endpoint: 'https://oid4vci.ngrok.dev/test/token',
             display: [
               {
-                name: 'Sphereon Issuer',
-                description: 'Example OID4VCI Issuer',
+                name: 'Sphereon',
+                description: 'Sphereon Example OID4VCI Issuer',
               },
             ],
             credentials_supported: [
               {
                 display: [
                   {
-                    name: 'Example Credential',
-                    description: 'Example Credential',
+                    name: 'Verified Employee',
+                    description: 'Verified Employee Example',
+                    logo: {
+                      url: 'https://sphereon.com/content/themes/sphereon/assets/img/logo-wit.svg',
+                      alt_text: 'A red rectangular shape, portraying the logo of Sphereon.',
+                    },
                   },
                 ],
-                id: 'test',
-                types: ['VerifiableCredential'],
+                id: 'verified-employee',
+                '@context': ['https://www.w3.org/2018/credentials/v1'],
+                types: ['VerifiableCredential', 'VerifiedEmployee'],
                 format: 'jwt_vc_json',
-                cryptographic_binding_methods_supported: ['did:web', 'did:jwk', 'did:key'],
+                cryptographic_binding_methods_supported: ['did:web', 'did:ion', 'did:jwk'],
+                cryptographic_suites_supported: ['ES256', 'ES256K', 'EdDSA'],
+              },
+              {
+                display: [
+                  {
+                    name: 'Example Membership',
+                    description: 'Example Membership',
+                    logo: {
+                      url: 'https://sphereon.com/content/themes/sphereon/assets/img/logo-wit.svg',
+                      alt_text: 'An red rectangular shape, portraying the logo of Sphereon.',
+                    },
+                  },
+                ],
+                id: 'membership-example',
+                '@context': ['https://www.w3.org/2018/credentials/v1'],
+                types: ['VerifiableCredential', 'MembershipExample'],
+                format: 'jwt_vc_json',
+                cryptographic_binding_methods_supported: ['did:web', 'did:ion', 'did:jwk', 'did:key'],
                 cryptographic_suites_supported: ['ES256', 'ES256K', 'EdDSA'],
               },
             ],
           } as CredentialIssuerMetadata,
         },
         {
-          correlationId: 'https://oid4vci.ngrok.dev/dbc2023',
+          correlationId: `${baseUrl}/dbc2023`,
           overwriteExisting: true,
           metadata: {
-            credential_issuer: 'https://oid4vci.ngrok.dev/dbc2023',
-            credential_endpoint: 'https://oid4vci.ngrok.dev/dbc2023/credentials',
+            credential_issuer: `${baseUrl}/dbc2023`,
+            credential_endpoint: `${baseUrl}/dbc2023/credentials`,
             // token_endpoint: 'https://oid4vci.ngrok.dev/test/token',
             display: [
               {
-                name: 'Dutch Blockchain',
-                description: 'Dutch Blockchain Issuer',
+                name: 'Dutch Blockchain Coalition',
+                description: 'Dutch Blockchain Coalition Issuer',
               },
             ],
             credentials_supported: [
@@ -255,6 +307,134 @@ const agent = createAgent<IPlugins>({
             ],
           } as CredentialIssuerMetadata,
         },
+        {
+          correlationId: `${baseUrl}/fma2023`,
+          overwriteExisting: true,
+          metadata: {
+            credential_issuer: `${baseUrl}/fma2023`,
+            credential_endpoint: `${baseUrl}/fma2023/credentials`,
+            // token_endpoint: 'https://oid4vci.ngrok.dev/test/token',
+            display: [
+              {
+                name: 'Future Mobility Alliance',
+                description: 'Future Data Market Place Issuer',
+              },
+            ],
+            credentials_supported: [
+              {
+                display: [
+                  {
+                    name: 'FMA Guest',
+                    description: 'Future Mobility Data Marketplace Guest credential for demo purposes.',
+                    background_color: '#3B6F6D',
+                    text_color: '#FFFFFF',
+                    logo: {
+                      url: 'https://marketplace.future-mobility-alliance.org/images/extra-logos/3-FutureMobilityNetwork_logo.png',
+                      alt_text:
+                        'An green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
+                    },
+                  },
+                  {
+                    locale: 'en-US',
+                    name: 'FMA Guest',
+                    description: 'Future Mobility Data Marketplace Guest credential for demo purposes.',
+                    background_color: '#3B6F6D',
+                    text_color: '#FFFFFF',
+                    logo: {
+                      url: 'https://marketplace.future-mobility-alliance.org/images/extra-logos/3-FutureMobilityNetwork_logo.png',
+                      alt_text:
+                        'An green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
+                    },
+                  },
+                  {
+                    locale: 'nl-NL',
+                    name: 'FMA gast',
+                    description: 'Future Mobility Alliance gast credential wordt uitgegeven voor demo doeleinden.',
+                    background_color: '#3B6F6D',
+                    text_color: '#FFFFFF',
+                    logo: {
+                      url: 'https://marketplace.future-mobility-alliance.org/images/extra-logos/3-FutureMobilityNetwork_logo.png',
+                      alt_text:
+                        'An green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
+                    },
+                  },
+                ],
+                order: ['firstName', 'lastName', 'email', 'type'],
+                credentialSubject: {
+                  firstName: {
+                    value_type: 'string',
+                    display: [
+                      {
+                        name: 'firstName',
+                      },
+                      {
+                        name: 'firstName',
+                        locale: 'en-US',
+                      },
+                      {
+                        name: 'Voornaam',
+                        locale: 'nl-NL',
+                      },
+                    ],
+                  },
+                  lastName: {
+                    value_type: 'string',
+                    display: [
+                      {
+                        name: 'lastName',
+                      },
+                      {
+                        name: 'lastName',
+                        locale: 'en-US',
+                      },
+                      {
+                        name: 'Achternaam',
+                        locale: 'nl-NL',
+                      },
+                    ],
+                  },
+                  email: {
+                    value_type: 'string',
+                    display: [
+                      {
+                        name: 'Email',
+                      },
+                      {
+                        name: 'Email',
+                        locale: 'en-US',
+                      },
+                      {
+                        name: 'Email',
+                        locale: 'nl-NL',
+                      },
+                    ],
+                  },
+                  type: {
+                    value_type: 'string',
+                    display: [
+                      {
+                        name: 'Type',
+                      },
+                      {
+                        name: 'Type',
+                        locale: 'en-US',
+                      },
+                      {
+                        name: 'Type',
+                        locale: 'nl-NL',
+                      },
+                    ],
+                  },
+                },
+                id: 'fma2023',
+                types: ['VerifiableCredential', 'GuestCredential'],
+                format: 'jwt_vc_json',
+                cryptographic_binding_methods_supported: ['did:web', 'did:jwk'],
+                cryptographic_suites_supported: ['ES256', 'ES256K', 'EdDSA'],
+              },
+            ],
+          } as CredentialIssuerMetadata,
+        },
       ],
     }),
     new OID4VCIIssuer({
@@ -281,19 +461,20 @@ const agent = createAgent<IPlugins>({
 })
 
 agent
-  .didManagerGet({ did: RP_DID_JWK })
+  .didManagerGet({ did: RP_DID_JWK})
   .then((id) => {
     console.log(
-      `==DID JWK existed:  \r\n${JSON.stringify(id, null, 2)}\r\nJWK:\r\n${JSON.stringify(toJwk(id.keys[0].publicKeyHex, 'Secp256k1'), null, 2)}`
+      `==DID JWK existed:  \r\n${JSON.stringify(id, null, 2)}\r\nJWK:\r\n${JSON.stringify(toJwk(id.keys[0].publicKeyHex, 'Secp256r1'), null, 2)}`
     )
   })
   .catch((error) => {
     agent
       .didManagerCreate({
         provider: 'did:jwk',
-        alias: 'oid4vci-jwk',
+        alias: 'jwk-es256',
         options: {
           key: {
+            type: 'Secp256r1',
             privateKeyHex: RP_DID_JWK_PRIVATE_KEY_HEX,
           },
         },

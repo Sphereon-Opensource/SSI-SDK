@@ -1,22 +1,39 @@
-import { CredentialIssuerMetadata, Jwt, OID4VCICredentialFormat, UniformCredentialRequest } from '@sphereon/oid4vci-common'
-import { CredentialDataSupplier, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
+import { CredentialIssuerMetadata, Jwt, JwtVerifyResult, OID4VCICredentialFormat, UniformCredentialRequest } from '@sphereon/oid4vci-common'
+import { CredentialDataSupplier, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getDID, getFirstKeyWithRelation, getIdentifier, getKey, IDIDOptions, toDID } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
-import { IIdentifier, IKey, ProofFormat } from '@veramo/core'
+import { DIDDocument, IIdentifier, IKey, ProofFormat } from '@veramo/core'
 import { CredentialPayload } from '@veramo/core/src/types/vc-data-model'
 import { bytesToBase64 } from '@veramo/utils'
 import { createJWT, decodeJWT, JWTVerifyOptions, verifyJWT } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
 import { IIssuerOptions, IRequiredContext } from './types/IOID4VCIIssuer'
 
-function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOptions }, _context: IRequiredContext) {
-  return async (args: { jwt: string; kid?: string }): Promise<Jwt> => {
+export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOptions }, _context: IRequiredContext) {
+  return async (args: { jwt: string; kid?: string }): Promise<JwtVerifyResult<DIDDocument>> => {
     const result = await verifyJWT(args.jwt, verifyOpts)
     if (!result.verified) {
       console.log(`JWT invalid: ${args.jwt}`)
       throw Error('JWT did not verify successfully')
     }
-    return (await decodeJWT(args.jwt)) as Jwt
+    const jwt = (await decodeJWT(args.jwt)) as Jwt
+    const kid = args.kid ?? jwt.header.kid
+    if (!kid) {
+      throw Error('No kid value found')
+    }
+    const did = kid.split('#')[0]
+    const didDocument = await _context.agent.resolveDid({ didUrl: did }).then((result) => result.didDocument)
+    if (!didDocument) {
+      throw Error(`Could not resolve did: ${did}`)
+    }
+    const alg = jwt.header.alg
+    return {
+      alg,
+      kid,
+      did,
+      didDocument,
+      jwt,
+    }
   }
 }
 
@@ -98,14 +115,16 @@ export function getAccessTokenSignerCallback(
   return accessTokenSignerCallback
 }
 
-export function getCredentialSignerCallback(didOpts: IDIDOptions, context: IRequiredContext) {
+export function getCredentialSignerCallback(didOpts: IDIDOptions, context: IRequiredContext): CredentialSignerCallback<DIDDocument> {
   async function issueVCCallback({
     credential,
     credentialRequest,
+    jwtVerifyResult,
     format,
   }: {
     credentialRequest: UniformCredentialRequest
     credential: ICredential
+    jwtVerifyResult: JwtVerifyResult<DIDDocument>
     format?: OID4VCICredentialFormat
   }): Promise<W3CVerifiableCredential> {
     let proofFormat: ProofFormat
@@ -114,6 +133,17 @@ export function getCredentialSignerCallback(didOpts: IDIDOptions, context: IRequ
     if (!credential.issuer && didOpts.identifierOpts.identifier) {
       credential.issuer = toDID(didOpts.identifierOpts.identifier)
     }
+    const subjectIsArray = Array.isArray(credential.credentialSubject)
+    let credentialSubjects = Array.isArray(credential.credentialSubject) ? credential.credentialSubject : [credential.credentialSubject]
+    credentialSubjects = credentialSubjects.map((subject) => {
+      if (!subject.id) {
+        subject.id = jwtVerifyResult.did
+      }
+      return subject
+    })
+
+    credential.credentialSubject = subjectIsArray ? credentialSubjects : credentialSubjects[0]
+
     const result = await context.agent.createVerifiableCredential({
       credential: credential as CredentialPayload,
       proofFormat,
@@ -134,15 +164,19 @@ export async function createVciIssuerBuilder(
     credentialDataSupplier?: CredentialDataSupplier
   },
   context: IRequiredContext
-): Promise<VcIssuerBuilder> {
+): Promise<VcIssuerBuilder<DIDDocument>> {
   const { issuerOpts, metadata } = args
   const { didOpts } = issuerOpts
-  const builder = new VcIssuerBuilder()
+  const builder = new VcIssuerBuilder<DIDDocument>()
   const resolver = args.resolver ?? args?.issuerOpts?.didOpts?.resolveOpts?.resolver ?? args.issuerOpts?.didOpts?.resolveOpts?.jwtVerifyOpts?.resolver
   if (!resolver) {
     throw Error('A Resolver is necessary to verify DID JWTs')
   }
-  const jwtVerifyOpts: JWTVerifyOptions = { ...args?.issuerOpts?.didOpts?.resolveOpts?.jwtVerifyOpts, resolver, audience: metadata.credential_issuer }
+  const jwtVerifyOpts: JWTVerifyOptions = {
+    ...args?.issuerOpts?.didOpts?.resolveOpts?.jwtVerifyOpts,
+    resolver,
+    audience: metadata.credential_issuer,
+  }
   builder.withIssuerMetadata(metadata)
   builder.withUserPinRequired(issuerOpts.userPinRequired ?? false)
   builder.withCredentialSignerCallback(getCredentialSignerCallback(didOpts, context))
@@ -169,6 +203,6 @@ export async function createVciIssuer(
     credentialDataSupplier?: CredentialDataSupplier
   },
   context: IRequiredContext
-): Promise<VcIssuer> {
+): Promise<VcIssuer<DIDDocument>> {
   return (await createVciIssuerBuilder({ issuerOpts, metadata, credentialDataSupplier }, context)).build()
 }
