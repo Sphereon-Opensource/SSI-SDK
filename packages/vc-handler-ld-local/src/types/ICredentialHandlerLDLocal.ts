@@ -1,4 +1,4 @@
-import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
+import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
 import { IPluginMethodMap } from '@veramo/core'
 
 import {

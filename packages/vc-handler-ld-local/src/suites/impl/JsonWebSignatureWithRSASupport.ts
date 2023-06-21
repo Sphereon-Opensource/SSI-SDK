@@ -120,8 +120,6 @@ export class JsonWebSignature {
       }
     }
 
-    // console.log(document);
-
     // ensure proof type is set
     proof.type = this.type
 
@@ -233,14 +231,17 @@ export class JsonWebSignature {
 
   async verifySignature({ verifyData, verificationMethod, proof }: any) {
     if (verificationMethod.publicKey) {
+      verificationMethod.publicKey.algorithm.name = 'RSA-PSS'
       const key = verificationMethod.publicKey as CryptoKey
+      // key.algorithm = {name: 'RSA-PSS'}
       const signature = proof.jws.split('.')[2]
       const headerString = proof.jws.split('.')[0]
       const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), verifyData])
       return await subtle.verify(
         {
-          name: key.algorithm?.name ? key.algorithm.name : 'RSASSA-PKCS1-V1_5',
-          hash: 'SHA-256', // todo get from proof.jws header
+          saltLength: 32,
+          name: 'RSA-PSS', //key.algorithm?.name ? key.algorithm.name : 'RSASSA-PKCS1-V1_5',
+          // hash: 'SHA-256', // todo get from proof.jws header
         },
         key,
         u8a.fromString(signature, 'base64url'),

@@ -1,7 +1,7 @@
 import 'cross-fetch/polyfill'
 import { Server } from 'http'
 
-import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 
 import { IAgent } from '@veramo/core'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'

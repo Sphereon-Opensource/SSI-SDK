@@ -23,9 +23,9 @@ dbConnection:
       synchronize: false
       migrationsRun: true
       migrations:
-        $require: '@sphereon/ssi-sdk-data-store?t=object#DataStoreMigrations'
+        $require: './packages/data-store?t=object#DataStoreMigrations'
       entities:
-        $require: '@sphereon/ssi-sdk-data-store?t=object#DataStoreContactEntities'
+        $require: './packages/data-store?t=object#DataStoreContactEntities'
 
 server:
   baseUrl:
@@ -92,6 +92,6 @@ agent:
         - $require: ./packages/contact-manager/dist#ContactManager
           $args:
             - store:
-                $require: '@sphereon/ssi-sdk-data-store#ContactStore'
+                $require: './packages/data-store/dist#ContactStore'
                 $args:
                   - $ref: /dbConnection

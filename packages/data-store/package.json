@@ -1,5 +1,5 @@
 {
-  "name": "@sphereon/ssi-sdk-data-store",
+  "name": "@sphereon/ssi-sdk.data-store",
   "version": "0.11.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
@@ -7,17 +7,20 @@
   "scripts": {
     "build": "tsc --build",
     "typeorm": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js --config src/migrations/internal-migrations-ormconfig.ts",
-    "typeorm-sqlite:migration:generate": "npm run typeorm -- migration:generate -c migration-sqlite -d src/migrations/sqlite -n",
-    "typeorm-sqlite:migration:run": "npm run typeorm -- migration:run -c migration-sqlite",
-    "typeorm-postgres:migration:generate": "npm run typeorm -- migration:generate -c migration-postgres -d src/migrations/postgres -n",
-    "typeorm-postgres:migration:run": "npm run typeorm -- migration:run -c migration-postgres"
+    "typeorm-sqlite:migration:generate": "pnpm run typeorm -- migration:generate -c migration-sqlite -d src/migrations/sqlite -n",
+    "typeorm-sqlite:migration:run": "pnpm run typeorm -- migration:run -c migration-sqlite",
+    "typeorm-postgres:migration:generate": "pnpm run typeorm -- migration:generate -c migration-postgres -d src/migrations/postgres -n",
+    "typeorm-postgres:migration:run": "pnpm run typeorm -- migration:run -c migration-postgres"
   },
   "dependencies": {
-    "@sphereon/ssi-types": "^0.11.0",
     "@veramo/core": "4.2.0",
+    "@sphereon/ssi-types": "workspace:*",
     "class-validator": "^0.14.0",
     "debug": "^4.3.4",
     "typeorm": "^0.3.12"
+  },
+  "devDependencies": {
+    "sqlite3": "^5.1.6"
   },
   "files": [
     "dist/**/*",
@@ -25,6 +28,7 @@
     "README.md",
     "LICENSE"
   ],
+  "private": false,
   "publishConfig": {
     "access": "public"
   },

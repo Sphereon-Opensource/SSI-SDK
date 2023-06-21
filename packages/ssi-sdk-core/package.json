@@ -1,5 +1,5 @@
 {
-  "name": "@sphereon/ssi-sdk-core",
+  "name": "@sphereon/ssi-sdk.core",
   "description": "SSI SDK Core & Interfaces",
   "version": "0.11.0",
   "main": "dist/index.js",
@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@scure/base": "^1.1.1",
-    "@sphereon/ssi-types": "^0.11.0",
-    "@veramo/core": "4.2.0"
+    "@sphereon/ssi-types": "workspace:*",
+    "@veramo/core": "4.2.0",
+    "cross-fetch": "^3.1.5",
+    "image-size": "^1.0.2"
   },
   "devDependencies": {
     "did-resolver": "^4.1.0"
@@ -23,6 +25,7 @@
     "README.md",
     "LICENSE"
   ],
+  "private": false,
   "publishConfig": {
     "access": "public"
   },

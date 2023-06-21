@@ -193,9 +193,7 @@ export const openid4vciCreateElementByValue: CreateElementArgs<QRType.OpenID4VCI
 
 export const openid4vciCreateValueValid: CreateValueArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
   data: openid4vciDataValid,
-  onGenerate: (result: ValueResult<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>) => {
-    console.log(result, null, 2)
-  },
+  onGenerate: (result: ValueResult<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>) => {},
 }
 
 export const openid4vciCreateElementValid: CreateElementArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme> = {
@@ -203,6 +201,5 @@ export const openid4vciCreateElementValid: CreateElementArgs<QRType.OpenID4VCI, 
   renderingProps,
   onGenerate: (result: ValueResult<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>) => {
     render(<div data-testid="test-div-openid4vci">{result.data.object.credentialOfferUri}</div>)
-    console.log(result.value)
   },
 }

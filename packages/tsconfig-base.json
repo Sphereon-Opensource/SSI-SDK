@@ -1,5 +1,9 @@
 {
-  "$schema": "http://json.schemastore.org/tsconfig",
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  },
   "compilerOptions": {
     /* Basic Options */
     "target": "ES6" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'. */,
@@ -47,6 +51,8 @@
     // "types": [],                           /* Type declaration files to be included in compilation. */
     //    "allowSyntheticDefaultImports": true /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */,
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
+    "allowSyntheticDefaultImports": true,
+
     // "preserveSymlinks": true,              /* Do not resolve the real path of symlinks. */
     "skipLibCheck": true /* Skip type checking of declaration files. */,
 
@@ -58,11 +64,12 @@
 
     "resolveJsonModule": true,
     /* Experimental Options */
+    "useUnknownInCatchVariables": false,
     "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
     "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
     "preserveConstEnums": true,
     "declarationMap": true,
     "composite": true
   },
-  "exclude": ["**/__tests__/**/*", "**/dist/**/*"]
+  "exclude": ["**/__tests__/**/*", "**/dist/**/*", "**/.yalc/**/*"]
 }

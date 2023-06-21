@@ -212,6 +212,8 @@ export const enum DocumentFormat {
   EIP712,
 }
 
+export const JWT_PROOF_TYPE_2020 = 'JwtProof2020'
+
 export interface IVerifyStatusResult {
   verified: boolean
   /**

@@ -40,8 +40,8 @@ For now the following connection types are supported:
 
 ```typescript
 import { migrations, Entities } from '@veramo/data-store'
-import DataStoreConnectionEntities from '@sphereon/ssi-sdk-contact-manager'
-import { ContactStore, DataStoreMigrations } from '@sphereon/ssi-sdk-data-store'
+import { ContactManager } from '@sphereon/ssi-sdk.contact-manager'
+import { ContactStore, DataStoreMigrations, DataStoreContactEntities } from '@sphereon/ssi-sdk.data-store'
 
 const dbConnection = createConnection({
   type: 'react-native',
@@ -51,7 +51,7 @@ const dbConnection = createConnection({
   synchronize: false,
   migrationsRun: true,
   migrations: [...DataStoreMigrations, ...migrations],
-  entities: [...DataStoreConnectionEntities, ...Entities],
+  entities: [...DataStoreContactEntities, ...Entities],
 })
 
 const agent = createAgent<IContactManager>({
@@ -190,7 +190,7 @@ await agent.cmRemoveIdentity({
 ## Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk-contact-manager
+yarn add @sphereon/ssi-sdk.contact-manager
 ```
 
 ## Build

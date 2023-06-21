@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig-base.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "declarationDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../agent-config"
+    }
+  ]
+}

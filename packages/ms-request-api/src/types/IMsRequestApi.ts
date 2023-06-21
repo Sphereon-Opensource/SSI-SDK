@@ -1,5 +1,5 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import { IMsAuthenticationClientCredentialArgs } from '@sphereon/ms-authenticator'
+import { IMsAuthenticationClientCredentialArgs } from '@sphereon/ssi-sdk.ms-authenticator'
 
 export interface IMsRequestApi extends IPluginMethodMap {
   issuanceRequestMsVc(clientIssueRequest: IClientIssueRequest, context: IRequiredContext): Promise<IIssueRequestResponse>

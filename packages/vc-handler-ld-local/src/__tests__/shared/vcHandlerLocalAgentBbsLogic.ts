@@ -1,17 +1,17 @@
 import { createAgent, IDIDManager, IIdentifier, IKeyManager, IResolver, PresentationPayload, TAgent } from '@veramo/core'
-import { CredentialHandlerLDLocal } from '../../agent/CredentialHandlerLDLocal'
+import { CredentialHandlerLDLocal } from '../../agent'
 import { LdDefaultContexts } from '../../ld-default-contexts'
-import { ICredentialHandlerLDLocal, MethodNames } from '../../types/ICredentialHandlerLDLocal'
+import { ICredentialHandlerLDLocal, MethodNames } from '../../types'
 import { SphereonBbsBlsSignature2020 } from '../../suites'
 import { MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
-import { BlsKeyManager } from '@sphereon/bls-key-manager'
-import { BlsKeyManagementSystem } from '@sphereon/bls-kms-local'
+import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '../../../../ssi-sdk-core/src'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
-import { BlsKeyDidProvider, getDidKeyResolver } from '@sphereon/bls-did-provider-key'
+import { SphereonKeyDidProvider, getDidKeyResolver } from '@sphereon/ssi-sdk-ext.did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { Resolver } from 'did-resolver'
-import { AssertionProofPurpose } from '../../types/types'
+import { AssertionProofPurpose } from '../../types'
 
 export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
   describe('Issuer Agent Plugin', () => {
@@ -24,15 +24,15 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
       const keyStore = new MemoryPrivateKeyStore()
       agent = createAgent({
         plugins: [
-          new BlsKeyManager({
+          new SphereonKeyManager({
             store: new MemoryKeyStore(),
             kms: {
-              local: new BlsKeyManagementSystem(keyStore),
+              local: new SphereonKeyManagementSystem(keyStore),
             },
           }),
           new DIDManager({
             providers: {
-              'did:key': new BlsKeyDidProvider({ defaultKms: 'local' }),
+              'did:key': new SphereonKeyDidProvider({ defaultKms: 'local' }),
             },
             store: new MemoryDIDStore(),
             defaultProvider: 'did:key',

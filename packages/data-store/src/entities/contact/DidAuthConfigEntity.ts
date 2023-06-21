@@ -1,6 +1,6 @@
 import { ChildEntity, Column, JoinColumn, OneToOne } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
-import { BasicDidAuthConfig } from '../../types/contact'
+import { BasicDidAuthConfig } from '../../types'
 import { ConnectionEntity } from './ConnectionEntity'
 
 @ChildEntity('DidAuthConfig')

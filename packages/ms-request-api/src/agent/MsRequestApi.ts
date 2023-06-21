@@ -8,7 +8,7 @@ import {
   Issuance,
   IssuanceConfig,
 } from '../types/IMsRequestApi'
-import { ClientCredentialAuthenticator, checkMsIdentityHostname } from '@sphereon/ms-authenticator'
+import { ClientCredentialAuthenticator, checkMsIdentityHostname } from '@sphereon/ssi-sdk.ms-authenticator'
 import { generatePin, fetchIssuanceRequestMs } from '../IssuerUtil'
 /**
  * {@inheritDoc IMsRequestApi}

@@ -1,17 +1,18 @@
 import { TKeyType } from '@veramo/core'
 
 import { SphereonLdSignature } from './ld-suites'
-
+import Debug from 'debug'
 /**
  * Initializes a list of Veramo-wrapped LD Signature suites and exposes those to the Agent Module
  */
+const debug = Debug('sphereon:ssi-sdk-vc-handler-ld-local')
 export class LdSuiteLoader {
   constructor(options: { ldSignatureSuites: SphereonLdSignature[] }) {
     options.ldSignatureSuites.forEach((obj) => {
       const veramoKeyType = obj.getSupportedVeramoKeyType()
       const verificationType = obj.getSupportedVerificationType()
       if (this.signatureMap[veramoKeyType]) {
-        console.log(
+        debug(
           `Registered another signature suite ${obj} for key type: ${veramoKeyType} overriding the old one. Previous one: ${this.signatureMap[veramoKeyType]}`
         )
         // throw Error(`Cannot register 2 suites for the same type ${veramoKeyType}`)

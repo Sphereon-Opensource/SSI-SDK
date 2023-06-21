@@ -65,3 +65,8 @@ test/*.js
 /packages/contact-manager/plugin.schema.json
 /packages/bls-key-manager/plugin.schema.json
 /packages/ms-request-api/plugin.schema.json
+/packages/siopv2-oid4vp-rp-rest-client/plugin.schema.json
+/packages/vc-handler-ld-local/plugin.schema.json
+/packages/issuance-branding/plugin.schema.json
+/packages/oid4vci-issuer-rest-client/plugin.schema.json
+

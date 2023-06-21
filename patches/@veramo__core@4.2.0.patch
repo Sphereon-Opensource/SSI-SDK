@@ -1,0 +1,60 @@
+diff --git a/build/types/IIdentifier.d.ts b/build/types/IIdentifier.d.ts
+index ace5497d95205df6fce3de304eae4293883b5e93..d69eccd2b587b5ec260e44bac3712ea13c02da4a 100644
+--- a/build/types/IIdentifier.d.ts
++++ b/build/types/IIdentifier.d.ts
+@@ -43,7 +43,7 @@ export type MinimalImportableIdentifier = {
+  *
+  * @public
+  */
+-export type TKeyType = 'Ed25519' | 'Secp256k1' | 'Secp256r1' | 'X25519' | 'Bls12381G1' | 'Bls12381G2';
++export type TKeyType = 'Ed25519' | 'Secp256k1' | 'Secp256r1' | 'X25519' | 'Bls12381G1' | 'Bls12381G2' | 'RSA';
+ /**
+  * Cryptographic key
+  * @public
+diff --git a/plugin.schema.json b/plugin.schema.json
+index f33bd89e6154d8c191bcb18bdff42764e99febed..38c63c18924e24801db60690fb060c7f530fb973 100644
+--- a/plugin.schema.json
++++ b/plugin.schema.json
+@@ -476,7 +476,8 @@
+             "Secp256r1",
+             "X25519",
+             "Bls12381G1",
+-            "Bls12381G2"
++            "Bls12381G2",
++            "RSA"
+           ],
+           "description": "Cryptographic key type."
+         },
+@@ -1046,7 +1047,8 @@
+             "Secp256r1",
+             "X25519",
+             "Bls12381G1",
+-            "Bls12381G2"
++            "Bls12381G2",
++            "RSA"
+           ],
+           "description": "Cryptographic key type."
+         },
+@@ -2570,7 +2572,8 @@
+             "Secp256r1",
+             "X25519",
+             "Bls12381G1",
+-            "Bls12381G2"
++            "Bls12381G2",
++            "RSA"
+           ],
+           "description": "Cryptographic key type."
+         },
+diff --git a/src/types/IIdentifier.ts b/src/types/IIdentifier.ts
+index ee063bdb7611b0552801b73ec664413f7c7246f4..3002bb85a7f4a8a8719ef50622e17546b3864735 100644
+--- a/src/types/IIdentifier.ts
++++ b/src/types/IIdentifier.ts
+@@ -51,7 +51,7 @@ export type MinimalImportableIdentifier = {
+  *
+  * @public
+  */
+-export type TKeyType = 'Ed25519' | 'Secp256k1' | 'Secp256r1' | 'X25519' | 'Bls12381G1' | 'Bls12381G2'
++export type TKeyType = 'Ed25519' | 'Secp256k1' | 'Secp256r1' | 'X25519' | 'Bls12381G1' | 'Bls12381G2' | 'RSA'
+ 
+ /**
+  * Cryptographic key

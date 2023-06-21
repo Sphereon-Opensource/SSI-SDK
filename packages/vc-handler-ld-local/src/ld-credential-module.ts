@@ -2,30 +2,21 @@ import { purposes } from '@digitalcredentials/jsonld-signatures'
 import * as vc from '@digitalcredentials/vc'
 import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
 import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
-import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk-core'
-import { events } from './types'
-import {
-  CredentialPayload,
-  IAgentContext,
-  IKey,
-  IKeyManager,
-  IResolver,
-  PresentationPayload,
-  VerifiableCredential,
-  VerifiablePresentation,
-} from '@veramo/core'
+import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
+import { IVerifyResult } from '@sphereon/ssi-types'
+import { CredentialPayload, IAgentContext, IKey, IResolver, PresentationPayload, VerifiableCredential, VerifiablePresentation } from '@veramo/core'
 import Debug from 'debug'
 
 import { LdContextLoader } from './ld-context-loader'
 import { LdDocumentLoader } from './ld-document-loader'
 import { LdSuiteLoader } from './ld-suite-loader'
-import { IVerifyResult } from '@sphereon/ssi-types'
+import { RequiredAgentMethods } from './ld-suites'
+import { events } from './types'
 
 // import jsigs from '@digitalcredentials/jsonld-signatures'
 //Support for Typescript added in version 9.0.0
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const jsigs = require('jsonld-signatures')
-
-export type RequiredAgentMethods = IResolver & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>
 
 const ProofPurpose = purposes.ProofPurpose
 const AssertionProofPurpose = purposes.AssertionProofPurpose
@@ -190,7 +181,6 @@ export class LdCredentialModule {
     checkStatus?: Function
     //AssertionProofPurpose()
   ): Promise<IVerifyResult> {
-    // console.log(JSON.stringify(presentation, null, 2))
     let result: IVerifyResult
     if (presentation.proof.type?.includes('BbsBlsSignature2020')) {
       //Should never be null or undefined
@@ -221,8 +211,7 @@ export class LdCredentialModule {
       context.agent.emit(events.PRESENTATION_VERIFIED, { presentation, ...result })
     } else {
       // NOT verified.
-      console.log(`Error verifying LD Verifiable Presentation`)
-      console.log(JSON.stringify(result, null, 2))
+      debug(`Error verifying LD Verifiable Presentation: ${JSON.stringify(result, null, 2)}`)
       context.agent.emit(events.PRESENTATION_VERIFY_FAILED, { presentation, ...result })
     }
     return result

@@ -1,4 +1,4 @@
-import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { Connection } from 'typeorm'
 import wellKnownDidIssuerAgentLogic from './shared/wellKnownDidIssuerAgentLogic'
 

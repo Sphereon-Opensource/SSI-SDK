@@ -12,12 +12,12 @@ import {
   BeforeInsert,
   BeforeUpdate,
 } from 'typeorm'
+import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { correlationIdentifierEntityFrom, CorrelationIdentifierEntity } from './CorrelationIdentifierEntity'
 import { ConnectionEntity, connectionEntityFrom } from './ConnectionEntity'
-import { BasicMetadataItem, IBasicIdentity, IdentityRoleEnum } from '../../types/contact'
-import { ContactEntity } from './ContactEntity'
 import { IdentityMetadataItemEntity, metadataItemEntityFrom } from './IdentityMetadataItemEntity'
-import { IsNotEmpty, validate } from 'class-validator'
+import { BasicMetadataItem, IBasicIdentity, IdentityRoleEnum } from '../../types'
+import { ContactEntity } from './ContactEntity'
 
 @Entity('Identity')
 export class IdentityEntity extends BaseEntity {
@@ -84,9 +84,9 @@ export class IdentityEntity extends BaseEntity {
   @BeforeInsert()
   @BeforeUpdate()
   async validate() {
-    const validation = await validate(this)
+    const validation: Array<ValidationError> = await validate(this)
     if (validation.length > 0) {
-      return Promise.reject(Error(validation[0].constraints?.isNotEmpty))
+      return Promise.reject(Error(Object.values(validation[0].constraints!)[0]))
     }
     return
   }
@@ -97,9 +97,7 @@ export const identityEntityFrom = (args: IBasicIdentity): IdentityEntity => {
   identityEntity.alias = args.alias
   identityEntity.roles = args.roles
   identityEntity.identifier = correlationIdentifierEntityFrom(args.identifier)
-  if (args.connection) {
-    identityEntity.connection = connectionEntityFrom(args.connection)
-  }
+  identityEntity.connection = args.connection ? connectionEntityFrom(args.connection) : undefined
   identityEntity.metadata = args.metadata ? args.metadata.map((item: BasicMetadataItem) => metadataItemEntityFrom(item)) : []
 
   return identityEntity

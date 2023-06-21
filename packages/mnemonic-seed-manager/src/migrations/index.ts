@@ -1,1 +1,0 @@
-export { MnemonicSeedManagerMigrations } from './generic'

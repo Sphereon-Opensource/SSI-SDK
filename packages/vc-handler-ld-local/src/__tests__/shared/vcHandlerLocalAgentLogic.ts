@@ -1,5 +1,5 @@
 import { getUniResolver } from '@sphereon/did-uni-client'
-import { IDidConnectionMode } from '../../../../lto-did-provider/src'
+import { IDidConnectionMode } from '@sphereon/ssi-sdk-ext.did-provider-lto'
 import { checkStatus } from '@transmute/vc-status-rl-2020'
 import { createAgent, IDIDManager, IIdentifier, IKeyManager, IResolver, PresentationPayload, TAgent } from '@veramo/core'
 import { CredentialIssuer, ICredentialIssuer } from '@veramo/credential-w3c'
@@ -12,12 +12,12 @@ import { Resolver } from 'did-resolver'
 // @ts-ignore
 import nock from 'nock'
 
-import { LtoDidProvider } from '../../../../lto-did-provider/src'
-import { CredentialHandlerLDLocal } from '../../agent/CredentialHandlerLDLocal'
+import { LtoDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-lto'
+import { CredentialHandlerLDLocal } from '../../agent'
 import { LdDefaultContexts } from '../../ld-default-contexts'
 import { SphereonEd25519Signature2018 } from '../../suites'
-import { ICredentialHandlerLDLocal, MethodNames } from '../../types/ICredentialHandlerLDLocal'
-import { ControllerProofPurpose } from '../../types/types'
+import { ICredentialHandlerLDLocal, MethodNames } from '../../types'
+import { ControllerProofPurpose } from '../../types'
 import { boaExampleVC, ltoDIDResolutionResult } from '../mocks'
 
 const LTO_DID = 'did:lto:3MsS3gqXkcx9m4wYSbfprYfjdZTFmx2ofdX'

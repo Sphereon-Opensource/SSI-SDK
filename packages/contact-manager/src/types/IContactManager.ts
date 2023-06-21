@@ -1,5 +1,5 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import { FindContactArgs, FindIdentityArgs, IBasicIdentity, IContact, IIdentity } from '@sphereon/ssi-sdk-data-store'
+import { FindContactArgs, FindIdentityArgs, IBasicIdentity, IContact, IIdentity } from '@sphereon/ssi-sdk.data-store'
 
 export interface IContactManager extends IPluginMethodMap {
   cmGetContact(args: IGetContactArgs, context: IRequiredContext): Promise<IContact>

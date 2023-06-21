@@ -1,4 +1,4 @@
-import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import msRequestApiAgentLogic from './shared/msRequestApiAgentLogic'
 
 jest.setTimeout(30000)

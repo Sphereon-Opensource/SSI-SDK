@@ -6,8 +6,8 @@ import { Connection } from 'typeorm'
 import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
-import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
-import { IContactManager } from '../src/types/IContactManager'
+import { createObjects, getConfig } from '../../agent-config/dist'
+import { IContactManager } from '../src'
 import contactManagerAgentLogic from './shared/contactManagerAgentLogic'
 
 jest.setTimeout(30000)

@@ -1,7 +1,10 @@
+import { IProof, IVerifiableCredential } from '@sphereon/ssi-types'
 import { CredentialPayload, DIDDocument, IAgentContext, IKey, PresentationPayload, TKeyType, VerifiableCredential } from '@veramo/core'
-import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
-import * as u8a from 'uint8arrays'
 import { asArray, encodeJoseBlob } from '@veramo/utils'
+import * as u8a from 'uint8arrays'
+
+import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
+
 import { JsonWebKey } from './impl/JsonWebKeyWithRSASupport'
 import { JsonWebSignature } from './impl/JsonWebSignatureWithRSASupport'
 
@@ -23,9 +26,9 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
     const controller = issuerDid
 
     // DID Key ID
-    let id = verificationMethodId
+    const id = verificationMethodId
 
-    let alg = 'RS256'
+    let alg = 'PS256'
     if (key.type === 'Ed25519' || key.type === 'X25519') {
       alg = 'EdDSA'
     } else if (key.type === 'Secp256k1') {
@@ -115,12 +118,32 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
     return 'https://w3id.org/security/suites/jws-2020/v1'
   }
 
-  preVerificationCredModification(credential: VerifiableCredential): void {
+  preVerificationCredModification(origCredential: VerifiableCredential): void {
+    const credential = origCredential as IVerifiableCredential // The original credential interface does not account for multiple proofs
     const vcJson = JSON.stringify(credential)
-    if (vcJson.indexOf('JsonWebKey2020') > -1) {
+    if (vcJson.includes('JsonWebSignature2020')) {
       if (vcJson.indexOf(this.getContext()) === -1) {
         credential['@context'] = [...asArray(credential['@context'] || []), this.getContext()]
+        /* if (Array.isArray(credential.proof)) {
+          credential.proof.forEach(proof => this.addProofContextIfNeeded(proof))
+        } else {
+          this.addProofContextIfNeeded(credential.proof)
+        }*/
       }
+    }
+  }
+
+  addProofContextIfNeeded(proof: IProof) {
+    if (proof['@context']) {
+      if (!proof['@context'].includes(this.getContext())) {
+        if (typeof proof['@context'] === 'string') {
+          proof['@context'] = [proof['@context'], this.getContext()]
+        } else {
+          proof['@context'].push(this.getContext())
+        }
+      }
+    } else {
+      proof['@context'] = this.getContext()
     }
   }
 }

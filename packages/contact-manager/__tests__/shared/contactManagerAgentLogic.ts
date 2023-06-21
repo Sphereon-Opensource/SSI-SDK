@@ -1,16 +1,16 @@
 import { TAgent } from '@veramo/core'
-import { IContactManager } from '../../src/types/IContactManager'
+import { IContactManager } from '../../src'
 import { CorrelationIdentifierEnum, IContact, IdentityRoleEnum, IIdentity } from '../../../data-store/src'
 
 type ConfiguredAgent = TAgent<IContactManager>
 
-export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
+export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
   describe('Contact Manager Agent Plugin', () => {
     let agent: ConfiguredAgent
     let defaultContact: IContact
     let defaultIdentity: IIdentity
 
-    beforeAll(async () => {
+    beforeAll(async (): Promise<void> => {
       await testContext.setup()
       agent = testContext.getAgent()
 
@@ -40,7 +40,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.id).toEqual(defaultContact.id)
     })
 
-    it('should throw error when getting contact with unknown id', async () => {
+    it('should throw error when getting contact with unknown id', async (): Promise<void> => {
       const contactId = 'unknownContactId'
 
       await expect(agent.cmGetContact({ contactId })).rejects.toThrow(`No contact found for id: ${contactId}`)
@@ -52,7 +52,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.length).toBeGreaterThan(0)
     })
 
-    it('should get contacts by filter', async () => {
+    it('should get contacts by filter', async (): Promise<void> => {
       const args = {
         filter: [{ name: 'default_contact' }, { alias: 'default_contact_alias' }, { uri: 'example.com' }],
       }
@@ -61,7 +61,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.length).toBe(1)
     })
 
-    it('should get contacts by name', async () => {
+    it('should get contacts by name', async (): Promise<void> => {
       const args = {
         filter: [{ name: 'default_contact' }],
       }
@@ -70,7 +70,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.length).toBe(1)
     })
 
-    it('should get contacts by alias', async () => {
+    it('should get contacts by alias', async (): Promise<void> => {
       const args = {
         filter: [{ alias: 'default_contact_alias' }],
       }
@@ -79,7 +79,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.length).toBe(1)
     })
 
-    it('should get contacts by uri', async () => {
+    it('should get contacts by uri', async (): Promise<void> => {
       const args = {
         filter: [{ uri: 'example.com' }],
       }
@@ -88,7 +88,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.length).toBe(1)
     })
 
-    it('should return no contacts if filter does not match', async () => {
+    it('should return no contacts if filter does not match', async (): Promise<void> => {
       const args = {
         filter: [{ name: 'no_match_contact' }, { alias: 'no_match_contact_alias' }, { uri: 'no_match_example.com' }],
       }
@@ -97,7 +97,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.length).toBe(0)
     })
 
-    it('should add contact', async () => {
+    it('should add contact', async (): Promise<void> => {
       const contact = {
         name: 'new_contact',
         alias: 'new_contact_alias',
@@ -111,7 +111,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.uri).toEqual(contact.uri)
     })
 
-    it('should throw error when adding contact with duplicate name', async () => {
+    it('should throw error when adding contact with duplicate name', async (): Promise<void> => {
       const name = 'default_contact'
       const alias = 'default_contact_new_alias'
       const contact = {
@@ -123,7 +123,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await expect(agent.cmAddContact(contact)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
     })
 
-    it('should throw error when adding contact with duplicate alias', async () => {
+    it('should throw error when adding contact with duplicate alias', async (): Promise<void> => {
       const name = 'default_new_contact'
       const alias = 'default_contact_alias'
       const contact = {
@@ -135,7 +135,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await expect(agent.cmAddContact(contact)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
     })
 
-    it('should update contact by id', async () => {
+    it('should update contact by id', async (): Promise<void> => {
       const contactName = 'updated_contact'
       const contact = {
         ...defaultContact,
@@ -147,7 +147,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.name).toEqual(contactName)
     })
 
-    it('should throw error when updating contact with unknown id', async () => {
+    it('should throw error when updating contact with unknown id', async (): Promise<void> => {
       const contactId = 'unknownContactId'
       const contact = {
         ...defaultContact,
@@ -163,7 +163,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.id).toEqual(defaultIdentity.id)
     })
 
-    it('should throw error when getting identity with unknown id', async () => {
+    it('should throw error when getting identity with unknown id', async (): Promise<void> => {
       const identityId = 'b0b5b2f9-7d78-4533-8bc1-386e4f08dce1'
 
       await expect(
@@ -173,13 +173,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       ).rejects.toThrow(`No identity found for id: ${identityId}`)
     })
 
-    it('should get all identities for contact', async () => {
+    it('should get all identities for contact', async (): Promise<void> => {
       const result = await agent.cmGetIdentities({ filter: [{ contactId: defaultContact.id }] })
 
       expect(result.length).toBeGreaterThan(0)
     })
 
-    it('should add identity to contact', async () => {
+    it('should add identity to contact', async (): Promise<void> => {
       const correlationId = 'new_example_did'
       const identity = {
         alias: correlationId,
@@ -197,13 +197,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(contact.identities.length).toEqual(2)
     })
 
-    it('should throw error when removing identity with unknown id', async () => {
+    it('should throw error when removing identity with unknown id', async (): Promise<void> => {
       const identityId = 'unknownIdentityId'
 
       await expect(agent.cmRemoveIdentity({ identityId })).rejects.toThrow(`No identity found for id: ${identityId}`)
     })
 
-    it('should throw error when adding identity with invalid identifier', async () => {
+    it('should throw error when adding identity with invalid identifier', async (): Promise<void> => {
       const correlationId = 'missing_connection_add_example'
       const identity = {
         alias: correlationId,
@@ -219,7 +219,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       )
     })
 
-    it('should throw error when updating identity with invalid identifier', async () => {
+    it('should throw error when updating identity with invalid identifier', async (): Promise<void> => {
       const correlationId = 'missing_connection_update_example'
       const identity = {
         alias: correlationId,
@@ -235,7 +235,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await expect(agent.cmUpdateIdentity({ identity: result })).rejects.toThrow(`Identity with correlation type url should contain a connection`)
     })
 
-    it('should update identity', async () => {
+    it('should update identity', async (): Promise<void> => {
       const correlationId = 'new_update_example_did'
       const identity = {
         alias: 'update_example_did',

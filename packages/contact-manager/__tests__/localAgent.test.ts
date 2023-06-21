@@ -1,4 +1,4 @@
-import { createObjects, getConfig } from '@sphereon/ssi-sdk-agent-config'
+import { createObjects, getConfig } from '../../agent-config/dist'
 import { Connection } from 'typeorm'
 
 jest.setTimeout(30000)
@@ -13,9 +13,7 @@ const setup = async (): Promise<boolean> => {
   const { localAgent, db } = await createObjects(config, { localAgent: '/agent', db: '/dbConnection' })
   agent = localAgent
   dbConnection = db
-  await (await dbConnection).dropDatabase()
-  await (await dbConnection).runMigrations()
-  await (await dbConnection).showMigrations()
+
   return true
 }
 

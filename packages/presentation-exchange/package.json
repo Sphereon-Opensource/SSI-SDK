@@ -1,0 +1,66 @@
+{
+  "name": "@sphereon/ssi-sdk.presentation-exchange",
+  "version": "0.11.0",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "veramo": {
+    "pluginInterfaces": {
+      "IPresentationExchange": "./src/types/IPresentationExchange.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build"
+  },
+  "dependencies": {
+    "@sphereon/pex": "2.0.1",
+    "@sphereon/pex-models": "^2.0.2",
+    "@sphereon/ssi-types": "workspace:*",
+    "@sphereon/ssi-sdk-ext.did-utils": "^0.12.0",
+    "@veramo/core": "4.2.0",
+    "@sphereon/ssi-sdk.kv-store-temp": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/json-buffer": "^3.0.0",
+    "@sphereon/did-uni-client": "^0.6.0",
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
+    "@veramo/did-provider-key": "4.2.0",
+    "@veramo/did-resolver": "4.2.0",
+    "@veramo/remote-server": "4.2.0",
+    "@veramo/remote-client": "4.2.0",
+    "@veramo/utils": "4.2.0",
+    "did-resolver": "^4.1.0",
+    "nock": "^13.2.1"
+  },
+  "resolutions": {
+    "@veramo/utils": "4.2.0"
+  },
+  "files": [
+    ".yalc/**/*",
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "plugin.schema.json",
+    "LICENSE"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sphereon",
+    "SSI",
+    "Veramo",
+    "DID",
+    "SIOP",
+    "SIOPv2",
+    "OIDC4VP",
+    "Presentation Exchange",
+    "OpenID Connect",
+    "Authenticator"
+  ]
+}
