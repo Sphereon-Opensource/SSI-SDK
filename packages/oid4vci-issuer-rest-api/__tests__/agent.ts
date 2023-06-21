@@ -258,7 +258,7 @@ const agent = createAgent<IPlugins>({
                     logo: {
                       url: 'https://dutchblockchaincoalition.org/assets/images/icons/Logo-DBC.png',
                       alt_text:
-                          'An orange block shape, with the text Dutch Blockchain Coalition next to it, portraying the logo of the Dutch Blockchain Coalition.',
+                        'An orange block shape, with the text Dutch Blockchain Coalition next to it, portraying the logo of the Dutch Blockchain Coalition.',
                     },
                     background_image: {
                       url: 'https://i.ibb.co/CHqjxrJ/dbc-card-hig-res.png',

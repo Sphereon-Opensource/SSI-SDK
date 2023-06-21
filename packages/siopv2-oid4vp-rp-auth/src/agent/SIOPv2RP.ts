@@ -81,7 +81,7 @@ export class SIOPv2RP implements IAgentPlugin {
 
   private async siopUpdateRequestState(args: IUpdateRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState> {
     if (args.state !== AuthorizationRequestStateStatus.SENT) {
-      throw Error(`Only 'sent' status is support for this method at this point`)
+      throw Error(`Only 'sent' status is supported for this method at this point`)
     }
     return await this.getRPInstance({ definitionId: args.definitionId }, context)
       // todo: In the SIOP library we need to update the signal method to be more like this method

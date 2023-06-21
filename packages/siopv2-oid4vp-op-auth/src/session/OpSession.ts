@@ -115,33 +115,6 @@ export class OpSession {
   private async getMergedRequestPayload(): Promise<RequestObjectPayload> {
     return await (await this.getAuthorizationRequest()).authorizationRequest.mergedPayloads()
   }
-
-  /* public async getSiopAuthorizationRequestFromRP(args: IOpsGetSiopAuthorizationRequestFromRpArgs): Promise<ParsedAuthorizationRequestURI> {
-     const url = args.stateId ? `${args.redirectUrl}?stateId=${args.stateId}` : args.redirectUrl
-     return fetch(url)
-       .then(async (response: Response) =>
-         response.status >= 400 ? Promise.reject(new Error(await response.text())) : this._op!.parseAuthorizationRequestURI(await response.text())
-       )
-       .catch((error: unknown) => Promise.reject(error))
-   }*/
-
-  /* public async getSiopAuthorizationRequestDetails(args: IOpsGetSiopAuthorizationRequestDetailsArgs): Promise<IAuthRequestDetails> {
-     const presentationDefs = await this.getPresentationDefinitions()
-     const verifiablePresentationMatches =
-       presentationDefs && presentationDefs.length > 0
-         ? await this.matchPresentationDefinitions(presentationDefs, args.verifiableCredentials, args.presentationSignCallback, args.signingOptions)
-         : []
-     const didResolutionResult = (await this.getAuthorizationRequest()).didResolutionResult
-
-     return {
-       rpDIDDocument: didResolutionResult.didDocument ?? undefined,
-       id: didResolutionResult.didDocument!.id,
-       alsoKnownAs: didResolutionResult.didDocument!.alsoKnownAs,
-       verifiablePresentationMatches: verifiablePresentationMatches,
-     }
-   }
- */
-
   public async sendAuthorizationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
     const resolveOpts: ResolveOpts = this.options.resolveOpts ?? { resolver: new AgentDIDResolver(this.context, true) }
     if (!resolveOpts.subjectSyntaxTypesSupported || resolveOpts.subjectSyntaxTypesSupported.length === 0) {
@@ -177,9 +150,7 @@ export class OpSession {
           }
         : {}),
     }
-    /*    if (!responseOpts.signer) {
-      throw Error('Signer needs to be present when creating the response')
-    }*/
+
     //fixme: Remove ignore once support is in ICredential
     // @ts-ignore
     const authResponse = await op.createAuthorizationResponse(await this.getAuthorizationRequest(), responseOpts)
@@ -191,92 +162,4 @@ export class OpSession {
       return response
     }
   }
-
-  /*
-
-    private async matchPresentationDefinitions(
-      presentationDefs: PresentationDefinitionWithLocation[],
-      verifiableCredentials: W3CVerifiableCredential[],
-      presentationSignCallback: PresentationSignCallback,
-      options?: {
-        presentationSignCallback?: PresentationSignCallback
-        nonce?: string
-        domain?: string
-      },
-    ): Promise<IPresentationWithDefinition[]> {
-      return await Promise.all(presentationDefs.map(this.mapper(verifiableCredentials, presentationSignCallback, options)))
-    }
-
-    private mapper(
-      verifiableCredentials: W3CVerifiableCredential[],
-      presentationSignCallback: PresentationSignCallback,
-      options?: {
-        nonce?: string
-        domain?: string
-      },
-    ) {
-      return async (presentationDef: PresentationDefinitionWithLocation): Promise<IPresentationWithDefinition> => {
-        const presentationExchange = this.getPresentationExchange(verifiableCredentials)
-        const checked = await presentationExchange.selectVerifiableCredentialsForSubmission(presentationDef.definition)
-        if (checked.errors && checked.errors.length > 0) {
-          return Promise.reject(new Error(JSON.stringify(checked.errors)))
-        }
-
-        const matches: SubmissionRequirementMatch[] | undefined = checked.matches
-        if (!matches || matches.length === 0 || !checked.verifiableCredential || checked.verifiableCredential.length === 0) {
-          return Promise.reject(new Error(JSON.stringify(checked.errors)))
-        }
-
-        const verifiablePresentation: W3CVerifiablePresentation = await presentationExchange.createVerifiablePresentation(
-          presentationDef.definition,
-          checked.verifiableCredential,
-          // todo: Do we want to expose more options?
-          { proofOptions: { nonce: options?.nonce, domain: options?.domain } },
-          presentationSignCallback,
-        )
-
-        let format = typeof verifiablePresentation !== 'string' ? VerifiablePresentationTypeFormat.LDP_VP : VerifiablePresentationTypeFormat.JWT_VP
-        return {
-          definition: presentationDef,
-          location: VPTokenLocation.AUTHORIZATION_RESPONSE, // fixme: Inspect auth request for location, which did-auth-siop can do
-          format,
-          presentation: verifiablePresentation,
-        }
-      }
-    }
-  */
-
-  /*
-    public async authenticateWithSiop(args: IOpsAuthenticateWithSiopArgs): Promise<Response> {
-      // fixme: This flow misses several items, like VCs, creating the VPs etc
-      if (args.stateId || args.redirectUrl || this._op || true) {
-        throw Error('please use individual methods instead of authetnicateWithSiop for now!')
-      }
-
-      return this.getSiopAuthorizationRequestFromRP({ stateId: args.stateId, redirectUrl: args.redirectUrl })
-        .then((authorizationRequest: ParsedAuthorizationRequestURI) => this.verifyAuthorizationRequest({ requestURI: authorizationRequest }))
-        .then((verifiedAuthorizationRequest) => {
-          // const authDetails = await this.getSiopAuthorizationRequestDetails({ verifiedAuthorizationRequest: verifiedAuthorizationRequest, verifiableCredentials: args.})
-          if (args.customApproval !== undefined) {
-            if (typeof args.customApproval === 'string') {
-              if (args.customApprovals !== undefined && args.customApprovals[args.customApproval] !== undefined) {
-                return args.customApprovals[args.customApproval](verifiedAuthorizationRequest, this.id).then(() =>
-                  this.sendSiopAuthorizationResponse({ verifiedAuthorizationRequest: verifiedAuthorizationRequest }),
-                )
-              }
-              return Promise.reject(new Error(`Custom approval not found for key: ${args.customApproval}`))
-            } else {
-              return args.customApproval(verifiedAuthorizationRequest, this.id).then(() =>
-                this.sendSiopAuthorizationResponse({
-                  verifiedAuthorizationRequest: verifiedAuthorizationRequest,
-                  verifiablePresentations: undefined /!*fixme*!/,
-                }),
-              )
-            }
-          } else {
-            return this.sendSiopAuthorizationResponse({ verifiedAuthorizationRequest: verifiedAuthorizationRequest })
-          }
-        })
-        .catch((error: unknown) => Promise.reject(error))
-    }*/
 }
