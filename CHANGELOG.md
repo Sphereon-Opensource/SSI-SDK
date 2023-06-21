@@ -3,6 +3,49 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.12.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.11.0...v0.12.0) (2023-06-21)
+
+
+### Bug Fixes
+
+* added dev dependencies for oid4vci-issuer-rest-client plus prettier ([7b6c2b3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7b6c2b3d08aedfe357345fac47e94be4dcd3d243))
+* added schema export for oid4vci-issuer-rest-client and some docs ([7db9c1b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7db9c1be4775f55cf6db4470db1d99e0efdf5caa))
+* changed credentials and grants to mandatory plus renamed the uri to url ([2df3612](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2df36125a3062250ab0a7a69eca3c83cdb8c450d))
+* fix test cases and REST arguments ([975801e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/975801e1e6c8270fd470acd7e2ce67ae4971a16f))
+* fixed a bug in calling cross-fetch with post, modified the tests ([a3defeb](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a3defeb5d62ff7f4007a88cd772b2164c136da7a))
+* skipped integration tests in oid4vci-issuer-rest-client ([c43759b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c43759bebc7350cc400d668369105a8cff0e3ee1))
+* unify naming ([aee0bf1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/aee0bf1a7a94142c10561fd7295d1d0950c29221))
+* unify naming ([ec7d0b6](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ec7d0b6ced54a792ede23937c7043e53d7121e42))
+* unify naming ([94165cd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/94165cdb8d1cf14f866de7fc5fe2c518a97b1986))
+* updated generate-plugin-schema for oid4vci-rest-client ([70e7820](https://github.com/Sphereon-Opensource/SSI-SDK/commit/70e7820b6e59b3bfdd9de5b15de0718de1826738))
+
+
+### Features
+
+* Add issue status support to OID4VCI REST client ([40abd83](https://github.com/Sphereon-Opensource/SSI-SDK/commit/40abd8320dd0097e2e024c2e61ce2f03359926ab))
+* Add key value store plugin ([95244fa](https://github.com/Sphereon-Opensource/SSI-SDK/commit/95244fa9f6c79d47660f1afee39c2c9db50f0e27))
+* Add OID4VCI issuer modules ([af85f1e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/af85f1e2aace201c5749eef2e1a3fb8223ae7937))
+* Add Presentation Exchange module ([a085c81](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a085c81a2608dd072e9b2c3d49174b76dab9705a))
+* Add SIOPv2 Relying Party logic and REST API ([01f2023](https://github.com/Sphereon-Opensource/SSI-SDK/commit/01f2023a4112f04412df4df318c6eacf9da536a7))
+* Add SIOPv2OID4VP RP auth and REST module ([91b1da3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/91b1da3548fd425aa93424411339e1ec2a2e0fd3))
+* added oid4vci-rest-client package ([910f697](https://github.com/Sphereon-Opensource/SSI-SDK/commit/910f697f08dc05e3c16dafb239b7ee85bc68b431))
+* Allow to supply data for VCI Issuer REST client and server during offer ([0878c28](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0878c2848aa5144ee863e6f192c9f8b8eb46ff34))
+* changed the test structure and few other pr notes addressed ([6520fbe](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6520fbe297ab9a1c5f5fbaff5cabb98f51d3cbea))
+* More support for definition Formats when creating VPs from SIOP ([846ef0b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/846ef0b359c4ec5755d9385c5f1c6db1fb14b0c1))
+* move schema generation to own plugin because of transitive dependency issues upstream ([51c5156](https://github.com/Sphereon-Opensource/SSI-SDK/commit/51c5156bdf83e12d55bc4e609d741c6ff878daa8))
+* move schema generation to own plugin because of transitive dependency issues upstream ([58002a8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/58002a861f7ed504b0e1d4250d556f8414f961a0))
+* move to pnpm ([2714a9c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2714a9c786b8591de41310a83aff19f62cf65e77))
+
+
+### Reverts
+
+* Revert "chore: remove plugin schemas" ([2870d77](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2870d77a6e1919e94f554e71100fbcdb4fed47af))
+* Revert "chore: remove plugin schemas" ([07af699](https://github.com/Sphereon-Opensource/SSI-SDK/commit/07af6996b3209e86d588666c0c0da9ea9e17442c))
+
+
+
+
+
 # [0.11.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.10.1...v0.11.0) (2023-05-07)
 
 ### Bug Fixes
