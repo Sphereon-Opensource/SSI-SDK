@@ -256,6 +256,11 @@ const agent = createAgent<IPlugins>({
                     background_color: '#3B6F6D',
                     text_color: '#FFFFFF',
                     logo: {
+                      url: 'https://dutchblockchaincoalition.org/assets/images/icons/Logo-DBC.png',
+                      alt_text:
+                          'An orange block shape, with the text Dutch Blockchain Coalition next to it, portraying the logo of the Dutch Blockchain Coalition.',
+                    },
+                    background_image: {
                       url: 'https://i.ibb.co/CHqjxrJ/dbc-card-hig-res.png',
                       alt_text: 'Connected open cubes in blue with one orange cube as a background of the card',
                     },
@@ -267,23 +272,46 @@ const agent = createAgent<IPlugins>({
                     background_color: '#3B6F6D',
                     text_color: '#FFFFFF',
                     logo: {
-                      url: 'https://i.ibb.co/CHqjxrJ/dbc-card-hig-res.png',
+                      url: 'https://dutchblockchaincoalition.org/assets/images/icons/Logo-DBC.png',
                       alt_text:
                         'Aaneengesloten open blokken in de kleur blauw, met een blok in de kleur oranje, die tesamen de achtergrond van de kaart vormen.',
                     },
+                    background_image: {
+                      url: 'https://i.ibb.co/CHqjxrJ/dbc-card-hig-res.png',
+                      alt_text: 'Connected open cubes in blue with one orange cube as a background of the card',
+                    },
                   },
                 ],
-                order: ['name', 'email'],
+                order: ['firstName', 'lastName', 'email'],
                 credentialSubject: {
-                  name: {
+                  firstName: {
                     value_type: 'string',
                     display: [
                       {
-                        name: 'Name',
+                        name: 'FirstName',
+                      },
+                      {
+                        name: 'FirstName',
                         locale: 'en-US',
                       },
                       {
-                        name: 'Naam',
+                        name: 'Voornaam',
+                        locale: 'nl-NL',
+                      },
+                    ],
+                  },
+                  lastName: {
+                    value_type: 'string',
+                    display: [
+                      {
+                        name: 'LastName',
+                      },
+                      {
+                        name: 'LastName',
+                        locale: 'en-US',
+                      },
+                      {
+                        name: 'Achternaam',
                         locale: 'nl-NL',
                       },
                     ],
@@ -291,6 +319,9 @@ const agent = createAgent<IPlugins>({
                   email: {
                     value_type: 'string',
                     display: [
+                      {
+                        name: 'Email',
+                      },
                       {
                         name: 'Email',
                         locale: 'en-US',
@@ -337,9 +368,9 @@ const agent = createAgent<IPlugins>({
                       alt_text: 'Multiple green bikes in a row as the card background',
                     },
                     logo: {
-                      url: 'https://i.ibb.co/SdKndf4/fmdm-logo-transp.png',
+                      url: 'https://i.ibb.co/vkfZCvr/FMDM-card-logo.png',
                       alt_text:
-                        'An green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
+                        'A green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
                     },
                   },
                   {
@@ -353,9 +384,9 @@ const agent = createAgent<IPlugins>({
                       alt_text: 'Multiple green bikes in a row as the card background',
                     },
                     logo: {
-                      url: 'https://i.ibb.co/SdKndf4/fmdm-logo-transp.png',
+                      url: 'https://i.ibb.co/vkfZCvr/FMDM-card-logo.png',
                       alt_text:
-                        'An green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
+                        'A green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
                     },
                   },
                   {
@@ -369,7 +400,7 @@ const agent = createAgent<IPlugins>({
                       alt_text: 'Meerdere groene fietsen op een rij die samen de kaart achtergrond vormen',
                     },
                     logo: {
-                      url: 'https://i.ibb.co/SdKndf4/fmdm-logo-transp.png',
+                      url: 'https://i.ibb.co/vkfZCvr/FMDM-card-logo.png',
                       alt_text:
                         'An green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
                     },
@@ -381,10 +412,10 @@ const agent = createAgent<IPlugins>({
                     value_type: 'string',
                     display: [
                       {
-                        name: 'firstName',
+                        name: 'FirstName',
                       },
                       {
-                        name: 'firstName',
+                        name: 'FirstName',
                         locale: 'en-US',
                       },
                       {
@@ -397,10 +428,10 @@ const agent = createAgent<IPlugins>({
                     value_type: 'string',
                     display: [
                       {
-                        name: 'lastName',
+                        name: 'LastName',
                       },
                       {
-                        name: 'lastName',
+                        name: 'LastName',
                         locale: 'en-US',
                       },
                       {
@@ -521,10 +552,10 @@ const agent = createAgent<IPlugins>({
                     value_type: 'string',
                     display: [
                       {
-                        name: 'firstName',
+                        name: 'FirstName',
                       },
                       {
-                        name: 'firstName',
+                        name: 'FirstName',
                         locale: 'en-US',
                       },
                       {
@@ -537,10 +568,10 @@ const agent = createAgent<IPlugins>({
                     value_type: 'string',
                     display: [
                       {
-                        name: 'lastName',
+                        name: 'LastName',
                       },
                       {
-                        name: 'lastName',
+                        name: 'LastName',
                         locale: 'en-US',
                       },
                       {
