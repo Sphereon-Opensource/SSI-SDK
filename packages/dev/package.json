@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.dev",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "source": "lib/index.ts",
   "exports": {
     ".": {
@@ -20,19 +20,19 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "copyfiles": "^2.4.1",
-    "ts-json-schema-generator": "^1.2.0",
     "@microsoft/api-extractor": "^7.33.8",
     "@microsoft/api-extractor-model": "^7.25.3",
     "commander": "^10.0.0",
-    "jsonpointer": "^5.0.1",
-    "url-parse": "^1.5.10",
+    "copyfiles": "^2.4.1",
     "inquirer": "^9.1.4",
     "inquirer-autocomplete-prompt": "^3.0.0",
     "json-schema": "^0.4.0",
     "json5": "^2.2.0",
+    "jsonpointer": "^5.0.1",
     "oas-resolver": "^2.5.3",
     "openapi-types": "^12.0.2",
+    "ts-json-schema-generator": "^1.2.0",
+    "url-parse": "^1.5.10",
     "yaml": "^2.2.2"
   },
   "devDependencies": {

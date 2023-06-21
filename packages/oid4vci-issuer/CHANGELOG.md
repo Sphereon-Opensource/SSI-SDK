@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.12.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.11.0...v0.12.0) (2023-06-21)
+
+
+### Features
+
+* Add issue status support to OID4VCI REST client ([40abd83](https://github.com/Sphereon-Opensource/SSI-SDK/commit/40abd8320dd0097e2e024c2e61ce2f03359926ab))
+* Add OID4VCI issuer modules ([af85f1e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/af85f1e2aace201c5749eef2e1a3fb8223ae7937))
+* Allow to supply data for VCI Issuer REST client and server during offer ([0878c28](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0878c2848aa5144ee863e6f192c9f8b8eb46ff34))
+
+
+### Reverts
+
+* Revert "chore: remove plugin schemas" ([2870d77](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2870d77a6e1919e94f554e71100fbcdb4fed47af))
+
+
+
+
+
 # [0.9.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.8.0...v0.9.0) (2023-03-09)
 
 ### Bug Fixes

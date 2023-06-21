@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.12.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.11.0...v0.12.0) (2023-06-21)
+
+
+### Bug Fixes
+
+* unify naming ([ec7d0b6](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ec7d0b6ced54a792ede23937c7043e53d7121e42))
+
+
+### Features
+
+* Add OID4VCI issuer modules ([af85f1e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/af85f1e2aace201c5749eef2e1a3fb8223ae7937))
+* move schema generation to own plugin because of transitive dependency issues upstream ([51c5156](https://github.com/Sphereon-Opensource/SSI-SDK/commit/51c5156bdf83e12d55bc4e609d741c6ff878daa8))
+* move schema generation to own plugin because of transitive dependency issues upstream ([58002a8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/58002a861f7ed504b0e1d4250d556f8414f961a0))
+* move to pnpm ([2714a9c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2714a9c786b8591de41310a83aff19f62cf65e77))
+
+
+
+
+
 # [0.11.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.10.1...v0.11.0) (2023-05-07)
 
 ### Bug Fixes
