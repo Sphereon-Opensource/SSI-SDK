@@ -5,6 +5,7 @@ import {
   IGetAuthResponseStateArgs,
   IPEXInstanceOptions,
   IRequiredContext,
+  IRPDefaultOpts,
   IRPOptions,
   ISiopRPInstanceArgs,
   ISiopv2RPOpts,
@@ -47,6 +48,10 @@ export class SIOPv2RP implements IAgentPlugin {
 
   constructor(opts: ISiopv2RPOpts) {
     this.opts = opts
+  }
+  public setDefaultOpts(rpDefaultOpts: IRPDefaultOpts) {
+    // We allow setting default options later, because in some cases you might want to query the agent for defaults. This cannot happen when the agent is being build (this is when the constructor is being called)
+    this.opts.defaultOpts = rpDefaultOpts
   }
 
   private async createAuthorizationRequestURI(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<string> {

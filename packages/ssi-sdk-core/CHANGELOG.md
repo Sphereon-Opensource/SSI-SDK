@@ -5,14 +5,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [0.12.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.11.0...v0.12.0) (2023-06-21)
 
-
 ### Features
 
-* move to pnpm ([2714a9c](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/2714a9c786b8591de41310a83aff19f62cf65e77))
-
-
-
-
+- move to pnpm ([2714a9c](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/2714a9c786b8591de41310a83aff19f62cf65e77))
 
 # [0.11.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.10.1...v0.11.0) (2023-05-07)
 

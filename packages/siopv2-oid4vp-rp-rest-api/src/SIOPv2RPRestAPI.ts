@@ -164,7 +164,6 @@ export class SIOPv2RPRestAPI {
         ...(responseState && responseState.status === AuthorizationResponseStateStatus.VERIFIED
           ? { payload: await responseState.response.mergedPayloads() }
           : {}),
-
       }
       console.log(`Will send auth status: ${JSON.stringify(statusBody)}`)
       if (overallState.status === AuthorizationRequestStateStatus.ERROR || overallState.status === AuthorizationResponseStateStatus.ERROR) {

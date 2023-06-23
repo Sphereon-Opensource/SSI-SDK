@@ -5,15 +5,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [0.12.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.11.0...v0.12.0) (2023-06-21)
 
-
 ### Features
 
-* move schema generation to own plugin because of transitive dependency issues upstream ([51c5156](https://github.com/Sphereon-Opensource/SSI-SDK/commit/51c5156bdf83e12d55bc4e609d741c6ff878daa8))
-* move schema generation to own plugin because of transitive dependency issues upstream ([58002a8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/58002a861f7ed504b0e1d4250d556f8414f961a0))
-
-
-
-
+- move schema generation to own plugin because of transitive dependency issues upstream ([51c5156](https://github.com/Sphereon-Opensource/SSI-SDK/commit/51c5156bdf83e12d55bc4e609d741c6ff878daa8))
+- move schema generation to own plugin because of transitive dependency issues upstream ([58002a8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/58002a861f7ed504b0e1d4250d556f8414f961a0))
 
 # [0.11.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.10.1...v0.11.0) (2023-05-07)
 
