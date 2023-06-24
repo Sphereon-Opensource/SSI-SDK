@@ -20,10 +20,16 @@ export class OID4VCIStore implements IAgentPlugin {
     return this._defaultOpts
   }
 
+  set defaultOpts(value: IIssuerDefaultOpts | undefined) {
+    this._defaultOpts = value
+  }
+
   private readonly _metadataStores: Map<string, IKeyValueStore<CredentialIssuerMetadata>>
   private readonly _optionStores: Map<string, IKeyValueStore<IIssuerOptions>>
   private readonly defaultStoreId: string
   private readonly defaultNamespace: string
+
+  private _defaultOpts?: IIssuerDefaultOpts
 
   readonly methods: IOID4VCIStore = {
     oid4vciStoreDefaultMetadata: this.oid4vciStoreDefaultMetadata.bind(this),
@@ -43,7 +49,6 @@ export class OID4VCIStore implements IAgentPlugin {
     oid4vciStoreRemoveMetadata: this.oid4vciStoreRemoveMetadata.bind(this),
     oid4vciStoreClearAllMetadata: this.oid4vciStoreClearAllMetadata.bind(this),
   }
-  private readonly _defaultOpts?: IIssuerDefaultOpts
 
   constructor(opts: IOID4VCIStoreOpts) {
     this.defaultStoreId = opts.defaultStore ?? '_default'
