@@ -5,22 +5,16 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [0.12.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.11.0...v0.12.0) (2023-06-21)
 
-
 ### Bug Fixes
 
-* unify naming ([ec7d0b6](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ec7d0b6ced54a792ede23937c7043e53d7121e42))
-* unify naming ([94165cd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/94165cdb8d1cf14f866de7fc5fe2c518a97b1986))
-
+- unify naming ([ec7d0b6](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ec7d0b6ced54a792ede23937c7043e53d7121e42))
+- unify naming ([94165cd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/94165cdb8d1cf14f866de7fc5fe2c518a97b1986))
 
 ### Features
 
-* Add key value store plugin ([95244fa](https://github.com/Sphereon-Opensource/SSI-SDK/commit/95244fa9f6c79d47660f1afee39c2c9db50f0e27))
-* More support for definition Formats when creating VPs from SIOP ([846ef0b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/846ef0b359c4ec5755d9385c5f1c6db1fb14b0c1))
-* move to pnpm ([2714a9c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2714a9c786b8591de41310a83aff19f62cf65e77))
-
-
-
-
+- Add key value store plugin ([95244fa](https://github.com/Sphereon-Opensource/SSI-SDK/commit/95244fa9f6c79d47660f1afee39c2c9db50f0e27))
+- More support for definition Formats when creating VPs from SIOP ([846ef0b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/846ef0b359c4ec5755d9385c5f1c6db1fb14b0c1))
+- move to pnpm ([2714a9c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2714a9c786b8591de41310a83aff19f62cf65e77))
 
 # [0.9.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.8.0...v0.9.0) (2023-03-09)
 

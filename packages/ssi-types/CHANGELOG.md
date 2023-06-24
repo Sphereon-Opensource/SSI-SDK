@@ -5,15 +5,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [0.12.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.11.0...v0.12.0) (2023-06-21)
 
-
 ### Features
 
-* Add Presentation Exchange module ([a085c81](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/a085c81a2608dd072e9b2c3d49174b76dab9705a))
-* More support for definition Formats when creating VPs from SIOP ([846ef0b](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/846ef0b359c4ec5755d9385c5f1c6db1fb14b0c1))
-
-
-
-
+- Add Presentation Exchange module ([a085c81](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/a085c81a2608dd072e9b2c3d49174b76dab9705a))
+- More support for definition Formats when creating VPs from SIOP ([846ef0b](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/846ef0b359c4ec5755d9385c5f1c6db1fb14b0c1))
 
 # [0.11.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.10.1...v0.11.0) (2023-05-07)
 

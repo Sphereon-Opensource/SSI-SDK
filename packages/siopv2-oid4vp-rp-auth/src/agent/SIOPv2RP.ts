@@ -5,12 +5,14 @@ import {
   IGetAuthResponseStateArgs,
   IPEXInstanceOptions,
   IRequiredContext,
+  IRPDefaultOpts,
   IRPOptions,
   ISiopRPInstanceArgs,
   ISiopv2RPOpts,
   IUpdateRequestStateArgs,
   IVerifyAuthResponseStateArgs,
   schema,
+  VerifiedDataMode,
 } from '../index'
 import { IAgentPlugin } from '@veramo/core'
 
@@ -24,6 +26,9 @@ import {
   VerifiedAuthorizationResponse,
 } from '@sphereon/did-auth-siop'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import { AdditionalClaims, CredentialMapper, ICredentialSubject, IVerifiableCredential } from '@sphereon/ssi-types'
+import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop/dist/types/SessionManager'
+import { OriginalVerifiablePresentation } from '@sphereon/ssi-types/dist'
 
 export class SIOPv2RP implements IAgentPlugin {
   private readonly opts: ISiopv2RPOpts
@@ -43,6 +48,10 @@ export class SIOPv2RP implements IAgentPlugin {
 
   constructor(opts: ISiopv2RPOpts) {
     this.opts = opts
+  }
+  public setDefaultOpts(rpDefaultOpts: IRPDefaultOpts) {
+    // We allow setting default options later, because in some cases you might want to query the agent for defaults. This cannot happen when the agent is being build (this is when the constructor is being called)
+    this.opts.defaultOpts = rpDefaultOpts
   }
 
   private async createAuthorizationRequestURI(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<string> {
@@ -74,9 +83,46 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async siopGetResponseState(args: IGetAuthResponseStateArgs, context: IRequiredContext): Promise<AuthorizationResponseState | undefined> {
-    return await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
+    const rpInstance = await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
       rp.get(context).then((rp) => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound))
     )
+    if (rpInstance === undefined) {
+      return undefined
+    }
+
+    const responseState = rpInstance as AuthorizationResponseState
+    if (
+      responseState.status === AuthorizationResponseStateStatus.VERIFIED &&
+      args.includeVerifiedData &&
+      args.includeVerifiedData !== VerifiedDataMode.NONE
+    ) {
+      const presentationDecoded = CredentialMapper.decodeVerifiablePresentation(
+        responseState.response.payload.vp_token as OriginalVerifiablePresentation
+      )
+      const presentation = CredentialMapper.toUniformPresentation(presentationDecoded as OriginalVerifiablePresentation)
+      switch (args.includeVerifiedData) {
+        case VerifiedDataMode.VERIFIED_PRESENTATION:
+          responseState.response.payload.verifiedData = presentation
+          break
+        case VerifiedDataMode.CREDENTIAL_SUBJECT_FLATTENED:
+          const allClaims: AdditionalClaims = {}
+          presentation.verifiableCredential?.forEach((credential) => {
+            const vc = credential as IVerifiableCredential
+            const credentialSubject = vc.credentialSubject as ICredentialSubject & AdditionalClaims
+            if (!('id' in allClaims)) {
+              allClaims['id'] = credentialSubject.id
+            }
+
+            Object.entries(credentialSubject).forEach(([key, value]) => {
+              if (!(key in allClaims)) {
+                allClaims[key] = value
+              }
+            })
+          })
+          responseState.response.payload.verifiedData = allClaims
+      }
+    }
+    return responseState
   }
 
   private async siopUpdateRequestState(args: IUpdateRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState> {
@@ -152,6 +198,25 @@ export class SIOPv2RP implements IAgentPlugin {
     if (!options) {
       throw Error(`Could not get specific nor default options for definition ${definitionId}`)
     }
+    if (this.opts.defaultOpts) {
+      if (!options.didOpts) {
+        options.didOpts = this.opts.defaultOpts?.didOpts
+      } else {
+        if (!options.didOpts.identifierOpts) {
+          options.didOpts.identifierOpts = this.opts.defaultOpts.didOpts.identifierOpts
+        }
+        if (!options.didOpts.resolveOpts) {
+          options.didOpts.resolveOpts = this.opts.defaultOpts.didOpts.resolveOpts
+        }
+        if (!options.didOpts.supportedDIDMethods) {
+          options.didOpts.supportedDIDMethods = this.opts.defaultOpts.didOpts.supportedDIDMethods
+        }
+        if (!options.supportedVersions) {
+          options.supportedVersions = this.opts.defaultOpts.supportedVersions
+        }
+      }
+    }
+
     return options
   }
 
