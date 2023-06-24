@@ -4,6 +4,7 @@ import { IAgentPlugin } from '@veramo/core'
 import {
   IIssuerDefaultOpts,
   IIssuerOptions,
+  IIssuerOptsImportArgs,
   IIssuerOptsPersistArgs,
   IMetadataPersistArgs,
   Ioid4vciStoreClearArgs,
@@ -108,6 +109,10 @@ export class OID4VCIStore implements IAgentPlugin {
         })
       )) ?? this.defaultOpts
     )
+  }
+
+  public importIssuerOpts(importOpts: IIssuerOptsImportArgs[]) {
+    importOpts.forEach((opt) => this.oid4vciStorePersistIssuerOpts(opt))
   }
 
   private async oid4vciStoreHasIssuerOpts({ correlationId, storeId, namespace }: Ioid4vciStoreExistsArgs): Promise<boolean> {

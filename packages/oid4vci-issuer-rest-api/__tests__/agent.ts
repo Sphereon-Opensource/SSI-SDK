@@ -2,9 +2,9 @@ import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
 import { getUniResolver } from '@sphereon/did-uni-client'
 import { CredentialIssuerMetadata } from '@sphereon/oid4vci-common'
 import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
-import {SphereonKeyManager} from "@sphereon/ssi-sdk-ext.key-manager";
+import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { /*generatePrivateKeyHex, */ toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
-import {SphereonKeyManagementSystem} from "@sphereon/ssi-sdk-ext.kms-local";
+import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 import { OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {
