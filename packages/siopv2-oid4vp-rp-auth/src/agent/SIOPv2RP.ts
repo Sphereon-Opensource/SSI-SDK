@@ -1,3 +1,4 @@
+import {AgentDIDResolver} from "@sphereon/ssi-sdk-ext.did-utils";
 import {
   IAuthorizationRequestPayloads,
   ICreateAuthRequestArgs,
@@ -173,6 +174,11 @@ export class SIOPv2RP implements IAgentPlugin {
     if (!this.instances.has(instanceId)) {
       const instanceOpts = this.getInstanceOpts(definitionId)
       const rpOpts = await this.getRPOptions(definitionId)
+      if (!rpOpts.didOpts.resolveOpts?.resolver) {
+        rpOpts.didOpts = { ...rpOpts.didOpts}
+        rpOpts.didOpts.resolveOpts = {...rpOpts.didOpts.resolveOpts}
+        rpOpts.didOpts.resolveOpts.resolver = new AgentDIDResolver(context, true)
+      }
 
       /*const definition = args.definition ?? (definitionId ? await context.agent.pexStoreGetDefinition({
         definitionId,

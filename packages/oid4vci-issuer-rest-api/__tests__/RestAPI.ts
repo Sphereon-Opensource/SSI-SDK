@@ -1,6 +1,6 @@
 import { CredentialRequestJwtVcJson } from '@sphereon/oid4vci-common/lib/types/Generic.types'
 import { CredentialDataSupplier, CredentialDataSupplierResult } from '@sphereon/oid4vci-issuer'
-import { CredentialDataSupplierArgs } from '@sphereon/oid4vci-issuer/lib/types'
+import { CredentialDataSupplierArgs } from '@sphereon/oid4vci-issuer'
 import { TAgent } from '@veramo/core'
 import { IOID4VCIRestAPIOpts, IPlugins, OID4VCIRestAPI } from '../src'
 import agent, { baseUrl } from './agent'
