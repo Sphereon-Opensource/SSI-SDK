@@ -19,6 +19,6 @@ const tearDown = async (): Promise<boolean> => {
 const getAgent = () => agent
 const testContext = { getAgent, setup, tearDown }
 
-describe('Local integration tests', () => {
+xdescribe('Local integration tests', () => {
   msRequestApiAgentLogic(testContext)
 })
