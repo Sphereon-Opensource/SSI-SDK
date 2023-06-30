@@ -221,17 +221,17 @@ export class SIOPv2RP implements IAgentPlugin {
                 if (!options.didOpts.identifierOpts) {
                     options.didOpts.identifierOpts = this.opts.defaultOpts.didOpts.identifierOpts
                 }
-                if (!options.didOpts.resolveOpts) {
-                    options.didOpts.resolveOpts = {
-                        ...this.opts.defaultOpts.didOpts.resolveOpts,
-                        resolver: this.opts.defaultOpts.didOpts?.resolveOpts?.resolver ?? new AgentDIDResolver(context, true)
-                    }
-                }
                 if (!options.didOpts.supportedDIDMethods) {
                     options.didOpts.supportedDIDMethods = this.opts.defaultOpts.didOpts.supportedDIDMethods
                 }
                 if (!options.supportedVersions) {
                     options.supportedVersions = this.opts.defaultOpts.supportedVersions
+                }
+            }
+            if (!options.didOpts.resolveOpts) {
+                options.didOpts.resolveOpts = {
+                    ...this.opts.defaultOpts.didOpts.resolveOpts,
+                    resolver: this.opts.defaultOpts.didOpts?.resolveOpts?.resolver ?? new AgentDIDResolver(context, true)
                 }
             }
         }
