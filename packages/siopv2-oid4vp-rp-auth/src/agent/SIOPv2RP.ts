@@ -99,6 +99,7 @@ export class SIOPv2RP implements IAgentPlugin {
             return undefined
         }
 
+        console.log("args.includeVerifiedData:", args.includeVerifiedData) // TODO DELETE ME
         const responseState = rpInstance as AuthorizationResponseState
         if (
             responseState.status === AuthorizationResponseStateStatus.VERIFIED &&
@@ -130,6 +131,7 @@ export class SIOPv2RP implements IAgentPlugin {
                     })
                     const responseWithVerifiedData = responseState.response as unknown as AuthStatusResponse & { verifiedData?: AdditionalClaims };
                     responseWithVerifiedData.verifiedData = allClaims
+                    console.log("responseWithVerifiedData:", responseWithVerifiedData) // TODO DELETE ME
             }
         }
         return responseState
