@@ -99,7 +99,7 @@ export class SIOPv2RP implements IAgentPlugin {
             return undefined
         }
 
-        const responseState = rpInstance as AuthorizationResponseState
+        const responseState = rpInstance as AuthorizationResponseState & { verifiedData?: AdditionalClaims }
         if (
             responseState.status === AuthorizationResponseStateStatus.VERIFIED &&
             args.includeVerifiedData &&
@@ -128,7 +128,7 @@ export class SIOPv2RP implements IAgentPlugin {
                             }
                         })
                     })
-                    responseState.response.payload.verifiedData = allClaims
+                    responseState.verifiedData = allClaims
             }
         }
         return responseState
