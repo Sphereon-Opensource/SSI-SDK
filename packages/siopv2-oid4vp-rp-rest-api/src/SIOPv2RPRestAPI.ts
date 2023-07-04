@@ -23,6 +23,7 @@ import { ISIOPv2RP, VerifiedDataMode } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-
 import { RequestWithAgent } from './request-agent-router'
 import { TAgent } from '@veramo/core'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
+import {AdditionalClaims} from '@sphereon/ssi-types'
 
 export interface ISIOPv2RPRestAPIOpts {
   siopBaseURI?: string // An externally communicated base URI for SIOP endpoints. Needs to be provided via this option, or environment variable!
@@ -156,7 +157,7 @@ export class SIOPv2RPRestAPI {
           definitionId,
           includeVerifiedData: includeVerifiedData,
           errorOnNotFound: false,
-        })
+        }) as AuthorizationResponseState & { verifiedData?: AdditionalClaims }
       }
       const overallState: AuthorizationRequestState | AuthorizationResponseState = responseState ?? requestState
 
@@ -167,7 +168,9 @@ export class SIOPv2RPRestAPI {
         definitionId,
         lastUpdated: overallState.lastUpdated,
         ...(responseState && responseState.status === AuthorizationResponseStateStatus.VERIFIED
-          ? { payload: await responseState.response.mergedPayloads() }
+          ? { payload: await responseState.response.mergedPayloads(),
+              verifiedData: responseState.verifiedData
+            }
           : {}),
       }
       console.log(`Will send auth status: ${JSON.stringify(statusBody)}`)
