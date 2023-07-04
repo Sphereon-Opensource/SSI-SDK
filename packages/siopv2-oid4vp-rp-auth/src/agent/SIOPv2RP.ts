@@ -26,7 +26,7 @@ import {
     decodeUriAsJson,
     VerifiedAuthorizationResponse,
 } from '@sphereon/did-auth-siop'
-import {AuthorizationRequestStateStatus} from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import {AuthorizationRequestStateStatus, AuthStatusResponse} from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import {AdditionalClaims, CredentialMapper, ICredentialSubject, IVerifiableCredential} from '@sphereon/ssi-types'
 import {AuthorizationResponseStateStatus} from '@sphereon/did-auth-siop/dist/types/SessionManager'
 import {OriginalVerifiablePresentation} from '@sphereon/ssi-types/dist'
@@ -99,7 +99,7 @@ export class SIOPv2RP implements IAgentPlugin {
             return undefined
         }
 
-        const responseState = rpInstance as AuthorizationResponseState & { verifiedData?: AdditionalClaims }
+        const responseState = rpInstance as AuthorizationResponseState
         if (
             responseState.status === AuthorizationResponseStateStatus.VERIFIED &&
             args.includeVerifiedData &&
@@ -128,7 +128,8 @@ export class SIOPv2RP implements IAgentPlugin {
                             }
                         })
                     })
-                    responseState.verifiedData = allClaims
+                    const responseWithVerifiedData = responseState.response as unknown as AuthStatusResponse & { verifiedData?: AdditionalClaims };
+                    responseWithVerifiedData.verifiedData = allClaims
             }
         }
         return responseState
