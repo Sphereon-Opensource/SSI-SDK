@@ -1,12 +1,12 @@
-import {IonPublicKeyPurpose} from '@decentralized-identity/ion-sdk'
-import {getUniResolver} from '@sphereon/did-uni-client'
-import {CredentialIssuerMetadata} from '@sphereon/oid4vci-common'
-import {JwkDIDProvider} from '@sphereon/ssi-sdk-ext.did-provider-jwk'
-import {SphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
-import {toJwk} from '@sphereon/ssi-sdk-ext.key-utils'
-import {SphereonKeyManagementSystem} from '@sphereon/ssi-sdk-ext.kms-local'
-import {OID4VCIIssuer} from '@sphereon/ssi-sdk.oid4vci-issuer'
-import {OID4VCIStore} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
+import { getUniResolver } from '@sphereon/did-uni-client'
+import { CredentialIssuerMetadata } from '@sphereon/oid4vci-common'
+import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
+import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+import { toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
+import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
+import { OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
+import { OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {
   CredentialHandlerLDLocal,
   LdDefaultContexts,
@@ -16,22 +16,22 @@ import {
   SphereonEd25519Signature2020,
   SphereonJsonWebSignature2020,
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
-import {createAgent} from '@veramo/core'
-import {CredentialPlugin} from '@veramo/credential-w3c'
-import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@veramo/data-store'
-import {DIDManager} from '@veramo/did-manager'
-import {EthrDIDProvider} from '@veramo/did-provider-ethr'
-import {getDidIonResolver, IonDIDProvider} from '@veramo/did-provider-ion'
-import {getDidKeyResolver, KeyDIDProvider} from '@veramo/did-provider-key'
-import {WebDIDProvider} from '@veramo/did-provider-web'
-import {DIDResolverPlugin} from '@veramo/did-resolver'
-import {SecretBox} from '@veramo/kms-local'
+import { createAgent } from '@veramo/core'
+import { CredentialPlugin } from '@veramo/credential-w3c'
+import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
+import { DIDManager } from '@veramo/did-manager'
+import { EthrDIDProvider } from '@veramo/did-provider-ethr'
+import { getDidIonResolver, IonDIDProvider } from '@veramo/did-provider-ion'
+import { getDidKeyResolver, KeyDIDProvider } from '@veramo/did-provider-key'
+import { WebDIDProvider } from '@veramo/did-provider-web'
+import { DIDResolverPlugin } from '@veramo/did-resolver'
+import { SecretBox } from '@veramo/kms-local'
 import Debug from 'debug'
-import {Resolver} from 'did-resolver'
-import {getResolver as getDidWebResolver} from 'web-did-resolver'
-import {IPlugins} from '../src'
-import {DB_CONNECTION_NAME, DB_ENCRYPTION_KEY, getDbConnection} from './database'
-import {start} from './RestAPI'
+import { Resolver } from 'did-resolver'
+import { getResolver as getDidWebResolver } from 'web-did-resolver'
+import { IPlugins } from '../src'
+import { DB_CONNECTION_NAME, DB_ENCRYPTION_KEY, getDbConnection } from './database'
+import { start } from './RestAPI'
 // import {toJwk} from "@sphereon/ssi-sdk-ext.key-utils";
 
 const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-api')
@@ -188,7 +188,7 @@ let importMetadatas = [
               logo: {
                 url: 'https://dutchblockchaincoalition.org/assets/images/icons/Logo-DBC.png',
                 alt_text:
-                    'An orange block shape, with the text Dutch Blockchain Coalition next to it, portraying the logo of the Dutch Blockchain Coalition.',
+                  'An orange block shape, with the text Dutch Blockchain Coalition next to it, portraying the logo of the Dutch Blockchain Coalition.',
               },
               background_image: {
                 url: 'https://i.ibb.co/CHqjxrJ/dbc-card-hig-res.png',
@@ -204,7 +204,7 @@ let importMetadatas = [
               logo: {
                 url: 'https://dutchblockchaincoalition.org/assets/images/icons/Logo-DBC.png',
                 alt_text:
-                    'An orange block shape, with the text Dutch Blockchain Coalition next to it, portraying the logo of the Dutch Blockchain Coalition.',
+                  'An orange block shape, with the text Dutch Blockchain Coalition next to it, portraying the logo of the Dutch Blockchain Coalition.',
               },
               background_image: {
                 url: 'https://i.ibb.co/CHqjxrJ/dbc-card-hig-res.png',
@@ -220,7 +220,7 @@ let importMetadatas = [
               logo: {
                 url: 'https://dutchblockchaincoalition.org/assets/images/icons/Logo-DBC.png',
                 alt_text:
-                    'Aaneengesloten open blokken in de kleur blauw, met een blok in de kleur oranje, die tesamen de achtergrond van de kaart vormen.',
+                  'Aaneengesloten open blokken in de kleur blauw, met een blok in de kleur oranje, die tesamen de achtergrond van de kaart vormen.',
               },
               background_image: {
                 url: 'https://i.ibb.co/CHqjxrJ/dbc-card-hig-res.png',
@@ -316,7 +316,7 @@ let importMetadatas = [
               logo: {
                 url: 'https://i.ibb.co/vkfZCvr/FMDM-card-logo.png',
                 alt_text:
-                    'A green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
+                  'A green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
               },
             },
             {
@@ -332,7 +332,7 @@ let importMetadatas = [
               logo: {
                 url: 'https://i.ibb.co/vkfZCvr/FMDM-card-logo.png',
                 alt_text:
-                    'A green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
+                  'A green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
               },
             },
             {
@@ -348,7 +348,7 @@ let importMetadatas = [
               logo: {
                 url: 'https://i.ibb.co/vkfZCvr/FMDM-card-logo.png',
                 alt_text:
-                    'An green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
+                  'An green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
               },
             },
           ],
@@ -456,7 +456,7 @@ let importMetadatas = [
               logo: {
                 url: 'https://i.ibb.co/WV6Rmsj/triall-White.png',
                 alt_text:
-                    '9 white circles of which 5 are connected in a rectangular shape, with the text Triall next to it, portraying the logo of Triall.',
+                  '9 white circles of which 5 are connected in a rectangular shape, with the text Triall next to it, portraying the logo of Triall.',
               },
             },
             {
@@ -472,7 +472,7 @@ let importMetadatas = [
               logo: {
                 url: 'https://i.ibb.co/WV6Rmsj/triall-White.png',
                 alt_text:
-                    '9 white circles of which 5 are connected in a rectangular shape, with the text Triall next to it, portraying the logo of Triall.',
+                  '9 white circles of which 5 are connected in a rectangular shape, with the text Triall next to it, portraying the logo of Triall.',
               },
             },
             {
@@ -488,7 +488,7 @@ let importMetadatas = [
               logo: {
                 url: 'https://i.ibb.co/WV6Rmsj/triall-White.png',
                 alt_text:
-                    '9 white circles of which 5 are connected in a rectangular shape, with the text Triall next to it, portraying the logo of Triall.',
+                  '9 white circles of which 5 are connected in a rectangular shape, with the text Triall next to it, portraying the logo of Triall.',
               },
             },
           ],
@@ -568,7 +568,7 @@ let importMetadatas = [
       ],
     } as CredentialIssuerMetadata,
   },
-];
+]
 
 console.log(JSON.stringify(importMetadatas, null, 2))
 

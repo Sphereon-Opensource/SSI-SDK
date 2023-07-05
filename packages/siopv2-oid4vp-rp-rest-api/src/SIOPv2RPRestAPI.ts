@@ -7,7 +7,6 @@ import uuid from 'short-uuid'
 import {
   AuthorizationRequestState,
   AuthorizationResponsePayload,
-  AuthorizationResponseState,
   AuthorizationResponseStateStatus,
   PresentationDefinitionLocation,
   VerifiedAuthorizationResponse,
@@ -19,11 +18,14 @@ import {
   GenerateAuthRequestURIResponse,
   uriWithBase,
 } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { ISIOPv2RP, VerifiedDataMode } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import {
+  AuthorizationResponseStateWithVerifiedData,
+  ISIOPv2RP,
+  VerifiedDataMode
+} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { RequestWithAgent } from './request-agent-router'
 import { TAgent } from '@veramo/core'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
-import {AdditionalClaims} from '@sphereon/ssi-types'
 
 export interface ISIOPv2RPRestAPIOpts {
   siopBaseURI?: string // An externally communicated base URI for SIOP endpoints. Needs to be provided via this option, or environment variable!
@@ -152,14 +154,14 @@ export class SIOPv2RPRestAPI {
 
       let responseState
       if (requestState.status === AuthorizationRequestStateStatus.SENT) {
-        responseState = await this.agent.siopGetAuthResponseState({
+        responseState = (await this.agent.siopGetAuthResponseState({
           correlationId,
           definitionId,
           includeVerifiedData: includeVerifiedData,
           errorOnNotFound: false,
-        }) as AuthorizationResponseState & { verifiedData?: AdditionalClaims }
+        })) as AuthorizationResponseStateWithVerifiedData
       }
-      const overallState: AuthorizationRequestState | AuthorizationResponseState = responseState ?? requestState
+      const overallState: AuthorizationRequestState | AuthorizationResponseStateWithVerifiedData = responseState ?? requestState
 
       const statusBody: AuthStatusResponse = {
         status: overallState.status,
@@ -168,9 +170,7 @@ export class SIOPv2RPRestAPI {
         definitionId,
         lastUpdated: overallState.lastUpdated,
         ...(responseState && responseState.status === AuthorizationResponseStateStatus.VERIFIED
-          ? { payload: await responseState.response.mergedPayloads(),
-              verifiedData: responseState.verifiedData
-            }
+          ? { payload: await responseState.response.mergedPayloads(), verifiedData: responseState.verifiedData }
           : {}),
       }
       console.log(`Will send auth status: ${JSON.stringify(statusBody)}`)
