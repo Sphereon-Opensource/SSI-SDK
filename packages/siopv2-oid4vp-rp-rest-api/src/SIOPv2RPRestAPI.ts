@@ -18,11 +18,7 @@ import {
   GenerateAuthRequestURIResponse,
   uriWithBase,
 } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import {
-  AuthorizationResponseStateWithVerifiedData,
-  ISIOPv2RP,
-  VerifiedDataMode
-} from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import { AuthorizationResponseStateWithVerifiedData, ISIOPv2RP, VerifiedDataMode } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { RequestWithAgent } from './request-agent-router'
 import { TAgent } from '@veramo/core'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'

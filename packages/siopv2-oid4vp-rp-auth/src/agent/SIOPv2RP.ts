@@ -20,12 +20,7 @@ import { IAgentPlugin } from '@veramo/core'
 
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
 import { RPInstance } from '../RPInstance'
-import {
-  AuthorizationRequestState,
-  AuthorizationResponsePayload,
-  decodeUriAsJson,
-  VerifiedAuthorizationResponse,
-} from '@sphereon/did-auth-siop'
+import { AuthorizationRequestState, AuthorizationResponsePayload, decodeUriAsJson, VerifiedAuthorizationResponse } from '@sphereon/did-auth-siop'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { AdditionalClaims, CredentialMapper, ICredentialSubject, IVerifiableCredential } from '@sphereon/ssi-types'
 import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop/dist/types/SessionManager'
