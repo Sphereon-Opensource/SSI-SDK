@@ -1,5 +1,6 @@
 import { CredentialIssuerMetadata, Jwt, JwtVerifyResult, OID4VCICredentialFormat, UniformCredentialRequest } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
+import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { getDID, getFirstKeyWithRelation, getIdentifier, getKey, IDIDOptions, toDID } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { DIDDocument, IIdentifier, IKey, ProofFormat } from '@veramo/core'
@@ -11,6 +12,11 @@ import { IIssuerOptions, IRequiredContext } from './types/IOID4VCIIssuer'
 
 export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOptions }, _context: IRequiredContext) {
   return async (args: { jwt: string; kid?: string }): Promise<JwtVerifyResult<DIDDocument>> => {
+    const resolver = getAgentResolver(_context, {uniresolverFallback: true})
+    verifyOpts = {...verifyOpts}
+    if (!verifyOpts?.resolver) {
+      verifyOpts.resolver = resolver
+    }
     const result = await verifyJWT(args.jwt, verifyOpts)
     if (!result.verified) {
       console.log(`JWT invalid: ${args.jwt}`)
@@ -22,10 +28,11 @@ export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOpt
       throw Error('No kid value found')
     }
     const did = kid.split('#')[0]
-    const didDocument = await _context.agent.resolveDid({ didUrl: did }).then((result) => result.didDocument)
-    if (!didDocument) {
-      throw Error(`Could not resolve did: ${did}`)
+    const didResolution = await resolver.resolve(did)
+    if (!didResolution || !didResolution.didDocument) {
+      throw Error(`Could not resolve did: ${did}, metadata: ${didResolution?.didResolutionMetadata}`)
     }
+    const didDocument = didResolution.didDocument
     const alg = jwt.header.alg
     return {
       alg,
