@@ -8,12 +8,13 @@
     "build": "tsc --build",
     "build:clean": "tsc --build --clean && tsc --build",
     "start:prod": "node build/index.js",
-    "start:dev": "ts-node __tests__/RestAPI.ts"
+    "start:dev": "ts-node __tests__/agent.ts"
   },
   "dependencies": {
     "@sphereon/did-auth-siop": "0.3.2-unstable.6",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@sphereon/ssi-sdk.presentation-exchange": "workspace:*",
+    "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@types/uuid": "^9.0.1",
     "@veramo/core": "4.2.0",
@@ -32,8 +33,8 @@
     "@sphereon/did-uni-client": "^0.6.0",
     "@sphereon/pex": "^2.0.1",
     "@sphereon/pex-models": "^2.0.2",
-    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.12.2-next.3",
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.12.2-next.3",
+    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.12.2-next.4",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.12.2-next.4",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-sdk.vc-handler-ld-local": "workspace:*",
     "@types/body-parser": "^1.19.2",

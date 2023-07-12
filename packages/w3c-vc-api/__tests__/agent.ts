@@ -25,7 +25,7 @@ import { KeyManager } from '@veramo/key-manager'
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 import Debug from 'debug'
 import { Resolver } from 'did-resolver'
-import { VCAPIServer } from '../src'
+import { VcApiServer } from '../src'
 import { DB_CONNECTION_NAME, DB_ENCRYPTION_KEY, getDbConnection } from './database'
 import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
 
@@ -62,24 +62,11 @@ const PRIVATE_UPDATE_KEY_HEX = '7288a92f6219c873446abd1f8d26fcbbe1caa5274b47f6f0
 // const RP_DID_KID = `${RP_DID}#auth-key`
 
 export const resolver = new Resolver({
-  /*// const SPHEREON_UNIRESOLVER_RESOLVE_URL = 'https://uniresolver.test.sphereon.io/1.0/identifiers'
-      ...getUniResolver('jwk', {
-          resolveUrl: DIF_UNIRESOLVER_RESOLVE_URL
-      }),
-      ...getUniResolver('ion', {
-          resolveUrl: DIF_UNIRESOLVER_RESOLVE_URL
-      }),
-      ..getUniResolver('lto', {
-          resolveUrl: SPHEREON_UNIRESOLVER_RESOLVE_URL
-      }),*/
   ...getUniResolver('ethr', {
     resolveUrl: DIF_UNIRESOLVER_RESOLVE_URL,
   }),
   ...getDidKeyResolver(),
   ...getDidJwkResolver(),
-  ...getUniResolver('jwk', {
-    resolveUrl: DIF_UNIRESOLVER_RESOLVE_URL,
-  }),
   ...getDidIonResolver(),
 })
 
@@ -202,7 +189,7 @@ agent
   })
   .finally(
     () =>
-      new VCAPIServer({
+      new VcApiServer({
         opts: {
           issueCredentialOpts: {
             proofFormat: 'lds',
