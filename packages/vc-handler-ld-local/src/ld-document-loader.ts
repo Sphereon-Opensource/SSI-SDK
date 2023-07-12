@@ -1,13 +1,19 @@
 import { extendContextLoader } from '@digitalcredentials/jsonld-signatures'
 import vc from '@digitalcredentials/vc'
-import { DIDDocument, IAgentContext, IResolver } from '@veramo/core'
-
+import {
+  CredentialPayload,
+  DIDDocument,
+  IAgentContext,
+  IResolver,
+  PresentationPayload,
+  VerifiableCredential,
+  VerifiablePresentation,
+} from '@veramo/core'
+import { fetch } from 'cross-fetch'
 import Debug from 'debug'
 
 import { LdContextLoader } from './ld-context-loader'
 import { LdSuiteLoader } from './ld-suite-loader'
-
-import { fetch } from 'cross-fetch'
 
 const debug = Debug('sphereon:ssi-sdk:vc-handler-ld-local')
 
@@ -23,24 +29,33 @@ export class LdDocumentLoader {
     this.ldSuiteLoader = options.ldSuiteLoader
   }
 
-  getLoader(context: IAgentContext<IResolver>, attemptToFetchContexts = false) {
+  getLoader(
+    context: IAgentContext<IResolver>,
+    {
+      attemptToFetchContexts = false,
+      verifiableData,
+    }: { attemptToFetchContexts: boolean; verifiableData: VerifiableCredential | VerifiablePresentation | CredentialPayload | PresentationPayload }
+  ) {
     return extendContextLoader(async (url: string) => {
       if (!url || url.trim().length === 0) {
         throw Error('URL needs to be provided to load a context!')
       }
+      const origUrl = url
+      if (url.startsWith('#') && verifiableData.issuer !== undefined) {
+        url = (typeof verifiableData.issuer === 'string' ? verifiableData.issuer : verifiableData.issuer.id) + url
+        console.log(url)
+      }
       // did resolution
       if (url.toLowerCase().startsWith('did:')) {
-        let didDoc: DIDDocument | null
-        /* if (url.toLowerCase().startsWith('did:key:')) {
-          // const suite = this.ldSuiteLoader.getAllSignatureSuites()[0].getSuiteForVerification();
-          didDoc = await new DidKeyDriver().get({url});
-        } else {*/
         const resolutionResult = await context.agent.resolveDid({ didUrl: url })
-        didDoc = resolutionResult.didDocument
-        // }
+        let didDoc: DIDDocument | null = resolutionResult.didDocument
         if (!didDoc) {
           throw new Error(`Could not fetch DID document with url: ${url}. Did you enable the the driver?`)
         }
+        // currently Veramo LD suites can modify the resolution response for DIDs from
+        // the document Loader. This allows to fix incompatibilities between DID Documents
+        // and LD suites to be fixed specifically within the Veramo LD Suites definition
+        this.ldSuiteLoader.getAllSignatureSuites().forEach((x) => x.preDidResolutionModification(url, didDoc as DIDDocument))
 
         // Move legacy publicKey to verificationMethod, so any dependency that does not support it, keeps functioning
         if (didDoc.publicKey) {
@@ -55,8 +70,20 @@ export class LdDocumentLoader {
         }
 
         if (url.indexOf('#') > 0 && didDoc['@context']) {
+          if (origUrl !== url) {
+            // Make sure we replace the result URLs with the original URLs, so framing keeps working
+            didDoc = JSON.parse(JSON.stringify(didDoc).replace(url, origUrl)) as DIDDocument
+            console.log('CHANGED:')
+            console.log(didDoc)
+          }
+
           // Apparently we got a whole DID document, but we are looking for a verification method
-          const component = await context.agent.getDIDComponentById({ didDocument: didDoc, didUrl: url })
+          // We use origUrl here, as that is how it was used in the VM
+          const component = await context.agent.getDIDComponentById({ didDocument: didDoc, didUrl: origUrl })
+          console.log('Component:')
+          console.log(component)
+          console.log('Component stringified:')
+          console.log(JSON.stringify(component))
           if (component && typeof component !== 'string' && component.id) {
             // We have to provide a context
             const contexts = this.ldSuiteLoader
@@ -73,11 +100,6 @@ export class LdDocumentLoader {
             }
           }
         }
-
-        // currently Veramo LD suites can modify the resolution response for DIDs from
-        // the document Loader. This allows to fix incompatibilities between DID Documents
-        // and LD suites to be fixed specifically within the Veramo LD Suites definition
-        this.ldSuiteLoader.getAllSignatureSuites().forEach((x) => x.preDidResolutionModification(url, didDoc as DIDDocument))
 
         return {
           contextUrl: null,

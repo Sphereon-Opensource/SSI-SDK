@@ -1,12 +1,14 @@
+import { Verifier } from '@transmute/jose-ld'
+import sec from '@transmute/security-context'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import jsonld from 'jsonld'
-
-const crypto = require('@sphereon/isomorphic-webcrypto')
-import { JsonWebKey } from './JsonWebKeyWithRSASupport'
 import * as u8a from 'uint8arrays'
-import { Verifier } from '@transmute/jose-ld'
 
-import sec from '@transmute/security-context'
+import { JsonWebKey } from './JsonWebKeyWithRSASupport'
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const crypto = require('@sphereon/isomorphic-webcrypto')
 
 const subtle = crypto.subtle
 
@@ -21,11 +23,11 @@ export interface JsonWebSignatureOptions {
 }
 
 export class JsonWebSignature {
-  public useNativeCanonize: boolean = false
+  public useNativeCanonize = false
   public key?: JsonWebKey
   public proof: any
   public date: any
-  public type: string = 'JsonWebSignature2020'
+  public type = 'JsonWebSignature2020'
   public verificationMethod?: string
   public verifier?: Verifier
 
@@ -226,23 +228,33 @@ export class JsonWebSignature {
       return framed
     }
 
-    return JsonWebKey.from(document, { signer: false, verifier: this.verifier })
+    return await JsonWebKey.from(document, { signer: false, verifier: this.verifier })
   }
 
-  async verifySignature({ verifyData, verificationMethod, proof }: any) {
-    if (verificationMethod.publicKey) {
-      verificationMethod.publicKey.algorithm.name = 'RSA-PSS'
-      const key = verificationMethod.publicKey as CryptoKey
+  async verifySignature({ verifyData, verificationMethod, proof, document }: any) {
+    if (verificationMethod.publicKey && typeof verificationMethod.publicKey === 'object' && !(verificationMethod.publicKey instanceof Uint8Array)) {
+      // const key = verificationMethod.publicKey as CryptoKey
       // key.algorithm = {name: 'RSA-PSS'}
       const signature = proof.jws.split('.')[2]
       const headerString = proof.jws.split('.')[0]
       const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), verifyData])
+
+      if (!verificationMethod.publicKey.algorithm) {
+        verificationMethod.publicKey.algorithm = {}
+      }
+      if (!verificationMethod.publicKey.algorithm.name) {
+        verificationMethod.publicKey.algorithm.name = 'RSA-PSS'
+      }
+      const key = verificationMethod.publicKey as CryptoKey
+      const algName = verificationMethod.publicKey.algorithm.name ?? key?.algorithm?.name ?? 'RSA-PSS'
       return await subtle.verify(
-        {
-          saltLength: 32,
-          name: 'RSA-PSS', //key.algorithm?.name ? key.algorithm.name : 'RSASSA-PKCS1-V1_5',
-          // hash: 'SHA-256', // todo get from proof.jws header
-        },
+        algName === 'RSA-PSS'
+          ? {
+              saltLength: 32,
+              name: algName,
+              // hash: 'SHA-256', // todo get from proof.jws header
+            }
+          : { name: algName },
         key,
         u8a.fromString(signature, 'base64url'),
         messageBuffer
