@@ -39,7 +39,6 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'pnpm'
-      - run: pnpm add -g pnpm
       - run: pnpm install
       - run: pnpm build
       - name: run CI tests
@@ -73,12 +72,12 @@ jobs:
 
       - name: publish @latest when on main
         if: github.ref == 'refs/heads/main'
-        run: yarn publish:latest
+        run: pnpm publish:latest
 
       - name: publish @next when on develop
         if: github.ref == 'refs/heads/develop'
-        run: yarn publish:next
+        run: pnpm publish:next
 
       - name: publish @unstable when on unstable branch
         if: startsWith(github.ref, 'refs/heads/feat')
-        run: yarn publish:unstable
+        run: pnpm publish:unstable

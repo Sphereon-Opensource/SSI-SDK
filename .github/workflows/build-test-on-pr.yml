@@ -27,10 +27,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'pnpm'
-      - run: pnpm add -g pnpm
-
-      - run: yarn install --frozen-lockfile
-      - run: pnpm install
+      - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - name: run CI tests
         env:
