@@ -27,6 +27,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'pnpm'
+      - run: git diff -u
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - name: run CI tests
