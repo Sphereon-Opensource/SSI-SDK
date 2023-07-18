@@ -1,4 +1,12 @@
+import {
+  assertEntraCredentialManifestUrlInCorrectRegion,
+  IMSClientCredentialAuthInfo,
+  determineMSAuthId,
+  getMSClientCredentialAccessToken,
+  newMSClientCredentialAuthenticator,
+} from '@sphereon/ssi-sdk.ms-authenticator'
 import { IAgentPlugin } from '@veramo/core'
+import { fetchIssuanceRequestMs, generatePin } from '../IssuerUtil'
 import {
   IClientIssueRequest,
   IIssueRequest,
@@ -8,21 +16,33 @@ import {
   Issuance,
   IssuanceConfig,
 } from '../types/IMsRequestApi'
-import { ClientCredentialAuthenticator, checkMsIdentityHostname } from '@sphereon/ssi-sdk.ms-authenticator'
-import { generatePin, fetchIssuanceRequestMs } from '../IssuerUtil'
+
 /**
  * {@inheritDoc IMsRequestApi}
  */
 export class MsRequestApi implements IAgentPlugin {
+  private clients: Map<string, IMSClientCredentialAuthInfo> = new Map<string, IMSClientCredentialAuthInfo>()
+
   readonly methods: IMsRequestApi = {
     issuanceRequestMsVc: this.issuanceRequestMsVc.bind(this),
   }
 
   /** {@inheritDoc IMsRequestApi.issuanceRequestMsVc} */
   private async issuanceRequestMsVc(clientIssueRequest: IClientIssueRequest, context: IRequiredContext): Promise<IIssueRequestResponse> {
-    var accessToken = await ClientCredentialAuthenticator(clientIssueRequest.authenticationInfo)
+    const id = determineMSAuthId(clientIssueRequest.authenticationInfo)
+    if (!this.clients.has(id)) {
+      this.clients.set(id, await newMSClientCredentialAuthenticator(clientIssueRequest.authenticationInfo))
+    }
+    const clientInfo = this.clients.get(id)
+    if (!clientInfo) {
+      throw Error(`Could not get client from arguments for id: ${id}`)
+    }
+    const authResult = await getMSClientCredentialAccessToken(clientIssueRequest.authenticationInfo, {
+      confidentialClient: clientInfo.confidentialClient,
+    })
+    const accessToken = authResult.accessToken
 
-    var msIdentityHostName = await checkMsIdentityHostname(clientIssueRequest.authenticationInfo)
+    const msIdentityHostName = await assertEntraCredentialManifestUrlInCorrectRegion(clientIssueRequest.authenticationInfo)
 
     // Config Request and App Config File should be a parameter to this function
     if (!clientIssueRequest.authenticationInfo.azTenantId) {
@@ -35,26 +55,26 @@ export class MsRequestApi implements IAgentPlugin {
       clientIssueRequest.clientIssuanceConfig.issuance.pin.value = generatePin(clientIssueRequest.clientIssuanceConfig.issuance.pin.length)
     }
 
-    var issuance: Issuance = {
+    const issuance: Issuance = {
       type: clientIssueRequest.clientIssuanceConfig.issuance.type,
       manifest: clientIssueRequest.clientIssuanceConfig.issuance.manifest,
       pin: clientIssueRequest.clientIssuanceConfig.issuance.pin,
       claims: clientIssueRequest.claims,
     }
 
-    var issuanceConfig: IssuanceConfig = {
+    const issuanceConfig: IssuanceConfig = {
       authority: clientIssueRequest.clientIssuanceConfig.authority,
       includeQRCode: clientIssueRequest.clientIssuanceConfig.includeQRCode,
       registration: clientIssueRequest.clientIssuanceConfig.registration,
       callback: clientIssueRequest.clientIssuanceConfig.callback,
       issuance: issuance,
     }
-    var issueRequest: IIssueRequest = {
+    const issueRequest: IIssueRequest = {
       authenticationInfo: clientIssueRequest.authenticationInfo,
       issuanceConfig: issuanceConfig,
     }
 
-    var resp = await fetchIssuanceRequestMs(issueRequest, accessToken, msIdentityHostName)
+    const resp = await fetchIssuanceRequestMs(issueRequest, accessToken, msIdentityHostName)
 
     // the response from the VC Request API call is returned to the caller (the UI). It contains the URI to the request which Authenticator can download after
     // it has scanned the QR code. If the payload requested the VC Request service to create the QR code that is returned as well
@@ -65,4 +85,5 @@ export class MsRequestApi implements IAgentPlugin {
     }
     return resp
   }
+
 }

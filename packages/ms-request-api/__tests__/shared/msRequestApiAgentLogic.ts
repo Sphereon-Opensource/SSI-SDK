@@ -32,7 +32,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       jest.mock('@sphereon/ssi-sdk.ms-authenticator', () => {
         return {
           ClientCredentialAuthenticator: jest.fn().mockResolvedValue('ey...'),
-          checkMsIdentityHostname: jest.fn().mockResolvedValue(MsAuthenticator.MS_IDENTITY_HOST_NAME_EU),
+          checkMsIdentityHostname: jest.fn().mockResolvedValue(MsAuthenticator.MS_DID_ENDPOINT_EU),
         }
       })
       await testContext.setup()
