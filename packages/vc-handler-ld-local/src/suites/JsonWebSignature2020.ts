@@ -1,3 +1,4 @@
+import { JwkKeyUse, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IProof, IVerifiableCredential } from '@sphereon/ssi-types'
 import { CredentialPayload, DIDDocument, IAgentContext, IKey, PresentationPayload, TKeyType, VerifiableCredential } from '@veramo/core'
 import { asArray, encodeJoseBlob } from '@veramo/utils'
@@ -36,7 +37,6 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
       throw Error('ES256k keys not supported yet (to JWK missing)')
     } else if (key.type === 'Secp256r1') {
       alg = 'ES256'
-      throw Error('ES256 keys not supported yet (to JWK missing)')
     } else if (key.type === 'Bls12381G1') {
       throw Error('BLS keys as jsonwebkey2020 not implemented yet')
     }
@@ -59,24 +59,17 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
           algorithm: alg,
           data: messageString,
           encoding: 'base64',
-        }) // returns base64url signature
+        })
         return `${headerString}..${signature}`
       },
     }
 
-    const publicKeyJwk = key.meta?.publicKeyJwk
-      ? key.meta.publicKeyJwk
-      : {
-          kty: 'OKP',
-          crv: 'Ed25519',
-          x: u8a.toString(u8a.fromString(key.publicKeyHex, 'hex'), 'base64url'),
-        }
-
+    const publicKeyJwk = key.meta?.publicKeyJwk ?? (await toJwk(key.publicKeyHex, key.type, JwkKeyUse.Signature))
     const verificationKey = await JsonWebKey.from(
       {
-        id: id,
+        id,
         type: this.getSupportedVerificationType(),
-        controller: controller,
+        controller,
         publicKeyJwk,
       },
       { signer, verifier: false }
