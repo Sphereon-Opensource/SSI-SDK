@@ -1268,6 +1268,9 @@ importers:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.12.2-next.4
         version: 0.12.2-next.4
+      '@sphereon/ssi-sdk-ext.key-utils':
+        specifier: 0.12.2-next.4
+        version: 0.12.2-next.4
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
