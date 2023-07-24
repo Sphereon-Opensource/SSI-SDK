@@ -16,15 +16,13 @@
   },
   "dependencies": {
     "@sphereon/ssi-sdk.ms-authenticator": "workspace:*",
-    "@veramo/remote-client": "4.2.0",
-    "@veramo/remote-server": "4.2.0",
-    "cross-fetch": "^3.1.5",
-    "express": "^4.17.1",
-    "express-session": "^1.17.2",
-    "typeorm": "^0.3.12"
+    "@veramo/core": "4.2.0",
+    "cross-fetch": "^3.1.5"
   },
   "devDependencies": {
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
     "@types/express": "^4.17.17",
     "@types/express-session": "^1.17.4",
     "@types/jest": "^27.5.2",
@@ -33,6 +31,7 @@
     "@veramo/data-store": "4.2.0",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
+    "typeorm": "^0.3.12",
     "jest": "^27.5.1",
     "prettier": "^2.8.8",
     "sqlite3": "^5.1.6",
