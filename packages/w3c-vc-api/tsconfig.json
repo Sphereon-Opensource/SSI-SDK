@@ -1,12 +1,15 @@
 {
-  "extends": "../tsconfig-base.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
+    "resolveJsonModule": true,
     "declarationDir": "dist",
     "esModuleInterop": true
   },
   "references": [
+    {
+      "path": "../express-support"
+    },
     {
       "path": "../siopv2-oid4vp-common"
     },
@@ -25,5 +28,6 @@
     {
       "path": "../kv-store"
     }
-  ]
+  ],
+  "extends": "../tsconfig-base.json"
 }
