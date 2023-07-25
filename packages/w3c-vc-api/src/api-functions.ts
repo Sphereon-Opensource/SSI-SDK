@@ -3,7 +3,6 @@ import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi
 import { CredentialPayload } from '@veramo/core'
 import { W3CVerifiableCredential } from '@veramo/core/src/types/vc-data-model'
 import { Request, Response, Router } from 'express'
-import passport from 'passport'
 import { v4 } from 'uuid'
 import { IIssueCredentialEndpointOpts, IRequiredContext, IVCAPIIssueOpts, IVerifyCredentialEndpointOpts } from './types'
 
@@ -14,7 +13,7 @@ export function issueCredentialEndpoint(router: Router, context: IRequiredContex
   }
   const path = opts?.path ?? '/credentials/issue'
 
-  router.post(path, passport.authenticate('oauth-bearer'), checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
+  router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const credential: CredentialPayload = request.body.credential
       if (!credential) {
@@ -110,7 +109,7 @@ export function deleteCredentialEndpoint(router: Router, context: IRequiredConte
     console.log(`Delete credential endpoint is disabled`)
     return
   }
-  router.delete(opts?.path ?? '/credentials/:id', async (request: Request, response: Response) => {
+  router.delete(opts?.path ?? '/credentials/:id', checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const id = request.params.id
       if (!id) {
