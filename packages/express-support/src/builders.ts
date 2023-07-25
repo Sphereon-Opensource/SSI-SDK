@@ -19,13 +19,13 @@ export class ExpressBuilder {
   private existingExpress?: Express
   private hostnameOrIP?: string
   private port?: number
-  private _handlers: ApplicationRequestHandler<Application>[]
+  private _handlers?: ApplicationRequestHandler<Application>[] = []
   private listenCallback?: () => void
-  private _startListen: boolean | undefined = undefined
+  private _startListen?: boolean | undefined = undefined
   private readonly envVarPrefix?: string
   private _corsConfigurer?: ExpressCorsConfigurer
   private _sessionOpts?: session.SessionOptions
-  private _usePassportAuth: boolean = false
+  private _usePassportAuth?: boolean = false
   private _passportInitOpts?: InitializeOptions
   private _userIsInRole?: string | string[]
   private _enforcer?: Enforcer
@@ -132,6 +132,9 @@ export class ExpressBuilder {
     if (Array.isArray(handlers)) {
       this._handlers = handlers
     } else if (handlers) {
+      if (!this._handlers) {
+        this._handlers = []
+      }
       this._handlers.push(handlers)
     } else {
       this._handlers = []
@@ -141,6 +144,9 @@ export class ExpressBuilder {
   }
 
   public addHandler(handler: ApplicationRequestHandler<any>): this {
+    if (!this._handlers) {
+      this._handlers = []
+    }
     this._handlers.push(handler)
     return this
   }
