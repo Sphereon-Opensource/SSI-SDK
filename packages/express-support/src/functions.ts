@@ -1,7 +1,10 @@
 import express from 'express'
 import process from 'process'
 
-export function env(key: string, prefix?: string): string | undefined {
+export function env(key?: string, prefix?: string): string | undefined {
+  if (!key) {
+    return
+  }
   return process.env[`${prefix ? prefix.trim() : ''}${key}`]
 }
 
