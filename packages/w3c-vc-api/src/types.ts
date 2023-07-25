@@ -10,7 +10,6 @@ import {
   IKeyManager,
   IResolver,
 } from '@veramo/core'
-import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ProofFormat } from '@veramo/core/src/types/ICredentialIssuer'
 
 export type IRequiredPlugins = IDataStore &
@@ -19,7 +18,6 @@ export type IRequiredPlugins = IDataStore &
   IKeyManager &
   ICredentialIssuer &
   ICredentialVerifier &
-  IPresentationExchange &
   ICredentialPlugin &
   IResolver
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
@@ -43,14 +41,10 @@ export interface IVCAPIEndpointOpts {
   verifyPresentation?: ISingleEndpointOpts
 }
 
-export enum IVCIApiFeatures {
-  VC_VERIFY = 'vc-verify',
-  VC_ISSUE = 'vc-issue',
-  VC_PERSISTENCE = 'vc-persist',
-}
+export type vcApiFeatures = 'vc-verify' | 'vc-issue' | 'vc-persist'
 
 export interface IVCAPIIssueOpts {
-  enableFeatures?: IVCIApiFeatures[] // Feature to enable. If not defined or empty, all features will be enabled
+  enableFeatures?: vcApiFeatures[] // Feature to enable. If not defined or empty, all features will be enabled
   persistIssuedCredentials?: boolean // Whether the issuer persists issued credentials or not. Defaults to VC_PERSISTENCE feature flag being present or not
 
   /**

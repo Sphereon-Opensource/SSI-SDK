@@ -4,7 +4,7 @@ import { TAgent } from '@veramo/core'
 
 import express, { Express, Router } from 'express'
 import { createDidEndpoint, deactivateDidEndpoint, getDidMethodsEndpoint, resolveDidEndpoint } from './api-functions'
-import { IDidAPIOpts, IRequiredPlugins, IVCIApiFeatures } from './types'
+import { IDidAPIOpts, IRequiredPlugins } from './types'
 
 export class UniResolverApiServer {
   get router(): express.Router {
@@ -32,15 +32,15 @@ export class UniResolverApiServer {
 
     const context = agentContext(agent)
 
-    const features = opts?.didOpts?.enableFeatures ?? [IVCIApiFeatures.DID_RESOLVE, IVCIApiFeatures.DID_PERSISTENCE]
+    const features = opts?.enableFeatures ?? ['did-resolve', 'did-persist']
     console.log(`DID UniResolver API enabled, with features: ${JSON.stringify(features)}`)
 
     // DID endpoints
-    if (features.includes(IVCIApiFeatures.DID_RESOLVE)) {
+    if (features.includes('did-resolve')) {
       resolveDidEndpoint(this.router, context, opts?.endpointOpts?.resolveDid)
       getDidMethodsEndpoint(this.router, context, opts?.endpointOpts?.getDidMethods)
     }
-    if (features.includes(IVCIApiFeatures.DID_RESOLVE)) {
+    if (features.includes('did-persist')) {
       createDidEndpoint(this.router, context, opts?.endpointOpts?.createDid)
       deactivateDidEndpoint(this.router, context, opts?.endpointOpts?.deactivateDid) // not in spec.
     }

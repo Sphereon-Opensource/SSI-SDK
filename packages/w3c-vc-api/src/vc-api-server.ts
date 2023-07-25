@@ -10,7 +10,7 @@ import {
   issueCredentialEndpoint,
   verifyCredentialEndpoint,
 } from './api-functions'
-import { IRequiredPlugins, IVCAPIOpts, IVCIApiFeatures } from './types'
+import { IRequiredPlugins, IVCAPIOpts } from './types'
 
 export class VcApiServer {
   get router(): express.Router {
@@ -39,26 +39,22 @@ export class VcApiServer {
 
     const context = agentContext(agent)
 
-    const features = opts?.issueCredentialOpts?.enableFeatures ?? [
-      IVCIApiFeatures.VC_ISSUE,
-      IVCIApiFeatures.VC_PERSISTENCE,
-      IVCIApiFeatures.VC_VERIFY,
-    ]
+    const features = opts?.issueCredentialOpts?.enableFeatures ?? ['vc-issue', 'vc-persist', 'vc-verify']
     console.log(`VC API enabled, with features: ${JSON.stringify(features)}`)
 
     // Credential endpoints
-    if (features.includes(IVCIApiFeatures.VC_ISSUE)) {
+    if (features.includes('vc-issue')) {
       issueCredentialEndpoint(this.router, context, {
         ...opts?.endpointOpts?.issueCredential,
         issueCredentialOpts: opts?.issueCredentialOpts,
       })
     }
-    if (features.includes(IVCIApiFeatures.VC_PERSISTENCE)) {
+    if (features.includes('vc-persist')) {
       getCredentialEndpoint(this.router, context, opts?.endpointOpts?.getCredential)
       getCredentialsEndpoint(this.router, context, opts?.endpointOpts?.getCredentials)
       deleteCredentialEndpoint(this.router, context, opts?.endpointOpts?.deleteCredential) // not in spec.
     }
-    if (features.includes(IVCIApiFeatures.VC_VERIFY)) {
+    if (features.includes('vc-verify')) {
       verifyCredentialEndpoint(this.router, context, {
         ...opts?.endpointOpts?.verifyCredential,
         fetchRemoteContexts: opts?.issueCredentialOpts?.fetchRemoteContexts,

@@ -207,7 +207,7 @@ export class ExpressCorsConfigurer {
   private _disableCors?: boolean
   private _enablePreflightOptions?: boolean
   private _allowOrigin?: boolean | string | RegExp | Array<boolean | string | RegExp>
-  private _allowMethods: string | string[]
+  private _allowMethods?: string | string[]
   private _allowedHeaders?: string | string[]
   private _allowCredentials?: boolean
   private readonly _express?: Express
@@ -249,13 +249,24 @@ export class ExpressCorsConfigurer {
       throw Error('No express passed in during construction or configure')
     }
     const disableCorsEnv = env('CORS_DISABLE', this._envVarPrefix)
-    const disableCors = this._disableCors ?? (disableCorsEnv ? /true/.test(disableCorsEnv) : false)
-    if (disableCors) {
+    const corsDisabled = this._disableCors ?? (disableCorsEnv ? /true/.test(disableCorsEnv) : false)
+    if (corsDisabled) {
       return
     }
+    const envAllowOriginStr = env('CORS_ALLOW_ORIGIN', this._envVarPrefix) ?? '*'
+    let envAllowOrigin: string[] | string
+    if (envAllowOriginStr.includes(',')) {
+      envAllowOrigin = envAllowOriginStr.split(',')
+    } else if (envAllowOriginStr.includes(' ')) {
+      envAllowOrigin = envAllowOriginStr.split(' ')
+    } else {
+      envAllowOrigin = envAllowOriginStr
+    }
+    if (Array.isArray(envAllowOrigin) && envAllowOrigin.length === 1) {
+      envAllowOrigin = envAllowOrigin[0]
+    }
     const corsOptions: CorsOptions = {
-      origin: this._allowOrigin ?? env('CORS_ALLOW_ORIGIN', this._envVarPrefix) ?? '*',
-
+      origin: this._allowOrigin ?? envAllowOrigin,
       // todo: env vars
       ...(this._allowMethods && { methods: this._allowMethods }),
       ...(this._allowedHeaders && { allowedHeaders: this._allowedHeaders }),
