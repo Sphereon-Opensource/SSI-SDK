@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.14.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.13.0...v0.14.0) (2023-07-30)
+
+
+### Bug Fixes
+
+* also publish when on a fix branch ([e8b678e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e8b678e13205c68e44c0ec63d8a915c5e7d63b24))
+* also publish when on a fix branch. Also run a diff before the frozen lockfile install so we can see what's going on ([69a3200](https://github.com/Sphereon-Opensource/SSI-SDK/commit/69a3200b6185498dd9554193717db0c81fbdd31a))
+* CI was still using yarn instead if pnpm in several places ([ca16f70](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ca16f70274168a50fed284aeea2f29ed40e4ec5b))
+* CI was still using yarn instead if pnpm in several places ([c167259](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c16725978df96647cb346c47c8a1ef4489ab13cb))
+* Fix relative DID resolution and Json websignature 2020 verification for ED25519 and some other algs ([ca2682c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ca2682c0b747f5052143c943a06f23acc7aa22cc))
+* Use agent resolver if not set, with fallback to universal resolver. Fix bug in response message ([43c9313](https://github.com/Sphereon-Opensource/SSI-SDK/commit/43c9313ee623fa0848dca8dcd4e2e509692c28d7))
+* VCI did resolution from agent ([7aa2bd3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7aa2bd30e4ee51d3322415b8a06533e91f07b97d))
+* VCI did resolution from agent ([2c913db](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2c913dbe635337f0931032023a17c0cfd3d739ce))
+* VP did resolution from agent ([aa3f3f1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/aa3f3f1173f502c5414a2237231306311ed4d1fc))
+
+
+### Features
+
+* Add express builder, cors configurer, passport authentication and casbin authorization support for APIs. ([cb04fe8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/cb04fe8b84ce6f4c840afef43d628f23cb8e9e36))
+* Add global web resolution provider. Add json error handler ([f19d1d1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f19d1d135a9944a6c9e4c6040c58e7563c4442f2))
+* Add partial DIF Universal Registrar and Resolver support ([69c8046](https://github.com/Sphereon-Opensource/SSI-SDK/commit/69c8046b214771b54d731c19f295341cf22d0616))
+* Add seperate did:web service to host did.json files managed by the agent ([0a8a0bb](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0a8a0bb201742c3208f98267f9a03fcaeb32ec56))
+* Add support for ES256(k/r) in JsonWebsignature2020 signing ([cd511d5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/cd511d55a66798936218b5968f8daac9a549a9b7))
+* Allow objects for error response. Improve json handling in error responses ([4151c73](https://github.com/Sphereon-Opensource/SSI-SDK/commit/4151c73b4cdeb931c0deb8b8f34ed9c215efe5ba))
+* Better support for MS Azure auth and re-using a MSAL client from Azure Request API ([61bdfaf](https://github.com/Sphereon-Opensource/SSI-SDK/commit/61bdfaf202ee8e5fc6f1e9b83138298798a7a440))
+* Move VC API endpoints to functions, to more easily create your own API server, only supporting certain endpoints ([fc03507](https://github.com/Sphereon-Opensource/SSI-SDK/commit/fc0350735c8cd42a60e1152add9cb49da5c39e62))
+
+
+
+
+
 # [0.13.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.12.0...v0.13.0) (2023-06-24)
 
 
