@@ -11,6 +11,7 @@
 **Warning: This package is in early development. Breaking changes without notice will happen at this point!**
 
 ---
+
 This module provides a DIF Universal Resolver and Universal Registrar API, to allow DIDs managed by the agent to be
 resolved using standardized APIs, as well as to create and manage new DIDs using the registrar APIs.
 
@@ -71,12 +72,8 @@ curl -X GET\
         }
       }
     ],
-    "authentication": [
-      "did:web:ddip.sphereon.com#JWK2020-RSA"
-    ],
-    "assertionMethod": [
-      "did:web:ddip.sphereon.com#JWK2020-RSA"
-    ],
+    "authentication": ["did:web:ddip.sphereon.com#JWK2020-RSA"],
+    "assertionMethod": ["did:web:ddip.sphereon.com#JWK2020-RSA"],
     "service": []
   }
 }
@@ -162,44 +159,43 @@ Note: You can have multiple instances of the UniResolverApiServer, as long as yo
 for each instance and that the same express is being used.
 
 ```typescript
-
 // agent is a configured SSI-SDK/Veramo agent (see below for an example)
 
 // Let's first build express to listen on port 5000
 const expressBuilder = ExpressBuilder.fromServerOpts({
-    port: 5000,
-    hostname: '0.0.0.0',
+  port: 5000,
+  hostname: '0.0.0.0',
 }).withPassportAuth(false)
-const expressArgs = expressBuilder.build({startListening: true})
+const expressArgs = expressBuilder.build({ startListening: true })
 
 // Now create the Universal Resolver API, with DID resolution and persistence enabled and authentication disabled
 new UniResolverApiServer({
-    opts: {
-        enableFeatures: ['did-persist', 'did-resolve'],
-        endpointOpts: {
-            basePath: '/1.0', // Let's make sure the eventual path becomes <agent>/1.0/idenfitiers/<did>
-            globalAuth: {
-                authentication: {
-                    enabled: false
-                },
-            },
+  opts: {
+    enableFeatures: ['did-persist', 'did-resolve'],
+    endpointOpts: {
+      basePath: '/1.0', // Let's make sure the eventual path becomes <agent>/1.0/idenfitiers/<did>
+      globalAuth: {
+        authentication: {
+          enabled: false,
         },
+      },
     },
-    expressArgs,
-    agent,
+  },
+  expressArgs,
+  agent,
 })
 // At this point you can execute the example above, as the Uniresolver is now listening on port 5000
 ```
 
-
 ## DID Web Service
-This service hosts agent managed did:web DIDs at the appropriate locations as a did.json file. Meaning that whenever you hit 
+
+This service hosts agent managed did:web DIDs at the appropriate locations as a did.json file. Meaning that whenever you hit
 https://agent/.well-known/did.json or http://agent/example/path/test/did.json for instance, the agent will lookup the appropriate DID managed by the agent.
 If no DID is found for the URL, it will return the below response, with an HTTP code 404
 
 ```json
 {
-    "error": "Not found"
+  "error": "Not found"
 }
 ```
 
@@ -246,46 +242,46 @@ these DID methods.
 
 ```typescript
 export const resolver = new Resolver({
-    ...getDidWebResolver(),
-    ...getDidKeyResolver(),
-    ...getDidJwkResolver(),
-    ...getDidIonResolver(),
+  ...getDidWebResolver(),
+  ...getDidKeyResolver(),
+  ...getDidJwkResolver(),
+  ...getDidIonResolver(),
 })
 
 export const didProviders = {
-    [`did:web`]: new WebDIDProvider({
-        defaultKms: 'local',
-    }),
-    [`did:key`]: new KeyDIDProvider({
-        defaultKms: 'local',
-    }),
-    [`did:ion`]: new IonDIDProvider({
-        defaultKms: 'local',
-    }),
-    [`did:jwk`]: new JwkDIDProvider({
-        defaultKms: 'local',
-    }),
+  [`did:web`]: new WebDIDProvider({
+    defaultKms: 'local',
+  }),
+  [`did:key`]: new KeyDIDProvider({
+    defaultKms: 'local',
+  }),
+  [`did:ion`]: new IonDIDProvider({
+    defaultKms: 'local',
+  }),
+  [`did:jwk`]: new JwkDIDProvider({
+    defaultKms: 'local',
+  }),
 }
 
 const agent = createAgent<IDIDManager & IKeyManager & IDataStore & IDataStoreORM & IResolver>({
-    plugins: [
-        new DataStore(dbConnection),
-        new DataStoreORM(dbConnection),
-        new KeyManager({
-            store: new KeyStore(dbConnection),
-            kms: {
-                local: new KeyManagementSystem(privateKeyStore),
-            },
-        }),
-        new DIDManager({
-            store: new DIDStore(dbConnection),
-            defaultProvider: 'did:jwk',
-            providers: didProviders,
-        }),
-        new DIDResolverPlugin({
-            resolver,
-        }),
-    ],
+  plugins: [
+    new DataStore(dbConnection),
+    new DataStoreORM(dbConnection),
+    new KeyManager({
+      store: new KeyStore(dbConnection),
+      kms: {
+        local: new KeyManagementSystem(privateKeyStore),
+      },
+    }),
+    new DIDManager({
+      store: new DIDStore(dbConnection),
+      defaultProvider: 'did:jwk',
+      providers: didProviders,
+    }),
+    new DIDResolverPlugin({
+      resolver,
+    }),
+  ],
 })
 ```
 

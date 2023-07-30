@@ -22,11 +22,11 @@ export type IRequiredPlugins = IDataStore &
   IResolver
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
-interface IVCAPISecurityOpts {}
+// interface IVCAPISecurityOpts {}
 
 export interface IVCAPIOpts {
   endpointOpts?: IVCAPIEndpointOpts
-  securityOpts?: IVCAPISecurityOpts
+  // securityOpts?: IVCAPISecurityOpts
   issueCredentialOpts?: IVCAPIIssueOpts
 }
 

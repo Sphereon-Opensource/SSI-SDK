@@ -252,6 +252,7 @@ agent
           },
         },
         issueCredentialOpts: {
+          enableFeatures: ['vc-issue', 'vc-persist', 'vc-verify'],
           proofFormat: 'lds',
           fetchRemoteContexts: true,
           persistIssuedCredentials: true,
