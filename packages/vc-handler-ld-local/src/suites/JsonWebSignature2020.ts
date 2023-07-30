@@ -1,13 +1,21 @@
-import { JwkKeyUse, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
-import { IProof, IVerifiableCredential } from '@sphereon/ssi-types'
-import { CredentialPayload, DIDDocument, IAgentContext, IKey, PresentationPayload, TKeyType, VerifiableCredential } from '@veramo/core'
-import { asArray, encodeJoseBlob } from '@veramo/utils'
+import {JwkKeyUse, toJwk} from '@sphereon/ssi-sdk-ext.key-utils'
+import {IProof, IVerifiableCredential} from '@sphereon/ssi-types'
+import {
+  CredentialPayload,
+  DIDDocument,
+  IAgentContext,
+  IKey,
+  PresentationPayload,
+  TKeyType,
+  VerifiableCredential
+} from '@veramo/core'
+import {asArray, encodeJoseBlob} from '@veramo/utils'
 import * as u8a from 'uint8arrays'
 
-import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
+import {RequiredAgentMethods, SphereonLdSignature} from '../ld-suites'
 
-import { JsonWebKey } from './impl/JsonWebKeyWithRSASupport'
-import { JsonWebSignature } from './impl/JsonWebSignatureWithRSASupport'
+import {JsonWebKey} from './impl/JsonWebKeyWithRSASupport'
+import {JsonWebSignature} from './impl/JsonWebSignatureWithRSASupport'
 
 /**
  * Veramo wrapper for the JsonWebSignature2020 suite by Transmute Industries
@@ -64,7 +72,7 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
       },
     }
 
-    const publicKeyJwk = key.meta?.publicKeyJwk ?? (await toJwk(key.publicKeyHex, key.type, JwkKeyUse.Signature))
+    const publicKeyJwk = key.meta?.publicKeyJwk ?? (await toJwk(key.publicKeyHex, key.type, {use: JwkKeyUse.Signature, key}))
     const verificationKey = await JsonWebKey.from(
       {
         id,

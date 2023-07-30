@@ -63,9 +63,13 @@ export interface CreateState {
   didDocumentMetadata?: Record<string, any>
 }
 
+export type DidStateValue = 'finished' | 'failed' | 'action' | 'wait' | 'exists'
+
+export type DidStateAction = 'redirect' | 'getVerificationMethod' | 'signPayload' | 'decryptPayload'
+
 export interface DidState {
-  state: 'finished' | 'failed' | 'action' | 'wait'
-  action?: 'redirect' | 'getVerificationMethod' | 'signPayload' | 'decryptPayload'
+  state: DidStateValue
+  action?: DidStateAction
   wait?: string
   waitTime?: number
   did: string
@@ -81,10 +85,24 @@ export interface IDidAPIOpts {
 export interface IDidAPIEndpointOpts {
   basePath?: string
   globalAuth?: GenericAuthArgs
-  createDid?: ISingleEndpointOpts
+  createDid?: ICreateDidEndpointOpts
   resolveDid?: ISingleEndpointOpts
   deactivateDid?: ISingleEndpointOpts
   getDidMethods?: ISingleEndpointOpts
+  globalDidWebResolution?: IGlobalDidWebEndpointOpts
 }
 
-export type didApiFeatures = 'did-resolve' | 'did-persist'
+export interface IGlobalDidWebEndpointOpts extends ISingleEndpointOpts {
+  hostname?: string
+  disableWellKnown?: boolean
+  disableSubPaths?: boolean
+}
+
+export interface ICreateDidEndpointOpts extends ISingleEndpointOpts {
+  kms?: string
+  storeSecrets?: boolean
+  noErrorOnExistingDid?: boolean
+  defaultMethod?: string
+}
+
+export type didApiFeatures = 'did-resolve' | 'did-persist' | 'did-web-global-resolution'

@@ -48,7 +48,7 @@ export enum SupportedDidMethodEnum {
 
 const PRIVATE_KEY_HEX =
   'ea6aaeebe17557e0fe256bfce08e8224a412ea1e25a5ec8b5d69618a58bad89e89a4661e446b46401325a38d3b20582d1dd277eb448a3181012a671b7ae15837'
-const PUBLIC_KEY_HEX = '89a4661e446b46401325a38d3b20582d1dd277eb448a3181012a671b7ae15837'
+// const PUBLIC_KEY_HEX = '89a4661e446b46401325a38d3b20582d1dd277eb448a3181012a671b7ae15837'
 
 export const resolver = new Resolver({
   ...getUniResolver('ethr', {
@@ -188,7 +188,7 @@ agent
   .finally(() => {
     const builder = ExpressBuilder.fromServerOpts({
       port: 5000,
-      envVarPrefix: 'DID_API_',
+      // envVarPrefix: 'DID_API_',
       hostname: '0.0.0.0',
     }).withPassportAuth(false)
     // .withSessionOptions({secret: '1234', name: 'oidc-session'})
@@ -199,6 +199,7 @@ agent
 
     new UniResolverApiServer({
       opts: {
+        enableFeatures: ['did-persist', 'did-resolve', 'did-web-global-resolution'],
         endpointOpts: {
           globalAuth: {
             authentication: {

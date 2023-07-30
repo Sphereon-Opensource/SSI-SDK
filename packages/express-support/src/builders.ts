@@ -9,7 +9,7 @@ import { Application, ApplicationRequestHandler } from 'express-serve-static-cor
 import session from 'express-session'
 import passport, { InitializeOptions } from 'passport'
 import { checkUserIsInRole } from './auth-utils'
-import { env } from './functions'
+import { env, jsonErrorHandler } from './functions'
 import { ExpressBuildResult, IExpressServerOpts } from './types'
 import * as dotenv from 'dotenv-flow'
 
@@ -194,6 +194,9 @@ export class ExpressBuilder {
     if (this._corsConfigurer) {
       this._corsConfigurer.configure({ existingExpress: app })
     }
+
+    app.use(jsonErrorHandler)
+
     // @ts-ignore
     this._handlers && this._handlers.length > 0 && app.use(this._handlers)
     // @ts-ignore
@@ -254,6 +257,7 @@ export class ExpressCorsConfigurer {
     if (!express) {
       throw Error('No express passed in during construction or configure')
     }
+
     const disableCorsEnv = env('CORS_DISABLE', this._envVarPrefix)
     const corsDisabled = this._disableCors ?? (disableCorsEnv ? /true/.test(disableCorsEnv) : false)
     if (corsDisabled) {

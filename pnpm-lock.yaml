@@ -522,8 +522,8 @@ importers:
         specifier: 0.6.0
         version: 0.6.0
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -641,17 +641,17 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5(expo-crypto@12.4.1)(expo@49.0.4)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5(expo-crypto@12.4.1)(expo@49.0.4)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -768,8 +768,8 @@ importers:
         specifier: 0.6.0
         version: 0.6.0
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -817,8 +817,8 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -940,8 +940,8 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1010,8 +1010,8 @@ importers:
         specifier: 2.0.1
         version: 2.0.1
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1132,8 +1132,8 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1288,14 +1288,14 @@ importers:
   packages/uni-resolver-registrar-api:
     dependencies:
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5(expo-crypto@12.4.1)(expo@49.0.4)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1340,11 +1340,11 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1470,16 +1470,16 @@ importers:
         version: 1.1.1
       '@sphereon/ed25519-signature-2018':
         specifier: 0.7.0-unstable.6
-        version: 0.7.0-unstable.6(expo-crypto@12.4.1)(expo@49.0.4)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.7.0-unstable.6(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/isomorphic-webcrypto':
         specifier: ^2.4.0-unstable.4
-        version: 2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.4)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1551,17 +1551,17 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@sphereon/ssi-sdk-ext.did-provider-key':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-provider-lto':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5(typescript@4.9.5)
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(typescript@4.9.5)
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5(expo-crypto@12.4.1)(expo@49.0.4)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5(expo-crypto@12.4.1)(expo@49.0.4)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -1696,11 +1696,11 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.12.2-next.5
-        version: 0.12.2-next.5
+        specifier: 0.12.2-next.12
+        version: 0.12.2-next.12
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -3163,7 +3163,7 @@ packages:
       babel-plugin-polyfill-corejs2: 0.4.5(@babel/core@7.22.9)
       babel-plugin-polyfill-corejs3: 0.8.3(@babel/core@7.22.9)
       babel-plugin-polyfill-regenerator: 0.5.2(@babel/core@7.22.9)
-      core-js-compat: 3.31.1
+      core-js-compat: 3.32.0
       semver: 6.3.1
     transitivePeerDependencies:
       - supports-color
@@ -3403,11 +3403,11 @@ packages:
       eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
     dependencies:
       eslint: 8.35.0
-      eslint-visitor-keys: 3.4.1
+      eslint-visitor-keys: 3.4.2
     dev: true
 
-  /@eslint-community/regexpp@4.6.1:
-    resolution: {integrity: sha512-O7x6dMstWLn2ktjcoiNLDkAGG2EjveHL+Vvc+n0fXumkJYAcSqcVYKtwDU+hDZ0uDUsnUagSYaZrOLAYE8un1A==}
+  /@eslint-community/regexpp@4.6.2:
+    resolution: {integrity: sha512-pPTNuaAG3QMH+buKyBIGJs3g/S5y0caxw0ygM3YyE6yJFySwiGGSzA+mM3KJ8QQvzeLh3blwgSonkFjgQdxzMw==}
     engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
     dev: true
 
@@ -3428,8 +3428,8 @@ packages:
       - supports-color
     dev: true
 
-  /@eslint/eslintrc@2.1.0:
-    resolution: {integrity: sha512-Lj7DECXqIVCqnqjjHMPna4vn6GJcMgul/wuS0je9OZ9gsL0zzDpKPVtcG1HaDVc+9y+qgXneTeUMbCqXJNpH1A==}
+  /@eslint/eslintrc@2.1.1:
+    resolution: {integrity: sha512-9t7ZA7NGGK8ckelF0PQCfcxIUzs1Md5rrO6U/c+FIQNanea5UZC0wqKXH4vHBccmu4ZJgZ2idtPeW7+Q2npOEA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       ajv: 6.12.6
@@ -3885,7 +3885,7 @@ packages:
       glob: 7.2.3
       lodash: 4.17.21
       mkdirp: 0.5.6
-      password-prompt: 1.1.2
+      password-prompt: 1.1.3
       rimraf: 2.7.1
       sudo-prompt: 8.2.5
       tmp: 0.0.33
@@ -3987,7 +3987,7 @@ packages:
       '@expo/json-file': 8.2.37
       debug: 4.3.4
       expo-modules-autolinking: 1.5.0
-      fs-extra: 9.1.0
+      fs-extra: 9.0.0
       resolve-from: 5.0.0
       semver: 7.5.3
       xml2js: 0.6.0
@@ -4136,15 +4136,15 @@ packages:
       slash: 3.0.0
     dev: true
 
-  /@jest/console@29.6.1:
-    resolution: {integrity: sha512-Aj772AYgwTSr5w8qnyoJ0eDYvN6bMsH3ORH1ivMotrInHLKdUz6BDlaEXHdM6kODaBIkNIyQGzsMvRdOv7VG7Q==}
+  /@jest/console@29.6.2:
+    resolution: {integrity: sha512-0N0yZof5hi44HAR2pPS+ikJ3nzKNoZdVu8FffRf3wy47I7Dm7etk/3KetMdRUqzVd16V4O2m2ISpNTbnIuqy1w==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.1
       '@types/node': 18.16.3
       chalk: 4.1.2
-      jest-message-util: 29.6.1
-      jest-util: 29.6.1
+      jest-message-util: 29.6.2
+      jest-util: 29.6.2
       slash: 3.0.0
     dev: true
 
@@ -4193,8 +4193,8 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@jest/core@29.6.1(ts-node@10.9.1):
-    resolution: {integrity: sha512-CcowHypRSm5oYQ1obz1wfvkjZZ2qoQlrKKvlfPwh5jUXVU12TWr2qMeH8chLMuTFzHh5a1g2yaqlqDICbr+ukQ==}
+  /@jest/core@29.6.2(ts-node@10.9.1):
+    resolution: {integrity: sha512-Oj+5B+sDMiMWLhPFF+4/DvHOf+U10rgvCLGPHP8Xlsy/7QxS51aU/eBngudHlJXnaWD5EohAgJ4js+T6pa+zOg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     peerDependencies:
       node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
@@ -4202,10 +4202,10 @@ packages:
       node-notifier:
         optional: true
     dependencies:
-      '@jest/console': 29.6.1
-      '@jest/reporters': 29.6.1
-      '@jest/test-result': 29.6.1
-      '@jest/transform': 29.6.1
+      '@jest/console': 29.6.2
+      '@jest/reporters': 29.6.2
+      '@jest/test-result': 29.6.2
+      '@jest/transform': 29.6.2
       '@jest/types': 29.6.1
       '@types/node': 18.16.3
       ansi-escapes: 4.3.2
@@ -4214,29 +4214,30 @@ packages:
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 29.5.0
-      jest-config: 29.6.1(@types/node@18.16.3)(ts-node@10.9.1)
-      jest-haste-map: 29.6.1
-      jest-message-util: 29.6.1
+      jest-config: 29.6.2(@types/node@18.16.3)(ts-node@10.9.1)
+      jest-haste-map: 29.6.2
+      jest-message-util: 29.6.2
       jest-regex-util: 29.4.3
-      jest-resolve: 29.6.1
-      jest-resolve-dependencies: 29.6.1
-      jest-runner: 29.6.1
-      jest-runtime: 29.6.1
-      jest-snapshot: 29.6.1
-      jest-util: 29.6.1
-      jest-validate: 29.6.1
-      jest-watcher: 29.6.1
+      jest-resolve: 29.6.2
+      jest-resolve-dependencies: 29.6.2
+      jest-runner: 29.6.2
+      jest-runtime: 29.6.2
+      jest-snapshot: 29.6.2
+      jest-util: 29.6.2
+      jest-validate: 29.6.2
+      jest-watcher: 29.6.2
       micromatch: 4.0.5
-      pretty-format: 29.6.1
+      pretty-format: 29.6.2
       slash: 3.0.0
       strip-ansi: 6.0.1
     transitivePeerDependencies:
+      - babel-plugin-macros
       - supports-color
       - ts-node
     dev: true
 
-  /@jest/create-cache-key-function@29.6.1:
-    resolution: {integrity: sha512-d77/1BbNLbJDBV6tH7ctYpau+3tnU5YMhg36uGabW4VDrl1Arp6E0jDRioHFoFqIbm+BXMVbyQc9MpfKo6OIQQ==}
+  /@jest/create-cache-key-function@29.6.2:
+    resolution: {integrity: sha512-oGVRMr8na9h1vUiem1E/Uoxb/NR9BdfKb7IBZ+pNWxJQmTYSbDF0dsVBAGqNU7MBQwYJDyRx0H7H/0itiqAgQg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.1
@@ -4251,28 +4252,28 @@ packages:
       jest-mock: 27.5.1
     dev: true
 
-  /@jest/environment@29.6.1:
-    resolution: {integrity: sha512-RMMXx4ws+Gbvw3DfLSuo2cfQlK7IwGbpuEWXCqyYDcqYTI+9Ju3a5hDnXaxjNsa6uKh9PQF2v+qg+RLe63tz5A==}
+  /@jest/environment@29.6.2:
+    resolution: {integrity: sha512-AEcW43C7huGd/vogTddNNTDRpO6vQ2zaQNrttvWV18ArBx9Z56h7BIsXkNFJVOO4/kblWEQz30ckw0+L3izc+Q==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@jest/fake-timers': 29.6.1
+      '@jest/fake-timers': 29.6.2
       '@jest/types': 29.6.1
       '@types/node': 18.16.3
-      jest-mock: 29.6.1
+      jest-mock: 29.6.2
 
-  /@jest/expect-utils@29.6.1:
-    resolution: {integrity: sha512-o319vIf5pEMx0LmzSxxkYYxo4wrRLKHq9dP1yJU7FoPTB0LfAKSz8SWD6D/6U3v/O52t9cF5t+MeJiRsfk7zMw==}
+  /@jest/expect-utils@29.6.2:
+    resolution: {integrity: sha512-6zIhM8go3RV2IG4aIZaZbxwpOzz3ZiM23oxAlkquOIole+G6TrbeXnykxWYlqF7kz2HlBjdKtca20x9atkEQYg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       jest-get-type: 29.4.3
     dev: true
 
-  /@jest/expect@29.6.1:
-    resolution: {integrity: sha512-N5xlPrAYaRNyFgVf2s9Uyyvr795jnB6rObuPx4QFvNJz8aAjpZUDfO4bh5G/xuplMID8PrnuF1+SfSyDxhsgYg==}
+  /@jest/expect@29.6.2:
+    resolution: {integrity: sha512-m6DrEJxVKjkELTVAztTLyS/7C92Y2b0VYqmDROYKLLALHn8T/04yPs70NADUYPrV3ruI+H3J0iUIuhkjp7vkfg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      expect: 29.6.1
-      jest-snapshot: 29.6.1
+      expect: 29.6.2
+      jest-snapshot: 29.6.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -4289,16 +4290,16 @@ packages:
       jest-util: 27.5.1
     dev: true
 
-  /@jest/fake-timers@29.6.1:
-    resolution: {integrity: sha512-RdgHgbXyosCDMVYmj7lLpUwXA4c69vcNzhrt69dJJdf8azUrpRh3ckFCaTPNjsEeRi27Cig0oKDGxy5j7hOgHg==}
+  /@jest/fake-timers@29.6.2:
+    resolution: {integrity: sha512-euZDmIlWjm1Z0lJ1D0f7a0/y5Kh/koLFMUBE5SUYWrmy8oNhJpbTBDAP6CxKnadcMLDoDf4waRYCe35cH6G6PA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.1
       '@sinonjs/fake-timers': 10.3.0
       '@types/node': 18.16.3
-      jest-message-util: 29.6.1
-      jest-mock: 29.6.1
-      jest-util: 29.6.1
+      jest-message-util: 29.6.2
+      jest-mock: 29.6.2
+      jest-util: 29.6.2
 
   /@jest/globals@27.5.1:
     resolution: {integrity: sha512-ZEJNB41OBQQgGzgyInAv0UUfDDj3upmHydjieSxFvTRuZElrx7tXg/uVQ5hYVEwiXs3+aMsAeEc9X7xiSKCm4Q==}
@@ -4309,14 +4310,14 @@ packages:
       expect: 27.5.1
     dev: true
 
-  /@jest/globals@29.6.1:
-    resolution: {integrity: sha512-2VjpaGy78JY9n9370H8zGRCFbYVWwjY6RdDMhoJHa1sYfwe6XM/azGN0SjY8kk7BOZApIejQ1BFPyH7FPG0w3A==}
+  /@jest/globals@29.6.2:
+    resolution: {integrity: sha512-cjuJmNDjs6aMijCmSa1g2TNG4Lby/AeU7/02VtpW+SLcZXzOLK2GpN2nLqcFjmhy3B3AoPeQVx7BnyOf681bAw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@jest/environment': 29.6.1
-      '@jest/expect': 29.6.1
+      '@jest/environment': 29.6.2
+      '@jest/expect': 29.6.2
       '@jest/types': 29.6.1
-      jest-mock: 29.6.1
+      jest-mock: 29.6.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -4343,9 +4344,9 @@ packages:
       graceful-fs: 4.2.11
       istanbul-lib-coverage: 3.2.0
       istanbul-lib-instrument: 5.2.1
-      istanbul-lib-report: 3.0.0
+      istanbul-lib-report: 3.0.1
       istanbul-lib-source-maps: 4.0.1
-      istanbul-reports: 3.1.5
+      istanbul-reports: 3.1.6
       jest-haste-map: 27.5.1
       jest-resolve: 27.5.1
       jest-util: 27.5.1
@@ -4359,8 +4360,8 @@ packages:
       - supports-color
     dev: true
 
-  /@jest/reporters@29.6.1:
-    resolution: {integrity: sha512-9zuaI9QKr9JnoZtFQlw4GREQbxgmNYXU6QuWtmuODvk5nvPUeBYapVR/VYMyi2WSx3jXTLJTJji8rN6+Cm4+FA==}
+  /@jest/reporters@29.6.2:
+    resolution: {integrity: sha512-sWtijrvIav8LgfJZlrGCdN0nP2EWbakglJY49J1Y5QihcQLfy7ovyxxjJBRXMNltgt4uPtEcFmIMbVshEDfFWw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     peerDependencies:
       node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
@@ -4369,9 +4370,9 @@ packages:
         optional: true
     dependencies:
       '@bcoe/v8-coverage': 0.2.3
-      '@jest/console': 29.6.1
-      '@jest/test-result': 29.6.1
-      '@jest/transform': 29.6.1
+      '@jest/console': 29.6.2
+      '@jest/test-result': 29.6.2
+      '@jest/transform': 29.6.2
       '@jest/types': 29.6.1
       '@jridgewell/trace-mapping': 0.3.18
       '@types/node': 18.16.3
@@ -4382,12 +4383,12 @@ packages:
       graceful-fs: 4.2.11
       istanbul-lib-coverage: 3.2.0
       istanbul-lib-instrument: 5.2.1
-      istanbul-lib-report: 3.0.0
+      istanbul-lib-report: 3.0.1
       istanbul-lib-source-maps: 4.0.1
-      istanbul-reports: 3.1.5
-      jest-message-util: 29.6.1
-      jest-util: 29.6.1
-      jest-worker: 29.6.1
+      istanbul-reports: 3.1.6
+      jest-message-util: 29.6.2
+      jest-util: 29.6.2
+      jest-worker: 29.6.2
       slash: 3.0.0
       string-length: 4.0.2
       strip-ansi: 6.0.1
@@ -4430,11 +4431,11 @@ packages:
       collect-v8-coverage: 1.0.2
     dev: true
 
-  /@jest/test-result@29.6.1:
-    resolution: {integrity: sha512-Ynr13ZRcpX6INak0TPUukU8GWRfm/vAytE3JbJNGAvINySWYdfE7dGZMbk36oVuK4CigpbhMn8eg1dixZ7ZJOw==}
+  /@jest/test-result@29.6.2:
+    resolution: {integrity: sha512-3VKFXzcV42EYhMCsJQURptSqnyjqCGbtLuX5Xxb6Pm6gUf1wIRIl+mandIRGJyWKgNKYF9cnstti6Ls5ekduqw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@jest/console': 29.6.1
+      '@jest/console': 29.6.2
       '@jest/types': 29.6.1
       '@types/istanbul-lib-coverage': 2.0.4
       collect-v8-coverage: 1.0.2
@@ -4452,13 +4453,13 @@ packages:
       - supports-color
     dev: true
 
-  /@jest/test-sequencer@29.6.1:
-    resolution: {integrity: sha512-oBkC36PCDf/wb6dWeQIhaviU0l5u6VCsXa119yqdUosYAt7/FbQU2M2UoziO3igj/HBDEgp57ONQ3fm0v9uyyg==}
+  /@jest/test-sequencer@29.6.2:
+    resolution: {integrity: sha512-GVYi6PfPwVejO7slw6IDO0qKVum5jtrJ3KoLGbgBWyr2qr4GaxFV6su+ZAjdTX75Sr1DkMFRk09r2ZVa+wtCGw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@jest/test-result': 29.6.1
+      '@jest/test-result': 29.6.2
       graceful-fs: 4.2.11
-      jest-haste-map: 29.6.1
+      jest-haste-map: 29.6.2
       slash: 3.0.0
     dev: true
 
@@ -4485,8 +4486,8 @@ packages:
       - supports-color
     dev: true
 
-  /@jest/transform@29.6.1:
-    resolution: {integrity: sha512-URnTneIU3ZjRSaf906cvf6Hpox3hIeJXRnz3VDSw5/X93gR8ycdfSIEy19FlVx8NFmpN7fe3Gb1xF+NjXaQLWg==}
+  /@jest/transform@29.6.2:
+    resolution: {integrity: sha512-ZqCqEISr58Ce3U+buNFJYUktLJZOggfyvR+bZMaiV1e8B1SIvJbwZMrYz3gx/KAPn9EXmOmN+uB08yLCjWkQQg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@babel/core': 7.22.9
@@ -4497,9 +4498,9 @@ packages:
       convert-source-map: 2.0.0
       fast-json-stable-stringify: 2.1.0
       graceful-fs: 4.2.11
-      jest-haste-map: 29.6.1
+      jest-haste-map: 29.6.2
       jest-regex-util: 29.4.3
-      jest-util: 29.6.1
+      jest-util: 29.6.2
       micromatch: 4.0.5
       pirates: 4.0.6
       slash: 3.0.0
@@ -4965,7 +4966,7 @@ packages:
       nopt: 7.2.0
       npm-install-checks: 6.1.1
       npm-package-arg: 10.1.0
-      npm-pick-manifest: 8.0.1
+      npm-pick-manifest: 8.0.2
       npm-registry-fetch: 14.0.5
       npmlog: 7.0.1
       pacote: 15.2.0
@@ -5027,7 +5028,7 @@ packages:
     dependencies:
       '@npmcli/promise-spawn': 6.0.2
       lru-cache: 7.18.3
-      npm-pick-manifest: 8.0.1
+      npm-pick-manifest: 8.0.2
       proc-log: 3.0.0
       promise-inflight: 1.0.1
       promise-retry: 2.0.1
@@ -5986,13 +5987,13 @@ packages:
     transitivePeerDependencies:
       - encoding
 
-  /@sphereon/ed25519-signature-2018@0.7.0-unstable.6(expo-crypto@12.4.1)(expo@49.0.4)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+  /@sphereon/ed25519-signature-2018@0.7.0-unstable.6(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-HO+W3v50yv0DrCrhCH3MFkHuUk0snM8zf8XFt6ym3xe2Dv/9x1J8xk6VZeYhSygvoUavH5x/Az6NbV4KDMgrXA==}
     engines: {node: '>=16'}
     dependencies:
       '@digitalcredentials/credentials-context': 1.0.5
       '@digitalcredentials/jsonld': 5.2.1
-      '@sphereon/isomorphic-webcrypto': 2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.4)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/isomorphic-webcrypto': 2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@transmute/credentials-context': 0.7.0-unstable.81
       '@transmute/ed25519-key-pair': 0.7.0-unstable.80
       '@transmute/jose-ld': 0.7.0-unstable.80
@@ -6035,7 +6036,7 @@ packages:
       uint8arrays: 3.1.1
     dev: true
 
-  /@sphereon/isomorphic-webcrypto@2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.4)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+  /@sphereon/isomorphic-webcrypto@2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-7i9GBta0yji3Z5ocyk82fXpqrV/swe7hXZVfVzOXRaGtTUNd+y8W/3cpHRQC2S4UEO/5N3lX7+B6qUunK9wS/Q==}
     peerDependencies:
       expo: '*'
@@ -6049,8 +6050,8 @@ packages:
       b64u-lite: 1.1.0
       cipher-base: 1.0.4
       create-hash: 1.2.0
-      expo: 49.0.4(@babel/core@7.22.9)
-      expo-crypto: 12.4.1(expo@49.0.4)
+      expo: 49.0.6(@babel/core@7.22.9)
+      expo-crypto: 12.4.1(expo@49.0.6)
       inherits: 2.0.4
       md5.js: 1.3.5
       msrcrypto: 1.5.8
@@ -6140,12 +6141,12 @@ packages:
       react-native: 0.72.3(@babel/core@7.22.9)(@babel/preset-env@7.22.2)(react@18.2.0)
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.12.2-next.5:
-    resolution: {integrity: sha512-5r53efyBiFj0Z0blx5hjSnaHwirsovAKKSfREI5Pgn5Ybb8Ms5wHzLBRiSMY9K9qLtnKN67yRh79XdGqWFJjZg==}
+  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-C/3axjtUUayTKodJ2XArQ4OyhBSrFjDsFiHLofTEJBxg6OEXj0iRS9rYQ+L91olRuT6CUXQUJks3ZDfdCtYOeQ==}
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/ssi-sdk-ext.did-utils': 0.12.2-next.5
-      '@sphereon/ssi-sdk-ext.key-utils': 0.12.2-next.5
+      '@sphereon/ssi-sdk-ext.did-utils': 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -6156,14 +6157,18 @@ packages:
       elliptic: 6.5.4
     transitivePeerDependencies:
       - encoding
+      - expo
+      - expo-crypto
+      - msrcrypto
+      - react-native-securerandom
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-provider-key@0.12.2-next.5:
-    resolution: {integrity: sha512-6kxKrBQgeWsUCVHUuqvJgPvFciSORTwzoyAPl3zAsft3Of/AK9kxhN24RVfdZcVsKXxpe8+6bZSxQQhGpJwHrw==}
+  /@sphereon/ssi-sdk-ext.did-provider-key@0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-ujd0h2hHD8vwrMRsls21nGS7P7triun94pQ3pRj5HWjvsEpd7SlyivHQKTGmz+suxiQYxS/vfxivRCjrcBe3dg==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.12.2-next.5
-      '@sphereon/ssi-sdk-ext.key-utils': 0.12.2-next.5
+      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@transmute/did-key-bls12381': 0.3.0-unstable.10
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
@@ -6174,11 +6179,15 @@ packages:
       multicodec: 3.2.1
     transitivePeerDependencies:
       - encoding
+      - expo
+      - expo-crypto
+      - msrcrypto
+      - react-native-securerandom
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-provider-lto@0.12.2-next.5(typescript@4.9.5):
-    resolution: {integrity: sha512-GBItPYFJvTF5XQL9m4IGECJVQqTE1nmtngIa3S6qkCC3QN5sPSqF9fPb5SLJrwx1OFmNrN5seBOaZa3dT60atQ==}
+  /@sphereon/ssi-sdk-ext.did-provider-lto@0.12.2-next.12(typescript@4.9.5):
+    resolution: {integrity: sha512-Ej9MPukwCMVRgrht7rnv3G/tzH7ETnH3RCKMfG69ERdnBuf6CWsL4LkyTJOYsE+20xlFDPZ+8CJv2FvozAa+xA==}
     dependencies:
       '@lto-network/lto-crypto': 1.1.1
       '@lto-network/lto-transactions': 1.2.12(debug@4.3.4)(typescript@4.9.5)
@@ -6195,8 +6204,8 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.12.2-next.5:
-    resolution: {integrity: sha512-nzt6YgBH6VK3loX49L1Z0FhA8qG3LjorocEE25MU7jteD9+1f+hDanpNUbylT48VD1j/nDYPak3C5CsTsn7J+A==}
+  /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.12.2-next.12:
+    resolution: {integrity: sha512-Rwy6DTWnUedzEowRpBrF0kZ644rNTbqSRHbdeInCBS7T5ZaIMvApAu+q/dkOoZ1TIxSKvYcAIRV7kZa41xczyg==}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       base64url: 3.0.1
@@ -6207,10 +6216,10 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-resolver-key@0.12.2-next.5:
-    resolution: {integrity: sha512-4JgFfOVDsvfO/kpi6OS7vs/Ll7hxGwU/4CfvD71IeaS93vK8yGY/zo+DYN7v6F4BUei8m2k8mzpOJtKEbQVHpA==}
+  /@sphereon/ssi-sdk-ext.did-resolver-key@0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-vjvw2zZiF+R6VAozq7L3IYWcNtKljgyg82VlgZMbXk0otxo0CVu9pZhY6gNAKkq169zcPzobAstQA1tfVlTm8A==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.key-utils': 0.12.2-next.5
+      '@sphereon/ssi-sdk-ext.key-utils': 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@stablelib/ed25519': 1.0.3
       bigint-mod-arith: 3.3.1
       did-resolver: 4.1.0
@@ -6222,14 +6231,18 @@ packages:
       varint: 6.0.0
       web-encoding: 1.1.5
     transitivePeerDependencies:
+      - expo
+      - expo-crypto
+      - msrcrypto
+      - react-native-securerandom
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-utils@0.12.2-next.5:
-    resolution: {integrity: sha512-9qI+IQWewbwn63H1bRjvGahunznJiFnaaH5hbu0FRLQ0zmPZ5QWzg0bEk4kSAcYrK+CT20qlkhs5TLG7/S5bzQ==}
+  /@sphereon/ssi-sdk-ext.did-utils@0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-j4e4Cu0YiqKMKwBhcGPJYgU8Q6cNFdM58w4w0uDO9cDS++XClJCu7ykOJA4WNtH8CSpd8HWp/2+9LmmZZvGGTA==}
     dependencies:
       '@sphereon/did-uni-client': 0.6.0
-      '@sphereon/ssi-sdk-ext.key-utils': 0.12.2-next.5
+      '@sphereon/ssi-sdk-ext.key-utils': 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
@@ -6238,13 +6251,17 @@ packages:
       uint8arrays: 3.1.1
     transitivePeerDependencies:
       - encoding
+      - expo
+      - expo-crypto
+      - msrcrypto
+      - react-native-securerandom
       - supports-color
 
-  /@sphereon/ssi-sdk-ext.key-manager@0.12.2-next.5(expo-crypto@12.4.1)(expo@49.0.4)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-8tN99nPLB/OOaWznuISdclODjzFe8JIBK7AZCIJbRMdvaH1rElxypAqhQeBktWFjNRU2aM+y0+ei7awlMsJdgw==}
+  /@sphereon/ssi-sdk-ext.key-manager@0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-Jzs54EXUUydRoghchmna+DfsxvIbTV/fspBmTX83ZcOo/7zke0VFE0fyuvQw69EGMMtRyIAjZ1DL0CmBG2gDVg==}
     dependencies:
       '@mattrglobal/bbs-signatures': 1.1.0
-      '@sphereon/ssi-sdk-ext.kms-local': 0.12.2-next.5(expo-crypto@12.4.1)(expo@49.0.4)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.kms-local': 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
     transitivePeerDependencies:
@@ -6255,13 +6272,15 @@ packages:
       - react-native-securerandom
       - supports-color
 
-  /@sphereon/ssi-sdk-ext.key-utils@0.12.2-next.5:
-    resolution: {integrity: sha512-JW1PcldlH0DuECQqaAo/ABAyji86+imHqguXeUFvzecVNF472cuLAyrk9JfFFEyq+w7RyHsV//pxMm+nd7b51A==}
+  /@sphereon/ssi-sdk-ext.key-utils@0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-8uo1J6nsr+J/L5QbU9SHOGNTOrl3KBQGFK0P40jPyptAvclC2St0NXjC9HNV98BDjhp+ji/hXqubDRO6AJe0Kg==}
     dependencies:
       '@ethersproject/random': 5.7.0
+      '@sphereon/isomorphic-webcrypto': 2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@stablelib/ed25519': 1.0.3
       '@stablelib/sha256': 1.0.1
       '@stablelib/sha512': 1.0.1
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       base64url: 3.0.1
       debug: 4.3.4
       did-resolver: 4.1.0
@@ -6272,15 +6291,19 @@ packages:
       varint: 6.0.0
       web-encoding: 1.1.5
     transitivePeerDependencies:
+      - expo
+      - expo-crypto
+      - msrcrypto
+      - react-native-securerandom
       - supports-color
 
-  /@sphereon/ssi-sdk-ext.kms-local@0.12.2-next.5(expo-crypto@12.4.1)(expo@49.0.4)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-6xzcFIdjeMclE+Ced6bNllIkUeY3BjkvhZ76ySW5H00ZnJ69fkl1et24qr16SnKMfYy76+X9KpPnl/CkMd4dwQ==}
+  /@sphereon/ssi-sdk-ext.kms-local@0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-RcCg4nG53O3rTpKfi0HEzAkmOBRqwLg7dlMmZSa7tfsk6TLM+I7iIBsvG8cH47qa7zkjY3mCnYDOMBUM12LkVA==}
     dependencies:
       '@mattrglobal/bbs-signatures': 1.1.0
-      '@sphereon/isomorphic-webcrypto': 2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.4)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.12.2-next.5
-      '@sphereon/ssi-sdk-ext.key-utils': 0.12.2-next.5
+      '@sphereon/isomorphic-webcrypto': 2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.12.2-next.12(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@trust/keyto': 2.0.0-alpha1
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
@@ -7313,7 +7336,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@eslint-community/regexpp': 4.6.1
+      '@eslint-community/regexpp': 4.6.2
       '@typescript-eslint/parser': 5.59.2(eslint@8.35.0)(typescript@4.9.5)
       '@typescript-eslint/scope-manager': 5.59.2
       '@typescript-eslint/type-utils': 5.59.2(eslint@8.35.0)(typescript@4.9.5)
@@ -7509,7 +7532,7 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       '@typescript-eslint/types': 5.59.2
-      eslint-visitor-keys: 3.4.1
+      eslint-visitor-keys: 3.4.2
     dev: true
 
   /@urql/core@2.3.6(graphql@15.8.0):
@@ -8038,10 +8061,6 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /ansi-escapes@3.2.0:
-    resolution: {integrity: sha512-cBhpre4ma+U0T1oM5fXg7Dy1Jw7zzwv7lt/GoCpr+hDQJoYnKVPLL4dCvSEFMmQurOQvSrwT7SL/DAlhBI97RQ==}
-    engines: {node: '>=4'}
-
   /ansi-escapes@4.3.2:
     resolution: {integrity: sha512-gKXj5ALrKWQLsYG9jlTRmR/xKluxHV+Z9QEwNIgCfM1/uwPMCuzVVnh5mwTd+OuBZcwSIMbqssNWRm1lE51QaQ==}
     engines: {node: '>=8'}
@@ -8407,14 +8426,14 @@ packages:
       - supports-color
     dev: true
 
-  /babel-jest@29.6.1(@babel/core@7.22.9):
-    resolution: {integrity: sha512-qu+3bdPEQC6KZSPz+4Fyjbga5OODNcp49j6GKzG1EKbkfyJBxEYGVUmVGpwCSeGouG52R4EgYMLb6p9YeEEQ4A==}
+  /babel-jest@29.6.2(@babel/core@7.22.9):
+    resolution: {integrity: sha512-BYCzImLos6J3BH/+HvUCHG1dTf2MzmAB4jaVxHV+29RZLjR29XuYTmsf2sdDwkrb+FczkGo3kOhE7ga6sI0P4A==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     peerDependencies:
       '@babel/core': ^7.8.0
     dependencies:
       '@babel/core': 7.22.9
-      '@jest/transform': 29.6.1
+      '@jest/transform': 29.6.2
       '@types/babel__core': 7.20.1
       babel-plugin-istanbul: 6.1.1
       babel-preset-jest: 29.5.0(@babel/core@7.22.9)
@@ -8487,7 +8506,7 @@ packages:
     dependencies:
       '@babel/core': 7.22.9
       '@babel/helper-define-polyfill-provider': 0.4.2(@babel/core@7.22.9)
-      core-js-compat: 3.31.1
+      core-js-compat: 3.32.0
     transitivePeerDependencies:
       - supports-color
 
@@ -8534,8 +8553,8 @@ packages:
       '@babel/plugin-syntax-top-level-await': 7.14.5(@babel/core@7.22.9)
     dev: true
 
-  /babel-preset-expo@9.5.0(@babel/core@7.22.9):
-    resolution: {integrity: sha512-c5YPPro5g0rVf6WtednbCdRPFkZ+VT43/DhQQNh8rRubDxvKHT1bq0EUG0cgm5M61hXjTwgLJn9YzxX1TeBm/g==}
+  /babel-preset-expo@9.5.1(@babel/core@7.22.9):
+    resolution: {integrity: sha512-dOLhi5C1hNOAMFYjRlsP1axswMSf9MxX7zsez9kmwrm46cyev2l2ThQ8VdDig/YdwhNScd7sQ/lovrOTObk4Hg==}
     dependencies:
       '@babel/plugin-proposal-decorators': 7.22.7(@babel/core@7.22.9)
       '@babel/plugin-proposal-export-namespace-from': 7.18.9(@babel/core@7.22.9)
@@ -8544,7 +8563,7 @@ packages:
       '@babel/preset-env': 7.22.2(@babel/core@7.22.9)
       babel-plugin-module-resolver: 5.0.0
       babel-plugin-react-native-web: 0.18.12
-      metro-react-native-babel-preset: 0.76.5(@babel/core@7.22.9)
+      metro-react-native-babel-preset: 0.76.7(@babel/core@7.22.9)
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
@@ -8848,7 +8867,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001517
-      electron-to-chromium: 1.4.469
+      electron-to-chromium: 1.4.477
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11(browserslist@4.21.9)
 
@@ -9185,7 +9204,7 @@ packages:
     resolution: {integrity: sha512-ct3ltplN8I9fOwUd8GrP8UQixwff129BkEtuWDKL5W45cQuLd19xqmTLu5ge78YDm/fdje6FMt0hGOhl0lii3A==}
     dependencies:
       '@types/validator': 13.7.17
-      libphonenumber-js: 1.10.37
+      libphonenumber-js: 1.10.38
       validator: 13.9.0
     dev: false
 
@@ -9675,8 +9694,8 @@ packages:
       untildify: 4.0.0
       yargs: 16.2.0
 
-  /core-js-compat@3.31.1:
-    resolution: {integrity: sha512-wIDWd2s5/5aJSdpOJHfSibxNODxoGoWOBHt8JSPB41NOE94M7kuTPZCYLOlTtuoXTsBPKobpJ6T+y0SSy5L9SA==}
+  /core-js-compat@3.32.0:
+    resolution: {integrity: sha512-7a9a3D1k4UCVKnLhrgALyFcP7YCsLOQIxPd0dKjf/6GuPcgyiGP70ewWdCGrSK7evyhymi0qO4EqCmSJofDeYw==}
     dependencies:
       browserslist: 4.21.9
 
@@ -9965,6 +9984,15 @@ packages:
 
   /dedent@0.7.0:
     resolution: {integrity: sha512-Q6fKUPqnAHAyhiUgFU7BUzLiv0kd8saH9al7tnu5Q/okj6dnupxyTgFIBjVzJATdfIAm9NAsvXNzjaKa+bxVyA==}
+    dev: true
+
+  /dedent@1.3.0:
+    resolution: {integrity: sha512-7glNLfvdsMzZm3FpRY1CHuI2lbYDR+71YmrhmTZjYFD5pfT0ACgnGRdrrC9Mk2uICnzkcdelCx5at787UDGOvg==}
+    peerDependencies:
+      babel-plugin-macros: ^3.1.0
+    peerDependenciesMeta:
+      babel-plugin-macros:
+        optional: true
     dev: true
 
   /deep-equal@2.2.2:
@@ -10282,8 +10310,8 @@ packages:
       jake: 10.8.7
     dev: true
 
-  /electron-to-chromium@1.4.469:
-    resolution: {integrity: sha512-HRN9XQjElxJBrdDky5iiUUr3eDwXGTg6Cp4IV8MuNc8VqMkYSneSnIe6poFKx9PsNzkudCgaWCBVxwDqirwQWQ==}
+  /electron-to-chromium@1.4.477:
+    resolution: {integrity: sha512-shUVy6Eawp33dFBFIoYbIwLHrX0IZ857AlH9ug2o4rvbWmpaCUdBpQ5Zw39HRrfzAFm4APJE9V+E2A/WB0YqJw==}
 
   /elliptic@6.5.4:
     resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}
@@ -10341,6 +10369,14 @@ packages:
     engines: {node: '>=8.6'}
     dependencies:
       ansi-colors: 4.1.3
+    dev: true
+
+  /enquirer@2.4.1:
+    resolution: {integrity: sha512-rRqJg/6gd538VHvR3PSrdRBb/1Vy2YfzHqzvbhGIQpDRKIa4FgV/54b5Q1xYSxOOwKvjXweS26E0Q+nAMwp2pQ==}
+    engines: {node: '>=8.6'}
+    dependencies:
+      ansi-colors: 4.1.3
+      strip-ansi: 6.0.1
     dev: true
 
   /entities@4.5.0:
@@ -10635,8 +10671,8 @@ packages:
       estraverse: 4.3.0
     dev: true
 
-  /eslint-scope@7.2.1:
-    resolution: {integrity: sha512-CvefSOsDdaYYvxChovdrPo/ZGt8d5lrJWleAc1diXRKhHGiTYEI26cvo8Kle/wGnsizoCJjK73FMg1/IkIwiNA==}
+  /eslint-scope@7.2.2:
+    resolution: {integrity: sha512-dOt21O7lTMhDM+X9mB4GX+DZrZtCUJPL/wlcTqxyrx5IvO0IYtILdtrQGQp+8n5S0gwSVmOf9NQrjMOgfQZlIg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       esrecurse: 4.3.0
@@ -10680,8 +10716,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /eslint-visitor-keys@3.4.1:
-    resolution: {integrity: sha512-pZnmmLwYzf+kWaM/Qgrvpen51upAktaaiI01nsJD/Yr3lMOdNtq0cxkrrg16w64VtisN6okbs7Q8AfGqj4c9fA==}
+  /eslint-visitor-keys@3.4.2:
+    resolution: {integrity: sha512-8drBzUEyZ2llkpCA67iYrgEssKDUu68V8ChqqOfFupIaG/LCVPUT+CoGJpT77zJprs4T/W7p07LP7zAIMuweVw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
@@ -10698,7 +10734,7 @@ packages:
       cross-spawn: 7.0.3
       debug: 4.3.4
       doctrine: 3.0.0
-      enquirer: 2.3.6
+      enquirer: 2.4.1
       escape-string-regexp: 4.0.0
       eslint-scope: 5.1.1
       eslint-utils: 2.1.0
@@ -10739,7 +10775,7 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     hasBin: true
     dependencies:
-      '@eslint/eslintrc': 2.1.0
+      '@eslint/eslintrc': 2.1.1
       '@eslint/js': 8.35.0
       '@humanwhocodes/config-array': 0.11.10
       '@humanwhocodes/module-importer': 1.0.1
@@ -10750,9 +10786,9 @@ packages:
       debug: 4.3.4
       doctrine: 3.0.0
       escape-string-regexp: 4.0.0
-      eslint-scope: 7.2.1
+      eslint-scope: 7.2.2
       eslint-utils: 3.0.0(eslint@8.35.0)
-      eslint-visitor-keys: 3.4.1
+      eslint-visitor-keys: 3.4.2
       espree: 9.6.1
       esquery: 1.5.0
       esutils: 2.0.3
@@ -10798,7 +10834,7 @@ packages:
     dependencies:
       acorn: 8.10.0
       acorn-jsx: 5.3.2(acorn@8.10.0)
-      eslint-visitor-keys: 3.4.1
+      eslint-visitor-keys: 3.4.2
     dev: true
 
   /esprima@1.2.2:
@@ -10993,31 +11029,31 @@ packages:
       jest-message-util: 27.5.1
     dev: true
 
-  /expect@29.6.1:
-    resolution: {integrity: sha512-XEdDLonERCU1n9uR56/Stx9OqojaLAQtZf9PrCHH9Hl8YXiEIka3H4NXJ3NOIBmQJTg7+j7buh34PMHfJujc8g==}
+  /expect@29.6.2:
+    resolution: {integrity: sha512-iAErsLxJ8C+S02QbLAwgSGSezLQK+XXRDt8IuFXFpwCNw2ECmzZSmjKcCaFVp5VRMk+WAvz6h6jokzEzBFZEuA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@jest/expect-utils': 29.6.1
+      '@jest/expect-utils': 29.6.2
       '@types/node': 18.16.3
       jest-get-type: 29.4.3
-      jest-matcher-utils: 29.6.1
-      jest-message-util: 29.6.1
-      jest-util: 29.6.1
+      jest-matcher-utils: 29.6.2
+      jest-message-util: 29.6.2
+      jest-util: 29.6.2
     dev: true
 
-  /expo-application@5.3.0(expo@49.0.4):
+  /expo-application@5.3.0(expo@49.0.6):
     resolution: {integrity: sha512-XLkaELwmiXW6JjFVkwuiFQaGZoNKAxNAcSJkFdz8s4rCljEwehylbzoPk37QHw3cxqb4v0/2EICtg4C4kpEVCA==}
     peerDependencies:
       expo: '*'
     dependencies:
-      expo: 49.0.4(@babel/core@7.22.9)
+      expo: 49.0.6(@babel/core@7.22.9)
 
-  /expo-asset@8.10.1(expo@49.0.4):
+  /expo-asset@8.10.1(expo@49.0.6):
     resolution: {integrity: sha512-5VMTESxgY9GBsspO/esY25SKEa7RyascVkLe/OcL1WgblNFm7xCCEEUIW8VWS1nHJQGYxpMZPr3bEfjMpdWdyA==}
     dependencies:
       blueimp-md5: 2.19.0
-      expo-constants: 14.4.2(expo@49.0.4)
-      expo-file-system: 15.4.2(expo@49.0.4)
+      expo-constants: 14.4.2(expo@49.0.6)
+      expo-file-system: 15.4.2(expo@49.0.6)
       invariant: 2.2.4
       md5-file: 3.2.3
       path-browserify: 1.0.1
@@ -11026,47 +11062,47 @@ packages:
       - expo
       - supports-color
 
-  /expo-constants@14.4.2(expo@49.0.4):
+  /expo-constants@14.4.2(expo@49.0.6):
     resolution: {integrity: sha512-nOB122DOAjk+KrJT69lFQAoYVQGQjFHSigCPVBzVdko9S1xGsfiOH9+X5dygTsZTIlVLpQJDdmZ7ONiv3i+26w==}
     peerDependencies:
       expo: '*'
     dependencies:
       '@expo/config': 8.1.2
-      expo: 49.0.4(@babel/core@7.22.9)
+      expo: 49.0.6(@babel/core@7.22.9)
       uuid: 3.4.0
     transitivePeerDependencies:
       - supports-color
 
-  /expo-crypto@12.4.1(expo@49.0.4):
+  /expo-crypto@12.4.1(expo@49.0.6):
     resolution: {integrity: sha512-/en03oPNAX6gP0bKpwA1EyLBnGG9uv0+Q7uvGYyOXaQQEvj31a+8cEvNPkv75x6GuK1hcaBfO25RtX9AGOMwVA==}
     peerDependencies:
       expo: '*'
     dependencies:
       base64-js: 1.5.1
-      expo: 49.0.4(@babel/core@7.22.9)
+      expo: 49.0.6(@babel/core@7.22.9)
 
-  /expo-file-system@15.4.2(expo@49.0.4):
+  /expo-file-system@15.4.2(expo@49.0.6):
     resolution: {integrity: sha512-WFaEWuFEuUpETiq85YlhKYJgedccWTjtCMnYGAgyNfCfvnIgfMCVH7dWudGuxhfAcTZqh36OcqtSckbtbhOtyg==}
     peerDependencies:
       expo: '*'
     dependencies:
-      expo: 49.0.4(@babel/core@7.22.9)
+      expo: 49.0.6(@babel/core@7.22.9)
       uuid: 3.4.0
 
-  /expo-font@11.4.0(expo@49.0.4):
+  /expo-font@11.4.0(expo@49.0.6):
     resolution: {integrity: sha512-nkmezCFD7gR/I6R+e3/ry18uEfF8uYrr6h+PdBJu+3dawoLOpo+wFb/RG9bHUekU1/cPanR58LR7G5MEMKHR2w==}
     peerDependencies:
       expo: '*'
     dependencies:
-      expo: 49.0.4(@babel/core@7.22.9)
+      expo: 49.0.6(@babel/core@7.22.9)
       fontfaceobserver: 2.3.0
 
-  /expo-keep-awake@12.3.0(expo@49.0.4):
+  /expo-keep-awake@12.3.0(expo@49.0.6):
     resolution: {integrity: sha512-ujiJg1p9EdCOYS05jh5PtUrfiZnK0yyLy+UewzqrjUqIT8eAGMQbkfOn3C3fHE7AKd5AefSMzJnS3lYZcZYHDw==}
     peerDependencies:
       expo: '*'
     dependencies:
-      expo: 49.0.4(@babel/core@7.22.9)
+      expo: 49.0.6(@babel/core@7.22.9)
 
   /expo-modules-autolinking@1.5.0:
     resolution: {integrity: sha512-i9zll5xNYh0/sjaa6hpZlTHodKEu2tMEFsJJYsfBMTt8G9J8gGhalOydrX/Ql1E8bQ4GxnLAqrM7duR0Tj2VTQ==}
@@ -11081,14 +11117,14 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /expo-modules-core@1.5.7:
-    resolution: {integrity: sha512-qdSP/yExeDya2lySJEhP+1DRSyayZ6IlXAT0hA3wao1AUtoz09yM257TUMS05ASihopQhLn520Q6yAwrezDsxA==}
+  /expo-modules-core@1.5.9:
+    resolution: {integrity: sha512-kQxllZfus7wM0O6X0Ud+SOnbH/kbxtEAQp2gkvDq3P3kqhtafue/H9CPDX04uWc/pypvp9vp/sZ+qvA0alaVuQ==}
     dependencies:
       compare-versions: 3.6.0
       invariant: 2.2.4
 
-  /expo@49.0.4(@babel/core@7.22.9):
-    resolution: {integrity: sha512-52FUpEYDLL8G+pFjR8H7a2W6XgjX9RlBF36bFMyrfHdwxURu/pMR/C2SBSDQZRao43+urL8soX8c7iwtPN696A==}
+  /expo@49.0.6(@babel/core@7.22.9):
+    resolution: {integrity: sha512-prwW1DNTehTdJh2xp+HrEMVrO53WfFNdCC9c2yo3BfsqASGhP8LUePC+RyNgNZzOTL0OsXY7pxkEd0zH1idudA==}
     hasBin: true
     dependencies:
       '@babel/runtime': 7.22.6
@@ -11096,15 +11132,15 @@ packages:
       '@expo/config': 8.1.2
       '@expo/config-plugins': 7.2.5
       '@expo/vector-icons': 13.0.0
-      babel-preset-expo: 9.5.0(@babel/core@7.22.9)
-      expo-application: 5.3.0(expo@49.0.4)
-      expo-asset: 8.10.1(expo@49.0.4)
-      expo-constants: 14.4.2(expo@49.0.4)
-      expo-file-system: 15.4.2(expo@49.0.4)
-      expo-font: 11.4.0(expo@49.0.4)
-      expo-keep-awake: 12.3.0(expo@49.0.4)
+      babel-preset-expo: 9.5.1(@babel/core@7.22.9)
+      expo-application: 5.3.0(expo@49.0.6)
+      expo-asset: 8.10.1(expo@49.0.6)
+      expo-constants: 14.4.2(expo@49.0.6)
+      expo-file-system: 15.4.2(expo@49.0.6)
+      expo-font: 11.4.0(expo@49.0.6)
+      expo-keep-awake: 12.3.0(expo@49.0.6)
       expo-modules-autolinking: 1.5.0
-      expo-modules-core: 1.5.7
+      expo-modules-core: 1.5.9
       fbemitter: 3.0.0
       invariant: 2.2.4
       md5-file: 3.2.3
@@ -11489,7 +11525,7 @@ packages:
     engines: {node: '>=14'}
     dependencies:
       cross-spawn: 7.0.3
-      signal-exit: 4.0.2
+      signal-exit: 4.1.0
     dev: true
 
   /form-data@3.0.1:
@@ -11676,7 +11712,7 @@ packages:
       color-support: 1.1.3
       console-control-strings: 1.1.0
       has-unicode: 2.0.1
-      signal-exit: 4.0.2
+      signal-exit: 4.1.0
       string-width: 4.2.3
       strip-ansi: 6.0.1
       wide-align: 1.1.5
@@ -12808,12 +12844,12 @@ packages:
       - supports-color
     dev: true
 
-  /istanbul-lib-report@3.0.0:
-    resolution: {integrity: sha512-wcdi+uAKzfiGT2abPpKZ0hSU1rGQjUQnLvtY5MpQ7QCTahD3VODhcu4wcfY1YtkGaDD5yuydOLINXsfbus9ROw==}
-    engines: {node: '>=8'}
+  /istanbul-lib-report@3.0.1:
+    resolution: {integrity: sha512-GCfE1mtsHGOELCU8e/Z7YWzpmybrx/+dSTfLrvY8qRmaY6zXTKWn6WQIjaAFw069icm6GVMNkgu0NzI4iPZUNw==}
+    engines: {node: '>=10'}
     dependencies:
       istanbul-lib-coverage: 3.2.0
-      make-dir: 3.1.0
+      make-dir: 4.0.0
       supports-color: 7.2.0
     dev: true
 
@@ -12828,12 +12864,12 @@ packages:
       - supports-color
     dev: true
 
-  /istanbul-reports@3.1.5:
-    resolution: {integrity: sha512-nUsEMa9pBt/NOHqbcbeJEgqIlY/K7rVWUX6Lql2orY5e9roQOthbR3vtY4zzf2orPELg80fnxxk9zUyPlgwD1w==}
+  /istanbul-reports@3.1.6:
+    resolution: {integrity: sha512-TLgnMkKg3iTDsQ9PbPTdpfAK2DzjF9mqUG7RMgcQl8oFjad8ob4laGxv5XV5U9MAfx8D6tSJiUyuAwzLicaxlg==}
     engines: {node: '>=8'}
     dependencies:
       html-escaper: 2.0.2
-      istanbul-lib-report: 3.0.0
+      istanbul-lib-report: 3.0.1
     dev: true
 
   /jackspeak@2.2.2:
@@ -12905,31 +12941,32 @@ packages:
       - supports-color
     dev: true
 
-  /jest-circus@29.6.1:
-    resolution: {integrity: sha512-tPbYLEiBU4MYAL2XoZme/bgfUeotpDBd81lgHLCbDZZFaGmECk0b+/xejPFtmiBP87GgP/y4jplcRpbH+fgCzQ==}
+  /jest-circus@29.6.2:
+    resolution: {integrity: sha512-G9mN+KOYIUe2sB9kpJkO9Bk18J4dTDArNFPwoZ7WKHKel55eKIS/u2bLthxgojwlf9NLCVQfgzM/WsOVvoC6Fw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@jest/environment': 29.6.1
-      '@jest/expect': 29.6.1
-      '@jest/test-result': 29.6.1
+      '@jest/environment': 29.6.2
+      '@jest/expect': 29.6.2
+      '@jest/test-result': 29.6.2
       '@jest/types': 29.6.1
       '@types/node': 18.16.3
       chalk: 4.1.2
       co: 4.6.0
-      dedent: 0.7.0
+      dedent: 1.3.0
       is-generator-fn: 2.1.0
-      jest-each: 29.6.1
-      jest-matcher-utils: 29.6.1
-      jest-message-util: 29.6.1
-      jest-runtime: 29.6.1
-      jest-snapshot: 29.6.1
-      jest-util: 29.6.1
+      jest-each: 29.6.2
+      jest-matcher-utils: 29.6.2
+      jest-message-util: 29.6.2
+      jest-runtime: 29.6.2
+      jest-snapshot: 29.6.2
+      jest-util: 29.6.2
       p-limit: 3.1.0
-      pretty-format: 29.6.1
+      pretty-format: 29.6.2
       pure-rand: 6.0.2
       slash: 3.0.0
       stack-utils: 2.0.6
     transitivePeerDependencies:
+      - babel-plugin-macros
       - supports-color
     dev: true
 
@@ -12963,8 +13000,8 @@ packages:
       - utf-8-validate
     dev: true
 
-  /jest-cli@29.6.1(@types/node@18.16.3)(ts-node@10.9.1):
-    resolution: {integrity: sha512-607dSgTA4ODIN6go9w6xY3EYkyPFGicx51a69H7yfvt7lN53xNswEVLovq+E77VsTRi5fWprLH0yl4DJgE8Ing==}
+  /jest-cli@29.6.2(@types/node@18.16.3)(ts-node@10.9.1):
+    resolution: {integrity: sha512-TT6O247v6dCEX2UGHGyflMpxhnrL0DNqP2fRTKYm3nJJpCTfXX3GCMQPGFjXDoj0i5/Blp3jriKXFgdfmbYB6Q==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     hasBin: true
     peerDependencies:
@@ -12973,20 +13010,21 @@ packages:
       node-notifier:
         optional: true
     dependencies:
-      '@jest/core': 29.6.1(ts-node@10.9.1)
-      '@jest/test-result': 29.6.1
+      '@jest/core': 29.6.2(ts-node@10.9.1)
+      '@jest/test-result': 29.6.2
       '@jest/types': 29.6.1
       chalk: 4.1.2
       exit: 0.1.2
       graceful-fs: 4.2.11
       import-local: 3.1.0
-      jest-config: 29.6.1(@types/node@18.16.3)(ts-node@10.9.1)
-      jest-util: 29.6.1
-      jest-validate: 29.6.1
+      jest-config: 29.6.2(@types/node@18.16.3)(ts-node@10.9.1)
+      jest-util: 29.6.2
+      jest-validate: 29.6.2
       prompts: 2.4.2
       yargs: 17.7.2
     transitivePeerDependencies:
       - '@types/node'
+      - babel-plugin-macros
       - supports-color
       - ts-node
     dev: true
@@ -13032,8 +13070,8 @@ packages:
       - utf-8-validate
     dev: true
 
-  /jest-config@29.6.1(@types/node@18.16.3)(ts-node@10.9.1):
-    resolution: {integrity: sha512-XdjYV2fy2xYixUiV2Wc54t3Z4oxYPAELUzWnV6+mcbq0rh742X2p52pii5A3oeRzYjLnQxCsZmp0qpI6klE2cQ==}
+  /jest-config@29.6.2(@types/node@18.16.3)(ts-node@10.9.1):
+    resolution: {integrity: sha512-VxwFOC8gkiJbuodG9CPtMRjBUNZEHxwfQXmIudSTzFWxaci3Qub1ddTRbFNQlD/zUeaifLndh/eDccFX4wCMQw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     peerDependencies:
       '@types/node': '*'
@@ -13045,30 +13083,31 @@ packages:
         optional: true
     dependencies:
       '@babel/core': 7.22.9
-      '@jest/test-sequencer': 29.6.1
+      '@jest/test-sequencer': 29.6.2
       '@jest/types': 29.6.1
       '@types/node': 18.16.3
-      babel-jest: 29.6.1(@babel/core@7.22.9)
+      babel-jest: 29.6.2(@babel/core@7.22.9)
       chalk: 4.1.2
       ci-info: 3.8.0
       deepmerge: 4.3.1
       glob: 7.2.3
       graceful-fs: 4.2.11
-      jest-circus: 29.6.1
-      jest-environment-node: 29.6.1
+      jest-circus: 29.6.2
+      jest-environment-node: 29.6.2
       jest-get-type: 29.4.3
       jest-regex-util: 29.4.3
-      jest-resolve: 29.6.1
-      jest-runner: 29.6.1
-      jest-util: 29.6.1
-      jest-validate: 29.6.1
+      jest-resolve: 29.6.2
+      jest-runner: 29.6.2
+      jest-util: 29.6.2
+      jest-validate: 29.6.2
       micromatch: 4.0.5
       parse-json: 5.2.0
-      pretty-format: 29.6.1
+      pretty-format: 29.6.2
       slash: 3.0.0
       strip-json-comments: 3.1.1
       ts-node: 10.9.1(@types/node@18.16.3)(typescript@4.9.5)
     transitivePeerDependencies:
+      - babel-plugin-macros
       - supports-color
     dev: true
 
@@ -13082,14 +13121,14 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /jest-diff@29.6.1:
-    resolution: {integrity: sha512-FsNCvinvl8oVxpNLttNQX7FAq7vR+gMDGj90tiP7siWw1UdakWUGqrylpsYrpvj908IYckm5Y0Q7azNAozU1Kg==}
+  /jest-diff@29.6.2:
+    resolution: {integrity: sha512-t+ST7CB9GX5F2xKwhwCf0TAR17uNDiaPTZnVymP9lw0lssa9vG+AFyDZoeIHStU3WowFFwT+ky+er0WVl2yGhA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       chalk: 4.1.2
       diff-sequences: 29.4.3
       jest-get-type: 29.4.3
-      pretty-format: 29.6.1
+      pretty-format: 29.6.2
     dev: true
 
   /jest-docblock@27.5.1:
@@ -13117,15 +13156,15 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /jest-each@29.6.1:
-    resolution: {integrity: sha512-n5eoj5eiTHpKQCAVcNTT7DRqeUmJ01hsAL0Q1SMiBHcBcvTKDELixQOGMCpqhbIuTcfC4kMfSnpmDqRgRJcLNQ==}
+  /jest-each@29.6.2:
+    resolution: {integrity: sha512-MsrsqA0Ia99cIpABBc3izS1ZYoYfhIy0NNWqPSE0YXbQjwchyt6B1HD2khzyPe1WiJA7hbxXy77ZoUQxn8UlSw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.1
       chalk: 4.1.2
       jest-get-type: 29.4.3
-      jest-util: 29.6.1
-      pretty-format: 29.6.1
+      jest-util: 29.6.2
+      pretty-format: 29.6.2
     dev: true
 
   /jest-environment-jsdom@27.5.1:
@@ -13158,16 +13197,16 @@ packages:
       jest-util: 27.5.1
     dev: true
 
-  /jest-environment-node@29.6.1:
-    resolution: {integrity: sha512-ZNIfAiE+foBog24W+2caIldl4Irh8Lx1PUhg/GZ0odM1d/h2qORAsejiFc7zb+SEmYPn1yDZzEDSU5PmDkmVLQ==}
+  /jest-environment-node@29.6.2:
+    resolution: {integrity: sha512-YGdFeZ3T9a+/612c5mTQIllvWkddPbYcN2v95ZH24oWMbGA4GGS2XdIF92QMhUhvrjjuQWYgUGW2zawOyH63MQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@jest/environment': 29.6.1
-      '@jest/fake-timers': 29.6.1
+      '@jest/environment': 29.6.2
+      '@jest/fake-timers': 29.6.2
       '@jest/types': 29.6.1
       '@types/node': 18.16.3
-      jest-mock: 29.6.1
-      jest-util: 29.6.1
+      jest-mock: 29.6.2
+      jest-util: 29.6.2
 
   /jest-fetch-mock@3.0.3:
     resolution: {integrity: sha512-Ux1nWprtLrdrH4XwE7O7InRY6psIi3GOsqNESJgMJ+M5cv4A8Lh7SN9d2V2kKRZ8ebAfcd1LNyZguAOb6JiDqw==}
@@ -13207,8 +13246,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /jest-haste-map@29.6.1:
-    resolution: {integrity: sha512-0m7f9PZXxOCk1gRACiVgX85knUKPKLPg4oRCjLoqIm9brTHXaorMA0JpmtmVkQiT8nmXyIVoZd/nnH1cfC33ig==}
+  /jest-haste-map@29.6.2:
+    resolution: {integrity: sha512-+51XleTDAAysvU8rT6AnS1ZJ+WHVNqhj1k6nTvN2PYP+HjU3kqlaKQ1Lnw3NYW3bm2r8vq82X0Z1nDDHZMzHVA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.1
@@ -13218,8 +13257,8 @@ packages:
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
       jest-regex-util: 29.4.3
-      jest-util: 29.6.1
-      jest-worker: 29.6.1
+      jest-util: 29.6.2
+      jest-worker: 29.6.2
       micromatch: 4.0.5
       walker: 1.0.8
     optionalDependencies:
@@ -13259,12 +13298,12 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /jest-leak-detector@29.6.1:
-    resolution: {integrity: sha512-OrxMNyZirpOEwkF3UHnIkAiZbtkBWiye+hhBweCHkVbCgyEy71Mwbb5zgeTNYWJBi1qgDVfPC1IwO9dVEeTLwQ==}
+  /jest-leak-detector@29.6.2:
+    resolution: {integrity: sha512-aNqYhfp5uYEO3tdWMb2bfWv6f0b4I0LOxVRpnRLAeque2uqOVVMLh6khnTcE2qJ5wAKop0HcreM1btoysD6bPQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       jest-get-type: 29.4.3
-      pretty-format: 29.6.1
+      pretty-format: 29.6.2
     dev: true
 
   /jest-matcher-utils@27.5.1:
@@ -13277,14 +13316,14 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /jest-matcher-utils@29.6.1:
-    resolution: {integrity: sha512-SLaztw9d2mfQQKHmJXKM0HCbl2PPVld/t9Xa6P9sgiExijviSp7TnZZpw2Fpt+OI3nwUO/slJbOfzfUMKKC5QA==}
+  /jest-matcher-utils@29.6.2:
+    resolution: {integrity: sha512-4LiAk3hSSobtomeIAzFTe+N8kL6z0JtF3n6I4fg29iIW7tt99R7ZcIFW34QkX+DuVrf+CUe6wuVOpm7ZKFJzZQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       chalk: 4.1.2
-      jest-diff: 29.6.1
+      jest-diff: 29.6.2
       jest-get-type: 29.4.3
-      pretty-format: 29.6.1
+      pretty-format: 29.6.2
     dev: true
 
   /jest-message-util@27.5.1:
@@ -13302,8 +13341,8 @@ packages:
       stack-utils: 2.0.6
     dev: true
 
-  /jest-message-util@29.6.1:
-    resolution: {integrity: sha512-KoAW2zAmNSd3Gk88uJ56qXUWbFk787QKmjjJVOjtGFmmGSZgDBrlIL4AfQw1xyMYPNVD7dNInfIbur9B2rd/wQ==}
+  /jest-message-util@29.6.2:
+    resolution: {integrity: sha512-vnIGYEjoPSuRqV8W9t+Wow95SDp6KPX2Uf7EoeG9G99J2OVh7OSwpS4B6J0NfpEIpfkBNHlBZpA2rblEuEFhZQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@babel/code-frame': 7.22.5
@@ -13312,7 +13351,7 @@ packages:
       chalk: 4.1.2
       graceful-fs: 4.2.11
       micromatch: 4.0.5
-      pretty-format: 29.6.1
+      pretty-format: 29.6.2
       slash: 3.0.0
       stack-utils: 2.0.6
 
@@ -13324,13 +13363,13 @@ packages:
       '@types/node': 18.16.3
     dev: true
 
-  /jest-mock@29.6.1:
-    resolution: {integrity: sha512-brovyV9HBkjXAEdRooaTQK42n8usKoSRR3gihzUpYeV/vwqgSoNfrksO7UfSACnPmxasO/8TmHM3w9Hp3G1dgw==}
+  /jest-mock@29.6.2:
+    resolution: {integrity: sha512-hoSv3lb3byzdKfwqCuT6uTscan471GUECqgNYykg6ob0yiAw3zYc7OrPnI9Qv8Wwoa4lC7AZ9hyS4AiIx5U2zg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.1
       '@types/node': 18.16.3
-      jest-util: 29.6.1
+      jest-util: 29.6.2
 
   /jest-pnp-resolver@1.2.3(jest-resolve@27.5.1):
     resolution: {integrity: sha512-+3NpwQEnRoIBtx4fyhblQDPgJI0H1IEIkX7ShLUjPGA7TtUTvI1oiKi3SR4oBR0hQhQR80l4WAe5RrXBwWMA8w==}
@@ -13344,7 +13383,7 @@ packages:
       jest-resolve: 27.5.1
     dev: true
 
-  /jest-pnp-resolver@1.2.3(jest-resolve@29.6.1):
+  /jest-pnp-resolver@1.2.3(jest-resolve@29.6.2):
     resolution: {integrity: sha512-+3NpwQEnRoIBtx4fyhblQDPgJI0H1IEIkX7ShLUjPGA7TtUTvI1oiKi3SR4oBR0hQhQR80l4WAe5RrXBwWMA8w==}
     engines: {node: '>=6'}
     peerDependencies:
@@ -13353,7 +13392,7 @@ packages:
       jest-resolve:
         optional: true
     dependencies:
-      jest-resolve: 29.6.1
+      jest-resolve: 29.6.2
     dev: true
 
   /jest-regex-util@27.5.1:
@@ -13376,12 +13415,12 @@ packages:
       - supports-color
     dev: true
 
-  /jest-resolve-dependencies@29.6.1:
-    resolution: {integrity: sha512-BbFvxLXtcldaFOhNMXmHRWx1nXQO5LoXiKSGQcA1LxxirYceZT6ch8KTE1bK3X31TNG/JbkI7OkS/ABexVahiw==}
+  /jest-resolve-dependencies@29.6.2:
+    resolution: {integrity: sha512-LGqjDWxg2fuQQm7ypDxduLu/m4+4Lb4gczc13v51VMZbVP5tSBILqVx8qfWcsdP8f0G7aIqByIALDB0R93yL+w==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       jest-regex-util: 29.4.3
-      jest-snapshot: 29.6.1
+      jest-snapshot: 29.6.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -13402,16 +13441,16 @@ packages:
       slash: 3.0.0
     dev: true
 
-  /jest-resolve@29.6.1:
-    resolution: {integrity: sha512-AeRkyS8g37UyJiP9w3mmI/VXU/q8l/IH52vj/cDAyScDcemRbSBhfX/NMYIGilQgSVwsjxrCHf3XJu4f+lxCMg==}
+  /jest-resolve@29.6.2:
+    resolution: {integrity: sha512-G/iQUvZWI5e3SMFssc4ug4dH0aZiZpsDq9o1PtXTV1210Ztyb2+w+ZgQkB3iOiC5SmAEzJBOHWz6Hvrd+QnNPw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       chalk: 4.1.2
       graceful-fs: 4.2.11
-      jest-haste-map: 29.6.1
-      jest-pnp-resolver: 1.2.3(jest-resolve@29.6.1)
-      jest-util: 29.6.1
-      jest-validate: 29.6.1
+      jest-haste-map: 29.6.2
+      jest-pnp-resolver: 1.2.3(jest-resolve@29.6.2)
+      jest-util: 29.6.2
+      jest-validate: 29.6.2
       resolve: 1.22.2
       resolve.exports: 2.0.2
       slash: 3.0.0
@@ -13449,29 +13488,29 @@ packages:
       - utf-8-validate
     dev: true
 
-  /jest-runner@29.6.1:
-    resolution: {integrity: sha512-tw0wb2Q9yhjAQ2w8rHRDxteryyIck7gIzQE4Reu3JuOBpGp96xWgF0nY8MDdejzrLCZKDcp8JlZrBN/EtkQvPQ==}
+  /jest-runner@29.6.2:
+    resolution: {integrity: sha512-wXOT/a0EspYgfMiYHxwGLPCZfC0c38MivAlb2lMEAlwHINKemrttu1uSbcGbfDV31sFaPWnWJPmb2qXM8pqZ4w==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@jest/console': 29.6.1
-      '@jest/environment': 29.6.1
-      '@jest/test-result': 29.6.1
-      '@jest/transform': 29.6.1
+      '@jest/console': 29.6.2
+      '@jest/environment': 29.6.2
+      '@jest/test-result': 29.6.2
+      '@jest/transform': 29.6.2
       '@jest/types': 29.6.1
       '@types/node': 18.16.3
       chalk: 4.1.2
       emittery: 0.13.1
       graceful-fs: 4.2.11
       jest-docblock: 29.4.3
-      jest-environment-node: 29.6.1
-      jest-haste-map: 29.6.1
-      jest-leak-detector: 29.6.1
-      jest-message-util: 29.6.1
-      jest-resolve: 29.6.1
-      jest-runtime: 29.6.1
-      jest-util: 29.6.1
-      jest-watcher: 29.6.1
-      jest-worker: 29.6.1
+      jest-environment-node: 29.6.2
+      jest-haste-map: 29.6.2
+      jest-leak-detector: 29.6.2
+      jest-message-util: 29.6.2
+      jest-resolve: 29.6.2
+      jest-runtime: 29.6.2
+      jest-util: 29.6.2
+      jest-watcher: 29.6.2
+      jest-worker: 29.6.2
       p-limit: 3.1.0
       source-map-support: 0.5.13
     transitivePeerDependencies:
@@ -13508,16 +13547,16 @@ packages:
       - supports-color
     dev: true
 
-  /jest-runtime@29.6.1:
-    resolution: {integrity: sha512-D6/AYOA+Lhs5e5il8+5pSLemjtJezUr+8zx+Sn8xlmOux3XOqx4d8l/2udBea8CRPqqrzhsKUsN/gBDE/IcaPQ==}
+  /jest-runtime@29.6.2:
+    resolution: {integrity: sha512-2X9dqK768KufGJyIeLmIzToDmsN0m7Iek8QNxRSI/2+iPFYHF0jTwlO3ftn7gdKd98G/VQw9XJCk77rbTGZnJg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@jest/environment': 29.6.1
-      '@jest/fake-timers': 29.6.1
-      '@jest/globals': 29.6.1
+      '@jest/environment': 29.6.2
+      '@jest/fake-timers': 29.6.2
+      '@jest/globals': 29.6.2
       '@jest/source-map': 29.6.0
-      '@jest/test-result': 29.6.1
-      '@jest/transform': 29.6.1
+      '@jest/test-result': 29.6.2
+      '@jest/transform': 29.6.2
       '@jest/types': 29.6.1
       '@types/node': 18.16.3
       chalk: 4.1.2
@@ -13525,13 +13564,13 @@ packages:
       collect-v8-coverage: 1.0.2
       glob: 7.2.3
       graceful-fs: 4.2.11
-      jest-haste-map: 29.6.1
-      jest-message-util: 29.6.1
-      jest-mock: 29.6.1
+      jest-haste-map: 29.6.2
+      jest-message-util: 29.6.2
+      jest-mock: 29.6.2
       jest-regex-util: 29.4.3
-      jest-resolve: 29.6.1
-      jest-snapshot: 29.6.1
-      jest-util: 29.6.1
+      jest-resolve: 29.6.2
+      jest-snapshot: 29.6.2
+      jest-util: 29.6.2
       slash: 3.0.0
       strip-bom: 4.0.0
     transitivePeerDependencies:
@@ -13576,8 +13615,8 @@ packages:
       - supports-color
     dev: true
 
-  /jest-snapshot@29.6.1:
-    resolution: {integrity: sha512-G4UQE1QQ6OaCgfY+A0uR1W2AY0tGXUPQpoUClhWHq1Xdnx1H6JOrC2nH5lqnOEqaDgbHFgIwZ7bNq24HpB180A==}
+  /jest-snapshot@29.6.2:
+    resolution: {integrity: sha512-1OdjqvqmRdGNvWXr/YZHuyhh5DeaLp1p/F8Tht/MrMw4Kr1Uu/j4lRG+iKl1DAqUJDWxtQBMk41Lnf/JETYBRA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@babel/core': 7.22.9
@@ -13585,21 +13624,20 @@ packages:
       '@babel/plugin-syntax-jsx': 7.22.5(@babel/core@7.22.9)
       '@babel/plugin-syntax-typescript': 7.22.5(@babel/core@7.22.9)
       '@babel/types': 7.22.5
-      '@jest/expect-utils': 29.6.1
-      '@jest/transform': 29.6.1
+      '@jest/expect-utils': 29.6.2
+      '@jest/transform': 29.6.2
       '@jest/types': 29.6.1
-      '@types/prettier': 2.7.3
       babel-preset-current-node-syntax: 1.0.1(@babel/core@7.22.9)
       chalk: 4.1.2
-      expect: 29.6.1
+      expect: 29.6.2
       graceful-fs: 4.2.11
-      jest-diff: 29.6.1
+      jest-diff: 29.6.2
       jest-get-type: 29.4.3
-      jest-matcher-utils: 29.6.1
-      jest-message-util: 29.6.1
-      jest-util: 29.6.1
+      jest-matcher-utils: 29.6.2
+      jest-message-util: 29.6.2
+      jest-util: 29.6.2
       natural-compare: 1.4.0
-      pretty-format: 29.6.1
+      pretty-format: 29.6.2
       semver: 7.5.4
     transitivePeerDependencies:
       - supports-color
@@ -13616,8 +13654,8 @@ packages:
       graceful-fs: 4.2.11
       picomatch: 2.3.1
 
-  /jest-util@29.6.1:
-    resolution: {integrity: sha512-NRFCcjc+/uO3ijUVyNOQJluf8PtGCe/W6cix36+M3cTFgiYqFOOW5MgN4JOOcvbUhcKTYVd1CvHz/LWi8d16Mg==}
+  /jest-util@29.6.2:
+    resolution: {integrity: sha512-3eX1qb6L88lJNCFlEADKOkjpXJQyZRiavX1INZ4tRnrBVr2COd3RgcTLyUiEXMNBlDU/cgYq6taUS0fExrWW4w==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.1
@@ -13639,8 +13677,8 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /jest-validate@29.6.1:
-    resolution: {integrity: sha512-r3Ds69/0KCN4vx4sYAbGL1EVpZ7MSS0vLmd3gV78O+NAx3PDQQukRU5hNHPXlyqCgFY8XUk7EuTMLugh0KzahA==}
+  /jest-validate@29.6.2:
+    resolution: {integrity: sha512-vGz0yMN5fUFRRbpJDPwxMpgSXW1LDKROHfBopAvDcmD6s+B/s8WJrwi+4bfH4SdInBA5C3P3BI19dBtKzx1Arg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.1
@@ -13648,7 +13686,7 @@ packages:
       chalk: 4.1.2
       jest-get-type: 29.4.3
       leven: 3.1.0
-      pretty-format: 29.6.1
+      pretty-format: 29.6.2
 
   /jest-watcher@27.5.1:
     resolution: {integrity: sha512-z676SuD6Z8o8qbmEGhoEUFOM1+jfEiL3DXHK/xgEiG2EyNYfFG60jluWcupY6dATjfEsKQuibReS1djInQnoVw==}
@@ -13663,17 +13701,17 @@ packages:
       string-length: 4.0.2
     dev: true
 
-  /jest-watcher@29.6.1:
-    resolution: {integrity: sha512-d4wpjWTS7HEZPaaj8m36QiaP856JthRZkrgcIY/7ISoUWPIillrXM23WPboZVLbiwZBt4/qn2Jke84Sla6JhFA==}
+  /jest-watcher@29.6.2:
+    resolution: {integrity: sha512-GZitlqkMkhkefjfN/p3SJjrDaxPflqxEAv3/ik10OirZqJGYH5rPiIsgVcfof0Tdqg3shQGdEIxDBx+B4tuLzA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@jest/test-result': 29.6.1
+      '@jest/test-result': 29.6.2
       '@jest/types': 29.6.1
       '@types/node': 18.16.3
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.13.1
-      jest-util: 29.6.1
+      jest-util: 29.6.2
       string-length: 4.0.2
     dev: true
 
@@ -13685,12 +13723,12 @@ packages:
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
-  /jest-worker@29.6.1:
-    resolution: {integrity: sha512-U+Wrbca7S8ZAxAe9L6nb6g8kPdia5hj32Puu5iOqBCMTMWFHXuK6dOV2IFrpedbTV8fjMFLdWNttQTBL6u2MRA==}
+  /jest-worker@29.6.2:
+    resolution: {integrity: sha512-l3ccBOabTdkng8I/ORCkADz4eSMKejTYv1vB/Z83UiubqhC1oQ5Li6dWCyqOIvSifGjUBxuvxvlm6KGK2DtuAQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@types/node': 18.16.3
-      jest-util: 29.6.1
+      jest-util: 29.6.2
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
@@ -13726,12 +13764,13 @@ packages:
       node-notifier:
         optional: true
     dependencies:
-      '@jest/core': 29.6.1(ts-node@10.9.1)
+      '@jest/core': 29.6.2(ts-node@10.9.1)
       '@jest/types': 29.6.1
       import-local: 3.1.0
-      jest-cli: 29.6.1(@types/node@18.16.3)(ts-node@10.9.1)
+      jest-cli: 29.6.2(@types/node@18.16.3)(ts-node@10.9.1)
     transitivePeerDependencies:
       - '@types/node'
+      - babel-plugin-macros
       - supports-color
       - ts-node
     dev: true
@@ -14328,8 +14367,8 @@ packages:
       - supports-color
     dev: true
 
-  /libphonenumber-js@1.10.37:
-    resolution: {integrity: sha512-Z10PCaOCiAxbUxLyR31DNeeNugSVP6iv/m7UrSKS5JHziEMApJtgku4e9Q69pzzSC9LnQiM09sqsGf2ticZnMw==}
+  /libphonenumber-js@1.10.38:
+    resolution: {integrity: sha512-4NjVXVUmpZ9Zsqq6FXa2+MKI+KAI3tOqA0pxXgXGluhpj4ge5didmbWJpMBqGB3AVGv1SnEtKdGTbxjSEG1kCQ==}
     dev: false
 
   /lightningcss-darwin-arm64@1.19.0:
@@ -14629,6 +14668,13 @@ packages:
     dependencies:
       semver: 6.3.1
 
+  /make-dir@4.0.0:
+    resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
+    engines: {node: '>=10'}
+    dependencies:
+      semver: 7.5.4
+    dev: true
+
   /make-error@1.3.6:
     resolution: {integrity: sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==}
 
@@ -14863,7 +14909,7 @@ packages:
     dependencies:
       connect: 3.7.0
       cosmiconfig: 5.2.1
-      jest-validate: 29.6.1
+      jest-validate: 29.6.2
       metro: 0.76.7
       metro-cache: 0.76.7
       metro-core: 0.76.7
@@ -14929,54 +14975,6 @@ packages:
     engines: {node: '>=16'}
     dependencies:
       uglify-es: 3.3.9
-
-  /metro-react-native-babel-preset@0.76.5(@babel/core@7.22.9):
-    resolution: {integrity: sha512-IlVKeTon5fef77rQ6WreSmrabmbc3dEsLwr/sL80fYjobjsD8FRCnOlbaJdgUf2SMJmSIoawgjh5Yeebv+gJzg==}
-    engines: {node: '>=16'}
-    peerDependencies:
-      '@babel/core': '*'
-    dependencies:
-      '@babel/core': 7.22.9
-      '@babel/plugin-proposal-async-generator-functions': 7.20.7(@babel/core@7.22.9)
-      '@babel/plugin-proposal-class-properties': 7.18.6(@babel/core@7.22.9)
-      '@babel/plugin-proposal-export-default-from': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-proposal-nullish-coalescing-operator': 7.18.6(@babel/core@7.22.9)
-      '@babel/plugin-proposal-numeric-separator': 7.18.6(@babel/core@7.22.9)
-      '@babel/plugin-proposal-object-rest-spread': 7.20.7(@babel/core@7.22.9)
-      '@babel/plugin-proposal-optional-catch-binding': 7.18.6(@babel/core@7.22.9)
-      '@babel/plugin-proposal-optional-chaining': 7.21.0(@babel/core@7.22.9)
-      '@babel/plugin-syntax-dynamic-import': 7.8.3(@babel/core@7.22.9)
-      '@babel/plugin-syntax-export-default-from': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-syntax-flow': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-syntax-nullish-coalescing-operator': 7.8.3(@babel/core@7.22.9)
-      '@babel/plugin-syntax-optional-chaining': 7.8.3(@babel/core@7.22.9)
-      '@babel/plugin-transform-arrow-functions': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-async-to-generator': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-block-scoping': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-classes': 7.22.6(@babel/core@7.22.9)
-      '@babel/plugin-transform-computed-properties': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-destructuring': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-flow-strip-types': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-function-name': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-literals': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-modules-commonjs': 7.21.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-named-capturing-groups-regex': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-parameters': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-react-display-name': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-react-jsx': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-react-jsx-self': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-react-jsx-source': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-runtime': 7.22.2(@babel/core@7.22.9)
-      '@babel/plugin-transform-shorthand-properties': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-spread': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-sticky-regex': 7.22.5(@babel/core@7.22.9)
-      '@babel/plugin-transform-typescript': 7.22.9(@babel/core@7.22.9)
-      '@babel/plugin-transform-unicode-regex': 7.22.5(@babel/core@7.22.9)
-      '@babel/template': 7.22.5
-      babel-plugin-transform-flow-enums: 0.0.2(@babel/core@7.22.9)
-      react-refresh: 0.4.3
-    transitivePeerDependencies:
-      - supports-color
 
   /metro-react-native-babel-preset@0.76.7(@babel/core@7.22.9):
     resolution: {integrity: sha512-R25wq+VOSorAK3hc07NW0SmN8z9S/IR0Us0oGAsBcMZnsgkbOxu77Mduqf+f4is/wnWHc5+9bfiqdLnaMngiVw==}
@@ -16016,8 +16014,8 @@ packages:
       semver: 7.5.4
     dev: true
 
-  /npm-pick-manifest@8.0.1:
-    resolution: {integrity: sha512-mRtvlBjTsJvfCCdmPtiu2bdlx8d/KXtF7yNXNWe7G0Z36qWA9Ny5zXsI2PfBZEv7SXgoxTmNaTzGSbbzDZChoA==}
+  /npm-pick-manifest@8.0.2:
+    resolution: {integrity: sha512-1dKY+86/AIiq1tkKVD3l0WI+Gd3vkknVGAggsFeBkTvbhMQ1OND/LKkYv4JtXPKUJ8bOTCyLiqEg2P6QNdK+Gg==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
       npm-install-checks: 6.1.1
@@ -16652,7 +16650,7 @@ packages:
       minipass: 5.0.0
       npm-package-arg: 10.1.0
       npm-packlist: 7.0.4
-      npm-pick-manifest: 8.0.1
+      npm-pick-manifest: 8.0.2
       npm-registry-fetch: 14.0.5
       proc-log: 3.0.0
       promise-retry: 2.0.1
@@ -16787,11 +16785,11 @@ packages:
       pause: 0.0.1
       utils-merge: 1.0.1
 
-  /password-prompt@1.1.2:
-    resolution: {integrity: sha512-bpuBhROdrhuN3E7G/koAju0WjVw9/uQOG5Co5mokNj0MiOSBVZS1JTwM4zl55hu0WFmIEFvO9cU9sJQiBIYeIA==}
+  /password-prompt@1.1.3:
+    resolution: {integrity: sha512-HkrjG2aJlvF0t2BMH0e2LB/EHf3Lcq3fNMzy4GYHcQblAvOl+QQji1Lx7WRBMqpVK8p+KR7bCg7oqAMXtdgqyw==}
     dependencies:
-      ansi-escapes: 3.2.0
-      cross-spawn: 6.0.5
+      ansi-escapes: 4.3.2
+      cross-spawn: 7.0.3
 
   /patch-package@6.5.1:
     resolution: {integrity: sha512-I/4Zsalfhc6bphmJTlrLoOcAF87jcxko4q0qsv4bGcurbr8IskEOtdnt9iCmsQVGL1B+iUhSQqweyTLJfCF9rA==}
@@ -16996,8 +16994,8 @@ packages:
       react-is: 18.2.0
     dev: true
 
-  /pretty-format@29.6.1:
-    resolution: {integrity: sha512-7jRj+yXO0W7e4/tSJKoR7HRIHLPPjtNaUGG2xxKQnGvPNRkgWcQ0AZX6P4KBRJN4FcTBWb3sa7DVUJmocYuoog==}
+  /pretty-format@29.6.2:
+    resolution: {integrity: sha512-1q0oC8eRveTg5nnBEWMXAU2qpv65Gnuf2eCQzSjxpWFkPaPARwqZZDGuNE0zPAZfTCHzIk3A8dIjwlQKKLphyg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/schemas': 29.6.0
@@ -17289,7 +17287,7 @@ packages:
     peerDependencies:
       react: 18.2.0
     dependencies:
-      '@jest/create-cache-key-function': 29.6.1
+      '@jest/create-cache-key-function': 29.6.2
       '@react-native-community/cli': 11.3.5(@babel/core@7.22.9)
       '@react-native-community/cli-platform-android': 11.3.5
       '@react-native-community/cli-platform-ios': 11.3.5
@@ -17306,7 +17304,7 @@ packages:
       event-target-shim: 5.0.1
       flow-enums-runtime: 0.0.5
       invariant: 2.2.4
-      jest-environment-node: 29.6.1
+      jest-environment-node: 29.6.2
       jsc-android: 250231.0.0
       memoize-one: 5.2.1
       metro-runtime: 0.76.7
@@ -18086,8 +18084,8 @@ packages:
   /signal-exit@3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
 
-  /signal-exit@4.0.2:
-    resolution: {integrity: sha512-MY2/qGx4enyjprQnFaZsHib3Yadh3IXyV2C321GY0pjGfVBu4un0uDJkwgdxqO+Rdx8JMT8IfJIRwbYVz3Ob3Q==}
+  /signal-exit@4.1.0:
+    resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
     dev: true
 
@@ -18952,7 +18950,7 @@ packages:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
       jest: 29.6.1(@types/node@18.16.3)(ts-node@10.9.1)
-      jest-util: 29.6.1
+      jest-util: 29.6.2
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
@@ -19887,7 +19885,7 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
       imurmurhash: 0.1.4
-      signal-exit: 4.0.2
+      signal-exit: 4.1.0
     dev: true
 
   /write-json-file@3.2.0:
