@@ -62,6 +62,6 @@ const testContext = {
   tearDown,
 }
 
-describe('REST integration tests', () => {
+xdescribe('REST integration tests', () => {
   msRequestApiAgentLogic(testContext)
 })

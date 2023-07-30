@@ -1,5 +1,6 @@
 /**
  * @public
  */
-export * from './VCAPIServer'
+export * from './vc-api-server'
 export * from './types'
+export * from './api-functions'

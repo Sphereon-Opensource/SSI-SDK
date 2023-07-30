@@ -2,20 +2,20 @@
 <h1 align="center">
   <br>
   <a href="https://www.sphereon.com"><img src="https://sphereon.com/content/themes/sphereon/assets/img/logo.svg" alt="Sphereon" width="400"></a>
-  <br>Agent Configuration 
+  <br>Dev Support 
   <br>
 </h1>
 
-This plugin allows you to run/start an Agent from a yaml configuration. Best used in a NodeJS environment, but should work with React-Native in case path/fs are browserified or polyfilled
+This plugin is used for development purposes. It hosts the schema-generator used during building of the SDK packages for instance
 
 ## Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk.agent-config
+pnpm add dev @sphereon/ssi-sdk.dev
 ```
 
 ## Build
 
 ```shell
-yarn build
+pnpm build
 ```

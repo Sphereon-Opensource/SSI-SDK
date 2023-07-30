@@ -1,4 +1,17 @@
 import {
+  AuthorizationRequestState,
+  AuthorizationResponsePayload,
+  AuthorizationResponseState,
+  decodeUriAsJson,
+  VerifiedAuthorizationResponse,
+} from '@sphereon/did-auth-siop'
+import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop/dist/types/SessionManager'
+import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
+import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import { AdditionalClaims, CredentialMapper, ICredentialSubject, IVerifiableCredential } from '@sphereon/ssi-types'
+import { OriginalVerifiablePresentation } from '@sphereon/ssi-types/dist'
+import { IAgentPlugin } from '@veramo/core'
+import {
   IAuthorizationRequestPayloads,
   ICreateAuthRequestArgs,
   IGetAuthRequestStateArgs,
@@ -14,21 +27,9 @@ import {
   schema,
   VerifiedDataMode,
 } from '../index'
-import { IAgentPlugin } from '@veramo/core'
+import { RPInstance } from '../RPInstance'
 
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
-import { RPInstance } from '../RPInstance'
-import {
-  AuthorizationRequestState,
-  AuthorizationResponsePayload,
-  AuthorizationResponseState,
-  decodeUriAsJson,
-  VerifiedAuthorizationResponse,
-} from '@sphereon/did-auth-siop'
-import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { AdditionalClaims, CredentialMapper, ICredentialSubject, IVerifiableCredential } from '@sphereon/ssi-types'
-import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop/dist/types/SessionManager'
-import { OriginalVerifiablePresentation } from '@sphereon/ssi-types/dist'
 
 export class SIOPv2RP implements IAgentPlugin {
   private readonly opts: ISiopv2RPOpts
@@ -49,9 +50,17 @@ export class SIOPv2RP implements IAgentPlugin {
   constructor(opts: ISiopv2RPOpts) {
     this.opts = opts
   }
-  public setDefaultOpts(rpDefaultOpts: IRPDefaultOpts) {
+
+  public setDefaultOpts(rpDefaultOpts: IRPDefaultOpts, context: IRequiredContext) {
     // We allow setting default options later, because in some cases you might want to query the agent for defaults. This cannot happen when the agent is being build (this is when the constructor is being called)
     this.opts.defaultOpts = rpDefaultOpts
+    // We however do require the agent to be responsible for resolution, otherwise people might encounter strange errors, that are very hard to track down
+    if (!this.opts.defaultOpts.didOpts.resolveOpts?.resolver || typeof this.opts.defaultOpts.didOpts.resolveOpts.resolver.resolve !== 'function') {
+      this.opts.defaultOpts.didOpts.resolveOpts = {
+        ...this.opts.defaultOpts.didOpts.resolveOpts,
+        resolver: getAgentResolver(context, { uniresolverFallback: true }),
+      }
+    }
   }
 
   private async createAuthorizationRequestURI(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<string> {
@@ -172,13 +181,19 @@ export class SIOPv2RP implements IAgentPlugin {
     const instanceId = definitionId ?? SIOPv2RP._DEFAULT_OPTS_KEY
     if (!this.instances.has(instanceId)) {
       const instanceOpts = this.getInstanceOpts(definitionId)
-      const rpOpts = await this.getRPOptions(definitionId)
+      const rpOpts = await this.getRPOptions(context, { definitionId })
+      if (!rpOpts.didOpts.resolveOpts?.resolver || typeof rpOpts.didOpts.resolveOpts.resolver.resolve !== 'function') {
+        rpOpts.didOpts = { ...rpOpts.didOpts }
+        rpOpts.didOpts.resolveOpts = { ...rpOpts.didOpts.resolveOpts }
+        console.log('Using agent DID resolver for RP instance with definition id ' + args.definitionId)
+        rpOpts.didOpts.resolveOpts.resolver = getAgentResolver(context, { uniresolverFallback: true })
+      }
 
       /*const definition = args.definition ?? (definitionId ? await context.agent.pexStoreGetDefinition({
-        definitionId,
-        storeId,
-        namespace: storeNamespace,
-      }) : undefined)*/
+              definitionId,
+              storeId,
+              namespace: storeNamespace,
+            }) : undefined)*/
       if (instanceOpts?.definition) {
         await context.agent.pexStorePersistDefinition({
           definitionId,
@@ -193,7 +208,8 @@ export class SIOPv2RP implements IAgentPlugin {
     return this.instances.get(instanceId)!
   }
 
-  async getRPOptions(definitionId?: string): Promise<IRPOptions> {
+  async getRPOptions(context: IRequiredContext, opts: { definitionId?: string }): Promise<IRPOptions> {
+    const definitionId = opts.definitionId
     const options = this.getInstanceOpts(definitionId)?.rpOpts ?? this.opts.defaultOpts
     if (!options) {
       throw Error(`Could not get specific nor default options for definition ${definitionId}`)
@@ -205,14 +221,17 @@ export class SIOPv2RP implements IAgentPlugin {
         if (!options.didOpts.identifierOpts) {
           options.didOpts.identifierOpts = this.opts.defaultOpts.didOpts.identifierOpts
         }
-        if (!options.didOpts.resolveOpts) {
-          options.didOpts.resolveOpts = this.opts.defaultOpts.didOpts.resolveOpts
-        }
         if (!options.didOpts.supportedDIDMethods) {
           options.didOpts.supportedDIDMethods = this.opts.defaultOpts.didOpts.supportedDIDMethods
         }
         if (!options.supportedVersions) {
           options.supportedVersions = this.opts.defaultOpts.supportedVersions
+        }
+      }
+      if (!options.didOpts.resolveOpts || typeof options.didOpts.resolveOpts.resolver?.resolve !== 'function') {
+        options.didOpts.resolveOpts = {
+          ...this.opts.defaultOpts.didOpts.resolveOpts,
+          resolver: this.opts.defaultOpts.didOpts?.resolveOpts?.resolver ?? getAgentResolver(context, { uniresolverFallback: true }),
         }
       }
     }

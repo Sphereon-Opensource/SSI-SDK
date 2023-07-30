@@ -51,7 +51,7 @@ export class LdCredentialModule {
   ): Promise<VerifiableCredentialSP> {
     debug(`Issue VC method called for ${key.kid}...`)
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
-    const documentLoader = this.ldDocumentLoader.getLoader(context, true)
+    const documentLoader = this.ldDocumentLoader.getLoader(context, { attemptToFetchContexts: true, verifiableData: credential })
 
     // some suites can modify the incoming credential (e.g. add required contexts)
     suite.preSigningCredModification(credential)
@@ -97,7 +97,7 @@ export class LdCredentialModule {
     context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiablePresentationSP> {
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
-    const documentLoader = this.ldDocumentLoader.getLoader(context, true)
+    const documentLoader = this.ldDocumentLoader.getLoader(context, { attemptToFetchContexts: true, verifiableData: presentation })
 
     suite.preSigningPresModification(presentation)
 
@@ -141,14 +141,14 @@ export class LdCredentialModule {
       result = await jsigs.verify(credential, {
         suite,
         purpose,
-        documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
+        documentLoader: this.ldDocumentLoader.getLoader(context, { attemptToFetchContexts: fetchRemoteContexts, verifiableData: credential }),
         compactProof: true,
       })
     } else {
       result = await vc.verifyCredential({
         credential,
         suite: verificationSuites,
-        documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
+        documentLoader: this.ldDocumentLoader.getLoader(context, { attemptToFetchContexts: fetchRemoteContexts, verifiableData: credential }),
         purpose,
         compactProof: false,
         checkStatus,
@@ -191,14 +191,14 @@ export class LdCredentialModule {
       result = await jsigs.verify(presentation, {
         suite,
         purpose: presentationPurpose,
-        documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
+        documentLoader: this.ldDocumentLoader.getLoader(context, { attemptToFetchContexts: fetchRemoteContexts, verifiableData: presentation }),
         compactProof: true,
       })
     } else {
       result = await vc.verify({
         presentation,
         suite: this.getAllVerificationSuites(),
-        documentLoader: this.ldDocumentLoader.getLoader(context, fetchRemoteContexts),
+        documentLoader: this.ldDocumentLoader.getLoader(context, { attemptToFetchContexts: fetchRemoteContexts, verifiableData: presentation }),
         challenge,
         domain,
         presentationPurpose,

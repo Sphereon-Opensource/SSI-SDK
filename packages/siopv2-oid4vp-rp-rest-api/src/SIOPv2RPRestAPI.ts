@@ -90,7 +90,12 @@ export class SIOPv2RPRestAPI {
 
   private static sendErrorResponse(response: Response, statusCode: number, message: string) {
     response.statusCode = statusCode
-    response.status(statusCode).send(message)
+    try {
+      response.status(statusCode).send(JSON.stringify(message))
+    } catch (error) {
+      console.error(JSON.stringify(error))
+      response.status(500).send()
+    }
   }
 
   private removeAuthRequestStateWebappEndpoint() {
