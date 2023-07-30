@@ -77,9 +77,15 @@ export interface DidState {
   didDocument?: DIDDocument
 }
 
+export interface IDidWebServiceOpts {
+  globalAuth?: GenericAuthArgs
+  endpointOpts?: IGlobalDidWebEndpointOpts
+  enableFeatures?: DidWebServiceFeatures[] // Feature to enable. If not defined or empty. Has to be defined or no features will be enabled
+}
+
 export interface IDidAPIOpts {
   endpointOpts?: IDidAPIEndpointOpts
-  enableFeatures?: didApiFeatures[] // Feature to enable. If not defined or empty, all features will be enabled
+  enableFeatures?: DidApiFeatures[] // Feature to enable. If not defined or empty, all features will be enabled
 }
 
 export interface IDidAPIEndpointOpts {
@@ -105,4 +111,5 @@ export interface ICreateDidEndpointOpts extends ISingleEndpointOpts {
   defaultMethod?: string
 }
 
-export type didApiFeatures = 'did-resolve' | 'did-persist' | 'did-web-global-resolution'
+export type DidWebServiceFeatures = 'did-web-global-resolution'
+export type DidApiFeatures = 'did-resolve' | 'did-persist'

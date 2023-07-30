@@ -23,6 +23,7 @@ import { ITokenPayload, VerifyCallback } from 'passport-azure-ad/common'
 
 import { getResolver as getDidWebResolver } from 'web-did-resolver'
 import { UniResolverApiServer } from '../src'
+import { DidWebServer } from '../src/did-web-server'
 
 import config from './config.json'
 import { DB_CONNECTION_NAME, DB_ENCRYPTION_KEY, getDbConnection } from './database'
@@ -199,7 +200,7 @@ agent
 
     new UniResolverApiServer({
       opts: {
-        enableFeatures: ['did-persist', 'did-resolve', 'did-web-global-resolution'],
+        enableFeatures: ['did-persist', 'did-resolve'],
         endpointOpts: {
           globalAuth: {
             authentication: {
@@ -212,7 +213,21 @@ agent
       expressArgs,
       agent,
     })
-    // builder.startListening(expressArgs.express)
+
+    new DidWebServer({
+      opts: {
+        enableFeatures: ['did-web-global-resolution'],
+        globalAuth: {
+          authentication: {
+            enabled: false,
+            strategy: bearerStrategy,
+          },
+        },
+        endpointOpts: {},
+      },
+      expressArgs,
+      agent,
+    })
   })
 
 export default agent
