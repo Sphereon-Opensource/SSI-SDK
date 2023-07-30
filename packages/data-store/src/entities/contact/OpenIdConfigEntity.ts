@@ -35,7 +35,7 @@ export class OpenIdConfigEntity extends BaseConfigEntity {
 }
 
 export const openIdConfigEntityFrom = (config: BasicOpenIdConfig): OpenIdConfigEntity => {
-  const openIdConfig = new OpenIdConfigEntity()
+  const openIdConfig: OpenIdConfigEntity = new OpenIdConfigEntity()
   openIdConfig.clientId = config.clientId
   openIdConfig.clientSecret = config.clientSecret
   openIdConfig.scopes = config.scopes

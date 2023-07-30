@@ -14,6 +14,7 @@ export class DidAuthConfigEntity extends BaseConfigEntity {
   @Column({ name: 'session_id', length: 255, nullable: false })
   sessionId!: string
 
+  // TODO can we move this to the base entity?
   @OneToOne(() => ConnectionEntity, (connection: ConnectionEntity) => connection.config, {
     onDelete: 'CASCADE',
   })
@@ -22,7 +23,7 @@ export class DidAuthConfigEntity extends BaseConfigEntity {
 }
 
 export const didAuthConfigEntityFrom = (config: BasicDidAuthConfig): DidAuthConfigEntity => {
-  const didAuthConfig = new DidAuthConfigEntity()
+  const didAuthConfig: DidAuthConfigEntity = new DidAuthConfigEntity()
   didAuthConfig.identifier = config.identifier.did
   didAuthConfig.redirectUrl = config.redirectUrl
   didAuthConfig.sessionId = config.sessionId

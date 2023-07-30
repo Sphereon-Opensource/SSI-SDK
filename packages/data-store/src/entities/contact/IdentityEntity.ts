@@ -13,11 +13,12 @@ import {
   BeforeUpdate,
 } from 'typeorm'
 import { IsNotEmpty, validate, ValidationError } from 'class-validator'
-import { correlationIdentifierEntityFrom, CorrelationIdentifierEntity } from './CorrelationIdentifierEntity'
-import { ConnectionEntity, connectionEntityFrom } from './ConnectionEntity'
-import { IdentityMetadataItemEntity, metadataItemEntityFrom } from './IdentityMetadataItemEntity'
-import { BasicMetadataItem, IBasicIdentity, IdentityRoleEnum } from '../../types'
+import { correlationIdentifierEntityFrom, CorrelationIdentifierEntity, correlationIdentifierFrom } from './CorrelationIdentifierEntity'
+import { ConnectionEntity, connectionEntityFrom, connectionFrom } from './ConnectionEntity'
+import { IdentityMetadataItemEntity, metadataItemEntityFrom, metadataItemFrom } from './IdentityMetadataItemEntity'
+import { BasicMetadataItem, IBasicIdentity, IdentityRoleEnum, IIdentity, ValidationConstraint } from '../../types'
 import { ContactEntity } from './ContactEntity'
+import { getConstraint } from '../../utils/ValidatorUtils'
 
 @Entity('Identity')
 export class IdentityEntity extends BaseEntity {
@@ -77,23 +78,26 @@ export class IdentityEntity extends BaseEntity {
   // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.
   @BeforeInsert()
   @BeforeUpdate()
-  updateUpdatedDate() {
+  updateLastUpdatedDate(): void {
     this.lastUpdatedAt = new Date()
   }
 
   @BeforeInsert()
   @BeforeUpdate()
-  async validate() {
+  async validate(): Promise<void> {
     const validation: Array<ValidationError> = await validate(this)
     if (validation.length > 0) {
-      return Promise.reject(Error(Object.values(validation[0].constraints!)[0]))
+      const constraint: ValidationConstraint | undefined = getConstraint(validation[0])
+      if (constraint) {
+        const message: string = Object.values(constraint!)[0]
+        return Promise.reject(Error(message))
+      }
     }
-    return
   }
 }
 
 export const identityEntityFrom = (args: IBasicIdentity): IdentityEntity => {
-  const identityEntity = new IdentityEntity()
+  const identityEntity: IdentityEntity = new IdentityEntity()
   identityEntity.alias = args.alias
   identityEntity.roles = args.roles
   identityEntity.identifier = correlationIdentifierEntityFrom(args.identifier)
@@ -101,4 +105,17 @@ export const identityEntityFrom = (args: IBasicIdentity): IdentityEntity => {
   identityEntity.metadata = args.metadata ? args.metadata.map((item: BasicMetadataItem) => metadataItemEntityFrom(item)) : []
 
   return identityEntity
+}
+
+export const identityFrom = (identity: IdentityEntity): IIdentity => {
+  return {
+    id: identity.id,
+    alias: identity.alias,
+    roles: identity.roles,
+    identifier: correlationIdentifierFrom(identity.identifier),
+    ...(identity.connection && { connection: connectionFrom(identity.connection) }),
+    metadata: identity.metadata ? identity.metadata.map((item: IdentityMetadataItemEntity) => metadataItemFrom(item)) : [],
+    createdAt: identity.createdAt,
+    lastUpdatedAt: identity.createdAt,
+  }
 }

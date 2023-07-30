@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, BaseEntity } from 'typeorm'
-import { BaseConfigEntity } from './BaseConfigEntity'
-import { BasicConnectionConfig, ConnectionTypeEnum, IBasicConnection, IDidAuthConfig, IOpenIdConfig } from '../../types'
+import { BaseConfigEntity, configFrom, isDidAuthConfig, isOpenIdConfig } from './BaseConfigEntity'
+import { BasicConnectionConfig, BasicDidAuthConfig, BasicOpenIdConfig, ConnectionTypeEnum, IBasicConnection, IConnection } from '../../types'
 import { IdentityEntity } from './IdentityEntity'
 import { OpenIdConfigEntity, openIdConfigEntityFrom } from './OpenIdConfigEntity'
 import { DidAuthConfigEntity, didAuthConfigEntityFrom } from './DidAuthConfigEntity'
@@ -29,20 +29,28 @@ export class ConnectionEntity extends BaseEntity {
 }
 
 export const connectionEntityFrom = (connection: IBasicConnection): ConnectionEntity => {
-  const connectionEntity = new ConnectionEntity()
+  const connectionEntity: ConnectionEntity = new ConnectionEntity()
   connectionEntity.type = connection.type
-  connectionEntity.config = configEntityFrom(connection.type, connection.config)
+  connectionEntity.config = configEntityFrom(connection.config)
 
   return connectionEntity
 }
 
-const configEntityFrom = (type: ConnectionTypeEnum, config: BasicConnectionConfig): BaseConfigEntity => {
-  switch (type) {
-    case ConnectionTypeEnum.OPENID_CONNECT:
-      return openIdConfigEntityFrom(config as IOpenIdConfig)
-    case ConnectionTypeEnum.SIOPv2:
-      return didAuthConfigEntityFrom(config as IDidAuthConfig)
-    default:
-      throw new Error('Connection type not supported')
+export const connectionFrom = (connection: ConnectionEntity): IConnection => {
+  return {
+    id: connection.id,
+    type: connection.type,
+    config: configFrom(connection.config),
   }
+}
+
+// TODO move to base config?
+const configEntityFrom = (config: BasicConnectionConfig): BaseConfigEntity => {
+  if (isOpenIdConfig((config))) {
+    return openIdConfigEntityFrom(<BasicOpenIdConfig>config)
+  } else if (isDidAuthConfig(config)) {
+    return didAuthConfigEntityFrom(<BasicDidAuthConfig>config)
+  }
+
+  throw new Error('config type not supported')
 }
