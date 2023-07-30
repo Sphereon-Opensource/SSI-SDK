@@ -6,7 +6,9 @@ import {
   UpdateDateColumn,
   ManyToOne,
   // Column,
-  Index, BeforeInsert, BeforeUpdate, Column
+  Index,
+  BeforeInsert,
+  BeforeUpdate
 } from 'typeorm'
 import { ContactEntity } from './ContactEntity'
 import { IContactRelationship } from '../../types'
@@ -25,8 +27,8 @@ export class ContactRelationshipEntity {
   // @JoinColumn({ name: 'left_contact_id' })
   left!: ContactEntity
 
-  @Column({ name: 'left', nullable: true })
-  leftContactId?: string
+  // @Column({ name: 'left', nullable: true })
+  // leftContactId?: string
 
   @ManyToOne(() => ContactEntity, {
     nullable: false,
@@ -35,8 +37,8 @@ export class ContactRelationshipEntity {
   // @JoinColumn({ name: 'right_contact_id' })
   right!: ContactEntity
 
-  @Column({ name: 'right', nullable: true })
-  rightContactId?: string
+  // @Column({ name: 'right', nullable: true })
+  // rightContactId?: string
 
   @CreateDateColumn({ name: 'created_at', nullable: false })
   createdAt!: Date
