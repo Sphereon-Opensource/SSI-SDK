@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.14.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.13.0...v0.14.0) (2023-07-30)
+
+
+### Bug Fixes
+
+* VP did resolution from agent ([aa3f3f1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/aa3f3f1173f502c5414a2237231306311ed4d1fc))
+
+
+### Features
+
+* Add global web resolution provider. Add json error handler ([f19d1d1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f19d1d135a9944a6c9e4c6040c58e7563c4442f2))
+* Better support for MS Azure auth and re-using a MSAL client from Azure Request API ([61bdfaf](https://github.com/Sphereon-Opensource/SSI-SDK/commit/61bdfaf202ee8e5fc6f1e9b83138298798a7a440))
+* Move VC API endpoints to functions, to more easily create your own API server, only supporting certain endpoints ([fc03507](https://github.com/Sphereon-Opensource/SSI-SDK/commit/fc0350735c8cd42a60e1152add9cb49da5c39e62))
+
+
+
+
+
 # [0.13.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.12.0...v0.13.0) (2023-06-24)
 
 ### Features
