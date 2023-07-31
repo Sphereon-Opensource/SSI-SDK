@@ -92,7 +92,7 @@ export interface IDidAPIEndpointOpts {
   basePath?: string
   globalAuth?: GenericAuthArgs
   createDid?: ICreateDidEndpointOpts
-  resolveDid?: ISingleEndpointOpts
+  resolveDid?: IResolveEndpointOpts
   deactivateDid?: ISingleEndpointOpts
   getDidMethods?: ISingleEndpointOpts
   globalDidWebResolution?: IGlobalDidWebEndpointOpts
@@ -109,6 +109,10 @@ export interface ICreateDidEndpointOpts extends ISingleEndpointOpts {
   storeSecrets?: boolean
   noErrorOnExistingDid?: boolean
   defaultMethod?: string
+}
+
+export interface IResolveEndpointOpts extends ISingleEndpointOpts {
+  mode?: 'local' | 'hybrid' | 'global'
 }
 
 export type DidWebServiceFeatures = 'did-web-global-resolution'
