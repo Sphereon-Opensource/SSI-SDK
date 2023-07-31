@@ -12,7 +12,7 @@ import {
   DidStateValue,
   ICreateDidEndpointOpts,
   IGlobalDidWebEndpointOpts,
-  IRequiredContext,
+  IRequiredContext, IResolveEndpointOpts,
 } from './types'
 
 export function createDidEndpoint(router: Router, context: IRequiredContext, opts?: ICreateDidEndpointOpts) {
@@ -39,7 +39,7 @@ export function createDidEndpoint(router: Router, context: IRequiredContext, opt
         return sendErrorResponse(response, 400, 'DID method not supported')
       }
       const provider = `did:${didMethod}`
-      const jobId = createRequest.jobId ?? `urn:uuid:${v4()}`
+      const jobId = createRequest.jobId ?? v4()
       let alias: string | undefined = undefined
       if (didMethod === 'web') {
         if (!did) {
@@ -137,9 +137,7 @@ async function agentDidToResolutionResult(context: IRequiredContext, did: string
 export function resolveDidEndpoint(
   router: Router,
   context: IRequiredContext,
-  opts?: ISingleEndpointOpts & {
-    mode?: 'local' | 'hybrid' | 'global'
-  }
+  opts?: IResolveEndpointOpts
 ) {
   if (opts?.enabled === false) {
     console.log(`Resolve DID endpoint is disabled`)
