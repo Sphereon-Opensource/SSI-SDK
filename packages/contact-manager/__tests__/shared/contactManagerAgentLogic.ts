@@ -11,8 +11,8 @@ import {
   IIdentity,
   IPerson,
   IGetContactsArgs,
+  IContactRelationship,
 } from '../../../data-store/src'
-import { IContactRelationship } from '../../../data-store'
 
 type ConfiguredAgent = TAgent<IContactManager>
 
@@ -341,8 +341,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(otherContacts.length).toEqual(1)
 
       const relationship: IContactRelationship = await agent.cmAddRelationship({
-        leftContactId: savedContact.id,
-        rightContactId: otherContacts[0].id,
+        leftId: savedContact.id,
+        rightId: otherContacts[0].id,
       })
 
       expect(relationship).toBeDefined()
@@ -359,8 +359,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(result.length).toEqual(1)
       expect(result[0].relationships.length).toEqual(1)
-      expect(result[0].relationships[0].leftContactId).toEqual(savedContact.id)
-      expect(result[0].relationships[0].rightContactId).toEqual(otherContacts[0].id)
+      expect(result[0].relationships[0].leftId).toEqual(savedContact.id)
+      expect(result[0].relationships[0].rightId).toEqual(otherContacts[0].id)
     })
 
     it('should remove relationship', async (): Promise<void> => {
@@ -395,8 +395,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(otherContacts.length).toEqual(1)
 
       const relationship: IContactRelationship = await agent.cmAddRelationship({
-        leftContactId: savedContact.id,
-        rightContactId: otherContacts[0].id,
+        leftId: savedContact.id,
+        rightId: otherContacts[0].id,
       })
 
       expect(relationship).toBeDefined()
@@ -423,6 +423,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(result.relationships.length).toEqual(0)
     })
+
+    // TODO test all new crud functions
 
     // remove relation
   })

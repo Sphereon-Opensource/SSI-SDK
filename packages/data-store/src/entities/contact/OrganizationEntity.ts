@@ -17,7 +17,7 @@ export class OrganizationEntity extends ContactOwnerEntity {
   displayName!: string
 
   // TODO uniek per tenant
-  @Column({ name: 'cocNumber', length: 255, nullable: true, unique: true })
+  @Column({ name: 'cocNumber', length: 255, nullable: true, unique: false })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank coc numbers are not allowed' })
   cocNumber?: string
 

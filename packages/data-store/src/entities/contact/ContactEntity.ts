@@ -5,6 +5,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  FindOptionsWhere,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -58,7 +59,7 @@ export class ContactEntity extends BaseEntity {
   @JoinColumn({ name: 'contactTypeId' })
   contactType!: ContactTypeEntity
 
-  @OneToOne(() => ContactOwnerEntity, (member: PersonEntity | OrganizationEntity) => member.contact, {
+  @OneToOne(() => ContactOwnerEntity, (owner: PersonEntity | OrganizationEntity) => owner.contact, {
     cascade: true,
     onDelete: 'CASCADE',
     eager: true,
@@ -86,6 +87,27 @@ export class ContactEntity extends BaseEntity {
   @BeforeUpdate()
   updateLastUpdatedDate(): void {
     this.lastUpdatedAt = new Date()
+  }
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async checkUniqueCocNumberAndTenantId(): Promise<undefined> {
+    const result: Array<ContactEntity> = await ContactEntity.find({
+      where: {
+        contactOwner: {
+          cocNumber: (<OrganizationEntity>this.contactOwner).cocNumber,
+        } as FindOptionsWhere<PersonEntity | OrganizationEntity>,
+        contactType: {
+          tenantId: this.contactType.tenantId,
+        },
+      },
+    })
+
+    if (result?.length > 0) {
+      return Promise.reject(Error('Coc number already in use'))
+    }
+
+    return
   }
 
   @BeforeInsert()

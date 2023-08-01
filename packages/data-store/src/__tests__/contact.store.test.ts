@@ -15,7 +15,10 @@ import {
   IGetIdentitiesArgs,
   IGetContactsArgs,
   BasicContactRelationship,
-  IContactRelationship
+  IContactRelationship,
+  IContactType,
+  IGetRelationshipsArgs,
+  BasicContactType,
 } from '../types'
 
 describe('Contact store tests', (): void => {
@@ -123,6 +126,7 @@ describe('Contact store tests', (): void => {
 
     const result: Array<IContact> = await contactStore.getContacts()
 
+    expect(result).toBeDefined()
     expect(result.length).toEqual(2)
   })
 
@@ -1119,8 +1123,8 @@ describe('Contact store tests', (): void => {
     expect(savedContact2).toBeDefined()
 
     const relationship: BasicContactRelationship = {
-      leftContactId: savedContact1.id,
-      rightContactId: savedContact2.id,
+      leftId: savedContact1.id,
+      rightId: savedContact2.id,
     }
     await contactStore.addRelationship(relationship)
 
@@ -1128,8 +1132,177 @@ describe('Contact store tests', (): void => {
 
     expect(result).toBeDefined()
     expect(result.relationships.length).toEqual(1)
-    expect(result.relationships[0].leftContactId).toEqual(savedContact1.id)
-    expect(result.relationships[0].rightContactId).toEqual(savedContact2.id)
+    expect(result.relationships[0].leftId).toEqual(savedContact1.id)
+    expect(result.relationships[0].rightId).toEqual(savedContact2.id)
+  })
+
+  it('should get relationship', async (): Promise<void> => {
+    const contact1: IBasicContact = {
+      uri: 'example1.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contactOwner: {
+        firstName: 'example_first_name1',
+        middleName: 'example_middle_name1',
+        lastName: 'example_last_name1',
+        displayName: 'example_display_name1',
+      },
+    }
+    const savedContact1: IContact = await contactStore.addContact(contact1)
+    expect(savedContact1).toBeDefined()
+
+    const contact2: IBasicContact = {
+      uri: 'example2.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contactOwner: {
+        firstName: 'example_first_name2',
+        middleName: 'example_middle_name2',
+        lastName: 'example_last_name2',
+        displayName: 'example_display_name2',
+      },
+    }
+    const savedContact2: IContact = await contactStore.addContact(contact2)
+    expect(savedContact2).toBeDefined()
+
+    const relationship: BasicContactRelationship = {
+      leftId: savedContact1.id,
+      rightId: savedContact2.id,
+    }
+    const savedRelationship: IContactRelationship = await contactStore.addRelationship(relationship)
+
+    const result: IContactRelationship = await contactStore.getRelationship({ relationshipId: savedRelationship.id })
+
+    expect(result).toBeDefined()
+    expect(result.leftId).toEqual(savedContact1.id)
+    expect(result.rightId).toEqual(savedContact2.id)
+  })
+
+  it('should throw error when getting relationship with unknown id', async (): Promise<void> => {
+    const relationshipId = 'unknownRelationshipId'
+
+    await expect(contactStore.getRelationship({ relationshipId })).rejects.toThrow(`No relationship found for id: ${relationshipId}`)
+  })
+
+  it('should get all relationships', async (): Promise<void> => {
+    const contact1: IBasicContact = {
+      uri: 'example1.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contactOwner: {
+        firstName: 'example_first_name1',
+        middleName: 'example_middle_name1',
+        lastName: 'example_last_name1',
+        displayName: 'example_display_name1',
+      },
+    }
+    const savedContact1: IContact = await contactStore.addContact(contact1)
+    expect(savedContact1).toBeDefined()
+
+    const contact2: IBasicContact = {
+      uri: 'example2.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contactOwner: {
+        firstName: 'example_first_name2',
+        middleName: 'example_middle_name2',
+        lastName: 'example_last_name2',
+        displayName: 'example_display_name2',
+      },
+    }
+    const savedContact2: IContact = await contactStore.addContact(contact2)
+    expect(savedContact2).toBeDefined()
+
+    const relationship1: BasicContactRelationship = {
+      leftId: savedContact1.id,
+      rightId: savedContact2.id,
+    }
+    await contactStore.addRelationship(relationship1)
+
+    const relationship2: BasicContactRelationship = {
+      leftId: savedContact2.id,
+      rightId: savedContact1.id,
+    }
+    await contactStore.addRelationship(relationship2)
+
+    const result: Array<IContactRelationship> = await contactStore.getRelationships()
+
+    expect(result).toBeDefined()
+    expect(result.length).toEqual(2)
+  })
+
+  it('should get relationships by filter', async (): Promise<void> => {
+    const contact1: IBasicContact = {
+      uri: 'example1.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contactOwner: {
+        firstName: 'example_first_name1',
+        middleName: 'example_middle_name1',
+        lastName: 'example_last_name1',
+        displayName: 'example_display_name1',
+      },
+    }
+    const savedContact1: IContact = await contactStore.addContact(contact1)
+    expect(savedContact1).toBeDefined()
+
+    const contact2: IBasicContact = {
+      uri: 'example2.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contactOwner: {
+        firstName: 'example_first_name2',
+        middleName: 'example_middle_name2',
+        lastName: 'example_last_name2',
+        displayName: 'example_display_name2',
+      },
+    }
+    const savedContact2: IContact = await contactStore.addContact(contact2)
+    expect(savedContact2).toBeDefined()
+
+    const relationship1: BasicContactRelationship = {
+      leftId: savedContact1.id,
+      rightId: savedContact2.id,
+    }
+    await contactStore.addRelationship(relationship1)
+
+    const relationship2: BasicContactRelationship = {
+      leftId: savedContact2.id,
+      rightId: savedContact1.id,
+    }
+    await contactStore.addRelationship(relationship2)
+
+    const args: IGetRelationshipsArgs = {
+      filter: [
+        {
+          leftId: savedContact1.id,
+          rightId: savedContact2.id,
+        },
+      ],
+    }
+
+    const result: Array<IContactRelationship> = await contactStore.getRelationships(args)
+
+    expect(result).toBeDefined()
+    expect(result.length).toEqual(1)
   })
 
   it('should remove relationship', async (): Promise<void> => {
@@ -1168,8 +1341,8 @@ describe('Contact store tests', (): void => {
     expect(savedContact2).toBeDefined()
 
     const relationship: BasicContactRelationship = {
-      leftContactId: savedContact1.id,
-      rightContactId: savedContact2.id,
+      leftId: savedContact1.id,
+      rightId: savedContact2.id,
     }
     const savedRelationship: IContactRelationship = await contactStore.addRelationship(relationship)
     expect(savedRelationship).toBeDefined()
@@ -1188,7 +1361,458 @@ describe('Contact store tests', (): void => {
     await expect(contactStore.removeRelationship({ relationshipId })).rejects.toThrow(`No relationship found for id: ${relationshipId}`)
   })
 
-  // TODO cannot delete contact type when used by contact
+  it('should return no relationships if filter does not match', async (): Promise<void> => {
+    const args: IGetRelationshipsArgs = {
+      filter: [
+        {
+          leftId: 'unknown_id',
+        },
+      ],
+    }
+    const result: Array<IContactRelationship> = await contactStore.getRelationships(args)
+
+    expect(result.length).toEqual(0)
+  })
+
+  it('should update relationship by id', async (): Promise<void> => {
+    const contact1: IBasicContact = {
+      uri: 'example1.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contactOwner: {
+        firstName: 'example_first_name1',
+        middleName: 'example_middle_name1',
+        lastName: 'example_last_name1',
+        displayName: 'example_display_name1',
+      },
+    }
+    const savedContact1: IContact = await contactStore.addContact(contact1)
+    expect(savedContact1).toBeDefined()
+
+    const contact2: IBasicContact = {
+      uri: 'example2.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contactOwner: {
+        firstName: 'example_first_name2',
+        middleName: 'example_middle_name2',
+        lastName: 'example_last_name2',
+        displayName: 'example_display_name2',
+      },
+    }
+    const savedContact2: IContact = await contactStore.addContact(contact2)
+    expect(savedContact2).toBeDefined()
+
+    const contact3: IBasicContact = {
+      uri: 'example3.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d287',
+        name: 'example_name3',
+      },
+      contactOwner: {
+        firstName: 'example_first_name3',
+        middleName: 'example_middle_name3',
+        lastName: 'example_last_name3',
+        displayName: 'example_display_name3',
+      },
+    }
+    const savedContact3: IContact = await contactStore.addContact(contact3)
+    expect(savedContact3).toBeDefined()
+
+    const relationship: BasicContactRelationship = {
+      leftId: savedContact1.id,
+      rightId: savedContact2.id,
+    }
+    const savedRelationship: IContactRelationship = await contactStore.addRelationship(relationship)
+
+    const updatedRelationship: IContactRelationship = {
+      ...savedRelationship,
+      rightId: savedContact3.id,
+    }
+
+    await contactStore.updateRelationship({ relationship: updatedRelationship })
+
+    const result: IContact = await contactStore.getContact({ contactId: savedContact1.id })
+
+    expect(result).toBeDefined()
+    expect(result.relationships.length).toEqual(1)
+    expect(result.relationships[0].leftId).toEqual(savedContact1.id)
+    expect(result.relationships[0].rightId).toEqual(savedContact3.id)
+  })
+
+  it('should throw error when updating relationship with unknown id', async (): Promise<void> => {
+    const contact1: IBasicContact = {
+      uri: 'example1.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contactOwner: {
+        firstName: 'example_first_name1',
+        middleName: 'example_middle_name1',
+        lastName: 'example_last_name1',
+        displayName: 'example_display_name1',
+      },
+    }
+    const savedContact1: IContact = await contactStore.addContact(contact1)
+    expect(savedContact1).toBeDefined()
+
+    const contact2: IBasicContact = {
+      uri: 'example2.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contactOwner: {
+        firstName: 'example_first_name2',
+        middleName: 'example_middle_name2',
+        lastName: 'example_last_name2',
+        displayName: 'example_display_name2',
+      },
+    }
+    const savedContact2: IContact = await contactStore.addContact(contact2)
+    expect(savedContact2).toBeDefined()
+
+    const relationship: BasicContactRelationship = {
+      leftId: savedContact1.id,
+      rightId: savedContact2.id,
+    }
+    const savedRelationship: IContactRelationship = await contactStore.addRelationship(relationship)
+
+    const relationshipId = 'unknownRelationshipId'
+    const updatedRelationship: IContactRelationship = {
+      ...savedRelationship,
+      id: relationshipId,
+      rightId: savedContact2.id,
+    }
+
+    await expect(contactStore.updateRelationship({ relationship: updatedRelationship })).rejects.toThrow(
+      `No contact relationship found for id: ${relationshipId}`
+    )
+  })
+
+  it('should throw error when updating relationship with unknown right side id', async (): Promise<void> => {
+    const contact1: IBasicContact = {
+      uri: 'example1.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contactOwner: {
+        firstName: 'example_first_name1',
+        middleName: 'example_middle_name1',
+        lastName: 'example_last_name1',
+        displayName: 'example_display_name1',
+      },
+    }
+    const savedContact1: IContact = await contactStore.addContact(contact1)
+    expect(savedContact1).toBeDefined()
+
+    const contact2: IBasicContact = {
+      uri: 'example2.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contactOwner: {
+        firstName: 'example_first_name2',
+        middleName: 'example_middle_name2',
+        lastName: 'example_last_name2',
+        displayName: 'example_display_name2',
+      },
+    }
+    const savedContact2: IContact = await contactStore.addContact(contact2)
+    expect(savedContact2).toBeDefined()
+
+    const relationship: BasicContactRelationship = {
+      leftId: savedContact1.id,
+      rightId: savedContact2.id,
+    }
+    const savedRelationship: IContactRelationship = await contactStore.addRelationship(relationship)
+
+    const contactId = 'unknownContactId'
+    const updatedRelationship: IContactRelationship = {
+      ...savedRelationship,
+      rightId: contactId,
+    }
+
+    await expect(contactStore.updateRelationship({ relationship: updatedRelationship })).rejects.toThrow(
+      `No contact found for right contact id: ${contactId}`
+    )
+  })
+
+  it('should throw error when updating relationship with unknown left side id', async (): Promise<void> => {
+    const contact1: IBasicContact = {
+      uri: 'example1.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contactOwner: {
+        firstName: 'example_first_name1',
+        middleName: 'example_middle_name1',
+        lastName: 'example_last_name1',
+        displayName: 'example_display_name1',
+      },
+    }
+    const savedContact1: IContact = await contactStore.addContact(contact1)
+    expect(savedContact1).toBeDefined()
+
+    const contact2: IBasicContact = {
+      uri: 'example2.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contactOwner: {
+        firstName: 'example_first_name2',
+        middleName: 'example_middle_name2',
+        lastName: 'example_last_name2',
+        displayName: 'example_display_name2',
+      },
+    }
+    const savedContact2: IContact = await contactStore.addContact(contact2)
+    expect(savedContact2).toBeDefined()
+
+    const relationship: BasicContactRelationship = {
+      leftId: savedContact1.id,
+      rightId: savedContact2.id,
+    }
+    const savedRelationship: IContactRelationship = await contactStore.addRelationship(relationship)
+
+    const contactId = 'unknownContactId'
+    const updatedRelationship: IContactRelationship = {
+      ...savedRelationship,
+      leftId: contactId,
+    }
+
+    await expect(contactStore.updateRelationship({ relationship: updatedRelationship })).rejects.toThrow(
+      `No contact found for left contact id: ${contactId}`
+    )
+  })
+
+  it('should add contact type', async (): Promise<void> => {
+    const contactType: BasicContactType = {
+      type: ContactTypeEnum.PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+      name: 'example_name',
+      description: 'example_description',
+    }
+
+    const savedContactType: IContactType = await contactStore.addContactType(contactType)
+    const result: IContactType = await contactStore.getContactType({ contactTypeId: savedContactType.id })
+
+    expect(result).toBeDefined()
+    expect(result.name).toEqual(contactType.name)
+    expect(result.type).toEqual(contactType.type)
+    expect(result.tenantId).toEqual(contactType.tenantId)
+    expect(result.description).toEqual(contactType.description)
+    expect(result.lastUpdatedAt).toBeDefined()
+    expect(result.createdAt).toBeDefined()
+  })
+
+  it('should get contact types by filter', async (): Promise<void> => {
+    const contactType1: BasicContactType = {
+      type: ContactTypeEnum.PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+      name: 'example_name1',
+      description: 'example_description1',
+    }
+    const savedContactType1: IContactType = await contactStore.addContactType(contactType1)
+    expect(savedContactType1).toBeDefined()
+
+    const contactType2: BasicContactType = {
+      type: ContactTypeEnum.PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d287',
+      name: 'example_name2',
+      description: 'example_description2',
+    }
+    const savedContactType2: IContactType = await contactStore.addContactType(contactType2)
+    expect(savedContactType2).toBeDefined()
+
+    const result: Array<IContactType> = await contactStore.getContactTypes({
+      filter: [
+        {
+          type: ContactTypeEnum.PERSON,
+          name: 'example_name1',
+          description: 'example_description1',
+        },
+      ],
+    })
+
+    expect(result).toBeDefined()
+    expect(result.length).toEqual(1)
+  })
+
+  it('should return no contact types if filter does not match', async (): Promise<void> => {
+    const contactType1: BasicContactType = {
+      type: ContactTypeEnum.PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+      name: 'example_name1',
+      description: 'example_description1',
+    }
+    const savedContactType1: IContactType = await contactStore.addContactType(contactType1)
+    expect(savedContactType1).toBeDefined()
+
+    const contactType2: BasicContactType = {
+      type: ContactTypeEnum.PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d287',
+      name: 'example_name2',
+      description: 'example_description2',
+    }
+    const savedContactType2: IContactType = await contactStore.addContactType(contactType2)
+    expect(savedContactType2).toBeDefined()
+
+    const result: Array<IContactType> = await contactStore.getContactTypes({
+      filter: [
+        {
+          type: ContactTypeEnum.PERSON,
+          name: 'unknown_name',
+          description: 'unknown_description',
+        },
+      ],
+    })
+
+    expect(result).toBeDefined()
+    expect(result.length).toEqual(0)
+  })
+
+  it('should throw error when updating contact type with unknown id', async (): Promise<void> => {
+    const contactType: BasicContactType = {
+      type: ContactTypeEnum.PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+      name: 'example_name',
+      description: 'example_description',
+    }
+    const savedContactType: IContactType = await contactStore.addContactType(contactType)
+    expect(savedContactType).toBeDefined()
+
+    const contactTypeId = 'unknownContactTypeId'
+    const updatedContactType: IContactType = {
+      ...savedContactType,
+      id: contactTypeId,
+      description: 'new_example_description',
+    }
+
+    await expect(contactStore.updateContactType({ contactType: updatedContactType })).rejects.toThrow(
+      `No contact type found for id: ${contactTypeId}`
+    )
+  })
+
+  it('should update contact type by id', async (): Promise<void> => {
+    const contactType: BasicContactType = {
+      type: ContactTypeEnum.PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+      name: 'example_name',
+      description: 'example_description',
+    }
+    const savedContactType: IContactType = await contactStore.addContactType(contactType)
+    expect(savedContactType).toBeDefined()
+
+    const newDescription = 'new_example_description'
+    const updatedContactType: IContactType = {
+      ...savedContactType,
+      description: newDescription,
+    }
+
+    const result: IContactType = await contactStore.updateContactType({ contactType: updatedContactType })
+
+    expect(result).toBeDefined()
+    expect(result.description).toEqual(newDescription)
+  })
+
+  it('should throw error when removing contact type with unknown id', async (): Promise<void> => {
+    const contactTypeId = 'unknownContactTypeId'
+
+    await expect(contactStore.removeContactType({ contactTypeId })).rejects.toThrow(`No contact type found for id: ${contactTypeId}`)
+  })
+
+  it('should remove contact type', async (): Promise<void> => {
+    const contactType: BasicContactType = {
+      type: ContactTypeEnum.PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+      name: 'example_name',
+      description: 'example_description',
+    }
+    const savedContactType: IContactType = await contactStore.addContactType(contactType)
+    expect(savedContactType).toBeDefined()
+
+    const retrievedContactType: IContactType = await contactStore.getContactType({ contactTypeId: savedContactType.id })
+    expect(retrievedContactType).toBeDefined()
+
+    await contactStore.removeContactType({ contactTypeId: savedContactType.id })
+
+    const result: Array<IContactType> = await contactStore.getContactTypes()
+
+    expect(result).toBeDefined()
+    expect(result.length).toEqual(0)
+  })
+
+  it('should throw error when removing contact type attached to contact', async (): Promise<void> => {
+    const contact: IBasicContact = {
+      uri: 'example.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contactOwner: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+    const savedContact: IContact = await contactStore.addContact(contact)
+    expect(savedContact).toBeDefined()
+
+    await expect(contactStore.removeContactType({ contactTypeId: savedContact.contactType.id })).rejects.toThrow(
+      `Unable to remove contact type with id: ${savedContact.contactType.id}. Contact type is in use`
+    )
+  })
+
+  it('Should save contact with existing contact type', async (): Promise<void> => {
+    const contactType: BasicContactType = {
+      type: ContactTypeEnum.PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+      name: 'example_name',
+    }
+    const savedContactType: IContactType = await contactStore.addContactType(contactType)
+    expect(savedContactType).toBeDefined()
+
+    const contact: IBasicContact = {
+      uri: 'example.com',
+      contactType: savedContactType,
+      contactOwner: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+
+    const result: IContact = await contactStore.addContact(contact)
+
+    expect(result).toBeDefined()
+    expect(result?.contactType).toBeDefined()
+    expect(result?.contactType.id).toEqual(savedContactType.id)
+    expect(result?.contactType.type).toEqual(savedContactType.type)
+    expect(result?.contactType.tenantId).toEqual(savedContactType.tenantId)
+    expect(result?.contactType.name).toEqual(savedContactType.name)
+  })
 })
 
 // maybe add some categories for the tests to find them

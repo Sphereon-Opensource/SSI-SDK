@@ -24,13 +24,7 @@ import {
   IRemoveContactTypeArgs,
   IUpdateContactTypeArgs,
 } from '../types/IContactManager'
-import {
-  IContact,
-  IIdentity,
-  AbstractContactStore,
-  IContactRelationship,
-  IContactType
-} from '@sphereon/ssi-sdk.data-store'
+import { IContact, IIdentity, AbstractContactStore, IContactRelationship, IContactType } from '@sphereon/ssi-sdk.data-store'
 
 /**
  * {@inheritDoc IContactManager}
@@ -57,7 +51,7 @@ export class ContactManager implements IAgentPlugin {
     cmGetContactTypes: this.cmGetContactTypes.bind(this),
     cmAddContactType: this.cmAddContactType.bind(this),
     cmUpdateContactType: this.cmUpdateContactType.bind(this),
-    cmRemoveContactType: this.cmRemoveContactType.bind(this)
+    cmRemoveContactType: this.cmRemoveContactType.bind(this),
   }
 
   private readonly store: AbstractContactStore

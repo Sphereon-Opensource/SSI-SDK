@@ -256,22 +256,22 @@ export class ContactStore extends AbstractContactStore {
     await this.deleteIdentities([identity])
   }
 
-  addRelationship = async ({ leftContactId, rightContactId }: IAddRelationshipArgs): Promise<IContactRelationship> => {
+  addRelationship = async ({ leftId, rightId }: IAddRelationshipArgs): Promise<IContactRelationship> => {
     const contactRepository: Repository<ContactEntity> = (await this.dbConnection).getRepository(ContactEntity)
     const leftContact: ContactEntity | null = await contactRepository.findOne({
-      where: { id: leftContactId },
+      where: { id: leftId },
     })
 
     if (!leftContact) {
-      return Promise.reject(Error(`No contact found for left contact id: ${leftContactId}`))
+      return Promise.reject(Error(`No contact found for left contact id: ${leftId}`))
     }
 
     const rightContact: ContactEntity | null = await contactRepository.findOne({
-      where: { id: rightContactId },
+      where: { id: rightId },
     })
 
     if (!rightContact) {
-      return Promise.reject(Error(`No contact found for right contact id: ${rightContactId}`))
+      return Promise.reject(Error(`No contact found for right contact id: ${rightId}`))
     }
 
     const relationship: ContactRelationshipEntity = contactRelationshipEntityFrom({
@@ -296,7 +296,6 @@ export class ContactStore extends AbstractContactStore {
     return contactRelationshipFrom(result)
   }
 
-  // TODO get relationships
   getRelationships = async (args?: IGetRelationshipsArgs): Promise<Array<IContactRelationship>> => {
     const contactRelationshipRepository: Repository<ContactRelationshipEntity> = (await this.dbConnection).getRepository(ContactRelationshipEntity)
     const initialResult: Array<ContactRelationshipEntity> | null = await contactRelationshipRepository.find({
@@ -312,7 +311,6 @@ export class ContactStore extends AbstractContactStore {
     return result.map((contactRelationship: ContactRelationshipEntity) => contactRelationshipFrom(contactRelationship))
   }
 
-  // TODO update relationship
   updateRelationship = async ({ relationship }: IUpdateRelationshipArgs): Promise<IContactRelationship> => {
     const contactRelationshipRepository: Repository<ContactRelationshipEntity> = (await this.dbConnection).getRepository(ContactRelationshipEntity)
     const result: ContactRelationshipEntity | null = await contactRelationshipRepository.findOne({
@@ -323,12 +321,22 @@ export class ContactStore extends AbstractContactStore {
       return Promise.reject(Error(`No contact relationship found for id: ${relationship.id}`))
     }
 
-    // const updatedContactType = {
-    //   // TODO fix type
-    //   ...contactType,
-    //   identities: result.identities,
-    //   relationships: result.relationships,
-    // }
+    const contactRepository: Repository<ContactEntity> = (await this.dbConnection).getRepository(ContactEntity)
+    const leftContact: ContactEntity | null = await contactRepository.findOne({
+      where: { id: relationship.leftId },
+    })
+
+    if (!leftContact) {
+      return Promise.reject(Error(`No contact found for left contact id: ${relationship.leftId}`))
+    }
+
+    const rightContact: ContactEntity | null = await contactRepository.findOne({
+      where: { id: relationship.rightId },
+    })
+
+    if (!rightContact) {
+      return Promise.reject(Error(`No contact found for right contact id: ${relationship.rightId}`))
+    }
 
     debug('Updating contact relationship', relationship)
     const updatedResult: ContactRelationshipEntity = await contactRelationshipRepository.save(relationship, { transaction: true })
@@ -351,7 +359,6 @@ export class ContactStore extends AbstractContactStore {
     await contactRelationshipRepository.delete(relationshipId)
   }
 
-  // TODO add contact type
   addContactType = async (args: IAddContactTypeArgs): Promise<IContactType> => {
     // TODO do we need checks?
 
@@ -362,7 +369,6 @@ export class ContactStore extends AbstractContactStore {
     return contactTypeFrom(createdResult)
   }
 
-  // TODO get contact type
   getContactType = async ({ contactTypeId }: IGetContactTypeArgs): Promise<IContactType> => {
     const result: ContactTypeEntity | null = await (await this.dbConnection).getRepository(ContactTypeEntity).findOne({
       where: { id: contactTypeId },
@@ -375,7 +381,6 @@ export class ContactStore extends AbstractContactStore {
     return contactTypeFrom(result)
   }
 
-  // TODO get contact types
   getContactTypes = async (args?: IGetContactTypesArgs): Promise<Array<IContactType>> => {
     const contactTypeRepository: Repository<ContactTypeEntity> = (await this.dbConnection).getRepository(ContactTypeEntity)
     const initialResult: Array<ContactTypeEntity> | null = await contactTypeRepository.find({
@@ -391,7 +396,6 @@ export class ContactStore extends AbstractContactStore {
     return result.map((contactType: ContactTypeEntity) => contactTypeFrom(contactType))
   }
 
-  // TODO update contact type
   updateContactType = async ({ contactType }: IUpdateContactTypeArgs): Promise<IContactType> => {
     const contactTypeRepository: Repository<ContactTypeEntity> = (await this.dbConnection).getRepository(ContactTypeEntity)
     const result: ContactTypeEntity | null = await contactTypeRepository.findOne({
@@ -402,22 +406,24 @@ export class ContactStore extends AbstractContactStore {
       return Promise.reject(Error(`No contact type found for id: ${contactType.id}`))
     }
 
-    // const updatedContactType = {
-    //   // TODO fix type
-    //   ...contactType,
-    //   identities: result.identities,
-    //   relationships: result.relationships,
-    // }
-
     debug('Updating contact type', contactType)
     const updatedResult: ContactTypeEntity = await contactTypeRepository.save(contactType, { transaction: true })
 
     return contactTypeFrom(updatedResult)
   }
 
-  // TODO remove contact type
   removeContactType = async ({ contactTypeId }: IRemoveContactTypeArgs): Promise<void> => {
-    // TODO maybe add check if contact type is used, if used, cannot delete
+    const contacts: Array<ContactEntity> | null = await (await this.dbConnection).getRepository(ContactEntity).find({
+      where: {
+        contactType: {
+          id: contactTypeId,
+        },
+      },
+    })
+
+    if (contacts?.length > 0) {
+      return Promise.reject(Error(`Unable to remove contact type with id: ${contactTypeId}. Contact type is in use`))
+    }
 
     const contactTypeRepository: Repository<ContactTypeEntity> = (await this.dbConnection).getRepository(ContactTypeEntity)
     const contactType: ContactTypeEntity | null = await contactTypeRepository.findOne({

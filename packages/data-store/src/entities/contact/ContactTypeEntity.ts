@@ -1,15 +1,4 @@
-import {
-  Entity,
-  //JoinColumn,
-  PrimaryGeneratedColumn,
-  Column,
-  Index,
-  CreateDateColumn,
-  UpdateDateColumn,
-  OneToMany,
-  BeforeInsert,
-  BeforeUpdate,
-} from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, Index, CreateDateColumn, UpdateDateColumn, OneToMany, BeforeInsert, BeforeUpdate } from 'typeorm'
 import { ContactEntity } from './ContactEntity'
 import { BasicContactType, ContactTypeEnum, IContactType, ValidationConstraint } from '../../types'
 import { IsNotEmpty, Validate, validate, ValidationError } from 'class-validator'
@@ -33,18 +22,13 @@ export class ContactTypeEntity {
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank descriptions are not allowed' })
   description?: string
 
-  // TODO why is the tenantId in this entity?
-  @Column({ name: 'tenantId', length: 255, nullable: false, unique: true })
+  @Column({ name: 'tenantId', length: 255, nullable: false, unique: false })
   @IsNotEmpty({ message: "Blank tenant id's are not allowed" })
   tenantId!: string
 
   @OneToMany(() => ContactEntity, (contact: ContactEntity) => contact.contactType, {
-    // cascade: true,
-    // onDelete: 'CASCADE',
-    // eager: true, // TODO check this relation
     nullable: false,
   })
-  // @JoinColumn({ name: 'contactId' })
   contacts!: Array<ContactEntity>
 
   @CreateDateColumn({ name: 'created_at', nullable: false })
@@ -69,11 +53,13 @@ export class ContactTypeEntity {
 
 export const contactTypeEntityFrom = (args: BasicContactType): ContactTypeEntity => {
   const contactTypeEntity: ContactTypeEntity = new ContactTypeEntity()
+  if (args.id) {
+    contactTypeEntity.id = args.id
+  }
   contactTypeEntity.type = args.type
   contactTypeEntity.name = args.name
   contactTypeEntity.description = args.description
   contactTypeEntity.tenantId = args.tenantId
-  // TODO contacts?
 
   return contactTypeEntity
 }

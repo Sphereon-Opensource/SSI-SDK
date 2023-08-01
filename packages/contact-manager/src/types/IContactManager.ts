@@ -11,7 +11,7 @@ import {
   FindRelationshipArgs,
   ContactTypeEnum,
   FindContactTypeArgs,
-  IContactType
+  IContactType,
 } from '@sphereon/ssi-sdk.data-store'
 
 export interface IContactManager extends IPluginMethodMap {
@@ -82,8 +82,8 @@ export interface IRemoveIdentityArgs {
 }
 
 export interface IAddRelationshipArgs {
-  leftContactId: string
-  rightContactId: string
+  leftId: string
+  rightId: string
 }
 
 export interface IRemoveRelationshipArgs {

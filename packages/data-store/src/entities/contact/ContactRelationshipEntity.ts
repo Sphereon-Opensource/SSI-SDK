@@ -68,8 +68,8 @@ export const contactRelationshipEntityFrom = (relationship: { left: ContactEntit
 export const contactRelationshipFrom = (relationship: ContactRelationshipEntity): IContactRelationship => {
   return {
     id: relationship.id,
-    leftContactId: relationship.leftId, //relationship.left.id,
-    rightContactId: relationship.rightId, //relationship.right.id,
+    leftId: relationship.leftId, //relationship.left.id,
+    rightId: relationship.rightId, //relationship.right.id,
     createdAt: relationship.createdAt,
     lastUpdatedAt: relationship.lastUpdatedAt,
   }

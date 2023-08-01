@@ -209,7 +209,7 @@ describe('Database entities tests', (): void => {
 
     const contactEntity: ContactEntity = contactEntityFrom(contact)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrow('Blank first names are not allowed')
+    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank first names are not allowed')
   })
 
   it('should throw error when saving person contact with blank middle name', async (): Promise<void> => {
@@ -230,7 +230,7 @@ describe('Database entities tests', (): void => {
 
     const contactEntity: ContactEntity = contactEntityFrom(contact)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrow('Blank middle names are not allowed')
+    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank middle names are not allowed')
   })
 
   it('should throw error when saving person contact with blank last name', async (): Promise<void> => {
@@ -251,7 +251,7 @@ describe('Database entities tests', (): void => {
 
     const contactEntity: ContactEntity = contactEntityFrom(contact)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrow('Blank last names are not allowed')
+    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank last names are not allowed')
   })
 
   it('should throw error when saving person contact with blank display name', async (): Promise<void> => {
@@ -272,7 +272,7 @@ describe('Database entities tests', (): void => {
 
     const contactEntity: ContactEntity = contactEntityFrom(contact)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrow('Blank display names are not allowed')
+    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank display names are not allowed')
   })
 
   it('should throw error when saving organization contact with blank legal name', async (): Promise<void> => {
@@ -292,7 +292,7 @@ describe('Database entities tests', (): void => {
 
     const contactEntity: ContactEntity = contactEntityFrom(contact)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrow('Blank legal names are not allowed')
+    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank legal names are not allowed')
   })
 
   it('should throw error when saving organization contact with blank display name', async (): Promise<void> => {
@@ -306,13 +306,13 @@ describe('Database entities tests', (): void => {
       contactOwner: {
         legalName: 'example_first_name',
         displayName: '',
-        cocNumber: '12345678ABC',
+        cocNumber: 'example_coc_number',
       },
     }
 
     const contactEntity: ContactEntity = contactEntityFrom(contact)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrow('Blank display names are not allowed')
+    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank display names are not allowed')
   })
 
   it('should throw error when saving organization contact with blank coc number', async (): Promise<void> => {
@@ -332,7 +332,7 @@ describe('Database entities tests', (): void => {
 
     const contactEntity: ContactEntity = contactEntityFrom(contact)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrow('Blank coc numbers are not allowed')
+    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank coc numbers are not allowed')
   })
 
   it('should throw error when saving contact with blank contact type name', async (): Promise<void> => {
@@ -353,7 +353,7 @@ describe('Database entities tests', (): void => {
 
     const contactEntity: ContactEntity = contactEntityFrom(contact)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrow('Blank names are not allowed')
+    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank names are not allowed')
   })
 
   it('should throw error when saving contact with blank contact type description', async (): Promise<void> => {
@@ -375,7 +375,7 @@ describe('Database entities tests', (): void => {
 
     const contactEntity: ContactEntity = contactEntityFrom(contact)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrow('Blank descriptions are not allowed')
+    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank descriptions are not allowed')
   })
 
   it('should throw error when saving contact with blank contact type tenant id', async (): Promise<void> => {
@@ -396,7 +396,7 @@ describe('Database entities tests', (): void => {
 
     const contactEntity: ContactEntity = contactEntityFrom(contact)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrow("Blank tenant id's are not allowed")
+    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError("Blank tenant id's are not allowed")
   })
 
   it('Should enforce unique display name for a person contact', async (): Promise<void> => {
@@ -451,7 +451,7 @@ describe('Database entities tests', (): void => {
       contactOwner: {
         legalName: 'example_first_name',
         displayName: contactDisplayName,
-        cocNumber: '12345678ABC',
+        cocNumber: 'example_coc_number',
       },
     }
     const contact1Entity: ContactEntity = contactEntityFrom(contact1)
@@ -467,7 +467,7 @@ describe('Database entities tests', (): void => {
       contactOwner: {
         legalName: 'example_first_name',
         displayName: contactDisplayName,
-        cocNumber: '12345678ABC',
+        cocNumber: 'example_coc_number',
       },
     }
     const contact2Entity: ContactEntity = contactEntityFrom(contact2)
@@ -573,7 +573,7 @@ describe('Database entities tests', (): void => {
 
     const identityEntity: IdentityEntity = identityEntityFrom(identity)
 
-    await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrow('Blank aliases are not allowed')
+    await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrowError('Blank aliases are not allowed')
   })
 
   it('should throw error when saving identity with blank correlation id', async (): Promise<void> => {
@@ -588,7 +588,7 @@ describe('Database entities tests', (): void => {
 
     const identityEntity: IdentityEntity = identityEntityFrom(identity)
 
-    await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrow('Blank correlation ids are not allowed')
+    await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrowError('Blank correlation ids are not allowed')
   })
 
   it('should throw error when saving identity with blank metadata label', async (): Promise<void> => {
@@ -610,7 +610,7 @@ describe('Database entities tests', (): void => {
 
     const identityEntity: IdentityEntity = identityEntityFrom(identity)
 
-    await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrow('Blank metadata labels are not allowed')
+    await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrowError('Blank metadata labels are not allowed')
   })
 
   it('should throw error when saving identity with blank metadata value', async (): Promise<void> => {
@@ -632,7 +632,7 @@ describe('Database entities tests', (): void => {
 
     const identityEntity: IdentityEntity = identityEntityFrom(identity)
 
-    await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrow('Blank metadata values are not allowed')
+    await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrowError('Blank metadata values are not allowed')
   })
 
   it('Should save identity with openid connection to database', async (): Promise<void> => {
@@ -1564,30 +1564,43 @@ describe('Database entities tests', (): void => {
     )
   })
 
-  it('Should enforce unique coc number when saving organization', async (): Promise<void> => {
-    const legalName = 'example_legal_name'
-    const organization1: BasicOrganization = {
-      legalName,
-      displayName: 'example_display_name1',
-      cocNumber: '1234567890',
+  it('Should enforce unique coc number when saving organization per tenant id', async (): Promise<void> => {
+    const contact: IBasicContact = {
+      uri: 'example.com',
+      contactType: {
+        type: ContactTypeEnum.ORGANIZATION,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contactOwner: {
+        legalName: 'example_legal_name',
+        displayName: 'example_display_name',
+        cocNumber: 'example_coc_number',
+      },
     }
 
-    const organizationEntity1: OrganizationEntity = organizationEntityFrom(organization1)
-    const savedOrganization1: OrganizationEntity | null = await dbConnection.getRepository(OrganizationEntity).save(organizationEntity1, {
+    const contactEntity: ContactEntity = contactEntityFrom(contact)
+    await dbConnection.getRepository(ContactEntity).save(contactEntity, {
       transaction: true,
     })
 
-    expect(savedOrganization1).toBeDefined()
-
-    const organization2: BasicOrganization = {
-      legalName,
-      displayName: 'example_display_name2',
-      cocNumber: '1234567890',
+    const contact2: IBasicContact = {
+      uri: 'example.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name2',
+      },
+      contactOwner: {
+        legalName: 'example_legal_name2',
+        displayName: 'example_display_name2',
+        cocNumber: 'example_coc_number',
+      },
     }
 
-    const organizationEntity2: OrganizationEntity = organizationEntityFrom(organization2)
-    await expect(dbConnection.getRepository(OrganizationEntity).save(organizationEntity2)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: ContactOwner.cocNumber'
+    const contactEntity2: ContactEntity = contactEntityFrom(contact2)
+    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity2, { transaction: true })).rejects.toThrowError(
+      'Coc number already in use'
     )
   })
 
@@ -2113,7 +2126,7 @@ describe('Database entities tests', (): void => {
       contactOwner: {
         legalName,
         displayName: 'example_display_name',
-        cocNumber: '12345678ABC',
+        cocNumber: 'example_coc_number',
       },
     }
 
@@ -2278,6 +2291,45 @@ describe('Database entities tests', (): void => {
     await expect(dbConnection.getRepository(ContactTypeEntity).delete({ id: savedContact.contactType.id })).rejects.toThrowError(
       'FOREIGN KEY constraint failed'
     )
+  })
+
+  it('Should save contact with existing contact type', async (): Promise<void> => {
+    const contactType: BasicContactType = {
+      type: ContactTypeEnum.PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+      name: 'example_name',
+    }
+
+    const contactTypeEntity: ContactTypeEntity = contactTypeEntityFrom(contactType)
+    const savedContactType: ContactTypeEntity | null = await dbConnection.getRepository(ContactTypeEntity).save(contactTypeEntity)
+
+    const contact: IBasicContact = {
+      uri: 'example.com',
+      contactType: savedContactType,
+      contactOwner: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+
+    const contactEntity: ContactEntity = contactEntityFrom(contact)
+    contactEntity.contactType = savedContactType
+    await dbConnection.getRepository(ContactEntity).save(contactEntity, {
+      transaction: true,
+    })
+
+    const fromDb: ContactEntity | null = await dbConnection.getRepository(ContactEntity).findOne({
+      where: { id: contactEntity.id },
+    })
+
+    expect(fromDb).toBeDefined()
+    expect(fromDb?.contactType).toBeDefined()
+    expect(fromDb?.contactType.id).toEqual(savedContactType.id)
+    expect(fromDb?.contactType.type).toEqual(savedContactType.type)
+    expect(fromDb?.contactType.tenantId).toEqual(savedContactType.tenantId)
+    expect(fromDb?.contactType.name).toEqual(savedContactType.name)
   })
 
   // TODO not update creation date when saving contact type

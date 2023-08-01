@@ -10,7 +10,7 @@ import {
   IContactType,
   IContactRelationship,
   IPartialContactRelationship,
-  IPartialContactType
+  IPartialContactType,
 } from './contact'
 
 export type FindContactArgs = Array<IPartialContact>
@@ -67,8 +67,8 @@ export interface IRemoveRelationshipArgs {
 }
 
 export interface IAddRelationshipArgs {
-  leftContactId: string
-  rightContactId: string
+  leftId: string
+  rightId: string
 }
 
 export interface IGetRelationshipArgs {

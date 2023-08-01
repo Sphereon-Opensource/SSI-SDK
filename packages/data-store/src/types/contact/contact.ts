@@ -166,18 +166,17 @@ export interface IContactType {
   createdAt: Date
   lastUpdatedAt: Date
 }
-export declare type BasicContactType = Omit<IContactType, 'id' | 'createdAt' | 'lastUpdatedAt'>
+export interface BasicContactType extends Omit<IContactType, 'id' | 'createdAt' | 'lastUpdatedAt'> {
+  id?: string
+}
 export interface IPartialContactType extends Partial<IContactType> {}
 
 export interface IContactRelationship {
   id: string
-  leftContactId: string
-  rightContactId: string
+  leftId: string
+  rightId: string
   createdAt: Date
   lastUpdatedAt: Date
 }
 export declare type BasicContactRelationship = Omit<IContactRelationship, 'id' | 'createdAt' | 'lastUpdatedAt'>
-export interface IPartialContactRelationship extends Partial<Omit<IContactRelationship, 'leftContactId' | 'rightContactId'>> {
-  left: IPartialContact
-  right: IPartialContact
-}
+export interface IPartialContactRelationship extends Partial<IContactRelationship> {}
