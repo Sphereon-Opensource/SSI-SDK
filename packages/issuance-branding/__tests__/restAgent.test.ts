@@ -66,6 +66,6 @@ const testContext = {
   tearDown,
 }
 
-describe('REST integration tests', () => {
+describe('REST integration tests', (): void => {
   issuanceBrandingAgentLogic(testContext)
 })

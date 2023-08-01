@@ -1,8 +1,8 @@
 import 'cross-fetch/polyfill'
 // @ts-ignore
-import express from 'express'
+import express, { Router } from 'express'
 import { Server } from 'http'
-import { Connection } from 'typeorm'
+import { DataSource } from 'typeorm'
 import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
@@ -17,7 +17,7 @@ const basePath = '/agent'
 
 let serverAgent: IAgent
 let restServer: Server
-let dbConnection: Promise<Connection>
+let dbConnection: Promise<DataSource>
 
 const getAgent = (options?: IAgentOptions) =>
   createAgent<IContactManager>({
@@ -41,14 +41,14 @@ const setup = async (): Promise<boolean> => {
     exposedMethods: serverAgent.availableMethods(),
   })
 
-  const requestWithAgent = RequestWithAgentRouter({
+  const requestWithAgent: Router = RequestWithAgentRouter({
     agent: serverAgent,
   })
 
-  return new Promise((resolve) => {
+  return new Promise((resolve): void => {
     const app = express()
     app.use(basePath, requestWithAgent, agentRouter)
-    restServer = app.listen(port, () => {
+    restServer = app.listen(port, (): void => {
       resolve(true)
     })
   })
@@ -66,6 +66,6 @@ const testContext = {
   tearDown,
 }
 
-describe('REST integration tests', () => {
+describe('REST integration tests', (): void => {
   contactManagerAgentLogic(testContext)
 })

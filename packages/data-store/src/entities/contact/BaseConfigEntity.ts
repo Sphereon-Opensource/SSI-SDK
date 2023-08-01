@@ -1,10 +1,5 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, TableInheritance } from 'typeorm'
-import {
-  BasicConnectionConfig,
-  ConnectionConfig,
-  IDidAuthConfig,
-  IOpenIdConfig
-} from '../../types'
+import { BasicConnectionConfig, ConnectionConfig, IDidAuthConfig, IOpenIdConfig } from '../../types'
 import { OpenIdConfigEntity } from './OpenIdConfigEntity'
 import { DidAuthConfigEntity } from './DidAuthConfigEntity'
 

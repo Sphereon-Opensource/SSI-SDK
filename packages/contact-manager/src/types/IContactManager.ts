@@ -1,5 +1,18 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import { FindContactArgs, FindIdentityArgs, IBasicIdentity, IContact, IIdentity } from '@sphereon/ssi-sdk.data-store'
+import {
+  BasicContactOwner,
+  BasicContactType,
+  FindContactArgs,
+  FindIdentityArgs,
+  IBasicIdentity,
+  IContact,
+  IContactRelationship,
+  IIdentity,
+  FindRelationshipArgs,
+  ContactTypeEnum,
+  FindContactTypeArgs,
+  IContactType
+} from '@sphereon/ssi-sdk.data-store'
 
 export interface IContactManager extends IPluginMethodMap {
   cmGetContact(args: IGetContactArgs, context: IRequiredContext): Promise<IContact>
@@ -8,10 +21,20 @@ export interface IContactManager extends IPluginMethodMap {
   cmUpdateContact(args: IUpdateContactArgs, context: IRequiredContext): Promise<IContact>
   cmRemoveContact(args: IRemoveContactArgs, context: IRequiredContext): Promise<boolean>
   cmGetIdentity(args: IGetIdentityArgs, context: IRequiredContext): Promise<IIdentity>
-  cmGetIdentities(args: IGetIdentitiesArgs, context: IRequiredContext): Promise<Array<IIdentity>>
+  cmGetIdentities(args?: IGetIdentitiesArgs): Promise<Array<IIdentity>>
   cmAddIdentity(args: IAddIdentityArgs, context: IRequiredContext): Promise<IIdentity>
   cmUpdateIdentity(args: IUpdateIdentityArgs, context: IRequiredContext): Promise<IIdentity>
   cmRemoveIdentity(args: IRemoveIdentityArgs, context: IRequiredContext): Promise<boolean>
+  cmGetRelationship(args: IGetRelationshipArgs, context: IRequiredContext): Promise<IContactRelationship>
+  cmGetRelationships(args?: IGetRelationshipsArgs): Promise<Array<IContactRelationship>>
+  cmUpdateRelationship(args: IUpdateRelationshipArgs, context: IRequiredContext): Promise<IContactRelationship>
+  cmAddRelationship(args: IAddRelationshipArgs, context: IRequiredContext): Promise<IContactRelationship>
+  cmRemoveRelationship(args: IRemoveRelationshipArgs, context: IRequiredContext): Promise<boolean>
+  cmGetContactType(args: IGetContactTypeArgs, context: IRequiredContext): Promise<IContactType>
+  cmGetContactTypes(args?: IGetContactTypesArgs): Promise<Array<IContactType>>
+  cmAddContactType(args: IAddContactTypeArgs, context: IRequiredContext): Promise<IContactType>
+  cmUpdateContactType(args: IUpdateContactTypeArgs, context: IRequiredContext): Promise<IContactType>
+  cmRemoveContactType(args: IRemoveContactTypeArgs, context: IRequiredContext): Promise<boolean>
 }
 
 export interface IGetContactArgs {
@@ -23,9 +46,9 @@ export interface IGetContactsArgs {
 }
 
 export interface IAddContactArgs {
-  name: string
-  alias: string
   uri?: string
+  contactType: BasicContactType // TODO we can have a situation where we want to add a contact to an existing type, so use BasicContactType | IContactType? also make a test for these 2 situations in the store
+  contactOwner: BasicContactOwner
   identities?: Array<IBasicIdentity>
 }
 
@@ -56,6 +79,50 @@ export interface IUpdateIdentityArgs {
 
 export interface IRemoveIdentityArgs {
   identityId: string
+}
+
+export interface IAddRelationshipArgs {
+  leftContactId: string
+  rightContactId: string
+}
+
+export interface IRemoveRelationshipArgs {
+  relationshipId: string
+}
+
+export interface IGetRelationshipArgs {
+  relationshipId: string
+}
+
+export interface IGetRelationshipsArgs {
+  filter: FindRelationshipArgs
+}
+
+export interface IUpdateRelationshipArgs {
+  relationship: IContactRelationship // TODO do we also want the omits here?
+}
+
+export interface IAddContactTypeArgs {
+  type: ContactTypeEnum
+  name: string
+  tenantId: string
+  description?: string
+}
+
+export interface IGetContactTypeArgs {
+  contactTypeId: string
+}
+
+export interface IGetContactTypesArgs {
+  filter?: FindContactTypeArgs
+}
+
+export interface IUpdateContactTypeArgs {
+  contactType: Omit<IContactType, 'createdAt' | 'lastUpdatedAt'> // TODO do we also want the omits here?
+}
+
+export interface IRemoveContactTypeArgs {
+  contactTypeId: string
 }
 
 export type IRequiredContext = IAgentContext<never>

@@ -127,7 +127,7 @@ describe('Database entities tests', (): void => {
     expect((<OrganizationEntity>fromDb?.contactOwner).cocNumber).toEqual((<IOrganization>contact.contactOwner).cocNumber)
   })
 
-  it('Should result in contact relation for the owner side only', async (): Promise<void> => {
+  it('Should result in contact relationship for the owner side only', async (): Promise<void> => {
     const contact1: IBasicContact = {
       uri: 'example1.com',
       contactType: {
@@ -399,8 +399,6 @@ describe('Database entities tests', (): void => {
     await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrow("Blank tenant id's are not allowed")
   })
 
-  // TODO should wew enforce unique combinations of first/middle/last names
-  // Example, hans kraai, we have a jr and sr
   it('Should enforce unique display name for a person contact', async (): Promise<void> => {
     const contactDisplayName = 'non_unique_name'
     const contact1: IBasicContact = {
@@ -1571,7 +1569,7 @@ describe('Database entities tests', (): void => {
     const organization1: BasicOrganization = {
       legalName,
       displayName: 'example_display_name1',
-      cocNumber: '1234567890'
+      cocNumber: '1234567890',
     }
 
     const organizationEntity1: OrganizationEntity = organizationEntityFrom(organization1)
@@ -1584,7 +1582,7 @@ describe('Database entities tests', (): void => {
     const organization2: BasicOrganization = {
       legalName,
       displayName: 'example_display_name2',
-      cocNumber: '1234567890'
+      cocNumber: '1234567890',
     }
 
     const organizationEntity2: OrganizationEntity = organizationEntityFrom(organization2)
@@ -1620,7 +1618,7 @@ describe('Database entities tests', (): void => {
     )
   })
 
-  it('Should save contact relation to database', async (): Promise<void> => {
+  it('Should save contact relationship to database', async (): Promise<void> => {
     const contact1: IBasicContact = {
       uri: 'example1.com',
       contactType: {
@@ -1682,7 +1680,7 @@ describe('Database entities tests', (): void => {
     expect(fromDb).toBeDefined()
   })
 
-  it('Should set last updated date when saving contact relation', async (): Promise<void> => {
+  it('Should set last updated date when saving contact relationship', async (): Promise<void> => {
     const contact1: IBasicContact = {
       uri: 'example1.com',
       contactType: {
@@ -1740,7 +1738,7 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.lastUpdatedAt).toBeDefined()
   })
 
-  it('Should set creation date when saving contact relation', async (): Promise<void> => {
+  it('Should set creation date when saving contact relationship', async (): Promise<void> => {
     const contact1: IBasicContact = {
       uri: 'example1.com',
       contactType: {
@@ -1798,7 +1796,7 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.createdAt).toBeDefined()
   })
 
-  it('Should save bidirectional contact relations to database', async (): Promise<void> => {
+  it('Should save bidirectional contact relationships to database', async (): Promise<void> => {
     const contact1: IBasicContact = {
       uri: 'example1.com',
       contactType: {
@@ -1872,7 +1870,7 @@ describe('Database entities tests', (): void => {
     expect(fromDb).toBeDefined()
   })
 
-  it('Should enforce unique owner combination for contact relation', async (): Promise<void> => {
+  it('Should enforce unique owner combination for contact relationship', async (): Promise<void> => {
     const contact1: IBasicContact = {
       uri: 'example1.com',
       contactType: {
@@ -2135,7 +2133,7 @@ describe('Database entities tests', (): void => {
     expect(fromDb).toBeDefined()
   })
 
-  it('Should enforce unique contact id\'s for relationship sides', async (): Promise<void> => {
+  it("Should enforce unique contact id's for relationship sides", async (): Promise<void> => {
     const contact: IBasicContact = {
       uri: 'example.com',
       contactType: {
@@ -2168,7 +2166,7 @@ describe('Database entities tests', (): void => {
     )
   })
 
-  it('Should delete contact relation', async (): Promise<void> => {
+  it('Should delete contact relationship', async (): Promise<void> => {
     const contact1: IBasicContact = {
       uri: 'example1.com',
       contactType: {

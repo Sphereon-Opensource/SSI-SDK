@@ -46,7 +46,7 @@ export const connectionFrom = (connection: ConnectionEntity): IConnection => {
 
 // TODO move to base config?
 const configEntityFrom = (config: BasicConnectionConfig): BaseConfigEntity => {
-  if (isOpenIdConfig((config))) {
+  if (isOpenIdConfig(config)) {
     return openIdConfigEntityFrom(<BasicOpenIdConfig>config)
   } else if (isDidAuthConfig(config)) {
     return didAuthConfigEntityFrom(<BasicDidAuthConfig>config)

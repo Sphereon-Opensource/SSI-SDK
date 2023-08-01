@@ -19,26 +19,28 @@ import {
   IIdentity,
   IRemoveRelationshipArgs,
   IContactRelationship,
-  IAddRelationshipArgs
+  IAddRelationshipArgs,
+  IGetRelationshipArgs,
+  IAddContactTypeArgs,
+  IContactType,
+  IGetContactTypeArgs,
+  IGetContactTypesArgs,
+  IUpdateContactTypeArgs,
+  IRemoveContactTypeArgs,
+  IGetRelationshipsArgs,
+  IUpdateRelationshipArgs,
 } from '../types'
 import { ContactEntity, contactEntityFrom, contactFrom } from '../entities/contact/ContactEntity'
 import { IdentityEntity, identityEntityFrom, identityFrom } from '../entities/contact/IdentityEntity'
 import { IdentityMetadataItemEntity } from '../entities/contact/IdentityMetadataItemEntity'
 import { CorrelationIdentifierEntity } from '../entities/contact/CorrelationIdentifierEntity'
 import { ConnectionEntity } from '../entities/contact/ConnectionEntity'
-import {
-  BaseConfigEntity,
-  isDidAuthConfig,
-  isOpenIdConfig
-} from '../entities/contact/BaseConfigEntity'
+import { BaseConfigEntity, isDidAuthConfig, isOpenIdConfig } from '../entities/contact/BaseConfigEntity'
 import { DataSource, FindOptionsWhere, In, Repository } from 'typeorm'
 import { PersonEntity } from '../entities/contact/PersonEntity'
 import { OrganizationEntity } from '../entities/contact/OrganizationEntity'
-import {
-  ContactRelationshipEntity,
-  contactRelationshipEntityFrom,
-  contactRelationshipFrom
-} from '../entities/contact/ContactRelationshipEntity'
+import { ContactRelationshipEntity, contactRelationshipEntityFrom, contactRelationshipFrom } from '../entities/contact/ContactRelationshipEntity'
+import { ContactTypeEntity, contactTypeEntityFrom, contactTypeFrom } from '../entities/contact/ContactTypeEntity'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:contact-store')
 
@@ -78,11 +80,10 @@ export class ContactStore extends AbstractContactStore {
   }
 
   addContact = async (args: IAddContactArgs): Promise<IContact> => {
-    const { identities, contactOwner } = args //, alias, name,
+    const { identities, contactOwner } = args
 
     const contactRepository: Repository<ContactEntity> = (await this.dbConnection).getRepository(ContactEntity)
 
-    // TODO extend with more names?
     const result: ContactEntity | null = await contactRepository.findOne({
       where: [
         {
@@ -95,7 +96,7 @@ export class ContactStore extends AbstractContactStore {
 
     if (result) {
       // TODO correct msg?
-      return Promise.reject(Error(`Duplicate names or display are not allowed. Display name: ${contactOwner.displayName}`)) //Name: ${name},
+      return Promise.reject(Error(`Duplicate names or display are not allowed. Display name: ${contactOwner.displayName}`))
     }
 
     for (const identity of identities ?? []) {
@@ -111,7 +112,7 @@ export class ContactStore extends AbstractContactStore {
     }
 
     const contactEntity: ContactEntity = contactEntityFrom(args)
-    //debug('Adding contact', name) TODO fix
+    debug('Adding contact', args)
     const createdResult: ContactEntity = await contactRepository.save(contactEntity)
 
     return contactFrom(createdResult)
@@ -143,7 +144,7 @@ export class ContactStore extends AbstractContactStore {
   removeContact = async ({ contactId }: IRemoveContactArgs): Promise<void> => {
     const contactRepository: Repository<ContactEntity> = (await this.dbConnection).getRepository(ContactEntity)
     debug('Removing contact', contactId)
-    ;contactRepository
+    contactRepository
       .findOneById(contactId)
       .then(async (contact: ContactEntity | null): Promise<void> => {
         if (!contact) {
@@ -256,10 +257,6 @@ export class ContactStore extends AbstractContactStore {
   }
 
   addRelationship = async ({ leftContactId, rightContactId }: IAddRelationshipArgs): Promise<IContactRelationship> => {
-    // if (leftContactId === rightContactId) {
-    //   return Promise.reject(Error(`Cannot use the same id for both sides of the relationship`))
-    // }
-
     const contactRepository: Repository<ContactEntity> = (await this.dbConnection).getRepository(ContactEntity)
     const leftContact: ContactEntity | null = await contactRepository.findOne({
       where: { id: leftContactId },
@@ -287,8 +284,57 @@ export class ContactStore extends AbstractContactStore {
     return contactRelationshipFrom(createdResult)
   }
 
-  // TODO get relationship?
-  // TODO get relationships?
+  getRelationship = async ({ relationshipId }: IGetRelationshipArgs): Promise<IContactRelationship> => {
+    const result: ContactRelationshipEntity | null = await (await this.dbConnection).getRepository(ContactRelationshipEntity).findOne({
+      where: { id: relationshipId },
+    })
+
+    if (!result) {
+      return Promise.reject(Error(`No relationship found for id: ${relationshipId}`))
+    }
+
+    return contactRelationshipFrom(result)
+  }
+
+  // TODO get relationships
+  getRelationships = async (args?: IGetRelationshipsArgs): Promise<Array<IContactRelationship>> => {
+    const contactRelationshipRepository: Repository<ContactRelationshipEntity> = (await this.dbConnection).getRepository(ContactRelationshipEntity)
+    const initialResult: Array<ContactRelationshipEntity> | null = await contactRelationshipRepository.find({
+      ...(args?.filter && { where: args?.filter }),
+    })
+
+    const result: Array<ContactRelationshipEntity> | null = await contactRelationshipRepository.find({
+      where: {
+        id: In(initialResult.map((contactRelationship: ContactRelationshipEntity) => contactRelationship.id)),
+      },
+    })
+
+    return result.map((contactRelationship: ContactRelationshipEntity) => contactRelationshipFrom(contactRelationship))
+  }
+
+  // TODO update relationship
+  updateRelationship = async ({ relationship }: IUpdateRelationshipArgs): Promise<IContactRelationship> => {
+    const contactRelationshipRepository: Repository<ContactRelationshipEntity> = (await this.dbConnection).getRepository(ContactRelationshipEntity)
+    const result: ContactRelationshipEntity | null = await contactRelationshipRepository.findOne({
+      where: { id: relationship.id },
+    })
+
+    if (!result) {
+      return Promise.reject(Error(`No contact relationship found for id: ${relationship.id}`))
+    }
+
+    // const updatedContactType = {
+    //   // TODO fix type
+    //   ...contactType,
+    //   identities: result.identities,
+    //   relationships: result.relationships,
+    // }
+
+    debug('Updating contact relationship', relationship)
+    const updatedResult: ContactRelationshipEntity = await contactRelationshipRepository.save(relationship, { transaction: true })
+
+    return contactRelationshipFrom(updatedResult)
+  }
 
   removeRelationship = async ({ relationshipId }: IRemoveRelationshipArgs): Promise<void> => {
     const contactRelationshipRepository: Repository<ContactRelationshipEntity> = (await this.dbConnection).getRepository(ContactRelationshipEntity)
@@ -305,7 +351,87 @@ export class ContactStore extends AbstractContactStore {
     await contactRelationshipRepository.delete(relationshipId)
   }
 
-  // TODO functions for adding/removing contact types?
+  // TODO add contact type
+  addContactType = async (args: IAddContactTypeArgs): Promise<IContactType> => {
+    // TODO do we need checks?
+
+    const contactEntity: ContactTypeEntity = contactTypeEntityFrom(args)
+    debug('Adding contact type', args)
+    const createdResult: ContactTypeEntity = await (await this.dbConnection).getRepository(ContactTypeEntity).save(contactEntity)
+
+    return contactTypeFrom(createdResult)
+  }
+
+  // TODO get contact type
+  getContactType = async ({ contactTypeId }: IGetContactTypeArgs): Promise<IContactType> => {
+    const result: ContactTypeEntity | null = await (await this.dbConnection).getRepository(ContactTypeEntity).findOne({
+      where: { id: contactTypeId },
+    })
+
+    if (!result) {
+      return Promise.reject(Error(`No contact type found for id: ${contactTypeId}`))
+    }
+
+    return contactTypeFrom(result)
+  }
+
+  // TODO get contact types
+  getContactTypes = async (args?: IGetContactTypesArgs): Promise<Array<IContactType>> => {
+    const contactTypeRepository: Repository<ContactTypeEntity> = (await this.dbConnection).getRepository(ContactTypeEntity)
+    const initialResult: Array<ContactTypeEntity> | null = await contactTypeRepository.find({
+      ...(args?.filter && { where: args?.filter }),
+    })
+
+    const result: Array<ContactTypeEntity> | null = await contactTypeRepository.find({
+      where: {
+        id: In(initialResult.map((contactType: ContactTypeEntity) => contactType.id)),
+      },
+    })
+
+    return result.map((contactType: ContactTypeEntity) => contactTypeFrom(contactType))
+  }
+
+  // TODO update contact type
+  updateContactType = async ({ contactType }: IUpdateContactTypeArgs): Promise<IContactType> => {
+    const contactTypeRepository: Repository<ContactTypeEntity> = (await this.dbConnection).getRepository(ContactTypeEntity)
+    const result: ContactTypeEntity | null = await contactTypeRepository.findOne({
+      where: { id: contactType.id },
+    })
+
+    if (!result) {
+      return Promise.reject(Error(`No contact type found for id: ${contactType.id}`))
+    }
+
+    // const updatedContactType = {
+    //   // TODO fix type
+    //   ...contactType,
+    //   identities: result.identities,
+    //   relationships: result.relationships,
+    // }
+
+    debug('Updating contact type', contactType)
+    const updatedResult: ContactTypeEntity = await contactTypeRepository.save(contactType, { transaction: true })
+
+    return contactTypeFrom(updatedResult)
+  }
+
+  // TODO remove contact type
+  removeContactType = async ({ contactTypeId }: IRemoveContactTypeArgs): Promise<void> => {
+    // TODO maybe add check if contact type is used, if used, cannot delete
+
+    const contactTypeRepository: Repository<ContactTypeEntity> = (await this.dbConnection).getRepository(ContactTypeEntity)
+    const contactType: ContactTypeEntity | null = await contactTypeRepository.findOne({
+      where: { id: contactTypeId },
+    })
+
+    if (!contactType) {
+      return Promise.reject(Error(`No contact type found for id: ${contactTypeId}`))
+    }
+
+    debug('Removing contact type', contactTypeId)
+
+    await contactTypeRepository.delete(contactTypeId)
+  }
 
   private hasCorrectConfig(type: ConnectionTypeEnum, config: BasicConnectionConfig): boolean {
     switch (type) {
@@ -325,9 +451,9 @@ export class ContactStore extends AbstractContactStore {
       await (
         await this.dbConnection
       )
-      .getRepository(CorrelationIdentifierEntity)
-      .delete(identity.identifier.id)
-      .catch((error) => Promise.reject(Error(`Unable to remove identity.identifier with id: ${identity.identifier.id}. ${error}`)))
+        .getRepository(CorrelationIdentifierEntity)
+        .delete(identity.identifier.id)
+        .catch((error) => Promise.reject(Error(`Unable to remove identity.identifier with id: ${identity.identifier.id}. ${error}`)))
 
       if (identity.connection) {
         await (await this.dbConnection).getRepository(BaseConfigEntity).delete(identity.connection.config.id)
@@ -335,9 +461,9 @@ export class ContactStore extends AbstractContactStore {
         await (
           await this.dbConnection
         )
-        .getRepository(ConnectionEntity)
-        .delete(identity.connection.id)
-        .catch((error) => Promise.reject(Error(`Unable to remove identity.connection with id. ${error}`)))
+          .getRepository(ConnectionEntity)
+          .delete(identity.connection.id)
+          .catch((error) => Promise.reject(Error(`Unable to remove identity.connection with id. ${error}`)))
       }
 
       if (identity.metadata) {
@@ -345,17 +471,16 @@ export class ContactStore extends AbstractContactStore {
           await (
             await this.dbConnection
           )
-          .getRepository(IdentityMetadataItemEntity)
-          .delete(metadataItem.id)
-          .catch((error) => Promise.reject(Error(`Unable to remove metadataItem.id with id ${metadataItem.id}. ${error}`)))
+            .getRepository(IdentityMetadataItemEntity)
+            .delete(metadataItem.id)
+            .catch((error) => Promise.reject(Error(`Unable to remove metadataItem.id with id ${metadataItem.id}. ${error}`)))
         })
       }
 
       ;(await this.dbConnection)
-      .getRepository(IdentityEntity)
-      .delete(identity.id)
-      .catch((error) => Promise.reject(Error(`Unable to remove metadataItem.id with id ${identity.id}. ${error}`)))
+        .getRepository(IdentityEntity)
+        .delete(identity.id)
+        .catch((error) => Promise.reject(Error(`Unable to remove metadataItem.id with id ${identity.id}. ${error}`)))
     })
   }
-
 }

@@ -15,11 +15,11 @@ import { ImageDimensionsEntity, imageDimensionsEntityFrom } from './entities/iss
 import { IssuerLocaleBrandingEntity, issuerLocaleBrandingEntityFrom } from './entities/issuanceBranding/IssuerLocaleBrandingEntity'
 import { IssuerBrandingEntity, issuerBrandingEntityFrom } from './entities/issuanceBranding/IssuerBrandingEntity'
 import { TextAttributesEntity, textAttributesEntityFrom } from './entities/issuanceBranding/TextAttributesEntity'
-import { ContactRelationshipEntity } from './entities/contact/ContactRelationshipEntity'
-import { ContactTypeEntity } from './entities/contact/ContactTypeEntity'
+import { ContactRelationshipEntity, contactRelationshipEntityFrom } from './entities/contact/ContactRelationshipEntity'
+import { ContactTypeEntity, contactTypeEntityFrom } from './entities/contact/ContactTypeEntity'
 import { ContactOwnerEntity } from './entities/contact/ContactOwnerEntity'
-import { OrganizationEntity } from './entities/contact/OrganizationEntity'
-import { PersonEntity } from './entities/contact/PersonEntity'
+import { OrganizationEntity, organizationEntityFrom } from './entities/contact/OrganizationEntity'
+import { PersonEntity, personEntityFrom } from './entities/contact/PersonEntity'
 
 export { ContactStore } from './contact/ContactStore'
 export { AbstractContactStore } from './contact/AbstractContactStore'
@@ -89,4 +89,8 @@ export {
   textAttributesEntityFrom,
   issuerLocaleBrandingEntityFrom,
   credentialLocaleBrandingEntityFrom,
+  contactRelationshipEntityFrom,
+  contactTypeEntityFrom,
+  organizationEntityFrom,
+  personEntityFrom,
 }

@@ -113,13 +113,14 @@ export const contactEntityFrom = (contact: IBasicContact): ContactEntity => {
 }
 
 export const contactFrom = (contact: ContactEntity): IContact => {
-  console.log('')
   return {
     id: contact.id,
     uri: contact.uri,
     roles: [...new Set(contact.identities?.flatMap((identity: IdentityEntity) => identity.roles))] ?? [],
     identities: contact.identities ? contact.identities.map((identity: IdentityEntity) => identityFrom(identity)) : [],
-    relationships: contact.relationships ? contact.relationships.map((relationship: ContactRelationshipEntity) => contactRelationshipFrom(relationship)) : [],
+    relationships: contact.relationships
+      ? contact.relationships.map((relationship: ContactRelationshipEntity) => contactRelationshipFrom(relationship))
+      : [],
     contactType: contactTypeFrom(contact.contactType),
     contactOwner: contactOwnerFrom(contact.contactOwner),
     createdAt: contact.createdAt,

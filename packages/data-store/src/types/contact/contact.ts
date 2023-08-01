@@ -171,8 +171,8 @@ export interface IPartialContactType extends Partial<IContactType> {}
 
 export interface IContactRelationship {
   id: string
-  leftContactId: string//IContact // TODO
-  rightContactId: string//IContact // TODO
+  leftContactId: string
+  rightContactId: string
   createdAt: Date
   lastUpdatedAt: Date
 }

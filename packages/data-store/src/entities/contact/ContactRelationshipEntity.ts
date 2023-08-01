@@ -5,10 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  // Column,
+  Column,
   Index,
   BeforeInsert,
-  BeforeUpdate
+  BeforeUpdate,
 } from 'typeorm'
 import { ContactEntity } from './ContactEntity'
 import { IContactRelationship } from '../../types'
@@ -27,8 +27,8 @@ export class ContactRelationshipEntity {
   // @JoinColumn({ name: 'left_contact_id' })
   left!: ContactEntity
 
-  // @Column({ name: 'left', nullable: true })
-  // leftContactId?: string
+  @Column({ name: 'leftId', nullable: false })
+  leftId!: string
 
   @ManyToOne(() => ContactEntity, {
     nullable: false,
@@ -37,8 +37,8 @@ export class ContactRelationshipEntity {
   // @JoinColumn({ name: 'right_contact_id' })
   right!: ContactEntity
 
-  // @Column({ name: 'right', nullable: true })
-  // rightContactId?: string
+  @Column({ name: 'rightId', nullable: false })
+  rightId!: string
 
   @CreateDateColumn({ name: 'created_at', nullable: false })
   createdAt!: Date
@@ -66,13 +66,12 @@ export const contactRelationshipEntityFrom = (relationship: { left: ContactEntit
 }
 
 export const contactRelationshipFrom = (relationship: ContactRelationshipEntity): IContactRelationship => {
-  console.log('')
   return {
     id: relationship.id,
-    leftContactId: relationship.left.id,
-    rightContactId: relationship.right.id,
+    leftContactId: relationship.leftId, //relationship.left.id,
+    rightContactId: relationship.rightId, //relationship.right.id,
     createdAt: relationship.createdAt,
-    lastUpdatedAt: relationship.lastUpdatedAt
+    lastUpdatedAt: relationship.lastUpdatedAt,
   }
   // TODO convert IContact to ContactEntity here
 }

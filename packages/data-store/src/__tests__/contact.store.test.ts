@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm'
 
-import { BasicContactRelationship, DataStoreContactEntities, IContactRelationship } from '../index'
+import { DataStoreContactEntities } from '../index'
 import { ContactStore } from '../contact/ContactStore'
 import {
   IdentityRoleEnum,
@@ -14,6 +14,8 @@ import {
   IBasicIdentity,
   IGetIdentitiesArgs,
   IGetContactsArgs,
+  BasicContactRelationship,
+  IContactRelationship
 } from '../types'
 
 describe('Contact store tests', (): void => {
@@ -1118,7 +1120,7 @@ describe('Contact store tests', (): void => {
 
     const relationship: BasicContactRelationship = {
       leftContactId: savedContact1.id,
-      rightContactId: savedContact2.id
+      rightContactId: savedContact2.id,
     }
     await contactStore.addRelationship(relationship)
 
@@ -1167,7 +1169,7 @@ describe('Contact store tests', (): void => {
 
     const relationship: BasicContactRelationship = {
       leftContactId: savedContact1.id,
-      rightContactId: savedContact2.id
+      rightContactId: savedContact2.id,
     }
     const savedRelationship: IContactRelationship = await contactStore.addRelationship(relationship)
     expect(savedRelationship).toBeDefined()
@@ -1179,4 +1181,14 @@ describe('Contact store tests', (): void => {
     expect(result).toBeDefined()
     expect(result?.relationships?.length).toEqual(0)
   })
+
+  it('should throw error when removing relationship with unknown id', async (): Promise<void> => {
+    const relationshipId = 'unknownRelationshipId'
+
+    await expect(contactStore.removeRelationship({ relationshipId })).rejects.toThrow(`No relationship found for id: ${relationshipId}`)
+  })
+
+  // TODO cannot delete contact type when used by contact
 })
+
+// maybe add some categories for the tests to find them

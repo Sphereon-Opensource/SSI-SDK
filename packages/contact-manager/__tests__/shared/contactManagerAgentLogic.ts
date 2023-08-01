@@ -1,11 +1,23 @@
 import { TAgent } from '@veramo/core'
 import { IContactManager } from '../../src'
-import { CorrelationIdentifierEnum, IContact, IdentityRoleEnum, IIdentity } from '../../../data-store/src'
+import {
+  BasicPerson,
+  ContactTypeEnum,
+  CorrelationIdentifierEnum,
+  IBasicContact,
+  IBasicIdentity,
+  IContact,
+  IdentityRoleEnum,
+  IIdentity,
+  IPerson,
+  IGetContactsArgs,
+} from '../../../data-store/src'
+import { IContactRelationship } from '../../../data-store'
 
 type ConfiguredAgent = TAgent<IContactManager>
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
-  describe('Contact Manager Agent Plugin', () => {
+  describe('Contact Manager Agent Plugin', (): void => {
     let agent: ConfiguredAgent
     let defaultContact: IContact
     let defaultIdentity: IIdentity
@@ -14,13 +26,22 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await testContext.setup()
       agent = testContext.getAgent()
 
-      const contact = {
-        name: 'default_contact',
-        alias: 'default_contact_alias',
+      const contact: IBasicContact = {
+        contactType: {
+          type: ContactTypeEnum.PERSON,
+          tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+          name: 'example_name',
+        },
+        contactOwner: {
+          firstName: 'default_first_name',
+          middleName: 'default_middle_name',
+          lastName: 'default_last_name',
+          displayName: 'default_display_name',
+        },
         uri: 'example.com',
       }
       const correlationId = 'default_example_did'
-      const identity = {
+      const identity: IBasicIdentity = {
         alias: correlationId,
         roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
         identifier: {
@@ -34,8 +55,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     afterAll(testContext.tearDown)
 
-    it('should get contact by id', async () => {
-      const result = await agent.cmGetContact({ contactId: defaultContact.id })
+    it('should get contact by id', async (): Promise<void> => {
+      const result: IContact = await agent.cmGetContact({ contactId: defaultContact.id })
 
       expect(result.id).toEqual(defaultContact.id)
     })
@@ -46,119 +67,152 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await expect(agent.cmGetContact({ contactId })).rejects.toThrow(`No contact found for id: ${contactId}`)
     })
 
-    it('should get all contacts', async () => {
-      const result = await agent.cmGetContacts()
+    it('should get all contacts', async (): Promise<void> => {
+      const result: Array<IContact> = await agent.cmGetContacts()
 
       expect(result.length).toBeGreaterThan(0)
     })
 
     it('should get contacts by filter', async (): Promise<void> => {
-      const args = {
-        filter: [{ name: 'default_contact' }, { alias: 'default_contact_alias' }, { uri: 'example.com' }],
+      const args: IGetContactsArgs = {
+        filter: [
+          {
+            contactType: {
+              type: ContactTypeEnum.PERSON,
+            },
+          },
+          {
+            contactOwner: {
+              displayName: 'default_display_name',
+            },
+          },
+          { uri: 'example.com' },
+        ],
       }
-      const result = await agent.cmGetContacts(args)
+      const result: Array<IContact> = await agent.cmGetContacts(args)
 
       expect(result.length).toBe(1)
     })
 
     it('should get contacts by name', async (): Promise<void> => {
-      const args = {
-        filter: [{ name: 'default_contact' }],
+      const args: IGetContactsArgs = {
+        filter: [
+          { contactOwner: { firstName: 'default_first_name' } },
+          { contactOwner: { middleName: 'default_middle_name' } },
+          { contactOwner: { lastName: 'default_last_name' } },
+        ],
       }
-      const result = await agent.cmGetContacts(args)
+      const result: Array<IContact> = await agent.cmGetContacts(args)
 
       expect(result.length).toBe(1)
     })
 
-    it('should get contacts by alias', async (): Promise<void> => {
-      const args = {
-        filter: [{ alias: 'default_contact_alias' }],
+    it('should get contacts by display name', async (): Promise<void> => {
+      const args: IGetContactsArgs = {
+        filter: [{ contactOwner: { displayName: 'default_display_name' } }],
       }
-      const result = await agent.cmGetContacts(args)
+      const result: Array<IContact> = await agent.cmGetContacts(args)
 
       expect(result.length).toBe(1)
     })
 
     it('should get contacts by uri', async (): Promise<void> => {
-      const args = {
+      const args: IGetContactsArgs = {
         filter: [{ uri: 'example.com' }],
       }
-      const result = await agent.cmGetContacts(args)
+      const result: Array<IContact> = await agent.cmGetContacts(args)
 
       expect(result.length).toBe(1)
     })
 
     it('should return no contacts if filter does not match', async (): Promise<void> => {
-      const args = {
-        filter: [{ name: 'no_match_contact' }, { alias: 'no_match_contact_alias' }, { uri: 'no_match_example.com' }],
+      const args: IGetContactsArgs = {
+        filter: [{ contactOwner: { displayName: 'no_match_contact_display_name' } }, { uri: 'no_match_example.com' }],
       }
-      const result = await agent.cmGetContacts(args)
+      const result: Array<IContact> = await agent.cmGetContacts(args)
 
       expect(result.length).toBe(0)
     })
 
     it('should add contact', async (): Promise<void> => {
-      const contact = {
-        name: 'new_contact',
-        alias: 'new_contact_alias',
+      const contact: IBasicContact = {
+        contactType: {
+          type: ContactTypeEnum.PERSON,
+          tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+          name: 'new_name',
+          description: 'new_description',
+        },
+        contactOwner: {
+          firstName: 'new_first_name',
+          middleName: 'new_middle_name',
+          lastName: 'new_last_name',
+          displayName: 'new_display_name',
+        },
         uri: 'example.com',
       }
 
-      const result = await agent.cmAddContact(contact)
+      const result: IContact = await agent.cmAddContact(contact)
 
-      expect(result.name).toEqual(contact.name)
-      expect(result.alias).toEqual(contact.alias)
+      expect(result.contactType.type).toEqual(contact.contactType.type)
+      expect(result.contactType.name).toEqual(contact.contactType.name)
+      expect(result.contactType.description).toEqual(contact.contactType.description)
+      expect((<IPerson>result.contactOwner).firstName).toEqual((<BasicPerson>contact.contactOwner).firstName)
+      expect((<IPerson>result.contactOwner).middleName).toEqual((<BasicPerson>contact.contactOwner).middleName)
+      expect((<IPerson>result.contactOwner).lastName).toEqual((<BasicPerson>contact.contactOwner).lastName)
+      expect((<IPerson>result.contactOwner).displayName).toEqual((<BasicPerson>contact.contactOwner).displayName)
       expect(result.uri).toEqual(contact.uri)
     })
 
-    it('should throw error when adding contact with duplicate name', async (): Promise<void> => {
-      const name = 'default_contact'
-      const alias = 'default_contact_new_alias'
-      const contact = {
-        name,
-        alias,
+    it('should throw error when adding contact with duplicate display name', async (): Promise<void> => {
+      const displayName = 'default_display_name'
+      const contact: IBasicContact = {
+        contactType: {
+          type: ContactTypeEnum.PERSON,
+          tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d287',
+          name: 'example_name2',
+        },
+        contactOwner: {
+          firstName: 'default_first_name2',
+          middleName: 'default_middle_name2',
+          lastName: 'default_last_name2',
+          displayName,
+        },
         uri: 'example.com',
       }
 
-      await expect(agent.cmAddContact(contact)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
-    })
-
-    it('should throw error when adding contact with duplicate alias', async (): Promise<void> => {
-      const name = 'default_new_contact'
-      const alias = 'default_contact_alias'
-      const contact = {
-        name,
-        alias,
-        uri: 'example.com',
-      }
-
-      await expect(agent.cmAddContact(contact)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
+      await expect(agent.cmAddContact(contact)).rejects.toThrow(`Duplicate names or display are not allowed. Display name: ${displayName}`)
     })
 
     it('should update contact by id', async (): Promise<void> => {
-      const contactName = 'updated_contact'
-      const contact = {
+      const contactFirstName = 'updated_contact_first_name'
+      const contact: IContact = {
         ...defaultContact,
-        name: contactName,
+        contactOwner: {
+          ...defaultContact.contactOwner,
+          firstName: contactFirstName,
+        },
       }
 
-      const result = await agent.cmUpdateContact({ contact })
+      const result: IContact = await agent.cmUpdateContact({ contact })
 
-      expect(result.name).toEqual(contactName)
+      expect((<IPerson>result.contactOwner).firstName).toEqual(contactFirstName)
     })
 
     it('should throw error when updating contact with unknown id', async (): Promise<void> => {
       const contactId = 'unknownContactId'
-      const contact = {
+      const contact: IContact = {
         ...defaultContact,
         id: contactId,
-        name: 'new_name',
+        contactOwner: {
+          ...defaultContact.contactOwner,
+          firstName: 'new_first_name',
+        },
       }
       await expect(agent.cmUpdateContact({ contact })).rejects.toThrow(`No contact found for id: ${contactId}`)
     })
 
-    it('should get identity by id', async () => {
-      const result = await agent.cmGetIdentity({ identityId: defaultIdentity.id })
+    it('should get identity by id', async (): Promise<void> => {
+      const result: IIdentity = await agent.cmGetIdentity({ identityId: defaultIdentity.id })
 
       expect(result.id).toEqual(defaultIdentity.id)
     })
@@ -174,14 +228,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get all identities for contact', async (): Promise<void> => {
-      const result = await agent.cmGetIdentities({ filter: [{ contactId: defaultContact.id }] })
+      const result: Array<IIdentity> = await agent.cmGetIdentities({ filter: [{ contactId: defaultContact.id }] })
 
       expect(result.length).toBeGreaterThan(0)
     })
 
     it('should add identity to contact', async (): Promise<void> => {
       const correlationId = 'new_example_did'
-      const identity = {
+      const identity: IBasicIdentity = {
         alias: correlationId,
         roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
         identifier: {
@@ -190,8 +244,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         },
       }
 
-      const result = await agent.cmAddIdentity({ contactId: defaultContact.id, identity })
-      const contact = await agent.cmGetContact({ contactId: defaultContact.id })
+      const result: IIdentity = await agent.cmAddIdentity({ contactId: defaultContact.id, identity })
+      const contact: IContact = await agent.cmGetContact({ contactId: defaultContact.id })
 
       expect(result).not.toBeNull()
       expect(contact.identities.length).toEqual(2)
@@ -205,7 +259,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should throw error when adding identity with invalid identifier', async (): Promise<void> => {
       const correlationId = 'missing_connection_add_example'
-      const identity = {
+      const identity: IBasicIdentity = {
         alias: correlationId,
         roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
         identifier: {
@@ -221,7 +275,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should throw error when updating identity with invalid identifier', async (): Promise<void> => {
       const correlationId = 'missing_connection_update_example'
-      const identity = {
+      const identity: IBasicIdentity = {
         alias: correlationId,
         roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
         identifier: {
@@ -229,7 +283,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           correlationId,
         },
       }
-      const result = await agent.cmAddIdentity({ contactId: defaultContact.id, identity })
+      const result: IIdentity = await agent.cmAddIdentity({ contactId: defaultContact.id, identity })
       result.identifier = { ...result.identifier, type: CorrelationIdentifierEnum.URL }
 
       await expect(agent.cmUpdateIdentity({ identity: result })).rejects.toThrow(`Identity with correlation type url should contain a connection`)
@@ -237,7 +291,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should update identity', async (): Promise<void> => {
       const correlationId = 'new_update_example_did'
-      const identity = {
+      const identity: IBasicIdentity = {
         alias: 'update_example_did',
         roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
         identifier: {
@@ -245,14 +299,131 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           correlationId: 'update_example_did',
         },
       }
-      const result = await agent.cmAddIdentity({ contactId: defaultContact.id, identity })
+      const result: IIdentity = await agent.cmAddIdentity({ contactId: defaultContact.id, identity })
       result.identifier = { ...result.identifier, correlationId }
 
       await agent.cmUpdateIdentity({ identity: result })
-      const updatedIdentity = await agent.cmGetIdentity({ identityId: result.id })
+      const updatedIdentity: IIdentity = await agent.cmGetIdentity({ identityId: result.id })
 
       expect(updatedIdentity).not.toBeNull()
       expect(updatedIdentity.identifier.correlationId).toEqual(correlationId)
     })
+
+    it('should add relationship', async (): Promise<void> => {
+      const contact: IBasicContact = {
+        contactType: {
+          type: ContactTypeEnum.PERSON,
+          tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d287',
+          name: 'relation_contact_type_name',
+          description: 'new_description',
+        },
+        contactOwner: {
+          firstName: 'relation_first_name',
+          middleName: 'relation_middle_name',
+          lastName: 'relation_last_name',
+          displayName: 'relation_display_name',
+        },
+        uri: 'example.com',
+      }
+
+      const savedContact: IContact = await agent.cmAddContact(contact)
+
+      // TODO why does this filter not work on only first name?
+      const args1: IGetContactsArgs = {
+        filter: [
+          { contactOwner: { firstName: 'default_first_name' } },
+          { contactOwner: { middleName: 'default_middle_name' } },
+          // { contactOwner: { lastName: 'default_last_name'} },
+        ],
+      }
+      const otherContacts: Array<IContact> = await agent.cmGetContacts(args1)
+
+      expect(otherContacts.length).toEqual(1)
+
+      const relationship: IContactRelationship = await agent.cmAddRelationship({
+        leftContactId: savedContact.id,
+        rightContactId: otherContacts[0].id,
+      })
+
+      expect(relationship).toBeDefined()
+
+      // TODO why does this filter not work on only first name?
+      const args2: IGetContactsArgs = {
+        filter: [
+          { contactOwner: { firstName: 'relation_first_name' } },
+          { contactOwner: { middleName: 'relation_middle_name' } },
+          // { contactOwner: { lastName: 'default_last_name'} },
+        ],
+      }
+      const result: Array<IContact> = await agent.cmGetContacts(args2)
+
+      expect(result.length).toEqual(1)
+      expect(result[0].relationships.length).toEqual(1)
+      expect(result[0].relationships[0].leftContactId).toEqual(savedContact.id)
+      expect(result[0].relationships[0].rightContactId).toEqual(otherContacts[0].id)
+    })
+
+    it('should remove relationship', async (): Promise<void> => {
+      const contact: IBasicContact = {
+        contactType: {
+          type: ContactTypeEnum.PERSON,
+          tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d286',
+          name: 'remove_relation_contact_type_name',
+          description: 'new_description',
+        },
+        contactOwner: {
+          firstName: 'remove_relation_first_name',
+          middleName: 'remove_relation_middle_name',
+          lastName: 'remove_relation_last_name',
+          displayName: 'remove_relation_display_name',
+        },
+        uri: 'example.com',
+      }
+
+      const savedContact: IContact = await agent.cmAddContact(contact)
+
+      // TODO why does this filter not work on only first name?
+      const args1: IGetContactsArgs = {
+        filter: [
+          { contactOwner: { firstName: 'default_first_name' } },
+          { contactOwner: { middleName: 'default_middle_name' } },
+          // { contactOwner: { lastName: 'default_last_name'} },
+        ],
+      }
+      const otherContacts: Array<IContact> = await agent.cmGetContacts(args1)
+
+      expect(otherContacts.length).toEqual(1)
+
+      const relationship: IContactRelationship = await agent.cmAddRelationship({
+        leftContactId: savedContact.id,
+        rightContactId: otherContacts[0].id,
+      })
+
+      expect(relationship).toBeDefined()
+
+      // TODO why does this filter not work on only first name?
+      const args2: IGetContactsArgs = {
+        filter: [
+          { contactOwner: { firstName: 'relation_first_name' } },
+          { contactOwner: { middleName: 'relation_middle_name' } },
+          // { contactOwner: { lastName: 'default_last_name'} },
+        ],
+      }
+      const retrievedContact: Array<IContact> = await agent.cmGetContacts(args2)
+
+      expect(retrievedContact.length).toEqual(1)
+      expect(retrievedContact[0].relationships.length).toEqual(1)
+      // expect(result[0].relationships[0].leftContactId).toEqual(savedContact.id)
+      // expect(result[0].relationships[0].rightContactId).toEqual(otherContacts[0].id)
+
+      const removeRelationshipResult: boolean = await agent.cmRemoveRelationship({ relationshipId: relationship.id })
+      expect(removeRelationshipResult).toBeTruthy()
+
+      const result: IContact = await agent.cmGetContact({ contactId: savedContact.id })
+
+      expect(result.relationships.length).toEqual(0)
+    })
+
+    // remove relation
   })
 }

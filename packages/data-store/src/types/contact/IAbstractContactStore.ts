@@ -1,14 +1,22 @@
-// import { FindOptionsWhere } from 'typeorm'
-// import { ContactEntity } from '../../entities/contact/ContactEntity'
-// import { IdentityEntity } from '../../entities/contact/IdentityEntity'
-import { BasicContactType, BasicContactOwner, IBasicIdentity, IContact, IIdentity, IPartialContact, IPartialIdentity } from './contact'
-
-// TODO WAL-625 refactor types to use interfaces and not the entities as the store should be replaceable
-// export type FindContactArgs = FindOptionsWhere<ContactEntity>[]
-// export type FindIdentityArgs = FindOptionsWhere<IdentityEntity>[]
+import {
+  BasicContactType,
+  BasicContactOwner,
+  IBasicIdentity,
+  IContact,
+  IIdentity,
+  IPartialContact,
+  IPartialIdentity,
+  ContactTypeEnum,
+  IContactType,
+  IContactRelationship,
+  IPartialContactRelationship,
+  IPartialContactType
+} from './contact'
 
 export type FindContactArgs = Array<IPartialContact>
 export type FindIdentityArgs = Array<IPartialIdentity>
+export type FindContactTypeArgs = Array<IPartialContactType>
+export type FindRelationshipArgs = Array<IPartialContactRelationship>
 
 export interface IGetContactArgs {
   contactId: string
@@ -19,9 +27,7 @@ export interface IGetContactsArgs {
 }
 
 export interface IAddContactArgs {
-  // name: string
-  // alias: string
-  uri?: string // TODO what we do with uri?
+  uri?: string
   contactType: BasicContactType // TODO we can have a situation where we want to add a contact to an existing type, so use BasicContactType | IContactType? also make a test for these 2 situations in the store
   contactOwner: BasicContactOwner
   identities?: Array<IBasicIdentity>
@@ -63,4 +69,39 @@ export interface IRemoveRelationshipArgs {
 export interface IAddRelationshipArgs {
   leftContactId: string
   rightContactId: string
+}
+
+export interface IGetRelationshipArgs {
+  relationshipId: string
+}
+
+export interface IGetRelationshipsArgs {
+  filter: FindRelationshipArgs
+}
+
+export interface IUpdateRelationshipArgs {
+  relationship: Omit<IContactRelationship, 'createdAt' | 'lastUpdatedAt'>
+}
+
+export interface IAddContactTypeArgs {
+  type: ContactTypeEnum
+  name: string
+  tenantId: string
+  description?: string
+}
+
+export interface IGetContactTypeArgs {
+  contactTypeId: string
+}
+
+export interface IGetContactTypesArgs {
+  filter?: FindContactTypeArgs
+}
+
+export interface IUpdateContactTypeArgs {
+  contactType: Omit<IContactType, 'createdAt' | 'lastUpdatedAt'>
+}
+
+export interface IRemoveContactTypeArgs {
+  contactTypeId: string
 }

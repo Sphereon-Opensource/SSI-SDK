@@ -1,11 +1,11 @@
 import { createObjects, getConfig } from '../../agent-config/dist'
-import { Connection } from 'typeorm'
+import { DataSource } from 'typeorm'
 
 jest.setTimeout(30000)
 
 import contactManagerAgentLogic from './shared/contactManagerAgentLogic'
 
-let dbConnection: Promise<Connection>
+let dbConnection: Promise<DataSource>
 let agent: any
 
 const setup = async (): Promise<boolean> => {
@@ -29,6 +29,6 @@ const testContext = {
   tearDown,
 }
 
-describe('Local integration tests', () => {
+describe('Local integration tests', (): void => {
   contactManagerAgentLogic(testContext)
 })

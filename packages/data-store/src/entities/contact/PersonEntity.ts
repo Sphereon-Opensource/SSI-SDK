@@ -19,8 +19,6 @@ export class PersonEntity extends ContactOwnerEntity {
   @IsNotEmpty({ message: 'Blank last names are not allowed' })
   lastName!: string
 
-  // TODO do we want a suffix?
-
   @Column({ name: 'displayName', length: 255, nullable: false, unique: true })
   @IsNotEmpty({ message: 'Blank display names are not allowed' })
   displayName!: string

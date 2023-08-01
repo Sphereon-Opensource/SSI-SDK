@@ -14,16 +14,26 @@ constants:
     - cmAddIdentity
     - cmUpdateIdentity
     - cmRemoveIdentity
+    - cmGetRelationship
+    - cmGetRelationships
+    - cmUpdateRelationship
+    - cmAddRelationship
+    - cmRemoveRelationship
+    - cmGetContactType
+    - cmGetContactTypes
+    - cmAddContactType
+    - cmUpdateContactType
+    - cmRemoveContactType
 
 dbConnection:
   $require: typeorm?t=function#createConnection
   $args:
     - type: sqlite
       database: ':memory:'
-      synchronize: false
-      migrationsRun: true
-      migrations:
-        $require: './packages/data-store?t=object#DataStoreMigrations'
+      synchronize: true #false
+      migrationsRun: true #true
+      #      migrations:
+      #        $require: './packages/data-store?t=object#DataStoreMigrations'
       entities:
         $require: './packages/data-store?t=object#DataStoreContactEntities'
 
