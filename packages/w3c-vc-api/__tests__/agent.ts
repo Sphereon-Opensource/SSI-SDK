@@ -1,6 +1,8 @@
 // import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
 import { getUniResolver } from '@sphereon/did-uni-client'
+import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
 import { getDidJwkResolver } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
+import { ExpressBuilder } from '@sphereon/ssi-sdk.express-support'
 import { IPresentationExchange, PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import {
   CredentialHandlerLDLocal,
@@ -25,9 +27,15 @@ import { KeyManager } from '@veramo/key-manager'
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 import Debug from 'debug'
 import { Resolver } from 'did-resolver'
-import { VCAPIServer } from '../src'
+
+import morgan from 'morgan'
+
+import passport from 'passport'
+import { ITokenPayload, VerifyCallback } from 'passport-azure-ad/common'
+import { VcApiServer } from '../src'
+
+import config from './config.json'
 import { DB_CONNECTION_NAME, DB_ENCRYPTION_KEY, getDbConnection } from './database'
-import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
 
 const debug = Debug('sphereon:vc-api')
 
@@ -47,6 +55,7 @@ export enum SupportedDidMethodEnum {
   // DID_FACTOM = 'factom',
   DID_JWK = 'jwk',
 }
+
 const PRIVATE_KEY_HEX =
   'ea6aaeebe17557e0fe256bfce08e8224a412ea1e25a5ec8b5d69618a58bad89e89a4661e446b46401325a38d3b20582d1dd277eb448a3181012a671b7ae15837'
 const PUBLIC_KEY_HEX = '89a4661e446b46401325a38d3b20582d1dd277eb448a3181012a671b7ae15837'
@@ -62,24 +71,11 @@ const PRIVATE_UPDATE_KEY_HEX = '7288a92f6219c873446abd1f8d26fcbbe1caa5274b47f6f0
 // const RP_DID_KID = `${RP_DID}#auth-key`
 
 export const resolver = new Resolver({
-  /*// const SPHEREON_UNIRESOLVER_RESOLVE_URL = 'https://uniresolver.test.sphereon.io/1.0/identifiers'
-      ...getUniResolver('jwk', {
-          resolveUrl: DIF_UNIRESOLVER_RESOLVE_URL
-      }),
-      ...getUniResolver('ion', {
-          resolveUrl: DIF_UNIRESOLVER_RESOLVE_URL
-      }),
-      ..getUniResolver('lto', {
-          resolveUrl: SPHEREON_UNIRESOLVER_RESOLVE_URL
-      }),*/
   ...getUniResolver('ethr', {
     resolveUrl: DIF_UNIRESOLVER_RESOLVE_URL,
   }),
   ...getDidKeyResolver(),
   ...getDidJwkResolver(),
-  ...getUniResolver('jwk', {
-    resolveUrl: DIF_UNIRESOLVER_RESOLVE_URL,
-  }),
   ...getDidIonResolver(),
 })
 
@@ -154,6 +150,38 @@ const agent = createAgent<
 
 // agent.didManagerImport({did: RP_DID, keys: })
 agent.dataStoreORMGetIdentifiers().then((ids) => ids.forEach((id) => console.log(JSON.stringify(id, null, 2))))
+
+// Import the passport Azure AD library
+const BearerStrategy = require('passport-azure-ad').BearerStrategy
+
+// Set the Azure AD B2C options
+const options = {
+  identityMetadata: `https://${config.metadata.authority}/${config.credentials.tenantName}.onmicrosoft.com/${config.metadata.version}/${config.metadata.discovery}`,
+  clientID: config.credentials.clientID,
+  audience: config.credentials.clientID,
+  issuer: config.credentials.issuer,
+  // policyName: config.policies.policyName,
+  // isB2C: config.settings.isB2C,
+  // scope: config.resource.scope,
+  validateIssuer: config.settings.validateIssuer,
+  loggingLevel: config.settings.loggingLevel,
+  passReqToCallback: config.settings.passReqToCallback,
+}
+
+// Instantiate the passport Azure AD library with the Azure AD B2C options
+const bearerStrategy = new BearerStrategy(options, (token: ITokenPayload, done: VerifyCallback) => {
+  // Send user info using the second argument
+  done(null, {}, token)
+})
+passport.use(bearerStrategy)
+passport.serializeUser(function (user: Express.User, done: (err: any, id?: any) => void) {
+  done(null, user)
+})
+
+passport.deserializeUser(function (user: Express.User, done: (err: any, user?: Express.User | false | null) => void) {
+  done(null, user)
+})
+
 agent
   .didManagerCreate({
     provider: 'did:jwk',
@@ -166,57 +194,75 @@ agent
     },
   })
   /*.didManagerCreate({
-      provider: 'did:ion',
-      alias: RP_DID,
-      options: {
-        kid: 'auth-key',
-        anchor: false,
-        recoveryKey: {
-          kid: 'recovery-test2',
-          key: {
-            privateKeyHex: PRIVATE_RECOVERY_KEY_HEX,
-          },
-        },
-        updateKey: {
-          kid: 'update-test2',
-          key: {
-            privateKeyHex: PRIVATE_UPDATE_KEY_HEX,
-          },
-        },
-        verificationMethods: [
-          {
+        provider: 'did:ion',
+        alias: RP_DID,
+        options: {
+          kid: 'auth-key',
+          anchor: false,
+          recoveryKey: {
+            kid: 'recovery-test2',
             key: {
-              kid: 'auth-key',
-              privateKeyHex: RP_PRIVATE_KEY_HEX,
+              privateKeyHex: PRIVATE_RECOVERY_KEY_HEX,
             },
-            purposes: [IonPublicKeyPurpose.Authentication, IonPublicKeyPurpose.AssertionMethod],
           },
-        ],
-      },
-    })*/
+          updateKey: {
+            kid: 'update-test2',
+            key: {
+              privateKeyHex: PRIVATE_UPDATE_KEY_HEX,
+            },
+          },
+          verificationMethods: [
+            {
+              key: {
+                kid: 'auth-key',
+                privateKeyHex: RP_PRIVATE_KEY_HEX,
+              },
+              purposes: [IonPublicKeyPurpose.Authentication, IonPublicKeyPurpose.AssertionMethod],
+            },
+          ],
+        },
+      })*/
   .then((value) => {
     debug(`IDENTIFIER: ${value.did}`)
   })
   .catch((reason) => {
     console.log(`error on creation:  ${reason}`)
   })
-  .finally(
-    () =>
-      new VCAPIServer({
-        opts: {
-          issueCredentialOpts: {
-            proofFormat: 'lds',
-            fetchRemoteContexts: true,
-            persistIssuedCredentials: true,
-            keyRef: PUBLIC_KEY_HEX,
-          },
-          serverOpts: {
-            hostname: '0.0.0.0',
-            port: 5000,
+  .finally(() => {
+    const builder = ExpressBuilder.fromServerOpts({
+      port: 5000,
+      envVarPrefix: 'VC_API_',
+      hostname: '0.0.0.0',
+    })
+      .withPassportAuth(true)
+      .withSessionOptions({ secret: '1234', name: 'oidc-session' })
+    // .addHandler(morgan('dev'))
+    const expressArgs = builder.build({ startListening: true })
+    expressArgs.express.use(morgan('dev'))
+    // expressArgs.express.use(passport.initialize())
+
+    new VcApiServer({
+      opts: {
+        endpointOpts: {
+          globalAuth: {
+            authentication: {
+              enabled: true,
+              strategy: bearerStrategy,
+            },
           },
         },
-        agent,
-      })
-  )
+        issueCredentialOpts: {
+          enableFeatures: ['vc-issue', 'vc-persist', 'vc-verify'],
+          proofFormat: 'lds',
+          fetchRemoteContexts: true,
+          persistIssuedCredentials: true,
+          keyRef: PUBLIC_KEY_HEX,
+        },
+      },
+      expressArgs,
+      agent,
+    })
+    // builder.startListening(expressArgs.express)
+  })
 
 export default agent

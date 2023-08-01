@@ -1,5 +1,6 @@
 export * from './utils'
 export {
+  agentContext,
   VerifiablePresentationSP,
   UnsignedPresentationSP,
   VerifiableCredentialSP,
