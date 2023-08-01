@@ -1,5 +1,6 @@
 import { getImageDimensions, getImageMediaType } from '../image'
 import { IImageDimensions } from '../../types'
+import { describe, it, expect } from 'vitest'
 
 describe('@sphereon/ssi-sdk.core:image', () => {
   it('should return image type for svg base64', async (): Promise<void> => {

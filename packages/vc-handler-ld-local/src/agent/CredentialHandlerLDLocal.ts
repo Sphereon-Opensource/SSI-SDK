@@ -123,7 +123,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     let managedKey: IKey | undefined
     let verificationMethod: string | undefined
     if (keyRef) {
-      const k = await this.keyStore?.get({ alias: keyRef })
+      const k = await this.keyStore?.getKey({ alias: keyRef })
       if (k?.privateKeyHex) {
         managedKey = {
           ...identifier.keys.find((k) => k.kid === keyRef),

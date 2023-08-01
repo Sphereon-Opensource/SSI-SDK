@@ -25,6 +25,7 @@ import {
   IUpdateIssuerLocaleBrandingArgs,
   TextAttributesEntity,
 } from '../index'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
 describe('Issuance branding store tests', (): void => {
   let dbConnection: DataSource

@@ -4,14 +4,14 @@ import { AuthorizationRequestStateStatus, AuthStatusResponse, GenerateAuthReques
 
 const definitionId = '9449e2db-791f-407c-b086-c21cc677d2e0'
 const baseUrl = 'https://ssi-backend.sphereon.com'
-
+import { describe, it, expect } from 'vitest'
 const agent = createAgent<IResolver & ISIOPv2OID4VPRPRestClient>({
   plugins: [new SIOPv2OID4VPRPRestClient({ baseUrl, definitionId })],
 })
 
-xdescribe('@sphereon/siopv2-oid4vp-rp-rest-client', () => {
+describe.skip('@sphereon/siopv2-oid4vp-rp-rest-client', () => {
   // disabled because the delete call hangs. Since endpoints will be updated anyway, skiping this for now
-  xit('should call the endpoint for siopClientRemoveAuthRequestSession', async () => {
+  it.skip('should call the endpoint for siopClientRemoveAuthRequestSession', async () => {
     const authRequest: GenerateAuthRequestURIResponse = await agent.siopClientCreateAuthRequest({})
     agent.siopClientRemoveAuthRequestState({
       correlationId: authRequest.correlationId,

@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@sphereon/ssi-types": "workspace:*",
-    "@veramo/core": "4.2.0",
+    "@veramo/core": "5.3.0",
     "class-validator": "^0.14.0",
     "debug": "^4.3.4",
     "typeorm": "^0.3.12"

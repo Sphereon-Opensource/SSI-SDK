@@ -9,8 +9,8 @@ import {
   IDIDManager,
   IKeyManager,
   IResolver,
+  ProofFormat,
 } from '@veramo/core'
-import { ProofFormat } from '@veramo/core/src/types/ICredentialIssuer'
 
 export type IRequiredPlugins = IDataStore &
   IDataStoreORM &

@@ -95,12 +95,26 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
   }
 
   preSigningCredModification(credential: CredentialPayload): void {
-    credential['@context'] = [...(credential['@context'] || []), this.getContext()]
+    let context = credential['@context']
+    if (Array.isArray(context)) {
+      credential['@context'] = [...context, this.getContext()]
+    } else if (typeof context === 'string' || typeof context === 'object') {
+      credential['@context'] = [this.getContext()]
+    } else if (typeof context === 'undefined') {
+      credential['@context'] = [this.getContext()]
+    }
   }
 
   preSigningPresModification(presentation: PresentationPayload): void {
     super.preSigningPresModification(presentation)
-    presentation['@context'] = [...(presentation['@context'] || []), this.getContext()]
+    let context = presentation['@context']
+    if (Array.isArray(context)) {
+      presentation['@context'] = [...context, this.getContext()]
+    } else if (typeof context === 'string' || typeof context === 'object') {
+      presentation['@context'] = [this.getContext()]
+    } else if (typeof context === 'undefined') {
+      presentation['@context'] = [this.getContext()]
+    }
   }
 
   preDidResolutionModification(didUrl: string, didDoc: DIDDocument): void {

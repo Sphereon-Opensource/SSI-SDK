@@ -1,10 +1,11 @@
 import { TAgent } from '@veramo/core'
 import { IContactManager } from '../../src'
 import { CorrelationIdentifierEnum, IContact, IdentityRoleEnum, IIdentity } from '../../../data-store/src'
+import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 
 type ConfiguredAgent = TAgent<IContactManager>
 
-export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
+export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<void> }): void => {
   describe('Contact Manager Agent Plugin', () => {
     let agent: ConfiguredAgent
     let defaultContact: IContact

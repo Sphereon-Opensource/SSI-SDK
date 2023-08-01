@@ -1,7 +1,7 @@
 import { createObjects, getConfig } from '../../agent-config/dist'
 import { Connection } from 'typeorm'
 
-jest.setTimeout(30000)
+import { describe } from 'vitest'
 
 import contactManagerAgentLogic from './shared/contactManagerAgentLogic'
 
@@ -17,9 +17,8 @@ const setup = async (): Promise<boolean> => {
   return true
 }
 
-const tearDown = async (): Promise<boolean> => {
+const tearDown = async (): Promise<void> => {
   await (await dbConnection).close()
-  return true
 }
 
 const getAgent = () => agent

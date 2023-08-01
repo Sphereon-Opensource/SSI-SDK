@@ -2,6 +2,7 @@ import { DataSource } from 'typeorm'
 
 import { ContactStore } from '../contact/ContactStore'
 import { CorrelationIdentifierEnum, DataStoreContactEntities, DataStoreMigrations, IdentityRoleEnum } from '../index'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
 describe('Contact store tests', (): void => {
   let dbConnection: DataSource

@@ -1,9 +1,8 @@
 import { DataSource } from 'typeorm'
 import { createObjects, getConfig } from '../../agent-config/dist'
 
-jest.setTimeout(30000)
-
 import issuanceBrandingAgentLogic from './shared/issuanceBrandingAgentLogic'
+import { describe } from 'vitest'
 
 let dbConnection: Promise<DataSource>
 let agent: any

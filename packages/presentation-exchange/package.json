@@ -19,22 +19,22 @@
     "@sphereon/ssi-sdk-ext.did-utils": "0.13.0",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
-    "@veramo/core": "4.2.0"
+    "@veramo/core": "5.3.0"
   },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.0",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@types/json-buffer": "^3.0.0",
-    "@veramo/did-provider-key": "4.2.0",
-    "@veramo/did-resolver": "4.2.0",
-    "@veramo/remote-client": "4.2.0",
-    "@veramo/remote-server": "4.2.0",
-    "@veramo/utils": "4.2.0",
+    "@veramo/did-provider-key": "5.3.0",
+    "@veramo/did-resolver": "5.3.0",
+    "@veramo/remote-client": "5.3.0",
+    "@veramo/remote-server": "5.3.0",
+    "@veramo/utils": "5.3.0",
     "did-resolver": "^4.1.0",
     "nock": "^13.2.1"
   },
   "resolutions": {
-    "@veramo/utils": "4.2.0"
+    "@veramo/utils": "5.3.0"
   },
   "files": [
     ".yalc/**/*",

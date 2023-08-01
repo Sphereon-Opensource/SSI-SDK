@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:*",
-    "@veramo/core": "4.2.0",
+    "@veramo/core": "5.3.0",
     "cross-fetch": "^3.1.5"
   },
   "devDependencies": {

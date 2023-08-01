@@ -21,8 +21,8 @@
   "devDependencies": {
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
-    "@veramo/remote-client": "4.2.0",
-    "@veramo/remote-server": "4.2.0"
+    "@veramo/remote-client": "5.3.0",
+    "@veramo/remote-server": "5.3.0"
   },
   "files": [
     "dist/**/*",
