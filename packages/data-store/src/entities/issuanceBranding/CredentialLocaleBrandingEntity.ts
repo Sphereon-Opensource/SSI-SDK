@@ -16,7 +16,7 @@ export class CredentialLocaleBrandingEntity extends BaseLocaleBrandingEntity {
   @JoinColumn({ name: 'credentialBrandingId' })
   credentialBranding!: CredentialBrandingEntity
 
-  @Column({ name: 'credentialBrandingId', nullable: false })
+  @Column({ name: 'credentialBrandingId', type: 'varchar', nullable: false })
   credentialBrandingId!: string
 }
 

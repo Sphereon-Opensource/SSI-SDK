@@ -1,9 +1,10 @@
 import { TAgent } from '@veramo/core'
 import { IOID4VCIRestClient } from '../../src'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<IOID4VCIRestClient>
 
-export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
+export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<void> }) => {
   describe('ssi-sdk.oid4vci-issuer-rest-client', () => {
     let agent: ConfiguredAgent
 

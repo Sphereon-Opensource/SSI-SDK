@@ -4,6 +4,7 @@ import { IPresentationExchange } from '../../src'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
 import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IPresentationDefinition } from '@sphereon/pex'
+import { afterAll, beforeAll, describe, expect, it, Mock, vi } from 'vitest'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -14,14 +15,14 @@ function getFileAsJson(path: string) {
 }
 
 // const nock = require('nock')
-jest.mock('@veramo/utils', () => ({
-  ...jest.requireActual('@veramo/utils'),
-  mapIdentifierKeysToDoc: jest.fn(),
+vi.mock('@veramo/utils', () => ({
+  ...vi.importActual('@veramo/utils'),
+  mapIdentifierKeysToDoc: vi.fn(),
 }))
 
-jest.mock('@sphereon/ssi-sdk-ext.did-utils', () => ({
-  ...jest.requireActual('@sphereon/ssi-sdk-ext.did-utils'),
-  mapIdentifierKeysToDocWithJwkSupport: jest.fn(),
+vi.mock('@sphereon/ssi-sdk-ext.did-utils', () => ({
+  ...vi.importActual('@sphereon/ssi-sdk-ext.did-utils'),
+  mapIdentifierKeysToDocWithJwkSupport: vi.fn(),
 }))
 
 type ConfiguredAgent = TAgent<IPresentationExchange & IDataStore>
@@ -64,7 +65,7 @@ const authKeys = [
 export default (testContext: {
   getAgent: () => ConfiguredAgent
   setup: () => Promise<boolean>
-  tearDown: () => Promise<boolean>
+  tearDown: () => Promise<void>
   isRestTest: boolean
 }) => {
   describe('Presentation Exchange Agent Plugin', () => {
@@ -76,10 +77,10 @@ export default (testContext: {
       await testContext.setup()
       agent = testContext.getAgent()
 
-      const mockedMapIdentifierKeysToDocMethod = mapIdentifierKeysToDoc as jest.Mock
+      const mockedMapIdentifierKeysToDocMethod = mapIdentifierKeysToDoc as Mock
       mockedMapIdentifierKeysToDocMethod.mockReturnValue(Promise.resolve(authKeys))
 
-      const mockedMapIdentifierKeysToDocMethodWithJwkSupport = mapIdentifierKeysToDocWithJwkSupport as jest.Mock
+      const mockedMapIdentifierKeysToDocMethodWithJwkSupport = mapIdentifierKeysToDocWithJwkSupport as Mock
       mockedMapIdentifierKeysToDocMethodWithJwkSupport.mockReturnValue(Promise.resolve(authKeys))
     })
 

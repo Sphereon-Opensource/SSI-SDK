@@ -1,4 +1,6 @@
 import 'cross-fetch/polyfill'
+import { describe } from 'vitest'
+
 // @ts-ignore
 import express, { Router } from 'express'
 import { Server } from 'http'
@@ -9,8 +11,6 @@ import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/dist'
 import { IIssuanceBranding } from '../src'
 import issuanceBrandingAgentLogic from './shared/issuanceBrandingAgentLogic'
-
-jest.setTimeout(30000)
 
 const port = 3002
 const basePath = '/agent'
@@ -54,10 +54,9 @@ const setup = async (): Promise<boolean> => {
   })
 }
 
-const tearDown = async (): Promise<boolean> => {
+const tearDown = async (): Promise<void> => {
   restServer.close()
-  await (await dbConnection).close()
-  return true
+  await (await dbConnection).destroy()
 }
 
 const testContext = {

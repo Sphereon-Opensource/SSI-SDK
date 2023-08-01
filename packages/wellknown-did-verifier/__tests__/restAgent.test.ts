@@ -10,8 +10,7 @@ import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { IWellKnownDidVerifier } from '../src/types/IWellKnownDidVerifier'
 import { ServiceTypesEnum } from '@sphereon/wellknown-dids-client'
 import wellKnownDidVerifierAgentLogic from './shared/wellKnownDidVerifierAgentLogic'
-
-jest.setTimeout(30000)
+import { describe, vi } from 'vitest'
 
 const port = 3002
 const basePath = '/agent'
@@ -75,7 +74,7 @@ const setup = async (): Promise<boolean> => {
     ],
   }
 
-  agent.resolveDid = jest.fn().mockReturnValue(Promise.resolve({ didDocument: DOCUMENT }))
+  agent.resolveDid = vi.fn().mockReturnValue(Promise.resolve({ didDocument: DOCUMENT }))
 
   serverAgent = agent
 
@@ -96,9 +95,8 @@ const setup = async (): Promise<boolean> => {
   })
 }
 
-const tearDown = async (): Promise<boolean> => {
+const tearDown = async (): Promise<void> => {
   restServer.close()
-  return true
 }
 
 const testContext = {

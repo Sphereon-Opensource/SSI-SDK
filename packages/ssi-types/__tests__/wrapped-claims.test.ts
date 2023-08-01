@@ -9,6 +9,7 @@ import {
   OriginalType,
   WrappedVerifiablePresentation,
 } from '../src'
+import { describe, it, expect } from 'vitest'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')

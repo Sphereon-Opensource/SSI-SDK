@@ -8,8 +8,7 @@ import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig, createObjects } from '@sphereon/ssi-sdk.agent-config'
 import { IMsRequestApi } from '../src/types/IMsRequestApi'
 import msRequestApiAgentLogic from './shared/msRequestApiAgentLogic'
-
-jest.setTimeout(30000)
+import { describe } from 'vitest'
 
 const port = 3002
 const basePath = '/agent'
@@ -51,9 +50,8 @@ const setup = async (): Promise<boolean> => {
   })
 }
 
-const tearDown = async (): Promise<boolean> => {
+const tearDown = async (): Promise<void> => {
   restServer.close()
-  return true
 }
 
 const testContext = {
@@ -62,6 +60,6 @@ const testContext = {
   tearDown,
 }
 
-xdescribe('REST integration tests', () => {
+describe.skip('REST integration tests', () => {
   msRequestApiAgentLogic(testContext)
 })

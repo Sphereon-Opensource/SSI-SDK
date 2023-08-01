@@ -3,10 +3,8 @@
  */
 
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
-
-jest.setTimeout(30000)
-
 import ssiQrCodeProviderLogic from './shared/ssiQrCodeProviderLogic'
+import { describe } from 'vitest'
 
 let agent: any
 
@@ -18,9 +16,7 @@ const setup = async (): Promise<boolean> => {
   return true
 }
 
-const tearDown = async (): Promise<boolean> => {
-  return true
-}
+const tearDown = async (): Promise<void> => {}
 
 const getAgent = () => agent
 const testContext = { getAgent, setup, tearDown }

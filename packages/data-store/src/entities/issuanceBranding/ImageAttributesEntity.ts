@@ -9,19 +9,19 @@ export class ImageAttributesEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'uri', length: 255, nullable: true, unique: false })
+  @Column({ name: 'uri', type: 'varchar', length: 255, nullable: true, unique: false })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank image uri are not allowed' })
   uri?: string
 
-  @Column({ name: 'dataUri', length: 255, nullable: true, unique: false })
+  @Column({ name: 'dataUri', type: 'varchar', length: 255, nullable: true, unique: false })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank image data uri are not allowed' })
   dataUri?: string
 
-  @Column({ name: 'mediaType', length: 255, nullable: true, unique: false })
+  @Column({ name: 'mediaType', type: 'varchar', length: 255, nullable: true, unique: false })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank image types are not allowed' })
   mediaType?: string
 
-  @Column({ name: 'alt', length: 255, nullable: true, unique: false })
+  @Column({ name: 'alt', type: 'varchar', length: 255, nullable: true, unique: false })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank image alts are not allowed' })
   alt?: string
 

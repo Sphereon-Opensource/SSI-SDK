@@ -12,7 +12,8 @@
   },
   "scripts": {
     "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build:clean": "tsc --build --clean && tsc --build",
+    "build:copyfiles": "copyfiles plugin.schema.json dist"
   },
   "dependencies": {
     "@veramo/core": "5.3.0",

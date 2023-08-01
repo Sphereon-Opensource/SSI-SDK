@@ -3,7 +3,7 @@ import { DidConfigurationResourceEntity } from './entities/DidConfigurationResou
 /**
  * @public
  */
-const schema = require('../plugin.schema.json')
+const schema = require('./plugin.schema.json')
 export { schema }
 export { WellKnownDidIssuer } from './agent/WellKnownDidIssuer'
 export * from './types/IWellKnownDidIssuer'

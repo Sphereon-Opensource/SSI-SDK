@@ -8,8 +8,8 @@
   "license": "Apache-2.0",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "build": "pnpm build:js && pnpm build:copyfiles && pnpm build:api && pnpm build:schema",
-    "build:clean": "lerna clean -y && pnpm install && lerna run build:clean --concurrency 1 && pnpm build:copyfiles && pnpm build:schema",
+    "build": "pnpm build:js && pnpm build:api && pnpm build:schema && pnpm build:copyfiles",
+    "build:clean": "lerna clean -y && pnpm install && lerna run build:clean --concurrency 1 && pnpm build:schema && pnpm build:copyfiles",
     "build:js": "pnpm -r --stream build",
     "build:api": "pnpm -r --stream extract-api",
     "build:schema": "pnpm -r --stream generate-plugin-schema",
@@ -46,6 +46,7 @@
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
     "codecov": "^3.8.3",
+    "copyfiles": "^2.4.1",
     "cross-fetch": "^3.1.5",
     "did-jwt": "6.11.6",
     "eslint": "^8.35.0",

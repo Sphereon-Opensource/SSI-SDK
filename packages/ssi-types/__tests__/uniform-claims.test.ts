@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import { CredentialMapper, ICredential, IVerifiableCredential, ICredentialSubject, W3CVerifiableCredential } from '../src'
+import { describe, it, expect } from 'vitest'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')

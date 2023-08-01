@@ -19,15 +19,15 @@ export class ContactEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'name', length: 255, nullable: false, unique: true })
+  @Column({ name: 'name', type: 'varchar', length: 255, nullable: false, unique: true })
   @IsNotEmpty({ message: 'Blank names are not allowed' })
   name!: string
 
-  @Column({ name: 'alias', length: 255, nullable: false, unique: true })
+  @Column({ name: 'alias', type: 'varchar', length: 255, nullable: false, unique: true })
   @IsNotEmpty({ message: 'Blank aliases are not allowed' })
   alias!: string
 
-  @Column({ name: 'uri', length: 255 })
+  @Column({ name: 'uri', type: 'varchar', length: 255 })
   uri?: string
 
   @OneToMany(() => IdentityEntity, (identity: IdentityEntity) => identity.contact, {

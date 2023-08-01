@@ -19,10 +19,11 @@ import { SphereonEd25519Signature2018 } from '../../suites'
 import { ICredentialHandlerLDLocal, MethodNames } from '../../types'
 import { ControllerProofPurpose } from '../../types'
 import { boaExampleVC, ltoDIDResolutionResult } from '../mocks'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 const LTO_DID = 'did:lto:3MsS3gqXkcx9m4wYSbfprYfjdZTFmx2ofdX'
 
-export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
+export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Promise<void> }) => {
   describe('Issuer Agent Plugin', () => {
     let didKeyIdentifier: IIdentifier
     let didLtoIdentifier: IIdentifier
@@ -124,9 +125,7 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
       expect(verified).toBeTruthy()
     })
 
-    xit('should verify a VC API issued VC with status list and create/verify a VP', async () => {
-      jest.setTimeout(100000)
-
+    it.skip('should verify a VC API issued VC with status list and create/verify a VP', async () => {
       const verifiableCredential = boaExampleVC
 
       const verified = await agent.verifyCredentialLDLocal({

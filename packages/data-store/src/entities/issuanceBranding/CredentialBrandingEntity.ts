@@ -21,11 +21,11 @@ export class CredentialBrandingEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'vcHash', length: 255, nullable: false, unique: true })
+  @Column({ name: 'vcHash', type: 'varchar', length: 255, nullable: false, unique: true })
   @IsNotEmpty({ message: 'Blank vcHashes are not allowed' })
   vcHash!: string
 
-  @Column({ name: 'issuerCorrelationId', length: 255, nullable: false, unique: false })
+  @Column({ name: 'issuerCorrelationId', type: 'varchar', length: 255, nullable: false, unique: false })
   @IsNotEmpty({ message: 'Blank issuerCorrelationIds are not allowed' })
   issuerCorrelationId!: string
 

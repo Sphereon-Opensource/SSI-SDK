@@ -14,13 +14,11 @@ import { SphereonEd25519Signature2018 } from '../suites'
 import { SphereonEd25519Signature2020 } from '../suites'
 import { ICredentialHandlerLDLocal, MethodNames } from '../types'
 import { diwalaVC } from './fixtures/diwala'
-
-jest.setTimeout(100000)
+import { beforeAll, describe, expect, it } from 'vitest'
 
 describe('Diwala issued VC', () => {
   let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialHandlerLDLocal>
 
-  // jest.setTimeout(1000000)
   beforeAll(async () => {
     agent = createAgent({
       plugins: [

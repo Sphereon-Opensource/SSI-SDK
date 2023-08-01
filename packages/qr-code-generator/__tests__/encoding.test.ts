@@ -1,6 +1,7 @@
 import base64url from 'base64url'
 import { DidCommOutOfBandMessage } from '../src/agent/utils'
 import { oobInvitation } from './shared/fixtures'
+import { describe, it, expect } from 'vitest'
 
 describe('SSI QR Code', () => {
   it('should create json value', async () => {

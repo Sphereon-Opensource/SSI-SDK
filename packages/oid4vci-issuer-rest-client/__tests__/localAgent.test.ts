@@ -1,6 +1,6 @@
 import { createObjects, getConfig } from '../../agent-config/dist'
 
-jest.setTimeout(30000)
+import { describe } from 'vitest'
 
 import issuanceRestClientAgentLogic from './shared/issuanceRestClientAgentLogic'
 import nock from 'nock'
@@ -28,9 +28,7 @@ const setup = async (): Promise<boolean> => {
   return true
 }
 
-const tearDown = async (): Promise<boolean> => {
-  return true
-}
+const tearDown = async (): Promise<void> => {}
 
 const getAgent = () => agent
 const testContext = {

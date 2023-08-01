@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { createAgent, TAgent, IDataStore, IDataStoreORM, VerifiableCredential, FindArgs, TCredentialColumns } from '@veramo/core'
 import { Entities, DataStore, DataStoreORM } from '@veramo/data-store'
 import { DataSource } from 'typeorm'
+import { describe, it, expect, beforeAll, vi, afterAll } from 'vitest'
 
 type ConfiguredAgent = TAgent<IMsRequestApi & IDataStore & IDataStoreORM>
 const did1 = 'did:test:111'
@@ -17,22 +18,22 @@ var requestIssuanceResponse: IIssueRequestResponse = {
   pin: '3683',
 }
 
-export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
+export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<void> }) => {
   describe('@sphereon/ssi-sdk.ms-request-api', () => {
     let agent: ConfiguredAgent
 
     beforeAll(async () => {
-      jest.mock('../../src/IssuerUtil', () => {
+      vi.mock('../../src/IssuerUtil', () => {
         return {
-          fetchIssuanceRequestMs: jest.fn().mockResolvedValue(requestIssuanceResponse),
-          generatePin: jest.fn().mockResolvedValue(6363),
+          fetchIssuanceRequestMs: vi.fn().mockResolvedValue(requestIssuanceResponse),
+          generatePin: vi.fn().mockResolvedValue(6363),
         }
       })
 
-      jest.mock('@sphereon/ssi-sdk.ms-authenticator', () => {
+      vi.mock('@sphereon/ssi-sdk.ms-authenticator', () => {
         return {
-          ClientCredentialAuthenticator: jest.fn().mockResolvedValue('ey...'),
-          checkMsIdentityHostname: jest.fn().mockResolvedValue(MsAuthenticator.MS_DID_ENDPOINT_EU),
+          ClientCredentialAuthenticator: vi.fn().mockResolvedValue('ey...'),
+          checkMsIdentityHostname: vi.fn().mockResolvedValue(MsAuthenticator.MS_DID_ENDPOINT_EU),
         }
       })
       await testContext.setup()
@@ -73,7 +74,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       var id = uuidv4()
       clientIssueRequest.clientIssuanceConfig.callback.state = id
 
-      const fetchIssuanceRequestMsMock = jest.fn().mockResolvedValue(requestIssuanceResponse)
+      const fetchIssuanceRequestMsMock = vi.fn().mockResolvedValue(requestIssuanceResponse)
       fetchIssuanceRequestMs.prototype = fetchIssuanceRequestMsMock
 
       return await expect(agent.issuanceRequestMsVc(clientIssueRequest)).resolves.not.toBeNull

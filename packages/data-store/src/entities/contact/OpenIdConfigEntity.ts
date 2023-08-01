@@ -5,16 +5,16 @@ import { ConnectionEntity } from './ConnectionEntity'
 
 @ChildEntity('OpenIdConfig')
 export class OpenIdConfigEntity extends BaseConfigEntity {
-  @Column({ name: 'client_id', length: 255, nullable: false })
+  @Column({ name: 'client_id', type: 'varchar', length: 255, nullable: false })
   clientId!: string
 
-  @Column({ name: 'client_secret', length: 255, nullable: false })
+  @Column({ name: 'client_secret', type: 'varchar', length: 255, nullable: false })
   clientSecret!: string
 
   @Column('simple-array', { name: 'scopes', nullable: false })
   scopes!: Array<string>
 
-  @Column({ name: 'issuer', length: 255, nullable: false })
+  @Column({ name: 'issuer', type: 'varchar', length: 255, nullable: false })
   issuer!: string
 
   @Column('text', { name: 'redirect_url', nullable: false })

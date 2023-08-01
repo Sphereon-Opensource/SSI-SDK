@@ -14,8 +14,7 @@ import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { getUniResolver } from '@sphereon/did-uni-client'
 import didAuthSiopOpAuthenticatorAgentLogic from './shared/didAuthSiopOpAuthenticatorAgentLogic'
 import { PresentationSignCallback } from '@sphereon/did-auth-siop'
-
-jest.setTimeout(30000)
+import { describe } from 'vitest'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -84,9 +83,8 @@ const setup = async (): Promise<boolean> => {
   })
 }
 
-const tearDown = async (): Promise<boolean> => {
+const tearDown = async (): Promise<void> => {
   restServer.close()
-  return true
 }
 
 const testContext = {
@@ -96,6 +94,6 @@ const testContext = {
   isRestTest: true,
 }
 
-xdescribe('REST integration tests', () => {
+describe.skip('REST integration tests', () => {
   didAuthSiopOpAuthenticatorAgentLogic(testContext)
 })

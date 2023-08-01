@@ -2,6 +2,7 @@ import { ContextDoc } from '@veramo/credential-ld'
 
 import { LdContextLoader } from '../ld-context-loader'
 import { LdDefaultContexts } from '../ld-default-contexts'
+import { describe, it, expect } from 'vitest'
 
 describe('credential-ld context loader', () => {
   const customContext: Record<string, ContextDoc> = {

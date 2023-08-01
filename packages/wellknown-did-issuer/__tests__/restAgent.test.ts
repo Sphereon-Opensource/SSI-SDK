@@ -10,8 +10,7 @@ import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 
 import { IWellKnownDidIssuer } from '../src/types/IWellKnownDidIssuer'
 import wellKnownDidIssuerAgentLogic from './shared/wellKnownDidIssuerAgentLogic'
-
-jest.setTimeout(30000)
+import { describe, vi, vitest } from 'vitest'
 
 const port = 3002
 const basePath = '/agent'
@@ -76,7 +75,7 @@ const setup = async (): Promise<boolean> => {
     null
   )
 
-  agent.didManagerGet = jest.fn().mockReturnValue(
+  agent.didManagerGet = vi.fn().mockReturnValue(
     Promise.resolve({
       did: 'did:key:abc',
       services: [
@@ -108,10 +107,9 @@ const setup = async (): Promise<boolean> => {
   })
 }
 
-const tearDown = async (): Promise<boolean> => {
+const tearDown = async (): Promise<void> => {
   await (await dbConnection).close()
   restServer.close()
-  return true
 }
 
 const testContext = {

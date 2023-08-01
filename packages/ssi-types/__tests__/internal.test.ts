@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import { CredentialMapper, IVerifiableCredential } from '../src'
 import { VerifiableCredential } from '@veramo/core'
+import { describe, it, expect } from 'vitest'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')

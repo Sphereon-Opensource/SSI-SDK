@@ -16,7 +16,7 @@ export class IssuerLocaleBrandingEntity extends BaseLocaleBrandingEntity {
   @JoinColumn({ name: 'issuerBrandingId' })
   issuerBranding!: IssuerBrandingEntity
 
-  @Column({ name: 'issuerBrandingId', nullable: false })
+  @Column({ name: 'issuerBrandingId', type: 'varchar', nullable: false })
   issuerBrandingId!: string
 }
 

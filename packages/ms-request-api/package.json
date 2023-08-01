@@ -12,7 +12,8 @@
   "scripts": {
     "build": "tsc --build",
     "build:clean": "tsc --build --clean && tsc --build",
-    "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
+    "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema",
+    "build:copyfiles": "copyfiles plugin.schema.json dist"
   },
   "dependencies": {
     "@sphereon/ssi-sdk.ms-authenticator": "workspace:*",

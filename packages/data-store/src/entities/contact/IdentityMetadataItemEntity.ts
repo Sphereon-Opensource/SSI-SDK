@@ -8,11 +8,11 @@ export class IdentityMetadataItemEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'label', length: 255, nullable: false })
+  @Column({ name: 'label', type: 'varchar', length: 255, nullable: false })
   @IsNotEmpty({ message: 'Blank metadata labels are not allowed' })
   label!: string
 
-  @Column({ name: 'value', length: 255, nullable: false })
+  @Column({ name: 'value', type: 'varchar', length: 255, nullable: false })
   @IsNotEmpty({ message: 'Blank metadata values are not allowed' })
   value!: string
 

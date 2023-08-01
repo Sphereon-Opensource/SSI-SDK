@@ -1,8 +1,7 @@
 import * as fs from 'fs'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import presentationExchangeAgentLogic from './shared/presentationExchangeAgentLogic'
-
-jest.setTimeout(30000)
+import { describe } from 'vitest'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -34,9 +33,7 @@ const setup = async (): Promise<boolean> => {
   return true
 }
 
-const tearDown = async (): Promise<boolean> => {
-  return true
-}
+const tearDown = async (): Promise<void> => {}
 
 const getAgent = () => agent
 const testContext = {

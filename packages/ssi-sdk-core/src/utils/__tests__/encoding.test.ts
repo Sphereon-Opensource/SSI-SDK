@@ -1,4 +1,5 @@
 import { hexToMultibase, MultibaseFormat, multibaseToHex } from '../encoding'
+import { describe, it, expect } from 'vitest'
 
 describe('@sphereon/ssi-sdk.core:encoding', () => {
   const BASE58_EXAMPLE = 'C3CPq7c8PY'

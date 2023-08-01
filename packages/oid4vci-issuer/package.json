@@ -11,7 +11,8 @@
   },
   "scripts": {
     "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build:clean": "tsc --build --clean && tsc --build",
+    "build:copyfiles": "copyfiles plugin.schema.json dist"
   },
   "dependencies": {
     "@sphereon/oid4vci-common": "0.6.0",

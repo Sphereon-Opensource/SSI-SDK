@@ -9,8 +9,7 @@ import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/dist'
 import { IContactManager } from '../src'
 import contactManagerAgentLogic from './shared/contactManagerAgentLogic'
-
-jest.setTimeout(30000)
+import { describe } from 'vitest'
 
 const port = 3002
 const basePath = '/agent'
@@ -54,10 +53,9 @@ const setup = async (): Promise<boolean> => {
   })
 }
 
-const tearDown = async (): Promise<boolean> => {
+const tearDown = async (): Promise<void> => {
   restServer.close()
-  await (await dbConnection).close()
-  return true
+  await (await dbConnection).destroy()
 }
 
 const testContext = {

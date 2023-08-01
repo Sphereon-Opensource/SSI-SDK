@@ -1,7 +1,6 @@
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import msRequestApiAgentLogic from './shared/msRequestApiAgentLogic'
-
-jest.setTimeout(30000)
+import { describe, it, expect } from 'vitest'
 
 let agent: any
 
@@ -12,13 +11,11 @@ const setup = async (): Promise<boolean> => {
   return true
 }
 
-const tearDown = async (): Promise<boolean> => {
-  return true
-}
+const tearDown = async (): Promise<void> => {}
 
 const getAgent = () => agent
 const testContext = { getAgent, setup, tearDown }
 
-xdescribe('Local integration tests', () => {
+describe.skip('Local integration tests', () => {
   msRequestApiAgentLogic(testContext)
 })

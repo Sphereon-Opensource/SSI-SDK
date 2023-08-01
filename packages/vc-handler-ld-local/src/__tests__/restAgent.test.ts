@@ -12,8 +12,7 @@ import { LdDefaultContexts } from '../ld-default-contexts'
 import { SphereonBbsBlsSignature2020, SphereonEd25519Signature2018, SphereonEd25519Signature2020 } from '../suites'
 
 import vcHandlerLocalAgentLogic from './shared/vcHandlerLocalAgentLogic'
-
-jest.setTimeout(30000)
+import { describe } from 'vitest'
 
 const port = 4002
 const basePath = '/agent'
@@ -48,9 +47,8 @@ const setup = async (): Promise<boolean> => {
   })
 }
 
-const tearDown = async (): Promise<boolean> => {
+const tearDown = async (): Promise<void> => {
   restServer?.close()
-  return true
 }
 
 const testContext = { setup, tearDown }

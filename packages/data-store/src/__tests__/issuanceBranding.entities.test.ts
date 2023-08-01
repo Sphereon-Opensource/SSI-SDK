@@ -15,6 +15,7 @@ import {
   IBasicIssuerLocaleBranding,
   IssuerBrandingEntity,
 } from '../index'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource

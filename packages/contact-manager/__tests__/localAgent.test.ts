@@ -18,7 +18,7 @@ const setup = async (): Promise<boolean> => {
 }
 
 const tearDown = async (): Promise<void> => {
-  await (await dbConnection).close()
+  await (await dbConnection).destroy()
 }
 
 const getAgent = () => agent

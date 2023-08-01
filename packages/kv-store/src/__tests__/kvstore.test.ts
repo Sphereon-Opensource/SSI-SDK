@@ -1,5 +1,6 @@
 import { KeyValueStore } from '../key-value-store'
 import { IKeyValueStore } from '../key-value-types'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
 interface TestValue {
   stringProp: string

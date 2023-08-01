@@ -11,8 +11,7 @@ import { Resolver } from 'did-resolver'
 import { getDidKeyResolver } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import presentationExchangeAgentLogic from './shared/presentationExchangeAgentLogic'
-
-jest.setTimeout(30000)
+import { describe } from 'vitest'
 
 const port = 3002
 const basePath = '/agent'
@@ -62,9 +61,8 @@ const setup = async (): Promise<boolean> => {
   })
 }
 
-const tearDown = async (): Promise<boolean> => {
+const tearDown = async (): Promise<void> => {
   restServer.close()
-  return true
 }
 
 const testContext = {

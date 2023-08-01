@@ -68,6 +68,9 @@ importers:
       codecov:
         specifier: ^3.8.3
         version: 3.8.3
+      copyfiles:
+        specifier: ^2.4.1
+        version: 2.4.1
       cross-fetch:
         specifier: ^3.1.5
         version: 3.1.5

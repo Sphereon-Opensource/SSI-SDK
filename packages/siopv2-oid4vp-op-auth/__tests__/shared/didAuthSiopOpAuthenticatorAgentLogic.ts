@@ -17,6 +17,7 @@ import {
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
 import { CredentialMapper } from '@sphereon/ssi-types'
 import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
+import { afterAll, beforeAll, describe, expect, it, Mock, vi } from 'vitest'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -27,14 +28,14 @@ function getFileAsJson(path: string) {
 }
 
 const nock = require('nock')
-jest.mock('@veramo/utils', () => ({
-  ...jest.requireActual('@veramo/utils'),
-  mapIdentifierKeysToDoc: jest.fn(),
+vi.mock('@veramo/utils', () => ({
+  ...vi.importActual('@veramo/utils'),
+  mapIdentifierKeysToDoc: vi.fn(),
 }))
 
-jest.mock('@sphereon/ssi-sdk-ext.did-utils', () => ({
-  ...jest.requireActual('@sphereon/ssi-sdk-ext.did-utils'),
-  mapIdentifierKeysToDocWithJwkSupport: jest.fn(),
+vi.mock('@sphereon/ssi-sdk-ext.did-utils', () => ({
+  ...vi.importActual('@sphereon/ssi-sdk-ext.did-utils'),
+  mapIdentifierKeysToDocWithJwkSupport: vi.fn(),
 }))
 
 type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator & IDataStore>
@@ -164,7 +165,7 @@ const createAuthorizationResponseMockedResult = {
 export default (testContext: {
   getAgent: () => ConfiguredAgent
   setup: () => Promise<boolean>
-  tearDown: () => Promise<boolean>
+  tearDown: () => Promise<void>
   isRestTest: boolean
 }) => {
   describe('DID Auth SIOP OP Authenticator Agent Plugin', () => {
@@ -186,25 +187,25 @@ export default (testContext: {
 
       nock(redirectUrl).get(`?stateId=${stateId}`).times(5).reply(200, openIDURI)
 
-      const mockedMapIdentifierKeysToDocMethod = mapIdentifierKeysToDoc as jest.Mock
+      const mockedMapIdentifierKeysToDocMethod = mapIdentifierKeysToDoc as Mock
       mockedMapIdentifierKeysToDocMethod.mockReturnValue(Promise.resolve(authKeys))
 
-      const mockedMapIdentifierKeysToDocMethodWithJwkSupport = mapIdentifierKeysToDocWithJwkSupport as jest.Mock
+      const mockedMapIdentifierKeysToDocMethodWithJwkSupport = mapIdentifierKeysToDocWithJwkSupport as Mock
       mockedMapIdentifierKeysToDocMethodWithJwkSupport.mockReturnValue(Promise.resolve(authKeys))
 
-      const mockedparseAuthorizationRequestURIMethod = jest.fn()
+      const mockedparseAuthorizationRequestURIMethod = vi.fn()
       OP.prototype.parseAuthorizationRequestURI = mockedparseAuthorizationRequestURIMethod
       mockedparseAuthorizationRequestURIMethod.mockReturnValue(Promise.resolve(authorizationRequest))
 
-      const mockedverifyAuthorizationRequestMethod = jest.fn()
+      const mockedverifyAuthorizationRequestMethod = vi.fn()
       OP.prototype.verifyAuthorizationRequest = mockedverifyAuthorizationRequestMethod
       mockedverifyAuthorizationRequestMethod.mockReturnValue(Promise.resolve(authorizationVerificationMockedResult))
 
-      const mockedcreateAuthorizationResponse = jest.fn()
+      const mockedcreateAuthorizationResponse = vi.fn()
       OP.prototype.createAuthorizationResponse = mockedcreateAuthorizationResponse
       mockedcreateAuthorizationResponse.mockReturnValue(Promise.resolve(createAuthorizationResponseMockedResult))
 
-      const mocksubmitAuthorizationResponseMethod = jest.fn()
+      const mocksubmitAuthorizationResponseMethod = vi.fn()
       OP.prototype.submitAuthorizationResponse = mocksubmitAuthorizationResponseMethod
       mocksubmitAuthorizationResponseMethod.mockReturnValue(Promise.resolve({ status: 200, statusText: 'example_value' }))
 

@@ -1,8 +1,7 @@
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { Connection } from 'typeorm'
 import wellKnownDidIssuerAgentLogic from './shared/wellKnownDidIssuerAgentLogic'
-
-jest.setTimeout(30000)
+import { describe, vi } from 'vitest'
 
 let agent: any
 let dbConnection: Promise<Connection>
@@ -51,7 +50,7 @@ const setup = async (): Promise<boolean> => {
     null
   )
 
-  localAgent.didManagerGet = jest.fn().mockReturnValue(
+  localAgent.didManagerGet = vi.fn().mockReturnValue(
     Promise.resolve({
       did: DID,
       services: [
@@ -69,9 +68,8 @@ const setup = async (): Promise<boolean> => {
   return true
 }
 
-const tearDown = async (): Promise<boolean> => {
-  await (await dbConnection).close()
-  return true
+const tearDown = async (): Promise<void> => {
+  await (await dbConnection).destroy()
 }
 
 const getAgent = () => agent

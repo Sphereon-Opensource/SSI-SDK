@@ -20,7 +20,7 @@ import {
 
 type ConfiguredAgent = TAgent<IQRCodeGenerator>
 
-export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
+export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<void> }) => {
   describe('SSI QR Code', () => {
     let agent: ConfiguredAgent
 

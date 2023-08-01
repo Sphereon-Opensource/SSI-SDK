@@ -1,6 +1,7 @@
 import { ValidationStatusEnum } from '@sphereon/wellknown-dids-client'
 import { TAgent, IResolver } from '@veramo/core'
 import { IWellKnownDidVerifier } from '../../src/types/IWellKnownDidVerifier'
+import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 
 const nock = require('nock')
 
@@ -9,7 +10,7 @@ type ConfiguredAgent = TAgent<IWellKnownDidVerifier | IResolver>
 export default (testContext: {
   getAgent: () => ConfiguredAgent
   setup: () => Promise<boolean>
-  tearDown: () => Promise<boolean>
+  tearDown: () => Promise<void>
   isRestTest: boolean
 }) => {
   describe('Well-Known DID Verifier Agent Plugin', () => {

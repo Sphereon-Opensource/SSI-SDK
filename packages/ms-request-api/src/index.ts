@@ -1,7 +1,7 @@
 /**
  * @public
  */
-const schema = require('../plugin.schema.json')
+const schema = require('./plugin.schema.json')
 export { schema }
 export { MsRequestApi } from './agent/MsRequestApi'
 export * from './types/IMsRequestApi'

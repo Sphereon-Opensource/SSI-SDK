@@ -26,6 +26,7 @@ export class IdentityEntity extends BaseEntity {
 
   @Column({
     name: 'alias',
+    type: 'varchar',
     length: 255,
     nullable: false,
     unique: true,
@@ -71,7 +72,7 @@ export class IdentityEntity extends BaseEntity {
   })
   contact!: ContactEntity
 
-  @Column({ name: 'contactId', nullable: true })
+  @Column({ name: 'contactId', type: 'varchar', nullable: true })
   contactId!: string
 
   // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.

@@ -7,7 +7,7 @@ type ConfiguredAgent = TAgent<IWellKnownDidIssuer | IDIDManager>
 export default (testContext: {
   getAgent: () => ConfiguredAgent
   setup: () => Promise<boolean>
-  tearDown: () => Promise<boolean>
+  tearDown: () => Promise<void>
   isRestTest: boolean
 }) => {
   describe('Well-Known DID Issuer Agent Plugin', () => {

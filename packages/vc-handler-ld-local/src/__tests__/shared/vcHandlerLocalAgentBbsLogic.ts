@@ -13,7 +13,7 @@ import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { Resolver } from 'did-resolver'
 import { AssertionProofPurpose } from '../../types'
 
-export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }) => {
+export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Promise<void> }) => {
   describe('Issuer Agent Plugin', () => {
     let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialHandlerLDLocal>
     let didKeyIdentifier: IIdentifier

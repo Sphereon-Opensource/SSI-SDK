@@ -8,8 +8,7 @@ import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/dist'
 import { IOID4VCIRestClient } from '../src'
 import issuanceRestClientAgentLogic from './shared/issuanceRestClientAgentLogic'
-
-jest.setTimeout(30000)
+import { describe } from 'vitest'
 
 const port = 3002
 const basePath = '/agent'
@@ -51,9 +50,8 @@ const setup = async (): Promise<boolean> => {
   })
 }
 
-const tearDown = async (): Promise<boolean> => {
+const tearDown = async (): Promise<void> => {
   restServer.close()
-  return true
 }
 
 const testContext = {
@@ -63,6 +61,6 @@ const testContext = {
 }
 
 // todo: for now we're skipping this test, uncomment if we want the integration tests
-xdescribe('REST integration tests', () => {
+describe.skip('REST integration tests', () => {
   issuanceRestClientAgentLogic(testContext)
 })

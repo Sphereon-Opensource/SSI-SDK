@@ -2,8 +2,7 @@ import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 
 import { ServiceTypesEnum } from '@sphereon/wellknown-dids-client'
 import wellKnownDidVerifierAgentLogic from './shared/wellKnownDidVerifierAgentLogic'
-
-jest.setTimeout(30000)
+import { describe, vi } from 'vitest'
 
 let agent: any
 
@@ -51,16 +50,14 @@ const setup = async (): Promise<boolean> => {
     ],
   }
 
-  localAgent.resolveDid = jest.fn().mockReturnValue(Promise.resolve({ didDocument: DOCUMENT }))
+  localAgent.resolveDid = vi.fn().mockReturnValue(Promise.resolve({ didDocument: DOCUMENT }))
 
   agent = localAgent
 
   return true
 }
 
-const tearDown = async (): Promise<boolean> => {
-  return true
-}
+const tearDown = async (): Promise<void> => {}
 
 const getAgent = () => agent
 const testContext = {

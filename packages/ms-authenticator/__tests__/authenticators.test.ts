@@ -1,6 +1,6 @@
 import { getMSClientCredentialAccessToken, UsernamePasswordAuthenticator } from '../src'
 import * as process from 'process'
-jest.setTimeout(100000)
+import { describe, it, expect } from 'vitest'
 
 describe('@sphereon/ssi-sdk.ms-authenticator', () => {
   it('should authenticate using clientCredential', async () => {
