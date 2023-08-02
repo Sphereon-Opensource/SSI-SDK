@@ -1,7 +1,6 @@
 import {
   AuthorizationRequestState,
   AuthorizationResponsePayload,
-  AuthorizationResponseState,
   decodeUriAsJson,
   VerifiedAuthorizationResponse,
 } from '@sphereon/did-auth-siop'
@@ -26,6 +25,7 @@ import {
   IVerifyAuthResponseStateArgs,
   schema,
   VerifiedDataMode,
+  AuthorizationResponseStateWithVerifiedData,
 } from '../index'
 import { RPInstance } from '../RPInstance'
 
@@ -91,7 +91,7 @@ export class SIOPv2RP implements IAgentPlugin {
     )
   }
 
-  private async siopGetResponseState(args: IGetAuthResponseStateArgs, context: IRequiredContext): Promise<AuthorizationResponseState | undefined> {
+  private async siopGetResponseState(args: IGetAuthResponseStateArgs, context: IRequiredContext): Promise<AuthorizationResponseStateWithVerifiedData | undefined> {
     const rpInstance = await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
       rp.get(context).then((rp) => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound))
     )
@@ -99,7 +99,7 @@ export class SIOPv2RP implements IAgentPlugin {
       return undefined
     }
 
-    const responseState = rpInstance as AuthorizationResponseState
+    const responseState = rpInstance as AuthorizationResponseStateWithVerifiedData
     if (
       responseState.status === AuthorizationResponseStateStatus.VERIFIED &&
       args.includeVerifiedData &&
@@ -128,7 +128,7 @@ export class SIOPv2RP implements IAgentPlugin {
               }
             })
           })
-          responseState.response.payload.verifiedData = allClaims
+          responseState.verifiedData = allClaims
       }
     }
     return responseState
