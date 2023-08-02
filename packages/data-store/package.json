@@ -4,6 +4,7 @@
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc --build",
     "typeorm": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js --config src/migrations/internal-migrations-ormconfig.ts",
@@ -14,7 +15,7 @@
   },
   "dependencies": {
     "@sphereon/ssi-types": "workspace:*",
-    "@veramo/core": "5.3.0",
+    "@veramo/core": "^5.3.0",
     "class-validator": "^0.14.0",
     "debug": "^4.3.4",
     "typeorm": "^0.3.12"

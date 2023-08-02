@@ -1,10 +1,10 @@
 import { defineWorkspace } from 'vitest/config'
 
 export default defineWorkspace([
-  'packages/*', {
+  {
     test: {
       testTimeout: 100000,
-      hookTimeout: 100000
-    }
-  }
+      hookTimeout: 100000,
+    },
+  },
 ])

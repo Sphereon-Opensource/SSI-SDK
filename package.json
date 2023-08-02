@@ -38,7 +38,7 @@
     ]
   },
   "dependencies": {
-    "@veramo/core": "5.3.0"
+    "@veramo/core": "^5.3.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
@@ -103,6 +103,7 @@
       "@veramo/url-handler": "5.3.0",
       "@sphereon/ssi-types": "workspace:*",
       "@sphereon/ssi-sdk.core": "workspace:*",
+      "@sphereon/pex": "2.1.1-unstable.0",
       "@noble/hashes": "1.2.0",
       "did-jwt": "6.11.6",
       "did-jwt-vc": "3.1.3",

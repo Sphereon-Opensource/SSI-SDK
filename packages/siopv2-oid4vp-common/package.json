@@ -5,6 +5,7 @@
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
   "private": false,

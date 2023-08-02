@@ -93,13 +93,14 @@ export async function createObjects(config: object, pointers: Record<string, str
     const args = objectConfig['$args']
     // console.log({module, member, type, query: parsed.query})
 
-    if (module.slice(0, 2) === './' || module.slice(0, 3) === '../') {
+    if (module.slice(0, 2) === './') {
       module = resolve(module)
     }
 
     const resolvedArgs = args !== undefined ? await resolveRefs(args) : []
     try {
-      let required = member ? (await import(module))[member] : await import(module)
+      const moduleImport = await import(module)
+      let required = member ? moduleImport[member] : moduleImport
       if (type === 'class') {
         object = new required(...resolvedArgs)
       } else if (type === 'function') {

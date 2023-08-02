@@ -125,7 +125,8 @@ export class PresentationExchange implements IAgentPlugin {
     return {
       id: args.presentationDefinition.id,
       selectResults,
-      filteredCredentials: selectResults.verifiableCredential?.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)) ?? [],
+      filteredCredentials:
+        selectResults.verifiableCredential?.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc as W3CVerifiableCredential)) ?? [],
     }
   }
 

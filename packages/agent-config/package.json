@@ -4,12 +4,14 @@
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc --build",
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@veramo/core": "5.3.0",
+    "@veramo/core": "^5.3.0",
+    "@veramo/data-store": "^5.3.0",
     "jsonpointer": "^5.0.1",
     "typeorm": "^0.3.12",
     "url-parse": "^1.5.10",

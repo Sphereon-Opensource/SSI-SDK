@@ -5,6 +5,7 @@
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "veramo": {
     "pluginInterfaces": {
       "IOID4VCIRestClient": "./src/types/IOID4VCIRestClient.ts"
@@ -13,18 +14,20 @@
   "scripts": {
     "build": "tsc --build",
     "build:clean": "tsc --build --clean && tsc --build",
+    "build:copyfiles": "copyfiles plugin.schema.json dist",
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
     "@sphereon/oid4vci-common": "0.6.0",
-    "@veramo/core": "5.3.0",
-    "cross-fetch": "^3.1.5"
+    "@veramo/core": "^5.3.0",
+    "cross-fetch": "^3.1.5",
+    "debug": "^4.3.4"
   },
   "devDependencies": {
     "@sphereon/ssi-sdk.dev": "workspace:*",
     "@types/node": "^18.16.3",
-    "@veramo/remote-client": "5.3.0",
-    "@veramo/remote-server": "5.3.0",
+    "@veramo/remote-client": "^5.3.0",
+    "@veramo/remote-server": "^5.3.0",
     "nock": "^13.3.0",
     "ts-node": "^10.9.1",
     "typescript": "4.9.5"

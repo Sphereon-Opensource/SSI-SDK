@@ -5,6 +5,7 @@
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "veramo": {
     "pluginInterfaces": {
       "IQRCodeGenerator": "./src/types/IQRCodeGenerator.ts"
@@ -16,7 +17,7 @@
     "build:copyfiles": "copyfiles plugin.schema.json dist"
   },
   "dependencies": {
-    "@veramo/core": "5.3.0",
+    "@veramo/core": "^5.3.0",
     "base64url": "^3.0.1",
     "react": "^18.2.0",
     "react-qr-code": "^2.0.11"
