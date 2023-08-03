@@ -6,7 +6,7 @@ import { IsNonEmptyStringConstraint } from '../validators'
 import { getConstraint } from '../../utils/ValidatorUtils'
 
 @Entity('ContactType')
-@Index(['type', 'tenantId'], { unique: true }) // TODO name example: 'IDX_CredentialLocaleBrandingEntity_credentialBranding_locale',
+@Index('IDX_ContactTypeEntity_type_tenantId', ['type', 'tenantId'], { unique: true }) // TODO use name for migrations
 export class ContactTypeEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
