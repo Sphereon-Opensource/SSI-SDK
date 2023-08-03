@@ -1,9 +1,20 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, BaseEntity } from 'typeorm'
-import { BaseConfigEntity, configFrom, isDidAuthConfig, isOpenIdConfig } from './BaseConfigEntity'
-import { BasicConnectionConfig, BasicDidAuthConfig, BasicOpenIdConfig, ConnectionTypeEnum, IBasicConnection, IConnection } from '../../types'
+import {
+  BaseConfigEntity,
+  configFrom, isDidAuthConfig, isOpenIdConfig
+} from './BaseConfigEntity'
+import {
+  BasicConnectionConfig,
+  BasicDidAuthConfig, BasicOpenIdConfig,
+  ConnectionTypeEnum, IBasicConnection, IConnection
+} from '../../types'
 import { IdentityEntity } from './IdentityEntity'
-import { OpenIdConfigEntity, openIdConfigEntityFrom } from './OpenIdConfigEntity'
-import { DidAuthConfigEntity, didAuthConfigEntityFrom } from './DidAuthConfigEntity'
+import {
+  OpenIdConfigEntity, openIdConfigEntityFrom
+} from './OpenIdConfigEntity'
+import {
+  DidAuthConfigEntity, didAuthConfigEntityFrom
+} from './DidAuthConfigEntity'
 
 @Entity('Connection')
 export class ConnectionEntity extends BaseEntity {
@@ -44,7 +55,6 @@ export const connectionFrom = (connection: ConnectionEntity): IConnection => {
   }
 }
 
-// TODO move to base config?
 const configEntityFrom = (config: BasicConnectionConfig): BaseConfigEntity => {
   if (isOpenIdConfig(config)) {
     return openIdConfigEntityFrom(<BasicOpenIdConfig>config)

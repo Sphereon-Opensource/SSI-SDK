@@ -1,6 +1,5 @@
 import {
   Entity,
-  // JoinColumn,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
@@ -11,11 +10,10 @@ import {
   BeforeUpdate,
 } from 'typeorm'
 import { ContactEntity } from './ContactEntity'
-import { IContactRelationship } from '../../types'
+import { BasicContactRelationship, IContactRelationship } from '../../types'
 
-@Entity()
-// @Index(['leftContactId', 'rightContactId'], { unique: true }) // TODO name\
-@Index(['left', 'right'], { unique: true }) // TODO name
+@Entity('ContactRelationship')
+@Index('IDX_ContactRelationshipEntity_left_right', ['left', 'right'], { unique: true })
 export class ContactRelationshipEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
@@ -24,7 +22,6 @@ export class ContactRelationshipEntity {
     nullable: false,
     onDelete: 'CASCADE',
   })
-  // @JoinColumn({ name: 'left_contact_id' })
   left!: ContactEntity
 
   @Column({ name: 'leftId', nullable: false })
@@ -34,7 +31,6 @@ export class ContactRelationshipEntity {
     nullable: false,
     onDelete: 'CASCADE',
   })
-  // @JoinColumn({ name: 'right_contact_id' })
   right!: ContactEntity
 
   @Column({ name: 'rightId', nullable: false })
@@ -49,29 +45,26 @@ export class ContactRelationshipEntity {
   @BeforeInsert()
   @BeforeUpdate()
   async checkRelationshipSides(): Promise<void> {
-    if (this.left.id === this.right.id) {
+    if ((this.left?.id ?? this.leftId) === (this.right?.id ?? this.rightId)) {
       return Promise.reject(Error('Cannot use the same id for both sides of the relationship'))
     }
   }
 }
 
-// TODO interface
-export const contactRelationshipEntityFrom = (relationship: { left: ContactEntity; right: ContactEntity }): ContactRelationshipEntity => {
-  // TODO convert IContact to ContactEntity here
-
+export const contactRelationshipEntityFrom = (relationship: BasicContactRelationship): ContactRelationshipEntity => {
   const contactRelationshipEntity: ContactRelationshipEntity = new ContactRelationshipEntity()
-  contactRelationshipEntity.left = relationship.left
-  contactRelationshipEntity.right = relationship.right
+  contactRelationshipEntity.leftId = relationship.leftId
+  contactRelationshipEntity.rightId = relationship.rightId
+
   return contactRelationshipEntity
 }
 
 export const contactRelationshipFrom = (relationship: ContactRelationshipEntity): IContactRelationship => {
   return {
     id: relationship.id,
-    leftId: relationship.leftId, //relationship.left.id,
-    rightId: relationship.rightId, //relationship.right.id,
+    leftId: relationship.leftId,
+    rightId: relationship.rightId,
     createdAt: relationship.createdAt,
     lastUpdatedAt: relationship.lastUpdatedAt,
   }
-  // TODO convert IContact to ContactEntity here
 }

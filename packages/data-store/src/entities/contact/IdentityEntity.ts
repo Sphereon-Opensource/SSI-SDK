@@ -75,13 +75,6 @@ export class IdentityEntity extends BaseEntity {
   @Column({ name: 'contactId', nullable: true })
   contactId!: string
 
-  // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.
-  @BeforeInsert()
-  @BeforeUpdate()
-  updateLastUpdatedDate(): void {
-    this.lastUpdatedAt = new Date()
-  }
-
   @BeforeInsert()
   @BeforeUpdate()
   async validate(): Promise<void> {

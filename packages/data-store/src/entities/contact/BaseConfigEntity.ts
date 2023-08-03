@@ -1,5 +1,10 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, TableInheritance } from 'typeorm'
-import { BasicConnectionConfig, ConnectionConfig, IDidAuthConfig, IOpenIdConfig } from '../../types'
+import {
+  BasicConnectionConfig,
+  ConnectionConfig,
+  IDidAuthConfig,
+  IOpenIdConfig
+} from '../../types'
 import { OpenIdConfigEntity } from './OpenIdConfigEntity'
 import { DidAuthConfigEntity } from './DidAuthConfigEntity'
 
@@ -11,12 +16,9 @@ export abstract class BaseConfigEntity extends BaseEntity {
 }
 
 export const configFrom = (config: BaseConfigEntity): ConnectionConfig => {
-  // @ts-ignore
   if (isOpenIdConfig(config)) {
     return openIdConfigFrom(<OpenIdConfigEntity>config)
-    // @ts-ignore
   } else if (isDidAuthConfig(config)) {
-    // @ts-ignore
     return didAuthConfigFrom(<DidAuthConfigEntity>config)
   }
 
@@ -29,7 +31,7 @@ export const openIdConfigFrom = (config: OpenIdConfigEntity): IOpenIdConfig => {
     clientId: config.clientId,
     clientSecret: config.clientSecret,
     scopes: config.scopes,
-    issuer: config.issuer!, // FIXME
+    issuer: config.issuer,
     redirectUrl: config.redirectUrl,
     dangerouslyAllowInsecureHttpRequests: config.dangerouslyAllowInsecureHttpRequests,
     clientAuthMethod: config.clientAuthMethod,
@@ -46,8 +48,8 @@ export const didAuthConfigFrom = (config: DidAuthConfigEntity): IDidAuthConfig =
   }
 }
 
-export const isOpenIdConfig = (config: BasicConnectionConfig): config is IOpenIdConfig =>
+export const isOpenIdConfig = (config: BasicConnectionConfig | BaseConfigEntity): config is IOpenIdConfig | OpenIdConfigEntity =>
   'clientSecret' in config && 'issuer' in config && 'redirectUrl' in config
 
-export const isDidAuthConfig = (config: BasicConnectionConfig): config is IDidAuthConfig =>
+export const isDidAuthConfig = (config: BasicConnectionConfig | BaseConfigEntity): config is IDidAuthConfig | DidAuthConfigEntity =>
   'identifier' in config && 'redirectUrl' in config && 'sessionId' in config

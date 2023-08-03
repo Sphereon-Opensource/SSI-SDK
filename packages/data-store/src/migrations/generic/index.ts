@@ -1,7 +1,6 @@
 import { CreateContacts1659463079429 } from './1-CreateContacts'
-// import { CreateContacts1690925872318 } from './2-CreateContacts'
+import { CreateContacts1690925872318 } from './2-CreateContacts'
 import { CreateIssuanceBranding1659463079429 } from './1-CreateIssuanceBranding'
-
 
 /**
  * The migrations array that SHOULD be used when initializing a TypeORM database connection.
@@ -12,6 +11,6 @@ import { CreateIssuanceBranding1659463079429 } from './1-CreateIssuanceBranding'
  */
 export const DataStoreMigrations = [
   CreateContacts1659463079429,
-  // CreateContacts1690925872318,
+  CreateContacts1690925872318,
   CreateIssuanceBranding1659463079429
 ]

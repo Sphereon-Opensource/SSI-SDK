@@ -432,51 +432,44 @@ describe('Contact store tests', (): void => {
     expect(result.identities.length).toEqual(2)
   })
 
-  // TODO fix test, its not throwing an error
-  // it('should throw error when adding contact with invalid identity', async (): Promise<void> => {
-  //   const contact: IBasicContact = {
-  //     uri: 'example.com',
-  //     contactType: {
-  //       type: ContactTypeEnum.PERSON,
-  //       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
-  //       name: 'something',
-  //     },
-  //     contactOwner: {
-  //       firstName: 'example_first_name',
-  //       middleName: 'example_middle_name',
-  //       lastName: 'example_last_name',
-  //       displayName: 'example_display_name',
-  //     },
-  //     identities: [
-  //       {
-  //         alias: 'test_alias1',
-  //         roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
-  //         identifier: {
-  //           type: CorrelationIdentifierEnum.DID,
-  //           correlationId: 'example_did1',
-  //         },
-  //       },
-  //       {
-  //         alias: 'test_alias2',
-  //         roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
-  //         identifier: {
-  //           type: CorrelationIdentifierEnum.DID,
-  //           correlationId: 'example_did2',
-  //         },
-  //       },
-  //     ],
-  //   }
-  //
-  //   const result: IContact = await contactStore.addContact(contact)
-  //
-  //   expect(result.name).toEqual(contact.name)
-  //   expect(result.alias).toEqual(contact.alias)
-  //   expect(result.uri).toEqual(contact.uri)
-  //   expect(result.identities.length).toEqual(2)
-  // })
+  it('should throw error when adding contact with invalid identity', async (): Promise<void> => {
+    const contact: IBasicContact = {
+      uri: 'example.com',
+      contactType: {
+        type: ContactTypeEnum.PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'something',
+      },
+      contactOwner: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+      identities: [
+        {
+          alias: 'test_alias1',
+          roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+          identifier: {
+            type: CorrelationIdentifierEnum.URL,
+            correlationId: 'example_did1',
+          },
+        },
+        {
+          alias: 'test_alias2',
+          roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+          identifier: {
+            type: CorrelationIdentifierEnum.DID,
+            correlationId: 'example_did2',
+          },
+        },
+      ],
+    }
 
-  // TODO test org and person
-  it('should throw error when adding contact with duplicate display name', async (): Promise<void> => {
+    await expect(contactStore.addContact(contact)).rejects.toThrow(`Identity with correlation type url should contain a connection`)
+  })
+
+  it('should throw error when adding person contact with duplicate display name', async (): Promise<void> => {
     const displayName = 'non_unique_value'
     const contact1: IBasicContact = {
       uri: 'example.com',
@@ -510,29 +503,41 @@ describe('Contact store tests', (): void => {
       },
     }
 
-    await expect(contactStore.addContact(contact2)).rejects.toThrow(`Duplicate names or display are not allowed. Display name: ${displayName}`)
+    await expect(contactStore.addContact(contact2)).rejects.toThrow(`Duplicate display names are not allowed. Display name: ${displayName}`)
   })
 
-  // TODO  // TODO test name
-  // it('should throw error when adding contact with duplicate name', async (): Promise<void> => {
-  //   const alias = 'test_alias'
-  //   const contact1: IBasicContact = {
-  //     name: 'test_name',
-  //     alias,
-  //     uri: 'example.com',
-  //   }
-  //   const savedContact1: IContact = await contactStore.addContact(contact1)
-  //   expect(savedContact1).toBeDefined()
-  //
-  //   const name = 'test_name2'
-  //   const contact2: IBasicContact = {
-  //     name,
-  //     alias,
-  //     uri: 'example.com',
-  //   }
-  //
-  //   await expect(contactStore.addContact(contact2)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
-  // })
+  it('should throw error when adding organization contact with duplicate display name', async (): Promise<void> => {
+    const displayName = 'non_unique_value'
+    const contact1: IBasicContact = {
+      uri: 'example.com',
+      contactType: {
+        type: ContactTypeEnum.ORGANIZATION,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contactOwner: {
+        legalName: 'example_legal_name1',
+        displayName,
+      },
+    }
+    const savedContact1: IContact = await contactStore.addContact(contact1)
+    expect(savedContact1).toBeDefined()
+
+    const contact2: IBasicContact = {
+      uri: 'example.com',
+      contactType: {
+        type: ContactTypeEnum.ORGANIZATION,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contactOwner: {
+        legalName: 'example_legal_name2',
+        displayName,
+      },
+    }
+
+    await expect(contactStore.addContact(contact2)).rejects.toThrow(`Duplicate display names are not allowed. Display name: ${displayName}`)
+  })
 
   it('should update contact by id', async (): Promise<void> => {
     const contact: IBasicContact = {
@@ -622,8 +627,6 @@ describe('Contact store tests', (): void => {
 
     await expect(contactStore.updateContact({ contact: updatedContact })).rejects.toThrow(`No contact found for id: ${contactId}`)
   })
-
-  // TODO test to update wrong contact type person to org
 
   it('should get identity by id', async (): Promise<void> => {
     const contact: IBasicContact = {
@@ -1813,6 +1816,43 @@ describe('Contact store tests', (): void => {
     expect(result?.contactType.tenantId).toEqual(savedContactType.tenantId)
     expect(result?.contactType.name).toEqual(savedContactType.name)
   })
-})
 
-// maybe add some categories for the tests to find them
+  it('should throw error when adding person contact with wrong contact type', async (): Promise<void> => {
+    const contactType = ContactTypeEnum.ORGANIZATION
+    const contact: IBasicContact = {
+      uri: 'example.com',
+      contactType: {
+        type: contactType,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contactOwner: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+
+    await expect(contactStore.addContact(contact)).rejects.toThrow(`Contact type ${contactType}, does not match for provided contact owner`)
+  })
+
+  it('should throw error when adding organization contact with wrong contact type', async (): Promise<void> => {
+    const contactType = ContactTypeEnum.PERSON
+    const contact: IBasicContact = {
+      uri: 'example.com',
+      contactType: {
+        type: contactType,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contactOwner: {
+        legalName: 'example_legal_name',
+        displayName: 'example_display_name',
+      },
+    }
+
+    await expect(contactStore.addContact(contact)).rejects.toThrow(`Contact type ${contactType}, does not match for provided contact owner`)
+  })
+
+})

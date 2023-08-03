@@ -29,6 +29,8 @@ import {
   IRemoveContactTypeArgs,
   IGetRelationshipsArgs,
   IUpdateRelationshipArgs,
+  ContactTypeEnum,
+  BasicContactOwner
 } from '../types'
 import { ContactEntity, contactEntityFrom, contactFrom } from '../entities/contact/ContactEntity'
 import { IdentityEntity, identityEntityFrom, identityFrom } from '../entities/contact/IdentityEntity'
@@ -41,6 +43,7 @@ import { PersonEntity } from '../entities/contact/PersonEntity'
 import { OrganizationEntity } from '../entities/contact/OrganizationEntity'
 import { ContactRelationshipEntity, contactRelationshipEntityFrom, contactRelationshipFrom } from '../entities/contact/ContactRelationshipEntity'
 import { ContactTypeEntity, contactTypeEntityFrom, contactTypeFrom } from '../entities/contact/ContactTypeEntity'
+import { isOrganization, isPerson } from '../entities/contact/ContactOwnerEntity'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:contact-store')
 
@@ -80,9 +83,13 @@ export class ContactStore extends AbstractContactStore {
   }
 
   addContact = async (args: IAddContactArgs): Promise<IContact> => {
-    const { identities, contactOwner } = args
+    const { identities, contactOwner, contactType } = args
 
     const contactRepository: Repository<ContactEntity> = (await this.dbConnection).getRepository(ContactEntity)
+
+    if (!this.hasCorrectContactType(contactType.type, contactOwner)) {
+      return Promise.reject(Error(`Contact type ${contactType.type}, does not match for provided contact owner`))
+    }
 
     const result: ContactEntity | null = await contactRepository.findOne({
       where: [
@@ -95,8 +102,7 @@ export class ContactStore extends AbstractContactStore {
     })
 
     if (result) {
-      // TODO correct msg?
-      return Promise.reject(Error(`Duplicate names or display are not allowed. Display name: ${contactOwner.displayName}`))
+      return Promise.reject(Error(`Duplicate display names are not allowed. Display name: ${contactOwner.displayName}`))
     }
 
     for (const identity of identities ?? []) {
@@ -105,7 +111,7 @@ export class ContactStore extends AbstractContactStore {
           return Promise.reject(Error(`Identity with correlation type ${CorrelationIdentifierEnum.URL} should contain a connection`))
         }
 
-        if (!this.hasCorrectConfig(identity.connection.type, identity.connection.config)) {
+        if (!this.hasCorrectConnectionConfig(identity.connection.type, identity.connection.config)) {
           return Promise.reject(Error(`Connection type ${identity.connection.type}, does not match for provided config`))
         }
       }
@@ -129,9 +135,9 @@ export class ContactStore extends AbstractContactStore {
     }
 
     const updatedContact = {
-      // TODO fix type
       ...contact,
       identities: result.identities,
+      contactType: result.contactType,
       relationships: result.relationships,
     }
 
@@ -201,7 +207,7 @@ export class ContactStore extends AbstractContactStore {
         return Promise.reject(Error(`Identity with correlation type ${CorrelationIdentifierEnum.URL} should contain a connection`))
       }
 
-      if (!this.hasCorrectConfig(identity.connection.type, identity.connection.config)) {
+      if (!this.hasCorrectConnectionConfig(identity.connection.type, identity.connection.config)) {
         return Promise.reject(Error(`Connection type ${identity.connection.type}, does not match for provided config`))
       }
     }
@@ -231,7 +237,7 @@ export class ContactStore extends AbstractContactStore {
         return Promise.reject(Error(`Identity with correlation type ${CorrelationIdentifierEnum.URL} should contain a connection`))
       }
 
-      if (!this.hasCorrectConfig(identity.connection.type, identity.connection.config)) {
+      if (!this.hasCorrectConnectionConfig(identity.connection.type, identity.connection.config)) {
         return Promise.reject(Error(`Connection type ${identity.connection.type}, does not match for provided config`))
       }
     }
@@ -275,8 +281,8 @@ export class ContactStore extends AbstractContactStore {
     }
 
     const relationship: ContactRelationshipEntity = contactRelationshipEntityFrom({
-      left: leftContact,
-      right: rightContact,
+      leftId: leftContact.id,
+      rightId: rightContact.id,
     })
 
     const createdResult: ContactRelationshipEntity = await (await this.dbConnection).getRepository(ContactRelationshipEntity).save(relationship)
@@ -360,8 +366,6 @@ export class ContactStore extends AbstractContactStore {
   }
 
   addContactType = async (args: IAddContactTypeArgs): Promise<IContactType> => {
-    // TODO do we need checks?
-
     const contactEntity: ContactTypeEntity = contactTypeEntityFrom(args)
     debug('Adding contact type', args)
     const createdResult: ContactTypeEntity = await (await this.dbConnection).getRepository(ContactTypeEntity).save(contactEntity)
@@ -439,7 +443,7 @@ export class ContactStore extends AbstractContactStore {
     await contactTypeRepository.delete(contactTypeId)
   }
 
-  private hasCorrectConfig(type: ConnectionTypeEnum, config: BasicConnectionConfig): boolean {
+  private hasCorrectConnectionConfig(type: ConnectionTypeEnum, config: BasicConnectionConfig): boolean {
     switch (type) {
       case ConnectionTypeEnum.OPENID_CONNECT:
         return isOpenIdConfig(config)
@@ -447,6 +451,17 @@ export class ContactStore extends AbstractContactStore {
         return isDidAuthConfig(config)
       default:
         throw new Error('Connection type not supported')
+    }
+  }
+
+  private hasCorrectContactType(type: ContactTypeEnum, owner: BasicContactOwner): boolean {
+    switch (type) {
+      case ContactTypeEnum.PERSON:
+        return isPerson(owner)
+      case ContactTypeEnum.ORGANIZATION:
+        return isOrganization(owner)
+      default:
+        throw new Error('Contact type not supported')
     }
   }
 
@@ -489,4 +504,5 @@ export class ContactStore extends AbstractContactStore {
         .catch((error) => Promise.reject(Error(`Unable to remove metadataItem.id with id ${identity.id}. ${error}`)))
     })
   }
+
 }

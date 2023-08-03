@@ -21,12 +21,16 @@ import {
   IBasicContact,
   IBasicIdentity,
   IContact,
-  ValidationConstraint,
+  ValidationConstraint
 } from '../../types'
 import { IdentityEntity, identityEntityFrom, identityFrom } from './IdentityEntity'
 import { validate, ValidationError } from 'class-validator'
 import { ContactTypeEntity, contactTypeEntityFrom, contactTypeFrom } from './ContactTypeEntity'
-import { ContactOwnerEntity } from './ContactOwnerEntity'
+import {
+  ContactOwnerEntity,
+  isOrganization,
+  isPerson
+} from './ContactOwnerEntity'
 import { PersonEntity, personEntityFrom, personFrom } from './PersonEntity'
 import { OrganizationEntity, organizationEntityFrom, organizationFrom } from './OrganizationEntity'
 import { ContactRelationshipEntity, contactRelationshipFrom } from './ContactRelationshipEntity'
@@ -50,12 +54,10 @@ export class ContactEntity extends BaseEntity {
   identities!: Array<IdentityEntity>
 
   @ManyToOne(() => ContactTypeEntity, (contactType: ContactTypeEntity) => contactType.contacts, {
-    // cascade: ['insert', 'update'],
     cascade: true,
-    // onDelete: 'CASCADE',
     nullable: false,
     eager: true,
-  }) // TODO check these options
+  })
   @JoinColumn({ name: 'contactTypeId' })
   contactType!: ContactTypeEntity
 
@@ -81,13 +83,6 @@ export class ContactEntity extends BaseEntity {
 
   @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
   lastUpdatedAt!: Date
-
-  // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.
-  @BeforeInsert()
-  @BeforeUpdate()
-  updateLastUpdatedDate(): void {
-    this.lastUpdatedAt = new Date()
-  }
 
   @BeforeInsert()
   @BeforeUpdate()
@@ -150,7 +145,6 @@ export const contactFrom = (contact: ContactEntity): IContact => {
   }
 }
 
-// TODO move
 export const contactOwnerEntityFrom = (owner: BasicContactOwner): ContactOwnerEntity => {
   if (isPerson(owner)) {
     return personEntityFrom(<BasicPerson>owner)
@@ -163,18 +157,10 @@ export const contactOwnerEntityFrom = (owner: BasicContactOwner): ContactOwnerEn
 
 export const contactOwnerFrom = (owner: ContactOwnerEntity): ContactOwner => {
   if (isPerson(owner)) {
-    // @ts-ignore
     return personFrom(owner)
   } else if (isOrganization(owner)) {
-    // @ts-ignore
     return organizationFrom(owner)
   }
 
   throw new Error('Owner type not supported')
 }
-
-// TODO move?
-const isPerson = (owner: BasicContactOwner | ContactOwnerEntity): owner is BasicPerson =>
-  'firstName' in owner && 'middleName' in owner && 'lastName' in owner
-
-const isOrganization = (owner: BasicContactOwner | ContactOwnerEntity): owner is BasicOrganization => 'legalName' in owner && 'cocNumber' in owner
