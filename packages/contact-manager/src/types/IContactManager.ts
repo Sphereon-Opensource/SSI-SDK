@@ -47,7 +47,7 @@ export interface IGetContactsArgs {
 
 export interface IAddContactArgs {
   uri?: string
-  contactType: BasicContactType // TODO we can have a situation where we want to add a contact to an existing type, so use BasicContactType | IContactType? also make a test for these 2 situations in the store
+  contactType: BasicContactType
   contactOwner: BasicContactOwner
   identities?: Array<IBasicIdentity>
 }
