@@ -8,6 +8,9 @@
   },
   "references": [
     {
+      "path": "../express-support"
+    },
+    {
       "path": "../siopv2-oid4vp-common"
     },
     {
