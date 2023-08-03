@@ -1,9 +1,4 @@
-import {
-  AuthorizationRequestState,
-  AuthorizationResponsePayload,
-  decodeUriAsJson,
-  VerifiedAuthorizationResponse,
-} from '@sphereon/did-auth-siop'
+import { AuthorizationRequestState, AuthorizationResponsePayload, decodeUriAsJson, VerifiedAuthorizationResponse } from '@sphereon/did-auth-siop'
 import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop/dist/types/SessionManager'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
@@ -91,7 +86,10 @@ export class SIOPv2RP implements IAgentPlugin {
     )
   }
 
-  private async siopGetResponseState(args: IGetAuthResponseStateArgs, context: IRequiredContext): Promise<AuthorizationResponseStateWithVerifiedData | undefined> {
+  private async siopGetResponseState(
+    args: IGetAuthResponseStateArgs,
+    context: IRequiredContext
+  ): Promise<AuthorizationResponseStateWithVerifiedData | undefined> {
     const rpInstance = await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
       rp.get(context).then((rp) => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound))
     )

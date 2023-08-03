@@ -12,7 +12,8 @@ import {
   DidStateValue,
   ICreateDidEndpointOpts,
   IGlobalDidWebEndpointOpts,
-  IRequiredContext, IResolveEndpointOpts,
+  IRequiredContext,
+  IResolveEndpointOpts,
 } from './types'
 
 export function createDidEndpoint(router: Router, context: IRequiredContext, opts?: ICreateDidEndpointOpts) {
@@ -134,11 +135,7 @@ async function agentDidToResolutionResult(context: IRequiredContext, did: string
   }
 }
 
-export function resolveDidEndpoint(
-  router: Router,
-  context: IRequiredContext,
-  opts?: IResolveEndpointOpts
-) {
+export function resolveDidEndpoint(router: Router, context: IRequiredContext, opts?: IResolveEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`Resolve DID endpoint is disabled`)
     return

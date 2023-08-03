@@ -40,18 +40,15 @@ curl -X POST\
 "https://agent/credentials/issue"
 -d '<json body below>'
 ```
+
 Body:
+
 ```json
 {
   "verifiableCredential": {
-    "@context": [
-      "https://www.w3.org/2018/credentials/v1"
-    ],
+    "@context": ["https://www.w3.org/2018/credentials/v1"],
     "id": "https://example.com/8790171",
-    "type": [
-      "VerifiableCredential",
-      "GS1CompanyPrefixLicenseCredential"
-    ],
+    "type": ["VerifiableCredential", "GS1CompanyPrefixLicenseCredential"],
     "issuer": "did:web:example.com",
     "issuanceDate": "2023-06-22T00:00:00.000Z",
     "validUntil": "2024-06-22T00:00:00.000Z",
@@ -71,11 +68,8 @@ Body:
 ```
 
 ```json
-{
-
-}
+{}
 ```
-
 
 ## Configure API
 
