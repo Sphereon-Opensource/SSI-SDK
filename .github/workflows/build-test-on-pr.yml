@@ -27,6 +27,10 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'pnpm'
+      - name: setup npmrc
+        run: |
+          echo "link-workspace-packages=deep" >> .npmrc
+          echo "prefer-workspace-packages=true" >> .npmrc
       - run: git diff -u
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
