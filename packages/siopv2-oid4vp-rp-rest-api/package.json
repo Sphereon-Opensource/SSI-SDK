@@ -33,6 +33,10 @@
   },
   "devDependencies": {
     "morgan": "^1.10.0",
+    "passport": "^0.6.0",
+    "passport-http-bearer": "^1.0.1",
+    "@types/passport": "^1.0.12",
+    "@types/passport-http-bearer": "^1.0.37",
     "@types/morgan": "^1.9.4",
     "@decentralized-identity/ion-sdk": "^0.6.0",
     "@sphereon/did-uni-client": "^0.6.0",

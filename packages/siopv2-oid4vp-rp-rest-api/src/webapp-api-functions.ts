@@ -130,7 +130,7 @@ export function removeAuthRequestStateWebappEndpoint(router: Router, context: IR
     return
   }
   const path = opts?.path ?? '/webapp/definitions/:definitionId/auth-requests/:correlationId'
-  router.delete(path, checkAuth(opts?.endpoint), async (request, response) => {
+  router.delete(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const correlationId: string = request.params.correlationId
       const definitionId: string = request.params.definitionId

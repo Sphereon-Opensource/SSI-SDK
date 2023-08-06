@@ -1,20 +1,12 @@
-import { ExpressBuildResult, ISingleEndpointOpts } from '@sphereon/ssi-sdk.express-support'
+import { agentContext } from '@sphereon/ssi-sdk.core'
+import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-sdk.express-support'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { TAgent } from '@veramo/core'
 import express, { Express, Router } from 'express'
-import { agentContext } from '@sphereon/ssi-sdk.core'
 import { getAuthRequestSIOPv2Endpoint, verifyAuthResponseSIOPv2Endpoint } from './siop-api-functions'
-import { ICreateAuthRequestWebappEndpointOpts, IRequiredPlugins } from './types'
+import { IRequiredPlugins, ISIOPv2RPRestAPIOpts } from './types'
 import { authStatusWebappEndpoint, createAuthRequestWebappEndpoint, removeAuthRequestStateWebappEndpoint } from './webapp-api-functions'
-
-export interface ISIOPv2RPRestAPIOpts {
-  webappCreateAuthRequest?: ICreateAuthRequestWebappEndpointOpts // Override the create Auth Request path. Needs to contain correlationId and definitionId path params!
-  webappDeleteAuthRequest?: ISingleEndpointOpts // Override the delete Auth Request path. Needs to contain correlationId and definitionId path params!
-  webappAuthStatus?: ISingleEndpointOpts // Override the Auth status path. CorrelationId and definitionId need to come from the body!
-  siopVerifyAuthResponse?: ISingleEndpointOpts // Override the siop Verify Response path. Needs to contain correlationId and definitionId path params!
-  siopGetAuthRequest?: ISingleEndpointOpts // Override the siop get Auth Request path. Needs to contain correlationId and definitionId path params!
-}
 
 export class SIOPv2RPApiServer {
   private readonly _express: Express
@@ -22,22 +14,35 @@ export class SIOPv2RPApiServer {
   private readonly _agent: TAgent<IPresentationExchange & ISIOPv2RP>
   private readonly _opts?: ISIOPv2RPRestAPIOpts
 
-  constructor(args: { agent: TAgent<IRequiredPlugins>; expressArgs: ExpressBuildResult; opts?: ISIOPv2RPRestAPIOpts }) {
+  constructor(args: { agent: TAgent<IRequiredPlugins>; expressSupport: ExpressSupport; opts?: ISIOPv2RPRestAPIOpts }) {
     const { agent, opts } = args
     this._agent = agent
+    copyGlobalAuthToEndpoints({ opts, keys: ['webappCreateAuthRequest', 'webappAuthStatus', 'webappDeleteAuthRequest'] })
+    if (opts?.endpointOpts?.globalAuth?.secureSiopEndpoints) {
+      copyGlobalAuthToEndpoints({ opts, keys: ['siopGetAuthRequest', 'siopVerifyAuthResponse'] })
+    }
+
     this._opts = opts
-    this._express = args.expressArgs.express
+    this._express = args.expressSupport.express
     this._router = express.Router()
     const context = agentContext(agent)
 
+    const features = opts?.enableFeatures ?? ['rp-status', 'siop']
+    console.log(`SIOPv2 API enabled, with features: ${JSON.stringify(features)}}`)
+
     // Webapp endpoints
-    createAuthRequestWebappEndpoint(this._router, context, opts?.webappCreateAuthRequest)
-    authStatusWebappEndpoint(this._router, context, opts?.webappAuthStatus)
-    removeAuthRequestStateWebappEndpoint(this._router, context, opts?.webappDeleteAuthRequest)
+    if (features.includes('rp-status')) {
+      createAuthRequestWebappEndpoint(this._router, context, opts?.endpointOpts?.webappCreateAuthRequest)
+      authStatusWebappEndpoint(this._router, context, opts?.endpointOpts?.webappAuthStatus)
+      removeAuthRequestStateWebappEndpoint(this._router, context, opts?.endpointOpts?.webappDeleteAuthRequest)
+    }
 
     // SIOPv2 endpoints
-    getAuthRequestSIOPv2Endpoint(this._router, context, opts?.siopGetAuthRequest)
-    verifyAuthResponseSIOPv2Endpoint(this._router, context, opts?.siopVerifyAuthResponse)
+    if (features.includes('siop')) {
+      getAuthRequestSIOPv2Endpoint(this._router, context, opts?.endpointOpts?.siopGetAuthRequest)
+      verifyAuthResponseSIOPv2Endpoint(this._router, context, opts?.endpointOpts?.siopVerifyAuthResponse)
+    }
+    this._express.use(opts?.endpointOpts?.basePath ?? '', this.router)
   }
 
   get express(): Express {

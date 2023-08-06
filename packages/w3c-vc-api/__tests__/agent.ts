@@ -28,8 +28,6 @@ import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 import Debug from 'debug'
 import { Resolver } from 'did-resolver'
 
-import morgan from 'morgan'
-
 import passport from 'passport'
 import { ITokenPayload, VerifyCallback } from 'passport-azure-ad/common'
 import { VcApiServer } from '../src'
@@ -193,35 +191,6 @@ agent
       },
     },
   })
-  /*.didManagerCreate({
-        provider: 'did:ion',
-        alias: RP_DID,
-        options: {
-          kid: 'auth-key',
-          anchor: false,
-          recoveryKey: {
-            kid: 'recovery-test2',
-            key: {
-              privateKeyHex: PRIVATE_RECOVERY_KEY_HEX,
-            },
-          },
-          updateKey: {
-            kid: 'update-test2',
-            key: {
-              privateKeyHex: PRIVATE_UPDATE_KEY_HEX,
-            },
-          },
-          verificationMethods: [
-            {
-              key: {
-                kid: 'auth-key',
-                privateKeyHex: RP_PRIVATE_KEY_HEX,
-              },
-              purposes: [IonPublicKeyPurpose.Authentication, IonPublicKeyPurpose.AssertionMethod],
-            },
-          ],
-        },
-      })*/
   .then((value) => {
     debug(`IDENTIFIER: ${value.did}`)
   })
@@ -234,12 +203,10 @@ agent
       envVarPrefix: 'VC_API_',
       hostname: '0.0.0.0',
     })
+      .withMorganLogging({ format: 'dev' })
       .withPassportAuth(true)
       .withSessionOptions({ secret: '1234', name: 'oidc-session' })
-    // .addHandler(morgan('dev'))
-    const expressArgs = builder.build({ startListening: true })
-    expressArgs.express.use(morgan('dev'))
-    // expressArgs.express.use(passport.initialize())
+    const expressSupport = builder.build()
 
     new VcApiServer({
       opts: {
@@ -259,10 +226,10 @@ agent
           keyRef: PUBLIC_KEY_HEX,
         },
       },
-      expressArgs,
+      expressSupport,
       agent,
     })
-    // builder.startListening(expressArgs.express)
+    expressSupport.start()
   })
 
 export default agent

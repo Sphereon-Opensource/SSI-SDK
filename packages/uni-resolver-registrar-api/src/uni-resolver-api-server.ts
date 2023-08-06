@@ -1,5 +1,5 @@
 import { agentContext } from '@sphereon/ssi-sdk.core'
-import { ExpressBuildResult } from '@sphereon/ssi-sdk.express-support'
+import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-sdk.express-support'
 import { TAgent } from '@veramo/core'
 
 import express, { Express, Router } from 'express'
@@ -16,22 +16,14 @@ export class UniResolverApiServer {
   private readonly _opts?: IDidAPIOpts
   private readonly _router: Router
 
-  constructor(args: { agent: TAgent<IRequiredPlugins>; expressArgs: ExpressBuildResult; opts?: IDidAPIOpts }) {
+  constructor(args: { agent: TAgent<IRequiredPlugins>; expressSupport: ExpressSupport; opts?: IDidAPIOpts }) {
     const { agent, opts } = args
     this._agent = agent
-    if (opts?.endpointOpts?.globalAuth) {
-      copyGlobalAuthToEndpoint(opts, 'getDidMethods')
-      copyGlobalAuthToEndpoint(opts, 'createDid')
-      copyGlobalAuthToEndpoint(opts, 'resolveDid')
-      copyGlobalAuthToEndpoint(opts, 'deactivateDid')
-    }
-
+    copyGlobalAuthToEndpoints({ opts, keys: ['getDidMethods', 'createDid', 'resolveDid', 'deactivateDid'] })
     this._opts = opts
-    this._express = args.expressArgs.express
+    this._express = args.expressSupport.express
     this._router = express.Router()
-
     const context = agentContext(agent)
-
     const features = opts?.enableFeatures ?? ['did-resolve', 'did-persist']
     console.log(`DID UniResolver API enabled, with features: ${JSON.stringify(features)}}`)
 
@@ -57,17 +49,5 @@ export class UniResolverApiServer {
 
   get express(): Express {
     return this._express
-  }
-}
-
-function copyGlobalAuthToEndpoint(opts: IDidAPIOpts, key: string) {
-  if (opts?.endpointOpts?.globalAuth) {
-    // @ts-ignore
-    opts.endpointOpts[key] = {
-      // @ts-ignore
-      ...opts.endpointOpts[key],
-      // @ts-ignore
-      endpoint: { ...opts.endpointOpts.globalAuth, ...opts.endpointOpts[key]?.endpoint },
-    }
   }
 }

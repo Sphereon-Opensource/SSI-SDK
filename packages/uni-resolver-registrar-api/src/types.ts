@@ -95,7 +95,7 @@ export interface IDidAPIEndpointOpts {
   resolveDid?: IResolveEndpointOpts
   deactivateDid?: ISingleEndpointOpts
   getDidMethods?: ISingleEndpointOpts
-  globalDidWebResolution?: IGlobalDidWebEndpointOpts
+  // globalDidWebResolution?: IGlobalDidWebEndpointOpts
 }
 
 export interface IGlobalDidWebEndpointOpts extends ISingleEndpointOpts {
