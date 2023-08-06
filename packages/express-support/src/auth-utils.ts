@@ -1,6 +1,8 @@
-import express, { NextFunction } from 'express'
+import express, { NextFunction, RequestHandler } from 'express'
+import { ParamsDictionary } from 'express-serve-static-core'
 import passport from 'passport'
-import { EndpointArgs } from './types'
+import { ParsedQs } from 'qs'
+import { EndpointArgs, hasEndpointOpts, HasEndpointOpts } from './types'
 
 export const checkUserIsInRole = (opts: { roles: string | string[] }) => (req: express.Request, res: express.Response, next: NextFunction) => {
   if (!opts?.roles || opts.roles.length === 0) {
@@ -20,24 +22,50 @@ export const checkUserIsInRole = (opts: { roles: string | string[] }) => (req: e
   return next()
 }
 
-const checkAuthenticationImpl = (req: express.Request, res: express.Response, opts?: EndpointArgs) => {
+const checkAuthenticationImpl = (req: express.Request, res: express.Response, next: express.NextFunction, opts?: EndpointArgs) => {
   if (!opts || !opts.authentication || opts.authentication.enabled === false) {
-    return
+    return next()
   }
   if (!opts.authentication.strategy) {
     return res.status(401).end()
   }
-  passport.authenticate(opts.authentication.strategy)
-
-  if (typeof req.isAuthenticated !== 'function' || !req.isAuthenticated()) {
-    return res.status(403).end()
-  }
-  return
+  const options = { authInfo: true, session: false }
+  passport
+    .authenticate(
+      opts.authentication.strategy,
+      options,
+      (
+        err: any,
+        user?: Express.User | false | null,
+        _info?: object | string | Array<string | undefined>,
+        _status?: number | Array<number | undefined>
+      ) => {
+        if (err) {
+          return next({ statusCode: 403, message: err })
+        } else if (!user) {
+          return next({ statusCode: 403, message: 'user not found' })
+        }
+        if (options.session) {
+          req.logIn(user, function (err) {
+            if (err) {
+              return next(err)
+            }
+            return res.send(user)
+          })
+        }
+        return next()
+      }
+    )
+    .call(this, req, res, next)
+  // next()
 }
-const checkAuthorizationImpl = (req: express.Request, res: express.Response, opts?: EndpointArgs) => {
+const checkAuthorizationImpl = (req: express.Request, res: express.Response, next: express.NextFunction, opts?: EndpointArgs) => {
   if (!opts || !opts.authentication || !opts.authorization || opts.authentication.enabled === false || opts?.authorization.enabled === false) {
-    return
+    return next()
   }
+  /*if (!req.isAuthenticated()) {
+        return sendErrorResponse(res, 403, 'Authorization with an unauthenticated request is not possible')
+    }*/
   const authorization = opts.authorization
 
   if (!authorization.enforcer && (!authorization.requireUserInRoles || authorization.requireUserInRoles.length === 0)) {
@@ -55,31 +83,43 @@ const checkAuthorizationImpl = (req: express.Request, res: express.Response, opt
       return res.status(403).end()
     }
   }
-  return
+  return next()
 }
 
-const executeRequestHandlers = (req: express.Request, res: express.Response, next: NextFunction, opts?: EndpointArgs) => {
-  if (opts?.handlers) {
-    opts.handlers.forEach((requestHandler) => requestHandler(req, res, next))
+export const checkAuthenticationOnly = (opts?: EndpointArgs) => (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  // executeRequestHandlers(req, res, next, opts)
+  return checkAuthenticationImpl(req, res, next, opts)
+}
+
+export const checkAuthorizationOnly = (opts?: EndpointArgs) => (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  // executeRequestHandlers(req, res, next, opts)
+  return checkAuthorizationImpl(req, res, next, opts)
+}
+export const checkAuth = (opts?: EndpointArgs): RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>[] => {
+  const handlers: RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>[] = []
+  handlers.push(checkAuthenticationOnly(opts))
+  handlers.push(checkAuthorizationOnly(opts))
+  opts?.handlers && handlers.push(...opts.handlers)
+  return handlers
+}
+
+export function copyGlobalAuthToEndpoint(args?: { opts?: HasEndpointOpts; key: string }) {
+  const opts = args?.opts
+  const key = args?.key
+  if (!opts || !key || !hasEndpointOpts(opts)) {
+    return
+  }
+  if (opts.endpointOpts?.globalAuth) {
+    if (opts.endpointOpts[key]?.disableGlobalAuth === true) {
+      return
+    }
+    opts.endpointOpts[key] = {
+      ...opts.endpointOpts[key],
+      endpoint: { ...opts.endpointOpts.globalAuth, ...opts.endpointOpts[key]?.endpoint },
+    }
   }
 }
 
-export const checkAuthenticationOnly = (opts?: EndpointArgs) => (req: express.Request, res: express.Response, next: NextFunction) => {
-  executeRequestHandlers(req, res, next, opts)
-  return checkAuthenticationImpl(req, res, opts) ?? next()
-}
-
-export const checkAuthorizationOnly = (opts?: EndpointArgs) => (req: express.Request, res: express.Response, next: NextFunction) => {
-  executeRequestHandlers(req, res, next, opts)
-  return checkAuthorizationImpl(req, res, opts) ?? next()
-}
-export const checkAuth = (opts?: EndpointArgs) => (req: express.Request, res: express.Response, next: NextFunction) => {
-  /*const handlers = /!*this._handlers ??*!/ []
-    checkAuthenticationImpl(req, res, opts))
-    handlers.push(checkAuthorizationImpl(req, res, opts))
-    handlers.push(next)
-    return handlers
-*/
-  executeRequestHandlers(req, res, next, opts)
-  return checkAuthenticationImpl(req, res, opts) ?? checkAuthorizationImpl(req, res, opts) ?? next()
+export function copyGlobalAuthToEndpoints(args?: { opts?: HasEndpointOpts; keys: string[] }) {
+  args?.keys.forEach((key) => copyGlobalAuthToEndpoint({ opts: args?.opts, key }))
 }
