@@ -4,15 +4,23 @@
 import bodyParser from 'body-parser'
 import { Enforcer } from 'casbin'
 import cors, { CorsOptions } from 'cors'
+import * as dotenv from 'dotenv-flow'
 import express, { Express } from 'express'
 import { Application, ApplicationRequestHandler } from 'express-serve-static-core'
 import session from 'express-session'
+import http from 'http'
+import morgan from 'morgan'
 import passport, { InitializeOptions } from 'passport'
 import { checkUserIsInRole } from './auth-utils'
-import { env, jsonErrorHandler } from './functions'
-import { ExpressBuildResult, IExpressServerOpts } from './types'
-import * as dotenv from 'dotenv-flow'
+import { jsonErrorHandler } from './express-utils'
+import { env } from './functions'
+import { ExpressSupport, IExpressServerOpts } from './types'
 
+type Handler<Request extends http.IncomingMessage, Response extends http.ServerResponse> = (
+  req: Request,
+  res: Response,
+  callback: (err?: Error) => void
+) => void
 dotenv.config()
 
 export class ExpressBuilder {
@@ -29,6 +37,7 @@ export class ExpressBuilder {
   private _passportInitOpts?: InitializeOptions
   private _userIsInRole?: string | string[]
   private _enforcer?: Enforcer
+  private _morgan?: Handler<any, any> | undefined
 
   private constructor(opts?: { existingExpress?: Express; envVarPrefix?: string }) {
     const { existingExpress, envVarPrefix } = opts ?? {}
@@ -51,6 +60,14 @@ export class ExpressBuilder {
     if (startOnBuild !== undefined) {
       this._startListen = startOnBuild
     }
+    return this
+  }
+
+  public withMorganLogging(opts?: { existingMorgan?: Handler<any, any>; format?: string; options?: morgan.Options<any, any> }): this {
+    if (opts?.existingMorgan && (opts.format || opts.options)) {
+      throw Error('Cannot using an existing morgan with either a format or options')
+    }
+    this._morgan = opts?.existingMorgan ?? morgan(opts?.format ?? 'dev', opts?.options)
     return this
   }
 
@@ -160,7 +177,7 @@ export class ExpressBuilder {
     express?: Express
     startListening?: boolean
     handlers?: ApplicationRequestHandler<T> | ApplicationRequestHandler<T>[]
-  }): ExpressBuildResult {
+  }): ExpressSupport {
     const express = this.buildExpress(opts)
     return {
       express,
@@ -169,6 +186,16 @@ export class ExpressBuilder {
       userIsInRole: this._userIsInRole,
       startListening: this._startListen !== false,
       enforcer: this._enforcer,
+      start: (opts) => {
+        if (this._startListen !== false) {
+          this.startListening(express)
+        }
+
+        if (opts?.disableErrorHandler !== true) {
+          express.use(jsonErrorHandler)
+        }
+        return express
+      },
     }
   }
 
@@ -178,6 +205,9 @@ export class ExpressBuilder {
     handlers?: ApplicationRequestHandler<T> | ApplicationRequestHandler<T>[]
   }): express.Express {
     const app: express.Express = opts?.express ?? this.existingExpress ?? express()
+    if (this._morgan) {
+      app.use(this._morgan)
+    }
     if (this._sessionOpts) {
       // @ts-ignore
       app.use(session(this._sessionOpts))
@@ -195,8 +225,6 @@ export class ExpressBuilder {
       this._corsConfigurer.configure({ existingExpress: app })
     }
 
-    app.use(jsonErrorHandler)
-
     // @ts-ignore
     this._handlers && this._handlers.length > 0 && app.use(this._handlers)
     // @ts-ignore
@@ -205,9 +233,9 @@ export class ExpressBuilder {
     app.use(bodyParser.urlencoded({ extended: true }))
     app.use(bodyParser.json())
 
-    if (this._startListen !== false) {
-      this.startListening(app)
-    }
+    /*if (this._startListen !== false) {
+          this.startListening(app)
+        }*/
     return app
   }
 }
