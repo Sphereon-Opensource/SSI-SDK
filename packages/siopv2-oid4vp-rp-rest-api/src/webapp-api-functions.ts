@@ -1,5 +1,5 @@
 import { AuthorizationRequestState, AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop'
-import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-sdk.express-support'
+import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import {
   AuthorizationRequestStateStatus,
   AuthStatusResponse,

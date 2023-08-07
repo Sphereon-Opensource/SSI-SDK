@@ -1,5 +1,5 @@
 import { agentContext } from '@sphereon/ssi-sdk.core'
-import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-sdk.express-support'
+import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-express-support'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { TAgent } from '@veramo/core'

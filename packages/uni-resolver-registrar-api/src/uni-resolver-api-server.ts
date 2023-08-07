@@ -1,5 +1,5 @@
 import { agentContext } from '@sphereon/ssi-sdk.core'
-import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-sdk.express-support'
+import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-express-support'
 import { TAgent } from '@veramo/core'
 
 import express, { Express, Router } from 'express'

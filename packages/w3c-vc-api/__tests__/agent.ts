@@ -2,7 +2,7 @@
 import { getUniResolver } from '@sphereon/did-uni-client'
 import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
 import { getDidJwkResolver } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
-import { ExpressBuilder } from '@sphereon/ssi-sdk.express-support'
+import { ExpressBuilder } from '@sphereon/ssi-express-support'
 import { IPresentationExchange, PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import {
   CredentialHandlerLDLocal,

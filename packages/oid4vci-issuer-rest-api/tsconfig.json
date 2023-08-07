@@ -14,6 +14,9 @@
       "path": "../ssi-sdk-core"
     },
     {
+      "path": "../ssi-express-support"
+    },
+    {
       "path": "../kv-store"
     },
     {

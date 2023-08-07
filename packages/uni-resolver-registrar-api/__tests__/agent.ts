@@ -2,7 +2,7 @@
 import { getUniResolver } from '@sphereon/did-uni-client'
 import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
 import { getDidJwkResolver } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
-import { EntraIDAuth, ExpressBuilder, IBearerStrategyOptionWithRequest } from '@sphereon/ssi-sdk.express-support'
+import { EntraIDAuth, ExpressBuilder, IBearerStrategyOptionWithRequest } from '@sphereon/ssi-express-support'
 import { createAgent, IDataStore, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
 import { DIDManager } from '@veramo/did-manager'

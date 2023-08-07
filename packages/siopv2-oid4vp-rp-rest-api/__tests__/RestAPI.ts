@@ -1,4 +1,4 @@
-import { ExpressBuilder, StaticBearerAuth } from '@sphereon/ssi-sdk.express-support'
+import { ExpressBuilder, StaticBearerAuth } from '@sphereon/ssi-express-support'
 import { ISIOPv2RPRestAPIOpts, SIOPv2RPApiServer } from '../src'
 import agent from './agent'
 

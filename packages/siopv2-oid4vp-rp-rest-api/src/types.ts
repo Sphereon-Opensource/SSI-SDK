@@ -1,4 +1,4 @@
-import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-sdk.express-support'
+import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { IAgentContext, ICredentialVerifier } from '@veramo/core'

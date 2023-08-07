@@ -1,5 +1,5 @@
 import { agentContext } from '@sphereon/ssi-sdk.core'
-import { ExpressSupport } from '@sphereon/ssi-sdk.express-support'
+import { ExpressSupport } from '@sphereon/ssi-express-support'
 import { TAgent } from '@veramo/core'
 
 import express, { Express, Router } from 'express'

@@ -1,6 +1,10 @@
 import { CredentialRequestJwtVcJson } from '@sphereon/oid4vci-common/lib/types/Generic.types'
-import { CredentialDataSupplier, CredentialDataSupplierResult } from '@sphereon/oid4vci-issuer'
-import { CredentialDataSupplierArgs } from '@sphereon/oid4vci-issuer'
+import {
+  CredentialDataSupplier,
+  CredentialDataSupplierArgs,
+  CredentialDataSupplierResult
+} from '@sphereon/oid4vci-issuer'
+import {ExpressBuilder} from "@sphereon/ssi-express-support";
 import { TAgent } from '@veramo/core'
 import { IOID4VCIRestAPIOpts, IPlugins, OID4VCIRestAPI } from '../src'
 import agent, { baseUrl } from './agent'
@@ -13,9 +17,16 @@ export const opts: IOID4VCIRestAPIOpts = {
 }
 
 export function start() {
+
+  const expressSupport = ExpressBuilder.fromServerOpts({
+    port: 5000,
+    hostname: '0.0.0.0'
+  }).build()
+
   OID4VCIRestAPI.init({
     context: { ...agent.context, agent: agent as TAgent<IPlugins> },
     credentialDataSupplier: credentialDataSupplierSphereon,
+    expressSupport,
     opts,
     issuerInstanceArgs: { credentialIssuer: `${baseUrl}/sphereon` },
   }).then((restApi) => {
@@ -25,6 +36,7 @@ export function start() {
   OID4VCIRestAPI.init({
     context: { ...agent.context, agent: agent as TAgent<IPlugins> },
     credentialDataSupplier: credentialDataSupplierDBCConference2023,
+    expressSupport,
     opts,
     issuerInstanceArgs: { credentialIssuer: `${baseUrl}/dbc2023` },
   }).then((restApi) => {
@@ -34,6 +46,7 @@ export function start() {
   OID4VCIRestAPI.init({
     context: { ...agent.context, agent: agent as TAgent<IPlugins> },
     credentialDataSupplier: credentialDataSupplierFMAGuest2023,
+    expressSupport,
     opts,
     issuerInstanceArgs: { credentialIssuer: `${baseUrl}/fma2023` },
   }).then((restApi) => {
@@ -43,11 +56,14 @@ export function start() {
   OID4VCIRestAPI.init({
     context: { ...agent.context, agent: agent as TAgent<IPlugins> },
     credentialDataSupplier: credentialDataSupplierTriallGuest2023,
+    expressSupport,
     opts,
     issuerInstanceArgs: { credentialIssuer: `${baseUrl}/triall2023` },
   }).then((restApi) => {
     console.log('REST API STARTED: ' + restApi.instance.metadataOptions.credentialIssuer)
   })
+
+  expressSupport.start()
 }
 
 const credentialDataSupplierDBCConference2023: CredentialDataSupplier = (args: CredentialDataSupplierArgs) => {

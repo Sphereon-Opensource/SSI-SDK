@@ -1,5 +1,5 @@
 import { getCredentialByIdOrHash } from '@sphereon/ssi-sdk.core'
-import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-sdk.express-support'
+import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { CredentialPayload } from '@veramo/core'
 import { W3CVerifiableCredential } from '@veramo/core/src/types/vc-data-model'
 import { Request, Response, Router } from 'express'

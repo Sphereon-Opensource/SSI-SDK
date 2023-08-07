@@ -1,7 +1,7 @@
 import { DIDResolutionResult } from '@sphereon/did-uni-client'
 import { getAgentDIDMethods, toDidDocument, toDidResolutionResult } from '@sphereon/ssi-sdk-ext.did-utils'
 import { JwkKeyUse } from '@sphereon/ssi-sdk-ext.key-utils'
-import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-sdk.express-support'
+import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { parseDid } from '@sphereon/ssi-types'
 import { IIdentifier } from '@veramo/core'
 import { Request, Response, Router } from 'express'
