@@ -75,7 +75,7 @@ export class StaticBearerAuth {
                   findUser(u8a.toString(hash.sha256(token)), cb)
                 })
                 .catch((error) => {
-                  console.log(error)
+                  console.log(`hash problem: ${error}`)
                   throw Error('Did you include @noble/hashes in package.json?')
                 })
             } else {
@@ -85,7 +85,7 @@ export class StaticBearerAuth {
         )
       })
       .catch((error) => {
-        console.log(error)
+        console.log(`passport-http-bearer package problem: ${error}`)
         throw Error('Did you include passport-http-bearer in package.json?')
       })
   }
@@ -138,7 +138,7 @@ export class MapBasedStaticBearerUserProvider implements StaticBearerUserProvide
           users.forEach((user) => (user.token = u8a.toString(hash.sha256(user.token))))
         })
         .catch((error) => {
-          console.log(error)
+          console.log(`hash problem: ${error}`)
           throw Error('Did you include @noble/hashes in package.json?')
         })
     }

@@ -27,6 +27,7 @@ const checkAuthenticationImpl = (req: express.Request, res: express.Response, ne
     return next()
   }
   if (!opts.authentication.strategy) {
+    console.log(`Authentication enabled, but no strategy configured. All auth request will be denied!`)
     return res.status(401).end()
   }
   const options = { authInfo: true, session: false }
@@ -43,7 +44,8 @@ const checkAuthenticationImpl = (req: express.Request, res: express.Response, ne
         if (err) {
           return next({ statusCode: 403, message: err })
         } else if (!user) {
-          return next({ statusCode: 403, message: 'user not found' })
+          console.log('Authentication failed, no user object present in request')
+          return next({ statusCode: 401, message: 'authentication failed' })
         }
         if (options.session) {
           req.logIn(user, function (err) {

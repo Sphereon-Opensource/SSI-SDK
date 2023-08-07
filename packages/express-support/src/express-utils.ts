@@ -8,9 +8,6 @@ export function sendErrorResponse(response: express.Response, statusCode: number
     console.log(`sendErrorResponse headers already sent`)
     return
   }
-  if (response.headersSent) {
-    return
-  }
   response.statusCode = statusCode
   if (typeof message === 'string' && !message.startsWith('{')) {
     message = { error: message }
