@@ -53,7 +53,7 @@ export class ExpressBuilder {
 
   public static fromServerOpts(opts: IExpressServerOpts & { envVarPrefix?: string }) {
     const builder = new ExpressBuilder({ existingExpress: opts?.existingExpress, envVarPrefix: opts?.envVarPrefix })
-    return builder.withEnableListenOpts(opts)
+    return builder.withEnableListenOpts({...opts, hostnameOrIP: opts.hostname, startOnBuild: opts.startListening ?? false})
   }
 
   public enableListen(startOnBuild?: boolean): this {
@@ -179,16 +179,19 @@ export class ExpressBuilder {
     handlers?: ApplicationRequestHandler<T> | ApplicationRequestHandler<T>[]
   }): ExpressSupport {
     const express = this.buildExpress(opts)
+    const startListening = opts?.startListening === undefined ? this._startListen !==  false : opts.startListening
     return {
       express,
       port: this.getPort(),
       hostname: this.getHostname(),
       userIsInRole: this._userIsInRole,
-      startListening: this._startListen !== false,
+      startListening,
       enforcer: this._enforcer,
       start: (opts) => {
-        if (this._startListen !== false) {
+        if (startListening) {
           this.startListening(express)
+        } else {
+          throw Error('Express already started during build')
         }
 
         if (opts?.disableErrorHandler !== true) {
@@ -233,9 +236,9 @@ export class ExpressBuilder {
     app.use(bodyParser.urlencoded({ extended: true }))
     app.use(bodyParser.json())
 
-    /*if (this._startListen !== false) {
+    if (this._startListen === true) {
           this.startListening(app)
-        }*/
+    }
     return app
   }
 }
