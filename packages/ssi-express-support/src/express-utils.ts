@@ -1,5 +1,5 @@
 import express, { NextFunction } from 'express'
-export function sendErrorResponse(response: express.Response, statusCode: number, message: string | object, error?: Error) {
+export function sendErrorResponse(response: express.Response, statusCode: number, message: string | object, error?: any) {
   console.log(`sendErrorResponse: ${message}`)
   if (error) {
     console.log(JSON.stringify(error))
@@ -13,6 +13,7 @@ export function sendErrorResponse(response: express.Response, statusCode: number
     message = { error: message }
   }
   if (typeof message === 'string' && message.startsWith('{')) {
+    response.header('Content-Type', 'application/json')
     return response.status(statusCode).end(message)
   }
   return response.status(statusCode).json(message)

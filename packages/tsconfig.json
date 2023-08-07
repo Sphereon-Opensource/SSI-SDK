@@ -2,7 +2,7 @@
   "files": [],
   "references": [
     { "path": "dev" },
-    { "path": "ssi-express-support"},
+    { "path": "ssi-express-support" },
     { "path": "agent-config" },
     { "path": "ssi-types" },
     { "path": "ssi-sdk-core" },

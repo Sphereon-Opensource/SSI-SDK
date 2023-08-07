@@ -24,9 +24,16 @@ export class OID4VCIRestAPI {
     expressSupport?: ExpressSupport
     opts?: IOID4VCIRestAPIOpts
   }): Promise<OID4VCIRestAPI> {
-    const { issuerInstanceArgs, context} = args
+    const { issuerInstanceArgs, context } = args
     const opts = args.opts ?? {}
-    const expressSupport = args.expressSupport ?? ExpressBuilder.fromServerOpts({ port: opts?.serverOpts?.port, hostname: opts?.serverOpts?.host, basePath: opts?.serverOpts?.baseUrl, existingExpress: opts?.serverOpts?.app}).build()
+    const expressSupport =
+      args.expressSupport ??
+      ExpressBuilder.fromServerOpts({
+        port: opts?.serverOpts?.port,
+        hostname: opts?.serverOpts?.host,
+        basePath: opts?.serverOpts?.baseUrl,
+        existingExpress: opts?.serverOpts?.app,
+      }).build()
     const instance = await context.agent.oid4vciGetInstance(args.issuerInstanceArgs)
     const issuer = await instance.get({ context, credentialDataSupplier: args.credentialDataSupplier })
 

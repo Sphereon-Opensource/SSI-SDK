@@ -23,7 +23,8 @@ export type HasEndpointOpts = { endpointOpts?: IEndpointOpts & SingleEndpoints }
 
 export type SingleEndpoints = Record<string, ISingleEndpointOpts | any>
 export interface IEndpointOpts {
-  basePath?: string
+  basePath?: string // The base path used to construct the router
+  baseUrl?: string | URL // Typically the external base URL
   globalAuth?: GenericAuthArgs
 }
 export interface ExpressSupport {

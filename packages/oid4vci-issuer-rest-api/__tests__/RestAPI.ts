@@ -1,10 +1,6 @@
 import { CredentialRequestJwtVcJson } from '@sphereon/oid4vci-common/lib/types/Generic.types'
-import {
-  CredentialDataSupplier,
-  CredentialDataSupplierArgs,
-  CredentialDataSupplierResult
-} from '@sphereon/oid4vci-issuer'
-import {ExpressBuilder} from "@sphereon/ssi-express-support";
+import { CredentialDataSupplier, CredentialDataSupplierArgs, CredentialDataSupplierResult } from '@sphereon/oid4vci-issuer'
+import { ExpressBuilder } from '@sphereon/ssi-express-support'
 import { TAgent } from '@veramo/core'
 import { IOID4VCIRestAPIOpts, IPlugins, OID4VCIRestAPI } from '../src'
 import agent, { baseUrl } from './agent'
@@ -17,10 +13,9 @@ export const opts: IOID4VCIRestAPIOpts = {
 }
 
 export function start() {
-
   const expressSupport = ExpressBuilder.fromServerOpts({
     port: 5000,
-    hostname: '0.0.0.0'
+    hostname: '0.0.0.0',
   }).build()
 
   OID4VCIRestAPI.init({
