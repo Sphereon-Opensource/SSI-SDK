@@ -87,7 +87,7 @@ export class ExpressBuilder {
     if (typeof callback === 'function') {
       this.withListenCallback(callback)
     }
-    this._startListen = startOnBuild !== false
+    this._startListen = startOnBuild === true
     return this
   }
 
@@ -179,7 +179,7 @@ export class ExpressBuilder {
     handlers?: ApplicationRequestHandler<T> | ApplicationRequestHandler<T>[]
   }): ExpressSupport {
     const express = this.buildExpress(opts)
-    const startListening = opts?.startListening === undefined ? this._startListen !==  false : opts.startListening
+    const startListening = opts?.startListening === undefined ? this._startListen ===  true : opts.startListening
     return {
       express,
       port: this.getPort(),
