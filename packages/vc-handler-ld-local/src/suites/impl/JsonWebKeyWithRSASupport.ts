@@ -178,17 +178,15 @@ export class JsonWebKey {
       const jwk = k.publicKeyJwk as JWK
       if (jwk.kty === 'RSA') {
         const publicKey = await subtle.importKey(
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
           'jwk',
-          k.publicKeyJwk as JsonWebKey,
+          jwk,
           {
             name: 'RSA-PSS',
             // modulusLength: 2048,
             saltLength: 32,
             hash: 'SHA-256',
             // publicExponent: new Uint8Array([1, 0, 1]),
-          },
+          } as RsaHashedImportParams,
           true,
           ['sign', 'verify']
         )
