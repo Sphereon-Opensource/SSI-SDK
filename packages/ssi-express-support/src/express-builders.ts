@@ -53,7 +53,7 @@ export class ExpressBuilder {
 
   public static fromServerOpts(opts: IExpressServerOpts & { envVarPrefix?: string }) {
     const builder = new ExpressBuilder({ existingExpress: opts?.existingExpress, envVarPrefix: opts?.envVarPrefix })
-    return builder.withEnableListenOpts({...opts, hostnameOrIP: opts.hostname, startOnBuild: opts.startListening ?? false})
+    return builder.withEnableListenOpts({ ...opts, hostnameOrIP: opts.hostname, startOnBuild: opts.startListening ?? false })
   }
 
   public enableListen(startOnBuild?: boolean): this {
@@ -179,7 +179,12 @@ export class ExpressBuilder {
     handlers?: ApplicationRequestHandler<T> | ApplicationRequestHandler<T>[]
   }): ExpressSupport {
     const express = this.buildExpress(opts)
-    const startListening = opts?.startListening === undefined ? this._startListen ===  true : opts.startListening
+    const startListening = opts?.startListening === undefined ? this._startListen !== true : opts.startListening
+    let started = false
+    if (startListening) {
+      this.startListening(express)
+      started = true
+    }
     return {
       express,
       port: this.getPort(),
@@ -188,10 +193,15 @@ export class ExpressBuilder {
       startListening,
       enforcer: this._enforcer,
       start: (opts) => {
-        if (startListening) {
-          this.startListening(express)
+        if (opts?.doNotStartListening) {
+          console.log('Express will not start listening. You will have to start it yourself')
         } else {
-          throw Error('Express already started during build')
+          if (!started) {
+            this.startListening(express)
+            started = true
+          } else {
+            throw Error('Express already started during build')
+          }
         }
 
         if (opts?.disableErrorHandler !== true) {
@@ -235,10 +245,6 @@ export class ExpressBuilder {
 
     app.use(bodyParser.urlencoded({ extended: true }))
     app.use(bodyParser.json())
-
-    if (this._startListen === true) {
-          this.startListening(app)
-    }
     return app
   }
 }

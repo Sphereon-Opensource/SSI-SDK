@@ -34,7 +34,7 @@ export interface ExpressSupport {
   userIsInRole?: string | string[]
   startListening: boolean
   enforcer?: Enforcer
-  start: (opts?: { disableErrorHandler?: boolean }) => Express
+  start: (opts?: { disableErrorHandler?: boolean; doNotStartListening?: boolean }) => Express
 }
 
 export interface ISingleEndpointOpts extends GenericAuthArgs {
