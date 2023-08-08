@@ -470,11 +470,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.6.1-next.6
+        version: 0.6.1-next.6
       '@sphereon/oid4vci-issuer':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.6.1-next.6
+        version: 0.6.1-next.6
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.13.0
         version: 0.13.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -528,14 +528,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.6.1-next.6
+        version: 0.6.1-next.6
       '@sphereon/oid4vci-issuer':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.6.1-next.6
+        version: 0.6.1-next.6
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.6.1-next.6
+        version: 0.6.1-next.6
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -688,8 +688,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.6.1-next.6
+        version: 0.6.1-next.6
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -722,8 +722,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.6.1-next.6
+        version: 0.6.1-next.6
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.13.0
         version: 0.13.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -1948,8 +1948,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /@adobe/css-tools@4.2.0:
-    resolution: {integrity: sha512-E09FiIft46CmH5Qnjb0wsW54/YQd69LsxeKUOWawmws1XWvyFGURnAChH0mlr7YPFR1ofwvUQfcL0J3lMxXqPA==}
+  /@adobe/css-tools@4.3.0:
+    resolution: {integrity: sha512-+RNNcQvw2V1bmnBTPAtOLfW/9mhH2vC67+rUSi5T8EtEWt6lEnGNY2GuhZ1/YwbgikT1TkhvidCDmN5Q5YCo/w==}
     dev: true
 
   /@ampproject/remapping@2.2.1:
@@ -6130,8 +6130,8 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vci-common@0.6.0:
-    resolution: {integrity: sha512-ApaXhYfkmRtsAKxSuCy70jlFvWdmf7dm8jHCtoUpPT2g+/2q1eoSCYUtA4f9kzskOI74LydPSzbl7QcZCWdueQ==}
+  /@sphereon/oid4vci-common@0.6.1-next.6:
+    resolution: {integrity: sha512-KnIywljGrcQ5ee6lvVpOvSmSLDJUEglppw3loGm5UuzXKznyXDq2SB6vvY0iigSS5kcs2tEp/HcQRQ0bHE8+oA==}
     engines: {node: '>=16'}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -6141,29 +6141,34 @@ packages:
       - encoding
     dev: false
 
-  /@sphereon/oid4vci-issuer-server@0.6.0:
-    resolution: {integrity: sha512-IBHy7dZ6cI61sl7e3OnQsp5wHJaAqFe+L6eJZwNwPEA0xB6WjDYQnrKrJFVkXLkaxXqRC3+cy0Ns/NItQVXqXw==}
+  /@sphereon/oid4vci-issuer-server@0.6.1-next.6:
+    resolution: {integrity: sha512-SPayyT8q6GRGvWNLIvKQSlvjtet/TwvrCF6mqqUtD6AOSpRVx4bCySPkg9yohbmJzxeDa8UKA9LCjtGx8Mbm1g==}
     engines: {node: '>=16'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.6.0
-      '@sphereon/oid4vci-issuer': 0.6.0
+      '@sphereon/oid4vci-common': 0.6.1-next.6
+      '@sphereon/oid4vci-issuer': 0.6.1-next.6
+      '@sphereon/ssi-express-support': 0.14.2-next.30
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.2
       cookie-parser: 1.4.6
       cors: 2.8.5
       dotenv-flow: 3.2.0
       express: 4.18.2
+      http-terminator: 3.2.0
       uuid: 9.0.0
     transitivePeerDependencies:
+      - '@noble/hashes'
       - encoding
+      - passport-azure-ad
+      - passport-http-bearer
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.6.0:
-    resolution: {integrity: sha512-bLAa1bPfwzfPBQNuwi5BbJhOSJV2J92fgFVirEnzSCCkirkGv4V7ibhIaYJpVk23xckJkHc4X0860fYKYYIgsQ==}
+  /@sphereon/oid4vci-issuer@0.6.1-next.6:
+    resolution: {integrity: sha512-AiBnx5SM1nfg15XybQvfHg5Al6IvnH+8YUuha7JGJmJALDC2rF7FN73wCKtmg2ODxf6C62QDGixj9wjDOq3Q9Q==}
     engines: {node: '>=16'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.6.0
+      '@sphereon/oid4vci-common': 0.6.1-next.6
       '@sphereon/ssi-types': link:packages/ssi-types
       uuid: 9.0.0
     transitivePeerDependencies:
@@ -6197,6 +6202,35 @@ packages:
     dependencies:
       react-native: 0.72.3(@babel/core@7.22.10)(@babel/preset-env@7.22.2)(react@18.2.0)
     dev: true
+
+  /@sphereon/ssi-express-support@0.14.2-next.30:
+    resolution: {integrity: sha512-/FMTyRl0mAAaXwTBsgUWWJMsBviA6PQUdee8RCRnKXLb/NE2MUAioMwhNUWff89wGyFAzQa4Ut2Jhyix1uX/yA==}
+    peerDependencies:
+      '@noble/hashes': ^1.3.1
+      passport-azure-ad: ^4.3.5
+      passport-http-bearer: ^1.0.1
+    peerDependenciesMeta:
+      '@noble/hashes':
+        optional: true
+      passport-azure-ad:
+        optional: true
+      passport-http-bearer:
+        optional: true
+    dependencies:
+      body-parser: 1.20.2
+      casbin: 5.26.1
+      cors: 2.8.5
+      dotenv-flow: 3.2.0
+      express: 4.18.2
+      express-session: 1.17.3
+      http-terminator: 3.2.0
+      morgan: 1.10.0
+      passport: 0.6.0
+      qs: 6.11.2
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
 
   /@sphereon/ssi-sdk-ext.did-provider-jwk@0.13.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-zqK+UdBKzwzLcVpUBpk+3TZNbV7DVRGwcj3iWtGRuv47ExRxEKcl8q9KVini1pn8sLtd1+FQMf3gUsEk3zmzew==}
@@ -6554,7 +6588,7 @@ packages:
     resolution: {integrity: sha512-N5ixQ2qKpi5OLYfwQmUb/5mSV9LneAcaUfp32pn4yCnpb8r/Yz0pXFPck21dIicKmi+ta5WRAknkZCfA8refMA==}
     engines: {node: '>=8', npm: '>=6', yarn: '>=1'}
     dependencies:
-      '@adobe/css-tools': 4.2.0
+      '@adobe/css-tools': 4.3.0
       '@babel/runtime': 7.22.10
       '@types/testing-library__jest-dom': 5.14.9
       aria-query: 5.3.0
@@ -7395,8 +7429,8 @@ packages:
   /@types/uuid@9.0.1:
     resolution: {integrity: sha512-rFT3ak0/2trgvp4yYZo5iKFEPsET7vKydKF+VRCxlQ9bpheehyAJH89dAkaLEq/j/RZXJIqcgsmPJKUP1Z28HA==}
 
-  /@types/validator@13.9.0:
-    resolution: {integrity: sha512-NclP0IbzHj/4tJZKFqKh8E7kZdgss+MCUYV9G+TLltFfDA4lFgE4PKPpDIyS2FlcdANIfSx273emkupvChigbw==}
+  /@types/validator@13.11.1:
+    resolution: {integrity: sha512-d/MUkJYdOeKycmm75Arql4M5+UuXmf4cHdHKsyw1GcvnNgL6s77UkgSgJ8TE/rI5PYsnwYq5jkcWBLuN/MpQ1A==}
     dev: false
 
   /@types/yargs-parser@21.0.0:
@@ -8982,7 +9016,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001519
-      electron-to-chromium: 1.4.486
+      electron-to-chromium: 1.4.487
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11(browserslist@4.21.10)
 
@@ -9316,7 +9350,7 @@ packages:
   /class-validator@0.14.0:
     resolution: {integrity: sha512-ct3ltplN8I9fOwUd8GrP8UQixwff129BkEtuWDKL5W45cQuLd19xqmTLu5ge78YDm/fdje6FMt0hGOhl0lii3A==}
     dependencies:
-      '@types/validator': 13.9.0
+      '@types/validator': 13.11.1
       libphonenumber-js: 1.10.39
       validator: 13.11.0
     dev: false
@@ -9899,6 +9933,7 @@ packages:
       node-fetch: 2.6.12
     transitivePeerDependencies:
       - encoding
+    dev: false
 
   /cross-fetch@4.0.0:
     resolution: {integrity: sha512-e4a5N8lVvuLgAWgnCrLr2PP0YyDOTHa9H/Rj54dirp61qXnNq46m82bRhNqIA5VccJtWBvPTFRV3TtvHUKPB1g==}
@@ -10169,7 +10204,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       globby: 11.1.0
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.10
       is-glob: 4.0.3
       is-path-cwd: 2.2.0
       is-path-inside: 3.0.3
@@ -10420,8 +10455,8 @@ packages:
       jake: 10.8.7
     dev: true
 
-  /electron-to-chromium@1.4.486:
-    resolution: {integrity: sha512-9zn9/2lbMGY/mFhoUymD9ODYdLY3zjUW/IW9ihU/sJVeIlD70m2aAb86S35aRGF+iwqLuQP25epruayZjKNjBw==}
+  /electron-to-chromium@1.4.487:
+    resolution: {integrity: sha512-XbCRs/34l31np/p33m+5tdBrdXu9jJkZxSbNxj5I0H1KtV2ZMSB+i/HYqDiRzHaFx2T5EdytjoBRe8QRJE2vQg==}
 
   /elliptic@6.5.4:
     resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}
@@ -11439,7 +11474,7 @@ packages:
   /fbjs@3.0.5:
     resolution: {integrity: sha512-ztsSx77JBtkuMrEypfhgc3cI0+0h+svqeie7xHbh1k/IKdcydnvadp/mUaGgjAOXQmQSxsqgaRhS3q9fy+1kxg==}
     dependencies:
-      cross-fetch: 3.1.8
+      cross-fetch: 3.1.5
       fbjs-css-vars: 1.0.2
       loose-envify: 1.4.0
       object-assign: 4.1.1
@@ -11542,7 +11577,7 @@ packages:
     resolution: {integrity: sha512-dOKT7jvF3hGzlW60Gc3ONox/0rRZ/tz7WCil0bqA1In/3I8f1BctpXahRnEKDySZqci7u+dqq93sZST9fOJpFw==}
     engines: {node: '>=16.0.0'}
     dependencies:
-      json5: 2.2.3
+      json5: 2.2.0
       path-exists: 4.0.0
 
   /find-cache-dir@2.1.0:
@@ -14195,7 +14230,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.10
 
   /jsonld-checker@0.1.8:
     resolution: {integrity: sha512-jclmnPRrm5SEpaIV6IiSTJxplRAqIWHduQLsUfrYpZM41Ng48m1RN2/aUyHze/ynfO0D2UhlJBt8SdObsH5GBw==}
@@ -14591,7 +14626,7 @@ packages:
     resolution: {integrity: sha512-Kx8hMakjX03tiGTLAIdJ+lL0htKnXjEZN6hk/tozf/WOuYGdZBJrZ+rCJRbVCugsjB3jMLn9746NsQIf5VjBMw==}
     engines: {node: '>=4'}
     dependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.10
       parse-json: 4.0.0
       pify: 3.0.0
       strip-bom: 3.0.0
@@ -15882,7 +15917,7 @@ packages:
       env-paths: 2.2.1
       exponential-backoff: 3.1.1
       glob: 7.2.3
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.10
       make-fetch-happen: 11.1.1
       nopt: 6.0.0
       npmlog: 6.0.2
@@ -20009,7 +20044,7 @@ packages:
   /write-file-atomic@2.4.3:
     resolution: {integrity: sha512-GaETH5wwsX+GcnzhPgKcKjJ6M2Cq3/iZp1WyY/X1CSqrW+jVNM9Y7D8EC2sM4ZG/V8wZlSniJnCKWPmBYAucRQ==}
     dependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.10
       imurmurhash: 0.1.4
       signal-exit: 3.0.7
 
@@ -20051,7 +20086,7 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       detect-indent: 5.0.0
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.10
       make-dir: 2.1.0
       pify: 4.0.1
       sort-keys: 2.0.0

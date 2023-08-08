@@ -1,7 +1,7 @@
 import { CredentialDataSupplier, VcIssuer } from '@sphereon/oid4vci-issuer'
 import { OID4VCIServer } from '@sphereon/oid4vci-issuer-server'
 import { IOID4VCIServerOpts } from '@sphereon/oid4vci-issuer-server/lib/OID4VCIServer'
-import { ExpressBuilder, ExpressSupport } from '@sphereon/ssi-express-support'
+import { ExpressSupport } from '@sphereon/ssi-express-support'
 import { getAccessTokenKeyRef, getAccessTokenSignerCallback, IIssuerInstanceArgs, IssuerInstance } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { DIDDocument } from 'did-resolver'
 import { Express } from 'express'
@@ -10,7 +10,7 @@ import { IRequiredContext } from './types'
 export interface IOID4VCIRestAPIOpts extends IOID4VCIServerOpts {}
 
 export class OID4VCIRestAPI {
-  private readonly _express: Express
+  private readonly _expressSupport: ExpressSupport
   private readonly _context: IRequiredContext
   private readonly _opts?: IOID4VCIRestAPIOpts
   private readonly _restApi: OID4VCIServer<DIDDocument>
@@ -21,19 +21,12 @@ export class OID4VCIRestAPI {
     context: IRequiredContext
     issuerInstanceArgs: IIssuerInstanceArgs
     credentialDataSupplier?: CredentialDataSupplier
-    expressSupport?: ExpressSupport
-    opts?: IOID4VCIRestAPIOpts
+    expressSupport: ExpressSupport
+    opts: IOID4VCIRestAPIOpts
   }): Promise<OID4VCIRestAPI> {
     const { issuerInstanceArgs, context } = args
     const opts = args.opts ?? {}
-    const expressSupport =
-      args.expressSupport ??
-      ExpressBuilder.fromServerOpts({
-        port: opts?.serverOpts?.port,
-        hostname: opts?.serverOpts?.host,
-        basePath: opts?.serverOpts?.baseUrl,
-        existingExpress: opts?.serverOpts?.app,
-      }).build()
+    const expressSupport = args.expressSupport
     const instance = await context.agent.oid4vciGetInstance(args.issuerInstanceArgs)
     const issuer = await instance.get({ context, credentialDataSupplier: args.credentialDataSupplier })
 
@@ -72,19 +65,14 @@ export class OID4VCIRestAPI {
     const { context, opts } = args
     this._context = context
     this._opts = opts ?? {}
-    this._express = args.expressSupport.express
+    this._expressSupport = args.expressSupport
     this._issuer = args.issuer
     this._instance = args.instance
-
-    this._opts.serverOpts = {
-      ...opts.serverOpts,
-      app: this._express,
-    }
-    this._restApi = new OID4VCIServer<DIDDocument>({ ...opts, issuer: this._issuer })
+    this._restApi = new OID4VCIServer<DIDDocument>(args.expressSupport, { ...opts, issuer: this._issuer })
   }
 
   get express(): Express {
-    return this._express
+    return this._expressSupport.express
   }
 
   get context(): IRequiredContext {
@@ -105,5 +93,9 @@ export class OID4VCIRestAPI {
 
   get issuer(): VcIssuer<DIDDocument> {
     return this._issuer
+  }
+
+  async stop(): Promise<boolean> {
+      return this._expressSupport.stop()
   }
 }
