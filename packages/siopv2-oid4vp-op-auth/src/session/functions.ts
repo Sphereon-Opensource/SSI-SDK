@@ -74,7 +74,12 @@ export async function createOPBuilder({
     .withExpiresIn(opOptions.expiresIn ?? 300)
     .withCheckLinkedDomain(opOptions.checkLinkedDomains ?? CheckLinkedDomain.IF_PRESENT)
     .withCustomResolver(
-      opOptions.resolveOpts?.resolver ?? new AgentDIDResolver(context, opOptions.resolveOpts?.noUniversalResolverFallback !== false)
+      opOptions.resolveOpts?.resolver ??
+        new AgentDIDResolver(context, {
+          uniresolverResolution: opOptions.resolveOpts?.noUniversalResolverFallback !== true,
+          localResolution: true,
+          resolverResolution: true,
+        })
     )
     .withEventEmitter(eventEmitter)
     .withRegistration({

@@ -12,7 +12,7 @@ import { IIssuerOptions, IRequiredContext } from './types/IOID4VCIIssuer'
 
 export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOptions }, _context: IRequiredContext) {
   return async (args: { jwt: string; kid?: string }): Promise<JwtVerifyResult<DIDDocument>> => {
-    const resolver = getAgentResolver(_context, { uniresolverFallback: true })
+    const resolver = getAgentResolver(_context, { resolverResolution: true, uniresolverResolution: true, localResolution: true })
     verifyOpts = { ...verifyOpts, resolver: verifyOpts?.resolver } // Resolver seperately as that is a function
     if (!verifyOpts?.resolver || typeof verifyOpts?.resolver?.resolve !== 'function') {
       verifyOpts.resolver = resolver

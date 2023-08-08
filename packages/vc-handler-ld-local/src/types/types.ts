@@ -163,7 +163,7 @@ export interface IVerifyPresentationLDArgs {
  *
  * @beta This API is likely to change without a BREAKING CHANGE notice
  */
-export type IRequiredContext = IAgentContext<IResolver & Pick<IDIDManager, 'didManagerGet'> & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>>
+export type IRequiredContext = IAgentContext<IResolver & IDIDManager & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>>
 
 export type ContextDoc = {
   '@context': string | Record<string, any>
