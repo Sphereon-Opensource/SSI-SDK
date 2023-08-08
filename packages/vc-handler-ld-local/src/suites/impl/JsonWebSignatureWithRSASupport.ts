@@ -233,19 +233,19 @@ export class JsonWebSignature {
 
   async verifySignature({ verifyData, verificationMethod, proof, document }: any) {
     if (verificationMethod.publicKey && typeof verificationMethod.publicKey === 'object' && !(verificationMethod.publicKey instanceof Uint8Array)) {
-      // const key = verificationMethod.publicKey as CryptoKey
-      // key.algorithm = {name: 'RSA-PSS'}
+      const key = verificationMethod.publicKey as CryptoKey
       const signature = proof.jws.split('.')[2]
       const headerString = proof.jws.split('.')[0]
-      const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), verifyData])
+      const dataBuffer = u8a.fromString(verifyData, 'utf-8')
 
-      if (!verificationMethod.publicKey.algorithm) {
+      const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), dataBuffer])
+
+      /*if (!verificationMethod.publicKey.algorithm) {
         verificationMethod.publicKey.algorithm = {}
       }
       if (!verificationMethod.publicKey.algorithm.name) {
         verificationMethod.publicKey.algorithm.name = 'RSA-PSS'
-      }
-      const key = verificationMethod.publicKey as CryptoKey
+      }*/
       const algName = verificationMethod.publicKey.algorithm.name ?? key?.algorithm?.name ?? 'RSA-PSS'
       return await subtle.verify(
         algName === 'RSA-PSS'
@@ -261,7 +261,7 @@ export class JsonWebSignature {
       )
     }
     const verifier = await verificationMethod.verifier()
-    return verifier.verify({ data: verifyData, signature: proof.jws })
+    return verifier.verify({ data: verifyData, signature: proof.jws.replace('..', `.${verifyData}.`) })
   }
 
   async verifyProof({ proof, document, purpose, documentLoader, expansionMap, compactProof }: any) {
