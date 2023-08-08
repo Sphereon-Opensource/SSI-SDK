@@ -9,6 +9,7 @@ import express, { Express } from 'express'
 import { Application, ApplicationRequestHandler } from 'express-serve-static-core'
 import session from 'express-session'
 import http from 'http'
+import { createHttpTerminator, HttpTerminator } from 'http-terminator'
 import morgan from 'morgan'
 import passport, { InitializeOptions } from 'passport'
 import { checkUserIsInRole } from './auth-utils'
@@ -37,6 +38,8 @@ export class ExpressBuilder {
   private _passportInitOpts?: InitializeOptions
   private _userIsInRole?: string | string[]
   private _enforcer?: Enforcer
+  private _server?: http.Server | undefined
+  private _terminator?: HttpTerminator
   private _morgan?: Handler<any, any> | undefined
 
   private constructor(opts?: { existingExpress?: Express; envVarPrefix?: string }) {
@@ -134,7 +137,13 @@ export class ExpressBuilder {
   }
 
   public startListening(express: Express) {
-    return express.listen(this.getPort(), this.getHostname(), this.listenCallback)
+    this._server = express.listen(this.getPort(), this.getHostname(), this.listenCallback)
+    this._terminator = createHttpTerminator({
+      server: this._server,
+      // gracefulTerminationTimeout: 10
+    })
+
+    return { server: this._server, terminator: this._terminator }
   }
 
   public getHostname(): string {
@@ -180,11 +189,12 @@ export class ExpressBuilder {
   }): ExpressSupport {
     const express = this.buildExpress(opts)
     const startListening = opts?.startListening === undefined ? this._startListen !== true : opts.startListening
-    let started = false
-    if (startListening) {
+    let started = this._server !== undefined
+    if (startListening && !started) {
       this.startListening(express)
       started = true
     }
+
     return {
       express,
       port: this.getPort(),
@@ -199,15 +209,20 @@ export class ExpressBuilder {
           if (!started) {
             this.startListening(express)
             started = true
-          } else {
-            throw Error('Express already started during build')
           }
         }
 
         if (opts?.disableErrorHandler !== true) {
           express.use(jsonErrorHandler)
         }
-        return express
+        return { server: this._server!, terminator: this._terminator! }
+      },
+      stop: async (terminator?: HttpTerminator) => {
+        const term = terminator ?? this._terminator
+        if (!term) {
+          return false
+        }
+        return await term.terminate().then(() => true)
       },
     }
   }
@@ -259,7 +274,8 @@ export class ExpressCorsConfigurer {
   private readonly _express?: Express
   private readonly _envVarPrefix?: string
 
-  constructor({ existingExpress, envVarPrefix }: { existingExpress?: Express; envVarPrefix?: string }) {
+  constructor(args?: { existingExpress?: Express; envVarPrefix?: string }) {
+    const { existingExpress, envVarPrefix } = args ?? {}
     this._express = existingExpress
     this._envVarPrefix = envVarPrefix
   }

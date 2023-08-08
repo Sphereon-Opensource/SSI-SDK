@@ -1,6 +1,8 @@
 import { Enforcer } from 'casbin'
 import { Express, RequestHandler } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
+import http from 'http'
+import { HttpTerminator } from 'http-terminator'
 import { Strategy } from 'passport'
 import { ParsedQs } from 'qs'
 
@@ -33,8 +35,10 @@ export interface ExpressSupport {
   hostname: string
   userIsInRole?: string | string[]
   startListening: boolean
+  server?: http.Server
   enforcer?: Enforcer
-  start: (opts?: { disableErrorHandler?: boolean; doNotStartListening?: boolean }) => Express
+  start: (opts?: { disableErrorHandler?: boolean; doNotStartListening?: boolean }) => { server: http.Server; terminator: HttpTerminator }
+  stop: (terminator?: HttpTerminator) => Promise<boolean>
 }
 
 export interface ISingleEndpointOpts extends GenericAuthArgs {
