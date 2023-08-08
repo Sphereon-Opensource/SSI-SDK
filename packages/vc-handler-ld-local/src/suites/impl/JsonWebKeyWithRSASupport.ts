@@ -1,10 +1,13 @@
-import { Ed25519KeyPair, Ed25519VerificationKey2018 } from '@transmute/ed25519-key-pair'
-import { Secp256k1KeyPair, EcdsaSecp256k1VerificationKey2019 } from '@transmute/secp256k1-key-pair'
-
 import crypto from '@sphereon/isomorphic-webcrypto'
+import { Ed25519KeyPair, Ed25519VerificationKey2018 } from '@transmute/ed25519-key-pair'
 import { JWS } from '@transmute/jose-ld'
+import { EcdsaSecp256k1VerificationKey2019, Secp256k1KeyPair } from '@transmute/secp256k1-key-pair'
 
-import { WebCryptoKey, JsonWebKey2020, P256Key2021, P384Key2021, P521Key2021 } from '@transmute/web-crypto-key-pair'
+import { JsonWebKey as JWK } from 'did-resolver'
+
+export const subtle: SubtleCrypto = typeof window !== 'undefined' && typeof jest === 'undefined' ? window.crypto.subtle : crypto.subtle
+
+import { JsonWebKey2020, P256Key2021, P384Key2021, P521Key2021, WebCryptoKey } from '@transmute/web-crypto-key-pair'
 // import { JsonWebKey, JsonWebSignature } from "@transmute/json-web-signature";
 
 export { JsonWebKey2020 }
@@ -170,12 +173,40 @@ export class JsonWebKey {
     k: JsonWebKey2020 | P256Key2021 | P384Key2021 | P521Key2021 | Ed25519VerificationKey2018 | EcdsaSecp256k1VerificationKey2019,
     options: any = { detached: true }
   ) => {
-    const KeyPair = getKeyPairForType(k)
-    const kp = await KeyPair.from(k as any)
-    let { detached, header, signer, verifier } = options
-    if (detached === undefined) {
-      detached = true
+    let kp: any | undefined
+    if (k.type === 'JsonWebKey2020') {
+      const jwk = k.publicKeyJwk as JWK
+      if (jwk.kty === 'RSA') {
+        const publicKey = await subtle.importKey(
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'jwk',
+          k.publicKeyJwk as JsonWebKey,
+          {
+            name: 'RSA-PSS',
+            // modulusLength: 2048,
+            saltLength: 32,
+            hash: 'SHA-256',
+            // publicExponent: new Uint8Array([1, 0, 1]),
+          },
+          true,
+          ['sign', 'verify']
+        )
+
+        kp = new WebCryptoKey({
+          id: k.id,
+          type: 'JsonWebKey2020',
+          controller: k.controller,
+          publicKey,
+        })
+      }
     }
+    if (!kp) {
+      const KeyPair = getKeyPairForType(k)
+      kp = await KeyPair.from(k as any)
+    }
+    const { header, signer, verifier } = options
+    const detached = options.detached !== undefined ? options.detached : true
     return useJwa(kp, { detached, header, signer, verifier })
   }
 
