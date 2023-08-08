@@ -78,7 +78,7 @@ export class JsonWebSignature {
       let saltLength: number | undefined
       try {
         const vm = await documentLoader(proof.verificationMethod)
-        if (vm.publicKeyJwk && vm.publicKey.kty === 'RSA') {
+        if (vm?.document?.publicKeyJwk && vm.document.publicKey.kty === 'RSA') {
           saltLength = 32
         }
       } catch (error) {
