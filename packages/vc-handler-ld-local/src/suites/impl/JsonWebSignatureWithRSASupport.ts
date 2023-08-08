@@ -51,50 +51,43 @@ export class JsonWebSignature {
     throw new TypeError(`The document to be signed must contain this suite's @context, ` + `"${contextUrl}".`)
   }
 
-  async canonize(input: any, { documentLoader, expansionMap, skipExpansion }: any) {
-    return jsonld.canonize(input, {
+  async canonize(input: any, { documentLoader }: any) {
+    return await jsonld.canonize(input, {
       algorithm: 'URDNA2015',
       format: 'application/n-quads',
-      documentLoader,
-      expansionMap,
-      skipExpansion,
-      useNative: this.useNativeCanonize,
+      documentLoader: documentLoader,
     })
   }
 
-  async canonizeProof(proof: any, { documentLoader, expansionMap }: any) {
-    // `jws`,`signatureValue`,`proofValue` must not be included in the proof
-    // options
-    proof = { ...proof }
-    delete proof.jws
-    return this.canonize(proof, {
-      documentLoader,
-      expansionMap,
-      skipExpansion: false,
-    })
-  }
-
-  async createVerifyData({ document, proof, documentLoader, expansionMap }: any) {
+  async createVerifyData({ document, documentLoader }: any) {
     // concatenate hash of c14n proof options and hash of c14n document
-    const c14nProofOptions = await this.canonizeProof(proof, {
-      documentLoader,
-      expansionMap,
-    })
     const c14nDocument = await this.canonize(document, {
       documentLoader,
-      expansionMap,
     })
-    return Buffer.concat([await sha256(c14nProofOptions), await sha256(c14nDocument)])
+    return u8a.toString(await sha256(c14nDocument), 'base16')
   }
 
   async matchProof({ proof }: any) {
     return proof.type === 'JsonWebSignature2020'
   }
 
-  async sign({ verifyData, proof }: any) {
+  async sign({ verifyData, proof, documentLoader }: any) {
     try {
       const signer: any = await this.key?.signer()
-      const detachedJws = await signer.sign({ data: verifyData })
+
+      let saltLength: number | undefined
+      try {
+        const vm = await documentLoader(proof.verificationMethod)
+        if (vm.publicKeyJwk && vm.publicKey.kty === 'RSA') {
+          saltLength = 32
+        }
+      } catch (error) {
+        console.log(error)
+        if (proof.verificationMethod.startsWith('did:web')) {
+          saltLength = 32
+        }
+      }
+      const detachedJws = await signer.sign({ data: verifyData, saltLength })
       proof.jws = detachedJws
       return proof
     } catch (e) {
@@ -112,6 +105,7 @@ export class JsonWebSignature {
       // use proof JSON-LD document passed to API
       proof = await jsonld.compact(this.proof, context, {
         documentLoader,
+        skipExpansion: true,
         expansionMap,
         compactToRelative: false,
       })
