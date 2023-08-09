@@ -37,7 +37,6 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
       alg = 'EdDSA'
     } else if (key.type === 'Secp256k1') {
       alg = 'ES256k'
-      throw Error('ES256k keys not supported yet (to JWK missing)')
     } else if (key.type === 'Secp256r1') {
       alg = 'ES256'
     } else if (key.type === 'Bls12381G1') {
@@ -48,7 +47,7 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
       // returns a JWS detached
       sign: async (args: { data: Uint8Array }): Promise<string> => {
         const header = {
-          alg: 'EdDSA',
+          alg,
           b64: false,
           crit: ['b64'],
         }
