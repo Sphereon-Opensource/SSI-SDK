@@ -1,8 +1,17 @@
 import { ISphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
-import { CredentialPayload, IAgentContext, IKey, IResolver, PresentationPayload, TKeyType, VerifiableCredential } from '@veramo/core'
+import {
+  CredentialPayload,
+  IAgentContext,
+  IDIDManager,
+  IKey,
+  IResolver,
+  PresentationPayload,
+  TKeyType,
+  VerifiableCredential
+} from '@veramo/core'
 import { DIDDocument } from 'did-resolver/lib/resolver'
 
-export type RequiredAgentMethods = IResolver & Pick<ISphereonKeyManager, 'keyManagerGet' | 'keyManagerSign' | 'keyManagerVerify'>
+export type RequiredAgentMethods = IResolver & IDIDManager & Pick<ISphereonKeyManager, 'keyManagerGet' | 'keyManagerSign' | 'keyManagerVerify'>
 
 export abstract class SphereonLdSignature {
   // LinkedDataSignature Suites according to

@@ -57,11 +57,17 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     suites: SphereonLdSignature[]
     bindingOverrides?: IBindingOverrides
     keyStore?: AbstractPrivateKeyStore
+    documentLoader?: {
+      localResolution?: boolean // Resolve identifiers hosted by the agent
+      uniresolverResolution?: boolean // Resolve identifiers using universal resolver
+      resolverResolution?: boolean // Use registered drivers
+    }
   }) {
     this.keyStore = options.keyStore
     this.ldCredentialModule = new LdCredentialModule({
       ldContextLoader: new LdContextLoader({ contextsPaths: options.contextMaps }),
       ldSuiteLoader: new LdSuiteLoader({ ldSignatureSuites: options.suites }),
+      documentLoader: options?.documentLoader
     })
 
     this.overrideBindings(options.bindingOverrides)
