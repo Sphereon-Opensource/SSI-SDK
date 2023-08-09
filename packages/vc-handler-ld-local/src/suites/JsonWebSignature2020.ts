@@ -43,7 +43,7 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
 
     const signer = {
       // returns a JWS detached
-      sign: async (args: { data: string  }): Promise<string> => {
+      sign: async (args: { data: Uint8Array }): Promise<string> => {
         const header = {
           alg,
           b64: false,
@@ -51,7 +51,7 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
         }
 
         const headerString = encodeJoseBlob(header)
-        const dataBuffer = u8a.fromString(args.data, 'utf-8')
+        const dataBuffer = args.data
         const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), dataBuffer])
         const messageString = u8a.toString(messageBuffer, 'base64') //will be decoded to bytes in the keyManagerSign, hence the base64 arg to the method below
 
@@ -65,7 +65,7 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
       },
     }
 
-    const publicKeyJwk = key.meta?.publicKeyJwk ?? toJwk(key.publicKeyHex, key.type, {use: JwkKeyUse.Signature, key})
+    const publicKeyJwk = key.meta?.publicKeyJwk ?? toJwk(key.publicKeyHex, key.type, { use: JwkKeyUse.Signature, key })
     const verificationKey = await JsonWebKey.from(
       {
         id,

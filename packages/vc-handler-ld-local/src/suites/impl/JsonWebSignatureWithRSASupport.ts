@@ -1,7 +1,7 @@
 import { Verifier } from '@transmute/jose-ld'
 import sec from '@transmute/security-context'
-import {decodeBase64url} from "@veramo/utils";
-import {JWTHeader} from "did-jwt";
+import { decodeJoseBlob } from '@veramo/utils'
+import { JWTHeader } from 'did-jwt'
 // import {decodeBase64url} from "did-jwt/src/util";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -110,7 +110,7 @@ export class JsonWebSignature {
           saltLength = 32
         }
       }
-      const detachedJws = await signer.sign({ data: verifyData, ...(saltLength && {saltLength}) })
+      const detachedJws = await signer.sign({ data: verifyData, ...(saltLength && { saltLength }) })
       proof.jws = detachedJws
       return proof
     } catch (e) {
@@ -253,8 +253,9 @@ export class JsonWebSignature {
       const key = verificationMethod.publicKey as CryptoKey
       const signature = proof.jws.split('.')[2]
       const headerString = proof.jws.split('.')[0]
-      const header = JSON.parse(decodeBase64url(headerString)) as JWTHeader
-      const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), verifyData])
+      const header = decodeJoseBlob(headerString) as JWTHeader
+      const headerBuffer = u8a.toString(u8a.fromString(headerString, 'base64url'), 'utf-8')
+      const messageBuffer = u8a.concat([u8a.fromString(`${headerBuffer}.`, 'utf-8'), verifyData])
 
       /*if (!verificationMethod.publicKey.algorithm) {
         verificationMethod.publicKey.algorithm = {}
@@ -265,14 +266,14 @@ export class JsonWebSignature {
       const algName = verificationMethod.publicKey.algorithm.name ?? key?.algorithm?.name ?? header?.alg ?? 'RSA-PSS'
       return await subtle.verify(
         algName === 'RSA-PSS'
-          ? {
+          ? ({
               saltLength: 32,
               name: algName,
               hash: 'SHA-256',
-            } as RsaHashedImportParams
+            } as RsaHashedImportParams)
           : { name: algName },
         key,
-          // detached signature b64 header is false, so no base64url
+        // detached signature b64 header is false, so no base64url
         u8a.fromString(signature, 'utf-8'),
         messageBuffer
       )
