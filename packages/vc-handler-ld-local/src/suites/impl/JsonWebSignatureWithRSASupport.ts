@@ -12,6 +12,7 @@ import jsonld from 'jsonld'
 import * as u8a from 'uint8arrays'
 
 import { JsonWebKey } from './JsonWebKeyWithRSASupport'
+// import { getJwaAlgFromJwk } from '@transmute/web-crypto-key-pair/dist/signatures/jws'
 
 const subtle = crypto.subtle
 
@@ -262,14 +263,20 @@ export class JsonWebSignature {
       debug(`#VERIFY MessageBuffer: ${messageString}`)
       debug(`#VERIFY Signature: ${signature}`)
       const algName = verificationMethod.publicKey.algorithm.name ?? key?.algorithm?.name ?? header?.alg ?? 'RSA-PSS'
+      let hash = 'SHA-256'
+      if (header.alg?.includes('384') || algName.includes('384')) {
+        hash = 'SHA-384'
+      } else if (header.alg?.includes('512') || algName.includes('512')) {
+        hash = 'SHA-512'
+      }
       return await subtle.verify(
         algName === 'RSA-PSS'
           ? ({
               saltLength: 32,
               name: algName,
-              hash: 'SHA-256',
+              hash,
             } as RsaPssParams)
-          : { name: algName },
+          : { name: algName, hash },
         key,
         // detached signature b64 header is false, so no base64url
         u8a.fromString(signature, 'base64url'),

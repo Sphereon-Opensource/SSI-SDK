@@ -67,7 +67,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     this.ldCredentialModule = new LdCredentialModule({
       ldContextLoader: new LdContextLoader({ contextsPaths: options.contextMaps }),
       ldSuiteLoader: new LdSuiteLoader({ ldSignatureSuites: options.suites }),
-      documentLoader: options?.documentLoader
+      documentLoader: options?.documentLoader,
     })
 
     this.overrideBindings(options.bindingOverrides)

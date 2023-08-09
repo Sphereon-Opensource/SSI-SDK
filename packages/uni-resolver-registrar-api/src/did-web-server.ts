@@ -20,7 +20,7 @@ export class DidWebServer {
     const { agent, opts } = args
     const features = opts?.enableFeatures ?? []
     if (!features.includes('did-web-global-resolution')) {
-      console.log('DID WEB Service NOT enabled')
+      console.log('did:web hosting service NOT enabled')
       return
     }
 
@@ -35,7 +35,7 @@ export class DidWebServer {
 
     const context = agentContext(agent)
 
-    console.log(`DID WEB Service enabled`)
+    console.log(`did:web hosting service enabled`)
 
     didWebDomainEndpoint(this.router!, context, opts?.endpointOpts)
     this._express.use(this.router!)

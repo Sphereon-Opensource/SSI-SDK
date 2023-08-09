@@ -5,7 +5,8 @@ import { W3CVerifiableCredential } from '@veramo/core/src/types/vc-data-model'
 import { Request, Response, Router } from 'express'
 import { v4 } from 'uuid'
 import { IIssueCredentialEndpointOpts, IRequiredContext, IVCAPIIssueOpts, IVerifyCredentialEndpointOpts } from './types'
-
+import Debug from 'debug'
+const debug = Debug('sphereon:ssi-sdk:w3c-vc-api')
 export function issueCredentialEndpoint(router: Router, context: IRequiredContext, opts?: IIssueCredentialEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`Issue credential endpoint is disabled`)
@@ -85,7 +86,7 @@ export function verifyCredentialEndpoint(router: Router, context: IRequiredConte
   }
   router.post(opts?.path ?? '/credentials/verify', checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
-      console.log(request.body)
+      debug(JSON.stringify(request.body, null, 2))
       const credential: W3CVerifiableCredential = request.body.verifiableCredential
       // const options: IIssueOptionsPayload = request.body.options
       if (!credential) {
