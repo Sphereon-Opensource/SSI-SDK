@@ -1,9 +1,9 @@
 import { purposes } from '@digitalcredentials/jsonld-signatures'
+import {ISphereonKeyManager} from "@sphereon/ssi-sdk-ext.key-manager";
 import {
   CredentialPayload,
   IAgentContext,
   IDIDManager,
-  IKeyManager,
   IResolver,
   PresentationPayload,
   VerifiableCredential,
@@ -163,7 +163,7 @@ export interface IVerifyPresentationLDArgs {
  *
  * @beta This API is likely to change without a BREAKING CHANGE notice
  */
-export type IRequiredContext = IAgentContext<IResolver & IDIDManager & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign'>>
+export type IRequiredContext = IAgentContext<IResolver & IDIDManager & Pick<ISphereonKeyManager, 'keyManagerGet' | 'keyManagerSign' | 'keyManagerVerify'>>
 
 export type ContextDoc = {
   '@context': string | Record<string, any>

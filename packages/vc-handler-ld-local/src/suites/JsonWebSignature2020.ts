@@ -1,6 +1,14 @@
 import { JwkKeyUse, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IProof, IVerifiableCredential } from '@sphereon/ssi-types'
-import { CredentialPayload, DIDDocument, IAgentContext, IKey, PresentationPayload, TKeyType, VerifiableCredential } from '@veramo/core'
+import {
+  CredentialPayload,
+  DIDDocument,
+  IAgentContext,
+  IKey,
+  PresentationPayload,
+  TKeyType,
+  VerifiableCredential
+} from '@veramo/core'
 import { asArray, encodeJoseBlob } from '@veramo/utils'
 import * as u8a from 'uint8arrays'
 
@@ -55,6 +63,8 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
         const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), dataBuffer])
         const messageString = u8a.toString(messageBuffer, 'base64') //will be decoded to bytes in the keyManagerSign, hence the base64 arg to the method below
 
+        console.log(`SIGN messageString: ${messageString}`)
+
         const signature = await context.agent.keyManagerSign({
           keyRef: key.kid,
           algorithm: alg,
@@ -85,11 +95,11 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
     return suite
   }
 
-  getSuiteForVerification(): any {
+  getSuiteForVerification(context: IAgentContext<RequiredAgentMethods>): any {
     const verifier = {
       // returns a JWS detached
-      verify: async (args: { data: Uint8Array; signature: Uint8Array }): Promise<boolean> => {
-        return true
+      verify: async (args: any): Promise<boolean> => {
+        return await context.agent.keyManagerVerify(args)
       },
     }
     return new JsonWebSignature({ verifier })

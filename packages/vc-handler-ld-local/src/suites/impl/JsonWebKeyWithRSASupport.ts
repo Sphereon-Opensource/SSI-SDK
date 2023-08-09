@@ -103,8 +103,9 @@ const getSigner = async (k: any, options = { detached: true }) => {
     }
   }
   if (kty === 'RSA') {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    return JWS.createSigner(k.signer('RSA'), 'RS256', options)
+    return JWS.createSigner(k.signer('RSA'), 'PS256', options)
   }
   if (kty === 'EC') {
     if (crv === 'secp256k1') {
@@ -180,7 +181,7 @@ export class JsonWebKey {
     if (k.type === 'JsonWebKey2020') {
       const jwk = k.publicKeyJwk as JWK
       if (jwk.kty === 'RSA') {
-        const publicKey = await subtle.importKey(
+        const publicKey: CryptoKey = await subtle.importKey(
           'jwk',
           jwk,
           {

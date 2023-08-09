@@ -4,7 +4,7 @@ import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
 import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
 import { IVerifyResult } from '@sphereon/ssi-types'
-import { CredentialPayload, IAgentContext, IKey, IResolver, PresentationPayload, VerifiableCredential, VerifiablePresentation } from '@veramo/core'
+import { CredentialPayload, IAgentContext, IKey, PresentationPayload, VerifiableCredential, VerifiablePresentation } from '@veramo/core'
 import Debug from 'debug'
 
 import { LdContextLoader } from './ld-context-loader'
@@ -122,12 +122,12 @@ export class LdCredentialModule {
 
   async verifyCredential(
     credential: VerifiableCredential,
-    context: IAgentContext<IResolver>,
+    context: IAgentContext<RequiredAgentMethods>,
     fetchRemoteContexts = false,
     purpose: typeof ProofPurpose = new AssertionProofPurpose(),
     checkStatus?: Function
   ): Promise<IVerifyResult> {
-    const verificationSuites = this.getAllVerificationSuites()
+    const verificationSuites = this.getAllVerificationSuites(context)
     this.ldSuiteLoader.getAllSignatureSuites().forEach((suite) => suite.preVerificationCredModification(credential))
     let result: IVerifyResult
     if (credential.proof.type?.includes('BbsBlsSignature2020')) {
@@ -135,7 +135,7 @@ export class LdCredentialModule {
       const suite = this.ldSuiteLoader
         .getAllSignatureSuites()
         .find((s) => s.getSupportedVeramoKeyType() === 'Bls12381G2')
-        ?.getSuiteForVerification() as BbsBlsSignature2020
+        ?.getSuiteForVerification(context) as BbsBlsSignature2020
 
       // fixme: check signature of verify method, adjust result if needed
       result = await jsigs.verify(credential, {
@@ -165,15 +165,15 @@ export class LdCredentialModule {
     return result
   }
 
-  private getAllVerificationSuites() {
-    return this.ldSuiteLoader.getAllSignatureSuites().map((x) => x.getSuiteForVerification())
+  private getAllVerificationSuites(context: IAgentContext<RequiredAgentMethods>) {
+    return this.ldSuiteLoader.getAllSignatureSuites().map((x) => x.getSuiteForVerification(context))
   }
 
   async verifyPresentation(
     presentation: VerifiablePresentation,
     challenge: string | undefined,
     domain: string | undefined,
-    context: IAgentContext<IResolver>,
+    context: IAgentContext<RequiredAgentMethods>,
     fetchRemoteContexts = false,
     presentationPurpose: typeof ProofPurpose = !challenge && !domain
       ? new AssertionProofPurpose()
@@ -187,7 +187,7 @@ export class LdCredentialModule {
       const suite = this.ldSuiteLoader
         .getAllSignatureSuites()
         .find((s) => s.getSupportedVeramoKeyType() === 'Bls12381G2')
-        ?.getSuiteForVerification() as BbsBlsSignature2020
+        ?.getSuiteForVerification(context) as BbsBlsSignature2020
       result = await jsigs.verify(presentation, {
         suite,
         purpose: presentationPurpose,
@@ -197,7 +197,7 @@ export class LdCredentialModule {
     } else {
       result = await vc.verify({
         presentation,
-        suite: this.getAllVerificationSuites(),
+        suite: this.getAllVerificationSuites(context),
         documentLoader: this.ldDocumentLoader.getLoader(context, { attemptToFetchContexts: fetchRemoteContexts, verifiableData: presentation }),
         challenge,
         domain,
