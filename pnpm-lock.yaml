@@ -27,8 +27,8 @@ overrides:
   '@veramo/remote-server': 4.2.0
   '@veramo/selective-disclosure': 4.2.0
   '@veramo/url-handler': 4.2.0
-  '@sphereon/ssi-types': workspace:*
-  '@sphereon/ssi-sdk.core': workspace:*
+  '@sphereon/ssi-types': workspace:^
+  '@sphereon/ssi-sdk.core': workspace:^
   '@noble/hashes': 1.2.0
   did-jwt: 6.11.6
   did-jwt-vc: 3.1.3
@@ -187,7 +187,7 @@ importers:
   packages/contact-manager:
     dependencies:
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../data-store
       cross-fetch:
         specifier: ^3.1.5
@@ -197,7 +197,7 @@ importers:
         version: 0.3.12(sqlite3@5.1.6)(ts-node@10.9.1)
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../agent-config
       '@veramo/remote-client':
         specifier: 4.2.0
@@ -209,7 +209,7 @@ importers:
   packages/data-store:
     dependencies:
       '@sphereon/ssi-types':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-types
       '@veramo/core':
         specifier: 4.2.0
@@ -289,10 +289,10 @@ importers:
   packages/issuance-branding:
     dependencies:
       '@sphereon/ssi-sdk.core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../data-store
       debug:
         specifier: ^4.3.4
@@ -302,7 +302,7 @@ importers:
         version: 0.3.12(sqlite3@5.1.6)(ts-node@10.9.1)
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../agent-config
       '@veramo/remote-client':
         specifier: 4.2.0
@@ -345,7 +345,7 @@ importers:
         specifier: ^1.9.2
         version: 1.9.2
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../agent-config
       '@types/debug':
         specifier: ^4.1.7
@@ -403,7 +403,7 @@ importers:
   packages/ms-request-api:
     dependencies:
       '@sphereon/ssi-sdk.ms-authenticator':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ms-authenticator
       '@veramo/core':
         specifier: 4.2.0
@@ -413,7 +413,7 @@ importers:
         version: 3.1.5
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../agent-config
       '@types/express':
         specifier: ^4.17.17
@@ -479,16 +479,16 @@ importers:
         specifier: 0.13.1-next.7
         version: 0.13.1-next.7(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../kv-store
       '@sphereon/ssi-sdk.oid4vci-issuer-store':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../oid4vci-issuer-store
       '@sphereon/ssi-types':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-types
       '@types/uuid':
         specifier: ^9.0.1
@@ -537,19 +537,19 @@ importers:
         specifier: 0.6.0
         version: 0.6.0
       '@sphereon/ssi-express-support':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../kv-store
       '@sphereon/ssi-sdk.oid4vci-issuer':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../oid4vci-issuer
       '@sphereon/ssi-sdk.oid4vci-issuer-store':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../oid4vci-issuer-store
       '@sphereon/ssi-types':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-types
       '@types/uuid':
         specifier: ^9.0.1
@@ -610,10 +610,10 @@ importers:
         specifier: 0.13.1-next.7
         version: 0.13.1-next.7(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../data-store
       '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../vc-handler-ld-local
       '@types/body-parser':
         specifier: ^1.19.2
@@ -698,7 +698,7 @@ importers:
         version: 3.1.5
     devDependencies:
       '@sphereon/ssi-sdk.dev':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../dev
       '@types/node':
         specifier: ^18.16.3
@@ -728,7 +728,7 @@ importers:
         specifier: 0.13.1-next.7
         version: 0.13.1-next.7(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../kv-store
       '@types/uuid':
         specifier: ^9.0.1
@@ -777,10 +777,10 @@ importers:
         specifier: 0.13.1-next.7
         version: 0.13.1-next.7(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../kv-store
       '@sphereon/ssi-types':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-types
       '@veramo/core':
         specifier: 4.2.0
@@ -790,7 +790,7 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../agent-config
       '@types/json-buffer':
         specifier: ^3.0.0
@@ -836,7 +836,7 @@ importers:
         specifier: ^1.5.5
         version: 1.5.5
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../agent-config
       '@testing-library/jest-dom':
         specifier: ^5.16.5
@@ -878,7 +878,7 @@ importers:
         specifier: 0.3.2-unstable.8
         version: 0.3.2-unstable.8
       '@sphereon/ssi-types':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-types
       uint8arrays:
         specifier: 3.1.1
@@ -903,13 +903,13 @@ importers:
         specifier: 0.13.1-next.7
         version: 0.13.1-next.7(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.presentation-exchange':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../presentation-exchange
       '@sphereon/ssi-types':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-types
       '@sphereon/wellknown-dids-client':
         specifier: ^0.1.3
@@ -937,7 +937,7 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../agent-config
       '@veramo/did-provider-key':
         specifier: 4.2.0
@@ -973,19 +973,19 @@ importers:
         specifier: 0.13.1-next.7
         version: 0.13.1-next.7(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../kv-store
       '@sphereon/ssi-sdk.presentation-exchange':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../presentation-exchange
       '@sphereon/ssi-sdk.siopv2-oid4vp-common':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../siopv2-oid4vp-common
       '@sphereon/ssi-types':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-types
       '@sphereon/wellknown-dids-client':
         specifier: ^0.1.3
@@ -1031,25 +1031,25 @@ importers:
         specifier: 0.3.2-unstable.8
         version: 0.3.2-unstable.8
       '@sphereon/ssi-express-support':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk.core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../kv-store
       '@sphereon/ssi-sdk.presentation-exchange':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../presentation-exchange
       '@sphereon/ssi-sdk.siopv2-oid4vp-common':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../siopv2-oid4vp-common
       '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../siopv2-oid4vp-rp-auth
       '@sphereon/ssi-types':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-types
       '@types/uuid':
         specifier: ^9.0.1
@@ -1101,10 +1101,10 @@ importers:
         specifier: 0.13.1-next.7
         version: 0.13.1-next.7(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../data-store
       '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../vc-handler-ld-local
       '@types/body-parser':
         specifier: ^1.19.2
@@ -1194,7 +1194,7 @@ importers:
   packages/siopv2-oid4vp-rp-rest-client:
     dependencies:
       '@sphereon/ssi-sdk.siopv2-oid4vp-common':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../siopv2-oid4vp-common
       '@veramo/core':
         specifier: 4.2.0
@@ -1310,7 +1310,7 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1
       '@sphereon/ssi-types':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-types
       '@veramo/core':
         specifier: 4.2.0
@@ -1357,7 +1357,7 @@ importers:
   packages/uni-resolver-registrar-api:
     dependencies:
       '@sphereon/ssi-express-support':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.13.1-next.7
@@ -1369,10 +1369,10 @@ importers:
         specifier: 0.13.1-next.7
         version: 0.13.1-next.7(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-sdk-core
       '@sphereon/ssi-types':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-types
       '@veramo/core':
         specifier: 4.2.0
@@ -1415,10 +1415,10 @@ importers:
         specifier: 0.13.1-next.7
         version: 0.13.1-next.7
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../data-store
       '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../vc-handler-ld-local
       '@types/body-parser':
         specifier: ^1.19.2
@@ -1553,10 +1553,10 @@ importers:
         specifier: 0.13.1-next.7
         version: 0.13.1-next.7(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-sdk-core
       '@sphereon/ssi-types':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-types
       '@transmute/ed25519-key-pair':
         specifier: 0.7.0-unstable.81
@@ -1635,7 +1635,7 @@ importers:
         specifier: 0.13.1-next.7
         version: 0.13.1-next.7(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../agent-config
       '@transmute/lds-ecdsa-secp256k1-recovery2020':
         specifier: ^0.0.7
@@ -1713,19 +1713,19 @@ importers:
         specifier: 0.3.2-unstable.8
         version: 0.3.2-unstable.8
       '@sphereon/ssi-express-support':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk.core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../kv-store
       '@sphereon/ssi-sdk.presentation-exchange':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../presentation-exchange
       '@sphereon/ssi-types':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-types
       '@types/uuid':
         specifier: ^9.0.1
@@ -1774,10 +1774,10 @@ importers:
         specifier: 0.13.1-next.7
         version: 0.13.1-next.7
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../data-store
       '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../vc-handler-ld-local
       '@types/body-parser':
         specifier: ^1.19.2
@@ -1867,7 +1867,7 @@ importers:
   packages/wellknown-did-issuer:
     dependencies:
       '@sphereon/ssi-types':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ssi-types
       '@sphereon/wellknown-dids-client':
         specifier: ^0.1.3
@@ -1892,7 +1892,7 @@ importers:
         version: 8.3.2
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../agent-config
       '@types/express':
         specifier: 4.17.13
@@ -1929,7 +1929,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../agent-config
       '@veramo/remote-client':
         specifier: 4.2.0
@@ -9870,7 +9870,6 @@ packages:
       node-fetch: 2.6.12
     transitivePeerDependencies:
       - encoding
-    dev: false
 
   /cross-fetch@4.0.0:
     resolution: {integrity: sha512-e4a5N8lVvuLgAWgnCrLr2PP0YyDOTHa9H/Rj54dirp61qXnNq46m82bRhNqIA5VccJtWBvPTFRV3TtvHUKPB1g==}
@@ -10141,7 +10140,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       globby: 11.1.0
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       is-glob: 4.0.3
       is-path-cwd: 2.2.0
       is-path-inside: 3.0.3
@@ -11411,7 +11410,7 @@ packages:
   /fbjs@3.0.5:
     resolution: {integrity: sha512-ztsSx77JBtkuMrEypfhgc3cI0+0h+svqeie7xHbh1k/IKdcydnvadp/mUaGgjAOXQmQSxsqgaRhS3q9fy+1kxg==}
     dependencies:
-      cross-fetch: 3.1.5
+      cross-fetch: 3.1.8
       fbjs-css-vars: 1.0.2
       loose-envify: 1.4.0
       object-assign: 4.1.1
@@ -11514,7 +11513,7 @@ packages:
     resolution: {integrity: sha512-dOKT7jvF3hGzlW60Gc3ONox/0rRZ/tz7WCil0bqA1In/3I8f1BctpXahRnEKDySZqci7u+dqq93sZST9fOJpFw==}
     engines: {node: '>=16.0.0'}
     dependencies:
-      json5: 2.2.0
+      json5: 2.2.3
       path-exists: 4.0.0
 
   /find-cache-dir@2.1.0:
@@ -14167,7 +14166,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
 
   /jsonld-checker@0.1.8:
     resolution: {integrity: sha512-jclmnPRrm5SEpaIV6IiSTJxplRAqIWHduQLsUfrYpZM41Ng48m1RN2/aUyHze/ynfO0D2UhlJBt8SdObsH5GBw==}
@@ -15854,7 +15853,7 @@ packages:
       env-paths: 2.2.1
       exponential-backoff: 3.1.1
       glob: 7.2.3
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       make-fetch-happen: 11.1.1
       nopt: 6.0.0
       npmlog: 6.0.2
@@ -19981,7 +19980,7 @@ packages:
   /write-file-atomic@2.4.3:
     resolution: {integrity: sha512-GaETH5wwsX+GcnzhPgKcKjJ6M2Cq3/iZp1WyY/X1CSqrW+jVNM9Y7D8EC2sM4ZG/V8wZlSniJnCKWPmBYAucRQ==}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       imurmurhash: 0.1.4
       signal-exit: 3.0.7
 
@@ -20023,7 +20022,7 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       detect-indent: 5.0.0
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       make-dir: 2.1.0
       pify: 4.0.1
       sort-keys: 2.0.0
