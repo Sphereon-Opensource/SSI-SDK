@@ -53,24 +53,21 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
       // returns a JWS detached
       sign: async (args: { data: Uint8Array }): Promise<string> => {
         const header = {
-          alg,
+          alg: 'EdDSA',
           b64: false,
           crit: ['b64'],
         }
-
         const headerString = encodeJoseBlob(header)
-        const dataBuffer = args.data
-        const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), dataBuffer])
-        const messageString = u8a.toString(messageBuffer, 'base64') //will be decoded to bytes in the keyManagerSign, hence the base64 arg to the method below
-
-        console.log(`SIGN messageString: ${messageString}`)
-
+        const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), args.data])
+        const messageString = u8a.toString(messageBuffer, 'base64')
+        console.log(`#Create MessageBuffer: ${messageString}`)
         const signature = await context.agent.keyManagerSign({
           keyRef: key.kid,
           algorithm: alg,
           data: messageString,
           encoding: 'base64',
         })
+        console.log(`#Create signature: ${signature}`)
         return `${headerString}..${signature}`
       },
     }

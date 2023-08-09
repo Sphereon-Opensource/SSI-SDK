@@ -1,7 +1,7 @@
 import { sha256 } from '@noble/hashes/sha256'
 import { Verifier } from '@transmute/jose-ld'
 import sec from '@transmute/security-context'
-import { decodeJoseBlob } from '@veramo/utils'
+import {decodeJoseBlob} from '@veramo/utils'
 import { JWTHeader } from 'did-jwt'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -86,7 +86,9 @@ export class JsonWebSignature {
       documentLoader,
       expansionMap,
     })
-    return u8a.concat([hash(c14nProof), hash(c14nDocument)])
+    const verifyData = u8a.concat([hash(c14nProof), hash(c14nDocument)])
+    console.log(`===Verify DATA: ${u8a.toString(verifyData, 'base64')}`)
+    return verifyData
   }
 
   async matchProof({ proof }: any) {
@@ -253,9 +255,10 @@ export class JsonWebSignature {
       const signature = proof.jws.split('.')[2]
       const headerString = proof.jws.split('.')[0]
       const header = decodeJoseBlob(headerString) as JWTHeader
-      const dataBuffer = verifyData
-
-      const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), dataBuffer])
+      const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), verifyData])
+      const messageString = u8a.toString(messageBuffer, 'base64')
+      console.log(`#VERIFY MessageBuffer: ${messageString}`)
+      console.log(`#VERIFY Signature: ${signature}`)
       const algName = verificationMethod.publicKey.algorithm.name ?? key?.algorithm?.name ?? header?.alg ?? 'RSA-PSS'
       return await subtle.verify(
         algName === 'RSA-PSS'
@@ -267,7 +270,7 @@ export class JsonWebSignature {
           : { name: algName },
         key,
         // detached signature b64 header is false, so no base64url
-        u8a.fromString(signature, 'utf-8'),
+        u8a.fromString(signature, 'base64url'),
         messageBuffer
       )
     }
