@@ -1,11 +1,14 @@
-import crypto from '@sphereon/isomorphic-webcrypto'
+// import crypto from '@sphereon/isomorphic-webcrypto'
 import { Ed25519KeyPair, Ed25519VerificationKey2018 } from '@transmute/ed25519-key-pair'
 import { JWS } from '@transmute/jose-ld'
 import { EcdsaSecp256k1VerificationKey2019, Secp256k1KeyPair } from '@transmute/secp256k1-key-pair'
 
 import { JsonWebKey as JWK } from 'did-resolver'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const crypto = require('@sphereon/isomorphic-webcrypto')
 
-export const subtle: SubtleCrypto = typeof window !== 'undefined' && typeof jest === 'undefined' ? window.crypto.subtle : crypto.subtle
+const subtle = crypto.subtle
+// export const subtle: SubtleCrypto = typeof window !== 'undefined' && typeof jest === 'undefined' ? window.crypto.subtle : crypto.subtle
 
 import { JsonWebKey2020, P256Key2021, P384Key2021, P521Key2021, WebCryptoKey } from '@transmute/web-crypto-key-pair'
 // import { JsonWebKey, JsonWebSignature } from "@transmute/json-web-signature";

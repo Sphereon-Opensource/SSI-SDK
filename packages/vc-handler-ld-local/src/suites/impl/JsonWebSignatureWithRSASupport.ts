@@ -272,7 +272,8 @@ export class JsonWebSignature {
             } as RsaHashedImportParams
           : { name: algName },
         key,
-        u8a.fromString(signature, 'base64url'),
+          // detached signature b64 header is false, so no base64url
+        u8a.fromString(signature, 'utf-8'),
         messageBuffer
       )
     }
