@@ -1,8 +1,11 @@
+import crypto from '@sphereon/isomorphic-webcrypto'
 import { sha256 } from '@noble/hashes/sha256'
 import { Verifier } from '@transmute/jose-ld'
 import sec from '@transmute/security-context'
-import {decodeJoseBlob} from '@veramo/utils'
+import { decodeJoseBlob } from '@veramo/utils'
 import { JWTHeader } from 'did-jwt'
+import Debug from 'debug'
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import jsonld from 'jsonld'
@@ -10,10 +13,9 @@ import * as u8a from 'uint8arrays'
 
 import { JsonWebKey } from './JsonWebKeyWithRSASupport'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const crypto = require('@sphereon/isomorphic-webcrypto')
-
 const subtle = crypto.subtle
+
+const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 
 export function hash(payload: string | Uint8Array): Uint8Array {
   const data = typeof payload === 'string' ? u8a.fromString(payload) : payload
@@ -87,7 +89,7 @@ export class JsonWebSignature {
       expansionMap,
     })
     const verifyData = u8a.concat([hash(c14nProof), hash(c14nDocument)])
-    console.log(`===Verify DATA: ${u8a.toString(verifyData, 'base64')}`)
+    debug(`===Verify DATA: ${u8a.toString(verifyData, 'base64')}`)
     return verifyData
   }
 
@@ -106,7 +108,7 @@ export class JsonWebSignature {
           saltLength = 32
         }
       } catch (error) {
-        console.log(error)
+        debug(error)
         if (proof.verificationMethod.startsWith('did:web')) {
           saltLength = 32
         }
@@ -257,8 +259,8 @@ export class JsonWebSignature {
       const header = decodeJoseBlob(headerString) as JWTHeader
       const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), verifyData])
       const messageString = u8a.toString(messageBuffer, 'base64')
-      console.log(`#VERIFY MessageBuffer: ${messageString}`)
-      console.log(`#VERIFY Signature: ${signature}`)
+      debug(`#VERIFY MessageBuffer: ${messageString}`)
+      debug(`#VERIFY Signature: ${signature}`)
       const algName = verificationMethod.publicKey.algorithm.name ?? key?.algorithm?.name ?? header?.alg ?? 'RSA-PSS'
       return await subtle.verify(
         algName === 'RSA-PSS'

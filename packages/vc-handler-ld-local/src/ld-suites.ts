@@ -1,4 +1,4 @@
-import {ISphereonKeyManager} from "@sphereon/ssi-sdk-ext.key-manager";
+import { ISphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { CredentialPayload, IAgentContext, IKey, IResolver, PresentationPayload, TKeyType, VerifiableCredential } from '@veramo/core'
 import { DIDDocument } from 'did-resolver/lib/resolver'
 

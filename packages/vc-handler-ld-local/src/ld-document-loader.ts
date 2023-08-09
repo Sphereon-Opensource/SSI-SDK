@@ -43,7 +43,7 @@ export class LdDocumentLoader {
       const origUrl = url
       if (url.startsWith('#') && verifiableData.issuer !== undefined) {
         url = (typeof verifiableData.issuer === 'string' ? verifiableData.issuer : verifiableData.issuer.id) + url
-        console.log(url)
+        debug(url)
       }
       // did resolution
       if (url.toLowerCase().startsWith('did:')) {
@@ -73,17 +73,17 @@ export class LdDocumentLoader {
           if (origUrl !== url) {
             // Make sure we replace the result URLs with the original URLs, so framing keeps working
             didDoc = JSON.parse(JSON.stringify(didDoc).replace(url, origUrl)) as DIDDocument
-            console.log('CHANGED:')
-            console.log(didDoc)
+            debug('CHANGED:')
+            debug(didDoc)
           }
 
           // Apparently we got a whole DID document, but we are looking for a verification method
           // We use origUrl here, as that is how it was used in the VM
           const component = await context.agent.getDIDComponentById({ didDocument: didDoc, didUrl: origUrl })
-          console.log('Component:')
-          console.log(component)
-          console.log('Component stringified:')
-          console.log(JSON.stringify(component))
+          debug('Component:')
+          debug(component)
+          debug('Component stringified:')
+          debug(JSON.stringify(component))
           if (component && typeof component !== 'string' && component.id) {
             // We have to provide a context
             const contexts = this.ldSuiteLoader
@@ -138,7 +138,7 @@ export class LdDocumentLoader {
         }
       }
 
-      console.log(`WARNING: Possible unknown context/identifier for ${url} \n falling back to default documentLoader`)
+      debug(`WARNING: Possible unknown context/identifier for ${url} \n falling back to default documentLoader`)
 
       return vc.defaultDocumentLoader(url)
     })

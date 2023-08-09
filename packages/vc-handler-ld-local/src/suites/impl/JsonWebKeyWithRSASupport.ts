@@ -1,19 +1,18 @@
-// import crypto from '@sphereon/isomorphic-webcrypto'
+import crypto from '@sphereon/isomorphic-webcrypto'
 import { Ed25519KeyPair, Ed25519VerificationKey2018 } from '@transmute/ed25519-key-pair'
 import { JWS } from '@transmute/jose-ld'
 import { EcdsaSecp256k1VerificationKey2019, Secp256k1KeyPair } from '@transmute/secp256k1-key-pair'
 
 import { JsonWebKey as JWK } from 'did-resolver'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const crypto = require('@sphereon/isomorphic-webcrypto')
 
 const subtle = crypto.subtle
-// export const subtle: SubtleCrypto = typeof window !== 'undefined' && typeof jest === 'undefined' ? window.crypto.subtle : crypto.subtle
 
 import { JsonWebKey2020, P256Key2021, P384Key2021, P521Key2021, WebCryptoKey } from '@transmute/web-crypto-key-pair'
-// import { JsonWebKey, JsonWebSignature } from "@transmute/json-web-signature";
+import Debug from 'debug'
 
 export { JsonWebKey2020 }
+
+const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 
 const getKeyPairForKtyAndCrv = (kty: string, crv: string) => {
   if (kty === 'OKP') {
@@ -179,6 +178,7 @@ export class JsonWebKey {
   ) => {
     let kp: any | undefined
     if (k.type === 'JsonWebKey2020') {
+      debug('Importing RSA key using crypto.subtle')
       const jwk = k.publicKeyJwk as JWK
       if (jwk.kty === 'RSA') {
         const publicKey: CryptoKey = await subtle.importKey(
@@ -204,6 +204,7 @@ export class JsonWebKey {
       }
     }
     if (!kp) {
+      debug(`Using getKeyPairForType for ${k.type} ${k.id}`)
       const KeyPair = getKeyPairForType(k)
       kp = await KeyPair.from(k as any)
     }

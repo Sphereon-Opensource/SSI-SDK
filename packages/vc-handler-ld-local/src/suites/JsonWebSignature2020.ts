@@ -1,21 +1,16 @@
 import { JwkKeyUse, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IProof, IVerifiableCredential } from '@sphereon/ssi-types'
-import {
-  CredentialPayload,
-  DIDDocument,
-  IAgentContext,
-  IKey,
-  PresentationPayload,
-  TKeyType,
-  VerifiableCredential
-} from '@veramo/core'
+import { CredentialPayload, DIDDocument, IAgentContext, IKey, PresentationPayload, TKeyType, VerifiableCredential } from '@veramo/core'
 import { asArray, encodeJoseBlob } from '@veramo/utils'
+import Debug from 'debug'
 import * as u8a from 'uint8arrays'
 
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 
 import { JsonWebKey } from './impl/JsonWebKeyWithRSASupport'
 import { JsonWebSignature } from './impl/JsonWebSignatureWithRSASupport'
+
+const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 
 /**
  * Veramo wrapper for the JsonWebSignature2020 suite by Transmute Industries
@@ -60,14 +55,14 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
         const headerString = encodeJoseBlob(header)
         const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), args.data])
         const messageString = u8a.toString(messageBuffer, 'base64')
-        console.log(`#Create MessageBuffer: ${messageString}`)
+        debug(`#Create MessageBuffer: ${messageString}`)
         const signature = await context.agent.keyManagerSign({
           keyRef: key.kid,
           algorithm: alg,
           data: messageString,
           encoding: 'base64',
         })
-        console.log(`#Create signature: ${signature}`)
+        debug(`#Create signature: ${signature}`)
         return `${headerString}..${signature}`
       },
     }
