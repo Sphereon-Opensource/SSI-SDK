@@ -96,6 +96,6 @@ export class OID4VCIRestAPI {
   }
 
   async stop(): Promise<boolean> {
-      return this._expressSupport.stop()
+    return this._expressSupport.stop()
   }
 }
