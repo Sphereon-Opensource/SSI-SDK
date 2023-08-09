@@ -1,5 +1,8 @@
 import { Verifier } from '@transmute/jose-ld'
 import sec from '@transmute/security-context'
+import {decodeBase64url} from "@veramo/utils";
+import {JWTHeader} from "did-jwt";
+// import {decodeBase64url} from "did-jwt/src/util";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import jsonld from 'jsonld'
@@ -51,20 +54,40 @@ export class JsonWebSignature {
     throw new TypeError(`The document to be signed must contain this suite's @context, ` + `"${contextUrl}".`)
   }
 
-  async canonize(input: any, { documentLoader }: any) {
-    return await jsonld.canonize(input, {
+  async canonize(input: any, { documentLoader, expansionMap, skipExpansion }: any) {
+    return jsonld.canonize(input, {
       algorithm: 'URDNA2015',
       format: 'application/n-quads',
-      documentLoader: documentLoader,
+      documentLoader,
+      expansionMap,
+      skipExpansion,
+      useNative: this.useNativeCanonize,
     })
   }
 
-  async createVerifyData({ document, documentLoader }: any) {
+  async canonizeProof(proof: any, { documentLoader, expansionMap }: any) {
+    // `jws`,`signatureValue`,`proofValue` must not be included in the proof
+    // options
+    const proofInput = { ...proof }
+    delete proofInput.jws
+    return this.canonize(proofInput, {
+      documentLoader,
+      expansionMap,
+      skipExpansion: false,
+    })
+  }
+
+  async createVerifyData({ document, proof, documentLoader, expansionMap }: any) {
     // concatenate hash of c14n proof options and hash of c14n document
+    const c14nProofOptions = await this.canonizeProof(proof, {
+      documentLoader,
+      expansionMap,
+    })
     const c14nDocument = await this.canonize(document, {
       documentLoader,
+      expansionMap,
     })
-    return u8a.toString(await sha256(c14nDocument), 'base16')
+    return Buffer.concat([await sha256(c14nProofOptions), await sha256(c14nDocument)])
   }
 
   async matchProof({ proof }: any) {
@@ -78,7 +101,7 @@ export class JsonWebSignature {
       let saltLength: number | undefined
       try {
         const vm = await documentLoader(proof.verificationMethod)
-        if (vm?.document?.publicKeyJwk && vm.document.publicKey.kty === 'RSA') {
+        if (vm?.document?.publicKeyJwk && vm.document.publicKeyJwk.kty === 'RSA') {
           saltLength = 32
         }
       } catch (error) {
@@ -87,7 +110,7 @@ export class JsonWebSignature {
           saltLength = 32
         }
       }
-      const detachedJws = await signer.sign({ data: verifyData, saltLength })
+      const detachedJws = await signer.sign({ data: verifyData, ...(saltLength && {saltLength}) })
       proof.jws = detachedJws
       return proof
     } catch (e) {
@@ -230,9 +253,8 @@ export class JsonWebSignature {
       const key = verificationMethod.publicKey as CryptoKey
       const signature = proof.jws.split('.')[2]
       const headerString = proof.jws.split('.')[0]
-      const dataBuffer = u8a.fromString(verifyData, 'utf-8')
-
-      const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), dataBuffer])
+      const header = JSON.parse(decodeBase64url(headerString)) as JWTHeader
+      const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), verifyData])
 
       /*if (!verificationMethod.publicKey.algorithm) {
         verificationMethod.publicKey.algorithm = {}
@@ -240,14 +262,14 @@ export class JsonWebSignature {
       if (!verificationMethod.publicKey.algorithm.name) {
         verificationMethod.publicKey.algorithm.name = 'RSA-PSS'
       }*/
-      const algName = verificationMethod.publicKey.algorithm.name ?? key?.algorithm?.name ?? 'RSA-PSS'
+      const algName = verificationMethod.publicKey.algorithm.name ?? key?.algorithm?.name ?? header?.alg ?? 'RSA-PSS'
       return await subtle.verify(
         algName === 'RSA-PSS'
           ? {
               saltLength: 32,
               name: algName,
-              // hash: 'SHA-256', // todo get from proof.jws header
-            }
+              hash: 'SHA-256',
+            } as RsaHashedImportParams
           : { name: algName },
         key,
         u8a.fromString(signature, 'base64url'),
