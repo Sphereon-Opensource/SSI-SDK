@@ -15,6 +15,9 @@ import {
   IRequiredContext,
   IResolveEndpointOpts,
 } from './types'
+import Debug from 'debug'
+
+const debug = Debug('sphereon:ssi-sdk:uni-resolver-registrar')
 
 export function createDidEndpoint(router: Router, context: IRequiredContext, opts?: ICreateDidEndpointOpts) {
   if (opts?.enabled === false) {
@@ -118,7 +121,7 @@ export function getDidMethodsEndpoint(router: Router, context: IRequiredContext,
 async function agentDidToResolutionResult(context: IRequiredContext, did: string) {
   try {
     const identifier = await context.agent.didManagerGet({ did })
-    console.log(JSON.stringify(identifier, null, 2))
+    debug(JSON.stringify(identifier, null, 2))
     return toDidResolutionResult(identifier, {
       did,
       supportedMethods: await getAgentDIDMethods(context),

@@ -1,21 +1,27 @@
+import crypto from '@sphereon/isomorphic-webcrypto'
+import { sha256 } from '@noble/hashes/sha256'
 import { Verifier } from '@transmute/jose-ld'
 import sec from '@transmute/security-context'
+import { decodeJoseBlob } from '@veramo/utils'
+import { JWTHeader } from 'did-jwt'
+import Debug from 'debug'
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import jsonld from 'jsonld'
 import * as u8a from 'uint8arrays'
 
 import { JsonWebKey } from './JsonWebKeyWithRSASupport'
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const crypto = require('@sphereon/isomorphic-webcrypto')
+// import { getJwaAlgFromJwk } from '@transmute/web-crypto-key-pair/dist/signatures/jws'
 
 const subtle = crypto.subtle
 
-const sha256 = async (data: any) => {
-  return Buffer.from(await subtle.digest('SHA-256', Buffer.from(data)))
-}
+const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 
+export function hash(payload: string | Uint8Array): Uint8Array {
+  const data = typeof payload === 'string' ? u8a.fromString(payload) : payload
+  return sha256(data)
+}
 export interface JsonWebSignatureOptions {
   key?: JsonWebKey
   date?: any
@@ -64,10 +70,9 @@ export class JsonWebSignature {
 
   async canonizeProof(proof: any, { documentLoader, expansionMap }: any) {
     // `jws`,`signatureValue`,`proofValue` must not be included in the proof
-    // options
-    proof = { ...proof }
-    delete proof.jws
-    return this.canonize(proof, {
+    const proofInput = { ...proof }
+    delete proofInput.jws
+    return this.canonize(proofInput, {
       documentLoader,
       expansionMap,
       skipExpansion: false,
@@ -75,8 +80,8 @@ export class JsonWebSignature {
   }
 
   async createVerifyData({ document, proof, documentLoader, expansionMap }: any) {
-    // concatenate hash of c14n proof options and hash of c14n document
-    const c14nProofOptions = await this.canonizeProof(proof, {
+    // concatenate hash of c14n proof and hash of c14n document
+    const c14nProof = await this.canonizeProof(proof, {
       documentLoader,
       expansionMap,
     })
@@ -84,16 +89,31 @@ export class JsonWebSignature {
       documentLoader,
       expansionMap,
     })
-    return Buffer.concat([await sha256(c14nProofOptions), await sha256(c14nDocument)])
+    const verifyData = u8a.concat([hash(c14nProof), hash(c14nDocument)])
+    debug(`===Verify DATA: ${u8a.toString(verifyData, 'base64')}`)
+    return verifyData
   }
 
   async matchProof({ proof }: any) {
     return proof.type === 'JsonWebSignature2020'
   }
 
-  async sign({ verifyData, proof }: any) {
+  async sign({ verifyData, proof, documentLoader }: any) {
     try {
       const signer: any = await this.key?.signer()
+
+      /*let saltLength: number | undefined
+      try {
+        const vm = await documentLoader(proof.verificationMethod)
+        if (vm?.document?.publicKeyJwk && vm.document.publicKeyJwk.kty === 'RSA') {
+          saltLength = 32
+        }
+      } catch (error) {
+        debug(error)
+        if (proof.verificationMethod.startsWith('did:web')) {
+          saltLength = 32
+        }
+      }*/
       const detachedJws = await signer.sign({ data: verifyData })
       proof.jws = detachedJws
       return proof
@@ -112,6 +132,7 @@ export class JsonWebSignature {
       // use proof JSON-LD document passed to API
       proof = await jsonld.compact(this.proof, context, {
         documentLoader,
+        skipExpansion: true,
         expansionMap,
         compactToRelative: false,
       })
@@ -233,35 +254,37 @@ export class JsonWebSignature {
 
   async verifySignature({ verifyData, verificationMethod, proof, document }: any) {
     if (verificationMethod.publicKey && typeof verificationMethod.publicKey === 'object' && !(verificationMethod.publicKey instanceof Uint8Array)) {
-      // const key = verificationMethod.publicKey as CryptoKey
-      // key.algorithm = {name: 'RSA-PSS'}
+      const key = verificationMethod.publicKey as CryptoKey
       const signature = proof.jws.split('.')[2]
       const headerString = proof.jws.split('.')[0]
+      const header = decodeJoseBlob(headerString) as JWTHeader
       const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), verifyData])
-
-      if (!verificationMethod.publicKey.algorithm) {
-        verificationMethod.publicKey.algorithm = {}
+      const messageString = u8a.toString(messageBuffer, 'base64')
+      debug(`#VERIFY MessageBuffer: ${messageString}`)
+      debug(`#VERIFY Signature: ${signature}`)
+      const algName = verificationMethod.publicKey.algorithm.name ?? key?.algorithm?.name ?? header?.alg ?? 'RSA-PSS'
+      let hash = 'SHA-256'
+      if (header.alg?.includes('384') || algName.includes('384')) {
+        hash = 'SHA-384'
+      } else if (header.alg?.includes('512') || algName.includes('512')) {
+        hash = 'SHA-512'
       }
-      if (!verificationMethod.publicKey.algorithm.name) {
-        verificationMethod.publicKey.algorithm.name = 'RSA-PSS'
-      }
-      const key = verificationMethod.publicKey as CryptoKey
-      const algName = verificationMethod.publicKey.algorithm.name ?? key?.algorithm?.name ?? 'RSA-PSS'
       return await subtle.verify(
         algName === 'RSA-PSS'
-          ? {
+          ? ({
               saltLength: 32,
               name: algName,
-              // hash: 'SHA-256', // todo get from proof.jws header
-            }
-          : { name: algName },
+              hash,
+            } as RsaPssParams)
+          : { name: algName, hash },
         key,
+        // detached signature b64 header is false, so no base64url
         u8a.fromString(signature, 'base64url'),
         messageBuffer
       )
     }
     const verifier = await verificationMethod.verifier()
-    return verifier.verify({ data: verifyData, signature: proof.jws })
+    return verifier.verify({ data: verifyData, signature: proof.jws.replace('..', `.${verifyData}.`) })
   }
 
   async verifyProof({ proof, document, purpose, documentLoader, expansionMap, compactProof }: any) {

@@ -25,7 +25,7 @@ export class UniResolverApiServer {
     this._router = express.Router()
     const context = agentContext(agent)
     const features = opts?.enableFeatures ?? ['did-resolve', 'did-persist']
-    console.log(`DID UniResolver API enabled, with features: ${JSON.stringify(features)}}`)
+    console.log(`DID Uni Resolver and Registrar API enabled, with features: ${JSON.stringify(features)}}`)
 
     // DID endpoints
     if (features.includes('did-resolve')) {
