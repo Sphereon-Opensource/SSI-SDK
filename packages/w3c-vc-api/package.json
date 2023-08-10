@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.w3c-vc-api",
-  "version": "0.14.1",
+  "version": "0.15.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@sphereon/did-auth-siop": "0.3.2-unstable.8",
-    "@sphereon/ssi-sdk.core": "workspace:^",
     "@sphereon/ssi-express-support": "workspace:^",
+    "@sphereon/ssi-sdk.core": "workspace:^",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:^",
     "@sphereon/ssi-sdk.presentation-exchange": "workspace:^",
     "@sphereon/ssi-types": "workspace:^",
@@ -24,8 +24,8 @@
     "casbin": "^5.26.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
-    "debug": "^4.3.4",
     "cross-fetch": "^3.1.5",
+    "debug": "^4.3.4",
     "dotenv-flow": "^3.2.0",
     "express": "^4.18.2",
     "short-uuid": "^4.2.2",

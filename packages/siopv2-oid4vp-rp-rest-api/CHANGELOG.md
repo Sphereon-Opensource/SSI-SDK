@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.15.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.14.1...v0.15.0) (2023-08-10)
+
+
+### Features
+
+* allow signing credential with local resolved DID. Especially handy for did:web that is not yet published/exposed ([34793e9](https://github.com/Sphereon-Opensource/SSI-SDK/commit/34793e9bacc7dfcc689ad8c11119d5f7d7b1d3ef))
+* Separate SIOPv2 REST API into individual functions and use express-support ([2495980](https://github.com/Sphereon-Opensource/SSI-SDK/commit/24959808b9a4b59cec5171e2abb5fdc260448b98))
+
+
+
+
+
 ## [0.14.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.14.0...v0.14.1) (2023-07-31)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api

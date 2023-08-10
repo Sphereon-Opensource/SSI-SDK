@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.vc-handler-ld-local",
-  "version": "0.14.1",
+  "version": "0.15.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,9 +23,9 @@
     "@digitalcredentials/vc": "^5.0.0",
     "@digitalcredentials/x25519-key-agreement-2020-context": "^1.0.0",
     "@mattrglobal/jsonld-signatures-bbs": "^1.1.2",
+    "@noble/hashes": "^1.2.0",
     "@sphereon/ed25519-signature-2018": "0.7.0-unstable.6",
     "@sphereon/isomorphic-webcrypto": "^2.4.0-unstable.4",
-    "@noble/hashes": "^1.2.0",
     "@sphereon/ssi-sdk-ext.did-utils": "0.14.0",
     "@sphereon/ssi-sdk-ext.key-utils": "0.14.0",
     "@sphereon/ssi-sdk.core": "workspace:^",

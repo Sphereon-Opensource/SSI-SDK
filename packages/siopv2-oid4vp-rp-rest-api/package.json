@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api",
-  "version": "0.14.1",
+  "version": "0.15.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@sphereon/did-auth-siop": "0.3.2-unstable.8",
-    "@sphereon/ssi-sdk.core": "workspace:^",
     "@sphereon/ssi-express-support": "workspace:^",
+    "@sphereon/ssi-sdk.core": "workspace:^",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:^",
     "@sphereon/ssi-sdk.presentation-exchange": "workspace:^",
     "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:^",
@@ -32,12 +32,6 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "morgan": "^1.10.0",
-    "passport": "^0.6.0",
-    "passport-http-bearer": "^1.0.1",
-    "@types/passport": "^1.0.12",
-    "@types/passport-http-bearer": "^1.0.37",
-    "@types/morgan": "^1.9.4",
     "@decentralized-identity/ion-sdk": "^0.6.0",
     "@sphereon/did-uni-client": "^0.6.0",
     "@sphereon/pex": "2.1.0",
@@ -52,7 +46,10 @@
     "@types/dotenv-flow": "^3.2.0",
     "@types/express": "^4.17.13",
     "@types/express-http-proxy": "^1.6.3",
+    "@types/morgan": "^1.9.4",
     "@types/node": "^18.15.0",
+    "@types/passport": "^1.0.12",
+    "@types/passport-http-bearer": "^1.0.37",
     "@veramo/data-store": "4.2.0",
     "@veramo/did-manager": "4.2.0",
     "@veramo/did-provider-ethr": "4.2.0",
@@ -64,7 +61,10 @@
     "@veramo/kms-local": "4.2.0",
     "@veramo/utils": "4.2.0",
     "did-resolver": "^4.1.0",
+    "morgan": "^1.10.0",
     "nock": "^13.2.1",
+    "passport": "^0.6.0",
+    "passport-http-bearer": "^1.0.1",
     "ts-node": "^10.9.1",
     "typeorm": "^0.3.12"
   },

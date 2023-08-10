@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.15.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.14.1...v0.15.0) (2023-08-10)
+
+
+### Bug Fixes
+
+* Alg header was not correctly set, and we do support ES256 for JsonWebSignature2020 now ([d8e961c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d8e961c984ca522ebb657b420853e4c0687161f8))
+* Authentication fixes ([adafd6b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/adafd6bd09142492f7b3bddbab8d03ae24cf8600))
+
+
+### Features
+
+* Add graceful http server termination ([bba073b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/bba073b22afe1e09663532ac4427cf3a16a9e734))
+* Add morgan logging to express builder. Allow expres to start from build result ([caa4909](https://github.com/Sphereon-Opensource/SSI-SDK/commit/caa4909009d33d0bade1df637b354af8a89d9a4b))
+* Add optional entra ID auth builder ([960f2df](https://github.com/Sphereon-Opensource/SSI-SDK/commit/960f2dfc645ca09567765e6cb67df5915cd02183))
+* Add optional static bearer auth builder, with hashed tokens ([6a7dd17](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6a7dd1799ada74a4fa8d1a8b0ce3f89ffc043d5a))
+* Allow document loader to also load DID from the agent and fall back to the universal resolver (all configurable) ([f2f9fbc](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f2f9fbc0c999664c8c1cfdd4b0f0204ea1b8ccf1))
+* allow signing credential with local resolved DID. Especially handy for did:web that is not yet published/exposed ([34793e9](https://github.com/Sphereon-Opensource/SSI-SDK/commit/34793e9bacc7dfcc689ad8c11119d5f7d7b1d3ef))
+* Separate SIOPv2 REST API into individual functions and use express-support ([2495980](https://github.com/Sphereon-Opensource/SSI-SDK/commit/24959808b9a4b59cec5171e2abb5fdc260448b98))
+
+
+
+
+
 ## [0.14.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.14.0...v0.14.1) (2023-07-31)
 
 **Note:** Version bump only for package @sphereon/sphereon-sdk.workspace
