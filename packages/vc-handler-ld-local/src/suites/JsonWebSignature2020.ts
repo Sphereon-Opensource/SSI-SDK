@@ -81,19 +81,14 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
 
     const suite = new JsonWebSignature({
       key: verificationKey,
+      context,
     })
 
     return suite
   }
 
   getSuiteForVerification(context: IAgentContext<RequiredAgentMethods>): any {
-    const verifier = {
-      // returns a JWS detached
-      verify: async (args: any): Promise<boolean> => {
-        return await context.agent.keyManagerVerify(args)
-      },
-    }
-    return new JsonWebSignature({ verifier })
+    return new JsonWebSignature({ context })
   }
 
   preSigningCredModification(credential: CredentialPayload): void {

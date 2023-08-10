@@ -1,6 +1,5 @@
 import crypto from '@sphereon/isomorphic-webcrypto'
 import { sha256 } from '@noble/hashes/sha256'
-import { Verifier } from '@transmute/jose-ld'
 import sec from '@transmute/security-context'
 import { decodeJoseBlob } from '@veramo/utils'
 import { JWTHeader } from 'did-jwt'
@@ -12,6 +11,8 @@ import jsonld from 'jsonld'
 import * as u8a from 'uint8arrays'
 
 import { JsonWebKey } from './JsonWebKeyWithRSASupport'
+import { IAgentContext } from '@veramo/core'
+import { RequiredAgentMethods } from '../../ld-suites'
 // import { getJwaAlgFromJwk } from '@transmute/web-crypto-key-pair/dist/signatures/jws'
 
 const subtle = crypto.subtle
@@ -22,10 +23,11 @@ export function hash(payload: string | Uint8Array): Uint8Array {
   const data = typeof payload === 'string' ? u8a.fromString(payload) : payload
   return sha256(data)
 }
+
 export interface JsonWebSignatureOptions {
   key?: JsonWebKey
   date?: any
-  verifier?: Verifier
+  context: IAgentContext<RequiredAgentMethods>
 }
 
 export class JsonWebSignature {
@@ -35,17 +37,15 @@ export class JsonWebSignature {
   public date: any
   public type = 'JsonWebSignature2020'
   public verificationMethod?: string
-  public verifier?: Verifier
+  private readonly context: IAgentContext<RequiredAgentMethods>
 
-  constructor(options: JsonWebSignatureOptions = {}) {
+  constructor(options: JsonWebSignatureOptions) {
     this.date = options.date
     if (options.key) {
       this.key = options.key
       this.verificationMethod = this.key.id
     }
-    if (options.verifier) {
-      this.verifier = options.verifier
-    }
+    this.context = options.context
   }
 
   ensureSuiteContext({ document }: any) {
@@ -103,17 +103,17 @@ export class JsonWebSignature {
       const signer: any = await this.key?.signer()
 
       /*let saltLength: number | undefined
-      try {
-        const vm = await documentLoader(proof.verificationMethod)
-        if (vm?.document?.publicKeyJwk && vm.document.publicKeyJwk.kty === 'RSA') {
-          saltLength = 32
-        }
-      } catch (error) {
-        debug(error)
-        if (proof.verificationMethod.startsWith('did:web')) {
-          saltLength = 32
-        }
-      }*/
+            try {
+              const vm = await documentLoader(proof.verificationMethod)
+              if (vm?.document?.publicKeyJwk && vm.document.publicKeyJwk.kty === 'RSA') {
+                saltLength = 32
+              }
+            } catch (error) {
+              debug(error)
+              if (proof.verificationMethod.startsWith('did:web')) {
+                saltLength = 32
+              }
+            }*/
       const detachedJws = await signer.sign({ data: verifyData })
       proof.jws = detachedJws
       return proof
@@ -249,7 +249,7 @@ export class JsonWebSignature {
       return framed
     }
 
-    return await JsonWebKey.from(document, { signer: false, verifier: this.verifier })
+    return await JsonWebKey.from(document, { signer: false, context: this.context })
   }
 
   async verifySignature({ verifyData, verificationMethod, proof, document }: any) {
@@ -282,9 +282,10 @@ export class JsonWebSignature {
         u8a.fromString(signature, 'base64url'),
         messageBuffer
       )
+    } else {
+      const verifier = await verificationMethod.verifier()
+      return verifier.verify({ data: verifyData, signature: proof.jws.replace('..', `.${verifyData}.`) })
     }
-    const verifier = await verificationMethod.verifier()
-    return verifier.verify({ data: verifyData, signature: proof.jws.replace('..', `.${verifyData}.`) })
   }
 
   async verifyProof({ proof, document, purpose, documentLoader, expansionMap, compactProof }: any) {
