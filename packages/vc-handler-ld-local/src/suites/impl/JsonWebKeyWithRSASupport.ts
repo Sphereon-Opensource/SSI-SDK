@@ -1,6 +1,6 @@
 import crypto from '@sphereon/isomorphic-webcrypto'
 import { Ed25519KeyPair, Ed25519VerificationKey2018 } from '@transmute/ed25519-key-pair'
-import { JWS } from '@transmute/jose-ld'
+import { JWS, Verifier } from '@transmute/jose-ld'
 import { EcdsaSecp256k1VerificationKey2019, Secp256k1KeyPair } from '@transmute/secp256k1-key-pair'
 
 import { JsonWebKey as JWK } from 'did-resolver'
@@ -9,6 +9,8 @@ const subtle = crypto.subtle
 
 import { JsonWebKey2020, P256Key2021, P384Key2021, P521Key2021, WebCryptoKey } from '@transmute/web-crypto-key-pair'
 import Debug from 'debug'
+import { IAgentContext } from '@veramo/core'
+import { RequiredAgentMethods } from '../../ld-suites'
 
 export { JsonWebKey2020 }
 
@@ -177,10 +179,12 @@ export class JsonWebKey {
     options: any = { detached: true }
   ) => {
     let kp: any | undefined
+    const context: IAgentContext<RequiredAgentMethods> = options.context
+    let verifier: Verifier | undefined = undefined
     if (k.type === 'JsonWebKey2020') {
-      debug('Importing RSA key using crypto.subtle')
       const jwk = k.publicKeyJwk as JWK
       if (jwk.kty === 'RSA') {
+        debug('Importing RSA key using crypto.subtle')
         const publicKey: CryptoKey = await subtle.importKey(
           'jwk',
           jwk,
@@ -201,6 +205,12 @@ export class JsonWebKey {
           controller: k.controller,
           publicKey,
         })
+        verifier = {
+          // returns a JWS detached
+          verify: async (args: any): Promise<boolean> => {
+            return await context.agent.keyManagerVerify(args)
+          },
+        }
       }
     }
     if (!kp) {
@@ -208,7 +218,7 @@ export class JsonWebKey {
       const KeyPair = getKeyPairForType(k)
       kp = await KeyPair.from(k as any)
     }
-    const { header, signer, verifier } = options
+    const { header, signer } = options
     const detached = options.detached !== undefined ? options.detached : true
     return useJwa(kp, { detached, header, signer, verifier })
   }

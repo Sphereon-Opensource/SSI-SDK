@@ -74,7 +74,7 @@ importers:
         version: 7.21.5(@babel/core@7.22.10)
       '@types/debug':
         specifier: ^4.1.7
-        version: 4.1.7
+        version: 4.1.8
       '@types/jest':
         specifier: ^27.5.2
         version: 27.5.2
@@ -350,7 +350,7 @@ importers:
         version: link:../agent-config
       '@types/debug':
         specifier: ^4.1.7
-        version: 4.1.7
+        version: 4.1.8
       '@types/json-buffer':
         specifier: ^3.0.0
         version: 3.0.0
@@ -471,14 +471,14 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.6.1-next.6
+        version: 0.6.1-next.6
       '@sphereon/oid4vci-issuer':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.6.1-next.6
+        version: 0.6.1-next.6
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:^
         version: link:../ssi-sdk-core
@@ -529,14 +529,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.6.1-next.6
+        version: 0.6.1-next.6
       '@sphereon/oid4vci-issuer':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.6.1-next.6
+        version: 0.6.1-next.6
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.6.1-next.6
+        version: 0.6.1-next.6
       '@sphereon/ssi-express-support':
         specifier: workspace:^
         version: link:../ssi-express-support
@@ -600,16 +600,16 @@ importers:
         version: 2.0.3
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:^
         version: link:../data-store
@@ -627,7 +627,7 @@ importers:
         version: 2.8.13
       '@types/debug':
         specifier: ^4.1.7
-        version: 4.1.7
+        version: 4.1.8
       '@types/dotenv-flow':
         specifier: ^3.2.0
         version: 3.2.0
@@ -689,8 +689,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.6.1-next.6
+        version: 0.6.1-next.6
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -723,11 +723,11 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.6.1-next.6
+        version: 0.6.1-next.6
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:^
         version: link:../kv-store
@@ -776,7 +776,7 @@ importers:
         version: 2.0.3
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:^
         version: link:../kv-store
@@ -902,7 +902,7 @@ importers:
         version: 2.0.2
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:^
         version: link:../ssi-sdk-core
@@ -972,7 +972,7 @@ importers:
         version: 2.1.0
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:^
         version: link:../ssi-sdk-core
@@ -1100,7 +1100,7 @@ importers:
         version: 2.0.3
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:^
         version: link:../data-store
@@ -1118,7 +1118,7 @@ importers:
         version: 2.8.13
       '@types/debug':
         specifier: ^4.1.7
-        version: 4.1.7
+        version: 4.1.8
       '@types/dotenv-flow':
         specifier: ^3.2.0
         version: 3.2.0
@@ -1362,13 +1362,13 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:^
         version: link:../ssi-sdk-core
@@ -1393,6 +1393,9 @@ importers:
       cross-fetch:
         specifier: ^3.1.5
         version: 3.1.5
+      debug:
+        specifier: ^4.3.4
+        version: 4.3.4
       dotenv-flow:
         specifier: ^3.2.0
         version: 3.2.0
@@ -1411,7 +1414,7 @@ importers:
         version: 0.6.0
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.14.0
         version: 0.14.0
@@ -1431,8 +1434,8 @@ importers:
         specifier: ^2.8.13
         version: 2.8.13
       '@types/debug':
-        specifier: ^4.1.7
-        version: 4.1.7
+        specifier: ^4.1.8
+        version: 4.1.8
       '@types/dotenv-flow':
         specifier: ^3.2.0
         version: 3.2.0
@@ -1543,16 +1546,16 @@ importers:
         version: 1.2.0
       '@sphereon/ed25519-signature-2018':
         specifier: 0.7.0-unstable.6
-        version: 0.7.0-unstable.6(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.7.0-unstable.6(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/isomorphic-webcrypto':
         specifier: ^2.4.0-unstable.4
-        version: 2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:^
         version: link:../ssi-sdk-core
@@ -1625,16 +1628,16 @@ importers:
         version: 0.6.0
       '@sphereon/ssi-sdk-ext.did-provider-key':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-provider-lto':
         specifier: 0.14.0
         version: 0.14.0(typescript@4.9.5)
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:^
         version: link:../agent-config
@@ -1752,6 +1755,9 @@ importers:
       cross-fetch:
         specifier: ^3.1.5
         version: 3.1.5
+      debug:
+        specifier: ^4.3.4
+        version: 4.3.4
       dotenv-flow:
         specifier: ^3.2.0
         version: 3.2.0
@@ -1770,7 +1776,7 @@ importers:
         version: 0.6.0
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.14.0
         version: 0.14.0
@@ -1790,8 +1796,8 @@ importers:
         specifier: ^2.8.13
         version: 2.8.13
       '@types/debug':
-        specifier: ^4.1.7
-        version: 4.1.7
+        specifier: ^4.1.8
+        version: 4.1.8
       '@types/dotenv-flow':
         specifier: ^3.2.0
         version: 3.2.0
@@ -4063,7 +4069,7 @@ packages:
       '@expo/json-file': 8.2.37
       debug: 4.3.4
       expo-modules-autolinking: 1.5.0
-      fs-extra: 9.0.0
+      fs-extra: 9.1.0
       resolve-from: 5.0.0
       semver: 7.5.3
       xml2js: 0.6.0
@@ -6048,13 +6054,13 @@ packages:
     transitivePeerDependencies:
       - encoding
 
-  /@sphereon/ed25519-signature-2018@0.7.0-unstable.6(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+  /@sphereon/ed25519-signature-2018@0.7.0-unstable.6(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-HO+W3v50yv0DrCrhCH3MFkHuUk0snM8zf8XFt6ym3xe2Dv/9x1J8xk6VZeYhSygvoUavH5x/Az6NbV4KDMgrXA==}
     engines: {node: '>=16'}
     dependencies:
       '@digitalcredentials/credentials-context': 1.0.5
       '@digitalcredentials/jsonld': 5.2.1
-      '@sphereon/isomorphic-webcrypto': 2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/isomorphic-webcrypto': 2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@transmute/credentials-context': 0.7.0-unstable.81
       '@transmute/ed25519-key-pair': 0.7.0-unstable.80
       '@transmute/jose-ld': 0.7.0-unstable.81
@@ -6097,7 +6103,7 @@ packages:
       uint8arrays: 3.1.1
     dev: true
 
-  /@sphereon/isomorphic-webcrypto@2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+  /@sphereon/isomorphic-webcrypto@2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-7i9GBta0yji3Z5ocyk82fXpqrV/swe7hXZVfVzOXRaGtTUNd+y8W/3cpHRQC2S4UEO/5N3lX7+B6qUunK9wS/Q==}
     peerDependencies:
       expo: '*'
@@ -6111,8 +6117,8 @@ packages:
       b64u-lite: 1.1.0
       cipher-base: 1.0.4
       create-hash: 1.2.0
-      expo: 49.0.6(@babel/core@7.22.10)
-      expo-crypto: 12.4.1(expo@49.0.6)
+      expo: 49.0.7(@babel/core@7.22.10)
+      expo-crypto: 12.4.1(expo@49.0.7)
       inherits: 2.0.4
       md5.js: 1.3.5
       msrcrypto: 1.5.8
@@ -6138,8 +6144,8 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vci-common@0.6.0:
-    resolution: {integrity: sha512-ApaXhYfkmRtsAKxSuCy70jlFvWdmf7dm8jHCtoUpPT2g+/2q1eoSCYUtA4f9kzskOI74LydPSzbl7QcZCWdueQ==}
+  /@sphereon/oid4vci-common@0.6.1-next.6:
+    resolution: {integrity: sha512-KnIywljGrcQ5ee6lvVpOvSmSLDJUEglppw3loGm5UuzXKznyXDq2SB6vvY0iigSS5kcs2tEp/HcQRQ0bHE8+oA==}
     engines: {node: '>=16'}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -6149,29 +6155,34 @@ packages:
       - encoding
     dev: false
 
-  /@sphereon/oid4vci-issuer-server@0.6.0:
-    resolution: {integrity: sha512-IBHy7dZ6cI61sl7e3OnQsp5wHJaAqFe+L6eJZwNwPEA0xB6WjDYQnrKrJFVkXLkaxXqRC3+cy0Ns/NItQVXqXw==}
+  /@sphereon/oid4vci-issuer-server@0.6.1-next.6:
+    resolution: {integrity: sha512-SPayyT8q6GRGvWNLIvKQSlvjtet/TwvrCF6mqqUtD6AOSpRVx4bCySPkg9yohbmJzxeDa8UKA9LCjtGx8Mbm1g==}
     engines: {node: '>=16'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.6.0
-      '@sphereon/oid4vci-issuer': 0.6.0
+      '@sphereon/oid4vci-common': 0.6.1-next.6
+      '@sphereon/oid4vci-issuer': 0.6.1-next.6
+      '@sphereon/ssi-express-support': 0.14.2-next.30
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.2
       cookie-parser: 1.4.6
       cors: 2.8.5
       dotenv-flow: 3.2.0
       express: 4.18.2
+      http-terminator: 3.2.0
       uuid: 9.0.0
     transitivePeerDependencies:
+      - '@noble/hashes'
       - encoding
+      - passport-azure-ad
+      - passport-http-bearer
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.6.0:
-    resolution: {integrity: sha512-bLAa1bPfwzfPBQNuwi5BbJhOSJV2J92fgFVirEnzSCCkirkGv4V7ibhIaYJpVk23xckJkHc4X0860fYKYYIgsQ==}
+  /@sphereon/oid4vci-issuer@0.6.1-next.6:
+    resolution: {integrity: sha512-AiBnx5SM1nfg15XybQvfHg5Al6IvnH+8YUuha7JGJmJALDC2rF7FN73wCKtmg2ODxf6C62QDGixj9wjDOq3Q9Q==}
     engines: {node: '>=16'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.6.0
+      '@sphereon/oid4vci-common': 0.6.1-next.6
       '@sphereon/ssi-types': link:packages/ssi-types
       uuid: 9.0.0
     transitivePeerDependencies:
@@ -6206,12 +6217,41 @@ packages:
       react-native: 0.72.3(@babel/core@7.22.10)(@babel/preset-env@7.22.2)(react@18.2.0)
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+  /@sphereon/ssi-express-support@0.14.2-next.30:
+    resolution: {integrity: sha512-/FMTyRl0mAAaXwTBsgUWWJMsBviA6PQUdee8RCRnKXLb/NE2MUAioMwhNUWff89wGyFAzQa4Ut2Jhyix1uX/yA==}
+    peerDependencies:
+      '@noble/hashes': ^1.3.1
+      passport-azure-ad: ^4.3.5
+      passport-http-bearer: ^1.0.1
+    peerDependenciesMeta:
+      '@noble/hashes':
+        optional: true
+      passport-azure-ad:
+        optional: true
+      passport-http-bearer:
+        optional: true
+    dependencies:
+      body-parser: 1.20.2
+      casbin: 5.26.1
+      cors: 2.8.5
+      dotenv-flow: 3.2.0
+      express: 4.18.2
+      express-session: 1.17.3
+      http-terminator: 3.2.0
+      morgan: 1.10.0
+      passport: 0.6.0
+      qs: 6.11.2
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-3Rd6XBimprac+9eQ9YcFIY8sA/h0ynde43RnSEVweqN2+FLTx4aDlj0r3OWoNN6jWF1kqOzWJH96kgwAgXD54w==}
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/ssi-sdk-ext.did-utils': 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -6229,11 +6269,11 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-provider-key@0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+  /@sphereon/ssi-sdk-ext.did-provider-key@0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-LBaPQV4cWuSLAUVfr/RGmUMWDSSqIZi/FQmRXhsMEp/Anjnk5EWznb+rmvQkpwiV8JYOsjzmSBfVQH9VHhrKRw==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@transmute/did-key-bls12381': 0.3.0-unstable.10
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
@@ -6281,10 +6321,10 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-resolver-key@0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+  /@sphereon/ssi-sdk-ext.did-resolver-key@0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-MPEYXfzhAiRBdnQUGWP2Au4OFlDVlthm7cWfMdlAi8frkDF/X9SQOqvKnx8/T5HGI5INX6567naBvosYQFUwKQ==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.key-utils': 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@stablelib/ed25519': 1.0.3
       bigint-mod-arith: 3.3.1
       did-resolver: 4.1.0
@@ -6303,12 +6343,12 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-utils@0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+  /@sphereon/ssi-sdk-ext.did-utils@0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-S3K9a6MiEcLLY2OM38VFK+B7pfn1YdSlAx1Tbbv/NiPEKX6UdFye/6HCqYQZXhT4W6PY+MTiBUNGIW3q+sHmMg==}
     dependencies:
       '@ethersproject/transactions': 5.7.0
       '@sphereon/did-uni-client': 0.6.0
-      '@sphereon/ssi-sdk-ext.key-utils': 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
@@ -6323,11 +6363,11 @@ packages:
       - react-native-securerandom
       - supports-color
 
-  /@sphereon/ssi-sdk-ext.key-manager@0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+  /@sphereon/ssi-sdk-ext.key-manager@0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-eqoMihNfVr0yzm/W3u3qarmXsrs3XnZCmPdIb0bAt/Hd9xIDvO4KSoDk09OGJjkBiQ9N1qReI7r8EYy8mgP9tA==}
     dependencies:
       '@mattrglobal/bbs-signatures': 1.1.0
-      '@sphereon/ssi-sdk-ext.kms-local': 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.kms-local': 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
     transitivePeerDependencies:
@@ -6338,11 +6378,11 @@ packages:
       - react-native-securerandom
       - supports-color
 
-  /@sphereon/ssi-sdk-ext.key-utils@0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+  /@sphereon/ssi-sdk-ext.key-utils@0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-jJZPkxSCQIN1JZtssgZRj7E5cpz3YUnXotLshG9exI1IJr1fmGU7p0kXqox+7sXMWj03rtDrKz+wVZKBJCCirQ==}
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/isomorphic-webcrypto': 2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/isomorphic-webcrypto': 2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@stablelib/ed25519': 1.0.3
       '@stablelib/sha256': 1.0.1
       '@stablelib/sha512': 1.0.1
@@ -6363,13 +6403,13 @@ packages:
       - react-native-securerandom
       - supports-color
 
-  /@sphereon/ssi-sdk-ext.kms-local@0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+  /@sphereon/ssi-sdk-ext.kms-local@0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-loWLOxoXp1fhnZf2lrRQlhroETvEreEY1BQRYhpzkS6zuAFTUSwvFkPimislZEi32oVvQ1//cGifPKKD5JDNRw==}
     dependencies:
       '@mattrglobal/bbs-signatures': 1.1.0
-      '@sphereon/isomorphic-webcrypto': 2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.14.0(expo-crypto@12.4.1)(expo@49.0.6)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/isomorphic-webcrypto': 2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@trust/keyto': 2.0.0-alpha1
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
@@ -7066,8 +7106,8 @@ packages:
     resolution: {integrity: sha512-eI6gvpcGHLk3dAuHYnRCAjX+41gMv1nz/VP55wAe5HtmAKDOoPSfr3f6vkMc08ov1S0NsjvUBxDtHHxqQY1LGA==}
     dev: true
 
-  /@types/debug@4.1.7:
-    resolution: {integrity: sha512-9AonUzyTjXXhEOa0DnqpzZi6VHlqKMswga9EXjpXnnqxwLtdvPPtlO8evrI5D9S6asFRCQ6v+wpiUKbw+vKqyg==}
+  /@types/debug@4.1.8:
+    resolution: {integrity: sha512-/vPO1EPOs306Cvhwv7KfVfYvOJqA/S/AXjaHQiJboCZzcNDb+TIJFN9/2C9DZ//ijSKWioNyUxD792QmDJ+HKQ==}
     dependencies:
       '@types/ms': 0.7.31
     dev: true
@@ -7646,7 +7686,7 @@ packages:
   /@veramo/core@4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau):
     resolution: {integrity: sha512-HIqbXfCbwOAJelR5Ohsm22vr63cy6ND8Ua/+9wfMDAiymUUS7NryaJ/v6NRtnmIrNZqUMDdR9/TWdp4cCq5eBg==}
     dependencies:
-      credential-status: 2.0.5
+      credential-status: 2.0.6
       debug: 4.3.4
       did-jwt-vc: 3.1.3
       did-resolver: 4.1.0
@@ -8955,7 +8995,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001519
-      electron-to-chromium: 1.4.488
+      electron-to-chromium: 1.4.489
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11(browserslist@4.21.10)
 
@@ -9850,8 +9890,8 @@ packages:
   /create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
 
-  /credential-status@2.0.5:
-    resolution: {integrity: sha512-hh0pOcRidROn4MC1wF3vNURhPEMSzm3RcpFIl5PFVj5HWgCaZy16nXmrOl5cmr50Jhp2WV48cWbNMxh4OFWU+w==}
+  /credential-status@2.0.6:
+    resolution: {integrity: sha512-l5ZwSbX/UXFJ3DQ3dFt4rc2BtfUu/rhlkefR7BL9EZsKPyCe21okJA9mDy4h/nXvMEwpYjSQEa5vzR7KZqhI9g==}
     dependencies:
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-resolver: 4.1.0
@@ -10394,8 +10434,8 @@ packages:
       jake: 10.8.7
     dev: true
 
-  /electron-to-chromium@1.4.488:
-    resolution: {integrity: sha512-Dv4sTjiW7t/UWGL+H8ZkgIjtUAVZDgb/PwGWvMsCT7jipzUV/u5skbLXPFKb6iV0tiddVi/bcS2/kUrczeWgIQ==}
+  /electron-to-chromium@1.4.489:
+    resolution: {integrity: sha512-QNx+cirm4ENixfdSk9rp/3HKpjlxHFsmDoHtU1IiXdkJcpkKrd/o20LT5h1f3Qz+yfTMb4Ji3YDT/IvJkNfEkA==}
 
   /elliptic@6.5.4:
     resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}
@@ -11119,19 +11159,19 @@ packages:
       jest-util: 29.6.2
     dev: true
 
-  /expo-application@5.3.0(expo@49.0.6):
+  /expo-application@5.3.0(expo@49.0.7):
     resolution: {integrity: sha512-XLkaELwmiXW6JjFVkwuiFQaGZoNKAxNAcSJkFdz8s4rCljEwehylbzoPk37QHw3cxqb4v0/2EICtg4C4kpEVCA==}
     peerDependencies:
       expo: '*'
     dependencies:
-      expo: 49.0.6(@babel/core@7.22.10)
+      expo: 49.0.7(@babel/core@7.22.10)
 
-  /expo-asset@8.10.1(expo@49.0.6):
+  /expo-asset@8.10.1(expo@49.0.7):
     resolution: {integrity: sha512-5VMTESxgY9GBsspO/esY25SKEa7RyascVkLe/OcL1WgblNFm7xCCEEUIW8VWS1nHJQGYxpMZPr3bEfjMpdWdyA==}
     dependencies:
       blueimp-md5: 2.19.0
-      expo-constants: 14.4.2(expo@49.0.6)
-      expo-file-system: 15.4.2(expo@49.0.6)
+      expo-constants: 14.4.2(expo@49.0.7)
+      expo-file-system: 15.4.3(expo@49.0.7)
       invariant: 2.2.4
       md5-file: 3.2.3
       path-browserify: 1.0.1
@@ -11140,47 +11180,47 @@ packages:
       - expo
       - supports-color
 
-  /expo-constants@14.4.2(expo@49.0.6):
+  /expo-constants@14.4.2(expo@49.0.7):
     resolution: {integrity: sha512-nOB122DOAjk+KrJT69lFQAoYVQGQjFHSigCPVBzVdko9S1xGsfiOH9+X5dygTsZTIlVLpQJDdmZ7ONiv3i+26w==}
     peerDependencies:
       expo: '*'
     dependencies:
       '@expo/config': 8.1.2
-      expo: 49.0.6(@babel/core@7.22.10)
+      expo: 49.0.7(@babel/core@7.22.10)
       uuid: 3.4.0
     transitivePeerDependencies:
       - supports-color
 
-  /expo-crypto@12.4.1(expo@49.0.6):
+  /expo-crypto@12.4.1(expo@49.0.7):
     resolution: {integrity: sha512-/en03oPNAX6gP0bKpwA1EyLBnGG9uv0+Q7uvGYyOXaQQEvj31a+8cEvNPkv75x6GuK1hcaBfO25RtX9AGOMwVA==}
     peerDependencies:
       expo: '*'
     dependencies:
       base64-js: 1.5.1
-      expo: 49.0.6(@babel/core@7.22.10)
+      expo: 49.0.7(@babel/core@7.22.10)
 
-  /expo-file-system@15.4.2(expo@49.0.6):
-    resolution: {integrity: sha512-WFaEWuFEuUpETiq85YlhKYJgedccWTjtCMnYGAgyNfCfvnIgfMCVH7dWudGuxhfAcTZqh36OcqtSckbtbhOtyg==}
+  /expo-file-system@15.4.3(expo@49.0.7):
+    resolution: {integrity: sha512-HaaCBTUATs2+i7T4jxIvoU9rViAHMvOD2eBaJ1H7xPHlwZlMORjQs7bsNKonR/TQoduxZBJLVZGawvaAJNCH8g==}
     peerDependencies:
       expo: '*'
     dependencies:
-      expo: 49.0.6(@babel/core@7.22.10)
+      expo: 49.0.7(@babel/core@7.22.10)
       uuid: 3.4.0
 
-  /expo-font@11.4.0(expo@49.0.6):
+  /expo-font@11.4.0(expo@49.0.7):
     resolution: {integrity: sha512-nkmezCFD7gR/I6R+e3/ry18uEfF8uYrr6h+PdBJu+3dawoLOpo+wFb/RG9bHUekU1/cPanR58LR7G5MEMKHR2w==}
     peerDependencies:
       expo: '*'
     dependencies:
-      expo: 49.0.6(@babel/core@7.22.10)
+      expo: 49.0.7(@babel/core@7.22.10)
       fontfaceobserver: 2.3.0
 
-  /expo-keep-awake@12.3.0(expo@49.0.6):
+  /expo-keep-awake@12.3.0(expo@49.0.7):
     resolution: {integrity: sha512-ujiJg1p9EdCOYS05jh5PtUrfiZnK0yyLy+UewzqrjUqIT8eAGMQbkfOn3C3fHE7AKd5AefSMzJnS3lYZcZYHDw==}
     peerDependencies:
       expo: '*'
     dependencies:
-      expo: 49.0.6(@babel/core@7.22.10)
+      expo: 49.0.7(@babel/core@7.22.10)
 
   /expo-modules-autolinking@1.5.0:
     resolution: {integrity: sha512-i9zll5xNYh0/sjaa6hpZlTHodKEu2tMEFsJJYsfBMTt8G9J8gGhalOydrX/Ql1E8bQ4GxnLAqrM7duR0Tj2VTQ==}
@@ -11201,8 +11241,8 @@ packages:
       compare-versions: 3.6.0
       invariant: 2.2.4
 
-  /expo@49.0.6(@babel/core@7.22.10):
-    resolution: {integrity: sha512-prwW1DNTehTdJh2xp+HrEMVrO53WfFNdCC9c2yo3BfsqASGhP8LUePC+RyNgNZzOTL0OsXY7pxkEd0zH1idudA==}
+  /expo@49.0.7(@babel/core@7.22.10):
+    resolution: {integrity: sha512-KGyZMuU83LNnWbfzdFrC45AhUDDAYKir7MawZJ7N8pBmHbLF8txlKq+KeZcwavD8fZREFYhSGJdTgfKPiXQymg==}
     hasBin: true
     dependencies:
       '@babel/runtime': 7.22.10
@@ -11211,12 +11251,12 @@ packages:
       '@expo/config-plugins': 7.2.5
       '@expo/vector-icons': 13.0.0
       babel-preset-expo: 9.5.1(@babel/core@7.22.10)
-      expo-application: 5.3.0(expo@49.0.6)
-      expo-asset: 8.10.1(expo@49.0.6)
-      expo-constants: 14.4.2(expo@49.0.6)
-      expo-file-system: 15.4.2(expo@49.0.6)
-      expo-font: 11.4.0(expo@49.0.6)
-      expo-keep-awake: 12.3.0(expo@49.0.6)
+      expo-application: 5.3.0(expo@49.0.7)
+      expo-asset: 8.10.1(expo@49.0.7)
+      expo-constants: 14.4.2(expo@49.0.7)
+      expo-file-system: 15.4.3(expo@49.0.7)
+      expo-font: 11.4.0(expo@49.0.7)
+      expo-keep-awake: 12.3.0(expo@49.0.7)
       expo-modules-autolinking: 1.5.0
       expo-modules-core: 1.5.9
       fbemitter: 3.0.0
@@ -11980,7 +12020,7 @@ packages:
     hasBin: true
     dependencies:
       foreground-child: 3.1.1
-      jackspeak: 2.2.2
+      jackspeak: 2.2.3
       minimatch: 9.0.3
       minipass: 7.0.2
       path-scurry: 1.10.1
@@ -12982,8 +13022,8 @@ packages:
       istanbul-lib-report: 3.0.1
     dev: true
 
-  /jackspeak@2.2.2:
-    resolution: {integrity: sha512-mgNtVv4vUuaKA97yxUHoA3+FkuhtxkjdXEWOyB/N76fjy0FjezEt34oy3epBtvCvS+7DyKwqCFWx/oJLV5+kCg==}
+  /jackspeak@2.2.3:
+    resolution: {integrity: sha512-pF0kfjmg8DJLxDrizHoCZGUFz4P4czQ3HyfW4BU0ffebYkzAVlBywp5zaxW/TM+r0sGbmrQdi8EQQVTJFxnGsQ==}
     engines: {node: '>=14'}
     dependencies:
       '@isaacs/cliui': 8.0.2
