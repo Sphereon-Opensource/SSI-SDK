@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.15.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.15.0...v0.15.1) (2023-08-10)
+
+
+### Bug Fixes
+
+* /well-known/did/json wasn't resolving anymore because of an incorrect path match ([e94f4da](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e94f4dad1eef2f1e428eef0967b4c75c6509f77c))
+
+
+
+
+
 # [0.15.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.14.1...v0.15.0) (2023-08-10)
 
 
