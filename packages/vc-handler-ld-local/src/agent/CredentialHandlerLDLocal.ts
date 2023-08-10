@@ -1,5 +1,17 @@
+import { getAgentResolver, mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
-import { CredentialPayload, IAgentContext, IAgentPlugin, IIdentifier, IKey, IResolver, PresentationPayload } from '@veramo/core'
+import { IVerifyResult } from '@sphereon/ssi-types'
+import {
+  CredentialPayload,
+  DIDDocument,
+  IAgentContext,
+  IAgentPlugin,
+  IDIDManager,
+  IIdentifier,
+  IKey,
+  IResolver,
+  PresentationPayload,
+} from '@veramo/core'
 import { AbstractPrivateKeyStore } from '@veramo/key-manager'
 import { _ExtendedIKey, extractIssuer, isDefined, MANDATORY_CREDENTIAL_CONTEXT, OrPromise, processEntryToArray, RecordLike } from '@veramo/utils'
 import Debug from 'debug'
@@ -17,8 +29,6 @@ import {
   IVerifyCredentialLDArgs,
   IVerifyPresentationLDArgs,
 } from '../types'
-import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
-import { IVerifyResult } from '@sphereon/ssi-types'
 
 const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 
@@ -47,11 +57,17 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     suites: SphereonLdSignature[]
     bindingOverrides?: IBindingOverrides
     keyStore?: AbstractPrivateKeyStore
+    documentLoader?: {
+      localResolution?: boolean // Resolve identifiers hosted by the agent
+      uniresolverResolution?: boolean // Resolve identifiers using universal resolver
+      resolverResolution?: boolean // Use registered drivers
+    }
   }) {
     this.keyStore = options.keyStore
     this.ldCredentialModule = new LdCredentialModule({
       ldContextLoader: new LdContextLoader({ contextsPaths: options.contextMaps }),
       ldSuiteLoader: new LdSuiteLoader({ ldSignatureSuites: options.suites }),
+      documentLoader: options?.documentLoader,
     })
 
     this.overrideBindings(options.bindingOverrides)
@@ -104,7 +120,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     }
     try {
       const { managedKey, verificationMethod } = await this.getSigningKey(identifier, args.keyRef)
-      const { signingKey, verificationMethodId } = await this.findSigningKeyWithId(context, identifier, args.keyRef)
+      const { signingKey, verificationMethodId } = await this.findSigningKeyWithId(context, identifier, { keyRef: args.keyRef })
       return await this.ldCredentialModule.issueLDVerifiableCredential(
         credential,
         identifier.did,
@@ -180,7 +196,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     }
     try {
       const { managedKey, verificationMethod } = await this.getSigningKey(identifier, args.keyRef)
-      const { signingKey, verificationMethodId } = await this.findSigningKeyWithId(context, identifier, args.keyRef)
+      const { signingKey, verificationMethodId } = await this.findSigningKeyWithId(context, identifier, { keyRef: args.keyRef })
 
       return await this.ldCredentialModule.signLDVerifiablePresentation(
         presentation,
@@ -219,13 +235,21 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   }
 
   private async findSigningKeyWithId(
-    context: IAgentContext<IResolver>,
+    context: IAgentContext<IResolver & IDIDManager>,
     identifier: IIdentifier,
-    keyRef?: string
+    opts?: {
+      keyRef?: string
+      didDocument?: DIDDocument
+    }
   ): Promise<{ signingKey: IKey; verificationMethodId: string }> {
+    const keyRef = opts?.keyRef
     debug(`Retrieving signing key for id ${identifier.did} keyref ${keyRef}...`)
-    // @ts-ignore
-    const extendedKeys: _ExtendedIKey[] = await mapIdentifierKeysToDocWithJwkSupport(identifier, 'verificationMethod', context)
+    const didDocument =
+      opts?.didDocument ??
+      (await getAgentResolver(context)
+        .resolve(identifier.did)
+        .then((result) => result.didDocument ?? undefined))
+    const extendedKeys: _ExtendedIKey[] = await mapIdentifierKeysToDocWithJwkSupport(identifier, 'verificationMethod', context, didDocument)
     const supportedTypes = this.ldCredentialModule.ldSuiteLoader.getAllSignatureSuiteTypes()
     let signingKey: _ExtendedIKey | undefined
     if (keyRef) {

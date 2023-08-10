@@ -12,7 +12,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.3.2-unstable.6",
+    "@sphereon/did-auth-siop": "0.3.2-unstable.8",
+    "@sphereon/ssi-types": "workspace:^",
     "uint8arrays": "3.1.1"
   },
   "scripts": {

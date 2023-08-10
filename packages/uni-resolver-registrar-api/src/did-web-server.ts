@@ -1,5 +1,5 @@
 import { agentContext } from '@sphereon/ssi-sdk.core'
-import { ExpressBuildResult } from '@sphereon/ssi-sdk.express-support'
+import { ExpressSupport } from '@sphereon/ssi-express-support'
 import { TAgent } from '@veramo/core'
 
 import express, { Express, Router } from 'express'
@@ -16,11 +16,11 @@ export class DidWebServer {
   private readonly _opts?: IDidWebServiceOpts
   private readonly _router: Router | undefined
 
-  constructor(args: { agent: TAgent<IRequiredPlugins>; expressArgs: ExpressBuildResult; opts?: IDidWebServiceOpts }) {
+  constructor(args: { agent: TAgent<IRequiredPlugins>; expressSupport: ExpressSupport; opts?: IDidWebServiceOpts }) {
     const { agent, opts } = args
     const features = opts?.enableFeatures ?? []
     if (!features.includes('did-web-global-resolution')) {
-      console.log('DID WEB Service NOT enabled')
+      console.log('did:web hosting service NOT enabled')
       return
     }
 
@@ -30,12 +30,12 @@ export class DidWebServer {
     }
 
     this._opts = opts
-    this._express = args.expressArgs.express
+    this._express = args.expressSupport.express
     this._router = express.Router()
 
     const context = agentContext(agent)
 
-    console.log(`DID WEB Service enabled`)
+    console.log(`did:web hosting service enabled`)
 
     didWebDomainEndpoint(this.router!, context, opts?.endpointOpts)
     this._express.use(this.router!)

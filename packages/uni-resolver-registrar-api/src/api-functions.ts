@@ -1,7 +1,7 @@
 import { DIDResolutionResult } from '@sphereon/did-uni-client'
 import { getAgentDIDMethods, toDidDocument, toDidResolutionResult } from '@sphereon/ssi-sdk-ext.did-utils'
 import { JwkKeyUse } from '@sphereon/ssi-sdk-ext.key-utils'
-import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-sdk.express-support'
+import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { parseDid } from '@sphereon/ssi-types'
 import { IIdentifier } from '@veramo/core'
 import { Request, Response, Router } from 'express'
@@ -12,8 +12,12 @@ import {
   DidStateValue,
   ICreateDidEndpointOpts,
   IGlobalDidWebEndpointOpts,
-  IRequiredContext, IResolveEndpointOpts,
+  IRequiredContext,
+  IResolveEndpointOpts,
 } from './types'
+import Debug from 'debug'
+
+const debug = Debug('sphereon:ssi-sdk:uni-resolver-registrar')
 
 export function createDidEndpoint(router: Router, context: IRequiredContext, opts?: ICreateDidEndpointOpts) {
   if (opts?.enabled === false) {
@@ -117,7 +121,7 @@ export function getDidMethodsEndpoint(router: Router, context: IRequiredContext,
 async function agentDidToResolutionResult(context: IRequiredContext, did: string) {
   try {
     const identifier = await context.agent.didManagerGet({ did })
-    console.log(JSON.stringify(identifier, null, 2))
+    debug(JSON.stringify(identifier, null, 2))
     return toDidResolutionResult(identifier, {
       did,
       supportedMethods: await getAgentDIDMethods(context),
@@ -134,11 +138,7 @@ async function agentDidToResolutionResult(context: IRequiredContext, did: string
   }
 }
 
-export function resolveDidEndpoint(
-  router: Router,
-  context: IRequiredContext,
-  opts?: IResolveEndpointOpts
-) {
+export function resolveDidEndpoint(router: Router, context: IRequiredContext, opts?: IResolveEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`Resolve DID endpoint is disabled`)
     return

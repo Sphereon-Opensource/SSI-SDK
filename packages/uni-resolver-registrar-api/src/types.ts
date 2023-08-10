@@ -1,5 +1,5 @@
 import { DIDDocument } from '@sphereon/did-uni-client'
-import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-sdk.express-support'
+import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
 import { IAgentContext, IDataStore, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
 import { VerificationMethod } from 'did-resolver'
 
@@ -95,7 +95,7 @@ export interface IDidAPIEndpointOpts {
   resolveDid?: IResolveEndpointOpts
   deactivateDid?: ISingleEndpointOpts
   getDidMethods?: ISingleEndpointOpts
-  globalDidWebResolution?: IGlobalDidWebEndpointOpts
+  // globalDidWebResolution?: IGlobalDidWebEndpointOpts
 }
 
 export interface IGlobalDidWebEndpointOpts extends ISingleEndpointOpts {

@@ -1,5 +1,6 @@
 // noinspection JSUnusedGlobalSymbols
 import { AuthorizationResponsePayload } from '@sphereon/did-auth-siop'
+import { AdditionalClaims } from '@sphereon/ssi-types'
 
 export interface ClaimPayloadCommonOpts {
   [x: string]: any
@@ -33,4 +34,5 @@ export interface AuthStatusResponse {
   definitionId: string
   lastUpdated: number
   payload?: AuthorizationResponsePayload // Only put in here once the status reaches Verified on the RP side
+  verifiedData?: AdditionalClaims
 }

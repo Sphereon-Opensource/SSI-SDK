@@ -16,12 +16,12 @@
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.6.0",
+    "@sphereon/oid4vci-common": "0.6.1-next.6",
     "@veramo/core": "4.2.0",
     "cross-fetch": "^3.1.5"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk.dev": "workspace:*",
+    "@sphereon/ssi-sdk.dev": "workspace:^",
     "@types/node": "^18.16.3",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",

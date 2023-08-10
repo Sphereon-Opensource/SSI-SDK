@@ -1,5 +1,5 @@
 import { agentContext } from '@sphereon/ssi-sdk.core'
-import { ExpressBuildResult } from '@sphereon/ssi-sdk.express-support'
+import { ExpressSupport } from '@sphereon/ssi-express-support'
 import { TAgent } from '@veramo/core'
 
 import express, { Express, Router } from 'express'
@@ -22,7 +22,7 @@ export class VcApiServer {
   private readonly _opts?: IVCAPIOpts
   private readonly _router: Router
 
-  constructor(args: { agent: TAgent<IRequiredPlugins>; expressArgs: ExpressBuildResult; opts?: IVCAPIOpts }) {
+  constructor(args: { agent: TAgent<IRequiredPlugins>; expressSupport: ExpressSupport; opts?: IVCAPIOpts }) {
     const { agent, opts } = args
     this._agent = agent
     if (opts?.endpointOpts?.globalAuth) {
@@ -34,7 +34,7 @@ export class VcApiServer {
     }
 
     this._opts = opts
-    this._express = args.expressArgs.express
+    this._express = args.expressSupport.express
     this._router = express.Router()
 
     const context = agentContext(agent)

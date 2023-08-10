@@ -7,22 +7,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.uni-resolver-registrar-api
 
-
-
-
-
 # [0.14.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.13.0...v0.14.0) (2023-07-30)
-
 
 ### Features
 
-* Add global web resolution provider. Add json error handler ([f19d1d1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f19d1d135a9944a6c9e4c6040c58e7563c4442f2))
-* Add partial DIF Universal Registrar and Resolver support ([69c8046](https://github.com/Sphereon-Opensource/SSI-SDK/commit/69c8046b214771b54d731c19f295341cf22d0616))
-* Add seperate did:web service to host did.json files managed by the agent ([0a8a0bb](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0a8a0bb201742c3208f98267f9a03fcaeb32ec56))
-
-
-
-
+- Add global web resolution provider. Add json error handler ([f19d1d1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f19d1d135a9944a6c9e4c6040c58e7563c4442f2))
+- Add partial DIF Universal Registrar and Resolver support ([69c8046](https://github.com/Sphereon-Opensource/SSI-SDK/commit/69c8046b214771b54d731c19f295341cf22d0616))
+- Add seperate did:web service to host did.json files managed by the agent ([0a8a0bb](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0a8a0bb201742c3208f98267f9a03fcaeb32ec56))
 
 # [0.13.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.12.0...v0.13.0) (2023-06-24)
 

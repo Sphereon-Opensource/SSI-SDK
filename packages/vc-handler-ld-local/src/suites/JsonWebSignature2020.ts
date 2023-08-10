@@ -2,12 +2,15 @@ import { JwkKeyUse, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IProof, IVerifiableCredential } from '@sphereon/ssi-types'
 import { CredentialPayload, DIDDocument, IAgentContext, IKey, PresentationPayload, TKeyType, VerifiableCredential } from '@veramo/core'
 import { asArray, encodeJoseBlob } from '@veramo/utils'
+import Debug from 'debug'
 import * as u8a from 'uint8arrays'
 
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 
 import { JsonWebKey } from './impl/JsonWebKeyWithRSASupport'
 import { JsonWebSignature } from './impl/JsonWebSignatureWithRSASupport'
+
+const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 
 /**
  * Veramo wrapper for the JsonWebSignature2020 suite by Transmute Industries
@@ -34,7 +37,6 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
       alg = 'EdDSA'
     } else if (key.type === 'Secp256k1') {
       alg = 'ES256k'
-      throw Error('ES256k keys not supported yet (to JWK missing)')
     } else if (key.type === 'Secp256r1') {
       alg = 'ES256'
     } else if (key.type === 'Bls12381G1') {
@@ -49,22 +51,22 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
           b64: false,
           crit: ['b64'],
         }
-
         const headerString = encodeJoseBlob(header)
         const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), args.data])
-        const messageString = u8a.toString(messageBuffer, 'base64') //will be decoded to bytes in the keyManagerSign, hence the base64 arg to the method below
-
+        const messageString = u8a.toString(messageBuffer, 'base64')
+        debug(`#Create MessageBuffer: ${messageString}`)
         const signature = await context.agent.keyManagerSign({
           keyRef: key.kid,
           algorithm: alg,
           data: messageString,
           encoding: 'base64',
         })
+        debug(`#Create signature: ${signature}`)
         return `${headerString}..${signature}`
       },
     }
 
-    const publicKeyJwk = key.meta?.publicKeyJwk ?? (await toJwk(key.publicKeyHex, key.type, { use: JwkKeyUse.Signature, key }))
+    const publicKeyJwk = key.meta?.publicKeyJwk ?? toJwk(key.publicKeyHex, key.type, { use: JwkKeyUse.Signature, key })
     const verificationKey = await JsonWebKey.from(
       {
         id,
@@ -79,19 +81,14 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
 
     const suite = new JsonWebSignature({
       key: verificationKey,
+      context,
     })
 
     return suite
   }
 
-  getSuiteForVerification(): any {
-    const verifier = {
-      // returns a JWS detached
-      verify: async (args: { data: Uint8Array; signature: Uint8Array }): Promise<boolean> => {
-        return true
-      },
-    }
-    return new JsonWebSignature({ verifier })
+  getSuiteForVerification(context: IAgentContext<RequiredAgentMethods>): any {
+    return new JsonWebSignature({ context })
   }
 
   preSigningCredModification(credential: CredentialPayload): void {

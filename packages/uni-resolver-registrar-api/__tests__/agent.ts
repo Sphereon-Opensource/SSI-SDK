@@ -2,7 +2,7 @@
 import { getUniResolver } from '@sphereon/did-uni-client'
 import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
 import { getDidJwkResolver } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
-import { ExpressBuilder } from '@sphereon/ssi-sdk.express-support'
+import { EntraIDAuth, ExpressBuilder, IBearerStrategyOptionWithRequest } from '@sphereon/ssi-express-support'
 import { createAgent, IDataStore, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
 import { DIDManager } from '@veramo/did-manager'
@@ -16,11 +16,7 @@ import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 import Debug from 'debug'
 import { Resolver } from 'did-resolver'
 
-import morgan from 'morgan'
-
-import passport from 'passport'
-import { ITokenPayload, VerifyCallback } from 'passport-azure-ad/common'
-
+// import passport from 'passport'
 import { getResolver as getDidWebResolver } from 'web-did-resolver'
 import { UniResolverApiServer } from '../src'
 import { DidWebServer } from '../src/did-web-server'
@@ -104,16 +100,10 @@ const agent = createAgent<IDIDManager & IKeyManager & IDataStore & IDataStoreORM
   ],
 })
 
-// let keyRef = "did:ion:EiAeobpQwEVpR-Ib9toYwbISQZZGIBck6zIUm0ZDmm9v0g:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJhdXRoLWtleSIsInB1YmxpY0tleUp3ayI6eyJjcnYiOiJzZWNwMjU2azEiLCJrdHkiOiJFQyIsIngiOiJmUUE3WUpNRk1qNXFET0RrS25qR1ZLNW0za1VSRFc1YnJ1TWhUa1NYSGQwIiwieSI6IlI3cVBNNEsxWHlqNkprM3M2a3I2aFNrQzlDa0ExSEFpMVFTejZqSU56dFkifSwicHVycG9zZXMiOlsiYXV0aGVudGljYXRpb24iLCJhc3NlcnRpb25NZXRob2QiXSwidHlwZSI6IkVjZHNhU2VjcDI1NmsxVmVyaWZpY2F0aW9uS2V5MjAxOSJ9XX19XSwidXBkYXRlQ29tbWl0bWVudCI6IkVpQnpwN1loTjltaFVjWnNGZHhuZi1sd2tSVS1oVmJCdFpXc1ZvSkhWNmprd0EifSwic3VmZml4RGF0YSI6eyJkZWx0YUhhc2giOiJFaUJvbWxvZ0JPOERROFdpVVFsa3diYmxuMXpsRFU2Q3Jvc01wNDRySjYzWHhBIiwicmVjb3ZlcnlDb21taXRtZW50IjoiRWlEQVFYU2k3SGNqSlZCWUFLZE8yenJNNEhmeWJtQkJDV3NsNlBRUEpfamtsQSJ9fQ"
-
-// agent.didManagerImport({did: RP_DID, keys: })
 agent.dataStoreORMGetIdentifiers().then((ids) => ids.forEach((id) => console.log(JSON.stringify(id, null, 2))))
 
-// Import the passport Azure AD library
-const BearerStrategy = require('passport-azure-ad').BearerStrategy
-
 // Set the Azure AD B2C options
-const options = {
+const options: IBearerStrategyOptionWithRequest = {
   identityMetadata: `https://${config.metadata.authority}/${config.credentials.tenantName}.onmicrosoft.com/${config.metadata.version}/${config.metadata.discovery}`,
   clientID: config.credentials.clientID,
   audience: config.credentials.clientID,
@@ -122,23 +112,25 @@ const options = {
   // isB2C: config.settings.isB2C,
   // scope: config.resource.scope,
   validateIssuer: config.settings.validateIssuer,
-  loggingLevel: config.settings.loggingLevel,
+  loggingLevel: config.settings.loggingLevel as 'info' | 'warn' | 'error' | undefined,
   passReqToCallback: config.settings.passReqToCallback,
 }
 
-// Instantiate the passport Azure AD library with the Azure AD B2C options
-const bearerStrategy = new BearerStrategy(options, (token: ITokenPayload, done: VerifyCallback) => {
-  // Send user info using the second argument
-  done(null, {}, token)
-})
-passport.use(bearerStrategy)
+const strategy = 'sphereon-entra-demo-client'
+EntraIDAuth.init(strategy).withOptions(options).connectPassport()
+/*
+
 passport.serializeUser(function (user: Express.User, done: (err: any, id?: any) => void) {
+  console.log(`serializeUser: ${JSON.stringify(user)}`)
   done(null, user)
 })
 
 passport.deserializeUser(function (user: Express.User, done: (err: any, user?: Express.User | false | null) => void) {
+  console.log(`deserializeUser: ${JSON.stringify(user)}`)
   done(null, user)
 })
+
+*/
 
 agent
   .didManagerCreate({
@@ -151,35 +143,6 @@ agent
       },
     },
   })
-  /*.didManagerCreate({
-          provider: 'did:ion',
-          alias: RP_DID,
-          options: {
-            kid: 'auth-key',
-            anchor: false,
-            recoveryKey: {
-              kid: 'recovery-test2',
-              key: {
-                privateKeyHex: PRIVATE_RECOVERY_KEY_HEX,
-              },
-            },
-            updateKey: {
-              kid: 'update-test2',
-              key: {
-                privateKeyHex: PRIVATE_UPDATE_KEY_HEX,
-              },
-            },
-            verificationMethods: [
-              {
-                key: {
-                  kid: 'auth-key',
-                  privateKeyHex: RP_PRIVATE_KEY_HEX,
-                },
-                purposes: [IonPublicKeyPurpose.Authentication, IonPublicKeyPurpose.AssertionMethod],
-              },
-            ],
-          },
-        })*/
   .then((value) => {
     debug(`IDENTIFIER: ${value.did}`)
   })
@@ -191,12 +154,11 @@ agent
       port: 5000,
       // envVarPrefix: 'DID_API_',
       hostname: '0.0.0.0',
-    }).withPassportAuth(false)
+    })
+      .withPassportAuth(false)
+      .withMorganLogging({ format: 'dev' })
     // .withSessionOptions({secret: '1234', name: 'oidc-session'})
-    // .addHandler(morgan('dev'))
-    const expressArgs = builder.build({ startListening: true })
-    expressArgs.express.use(morgan('dev'))
-    // expressArgs.express.use(passport.initialize())
+    const expressSupport = builder.build({ startListening: false })
 
     new UniResolverApiServer({
       opts: {
@@ -204,13 +166,19 @@ agent
         endpointOpts: {
           globalAuth: {
             authentication: {
-              enabled: false,
-              strategy: bearerStrategy,
+              enabled: true,
+              strategy,
             },
+          },
+          resolveDid: {
+            disableGlobalAuth: true,
+          },
+          getDidMethods: {
+            disableGlobalAuth: true,
           },
         },
       },
-      expressArgs,
+      expressSupport: expressSupport,
       agent,
     })
 
@@ -220,14 +188,15 @@ agent
         globalAuth: {
           authentication: {
             enabled: false,
-            strategy: bearerStrategy,
+            strategy,
           },
         },
         endpointOpts: {},
       },
-      expressArgs,
+      expressSupport,
       agent,
     })
+    expressSupport.start()
   })
 
 export default agent

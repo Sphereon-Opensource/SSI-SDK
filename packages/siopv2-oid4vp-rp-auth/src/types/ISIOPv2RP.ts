@@ -8,7 +8,7 @@ import {
   IPluginMethodMap,
   IResolver,
 } from '@veramo/core'
-import { W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { AdditionalClaims, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import {
   AuthorizationRequestPayload,
   AuthorizationRequestState,
@@ -46,7 +46,10 @@ export interface ISIOPv2RP extends IPluginMethodMap {
   siopCreateAuthRequestURI(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<string>
   siopCreateAuthRequestPayloads(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<IAuthorizationRequestPayloads>
   siopGetAuthRequestState(args: IGetAuthRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState | undefined>
-  siopGetAuthResponseState(args: IGetAuthResponseStateArgs, context: IRequiredContext): Promise<AuthorizationResponseState | undefined>
+  siopGetAuthResponseState(
+    args: IGetAuthResponseStateArgs,
+    context: IRequiredContext
+  ): Promise<AuthorizationResponseStateWithVerifiedData | undefined>
   siopUpdateAuthRequestState(args: IUpdateRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState>
   siopDeleteAuthState(args: IDeleteAuthStateArgs, context: IRequiredContext): Promise<boolean>
   siopVerifyAuthResponse(args: IVerifyAuthResponseStateArgs, context: IRequiredContext): Promise<VerifiedAuthorizationResponse>
@@ -162,6 +165,10 @@ export interface IPresentationWithDefinition {
 export interface ISIOPDIDOptions extends IDIDOptions {
   checkLinkedDomains?: CheckLinkedDomain
   wellknownDIDVerifyCallback?: VerifyCallback
+}
+
+export interface AuthorizationResponseStateWithVerifiedData extends AuthorizationResponseState {
+  verifiedData?: AdditionalClaims
 }
 
 export type IRequiredContext = IAgentContext<

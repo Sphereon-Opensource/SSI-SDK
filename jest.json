@@ -41,7 +41,8 @@
   ],
   "testMatch": [
     "**/__tests__/**/*.test.*",
-    "!**/.yalc/**"
+    "!**/.yalc/**",
+    "!dist/*"
   ],
   "globals": {
     "ts-jest": {
