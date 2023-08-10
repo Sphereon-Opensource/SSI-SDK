@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.dev",
-  "version": "0.14.1",
+  "version": "0.15.0",
   "source": "lib/index.ts",
   "exports": {
     ".": {

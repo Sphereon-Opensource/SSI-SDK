@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.wellknown-did-verifier",
-  "version": "0.14.1",
+  "version": "0.15.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
