@@ -22,7 +22,7 @@ export class OID4VCIRestAPI {
     issuerInstanceArgs: IIssuerInstanceArgs
     credentialDataSupplier?: CredentialDataSupplier
     expressSupport: ExpressSupport
-    opts: IOID4VCIRestAPIOpts
+    opts?: IOID4VCIRestAPIOpts
   }): Promise<OID4VCIRestAPI> {
     const { issuerInstanceArgs, context } = args
     const opts = args.opts ?? {}

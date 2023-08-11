@@ -24,7 +24,7 @@
     "casbin": "^5.26.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
-    "cross-fetch": "^3.1.5",
+    "cross-fetch": "^3.1.8",
     "debug": "^4.3.4",
     "dotenv-flow": "^3.2.0",
     "express": "^4.18.2",
