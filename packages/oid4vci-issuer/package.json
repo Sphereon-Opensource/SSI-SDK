@@ -1,9 +1,9 @@
 {
   "name": "@sphereon/ssi-sdk.oid4vci-issuer",
   "version": "0.14.1",
-  "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "source": "src/index.mts",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
   "type": "module",
   "veramo": {
     "pluginInterfaces": {

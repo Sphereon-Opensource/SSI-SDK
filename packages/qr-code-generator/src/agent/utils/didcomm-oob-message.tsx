@@ -1,4 +1,4 @@
-import { DIDCommV2OOBInvitation } from '../../types/IQRCodeGenerator'
+import { DIDCommV2OOBInvitation } from '../../types/IQRCodeGenerator.mjs'
 import base64url from 'base64url'
 
 export class DidCommOutOfBandMessage {

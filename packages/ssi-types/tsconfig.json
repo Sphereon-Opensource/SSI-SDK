@@ -4,6 +4,6 @@
     "rootDir": "src",
     "outDir": "dist",
     "module": "ESNext",
-    "target": "ES2022"
+    "target": "ESNext"
   }
 }

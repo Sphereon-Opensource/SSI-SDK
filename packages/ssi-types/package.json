@@ -2,8 +2,8 @@
   "name": "@sphereon/ssi-types",
   "description": "SSI Common Types",
   "version": "0.14.1",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
   "type": "module",
   "scripts": {
     "build": "tsc",

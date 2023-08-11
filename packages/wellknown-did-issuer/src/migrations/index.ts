@@ -1,1 +1,0 @@
-export { WellknownDidIssuerMigrations } from './generic'

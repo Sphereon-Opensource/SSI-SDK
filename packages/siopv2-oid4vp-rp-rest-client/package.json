@@ -2,9 +2,9 @@
   "name": "@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-client",
   "description": "contains the client side to call REST endpoints of relying party",
   "version": "0.14.1",
-  "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "source": "src/index.mts",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
   "type": "module",
   "veramo": {
     "pluginInterfaces": {

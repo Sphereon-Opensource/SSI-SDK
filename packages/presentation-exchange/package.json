@@ -1,13 +1,13 @@
 {
   "name": "@sphereon/ssi-sdk.presentation-exchange",
   "version": "0.14.1",
-  "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "source": "src/index.mts",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
   "type": "module",
   "veramo": {
     "pluginInterfaces": {
-      "IPresentationExchange": "./src/types/IPresentationExchange.ts"
+      "IPresentationExchange": "./src/types/IPresentationExchange.mts"
     }
   },
   "scripts": {
@@ -16,7 +16,7 @@
     "build:copyfiles": "copyfiles plugin.schema.json dist"
   },
   "dependencies": {
-    "@sphereon/pex": "2.0.1",
+    "@sphereon/pex": "2.1.1-unstable.5",
     "@sphereon/pex-models": "^2.0.2",
     "@sphereon/ssi-sdk-ext.did-utils": "0.13.1-unstable.3+bf7e638",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",

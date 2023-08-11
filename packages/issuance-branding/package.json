@@ -1,9 +1,9 @@
 {
   "name": "@sphereon/ssi-sdk.issuance-branding",
   "version": "0.14.1",
-  "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "source": "src/index.mts",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
   "type": "module",
   "veramo": {
     "pluginInterfaces": {
@@ -14,7 +14,7 @@
     "build": "tsc",
     "build:clean": "tsc --build --clean && tsc --build",
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema",
-    "build:copyfiles": "copyfiles plugin.schema.json dist"
+    "build:copyfiles": "copyfiles src/plugin.schema.json dist"
   },
   "dependencies": {
     "@sphereon/ssi-sdk.core": "workspace:*",
@@ -31,7 +31,7 @@
     "dist/**/*",
     "src/**/*",
     "README.md",
-    "plugin.schema.json",
+    "src/plugin.schema.json",
     "LICENSE"
   ],
   "private": false,

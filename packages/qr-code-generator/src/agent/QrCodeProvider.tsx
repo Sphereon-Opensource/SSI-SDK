@@ -10,8 +10,8 @@ import {
   QRType,
   SIOPv2DataWithScheme,
   URIData,
-} from '../types/IQRCodeGenerator'
-import { DidCommOutOfBandMessage, generateQRCodeReactElement } from './utils'
+} from '../types/IQRCodeGenerator.mjs'
+import { DidCommOutOfBandMessage, generateQRCodeReactElement } from './utils/index.mjs'
 import { generateQRCodeReactElementImpl } from './utils/react-qr'
 
 /**

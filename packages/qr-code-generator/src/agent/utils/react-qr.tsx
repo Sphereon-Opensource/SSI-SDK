@@ -1,4 +1,4 @@
-import { CreateElementArgs, CreateValueArgs, events, IRequiredContext, QRType, ValueResult } from '../../types/IQRCodeGenerator'
+import { CreateElementArgs, CreateValueArgs, events, IRequiredContext, QRType, ValueResult } from '../../types/IQRCodeGenerator.mjs'
 import QRCode from 'react-qr-code'
 import React from 'react'
 

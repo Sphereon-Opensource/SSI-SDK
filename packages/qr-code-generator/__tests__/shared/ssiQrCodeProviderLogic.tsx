@@ -1,5 +1,5 @@
 import { TAgent } from '@veramo/core'
-import { IQRCodeGenerator } from '../../src'
+import { IQRCodeGenerator } from '../../src/index.mjs'
 import { render, screen } from '@testing-library/react'
 // @ts-ignore
 import React from 'react'
@@ -17,6 +17,8 @@ import {
   siopv2CreateElement,
   siopv2CreateValue,
 } from './fixtures'
+
+import { describe, it, expect, beforeAll, vi, afterAll } from 'vitest'
 
 type ConfiguredAgent = TAgent<IQRCodeGenerator>
 
