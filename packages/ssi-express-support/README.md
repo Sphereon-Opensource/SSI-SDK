@@ -15,7 +15,7 @@ Note: Be aware that this plugin only runs in NodeJS environments!
 ## Installation
 
 ```shell
-pnpm add @sphereon/ssi-sdk.express-support
+pnpm add @sphereon/ssi-express-support
 ```
 
 ## Build

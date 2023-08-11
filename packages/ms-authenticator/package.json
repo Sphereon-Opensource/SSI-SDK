@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.ms-authenticator",
-  "version": "0.14.1",
+  "version": "0.15.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,7 +11,7 @@
   "dependencies": {
     "@azure/msal-common": "^13.2.0",
     "@azure/msal-node": "^1.18.0",
-    "cross-fetch": "^3.1.5",
+    "cross-fetch": "^3.1.8",
     "object-hash": "^3.0.0"
   },
   "devDependencies": {

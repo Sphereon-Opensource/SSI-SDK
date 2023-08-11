@@ -1,10 +1,4 @@
-import {
-  AuthorizationRequestState,
-  AuthorizationResponsePayload,
-  AuthorizationResponseState,
-  decodeUriAsJson,
-  VerifiedAuthorizationResponse,
-} from '@sphereon/did-auth-siop'
+import { AuthorizationRequestState, AuthorizationResponsePayload, decodeUriAsJson, VerifiedAuthorizationResponse } from '@sphereon/did-auth-siop'
 import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop/dist/types/SessionManager'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
@@ -26,6 +20,7 @@ import {
   IVerifyAuthResponseStateArgs,
   schema,
   VerifiedDataMode,
+  AuthorizationResponseStateWithVerifiedData,
 } from '../index'
 import { RPInstance } from '../RPInstance'
 
@@ -58,7 +53,7 @@ export class SIOPv2RP implements IAgentPlugin {
     if (!this.opts.defaultOpts.didOpts.resolveOpts?.resolver || typeof this.opts.defaultOpts.didOpts.resolveOpts.resolver.resolve !== 'function') {
       this.opts.defaultOpts.didOpts.resolveOpts = {
         ...this.opts.defaultOpts.didOpts.resolveOpts,
-        resolver: getAgentResolver(context, { uniresolverFallback: true }),
+        resolver: getAgentResolver(context, { uniresolverResolution: true, resolverResolution: true, localResolution: true }),
       }
     }
   }
@@ -91,7 +86,10 @@ export class SIOPv2RP implements IAgentPlugin {
     )
   }
 
-  private async siopGetResponseState(args: IGetAuthResponseStateArgs, context: IRequiredContext): Promise<AuthorizationResponseState | undefined> {
+  private async siopGetResponseState(
+    args: IGetAuthResponseStateArgs,
+    context: IRequiredContext
+  ): Promise<AuthorizationResponseStateWithVerifiedData | undefined> {
     const rpInstance = await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
       rp.get(context).then((rp) => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound))
     )
@@ -99,7 +97,7 @@ export class SIOPv2RP implements IAgentPlugin {
       return undefined
     }
 
-    const responseState = rpInstance as AuthorizationResponseState
+    const responseState = rpInstance as AuthorizationResponseStateWithVerifiedData
     if (
       responseState.status === AuthorizationResponseStateStatus.VERIFIED &&
       args.includeVerifiedData &&
@@ -128,7 +126,7 @@ export class SIOPv2RP implements IAgentPlugin {
               }
             })
           })
-          responseState.response.payload.verifiedData = allClaims
+          responseState.verifiedData = allClaims
       }
     }
     return responseState
@@ -186,7 +184,11 @@ export class SIOPv2RP implements IAgentPlugin {
         rpOpts.didOpts = { ...rpOpts.didOpts }
         rpOpts.didOpts.resolveOpts = { ...rpOpts.didOpts.resolveOpts }
         console.log('Using agent DID resolver for RP instance with definition id ' + args.definitionId)
-        rpOpts.didOpts.resolveOpts.resolver = getAgentResolver(context, { uniresolverFallback: true })
+        rpOpts.didOpts.resolveOpts.resolver = getAgentResolver(context, {
+          uniresolverResolution: true,
+          localResolution: true,
+          resolverResolution: true,
+        })
       }
 
       /*const definition = args.definition ?? (definitionId ? await context.agent.pexStoreGetDefinition({
@@ -231,7 +233,9 @@ export class SIOPv2RP implements IAgentPlugin {
       if (!options.didOpts.resolveOpts || typeof options.didOpts.resolveOpts.resolver?.resolve !== 'function') {
         options.didOpts.resolveOpts = {
           ...this.opts.defaultOpts.didOpts.resolveOpts,
-          resolver: this.opts.defaultOpts.didOpts?.resolveOpts?.resolver ?? getAgentResolver(context, { uniresolverFallback: true }),
+          resolver:
+            this.opts.defaultOpts.didOpts?.resolveOpts?.resolver ??
+            getAgentResolver(context, { localResolution: true, resolverResolution: true, uniresolverResolution: true }),
         }
       }
     }

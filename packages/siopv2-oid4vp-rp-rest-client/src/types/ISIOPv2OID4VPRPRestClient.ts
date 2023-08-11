@@ -1,4 +1,4 @@
-import { IAgentContext, IPluginMethodMap, IResolver } from '@veramo/core'
+import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 
 import { AuthStatusResponse, GenerateAuthRequestURIResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 
@@ -27,4 +27,17 @@ export interface ISiopClientGetAuthStatusArgs {
   definitionId?: string
 }
 
-export type IRequiredContext = IAgentContext<IResolver>
+
+export interface Siopv2RestClientAuthenticationOpts {
+  enabled?: boolean;
+  staticBearerToken?: string;
+}
+
+export interface Siopv2RestClientOpts {
+  baseUrl?: string;
+  definitionId?: string;
+  authentication?: Siopv2RestClientAuthenticationOpts;
+}
+
+
+export type IRequiredContext = IAgentContext<any>

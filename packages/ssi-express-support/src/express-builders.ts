@@ -4,15 +4,24 @@
 import bodyParser from 'body-parser'
 import { Enforcer } from 'casbin'
 import cors, { CorsOptions } from 'cors'
+import * as dotenv from 'dotenv-flow'
 import express, { Express } from 'express'
 import { Application, ApplicationRequestHandler } from 'express-serve-static-core'
 import session from 'express-session'
+import http from 'http'
+import { createHttpTerminator, HttpTerminator } from 'http-terminator'
+import morgan from 'morgan'
 import passport, { InitializeOptions } from 'passport'
 import { checkUserIsInRole } from './auth-utils'
-import { env, jsonErrorHandler } from './functions'
-import { ExpressBuildResult, IExpressServerOpts } from './types'
-import * as dotenv from 'dotenv-flow'
+import { jsonErrorHandler } from './express-utils'
+import { env } from './functions'
+import { ExpressSupport, IExpressServerOpts } from './types'
 
+type Handler<Request extends http.IncomingMessage, Response extends http.ServerResponse> = (
+  req: Request,
+  res: Response,
+  callback: (err?: Error) => void
+) => void
 dotenv.config()
 
 export class ExpressBuilder {
@@ -29,6 +38,9 @@ export class ExpressBuilder {
   private _passportInitOpts?: InitializeOptions
   private _userIsInRole?: string | string[]
   private _enforcer?: Enforcer
+  private _server?: http.Server | undefined
+  private _terminator?: HttpTerminator
+  private _morgan?: Handler<any, any> | undefined
 
   private constructor(opts?: { existingExpress?: Express; envVarPrefix?: string }) {
     const { existingExpress, envVarPrefix } = opts ?? {}
@@ -44,13 +56,21 @@ export class ExpressBuilder {
 
   public static fromServerOpts(opts: IExpressServerOpts & { envVarPrefix?: string }) {
     const builder = new ExpressBuilder({ existingExpress: opts?.existingExpress, envVarPrefix: opts?.envVarPrefix })
-    return builder.withEnableListenOpts(opts)
+    return builder.withEnableListenOpts({ ...opts, hostnameOrIP: opts.hostname, startOnBuild: opts.startListening ?? false })
   }
 
   public enableListen(startOnBuild?: boolean): this {
     if (startOnBuild !== undefined) {
       this._startListen = startOnBuild
     }
+    return this
+  }
+
+  public withMorganLogging(opts?: { existingMorgan?: Handler<any, any>; format?: string; options?: morgan.Options<any, any> }): this {
+    if (opts?.existingMorgan && (opts.format || opts.options)) {
+      throw Error('Cannot using an existing morgan with either a format or options')
+    }
+    this._morgan = opts?.existingMorgan ?? morgan(opts?.format ?? 'dev', opts?.options)
     return this
   }
 
@@ -70,7 +90,7 @@ export class ExpressBuilder {
     if (typeof callback === 'function') {
       this.withListenCallback(callback)
     }
-    this._startListen = startOnBuild !== false
+    this._startListen = startOnBuild === true
     return this
   }
 
@@ -117,7 +137,13 @@ export class ExpressBuilder {
   }
 
   public startListening(express: Express) {
-    return express.listen(this.getPort(), this.getHostname(), this.listenCallback)
+    this._server = express.listen(this.getPort(), this.getHostname(), this.listenCallback)
+    this._terminator = createHttpTerminator({
+      server: this._server,
+      // gracefulTerminationTimeout: 10
+    })
+
+    return { server: this._server, terminator: this._terminator }
   }
 
   public getHostname(): string {
@@ -160,15 +186,44 @@ export class ExpressBuilder {
     express?: Express
     startListening?: boolean
     handlers?: ApplicationRequestHandler<T> | ApplicationRequestHandler<T>[]
-  }): ExpressBuildResult {
+  }): ExpressSupport {
     const express = this.buildExpress(opts)
+    const startListening = opts?.startListening === undefined ? this._startListen !== true : opts.startListening
+    let started = this._server !== undefined
+    if (startListening && !started) {
+      this.startListening(express)
+      started = true
+    }
+
     return {
       express,
       port: this.getPort(),
       hostname: this.getHostname(),
       userIsInRole: this._userIsInRole,
-      startListening: this._startListen !== false,
+      startListening,
       enforcer: this._enforcer,
+      start: (opts) => {
+        if (opts?.doNotStartListening) {
+          console.log('Express will not start listening. You will have to start it yourself')
+        } else {
+          if (!started) {
+            this.startListening(express)
+            started = true
+          }
+        }
+
+        if (opts?.disableErrorHandler !== true) {
+          express.use(jsonErrorHandler)
+        }
+        return { server: this._server!, terminator: this._terminator! }
+      },
+      stop: async (terminator?: HttpTerminator) => {
+        const term = terminator ?? this._terminator
+        if (!term) {
+          return false
+        }
+        return await term.terminate().then(() => true)
+      },
     }
   }
 
@@ -178,6 +233,9 @@ export class ExpressBuilder {
     handlers?: ApplicationRequestHandler<T> | ApplicationRequestHandler<T>[]
   }): express.Express {
     const app: express.Express = opts?.express ?? this.existingExpress ?? express()
+    if (this._morgan) {
+      app.use(this._morgan)
+    }
     if (this._sessionOpts) {
       // @ts-ignore
       app.use(session(this._sessionOpts))
@@ -195,8 +253,6 @@ export class ExpressBuilder {
       this._corsConfigurer.configure({ existingExpress: app })
     }
 
-    app.use(jsonErrorHandler)
-
     // @ts-ignore
     this._handlers && this._handlers.length > 0 && app.use(this._handlers)
     // @ts-ignore
@@ -204,10 +260,6 @@ export class ExpressBuilder {
 
     app.use(bodyParser.urlencoded({ extended: true }))
     app.use(bodyParser.json())
-
-    if (this._startListen !== false) {
-      this.startListening(app)
-    }
     return app
   }
 }
@@ -222,7 +274,8 @@ export class ExpressCorsConfigurer {
   private readonly _express?: Express
   private readonly _envVarPrefix?: string
 
-  constructor({ existingExpress, envVarPrefix }: { existingExpress?: Express; envVarPrefix?: string }) {
+  constructor(args?: { existingExpress?: Express; envVarPrefix?: string }) {
+    const { existingExpress, envVarPrefix } = args ?? {}
     this._express = existingExpress
     this._envVarPrefix = envVarPrefix
   }

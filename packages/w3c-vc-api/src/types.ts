@@ -1,4 +1,4 @@
-import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-sdk.express-support'
+import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
 import {
   IAgentContext,
   ICredentialIssuer,

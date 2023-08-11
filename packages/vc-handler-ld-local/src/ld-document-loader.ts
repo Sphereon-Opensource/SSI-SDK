@@ -4,6 +4,7 @@ import {
   CredentialPayload,
   DIDDocument,
   IAgentContext,
+  IDIDManager,
   IResolver,
   PresentationPayload,
   VerifiableCredential,
@@ -14,6 +15,7 @@ import Debug from 'debug'
 
 import { LdContextLoader } from './ld-context-loader'
 import { LdSuiteLoader } from './ld-suite-loader'
+import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 
 const debug = Debug('sphereon:ssi-sdk:vc-handler-ld-local')
 
@@ -21,16 +23,30 @@ const debug = Debug('sphereon:ssi-sdk:vc-handler-ld-local')
  * Initializes a list of Veramo-wrapped LD Signature suites and exposes those to the Agent Module
  */
 export class LdDocumentLoader {
-  private ldContextLoader: LdContextLoader
+  private readonly ldContextLoader: LdContextLoader
   ldSuiteLoader: LdSuiteLoader
+  private readonly localResolution?: boolean
+  private readonly uniresolverResolution?: boolean
+  private readonly resolverResolution?: boolean
 
-  constructor(options: { ldContextLoader: LdContextLoader; ldSuiteLoader: LdSuiteLoader }) {
+  constructor(options: {
+    ldContextLoader: LdContextLoader
+    ldSuiteLoader: LdSuiteLoader
+    documentLoader?: {
+      localResolution?: boolean // Resolve identifiers hosted by the agent
+      uniresolverResolution?: boolean // Resolve identifiers using universal resolver
+      resolverResolution?: boolean // Use registered drivers
+    }
+  }) {
     this.ldContextLoader = options.ldContextLoader
     this.ldSuiteLoader = options.ldSuiteLoader
+    this.localResolution = options?.documentLoader?.localResolution
+    this.uniresolverResolution = options?.documentLoader?.uniresolverResolution
+    this.resolverResolution = options?.documentLoader?.resolverResolution
   }
 
   getLoader(
-    context: IAgentContext<IResolver>,
+    context: IAgentContext<IResolver & IDIDManager>,
     {
       attemptToFetchContexts = false,
       verifiableData,
@@ -43,11 +59,16 @@ export class LdDocumentLoader {
       const origUrl = url
       if (url.startsWith('#') && verifiableData.issuer !== undefined) {
         url = (typeof verifiableData.issuer === 'string' ? verifiableData.issuer : verifiableData.issuer.id) + url
-        console.log(url)
+        debug(url)
       }
       // did resolution
       if (url.toLowerCase().startsWith('did:')) {
-        const resolutionResult = await context.agent.resolveDid({ didUrl: url })
+        const resolutionResult = await getAgentResolver(context, {
+          localResolution: this.localResolution,
+          resolverResolution: this.resolverResolution,
+          uniresolverResolution: this.uniresolverResolution,
+        }).resolve(url)
+        // context.agent.resolveDid({didUrl: url})
         let didDoc: DIDDocument | null = resolutionResult.didDocument
         if (!didDoc) {
           throw new Error(`Could not fetch DID document with url: ${url}. Did you enable the the driver?`)
@@ -73,17 +94,17 @@ export class LdDocumentLoader {
           if (origUrl !== url) {
             // Make sure we replace the result URLs with the original URLs, so framing keeps working
             didDoc = JSON.parse(JSON.stringify(didDoc).replace(url, origUrl)) as DIDDocument
-            console.log('CHANGED:')
-            console.log(didDoc)
+            debug('CHANGED:')
+            debug(didDoc)
           }
 
           // Apparently we got a whole DID document, but we are looking for a verification method
           // We use origUrl here, as that is how it was used in the VM
           const component = await context.agent.getDIDComponentById({ didDocument: didDoc, didUrl: origUrl })
-          console.log('Component:')
-          console.log(component)
-          console.log('Component stringified:')
-          console.log(JSON.stringify(component))
+          debug('Component:')
+          debug(component)
+          debug('Component stringified:')
+          debug(JSON.stringify(component))
           if (component && typeof component !== 'string' && component.id) {
             // We have to provide a context
             const contexts = this.ldSuiteLoader
@@ -138,7 +159,7 @@ export class LdDocumentLoader {
         }
       }
 
-      console.log(`WARNING: Possible unknown context/identifier for ${url} \n falling back to default documentLoader`)
+      debug(`WARNING: Possible unknown context/identifier for ${url} \n falling back to default documentLoader`)
 
       return vc.defaultDocumentLoader(url)
     })
