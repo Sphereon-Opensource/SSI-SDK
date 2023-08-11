@@ -41,7 +41,7 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
             if (!this.authOpts.staticBearerToken) {
                 throw Error(`Cannot have authentication enabled, whilst not enabling static bearer tokens at this point`)
             }
-            headers.Authentication = `Bearer ${this.authOpts.staticBearerToken}`
+            headers.Authorization = `Bearer ${this.authOpts.staticBearerToken}`
         }
         return headers
     }
