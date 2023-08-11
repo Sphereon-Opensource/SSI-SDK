@@ -6,4 +6,5 @@ import { DidConfigurationResourceEntity } from './entities/DidConfigurationResou
 export const schema = require('./plugin.schema.json')
 export { WellKnownDidIssuer } from './agent/WellKnownDidIssuer.mjs'
 export * from './types/IWellKnownDidIssuer.mjs'
+export const WellknownDidIssuerEntities = [DidConfigurationResourceEntity]
 export { WellknownDidIssuerMigrations } from './migrations/index.mjs'

@@ -97,9 +97,9 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/issuance-branding/dist#IssuanceBranding
+        - $require: ./packages/issuance-branding#IssuanceBranding
           $args:
             - store:
-                $require: './packages/data-store/dist#IssuanceBrandingStore'
+                $require: './packages/data-store#IssuanceBrandingStore'
                 $args:
                   - $ref: /dbConnection

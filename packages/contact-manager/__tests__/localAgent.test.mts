@@ -1,4 +1,4 @@
-import { createObjects, getConfig } from '../../agent-config/dist'
+import { createObjects, getConfig } from '../../agent-config'
 import { Connection } from 'typeorm'
 
 import { describe } from 'vitest'

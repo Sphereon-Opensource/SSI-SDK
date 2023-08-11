@@ -89,9 +89,9 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/contact-manager/dist#ContactManager
+        - $require: ./packages/contact-manager#ContactManager
           $args:
             - store:
-                $require: './packages/data-store/dist#ContactStore'
+                $require: './packages/data-store#ContactStore'
                 $args:
                   - $ref: /dbConnection

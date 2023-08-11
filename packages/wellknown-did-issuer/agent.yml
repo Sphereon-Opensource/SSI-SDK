@@ -105,6 +105,6 @@ agent:
         - $require: '@veramo/data-store#DataStore'
           $args:
             - $ref: /dbConnection
-        - $require: ./packages/wellknown-did-issuer/dist#WellKnownDidIssuer
+        - $require: ./packages/wellknown-did-issuer#WellKnownDidIssuer
           $args:
             - $ref: /dbConnection

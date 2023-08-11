@@ -1,6 +1,7 @@
 import { set, get } from 'jsonpointer'
 import parse from 'url-parse'
 import { resolve } from 'path'
+import { extractPathFromPackageJSON } from './packagePath.mjs'
 
 /**
  * Creates objects from a configuration object and a set of pointers.
@@ -82,10 +83,29 @@ export async function createObjects(config: object, pointers: Record<string, str
     return input
   }
 
+  async function resolveModuleEntryPoint(path: string) {
+    let module = path
+    if (module.startsWith('.')) {
+      const packageJson = resolve(module + '/package.json')
+      if (packageJson) {
+        try {
+          let result = await extractPathFromPackageJSON(packageJson)
+          if (result) {
+            module += '/' + result
+          }
+        } catch (e) {
+          // No package.json? Well guess the entrypoint then what it's supposed to be it
+          module += '/dist/index.mjs'
+        }
+      }
+    }
+    return module
+  }
+
   async function objectFromConfig(objectConfig: any): Promise<any> {
     let object
     const parsed = parse(objectConfig['$require'], {}, true)
-    let module = parsed.pathname
+    let module = await resolveModuleEntryPoint(parsed.pathname)
     const member = parsed.hash.length > 1 ? parsed.hash.slice(1) : undefined
     const type = parsed.query['t'] || 'class'
     const pointer = parsed.query['p']

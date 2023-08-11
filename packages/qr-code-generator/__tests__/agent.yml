@@ -6,6 +6,6 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/qr-code-generator/dist#QrCodeProvider
+        - $require: ./packages/qr-code-generator#QrCodeProvider
 #          $args:
 #            - renderingProps

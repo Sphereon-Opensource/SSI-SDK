@@ -8,7 +8,7 @@ import {
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { AuthorizationRequestStateStatus, AuthorizationResponseStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { AdditionalClaims, CredentialMapper, ICredentialSubject, IVerifiableCredential } from '@sphereon/ssi-types'
-import { OriginalVerifiablePresentation } from '@sphereon/ssi-types/dist'
+import { OriginalVerifiablePresentation } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import {
   IAuthorizationRequestPayloads,

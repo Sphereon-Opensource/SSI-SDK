@@ -79,7 +79,7 @@ agent:
         #          $args:
         #            - contextMaps: []
         #            suites: []
-        - $require: ./packages/vc-handler-ld-local/dist#CredentialHandlerLDLocal
+        - $require: ./packages/vc-handler-ld-local#CredentialHandlerLDLocal
           $args:
             - contextMaps: []
               suites: []

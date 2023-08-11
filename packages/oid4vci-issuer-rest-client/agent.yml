@@ -68,6 +68,6 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/oid4vci-issuer-rest-client/dist#OID4VCIRestClient
+        - $require: ./packages/oid4vci-issuer-rest-client#OID4VCIRestClient
           $args:
             - baseUrl: 'https://ssi-backend.sphereon.com'

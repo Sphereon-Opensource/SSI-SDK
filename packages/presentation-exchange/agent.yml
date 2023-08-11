@@ -122,4 +122,4 @@ agent:
         - $require: '@veramo/data-store#DataStoreORM'
           $args:
             - $ref: /dbConnection
-        - $require: ./packages/presentation-exchange/dist#PresentationExchange
+        - $require: ./packages/presentation-exchange#PresentationExchange

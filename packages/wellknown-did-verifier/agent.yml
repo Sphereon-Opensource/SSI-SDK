@@ -102,4 +102,4 @@ agent:
     - schemaValidation: false
       plugins:
         - $ref: /didResolver
-        - $require: ./packages/wellknown-did-verifier/dist#WellKnownDidVerifier
+        - $require: ./packages/wellknown-did-verifier#WellKnownDidVerifier

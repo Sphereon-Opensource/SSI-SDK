@@ -10,7 +10,7 @@ import {
 import { CredentialDataSupplier } from '@sphereon/oid4vci-issuer/lib/types'
 import { IDIDOptions, ResolveOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IOID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import { ICredential } from '@sphereon/ssi-types/dist'
+import { ICredential } from '@sphereon/ssi-types'
 import { IAgentContext, ICredentialIssuer, IDataStoreORM, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { IssuerInstance } from '../IssuerInstance.mjs'
 
