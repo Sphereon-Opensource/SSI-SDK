@@ -27,7 +27,7 @@ const energyShrMetadata: ClientMetadata = {
   client_secret: env('OIDC_CLIENT_SECRET', PREFIX) ?? 'NOPE',
   redirect_uris: ['https://www.energyshr.nl/authentication/callback'],
   post_logout_redirect_uris: ['https://www.energyshr.nl/authentication/logout-callback'],
-  response_types: ['code', 'id_token'],
+  response_types: ['code'],
   token_endpoint_auth_method: 'client_secret_basic',
 }
 const metadata: ClientMetadata = ENVIRONMENT.toLocaleLowerCase() === 'energyshr' ? energyShrMetadata : devMetadata
