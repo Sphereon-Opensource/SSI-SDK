@@ -7,26 +7,16 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
-
-
-
-
 # [0.15.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.14.1...v0.15.0) (2023-08-10)
-
 
 ### Bug Fixes
 
-* Alg header was not correctly set, and we do support ES256 for JsonWebSignature2020 now ([d8e961c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d8e961c984ca522ebb657b420853e4c0687161f8))
-
+- Alg header was not correctly set, and we do support ES256 for JsonWebSignature2020 now ([d8e961c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d8e961c984ca522ebb657b420853e4c0687161f8))
 
 ### Features
 
-* Allow document loader to also load DID from the agent and fall back to the universal resolver (all configurable) ([f2f9fbc](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f2f9fbc0c999664c8c1cfdd4b0f0204ea1b8ccf1))
-* allow signing credential with local resolved DID. Especially handy for did:web that is not yet published/exposed ([34793e9](https://github.com/Sphereon-Opensource/SSI-SDK/commit/34793e9bacc7dfcc689ad8c11119d5f7d7b1d3ef))
-
-
-
-
+- Allow document loader to also load DID from the agent and fall back to the universal resolver (all configurable) ([f2f9fbc](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f2f9fbc0c999664c8c1cfdd4b0f0204ea1b8ccf1))
+- allow signing credential with local resolved DID. Especially handy for did:web that is not yet published/exposed ([34793e9](https://github.com/Sphereon-Opensource/SSI-SDK/commit/34793e9bacc7dfcc689ad8c11119d5f7d7b1d3ef))
 
 ## [0.14.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.14.0...v0.14.1) (2023-07-31)
 

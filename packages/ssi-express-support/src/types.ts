@@ -3,7 +3,7 @@ import { Express, RequestHandler } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import http from 'http'
 import { HttpTerminator } from 'http-terminator'
-import { Strategy } from 'passport'
+import { AuthenticateCallback, Strategy } from 'passport'
 import { ParsedQs } from 'qs'
 
 export interface IExpressServerOpts {
@@ -50,8 +50,13 @@ export interface ISingleEndpointOpts extends GenericAuthArgs {
 
 export interface GenericAuthArgs {
   authentication?: {
+    callback?: AuthenticateCallback | ((...args: any[]) => any)
+    useDefaultCallback?: boolean
     enabled?: boolean
     strategy?: string | string[] | Strategy
+    strategyOptions?: Record<string, any> | any
+    authInfo?: boolean
+    session?: boolean
   }
   authorization?: {
     enabled?: boolean
