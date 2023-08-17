@@ -1,8 +1,8 @@
 {
   "extends": "../tsconfig-base.json",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
+    "target": "es6",
+    "module": "commonjs",
     "rootDir": "src",
     "outDir": "dist",
     "declarationDir": "dist",
@@ -10,9 +10,9 @@
   },
   "ts-node": {
     "compilerOptions": {
-      "module": "esnext",
-      "target": "esnext",
-      "moduleResolution": "Node",
+      "module": "es6",
+      "target": "commonjs",
+//      "moduleResolution": "Node",
       //      "esm": true,
       //      "experimentalSpecifierResolution": "node",
       "esModuleInterop": true
