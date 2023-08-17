@@ -91,7 +91,17 @@ export function getLogoutEndpoint(router: Router, client: BaseClient, opts?: ISi
   }
   const path = opts?.path ?? '/authentication/logout'
   router.get(path, (req, res) => {
-    res.redirect(client.endSessionUrl())
+    try {
+      if (client.endSessionUrl()) {
+        return res.redirect(client.endSessionUrl())
+      } else {
+        console.log('IDP does not support end session url')
+        return res.redirect('/authentication/logout-callback')
+      }
+    } catch (error) {
+      console.log(error)
+      return res.redirect('/authentication/logout-callback')
+    }
   })
 }
 

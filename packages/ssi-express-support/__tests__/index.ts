@@ -27,7 +27,7 @@ const energyShrMetadata: ClientMetadata = {
   client_secret: env('OIDC_CLIENT_SECRET', PREFIX) ?? 'NOPE',
   redirect_uris: ['https://www.energyshr.nl/authentication/callback'],
   post_logout_redirect_uris: ['https://www.energyshr.nl/authentication/logout-callback'],
-  response_types: ['code'],
+  response_types: ['code', 'id_token'],
   token_endpoint_auth_method: 'client_secret_basic',
 }
 const metadata: ClientMetadata = ENVIRONMENT.toLocaleLowerCase() === 'energyshr' ? energyShrMetadata : devMetadata
@@ -63,6 +63,9 @@ passport.use(
     {
       client,
       passReqToCallback: true,
+      params: {
+        scope: "openid email"
+      }
     },
     (req: any, tokenSet: any, userinfo: UserinfoResponse<any, any>, done: any) => {
       req.session.tokens = tokenSet
