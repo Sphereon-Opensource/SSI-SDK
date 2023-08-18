@@ -156,6 +156,7 @@ export function getCredentialSignerCallback(didOpts: IDIDOptions, context: IRequ
     const result = await context.agent.createVerifiableCredential({
       credential: credential as CredentialPayload,
       proofFormat,
+      removeOriginalFields: false,
       fetchRemoteContexts: true,
       domain: getDID(didOpts.identifierOpts),
     })
