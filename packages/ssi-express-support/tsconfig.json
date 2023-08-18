@@ -12,7 +12,7 @@
     "compilerOptions": {
       "module": "es6",
       "target": "commonjs",
-//      "moduleResolution": "Node",
+      //      "moduleResolution": "Node",
       //      "esm": true,
       //      "experimentalSpecifierResolution": "node",
       "esModuleInterop": true

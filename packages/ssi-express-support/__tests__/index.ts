@@ -64,8 +64,8 @@ passport.use(
       client,
       passReqToCallback: true,
       params: {
-        scope: "openid email"
-      }
+        scope: 'openid email',
+      },
     },
     (req: any, tokenSet: any, userinfo: UserinfoResponse<any, any>, done: any) => {
       req.session.tokens = tokenSet
