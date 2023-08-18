@@ -471,11 +471,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.6.1-next.8
-        version: 0.6.1-next.8
+        specifier: ' 0.6.1-next.12'
+        version: 0.6.1-next.12
       '@sphereon/oid4vci-issuer':
-        specifier: 0.6.1-next.8
-        version: 0.6.1-next.8
+        specifier: ' 0.6.1-next.12'
+        version: 0.6.1-next.12
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.14.0
         version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -529,14 +529,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.6.1-next.8
-        version: 0.6.1-next.8
+        specifier: ' 0.6.1-next.12'
+        version: 0.6.1-next.12
       '@sphereon/oid4vci-issuer':
-        specifier: 0.6.1-next.8
-        version: 0.6.1-next.8
+        specifier: ' 0.6.1-next.12'
+        version: 0.6.1-next.12
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.6.1-next.8
-        version: 0.6.1-next.8
+        specifier: ' 0.6.1-next.12'
+        version: 0.6.1-next.12
       '@sphereon/ssi-express-support':
         specifier: workspace:^
         version: link:../ssi-express-support
@@ -689,8 +689,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.6.1-next.8
-        version: 0.6.1-next.8
+        specifier: ' 0.6.1-next.12'
+        version: 0.6.1-next.12
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -723,8 +723,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.6.1-next.8
-        version: 0.6.1-next.8
+        specifier: ' 0.6.1-next.12'
+        version: 0.6.1-next.12
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.14.0
         version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -6170,8 +6170,8 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vci-common@0.6.1-next.8:
-    resolution: {integrity: sha512-4iH/yCe4QfNZ5DHt8xmL6MYSt3JjpgdEitU5RAfkBYHwIoyeaeouZhPwjs3bReOsk5eN4hm0i8XGImexdTE6kQ==}
+  /@sphereon/oid4vci-common@0.6.1-next.12:
+    resolution: {integrity: sha512-m6V8+fBFCs5u4ytq+DFuOvEiO2Zq9LXEzuaKUe2YKzuilTgVj1iapUbV0EG/xIGUYd2UuaRpO3pQhBqBRuyy5A==}
     engines: {node: '>=16'}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -6181,12 +6181,12 @@ packages:
       - encoding
     dev: false
 
-  /@sphereon/oid4vci-issuer-server@0.6.1-next.8:
-    resolution: {integrity: sha512-2iZGGqCk7HFpf1yNXO+/LgJvY/PAUQPRLj6KeNj6aMudu0T0z13ebZuXksf5BHosFJopRWL2WtSf4k1+aAly4A==}
+  /@sphereon/oid4vci-issuer-server@0.6.1-next.12:
+    resolution: {integrity: sha512-sotcVGISwGvRec9Ec6ieZf5KHKzkgp2v0pSkeTtr7RZAqyUaeorMdh5qijsdYA1XxwLYYhLgtGiYi9R8LBHjvA==}
     engines: {node: '>=16'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.6.1-next.8
-      '@sphereon/oid4vci-issuer': 0.6.1-next.8
+      '@sphereon/oid4vci-common': 0.6.1-next.12
+      '@sphereon/oid4vci-issuer': 0.6.1-next.12
       '@sphereon/ssi-express-support': 0.15.1
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.2
@@ -6204,11 +6204,11 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.6.1-next.8:
-    resolution: {integrity: sha512-uYdOHtxHgIktthI0weVfUk+d29AKIDlCO2/YVfmoWSSiorZcCJ37I9ZYjbZSF4M9mE3e9Ip4+bgKYu4WgPxbSw==}
+  /@sphereon/oid4vci-issuer@0.6.1-next.12:
+    resolution: {integrity: sha512-00MgQ29RTQRXIrkNPUJO6dRx6hiWP8fC7YlQViLU7r20umEc20po+ehtSgcEQmlGESYXqrKP7o7n7yr0Sc7seA==}
     engines: {node: '>=16'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.6.1-next.8
+      '@sphereon/oid4vci-common': 0.6.1-next.12
       '@sphereon/ssi-types': link:packages/ssi-types
       uuid: 9.0.0
     transitivePeerDependencies:
@@ -11609,7 +11609,7 @@ packages:
     resolution: {integrity: sha512-dOKT7jvF3hGzlW60Gc3ONox/0rRZ/tz7WCil0bqA1In/3I8f1BctpXahRnEKDySZqci7u+dqq93sZST9fOJpFw==}
     engines: {node: '>=16.0.0'}
     dependencies:
-      json5: 2.2.0
+      json5: 2.2.3
       path-exists: 4.0.0
 
   /find-cache-dir@2.1.0:
@@ -12095,7 +12095,7 @@ packages:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 3.0.5
+      minimatch: 3.1.2
       once: 1.4.0
       path-is-absolute: 1.0.1
     dev: true
@@ -14262,7 +14262,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
 
   /jsonld-checker@0.1.8:
     resolution: {integrity: sha512-jclmnPRrm5SEpaIV6IiSTJxplRAqIWHduQLsUfrYpZM41Ng48m1RN2/aUyHze/ynfO0D2UhlJBt8SdObsH5GBw==}
@@ -14666,7 +14666,7 @@ packages:
     resolution: {integrity: sha512-Kx8hMakjX03tiGTLAIdJ+lL0htKnXjEZN6hk/tozf/WOuYGdZBJrZ+rCJRbVCugsjB3jMLn9746NsQIf5VjBMw==}
     engines: {node: '>=4'}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       parse-json: 4.0.0
       pify: 3.0.0
       strip-bom: 3.0.0
@@ -15752,7 +15752,7 @@ packages:
       array-differ: 3.0.0
       array-union: 2.1.0
       arrify: 2.0.1
-      minimatch: 3.0.5
+      minimatch: 3.1.2
     dev: true
 
   /mute-stream@0.0.8:
@@ -15994,7 +15994,7 @@ packages:
       env-paths: 2.2.1
       exponential-backoff: 3.1.1
       glob: 7.2.3
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       make-fetch-happen: 11.1.1
       nopt: 6.0.0
       npmlog: 6.0.2
@@ -20154,7 +20154,7 @@ packages:
   /write-file-atomic@2.4.3:
     resolution: {integrity: sha512-GaETH5wwsX+GcnzhPgKcKjJ6M2Cq3/iZp1WyY/X1CSqrW+jVNM9Y7D8EC2sM4ZG/V8wZlSniJnCKWPmBYAucRQ==}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       imurmurhash: 0.1.4
       signal-exit: 3.0.7
 
@@ -20196,7 +20196,7 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       detect-indent: 5.0.0
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       make-dir: 2.1.0
       pify: 4.0.1
       sort-keys: 2.0.0
