@@ -34,9 +34,14 @@ export class OID4VCIRestAPI {
       opts.endpointOpts = {}
     }
     if (!opts.endpointOpts.tokenEndpointOpts) {
-      opts.endpointOpts.tokenEndpointOpts = { accessTokenIssuer: instance.metadataOptions.credentialIssuer ?? issuer.issuerMetadata.credential_issuer }
+      opts.endpointOpts.tokenEndpointOpts = {
+        accessTokenIssuer: instance.metadataOptions.credentialIssuer ?? issuer.issuerMetadata.credential_issuer,
+      }
     }
-    if (opts?.endpointOpts.tokenEndpointOpts?.tokenEndpointDisabled !== true && typeof opts?.endpointOpts.tokenEndpointOpts?.accessTokenSignerCallback !== 'function') {
+    if (
+      opts?.endpointOpts.tokenEndpointOpts?.tokenEndpointDisabled !== true &&
+      typeof opts?.endpointOpts.tokenEndpointOpts?.accessTokenSignerCallback !== 'function'
+    ) {
       let keyRef: string | undefined
       const tokenOpts = {
         iss: opts.endpointOpts.tokenEndpointOpts.accessTokenIssuer ?? instance.metadataOptions.credentialIssuer,

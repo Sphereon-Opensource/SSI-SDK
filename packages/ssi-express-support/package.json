@@ -6,15 +6,20 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build:clean": "tsc --build --clean && tsc --build",
+    "start:dev": "cross-env ENVIRONMENT=dev NODE_ENV=local node --experimental-specifier-resolution=node --loader ts-node/esm __tests__/index.ts",
+    "start:energyshr": "cross-env ENVIRONMENT=EnergySHR NODE_ENV=energyshr node --experimental-specifier-resolution=node --loader ts-node/esm __tests__/index.ts"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
+    "openid-client": "^5.4.3",
+    "jose": "^4.14.4",
     "casbin": "^5.26.1",
     "cors": "^2.8.5",
     "dotenv-flow": "^3.2.0",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
+    "cookie-session": "^2.0.0",
     "http-terminator": "^3.2.0",
     "morgan": "^1.10.0",
     "passport": "^0.6.0",
@@ -22,6 +27,8 @@
     "uint8arrays": "^3.1.1"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
+    "@types/cookie-session": "^2.0.44",
     "@types/body-parser": "^1.19.2",
     "@types/cors": "^2.8.13",
     "@types/dotenv-flow": "^3.2.0",

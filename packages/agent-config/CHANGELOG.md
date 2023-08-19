@@ -7,17 +7,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.agent-config
 
-
-
-
-
 # [0.15.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.14.1...v0.15.0) (2023-08-10)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.agent-config
-
-
-
-
 
 ## [0.14.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.14.0...v0.14.1) (2023-07-31)
 

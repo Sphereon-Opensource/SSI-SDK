@@ -4,9 +4,10 @@
 import bodyParser from 'body-parser'
 import { Enforcer } from 'casbin'
 import cors, { CorsOptions } from 'cors'
-import * as dotenv from 'dotenv-flow'
+
 import express, { Express } from 'express'
 import { Application, ApplicationRequestHandler } from 'express-serve-static-core'
+import expressSession from 'express-session'
 import session from 'express-session'
 import http from 'http'
 import { createHttpTerminator, HttpTerminator } from 'http-terminator'
@@ -22,7 +23,6 @@ type Handler<Request extends http.IncomingMessage, Response extends http.ServerR
   res: Response,
   callback: (err?: Error) => void
 ) => void
-dotenv.config()
 
 export class ExpressBuilder {
   private existingExpress?: Express
@@ -237,12 +237,15 @@ export class ExpressBuilder {
       app.use(this._morgan)
     }
     if (this._sessionOpts) {
-      // @ts-ignore
-      app.use(session(this._sessionOpts))
+      const store = this._sessionOpts.store ?? new expressSession.MemoryStore()
+      this._sessionOpts.store = store
+      app.use(expressSession(this._sessionOpts))
     }
     if (this._usePassportAuth) {
       app.use(passport.initialize(this._passportInitOpts))
       if (this._sessionOpts) {
+        // app.use(passport.authenticate('session'))
+        //_sessionOpts are not for passport session, they are for express above
         app.use(passport.session())
       }
     }

@@ -27,17 +27,15 @@ export interface ISiopClientGetAuthStatusArgs {
   definitionId?: string
 }
 
-
 export interface Siopv2RestClientAuthenticationOpts {
-  enabled?: boolean;
-  staticBearerToken?: string;
+  enabled?: boolean
+  staticBearerToken?: string
 }
 
 export interface Siopv2RestClientOpts {
-  baseUrl?: string;
-  definitionId?: string;
-  authentication?: Siopv2RestClientAuthenticationOpts;
+  baseUrl?: string
+  definitionId?: string
+  authentication?: Siopv2RestClientAuthenticationOpts
 }
-
 
 export type IRequiredContext = IAgentContext<any>
