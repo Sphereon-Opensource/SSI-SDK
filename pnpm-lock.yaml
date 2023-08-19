@@ -471,11 +471,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: ' 0.6.1-next.12'
-        version: 0.6.1-next.12
+        specifier: 0.7.0
+        version: 0.7.0
       '@sphereon/oid4vci-issuer':
-        specifier: ' 0.6.1-next.12'
-        version: 0.6.1-next.12
+        specifier: 0.7.0
+        version: 0.7.0
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.14.0
         version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -529,14 +529,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: ' 0.6.1-next.12'
-        version: 0.6.1-next.12
+        specifier: 0.7.0
+        version: 0.7.0
       '@sphereon/oid4vci-issuer':
-        specifier: ' 0.6.1-next.12'
-        version: 0.6.1-next.12
+        specifier: 0.7.0
+        version: 0.7.0
       '@sphereon/oid4vci-issuer-server':
-        specifier: ' 0.6.1-next.12'
-        version: 0.6.1-next.12
+        specifier: 0.7.0
+        version: 0.7.0
       '@sphereon/ssi-express-support':
         specifier: workspace:^
         version: link:../ssi-express-support
@@ -689,8 +689,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: ' 0.6.1-next.12'
-        version: 0.6.1-next.12
+        specifier: 0.7.0
+        version: 0.7.0
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -723,8 +723,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: ' 0.6.1-next.12'
-        version: 0.6.1-next.12
+        specifier: 0.7.0
+        version: 0.7.0
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.14.0
         version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.7)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -6170,8 +6170,8 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vci-common@0.6.1-next.12:
-    resolution: {integrity: sha512-m6V8+fBFCs5u4ytq+DFuOvEiO2Zq9LXEzuaKUe2YKzuilTgVj1iapUbV0EG/xIGUYd2UuaRpO3pQhBqBRuyy5A==}
+  /@sphereon/oid4vci-common@0.7.0:
+    resolution: {integrity: sha512-W+He2INxKgqpNP/9CEQWe62NI98brd8RCUdOK51gaVnc6aXc4IrcyAjk/8Q+jlAer1+31YOlW60UqdX79oq8PQ==}
     engines: {node: '>=16'}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -6181,12 +6181,12 @@ packages:
       - encoding
     dev: false
 
-  /@sphereon/oid4vci-issuer-server@0.6.1-next.12:
-    resolution: {integrity: sha512-sotcVGISwGvRec9Ec6ieZf5KHKzkgp2v0pSkeTtr7RZAqyUaeorMdh5qijsdYA1XxwLYYhLgtGiYi9R8LBHjvA==}
+  /@sphereon/oid4vci-issuer-server@0.7.0:
+    resolution: {integrity: sha512-UJoBE2oUTAzK2lFmR198UaPkM4sdcQEo18x8WNRR8pRFqi6DDR8NmgSR7xpHMKCKnZOOqLZ1aSElamSvwhFcUQ==}
     engines: {node: '>=16'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.6.1-next.12
-      '@sphereon/oid4vci-issuer': 0.6.1-next.12
+      '@sphereon/oid4vci-common': 0.7.0
+      '@sphereon/oid4vci-issuer': 0.7.0
       '@sphereon/ssi-express-support': 0.15.1
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.2
@@ -6204,11 +6204,11 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.6.1-next.12:
-    resolution: {integrity: sha512-00MgQ29RTQRXIrkNPUJO6dRx6hiWP8fC7YlQViLU7r20umEc20po+ehtSgcEQmlGESYXqrKP7o7n7yr0Sc7seA==}
+  /@sphereon/oid4vci-issuer@0.7.0:
+    resolution: {integrity: sha512-u6dOsGZ8wOMDHWyQdEsnmfxYS5WHNZ+1VWbsHzsET63JENdQFVoikwRbUn5kGIoJN4bq2RtaiOkDKIgKQiZ2vA==}
     engines: {node: '>=16'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.6.1-next.12
+      '@sphereon/oid4vci-common': 0.7.0
       '@sphereon/ssi-types': link:packages/ssi-types
       uuid: 9.0.0
     transitivePeerDependencies:
