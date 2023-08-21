@@ -1,0 +1,58 @@
+{
+  "name": "@sphereon/ssi-sdk.contact-manager-rest-api",
+  "version": "0.13.0",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build",
+    "start:prod": "node build/index.js",
+    "start:dev": "ts-node __tests__/RestAPI.ts"
+  },
+  "dependencies": {
+    "@sphereon/ssi-sdk.contact-manager": "^0.13.0",
+    "@sphereon/vdx.ecmo": "/home/sadjad/programming/vdx/vdx-openapi/ecmo/target/sdks/typescript/sphereon-vdx.ecmo-9.5.1.tgz",
+    "cors": "^2.8.5",
+    "cross-fetch": "^3.1.5",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.19.2",
+    "@types/cookie-parser": "^1.4.3",
+    "@types/cors": "^2.8.13",
+    "@types/debug": "^4.1.7",
+    "@types/dotenv-flow": "^3.2.0",
+    "@types/express": "^4.17.13",
+    "@types/express-http-proxy": "^1.6.3",
+    "@types/node": "^18.15.0",
+    "@veramo/data-store": "4.2.0",
+    "@veramo/utils": "4.2.0",
+    "nock": "^13.2.1",
+    "ts-node": "^10.9.1",
+    "typeorm": "^0.3.12"
+  },
+  "files": [
+    ".yalc/**/*",
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "plugin.schema.json",
+    "LICENSE"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sphereon",
+    "Veramo",
+    "Contact",
+    "contact-management",
+    "REST",
+    "API"
+  ]
+}
