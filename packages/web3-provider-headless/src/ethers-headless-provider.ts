@@ -1,38 +1,76 @@
-import { toUtf8String } from '@ethersproject/strings'
-import { ethers, Wallet, Signer } from 'ethers'
-import { filter, firstValueFrom, BehaviorSubject, switchMap, from, first, tap } from 'rxjs'
-import { signTypedData, SignTypedDataVersion } from '@metamask/eth-sig-util'
+import {TransactionRequest} from '@ethersproject/abstract-provider'
+import {toUtf8String} from '@ethersproject/strings'
+import {signTypedData, SignTypedDataVersion} from '@metamask/eth-sig-util'
 import assert from 'assert/strict'
+import {ethers, Signer, Wallet} from 'ethers'
+// import {hashMessage} from "ethers/lib/utils";
+import {BehaviorSubject, filter, first, firstValueFrom, from, switchMap, tap} from 'rxjs'
 
-import { ChainDisconnected, Deny, Disconnected, ErrorWithCode, Unauthorized, UnsupportedMethod } from './errors'
-import { ChainConnection, IWeb3Provider, PendingRequest, Web3ProviderConfig, Web3RequestKind } from './types'
-import { EventEmitter } from './event-emitter'
+import {Deny, Disconnected, ErrorWithCode, Unauthorized, UnrecognizedChainID,} from './errors'
+import {EthersKMSSigner} from "./ethers-kms-signer";
+import {EventEmitter} from './event-emitter'
+import {ChainConnection, IWeb3Provider, PendingRequest, Web3Method, Web3ProviderConfig, without} from './types'
 
-export class Web3HeadlessProvider extends EventEmitter implements IWeb3Provider {
+export class EthersHeadlessProvider
+  extends EventEmitter
+  implements IWeb3Provider
+{
   private _pendingRequests = new BehaviorSubject<PendingRequest[]>([])
   private _signers: Signer[] = []
   private _activeChainId: number
   private _rpc: Record<number, ethers.providers.JsonRpcProvider> = {}
   private _config: { debug: boolean; logger: typeof console.log }
-  private _authorizedRequests: { [K in Web3RequestKind | string]?: boolean } = {}
+  private _authorizedRequests: { [K in Web3Method | string]?: boolean } =
+    {}
 
-  constructor(signers: Signer[], private readonly chains: ChainConnection[], config: Web3ProviderConfig = {}) {
+
+  constructor(
+    signers: Signer[],
+    private readonly chains: ChainConnection[],
+    // @ts-ignore
+    config: Web3ProviderConfig = {}
+  ) {
     super()
     this._signers = signers
     this._activeChainId = chains[0].chainId
     this._config = Object.assign({ debug: true, logger: console.log }, config)
   }
 
+  request(args: { method: 'eth_call'; params: any[] }): Promise<any>
+  request(args: { method: 'eth_getBalance'; params: string[] }): Promise<string>
   request(args: { method: 'eth_accounts'; params: [] }): Promise<string[]>
-  request(args: { method: 'eth_requestAccounts'; params: string[] }): Promise<string[]>
+  request(args: {
+    method: 'eth_requestAccounts'
+    params: string[]
+  }): Promise<string[]>
+
   request(args: { method: 'net_version'; params: [] }): Promise<number>
   request(args: { method: 'eth_chainId'; params: [] }): Promise<string>
   request(args: { method: 'personal_sign'; params: string[] }): Promise<string>
-  request(args: { method: 'eth_signTypedData' | 'eth_signTypedData_v1'; params: [object[], string] }): Promise<string>
-  request(args: { method: 'eth_signTypedData_v3' | 'eth_signTypedData_v4'; params: string[] }): Promise<string>
-  async request({ method, params }: { method: string; params: any[] }): Promise<any> {
+  request(args: {
+    method: 'eth_signTypedData' | 'eth_signTypedData_v1'
+    params: [object[], string]
+  }): Promise<string>
+
+  request(args: {
+    method: 'eth_signTypedData_v3' | 'eth_signTypedData_v4'
+    params: string[]
+  }): Promise<string>
+
+  request(args: {
+    method: 'eth_sendTransaction'
+    params: TransactionRequest[]
+  }): Promise<string>
+
+  async request({
+    method,
+    params
+  }: {
+    method: string
+    params: any[]
+  }): Promise<any> {
     if (this._config.debug) {
-      this._config.logger({ method, params })
+      this._config.logger(JSON.stringify({ method, params }))
     }
 
     switch (method) {
@@ -43,6 +81,7 @@ export class Web3HeadlessProvider extends EventEmitter implements IWeb3Provider 
       case 'eth_getBlockByNumber':
       case 'eth_getTransactionByHash':
       case 'eth_getTransactionReceipt':
+      case 'eth_feeHistory':
         return this.getRpc().send(method, params)
 
       case 'eth_requestAccounts':
@@ -52,7 +91,9 @@ export class Web3HeadlessProvider extends EventEmitter implements IWeb3Provider 
           async () => {
             const { chainId } = this.getCurrentChain()
             this.emit('connect', { chainId })
-            return Promise.all(this._signers.map((wallet) => wallet.getAddress()))
+            return Promise.all(
+              this._signers.map((wallet) => wallet.getAddress())
+            )
           },
           true,
           'eth_requestAccounts'
@@ -65,23 +106,32 @@ export class Web3HeadlessProvider extends EventEmitter implements IWeb3Provider 
 
       case 'net_version': {
         const { chainId } = this.getCurrentChain()
-        return chainId
+        return ""+chainId
       }
 
       case 'eth_sendTransaction': {
         return this.waitAuthorization({ method, params }, async () => {
           const wallet = this.getCurrentWallet()
           const rpc = this.getRpc()
-          const { gas, ...txRequest } = params[0]
+          const { gas, from, ...txRequest } = params[0]
           const tx = await wallet.connect(rpc).sendTransaction(txRequest)
           return tx.hash
+        })
+      }
+
+      case 'eth_sign': {
+        return this.waitAuthorization({ method, params }, async () => {
+          const wallet = this.getCurrentWallet()
+          const rpc = this.getRpc()
+          const message = params[1]
+          return  await (wallet.connect(rpc) as EthersKMSSigner).signMessage(message)
         })
       }
 
       case 'wallet_addEthereumChain': {
         return this.waitAuthorization({ method, params }, async () => {
           const chainId = Number(params[0].chainId)
-          const rpcUrl = params[0].rpcUrl
+          const { rpcUrl } = params[0]
           this.addNetwork(chainId, rpcUrl)
           return null
         })
@@ -109,7 +159,7 @@ export class Web3HeadlessProvider extends EventEmitter implements IWeb3Provider 
           if (this._config.debug) {
             this._config.logger('personal_sign', {
               message,
-              signature,
+              signature
             })
           }
 
@@ -129,7 +179,7 @@ export class Web3HeadlessProvider extends EventEmitter implements IWeb3Provider 
           return signTypedData({
             privateKey: Buffer.from(wallet.privateKey.slice(2), 'hex'),
             data: msgParams,
-            version: SignTypedDataVersion.V1,
+            version: SignTypedDataVersion.V1
           })
         })
       }
@@ -146,13 +196,17 @@ export class Web3HeadlessProvider extends EventEmitter implements IWeb3Provider 
           return signTypedData({
             privateKey: Buffer.from(wallet.privateKey.slice(2), 'hex'),
             data: msgParams,
-            version: method === 'eth_signTypedData_v4' ? SignTypedDataVersion.V4 : SignTypedDataVersion.V3,
+            version:
+              method === 'eth_signTypedData_v4'
+                ? SignTypedDataVersion.V4
+                : SignTypedDataVersion.V3
           })
         })
       }
 
       default:
-        throw UnsupportedMethod()
+        return this.getRpc().send(method, params)
+        // throw UnsupportedMethod()
     }
   }
 
@@ -166,7 +220,12 @@ export class Web3HeadlessProvider extends EventEmitter implements IWeb3Provider 
     return wallet
   }
 
-  waitAuthorization<T>(requestInfo: PendingRequest['requestInfo'], task: () => Promise<T>, permanentPermission = false, methodOverride?: string) {
+  waitAuthorization<T>(
+    requestInfo: PendingRequest['requestInfo'],
+    task: () => Promise<T>,
+    permanentPermission = false,
+    methodOverride?: string
+  ) {
     const method = methodOverride ?? requestInfo.method
 
     if (this._authorizedRequests[method]) {
@@ -175,7 +234,7 @@ export class Web3HeadlessProvider extends EventEmitter implements IWeb3Provider 
 
     return new Promise((resolve, reject) => {
       const pendingRequest: PendingRequest = {
-        requestInfo: requestInfo,
+        requestInfo,
         authorize: async () => {
           if (permanentPermission) {
             this._authorizedRequests[method] = true
@@ -185,14 +244,16 @@ export class Web3HeadlessProvider extends EventEmitter implements IWeb3Provider 
         },
         reject(err) {
           reject(err)
-        },
+        }
       }
 
-      this._pendingRequests.next(this._pendingRequests.getValue().concat(pendingRequest))
+      this._pendingRequests.next(
+        this._pendingRequests.getValue().concat(pendingRequest)
+      )
     })
   }
 
-  private consumeRequest(requestKind: Web3RequestKind) {
+  private consumeRequest(requestKind: Web3Method) {
     return firstValueFrom(
       this._pendingRequests.pipe(
         switchMap((a) => from(a)),
@@ -201,7 +262,9 @@ export class Web3HeadlessProvider extends EventEmitter implements IWeb3Provider 
         }),
         first(),
         tap((item) => {
-          this._pendingRequests.next(without(this._pendingRequests.getValue(), item))
+          this._pendingRequests.next(
+            without(this._pendingRequests.getValue(), item)
+          )
         })
       )
     )
@@ -214,24 +277,31 @@ export class Web3HeadlessProvider extends EventEmitter implements IWeb3Provider 
   }
 
   getPendingRequests(): PendingRequest['requestInfo'][] {
-    return this._pendingRequests.getValue().map((pendingRequest) => pendingRequest.requestInfo)
+    return this._pendingRequests
+      .getValue()
+      .map((pendingRequest) => pendingRequest.requestInfo)
   }
 
-  getPendingRequestCount(requestKind?: Web3RequestKind): number {
+  getPendingRequestCount(requestKind?: Web3Method): number {
     const pendingRequests = this._pendingRequests.getValue()
     if (!requestKind) {
       return pendingRequests.length
     }
 
-    return pendingRequests.filter((pendingRequest) => pendingRequest.requestInfo.method === requestKind).length
+    return pendingRequests.filter(
+      (pendingRequest) => pendingRequest.requestInfo.method === requestKind
+    ).length
   }
 
-  async authorize(requestKind: Web3RequestKind): Promise<void> {
+  async authorize(requestKind: Web3Method): Promise<void> {
     const pendingRequest = await this.consumeRequest(requestKind)
     return pendingRequest.authorize()
   }
 
-  async reject(requestKind: Web3RequestKind, reason: ErrorWithCode = Deny()): Promise<void> {
+  async reject(
+    requestKind: Web3Method,
+    reason: ErrorWithCode = Deny()
+  ): Promise<void> {
     const pendingRequest = await this.consumeRequest(requestKind)
     return pendingRequest.reject(reason)
   }
@@ -246,23 +316,31 @@ export class Web3HeadlessProvider extends EventEmitter implements IWeb3Provider 
 
   async changeAccounts(signers: Signer[]): Promise<void> {
     this._signers = signers
-    this.emit('accountsChanged', await Promise.all(this._signers.map((signer) => signer.getAddress())))
+    this.emit(
+      'accountsChanged',
+      await Promise.all(this._signers.map((signer) => signer.getAddress()))
+    )
   }
 
   private getCurrentChain(): ChainConnection {
-    const chainConn = this.chains.find((chainConn) => chainConn.chainId === this._activeChainId)
+    const chainConn = this.chains.find(
+      (chainConn) => chainConn.chainId === this._activeChainId
+    )
     if (!chainConn) {
       throw Disconnected()
     }
     return chainConn
   }
 
-  private getRpc(): ethers.providers.JsonRpcProvider {
+  public getRpc(): ethers.providers.JsonRpcProvider {
     const chainConn = this.getCurrentChain()
     let rpc = this._rpc[chainConn.chainId]
 
     if (!rpc) {
-      rpc = new ethers.providers.JsonRpcProvider(chainConn.rpcUrl, chainConn.chainId)
+      rpc = new ethers.providers.JsonRpcProvider(
+        chainConn.rpcUrl,
+        chainConn.chainId
+      )
       this._rpc[chainConn.chainId] = rpc
     }
 
@@ -282,21 +360,15 @@ export class Web3HeadlessProvider extends EventEmitter implements IWeb3Provider 
   }
 
   switchNetwork(chainId: number): void {
-    const idx = this.chains.findIndex((connection) => connection.chainId === chainId)
+    const idx = this.chains.findIndex(
+      (connection) => connection.chainId === chainId
+    )
     if (idx < 0) {
-      throw ChainDisconnected()
+      throw UnrecognizedChainID()
     }
     if (chainId !== this._activeChainId) {
       this._activeChainId = chainId
       this.emit('chainChanged', chainId)
     }
   }
-}
-
-function without<T>(list: T[], item: T): T[] {
-  const idx = list.indexOf(item)
-  if (idx >= 0) {
-    return list.slice(0, idx).concat(list.slice(idx + 1))
-  }
-  return list
 }

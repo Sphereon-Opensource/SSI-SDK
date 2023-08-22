@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc --build",
     "build:clean": "tsc --build --clean && tsc --build",
-    "start:dev": "cross-env ENVIRONMENT=dev NODE_ENV=local node --experimental-specifier-resolution=node --loader ts-node/esm __tests__/index.ts",
+    "start:dev": "cross-env ENVIRONMENT=dev NODE_ENV=local ts-node __tests__/index.ts",
     "start:energyshr": "cross-env ENVIRONMENT=EnergySHR NODE_ENV=energyshr node --experimental-specifier-resolution=node --loader ts-node/esm __tests__/index.ts"
   },
   "dependencies": {

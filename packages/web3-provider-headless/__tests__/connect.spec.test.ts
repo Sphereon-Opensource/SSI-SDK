@@ -7,7 +7,10 @@ import {DIDResolverPlugin} from "@veramo/did-resolver";
 import {MemoryKeyStore, MemoryPrivateKeyStore} from "@veramo/key-manager";
 import {Resolver} from "did-resolver";
 import {Signer} from 'ethers'
-import {IRequiredContext, IWeb3Provider, Web3HeadlessProvider, Web3KMSSigner, Web3KMSSignerBuilder} from '../src'
+import {IRequiredContext, IWeb3Provider} from '../src'
+import {EthersHeadlessProvider} from "../src/ethers-headless-provider";
+import {EthersKMSSigner, EthersKMSSignerBuilder} from "../src/ethers-kms-signer";
+import {createRpcServer} from "../src/rpc-server";
 import {injectWeb3Provider} from './web3-helper'
 
 describe('Headless web3 provider', () => {
@@ -15,7 +18,7 @@ describe('Headless web3 provider', () => {
     let web3Provider: IWeb3Provider
     let agent: TAgent<IKeyManager & IDIDManager & IResolver>
     let key: ManagedKeyInfo
-    let kmsSigner: Web3KMSSigner
+    let kmsSigner: EthersKMSSigner
 
     beforeAll(async () => {
         agent = createAgent({
@@ -50,16 +53,17 @@ describe('Headless web3 provider', () => {
         console.log(JSON.stringify(key))
         console.log("=============KEY===========")
 
-        kmsSigner = new Web3KMSSignerBuilder().withContext(context).withKeyRef(key).build()
+        kmsSigner = new EthersKMSSignerBuilder().withContext(context).withKeyRef(key).build()
     })
 
     beforeEach(() => {
         // Inject window.ethereum instance
         [signers, web3Provider] = injectWeb3Provider({signers: [kmsSigner]})
+        createRpcServer(web3Provider as EthersHeadlessProvider)
     })
 
     it('renders user address after connecting', async () => {
-        const headlessProvider = web3Provider as Web3HeadlessProvider
+        const headlessProvider = web3Provider as EthersHeadlessProvider
         expect(signers).toBeDefined()
         expect(await kmsSigner.getAddress()).toEqual('0x0c45D104d250B72301A7158fb27A8A4D4567b9Ce')
 
@@ -72,7 +76,16 @@ describe('Headless web3 provider', () => {
 
         const balance = await web3Provider.request({method: 'eth_getBalance', params: [account, 'latest']})
 
-        console.log(JSON.stringify(await balance))
+        if (balance != "0x0") {
+            //0,05 eth
+            // kmsSigner.connect(headlessProvider.getRpc())
+            const txRequest = await kmsSigner.checkTransaction({to: '0xd10c2900f43bb38d6067eb7cac79de97849a794a', value: '50000000000000000'})
+            const hashPromise = web3Provider.request({method: 'eth_sendTransaction', params: [txRequest]})
+
+            // headlessProvider.authorizeAll()
+            console.log(JSON.stringify(await hashPromise, null, 2))
+        }
+
         console.log('DONE')
     }, 60000)
 })

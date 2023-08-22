@@ -6,7 +6,7 @@ export function sendErrorResponse(response: express.Response, statusCode: number
   }
   if (response.headersSent) {
     console.log(`sendErrorResponse headers already sent`)
-    return
+    return response
   }
   response.statusCode = statusCode
   if (typeof message === 'string' && !message.startsWith('{')) {
