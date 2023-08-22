@@ -2,10 +2,12 @@
   "files": [],
   "references": [
     { "path": "dev" },
+    { "path": "ssi-express-support" },
     { "path": "agent-config" },
     { "path": "ssi-types" },
     { "path": "ssi-sdk-core" },
     { "path": "w3c-vc-api" },
+    { "path": "uni-resolver-registrar-api" },
     { "path": "ms-authenticator" },
     { "path": "ms-request-api" },
     { "path": "vc-handler-ld-local" },

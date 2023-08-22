@@ -1,19 +1,20 @@
-import { CredentialPayload, VerifiableCredential } from '@veramo/core'
+import { getCredentialByIdOrHash } from '@sphereon/ssi-sdk.core'
+import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
+import { CredentialPayload } from '@veramo/core'
 import { W3CVerifiableCredential } from '@veramo/core/src/types/vc-data-model'
 import { Request, Response, Router } from 'express'
 import { v4 } from 'uuid'
-import { IRequiredContext, IVCAPIIssueOpts } from './types'
-
-export function issueCredentialEndpoint(
-  router: Router,
-  context: IRequiredContext,
-  opts?: {
-    issueCredentialOpts?: IVCAPIIssueOpts
-    issueCredentialPath?: string
-    persistIssuedCredentials?: boolean
+import { IIssueCredentialEndpointOpts, IRequiredContext, IVCAPIIssueOpts, IVerifyCredentialEndpointOpts } from './types'
+import Debug from 'debug'
+const debug = Debug('sphereon:ssi-sdk:w3c-vc-api')
+export function issueCredentialEndpoint(router: Router, context: IRequiredContext, opts?: IIssueCredentialEndpointOpts) {
+  if (opts?.enabled === false) {
+    console.log(`Issue credential endpoint is disabled`)
+    return
   }
-) {
-  router.post(opts?.issueCredentialPath ?? '/credentials/issue', async (request: Request, response: Response) => {
+  const path = opts?.path ?? '/credentials/issue'
+
+  router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const credential: CredentialPayload = request.body.credential
       if (!credential) {
@@ -25,9 +26,9 @@ export function issueCredentialEndpoint(
       const issueOpts: IVCAPIIssueOpts | undefined = opts?.issueCredentialOpts
       const vc = await context.agent.createVerifiableCredential({
         credential,
-        save: opts?.persistIssuedCredentials ?? true,
+        save: opts?.persistIssuedCredentials !== false,
         proofFormat: issueOpts?.proofFormat ?? 'lds',
-        fetchRemoteContexts: issueOpts?.fetchRemoteContexts || true,
+        fetchRemoteContexts: issueOpts?.fetchRemoteContexts !== false,
       })
       response.statusCode = 201
       return response.send({ verifiableCredential: vc })
@@ -37,14 +38,13 @@ export function issueCredentialEndpoint(
   })
 }
 
-export function getCredentialsEndpoint(
-  router: Router,
-  context: IRequiredContext,
-  opts?: {
-    getCredentialsPath?: string
+export function getCredentialsEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
+  if (opts?.enabled === false) {
+    console.log(`Get credentials endpoint is disabled`)
+    return
   }
-) {
-  router.get(opts?.getCredentialsPath ?? '/credentials', async (request: Request, response: Response) => {
+  const path = opts?.path ?? '/credentials'
+  router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const uniqueVCs = await context.agent.dataStoreORMGetVerifiableCredentials()
       response.statusCode = 202
@@ -55,14 +55,13 @@ export function getCredentialsEndpoint(
   })
 }
 
-export function getCredentialEndpoint(
-  router: Router,
-  context: IRequiredContext,
-  opts?: {
-    getCredentialPath?: string
+export function getCredentialEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
+  if (opts?.enabled === false) {
+    console.log(`Get credential endpoint is disabled`)
+    return
   }
-) {
-  router.get(opts?.getCredentialPath ?? '/credentials/:id', async (request: Request, response: Response) => {
+  const path = opts?.path ?? '/credentials/:id'
+  router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const id = request.params.id
       if (!id) {
@@ -80,17 +79,14 @@ export function getCredentialEndpoint(
   })
 }
 
-export function verifyCredentialEndpoint(
-  router: Router,
-  context: IRequiredContext,
-  opts?: {
-    verifyCredentialPath?: string
-    fetchRemoteContexts?: boolean
+export function verifyCredentialEndpoint(router: Router, context: IRequiredContext, opts?: IVerifyCredentialEndpointOpts) {
+  if (opts?.enabled === false) {
+    console.log(`Verify credential endpoint is disabled`)
+    return
   }
-) {
-  router.post(opts?.verifyCredentialPath ?? '/credentials/verify', async (request: Request, response: Response) => {
+  router.post(opts?.path ?? '/credentials/verify', checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
-      console.log(request.body)
+      debug(JSON.stringify(request.body, null, 2))
       const credential: W3CVerifiableCredential = request.body.verifiableCredential
       // const options: IIssueOptionsPayload = request.body.options
       if (!credential) {
@@ -109,14 +105,12 @@ export function verifyCredentialEndpoint(
   })
 }
 
-export function deleteCredentialEndpoint(
-  router: Router,
-  context: IRequiredContext,
-  opts?: {
-    deleteCredentialsPath?: string
+export function deleteCredentialEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
+  if (opts?.enabled === false) {
+    console.log(`Delete credential endpoint is disabled`)
+    return
   }
-) {
-  router.delete(opts?.deleteCredentialsPath ?? '/credentials/:id', async (request: Request, response: Response) => {
+  router.delete(opts?.path ?? '/credentials/:id', checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const id = request.params.id
       if (!id) {
@@ -136,48 +130,4 @@ export function deleteCredentialEndpoint(
       return sendErrorResponse(response, 500, e.message as string, e)
     }
   })
-}
-
-function sendErrorResponse(response: Response, statusCode: number, message: string, error?: Error) {
-  console.log(message)
-  if (error) {
-    console.log(error)
-  }
-  response.statusCode = statusCode
-  return response.status(statusCode).send(message)
-}
-
-export async function getCredentialByIdOrHash(
-  context: IRequiredContext,
-  idOrHash: string
-): Promise<{
-  id: string
-  hash?: string
-  vc?: VerifiableCredential
-}> {
-  let vc: VerifiableCredential
-  let hash: string
-  const uniqueVCs = await context.agent.dataStoreORMGetVerifiableCredentials({
-    where: [
-      {
-        column: 'id',
-        value: [idOrHash],
-        op: 'Equal',
-      },
-    ],
-  })
-  if (uniqueVCs.length === 0) {
-    hash = idOrHash
-    vc = await context.agent.dataStoreGetVerifiableCredential({ hash })
-  } else {
-    const uniqueVC = uniqueVCs[0]
-    hash = uniqueVC.hash
-    vc = uniqueVC.verifiableCredential
-  }
-
-  return {
-    vc,
-    id: idOrHash,
-    hash,
-  }
 }

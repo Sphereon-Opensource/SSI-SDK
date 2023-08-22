@@ -8,7 +8,7 @@
 
 ---
 
-**Warning: This package still is in every early development. Breaking changes without notice will happen at this point!**
+**Warning: This package still is in early development. Breaking changes without notice will happen at this point!**
 
 ---
 
@@ -19,11 +19,11 @@ A SSI-SDK plugin to authenticate using the Microsoft Authentication Library (MSA
 ### Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk.ms-authenticator
+pnpm add @sphereon/ssi-sdk.ms-authenticator
 ```
 
 ### Build
 
 ```shell
-yarn build
+pnpm build
 ```

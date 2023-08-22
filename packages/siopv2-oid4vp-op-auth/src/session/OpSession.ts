@@ -116,7 +116,9 @@ export class OpSession {
     return await (await this.getAuthorizationRequest()).authorizationRequest.mergedPayloads()
   }
   public async sendAuthorizationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
-    const resolveOpts: ResolveOpts = this.options.resolveOpts ?? { resolver: new AgentDIDResolver(this.context, true) }
+    const resolveOpts: ResolveOpts = this.options.resolveOpts ?? {
+      resolver: new AgentDIDResolver(this.context, { uniresolverResolution: true, localResolution: true, resolverResolution: true }),
+    }
     if (!resolveOpts.subjectSyntaxTypesSupported || resolveOpts.subjectSyntaxTypesSupported.length === 0) {
       resolveOpts.subjectSyntaxTypesSupported = await this.getSupportedDIDMethods(true)
     }

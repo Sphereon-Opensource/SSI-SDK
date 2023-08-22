@@ -1,6 +1,4 @@
-import { IAgentContext } from '@veramo/core'
-import { LogLevel } from '@azure/msal-node'
-
+import { ConfidentialClientApplication, Configuration, LogLevel } from '@azure/msal-node'
 /**
  *   azClientId: clientId of the application you're trying to login
  *   azClientSecret: secret of the application you're trying to login
@@ -26,7 +24,7 @@ export interface IMsAuthenticationClientCredentialArgs {
   azClientId: string
   azTenantId: string
   azClientSecret: string
-  credentialManifestUrl: string
+  credentialManifestUrl?: string
   authority?: string
   region?: string
   scopes?: string[]
@@ -54,5 +52,10 @@ export interface IMsAuthenticationUsernamePasswordArgs {
   authority?: string
 }
 
-export type IRequiredContext = IAgentContext<Record<string, never>>
-export type IMsAuthenticationResponse = String
+export interface IMSClientCredentialAuthInfo {
+  id: string
+  confidentialClient: ConfidentialClientApplication
+  msalConfig: Configuration
+  authenticationArgs: IMsAuthenticationClientCredentialArgs
+  didEndpoint?: string
+}

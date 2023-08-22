@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.data-store",
-  "version": "0.13.0",
+  "version": "0.15.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,7 +13,7 @@
     "typeorm-postgres:migration:run": "pnpm run typeorm -- migration:run -c migration-postgres"
   },
   "dependencies": {
-    "@sphereon/ssi-types": "workspace:*",
+    "@sphereon/ssi-types": "workspace:^",
     "@veramo/core": "4.2.0",
     "class-validator": "^0.14.0",
     "debug": "^4.3.4",
