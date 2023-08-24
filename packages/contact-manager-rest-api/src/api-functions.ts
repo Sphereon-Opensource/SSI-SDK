@@ -48,8 +48,9 @@ export function contactWriteEndpoints(router: Router, context: IRequiredContext,
   router.post(path, async (request: Request, response: Response) => {
     try {
       const addContact = request.body
-      console.log(`>>> got the body:\n${JSON.stringify(addContact, null, 2)}\nfor our addContact.`)
-      return await context.agent.cmAddContact({ ...addContact } as IAddContactArgs)
+      const contact = await context.agent.cmAddContact(addContact as IAddContactArgs)
+      response.statusCode = 201
+      return response.send(contact)
     } catch (error) {
       console.error(error)
       return sendErrorResponse(response, 500, 'Could not add contact')
@@ -58,7 +59,8 @@ export function contactWriteEndpoints(router: Router, context: IRequiredContext,
   router.delete(`${path}/:contactId`, async (request, response) => {
     try {
       const contactId = request.params.contactId
-      return await context.agent.cmRemoveContact({ contactId })
+      const result = await context.agent.cmRemoveContact({ contactId })
+      return response.send(result)
     } catch (error) {
       console.error(error)
       return sendErrorResponse(response, 500, 'Could not remove the contact.')
