@@ -1,11 +1,10 @@
 import { agentContext } from '@sphereon/ssi-sdk.core'
-import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-express-support'
 import { TAgent } from '@veramo/core'
 
 import express, { Express, Router } from 'express'
 import { ContactManagerMRestApiFeatureEnum, IContactManagerAPIEndpointOpts, IRequiredPlugins } from './types'
 import { contactReadEndpoints, contactTypeReadEndpoints, identityReadEndpoints } from './api-functions'
-import { ENABLED_EFATURES } from './environment'
+import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-express-support'
 
 export class ContactManagerApiServer {
   get router(): express.Router {
@@ -20,8 +19,15 @@ export class ContactManagerApiServer {
   constructor(args: { agent: TAgent<IRequiredPlugins>; expressSupport: ExpressSupport; opts?: IContactManagerAPIEndpointOpts }) {
     const { agent, opts } = args
     this._agent = agent
-    copyGlobalAuthToEndpoints({ opts, keys: ['getDidMethods', 'createDid', 'resolveDid', 'deactivateDid'] })
-    const enableFeatures = opts?.enableFeatures ?? ENABLED_EFATURES
+    copyGlobalAuthToEndpoints({ opts, keys: ['contactRead', 'contactTypeRead', 'identityRead'] })
+    const enableFeatures = opts?.enableFeatures ?? [
+      ContactManagerMRestApiFeatureEnum.contact_read,
+      ContactManagerMRestApiFeatureEnum.contact_write,
+      ContactManagerMRestApiFeatureEnum.contact_type_read,
+      ContactManagerMRestApiFeatureEnum.contact_type_write,
+      ContactManagerMRestApiFeatureEnum.identity_read,
+      ContactManagerMRestApiFeatureEnum.identity_write,
+    ]
     this._opts = opts
     this._express = args.expressSupport.express
     this._router = express.Router()

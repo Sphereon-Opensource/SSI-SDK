@@ -1,11 +1,11 @@
-import { checkAuth, sendErrorResponse } from '@sphereon/ssi-express-support'
+import { checkAuth, sendErrorResponse, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
 import { Request, Response, Router } from 'express'
-import { IContactManagerEndpointOpts, IRequiredContext } from './types'
+import { IRequiredContext } from './types'
 import Debug from 'debug'
 
 const debug = Debug('sphereon:ssi-sdk:contact-manager-rest-api')
 
-export function contactReadEndpoints(router: Router, context: IRequiredContext, opts?: IContactManagerEndpointOpts) {
+export function contactReadEndpoints(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
   if (opts?.enabled === false) {
     debug(`Endpoint is disabled`)
     return
@@ -38,7 +38,7 @@ export function contactReadEndpoints(router: Router, context: IRequiredContext, 
   })
 }
 
-export function contactTypeReadEndpoints(router: Router, context: IRequiredContext, opts?: IContactManagerEndpointOpts) {
+export function contactTypeReadEndpoints(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
   if (opts?.enabled === false) {
     debug(`Endpoint is disabled`)
     return
@@ -67,7 +67,7 @@ export function contactTypeReadEndpoints(router: Router, context: IRequiredConte
   })
 }
 
-export function identityReadEndpoints(router: Router, context: IRequiredContext, opts?: IContactManagerEndpointOpts) {
+export function identityReadEndpoints(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
   if (opts?.enabled === false) {
     debug(`Endpoint is disabled`)
     return

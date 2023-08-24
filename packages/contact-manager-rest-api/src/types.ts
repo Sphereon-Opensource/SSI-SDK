@@ -1,6 +1,6 @@
 import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { IAgentContext } from '@veramo/core'
+import { IAgentContext, IDataStore, IKeyManager } from '@veramo/core'
 
 export enum ContactManagerMRestApiFeatureEnum {
   contact_read = 'contact_read',
@@ -14,7 +14,7 @@ export enum ContactManagerMRestApiFeatureEnum {
 export interface IContactManagerAPIEndpointOpts {
   endpointOpts?: {
     basePath?: string
-    globalAuth?: GenericAuthArgs & { secureSiopEndpoints?: boolean }
+    globalAuth?: GenericAuthArgs & { secureContactManagerEndpoints?: boolean }
     contactRead?: ISingleEndpointOpts // Overrides read contact entity path
     contactWrite?: ISingleEndpointOpts // Overrides write contact entity path
     contactTypeRead?: ISingleEndpointOpts // Overrides read contact-type entity path
@@ -25,9 +25,5 @@ export interface IContactManagerAPIEndpointOpts {
   enableFeatures?: ContactManagerMRestApiFeatureEnum[]
 }
 
-export interface IContactManagerEndpointOpts extends ISingleEndpointOpts {
-  basePath?: string
-}
-
-export type IRequiredPlugins = IContactManager
+export type IRequiredPlugins = IContactManager & IDataStore & IKeyManager
 export type IRequiredContext = IAgentContext<IRequiredPlugins>

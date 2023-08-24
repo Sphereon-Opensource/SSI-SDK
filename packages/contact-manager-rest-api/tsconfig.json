@@ -11,16 +11,13 @@
       "path": "../ssi-types"
     },
     {
+      "path": "../ssi-express-support"
+    },
+    {
       "path": "../ssi-sdk-core"
     },
     {
       "path": "../kv-store"
-    },
-    {
-      "path": "../oid4vci-issuer-store"
-    },
-    {
-      "path": "../oid4vci-issuer"
     }
   ]
 }
