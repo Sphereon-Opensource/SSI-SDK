@@ -3,14 +3,10 @@ import { TAgent } from '@veramo/core'
 
 import express, { Express, Router } from 'express'
 import { ContactManagerMRestApiFeatureEnum, IContactManagerAPIEndpointOpts, IRequiredPlugins } from './types'
-import { contactReadEndpoints, contactTypeReadEndpoints, identityReadEndpoints } from './api-functions'
+import { contactReadEndpoints, contactTypeReadEndpoints, contactWriteEndpoints, identityReadEndpoints } from './api-functions'
 import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-express-support'
 
 export class ContactManagerApiServer {
-  get router(): express.Router {
-    return this._router
-  }
-
   private readonly _express: Express
   private readonly _agent: TAgent<IRequiredPlugins>
   private readonly _opts?: IContactManagerAPIEndpointOpts
@@ -48,8 +44,7 @@ export class ContactManagerApiServer {
       contactReadEndpoints(this.router, context, this._opts?.endpointOpts?.contactRead)
     }
     if (features.includes(ContactManagerMRestApiFeatureEnum.contact_write)) {
-      contactReadEndpoints(this.router, context, this._opts?.endpointOpts?.contactRead)
-      // contactWriteEndpoints(this.router, context, this._opts?.endpointOpts.contactWrite)
+      contactWriteEndpoints(this.router, context, this._opts?.endpointOpts?.contactWrite)
     }
     if (features.includes(ContactManagerMRestApiFeatureEnum.contact_type_read)) {
       contactTypeReadEndpoints(this.router, context, this._opts?.endpointOpts?.contactTypeRead)
@@ -68,15 +63,18 @@ export class ContactManagerApiServer {
     this._express.use(opts?.endpointOpts?.basePath ?? '', this.router)
   }
 
+  get express(): Express {
+    return this._express
+  }
+
+  get router(): Router {
+    return this._router
+  }
+
   get agent(): TAgent<IRequiredPlugins> {
     return this._agent
   }
-
   get opts(): IContactManagerAPIEndpointOpts | undefined {
     return this._opts
-  }
-
-  get express(): Express {
-    return this._express
   }
 }

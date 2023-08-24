@@ -9,7 +9,7 @@ const opts: IContactManagerAPIEndpointOpts = {
         enabled: true,
         strategy: 'bearer',
       },
-    }
+    },
   },
 }
 

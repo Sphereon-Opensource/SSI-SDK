@@ -2,6 +2,7 @@ import { checkAuth, sendErrorResponse, ISingleEndpointOpts } from '@sphereon/ssi
 import { Request, Response, Router } from 'express'
 import { IRequiredContext } from './types'
 import Debug from 'debug'
+import { IAddContactArgs } from '@sphereon/ssi-sdk.contact-manager'
 
 const debug = Debug('sphereon:ssi-sdk:contact-manager-rest-api')
 
@@ -34,6 +35,33 @@ export function contactReadEndpoints(router: Router, context: IRequiredContext, 
     } catch (e) {
       console.error(e)
       return sendErrorResponse(response, 500, e.message as string, e)
+    }
+  })
+}
+
+export function contactWriteEndpoints(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
+  if (opts?.enabled === false) {
+    debug(`Endpoint is disabled`)
+    return
+  }
+  const path = opts?.path ?? '/contacts'
+  router.post(path, async (request: Request, response: Response) => {
+    try {
+      const addContact = request.body
+      console.log(`>>> got the body:\n${JSON.stringify(addContact, null, 2)}\nfor our addContact.`)
+      return await context.agent.cmAddContact({ ...addContact } as IAddContactArgs)
+    } catch (error) {
+      console.error(error)
+      return sendErrorResponse(response, 500, 'Could not add contact')
+    }
+  })
+  router.delete(`${path}/:contactId`, async (request, response) => {
+    try {
+      const contactId = request.params.contactId
+      return await context.agent.cmRemoveContact({ contactId })
+    } catch (error) {
+      console.error(error)
+      return sendErrorResponse(response, 500, 'Could not remove the contact.')
     }
   })
 }
