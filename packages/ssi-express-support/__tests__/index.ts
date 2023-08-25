@@ -13,7 +13,7 @@ const STRATEGY = env('OIDC_STRATEGY_NAME', PREFIX) ?? 'oidc'
 console.log(`Starting OIDC RP API for env '${ENVIRONMENT}/${process.env.NODE_ENV}', issuer: ${issuerUrl} with strategy ${STRATEGY}`)
 
 async function init() {
-  const oidcIssuer = await oidcDiscoverIssuer({issuerUrl})
+  const oidcIssuer = await oidcDiscoverIssuer({ issuerUrl })
   const devMetadata: ClientMetadata = {
     client_id: env('OIDC_CLIENT_ID', PREFIX) ?? 'EnergySHRDev',
     client_secret: env('OIDC_CLIENT_SECRET', PREFIX) ?? 'iZDmseeTIpuVFcodqc3cQpJ6gak7xMfa',
@@ -41,42 +41,42 @@ async function init() {
     hostname: env('HOSTNAME', PREFIX) ?? 'localhost',
   })
 
-      .withMorganLogging()
-      .withCorsConfigurer(
-          new ExpressCorsConfigurer().allowOrigin(env('OIDC_FRONTEND_CORS_ORIGIN', PREFIX) ?? 'http://localhost:3001').allowCredentials(true)
-      )
-      .withPassportAuth(true)
-      .withSessionOptions({
-        secret: env('OIDC_SESSION_SECRET', PREFIX) ?? 'defaultSecretPleaseChange!',
-        // proxy: true,
-        resave: false,
-        saveUninitialized: true,
-        /*cookie: {
+    .withMorganLogging()
+    .withCorsConfigurer(
+      new ExpressCorsConfigurer().allowOrigin(env('OIDC_FRONTEND_CORS_ORIGIN', PREFIX) ?? 'http://localhost:3001').allowCredentials(true)
+    )
+    .withPassportAuth(true)
+    .withSessionOptions({
+      secret: env('OIDC_SESSION_SECRET', PREFIX) ?? 'defaultSecretPleaseChange!',
+      // proxy: true,
+      resave: false,
+      saveUninitialized: true,
+      /*cookie: {
                 maxAge: (24 * 60 * 60),
                 httpOnly: false
             }*/
-      })
-      .build({startListening: false})
+    })
+    .build({ startListening: false })
 
   passport.use(
-      STRATEGY,
-      new Strategy(
-          {
-            client,
-            passReqToCallback: true,
-            params: {
-              scope: 'openid email',
-            },
-          },
-          (req: any, tokenSet: any, userinfo: UserinfoResponse<any, any>, done: any) => {
-            req.session.tokens = tokenSet
-            const authInfo = {
-              ...userinfo,
-              ...tokenSet.claims(),
-            }
-            return done(null, authInfo)
-          }
-      )
+    STRATEGY,
+    new Strategy(
+      {
+        client,
+        passReqToCallback: true,
+        params: {
+          scope: 'openid email',
+        },
+      },
+      (req: any, tokenSet: any, userinfo: UserinfoResponse<any, any>, done: any) => {
+        req.session.tokens = tokenSet
+        const authInfo = {
+          ...userinfo,
+          ...tokenSet.claims(),
+        }
+        return done(null, authInfo)
+      }
+    )
   )
   passport.serializeUser(function (user, done) {
     done(null, user)

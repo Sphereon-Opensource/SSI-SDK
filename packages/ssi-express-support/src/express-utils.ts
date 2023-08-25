@@ -27,7 +27,7 @@ export function sendErrorResponse(response: express.Response, statusCode: number
 
 export const jsonErrorHandler = (err: any, req: express.Request, res: express.Response, next: NextFunction) => {
   const statusCode: number = 'statusCode' in err ? err.statusCode : 500
-  const errorMsg = typeof err === 'string' ? err : (err.message ?? err)
+  const errorMsg = typeof err === 'string' ? err : err.message ?? err
   if (res.headersSent) {
     console.log('Headers already sent, when calling error handler. Will defer to next error handler')
     console.log(`Error was: ${JSON.stringify(err)}`)

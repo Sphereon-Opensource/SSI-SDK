@@ -1,15 +1,15 @@
-import {Provider, TransactionRequest} from '@ethersproject/abstract-provider'
-import {Deferrable} from '@ethersproject/properties'
-import {serialize} from "@ethersproject/transactions";
-import {IKey} from '@veramo/core'
-import {Eip712Payload} from '@veramo/key-manager'
-import {ethers, Signer, TypedDataDomain, TypedDataField} from 'ethers'
+import { Provider, TransactionRequest } from '@ethersproject/abstract-provider'
+import { Deferrable } from '@ethersproject/properties'
+import { serialize } from '@ethersproject/transactions'
+import { IKey } from '@veramo/core'
+import { Eip712Payload } from '@veramo/key-manager'
+import { ethers, Signer, TypedDataDomain, TypedDataField } from 'ethers'
 // import {arrayify, defineReadOnly, serializeTransaction} from 'ethers/lib/utils'
-import {arrayify, defineReadOnly/*, joinSignature*/} from 'ethers/lib/utils'
+import { arrayify, defineReadOnly /*, joinSignature*/ } from 'ethers/lib/utils'
 import * as u8a from 'uint8arrays'
 // import {ECDSASignature} from "web3-eth-accounts";
 import { getAddressFromAgent } from './functions'
-import {IRequiredContext, TypedDataSigner} from './types'
+import { IRequiredContext, TypedDataSigner } from './types'
 
 export class EthersKMSSignerBuilder {
   private context?: IRequiredContext
@@ -58,8 +58,7 @@ export class EthersKMSSignerBuilder {
  * Be aware that the provided KeyRef needs to belong to the respective KMS, as it will use a lookup for the key in the KMS to sign
  */
 export class EthersKMSSigner extends Signer implements TypedDataSigner {
-
-  private readonly context: IRequiredContext;
+  private readonly context: IRequiredContext
   private readonly keyRef: Pick<IKey, 'kid'>
 
   constructor({ provider, context, keyRef }: { provider?: ethers.providers.Provider; context: IRequiredContext; keyRef: Pick<IKey, 'kid'> }) {
@@ -74,7 +73,7 @@ export class EthersKMSSigner extends Signer implements TypedDataSigner {
     return await getAddressFromAgent(this.context, this.keyRef)
   }
   async signTransaction(transaction: Deferrable<TransactionRequest>): Promise<string> {
-    const {from, ...tx} = await transaction
+    const { from, ...tx } = await transaction
 
     return this.context.agent.keyManagerSign({
       algorithm: 'eth_signTransaction',
@@ -85,9 +84,8 @@ export class EthersKMSSigner extends Signer implements TypedDataSigner {
     })
   }
 
-
   async signRaw(message: string | Uint8Array): Promise<string> {
-    return  await this.context.agent.keyManagerSign({
+    return await this.context.agent.keyManagerSign({
       algorithm: 'eth_rawSign',
       keyRef: this.keyRef.kid,
       encoding: 'base16',
@@ -124,7 +122,6 @@ export class EthersKMSSigner extends Signer implements TypedDataSigner {
     return new EthersKMSSigner({ provider, context: this.context, keyRef: this.keyRef })
   }
 }
-
 
 /*
 /!**

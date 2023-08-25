@@ -1,6 +1,5 @@
 export class EventEmitter {
-  private readonly listeners: Record<string, Array<(...args: any[]) => void>> =
-    Object.create(null)
+  private readonly listeners: Record<string, Array<(...args: any[]) => void>> = Object.create(null)
 
   emit(eventName: string, ...args: any[]): boolean {
     this.listeners[eventName]?.forEach((listener) => {
