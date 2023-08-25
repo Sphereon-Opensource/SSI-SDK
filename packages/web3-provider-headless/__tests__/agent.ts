@@ -57,7 +57,7 @@ agent
     const headlessProvider = web3Provider as EthersHeadlessProvider
     console.log(`Signers: ${signers}`)
     const expressSupport = ExpressBuilder.fromServerOpts({
-      hostname: '0.0.0.0',
+      hostname: '127.0.0.1',
       port: 3000,
       basePath: '/web3/rpc',
     })
