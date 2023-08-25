@@ -58,7 +58,7 @@ agent
     console.log(`Signers: ${signers}`)
     const expressSupport = ExpressBuilder.fromServerOpts({
       hostname: '127.0.0.1',
-      port: 3000,
+      port: 2999,
       basePath: '/web3/rpc',
     })
       .withCorsConfigurer(new ExpressCorsConfigurer().allowOrigin('*'))
