@@ -111,9 +111,18 @@ export function getLogoutCallbackEndpoint(router: Router, opts?: ISingleEndpoint
     return
   }
   const path = opts?.path ?? '/authentication/logout-callback'
-  router.get(path, (req, res) => {
-    req.logout((err) => console.log(err))
-    res.redirect(env('OIDC_FRONTEND_LOGOUT_REDIRECT_URL', PREFIX) ?? '/')
+  router.get(path, (req, res, next) => {
+    try {
+      req.logout((err) => {
+            if (err) {
+              console.log(`Error during calling logout-callback: ${JSON.stringify(err)}`)
+            }
+          }
+      )
+      return res.redirect(env('OIDC_FRONTEND_LOGOUT_REDIRECT_URL', PREFIX) ?? '/')
+    } catch (e) {
+      return sendErrorResponse(res, 500, 'An unexpected error occurred during logout callback', e)
+    }
   })
 }
 

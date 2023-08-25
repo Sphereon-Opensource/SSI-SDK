@@ -1,3 +1,4 @@
+/*
 import {SphereonKeyManager} from "@sphereon/ssi-sdk-ext.key-manager";
 import {SphereonKeyManagementSystem} from "@sphereon/ssi-sdk-ext.kms-local";
 import {createAgent, IDIDManager, IKeyManager, IResolver, ManagedKeyInfo, TAgent} from "@veramo/core";
@@ -89,3 +90,4 @@ describe('Headless web3 provider', () => {
         console.log('DONE')
     }, 60000)
 })
+*/

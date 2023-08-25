@@ -10,12 +10,12 @@
     "start:dev": "ts-node __tests__/agent.ts"
   },
   "dependencies": {
+    "@sphereon/ssi-express-support": "^0.15.1",
     "@ethersproject/abstract-provider": "^5.7.0",
     "@ethersproject/abstract-signer": "^5.7.0",
     "@ethersproject/properties": "^5.7.0",
     "@ethersproject/strings": "^5.7.0",
     "@ethersproject/transactions": "^5.7.0",
-    "web3": "1.10.1",
     "bn.js": "^5.2.1",
     "elliptic": "6.5.4",
     "@metamask/eth-sig-util": "^6.0.0",

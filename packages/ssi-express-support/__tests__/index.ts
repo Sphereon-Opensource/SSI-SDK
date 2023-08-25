@@ -17,8 +17,8 @@ async function init() {
   const devMetadata: ClientMetadata = {
     client_id: env('OIDC_CLIENT_ID', PREFIX) ?? 'EnergySHRDev',
     client_secret: env('OIDC_CLIENT_SECRET', PREFIX) ?? 'iZDmseeTIpuVFcodqc3cQpJ6gak7xMfa',
-    redirect_uris: ['http://localhost:3001/authentication/callback'],
-    post_logout_redirect_uris: ['http://localhost:3001/authentication/logout-callback'],
+    redirect_uris: ['http://localhost:8000/authentication/callback'],
+    post_logout_redirect_uris: ['http://localhost:8000/authentication/logout-callback'],
     response_types: ['code'],
     token_endpoint_auth_method: 'client_secret_basic',
   }

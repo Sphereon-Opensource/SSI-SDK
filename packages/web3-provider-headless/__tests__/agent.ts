@@ -1,3 +1,4 @@
+import {ExpressBuilder, ExpressCorsConfigurer} from "@sphereon/ssi-express-support";
 import {SphereonKeyManager} from "@sphereon/ssi-sdk-ext.key-manager";
 import {SphereonKeyManagementSystem} from "@sphereon/ssi-sdk-ext.kms-local";
 import {createAgent, IDIDManager, IKeyManager, IResolver, TAgent} from "@veramo/core";
@@ -39,7 +40,7 @@ const agent: TAgent<IKeyManager & IDIDManager & IResolver> = createAgent({
 const context: IRequiredContext = {agent}
 agent.keyManagerImport({
     // privateKeyHex: '8f2695a99c416ab9241fc75ae53f90b083aecff9e4463e046a1527f456b502c6',
-    privateKeyHex: 'f5c0438db93a60a191530c0dd61a118bfb26ce4afb1ee54ea67deb15ec92d164',
+    privateKeyHex: process.env.WEB3_IMPORT_PRIVATEKEY_HEX ?? 'f5c0438db93a60a191530c0dd61a118bfb26ce4afb1ee54ea67deb15ec92d164',
     kms: 'local',
     type: 'Secp256k1'
 }).then(key => {
@@ -54,7 +55,13 @@ agent.keyManagerImport({
     [signers, web3Provider] = injectWeb3Provider({signers: [kmsSigner]})
     const headlessProvider = web3Provider as EthersHeadlessProvider
     console.log(`Signers: ${signers}`)
-    createRpcServer(headlessProvider)
+    const expressSupport = ExpressBuilder.fromServerOpts({
+        hostname: "0.0.0.0",
+        port: 3000,
+        basePath: "/web3/rpc"
+    }).withCorsConfigurer(new ExpressCorsConfigurer().allowOrigin("*")).build()
+    createRpcServer(headlessProvider, expressSupport)
+    expressSupport.start()
 })
 console.log('DONE')
 
