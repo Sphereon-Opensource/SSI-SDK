@@ -52,7 +52,7 @@ agent
     let signers: Signer[]
     let web3Provider: IWeb3Provider
 
-    // Inject window.ethereum instance
+      // Inject window.ethereum instance
     ;[signers, web3Provider] = injectWeb3Provider({ signers: [kmsSigner] })
     const headlessProvider = web3Provider as EthersHeadlessProvider
     console.log(`Signers: ${signers}`)

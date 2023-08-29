@@ -1249,9 +1249,6 @@ importers:
       http-terminator:
         specifier: ^3.2.0
         version: 3.2.0
-      jose:
-        specifier: ^4.14.4
-        version: 4.14.4
       morgan:
         specifier: ^1.10.0
         version: 1.10.0
@@ -1316,6 +1313,9 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
+      jose:
+        specifier: ^4.14.4
+        version: 4.14.4
       typescript:
         specifier: 4.9.5
         version: 4.9.5

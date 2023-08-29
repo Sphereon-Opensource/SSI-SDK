@@ -1,6 +1,5 @@
 import { TAgent } from '@veramo/core'
 import express, { Express, NextFunction, Router } from 'express'
-import * as jose from 'jose'
 import { BaseClient, ClientMetadata, ClientOptions, Issuer } from 'openid-client'
 import passport from 'passport'
 import { copyGlobalAuthToEndpoints, isUserAuthenticated } from './auth-utils'
@@ -20,10 +19,11 @@ export async function oidcGetClient(
   issuer: Issuer<BaseClient>,
   metadata: ClientMetadata,
   opts?: {
-    jwks?: { keys: jose.JWK[] }
+    jwks?: { keys: JsonWebKey[] }
     options?: ClientOptions
   }
 ) {
+  // @ts-ignore
   return new issuer.Client(metadata, opts?.jwks, opts?.options)
 }
 
