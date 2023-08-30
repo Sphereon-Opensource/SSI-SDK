@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, BeforeInsert, BeforeUpdate } from 'typeorm'
-import { BasicMetadataItem, IMetadataItem, ValidationConstraint } from '../../types'
+import { ValidationConstraint } from '../../types'
 import { IdentityEntity } from './IdentityEntity'
 import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { getConstraint } from '../../utils/ValidatorUtils'
@@ -31,21 +31,5 @@ export class IdentityMetadataItemEntity extends BaseEntity {
         return Promise.reject(Error(message))
       }
     }
-  }
-}
-
-export const metadataItemEntityFrom = (item: BasicMetadataItem): IdentityMetadataItemEntity => {
-  const metadataItem: IdentityMetadataItemEntity = new IdentityMetadataItemEntity()
-  metadataItem.label = item.label
-  metadataItem.value = item.value
-
-  return metadataItem
-}
-
-export const metadataItemFrom = (item: IdentityMetadataItemEntity): IMetadataItem => {
-  return {
-    id: item.id,
-    label: item.label,
-    value: item.value,
   }
 }

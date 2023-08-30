@@ -1,49 +1,60 @@
-import Debug from 'debug'
 import { OrPromise } from '@sphereon/ssi-types'
+import { DataSource, In, Repository } from 'typeorm'
+import Debug from 'debug'
 import { AbstractContactStore } from './AbstractContactStore'
-import {
-  IAddIdentityArgs,
-  IGetIdentityArgs,
-  IGetIdentitiesArgs,
-  IGetContactArgs,
-  IRemoveIdentityArgs,
-  IUpdateIdentityArgs,
-  IGetContactsArgs,
-  IAddContactArgs,
-  IUpdateContactArgs,
-  IRemoveContactArgs,
-  BasicConnectionConfig,
-  ConnectionTypeEnum,
-  CorrelationIdentifierEnum,
-  IContact,
-  IIdentity,
-  IRemoveRelationshipArgs,
-  IContactRelationship,
-  IAddRelationshipArgs,
-  IGetRelationshipArgs,
-  IAddContactTypeArgs,
-  IContactType,
-  IGetContactTypeArgs,
-  IGetContactTypesArgs,
-  IUpdateContactTypeArgs,
-  IRemoveContactTypeArgs,
-  IGetRelationshipsArgs,
-  IUpdateRelationshipArgs,
-  ContactTypeEnum,
-  BasicContactOwner
-} from '../types'
-import { ContactEntity, contactEntityFrom, contactFrom } from '../entities/contact/ContactEntity'
-import { IdentityEntity, identityEntityFrom, identityFrom } from '../entities/contact/IdentityEntity'
+import { PartyEntity } from '../entities/contact/PartyEntity'
+import { IdentityEntity } from '../entities/contact/IdentityEntity'
 import { IdentityMetadataItemEntity } from '../entities/contact/IdentityMetadataItemEntity'
 import { CorrelationIdentifierEntity } from '../entities/contact/CorrelationIdentifierEntity'
 import { ConnectionEntity } from '../entities/contact/ConnectionEntity'
-import { BaseConfigEntity, isDidAuthConfig, isOpenIdConfig } from '../entities/contact/BaseConfigEntity'
-import { DataSource, FindOptionsWhere, In, Repository } from 'typeorm'
-import { PersonEntity } from '../entities/contact/PersonEntity'
-import { OrganizationEntity } from '../entities/contact/OrganizationEntity'
-import { ContactRelationshipEntity, contactRelationshipEntityFrom, contactRelationshipFrom } from '../entities/contact/ContactRelationshipEntity'
-import { ContactTypeEntity, contactTypeEntityFrom, contactTypeFrom } from '../entities/contact/ContactTypeEntity'
-import { isOrganization, isPerson } from '../entities/contact/ContactOwnerEntity'
+import { BaseConfigEntity } from '../entities/contact/BaseConfigEntity'
+import { PartyRelationshipEntity } from '../entities/contact/PartyRelationshipEntity'
+import { PartyTypeEntity } from '../entities/contact/PartyTypeEntity'
+import {
+  identityEntityFrom,
+  identityFrom,
+  isDidAuthConfig,
+  isNaturalPerson,
+  isOpenIdConfig,
+  isOrganization,
+  partyEntityFrom,
+  partyFrom,
+  partyRelationshipEntityFrom,
+  partyRelationshipFrom,
+  partyTypeEntityFrom,
+  partyTypeFrom,
+} from '../utils/contact/MappingUtils'
+import {
+  AddIdentityArgs,
+  GetIdentityArgs,
+  GetIdentitiesArgs,
+  GetPartyArgs,
+  RemoveIdentityArgs,
+  UpdateIdentityArgs,
+  GetPartiesArgs,
+  AddPartyArgs,
+  UpdatePartyArgs,
+  RemovePartyArgs,
+  NonPersistedConnectionConfig,
+  ConnectionTypeEnum,
+  CorrelationIdentifierEnum,
+  Party,
+  Identity,
+  RemoveRelationshipArgs,
+  PartyRelationship,
+  AddRelationshipArgs,
+  GetRelationshipArgs,
+  AddPartyTypeArgs,
+  PartyType,
+  GetPartyTypeArgs,
+  GetPartyTypesArgs,
+  UpdatePartyTypeArgs,
+  RemovePartyTypeArgs,
+  GetRelationshipsArgs,
+  UpdateRelationshipArgs,
+  PartyTypeEnum,
+  NonPersistedContact,
+} from '../types'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:contact-store')
 
@@ -55,54 +66,40 @@ export class ContactStore extends AbstractContactStore {
     this.dbConnection = dbConnection
   }
 
-  getContact = async ({ contactId }: IGetContactArgs): Promise<IContact> => {
-    const result: ContactEntity | null = await (await this.dbConnection).getRepository(ContactEntity).findOne({
-      where: { id: contactId },
+  getParty = async ({ partyId }: GetPartyArgs): Promise<Party> => {
+    const result: PartyEntity | null = await (await this.dbConnection).getRepository(PartyEntity).findOne({
+      where: { id: partyId },
     })
 
     if (!result) {
-      return Promise.reject(Error(`No contact found for id: ${contactId}`))
+      return Promise.reject(Error(`No party found for id: ${partyId}`))
     }
 
-    return contactFrom(result)
+    return partyFrom(result)
   }
 
-  getContacts = async (args?: IGetContactsArgs): Promise<Array<IContact>> => {
-    const contactRepository: Repository<ContactEntity> = (await this.dbConnection).getRepository(ContactEntity)
-    const initialResult: Array<ContactEntity> | null = await contactRepository.find({
+  getParties = async (args?: GetPartiesArgs): Promise<Array<Party>> => {
+    const partyRepository: Repository<PartyEntity> = (await this.dbConnection).getRepository(PartyEntity)
+    const initialResult: Array<PartyEntity> = await partyRepository.find({
       ...(args?.filter && { where: args?.filter }),
     })
 
-    const result: Array<ContactEntity> | null = await contactRepository.find({
+    const result: Array<PartyEntity> = await partyRepository.find({
       where: {
-        id: In(initialResult.map((contact: ContactEntity) => contact.id)),
+        id: In(initialResult.map((party: PartyEntity) => party.id)),
       },
     })
 
-    return result.map((contact: ContactEntity) => contactFrom(contact))
+    return result.map((party: PartyEntity) => partyFrom(party))
   }
 
-  addContact = async (args: IAddContactArgs): Promise<IContact> => {
-    const { identities, contactOwner, contactType } = args
+  addParty = async (args: AddPartyArgs): Promise<Party> => {
+    const { identities, contact, partyType } = args
 
-    const contactRepository: Repository<ContactEntity> = (await this.dbConnection).getRepository(ContactEntity)
+    const partyRepository: Repository<PartyEntity> = (await this.dbConnection).getRepository(PartyEntity)
 
-    if (!this.hasCorrectContactType(contactType.type, contactOwner)) {
-      return Promise.reject(Error(`Contact type ${contactType.type}, does not match for provided contact owner`))
-    }
-
-    const result: ContactEntity | null = await contactRepository.findOne({
-      where: [
-        {
-          contactOwner: {
-            displayName: contactOwner.displayName,
-          } as FindOptionsWhere<PersonEntity | OrganizationEntity>,
-        },
-      ],
-    })
-
-    if (result) {
-      return Promise.reject(Error(`Duplicate display names are not allowed. Display name: ${contactOwner.displayName}`))
+    if (!this.hasCorrectPartyType(partyType.type, contact)) {
+      return Promise.reject(Error(`Party type ${partyType.type}, does not match for provided contact`))
     }
 
     for (const identity of identities ?? []) {
@@ -117,56 +114,57 @@ export class ContactStore extends AbstractContactStore {
       }
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(args)
-    debug('Adding contact', args)
-    const createdResult: ContactEntity = await contactRepository.save(contactEntity)
+    const partyEntity: PartyEntity = partyEntityFrom(args)
+    debug('Adding party', args)
+    const createdResult: PartyEntity = await partyRepository.save(partyEntity)
 
-    return contactFrom(createdResult)
+    return partyFrom(createdResult)
   }
 
-  updateContact = async ({ contact }: IUpdateContactArgs): Promise<IContact> => {
-    const contactRepository: Repository<ContactEntity> = (await this.dbConnection).getRepository(ContactEntity)
-    const result: ContactEntity | null = await contactRepository.findOne({
-      where: { id: contact.id },
+  updateParty = async ({ party }: UpdatePartyArgs): Promise<Party> => {
+    const partyRepository: Repository<PartyEntity> = (await this.dbConnection).getRepository(PartyEntity)
+    const result: PartyEntity | null = await partyRepository.findOne({
+      where: { id: party.id },
     })
 
     if (!result) {
-      return Promise.reject(Error(`No contact found for id: ${contact.id}`))
+      return Promise.reject(Error(`No party found for id: ${party.id}`))
     }
 
-    const updatedContact = {
-      ...contact,
+    const updatedParty = {
+      ...party,
       identities: result.identities,
-      contactType: result.contactType,
+      type: result.partyType,
       relationships: result.relationships,
+      electronicAddresses: result.electronicAddresses,
     }
 
-    debug('Updating contact', contact)
-    const updatedResult: ContactEntity = await contactRepository.save(updatedContact, { transaction: true })
+    debug('Updating party', party)
+    const updatedResult: PartyEntity = await partyRepository.save(updatedParty, { transaction: true })
 
-    return contactFrom(updatedResult)
+    return partyFrom(updatedResult)
   }
 
-  removeContact = async ({ contactId }: IRemoveContactArgs): Promise<void> => {
-    const contactRepository: Repository<ContactEntity> = (await this.dbConnection).getRepository(ContactEntity)
-    debug('Removing contact', contactId)
-    contactRepository
-      .findOneById(contactId)
-      .then(async (contact: ContactEntity | null): Promise<void> => {
-        if (!contact) {
-          await Promise.reject(Error(`Unable to find the contact with id to remove: ${contactId}`))
+  removeParty = async ({ partyId }: RemovePartyArgs): Promise<void> => {
+    const partyRepository: Repository<PartyEntity> = (await this.dbConnection).getRepository(PartyEntity)
+    debug('Removing party', partyId)
+    partyRepository
+      .findOneById(partyId)
+      .then(async (party: PartyEntity | null): Promise<void> => {
+        if (!party) {
+          await Promise.reject(Error(`Unable to find the party with id to remove: ${partyId}`))
         } else {
-          await this.deleteIdentities(contact.identities)
+          await this.deleteIdentities(party.identities)
 
-          await contactRepository
-            .delete({ id: contactId })
-            .catch((error) => Promise.reject(Error(`Unable to remove contact with id: ${contactId}. ${error}`)))
+          await partyRepository
+            .delete({ id: partyId })
+            .catch((error) => Promise.reject(Error(`Unable to remove party with id: ${partyId}. ${error}`)))
         }
       })
-      .catch((error) => Promise.reject(Error(`Unable to remove contact with id: ${contactId}. ${error}`)))
+      .catch((error) => Promise.reject(Error(`Unable to remove party with id: ${partyId}. ${error}`)))
   }
 
-  getIdentity = async ({ identityId }: IGetIdentityArgs): Promise<IIdentity> => {
+  getIdentity = async ({ identityId }: GetIdentityArgs): Promise<Identity> => {
     const result: IdentityEntity | null = await (await this.dbConnection).getRepository(IdentityEntity).findOne({
       where: { id: identityId },
     })
@@ -178,7 +176,7 @@ export class ContactStore extends AbstractContactStore {
     return identityFrom(result)
   }
 
-  getIdentities = async (args?: IGetIdentitiesArgs): Promise<Array<IIdentity>> => {
+  getIdentities = async (args?: GetIdentitiesArgs): Promise<Array<Identity>> => {
     const identityRepository: Repository<IdentityEntity> = (await this.dbConnection).getRepository(IdentityEntity)
     const initialResult: Array<IdentityEntity> = await identityRepository.find({
       ...(args?.filter && { where: args?.filter }),
@@ -193,13 +191,13 @@ export class ContactStore extends AbstractContactStore {
     return result.map((identity: IdentityEntity) => identityFrom(identity))
   }
 
-  addIdentity = async ({ identity, contactId }: IAddIdentityArgs): Promise<IIdentity> => {
-    const contact: ContactEntity | null = await (await this.dbConnection).getRepository(ContactEntity).findOne({
-      where: { id: contactId },
+  addIdentity = async ({ identity, partyId }: AddIdentityArgs): Promise<Identity> => {
+    const party: PartyEntity | null = await (await this.dbConnection).getRepository(PartyEntity).findOne({
+      where: { id: partyId },
     })
 
-    if (!contact) {
-      return Promise.reject(Error(`No contact found for id: ${contactId}`))
+    if (!party) {
+      return Promise.reject(Error(`No party found for id: ${partyId}`))
     }
 
     if (identity.identifier.type === CorrelationIdentifierEnum.URL) {
@@ -213,7 +211,7 @@ export class ContactStore extends AbstractContactStore {
     }
 
     const identityEntity: IdentityEntity = identityEntityFrom(identity)
-    identityEntity.contact = contact
+    identityEntity.party = party
     debug('Adding identity', identity)
     const result: IdentityEntity = await (await this.dbConnection).getRepository(IdentityEntity).save(identityEntity, {
       transaction: true,
@@ -222,7 +220,7 @@ export class ContactStore extends AbstractContactStore {
     return identityFrom(result)
   }
 
-  updateIdentity = async ({ identity }: IUpdateIdentityArgs): Promise<IIdentity> => {
+  updateIdentity = async ({ identity }: UpdateIdentityArgs): Promise<Identity> => {
     const identityRepository: Repository<IdentityEntity> = (await this.dbConnection).getRepository(IdentityEntity)
     const result: IdentityEntity | null = await identityRepository.findOne({
       where: { id: identity.id },
@@ -248,7 +246,7 @@ export class ContactStore extends AbstractContactStore {
     return identityFrom(updatedResult)
   }
 
-  removeIdentity = async ({ identityId }: IRemoveIdentityArgs): Promise<void> => {
+  removeIdentity = async ({ identityId }: RemoveIdentityArgs): Promise<void> => {
     const identity: IdentityEntity | null = await (await this.dbConnection).getRepository(IdentityEntity).findOne({
       where: { id: identityId },
     })
@@ -262,36 +260,22 @@ export class ContactStore extends AbstractContactStore {
     await this.deleteIdentities([identity])
   }
 
-  addRelationship = async ({ leftId, rightId }: IAddRelationshipArgs): Promise<IContactRelationship> => {
-    const contactRepository: Repository<ContactEntity> = (await this.dbConnection).getRepository(ContactEntity)
-    const leftContact: ContactEntity | null = await contactRepository.findOne({
-      where: { id: leftId },
+  addRelationship = async ({ leftId, rightId }: AddRelationshipArgs): Promise<PartyRelationship> => {
+    return this.assertRelationshipSides(leftId, rightId).then(async (): Promise<PartyRelationship> => {
+      const relationship: PartyRelationshipEntity = partyRelationshipEntityFrom({
+        leftId,
+        rightId,
+      })
+      debug('Adding party relationship', relationship)
+
+      const createdResult: PartyRelationshipEntity = await (await this.dbConnection).getRepository(PartyRelationshipEntity).save(relationship)
+
+      return partyRelationshipFrom(createdResult)
     })
-
-    if (!leftContact) {
-      return Promise.reject(Error(`No contact found for left contact id: ${leftId}`))
-    }
-
-    const rightContact: ContactEntity | null = await contactRepository.findOne({
-      where: { id: rightId },
-    })
-
-    if (!rightContact) {
-      return Promise.reject(Error(`No contact found for right contact id: ${rightId}`))
-    }
-
-    const relationship: ContactRelationshipEntity = contactRelationshipEntityFrom({
-      leftId: leftContact.id,
-      rightId: rightContact.id,
-    })
-
-    const createdResult: ContactRelationshipEntity = await (await this.dbConnection).getRepository(ContactRelationshipEntity).save(relationship)
-
-    return contactRelationshipFrom(createdResult)
   }
 
-  getRelationship = async ({ relationshipId }: IGetRelationshipArgs): Promise<IContactRelationship> => {
-    const result: ContactRelationshipEntity | null = await (await this.dbConnection).getRepository(ContactRelationshipEntity).findOne({
+  getRelationship = async ({ relationshipId }: GetRelationshipArgs): Promise<PartyRelationship> => {
+    const result: PartyRelationshipEntity | null = await (await this.dbConnection).getRepository(PartyRelationshipEntity).findOne({
       where: { id: relationshipId },
     })
 
@@ -299,60 +283,45 @@ export class ContactStore extends AbstractContactStore {
       return Promise.reject(Error(`No relationship found for id: ${relationshipId}`))
     }
 
-    return contactRelationshipFrom(result)
+    return partyRelationshipFrom(result)
   }
 
-  getRelationships = async (args?: IGetRelationshipsArgs): Promise<Array<IContactRelationship>> => {
-    const contactRelationshipRepository: Repository<ContactRelationshipEntity> = (await this.dbConnection).getRepository(ContactRelationshipEntity)
-    const initialResult: Array<ContactRelationshipEntity> | null = await contactRelationshipRepository.find({
+  getRelationships = async (args?: GetRelationshipsArgs): Promise<Array<PartyRelationship>> => {
+    const partyRelationshipRepository: Repository<PartyRelationshipEntity> = (await this.dbConnection).getRepository(PartyRelationshipEntity)
+    const initialResult: Array<PartyRelationshipEntity> = await partyRelationshipRepository.find({
       ...(args?.filter && { where: args?.filter }),
     })
 
-    const result: Array<ContactRelationshipEntity> | null = await contactRelationshipRepository.find({
+    const result: Array<PartyRelationshipEntity> = await partyRelationshipRepository.find({
       where: {
-        id: In(initialResult.map((contactRelationship: ContactRelationshipEntity) => contactRelationship.id)),
+        id: In(initialResult.map((partyRelationship: PartyRelationshipEntity) => partyRelationship.id)),
       },
     })
 
-    return result.map((contactRelationship: ContactRelationshipEntity) => contactRelationshipFrom(contactRelationship))
+    return result.map((partyRelationship: PartyRelationshipEntity) => partyRelationshipFrom(partyRelationship))
   }
 
-  updateRelationship = async ({ relationship }: IUpdateRelationshipArgs): Promise<IContactRelationship> => {
-    const contactRelationshipRepository: Repository<ContactRelationshipEntity> = (await this.dbConnection).getRepository(ContactRelationshipEntity)
-    const result: ContactRelationshipEntity | null = await contactRelationshipRepository.findOne({
+  updateRelationship = async ({ relationship }: UpdateRelationshipArgs): Promise<PartyRelationship> => {
+    const partyRelationshipRepository: Repository<PartyRelationshipEntity> = (await this.dbConnection).getRepository(PartyRelationshipEntity)
+    const result: PartyRelationshipEntity | null = await partyRelationshipRepository.findOne({
       where: { id: relationship.id },
     })
 
     if (!result) {
-      return Promise.reject(Error(`No contact relationship found for id: ${relationship.id}`))
+      return Promise.reject(Error(`No party relationship found for id: ${relationship.id}`))
     }
 
-    const contactRepository: Repository<ContactEntity> = (await this.dbConnection).getRepository(ContactEntity)
-    const leftContact: ContactEntity | null = await contactRepository.findOne({
-      where: { id: relationship.leftId },
+    return this.assertRelationshipSides(relationship.leftId, relationship.rightId).then(async (): Promise<PartyRelationship> => {
+      debug('Updating party relationship', relationship)
+      const updatedResult: PartyRelationshipEntity = await partyRelationshipRepository.save(relationship, { transaction: true })
+
+      return partyRelationshipFrom(updatedResult)
     })
-
-    if (!leftContact) {
-      return Promise.reject(Error(`No contact found for left contact id: ${relationship.leftId}`))
-    }
-
-    const rightContact: ContactEntity | null = await contactRepository.findOne({
-      where: { id: relationship.rightId },
-    })
-
-    if (!rightContact) {
-      return Promise.reject(Error(`No contact found for right contact id: ${relationship.rightId}`))
-    }
-
-    debug('Updating contact relationship', relationship)
-    const updatedResult: ContactRelationshipEntity = await contactRelationshipRepository.save(relationship, { transaction: true })
-
-    return contactRelationshipFrom(updatedResult)
   }
 
-  removeRelationship = async ({ relationshipId }: IRemoveRelationshipArgs): Promise<void> => {
-    const contactRelationshipRepository: Repository<ContactRelationshipEntity> = (await this.dbConnection).getRepository(ContactRelationshipEntity)
-    const relationship: ContactRelationshipEntity | null = await contactRelationshipRepository.findOne({
+  removeRelationship = async ({ relationshipId }: RemoveRelationshipArgs): Promise<void> => {
+    const partyRelationshipRepository: Repository<PartyRelationshipEntity> = (await this.dbConnection).getRepository(PartyRelationshipEntity)
+    const relationship: PartyRelationshipEntity | null = await partyRelationshipRepository.findOne({
       where: { id: relationshipId },
     })
 
@@ -362,88 +331,88 @@ export class ContactStore extends AbstractContactStore {
 
     debug('Removing relationship', relationshipId)
 
-    await contactRelationshipRepository.delete(relationshipId)
+    await partyRelationshipRepository.delete(relationshipId)
   }
 
-  addContactType = async (args: IAddContactTypeArgs): Promise<IContactType> => {
-    const contactEntity: ContactTypeEntity = contactTypeEntityFrom(args)
-    debug('Adding contact type', args)
-    const createdResult: ContactTypeEntity = await (await this.dbConnection).getRepository(ContactTypeEntity).save(contactEntity)
+  addPartyType = async (args: AddPartyTypeArgs): Promise<PartyType> => {
+    const partyEntity: PartyTypeEntity = partyTypeEntityFrom(args)
+    debug('Adding party type', args)
+    const createdResult: PartyTypeEntity = await (await this.dbConnection).getRepository(PartyTypeEntity).save(partyEntity)
 
-    return contactTypeFrom(createdResult)
+    return partyTypeFrom(createdResult)
   }
 
-  getContactType = async ({ contactTypeId }: IGetContactTypeArgs): Promise<IContactType> => {
-    const result: ContactTypeEntity | null = await (await this.dbConnection).getRepository(ContactTypeEntity).findOne({
-      where: { id: contactTypeId },
+  getPartyType = async ({ partyTypeId }: GetPartyTypeArgs): Promise<PartyType> => {
+    const result: PartyTypeEntity | null = await (await this.dbConnection).getRepository(PartyTypeEntity).findOne({
+      where: { id: partyTypeId },
     })
 
     if (!result) {
-      return Promise.reject(Error(`No contact type found for id: ${contactTypeId}`))
+      return Promise.reject(Error(`No party type found for id: ${partyTypeId}`))
     }
 
-    return contactTypeFrom(result)
+    return partyTypeFrom(result)
   }
 
-  getContactTypes = async (args?: IGetContactTypesArgs): Promise<Array<IContactType>> => {
-    const contactTypeRepository: Repository<ContactTypeEntity> = (await this.dbConnection).getRepository(ContactTypeEntity)
-    const initialResult: Array<ContactTypeEntity> | null = await contactTypeRepository.find({
+  getPartyTypes = async (args?: GetPartyTypesArgs): Promise<Array<PartyType>> => {
+    const partyTypeRepository: Repository<PartyTypeEntity> = (await this.dbConnection).getRepository(PartyTypeEntity)
+    const initialResult: Array<PartyTypeEntity> = await partyTypeRepository.find({
       ...(args?.filter && { where: args?.filter }),
     })
 
-    const result: Array<ContactTypeEntity> | null = await contactTypeRepository.find({
+    const result: Array<PartyTypeEntity> = await partyTypeRepository.find({
       where: {
-        id: In(initialResult.map((contactType: ContactTypeEntity) => contactType.id)),
+        id: In(initialResult.map((partyType: PartyTypeEntity) => partyType.id)),
       },
     })
 
-    return result.map((contactType: ContactTypeEntity) => contactTypeFrom(contactType))
+    return result.map((partyType: PartyTypeEntity) => partyTypeFrom(partyType))
   }
 
-  updateContactType = async ({ contactType }: IUpdateContactTypeArgs): Promise<IContactType> => {
-    const contactTypeRepository: Repository<ContactTypeEntity> = (await this.dbConnection).getRepository(ContactTypeEntity)
-    const result: ContactTypeEntity | null = await contactTypeRepository.findOne({
-      where: { id: contactType.id },
+  updatePartyType = async ({ partyType }: UpdatePartyTypeArgs): Promise<PartyType> => {
+    const partyTypeRepository: Repository<PartyTypeEntity> = (await this.dbConnection).getRepository(PartyTypeEntity)
+    const result: PartyTypeEntity | null = await partyTypeRepository.findOne({
+      where: { id: partyType.id },
     })
 
     if (!result) {
-      return Promise.reject(Error(`No contact type found for id: ${contactType.id}`))
+      return Promise.reject(Error(`No party type found for id: ${partyType.id}`))
     }
 
-    debug('Updating contact type', contactType)
-    const updatedResult: ContactTypeEntity = await contactTypeRepository.save(contactType, { transaction: true })
+    debug('Updating party type', partyType)
+    const updatedResult: PartyTypeEntity = await partyTypeRepository.save(partyType, { transaction: true })
 
-    return contactTypeFrom(updatedResult)
+    return partyTypeFrom(updatedResult)
   }
 
-  removeContactType = async ({ contactTypeId }: IRemoveContactTypeArgs): Promise<void> => {
-    const contacts: Array<ContactEntity> | null = await (await this.dbConnection).getRepository(ContactEntity).find({
+  removePartyType = async ({ partyTypeId }: RemovePartyTypeArgs): Promise<void> => {
+    const parties: Array<PartyEntity> = await (await this.dbConnection).getRepository(PartyEntity).find({
       where: {
-        contactType: {
-          id: contactTypeId,
+        partyType: {
+          id: partyTypeId,
         },
       },
     })
 
-    if (contacts?.length > 0) {
-      return Promise.reject(Error(`Unable to remove contact type with id: ${contactTypeId}. Contact type is in use`))
+    if (parties.length > 0) {
+      return Promise.reject(Error(`Unable to remove party type with id: ${partyTypeId}. Party type is in use`))
     }
 
-    const contactTypeRepository: Repository<ContactTypeEntity> = (await this.dbConnection).getRepository(ContactTypeEntity)
-    const contactType: ContactTypeEntity | null = await contactTypeRepository.findOne({
-      where: { id: contactTypeId },
+    const partyTypeRepository: Repository<PartyTypeEntity> = (await this.dbConnection).getRepository(PartyTypeEntity)
+    const partyType: PartyTypeEntity | null = await partyTypeRepository.findOne({
+      where: { id: partyTypeId },
     })
 
-    if (!contactType) {
-      return Promise.reject(Error(`No contact type found for id: ${contactTypeId}`))
+    if (!partyType) {
+      return Promise.reject(Error(`No party type found for id: ${partyTypeId}`))
     }
 
-    debug('Removing contact type', contactTypeId)
+    debug('Removing party type', partyTypeId)
 
-    await contactTypeRepository.delete(contactTypeId)
+    await partyTypeRepository.delete(partyTypeId)
   }
 
-  private hasCorrectConnectionConfig(type: ConnectionTypeEnum, config: BasicConnectionConfig): boolean {
+  private hasCorrectConnectionConfig(type: ConnectionTypeEnum, config: NonPersistedConnectionConfig): boolean {
     switch (type) {
       case ConnectionTypeEnum.OPENID_CONNECT:
         return isOpenIdConfig(config)
@@ -454,14 +423,14 @@ export class ContactStore extends AbstractContactStore {
     }
   }
 
-  private hasCorrectContactType(type: ContactTypeEnum, owner: BasicContactOwner): boolean {
+  private hasCorrectPartyType(type: PartyTypeEnum, contact: NonPersistedContact): boolean {
     switch (type) {
-      case ContactTypeEnum.PERSON:
-        return isPerson(owner)
-      case ContactTypeEnum.ORGANIZATION:
-        return isOrganization(owner)
+      case PartyTypeEnum.NATURAL_PERSON:
+        return isNaturalPerson(contact)
+      case PartyTypeEnum.ORGANIZATION:
+        return isOrganization(contact)
       default:
-        throw new Error('Contact type not supported')
+        throw new Error('Party type not supported')
     }
   }
 
@@ -505,4 +474,22 @@ export class ContactStore extends AbstractContactStore {
     })
   }
 
+  private async assertRelationshipSides(leftId: string, rightId: string): Promise<void> {
+    const partyRepository: Repository<PartyEntity> = (await this.dbConnection).getRepository(PartyEntity)
+    const leftParty: PartyEntity | null = await partyRepository.findOne({
+      where: { id: leftId },
+    })
+
+    if (!leftParty) {
+      return Promise.reject(Error(`No party found for left side of the relationship, party id: ${leftId}`))
+    }
+
+    const rightParty: PartyEntity | null = await partyRepository.findOne({
+      where: { id: rightId },
+    })
+
+    if (!rightParty) {
+      return Promise.reject(Error(`No party found for right side of the relationship, party id: ${rightId}`))
+    }
+  }
 }

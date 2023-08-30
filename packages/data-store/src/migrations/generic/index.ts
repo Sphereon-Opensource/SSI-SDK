@@ -9,8 +9,4 @@ import { CreateIssuanceBranding1659463079429 } from './1-CreateIssuanceBranding'
  *
  * @public
  */
-export const DataStoreMigrations = [
-  CreateContacts1659463079429,
-  CreateContacts1690925872318,
-  CreateIssuanceBranding1659463079429
-]
+export const DataStoreMigrations = [CreateContacts1659463079429, CreateContacts1690925872318, CreateIssuanceBranding1659463079429]

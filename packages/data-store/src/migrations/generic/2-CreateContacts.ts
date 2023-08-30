@@ -13,8 +13,7 @@ export class CreateContacts1690925872318 implements MigrationInterface {
     const dbType: DatabaseType = queryRunner.connection.driver.options.type
 
     switch (dbType) {
-      case 'postgres':
-      {
+      case 'postgres': {
         debug('using postgres migration file')
         const mig: CreateContacts1690925872592 = new CreateContacts1690925872592()
         await mig.up(queryRunner)
@@ -22,8 +21,7 @@ export class CreateContacts1690925872318 implements MigrationInterface {
         return
       }
       case 'sqlite':
-      case 'react-native':
-      {
+      case 'react-native': {
         debug('using sqlite/react-native migration file')
         const mig: CreateContacts1690925872693 = new CreateContacts1690925872693()
         await mig.up(queryRunner)
@@ -42,8 +40,7 @@ export class CreateContacts1690925872318 implements MigrationInterface {
     const dbType: DatabaseType = queryRunner.connection.driver.options.type
 
     switch (dbType) {
-      case 'postgres':
-      {
+      case 'postgres': {
         debug('using postgres migration file')
         const mig: CreateContacts1690925872592 = new CreateContacts1690925872592()
         await mig.down(queryRunner)
@@ -51,8 +48,7 @@ export class CreateContacts1690925872318 implements MigrationInterface {
         return
       }
       case 'sqlite':
-      case 'react-native':
-      {
+      case 'react-native': {
         debug('using sqlite/react-native migration file')
         const mig: CreateContacts1690925872693 = new CreateContacts1690925872693()
         await mig.down(queryRunner)

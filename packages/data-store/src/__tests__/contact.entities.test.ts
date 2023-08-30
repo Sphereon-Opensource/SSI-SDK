@@ -1,40 +1,48 @@
-import { DataSource
-  , FindOptionsWhere
-} from 'typeorm'
+import { DataSource, FindOptionsWhere } from 'typeorm'
 
-import { DataStoreContactEntities
+import {
+  DataStoreContactEntities,
   // , DataStoreMigrations
 } from '../index'
+import { NaturalPersonEntity } from '../entities/contact/NaturalPersonEntity'
+import { OrganizationEntity } from '../entities/contact/OrganizationEntity'
+import { PartyRelationshipEntity } from '../entities/contact/PartyRelationshipEntity'
+import { PartyTypeEntity } from '../entities/contact/PartyTypeEntity'
+import { PartyEntity } from '../entities/contact/PartyEntity'
+import { IdentityEntity } from '../entities/contact/IdentityEntity'
+import { OpenIdConfigEntity } from '../entities/contact/OpenIdConfigEntity'
+import { DidAuthConfigEntity } from '../entities/contact/DidAuthConfigEntity'
+import { ConnectionEntity } from '../entities/contact/ConnectionEntity'
+import { CorrelationIdentifierEntity } from '../entities/contact/CorrelationIdentifierEntity'
+import { IdentityMetadataItemEntity } from '../entities/contact/IdentityMetadataItemEntity'
+import { BaseContactEntity } from '../entities/contact/BaseContactEntity'
 import {
-  IBasicContact,
-  ContactTypeEnum,
-  IPerson,
-  IOrganization,
+  NonPersistedParty,
+  PartyTypeEnum,
+  NaturalPerson,
+  Organization,
   IdentityRoleEnum,
   CorrelationIdentifierEnum,
   ConnectionTypeEnum,
-  BasicContactType,
-  BasicOrganization,
-  BasicPerson,
-  IBasicConnection,
-  IBasicIdentity,
-  BasicDidAuthConfig,
-  BasicOpenIdConfig,
+  NonPersistedPartyType,
+  NonPersistedOrganization,
+  NonPersistedNaturalPerson,
+  NonPersistedConnection,
+  NonPersistedIdentity,
+  NonPersistedDidAuthConfig,
+  NonPersistedOpenIdConfig,
 } from '../types'
-import { PersonEntity
-  , personEntityFrom
-} from '../entities/contact/PersonEntity'
-import { OrganizationEntity, organizationEntityFrom } from '../entities/contact/OrganizationEntity'
-import { ContactRelationshipEntity, contactRelationshipEntityFrom } from '../entities/contact/ContactRelationshipEntity'
-import { ContactTypeEntity, contactTypeEntityFrom } from '../entities/contact/ContactTypeEntity'
-import { ContactEntity, contactEntityFrom } from '../entities/contact/ContactEntity'
-import { IdentityEntity, identityEntityFrom } from '../entities/contact/IdentityEntity'
-import { OpenIdConfigEntity, openIdConfigEntityFrom } from '../entities/contact/OpenIdConfigEntity'
-import { DidAuthConfigEntity, didAuthConfigEntityFrom } from '../entities/contact/DidAuthConfigEntity'
-import { ConnectionEntity, connectionEntityFrom } from '../entities/contact/ConnectionEntity'
-import { CorrelationIdentifierEntity } from '../entities/contact/CorrelationIdentifierEntity'
-import { IdentityMetadataItemEntity } from '../entities/contact/IdentityMetadataItemEntity'
-import { ContactOwnerEntity } from '../entities/contact/ContactOwnerEntity'
+import {
+  connectionEntityFrom,
+  didAuthConfigEntityFrom,
+  identityEntityFrom,
+  naturalPersonEntityFrom,
+  openIdConfigEntityFrom,
+  organizationEntityFrom,
+  partyEntityFrom,
+  partyRelationshipEntityFrom,
+  partyTypeEntityFrom,
+} from '../utils/contact/MappingUtils'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource
@@ -85,15 +93,15 @@ describe('Database entities tests', (): void => {
     await (await dbConnection).destroy()
   })
 
-  it('Should save person contact to database', async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it('Should save person party to database', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
         lastName: 'example_last_name',
@@ -101,75 +109,73 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
-    await dbConnection.getRepository(ContactEntity).save(contactEntity, {
+    const partyEntity: PartyEntity = partyEntityFrom(party)
+    await dbConnection.getRepository(PartyEntity).save(partyEntity, {
       transaction: true,
     })
 
-    const fromDb: ContactEntity | null = await dbConnection.getRepository(ContactEntity).findOne({
-      where: { id: contactEntity.id },
+    const fromDb: PartyEntity | null = await dbConnection.getRepository(PartyEntity).findOne({
+      where: { id: partyEntity.id },
     })
 
     expect(fromDb).toBeDefined()
     expect(fromDb?.identities?.length).toEqual(0)
-    expect(fromDb?.uri).toEqual(contact.uri)
-    expect(fromDb?.contactType).toBeDefined()
-    expect(fromDb?.contactType.type).toEqual(contact.contactType.type)
-    expect(fromDb?.contactType.tenantId).toEqual(contact.contactType.tenantId)
-    expect(fromDb?.contactType.name).toEqual(contact.contactType.name)
-    expect(fromDb?.contactOwner).toBeDefined()
-    expect((<PersonEntity>fromDb?.contactOwner).firstName).toEqual((<IPerson>contact.contactOwner).firstName)
-    expect((<PersonEntity>fromDb?.contactOwner).middleName).toEqual((<IPerson>contact.contactOwner).middleName)
-    expect((<PersonEntity>fromDb?.contactOwner).lastName).toEqual((<IPerson>contact.contactOwner).lastName)
-    expect((<PersonEntity>fromDb?.contactOwner).displayName).toEqual((<IPerson>contact.contactOwner).displayName)
+    expect(fromDb?.uri).toEqual(party.uri)
+    expect(fromDb?.partyType).toBeDefined()
+    expect(fromDb?.partyType.type).toEqual(party.partyType.type)
+    expect(fromDb?.partyType.tenantId).toEqual(party.partyType.tenantId)
+    expect(fromDb?.partyType.name).toEqual(party.partyType.name)
+    expect(fromDb?.contact).toBeDefined()
+    expect((<NaturalPersonEntity>fromDb?.contact).firstName).toEqual((<NaturalPerson>party.contact).firstName)
+    expect((<NaturalPersonEntity>fromDb?.contact).middleName).toEqual((<NaturalPerson>party.contact).middleName)
+    expect((<NaturalPersonEntity>fromDb?.contact).lastName).toEqual((<NaturalPerson>party.contact).lastName)
+    expect((<NaturalPersonEntity>fromDb?.contact).displayName).toEqual((<NaturalPerson>party.contact).displayName)
   })
 
-  it('Should save organization contact to database', async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it('Should save organization party to database', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.ORGANIZATION,
+      partyType: {
+        type: PartyTypeEnum.ORGANIZATION,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         legalName: 'example_legal_name',
         displayName: 'example_display_name',
-        cocNumber: 'example_coc_number',
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
-    await dbConnection.getRepository(ContactEntity).save(contactEntity, {
+    const partyEntity: PartyEntity = partyEntityFrom(party)
+    await dbConnection.getRepository(PartyEntity).save(partyEntity, {
       transaction: true,
     })
 
-    const fromDb: ContactEntity | null = await dbConnection.getRepository(ContactEntity).findOne({
-      where: { id: contactEntity.id },
+    const fromDb: PartyEntity | null = await dbConnection.getRepository(PartyEntity).findOne({
+      where: { id: partyEntity.id },
     })
 
     expect(fromDb).toBeDefined()
     expect(fromDb?.identities?.length).toEqual(0)
-    expect(fromDb?.uri).toEqual(contact.uri)
-    expect(fromDb?.contactType).toBeDefined()
-    expect(fromDb?.contactType.type).toEqual(contact.contactType.type)
-    expect(fromDb?.contactType.tenantId).toEqual(contact.contactType.tenantId)
-    expect(fromDb?.contactType.name).toEqual(contact.contactType.name)
-    expect(fromDb?.contactOwner).toBeDefined()
-    expect((<OrganizationEntity>fromDb?.contactOwner).legalName).toEqual((<IOrganization>contact.contactOwner).legalName)
-    expect((<OrganizationEntity>fromDb?.contactOwner).displayName).toEqual((<IOrganization>contact.contactOwner).displayName)
-    expect((<OrganizationEntity>fromDb?.contactOwner).cocNumber).toEqual((<IOrganization>contact.contactOwner).cocNumber)
+    expect(fromDb?.uri).toEqual(party.uri)
+    expect(fromDb?.partyType).toBeDefined()
+    expect(fromDb?.partyType.type).toEqual(party.partyType.type)
+    expect(fromDb?.partyType.tenantId).toEqual(party.partyType.tenantId)
+    expect(fromDb?.partyType.name).toEqual(party.partyType.name)
+    expect(fromDb?.contact).toBeDefined()
+    expect((<OrganizationEntity>fromDb?.contact).legalName).toEqual((<Organization>party.contact).legalName)
+    expect((<OrganizationEntity>fromDb?.contact).displayName).toEqual((<Organization>party.contact).displayName)
   })
 
-  it('Should result in contact relationship for the owner side only', async (): Promise<void> => {
-    const contact1: IBasicContact = {
+  it('Should result in party relationship for the owner side only', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
       uri: 'example1.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name1',
         middleName: 'example_middle_name1',
         lastName: 'example_last_name1',
@@ -177,19 +183,19 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity1: ContactEntity = contactEntityFrom(contact1)
-    const savedContact1: ContactEntity = await dbConnection.getRepository(ContactEntity).save(contactEntity1, {
+    const partyEntity1: PartyEntity = partyEntityFrom(party1)
+    const savedParty1: PartyEntity = await dbConnection.getRepository(PartyEntity).save(partyEntity1, {
       transaction: true,
     })
 
-    const contact2: IBasicContact = {
+    const party2: NonPersistedParty = {
       uri: 'example2.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name2',
         middleName: 'example_middle_name2',
         lastName: 'example_last_name2',
@@ -197,26 +203,26 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity2: ContactEntity = contactEntityFrom(contact2)
-    const savedContact2: ContactEntity = await dbConnection.getRepository(ContactEntity).save(contactEntity2, {
+    const partyEntity2: PartyEntity = partyEntityFrom(party2)
+    const savedParty2: PartyEntity = await dbConnection.getRepository(PartyEntity).save(partyEntity2, {
       transaction: true,
     })
 
-    const relationship: ContactRelationshipEntity = contactRelationshipEntityFrom({
-      leftId: savedContact1.id,
-      rightId: savedContact2.id,
+    const relationship: PartyRelationshipEntity = partyRelationshipEntityFrom({
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
     })
 
-    await dbConnection.getRepository(ContactRelationshipEntity).save(relationship, {
+    await dbConnection.getRepository(PartyRelationshipEntity).save(relationship, {
       transaction: true,
     })
 
-    const fromDb1: ContactEntity | null = await dbConnection.getRepository(ContactEntity).findOne({
-      where: { id: savedContact1.id },
+    const fromDb1: PartyEntity | null = await dbConnection.getRepository(PartyEntity).findOne({
+      where: { id: savedParty1.id },
     })
 
-    const fromDb2: ContactEntity | null = await dbConnection.getRepository(ContactEntity).findOne({
-      where: { id: savedContact2.id },
+    const fromDb2: PartyEntity | null = await dbConnection.getRepository(PartyEntity).findOne({
+      where: { id: savedParty2.id },
     })
 
     expect(fromDb1).toBeDefined()
@@ -225,15 +231,15 @@ describe('Database entities tests', (): void => {
     expect(fromDb2?.relationships.length).toEqual(0)
   })
 
-  it('should throw error when saving person contact with blank first name', async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it('should throw error when saving person party with blank first name', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         firstName: '',
         middleName: 'example_middle_name1',
         lastName: 'example_last_name1',
@@ -241,20 +247,20 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
+    const partyEntity: PartyEntity = partyEntityFrom(party)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank first names are not allowed')
+    await expect(dbConnection.getRepository(PartyEntity).save(partyEntity)).rejects.toThrowError('Blank first names are not allowed')
   })
 
-  it('should throw error when saving person contact with blank middle name', async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it('should throw error when saving person party with blank middle name', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name',
         middleName: '',
         lastName: 'example_last_name',
@@ -262,20 +268,20 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
+    const partyEntity: PartyEntity = partyEntityFrom(party)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank middle names are not allowed')
+    await expect(dbConnection.getRepository(PartyEntity).save(partyEntity)).rejects.toThrowError('Blank middle names are not allowed')
   })
 
-  it('should throw error when saving person contact with blank last name', async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it('should throw error when saving person party with blank last name', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
         lastName: '',
@@ -283,20 +289,20 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
+    const partyEntity: PartyEntity = partyEntityFrom(party)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank last names are not allowed')
+    await expect(dbConnection.getRepository(PartyEntity).save(partyEntity)).rejects.toThrowError('Blank last names are not allowed')
   })
 
-  it('should throw error when saving person contact with blank display name', async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it('should throw error when saving person party with blank display name', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
         lastName: 'example_last_name',
@@ -304,80 +310,58 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
+    const partyEntity: PartyEntity = partyEntityFrom(party)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank display names are not allowed')
+    await expect(dbConnection.getRepository(PartyEntity).save(partyEntity)).rejects.toThrowError('Blank display names are not allowed')
   })
 
-  it('should throw error when saving organization contact with blank legal name', async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it('should throw error when saving organization party with blank legal name', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.ORGANIZATION,
+      partyType: {
+        type: PartyTypeEnum.ORGANIZATION,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         legalName: '',
         displayName: 'example_legal_name',
-        cocNumber: 'example_coc_number',
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
+    const partyEntity: PartyEntity = partyEntityFrom(party)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank legal names are not allowed')
+    await expect(dbConnection.getRepository(PartyEntity).save(partyEntity)).rejects.toThrowError('Blank legal names are not allowed')
   })
 
-  it('should throw error when saving organization contact with blank display name', async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it('should throw error when saving organization party with blank display name', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.ORGANIZATION,
+      partyType: {
+        type: PartyTypeEnum.ORGANIZATION,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         legalName: 'example_first_name',
         displayName: '',
-        cocNumber: 'example_coc_number',
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
+    const partyEntity: PartyEntity = partyEntityFrom(party)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank display names are not allowed')
+    await expect(dbConnection.getRepository(PartyEntity).save(partyEntity)).rejects.toThrowError('Blank display names are not allowed')
   })
 
-  it('should throw error when saving organization contact with blank coc number', async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it('should throw error when saving party with blank party type name', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.ORGANIZATION,
-        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
-        name: 'example_name',
-      },
-      contactOwner: {
-        legalName: 'example_first_name',
-        displayName: 'example_display_name',
-        cocNumber: '',
-      },
-    }
-
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
-
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank coc numbers are not allowed')
-  })
-
-  it('should throw error when saving contact with blank contact type name', async (): Promise<void> => {
-    const contact: IBasicContact = {
-      uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: '',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
         lastName: 'example_last_name',
@@ -385,21 +369,21 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
+    const partyEntity: PartyEntity = partyEntityFrom(party)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank names are not allowed')
+    await expect(dbConnection.getRepository(PartyEntity).save(partyEntity)).rejects.toThrowError('Blank names are not allowed')
   })
 
-  it('should throw error when saving contact with blank contact type description', async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it('should throw error when saving party with blank party type description', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
         description: '',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
         lastName: 'example_last_name',
@@ -407,20 +391,20 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
+    const partyEntity: PartyEntity = partyEntityFrom(party)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError('Blank descriptions are not allowed')
+    await expect(dbConnection.getRepository(PartyEntity).save(partyEntity)).rejects.toThrowError('Blank descriptions are not allowed')
   })
 
-  it('should throw error when saving contact with blank contact type tenant id', async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it('should throw error when saving party with blank party type tenant id', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
         lastName: 'example_last_name',
@@ -428,92 +412,14 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
+    const partyEntity: PartyEntity = partyEntityFrom(party)
 
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity)).rejects.toThrowError("Blank tenant id's are not allowed")
-  })
-
-  it('Should enforce unique display name for a person contact', async (): Promise<void> => {
-    const contactDisplayName = 'non_unique_name'
-    const contact1: IBasicContact = {
-      uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
-        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
-        name: 'example_name',
-      },
-      contactOwner: {
-        firstName: 'example_first_name',
-        middleName: 'example_middle_name',
-        lastName: 'example_last_name',
-        displayName: contactDisplayName,
-      },
-    }
-    const contact1Entity: ContactEntity = contactEntityFrom(contact1)
-    await dbConnection.getRepository(ContactEntity).save(contact1Entity)
-
-    const contact2: IBasicContact = {
-      uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
-        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
-        name: 'example_name',
-      },
-      contactOwner: {
-        firstName: 'example_first_name',
-        middleName: 'example_middle_name',
-        lastName: 'example_last_name',
-        displayName: contactDisplayName,
-      },
-    }
-    const contact2Entity: ContactEntity = contactEntityFrom(contact2)
-
-    await expect(dbConnection.getRepository(ContactEntity).save(contact2Entity)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: ContactType.name'
-    )
-  })
-
-  it('Should enforce unique display name for a organization contact', async (): Promise<void> => {
-    const contactDisplayName = 'non_unique_name'
-    const contact1: IBasicContact = {
-      uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.ORGANIZATION,
-        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
-        name: 'example_name',
-      },
-      contactOwner: {
-        legalName: 'example_first_name',
-        displayName: contactDisplayName,
-        cocNumber: 'example_coc_number',
-      },
-    }
-    const contact1Entity: ContactEntity = contactEntityFrom(contact1)
-    await dbConnection.getRepository(ContactEntity).save(contact1Entity)
-
-    const contact2: IBasicContact = {
-      uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.ORGANIZATION,
-        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
-        name: 'example_name',
-      },
-      contactOwner: {
-        legalName: 'example_first_name',
-        displayName: contactDisplayName,
-        cocNumber: 'example_coc_number',
-      },
-    }
-    const contact2Entity: ContactEntity = contactEntityFrom(contact2)
-
-    await expect(dbConnection.getRepository(ContactEntity).save(contact2Entity)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: ContactType.name'
-    )
+    await expect(dbConnection.getRepository(PartyEntity).save(partyEntity)).rejects.toThrowError("Blank tenant id's are not allowed")
   })
 
   it('Should enforce unique alias for an identity', async (): Promise<void> => {
     const alias = 'non_unique_alias'
-    const identity1: IBasicIdentity = {
+    const identity1: NonPersistedIdentity = {
       alias,
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -524,7 +430,7 @@ describe('Database entities tests', (): void => {
     const identity1Entity: IdentityEntity = identityEntityFrom(identity1)
     await dbConnection.getRepository(IdentityEntity).save(identity1Entity)
 
-    const identity2: IBasicIdentity = {
+    const identity2: NonPersistedIdentity = {
       alias: alias,
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -540,7 +446,7 @@ describe('Database entities tests', (): void => {
 
   it('Should enforce unique correlationId for a identity', async (): Promise<void> => {
     const correlationId = 'non_unique_correlationId'
-    const identity1: IBasicIdentity = {
+    const identity1: NonPersistedIdentity = {
       alias: 'unique_alias1',
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -551,7 +457,7 @@ describe('Database entities tests', (): void => {
     const identity1Entity: IdentityEntity = identityEntityFrom(identity1)
     await dbConnection.getRepository(IdentityEntity).save(identity1Entity)
 
-    const identity2: IBasicIdentity = {
+    const identity2: NonPersistedIdentity = {
       alias: 'unique_alias2',
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -567,7 +473,7 @@ describe('Database entities tests', (): void => {
 
   it('Should save identity to database', async (): Promise<void> => {
     const correlationId = 'example_did'
-    const identity: IBasicIdentity = {
+    const identity: NonPersistedIdentity = {
       alias: correlationId,
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -596,7 +502,7 @@ describe('Database entities tests', (): void => {
   })
 
   it('should throw error when saving identity with blank alias', async (): Promise<void> => {
-    const identity: IBasicIdentity = {
+    const identity: NonPersistedIdentity = {
       alias: '',
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -611,7 +517,7 @@ describe('Database entities tests', (): void => {
   })
 
   it('should throw error when saving identity with blank correlation id', async (): Promise<void> => {
-    const identity: IBasicIdentity = {
+    const identity: NonPersistedIdentity = {
       alias: 'example_did',
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -627,7 +533,7 @@ describe('Database entities tests', (): void => {
 
   it('should throw error when saving identity with blank metadata label', async (): Promise<void> => {
     const correlationId = 'example_did'
-    const identity: IBasicIdentity = {
+    const identity: NonPersistedIdentity = {
       alias: correlationId,
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -649,7 +555,7 @@ describe('Database entities tests', (): void => {
 
   it('should throw error when saving identity with blank metadata value', async (): Promise<void> => {
     const correlationId = 'example_did'
-    const identity: IBasicIdentity = {
+    const identity: NonPersistedIdentity = {
       alias: correlationId,
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -671,7 +577,7 @@ describe('Database entities tests', (): void => {
 
   it('Should save identity with openid connection to database', async (): Promise<void> => {
     const correlationId = 'example.com'
-    const identity: IBasicIdentity = {
+    const identity: NonPersistedIdentity = {
       alias: correlationId,
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -711,12 +617,12 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.identifier.type).toEqual(identity.identifier.type)
     expect(fromDb?.connection?.type).toEqual(identity.connection?.type)
     expect(fromDb?.connection?.config).toBeDefined()
-    expect((<OpenIdConfigEntity>fromDb?.connection?.config).clientId).toEqual((<BasicOpenIdConfig>identity.connection?.config).clientId)
+    expect((<OpenIdConfigEntity>fromDb?.connection?.config).clientId).toEqual((<NonPersistedOpenIdConfig>identity.connection?.config).clientId)
   })
 
   it('Should save identity with didauth connection to database', async (): Promise<void> => {
     const correlationId = 'example.com'
-    const identity: IBasicIdentity = {
+    const identity: NonPersistedIdentity = {
       alias: correlationId,
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -758,11 +664,13 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.identifier.type).toEqual(identity.identifier.type)
     expect(fromDb?.connection?.type).toEqual(identity.connection?.type)
     expect(fromDb?.connection?.config).toBeDefined()
-    expect((<DidAuthConfigEntity>fromDb?.connection?.config).identifier).toEqual((<BasicDidAuthConfig>identity.connection?.config).identifier.did)
+    expect((<DidAuthConfigEntity>fromDb?.connection?.config).identifier).toEqual(
+      (<NonPersistedDidAuthConfig>identity.connection?.config).identifier.did
+    )
   })
 
   it('Should save connection with openid config to database', async (): Promise<void> => {
-    const connection: IBasicConnection = {
+    const connection: NonPersistedConnection = {
       type: ConnectionTypeEnum.OPENID_CONNECT,
       config: {
         clientId: '138d7bf8-c930-4c6e-b928-97d3a4928b01',
@@ -792,11 +700,11 @@ describe('Database entities tests', (): void => {
     expect(fromDbConfig).toBeDefined()
     expect(fromDb?.type).toEqual(connection.type)
     expect(fromDb?.config).toBeDefined()
-    expect((<OpenIdConfigEntity>fromDb?.config).clientId).toEqual((<BasicOpenIdConfig>connection.config).clientId)
+    expect((<OpenIdConfigEntity>fromDb?.config).clientId).toEqual((<NonPersistedOpenIdConfig>connection.config).clientId)
   })
 
   it('Should save connection with didauth config to database', async (): Promise<void> => {
-    const connection: IBasicConnection = {
+    const connection: NonPersistedConnection = {
       type: ConnectionTypeEnum.SIOPv2,
       config: {
         identifier: {
@@ -828,12 +736,12 @@ describe('Database entities tests', (): void => {
     expect(fromDbConfig).toBeDefined()
     expect(fromDb?.type).toEqual(connection.type)
     expect(fromDb?.config).toBeDefined()
-    expect((<DidAuthConfigEntity>fromDb?.config).identifier).toEqual((<BasicDidAuthConfig>connection.config).identifier.did)
+    expect((<DidAuthConfigEntity>fromDb?.config).identifier).toEqual((<NonPersistedDidAuthConfig>connection.config).identifier.did)
   })
 
   it('Should save openid config to database', async (): Promise<void> => {
     const clientId = '138d7bf8-c930-4c6e-b928-97d3a4928b01'
-    const config: BasicOpenIdConfig = {
+    const config: NonPersistedOpenIdConfig = {
       clientId,
       clientSecret: '03b3955f-d020-4f2a-8a27-4e452d4e27a0',
       scopes: ['auth'],
@@ -858,7 +766,7 @@ describe('Database entities tests', (): void => {
 
   it('Should save didauth config to database', async (): Promise<void> => {
     const sessionId = 'https://example.com/did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01'
-    const config: BasicDidAuthConfig = {
+    const config: NonPersistedDidAuthConfig = {
       identifier: {
         did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
         provider: 'test_provider',
@@ -883,15 +791,15 @@ describe('Database entities tests', (): void => {
     expect((<DidAuthConfigEntity>fromDb).identifier).toEqual(config.identifier.did)
   })
 
-  it('Should delete contact and all child relations', async (): Promise<void> => {
-    const contact1: IBasicContact = {
+  it('Should delete party and all child relations', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name1',
         middleName: 'example_middle_name1',
         lastName: 'example_last_name1',
@@ -899,19 +807,19 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity1: ContactEntity = contactEntityFrom(contact1)
-    const savedContact1: ContactEntity | null = await dbConnection.getRepository(ContactEntity).save(contactEntity1)
+    const partyEntity1: PartyEntity = partyEntityFrom(party1)
+    const savedParty1: PartyEntity | null = await dbConnection.getRepository(PartyEntity).save(partyEntity1)
 
-    expect(savedContact1).toBeDefined()
+    expect(savedParty1).toBeDefined()
 
-    const contact2: IBasicContact = {
+    const party2: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name2',
         middleName: 'example_middle_name2',
         lastName: 'example_last_name2',
@@ -919,13 +827,13 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity2: ContactEntity = contactEntityFrom(contact2)
-    const savedContact2: ContactEntity | null = await dbConnection.getRepository(ContactEntity).save(contactEntity2)
+    const partyEntity2: PartyEntity = partyEntityFrom(party2)
+    const savedParty2: PartyEntity | null = await dbConnection.getRepository(PartyEntity).save(partyEntity2)
 
-    expect(savedContact2).toBeDefined()
+    expect(savedParty2).toBeDefined()
 
     const correlationId = 'relation_example.com'
-    const identity: IBasicIdentity = {
+    const identity: NonPersistedIdentity = {
       alias: correlationId,
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -953,42 +861,42 @@ describe('Database entities tests', (): void => {
     }
 
     const identityEntity: IdentityEntity = identityEntityFrom(identity)
-    identityEntity.contact = savedContact1
+    identityEntity.party = savedParty1
 
     const savedIdentity: IdentityEntity | null = await dbConnection.getRepository(IdentityEntity).save(identityEntity)
 
     expect(savedIdentity).toBeDefined()
 
-    const relationship: ContactRelationshipEntity = contactRelationshipEntityFrom({
-      leftId: savedContact1.id,
-      rightId: savedContact2.id,
+    const relationship: PartyRelationshipEntity = partyRelationshipEntityFrom({
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
     })
 
-    const savedRelationship: ContactRelationshipEntity | null = await dbConnection.getRepository(ContactRelationshipEntity).save(relationship, {
+    const savedRelationship: PartyRelationshipEntity | null = await dbConnection.getRepository(PartyRelationshipEntity).save(relationship, {
       transaction: true,
     })
 
     expect(savedRelationship).toBeDefined()
 
     expect(
-      await dbConnection.getRepository(ContactEntity).findOne({
-        where: { id: savedContact1.id },
+      await dbConnection.getRepository(PartyEntity).findOne({
+        where: { id: savedParty1.id },
       })
     ).toBeDefined()
 
-    await dbConnection.getRepository(ContactEntity).delete({ id: savedContact1.id })
+    await dbConnection.getRepository(PartyEntity).delete({ id: savedParty1.id })
 
-    // check contact
+    // check party
     await expect(
-      await dbConnection.getRepository(ContactEntity).findOne({
-        where: { id: savedContact1.id },
+      await dbConnection.getRepository(PartyEntity).findOne({
+        where: { id: savedParty1.id },
       })
     ).toBeNull()
 
     // check identity
     expect(
       await dbConnection.getRepository(IdentityEntity).findOne({
-        where: { id: savedContact1.id },
+        where: { id: savedParty1.id },
       })
     ).toBeNull()
 
@@ -1020,37 +928,37 @@ describe('Database entities tests', (): void => {
       })
     ).toBeNull()
 
-    // check contact owner
+    // check contact
     expect(
-      await dbConnection.getRepository(ContactOwnerEntity).findOne({
-        where: { id: savedContact1.contactOwner.id },
+      await dbConnection.getRepository(BaseContactEntity).findOne({
+        where: { id: savedParty1.contact.id },
       })
     ).toBeNull()
 
-    // check contact type
+    // check party type
     expect(
-      await dbConnection.getRepository(ContactTypeEntity).findOne({
-        where: { id: savedContact1.contactType.id },
+      await dbConnection.getRepository(PartyTypeEntity).findOne({
+        where: { id: savedParty1.partyType.id },
       })
     ).toBeDefined()
 
     // check relation
     expect(
-      await dbConnection.getRepository(ContactRelationshipEntity).findOne({
+      await dbConnection.getRepository(PartyRelationshipEntity).findOne({
         where: { id: savedRelationship.id },
       })
     ).toBeNull()
   })
 
   it('Should delete identity and all child relations', async (): Promise<void> => {
-    const contact: IBasicContact = {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
         lastName: 'example_last_name',
@@ -1058,13 +966,13 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
-    const savedContact: ContactEntity | null = await dbConnection.getRepository(ContactEntity).save(contactEntity)
+    const partyEntity: PartyEntity = partyEntityFrom(party)
+    const savedParty: PartyEntity | null = await dbConnection.getRepository(PartyEntity).save(partyEntity)
 
-    expect(savedContact).toBeDefined()
+    expect(savedParty).toBeDefined()
 
     const correlationId = 'relation_example.com'
-    const identity: IBasicIdentity = {
+    const identity: NonPersistedIdentity = {
       alias: correlationId,
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -1094,13 +1002,13 @@ describe('Database entities tests', (): void => {
     }
 
     const identityEntity: IdentityEntity = identityEntityFrom(identity)
-    identityEntity.contact = savedContact
+    identityEntity.party = savedParty
 
     const savedIdentity: IdentityEntity | null = await dbConnection.getRepository(IdentityEntity).save(identityEntity)
 
     expect(
-      await dbConnection.getRepository(ContactEntity).findOne({
-        where: { id: savedContact.id },
+      await dbConnection.getRepository(PartyEntity).findOne({
+        where: { id: savedParty.id },
       })
     ).toBeDefined()
 
@@ -1142,15 +1050,15 @@ describe('Database entities tests', (): void => {
     ).toBeNull()
   })
 
-  it('Should not delete contact when deleting identity', async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it('Should not delete party when deleting identity', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
         lastName: 'example_last_name',
@@ -1158,13 +1066,13 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
-    const savedContact: ContactEntity | null = await dbConnection.getRepository(ContactEntity).save(contactEntity)
+    const partyEntity: PartyEntity = partyEntityFrom(party)
+    const savedParty: PartyEntity | null = await dbConnection.getRepository(PartyEntity).save(partyEntity)
 
-    expect(savedContact).toBeDefined()
+    expect(savedParty).toBeDefined()
 
     const correlationId = 'relation_example.com'
-    const identity: IBasicIdentity = {
+    const identity: NonPersistedIdentity = {
       alias: correlationId,
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -1194,7 +1102,7 @@ describe('Database entities tests', (): void => {
     }
 
     const identityEntity: IdentityEntity = identityEntityFrom(identity)
-    identityEntity.contact = savedContact
+    identityEntity.party = savedParty
 
     const savedIdentity: IdentityEntity | null = await dbConnection.getRepository(IdentityEntity).save(identityEntity)
 
@@ -1209,23 +1117,23 @@ describe('Database entities tests', (): void => {
       })
     ).toBeNull()
 
-    // check contact
+    // check party
     expect(
-      await dbConnection.getRepository(ContactEntity).findOne({
-        where: { id: savedContact.id },
+      await dbConnection.getRepository(PartyEntity).findOne({
+        where: { id: savedParty.id },
       })
     ).toBeDefined()
   })
 
-  it('Should set creation date when saving contact', async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it('Should set creation date when saving party', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
         lastName: 'example_last_name',
@@ -1233,26 +1141,26 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
-    const savedContact: ContactEntity | null = await dbConnection.getRepository(ContactEntity).save(contactEntity)
+    const partyEntity: PartyEntity = partyEntityFrom(party)
+    const savedParty: PartyEntity | null = await dbConnection.getRepository(PartyEntity).save(partyEntity)
 
-    const fromDb: ContactEntity | null = await dbConnection.getRepository(ContactEntity).findOne({
-      where: { id: savedContact.id },
+    const fromDb: PartyEntity | null = await dbConnection.getRepository(PartyEntity).findOne({
+      where: { id: savedParty.id },
     })
 
     expect(fromDb).toBeDefined()
     expect(fromDb?.createdAt).toBeDefined()
   })
 
-  it('Should not update creation date when updating contact', async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it('Should not update creation date when updating party', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
         lastName: 'example_last_name',
@@ -1260,32 +1168,32 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
-    const savedContact: ContactEntity | null = await dbConnection.getRepository(ContactEntity).save(contactEntity)
+    const partyEntity: PartyEntity = partyEntityFrom(party)
+    const savedParty: PartyEntity | null = await dbConnection.getRepository(PartyEntity).save(partyEntity)
 
-    expect(savedContact).toBeDefined()
+    expect(savedParty).toBeDefined()
 
     const newContactFirstName = 'new_first_name'
-    await dbConnection.getRepository(ContactEntity).save({
-      ...savedContact,
-      contactOwner: {
-        ...savedContact.contactOwner,
+    await dbConnection.getRepository(PartyEntity).save({
+      ...savedParty,
+      contact: {
+        ...savedParty.contact,
         firstName: newContactFirstName,
       },
     })
 
-    const fromDb: ContactEntity | null = await dbConnection.getRepository(ContactEntity).findOne({
-      where: { id: savedContact.id },
+    const fromDb: PartyEntity | null = await dbConnection.getRepository(PartyEntity).findOne({
+      where: { id: savedParty.id },
     })
 
     expect(fromDb).toBeDefined()
-    expect((<PersonEntity>fromDb?.contactOwner).firstName).toEqual(newContactFirstName)
-    expect(fromDb?.createdAt).toEqual(savedContact?.createdAt)
+    expect((<NaturalPersonEntity>fromDb?.contact).firstName).toEqual(newContactFirstName)
+    expect(fromDb?.createdAt).toEqual(savedParty?.createdAt)
   })
 
   it('Should set creation date when saving identity', async (): Promise<void> => {
     const correlationId = 'example_did'
-    const identity: IBasicIdentity = {
+    const identity: NonPersistedIdentity = {
       alias: correlationId,
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -1311,7 +1219,7 @@ describe('Database entities tests', (): void => {
 
   it('Should not update creation date when saving identity', async (): Promise<void> => {
     const correlationId = 'example_did'
-    const identity: IBasicIdentity = {
+    const identity: NonPersistedIdentity = {
       alias: correlationId,
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -1339,15 +1247,15 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.createdAt).toEqual(savedIdentity?.createdAt)
   })
 
-  it('Should set last updated date when saving contact', async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it('Should set last updated date when saving party', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
         lastName: 'example_last_name',
@@ -1355,26 +1263,26 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
-    const savedContact: ContactEntity | null = await dbConnection.getRepository(ContactEntity).save(contactEntity)
+    const partyEntity: PartyEntity = partyEntityFrom(party)
+    const savedParty: PartyEntity | null = await dbConnection.getRepository(PartyEntity).save(partyEntity)
 
-    const fromDb: ContactEntity | null = await dbConnection.getRepository(ContactEntity).findOne({
-      where: { id: savedContact.id },
+    const fromDb: PartyEntity | null = await dbConnection.getRepository(PartyEntity).findOne({
+      where: { id: savedParty.id },
     })
 
     expect(fromDb).toBeDefined()
     expect(fromDb?.lastUpdatedAt).toBeDefined()
   })
 
-  it('Should update last updated date when updating contact', async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it('Should update last updated date when updating party', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
         lastName: 'example_last_name',
@@ -1382,64 +1290,64 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
-    const savedContact: ContactEntity | null = await dbConnection.getRepository(ContactEntity).save(contactEntity)
-    expect(savedContact).toBeDefined()
+    const partyEntity: PartyEntity = partyEntityFrom(party)
+    const savedParty: PartyEntity | null = await dbConnection.getRepository(PartyEntity).save(partyEntity)
+    expect(savedParty).toBeDefined()
 
     // waiting here to get a different timestamp
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
     const newContactFirstName = 'new_first_name'
-    await dbConnection.getRepository(ContactEntity).save({
-      ...savedContact,
+    await dbConnection.getRepository(PartyEntity).save({
+      ...savedParty,
       // FIXME there is still an issue when updating nested objects, the parent does not update
       // https://github.com/typeorm/typeorm/issues/5378
       uri: 'new uri', // TODO remove this to trigger the bug
-      contactOwner: {
-        ...savedContact.contactOwner,
+      contact: {
+        ...savedParty.contact,
         firstName: newContactFirstName,
       },
     })
 
-    const fromDb: ContactEntity | null = await dbConnection.getRepository(ContactEntity).findOne({
-      where: { id: savedContact.id },
+    const fromDb: PartyEntity | null = await dbConnection.getRepository(PartyEntity).findOne({
+      where: { id: savedParty.id },
     })
 
     expect(fromDb).toBeDefined()
-    expect((<PersonEntity>fromDb?.contactOwner).firstName).toEqual(newContactFirstName)
-    expect(fromDb?.lastUpdatedAt).not.toEqual(savedContact?.lastUpdatedAt)
+    expect((<NaturalPersonEntity>fromDb?.contact).firstName).toEqual(newContactFirstName)
+    expect(fromDb?.lastUpdatedAt).not.toEqual(savedParty?.lastUpdatedAt)
   })
 
-  it('Should set last updated date when saving contact type', async (): Promise<void> => {
-    const contactType: BasicContactType = {
-      type: ContactTypeEnum.PERSON,
+  it('Should set last updated date when saving party type', async (): Promise<void> => {
+    const partyType: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
 
-    const contactTypeEntity: ContactTypeEntity = contactTypeEntityFrom(contactType)
-    const savedContactType: ContactTypeEntity | null = await dbConnection.getRepository(ContactTypeEntity).save(contactTypeEntity)
+    const partyTypeEntity: PartyTypeEntity = partyTypeEntityFrom(partyType)
+    const savedPartyType: PartyTypeEntity | null = await dbConnection.getRepository(PartyTypeEntity).save(partyTypeEntity)
 
-    const fromDb: ContactTypeEntity | null = await dbConnection.getRepository(ContactTypeEntity).findOne({
-      where: { id: savedContactType.id },
+    const fromDb: PartyTypeEntity | null = await dbConnection.getRepository(PartyTypeEntity).findOne({
+      where: { id: savedPartyType.id },
     })
 
     expect(fromDb).toBeDefined()
     expect(fromDb?.lastUpdatedAt).toBeDefined()
   })
 
-  it('Should set last creation date when saving contact type', async (): Promise<void> => {
-    const contactType: BasicContactType = {
-      type: ContactTypeEnum.PERSON,
+  it('Should set last creation date when saving party type', async (): Promise<void> => {
+    const partyType: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
 
-    const contactTypeEntity: ContactTypeEntity = contactTypeEntityFrom(contactType)
-    const savedContactType: ContactTypeEntity | null = await dbConnection.getRepository(ContactTypeEntity).save(contactTypeEntity)
+    const partyTypeEntity: PartyTypeEntity = partyTypeEntityFrom(partyType)
+    const savedPartyType: PartyTypeEntity | null = await dbConnection.getRepository(PartyTypeEntity).save(partyTypeEntity)
 
-    const fromDb: ContactTypeEntity | null = await dbConnection.getRepository(ContactTypeEntity).findOne({
-      where: { id: savedContactType.id },
+    const fromDb: PartyTypeEntity | null = await dbConnection.getRepository(PartyTypeEntity).findOne({
+      where: { id: savedPartyType.id },
     })
 
     expect(fromDb).toBeDefined()
@@ -1448,7 +1356,7 @@ describe('Database entities tests', (): void => {
 
   it('Should set last updated date when saving identity', async (): Promise<void> => {
     const correlationId = 'example_did'
-    const identity: IBasicIdentity = {
+    const identity: NonPersistedIdentity = {
       alias: correlationId,
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -1472,60 +1380,60 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.lastUpdatedAt).toBeDefined()
   })
 
-  it('Should enforce unique type and tenant id combination when saving contact type', async (): Promise<void> => {
+  it('Should enforce unique type and tenant id combination when saving party type', async (): Promise<void> => {
     const tenantId = 'non_unique_value'
     const name = 'non_unique_value'
-    const contactType1: BasicContactType = {
-      type: ContactTypeEnum.PERSON,
+    const partyType1: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
       tenantId,
       name,
     }
 
-    const contactTypeEntity1: ContactTypeEntity = contactTypeEntityFrom(contactType1)
-    const savedContactType1: ContactTypeEntity | null = await dbConnection.getRepository(ContactTypeEntity).save(contactTypeEntity1)
+    const partyTypeEntity1: PartyTypeEntity = partyTypeEntityFrom(partyType1)
+    const savedPartyType1: PartyTypeEntity | null = await dbConnection.getRepository(PartyTypeEntity).save(partyTypeEntity1)
 
-    expect(savedContactType1).toBeDefined()
+    expect(savedPartyType1).toBeDefined()
 
-    const contactType2: BasicContactType = {
-      type: ContactTypeEnum.PERSON,
+    const partyType2: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
       tenantId,
       name,
     }
 
-    const contactTypeEntity2: ContactTypeEntity = contactTypeEntityFrom(contactType2)
-    await expect(dbConnection.getRepository(ContactTypeEntity).save(contactTypeEntity2)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: ContactType.type, ContactType.tenantId'
+    const partyTypeEntity2: PartyTypeEntity = partyTypeEntityFrom(partyType2)
+    await expect(dbConnection.getRepository(PartyTypeEntity).save(partyTypeEntity2)).rejects.toThrowError(
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: PartyType.type, PartyType.tenant_id'
     )
   })
 
-  it('Should enforce unique name when saving contact type', async (): Promise<void> => {
+  it('Should enforce unique name when saving party type', async (): Promise<void> => {
     const name = 'non_unique_value'
-    const contactType1: BasicContactType = {
-      type: ContactTypeEnum.PERSON,
+    const partyType1: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name,
     }
 
-    const contactTypeEntity1: ContactTypeEntity = contactTypeEntityFrom(contactType1)
-    const savedContactType1: ContactTypeEntity | null = await dbConnection.getRepository(ContactTypeEntity).save(contactTypeEntity1)
+    const partyTypeEntity1: PartyTypeEntity = partyTypeEntityFrom(partyType1)
+    const savedPartyType1: PartyTypeEntity | null = await dbConnection.getRepository(PartyTypeEntity).save(partyTypeEntity1)
 
-    expect(savedContactType1).toBeDefined()
+    expect(savedPartyType1).toBeDefined()
 
-    const contactType2: BasicContactType = {
-      type: ContactTypeEnum.PERSON,
+    const partyType2: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
       name,
     }
 
-    const contactTypeEntity2: ContactTypeEntity = contactTypeEntityFrom(contactType2)
-    await expect(dbConnection.getRepository(ContactTypeEntity).save(contactTypeEntity2)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: ContactType.name'
+    const partyTypeEntity2: PartyTypeEntity = partyTypeEntityFrom(partyType2)
+    await expect(dbConnection.getRepository(PartyTypeEntity).save(partyTypeEntity2)).rejects.toThrowError(
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: PartyType.name'
     )
   })
 
   it('Should enforce unique legal name when saving organization', async (): Promise<void> => {
     const legalName = 'non_unique_value'
-    const organization1: BasicOrganization = {
+    const organization1: NonPersistedOrganization = {
       legalName,
       displayName: 'example_display_name',
     }
@@ -1537,45 +1445,20 @@ describe('Database entities tests', (): void => {
 
     expect(savedOrganization1).toBeDefined()
 
-    const organization2: BasicOrganization = {
+    const organization2: NonPersistedOrganization = {
       legalName,
       displayName: 'example_display_name',
     }
 
     const organizationEntity2: OrganizationEntity = organizationEntityFrom(organization2)
     await expect(dbConnection.getRepository(OrganizationEntity).save(organizationEntity2)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: ContactOwner.legalName'
-    )
-  })
-
-  it('Should enforce unique display name when saving organization', async (): Promise<void> => {
-    const displayName = 'non_unique_value'
-    const organization1: BasicOrganization = {
-      legalName: 'example_legal_name1',
-      displayName,
-    }
-
-    const organizationEntity1: OrganizationEntity = organizationEntityFrom(organization1)
-    const savedOrganization1: OrganizationEntity | null = await dbConnection.getRepository(OrganizationEntity).save(organizationEntity1, {
-      transaction: true,
-    })
-
-    expect(savedOrganization1).toBeDefined()
-
-    const organization2: BasicOrganization = {
-      legalName: 'example_legal_name2',
-      displayName,
-    }
-
-    const organizationEntity2: OrganizationEntity = organizationEntityFrom(organization2)
-    await expect(dbConnection.getRepository(OrganizationEntity).save(organizationEntity2)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: ContactOwner.displayName'
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: BaseContact.legal_name'
     )
   })
 
   it('Should enforce unique legal name when saving organization', async (): Promise<void> => {
     const legalName = 'example_legal_name'
-    const organization1: BasicOrganization = {
+    const organization1: NonPersistedOrganization = {
       legalName,
       displayName: 'example_display_name',
     }
@@ -1587,93 +1470,26 @@ describe('Database entities tests', (): void => {
 
     expect(savedOrganization1).toBeDefined()
 
-    const organization2: BasicOrganization = {
+    const organization2: NonPersistedOrganization = {
       legalName,
       displayName: 'example_display_name',
     }
 
     const organizationEntity2: OrganizationEntity = organizationEntityFrom(organization2)
     await expect(dbConnection.getRepository(OrganizationEntity).save(organizationEntity2)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: ContactOwner.legalName'
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: BaseContact.legal_name'
     )
   })
 
-  it('Should enforce unique coc number when saving organization per tenant id', async (): Promise<void> => {
-    const contact: IBasicContact = {
-      uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.ORGANIZATION,
-        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
-        name: 'example_name',
-      },
-      contactOwner: {
-        legalName: 'example_legal_name',
-        displayName: 'example_display_name',
-        cocNumber: 'example_coc_number',
-      },
-    }
-
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
-    await dbConnection.getRepository(ContactEntity).save(contactEntity, {
-      transaction: true,
-    })
-
-    const contact2: IBasicContact = {
-      uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
-        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
-        name: 'example_name2',
-      },
-      contactOwner: {
-        legalName: 'example_legal_name2',
-        displayName: 'example_display_name2',
-        cocNumber: 'example_coc_number',
-      },
-    }
-
-    const contactEntity2: ContactEntity = contactEntityFrom(contact2)
-    await expect(dbConnection.getRepository(ContactEntity).save(contactEntity2, { transaction: true })).rejects.toThrowError(
-      'Coc number already in use'
-    )
-  })
-
-  it('Should enforce unique display name when saving person', async (): Promise<void> => {
-    const displayName = 'non_unique_value'
-    const person1: BasicPerson = {
-      firstName: 'example_first_name1',
-      lastName: 'lastName2',
-      displayName,
-    }
-
-    const personEntity1: PersonEntity = personEntityFrom(person1)
-    const savedPerson1: PersonEntity | null = await dbConnection.getRepository(PersonEntity).save(personEntity1, {
-      transaction: true,
-    })
-
-    expect(savedPerson1).toBeDefined()
-
-    const person2: BasicPerson = {
-      firstName: 'example_first_name2',
-      lastName: 'lastName2',
-      displayName,
-    }
-
-    const personEntity2: PersonEntity = personEntityFrom(person2)
-    await expect(dbConnection.getRepository(PersonEntity).save(personEntity2)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: ContactOwner.displayName'
-    )
-  })
-
-  it('Should save contact relationship to database', async (): Promise<void> => {
-    const contact1: IBasicContact = {
+  it('Should save party relationship to database', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
       uri: 'example1.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name1',
         middleName: 'example_middle_name1',
         lastName: 'example_last_name1',
@@ -1681,21 +1497,21 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity1: ContactEntity = contactEntityFrom(contact1)
-    const savedContact1: ContactEntity = await dbConnection.getRepository(ContactEntity).save(contactEntity1, {
+    const partyEntity1: PartyEntity = partyEntityFrom(party1)
+    const savedParty1: PartyEntity = await dbConnection.getRepository(PartyEntity).save(partyEntity1, {
       transaction: true,
     })
 
-    expect(savedContact1).toBeDefined()
+    expect(savedParty1).toBeDefined()
 
-    const contact2: IBasicContact = {
+    const party2: NonPersistedParty = {
       uri: 'example2.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name2',
         middleName: 'example_middle_name2',
         lastName: 'example_last_name2',
@@ -1703,39 +1519,39 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity2: ContactEntity = contactEntityFrom(contact2)
-    const savedContact2: ContactEntity = await dbConnection.getRepository(ContactEntity).save(contactEntity2, {
+    const partyEntity2: PartyEntity = partyEntityFrom(party2)
+    const savedParty2: PartyEntity = await dbConnection.getRepository(PartyEntity).save(partyEntity2, {
       transaction: true,
     })
 
-    expect(savedContact2).toBeDefined()
+    expect(savedParty2).toBeDefined()
 
-    const relationship: ContactRelationshipEntity = contactRelationshipEntityFrom({
-      leftId: savedContact1.id,
-      rightId: savedContact2.id,
+    const relationship: PartyRelationshipEntity = partyRelationshipEntityFrom({
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
     })
 
-    await dbConnection.getRepository(ContactRelationshipEntity).save(relationship, {
+    await dbConnection.getRepository(PartyRelationshipEntity).save(relationship, {
       transaction: true,
     })
 
     // TODO check the relation field
-    const fromDb: ContactEntity | null = await dbConnection.getRepository(ContactEntity).findOne({
-      where: { id: contactEntity1.id },
+    const fromDb: PartyEntity | null = await dbConnection.getRepository(PartyEntity).findOne({
+      where: { id: partyEntity1.id },
     })
 
     expect(fromDb).toBeDefined()
   })
 
-  it('Should set last updated date when saving contact relationship', async (): Promise<void> => {
-    const contact1: IBasicContact = {
+  it('Should set last updated date when saving party relationship', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
       uri: 'example1.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name1',
         middleName: 'example_middle_name1',
         lastName: 'example_last_name1',
@@ -1743,19 +1559,19 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity1: ContactEntity = contactEntityFrom(contact1)
-    const savedContact1: ContactEntity = await dbConnection.getRepository(ContactEntity).save(contactEntity1, {
+    const partyEntity1: PartyEntity = partyEntityFrom(party1)
+    const savedParty1: PartyEntity = await dbConnection.getRepository(PartyEntity).save(partyEntity1, {
       transaction: true,
     })
 
-    const contact2: IBasicContact = {
+    const party2: NonPersistedParty = {
       uri: 'example2.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name2',
         middleName: 'example_middle_name2',
         lastName: 'example_last_name2',
@@ -1763,37 +1579,37 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity2: ContactEntity = contactEntityFrom(contact2)
-    const savedContact2: ContactEntity = await dbConnection.getRepository(ContactEntity).save(contactEntity2, {
+    const partyEntity2: PartyEntity = partyEntityFrom(party2)
+    const savedParty2: PartyEntity = await dbConnection.getRepository(PartyEntity).save(partyEntity2, {
       transaction: true,
     })
 
-    const relationship: ContactRelationshipEntity = contactRelationshipEntityFrom({
-      leftId: savedContact1.id,
-      rightId: savedContact2.id,
+    const relationship: PartyRelationshipEntity = partyRelationshipEntityFrom({
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
     })
 
-    await dbConnection.getRepository(ContactRelationshipEntity).save(relationship, {
+    await dbConnection.getRepository(PartyRelationshipEntity).save(relationship, {
       transaction: true,
     })
 
-    const fromDb: ContactEntity | null = await dbConnection.getRepository(ContactEntity).findOne({
-      where: { id: contactEntity1.id },
+    const fromDb: PartyEntity | null = await dbConnection.getRepository(PartyEntity).findOne({
+      where: { id: partyEntity1.id },
     })
 
     expect(fromDb).toBeDefined()
     expect(fromDb?.lastUpdatedAt).toBeDefined()
   })
 
-  it('Should set creation date when saving contact relationship', async (): Promise<void> => {
-    const contact1: IBasicContact = {
+  it('Should set creation date when saving party relationship', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
       uri: 'example1.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name1',
         middleName: 'example_middle_name1',
         lastName: 'example_last_name1',
@@ -1801,19 +1617,19 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity1: ContactEntity = contactEntityFrom(contact1)
-    const savedContact1: ContactEntity = await dbConnection.getRepository(ContactEntity).save(contactEntity1, {
+    const partyEntity1: PartyEntity = partyEntityFrom(party1)
+    const savedParty1: PartyEntity = await dbConnection.getRepository(PartyEntity).save(partyEntity1, {
       transaction: true,
     })
 
-    const contact2: IBasicContact = {
+    const party2: NonPersistedParty = {
       uri: 'example2.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name2',
         middleName: 'example_middle_name2',
         lastName: 'example_last_name2',
@@ -1821,37 +1637,37 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity2: ContactEntity = contactEntityFrom(contact2)
-    const savedContact2: ContactEntity = await dbConnection.getRepository(ContactEntity).save(contactEntity2, {
+    const partyEntity2: PartyEntity = partyEntityFrom(party2)
+    const savedParty2: PartyEntity = await dbConnection.getRepository(PartyEntity).save(partyEntity2, {
       transaction: true,
     })
 
-    const relationship: ContactRelationshipEntity = contactRelationshipEntityFrom({
-      leftId: savedContact1.id,
-      rightId: savedContact2.id,
+    const relationship: PartyRelationshipEntity = partyRelationshipEntityFrom({
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
     })
 
-    await dbConnection.getRepository(ContactRelationshipEntity).save(relationship, {
+    await dbConnection.getRepository(PartyRelationshipEntity).save(relationship, {
       transaction: true,
     })
 
-    const fromDb: ContactEntity | null = await dbConnection.getRepository(ContactEntity).findOne({
-      where: { id: contactEntity1.id },
+    const fromDb: PartyEntity | null = await dbConnection.getRepository(PartyEntity).findOne({
+      where: { id: partyEntity1.id },
     })
 
     expect(fromDb).toBeDefined()
     expect(fromDb?.createdAt).toBeDefined()
   })
 
-  it('Should save bidirectional contact relationships to database', async (): Promise<void> => {
-    const contact1: IBasicContact = {
+  it('Should save bidirectional party relationships to database', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
       uri: 'example1.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name1',
         middleName: 'example_middle_name1',
         lastName: 'example_last_name1',
@@ -1859,21 +1675,21 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity1: ContactEntity = contactEntityFrom(contact1)
-    const savedContact1: ContactEntity = await dbConnection.getRepository(ContactEntity).save(contactEntity1, {
+    const partyEntity1: PartyEntity = partyEntityFrom(party1)
+    const savedParty1: PartyEntity = await dbConnection.getRepository(PartyEntity).save(partyEntity1, {
       transaction: true,
     })
 
-    expect(savedContact1).toBeDefined()
+    expect(savedParty1).toBeDefined()
 
-    const contact2: IBasicContact = {
+    const party2: NonPersistedParty = {
       uri: 'example2.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name2',
         middleName: 'example_middle_name2',
         lastName: 'example_last_name2',
@@ -1881,51 +1697,51 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity2: ContactEntity = contactEntityFrom(contact2)
-    const savedContact2: ContactEntity = await dbConnection.getRepository(ContactEntity).save(contactEntity2, {
+    const partyEntity2: PartyEntity = partyEntityFrom(party2)
+    const savedParty2: PartyEntity = await dbConnection.getRepository(PartyEntity).save(partyEntity2, {
       transaction: true,
     })
 
-    expect(savedContact2).toBeDefined()
+    expect(savedParty2).toBeDefined()
 
-    const relationship1: ContactRelationshipEntity = contactRelationshipEntityFrom({
-      leftId: savedContact1.id,
-      rightId: savedContact2.id,
+    const relationship1: PartyRelationshipEntity = partyRelationshipEntityFrom({
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
     })
 
-    const savedRelationship1: ContactRelationshipEntity | null = await dbConnection.getRepository(ContactRelationshipEntity).save(relationship1, {
+    const savedRelationship1: PartyRelationshipEntity | null = await dbConnection.getRepository(PartyRelationshipEntity).save(relationship1, {
       transaction: true,
     })
 
     expect(savedRelationship1).toBeDefined()
 
-    const relationship2: ContactRelationshipEntity = contactRelationshipEntityFrom({
-      leftId: savedContact2.id,
-      rightId: savedContact1.id,
+    const relationship2: PartyRelationshipEntity = partyRelationshipEntityFrom({
+      leftId: savedParty2.id,
+      rightId: savedParty1.id,
     })
 
-    const savedRelationship2: ContactRelationshipEntity | null = await dbConnection.getRepository(ContactRelationshipEntity).save(relationship2, {
+    const savedRelationship2: PartyRelationshipEntity | null = await dbConnection.getRepository(PartyRelationshipEntity).save(relationship2, {
       transaction: true,
     })
 
     expect(savedRelationship2).toBeDefined()
 
-    const fromDb: ContactRelationshipEntity | null = await dbConnection.getRepository(ContactRelationshipEntity).findOne({
+    const fromDb: PartyRelationshipEntity | null = await dbConnection.getRepository(PartyRelationshipEntity).findOne({
       where: { id: savedRelationship2.id },
     })
 
     expect(fromDb).toBeDefined()
   })
 
-  it('Should enforce unique owner combination for contact relationship', async (): Promise<void> => {
-    const contact1: IBasicContact = {
+  it('Should enforce unique owner combination for party relationship', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
       uri: 'example1.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name1',
         middleName: 'example_middle_name1',
         lastName: 'example_last_name1',
@@ -1933,21 +1749,21 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity1: ContactEntity = contactEntityFrom(contact1)
-    const savedContact1: ContactEntity = await dbConnection.getRepository(ContactEntity).save(contactEntity1, {
+    const partyEntity1: PartyEntity = partyEntityFrom(party1)
+    const savedParty1: PartyEntity = await dbConnection.getRepository(PartyEntity).save(partyEntity1, {
       transaction: true,
     })
 
-    expect(savedContact1).toBeDefined()
+    expect(savedParty1).toBeDefined()
 
-    const contact2: IBasicContact = {
+    const party2: NonPersistedParty = {
       uri: 'example2.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name2',
         middleName: 'example_middle_name2',
         lastName: 'example_last_name2',
@@ -1955,64 +1771,64 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity2: ContactEntity = contactEntityFrom(contact2)
-    const savedContact2: ContactEntity = await dbConnection.getRepository(ContactEntity).save(contactEntity2, {
+    const partyEntity2: PartyEntity = partyEntityFrom(party2)
+    const savedParty2: PartyEntity = await dbConnection.getRepository(PartyEntity).save(partyEntity2, {
       transaction: true,
     })
 
-    expect(savedContact2).toBeDefined()
+    expect(savedParty2).toBeDefined()
 
-    const relationship1: ContactRelationshipEntity = contactRelationshipEntityFrom({
-      leftId: savedContact1.id,
-      rightId: savedContact2.id,
+    const relationship1: PartyRelationshipEntity = partyRelationshipEntityFrom({
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
     })
 
-    const savedRelationship1: ContactRelationshipEntity | null = await dbConnection.getRepository(ContactRelationshipEntity).save(relationship1, {
+    const savedRelationship1: PartyRelationshipEntity | null = await dbConnection.getRepository(PartyRelationshipEntity).save(relationship1, {
       transaction: true,
     })
 
     expect(savedRelationship1).toBeDefined()
 
-    const relationship2: ContactRelationshipEntity = contactRelationshipEntityFrom({
-      leftId: savedContact1.id,
-      rightId: savedContact2.id,
+    const relationship2: PartyRelationshipEntity = partyRelationshipEntityFrom({
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
     })
 
-    await expect(dbConnection.getRepository(ContactRelationshipEntity).save(relationship2)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: ContactRelationship.leftId, ContactRelationship.rightId'
+    await expect(dbConnection.getRepository(PartyRelationshipEntity).save(relationship2)).rejects.toThrowError(
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: PartyRelationship.left_id, PartyRelationship.right_id'
     )
   })
 
-  it('Should save contact type to database', async (): Promise<void> => {
-    const contactType: BasicContactType = {
-      type: ContactTypeEnum.PERSON,
+  it('Should save party type to database', async (): Promise<void> => {
+    const partyType: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
 
-    const contactTypeEntity: ContactTypeEntity = contactTypeEntityFrom(contactType)
-    const savedContactType: ContactTypeEntity | null = await dbConnection.getRepository(ContactTypeEntity).save(contactTypeEntity)
+    const partyTypeEntity: PartyTypeEntity = partyTypeEntityFrom(partyType)
+    const savedPartyType: PartyTypeEntity | null = await dbConnection.getRepository(PartyTypeEntity).save(partyTypeEntity)
 
-    const fromDb: ContactTypeEntity | null = await dbConnection.getRepository(ContactTypeEntity).findOne({
-      where: { id: savedContactType.id },
+    const fromDb: PartyTypeEntity | null = await dbConnection.getRepository(PartyTypeEntity).findOne({
+      where: { id: savedPartyType.id },
     })
 
     expect(fromDb).toBeDefined()
   })
 
   it('Should save person to database', async (): Promise<void> => {
-    const person: BasicPerson = {
+    const person: NonPersistedNaturalPerson = {
       firstName: 'example_first_name',
       lastName: 'lastName2',
       displayName: 'displayName',
     }
 
-    const personEntity: PersonEntity = personEntityFrom(person)
-    const savedPerson: PersonEntity | null = await dbConnection.getRepository(PersonEntity).save(personEntity, {
+    const personEntity: NaturalPersonEntity = naturalPersonEntityFrom(person)
+    const savedPerson: NaturalPersonEntity | null = await dbConnection.getRepository(NaturalPersonEntity).save(personEntity, {
       transaction: true,
     })
 
-    const fromDb: PersonEntity | null = await dbConnection.getRepository(PersonEntity).findOne({
+    const fromDb: NaturalPersonEntity | null = await dbConnection.getRepository(NaturalPersonEntity).findOne({
       where: { id: savedPerson.id },
     })
 
@@ -2020,18 +1836,18 @@ describe('Database entities tests', (): void => {
   })
 
   it('Should set last updated date when saving person', async (): Promise<void> => {
-    const person: BasicPerson = {
+    const person: NonPersistedNaturalPerson = {
       firstName: 'example_first_name',
       lastName: 'lastName2',
       displayName: 'displayName',
     }
 
-    const personEntity: PersonEntity = personEntityFrom(person)
-    const savedPerson: PersonEntity | null = await dbConnection.getRepository(PersonEntity).save(personEntity, {
+    const personEntity: NaturalPersonEntity = naturalPersonEntityFrom(person)
+    const savedPerson: NaturalPersonEntity | null = await dbConnection.getRepository(NaturalPersonEntity).save(personEntity, {
       transaction: true,
     })
 
-    const fromDb: PersonEntity | null = await dbConnection.getRepository(PersonEntity).findOne({
+    const fromDb: NaturalPersonEntity | null = await dbConnection.getRepository(NaturalPersonEntity).findOne({
       where: { id: savedPerson.id },
     })
 
@@ -2040,18 +1856,18 @@ describe('Database entities tests', (): void => {
   })
 
   it('Should set creation date when saving person', async (): Promise<void> => {
-    const person: BasicPerson = {
+    const person: NonPersistedNaturalPerson = {
       firstName: 'example_first_name',
       lastName: 'lastName2',
       displayName: 'displayName',
     }
 
-    const personEntity: PersonEntity = personEntityFrom(person)
-    const savedPerson: PersonEntity | null = await dbConnection.getRepository(PersonEntity).save(personEntity, {
+    const personEntity: NaturalPersonEntity = naturalPersonEntityFrom(person)
+    const savedPerson: NaturalPersonEntity | null = await dbConnection.getRepository(NaturalPersonEntity).save(personEntity, {
       transaction: true,
     })
 
-    const fromDb: PersonEntity | null = await dbConnection.getRepository(PersonEntity).findOne({
+    const fromDb: NaturalPersonEntity | null = await dbConnection.getRepository(NaturalPersonEntity).findOne({
       where: { id: savedPerson.id },
     })
 
@@ -2060,7 +1876,7 @@ describe('Database entities tests', (): void => {
   })
 
   it('Should save organization to database', async (): Promise<void> => {
-    const organization: BasicOrganization = {
+    const organization: NonPersistedOrganization = {
       legalName: 'example_legal_name',
       displayName: 'example_display_name',
     }
@@ -2078,7 +1894,7 @@ describe('Database entities tests', (): void => {
   })
 
   it('Should set last updated date when saving organization', async (): Promise<void> => {
-    const organization: BasicOrganization = {
+    const organization: NonPersistedOrganization = {
       legalName: 'example_legal_name',
       displayName: 'example_display_name',
     }
@@ -2097,7 +1913,7 @@ describe('Database entities tests', (): void => {
   })
 
   it('Should set creation date when saving organization', async (): Promise<void> => {
-    const organization: BasicOrganization = {
+    const organization: NonPersistedOrganization = {
       legalName: 'example_legal_name',
       displayName: 'example_display_name',
     }
@@ -2115,16 +1931,16 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.createdAt).toBeDefined()
   })
 
-  it('Should get contact based on person information', async (): Promise<void> => {
+  it('Should get party based on person information', async (): Promise<void> => {
     const firstName = 'example_first_name'
-    const contact: IBasicContact = {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         firstName,
         middleName: 'example_middle_name',
         lastName: 'example_last_name',
@@ -2132,63 +1948,62 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
-    await dbConnection.getRepository(ContactEntity).save(contactEntity, {
+    const partyEntity: PartyEntity = partyEntityFrom(party)
+    await dbConnection.getRepository(PartyEntity).save(partyEntity, {
       transaction: true,
     })
 
-    const fromDb: ContactEntity | null = await dbConnection.getRepository(ContactEntity).findOne({
+    const fromDb: PartyEntity | null = await dbConnection.getRepository(PartyEntity).findOne({
       where: {
-        contactOwner: {
+        contact: {
           firstName,
-        } as FindOptionsWhere<PersonEntity | OrganizationEntity>,
+        } as FindOptionsWhere<BaseContactEntity>, //NaturalPersonEntity | OrganizationEntity
       },
     })
 
     expect(fromDb).toBeDefined()
   })
 
-  it('Should get contact based on organization information', async (): Promise<void> => {
+  it('Should get party based on organization information', async (): Promise<void> => {
     const legalName = 'example_legal_name'
-    const contact: IBasicContact = {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.ORGANIZATION,
+      partyType: {
+        type: PartyTypeEnum.ORGANIZATION,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         legalName,
         displayName: 'example_display_name',
-        cocNumber: 'example_coc_number',
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
-    await dbConnection.getRepository(ContactEntity).save(contactEntity, {
+    const partyEntity: PartyEntity = partyEntityFrom(party)
+    await dbConnection.getRepository(PartyEntity).save(partyEntity, {
       transaction: true,
     })
 
-    const fromDb: ContactEntity | null = await dbConnection.getRepository(ContactEntity).findOne({
+    const fromDb: PartyEntity | null = await dbConnection.getRepository(PartyEntity).findOne({
       where: {
-        contactOwner: {
+        contact: {
           legalName,
-        } as FindOptionsWhere<PersonEntity | OrganizationEntity>,
+        } as FindOptionsWhere<BaseContactEntity>, //NaturalPersonEntity | OrganizationEntity
       },
     })
 
     expect(fromDb).toBeDefined()
   })
 
-  it("Should enforce unique contact id's for relationship sides", async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it("Should enforce unique party id's for relationship sides", async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
         lastName: 'example_last_name',
@@ -2196,32 +2011,32 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
-    const savedContact: ContactEntity = await dbConnection.getRepository(ContactEntity).save(contactEntity, {
+    const partyEntity: PartyEntity = partyEntityFrom(party)
+    const savedParty: PartyEntity = await dbConnection.getRepository(PartyEntity).save(partyEntity, {
       transaction: true,
     })
 
-    expect(savedContact).toBeDefined()
+    expect(savedParty).toBeDefined()
 
-    const relationship: ContactRelationshipEntity = contactRelationshipEntityFrom({
-      leftId: savedContact.id,
-      rightId: savedContact.id,
+    const relationship: PartyRelationshipEntity = partyRelationshipEntityFrom({
+      leftId: savedParty.id,
+      rightId: savedParty.id,
     })
 
-    await expect(dbConnection.getRepository(ContactRelationshipEntity).save(relationship)).rejects.toThrowError(
+    await expect(dbConnection.getRepository(PartyRelationshipEntity).save(relationship)).rejects.toThrowError(
       'Cannot use the same id for both sides of the relationship'
     )
   })
 
-  it('Should delete contact relationship', async (): Promise<void> => {
-    const contact1: IBasicContact = {
+  it('Should delete party relationship', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
       uri: 'example1.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name1',
         middleName: 'example_middle_name1',
         lastName: 'example_last_name1',
@@ -2229,21 +2044,21 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity1: ContactEntity = contactEntityFrom(contact1)
-    const savedContact1: ContactEntity = await dbConnection.getRepository(ContactEntity).save(contactEntity1, {
+    const partyEntity1: PartyEntity = partyEntityFrom(party1)
+    const savedParty1: PartyEntity = await dbConnection.getRepository(PartyEntity).save(partyEntity1, {
       transaction: true,
     })
 
-    expect(savedContact1).toBeDefined()
+    expect(savedParty1).toBeDefined()
 
-    const contact2: IBasicContact = {
+    const party2: NonPersistedParty = {
       uri: 'example2.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name2',
         middleName: 'example_middle_name2',
         lastName: 'example_last_name2',
@@ -2251,63 +2066,63 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity2: ContactEntity = contactEntityFrom(contact2)
-    const savedContact2: ContactEntity = await dbConnection.getRepository(ContactEntity).save(contactEntity2, {
+    const partyEntity2: PartyEntity = partyEntityFrom(party2)
+    const savedParty2: PartyEntity = await dbConnection.getRepository(PartyEntity).save(partyEntity2, {
       transaction: true,
     })
 
-    expect(savedContact2).toBeDefined()
+    expect(savedParty2).toBeDefined()
 
-    const relationship: ContactRelationshipEntity = contactRelationshipEntityFrom({
-      leftId: savedContact1.id,
-      rightId: savedContact2.id,
+    const relationship: PartyRelationshipEntity = partyRelationshipEntityFrom({
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
     })
 
-    const savedRelationship: ContactRelationshipEntity | null = await dbConnection.getRepository(ContactRelationshipEntity).save(relationship, {
+    const savedRelationship: PartyRelationshipEntity | null = await dbConnection.getRepository(PartyRelationshipEntity).save(relationship, {
       transaction: true,
     })
 
     expect(savedRelationship).toBeDefined()
 
-    await dbConnection.getRepository(ContactRelationshipEntity).delete({ id: savedRelationship.id })
+    await dbConnection.getRepository(PartyRelationshipEntity).delete({ id: savedRelationship.id })
 
     await expect(
-      await dbConnection.getRepository(ContactRelationshipEntity).findOne({
+      await dbConnection.getRepository(PartyRelationshipEntity).findOne({
         where: { id: savedRelationship.id },
       })
     ).toBeNull()
   })
 
-  it('Should delete contact type', async (): Promise<void> => {
-    const contactType: BasicContactType = {
-      type: ContactTypeEnum.PERSON,
+  it('Should delete party type', async (): Promise<void> => {
+    const partyType: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
 
-    const contactTypeEntity: ContactTypeEntity = contactTypeEntityFrom(contactType)
-    const savedContactType: ContactTypeEntity | null = await dbConnection.getRepository(ContactTypeEntity).save(contactTypeEntity)
+    const partyTypeEntity: PartyTypeEntity = partyTypeEntityFrom(partyType)
+    const savedPartyType: PartyTypeEntity | null = await dbConnection.getRepository(PartyTypeEntity).save(partyTypeEntity)
 
-    expect(savedContactType).toBeDefined()
+    expect(savedPartyType).toBeDefined()
 
-    await dbConnection.getRepository(ContactTypeEntity).delete({ id: savedContactType.id })
+    await dbConnection.getRepository(PartyTypeEntity).delete({ id: savedPartyType.id })
 
     await expect(
-      await dbConnection.getRepository(ContactTypeEntity).findOne({
-        where: { id: savedContactType.id },
+      await dbConnection.getRepository(PartyTypeEntity).findOne({
+        where: { id: savedPartyType.id },
       })
     ).toBeNull()
   })
 
-  it('Should not be able to remove contact type when used by contacts', async (): Promise<void> => {
-    const contact: IBasicContact = {
+  it('Should not be able to remove party type when used by parties', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: {
-        type: ContactTypeEnum.PERSON,
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
-      contactOwner: {
+      contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
         lastName: 'example_last_name',
@@ -2315,32 +2130,32 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
-    const savedContact: ContactEntity | null = await dbConnection.getRepository(ContactEntity).save(contactEntity, {
+    const partyEntity: PartyEntity = partyEntityFrom(party)
+    const savedParty: PartyEntity | null = await dbConnection.getRepository(PartyEntity).save(partyEntity, {
       transaction: true,
     })
 
-    expect(savedContact).toBeDefined()
+    expect(savedParty).toBeDefined()
 
-    await expect(dbConnection.getRepository(ContactTypeEntity).delete({ id: savedContact.contactType.id })).rejects.toThrowError(
+    await expect(dbConnection.getRepository(PartyTypeEntity).delete({ id: savedParty.partyType.id })).rejects.toThrowError(
       'FOREIGN KEY constraint failed'
     )
   })
 
-  it('Should save contact with existing contact type', async (): Promise<void> => {
-    const contactType: BasicContactType = {
-      type: ContactTypeEnum.PERSON,
+  it('Should save party with existing party type', async (): Promise<void> => {
+    const partyType: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
 
-    const contactTypeEntity: ContactTypeEntity = contactTypeEntityFrom(contactType)
-    const savedContactType: ContactTypeEntity | null = await dbConnection.getRepository(ContactTypeEntity).save(contactTypeEntity)
+    const partyTypeEntity: PartyTypeEntity = partyTypeEntityFrom(partyType)
+    const savedPartyType: PartyTypeEntity | null = await dbConnection.getRepository(PartyTypeEntity).save(partyTypeEntity)
 
-    const contact: IBasicContact = {
+    const party: NonPersistedParty = {
       uri: 'example.com',
-      contactType: savedContactType,
-      contactOwner: {
+      partyType: savedPartyType,
+      contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
         lastName: 'example_last_name',
@@ -2348,45 +2163,42 @@ describe('Database entities tests', (): void => {
       },
     }
 
-    const contactEntity: ContactEntity = contactEntityFrom(contact)
-    contactEntity.contactType = savedContactType
-    await dbConnection.getRepository(ContactEntity).save(contactEntity, {
+    const partyEntity: PartyEntity = partyEntityFrom(party)
+    partyEntity.partyType = savedPartyType
+    await dbConnection.getRepository(PartyEntity).save(partyEntity, {
       transaction: true,
     })
 
-    const fromDb: ContactEntity | null = await dbConnection.getRepository(ContactEntity).findOne({
-      where: { id: contactEntity.id },
+    const fromDb: PartyEntity | null = await dbConnection.getRepository(PartyEntity).findOne({
+      where: { id: partyEntity.id },
     })
 
     expect(fromDb).toBeDefined()
-    expect(fromDb?.contactType).toBeDefined()
-    expect(fromDb?.contactType.id).toEqual(savedContactType.id)
-    expect(fromDb?.contactType.type).toEqual(savedContactType.type)
-    expect(fromDb?.contactType.tenantId).toEqual(savedContactType.tenantId)
-    expect(fromDb?.contactType.name).toEqual(savedContactType.name)
+    expect(fromDb?.partyType).toBeDefined()
+    expect(fromDb?.partyType.id).toEqual(savedPartyType.id)
+    expect(fromDb?.partyType.type).toEqual(savedPartyType.type)
+    expect(fromDb?.partyType.tenantId).toEqual(savedPartyType.tenantId)
+    expect(fromDb?.partyType.name).toEqual(savedPartyType.name)
   })
 
-  it('Should not update creation date when saving contact type', async (): Promise<void> => {
-    const contactType: BasicContactType = {
-      type: ContactTypeEnum.PERSON,
+  it('Should not update creation date when saving party type', async (): Promise<void> => {
+    const partyType: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
 
-    const contactTypeEntity: ContactTypeEntity = contactTypeEntityFrom(contactType)
-    const savedContactType: ContactTypeEntity | null = await dbConnection.getRepository(ContactTypeEntity).save(contactTypeEntity)
-    await dbConnection
-    .getRepository(ContactTypeEntity)
-    .save({ ...savedContactType, type: ContactTypeEnum.ORGANIZATION })
+    const partyTypeEntity: PartyTypeEntity = partyTypeEntityFrom(partyType)
+    const savedPartyType: PartyTypeEntity | null = await dbConnection.getRepository(PartyTypeEntity).save(partyTypeEntity)
+    await dbConnection.getRepository(PartyTypeEntity).save({ ...savedPartyType, type: PartyTypeEnum.ORGANIZATION })
 
-    const fromDb: ContactTypeEntity | null = await dbConnection.getRepository(ContactTypeEntity).findOne({
+    const fromDb: PartyTypeEntity | null = await dbConnection.getRepository(PartyTypeEntity).findOne({
       where: {
-        type: ContactTypeEnum.ORGANIZATION,
+        type: PartyTypeEnum.ORGANIZATION,
       },
     })
 
     expect(fromDb).toBeDefined()
-    expect(fromDb?.createdAt).toEqual(savedContactType?.createdAt)
+    expect(fromDb?.createdAt).toEqual(savedPartyType?.createdAt)
   })
-
 })

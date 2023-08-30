@@ -13,11 +13,11 @@ import {
   BeforeUpdate,
 } from 'typeorm'
 import { IsNotEmpty, validate, ValidationError } from 'class-validator'
-import { correlationIdentifierEntityFrom, CorrelationIdentifierEntity, correlationIdentifierFrom } from './CorrelationIdentifierEntity'
-import { ConnectionEntity, connectionEntityFrom, connectionFrom } from './ConnectionEntity'
-import { IdentityMetadataItemEntity, metadataItemEntityFrom, metadataItemFrom } from './IdentityMetadataItemEntity'
-import { BasicMetadataItem, IBasicIdentity, IdentityRoleEnum, IIdentity, ValidationConstraint } from '../../types'
-import { ContactEntity } from './ContactEntity'
+import { CorrelationIdentifierEntity } from './CorrelationIdentifierEntity'
+import { ConnectionEntity } from './ConnectionEntity'
+import { IdentityMetadataItemEntity } from './IdentityMetadataItemEntity'
+import { IdentityRoleEnum, ValidationConstraint } from '../../types'
+import { PartyEntity } from './PartyEntity'
 import { getConstraint } from '../../utils/ValidatorUtils'
 
 @Entity('Identity')
@@ -58,7 +58,7 @@ export class IdentityEntity extends BaseEntity {
     eager: true,
     nullable: false,
   })
-  @JoinColumn({ name: 'metadataId' })
+  @JoinColumn({ name: 'metadata_id' })
   metadata!: Array<IdentityMetadataItemEntity>
 
   @CreateDateColumn({ name: 'created_at', nullable: false })
@@ -67,13 +67,15 @@ export class IdentityEntity extends BaseEntity {
   @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
   lastUpdatedAt!: Date
 
-  @ManyToOne(() => ContactEntity, (contact: ContactEntity) => contact.identities, {
+  @ManyToOne(() => PartyEntity, (party: PartyEntity) => party.identities, {
     onDelete: 'CASCADE',
   })
-  contact!: ContactEntity
+  party!: PartyEntity
 
-  @Column({ name: 'contactId', nullable: true })
-  contactId!: string
+  // TODO name should be party_id
+  // TODO add reverse side column name to owning side party
+  @Column({ name: 'partyId', nullable: true })
+  partyId!: string
 
   @BeforeInsert()
   @BeforeUpdate()
@@ -86,29 +88,5 @@ export class IdentityEntity extends BaseEntity {
         return Promise.reject(Error(message))
       }
     }
-  }
-}
-
-export const identityEntityFrom = (args: IBasicIdentity): IdentityEntity => {
-  const identityEntity: IdentityEntity = new IdentityEntity()
-  identityEntity.alias = args.alias
-  identityEntity.roles = args.roles
-  identityEntity.identifier = correlationIdentifierEntityFrom(args.identifier)
-  identityEntity.connection = args.connection ? connectionEntityFrom(args.connection) : undefined
-  identityEntity.metadata = args.metadata ? args.metadata.map((item: BasicMetadataItem) => metadataItemEntityFrom(item)) : []
-
-  return identityEntity
-}
-
-export const identityFrom = (identity: IdentityEntity): IIdentity => {
-  return {
-    id: identity.id,
-    alias: identity.alias,
-    roles: identity.roles,
-    identifier: correlationIdentifierFrom(identity.identifier),
-    ...(identity.connection && { connection: connectionFrom(identity.connection) }),
-    metadata: identity.metadata ? identity.metadata.map((item: IdentityMetadataItemEntity) => metadataItemFrom(item)) : [],
-    createdAt: identity.createdAt,
-    lastUpdatedAt: identity.createdAt,
   }
 }

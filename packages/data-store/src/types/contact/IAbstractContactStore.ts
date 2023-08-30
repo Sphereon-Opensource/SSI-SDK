@@ -1,107 +1,108 @@
 import {
-  BasicContactType,
-  BasicContactOwner,
-  IBasicIdentity,
-  IContact,
-  IIdentity,
-  IPartialContact,
-  IPartialIdentity,
-  ContactTypeEnum,
-  IContactType,
-  IContactRelationship,
-  IPartialContactRelationship,
-  IPartialContactType,
+  NonPersistedPartyType,
+  NonPersistedContact,
+  NonPersistedIdentity,
+  Party,
+  Identity,
+  PartialParty,
+  PartialIdentity,
+  PartyTypeEnum,
+  PartyType,
+  PartyRelationship,
+  PartialPartyRelationship,
+  PartialPartyType, NonPersistedElectronicAddress
 } from './contact'
 
-export type FindContactArgs = Array<IPartialContact>
-export type FindIdentityArgs = Array<IPartialIdentity>
-export type FindContactTypeArgs = Array<IPartialContactType>
-export type FindRelationshipArgs = Array<IPartialContactRelationship>
+export type FindPartyArgs = Array<PartialParty>
+export type FindIdentityArgs = Array<PartialIdentity>
+export type FindPartyTypeArgs = Array<PartialPartyType>
+export type FindRelationshipArgs = Array<PartialPartyRelationship>
 
-export interface IGetContactArgs {
-  contactId: string
+export type GetPartyArgs = {
+  partyId: string
 }
 
-export interface IGetContactsArgs {
-  filter?: FindContactArgs
+export type GetPartiesArgs = {
+  filter?: FindPartyArgs
 }
 
-export interface IAddContactArgs {
+export type AddPartyArgs = {
   uri?: string
-  contactType: BasicContactType
-  contactOwner: BasicContactOwner
-  identities?: Array<IBasicIdentity>
+  partyType: NonPersistedPartyType
+  contact: NonPersistedContact
+  identities?: Array<NonPersistedIdentity>
+  electronicAddresses?: Array<NonPersistedElectronicAddress>
 }
 
-export interface IUpdateContactArgs {
-  contact: Omit<IContact, 'identities' | 'contactType' | 'createdAt' | 'lastUpdatedAt'>
+export type UpdatePartyArgs = {
+  party: Omit<Party, 'identities' | 'electronicAddresses' | 'partyType' | 'createdAt' | 'lastUpdatedAt'>
 }
 
-export interface IRemoveContactArgs {
-  contactId: string
+export type RemovePartyArgs = {
+  partyId: string
 }
 
-export interface IGetIdentityArgs {
+export type GetIdentityArgs = {
   identityId: string
 }
 
-export interface IGetIdentitiesArgs {
+export type GetIdentitiesArgs = {
   filter?: FindIdentityArgs
 }
 
-export interface IAddIdentityArgs {
-  contactId: string
-  identity: IBasicIdentity
+export type AddIdentityArgs = {
+  partyId: string
+  identity: NonPersistedIdentity
 }
 
-export interface IUpdateIdentityArgs {
-  identity: IIdentity
+export type UpdateIdentityArgs = {
+  identity: Identity
 }
 
-export interface IRemoveIdentityArgs {
+export type RemoveIdentityArgs = {
   identityId: string
 }
 
-export interface IRemoveRelationshipArgs {
+export type RemoveRelationshipArgs = {
   relationshipId: string
 }
 
-export interface IAddRelationshipArgs {
+export type AddRelationshipArgs = {
   leftId: string
   rightId: string
 }
 
-export interface IGetRelationshipArgs {
+export type GetRelationshipArgs = {
   relationshipId: string
 }
 
-export interface IGetRelationshipsArgs {
+export type GetRelationshipsArgs = {
   filter: FindRelationshipArgs
 }
 
-export interface IUpdateRelationshipArgs {
-  relationship: Omit<IContactRelationship, 'createdAt' | 'lastUpdatedAt'>
+export type UpdateRelationshipArgs = {
+  relationship: Omit<PartyRelationship, 'createdAt' | 'lastUpdatedAt'>
 }
 
-export interface IAddContactTypeArgs {
-  type: ContactTypeEnum
+export type AddPartyTypeArgs = {
+  type: PartyTypeEnum
   name: string
   tenantId: string
   description?: string
 }
 
-export interface IGetContactTypeArgs {
-  contactTypeId: string
+export type GetPartyTypeArgs = {
+  partyTypeId: string
 }
 
-export interface IGetContactTypesArgs {
-  filter?: FindContactTypeArgs
+export type GetPartyTypesArgs = {
+  filter?: FindPartyTypeArgs
 }
 
-export interface IUpdateContactTypeArgs {
-  contactType: Omit<IContactType, 'createdAt' | 'lastUpdatedAt'>
+export type UpdatePartyTypeArgs = {
+  partyType: Omit<PartyType, 'createdAt' | 'lastUpdatedAt'>
 }
 
-export interface IRemoveContactTypeArgs {
-  contactTypeId: string
+export type RemovePartyTypeArgs = {
+  partyTypeId: string
 }

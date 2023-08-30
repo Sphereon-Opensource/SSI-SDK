@@ -1,28 +1,23 @@
 import { JoinColumn, OneToOne, Column, ChildEntity, BeforeInsert, BeforeUpdate } from 'typeorm'
-import { ContactEntity } from './ContactEntity'
-import { ContactOwnerEntity } from './ContactOwnerEntity'
-import { BasicOrganization, IOrganization, ValidationConstraint } from '../../types'
-import { validate, IsNotEmpty, ValidationError, Validate } from 'class-validator'
-import { IsNonEmptyStringConstraint } from '../validators'
+import { PartyEntity } from './PartyEntity'
+import { BaseContactEntity } from './BaseContactEntity'
+import { ValidationConstraint } from '../../types'
+import { validate, IsNotEmpty, ValidationError } from 'class-validator'
 import { getConstraint } from '../../utils/ValidatorUtils'
 
 @ChildEntity('Organization')
-export class OrganizationEntity extends ContactOwnerEntity {
-  @Column({ name: 'legalName', length: 255, nullable: false, unique: true })
+export class OrganizationEntity extends BaseContactEntity {
+  @Column({ name: 'legal_name', length: 255, nullable: false, unique: true })
   @IsNotEmpty({ message: 'Blank legal names are not allowed' })
   legalName!: string
 
-  @Column({ name: 'displayName', length: 255, nullable: false, unique: true })
+  @Column({ name: 'display_name', length: 255, nullable: false, unique: false })
   @IsNotEmpty({ message: 'Blank display names are not allowed' })
   displayName!: string
 
-  @Column({ name: 'cocNumber', length: 255, nullable: true, unique: false })
-  @Validate(IsNonEmptyStringConstraint, { message: 'Blank coc numbers are not allowed' })
-  cocNumber?: string
-
-  @OneToOne(() => ContactEntity)
-  @JoinColumn({ name: 'contactId' })
-  contact!: ContactEntity
+  @OneToOne(() => PartyEntity)
+  @JoinColumn({ name: 'contact_id' })
+  contact!: PartyEntity
 
   @BeforeInsert()
   @BeforeUpdate()
@@ -35,25 +30,5 @@ export class OrganizationEntity extends ContactOwnerEntity {
         return Promise.reject(Error(message))
       }
     }
-  }
-}
-
-export const organizationEntityFrom = (organization: BasicOrganization): OrganizationEntity => {
-  const organizationEntity: OrganizationEntity = new OrganizationEntity()
-  organizationEntity.legalName = organization.legalName
-  organizationEntity.displayName = organization.displayName
-  organizationEntity.cocNumber = organization.cocNumber
-
-  return organizationEntity
-}
-
-export const organizationFrom = (organization: OrganizationEntity): IOrganization => {
-  return {
-    id: organization.id,
-    legalName: organization.legalName,
-    displayName: organization.displayName,
-    cocNumber: organization.cocNumber,
-    createdAt: organization.createdAt,
-    lastUpdatedAt: organization.lastUpdatedAt,
   }
 }
