@@ -83,14 +83,6 @@ export class ContactManager implements IAgentPlugin {
     ? { firstName: args.firstName, middleName: args.middleName, lastName: args.lastName, displayName: args.displayName}
     : { legalName: args.legalName, displayName: args.displayName }
 
-
-    // export type AddPartyArgs = {
-    //   uri?: string
-    //   partyType: NonPersistedPartyType
-    //   contact: NonPersistedContact
-    //   identities?: Array<NonPersistedIdentity>
-    // }
-    // TODO add electronic addresses
     return this.store.addParty({
       uri: args.uri,
       partyType: args.contactType,
