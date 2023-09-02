@@ -108,6 +108,24 @@ export interface IVerifyCredentialLDArgs {
    * Check status function, to check verifiableCredentials that have a credentialStatus property
    */
   checkStatus?: Function
+
+  /**
+   * Allows you to use the default integrated statusList 2021 support. If a checkStatus function is provided, this will be ignored
+   */
+  statusList?: StatusListCheck
+
+}
+
+export interface StatusListCheck {
+  /**
+   * If no checkStatus function is given we default to a StatusList2021 check in case the VC has a credentialStatus. This boolean allows to disable this fallback check
+   */
+  disableCheckStatusList2021?: boolean
+
+  mandatoryCredentialStatus: boolean
+  verifyStatusListCredential: boolean
+  verifyMatchingIssuers: boolean
+
 }
 
 /**
@@ -153,6 +171,11 @@ export interface IVerifyPresentationLDArgs {
    * Check status function, to check verifiableCredentials that have a credentialStatus property
    */
   checkStatus?: Function
+
+  /**
+   * Allows you to use the default integrated statusList 2021 support. If a checkStatus function is provided, this will be ignored
+   */
+  statusList?: StatusListCheck
 }
 
 /**

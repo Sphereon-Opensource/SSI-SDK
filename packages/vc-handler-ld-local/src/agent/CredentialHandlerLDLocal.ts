@@ -1,5 +1,6 @@
 import { getAgentResolver, mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
+import { checkStatusFunction } from '@sphereon/ssi-sdk.vc-status-list'
 import { IVerifyResult } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
@@ -217,12 +218,20 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyCredentialLDLocal} */
   public async verifyCredentialLDLocal(args: IVerifyCredentialLDArgs, context: IRequiredContext): Promise<IVerifyResult> {
     const credential = args.credential
-    return this.ldCredentialModule.verifyCredential(credential, context, args.fetchRemoteContexts, args.purpose, args.checkStatus)
+    let checkStatus = args.checkStatus
+    if (typeof checkStatus !== 'function' && args.statusList && !args.statusList.disableCheckStatusList2021) {
+      checkStatus = checkStatusFunction({...args.statusList})
+    }
+    return this.ldCredentialModule.verifyCredential(credential, context, args.fetchRemoteContexts, args.purpose, checkStatus)
   }
 
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyPresentationLDLocal} */
   public async verifyPresentationLDLocal(args: IVerifyPresentationLDArgs, context: IRequiredContext): Promise<IVerifyResult> {
     const presentation = args.presentation
+    let checkStatus = args.checkStatus
+    if (typeof checkStatus !== 'function' && args.statusList && !args.statusList.disableCheckStatusList2021) {
+      checkStatus = checkStatusFunction({...args.statusList})
+    }
     return this.ldCredentialModule.verifyPresentation(
       presentation,
       args.challenge,
@@ -230,7 +239,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       context,
       args.fetchRemoteContexts,
       args.presentationPurpose,
-      args.checkStatus
+      checkStatus
     )
   }
 

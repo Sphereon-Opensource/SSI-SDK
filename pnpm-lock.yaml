@@ -1337,6 +1337,12 @@ importers:
       image-size:
         specifier: ^1.0.2
         version: 1.0.2
+      multiformats:
+        specifier: ^11.0.2
+        version: 11.0.2
+      uint8arrays:
+        specifier: 3.1.1
+        version: 3.1.1
     devDependencies:
       did-resolver:
         specifier: ^4.1.0
@@ -1574,6 +1580,9 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:^
         version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.vc-status-list':
+        specifier: workspace:^
+        version: link:../vc-status-list
       '@sphereon/ssi-types':
         specifier: workspace:^
         version: link:../ssi-types
@@ -1725,6 +1734,67 @@ importers:
       web-did-resolver:
         specifier: ^2.0.24
         version: 2.0.27
+
+  packages/vc-status-list:
+    dependencies:
+      '@digitalcredentials/vc-status-list':
+        specifier: ^5.0.2
+        version: 5.0.2
+      '@sphereon/ssi-sdk-ext.did-utils':
+        specifier: ^0.14.0
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-types':
+        specifier: workspace:^
+        version: link:../ssi-types
+      '@veramo/core':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      debug:
+        specifier: ^4.3.4
+        version: 4.3.4
+      uint8arrays:
+        specifier: ^3.1.1
+        version: 3.1.1
+    devDependencies:
+      '@digitalcredentials/ed25519-signature-2020':
+        specifier: ~3.0.2
+        version: 3.0.2
+      '@digitalcredentials/ed25519-verification-key-2020':
+        specifier: 3.2.2
+        version: 3.2.2
+      '@sphereon/ssi-sdk-ext.did-provider-key':
+        specifier: 0.14.0
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-manager':
+        specifier: ^0.14.0
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.kms-local':
+        specifier: ^0.14.0
+        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.core':
+        specifier: workspace:^
+        version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.vc-handler-ld-local':
+        specifier: workspace:^
+        version: link:../vc-handler-ld-local
+      '@veramo/credential-w3c':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
+      '@veramo/did-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-resolver':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/key-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      did-resolver:
+        specifier: ^4.1.0
+        version: 4.1.0
+      typescript:
+        specifier: 4.9.5
+        version: 4.9.5
 
   packages/w3c-vc-api:
     dependencies:
@@ -2416,6 +2486,7 @@ packages:
   /@babel/plugin-proposal-async-generator-functions@7.20.7(@babel/core@7.22.11):
     resolution: {integrity: sha512-xMbiLsn/8RK7Wq7VeVytytS2L6qE69bXPB10YCmMdDZbKF4okCqY74pI/jJQ/8U0b/F6NrT2+14b8/P9/3AMGA==}
     engines: {node: '>=6.9.0'}
+    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-async-generator-functions instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
@@ -2428,6 +2499,7 @@ packages:
   /@babel/plugin-proposal-class-properties@7.18.6(@babel/core@7.22.11):
     resolution: {integrity: sha512-cumfXOF0+nzZrrN8Rf0t7M+tF6sZc7vhQwYQck9q1/5w2OExlD+b4v4RpMJFaV1Z7WcDRgO6FqvxqxGlwo+RHQ==}
     engines: {node: '>=6.9.0'}
+    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-class-properties instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
@@ -2461,6 +2533,7 @@ packages:
   /@babel/plugin-proposal-export-namespace-from@7.18.9(@babel/core@7.22.11):
     resolution: {integrity: sha512-k1NtHyOMvlDDFeb9G5PhUXuGj8m/wiwojgQVEhJ/fsVsMCpLyOP4h0uGEjYJKrRI+EVPlb5Jk+Gt9P97lOGwtA==}
     engines: {node: '>=6.9.0'}
+    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-export-namespace-from instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
@@ -2471,6 +2544,7 @@ packages:
   /@babel/plugin-proposal-nullish-coalescing-operator@7.18.6(@babel/core@7.22.11):
     resolution: {integrity: sha512-wQxQzxYeJqHcfppzBDnm1yAY0jSRkUXR2z8RePZYrKwMKgMlE8+Z6LUno+bd6LvbGh8Gltvy74+9pIYkr+XkKA==}
     engines: {node: '>=6.9.0'}
+    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-nullish-coalescing-operator instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
@@ -2481,6 +2555,7 @@ packages:
   /@babel/plugin-proposal-numeric-separator@7.18.6(@babel/core@7.22.11):
     resolution: {integrity: sha512-ozlZFogPqoLm8WBr5Z8UckIoE4YQ5KESVcNudyXOR8uqIkliTEgJ3RoketfG6pmzLdeZF0H/wjE9/cCEitBl7Q==}
     engines: {node: '>=6.9.0'}
+    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-numeric-separator instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
@@ -2491,6 +2566,7 @@ packages:
   /@babel/plugin-proposal-object-rest-spread@7.20.7(@babel/core@7.22.11):
     resolution: {integrity: sha512-d2S98yCiLxDVmBmE8UjGcfPvNEUbA1U5q5WxaWFUGRzJSVAZqm5W6MbPct0jxnegUZ0niLeNX+IOzEs7wYg9Dg==}
     engines: {node: '>=6.9.0'}
+    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-object-rest-spread instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
@@ -2504,6 +2580,7 @@ packages:
   /@babel/plugin-proposal-optional-catch-binding@7.18.6(@babel/core@7.22.11):
     resolution: {integrity: sha512-Q40HEhs9DJQyaZfUjjn6vE8Cv4GmMHCYuMGIWUnlxH6400VGxOuwWsPt4FxXxJkC/5eOzgn0z21M9gMT4MOhbw==}
     engines: {node: '>=6.9.0'}
+    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-optional-catch-binding instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
@@ -2514,6 +2591,7 @@ packages:
   /@babel/plugin-proposal-optional-chaining@7.21.0(@babel/core@7.22.11):
     resolution: {integrity: sha512-p4zeefM72gpmEe2fkUr/OnOXpWEf8nAgk7ZYVqqfFiyIG7oFfVZcCrU64hWn5xp4tQ9LkV4bTIa5rD0KANpKNA==}
     engines: {node: '>=6.9.0'}
+    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-optional-chaining instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
@@ -3542,9 +3620,28 @@ packages:
   /@digitalbazaar/security-context@1.0.1:
     resolution: {integrity: sha512-0WZa6tPiTZZF8leBtQgYAfXQePFQp2z5ivpCEN/iZguYYZ0TB9qRmWtan5XH6mNFuusHtMcyIzAcReyE6rZPhA==}
 
+  /@digitalbazaar/vc-status-list-context@3.0.1:
+    resolution: {integrity: sha512-vQsqQXpmSXKNy/C0xxFUOBzz60dHh6oupQam1xRC8IspVC11hYJiX9SAhmbI0ulHvX1R2JfqZaJHZjmAyMZ/aA==}
+    dev: false
+
   /@digitalcredentials/base58-universal@1.0.1:
     resolution: {integrity: sha512-1xKdJnfITMvrF/sCgwBx2C4p7qcNAARyIvrAOZGqIHmBaT/hAenpC8bf44qVY+UIMuCYP23kqpIfJQebQDThDQ==}
     engines: {node: '>=12'}
+
+  /@digitalcredentials/base64url-universal@2.0.2:
+    resolution: {integrity: sha512-SgyH5xuoZNu3oIhZjG+kWdk3Hc3eIRgi9/G0auii4jMd65kxBYY5YLmUeF0u1dpWoyrDp62uATq0yBP/sVV29w==}
+    engines: {node: '>=14'}
+    dependencies:
+      base64url: 3.0.1
+    dev: false
+
+  /@digitalcredentials/bitstring@2.0.1:
+    resolution: {integrity: sha512-9priXvsEJGI4LYHPwLqf5jv9HtQGlG0MgeuY8Q4NHN+xWz5rYMylh1TYTVThKa3XI6xF2pR2oEfKZD21eWXveQ==}
+    engines: {node: '>=14'}
+    dependencies:
+      '@digitalcredentials/base64url-universal': 2.0.2
+      pako: 2.1.0
+    dev: false
 
   /@digitalcredentials/credentials-context@1.0.5:
     resolution: {integrity: sha512-UL4vFxJvR2SV8FkvxnQe0ukcke4+46Up38Yk2SlmvRWIQAKhxgrEkv1Nq+DbTKllOHE75kZF53Ioy0bZNoJhJA==}
@@ -3613,6 +3710,31 @@ packages:
     dependencies:
       fast-text-encoding: 1.0.6
       isomorphic-webcrypto: link:node_modules/@sphereon/isomorphic-webcrypto
+
+  /@digitalcredentials/vc-status-list@5.0.2:
+    resolution: {integrity: sha512-PI0N7SM0tXpaNLelbCNsMAi34AjOeuhUzMSYTkHdeqRPX7oT2F3ukyOssgr4koEqDxw9shHtxHu3fSJzrzcPMQ==}
+    engines: {node: '>=14'}
+    dependencies:
+      '@digitalbazaar/vc-status-list-context': 3.0.1
+      '@digitalcredentials/bitstring': 2.0.1
+      '@digitalcredentials/vc': 4.2.0
+      credentials-context: 2.0.0
+    transitivePeerDependencies:
+      - domexception
+      - web-streams-polyfill
+    dev: false
+
+  /@digitalcredentials/vc@4.2.0:
+    resolution: {integrity: sha512-8Rxpn77JghJN7noBQdcMuzm/tB8vhDwPoFepr3oGd5w+CyJxOk2RnBlgIGlAAGA+mALFWECPv1rANfXno+hdjA==}
+    engines: {node: '>=12'}
+    dependencies:
+      '@digitalcredentials/jsonld': 5.2.1
+      '@digitalcredentials/jsonld-signatures': 9.3.1
+      credentials-context: 2.0.0
+    transitivePeerDependencies:
+      - domexception
+      - web-streams-polyfill
+    dev: false
 
   /@digitalcredentials/vc@5.0.0:
     resolution: {integrity: sha512-87ARRxlAdIuUPArbMYJ8vUY7QqkIvJGFrBwfTH1PcB8Wz1E/M4q3oc/WLrDyJNg4o/irVVB5gkA9iIntTYSpoA==}
@@ -4891,7 +5013,7 @@ packages:
     resolution: {integrity: sha512-yUCDCcRNNbI9UUsUB6FYEmDHpo5Tn/f0q5D7vhDP4i6Or8kBj82y7+e31hwfLvK2ykOYlDVs2MxAluH/+QUBOQ==}
     engines: {node: ^14.15.0 || >=16.0.0}
     dependencies:
-      chalk: 4.1.0
+      chalk: 4.1.2
       execa: 5.0.0
       strong-log-transformer: 2.1.0
     dev: true
@@ -5705,7 +5827,7 @@ packages:
       '@octokit/request-error': 3.0.3
       '@octokit/types': 9.3.2
       is-plain-object: 5.0.0
-      node-fetch: 2.6.7
+      node-fetch: 2.7.0
       universal-user-agent: 6.0.0
     transitivePeerDependencies:
       - encoding
@@ -9368,7 +9490,7 @@ packages:
       promise-inflight: 1.0.1
       rimraf: 3.0.2
       ssri: 9.0.1
-      tar: 6.1.11
+      tar: 6.1.15
       unique-filename: 2.0.1
     transitivePeerDependencies:
       - bluebird
@@ -9388,7 +9510,7 @@ packages:
       minipass-pipeline: 1.2.4
       p-map: 4.0.0
       ssri: 10.0.5
-      tar: 6.1.11
+      tar: 6.1.15
       unique-filename: 3.0.0
     dev: true
 
@@ -12038,7 +12160,7 @@ packages:
     resolution: {integrity: sha512-MGIE4HOvQCeUCzmlHs0vXpih4ysz4wg9qiSAu6cd42lVwPbTM1TjV7RusoyQqMmk/95gdQZX72u+YW+c3eEpFQ==}
     engines: {node: '>=14.14'}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jsonfile: 6.1.0
       universalify: 2.0.0
     dev: true
@@ -12074,7 +12196,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       at-least-node: 1.0.0
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jsonfile: 6.1.0
       universalify: 2.0.0
 
@@ -12364,7 +12486,7 @@ packages:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 3.0.5
+      minimatch: 3.1.2
       once: 1.4.0
       path-is-absolute: 1.0.1
     dev: true
@@ -12453,6 +12575,7 @@ packages:
 
   /graceful-fs@4.2.10:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
+    dev: true
 
   /graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
@@ -14978,7 +15101,7 @@ packages:
     resolution: {integrity: sha512-gUD/epcRms75Cw8RT1pUdHugZYM5ce64ucs2GEISABwkRsOQr0q2wm/MV2TKThycIe5e0ytRweW2RZxclogCdQ==}
     engines: {node: '>=8'}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       parse-json: 5.2.0
       strip-bom: 4.0.0
       type-fest: 0.6.0
@@ -16106,7 +16229,7 @@ packages:
       array-differ: 3.0.0
       array-union: 2.1.0
       arrify: 2.0.1
-      minimatch: 3.0.5
+      minimatch: 3.1.2
     dev: true
 
   /mute-stream@0.0.8:
@@ -16348,13 +16471,13 @@ packages:
       env-paths: 2.2.1
       exponential-backoff: 3.1.1
       glob: 7.2.3
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       make-fetch-happen: 11.1.1
       nopt: 6.0.0
       npmlog: 6.0.2
       rimraf: 3.0.2
       semver: 7.5.4
-      tar: 6.1.11
+      tar: 6.1.15
       which: 2.0.2
     transitivePeerDependencies:
       - supports-color
@@ -17248,7 +17371,7 @@ packages:
       read-package-json-fast: 2.0.3
       rimraf: 3.0.2
       ssri: 9.0.1
-      tar: 6.1.11
+      tar: 6.1.15
     transitivePeerDependencies:
       - bluebird
       - supports-color
@@ -17276,7 +17399,7 @@ packages:
       read-package-json-fast: 3.0.2
       sigstore: 1.9.0
       ssri: 10.0.5
-      tar: 6.1.11
+      tar: 6.1.15
     transitivePeerDependencies:
       - bluebird
       - supports-color
