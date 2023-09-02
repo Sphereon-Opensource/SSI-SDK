@@ -102,7 +102,7 @@ export async function simpleCheckStatusFromStatusListCredential(args: {
   } else if (args.id && args.id !== id) {
     throw Error(`Status list id ${id} did not match required supplied id: ${args.id}`)
   }
-  if (!type || !type.includes(requestedType)) {
+  if (!type || !(type.includes(requestedType) || type.includes(requestedType + 'Credential'))) {
     throw Error(`Credential type ${JSON.stringify(type)} does not contain requested type ${requestedType}`)
   }
   // @ts-ignore
@@ -186,7 +186,7 @@ export async function updateStatusListFromEncodedList(
   return {
     encodedList,
     statusListCredential,
-    length: statusList.length,
+    length: statusList.length - 1,
     type,
     proofFormat,
     id,
@@ -238,7 +238,7 @@ function getAssertedStatusListType(type?: StatusListType) {
 }
 
 function getAssertedValue<T>(name: string, value: T): NonNullable<T> {
-  if (!value) {
+  if (value === undefined || value === null) {
     throw Error(`Missing required ${name} value`)
   }
   return value
