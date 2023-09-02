@@ -220,7 +220,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     const credential = args.credential
     let checkStatus = args.checkStatus
     if (typeof checkStatus !== 'function' && args.statusList && !args.statusList.disableCheckStatusList2021) {
-      checkStatus = checkStatusFunction({...args.statusList})
+      checkStatus = checkStatusFunction({ ...args.statusList })
     }
     return this.ldCredentialModule.verifyCredential(credential, context, args.fetchRemoteContexts, args.purpose, checkStatus)
   }
@@ -230,7 +230,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     const presentation = args.presentation
     let checkStatus = args.checkStatus
     if (typeof checkStatus !== 'function' && args.statusList && !args.statusList.disableCheckStatusList2021) {
-      checkStatus = checkStatusFunction({...args.statusList})
+      checkStatus = checkStatusFunction({ ...args.statusList })
     }
     return this.ldCredentialModule.verifyPresentation(
       presentation,

@@ -1322,9 +1322,6 @@ importers:
 
   packages/ssi-sdk-core:
     dependencies:
-      '@scure/base':
-        specifier: ^1.1.1
-        version: 1.1.1
       '@sphereon/ssi-types':
         specifier: workspace:^
         version: link:../ssi-types
@@ -1756,42 +1753,6 @@ importers:
         specifier: ^3.1.1
         version: 3.1.1
     devDependencies:
-      '@digitalcredentials/ed25519-signature-2020':
-        specifier: ~3.0.2
-        version: 3.0.2
-      '@digitalcredentials/ed25519-verification-key-2020':
-        specifier: 3.2.2
-        version: 3.2.2
-      '@sphereon/ssi-sdk-ext.did-provider-key':
-        specifier: 0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: ^0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: ^0.14.0
-        version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.core':
-        specifier: workspace:^
-        version: link:../ssi-sdk-core
-      '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: workspace:^
-        version: link:../vc-handler-ld-local
-      '@veramo/credential-w3c':
-        specifier: 4.2.0
-        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
-      '@veramo/did-manager':
-        specifier: 4.2.0
-        version: 4.2.0
-      '@veramo/did-resolver':
-        specifier: 4.2.0
-        version: 4.2.0
-      '@veramo/key-manager':
-        specifier: 4.2.0
-        version: 4.2.0
-      did-resolver:
-        specifier: ^4.1.0
-        version: 4.1.0
       typescript:
         specifier: 4.9.5
         version: 4.9.5

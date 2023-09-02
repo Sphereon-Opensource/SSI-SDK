@@ -1,27 +1,26 @@
-import {TKeyType} from "@veramo/core";
-import {varint} from "multiformats";
-import {base58btc} from 'multiformats/bases/base58'
-import {concat as concatArrays, fromString, toString} from 'uint8arrays'
+import { TKeyType } from '@veramo/core'
+import { varint } from 'multiformats'
+import { base58btc } from 'multiformats/bases/base58'
+import { concat as concatArrays, fromString, toString } from 'uint8arrays'
 
 export enum MultibaseFormat {
-    BASE58 = 'z',
+  BASE58 = 'z',
 }
 
 export function hexToMultibase(hex: string, type: TKeyType): { value: string; format: MultibaseFormat; keyType: TKeyType } {
-    return {value: bytesToMultibase(hexToBytes(hex), type), format: MultibaseFormat.BASE58, keyType: type}
+  return { value: bytesToMultibase(hexToBytes(hex), type), format: MultibaseFormat.BASE58, keyType: type }
 }
 
-export function multibaseToHex(multibase: string): { value: string; keyType: TKeyType, format: MultibaseFormat } {
-    if (!multibase.startsWith(MultibaseFormat.BASE58)) {
-        throw new Error('Only base58 supported for now using multibase!')
-    }
+export function multibaseToHex(multibase: string): { value: string; keyType: TKeyType; format: MultibaseFormat } {
+  if (!multibase.startsWith(MultibaseFormat.BASE58)) {
+    throw new Error('Only base58 supported for now using multibase!')
+  }
 
-    const props = multibaseKeyToProps(multibase)
-    return {value: bytesToHex(multibaseKeyToBytes(multibase)), keyType: props.keyType, format: MultibaseFormat.BASE58}
+  const props = multibaseKeyToProps(multibase)
+  return { value: bytesToHex(multibaseKeyToBytes(multibase)), keyType: props.keyType, format: MultibaseFormat.BASE58 }
 }
 
-
-const u8a = {toString, fromString, concatArrays}
+const u8a = { toString, fromString, concatArrays }
 
 /**
  * Converts a Uint8Array to a base64url string
@@ -30,7 +29,7 @@ const u8a = {toString, fromString, concatArrays}
  * @public
  */
 export function bytesToBase64url(b: Uint8Array): string {
-    return u8a.toString(b, 'base64url')
+  return u8a.toString(b, 'base64url')
 }
 
 /**
@@ -43,8 +42,8 @@ export function bytesToBase64url(b: Uint8Array): string {
  * @public
  */
 export function base64ToBytes(s: string): Uint8Array {
-    const inputBase64Url = s.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
-    return u8a.fromString(inputBase64Url, 'base64url')
+  const inputBase64Url = s.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+  return u8a.fromString(inputBase64Url, 'base64url')
 }
 
 /**
@@ -54,7 +53,7 @@ export function base64ToBytes(s: string): Uint8Array {
  * @public
  */
 export function bytesToBase64(b: Uint8Array): string {
-    return u8a.toString(b, 'base64pad')
+  return u8a.toString(b, 'base64pad')
 }
 
 /**
@@ -64,7 +63,7 @@ export function bytesToBase64(b: Uint8Array): string {
  * @beta This API may change without a BREAKING CHANGE notice.
  */
 export function encodeBase64url(s: string): string {
-    return bytesToBase64url(u8a.fromString(s))
+  return bytesToBase64url(u8a.fromString(s))
 }
 
 /**
@@ -74,7 +73,7 @@ export function encodeBase64url(s: string): string {
  * @beta This API may change without a BREAKING CHANGE notice.
  */
 export function decodeBase64url(s: string): string {
-    return u8a.toString(base64ToBytes(s))
+  return u8a.toString(base64ToBytes(s))
 }
 
 /**
@@ -84,7 +83,7 @@ export function decodeBase64url(s: string): string {
  * @public
  */
 export function bytesToUtf8String(b: Uint8Array): string {
-    return u8a.toString(b, 'utf-8')
+  return u8a.toString(b, 'utf-8')
 }
 
 /**
@@ -94,7 +93,7 @@ export function bytesToUtf8String(b: Uint8Array): string {
  * @public
  */
 export function stringToUtf8Bytes(s: string): Uint8Array {
-    return u8a.fromString(s, 'utf-8')
+  return u8a.fromString(s, 'utf-8')
 }
 
 /**
@@ -104,7 +103,7 @@ export function stringToUtf8Bytes(s: string): Uint8Array {
  * @beta This API may change without a BREAKING CHANGE notice.
  */
 export function encodeJoseBlob(payload: {}) {
-    return u8a.toString(u8a.fromString(JSON.stringify(payload), 'utf-8'), 'base64url')
+  return u8a.toString(u8a.fromString(JSON.stringify(payload), 'utf-8'), 'base64url')
 }
 
 /**
@@ -115,7 +114,7 @@ export function encodeJoseBlob(payload: {}) {
  * @beta This API may change without a BREAKING CHANGE notice.
  */
 export function decodeJoseBlob(blob: string) {
-    return JSON.parse(u8a.toString(u8a.fromString(blob, 'base64url'), 'utf-8'))
+  return JSON.parse(u8a.toString(u8a.fromString(blob, 'base64url'), 'utf-8'))
 }
 
 /**
@@ -129,16 +128,16 @@ export function decodeJoseBlob(blob: string) {
  * @beta This API may change without a BREAKING CHANGE notice.
  */
 export function hexToBytes(hexString: string): Uint8Array {
-    // @ts-ignore
-    if (hexString instanceof Uint8Array) {
-        return Uint8Array.from(hexString)
-    }
-    if (typeof hexString !== 'string') {
-        throw new Error('illegal_argument: a string must be provided for a hex-string to byte array conversion')
-    }
-    const noPrefix = hexString.startsWith('0x') ? hexString.substring(2) : hexString
-    const padded = noPrefix.length % 2 !== 0 ? `0${noPrefix}` : noPrefix
-    return u8a.fromString(padded.toLowerCase(), 'base16')
+  // @ts-ignore
+  if (hexString instanceof Uint8Array) {
+    return Uint8Array.from(hexString)
+  }
+  if (typeof hexString !== 'string') {
+    throw new Error('illegal_argument: a string must be provided for a hex-string to byte array conversion')
+  }
+  const noPrefix = hexString.startsWith('0x') ? hexString.substring(2) : hexString
+  const padded = noPrefix.length % 2 !== 0 ? `0${noPrefix}` : noPrefix
+  return u8a.fromString(padded.toLowerCase(), 'base16')
 }
 
 /**
@@ -154,11 +153,11 @@ export function hexToBytes(hexString: string): Uint8Array {
  * @beta This API may change without a BREAKING CHANGE notice.
  */
 export function bytesToHex(byteArray: Uint8Array, prefix: boolean = false): string {
-    if (!(byteArray instanceof Uint8Array)) {
-        throw new Error('illegal_argument: only byte arrays can be converted to hex encoding')
-    }
-    const result = u8a.toString(byteArray, 'base16')
-    return prefix ? `0x${result}` : result
+  if (!(byteArray instanceof Uint8Array)) {
+    throw new Error('illegal_argument: only byte arrays can be converted to hex encoding')
+  }
+  const result = u8a.toString(byteArray, 'base16')
+  return prefix ? `0x${result}` : result
 }
 
 /**
@@ -171,7 +170,7 @@ export function bytesToHex(byteArray: Uint8Array, prefix: boolean = false): stri
  * @public
  */
 export function base58ToBytes(s: string): Uint8Array {
-    return u8a.fromString(s, 'base58btc')
+  return u8a.fromString(s, 'base58btc')
 }
 
 /**
@@ -184,7 +183,7 @@ export function base58ToBytes(s: string): Uint8Array {
  * @public
  */
 export function bytesToBase58(byteArray: Uint8Array): string {
-    return u8a.toString(byteArray, 'base58btc')
+  return u8a.toString(byteArray, 'base58btc')
 }
 
 /**
@@ -197,73 +196,71 @@ export function bytesToBase58(byteArray: Uint8Array): string {
  * @public
  */
 export function multibaseKeyToBytes(s: string): Uint8Array {
-    if (s.charAt(0) !== 'z') {
-        throw new Error('invalid multibase string: string is not base58 encoded (does not start with "z")')
-    }
-    const bytes = base58btc.decode(s)
-    const props = multibaseKeyToProps(s)
-    const keyLength = props.code.length / 2
+  if (s.charAt(0) !== 'z') {
+    throw new Error('invalid multibase string: string is not base58 encoded (does not start with "z")')
+  }
+  const bytes = base58btc.decode(s)
+  const props = multibaseKeyToProps(s)
+  const keyLength = props.code.length / 2
 
-    if (props.keyType === 'RSA') {
-        if (bytes[2] !== 48) {
-            throw Error('Invalid RSA octet sequence')
-        }
-        return bytes.slice(2)
-    } else if (props.keyType === 'Secp256r1') {
-        return bytes.slice(2)
+  if (props.keyType === 'RSA') {
+    if (bytes[2] !== 48) {
+      throw Error('Invalid RSA octet sequence')
     }
-    if (bytes[keyLength] !== 0x01) {
-        throw Error(`Invalid multicodec value at position ${keyLength}:   ${bytes[keyLength]}`)
-    }
-    return bytes.slice(keyLength + 1)
+    return bytes.slice(2)
+  } else if (props.keyType === 'Secp256r1') {
+    return bytes.slice(2)
+  }
+  if (bytes[keyLength] !== 0x01) {
+    throw Error(`Invalid multicodec value at position ${keyLength}:   ${bytes[keyLength]}`)
+  }
+  return bytes.slice(keyLength + 1)
 }
 
 export function multibaseKeyToProps(s: string): MultiCodedLookup {
-    if (s.charAt(0) !== 'z') {
-        throw new Error('invalid multibase string: string is not base58 encoded (does not start with "z")')
-    }
+  if (s.charAt(0) !== 'z') {
+    throw new Error('invalid multibase string: string is not base58 encoded (does not start with "z")')
+  }
 
-    const bytes = base58btc.decode(s)
-    const vint = varint.decode(bytes)
-    // console.log(JSON.stringify(vint))
+  const bytes = base58btc.decode(s)
+  const vint = varint.decode(bytes)
+  // console.log(JSON.stringify(vint))
 
-    const code = vint[0]
-    return getMultibasePropsByCode(code)
+  const code = vint[0]
+  return getMultibasePropsByCode(code)
 }
 
 export interface MultiCodedLookup {
-    code: string
-    keyType: TKeyType
-    minLegth: number
-    maxLength: number
+  code: string
+  keyType: TKeyType
+  minLegth: number
+  maxLength: number
 }
 
-export const SUPPORTED_KEY_CODECS: MultiCodedLookup[] =
-    [
-        {code: "e7", keyType: 'Secp256k1', minLegth: 33, maxLength: 33},
-        {code: "ec", keyType: 'X25519', minLegth: 32, maxLength: 32},
-        {code: "ed", keyType: 'Ed25519', minLegth: 32, maxLength: 32},
-        {code: "1200", keyType: 'Secp256r1', minLegth: 33, maxLength: 34},
-        // {code: "1201", keyType: 'Secp384r1', minLegth: 49, maxLength: 49}, //TODO: Implement keytype
-        // {code: "1202", keyType: 'Secp521r1', minLegth: 65, maxLength: 65}, //TODO: Implement keytype
-        {code: "1205", keyType: 'RSA', minLegth: 10, maxLength: 512}, // TODO: Lookup what we should put here
-
-    ]
+export const SUPPORTED_KEY_CODECS: MultiCodedLookup[] = [
+  { code: 'e7', keyType: 'Secp256k1', minLegth: 33, maxLength: 33 },
+  { code: 'ec', keyType: 'X25519', minLegth: 32, maxLength: 32 },
+  { code: 'ed', keyType: 'Ed25519', minLegth: 32, maxLength: 32 },
+  { code: '1200', keyType: 'Secp256r1', minLegth: 33, maxLength: 34 },
+  // {code: "1201", keyType: 'Secp384r1', minLegth: 49, maxLength: 49}, //TODO: Implement keytype
+  // {code: "1202", keyType: 'Secp521r1', minLegth: 65, maxLength: 65}, //TODO: Implement keytype
+  { code: '1205', keyType: 'RSA', minLegth: 10, maxLength: 512 }, // TODO: Lookup what we should put here
+]
 
 export function getMultibasePropsByType(keytype: TKeyType) {
-    const props = SUPPORTED_KEY_CODECS.find(row => row.keyType === keytype)
-    if (!props) {
-        throw Error(`Multibase not supported (yet) for key type: ${keytype}`)
-    }
-    return props
+  const props = SUPPORTED_KEY_CODECS.find((row) => row.keyType === keytype)
+  if (!props) {
+    throw Error(`Multibase not supported (yet) for key type: ${keytype}`)
+  }
+  return props
 }
 
 export function getMultibasePropsByCode(code: string | number) {
-    const props = SUPPORTED_KEY_CODECS.find(row => typeof code === "string" ? row.code === code : row.code === code.toString(16))
-    if (!props) {
-        throw Error(`Multibase not supported (yet) for code: ${code}`)
-    }
-    return props
+  const props = SUPPORTED_KEY_CODECS.find((row) => (typeof code === 'string' ? row.code === code : row.code === code.toString(16)))
+  if (!props) {
+    throw Error(`Multibase not supported (yet) for code: ${code}`)
+  }
+  return props
 }
 
 /**
@@ -277,17 +274,21 @@ export function getMultibasePropsByCode(code: string | number) {
  * @public
  */
 export function bytesToMultibase(byteArray: Uint8Array, type: TKeyType): string {
-    const props = getMultibasePropsByType(type)
-    if (byteArray.length < props.minLegth || byteArray.length > props.maxLength ) {
-        throw Error(`Length of provided bytes (${byteArray.length}) falls outside of the bounds ${props.minLegth} and ${props.maxLength}`)
-    }
-    const multicodec = "01"
-    const varCode = Number.parseInt(props.code, 16)
-    const length = props.code.length / 2
-    const varType = new Uint8Array(length)
-    varint.encodeTo(varCode, varType)
-    const bytes = u8a.concatArrays([varType, props.keyType === "RSA" || props.keyType === 'Secp256r1' ? new Uint8Array(0) : u8a.fromString(multicodec, 'base16'), byteArray])
-    return base58btc.encode(bytes)
+  const props = getMultibasePropsByType(type)
+  if (byteArray.length < props.minLegth || byteArray.length > props.maxLength) {
+    throw Error(`Length of provided bytes (${byteArray.length}) falls outside of the bounds ${props.minLegth} and ${props.maxLength}`)
+  }
+  const multicodec = '01'
+  const varCode = Number.parseInt(props.code, 16)
+  const length = props.code.length / 2
+  const varType = new Uint8Array(length)
+  varint.encodeTo(varCode, varType)
+  const bytes = u8a.concatArrays([
+    varType,
+    props.keyType === 'RSA' || props.keyType === 'Secp256r1' ? new Uint8Array(0) : u8a.fromString(multicodec, 'base16'),
+    byteArray,
+  ])
+  return base58btc.encode(bytes)
 }
 
 /**
@@ -298,5 +299,5 @@ export function bytesToMultibase(byteArray: Uint8Array, type: TKeyType): string 
  * @beta This API may change without a BREAKING CHANGE notice.
  */
 export function concat(arrays: ArrayLike<number>[], length?: number): Uint8Array {
-    return u8a.concatArrays(arrays, length)
+  return u8a.concatArrays(arrays, length)
 }

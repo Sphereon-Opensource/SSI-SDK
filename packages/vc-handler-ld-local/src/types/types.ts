@@ -113,7 +113,6 @@ export interface IVerifyCredentialLDArgs {
    * Allows you to use the default integrated statusList 2021 support. If a checkStatus function is provided, this will be ignored
    */
   statusList?: StatusListCheck
-
 }
 
 export interface StatusListCheck {
@@ -125,7 +124,6 @@ export interface StatusListCheck {
   mandatoryCredentialStatus: boolean
   verifyStatusListCredential: boolean
   verifyMatchingIssuers: boolean
-
 }
 
 /**

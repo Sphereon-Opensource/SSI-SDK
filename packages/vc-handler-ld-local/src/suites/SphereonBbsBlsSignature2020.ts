@@ -1,12 +1,12 @@
-import {Bls12381G2KeyPair} from '@mattrglobal/jsonld-signatures-bbs'
-import {KeyType} from '@sphereon/ssi-sdk-ext.kms-local'
-import {bytesToBase58, hexToBytes} from '@sphereon/ssi-sdk.core';
-import {IAgentContext, IKey, TKeyType, VerifiableCredential} from '@veramo/core'
-import {asArray} from '@veramo/utils'
+import { Bls12381G2KeyPair } from '@mattrglobal/jsonld-signatures-bbs'
+import { KeyType } from '@sphereon/ssi-sdk-ext.kms-local'
+import { bytesToBase58, hexToBytes } from '@sphereon/ssi-sdk.core'
+import { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
+import { asArray } from '@veramo/utils'
 
-import {RequiredAgentMethods, SphereonLdSignature} from '../ld-suites'
+import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 
-import {SphereonBbsBlsSignatureSuite2020} from './impl/SphereonBbsBlsSignatureSuite2020'
+import { SphereonBbsBlsSignatureSuite2020 } from './impl/SphereonBbsBlsSignatureSuite2020'
 
 export enum VerificationType {
   Bls12381G2Key2020 = 'Bls12381G2Key2020',
