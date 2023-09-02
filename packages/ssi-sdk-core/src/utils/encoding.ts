@@ -1,7 +1,6 @@
 import { TKeyType } from '@veramo/core'
-import { varint } from 'multiformats'
-import { base58btc } from 'multiformats/bases/base58'
 import { concat as concatArrays, fromString, toString } from 'uint8arrays'
+import varint from './varint/varint'
 
 export enum MultibaseFormat {
   BASE58 = 'z',
@@ -199,7 +198,7 @@ export function multibaseKeyToBytes(s: string): Uint8Array {
   if (s.charAt(0) !== 'z') {
     throw new Error('invalid multibase string: string is not base58 encoded (does not start with "z")')
   }
-  const bytes = base58btc.decode(s)
+  const bytes = u8a.fromString(s.substring(1), 'base58btc')
   const props = multibaseKeyToProps(s)
   const keyLength = props.code.length / 2
 
@@ -222,11 +221,8 @@ export function multibaseKeyToProps(s: string): MultiCodedLookup {
     throw new Error('invalid multibase string: string is not base58 encoded (does not start with "z")')
   }
 
-  const bytes = base58btc.decode(s)
-  const vint = varint.decode(bytes)
-  // console.log(JSON.stringify(vint))
-
-  const code = vint[0]
+  const bytes = u8a.fromString(s.substring(1), 'base58btc')
+  const code = varint.decode(bytes)
   return getMultibasePropsByCode(code)
 }
 
@@ -282,13 +278,13 @@ export function bytesToMultibase(byteArray: Uint8Array, type: TKeyType): string 
   const varCode = Number.parseInt(props.code, 16)
   const length = props.code.length / 2
   const varType = new Uint8Array(length)
-  varint.encodeTo(varCode, varType)
+  varint.encode(varCode, varType)
   const bytes = u8a.concatArrays([
     varType,
     props.keyType === 'RSA' || props.keyType === 'Secp256r1' ? new Uint8Array(0) : u8a.fromString(multicodec, 'base16'),
     byteArray,
   ])
-  return base58btc.encode(bytes)
+  return 'z' + u8a.toString(bytes, 'base58btc')
 }
 
 /**

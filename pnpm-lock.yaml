@@ -1334,9 +1334,6 @@ importers:
       image-size:
         specifier: ^1.0.2
         version: 1.0.2
-      multiformats:
-        specifier: ^11.0.2
-        version: 11.0.2
       uint8arrays:
         specifier: 3.1.1
         version: 3.1.1

@@ -1,11 +1,3 @@
-import {
-  CredentialHandlerLDLocal,
-  ICredentialHandlerLDLocal,
-  LdDefaultContexts,
-  MethodNames,
-  SphereonEd25519Signature2018,
-  SphereonEd25519Signature2020,
-} from 'vc-handler-ld-local/src/index'
 import { createAgent, ICredentialPlugin, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
 import { CredentialPlugin, ICredentialIssuer } from '@veramo/credential-w3c'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
@@ -18,6 +10,10 @@ import { Resolver } from 'did-resolver'
 // @ts-ignore
 import nock from 'nock'
 import { createNewStatusList } from '@sphereon/ssi-sdk.vc-status-list'
+import {CredentialHandlerLDLocal} from "../agent";
+import {LdDefaultContexts} from "../ld-default-contexts";
+import {SphereonEd25519Signature2018, SphereonEd25519Signature2020} from "../suites";
+import {ICredentialHandlerLDLocal, MethodNames} from "../types";
 
 jest.setTimeout(100000)
 
