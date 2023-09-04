@@ -105,7 +105,7 @@ describe('Database entities tests', (): void => {
       port: 5432, // Default PostgreSQL port
       username: 'postgres',
       password: 'btencate',
-      database: 'contacts5-ssi-sdk',
+      database: 'contacts6-ssi-sdk',
 
       migrationsRun: false,
       migrations: DataStoreMigrations,

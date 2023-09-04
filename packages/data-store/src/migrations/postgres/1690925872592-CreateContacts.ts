@@ -3,8 +3,6 @@ import { MigrationInterface, QueryRunner } from 'typeorm'
 export class CreateContacts1690925872592 implements MigrationInterface {
   name = 'CreateContacts1690925872592'
 
-
-
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" DROP CONSTRAINT "FK_CorrelationIdentifier_identityId"`)
     await queryRunner.query(`ALTER TABLE "IdentityMetadata" DROP CONSTRAINT "FK_IdentityMetadata_identityId"`)
@@ -37,74 +35,13 @@ export class CreateContacts1690925872592 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "Connection" ADD CONSTRAINT "FK_360ccf2d714878339680a197d26" FOREIGN KEY ("identity_id") REFERENCES "Identity"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
     await queryRunner.query(`ALTER TABLE "BaseConfig" ADD CONSTRAINT "FK_4b10e0398e0bc003b479a21f53e" FOREIGN KEY ("connection_id") REFERENCES "Connection"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
 
-
+    // migrate existing data
     await queryRunner.query(`INSERT INTO "BaseConfig"("id", "identifier", "redirect_url", "session_id", "client_id", "client_secret", "scopes", "issuer", "dangerously_allow_insecure_http_requests", "client_auth_method", "type", "connection_id") SELECT "id", "identifier", "redirect_url", "session_id", "client_id", "client_secret", "scopes", "issuer", "dangerously_allow_insecure_http_requests", "client_auth_method", "type", "connectionId" FROM "BaseConfigEntity"`)
     await queryRunner.query(`DROP TABLE "BaseConfigEntity"`)
     await queryRunner.query(`INSERT INTO "PartyType"(id, type, name, description, tenant_id, created_at, last_updated_at) VALUES ('3875c12e-fdaa-4ef6-a340-c936e054b627', 'organization', 'Sphereon_default_type', 'sphereon_default_organization', '95e09cfc-c974-4174-86aa-7bf1d5251fb4', now(), now())`)
     await queryRunner.query(`INSERT INTO "Party"(id, uri, created_at, last_updated_at, party_type_id) SELECT id, uri, created_at, last_updated_at, '3875c12e-fdaa-4ef6-a340-c936e054b627' FROM "Contact"`)
     await queryRunner.query(`INSERT INTO "BaseContact"(id, legal_name, display_name, party_id, created_at, last_updated_at, type) SELECT id, name, alias, id, created_at, last_updated_at, 'Organization' FROM "Contact"`)
     await queryRunner.query(`DROP TABLE "Contact"`)
-
-
-    await queryRunner.query(`ROLLBACK`)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // await queryRunner.query(
-    //   `CREATE TABLE "BaseConfigEntity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "client_id" character varying(255), "client_secret" character varying(255), "scopes" text, "issuer" character varying(255), "redirect_url" text, "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "identifier" character varying(255), "session_id" character varying(255), "type" character varying NOT NULL, "connectionId" uuid, CONSTRAINT "REL_BaseConfig_connectionId" UNIQUE ("connectionId"), CONSTRAINT "PK_BaseConfigEntity_id" PRIMARY KEY ("id"))`
-    // )
-    // await queryRunner.query(`CREATE INDEX "IDX_BaseConfigEntity_type" ON "BaseConfigEntity" ("type")`)
-    // await queryRunner.query(`CREATE TYPE "public"."CorrelationIdentifier_type_enum" AS ENUM('did', 'url')`)
-    // await queryRunner.query(
-    //   `CREATE TABLE "CorrelationIdentifier" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."CorrelationIdentifier_type_enum" NOT NULL, "correlation_id" text NOT NULL, "identityId" uuid, CONSTRAINT "UQ_Correlation_id" UNIQUE ("correlation_id"), CONSTRAINT "REL_CorrelationIdentifier_identityId" UNIQUE ("identityId"), CONSTRAINT "PK_CorrelationIdentifier_id" PRIMARY KEY ("id"))`
-    // )
-    // await queryRunner.query(
-    //   `CREATE TABLE "Contact" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying(255) NOT NULL, "alias" character varying(255) NOT NULL, "uri" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_Name" UNIQUE ("name"), CONSTRAINT "UQ_Alias" UNIQUE ("alias"), CONSTRAINT "PK_Contact_id" PRIMARY KEY ("id"))`
-    // )
-    // await queryRunner.query(
-    //   `CREATE TABLE "IdentityMetadata" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "label" character varying(255) NOT NULL, "value" character varying(255) NOT NULL, "identityId" uuid, CONSTRAINT "PK_IdentityMetadata_id" PRIMARY KEY ("id"))`
-    // )
-    // await queryRunner.query(
-    //   `CREATE TABLE "Identity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "alias" character varying(255) NOT NULL, "roles" text, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "contactId" uuid, CONSTRAINT "UQ_Alias" UNIQUE ("alias"), CONSTRAINT "PK_Identity_id" PRIMARY KEY ("id"))`
-    // )
-    // await queryRunner.query(`CREATE TYPE "public"."Connection_type_enum" AS ENUM('OIDC', 'SIOPv2', 'SIOPv2+OpenID4VP')`)
-    // await queryRunner.query(
-    //   `CREATE TABLE "Connection" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."Connection_type_enum" NOT NULL, "identityId" uuid, CONSTRAINT "REL_Connection_identityId" UNIQUE ("identityId"), CONSTRAINT "PK_Connection_id" PRIMARY KEY ("id"))`
-    // )
-    // await queryRunner.query(
-    //   `ALTER TABLE "BaseConfigEntity" ADD CONSTRAINT "FK_BaseConfig_connectionId" FOREIGN KEY ("connectionId") REFERENCES "Connection"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
-    // )
-    // await queryRunner.query(
-    //   `ALTER TABLE "CorrelationIdentifier" ADD CONSTRAINT "FK_CorrelationIdentifier_identityId" FOREIGN KEY ("identityId") REFERENCES "Identity"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
-    // )
-    // await queryRunner.query(
-    //   `ALTER TABLE "IdentityMetadata" ADD CONSTRAINT "FK_IdentityMetadata_identityId" FOREIGN KEY ("identityId") REFERENCES "Identity"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
-    // )
-    // await queryRunner.query(
-    //   `ALTER TABLE "Identity" ADD CONSTRAINT "FK_Identity_contactId" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
-    // )
-    // await queryRunner.query(
-    //   `ALTER TABLE "Connection" ADD CONSTRAINT "FK_Connection_identityId" FOREIGN KEY ("identityId") REFERENCES "Identity"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
-    // )
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
