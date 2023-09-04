@@ -81,8 +81,8 @@ export class CreateContacts1690925872693 implements MigrationInterface {
     await queryRunner.query(`INSERT INTO "BaseConfig"("id", "identifier", "redirect_url", "session_id", "client_id", "client_secret", "scopes", "issuer", "dangerously_allow_insecure_http_requests", "client_auth_method", "type", "connection_id") SELECT "id", "identifier", "redirect_url", "session_id", "client_id", "client_secret", "scopes", "issuer", "dangerously_allow_insecure_http_requests", "client_auth_method", "type", "connection_id" FROM "BaseConfigEntity"`)
     await queryRunner.query(`DROP TABLE "BaseConfigEntity"`)
     await queryRunner.query(`INSERT INTO "PartyType"(id, type, name, description, tenant_id, created_at, last_updated_at) VALUES ('3875c12e-fdaa-4ef6-a340-c936e054b627', 'organization', 'Sphereon_default_type', 'sphereon_default_organization', '95e09cfc-c974-4174-86aa-7bf1d5251fb4', datetime('now'), datetime('now'))`)
-    await queryRunner.query(`INSERT INTO "Party"(id, uri, created_at, last_updated_at, party_type_id) SELECT id, uri, created_at, last_updated_at, '3875c12e-fdaa-4ef6-a340-c936e054b627' FROM Contact`)
-    await queryRunner.query(`INSERT INTO "BaseContact"(id, legal_name, display_name, party_id, created_at, last_updated_at, type) SELECT id, name, alias, id, created_at, last_updated_at, 'Organization' FROM Contact`)
+    await queryRunner.query(`INSERT INTO "Party"(id, uri, created_at, last_updated_at, party_type_id) SELECT id, uri, created_at, last_updated_at, '3875c12e-fdaa-4ef6-a340-c936e054b627' FROM "Contact"`)
+    await queryRunner.query(`INSERT INTO "BaseContact"(id, legal_name, display_name, party_id, created_at, last_updated_at, type) SELECT id, name, alias, id, created_at, last_updated_at, 'Organization' FROM "Contact"`)
     await queryRunner.query(`DROP TABLE "Contact"`)
 
 
