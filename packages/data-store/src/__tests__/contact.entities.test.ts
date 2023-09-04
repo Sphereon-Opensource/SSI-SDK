@@ -4,7 +4,7 @@ import { DataSource,
 
 import {
   DataStoreContactEntities,
-  //DataStoreMigrations
+  DataStoreMigrations
 } from '../index'
 //import { NaturalPersonEntity } from '../entities/contact/NaturalPersonEntity'
 // import { OrganizationEntity } from '../entities/contact/OrganizationEntity'
@@ -105,15 +105,15 @@ describe('Database entities tests', (): void => {
       port: 5432, // Default PostgreSQL port
       username: 'postgres',
       password: 'btencate',
-      database: 'contacts2-ssi-sdk',
+      database: 'contacts3-ssi-sdk',
 
       migrationsRun: false,
-      //migrations: DataStoreMigrations,
-      synchronize: true, //false
+      migrations: DataStoreMigrations,
+      synchronize: false,
       entities: DataStoreContactEntities,
     }).initialize()
-    //await dbConnection.runMigrations()
-    //expect(await dbConnection.showMigrations()).toBeFalsy()
+    await dbConnection.runMigrations()
+    expect(await dbConnection.showMigrations()).toBeFalsy()
   })
 
   afterEach(async (): Promise<void> => {

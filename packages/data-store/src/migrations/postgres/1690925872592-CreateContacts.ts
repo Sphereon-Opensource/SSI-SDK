@@ -104,19 +104,19 @@ export class CreateContacts1690925872592 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`ALTER TABLE "Connection" DROP CONSTRAINT "FK_Connection_identityId"`)
-    await queryRunner.query(`ALTER TABLE "Identity" DROP CONSTRAINT "FK_Identity_contactId"`)
-    await queryRunner.query(`ALTER TABLE "IdentityMetadata" DROP CONSTRAINT "FK_IdentityMetadata_identityId"`)
-    await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" DROP CONSTRAINT "FK_CorrelationIdentifier_identityId"`)
-    await queryRunner.query(`ALTER TABLE "BaseConfigEntity" DROP CONSTRAINT "FK_BaseConfig_connectionId"`)
-    await queryRunner.query(`DROP TABLE "Connection"`)
-    await queryRunner.query(`DROP TYPE "public"."Connection_type_enum"`)
-    await queryRunner.query(`DROP TABLE "Identity"`)
-    await queryRunner.query(`DROP TABLE "IdentityMetadata"`)
-    await queryRunner.query(`DROP TABLE "Contact"`)
-    await queryRunner.query(`DROP TABLE "CorrelationIdentifier"`)
-    await queryRunner.query(`DROP TYPE "public"."CorrelationIdentifier_type_enum"`)
-    await queryRunner.query(`DROP INDEX "public"."IDX_BaseConfigEntity_type"`)
-    await queryRunner.query(`DROP TABLE "BaseConfigEntity"`)
+    // await queryRunner.query(`ALTER TABLE "Connection" DROP CONSTRAINT "FK_Connection_identityId"`)
+    // await queryRunner.query(`ALTER TABLE "Identity" DROP CONSTRAINT "FK_Identity_contactId"`)
+    // await queryRunner.query(`ALTER TABLE "IdentityMetadata" DROP CONSTRAINT "FK_IdentityMetadata_identityId"`)
+    // await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" DROP CONSTRAINT "FK_CorrelationIdentifier_identityId"`)
+    // await queryRunner.query(`ALTER TABLE "BaseConfigEntity" DROP CONSTRAINT "FK_BaseConfig_connectionId"`)
+    // await queryRunner.query(`DROP TABLE "Connection"`)
+    // await queryRunner.query(`DROP TYPE "public"."Connection_type_enum"`)
+    // await queryRunner.query(`DROP TABLE "Identity"`)
+    // await queryRunner.query(`DROP TABLE "IdentityMetadata"`)
+    // await queryRunner.query(`DROP TABLE "Contact"`)
+    // await queryRunner.query(`DROP TABLE "CorrelationIdentifier"`)
+    // await queryRunner.query(`DROP TYPE "public"."CorrelationIdentifier_type_enum"`)
+    // await queryRunner.query(`DROP INDEX "public"."IDX_BaseConfigEntity_type"`)
+    // await queryRunner.query(`DROP TABLE "BaseConfigEntity"`)
   }
 }
