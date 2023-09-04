@@ -58,7 +58,7 @@ export class IdentityEntity extends BaseEntity {
     eager: true,
     nullable: false,
   })
-  @JoinColumn({ name: 'metadata_id' })
+  @JoinColumn({ name: 'metadata_id' }) // TODO check in db file
   metadata!: Array<IdentityMetadataItemEntity>
 
   @CreateDateColumn({ name: 'created_at', nullable: false })

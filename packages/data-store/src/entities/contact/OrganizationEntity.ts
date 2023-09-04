@@ -16,8 +16,8 @@ export class OrganizationEntity extends BaseContactEntity {
   displayName!: string
 
   @OneToOne(() => PartyEntity)
-  @JoinColumn({ name: 'contact_id' })
-  contact!: PartyEntity
+  @JoinColumn({ name: 'party_id' })
+  party!: PartyEntity
 
   @BeforeInsert()
   @BeforeUpdate()

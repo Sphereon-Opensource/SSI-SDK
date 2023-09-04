@@ -35,7 +35,7 @@ export class PartyEntity extends BaseEntity {
     eager: true,
     nullable: false,
   })
-  @JoinColumn({ name: 'identity_id' })
+  @JoinColumn({ name: 'identity_id' }) // TODO check this in the db file
   identities!: Array<IdentityEntity>
 
   @OneToMany(() => ElectronicAddressEntity, (electronicAddress: ElectronicAddressEntity) => electronicAddress.party, {
@@ -44,7 +44,7 @@ export class PartyEntity extends BaseEntity {
     eager: true,
     nullable: false,
   })
-  @JoinColumn({ name: 'electronic_address_id' })
+  @JoinColumn({ name: 'electronic_address_id' }) // TODO check this in the db file
   electronicAddresses!: Array<ElectronicAddressEntity>
 
   @ManyToOne(() => PartyTypeEntity, (contactType: PartyTypeEntity) => contactType.parties, {
