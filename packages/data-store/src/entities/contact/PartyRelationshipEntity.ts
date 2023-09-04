@@ -13,7 +13,7 @@ import {
 import { PartyEntity } from './PartyEntity'
 
 @Entity('PartyRelationship')
-@Index('IDX_PartyRelationshipEntity_left_right', ['left', 'right'], { unique: true })
+@Index('IDX_PartyRelationship_left_right', ['left', 'right'], { unique: true })
 export class PartyRelationshipEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string

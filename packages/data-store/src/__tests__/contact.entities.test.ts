@@ -78,43 +78,43 @@ describe('Database entities tests', (): void => {
   // })
 
   // sqlite
-  // beforeEach(async (): Promise<void> => {
-  //   dbConnection = await new DataSource({
-  //     type: 'sqlite',
-  //     database: './database.sqlite',
-  //     logging: 'all',
-  //     migrationsRun: false,
-  //     migrations: DataStoreMigrations,
-  //     synchronize: false, //false
-  //     entities: DataStoreContactEntities,
-  //   }).initialize()
-  //   await dbConnection.runMigrations()
-  //   expect(await dbConnection.showMigrations()).toBeFalsy()
-  // })
-
-  // postgres
   beforeEach(async (): Promise<void> => {
     dbConnection = await new DataSource({
-      // type: 'sqlite',
-      // database: ':memory:',
+      type: 'sqlite',
+      database: './database.sqlite',
       logging: 'all',
-
-
-      type: 'postgres',
-      host: 'localhost', // or '127.0.0.1'
-      port: 5432, // Default PostgreSQL port
-      username: 'postgres',
-      password: 'btencate',
-      database: 'contacts6-ssi-sdk',
-
       migrationsRun: false,
       migrations: DataStoreMigrations,
-      synchronize: false,
+      synchronize: false, //false
       entities: DataStoreContactEntities,
     }).initialize()
     await dbConnection.runMigrations()
     expect(await dbConnection.showMigrations()).toBeFalsy()
   })
+
+  // postgres
+  // beforeEach(async (): Promise<void> => {
+  //   dbConnection = await new DataSource({
+  //     // type: 'sqlite',
+  //     // database: ':memory:',
+  //     logging: 'all',
+  //
+  //
+  //     type: 'postgres',
+  //     host: 'localhost', // or '127.0.0.1'
+  //     port: 5432, // Default PostgreSQL port
+  //     username: 'postgres',
+  //     password: 'btencate',
+  //     database: 'contacts7-ssi-sdk',
+  //
+  //     migrationsRun: false,
+  //     migrations: DataStoreMigrations,
+  //     synchronize: false,
+  //     entities: DataStoreContactEntities,
+  //   }).initialize()
+  //   await dbConnection.runMigrations()
+  //   expect(await dbConnection.showMigrations()).toBeFalsy()
+  // })
 
   afterEach(async (): Promise<void> => {
     await (await dbConnection).destroy()
