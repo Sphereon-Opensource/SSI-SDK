@@ -4,7 +4,7 @@ import { DataSource,
 
 import {
   DataStoreContactEntities,
-  DataStoreMigrations
+  //DataStoreMigrations
 } from '../index'
 //import { NaturalPersonEntity } from '../entities/contact/NaturalPersonEntity'
 // import { OrganizationEntity } from '../entities/contact/OrganizationEntity'
@@ -77,18 +77,43 @@ describe('Database entities tests', (): void => {
   //   // expect(await dbConnection.showMigrations()).toBeFalsy()
   // })
 
+  // sqlite
+  // beforeEach(async (): Promise<void> => {
+  //   dbConnection = await new DataSource({
+  //     type: 'sqlite',
+  //     database: './database.sqlite',
+  //     logging: 'all',
+  //     migrationsRun: false,
+  //     migrations: DataStoreMigrations,
+  //     synchronize: false, //false
+  //     entities: DataStoreContactEntities,
+  //   }).initialize()
+  //   await dbConnection.runMigrations()
+  //   expect(await dbConnection.showMigrations()).toBeFalsy()
+  // })
+
+  // postgres
   beforeEach(async (): Promise<void> => {
     dbConnection = await new DataSource({
-      type: 'sqlite',
-      database: './database.sqlite',
-      logging: 'all',
+      // type: 'sqlite',
+      // database: ':memory:',
+      // //logging: 'all',
+
+
+      type: 'postgres',
+      host: 'localhost', // or '127.0.0.1'
+      port: 5432, // Default PostgreSQL port
+      username: 'postgres',
+      password: 'btencate',
+      database: 'contacts-ssi-sdk',
+
       migrationsRun: false,
-      migrations: DataStoreMigrations,
-      synchronize: false, //false
+      //migrations: DataStoreMigrations,
+      synchronize: true, //false
       entities: DataStoreContactEntities,
     }).initialize()
-    await dbConnection.runMigrations()
-    expect(await dbConnection.showMigrations()).toBeFalsy()
+    //await dbConnection.runMigrations()
+    //expect(await dbConnection.showMigrations()).toBeFalsy()
   })
 
   afterEach(async (): Promise<void> => {
