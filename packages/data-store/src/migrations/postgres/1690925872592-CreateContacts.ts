@@ -38,8 +38,8 @@ export class CreateContacts1690925872592 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "BaseConfig" ADD CONSTRAINT "FK_4b10e0398e0bc003b479a21f53e" FOREIGN KEY ("connection_id") REFERENCES "Connection"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
 
 
-
-
+    await queryRunner.query(`DROP TABLE "BaseConfigEntity"`)
+    await queryRunner.query(`DROP TABLE "Contact"`)
 
 
 
