@@ -97,7 +97,7 @@ describe('Database entities tests', (): void => {
     dbConnection = await new DataSource({
       // type: 'sqlite',
       // database: ':memory:',
-      // //logging: 'all',
+      logging: 'all',
 
 
       type: 'postgres',
@@ -105,7 +105,7 @@ describe('Database entities tests', (): void => {
       port: 5432, // Default PostgreSQL port
       username: 'postgres',
       password: 'btencate',
-      database: 'contacts-ssi-sdk',
+      database: 'contacts2-ssi-sdk',
 
       migrationsRun: false,
       //migrations: DataStoreMigrations,
