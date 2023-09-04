@@ -87,6 +87,7 @@ export class CreateContacts1690925872693 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-
+    // TODO DPP-27 implement downgrade
+    return Promise.reject(Error(`Downgrade is not yet implemented for ${this.name}`))
   }
 }
