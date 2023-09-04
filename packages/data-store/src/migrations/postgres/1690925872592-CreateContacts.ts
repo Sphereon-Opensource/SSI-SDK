@@ -21,8 +21,10 @@ export class CreateContacts1690925872592 implements MigrationInterface {
     await queryRunner.query(`CREATE TABLE "Party" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "uri" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "party_type_id" uuid NOT NULL, CONSTRAINT "PK_Party_id" PRIMARY KEY ("id"))`)
     await queryRunner.query(`CREATE TABLE "BaseConfig" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "identifier" character varying(255), "redirect_url" character varying(255), "session_id" character varying(255), "client_id" character varying(255), "client_secret" character varying(255), "scopes" text, "issuer" character varying(255), "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "type" character varying NOT NULL, "connection_id" uuid, CONSTRAINT "REL_BaseConfig_connection_id" UNIQUE ("connection_id"), CONSTRAINT "PK_BaseConfig_id" PRIMARY KEY ("id"))`)
     await queryRunner.query(`CREATE INDEX "IDX_BaseConfig_type" ON "BaseConfig" ("type")`)
-    await queryRunner.query(`ALTER TABLE "Identity" DROP COLUMN "contactId"`)
-    await queryRunner.query(`ALTER TABLE "Identity" ADD "partyId" uuid`)
+    // await queryRunner.query(`ALTER TABLE "Identity" DROP COLUMN "contactId"`) // TODO we need rename this column
+    // await queryRunner.query(`ALTER TABLE "Identity" ADD "partyId" uuid`)
+    await queryRunner.query(`ALTER TABLE "Identity" RENAME COLUMN "contactId" TO "partyId"`)
+
     await queryRunner.query(`ALTER TABLE "Identity" ALTER COLUMN "roles" SET NOT NULL`)
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" ADD CONSTRAINT "FK_CorrelationIdentifier_identity_id" FOREIGN KEY ("identity_id") REFERENCES "Identity"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
     await queryRunner.query(`ALTER TABLE "IdentityMetadata" ADD CONSTRAINT "FK_IdentityMetadata_identityId" FOREIGN KEY ("identityId") REFERENCES "Identity"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
