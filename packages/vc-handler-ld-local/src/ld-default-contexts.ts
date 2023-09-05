@@ -15,6 +15,7 @@ import contextSuitesJws_2020 from './contexts/json-web-signature-2020-v1.json' /
 import contextSuiteEip712 from './contexts/eip712.json' // assert { type: 'json' }
 import contextCitizenshipV1 from './contexts/citizenship-v1.json' // assert { type: 'json' }
 import contextVCRevocationList2020 from './contexts/vc-revocation-list-2020-v1.json' // assert { type: 'json' }
+import contextVCStatusList2021 from './contexts/vc-status-list-2021-v1.json' // assert { type: 'json' }
 
 /**
  * Provides a hardcoded map of common context definitions
@@ -35,6 +36,8 @@ export const LdDefaultContexts = new Map([
   ['https://veramo.io/contexts/profile/v1', contextProfile],
   ['https://w3id.org/citizenship/v1', contextCitizenshipV1],
   ['https://w3id.org/vc-revocation-list-2020', contextVCRevocationList2020],
+  ['https://w3id.org/vc/status-list/v1', contextVCStatusList2021], // Unfortunately also listed in the spec
+  ['https://w3id.org/vc/status-list/2021/v1', contextVCStatusList2021],
   ['https://identity.foundation/EcdsaSecp256k1RecoverySignature2020/lds-ecdsa-secp256k1-recovery2020-0.0.jsonld', contextLdsEcdsaSecpRecovery2020_0],
   ['https://identity.foundation/EcdsaSecp256k1RecoverySignature2020/lds-ecdsa-secp256k1-recovery2020-2.0.jsonld', contextLdsEcdsaSecpRecovery2020_2],
   ['https://w3id.org/security/suites/secp256k1recovery-2020/v2', contextSuitesSecp],

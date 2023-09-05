@@ -1,3 +1,4 @@
+import jwt_decode from 'jwt-decode'
 import {
   DocumentFormat,
   IPresentation,
@@ -18,7 +19,6 @@ import {
   WrappedVerifiableCredential,
   WrappedVerifiablePresentation,
 } from '../types'
-import jwt_decode from 'jwt-decode'
 import { ObjectUtils } from '../utils'
 
 export class CredentialMapper {
@@ -334,6 +334,11 @@ export class CredentialMapper {
             throw new Error(`Inconsistent issuers between JWT claim (${iss}) and VC value (${issuer})`)
           }
         } else {
+          if (!issuer.id && Object.keys(issuer).length > 0) {
+            // We have an issuer object with more than 1 property but without an issuer id. Set it,
+            // because the default behaviour of did-jwt-vc is to remove the id value when creating JWTs
+            issuer.id = iss
+          }
           if (issuer.id !== iss) {
             throw new Error(`Inconsistent issuers between JWT claim (${iss}) and VC value (${issuer.id})`)
           }
@@ -402,7 +407,7 @@ export class CredentialMapper {
     }
   }
 
-  static storedCredentialToOriginalFormat(credential: W3CVerifiableCredential): W3CVerifiableCredential {
+  static storedCredentialToOriginalFormat(credential: OriginalVerifiableCredential): W3CVerifiableCredential {
     const type: DocumentFormat = CredentialMapper.detectDocumentType(credential)
     if (typeof credential === 'string') {
       if (type === DocumentFormat.JWT) {
@@ -410,11 +415,13 @@ export class CredentialMapper {
       } else if (type === DocumentFormat.JSONLD) {
         return JSON.parse(credential)
       }
+    } else if (type === DocumentFormat.JWT && 'vc' in credential) {
+      return CredentialMapper.toCompactJWT(credential)
     }
-    return credential
+    return credential as W3CVerifiableCredential
   }
 
-  static storedPresentationToOriginalFormat(presentation: W3CVerifiablePresentation): W3CVerifiablePresentation {
+  static storedPresentationToOriginalFormat(presentation: OriginalVerifiablePresentation): W3CVerifiablePresentation {
     const type: DocumentFormat = CredentialMapper.detectDocumentType(presentation)
     if (typeof presentation === 'string') {
       if (type === DocumentFormat.JWT) {
@@ -422,8 +429,10 @@ export class CredentialMapper {
       } else if (type === DocumentFormat.JSONLD) {
         return JSON.parse(presentation)
       }
+    } else if (type === DocumentFormat.JWT && 'vp' in presentation) {
+      return CredentialMapper.toCompactJWT(presentation)
     }
-    return presentation
+    return presentation as W3CVerifiablePresentation
   }
 
   static toCompactJWT(

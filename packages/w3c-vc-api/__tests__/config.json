@@ -1,0 +1,17 @@
+{
+  "credentials": {
+    "tenantName": "sphereon",
+    "clientID": "14f34474-b7a9-428b-a7e6-e7eda91675b0",
+    "issuer": "https://login.microsoftonline.com/e2a42b2f-7460-4499-afc2-425315ef058a/v2.0"
+  },
+  "metadata": {
+    "authority": "login.microsoftonline.com",
+    "discovery": ".well-known/openid-configuration",
+    "version": "v2.0"
+  },
+  "settings": {
+    "validateIssuer": true,
+    "passReqToCallback": false,
+    "loggingLevel": "debug"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-client",
   "description": "contains the client side to call REST endpoints of relying party",
-  "version": "0.13.0",
+  "version": "0.15.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,9 +15,9 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:*",
+    "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:^",
     "@veramo/core": "4.2.0",
-    "cross-fetch": "^3.1.5"
+    "cross-fetch": "^3.1.8"
   },
   "devDependencies": {
     "@types/node": "^18.16.3",

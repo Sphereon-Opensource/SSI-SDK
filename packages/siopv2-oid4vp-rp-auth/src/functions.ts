@@ -105,7 +105,8 @@ export async function createRPBuilder(args: {
     .withResponseMode(rpOpts.responseMode ?? ResponseMode.POST)
     .withResponseType(ResponseType.ID_TOKEN, PropertyTarget.REQUEST_OBJECT)
     .withCustomResolver(
-      rpOpts.didOpts.resolveOpts?.resolver ?? new AgentDIDResolver(context, rpOpts.didOpts.resolveOpts?.noUniversalResolverFallback !== false)
+      rpOpts.didOpts.resolveOpts?.resolver ??
+        new AgentDIDResolver(context, { uniresolverResolution: rpOpts.didOpts.resolveOpts?.noUniversalResolverFallback !== true })
     )
     .withClientId(did, PropertyTarget.REQUEST_OBJECT)
     // todo: move to options fill/correct method

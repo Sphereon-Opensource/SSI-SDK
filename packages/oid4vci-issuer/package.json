@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.oid4vci-issuer",
-  "version": "0.13.0",
+  "version": "0.15.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,17 +14,17 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.6.0",
-    "@sphereon/oid4vci-issuer": "0.6.0",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.12.2-next.4",
-    "@sphereon/ssi-sdk.core": "workspace:*",
-    "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
-    "@sphereon/ssi-sdk.oid4vci-issuer-store": "workspace:*",
-    "@sphereon/ssi-types": "workspace:*",
+    "@sphereon/oid4vci-common": "0.7.0",
+    "@sphereon/oid4vci-issuer": "0.7.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.14.1-next.3",
+    "@sphereon/ssi-sdk.core": "workspace:^",
+    "@sphereon/ssi-sdk.kv-store-temp": "workspace:^",
+    "@sphereon/ssi-sdk.oid4vci-issuer-store": "workspace:^",
+    "@sphereon/ssi-types": "workspace:^",
     "@types/uuid": "^9.0.1",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",
-    "cross-fetch": "^3.1.5",
+    "cross-fetch": "^3.1.8",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

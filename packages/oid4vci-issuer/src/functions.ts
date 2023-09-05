@@ -12,7 +12,7 @@ import { IIssuerOptions, IRequiredContext } from './types/IOID4VCIIssuer'
 
 export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOptions }, _context: IRequiredContext) {
   return async (args: { jwt: string; kid?: string }): Promise<JwtVerifyResult<DIDDocument>> => {
-    const resolver = getAgentResolver(_context, { uniresolverFallback: true })
+    const resolver = getAgentResolver(_context, { resolverResolution: true, uniresolverResolution: true, localResolution: true })
     verifyOpts = { ...verifyOpts, resolver: verifyOpts?.resolver } // Resolver seperately as that is a function
     if (!verifyOpts?.resolver || typeof verifyOpts?.resolver?.resolve !== 'function') {
       verifyOpts.resolver = resolver
@@ -139,6 +139,8 @@ export function getCredentialSignerCallback(didOpts: IDIDOptions, context: IRequ
     proofFormat = format?.includes('ld') ? 'lds' : 'jwt'
     if (!credential.issuer && didOpts.identifierOpts.identifier) {
       credential.issuer = toDID(didOpts.identifierOpts.identifier)
+    } else if (typeof credential.issuer === 'object' && !credential.issuer.id && didOpts.identifierOpts.identifier) {
+      credential.issuer.id = toDID(didOpts.identifierOpts.identifier)
     }
     const subjectIsArray = Array.isArray(credential.credentialSubject)
     let credentialSubjects = Array.isArray(credential.credentialSubject) ? credential.credentialSubject : [credential.credentialSubject]
@@ -154,6 +156,7 @@ export function getCredentialSignerCallback(didOpts: IDIDOptions, context: IRequ
     const result = await context.agent.createVerifiableCredential({
       credential: credential as CredentialPayload,
       proofFormat,
+      removeOriginalFields: false,
       fetchRemoteContexts: true,
       domain: getDID(didOpts.identifierOpts),
     })

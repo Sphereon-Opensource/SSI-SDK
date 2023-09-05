@@ -1,0 +1,41 @@
+{
+  "name": "@sphereon/ssi-sdk.vc-status-list",
+  "description": "Sphereon SSI-SDK plugin for Status List management, like StatusList2021.",
+  "version": "0.14.1-next.3",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build"
+  },
+  "dependencies": {
+    "@digitalcredentials/vc-status-list": "^5.0.2",
+    "@veramo/core": "4.2.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "^0.14.1-next.3",
+    "@sphereon/ssi-types": "workspace:^",
+    "debug": "^4.3.4",
+    "uint8arrays": "^3.1.1"
+  },
+  "devDependencies": {
+    "typescript": "4.9.5"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-OpenSource/ssi-sdk.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sphereon",
+    "SSI",
+    "StatusList2021"
+  ]
+}
