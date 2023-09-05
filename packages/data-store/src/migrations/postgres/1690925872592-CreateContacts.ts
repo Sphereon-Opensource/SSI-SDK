@@ -33,7 +33,7 @@ export class CreateContacts1690925872592 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "PartyRelationship" ADD CONSTRAINT "FK_PartyRelationship_right_id" FOREIGN KEY ("right_id") REFERENCES "Party"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
     await queryRunner.query(`ALTER TABLE "ElectronicAddress" ADD CONSTRAINT "FK_ElectronicAddress_partyId" FOREIGN KEY ("partyId") REFERENCES "Party"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
     await queryRunner.query(`ALTER TABLE "Party" ADD CONSTRAINT "FK_Party_party_type_id" FOREIGN KEY ("party_type_id") REFERENCES "PartyType"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
-    await queryRunner.query(`ALTER TABLE "Identity" ADD CONSTRAINT "FK_partyId" FOREIGN KEY ("partyId") REFERENCES "Party"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
+    await queryRunner.query(`ALTER TABLE "Identity" ADD CONSTRAINT "FK_Identity_partyId" FOREIGN KEY ("partyId") REFERENCES "Party"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
     await queryRunner.query(`ALTER TABLE "Connection" ADD CONSTRAINT "FK_Connection_identity_id" FOREIGN KEY ("identity_id") REFERENCES "Identity"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
     await queryRunner.query(`ALTER TABLE "BaseConfig" ADD CONSTRAINT "FK_BaseConfig_connection_id" FOREIGN KEY ("connection_id") REFERENCES "Connection"("id") ON DELETE CASCADE ON UPDATE NO ACTION`)
 
