@@ -11,7 +11,8 @@ import {
   FindPartyArgs as FindContactArgs,
   PartyRelationship as ContactRelationship,
   PartyType as ContactType,
-  Party as Contact, NonPersistedParty
+  Party as Contact,
+  NonPersistedParty,
 } from '@sphereon/ssi-sdk.data-store'
 
 export interface IContactManager extends IPluginMethodMap {
@@ -51,9 +52,10 @@ export type GetContactsArgs = {
 //   identities?: Array<NonPersistedIdentity>
 // } & NonPersistedNaturalPerson | NonPersistedOrganization
 
-export type AddContactArgs = Omit<NonPersistedParty, 'contact' | 'partyType'> & NonPersistedContact & {
-  contactType: NonPersistedContactType
-}
+export type AddContactArgs = Omit<NonPersistedParty, 'contact' | 'partyType'> &
+  NonPersistedContact & {
+    contactType: NonPersistedContactType
+  }
 
 export type UpdateContactArgs = {
   contact: Contact

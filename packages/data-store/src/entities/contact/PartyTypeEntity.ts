@@ -6,7 +6,7 @@ import { IsNonEmptyStringConstraint } from '../validators'
 import { getConstraint } from '../../utils/ValidatorUtils'
 
 @Entity('PartyType')
-@Index('IDX_PartyType_type_tenant_id', ['type', 'tenantId'], { unique: true }) // TODO use name for migrations
+@Index('IDX_PartyType_type_tenant_id', ['type', 'tenantId'], { unique: true })
 export class PartyTypeEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string

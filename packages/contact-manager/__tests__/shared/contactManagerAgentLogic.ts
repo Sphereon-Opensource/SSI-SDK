@@ -24,7 +24,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await testContext.setup()
       agent = testContext.getAgent()
 
-      const contact: AddContactArgs = { //NonPersistedParty
+      const contact: AddContactArgs = {
+        //NonPersistedParty
         firstName: 'default_first_name',
         middleName: 'default_middle_name',
         lastName: 'default_last_name',
@@ -137,7 +138,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should add contact', async (): Promise<void> => {
-      const contact: AddContactArgs = { //NonPersistedParty
+      const contact: AddContactArgs = {
+        //NonPersistedParty
         firstName: 'new_first_name',
         middleName: 'new_middle_name',
         lastName: 'new_last_name',
@@ -156,10 +158,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         // },
         uri: 'example.com',
         // TODO create better tests for electronicAddresses
-        electronicAddresses: [{
-          type: 'email',
-          electronicAddress: 'sphereon@sphereon.com'
-        }]
+        electronicAddresses: [
+          {
+            type: 'email',
+            electronicAddress: 'sphereon@sphereon.com',
+          },
+        ],
       }
 
       const result: Party = await agent.cmAddContact(contact)
@@ -303,7 +307,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should add relationship', async (): Promise<void> => {
-      const contact: AddContactArgs = { //NonPersistedParty
+      const contact: AddContactArgs = {
+        //NonPersistedParty
         firstName: 'relation_first_name',
         middleName: 'relation_middle_name',
         lastName: 'relation_last_name',
@@ -346,10 +351,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       // TODO why does this filter not work on only first name?
       const args2: GetPartiesArgs = {
-        filter: [
-          { contact: { firstName: 'relation_first_name' } },
-          { contact: { middleName: 'relation_middle_name' } },
-        ],
+        filter: [{ contact: { firstName: 'relation_first_name' } }, { contact: { middleName: 'relation_middle_name' } }],
       }
       const result: Array<Party> = await agent.cmGetContacts(args2)
 
@@ -360,7 +362,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should remove relationship', async (): Promise<void> => {
-      const contact: AddContactArgs = { //NonPersistedParty
+      const contact: AddContactArgs = {
+        //NonPersistedParty
         firstName: 'remove_relation_first_name',
         middleName: 'remove_relation_middle_name',
         lastName: 'remove_relation_last_name',

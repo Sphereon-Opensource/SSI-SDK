@@ -1,4 +1,4 @@
-import { DataSource, FindOptionsWhere} from 'typeorm'
+import { DataSource, FindOptionsWhere } from 'typeorm'
 
 import { DataStoreContactEntities, DataStoreMigrations } from '../index'
 import { NaturalPersonEntity } from '../entities/contact/NaturalPersonEntity'

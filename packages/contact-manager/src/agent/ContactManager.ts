@@ -29,7 +29,7 @@ import {
   Party as Contact,
   Identity,
   PartyRelationship as ContactRelationship,
-  PartyType as ContactType
+  PartyType as ContactType,
 } from '@sphereon/ssi-sdk.data-store'
 
 /**
@@ -79,16 +79,17 @@ export class ContactManager implements IAgentPlugin {
   /** {@inheritDoc IContactManager.cmAddContact} */
   private async cmAddContact(args: AddContactArgs, context: RequiredContext): Promise<Contact> {
     // TODO this needs to be improved
-    const contact = ('firstName' in args && 'lastName' in args)
-    ? { firstName: args.firstName, middleName: args.middleName, lastName: args.lastName, displayName: args.displayName}
-    : { legalName: args.legalName, displayName: args.displayName }
+    const contact =
+      'firstName' in args && 'lastName' in args
+        ? { firstName: args.firstName, middleName: args.middleName, lastName: args.lastName, displayName: args.displayName }
+        : { legalName: args.legalName, displayName: args.displayName }
 
     return this.store.addParty({
       uri: args.uri,
       partyType: args.contactType,
       contact,
       identities: args.identities,
-      electronicAddresses: args.electronicAddresses
+      electronicAddresses: args.electronicAddresses,
     })
   }
 
@@ -169,7 +170,7 @@ export class ContactManager implements IAgentPlugin {
 
   /** {@inheritDoc IContactManager.cmUpdateContactType} */
   private async cmUpdateContactType(args: UpdateContactTypeArgs, context: RequiredContext): Promise<ContactType> {
-    return this.store.updatePartyType({partyType: args.contactType})
+    return this.store.updatePartyType({ partyType: args.contactType })
   }
 
   /** {@inheritDoc IContactManager.cmRemoveContactType} */

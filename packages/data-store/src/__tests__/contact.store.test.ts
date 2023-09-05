@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm'
 
-import { DataStoreContactEntities } from '../index'
+import { DataStoreMigrations, DataStoreContactEntities } from '../index'
 import { ContactStore } from '../contact/ContactStore'
 import {
   IdentityRoleEnum,
@@ -29,31 +29,16 @@ describe('Contact store tests', (): void => {
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',
-      //logging: 'all',
+      logging: 'all',
       migrationsRun: false,
-      // migrations: DataStoreMigrations,
-      synchronize: true, //false
+      migrations: DataStoreMigrations,
+      synchronize: false,
       entities: DataStoreContactEntities,
     }).initialize()
-    // await dbConnection.runMigrations()
-    // expect(await dbConnection.showMigrations()).toBeFalsy()
+    await dbConnection.runMigrations()
+    expect(await dbConnection.showMigrations()).toBeFalsy()
     contactStore = new ContactStore(dbConnection)
   })
-
-  // beforeEach(async (): Promise<void> => {
-  //   dbConnection = await new DataSource({
-  //     type: 'sqlite',
-  //     database: ':memory:',
-  //     //logging: 'all',
-  //     migrationsRun: false,
-  //     migrations: DataStoreMigrations,
-  //     synchronize: false,
-  //     entities: DataStoreContactEntities,
-  //   }).initialize()
-  //   await dbConnection.runMigrations()
-  //   expect(await dbConnection.showMigrations()).toBeFalsy()
-  //   contactStore = new ContactStore(dbConnection)
-  // })
 
   afterEach(async (): Promise<void> => {
     await (await dbConnection).destroy()
@@ -217,10 +202,12 @@ describe('Contact store tests', (): void => {
           },
         },
       ],
-      electronicAddresses: [{
-        type: 'email',
-        electronicAddress: 'sphereon@sphereon.com'
-      }]
+      electronicAddresses: [
+        {
+          type: 'email',
+          electronicAddress: 'sphereon@sphereon.com',
+        },
+      ],
     }
     const savedParty: Party = await contactStore.addParty(party)
     expect(savedParty).toBeDefined()

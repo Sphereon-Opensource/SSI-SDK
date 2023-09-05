@@ -10,7 +10,8 @@ import {
   PartyType,
   PartyRelationship,
   PartialPartyRelationship,
-  PartialPartyType, NonPersistedElectronicAddress
+  PartialPartyType,
+  NonPersistedElectronicAddress,
 } from './contact'
 
 export type FindPartyArgs = Array<PartialParty>

@@ -72,8 +72,6 @@ export class IdentityEntity extends BaseEntity {
   })
   party!: PartyEntity
 
-  // TODO name should be party_id
-  // TODO add reverse side column name to owning side party
   @Column({ name: 'partyId', nullable: true })
   partyId!: string
 
