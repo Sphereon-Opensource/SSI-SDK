@@ -14,13 +14,13 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk.data-store": "file://C:\\ssi-sdk\\packages\\data-store\\sphereon-ssi-sdk.data-store-0.23.0-bram.tgz",
+    "@sphereon/ssi-sdk.data-store": "workspace:^",
     "cross-fetch": "^3.1.5",
     "typeorm": "^0.3.12"
   },
   "devDependencies": {
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
-    "@sphereon/ssi-sdk.data-store": "file://C:\\ssi-sdk\\packages\\data-store\\sphereon-ssi-sdk.data-store-0.23.0-bram.tgz",
+    "@sphereon/ssi-sdk.data-store": "workspace:^",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0"
   },
