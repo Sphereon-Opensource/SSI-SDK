@@ -21,26 +21,13 @@ import { PartyTypeEntity } from './entities/contact/PartyTypeEntity'
 import { OrganizationEntity } from './entities/contact/OrganizationEntity'
 import { NaturalPersonEntity } from './entities/contact/NaturalPersonEntity'
 import { ElectronicAddressEntity } from './entities/contact/ElectronicAddressEntity'
-import {
-  connectionEntityFrom,
-  correlationIdentifierEntityFrom,
-  didAuthConfigEntityFrom,
-  electronicAddressEntityFrom,
-  identityEntityFrom,
-  metadataItemEntityFrom,
-  naturalPersonEntityFrom,
-  openIdConfigEntityFrom,
-  organizationEntityFrom,
-  partyEntityFrom,
-  partyRelationshipEntityFrom,
-  partyTypeEntityFrom,
-} from './utils/contact/MappingUtils'
 export { ContactStore } from './contact/ContactStore'
 export { AbstractContactStore } from './contact/AbstractContactStore'
 export { AbstractIssuanceBrandingStore } from './issuanceBranding/AbstractIssuanceBrandingStore'
 export { IssuanceBrandingStore } from './issuanceBranding/IssuanceBrandingStore'
 export { DataStoreMigrations } from './migrations'
 export * from './types'
+export * from './utils/contact/MappingUtils'
 
 export const DataStoreContactEntities = [
   BaseConfigEntity,
@@ -90,13 +77,6 @@ export {
   CredentialLocaleBrandingEntity,
   IssuerLocaleBrandingEntity,
   ElectronicAddressEntity,
-  metadataItemEntityFrom,
-  connectionEntityFrom,
-  partyEntityFrom,
-  correlationIdentifierEntityFrom,
-  identityEntityFrom,
-  didAuthConfigEntityFrom,
-  openIdConfigEntityFrom,
   backgroundAttributesEntityFrom,
   credentialBrandingEntityFrom,
   imageAttributesEntityFrom,
@@ -105,9 +85,4 @@ export {
   textAttributesEntityFrom,
   issuerLocaleBrandingEntityFrom,
   credentialLocaleBrandingEntityFrom,
-  partyRelationshipEntityFrom,
-  partyTypeEntityFrom,
-  organizationEntityFrom,
-  naturalPersonEntityFrom,
-  electronicAddressEntityFrom,
 }

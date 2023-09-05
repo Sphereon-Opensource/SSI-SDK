@@ -30,6 +30,9 @@ import {
   Identity,
   PartyRelationship as ContactRelationship,
   PartyType as ContactType,
+  NonPersistedContact,
+  isNaturalPerson,
+  isOrganization,
 } from '@sphereon/ssi-sdk.data-store'
 
 /**
@@ -78,16 +81,10 @@ export class ContactManager implements IAgentPlugin {
 
   /** {@inheritDoc IContactManager.cmAddContact} */
   private async cmAddContact(args: AddContactArgs, context: RequiredContext): Promise<Contact> {
-    // TODO this needs to be improved
-    const contact =
-      'firstName' in args && 'lastName' in args
-        ? { firstName: args.firstName, middleName: args.middleName, lastName: args.lastName, displayName: args.displayName }
-        : { legalName: args.legalName, displayName: args.displayName }
-
     return this.store.addParty({
       uri: args.uri,
       partyType: args.contactType,
-      contact,
+      contact: this.getContactInformationFrom(args),
       identities: args.identities,
       electronicAddresses: args.electronicAddresses,
     })
@@ -177,4 +174,15 @@ export class ContactManager implements IAgentPlugin {
   private async cmRemoveContactType(args: RemoveContactTypeArgs, context: RequiredContext): Promise<boolean> {
     return this.store.removePartyType({ partyTypeId: args.contactTypeId }).then(() => true)
   }
+
+  private getContactInformationFrom(contact: any): NonPersistedContact {
+    if (isNaturalPerson(contact)) {
+      return { firstName: contact.firstName, middleName: contact.middleName, lastName: contact.lastName, displayName: contact.displayName }
+    } else if (isOrganization(contact)) {
+      return { legalName: contact.legalName, displayName: contact.displayName }
+    }
+
+    throw new Error('Contact not supported')
+  }
+
 }
