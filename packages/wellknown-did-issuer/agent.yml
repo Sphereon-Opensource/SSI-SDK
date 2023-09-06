@@ -17,20 +17,20 @@ dbConnection:
   $args:
     - type: sqlite
       database: ':memory:'
-      synchronize: true
-      migrationsRun: false
-#      migrations:
-#        $require: './packages/ssi-sdk-core/dist?t=function#flattenMigrations'
-#        $args:
-#          - migrations:
-#              - $require: '@veramo/data-store?t=object#migrations'
-#              - $require: './packages/wellknown-did-issuer/dist?t=object#WellknownDidIssuerMigrations'
-#      entities:
-#        $require: './packages/ssi-sdk-core/dist?t=function#flattenArray'
-#        $args:
-#          - items:
-#              - $require: '@veramo/data-store?t=object#Entities'
-#              - $require: './packages/wellknown-did-issuer/dist?t=object#WellknownDidIssuerEntities'
+      synchronize: false
+      migrationsRun: true
+      migrations:
+        $require: './packages/ssi-sdk-core/dist?t=function#flattenMigrations'
+        $args:
+          - migrations:
+              - $require: '@veramo/data-store?t=object#migrations'
+              - $require: './packages/wellknown-did-issuer/dist?t=object#WellknownDidIssuerMigrations'
+      entities:
+        $require: './packages/ssi-sdk-core/dist?t=function#flattenArray'
+        $args:
+          - items:
+              - $require: '@veramo/data-store?t=object#Entities'
+              - $require: './packages/wellknown-did-issuer/dist?t=object#WellknownDidIssuerEntities'
 
 server:
   baseUrl:

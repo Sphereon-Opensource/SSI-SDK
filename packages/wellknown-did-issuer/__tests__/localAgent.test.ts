@@ -1,11 +1,11 @@
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
-import { Connection } from 'typeorm'
+import { DataSource } from 'typeorm'
 import wellKnownDidIssuerAgentLogic from './shared/wellKnownDidIssuerAgentLogic'
 
 jest.setTimeout(30000)
 
 let agent: any
-let dbConnection: Promise<Connection>
+let dbConnection: Promise<DataSource>
 
 const setup = async (): Promise<boolean> => {
   const config = await getConfig('packages/wellknown-did-issuer/agent.yml')
