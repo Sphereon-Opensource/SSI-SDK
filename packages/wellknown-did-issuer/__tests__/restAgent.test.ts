@@ -121,6 +121,6 @@ const testContext = {
   isRestTest: true,
 }
 
-describe.skip('REST integration tests', () => {
+describe('REST integration tests', () => {
   wellKnownDidIssuerAgentLogic(testContext)
 })

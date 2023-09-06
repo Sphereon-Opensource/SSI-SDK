@@ -65,7 +65,6 @@
     "passport": "^0.6.0",
     "passport-azure-ad": "^4.3.5",
     "ts-node": "^10.9.1",
-    "pg": "^8.11.3",
     "typeorm": "^0.3.12"
   },
   "files": [
