@@ -12,11 +12,14 @@
     "@veramo/core": "4.2.0",
     "jsonpointer": "^5.0.1",
     "typeorm": "^0.3.12",
+    "debug": "^4.3.4",
     "url-parse": "^1.5.10",
     "yaml": "^2.2.2"
   },
   "devDependencies": {
-    "@types/url-parse": "^1.4.8"
+    "@types/url-parse": "^1.4.8",
+    "@types/debug": "^4.1.8",
+    "typescript": "4.9.5"
   },
   "files": [
     "dist/**/*",

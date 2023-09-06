@@ -1,4 +1,4 @@
-import { CredentialRequestJwtVcJson } from '@sphereon/oid4vci-common/lib/types/Generic.types'
+import { CredentialRequestJwtVc } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialDataSupplierArgs, CredentialDataSupplierResult } from '@sphereon/oid4vci-issuer'
 import { ExpressBuilder } from '@sphereon/ssi-express-support'
 import { TAgent } from '@veramo/core'
@@ -136,7 +136,7 @@ const credentialDataSupplierSphereon: CredentialDataSupplier = (args: Credential
     throw Error(`Format ${args.credentialRequest.format} is not configured on this issuer`)
   }
 
-  const request = args.credentialRequest as CredentialRequestJwtVcJson
+  const request = args.credentialRequest as CredentialRequestJwtVc
   if (request.types.includes('VerifiedEmployee')) {
     return Promise.resolve({
       format: 'jwt_vc_json',

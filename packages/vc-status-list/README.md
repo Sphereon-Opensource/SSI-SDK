@@ -2,20 +2,20 @@
 <h1 align="center">
   <br>
   <a href="https://www.sphereon.com"><img src="https://sphereon.com/content/themes/sphereon/assets/img/logo.svg" alt="Sphereon" width="400"></a>
-  <br>Key Utils
+  <br>Status List - Common
   <br>
 </h1>
 
-This package contains Key generation and transformation functions used by other modules.
+This package contains common StatusLists functions for issuers, holders and verifiers
 
 ## Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk-ext.key-utils
+pnpm install @sphereon/ssi-sdk.vc-status-list
 ```
 
 ## Build
 
 ```shell
-yarn build
+pnpm build
 ```

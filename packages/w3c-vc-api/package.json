@@ -35,6 +35,7 @@
     "@sphereon/did-uni-client": "^0.6.0",
     "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.14.1-next.3",
     "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.14.1-next.3",
+    "@sphereon/ssi-sdk.agent-config": "workspace:^",
     "@sphereon/ssi-sdk.data-store": "workspace:^",
     "@sphereon/ssi-sdk.vc-handler-ld-local": "workspace:^",
     "@types/body-parser": "^1.19.2",
@@ -64,6 +65,7 @@
     "passport": "^0.6.0",
     "passport-azure-ad": "^4.3.5",
     "ts-node": "^10.9.1",
+    "pg": "^8.11.3",
     "typeorm": "^0.3.12"
   },
   "files": [

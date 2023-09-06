@@ -15,11 +15,15 @@ import { ImageDimensionsEntity, imageDimensionsEntityFrom } from './entities/iss
 import { IssuerLocaleBrandingEntity, issuerLocaleBrandingEntityFrom } from './entities/issuanceBranding/IssuerLocaleBrandingEntity'
 import { IssuerBrandingEntity, issuerBrandingEntityFrom } from './entities/issuanceBranding/IssuerBrandingEntity'
 import { TextAttributesEntity, textAttributesEntityFrom } from './entities/issuanceBranding/TextAttributesEntity'
+import { StatusListEntity } from './entities/statusList2021/StatusList2021Entity'
+import { StatusListEntryEntity } from './entities/statusList2021/StatusList2021EntryEntity'
+import { IStatusListEntity, IStatusListEntryEntity } from './types'
 
 export { ContactStore } from './contact/ContactStore'
 export { AbstractContactStore } from './contact/AbstractContactStore'
 export { AbstractIssuanceBrandingStore } from './issuanceBranding/AbstractIssuanceBrandingStore'
 export { IssuanceBrandingStore } from './issuanceBranding/IssuanceBrandingStore'
+export { StatusListStore } from './statusList/StatusListStore'
 export { DataStoreMigrations } from './migrations'
 export * from './types'
 
@@ -45,6 +49,11 @@ export const DataStoreIssuanceBrandingEntities = [
   CredentialLocaleBrandingEntity,
   IssuerLocaleBrandingEntity,
 ]
+
+export const DataStoreStatusListEntities = [StatusListEntity, StatusListEntryEntity]
+
+// All entities combined if a party wants to enable them all at once
+export const DataStoreEntities = [...DataStoreContactEntities, ...DataStoreIssuanceBrandingEntities, ...DataStoreStatusListEntities]
 
 export {
   BaseConfigEntity,
@@ -79,4 +88,8 @@ export {
   textAttributesEntityFrom,
   issuerLocaleBrandingEntityFrom,
   credentialLocaleBrandingEntityFrom,
+  IStatusListEntity,
+  IStatusListEntryEntity,
+  StatusListEntity,
+  StatusListEntryEntity,
 }

@@ -3,6 +3,7 @@ import { getUniResolver } from '@sphereon/did-uni-client'
 import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
 import { getDidJwkResolver } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { ExpressBuilder } from '@sphereon/ssi-express-support'
+import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { IPresentationExchange, PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import {
   CredentialHandlerLDLocal,
@@ -33,7 +34,7 @@ import { ITokenPayload, VerifyCallback } from 'passport-azure-ad/common'
 import { VcApiServer } from '../src'
 
 import config from './config.json'
-import { DB_CONNECTION_NAME, DB_ENCRYPTION_KEY, getDbConnection } from './database'
+import { DB_CONNECTION_NAME_POSTGRES, DB_ENCRYPTION_KEY, postgresConfig } from './database'
 
 const debug = Debug('sphereon:vc-api')
 
@@ -93,7 +94,10 @@ export const didProviders = {
   }),
 }
 
-const dbConnection = getDbConnection(DB_CONNECTION_NAME)
+const dbConnection = DataSources.singleInstance()
+  .addConfig(DB_CONNECTION_NAME_POSTGRES, postgresConfig)
+  // .addConfig(DB_CONNECTION_NAME_SQLITE, sqliteConfig)
+  .getDbConnection(DB_CONNECTION_NAME_POSTGRES)
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
 const agent = createAgent<
@@ -213,7 +217,7 @@ agent
         endpointOpts: {
           globalAuth: {
             authentication: {
-              enabled: true,
+              enabled: false,
               strategy: bearerStrategy,
             },
           },

@@ -1,4 +1,5 @@
 import { createNewStatusList } from '@sphereon/ssi-sdk.vc-status-list'
+import { StatusListType } from '@sphereon/ssi-types'
 import { createAgent, ICredentialPlugin, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
 import { CredentialPlugin, ICredentialIssuer } from '@veramo/credential-w3c'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
@@ -69,7 +70,15 @@ describe.skip('credential-LD full flow', () => {
 
   it('create a new status list', async () => {
     const statusList = await createNewStatusList(
-      { statusPurpose: 'revocation', proofFormat: 'lds', id: 'http://localhost:9543/list1', issuer: didKeyIdentifier.did, length: 99999 },
+      {
+        statusPurpose: 'revocation',
+        proofFormat: 'lds',
+        id: 'http://localhost:9543/list1',
+        issuer: didKeyIdentifier.did,
+        length: 99999,
+        correlationId: '1234',
+        type: StatusListType.StatusList2021,
+      },
       { agent }
     )
     expect(statusList).toBeDefined()

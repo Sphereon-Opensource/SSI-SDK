@@ -1,5 +1,4 @@
 {
-  "extends": "../tsconfig-base.json",
   "compilerOptions": {
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -11,5 +10,6 @@
     {
       "path": "../ssi-types"
     }
-  ]
+  ],
+  "extends": "../tsconfig-base.json"
 }

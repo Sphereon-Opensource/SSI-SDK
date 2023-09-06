@@ -1,6 +1,6 @@
 import { getAgentResolver, mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
-import { checkStatusFunction } from '@sphereon/ssi-sdk.vc-status-list'
+import { vcLibCheckStatusFunction } from '@sphereon/ssi-sdk.vc-status-list'
 import { IVerifyResult } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
@@ -123,11 +123,14 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       const { managedKey, verificationMethod } = await this.getSigningKey(identifier, args.keyRef)
       const { signingKey, verificationMethodId } = await this.findSigningKeyWithId(context, identifier, { keyRef: args.keyRef })
       return await this.ldCredentialModule.issueLDVerifiableCredential(
-        credential,
-        identifier.did,
-        managedKey || signingKey, // todo: signingKey does not have the private key, so would never work
-        verificationMethodId ? verificationMethodId : (verificationMethod as string),
-        args.purpose,
+        {
+          credential,
+          issuerDid: identifier.did,
+          key: managedKey ?? signingKey, // todo: signingKey does not have the private key, so would never work
+          verificationMethodId: verificationMethodId ?? (verificationMethod as string),
+          purpose: args.purpose,
+          credentialStatusOpts: args.credentialStatusOpts,
+        },
         context
       )
     } catch (error) {
@@ -168,8 +171,8 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     // Workaround for bug in TypeError: Cannot read property 'length' of undefined
     //     at VeramoEd25519Signature2018.preSigningPresModification
     /*if (!presentation.verifier) {
-      presentation.verifier = []
-    }*/
+          presentation.verifier = []
+        }*/
 
     if (!isDefined(presentation.holder) || !presentation.holder) {
       throw new Error('invalid_argument: args.presentation.holderDID must not be empty')
@@ -219,8 +222,11 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   public async verifyCredentialLDLocal(args: IVerifyCredentialLDArgs, context: IRequiredContext): Promise<IVerifyResult> {
     const credential = args.credential
     let checkStatus = args.checkStatus
-    if (typeof checkStatus !== 'function' && args.statusList && !args.statusList.disableCheckStatusList2021) {
-      checkStatus = checkStatusFunction({ ...args.statusList })
+    if (typeof checkStatus !== 'function' && (!args.statusList || args.statusList.disableCheckStatusList2021 !== true)) {
+      checkStatus = vcLibCheckStatusFunction({
+        ...args.statusList,
+        verifyStatusListCredential: false /*todo: enable. Needs calling this method first and not rely on @digiticalcredentials*/,
+      }) // todo: Probably should be moved to the module to have access to the loaders
     }
     return this.ldCredentialModule.verifyCredential(credential, context, args.fetchRemoteContexts, args.purpose, checkStatus)
   }
@@ -230,7 +236,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     const presentation = args.presentation
     let checkStatus = args.checkStatus
     if (typeof checkStatus !== 'function' && args.statusList && !args.statusList.disableCheckStatusList2021) {
-      checkStatus = checkStatusFunction({ ...args.statusList })
+      checkStatus = vcLibCheckStatusFunction({ ...args.statusList })
     }
     return this.ldCredentialModule.verifyPresentation(
       presentation,
