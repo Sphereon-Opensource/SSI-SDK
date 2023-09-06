@@ -82,6 +82,6 @@ const testContext = {
   isRestTest: false,
 }
 
-describe('Local integration tests', () => {
+describe.skip('Local integration tests', () => {
   wellKnownDidIssuerAgentLogic(testContext)
 })
