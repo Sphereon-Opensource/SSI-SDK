@@ -17,7 +17,7 @@ export function createNewStatusListEndpoint(router: Router, context: IRequiredCo
     console.log(`Create new status list endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/credentials/status-lists'
+  const path = opts?.path ?? '/status-lists'
 
   router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
@@ -47,7 +47,7 @@ export function getStatusListCredentialEndpoint(router: Router, context: IRequir
     console.log(`Get statusList credential endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/credentials/status-lists/:index'
+  const path = opts?.path ?? '/status-lists/:index'
   router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       //todo: Check index against correlationId first. Then match originalUrl against statusList id
@@ -67,7 +67,7 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
     console.log(`Get statusList credential index status endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/credentials/status-lists/:index/status/index/:statusListIndex'
+  const path = opts?.path ?? '/status-lists/:index/status/index/:statusListIndex'
   router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       //todo: Check index against correlationId first. Then match originalUrl against statusList id

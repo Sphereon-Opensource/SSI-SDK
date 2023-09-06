@@ -10,6 +10,7 @@ import {
 import { StatusList2021EntryCredentialStatus, statusListCredentialToDetails, StatusListDetails } from '@sphereon/ssi-sdk.vc-status-list'
 import { OriginalVerifiableCredential, StatusListCredentialIdMode, StatusListDriverType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
+import {Driver} from "./types";
 
 export interface StatusListManagementOptions {
   id?: string
@@ -41,36 +42,6 @@ export async function getDriver(args: { id?: string; correlationId?: string; dbN
   return await AgentTypeORMDriver.init(getOptions(args), { dataSources: DataSources.singleInstance() })
 }
 
-export interface Driver {
-  statusListStore: StatusListStore
-
-  getType(): StatusListDriverType
-
-  getOptions(): DriverOptions
-
-  getStatusListLength(args?: { correlationId?: string }): Promise<number>
-
-  createStatusList(args: { statusListCredential: OriginalVerifiableCredential; correlationId?: string }): Promise<StatusListDetails>
-
-  getStatusList(args?: { correlationId?: string }): Promise<StatusListDetails>
-
-  updateStatusListEntry(args: IAddStatusListEntryArgs): Promise<{
-    credentialStatus: StatusList2021EntryCredentialStatus
-    statusListEntry: IStatusListEntryEntity
-  }>
-
-  getStatusListEntryByCredentialId(args: IGetStatusListEntryByCredentialIdArgs): Promise<IStatusListEntryEntity | undefined>
-
-  getStatusListEntryByIndex(args: IGetStatusListEntryByIndexArgs): Promise<IStatusListEntryEntity | undefined>
-
-  updateStatusList(args: { statusListCredential: OriginalVerifiableCredential }): Promise<StatusListDetails>
-
-  deleteStatusList(): Promise<boolean>
-
-  getRandomNewStatusListIndex(args?: { correlationId?: string }): Promise<number>
-
-  isStatusListIndexInUse(): Promise<boolean>
-}
 
 export class AgentTypeORMDriver implements Driver {
   private _statusListLength: number | undefined
