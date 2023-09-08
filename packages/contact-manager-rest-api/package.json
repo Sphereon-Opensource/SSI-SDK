@@ -19,7 +19,6 @@
     "@sphereon/ssi-sdk.core": "workspace:^",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:^",
     "@sphereon/ssi-types": "workspace:^",
-    "@sphereon/vdx.ecmo": "/home/sadjad/programming/vdx/vdx-openapi/ecmo/target/sdks/typescript/sphereon-vdx.ecmo-9.5.1.tgz",
     "@veramo/core": "4.2.0",
     "body-parser": "^1.19.0",
     "casbin": "^5.26.2",

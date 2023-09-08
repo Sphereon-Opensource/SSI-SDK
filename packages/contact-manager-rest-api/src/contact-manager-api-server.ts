@@ -3,7 +3,12 @@ import { TAgent } from '@veramo/core'
 
 import express, { Express, Router } from 'express'
 import { ContactManagerMRestApiFeatureEnum, IContactManagerAPIEndpointOpts, IRequiredPlugins } from './types'
-import { contactReadEndpoints, contactTypeReadEndpoints, contactWriteEndpoints, identityReadEndpoints } from './api-functions'
+import {
+  identityReadEndpoints,
+  partyReadEndpoints,
+  partyTypeReadEndpoints,
+  partyWriteEndpoints
+} from './api-functions'
 import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-express-support'
 
 export class ContactManagerApiServer {
@@ -17,10 +22,10 @@ export class ContactManagerApiServer {
     this._agent = agent
     copyGlobalAuthToEndpoints({ opts, keys: ['contactRead', 'contactTypeRead', 'identityRead'] })
     const enableFeatures = opts?.enableFeatures ?? [
-      ContactManagerMRestApiFeatureEnum.contact_read,
-      ContactManagerMRestApiFeatureEnum.contact_write,
-      ContactManagerMRestApiFeatureEnum.contact_type_read,
-      ContactManagerMRestApiFeatureEnum.contact_type_write,
+      ContactManagerMRestApiFeatureEnum.party_read,
+      ContactManagerMRestApiFeatureEnum.party_write,
+      ContactManagerMRestApiFeatureEnum.party_type_read,
+      ContactManagerMRestApiFeatureEnum.party_type_write,
       ContactManagerMRestApiFeatureEnum.identity_read,
       ContactManagerMRestApiFeatureEnum.identity_write,
     ]
@@ -29,10 +34,10 @@ export class ContactManagerApiServer {
     this._router = express.Router()
     const context = agentContext(agent)
     const features = enableFeatures ?? [
-      ContactManagerMRestApiFeatureEnum.contact_read,
-      ContactManagerMRestApiFeatureEnum.contact_write,
-      ContactManagerMRestApiFeatureEnum.contact_type_read,
-      ContactManagerMRestApiFeatureEnum.contact_type_write,
+      ContactManagerMRestApiFeatureEnum.party_read,
+      ContactManagerMRestApiFeatureEnum.party_write,
+      ContactManagerMRestApiFeatureEnum.party_type_read,
+      ContactManagerMRestApiFeatureEnum.party_type_write,
       ContactManagerMRestApiFeatureEnum.identity_read,
       ContactManagerMRestApiFeatureEnum.identity_write,
     ]
@@ -40,23 +45,23 @@ export class ContactManagerApiServer {
 
     // todo: I've commented out the write part of the APIs. We might want to implement and uncomment these in near future
     // endpoints
-    if (features.includes(ContactManagerMRestApiFeatureEnum.contact_read)) {
-      contactReadEndpoints(this.router, context, this._opts?.endpointOpts?.contactRead)
+    if (features.includes(ContactManagerMRestApiFeatureEnum.party_read)) {
+      partyReadEndpoints(this.router, context, this._opts?.endpointOpts?.partyRead)
     }
-    if (features.includes(ContactManagerMRestApiFeatureEnum.contact_write)) {
-      contactWriteEndpoints(this.router, context, this._opts?.endpointOpts?.contactWrite)
+    if (features.includes(ContactManagerMRestApiFeatureEnum.party_write)) {
+      partyWriteEndpoints(this.router, context, this._opts?.endpointOpts?.partyWrite)
     }
-    if (features.includes(ContactManagerMRestApiFeatureEnum.contact_type_read)) {
-      contactTypeReadEndpoints(this.router, context, this._opts?.endpointOpts?.contactTypeRead)
+    if (features.includes(ContactManagerMRestApiFeatureEnum.party_type_read)) {
+      partyTypeReadEndpoints(this.router, context, this._opts?.endpointOpts?.partyTypeRead)
     }
-    if (features.includes(ContactManagerMRestApiFeatureEnum.contact_type_write)) {
-      contactTypeReadEndpoints(this.router, context, this._opts?.endpointOpts?.contactTypeRead)
+    if (features.includes(ContactManagerMRestApiFeatureEnum.party_type_write)) {
+      partyTypeReadEndpoints(this.router, context, this._opts?.endpointOpts?.partyTypeRead)
       // contactTypeModifyEndpoints(this.router, context, this._opts.endpointOpts?.contactTypeWrite)
     }
     if (features.includes(ContactManagerMRestApiFeatureEnum.identity_read)) {
       identityReadEndpoints(this.router, context, this._opts?.endpointOpts?.identityRead)
     }
-    if (features.includes(ContactManagerMRestApiFeatureEnum.contact_write)) {
+    if (features.includes(ContactManagerMRestApiFeatureEnum.identity_write)) {
       identityReadEndpoints(this.router, context, this._opts?.endpointOpts?.identityRead)
       // identityModifyEndpoints(this.router, context, this._opts?.endpointOpts?.identityWrite)
     }

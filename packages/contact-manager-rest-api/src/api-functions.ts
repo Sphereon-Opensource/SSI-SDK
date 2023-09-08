@@ -2,36 +2,36 @@ import { checkAuth, sendErrorResponse, ISingleEndpointOpts } from '@sphereon/ssi
 import { Request, Response, Router } from 'express'
 import { IRequiredContext } from './types'
 import Debug from 'debug'
-import { IAddContactArgs } from '@sphereon/ssi-sdk.contact-manager'
+import { AddContactArgs } from '@sphereon/ssi-sdk.contact-manager'
 
 const debug = Debug('sphereon:ssi-sdk:contact-manager-rest-api')
 
-export function contactReadEndpoints(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
+export function partyReadEndpoints(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
   if (opts?.enabled === false) {
     debug(`Endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/contacts'
+  const path = opts?.path ?? '/parties'
   router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       // later we will add filter to this
-      const contacts = await context.agent.cmGetContacts()
+      const parties = await context.agent.cmGetContacts()
       response.statusCode = 200
-      return response.send(contacts)
+      return response.send(parties)
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)
     }
   })
-  router.get(`${path}/:contactId`, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
+  router.get(`${path}/:partyId`, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     if (opts?.enabled === false) {
       debug(`Endpoint is disabled`)
       return
     }
     try {
-      const contactId = request.params.contactId
-      const contact = await context.agent.cmGetContact({ contactId })
+      const partyId = request.params.contactId
+      const party = await context.agent.cmGetContact({ contactId: partyId })
       response.statusCode = 200
-      return response.send(contact)
+      return response.send(party)
     } catch (e) {
       console.error(e)
       return sendErrorResponse(response, 500, e.message as string, e)
@@ -39,57 +39,57 @@ export function contactReadEndpoints(router: Router, context: IRequiredContext, 
   })
 }
 
-export function contactWriteEndpoints(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
+export function partyWriteEndpoints(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
   if (opts?.enabled === false) {
     debug(`Endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/contacts'
+  const path = opts?.path ?? '/parties'
   router.post(path, async (request: Request, response: Response) => {
     try {
-      const addContact = request.body
-      const contact = await context.agent.cmAddContact(addContact as IAddContactArgs)
+      const addParty = request.body
+      const party = await context.agent.cmAddContact(addParty as AddContactArgs)
       response.statusCode = 201
-      return response.send(contact)
+      return response.send(party)
     } catch (error) {
       console.error(error)
-      return sendErrorResponse(response, 500, 'Could not add contact')
+      return sendErrorResponse(response, 500, 'Could not add party')
     }
   })
-  router.delete(`${path}/:contactId`, async (request, response) => {
+  router.delete(`${path}/:partyId`, async (request, response) => {
     try {
-      const contactId = request.params.contactId
-      const result = await context.agent.cmRemoveContact({ contactId })
+      const partyId = request.params.partyId
+      const result = await context.agent.cmRemoveContact({ contactId: partyId })
       return response.send(result)
     } catch (error) {
       console.error(error)
-      return sendErrorResponse(response, 500, 'Could not remove the contact.')
+      return sendErrorResponse(response, 500, 'Could not remove the party.')
     }
   })
 }
 
-export function contactTypeReadEndpoints(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
+export function partyTypeReadEndpoints(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
   if (opts?.enabled === false) {
     debug(`Endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/contact-types'
+  const path = opts?.path ?? '/party-types'
   router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       // later we will add filter to this
-      const contactTypes = await context.agent.cmGetContactTypes()
+      const partyTypes = await context.agent.cmGetContactTypes()
       response.statusCode = 200
-      return response.send(contactTypes)
+      return response.send(partyTypes)
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)
     }
   })
-  router.get(`${path}/:contactTypeId`, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
+  router.get(`${path}/:partyTypeId`, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
-      const contactTypeId = request.params.contactTypeId
-      const contact = await context.agent.cmGetContactType({ contactTypeId })
+      const partyTypeId = request.params.partyTypeId
+      const partyType = await context.agent.cmGetContactType({ contactTypeId: partyTypeId })
       response.statusCode = 200
-      return response.send(contact)
+      return response.send(partyType)
     } catch (e) {
       console.error(e)
       return sendErrorResponse(response, 500, e.message as string, e)
