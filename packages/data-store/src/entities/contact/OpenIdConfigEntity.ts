@@ -1,7 +1,5 @@
-import { ChildEntity, Column, JoinColumn, OneToOne } from 'typeorm'
+import { ChildEntity, Column } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
-import { BasicOpenIdConfig } from '../../types'
-import { ConnectionEntity } from './ConnectionEntity'
 
 @ChildEntity('OpenIdConfig')
 export class OpenIdConfigEntity extends BaseConfigEntity {
@@ -25,24 +23,4 @@ export class OpenIdConfigEntity extends BaseConfigEntity {
 
   @Column('text', { name: 'client_auth_method', nullable: false })
   clientAuthMethod!: 'basic' | 'post' | undefined
-
-  @OneToOne(() => ConnectionEntity, (connection: ConnectionEntity) => connection.config, {
-    cascade: ['insert', 'update'],
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'connectionId' })
-  connection?: ConnectionEntity
-}
-
-export const openIdConfigEntityFrom = (config: BasicOpenIdConfig): OpenIdConfigEntity => {
-  const openIdConfig: OpenIdConfigEntity = new OpenIdConfigEntity()
-  openIdConfig.clientId = config.clientId
-  openIdConfig.clientSecret = config.clientSecret
-  openIdConfig.scopes = config.scopes
-  openIdConfig.issuer = config.issuer
-  openIdConfig.redirectUrl = config.redirectUrl
-  openIdConfig.dangerouslyAllowInsecureHttpRequests = config.dangerouslyAllowInsecureHttpRequests
-  openIdConfig.clientAuthMethod = config.clientAuthMethod
-
-  return openIdConfig
 }

@@ -1,30 +1,39 @@
 import { IAgentPlugin } from '@veramo/core'
 import { schema } from '../index'
 import {
-  IAddContactArgs,
-  IUpdateContactArgs,
-  IGetIdentitiesArgs,
-  IRemoveContactArgs,
-  IAddIdentityArgs,
+  AddContactArgs,
+  UpdateContactArgs,
+  GetIdentitiesArgs,
+  RemoveContactArgs,
+  AddIdentityArgs,
   IContactManager,
-  IGetIdentityArgs,
-  IRemoveIdentityArgs,
-  IRequiredContext,
-  IUpdateIdentityArgs,
-  IGetContactsArgs,
-  IGetContactArgs,
-  IAddRelationshipArgs,
-  IRemoveRelationshipArgs,
-  IGetRelationshipArgs,
-  IGetRelationshipsArgs,
-  IUpdateRelationshipArgs,
-  IAddContactTypeArgs,
-  IGetContactTypeArgs,
-  IGetContactTypesArgs,
-  IRemoveContactTypeArgs,
-  IUpdateContactTypeArgs,
+  GetIdentityArgs,
+  RemoveIdentityArgs,
+  RequiredContext,
+  UpdateIdentityArgs,
+  GetContactsArgs,
+  GetContactArgs,
+  AddRelationshipArgs,
+  RemoveRelationshipArgs,
+  GetRelationshipArgs,
+  GetRelationshipsArgs,
+  UpdateRelationshipArgs,
+  AddContactTypeArgs,
+  GetContactTypeArgs,
+  GetContactTypesArgs,
+  RemoveContactTypeArgs,
+  UpdateContactTypeArgs,
 } from '../types/IContactManager'
-import { IContact, IIdentity, AbstractContactStore, IContactRelationship, IContactType } from '@sphereon/ssi-sdk.data-store'
+import {
+  AbstractContactStore,
+  Party as Contact,
+  Identity,
+  PartyRelationship as ContactRelationship,
+  PartyType as ContactType,
+  NonPersistedContact,
+  isNaturalPerson,
+  isOrganization,
+} from '@sphereon/ssi-sdk.data-store'
 
 /**
  * {@inheritDoc IContactManager}
@@ -61,102 +70,119 @@ export class ContactManager implements IAgentPlugin {
   }
 
   /** {@inheritDoc IContactManager.cmGetContact} */
-  private async cmGetContact(args: IGetContactArgs, context: IRequiredContext): Promise<IContact> {
-    return this.store.getContact(args)
+  private async cmGetContact(args: GetContactArgs, context: RequiredContext): Promise<Contact> {
+    return this.store.getParty({ partyId: args.contactId })
   }
 
   /** {@inheritDoc IContactManager.cmGetContacts} */
-  private async cmGetContacts(args?: IGetContactsArgs): Promise<Array<IContact>> {
-    return this.store.getContacts(args)
+  private async cmGetContacts(args?: GetContactsArgs): Promise<Array<Contact>> {
+    return this.store.getParties(args)
   }
 
   /** {@inheritDoc IContactManager.cmAddContact} */
-  private async cmAddContact(args: IAddContactArgs, context: IRequiredContext): Promise<IContact> {
-    return this.store.addContact(args)
+  private async cmAddContact(args: AddContactArgs, context: RequiredContext): Promise<Contact> {
+    return this.store.addParty({
+      uri: args.uri,
+      partyType: args.contactType,
+      contact: this.getContactInformationFrom(args),
+      identities: args.identities,
+      electronicAddresses: args.electronicAddresses,
+    })
   }
 
   /** {@inheritDoc IContactManager.cmUpdateContact} */
-  private async cmUpdateContact(args: IUpdateContactArgs, context: IRequiredContext): Promise<IContact> {
-    return this.store.updateContact(args)
+  private async cmUpdateContact(args: UpdateContactArgs, context: RequiredContext): Promise<Contact> {
+    return this.store.updateParty({ party: args.contact })
   }
 
   /** {@inheritDoc IContactManager.cmRemoveContact} */
-  private async cmRemoveContact(args: IRemoveContactArgs, context: IRequiredContext): Promise<boolean> {
-    return this.store.removeContact(args).then(() => true)
+  private async cmRemoveContact(args: RemoveContactArgs, context: RequiredContext): Promise<boolean> {
+    return this.store.removeParty({ partyId: args.contactId }).then(() => true)
   }
 
   /** {@inheritDoc IContactManager.cmGetIdentity} */
-  private async cmGetIdentity(args: IGetIdentityArgs, context: IRequiredContext): Promise<IIdentity> {
+  private async cmGetIdentity(args: GetIdentityArgs, context: RequiredContext): Promise<Identity> {
     return this.store.getIdentity(args)
   }
 
   /** {@inheritDoc IContactManager.cmGetIdentities} */
-  private async cmGetIdentities(args?: IGetIdentitiesArgs): Promise<Array<IIdentity>> {
+  private async cmGetIdentities(args?: GetIdentitiesArgs): Promise<Array<Identity>> {
     return this.store.getIdentities(args)
   }
 
   /** {@inheritDoc IContactManager.cmAddIdentity} */
-  private async cmAddIdentity(args: IAddIdentityArgs, context: IRequiredContext): Promise<IIdentity> {
-    return this.store.addIdentity(args)
+  private async cmAddIdentity(args: AddIdentityArgs, context: RequiredContext): Promise<Identity> {
+    return this.store.addIdentity({ partyId: args.contactId, identity: args.identity })
   }
 
   /** {@inheritDoc IContactManager.cmUpdateIdentity} */
-  private async cmUpdateIdentity(args: IUpdateIdentityArgs, context: IRequiredContext): Promise<IIdentity> {
+  private async cmUpdateIdentity(args: UpdateIdentityArgs, context: RequiredContext): Promise<Identity> {
     return this.store.updateIdentity(args)
   }
 
   /** {@inheritDoc IContactManager.cmRemoveIdentity} */
-  private async cmRemoveIdentity(args: IRemoveIdentityArgs, context: IRequiredContext): Promise<boolean> {
+  private async cmRemoveIdentity(args: RemoveIdentityArgs, context: RequiredContext): Promise<boolean> {
     return this.store.removeIdentity(args).then(() => true)
   }
 
   /** {@inheritDoc IContactManager.cmAddRelationship} */
-  private async cmAddRelationship(args: IAddRelationshipArgs, context: IRequiredContext): Promise<IContactRelationship> {
+  private async cmAddRelationship(args: AddRelationshipArgs, context: RequiredContext): Promise<ContactRelationship> {
     return this.store.addRelationship(args)
   }
 
   /** {@inheritDoc IContactManager.cmRemoveRelationship} */
-  private async cmRemoveRelationship(args: IRemoveRelationshipArgs, context: IRequiredContext): Promise<boolean> {
+  private async cmRemoveRelationship(args: RemoveRelationshipArgs, context: RequiredContext): Promise<boolean> {
     return this.store.removeRelationship(args).then(() => true)
   }
 
   /** {@inheritDoc IContactManager.cmGetRelationship} */
-  private async cmGetRelationship(args: IGetRelationshipArgs, context: IRequiredContext): Promise<IContactRelationship> {
+  private async cmGetRelationship(args: GetRelationshipArgs, context: RequiredContext): Promise<ContactRelationship> {
     return this.store.getRelationship(args)
   }
 
   /** {@inheritDoc IContactManager.cmGetRelationships} */
-  private async cmGetRelationships(args?: IGetRelationshipsArgs): Promise<Array<IContactRelationship>> {
+  private async cmGetRelationships(args?: GetRelationshipsArgs): Promise<Array<ContactRelationship>> {
     return this.store.getRelationships(args)
   }
 
   /** {@inheritDoc IContactManager.cmUpdateRelationship} */
-  private async cmUpdateRelationship(args: IUpdateRelationshipArgs, context: IRequiredContext): Promise<IContactRelationship> {
+  private async cmUpdateRelationship(args: UpdateRelationshipArgs, context: RequiredContext): Promise<ContactRelationship> {
     return this.store.updateRelationship(args)
   }
 
   /** {@inheritDoc IContactManager.cmGetContactType} */
-  private async cmGetContactType(args: IGetContactTypeArgs, context: IRequiredContext): Promise<IContactType> {
-    return this.store.getContactType(args)
+  private async cmGetContactType(args: GetContactTypeArgs, context: RequiredContext): Promise<ContactType> {
+    return this.store.getPartyType({ partyTypeId: args.contactTypeId })
   }
 
   /** {@inheritDoc IContactManager.cmGetContactTypes} */
-  private async cmGetContactTypes(args?: IGetContactTypesArgs): Promise<Array<IContactType>> {
-    return this.store.getContactTypes(args)
+  private async cmGetContactTypes(args?: GetContactTypesArgs): Promise<Array<ContactType>> {
+    return this.store.getPartyTypes(args)
   }
 
   /** {@inheritDoc IContactManager.cmAddContactType} */
-  private async cmAddContactType(args: IAddContactTypeArgs, context: IRequiredContext): Promise<IContactType> {
-    return this.store.addContactType(args)
+  private async cmAddContactType(args: AddContactTypeArgs, context: RequiredContext): Promise<ContactType> {
+    return this.store.addPartyType(args)
   }
 
   /** {@inheritDoc IContactManager.cmUpdateContactType} */
-  private async cmUpdateContactType(args: IUpdateContactTypeArgs, context: IRequiredContext): Promise<IContactType> {
-    return this.store.updateContactType(args)
+  private async cmUpdateContactType(args: UpdateContactTypeArgs, context: RequiredContext): Promise<ContactType> {
+    return this.store.updatePartyType({ partyType: args.contactType })
   }
 
   /** {@inheritDoc IContactManager.cmRemoveContactType} */
-  private async cmRemoveContactType(args: IRemoveContactTypeArgs, context: IRequiredContext): Promise<boolean> {
-    return this.store.removeContactType(args).then(() => true)
+  private async cmRemoveContactType(args: RemoveContactTypeArgs, context: RequiredContext): Promise<boolean> {
+    return this.store.removePartyType({ partyTypeId: args.contactTypeId }).then(() => true)
   }
+
+  private getContactInformationFrom(contact: any): NonPersistedContact {
+    if (isNaturalPerson(contact)) {
+      return { firstName: contact.firstName, middleName: contact.middleName, lastName: contact.lastName, displayName: contact.displayName }
+    } else if (isOrganization(contact)) {
+      return { legalName: contact.legalName, displayName: contact.displayName }
+    }
+
+    throw new Error('Contact not supported')
+  }
+
 }

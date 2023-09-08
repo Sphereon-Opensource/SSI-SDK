@@ -139,6 +139,8 @@ export function getCredentialSignerCallback(didOpts: IDIDOptions, context: IRequ
     proofFormat = format?.includes('ld') ? 'lds' : 'jwt'
     if (!credential.issuer && didOpts.identifierOpts.identifier) {
       credential.issuer = toDID(didOpts.identifierOpts.identifier)
+    } else if (typeof credential.issuer === 'object' && !credential.issuer.id && didOpts.identifierOpts.identifier) {
+      credential.issuer.id = toDID(didOpts.identifierOpts.identifier)
     }
     const subjectIsArray = Array.isArray(credential.credentialSubject)
     let credentialSubjects = Array.isArray(credential.credentialSubject) ? credential.credentialSubject : [credential.credentialSubject]
@@ -154,6 +156,7 @@ export function getCredentialSignerCallback(didOpts: IDIDOptions, context: IRequ
     const result = await context.agent.createVerifiableCredential({
       credential: credential as CredentialPayload,
       proofFormat,
+      removeOriginalFields: false,
       fetchRemoteContexts: true,
       domain: getDID(didOpts.identifierOpts),
     })

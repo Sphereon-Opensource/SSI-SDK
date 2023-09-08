@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv-flow'
+dotenv.config()
 export * from './entra-id-auth'
 export * from './static-bearer-auth'
 export * from './auth-utils'
@@ -5,3 +7,4 @@ export * from './express-builders'
 export * from './types'
 export { sendErrorResponse, jsonErrorHandler } from './express-utils'
 export * from './functions'
+export * from './openid-connect-rp'

@@ -10,6 +10,7 @@
     { "path": "uni-resolver-registrar-api" },
     { "path": "ms-authenticator" },
     { "path": "ms-request-api" },
+    { "path": "vc-status-list" },
     { "path": "vc-handler-ld-local" },
     { "path": "presentation-exchange" },
     { "path": "oid4vci-issuer-store" },
@@ -27,6 +28,7 @@
     { "path": "wellknown-did-issuer" },
     { "path": "wellknown-did-verifier" },
     { "path": "kv-store" },
-    { "path": "issuance-branding" }
+    { "path": "issuance-branding" },
+    { "path": "headless-web3-provider" }
   ]
 }

@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToOne, JoinColumn, BeforeInsert, BeforeUpdate } from 'typeorm'
-import { CorrelationIdentifierEnum, BasicCorrelationIdentifier, ICorrelationIdentifier, ValidationConstraint } from '../../types'
+import { CorrelationIdentifierEnum, ValidationConstraint } from '../../types'
 import { IdentityEntity } from './IdentityEntity'
 import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { getConstraint } from '../../utils/ValidatorUtils'
@@ -19,7 +19,7 @@ export class CorrelationIdentifierEntity extends BaseEntity {
   @OneToOne(() => IdentityEntity, (identity: IdentityEntity) => identity.identifier, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'identityId' })
+  @JoinColumn({ name: 'identity_id' })
   identity!: IdentityEntity
 
   @BeforeInsert()
@@ -33,21 +33,5 @@ export class CorrelationIdentifierEntity extends BaseEntity {
         return Promise.reject(Error(message))
       }
     }
-  }
-}
-
-export const correlationIdentifierEntityFrom = (identifier: BasicCorrelationIdentifier): CorrelationIdentifierEntity => {
-  const identifierEntity: CorrelationIdentifierEntity = new CorrelationIdentifierEntity()
-  identifierEntity.type = identifier.type
-  identifierEntity.correlationId = identifier.correlationId
-
-  return identifierEntity
-}
-
-export const correlationIdentifierFrom = (identifier: CorrelationIdentifierEntity): ICorrelationIdentifier => {
-  return {
-    id: identifier.id,
-    type: identifier.type,
-    correlationId: identifier.correlationId,
   }
 }

@@ -27,9 +27,12 @@
   "coverageDirectory": "./coverage",
   "transform": {
     "\\.jsx?$": "babel-jest",
-    "\\.tsx?$": ["ts-jest", {
-      "tsconfig": "./packages/tsconfig-base.json"
-    }]
+    "\\.tsx?$": [
+      "ts-jest",
+      {
+        "tsconfig": "./packages/tsconfig-base.json"
+      }
+    ]
   },
   "modulePathIgnorePatterns": [
     "<rootDir>/packages/presentation-exchange/.yalc/",
@@ -37,7 +40,7 @@
     "<rootDir>/packages/siopv2-oid4vp-rp-rest-api/.yalc/"
   ],
   "transformIgnorePatterns": [
-    "node_modules/(?!(?:.pnpm/)?(nist-weierstrauss|multiformatsgggggg))"
+    "<rootDir>/node_modules/.pnpm/(?!(nist-weierstrauss|multiformatsgggggg|@digitalcredentials\\+vc-status-list)@)"
   ],
   "testMatch": [
     "**/__tests__/**/*.test.*",

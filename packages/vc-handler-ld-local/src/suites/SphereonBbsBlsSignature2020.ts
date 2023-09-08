@@ -1,9 +1,11 @@
 import { Bls12381G2KeyPair } from '@mattrglobal/jsonld-signatures-bbs'
+import { KeyType } from '@sphereon/ssi-sdk-ext.kms-local'
+import { bytesToBase58, hexToBytes } from '@sphereon/ssi-sdk.core'
 import { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
 import { asArray } from '@veramo/utils'
+
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
-import { hexToMultibase, MultibaseFormat } from '@sphereon/ssi-sdk.core'
-import { KeyType } from '@sphereon/ssi-sdk-ext.kms-local'
+
 import { SphereonBbsBlsSignatureSuite2020 } from './impl/SphereonBbsBlsSignatureSuite2020'
 
 export enum VerificationType {
@@ -39,12 +41,12 @@ export class SphereonBbsBlsSignature2020 extends SphereonLdSignature {
     const keyPairOptions = {
       id: id,
       controller: controller,
-      privateKeyBase58: hexToMultibase(key.privateKeyHex, MultibaseFormat.BASE58).value.substring(1),
-      publicKeyBase58: hexToMultibase(key.publicKeyHex, MultibaseFormat.BASE58).value.substring(1),
+      privateKeyBase58: bytesToBase58(hexToBytes(key.privateKeyHex)),
+      publicKeyBase58: bytesToBase58(hexToBytes(key.publicKeyHex)),
       type: this.getSupportedVerificationType(),
     }
 
-    let bls12381G2KeyPair: Bls12381G2KeyPair = new Bls12381G2KeyPair(keyPairOptions)
+    const bls12381G2KeyPair: Bls12381G2KeyPair = new Bls12381G2KeyPair(keyPairOptions)
 
     const signatureSuiteOptions = {
       key: bls12381G2KeyPair,

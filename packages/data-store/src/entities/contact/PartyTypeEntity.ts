@@ -1,18 +1,18 @@
 import { Entity, PrimaryGeneratedColumn, Column, Index, CreateDateColumn, UpdateDateColumn, OneToMany, BeforeInsert, BeforeUpdate } from 'typeorm'
-import { ContactEntity } from './ContactEntity'
-import { BasicContactType, ContactTypeEnum, IContactType, ValidationConstraint } from '../../types'
+import { PartyEntity } from './PartyEntity'
+import { PartyTypeEnum, ValidationConstraint } from '../../types'
 import { IsNotEmpty, Validate, validate, ValidationError } from 'class-validator'
 import { IsNonEmptyStringConstraint } from '../validators'
 import { getConstraint } from '../../utils/ValidatorUtils'
 
-@Entity('ContactType')
-@Index('IDX_ContactTypeEntity_type_tenantId', ['type', 'tenantId'], { unique: true }) // TODO use name for migrations
-export class ContactTypeEntity {
+@Entity('PartyType')
+@Index('IDX_PartyType_type_tenant_id', ['type', 'tenantId'], { unique: true })
+export class PartyTypeEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum', { name: 'type', enum: ContactTypeEnum, nullable: false, unique: false })
-  type!: ContactTypeEnum
+  @Column('simple-enum', { name: 'type', enum: PartyTypeEnum, nullable: false, unique: false })
+  type!: PartyTypeEnum
 
   @Column({ name: 'name', length: 255, nullable: false, unique: true })
   @IsNotEmpty({ message: 'Blank names are not allowed' })
@@ -22,14 +22,14 @@ export class ContactTypeEntity {
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank descriptions are not allowed' })
   description?: string
 
-  @Column({ name: 'tenantId', length: 255, nullable: false, unique: false })
+  @Column({ name: 'tenant_id', length: 255, nullable: false, unique: false })
   @IsNotEmpty({ message: "Blank tenant id's are not allowed" })
   tenantId!: string
 
-  @OneToMany(() => ContactEntity, (contact: ContactEntity) => contact.contactType, {
+  @OneToMany(() => PartyEntity, (party: PartyEntity) => party.partyType, {
     nullable: false,
   })
-  contacts!: Array<ContactEntity>
+  parties!: Array<PartyEntity>
 
   @CreateDateColumn({ name: 'created_at', nullable: false })
   createdAt!: Date
@@ -48,30 +48,5 @@ export class ContactTypeEntity {
         return Promise.reject(Error(message))
       }
     }
-  }
-}
-
-export const contactTypeEntityFrom = (args: BasicContactType): ContactTypeEntity => {
-  const contactTypeEntity: ContactTypeEntity = new ContactTypeEntity()
-  if (args.id) {
-    contactTypeEntity.id = args.id
-  }
-  contactTypeEntity.type = args.type
-  contactTypeEntity.name = args.name
-  contactTypeEntity.description = args.description
-  contactTypeEntity.tenantId = args.tenantId
-
-  return contactTypeEntity
-}
-
-export const contactTypeFrom = (contactType: ContactTypeEntity): IContactType => {
-  return {
-    id: contactType.id,
-    type: contactType.type,
-    name: contactType.name,
-    tenantId: contactType.tenantId,
-    description: contactType.description,
-    createdAt: contactType.createdAt,
-    lastUpdatedAt: contactType.lastUpdatedAt,
   }
 }

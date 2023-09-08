@@ -1,5 +1,177 @@
 import { IIdentifier } from '@veramo/core'
 
+export type Party = {
+  id: string
+  uri?: string
+  roles: Array<IdentityRoleEnum>
+  identities: Array<Identity>
+  electronicAddresses: Array<ElectronicAddress>
+  contact: Contact
+  partyType: PartyType
+  relationships: Array<PartyRelationship>
+  createdAt: Date
+  lastUpdatedAt: Date
+}
+export type NonPersistedParty = Omit<
+  Party,
+  'id' | 'identities' | 'electronicAddresses' | 'contact' | 'roles' | 'partyType' | 'relationships' | 'createdAt' | 'lastUpdatedAt'
+> & {
+  identities?: Array<NonPersistedIdentity>
+  electronicAddresses?: Array<NonPersistedElectronicAddress>
+  contact: NonPersistedContact
+  partyType: NonPersistedPartyType
+  relationships?: Array<NonPersistedPartyRelationship>
+}
+export type PartialParty = Partial<Omit<Party, 'identities' | 'electronicAddresses' | 'contact' | 'partyType' | 'relationships'>> & {
+  identities?: PartialIdentity
+  electronicAddresses?: PartialElectronicAddress
+  contact?: PartialContact
+  partyType?: PartialPartyType
+  relationships?: PartialPartyRelationship
+}
+
+export type Identity = {
+  id: string
+  alias: string
+  roles: Array<IdentityRoleEnum>
+  identifier: CorrelationIdentifier
+  connection?: Connection
+  metadata?: Array<MetadataItem>
+  createdAt: Date
+  lastUpdatedAt: Date
+}
+export type NonPersistedIdentity = Omit<Identity, 'id' | 'identifier' | 'connection' | 'metadata' | 'createdAt' | 'lastUpdatedAt'> & {
+  identifier: NonPersistedCorrelationIdentifier
+  connection?: NonPersistedConnection
+  metadata?: Array<NonPersistedMetadataItem>
+}
+export type PartialIdentity = Partial<Omit<Identity, 'identifier' | 'connection' | 'metadata' | 'roles'>> & {
+  identifier?: PartialCorrelationIdentifier
+  connection?: PartialConnection
+  metadata?: PartialMetadataItem
+  roles?: IdentityRoleEnum
+  partyId?: string
+}
+
+export type MetadataItem = {
+  id: string
+  label: string
+  value: string
+}
+export type NonPersistedMetadataItem = Omit<MetadataItem, 'id'>
+export type PartialMetadataItem = Partial<MetadataItem>
+
+export type CorrelationIdentifier = {
+  id: string
+  type: CorrelationIdentifierEnum
+  correlationId: string
+}
+export type NonPersistedCorrelationIdentifier = Omit<CorrelationIdentifier, 'id'>
+export type PartialCorrelationIdentifier = Partial<CorrelationIdentifier>
+
+export type Connection = {
+  id: string
+  type: ConnectionTypeEnum
+  config: ConnectionConfig
+}
+export type NonPersistedConnection = Omit<Connection, 'id' | 'config'> & {
+  config: NonPersistedConnectionConfig
+}
+export type PartialConnection = Partial<Omit<Connection, 'config'>> & {
+  config: PartialConnectionConfig
+}
+
+export type OpenIdConfig = {
+  id: string
+  clientId: string
+  clientSecret: string
+  scopes: Array<string>
+  issuer: string
+  redirectUrl: string
+  dangerouslyAllowInsecureHttpRequests: boolean
+  clientAuthMethod: 'basic' | 'post' | undefined
+}
+export type NonPersistedOpenIdConfig = Omit<OpenIdConfig, 'id'>
+export type PartialOpenIdConfig = Partial<OpenIdConfig>
+
+export type DidAuthConfig = {
+  id: string
+  identifier: IIdentifier
+  stateId: string
+  redirectUrl: string
+  sessionId: string
+}
+export type NonPersistedDidAuthConfig = Omit<DidAuthConfig, 'id'>
+export type PartialDidAuthConfig = Partial<Omit<DidAuthConfig, 'identifier'>> & {
+  identifier: Partial<IIdentifier> // TODO, we need to create partials for sub types in IIdentifier
+}
+
+export type ConnectionConfig = OpenIdConfig | DidAuthConfig
+export type NonPersistedConnectionConfig = NonPersistedDidAuthConfig | NonPersistedOpenIdConfig
+export type PartialConnectionConfig = PartialOpenIdConfig | PartialDidAuthConfig
+
+export type NaturalPerson = {
+  id: string
+  firstName: string
+  lastName: string
+  middleName?: string
+  displayName: string
+  createdAt: Date
+  lastUpdatedAt: Date
+}
+export type NonPersistedNaturalPerson = Omit<NaturalPerson, 'id' | 'createdAt' | 'lastUpdatedAt'>
+export type PartialNaturalPerson = Partial<NaturalPerson>
+
+export type Organization = {
+  id: string
+  legalName: string
+  displayName: string
+  createdAt: Date
+  lastUpdatedAt: Date
+}
+export type NonPersistedOrganization = Omit<Organization, 'id' | 'createdAt' | 'lastUpdatedAt'>
+export type PartialOrganization = Partial<Organization>
+
+export type Contact = NaturalPerson | Organization
+export type NonPersistedContact = NonPersistedNaturalPerson | NonPersistedOrganization
+export type PartialContact = PartialNaturalPerson | PartialOrganization
+
+export type PartyType = {
+  id: string
+  type: PartyTypeEnum
+  name: string
+  tenantId: string
+  description?: string
+  createdAt: Date
+  lastUpdatedAt: Date
+}
+export type NonPersistedPartyType = Omit<PartyType, 'id' | 'createdAt' | 'lastUpdatedAt'> & {
+  id?: string
+}
+export type PartialPartyType = Partial<PartyType>
+
+export type PartyRelationship = {
+  id: string
+  leftId: string
+  rightId: string
+  createdAt: Date
+  lastUpdatedAt: Date
+}
+export type NonPersistedPartyRelationship = Omit<PartyRelationship, 'id' | 'createdAt' | 'lastUpdatedAt'>
+export type PartialPartyRelationship = Partial<PartyRelationship>
+
+export type ElectronicAddress = {
+  id: string
+  type: ElectronicAddressType
+  electronicAddress: string
+  createdAt: Date
+  lastUpdatedAt: Date
+}
+export type NonPersistedElectronicAddress = Omit<ElectronicAddress, 'id' | 'createdAt' | 'lastUpdatedAt'>
+export type PartialElectronicAddress = Partial<ElectronicAddress>
+
+export type ElectronicAddressType = 'email'
+
 export enum IdentityRoleEnum {
   ISSUER = 'issuer',
   VERIFIER = 'verifier',
@@ -17,166 +189,7 @@ export enum CorrelationIdentifierEnum {
   URL = 'url',
 }
 
-export interface IContact {
-  id: string
-  uri?: string
-  roles: Array<IdentityRoleEnum>
-  identities: Array<IIdentity>
-  contactOwner: ContactOwner
-  contactType: IContactType
-  relationships: Array<IContactRelationship>
-  createdAt: Date
-  lastUpdatedAt: Date
-}
-export interface IBasicContact {
-  uri?: string
-  identities?: Array<IBasicIdentity>
-  contactOwner: BasicContactOwner
-  contactType: BasicContactType
-  relationships?: Array<BasicContactRelationship>
-}
-export interface IPartialContact extends Partial<Omit<IContact, 'identities' | 'contactOwner' | 'contactType' | 'relationships'>> {
-  identities?: IPartialIdentity
-  contactOwner?: PartialContactOwner
-  contactType?: IPartialContactType
-  relationships?: IPartialContactRelationship
-}
-
-export interface IIdentity {
-  id: string
-  alias: string
-  roles: Array<IdentityRoleEnum>
-  identifier: ICorrelationIdentifier
-  connection?: IConnection
-  metadata?: Array<IMetadataItem>
-  createdAt: Date
-  lastUpdatedAt: Date
-}
-export interface IBasicIdentity {
-  alias: string
-  roles: Array<IdentityRoleEnum>
-  identifier: BasicCorrelationIdentifier
-  connection?: IBasicConnection
-  metadata?: Array<BasicMetadataItem>
-}
-export interface IPartialIdentity extends Partial<Omit<IIdentity, 'identifier' | 'connection' | 'metadata' | 'roles'>> {
-  identifier?: IPartialCorrelationIdentifier
-  connection?: IPartialConnection
-  metadata?: IPartialMetadataItem
-  roles?: IdentityRoleEnum //FindOperator
-  contactId?: string
-}
-
-export interface IMetadataItem {
-  id: string
-  label: string
-  value: string
-}
-export declare type BasicMetadataItem = Omit<IMetadataItem, 'id'>
-export interface IPartialMetadataItem extends Partial<IMetadataItem> {}
-
-export interface ICorrelationIdentifier {
-  id: string
-  type: CorrelationIdentifierEnum
-  correlationId: string
-}
-export declare type BasicCorrelationIdentifier = Omit<ICorrelationIdentifier, 'id'>
-export interface IPartialCorrelationIdentifier extends Partial<ICorrelationIdentifier> {}
-
-export interface IConnection {
-  id: string
-  type: ConnectionTypeEnum
-  config: ConnectionConfig
-}
-export interface IBasicConnection {
-  type: ConnectionTypeEnum
-  config: BasicConnectionConfig
-}
-export interface IPartialConnection extends Partial<Omit<IConnection, 'config'>> {
-  config: PartialConnectionConfig
-}
-
-export interface IOpenIdConfig {
-  id: string
-  clientId: string
-  clientSecret: string
-  scopes: Array<string>
-  issuer: string
-  redirectUrl: string
-  dangerouslyAllowInsecureHttpRequests: boolean
-  clientAuthMethod: 'basic' | 'post' | undefined
-}
-export declare type BasicOpenIdConfig = Omit<IOpenIdConfig, 'id'>
-export interface IPartialOpenIdConfig extends Partial<IOpenIdConfig> {}
-
-export interface IDidAuthConfig {
-  id: string
-  identifier: IIdentifier
-  stateId: string
-  redirectUrl: string
-  sessionId: string
-}
-export declare type BasicDidAuthConfig = Omit<IDidAuthConfig, 'id'>
-export interface IPartialDidAuthConfig extends Partial<Omit<IDidAuthConfig, 'identifier'>> {
-  identifier: Partial<IIdentifier> // TODO
-}
-
-export declare type ConnectionConfig = IOpenIdConfig | IDidAuthConfig
-export declare type BasicConnectionConfig = BasicDidAuthConfig | BasicOpenIdConfig
-export declare type PartialConnectionConfig = IPartialOpenIdConfig | IPartialDidAuthConfig
-
-export enum ContactTypeEnum {
-  PERSON = 'person',
+export enum PartyTypeEnum {
+  NATURAL_PERSON = 'naturalPerson',
   ORGANIZATION = 'organization',
 }
-
-export interface IPerson {
-  id: string
-  firstName: string
-  lastName: string
-  middleName?: string
-  displayName: string
-  createdAt: Date
-  lastUpdatedAt: Date
-}
-export declare type BasicPerson = Omit<IPerson, 'id' | 'createdAt' | 'lastUpdatedAt'>
-export interface IPartialPerson extends Partial<IPerson> {}
-
-export interface IOrganization {
-  id: string
-  legalName: string
-  displayName: string
-  cocNumber?: string
-  createdAt: Date
-  lastUpdatedAt: Date
-}
-export declare type BasicOrganization = Omit<IOrganization, 'id' | 'createdAt' | 'lastUpdatedAt'>
-export interface IPartialOrganization extends Partial<IOrganization> {}
-
-export declare type ContactOwner = IPerson | IOrganization
-export declare type BasicContactOwner = BasicPerson | BasicOrganization
-export declare type PartialContactOwner = IPartialPerson | IPartialOrganization
-
-export interface IContactType {
-  id: string
-  type: ContactTypeEnum
-  name: string
-  tenantId: string
-  description?: string
-  createdAt: Date
-  lastUpdatedAt: Date
-}
-export interface BasicContactType extends Omit<IContactType, 'id' | 'createdAt' | 'lastUpdatedAt'> {
-  id?: string
-}
-export interface IPartialContactType extends Partial<IContactType> {}
-
-export interface IContactRelationship {
-  id: string
-  leftId: string
-  rightId: string
-  createdAt: Date
-  lastUpdatedAt: Date
-}
-export declare type BasicContactRelationship = Omit<IContactRelationship, 'id' | 'createdAt' | 'lastUpdatedAt'>
-export interface IPartialContactRelationship extends Partial<IContactRelationship> {}
