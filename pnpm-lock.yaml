@@ -228,6 +228,9 @@ importers:
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.14.0
         version: 0.14.0(expo-crypto@12.4.1)(expo@49.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:^
+        version: link:../agent-config
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:^
         version: link:../contact-manager
