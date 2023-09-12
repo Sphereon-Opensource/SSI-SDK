@@ -1,4 +1,4 @@
-import { ConnectionOptions } from 'typeorm'
+import { DataSourceOptions } from 'typeorm'
 import { DataStoreContactEntities, DataStoreMigrations } from '../index'
 
 /**
@@ -7,7 +7,6 @@ import { DataStoreContactEntities, DataStoreMigrations } from '../index'
 export default [
   {
     type: 'sqlite',
-    name: 'migration-sqlite',
     database: 'migration.sqlite',
     migrationsRun: false,
     synchronize: false,
@@ -17,7 +16,6 @@ export default [
   },
   {
     type: 'postgres',
-    name: 'migration-postgres',
     database: 'migration-postgres',
     migrationsRun: false,
     synchronize: false,
@@ -25,4 +23,4 @@ export default [
     entities: [...DataStoreContactEntities],
     migrations: [...DataStoreMigrations],
   },
-] as ConnectionOptions[]
+] as DataSourceOptions[]

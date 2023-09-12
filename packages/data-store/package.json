@@ -20,6 +20,7 @@
     "typeorm": "^0.3.12"
   },
   "devDependencies": {
+    "pg": "^8.11.3",
     "sqlite3": "^5.1.6"
   },
   "files": [

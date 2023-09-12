@@ -1,9 +1,9 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, BaseEntity } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
-import { BasicConnectionConfig, ConnectionTypeEnum, IBasicConnection, IDidAuthConfig, IOpenIdConfig } from '../../types'
+import { ConnectionTypeEnum } from '../../types'
 import { IdentityEntity } from './IdentityEntity'
-import { OpenIdConfigEntity, openIdConfigEntityFrom } from './OpenIdConfigEntity'
-import { DidAuthConfigEntity, didAuthConfigEntityFrom } from './DidAuthConfigEntity'
+import { OpenIdConfigEntity } from './OpenIdConfigEntity'
+import { DidAuthConfigEntity } from './DidAuthConfigEntity'
 
 @Entity('Connection')
 export class ConnectionEntity extends BaseEntity {
@@ -24,25 +24,6 @@ export class ConnectionEntity extends BaseEntity {
   @OneToOne(() => IdentityEntity, (identity: IdentityEntity) => identity.connection, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'identityId' })
+  @JoinColumn({ name: 'identity_id' })
   identity!: IdentityEntity
-}
-
-export const connectionEntityFrom = (connection: IBasicConnection): ConnectionEntity => {
-  const connectionEntity = new ConnectionEntity()
-  connectionEntity.type = connection.type
-  connectionEntity.config = configEntityFrom(connection.type, connection.config)
-
-  return connectionEntity
-}
-
-const configEntityFrom = (type: ConnectionTypeEnum, config: BasicConnectionConfig): BaseConfigEntity => {
-  switch (type) {
-    case ConnectionTypeEnum.OPENID_CONNECT:
-      return openIdConfigEntityFrom(config as IOpenIdConfig)
-    case ConnectionTypeEnum.SIOPv2:
-      return didAuthConfigEntityFrom(config as IDidAuthConfig)
-    default:
-      throw new Error('Connection type not supported')
-  }
 }

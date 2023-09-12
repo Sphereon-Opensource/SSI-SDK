@@ -1,12 +1,12 @@
 import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import Debug from 'debug'
-import { CreateContacts1659463079428 } from '../postgres/1659463079428-CreateContacts'
-import { CreateContacts1659463069549 } from '../sqlite/1659463069549-CreateContacts'
+import { CreateContacts1690925872693 } from '../sqlite/1690925872693-CreateContacts'
+import { CreateContacts1690925872592 } from '../postgres/1690925872592-CreateContacts'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:migrations')
 
-export class CreateContacts1659463079429 implements MigrationInterface {
-  name = 'CreateContacts1659463079429'
+export class CreateContacts1690925872318 implements MigrationInterface {
+  name = 'CreateContacts1690925872318'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     debug('migration: creating contacts tables')
@@ -15,7 +15,7 @@ export class CreateContacts1659463079429 implements MigrationInterface {
     switch (dbType) {
       case 'postgres': {
         debug('using postgres migration file')
-        const mig: CreateContacts1659463079428 = new CreateContacts1659463079428()
+        const mig: CreateContacts1690925872592 = new CreateContacts1690925872592()
         await mig.up(queryRunner)
         debug('Migration statements executed')
         return
@@ -23,7 +23,7 @@ export class CreateContacts1659463079429 implements MigrationInterface {
       case 'sqlite':
       case 'react-native': {
         debug('using sqlite/react-native migration file')
-        const mig: CreateContacts1659463069549 = new CreateContacts1659463069549()
+        const mig: CreateContacts1690925872693 = new CreateContacts1690925872693()
         await mig.up(queryRunner)
         debug('Migration statements executed')
         return
@@ -42,7 +42,7 @@ export class CreateContacts1659463079429 implements MigrationInterface {
     switch (dbType) {
       case 'postgres': {
         debug('using postgres migration file')
-        const mig: CreateContacts1659463079428 = new CreateContacts1659463079428()
+        const mig: CreateContacts1690925872592 = new CreateContacts1690925872592()
         await mig.down(queryRunner)
         debug('Migration statements executed')
         return
@@ -50,7 +50,7 @@ export class CreateContacts1659463079429 implements MigrationInterface {
       case 'sqlite':
       case 'react-native': {
         debug('using sqlite/react-native migration file')
-        const mig: CreateContacts1659463069549 = new CreateContacts1659463069549()
+        const mig: CreateContacts1690925872693 = new CreateContacts1690925872693()
         await mig.down(queryRunner)
         debug('Migration statements executed')
         return

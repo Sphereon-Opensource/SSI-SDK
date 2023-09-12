@@ -1,7 +1,24 @@
 import { DataSource } from 'typeorm'
-
+import { DataStoreMigrations, DataStoreContactEntities } from '../index'
 import { ContactStore } from '../contact/ContactStore'
-import { CorrelationIdentifierEnum, DataStoreContactEntities, DataStoreMigrations, IdentityRoleEnum } from '../index'
+import {
+  IdentityRoleEnum,
+  PartyTypeEnum,
+  NonPersistedParty,
+  Party,
+  CorrelationIdentifierEnum,
+  Identity,
+  NaturalPerson,
+  NonPersistedNaturalPerson,
+  NonPersistedIdentity,
+  GetIdentitiesArgs,
+  GetPartiesArgs,
+  NonPersistedPartyRelationship,
+  PartyRelationship,
+  PartyType,
+  GetRelationshipsArgs,
+  NonPersistedPartyType,
+} from '../types'
 
 describe('Contact store tests', (): void => {
   let dbConnection: DataSource
@@ -11,7 +28,7 @@ describe('Contact store tests', (): void => {
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',
-      //logging: 'all',
+      logging: 'all',
       migrationsRun: false,
       migrations: DataStoreMigrations,
       synchronize: false,
@@ -26,70 +43,138 @@ describe('Contact store tests', (): void => {
     await (await dbConnection).destroy()
   })
 
-  it('should get contact by id', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+  it('should get party by id', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
 
-    const result = await contactStore.getContact({ contactId: savedContact.id })
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const result: Party = await contactStore.getParty({ partyId: savedParty.id })
 
     expect(result).toBeDefined()
   })
 
-  it('should throw error when getting contact with unknown id', async (): Promise<void> => {
-    const contactId = 'unknownContactId'
+  it('should throw error when getting party with unknown id', async (): Promise<void> => {
+    const partyId = 'unknownPartyId'
 
-    await expect(contactStore.getContact({ contactId })).rejects.toThrow(`No contact found for id: ${contactId}`)
+    await expect(contactStore.getParty({ partyId })).rejects.toThrow(`No party found for id: ${partyId}`)
   })
 
-  it('should get all contacts', async (): Promise<void> => {
-    const contact1 = {
-      name: 'test_name1',
-      alias: 'test_alias1',
-      uri: 'example.com1',
+  it('should get all parties', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contact: {
+        firstName: 'example_first_name1',
+        middleName: 'example_middle_name1',
+        lastName: 'example_last_name1',
+        displayName: 'example_display_name1',
+      },
     }
-    const savedContact1 = await contactStore.addContact(contact1)
-    expect(savedContact1).toBeDefined()
+    const savedParty1: Party = await contactStore.addParty(party1)
+    expect(savedParty1).toBeDefined()
 
-    const contact2 = {
-      name: 'test_name2',
-      alias: 'test_alias2',
-      uri: 'example.com2',
+    const party2: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contact: {
+        firstName: 'example_first_name2',
+        middleName: 'example_middle_name2',
+        lastName: 'example_last_name2',
+        displayName: 'example_display_name2',
+      },
     }
-    const savedContact2 = await contactStore.addContact(contact2)
-    expect(savedContact2).toBeDefined()
+    const savedParty2: Party = await contactStore.addParty(party2)
+    expect(savedParty2).toBeDefined()
 
-    const result = await contactStore.getContacts()
+    const result: Array<Party> = await contactStore.getParties()
 
+    expect(result).toBeDefined()
     expect(result.length).toEqual(2)
   })
 
-  it('should get contacts by filter', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+  it('should get parties by filter', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
 
-    const args = {
-      filter: [{ name: 'test_name' }, { alias: 'test_alias' }, { uri: 'example.com' }],
+    const args: GetPartiesArgs = {
+      filter: [
+        {
+          contact: {
+            firstName: (<NonPersistedNaturalPerson>party.contact).firstName,
+          },
+        },
+        {
+          contact: {
+            middleName: (<NonPersistedNaturalPerson>party.contact).middleName,
+          },
+        },
+        {
+          contact: {
+            lastName: (<NonPersistedNaturalPerson>party.contact).lastName,
+          },
+        },
+        {
+          contact: {
+            displayName: (<NonPersistedNaturalPerson>party.contact).displayName,
+          },
+        },
+      ],
     }
-    const result = await contactStore.getContacts(args)
+    const result: Array<Party> = await contactStore.getParties(args)
 
     expect(result.length).toEqual(1)
   })
 
-  it('should get whole contacts by filter', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+  it('should get whole parties by filter', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
       identities: [
         {
           alias: 'test_alias1',
@@ -116,11 +201,17 @@ describe('Contact store tests', (): void => {
           },
         },
       ],
+      electronicAddresses: [
+        {
+          type: 'email',
+          electronicAddress: 'sphereon@sphereon.com',
+        },
+      ],
     }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
 
-    const args = {
+    const args: GetPartiesArgs = {
       filter: [
         {
           identities: {
@@ -131,90 +222,178 @@ describe('Contact store tests', (): void => {
         },
       ],
     }
-    const result = await contactStore.getContacts(args)
+    const result: Array<Party> = await contactStore.getParties(args)
 
     expect(result[0].identities.length).toEqual(3)
+    expect(result[0].electronicAddresses.length).toEqual(1)
   })
 
-  it('should get contacts by name', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+  it('should get parties by name', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'something',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
 
-    const args = {
-      filter: [{ name: 'test_name' }],
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const args: GetPartiesArgs = {
+      filter: [
+        {
+          contact: {
+            firstName: (<NonPersistedNaturalPerson>party.contact).firstName,
+          },
+        },
+        {
+          contact: {
+            middleName: (<NonPersistedNaturalPerson>party.contact).middleName,
+          },
+        },
+        {
+          contact: {
+            lastName: (<NonPersistedNaturalPerson>party.contact).lastName,
+          },
+        },
+      ],
     }
-    const result = await contactStore.getContacts(args)
+    const result: Array<Party> = await contactStore.getParties(args)
 
     expect(result.length).toEqual(1)
   })
 
-  it('should get contacts by alias', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+  it('should get parties by display name', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
 
-    const args = {
-      filter: [{ alias: 'test_alias' }],
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const args: GetPartiesArgs = {
+      filter: [
+        {
+          contact: {
+            displayName: (<NonPersistedNaturalPerson>party.contact).displayName,
+          },
+        },
+      ],
     }
-    const result = await contactStore.getContacts(args)
+    const result: Array<Party> = await contactStore.getParties(args)
 
     expect(result.length).toEqual(1)
   })
 
-  it('should get contacts by uri', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+  it('should get parties by uri', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
 
-    const args = {
+    const args: GetPartiesArgs = {
       filter: [{ uri: 'example.com' }],
     }
-    const result = await contactStore.getContacts(args)
+    const result: Array<Party> = await contactStore.getParties(args)
 
     expect(result.length).toEqual(1)
   })
 
-  it('should return no contacts if filter does not match', async (): Promise<void> => {
-    const args = {
-      filter: [{ name: 'no_match_contact' }, { alias: 'no_match_contact_alias' }, { uri: 'no_match_example.com' }],
+  it('should return no parties if filter does not match', async (): Promise<void> => {
+    const args: GetPartiesArgs = {
+      filter: [
+        {
+          contact: {
+            firstName: 'no_match_firstName',
+          },
+        },
+        {
+          contact: {
+            middleName: 'no_match_middleName',
+          },
+        },
+        {
+          contact: {
+            lastName: 'no_match_lastName',
+          },
+        },
+      ],
     }
-    const result = await contactStore.getContacts(args)
+    const result: Array<Party> = await contactStore.getParties(args)
 
     expect(result.length).toEqual(0)
   })
 
-  it('should add contact without identities', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+  it('should add party without identities', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
 
-    const result = await contactStore.addContact(contact)
+    const result: Party = await contactStore.addParty(party)
 
-    expect(result.name).toEqual(contact.name)
-    expect(result.alias).toEqual(contact.alias)
-    expect(result.uri).toEqual(contact.uri)
+    expect(result).toBeDefined()
+    expect((<NaturalPerson>result.contact).firstName).toEqual((<NonPersistedNaturalPerson>party.contact).firstName)
+    expect((<NaturalPerson>result.contact).middleName).toEqual((<NonPersistedNaturalPerson>party.contact).middleName)
+    expect((<NaturalPerson>result.contact).lastName).toEqual((<NonPersistedNaturalPerson>party.contact).lastName)
+    expect(result.identities.length).toEqual(0)
   })
 
-  it('should add contact with identities', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+  it('should add party with identities', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
       identities: [
         {
           alias: 'test_alias1',
@@ -235,25 +414,35 @@ describe('Contact store tests', (): void => {
       ],
     }
 
-    const result = await contactStore.addContact(contact)
+    const result: Party = await contactStore.addParty(party)
 
-    expect(result.name).toEqual(contact.name)
-    expect(result.alias).toEqual(contact.alias)
-    expect(result.uri).toEqual(contact.uri)
+    expect(result).toBeDefined()
+    expect((<NaturalPerson>result.contact).firstName).toEqual((<NonPersistedNaturalPerson>party.contact).firstName)
+    expect((<NaturalPerson>result.contact).middleName).toEqual((<NonPersistedNaturalPerson>party.contact).middleName)
+    expect((<NaturalPerson>result.contact).lastName).toEqual((<NonPersistedNaturalPerson>party.contact).lastName)
     expect(result.identities.length).toEqual(2)
   })
 
-  it('should throw error when adding contact with invalid identity', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+  it('should throw error when adding party with invalid identity', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'something',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
       identities: [
         {
           alias: 'test_alias1',
           roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
           identifier: {
-            type: CorrelationIdentifierEnum.DID,
+            type: CorrelationIdentifierEnum.URL,
             correlationId: 'example_did1',
           },
         },
@@ -268,64 +457,28 @@ describe('Contact store tests', (): void => {
       ],
     }
 
-    const result = await contactStore.addContact(contact)
-
-    expect(result.name).toEqual(contact.name)
-    expect(result.alias).toEqual(contact.alias)
-    expect(result.uri).toEqual(contact.uri)
-    expect(result.identities.length).toEqual(2)
+    await expect(contactStore.addParty(party)).rejects.toThrow(`Identity with correlation type url should contain a connection`)
   })
 
-  it('should throw error when adding contact with duplicate name', async (): Promise<void> => {
-    const name = 'test_name'
-    const contact1 = {
-      name,
-      alias: 'test_alias',
+  it('should update party by id', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
-    const savedContact1 = await contactStore.addContact(contact1)
-    expect(savedContact1).toBeDefined()
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
 
-    const alias = 'test_alias2'
-    const contact2 = {
-      name,
-      alias,
-      uri: 'example.com',
-    }
-
-    await expect(contactStore.addContact(contact2)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
-  })
-
-  it('should throw error when adding contact with duplicate alias', async (): Promise<void> => {
-    const alias = 'test_alias'
-    const contact1 = {
-      name: 'test_name',
-      alias,
-      uri: 'example.com',
-    }
-    const savedContact1 = await contactStore.addContact(contact1)
-    expect(savedContact1).toBeDefined()
-
-    const name = 'test_name2'
-    const contact2 = {
-      name,
-      alias,
-      uri: 'example.com',
-    }
-
-    await expect(contactStore.addContact(contact2)).rejects.toThrow(`Duplicate names or aliases are not allowed. Name: ${name}, Alias: ${alias}`)
-  })
-
-  it('should update contact by id', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
-      uri: 'example.com',
-    }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
-
-    const identity1 = {
+    const identity1: NonPersistedIdentity = {
       alias: 'test_alias1',
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -333,10 +486,10 @@ describe('Contact store tests', (): void => {
         correlationId: 'example_did1',
       },
     }
-    const savedIdentity1 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity1 })
+    const savedIdentity1: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity: identity1 })
     expect(savedIdentity1).toBeDefined()
 
-    const identity2 = {
+    const identity2: NonPersistedIdentity = {
       alias: 'test_alias2',
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -344,50 +497,77 @@ describe('Contact store tests', (): void => {
         correlationId: 'example_did2',
       },
     }
-    const savedIdentity2 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity2 })
+    const savedIdentity2: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity: identity2 })
     expect(savedIdentity2).toBeDefined()
 
-    const contactName = 'updated_name'
-    const updatedContact = {
-      ...savedContact,
-      name: contactName,
+    const contactFirstName = 'updated_first_name'
+    const updatedParty: Party = {
+      ...savedParty,
+      contact: {
+        ...savedParty.contact,
+        firstName: contactFirstName,
+      },
     }
 
-    await contactStore.updateContact({ contact: updatedContact })
-    const result = await contactStore.getContact({ contactId: savedContact.id })
+    await contactStore.updateParty({ party: updatedParty })
+    const result: Party = await contactStore.getParty({ partyId: savedParty.id })
 
-    expect(result.name).toEqual(contactName)
+    expect(result).toBeDefined()
+    expect((<NaturalPerson>result.contact).firstName).toEqual(contactFirstName)
     expect(result.identities.length).toEqual(2)
   })
 
-  it('should throw error when updating contact with unknown id', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+  it('should throw error when updating party with unknown id', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
 
-    const contactId = 'unknownContactId'
-    const updatedContact = {
-      ...savedContact,
-      id: contactId,
-      name: 'new_name',
+    const partyId = 'unknownPartyId'
+    const contactFirstName = 'updated_first_name'
+    const updatedParty: Party = {
+      ...savedParty,
+      id: partyId,
+      contact: {
+        ...savedParty.contact,
+        firstName: contactFirstName,
+      },
     }
-    await expect(contactStore.updateContact({ contact: updatedContact })).rejects.toThrow(`No contact found for id: ${contactId}`)
+
+    await expect(contactStore.updateParty({ party: updatedParty })).rejects.toThrow(`No party found for id: ${partyId}`)
   })
 
   it('should get identity by id', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
 
-    const identity = {
+    const identity: NonPersistedIdentity = {
       alias: 'test_alias',
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -395,24 +575,33 @@ describe('Contact store tests', (): void => {
         correlationId: 'example_did',
       },
     }
-    const savedIdentity = await contactStore.addIdentity({ contactId: savedContact.id, identity })
+    const savedIdentity: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity })
     expect(savedIdentity).toBeDefined()
 
-    const result = await contactStore.getIdentity({ identityId: savedIdentity.id })
+    const result: Identity = await contactStore.getIdentity({ identityId: savedIdentity.id })
 
     expect(result).toBeDefined()
   })
 
   it('should get holderDID identity by id', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
 
-    const identity = {
+    const identity: NonPersistedIdentity = {
       alias: 'test_alias',
       roles: [IdentityRoleEnum.HOLDER],
       identifier: {
@@ -420,10 +609,10 @@ describe('Contact store tests', (): void => {
         correlationId: 'example_did',
       },
     }
-    const savedIdentity = await contactStore.addIdentity({ contactId: savedContact.id, identity })
+    const savedIdentity: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity })
     expect(savedIdentity).toBeDefined()
 
-    const result = await contactStore.getIdentity({ identityId: savedIdentity.id })
+    const result: Identity = await contactStore.getIdentity({ identityId: savedIdentity.id })
 
     expect(result).toBeDefined()
   })
@@ -435,15 +624,24 @@ describe('Contact store tests', (): void => {
   })
 
   it('should get all identities for contact', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
 
-    const identity1 = {
+    const identity1: NonPersistedIdentity = {
       alias: 'test_alias1',
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -451,10 +649,10 @@ describe('Contact store tests', (): void => {
         correlationId: 'example_did1',
       },
     }
-    const savedIdentity1 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity1 })
+    const savedIdentity1: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity: identity1 })
     expect(savedIdentity1).toBeDefined()
 
-    const identity2 = {
+    const identity2: NonPersistedIdentity = {
       alias: 'test_alias2',
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -462,28 +660,37 @@ describe('Contact store tests', (): void => {
         correlationId: 'example_did2',
       },
     }
-    const savedIdentity2 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity2 })
+    const savedIdentity2: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity: identity2 })
     expect(savedIdentity2).toBeDefined()
 
-    const args = {
-      filter: [{ contactId: savedContact.id }],
+    const args: GetIdentitiesArgs = {
+      filter: [{ partyId: savedParty.id }],
     }
 
-    const result = await contactStore.getIdentities(args)
+    const result: Array<Identity> = await contactStore.getIdentities(args)
 
     expect(result.length).toEqual(2)
   })
 
   it('should get all identities', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
 
-    const identity1 = {
+    const identity1: NonPersistedIdentity = {
       alias: 'test_alias1',
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -491,10 +698,10 @@ describe('Contact store tests', (): void => {
         correlationId: 'example_did1',
       },
     }
-    const savedIdentity1 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity1 })
+    const savedIdentity1: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity: identity1 })
     expect(savedIdentity1).toBeDefined()
 
-    const identity2 = {
+    const identity2: NonPersistedIdentity = {
       alias: 'test_alias2',
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -502,25 +709,34 @@ describe('Contact store tests', (): void => {
         correlationId: 'example_did2',
       },
     }
-    const savedIdentity2 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity2 })
+    const savedIdentity2: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity: identity2 })
     expect(savedIdentity2).toBeDefined()
 
-    const result = await contactStore.getIdentities()
+    const result: Array<Identity> = await contactStore.getIdentities()
 
     expect(result.length).toEqual(2)
   })
 
   it('should get identities by filter', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
 
     const alias = 'test_alias1'
-    const identity1 = {
+    const identity1: NonPersistedIdentity = {
       alias,
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -528,10 +744,10 @@ describe('Contact store tests', (): void => {
         correlationId: 'example_did1',
       },
     }
-    const savedIdentity1 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity1 })
+    const savedIdentity1: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity: identity1 })
     expect(savedIdentity1).toBeDefined()
 
-    const identity2 = {
+    const identity2: NonPersistedIdentity = {
       alias: 'test_alias2',
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -539,29 +755,38 @@ describe('Contact store tests', (): void => {
         correlationId: 'example_did2',
       },
     }
-    const savedIdentity2 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity2 })
+    const savedIdentity2: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity: identity2 })
     expect(savedIdentity2).toBeDefined()
 
-    const args = {
+    const args: GetIdentitiesArgs = {
       filter: [{ alias }],
     }
 
-    const result = await contactStore.getIdentities(args)
+    const result: Array<Identity> = await contactStore.getIdentities(args)
 
     expect(result.length).toEqual(1)
   })
 
   it('should get whole identities by filter', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
 
     const alias = 'test_alias1'
-    const identity1 = {
+    const identity1: NonPersistedIdentity = {
       alias,
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -579,29 +804,38 @@ describe('Contact store tests', (): void => {
         },
       ],
     }
-    const savedIdentity1 = await contactStore.addIdentity({ contactId: savedContact.id, identity: identity1 })
+    const savedIdentity1: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity: identity1 })
     expect(savedIdentity1).toBeDefined()
 
-    const args = {
+    const args: GetIdentitiesArgs = {
       filter: [{ metadata: { label: 'label1' } }],
     }
 
-    const result = await contactStore.getIdentities(args)
+    const result: Array<Identity> = await contactStore.getIdentities(args)
 
     expect(result[0]).toBeDefined()
     expect(result[0].metadata!.length).toEqual(2)
   })
 
   it('should add identity to contact', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
 
-    const identity = {
+    const identity: NonPersistedIdentity = {
       alias: 'test_alias',
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -609,10 +843,10 @@ describe('Contact store tests', (): void => {
         correlationId: 'example_did',
       },
     }
-    const savedIdentity = await contactStore.addIdentity({ contactId: savedContact.id, identity })
+    const savedIdentity: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity })
     expect(savedIdentity).toBeDefined()
 
-    const result = await contactStore.getContact({ contactId: savedContact.id })
+    const result: Party = await contactStore.getParty({ partyId: savedParty.id })
     expect(result.identities.length).toEqual(1)
   })
 
@@ -623,16 +857,25 @@ describe('Contact store tests', (): void => {
   })
 
   it('should throw error when adding identity with invalid identifier', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
 
     const correlationId = 'missing_connection_example'
-    const identity = {
+    const identity: NonPersistedIdentity = {
       alias: correlationId,
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -641,22 +884,31 @@ describe('Contact store tests', (): void => {
       },
     }
 
-    await expect(contactStore.addIdentity({ contactId: savedContact.id, identity })).rejects.toThrow(
+    await expect(contactStore.addIdentity({ partyId: savedParty.id, identity })).rejects.toThrow(
       `Identity with correlation type url should contain a connection`
     )
   })
 
   it('should throw error when updating identity with invalid identifier', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
 
     const correlationId = 'missing_connection_example'
-    const identity = {
+    const identity: NonPersistedIdentity = {
       alias: correlationId,
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER, IdentityRoleEnum.HOLDER],
       identifier: {
@@ -664,7 +916,7 @@ describe('Contact store tests', (): void => {
         correlationId,
       },
     }
-    const storedIdentity = await contactStore.addIdentity({ contactId: savedContact.id, identity })
+    const storedIdentity: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity })
     storedIdentity.identifier = { ...storedIdentity.identifier, type: CorrelationIdentifierEnum.URL }
 
     await expect(contactStore.updateIdentity({ identity: storedIdentity })).rejects.toThrow(
@@ -673,15 +925,24 @@ describe('Contact store tests', (): void => {
   })
 
   it('should update identity by id', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
     }
-    const savedContact = await contactStore.addContact(contact)
-    expect(savedContact).toBeDefined()
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
 
-    const identity = {
+    const identity: NonPersistedIdentity = {
       alias: 'example_did',
       roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
       identifier: {
@@ -689,22 +950,31 @@ describe('Contact store tests', (): void => {
         correlationId: 'example_did',
       },
     }
-    const storedIdentity = await contactStore.addIdentity({ contactId: savedContact.id, identity })
+    const storedIdentity: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity })
     const correlationId = 'new_update_example_did'
     storedIdentity.identifier = { ...storedIdentity.identifier, correlationId }
 
     await contactStore.updateIdentity({ identity: storedIdentity })
-    const result = await contactStore.getIdentity({ identityId: storedIdentity.id })
+    const result: Identity = await contactStore.getIdentity({ identityId: storedIdentity.id })
 
-    expect(result).not.toBeNull()
+    expect(result).toBeDefined()
     expect(result.identifier.correlationId).toEqual(correlationId)
   })
 
-  it('should get aggregate of identity roles on contact', async (): Promise<void> => {
-    const contact = {
-      name: 'test_name',
-      alias: 'test_alias',
+  it('should get aggregate of identity roles on party', async (): Promise<void> => {
+    const party: NonPersistedParty = {
       uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
       identities: [
         {
           alias: 'test_alias1',
@@ -733,11 +1003,777 @@ describe('Contact store tests', (): void => {
       ],
     }
 
-    const savedContact = await contactStore.addContact(contact)
-    const result = await contactStore.getContact({ contactId: savedContact.id })
+    const savedParty: Party = await contactStore.addParty(party)
+    const result: Party = await contactStore.getParty({ partyId: savedParty.id })
 
     expect(result.roles).toBeDefined()
     expect(result.roles.length).toEqual(3)
     expect(result.roles).toEqual([IdentityRoleEnum.VERIFIER, IdentityRoleEnum.ISSUER, IdentityRoleEnum.HOLDER])
+  })
+
+  it('should add relationship', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
+      uri: 'example1.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contact: {
+        firstName: 'example_first_name1',
+        middleName: 'example_middle_name1',
+        lastName: 'example_last_name1',
+        displayName: 'example_display_name1',
+      },
+    }
+    const savedParty1: Party = await contactStore.addParty(party1)
+    expect(savedParty1).toBeDefined()
+
+    const party2: NonPersistedParty = {
+      uri: 'example2.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contact: {
+        firstName: 'example_first_name2',
+        middleName: 'example_middle_name2',
+        lastName: 'example_last_name2',
+        displayName: 'example_display_name2',
+      },
+    }
+    const savedParty2: Party = await contactStore.addParty(party2)
+    expect(savedParty2).toBeDefined()
+
+    const relationship: NonPersistedPartyRelationship = {
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
+    }
+    await contactStore.addRelationship(relationship)
+
+    const result: Party = await contactStore.getParty({ partyId: savedParty1.id })
+
+    expect(result).toBeDefined()
+    expect(result.relationships.length).toEqual(1)
+    expect(result.relationships[0].leftId).toEqual(savedParty1.id)
+    expect(result.relationships[0].rightId).toEqual(savedParty2.id)
+  })
+
+  it('should get relationship', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
+      uri: 'example1.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contact: {
+        firstName: 'example_first_name1',
+        middleName: 'example_middle_name1',
+        lastName: 'example_last_name1',
+        displayName: 'example_display_name1',
+      },
+    }
+    const savedParty1: Party = await contactStore.addParty(party1)
+    expect(savedParty1).toBeDefined()
+
+    const party2: NonPersistedParty = {
+      uri: 'example2.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contact: {
+        firstName: 'example_first_name2',
+        middleName: 'example_middle_name2',
+        lastName: 'example_last_name2',
+        displayName: 'example_display_name2',
+      },
+    }
+    const savedParty2: Party = await contactStore.addParty(party2)
+    expect(savedParty2).toBeDefined()
+
+    const relationship: NonPersistedPartyRelationship = {
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
+    }
+    const savedRelationship: PartyRelationship = await contactStore.addRelationship(relationship)
+
+    const result: PartyRelationship = await contactStore.getRelationship({ relationshipId: savedRelationship.id })
+
+    expect(result).toBeDefined()
+    expect(result.leftId).toEqual(savedParty1.id)
+    expect(result.rightId).toEqual(savedParty2.id)
+  })
+
+  it('should throw error when getting relationship with unknown id', async (): Promise<void> => {
+    const relationshipId = 'unknownRelationshipId'
+
+    await expect(contactStore.getRelationship({ relationshipId })).rejects.toThrow(`No relationship found for id: ${relationshipId}`)
+  })
+
+  it('should get all relationships', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
+      uri: 'example1.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contact: {
+        firstName: 'example_first_name1',
+        middleName: 'example_middle_name1',
+        lastName: 'example_last_name1',
+        displayName: 'example_display_name1',
+      },
+    }
+    const savedParty1: Party = await contactStore.addParty(party1)
+    expect(savedParty1).toBeDefined()
+
+    const party2: NonPersistedParty = {
+      uri: 'example2.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contact: {
+        firstName: 'example_first_name2',
+        middleName: 'example_middle_name2',
+        lastName: 'example_last_name2',
+        displayName: 'example_display_name2',
+      },
+    }
+    const savedParty2: Party = await contactStore.addParty(party2)
+    expect(savedParty2).toBeDefined()
+
+    const relationship1: NonPersistedPartyRelationship = {
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
+    }
+    await contactStore.addRelationship(relationship1)
+
+    const relationship2: NonPersistedPartyRelationship = {
+      leftId: savedParty2.id,
+      rightId: savedParty1.id,
+    }
+    await contactStore.addRelationship(relationship2)
+
+    const result: Array<PartyRelationship> = await contactStore.getRelationships()
+
+    expect(result).toBeDefined()
+    expect(result.length).toEqual(2)
+  })
+
+  it('should get relationships by filter', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
+      uri: 'example1.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contact: {
+        firstName: 'example_first_name1',
+        middleName: 'example_middle_name1',
+        lastName: 'example_last_name1',
+        displayName: 'example_display_name1',
+      },
+    }
+    const savedParty1: Party = await contactStore.addParty(party1)
+    expect(savedParty1).toBeDefined()
+
+    const party2: NonPersistedParty = {
+      uri: 'example2.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contact: {
+        firstName: 'example_first_name2',
+        middleName: 'example_middle_name2',
+        lastName: 'example_last_name2',
+        displayName: 'example_display_name2',
+      },
+    }
+    const savedParty2: Party = await contactStore.addParty(party2)
+    expect(savedParty2).toBeDefined()
+
+    const relationship1: NonPersistedPartyRelationship = {
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
+    }
+    await contactStore.addRelationship(relationship1)
+
+    const relationship2: NonPersistedPartyRelationship = {
+      leftId: savedParty2.id,
+      rightId: savedParty1.id,
+    }
+    await contactStore.addRelationship(relationship2)
+
+    const args: GetRelationshipsArgs = {
+      filter: [
+        {
+          leftId: savedParty1.id,
+          rightId: savedParty2.id,
+        },
+      ],
+    }
+
+    const result: Array<PartyRelationship> = await contactStore.getRelationships(args)
+
+    expect(result).toBeDefined()
+    expect(result.length).toEqual(1)
+  })
+
+  it('should remove relationship', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
+      uri: 'example1.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contact: {
+        firstName: 'example_first_name1',
+        middleName: 'example_middle_name1',
+        lastName: 'example_last_name1',
+        displayName: 'example_display_name1',
+      },
+    }
+    const savedParty1: Party = await contactStore.addParty(party1)
+    expect(savedParty1).toBeDefined()
+
+    const party2: NonPersistedParty = {
+      uri: 'example2.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contact: {
+        firstName: 'example_first_name2',
+        middleName: 'example_middle_name2',
+        lastName: 'example_last_name2',
+        displayName: 'example_display_name2',
+      },
+    }
+    const savedParty2: Party = await contactStore.addParty(party2)
+    expect(savedParty2).toBeDefined()
+
+    const relationship: NonPersistedPartyRelationship = {
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
+    }
+    const savedRelationship: PartyRelationship = await contactStore.addRelationship(relationship)
+    expect(savedRelationship).toBeDefined()
+
+    await contactStore.removeRelationship({ relationshipId: savedRelationship.id })
+
+    const result: Party = await contactStore.getParty({ partyId: savedParty1.id })
+
+    expect(result).toBeDefined()
+    expect(result?.relationships?.length).toEqual(0)
+  })
+
+  it('should throw error when removing relationship with unknown id', async (): Promise<void> => {
+    const relationshipId = 'unknownRelationshipId'
+
+    await expect(contactStore.removeRelationship({ relationshipId })).rejects.toThrow(`No relationship found for id: ${relationshipId}`)
+  })
+
+  it('should return no relationships if filter does not match', async (): Promise<void> => {
+    const args: GetRelationshipsArgs = {
+      filter: [
+        {
+          leftId: 'unknown_id',
+        },
+      ],
+    }
+    const result: Array<PartyRelationship> = await contactStore.getRelationships(args)
+
+    expect(result.length).toEqual(0)
+  })
+
+  it('should update relationship by id', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
+      uri: 'example1.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contact: {
+        firstName: 'example_first_name1',
+        middleName: 'example_middle_name1',
+        lastName: 'example_last_name1',
+        displayName: 'example_display_name1',
+      },
+    }
+    const savedParty1: Party = await contactStore.addParty(party1)
+    expect(savedParty1).toBeDefined()
+
+    const party2: NonPersistedParty = {
+      uri: 'example2.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contact: {
+        firstName: 'example_first_name2',
+        middleName: 'example_middle_name2',
+        lastName: 'example_last_name2',
+        displayName: 'example_display_name2',
+      },
+    }
+    const savedParty2: Party = await contactStore.addParty(party2)
+    expect(savedParty2).toBeDefined()
+
+    const party3: NonPersistedParty = {
+      uri: 'example3.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d287',
+        name: 'example_name3',
+      },
+      contact: {
+        firstName: 'example_first_name3',
+        middleName: 'example_middle_name3',
+        lastName: 'example_last_name3',
+        displayName: 'example_display_name3',
+      },
+    }
+    const savedParty3: Party = await contactStore.addParty(party3)
+    expect(savedParty3).toBeDefined()
+
+    const relationship: NonPersistedPartyRelationship = {
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
+    }
+    const savedRelationship: PartyRelationship = await contactStore.addRelationship(relationship)
+
+    const updatedRelationship: PartyRelationship = {
+      ...savedRelationship,
+      rightId: savedParty3.id,
+    }
+
+    await contactStore.updateRelationship({ relationship: updatedRelationship })
+
+    const result: Party = await contactStore.getParty({ partyId: savedParty1.id })
+
+    expect(result).toBeDefined()
+    expect(result.relationships.length).toEqual(1)
+    expect(result.relationships[0].leftId).toEqual(savedParty1.id)
+    expect(result.relationships[0].rightId).toEqual(savedParty3.id)
+  })
+
+  it('should throw error when updating relationship with unknown id', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
+      uri: 'example1.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contact: {
+        firstName: 'example_first_name1',
+        middleName: 'example_middle_name1',
+        lastName: 'example_last_name1',
+        displayName: 'example_display_name1',
+      },
+    }
+    const savedParty1: Party = await contactStore.addParty(party1)
+    expect(savedParty1).toBeDefined()
+
+    const party2: NonPersistedParty = {
+      uri: 'example2.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contact: {
+        firstName: 'example_first_name2',
+        middleName: 'example_middle_name2',
+        lastName: 'example_last_name2',
+        displayName: 'example_display_name2',
+      },
+    }
+    const savedParty2: Party = await contactStore.addParty(party2)
+    expect(savedParty2).toBeDefined()
+
+    const relationship: NonPersistedPartyRelationship = {
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
+    }
+    const savedRelationship: PartyRelationship = await contactStore.addRelationship(relationship)
+
+    const relationshipId = 'unknownRelationshipId'
+    const updatedRelationship: PartyRelationship = {
+      ...savedRelationship,
+      id: relationshipId,
+      rightId: savedParty2.id,
+    }
+
+    await expect(contactStore.updateRelationship({ relationship: updatedRelationship })).rejects.toThrow(
+      `No party relationship found for id: ${relationshipId}`
+    )
+  })
+
+  it('should throw error when updating relationship with unknown right side id', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
+      uri: 'example1.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contact: {
+        firstName: 'example_first_name1',
+        middleName: 'example_middle_name1',
+        lastName: 'example_last_name1',
+        displayName: 'example_display_name1',
+      },
+    }
+    const savedParty1: Party = await contactStore.addParty(party1)
+    expect(savedParty1).toBeDefined()
+
+    const party2: NonPersistedParty = {
+      uri: 'example2.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contact: {
+        firstName: 'example_first_name2',
+        middleName: 'example_middle_name2',
+        lastName: 'example_last_name2',
+        displayName: 'example_display_name2',
+      },
+    }
+    const savedParty2: Party = await contactStore.addParty(party2)
+    expect(savedParty2).toBeDefined()
+
+    const relationship: NonPersistedPartyRelationship = {
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
+    }
+    const savedRelationship: PartyRelationship = await contactStore.addRelationship(relationship)
+
+    const partyId = 'unknownPartyId'
+    const updatedRelationship: PartyRelationship = {
+      ...savedRelationship,
+      rightId: partyId,
+    }
+
+    await expect(contactStore.updateRelationship({ relationship: updatedRelationship })).rejects.toThrow(
+      `No party found for right side of the relationship, party id: ${partyId}`
+    )
+  })
+
+  it('should throw error when updating relationship with unknown left side id', async (): Promise<void> => {
+    const party1: NonPersistedParty = {
+      uri: 'example1.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name1',
+      },
+      contact: {
+        firstName: 'example_first_name1',
+        middleName: 'example_middle_name1',
+        lastName: 'example_last_name1',
+        displayName: 'example_display_name1',
+      },
+    }
+    const savedParty1: Party = await contactStore.addParty(party1)
+    expect(savedParty1).toBeDefined()
+
+    const party2: NonPersistedParty = {
+      uri: 'example2.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+        name: 'example_name2',
+      },
+      contact: {
+        firstName: 'example_first_name2',
+        middleName: 'example_middle_name2',
+        lastName: 'example_last_name2',
+        displayName: 'example_display_name2',
+      },
+    }
+    const savedParty2: Party = await contactStore.addParty(party2)
+    expect(savedParty2).toBeDefined()
+
+    const relationship: NonPersistedPartyRelationship = {
+      leftId: savedParty1.id,
+      rightId: savedParty2.id,
+    }
+    const savedRelationship: PartyRelationship = await contactStore.addRelationship(relationship)
+
+    const partyId = 'unknownPartyId'
+    const updatedRelationship: PartyRelationship = {
+      ...savedRelationship,
+      leftId: partyId,
+    }
+
+    await expect(contactStore.updateRelationship({ relationship: updatedRelationship })).rejects.toThrow(
+      `No party found for left side of the relationship, party id: ${partyId}`
+    )
+  })
+
+  it('should add party type', async (): Promise<void> => {
+    const partyType: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+      name: 'example_name',
+      description: 'example_description',
+    }
+
+    const savedPartyType: PartyType = await contactStore.addPartyType(partyType)
+    const result: PartyType = await contactStore.getPartyType({ partyTypeId: savedPartyType.id })
+
+    expect(result).toBeDefined()
+    expect(result.name).toEqual(partyType.name)
+    expect(result.type).toEqual(partyType.type)
+    expect(result.tenantId).toEqual(partyType.tenantId)
+    expect(result.description).toEqual(partyType.description)
+    expect(result.lastUpdatedAt).toBeDefined()
+    expect(result.createdAt).toBeDefined()
+  })
+
+  it('should get party types by filter', async (): Promise<void> => {
+    const partyType1: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+      name: 'example_name1',
+      description: 'example_description1',
+    }
+    const savedPartyType1: PartyType = await contactStore.addPartyType(partyType1)
+    expect(savedPartyType1).toBeDefined()
+
+    const partyType2: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d287',
+      name: 'example_name2',
+      description: 'example_description2',
+    }
+    const savedPartyType2: PartyType = await contactStore.addPartyType(partyType2)
+    expect(savedPartyType2).toBeDefined()
+
+    const result: Array<PartyType> = await contactStore.getPartyTypes({
+      filter: [
+        {
+          type: PartyTypeEnum.NATURAL_PERSON,
+          name: 'example_name1',
+          description: 'example_description1',
+        },
+      ],
+    })
+
+    expect(result).toBeDefined()
+    expect(result.length).toEqual(1)
+  })
+
+  it('should return no party types if filter does not match', async (): Promise<void> => {
+    const partyType1: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+      name: 'example_name1',
+      description: 'example_description1',
+    }
+    const savedPartyType1: PartyType = await contactStore.addPartyType(partyType1)
+    expect(savedPartyType1).toBeDefined()
+
+    const partyType2: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d287',
+      name: 'example_name2',
+      description: 'example_description2',
+    }
+    const savedPartyType2: PartyType = await contactStore.addPartyType(partyType2)
+    expect(savedPartyType2).toBeDefined()
+
+    const result: Array<PartyType> = await contactStore.getPartyTypes({
+      filter: [
+        {
+          type: PartyTypeEnum.NATURAL_PERSON,
+          name: 'unknown_name',
+          description: 'unknown_description',
+        },
+      ],
+    })
+
+    expect(result).toBeDefined()
+    expect(result.length).toEqual(0)
+  })
+
+  it('should throw error when updating party type with unknown id', async (): Promise<void> => {
+    const partyType: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+      name: 'example_name',
+      description: 'example_description',
+    }
+    const savedPartyType: PartyType = await contactStore.addPartyType(partyType)
+    expect(savedPartyType).toBeDefined()
+
+    const partyTypeId = 'unknownPartyTypeId'
+    const updatedPartyType: PartyType = {
+      ...savedPartyType,
+      id: partyTypeId,
+      description: 'new_example_description',
+    }
+
+    await expect(contactStore.updatePartyType({ partyType: updatedPartyType })).rejects.toThrow(`No party type found for id: ${partyTypeId}`)
+  })
+
+  it('should update party type by id', async (): Promise<void> => {
+    const partyType: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+      name: 'example_name',
+      description: 'example_description',
+    }
+    const savedPartyType: PartyType = await contactStore.addPartyType(partyType)
+    expect(savedPartyType).toBeDefined()
+
+    const newDescription = 'new_example_description'
+    const updatedPartyType: PartyType = {
+      ...savedPartyType,
+      description: newDescription,
+    }
+
+    const result: PartyType = await contactStore.updatePartyType({ partyType: updatedPartyType })
+
+    expect(result).toBeDefined()
+    expect(result.description).toEqual(newDescription)
+  })
+
+  it('should throw error when removing party type with unknown id', async (): Promise<void> => {
+    const partyTypeId = 'unknownPartyTypeId'
+
+    await expect(contactStore.removePartyType({ partyTypeId })).rejects.toThrow(`No party type found for id: ${partyTypeId}`)
+  })
+
+  it('should remove party type', async (): Promise<void> => {
+    const partyType: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
+      name: 'example_name',
+      description: 'example_description',
+    }
+    const savedPartyType: PartyType = await contactStore.addPartyType(partyType)
+    expect(savedPartyType).toBeDefined()
+
+    const resultPartyType: PartyType = await contactStore.getPartyType({ partyTypeId: savedPartyType.id })
+    expect(resultPartyType).toBeDefined()
+
+    const includingMigrationPartyTypes: Array<PartyType> = await contactStore.getPartyTypes()
+    expect(includingMigrationPartyTypes.length).toEqual(2)
+
+    await contactStore.removePartyType({ partyTypeId: savedPartyType.id })
+
+    const result: Array<PartyType> = await contactStore.getPartyTypes()
+
+    expect(result).toBeDefined()
+    expect(result.length).toEqual(1)
+  })
+
+  it('should throw error when removing party type attached to contact', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    await expect(contactStore.removePartyType({ partyTypeId: savedParty.partyType.id })).rejects.toThrow(
+      `Unable to remove party type with id: ${savedParty.partyType.id}. Party type is in use`
+    )
+  })
+
+  it('Should save party with existing party type', async (): Promise<void> => {
+    const partyType: NonPersistedPartyType = {
+      type: PartyTypeEnum.NATURAL_PERSON,
+      tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+      name: 'example_name',
+    }
+    const savedPartyType: PartyType = await contactStore.addPartyType(partyType)
+    expect(savedPartyType).toBeDefined()
+
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: savedPartyType,
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+
+    const result: Party = await contactStore.addParty(party)
+
+    expect(result).toBeDefined()
+    expect(result?.partyType).toBeDefined()
+    expect(result?.partyType.id).toEqual(savedPartyType.id)
+    expect(result?.partyType.type).toEqual(savedPartyType.type)
+    expect(result?.partyType.tenantId).toEqual(savedPartyType.tenantId)
+    expect(result?.partyType.name).toEqual(savedPartyType.name)
+  })
+
+  it('should throw error when adding person party with wrong contact type', async (): Promise<void> => {
+    const partyType = PartyTypeEnum.ORGANIZATION
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: partyType,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+
+    await expect(contactStore.addParty(party)).rejects.toThrow(`Party type ${partyType}, does not match for provided contact`)
+  })
+
+  it('should throw error when adding organization party with wrong contact type', async (): Promise<void> => {
+    const partyType = PartyTypeEnum.NATURAL_PERSON
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: partyType,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        legalName: 'example_legal_name',
+        displayName: 'example_display_name',
+      },
+    }
+
+    await expect(contactStore.addParty(party)).rejects.toThrow(`Party type ${partyType}, does not match for provided contact`)
   })
 })
