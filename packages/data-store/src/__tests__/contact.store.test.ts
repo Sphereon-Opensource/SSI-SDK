@@ -1,5 +1,4 @@
 import { DataSource } from 'typeorm'
-
 import { DataStoreMigrations, DataStoreContactEntities } from '../index'
 import { ContactStore } from '../contact/ContactStore'
 import {
@@ -1676,12 +1675,15 @@ describe('Contact store tests', (): void => {
     const resultPartyType: PartyType = await contactStore.getPartyType({ partyTypeId: savedPartyType.id })
     expect(resultPartyType).toBeDefined()
 
+    const includingMigrationPartyTypes: Array<PartyType> = await contactStore.getPartyTypes()
+    expect(includingMigrationPartyTypes.length).toEqual(2)
+
     await contactStore.removePartyType({ partyTypeId: savedPartyType.id })
 
     const result: Array<PartyType> = await contactStore.getPartyTypes()
 
     expect(result).toBeDefined()
-    expect(result.length).toEqual(0)
+    expect(result.length).toEqual(1)
   })
 
   it('should throw error when removing party type attached to contact', async (): Promise<void> => {
