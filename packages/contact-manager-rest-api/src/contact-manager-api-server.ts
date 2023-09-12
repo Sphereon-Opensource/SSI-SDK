@@ -28,23 +28,15 @@ export class ContactManagerApiServer {
     if (opts?.endpointOpts?.globalAuth?.secureContactManagerEndpoints) {
       copyGlobalAuthToEndpoints({ opts, keys: ['partyRead', 'partyWrite', 'partyTypeRead', 'identityRead'] })
     }
-    const enableFeatures = opts?.enableFeatures ?? [
-      'party_read',
-      'party_write',
-      'party_type_read',
-      'identity_read',
-    ]
     this._opts = opts
     this._express = args.expressSupport.express
     this._router = express.Router()
     const context = agentContext(agent)
-    const features = enableFeatures ?? [
+    const features = opts?.enableFeatures ?? [
       'party_read',
       'party_write',
       'party_type_read',
-      'party_type_write',
-      'identity_read',
-      'identity_write',
+      'identity_read'
     ]
     console.log(`Contact Manager API enabled, with features: ${JSON.stringify(features)}}`)
 
