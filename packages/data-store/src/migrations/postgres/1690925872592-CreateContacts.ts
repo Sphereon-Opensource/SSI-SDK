@@ -1,9 +1,11 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
+import { enableUuidv4 } from './uuid'
 
 export class CreateContacts1690925872592 implements MigrationInterface {
   name = 'CreateContacts1690925872592'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await enableUuidv4(queryRunner)
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" DROP CONSTRAINT "FK_CorrelationIdentifier_identityId"`)
     await queryRunner.query(`ALTER TABLE "IdentityMetadata" DROP CONSTRAINT "FK_IdentityMetadata_identityId"`)
     await queryRunner.query(`ALTER TABLE "Identity" DROP CONSTRAINT "FK_Identity_contactId"`)

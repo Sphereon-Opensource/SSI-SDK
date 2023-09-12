@@ -17,4 +17,4 @@ export const DataStoreIssuanceBrandingMigrations = [CreateIssuanceBranding165946
 export const DataStoreStatusListMigrations = [CreateStatusList1693866470000]
 
 // All migrations together
-export const DataStoreMigrations = [CreateContacts1659463079429, CreateContacts1690925872318, CreateIssuanceBranding1659463079429, CreateStatusList1693866470000]
+export const DataStoreMigrations = [...DataStoreContactMigrations, ...DataStoreIssuanceBrandingMigrations, ...DataStoreStatusListMigrations]
