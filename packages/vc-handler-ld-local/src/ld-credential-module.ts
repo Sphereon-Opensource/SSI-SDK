@@ -2,16 +2,19 @@ import { purposes } from '@digitalcredentials/jsonld-signatures'
 import * as vc from '@digitalcredentials/vc'
 import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
 import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
+import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
-import { IVerifyResult } from '@sphereon/ssi-types'
+import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
+import { IVerifyResult, StatusListCredentialIdMode } from '@sphereon/ssi-types'
 import { CredentialPayload, IAgentContext, IKey, PresentationPayload, VerifiableCredential, VerifiablePresentation } from '@veramo/core'
+import { IStatusListEntryEntity } from '@sphereon/ssi-sdk.data-store'
 import Debug from 'debug'
 
 import { LdContextLoader } from './ld-context-loader'
 import { LdDocumentLoader } from './ld-document-loader'
 import { LdSuiteLoader } from './ld-suite-loader'
 import { RequiredAgentMethods } from './ld-suites'
-import { events } from './types'
+import { events, IIssueCredentialStatusOpts } from './types'
 
 // import jsigs from '@digitalcredentials/jsonld-signatures'
 //Support for Typescript added in version 9.0.0
@@ -50,22 +53,31 @@ export class LdCredentialModule {
   }
 
   async issueLDVerifiableCredential(
-    credential: CredentialPayload,
-    issuerDid: string,
-    key: IKey,
-    verificationMethodId: string,
-    purpose: typeof ProofPurpose = new CredentialIssuancePurpose(),
+    args: {
+      credential: CredentialPayload
+      issuerDid: string
+      key: IKey
+      verificationMethodId: string
+      purpose: typeof ProofPurpose
+      credentialStatusOpts?: IIssueCredentialStatusOpts
+    },
     context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiableCredentialSP> {
+    const { key, issuerDid, verificationMethodId, credential } = args
+    const purpose = args.purpose ?? new CredentialIssuancePurpose()
     debug(`Issue VC method called for ${key.kid}...`)
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
-    const documentLoader = this.ldDocumentLoader.getLoader(context, { attemptToFetchContexts: true, verifiableData: credential })
+    const documentLoader = this.ldDocumentLoader.getLoader(context, {
+      attemptToFetchContexts: true,
+      verifiableData: credential,
+    })
 
     // some suites can modify the incoming credential (e.g. add required contexts)
     suite.preSigningCredModification(credential)
     debug(`Signing suite will be retrieved for ${verificationMethodId}...`)
     const signingSuite = await suite.getSuiteForSigning(key, issuerDid, verificationMethodId, context)
     debug(`Issuer ${issuerDid} will create VC for ${key.kid}...`)
+    await this.handleCredentialStatus(credential, args.credentialStatusOpts)
 
     let verifiableCredential
     //Needs to be signed using jsonld-signaures@5.0.1
@@ -89,6 +101,86 @@ export class LdCredentialModule {
     return verifiableCredential
   }
 
+  private async handleCredentialStatus(credential: CredentialPayload, credentialStatusOpts?: IIssueCredentialStatusOpts) {
+    if (credential.credentialStatus) {
+      const credentialId = credential.id ?? credentialStatusOpts?.credentialId
+      const statusListId = credential.credentialStatus.statusListCredential ?? credentialStatusOpts?.statusListId
+      debug(`Creating new credentialStatus object for credential with id ${credentialId} and statusListId ${statusListId}...`)
+      if (!statusListId) {
+        throw Error(
+          `A credential status is requested, but we could not determine the status list id from 'statusListCredential' value or configuration`
+        )
+      }
+
+      // fixme: We really should make the status-list an agent plugin and pass the DataSource in the agent setup phase.
+      // This will not work when not setup with the DataSources class.
+      let dbName = credentialStatusOpts?.dbName
+      if (!dbName) {
+        const dbNames = DataSources.singleInstance().getDbNames()
+        if (!dbNames || dbNames.length === 0) {
+          throw Error(`Please use the DataSources class to register DB connections. The status list support needs a DB connection at this point`)
+        }
+        dbName = dbNames[0]
+      }
+      const slDriver = await getDriver({ id: statusListId, dbName })
+      const statusList = await slDriver.statusListStore.getStatusList({ id: statusListId })
+
+      if (!credentialId && statusList.credentialIdMode === StatusListCredentialIdMode.ISSUANCE) {
+        throw Error(
+          'No credential.id was provided in the credential, whilst the issuer is configured to persist credentialIds. Please adjust your input credential to contain an id'
+        )
+      }
+      let existingEntry: IStatusListEntryEntity | undefined = undefined
+      if (credentialId) {
+        existingEntry = await slDriver.getStatusListEntryByCredentialId({
+          statusListId: statusList.id,
+          credentialId,
+          errorOnNotFound: false,
+        })
+        debug(
+          `Existing statusList entry and index ${existingEntry?.statusListIndex} found for credential with id ${credentialId} and statusListId ${statusListId}. Will reuse the index`
+        )
+      }
+      let statusListIndex = existingEntry?.statusListIndex ?? credential.credentialStatus.statusListIndex ?? credentialStatusOpts?.credentialId
+      if (statusListIndex) {
+        existingEntry = await slDriver.getStatusListEntryByIndex({
+          statusListId: statusList.id,
+          statusListIndex,
+          errorOnNotFound: false,
+        })
+        debug(
+          `${!existingEntry && 'no'} existing statusList entry and index ${
+            existingEntry?.statusListIndex
+          } for credential with id ${credentialId} and statusListId ${statusListId}. Will reuse the index`
+        )
+        if (existingEntry && credentialId && existingEntry.credentialId && existingEntry.credentialId !== credentialId) {
+          throw Error(
+            `A credential with new id (${credentialId}) is issued, but its id does not match a registered statusListEntry id ${existingEntry.credentialId} for index ${statusListIndex} `
+          )
+        }
+      } else {
+        debug(
+          `Will generate a new random statusListIndex since the credential did not contain a statusListIndex for credential with id ${credentialId} and statusListId ${statusListId}...`
+        )
+        statusListIndex = await slDriver.getRandomNewStatusListIndex({ correlationId: statusList.correlationId })
+        debug(`Random statusListIndex ${statusListIndex} assigned for credential with id ${credentialId} and statusListId ${statusListId}`)
+      }
+      const result = await slDriver.updateStatusListEntry({
+        statusList: statusListId,
+        credentialId,
+        statusListIndex,
+        correlationId: credentialStatusOpts?.statusEntryCorrelationId,
+        value: credentialStatusOpts?.value,
+      })
+      debug(`StatusListEntry with statusListIndex ${statusListIndex} created for credential with id ${credentialId} and statusListId ${statusListId}`)
+
+      credential.credentialStatus = {
+        ...credential.credentialStatus,
+        ...result.credentialStatus,
+      }
+    }
+  }
+
   async signLDVerifiablePresentation(
     presentation: PresentationPayload,
     holderDid: string,
@@ -105,7 +197,10 @@ export class LdCredentialModule {
     context: IAgentContext<RequiredAgentMethods>
   ): Promise<VerifiablePresentationSP> {
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
-    const documentLoader = this.ldDocumentLoader.getLoader(context, { attemptToFetchContexts: true, verifiableData: presentation })
+    const documentLoader = this.ldDocumentLoader.getLoader(context, {
+      attemptToFetchContexts: true,
+      verifiableData: presentation,
+    })
 
     suite.preSigningPresModification(presentation)
 
@@ -138,25 +233,31 @@ export class LdCredentialModule {
     const verificationSuites = this.getAllVerificationSuites(context)
     this.ldSuiteLoader.getAllSignatureSuites().forEach((suite) => suite.preVerificationCredModification(credential))
     let result: IVerifyResult
-    if (credential.proof.type?.includes('BbsBlsSignature2020')) {
-      //Should never be null or undefined
-      const suite = this.ldSuiteLoader
-        .getAllSignatureSuites()
-        .find((s) => s.getSupportedVeramoKeyType() === 'Bls12381G2')
-        ?.getSuiteForVerification(context) as BbsBlsSignature2020
-
+    const documentLoader = this.ldDocumentLoader.getLoader(context, {
+      attemptToFetchContexts: fetchRemoteContexts,
+      verifiableData: credential,
+    })
+    const isBls = credential.proof.type?.includes('BbsBlsSignature2020')
+    const suite = isBls
+      ? (this.ldSuiteLoader
+          .getAllSignatureSuites()
+          .find((s) => s.getSupportedVeramoKeyType() === 'Bls12381G2')
+          ?.getSuiteForVerification(context) as BbsBlsSignature2020)
+      : verificationSuites
+    context.agent
+    if (isBls) {
       // fixme: check signature of verify method, adjust result if needed
       result = await jsigs.verify(credential, {
         suite,
         purpose,
-        documentLoader: this.ldDocumentLoader.getLoader(context, { attemptToFetchContexts: fetchRemoteContexts, verifiableData: credential }),
+        documentLoader,
         compactProof: true,
       })
     } else {
       result = await vc.verifyCredential({
         credential,
         suite: verificationSuites,
-        documentLoader: this.ldDocumentLoader.getLoader(context, { attemptToFetchContexts: fetchRemoteContexts, verifiableData: credential }),
+        documentLoader,
         purpose,
         compactProof: false,
         checkStatus,
@@ -199,14 +300,20 @@ export class LdCredentialModule {
       result = await jsigs.verify(presentation, {
         suite,
         purpose: presentationPurpose,
-        documentLoader: this.ldDocumentLoader.getLoader(context, { attemptToFetchContexts: fetchRemoteContexts, verifiableData: presentation }),
+        documentLoader: this.ldDocumentLoader.getLoader(context, {
+          attemptToFetchContexts: fetchRemoteContexts,
+          verifiableData: presentation,
+        }),
         compactProof: true,
       })
     } else {
       result = await vc.verify({
         presentation,
         suite: this.getAllVerificationSuites(context),
-        documentLoader: this.ldDocumentLoader.getLoader(context, { attemptToFetchContexts: fetchRemoteContexts, verifiableData: presentation }),
+        documentLoader: this.ldDocumentLoader.getLoader(context, {
+          attemptToFetchContexts: fetchRemoteContexts,
+          verifiableData: presentation,
+        }),
         challenge,
         domain,
         presentationPurpose,

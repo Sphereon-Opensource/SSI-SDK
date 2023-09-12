@@ -1,9 +1,11 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
+import { enableUuidv4 } from './uuid'
 
 export class CreateContacts1659463079428 implements MigrationInterface {
   name = 'CreateContacts1659463079428'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await enableUuidv4(queryRunner)
     await queryRunner.query(
       `CREATE TABLE "BaseConfigEntity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "client_id" character varying(255), "client_secret" character varying(255), "scopes" text, "issuer" character varying(255), "redirect_url" text, "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "identifier" character varying(255), "session_id" character varying(255), "type" character varying NOT NULL, "connectionId" uuid, CONSTRAINT "REL_BaseConfig_connectionId" UNIQUE ("connectionId"), CONSTRAINT "PK_BaseConfigEntity_id" PRIMARY KEY ("id"))`
     )

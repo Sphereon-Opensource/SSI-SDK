@@ -1,22 +1,28 @@
-import { ICredentialStatus, IIssuer, OriginalVerifiableCredential } from '@sphereon/ssi-types'
+import {
+  ICredentialStatus,
+  IIssuer,
+  OriginalVerifiableCredential,
+  StatusListCredentialIdMode,
+  StatusListDriverType,
+  StatusListIndexingDirection,
+  StatusListType,
+  StatusPurpose2021,
+} from '@sphereon/ssi-types'
 import { ProofFormat } from '@veramo/core'
 
-export type StatusListType = 'StatusList2021'
-export type StatusPurpose2021 = 'revocation' | 'suspension' | string
-export type IndexingDirection = 'rightToLeft'
-
 export interface CreateNewStatusListArgs extends Omit<StatusList2021ToVerifiableCredentialArgs, 'encodedList'> {
+  correlationId: string
   length?: number
 }
 export interface UpdateStatusListFromEncodedListArgs extends StatusList2021ToVerifiableCredentialArgs {
-  index: number
+  statusListIndex: number | string
   value: boolean
 }
 
 export interface UpdateStatusListFromStatusListCredentialArgs {
   statusListCredential: OriginalVerifiableCredential
   keyRef?: string
-  index: number
+  statusListIndex: number | string
   value: boolean
 }
 export interface StatusList2021ToVerifiableCredentialArgs {
@@ -31,15 +37,23 @@ export interface StatusList2021ToVerifiableCredentialArgs {
   // todo: validFrom and validUntil
 }
 
-export interface StatusListResult {
+export interface StatusListDetails {
   encodedList: string
-  statusListCredential: OriginalVerifiableCredential
   length: number
   type: StatusListType
   proofFormat: ProofFormat
+  statusPurpose: StatusPurpose2021
   id: string
   issuer: string | IIssuer
-  indexingDirection: IndexingDirection
+  indexingDirection: StatusListIndexingDirection
+  statusListCredential: OriginalVerifiableCredential
+  // These cannot be deduced from the VC, so they are present when callers pass in these values as params
+  correlationId?: string
+  driverType?: StatusListDriverType
+  credentialIdMode?: StatusListCredentialIdMode
+}
+export interface StatusListResult extends StatusListDetails {
+  statusListCredential: OriginalVerifiableCredential
 }
 
 export interface StatusList2021EntryCredentialStatus extends ICredentialStatus {

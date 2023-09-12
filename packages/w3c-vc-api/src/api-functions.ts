@@ -94,6 +94,9 @@ export function verifyCredentialEndpoint(router: Router, context: IRequiredConte
       }
       const verifyResult = await context.agent.verifyCredential({
         credential,
+        policies: {
+          credentialStatus: false, // Do not use built-in. We have our own statusList implementations
+        },
         fetchRemoteContexts: opts?.fetchRemoteContexts !== false,
       })
 
