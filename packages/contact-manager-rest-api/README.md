@@ -12,7 +12,7 @@
 
 ---
 
-A Veramo contact manager rest api plugin. This plugin provides rest apis and calls into another Veramo plugin which manages contacts and identity configurations to third parties and persists them. These configurations can then be used to establish a connection.
+A contact manager REST API plugin. This plugin provides rest APIs and calls into another plugin which manages contacts and identity configurations to third parties and persists them. These configurations can then be used to establish a connection.
 
 ## Supported identity connection types
 
