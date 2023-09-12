@@ -1,9 +1,6 @@
-import Debug from 'debug'
 import { DataSource } from 'typeorm'
 
 import { sqliteConfig } from './config'
-
-const debug = Debug(`demo:databaseService`)
 
 /**
  * Todo, move to a class
@@ -24,13 +21,13 @@ export const getDbConnection = async (dbName: string): Promise<DataSource> => {
   const dataSource = await new DataSource({ ...sqliteConfig, name: dbName }).initialize()
   dataSources.set(dbName, dataSource)
   if (sqliteConfig.migrationsRun) {
-    debug(
+    console.log(
       `Migrations are currently managed from config. Please set migrationsRun and synchronize to false to get consistent behaviour. We run migrations from code explicitly`
     )
   } else {
-    debug(`Running ${dataSource.migrations.length} migration(s) from code if needed...`)
+    console.log(`Running ${dataSource.migrations.length} migration(s) from code if needed...`)
     await dataSource.runMigrations()
-    debug(`${dataSource.migrations.length} migration(s) from code were inspected and applied`)
+    console.log(`${dataSource.migrations.length} migration(s) from code were inspected and applied`)
   }
   return dataSource
 }
