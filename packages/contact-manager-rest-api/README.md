@@ -24,7 +24,7 @@ For now the following connection types are supported:
 ## Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk.contact-manager
+yarn add @sphereon/ssi-sdk.contact-manager-rest-api
 ```
 
 ## Build
