@@ -46,6 +46,15 @@ export interface ICreateVerifiablePresentationLDArgs {
   purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 }
 
+export interface IIssueCredentialStatusOpts {
+  dbName?: string // TODO: remove once issuance if full plugin
+  credentialId?: string
+  statusListId?: string
+  statusListIndex?: number | string
+  statusEntryCorrelationId?: string
+  value?: string
+}
+
 /**
  * Encapsulates the parameters required to create a
  * {@link https://www.w3.org/TR/vc-data-model/#credentials | W3C Verifiable Credential}
@@ -73,6 +82,8 @@ export interface ICreateVerifiableCredentialLDArgs {
    * Use this purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)
    */
   purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
+
+  credentialStatusOpts?: IIssueCredentialStatusOpts
 }
 
 /**

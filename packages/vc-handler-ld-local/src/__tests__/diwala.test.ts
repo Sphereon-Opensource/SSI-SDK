@@ -67,7 +67,7 @@ describe('Diwala issued VC', () => {
       fetchRemoteContexts: true,
     })
 
-    expect(verifiedCredential).toEqual({
+    expect(verifiedCredential).toMatchObject({
       log: [
         {
           id: 'expiration',

@@ -1,6 +1,6 @@
 import { ProofFormatTypesEnum } from '@sphereon/wellknown-dids-client'
 import { TAgent, IDIDManager } from '@veramo/core'
-import { IWellKnownDidIssuer } from '../../src/types/IWellKnownDidIssuer'
+import { IWellKnownDidIssuer } from '../../src'
 
 type ConfiguredAgent = TAgent<IWellKnownDidIssuer | IDIDManager>
 

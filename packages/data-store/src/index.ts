@@ -16,6 +16,9 @@ import { ImageDimensionsEntity, imageDimensionsEntityFrom } from './entities/iss
 import { IssuerLocaleBrandingEntity, issuerLocaleBrandingEntityFrom } from './entities/issuanceBranding/IssuerLocaleBrandingEntity'
 import { IssuerBrandingEntity, issuerBrandingEntityFrom } from './entities/issuanceBranding/IssuerBrandingEntity'
 import { TextAttributesEntity, textAttributesEntityFrom } from './entities/issuanceBranding/TextAttributesEntity'
+import { StatusListEntity } from './entities/statusList2021/StatusList2021Entity'
+import { StatusListEntryEntity } from './entities/statusList2021/StatusList2021EntryEntity'
+import { IStatusListEntity, IStatusListEntryEntity } from './types'
 import { PartyRelationshipEntity } from './entities/contact/PartyRelationshipEntity'
 import { PartyTypeEntity } from './entities/contact/PartyTypeEntity'
 import { OrganizationEntity } from './entities/contact/OrganizationEntity'
@@ -25,6 +28,7 @@ export { ContactStore } from './contact/ContactStore'
 export { AbstractContactStore } from './contact/AbstractContactStore'
 export { AbstractIssuanceBrandingStore } from './issuanceBranding/AbstractIssuanceBrandingStore'
 export { IssuanceBrandingStore } from './issuanceBranding/IssuanceBrandingStore'
+export { StatusListStore } from './statusList/StatusListStore'
 export { DataStoreMigrations } from './migrations'
 export * from './types'
 export * from './utils/contact/MappingUtils'
@@ -58,6 +62,11 @@ export const DataStoreIssuanceBrandingEntities = [
   IssuerLocaleBrandingEntity,
 ]
 
+export const DataStoreStatusListEntities = [StatusListEntity, StatusListEntryEntity]
+
+// All entities combined if a party wants to enable them all at once
+export const DataStoreEntities = [...DataStoreContactEntities, ...DataStoreIssuanceBrandingEntities, ...DataStoreStatusListEntities]
+
 export {
   BaseConfigEntity,
   ConnectionEntity,
@@ -85,4 +94,8 @@ export {
   textAttributesEntityFrom,
   issuerLocaleBrandingEntityFrom,
   credentialLocaleBrandingEntityFrom,
+  IStatusListEntity,
+  IStatusListEntryEntity,
+  StatusListEntity,
+  StatusListEntryEntity,
 }

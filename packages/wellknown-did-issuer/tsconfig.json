@@ -5,6 +5,7 @@
     "outDir": "dist",
     "esModuleInterop": true,
     "declarationDir": "dist",
+    "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "noUnusedLocals": false
   },
