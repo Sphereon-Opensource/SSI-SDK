@@ -37,6 +37,13 @@ export class PartyTypeEntity {
   @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
   lastUpdatedAt!: Date
 
+  // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.
+  @BeforeInsert()
+  @BeforeUpdate()
+  updateUpdatedDate(): void {
+    this.lastUpdatedAt = new Date()
+  }
+
   @BeforeInsert()
   @BeforeUpdate()
   async validate(): Promise<void> {

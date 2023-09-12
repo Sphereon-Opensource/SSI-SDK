@@ -1,4 +1,6 @@
-import { BaseEntity, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, TableInheritance, UpdateDateColumn } from 'typeorm'
+import { BaseEntity,
+  BeforeInsert,
+  BeforeUpdate, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, TableInheritance, UpdateDateColumn } from 'typeorm'
 import { PartyEntity } from './PartyEntity'
 
 @Entity('BaseContact')
@@ -18,4 +20,11 @@ export abstract class BaseContactEntity extends BaseEntity {
   })
   @JoinColumn({ name: 'party_id' })
   party!: PartyEntity
+
+  // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.
+  @BeforeInsert()
+  @BeforeUpdate()
+  updateUpdatedDate(): void {
+    this.lastUpdatedAt = new Date()
+  }
 }
