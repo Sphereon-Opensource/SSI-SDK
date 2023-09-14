@@ -16,51 +16,47 @@ const agent = createAgent<IRequiredPlugins>({
 })
 
 agent.cmAddContactType({
-  name: `${v4()}-people`,
+  name: "people",
   type: PartyTypeEnum.NATURAL_PERSON,
   tenantId: v4()
 }).then(ct=> {
   agent.cmAddContact({
-    "firstName": "emp1_fn",
-    "middleName": "emp1_mn",
-    "lastName": "emp1_ln",
-    "displayName": "emp1_dn",
+    firstName: "Abraham",
+    middleName: "Gerrit Jan",
+    lastName: "ten Cate",
+    displayName: "Bram ten Cate",
     contactType: ct,
-    uri: "emp1_url"
+    uri: "example.com"
   })
   agent.cmAddContact({
-    "firstName": "emp2_fn",
-    "middleName": "emp2_mn",
-    "lastName": "emp2_ln",
-    "displayName": "emp2_dn",
+    firstName: "Kraak",
+    middleName: "en",
+    lastName: "Smaak",
+    displayName: "Kraak en Smaak",
     contactType: ct,
-    uri: "emp2_url"
+    uri: "example.com"
   })
-  agent.cmAddContact({
-    "firstName": "emp3_fn",
-    "middleName": "emp3_mn",
-    "lastName": "emp3_ln",
-    "displayName": "emp3_dn",
-    contactType: ct,
-    uri: "emp2_url"
-  })
+}).catch(e => {
+  console.log(e)
 })
 agent.cmAddContactType({
-  name: `${v4()}-orgzanizations`,
+  name: "orgzanizations",
   type: PartyTypeEnum.ORGANIZATION,
   tenantId: v4()
 }).then(ct=> {
   agent.cmAddContact({
-    legalName: `${v4()}-org1_fn`,
-    displayName: "org1_dn",
+    legalName: "Sphereon International",
+    displayName: "Sphereon B.V.",
     contactType: ct,
-    uri: "org1_uri"
+    uri: "sphereon.com"
   })
   agent.cmAddContact({
-    legalName: `${v4()}-org2_fn`,
-    displayName: "org2_dn",
+    legalName: "Kamer van verkoophandel",
+    displayName: "Kamer van koophandel",
     contactType: ct,
-    uri: "org2_uri"
+    uri: "kvk.nl"
   })
+}).catch(e=> {
+  console.log(e)
 })
 export default agent
