@@ -4,7 +4,7 @@ import {
   IOID4VCIClientCreateOfferUriRequest,
   IOID4VCIClientCreateOfferUriRequestArgs,
   IOID4VCIClientCreateOfferUriResponse,
-  IOID4VCIClientGetIssueStatusArgs,
+  IOID4VCIClientGetIssueStatusArgs, IRestClientAuthenticationOpts,
 } from '../types/IOID4VCIRestClient'
 import { IssueStatusResponse } from '@sphereon/oid4vci-common'
 import Debug from 'debug'
@@ -22,11 +22,26 @@ export class OID4VCIRestClient implements IAgentPlugin {
   }
 
   private readonly agentBaseUrl?: string
+  private readonly authOpts?: IRestClientAuthenticationOpts
 
-  constructor(args?: { baseUrl?: string }) {
+  constructor(args?: { baseUrl?: string,  authentication?: IRestClientAuthenticationOpts }) {
     if (args?.baseUrl) {
       this.agentBaseUrl = args.baseUrl
     }
+    this.authOpts = args?.authentication
+  }
+  private createHeaders(existing?: Record<string, any>): HeadersInit {
+    const headers: HeadersInit = {
+      ...existing,
+      Accept: 'application/json',
+    }
+    if (this.authOpts?.enabled === true) {
+      if (!this.authOpts.staticBearerToken) {
+        throw Error(`Cannot have authentication enabled, whilst not enabling static bearer tokens at this point`)
+      }
+      headers.Authorization = `Bearer ${this.authOpts.staticBearerToken}`
+    }
+    return headers
   }
 
   /** {@inheritDoc IOID4VCIRestClient.vciClientCreateOfferUri} */
@@ -45,9 +60,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
     try {
       const origResponse = await fetch(url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: this.createHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify(request),
       })
       if (!origResponse.ok) {
@@ -65,9 +78,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
     const url = OID4VCIRestClient.urlWithBase('/webapp/credential-offer-status', baseUrl)
     const statusResponse = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: this.createHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({
         id: args.id,
       }),
