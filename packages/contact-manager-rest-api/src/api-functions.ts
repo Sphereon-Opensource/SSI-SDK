@@ -29,7 +29,7 @@ export function partyReadEndpoint(router: Router, context: IRequiredContext, opt
   const path = opts?.path ?? '/parties'
   router.get(`${path}/:partyId`, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
-      const partyId = request.params.contactId
+      const partyId = request.params.partyId
       const party = await context.agent.cmGetContact({ contactId: partyId })
       response.statusCode = 200
       return response.send(party)
