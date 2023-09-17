@@ -1,0 +1,23 @@
+{
+  "configs": [
+    {
+      "basePath": "/web3/rpc",
+      "hostname": "127.0.0.1",
+      "port": 2999,
+      "wallets": [
+        {
+          "privateKeys": [
+            "f5c0438db93a60a191530c0dd61a118bfb26ce4afb1ee54ea67deb15ec92d164"
+          ],
+          "path": "/anon"
+        },
+        {
+          "privateKeys": [
+            "f5c0438db93a60a191530c0dd61a118bfb26ce4afb1ee54ea67deb15ec92d164"
+          ],
+          "path": "/secured"
+        }
+      ]
+    }
+  ]
+}
