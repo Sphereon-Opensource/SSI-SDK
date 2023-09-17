@@ -16,6 +16,11 @@ export interface IOID4VCIClientCreateOfferUriRequestArgs extends IOID4VCIClientC
   agentBaseUrl?: string
 }
 
+export interface IRestClientAuthenticationOpts {
+  enabled?: boolean
+  staticBearerToken?: string
+}
+
 export interface IOID4VCIClientGetIssueStatusArgs {
   id: string
   baseUrl?: string
