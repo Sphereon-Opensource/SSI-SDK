@@ -1,4 +1,4 @@
-import {ExpressCorsConfigurer} from "../../ssi-express-support/src";
+import { ExpressCorsConfigurer } from '../../ssi-express-support/src'
 import { ExpressBuilder } from '../../ssi-express-support/src'
 import { ContactManagerApiServer } from '../src'
 import agent from './agent'
@@ -9,7 +9,7 @@ const builder = ExpressBuilder.fromServerOpts({
 })
   .withMorganLogging({ format: 'dev' })
   .withPassportAuth(false)
-    .withCorsConfigurer(new ExpressCorsConfigurer().allowOrigin('*'))
+  .withCorsConfigurer(new ExpressCorsConfigurer().allowOrigin('*'))
 
 const expressSupport = builder.build({ startListening: true })
 

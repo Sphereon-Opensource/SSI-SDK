@@ -4,7 +4,8 @@ import {
   IOID4VCIClientCreateOfferUriRequest,
   IOID4VCIClientCreateOfferUriRequestArgs,
   IOID4VCIClientCreateOfferUriResponse,
-  IOID4VCIClientGetIssueStatusArgs, IRestClientAuthenticationOpts,
+  IOID4VCIClientGetIssueStatusArgs,
+  IRestClientAuthenticationOpts,
 } from '../types/IOID4VCIRestClient'
 import { IssueStatusResponse } from '@sphereon/oid4vci-common'
 import Debug from 'debug'
@@ -24,7 +25,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
   private readonly agentBaseUrl?: string
   private readonly authOpts?: IRestClientAuthenticationOpts
 
-  constructor(args?: { baseUrl?: string,  authentication?: IRestClientAuthenticationOpts }) {
+  constructor(args?: { baseUrl?: string; authentication?: IRestClientAuthenticationOpts }) {
     if (args?.baseUrl) {
       this.agentBaseUrl = args.baseUrl
     }
