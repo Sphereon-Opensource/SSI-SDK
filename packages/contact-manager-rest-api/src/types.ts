@@ -1,12 +1,8 @@
 import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { IAgentContext, IDataStore, IKeyManager } from '@veramo/core'
+import {IAgentContext, IDataStore, IDIDManager, IKeyManager} from '@veramo/core'
 
-export type ContactManagerMRestApiFeatures =
-  'party_read' |
-  'party_write' |
-  'party_type_read' |
-  'identity_read'
+export type ContactManagerMRestApiFeatures = 'party_read' | 'party_write' | 'party_type_read' | 'identity_read'
 
 export interface IContactManagerAPIEndpointOpts {
   endpointOpts?: {
@@ -20,5 +16,5 @@ export interface IContactManagerAPIEndpointOpts {
   enableFeatures?: ContactManagerMRestApiFeatures[]
 }
 
-export type IRequiredPlugins = IContactManager & IDataStore & IKeyManager
+export type IRequiredPlugins = IContactManager & IDataStore & IKeyManager & IDIDManager
 export type IRequiredContext = IAgentContext<IRequiredPlugins>

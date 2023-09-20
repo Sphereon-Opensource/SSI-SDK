@@ -11,7 +11,7 @@ import {
   partiesTypeReadEndpoint,
   partyWriteEndpoint,
   partyTypeReadEndpoint,
-  identitiesReadEndpoint
+  identitiesReadEndpoint,
 } from './api-functions'
 import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-express-support'
 
@@ -32,12 +32,7 @@ export class ContactManagerApiServer {
     this._express = args.expressSupport.express
     this._router = express.Router()
     const context = agentContext(agent)
-    const features = opts?.enableFeatures ?? [
-      'party_read',
-      'party_write',
-      'party_type_read',
-      'identity_read'
-    ]
+    const features = opts?.enableFeatures ?? ['party_read', 'party_write', 'party_type_read', 'identity_read']
     console.log(`Contact Manager API enabled, with features: ${JSON.stringify(features)}}`)
 
     // endpoints

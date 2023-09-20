@@ -1,6 +1,15 @@
-import { BaseEntity,
+import {
+  BaseEntity,
   BeforeInsert,
-  BeforeUpdate, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, TableInheritance, UpdateDateColumn } from 'typeorm'
+  BeforeUpdate,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  TableInheritance,
+  UpdateDateColumn,
+} from 'typeorm'
 import { PartyEntity } from './PartyEntity'
 
 @Entity('BaseContact')

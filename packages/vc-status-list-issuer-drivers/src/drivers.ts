@@ -10,7 +10,7 @@ import {
 import { StatusList2021EntryCredentialStatus, statusListCredentialToDetails, StatusListDetails } from '@sphereon/ssi-sdk.vc-status-list'
 import { OriginalVerifiableCredential, StatusListCredentialIdMode, StatusListDriverType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
-import {Driver} from "./types";
+import { Driver } from './types'
 
 export interface StatusListManagementOptions {
   id?: string
@@ -41,7 +41,6 @@ export function getOptions(args: { id?: string; correlationId?: string; dbName: 
 export async function getDriver(args: { id?: string; correlationId?: string; dbName: string }): Promise<Driver> {
   return await AgentTypeORMDriver.init(getOptions(args), { dataSources: DataSources.singleInstance() })
 }
-
 
 export class AgentTypeORMDriver implements Driver {
   private _statusListLength: number | undefined

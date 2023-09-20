@@ -280,6 +280,9 @@ importers:
         specifier: ^8.3.2
         version: 8.3.2
     devDependencies:
+      '@decentralized-identity/ion-sdk':
+        specifier: ^0.6.0
+        version: 0.6.0
       '@types/body-parser':
         specifier: ^1.19.2
         version: 1.19.2
@@ -319,6 +322,12 @@ importers:
       '@veramo/data-store':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(sqlite3@5.1.6)(ts-node@10.9.1)
+      '@veramo/did-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-provider-ion':
+        specifier: 4.2.0
+        version: 4.2.0(@sphereon/react-native-argon2@2.0.9)(react-native@0.72.4)
       '@veramo/key-manager':
         specifier: 4.2.0
         version: 4.2.0

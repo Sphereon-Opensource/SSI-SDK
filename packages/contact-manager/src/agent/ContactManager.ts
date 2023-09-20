@@ -184,5 +184,4 @@ export class ContactManager implements IAgentPlugin {
 
     throw new Error('Contact not supported')
   }
-
 }

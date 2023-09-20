@@ -1,11 +1,12 @@
 import {
   IAddStatusListEntryArgs,
-  IGetStatusListEntryByCredentialIdArgs, IGetStatusListEntryByIndexArgs,
+  IGetStatusListEntryByCredentialIdArgs,
+  IGetStatusListEntryByIndexArgs,
   IStatusListEntryEntity,
-  StatusListStore
-} from "@sphereon/ssi-sdk.data-store";
-import {StatusList2021EntryCredentialStatus, StatusListDetails} from "@sphereon/ssi-sdk.vc-status-list";
-import {OriginalVerifiableCredential, StatusListDriverType} from "@sphereon/ssi-types";
+  StatusListStore,
+} from '@sphereon/ssi-sdk.data-store'
+import { StatusList2021EntryCredentialStatus, StatusListDetails } from '@sphereon/ssi-sdk.vc-status-list'
+import { OriginalVerifiableCredential, StatusListDriverType } from '@sphereon/ssi-types'
 import {
   IAgentContext,
   ICredentialIssuer,
@@ -17,7 +18,7 @@ import {
   IKeyManager,
   IResolver,
 } from '@veramo/core'
-import {DriverOptions} from "./drivers";
+import { DriverOptions } from './drivers'
 
 export type IRequiredPlugins = IDataStore &
   IDataStoreORM &
