@@ -283,9 +283,6 @@ importers:
       '@decentralized-identity/ion-sdk':
         specifier: ^0.6.0
         version: 0.6.0
-      '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.14.1-next.3
-        version: 0.14.1-next.3(expo-crypto@12.4.1)(expo@49.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@types/body-parser':
         specifier: ^1.19.2
         version: 1.19.2
@@ -331,9 +328,6 @@ importers:
       '@veramo/did-provider-ion':
         specifier: 4.2.0
         version: 4.2.0(@sphereon/react-native-argon2@2.0.9)(react-native@0.72.4)
-      '@veramo/did-provider-key':
-        specifier: 4.2.0
-        version: 4.2.0
       '@veramo/key-manager':
         specifier: 4.2.0
         version: 4.2.0
