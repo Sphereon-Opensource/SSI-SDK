@@ -19,9 +19,6 @@ import {IonDIDProvider} from "@veramo/did-provider-ion";
 import {IonPublicKeyPurpose} from "@decentralized-identity/ion-sdk";
 
 export const DID_PREFIX = 'did'
-const dbConnection = DataSources.singleInstance()
-    .addConfig(DB_CONNECTION_NAME, sqliteConfig)
-    .getDbConnection(DB_CONNECTION_NAME)
 
 const PRIVATE_RECOVERY_KEY_HEX = 'd39e66e720c00b244923eb861122ed25116555ae771ee9a57b749640173d7cf8'
 const PRIVATE_UPDATE_KEY_HEX = '0121009becfa9caf6221dce6f4f7b55dd3376e79c4ca83ce92bd43861c2393ec'
@@ -43,6 +40,11 @@ export const didProviders = {
         defaultKms: KeyManagementSystemEnum.LOCAL,
     }),
 }
+
+const dbConnection = DataSources.singleInstance()
+    .addConfig(DB_CONNECTION_NAME, sqliteConfig)
+    .getDbConnection(DB_CONNECTION_NAME)
+
 
 const agent = createAgent<IRequiredPlugins>({
     plugins: [
