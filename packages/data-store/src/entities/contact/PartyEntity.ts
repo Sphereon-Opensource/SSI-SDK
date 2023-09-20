@@ -87,24 +87,6 @@ export class PartyEntity extends BaseEntity {
 
   @BeforeInsert()
   @BeforeUpdate()
-  async checkUniqueTenantId(): Promise<undefined> {
-    const result: Array<PartyEntity> = await PartyEntity.find({
-      where: {
-        partyType: {
-          tenantId: this.partyType.tenantId,
-        },
-      },
-    })
-
-    if (result?.length > 0) {
-      return Promise.reject(Error('Tenant id already in use'))
-    }
-
-    return
-  }
-
-  @BeforeInsert()
-  @BeforeUpdate()
   async validate(): Promise<void> {
     const validation: Array<ValidationError> = await validate(this)
     if (validation.length > 0) {
