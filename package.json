@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/sphereon-sdk.workspace",
   "private": true,
-  "version": "0.12.2",
+  "version": "0.15.1",
   "description": "Sphereon SSI SDK (Workspace)",
   "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
   "author": "Sphereon <dev@sphereon.com>",
@@ -111,7 +111,7 @@
       "@veramo/url-handler": "4.2.0",
       "@sphereon/ssi-types": "workspace:*",
       "@sphereon/ssi-sdk.core": "workspace:*",
-      "@sphereon/ssi-sdk-ext.did-provider-key": "0.14.1-next.3",
+      "@sphereon/ssi-sdk-ext.did-provider-key": "0.14.1-next.6",
       "@noble/hashes": "1.2.0",
       "did-jwt": "6.11.6",
       "did-jwt-vc": "3.1.3",

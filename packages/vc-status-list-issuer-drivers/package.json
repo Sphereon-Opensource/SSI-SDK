@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk.vc-status-list-issuer-drivers",
   "description": "Sphereon SSI-SDK plugin for Status List management, like StatusList2021. Issuer drivers module",
-  "version": "0.14.1-next.3",
+  "version": "0.14.1-next.6",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
     "typeorm": "^0.3.12",
     "@digitalcredentials/vc-status-list": "^5.0.2",
     "@veramo/core": "4.2.0",
-    "@sphereon/ssi-sdk-ext.did-utils": "^0.14.1-next.3",
+    "@sphereon/ssi-sdk-ext.did-utils": "^0.14.1-next.6",
     "@sphereon/ssi-types": "workspace:*",
     "debug": "^4.3.4",
     "uint8arrays": "^3.1.1"
