@@ -7,6 +7,8 @@
     { "path": "ssi-types" },
     { "path": "ssi-sdk-core" },
     { "path": "w3c-vc-api" },
+    { "path": "w3c-vc-api-issuer-rest-client" },
+    { "path": "w3c-vc-api-verifier-rest-client" },
     { "path": "uni-resolver-registrar-api" },
     { "path": "ms-authenticator" },
     { "path": "ms-request-api" },
