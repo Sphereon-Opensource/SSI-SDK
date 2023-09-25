@@ -17,6 +17,7 @@
   "dependencies": {
     "@digitalcredentials/ed25519-signature-2020": "~3.0.2",
     "@digitalcredentials/ed25519-verification-key-2020": "3.2.2",
+    "@veramo-community/lds-ecdsa-secp256k1-recovery2020": "uport-project/EcdsaSecp256k1RecoverySignature2020",
     "@digitalcredentials/jsonld": "^5.2.1",
     "@digitalcredentials/jsonld-signatures": "^9.3.1",
     "@digitalcredentials/rdf-canonize": "^1.0.0",

@@ -1,7 +1,8 @@
-import { EcdsaSecp256k1RecoveryMethod2020, EcdsaSecp256k1RecoverySignature2020 } from '@transmute/lds-ecdsa-secp256k1-recovery2020'
 import { CredentialPayload, DIDDocument, IAgentContext, IKey, TKeyType } from '@veramo/core'
 import { asArray, encodeJoseBlob } from '@veramo/utils'
 import * as u8a from 'uint8arrays'
+import ldsEcdsa from '@veramo-community/lds-ecdsa-secp256k1-recovery2020'
+const { EcdsaSecp256k1RecoveryMethod2020, EcdsaSecp256k1RecoverySignature2020 } = ldsEcdsa
 
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 
@@ -30,12 +31,13 @@ export class SphereonEcdsaSecp256k1RecoverySignature2020 extends SphereonLdSigna
           keyRef: key.kid,
           algorithm: 'ES256K-R',
           data: messageBuffer,
+          encoding: 'base64'
         })
         return `${headerString}..${signature}`
       },
     }
 
-    return new EcdsaSecp256k1RecoverySignature2020({
+    const suite = new EcdsaSecp256k1RecoverySignature2020({
       // signer,
       key: new EcdsaSecp256k1RecoveryMethod2020({
         publicKeyHex: key.publicKeyHex,
@@ -45,6 +47,12 @@ export class SphereonEcdsaSecp256k1RecoverySignature2020 extends SphereonLdSigna
         id: verifiableMethodId,
       }),
     })
+
+    suite.ensureSuiteContext = ({ document }: { document: any; addSuiteContext: boolean }) => {
+      document['@context'] = [...asArray(document['@context'] || []), this.getContext()]
+    }
+
+    return suite
   }
 
   getSuiteForVerification(): any {
@@ -61,6 +69,13 @@ export class SphereonEcdsaSecp256k1RecoverySignature2020 extends SphereonLdSigna
   }
 
   preDidResolutionModification(didUrl: string, didDoc: DIDDocument): void {
+    const idx =
+        didDoc['@context']?.indexOf(
+            'https://identity.foundation/EcdsaSecp256k1RecoverySignature2020/lds-ecdsa-secp256k1-recovery2020-0.0.jsonld',
+        ) || -1
+    if (Array.isArray(didDoc['@context']) && idx !== -1) {
+      didDoc['@context'][idx] = this.getContext()
+    }
     // did:ethr
     if (didUrl.toLowerCase().startsWith('did:ethr')) {
       // TODO: EcdsaSecp256k1RecoveryMethod2020 does not support blockchainAccountId
@@ -74,6 +89,6 @@ export class SphereonEcdsaSecp256k1RecoverySignature2020 extends SphereonLdSigna
   }
 
   getContext(): string {
-    return 'https://identity.foundation/EcdsaSecp256k1RecoverySignature2020/lds-ecdsa-secp256k1-recovery2020-0.0.jsonld'
+    return 'https://w3id.org/security/suites/secp256k1recovery-2020/v2'
   }
 }
