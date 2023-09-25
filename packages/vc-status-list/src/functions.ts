@@ -20,7 +20,7 @@ import {
 } from './types'
 
 //fixme: Remove fix-esm when we move to ESM For whatever reason it kept complaining to do a require even when changing module/target in tsconfig
-const sl = require('fix-esm').require('@digitalcredentials/vc-status-list')
+import {StatusList, checkStatus} from '@sphereon/vc-status-list'
 
 export async function fetchStatusListCredential(args: { statusListCredential: string }): Promise<OriginalVerifiableCredential> {
   const url = getAssertedValue('statusListCredential', args.statusListCredential)
@@ -107,7 +107,7 @@ export async function checkStatusForCredential(args: {
     return { verified: true }
   }
 
-  return sl.checkStatus({ ...args, verifyStatusListCredential, verifyMatchingIssuers })
+  return checkStatus({ ...args, verifyStatusListCredential, verifyMatchingIssuers })
 }
 
 export async function simpleCheckStatusFromStatusListUrl(args: {
@@ -150,7 +150,7 @@ export async function checkStatusIndexFromStatusListCredential(args: {
   // @ts-ignore
   const encodedList = getAssertedValue('encodedList', credentialSubject['encodedList'])
 
-  const statusList = await sl.StatusList.decode({ encodedList })
+  const statusList = await StatusList.decode({ encodedList })
   const status = statusList.getStatus(typeof args.statusListIndex === 'number' ? args.statusListIndex : Number.parseInt(args.statusListIndex))
   return status
 }
@@ -164,7 +164,7 @@ export async function createNewStatusList(
   const { issuer, type, id } = getAssertedValues(args)
   const correlationId = getAssertedValue('correlationId', args.correlationId)
 
-  const list = new sl.StatusList({ length })
+  const list = new StatusList({ length })
   const encodedList = await list.encode()
   const statusPurpose = args.statusPurpose ?? 'revocation'
   const statusListCredential = await statusList2021ToVerifiableCredential(
@@ -227,7 +227,7 @@ export async function statusListCredentialToDetails(args: {
     type: StatusListType.StatusList2021,
     proofFormat,
     indexingDirection: 'rightToLeft',
-    length: (await sl.StatusList.decode({ encodedList })).length,
+    length: (await StatusList.decode({ encodedList })).length,
     statusPurpose,
     statusListCredential: credential,
     ...(args.correlationId && { correlationId: args.correlationId }),
@@ -246,7 +246,7 @@ export async function updateStatusListIndexFromEncodedList(
   const value = getAssertedValue('value', args.value)
   const statusPurpose = getAssertedValue('statusPurpose', args.statusPurpose)
 
-  const statusList = await sl.StatusList.decode({ encodedList: origEncodedList })
+  const statusList = await StatusList.decode({ encodedList: origEncodedList })
   statusList.setStatus(index, value)
   const encodedList = await statusList.encode()
   const statusListCredential = await statusList2021ToVerifiableCredential(

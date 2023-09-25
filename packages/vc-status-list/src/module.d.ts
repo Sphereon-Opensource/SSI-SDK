@@ -1,4 +1,4 @@
-declare module '@digitalcredentials/vc-status-list' {
+declare module '@sphereon/vc-status-list' {
   export class StatusList {
     constructor(options?: { length?: number; buffer?: ArrayBuffer })
 
