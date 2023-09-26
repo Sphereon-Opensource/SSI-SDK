@@ -21,6 +21,7 @@ export class CreateContacts1690925872318 implements MigrationInterface {
         return
       }
       case 'sqlite':
+      case 'expo':
       case 'react-native': {
         debug('using sqlite/react-native migration file')
         const mig: CreateContacts1690925872693 = new CreateContacts1690925872693()
@@ -30,7 +31,7 @@ export class CreateContacts1690925872318 implements MigrationInterface {
       }
       default:
         return Promise.reject(
-          "Migrations are currently only supported for sqlite, react-native and postgres. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now"
+          `Migrations are currently only supported for sqlite, react-native, expor and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`
         )
     }
   }
@@ -48,6 +49,7 @@ export class CreateContacts1690925872318 implements MigrationInterface {
         return
       }
       case 'sqlite':
+      case 'expo':
       case 'react-native': {
         debug('using sqlite/react-native migration file')
         const mig: CreateContacts1690925872693 = new CreateContacts1690925872693()
@@ -57,7 +59,7 @@ export class CreateContacts1690925872318 implements MigrationInterface {
       }
       default:
         return Promise.reject(
-          "Migrations are currently only supported for sqlite, react-native and postgres. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now"
+          `Migrations are currently only supported for sqlite, react-native, expor and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`
         )
     }
   }
