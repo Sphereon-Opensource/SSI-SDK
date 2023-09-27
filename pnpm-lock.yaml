@@ -1711,9 +1711,6 @@ importers:
       '@noble/hashes':
         specifier: 1.2.0
         version: 1.2.0
-      '@sphereon/ed25519-signature-2018':
-        specifier: 0.7.0-unstable.6
-        version: 0.7.0-unstable.6(expo-crypto@12.4.1)(expo@49.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/isomorphic-webcrypto':
         specifier: ^2.4.0-unstable.4
         version: 2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -1743,6 +1740,9 @@ importers:
         version: link:../ssi-types
       '@transmute/ed25519-key-pair':
         specifier: 0.7.0-unstable.81
+        version: 0.7.0-unstable.81
+      '@transmute/ed25519-signature-2018':
+        specifier: ^0.7.0-unstable.81
         version: 0.7.0-unstable.81
       '@transmute/jose-ld':
         specifier: 0.7.0-unstable.81
@@ -5041,10 +5041,6 @@ packages:
       pako: 2.1.0
     dev: false
 
-  /@digitalcredentials/credentials-context@1.0.5:
-    resolution: {integrity: sha512-UL4vFxJvR2SV8FkvxnQe0ukcke4+46Up38Yk2SlmvRWIQAKhxgrEkv1Nq+DbTKllOHE75kZF53Ioy0bZNoJhJA==}
-    dev: false
-
   /@digitalcredentials/ed25519-signature-2020@3.0.2:
     resolution: {integrity: sha512-R8IrR21Dh+75CYriQov3nVHKaOVusbxfk9gyi6eCAwLHKn6fllUt+2LQfuUrL7Ts/sGIJqQcev7YvkX9GvyYRA==}
     engines: {node: '>=14'}
@@ -7781,27 +7777,6 @@ packages:
     transitivePeerDependencies:
       - encoding
 
-  /@sphereon/ed25519-signature-2018@0.7.0-unstable.6(expo-crypto@12.4.1)(expo@49.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-HO+W3v50yv0DrCrhCH3MFkHuUk0snM8zf8XFt6ym3xe2Dv/9x1J8xk6VZeYhSygvoUavH5x/Az6NbV4KDMgrXA==}
-    engines: {node: '>=16'}
-    dependencies:
-      '@digitalcredentials/credentials-context': 1.0.5
-      '@digitalcredentials/jsonld': 5.2.1
-      '@sphereon/isomorphic-webcrypto': 2.4.0-unstable.4(expo-crypto@12.4.1)(expo@49.0.9)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@transmute/credentials-context': 0.7.0-unstable.81
-      '@transmute/ed25519-key-pair': 0.7.0-unstable.80
-      '@transmute/jose-ld': 0.7.0-unstable.81
-      '@transmute/security-context': 0.7.0-unstable.81
-      fast-text-encoding: 1.0.6
-    transitivePeerDependencies:
-      - domexception
-      - expo
-      - expo-crypto
-      - msrcrypto
-      - react-native-securerandom
-      - web-streams-polyfill
-    dev: false
-
   /@sphereon/ion-pow@0.2.0(@sphereon/react-native-argon2@2.0.9)(react-native@0.72.4):
     resolution: {integrity: sha512-SpEG4mV5D+K/jrqGI9QSBPPKO5+Kpu6F3cINBKbWiz+ZI4boWwz9JAdNspD45YnnMqTbR14CDEGtHwOaHboJQg==}
     peerDependencies:
@@ -8607,15 +8582,6 @@ packages:
       '@stablelib/ed25519': 1.0.3
       '@transmute/ld-key-pair': 0.7.0-unstable.81
       '@transmute/x25519-key-pair': 0.7.0-unstable.81
-
-  /@transmute/ed25519-key-pair@0.7.0-unstable.80:
-    resolution: {integrity: sha512-Rl9mdLkUrn299hUEeVlcx4JYg5S0zdK8M4GhuLGpcQozkqPApbDuuotzyNIp4ok3tDwyM0v62H1gZRxWEYcvMg==}
-    engines: {node: '>=16'}
-    dependencies:
-      '@stablelib/ed25519': 1.0.3
-      '@transmute/ld-key-pair': 0.7.0-unstable.81
-      '@transmute/x25519-key-pair': 0.7.0-unstable.81
-    dev: false
 
   /@transmute/ed25519-key-pair@0.7.0-unstable.81:
     resolution: {integrity: sha512-Jz3PhNe/2pMxfz5/6q7MizaWLSMUEzgI2Lc1UFEMIW59TjTkgbE9LZ5e+QK+fh59KWwYpUG4AFk6VGHBZgUCDA==}
