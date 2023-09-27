@@ -118,7 +118,7 @@
       "ethr-did": "2.3.9",
       "typeorm": "0.3.17",
       "@mattrglobal/jsonld-signatures-bbs@1.1.0>jsonld": "4.0.1",
-      "jsonld": "link:./node_modules/.pnpm/@digitalcredentials+jsonld@5.2.1/node_modules/@digitalcredentials/jsonld",
+      "jsonld": "link:./node_modules/.pnpm/@digitalcredentials+jsonld@6.0.0/node_modules/@digitalcredentials/jsonld",
       "isomorphic-webcrypto": "link:./node_modules/@sphereon/isomorphic-webcrypto"
     },
     "patchedDependencies": {

@@ -124,6 +124,7 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
           issuer: didKeyIdentifier.did,
           name: 'Permanent Resident Card',
           proof: {
+            // '@context': expect.any(String),
             created: expect.any(String),
             proofPurpose: 'assertionMethod',
             proofValue: expect.any(String),

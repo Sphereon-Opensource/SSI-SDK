@@ -56,7 +56,7 @@ export class LdDocumentLoader {
       if (!url || url.trim().length === 0) {
         throw Error('URL needs to be provided to load a context!')
       }
-      const origUrl = url
+
       if (url.startsWith('#') && verifiableData.issuer !== undefined) {
         url = (typeof verifiableData.issuer === 'string' ? verifiableData.issuer : verifiableData.issuer.id) + url
         debug(url)
@@ -69,7 +69,7 @@ export class LdDocumentLoader {
           uniresolverResolution: this.uniresolverResolution,
         }).resolve(url)
         // context.agent.resolveDid({didUrl: url})
-        let didDoc: DIDDocument | null = resolutionResult.didDocument
+        const didDoc: DIDDocument | null = resolutionResult.didDocument
         if (!didDoc) {
           throw new Error(`Could not fetch DID document with url: ${url}. Did you enable the the driver?`)
         }
@@ -90,7 +90,8 @@ export class LdDocumentLoader {
           delete didDoc.publicKey
         }
 
-        if (url.indexOf('#') > 0 && didDoc['@context']) {
+        // const origUrl = url
+        /*if (url.indexOf('#') > 0 && didDoc && typeof didDoc === 'object' && '@context' in didDoc!) {
           if (origUrl !== url) {
             // Make sure we replace the result URLs with the original URLs, so framing keeps working
             didDoc = JSON.parse(JSON.stringify(didDoc).replace(url, origUrl)) as DIDDocument
@@ -109,7 +110,7 @@ export class LdDocumentLoader {
             // We have to provide a context
             const contexts = this.ldSuiteLoader
               .getAllSignatureSuites()
-              .filter((x) => x.getSupportedVerificationType() === component.type /* || component.type === 'Ed25519VerificationKey2018'*/)
+              .filter((x) => x.getSupportedVerificationType() === component.type /!* || component.type === 'Ed25519VerificationKey2018'*!/)
               .filter((value, index, self) => self.indexOf(value) === index)
               .map((value) => value.getContext())
             const fragment = { ...component, '@context': contexts }
@@ -121,7 +122,7 @@ export class LdDocumentLoader {
             }
           }
         }
-
+*/
         return {
           contextUrl: null,
           documentUrl: url,

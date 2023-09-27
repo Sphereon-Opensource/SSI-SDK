@@ -177,7 +177,7 @@ describe('credential-LD full flow', () => {
             valid: true,
           },
           verificationMethod: {
-            '@context': ['https://w3id.org/security/suites/ed25519-2018/v1'],
+            '@context': ['https://www.w3.org/ns/did/v1', 'https://w3id.org/security/suites/ed25519-2018/v1'],
             type: 'Ed25519VerificationKey2018',
           },
           verified: true,
@@ -257,7 +257,7 @@ describe('credential-LD full flow', () => {
                 valid: true,
               },
               verificationMethod: {
-                '@context': ['https://w3id.org/security/suites/ed25519-2018/v1'],
+                '@context': ['https://www.w3.org/ns/did/v1', 'https://w3id.org/security/suites/ed25519-2018/v1'],
                 type: 'Ed25519VerificationKey2018',
               },
               verified: true,
@@ -281,7 +281,7 @@ describe('credential-LD full flow', () => {
               valid: true,
             },
             verificationMethod: {
-              '@context': ['https://w3id.org/security/suites/ed25519-2018/v1'],
+              "@context": "https://www.w3.org/ns/did/v1",
               type: 'Ed25519VerificationKey2018',
             },
             verified: true,
@@ -418,7 +418,7 @@ describe('credential-LD full flow', () => {
             valid: true,
           },
           verificationMethod: {
-            '@context': ['https://w3id.org/security/suites/ed25519-2018/v1'],
+            '@context': ['https://www.w3.org/ns/did/v1'],
             type: 'Ed25519VerificationKey2018',
           },
           verified: true,

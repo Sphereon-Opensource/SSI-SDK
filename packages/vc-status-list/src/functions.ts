@@ -19,7 +19,6 @@ import {
   UpdateStatusListFromStatusListCredentialArgs,
 } from './types'
 
-//fixme: Remove fix-esm when we move to ESM For whatever reason it kept complaining to do a require even when changing module/target in tsconfig
 import {StatusList, checkStatus} from '@sphereon/vc-status-list'
 
 export async function fetchStatusListCredential(args: { statusListCredential: string }): Promise<OriginalVerifiableCredential> {

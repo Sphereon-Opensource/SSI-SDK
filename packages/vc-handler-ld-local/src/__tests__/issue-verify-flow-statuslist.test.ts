@@ -26,7 +26,7 @@ const customContext = new Map<string, ContextDoc>([
   ['https://sphereon-opensource.github.io/vc-contexts/myc/bedrijfsinformatie-v1.jsonld', bedrijfsInformatieV1],
 ])
 
-describe.skip('credential-LD full flow', () => {
+describe('credential-LD full flow', () => {
   let didKeyIdentifier: IIdentifier
   let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialPlugin & ICredentialIssuer & ICredentialHandlerLDLocal>
 
