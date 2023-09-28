@@ -5,15 +5,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [0.16.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.15.1...v0.16.0) (2023-09-28)
 
-
 ### Features
 
-* Add auth support to VCI REST client ([c541b23](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/c541b2347f4d602e5a017116e5d0155e8d6290dd))
-* Add support for an OIDC BFF Passport based solution to express. Allows for SPA to work IDPs that require confidential clients ([d4e082c](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/d4e082c76693b2449a0bf101db99e974fe4a796f))
-
-
-
-
+- Add auth support to VCI REST client ([c541b23](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/c541b2347f4d602e5a017116e5d0155e8d6290dd))
+- Add support for an OIDC BFF Passport based solution to express. Allows for SPA to work IDPs that require confidential clients ([d4e082c](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/d4e082c76693b2449a0bf101db99e974fe4a796f))
 
 ## [0.15.1](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.15.0...v0.15.1) (2023-08-10)
 
