@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.16.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.15.1...v0.16.0) (2023-09-28)
+
+
+### Features
+
+* statuslist2021 support ([46986dd](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/46986dd9eae27aaa6a980eac55a8d5e1d5c85a57))
+
+
+
+
+
 # [0.14.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.13.0...v0.14.0) (2023-08-09)
 
 ### Bug Fixes

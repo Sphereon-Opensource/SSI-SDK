@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.w3c-vc-api",
-  "version": "0.15.1",
+  "version": "0.16.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -31,7 +31,6 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@types/uuid": "^9.0.1",
     "@sphereon/did-uni-client": "^0.6.0",
     "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.14.1",
     "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.14.1",
@@ -49,6 +48,7 @@
     "@types/node": "^18.15.0",
     "@types/passport": "^1.0.12",
     "@types/passport-azure-ad": "^4.3.1",
+    "@types/uuid": "^9.0.1",
     "@veramo/data-store": "4.2.0",
     "@veramo/did-manager": "4.2.0",
     "@veramo/did-provider-ethr": "4.2.0",

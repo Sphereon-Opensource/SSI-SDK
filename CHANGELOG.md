@@ -3,6 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.16.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.15.1...v0.16.0) (2023-09-28)
+
+
+### Bug Fixes
+
+* Create a issuer.id in a uniform credential in case the issuer is already an object and there is an iss claim in the JWT ([706baff](https://github.com/Sphereon-Opensource/SSI-SDK/commit/706baffee81c1a6993bf1573a083696c45cb3ab9))
+* Ed25519 2018 handling for verification ([b858710](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b858710167a34a6a1c968f459cfae207b0d5a226))
+* Ed25519 2018 handling for verification ([14125e5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/14125e58070e89b0c1a95769f24af79c0c1e1df5))
+* Fix multibase/codec code ([4354927](https://github.com/Sphereon-Opensource/SSI-SDK/commit/43549278bb1a2f10f8eb4fab03abcd78c234bda2))
+* fixed partyId property in rest api ([51861fd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/51861fd35110b57975c4d897893a65f670e50430))
+* Internally alg needs uppercase ([0388f11](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0388f117d6cf1d753cf0eff10a3ab6a98f10faa0))
+* Make sure we do not throw an error when the IDP does not have an end_session_url ([781e250](https://github.com/Sphereon-Opensource/SSI-SDK/commit/781e2500a3296fb74f3c774b8e2862cbca9abdb0))
+* Secp256k recovery 2020 fix ([196ad4c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/196ad4c158cc5c51400c17ed52f521b3deeb52e8))
+* Secp256k recovery 2020 fix ([8be1da2](https://github.com/Sphereon-Opensource/SSI-SDK/commit/8be1da2a13572ec3dace13d87f9206d357f34266))
+
+
+### Features
+
+* Add auth support to VCI REST client ([c541b23](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c541b2347f4d602e5a017116e5d0155e8d6290dd))
+* Add initial versions of VC API clients back ([f6465cf](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f6465cf91e32e29349e91e203a2354cb229052ad))
+* Add static header support to siop rest client ([e9fb5ee](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e9fb5ee97e9f466b87a7a0424392571cff9fd56c))
+* Add support for an OIDC BFF Passport based solution to express. Allows for SPA to work IDPs that require confidential clients ([d4e082c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d4e082c76693b2449a0bf101db99e974fe4a796f))
+* Add web3 signer/wallet support directly using KMS, so you can use keys managed by the KMS in web3, without ever having to expose private keys ([e3d3df7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e3d3df746efd076a93d8452c79360840026f58b5))
+* added contact test data ([daeb87d](https://github.com/Sphereon-Opensource/SSI-SDK/commit/daeb87d5a5f3f955b096be44e098d053f78a885b))
+* Allow VCI issuer to also supply the issuer DID when the credential issuer is an object without an id ([7c72d31](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7c72d31e05b90d0064dcff5ab25c985636438ec8))
+* statuslist2021 functions ([61729f3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/61729f3c2808a96339ee64a82ff8cce12b1ecef2))
+* statuslist2021 support ([2649b95](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2649b95dc5fe5882d6b43ccfdcf085e37918e713))
+* statuslist2021 support ([46986dd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/46986dd9eae27aaa6a980eac55a8d5e1d5c85a57))
+* web3 headless provider and wallet ([00fc40a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/00fc40a6fd2ade1cab03d750a1c012ca8cb6d05a))
+* web3 headless provider and wallet ([c69cf9e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c69cf9e65de30180e2898ed2289c572fe228eb20))
+* web3 headless provider and wallet ([62dc7df](https://github.com/Sphereon-Opensource/SSI-SDK/commit/62dc7dfb43b0461707d4ef2afc6f21406e57ae5e))
+
+
+
+
+
 ## [0.15.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.15.0...v0.15.1) (2023-08-10)
 
 

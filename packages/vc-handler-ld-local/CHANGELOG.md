@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.16.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.15.1...v0.16.0) (2023-09-28)
+
+
+### Bug Fixes
+
+* Ed25519 2018 handling for verification ([b858710](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b858710167a34a6a1c968f459cfae207b0d5a226))
+* Ed25519 2018 handling for verification ([14125e5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/14125e58070e89b0c1a95769f24af79c0c1e1df5))
+* Fix multibase/codec code ([4354927](https://github.com/Sphereon-Opensource/SSI-SDK/commit/43549278bb1a2f10f8eb4fab03abcd78c234bda2))
+* Internally alg needs uppercase ([0388f11](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0388f117d6cf1d753cf0eff10a3ab6a98f10faa0))
+* Secp256k recovery 2020 fix ([196ad4c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/196ad4c158cc5c51400c17ed52f521b3deeb52e8))
+* Secp256k recovery 2020 fix ([8be1da2](https://github.com/Sphereon-Opensource/SSI-SDK/commit/8be1da2a13572ec3dace13d87f9206d357f34266))
+
+
+### Features
+
+* Add support for an OIDC BFF Passport based solution to express. Allows for SPA to work IDPs that require confidential clients ([d4e082c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d4e082c76693b2449a0bf101db99e974fe4a796f))
+* statuslist2021 functions ([61729f3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/61729f3c2808a96339ee64a82ff8cce12b1ecef2))
+* statuslist2021 support ([2649b95](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2649b95dc5fe5882d6b43ccfdcf085e37918e713))
+* statuslist2021 support ([46986dd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/46986dd9eae27aaa6a980eac55a8d5e1d5c85a57))
+
+
+
+
+
 ## [0.15.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.15.0...v0.15.1) (2023-08-10)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local

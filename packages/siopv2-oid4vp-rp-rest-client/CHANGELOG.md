@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.16.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.15.1...v0.16.0) (2023-09-28)
+
+
+### Features
+
+* Add static header support to siop rest client ([e9fb5ee](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/e9fb5ee97e9f466b87a7a0424392571cff9fd56c))
+* Add support for an OIDC BFF Passport based solution to express. Allows for SPA to work IDPs that require confidential clients ([d4e082c](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/d4e082c76693b2449a0bf101db99e974fe4a796f))
+
+
+
+
+
 ## [0.15.1](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.15.0...v0.15.1) (2023-08-10)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-client

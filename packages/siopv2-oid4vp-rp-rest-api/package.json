@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api",
-  "version": "0.15.1",
+  "version": "0.16.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -33,7 +33,6 @@
   "devDependencies": {
     "@decentralized-identity/ion-sdk": "^0.6.0",
     "@sphereon/did-uni-client": "^0.6.0",
-    "@types/uuid": "^9.0.4",
     "@sphereon/pex": "2.1.2",
     "@sphereon/pex-models": "^2.0.3",
     "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.14.1",
@@ -50,6 +49,7 @@
     "@types/node": "^18.15.0",
     "@types/passport": "^1.0.12",
     "@types/passport-http-bearer": "^1.0.37",
+    "@types/uuid": "^9.0.4",
     "@veramo/data-store": "4.2.0",
     "@veramo/did-manager": "4.2.0",
     "@veramo/did-provider-ethr": "4.2.0",

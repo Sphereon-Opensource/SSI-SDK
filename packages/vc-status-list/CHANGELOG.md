@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.16.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.15.1...v0.16.0) (2023-09-28)
+
+
+### Bug Fixes
+
+* Ed25519 2018 handling for verification ([b858710](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/b858710167a34a6a1c968f459cfae207b0d5a226))
+* Fix multibase/codec code ([4354927](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/43549278bb1a2f10f8eb4fab03abcd78c234bda2))
+
+
+### Features
+
+* statuslist2021 functions ([61729f3](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/61729f3c2808a96339ee64a82ff8cce12b1ecef2))
+* statuslist2021 support ([46986dd](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/46986dd9eae27aaa6a980eac55a8d5e1d5c85a57))
+
+
+
+
+
 # [0.14.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.13.0...v0.14.0) (2023-08-09)
 
 ### Bug Fixes

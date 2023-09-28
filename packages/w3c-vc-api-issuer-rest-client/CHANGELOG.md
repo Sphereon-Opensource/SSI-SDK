@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.16.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.15.1...v0.16.0) (2023-09-28)
+
+
+### Features
+
+* Add initial versions of VC API clients back ([f6465cf](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f6465cf91e32e29349e91e203a2354cb229052ad))
+
+
+
+
+
 # [0.9.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.8.0...v0.9.0) (2023-03-09)
 
 ### Features

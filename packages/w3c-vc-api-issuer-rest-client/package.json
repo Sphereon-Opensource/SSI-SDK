@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.w3c-vc-api-issuer-rest-client",
-  "version": "0.9.0",
+  "version": "0.16.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,15 +15,15 @@
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk.dev": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
+    "@sphereon/ssi-sdk.dev": "workspace:*",
     "@veramo/core": "4.2.0",
     "cross-fetch": "^3.1.8"
   },
   "devDependencies": {
+    "@veramo/cli": "4.2.0",
     "@veramo/remote-client": "4.2.0",
-    "@veramo/remote-server": "4.2.0",
-    "@veramo/cli": "4.2.0"
+    "@veramo/remote-server": "4.2.0"
   },
   "files": [
     "dist/**/*",
