@@ -135,6 +135,7 @@ export interface StatusListCheck {
   mandatoryCredentialStatus: boolean
   verifyStatusListCredential: boolean
   verifyMatchingIssuers: boolean
+  errorUnknownListType?: boolean
 }
 
 /**

@@ -46,12 +46,14 @@ export function statusPluginStatusFunction(args: {
   mandatoryCredentialStatus?: boolean
   verifyStatusListCredential?: boolean
   verifyMatchingIssuers?: boolean
+  errorUnknownListType?: boolean
 }): StatusMethod {
   return async (credential: CredentialJwtOrJSON, didDoc: DIDDocument): Promise<CredentialStatus> => {
     const result = await checkStatusForCredential({
       ...args,
       documentLoader: args.documentLoader,
       credential: credential as OriginalVerifiableCredential,
+      errorUnknownListType: args.errorUnknownListType,
     })
 
     return {
@@ -69,8 +71,9 @@ export function vcLibCheckStatusFunction(args: {
   mandatoryCredentialStatus?: boolean
   verifyStatusListCredential?: boolean
   verifyMatchingIssuers?: boolean
+  errorUnknownListType?: boolean
 }) {
-  const { mandatoryCredentialStatus, verifyStatusListCredential, verifyMatchingIssuers } = args
+  const { mandatoryCredentialStatus, verifyStatusListCredential, verifyMatchingIssuers, errorUnknownListType } = args
   return (args: {
     credential: OriginalVerifiableCredential
     documentLoader: any
@@ -84,6 +87,7 @@ export function vcLibCheckStatusFunction(args: {
       mandatoryCredentialStatus,
       verifyStatusListCredential,
       verifyMatchingIssuers,
+      errorUnknownListType,
     })
   }
 }
@@ -95,18 +99,31 @@ export async function checkStatusForCredential(args: {
   mandatoryCredentialStatus?: boolean
   verifyStatusListCredential?: boolean
   verifyMatchingIssuers?: boolean
+  errorUnknownListType?: boolean
 }): Promise<{ verified: boolean; error?: any }> {
   const verifyStatusListCredential = args.verifyStatusListCredential ?? true
   const verifyMatchingIssuers = args.verifyMatchingIssuers ?? true
   const uniform = CredentialMapper.toUniformCredential(args.credential)
   if (!('credentialStatus' in uniform) || !uniform.credentialStatus) {
     if (args.mandatoryCredentialStatus) {
-      throw Error('No credential status object found in the Verifiable Credential and it is mandatory')
+      const error = 'No credential status object found in the Verifiable Credential and it is mandatory'
+      console.log(error)
+      return { verified: false, error }
     }
     return { verified: true }
   }
-
-  return checkStatus({ ...args, verifyStatusListCredential, verifyMatchingIssuers })
+  if ('credentialStatus' in uniform && uniform.credentialStatus) {
+    if (uniform.credentialStatus.type === 'StatusList2021Entry') {
+      return checkStatus({ ...args, verifyStatusListCredential, verifyMatchingIssuers })
+    } else if (args?.errorUnknownListType) {
+      const error = `Credential status type ${uniform.credentialStatus.type} is not supported, and check status has been configured to not allow for that`
+      console.log(error)
+      return { verified: false, error }
+    } else {
+      console.log(`Skipped verification of status type ${uniform.credentialStatus.type} as we do not support it (yet)`)
+    }
+  }
+  return { verified: true }
 }
 
 export async function simpleCheckStatusFromStatusListUrl(args: {

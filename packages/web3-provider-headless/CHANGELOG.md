@@ -5,17 +5,12 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [0.16.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.15.1...v0.16.0) (2023-09-28)
 
-
 ### Features
 
-* statuslist2021 functions ([61729f3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/61729f3c2808a96339ee64a82ff8cce12b1ecef2))
-* web3 headless provider and wallet ([00fc40a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/00fc40a6fd2ade1cab03d750a1c012ca8cb6d05a))
-* web3 headless provider and wallet ([c69cf9e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c69cf9e65de30180e2898ed2289c572fe228eb20))
-* web3 headless provider and wallet ([62dc7df](https://github.com/Sphereon-Opensource/SSI-SDK/commit/62dc7dfb43b0461707d4ef2afc6f21406e57ae5e))
-
-
-
-
+- statuslist2021 functions ([61729f3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/61729f3c2808a96339ee64a82ff8cce12b1ecef2))
+- web3 headless provider and wallet ([00fc40a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/00fc40a6fd2ade1cab03d750a1c012ca8cb6d05a))
+- web3 headless provider and wallet ([c69cf9e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c69cf9e65de30180e2898ed2289c572fe228eb20))
+- web3 headless provider and wallet ([62dc7df](https://github.com/Sphereon-Opensource/SSI-SDK/commit/62dc7dfb43b0461707d4ef2afc6f21406e57ae5e))
 
 ## [0.14.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.14.0...v0.14.1) (2023-07-31)
 
