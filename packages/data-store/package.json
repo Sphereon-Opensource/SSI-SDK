@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.data-store",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
