@@ -2,6 +2,7 @@ import express, { NextFunction, RequestHandler } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import passport from 'passport'
 import { ParsedQs } from 'qs'
+import { sendErrorResponse } from './express-utils'
 import { EndpointArgs, hasEndpointOpts, HasEndpointOpts } from './types'
 
 export const checkUserIsInRole = (opts: { roles: string | string[] }) => (req: express.Request, res: express.Response, next: NextFunction) => {
@@ -23,6 +24,39 @@ export const checkUserIsInRole = (opts: { roles: string | string[] }) => (req: e
 }
 
 const checkAuthenticationImpl = (req: express.Request, res: express.Response, next: express.NextFunction, opts?: EndpointArgs) => {
+  const defaultCallback = (
+    err: any,
+    user?: Express.User | false | null,
+    _info?: object | string | Array<string | undefined>,
+    _status?: number | Array<number | undefined>
+  ) => {
+    if (err) {
+      const message = 'message' in err ? err.message : err
+      console.log('Authentication failed, error: ' + JSON.stringify(message))
+      return next({ statusCode: 403, message })
+    } else if (!user) {
+      console.log('Authentication failed, no user object present in request. Redirecting to /login')
+      // todo: configuration option
+      return res.redirect('/authentication/login')
+    }
+    if (options.session) {
+      req.logIn(user, function (err) {
+        if (err) {
+          return next(err)
+        }
+      })
+    }
+    /*       /!*if (options.session) {
+               req.logIn(user, function (err) {
+                   if (err) {
+                       return next(err)
+                   }
+                   return res.redirect('/')
+               })
+           }*!/*/
+    return next()
+  }
+
   if (!opts || !opts.authentication || opts.authentication.enabled === false) {
     return next()
   }
@@ -30,44 +64,23 @@ const checkAuthenticationImpl = (req: express.Request, res: express.Response, ne
     console.log(`Authentication enabled, but no strategy configured. All auth request will be denied!`)
     return res.status(401).end()
   }
-  const options = { authInfo: true, session: false }
-  passport
-    .authenticate(
-      opts.authentication.strategy,
-      options,
-      (
-        err: any,
-        user?: Express.User | false | null,
-        _info?: object | string | Array<string | undefined>,
-        _status?: number | Array<number | undefined>
-      ) => {
-        if (err) {
-          return next({ statusCode: 403, message: err })
-        } else if (!user) {
-          console.log('Authentication failed, no user object present in request')
-          return next({ statusCode: 401, message: 'authentication failed' })
-        }
-        if (options.session) {
-          req.logIn(user, function (err) {
-            if (err) {
-              return next(err)
-            }
-            return res.send(user)
-          })
-        }
-        return next()
-      }
-    )
-    .call(this, req, res, next)
-  // next()
+  const options = {
+    ...opts?.authentication?.strategyOptions,
+    authInfo: opts?.authentication?.authInfo !== false,
+    session: opts?.authentication?.session !== false,
+  }
+
+  const callback = opts?.authentication?.callback ?? (opts?.authentication?.useDefaultCallback ? defaultCallback : undefined)
+
+  passport.authenticate(opts.authentication.strategy, options, callback).call(this, req, res, next)
 }
 const checkAuthorizationImpl = (req: express.Request, res: express.Response, next: express.NextFunction, opts?: EndpointArgs) => {
   if (!opts || !opts.authentication || !opts.authorization || opts.authentication.enabled === false || opts?.authorization.enabled === false) {
     return next()
   }
   /*if (!req.isAuthenticated()) {
-        return sendErrorResponse(res, 403, 'Authorization with an unauthenticated request is not possible')
-    }*/
+          return sendErrorResponse(res, 403, 'Authorization with an unauthenticated request is not possible')
+      }*/
   const authorization = opts.authorization
 
   if (!authorization.enforcer && (!authorization.requireUserInRoles || authorization.requireUserInRoles.length === 0)) {
@@ -97,6 +110,21 @@ export const checkAuthorizationOnly = (opts?: EndpointArgs) => (req: express.Req
   // executeRequestHandlers(req, res, next, opts)
   return checkAuthorizationImpl(req, res, next, opts)
 }
+
+export const isUserNotAuthenticated = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (!req.user) {
+    next()
+  }
+}
+
+export const isUserAuthenticated = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (!req.user) {
+    return sendErrorResponse(res, 401, 'Authentication required')
+  } else {
+    return next()
+  }
+}
+
 export const checkAuth = (opts?: EndpointArgs): RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>[] => {
   const handlers: RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>[] = []
   handlers.push(checkAuthenticationOnly(opts))

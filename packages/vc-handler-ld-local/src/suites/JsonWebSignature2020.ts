@@ -36,7 +36,7 @@ export class SphereonJsonWebSignature2020 extends SphereonLdSignature {
     if (key.type === 'Ed25519' || key.type === 'X25519') {
       alg = 'EdDSA'
     } else if (key.type === 'Secp256k1') {
-      alg = 'ES256k'
+      alg = 'ES256K'
     } else if (key.type === 'Secp256r1') {
       alg = 'ES256'
     } else if (key.type === 'Bls12381G1') {

@@ -14,6 +14,16 @@ constants:
     - cmAddIdentity
     - cmUpdateIdentity
     - cmRemoveIdentity
+    - cmGetRelationship
+    - cmGetRelationships
+    - cmUpdateRelationship
+    - cmAddRelationship
+    - cmRemoveRelationship
+    - cmGetContactType
+    - cmGetContactTypes
+    - cmAddContactType
+    - cmUpdateContactType
+    - cmRemoveContactType
 
 dbConnection:
   $require: typeorm?t=function#createConnection

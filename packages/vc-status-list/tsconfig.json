@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "declarationDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../ssi-types"
+    }
+  ],
+  "extends": "../tsconfig-base.json"
+}

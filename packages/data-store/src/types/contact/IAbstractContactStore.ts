@@ -1,52 +1,109 @@
-import { FindOptionsWhere } from 'typeorm'
-import { ContactEntity } from '../../entities/contact/ContactEntity'
-import { IdentityEntity } from '../../entities/contact/IdentityEntity'
-import { IBasicIdentity, IContact, IIdentity } from './contact'
+import {
+  NonPersistedPartyType,
+  NonPersistedContact,
+  NonPersistedIdentity,
+  Party,
+  Identity,
+  PartialParty,
+  PartialIdentity,
+  PartyTypeEnum,
+  PartyType,
+  PartyRelationship,
+  PartialPartyRelationship,
+  PartialPartyType,
+  NonPersistedElectronicAddress,
+} from './contact'
 
-// TODO WAL-625 refactor types to use interfaces and not the entities as the store should be replaceable
-export type FindContactArgs = FindOptionsWhere<ContactEntity>[]
-export type FindIdentityArgs = FindOptionsWhere<IdentityEntity>[]
+export type FindPartyArgs = Array<PartialParty>
+export type FindIdentityArgs = Array<PartialIdentity>
+export type FindPartyTypeArgs = Array<PartialPartyType>
+export type FindRelationshipArgs = Array<PartialPartyRelationship>
 
-export interface IGetContactArgs {
-  contactId: string
+export type GetPartyArgs = {
+  partyId: string
 }
 
-export interface IGetContactsArgs {
-  filter?: FindContactArgs
+export type GetPartiesArgs = {
+  filter?: FindPartyArgs
 }
 
-export interface IAddContactArgs {
-  name: string
-  alias: string
+export type AddPartyArgs = {
   uri?: string
-  identities?: Array<IBasicIdentity>
+  partyType: NonPersistedPartyType
+  contact: NonPersistedContact
+  identities?: Array<NonPersistedIdentity>
+  electronicAddresses?: Array<NonPersistedElectronicAddress>
 }
 
-export interface IUpdateContactArgs {
-  contact: Omit<IContact, 'identities' | 'createdAt' | 'lastUpdatedAt'>
+export type UpdatePartyArgs = {
+  party: Omit<Party, 'identities' | 'electronicAddresses' | 'partyType' | 'createdAt' | 'lastUpdatedAt'>
 }
 
-export interface IRemoveContactArgs {
-  contactId: string
+export type RemovePartyArgs = {
+  partyId: string
 }
 
-export interface IGetIdentityArgs {
+export type GetIdentityArgs = {
   identityId: string
 }
 
-export interface IGetIdentitiesArgs {
+export type GetIdentitiesArgs = {
   filter?: FindIdentityArgs
 }
 
-export interface IAddIdentityArgs {
-  contactId: string
-  identity: IBasicIdentity
+export type AddIdentityArgs = {
+  partyId: string
+  identity: NonPersistedIdentity
 }
 
-export interface IUpdateIdentityArgs {
-  identity: IIdentity
+export type UpdateIdentityArgs = {
+  identity: Identity
 }
 
-export interface IRemoveIdentityArgs {
+export type RemoveIdentityArgs = {
   identityId: string
+}
+
+export type RemoveRelationshipArgs = {
+  relationshipId: string
+}
+
+export type AddRelationshipArgs = {
+  leftId: string
+  rightId: string
+}
+
+export type GetRelationshipArgs = {
+  relationshipId: string
+}
+
+export type GetRelationshipsArgs = {
+  filter: FindRelationshipArgs
+}
+
+export type UpdateRelationshipArgs = {
+  relationship: Omit<PartyRelationship, 'createdAt' | 'lastUpdatedAt'>
+}
+
+export type AddPartyTypeArgs = {
+  type: PartyTypeEnum
+  name: string
+  tenantId: string
+  description?: string
+}
+
+export type GetPartyTypeArgs = {
+  partyTypeId: string
+}
+
+export type GetPartyTypesArgs = {
+  filter?: FindPartyTypeArgs
+}
+
+export type UpdatePartyTypeArgs = {
+  partyType: Omit<PartyType, 'createdAt' | 'lastUpdatedAt'>
+}
+
+export type RemovePartyTypeArgs = {
+  partyTypeId: string
 }

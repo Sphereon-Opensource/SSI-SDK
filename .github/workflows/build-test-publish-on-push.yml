@@ -73,7 +73,8 @@ jobs:
 
       #          npm whoami
 
-      - run: git diff -u
+      - name: show diff to track issues with lock file
+        run: git diff -u
 
       - name: publish @latest when on main
         if: github.ref == 'refs/heads/main'

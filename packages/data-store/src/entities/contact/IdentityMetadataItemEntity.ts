@@ -1,7 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, BeforeInsert, BeforeUpdate } from 'typeorm'
-import { BasicMetadataItem } from '../../types'
+import { ValidationConstraint } from '../../types'
 import { IdentityEntity } from './IdentityEntity'
 import { IsNotEmpty, validate, ValidationError } from 'class-validator'
+import { getConstraint } from '../../utils/ValidatorUtils'
 
 @Entity('IdentityMetadata')
 export class IdentityMetadataItemEntity extends BaseEntity {
@@ -21,19 +22,14 @@ export class IdentityMetadataItemEntity extends BaseEntity {
 
   @BeforeInsert()
   @BeforeUpdate()
-  async validate() {
+  async validate(): Promise<void> {
     const validation: Array<ValidationError> = await validate(this)
     if (validation.length > 0) {
-      return Promise.reject(Error(Object.values(validation[0].constraints!)[0]))
+      const constraint: ValidationConstraint | undefined = getConstraint(validation[0])
+      if (constraint) {
+        const message: string = Object.values(constraint!)[0]
+        return Promise.reject(Error(message))
+      }
     }
-    return
   }
-}
-
-export const metadataItemEntityFrom = (item: BasicMetadataItem): IdentityMetadataItemEntity => {
-  const metadataItem = new IdentityMetadataItemEntity()
-  metadataItem.label = item.label
-  metadataItem.value = item.value
-
-  return metadataItem
 }

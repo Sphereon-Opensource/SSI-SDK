@@ -22,7 +22,7 @@ export class OID4VCIRestAPI {
     issuerInstanceArgs: IIssuerInstanceArgs
     credentialDataSupplier?: CredentialDataSupplier
     expressSupport: ExpressSupport
-    opts: IOID4VCIRestAPIOpts
+    opts?: IOID4VCIRestAPIOpts
   }): Promise<OID4VCIRestAPI> {
     const { issuerInstanceArgs, context } = args
     const opts = args.opts ?? {}
@@ -30,20 +30,28 @@ export class OID4VCIRestAPI {
     const instance = await context.agent.oid4vciGetInstance(args.issuerInstanceArgs)
     const issuer = await instance.get({ context, credentialDataSupplier: args.credentialDataSupplier })
 
-    if (!opts.tokenEndpointOpts) {
-      opts.tokenEndpointOpts = { accessTokenIssuer: instance.metadataOptions.credentialIssuer ?? issuer.issuerMetadata.credential_issuer }
+    if (!opts.endpointOpts) {
+      opts.endpointOpts = {}
     }
-    if (opts?.tokenEndpointOpts?.tokenEndpointDisabled !== true && typeof opts?.tokenEndpointOpts?.accessTokenSignerCallback !== 'function') {
+    if (!opts.endpointOpts.tokenEndpointOpts) {
+      opts.endpointOpts.tokenEndpointOpts = {
+        accessTokenIssuer: instance.metadataOptions.credentialIssuer ?? issuer.issuerMetadata.credential_issuer,
+      }
+    }
+    if (
+      opts?.endpointOpts.tokenEndpointOpts?.tokenEndpointDisabled !== true &&
+      typeof opts?.endpointOpts.tokenEndpointOpts?.accessTokenSignerCallback !== 'function'
+    ) {
       let keyRef: string | undefined
       const tokenOpts = {
-        iss: opts.tokenEndpointOpts.accessTokenIssuer ?? instance.metadataOptions.credentialIssuer,
+        iss: opts.endpointOpts.tokenEndpointOpts.accessTokenIssuer ?? instance.metadataOptions.credentialIssuer,
         didOpts: instance.issuerOptions.didOpts,
       }
       if (!tokenOpts.didOpts.identifierOpts.kid || tokenOpts.didOpts.identifierOpts.kid.startsWith('did:')) {
         keyRef = await getAccessTokenKeyRef(tokenOpts, context)
       }
 
-      opts.tokenEndpointOpts.accessTokenSignerCallback = getAccessTokenSignerCallback(
+      opts.endpointOpts.tokenEndpointOpts.accessTokenSignerCallback = getAccessTokenSignerCallback(
         {
           ...tokenOpts,
           keyRef,

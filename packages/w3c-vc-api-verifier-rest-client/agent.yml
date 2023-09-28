@@ -1,0 +1,75 @@
+version: 3.0
+
+constants:
+  baseUrl: http://localhost:3335
+  port: 3335
+  # please use your own X25519 key, this is only an example
+  secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
+  methods:
+    - vcApiClientVerifyCredential
+
+server:
+  baseUrl:
+    $ref: /constants/baseUrl
+  port:
+    $ref: /constants/port
+  use:
+    # CORS
+    - - $require: 'cors'
+
+    # Add agent to the request object
+    - - $require: '@veramo/remote-server?t=function#RequestWithAgentRouter'
+        $args:
+          - agent:
+              $ref: /agent
+
+    # API base path
+    - - /agent
+      - $require: '@veramo/remote-server?t=function#apiKeyAuth'
+        $args:
+          # Please configure your own API key. This is used when executing agent methods through ${baseUrl}/agent or ${baseUrl}/api-docs
+          - apiKey: test123
+      - $require: '@veramo/remote-server?t=function#AgentRouter'
+        $args:
+          - exposedMethods:
+              $ref: /constants/methods
+
+    # Open API schema
+    - - /open-api.json
+      - $require: '@veramo/remote-server?t=function#ApiSchemaRouter'
+        $args:
+          - basePath: :3335/agent
+            securityScheme: bearer
+            apiName: Agent
+            apiVersion: '1.0.0'
+            exposedMethods:
+              $ref: /constants/methods
+
+    # Swagger docs
+    - - /api-docs
+      - $require: swagger-ui-express?t=object#serve
+      - $require: swagger-ui-express?t=function#setup
+        $args:
+          - null
+          - swaggerOptions:
+              url: '/open-api.json'
+
+  # Execute during server initialization
+  init:
+    - $require: '@veramo/remote-server?t=function#createDefaultDid'
+      $args:
+        - agent:
+            $ref: /agent
+          baseUrl:
+            $ref: /constants/baseUrl
+          messagingServiceEndpoint: /messaging
+
+# Agent
+agent:
+  $require: '@veramo/core#Agent'
+  $args:
+    - schemaValidation: false
+      plugins:
+        - $require: ./packages/w3c-vc-api-verifier-rest-client/dist#VcApiVerifierClient
+          $args:
+            - verifyUrl: 'https://vc-api.sphereon.io/services/verify/credentials'

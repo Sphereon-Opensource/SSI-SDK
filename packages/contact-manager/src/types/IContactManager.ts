@@ -1,61 +1,133 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import { FindContactArgs, FindIdentityArgs, IBasicIdentity, IContact, IIdentity } from '@sphereon/ssi-sdk.data-store'
+import {
+  Identity,
+  NonPersistedIdentity,
+  FindRelationshipArgs,
+  FindIdentityArgs,
+  NonPersistedContact,
+  PartyTypeEnum as ContactTypeEnum,
+  NonPersistedPartyType as NonPersistedContactType,
+  FindPartyTypeArgs as FindContactTypeArgs,
+  FindPartyArgs as FindContactArgs,
+  PartyRelationship as ContactRelationship,
+  PartyType as ContactType,
+  Party as Contact,
+  NonPersistedParty,
+} from '@sphereon/ssi-sdk.data-store'
 
 export interface IContactManager extends IPluginMethodMap {
-  cmGetContact(args: IGetContactArgs, context: IRequiredContext): Promise<IContact>
-  cmGetContacts(args?: IGetContactsArgs): Promise<Array<IContact>>
-  cmAddContact(args: IAddContactArgs, context: IRequiredContext): Promise<IContact>
-  cmUpdateContact(args: IUpdateContactArgs, context: IRequiredContext): Promise<IContact>
-  cmRemoveContact(args: IRemoveContactArgs, context: IRequiredContext): Promise<boolean>
-  cmGetIdentity(args: IGetIdentityArgs, context: IRequiredContext): Promise<IIdentity>
-  cmGetIdentities(args: IGetIdentitiesArgs, context: IRequiredContext): Promise<Array<IIdentity>>
-  cmAddIdentity(args: IAddIdentityArgs, context: IRequiredContext): Promise<IIdentity>
-  cmUpdateIdentity(args: IUpdateIdentityArgs, context: IRequiredContext): Promise<IIdentity>
-  cmRemoveIdentity(args: IRemoveIdentityArgs, context: IRequiredContext): Promise<boolean>
+  cmGetContact(args: GetContactArgs, context: RequiredContext): Promise<Contact>
+  cmGetContacts(args?: GetContactsArgs): Promise<Array<Contact>>
+  cmAddContact(args: AddContactArgs, context: RequiredContext): Promise<Contact>
+  cmUpdateContact(args: UpdateContactArgs, context: RequiredContext): Promise<Contact>
+  cmRemoveContact(args: RemoveContactArgs, context: RequiredContext): Promise<boolean>
+  cmGetIdentity(args: GetIdentityArgs, context: RequiredContext): Promise<Identity>
+  cmGetIdentities(args?: GetIdentitiesArgs): Promise<Array<Identity>>
+  cmAddIdentity(args: AddIdentityArgs, context: RequiredContext): Promise<Identity>
+  cmUpdateIdentity(args: UpdateIdentityArgs, context: RequiredContext): Promise<Identity>
+  cmRemoveIdentity(args: RemoveIdentityArgs, context: RequiredContext): Promise<boolean>
+  cmGetRelationship(args: GetRelationshipArgs, context: RequiredContext): Promise<ContactRelationship>
+  cmGetRelationships(args?: GetRelationshipsArgs): Promise<Array<ContactRelationship>>
+  cmUpdateRelationship(args: UpdateRelationshipArgs, context: RequiredContext): Promise<ContactRelationship>
+  cmAddRelationship(args: AddRelationshipArgs, context: RequiredContext): Promise<ContactRelationship>
+  cmRemoveRelationship(args: RemoveRelationshipArgs, context: RequiredContext): Promise<boolean>
+  cmGetContactType(args: GetContactTypeArgs, context: RequiredContext): Promise<ContactType>
+  cmGetContactTypes(args?: GetContactTypesArgs): Promise<Array<ContactType>>
+  cmAddContactType(args: AddContactTypeArgs, context: RequiredContext): Promise<ContactType>
+  cmUpdateContactType(args: UpdateContactTypeArgs, context: RequiredContext): Promise<ContactType>
+  cmRemoveContactType(args: RemoveContactTypeArgs, context: RequiredContext): Promise<boolean>
 }
 
-export interface IGetContactArgs {
+export type GetContactArgs = {
   contactId: string
 }
 
-export interface IGetContactsArgs {
+export type GetContactsArgs = {
   filter?: FindContactArgs
 }
 
-export interface IAddContactArgs {
-  name: string
-  alias: string
-  uri?: string
-  identities?: Array<IBasicIdentity>
+// export type AddContactArgs = {
+//   uri?: string
+//   contactType: NonPersistedContactType
+//   identities?: Array<NonPersistedIdentity>
+// } & NonPersistedNaturalPerson | NonPersistedOrganization
+
+export type AddContactArgs = Omit<NonPersistedParty, 'contact' | 'partyType'> &
+  NonPersistedContact & {
+    contactType: NonPersistedContactType
+  }
+
+export type UpdateContactArgs = {
+  contact: Contact
 }
 
-export interface IUpdateContactArgs {
-  contact: IContact
-}
-
-export interface IRemoveContactArgs {
+export type RemoveContactArgs = {
   contactId: string
 }
 
-export interface IGetIdentityArgs {
+export type GetIdentityArgs = {
   identityId: string
 }
 
-export interface IGetIdentitiesArgs {
+export type GetIdentitiesArgs = {
   filter?: FindIdentityArgs
 }
 
-export interface IAddIdentityArgs {
+export type AddIdentityArgs = {
   contactId: string
-  identity: IBasicIdentity
+  identity: NonPersistedIdentity
 }
 
-export interface IUpdateIdentityArgs {
-  identity: IIdentity
+export type UpdateIdentityArgs = {
+  identity: Identity
 }
 
-export interface IRemoveIdentityArgs {
+export type RemoveIdentityArgs = {
   identityId: string
 }
 
-export type IRequiredContext = IAgentContext<never>
+export type AddRelationshipArgs = {
+  leftId: string
+  rightId: string
+}
+
+export type RemoveRelationshipArgs = {
+  relationshipId: string
+}
+
+export type GetRelationshipArgs = {
+  relationshipId: string
+}
+
+export type GetRelationshipsArgs = {
+  filter: FindRelationshipArgs
+}
+
+export type UpdateRelationshipArgs = {
+  relationship: Omit<ContactRelationship, 'createdAt' | 'lastUpdatedAt'>
+}
+
+export type AddContactTypeArgs = {
+  type: ContactTypeEnum
+  name: string
+  tenantId: string
+  description?: string
+}
+
+export type GetContactTypeArgs = {
+  contactTypeId: string
+}
+
+export type GetContactTypesArgs = {
+  filter?: FindContactTypeArgs
+}
+
+export type UpdateContactTypeArgs = {
+  contactType: Omit<ContactType, 'createdAt' | 'lastUpdatedAt'>
+}
+
+export type RemoveContactTypeArgs = {
+  contactTypeId: string
+}
+
+export type RequiredContext = IAgentContext<never>

@@ -4,6 +4,8 @@ import {
   ISiopClientGetAuthStatusArgs,
   ISiopClientRemoveAuthRequestSessionArgs,
   ISIOPv2OID4VPRPRestClient,
+  Siopv2RestClientAuthenticationOpts,
+  Siopv2RestClientOpts,
 } from '../types/ISIOPv2OID4VPRPRestClient'
 import Debug from 'debug'
 import { IAgentPlugin } from '@veramo/core'
@@ -23,20 +25,33 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
 
   private readonly baseUrl?: string
   private readonly definitionId?: string
+  private readonly authOpts?: Siopv2RestClientAuthenticationOpts
 
-  constructor(args?: { baseUrl?: string; definitionId?: string }) {
-    if (args?.baseUrl) {
-      this.baseUrl = args.baseUrl
+  constructor(args?: Siopv2RestClientOpts) {
+    this.baseUrl = args?.baseUrl
+    this.definitionId = args?.definitionId
+    this.authOpts = args?.authentication
+  }
+
+  private createHeaders(existing?: Record<string, any>): HeadersInit {
+    const headers: HeadersInit = {
+      ...existing,
+      Accept: 'application/json',
     }
-    if (args?.definitionId) {
-      this.definitionId = args.definitionId
+    if (this.authOpts?.enabled === true) {
+      if (!this.authOpts.staticBearerToken) {
+        throw Error(`Cannot have authentication enabled, whilst not enabling static bearer tokens at this point`)
+      }
+      headers.Authorization = `Bearer ${this.authOpts.staticBearerToken}`
     }
+    return headers
   }
 
   private async siopClientRemoveAuthRequestState(args: ISiopClientRemoveAuthRequestSessionArgs): Promise<boolean> {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
     await fetch(this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests/${args.correlationId}`, baseUrl), {
+      headers: this.createHeaders(),
       method: 'DELETE',
     })
     return true
@@ -48,9 +63,7 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
     const statusResponse = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: this.createHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({
         correlationId: args.correlationId,
         definitionId,
@@ -70,9 +83,7 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
     const url = this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests`, baseUrl)
     const origResponse = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: this.createHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({}),
     })
     return await origResponse.json()

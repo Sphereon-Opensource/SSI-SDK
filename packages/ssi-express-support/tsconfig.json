@@ -1,11 +1,10 @@
 {
   "extends": "../tsconfig-base.json",
   "compilerOptions": {
-    "target": "es2017",
-    "module": "commonjs",
-    "rootDir": "src",
-    "outDir": "dist",
-    "declarationDir": "dist",
-    "strictPropertyInitialization": false
+    "strict": false,
+    "noImplicitAny": false,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "declarationDir": "./dist"
   }
 }

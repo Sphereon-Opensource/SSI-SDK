@@ -46,6 +46,15 @@ export interface ICreateVerifiablePresentationLDArgs {
   purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 }
 
+export interface IIssueCredentialStatusOpts {
+  dbName?: string // TODO: remove once issuance if full plugin
+  credentialId?: string
+  statusListId?: string
+  statusListIndex?: number | string
+  statusEntryCorrelationId?: string
+  value?: string
+}
+
 /**
  * Encapsulates the parameters required to create a
  * {@link https://www.w3.org/TR/vc-data-model/#credentials | W3C Verifiable Credential}
@@ -73,6 +82,8 @@ export interface ICreateVerifiableCredentialLDArgs {
    * Use this purpose for the verification method in the DID when doing a check (defaults to CredentialIssuancePurpose)
    */
   purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
+
+  credentialStatusOpts?: IIssueCredentialStatusOpts
 }
 
 /**
@@ -108,6 +119,22 @@ export interface IVerifyCredentialLDArgs {
    * Check status function, to check verifiableCredentials that have a credentialStatus property
    */
   checkStatus?: Function
+
+  /**
+   * Allows you to use the default integrated statusList 2021 support. If a checkStatus function is provided, this will be ignored
+   */
+  statusList?: StatusListCheck
+}
+
+export interface StatusListCheck {
+  /**
+   * If no checkStatus function is given we default to a StatusList2021 check in case the VC has a credentialStatus. This boolean allows to disable this fallback check
+   */
+  disableCheckStatusList2021?: boolean
+
+  mandatoryCredentialStatus: boolean
+  verifyStatusListCredential: boolean
+  verifyMatchingIssuers: boolean
 }
 
 /**
@@ -153,6 +180,11 @@ export interface IVerifyPresentationLDArgs {
    * Check status function, to check verifiableCredentials that have a credentialStatus property
    */
   checkStatus?: Function
+
+  /**
+   * Allows you to use the default integrated statusList 2021 support. If a checkStatus function is provided, this will be ignored
+   */
+  statusList?: StatusListCheck
 }
 
 /**

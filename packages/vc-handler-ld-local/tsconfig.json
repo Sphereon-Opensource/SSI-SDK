@@ -4,11 +4,21 @@
     "rootDir": "src",
     "outDir": "dist",
     "declarationDir": "dist",
+    "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
   "include": ["src/**/*.json", "src/**/*.ts"],
   "references": [
+    {
+      "path": "../vc-status-list"
+    },
+    {
+      "path": "../vc-status-list-issuer-drivers"
+    },
+    {
+      "path": "../data-store"
+    },
     {
       "path": "../ssi-types"
     },

@@ -1,9 +1,11 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
+import { enableUuidv4 } from './uuid'
 
 export class CreateIssuanceBranding1685628974232 implements MigrationInterface {
   name = 'CreateIssuanceBranding1685628974232'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await enableUuidv4(queryRunner)
     await queryRunner.query(
       `CREATE TABLE "ImageDimensions" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "width" integer NOT NULL, "height" integer NOT NULL, CONSTRAINT "PK_ImageDimensions_id" PRIMARY KEY ("id"))`
     )

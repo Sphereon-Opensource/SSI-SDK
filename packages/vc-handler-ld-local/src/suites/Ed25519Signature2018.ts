@@ -1,5 +1,5 @@
-import { Ed25519KeyPair } from '@transmute/ed25519-key-pair'
-import { Ed25519Signature2018 } from '@sphereon/ed25519-signature-2018'
+// import { Ed25519Signature2018 } from '@sphereon/ed25519-signature-2018'
+import { Ed25519Signature2018, Ed25519VerificationKey2018 } from '@transmute/ed25519-signature-2018'
 import { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
 import { asArray, encodeJoseBlob } from '@veramo/utils'
 import suiteContext2018 from 'ed25519-signature-2018-context'
@@ -55,15 +55,15 @@ export class SphereonEd25519Signature2018 extends SphereonLdSignature {
     }
 
     const options = {
-      id: id,
-      controller: controller,
-      publicKey: u8a.fromString(key.publicKeyHex),
+      id,
+      controller,
+      publicKey: u8a.fromString(key.publicKeyHex, 'base16'),
       signer: () => signer,
       type: this.getSupportedVerificationType(),
     }
 
     // For now we always go through this route given the multibase key has an invalid header
-    const verificationKey = new Ed25519KeyPair(options)
+    const verificationKey = new Ed25519VerificationKey2018(options)
     // overwrite the signer since we're not passing the private key and transmute doesn't support that behavior
     verificationKey.signer = () => signer as any
     // verificationKey.type = this.getSupportedVerificationType()

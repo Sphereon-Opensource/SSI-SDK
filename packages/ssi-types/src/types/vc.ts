@@ -292,3 +292,20 @@ export interface IErrorDetails {
   url?: string
   cause?: IError
 }
+
+export enum StatusListType {
+  StatusList2021 = 'StatusList2021',
+}
+export type StatusPurpose2021 = 'revocation' | 'suspension' | string
+export enum StatusListCredentialIdMode {
+  ISSUANCE = 'ISSUANCE',
+  PERSISTENCE = 'PERSISTENCE',
+  NEVER = 'NEVER',
+}
+export type StatusListIndexingDirection = 'rightToLeft'
+export enum StatusListDriverType {
+  AGENT_TYPEORM = 'agent_typeorm',
+  AGENT_KV_STORE = 'agent_kv_store',
+  GITHUB = 'github',
+  AGENT_FILESYSTEM = 'agent_filesystem',
+}

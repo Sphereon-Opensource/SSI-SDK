@@ -1,9 +1,11 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
+import { enableUuidv4 } from './uuid'
 
 export class CreateContacts1659463079428 implements MigrationInterface {
   name = 'CreateContacts1659463079428'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await enableUuidv4(queryRunner)
     await queryRunner.query(
       `CREATE TABLE "BaseConfigEntity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "client_id" character varying(255), "client_secret" character varying(255), "scopes" text, "issuer" character varying(255), "redirect_url" text, "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "identifier" character varying(255), "session_id" character varying(255), "type" character varying NOT NULL, "connectionId" uuid, CONSTRAINT "REL_BaseConfig_connectionId" UNIQUE ("connectionId"), CONSTRAINT "PK_BaseConfigEntity_id" PRIMARY KEY ("id"))`
     )
@@ -13,13 +15,13 @@ export class CreateContacts1659463079428 implements MigrationInterface {
       `CREATE TABLE "CorrelationIdentifier" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."CorrelationIdentifier_type_enum" NOT NULL, "correlation_id" text NOT NULL, "identityId" uuid, CONSTRAINT "UQ_Correlation_id" UNIQUE ("correlation_id"), CONSTRAINT "REL_CorrelationIdentifier_identityId" UNIQUE ("identityId"), CONSTRAINT "PK_CorrelationIdentifier_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "Contact" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying(255) NOT NULL, "alias" character varying(255) NOT NULL, "uri" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_Name" UNIQUE ("name"), CONSTRAINT "UQ_Alias" UNIQUE ("alias"), CONSTRAINT "PK_Contact_id" PRIMARY KEY ("id"))`
+      `CREATE TABLE "Contact" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying(255) NOT NULL, "alias" character varying(255) NOT NULL, "uri" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_Name" UNIQUE ("name"), CONSTRAINT "UQ_Contact_Alias" UNIQUE ("alias"), CONSTRAINT "PK_Contact_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
       `CREATE TABLE "IdentityMetadata" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "label" character varying(255) NOT NULL, "value" character varying(255) NOT NULL, "identityId" uuid, CONSTRAINT "PK_IdentityMetadata_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "Identity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "alias" character varying(255) NOT NULL, "roles" text, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "contactId" uuid, CONSTRAINT "UQ_Alias" UNIQUE ("alias"), CONSTRAINT "PK_Identity_id" PRIMARY KEY ("id"))`
+      `CREATE TABLE "Identity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "alias" character varying(255) NOT NULL, "roles" text, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "contactId" uuid, CONSTRAINT "UQ_Identity_Alias" UNIQUE ("alias"), CONSTRAINT "PK_Identity_id" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(`CREATE TYPE "public"."Connection_type_enum" AS ENUM('OIDC', 'SIOPv2', 'SIOPv2+OpenID4VP')`)
     await queryRunner.query(

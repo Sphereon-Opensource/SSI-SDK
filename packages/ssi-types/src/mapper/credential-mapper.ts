@@ -334,6 +334,11 @@ export class CredentialMapper {
             throw new Error(`Inconsistent issuers between JWT claim (${iss}) and VC value (${issuer})`)
           }
         } else {
+          if (!issuer.id && Object.keys(issuer).length > 0) {
+            // We have an issuer object with more than 1 property but without an issuer id. Set it,
+            // because the default behaviour of did-jwt-vc is to remove the id value when creating JWTs
+            issuer.id = iss
+          }
           if (issuer.id !== iss) {
             throw new Error(`Inconsistent issuers between JWT claim (${iss}) and VC value (${issuer.id})`)
           }

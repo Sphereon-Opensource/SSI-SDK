@@ -8,6 +8,9 @@
   },
   "references": [
     {
+      "path": "../agent-config"
+    },
+    {
       "path": "../ssi-express-support"
     },
     {
