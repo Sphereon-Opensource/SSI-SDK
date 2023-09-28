@@ -23,7 +23,7 @@ describe('Database entities tests', (): void => {
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',
-      //logging: 'warn',
+      //logging: ['info'],
       migrationsRun: false,
       migrations: DataStoreMigrations,
       synchronize: false,

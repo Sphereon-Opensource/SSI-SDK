@@ -76,7 +76,7 @@ import { DataSource } from 'typeorm'
 dbConnection = await new DataSource({
   type: 'sqlite',
   database: ':memory:',
-  logging: 'warn',
+  logging: ['info'],
   migrationsRun: true,
   synchronize: false,
   migrations: [...kvStoreMigrations],
