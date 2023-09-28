@@ -31,7 +31,7 @@ export class SphereonEcdsaSecp256k1RecoverySignature2020 extends SphereonLdSigna
           keyRef: key.kid,
           algorithm: 'ES256K-R',
           data: messageBuffer,
-          encoding: 'base64'
+          encoding: 'base64',
         })
         return `${headerString}..${signature}`
       },
@@ -70,9 +70,7 @@ export class SphereonEcdsaSecp256k1RecoverySignature2020 extends SphereonLdSigna
 
   preDidResolutionModification(didUrl: string, didDoc: DIDDocument): void {
     const idx =
-        didDoc['@context']?.indexOf(
-            'https://identity.foundation/EcdsaSecp256k1RecoverySignature2020/lds-ecdsa-secp256k1-recovery2020-0.0.jsonld',
-        ) || -1
+      didDoc['@context']?.indexOf('https://identity.foundation/EcdsaSecp256k1RecoverySignature2020/lds-ecdsa-secp256k1-recovery2020-0.0.jsonld') || -1
     if (Array.isArray(didDoc['@context']) && idx !== -1) {
       didDoc['@context'][idx] = this.getContext()
     }

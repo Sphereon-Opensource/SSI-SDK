@@ -19,7 +19,7 @@
   "devDependencies": {
     "@keyv/compress-brotli": "^1.1.3",
     "@keyv/compress-gzip": "^1.2.3",
-    "@keyv/sqlite": "^3.6.5",
+    "@keyv/sqlite": "3.6.5",
     "@keyv/test-suite": "^1.9.2",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@types/debug": "^4.1.7",

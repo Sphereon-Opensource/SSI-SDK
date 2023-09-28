@@ -281,7 +281,7 @@ describe('credential-LD full flow', () => {
               valid: true,
             },
             verificationMethod: {
-              "@context": "https://www.w3.org/ns/did/v1",
+              '@context': 'https://www.w3.org/ns/did/v1',
               type: 'Ed25519VerificationKey2018',
             },
             verified: true,

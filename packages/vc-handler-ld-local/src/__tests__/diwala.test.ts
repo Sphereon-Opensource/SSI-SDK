@@ -134,7 +134,7 @@ describe('Diwala issued VC', () => {
             valid: true,
           },
           verificationMethod: {
-            '@context': ["https://www.w3.org/ns/did/v1", 'https://w3id.org/security/suites/ed25519-2018/v1'],
+            '@context': ['https://www.w3.org/ns/did/v1', 'https://w3id.org/security/suites/ed25519-2018/v1'],
             controller: {
               id: 'did:key:z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9#z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9',
               // @fixme: The above is incorrect. Controller should be the DID not a VM, like below

@@ -19,7 +19,7 @@ import {
   UpdateStatusListFromStatusListCredentialArgs,
 } from './types'
 
-import {StatusList, checkStatus} from '@sphereon/vc-status-list'
+import { StatusList, checkStatus } from '@sphereon/vc-status-list'
 
 export async function fetchStatusListCredential(args: { statusListCredential: string }): Promise<OriginalVerifiableCredential> {
   const url = getAssertedValue('statusListCredential', args.statusListCredential)
