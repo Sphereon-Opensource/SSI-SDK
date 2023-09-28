@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth",
-  "version": "0.15.1",
+  "version": "0.16.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,9 +29,9 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@types/uuid": "^9.0.1",
     "@sphereon/did-uni-client": "^0.6.0",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
+    "@types/uuid": "^9.0.1",
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",
     "@veramo/remote-client": "4.2.0",
