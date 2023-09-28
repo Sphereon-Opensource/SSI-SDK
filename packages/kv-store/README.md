@@ -43,7 +43,7 @@ import { DataSource } from 'typeorm'
 const dbConnection: DataSource = await new DataSource({
   type: 'sqlite',
   database: ':memory:',
-  logging: 'all',
+  logging: 'info',
   migrationsRun: true,
   synchronize: false,
   entities: [KeyValueStoreEntity],
@@ -76,7 +76,7 @@ import { DataSource } from 'typeorm'
 dbConnection = await new DataSource({
   type: 'sqlite',
   database: ':memory:',
-  logging: 'all',
+  logging: 'warn',
   migrationsRun: true,
   synchronize: false,
   migrations: [...kvStoreMigrations],
