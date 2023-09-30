@@ -54,7 +54,7 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
       return response.send()
     } catch (error) {
       console.error(error)
-      return sendErrorResponse(response, 500, 'Could not verify auth status', error)
+      return sendErrorResponse(response, 500, 'Could not verify auth status', error.message)
     }
   })
 }
