@@ -181,8 +181,10 @@ export class SIOPv2RP implements IAgentPlugin {
       const instanceOpts = this.getInstanceOpts(definitionId)
       const rpOpts = await this.getRPOptions(context, { definitionId })
       if (!rpOpts.didOpts.resolveOpts?.resolver || typeof rpOpts.didOpts.resolveOpts.resolver.resolve !== 'function') {
-        rpOpts.didOpts = { ...rpOpts.didOpts }
-        rpOpts.didOpts.resolveOpts = { ...rpOpts.didOpts.resolveOpts }
+        if (!rpOpts.didOpts?.resolveOpts) {
+          rpOpts.didOpts = {...rpOpts.didOpts}
+          rpOpts.didOpts.resolveOpts = {...rpOpts.didOpts.resolveOpts}
+        }
         console.log('Using agent DID resolver for RP instance with definition id ' + args.definitionId)
         rpOpts.didOpts.resolveOpts.resolver = getAgentResolver(context, {
           uniresolverResolution: true,
