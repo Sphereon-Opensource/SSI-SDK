@@ -1,14 +1,6 @@
 import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPDIDOptions } from './types/ISIOPv2RP'
 import { EventEmitter } from 'events'
-import {
-    determineKid,
-    getAgentResolver,
-    getDID,
-    getIdentifier,
-    getKey,
-    getSupportedDIDMethods,
-    IDIDOptions
-} from '@sphereon/ssi-sdk-ext.did-utils'
+import { determineKid, getAgentResolver, getDID, getIdentifier, getKey, getSupportedDIDMethods, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
 import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import {
   CheckLinkedDomain,
@@ -114,7 +106,11 @@ export async function createRPBuilder(args: {
     .withResponseType(ResponseType.ID_TOKEN, PropertyTarget.REQUEST_OBJECT)
     .withCustomResolver(
       rpOpts.didOpts.resolveOpts?.resolver ??
-        getAgentResolver(context, { resolverResolution: true, localResolution: true, uniresolverResolution: rpOpts.didOpts.resolveOpts?.noUniversalResolverFallback !== true })
+        getAgentResolver(context, {
+          resolverResolution: true,
+          localResolution: true,
+          uniresolverResolution: rpOpts.didOpts.resolveOpts?.noUniversalResolverFallback !== true,
+        })
     )
     .withClientId(did, PropertyTarget.REQUEST_OBJECT)
     // todo: move to options fill/correct method
