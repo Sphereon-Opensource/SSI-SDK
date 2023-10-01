@@ -2348,8 +2348,8 @@ importers:
         specifier: ^6.0.0
         version: 6.0.1
       '@sphereon/ssi-express-support':
-        specifier: ^0.17.3
-        version: 0.17.4
+        specifier: ^0.17.4
+        version: link:../ssi-express-support
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -7019,37 +7019,6 @@ packages:
 
   /@sphereon/ssi-express-support@0.17.2:
     resolution: {integrity: sha512-OrLC7YAelpUmCIzPRgHM97HBNFqDoSdJNNssstS6Ho0ZXswq4fsPDm+h49+//ogp1ERbuOl9Ywqhp+3DdLZCPA==}
-    peerDependencies:
-      '@noble/hashes': 1.2.0
-      passport-azure-ad: ^4.3.5
-      passport-http-bearer: ^1.0.1
-    peerDependenciesMeta:
-      '@noble/hashes':
-        optional: true
-      passport-azure-ad:
-        optional: true
-      passport-http-bearer:
-        optional: true
-    dependencies:
-      body-parser: 1.20.2
-      casbin: 5.27.1
-      cookie-session: 2.0.0
-      cors: 2.8.5
-      dotenv-flow: 3.3.0
-      express: 4.18.2
-      express-session: 1.17.3
-      http-terminator: 3.2.0
-      morgan: 1.10.0
-      openid-client: 5.5.0
-      passport: 0.6.0
-      qs: 6.11.2
-      uint8arrays: 3.1.1
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@sphereon/ssi-express-support@0.17.4:
-    resolution: {integrity: sha512-ipkeo8LH/WBn/msCxVim/CKivCaanJm0KY5TeCJ5LJa70VmsMEcX/KB8bGcLtiKA38s4wtSP2SRgwc3kiICvSw==}
     peerDependencies:
       '@noble/hashes': 1.2.0
       passport-azure-ad: ^4.3.5
