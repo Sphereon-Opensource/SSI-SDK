@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.w3c-vc-api-issuer-rest-client",
-  "version": "0.17.3",
+  "version": "0.17.4",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
