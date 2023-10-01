@@ -47,7 +47,7 @@ export class OID4VCIRestAPI {
         iss: opts.endpointOpts.tokenEndpointOpts.accessTokenIssuer ?? instance.metadataOptions.credentialIssuer,
         didOpts: instance.issuerOptions.didOpts,
       }
-      if (!tokenOpts.didOpts.identifierOpts.kid || tokenOpts.didOpts.identifierOpts.kid.startsWith('did:')) {
+      if (!tokenOpts.didOpts.identifierOpts?.kid || tokenOpts.didOpts.identifierOpts?.kid?.startsWith('did:')) {
         keyRef = await getAccessTokenKeyRef(tokenOpts, context)
       }
 
