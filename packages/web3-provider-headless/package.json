@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-web3.headless-provider",
-  "version": "0.17.4",
+  "version": "0.17.5",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,7 +16,7 @@
     "@ethersproject/strings": "^5.7.0",
     "@ethersproject/transactions": "^5.7.0",
     "@metamask/eth-sig-util": "^6.0.0",
-    "@sphereon/ssi-express-support": "^0.17.4",
+    "@sphereon/ssi-express-support": "^0.17.5",
     "@veramo/core": "4.2.0",
     "@veramo/key-manager": "4.2.0",
     "bn.js": "^5.2.1",

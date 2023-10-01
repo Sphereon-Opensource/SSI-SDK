@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.contact-manager",
-  "version": "0.17.4",
+  "version": "0.17.5",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
