@@ -81,9 +81,13 @@ export function determinePath(
     path = new URL(endpoint).pathname
   }
   path = `/${trimBoth(path, '/')}`
-  if (opts?.stripBasePath && path.startsWith(basePath)) {
-    path = trimStart(path, basePath)
-    path = `/${trimBoth(path, '/')}`
+  if (opts?.stripBasePath) {
+    if(path.startsWith(basePath)) {
+      path = trimStart(path, basePath)
+      path = `/${trimBoth(path, '/')}`
+    }
+  } else if (!opts?.stripBasePath && !path.endsWith(basePath)){
+    path = basePath + path
   }
   return path
 }

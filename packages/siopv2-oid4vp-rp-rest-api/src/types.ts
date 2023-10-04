@@ -10,10 +10,10 @@ export interface ISIOPv2RPRestAPIOpts {
     basePath?: string
     globalAuth?: GenericAuthArgs & { secureSiopEndpoints?: boolean }
     webappCreateAuthRequest?: ICreateAuthRequestWebappEndpointOpts // Override the create Auth Request path. Needs to contain correlationId and definitionId path params!
-    webappDeleteAuthRequest?: ISingleEndpointOpts // Override the delete Auth Request path. Needs to contain correlationId and definitionId path params!
-    webappAuthStatus?: ISingleEndpointOpts // Override the Auth status path. CorrelationId and definitionId need to come from the body!
-    siopVerifyAuthResponse?: ISingleEndpointOpts // Override the siop Verify Response path. Needs to contain correlationId and definitionId path params!
-    siopGetAuthRequest?: ISingleEndpointOpts // Override the siop get Auth Request path. Needs to contain correlationId and definitionId path params!
+    webappDeleteAuthRequest?: IWebappEndpointOpts // Override the delete Auth Request path. Needs to contain correlationId and definitionId path params!
+    webappAuthStatus?: IWebappEndpointOpts // Override the Auth status path. CorrelationId and definitionId need to come from the body!
+    siopVerifyAuthResponse?: ISIOPEndpointOpts // Override the siop Verify Response path. Needs to contain correlationId and definitionId path params!
+    siopGetAuthRequest?: ISIOPEndpointOpts // Override the siop get Auth Request path. Needs to contain correlationId and definitionId path params!
   }
 }
 export interface IWebappEndpointOpts extends ISingleEndpointOpts {
