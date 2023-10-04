@@ -10,7 +10,7 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
     console.log(`verifyAuthResponse SIOP endpoint is disabled`)
     return
   }
-  const path = determinePath(opts?.siopBaseURI, opts?.path ?? '/siop/definitions/:definitionId/auth-responses/:correlationId', { stripBasePath: true })
+  const path = determinePath(opts?.siopBaseURI, opts?.path ?? '/siop/definitions/:definitionId/auth-responses/:correlationId', { stripBasePath: false })
   router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const correlationId = request.params.correlationId
@@ -65,7 +65,7 @@ export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredC
     console.log(`getAuthRequest SIOP endpoint is disabled`)
     return
   }
-  const path = determinePath(opts?.siopBaseURI, opts?.path ?? '/siop/definitions/:definitionId/auth-requests/:correlationId', { stripBasePath: true })
+  const path = determinePath(opts?.siopBaseURI, opts?.path ?? '/siop/definitions/:definitionId/auth-requests/:correlationId', { stripBasePath: false })
   router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const correlationId = request.params.correlationId

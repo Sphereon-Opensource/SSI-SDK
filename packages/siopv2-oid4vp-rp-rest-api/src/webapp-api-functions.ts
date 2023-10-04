@@ -17,7 +17,7 @@ export function createAuthRequestWebappEndpoint(router: Router, context: IRequir
     console.log(`createAuthRequest Webapp endpoint is disabled`)
     return
   }
-  const path = determinePath(opts?.webappBaseURI, opts?.path ?? '/webapp/definitions/:definitionId/auth-requests', { stripBasePath: true })
+  const path = determinePath(opts?.webappBaseURI, opts?.path ?? '/webapp/definitions/:definitionId/auth-requests', { stripBasePath: false })
   router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       // if (!request.agent) throw Error('No agent configured')
@@ -56,7 +56,7 @@ export function authStatusWebappEndpoint(router: Router, context: IRequiredConte
     console.log(`authStatus Webapp endpoint is disabled`)
     return
   }
-  const path = determinePath(opts?.webappBaseURI, opts?.path ?? '/webapp/auth-status', { stripBasePath: true })
+  const path = determinePath(opts?.webappBaseURI, opts?.path ?? '/webapp/auth-status', { stripBasePath: false })
   router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       console.log('Received auth-status request...')
@@ -130,7 +130,7 @@ export function removeAuthRequestStateWebappEndpoint(router: Router, context: IR
     console.log(`removeAuthStatus Webapp endpoint is disabled`)
     return
   }
-  const path = determinePath(opts?.webappBaseURI, opts?.path ?? '/webapp/definitions/:definitionId/auth-requests/:correlationId', { stripBasePath: true })
+  const path = determinePath(opts?.webappBaseURI, opts?.path ?? '/webapp/definitions/:definitionId/auth-requests/:correlationId', { stripBasePath: false })
   router.delete(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const correlationId: string = request.params.correlationId
