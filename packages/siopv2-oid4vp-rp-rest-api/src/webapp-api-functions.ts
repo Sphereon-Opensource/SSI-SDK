@@ -1,5 +1,5 @@
 import { AuthorizationRequestState, AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop'
-import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
+import {checkAuth, sendErrorResponse} from '@sphereon/ssi-express-support'
 import {
   AuthorizationRequestStateStatus,
   AuthStatusResponse,
@@ -9,16 +9,15 @@ import {
 import { AuthorizationResponseStateWithVerifiedData, VerifiedDataMode } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { Request, Response, Router } from 'express'
 import uuid from 'short-uuid'
-import { ICreateAuthRequestWebappEndpointOpts, IRequiredContext } from './types'
-import process from "process"
-import {adjustUrl, trimBoth, trimEnd} from "./functions/HttpUtils"
+import {ICreateAuthRequestWebappEndpointOpts, IRequiredContext, IWebappEndpointOpts} from './types'
+import {determinePath} from "./functions/HttpUtils"
 
 export function createAuthRequestWebappEndpoint(router: Router, context: IRequiredContext, opts?: ICreateAuthRequestWebappEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`createAuthRequest Webapp endpoint is disabled`)
     return
   }
-  const path = determinePath(opts.webappBaseURI, opts?.path ?? '/webapp/definitions/:definitionId/auth-requests', { stripBasePath: true })
+  const path = determinePath(opts?.webappBaseURI, opts?.path ?? '/webapp/definitions/:definitionId/auth-requests', { stripBasePath: true })
   router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       // if (!request.agent) throw Error('No agent configured')
@@ -52,12 +51,12 @@ export function createAuthRequestWebappEndpoint(router: Router, context: IRequir
   })
 }
 
-export function authStatusWebappEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts &  { webappBaseURI: string | URL }) {
+export function authStatusWebappEndpoint(router: Router, context: IRequiredContext, opts?: IWebappEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`authStatus Webapp endpoint is disabled`)
     return
   }
-  const path = determinePath(opts.webappBaseURI, opts?.path ?? '/webapp/auth-status', { stripBasePath: true })
+  const path = determinePath(opts?.webappBaseURI, opts?.path ?? '/webapp/auth-status', { stripBasePath: true })
   router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       console.log('Received auth-status request...')
@@ -126,12 +125,12 @@ export function authStatusWebappEndpoint(router: Router, context: IRequiredConte
   })
 }
 
-export function removeAuthRequestStateWebappEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts & { webappBaseURI: string | URL }) {
+export function removeAuthRequestStateWebappEndpoint(router: Router, context: IRequiredContext, opts?:IWebappEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`removeAuthStatus Webapp endpoint is disabled`)
     return
   }
-  const path = determinePath(opts.webappBaseURI, opts?.path ?? '/webapp/definitions/:definitionId/auth-requests/:correlationId', { stripBasePath: true })
+  const path = determinePath(opts?.webappBaseURI, opts?.path ?? '/webapp/definitions/:definitionId/auth-requests/:correlationId', { stripBasePath: true })
   router.delete(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const correlationId: string = request.params.correlationId
@@ -146,68 +145,4 @@ export function removeAuthRequestStateWebappEndpoint(router: Router, context: IR
       return sendErrorResponse(response, 500, error.message, error)
     }
   })
-}
-
-
-export function determinePath(
-    baseUrl: URL | string | undefined,
-    endpoint: string,
-    opts?: { skipBaseUrlCheck?: boolean; prependUrl?: string; stripBasePath?: boolean },
-) {
-  const basePath = baseUrl ? getBasePath(baseUrl) : ''
-  let path = endpoint
-  if (opts?.prependUrl) {
-    path = adjustUrl(path, { prepend: opts.prependUrl })
-  }
-  if (opts?.skipBaseUrlCheck !== true) {
-    assertEndpointHasIssuerBaseUrl(baseUrl, endpoint)
-  }
-  if (endpoint.includes('://')) {
-    path = new URL(endpoint).pathname
-  }
-  path = `/${trimBoth(path, '/')}`
-  if (opts?.stripBasePath && path.startsWith(basePath)) {
-    path = trimStart(path, basePath)
-    path = `/${trimBoth(path, '/')}`
-  }
-  return path
-}
-
-function assertEndpointHasIssuerBaseUrl(baseUrl: URL | string | undefined, endpoint: string) {
-  if (!validateEndpointHasIssuerBaseUrl(baseUrl, endpoint)) {
-    throw Error(`endpoint '${endpoint}' does not have base url '${baseUrl ? getBaseUrl(baseUrl) : '<no baseurl supplied>'}'`)
-  }
-}
-
-function validateEndpointHasIssuerBaseUrl(baseUrl: URL | string | undefined, endpoint: string): boolean {
-  if (!endpoint) {
-    return false
-  } else if (!endpoint.includes('://')) {
-    return true //absolute or relative path, not containing a hostname
-  } else if (!baseUrl) {
-    return true
-  }
-  return endpoint.startsWith(getBaseUrl(baseUrl))
-}
-
-export function getBaseUrl(url?: URL | string | undefined) {
-  let baseUrl = url
-  if (!baseUrl) {
-    const envUrl = env('BASE_URL', process?.env?.ENV_PREFIX)
-    if (envUrl && envUrl.length > 0) {
-      baseUrl = new URL(envUrl)
-    }
-  }
-  if (!baseUrl) {
-    throw Error(`Not base URL provided`)
-  }
-  return trimEnd(baseUrl.toString(), '/')
-}
-
-export function getBasePath(url?: URL | string) {
-  const basePath = new URL(getBaseUrl(url)).pathname
-  if (basePath === '' || basePath === '/') {
-    return ''
-  }
-  return `/${trimBoth(basePath, '/')}`
 }

@@ -1,15 +1,16 @@
 import { AuthorizationResponsePayload, PresentationDefinitionLocation } from '@sphereon/did-auth-siop'
-import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
+import { checkAuth, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { Request, Response, Router } from 'express'
-import { IRequiredContext } from './types'
+import {IRequiredContext, ISIOPEndpointOpts} from './types'
+import {determinePath} from "./functions/HttpUtils"
 
-export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
+export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequiredContext, opts?: ISIOPEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`verifyAuthResponse SIOP endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/siop/definitions/:definitionId/auth-responses/:correlationId'
+  const path = determinePath(opts?.siopBaseURI, opts?.path ?? '/siop/definitions/:definitionId/auth-responses/:correlationId', { stripBasePath: true })
   router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const correlationId = request.params.correlationId
@@ -59,12 +60,12 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
   })
 }
 
-export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
+export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredContext, opts?: ISIOPEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`getAuthRequest SIOP endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/siop/definitions/:definitionId/auth-requests/:correlationId'
+  const path = determinePath(opts?.siopBaseURI, opts?.path ?? '/siop/definitions/:definitionId/auth-requests/:correlationId', { stripBasePath: true })
   router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const correlationId = request.params.correlationId

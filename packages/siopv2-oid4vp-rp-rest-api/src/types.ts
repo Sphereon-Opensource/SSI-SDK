@@ -16,6 +16,14 @@ export interface ISIOPv2RPRestAPIOpts {
     siopGetAuthRequest?: ISingleEndpointOpts // Override the siop get Auth Request path. Needs to contain correlationId and definitionId path params!
   }
 }
+export interface IWebappEndpointOpts extends ISingleEndpointOpts {
+  webappBaseURI?: string
+}
+
+export interface ISIOPEndpointOpts extends ISingleEndpointOpts {
+  siopBaseURI?: string
+}
+
 export interface ICreateAuthRequestWebappEndpointOpts extends ISingleEndpointOpts {
   siopBaseURI?: string
   webappAuthStatusPath?: string
