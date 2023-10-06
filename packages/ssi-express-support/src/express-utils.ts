@@ -1,17 +1,20 @@
 import express, { NextFunction } from 'express'
 export function sendErrorResponse(response: express.Response, statusCode: number, message: string | object, error?: any) {
-  console.log(`sendErrorResponse: ${message}`)
   if (!message) {
-    console.log('Message was null when calling sendErrorResponse. This should not happen')
-    console.log(Error().stack)
+    console.error('Message was null when calling sendErrorResponse. This should not happen')
+    console.error(Error().stack)
     message = 'An unexpected error occurred'
     statusCode = 500
+  } else if(typeof message === 'string') {
+    console.error(`sendErrorResponse: ${message}`)
+  } else {
+    console.error(`sendErrorResponse: ${JSON.stringify(message)}`)
   }
   if (error) {
-    console.log(JSON.stringify(error))
+    console.error(JSON.stringify(error))
   }
   if (response.headersSent) {
-    console.log(`sendErrorResponse headers already sent`)
+    console.error(`sendErrorResponse headers already sent`)
     return response
   }
   response.statusCode = statusCode
