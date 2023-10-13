@@ -14,7 +14,7 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.5.0-unstable.3",
+    "@sphereon/did-auth-siop": "0.5.0-unstable.5",
     "@sphereon/pex": "2.2.0",
     "@sphereon/pex-models": "2.1.1",
     "@sphereon/ssi-sdk-ext.did-utils": "0.15.0",

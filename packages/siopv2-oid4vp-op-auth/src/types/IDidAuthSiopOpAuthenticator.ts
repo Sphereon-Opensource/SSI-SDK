@@ -11,7 +11,7 @@ import {
   IPluginMethodMap,
   IResolver,
 } from '@veramo/core'
-import { W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { PresentationSubmission, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { OpSession } from '../session/OpSession'
 import {
   CheckLinkedDomain,
@@ -171,6 +171,7 @@ export interface IOpsVerifySiopAuthorizationRequestUriArgs {
 export interface IOpsSendSiopAuthorizationResponseArgs {
   responseSignerOpts: IIdentifierOpts
   // verifiedAuthorizationRequest: VerifiedAuthorizationRequest
+  presentationSubmission?: PresentationSubmission
   verifiablePresentations?: W3CVerifiablePresentation[]
 }
 

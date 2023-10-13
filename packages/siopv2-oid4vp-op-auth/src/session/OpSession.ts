@@ -113,8 +113,8 @@ export class OpSession {
   }
 
   /*private async getMergedRequestPayload(): Promise<RequestObjectPayload> {
-      return await (await this.getAuthorizationRequest()).authorizationRequest.mergedPayloads()
-    }*/
+        return await (await this.getAuthorizationRequest()).authorizationRequest.mergedPayloads()
+      }*/
   public async sendAuthorizationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
     const resolveOpts: ResolveOpts = this.options.resolveOpts ?? {
       resolver: getAgentResolver(this.context, {
@@ -132,12 +132,18 @@ export class OpSession {
     }
 
     const request = await this.getAuthorizationRequest()
-    if (
-      (await this.hasPresentationDefinitions()) &&
-      request.presentationDefinitions &&
-      (!args.verifiablePresentations || args.verifiablePresentations.length !== request.presentationDefinitions.length)
-    ) {
-      throw Error(`Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${request.presentationDefinitions.length}`)
+    const hasDefinitions = await this.hasPresentationDefinitions()
+    if (hasDefinitions) {
+      if (
+        request.presentationDefinitions &&
+        (!args.verifiablePresentations || args.verifiablePresentations.length !== request.presentationDefinitions.length)
+      ) {
+        throw Error(
+          `Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${request.presentationDefinitions.length}`
+        )
+      } else if (!args.presentationSubmission) {
+        throw Error(`Presentation submission is required when verifiable presentations are required`)
+      }
     }
 
     const verifiablePresentations = args.verifiablePresentations
@@ -155,6 +161,7 @@ export class OpSession {
       ...(args.verifiablePresentations && {
         presentationExchange: {
           verifiablePresentations,
+          presentationSubmission: args.presentationSubmission,
         },
       }),
     }

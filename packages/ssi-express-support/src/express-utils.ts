@@ -10,7 +10,7 @@ export function sendErrorResponse(response: express.Response, statusCode: number
   if (error) {
     console.error(JSON.stringify(error))
   }
-  if(statusCode == 500) {
+  if (statusCode == 500) {
     console.error(Error().stack)
   }
   if (response.headersSent) {
