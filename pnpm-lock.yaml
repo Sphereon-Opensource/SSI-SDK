@@ -1027,8 +1027,8 @@ importers:
   packages/siopv2-oid4vp-common:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.5.0-unstable.2
-        version: 0.5.0-unstable.2
+        specifier: 0.5.0-unstable.3
+        version: 0.5.0-unstable.3
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1043,8 +1043,8 @@ importers:
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.5.0-unstable.2
-        version: 0.5.0-unstable.2
+        specifier: 0.5.0-unstable.3
+        version: 0.5.0-unstable.3
       '@sphereon/pex':
         specifier: 2.2.0
         version: 2.2.0
@@ -1116,8 +1116,8 @@ importers:
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.5.0-unstable.2
-        version: 0.5.0-unstable.2
+        specifier: 0.5.0-unstable.3
+        version: 0.5.0-unstable.3
       '@sphereon/pex':
         specifier: 2.2.0
         version: 2.2.0
@@ -1180,8 +1180,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.5.0-unstable.2
-        version: 0.5.0-unstable.2
+        specifier: 0.5.0-unstable.3
+        version: 0.5.0-unstable.3
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -2120,8 +2120,8 @@ importers:
   packages/w3c-vc-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.5.0-unstable.2
-        version: 0.5.0-unstable.2
+        specifier: 0.5.0-unstable.3
+        version: 0.5.0-unstable.3
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -6838,8 +6838,8 @@ packages:
       '@sinonjs/commons': 1.8.6
     dev: true
 
-  /@sphereon/did-auth-siop@0.5.0-unstable.2:
-    resolution: {integrity: sha512-CnpiuCBMkPbje+rPu0gbByqbwdWkBZf6nMFmWcLPuk0AdQ9UVeUYz0r2M6ZwImV38piSYs++3YEuUhRjko//mg==}
+  /@sphereon/did-auth-siop@0.5.0-unstable.3:
+    resolution: {integrity: sha512-Ym6RQic9ZqDlQ2LXnMBQnCXtqMJXYHrNFDSMIp4Bhj0VzQhK5Rhuj0nDoOW1ygbsBV93IrgMdnwx6Hc576NzwA==}
     engines: {node: '>=16'}
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
