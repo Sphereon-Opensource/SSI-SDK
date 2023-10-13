@@ -34,7 +34,10 @@ export async function createPEXPresentationSignCallback(
     challenge?: string
   }): Promise<W3CVerifiablePresentation> => {
     const formatOptions = format ?? args.format ?? presentationDefinition.format
-    const proofFormat = formatOptions ?? 'jwt_vp'
+    // we just take the first one that is applicable for now
+    const proofFormat = formatOptions && Object.keys(formatOptions).length > 0 ? Object.keys(formatOptions)[0] : 'jwt_vp'
+
+    // we ignore the alg / proof_format for now, as we already have the kid anyway at this point
 
     const vp = await context.agent.createVerifiablePresentation({
       presentation,
