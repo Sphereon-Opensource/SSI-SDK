@@ -1,7 +1,3 @@
-import { IIdentifierOpts, IOPOptions, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
-import { EventEmitter } from 'events'
-import { AgentDIDResolver, determineKid, getAgentDIDMethods, getKey } from '@sphereon/ssi-sdk-ext.did-utils'
-import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import {
   CheckLinkedDomain,
   OP,
@@ -13,9 +9,13 @@ import {
   SupportedVersion,
 } from '@sphereon/did-auth-siop'
 import { Format } from '@sphereon/pex-models'
-import { TKeyType } from '@veramo/core'
-import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
+import { determineKid, getAgentDIDMethods, getAgentResolver, getKey } from '@sphereon/ssi-sdk-ext.did-utils'
+import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { createPEXPresentationSignCallback } from '@sphereon/ssi-sdk.presentation-exchange'
+import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
+import { TKeyType } from '@veramo/core'
+import { EventEmitter } from 'events'
+import { IIdentifierOpts, IOPOptions, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
 
 export async function createOID4VPPresentationSignCallback({
   presentationSignCallback,
@@ -69,13 +69,18 @@ export async function createOPBuilder({
   const builder = OP.builder()
     .withResponseMode(opOptions.responseMode ?? ResponseMode.POST)
     .withSupportedVersions(
-      opOptions.supportedVersions ?? [SupportedVersion.SIOPv2_ID1, SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_D11]
+      opOptions.supportedVersions ?? [
+        SupportedVersion.SIOPv2_ID1,
+        SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1,
+        SupportedVersion.SIOPv2_D11,
+        SupportedVersion.SIOPv2_D12_OID4VP_D18,
+      ]
     )
     .withExpiresIn(opOptions.expiresIn ?? 300)
     .withCheckLinkedDomain(opOptions.checkLinkedDomains ?? CheckLinkedDomain.IF_PRESENT)
     .withCustomResolver(
       opOptions.resolveOpts?.resolver ??
-        new AgentDIDResolver(context, {
+        getAgentResolver(context, {
           uniresolverResolution: opOptions.resolveOpts?.noUniversalResolverFallback !== true,
           localResolution: true,
           resolverResolution: true,
@@ -129,31 +134,6 @@ export async function createOP({
 }): Promise<OP> {
   return (await createOPBuilder({ opOptions, idOpts, context })).build()
 }
-
-/*
-export async function getKey(
-  identifier: IIdentifier,
-  verificationMethodSection: DIDDocumentSection = 'authentication',
-  context: IRequiredContext,
-  keyId?: string
-): Promise<IKey> {
-  const keys = await mapIdentifierKeysToDocWithJwkSupport(identifier, verificationMethodSection, context)
-  if (!keys || keys.length === 0) {
-    throw new Error(`No keys found for verificationMethodSection: ${verificationMethodSection} and did ${identifier.did}`)
-  }
-
-  const identifierKey = keyId ? keys.find((key: _ExtendedIKey) => key.kid === keyId || key.meta.verificationMethod.id === keyId) : keys[0]
-  if (!identifierKey) {
-    throw new Error(`No matching verificationMethodSection key found for keyId: ${keyId}`)
-  }
-
-  return identifierKey
-}
-
-export function determineKid(key: IKey, idOpts: IIdentifierOpts): string {
-  return key.meta?.verificationMethod.id ?? idOpts.kid ?? key.kid
-}
-*/
 
 export function getSigningAlgo(type: TKeyType): SigningAlgo {
   switch (type) {

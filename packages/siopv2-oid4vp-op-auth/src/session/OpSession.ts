@@ -1,7 +1,7 @@
 import { IIdentifier } from '@veramo/core'
-import { RequestObjectPayload, ResolveOpts, URI, Verification, VerificationMode, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
+import { ResolveOpts, URI, Verification, VerificationMode, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
 import { IOPOptions, IOpSessionArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
-import { AgentDIDResolver, getAgentDIDMethods } from '@sphereon/ssi-sdk-ext.did-utils'
+import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
 import { CredentialMapper } from '@sphereon/ssi-types'
@@ -69,7 +69,7 @@ export class OpSession {
     const payload = (await this.getAuthorizationRequest()).registrationMetadataPayload
     const rpMethods = (
       payload?.subject_syntax_types_supported
-        ? Array.isArray(payload?.subject_syntax_types_supported)
+        ? Array.isArray(payload.subject_syntax_types_supported)
           ? payload.subject_syntax_types_supported
           : [payload.subject_syntax_types_supported]
         : []
@@ -100,7 +100,7 @@ export class OpSession {
   }
 
   public async getRedirectUri(): Promise<string> {
-    return (await this.getMergedRequestPayload()).redirect_uri
+    return Promise.resolve(this.verifiedAuthorizationRequest!.responseURI!)
   }
 
   public async hasPresentationDefinitions(): Promise<boolean> {
@@ -112,12 +112,16 @@ export class OpSession {
     return await OID4VP.init(this, allDIDs ?? (await this.getSupportedDIDs()))
   }
 
-  private async getMergedRequestPayload(): Promise<RequestObjectPayload> {
-    return await (await this.getAuthorizationRequest()).authorizationRequest.mergedPayloads()
-  }
+  /*private async getMergedRequestPayload(): Promise<RequestObjectPayload> {
+      return await (await this.getAuthorizationRequest()).authorizationRequest.mergedPayloads()
+    }*/
   public async sendAuthorizationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
     const resolveOpts: ResolveOpts = this.options.resolveOpts ?? {
-      resolver: new AgentDIDResolver(this.context, { uniresolverResolution: true, localResolution: true, resolverResolution: true }),
+      resolver: getAgentResolver(this.context, {
+        uniresolverResolution: true,
+        localResolution: true,
+        resolverResolution: true,
+      }),
     }
     if (!resolveOpts.subjectSyntaxTypesSupported || resolveOpts.subjectSyntaxTypesSupported.length === 0) {
       resolveOpts.subjectSyntaxTypesSupported = await this.getSupportedDIDMethods(true)
@@ -127,7 +131,7 @@ export class OpSession {
       resolveOpts,
     }
 
-    const request = this.verifiedAuthorizationRequest!
+    const request = await this.getAuthorizationRequest()
     if (
       (await this.hasPresentationDefinitions()) &&
       request.presentationDefinitions &&
@@ -139,23 +143,23 @@ export class OpSession {
     const verifiablePresentations = args.verifiablePresentations
       ? args.verifiablePresentations.map((vp) => CredentialMapper.storedPresentationToOriginalFormat(vp))
       : []
-    const op = await createOP({ opOptions: this.options, idOpts: args.responseSignerOpts, context: this.context })
+    const op = await createOP({
+      opOptions: { ...this.options, supportedVersions: request.versions },
+      idOpts: args.responseSignerOpts,
+      context: this.context,
+    })
 
     const responseOpts = {
       verification,
-      // ...(args.responseSignerOpts ? { signer: args.responseSignerOpts} : {}),
-      ...(args.verifiablePresentations
-        ? {
-            presentationExchange: {
-              verifiablePresentations,
-            },
-          }
-        : {}),
+      issuer: args.responseSignerOpts?.identifier.did,
+      ...(args.verifiablePresentations && {
+        presentationExchange: {
+          verifiablePresentations,
+        },
+      }),
     }
 
-    //fixme: Remove ignore once support is in ICredential
-    // @ts-ignore
-    const authResponse = await op.createAuthorizationResponse(await this.getAuthorizationRequest(), responseOpts)
+    const authResponse = await op.createAuthorizationResponse(request, responseOpts)
     const response = await op.submitAuthorizationResponse(authResponse)
 
     if (response.status >= 400) {

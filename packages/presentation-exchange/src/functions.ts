@@ -11,13 +11,7 @@ export async function getPresentationDefinition(pexOptions?: IPEXOptions): Promi
 }
 
 export async function createPEXPresentationSignCallback(
-  {
-    kid,
-    fetchRemoteContexts,
-    format,
-    domain,
-    challenge,
-  }: {
+  args: {
     kid: string
     fetchRemoteContexts?: boolean
     format?: Format
@@ -39,15 +33,15 @@ export async function createPEXPresentationSignCallback(
     domain?: string
     challenge?: string
   }): Promise<W3CVerifiablePresentation> => {
-    const formatOptions = format ?? presentationDefinition.format
-    const proofFormat = formatOptions && (!!formatOptions.ldp || !!formatOptions.ldp_vp) ? 'lds' : 'jwt'
+    const formatOptions = format ?? args.format ?? presentationDefinition.format
+    const proofFormat = formatOptions ?? 'jwt_vp'
 
     const vp = await context.agent.createVerifiablePresentation({
       presentation,
-      keyRef: kid,
-      domain,
-      challenge,
-      fetchRemoteContexts: fetchRemoteContexts !== undefined ? fetchRemoteContexts : true,
+      keyRef: args.kid,
+      domain: domain ?? args.domain,
+      challenge: challenge ?? args.challenge,
+      fetchRemoteContexts: args.fetchRemoteContexts !== undefined ? args?.fetchRemoteContexts : true,
       proofFormat,
     })
     // makes sure we extract an actual JWT from the internal representation in case it is a JWT

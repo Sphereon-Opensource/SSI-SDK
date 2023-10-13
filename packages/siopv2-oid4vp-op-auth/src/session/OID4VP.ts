@@ -78,6 +78,12 @@ export class OID4VP {
       throw Error('No verifiable verifiableCredentials provided for presentation definition')
     }
 
+    const proofOptions: ProofOptions = {
+      ...opts?.proofOpts,
+      challenge: opts?.proofOpts?.challenge ?? this.session.nonce,
+      domain: opts?.proofOpts?.domain ?? (await this.session.getRedirectUri()),
+    }
+
     let id: IIdentifier | undefined = opts?.identifierOpts?.identifier
     if (!opts?.identifierOpts?.identifier) {
       if (opts?.subjectIsHolder) {
@@ -114,7 +120,7 @@ export class OID4VP {
       vcs.credentials,
       signCallback,
       {
-        proofOptions: opts?.proofOpts,
+        proofOptions,
         holderDID: idOpts.identifier.did,
       }
     )

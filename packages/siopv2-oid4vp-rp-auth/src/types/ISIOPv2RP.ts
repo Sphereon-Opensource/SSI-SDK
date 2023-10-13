@@ -20,7 +20,7 @@ import {
   PresentationDefinitionWithLocation,
   PresentationVerificationCallback,
   RequestObjectPayload,
-  ResponseMode,
+  ResponseMode, ResponseURIType,
   SupportedVersion,
   VerifiablePresentationTypeFormat,
   VerifiedAuthorizationResponse,
@@ -65,7 +65,8 @@ export interface IRPDefaultOpts extends IRPOptions {}
 export interface ICreateAuthRequestArgs {
   definitionId: string
   correlationId: string
-  redirectURI: string
+  responseURIType: ResponseURIType
+  responseURI: string
   requestByReferenceURI?: string
   nonce?: string
   state?: string
