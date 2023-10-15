@@ -1,11 +1,6 @@
 import { AuthorizationRequestState, AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
-import {
-  AuthorizationRequestStateStatus,
-  AuthStatusResponse,
-  GenerateAuthRequestURIResponse,
-  uriWithBase,
-} from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import { AuthStatusResponse, GenerateAuthRequestURIResponse, uriWithBase } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { AuthorizationResponseStateWithVerifiedData, VerifiedDataMode } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { Request, Response, Router } from 'express'
 import uuid from 'short-uuid'
@@ -77,7 +72,7 @@ export function authStatusWebappEndpoint(router: Router, context: IRequiredConte
         )
         response.statusCode = 404
         const statusBody: AuthStatusResponse = {
-          status: requestState ? requestState.status : AuthorizationRequestStateStatus.ERROR,
+          status: requestState ? requestState.status : 'error',
           error: 'No authentication request mapping could be found for the given URL.',
           correlationId,
           definitionId,
@@ -92,7 +87,7 @@ export function authStatusWebappEndpoint(router: Router, context: IRequiredConte
       }
 
       let responseState
-      if (requestState.status === AuthorizationRequestStateStatus.SENT) {
+      if (requestState.status === 'sent') {
         responseState = (await context.agent.siopGetAuthResponseState({
           correlationId,
           definitionId,
@@ -113,7 +108,7 @@ export function authStatusWebappEndpoint(router: Router, context: IRequiredConte
           : {}),
       }
       console.log(`Will send auth status: ${JSON.stringify(statusBody)}`)
-      if (overallState.status === AuthorizationRequestStateStatus.ERROR || overallState.status === AuthorizationResponseStateStatus.ERROR) {
+      if (overallState.status === 'error') {
         response.statusCode = 500
         return response.send(statusBody)
       }

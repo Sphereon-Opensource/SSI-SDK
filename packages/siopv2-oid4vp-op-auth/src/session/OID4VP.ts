@@ -1,19 +1,18 @@
+import { PresentationDefinitionWithLocation, PresentationExchange } from '@sphereon/did-auth-siop'
+import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
+import { Format } from '@sphereon/pex-models'
+import { getDID, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+
+import { ProofOptions } from '@sphereon/ssi-sdk.core'
+import { CredentialMapper, W3CVerifiableCredential } from '@sphereon/ssi-types'
+import { FindCredentialsArgs, IIdentifier } from '@veramo/core'
 import {
   DEFAULT_JWT_PROOF_TYPE,
-  IIdentifierOpts,
   VerifiableCredentialsWithDefinition,
   VerifiablePresentationWithDefinition,
 } from '../types/IDidAuthSiopOpAuthenticator'
-import { OpSession } from './OpSession'
-import { CredentialMapper, W3CVerifiableCredential } from '@sphereon/ssi-types'
-import { PresentationDefinitionWithLocation, PresentationExchange } from '@sphereon/did-auth-siop'
-import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
-
-import { ProofOptions } from '@sphereon/ssi-sdk.core'
 import { createOID4VPPresentationSignCallback } from './functions'
-import { FindCredentialsArgs, IIdentifier } from '@veramo/core'
-import { determineKid, getKey } from '@sphereon/ssi-sdk-ext.did-utils'
-import { Format } from '@sphereon/pex-models'
+import { OpSession } from './OpSession'
 
 export class OID4VP {
   private readonly session: OpSession
@@ -84,8 +83,8 @@ export class OID4VP {
       domain: opts?.proofOpts?.domain ?? (await this.session.getRedirectUri()),
     }
 
-    let id: IIdentifier | undefined = opts?.identifierOpts?.identifier
-    if (!opts?.identifierOpts?.identifier) {
+    let id: IIdentifier | string | undefined = opts?.identifierOpts?.identifier
+    if (!id) {
       if (opts?.subjectIsHolder) {
         const firstVC = CredentialMapper.toUniformCredential(selectedVerifiableCredentials.credentials[0])
         const holder = Array.isArray(firstVC.credentialSubject) ? firstVC.credentialSubject[0].id : firstVC.credentialSubject.id
@@ -108,10 +107,10 @@ export class OID4VP {
         verifiableCredentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
       },
     })
-    const key = await getKey(idOpts.identifier, 'authentication', this.session.context, idOpts.kid)
+
     const signCallback = await createOID4VPPresentationSignCallback({
       presentationSignCallback: this.session.options.presentationSignCallback,
-      kid: determineKid(key, idOpts),
+      idOpts,
       context: this.session.context,
       format: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format,
     })
@@ -121,7 +120,7 @@ export class OID4VP {
       signCallback,
       {
         proofOptions,
-        holderDID: idOpts.identifier.did,
+        holderDID: getDID(idOpts),
       }
     )
 
@@ -201,7 +200,7 @@ export class OID4VP {
       .map((vc) => (vc.proof && vc.proof.type === DEFAULT_JWT_PROOF_TYPE ? vc.proof.jwt : vc))
   }
 
-  private assertIdentifier(identifier?: IIdentifier): void {
+  private assertIdentifier(identifier?: IIdentifier | string): void {
     if (!identifier) {
       throw Error(`OID4VP needs an identifier at this point`)
     }

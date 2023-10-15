@@ -1,6 +1,5 @@
 import { AuthorizationResponsePayload, PresentationDefinitionLocation } from '@sphereon/did-auth-siop'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
-import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { Request, Response, Router } from 'express'
 import { IRequiredContext } from './types'
 
@@ -99,7 +98,7 @@ export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredC
         await context.agent.siopUpdateAuthRequestState({
           correlationId,
           definitionId,
-          state: AuthorizationRequestStateStatus.SENT,
+          state: 'sent',
           error,
         })
       }

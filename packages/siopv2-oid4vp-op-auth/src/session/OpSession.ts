@@ -1,7 +1,7 @@
 import { IIdentifier } from '@veramo/core'
 import { ResolveOpts, URI, Verification, VerificationMode, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
 import { IOPOptions, IOpSessionArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
-import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
+import { getAgentDIDMethods, getAgentResolver, getDID } from '@sphereon/ssi-sdk-ext.did-utils'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
 import { CredentialMapper } from '@sphereon/ssi-types'
@@ -155,9 +155,10 @@ export class OpSession {
       context: this.context,
     })
 
+    let issuer = args.responseSignerOpts?.identifier ? getDID(args.responseSignerOpts) : undefined
     const responseOpts = {
       verification,
-      issuer: args.responseSignerOpts?.identifier.did,
+      issuer,
       ...(args.verifiablePresentations && {
         presentationExchange: {
           verifiablePresentations,

@@ -9,17 +9,17 @@ import {
   SupportedVersion,
 } from '@sphereon/did-auth-siop'
 import { Format } from '@sphereon/pex-models'
-import { determineKid, getAgentDIDMethods, getAgentResolver, getKey } from '@sphereon/ssi-sdk-ext.did-utils'
+import { determineKid, getAgentDIDMethods, getAgentResolver, getDID, getIdentifier, getKey, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { createPEXPresentationSignCallback } from '@sphereon/ssi-sdk.presentation-exchange'
 import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
 import { TKeyType } from '@veramo/core'
 import { EventEmitter } from 'events'
-import { IIdentifierOpts, IOPOptions, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
+import { IOPOptions, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
 
 export async function createOID4VPPresentationSignCallback({
   presentationSignCallback,
-  kid,
+  idOpts,
   domain,
   fetchRemoteContexts,
   challenge,
@@ -27,7 +27,7 @@ export async function createOID4VPPresentationSignCallback({
   context,
 }: {
   presentationSignCallback?: PresentationSignCallback
-  kid: string
+  idOpts: IIdentifierOpts
   domain?: string
   challenge?: string
   fetchRemoteContexts?: boolean
@@ -36,24 +36,12 @@ export async function createOID4VPPresentationSignCallback({
 }): Promise<PresentationSignCallback> {
   // fixme: Remove once IPresentation in proper form is available in PEX
   // @ts-ignore
-  return presentationSignCallback
-    ? presentationSignCallback
-    : createPEXPresentationSignCallback({ kid, fetchRemoteContexts, domain, challenge, format }, context)
 
-  /*async (args: PresentationSignCallBackParams): Promise<W3CVerifiablePresentation> => {
-        const presentation: PresentationPayload = args.presentation as PresentationPayload
-        const format = args.presentationDefinition.format
+  if (typeof presentationSignCallback === 'function') {
+    return presentationSignCallback
+  }
 
-        const vp = await context.agent.createVerifiablePresentation({
-          presentation,
-          keyRef: kid,
-          domain,
-          challenge,
-          fetchRemoteContexts: true,
-          proofFormat: format && (format.ldp || format.ldp_vp) ? 'lds' : 'jwt',
-        })
-        return vp as W3CVerifiablePresentation
-      }*/
+  return createPEXPresentationSignCallback({ idOpts, fetchRemoteContexts, domain, challenge, format }, context)
 }
 
 export async function createOPBuilder({
@@ -103,19 +91,19 @@ export async function createOPBuilder({
   builder.withWellknownDIDVerifyCallback(wellknownDIDVerifyCallback)
 
   if (idOpts && idOpts.identifier) {
-    const key = await getKey(idOpts.identifier, idOpts.verificationMethodSection, context, idOpts.kid)
+    const key = await getKey(await getIdentifier(idOpts, context), idOpts.verificationMethodSection, context, idOpts.kid)
     const kid = determineKid(key, idOpts)
 
     builder.withSuppliedSignature(
       SuppliedSigner(key, context, getSigningAlgo(key.type) as unknown as KeyAlgo),
-      idOpts.identifier.did,
+      getDID(idOpts),
       kid,
       getSigningAlgo(key.type)
     )
     builder.withPresentationSignCallback(
       await createOID4VPPresentationSignCallback({
         presentationSignCallback: opOptions.presentationSignCallback,
-        kid,
+        idOpts,
         context,
       })
     )
