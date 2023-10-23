@@ -2,7 +2,7 @@ import { dereferenceDidKeysWithJwkSupport, getAgentResolver, getIdentifier, getK
 import { IPEXOptions, IPEXPresentationSignCallback, IRequiredContext } from './types/IPresentationExchange'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { PresentationPayload, ProofFormat } from '@veramo/core'
-import { CredentialMapper, Optional, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { CredentialMapper, Optional, OriginalVerifiablePresentation, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { Format } from '@sphereon/pex-models'
 
 export async function getPresentationDefinition(pexOptions?: IPEXOptions): Promise<IPresentationDefinition | undefined> {
@@ -72,7 +72,7 @@ export async function createPEXPresentationSignCallback(
 
     const vp = await context.agent.createVerifiablePresentation({
       presentation: presentation as PresentationPayload,
-      removeOriginalFields: false,
+      removeOriginalFields: true,
       keyRef: key.kid,
       domain: domain ?? args.domain,
       challenge: challenge ?? args.challenge,
@@ -81,6 +81,6 @@ export async function createPEXPresentationSignCallback(
       header,
     })
     // makes sure we extract an actual JWT from the internal representation in case it is a JWT
-    return CredentialMapper.storedPresentationToOriginalFormat(vp as W3CVerifiablePresentation)
+    return CredentialMapper.storedPresentationToOriginalFormat(vp as OriginalVerifiablePresentation)
   }
 }

@@ -12,7 +12,7 @@
 
 ---
 
-A Veramo issuance branding plugin. This plugin manages issuer and credential branding and persists them. The branding can be used to display an issuer or a credential.
+A Sphereon SSI issuance branding plugin. This plugin manages issuer and credential branding and persists them. The branding can be used to display an issuer or a credential.
 
 ## Available functions
 

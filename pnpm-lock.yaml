@@ -741,8 +741,8 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@sphereon/pex':
-        specifier: 2.2.0
-        version: 2.2.0
+        specifier: 2.2.1-unstable.0
+        version: 2.2.1-unstable.0
       '@sphereon/pex-models':
         specifier: ^2.1.1
         version: 2.1.1
@@ -920,8 +920,8 @@ importers:
   packages/presentation-exchange:
     dependencies:
       '@sphereon/pex':
-        specifier: 2.2.0
-        version: 2.2.0
+        specifier: 2.2.1-unstable.0
+        version: 2.2.1-unstable.0
       '@sphereon/pex-models':
         specifier: ^2.1.1
         version: 2.1.1
@@ -1027,8 +1027,8 @@ importers:
   packages/siopv2-oid4vp-common:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.5.0-unstable.5
-        version: 0.5.0-unstable.5
+        specifier: 0.5.0-unstable.7
+        version: 0.5.0-unstable.7
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1046,11 +1046,11 @@ importers:
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.5.0-unstable.5
-        version: 0.5.0-unstable.5
+        specifier: 0.5.0-unstable.7
+        version: 0.5.0-unstable.7
       '@sphereon/pex':
-        specifier: 2.2.0
-        version: 2.2.0
+        specifier: 2.2.1-unstable.0
+        version: 2.2.1-unstable.0
       '@sphereon/pex-models':
         specifier: 2.1.1
         version: 2.1.1
@@ -1119,11 +1119,11 @@ importers:
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.5.0-unstable.5
-        version: 0.5.0-unstable.5
+        specifier: 0.5.0-unstable.7
+        version: 0.5.0-unstable.7
       '@sphereon/pex':
-        specifier: 2.2.0
-        version: 2.2.0
+        specifier: 2.2.1-unstable.0
+        version: 2.2.1-unstable.0
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.15.0
         version: 0.15.0(expo-crypto@12.6.0)(expo@49.0.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -1183,8 +1183,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.5.0-unstable.5
-        version: 0.5.0-unstable.5
+        specifier: 0.5.0-unstable.7
+        version: 0.5.0-unstable.7
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1244,8 +1244,8 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@sphereon/pex':
-        specifier: 2.2.0
-        version: 2.2.0
+        specifier: 2.2.1-unstable.0
+        version: 2.2.1-unstable.0
       '@sphereon/pex-models':
         specifier: ^2.1.1
         version: 2.1.1
@@ -2123,8 +2123,8 @@ importers:
   packages/w3c-vc-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.5.0-unstable.5
-        version: 0.5.0-unstable.5
+        specifier: 0.5.0-unstable.7
+        version: 0.5.0-unstable.7
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -6841,13 +6841,13 @@ packages:
       '@sinonjs/commons': 1.8.6
     dev: true
 
-  /@sphereon/did-auth-siop@0.5.0-unstable.5:
-    resolution: {integrity: sha512-9a//Y1dlRA+8HfmhPcrev4yWgCoGGUkDXd/cV/JUZ/5CkNhFbdYfmjnIXqyAwZJdp9qHc4BS8tcmqk61BOF4tQ==}
+  /@sphereon/did-auth-siop@0.5.0-unstable.7:
+    resolution: {integrity: sha512-Yq/NqrRTin85zkJA1//EzZ8j+hwt1Aw5YK2crN0MRhW6Oo3eoAuhLygCJNvy81hkwgawd8MuP9Bf6rk9vHsFsA==}
     engines: {node: '>=16'}
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sphereon/did-uni-client': 0.6.0
-      '@sphereon/pex': 2.2.0
+      '@sphereon/pex': 2.2.1-unstable.0
       '@sphereon/pex-models': 2.1.1
       '@sphereon/ssi-types': link:packages/ssi-types
       '@sphereon/wellknown-dids-client': 0.1.3
@@ -6999,8 +6999,8 @@ packages:
   /@sphereon/pex-models@2.1.1:
     resolution: {integrity: sha512-0UX/CMwgiJSxzuBn6SLOTSKkm+uPq3dkNjl8w4EtppXp6zBB4lQMd1mJX7OifX5Bp5vPUfoz7bj2B+yyDtbZww==}
 
-  /@sphereon/pex@2.2.0:
-    resolution: {integrity: sha512-NSEyrzWorPb9K5XuznoUMsI3N4S+0xHxPtUaRP/Zkf1hfOJ7Tj+D5XsOslq171DMoTfVVvYQgha4IL2l3ukZdw==}
+  /@sphereon/pex@2.2.1-unstable.0:
+    resolution: {integrity: sha512-gAO4+pUSdN+kDHaB1D7oCSn1AZcKOeH3IXv7NdPkf1U4J/sJpLEXA46gsG8SBTX4e45CRGwt8c5F7vPmIwX7XQ==}
     engines: {node: '>=16'}
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2

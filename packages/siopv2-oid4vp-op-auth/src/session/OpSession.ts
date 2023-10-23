@@ -1,10 +1,11 @@
-import { IIdentifier } from '@veramo/core'
-import { ResolveOpts, URI, Verification, VerificationMode, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
-import { IOPOptions, IOpSessionArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
+import { CheckLinkedDomain, ResolveOpts, URI, Verification, VerificationMode, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
+import { PresentationExchangeResponseOpts } from '@sphereon/did-auth-siop/dist/authorization-response'
 import { getAgentDIDMethods, getAgentResolver, getDID } from '@sphereon/ssi-sdk-ext.did-utils'
+import { CredentialMapper } from '@sphereon/ssi-types'
+import { IIdentifier } from '@veramo/core'
+import { IOPOptions, IOpSessionArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
-import { CredentialMapper } from '@sphereon/ssi-types'
 
 export class OpSession {
   public readonly ts = new Date().getDate()
@@ -113,8 +114,8 @@ export class OpSession {
   }
 
   /*private async getMergedRequestPayload(): Promise<RequestObjectPayload> {
-        return await (await this.getAuthorizationRequest()).authorizationRequest.mergedPayloads()
-      }*/
+          return await (await this.getAuthorizationRequest()).authorizationRequest.mergedPayloads()
+        }*/
   public async sendAuthorizationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
     const resolveOpts: ResolveOpts = this.options.resolveOpts ?? {
       resolver: getAgentResolver(this.context, {
@@ -128,6 +129,7 @@ export class OpSession {
     }
     const verification: Verification = {
       mode: VerificationMode.INTERNAL,
+      checkLinkedDomain: CheckLinkedDomain.IF_PRESENT,
       resolveOpts,
     }
 
@@ -135,11 +137,12 @@ export class OpSession {
     const hasDefinitions = await this.hasPresentationDefinitions()
     if (hasDefinitions) {
       if (
-        request.presentationDefinitions &&
-        (!args.verifiablePresentations || args.verifiablePresentations.length !== request.presentationDefinitions.length)
+        !request.presentationDefinitions ||
+        !args.verifiablePresentations ||
+        args.verifiablePresentations.length !== request.presentationDefinitions.length
       ) {
         throw Error(
-          `Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${request.presentationDefinitions.length}`
+          `Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${request.presentationDefinitions?.length}`
         )
       } else if (!args.presentationSubmission) {
         throw Error(`Presentation submission is required when verifiable presentations are required`)
@@ -150,7 +153,14 @@ export class OpSession {
       ? args.verifiablePresentations.map((vp) => CredentialMapper.storedPresentationToOriginalFormat(vp))
       : []
     const op = await createOP({
-      opOptions: { ...this.options, supportedVersions: request.versions },
+      opOptions: {
+        ...this.options,
+        resolveOpts: { ...this.options.resolveOpts },
+        eventEmitter: this.options.eventEmitter,
+        presentationSignCallback: this.options.presentationSignCallback,
+        wellknownDIDVerifyCallback: this.options.wellknownDIDVerifyCallback,
+        supportedVersions: request.versions,
+      },
       idOpts: args.responseSignerOpts,
       context: this.context,
     })
@@ -163,7 +173,7 @@ export class OpSession {
         presentationExchange: {
           verifiablePresentations,
           presentationSubmission: args.presentationSubmission,
-        },
+        } as PresentationExchangeResponseOpts,
       }),
     }
 

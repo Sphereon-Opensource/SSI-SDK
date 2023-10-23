@@ -68,7 +68,7 @@ export class OID4VP {
     }
   ): Promise<VerifiablePresentationWithDefinition> {
     if (opts?.subjectIsHolder && opts?.holderDID) {
-      throw Error('Cannot both have subject is issuer and a holderDID value at the same time (programming error)')
+      throw Error('Cannot both have subject is holder and a holderDID value at the same time (programming error)')
     } else if (
       !selectedVerifiableCredentials ||
       !selectedVerifiableCredentials.credentials ||
@@ -79,7 +79,7 @@ export class OID4VP {
 
     const proofOptions: ProofOptions = {
       ...opts?.proofOpts,
-      challenge: opts?.proofOpts?.challenge ?? this.session.nonce,
+      challenge: opts?.proofOpts?.nonce ?? opts?.proofOpts?.challenge ?? this.session.nonce,
       domain: opts?.proofOpts?.domain ?? (await this.session.getRedirectUri()),
     }
 
@@ -112,6 +112,8 @@ export class OID4VP {
       presentationSignCallback: this.session.options.presentationSignCallback,
       idOpts,
       context: this.session.context,
+      domain: proofOptions.domain,
+      challenge: proofOptions.challenge,
       format: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format,
     })
     const presentationResult = await this.getPresentationExchange(vcs.credentials, this.allDIDs).createVerifiablePresentation(

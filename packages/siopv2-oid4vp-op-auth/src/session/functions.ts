@@ -34,9 +34,6 @@ export async function createOID4VPPresentationSignCallback({
   format?: Format
   context: IRequiredContext
 }): Promise<PresentationSignCallback> {
-  // fixme: Remove once IPresentation in proper form is available in PEX
-  // @ts-ignore
-
   if (typeof presentationSignCallback === 'function') {
     return presentationSignCallback
   }
