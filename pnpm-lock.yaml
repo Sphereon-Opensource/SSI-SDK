@@ -2186,6 +2186,12 @@ importers:
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.15.0
         version: 0.15.0
+      '@sphereon/ssi-sdk-ext.key-manager':
+        specifier: 0.15.0
+        version: 0.15.0(expo-crypto@12.6.0)(expo@49.0.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.kms-local':
+        specifier: 0.15.0
+        version: 0.15.0(expo-crypto@12.6.0)(expo@49.0.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2264,6 +2270,9 @@ importers:
       did-resolver:
         specifier: ^4.1.0
         version: 4.1.0
+      jose:
+        specifier: ^5.1.0
+        version: 5.1.0
       morgan:
         specifier: ^1.10.0
         version: 1.10.0
@@ -15238,6 +15247,10 @@ packages:
 
   /jose@4.14.6:
     resolution: {integrity: sha512-EqJPEUlZD0/CSUMubKtMaYUOtWe91tZXTWMJZoKSbLk+KtdhNdcvppH8lA9XwVu2V4Ailvsj0GBZJ2ZwDjfesQ==}
+
+  /jose@5.1.0:
+    resolution: {integrity: sha512-H+RVqxA6apaJ0rcQYupKYhos7uosAiF42gUcWZiwhICWMphDULFj/CRr1R0tV/JCv9DEeJaSyYYpc9luHHNT4g==}
+    dev: true
 
   /js-sha256@0.9.0:
     resolution: {integrity: sha512-sga3MHh9sgQN2+pJ9VYZ+1LPwXOxuBJBA5nrR5/ofPfuiJBE2hnjsaN8se8JznOmGLN2p49Pe5U/ttafcs/apA==}

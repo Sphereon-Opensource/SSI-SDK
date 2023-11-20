@@ -1,10 +1,12 @@
 // import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
-import { getUniResolver } from '@sphereon/did-uni-client'
-import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
-import { getDidJwkResolver } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
-import { ExpressBuilder } from '@sphereon/ssi-express-support'
-import { DataSources } from '@sphereon/ssi-sdk.agent-config'
-import { IPresentationExchange, PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
+import {getUniResolver} from '@sphereon/did-uni-client'
+import {ExpressBuilder} from '@sphereon/ssi-express-support'
+import {JwkDIDProvider} from '@sphereon/ssi-sdk-ext.did-provider-jwk'
+import {getDidJwkResolver} from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
+import {SphereonKeyManager} from "@sphereon/ssi-sdk-ext.key-manager";
+import {SphereonKeyManagementSystem} from "@sphereon/ssi-sdk-ext.kms-local";
+import {DataSources} from '@sphereon/ssi-sdk.agent-config'
+import {IPresentationExchange, PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
 import {
   CredentialHandlerLDLocal,
   ICredentialHandlerLDLocal,
@@ -16,25 +18,33 @@ import {
   SphereonEd25519Signature2020,
   SphereonJsonWebSignature2020,
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
-import { createAgent, ICredentialPlugin, ICredentialVerifier, IDataStore, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
-import { CredentialPlugin } from '@veramo/credential-w3c'
-import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
-import { DIDManager } from '@veramo/did-manager'
-import { EthrDIDProvider } from '@veramo/did-provider-ethr'
-import { getDidIonResolver, IonDIDProvider } from '@veramo/did-provider-ion'
-import { getDidKeyResolver, KeyDIDProvider } from '@veramo/did-provider-key'
-import { DIDResolverPlugin } from '@veramo/did-resolver'
-import { KeyManager } from '@veramo/key-manager'
-import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
+import {
+  createAgent,
+  ICredentialPlugin,
+  ICredentialVerifier,
+  IDataStore,
+  IDataStoreORM,
+  IDIDManager,
+  IKeyManager,
+  IResolver
+} from '@veramo/core'
+import {CredentialPlugin} from '@veramo/credential-w3c'
+import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@veramo/data-store'
+import {DIDManager} from '@veramo/did-manager'
+import {EthrDIDProvider} from '@veramo/did-provider-ethr'
+import {getDidIonResolver, IonDIDProvider} from '@veramo/did-provider-ion'
+import {getDidKeyResolver, KeyDIDProvider} from '@veramo/did-provider-key'
+import {DIDResolverPlugin} from '@veramo/did-resolver'
+import {SecretBox} from '@veramo/kms-local'
 import Debug from 'debug'
-import { Resolver } from 'did-resolver'
+import {Resolver} from 'did-resolver'
 
 import passport from 'passport'
-import { ITokenPayload, VerifyCallback } from 'passport-azure-ad/common'
-import { VcApiServer } from '../src'
+import {ITokenPayload, VerifyCallback} from 'passport-azure-ad/common'
+import {VcApiServer} from '../src'
 
 import config from './config.json'
-import { DB_CONNECTION_NAME_POSTGRES, DB_ENCRYPTION_KEY, postgresConfig } from './database'
+import {DB_CONNECTION_NAME_SQLITE, DB_ENCRYPTION_KEY, sqliteConfig} from './database'
 
 const debug = Debug('sphereon:vc-api')
 
@@ -55,9 +65,9 @@ export enum SupportedDidMethodEnum {
   DID_JWK = 'jwk',
 }
 
-const PRIVATE_KEY_HEX =
-  'ea6aaeebe17557e0fe256bfce08e8224a412ea1e25a5ec8b5d69618a58bad89e89a4661e446b46401325a38d3b20582d1dd277eb448a3181012a671b7ae15837'
-const PUBLIC_KEY_HEX = '89a4661e446b46401325a38d3b20582d1dd277eb448a3181012a671b7ae15837'
+export const PRIVATE_KEY_HEX =
+  'a5e81a8cd50cf5c31d5b87db3e153e2817f86de350a60edc2335f76d5c3b4e0d'
+export const PUBLIC_KEY_HEX = '02cfc48d497317d51e9e4cacc91a6f80ede8c07c596e0e588726ea2039a3ec0c34'
 
 /*const RP_PRIVATE_KEY_HEX = '7dd923e40f4615ac496119f7e793cc2899e99b64b88ca8603db986700089532b'
 const RP_PUBLIC_KEY_HEX = '04a23cb4c83901acc2eb0f852599610de0caeac260bf8ed05e7f902eaac0f9c8d74dd4841b94d13424d32af8ec0e9976db9abfa7e3a59e10d565c5d4d901b4be63'*/
@@ -95,9 +105,9 @@ export const didProviders = {
 }
 
 const dbConnection = DataSources.singleInstance()
-  .addConfig(DB_CONNECTION_NAME_POSTGRES, postgresConfig)
+  .addConfig(DB_CONNECTION_NAME_SQLITE, sqliteConfig)
   // .addConfig(DB_CONNECTION_NAME_SQLITE, sqliteConfig)
-  .getDbConnection(DB_CONNECTION_NAME_POSTGRES)
+  .getDbConnection(DB_CONNECTION_NAME_SQLITE)
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
 const agent = createAgent<
@@ -114,10 +124,10 @@ const agent = createAgent<
   plugins: [
     new DataStore(dbConnection),
     new DataStoreORM(dbConnection),
-    new KeyManager({
+    new SphereonKeyManager({
       store: new KeyStore(dbConnection),
       kms: {
-        local: new KeyManagementSystem(privateKeyStore),
+        local: new SphereonKeyManagementSystem(privateKeyStore),
       },
     }),
     new DIDManager({
@@ -189,7 +199,7 @@ agent
     provider: 'did:jwk',
     alias: 'test',
     options: {
-      type: 'Ed25519',
+      type: 'Secp256r1',
       key: {
         privateKeyHex: PRIVATE_KEY_HEX,
       },
@@ -224,7 +234,7 @@ agent
         },
         issueCredentialOpts: {
           enableFeatures: ['vc-issue', 'vc-persist', 'vc-verify'],
-          proofFormat: 'lds',
+          proofFormat: 'jwt',
           fetchRemoteContexts: true,
           persistIssuedCredentials: true,
           keyRef: PUBLIC_KEY_HEX,
