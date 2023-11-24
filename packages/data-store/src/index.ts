@@ -29,7 +29,7 @@ export { AbstractContactStore } from './contact/AbstractContactStore'
 export { AbstractIssuanceBrandingStore } from './issuanceBranding/AbstractIssuanceBrandingStore'
 export { IssuanceBrandingStore } from './issuanceBranding/IssuanceBrandingStore'
 export { StatusListStore } from './statusList/StatusListStore'
-export { DataStoreMigrations, enableUuidv4 } from './migrations'
+export { DataStoreMigrations } from './migrations'
 export * from './types'
 export * from './utils/contact/MappingUtils'
 

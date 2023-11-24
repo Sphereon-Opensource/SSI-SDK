@@ -1,2 +1,2 @@
 export { DataStoreMigrations } from './generic'
-export { enableUuidv4 } from './postgres/uuid'
+export { createQueryRunnerAdapter } from './postgres/utils'

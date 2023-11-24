@@ -357,6 +357,9 @@ importers:
 
   packages/data-store:
     dependencies:
+      '@sphereon/ssi-sdk.core':
+        specifier: workspace:*
+        version: link:../ssi-sdk-core
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -6309,7 +6312,7 @@ packages:
       '@octokit/request-error': 3.0.3
       '@octokit/types': 9.3.2
       is-plain-object: 5.0.0
-      node-fetch: 2.6.7
+      node-fetch: 2.7.0
       universal-user-agent: 6.0.0
     transitivePeerDependencies:
       - encoding
