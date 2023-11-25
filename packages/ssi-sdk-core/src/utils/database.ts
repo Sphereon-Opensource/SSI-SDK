@@ -2,7 +2,9 @@ export const flattenArray = <T>(args: { items: Array<T | Array<T>> }): Array<T> 
 
 export const flattenMigrations = <T>(args: { migrations: Array<T | Array<T>> }): Array<T> => args.migrations.flat() as Array<T>
 
-// It should accept queryRunner from the typeorm
+/**
+ * It should accept queryRunner from the typeorm
+ */
 export const enablePostgresUuidExtension = async (queryRunner: any) => {
   if (!queryRunner.query) {
     throw new Error("You should pass a QueryRunner object to this function.")
