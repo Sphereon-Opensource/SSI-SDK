@@ -1,12 +1,11 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
-import { createQueryRunnerAdapter } from './utils'
 import { enablePostgresUuidExtension } from '@sphereon/ssi-sdk.core'
 
 export class CreateIssuanceBranding1685628974232 implements MigrationInterface {
   name = 'CreateIssuanceBranding1685628974232'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await enablePostgresUuidExtension(createQueryRunnerAdapter(queryRunner))
+    await enablePostgresUuidExtension(queryRunner)
     await queryRunner.query(
       `CREATE TABLE "ImageDimensions" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "width" integer NOT NULL, "height" integer NOT NULL, CONSTRAINT "PK_ImageDimensions_id" PRIMARY KEY ("id"))`
     )
