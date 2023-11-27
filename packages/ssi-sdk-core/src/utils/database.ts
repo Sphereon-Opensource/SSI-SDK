@@ -7,6 +7,9 @@ type QueryRunnerType = {
     query(query: string, parameters?: any[]): Promise<any>
 }
 
+/**
+ * It should accept the type QueryRunner from the typeorm
+ */
 export const enablePostgresUuidExtension = async (queryRunner: QueryRunnerType) => {
   try {
     await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
