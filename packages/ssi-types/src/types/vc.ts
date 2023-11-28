@@ -1,5 +1,6 @@
 import { PresentationSubmission } from './pex'
 import { IProofPurpose, IProofType } from './did'
+import { SdJwtDecodedVerifiableCredential, SdJwtDecodedVerifiableCredentialPayload, SdJwtDecodedVerifiablePresentation } from './sd-jwt-vc'
 
 export type AdditionalClaims = Record<string, any>
 
@@ -83,7 +84,12 @@ export type IVerifiableCredential = ICredential & IHasProof
 export type CompactJWT = string
 
 /**
- * Represents a signed Verifiable Credential (includes proof), in either JSON or compact JWT format.
+ * Represents a selective disclosure JWT vc in compact form.
+ */
+export type CompactSdJwtVc = string
+
+/**
+ * Represents a signed Verifiable Credential (includes proof), in either JSON, compact JWT or compact SD-JWT VC format.
  * See {@link https://www.w3.org/TR/vc-data-model/#credentials | VC data model}
  * See {@link https://www.w3.org/TR/vc-data-model/#proof-formats | proof formats}
  */
@@ -116,11 +122,11 @@ export interface WrappedVerifiableCredential {
    */
   original: OriginalVerifiableCredential
   /**
-   * In case of JWT credential it will be the decoded version. In other cases it will be the same as original one
+   * In case of JWT or SD-JWT credential it will be the decoded version. In other cases it will be the same as original one
    */
-  decoded: JwtDecodedVerifiableCredential | IVerifiableCredential
+  decoded: JwtDecodedVerifiableCredential | SdJwtDecodedVerifiableCredentialPayload | IVerifiableCredential
   /**
-   * Type of this credential. Supported types are json-ld and jwt (decoded/encoded)
+   * Type of this credential. Supported types are json-ld, jwt (decoded/encoded), and sd-jwt-vc (decoded/encoded)
    */
   type: OriginalType
   /**
@@ -130,7 +136,7 @@ export interface WrappedVerifiableCredential {
   /**
    * Internal stable representation of a Credential
    */
-  credential: IVerifiableCredential
+  credential: IVerifiableCredential | SdJwtDecodedVerifiableCredentialPayload
 }
 
 export interface WrappedVerifiablePresentation {
@@ -139,11 +145,11 @@ export interface WrappedVerifiablePresentation {
    */
   original: OriginalVerifiablePresentation
   /**
-   * In case of JWT VP it will be the decoded version. In other cases it will be the same as original one
+   * In case of JWT VP or SD-JWT presentation it will be the decoded version. In other cases it will be the same as original one
    */
-  decoded: JwtDecodedVerifiablePresentation | IVerifiablePresentation
+  decoded: JwtDecodedVerifiablePresentation | SdJwtDecodedVerifiableCredentialPayload | IVerifiablePresentation
   /**
-   * Type of this Presentation. Supported types are json-ld and jwt (decoded/encoded)
+   * Type of this Presentation. Supported types are json-ld and jwt (decoded/encoded) and sd-jwt-vc (decoded/encoded)
    */
   type: OriginalType
   /**
@@ -153,7 +159,7 @@ export interface WrappedVerifiablePresentation {
   /**
    * Internal stable representation of a Presentation without proofs, created based on https://www.w3.org/TR/vc-data-model/#jwt-decoding
    */
-  presentation: UniformVerifiablePresentation
+  presentation: UniformVerifiablePresentation | SdJwtDecodedVerifiableCredentialPayload
   /**
    * Wrapped Verifiable Credentials belonging to the Presentation
    */
@@ -164,6 +170,8 @@ export enum OriginalType {
   JSONLD = 'json-ld',
   JWT_ENCODED = 'jwt-encoded',
   JWT_DECODED = 'jwt-decoded',
+  SD_JWT_VC_ENCODED = 'sd-jwt-vc-encoded',
+  SD_JWT_VC_DECODED = 'sd-jwt-vc-decoded',
 }
 
 export interface UniformVerifiablePresentation {
@@ -198,18 +206,19 @@ export interface JwtDecodedVerifiablePresentation {
   [x: string]: any
 }
 
-export type CredentialFormat = 'jwt' | 'ldp' | 'jwt_vc' | 'ldp_vc' | string
-export type PresentationFormat = 'jwt' | 'ldp' | 'jwt_vp' | 'ldp_vp' | string
+export type CredentialFormat = 'jwt' | 'ldp' | 'jwt_vc' | 'ldp_vc' | 'vc+sd-jwt' | string
+export type PresentationFormat = 'jwt' | 'ldp' | 'jwt_vp' | 'ldp_vp' | 'vc+sd-jwt' | string
 export type ClaimFormat = CredentialFormat | PresentationFormat
 
-export type OriginalVerifiableCredential = W3CVerifiableCredential | JwtDecodedVerifiableCredential
-export type OriginalVerifiablePresentation = W3CVerifiablePresentation | JwtDecodedVerifiablePresentation
+export type OriginalVerifiableCredential = W3CVerifiableCredential | JwtDecodedVerifiableCredential | SdJwtDecodedVerifiableCredential
+export type OriginalVerifiablePresentation = W3CVerifiablePresentation | JwtDecodedVerifiablePresentation | SdJwtDecodedVerifiablePresentation
 export type Original = OriginalVerifiablePresentation | OriginalVerifiableCredential
 
 export const enum DocumentFormat {
   JWT,
   JSONLD,
   EIP712,
+  SD_JWT_VC,
 }
 
 export const JWT_PROOF_TYPE_2020 = 'JwtProof2020'
