@@ -87,9 +87,8 @@ export class CredentialMapper {
         original: originalPresentation,
         presentation: originalPresentation.decodedPayload,
         decoded: originalPresentation.decodedPayload,
-        // NOTE: the SD-JWT IS the credential as well as the presentation, but maybe the SD-JWT payload should be the credential
-        // while the KB-JWT is the presentation?
-        vcs: [],
+        // NOTE: we also include the SD-JWT VC as the VC, as the SD-JWT acts as both the VC and the VP
+        vcs: [CredentialMapper.toWrappedVerifiableCredential(originalPresentation)],
       }
     }
     const proof = CredentialMapper.getFirstProof(originalPresentation)

@@ -72,6 +72,18 @@ export interface SdJwtDecodedVerifiablePresentation extends SdJwtDecodedVerifiab
   compactKbJwt?: string
 }
 
+export type SdJwtDecodedDisclosure = [string, string, JsonValue] | [string, JsonValue]
+export interface SdJwtDisclosure {
+  // The encoded disclosure
+  encoded: string
+
+  // The decoded disclosure, in format [salt, claim, value] or in case of array entry [salt, value]
+  decoded: SdJwtDecodedDisclosure
+
+  // Digest over disclosure, can be used to match against a value within the SD JWT payload
+  digest: string
+}
+
 /**
  * The decoded SD JWT Verifiable Credential. This representation includes multiple representations of the
  * same SD-JWT, and allows to fully process an SD-JWT, as well as create a presentation SD-JWT  (minus the KB-JWT) by removing
@@ -91,16 +103,7 @@ export interface SdJwtDecodedVerifiableCredential {
    * The digests are also included, and allows the disclosures to be linked against
    * the digests in the signed payload.
    */
-  disclosures: Array<{
-    // The encoded disclosure
-    encoded: string
-
-    // The decoded disclosure, in format [salt, claim, value] or in case of array entry [salt, value]
-    decoded: [string, string, JsonValue] | [string, JsonValue]
-
-    // Digest over disclosure, can be used to match against a value within the SD JWT payload
-    digest: string
-  }>
+  disclosures: Array<SdJwtDisclosure>
 
   /**
    * The signed payload is the payload of the sd-jwt that is actually signed, and that includes
