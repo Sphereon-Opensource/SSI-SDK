@@ -1,3 +1,6 @@
+import { OriginalType, WrappedVerifiableCredential, WrappedVerifiablePresentation } from './vc'
+import { SdJwtVc } from '@sd-jwt/core'
+import { swapClaims } from '@sd-jwt/core/build/sdJwt/swapClaim'
 type JsonValue = string | number | boolean | { [x: string]: JsonValue | undefined } | Array<JsonValue>
 
 type SdJwtJsonValue =
@@ -34,6 +37,11 @@ export interface SdJwtDecodedVerifiableCredentialPayload {
 }
 
 /**
+ * Represents a selective disclosure JWT vc in compact form.
+ */
+export type CompactSdJwtVc = string
+
+/**
  * The signed payload of an SD-JWT. Includes fields such as `_sd`, `...` and `_sd_alg`
  */
 interface SdJwtSignedVerifiableCredentialPayload extends SdJwtDecodedVerifiableCredentialPayload {
@@ -58,18 +66,6 @@ export interface SdJwtCredentialInput extends SdJwtDecodedVerifiableCredentialPa
    * Will be removed from the actual SD-JWT payload before signing
    */
   __disclosureFrame?: SdJwtDisclosureFrame
-}
-
-/**
- * The presentation of an SD-JWT. It is the same as an SD-JWT credential, with the addition
- * of an optional key binding JWT that can be included.
- */
-export interface SdJwtDecodedVerifiablePresentation extends SdJwtDecodedVerifiableCredential {
-  /**
-   * Compact JWT encoding of the key binding (kb) JSON Web Token. This property will be included
-   * when the SD-JWT presentation includes a key binding JWT.
-   */
-  compactKbJwt?: string
 }
 
 export type SdJwtDecodedDisclosure = [string, string, JsonValue] | [string, JsonValue]
@@ -120,4 +116,133 @@ export interface SdJwtDecodedVerifiableCredential {
    * for querying the contents of the SD JWT VC using a PEX presentation definition path.
    */
   decodedPayload: SdJwtDecodedVerifiableCredentialPayload
+}
+
+export interface WrappedSdJwtVerifiableCredential {
+  /**
+   * Original VC that we've received. Can be either the encoded or decoded variant.
+   */
+  original: SdJwtDecodedVerifiableCredential | CompactSdJwtVc
+  /**
+   * Decoded version of the SD-JWT payload. This is the decoded payload, rather than the whole SD-JWT as the `decoded` property
+   * is used in e.g. PEX to check for path filters from fields. The full decoded credential can be found in the `credential` field.
+   */
+  decoded: SdJwtDecodedVerifiableCredentialPayload
+  /**
+   * Type of this credential.
+   */
+  type: OriginalType.SD_JWT_VC_DECODED | OriginalType.SD_JWT_VC_ENCODED
+  /**
+   * The claim format, typically used during exchange transport protocols
+   */
+  format: 'vc+sd-jwt'
+  /**
+   * Internal stable representation of a Credential
+   */
+  credential: SdJwtDecodedVerifiableCredential
+}
+
+export interface WrappedSdJwtVerifiablePresentation {
+  /**
+   * Original VP that we've received. Can be either the encoded or decoded variant.
+   */
+  original: SdJwtDecodedVerifiableCredential | CompactSdJwtVc
+  /**
+   * Decoded version of the SD-JWT payload. This is the decoded payload, rather than the whole SD-JWT.
+   */
+  decoded: SdJwtDecodedVerifiableCredentialPayload
+  /**
+   * Type of this Presentation.
+   */
+  type: OriginalType.SD_JWT_VC_DECODED | OriginalType.SD_JWT_VC_ENCODED
+  /**
+   * The claim format, typically used during exchange transport protocols
+   */
+  format: 'vc+sd-jwt'
+  /**
+   * Internal stable representation of a Presentation
+   */
+  presentation: SdJwtDecodedVerifiableCredential
+  /**
+   * Wrapped Verifiable Credentials belonging to the Presentation. Will always be an array
+   * with a single SdJwtVerifiableCredential entry.
+   */
+  vcs: [WrappedSdJwtVerifiableCredential]
+}
+
+export function isWrappedSdJwtVerifiableCredential(vc: WrappedVerifiableCredential): vc is WrappedSdJwtVerifiableCredential {
+  return vc.format === 'vc+sd-jwt'
+}
+
+export function isWrappedSdJwtVerifiablePresentation(vp: WrappedVerifiablePresentation): vp is WrappedSdJwtVerifiablePresentation {
+  return vp.format === 'vc+sd-jwt'
+}
+
+export type Hasher = (data: string, alg: string) => Uint8Array
+export type AsyncHasher = (data: string, alg: string) => Promise<Uint8Array>
+
+/**
+ * Decode an SD-JWT vc from its compact format (string) to an object containing the disclosures,
+ * signed payload, decoded payload and the compact SD-JWT vc.
+ *
+ * Both the input and output interfaces of this method are defined in `@sphereon/ssi-types`, so
+ * this method hides the actual implementation of SD-JWT (which is currently based on @sd-jwt/core)
+ */
+export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): SdJwtDecodedVerifiableCredential {
+  const sdJwtVc = SdJwtVc.fromCompact(compactSdJwtVc)
+
+  // Default (should be handled by the sd-jwt library)
+  let sdAlg = 'sha-256'
+  try {
+    sdAlg = sdJwtVc.getClaimInPayload('_sd_alg')
+  } catch {
+    /* no-op */
+  }
+
+  const disclosuresWithDigests = sdJwtVc.disclosures?.map((d) => d.withCalculateDigest((data: string) => hasher(data, sdAlg))) ?? []
+
+  return {
+    compactSdJwtVc: compactSdJwtVc,
+    decodedPayload: swapClaims(sdJwtVc.payload, disclosuresWithDigests) as SdJwtDecodedVerifiableCredentialPayload,
+    disclosures: disclosuresWithDigests.map((d) => ({
+      decoded: d.decoded as SdJwtDecodedDisclosure,
+      digest: d.digest,
+      encoded: d.encoded,
+    })),
+    signedPayload: sdJwtVc.payload as SdJwtDecodedVerifiableCredentialPayload,
+  }
+}
+
+/**
+ * Decode an SD-JWT vc from its compact format (string) to an object containing the disclosures,
+ * signed payload, decoded payload and the compact SD-JWT vc.
+ *
+ * Both the input and output interfaces of this method are defined in `@sphereon/ssi-types`, so
+ * this method hides the actual implementation of SD-JWT (which is currently based on @sd-jwt/core)
+ */
+export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher: AsyncHasher): Promise<SdJwtDecodedVerifiableCredential> {
+  const sdJwtVc = SdJwtVc.fromCompact(compactSdJwtVc)
+
+  // Default (should be handled by the sd-jwt library)
+  let sdAlg = 'sha-256'
+  try {
+    sdAlg = sdJwtVc.getClaimInPayload('_sd_alg')
+  } catch {
+    /* no-op */
+  }
+
+  const disclosuresWithDigests = await Promise.all(
+    sdJwtVc.disclosures?.map((d) => d.withCalculateDigest((data: string) => hasher(data, sdAlg))) ?? []
+  )
+
+  return {
+    compactSdJwtVc: compactSdJwtVc,
+    decodedPayload: swapClaims(sdJwtVc.payload, disclosuresWithDigests) as SdJwtDecodedVerifiableCredentialPayload,
+    disclosures: disclosuresWithDigests.map((d) => ({
+      decoded: d.decoded as SdJwtDecodedDisclosure,
+      digest: d.digest,
+      encoded: d.encoded,
+    })),
+    signedPayload: sdJwtVc.payload as SdJwtDecodedVerifiableCredentialPayload,
+  }
 }
