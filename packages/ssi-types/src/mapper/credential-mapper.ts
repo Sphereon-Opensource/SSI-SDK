@@ -154,7 +154,7 @@ export class CredentialMapper {
         presentation: decodedPresentation,
         decoded: decodedPresentation.decodedPayload,
         // NOTE: we also include the SD-JWT VC as the VC, as the SD-JWT acts as both the VC and the VP
-        vcs: [CredentialMapper.toWrappedVerifiableCredential(originalPresentation) as WrappedSdJwtVerifiableCredential],
+        vcs: [CredentialMapper.toWrappedVerifiableCredential(originalPresentation, opts) as WrappedSdJwtVerifiableCredential],
       }
     }
 
