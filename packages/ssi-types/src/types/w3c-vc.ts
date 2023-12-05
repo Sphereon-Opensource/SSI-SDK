@@ -127,7 +127,7 @@ export interface WrappedW3CVerifiableCredential {
   /**
    * The claim format, typically used during exchange transport protocols
    */
-  format: 'jwt_vc' | 'ldp_vc'
+  format: 'jwt_vc' | 'ldp_vc' | 'ldp' | 'jwt'
   /**
    * Internal stable representation of a Credential
    */
