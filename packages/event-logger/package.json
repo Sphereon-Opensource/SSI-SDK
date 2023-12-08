@@ -15,7 +15,7 @@
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk.data-store": "file://C:\\Git\\Sphereon-Opensource\\ssi-sdk\\packages\\data-store\\sphereon-ssi-sdk.data-store-0.96.38.tgz",
+    "@sphereon/ssi-sdk.data-store": "workspace:*",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
