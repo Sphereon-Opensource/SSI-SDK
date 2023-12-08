@@ -1,8 +1,8 @@
 import { CreateContacts1659463079429 } from './1-CreateContacts'
-import { CreateContacts1690925872318 } from './2-CreateContacts'
 import { CreateIssuanceBranding1659463079429 } from './2-CreateIssuanceBranding'
-import { CreateStatusList1693866470000 } from './3-CreateStatusList'
-import { CreateAuditEvents1701635835330 } from './1-CreateAuditEvents'
+import { CreateContacts1690925872318 } from './3-CreateContacts'
+import { CreateStatusList1693866470000 } from './4-CreateStatusList'
+import { CreateAuditEvents1701635835330 } from './5-CreateAuditEvents'
 
 /**
  * The migrations array that SHOULD be used when initializing a TypeORM database connection.
