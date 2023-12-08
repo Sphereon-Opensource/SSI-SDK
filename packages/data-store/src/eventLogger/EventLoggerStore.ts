@@ -34,8 +34,6 @@ export class EventLoggerStore extends AbstractEventLoggerStore {
     debug('Storing audit event', auditEventEntity)
     const createdResult: AuditEventEntity = await connection.getRepository(AuditEventEntity).save(auditEventEntity)
 
-    console.log(`EVENT DATA SAVED: ${JSON.stringify(createdResult)}`)
-
     return this.auditEventFrom(createdResult)
   }
 
