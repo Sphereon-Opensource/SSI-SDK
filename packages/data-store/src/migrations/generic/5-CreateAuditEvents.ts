@@ -1,21 +1,21 @@
 import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
-import Debug from 'debug'
-import { CreateContacts1690925872693 } from '../sqlite/1690925872693-CreateContacts'
-import { CreateContacts1690925872592 } from '../postgres/1690925872592-CreateContacts'
+import Debug, { Debugger } from 'debug'
+import { CreateAuditEvents1701634819487 } from '../sqlite/1701634819487-CreateAuditEvents'
+import { CreateAuditEvents1701634812183 } from '../postgres/1701634812183-CreateAuditEvents'
 
-const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:migrations')
+const debug: Debugger = Debug('sphereon:ssi-sdk:migrations')
 
-export class CreateContacts1690925872318 implements MigrationInterface {
-  name = 'CreateContacts1690925872318'
+export class CreateAuditEvents1701635835330 implements MigrationInterface {
+  name: string = 'CreateAuditEvents1701635835330'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    debug('migration: creating contacts tables')
+    debug('migration: creating audit events tables')
     const dbType: DatabaseType = queryRunner.connection.driver.options.type
 
     switch (dbType) {
       case 'postgres': {
         debug('using postgres migration file')
-        const mig: CreateContacts1690925872592 = new CreateContacts1690925872592()
+        const mig: CreateAuditEvents1701634812183 = new CreateAuditEvents1701634812183()
         await mig.up(queryRunner)
         debug('Migration statements executed')
         return
@@ -24,26 +24,26 @@ export class CreateContacts1690925872318 implements MigrationInterface {
       case 'expo':
       case 'react-native': {
         debug('using sqlite/react-native migration file')
-        const mig: CreateContacts1690925872693 = new CreateContacts1690925872693()
+        const mig: CreateAuditEvents1701634819487 = new CreateAuditEvents1701634819487()
         await mig.up(queryRunner)
         debug('Migration statements executed')
         return
       }
       default:
         return Promise.reject(
-          `Migrations are currently only supported for sqlite, react-native, expor and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`
+          `Migrations are currently only supported for sqlite, react-native, expo and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`
         )
     }
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    debug('migration: reverting contacts tables')
+    debug('migration: reverting audit events tables')
     const dbType: DatabaseType = queryRunner.connection.driver.options.type
 
     switch (dbType) {
       case 'postgres': {
         debug('using postgres migration file')
-        const mig: CreateContacts1690925872592 = new CreateContacts1690925872592()
+        const mig: CreateAuditEvents1701634812183 = new CreateAuditEvents1701634812183()
         await mig.down(queryRunner)
         debug('Migration statements executed')
         return
@@ -52,14 +52,14 @@ export class CreateContacts1690925872318 implements MigrationInterface {
       case 'expo':
       case 'react-native': {
         debug('using sqlite/react-native migration file')
-        const mig: CreateContacts1690925872693 = new CreateContacts1690925872693()
+        const mig: CreateAuditEvents1701634819487 = new CreateAuditEvents1701634819487()
         await mig.down(queryRunner)
         debug('Migration statements executed')
         return
       }
       default:
         return Promise.reject(
-          `Migrations are currently only supported for sqlite, react-native, expor and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`
+          `Migrations are currently only supported for sqlite, react-native, expo and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`
         )
     }
   }

@@ -1,20 +1,21 @@
 import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import Debug from 'debug'
-import { CreateIssuanceBranding1685628974232 } from '../postgres/1685628974232-CreateIssuanceBranding'
-import { CreateIssuanceBranding1685628973231 } from '../sqlite/1685628973231-CreateIssuanceBranding'
+import { CreateContacts1690925872693 } from '../sqlite/1690925872693-CreateContacts'
+import { CreateContacts1690925872592 } from '../postgres/1690925872592-CreateContacts'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:migrations')
 
-export class CreateIssuanceBranding1659463079429 implements MigrationInterface {
-  name = 'CreateIssuanceBranding1659463079429'
+export class CreateContacts1690925872318 implements MigrationInterface {
+  name = 'CreateContacts1690925872318'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    debug('migration: creating issuance branding tables')
+    debug('migration: creating contacts tables')
     const dbType: DatabaseType = queryRunner.connection.driver.options.type
+
     switch (dbType) {
       case 'postgres': {
         debug('using postgres migration file')
-        const mig: CreateIssuanceBranding1685628974232 = new CreateIssuanceBranding1685628974232()
+        const mig: CreateContacts1690925872592 = new CreateContacts1690925872592()
         await mig.up(queryRunner)
         debug('Migration statements executed')
         return
@@ -23,7 +24,7 @@ export class CreateIssuanceBranding1659463079429 implements MigrationInterface {
       case 'expo':
       case 'react-native': {
         debug('using sqlite/react-native migration file')
-        const mig: CreateIssuanceBranding1685628973231 = new CreateIssuanceBranding1685628973231()
+        const mig: CreateContacts1690925872693 = new CreateContacts1690925872693()
         await mig.up(queryRunner)
         debug('Migration statements executed')
         return
@@ -36,12 +37,13 @@ export class CreateIssuanceBranding1659463079429 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    debug('migration: reverting issuance branding tables')
+    debug('migration: reverting contacts tables')
     const dbType: DatabaseType = queryRunner.connection.driver.options.type
+
     switch (dbType) {
       case 'postgres': {
         debug('using postgres migration file')
-        const mig: CreateIssuanceBranding1685628974232 = new CreateIssuanceBranding1685628974232()
+        const mig: CreateContacts1690925872592 = new CreateContacts1690925872592()
         await mig.down(queryRunner)
         debug('Migration statements executed')
         return
@@ -50,7 +52,7 @@ export class CreateIssuanceBranding1659463079429 implements MigrationInterface {
       case 'expo':
       case 'react-native': {
         debug('using sqlite/react-native migration file')
-        const mig: CreateIssuanceBranding1685628973231 = new CreateIssuanceBranding1685628973231()
+        const mig: CreateContacts1690925872693 = new CreateContacts1690925872693()
         await mig.down(queryRunner)
         debug('Migration statements executed')
         return
