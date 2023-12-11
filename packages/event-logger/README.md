@@ -12,10 +12,154 @@
 
 ---
 
+A Veramo event logger plugin. This plugin allows for listening to events and to persist them into a database. 
+There are also functions that can be manually called to persist events. Current, only audit events are supported that can be used to create an audit log.
+
+Ideally this plugin should be used in combination with the event logger from our core package. This event logger will also default debug the events. 
+This is mainly as a fallback for when no listener is present within the agent.
+
+## Available functions
+- loggerGetAuditEvents
+- loggerStoreAuditEvent
+
+## Usage
+
+### Adding the plugin to an agent:
+
+```typescript
+import { migrations, Entities } from '@veramo/data-store'
+import { EventLogger, IEventLogger } from '@sphereon/ssi-sdk.event-logger'
+import {
+  EventLoggerStore,
+  DataStoreMigrations,
+  DataStoreEventLoggerEntities,
+  LoggingEventType
+} from '@sphereon/ssi-sdk.data-store'
+
+const dbConnection = createConnection({
+  type: 'react-native',
+  database: 'app.sqlite',
+  location: 'default',
+  logging: false,
+  synchronize: false,
+  migrationsRun: true,
+  migrations: [...DataStoreMigrations, ...migrations],
+  entities: [...DataStoreEventLoggerEntities, ...Entities],
+})
+
+const agent = createAgent<IEventLogger>({
+  plugins: [
+    new EventLogger({
+      eventTypes: [LoggingEventType.AUDIT],
+      store: new EventLoggerStore(dbConnection),
+    }),
+  ],
+})
+```
+
+### Log event using event listener:
+
+```typescript
+import { 
+  EventLogger, 
+  EventLoggerBuilder, 
+  LoggingEventType ,
+  LogLevel,
+  System,
+  SubSystem,
+  ActionType,
+  InitiatorType,
+  SystemCorrelationIdType,
+  PartyCorrelationType
+} from '@sphereon/ssi-sdk.core';
+
+const agentContext = { agent }
+const logger: EventLogger = new EventLoggerBuilder()
+    .withContext(agentContext)
+    .withNamespace('custom_namespace')
+    .build()
+
+await logger.logEvent({
+  type: LoggingEventType.AUDIT,
+  data: {
+    level: LogLevel.DEBUG,
+    correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
+    system: System.GENERAL,
+    subSystemType: SubSystem.DID_PROVIDER,
+    actionType: ActionType.CREATE,
+    actionSubType: 'Key generation',
+    initiatorType: InitiatorType.EXTERNAL,
+    systemCorrelationIdType: SystemCorrelationIdType.DID,
+    systemCorrelationId: '2dfa190f-b8f4-4532-831e-bc354f034775',
+    systemAlias: 'test_alias',
+    partyCorrelationType: PartyCorrelationType.DID,
+    partyCorrelationId: '16930a3e-0d52-4659-b3b5-07cdc9bf4083',
+    partyAlias: 'test_alias',
+    description: 'test_description',
+    data: 'test_data_string',
+    diagnosticData: { data: 'test_data_string'}
+  }
+})
+```
+
+### Log event manually:
+
+```typescript
+const auditEvent: Omit<AuditLoggingEvent, 'id' | 'timestamp'> = {
+  level: LogLevel.DEBUG,
+  correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
+  system: System.GENERAL,
+  subSystemType: SubSystem.DID_PROVIDER,
+  actionType: ActionType.CREATE,
+  actionSubType: 'Key generation',
+  initiatorType: InitiatorType.EXTERNAL,
+  systemCorrelationIdType: SystemCorrelationIdType.DID,
+  systemCorrelationId: '2dfa190f-b8f4-4532-831e-bc354f034775',
+  systemAlias: 'test_alias',
+  partyCorrelationType: PartyCorrelationType.DID,
+  partyCorrelationId: '16930a3e-0d52-4659-b3b5-07cdc9bf4083',
+  partyAlias: 'test_alias',
+  description: 'test_description',
+  data: 'test_data_string',
+  diagnosticData: { data: 'test_data_string'}
+}
+
+const result: AuditLoggingEvent = await agent.loggerStoreAuditEvent({event: auditEvent})
+```
+
+### Retrieve audit events:
+
+```typescript
+const auditEvent: Omit<AuditLoggingEvent, 'id' | 'timestamp'> = {
+  level: LogLevel.DEBUG,
+  correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
+  system: System.GENERAL,
+  subSystemType: SubSystem.DID_PROVIDER,
+  actionType: ActionType.CREATE,
+  actionSubType: 'Key generation',
+  initiatorType: InitiatorType.EXTERNAL,
+  systemCorrelationIdType: SystemCorrelationIdType.DID,
+  systemCorrelationId: '2dfa190f-b8f4-4532-831e-bc354f034775',
+  systemAlias: 'test_alias',
+  partyCorrelationType: PartyCorrelationType.DID,
+  partyCorrelationId: '16930a3e-0d52-4659-b3b5-07cdc9bf4083',
+  partyAlias: 'test_alias',
+  description: 'test_description',
+  data: 'test_data_string',
+  diagnosticData: { data: 'test_data_string'}
+}
+
+await agent.loggerStoreAuditEvent({event: auditEvent})
+const getAuditEventArgs: GetAuditEventsArgs = {
+  filter: [{ correlationId: auditEvent.correlationId }],
+}
+const result: Array<AuditLoggingEvent> = await agent.loggerGetAuditEvents(getAuditEventArgs)
+```
+
 ## Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk.contact-manager
+yarn add @sphereon/ssi-sdk.event-logger
 ```
 
 ## Build
