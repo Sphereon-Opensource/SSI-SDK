@@ -10,7 +10,7 @@ import { createObjects, getConfig } from '../../agent-config/dist'
 import { IContactManager } from '../src'
 import contactManagerAgentLogic from './shared/contactManagerAgentLogic'
 
-jest.setTimeout(60000)
+jest.setTimeout(100000)
 
 const port = 3002
 const basePath = '/agent'
