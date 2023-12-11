@@ -141,6 +141,18 @@ const result: AuditLoggingEvent = await agent.loggerStoreAuditEvent({event: audi
 ### Retrieve audit events:
 
 ```typescript
+import {
+  AuditLoggingEvent,
+  LogLevel,
+  System,
+  SubSystem,
+  ActionType,
+  InitiatorType,
+  SystemCorrelationIdType,
+  PartyCorrelationType
+} from '@sphereon/ssi-sdk.core'
+import { GetAuditEventsArgs } from '@sphereon/ssi-sdk.event-logger'
+
 const auditEvent: Omit<AuditLoggingEvent, 'id' | 'timestamp'> = {
   level: LogLevel.DEBUG,
   correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
