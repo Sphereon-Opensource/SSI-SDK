@@ -70,7 +70,7 @@ export function createRpcServer(
       return next()
     }
   )
-  express.use(opts.basePath ?? '', router)
+  express.use(opts?.basePath ?? '', router)
 }
 
 export function createServiceMethod(method: string, service: Record<string, Function>, provider: EthersHeadlessProvider) {
