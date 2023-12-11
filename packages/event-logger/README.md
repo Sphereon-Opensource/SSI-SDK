@@ -105,6 +105,17 @@ await logger.logEvent({
 ### Log event manually:
 
 ```typescript
+import {
+  AuditLoggingEvent,
+  LogLevel,
+  System,
+  SubSystem,
+  ActionType,
+  InitiatorType,
+  SystemCorrelationIdType,
+  PartyCorrelationType
+} from '@sphereon/ssi-sdk.core'
+
 const auditEvent: Omit<AuditLoggingEvent, 'id' | 'timestamp'> = {
   level: LogLevel.DEBUG,
   correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
