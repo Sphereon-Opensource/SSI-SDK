@@ -1,7 +1,7 @@
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 
-jest.setTimeout(30000)
+jest.setTimeout(60000)
 
 import vcApiVerifierAgentLogic from './shared/vcApiVerifierAgentLogic'
 

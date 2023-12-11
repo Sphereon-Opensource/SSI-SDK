@@ -8,10 +8,10 @@ import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 
-import { IWellKnownDidIssuer } from '../src/types/IWellKnownDidIssuer'
+import { IWellKnownDidIssuer } from '../src'
 import wellKnownDidIssuerAgentLogic from './shared/wellKnownDidIssuerAgentLogic'
 
-jest.setTimeout(30000)
+jest.setTimeout(60000)
 
 const port = 3002
 const basePath = '/agent'

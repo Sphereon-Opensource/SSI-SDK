@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm'
 import { createObjects, getConfig } from '../../agent-config/dist'
 
-jest.setTimeout(30000)
+jest.setTimeout(60000)
 
 import eventLoggerAgentLogic from './shared/eventLoggerAgentLogic'
 

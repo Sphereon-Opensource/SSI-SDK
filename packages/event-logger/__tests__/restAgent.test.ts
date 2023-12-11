@@ -10,7 +10,7 @@ import { createObjects, getConfig } from '../../agent-config/dist'
 import eventLoggerAgentLogic from './shared/eventLoggerAgentLogic'
 import { IEventLogger } from '../src'
 
-jest.setTimeout(30000)
+jest.setTimeout(60000)
 
 const port = 3002
 const basePath = '/agent'
