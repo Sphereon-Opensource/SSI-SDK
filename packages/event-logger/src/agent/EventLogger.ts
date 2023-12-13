@@ -8,7 +8,7 @@ import {
   GetAuditEventsArgs,
   IEventLogger,
   RequiredContext,
-  StoreAuditEventArgs
+  LogAuditEventArgs
 } from '../types/IEventLogger'
 
 /**
@@ -21,7 +21,7 @@ export class EventLogger implements IAgentPlugin {
 
   readonly methods: IEventLogger = {
     loggerGetAuditEvents: this.loggerGetAuditEvents.bind(this),
-    loggerStoreAuditEvent: this.loggerStoreAuditEvent.bind(this),
+    loggerLogAuditEvent: this.loggerLogAuditEvent.bind(this),
   }
 
   private readonly store: AbstractEventLoggerStore
@@ -35,7 +35,7 @@ export class EventLogger implements IAgentPlugin {
   public async onEvent(event: LoggingEvent, context: RequiredContext): Promise<void> {
     switch(event.type) {
       case LoggingEventType.AUDIT:
-        await this.loggerStoreAuditEvent({ event: event.data }, context)
+        await this.loggerLogAuditEvent({ event: event.data }, context)
         break;
       default:
         return Promise.reject(Error('Event type not supported'))
@@ -48,7 +48,7 @@ export class EventLogger implements IAgentPlugin {
     return this.store.getAuditEvents({ filter })
   }
 
-  private async loggerStoreAuditEvent(args: StoreAuditEventArgs, context: RequiredContext): Promise<AuditLoggingEvent> {
+  private async loggerLogAuditEvent(args: LogAuditEventArgs, context: RequiredContext): Promise<AuditLoggingEvent> {
     const { event } = args
 
     return this.store.storeAuditEvent({ event: {

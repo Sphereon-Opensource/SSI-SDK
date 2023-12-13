@@ -4,7 +4,7 @@ import { AbstractEventLoggerStore, FindAuditLoggingEventArgs } from '@sphereon/s
 
 export interface IEventLogger extends IPluginMethodMap {
   loggerGetAuditEvents(args?: GetAuditEventsArgs): Promise<Array<AuditLoggingEvent>>
-  loggerStoreAuditEvent(args: StoreAuditEventArgs, context: RequiredContext): Promise<AuditLoggingEvent>
+  loggerLogAuditEvent(args: LogAuditEventArgs, context: RequiredContext): Promise<AuditLoggingEvent>
 }
 
 export type EventLoggerOptions = {
@@ -16,7 +16,7 @@ export type GetAuditEventsArgs = {
   filter?: FindAuditLoggingEventArgs
 }
 
-export type StoreAuditEventArgs = {
+export type LogAuditEventArgs = {
   event: Omit<AuditLoggingEvent, 'id' | 'timestamp' | 'correlationId'> & { correlationId?: string  }
 }
 

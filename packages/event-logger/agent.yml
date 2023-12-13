@@ -5,7 +5,7 @@ constants:
   port: 3335
   methods:
     - loggerGetAuditEvents
-    - loggerStoreAuditEvent
+    - loggerLogAuditEvent
 
 dbConnection:
   $require: typeorm?t=function#createConnection
