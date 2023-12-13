@@ -1,6 +1,6 @@
 import Debug from 'debug'
 import { MigrationInterface, QueryRunner } from 'typeorm'
-import { CreateStatusList1693866470001 } from '../postgres/CreateStatusList1693866470001-CreateStatusList'
+import { CreateStatusList1693866470001 } from '../postgres/1693866470001-CreateStatusList'
 import { CreateStatusList1693866470002 } from '../sqlite/1693866470000-CreateStatusList'
 
 const debug = Debug('sphereon:ssi-sdk:migrations')

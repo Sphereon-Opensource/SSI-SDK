@@ -1,6 +1,6 @@
 import { IAgentPlugin } from '@veramo/core'
 import { AbstractEventLoggerStore } from '@sphereon/ssi-sdk.data-store'
-import { AuditLoggingEvent, LoggingEvent, LoggingEventType } from '@sphereon/ssi-sdk.core'
+import { AuditLoggingEvent, LoggingEvent, LoggingEventType, LogLevel } from '@sphereon/ssi-sdk.core'
 import { v4 as uuidv4 } from 'uuid'
 import { schema } from '../index'
 import {
@@ -53,6 +53,7 @@ export class EventLogger implements IAgentPlugin {
 
     return this.store.storeAuditEvent({ event: {
         ...event,
+        level: event.level ?? LogLevel.INFO,
         correlationId: event.correlationId ?? uuidv4(),
         timestamp: new Date()
       }
