@@ -15,6 +15,7 @@ class EventLogger {
   }
 
   public logEvent = async (event: LoggingEvent): Promise<void> => {
+    // TODO make default behaviour more configurable once we have a logger registry
     this.debug('logging event:', event);
     if (this.context?.agent) {
       await this.context.agent.emit(event.type, event.data)
