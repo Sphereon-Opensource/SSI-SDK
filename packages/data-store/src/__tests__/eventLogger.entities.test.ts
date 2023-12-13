@@ -45,7 +45,7 @@ describe('Database entities tests', (): void => {
       actionSubType: 'Key generation',
       initiatorType: InitiatorType.EXTERNAL,
       systemCorrelationIdType: SystemCorrelationIdType.DID,
-      systemCorrelationId: '2dfa190f-b8f4-4532-831e-bc354f034775',
+      systemCorrelationId: 'did:example:123456789abcdefghi',
       systemAlias: 'test_alias',
       partyCorrelationType: PartyCorrelationType.DID,
       partyCorrelationId: '75cfd84a-0f3b-4fb1-97a3-a1506c7ab850',
