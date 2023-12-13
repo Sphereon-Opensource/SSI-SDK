@@ -12,6 +12,9 @@
     },
     {
       "path": "../agent-config"
+    },
+    {
+      "path": "../ssi-sdk-core"
     }
   ]
 }
