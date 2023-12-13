@@ -69,7 +69,7 @@ export enum SystemCorrelationIdType {
   USER = 'user'
 }
 
-export enum PartyCorrelationType { // TODO we already have SystemCorrelationIdType, should these be duplicated?
+export enum PartyCorrelationType {
   DID = 'did',
   EMAIL = 'email',
   HOSTNAME = 'hostname',

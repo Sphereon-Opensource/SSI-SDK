@@ -48,12 +48,12 @@ export class EventLoggerStore extends AbstractEventLoggerStore {
       actionSubType: event.actionSubType,
       initiatorType: event.initiatorType,
       partyAlias: event.partyAlias,
-      partyCorrelationId: event.partyCorrelationId, // TODO or map contact
+      partyCorrelationId: event.partyCorrelationId,
       partyCorrelationType: event.partyCorrelationType,
       subSystemType: event.subSystemType,
       system: event.system,
       systemAlias: event.systemAlias,
-      systemCorrelationId: event.systemCorrelationId, // TODO or map contact
+      systemCorrelationId: event.systemCorrelationId,
       systemCorrelationIdType: event.systemCorrelationIdType,
       ...(event.data && {data: JSON.parse(event.data)}),
       ...(event.diagnosticData && {diagnosticData: JSON.parse(event.diagnosticData)}),
