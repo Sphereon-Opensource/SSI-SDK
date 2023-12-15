@@ -103,11 +103,10 @@ export type AuditLoggingEvent = {
 export type PartialAuditLoggingEvent = Partial<AuditLoggingEvent>
 
 export type AuditLoggingEvent_TEMP = {
-  // timestamp: Date
   level?: LogLevel
   correlationId?: string
-  system: System
-  subSystemType: SubSystem
+  system?: System
+  subSystem?: SubSystem
   actionType: ActionType
   actionSubType: ActionSubType
   initiatorType: InitiatorType
@@ -130,4 +129,7 @@ export type LoggingEvent = {
 export type EventLoggerArgs = {
   context?: IAgentContext<any>
   namespace?: string
+  system?: System
+  subSystem?: SubSystem
+  logLevel?: LogLevel
 }
