@@ -115,8 +115,9 @@ import {
   SystemCorrelationIdType,
   PartyCorrelationType
 } from '@sphereon/ssi-sdk.core'
+import { GetAuditEventsArgs, NonPersistedAuditLoggingEvent } from '@sphereon/ssi-sdk.event-logger'
 
-const auditEvent: Omit<AuditLoggingEvent, 'id' | 'timestamp'> = {
+const auditEvent: NonPersistedAuditLoggingEvent = {
   level: LogLevel.DEBUG,
   correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
   system: System.GENERAL,
@@ -151,9 +152,9 @@ import {
   SystemCorrelationIdType,
   PartyCorrelationType
 } from '@sphereon/ssi-sdk.core'
-import { GetAuditEventsArgs } from '@sphereon/ssi-sdk.event-logger'
+import { GetAuditEventsArgs, NonPersistedAuditLoggingEvent } from '@sphereon/ssi-sdk.event-logger'
 
-const auditEvent: Omit<AuditLoggingEvent, 'id' | 'timestamp'> = {
+const auditEvent: NonPersistedAuditLoggingEvent = {
   level: LogLevel.DEBUG,
   correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
   system: System.GENERAL,
