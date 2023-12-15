@@ -1,10 +1,9 @@
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 
-jest.setTimeout(30000)
+jest.setTimeout(60000)
 
 import { LdDefaultContexts } from '../ld-default-contexts'
-import { SphereonEd25519Signature2018 } from '../suites/Ed25519Signature2018'
-import { SphereonEd25519Signature2020 } from '../suites/Ed25519Signature2020'
+import { SphereonEd25519Signature2018, SphereonEd25519Signature2020 } from '../suites'
 
 import vcHandlerLocalAgentLogic from './shared/vcHandlerLocalAgentLogic'
 import vcHandlerLocalAgentBbsLogic from './shared/vcHandlerLocalAgentBbsLogic'

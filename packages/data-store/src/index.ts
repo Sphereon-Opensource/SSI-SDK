@@ -29,6 +29,9 @@ export { AbstractContactStore } from './contact/AbstractContactStore'
 export { AbstractIssuanceBrandingStore } from './issuanceBranding/AbstractIssuanceBrandingStore'
 export { IssuanceBrandingStore } from './issuanceBranding/IssuanceBrandingStore'
 export { StatusListStore } from './statusList/StatusListStore'
+import { AuditEventEntity, auditEventEntityFrom } from './entities/eventLogger/AuditEventEntity'
+export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
+export { EventLoggerStore } from './eventLogger/EventLoggerStore'
 export { DataStoreMigrations } from './migrations'
 export * from './types'
 export * from './utils/contact/MappingUtils'
@@ -64,8 +67,18 @@ export const DataStoreIssuanceBrandingEntities = [
 
 export const DataStoreStatusListEntities = [StatusListEntity, StatusListEntryEntity]
 
+export const DataStoreEventLoggerEntities = [
+  AuditEventEntity
+]
+
+
 // All entities combined if a party wants to enable them all at once
-export const DataStoreEntities = [...DataStoreContactEntities, ...DataStoreIssuanceBrandingEntities, ...DataStoreStatusListEntities]
+export const DataStoreEntities = [
+  ...DataStoreContactEntities,
+  ...DataStoreIssuanceBrandingEntities,
+  ...DataStoreStatusListEntities,
+  ...DataStoreEventLoggerEntities
+]
 
 export {
   BaseConfigEntity,
@@ -98,4 +111,6 @@ export {
   IStatusListEntryEntity,
   StatusListEntity,
   StatusListEntryEntity,
+  AuditEventEntity,
+  auditEventEntityFrom
 }

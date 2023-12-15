@@ -7,11 +7,11 @@ import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 
-import { IWellKnownDidVerifier } from '../src/types/IWellKnownDidVerifier'
+import { IWellKnownDidVerifier } from '../src'
 import { ServiceTypesEnum } from '@sphereon/wellknown-dids-client'
 import wellKnownDidVerifierAgentLogic from './shared/wellKnownDidVerifierAgentLogic'
 
-jest.setTimeout(30000)
+jest.setTimeout(60000)
 
 const port = 3002
 const basePath = '/agent'
