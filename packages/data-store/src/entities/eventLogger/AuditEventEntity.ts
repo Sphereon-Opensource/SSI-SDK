@@ -16,7 +16,7 @@ import {
   SystemCorrelationIdType,
   ActionSubType
 } from '@sphereon/ssi-sdk.core'
-import { NonPersistedAuditLoggingEvent } from '../../types/eventLogger/eventLogger'
+import { NonPersistedAuditLoggingEvent } from '../../types'
 
 @Entity('AuditEvents')
 export class AuditEventEntity extends BaseEntity {
@@ -29,7 +29,7 @@ export class AuditEventEntity extends BaseEntity {
   @Column('simple-enum', { name: 'level', enum: LogLevel, nullable: false, unique: false })
   level!: LogLevel
 
-  @Column({ name: 'correlationId', length: 255, nullable: false, unique: false})
+  @Column({ name: 'correlationId', nullable: false, unique: false})
   correlationId!: string
 
   @Column('simple-enum', { name: 'system', enum: System, nullable: false, unique: false })
@@ -41,7 +41,7 @@ export class AuditEventEntity extends BaseEntity {
   @Column('simple-enum', { name: 'actionType', enum: ActionType, nullable: false, unique: false })
   actionType!: ActionType
 
-  @Column({ name: 'actionSubType', length: 255, nullable: false, unique: false })
+  @Column({ name: 'actionSubType', nullable: false, unique: false })
   actionSubType!: ActionSubType
 
   @Column('simple-enum', { name: 'initiatorType', enum: InitiatorType, nullable: false, unique: false })
@@ -50,28 +50,28 @@ export class AuditEventEntity extends BaseEntity {
   @Column('simple-enum', { name: 'systemCorrelationIdType', enum: SystemCorrelationIdType, nullable: true, unique: false })
   systemCorrelationIdType?: SystemCorrelationIdType
 
-  @Column({ name: 'systemCorrelationId', length: 255, nullable: true, unique: false})
+  @Column({ name: 'systemCorrelationId', nullable: true, unique: false})
   systemCorrelationId?: string
 
-  @Column({ name: 'systemAlias', length: 255, nullable: false, unique: false})
+  @Column({ name: 'systemAlias', nullable: false, unique: false})
   systemAlias?: string
 
   @Column('simple-enum', { name: 'partyCorrelationType', enum: PartyCorrelationType, nullable: true, unique: false })
   partyCorrelationType?: PartyCorrelationType
 
-  @Column({ name: 'partyCorrelationId', length: 255, nullable: true, unique: false})
+  @Column({ name: 'partyCorrelationId', nullable: true, unique: false})
   partyCorrelationId?: string
 
-  @Column({ name: 'partyAlias', length: 255, nullable: true, unique: false})
+  @Column({ name: 'partyAlias', nullable: true, unique: false})
   partyAlias?: string
 
-  @Column({ name: 'description', length: 255, nullable: false, unique: false})
+  @Column({ name: 'description', nullable: false, unique: false})
   description!: string
 
-  @Column({ name: 'data', length: 255, nullable: true, unique: false})
+  @Column({ name: 'data', nullable: true, unique: false})
   data?: string
 
-  @Column({ name: 'diagnosticData', length: 255, nullable: true, unique: false})
+  @Column({ name: 'diagnosticData', nullable: true, unique: false})
   diagnosticData?: string
 
   @CreateDateColumn({ name: 'created_at', nullable: false })

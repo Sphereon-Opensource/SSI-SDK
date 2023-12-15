@@ -1,10 +1,6 @@
 import { DataSource } from 'typeorm'
 import { DataStoreEventLoggerMigrations } from '../migrations/generic'
-import {
-  DataStoreEventLoggerEntities,
-  EventLoggerStore,
-  GetAuditEventsArgs
-} from '../index'
+import { DataStoreEventLoggerEntities } from '../index'
 import {
   ActionType,
   AuditLoggingEvent,
@@ -15,7 +11,8 @@ import {
   System,
   SystemCorrelationIdType
 } from '@sphereon/ssi-sdk.core'
-
+import { EventLoggerStore } from '../eventLogger/EventLoggerStore'
+import { GetAuditEventsArgs, NonPersistedAuditLoggingEvent } from '../types'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource
@@ -41,7 +38,7 @@ describe('Database entities tests', (): void => {
   })
 
   it('should store audit event', async (): Promise<void> => {
-    const auditEvent: Omit<AuditLoggingEvent, 'id'> = {
+    const auditEvent: NonPersistedAuditLoggingEvent = {
       timestamp: new Date(),
       level: LogLevel.DEBUG,
       correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
@@ -66,7 +63,7 @@ describe('Database entities tests', (): void => {
   })
 
   it('should get all audit events', async (): Promise<void> => {
-    const auditEvent: Omit<AuditLoggingEvent, 'id'> = {
+    const auditEvent: NonPersistedAuditLoggingEvent = {
       timestamp: new Date(),
       level: LogLevel.DEBUG,
       correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
@@ -97,7 +94,7 @@ describe('Database entities tests', (): void => {
   })
 
   it('should get audit events by filter', async (): Promise<void> => {
-    const auditEvent: Omit<AuditLoggingEvent, 'id'> = {
+    const auditEvent: NonPersistedAuditLoggingEvent = {
       timestamp: new Date(),
       level: LogLevel.DEBUG,
       correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',

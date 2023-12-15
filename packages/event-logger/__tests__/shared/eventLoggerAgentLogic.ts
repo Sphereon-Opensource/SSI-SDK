@@ -1,5 +1,5 @@
 import { TAgent } from '@veramo/core'
-import { GetAuditEventsArgs, IEventLogger } from '../../src'
+import { GetAuditEventsArgs, IEventLogger, NonPersistedAuditLoggingEvent } from '../../src'
 import {
   ActionType,
   AuditLoggingEvent,
@@ -29,7 +29,7 @@ export default (testContext: {
     afterAll(testContext.tearDown)
 
     it('should store audit event', async (): Promise<void> => {
-      const auditEvent: Omit<AuditLoggingEvent, 'id' | 'timestamp'> = {
+      const auditEvent: NonPersistedAuditLoggingEvent = {
         level: LogLevel.DEBUG,
         correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
         system: System.GENERAL,
@@ -72,7 +72,7 @@ export default (testContext: {
     })
 
     it('should get audit events without filter', async (): Promise<void> => {
-      const auditEvent: Omit<AuditLoggingEvent, 'id' | 'timestamp'> = {
+      const auditEvent: NonPersistedAuditLoggingEvent = {
         level: LogLevel.DEBUG,
         correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
         system: System.GENERAL,
@@ -99,7 +99,7 @@ export default (testContext: {
     })
 
     it('should get audit events with filter', async (): Promise<void> => {
-      const auditEvent: Omit<AuditLoggingEvent, 'id' | 'timestamp'> = {
+      const auditEvent: NonPersistedAuditLoggingEvent = {
         level: LogLevel.DEBUG,
         correlationId: 'filter_test_correlation_id',
         system: System.GENERAL,
