@@ -1,5 +1,4 @@
 import { TAgent } from '@veramo/core'
-import { GetAuditEventsArgs, IEventLogger, NonPersistedAuditLoggingEvent } from '../../src'
 import {
   ActionType,
   AuditLoggingEvent,
@@ -10,6 +9,7 @@ import {
   System,
   SystemCorrelationIdType
 } from '@sphereon/ssi-sdk.core'
+import { GetAuditEventsArgs, IEventLogger, NonPersistedAuditLoggingEvent } from '../../src'
 
 type ConfiguredAgent = TAgent<IEventLogger>
 
