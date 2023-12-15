@@ -102,28 +102,16 @@ export type AuditLoggingEvent = {
 }
 export type PartialAuditLoggingEvent = Partial<AuditLoggingEvent>
 
-export type AuditLoggingEvent_TEMP = {
+export type NonPersistedAuditLoggingEvent = Omit<AuditLoggingEvent, 'id' | 'timestamp' | 'level' | 'correlationId' | 'system' | 'subSystemType'> & {
   level?: LogLevel
   correlationId?: string
   system?: System
-  subSystem?: SubSystem
-  actionType: ActionType
-  actionSubType: ActionSubType
-  initiatorType: InitiatorType
-  systemCorrelationIdType?: SystemCorrelationIdType
-  systemCorrelationId?: string
-  systemAlias?: string
-  partyCorrelationType?: PartyCorrelationType
-  partyCorrelationId?: string
-  partyAlias?: string
-  description: string
-  data?: any
-  diagnosticData?: any
+  subSystemType?: SubSystem
 }
 
 export type LoggingEvent = {
   type: LoggingEventType,
-  data: AuditLoggingEvent_TEMP
+  data: NonPersistedAuditLoggingEvent
 }
 
 export type EventLoggerArgs = {

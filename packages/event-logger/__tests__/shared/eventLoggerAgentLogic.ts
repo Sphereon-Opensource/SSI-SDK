@@ -48,7 +48,7 @@ export default (testContext: {
         diagnosticData: { data: 'test_data_string'}
       }
 
-      const result: AuditLoggingEvent = await agent.loggerStoreAuditEvent({event: auditEvent})
+      const result: AuditLoggingEvent = await agent.loggerLogAuditEvent({event: auditEvent})
 
       expect(result).toBeDefined()
       expect(result?.id).toBeDefined()
@@ -91,7 +91,7 @@ export default (testContext: {
         diagnosticData: { data: 'test_data_string'}
       }
 
-      await agent.loggerStoreAuditEvent({event: auditEvent})
+      await agent.loggerLogAuditEvent({event: auditEvent})
       const result: Array<AuditLoggingEvent> = await agent.loggerGetAuditEvents()
 
       expect(result).toBeDefined()
@@ -118,7 +118,7 @@ export default (testContext: {
         diagnosticData: { data: 'test_data_string'}
       }
 
-      await agent.loggerStoreAuditEvent({event: auditEvent})
+      await agent.loggerLogAuditEvent({event: auditEvent})
       const args: GetAuditEventsArgs = {
         filter: [{ correlationId: auditEvent.correlationId }],
       }

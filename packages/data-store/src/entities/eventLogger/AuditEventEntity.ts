@@ -14,9 +14,9 @@ import {
   SubSystem,
   System,
   SystemCorrelationIdType,
-  AuditLoggingEvent,
   ActionSubType
 } from '@sphereon/ssi-sdk.core'
+import { NonPersistedAuditLoggingEvent } from '../../types/eventLogger/eventLogger'
 
 @Entity('AuditEvents')
 export class AuditEventEntity extends BaseEntity {
@@ -81,7 +81,7 @@ export class AuditEventEntity extends BaseEntity {
   lastUpdatedAt!: Date
 }
 
-export const auditEventEntityFrom = (args: Omit<AuditLoggingEvent, 'id'>): AuditEventEntity => {
+export const auditEventEntityFrom = (args: NonPersistedAuditLoggingEvent): AuditEventEntity => {
   const auditEventEntity: AuditEventEntity = new AuditEventEntity()
   auditEventEntity.timestamp = args.timestamp
   auditEventEntity.level = args.level

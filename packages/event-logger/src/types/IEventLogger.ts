@@ -1,5 +1,11 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import { AuditLoggingEvent, AuditLoggingEvent_TEMP, LoggingEventType } from '@sphereon/ssi-sdk.core'
+import {
+  AuditLoggingEvent,
+  NonPersistedAuditLoggingEvent as NPAuditLoggingEvent,
+  LoggingEventType,
+  SubSystem,
+  System
+} from '@sphereon/ssi-sdk.core'
 import { AbstractEventLoggerStore, FindAuditLoggingEventArgs } from '@sphereon/ssi-sdk.data-store'
 
 export interface IEventLogger extends IPluginMethodMap {
@@ -17,8 +23,17 @@ export type GetAuditEventsArgs = {
 }
 
 export type LogAuditEventArgs = {
-  event: AuditLoggingEvent_TEMP
+  event: NonPersistedAuditLoggingEvent
 }
 
+export type NonPersistedAuditLoggingEvent = Omit<NPAuditLoggingEvent, 'system' | 'subSystemType'> & {
+  system: System
+  subSystemType: SubSystem
+}
+
+export type LoggingEvent = {
+  type: LoggingEventType,
+  data: NonPersistedAuditLoggingEvent
+}
 
 export type RequiredContext = IAgentContext<never>

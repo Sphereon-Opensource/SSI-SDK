@@ -1,6 +1,6 @@
 import { IAgentContext } from '@veramo/core'
 import {
-  AuditLoggingEvent_TEMP,
+  NonPersistedAuditLoggingEvent,
   EventLoggerArgs,
   LoggingEvent,
   LogLevel,
@@ -39,15 +39,15 @@ class EventLogger {
       return Promise.reject(Error('Required system is not present'))
     }
 
-    if (!this.subSystemType || event.data.subSystem) {
+    if (!this.subSystemType || event.data.subSystemType) {
       return Promise.reject(Error('Required sub system type is not present'))
     }
 
-    const eventData: AuditLoggingEvent_TEMP = {
+    const eventData: NonPersistedAuditLoggingEvent = {
       ...event.data,
       ...(!event.data.level && { level: this.logLevel }),
       ...(!event.data.system && { system: this.system }),
-      ...(!event.data.subSystem && { subSystemType: this.subSystemType })
+      ...(!event.data.subSystemType && { subSystemType: this.subSystemType })
     }
 
     // TODO make default behaviour more configurable once we have a logger registry

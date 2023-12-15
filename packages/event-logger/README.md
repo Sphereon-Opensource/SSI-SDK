@@ -135,7 +135,7 @@ const auditEvent: Omit<AuditLoggingEvent, 'id' | 'timestamp'> = {
   diagnosticData: { data: 'test_data_string'}
 }
 
-const result: AuditLoggingEvent = await agent.loggerStoreAuditEvent({event: auditEvent})
+const result: AuditLoggingEvent = await agent.loggerLogAuditEvent({event: auditEvent})
 ```
 
 ### Retrieve audit events:
@@ -172,7 +172,7 @@ const auditEvent: Omit<AuditLoggingEvent, 'id' | 'timestamp'> = {
   diagnosticData: { data: 'test_data_string'}
 }
 
-await agent.loggerStoreAuditEvent({event: auditEvent})
+await agent.loggerLogAuditEvent({event: auditEvent})
 const getAuditEventArgs: GetAuditEventsArgs = {
   filter: [{ correlationId: auditEvent.correlationId }],
 }
