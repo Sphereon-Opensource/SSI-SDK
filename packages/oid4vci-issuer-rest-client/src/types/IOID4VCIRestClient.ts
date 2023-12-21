@@ -18,7 +18,7 @@ export interface IOID4VCIClientCreateOfferUriRequestArgs extends IOID4VCIClientC
 
 export interface IRestClientAuthenticationOpts {
   enabled?: boolean
-  staticBearerToken?: string
+  bearerToken?: () => Promise<string> | string
 }
 
 export interface IOID4VCIClientGetIssueStatusArgs {

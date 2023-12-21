@@ -3,8 +3,8 @@ export const flattenArray = <T>(args: { items: Array<T | Array<T>> }): Array<T> 
 export const flattenMigrations = <T>(args: { migrations: Array<T | Array<T>> }): Array<T> => args.migrations.flat() as Array<T>
 
 type QueryRunnerType = {
-    query(query: string, parameters: any[] | undefined, useStructuredResult: true): Promise<any>
-    query(query: string, parameters?: any[]): Promise<any>
+  query(query: string, parameters: any[] | undefined, useStructuredResult: true): Promise<any>
+  query(query: string, parameters?: any[]): Promise<any>
 }
 
 /**

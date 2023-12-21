@@ -7,10 +7,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.kv-store-temp
 
-
-
-
-
 ## [0.17.4](https://github.com/uport-project/veramo/compare/v0.17.3...v0.17.4) (2023-10-01)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.kv-store-temp

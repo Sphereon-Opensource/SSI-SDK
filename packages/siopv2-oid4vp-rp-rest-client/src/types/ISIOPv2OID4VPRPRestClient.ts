@@ -29,7 +29,7 @@ export interface ISiopClientGetAuthStatusArgs {
 
 export interface Siopv2RestClientAuthenticationOpts {
   enabled?: boolean
-  staticBearerToken?: string
+  bearerToken?: () => Promise<string> | string
 }
 
 export interface Siopv2RestClientOpts {

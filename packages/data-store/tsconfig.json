@@ -11,7 +11,8 @@
   "references": [
     {
       "path": "../ssi-sdk-core"
-    }, {
+    },
+    {
       "path": "../ssi-types"
     }
   ]
