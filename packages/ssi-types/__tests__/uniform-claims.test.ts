@@ -1,5 +1,12 @@
 import * as fs from 'fs'
-import { CredentialMapper, ICredential, IVerifiableCredential, ICredentialSubject, W3CVerifiableCredential } from '../src'
+import {
+  CredentialMapper,
+  ICredential,
+  IVerifiableCredential,
+  ICredentialSubject,
+  W3CVerifiableCredential,
+  JwtDecodedVerifiablePresentation,
+} from '../src'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -138,7 +145,7 @@ describe('Uniform VP claims', () => {
   it('JWT Decoded VP should populate response', () => {
     const jwtEncodedVp = getFile('./packages/ssi-types/__tests__/vc_vp_examples/vp/vp_universityDegree.jwt')
     const jwtDecodedVp = CredentialMapper.toWrappedVerifiablePresentation(jwtEncodedVp).decoded
-    const vp = CredentialMapper.toUniformPresentation(jwtDecodedVp)
+    const vp = CredentialMapper.toUniformPresentation(jwtDecodedVp as JwtDecodedVerifiablePresentation)
     // vp should be decoded
     expect(vp.holder).toEqual('did:example:ebfeb1f712ebc6f1c276e12ec21')
     // vc should be decoded for a uniform vp
