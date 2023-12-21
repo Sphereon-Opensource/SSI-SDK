@@ -8,6 +8,8 @@ import {
   IVerifiablePresentation,
   OriginalType,
   WrappedVerifiablePresentation,
+  WrappedW3CVerifiableCredential,
+  WrappedW3CVerifiablePresentation,
 } from '../src'
 
 function getFile(path: string) {
@@ -22,7 +24,7 @@ describe('Wrapped VC claims', () => {
   it('should set expiration date if exp is present in JWT vc', () => {
     const jwtVc: IVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vp/vp_general.json').verifiableCredential[0]
     jwtVc['exp' as keyof IVerifiableCredential] = (+new Date()).toString()
-    const vc = CredentialMapper.toWrappedVerifiableCredential(jwtVc)
+    const vc = CredentialMapper.toWrappedVerifiableCredential(jwtVc) as WrappedW3CVerifiableCredential
     expect(vc.credential.expirationDate).toEqual(new Date(parseInt(jwtVc['exp' as keyof IVerifiableCredential] as string)).toISOString())
   })
 
@@ -30,7 +32,7 @@ describe('Wrapped VC claims', () => {
     const jwtVc: IVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vp/vp_general.json').verifiableCredential[0]
 
     jwtVc['exp' as keyof IVerifiableCredential] = new Date().valueOf()
-    const vc = CredentialMapper.toWrappedVerifiableCredential(jwtVc)
+    const vc = CredentialMapper.toWrappedVerifiableCredential(jwtVc) as WrappedW3CVerifiableCredential
     expect(vc.credential.expirationDate).toEqual(new Date(jwtVc['exp' as keyof IVerifiableCredential] as string).toISOString())
   })
 
@@ -50,7 +52,7 @@ describe('Wrapped VC claims', () => {
   it('should set issuer if iss is present in JWT vc', () => {
     const jwtVc: IVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vp/vp_general.json').verifiableCredential[0]
     ;(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).issuer
-    const vc = CredentialMapper.toWrappedVerifiableCredential(jwtVc)
+    const vc = CredentialMapper.toWrappedVerifiableCredential(jwtVc) as WrappedW3CVerifiableCredential
     expect(vc.credential.issuer).toEqual(jwtVc['iss' as keyof IVerifiableCredential])
   })
 
@@ -70,7 +72,7 @@ describe('Wrapped VC claims', () => {
     ;(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).issuanceDate = new Date(
       parseInt(jwtVc['nbf' as keyof IVerifiableCredential] as string)
     ).toISOString()
-    const vc = CredentialMapper.toWrappedVerifiableCredential(jwtVc)
+    const vc = CredentialMapper.toWrappedVerifiableCredential(jwtVc) as WrappedW3CVerifiableCredential
     expect(vc.credential.issuanceDate).toEqual(new Date(parseInt(jwtVc['nbf' as keyof IVerifiableCredential] as string)).toISOString())
   })
 
@@ -79,7 +81,7 @@ describe('Wrapped VC claims', () => {
     const nbf = new Date().valueOf()
     jwtVc['nbf' as keyof IVerifiableCredential] = nbf / 1000
     ;(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).issuanceDate = new Date(+new Date() + 2).toISOString()
-    expect(() => CredentialMapper.toWrappedVerifiableCredential(jwtVc, { maxTimeSkewInMS: 10 })).toThrowError(
+    expect(() => CredentialMapper.toWrappedVerifiableCredential(jwtVc, { maxTimeSkewInMS: 10 }) as WrappedW3CVerifiableCredential).toThrowError(
       `Inconsistent issuance dates between JWT claim (${new Date(nbf).toISOString().replace(/\.\d\d\dZ/, 'Z')}) and VC value (${
         (<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).issuanceDate
       })`
@@ -90,7 +92,7 @@ describe('Wrapped VC claims', () => {
     const jwtVc: IVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vp/vp_general.json').verifiableCredential[0]
     const subject = <ICredentialSubject>jwtVc.vc.credentialSubject
     jwtVc['sub' as keyof IVerifiableCredential] = subject.id
-    const vc = CredentialMapper.toWrappedVerifiableCredential(jwtVc)
+    const vc = CredentialMapper.toWrappedVerifiableCredential(jwtVc) as WrappedW3CVerifiableCredential
     expect(!Array.isArray(vc.credential.credentialSubject) && vc.credential.credentialSubject.id).toEqual(jwtVc['sub' as keyof IVerifiableCredential])
   })
 
@@ -106,7 +108,7 @@ describe('Wrapped VC claims', () => {
   it('should set id if jti is present in JWT vc', () => {
     const jwtVc: IVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vp/vp_general.json').verifiableCredential[0]
     jwtVc['jti' as keyof IVerifiableCredential] = (<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).id
-    const vc = CredentialMapper.toWrappedVerifiableCredential(jwtVc)
+    const vc = CredentialMapper.toWrappedVerifiableCredential(jwtVc) as WrappedW3CVerifiableCredential
     expect(vc.credential.id).toEqual(jwtVc['jti' as keyof IVerifiableCredential])
   })
 
@@ -124,7 +126,7 @@ describe('Wrapped VC claims', () => {
 describe('Wrapped VP', () => {
   it('Encoded VP should populate response', () => {
     const jwtEncodedVp = getFile('./packages/ssi-types/__tests__/vc_vp_examples/vp/vp_universityDegree.jwt')
-    const vp: WrappedVerifiablePresentation = CredentialMapper.toWrappedVerifiablePresentation(jwtEncodedVp)
+    const vp: WrappedVerifiablePresentation = CredentialMapper.toWrappedVerifiablePresentation(jwtEncodedVp) as WrappedW3CVerifiablePresentation
     expect(vp.original).toEqual(jwtEncodedVp)
     expect(vp.decoded.iss).toEqual('did:example:ebfeb1f712ebc6f1c276e12ec21')
     expect(vp.type).toEqual(OriginalType.JWT_ENCODED)
@@ -136,7 +138,7 @@ describe('Wrapped VP', () => {
   it('Decoded VP should populate response', () => {
     const jwtEncodedVp = getFile('./packages/ssi-types/__tests__/vc_vp_examples/vp/vp_universityDegree.jwt')
     const jwtDecodedVp = CredentialMapper.decodeVerifiablePresentation(jwtEncodedVp)
-    const vp: WrappedVerifiablePresentation = CredentialMapper.toWrappedVerifiablePresentation(jwtDecodedVp)
+    const vp: WrappedVerifiablePresentation = CredentialMapper.toWrappedVerifiablePresentation(jwtDecodedVp) as WrappedW3CVerifiablePresentation
     expect(vp.decoded).toEqual(jwtDecodedVp)
     expect(vp.decoded.iss).toEqual('did:example:ebfeb1f712ebc6f1c276e12ec21')
     expect(vp.type).toEqual(OriginalType.JWT_ENCODED)
@@ -147,7 +149,7 @@ describe('Wrapped VP', () => {
 
   it('JSON-LD VP String should populate response', () => {
     const jsonLdVpAsStr = getFile('./packages/ssi-types/__tests__/vc_vp_examples/vp/vp_subject_is_holder.json')
-    const vp = CredentialMapper.toWrappedVerifiablePresentation(jsonLdVpAsStr)
+    const vp = CredentialMapper.toWrappedVerifiablePresentation(jsonLdVpAsStr) as WrappedW3CVerifiablePresentation
     // vp should be decoded
     expect(vp.original).toEqual(jsonLdVpAsStr)
     expect(((vp.decoded as IVerifiablePresentation).verifiableCredential?.[1] as IVerifiableCredential).issuer).toEqual('did:foo:123')
@@ -157,7 +159,7 @@ describe('Wrapped VP', () => {
   })
   it('JSON-LD VP Object should populate response', () => {
     const jsonLdVp = getFileAsJson('./packages/ssi-types/__tests__/vc_vp_examples/vp/vp_subject_is_holder.json')
-    const vp = CredentialMapper.toWrappedVerifiablePresentation(jsonLdVp)
+    const vp = CredentialMapper.toWrappedVerifiablePresentation(jsonLdVp) as WrappedW3CVerifiablePresentation
     // vp should be decoded
     expect(vp.original).toEqual(jsonLdVp)
     expect(((vp.decoded as IVerifiablePresentation).verifiableCredential?.[1] as IVerifiableCredential).issuer).toEqual('did:foo:123')

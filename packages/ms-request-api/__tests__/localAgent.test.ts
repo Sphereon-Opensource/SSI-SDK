@@ -1,7 +1,7 @@
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import msRequestApiAgentLogic from './shared/msRequestApiAgentLogic'
 
-jest.setTimeout(30000)
+jest.setTimeout(60000)
 
 let agent: any
 

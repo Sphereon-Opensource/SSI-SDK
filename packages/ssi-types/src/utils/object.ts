@@ -13,7 +13,7 @@ export class ObjectUtils {
     ObjectUtils.isString(url) && isAbsoluteRegex.test(url)
   }
 
-  public static isString(value: unknown): boolean {
+  public static isString(value: unknown): value is string {
     return typeof value === 'string' || Object.prototype.toString.call(value) === '[object String]'
   }
 }

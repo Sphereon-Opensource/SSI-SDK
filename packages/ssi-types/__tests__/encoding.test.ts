@@ -47,8 +47,10 @@ describe('Encoding - Decoding', () => {
   })
 
   it('text-stringified JsonLD should be decoded', () => {
-    expect(CredentialMapper.decodeVerifiablePresentation(JSON.stringify(ldpVp)).verifiableCredential).toBeDefined()
-    expect(CredentialMapper.decodeVerifiableCredential(JSON.stringify(ldpVc)).credentialSubject.id).toEqual('did:example:b34ca6cd37bbf23')
+    const decodedVp = CredentialMapper.decodeVerifiablePresentation(JSON.stringify(ldpVp)) as IVerifiablePresentation
+    const decodedVc = CredentialMapper.decodeVerifiableCredential(JSON.stringify(ldpVc)) as IVerifiableCredential
+    expect(decodedVp.verifiableCredential).toBeDefined()
+    expect(decodedVc.credentialSubject).toMatchObject({ id: 'did:example:b34ca6cd37bbf23' })
   })
 
   it('JWT encoding checks should succeed on JWTs', () => {

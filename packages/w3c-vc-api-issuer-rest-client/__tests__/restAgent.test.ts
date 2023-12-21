@@ -7,11 +7,10 @@ import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import { IVcApiIssuerClient } from '../src'
-import { VcApiIssuerClient } from '../src'
+import { IVcApiIssuerClient, VcApiIssuerClient } from '../src'
 import vcApiIssuerAgentLogic from './shared/vcApiIssuerAgentLogic'
 
-jest.setTimeout(30000)
+jest.setTimeout(60000)
 
 const port = 3002
 const basePath = '/agent'

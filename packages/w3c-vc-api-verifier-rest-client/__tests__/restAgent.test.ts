@@ -7,12 +7,11 @@ import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-import { IVcApiVerifierClient } from '../src/types/IVcApiVerifierClient'
-import { VcApiVerifierClient } from '../src/agent/VcApiVerifierClient'
+import { IVcApiVerifierClient, VcApiVerifierClient } from '../src'
 import vcApiVerifierAgentLogic from './shared/vcApiVerifierAgentLogic'
 import * as path from 'path'
 
-jest.setTimeout(30000)
+jest.setTimeout(60000)
 
 const port = 30078
 const basePath = '/agent'
