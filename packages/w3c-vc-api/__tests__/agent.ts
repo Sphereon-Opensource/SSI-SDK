@@ -1,12 +1,12 @@
 // import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
-import {getUniResolver} from '@sphereon/did-uni-client'
-import {ExpressBuilder} from '@sphereon/ssi-express-support'
-import {JwkDIDProvider} from '@sphereon/ssi-sdk-ext.did-provider-jwk'
-import {getDidJwkResolver} from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
-import {SphereonKeyManager} from "@sphereon/ssi-sdk-ext.key-manager";
-import {SphereonKeyManagementSystem} from "@sphereon/ssi-sdk-ext.kms-local";
-import {DataSources} from '@sphereon/ssi-sdk.agent-config'
-import {IPresentationExchange, PresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
+import { getUniResolver } from '@sphereon/did-uni-client'
+import { ExpressBuilder } from '@sphereon/ssi-express-support'
+import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
+import { getDidJwkResolver } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
+import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
+import { DataSources } from '@sphereon/ssi-sdk.agent-config'
+import { IPresentationExchange, PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import {
   CredentialHandlerLDLocal,
   ICredentialHandlerLDLocal,
@@ -18,33 +18,24 @@ import {
   SphereonEd25519Signature2020,
   SphereonJsonWebSignature2020,
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
-import {
-  createAgent,
-  ICredentialPlugin,
-  ICredentialVerifier,
-  IDataStore,
-  IDataStoreORM,
-  IDIDManager,
-  IKeyManager,
-  IResolver
-} from '@veramo/core'
-import {CredentialPlugin} from '@veramo/credential-w3c'
-import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@veramo/data-store'
-import {DIDManager} from '@veramo/did-manager'
-import {EthrDIDProvider} from '@veramo/did-provider-ethr'
-import {getDidIonResolver, IonDIDProvider} from '@veramo/did-provider-ion'
-import {getDidKeyResolver, KeyDIDProvider} from '@veramo/did-provider-key'
-import {DIDResolverPlugin} from '@veramo/did-resolver'
-import {SecretBox} from '@veramo/kms-local'
+import { createAgent, ICredentialPlugin, ICredentialVerifier, IDataStore, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
+import { CredentialPlugin } from '@veramo/credential-w3c'
+import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
+import { DIDManager } from '@veramo/did-manager'
+import { EthrDIDProvider } from '@veramo/did-provider-ethr'
+import { getDidIonResolver, IonDIDProvider } from '@veramo/did-provider-ion'
+import { getDidKeyResolver, KeyDIDProvider } from '@veramo/did-provider-key'
+import { DIDResolverPlugin } from '@veramo/did-resolver'
+import { SecretBox } from '@veramo/kms-local'
 import Debug from 'debug'
-import {Resolver} from 'did-resolver'
+import { Resolver } from 'did-resolver'
 
 import passport from 'passport'
-import {ITokenPayload, VerifyCallback} from 'passport-azure-ad/common'
-import {VcApiServer} from '../src'
+import { ITokenPayload, VerifyCallback } from 'passport-azure-ad/common'
+import { VcApiServer } from '../src'
 
 import config from './config.json'
-import {DB_CONNECTION_NAME_SQLITE, DB_ENCRYPTION_KEY, sqliteConfig} from './database'
+import { DB_CONNECTION_NAME_SQLITE, DB_ENCRYPTION_KEY, sqliteConfig } from './database'
 
 const debug = Debug('sphereon:vc-api')
 
@@ -65,8 +56,7 @@ export enum SupportedDidMethodEnum {
   DID_JWK = 'jwk',
 }
 
-export const PRIVATE_KEY_HEX =
-  'a5e81a8cd50cf5c31d5b87db3e153e2817f86de350a60edc2335f76d5c3b4e0d'
+export const PRIVATE_KEY_HEX = 'a5e81a8cd50cf5c31d5b87db3e153e2817f86de350a60edc2335f76d5c3b4e0d'
 export const PUBLIC_KEY_HEX = '02cfc48d497317d51e9e4cacc91a6f80ede8c07c596e0e588726ea2039a3ec0c34'
 
 /*const RP_PRIVATE_KEY_HEX = '7dd923e40f4615ac496119f7e793cc2899e99b64b88ca8603db986700089532b'
