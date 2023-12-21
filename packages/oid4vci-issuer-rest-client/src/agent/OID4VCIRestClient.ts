@@ -31,7 +31,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
     }
     this.authOpts = args?.authentication
   }
-  private createHeaders(existing?: Record<string, any>): HeadersInit {
+  private async createHeaders(existing?: Record<string, any>): Promise<HeadersInit> {
     const headers: HeadersInit = {
       ...existing,
       Accept: 'application/json',
@@ -40,7 +40,9 @@ export class OID4VCIRestClient implements IAgentPlugin {
       if (!this.authOpts.bearerToken) {
         throw Error(`Cannot have authentication enabled, whilst not enabling static bearer tokens at this point`)
       }
-      headers.Authorization = `Bearer ${this.authOpts.bearerToken}`
+      headers.Authorization = `Bearer ${
+        typeof this.authOpts.bearerToken === 'string' ? this.authOpts.bearerToken : await this.authOpts.bearerToken()
+      }`
     }
     return headers
   }
@@ -61,7 +63,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
     try {
       const origResponse = await fetch(url, {
         method: 'POST',
-        headers: this.createHeaders({ 'Content-Type': 'application/json' }),
+        headers: await this.createHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify(request),
       })
       if (!origResponse.ok) {
@@ -79,7 +81,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
     const url = OID4VCIRestClient.urlWithBase('/webapp/credential-offer-status', baseUrl)
     const statusResponse = await fetch(url, {
       method: 'POST',
-      headers: this.createHeaders({ 'Content-Type': 'application/json' }),
+      headers: await this.createHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({
         id: args.id,
       }),

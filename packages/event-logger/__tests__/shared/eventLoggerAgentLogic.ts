@@ -7,17 +7,13 @@ import {
   PartyCorrelationType,
   SubSystem,
   System,
-  SystemCorrelationIdType
+  SystemCorrelationIdType,
 } from '@sphereon/ssi-sdk.core'
 import { GetAuditEventsArgs, IEventLogger, NonPersistedAuditLoggingEvent } from '../../src'
 
 type ConfiguredAgent = TAgent<IEventLogger>
 
-export default (testContext: {
-  getAgent: () => ConfiguredAgent
-  setup: () => Promise<boolean>
-  tearDown: () => Promise<boolean>
-}): void => {
+export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
   describe('Event Logger Agent Plugin', (): void => {
     let agent: ConfiguredAgent
 
@@ -45,10 +41,10 @@ export default (testContext: {
         partyAlias: 'test_alias',
         description: 'test_description',
         data: 'test_data_string',
-        diagnosticData: { data: 'test_data_string'}
+        diagnosticData: { data: 'test_data_string' },
       }
 
-      const result: AuditLoggingEvent = await agent.loggerLogAuditEvent({event: auditEvent})
+      const result: AuditLoggingEvent = await agent.loggerLogAuditEvent({ event: auditEvent })
 
       expect(result).toBeDefined()
       expect(result?.id).toBeDefined()
@@ -88,10 +84,10 @@ export default (testContext: {
         partyAlias: 'test_alias',
         description: 'test_description',
         data: 'test_data_string',
-        diagnosticData: { data: 'test_data_string'}
+        diagnosticData: { data: 'test_data_string' },
       }
 
-      await agent.loggerLogAuditEvent({event: auditEvent})
+      await agent.loggerLogAuditEvent({ event: auditEvent })
       const result: Array<AuditLoggingEvent> = await agent.loggerGetAuditEvents()
 
       expect(result).toBeDefined()
@@ -115,10 +111,10 @@ export default (testContext: {
         partyAlias: 'test_alias',
         description: 'test_description',
         data: 'test_data_string',
-        diagnosticData: { data: 'test_data_string'}
+        diagnosticData: { data: 'test_data_string' },
       }
 
-      await agent.loggerLogAuditEvent({event: auditEvent})
+      await agent.loggerLogAuditEvent({ event: auditEvent })
       const args: GetAuditEventsArgs = {
         filter: [{ correlationId: auditEvent.correlationId }],
       }
@@ -127,6 +123,5 @@ export default (testContext: {
       expect(result).toBeDefined()
       expect(result?.length).toEqual(1)
     })
-
   })
 }

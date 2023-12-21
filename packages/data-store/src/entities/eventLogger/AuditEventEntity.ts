@@ -1,11 +1,4 @@
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn
-} from 'typeorm'
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import {
   ActionType,
   InitiatorType,
@@ -14,7 +7,7 @@ import {
   SubSystem,
   System,
   SystemCorrelationIdType,
-  ActionSubType
+  ActionSubType,
 } from '@sphereon/ssi-sdk.core'
 import { NonPersistedAuditLoggingEvent } from '../../types'
 
@@ -23,13 +16,13 @@ export class AuditEventEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'timestamp', nullable: false, unique: false})
+  @Column({ name: 'timestamp', nullable: false, unique: false })
   timestamp!: Date
 
   @Column('simple-enum', { name: 'level', enum: LogLevel, nullable: false, unique: false })
   level!: LogLevel
 
-  @Column({ name: 'correlationId', nullable: false, unique: false})
+  @Column({ name: 'correlationId', nullable: false, unique: false })
   correlationId!: string
 
   @Column('simple-enum', { name: 'system', enum: System, nullable: false, unique: false })
@@ -50,28 +43,28 @@ export class AuditEventEntity extends BaseEntity {
   @Column('simple-enum', { name: 'systemCorrelationIdType', enum: SystemCorrelationIdType, nullable: true, unique: false })
   systemCorrelationIdType?: SystemCorrelationIdType
 
-  @Column({ name: 'systemCorrelationId', nullable: true, unique: false})
+  @Column({ name: 'systemCorrelationId', nullable: true, unique: false })
   systemCorrelationId?: string
 
-  @Column({ name: 'systemAlias', nullable: false, unique: false})
+  @Column({ name: 'systemAlias', nullable: false, unique: false })
   systemAlias?: string
 
   @Column('simple-enum', { name: 'partyCorrelationType', enum: PartyCorrelationType, nullable: true, unique: false })
   partyCorrelationType?: PartyCorrelationType
 
-  @Column({ name: 'partyCorrelationId', nullable: true, unique: false})
+  @Column({ name: 'partyCorrelationId', nullable: true, unique: false })
   partyCorrelationId?: string
 
-  @Column({ name: 'partyAlias', nullable: true, unique: false})
+  @Column({ name: 'partyAlias', nullable: true, unique: false })
   partyAlias?: string
 
-  @Column({ name: 'description', nullable: false, unique: false})
+  @Column({ name: 'description', nullable: false, unique: false })
   description!: string
 
-  @Column({ name: 'data', nullable: true, unique: false})
+  @Column({ name: 'data', nullable: true, unique: false })
   data?: string
 
-  @Column({ name: 'diagnosticData', nullable: true, unique: false})
+  @Column({ name: 'diagnosticData', nullable: true, unique: false })
   diagnosticData?: string
 
   @CreateDateColumn({ name: 'created_at', nullable: false })

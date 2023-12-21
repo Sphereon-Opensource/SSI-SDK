@@ -4,7 +4,7 @@ export enum LogLevel {
   DEBUG = 0,
   INFO,
   WARNING,
-  ERROR
+  ERROR,
 }
 
 export enum System {
@@ -38,7 +38,7 @@ export enum ActionType {
   READ = 'read',
   UPDATE = 'update',
   DELETE = 'delete',
-  EXECUTE = 'execute'
+  EXECUTE = 'execute',
 }
 
 export enum DefaultActionSubType {
@@ -58,7 +58,7 @@ export type ActionSubType = DefaultActionSubType | string
 export enum InitiatorType {
   USER = 'user',
   SYSTEM = 'system',
-  EXTERNAL = 'external'
+  EXTERNAL = 'external',
 }
 
 export enum SystemCorrelationIdType {
@@ -66,14 +66,14 @@ export enum SystemCorrelationIdType {
   EMAIL = 'email',
   HOSTNAME = 'hostname',
   PHONE = 'phone',
-  USER = 'user'
+  USER = 'user',
 }
 
 export enum PartyCorrelationType {
   DID = 'did',
   EMAIL = 'email',
   HOSTNAME = 'hostname',
-  PHONE = 'phone'
+  PHONE = 'phone',
 }
 
 export enum LoggingEventType {
@@ -110,7 +110,7 @@ export type NonPersistedAuditLoggingEvent = Omit<AuditLoggingEvent, 'id' | 'time
 }
 
 export type LoggingEvent = {
-  type: LoggingEventType,
+  type: LoggingEventType
   data: NonPersistedAuditLoggingEvent
 }
 

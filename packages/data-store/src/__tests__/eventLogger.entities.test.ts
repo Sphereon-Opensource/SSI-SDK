@@ -1,15 +1,7 @@
 import { DataSource } from 'typeorm'
 import { DataStoreEventLoggerEntities } from '../index'
 import { DataStoreEventLoggerMigrations } from '../migrations/generic'
-import {
-  ActionType,
-  InitiatorType,
-  LogLevel,
-  PartyCorrelationType,
-  SubSystem,
-  System,
-  SystemCorrelationIdType
-} from '@sphereon/ssi-sdk.core'
+import { ActionType, InitiatorType, LogLevel, PartyCorrelationType, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-sdk.core'
 import { auditEventEntityFrom, AuditEventEntity } from '../entities/eventLogger/AuditEventEntity'
 import { NonPersistedAuditLoggingEvent } from '../types'
 
@@ -52,7 +44,7 @@ describe('Database entities tests', (): void => {
       partyAlias: 'test_alias',
       description: 'test_description',
       data: 'test_data_string',
-      diagnosticData: { data: 'test_data_string'}
+      diagnosticData: { data: 'test_data_string' },
     }
 
     const auditEventEntity: AuditEventEntity = auditEventEntityFrom(auditEvent)
@@ -78,5 +70,4 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.data).toEqual(JSON.stringify(auditEvent.data))
     expect(fromDb?.diagnosticData).toEqual(JSON.stringify(auditEvent.diagnosticData))
   })
-
 })

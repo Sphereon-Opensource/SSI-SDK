@@ -67,17 +67,14 @@ export const DataStoreIssuanceBrandingEntities = [
 
 export const DataStoreStatusListEntities = [StatusListEntity, StatusListEntryEntity]
 
-export const DataStoreEventLoggerEntities = [
-  AuditEventEntity
-]
-
+export const DataStoreEventLoggerEntities = [AuditEventEntity]
 
 // All entities combined if a party wants to enable them all at once
 export const DataStoreEntities = [
   ...DataStoreContactEntities,
   ...DataStoreIssuanceBrandingEntities,
   ...DataStoreStatusListEntities,
-  ...DataStoreEventLoggerEntities
+  ...DataStoreEventLoggerEntities,
 ]
 
 export {
@@ -112,5 +109,5 @@ export {
   StatusListEntity,
   StatusListEntryEntity,
   AuditEventEntity,
-  auditEventEntityFrom
+  auditEventEntityFrom,
 }

@@ -4,3 +4,5 @@
  * @internal
  */
 export type OrPromise<T> = T | Promise<T>
+
+export type BearerTokenArg = (() => Promise<string>) | string

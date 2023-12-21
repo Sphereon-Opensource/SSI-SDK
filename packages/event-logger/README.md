@@ -12,13 +12,14 @@
 
 ---
 
-A Veramo event logger plugin. This plugin allows for listening to events and to persist them into a database. 
+A Veramo event logger plugin. This plugin allows for listening to events and to persist them into a database.
 There are also functions that can be manually called to persist events. Current, only audit events are supported that can be used to create an audit log.
 
-Ideally this plugin should be used in combination with the event logger from our core package. This event logger will also default debug the events. 
+Ideally this plugin should be used in combination with the event logger from our core package. This event logger will also default debug the events.
 This is mainly as a fallback for when no listener is present within the agent.
 
 ## Available functions
+
 - loggerGetAuditEvents
 - loggerStoreAuditEvent
 
@@ -29,12 +30,7 @@ This is mainly as a fallback for when no listener is present within the agent.
 ```typescript
 import { migrations, Entities } from '@veramo/data-store'
 import { EventLogger, IEventLogger } from '@sphereon/ssi-sdk.event-logger'
-import {
-  EventLoggerStore,
-  DataStoreMigrations,
-  DataStoreEventLoggerEntities,
-  LoggingEventType
-} from '@sphereon/ssi-sdk.data-store'
+import { EventLoggerStore, DataStoreMigrations, DataStoreEventLoggerEntities, LoggingEventType } from '@sphereon/ssi-sdk.data-store'
 
 const dbConnection = createConnection({
   type: 'react-native',
@@ -60,24 +56,21 @@ const agent = createAgent<IEventLogger>({
 ### Log event using event listener:
 
 ```typescript
-import { 
-  EventLogger, 
-  EventLoggerBuilder, 
-  LoggingEventType ,
+import {
+  EventLogger,
+  EventLoggerBuilder,
+  LoggingEventType,
   LogLevel,
   System,
   SubSystem,
   ActionType,
   InitiatorType,
   SystemCorrelationIdType,
-  PartyCorrelationType
-} from '@sphereon/ssi-sdk.core';
+  PartyCorrelationType,
+} from '@sphereon/ssi-sdk.core'
 
 const agentContext = { agent }
-const logger: EventLogger = new EventLoggerBuilder()
-    .withContext(agentContext)
-    .withNamespace('custom_namespace')
-    .build()
+const logger: EventLogger = new EventLoggerBuilder().withContext(agentContext).withNamespace('custom_namespace').build()
 
 await logger.logEvent({
   type: LoggingEventType.AUDIT,
@@ -97,8 +90,8 @@ await logger.logEvent({
     partyAlias: 'test_alias',
     description: 'test_description',
     data: 'test_data_string',
-    diagnosticData: { data: 'test_data_string'}
-  }
+    diagnosticData: { data: 'test_data_string' },
+  },
 })
 ```
 
@@ -113,7 +106,7 @@ import {
   ActionType,
   InitiatorType,
   SystemCorrelationIdType,
-  PartyCorrelationType
+  PartyCorrelationType,
 } from '@sphereon/ssi-sdk.core'
 import { GetAuditEventsArgs, NonPersistedAuditLoggingEvent } from '@sphereon/ssi-sdk.event-logger'
 
@@ -133,10 +126,10 @@ const auditEvent: NonPersistedAuditLoggingEvent = {
   partyAlias: 'test_alias',
   description: 'test_description',
   data: 'test_data_string',
-  diagnosticData: { data: 'test_data_string'}
+  diagnosticData: { data: 'test_data_string' },
 }
 
-const result: AuditLoggingEvent = await agent.loggerLogAuditEvent({event: auditEvent})
+const result: AuditLoggingEvent = await agent.loggerLogAuditEvent({ event: auditEvent })
 ```
 
 ### Retrieve audit events:
@@ -150,7 +143,7 @@ import {
   ActionType,
   InitiatorType,
   SystemCorrelationIdType,
-  PartyCorrelationType
+  PartyCorrelationType,
 } from '@sphereon/ssi-sdk.core'
 import { GetAuditEventsArgs, NonPersistedAuditLoggingEvent } from '@sphereon/ssi-sdk.event-logger'
 
@@ -170,10 +163,10 @@ const auditEvent: NonPersistedAuditLoggingEvent = {
   partyAlias: 'test_alias',
   description: 'test_description',
   data: 'test_data_string',
-  diagnosticData: { data: 'test_data_string'}
+  diagnosticData: { data: 'test_data_string' },
 }
 
-await agent.loggerLogAuditEvent({event: auditEvent})
+await agent.loggerLogAuditEvent({ event: auditEvent })
 const getAuditEventArgs: GetAuditEventsArgs = {
   filter: [{ correlationId: auditEvent.correlationId }],
 }
