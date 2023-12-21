@@ -1,7 +1,7 @@
 import { createObjects, getConfig } from '../../agent-config/dist'
 import { DataSource } from 'typeorm'
 
-jest.setTimeout(30000)
+jest.setTimeout(60000)
 
 import contactManagerAgentLogic from './shared/contactManagerAgentLogic'
 

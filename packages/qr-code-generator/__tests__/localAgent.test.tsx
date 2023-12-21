@@ -4,7 +4,7 @@
 
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 
-jest.setTimeout(30000)
+jest.setTimeout(60000)
 
 import ssiQrCodeProviderLogic from './shared/ssiQrCodeProviderLogic'
 

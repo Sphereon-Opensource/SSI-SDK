@@ -17,6 +17,7 @@ import {
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
 import { CredentialMapper } from '@sphereon/ssi-types'
 import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
+import { WrappedW3CVerifiablePresentation } from '@sphereon/ssi-types'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -333,7 +334,7 @@ export default (testContext: {
         './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_single.json'
       )
       const vp_single: IPresentationWithDefinition = getFileAsJson('./packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_single.json')
-      const presentation = CredentialMapper.toWrappedVerifiablePresentation(vp_single.presentation)
+      const presentation = CredentialMapper.toWrappedVerifiablePresentation(vp_single.presentation) as WrappedW3CVerifiablePresentation
       presentation.presentation.presentation_submission!.id = expect.any(String)
 
       const result: IAuthRequestDetails = await agent.getSiopAuthorizationRequestDetails({
@@ -362,7 +363,7 @@ export default (testContext: {
         './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_single.json'
       )
       const vpSingle: IPresentationWithDefinition = getFileAsJson('./packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_single.json')
-      const presentation = CredentialMapper.toWrappedVerifiablePresentation(vpSingle.presentation)
+      const presentation = CredentialMapper.toWrappedVerifiablePresentation(vpSingle.presentation) as WrappedW3CVerifiablePresentation
       presentation.presentation.presentation_submission!.id = expect.any(String)
 
       const result: IAuthRequestDetails = await agent.getSiopAuthorizationRequestDetails({
@@ -397,7 +398,7 @@ export default (testContext: {
       const vpMultiple: IPresentationWithDefinition = getFileAsJson(
         './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_multiple.json'
       )
-      const presentation = CredentialMapper.toWrappedVerifiablePresentation(vpMultiple.presentation)
+      const presentation = CredentialMapper.toWrappedVerifiablePresentation(vpMultiple.presentation) as WrappedW3CVerifiablePresentation
       presentation.presentation.presentation_submission!.id = expect.any(String)
 
       const result: IAuthRequestDetails = await agent.getSiopAuthorizationRequestDetails({

@@ -5,5 +5,12 @@
     "rootDir": "src",
     "outDir": "dist"
   },
-  "references": [{ "path": "../siopv2-oid4vp-common" }]
+  "references": [
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../siopv2-oid4vp-common"
+    }
+  ]
 }
