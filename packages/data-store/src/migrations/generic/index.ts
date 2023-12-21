@@ -16,12 +16,12 @@ import { CreateAuditEvents1701635835330 } from './5-CreateAuditEvents'
 export const DataStoreContactMigrations = [CreateContacts1659463079429, CreateContacts1690925872318]
 export const DataStoreIssuanceBrandingMigrations = [CreateIssuanceBranding1659463079429]
 export const DataStoreStatusListMigrations = [CreateStatusList1693866470000]
-export const DataStoreEventLoggerMigrations= [CreateAuditEvents1701635835330]
+export const DataStoreEventLoggerMigrations = [CreateAuditEvents1701635835330]
 
 // All migrations together
 export const DataStoreMigrations = [
   ...DataStoreContactMigrations,
   ...DataStoreIssuanceBrandingMigrations,
   ...DataStoreStatusListMigrations,
-  ...DataStoreEventLoggerMigrations
+  ...DataStoreEventLoggerMigrations,
 ]

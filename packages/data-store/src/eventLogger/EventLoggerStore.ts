@@ -1,10 +1,10 @@
-import Debug, {Debugger} from 'debug'
-import {DataSource} from 'typeorm'
-import {AuditLoggingEvent} from '@sphereon/ssi-sdk.core'
-import {OrPromise} from '@sphereon/ssi-types'
-import {AbstractEventLoggerStore} from './AbstractEventLoggerStore'
-import {AuditEventEntity, auditEventEntityFrom} from '../entities/eventLogger/AuditEventEntity'
-import {GetAuditEventsArgs, StoreAuditEventArgs} from '../types'
+import Debug, { Debugger } from 'debug'
+import { DataSource } from 'typeorm'
+import { AuditLoggingEvent } from '@sphereon/ssi-sdk.core'
+import { OrPromise } from '@sphereon/ssi-types'
+import { AbstractEventLoggerStore } from './AbstractEventLoggerStore'
+import { AuditEventEntity, auditEventEntityFrom } from '../entities/eventLogger/AuditEventEntity'
+import { GetAuditEventsArgs, StoreAuditEventArgs } from '../types'
 
 const debug: Debugger = Debug('sphereon:ssi-sdk:event-store')
 
@@ -55,8 +55,8 @@ export class EventLoggerStore extends AbstractEventLoggerStore {
       systemAlias: event.systemAlias,
       systemCorrelationId: event.systemCorrelationId,
       systemCorrelationIdType: event.systemCorrelationIdType,
-      ...(event.data && {data: JSON.parse(event.data)}),
-      ...(event.diagnosticData && {diagnosticData: JSON.parse(event.diagnosticData)}),
+      ...(event.data && { data: JSON.parse(event.data) }),
+      ...(event.diagnosticData && { diagnosticData: JSON.parse(event.diagnosticData) }),
     }
   }
 }

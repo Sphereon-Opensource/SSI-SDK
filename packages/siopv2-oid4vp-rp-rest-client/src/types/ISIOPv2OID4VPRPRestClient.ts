@@ -1,3 +1,4 @@
+import {BearerTokenArg} from "@sphereon/ssi-types";
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 
 import { AuthStatusResponse, GenerateAuthRequestURIResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
@@ -29,7 +30,7 @@ export interface ISiopClientGetAuthStatusArgs {
 
 export interface Siopv2RestClientAuthenticationOpts {
   enabled?: boolean
-  staticBearerToken?: string
+  bearerToken?: BearerTokenArg
 }
 
 export interface Siopv2RestClientOpts {

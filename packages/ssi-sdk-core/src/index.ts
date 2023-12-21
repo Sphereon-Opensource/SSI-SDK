@@ -5,7 +5,4 @@ export * from './utils'
 export * from './types'
 export { KeyAlgo, SuppliedSigner } from './signers'
 
-export {
-  EventLogger,
-  EventLoggerBuilder
-}
+export { EventLogger, EventLoggerBuilder }

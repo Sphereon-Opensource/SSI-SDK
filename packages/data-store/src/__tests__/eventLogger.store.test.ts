@@ -9,7 +9,7 @@ import {
   PartyCorrelationType,
   SubSystem,
   System,
-  SystemCorrelationIdType
+  SystemCorrelationIdType,
 } from '@sphereon/ssi-sdk.core'
 import { EventLoggerStore } from '../eventLogger/EventLoggerStore'
 import { GetAuditEventsArgs, NonPersistedAuditLoggingEvent } from '../types'
@@ -55,10 +55,10 @@ describe('Database entities tests', (): void => {
       partyAlias: 'test_alias',
       description: 'test_description',
       data: 'test_data_string',
-      diagnosticData: { data: 'test_data_string'}
+      diagnosticData: { data: 'test_data_string' },
     }
 
-    const savedAuditEvent: AuditLoggingEvent = await eventLoggerStore.storeAuditEvent({event: auditEvent})
+    const savedAuditEvent: AuditLoggingEvent = await eventLoggerStore.storeAuditEvent({ event: auditEvent })
     expect(savedAuditEvent).toBeDefined()
   })
 
@@ -80,13 +80,13 @@ describe('Database entities tests', (): void => {
       partyAlias: 'test_alias',
       description: 'test_description',
       data: 'test_data_string',
-      diagnosticData: { data: 'test_data_string'}
+      diagnosticData: { data: 'test_data_string' },
     }
 
-    const auditEvent1: AuditLoggingEvent = await eventLoggerStore.storeAuditEvent({event: auditEvent})
+    const auditEvent1: AuditLoggingEvent = await eventLoggerStore.storeAuditEvent({ event: auditEvent })
     expect(auditEvent1).toBeDefined()
 
-    const auditEvent2: AuditLoggingEvent = await eventLoggerStore.storeAuditEvent({event: auditEvent})
+    const auditEvent2: AuditLoggingEvent = await eventLoggerStore.storeAuditEvent({ event: auditEvent })
     expect(auditEvent2).toBeDefined()
 
     const result: Array<AuditLoggingEvent> = await eventLoggerStore.getAuditEvents()
@@ -111,10 +111,10 @@ describe('Database entities tests', (): void => {
       partyAlias: 'test_alias',
       description: 'test_description',
       data: 'test_data_string',
-      diagnosticData: { data: 'test_data_string'}
+      diagnosticData: { data: 'test_data_string' },
     }
 
-    const savedAuditEvent: AuditLoggingEvent = await eventLoggerStore.storeAuditEvent({event: auditEvent})
+    const savedAuditEvent: AuditLoggingEvent = await eventLoggerStore.storeAuditEvent({ event: auditEvent })
     expect(savedAuditEvent).toBeDefined()
 
     const args: GetAuditEventsArgs = {
@@ -127,11 +127,10 @@ describe('Database entities tests', (): void => {
 
   it('should return no audit events if filter does not match', async (): Promise<void> => {
     const args: GetAuditEventsArgs = {
-      filter: [{ correlationId: 'unknown_id'}],
+      filter: [{ correlationId: 'unknown_id' }],
     }
     const result: Array<AuditLoggingEvent> = await eventLoggerStore.getAuditEvents(args)
 
     expect(result.length).toEqual(0)
   })
-
 })
