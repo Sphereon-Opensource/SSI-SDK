@@ -12,7 +12,7 @@
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",
     "cross-fetch": "^3.1.8",
-    "image-size": "^1.0.2",
+    "image-size": "1.0.2",
     "uint8arrays": "3.1.1",
     "debug": "^4.3.4"
   },
