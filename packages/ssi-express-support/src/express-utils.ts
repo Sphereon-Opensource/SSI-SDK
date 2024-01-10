@@ -6,15 +6,17 @@ export function sendErrorResponse(response: express.Response, statusCode: number
     msg = 'An unexpected error occurred'
     statusCode = 500
   } else {
-    console.error(`sendErrorResponse: ${typeof msg === 'string' ? msg : JSON.stringify(msg)}`)
+    console.error(`sendErrorResponse (${statusCode}): ${typeof msg === 'string' ? msg : JSON.stringify(msg)}`)
   }
   if (error) {
     if (error instanceof Error) {
-      console.error(error.message)
+      console.error(`error message: ${error.message}`)
     }
-    console.error(`error: ${JSON.stringify(error)}`)
+    console.error(`error object: ${JSON.stringify(error)}`)
   }
-  if (statusCode === 500) {
+  if (statusCode >= 500) {
+    console.error('Original error stack (if any) and REST API error stack:')
+    console.error(error?.stack)
     console.error(Error().stack)
   }
   if (response.headersSent) {
@@ -43,5 +45,5 @@ export const jsonErrorHandler = (err: any, req: express.Request, res: express.Re
     console.log(`Error was: ${JSON.stringify(err)}`)
     return next(err)
   }
-  return sendErrorResponse(res, statusCode, errorMsg, typeof err !== 'string' ? err : undefined)
+  return sendErrorResponse(res, statusCode, errorMsg, err)
 }
