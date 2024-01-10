@@ -133,7 +133,7 @@ export interface IRPOptions {
   responseMode?: ResponseMode
   supportedVersions?: SupportedVersion[] // The supported version by the RP. The first version will be the default version
   sessionManager?: IRPSessionManager
-  clientMetadata?: ClientMetadataOpts
+  clientMetadataOpts?: ClientMetadataOpts
   expiresIn?: number
   eventEmitter?: EventEmitter
   didOpts: ISIOPDIDOptions

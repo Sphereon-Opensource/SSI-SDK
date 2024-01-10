@@ -3,7 +3,11 @@ import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi
 import { Request, Response, Router } from 'express'
 import { IRequiredContext } from './types'
 
-export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
+export function verifyAuthResponseSIOPv2Endpoint(
+  router: Router,
+  context: IRequiredContext,
+  opts?: ISingleEndpointOpts & { presentationDefinitionLocation?: PresentationDefinitionLocation }
+) {
   if (opts?.enabled === false) {
     console.log(`verifyAuthResponse SIOP endpoint is disabled`)
     return
@@ -33,7 +37,7 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
         definitionId,
         presentationDefinitions: [
           {
-            location: PresentationDefinitionLocation.CLAIMS_VP_TOKEN,
+            location: opts?.presentationDefinitionLocation ?? PresentationDefinitionLocation.TOPLEVEL_PRESENTATION_DEF,
             definition,
           },
         ],

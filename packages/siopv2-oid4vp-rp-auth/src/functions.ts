@@ -138,13 +138,16 @@ export async function createRPBuilder(args: {
 
     .withEventEmitter(eventEmitter)
     .withSessionManager(rpOpts.sessionManager ?? new InMemoryRPSessionManager(eventEmitter))
-    .withClientMetadata(rpOpts.clientMetadata ?? defaultClientMetadata, PropertyTarget.REQUEST_OBJECT)
+    .withClientMetadata(rpOpts.clientMetadataOpts ?? defaultClientMetadata, PropertyTarget.REQUEST_OBJECT)
 
     .withCheckLinkedDomain(didOpts.checkLinkedDomains ?? CheckLinkedDomain.IF_PRESENT)
     .withRevocationVerification(RevocationVerification.NEVER)
     .withPresentationVerification(getPresentationVerificationCallback(didOpts, context))
 
-  didMethods.forEach((method) => builder.addDidMethod(method))
+  if (!rpOpts.clientMetadataOpts?.subjectTypesSupported) {
+    // Do not update in case it is already provided via client metadata opts
+    didMethods.forEach((method) => builder.addDidMethod(method))
+  }
   builder.withWellknownDIDVerifyCallback(getWellKnownDIDVerifyCallback(didOpts, context))
 
   if (definition) {
