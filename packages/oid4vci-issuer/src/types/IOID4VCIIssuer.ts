@@ -8,7 +8,6 @@ import {
   CredentialRequestV1_0_11,
   CredentialResponse,
   Grant,
-  SdJwtVcCredentialDefinition,
   JsonLdIssuerCredentialDefinition,
 } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier } from '@sphereon/oid4vci-issuer'
@@ -18,7 +17,7 @@ import { ICredential } from '@sphereon/ssi-types/dist'
 import { IAgentContext, ICredentialIssuer, IDataStoreORM, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { IssuerInstance } from '../IssuerInstance'
 
-export type IssuerCredentialDefinition = SdJwtVcCredentialDefinition | JsonLdIssuerCredentialDefinition
+export type IssuerCredentialDefinition = JsonLdIssuerCredentialDefinition
 
 export interface IOID4VCIIssuer extends IPluginMethodMap {
   oid4vciCreateOfferURI(createArgs: ICreateOfferArgs, context: IRequiredContext): Promise<ICreateCredentialOfferURIResult>

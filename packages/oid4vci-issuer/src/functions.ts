@@ -1,14 +1,33 @@
-import { CredentialIssuerMetadata, Jwt, JwtVerifyResult, OID4VCICredentialFormat, UniformCredentialRequest } from '@sphereon/oid4vci-common'
-import { CredentialDataSupplier, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
-import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
-import { getDID, getFirstKeyWithRelation, getIdentifier, getKey, IDIDOptions, toDID } from '@sphereon/ssi-sdk-ext.did-utils'
-import { ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
-import { DIDDocument, IIdentifier, IKey, ProofFormat } from '@veramo/core'
-import { CredentialPayload } from '@veramo/core/src/types/vc-data-model'
-import { bytesToBase64 } from '@veramo/utils'
-import { createJWT, decodeJWT, JWTVerifyOptions, verifyJWT } from 'did-jwt'
-import { Resolvable } from 'did-resolver'
-import { IIssuerOptions, IRequiredContext } from './types/IOID4VCIIssuer'
+import {
+  CredentialIssuerMetadata,
+  Jwt,
+  JwtVerifyResult,
+  OID4VCICredentialFormat,
+  UniformCredentialRequest
+} from '@sphereon/oid4vci-common'
+import {
+  CredentialDataSupplier,
+  CredentialIssuanceInput,
+  CredentialSignerCallback,
+  VcIssuer,
+  VcIssuerBuilder
+} from '@sphereon/oid4vci-issuer'
+import {
+  getAgentResolver,
+  getDID,
+  getFirstKeyWithRelation,
+  getIdentifier,
+  getKey,
+  IDIDOptions,
+  toDID
+} from '@sphereon/ssi-sdk-ext.did-utils'
+import {ICredential, W3CVerifiableCredential} from '@sphereon/ssi-types'
+import {DIDDocument, IIdentifier, IKey, ProofFormat} from '@veramo/core'
+import {CredentialPayload} from '@veramo/core/src/types/vc-data-model'
+import {bytesToBase64} from '@veramo/utils'
+import {createJWT, decodeJWT, JWTVerifyOptions, verifyJWT} from 'did-jwt'
+import {Resolvable} from 'did-resolver'
+import {IIssuerOptions, IRequiredContext} from './types/IOID4VCIIssuer'
 
 export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOptions }, _context: IRequiredContext) {
   return async (args: { jwt: string; kid?: string }): Promise<JwtVerifyResult<DIDDocument>> => {
@@ -123,17 +142,17 @@ export function getAccessTokenSignerCallback(
 }
 
 export function getCredentialSignerCallback(didOpts: IDIDOptions, context: IRequiredContext): CredentialSignerCallback<DIDDocument> {
-  async function issueVCCallback({
-    credential,
-    credentialRequest,
-    jwtVerifyResult,
-    format,
-  }: {
+  async function issueVCCallback(args: {
     credentialRequest: UniformCredentialRequest
-    credential: ICredential
+    credential: CredentialIssuanceInput
     jwtVerifyResult: JwtVerifyResult<DIDDocument>
     format?: OID4VCICredentialFormat
   }): Promise<W3CVerifiableCredential> {
+    const {
+      jwtVerifyResult,
+      format,
+    } = args
+    const credential = args.credential as ICredential // TODO: SDJWT
     let proofFormat: ProofFormat
 
     proofFormat = format?.includes('ld') ? 'lds' : 'jwt'
