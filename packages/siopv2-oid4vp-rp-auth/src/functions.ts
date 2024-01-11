@@ -121,7 +121,7 @@ export async function createRPBuilder(args: {
   const builder = RP.builder({ requestVersion: getRequestVersion(rpOpts) })
     .withScope('openid', PropertyTarget.REQUEST_OBJECT)
     .withResponseMode(rpOpts.responseMode ?? ResponseMode.POST)
-    .withResponseType(ResponseType.ID_TOKEN, PropertyTarget.REQUEST_OBJECT)
+    .withResponseType(ResponseType.VP_TOKEN, PropertyTarget.REQUEST_OBJECT)
     .withCustomResolver(
       rpOpts.didOpts.resolveOpts?.resolver ??
         getAgentResolver(context, {
