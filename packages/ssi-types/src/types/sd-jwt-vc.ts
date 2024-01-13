@@ -25,7 +25,7 @@ export interface SdJwtDecodedVerifiableCredentialPayload {
   exp?: number
   cnf?: {
     jwk?: any
-    // TODO: add other cnf properties
+    kid?: string
   }
   status?: {
     idx: number
