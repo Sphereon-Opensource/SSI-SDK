@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@sphereon/oid4vci-common": "0.8.2-unstable.30",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.15.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.16.0",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",
