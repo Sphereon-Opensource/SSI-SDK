@@ -1,3 +1,4 @@
+import { BearerTokenArg } from '@sphereon/ssi-types'
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import {
   CredentialOfferFormat,
@@ -18,7 +19,7 @@ export interface IOID4VCIClientCreateOfferUriRequestArgs extends IOID4VCIClientC
 
 export interface IRestClientAuthenticationOpts {
   enabled?: boolean
-  staticBearerToken?: string
+  bearerToken?: BearerTokenArg
 }
 
 export interface IOID4VCIClientGetIssueStatusArgs {

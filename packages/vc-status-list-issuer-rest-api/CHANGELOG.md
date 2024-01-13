@@ -7,17 +7,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.vc-status-list-issuer-rest-api
 
-
-
-
-
 ## [0.17.4](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.17.3...v0.17.4) (2023-10-01)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.vc-status-list-issuer-rest-api
-
-
-
-
 
 ## [0.17.3](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.17.2...v0.17.3) (2023-09-30)
 

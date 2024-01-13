@@ -33,6 +33,7 @@
     { "path": "wellknown-did-verifier" },
     { "path": "kv-store" },
     { "path": "issuance-branding" },
-    { "path": "headless-web3-provider" }
+    { "path": "headless-web3-provider" },
+    { "path": "event-logger" }
   ]
 }

@@ -1,33 +1,43 @@
 import express, { NextFunction } from 'express'
 export function sendErrorResponse(response: express.Response, statusCode: number, message: string | object, error?: any) {
-  console.log(`sendErrorResponse: ${message}`)
-  if (!message) {
-    console.log('Message was null when calling sendErrorResponse. This should not happen')
-    console.log(Error().stack)
-    message = 'An unexpected error occurred'
+  let msg = message
+  if (!msg) {
+    console.error('Message was null when calling sendErrorResponse. This should not happen')
+    msg = 'An unexpected error occurred'
     statusCode = 500
+  } else {
+    console.error(`sendErrorResponse: ${typeof msg === 'string' ? msg : JSON.stringify(msg)}`)
   }
   if (error) {
-    console.log(JSON.stringify(error))
+    if (error instanceof Error) {
+      console.error(error.message)
+    }
+    console.error(`error: ${JSON.stringify(error)}`)
+  }
+  if (statusCode === 500) {
+    console.error(Error().stack)
   }
   if (response.headersSent) {
-    console.log(`sendErrorResponse headers already sent`)
+    console.error(`sendErrorResponse headers already sent`)
     return response
   }
   response.statusCode = statusCode
-  if (typeof message === 'string' && !message.startsWith('{')) {
-    message = { error: message }
+  if (typeof msg === 'string' && !msg.startsWith('{')) {
+    msg = { error: msg }
   }
-  if (typeof message === 'string' && message.startsWith('{')) {
+  if (typeof msg === 'string' && msg.startsWith('{')) {
     response.header('Content-Type', 'application/json')
-    return response.status(statusCode).end(message)
+    return response.status(statusCode).end(msg)
   }
-  return response.status(statusCode).json(message)
+  return response.status(statusCode).json(msg)
 }
 
 export const jsonErrorHandler = (err: any, req: express.Request, res: express.Response, next: NextFunction) => {
   const statusCode: number = 'statusCode' in err ? err.statusCode : 500
-  const errorMsg = typeof err === 'string' ? err : err.message ?? err
+  let errorMsg = typeof err === 'string' ? err : err.message ?? err
+  if (typeof errorMsg !== 'string') {
+    errorMsg = JSON.stringify(errorMsg)
+  }
   if (res.headersSent) {
     console.log('Headers already sent, when calling error handler. Will defer to next error handler')
     console.log(`Error was: ${JSON.stringify(err)}`)

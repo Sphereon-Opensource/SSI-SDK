@@ -4,5 +4,10 @@
     "esModuleInterop": true,
     "rootDir": "src",
     "outDir": "dist"
-  }
+  },
+  "references": [
+    {
+      "path": "../ssi-types"
+    }
+  ]
 }

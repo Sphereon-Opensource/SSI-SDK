@@ -1,11 +1,12 @@
 import {
   IIssuer,
-  OriginalVerifiableCredential,
+  JwtDecodedVerifiableCredential,
   StatusListCredentialIdMode,
   StatusListDriverType,
   StatusListIndexingDirection,
   StatusListType,
   StatusPurpose2021,
+  W3CVerifiableCredential,
 } from '@sphereon/ssi-types'
 import { ProofFormat } from '@veramo/core'
 import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn, Unique } from 'typeorm'
@@ -74,13 +75,13 @@ export class StatusListEntity extends BaseEntity {
     nullable: true,
     unique: false,
     transformer: {
-      from(value: string): OriginalVerifiableCredential {
+      from(value: string): W3CVerifiableCredential | JwtDecodedVerifiableCredential {
         if (value?.startsWith('ey')) {
           return value
         }
         return JSON.parse(value)
       },
-      to(value: OriginalVerifiableCredential): string {
+      to(value: W3CVerifiableCredential | JwtDecodedVerifiableCredential): string {
         if (typeof value === 'string') {
           return value
         }
@@ -88,7 +89,7 @@ export class StatusListEntity extends BaseEntity {
       },
     },
   })
-  statusListCredential?: OriginalVerifiableCredential
+  statusListCredential?: W3CVerifiableCredential | JwtDecodedVerifiableCredential
 
   @OneToMany((type) => StatusListEntryEntity, (entry) => entry.statusList)
   statusListEntries!: StatusListEntryEntity[]
