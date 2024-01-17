@@ -1543,9 +1543,9 @@ importers:
 
   packages/ssi-types:
     dependencies:
-      '@sd-jwt/core':
-        specifier: 0.1.2-alpha.0
-        version: 0.1.2-alpha.0
+      '@sd-jwt/decode':
+        specifier: 0.1.2-alpha.9
+        version: 0.1.2-alpha.9
       jwt-decode:
         specifier: ^3.1.2
         version: 3.1.2
@@ -6721,9 +6721,21 @@ packages:
       '@noble/hashes': 1.2.0
       '@scure/base': 1.1.3
 
-  /@sd-jwt/core@0.1.2-alpha.0:
-    resolution: { integrity: sha512-x4MVXar6WmPauZDRJ3aHwaY8o/bHzN77Ts7o43JKuuqIBFjPgAcSlRtd/Xk1rWhazFai4MCIwJDSQ1OQRJtNug== }
+  /@sd-jwt/decode@0.1.2-alpha.9:
+    resolution: { integrity: sha512-3Hx5yd1b9gDC0wK7ZkNVzKevyvdGGkmV+mK7/LBUIR+q5SLZlwOmIHz80EM+8Eg0WFAnAmRgWKjn7jWWRQO5dw== }
     dependencies:
+      '@sd-jwt/types': 0.1.2-alpha.9
+      '@sd-jwt/utils': 0.1.2-alpha.9
+    dev: false
+
+  /@sd-jwt/types@0.1.2-alpha.9:
+    resolution: { integrity: sha512-j7Nf3RhQshkEjf3RQhF5hWMMOPQmzwhXBUhjcOoF5eJNgkpF6R13ryb3GDJHkRomIhkygaWaFEzC+ioRAZ7FzQ== }
+    dev: false
+
+  /@sd-jwt/utils@0.1.2-alpha.9:
+    resolution: { integrity: sha512-oPNWO/XDUkJxdEyOZvmLoqCo0uwiu5Xk0wGkmpwB9KtzeaioVW3JziFUswEczE9RED4+dOWtQwbSpEcy1DEWQw== }
+    dependencies:
+      '@sd-jwt/types': 0.1.2-alpha.9
       buffer: 6.0.3
     dev: false
 
@@ -12318,7 +12330,6 @@ packages:
     dependencies:
       is-hex-prefixed: 1.0.0
       strip-hex-prefix: 1.0.0
-    bundledDependencies: false
 
   /ethr-did-resolver@8.1.2:
     resolution: { integrity: sha512-dnbE3GItE1YHp/eavR11KbGDi8Il01H9GeH+wKgoSgE95pKBZufHyHYce/EK2k8VOmj6MJf8u/TIpPvxjCbK+A== }
