@@ -164,7 +164,7 @@ export class ContactStore extends AbstractContactStore {
           const partyContactRepository: Repository<BaseContactEntity> = (await this.dbConnection).getRepository(BaseContactEntity)
           await partyContactRepository
             .delete({ id: party.contact.id })
-            .catch((error) => Promise.reject(Error(`Unable to remove party contact with id: ${partyId}. ${error}`)))
+            .catch((error) => Promise.reject(Error(`Unable to remove party contact with id: ${party.contact.id}. ${error}`)))
         }
       })
       .catch((error) => Promise.reject(Error(`Unable to remove party with id: ${partyId}. ${error}`)))
