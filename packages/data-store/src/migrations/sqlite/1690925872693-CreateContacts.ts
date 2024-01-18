@@ -141,7 +141,7 @@ export class CreateContacts1690925872693 implements MigrationInterface {
 
     // migrate existing data
     await queryRunner.query(
-      `INSERT INTO "BaseConfig"("id", "identifier", "redirect_url", "session_id", "client_id", "client_secret", "scopes", "issuer", "dangerously_allow_insecure_http_requests", "client_auth_method", "type", "connection_id") SELECT "id", "identifier", "redirect_url", "session_id", "client_id", "client_secret", "scopes", "issuer", "dangerously_allow_insecure_http_requests", "client_auth_method", "type", "connection_id" FROM "BaseConfigEntity"`
+      `INSERT INTO "BaseConfig"("id", "identifier", "redirect_url", "session_id", "client_id", "client_secret", "scopes", "issuer", "dangerously_allow_insecure_http_requests", "client_auth_method", "type", "connection_id") SELECT "id", "identifier", "redirect_url", "session_id", "client_id", "client_secret", "scopes", "issuer", "dangerously_allow_insecure_http_requests", "client_auth_method", "type", "connectionId" FROM "BaseConfigEntity"`
     )
     await queryRunner.query(`DROP TABLE "BaseConfigEntity"`)
     await queryRunner.query(
