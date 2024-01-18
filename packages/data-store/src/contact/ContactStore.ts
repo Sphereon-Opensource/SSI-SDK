@@ -10,6 +10,7 @@ import { ConnectionEntity } from '../entities/contact/ConnectionEntity'
 import { BaseConfigEntity } from '../entities/contact/BaseConfigEntity'
 import { PartyRelationshipEntity } from '../entities/contact/PartyRelationshipEntity'
 import { PartyTypeEntity } from '../entities/contact/PartyTypeEntity'
+import { BaseContactEntity } from '../entities/contact/BaseContactEntity'
 import {
   identityEntityFrom,
   identityFrom,
@@ -159,6 +160,11 @@ export class ContactStore extends AbstractContactStore {
           await partyRepository
             .delete({ id: partyId })
             .catch((error) => Promise.reject(Error(`Unable to remove party with id: ${partyId}. ${error}`)))
+
+          const partyContactRepository: Repository<BaseContactEntity> = (await this.dbConnection).getRepository(BaseContactEntity)
+          await partyContactRepository
+            .delete({ id: party.contact.id })
+            .catch((error) => Promise.reject(Error(`Unable to remove party contact with id: ${party.contact.id}. ${error}`)))
         }
       })
       .catch((error) => Promise.reject(Error(`Unable to remove party with id: ${partyId}. ${error}`)))
