@@ -9,7 +9,7 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sd-jwt/decode": "0.1.2-alpha.9",
+    "@sd-jwt/decode": "^0.2.0",
     "jwt-decode": "^3.1.2"
   },
   "devDependencies": {
