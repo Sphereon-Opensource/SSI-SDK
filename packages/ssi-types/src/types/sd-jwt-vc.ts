@@ -1,6 +1,6 @@
 import { OriginalType, WrappedVerifiableCredential, WrappedVerifiablePresentation } from './vc'
-import { SdJwtVc } from '@sd-jwt/core'
-import { swapClaims } from '@sd-jwt/core/build/sdJwt/swapClaim'
+import { decodeSdJwtVc as _decodeSdJwtVc } from '@sd-jwt/decode'
+
 type JsonValue = string | number | boolean | { [x: string]: JsonValue | undefined } | Array<JsonValue>
 
 type SdJwtJsonValue =
@@ -189,27 +189,20 @@ export type AsyncHasher = (data: string, alg: string) => Promise<Uint8Array>
  * this method hides the actual implementation of SD-JWT (which is currently based on @sd-jwt/core)
  */
 export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): SdJwtDecodedVerifiableCredential {
-  const sdJwtVc = SdJwtVc.fromCompact(compactSdJwtVc)
-
-  // Default (should be handled by the sd-jwt library)
-  let sdAlg = 'sha-256'
-  try {
-    sdAlg = sdJwtVc.getClaimInPayload('_sd_alg')
-  } catch {
-    /* no-op */
-  }
-
-  const disclosuresWithDigests = sdJwtVc.disclosures?.map((d) => d.withCalculateDigest((data: string) => hasher(data, sdAlg))) ?? []
+  const { signedPayload, decodedPayload, disclosures } = _decodeSdJwtVc(compactSdJwtVc, hasher)
 
   return {
-    compactSdJwtVc: compactSdJwtVc,
-    decodedPayload: swapClaims(sdJwtVc.payload, disclosuresWithDigests) as SdJwtDecodedVerifiableCredentialPayload,
-    disclosures: disclosuresWithDigests.map((d) => ({
-      decoded: d.decoded as SdJwtDecodedDisclosure,
-      digest: d.digest,
-      encoded: d.encoded,
-    })),
-    signedPayload: sdJwtVc.payload as SdJwtDecodedVerifiableCredentialPayload,
+    compactSdJwtVc,
+    decodedPayload: decodedPayload as SdJwtDecodedVerifiableCredentialPayload,
+    disclosures: disclosures.map((d) => {
+      const decoded = d.key ? [d.salt, d.key, d.value] : [d.salt, d.value]
+      return {
+        decoded: decoded as SdJwtDecodedDisclosure,
+        digest: d.digest,
+        encoded: d.encoded,
+      } satisfies SdJwtDisclosure
+    }),
+    signedPayload: signedPayload as SdJwtDecodedVerifiableCredentialPayload,
   }
 }
 
@@ -221,28 +214,19 @@ export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): S
  * this method hides the actual implementation of SD-JWT (which is currently based on @sd-jwt/core)
  */
 export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher: AsyncHasher): Promise<SdJwtDecodedVerifiableCredential> {
-  const sdJwtVc = SdJwtVc.fromCompact(compactSdJwtVc)
-
-  // Default (should be handled by the sd-jwt library)
-  let sdAlg = 'sha-256'
-  try {
-    sdAlg = sdJwtVc.getClaimInPayload('_sd_alg')
-  } catch {
-    /* no-op */
-  }
-
-  const disclosuresWithDigests = await Promise.all(
-    sdJwtVc.disclosures?.map((d) => d.withCalculateDigest((data: string) => hasher(data, sdAlg))) ?? []
-  )
+  const { signedPayload, decodedPayload, disclosures } = await _decodeSdJwtVc(compactSdJwtVc, hasher)
 
   return {
-    compactSdJwtVc: compactSdJwtVc,
-    decodedPayload: swapClaims(sdJwtVc.payload, disclosuresWithDigests) as SdJwtDecodedVerifiableCredentialPayload,
-    disclosures: disclosuresWithDigests.map((d) => ({
-      decoded: d.decoded as SdJwtDecodedDisclosure,
-      digest: d.digest,
-      encoded: d.encoded,
-    })),
-    signedPayload: sdJwtVc.payload as SdJwtDecodedVerifiableCredentialPayload,
+    compactSdJwtVc,
+    decodedPayload: decodedPayload as SdJwtDecodedVerifiableCredentialPayload,
+    disclosures: disclosures.map((d) => {
+      const decoded = d.key ? [d.salt, d.key, d.value] : [d.salt, d.value]
+      return {
+        decoded: decoded as SdJwtDecodedDisclosure,
+        digest: d.digest,
+        encoded: d.encoded,
+      } satisfies SdJwtDisclosure
+    }),
+    signedPayload: signedPayload as SdJwtDecodedVerifiableCredentialPayload,
   }
 }
