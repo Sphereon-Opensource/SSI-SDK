@@ -17,7 +17,7 @@
     "@sphereon/did-auth-siop": "0.6.0-unstable.1",
     "@sphereon/pex": "3.0.1",
     "@sphereon/pex-models": "2.1.5",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.16.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.15.0",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.presentation-exchange": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",

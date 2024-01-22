@@ -16,7 +16,7 @@
   "dependencies": {
     "@sphereon/pex": "3.0.1",
     "@sphereon/pex-models": "^2.1.5",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.16.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.15.0",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0"
