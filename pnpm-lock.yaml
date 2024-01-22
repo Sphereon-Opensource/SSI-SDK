@@ -1089,8 +1089,8 @@ importers:
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.6.0-unstable.1
-        version: 0.6.0-unstable.1
+        specifier: 0.6.0-unstable.3
+        version: 0.6.0-unstable.3
       '@sphereon/pex':
         specifier: 3.0.1
         version: 3.0.1
@@ -1162,8 +1162,8 @@ importers:
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.6.0-unstable.1
-        version: 0.6.0-unstable.1
+        specifier: 0.6.0-unstable.3
+        version: 0.6.0-unstable.3
       '@sphereon/pex':
         specifier: 3.0.1
         version: 3.0.1
@@ -1226,8 +1226,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.6.0-unstable.1
-        version: 0.6.0-unstable.1
+        specifier: 0.6.0-unstable.3
+        version: 0.6.0-unstable.3
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -2175,8 +2175,8 @@ importers:
   packages/w3c-vc-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.6.0-unstable.1
-        version: 0.6.0-unstable.1
+        specifier: 0.6.0-unstable.3
+        version: 0.6.0-unstable.3
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -6785,7 +6785,7 @@ packages:
       chromium-edge-launcher: 1.0.0
       connect: 3.7.0
       debug: 2.6.9
-      node-fetch: 2.6.12
+      node-fetch: 2.7.0
       open: 7.4.2
       serve-static: 1.15.0
       temp-dir: 2.0.0
@@ -7093,8 +7093,8 @@ packages:
       - encoding
     dev: false
 
-  /@sphereon/did-auth-siop@0.6.0-unstable.1:
-    resolution: {integrity: sha512-Q0ABHQ3VFQ49CRH9XWMKeMmHLWFjGb7/dhJY+Zi9hn2Z3jgwJqSWqVN4TN94Cmwt0UQBWhz7ZTCO4sBZKcdqGw==}
+  /@sphereon/did-auth-siop@0.6.0-unstable.3:
+    resolution: {integrity: sha512-0d2A3EPsywkHw5zfR3JWu0sjy3FACtpAlnWabol/5C8/C1Ys1hCk+X995aADqs8DRtdVFX8TFJkCMshp7pLyEg==}
     engines: {node: '>=18'}
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
@@ -17444,6 +17444,7 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
+    optional: true
 
   /node-fetch@2.6.7:
     resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}

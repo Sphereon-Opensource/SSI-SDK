@@ -1,5 +1,6 @@
 import { AuthorizationResponsePayload, PresentationDefinitionLocation } from '@sphereon/did-auth-siop'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
+import { PresentationSubmission } from '@sphereon/ssi-types'
 import { Request, Response, Router } from 'express'
 import { IRequiredContext } from './types'
 
@@ -24,7 +25,12 @@ export function verifyAuthResponseSIOPv2Endpoint(
       console.log('Authorization Response (siop-sessions')
       console.log(JSON.stringify(request.body, null, 2))
       const definition = await context.agent.pexStoreGetDefinition({ definitionId })
-      const authorizationResponse = typeof request.body === 'string' ? request.body : (request.body as AuthorizationResponsePayload)
+      const authorizationResponse =
+        typeof request.body === 'string' ? (JSON.parse(request.body) as AuthorizationResponsePayload) : (request.body as AuthorizationResponsePayload)
+      if (typeof authorizationResponse.presentation_submission === 'string') {
+        console.log(`Supplied presentation_submission was a string instead of JSON. Correctig, but external party should fix their implementation!`)
+        authorizationResponse.presentation_submission = JSON.parse(authorizationResponse.presentation_submission) as PresentationSubmission
+      }
       console.log(`URI: ${JSON.stringify(authorizationResponse)}`)
       if (!definition) {
         response.statusCode = 404
