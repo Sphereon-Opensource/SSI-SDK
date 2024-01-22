@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.18.0...v0.18.1) (2024-01-19)
+
+**Note:** Version bump only for package @sphereon/ssi-sdk.oid4vci-issuer-store
+
+# [0.18.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.5...v0.18.0) (2024-01-13)
+
+### Features
+
+- Add static bearer token callback function option ([2d5cd5a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2d5cd5ad429aa5bf7a1864ce6a09bf2196e37d63))
+
+### Reverts
+
+- Revert "chore: update deps" ([a1cd971](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a1cd971c4edcff58e0ee225dd159a4e6958f58d1))
+
 ## [0.17.5](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.4...v0.17.5) (2023-10-01)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.oid4vci-issuer-store

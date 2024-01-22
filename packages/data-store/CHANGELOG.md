@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.18.0...v0.18.1) (2024-01-19)
+
+**Note:** Version bump only for package @sphereon/ssi-sdk.data-store
+
+# [0.18.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.5...v0.18.0) (2024-01-13)
+
+### Bug Fixes
+
+- added ssi-sdk.core to data-store tsconfig plus added exposed query function to enablePostgresUuidExtension signature ([cb5d8cb](https://github.com/Sphereon-Opensource/SSI-SDK/commit/cb5d8cb2d9b5f89ced3957e3127d197190de03c2))
+- added WithTypeOrmQuery type to core module and renamed enableUuidv4 to enablePostgresUuidExtension ([9bfb597](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9bfb597c378d3ca269cabcc001dc672f56a1be0a))
+- document added ([80112ec](https://github.com/Sphereon-Opensource/SSI-SDK/commit/80112eca96026d09cc22b89f3651252559542e44))
+- refactored usages of enablePostgresUuidExtension to accept queryRunner as the main param ([3654a8a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/3654a8a070bed87fd9cab66184603cce4c298a05))
+
+### Features
+
+- Add bearer token support using callback function ([4528881](https://github.com/Sphereon-Opensource/SSI-SDK/commit/4528881563104ac00b9af8d9615479c76af8a3be))
+- Add static bearer token callback function option ([2d5cd5a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2d5cd5ad429aa5bf7a1864ce6a09bf2196e37d63))
+- added enableUuidv4 to data-store exports ([d7c1237](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d7c1237c3c384fa6fc9d775f8f165abb6a96a40a))
+
 ## [0.17.5](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.4...v0.17.5) (2023-10-01)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.data-store
