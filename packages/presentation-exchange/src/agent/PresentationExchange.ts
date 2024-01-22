@@ -144,11 +144,13 @@ export class PresentationExchange implements IAgentPlugin {
         id: inputDescriptor.id,
         input_descriptors: [inputDescriptor],
       }
+
       promises.set(
         inputDescriptor,
         this.pexDefinitionFilterCredentials(
           {
             credentialFilterOpts: { verifiableCredentials: credentials },
+            // @ts-ignore
             presentationDefinition,
             holderDIDs,
             limitDisclosureSignatureSuites,
