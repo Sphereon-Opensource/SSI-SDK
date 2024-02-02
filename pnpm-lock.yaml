@@ -784,8 +784,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0
       '@sphereon/pex-models':
-        specifier: ^2.1.5
-        version: 2.1.5
+        specifier: ^2.2.0
+        version: 2.2.0
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.15.0
         version: 0.15.0(expo-crypto@12.6.0)(expo@49.0.21)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -966,8 +966,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0
       '@sphereon/pex-models':
-        specifier: ^2.1.5
-        version: 2.1.5
+        specifier: ^2.2.0
+        version: 2.2.0
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.15.0
         version: 0.15.0(expo-crypto@12.6.0)(expo@49.0.21)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -1290,8 +1290,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0
       '@sphereon/pex-models':
-        specifier: ^2.1.5
-        version: 2.1.5
+        specifier: ^2.2.0
+        version: 2.2.0
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.15.0
         version: 0.15.0(expo-crypto@12.6.0)(expo@49.0.21)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -7250,9 +7250,6 @@ packages:
     transitivePeerDependencies:
       - encoding
     dev: false
-
-  /@sphereon/pex-models@2.1.5:
-    resolution: {integrity: sha512-7THexvdYUK/Dh8olBB46ErT9q/RnecnMdb5r2iwZ6be0Dt4vQLAUN7QU80H0HZBok4jRTb8ydt12x0raBSTHOg==}
 
   /@sphereon/pex-models@2.2.0:
     resolution: {integrity: sha512-dGDRdoxJj+P0TRqu0R8R0/IdIzrCya1MsnxIFbcmSW3rjPsbwXbV0EojEfxXGD5LhqsUJiuAffMtyE2dtVI/XQ==}
