@@ -1,7 +1,7 @@
 import { CheckLinkedDomain, ResolveOpts, URI, Verification, VerificationMode, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
 import { PresentationExchangeResponseOpts } from '@sphereon/did-auth-siop/dist/authorization-response'
 import { getAgentDIDMethods, getAgentResolver, getDID } from '@sphereon/ssi-sdk-ext.did-utils'
-import { CredentialMapper } from '@sphereon/ssi-types'
+import { CredentialMapper, parseDid } from '@sphereon/ssi-types'
 import { IIdentifier } from '@veramo/core'
 import { IOPOptions, IOpSessionArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
 import { createOP } from './functions'
@@ -67,14 +67,24 @@ export class OpSession {
 
   public async getSupportedDIDMethods(didPrefix?: boolean) {
     const agentMethods = this.options.supportedDIDMethods?.map((method) => method.toLowerCase().replace('did:', ''))
-    const payload = (await this.getAuthorizationRequest()).registrationMetadataPayload
-    const rpMethods = (
-      payload?.subject_syntax_types_supported
-        ? Array.isArray(payload.subject_syntax_types_supported)
-          ? payload.subject_syntax_types_supported
-          : [payload.subject_syntax_types_supported]
-        : []
-    ).map((method) => method.toLowerCase().replace('did:', ''))
+    const authReq = await this.getAuthorizationRequest()
+    const subjectSyntaxTypesSupported = authReq.registrationMetadataPayload?.subject_syntax_types_supported
+    const aud = await authReq.authorizationRequest.getMergedProperty<string>('aud')
+    let rpMethods: string[] = []
+    if (aud && aud.startsWith('did:')) {
+      const did = parseDid(aud).method
+
+      // The RP knows our DID, so we can use it to determine the supported DID methods
+      // If the aud did:method is not in the supported types, there still is something wrong, unless the RP signals to support all did methods
+      if (subjectSyntaxTypesSupported && !subjectSyntaxTypesSupported.includes('did') && !subjectSyntaxTypesSupported.includes(did)) {
+        throw Error(`The aud DID method ${did} is not in the supported types ${subjectSyntaxTypesSupported}`)
+      }
+      rpMethods = [did]
+    } else if (subjectSyntaxTypesSupported) {
+      rpMethods = (Array.isArray(subjectSyntaxTypesSupported) ? subjectSyntaxTypesSupported : [subjectSyntaxTypesSupported]).map((method) =>
+        method.toLowerCase().replace('did:', '')
+      )
+    }
 
     let intersection: string[]
     if (rpMethods.length === 0 || rpMethods.includes('did')) {

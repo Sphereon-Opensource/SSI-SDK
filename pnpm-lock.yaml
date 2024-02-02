@@ -781,8 +781,8 @@ importers:
         specifier: ^0.6.1
         version: 0.6.1
       '@sphereon/pex':
-        specifier: 3.0.1
-        version: 3.0.1
+        specifier: 3.1.0
+        version: 3.1.0
       '@sphereon/pex-models':
         specifier: ^2.1.5
         version: 2.1.5
@@ -963,8 +963,8 @@ importers:
   packages/presentation-exchange:
     dependencies:
       '@sphereon/pex':
-        specifier: 3.0.1
-        version: 3.0.1
+        specifier: 3.1.0
+        version: 3.1.0
       '@sphereon/pex-models':
         specifier: ^2.1.5
         version: 2.1.5
@@ -1070,8 +1070,8 @@ importers:
   packages/siopv2-oid4vp-common:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.5.0-unstable.9
-        version: 0.5.0-unstable.9
+        specifier: 0.6.0-unstable.5
+        version: 0.6.0-unstable.5
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1089,14 +1089,14 @@ importers:
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.6.0-unstable.3
-        version: 0.6.0-unstable.3
+        specifier: 0.6.0-unstable.5
+        version: 0.6.0-unstable.5
       '@sphereon/pex':
-        specifier: 3.0.1
-        version: 3.0.1
+        specifier: 3.1.0
+        version: 3.1.0
       '@sphereon/pex-models':
-        specifier: 2.1.5
-        version: 2.1.5
+        specifier: 2.2.0
+        version: 2.2.0
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.15.0
         version: 0.15.0(expo-crypto@12.6.0)(expo@49.0.21)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -1162,11 +1162,11 @@ importers:
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.6.0-unstable.3
-        version: 0.6.0-unstable.3
+        specifier: 0.6.0-unstable.5
+        version: 0.6.0-unstable.5
       '@sphereon/pex':
-        specifier: 3.0.1
-        version: 3.0.1
+        specifier: 3.1.0
+        version: 3.1.0
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.15.0
         version: 0.15.0(expo-crypto@12.6.0)(expo@49.0.21)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -1226,8 +1226,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.6.0-unstable.3
-        version: 0.6.0-unstable.3
+        specifier: 0.6.0-unstable.5
+        version: 0.6.0-unstable.5
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1287,8 +1287,8 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@sphereon/pex':
-        specifier: 3.0.1
-        version: 3.0.1
+        specifier: 3.1.0
+        version: 3.1.0
       '@sphereon/pex-models':
         specifier: ^2.1.5
         version: 2.1.5
@@ -2175,8 +2175,8 @@ importers:
   packages/w3c-vc-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.6.0-unstable.3
-        version: 0.6.0-unstable.3
+        specifier: 0.6.0-unstable.5
+        version: 0.6.0-unstable.5
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -7069,38 +7069,14 @@ packages:
       '@sinonjs/commons': 1.8.6
     dev: true
 
-  /@sphereon/did-auth-siop@0.5.0-unstable.9:
-    resolution: {integrity: sha512-7fgc/RDtGm/RrIwIkYcHM2xqBk9+ogZ2hHQZlZMWOX1CnjXmqqnjfJdisTr1ZyvjF1R3pr330Z3LBJ/y5NU7uQ==}
+  /@sphereon/did-auth-siop@0.6.0-unstable.5:
+    resolution: {integrity: sha512-gW22m7byRVW0xU4O62Gc4cwPbtqPWaQyihqm+rJ2rTbnLsJlLJtLBivP8ZApM1AJRkOEbq1ExRSINusmSO9KuQ==}
     engines: {node: '>=18'}
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sphereon/did-uni-client': 0.6.1
-      '@sphereon/pex': 2.2.2
-      '@sphereon/pex-models': 2.1.5
-      '@sphereon/ssi-types': link:packages/ssi-types
-      '@sphereon/wellknown-dids-client': 0.1.3
-      cross-fetch: 3.1.8
-      did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
-      did-resolver: 4.1.0
-      events: 3.3.0
-      language-tags: 1.0.9
-      multiformats: 11.0.2
-      qs: 6.11.2
-      sha.js: 2.4.11
-      uint8arrays: 3.1.1
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@sphereon/did-auth-siop@0.6.0-unstable.3:
-    resolution: {integrity: sha512-0d2A3EPsywkHw5zfR3JWu0sjy3FACtpAlnWabol/5C8/C1Ys1hCk+X995aADqs8DRtdVFX8TFJkCMshp7pLyEg==}
-    engines: {node: '>=18'}
-    dependencies:
-      '@astronautlabs/jsonpath': 1.1.2
-      '@sphereon/did-uni-client': 0.6.1
-      '@sphereon/pex': 3.0.1
-      '@sphereon/pex-models': 2.1.5
+      '@sphereon/pex': 3.1.0
+      '@sphereon/pex-models': 2.2.0
       '@sphereon/ssi-types': link:packages/ssi-types
       '@sphereon/wellknown-dids-client': 0.1.3
       cross-fetch: 4.0.0
@@ -7278,29 +7254,18 @@ packages:
   /@sphereon/pex-models@2.1.5:
     resolution: {integrity: sha512-7THexvdYUK/Dh8olBB46ErT9q/RnecnMdb5r2iwZ6be0Dt4vQLAUN7QU80H0HZBok4jRTb8ydt12x0raBSTHOg==}
 
-  /@sphereon/pex@2.2.2:
-    resolution: {integrity: sha512-NkR8iDTC2PSnYsOHlG2M2iOpFTTbzszs2/pL3iK3Dlv9QYLqX7NtPAlmeSwaoVP1NB1ewcs6U1DtemQAD+90yQ==}
-    engines: {node: '>=16'}
-    dependencies:
-      '@astronautlabs/jsonpath': 1.1.2
-      '@sphereon/pex-models': 2.1.5
-      '@sphereon/ssi-types': link:packages/ssi-types
-      ajv: 8.12.0
-      ajv-formats: 2.1.1(ajv@8.12.0)
-      jwt-decode: 3.1.2
-      nanoid: 3.3.7
-      string.prototype.matchall: 4.0.10
-    dev: false
+  /@sphereon/pex-models@2.2.0:
+    resolution: {integrity: sha512-dGDRdoxJj+P0TRqu0R8R0/IdIzrCya1MsnxIFbcmSW3rjPsbwXbV0EojEfxXGD5LhqsUJiuAffMtyE2dtVI/XQ==}
 
-  /@sphereon/pex@3.0.1:
-    resolution: {integrity: sha512-rj+GhFfV5JLyo7dTIA3htWlrT+f6tayF9JRAGxdsIYBfYictLi9BirQ++JRBXsiq7T5zMnfermz4RGi3cvt13Q==}
+  /@sphereon/pex@3.1.0:
+    resolution: {integrity: sha512-msw5dzC9SpDq28mqM6ukjYk+yVKb6kzM+KwLjecwi/hpvfFrNCaR4QYJgK0OEDdcF2ZbZTSpg278I5lJauh07A==}
     engines: {node: '>=18'}
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sd-jwt/decode': 0.2.0
       '@sd-jwt/present': 0.2.0
       '@sd-jwt/utils': 0.2.0
-      '@sphereon/pex-models': 2.1.5
+      '@sphereon/pex-models': 2.2.0
       '@sphereon/ssi-types': link:packages/ssi-types
       ajv: 8.12.0
       ajv-formats: 2.1.1(ajv@8.12.0)

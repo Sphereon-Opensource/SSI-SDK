@@ -33,7 +33,7 @@
   "devDependencies": {
     "@decentralized-identity/ion-sdk": "^0.6.0",
     "@sphereon/did-uni-client": "^0.6.1",
-    "@sphereon/pex": "3.0.1",
+    "@sphereon/pex": "3.1.0",
     "@sphereon/pex-models": "^2.1.5",
     "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.15.0",
     "@sphereon/ssi-sdk-ext.key-manager": "0.15.0",
