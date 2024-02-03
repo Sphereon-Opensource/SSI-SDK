@@ -476,7 +476,7 @@ export class CredentialMapper {
       ...vc,
     }
 
-    const maxSkewInMS = opts?.maxTimeSkewInMS !== undefined ? opts.maxTimeSkewInMS : 999
+    const maxSkewInMS = opts?.maxTimeSkewInMS ?? 1500
 
     if (exp) {
       const expDate = credential.expirationDate
@@ -597,6 +597,8 @@ export class CredentialMapper {
       }
     } else if (type === DocumentFormat.JWT && 'vc' in credential) {
       return CredentialMapper.toCompactJWT(credential)
+    } else if ('proof' in credential && credential.proof.type === 'JwtProof2020' && credential.proof.jwt) {
+      return credential.proof.jwt
     }
     return credential as W3CVerifiableCredential
   }
@@ -611,6 +613,8 @@ export class CredentialMapper {
       }
     } else if (type === DocumentFormat.JWT && 'vp' in presentation) {
       return CredentialMapper.toCompactJWT(presentation)
+    } else if ('proof' in presentation && presentation.proof.type === 'JwtProof2020' && presentation.proof.jwt) {
+      return presentation.proof.jwt
     }
     return presentation as W3CVerifiablePresentation
   }
@@ -626,9 +630,9 @@ export class CredentialMapper {
     }
     let proof: string | undefined
     if ('vp' in jwtDocument) {
-      proof = jwtDocument.vp.proof
+      proof = 'jwt' in jwtDocument.vp.proof ? jwtDocument.vp.proof.jwt : jwtDocument.vp.proof
     } else if ('vc' in jwtDocument) {
-      proof = jwtDocument.vc.proof
+      proof = 'jwt' in jwtDocument.vc.proof ? jwtDocument.vc.proof.jwt : jwtDocument.vc.proof
     } else {
       proof = Array.isArray(jwtDocument.proof) ? jwtDocument.proof[0].jwt : jwtDocument.proof.jwt
     }

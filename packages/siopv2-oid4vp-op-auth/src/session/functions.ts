@@ -52,7 +52,7 @@ export async function createOPBuilder({
 }): Promise<OPBuilder> {
   const eventEmitter = opOptions.eventEmitter ?? new EventEmitter()
   const builder = OP.builder()
-    .withResponseMode(opOptions.responseMode ?? ResponseMode.POST)
+    .withResponseMode(opOptions.responseMode ?? ResponseMode.DIRECT_POST)
     .withSupportedVersions(
       opOptions.supportedVersions ?? [
         SupportedVersion.SIOPv2_ID1,

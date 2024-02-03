@@ -126,8 +126,17 @@ export class OID4VP {
       }
     )
 
+    const verifiablePresentation =
+      typeof presentationResult.verifiablePresentation !== 'string' &&
+      'proof' in presentationResult.verifiablePresentation &&
+      'jwt' in presentationResult.verifiablePresentation.proof &&
+      presentationResult.verifiablePresentation.proof.jwt
+        ? presentationResult.verifiablePresentation.proof.jwt
+        : presentationResult.verifiablePresentation
+
     return {
       ...presentationResult,
+      verifiablePresentation,
       verifiableCredentials: vcs.credentials,
       definition: selectedVerifiableCredentials.definition,
       identifierOpts: idOpts,
