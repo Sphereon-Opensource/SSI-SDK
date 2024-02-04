@@ -21,6 +21,22 @@ export async function createPEXPresentationSignCallback(
   },
   context: IRequiredContext
 ): Promise<IPEXPresentationSignCallback> {
+  function determineProofFormat(format: Format | 'jwt' | 'lds' | 'EthereumEip712Signature2021', presentationDefinition: IPresentationDefinition) {
+    let proofFormat: ProofFormat = 'jwt'
+    const formatOptions = format ?? args.format ?? presentationDefinition.format
+    if (formatOptions) {
+      if (typeof formatOptions === 'object') {
+        const formats = Object.keys(formatOptions).map((form) => (form.includes('ldp') ? 'lds' : 'jwt'))
+        if (!formats.includes('jwt')) {
+          proofFormat = 'lds'
+        }
+      } else {
+        proofFormat = formatOptions
+      }
+    }
+    return proofFormat
+  }
+
   return async ({
     presentation,
     domain,
@@ -39,6 +55,9 @@ export async function createPEXPresentationSignCallback(
     if (typeof idOpts.identifier === 'string') {
       idOpts.identifier = id
     }
+    if (!presentation.holder) {
+      presentation.holder = id.did
+    }
     const key = await getKey(id, 'authentication', context, idOpts.kid)
     const didResolution = await getAgentResolver(context).resolve(idOpts.identifier.did)
     const vms = await dereferenceDidKeysWithJwkSupport(didResolution.didDocument!, idOpts.verificationMethodSection ?? 'authentication', context)
@@ -47,22 +66,53 @@ export async function createPEXPresentationSignCallback(
       throw Error(`Could not resolve DID document or match signing key to did ${idOpts.identifier.did}`)
     }
 
-    let proofFormat: ProofFormat = 'jwt'
-    const formatOptions = format ?? args.format ?? presentationDefinition.format
-    if (formatOptions) {
-      if (typeof formatOptions === 'object') {
-        const formats = Object.keys(formatOptions).map((form) => (form.includes('ldp') ? 'lds' : 'jwt'))
-        if (!formats.includes('jwt')) {
-          proofFormat = 'lds'
-        }
-      } else {
-        proofFormat = formatOptions
-      }
+    const proofFormat = determineProofFormat(format ?? 'jwt', presentationDefinition)
+    let header
+    if (!presentation.holder) {
+      presentation.holder = id.did
     }
-    let header: undefined | object
-    if (format === 'jwt') {
+    if (proofFormat === 'jwt') {
       header = {
         kid: vm.id,
+      }
+      if (presentation.verifier || !presentation.aud) {
+        presentation.aud = Array.isArray(presentation.verifier) ? presentation.verifier : presentation.verifier ?? domain ?? args.domain
+        delete presentation.verifier
+      }
+      if (!presentation.nbf) {
+        if (presentation.issuanceDate) {
+          const converted = Date.parse(presentation.issuanceDate)
+          if (!isNaN(converted)) {
+            presentation.nbf = Math.floor(converted / 1000)
+          }
+        } else {
+          presentation.nbf = Math.floor(Date.now() / 1000)
+        }
+      }
+
+      if (!presentation.iat) {
+        presentation.iat = presentation.nbf
+      }
+
+      if (!presentation.exp) {
+        if (presentation.expirationDate) {
+          const converted = Date.parse(presentation.expirationDate)
+          if (!isNaN(converted)) {
+            presentation.exp = Math.floor(converted / 1000)
+          }
+        } else {
+          presentation.exp = presentation.nbf + 600
+        }
+      }
+
+      if (!presentation.vp) {
+        presentation.vp = {}
+      }
+      if (!presentation.sub) {
+        presentation.sub = id.did
+      }
+      if (!presentation.vp.holder) {
+        presentation.vp.holder = id.did
       }
     }
 
@@ -72,9 +122,9 @@ export async function createPEXPresentationSignCallback(
 
     const vp = await context.agent.createVerifiablePresentation({
       presentation: presentation as PresentationPayload,
-      removeOriginalFields: true,
+      removeOriginalFields: false,
       keyRef: key.kid,
-      domain: domain ?? args.domain,
+      // domain: domain ?? args.domain, // handled above, and did-jwt-vc creates an array even for 1 entry
       challenge: challenge ?? args.challenge,
       fetchRemoteContexts: args.fetchRemoteContexts !== false,
       proofFormat,
