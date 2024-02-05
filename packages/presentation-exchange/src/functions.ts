@@ -120,6 +120,7 @@ export async function createPEXPresentationSignCallback(
 
     // todo: look for jwt_vc_json and remove types and @context
 
+    console.log(`PRE CREATE VP AGENT ${new Date().toString()}`)
     const vp = await context.agent.createVerifiablePresentation({
       presentation: presentation as PresentationPayload,
       removeOriginalFields: false,
@@ -130,7 +131,10 @@ export async function createPEXPresentationSignCallback(
       proofFormat,
       header,
     })
+    console.log(`POST CREATE VP AGENT ${new Date().toString()}`)
+    console.log(`PRE MAPPER AGENT ${new Date().toString()}`)
     // makes sure we extract an actual JWT from the internal representation in case it is a JWT
     return CredentialMapper.storedPresentationToOriginalFormat(vp as OriginalVerifiablePresentation)
+    console.log(`POST MAPPER AGENT ${new Date().toString()}`)
   }
 }

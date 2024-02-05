@@ -65,6 +65,7 @@ export class OID4VP {
       identifierOpts?: IIdentifierOpts
       holderDID?: string
       subjectIsHolder?: boolean
+      applyFilter?: boolean
     }
   ): Promise<VerifiablePresentationWithDefinition> {
     if (opts?.subjectIsHolder && opts?.holderDID) {
@@ -100,13 +101,18 @@ export class OID4VP {
     this.assertIdentifier(idOpts.identifier)
 
     // We are making sure to filter, in case the user submitted all verifiableCredentials in the wallet/agent. We also make sure to get original formats back
-    const vcs = await this.filterCredentials(selectedVerifiableCredentials.definition, {
-      restrictToFormats: opts?.restrictToFormats,
-      restrictToDIDMethods: opts?.restrictToDIDMethods,
-      filterOpts: {
-        verifiableCredentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
-      },
-    })
+    const vcs = opts?.applyFilter
+      ? await this.filterCredentials(selectedVerifiableCredentials.definition, {
+          restrictToFormats: opts?.restrictToFormats,
+          restrictToDIDMethods: opts?.restrictToDIDMethods,
+          filterOpts: {
+            verifiableCredentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
+          },
+        })
+      : {
+          definition: selectedVerifiableCredentials.definition,
+          credentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
+        }
 
     const signCallback = await createOID4VPPresentationSignCallback({
       presentationSignCallback: this.session.options.presentationSignCallback,
