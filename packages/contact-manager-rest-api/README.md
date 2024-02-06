@@ -2,7 +2,7 @@
 <h1 align="center">
   <br>
   <a href="https://www.sphereon.com"><img src="https://sphereon.com/content/themes/sphereon/assets/img/logo.svg" alt="Sphereon" width="400"></a>
-  <br>Contact Manager Rest API(Typescript) 
+  <br>Contact Manager Rest API (Typescript) 
   <br>
 </h1>
 

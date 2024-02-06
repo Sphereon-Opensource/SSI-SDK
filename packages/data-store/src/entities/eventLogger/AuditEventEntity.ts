@@ -46,7 +46,7 @@ export class AuditEventEntity extends BaseEntity {
   @Column({ name: 'systemCorrelationId', nullable: true, unique: false })
   systemCorrelationId?: string
 
-  @Column({ name: 'systemAlias', nullable: false, unique: false })
+  @Column({ name: 'systemAlias', nullable: true, unique: false })
   systemAlias?: string
 
   @Column('simple-enum', { name: 'partyCorrelationType', enum: PartyCorrelationType, nullable: true, unique: false })
