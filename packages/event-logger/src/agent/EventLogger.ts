@@ -33,7 +33,8 @@ export class EventLogger implements IAgentPlugin {
   public async onEvent(event: LoggingEvent, context: RequiredContext): Promise<void> {
     switch (event.type) {
       case LoggingEventType.AUDIT:
-        await context.agent.loggerLogAuditEvent({ event: event.data })
+        // Calling the context of the agent to make sure the REST client is called when configured
+        await c.loggerLogAuditEvent({ event: event.data })
         break
       default:
         return Promise.reject(Error('Event type not supported'))
