@@ -1,5 +1,5 @@
-import {TAgent} from '@veramo/core';
-import {ExpressSupport, GenericAuthArgs} from '@sphereon/ssi-express-support';
+import { TAgent } from '@veramo/core'
+import { ExpressSupport, GenericAuthArgs } from '@sphereon/ssi-express-support'
 
 export type RemoteServerApiEndpointOpts = {
   basePath?: string

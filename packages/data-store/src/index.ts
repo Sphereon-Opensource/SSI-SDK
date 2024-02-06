@@ -37,7 +37,7 @@ export {
   DataStoreEventLoggerMigrations,
   DataStoreContactMigrations,
   DataStoreIssuanceBrandingMigrations,
-  DataStoreStatusListMigrations
+  DataStoreStatusListMigrations,
 } from './migrations'
 export * from './types'
 export * from './utils/contact/MappingUtils'

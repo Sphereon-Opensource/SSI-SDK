@@ -103,7 +103,10 @@ export type AuditLoggingEvent = {
 }
 export type PartialAuditLoggingEvent = Partial<AuditLoggingEvent>
 
-export type NonPersistedAuditLoggingEvent = Omit<AuditLoggingEvent, 'id' | 'timestamp' | 'level' | 'correlationId' | 'system' | 'subSystemType' | 'initiatorType'> & {
+export type NonPersistedAuditLoggingEvent = Omit<
+  AuditLoggingEvent,
+  'id' | 'timestamp' | 'level' | 'correlationId' | 'system' | 'subSystemType' | 'initiatorType'
+> & {
   level?: LogLevel
   correlationId?: string
   system?: System

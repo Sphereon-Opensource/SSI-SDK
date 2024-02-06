@@ -47,7 +47,7 @@ class EventLoggerBuilder {
       system: this.system,
       subSystem: this.subSystem,
       logLevel: this.logLevel,
-      initiatorType: this.initiatorType
+      initiatorType: this.initiatorType,
     })
   }
 }

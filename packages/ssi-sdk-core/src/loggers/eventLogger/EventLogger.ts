@@ -1,14 +1,6 @@
 import { IAgentContext } from '@veramo/core'
 import Debug, { Debugger } from 'debug'
-import {
-  NonPersistedAuditLoggingEvent,
-  EventLoggerArgs,
-  LoggingEvent,
-  LogLevel,
-  SubSystem,
-  System,
-  InitiatorType
-} from '../../types'
+import { NonPersistedAuditLoggingEvent, EventLoggerArgs, LoggingEvent, LogLevel, SubSystem, System, InitiatorType } from '../../types'
 
 class EventLogger {
   private readonly context?: IAgentContext<any>
@@ -19,14 +11,7 @@ class EventLogger {
   private readonly initiatorType?: InitiatorType
   private readonly debug: Debugger
   constructor(args: EventLoggerArgs) {
-    const {
-      context,
-      namespace = 'sphereon:ssi-sdk:EventLogger',
-      system,
-      subSystem,
-      logLevel = LogLevel.INFO,
-      initiatorType
-    } = args
+    const { context, namespace = 'sphereon:ssi-sdk:EventLogger', system, subSystem, logLevel = LogLevel.INFO, initiatorType } = args
 
     this.context = context
     this.namespace = namespace

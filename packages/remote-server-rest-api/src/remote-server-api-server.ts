@@ -1,8 +1,8 @@
-import {Express, Router} from 'express';
-import {TAgent} from '@veramo/core';
-import {AgentRouter, RequestWithAgentRouter} from '@veramo/remote-server';
-import {copyGlobalAuthToEndpoint} from '@sphereon/ssi-express-support';
-import {RemoteServerApiServerArgs, RemoteServerApiOpts} from './types';
+import { Express, Router } from 'express'
+import { TAgent } from '@veramo/core'
+import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
+import { copyGlobalAuthToEndpoint } from '@sphereon/ssi-express-support'
+import { RemoteServerApiServerArgs, RemoteServerApiOpts } from './types'
 
 export class RemoteServerApiServer {
   private readonly _agent: TAgent<any>
@@ -47,7 +47,7 @@ export class RemoteServerApiServer {
     this._agentRouter = AgentRouter({ exposedMethods: this._exposedMethods })
 
     if (opts.endpointOpts?.globalAuth) {
-      this._exposedMethods.forEach(method => {
+      this._exposedMethods.forEach((method) => {
         copyGlobalAuthToEndpoint({ opts, key: method })
       })
     }
