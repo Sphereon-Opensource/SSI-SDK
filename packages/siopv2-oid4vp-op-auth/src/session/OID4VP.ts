@@ -71,8 +71,7 @@ export class OID4VP {
     if (opts?.subjectIsHolder && opts?.holderDID) {
       throw Error('Cannot both have subject is holder and a holderDID value at the same time (programming error)')
     } else if (
-      !selectedVerifiableCredentials ||
-      !selectedVerifiableCredentials.credentials ||
+      !selectedVerifiableCredentials?.credentials ||
       selectedVerifiableCredentials.credentials.length === 0
     ) {
       throw Error('No verifiable verifiableCredentials provided for presentation definition')

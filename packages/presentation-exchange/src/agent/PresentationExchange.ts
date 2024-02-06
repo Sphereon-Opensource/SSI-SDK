@@ -26,6 +26,7 @@ export class PresentationExchange implements IAgentPlugin {
   readonly schema = schema.IDidAuthSiopOpAuthenticator
   private readonly defaultStore: string
   private readonly defaultNamespace: string
+  private readonly pex  = new PEX()
 
   readonly methods: IPresentationExchange = {
     pexStoreGetDefinition: this.pexStoreGetDefinition.bind(this),
@@ -117,7 +118,7 @@ export class PresentationExchange implements IAgentPlugin {
   async pexDefinitionFilterCredentials(args: IDefinitionCredentialFilterArgs, context: IRequiredContext): Promise<IPEXFilterResult> {
     const credentials = await this.pexFilterCredentials(args.credentialFilterOpts ?? {}, context)
     const holderDIDs = args.holderDIDs ? toDIDs(args.holderDIDs) : toDIDs(await context.agent.dataStoreORMGetIdentifiers())
-    const selectResults = new PEX().selectFrom(args.presentationDefinition, credentials ?? [], {
+    const selectResults = this.pex.selectFrom(args.presentationDefinition, credentials ?? [], {
       ...args,
       holderDIDs,
       limitDisclosureSignatureSuites: args.limitDisclosureSignatureSuites ?? ['BbsBlsSignature2020'],

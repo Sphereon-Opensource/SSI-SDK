@@ -135,6 +135,5 @@ export async function createPEXPresentationSignCallback(
     console.log(`PRE MAPPER AGENT ${new Date().toString()}`)
     // makes sure we extract an actual JWT from the internal representation in case it is a JWT
     return CredentialMapper.storedPresentationToOriginalFormat(vp as OriginalVerifiablePresentation)
-    console.log(`POST MAPPER AGENT ${new Date().toString()}`)
   }
 }
