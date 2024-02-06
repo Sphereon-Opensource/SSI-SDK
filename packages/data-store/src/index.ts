@@ -32,7 +32,13 @@ export { StatusListStore } from './statusList/StatusListStore'
 import { AuditEventEntity, auditEventEntityFrom } from './entities/eventLogger/AuditEventEntity'
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
 export { EventLoggerStore } from './eventLogger/EventLoggerStore'
-export { DataStoreMigrations } from './migrations'
+export {
+  DataStoreMigrations,
+  DataStoreEventLoggerMigrations,
+  DataStoreContactMigrations,
+  DataStoreIssuanceBrandingMigrations,
+  DataStoreStatusListMigrations,
+} from './migrations'
 export * from './types'
 export * from './utils/contact/MappingUtils'
 

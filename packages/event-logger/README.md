@@ -30,7 +30,8 @@ This is mainly as a fallback for when no listener is present within the agent.
 ```typescript
 import { migrations, Entities } from '@veramo/data-store'
 import { EventLogger, IEventLogger } from '@sphereon/ssi-sdk.event-logger'
-import { EventLoggerStore, DataStoreMigrations, DataStoreEventLoggerEntities, LoggingEventType } from '@sphereon/ssi-sdk.data-store'
+import { EventLoggerStore, DataStoreMigrations, DataStoreEventLoggerEntities } from '@sphereon/ssi-sdk.data-store'
+import { LoggingEventType } from '@sphereon/ssi-sdk.core'
 
 const dbConnection = createConnection({
   type: 'react-native',

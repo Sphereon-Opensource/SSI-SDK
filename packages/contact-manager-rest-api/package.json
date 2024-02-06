@@ -60,11 +60,9 @@
     "typeorm": "^0.3.12"
   },
   "files": [
-    ".yalc/**/*",
     "dist/**/*",
     "src/**/*",
     "README.md",
-    "plugin.schema.json",
     "LICENSE"
   ],
   "private": false,
