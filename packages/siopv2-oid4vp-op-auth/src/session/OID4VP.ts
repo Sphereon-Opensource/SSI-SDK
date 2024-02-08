@@ -70,10 +70,7 @@ export class OID4VP {
   ): Promise<VerifiablePresentationWithDefinition> {
     if (opts?.subjectIsHolder && opts?.holderDID) {
       throw Error('Cannot both have subject is holder and a holderDID value at the same time (programming error)')
-    } else if (
-      !selectedVerifiableCredentials?.credentials ||
-      selectedVerifiableCredentials.credentials.length === 0
-    ) {
+    } else if (!selectedVerifiableCredentials?.credentials || selectedVerifiableCredentials.credentials.length === 0) {
       throw Error('No verifiable verifiableCredentials provided for presentation definition')
     }
 

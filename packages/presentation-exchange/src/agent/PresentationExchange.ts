@@ -26,7 +26,7 @@ export class PresentationExchange implements IAgentPlugin {
   readonly schema = schema.IDidAuthSiopOpAuthenticator
   private readonly defaultStore: string
   private readonly defaultNamespace: string
-  private readonly pex  = new PEX()
+  private readonly pex = new PEX()
 
   readonly methods: IPresentationExchange = {
     pexStoreGetDefinition: this.pexStoreGetDefinition.bind(this),
