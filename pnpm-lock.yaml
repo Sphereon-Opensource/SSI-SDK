@@ -1554,8 +1554,8 @@ importers:
         specifier: ^4.3.4
         version: 4.3.4
       image-size:
-        specifier: ^1.0.2
-        version: 1.0.2
+        specifier: ^2.0.0-beta.2
+        version: 2.0.0-beta.2
       uint8arrays:
         specifier: 3.1.1
         version: 3.1.1
@@ -12352,6 +12352,7 @@ packages:
     dependencies:
       is-hex-prefixed: 1.0.0
       strip-hex-prefix: 1.0.0
+    bundledDependencies: false
 
   /ethr-did-resolver@8.1.2:
     resolution: {integrity: sha512-dnbE3GItE1YHp/eavR11KbGDi8Il01H9GeH+wKgoSgE95pKBZufHyHYce/EK2k8VOmj6MJf8u/TIpPvxjCbK+A==}
@@ -13791,6 +13792,12 @@ packages:
     hasBin: true
     dependencies:
       queue: 6.0.2
+
+  /image-size@2.0.0-beta.2:
+    resolution: {integrity: sha512-1nDNnVxJixMWBynFgQ1q8+aVqK60TiNHpMyFAXt9xpzGZV+2lHI1IXjgdcAjBxPc4nx2ed1NdYs2I+Zfq+Zn7w==}
+    engines: {node: '>=18.18.0'}
+    hasBin: true
+    dev: false
 
   /import-fresh@2.0.0:
     resolution: {integrity: sha512-eZ5H8rcgYazHbKC3PG4ClHNykCSxtAhxSSEM+2mb+7evD2CKF5V7c0dNum7AdpDh0ZdICwZY9sRSn8f+KH96sg==}

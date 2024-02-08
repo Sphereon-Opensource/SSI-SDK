@@ -1,11 +1,17 @@
 import fetch from 'cross-fetch'
-import sizeOf from 'image-size'
-import { ISizeCalculationResult } from 'image-size/dist/types/interface'
+import {imageSize} from 'image-size'
 import { IImageDimensions, IImageResource } from '../types'
+
+type SizeCalculationResult = {
+  width: number | undefined
+  height: number | undefined
+  orientation?: number
+  type?: string
+}
 
 export const getImageMediaType = async (base64: string): Promise<string | undefined> => {
   const buffer: Buffer = Buffer.from(base64, 'base64')
-  const result: ISizeCalculationResult = sizeOf(buffer)
+  const result: SizeCalculationResult = imageSize(buffer)
 
   switch (result.type) {
     case undefined:
@@ -19,7 +25,7 @@ export const getImageMediaType = async (base64: string): Promise<string | undefi
 
 export const getImageDimensions = async (base64: string): Promise<IImageDimensions> => {
   const buffer: Buffer = Buffer.from(base64, 'base64')
-  const dimensions: ISizeCalculationResult = sizeOf(buffer)
+  const dimensions: SizeCalculationResult = imageSize(buffer)
 
   if (!dimensions.width || !dimensions.height) {
     return Promise.reject(Error('Unable to get image dimensions'))
