@@ -1,31 +1,67 @@
 import fetch from 'cross-fetch'
-import {imageSize} from 'image-size'
+import { imageSize } from 'image-size'
 import { IImageDimensions, IImageResource } from '../types'
 
 type SizeCalculationResult = {
-  width: number | undefined
-  height: number | undefined
+  width?: number
+  height?: number
   orientation?: number
   type?: string
 }
 
-export const getImageMediaType = async (base64: string): Promise<string | undefined> => {
-  const int8Array: Uint8Array = base64ToUint8Array(base64)
-  const result: SizeCalculationResult = imageSize(int8Array)
+const uint8ArrayToString = (uint8Array: Uint8Array): string => {
+  const decoder = new TextDecoder('utf-8')
+  return decoder.decode(uint8Array)
+}
 
-  switch (result.type) {
-    case undefined:
-      return undefined
-    case 'svg':
-      return `image/${result.type}+xml`
-    default:
-      return `image/${result.type}`
+// TODO: here we're handling svg separately, remove this section when image-size starts supporting it in version 2
+const isSvg = (uint8Array: Uint8Array): boolean => {
+  const text = uint8ArrayToString(uint8Array)
+  const normalizedText = text.trim().toLowerCase()
+  return normalizedText.startsWith('<svg') || normalizedText.startsWith('<?xml')
+}
+
+const getSvgDimensions = (uint8Array: Uint8Array) => {
+  const svgContent = uint8ArrayToString(uint8Array)
+  const widthMatch = svgContent.match(/width="([^"]+)"/)
+  const heightMatch = svgContent.match(/height="([^"]+)"/)
+  const viewBoxMatch = svgContent.match(/viewBox="([^"]+)"/)
+
+  let width, height
+
+  if (widthMatch) {
+    width = widthMatch[1]
   }
+
+  if (heightMatch) {
+    height = heightMatch[1]
+  }
+
+  if ((!width || !height) && viewBoxMatch) {
+    const parts = viewBoxMatch[1].split(' ').map(Number)
+    if (!width && parts.length === 4) {
+      width = parts[2].toString()
+    }
+    if (!height && parts.length === 4) {
+      height = parts[3].toString()
+    }
+  }
+
+  return { width: Number(width), height: Number(height), type: 'svg' }
+}
+
+export const getImageMediaType = async (base64: string): Promise<string | undefined> => {
+  const buffer: Buffer = Buffer.from(base64, 'base64')
+  if (isSvg(buffer)) {
+    return `image/svg+xml`
+  }
+  const result: SizeCalculationResult = imageSize(buffer)
+  return `image/${result.type}`
 }
 
 export const getImageDimensions = async (base64: string): Promise<IImageDimensions> => {
   const buffer: Buffer = Buffer.from(base64, 'base64')
-  const dimensions: SizeCalculationResult = imageSize(buffer)
+  const dimensions: SizeCalculationResult = isSvg(buffer) ? getSvgDimensions(buffer) : imageSize(buffer)
 
   if (!dimensions.width || !dimensions.height) {
     return Promise.reject(Error('Unable to get image dimensions'))
@@ -47,10 +83,4 @@ export const downloadImage = async (url: string): Promise<IImageResource> => {
     base64Content,
     contentType: contentType || undefined,
   }
-}
-
-const base64ToUint8Array = (base64: string): Uint8Array => {
-  const base64WithoutPrefix: string = base64.split(',').pop()!;
-  const buffer = Buffer.from(base64WithoutPrefix, 'base64');
-  return new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
 }
