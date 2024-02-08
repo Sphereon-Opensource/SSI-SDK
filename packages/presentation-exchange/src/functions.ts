@@ -21,7 +21,13 @@ export async function createPEXPresentationSignCallback(
   },
   context: IRequiredContext
 ): Promise<IPEXPresentationSignCallback> {
-  function determineProofFormat(format?: Format | 'jwt' | 'lds' | 'EthereumEip712Signature2021', presentationDefinition: IPresentationDefinition) {
+  function determineProofFormat({
+    format,
+    presentationDefinition,
+  }: {
+    format?: Format | 'jwt' | 'lds' | 'EthereumEip712Signature2021'
+    presentationDefinition: IPresentationDefinition
+  }) {
     let proofFormat: ProofFormat = 'jwt'
     const formatOptions = format ?? args.format ?? presentationDefinition.format
     if (formatOptions) {
@@ -66,7 +72,7 @@ export async function createPEXPresentationSignCallback(
       throw Error(`Could not resolve DID document or match signing key to did ${idOpts.identifier.did}`)
     }
 
-    const proofFormat = determineProofFormat(format, presentationDefinition)
+    const proofFormat = determineProofFormat({ format, presentationDefinition })
     let header
     if (!presentation.holder) {
       presentation.holder = id.did
