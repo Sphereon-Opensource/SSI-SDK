@@ -10,8 +10,8 @@ type SizeCalculationResult = {
 }
 
 export const getImageMediaType = async (base64: string): Promise<string | undefined> => {
-  const buffer: Buffer = Buffer.from(base64, 'base64')
-  const result: SizeCalculationResult = imageSize(buffer)
+  const int8Array: Uint8Array = base64ToUint8Array(base64)
+  const result: SizeCalculationResult = imageSize(int8Array)
 
   switch (result.type) {
     case undefined:
@@ -47,4 +47,10 @@ export const downloadImage = async (url: string): Promise<IImageResource> => {
     base64Content,
     contentType: contentType || undefined,
   }
+}
+
+const base64ToUint8Array = (base64: string): Uint8Array => {
+  const base64WithoutPrefix: string = base64.split(',').pop()!;
+  const buffer = Buffer.from(base64WithoutPrefix, 'base64');
+  return new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
 }
