@@ -1,6 +1,7 @@
 import fetch from 'cross-fetch'
 import { imageSize } from 'image-size'
 import { IImageDimensions, IImageResource } from '../types'
+import * as u8a from 'uint8arrays'
 
 type SizeCalculationResult = {
   width?: number
@@ -9,45 +10,38 @@ type SizeCalculationResult = {
   type?: string
 }
 
-const uint8ArrayToString = (uint8Array: Uint8Array): string => {
-  const decoder = new TextDecoder('utf-8')
-  return decoder.decode(uint8Array)
-}
-
 // TODO: here we're handling svg separately, remove this section when image-size starts supporting it in version 2
 const isSvg = (uint8Array: Uint8Array): boolean => {
-  const text = uint8ArrayToString(uint8Array)
-  const normalizedText = text.trim().toLowerCase()
+  const maxCheckLength: number = Math.min(80, uint8Array.length)
+  const initialText: string = u8a.toString(uint8Array.subarray(0, maxCheckLength))
+  const normalizedText: string = initialText.trim().toLowerCase()
   return normalizedText.startsWith('<svg') || normalizedText.startsWith('<?xml')
 }
 
-const getSvgDimensions = (uint8Array: Uint8Array) => {
-  const svgContent = uint8ArrayToString(uint8Array)
-  const widthMatch = svgContent.match(/width="([^"]+)"/)
-  const heightMatch = svgContent.match(/height="([^"]+)"/)
-  const viewBoxMatch = svgContent.match(/viewBox="([^"]+)"/)
+function parseDimension(dimension: string): number | undefined {
+  const match: RegExpMatchArray | null = dimension.match(/^(\d+(?:\.\d+)?)([a-z%]*)$/)
+  return match ? parseFloat(match[1]) : 0
+}
 
-  let width, height
+const getSvgDimensions = (uint8Array: Uint8Array): SizeCalculationResult => {
+  const svgContent: string = new TextDecoder().decode(uint8Array)
+  const widthMatch: RegExpMatchArray | null = svgContent.match(/width="([^"]+)"/)
+  const heightMatch: RegExpMatchArray | null = svgContent.match(/height="([^"]+)"/)
+  const viewBoxMatch: RegExpMatchArray | null = svgContent.match(/viewBox="[^"]*"/)
 
-  if (widthMatch) {
-    width = widthMatch[1]
-  }
+  let width: number | undefined = widthMatch ? parseDimension(widthMatch[1]) : undefined
+  let height: number | undefined = heightMatch ? parseDimension(heightMatch[1]) : undefined
 
-  if (heightMatch) {
-    height = heightMatch[1]
-  }
-
-  if ((!width || !height) && viewBoxMatch) {
-    const parts = viewBoxMatch[1].split(' ').map(Number)
-    if (!width && parts.length === 4) {
-      width = parts[2].toString()
-    }
-    if (!height && parts.length === 4) {
-      height = parts[3].toString()
+  if (viewBoxMatch && (!width || !height)) {
+    const parts = viewBoxMatch[0].match(/[\d\.]+/g)?.map(Number)
+    if (parts && parts.length === 4) {
+      const [x, y, viewBoxWidth, viewBoxHeight] = parts
+      width = width ?? viewBoxWidth - x
+      height = height ?? viewBoxHeight - y
     }
   }
 
-  return { width: Number(width), height: Number(height), type: 'svg' }
+  return { width, height, type: 'svg' }
 }
 
 export const getImageMediaType = async (base64: string): Promise<string | undefined> => {
