@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.oid4vci-holder",
-  "version": "0.127.29-bram",
+  "version": "0.18.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,8 +18,8 @@
     "@sphereon/ssi-sdk.issuance-branding": "workspace:*",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
-    "@sphereon/oid4vci-client": "file://C:\\Git\\Sphereon-Opensource\\OID4VCI-client\\packages\\client\\sphereon-oid4vci-client-0.40.10-bram.tgz",
-    "@sphereon/oid4vci-common": "0.8.2-unstable.75",
+    "@sphereon/oid4vci-client": "0.8.2-next.87",
+    "@sphereon/oid4vci-common": "0.8.2-next.87",
     "@veramo/utils": "4.2.0",
     "@veramo/core": "4.2.0",
     "@veramo/data-store": "4.2.0",
@@ -30,6 +30,9 @@
   },
   "devDependencies": {
     "typescript": "^4.9.5",
+    "typeorm": "0.3.12",
+    "@veramo/remote-client": "4.2.0",
+    "@veramo/remote-server": "4.2.0",
     "@types/uuid": "^9.0.8",
     "@types/i18n-js": "^3.8.4",
     "@types/lodash.memoize": "^4.1.7"
