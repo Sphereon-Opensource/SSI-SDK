@@ -1,0 +1,147 @@
+{
+  "IXStateStateManager": {
+    "components": {
+      "schemas": {
+        "DeleteStateArgs": {
+          "$ref": "#/components/schemas/LoadStateArgs"
+        },
+        "LoadStateArgs": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        "DeleteStateResult": {
+          "$ref": "#/components/schemas/PersistStateResult"
+        },
+        "PersistStateResult": {
+          "type": "null"
+        },
+        "LoadStateResult": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/State"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "State": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "completedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "ttl": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "state",
+            "type",
+            "createdAt",
+            "updatedAt",
+            "completedAt",
+            "tenantId",
+            "ttl"
+          ]
+        },
+        "PersistStateArgs": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "completedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "ttl": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "state",
+            "type",
+            "createdAt",
+            "updatedAt",
+            "completedAt",
+            "tenantId"
+          ]
+        }
+      },
+      "methods": {
+        "deleteState": {
+          "description": "Deletes the state of an xstate machine in the database.",
+          "arguments": {
+            "$ref": "#/components/schemas/DeleteStateArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/DeleteStateResult"
+          }
+        },
+        "loadState": {
+          "description": "Loads the state of an xstate machine from the database.",
+          "arguments": {
+            "$ref": "#/components/schemas/LoadStateArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/LoadStateResult"
+          }
+        },
+        "persistState": {
+          "description": "Persist the state and history of xstate machines",
+          "arguments": {
+            "$ref": "#/components/schemas/PersistStateArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/PersistStateResult"
+          }
+        }
+      }
+    }
+  }
+}

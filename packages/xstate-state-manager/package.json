@@ -1,0 +1,68 @@
+{
+  "name": "@sphereon/ssi-sdk.xstate-state-manager",
+  "version": "0.18.1",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "veramo": {
+    "pluginInterfaces": {
+      "IXStateStateManager": "./src/types/IXStateStateManager.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:clean": "tsc --build --clean && tsc --build",
+    "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
+  },
+  "dependencies": {
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
+    "@sphereon/ssi-sdk.core": "workspace:*",
+    "@sphereon/ssi-sdk.data-store": "workspace:*",
+    "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
+    "@sphereon/ssi-sdk.vc-status-list-issuer-drivers": "workspace:*",
+    "@sphereon/ssi-types": "workspace:*",
+    "@veramo/core": "4.2.0",
+    "@veramo/utils": "4.2.0",
+    "typeorm": "0.3.17",
+    "xstate": "^5.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
+    "ts-node": "^10.9.1",
+    "typescript": "4.9.5"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "plugin.schema.json",
+    "LICENSE"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sphereon",
+    "SSI",
+    "Veramo",
+    "W3C",
+    "Verifiable Credentials",
+    "Verifiable Presentations",
+    "JsonLd"
+  ],
+  "resolutions": {
+    "@types/react": "18.0.12",
+    "@transmute/jsonld": "^0.0.4",
+    "@mattrglobal/jsonld-signatures-bbs/jsonld": "4.0.1",
+    "**/jsonld": "npm:@digitalcredentials/jsonld@^5.2.1"
+  },
+  "peerDependencies": {
+    "react-native-securerandom": "^1.0.1"
+  }
+}
