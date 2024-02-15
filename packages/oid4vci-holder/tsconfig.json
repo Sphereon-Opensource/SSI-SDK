@@ -1,0 +1,27 @@
+{
+  "extends": "../tsconfig-base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "declarationDir": "dist",
+    "strictPropertyInitialization": false
+  },
+  "include": ["src/**/*.json", "src/**/*.ts"],
+  "references": [
+    {
+      "path": "../data-store"
+    },
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../issuance-branding"
+    },
+    {
+      "path": "../contact-manager"
+    },
+  ]
+}
