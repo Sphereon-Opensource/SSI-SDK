@@ -22,8 +22,8 @@ export class State extends BaseEntity {
     completedAt: Date
     @Column()
     // @ts-ignore
-    tenantId: string
-    @Column()
+    tenantId?: string
+    @Column({ default: 0 })
     // @ts-ignore
     ttl: number
 }

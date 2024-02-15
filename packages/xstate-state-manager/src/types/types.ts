@@ -6,8 +6,8 @@ export type PersistStateArgs = {
     createdAt: Date
     updatedAt: Date
     completedAt: Date
-    tenantId: string
-    ttl?: number
+    tenantId?: string
+    ttl: number
 }
 
 export type LoadStateArgs = Pick<PersistStateArgs, 'type'>
