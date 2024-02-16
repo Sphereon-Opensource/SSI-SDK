@@ -45,17 +45,17 @@ const getSvgDimensions = (uint8Array: Uint8Array): SizeCalculationResult => {
 }
 
 export const getImageMediaType = async (base64: string): Promise<string | undefined> => {
-  const buffer: Buffer = Buffer.from(base64, 'base64')
-  if (isSvg(buffer)) {
+  const uint8Array = u8a.fromString(base64, 'base64')
+  if (isSvg(uint8Array)) {
     return `image/svg+xml`
   }
-  const result: SizeCalculationResult = imageSize(buffer)
+  const result: SizeCalculationResult = imageSize(uint8Array)
   return `image/${result.type}`
 }
 
-export const getImageDimensions = async (base64: string): Promise<IImageDimensions> => {
-  const buffer: Buffer = Buffer.from(base64, 'base64')
-  const dimensions: SizeCalculationResult = isSvg(buffer) ? getSvgDimensions(buffer) : imageSize(buffer)
+export const getImageDimensions = async (value: string | Uint8Array): Promise<IImageDimensions> => {
+  const uint8Array = typeof value === 'string' ? u8a.fromString(value, 'base64') : value
+  const dimensions: SizeCalculationResult = isSvg(uint8Array) ? getSvgDimensions(uint8Array) : imageSize(uint8Array)
 
   if (!dimensions.width || !dimensions.height) {
     return Promise.reject(Error('Unable to get image dimensions'))
