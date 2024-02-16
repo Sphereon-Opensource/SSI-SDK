@@ -21,10 +21,7 @@
     "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
     "@sphereon/ssi-sdk.vc-status-list-issuer-drivers": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
-    "@veramo/core": "4.2.0",
-    "@veramo/utils": "4.2.0",
-    "typeorm": "0.3.17",
-    "xstate": "^5.6.2"
+    "@veramo/core": "4.2.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
