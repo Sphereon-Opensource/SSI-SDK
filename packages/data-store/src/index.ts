@@ -18,6 +18,7 @@ import { IssuerBrandingEntity, issuerBrandingEntityFrom } from './entities/issua
 import { TextAttributesEntity, textAttributesEntityFrom } from './entities/issuanceBranding/TextAttributesEntity'
 import { StatusListEntity } from './entities/statusList2021/StatusList2021Entity'
 import { StatusListEntryEntity } from './entities/statusList2021/StatusList2021EntryEntity'
+import {XStateEntity} from "./entities/xstatePersistence/XStateEntity";
 import { IStatusListEntity, IStatusListEntryEntity } from './types'
 import { PartyRelationshipEntity } from './entities/contact/PartyRelationshipEntity'
 import { PartyTypeEntity } from './entities/contact/PartyTypeEntity'
@@ -32,12 +33,16 @@ export { StatusListStore } from './statusList/StatusListStore'
 import { AuditEventEntity, auditEventEntityFrom } from './entities/eventLogger/AuditEventEntity'
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
 export { EventLoggerStore } from './eventLogger/EventLoggerStore'
+export { IAbstractStateStore } from './xstatePersistence/IAbstractStateStore'
+export { XStateStore } from './xstatePersistence/XStateStore'
+
 export {
   DataStoreMigrations,
   DataStoreEventLoggerMigrations,
   DataStoreContactMigrations,
   DataStoreIssuanceBrandingMigrations,
   DataStoreStatusListMigrations,
+  DataStoreXStatePersistenceMigration,
 } from './migrations'
 export * from './types'
 export * from './utils/contact/MappingUtils'
@@ -75,12 +80,15 @@ export const DataStoreStatusListEntities = [StatusListEntity, StatusListEntryEnt
 
 export const DataStoreEventLoggerEntities = [AuditEventEntity]
 
+export const DataStoreXStateStoreEntities = [XStateEntity]
+
 // All entities combined if a party wants to enable them all at once
 export const DataStoreEntities = [
   ...DataStoreContactEntities,
   ...DataStoreIssuanceBrandingEntities,
   ...DataStoreStatusListEntities,
   ...DataStoreEventLoggerEntities,
+  ...DataStoreXStateStoreEntities
 ]
 
 export {
@@ -116,4 +124,5 @@ export {
   StatusListEntryEntity,
   AuditEventEntity,
   auditEventEntityFrom,
+  XStateEntity
 }
