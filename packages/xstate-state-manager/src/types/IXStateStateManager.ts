@@ -4,9 +4,9 @@ import {
   DeleteStateArgs,
   DeleteStateResult,
   LoadStateArgs,
-  LoadStateResult,
+  LoadStateResult, OnEventResult,
   PersistStateArgs,
-  PersistStateResult
+  PersistStateResult, RequiredContext, XStateStateManagerEvent
 } from "./types";
 
 /**
@@ -47,4 +47,12 @@ export interface IXStateStateManager extends IPluginMethodMap {
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
   deleteState(args: DeleteStateArgs): Promise<DeleteStateResult>
+
+  /**
+   * Persists the state whenever an event is emitted
+   * @param event
+   * @param context
+   * @beta This API is likely to change without a BREAKING CHANGE notice
+   */
+  onEvent(event: XStateStateManagerEvent, context: RequiredContext): Promise<OnEventResult>
 }
