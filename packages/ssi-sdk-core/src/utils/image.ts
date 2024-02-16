@@ -18,7 +18,7 @@ const isSvg = (uint8Array: Uint8Array): boolean => {
   return normalizedText.startsWith('<svg') || normalizedText.startsWith('<?xml')
 }
 
-function parseDimension(dimension: string): number | undefined {
+const parseDimension = (dimension: string): number => {
   const match: RegExpMatchArray | null = dimension.match(/^(\d+(?:\.\d+)?)([a-z%]*)$/)
   return match ? parseFloat(match[1]) : 0
 }
@@ -44,8 +44,12 @@ const getSvgDimensions = (uint8Array: Uint8Array): SizeCalculationResult => {
   return { width, height, type: 'svg' }
 }
 
-export const getImageMediaType = async (base64: string): Promise<string | undefined> => {
-  const uint8Array = u8a.fromString(base64, 'base64')
+/**
+ *
+ * @param value can be both (base64) string and Uint8Array
+ */
+export const getImageMediaType = async (value: string | Uint8Array): Promise<string | undefined> => {
+  const uint8Array = typeof value === 'string' ? u8a.fromString(value, 'base64') : value
   if (isSvg(uint8Array)) {
     return `image/svg+xml`
   }
