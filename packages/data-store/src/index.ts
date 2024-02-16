@@ -33,7 +33,7 @@ export { StatusListStore } from './statusList/StatusListStore'
 import { AuditEventEntity, auditEventEntityFrom } from './entities/eventLogger/AuditEventEntity'
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
 export { EventLoggerStore } from './eventLogger/EventLoggerStore'
-export { IAbstractStateStore } from './xstatePersistence/IAbstractStateStore'
+export { IAbstractXStateStore } from './xstatePersistence/IAbstractXStateStore'
 export { XStateStore } from './xstatePersistence/XStateStore'
 
 export {

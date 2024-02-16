@@ -1,13 +1,9 @@
-
+import {IAbstractXStateStore, XStateEntity} from "@sphereon/ssi-sdk.data-store";
 import {IAgentContext} from "@veramo/core";
-import {OrPromise} from "@veramo/utils";
-import {DataSource} from "typeorm";
 
-import {State} from "../entities/State";
+import {IXStatePersistence} from "./IXStatePersistence";
 
-import {IXStateStateManager} from "./IXStateStateManager";
-
-export type XStateStateManagerOptions = { dbConnection: OrPromise<DataSource>, eventTypes: Array<string> }
+export type XStateStateManagerOptions = { store: IAbstractXStateStore, eventTypes: Array<string> }
 
 export enum XStateStateManagerEventType {
     EVERY = 'every'
@@ -31,7 +27,7 @@ export type DeleteStateArgs = LoadStateArgs
 
 export type PersistStateResult = void
 
-export type LoadStateResult = State | null
+export type LoadStateResult = XStateEntity | null
 
 export type DeleteStateResult = PersistStateResult
 
@@ -42,4 +38,4 @@ export type XStateStateManagerEvent = {
     data: NonPersistedXStateStateManagerEvent
 }
 
-export type RequiredContext = IAgentContext<IXStateStateManager>
+export type RequiredContext = IAgentContext<IXStatePersistence>

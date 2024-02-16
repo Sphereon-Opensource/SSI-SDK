@@ -4,11 +4,11 @@ import {DataSource} from "typeorm";
 
 import {XStateEntity} from "../entities/xstatePersistence/XStateEntity";
 import {DeleteStateArgs, LoadStateArgs, LoadStateResult, PersistStateArgs, VoidResult,} from "../types";
-import {IAbstractStateStore} from "./IAbstractStateStore";
+import {IAbstractXStateStore} from "./IAbstractXStateStore";
 
 const debug = Debug('sphereon:ssi-sdk:xstatePersistence')
 
-export class XStateStore extends IAbstractStateStore {
+export class XStateStore extends IAbstractXStateStore {
     private readonly dbConnection: OrPromise<DataSource>
 
     constructor(dbConnection: OrPromise<DataSource>) {

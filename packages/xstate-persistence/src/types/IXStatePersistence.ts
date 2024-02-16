@@ -17,7 +17,7 @@ import {
  *
  * @beta This API is likely to change without a BREAKING CHANGE notice
  */
-export interface IXStateStateManager extends IPluginMethodMap {
+export interface IXStatePersistence extends IPluginMethodMap {
   /**
    * Persist the state and history of xstate machines
    *

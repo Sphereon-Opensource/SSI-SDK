@@ -1,21 +1,16 @@
+import {IAbstractXStateStore} from "@sphereon/ssi-sdk.data-store";
 import {IAgentPlugin,} from '@veramo/core'
-import {OrPromise} from "@veramo/utils";
-import Debug from 'debug'
-import {DataSource} from "typeorm";
-
-import {State} from "../entities/State";
 import {
-    DeleteStateResult, OnEventResult,
-    PersistStateResult, RequiredContext,
+    DeleteStateResult,
+    OnEventResult,
+    PersistStateResult,
+    RequiredContext,
     schema,
     XStateStateManagerEvent,
-    XStateStateManagerEventType, XStateStateManagerOptions
+    XStateStateManagerEventType,
+    XStateStateManagerOptions
 } from '../index'
-import {IXStateStateManager, LoadStateArgs, LoadStateResult, PersistStateArgs} from "../types";
-import {getConnectedDb} from "../utils";
-
-
-const debug = Debug('sphereon:ssi-sdk:xstate-state-manager')
+import {IXStatePersistence, LoadStateArgs, LoadStateResult, PersistStateArgs} from "../types";
 
 /**
  * This class implements the IXStateStateManager interface using a TypeORM compatible database.
@@ -24,15 +19,16 @@ const debug = Debug('sphereon:ssi-sdk:xstate-state-manager')
  *
  * @beta This API may change without a BREAKING CHANGE notice.
  */
-export class XStateStateManager implements IAgentPlugin {
+export class XStatePersistence implements IAgentPlugin {
     readonly schema = schema.IXStateStateManager
-    readonly methods: IXStateStateManager
+    readonly methods: IXStatePersistence
     readonly eventTypes: Array<string>
-    private dbConnection: OrPromise<DataSource>
+    readonly store: IAbstractXStateStore
 
     constructor(opts: XStateStateManagerOptions) {
-        const { dbConnection, eventTypes } = opts
-        this.dbConnection = dbConnection
+        const { store, eventTypes } = opts
+
+        this.store = store
         this.eventTypes = eventTypes
         
         this.methods = {
@@ -55,27 +51,23 @@ export class XStateStateManager implements IAgentPlugin {
     }
 
     private async persistState(state: PersistStateArgs): Promise<PersistStateResult> {
-        debug.log(`Executing persistState with state: ${JSON.stringify(state)}`)
-        await (await getConnectedDb(this.dbConnection))
-            .getRepository(State)
-            .save(state)
+        if (!this.store) {
+            return Promise.reject(Error('No store available in options'))
+        }
+        this.store.persistState(state)
     }
 
     private async loadState(args: LoadStateArgs): Promise<LoadStateResult> {
-        const { type } = args
-        debug.log(`Executing loadState query with type: ${type}`)
-        return await (await getConnectedDb(this.dbConnection))
-            .getRepository(State)
-            .findOne({
-                where: { type }
-            })
+        if (!this.store) {
+            return Promise.reject(Error('No store available in options'))
+        }
+        return this.store.loadState(args)
     }
 
     private async deleteState(args: LoadStateArgs): Promise<DeleteStateResult> {
-        const { type } = args
-        debug.log(`Executing loadState query with type: ${type}`)
-        await (await getConnectedDb(this.dbConnection))
-            .getRepository(State)
-            .delete({ type })
+        if (!this.store) {
+            return Promise.reject(Error('No store available in options'))
+        }
+        return this.store.deleteState(args)
     }
 }
