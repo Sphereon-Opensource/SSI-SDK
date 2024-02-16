@@ -53,6 +53,10 @@ export const getImageMediaType = async (base64: string): Promise<string | undefi
   return `image/${result.type}`
 }
 
+/**
+ *
+ * @param value can be both (base64) string and Uint8Array
+ */
 export const getImageDimensions = async (value: string | Uint8Array): Promise<IImageDimensions> => {
   const uint8Array = typeof value === 'string' ? u8a.fromString(value, 'base64') : value
   const dimensions: SizeCalculationResult = isSvg(uint8Array) ? getSvgDimensions(uint8Array) : imageSize(uint8Array)
