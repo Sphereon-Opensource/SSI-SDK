@@ -1,5 +1,5 @@
-import {TAgent} from '@veramo/core'
-import {IOID4VCIHolder} from '../../src'
+import { TAgent } from '@veramo/core'
+import { IOID4VCIHolder } from '../../src'
 
 type ConfiguredAgent = TAgent<IOID4VCIHolder>
 

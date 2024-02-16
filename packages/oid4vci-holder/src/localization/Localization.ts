@@ -1,9 +1,9 @@
-import i18n, {Scope, TranslateOptions} from 'i18n-js'
+import i18n, { Scope, TranslateOptions } from 'i18n-js'
 import memoize from 'lodash.memoize'
 import { SupportedLanguage } from '../types/IOID4VCIHolder'
 
 class Localization {
-  private static translationGetters: {[locale: string]: () => object} = {
+  private static translationGetters: { [locale: string]: () => object } = {
     [SupportedLanguage.ENGLISH]: () => require('./translations/en.json'),
     [SupportedLanguage.DUTCH]: () => require('./translations/nl.json'),
   }
@@ -27,7 +27,7 @@ class Localization {
 
       return i18n.t(key, config)
     },
-    (key: Scope, config?: TranslateOptions) => (config ? key + JSON.stringify(config) : key),
+    (key: Scope, config?: TranslateOptions) => (config ? key + JSON.stringify(config) : key)
   )
 
   private static findSupportedLanguage = (locale: string): string | undefined => {

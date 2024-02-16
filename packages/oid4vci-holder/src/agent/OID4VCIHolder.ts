@@ -1,6 +1,7 @@
 import { schema } from '../index'
 import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
-import { CredentialSupported,
+import {
+  CredentialSupported,
   //DefaultURISchemes
 } from '@sphereon/oid4vci-common'
 import {
@@ -9,7 +10,7 @@ import {
   Identity,
   IdentityRoleEnum,
   NonPersistedIdentity,
-  Party
+  Party,
 } from '@sphereon/ssi-sdk.data-store'
 import { CredentialMapper, OriginalVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentPlugin, VerifiableCredential } from '@veramo/core'
@@ -42,7 +43,7 @@ import {
   getSupportedCredentials,
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
-  verifyCredentialToAccept
+  verifyCredentialToAccept,
 } from './OID4VCIHolderService'
 
 /**
@@ -51,10 +52,7 @@ import {
 
 export class OID4VCIHolder implements IAgentPlugin {
   readonly schema = schema.IOID4VCIHolder
-  readonly eventTypes: Array<OID4VCIHolderEvents> = [
-    OID4VCIHolderEvents.CONTACT_IDENTITY_CREATED,
-    OID4VCIHolderEvents.CREDENTIAL_STORED
-  ]
+  readonly eventTypes: Array<OID4VCIHolderEvents> = [OID4VCIHolderEvents.CONTACT_IDENTITY_CREATED, OID4VCIHolderEvents.CREDENTIAL_STORED]
 
   readonly methods: IOID4VCIHolder = {
     oid4vciHolderGetMachineInterpreter: this.oid4vciHolderGetMachineInterpreter.bind(this),
@@ -74,12 +72,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   private readonly onGetCredentials: (args: GetCredentialsArgs) => Promise<Array<CredentialFromOffer>>
 
   constructor(options: OID4VCIHolderOptions) {
-    const {
-      onContactIdentityCreated,
-      onCredentialStored,
-      onGetCredentials,
-      vcFormatPreferences
-    } = options
+    const { onContactIdentityCreated, onCredentialStored, onGetCredentials, vcFormatPreferences } = options
 
     if (vcFormatPreferences !== undefined && vcFormatPreferences.length > 0) {
       this.vcFormatPreferences = vcFormatPreferences
@@ -89,7 +82,8 @@ export class OID4VCIHolder implements IAgentPlugin {
     this.onCredentialStored = onCredentialStored
   }
 
-  public async onEvent(event: any, context: RequiredContext): Promise<void> { // TODO any
+  public async onEvent(event: any, context: RequiredContext): Promise<void> {
+    // TODO any
     switch (event.type) {
       case OID4VCIHolderEvents.CONTACT_IDENTITY_CREATED:
         this.onContactIdentityCreated?.(event.data)
@@ -104,8 +98,10 @@ export class OID4VCIHolder implements IAgentPlugin {
 
   // TODO will not work for REST
   // TODO add options to override vcPreferences
-  private async oid4vciHolderGetMachineInterpreter(args: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<Array<string>> { //OID4VCIMachineInterpreter
-    const newArgs: OID4VCIMachineInstanceOpts = { // TODO refactor using services property
+  private async oid4vciHolderGetMachineInterpreter(args: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<Array<string>> {
+    //OID4VCIMachineInterpreter
+    const newArgs: OID4VCIMachineInstanceOpts = {
+      // TODO refactor using services property
       ...args,
       initiateData: (args: InitiateDataArgs) => this.oid4vciHolderGetInitiationData(args, context), // TODO name of function
       createCredentialSelection: (args: CreateCredentialSelectionArgs) => this.oid4vciHolderCreateCredentialSelection(args, context),
@@ -114,28 +110,32 @@ export class OID4VCIHolder implements IAgentPlugin {
       addContactIdentity: (args: AddContactIdentityArgs) => this.oid4vciHolderAddContactIdentity(args, context),
       assertValidCredentials: (args: AssertValidCredentialsArgs) => this.oid4vciHolderAssertValidCredentials(args, context),
       storeCredentialBranding: (args: StoreCredentialBrandingArgs) => this.oid4vciHolderStoreCredentialBranding(args, context),
-      storeCredentials: (args: StoreCredentialsArgs) => this.oid4vciHolderStoreCredentials(args, context)
+      storeCredentials: (args: StoreCredentialsArgs) => this.oid4vciHolderStoreCredentials(args, context),
     }
 
-    const interpreter = OID4VCIMachine.newInstance(newArgs);
+    const interpreter = OID4VCIMachine.newInstance(newArgs)
     interpreter.start()
 
     // TODO correct this mess
     return []
   }
 
-  private async oid4vciHolderGetInitiationData(args: InitiateDataArgs, context: RequiredContext): Promise<InitiationData> { // TODO name
-    const { requestData } = args;
+  private async oid4vciHolderGetInitiationData(args: InitiateDataArgs, context: RequiredContext): Promise<InitiationData> {
+    // TODO name
+    const { requestData } = args
 
     if (requestData?.uri === undefined) {
-      return Promise.reject(Error('Missing request uri in context'));
+      return Promise.reject(Error('Missing request uri in context'))
     }
 
-    if (!requestData?.uri || !(requestData?.uri.startsWith(QrTypesEnum.OPENID_INITIATE_ISSUANCE) || requestData?.uri.startsWith(QrTypesEnum.OPENID_CREDENTIAL_OFFER))) {
-      return Promise.reject(Error('Invalid Uri'));
+    if (
+      !requestData?.uri ||
+      !(requestData?.uri.startsWith(QrTypesEnum.OPENID_INITIATE_ISSUANCE) || requestData?.uri.startsWith(QrTypesEnum.OPENID_CREDENTIAL_OFFER))
+    ) {
+      return Promise.reject(Error('Invalid Uri'))
     }
 
-    const openID4VCIClient= await OpenID4VCIClient.fromURI({
+    const openID4VCIClient = await OpenID4VCIClient.fromURI({
       uri: requestData?.uri,
       //authorizationRequest: {redirectUri: `${DefaultURISchemes.CREDENTIAL_OFFER}://`},
     })
@@ -144,19 +144,22 @@ export class OID4VCIHolder implements IAgentPlugin {
     const credentialsSupported = await getSupportedCredentials(openID4VCIClient, this.vcFormatPreferences)
     const credentialBranding = await getCredentialBranding(credentialsSupported, context)
     const authorizationCodeURL = openID4VCIClient.authorizationURL // TODO do we still use this?
-    const openID4VCIClientState =  await openID4VCIClient.exportState()
+    const openID4VCIClientState = await openID4VCIClient.exportState()
 
     return {
       authorizationCodeURL,
       credentialBranding,
       credentialsSupported,
       serverMetadata,
-      openID4VCIClientState
-    };
+      openID4VCIClientState,
+    }
   }
 
-  private async oid4vciHolderCreateCredentialSelection(args: CreateCredentialSelectionArgs, context: RequiredContext): Promise<Array<CredentialTypeSelection>> {
-    const {credentialsSupported, credentialBranding, locale, selectedCredentials} = args;
+  private async oid4vciHolderCreateCredentialSelection(
+    args: CreateCredentialSelectionArgs,
+    context: RequiredContext
+  ): Promise<Array<CredentialTypeSelection>> {
+    const { credentialsSupported, credentialBranding, locale, selectedCredentials } = args
 
     // TODO add guard for having credentials
     // if (!credentialsSupported) {
@@ -175,8 +178,8 @@ export class OID4VCIHolder implements IAgentPlugin {
         }
         // FIXME this allows for duplicate VerifiableCredential, which the user has no idea which ones those are and we also have a branding map with unique keys, so some branding will not match
         const defaultCredentialType = 'VerifiableCredential'
-        const credentialType = credentialMetadata.types.find((type: string) => type !== defaultCredentialType) ?? defaultCredentialType;
-        const localeBranding = credentialBranding?.get(credentialType)  // TODO check ? at credentialBranding
+        const credentialType = credentialMetadata.types.find((type: string) => type !== defaultCredentialType) ?? defaultCredentialType
+        const localeBranding = credentialBranding?.get(credentialType) // TODO check ? at credentialBranding
         const credentialAlias = (await selectCredentialLocaleBranding({ locale, localeBranding }))?.alias
 
         return {
@@ -184,20 +187,20 @@ export class OID4VCIHolder implements IAgentPlugin {
           credentialType,
           credentialAlias: credentialAlias ?? credentialType,
           isSelected: false,
-        };
-      }),
-    );
+        }
+      })
+    )
 
     // TODO find better place to do this, would be nice if the machine does this?
     if (credentialSelection.length === 1) {
-      selectedCredentials.push(credentialSelection[0].credentialType);
+      selectedCredentials.push(credentialSelection[0].credentialType)
     }
 
-    return credentialSelection;
+    return credentialSelection
   }
 
   private async oid4vciHolderGetContact(args: RetrieveContactArgs, context: RequiredContext): Promise<Party | undefined> {
-    const { serverMetadata } = args;
+    const { serverMetadata } = args
 
     // if (!openId4VcIssuanceProvider) {
     //   return Promise.reject(Error('Missing OID4VCI issuance provider in context'));
@@ -207,22 +210,24 @@ export class OID4VCIHolder implements IAgentPlugin {
     //   return Promise.reject(Error('OID4VCI issuance provider has no server metadata'));
     // }
 
-    const correlationId: string = new URL(serverMetadata.issuer).hostname; // TODO URL we need support for both react and react-native
-    return context.agent.cmGetContacts({
-      filter: [
-        {
-          identities: {
-            identifier: {
-              correlationId,
+    const correlationId: string = new URL(serverMetadata.issuer).hostname // TODO URL we need support for both react and react-native
+    return context.agent
+      .cmGetContacts({
+        filter: [
+          {
+            identities: {
+              identifier: {
+                correlationId,
+              },
             },
           },
-        },
-      ],
-    }).then((contacts: Array<Party>): Party | undefined => (contacts.length === 1 ? contacts[0] : undefined));
+        ],
+      })
+      .then((contacts: Array<Party>): Party | undefined => (contacts.length === 1 ? contacts[0] : undefined))
   }
 
   private async oid4vciHolderGetCredentials(args: RetrieveCredentialsArgs, context: RequiredContext): Promise<Array<MappedCredentialToAccept>> {
-    const {verificationCode, selectedCredentials, openID4VCIClientState} = args;
+    const { verificationCode, selectedCredentials, openID4VCIClientState } = args
 
     if (!openID4VCIClientState) {
       throw Error('Missing openID4VCI client state in context')
@@ -231,23 +236,22 @@ export class OID4VCIHolder implements IAgentPlugin {
     return this.onGetCredentials({
       credentials: selectedCredentials,
       pin: verificationCode,
-      openID4VCIClientState
-    })
-    .then(mapCredentialToAccept)
+      openID4VCIClientState,
+    }).then(mapCredentialToAccept)
   }
 
   private async oid4vciHolderAddContactIdentity(args: AddContactIdentityArgs, context: RequiredContext): Promise<Identity> {
-    const { credentialsToAccept, contact } = args;
+    const { credentialsToAccept, contact } = args
 
     if (!contact) {
-      return Promise.reject(Error('Missing contact in context'));
+      return Promise.reject(Error('Missing contact in context'))
     }
 
     if (credentialsToAccept === undefined || credentialsToAccept.length === 0) {
-      return Promise.reject(Error('Missing credential offers in context'));
+      return Promise.reject(Error('Missing credential offers in context'))
     }
 
-    const correlationId: string = credentialsToAccept[0].correlationId;
+    const correlationId: string = credentialsToAccept[0].correlationId
     const identity: NonPersistedIdentity = {
       alias: correlationId,
       roles: [IdentityRoleEnum.ISSUER],
@@ -255,53 +259,52 @@ export class OID4VCIHolder implements IAgentPlugin {
         type: CorrelationIdentifierEnum.DID,
         correlationId,
       },
-    };
-
+    }
 
     // TODO emit event
 
     // TODO also think about toasts?? mobile and web
-    return context.agent.cmAddIdentity({contactId: contact.id, identity})
+    return context.agent.cmAddIdentity({ contactId: contact.id, identity })
 
     //return store.dispatch<any>(addIdentity({contactId: contact.id, identity}));
   }
 
-  private async oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<void> { // TODO return boolean for rest
-    const { credentialsToAccept } = args;
+  private async oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<void> {
+    // TODO return boolean for rest
+    const { credentialsToAccept } = args
 
-    await Promise.all(credentialsToAccept
-      .map(async (mappedCredential: MappedCredentialToAccept): Promise<void> => verifyCredentialToAccept({ mappedCredential, context }))
-    );
+    await Promise.all(
+      credentialsToAccept.map(
+        async (mappedCredential: MappedCredentialToAccept): Promise<void> => verifyCredentialToAccept({ mappedCredential, context })
+      )
+    )
   }
 
   private async oid4vciHolderStoreCredentialBranding(args: StoreCredentialBrandingArgs, context: RequiredContext): Promise<void> {
-    const { credentialBranding, serverMetadata, selectedCredentials, credentialsToAccept,  } = args;
+    const { credentialBranding, serverMetadata, selectedCredentials, credentialsToAccept } = args
 
     // if (!serverMetadata) {
     //   return Promise.reject(Error('OID4VCI issuance provider has no server metadata'));
     // }
 
-    const localeBranding: Array<IBasicCredentialLocaleBranding> | undefined = credentialBranding?.get(
-      selectedCredentials[0],
-    );
+    const localeBranding: Array<IBasicCredentialLocaleBranding> | undefined = credentialBranding?.get(selectedCredentials[0])
     if (localeBranding && localeBranding.length > 0) {
       await context.agent.addCredentialBranding({
         vcHash: computeEntryHash(credentialsToAccept[0].rawVerifiableCredential),
         issuerCorrelationId: new URL(serverMetadata.issuer).hostname,
         localeBranding,
-      });
+      })
     }
     // TODO emit event???
   }
 
   private async oid4vciHolderStoreCredentials(args: StoreCredentialsArgs, context: RequiredContext): Promise<void> {
-    const { credentialsToAccept } = args;
+    const { credentialsToAccept } = args
 
     const vc = credentialsToAccept[0].rawVerifiableCredential
-    const mappedVc = <VerifiableCredential>CredentialMapper.toUniformCredential(<OriginalVerifiableCredential>vc);
-    await context.agent.dataStoreSaveVerifiableCredential({verifiableCredential: mappedVc});
+    const mappedVc = <VerifiableCredential>CredentialMapper.toUniformCredential(<OriginalVerifiableCredential>vc)
+    await context.agent.dataStoreSaveVerifiableCredential({ verifiableCredential: mappedVc })
     // TODO emit event
     //store.dispatch<any>(storeVerifiableCredential(credentialsToAccept[0].rawVerifiableCredential));
   }
-
 }

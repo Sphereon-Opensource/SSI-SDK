@@ -7,9 +7,7 @@
           "properties": {
             "requestData": {}
           },
-          "required": [
-            "requestData"
-          ]
+          "required": ["requestData"]
         }
       },
       "methods": {

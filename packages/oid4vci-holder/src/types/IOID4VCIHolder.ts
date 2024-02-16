@@ -1,39 +1,12 @@
-import {
-  IAgentContext,
-  ICredentialPlugin,
-  IPluginMethodMap,
-  TKeyType,
-  VerifiableCredential
-} from '@veramo/core'
-import {IDataStore, IDataStoreORM} from '@veramo/data-store'
-import {OpenID4VCIClientState} from '@sphereon/oid4vci-client'
-import {
-  AuthorizationResponse,
-  CredentialResponse,
-  CredentialSupported
-} from '@sphereon/oid4vci-common'
-import {
-  IBasicCredentialLocaleBranding,
-  IBasicIssuerLocaleBranding,
-  Identity,
-  Party
-} from '@sphereon/ssi-sdk.data-store'
-import {IIssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
-import {IContactManager} from '@sphereon/ssi-sdk.contact-manager'
-import {
-  IVerifiableCredential,
-  WrappedVerifiableCredential,
-  WrappedVerifiablePresentation
-} from '@sphereon/ssi-types'
-import {
-  BaseActionObject,
-  Interpreter,
-  ResolveTypegenMeta,
-  ServiceMap,
-  State,
-  StateMachine,
-  TypegenDisabled
-} from 'xstate'
+import { IAgentContext, ICredentialPlugin, IPluginMethodMap, TKeyType, VerifiableCredential } from '@veramo/core'
+import { IDataStore, IDataStoreORM } from '@veramo/data-store'
+import { OpenID4VCIClientState } from '@sphereon/oid4vci-client'
+import { AuthorizationResponse, CredentialResponse, CredentialSupported } from '@sphereon/oid4vci-common'
+import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
+import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
+import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
+import { IVerifiableCredential, WrappedVerifiableCredential, WrappedVerifiablePresentation } from '@sphereon/ssi-types'
+import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<Array<string>>
@@ -60,12 +33,18 @@ export type GetMachineArgs = {
 }
 
 export type InitiateDataArgs = Pick<OID4VCIMachineContext, 'requestData'>
-export type CreateCredentialSelectionArgs = Pick<OID4VCIMachineContext, 'credentialsSupported' | 'credentialBranding' | 'selectedCredentials' | 'locale'>
+export type CreateCredentialSelectionArgs = Pick<
+  OID4VCIMachineContext,
+  'credentialsSupported' | 'credentialBranding' | 'selectedCredentials' | 'locale'
+>
 export type RetrieveContactArgs = Pick<OID4VCIMachineContext, 'serverMetadata'> // TODO  rename
 export type RetrieveCredentialsArgs = Pick<OID4VCIMachineContext, 'verificationCode' | 'selectedCredentials' | 'openID4VCIClientState'> // TODO  rename
 export type AddContactIdentityArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'contact'>
 export type AssertValidCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept'>
-export type StoreCredentialBrandingArgs = Pick<OID4VCIMachineContext, 'serverMetadata' | 'credentialBranding' | 'selectedCredentials' | 'credentialsToAccept'>
+export type StoreCredentialBrandingArgs = Pick<
+  OID4VCIMachineContext,
+  'serverMetadata' | 'credentialBranding' | 'selectedCredentials' | 'credentialsToAccept'
+>
 export type StoreCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept'>
 
 export enum OID4VCIHolderEvents {
@@ -85,31 +64,31 @@ export type VerifyCredentialToAcceptArgs = {
 }
 
 export type MappedCredentialToAccept = {
-  correlationId: string;
-  credential: any;//CredentialFromOffer;
-  uniformVerifiableCredential: IVerifiableCredential;
-  rawVerifiableCredential: VerifiableCredential;
-};
+  correlationId: string
+  credential: any //CredentialFromOffer;
+  uniformVerifiableCredential: IVerifiableCredential
+  rawVerifiableCredential: VerifiableCredential
+}
 
 export type OID4VCIMachineContext = {
-  requestData?: QrData; // TODO WAL-673 fix type as this is not always a qr code (deeplink)
+  requestData?: QrData // TODO WAL-673 fix type as this is not always a qr code (deeplink)
   locale?: string
   authorizationCodeURL?: string
   credentialBranding?: any // TODO MAP should be serializable // check optional
   credentialsSupported: Array<any> // TODO
   serverMetadata?: any // TODO
   openID4VCIClientState?: OpenID4VCIClientState
-  credentialSelection: Array<CredentialTypeSelection>;
-  contactAlias: string;
-  contact?: Party;
-  selectedCredentials: Array<string>;
-  authorizationCodeResponse?: AuthorizationResponse;
-  credentialsToAccept: Array<MappedCredentialToAccept>;
+  credentialSelection: Array<CredentialTypeSelection>
+  contactAlias: string
+  contact?: Party
+  selectedCredentials: Array<string>
+  authorizationCodeResponse?: AuthorizationResponse
+  credentialsToAccept: Array<MappedCredentialToAccept>
   // TODO WAL-672 refactor to not store verificationCode in the context
-  verificationCode?: string;
-  hasContactConsent: boolean;
-  error?: ErrorDetails;
-};
+  verificationCode?: string
+  hasContactConsent: boolean
+  error?: ErrorDetails
+}
 
 export enum OID4VCIMachineStates {
   initiateOID4VCIProvider = 'initiateOID4VCIProvider',
@@ -151,21 +130,21 @@ export type OID4VCIMachineInterpreter = Interpreter<
   OID4VCIMachineContext,
   any,
   OID4VCIMachineEventTypes,
-  {value: any; context: OID4VCIMachineContext},
+  { value: any; context: OID4VCIMachineContext },
   any
->;
+>
 
-export type OID4VCIMachineState = State<OID4VCIMachineContext, OID4VCIMachineEventTypes, any, {value: any; context: OID4VCIMachineContext}, any>;
+export type OID4VCIMachineState = State<OID4VCIMachineContext, OID4VCIMachineEventTypes, any, { value: any; context: OID4VCIMachineContext }, any>
 
 export type OID4VCIStateMachine = StateMachine<
   OID4VCIMachineContext,
   any,
   OID4VCIMachineEventTypes,
-  {value: any; context: OID4VCIMachineContext},
+  { value: any; context: OID4VCIMachineContext },
   BaseActionObject,
   ServiceMap,
   ResolveTypegenMeta<TypegenDisabled, OID4VCIMachineEventTypes, BaseActionObject, ServiceMap>
->;
+>
 
 export type CreateOID4VCIMachineOpts = {
   requestData: QrData
@@ -179,32 +158,32 @@ export type CreateOID4VCIMachineOpts = {
   assertValidCredentials: (args: AssertValidCredentialsArgs) => Promise<void>
   storeCredentialBranding: (args: StoreCredentialBrandingArgs) => Promise<void>
   storeCredentials: (args: StoreCredentialsArgs) => Promise<void>
-};
+}
 
 export type OID4VCIMachineInstanceOpts = {
-  services?: any;
-  guards?: any;
-  subscription?: () => void;
-  requireCustomNavigationHook?: boolean;
+  services?: any
+  guards?: any
+  subscription?: () => void
+  requireCustomNavigationHook?: boolean
   navigation: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void> //NativeStackNavigationProp<any>
-} & CreateOID4VCIMachineOpts;
+} & CreateOID4VCIMachineOpts
 
 export type OID4VCIProviderProps = {
-  children?: any;//ReactNode;
-  customOID4VCIInstance?: OID4VCIMachineInterpreter;
-};
+  children?: any //ReactNode;
+  customOID4VCIInstance?: OID4VCIMachineInterpreter
+}
 
 export type OID4VCIContext = {
-  oid4vciInstance?: OID4VCIMachineInterpreter;
-};
+  oid4vciInstance?: OID4VCIMachineInterpreter
+}
 
 export type OID4VCIMachineNavigationArgs = {
-  oid4vciMachine: OID4VCIMachineInterpreter;
-  state: OID4VCIMachineState;
-  navigation: any;//NativeStackNavigationProp<any>;
-  onNext?: () => void;
-  onBack?: () => void;
-};
+  oid4vciMachine: OID4VCIMachineInterpreter
+  state: OID4VCIMachineState
+  navigation: any //NativeStackNavigationProp<any>;
+  onNext?: () => void
+  onBack?: () => void
+}
 
 export enum OID4VCIMachineEvents {
   NEXT = 'NEXT',
@@ -243,17 +222,17 @@ export enum OID4VCIMachineServices {
   storeCredentials = 'storeCredentials',
 }
 
-export type NextEvent = {type: OID4VCIMachineEvents.NEXT};
-export type PreviousEvent = {type: OID4VCIMachineEvents.PREVIOUS};
-export type DeclineEvent = {type: OID4VCIMachineEvents.DECLINE};
-export type CreateContactEvent = {type: OID4VCIMachineEvents.CREATE_CONTACT; data: Party};
-export type SelectCredentialsEvent = {type: OID4VCIMachineEvents.SET_SELECTED_CREDENTIALS; data: Array<string>};
-export type VerificationCodeEvent = {type: OID4VCIMachineEvents.SET_VERIFICATION_CODE; data: string};
-export type ContactConsentEvent = {type: OID4VCIMachineEvents.SET_CONTACT_CONSENT; data: boolean};
-export type ContactAliasEvent = {type: OID4VCIMachineEvents.SET_CONTACT_ALIAS; data: string};
-export type SetAuthorizationCodeURLEvent = {type: OID4VCIMachineEvents.SET_AUTHORIZATION_CODE_URL; data: string};
-export type InvokeAuthorizationRequestEvent = {type: OID4VCIMachineEvents.INVOKED_AUTHORIZATION_CODE_REQUEST; data: string};
-export type AuthorizationResponseEvent = {type: OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE; data: string | AuthorizationResponse};
+export type NextEvent = { type: OID4VCIMachineEvents.NEXT }
+export type PreviousEvent = { type: OID4VCIMachineEvents.PREVIOUS }
+export type DeclineEvent = { type: OID4VCIMachineEvents.DECLINE }
+export type CreateContactEvent = { type: OID4VCIMachineEvents.CREATE_CONTACT; data: Party }
+export type SelectCredentialsEvent = { type: OID4VCIMachineEvents.SET_SELECTED_CREDENTIALS; data: Array<string> }
+export type VerificationCodeEvent = { type: OID4VCIMachineEvents.SET_VERIFICATION_CODE; data: string }
+export type ContactConsentEvent = { type: OID4VCIMachineEvents.SET_CONTACT_CONSENT; data: boolean }
+export type ContactAliasEvent = { type: OID4VCIMachineEvents.SET_CONTACT_ALIAS; data: string }
+export type SetAuthorizationCodeURLEvent = { type: OID4VCIMachineEvents.SET_AUTHORIZATION_CODE_URL; data: string }
+export type InvokeAuthorizationRequestEvent = { type: OID4VCIMachineEvents.INVOKED_AUTHORIZATION_CODE_REQUEST; data: string }
+export type AuthorizationResponseEvent = { type: OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE; data: string | AuthorizationResponse }
 export type OID4VCIMachineEventTypes =
   | NextEvent
   | PreviousEvent
@@ -265,16 +244,16 @@ export type OID4VCIMachineEventTypes =
   | ContactAliasEvent
   | SetAuthorizationCodeURLEvent
   | InvokeAuthorizationRequestEvent
-  | AuthorizationResponseEvent;
+  | AuthorizationResponseEvent
 
 // TODO mobile wallet type
 export type ErrorDetails = {
-  title: string;
-  message: string;
+  title: string
+  message: string
   // TODO WAL-676 would be nice if we can bundle these details fields into a new type so that we can check on this field instead of the 2 separately
-  detailsTitle?: string;
-  detailsMessage?: string;
-};
+  detailsTitle?: string
+  detailsMessage?: string
+}
 
 // TODO mobile wallet type
 // TODO rename and remove non iod4vci
@@ -288,23 +267,23 @@ export enum QrTypesEnum {
   OPENID_CREDENTIAL_OFFER = 'openid-credential-offer',
 }
 
-
 // TODO mobile wallet type
 export type QrData = {
-  type: QrTypesEnum;
-  [x: string]: any;
+  type: QrTypesEnum
+  [x: string]: any
 }
 
 // TODO mobile wallet type
 export type CredentialTypeSelection = {
-  id: string;
-  credentialType: string;
-  credentialAlias: string;
-  isSelected: boolean;
+  id: string
+  credentialType: string
+  credentialAlias: string
+  isSelected: boolean
 }
 
 // TODO
-export type InitiationData = { // TODO name
+export type InitiationData = {
+  // TODO name
   authorizationCodeURL?: string
   credentialBranding: any // TODO MAP should be serializable
   credentialsSupported: Array<any> // TODO
@@ -315,25 +294,25 @@ export type InitiationData = { // TODO name
 // TODO mobile wallet type
 export type SelectAppLocaleBrandingArgs = {
   locale?: string
-  localeBranding?: Array<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding>;
+  localeBranding?: Array<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding>
 }
 // TODO mobile wallet type
 export interface GetCredentialsArgs {
-  pin?: string;
-  credentials?: Array<string>; // TODO why optional? we need credentials?
+  pin?: string
+  credentials?: Array<string> // TODO why optional? we need credentials?
   openID4VCIClientState: OpenID4VCIClientState
 }
 // TODO mobile wallet type
 export interface CredentialFromOffer {
-  id?: string;
-  issuanceOpt: IssuanceOpts;
-  credentialResponse: CredentialResponse;
+  id?: string
+  issuanceOpt: IssuanceOpts
+  credentialResponse: CredentialResponse
 }
 // TODO mobile wallet type
 export type IssuanceOpts = CredentialSupported & {
-  didMethod: SupportedDidMethodEnum;
-  keyType: TKeyType;
-};
+  didMethod: SupportedDidMethodEnum
+  keyType: TKeyType
+}
 // TODO mobile wallet type
 export enum SupportedDidMethodEnum {
   DID_ETHR = 'ethr',
@@ -346,23 +325,23 @@ export enum SupportedDidMethodEnum {
 
 // TODO mobile wallet type
 export type VerificationResult = {
-  result: boolean;
-  source: WrappedVerifiableCredential | WrappedVerifiablePresentation;
-  subResults: Array<VerificationSubResult>;
-  error?: string | undefined;
-  errorDetails?: string;
+  result: boolean
+  source: WrappedVerifiableCredential | WrappedVerifiablePresentation
+  subResults: Array<VerificationSubResult>
+  error?: string | undefined
+  errorDetails?: string
 }
 // TODO mobile wallet type
 export type VerificationSubResult = {
-  result: boolean;
-  error?: string;
-  errorDetails?: string;
+  result: boolean
+  error?: string
+  errorDetails?: string
 }
 // TODO mobile wallet type
 export type CredentialToAccept = {
-  id?: string;
-  issuanceOpt: IssuanceOpts;
-  credentialResponse: CredentialResponse;
+  id?: string
+  issuanceOpt: IssuanceOpts
+  credentialResponse: CredentialResponse
 }
 
 export type RequiredContext = IAgentContext<IIssuanceBranding | IContactManager | ICredentialPlugin | IDataStore | IDataStoreORM>
