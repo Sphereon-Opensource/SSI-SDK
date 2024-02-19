@@ -1,5 +1,5 @@
 {
-  "IXStateStateManager": {
+  "IXStatePersistence": {
     "components": {
       "schemas": {
         "DeleteStateArgs": {
@@ -26,14 +26,14 @@
         "LoadStateResult": {
           "anyOf": [
             {
-              "$ref": "#/components/schemas/State"
+              "$ref": "#/components/schemas/XStateEntity"
             },
             {
               "type": "null"
             }
           ]
         },
-        "State": {
+        "XStateEntity": {
           "type": "object",
           "properties": {
             "id": {
@@ -71,9 +71,30 @@
             "createdAt",
             "updatedAt",
             "completedAt",
-            "tenantId",
             "ttl"
           ]
+        },
+        "XStateStateManagerEvent": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "$ref": "#/components/schemas/XStateStateManagerEventType"
+            },
+            "data": {
+              "$ref": "#/components/schemas/NonPersistedXStateStateManagerEvent"
+            }
+          },
+          "required": [
+            "type",
+            "data"
+          ]
+        },
+        "XStateStateManagerEventType": {
+          "type": "string",
+          "const": "every"
+        },
+        "NonPersistedXStateStateManagerEvent": {
+          "$ref": "#/components/schemas/PersistStateArgs"
         },
         "PersistStateArgs": {
           "type": "object",
@@ -109,8 +130,11 @@
             "createdAt",
             "updatedAt",
             "completedAt",
-            "tenantId"
+            "ttl"
           ]
+        },
+        "OnEventResult": {
+          "$ref": "#/components/schemas/PersistStateResult"
         }
       },
       "methods": {
@@ -130,6 +154,15 @@
           },
           "returnType": {
             "$ref": "#/components/schemas/LoadStateResult"
+          }
+        },
+        "onEvent": {
+          "description": "Persists the state whenever an event is emitted",
+          "arguments": {
+            "$ref": "#/components/schemas/XStateStateManagerEvent"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/OnEventResult"
           }
         },
         "persistState": {

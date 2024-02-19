@@ -20,7 +20,7 @@ import {IXStatePersistence, LoadStateArgs, LoadStateResult, PersistStateArgs} fr
  * @beta This API may change without a BREAKING CHANGE notice.
  */
 export class XStatePersistence implements IAgentPlugin {
-    readonly schema = schema.IXStateStateManager
+    readonly schema = schema.IXStatePersistence
     readonly methods: IXStatePersistence
     readonly eventTypes: Array<string>
     readonly store: IAbstractXStateStore
