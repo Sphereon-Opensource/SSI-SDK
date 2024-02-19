@@ -2652,18 +2652,9 @@ importers:
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
-      '@veramo/utils':
-        specifier: 4.2.0
-        version: 4.2.0
       react-native-securerandom:
         specifier: ^1.0.1
         version: 1.0.1(react-native@0.73.2)
-      typeorm:
-        specifier: 0.3.17
-        version: 0.3.17(pg@8.11.3)(sqlite3@5.1.7)(ts-node@10.9.2)
-      xstate:
-        specifier: ^5.6.2
-        version: 5.7.1
     devDependencies:
       '@types/node':
         specifier: ^20.11.17
@@ -22028,10 +22019,6 @@ packages:
   /xmlchars@2.2.0:
     resolution: {integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==}
     dev: true
-
-  /xstate@5.7.1:
-    resolution: {integrity: sha512-x1fa1X/K2bCdXrN6Hrll30Q00iprXaaPqB0U3N4nUgjngTNxQbnBvAQ4WSH6ctdU3jbH32+S3GDYctM5K7t8Vw==}
-    dev: false
 
   /xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
