@@ -2,8 +2,9 @@ import {OrPromise} from "@sphereon/ssi-types";
 import Debug from 'debug'
 import {DataSource} from "typeorm";
 
-import {XStateEntity} from "../entities/xstatePersistence/XStateEntity";
-import {DeleteStateArgs, LoadStateArgs, LoadStateResult, PersistStateArgs, VoidResult,} from "../types";
+import {StateEntity} from "../entities/xstatePersistence/StateEntity";
+import {DeleteStateArgs, GetStateArgs, GetStateResult, SaveStateArgs, VoidResult,} from "../types";
+import {stateFrom} from "../utils/contact/MappingUtils";
 import {IAbstractXStateStore} from "./IAbstractXStateStore";
 
 const debug = Debug('sphereon:ssi-sdk:xstatePersistence')
@@ -16,25 +17,29 @@ export class XStateStore extends IAbstractXStateStore {
         this.dbConnection = dbConnection
     }
 
-    async persistState(state: PersistStateArgs): Promise<VoidResult> {
+    async saveState(state: SaveStateArgs): Promise<VoidResult> {
         const connection: DataSource = await this.dbConnection
         debug.log(`Executing persistState with state: ${JSON.stringify(state)}`)
-        await connection.getRepository(XStateEntity).save(state)
+        await connection.getRepository(StateEntity).save(state)
     }
 
-    async loadState(args: LoadStateArgs): Promise<LoadStateResult> {
+    async getState(args: GetStateArgs): Promise<GetStateResult> {
         const connection: DataSource = await this.dbConnection
         debug.log(`Executing loadState query with type: ${args.type}`)
-        return await connection.getRepository(XStateEntity)
+        const result: StateEntity | null = await connection.getRepository(StateEntity)
             .findOne({
                 where: { type: args.type }
             })
+        if (!result) {
+            return Promise.reject(Error(`No state found for type: ${args.type}`))
+        }
+        return stateFrom(result)
     }
 
     async deleteState(args: DeleteStateArgs): Promise<VoidResult> {
         const connection: DataSource = await this.dbConnection
         debug.log(`Executing loadState query with type: ${args.type}`)
-        await connection.getRepository(XStateEntity)
+        await connection.getRepository(StateEntity)
             .delete({ type: args.type })
     }
 }

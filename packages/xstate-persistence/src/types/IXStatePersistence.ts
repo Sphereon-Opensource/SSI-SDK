@@ -6,7 +6,7 @@ import {
   LoadStateArgs,
   LoadStateResult, OnEventResult,
   PersistStateArgs,
-  PersistStateResult, RequiredContext, XStateStateManagerEvent
+  PersistStateResult, RequiredContext, XStatePersistenceEvent
 } from "./types";
 
 /**
@@ -54,5 +54,5 @@ export interface IXStatePersistence extends IPluginMethodMap {
    * @param context
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
-  onEvent(event: XStateStateManagerEvent, context: RequiredContext): Promise<OnEventResult>
+  onEvent(event: XStatePersistenceEvent, context: RequiredContext): Promise<OnEventResult>
 }

@@ -1,7 +1,7 @@
 import {BaseEntity, Column, Entity, PrimaryColumn} from "typeorm";
 
-@Entity('XstateEntity')
-export class XStateEntity extends BaseEntity {
+@Entity('StateEntity')
+export class StateEntity extends BaseEntity {
     @PrimaryColumn({ name: 'id', type: 'varchar' })
     // @ts-ignore
     id: string

@@ -1,13 +1,14 @@
 import {IAbstractXStateStore} from "@sphereon/ssi-sdk.data-store";
 import {IAgentPlugin,} from '@veramo/core'
+
 import {
     DeleteStateResult,
     OnEventResult,
     PersistStateResult,
     RequiredContext,
     schema,
-    XStateStateManagerEvent,
-    XStateStateManagerEventType,
+    XStatePersistenceEvent,
+    XStatePersistenceEventType,
     XStateStateManagerOptions
 } from '../index'
 import {IXStatePersistence, LoadStateArgs, LoadStateResult, PersistStateArgs} from "../types";
@@ -39,9 +40,9 @@ export class XStatePersistence implements IAgentPlugin {
         }
     }
 
-    async onEvent(event: XStateStateManagerEvent, context: RequiredContext): Promise<OnEventResult> {
+    async onEvent(event: XStatePersistenceEvent, context: RequiredContext): Promise<OnEventResult> {
         switch (event.type) {
-            case XStateStateManagerEventType.EVERY:
+            case XStatePersistenceEventType.EVERY:
                 // Calling the context of the agent to make sure the REST client is called when configured
                 await context.agent.persistState(event.data)
                 break
@@ -54,14 +55,14 @@ export class XStatePersistence implements IAgentPlugin {
         if (!this.store) {
             return Promise.reject(Error('No store available in options'))
         }
-        this.store.persistState(state)
+        await this.store.saveState(state)
     }
 
     private async loadState(args: LoadStateArgs): Promise<LoadStateResult> {
         if (!this.store) {
             return Promise.reject(Error('No store available in options'))
         }
-        return this.store.loadState(args)
+        return this.store.getState(args)
     }
 
     private async deleteState(args: LoadStateArgs): Promise<DeleteStateResult> {

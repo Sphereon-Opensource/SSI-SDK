@@ -1,3 +1,4 @@
+import {StateEntity} from "../../entities/xstatePersistence/StateEntity";
 import {
   Connection,
   ConnectionConfig,
@@ -26,7 +27,7 @@ import {
   Organization,
   Party,
   PartyRelationship,
-  PartyType,
+  PartyType, State,
 } from '../../types'
 import { PartyEntity } from '../../entities/contact/PartyEntity'
 import { IdentityEntity } from '../../entities/contact/IdentityEntity'
@@ -342,3 +343,15 @@ export const isOpenIdConfig = (config: NonPersistedConnectionConfig | BaseConfig
 
 export const isDidAuthConfig = (config: NonPersistedConnectionConfig | BaseConfigEntity): config is DidAuthConfig | DidAuthConfigEntity =>
   'identifier' in config && 'redirectUrl' in config && 'sessionId' in config
+
+export const stateFrom = (state: StateEntity): State => {
+  return {
+    state: state.id,
+    type: state.type,
+    createdAt: state.createdAt,
+    updatedAt: state.updatedAt,
+    completedAt: state.completedAt,
+    tenantId: state.tenantId,
+    ttl: state.ttl
+  }
+}

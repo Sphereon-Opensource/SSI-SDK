@@ -1,41 +1,33 @@
-import {IAbstractXStateStore, XStateEntity} from "@sphereon/ssi-sdk.data-store";
+import {GetStateArgs, IAbstractXStateStore, SaveStateArgs, State, VoidResult} from "@sphereon/ssi-sdk.data-store";
 import {IAgentContext} from "@veramo/core";
 
 import {IXStatePersistence} from "./IXStatePersistence";
 
 export type XStateStateManagerOptions = { store: IAbstractXStateStore, eventTypes: Array<string> }
 
-export enum XStateStateManagerEventType {
+export enum XStatePersistenceEventType {
     EVERY = 'every'
 }
 
-export type PersistStateArgs = {
-    state: string
-    type: string
-    createdAt: Date
-    updatedAt: Date
-    completedAt: Date
-    tenantId?: string
-    ttl: number
-}
+export type PersistStateArgs = SaveStateArgs
 
-export type NonPersistedXStateStateManagerEvent = PersistStateArgs
+export type NonPersistedXStatePersistenceEvent = SaveStateArgs
 
-export type LoadStateArgs = Pick<PersistStateArgs, 'type'>
+export type LoadStateArgs = GetStateArgs
 
-export type DeleteStateArgs = LoadStateArgs
+export type DeleteStateArgs = GetStateArgs
 
-export type PersistStateResult = void
+export type PersistStateResult = VoidResult
 
-export type LoadStateResult = XStateEntity | null
+export type LoadStateResult = State
 
-export type DeleteStateResult = PersistStateResult
+export type DeleteStateResult = VoidResult
 
-export type OnEventResult = PersistStateResult
+export type OnEventResult = VoidResult
 
-export type XStateStateManagerEvent = {
-    type: XStateStateManagerEventType,
-    data: NonPersistedXStateStateManagerEvent
+export type XStatePersistenceEvent = {
+    type: XStatePersistenceEventType,
+    data: NonPersistedXStatePersistenceEvent
 }
 
 export type RequiredContext = IAgentContext<IXStatePersistence>

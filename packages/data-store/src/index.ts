@@ -18,7 +18,7 @@ import { IssuerBrandingEntity, issuerBrandingEntityFrom } from './entities/issua
 import { TextAttributesEntity, textAttributesEntityFrom } from './entities/issuanceBranding/TextAttributesEntity'
 import { StatusListEntity } from './entities/statusList2021/StatusList2021Entity'
 import { StatusListEntryEntity } from './entities/statusList2021/StatusList2021EntryEntity'
-import {XStateEntity} from "./entities/xstatePersistence/XStateEntity";
+import {StateEntity} from "./entities/xstatePersistence/StateEntity";
 import { IStatusListEntity, IStatusListEntryEntity } from './types'
 import { PartyRelationshipEntity } from './entities/contact/PartyRelationshipEntity'
 import { PartyTypeEntity } from './entities/contact/PartyTypeEntity'
@@ -80,7 +80,7 @@ export const DataStoreStatusListEntities = [StatusListEntity, StatusListEntryEnt
 
 export const DataStoreEventLoggerEntities = [AuditEventEntity]
 
-export const DataStoreXStateStoreEntities = [XStateEntity]
+export const DataStoreXStateStoreEntities = [StateEntity]
 
 // All entities combined if a party wants to enable them all at once
 export const DataStoreEntities = [
@@ -124,5 +124,5 @@ export {
   StatusListEntryEntity,
   AuditEventEntity,
   auditEventEntityFrom,
-  XStateEntity
+  StateEntity
 }

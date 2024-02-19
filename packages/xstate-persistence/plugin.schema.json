@@ -3,9 +3,9 @@
     "components": {
       "schemas": {
         "DeleteStateArgs": {
-          "$ref": "#/components/schemas/LoadStateArgs"
+          "$ref": "#/components/schemas/GetStateArgs"
         },
-        "LoadStateArgs": {
+        "GetStateArgs": {
           "type": "object",
           "properties": {
             "type": {
@@ -18,27 +18,20 @@
           "additionalProperties": false
         },
         "DeleteStateResult": {
-          "$ref": "#/components/schemas/PersistStateResult"
+          "$ref": "#/components/schemas/VoidResult"
         },
-        "PersistStateResult": {
+        "VoidResult": {
           "type": "null"
         },
-        "LoadStateResult": {
-          "anyOf": [
-            {
-              "$ref": "#/components/schemas/XStateEntity"
-            },
-            {
-              "type": "null"
-            }
-          ]
+        "LoadStateArgs": {
+          "$ref": "#/components/schemas/GetStateArgs"
         },
-        "XStateEntity": {
+        "LoadStateResult": {
+          "$ref": "#/components/schemas/State"
+        },
+        "State": {
           "type": "object",
           "properties": {
-            "id": {
-              "type": "string"
-            },
             "state": {
               "type": "string"
             },
@@ -65,7 +58,6 @@
             }
           },
           "required": [
-            "id",
             "state",
             "type",
             "createdAt",
@@ -74,14 +66,14 @@
             "ttl"
           ]
         },
-        "XStateStateManagerEvent": {
+        "XStatePersistenceEvent": {
           "type": "object",
           "properties": {
             "type": {
-              "$ref": "#/components/schemas/XStateStateManagerEventType"
+              "$ref": "#/components/schemas/XStatePersistenceEventType"
             },
             "data": {
-              "$ref": "#/components/schemas/NonPersistedXStateStateManagerEvent"
+              "$ref": "#/components/schemas/NonPersistedXStatePersistenceEvent"
             }
           },
           "required": [
@@ -89,14 +81,14 @@
             "data"
           ]
         },
-        "XStateStateManagerEventType": {
+        "XStatePersistenceEventType": {
           "type": "string",
           "const": "every"
         },
-        "NonPersistedXStateStateManagerEvent": {
-          "$ref": "#/components/schemas/PersistStateArgs"
+        "NonPersistedXStatePersistenceEvent": {
+          "$ref": "#/components/schemas/SaveStateArgs"
         },
-        "PersistStateArgs": {
+        "SaveStateArgs": {
           "type": "object",
           "properties": {
             "state": {
@@ -134,7 +126,13 @@
           ]
         },
         "OnEventResult": {
-          "$ref": "#/components/schemas/PersistStateResult"
+          "$ref": "#/components/schemas/VoidResult"
+        },
+        "PersistStateArgs": {
+          "$ref": "#/components/schemas/SaveStateArgs"
+        },
+        "PersistStateResult": {
+          "$ref": "#/components/schemas/VoidResult"
         }
       },
       "methods": {
@@ -159,7 +157,7 @@
         "onEvent": {
           "description": "Persists the state whenever an event is emitted",
           "arguments": {
-            "$ref": "#/components/schemas/XStateStateManagerEvent"
+            "$ref": "#/components/schemas/XStatePersistenceEvent"
           },
           "returnType": {
             "$ref": "#/components/schemas/OnEventResult"

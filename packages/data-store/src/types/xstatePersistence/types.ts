@@ -1,6 +1,4 @@
-import {XStateEntity} from "../../entities/xstatePersistence/XStateEntity";
-
-export type PersistStateArgs = {
+export type SaveStateArgs = {
     state: string
     type: string
     createdAt: Date
@@ -10,10 +8,20 @@ export type PersistStateArgs = {
     ttl: number
 }
 
-export type LoadStateArgs = Pick<PersistStateArgs, 'type'>
+export type GetStateArgs = Pick<SaveStateArgs, 'type'>
 
-export type DeleteStateArgs = Pick<PersistStateArgs, 'type'>
+export type DeleteStateArgs = Pick<SaveStateArgs, 'type'>
 
 export type VoidResult = void
 
-export type LoadStateResult = XStateEntity | null
+export type GetStateResult = State
+
+export type State = {
+    state: string
+    type: string
+    createdAt: Date
+    updatedAt: Date
+    completedAt: Date
+    tenantId?: string
+    ttl: number
+}
