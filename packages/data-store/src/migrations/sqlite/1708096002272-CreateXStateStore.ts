@@ -5,7 +5,7 @@ export class CreateXStateStore1708096002272 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(
-            `CREATE TABLE "XStateStore" ("id" varchar PRIMARY KEY NOT NULL, "state" varchar(255) NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, CONSTRAINT "PK_XStateStore_id"`
+            `CREATE TABLE "XStateStore" ("id" varchar PRIMARY KEY NOT NULL, "state" varchar(255) NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, CONSTRAINT "PK_XStateStore_id")`
         )
     }
 

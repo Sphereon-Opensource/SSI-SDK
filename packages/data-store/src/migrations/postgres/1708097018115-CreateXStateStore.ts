@@ -13,6 +13,6 @@ export class CreateXStateStore1708097018115 implements MigrationInterface {
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "XStateStore" DROP CONSTRAINT "PK_XStateStore_id"`)
-        await queryRunner.query(`DROP TABLE "XStateStore"`)
+        await queryRunner.query(`DROP TABLE "XStateEntity"`)
     }
 }
