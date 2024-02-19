@@ -20,13 +20,14 @@ import { BaseContactEntity } from './BaseContactEntity'
 import { PartyRelationshipEntity } from './PartyRelationshipEntity'
 import { getConstraint } from '../../utils/ValidatorUtils'
 import { ElectronicAddressEntity } from './ElectronicAddressEntity'
+import { PhysicalAddressEntity } from './PhysicalAddressEntity'
 
 @Entity('Party')
 export class PartyEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'uri', length: 255 })
+  @Column({ name: 'uri', length: 255, nullable: true })
   uri?: string
 
   @OneToMany(() => IdentityEntity, (identity: IdentityEntity) => identity.party, {
@@ -46,6 +47,15 @@ export class PartyEntity extends BaseEntity {
   })
   @JoinColumn({ name: 'electronic_address_id' })
   electronicAddresses!: Array<ElectronicAddressEntity>
+
+  @OneToMany(() => PhysicalAddressEntity, (physicalAddress: PhysicalAddressEntity) => physicalAddress.party, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    eager: true,
+    nullable: false,
+  })
+  @JoinColumn({ name: 'physical_address_id' })
+  physicalAddresses!: Array<PhysicalAddressEntity>
 
   @ManyToOne(() => PartyTypeEntity, (contactType: PartyTypeEntity) => contactType.parties, {
     cascade: true,

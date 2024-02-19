@@ -61,9 +61,6 @@ export class CreateContacts1690925872693 implements MigrationInterface {
     )
     await queryRunner.query(`CREATE UNIQUE INDEX "IDX_PartyRelationship_left_right" ON "PartyRelationship" ("left_id", "right_id")`)
     await queryRunner.query(
-      `CREATE TABLE "ElectronicAddress" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar(255) NOT NULL, "electronic_address" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "partyId" varchar)`
-    )
-    await queryRunner.query(
       `CREATE TABLE "Party" ("id" varchar PRIMARY KEY NOT NULL, "uri" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "party_type_id" varchar NOT NULL)`
     )
     await queryRunner.query(
@@ -99,15 +96,13 @@ export class CreateContacts1690925872693 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "temporary_PartyRelationship" RENAME TO "PartyRelationship"`)
     await queryRunner.query(`CREATE UNIQUE INDEX "IDX_PartyRelationship_left_right" ON "PartyRelationship" ("left_id", "right_id")`)
     await queryRunner.query(
-      `CREATE TABLE "temporary_ElectronicAddress" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar(255) NOT NULL, "electronic_address" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "partyId" varchar, CONSTRAINT "FK_ElectronicAddress_partyId" FOREIGN KEY ("partyId") REFERENCES "Party" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
+      `CREATE TABLE "ElectronicAddress" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar(255) NOT NULL, "electronic_address" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "partyId" varchar, CONSTRAINT "FK_ElectronicAddress_partyId" FOREIGN KEY ("partyId") REFERENCES "Party" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
     )
     await queryRunner.query(
-      `INSERT INTO "temporary_ElectronicAddress"("id", "type", "electronic_address", "created_at", "last_updated_at", "partyId") SELECT "id", "type", "electronic_address", "created_at", "last_updated_at", "partyId" FROM "ElectronicAddress"`
+      `CREATE TABLE "PhysicalAddress" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar(255) NOT NULL, "street_name" varchar(255) NOT NULL, "street_number" varchar(255) NOT NULL, "postal_code" varchar(255) NOT NULL, "city_name" varchar(255) NOT NULL, "province_name" varchar(255) NOT NULL, "country_code" varchar(2) NOT NULL, "building_name" varchar(255), "partyId" varchar, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), CONSTRAINT "FK_PhysicalAddressEntity_partyId" FOREIGN KEY ("partyId") REFERENCES "Party" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`
     )
-    await queryRunner.query(`DROP TABLE "ElectronicAddress"`)
-    await queryRunner.query(`ALTER TABLE "temporary_ElectronicAddress" RENAME TO "ElectronicAddress"`)
     await queryRunner.query(
-      `CREATE TABLE "temporary_Party" ("id" varchar PRIMARY KEY NOT NULL, "uri" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "party_type_id" varchar NOT NULL, CONSTRAINT "FK_Party_party_type_id" FOREIGN KEY ("party_type_id") REFERENCES "PartyType" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION)`
+      `CREATE TABLE "temporary_Party" ("id" varchar PRIMARY KEY NOT NULL, "uri" varchar(255), "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "party_type_id" varchar NOT NULL, CONSTRAINT "FK_Party_party_type_id" FOREIGN KEY ("party_type_id") REFERENCES "PartyType" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION)`
     )
     await queryRunner.query(
       `INSERT INTO "temporary_Party"("id", "uri", "created_at", "last_updated_at", "party_type_id") SELECT "id", "uri", "created_at", "last_updated_at", "party_type_id" FROM "Party"`
