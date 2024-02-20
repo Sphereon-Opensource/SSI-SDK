@@ -18,7 +18,7 @@ export const DataStoreContactMigrations = [CreateContacts1659463079429, CreateCo
 export const DataStoreIssuanceBrandingMigrations = [CreateIssuanceBranding1659463079429]
 export const DataStoreStatusListMigrations = [CreateStatusList1693866470000]
 export const DataStoreEventLoggerMigrations = [CreateAuditEvents1701635835330]
-export const DataStoreXStatePersistenceMigration = [CreateXStateStore1708098041262]
+export const DataStoreXStateStoreMigrations = [CreateXStateStore1708098041262]
 
 // All migrations together
 export const DataStoreMigrations = [
@@ -26,5 +26,5 @@ export const DataStoreMigrations = [
   ...DataStoreIssuanceBrandingMigrations,
   ...DataStoreStatusListMigrations,
   ...DataStoreEventLoggerMigrations,
-  ...DataStoreXStatePersistenceMigration
+  ...DataStoreXStateStoreMigrations
 ]
