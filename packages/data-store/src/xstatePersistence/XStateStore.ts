@@ -18,13 +18,13 @@ export class XStateStore extends IAbstractXStateStore {
 
     async saveState(state: SaveStateArgs): Promise<State> {
         const connection: DataSource = await this.dbConnection
-        debug.log(`Executing saveState with state: ${JSON.stringify(state)}`)
+        debug(`Executing saveState with state: ${JSON.stringify(state)}`)
         return connection.getRepository(StateEntity).save(state);
     }
 
     async getState(args: GetStateArgs): Promise<State> {
         const connection: DataSource = await this.dbConnection
-        debug.log(`Executing loadState query with type: ${args.type}`)
+        debug(`Executing loadState query with type: ${args.type}`)
         const result: StateEntity | null = await connection.getRepository(StateEntity)
             .findOne({
                 where: { type: args.type }
@@ -37,7 +37,7 @@ export class XStateStore extends IAbstractXStateStore {
 
     async deleteState(args: DeleteStateArgs): Promise<VoidResult> {
         const connection: DataSource = await this.dbConnection
-        debug.log(`Executing deleteState query with type: ${args.type}`)
+        debug(`Executing deleteState query with type: ${args.type}`)
         await connection.getRepository(StateEntity)
             .delete({ type: args.type })
     }

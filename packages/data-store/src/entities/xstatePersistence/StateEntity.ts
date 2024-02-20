@@ -1,32 +1,31 @@
-import {BaseEntity, Column, Entity, PrimaryColumn} from "typeorm"
+import {BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm"
 import {NonPersistedXStateStoreEvent} from "../../types";
 
 @Entity('StateEntity')
 export class StateEntity extends BaseEntity {
-    @PrimaryColumn({ name: 'id', type: 'varchar' })
-    // @ts-ignore
-    id: string
-    @Column()
-    // @ts-ignore
-    state: string
-    @Column()
-    // @ts-ignore
-    type: string
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    // @ts-ignore
-    createdAt: Date
-    @Column({ type: 'timestamp', onUpdate: 'CURRENT_TIMESTAMP', nullable: true })
-    // @ts-ignore
-    updatedAt: Date
-    @Column({ type: 'timestamp', nullable: true })
-    // @ts-ignore
+    @PrimaryGeneratedColumn('uuid', { name: 'id' })
+    id!: string
+
+    @Column({ name: 'state', nullable: false })
+    state!: string
+
+    @Column({ name: 'type', nullable: false })
+    type!: string
+
+    @CreateDateColumn({ name: 'created_at', nullable: false })
+    createdAt!: Date
+
+    @UpdateDateColumn({ name: 'updated_at', nullable: false })
+    updatedAt!: Date
+
+    @Column({ name: 'completed_at', type: 'date', nullable: true })
     completedAt?: Date
-    @Column()
-    // @ts-ignore
+
+    @Column({ name: 'tenant_id', type: 'varchar', nullable: true })
     tenantId?: string
-    @Column({ default: 0 })
-    // @ts-ignore
-    ttl: number
+
+    @Column({ name: 'ttl', default: 0 })
+    ttl!: number
 }
 
 export const stateEntityFrom = (args: NonPersistedXStateStoreEvent): StateEntity => {

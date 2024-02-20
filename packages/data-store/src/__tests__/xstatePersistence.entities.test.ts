@@ -1,10 +1,7 @@
-import { DataSource } from 'typeorm'
+import {DataSource} from 'typeorm'
 import {StateEntity, stateEntityFrom} from "../entities/xstatePersistence/StateEntity";
 
-import {
-    DataStoreXStateStoreMigrations,
-    DataStoreXStateStoreEntities, NonPersistedXStateStoreEvent
-} from '../index'
+import {DataStoreXStateStoreEntities, DataStoreXStateStoreMigrations, NonPersistedXStateStoreEvent} from '../index'
 
 describe('Database entities tests', (): void => {
     let dbConnection: DataSource
@@ -24,15 +21,13 @@ describe('Database entities tests', (): void => {
     })
 
     afterEach(async (): Promise<void> => {
-        await (await dbConnection).destroy()
+        await dbConnection.destroy()
     })
 
     it('should save xstate event to database', async (): Promise<void> => {
         const xstateEvent: NonPersistedXStateStoreEvent = {
             state: 'test_state',
             type: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
-            createdAt: new Date(),
-            updatedAt: new Date(),
             completedAt:  new Date(),
             tenantId: 'test_tenant_id',
             ttl: 30000
@@ -48,7 +43,5 @@ describe('Database entities tests', (): void => {
         expect(fromDb?.tenantId).toEqual(xstateEvent.tenantId)
         expect(fromDb?.ttl).toEqual(xstateEvent.ttl)
         expect(fromDb?.completedAt).toEqual(xstateEvent.completedAt)
-        expect(fromDb?.createdAt).toEqual(xstateEvent.createdAt)
-        expect(fromDb?.updatedAt).toEqual(xstateEvent.updatedAt)
     })
 })
