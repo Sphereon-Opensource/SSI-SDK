@@ -1,7 +1,7 @@
-import {GetStateArgs, GetStateResult, SaveStateArgs, VoidResult} from "../types";
+import {DeleteStateArgs, GetStateArgs, SaveStateArgs, State, VoidResult} from "../types";
 
 export abstract class IAbstractXStateStore {
-    abstract saveState(state: SaveStateArgs): Promise<VoidResult>
-    abstract getState(args: GetStateArgs): Promise<GetStateResult>
-    abstract deleteState(args: GetStateArgs): Promise<VoidResult>
+    abstract saveState(state: SaveStateArgs): Promise<State>
+    abstract getState(args: GetStateArgs): Promise<State>
+    abstract deleteState(args: DeleteStateArgs): Promise<VoidResult>
 }

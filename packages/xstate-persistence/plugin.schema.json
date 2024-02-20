@@ -14,8 +14,7 @@
           },
           "required": [
             "type"
-          ],
-          "additionalProperties": false
+          ]
         },
         "DeleteStateResult": {
           "$ref": "#/components/schemas/VoidResult"
@@ -62,7 +61,6 @@
             "type",
             "createdAt",
             "updatedAt",
-            "completedAt",
             "ttl"
           ]
         },
@@ -119,9 +117,6 @@
           "required": [
             "state",
             "type",
-            "createdAt",
-            "updatedAt",
-            "completedAt",
             "ttl"
           ]
         },
