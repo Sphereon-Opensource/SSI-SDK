@@ -53,7 +53,7 @@ export class RPInstance {
   }
 
   public async createAuthorizationRequestURI(createArgs: Omit<ICreateAuthRequestArgs, 'definitionId'>, context: IRequiredContext): Promise<URI> {
-    const { correlationId, claims, requestByReferenceURI, redirectURI } = createArgs
+    const { correlationId, claims, requestByReferenceURI, responseURI, responseURIType } = createArgs
     const nonce = createArgs.nonce ?? uuidv4()
     const state = createArgs.state ?? correlationId
     return await this.get(context).then((rp) =>
@@ -64,7 +64,8 @@ export class RPInstance {
         state,
         claims,
         requestByReferenceURI,
-        redirectURI,
+        responseURI,
+        responseURIType,
       })
     )
   }
@@ -73,7 +74,7 @@ export class RPInstance {
     createArgs: Omit<ICreateAuthRequestArgs, 'definitionId'>,
     context: IRequiredContext
   ): Promise<AuthorizationRequest> {
-    const { correlationId, claims, requestByReferenceURI, redirectURI } = createArgs
+    const { correlationId, claims, requestByReferenceURI, responseURI, responseURIType } = createArgs
     const nonce = createArgs.nonce ?? uuidv4()
     const state = createArgs.state ?? correlationId
     return await this.get(context).then((rp) =>
@@ -84,7 +85,8 @@ export class RPInstance {
         state,
         claims,
         requestByReferenceURI,
-        redirectURI,
+        responseURIType,
+        responseURI,
       })
     )
   }

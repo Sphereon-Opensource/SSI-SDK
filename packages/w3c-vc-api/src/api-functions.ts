@@ -1,6 +1,7 @@
 import { getCredentialByIdOrHash } from '@sphereon/ssi-sdk.core'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { CredentialPayload } from '@veramo/core'
+import { ProofFormat } from '@veramo/core/src/types/ICredentialIssuer'
 import { W3CVerifiableCredential } from '@veramo/core/src/types/vc-data-model'
 import { Request, Response, Router } from 'express'
 import { v4 } from 'uuid'
@@ -17,6 +18,15 @@ export function issueCredentialEndpoint(router: Router, context: IRequiredContex
   router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const credential: CredentialPayload = request.body.credential
+      const reqOpts = request.body.options ?? {}
+      let reqProofFormat: ProofFormat | undefined
+      if (reqOpts.proofFormat) {
+        if (reqOpts?.proofFormat?.includes('ld')) {
+          reqProofFormat = 'lds'
+        } else {
+          reqProofFormat = 'jwt'
+        }
+      }
       if (!credential) {
         return sendErrorResponse(response, 400, 'No credential supplied')
       }
@@ -27,7 +37,7 @@ export function issueCredentialEndpoint(router: Router, context: IRequiredContex
       const vc = await context.agent.createVerifiableCredential({
         credential,
         save: opts?.persistIssuedCredentials !== false,
-        proofFormat: issueOpts?.proofFormat ?? 'lds',
+        proofFormat: reqProofFormat ?? issueOpts?.proofFormat ?? 'lds',
         fetchRemoteContexts: issueOpts?.fetchRemoteContexts !== false,
       })
       response.statusCode = 201

@@ -1,18 +1,23 @@
-import { AccessTokenRequest, AccessTokenResponse, CredentialDataSupplierInput, CredentialOfferSession } from '@sphereon/oid4vci-common'
 import {
+  AccessTokenRequest,
+  AccessTokenResponse,
+  CredentialDataSupplierInput,
+  CredentialOfferSession,
   CredentialIssuerMetadataOpts,
   CredentialOfferFormat,
   CredentialRequestV1_0_11,
   CredentialResponse,
   Grant,
-  IssuerCredentialDefinition,
+  JsonLdIssuerCredentialDefinition,
 } from '@sphereon/oid4vci-common'
-import { CredentialDataSupplier } from '@sphereon/oid4vci-issuer/lib/types'
+import { CredentialDataSupplier } from '@sphereon/oid4vci-issuer'
 import { IDIDOptions, ResolveOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IOID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { ICredential } from '@sphereon/ssi-types/dist'
 import { IAgentContext, ICredentialIssuer, IDataStoreORM, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { IssuerInstance } from '../IssuerInstance'
+
+export type IssuerCredentialDefinition = JsonLdIssuerCredentialDefinition
 
 export interface IOID4VCIIssuer extends IPluginMethodMap {
   oid4vciCreateOfferURI(createArgs: ICreateOfferArgs, context: IRequiredContext): Promise<ICreateCredentialOfferURIResult>

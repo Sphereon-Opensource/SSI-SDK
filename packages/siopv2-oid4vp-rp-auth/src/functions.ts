@@ -4,6 +4,7 @@ import { determineKid, getAgentResolver, getDID, getIdentifier, getKey, getSuppo
 import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import {
   CheckLinkedDomain,
+  ClientMetadataOpts,
   InMemoryRPSessionManager,
   PassBy,
   PresentationVerificationResult,
@@ -100,10 +101,27 @@ export async function createRPBuilder(args: {
 
   const eventEmitter = rpOpts.eventEmitter ?? new EventEmitter()
 
+  const defaultClientMetadata: ClientMetadataOpts = {
+    // FIXME: All of the below should be configurable. Some should come from builder, some should be determined by the agent.
+    // For now it is either preconfigured or everything passed in as a single object
+    idTokenSigningAlgValuesSupported: [SigningAlgo.EDDSA, SigningAlgo.ES256, SigningAlgo.ES256K], // added newly
+    requestObjectSigningAlgValuesSupported: [SigningAlgo.EDDSA, SigningAlgo.ES256, SigningAlgo.ES256K], // added newly
+    responseTypesSupported: [ResponseType.ID_TOKEN], // added newly
+    client_name: 'Sphereon',
+    vpFormatsSupported: {
+      jwt_vc: { alg: ['EdDSA', 'ES256K'] },
+      jwt_vp: { alg: ['ES256K', 'EdDSA'] },
+    },
+    scopesSupported: [Scope.OPENID_DIDAUTHN],
+    subjectTypesSupported: [SubjectType.PAIRWISE],
+    subject_syntax_types_supported: didMethods.map((method) => `did:${method}`),
+    passBy: PassBy.VALUE,
+  }
+
   const builder = RP.builder({ requestVersion: getRequestVersion(rpOpts) })
     .withScope('openid', PropertyTarget.REQUEST_OBJECT)
     .withResponseMode(rpOpts.responseMode ?? ResponseMode.POST)
-    .withResponseType(ResponseType.ID_TOKEN, PropertyTarget.REQUEST_OBJECT)
+    .withResponseType(ResponseType.VP_TOKEN, PropertyTarget.REQUEST_OBJECT)
     .withCustomResolver(
       rpOpts.didOpts.resolveOpts?.resolver ??
         getAgentResolver(context, {
@@ -120,30 +138,16 @@ export async function createRPBuilder(args: {
 
     .withEventEmitter(eventEmitter)
     .withSessionManager(rpOpts.sessionManager ?? new InMemoryRPSessionManager(eventEmitter))
-    .withClientMetadata(
-      {
-        //FIXME: All of the below should be configurable. Some should come from builder, some should be determined by the agent
-        idTokenSigningAlgValuesSupported: [SigningAlgo.EDDSA, SigningAlgo.ES256, SigningAlgo.ES256K], // added newly
-        requestObjectSigningAlgValuesSupported: [SigningAlgo.EDDSA, SigningAlgo.ES256, SigningAlgo.ES256K], // added newly
-        responseTypesSupported: [ResponseType.ID_TOKEN], // added newly
-        client_name: 'Sphereon',
-        vpFormatsSupported: {
-          jwt_vc: { alg: ['EdDSA', 'ES256K'] },
-          jwt_vp: { alg: ['ES256K', 'EdDSA'] },
-        },
-        scopesSupported: [Scope.OPENID_DIDAUTHN],
-        subjectTypesSupported: [SubjectType.PAIRWISE],
-        subject_syntax_types_supported: didMethods.map((method) => `did:${method}`),
-        passBy: PassBy.VALUE,
-      },
-      PropertyTarget.REQUEST_OBJECT
-    )
+    .withClientMetadata(rpOpts.clientMetadataOpts ?? defaultClientMetadata, PropertyTarget.REQUEST_OBJECT)
 
     .withCheckLinkedDomain(didOpts.checkLinkedDomains ?? CheckLinkedDomain.IF_PRESENT)
     .withRevocationVerification(RevocationVerification.NEVER)
     .withPresentationVerification(getPresentationVerificationCallback(didOpts, context))
 
-  didMethods.forEach((method) => builder.addDidMethod(method))
+  if (!rpOpts.clientMetadataOpts?.subjectTypesSupported) {
+    // Do not update in case it is already provided via client metadata opts
+    didMethods.forEach((method) => builder.addDidMethod(method))
+  }
   builder.withWellknownDIDVerifyCallback(getWellKnownDIDVerifyCallback(didOpts, context))
 
   if (definition) {
