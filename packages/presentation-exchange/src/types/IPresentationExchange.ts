@@ -1,14 +1,15 @@
 import {
-  DIDDocumentSection,
   FindCredentialsArgs,
   IAgentContext,
+  ICredentialPlugin,
   IDataStoreORM,
   IDIDManager,
   IIdentifier,
   IPluginMethodMap,
+  IResolver,
   PresentationPayload,
 } from '@veramo/core'
-import { W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { IPresentation, Optional, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { IKeyValueStore, IValueData } from '@sphereon/ssi-sdk.kv-store-temp'
 import { IPresentationDefinition, PEVersion, SelectResults } from '@sphereon/pex'
 import { Format, InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
@@ -93,11 +94,13 @@ export interface IPEXFilterResult {
   filteredCredentials: W3CVerifiableCredential[]
 }
 
+/*
 export interface IIdentifierOpts {
   identifier: IIdentifier | string
   verificationMethodSection?: DIDDocumentSection
   kid?: string
 }
+*/
 
 export interface VersionDiscoveryResult {
   version?: PEVersion
@@ -107,8 +110,8 @@ export interface VersionDiscoveryResult {
 export type IPEXPresentationSignCallback = (args: IPEXPresentationSignCallBackParams) => Promise<W3CVerifiablePresentation>
 
 export interface IPEXPresentationSignCallBackParams {
-  presentation: PresentationPayload
+  presentation: IPresentation | Optional<PresentationPayload, 'holder'>
   presentationDefinition: IPresentationDefinition
 }
 
-export type IRequiredContext = IAgentContext<IDataStoreORM & IDIDManager>
+export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IDIDManager & ICredentialPlugin>

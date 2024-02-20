@@ -1,11 +1,11 @@
 import { AuthorizationRequestState, AuthorizationResponsePayload, decodeUriAsJson, VerifiedAuthorizationResponse } from '@sphereon/did-auth-siop'
 import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop/dist/types/SessionManager'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
-import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { AdditionalClaims, CredentialMapper, ICredentialSubject, IVerifiableCredential } from '@sphereon/ssi-types'
 import { OriginalVerifiablePresentation } from '@sphereon/ssi-types/dist'
 import { IAgentPlugin } from '@veramo/core'
 import {
+  AuthorizationResponseStateWithVerifiedData,
   IAuthorizationRequestPayloads,
   ICreateAuthRequestArgs,
   IGetAuthRequestStateArgs,
@@ -20,7 +20,6 @@ import {
   IVerifyAuthResponseStateArgs,
   schema,
   VerifiedDataMode,
-  AuthorizationResponseStateWithVerifiedData,
 } from '../index'
 import { RPInstance } from '../RPInstance'
 
@@ -133,7 +132,7 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async siopUpdateRequestState(args: IUpdateRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState> {
-    if (args.state !== AuthorizationRequestStateStatus.SENT) {
+    if (args.state !== 'sent') {
       throw Error(`Only 'sent' status is supported for this method at this point`)
     }
     return await this.getRPInstance({ definitionId: args.definitionId }, context)

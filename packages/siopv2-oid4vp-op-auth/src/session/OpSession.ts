@@ -1,10 +1,11 @@
+import { CheckLinkedDomain, ResolveOpts, URI, Verification, VerificationMode, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
+import { PresentationExchangeResponseOpts } from '@sphereon/did-auth-siop/dist/authorization-response'
+import { getAgentDIDMethods, getAgentResolver, getDID } from '@sphereon/ssi-sdk-ext.did-utils'
+import { CredentialMapper, parseDid } from '@sphereon/ssi-types'
 import { IIdentifier } from '@veramo/core'
-import { RequestObjectPayload, ResolveOpts, URI, Verification, VerificationMode, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
 import { IOPOptions, IOpSessionArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
-import { AgentDIDResolver, getAgentDIDMethods } from '@sphereon/ssi-sdk-ext.did-utils'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
-import { CredentialMapper } from '@sphereon/ssi-types'
 
 export class OpSession {
   public readonly ts = new Date().getDate()
@@ -66,14 +67,24 @@ export class OpSession {
 
   public async getSupportedDIDMethods(didPrefix?: boolean) {
     const agentMethods = this.options.supportedDIDMethods?.map((method) => method.toLowerCase().replace('did:', ''))
-    const payload = (await this.getAuthorizationRequest()).registrationMetadataPayload
-    const rpMethods = (
-      payload?.subject_syntax_types_supported
-        ? Array.isArray(payload?.subject_syntax_types_supported)
-          ? payload.subject_syntax_types_supported
-          : [payload.subject_syntax_types_supported]
-        : []
-    ).map((method) => method.toLowerCase().replace('did:', ''))
+    const authReq = await this.getAuthorizationRequest()
+    const subjectSyntaxTypesSupported = authReq.registrationMetadataPayload?.subject_syntax_types_supported
+    const aud = await authReq.authorizationRequest.getMergedProperty<string>('aud')
+    let rpMethods: string[] = []
+    if (aud && aud.startsWith('did:')) {
+      const did = parseDid(aud).method
+
+      // The RP knows our DID, so we can use it to determine the supported DID methods
+      // If the aud did:method is not in the supported types, there still is something wrong, unless the RP signals to support all did methods
+      if (subjectSyntaxTypesSupported && !subjectSyntaxTypesSupported.includes('did') && !subjectSyntaxTypesSupported.includes(did)) {
+        throw Error(`The aud DID method ${did} is not in the supported types ${subjectSyntaxTypesSupported}`)
+      }
+      rpMethods = [did]
+    } else if (subjectSyntaxTypesSupported) {
+      rpMethods = (Array.isArray(subjectSyntaxTypesSupported) ? subjectSyntaxTypesSupported : [subjectSyntaxTypesSupported]).map((method) =>
+        method.toLowerCase().replace('did:', '')
+      )
+    }
 
     let intersection: string[]
     if (rpMethods.length === 0 || rpMethods.includes('did')) {
@@ -100,7 +111,7 @@ export class OpSession {
   }
 
   public async getRedirectUri(): Promise<string> {
-    return (await this.getMergedRequestPayload()).redirect_uri
+    return Promise.resolve(this.verifiedAuthorizationRequest!.responseURI!)
   }
 
   public async hasPresentationDefinitions(): Promise<boolean> {
@@ -112,50 +123,71 @@ export class OpSession {
     return await OID4VP.init(this, allDIDs ?? (await this.getSupportedDIDs()))
   }
 
-  private async getMergedRequestPayload(): Promise<RequestObjectPayload> {
-    return await (await this.getAuthorizationRequest()).authorizationRequest.mergedPayloads()
-  }
+  /*private async getMergedRequestPayload(): Promise<RequestObjectPayload> {
+          return await (await this.getAuthorizationRequest()).authorizationRequest.mergedPayloads()
+        }*/
   public async sendAuthorizationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
     const resolveOpts: ResolveOpts = this.options.resolveOpts ?? {
-      resolver: new AgentDIDResolver(this.context, { uniresolverResolution: true, localResolution: true, resolverResolution: true }),
+      resolver: getAgentResolver(this.context, {
+        uniresolverResolution: true,
+        localResolution: true,
+        resolverResolution: true,
+      }),
     }
     if (!resolveOpts.subjectSyntaxTypesSupported || resolveOpts.subjectSyntaxTypesSupported.length === 0) {
       resolveOpts.subjectSyntaxTypesSupported = await this.getSupportedDIDMethods(true)
     }
     const verification: Verification = {
       mode: VerificationMode.INTERNAL,
+      checkLinkedDomain: CheckLinkedDomain.IF_PRESENT,
       resolveOpts,
     }
 
-    const request = this.verifiedAuthorizationRequest!
-    if (
-      (await this.hasPresentationDefinitions()) &&
-      request.presentationDefinitions &&
-      (!args.verifiablePresentations || args.verifiablePresentations.length !== request.presentationDefinitions.length)
-    ) {
-      throw Error(`Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${request.presentationDefinitions.length}`)
+    const request = await this.getAuthorizationRequest()
+    const hasDefinitions = await this.hasPresentationDefinitions()
+    if (hasDefinitions) {
+      if (
+        !request.presentationDefinitions ||
+        !args.verifiablePresentations ||
+        args.verifiablePresentations.length !== request.presentationDefinitions.length
+      ) {
+        throw Error(
+          `Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${request.presentationDefinitions?.length}`
+        )
+      } else if (!args.presentationSubmission) {
+        throw Error(`Presentation submission is required when verifiable presentations are required`)
+      }
     }
 
     const verifiablePresentations = args.verifiablePresentations
       ? args.verifiablePresentations.map((vp) => CredentialMapper.storedPresentationToOriginalFormat(vp))
       : []
-    const op = await createOP({ opOptions: this.options, idOpts: args.responseSignerOpts, context: this.context })
+    const op = await createOP({
+      opOptions: {
+        ...this.options,
+        resolveOpts: { ...this.options.resolveOpts },
+        eventEmitter: this.options.eventEmitter,
+        presentationSignCallback: this.options.presentationSignCallback,
+        wellknownDIDVerifyCallback: this.options.wellknownDIDVerifyCallback,
+        supportedVersions: request.versions,
+      },
+      idOpts: args.responseSignerOpts,
+      context: this.context,
+    })
 
+    let issuer = args.responseSignerOpts?.identifier ? getDID(args.responseSignerOpts) : undefined
     const responseOpts = {
       verification,
-      // ...(args.responseSignerOpts ? { signer: args.responseSignerOpts} : {}),
-      ...(args.verifiablePresentations
-        ? {
-            presentationExchange: {
-              verifiablePresentations,
-            },
-          }
-        : {}),
+      issuer,
+      ...(args.verifiablePresentations && {
+        presentationExchange: {
+          verifiablePresentations,
+          presentationSubmission: args.presentationSubmission,
+        } as PresentationExchangeResponseOpts,
+      }),
     }
 
-    //fixme: Remove ignore once support is in ICredential
-    // @ts-ignore
-    const authResponse = await op.createAuthorizationResponse(await this.getAuthorizationRequest(), responseOpts)
+    const authResponse = await op.createAuthorizationResponse(request, responseOpts)
     const response = await op.submitAuthorizationResponse(authResponse)
 
     if (response.status >= 400) {

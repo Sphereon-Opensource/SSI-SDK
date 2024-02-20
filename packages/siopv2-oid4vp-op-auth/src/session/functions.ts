@@ -1,7 +1,3 @@
-import { IIdentifierOpts, IOPOptions, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
-import { EventEmitter } from 'events'
-import { AgentDIDResolver, determineKid, getAgentDIDMethods, getKey } from '@sphereon/ssi-sdk-ext.did-utils'
-import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import {
   CheckLinkedDomain,
   OP,
@@ -13,13 +9,17 @@ import {
   SupportedVersion,
 } from '@sphereon/did-auth-siop'
 import { Format } from '@sphereon/pex-models'
-import { TKeyType } from '@veramo/core'
-import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
+import { determineKid, getAgentDIDMethods, getAgentResolver, getDID, getIdentifier, getKey, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { createPEXPresentationSignCallback } from '@sphereon/ssi-sdk.presentation-exchange'
+import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
+import { TKeyType } from '@veramo/core'
+import { EventEmitter } from 'events'
+import { IOPOptions, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
 
 export async function createOID4VPPresentationSignCallback({
   presentationSignCallback,
-  kid,
+  idOpts,
   domain,
   fetchRemoteContexts,
   challenge,
@@ -27,33 +27,18 @@ export async function createOID4VPPresentationSignCallback({
   context,
 }: {
   presentationSignCallback?: PresentationSignCallback
-  kid: string
+  idOpts: IIdentifierOpts
   domain?: string
   challenge?: string
   fetchRemoteContexts?: boolean
   format?: Format
   context: IRequiredContext
 }): Promise<PresentationSignCallback> {
-  // fixme: Remove once IPresentation in proper form is available in PEX
-  // @ts-ignore
-  return presentationSignCallback
-    ? presentationSignCallback
-    : createPEXPresentationSignCallback({ kid, fetchRemoteContexts, domain, challenge, format }, context)
+  if (typeof presentationSignCallback === 'function') {
+    return presentationSignCallback
+  }
 
-  /*async (args: PresentationSignCallBackParams): Promise<W3CVerifiablePresentation> => {
-        const presentation: PresentationPayload = args.presentation as PresentationPayload
-        const format = args.presentationDefinition.format
-
-        const vp = await context.agent.createVerifiablePresentation({
-          presentation,
-          keyRef: kid,
-          domain,
-          challenge,
-          fetchRemoteContexts: true,
-          proofFormat: format && (format.ldp || format.ldp_vp) ? 'lds' : 'jwt',
-        })
-        return vp as W3CVerifiablePresentation
-      }*/
+  return createPEXPresentationSignCallback({ idOpts, fetchRemoteContexts, domain, challenge, format }, context)
 }
 
 export async function createOPBuilder({
@@ -67,15 +52,20 @@ export async function createOPBuilder({
 }): Promise<OPBuilder> {
   const eventEmitter = opOptions.eventEmitter ?? new EventEmitter()
   const builder = OP.builder()
-    .withResponseMode(opOptions.responseMode ?? ResponseMode.POST)
+    .withResponseMode(opOptions.responseMode ?? ResponseMode.DIRECT_POST)
     .withSupportedVersions(
-      opOptions.supportedVersions ?? [SupportedVersion.SIOPv2_ID1, SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_D11]
+      opOptions.supportedVersions ?? [
+        SupportedVersion.SIOPv2_ID1,
+        SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1,
+        SupportedVersion.SIOPv2_D11,
+        SupportedVersion.SIOPv2_D12_OID4VP_D18,
+      ]
     )
     .withExpiresIn(opOptions.expiresIn ?? 300)
     .withCheckLinkedDomain(opOptions.checkLinkedDomains ?? CheckLinkedDomain.IF_PRESENT)
     .withCustomResolver(
       opOptions.resolveOpts?.resolver ??
-        new AgentDIDResolver(context, {
+        getAgentResolver(context, {
           uniresolverResolution: opOptions.resolveOpts?.noUniversalResolverFallback !== true,
           localResolution: true,
           resolverResolution: true,
@@ -98,19 +88,19 @@ export async function createOPBuilder({
   builder.withWellknownDIDVerifyCallback(wellknownDIDVerifyCallback)
 
   if (idOpts && idOpts.identifier) {
-    const key = await getKey(idOpts.identifier, idOpts.verificationMethodSection, context, idOpts.kid)
+    const key = await getKey(await getIdentifier(idOpts, context), idOpts.verificationMethodSection, context, idOpts.kid)
     const kid = determineKid(key, idOpts)
 
     builder.withSuppliedSignature(
       SuppliedSigner(key, context, getSigningAlgo(key.type) as unknown as KeyAlgo),
-      idOpts.identifier.did,
+      getDID(idOpts),
       kid,
       getSigningAlgo(key.type)
     )
     builder.withPresentationSignCallback(
       await createOID4VPPresentationSignCallback({
         presentationSignCallback: opOptions.presentationSignCallback,
-        kid,
+        idOpts,
         context,
       })
     )
@@ -129,31 +119,6 @@ export async function createOP({
 }): Promise<OP> {
   return (await createOPBuilder({ opOptions, idOpts, context })).build()
 }
-
-/*
-export async function getKey(
-  identifier: IIdentifier,
-  verificationMethodSection: DIDDocumentSection = 'authentication',
-  context: IRequiredContext,
-  keyId?: string
-): Promise<IKey> {
-  const keys = await mapIdentifierKeysToDocWithJwkSupport(identifier, verificationMethodSection, context)
-  if (!keys || keys.length === 0) {
-    throw new Error(`No keys found for verificationMethodSection: ${verificationMethodSection} and did ${identifier.did}`)
-  }
-
-  const identifierKey = keyId ? keys.find((key: _ExtendedIKey) => key.kid === keyId || key.meta.verificationMethod.id === keyId) : keys[0]
-  if (!identifierKey) {
-    throw new Error(`No matching verificationMethodSection key found for keyId: ${keyId}`)
-  }
-
-  return identifierKey
-}
-
-export function determineKid(key: IKey, idOpts: IIdentifierOpts): string {
-  return key.meta?.verificationMethod.id ?? idOpts.kid ?? key.kid
-}
-*/
 
 export function getSigningAlgo(type: TKeyType): SigningAlgo {
   switch (type) {

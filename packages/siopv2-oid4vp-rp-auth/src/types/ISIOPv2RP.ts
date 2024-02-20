@@ -1,3 +1,4 @@
+import { ClientMetadataOpts } from '@sphereon/did-auth-siop/dist/types'
 import {
   IAgentContext,
   ICredentialIssuer,
@@ -21,6 +22,7 @@ import {
   PresentationVerificationCallback,
   RequestObjectPayload,
   ResponseMode,
+  ResponseURIType,
   SupportedVersion,
   VerifiablePresentationTypeFormat,
   VerifiedAuthorizationResponse,
@@ -65,7 +67,8 @@ export interface IRPDefaultOpts extends IRPOptions {}
 export interface ICreateAuthRequestArgs {
   definitionId: string
   correlationId: string
-  redirectURI: string
+  responseURIType: ResponseURIType
+  responseURI: string
   requestByReferenceURI?: string
   nonce?: string
   state?: string
@@ -130,6 +133,7 @@ export interface IRPOptions {
   responseMode?: ResponseMode
   supportedVersions?: SupportedVersion[] // The supported version by the RP. The first version will be the default version
   sessionManager?: IRPSessionManager
+  clientMetadataOpts?: ClientMetadataOpts
   expiresIn?: number
   eventEmitter?: EventEmitter
   didOpts: ISIOPDIDOptions

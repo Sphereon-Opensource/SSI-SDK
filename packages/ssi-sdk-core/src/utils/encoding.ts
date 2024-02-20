@@ -44,7 +44,6 @@ export function base64ToBytes(s: string): Uint8Array {
   const inputBase64Url = s.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
   return u8a.fromString(inputBase64Url, 'base64url')
 }
-
 /**
  * Encodes a Uint8Array to a base64 string representation with padding.
  * @param b - the byte array to convert
