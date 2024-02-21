@@ -27,7 +27,7 @@ import {
   CredentialTypeSelection,
   GetContactArgs,
   GetCredentialsArgs,
-  OnCredentialsArgs,
+  OnGetCredentialsArgs,
   IOID4VCIHolder,
   InitiateOID4VCIArgs,
   InitiationData,
@@ -66,7 +66,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   private readonly vcFormatPreferences: Array<string> = ['jwt_vc_json', 'jwt_vc', 'ldp_vc']
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
-  private readonly onGetCredentials: (args: OnCredentialsArgs) => Promise<Array<CredentialToAccept>>
+  private readonly onGetCredentials: (args: OnGetCredentialsArgs) => Promise<Array<CredentialToAccept>>
 
   constructor(options: OID4VCIHolderOptions) {
     const { onContactIdentityCreated, onCredentialStored, onGetCredentials, vcFormatPreferences } = options

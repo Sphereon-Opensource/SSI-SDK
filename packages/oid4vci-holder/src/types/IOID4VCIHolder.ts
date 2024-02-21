@@ -23,7 +23,7 @@ export interface IOID4VCIHolder extends IPluginMethodMap {
 export type OID4VCIHolderOptions = {
   onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
-  onGetCredentials: (args: OnCredentialsArgs) => Promise<Array<CredentialToAccept>>
+  onGetCredentials: (args: OnGetCredentialsArgs) => Promise<Array<CredentialToAccept>>
   vcFormatPreferences?: Array<string>
 }
 
@@ -285,7 +285,7 @@ export type SelectAppLocaleBrandingArgs = {
   localeBranding?: Array<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding>
 }
 
-export interface OnCredentialsArgs {
+export interface OnGetCredentialsArgs {
   pin?: string
   credentials?: Array<string>
   openID4VCIClientState: OpenID4VCIClientState
