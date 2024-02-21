@@ -88,10 +88,9 @@ export const getPreferredCredentialFormats = async (args: GetPreferredCredential
   const { credentials, vcFormatPreferences } = args
   // Group credentials based on types as we now have multiple entries for one vc with different formats
   const groupedTypes: Array<any> = Array.from(
-    // TODO any
     credentials
-      // @ts-ignore
       .reduce(
+        // @ts-ignore
         (map: Map<any, any>, value: CredentialSupported) => map.set(value.types.toString(), [...(map.get(value.types.toString()) || []), value]),
         new Map()
       )
