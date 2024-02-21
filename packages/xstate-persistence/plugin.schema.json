@@ -3,6 +3,30 @@
     "components": {
       "schemas": {
         "DeleteStateArgs": {
+          "type": "object",
+          "properties": {
+            "where": {
+              "type": "string"
+            },
+            "parameters": {
+              "$ref": "#/components/schemas/ObjectLiteral"
+            }
+          },
+          "required": [
+            "where"
+          ]
+        },
+        "ObjectLiteral": {
+          "type": "object",
+          "description": "Interface of the simple literal object with any string keys."
+        },
+        "DeleteStateResult": {
+          "$ref": "#/components/schemas/VoidResult"
+        },
+        "VoidResult": {
+          "type": "null"
+        },
+        "LoadStateArgs": {
           "$ref": "#/components/schemas/GetStateArgs"
         },
         "GetStateArgs": {
@@ -16,15 +40,6 @@
             "type"
           ],
           "additionalProperties": false
-        },
-        "DeleteStateResult": {
-          "$ref": "#/components/schemas/VoidResult"
-        },
-        "VoidResult": {
-          "type": "null"
-        },
-        "LoadStateArgs": {
-          "$ref": "#/components/schemas/GetStateArgs"
         },
         "LoadStateResult": {
           "$ref": "#/components/schemas/State"

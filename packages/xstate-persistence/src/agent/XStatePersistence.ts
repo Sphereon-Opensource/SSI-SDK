@@ -1,4 +1,4 @@
-import {IAbstractXStateStore} from "@sphereon/ssi-sdk.data-store";
+import {DeleteStateArgs, IAbstractXStateStore} from "@sphereon/ssi-sdk.data-store";
 import {IAgentPlugin,} from '@veramo/core'
 
 import {
@@ -65,7 +65,7 @@ export class XStatePersistence implements IAgentPlugin {
         return this.store.getState(args)
     }
 
-    private async deleteState(args: LoadStateArgs): Promise<DeleteStateResult> {
+    private async deleteState(args: DeleteStateArgs): Promise<DeleteStateResult> {
         if (!this.store) {
             return Promise.reject(Error('No store available in options'))
         }

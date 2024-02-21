@@ -1,3 +1,5 @@
+import {ObjectLiteral} from "typeorm";
+
 export type SaveStateArgs = {
     state: string
     type: string
@@ -12,7 +14,7 @@ export type GetStateArgs = Pick<SaveStateArgs, 'type'>
 
 export type NonPersistedXStateStoreEvent = SaveStateArgs
 
-export type DeleteStateArgs = Pick<SaveStateArgs, 'type'>
+export type DeleteStateArgs = { where: string, parameters?: ObjectLiteral }
 
 export type VoidResult = void
 

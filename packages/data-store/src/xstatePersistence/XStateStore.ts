@@ -37,9 +37,11 @@ export class XStateStore extends IAbstractXStateStore {
 
     async deleteState(args: DeleteStateArgs): Promise<VoidResult> {
         const connection: DataSource = await this.dbConnection
-        debug(`Executing deleteState query with type: ${args.type}`)
-        await connection.getRepository(StateEntity)
-            .delete({ type: args.type })
+        debug(`Executing deleteState query with where clause: ${args.where} and params: ${JSON.stringify(args.parameters)}`)
+        await connection.getRepository(StateEntity).createQueryBuilder()
+            .delete()
+            .where(args.where, args.parameters)
+            .execute()
     }
 
     private stateFrom = (state: StateEntity): State => {

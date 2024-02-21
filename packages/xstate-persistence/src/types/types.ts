@@ -15,8 +15,6 @@ export type NonPersistedXStatePersistenceEvent = SaveStateArgs
 
 export type LoadStateArgs = GetStateArgs
 
-export type DeleteStateArgs = GetStateArgs
-
 export type PersistStateResult = VoidResult
 
 export type LoadStateResult = State

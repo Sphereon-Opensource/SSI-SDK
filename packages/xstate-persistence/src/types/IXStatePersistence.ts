@@ -1,12 +1,15 @@
+import {DeleteStateArgs} from "@sphereon/ssi-sdk.data-store";
 import {IPluginMethodMap} from '@veramo/core'
 
 import {
-  DeleteStateArgs,
   DeleteStateResult,
   LoadStateArgs,
-  LoadStateResult, OnEventResult,
+  LoadStateResult,
+  OnEventResult,
   PersistStateArgs,
-  PersistStateResult, RequiredContext, XStatePersistenceEvent
+  PersistStateResult,
+  RequiredContext,
+  XStatePersistenceEvent
 } from "./types";
 
 /**
