@@ -49,10 +49,7 @@ import {
  */
 
 export class OID4VCIHolder implements IAgentPlugin {
-  readonly eventTypes: Array<OID4VCIHolderEvent> = [
-    OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED,
-    OID4VCIHolderEvent.CREDENTIAL_STORED
-  ]
+  readonly eventTypes: Array<OID4VCIHolderEvent> = [OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED, OID4VCIHolderEvent.CREDENTIAL_STORED]
 
   readonly methods: IOID4VCIHolder = {
     oid4vciHolderGetMachineInterpreter: this.oid4vciHolderGetMachineInterpreter.bind(this),
@@ -72,11 +69,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   private readonly onGetCredentials: (args: OnCredentialsArgs) => Promise<Array<CredentialToAccept>>
 
   constructor(options: OID4VCIHolderOptions) {
-    const {
-      onContactIdentityCreated,
-      onCredentialStored,
-      onGetCredentials, vcFormatPreferences
-    } = options
+    const { onContactIdentityCreated, onCredentialStored, onGetCredentials, vcFormatPreferences } = options
 
     if (vcFormatPreferences !== undefined && vcFormatPreferences.length > 0) {
       this.vcFormatPreferences = vcFormatPreferences
@@ -116,7 +109,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       services: {
         ...services,
         ...args.services,
-      }
+      },
     }
 
     return OID4VCIMachine.newInstance(oid4vciMachineInstanceArgs)
@@ -129,13 +122,16 @@ export class OID4VCIHolder implements IAgentPlugin {
       return Promise.reject(Error('Missing request uri in context'))
     }
 
-    if (!requestData?.uri || !(requestData?.uri.startsWith(RequestType.OPENID_INITIATE_ISSUANCE) || requestData?.uri.startsWith(RequestType.OPENID_CREDENTIAL_OFFER))) {
+    if (
+      !requestData?.uri ||
+      !(requestData?.uri.startsWith(RequestType.OPENID_INITIATE_ISSUANCE) || requestData?.uri.startsWith(RequestType.OPENID_CREDENTIAL_OFFER))
+    ) {
       return Promise.reject(Error('Invalid Uri'))
     }
 
     const openID4VCIClient = await OpenID4VCIClient.fromURI({
       uri: requestData?.uri,
-      authorizationRequest: {redirectUri: `${DefaultURISchemes.CREDENTIAL_OFFER}://`},
+      authorizationRequest: { redirectUri: `${DefaultURISchemes.CREDENTIAL_OFFER}://` },
     })
 
     const serverMetadata = await openID4VCIClient.retrieveServerMetadata()
@@ -153,7 +149,10 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
   }
 
-  private async oid4vciHolderCreateCredentialSelection(args: CreateCredentialSelectionArgs, context: RequiredContext): Promise<Array<CredentialTypeSelection>> {
+  private async oid4vciHolderCreateCredentialSelection(
+    args: CreateCredentialSelectionArgs,
+    context: RequiredContext
+  ): Promise<Array<CredentialTypeSelection>> {
     const { credentialsSupported, credentialBranding, locale, selectedCredentials } = args
     const credentialSelection: Array<CredentialTypeSelection> = await Promise.all(
       credentialsSupported.map(async (credentialMetadata: CredentialSupported): Promise<CredentialTypeSelection> => {
@@ -217,8 +216,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       credentials: selectedCredentials,
       pin: verificationCode,
       openID4VCIClientState,
-    })
-    .then((credentials: Array<CredentialToAccept>) => mapCredentialToAccept({ credentials }))
+    }).then((credentials: Array<CredentialToAccept>) => mapCredentialToAccept({ credentials }))
   }
 
   private async oid4vciHolderAddContactIdentity(args: AddContactIdentityArgs, context: RequiredContext): Promise<Identity> {
@@ -244,7 +242,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     await context.agent.emit(OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED, {
       contactId: contact.id,
-      identity
+      identity,
     })
 
     return context.agent.cmAddIdentity({ contactId: contact.id, identity })
@@ -285,7 +283,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     await context.agent.emit(OID4VCIHolderEvent.CREDENTIAL_STORED, {
       vcHash,
-      credential: verifiableCredential
+      credential: verifiableCredential,
     })
   }
 }

@@ -78,13 +78,13 @@ const oid4vciRequireAuthorizationGuard = (_ctx: OID4VCIMachineContext, _event: O
     throw Error('Missing openID4VCI client state in context')
   }
 
-  if (!openID4VCIClientState.credentialOffer?.supportedFlows ?? (openID4VCIClientState.endpointMetadata?.credentialIssuerMetadata?.authorization_endpoint
-    ? [AuthzFlowType.AUTHORIZATION_CODE_FLOW]
-    : []
-  )) {
-    return false;
+  if (
+    !openID4VCIClientState.credentialOffer?.supportedFlows ??
+    (openID4VCIClientState.endpointMetadata?.credentialIssuerMetadata?.authorization_endpoint ? [AuthzFlowType.AUTHORIZATION_CODE_FLOW] : [])
+  ) {
+    return false
   } else if (!openID4VCIClientState.authorizationURL) {
-    return false;
+    return false
   }
 
   return !openID4VCIClientState.accessTokenResponse

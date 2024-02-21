@@ -1,10 +1,5 @@
 import { OpenID4VCIClient, OpenID4VCIClientState } from '@sphereon/oid4vci-client'
-import {
-  AuthorizationResponse,
-  CredentialResponse,
-  CredentialSupported,
-  EndpointMetadataResult
-} from '@sphereon/oid4vci-common'
+import { AuthorizationResponse, CredentialResponse, CredentialSupported, EndpointMetadataResult } from '@sphereon/oid4vci-common'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
@@ -48,12 +43,18 @@ export type GetMachineArgs = {
 }
 
 export type InitiateOID4VCIArgs = Pick<OID4VCIMachineContext, 'requestData'>
-export type CreateCredentialSelectionArgs = Pick<OID4VCIMachineContext, 'credentialsSupported' | 'credentialBranding' | 'selectedCredentials' | 'locale'>
+export type CreateCredentialSelectionArgs = Pick<
+  OID4VCIMachineContext,
+  'credentialsSupported' | 'credentialBranding' | 'selectedCredentials' | 'locale'
+>
 export type GetContactArgs = Pick<OID4VCIMachineContext, 'serverMetadata'>
 export type GetCredentialsArgs = Pick<OID4VCIMachineContext, 'verificationCode' | 'selectedCredentials' | 'openID4VCIClientState'>
 export type AddContactIdentityArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'contact'>
 export type AssertValidCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept'>
-export type StoreCredentialBrandingArgs = Pick<OID4VCIMachineContext, 'serverMetadata' | 'credentialBranding' | 'selectedCredentials' | 'credentialsToAccept'>
+export type StoreCredentialBrandingArgs = Pick<
+  OID4VCIMachineContext,
+  'serverMetadata' | 'credentialBranding' | 'selectedCredentials' | 'credentialsToAccept'
+>
 export type StoreCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept'>
 
 export enum OID4VCIHolderEvent {
@@ -79,7 +80,7 @@ export type VerifyCredentialToAcceptArgs = {
 
 export type MappedCredentialToAccept = {
   correlationId: string
-  credential: CredentialToAccept;
+  credential: CredentialToAccept
   uniformVerifiableCredential: IVerifiableCredential
   rawVerifiableCredential: VerifiableCredential
 }
@@ -325,11 +326,11 @@ export type CredentialToAccept = {
 }
 
 export type GetSupportedCredentialsArgs = {
-  openID4VCIClient: OpenID4VCIClient,
+  openID4VCIClient: OpenID4VCIClient
   vcFormatPreferences: Array<string>
 }
 
-export type GetCredentialBrandingArgs  = {
+export type GetCredentialBrandingArgs = {
   credentialsSupported: Array<CredentialSupported>
   context: RequiredContext
 }

@@ -3,7 +3,7 @@ import {
   CredentialResponse,
   CredentialsSupportedDisplay,
   CredentialSupported,
-  OpenId4VCIVersion
+  OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
 import {
   CredentialToAccept,
@@ -16,7 +16,7 @@ import {
   SelectAppLocaleBrandingArgs,
   VerificationResult,
   VerificationSubResult,
-  VerifyCredentialToAcceptArgs
+  VerifyCredentialToAcceptArgs,
 } from '../types/IOID4VCIHolder'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
 import { credentialLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
@@ -69,13 +69,13 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
       const credentialTypes: Array<string> =
         // @ts-ignore
         credential.types.length > 1
-          // @ts-ignore
-          ? credential.types.filter((type: string): boolean => type !== defaultCredentialType)
-          // @ts-ignore
-          : credential.types.length === 0
+          ? // @ts-ignore
+            credential.types.filter((type: string): boolean => type !== defaultCredentialType)
+          : // @ts-ignore
+          credential.types.length === 0
           ? [defaultCredentialType]
-          // @ts-ignore
-          : credential.types
+          : // @ts-ignore
+            credential.types
 
       credentialBranding.set(credentialTypes[0], localeBranding) // TODO for now taking the first type
     })
@@ -91,7 +91,10 @@ export const getPreferredCredentialFormats = async (args: GetPreferredCredential
     // TODO any
     credentials
       // @ts-ignore
-      .reduce((map: Map<any, any>, value: CredentialSupported) => map.set(value.types.toString(), [...(map.get(value.types.toString()) || []), value]), new Map())
+      .reduce(
+        (map: Map<any, any>, value: CredentialSupported) => map.set(value.types.toString(), [...(map.get(value.types.toString()) || []), value]),
+        new Map()
+      )
       .values()
   )
 
@@ -110,7 +113,9 @@ export const getPreferredCredentialFormats = async (args: GetPreferredCredential
   return preferredCredentials
 }
 
-export const selectCredentialLocaleBranding = (args: SelectAppLocaleBrandingArgs): Promise<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding | undefined>  => {
+export const selectCredentialLocaleBranding = (
+  args: SelectAppLocaleBrandingArgs
+): Promise<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding | undefined> => {
   const { locale, localeBranding } = args
 
   const branding = localeBranding?.find(
