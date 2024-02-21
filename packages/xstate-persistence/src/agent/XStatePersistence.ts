@@ -4,14 +4,13 @@ import {IAgentPlugin,} from '@veramo/core'
 import {
     DeleteStateResult,
     OnEventResult,
-    PersistStateResult,
     RequiredContext,
     schema,
     XStatePersistenceEvent,
     XStatePersistenceEventType,
     XStateStateManagerOptions
 } from '../index'
-import {IXStatePersistence, LoadStateArgs, LoadStateResult, PersistStateArgs} from "../types";
+import {IXStatePersistence, LoadStateArgs, LoadStateResult} from "../types";
 
 /**
  * This class implements the IXStateStateManager interface using a TypeORM compatible database.
@@ -33,9 +32,8 @@ export class XStatePersistence implements IAgentPlugin {
         this.eventTypes = eventTypes
         
         this.methods = {
-            persistState: this.persistState.bind(this),
             loadState: this.loadState.bind(this),
-            deleteState: this.deleteState.bind(this),
+            deleteExpiredStates: this.deleteExpiredStates.bind(this),
             onEvent: this.onEvent.bind(this)
         }
     }
@@ -51,13 +49,6 @@ export class XStatePersistence implements IAgentPlugin {
         }
     }
 
-    private async persistState(state: PersistStateArgs): Promise<PersistStateResult> {
-        if (!this.store) {
-            return Promise.reject(Error('No store available in options'))
-        }
-        await this.store.saveState(state)
-    }
-
     private async loadState(args: LoadStateArgs): Promise<LoadStateResult> {
         if (!this.store) {
             return Promise.reject(Error('No store available in options'))
@@ -65,7 +56,7 @@ export class XStatePersistence implements IAgentPlugin {
         return this.store.getState(args)
     }
 
-    private async deleteState(args: DeleteStateArgs): Promise<DeleteStateResult> {
+    private async deleteExpiredStates(args: DeleteStateArgs): Promise<DeleteStateResult> {
         if (!this.store) {
             return Promise.reject(Error('No store available in options'))
         }

@@ -10,7 +10,7 @@ describe('Database entities tests', (): void => {
         dbConnection = await new DataSource({
             type: 'sqlite',
             database: ':memory:',
-            //logging: 'all',
+            logging: 'all',
             migrationsRun: false,
             migrations: DataStoreXStateStoreMigrations,
             synchronize: false,
@@ -40,7 +40,26 @@ describe('Database entities tests', (): void => {
         expect(savedXStoreEvent).toBeDefined()
     })
 
-    it('should save an xstate event', async (): Promise<void> => {
+    it('should get all state events', async (): Promise<void> => {
+        const xstateEvent: NonPersistedXStateStoreEvent = {
+            state: 'test_state',
+            type: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
+            completedAt:  new Date(),
+            tenantId: 'test_tenant_id',
+            ttl: 30000
+        }
+
+        const stateEvent1: NonPersistedXStateStoreEvent = await xstateStore.saveState({...xstateEvent})
+        expect(stateEvent1).toBeDefined()
+
+        const stateEvent2: NonPersistedXStateStoreEvent = await xstateStore.saveState({...xstateEvent})
+        expect(stateEvent2).toBeDefined()
+
+        const result: Array<State> = await xstateStore.getStates()
+        expect(result).toHaveLength(2)
+    })
+
+    it('should retrieve an xstate event', async (): Promise<void> => {
         const xstateEvent: NonPersistedXStateStoreEvent = {
             state: 'test_state',
             type: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
@@ -56,11 +75,52 @@ describe('Database entities tests', (): void => {
         expect(result).toBeDefined()
     })
 
-    it('should return no xstate event if filter does not match', async (): Promise<void> => {
+    it('should return an error if type filter does not match', async (): Promise<void> => {
         const args: GetStateArgs = {
             type: 'unknown_event'
         }
 
         await expect(xstateStore.getState(args)).rejects.toEqual(Error('No state found for type: unknown_event'))
+    })
+
+    it('should delete the expired records', async () => {
+        const now = new Date()
+        const newestXstateEvent: NonPersistedXStateStoreEvent = {
+            state: 'test_state',
+            type: 'test_type_1',
+            createdAt: now,
+            completedAt: new Date(),
+            tenantId: 'test_tenant_id',
+            ttl: 30000
+        }
+        const middleXstateEvent: NonPersistedXStateStoreEvent = {
+            state: 'test_state',
+            type: 'test_type_2',
+            createdAt: new Date(+now - 30000),
+            completedAt:  new Date(),
+            tenantId: 'test_tenant_id',
+            ttl: 30000
+        }
+
+        const oldestXstateEvent: NonPersistedXStateStoreEvent = {
+            state: 'test_state',
+            type: 'test_type_3',
+            createdAt: new Date(+now - 60000),
+            completedAt: new Date(),
+            tenantId: 'test_tenant_id',
+            ttl: 30000
+        }
+
+        await xstateStore.saveState(oldestXstateEvent)
+        await xstateStore.saveState(middleXstateEvent)
+        await xstateStore.saveState(newestXstateEvent)
+
+        await xstateStore.deleteState({
+            where: `created_at < datetime('now', '-30 seconds')`
+        })
+
+        await expect(xstateStore.getState({ type: 'test_type_1'})).resolves.toBeDefined()
+        await expect(xstateStore.getState({ type: 'test_type_2'})).resolves.toBeDefined()
+        await expect(xstateStore.getState({ type: 'test_type_3'})).rejects.toEqual(Error('No state found for type: test_type_3'))
     })
 })

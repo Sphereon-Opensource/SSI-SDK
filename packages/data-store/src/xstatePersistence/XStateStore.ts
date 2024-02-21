@@ -3,7 +3,7 @@ import Debug from 'debug'
 import {DataSource} from "typeorm";
 
 import {StateEntity} from "../entities/xstatePersistence/StateEntity";
-import {DeleteStateArgs, GetStateArgs, SaveStateArgs, State, VoidResult,} from "../types";
+import {DeleteStateArgs, GetStateArgs, GetStatesArgs, SaveStateArgs, State, VoidResult,} from "../types";
 import {IAbstractXStateStore} from "./IAbstractXStateStore";
 
 const debug = Debug('sphereon:ssi-sdk:xstatePersistence')
@@ -35,11 +35,22 @@ export class XStateStore extends IAbstractXStateStore {
         return this.stateFrom(result)
     }
 
+    async getStates(args?: GetStatesArgs): Promise<Array<State>> {
+        const connection: DataSource = await this.dbConnection // TODO apply everywhere
+        debug('Getting states', args)
+        const result: Array<StateEntity> = await connection.getRepository(StateEntity).find({
+            ...(args?.filter && { where: args?.filter }),
+        })
+
+        return result.map((event: StateEntity) => this.stateFrom(event))
+    }
+
     async deleteState(args: DeleteStateArgs): Promise<VoidResult> {
         const connection: DataSource = await this.dbConnection
         debug(`Executing deleteState query with where clause: ${args.where} and params: ${JSON.stringify(args.parameters)}`)
-        await connection.getRepository(StateEntity).createQueryBuilder()
+        await connection.createQueryBuilder()
             .delete()
+            .from(StateEntity)
             .where(args.where, args.parameters)
             .execute()
     }

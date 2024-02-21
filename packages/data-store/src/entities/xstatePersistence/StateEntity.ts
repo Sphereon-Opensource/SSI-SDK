@@ -18,7 +18,7 @@ export class StateEntity extends BaseEntity {
     @UpdateDateColumn({ name: 'updated_at', nullable: false })
     updatedAt!: Date
 
-    @Column({ name: 'completed_at', type: 'date', nullable: true })
+    @Column({ name: 'completed_at', type: 'datetime', nullable: true })
     completedAt?: Date
 
     @Column({ name: 'tenant_id', type: 'varchar', nullable: true })

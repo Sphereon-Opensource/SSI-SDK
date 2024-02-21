@@ -12,6 +12,12 @@ export type SaveStateArgs = {
 
 export type GetStateArgs = Pick<SaveStateArgs, 'type'>
 
+export type FindStatesArgs = Partial<SaveStateArgs>
+
+export type GetStatesArgs = {
+    filter: FindStatesArgs
+}
+
 export type NonPersistedXStateStoreEvent = SaveStateArgs
 
 export type DeleteStateArgs = { where: string, parameters?: ObjectLiteral }

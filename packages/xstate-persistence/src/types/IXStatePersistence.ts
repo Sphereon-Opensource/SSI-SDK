@@ -6,8 +6,6 @@ import {
   LoadStateArgs,
   LoadStateResult,
   OnEventResult,
-  PersistStateArgs,
-  PersistStateResult,
   RequiredContext,
   XStatePersistenceEvent
 } from "./types";
@@ -21,15 +19,6 @@ import {
  * @beta This API is likely to change without a BREAKING CHANGE notice
  */
 export interface IXStatePersistence extends IPluginMethodMap {
-  /**
-   * Persist the state and history of xstate machines
-   *
-   * @param state
-   *
-   * @beta This API is likely to change without a BREAKING CHANGE notice
-   */
-  persistState(state: PersistStateArgs): Promise<PersistStateResult>
-
   /**
    * Loads the state of an xstate machine from the database.
    *
@@ -49,7 +38,7 @@ export interface IXStatePersistence extends IPluginMethodMap {
    *
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
-  deleteState(args: DeleteStateArgs): Promise<DeleteStateResult>
+  deleteExpiredStates(args: DeleteStateArgs): Promise<DeleteStateResult>
 
   /**
    * Persists the state whenever an event is emitted

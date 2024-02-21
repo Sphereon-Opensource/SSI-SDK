@@ -138,16 +138,10 @@
         },
         "OnEventResult": {
           "$ref": "#/components/schemas/VoidResult"
-        },
-        "PersistStateArgs": {
-          "$ref": "#/components/schemas/SaveStateArgs"
-        },
-        "PersistStateResult": {
-          "$ref": "#/components/schemas/VoidResult"
         }
       },
       "methods": {
-        "deleteState": {
+        "deleteExpiredStates": {
           "description": "Deletes the state of an xstate machine in the database.",
           "arguments": {
             "$ref": "#/components/schemas/DeleteStateArgs"
@@ -172,15 +166,6 @@
           },
           "returnType": {
             "$ref": "#/components/schemas/OnEventResult"
-          }
-        },
-        "persistState": {
-          "description": "Persist the state and history of xstate machines",
-          "arguments": {
-            "$ref": "#/components/schemas/PersistStateArgs"
-          },
-          "returnType": {
-            "$ref": "#/components/schemas/PersistStateResult"
           }
         }
       }
