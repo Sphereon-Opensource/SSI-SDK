@@ -32,8 +32,7 @@ describe('Database entities tests', (): void => {
             createdAt: new Date(),
             updatedAt: new Date(),
             completedAt:  new Date(),
-            tenantId: 'test_tenant_id',
-            ttl: 30000
+            tenantId: 'test_tenant_id'
         }
 
         const savedXStoreEvent: State = await xstateStore.saveState(xstateEvent)
@@ -45,8 +44,7 @@ describe('Database entities tests', (): void => {
             state: 'test_state',
             type: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
             completedAt:  new Date(),
-            tenantId: 'test_tenant_id',
-            ttl: 30000
+            tenantId: 'test_tenant_id'
         }
 
         const stateEvent1: NonPersistedXStateStoreEvent = await xstateStore.saveState({...xstateEvent})
@@ -64,8 +62,7 @@ describe('Database entities tests', (): void => {
             state: 'test_state',
             type: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
             completedAt:  new Date(),
-            tenantId: 'test_tenant_id',
-            ttl: 30000
+            tenantId: 'test_tenant_id'
         }
 
         const savedXStoreEvent1: State = await xstateStore.saveState(xstateEvent)
@@ -90,16 +87,14 @@ describe('Database entities tests', (): void => {
             type: 'test_type_1',
             createdAt: now,
             completedAt: new Date(),
-            tenantId: 'test_tenant_id',
-            ttl: 30000
+            tenantId: 'test_tenant_id'
         }
         const middleXstateEvent: NonPersistedXStateStoreEvent = {
             state: 'test_state',
             type: 'test_type_2',
             createdAt: new Date(+now - 30000),
             completedAt:  new Date(),
-            tenantId: 'test_tenant_id',
-            ttl: 30000
+            tenantId: 'test_tenant_id'
         }
 
         const oldestXstateEvent: NonPersistedXStateStoreEvent = {
@@ -107,8 +102,7 @@ describe('Database entities tests', (): void => {
             type: 'test_type_3',
             createdAt: new Date(+now - 60000),
             completedAt: new Date(),
-            tenantId: 'test_tenant_id',
-            ttl: 30000
+            tenantId: 'test_tenant_id'
         }
 
         await xstateStore.saveState(oldestXstateEvent)
@@ -116,7 +110,7 @@ describe('Database entities tests', (): void => {
         await xstateStore.saveState(newestXstateEvent)
 
         await xstateStore.deleteState({
-            where: `created_at < datetime('now', '-30 seconds')`
+            where: `created_at < datetime('now', :ttl)`, parameters: { ttl: '-30 seconds' }
         })
 
         await expect(xstateStore.getState({ type: 'test_type_1'})).resolves.toBeDefined()

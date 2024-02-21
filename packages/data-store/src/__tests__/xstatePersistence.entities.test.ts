@@ -29,8 +29,7 @@ describe('Database entities tests', (): void => {
             state: 'test_state',
             type: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
             completedAt:  new Date(),
-            tenantId: 'test_tenant_id',
-            ttl: 30000
+            tenantId: 'test_tenant_id'
         }
 
         const xstateEventEntity: StateEntity  = stateEntityFrom(xstateEvent)
@@ -41,7 +40,6 @@ describe('Database entities tests', (): void => {
         expect(fromDb?.type).toEqual(xstateEvent.type)
         expect(fromDb?.state).toEqual(xstateEvent.state)
         expect(fromDb?.tenantId).toEqual(xstateEvent.tenantId)
-        expect(fromDb?.ttl).toEqual(xstateEvent.ttl)
         expect(fromDb?.completedAt).toEqual(xstateEvent.completedAt)
     })
 })

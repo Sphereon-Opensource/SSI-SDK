@@ -1,7 +1,8 @@
-import {DeleteStateArgs, IAbstractXStateStore} from "@sphereon/ssi-sdk.data-store";
+import {IAbstractXStateStore} from "@sphereon/ssi-sdk.data-store";
 import {IAgentPlugin,} from '@veramo/core'
 
 import {
+    DeleteExpiredStatesArgs,
     DeleteStateResult,
     OnEventResult,
     RequiredContext,
@@ -56,10 +57,29 @@ export class XStatePersistence implements IAgentPlugin {
         return this.store.getState(args)
     }
 
-    private async deleteExpiredStates(args: DeleteStateArgs): Promise<DeleteStateResult> {
+    private async deleteExpiredStates(args: DeleteExpiredStatesArgs): Promise<DeleteStateResult> {
         if (!this.store) {
             return Promise.reject(Error('No store available in options'))
         }
-        return this.store.deleteState(args)
+        switch (args.dialect) {
+            case 'SQLite3':
+                const sqLiteParams = {
+                    where: `created_at < datetime('now', :duration)`,
+                    params: {
+                        duration: `-${args.duration / 1000} seconds`
+                    }
+                }
+                return this.store.deleteState(sqLiteParams)
+            case 'PostgreSQL':
+                const postgreSQLParams = {
+                    where: 'created_at < :duration',
+                    params: {
+                        duration: `NOW() - '${args.duration / 1000} seconds'::interval`
+                    }
+                }
+                return this.store.deleteState(postgreSQLParams)
+            default:
+                return Promise.reject(Error('Invalid database dialect'))
+        }
     }
 }

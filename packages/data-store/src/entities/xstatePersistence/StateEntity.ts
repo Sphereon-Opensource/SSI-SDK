@@ -23,9 +23,6 @@ export class StateEntity extends BaseEntity {
 
     @Column({ name: 'tenant_id', type: 'varchar', nullable: true })
     tenantId?: string
-
-    @Column({ name: 'ttl', default: 0 })
-    ttl!: number
 }
 
 export const stateEntityFrom = (args: NonPersistedXStateStoreEvent): StateEntity => {
@@ -34,6 +31,5 @@ export const stateEntityFrom = (args: NonPersistedXStateStoreEvent): StateEntity
     stateEntity.type = args.type
     stateEntity.completedAt = args.completedAt
     stateEntity.tenantId = args.tenantId
-    stateEntity.ttl = args.ttl
     return stateEntity
 }

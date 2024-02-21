@@ -2,23 +2,27 @@
   "IXStatePersistence": {
     "components": {
       "schemas": {
-        "DeleteStateArgs": {
+        "DeleteExpiredStatesArgs": {
           "type": "object",
           "properties": {
-            "where": {
-              "type": "string"
+            "duration": {
+              "type": "number"
             },
-            "parameters": {
-              "$ref": "#/components/schemas/ObjectLiteral"
+            "dialect": {
+              "$ref": "#/components/schemas/SQLDialect"
             }
           },
           "required": [
-            "where"
+            "duration",
+            "dialect"
           ]
         },
-        "ObjectLiteral": {
-          "type": "object",
-          "description": "Interface of the simple literal object with any string keys."
+        "SQLDialect": {
+          "type": "string",
+          "enum": [
+            "SQLite3",
+            "PostgreSQL"
+          ]
         },
         "DeleteStateResult": {
           "$ref": "#/components/schemas/VoidResult"
@@ -67,17 +71,13 @@
             },
             "tenantId": {
               "type": "string"
-            },
-            "ttl": {
-              "type": "number"
             }
           },
           "required": [
             "state",
             "type",
             "createdAt",
-            "updatedAt",
-            "ttl"
+            "updatedAt"
           ]
         },
         "XStatePersistenceEvent": {
@@ -125,15 +125,11 @@
             },
             "tenantId": {
               "type": "string"
-            },
-            "ttl": {
-              "type": "number"
             }
           },
           "required": [
             "state",
-            "type",
-            "ttl"
+            "type"
           ]
         },
         "OnEventResult": {
@@ -144,7 +140,7 @@
         "deleteExpiredStates": {
           "description": "Deletes the state of an xstate machine in the database.",
           "arguments": {
-            "$ref": "#/components/schemas/DeleteStateArgs"
+            "$ref": "#/components/schemas/DeleteExpiredStatesArgs"
           },
           "returnType": {
             "$ref": "#/components/schemas/DeleteStateResult"

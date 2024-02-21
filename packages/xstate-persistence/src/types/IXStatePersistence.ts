@@ -1,7 +1,7 @@
-import {DeleteStateArgs} from "@sphereon/ssi-sdk.data-store";
 import {IPluginMethodMap} from '@veramo/core'
 
 import {
+  DeleteExpiredStatesArgs,
   DeleteStateResult,
   LoadStateArgs,
   LoadStateResult,
@@ -22,7 +22,8 @@ export interface IXStatePersistence extends IPluginMethodMap {
   /**
    * Loads the state of an xstate machine from the database.
    *
-   * @param args
+   * @param args LoadStateArgs
+   * type of the event
    *
    * @returns state or null
    *
@@ -34,15 +35,20 @@ export interface IXStatePersistence extends IPluginMethodMap {
   /**
    * Deletes the state of an xstate machine in the database.
    *
-   * @param args
+   * @param args DeleteExpiredStatesArgs
+   * duration in milliseconds
+   * dialect 'SQLite3' or 'PostgreSQL'
    *
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
-  deleteExpiredStates(args: DeleteStateArgs): Promise<DeleteStateResult>
+  deleteExpiredStates(args: DeleteExpiredStatesArgs): Promise<DeleteStateResult>
 
   /**
    * Persists the state whenever an event is emitted
-   * @param event
+   * @param event XStatePersistenceEvent
+   * type of the event ('every' is the only one available at the moment)
+   * data of the event
+   *
    * @param context
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */

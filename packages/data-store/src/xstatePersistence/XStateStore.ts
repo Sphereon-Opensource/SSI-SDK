@@ -62,8 +62,7 @@ export class XStateStore extends IAbstractXStateStore {
             createdAt: state.createdAt,
             updatedAt: state.updatedAt,
             completedAt: state.completedAt,
-            tenantId: state.tenantId,
-            ttl: state.ttl
+            tenantId: state.tenantId
         }
     }
 }

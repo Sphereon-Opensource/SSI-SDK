@@ -7,7 +7,6 @@ export type SaveStateArgs = {
     updatedAt?: Date
     completedAt?: Date
     tenantId?: string
-    ttl: number
 }
 
 export type GetStateArgs = Pick<SaveStateArgs, 'type'>
@@ -31,5 +30,4 @@ export type State = {
     updatedAt: Date
     completedAt?: Date
     tenantId?: string
-    ttl: number
 }
