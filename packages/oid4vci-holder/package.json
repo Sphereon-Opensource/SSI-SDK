@@ -41,7 +41,6 @@
     "dist/**/*",
     "src/**/*",
     "README.md",
-    "plugin.schema.json",
     "LICENSE"
   ],
   "private": false,
