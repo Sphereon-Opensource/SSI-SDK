@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
-      "IOID4VCIFlow": "./src/types/IOID4VCIFlow.ts"
+      "IOID4VCIHolder": "./src/types/IOID4VCIHolder.ts"
     }
   },
   "scripts": {
