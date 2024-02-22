@@ -1,3 +1,4 @@
+import {State} from "@sphereon/ssi-sdk.data-store";
 import {IPluginMethodMap} from '@veramo/core'
 
 import {
@@ -5,9 +6,7 @@ import {
   DeleteStateResult,
   LoadStateArgs,
   LoadStateResult,
-  OnEventResult,
-  RequiredContext,
-  XStatePersistenceEvent
+  NonPersistedXStatePersistenceEvent, RequiredContext
 } from "./types";
 
 /**
@@ -45,12 +44,12 @@ export interface IXStatePersistence extends IPluginMethodMap {
 
   /**
    * Persists the state whenever an event is emitted
-   * @param event XStatePersistenceEvent
+   * @param event NonPersistedXStatePersistenceEvent
    * type of the event ('every' is the only one available at the moment)
    * data of the event
    *
    * @param context
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
-  onEvent(event: XStatePersistenceEvent, context: RequiredContext): Promise<OnEventResult>
+  persistState(event: NonPersistedXStatePersistenceEvent, context: RequiredContext): Promise<State>
 }

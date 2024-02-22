@@ -1,12 +1,13 @@
-import {IAbstractXStateStore} from "@sphereon/ssi-sdk.data-store";
+import {DeleteStateArgs, IAbstractXStateStore, State} from "@sphereon/ssi-sdk.data-store";
 import {IAgentPlugin,} from '@veramo/core'
 
 import {
     DeleteExpiredStatesArgs,
     DeleteStateResult,
-    OnEventResult,
+    NonPersistedXStatePersistenceEvent,
     RequiredContext,
     schema,
+    SQLDialect,
     XStatePersistenceEvent,
     XStatePersistenceEventType,
     XStateStateManagerOptions
@@ -35,19 +36,26 @@ export class XStatePersistence implements IAgentPlugin {
         this.methods = {
             loadState: this.loadState.bind(this),
             deleteExpiredStates: this.deleteExpiredStates.bind(this),
-            onEvent: this.onEvent.bind(this)
+            persistState: this.persistState.bind(this)
         }
     }
 
-    async onEvent(event: XStatePersistenceEvent, context: RequiredContext): Promise<OnEventResult> {
+    public async onEvent(event: XStatePersistenceEvent, context: RequiredContext): Promise<void> {
         switch (event.type) {
             case XStatePersistenceEventType.EVERY:
                 // Calling the context of the agent to make sure the REST client is called when configured
-                await context.agent.persistState(event.data)
+                await context.agent.persistState({...event.data})
                 break
             default:
                 return Promise.reject(Error('Event type not supported'))
         }
+    }
+
+    private async persistState(args: NonPersistedXStatePersistenceEvent): Promise<State> {
+        if (!this.store) {
+            return Promise.reject(Error('No store available in options'))
+        }
+        return this.store.saveState(args)
     }
 
     private async loadState(args: LoadStateArgs): Promise<LoadStateResult> {
@@ -61,22 +69,22 @@ export class XStatePersistence implements IAgentPlugin {
         if (!this.store) {
             return Promise.reject(Error('No store available in options'))
         }
+        const sqLiteParams: DeleteStateArgs = {
+            where: `created_at < datetime('now', :duration)`,
+            parameters: {
+                duration: `-${args.duration / 1000} seconds`
+            }
+        }
+        const postgreSQLParams: DeleteStateArgs = {
+            where: 'created_at < :duration',
+            parameters: {
+                duration: `NOW() - ${args.duration / 1000} seconds::interval`
+            }
+        }
         switch (args.dialect) {
-            case 'SQLite3':
-                const sqLiteParams = {
-                    where: `created_at < datetime('now', :duration)`,
-                    params: {
-                        duration: `-${args.duration / 1000} seconds`
-                    }
-                }
+            case SQLDialect.SQLite3:
                 return this.store.deleteState(sqLiteParams)
-            case 'PostgreSQL':
-                const postgreSQLParams = {
-                    where: 'created_at < :duration',
-                    params: {
-                        duration: `NOW() - '${args.duration / 1000} seconds'::interval`
-                    }
-                }
+            case SQLDialect.PostgreSQL:
                 return this.store.deleteState(postgreSQLParams)
             default:
                 return Promise.reject(Error('Invalid database dialect'))

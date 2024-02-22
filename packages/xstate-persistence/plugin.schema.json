@@ -80,25 +80,6 @@
             "updatedAt"
           ]
         },
-        "XStatePersistenceEvent": {
-          "type": "object",
-          "properties": {
-            "type": {
-              "$ref": "#/components/schemas/XStatePersistenceEventType"
-            },
-            "data": {
-              "$ref": "#/components/schemas/NonPersistedXStatePersistenceEvent"
-            }
-          },
-          "required": [
-            "type",
-            "data"
-          ]
-        },
-        "XStatePersistenceEventType": {
-          "type": "string",
-          "const": "every"
-        },
         "NonPersistedXStatePersistenceEvent": {
           "$ref": "#/components/schemas/SaveStateArgs"
         },
@@ -131,9 +112,6 @@
             "state",
             "type"
           ]
-        },
-        "OnEventResult": {
-          "$ref": "#/components/schemas/VoidResult"
         }
       },
       "methods": {
@@ -155,13 +133,13 @@
             "$ref": "#/components/schemas/LoadStateResult"
           }
         },
-        "onEvent": {
+        "persistState": {
           "description": "Persists the state whenever an event is emitted",
           "arguments": {
-            "$ref": "#/components/schemas/XStatePersistenceEvent"
+            "$ref": "#/components/schemas/NonPersistedXStatePersistenceEvent"
           },
           "returnType": {
-            "$ref": "#/components/schemas/OnEventResult"
+            "$ref": "#/components/schemas/State"
           }
         }
       }

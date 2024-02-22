@@ -27,8 +27,6 @@ export type LoadStateResult = State
 
 export type DeleteStateResult = VoidResult
 
-export type OnEventResult = VoidResult
-
 export type XStatePersistenceEvent = {
     type: XStatePersistenceEventType,
     data: NonPersistedXStatePersistenceEvent

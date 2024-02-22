@@ -14,20 +14,18 @@
     "build:clean": "tsc --build --clean && tsc --build",
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
-  "dependencies": {
+
+  "devDependencies": {
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
-    "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
-    "@sphereon/ssi-sdk.vc-status-list-issuer-drivers": "workspace:*",
-    "@sphereon/ssi-types": "workspace:*",
-    "@veramo/core": "4.2.0"
-  },
-  "devDependencies": {
     "@types/node": "^20.11.17",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
+    "@veramo/remote-client": "4.2.0",
+    "@veramo/remote-server": "4.2.0",
     "ts-node": "^10.9.1",
+    "typeorm": "0.3.17",
     "typescript": "4.9.5"
   },
   "files": [
