@@ -11,7 +11,11 @@ import { BaseConfigEntity } from '../entities/contact/BaseConfigEntity'
 import { PartyRelationshipEntity } from '../entities/contact/PartyRelationshipEntity'
 import { PartyTypeEntity } from '../entities/contact/PartyTypeEntity'
 import { BaseContactEntity } from '../entities/contact/BaseContactEntity'
+import { ElectronicAddressEntity } from '../entities/contact/ElectronicAddressEntity'
+import { PhysicalAddressEntity } from '../entities/contact/PhysicalAddressEntity'
 import {
+  electronicAddressEntityFrom,
+  electronicAddressFrom,
   identityEntityFrom,
   identityFrom,
   isDidAuthConfig,
@@ -24,37 +28,51 @@ import {
   partyRelationshipFrom,
   partyTypeEntityFrom,
   partyTypeFrom,
+  physicalAddressEntityFrom,
+  physicalAddressFrom
 } from '../utils/contact/MappingUtils'
 import {
+  AddElectronicAddressArgs,
   AddIdentityArgs,
-  GetIdentityArgs,
-  GetIdentitiesArgs,
-  GetPartyArgs,
-  RemoveIdentityArgs,
-  UpdateIdentityArgs,
-  GetPartiesArgs,
   AddPartyArgs,
-  UpdatePartyArgs,
-  RemovePartyArgs,
-  NonPersistedConnectionConfig,
+  AddPartyTypeArgs,
+  AddPhysicalAddressArgs,
+  AddRelationshipArgs,
   ConnectionTypeEnum,
   CorrelationIdentifierEnum,
-  Party,
-  Identity,
-  RemoveRelationshipArgs,
-  PartyRelationship,
-  AddRelationshipArgs,
-  GetRelationshipArgs,
-  AddPartyTypeArgs,
-  PartyType,
+  ElectronicAddress,
+  GetElectronicAddressArgs,
+  GetElectronicAddressesArgs,
+  GetIdentitiesArgs,
+  GetIdentityArgs,
+  GetPartiesArgs,
+  GetPartyArgs,
   GetPartyTypeArgs,
   GetPartyTypesArgs,
-  UpdatePartyTypeArgs,
-  RemovePartyTypeArgs,
+  GetPhysicalAddressArgs,
+  GetPhysicalAddressesArgs,
+  GetRelationshipArgs,
   GetRelationshipsArgs,
-  UpdateRelationshipArgs,
-  PartyTypeEnum,
+  Identity,
+  NonPersistedConnectionConfig,
   NonPersistedContact,
+  Party,
+  PartyRelationship,
+  PartyType,
+  PartyTypeEnum,
+  PhysicalAddress,
+  RemoveElectronicAddressArgs,
+  RemoveIdentityArgs,
+  RemovePartyArgs,
+  RemovePartyTypeArgs,
+  RemovePhysicalAddressArgs,
+  RemoveRelationshipArgs,
+  UpdateElectronicAddressArgs,
+  UpdateIdentityArgs,
+  UpdatePartyArgs,
+  UpdatePartyTypeArgs,
+  UpdatePhysicalAddressArgs,
+  UpdateRelationshipArgs,
 } from '../types'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:contact-store')
@@ -67,7 +85,8 @@ export class ContactStore extends AbstractContactStore {
     this.dbConnection = dbConnection
   }
 
-  getParty = async ({ partyId }: GetPartyArgs): Promise<Party> => {
+  getParty = async (args: GetPartyArgs): Promise<Party> => {
+    const { partyId } = args
     const result: PartyEntity | null = await (await this.dbConnection).getRepository(PartyEntity).findOne({
       where: { id: partyId },
     })
@@ -80,9 +99,10 @@ export class ContactStore extends AbstractContactStore {
   }
 
   getParties = async (args?: GetPartiesArgs): Promise<Array<Party>> => {
+    const { filter } = args ?? {}
     const partyRepository: Repository<PartyEntity> = (await this.dbConnection).getRepository(PartyEntity)
     const initialResult: Array<PartyEntity> = await partyRepository.find({
-      ...(args?.filter && { where: args?.filter }),
+      ...(filter && { where: filter }),
     })
 
     const result: Array<PartyEntity> = await partyRepository.find({
@@ -122,7 +142,8 @@ export class ContactStore extends AbstractContactStore {
     return partyFrom(createdResult)
   }
 
-  updateParty = async ({ party }: UpdatePartyArgs): Promise<Party> => {
+  updateParty = async (args: UpdatePartyArgs): Promise<Party> => {
+    const { party } = args
     const partyRepository: Repository<PartyEntity> = (await this.dbConnection).getRepository(PartyEntity)
     const result: PartyEntity | null = await partyRepository.findOne({
       where: { id: party.id },
@@ -146,7 +167,8 @@ export class ContactStore extends AbstractContactStore {
     return partyFrom(updatedResult)
   }
 
-  removeParty = async ({ partyId }: RemovePartyArgs): Promise<void> => {
+  removeParty = async (args: RemovePartyArgs): Promise<void> => {
+    const { partyId } = args
     const partyRepository: Repository<PartyEntity> = (await this.dbConnection).getRepository(PartyEntity)
     debug('Removing party', partyId)
     partyRepository
@@ -156,6 +178,8 @@ export class ContactStore extends AbstractContactStore {
           await Promise.reject(Error(`Unable to find the party with id to remove: ${partyId}`))
         } else {
           await this.deleteIdentities(party.identities)
+          await this.deleteElectronicAddresses(party.electronicAddresses)
+          await this.deletePhysicalAddresses(party.physicalAddresses)
 
           await partyRepository
             .delete({ id: partyId })
@@ -170,7 +194,8 @@ export class ContactStore extends AbstractContactStore {
       .catch((error) => Promise.reject(Error(`Unable to remove party with id: ${partyId}. ${error}`)))
   }
 
-  getIdentity = async ({ identityId }: GetIdentityArgs): Promise<Identity> => {
+  getIdentity = async (args: GetIdentityArgs): Promise<Identity> => {
+    const { identityId } = args
     const result: IdentityEntity | null = await (await this.dbConnection).getRepository(IdentityEntity).findOne({
       where: { id: identityId },
     })
@@ -183,9 +208,10 @@ export class ContactStore extends AbstractContactStore {
   }
 
   getIdentities = async (args?: GetIdentitiesArgs): Promise<Array<Identity>> => {
+    const { filter } = args ?? {}
     const identityRepository: Repository<IdentityEntity> = (await this.dbConnection).getRepository(IdentityEntity)
     const initialResult: Array<IdentityEntity> = await identityRepository.find({
-      ...(args?.filter && { where: args?.filter }),
+      ...(filter && { where: filter }),
     })
 
     const result: Array<IdentityEntity> = await identityRepository.find({
@@ -197,7 +223,8 @@ export class ContactStore extends AbstractContactStore {
     return result.map((identity: IdentityEntity) => identityFrom(identity))
   }
 
-  addIdentity = async ({ identity, partyId }: AddIdentityArgs): Promise<Identity> => {
+  addIdentity = async (args: AddIdentityArgs): Promise<Identity> => {
+    const { identity, partyId } = args
     const party: PartyEntity | null = await (await this.dbConnection).getRepository(PartyEntity).findOne({
       where: { id: partyId },
     })
@@ -226,7 +253,8 @@ export class ContactStore extends AbstractContactStore {
     return identityFrom(result)
   }
 
-  updateIdentity = async ({ identity }: UpdateIdentityArgs): Promise<Identity> => {
+  updateIdentity = async (args: UpdateIdentityArgs): Promise<Identity> => {
+    const { identity } = args
     const identityRepository: Repository<IdentityEntity> = (await this.dbConnection).getRepository(IdentityEntity)
     const result: IdentityEntity | null = await identityRepository.findOne({
       where: { id: identity.id },
@@ -252,7 +280,8 @@ export class ContactStore extends AbstractContactStore {
     return identityFrom(updatedResult)
   }
 
-  removeIdentity = async ({ identityId }: RemoveIdentityArgs): Promise<void> => {
+  removeIdentity = async (args: RemoveIdentityArgs): Promise<void> => {
+    const { identityId } = args
     const identity: IdentityEntity | null = await (await this.dbConnection).getRepository(IdentityEntity).findOne({
       where: { id: identityId },
     })
@@ -266,7 +295,8 @@ export class ContactStore extends AbstractContactStore {
     await this.deleteIdentities([identity])
   }
 
-  addRelationship = async ({ leftId, rightId }: AddRelationshipArgs): Promise<PartyRelationship> => {
+  addRelationship = async (args: AddRelationshipArgs): Promise<PartyRelationship> => {
+    const { leftId, rightId } = args
     return this.assertRelationshipSides(leftId, rightId).then(async (): Promise<PartyRelationship> => {
       const relationship: PartyRelationshipEntity = partyRelationshipEntityFrom({
         leftId,
@@ -280,7 +310,8 @@ export class ContactStore extends AbstractContactStore {
     })
   }
 
-  getRelationship = async ({ relationshipId }: GetRelationshipArgs): Promise<PartyRelationship> => {
+  getRelationship = async (args: GetRelationshipArgs): Promise<PartyRelationship> => {
+    const { relationshipId } = args
     const result: PartyRelationshipEntity | null = await (await this.dbConnection).getRepository(PartyRelationshipEntity).findOne({
       where: { id: relationshipId },
     })
@@ -293,9 +324,10 @@ export class ContactStore extends AbstractContactStore {
   }
 
   getRelationships = async (args?: GetRelationshipsArgs): Promise<Array<PartyRelationship>> => {
+    const { filter } = args ?? {}
     const partyRelationshipRepository: Repository<PartyRelationshipEntity> = (await this.dbConnection).getRepository(PartyRelationshipEntity)
     const initialResult: Array<PartyRelationshipEntity> = await partyRelationshipRepository.find({
-      ...(args?.filter && { where: args?.filter }),
+      ...(filter && { where: filter }),
     })
 
     const result: Array<PartyRelationshipEntity> = await partyRelationshipRepository.find({
@@ -307,7 +339,8 @@ export class ContactStore extends AbstractContactStore {
     return result.map((partyRelationship: PartyRelationshipEntity) => partyRelationshipFrom(partyRelationship))
   }
 
-  updateRelationship = async ({ relationship }: UpdateRelationshipArgs): Promise<PartyRelationship> => {
+  updateRelationship = async (args: UpdateRelationshipArgs): Promise<PartyRelationship> => {
+    const { relationship } = args
     const partyRelationshipRepository: Repository<PartyRelationshipEntity> = (await this.dbConnection).getRepository(PartyRelationshipEntity)
     const result: PartyRelationshipEntity | null = await partyRelationshipRepository.findOne({
       where: { id: relationship.id },
@@ -325,7 +358,8 @@ export class ContactStore extends AbstractContactStore {
     })
   }
 
-  removeRelationship = async ({ relationshipId }: RemoveRelationshipArgs): Promise<void> => {
+  removeRelationship = async (args: RemoveRelationshipArgs): Promise<void> => {
+    const { relationshipId } = args
     const partyRelationshipRepository: Repository<PartyRelationshipEntity> = (await this.dbConnection).getRepository(PartyRelationshipEntity)
     const relationship: PartyRelationshipEntity | null = await partyRelationshipRepository.findOne({
       where: { id: relationshipId },
@@ -348,7 +382,8 @@ export class ContactStore extends AbstractContactStore {
     return partyTypeFrom(createdResult)
   }
 
-  getPartyType = async ({ partyTypeId }: GetPartyTypeArgs): Promise<PartyType> => {
+  getPartyType = async (args: GetPartyTypeArgs): Promise<PartyType> => {
+    const { partyTypeId } = args
     const result: PartyTypeEntity | null = await (await this.dbConnection).getRepository(PartyTypeEntity).findOne({
       where: { id: partyTypeId },
     })
@@ -361,9 +396,10 @@ export class ContactStore extends AbstractContactStore {
   }
 
   getPartyTypes = async (args?: GetPartyTypesArgs): Promise<Array<PartyType>> => {
+    const { filter } = args ?? {}
     const partyTypeRepository: Repository<PartyTypeEntity> = (await this.dbConnection).getRepository(PartyTypeEntity)
     const initialResult: Array<PartyTypeEntity> = await partyTypeRepository.find({
-      ...(args?.filter && { where: args?.filter }),
+      ...(filter && { where: filter }),
     })
 
     const result: Array<PartyTypeEntity> = await partyTypeRepository.find({
@@ -375,7 +411,8 @@ export class ContactStore extends AbstractContactStore {
     return result.map((partyType: PartyTypeEntity) => partyTypeFrom(partyType))
   }
 
-  updatePartyType = async ({ partyType }: UpdatePartyTypeArgs): Promise<PartyType> => {
+  updatePartyType = async (args: UpdatePartyTypeArgs): Promise<PartyType> => {
+    const { partyType } = args
     const partyTypeRepository: Repository<PartyTypeEntity> = (await this.dbConnection).getRepository(PartyTypeEntity)
     const result: PartyTypeEntity | null = await partyTypeRepository.findOne({
       where: { id: partyType.id },
@@ -391,7 +428,8 @@ export class ContactStore extends AbstractContactStore {
     return partyTypeFrom(updatedResult)
   }
 
-  removePartyType = async ({ partyTypeId }: RemovePartyTypeArgs): Promise<void> => {
+  removePartyType = async (args: RemovePartyTypeArgs): Promise<void> => {
+    const { partyTypeId } = args
     const parties: Array<PartyEntity> = await (await this.dbConnection).getRepository(PartyEntity).find({
       where: {
         partyType: {
@@ -416,6 +454,170 @@ export class ContactStore extends AbstractContactStore {
     debug('Removing party type', partyTypeId)
 
     await partyTypeRepository.delete(partyTypeId)
+  }
+
+  getElectronicAddress = async (args: GetElectronicAddressArgs): Promise<ElectronicAddress> => {
+    const { electronicAddressId } = args
+    const result: ElectronicAddressEntity | null = await (await this.dbConnection).getRepository(ElectronicAddressEntity).findOne({
+      where: { id: electronicAddressId },
+    })
+
+    if (!result) {
+      return Promise.reject(Error(`No electronic address found for id: ${electronicAddressId}`))
+    }
+
+    return electronicAddressFrom(result)
+  }
+
+  getElectronicAddresses = async (args?: GetElectronicAddressesArgs): Promise<Array<ElectronicAddress>> => {
+    const { filter } = args ?? {}
+    const electronicAddressRepository: Repository<ElectronicAddressEntity> = (await this.dbConnection).getRepository(ElectronicAddressEntity)
+    const initialResult: Array<ElectronicAddressEntity> = await electronicAddressRepository.find({
+      ...(filter && { where: filter }),
+    })
+
+    const result: Array<ElectronicAddressEntity> = await electronicAddressRepository.find({
+      where: {
+        id: In(initialResult.map((electronicAddress: ElectronicAddressEntity) => electronicAddress.id)),
+      },
+    })
+
+    return result.map((electronicAddress: ElectronicAddressEntity) => electronicAddressFrom(electronicAddress))
+  }
+
+  addElectronicAddress = async (args: AddElectronicAddressArgs): Promise<ElectronicAddress> => {
+    const { electronicAddress, partyId } = args
+    const party: PartyEntity | null = await (await this.dbConnection).getRepository(PartyEntity).findOne({
+      where: { id: partyId },
+    })
+
+    if (!party) {
+      return Promise.reject(Error(`No party found for id: ${partyId}`))
+    }
+
+    const electronicAddressEntity: ElectronicAddressEntity = electronicAddressEntityFrom(electronicAddress)
+    electronicAddressEntity.party = party
+    debug('Adding electronic address', electronicAddress)
+    const result: ElectronicAddressEntity = await (await this.dbConnection).getRepository(ElectronicAddressEntity).save(electronicAddressEntity, {
+      transaction: true,
+    })
+
+    return electronicAddressFrom(result)
+  }
+
+  updateElectronicAddress = async (args: UpdateElectronicAddressArgs): Promise<ElectronicAddress> => {
+    const { electronicAddress } = args
+    const electronicAddressRepository: Repository<ElectronicAddressEntity> = (await this.dbConnection).getRepository(ElectronicAddressEntity)
+    const result: ElectronicAddressEntity | null = await electronicAddressRepository.findOne({
+      where: { id: electronicAddress.id },
+    })
+
+    if (!result) {
+      return Promise.reject(Error(`No electronic address found for id: ${electronicAddress.id}`))
+    }
+
+    debug('Updating electronic address', electronicAddress)
+    const updatedResult: ElectronicAddressEntity = await electronicAddressRepository.save(electronicAddress, { transaction: true })
+
+    return electronicAddressFrom(updatedResult)
+  }
+
+  removeElectronicAddress = async (args: RemoveElectronicAddressArgs): Promise<void> => {
+    const { electronicAddressId } = args
+    const electronicAddressRepository: Repository<ElectronicAddressEntity> = (await this.dbConnection).getRepository(ElectronicAddressEntity)
+    const electronicAddress: ElectronicAddressEntity | null = await electronicAddressRepository.findOne({
+      where: { id: electronicAddressId },
+    })
+
+    if (!electronicAddress) {
+      return Promise.reject(Error(`No electronic address found for id: ${electronicAddressId}`))
+    }
+
+    debug('Removing electronic address', electronicAddressId)
+
+    await electronicAddressRepository.delete(electronicAddressId)
+  }
+
+  getPhysicalAddress = async (args: GetPhysicalAddressArgs): Promise<PhysicalAddress> => {
+    const { physicalAddressId } = args
+    const result: PhysicalAddressEntity | null = await (await this.dbConnection).getRepository(PhysicalAddressEntity).findOne({
+      where: { id: physicalAddressId },
+    })
+
+    if (!result) {
+      return Promise.reject(Error(`No physical address found for id: ${physicalAddressId}`))
+    }
+
+    return physicalAddressFrom(result)
+  }
+
+  getPhysicalAddresses = async (args?: GetPhysicalAddressesArgs): Promise<Array<PhysicalAddress>> => {
+    const { filter } = args ?? {}
+    const physicalAddressRepository: Repository<PhysicalAddressEntity> = (await this.dbConnection).getRepository(PhysicalAddressEntity)
+    const initialResult: Array<PhysicalAddressEntity> = await physicalAddressRepository.find({
+      ...(filter && { where: filter }),
+    })
+
+    const result: Array<PhysicalAddressEntity> = await physicalAddressRepository.find({
+      where: {
+        id: In(initialResult.map((physicalAddress: PhysicalAddressEntity) => physicalAddress.id)),
+      },
+    })
+
+    return result.map((physicalAddress: PhysicalAddressEntity) => physicalAddressFrom(physicalAddress))
+  }
+
+  addPhysicalAddress = async (args: AddPhysicalAddressArgs): Promise<PhysicalAddress> => {
+    const { physicalAddress, partyId } = args
+    const party: PartyEntity | null = await (await this.dbConnection).getRepository(PartyEntity).findOne({
+      where: { id: partyId },
+    })
+
+    if (!party) {
+      return Promise.reject(Error(`No party found for id: ${partyId}`))
+    }
+
+    const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
+    physicalAddressEntity.party = party
+    debug('Adding physical address', physicalAddress)
+    const result: PhysicalAddressEntity = await (await this.dbConnection).getRepository(PhysicalAddressEntity).save(physicalAddressEntity, {
+      transaction: true,
+    })
+
+    return physicalAddressFrom(result)
+  }
+
+  updatePhysicalAddress = async (args: UpdatePhysicalAddressArgs): Promise<PhysicalAddress> => {
+    const { physicalAddress } = args
+    const physicalAddressRepository: Repository<PhysicalAddressEntity> = (await this.dbConnection).getRepository(PhysicalAddressEntity)
+    const result: PhysicalAddressEntity | null = await physicalAddressRepository.findOne({
+      where: { id: physicalAddress.id },
+    })
+
+    if (!result) {
+      return Promise.reject(Error(`No physical address found for id: ${physicalAddress.id}`))
+    }
+
+    debug('Updating physical address', physicalAddress)
+    const updatedResult: PhysicalAddressEntity = await physicalAddressRepository.save(physicalAddress, { transaction: true })
+
+    return physicalAddressFrom(updatedResult)
+  }
+
+  removePhysicalAddress = async (args: RemovePhysicalAddressArgs): Promise<void> => {
+    const { physicalAddressId } = args
+    const physicalAddressRepository: Repository<PhysicalAddressEntity> = (await this.dbConnection).getRepository(PhysicalAddressEntity)
+    const physicalAddress: PhysicalAddressEntity | null = await physicalAddressRepository.findOne({
+      where: { id: physicalAddressId },
+    })
+
+    if (!physicalAddress) {
+      return Promise.reject(Error(`No physical address found for id: ${physicalAddressId}`))
+    }
+
+    debug('Removing physical address', physicalAddressId)
+
+    await physicalAddressRepository.delete(physicalAddressId)
   }
 
   private hasCorrectConnectionConfig(type: ConnectionTypeEnum, config: NonPersistedConnectionConfig): boolean {
@@ -443,40 +645,52 @@ export class ContactStore extends AbstractContactStore {
   private async deleteIdentities(identities: Array<IdentityEntity>): Promise<void> {
     debug('Removing identities', identities)
 
+    const connection: DataSource = await this.dbConnection
+    const correlationIdentifierRepository: Repository<CorrelationIdentifierEntity> = connection.getRepository(CorrelationIdentifierEntity)
+    const baseConfigRepository: Repository<BaseConfigEntity> = connection.getRepository(BaseConfigEntity)
+    const connectionRepository: Repository<ConnectionEntity> = connection.getRepository(ConnectionEntity)
+    const identityMetadataItemRepository: Repository<IdentityMetadataItemEntity> = connection.getRepository(IdentityMetadataItemEntity)
+    const identityRepository: Repository<IdentityEntity> = connection.getRepository(IdentityEntity)
+
     identities.map(async (identity: IdentityEntity): Promise<void> => {
-      await (
-        await this.dbConnection
-      )
-        .getRepository(CorrelationIdentifierEntity)
-        .delete(identity.identifier.id)
-        .catch((error) => Promise.reject(Error(`Unable to remove identity.identifier with id: ${identity.identifier.id}. ${error}`)))
+      await correlationIdentifierRepository.delete(identity.identifier.id)
+        .catch((error) => Promise.reject(Error(`Unable to remove identity.identifier with id ${identity.identifier.id}. ${error}`)))
 
       if (identity.connection) {
-        await (await this.dbConnection).getRepository(BaseConfigEntity).delete(identity.connection.config.id)
-
-        await (
-          await this.dbConnection
-        )
-          .getRepository(ConnectionEntity)
-          .delete(identity.connection.id)
-          .catch((error) => Promise.reject(Error(`Unable to remove identity.connection with id. ${error}`)))
+        await baseConfigRepository.delete(identity.connection.config.id)
+        await connectionRepository.delete(identity.connection.id)
+          .catch((error) => Promise.reject(Error(`Unable to remove identity.connection with id ${identity.connection?.id}. ${error}`)))
       }
 
       if (identity.metadata) {
         identity.metadata.map(async (metadataItem: IdentityMetadataItemEntity): Promise<void> => {
-          await (
-            await this.dbConnection
-          )
-            .getRepository(IdentityMetadataItemEntity)
-            .delete(metadataItem.id)
-            .catch((error) => Promise.reject(Error(`Unable to remove metadataItem.id with id ${metadataItem.id}. ${error}`)))
+          await identityMetadataItemRepository.delete(metadataItem.id)
+            .catch((error) => Promise.reject(Error(`Unable to remove identity.metadataItem with id ${metadataItem.id}. ${error}`)))
         })
       }
 
-      ;(await this.dbConnection)
-        .getRepository(IdentityEntity)
-        .delete(identity.id)
-        .catch((error) => Promise.reject(Error(`Unable to remove metadataItem.id with id ${identity.id}. ${error}`)))
+      await identityRepository.delete(identity.id)
+        .catch((error) => Promise.reject(Error(`Unable to remove identity with id ${identity.id}. ${error}`)))
+    })
+  }
+
+  private async deleteElectronicAddresses(electronicAddresses: Array<ElectronicAddressEntity>): Promise<void> {
+    debug('Removing electronic addresses', electronicAddresses)
+
+    const electronicAddressRepository: Repository<ElectronicAddressEntity> = (await this.dbConnection).getRepository(ElectronicAddressEntity)
+    electronicAddresses.map(async (electronicAddress: ElectronicAddressEntity): Promise<void> => {
+      await electronicAddressRepository.delete(electronicAddress.id)
+      .catch((error) => Promise.reject(Error(`Unable to remove electronic address with id ${electronicAddress.id}. ${error}`)))
+    })
+  }
+
+  private async deletePhysicalAddresses(physicalAddresses: Array<PhysicalAddressEntity>): Promise<void> {
+    debug('Removing physical addresses', physicalAddresses)
+
+    const physicalAddressRepository: Repository<PhysicalAddressEntity> = (await this.dbConnection).getRepository(PhysicalAddressEntity)
+    physicalAddresses.map(async (physicalAddress: PhysicalAddressEntity): Promise<void> => {
+      await physicalAddressRepository.delete(physicalAddress.id)
+      .catch((error) => Promise.reject(Error(`Unable to remove physical address with id ${physicalAddress.id}. ${error}`)))
     })
   }
 

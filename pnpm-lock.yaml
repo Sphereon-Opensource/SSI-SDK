@@ -659,6 +659,70 @@ importers:
         specifier: ^9.0.0
         version: 9.0.1
 
+  packages/oid4vci-holder:
+    dependencies:
+      '@sphereon/oid4vci-client':
+        specifier: 0.9.1-next.2
+        version: 0.9.1-next.2
+      '@sphereon/oid4vci-common':
+        specifier: 0.9.1-next.2
+        version: 0.9.1-next.2(msrcrypto@1.5.8)
+      '@sphereon/ssi-sdk.contact-manager':
+        specifier: workspace:*
+        version: link:../contact-manager
+      '@sphereon/ssi-sdk.data-store':
+        specifier: workspace:*
+        version: link:../data-store
+      '@sphereon/ssi-sdk.issuance-branding':
+        specifier: workspace:*
+        version: link:../issuance-branding
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+      '@veramo/core':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/data-store':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.11.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@veramo/utils':
+        specifier: 4.2.0
+        version: 4.2.0
+      i18n-js:
+        specifier: ^3.8.0
+        version: 3.8.0
+      lodash.memoize:
+        specifier: ^4.1.2
+        version: 4.1.2
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
+      xstate:
+        specifier: ^4.38.3
+        version: 4.38.3
+    devDependencies:
+      '@types/i18n-js':
+        specifier: ^3.8.4
+        version: 3.8.4
+      '@types/lodash.memoize':
+        specifier: ^4.1.7
+        version: 4.1.7
+      '@types/uuid':
+        specifier: ^9.0.8
+        version: 9.0.8
+      '@veramo/remote-client':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/remote-server':
+        specifier: 4.2.0
+        version: 4.2.0(express@4.18.2)
+      typeorm:
+        specifier: 0.3.17
+        version: 0.3.17(pg@8.11.3)(sqlite3@5.1.7)(ts-node@10.9.2)
+      typescript:
+        specifier: ^4.9.5
+        version: 4.9.5
+
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
@@ -1557,8 +1621,8 @@ importers:
         specifier: ^4.3.4
         version: 4.3.4
       image-size:
-        specifier: 1.0.2
-        version: 1.0.2
+        specifier: ^2.0.0-beta.2
+        version: 2.0.0-beta.2
       uint8arrays:
         specifier: 3.1.1
         version: 3.1.1
@@ -5575,7 +5639,7 @@ packages:
     resolution: {integrity: sha512-QyKIWEnKQFnYu2ey+SAAm1A5xjzJLJJj3bhIZd3QKyXKKjaJ0hlxam/OsWSltxTNbcyH1jRJjC6Cxv31usv0Ag==}
     engines: {node: ^14.17.0 || >=16.0.0}
     dependencies:
-      chalk: 4.1.0
+      chalk: 4.1.2
       execa: 5.0.0
       strong-log-transformer: 2.1.0
     dev: true
@@ -5728,7 +5792,7 @@ packages:
       detect-libc: 2.0.2
       https-proxy-agent: 5.0.1
       make-dir: 3.1.0
-      node-fetch: 2.6.12
+      node-fetch: 2.7.0
       nopt: 5.0.0
       npmlog: 5.0.1
       rimraf: 3.0.2
@@ -6432,7 +6496,7 @@ packages:
       '@octokit/request-error': 3.0.3
       '@octokit/types': 9.3.2
       is-plain-object: 5.0.0
-      node-fetch: 2.6.7
+      node-fetch: 2.7.0
       universal-user-agent: 6.0.1
     transitivePeerDependencies:
       - encoding
@@ -7209,6 +7273,20 @@ packages:
       - encoding
       - typescript
     dev: true
+
+  /@sphereon/oid4vci-client@0.9.1-next.2:
+    resolution: {integrity: sha512-ShTHt/u0whNqCNySZkEfeFQlDuWiGI2UginfTjVB9ektSXnGbBaAh3sU3gR319bz9kLD9Mlzy4HLUFNuL31tsA==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@sphereon/oid4vci-common': 0.9.1-next.2(msrcrypto@1.5.8)
+      '@sphereon/ssi-types': link:packages/ssi-types
+      cross-fetch: 3.1.8
+      debug: 4.3.4
+    transitivePeerDependencies:
+      - encoding
+      - msrcrypto
+      - supports-color
+    dev: false
 
   /@sphereon/oid4vci-common@0.8.2-unstable.30:
     resolution: {integrity: sha512-tqEmAcPX5aqdCemGnMCY+jZuCpGmGQ6SOkxhcjO9yAMLaG5g/4onfcfUxLBaPdQERgIzsmLADof+2vbK7AXcDg==}
@@ -8454,6 +8532,10 @@ packages:
       '@types/node': 18.19.6
     dev: true
 
+  /@types/i18n-js@3.8.4:
+    resolution: {integrity: sha512-lXIJLglOZsa81DzqiiG99xF6qGJvwRGqzCQe1FB+/JhgVTyGGVa63DMopEQMJdpAlUUSdJsIhC7sw5xDfDjXWw==}
+    dev: true
+
   /@types/inquirer-autocomplete-prompt@3.0.3:
     resolution: {integrity: sha512-OQCW09mEECgvhcppbQRgZSmWskWv58l+WwyUvWB1oxTu3CZj8keYSDZR9U8owUzJ5Zeux5kacN9iVPJLXcoLXg==}
     dependencies:
@@ -8526,6 +8608,16 @@ packages:
       '@types/keygrip': 1.0.6
       '@types/koa-compose': 3.2.8
       '@types/node': 18.19.6
+    dev: true
+
+  /@types/lodash.memoize@4.1.7:
+    resolution: {integrity: sha512-lGN7WeO4vO6sICVpf041Q7BX/9k1Y24Zo3FY0aUezr1QlKznpjzsDk3T3wvH8ofYzoK0QupN9TWcFAFZlyPwQQ==}
+    dependencies:
+      '@types/lodash': 4.14.202
+    dev: true
+
+  /@types/lodash@4.14.202:
+    resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==}
     dev: true
 
   /@types/mime@1.3.5:
@@ -8697,6 +8789,10 @@ packages:
 
   /@types/uuid@9.0.7:
     resolution: {integrity: sha512-WUtIVRUZ9i5dYXefDEAI7sh9/O7jGvHg7Df/5O/gtH3Yabe5odI3UWopVR1qbPXQtvOxWu3mM4XxlYeZtMWF4g==}
+
+  /@types/uuid@9.0.8:
+    resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
+    dev: true
 
   /@types/validator@13.11.8:
     resolution: {integrity: sha512-c/hzNDBh7eRF+KbCf+OoZxKbnkpaK/cKp9iLQWqB7muXtM+MtL9SUUH8vCFcLn6dH1Qm05jiexK0ofWY7TfOhQ==}
@@ -13624,7 +13720,7 @@ packages:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 3.0.5
+      minimatch: 3.1.2
       once: 1.4.0
       path-is-absolute: 1.0.1
     dev: true
@@ -13980,6 +14076,10 @@ packages:
     dependencies:
       ms: 2.1.3
 
+  /i18n-js@3.8.0:
+    resolution: {integrity: sha512-hDsGgPuvw/2P+lXSbOafAwspK8Ste8YrwuuUg17W3wEcO1JkQxBlPgsN1t2+852nTnz4YSYTjZc/1nAA2PC/nw==}
+    dev: false
+
   /iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
     engines: {node: '>=0.10.0'}
@@ -14030,6 +14130,12 @@ packages:
     hasBin: true
     dependencies:
       queue: 6.0.2
+
+  /image-size@2.0.0-beta.2:
+    resolution: {integrity: sha512-1nDNnVxJixMWBynFgQ1q8+aVqK60TiNHpMyFAXt9xpzGZV+2lHI1IXjgdcAjBxPc4nx2ed1NdYs2I+Zfq+Zn7w==}
+    engines: {node: '>=18.18.0'}
+    hasBin: true
+    dev: false
 
   /import-fresh@2.0.0:
     resolution: {integrity: sha512-eZ5H8rcgYazHbKC3PG4ClHNykCSxtAhxSSEM+2mb+7evD2CKF5V7c0dNum7AdpDh0ZdICwZY9sRSn8f+KH96sg==}
@@ -14660,7 +14766,7 @@ packages:
     hasBin: true
     dependencies:
       async: 3.2.5
-      chalk: 4.1.0
+      chalk: 4.1.2
       filelist: 1.0.4
       minimatch: 3.1.2
     dev: true
@@ -16354,7 +16460,6 @@ packages:
 
   /lodash.memoize@4.1.2:
     resolution: {integrity: sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==}
-    dev: true
 
   /lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
@@ -16674,7 +16779,7 @@ packages:
       redent: 3.0.0
       trim-newlines: 3.0.1
       type-fest: 0.18.1
-      yargs-parser: 20.2.4
+      yargs-parser: 20.2.9
     dev: true
 
   /merge-descriptors@1.0.1:
@@ -17274,7 +17379,7 @@ packages:
       array-differ: 3.0.0
       array-union: 2.1.0
       arrify: 2.0.1
-      minimatch: 3.0.5
+      minimatch: 3.1.2
     dev: true
 
   /mute-stream@0.0.8:
@@ -17424,19 +17529,6 @@ packages:
     engines: {node: 4.x || >=6.0.0}
     dependencies:
       http2-client: 1.3.5
-
-  /node-fetch@2.6.12:
-    resolution: {integrity: sha512-C/fGU2E8ToujUivIO0H+tpQ6HWo4eEmchoPIoXtxCrVghxdKq+QOHqEZW7tuP3KlV3bC8FRMO5nMCC7Zm1VP6g==}
-    engines: {node: 4.x || >=6.0.0}
-    requiresBuild: true
-    peerDependencies:
-      encoding: ^0.1.0
-    peerDependenciesMeta:
-      encoding:
-        optional: true
-    dependencies:
-      whatwg-url: 5.0.0
-    optional: true
 
   /node-fetch@2.6.7:
     resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
@@ -17919,7 +18011,7 @@ packages:
       '@yarnpkg/parsers': 3.0.0-rc.46
       '@zkochan/js-yaml': 0.0.6
       axios: 1.6.5
-      chalk: 4.1.0
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       cliui: 7.0.4
@@ -20087,9 +20179,6 @@ packages:
   /sqlite3@5.1.7:
     resolution: {integrity: sha512-GGIyOiFaG+TUra3JIfkI/zGP8yZYLPQ0pl1bH+ODjiX57sPhrLU5sQJn1y9bDKZUFYkX1crlrPfSYt0BKKdkog==}
     requiresBuild: true
-    peerDependenciesMeta:
-      node-gyp:
-        optional: true
     dependencies:
       bindings: 1.5.0
       node-addon-api: 7.0.0
@@ -21943,6 +22032,10 @@ packages:
     resolution: {integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==}
     dev: true
 
+  /xstate@4.38.3:
+    resolution: {integrity: sha512-SH7nAaaPQx57dx6qvfcIgqKRXIh4L0A1iYEqim4s1u7c9VoCgzZc+63FY90AKU4ZzOC2cfJzTnpO4zK7fCUzzw==}
+    dev: false
+
   /xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
     engines: {node: '>=0.4'}
@@ -21984,11 +22077,11 @@ packages:
   /yargs-parser@20.2.4:
     resolution: {integrity: sha512-WOkpgNhPTlE73h4VFAFsOnomJVaovO8VqLDzy5saChRBFQFBoMYirowyW+Q9HB4HFF4Z7VZTiG3iSzJJA29yRA==}
     engines: {node: '>=10'}
+    dev: true
 
   /yargs-parser@20.2.9:
     resolution: {integrity: sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==}
     engines: {node: '>=10'}
-    dev: true
 
   /yargs-parser@21.1.1:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
@@ -22020,7 +22113,7 @@ packages:
       require-directory: 2.1.1
       string-width: 4.2.3
       y18n: 5.0.8
-      yargs-parser: 20.2.4
+      yargs-parser: 20.2.9
 
   /yargs@17.7.2:
     resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
