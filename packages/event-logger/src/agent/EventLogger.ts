@@ -37,7 +37,7 @@ export class EventLogger implements IAgentPlugin {
         await context.agent.loggerLogAuditEvent({ event: event.data })
         break
       default:
-        return Promise.reject(Error('Event type not supported'))
+        return Promise.reject(Error(`Event type ${event.type} not supported`))
     }
   }
 
