@@ -9,7 +9,7 @@ import { IDataStore, IDataStoreORM } from '@veramo/data-store'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
-  oid4vciHolderGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<OID4VCIMachineInterpreter>
+  oid4vciHolderGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<OID4VCIMachine>
   oid4vciHolderGetInitiationData(args: InitiateOID4VCIArgs, context: RequiredContext): Promise<InitiationData>
   oid4vciHolderCreateCredentialSelection(args: CreateCredentialSelectionArgs, context: RequiredContext): Promise<Array<CredentialTypeSelection>>
   oid4vciHolderGetContact(args: GetContactArgs, context: RequiredContext): Promise<Party | undefined>
@@ -270,6 +270,11 @@ export type CredentialTypeSelection = {
   credentialType: string
   credentialAlias: string
   isSelected: boolean
+}
+
+export type OID4VCIMachine = {
+  id: string
+  interpreter: OID4VCIMachineInterpreter
 }
 
 export type InitiationData = {

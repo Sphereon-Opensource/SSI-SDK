@@ -164,7 +164,6 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
   }
 }
 
-// TODO, refactor
 export const verifyCredential = async (args: IVerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
   // We also allow/add boolean, because 4.x Veramo returns a boolean for JWTs. 5.X will return better results
   const result: IVerifyResult | boolean = (await context.agent.verifyCredential(args)) as IVerifyResult | boolean

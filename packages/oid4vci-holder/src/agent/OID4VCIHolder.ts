@@ -34,6 +34,7 @@ import {
   MappedCredentialToAccept,
   OID4VCIHolderEvent,
   OID4VCIHolderOptions,
+  OID4VCIMachine as OID4VCIMachineType,
   OID4VCIMachineInstanceOpts,
   OID4VCIMachineInterpreter,
   OnContactIdentityCreatedArgs,
@@ -92,7 +93,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
   }
 
-  private async oid4vciHolderGetMachineInterpreter(args: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<OID4VCIMachineInterpreter> {
+  private async oid4vciHolderGetMachineInterpreter(args: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<OID4VCIMachineType> {
     const services = {
       initiateOID4VCI: (args: InitiateOID4VCIArgs) => this.oid4vciHolderGetInitiationData(args, context),
       createCredentialSelection: (args: CreateCredentialSelectionArgs) => this.oid4vciHolderCreateCredentialSelection(args, context),
@@ -112,7 +113,12 @@ export class OID4VCIHolder implements IAgentPlugin {
       },
     }
 
-    return OID4VCIMachine.newInstance(oid4vciMachineInstanceArgs)
+    const interpreter: OID4VCIMachineInterpreter =  OID4VCIMachine.newInstance(oid4vciMachineInstanceArgs)
+
+    return {
+      id: interpreter.id,
+      interpreter
+    }
   }
 
   private async oid4vciHolderGetInitiationData(args: InitiateOID4VCIArgs, context: RequiredContext): Promise<InitiationData> {
