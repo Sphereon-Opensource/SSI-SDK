@@ -2,7 +2,7 @@
 <h1 align="center">
   <br>
   <a href="https://www.sphereon.com"><img src="https://sphereon.com/content/themes/sphereon/assets/img/logo.svg" alt="Sphereon" width="400"></a>
-  <br>OpenID for Verifiable Credentials Holder (OID4VCI)
+  <br>OpenID for Verifiable Credentials Issuance - Holder (OID4VCI)
   <br>
 </h1>
 
