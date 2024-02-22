@@ -88,7 +88,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         this.onCredentialStored?.(event.data)
         break
       default:
-        return Promise.reject(Error('Event type not supported'))
+        return Promise.reject(Error(`Event type ${event.type} not supported`))
     }
   }
 
