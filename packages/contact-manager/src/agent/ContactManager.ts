@@ -118,7 +118,7 @@ export class ContactManager implements IAgentPlugin {
       contact: this.getContactInformationFrom(args),
       identities,
       electronicAddresses,
-      physicalAddresses, // TODO test adding this
+      physicalAddresses,
     })
   }
 
