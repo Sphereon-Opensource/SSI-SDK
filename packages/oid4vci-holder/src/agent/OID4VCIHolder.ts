@@ -119,14 +119,14 @@ export class OID4VCIHolder implements IAgentPlugin {
     const { requestData } = args
 
     if (requestData?.uri === undefined) {
-      return Promise.reject(Error('Missing request uri in context'))
+      return Promise.reject(Error('Missing request URI in context'))
     }
 
     if (
       !requestData?.uri ||
       !(requestData?.uri.startsWith(RequestType.OPENID_INITIATE_ISSUANCE) || requestData?.uri.startsWith(RequestType.OPENID_CREDENTIAL_OFFER))
     ) {
-      return Promise.reject(Error('Invalid Uri'))
+      return Promise.reject(Error(`Invalid URI: ${requestData?.uri}`))
     }
 
     const openID4VCIClient = await OpenID4VCIClient.fromURI({
