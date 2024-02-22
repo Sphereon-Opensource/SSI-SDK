@@ -1,19 +1,21 @@
+export type NonPersistedUniformCredential = Omit<UniformCredential, 'id'>
+
 export type UniformCredential = {
   id: string
   credentialType: CredentialTypeEnum
   documentFormat: CredentialDocumentFormat
   raw: string
   hash: string
-  type: string
   issuerCorrelationType: CredentialCorrelationType
   subjectCorrelationType?: CredentialCorrelationType
   issuerCorrelationId: string
   subjectCorrelationId?: string
-  last_verified_state?: CredentialStateType
+  uniformDocument: string
+  lastVerifiedState?: CredentialStateType
   tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
-  expiresAt: Date
+  expiresAt?: Date
 }
 
 export enum CredentialTypeEnum {
