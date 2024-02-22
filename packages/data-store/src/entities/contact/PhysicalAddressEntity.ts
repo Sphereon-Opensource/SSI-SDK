@@ -57,7 +57,7 @@ export class PhysicalAddressEntity extends BaseEntity {
   party!: PartyEntity
 
   @Column({ name: 'partyId', nullable: true })
-  partyId!: string
+  partyId?: string
 
   @CreateDateColumn({ name: 'created_at', nullable: false })
   createdAt!: Date
