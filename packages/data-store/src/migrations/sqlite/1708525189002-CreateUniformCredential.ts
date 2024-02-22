@@ -1,7 +1,7 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class CreateUniformCredential1708525189002 implements MigrationInterface {
-  name = 'CreateUniformCredential1708525189002';
+  name = 'CreateUniformCredential1708525189002'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -24,10 +24,10 @@ export class CreateUniformCredential1708525189002 implements MigrationInterface 
                 "verification_date" datetime,
                 "revocation_date" datetime
             )
-        `);
+        `)
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TABLE "UniformCredential"`);
+    await queryRunner.query(`DROP TABLE "UniformCredential"`)
   }
 }

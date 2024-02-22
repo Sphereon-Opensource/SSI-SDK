@@ -4,7 +4,7 @@ import { DataStoreUniformCredentialMigrations } from '../migrations'
 import { UniformCredentialEntity } from '../entities/uniformCredential/UniformCredentialEntity'
 import { CredentialCorrelationType, CredentialDocumentFormat, CredentialTypeEnum } from '../types/uniformCredential/uniformCredential'
 import { computeEntryHash } from '@veramo/utils'
-import { AddUniformCredentialArgs } from '../../dist/types/credential/IAbstractCredentialStore'
+import { AddUniformCredentialArgs } from '../types/uniformCredential/IAbstractUniformCredentialStore'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource
