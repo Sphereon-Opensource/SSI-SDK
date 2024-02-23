@@ -1,13 +1,13 @@
 import 'cross-fetch/polyfill'
-import {createAgent, IAgent, IAgentOptions} from '@veramo/core'
-import {AgentRestClient} from '@veramo/remote-client'
-import {AgentRouter, RequestWithAgentRouter} from '@veramo/remote-server'
+import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
+import { AgentRestClient } from '@veramo/remote-client'
+import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 // @ts-ignore
-import express, {Router} from 'express'
-import {Server} from 'http'
-import {DataSource} from 'typeorm'
-import {createObjects, getConfig} from '@sphereon/ssi-sdk.agent-config'
-import {IXStatePersistence} from "../index";
+import express, { Router } from 'express'
+import { Server } from 'http'
+import { DataSource } from 'typeorm'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
+import { IXStatePersistence } from '../index'
 import xStatePersistenceAgentLogic from './shared/xStatePersistenceAgentLogic'
 
 jest.setTimeout(60000)
@@ -32,7 +32,7 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const config = await getConfig('packages/event-logger/agent.yml')
+  const config = await getConfig('packages/xstate-persistence/agent.yml')
   const { agent, db } = await createObjects(config, { agent: '/agent', db: '/dbConnection' })
   serverAgent = agent
   dbConnection = db

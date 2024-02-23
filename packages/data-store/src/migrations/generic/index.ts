@@ -3,7 +3,7 @@ import { CreateIssuanceBranding1659463079429 } from './2-CreateIssuanceBranding'
 import { CreateContacts1690925872318 } from './3-CreateContacts'
 import { CreateStatusList1693866470000 } from './4-CreateStatusList'
 import { CreateAuditEvents1701635835330 } from './5-CreateAuditEvents'
-import {CreateXStateStore1708098041262} from "./6-CreateXStateStore";
+import { CreateXStateStore1708098041262 } from './6-CreateXStateStore'
 
 /**
  * The migrations array that SHOULD be used when initializing a TypeORM database connection.
@@ -26,5 +26,5 @@ export const DataStoreMigrations = [
   ...DataStoreIssuanceBrandingMigrations,
   ...DataStoreStatusListMigrations,
   ...DataStoreEventLoggerMigrations,
-  ...DataStoreXStateStoreMigrations
+  ...DataStoreXStateStoreMigrations,
 ]

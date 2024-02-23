@@ -1,22 +1,22 @@
-import {GetStateArgs, IAbstractXStateStore, SaveStateArgs, State, VoidResult} from "@sphereon/ssi-sdk.data-store";
-import {IAgentContext} from "@veramo/core";
+import { GetStateArgs, IAbstractXStateStore, SaveStateArgs, State } from '@sphereon/ssi-sdk.data-store'
+import { IAgentContext } from '@veramo/core'
 
-import {IXStatePersistence} from "./IXStatePersistence";
+import { IXStatePersistence } from './IXStatePersistence'
 
-export type XStateStateManagerOptions = { store: IAbstractXStateStore, eventTypes: Array<string> }
+export type XStateStateManagerOptions = { store: IAbstractXStateStore; eventTypes: Array<string> }
 
 export enum XStatePersistenceEventType {
-    EVERY = 'every'
+  EVERY = 'every',
 }
 
 export enum SQLDialect {
-    SQLite3 = 'SQLite3',
-    PostgreSQL = 'PostgreSQL',
+  SQLite3 = 'SQLite3',
+  PostgreSQL = 'PostgreSQL',
 }
 
 export type DeleteExpiredStatesArgs = {
-    duration: number,
-    dialect: SQLDialect,
+  duration: number
+  dialect: SQLDialect
 }
 
 export type NonPersistedXStatePersistenceEvent = SaveStateArgs
@@ -25,11 +25,11 @@ export type LoadStateArgs = GetStateArgs
 
 export type LoadStateResult = State
 
-export type DeleteStateResult = VoidResult
+export type DeleteStateResult = boolean
 
 export type XStatePersistenceEvent = {
-    type: XStatePersistenceEventType,
-    data: NonPersistedXStatePersistenceEvent
+  type: XStatePersistenceEventType
+  data: NonPersistedXStatePersistenceEvent
 }
 
 export type RequiredContext = IAgentContext<IXStatePersistence>

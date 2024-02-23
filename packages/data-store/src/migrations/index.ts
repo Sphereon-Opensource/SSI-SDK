@@ -4,5 +4,5 @@ export {
   DataStoreContactMigrations,
   DataStoreIssuanceBrandingMigrations,
   DataStoreStatusListMigrations,
-  DataStoreXStateStoreMigrations
+  DataStoreXStateStoreMigrations,
 } from './generic'

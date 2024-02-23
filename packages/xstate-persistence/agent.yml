@@ -6,10 +6,20 @@ constants:
   # please use your own X25519 key, this is only an example
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
-    - createVerifiableCredentialLDLocal
-      createVerifiablePresentationLDLocal
-      verifyPresentationLDLocal
-      verifyCredentialLDLocal
+    - persistState
+    - loadState
+    - deleteExpiredStates
+dbConnection:
+  $require: typeorm?t=function#createConnection
+  $args:
+    - type: sqlite
+      database: ':memory:'
+      synchronize: false
+      migrationsRun: true
+      migrations:
+        $require: './packages/data-store?t=object#DataStoreMigrations'
+      entities:
+        $require: './packages/data-store?t=object#DataStoreXStateStoreEntities'
 
 server:
   baseUrl:
@@ -73,14 +83,9 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: '@veramo/credential-ld/build#VeramoLdSignature'
-        #
-        #        - $require: '@veramo/credential-ld/build#CredentialIssuerLD'
-        #          $args:
-        #            - contextMaps: []
-        #            suites: []
-        - $require: ./packages/vc-handler-ld-local/dist#CredentialHandlerLDLocal
+        - $require: ./packages/xstate-persistence/dist#XStatePersistence
           $args:
-            - contextMaps: []
-              suites: []
-              bindingOverrides: []
+            - store:
+                $require: './packages/data-store/dist#XStateStore'
+                $args:
+                  - $ref: /dbConnection

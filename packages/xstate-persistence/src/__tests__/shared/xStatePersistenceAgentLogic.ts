@@ -1,11 +1,11 @@
-import {NonPersistedXStateStoreEvent, State} from "@sphereon/ssi-sdk.data-store";
-import {TAgent} from '@veramo/core'
-import {IXStatePersistence, SQLDialect} from '../../index'
+import { NonPersistedXStateStoreEvent, State } from '@sphereon/ssi-sdk.data-store'
+import { TAgent } from '@veramo/core'
+import { IXStatePersistence, SQLDialect } from '../../index'
 
 type ConfiguredAgent = TAgent<IXStatePersistence>
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
-  describe('Event Logger Agent Plugin', (): void => {
+  describe('xstate-persistence agent plugin', (): void => {
     let agent: ConfiguredAgent
 
     beforeAll(async (): Promise<void> => {
@@ -21,8 +21,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         type: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
         createdAt: new Date(),
         updatedAt: new Date(),
-        completedAt:  new Date(),
-        tenantId: 'test_tenant_id'
+        completedAt: new Date(),
+        tenantId: 'test_tenant_id',
       }
 
       const savedXStoreEvent: State = await agent.persistState(xstateEvent)
@@ -35,11 +35,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         type: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
         createdAt: new Date(),
         updatedAt: new Date(),
-        completedAt:  new Date(),
-        tenantId: 'test_tenant_id'
+        completedAt: new Date(),
+        tenantId: 'test_tenant_id',
       }
 
-      const savedXStoreEvent: State = await agent.persistState({...xstateEvent})
+      const savedXStoreEvent: State = await agent.persistState({ ...xstateEvent })
       expect(savedXStoreEvent).toBeDefined()
 
       const result: State = await agent.loadState({ type: savedXStoreEvent.type })
@@ -53,14 +53,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         type: 'test_type_1',
         createdAt: now,
         completedAt: new Date(),
-        tenantId: 'test_tenant_id'
+        tenantId: 'test_tenant_id',
       }
       const middleXstateEvent: NonPersistedXStateStoreEvent = {
         state: 'test_state',
         type: 'test_type_2',
         createdAt: new Date(+now - 30000),
-        completedAt:  new Date(),
-        tenantId: 'test_tenant_id'
+        completedAt: new Date(),
+        tenantId: 'test_tenant_id',
       }
 
       const oldestXstateEvent: NonPersistedXStateStoreEvent = {
@@ -68,7 +68,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         type: 'test_type_3',
         createdAt: new Date(+now - 60000),
         completedAt: new Date(),
-        tenantId: 'test_tenant_id'
+        tenantId: 'test_tenant_id',
       }
 
       await agent.persistState(newestXstateEvent)
@@ -77,9 +77,9 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       await agent.deleteExpiredStates({ duration: 40000, dialect: SQLDialect.SQLite3 })
 
-      await expect(agent.loadState({ type: 'test_type_1'})).resolves.toBeDefined()
-      await expect(agent.loadState({ type: 'test_type_2'})).resolves.toBeDefined()
-      await expect(agent.loadState({ type: 'test_type_3'})).rejects.toEqual(Error('No state found for type: test_type_3'))
+      await expect(agent.loadState({ type: 'test_type_1' })).resolves.toBeDefined()
+      await expect(agent.loadState({ type: 'test_type_2' })).resolves.toBeDefined()
+      await expect(agent.loadState({ type: 'test_type_3' })).rejects.toEqual(Error('No state found for type: test_type_3'))
     })
   })
 }

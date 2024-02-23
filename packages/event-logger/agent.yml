@@ -4,9 +4,8 @@ constants:
   baseUrl: http://localhost:3335
   port: 3335
   methods:
-    - persistState
-    - loadState
-    - deleteExpiredStates
+    - loggerGetAuditEvents
+    - loggerLogAuditEvent
 
 dbConnection:
   $require: typeorm?t=function#createConnection
@@ -18,7 +17,7 @@ dbConnection:
       migrations:
         $require: './packages/data-store?t=object#DataStoreMigrations'
       entities:
-        $require: './packages/data-store?t=object#DataStoreXStateStoreEntities'
+        $require: './packages/data-store?t=object#DataStoreEventLoggerEntities'
 
 server:
   baseUrl:
@@ -82,9 +81,9 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/xstate-persistence/dist#XStatePersistence
+        - $require: ./packages/event-logger/dist#EventLogger
           $args:
             - store:
-                $require: './packages/data-store/dist#XStateStore'
+                $require: './packages/data-store/dist#EventLoggerStore'
                 $args:
                   - $ref: /dbConnection

@@ -14,7 +14,6 @@
     "build:clean": "tsc --build --clean && tsc --build",
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
-
   "devDependencies": {
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",

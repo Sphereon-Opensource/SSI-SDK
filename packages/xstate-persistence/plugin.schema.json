@@ -25,10 +25,7 @@
           ]
         },
         "DeleteStateResult": {
-          "$ref": "#/components/schemas/VoidResult"
-        },
-        "VoidResult": {
-          "type": "null"
+          "type": "boolean"
         },
         "LoadStateArgs": {
           "$ref": "#/components/schemas/GetStateArgs"
