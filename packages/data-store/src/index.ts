@@ -25,6 +25,7 @@ import { PartyTypeEntity } from './entities/contact/PartyTypeEntity'
 import { OrganizationEntity } from './entities/contact/OrganizationEntity'
 import { NaturalPersonEntity } from './entities/contact/NaturalPersonEntity'
 import { ElectronicAddressEntity } from './entities/contact/ElectronicAddressEntity'
+import { PhysicalAddressEntity } from './entities/contact/PhysicalAddressEntity'
 export { ContactStore } from './contact/ContactStore'
 export { AbstractContactStore } from './contact/AbstractContactStore'
 export { AbstractIssuanceBrandingStore } from './issuanceBranding/AbstractIssuanceBrandingStore'
@@ -62,6 +63,7 @@ export const DataStoreContactEntities = [
   OrganizationEntity,
   NaturalPersonEntity,
   ElectronicAddressEntity,
+  PhysicalAddressEntity,
 ]
 
 export const DataStoreIssuanceBrandingEntities = [
@@ -110,6 +112,7 @@ export {
   CredentialLocaleBrandingEntity,
   IssuerLocaleBrandingEntity,
   ElectronicAddressEntity,
+  PhysicalAddressEntity,
   backgroundAttributesEntityFrom,
   credentialBrandingEntityFrom,
   imageAttributesEntityFrom,

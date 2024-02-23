@@ -4,48 +4,15 @@ constants:
   baseUrl: http://localhost:3335
   port: 3335
   methods:
-    - cmGetContact
-    - cmGetContacts
-    - cmAddContact
-    - cmUpdateContact
-    - cmRemoveContact
-    - cmGetIdentity
-    - cmGetIdentities
-    - cmAddIdentity
-    - cmUpdateIdentity
-    - cmRemoveIdentity
-    - cmGetRelationship
-    - cmGetRelationships
-    - cmUpdateRelationship
-    - cmAddRelationship
-    - cmRemoveRelationship
-    - cmGetContactType
-    - cmGetContactTypes
-    - cmAddContactType
-    - cmUpdateContactType
-    - cmRemoveContactType
-    - cmGetElectronicAddress
-    - cmGetElectronicAddresses
-    - cmAddElectronicAddress
-    - cmUpdateElectronicAddress
-    - cmRemoveElectronicAddress
-    - cmGetPhysicalAddress
-    - cmGetPhysicalAddresses
-    - cmAddPhysicalAddress
-    - cmUpdatePhysicalAddress
-    - cmRemovePhysicalAddress
-
-dbConnection:
-  $require: typeorm?t=function#createConnection
-  $args:
-    - type: sqlite
-      database: ':memory:'
-      synchronize: false
-      migrationsRun: true
-      migrations:
-        $require: './packages/data-store?t=object#DataStoreMigrations'
-      entities:
-        $require: './packages/data-store?t=object#DataStoreContactEntities'
+    - oid4vciHolderGetMachineInterpreter
+    - oid4vciHolderGetInitiationData
+    - oid4vciHolderCreateCredentialSelection
+    - oid4vciHolderGetContact
+    - oid4vciHolderGetCredentials
+    - oid4vciHolderAddContactIdentity
+    - oid4vciHolderAssertValidCredentials
+    - oid4vciHolderStoreCredentialBranding
+    - oid4vciHolderStoreCredentials
 
 server:
   baseUrl:
@@ -109,9 +76,4 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/contact-manager/dist#ContactManager
-          $args:
-            - store:
-                $require: './packages/data-store/dist#ContactStore'
-                $args:
-                  - $ref: /dbConnection
+        - $require: ./packages/oid4vci-holder/dist#OID4VCIHolder
