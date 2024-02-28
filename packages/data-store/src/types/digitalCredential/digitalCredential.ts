@@ -5,19 +5,20 @@ export type DigitalCredential = {
   credentialType: CredentialType
   documentFormat: CredentialDocumentFormat
   raw: string
+  uniformDocument: string
   hash: string
   issuerCorrelationType: CredentialCorrelationType
   subjectCorrelationType?: CredentialCorrelationType
   issuerCorrelationId: string
   subjectCorrelationId?: string
-  lastVerificationDate: string
-  verificationDate?: Date
   verifiedState?: CredentialStateType
   tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
-  issuedAt?: Date
   expiresAt?: Date
+  issuedAt?: Date
+  lastVerificationDate?: Date
+  revocationDate?: Date
 }
 
 export enum CredentialType {

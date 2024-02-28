@@ -3,6 +3,7 @@ import {
   AddDigitalCredentialArgs,
   GetDigitalCredentialArgs,
   GetDigitalCredentialsArgs,
+  GetDigitalCredentialsResponse,
   RemoveDigitalCredentialArgs,
   UpdateDigitalCredentialStateArgs,
 } from '../types/digitalCredential/IAbstractDigitalCredentialStore'
@@ -43,14 +44,22 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
     return result
   }
 
-  getDigitalCredentials = async (args?: GetDigitalCredentialsArgs): Promise<Array<DigitalCredentialEntity>> => {
-    const result: Array<DigitalCredentialEntity> = await (await this.dbConnection).getRepository(DigitalCredentialEntity).find({
-      ...(args?.filter && { where: args?.filter }),
+  getDigitalCredentials = async (args?: GetDigitalCredentialsArgs): Promise<GetDigitalCredentialsResponse> => {
+    const { filter = {}, skip, take, order = { createdAt: 'DESC' } } = args ?? {}
+    const [result, total] = await (await this.dbConnection).getRepository(DigitalCredentialEntity).findAndCount({
+      where: filter,
+      skip,
+      take,
+      order,
     })
     if (!result) {
       return Promise.reject(Error(`No credential found for arg: ${args?.toString()}`))
     }
-    return result
+    return {
+      data: result,
+      total,
+      hasMore: total > (skip || 0) + (take || 0),
+    }
   }
 
   removeDigitalCredential = async (args: RemoveDigitalCredentialArgs): Promise<boolean> => {
@@ -95,7 +104,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
     }
     const updatedCredential: DigitalCredential = {
       ...credential,
-      verificationDate: args.verificationDate ?? new Date(),
+      lastVerificationDate: args.verificationDate ?? new Date(),
       lastUpdatedAt: new Date(),
       ...(args.verifiedState === CredentialStateType.REVOKED && { revocationDate: args.verificationDate ?? new Date() }),
       verifiedState: args.verifiedState,

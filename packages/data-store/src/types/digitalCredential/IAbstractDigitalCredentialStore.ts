@@ -4,9 +4,17 @@ export type GetDigitalCredentialArgs = { id: string } | { hash: string }
 
 export type FindDigitalCredentialArgs = Array<Partial<DigitalCredential>>
 
-// TODO: discuss about what args we want here
 export type GetDigitalCredentialsArgs = {
   filter?: FindDigitalCredentialArgs
+  skip?: number
+  take?: number
+  order?: { [key in keyof DigitalCredential]: 'ASC' | 'DESC' }
+}
+
+export type GetDigitalCredentialsResponse = {
+  data: DigitalCredential[]
+  total: number
+  hasMore: boolean
 }
 
 export type AddDigitalCredentialArgs = {
