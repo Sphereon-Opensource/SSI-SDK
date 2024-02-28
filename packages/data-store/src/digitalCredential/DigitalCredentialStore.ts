@@ -48,7 +48,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
       ...(args?.filter && {where: args?.filter}),
     })
     if (!result) {
-      return Promise.reject(Error(`No credential found for arg: ${args?.toString() ?? undefined}`))
+      return Promise.reject(Error(`No credential found for arg: ${args?.toString()}`))
     }
     return result
   }
