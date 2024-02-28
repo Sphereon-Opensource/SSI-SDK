@@ -320,9 +320,9 @@ describe('Encoding - Decoding', () => {
   })
 
   it('should detect if has any proof', function () {
-    expect(CredentialMapper.hasProof(jwtVp)).toEqual(false)
+    expect(CredentialMapper.hasProof(jwtVp)).toEqual(true)
     expect(CredentialMapper.hasProof(decodedJwtVp)).toEqual(true)
-    expect(CredentialMapper.hasProof(jwtVc)).toEqual(false)
+    expect(CredentialMapper.hasProof(jwtVc)).toEqual(true)
     expect(CredentialMapper.hasProof(decodedJwtVc)).toEqual(true)
     expect(CredentialMapper.hasProof(ldpVp as unknown as OriginalVerifiablePresentation)).toEqual(true)
     expect(CredentialMapper.hasProof(ldpVc)).toEqual(true)

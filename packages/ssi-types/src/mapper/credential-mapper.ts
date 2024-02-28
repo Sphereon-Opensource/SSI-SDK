@@ -294,18 +294,24 @@ export class CredentialMapper {
   }
 
   public static isCredential(original: OriginalVerifiableCredential | OriginalVerifiablePresentation): boolean {
+    let document = original
     try {
-      if (CredentialMapper.isJwtEncoded(original)) {
-        const vc: IVerifiableCredential = CredentialMapper.toUniformCredential(original)
-        return CredentialMapper.isW3cCredential(vc)
-      } else if (CredentialMapper.isSdJwtEncoded(original)) {
-        return true
+      if (typeof original === 'string') {
+        if (this.isJwtEncoded(original)) {
+          const vc: IVerifiableCredential = this.toUniformCredential(original)
+          return this.isW3cCredential(vc)
+        } else if (this.isSdJwtEncoded(original)) {
+          // find out how we can differentiate between vc and vp for sd-jwts
+          return true
+        } else {
+          document = JSON.parse(original)
+        }
       }
       return (
-        CredentialMapper.isW3cCredential(original as ICredential) ||
-        CredentialMapper.isSdJwtDecodedCredentialPayload(original as ICredential) ||
-        CredentialMapper.isJwtDecodedCredential(original as OriginalVerifiableCredential) ||
-        CredentialMapper.isSdJwtDecodedCredential(original as OriginalVerifiableCredential)
+        this.isW3cCredential(document as ICredential) ||
+        this.isSdJwtDecodedCredentialPayload(document as ICredential) ||
+        this.isJwtDecodedCredential(document as OriginalVerifiableCredential) ||
+        this.isSdJwtDecodedCredential(document as OriginalVerifiableCredential)
       )
     } catch (e) {
       return false
@@ -313,44 +319,52 @@ export class CredentialMapper {
   }
 
   public static isPresentation(original: OriginalVerifiableCredential | OriginalVerifiablePresentation): boolean {
+    let document = original
     try {
-      if (CredentialMapper.isJwtEncoded(original)) {
-        const vp: IVerifiablePresentation = CredentialMapper.toUniformPresentation(original)
-        return CredentialMapper.isW3cPresentation(vp)
-      } else if (CredentialMapper.isSdJwtEncoded(original)) {
-        return true
-      }
+      if (typeof original === 'string')
+        if (this.isJwtEncoded(original)) {
+          const vp: IVerifiablePresentation = this.toUniformPresentation(original)
+          return this.isW3cPresentation(vp)
+        } else if (this.isSdJwtEncoded(original)) {
+          return true
+        } else {
+          document = JSON.parse(original)
+        }
       return (
-        CredentialMapper.isW3cPresentation(original as IPresentation) ||
-        CredentialMapper.isSdJwtDecodedCredentialPayload(original as ICredential) ||
-        CredentialMapper.isJwtDecodedPresentation(original as OriginalVerifiablePresentation) ||
-        CredentialMapper.isSdJwtDecodedCredential(original as OriginalVerifiableCredential)
+        this.isW3cPresentation(document as IPresentation) ||
+        this.isSdJwtDecodedCredentialPayload(document as ICredential) ||
+        this.isJwtDecodedPresentation(document as OriginalVerifiablePresentation) ||
+        this.isSdJwtDecodedCredential(document as OriginalVerifiableCredential)
       )
     } catch (e) {
       return false
     }
   }
 
-  public static hasProof(original: OriginalVerifiableCredential | OriginalVerifiablePresentation): boolean {
+  public static hasProof(original: OriginalVerifiableCredential | OriginalVerifiablePresentation | string): boolean {
     let document = original
     try {
-      if (CredentialMapper.isJwtEncoded(original)) {
-        document = jwt_decode(original)
-      } else if (CredentialMapper.isSdJwtEncoded(original) || CredentialMapper.isSdJwtDecodedCredential(original)) {
+      if (this.isJwtEncoded(original) || this.isJwtDecodedCredential(original as OriginalVerifiableCredential)) {
+        return true
+      } else if (this.isSdJwtEncoded(original) || this.isSdJwtDecodedCredential(original)) {
         //todo: we might want to revisit this
         return true
       }
+      if (typeof original === 'string') {
+        document = JSON.parse(original)
+      }
       if (ObjectUtils.isObject(document)) {
-        if (typeof document !== 'string' && 'vc' in document && (document as JwtDecodedVerifiableCredential).vc.proof) {
+        if ('vc' in (document as JwtDecodedVerifiableCredential) && (document as JwtDecodedVerifiableCredential).vc.proof) {
           return true
         }
-        if (typeof document !== 'string' && 'vp' in document && (document as JwtDecodedVerifiablePresentation).vp.proof) {
+        if ('vp' in (document as JwtDecodedVerifiablePresentation) && (document as JwtDecodedVerifiablePresentation).vp.proof) {
           return true
         }
         return !!(document as IVerifiableCredential | IVerifiablePresentation).proof
       }
       return false
     } catch (e) {
+      console.log('error! returning false')
       return false
     }
   }

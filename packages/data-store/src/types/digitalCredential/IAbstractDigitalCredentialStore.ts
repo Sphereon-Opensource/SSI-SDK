@@ -21,6 +21,6 @@ export type AddDigitalCredentialArgs = {
   revocationDate?: Date
 }
 
-export type UpdateDigitalCredentialStateArgs = GetDigitalCredentialArgs & { verifiedState: CredentialStateType, verificationDate?: Date }
+export type UpdateDigitalCredentialStateArgs = GetDigitalCredentialArgs & { verifiedState: CredentialStateType; verificationDate?: Date }
 
 export type RemoveDigitalCredentialArgs = GetDigitalCredentialArgs

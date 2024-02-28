@@ -1,6 +1,13 @@
 import { AddDigitalCredentialArgs } from '../../types/digitalCredential/IAbstractDigitalCredentialStore'
 import { DigitalCredentialEntity } from '../../entities/digitalCredential/DigitalCredentialEntity'
-import { CredentialMapper, DocumentFormat, ICredential, IHasProof, IPresentation } from '@sphereon/ssi-types'
+import {
+  CredentialMapper,
+  decodeSdJwtVc,
+  DocumentFormat,
+  IVerifiableCredential,
+  IVerifiablePresentation,
+  SdJwtDecodedVerifiableCredentialPayload,
+} from '@sphereon/ssi-types'
 import {
   CredentialDocumentFormat,
   CredentialType,
@@ -8,6 +15,7 @@ import {
   NonPersistedDigitalCredential,
 } from '../../types/digitalCredential/digitalCredential'
 import { computeEntryHash } from '@veramo/utils'
+import { createHash } from 'crypto'
 
 function determineCredentialType(raw: string): CredentialType {
   if (CredentialMapper.hasProof(raw)) {
@@ -39,7 +47,7 @@ function determineCredentialDocumentFormat(documentFormat: DocumentFormat): Cred
   }
 }
 
-function getExpiryDate(uniformDocument: (ICredential & IHasProof) | (IPresentation & IHasProof)): Date | undefined {
+function getExpiresAt(uniformDocument: IVerifiableCredential | IVerifiablePresentation | SdJwtDecodedVerifiableCredentialPayload): Date | undefined {
   if ('expirationDate' in uniformDocument) {
     return new Date(uniformDocument.expirationDate)
   } else if ('exp' in uniformDocument) {
@@ -48,40 +56,54 @@ function getExpiryDate(uniformDocument: (ICredential & IHasProof) | (IPresentati
   return undefined
 }
 
-function getIssuedAt(uniformDocument: (ICredential & IHasProof) | (IPresentation & IHasProof)): Date | undefined {
+function getIssuedAt(uniformDocument: IVerifiableCredential | IVerifiablePresentation | SdJwtDecodedVerifiableCredentialPayload): Date | undefined {
   if ('issuanceDate' in uniformDocument) {
-    return new Date(uniformDocument.expirationDate)
-  } else if (CredentialMapper.getFirstProof(uniformDocument)) {
-    return new Date(CredentialMapper.getFirstProof(uniformDocument)!.created)
+    return new Date(uniformDocument.issuanceDate)
+  } else if (uniformDocument.proof && CredentialMapper.getFirstProof(uniformDocument as IVerifiableCredential | IVerifiablePresentation)) {
+    return new Date(CredentialMapper.getFirstProof(uniformDocument as IVerifiableCredential | IVerifiablePresentation)!.created)
   } else if ('validFrom' in uniformDocument) {
-    return new Date(uniformDocument.validFrom)
+    return new Date(uniformDocument['validFrom'])
+  } else if ('iat' in uniformDocument) {
+    return new Date(uniformDocument['iat'] * 1000)
   }
+
   return undefined
+}
+
+export const handleSdJwt = (rawCredential: string): SdJwtDecodedVerifiableCredentialPayload => {
+  // todo ask about the hasher
+  return CredentialMapper.isSdJwtEncoded(rawCredential)
+    ? decodeSdJwtVc(rawCredential, (data, algorithm) => createHash(algorithm).update(data).digest()).decodedPayload
+    : JSON.parse(rawCredential)
 }
 
 export const nonPersistedDigitalCredentialEntityFromAddArgs = (addCredentialArgs: AddDigitalCredentialArgs): NonPersistedDigitalCredential => {
   const credentialType: CredentialType = determineCredentialType(addCredentialArgs.raw)
+  const documentFormat: DocumentFormat = CredentialMapper.detectDocumentType(addCredentialArgs.raw)
   const uniformDocument =
-    credentialType === CredentialType.VC || credentialType === CredentialType.C
+    documentFormat === DocumentFormat.SD_JWT_VC
+      ? handleSdJwt(addCredentialArgs.raw)
+      : credentialType === CredentialType.VC || credentialType === CredentialType.C
       ? CredentialMapper.toUniformCredential(addCredentialArgs.raw)
       : CredentialMapper.toUniformPresentation(addCredentialArgs.raw)
-  const documentFormat: CredentialDocumentFormat = determineCredentialDocumentFormat(CredentialMapper.detectDocumentType(uniformDocument))
+  const issuedAt: Date | undefined = getIssuedAt(uniformDocument)
+  const expiresAt: Date | undefined = getExpiresAt(uniformDocument)
   return {
     ...addCredentialArgs,
     credentialType,
-    documentFormat,
+    documentFormat: determineCredentialDocumentFormat(documentFormat),
     createdAt: new Date(),
-    ...(credentialType === CredentialType.VC || credentialType === CredentialType.VP ? { expiresAt: getExpiryDate(uniformDocument) } : {}),
     hash: computeEntryHash(addCredentialArgs.raw),
     uniformDocument: JSON.stringify(uniformDocument),
-    issuedAt: getIssuedAt(uniformDocument),
+    issuedAt,
+    expiresAt,
     lastUpdatedAt: new Date(),
   }
 }
 
 export const digitalCredentialFrom = (credentialEntity: DigitalCredentialEntity): DigitalCredential => {
   return {
-    ...credentialEntity
+    ...credentialEntity,
   }
 }
 

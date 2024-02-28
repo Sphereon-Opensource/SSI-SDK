@@ -133,7 +133,7 @@ describe('Database entities tests', (): void => {
     const savedDigitalCredential2: DigitalCredential = await digitalCredentialStore.addDigitalCredential(addCredentialArgs2)
     expect(savedDigitalCredential2).toBeDefined()
     const args: GetDigitalCredentialsArgs = {
-      filter: [{ credentialType: CredentialType.VC }],
+      filter: [{ credentialType: CredentialType.VP }],
     }
     const result: Array<DigitalCredentialEntity> = await digitalCredentialStore.getDigitalCredentials(args)
 

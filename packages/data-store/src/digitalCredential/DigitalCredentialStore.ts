@@ -7,12 +7,12 @@ import {
   UpdateDigitalCredentialStateArgs,
 } from '../types/digitalCredential/IAbstractDigitalCredentialStore'
 import { OrPromise } from '@sphereon/ssi-types'
-import { DataSource, Repository} from 'typeorm'
+import { DataSource, Repository } from 'typeorm'
 import Debug from 'debug'
-import {DigitalCredentialEntity} from '../entities/digitalCredential/DigitalCredentialEntity'
-import {nonPersistedDigitalCredentialEntityFromAddArgs} from '../utils/digitalCredential/MappingUtils'
-import {FindOptionsWhere} from 'typeorm/find-options/FindOptionsWhere'
-import {CredentialStateType, DigitalCredential, NonPersistedDigitalCredential} from '../types/digitalCredential/digitalCredential'
+import { DigitalCredentialEntity } from '../entities/digitalCredential/DigitalCredentialEntity'
+import { nonPersistedDigitalCredentialEntityFromAddArgs } from '../utils/digitalCredential/MappingUtils'
+import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere'
+import { CredentialStateType, DigitalCredential, NonPersistedDigitalCredential } from '../types/digitalCredential/digitalCredential'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:credential-store')
 
@@ -45,7 +45,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
 
   getDigitalCredentials = async (args?: GetDigitalCredentialsArgs): Promise<Array<DigitalCredentialEntity>> => {
     const result: Array<DigitalCredentialEntity> = await (await this.dbConnection).getRepository(DigitalCredentialEntity).find({
-      ...(args?.filter && {where: args?.filter}),
+      ...(args?.filter && { where: args?.filter }),
     })
     if (!result) {
       return Promise.reject(Error(`No credential found for arg: ${args?.toString()}`))
@@ -97,7 +97,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
       ...credential,
       verificationDate: args.verificationDate ?? new Date(),
       lastUpdatedAt: new Date(),
-      ...(args.verifiedState === CredentialStateType.REVOKED && {revocationDate: args.verificationDate ?? new Date()}),
+      ...(args.verifiedState === CredentialStateType.REVOKED && { revocationDate: args.verificationDate ?? new Date() }),
       verifiedState: args.verifiedState,
     }
     debug('Updating credential', credential)
