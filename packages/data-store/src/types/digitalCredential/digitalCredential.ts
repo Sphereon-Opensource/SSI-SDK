@@ -10,7 +10,7 @@ export type DigitalCredential = {
   subjectCorrelationType?: CredentialCorrelationType
   issuerCorrelationId: string
   subjectCorrelationId?: string
-  uniformDocument: string
+  lastVerificationDate: string
   verificationDate?: Date
   verifiedState?: CredentialStateType
   tenantId?: string

@@ -56,8 +56,8 @@ export class DigitalCredentialEntity extends BaseEntity {
   @Column('date', { name: 'issued_at', nullable: true })
   issuedAt?: Date
 
-  @Column('date', { name: 'verification_date', nullable: true })
-  verificationDate?: Date
+  @Column('date', { name: 'last_verification_date', nullable: true })
+  lastVerificationDate?: Date
 
   @Column('date', { name: 'revocation_date', nullable: true })
   revocationDate?: Date
