@@ -1,8 +1,8 @@
-export type NonPersistedUniformCredential = Omit<UniformCredential, 'id'>
+export type NonPersistedDigitalCredential = Omit<DigitalCredential, 'id'>
 
-export type UniformCredential = {
+export type DigitalCredential = {
   id: string
-  credentialType: CredentialTypeEnum
+  credentialType: CredentialType
   documentFormat: CredentialDocumentFormat
   raw: string
   hash: string
@@ -11,31 +11,35 @@ export type UniformCredential = {
   issuerCorrelationId: string
   subjectCorrelationId?: string
   uniformDocument: string
-  lastVerifiedState?: CredentialStateType
+  verificationDate?: Date
+  verifiedState?: CredentialStateType
   tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
+  issuedAt?: Date
   expiresAt?: Date
 }
 
-export enum CredentialTypeEnum {
-  VC = 'vc',
-  VP = 'vp',
+export enum CredentialType {
+  VC = 'VC',
+  VP = 'VP',
+  P = 'P',
+  C = 'C',
 }
 
 export enum CredentialDocumentFormat {
-  JSON_LD = 'JSON-LD',
+  JSON_LD = 'JSON_LD',
   JWT = 'JWT',
-  SD_JWT = 'SD-JWT',
+  SD_JWT = 'SD_JWT',
   MDOC = 'MDOC',
 }
 
 export enum CredentialCorrelationType {
-  DID = 'did',
+  DID = 'DID',
 }
 
 export enum CredentialStateType {
-  REVOKED = 'revoked',
-  VERIFIED = 'verified',
-  EXPIRED = 'expired',
+  REVOKED = 'REVOKED',
+  VERIFIED = 'VERIFIED',
+  EXPIRED = 'EXPIRED',
 }

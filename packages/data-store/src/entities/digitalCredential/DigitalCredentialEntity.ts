@@ -3,16 +3,16 @@ import {
   CredentialCorrelationType,
   CredentialDocumentFormat,
   CredentialStateType,
-  CredentialTypeEnum,
-} from '../../types/uniformCredential/uniformCredential'
+  CredentialType,
+} from '../../types/digitalCredential/digitalCredential'
 
-@Entity('UniformCredential')
-export class UniformCredentialEntity extends BaseEntity {
+@Entity('DigitalCredential')
+export class DigitalCredentialEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum', { name: 'credential_type', enum: CredentialTypeEnum, nullable: false })
-  credentialType!: CredentialTypeEnum
+  @Column('simple-enum', { name: 'credential_type', enum: CredentialType, nullable: false })
+  credentialType!: CredentialType
 
   @Column('simple-enum', { name: 'document_format', enum: CredentialDocumentFormat, nullable: false })
   documentFormat!: CredentialDocumentFormat
@@ -38,8 +38,8 @@ export class UniformCredentialEntity extends BaseEntity {
   @Column('text', { name: 'subject_correlation_id', nullable: true })
   subjectCorrelationId?: string
 
-  @Column('simple-enum', { name: 'last_verified_state', enum: CredentialStateType, nullable: true })
-  lastVerifiedState?: CredentialStateType
+  @Column('simple-enum', { name: 'verified_state', enum: CredentialStateType, nullable: true })
+  verifiedState?: CredentialStateType
 
   @Column('text', { name: 'tenant_id', nullable: true })
   tenantId?: string
@@ -52,6 +52,9 @@ export class UniformCredentialEntity extends BaseEntity {
 
   @Column('date', { name: 'expires_at', nullable: true })
   expiresAt?: Date
+
+  @Column('date', { name: 'issued_at', nullable: true })
+  issuedAt?: Date
 
   @Column('date', { name: 'verification_date', nullable: true })
   verificationDate?: Date

@@ -31,8 +31,8 @@ export { AbstractIssuanceBrandingStore } from './issuanceBranding/AbstractIssuan
 export { IssuanceBrandingStore } from './issuanceBranding/IssuanceBrandingStore'
 export { StatusListStore } from './statusList/StatusListStore'
 import { AuditEventEntity, auditEventEntityFrom } from './entities/eventLogger/AuditEventEntity'
-import { UniformCredentialEntity } from './entities/uniformCredential/UniformCredentialEntity'
-import { uniformCredentialFrom, uniformCredentialsFrom, uniformCredentialEntityFromAddArgs } from './utils/uniformCredential/MappingUtils'
+import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCredentialEntity'
+import { digitalCredentialFrom, digitalCredentialsFrom, nonPersistedDigitalCredentialEntityFromAddArgs } from './utils/digitalCredential/MappingUtils'
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
 export { EventLoggerStore } from './eventLogger/EventLoggerStore'
 export {
@@ -79,7 +79,7 @@ export const DataStoreStatusListEntities = [StatusListEntity, StatusListEntryEnt
 
 export const DataStoreEventLoggerEntities = [AuditEventEntity]
 
-export const DataStoreUniformCredentialEntities = [UniformCredentialEntity]
+export const DataStoreDigitalCredentialEntities = [DigitalCredentialEntity]
 
 // All entities combined if a party wants to enable them all at once
 export const DataStoreEntities = [
@@ -87,7 +87,7 @@ export const DataStoreEntities = [
   ...DataStoreIssuanceBrandingEntities,
   ...DataStoreStatusListEntities,
   ...DataStoreEventLoggerEntities,
-  ...DataStoreUniformCredentialEntities,
+  ...DataStoreDigitalCredentialEntities,
 ]
 
 export {
@@ -124,8 +124,8 @@ export {
   StatusListEntryEntity,
   AuditEventEntity,
   auditEventEntityFrom,
-  UniformCredentialEntity,
-  uniformCredentialFrom,
-  uniformCredentialsFrom,
-  uniformCredentialEntityFromAddArgs,
+  DigitalCredentialEntity,
+  digitalCredentialFrom,
+  digitalCredentialsFrom,
+  nonPersistedDigitalCredentialEntityFromAddArgs,
 }
