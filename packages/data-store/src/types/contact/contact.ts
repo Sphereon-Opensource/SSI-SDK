@@ -6,6 +6,7 @@ export type Party = {
   roles: Array<IdentityRoleEnum>
   identities: Array<Identity>
   electronicAddresses: Array<ElectronicAddress>
+  physicalAddresses: Array<PhysicalAddress>
   contact: Contact
   partyType: PartyType
   relationships: Array<PartyRelationship>
@@ -14,17 +15,19 @@ export type Party = {
 }
 export type NonPersistedParty = Omit<
   Party,
-  'id' | 'identities' | 'electronicAddresses' | 'contact' | 'roles' | 'partyType' | 'relationships' | 'createdAt' | 'lastUpdatedAt'
+  'id' | 'identities' | 'electronicAddresses' | 'physicalAddresses' | 'contact' | 'roles' | 'partyType' | 'relationships' | 'createdAt' | 'lastUpdatedAt'
 > & {
   identities?: Array<NonPersistedIdentity>
   electronicAddresses?: Array<NonPersistedElectronicAddress>
+  physicalAddresses?: Array<NonPersistedPhysicalAddress>
   contact: NonPersistedContact
   partyType: NonPersistedPartyType
   relationships?: Array<NonPersistedPartyRelationship>
 }
-export type PartialParty = Partial<Omit<Party, 'identities' | 'electronicAddresses' | 'contact' | 'partyType' | 'relationships'>> & {
+export type PartialParty = Partial<Omit<Party, 'identities' | 'electronicAddresses' | 'physicalAddresses' | 'contact' | 'partyType' | 'relationships'>> & {
   identities?: PartialIdentity
   electronicAddresses?: PartialElectronicAddress
+  physicalAddresses?: PartialPhysicalAddress
   contact?: PartialContact
   partyType?: PartialPartyType
   relationships?: PartialPartyRelationship
@@ -168,9 +171,31 @@ export type ElectronicAddress = {
   lastUpdatedAt: Date
 }
 export type NonPersistedElectronicAddress = Omit<ElectronicAddress, 'id' | 'createdAt' | 'lastUpdatedAt'>
-export type PartialElectronicAddress = Partial<ElectronicAddress>
+export type PartialElectronicAddress = Partial<ElectronicAddress> & {
+  partyId?: string
+}
 
-export type ElectronicAddressType = 'email'
+export type PhysicalAddress = {
+  id: string
+  type: PhysicalAddressType
+  streetName: string
+  streetNumber: string
+  postalCode: string
+  cityName: string
+  provinceName: string
+  countryCode: string
+  buildingName?: string
+  createdAt: Date
+  lastUpdatedAt: Date
+}
+export type NonPersistedPhysicalAddress = Omit<PhysicalAddress, 'id' | 'createdAt' | 'lastUpdatedAt'>
+export type PartialPhysicalAddress = Partial<PhysicalAddress> & {
+  partyId?: string
+}
+
+export type ElectronicAddressType = 'email' | 'phone'
+
+export type PhysicalAddressType = 'home' | 'visit' | 'postal'
 
 export enum IdentityRoleEnum {
   ISSUER = 'issuer',

@@ -1,14 +1,16 @@
-import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
 import {
   CredentialOfferFormat,
   CredentialResponse,
   CredentialsSupportedDisplay,
   CredentialSupported,
-  //EndpointMetadataResult,
   OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
 import {
   CredentialToAccept,
+  GetCredentialBrandingArgs,
+  GetPreferredCredentialFormatsArgs,
+  GetSupportedCredentialsArgs,
+  MapCredentialToAcceptArgs,
   MappedCredentialToAccept,
   RequiredContext,
   SelectAppLocaleBrandingArgs,
@@ -29,42 +31,33 @@ import {
 import { IVerifyCredentialArgs, VerifiableCredential } from '@veramo/core'
 import { translate } from '../localization/Localization'
 
-// TODO create arg object for all functions
-// export const getServerMetadata = async (openID4VCIClient: OpenID4VCIClient): Promise<EndpointMetadataResult> => {
-//   // @ts-ignore
-//   return openID4VCIClient.retrieveServerMetadata();
-// }
+export const getSupportedCredentials = async (args: GetSupportedCredentialsArgs): Promise<Array<CredentialSupported>> => {
+  const { openID4VCIClient, vcFormatPreferences } = args
 
-export const getSupportedCredentials = async (
-  openID4VCIClient: OpenID4VCIClient,
-  vcFormatPreferences: Array<string>
-): Promise<Array<CredentialSupported>> => {
+  if (!openID4VCIClient.credentialOffer) {
+    return Promise.reject(Error('openID4VCIClient has no credentialOffer'))
+  }
+
   // todo: remove format here. This is just a temp hack for V11+ issuance of only one credential. Having a single array with formats for multiple credentials will not work. This should be handled in VCI itself
   let format: string[] | undefined = undefined
-  // @ts-ignore
   if (openID4VCIClient.version() > OpenId4VCIVersion.VER_1_0_09 && typeof openID4VCIClient.credentialOffer.credential_offer === 'object') {
-    // @ts-ignore
     format = openID4VCIClient.credentialOffer.credential_offer.credentials
-      // @ts-ignore
       .filter((format: string | CredentialOfferFormat): boolean => typeof format !== 'string')
-      // @ts-ignore
       .map((format: string | CredentialOfferFormat) => (format as CredentialOfferFormat).format)
     if (format?.length === 0) {
       format = undefined // Otherwise we would match nothing
     }
   }
 
-  // @ts-ignore
-  return getPreferredCredentialFormats(openID4VCIClient.getCredentialsSupported(true, format), vcFormatPreferences)
+  const credentialsSupported: Array<CredentialSupported> = openID4VCIClient.getCredentialsSupported(true, format)
+  return getPreferredCredentialFormats({ credentials: credentialsSupported, vcFormatPreferences })
 }
 
-export const getCredentialBranding = async (
-  supportedCredentials: Array<CredentialSupported>,
-  context: RequiredContext
-): Promise<Map<string, Array<IBasicCredentialLocaleBranding>>> => {
+export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Map<string, Array<IBasicCredentialLocaleBranding>>> => {
+  const { credentialsSupported, context } = args
   const credentialBranding = new Map<string, Array<IBasicCredentialLocaleBranding>>()
   await Promise.all(
-    supportedCredentials.map(async (credential: CredentialSupported): Promise<void> => {
+    credentialsSupported.map(async (credential: CredentialSupported): Promise<void> => {
       const localeBranding: Array<IBasicCredentialLocaleBranding> = await Promise.all(
         (credential.display ?? []).map(
           async (display: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> =>
@@ -91,17 +84,13 @@ export const getCredentialBranding = async (
   return credentialBranding
 }
 
-export const getPreferredCredentialFormats = async (
-  credentials: Array<CredentialSupported>,
-  vcFormatPreferences: Array<string>
-): Promise<Array<CredentialSupported>> => {
+export const getPreferredCredentialFormats = async (args: GetPreferredCredentialFormatsArgs): Promise<Array<CredentialSupported>> => {
+  const { credentials, vcFormatPreferences } = args
   // Group credentials based on types as we now have multiple entries for one vc with different formats
-
   const groupedTypes: Array<any> = Array.from(
-    // TODO any
     credentials
       .reduce(
-        // @ts-ignore // TODO sd jwts type issue
+        // @ts-ignore
         (map: Map<any, any>, value: CredentialSupported) => map.set(value.types.toString(), [...(map.get(value.types.toString()) || []), value]),
         new Map()
       )
@@ -128,11 +117,13 @@ export const selectCredentialLocaleBranding = (
 ): Promise<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding | undefined> => {
   const { locale, localeBranding } = args
 
-  // @ts-ignore
-  return localeBranding?.find(
+  const branding = localeBranding?.find(
     (branding: IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding) =>
       locale ? branding.locale?.startsWith(locale) || branding.locale === undefined : branding.locale === undefined // TODO refactor as we duplicate code
   )
+
+  // FIXME as we should be able to just return the value directly
+  return Promise.resolve(branding)
 }
 
 export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<void> => {
@@ -173,7 +164,6 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
   }
 }
 
-// TODO, refactor
 export const verifyCredential = async (args: IVerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
   // We also allow/add boolean, because 4.x Veramo returns a boolean for JWTs. 5.X will return better results
   const result: IVerifyResult | boolean = (await context.agent.verifyCredential(args)) as IVerifyResult | boolean
@@ -214,8 +204,8 @@ export const verifyCredential = async (args: IVerifyCredentialArgs, context: Req
   }
 }
 
-// TODO args object
-export const mapCredentialToAccept = async (credentials: Array<CredentialToAccept>): Promise<Array<MappedCredentialToAccept>> => {
+export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Promise<Array<MappedCredentialToAccept>> => {
+  const { credentials } = args
   return credentials.map((credential: CredentialToAccept): MappedCredentialToAccept => {
     const credentialResponse: CredentialResponse = credential.credentialResponse
     const verifiableCredential: W3CVerifiableCredential | undefined = credentialResponse.credential

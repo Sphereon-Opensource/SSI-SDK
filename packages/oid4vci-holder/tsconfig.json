@@ -9,19 +9,19 @@
   "include": ["src/**/*.json", "src/**/*.ts"],
   "references": [
     {
-      "path": "../data-store"
-    },
-    {
       "path": "../agent-config"
     },
     {
-      "path": "../ssi-types"
+      "path": "../contact-manager"
+    },
+    {
+      "path": "../data-store"
     },
     {
       "path": "../issuance-branding"
     },
     {
-      "path": "../contact-manager"
+      "path": "../ssi-types"
     }
   ]
 }
