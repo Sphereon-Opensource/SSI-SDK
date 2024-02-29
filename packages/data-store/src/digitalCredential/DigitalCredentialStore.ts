@@ -1,4 +1,4 @@
-import {AbstractDigitalCredentialStore} from './AbstractDigitalCredentialStore'
+import { AbstractDigitalCredentialStore } from './AbstractDigitalCredentialStore'
 import {
   AddCredentialArgs,
   GetCredentialArgs,
@@ -7,13 +7,14 @@ import {
   RemoveCredentialArgs,
   UpdateCredentialStateArgs,
 } from '../types/digitalCredential/IAbstractDigitalCredentialStore'
-import {OrPromise} from '@sphereon/ssi-types'
-import {DataSource, Repository} from 'typeorm'
+import { OrPromise } from '@sphereon/ssi-types'
+import { DataSource, FindOptionsOrder, Repository } from 'typeorm'
 import Debug from 'debug'
-import {DigitalCredentialEntity} from '../entities/digitalCredential/DigitalCredentialEntity'
-import {nonPersistedDigitalCredentialEntityFromAddArgs} from '../utils/digitalCredential/MappingUtils'
-import {FindOptionsWhere} from 'typeorm/find-options/FindOptionsWhere'
-import {CredentialStateType, DigitalCredential, NonPersistedDigitalCredential} from '../types/digitalCredential/digitalCredential'
+import { DigitalCredentialEntity } from '../entities/digitalCredential/DigitalCredentialEntity'
+import { nonPersistedDigitalCredentialEntityFromAddArgs } from '../utils/digitalCredential/MappingUtils'
+import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere'
+import { CredentialStateType, DigitalCredential, NonPersistedDigitalCredential } from '../types/digitalCredential/digitalCredential'
+import { parseAndValidateOrderOptions } from '../utils/SortingUtils'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:credential-store')
 
@@ -45,20 +46,17 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
   }
 
   getCredentials = async (args?: GetCredentialsArgs): Promise<GetCredentialsResponse> => {
-    const { filter = {}, skip, take, order = { createdAt: 'DESC' } } = args ?? {}
+    const { filter = {}, offset, limit, order = 'id.asc' } = args ?? {}
+    const sortOptions: FindOptionsOrder<DigitalCredentialEntity> = parseAndValidateOrderOptions<DigitalCredentialEntity>(order)
     const [result, total] = await (await this.dbConnection).getRepository(DigitalCredentialEntity).findAndCount({
       where: filter,
-      skip,
-      take,
-      order,
+      skip: offset,
+      take: limit,
+      order: sortOptions,
     })
-    if (!result) {
-      return Promise.reject(Error(`No credential found for arg: ${args?.toString()}`))
-    }
     return {
       data: result,
       total,
-      hasMore: total > (skip || 0) + (take || 0),
     }
   }
 
@@ -100,7 +98,10 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
       throw new Error('No verifiedState param is provided.')
     }
     if (args.verifiedState === CredentialStateType.REVOKED && !args.revokedAt) {
-      throw new Error('No revokedAt param is provided for revoked credential.')
+      throw new Error('No revokedAt param is provided.')
+    }
+    if (args.verifiedState !== CredentialStateType.REVOKED && !args.verifiedAt) {
+      throw new Error('No verifiedAt param is provided.')
     }
     const credential: DigitalCredentialEntity | null = await credentialRepository.findOne({
       where: whereClause,
@@ -111,8 +112,8 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
     }
     const updatedCredential: DigitalCredential = {
       ...credential,
-      ...(args.verifiedState !== CredentialStateType.REVOKED && {verifiedAt: args.verifiedAt ?? new Date()}),
-      ...(args.verifiedState === CredentialStateType.REVOKED && {revokedAt: args.revokedAt}),
+      ...(args.verifiedState !== CredentialStateType.REVOKED && { verifiedAt: args.verifiedAt }),
+      ...(args.verifiedState === CredentialStateType.REVOKED && { revokedAt: args.revokedAt }),
       lastUpdatedAt: new Date(),
       verifiedState: args.verifiedState,
     }

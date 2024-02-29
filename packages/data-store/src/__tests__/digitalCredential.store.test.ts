@@ -2,12 +2,14 @@ import { DataSource } from 'typeorm'
 import { DataStoreDigitalCredentialMigrations } from '../migrations'
 import { DataStoreDigitalCredentialEntities } from '../index'
 import { DigitalCredentialStore } from '../digitalCredential/DigitalCredentialStore'
-import { CredentialCorrelationType, CredentialStateType, CredentialType, DigitalCredential } from '../types/digitalCredential/digitalCredential'
 import {
-  AddCredentialArgs,
-  GetCredentialsArgs,
-  GetCredentialsResponse,
-} from '../types/digitalCredential/IAbstractDigitalCredentialStore'
+  CredentialCorrelationType,
+  CredentialDocumentFormat,
+  CredentialStateType,
+  CredentialType,
+  DigitalCredential,
+} from '../types/digitalCredential/digitalCredential'
+import { AddCredentialArgs, GetCredentialsArgs, GetCredentialsResponse } from '../types/digitalCredential/IAbstractDigitalCredentialStore'
 import { IVerifiablePresentation } from '@sphereon/ssi-types'
 
 describe('Database entities tests', (): void => {
@@ -152,15 +154,19 @@ describe('Database entities tests', (): void => {
     }
     const result1: GetCredentialsResponse = await digitalCredentialStore.getCredentials(args1)
     expect(result1.total).toEqual(1)
-    expect(result1.hasMore).toEqual(true)
     const args2: GetCredentialsArgs = {
-      skip: 1,
-      take: 10,
+      offset: 1,
+      limit: 10,
     }
     const result2: GetCredentialsResponse = await digitalCredentialStore.getCredentials(args2)
     expect(result2.data.length).toEqual(2)
     expect(result2.total).toEqual(3)
-    expect(result2.hasMore).toEqual(false)
+    const args3: GetCredentialsArgs = {
+      order: 'createdAt.DESC',
+    }
+    const result3: GetCredentialsResponse = await digitalCredentialStore.getCredentials(args3)
+    expect(result3.data.length).toEqual(3)
+    expect(result3.data[1].documentFormat).toEqual(CredentialDocumentFormat.JSON_LD)
   })
 
   it('should return no digital credentials if filter does not match', async (): Promise<void> => {
@@ -230,10 +236,12 @@ describe('Database entities tests', (): void => {
 
     const savedDigitalCredential: DigitalCredential = await digitalCredentialStore.addCredential(digitalCredential)
 
-    await expect(digitalCredentialStore.updateCredentialState({
-      id: savedDigitalCredential.id,
-      verifiedState: CredentialStateType.REVOKED,
-    })).rejects.toThrowError('No revokedAt param is provided for revoked credential.')
+    await expect(
+      digitalCredentialStore.updateCredentialState({
+        id: savedDigitalCredential.id,
+        verifiedState: CredentialStateType.REVOKED,
+      })
+    ).rejects.toThrowError('No revokedAt param is provided for revoked credential.')
   })
 
   it('should revoke stored digital credential', async (): Promise<void> => {
@@ -253,7 +261,7 @@ describe('Database entities tests', (): void => {
     const result = await digitalCredentialStore.updateCredentialState({
       id: savedDigitalCredential.id,
       verifiedState: CredentialStateType.REVOKED,
-      revokedAt: currentDate
+      revokedAt: currentDate,
     })
     expect(result.verifiedState).toEqual(CredentialStateType.REVOKED)
     expect(result.revokedAt).toEqual(currentDate)

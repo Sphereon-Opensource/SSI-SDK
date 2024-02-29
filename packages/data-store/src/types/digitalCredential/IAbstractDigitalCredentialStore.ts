@@ -6,15 +6,14 @@ export type FindDigitalCredentialArgs = Array<Partial<DigitalCredential>>
 
 export type GetCredentialsArgs = {
   filter?: FindDigitalCredentialArgs
-  skip?: number
-  take?: number
-  order?: { [key in keyof DigitalCredential]: 'ASC' | 'DESC' }
+  offset?: number
+  limit?: number
+  order?: string
 }
 
 export type GetCredentialsResponse = {
-  data: DigitalCredential[]
+  data: Array<DigitalCredential>
   total: number
-  hasMore: boolean
 }
 
 export type AddCredentialArgs = {
@@ -29,6 +28,6 @@ export type AddCredentialArgs = {
   revokedAt?: Date
 }
 
-export type UpdateCredentialStateArgs = GetCredentialArgs & { verifiedState: CredentialStateType; verifiedAt?: Date, revokedAt?: Date }
+export type UpdateCredentialStateArgs = GetCredentialArgs & { verifiedState: CredentialStateType; verifiedAt?: Date; revokedAt?: Date }
 
 export type RemoveCredentialArgs = GetCredentialArgs
