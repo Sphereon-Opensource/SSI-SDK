@@ -104,7 +104,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
     }
     const updatedCredential: DigitalCredential = {
       ...credential,
-      lastVerificationDate: args.verificationDate ?? new Date(),
+      verifiedAt: args.verificationDate ?? new Date(),
       lastUpdatedAt: new Date(),
       ...(args.verifiedState === CredentialStateType.REVOKED && { revocationDate: args.verificationDate ?? new Date() }),
       verifiedState: args.verifiedState,

@@ -17,7 +17,7 @@ export type DigitalCredential = {
   lastUpdatedAt: Date
   expiresAt?: Date
   issuedAt?: Date
-  lastVerificationDate?: Date
+  verifiedAt?: Date
   revocationDate?: Date
 }
 

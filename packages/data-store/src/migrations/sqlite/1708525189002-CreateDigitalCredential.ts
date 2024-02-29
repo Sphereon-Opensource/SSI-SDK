@@ -22,7 +22,7 @@ export class CreateDigitalCredential1708525189002 implements MigrationInterface 
                 "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')),
                 "issued_at" datetime,
                 "expires_at" datetime,
-                "last_verification_date" datetime,
+                "verified_at" datetime,
                 "revocation_date" datetime
             )
         `)
