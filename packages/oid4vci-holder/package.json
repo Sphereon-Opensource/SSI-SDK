@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
-      "IOID4VCIHolder": "./src/types/IOID4VCIHolder.ts"
+      "IOID4VCIFlow": "./src/types/IOID4VCIFlow.ts"
     }
   },
   "scripts": {
@@ -18,8 +18,8 @@
     "@sphereon/ssi-sdk.issuance-branding": "workspace:*",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
-    "@sphereon/oid4vci-client": "0.9.1-next.2",
-    "@sphereon/oid4vci-common": "0.9.1-next.2",
+    "@sphereon/oid4vci-client": "0.10.0",
+    "@sphereon/oid4vci-common": "0.10.0",
     "@veramo/utils": "4.2.0",
     "@veramo/core": "4.2.0",
     "@veramo/data-store": "4.2.0",
@@ -41,6 +41,7 @@
     "dist/**/*",
     "src/**/*",
     "README.md",
+    "plugin.schema.json",
     "LICENSE"
   ],
   "private": false,

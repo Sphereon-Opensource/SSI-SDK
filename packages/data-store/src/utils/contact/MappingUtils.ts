@@ -27,7 +27,8 @@ import {
   Organization,
   Party,
   PartyRelationship,
-  PartyType, PhysicalAddress
+  PartyType,
+  PhysicalAddress,
 } from '../../types'
 import { PartyEntity } from '../../entities/contact/PartyEntity'
 import { IdentityEntity } from '../../entities/contact/IdentityEntity'

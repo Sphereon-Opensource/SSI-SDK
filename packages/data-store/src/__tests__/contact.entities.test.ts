@@ -30,7 +30,7 @@ import {
   NonPersistedPartyType,
   NonPersistedPhysicalAddress,
   Organization,
-  PartyTypeEnum
+  PartyTypeEnum,
 } from '../types'
 import {
   connectionEntityFrom,
@@ -845,12 +845,14 @@ describe('Database entities tests', (): void => {
 
     const electronicAddress: NonPersistedElectronicAddress = {
       type: 'email',
-      electronicAddress: 'example_electronic_address'
+      electronicAddress: 'example_electronic_address',
     }
     const electronicAddressEntity: ElectronicAddressEntity = electronicAddressEntityFrom(electronicAddress)
     electronicAddressEntity.party = savedParty1
 
-    const savedElectronicAddress: ElectronicAddressEntity | null = await dbConnection.getRepository(ElectronicAddressEntity).save(electronicAddressEntity)
+    const savedElectronicAddress: ElectronicAddressEntity | null = await dbConnection
+      .getRepository(ElectronicAddressEntity)
+      .save(electronicAddressEntity)
 
     expect(savedElectronicAddress).toBeDefined()
 
@@ -2199,7 +2201,7 @@ describe('Database entities tests', (): void => {
   it('Should save email electronic address to database', async (): Promise<void> => {
     const electronicAddress: NonPersistedElectronicAddress = {
       type: 'email',
-      electronicAddress: 'example_email_address'
+      electronicAddress: 'example_email_address',
     }
 
     const electronicAddressEntity: ElectronicAddressEntity = electronicAddressEntityFrom(electronicAddress)
@@ -2221,7 +2223,7 @@ describe('Database entities tests', (): void => {
   it('Should save phone electronic address to database', async (): Promise<void> => {
     const electronicAddress: NonPersistedElectronicAddress = {
       type: 'phone',
-      electronicAddress: 'example_phone_number'
+      electronicAddress: 'example_phone_number',
     }
 
     const electronicAddressEntity: ElectronicAddressEntity = electronicAddressEntityFrom(electronicAddress)
@@ -2243,12 +2245,14 @@ describe('Database entities tests', (): void => {
   it('should throw error when saving electronic address with blank electronic address', async (): Promise<void> => {
     const electronicAddress: NonPersistedElectronicAddress = {
       type: 'email',
-      electronicAddress: ''
+      electronicAddress: '',
     }
 
     const electronicAddressEntity: ElectronicAddressEntity = electronicAddressEntityFrom(electronicAddress)
 
-    await expect(dbConnection.getRepository(ElectronicAddressEntity).save(electronicAddressEntity)).rejects.toThrowError('Blank electronic addresses are not allowed')
+    await expect(dbConnection.getRepository(ElectronicAddressEntity).save(electronicAddressEntity)).rejects.toThrowError(
+      'Blank electronic addresses are not allowed'
+    )
   })
 
   it('Should save home physical address to database', async (): Promise<void> => {
@@ -2367,7 +2371,9 @@ describe('Database entities tests', (): void => {
 
     const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
 
-    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError('Blank street names are not allowed')
+    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
+      'Blank street names are not allowed'
+    )
   })
 
   it('should throw error when saving physical address with blank street number', async (): Promise<void> => {
@@ -2384,7 +2390,9 @@ describe('Database entities tests', (): void => {
 
     const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
 
-    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError('Blank street numbers are not allowed')
+    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
+      'Blank street numbers are not allowed'
+    )
   })
 
   it('should throw error when saving physical address with blank building name', async (): Promise<void> => {
@@ -2401,7 +2409,9 @@ describe('Database entities tests', (): void => {
 
     const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
 
-    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError('Blank building names are not allowed')
+    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
+      'Blank building names are not allowed'
+    )
   })
 
   it('should throw error when saving physical address with blank postal code', async (): Promise<void> => {
@@ -2418,7 +2428,9 @@ describe('Database entities tests', (): void => {
 
     const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
 
-    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError('Blank postal codes are not allowed')
+    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
+      'Blank postal codes are not allowed'
+    )
   })
 
   it('should throw error when saving physical address with blank city name', async (): Promise<void> => {
@@ -2435,7 +2447,9 @@ describe('Database entities tests', (): void => {
 
     const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
 
-    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError('Blank city names are not allowed')
+    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
+      'Blank city names are not allowed'
+    )
   })
 
   it('should throw error when saving physical address with blank province name', async (): Promise<void> => {
@@ -2452,7 +2466,9 @@ describe('Database entities tests', (): void => {
 
     const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
 
-    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError('Blank province names are not allowed')
+    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
+      'Blank province names are not allowed'
+    )
   })
 
   it('should throw error when saving physical address with blank country code', async (): Promise<void> => {
@@ -2469,7 +2485,8 @@ describe('Database entities tests', (): void => {
 
     const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
 
-    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError('Blank country codes are not allowed')
+    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
+      'Blank country codes are not allowed'
+    )
   })
-
 })

@@ -662,11 +662,11 @@ importers:
   packages/oid4vci-holder:
     dependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.9.1-next.2
-        version: 0.9.1-next.2
+        specifier: 0.10.0
+        version: 0.10.0
       '@sphereon/oid4vci-common':
-        specifier: 0.9.1-next.2
-        version: 0.9.1-next.2(msrcrypto@1.5.8)
+        specifier: 0.10.0
+        version: 0.10.0(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -690,7 +690,7 @@ importers:
         version: 4.2.0
       i18n-js:
         specifier: ^3.8.0
-        version: 3.8.0
+        version: 3.9.2
       lodash.memoize:
         specifier: ^4.1.2
         version: 4.1.2
@@ -703,10 +703,10 @@ importers:
     devDependencies:
       '@types/i18n-js':
         specifier: ^3.8.4
-        version: 3.8.4
+        version: 3.8.9
       '@types/lodash.memoize':
         specifier: ^4.1.7
-        version: 4.1.7
+        version: 4.1.9
       '@types/uuid':
         specifier: ^9.0.8
         version: 9.0.8
@@ -726,11 +726,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.9.1-next.2
-        version: 0.9.1-next.2(msrcrypto@1.5.8)
+        specifier: 0.10.0
+        version: 0.10.0(msrcrypto@1.5.8)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.9.1-next.2
-        version: 0.9.1-next.2(msrcrypto@1.5.8)
+        specifier: 0.10.0
+        version: 0.10.0(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.15.0
         version: 0.15.0(expo-crypto@12.6.0)(expo@49.0.21)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -763,8 +763,8 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/did-uni-client':
-        specifier: ^0.6.0
-        version: 0.6.0
+        specifier: ^0.6.1
+        version: 0.6.1
       '@veramo/did-provider-key':
         specifier: 4.2.0
         version: 4.2.0
@@ -784,14 +784,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.9.1-next.2
-        version: 0.9.1-next.2(msrcrypto@1.5.8)
+        specifier: 0.10.0
+        version: 0.10.0(msrcrypto@1.5.8)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.9.1-next.2
-        version: 0.9.1-next.2(msrcrypto@1.5.8)
+        specifier: 0.10.0
+        version: 0.10.0(msrcrypto@1.5.8)
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.9.1-next.2
-        version: 0.9.1-next.2(msrcrypto@1.5.8)
+        specifier: 0.10.0
+        version: 0.10.0(msrcrypto@1.5.8)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -845,11 +845,11 @@ importers:
         specifier: ^0.6.1
         version: 0.6.1
       '@sphereon/pex':
-        specifier: ^3.2.0
-        version: 3.2.0
+        specifier: ^3.3.0
+        version: 3.3.0
       '@sphereon/pex-models':
-        specifier: ^2.2.0
-        version: 2.2.0
+        specifier: ^2.2.2
+        version: 2.2.2
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.15.0
         version: 0.15.0(expo-crypto@12.6.0)(expo@49.0.21)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -981,8 +981,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.9.1-next.2
-        version: 0.9.1-next.2(msrcrypto@1.5.8)
+        specifier: 0.10.0
+        version: 0.10.0(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.15.0
         version: 0.15.0(expo-crypto@12.6.0)(expo@49.0.21)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -1027,11 +1027,11 @@ importers:
   packages/presentation-exchange:
     dependencies:
       '@sphereon/pex':
-        specifier: ^3.2.0
-        version: 3.2.0
+        specifier: ^3.3.0
+        version: 3.3.0
       '@sphereon/pex-models':
-        specifier: ^2.2.0
-        version: 2.2.0
+        specifier: ^2.2.2
+        version: 2.2.2
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.15.0
         version: 0.15.0(expo-crypto@12.6.0)(expo@49.0.21)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -1156,8 +1156,8 @@ importers:
   packages/siopv2-oid4vp-common:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.6.0-unstable.9
-        version: 0.6.0-unstable.9
+        specifier: 0.6.0
+        version: 0.6.0
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1171,18 +1171,21 @@ importers:
       '@types/node':
         specifier: ^16.18.0
         version: 16.18.70
+      typeorm:
+        specifier: 0.3.17
+        version: 0.3.17(pg@8.11.3)(sqlite3@5.1.7)(ts-node@10.9.2)
 
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.6.0-unstable.9
-        version: 0.6.0-unstable.9
+        specifier: 0.6.0
+        version: 0.6.0
       '@sphereon/pex':
-        specifier: ^3.2.0
-        version: 3.2.0
+        specifier: ^3.3.0
+        version: 3.3.0
       '@sphereon/pex-models':
-        specifier: 2.2.0
-        version: 2.2.0
+        specifier: 2.2.2
+        version: 2.2.2
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.15.0
         version: 0.15.0(expo-crypto@12.6.0)(expo@49.0.21)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -1248,11 +1251,11 @@ importers:
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.6.0-unstable.9
-        version: 0.6.0-unstable.9
+        specifier: 0.6.0
+        version: 0.6.0
       '@sphereon/pex':
-        specifier: ^3.2.0
-        version: 3.2.0
+        specifier: ^3.3.0
+        version: 3.3.0
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.15.0
         version: 0.15.0(expo-crypto@12.6.0)(expo@49.0.21)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -1312,8 +1315,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.6.0-unstable.9
-        version: 0.6.0-unstable.9
+        specifier: 0.6.0
+        version: 0.6.0
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1373,11 +1376,11 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@sphereon/pex':
-        specifier: ^3.2.0
-        version: 3.2.0
+        specifier: ^3.3.0
+        version: 3.3.0
       '@sphereon/pex-models':
-        specifier: ^2.2.0
-        version: 2.2.0
+        specifier: ^2.2.2
+        version: 2.2.2
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.15.0
         version: 0.15.0(expo-crypto@12.6.0)(expo@49.0.21)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -2261,8 +2264,8 @@ importers:
   packages/w3c-vc-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.6.0-unstable.9
-        version: 0.6.0-unstable.9
+        specifier: 0.6.0
+        version: 0.6.0
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -5639,7 +5642,7 @@ packages:
     resolution: {integrity: sha512-QyKIWEnKQFnYu2ey+SAAm1A5xjzJLJJj3bhIZd3QKyXKKjaJ0hlxam/OsWSltxTNbcyH1jRJjC6Cxv31usv0Ag==}
     engines: {node: ^14.17.0 || >=16.0.0}
     dependencies:
-      chalk: 4.1.2
+      chalk: 4.1.0
       execa: 5.0.0
       strong-log-transformer: 2.1.0
     dev: true
@@ -6496,7 +6499,7 @@ packages:
       '@octokit/request-error': 3.0.3
       '@octokit/types': 9.3.2
       is-plain-object: 5.0.0
-      node-fetch: 2.7.0
+      node-fetch: 2.6.7
       universal-user-agent: 6.0.1
     transitivePeerDependencies:
       - encoding
@@ -6969,20 +6972,38 @@ packages:
     dependencies:
       '@sd-jwt/types': 0.2.0
       '@sd-jwt/utils': 0.2.0
+    dev: false
 
-  /@sd-jwt/present@0.2.0:
-    resolution: {integrity: sha512-6xDBiB+UqCwW8k7O7OUJ7BgC/8zcO+AD5ZX1k4I6yjDM9vscgPulSVxT/yUH+Aov3cZ/BKvfKC0qDEZkHmP/kg==}
+  /@sd-jwt/decode@0.3.0:
+    resolution: {integrity: sha512-jCN1g3VzopiUxUtBZWq0Ojfzbg+wYkE1/gV86Xq7/gV8aNacCJo7Su5a3pYtoYg/rnH7ou1kwpD6vteQFkvXMQ==}
     dependencies:
-      '@sd-jwt/types': 0.2.0
-      '@sd-jwt/utils': 0.2.0
+      '@sd-jwt/types': 0.3.0
+      '@sd-jwt/utils': 0.3.0
+
+  /@sd-jwt/present@0.3.0:
+    resolution: {integrity: sha512-dICPhH5hqOLXmuJMdTaA47ZMpCDkTzbWUQXsIgw0vma7Aj9Bc6ySNevPwlsUx4K8XBjPgYWwBM9tKdrs3tsCvQ==}
+    dependencies:
+      '@sd-jwt/types': 0.3.0
+      '@sd-jwt/utils': 0.3.0
 
   /@sd-jwt/types@0.2.0:
     resolution: {integrity: sha512-16WFRcL/maG0/JxN9UCSx07/vJ2SDbGscv9gDLmFLgJzhJcGPer41XfI6aDfVARYP430wHFixChfY/n7qC1L/Q==}
+    dev: false
+
+  /@sd-jwt/types@0.3.0:
+    resolution: {integrity: sha512-JbpZICZ+nWPiKPKw+Veg5tf0Oftit4EzxhLJyvcd0u4R6IulNZvi6LCoUL7b2IT1H86eYPd/qB1KvSh43ByZOA==}
 
   /@sd-jwt/utils@0.2.0:
     resolution: {integrity: sha512-oHCfRYVHCb5RNwdq3eHAt7P9d7TsEaSM1TTux+xl1I9PeQGLtZETnto9Gchtzn8FlTrMdVsLlcuAcK6Viwj1Qw==}
     dependencies:
       '@sd-jwt/types': 0.2.0
+      buffer: 6.0.3
+    dev: false
+
+  /@sd-jwt/utils@0.3.0:
+    resolution: {integrity: sha512-jQNYxvyfLda9StVLeUqUZtv5csI6IuzcD6b55/wsC9xJgTuntZqf8vyJvuu4MwEJUFwm9PdGkCJXyl/nbpmNLw==}
+    dependencies:
+      '@sd-jwt/types': 0.3.0
       buffer: 6.0.3
 
   /@segment/loosely-validate-event@2.0.0:
@@ -7155,14 +7176,14 @@ packages:
       '@sinonjs/commons': 1.8.6
     dev: true
 
-  /@sphereon/did-auth-siop@0.6.0-unstable.9:
-    resolution: {integrity: sha512-1i64Z+guXLrkpHKuYUhwYSTPQtQ4/JpQEAEsgv7j47mZgnlappuO18juWHlKLNwmzYyhKzTdt7zaTTeP+wjeWA==}
+  /@sphereon/did-auth-siop@0.6.0:
+    resolution: {integrity: sha512-90jA4bll1nGV3GxGn9O3hKO3XtBS46/1dNwpBiSiFmXlWy6Vw63RINXlaqNfqC02beRP1u4sDH7LRXzbKUbkmA==}
     engines: {node: '>=18'}
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sphereon/did-uni-client': 0.6.1
-      '@sphereon/pex': 3.2.0
-      '@sphereon/pex-models': 2.2.0
+      '@sphereon/pex': 3.3.0
+      '@sphereon/pex-models': 2.2.2
       '@sphereon/ssi-types': link:packages/ssi-types
       '@sphereon/wellknown-dids-client': 0.1.3
       cross-fetch: 4.0.0
@@ -7274,11 +7295,11 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vci-client@0.9.1-next.2:
-    resolution: {integrity: sha512-ShTHt/u0whNqCNySZkEfeFQlDuWiGI2UginfTjVB9ektSXnGbBaAh3sU3gR319bz9kLD9Mlzy4HLUFNuL31tsA==}
+  /@sphereon/oid4vci-client@0.10.0:
+    resolution: {integrity: sha512-eCXWT7F49S9anUwH+G3+7bcAJE2V9xLXwj8yXVIKD/Fnulki/p5J8NlU0Ml+LouUEiLTZmhUxOIKYx75r49V5g==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.9.1-next.2(msrcrypto@1.5.8)
+      '@sphereon/oid4vci-common': 0.10.0(msrcrypto@1.5.8)
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
       debug: 4.3.4
@@ -7288,19 +7309,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-common@0.8.2-unstable.30:
-    resolution: {integrity: sha512-tqEmAcPX5aqdCemGnMCY+jZuCpGmGQ6SOkxhcjO9yAMLaG5g/4onfcfUxLBaPdQERgIzsmLADof+2vbK7AXcDg==}
-    engines: {node: '>=16'}
-    dependencies:
-      '@sphereon/ssi-types': link:packages/ssi-types
-      cross-fetch: 3.1.8
-      jwt-decode: 3.1.2
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@sphereon/oid4vci-common@0.9.1-next.2(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-+HB2XKzac1/OhFbewzusG47W8ENQziuO7pd5An4zkC/XFb2bAeJucXYt9bUXc+A7XvBegjsCT9NyIWqMK7ZuQg==}
+  /@sphereon/oid4vci-common@0.10.0(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-4jrL9gQR2kepTKx8DJvCoxMvmfYUJQu2USxA5usIaCbVNWudU8noJqa5X6jQ43/tEXXZ2lhB/lwH+7BtQUvn5A==}
     engines: {node: '>=18'}
     peerDependencies:
       msrcrypto: ^1.5.8
@@ -7318,12 +7328,23 @@ packages:
       - encoding
     dev: false
 
-  /@sphereon/oid4vci-issuer-server@0.9.1-next.2(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-2NG2aDaFBgKxLKTvP3I6Gf8cj3A0fwAxZjEeCK2jW0s4wfJ5ffGLr44cAhAmSe1yQ+BOzlNNRFBIfIg6t5kl3A==}
+  /@sphereon/oid4vci-common@0.8.2-unstable.30:
+    resolution: {integrity: sha512-tqEmAcPX5aqdCemGnMCY+jZuCpGmGQ6SOkxhcjO9yAMLaG5g/4onfcfUxLBaPdQERgIzsmLADof+2vbK7AXcDg==}
+    engines: {node: '>=16'}
+    dependencies:
+      '@sphereon/ssi-types': link:packages/ssi-types
+      cross-fetch: 3.1.8
+      jwt-decode: 3.1.2
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@sphereon/oid4vci-issuer-server@0.10.0(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-JJC8Q6FTA3Nq4rNJR06vmM9HXKkI5yWdTyAic8yy2xIayU9lnHt9Shs47feFLvRCctI1A9yW4TdU8s1T9p8/fw==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.9.1-next.2(msrcrypto@1.5.8)
-      '@sphereon/oid4vci-issuer': 0.9.1-next.2(msrcrypto@1.5.8)
+      '@sphereon/oid4vci-common': 0.10.0(msrcrypto@1.5.8)
+      '@sphereon/oid4vci-issuer': 0.10.0(msrcrypto@1.5.8)
       '@sphereon/ssi-express-support': 0.18.1
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.2
@@ -7344,8 +7365,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.9.1-next.2(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-FCwaoblhGBiAb7ZkFo8FPH+G4eCFKt3lai09zRjeRtsOWWb9WO5OGJVif+Z3FR/bBMWQcDjNoOhKswgwuRA/nQ==}
+  /@sphereon/oid4vci-issuer@0.10.0(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-V76T1Gt9hE3Ks++R6AzB9cmmroEJcCknWYrHWHv5IG1JXazD7ZPXeVGpi5P8hR0qCpDzk1qvOAl+5B4i8x4YZw==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -7353,7 +7374,7 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vci-common': 0.9.1-next.2(msrcrypto@1.5.8)
+      '@sphereon/oid4vci-common': 0.10.0(msrcrypto@1.5.8)
       '@sphereon/ssi-types': link:packages/ssi-types
       uuid: 9.0.1
     transitivePeerDependencies:
@@ -7361,18 +7382,18 @@ packages:
       - msrcrypto
     dev: false
 
-  /@sphereon/pex-models@2.2.0:
-    resolution: {integrity: sha512-dGDRdoxJj+P0TRqu0R8R0/IdIzrCya1MsnxIFbcmSW3rjPsbwXbV0EojEfxXGD5LhqsUJiuAffMtyE2dtVI/XQ==}
+  /@sphereon/pex-models@2.2.2:
+    resolution: {integrity: sha512-CZIsBoaV5rMZEWYBsmH+RxsdoxpXf5FSDwDz0GB0qOf5WFk1BGUnzpZzi5yJ+2L151mhPk97dlRc9Wb01Awr4Q==}
 
-  /@sphereon/pex@3.2.0:
-    resolution: {integrity: sha512-6qk4L7PaxFsHSVjG0w5SbffwuwI0sbnwyoaNBNku17u2WOThBcnH22sgCdNRRbzacXs0e4iAw7Cb1cd730LQaQ==}
+  /@sphereon/pex@3.3.0:
+    resolution: {integrity: sha512-CNthF/6dlIECqTqdOWGD5HOT72OWjzKTFVuFGmSbgOqsEtEtGU0e0g0gYbvXWNm0hYKsyFgS5XIZ1Uj3NR5UMg==}
     engines: {node: '>=18'}
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
-      '@sd-jwt/decode': 0.2.0
-      '@sd-jwt/present': 0.2.0
-      '@sd-jwt/utils': 0.2.0
-      '@sphereon/pex-models': 2.2.0
+      '@sd-jwt/decode': 0.3.0
+      '@sd-jwt/present': 0.3.0
+      '@sd-jwt/utils': 0.3.0
+      '@sphereon/pex-models': 2.2.2
       '@sphereon/ssi-types': link:packages/ssi-types
       ajv: 8.12.0
       ajv-formats: 2.1.1(ajv@8.12.0)
@@ -8532,8 +8553,8 @@ packages:
       '@types/node': 18.19.6
     dev: true
 
-  /@types/i18n-js@3.8.4:
-    resolution: {integrity: sha512-lXIJLglOZsa81DzqiiG99xF6qGJvwRGqzCQe1FB+/JhgVTyGGVa63DMopEQMJdpAlUUSdJsIhC7sw5xDfDjXWw==}
+  /@types/i18n-js@3.8.9:
+    resolution: {integrity: sha512-bSxgya4x5O+x+QhfCGckiDDE+17XGPp1TNBgBA/vfF5EwdiZC70F4cKG5QK2v44+v62oY7/t/InreRhxskulcA==}
     dev: true
 
   /@types/inquirer-autocomplete-prompt@3.0.3:
@@ -8610,8 +8631,8 @@ packages:
       '@types/node': 18.19.6
     dev: true
 
-  /@types/lodash.memoize@4.1.7:
-    resolution: {integrity: sha512-lGN7WeO4vO6sICVpf041Q7BX/9k1Y24Zo3FY0aUezr1QlKznpjzsDk3T3wvH8ofYzoK0QupN9TWcFAFZlyPwQQ==}
+  /@types/lodash.memoize@4.1.9:
+    resolution: {integrity: sha512-glY1nQuoqX4Ft8Uk+KfJudOD7DQbbEDF6k9XpGncaohW3RW4eSWBlx6AA0fZCrh40tZcQNH4jS/Oc59J6Eq+aw==}
     dependencies:
       '@types/lodash': 4.14.202
     dev: true
@@ -13720,7 +13741,7 @@ packages:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 3.1.2
+      minimatch: 3.0.5
       once: 1.4.0
       path-is-absolute: 1.0.1
     dev: true
@@ -14076,8 +14097,8 @@ packages:
     dependencies:
       ms: 2.1.3
 
-  /i18n-js@3.8.0:
-    resolution: {integrity: sha512-hDsGgPuvw/2P+lXSbOafAwspK8Ste8YrwuuUg17W3wEcO1JkQxBlPgsN1t2+852nTnz4YSYTjZc/1nAA2PC/nw==}
+  /i18n-js@3.9.2:
+    resolution: {integrity: sha512-+Gm8h5HL0emzKhRx2avMKX+nKiVPXeaOZm7Euf2/pbbFcLQoJ3zZYiUykAzoRasijCoWos2Kl1tslmScTgAQKw==}
     dev: false
 
   /iconv-lite@0.4.24:
@@ -16779,7 +16800,7 @@ packages:
       redent: 3.0.0
       trim-newlines: 3.0.1
       type-fest: 0.18.1
-      yargs-parser: 20.2.9
+      yargs-parser: 20.2.4
     dev: true
 
   /merge-descriptors@1.0.1:
@@ -17379,7 +17400,7 @@ packages:
       array-differ: 3.0.0
       array-union: 2.1.0
       arrify: 2.0.1
-      minimatch: 3.1.2
+      minimatch: 3.0.5
     dev: true
 
   /mute-stream@0.0.8:
@@ -18011,7 +18032,7 @@ packages:
       '@yarnpkg/parsers': 3.0.0-rc.46
       '@zkochan/js-yaml': 0.0.6
       axios: 1.6.5
-      chalk: 4.1.2
+      chalk: 4.1.0
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       cliui: 7.0.4
@@ -20179,6 +20200,9 @@ packages:
   /sqlite3@5.1.7:
     resolution: {integrity: sha512-GGIyOiFaG+TUra3JIfkI/zGP8yZYLPQ0pl1bH+ODjiX57sPhrLU5sQJn1y9bDKZUFYkX1crlrPfSYt0BKKdkog==}
     requiresBuild: true
+    peerDependenciesMeta:
+      node-gyp:
+        optional: true
     dependencies:
       bindings: 1.5.0
       node-addon-api: 7.0.0
@@ -22077,11 +22101,11 @@ packages:
   /yargs-parser@20.2.4:
     resolution: {integrity: sha512-WOkpgNhPTlE73h4VFAFsOnomJVaovO8VqLDzy5saChRBFQFBoMYirowyW+Q9HB4HFF4Z7VZTiG3iSzJJA29yRA==}
     engines: {node: '>=10'}
-    dev: true
 
   /yargs-parser@20.2.9:
     resolution: {integrity: sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==}
     engines: {node: '>=10'}
+    dev: true
 
   /yargs-parser@21.1.1:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
@@ -22113,7 +22137,7 @@ packages:
       require-directory: 2.1.1
       string-width: 4.2.3
       y18n: 5.0.8
-      yargs-parser: 20.2.9
+      yargs-parser: 20.2.4
 
   /yargs@17.7.2:
     resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
