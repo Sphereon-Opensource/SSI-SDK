@@ -218,6 +218,7 @@ describe('Database entities tests', (): void => {
     const result = await digitalCredentialStore.updateCredentialState({
       id: savedDigitalCredential.id,
       verifiedState: CredentialStateType.VERIFIED,
+      verifiedAt: new Date(),
     })
     expect(result.verifiedState).toEqual(CredentialStateType.VERIFIED)
   })
@@ -241,7 +242,7 @@ describe('Database entities tests', (): void => {
         id: savedDigitalCredential.id,
         verifiedState: CredentialStateType.REVOKED,
       })
-    ).rejects.toThrowError('No revokedAt param is provided for revoked credential.')
+    ).rejects.toThrowError('No revokedAt param is provided.')
   })
 
   it('should revoke stored digital credential', async (): Promise<void> => {

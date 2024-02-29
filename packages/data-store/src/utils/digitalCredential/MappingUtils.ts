@@ -6,6 +6,8 @@ import {
   DocumentFormat,
   IVerifiableCredential,
   IVerifiablePresentation,
+  OriginalVerifiableCredential,
+  OriginalVerifiablePresentation,
   SdJwtDecodedVerifiableCredentialPayload,
 } from '@sphereon/ssi-types'
 import {
@@ -18,20 +20,32 @@ import { computeEntryHash } from '@veramo/utils'
 import { createHash } from 'crypto'
 
 function determineCredentialType(raw: string): CredentialType {
-  if (CredentialMapper.hasProof(raw)) {
-    if (CredentialMapper.isCredential(raw)) {
-      return CredentialType.VC
-    } else if (CredentialMapper.isPresentation(raw)) {
-      return CredentialType.VP
-    }
-  } else {
-    if (CredentialMapper.isCredential(raw)) {
-      return CredentialType.C
-    } else if (CredentialMapper.isPresentation(raw)) {
-      return CredentialType.P
-    }
+  const rawDocument = parseRawDocument(raw)
+  if (!rawDocument) {
+    throw new Error(`Couldn't parse the credential: ${raw}`)
+  }
+
+  const hasProof = CredentialMapper.hasProof(rawDocument)
+  const isCredential = CredentialMapper.isCredential(rawDocument)
+  const isPresentation = CredentialMapper.isPresentation(rawDocument)
+
+  if (isCredential) {
+    return hasProof ? CredentialType.VC : CredentialType.C
+  } else if (isPresentation) {
+    return hasProof ? CredentialType.VP : CredentialType.P
   }
   throw new Error(`Couldn't determine the type of the credential: ${raw}`)
+}
+
+function parseRawDocument(raw: string): OriginalVerifiableCredential | OriginalVerifiablePresentation {
+  if (CredentialMapper.isJwtEncoded(raw) || CredentialMapper.isSdJwtEncoded(raw)) {
+    return raw
+  }
+  try {
+    return JSON.parse(raw)
+  } catch (e) {
+    throw new Error(`Can't parse the raw credential: ${raw}`)
+  }
 }
 
 function determineCredentialDocumentFormat(documentFormat: DocumentFormat): CredentialDocumentFormat {
