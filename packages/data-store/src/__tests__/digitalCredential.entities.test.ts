@@ -11,6 +11,7 @@ import {
 import { computeEntryHash } from '@veramo/utils'
 import { AddCredentialArgs } from '../types/digitalCredential/IAbstractDigitalCredentialStore'
 import { nonPersistedDigitalCredentialEntityFromAddArgs } from '../utils/digitalCredential/MappingUtils'
+import { createHash } from 'crypto'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource
@@ -238,6 +239,9 @@ describe('Database entities tests', (): void => {
       issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
+      opts: {
+        hasher: (data, algorithm) => createHash(algorithm).update(data).digest(),
+      },
     })
     expect(digitalCredential.credentialType).toEqual(CredentialType.VC)
     expect(digitalCredential.issuedAt).toEqual(new Date('2023-10-24T12:45:32.000Z'))

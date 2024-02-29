@@ -1,4 +1,5 @@
 import { CredentialCorrelationType, CredentialStateType, DigitalCredential } from './digitalCredential'
+import { Hasher } from '@sphereon/ssi-types'
 
 export type GetCredentialArgs = { id: string } | { hash: string }
 
@@ -26,6 +27,7 @@ export type AddCredentialArgs = {
   state?: CredentialStateType
   verifiedAt?: Date
   revokedAt?: Date
+  opts?: { maxTimeSkewInMS?: number; hasher?: Hasher }
 }
 
 export type UpdateCredentialStateArgs = GetCredentialArgs & { verifiedState: CredentialStateType; verifiedAt?: Date; revokedAt?: Date }

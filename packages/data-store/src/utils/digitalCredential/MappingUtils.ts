@@ -17,7 +17,6 @@ import {
   NonPersistedDigitalCredential,
 } from '../../types/digitalCredential/digitalCredential'
 import { computeEntryHash } from '@veramo/utils'
-import { createHash } from 'crypto'
 
 function determineCredentialType(raw: string): CredentialType {
   const rawDocument = parseRawDocument(raw)
@@ -64,6 +63,8 @@ function determineCredentialDocumentFormat(documentFormat: DocumentFormat): Cred
 function getExpiresAt(uniformDocument: IVerifiableCredential | IVerifiablePresentation | SdJwtDecodedVerifiableCredentialPayload): Date | undefined {
   if ('expirationDate' in uniformDocument) {
     return new Date(uniformDocument.expirationDate)
+  } else if ('validUntil' in uniformDocument) {
+    return new Date(uniformDocument.validUntil)
   } else if ('exp' in uniformDocument) {
     return new Date(uniformDocument.exp)
   }
@@ -77,6 +78,8 @@ function getIssuedAt(uniformDocument: IVerifiableCredential | IVerifiablePresent
     return new Date(CredentialMapper.getFirstProof(uniformDocument as IVerifiableCredential | IVerifiablePresentation)!.created)
   } else if ('validFrom' in uniformDocument) {
     return new Date(uniformDocument['validFrom'])
+  } else if ('nbf' in uniformDocument) {
+    return new Date(uniformDocument['nbf'] * 1000)
   } else if ('iat' in uniformDocument) {
     return new Date(uniformDocument['iat'] * 1000)
   }
@@ -84,19 +87,15 @@ function getIssuedAt(uniformDocument: IVerifiableCredential | IVerifiablePresent
   return undefined
 }
 
-export const handleSdJwt = (rawCredential: string): SdJwtDecodedVerifiableCredentialPayload => {
-  // todo ask about the hasher
-  return CredentialMapper.isSdJwtEncoded(rawCredential)
-    ? decodeSdJwtVc(rawCredential, (data, algorithm) => createHash(algorithm).update(data).digest()).decodedPayload
-    : JSON.parse(rawCredential)
-}
-
 export const nonPersistedDigitalCredentialEntityFromAddArgs = (addCredentialArgs: AddCredentialArgs): NonPersistedDigitalCredential => {
   const credentialType: CredentialType = determineCredentialType(addCredentialArgs.raw)
   const documentFormat: DocumentFormat = CredentialMapper.detectDocumentType(addCredentialArgs.raw)
+  if (documentFormat === DocumentFormat.SD_JWT_VC && !addCredentialArgs.opts?.hasher) {
+    throw new Error('No hasher function is provided for SD_JWT credential.')
+  }
   const uniformDocument =
     documentFormat === DocumentFormat.SD_JWT_VC
-      ? handleSdJwt(addCredentialArgs.raw)
+      ? decodeSdJwtVc(addCredentialArgs.raw, addCredentialArgs.opts!.hasher!).decodedPayload
       : credentialType === CredentialType.VC || credentialType === CredentialType.C
       ? CredentialMapper.toUniformCredential(addCredentialArgs.raw)
       : CredentialMapper.toUniformPresentation(addCredentialArgs.raw)
