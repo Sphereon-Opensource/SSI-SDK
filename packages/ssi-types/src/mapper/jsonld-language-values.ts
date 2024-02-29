@@ -6,7 +6,7 @@ export type LanguageValueClaim = {
 }
 
 export const isLanguageValueObject = (claim?: unknown): claim is LanguageValueClaim => {
-    if (!claim || !ObjectUtils.isObject(claim)) {
+    if (!claim || !ObjectUtils.isObject(claim) || Array.isArray(claim)) {
         return false
     }
     const keys = Object.keys(claim)
@@ -21,7 +21,7 @@ export const isLanguageValueObject = (claim?: unknown): claim is LanguageValueCl
 }
 
 export const isLanguageValueObjects = (claim?: unknown): claim is LanguageValueClaim[] => {
-    if (!Array.isArray(claim)) {
+    if (!claim || !Array.isArray(claim)) {
         return false
     }
     return claim.every(val => isLanguageValueObject(val))
@@ -33,7 +33,7 @@ export const toLanguageValueObject = (claim?: unknown): LanguageValueClaim | und
 
 export const toLanguageValueObjects = (claim?: unknown): LanguageValueClaim[] | undefined => {
     if (isLanguageValueObject(claim)) {
-        return [toLanguageValueObject(claim)!]
+        return ObjectUtils.asArray(toLanguageValueObject(claim) as LanguageValueClaim)
     } else if (isLanguageValueObjects(claim)) {
         return claim
     }
@@ -76,9 +76,9 @@ export const mapLanguageValues = (claimsOrCredential: object, opts?: {
     fallbackToFirstObject?: boolean,
     noDeepClone?: boolean
 }): any => {
-    const result = opts?.noDeepClone ? {...claimsOrCredential} : JSON.parse(JSON.stringify(claimsOrCredential))
-    Object.keys(claimsOrCredential).every(key => {
-        result[key] = mapLanguageValue(result[key])
+    const result = opts?.noDeepClone ? claimsOrCredential : JSON.parse(JSON.stringify(claimsOrCredential))
+    Object.keys(claimsOrCredential).forEach(key => {
+        result[key] = mapLanguageValue(result[key], opts)
         if (ObjectUtils.isObject(result[key]) || Array.isArray(result[key])) {
             result[key] = mapLanguageValues(result[key], {...opts, noDeepClone: true})
         }
