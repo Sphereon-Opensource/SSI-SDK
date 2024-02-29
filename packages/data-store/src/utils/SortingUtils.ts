@@ -5,7 +5,6 @@ export const parseAndValidateOrderOptions = <T extends BaseEntity>(order: string
   const orderOptions: FindOptionsOrder<T> = {}
 
   orderPairs.forEach(([field, direction]) => {
-    console.log(`[${field},${direction}]`)
     const dir = direction.toUpperCase()
     if (dir !== 'ASC' && dir !== 'DESC') {
       throw new Error(`Invalid order direction: '${direction}'. Must be 'asc' or 'desc'.`)
