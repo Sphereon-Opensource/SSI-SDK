@@ -3,7 +3,7 @@ export class ObjectUtils {
     return Array.isArray(value) ? value : [value]
   }
 
-  public static isObject(value: unknown) {
+  public static isObject(value: unknown): value is object {
     return Object.prototype.toString.call(value) === '[object Object]'
   }
 
