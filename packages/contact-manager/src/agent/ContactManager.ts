@@ -104,13 +104,7 @@ export class ContactManager implements IAgentPlugin {
 
   /** {@inheritDoc IContactManager.cmAddContact} */
   private async cmAddContact(args: AddContactArgs, context: RequiredContext): Promise<Contact> {
-    const {
-      uri,
-      contactType,
-      identities,
-      electronicAddresses,
-      physicalAddresses
-    } = args
+    const { uri, contactType, identities, electronicAddresses, physicalAddresses } = args
 
     return this.store.addParty({
       uri,

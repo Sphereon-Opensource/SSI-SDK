@@ -16,7 +16,7 @@ import {
   PartyRelationship,
   PartyType,
   PartyTypeEnum,
-  PhysicalAddress
+  PhysicalAddress,
 } from './contact'
 
 export type FindPartyArgs = Array<PartialParty>

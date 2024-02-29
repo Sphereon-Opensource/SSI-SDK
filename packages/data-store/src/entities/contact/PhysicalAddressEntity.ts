@@ -8,7 +8,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm'
 import { getConstraint } from '../../utils/ValidatorUtils'
 import { PhysicalAddressType, ValidationConstraint } from '../../types'

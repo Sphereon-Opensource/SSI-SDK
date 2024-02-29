@@ -12,7 +12,7 @@ import {
   Party,
   PartyRelationship,
   PartyTypeEnum,
-  PhysicalAddress
+  PhysicalAddress,
 } from '../../../data-store/src'
 import { AddContactArgs, IContactManager } from '../../src'
 
@@ -328,10 +328,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       // FIXME why does this filter not work on only first name?
       const defaultContactFilter: GetPartiesArgs = {
-        filter: [
-          { contact: { firstName: 'default_first_name' } },
-          { contact: { middleName: 'default_middle_name' } },
-        ],
+        filter: [{ contact: { firstName: 'default_first_name' } }, { contact: { middleName: 'default_middle_name' } }],
       }
       const otherContacts: Array<Party> = await agent.cmGetContacts(defaultContactFilter)
 
@@ -346,10 +343,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       // FIXME why does this filter not work on only first name?
       const relationContactFilter: GetPartiesArgs = {
-        filter: [
-          { contact: { firstName: 'relation_first_name' } },
-          { contact: { middleName: 'relation_middle_name' } }
-        ],
+        filter: [{ contact: { firstName: 'relation_first_name' } }, { contact: { middleName: 'relation_middle_name' } }],
       }
       const result: Array<Party> = await agent.cmGetContacts(relationContactFilter)
 
@@ -378,10 +372,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       // FIXME why does this filter not work on only first name?
       const defaultContactFilter: GetPartiesArgs = {
-        filter: [
-          { contact: { firstName: 'default_first_name' } },
-          { contact: { middleName: 'default_middle_name' } },
-        ],
+        filter: [{ contact: { firstName: 'default_first_name' } }, { contact: { middleName: 'default_middle_name' } }],
       }
       const otherContacts: Array<Party> = await agent.cmGetContacts(defaultContactFilter)
 
@@ -396,10 +387,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       // FIXME why does this filter not work on only first name?
       const relationContactFilter: GetPartiesArgs = {
-        filter: [
-          { contact: { firstName: 'relation_first_name' } },
-          { contact: { middleName: 'relation_middle_name' } },
-        ],
+        filter: [{ contact: { firstName: 'relation_first_name' } }, { contact: { middleName: 'relation_middle_name' } }],
       }
       const retrievedContact: Array<Party> = await agent.cmGetContacts(relationContactFilter)
 
@@ -433,7 +421,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const electronicAddress: NonPersistedElectronicAddress = {
         type: 'email',
-        electronicAddress: 'example_electronic_address'
+        electronicAddress: 'example_electronic_address',
       }
 
       const result: ElectronicAddress = await agent.cmAddElectronicAddress({ contactId: savedContact.id, electronicAddress })
@@ -461,7 +449,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const electronicAddress: NonPersistedElectronicAddress = {
         type: 'email',
-        electronicAddress: 'example_electronic_address'
+        electronicAddress: 'example_electronic_address',
       }
 
       const savedElectronicAddress: ElectronicAddress = await agent.cmAddElectronicAddress({ contactId: defaultContact.id, electronicAddress })
@@ -488,7 +476,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const electronicAddress: NonPersistedElectronicAddress = {
         type: 'email',
-        electronicAddress: 'example_electronic_address'
+        electronicAddress: 'example_electronic_address',
       }
 
       await agent.cmAddElectronicAddress({ contactId: savedContact.id, electronicAddress })
@@ -516,14 +504,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const electronicAddress: NonPersistedElectronicAddress = {
         type: 'email',
-        electronicAddress: 'example_electronic_address'
+        electronicAddress: 'example_electronic_address',
       }
 
       const savedElectronicAddress: ElectronicAddress = await agent.cmAddElectronicAddress({ contactId: savedContact.id, electronicAddress })
 
       const updatedElectronicAddress: ElectronicAddress = {
         ...savedElectronicAddress,
-        electronicAddress: 'updated_electronic_address'
+        electronicAddress: 'updated_electronic_address',
       }
 
       const result: ElectronicAddress = await agent.cmUpdateElectronicAddress({ electronicAddress: updatedElectronicAddress })
@@ -551,7 +539,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const electronicAddress: NonPersistedElectronicAddress = {
         type: 'email',
-        electronicAddress: 'example_electronic_address'
+        electronicAddress: 'example_electronic_address',
       }
 
       const savedElectronicAddress: ElectronicAddress = await agent.cmAddElectronicAddress({ contactId: savedContact.id, electronicAddress })
@@ -758,6 +746,5 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(removePhysicalAddressResult).toEqual(true)
       expect(contactResultAfterRemove.physicalAddresses.length).toEqual(0)
     })
-
   })
 }

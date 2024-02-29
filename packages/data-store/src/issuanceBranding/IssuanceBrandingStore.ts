@@ -376,14 +376,12 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     }
 
     const issuerLocaleBrandingRepository: Repository<IssuerLocaleBrandingEntity> = (await this.dbConnection).getRepository(IssuerLocaleBrandingEntity)
-    const addIssuerLocaleBranding: Array<Promise<void>> = localeBranding.map(
-      async (localeBranding: IBasicIssuerLocaleBranding): Promise<void> => {
-        const issuerLocaleBrandingEntity: IssuerLocaleBrandingEntity = issuerLocaleBrandingEntityFrom(localeBranding)
-        debug('Adding issuer locale branding', issuerLocaleBrandingEntity)
-        issuerLocaleBrandingEntity.issuerBranding = issuerBranding
-        await issuerLocaleBrandingRepository.save(issuerLocaleBrandingEntity, { transaction: true })
-      }
-    )
+    const addIssuerLocaleBranding: Array<Promise<void>> = localeBranding.map(async (localeBranding: IBasicIssuerLocaleBranding): Promise<void> => {
+      const issuerLocaleBrandingEntity: IssuerLocaleBrandingEntity = issuerLocaleBrandingEntityFrom(localeBranding)
+      debug('Adding issuer locale branding', issuerLocaleBrandingEntity)
+      issuerLocaleBrandingEntity.issuerBranding = issuerBranding
+      await issuerLocaleBrandingRepository.save(issuerLocaleBrandingEntity, { transaction: true })
+    })
 
     await Promise.all(addIssuerLocaleBranding)
 
