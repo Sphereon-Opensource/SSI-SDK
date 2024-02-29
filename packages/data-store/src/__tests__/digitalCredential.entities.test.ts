@@ -71,9 +71,9 @@ describe('Database entities tests', (): void => {
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     })
     expect(digitalCredential.credentialType).toEqual(CredentialType.VC)
-    expect(digitalCredential.issuedAt).toEqual(new Date('2024-02-20T14:53:28.000Z'))
+    expect(digitalCredential.validFrom).toEqual(new Date('2024-02-20T14:53:28.000Z'))
     expect(digitalCredential.documentFormat).toEqual(CredentialDocumentFormat.JWT)
-    expect(digitalCredential.expiresAt).toEqual(undefined)
+    expect(digitalCredential.validUntil).toEqual(undefined)
   })
 
   it('should assign correct values to DigitalCredential: jwt credential 2', () => {
@@ -86,9 +86,9 @@ describe('Database entities tests', (): void => {
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     })
     expect(digitalCredential.credentialType).toEqual(CredentialType.VC)
-    expect(digitalCredential.issuedAt).toEqual(new Date('2018-11-06T08:42:04.000Z'))
+    expect(digitalCredential.validFrom).toEqual(new Date('2018-11-06T08:42:04.000Z'))
     expect(digitalCredential.documentFormat).toEqual(CredentialDocumentFormat.JWT)
-    expect(digitalCredential.expiresAt).toEqual(new Date('2019-11-06T08:42:03.000Z'))
+    expect(digitalCredential.validUntil).toEqual(new Date('2019-11-06T08:42:03.000Z'))
   })
 
   it('should assign correct values to DigitalCredential: signed ldb credential', () => {
@@ -128,9 +128,9 @@ describe('Database entities tests', (): void => {
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     })
     expect(digitalCredential.credentialType).toEqual(CredentialType.VC)
-    expect(digitalCredential.issuedAt).toEqual(new Date('2022-01-07T11:54:12.000Z'))
+    expect(digitalCredential.validFrom).toEqual(new Date('2022-01-07T11:54:12.000Z'))
     expect(digitalCredential.documentFormat).toEqual(CredentialDocumentFormat.JSON_LD)
-    expect(digitalCredential.expiresAt).toEqual(undefined)
+    expect(digitalCredential.validUntil).toEqual(undefined)
   })
 
   it('should assign correct values to DigitalCredential: signed ldb presentation', () => {
@@ -226,9 +226,9 @@ describe('Database entities tests', (): void => {
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     })
     expect(digitalCredential.credentialType).toEqual(CredentialType.VP)
-    expect(digitalCredential.issuedAt).toEqual(new Date('2018-09-14T21:19:10.000Z'))
+    expect(digitalCredential.validFrom).toEqual(new Date('2018-09-14T21:19:10.000Z'))
     expect(digitalCredential.documentFormat).toEqual(CredentialDocumentFormat.JSON_LD)
-    expect(digitalCredential.expiresAt).toEqual(undefined)
+    expect(digitalCredential.validUntil).toEqual(undefined)
   })
 
   it('should assign correct values to DigitalCredential: signed sd_jwt credential', () => {
@@ -244,8 +244,8 @@ describe('Database entities tests', (): void => {
       },
     })
     expect(digitalCredential.credentialType).toEqual(CredentialType.VC)
-    expect(digitalCredential.issuedAt).toEqual(new Date('2023-10-24T12:45:32.000Z'))
+    expect(digitalCredential.validFrom).toEqual(new Date('2023-10-24T12:45:32.000Z'))
     expect(digitalCredential.documentFormat).toEqual(CredentialDocumentFormat.SD_JWT)
-    expect(digitalCredential.expiresAt).toEqual(undefined)
+    expect(digitalCredential.validUntil).toEqual(undefined)
   })
 })

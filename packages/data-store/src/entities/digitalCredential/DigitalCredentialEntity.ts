@@ -50,11 +50,11 @@ export class DigitalCredentialEntity extends BaseEntity {
   @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
   lastUpdatedAt!: Date
 
-  @Column('date', { name: 'expires_at', nullable: true })
-  expiresAt?: Date
+  @Column('date', { name: 'valid_until', nullable: true })
+  validUntil?: Date
 
-  @Column('date', { name: 'issued_at', nullable: true })
-  issuedAt?: Date
+  @Column('date', { name: 'valid_from', nullable: true })
+  validFrom?: Date
 
   @Column('date', { name: 'verified_at', nullable: true })
   verifiedAt?: Date

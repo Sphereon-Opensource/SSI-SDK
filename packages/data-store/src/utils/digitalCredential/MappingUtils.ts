@@ -4,6 +4,7 @@ import {
   CredentialMapper,
   decodeSdJwtVc,
   DocumentFormat,
+  IProof,
   IVerifiableCredential,
   IVerifiablePresentation,
   OriginalVerifiableCredential,
@@ -60,7 +61,7 @@ function determineCredentialDocumentFormat(documentFormat: DocumentFormat): Cred
   }
 }
 
-function getExpiresAt(uniformDocument: IVerifiableCredential | IVerifiablePresentation | SdJwtDecodedVerifiableCredentialPayload): Date | undefined {
+function getValidUntil(uniformDocument: IVerifiableCredential | IVerifiablePresentation | SdJwtDecodedVerifiableCredentialPayload): Date | undefined {
   if ('expirationDate' in uniformDocument) {
     return new Date(uniformDocument.expirationDate)
   } else if ('validUntil' in uniformDocument) {
@@ -71,11 +72,15 @@ function getExpiresAt(uniformDocument: IVerifiableCredential | IVerifiablePresen
   return undefined
 }
 
-function getIssuedAt(uniformDocument: IVerifiableCredential | IVerifiablePresentation | SdJwtDecodedVerifiableCredentialPayload): Date | undefined {
+function getValidFrom(uniformDocument: IVerifiableCredential | IVerifiablePresentation | SdJwtDecodedVerifiableCredentialPayload): Date | undefined {
+  let proof: IProof | undefined = undefined
+  if (uniformDocument.proof && !uniformDocument.vct) {
+    proof = Array.isArray(uniformDocument.proof) ? <IProof>uniformDocument.proof[0] : <IProof>uniformDocument.proof
+  }
   if ('issuanceDate' in uniformDocument) {
     return new Date(uniformDocument.issuanceDate)
-  } else if (uniformDocument.proof && CredentialMapper.getFirstProof(uniformDocument as IVerifiableCredential | IVerifiablePresentation)) {
-    return new Date(CredentialMapper.getFirstProof(uniformDocument as IVerifiableCredential | IVerifiablePresentation)!.created)
+  } else if (proof && proof.created) {
+    return new Date(proof.created)
   } else if ('validFrom' in uniformDocument) {
     return new Date(uniformDocument['validFrom'])
   } else if ('nbf' in uniformDocument) {
@@ -83,7 +88,6 @@ function getIssuedAt(uniformDocument: IVerifiableCredential | IVerifiablePresent
   } else if ('iat' in uniformDocument) {
     return new Date(uniformDocument['iat'] * 1000)
   }
-
   return undefined
 }
 
@@ -99,8 +103,8 @@ export const nonPersistedDigitalCredentialEntityFromAddArgs = (addCredentialArgs
       : credentialType === CredentialType.VC || credentialType === CredentialType.C
       ? CredentialMapper.toUniformCredential(addCredentialArgs.raw)
       : CredentialMapper.toUniformPresentation(addCredentialArgs.raw)
-  const issuedAt: Date | undefined = getIssuedAt(uniformDocument)
-  const expiresAt: Date | undefined = getExpiresAt(uniformDocument)
+  const validFrom: Date | undefined = getValidFrom(uniformDocument)
+  const validUntil: Date | undefined = getValidUntil(uniformDocument)
   return {
     ...addCredentialArgs,
     credentialType,
@@ -108,8 +112,8 @@ export const nonPersistedDigitalCredentialEntityFromAddArgs = (addCredentialArgs
     createdAt: new Date(),
     hash: computeEntryHash(addCredentialArgs.raw),
     uniformDocument: JSON.stringify(uniformDocument),
-    issuedAt,
-    expiresAt,
+    validFrom,
+    validUntil,
     lastUpdatedAt: new Date(),
   }
 }

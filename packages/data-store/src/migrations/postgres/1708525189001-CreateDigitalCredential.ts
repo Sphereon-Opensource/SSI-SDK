@@ -25,8 +25,8 @@ export class CreateDigitalCredential1708525189001 implements MigrationInterface 
         "tenant_id" text,
         "created_at" TIMESTAMP NOT NULL DEFAULT now(),
         "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-        "issued_at" DATE,
-        "expires_at" DATE,
+        "valid_from" DATE,
+        "valid_until" DATE,
         "verified_at" DATE,
         "revoked_at" DATE,
         PRIMARY KEY ("id")

@@ -736,7 +736,7 @@ export class CredentialMapper {
     return !!CredentialMapper.getFirstProof(document)?.jwt
   }
 
-  public static getFirstProof(
+  private static getFirstProof(
     document: W3CVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiableCredential | JwtDecodedVerifiablePresentation
   ): IProof | undefined {
     if (!document || typeof document === 'string') {

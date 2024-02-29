@@ -15,8 +15,8 @@ export type DigitalCredential = {
   tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
-  expiresAt?: Date
-  issuedAt?: Date
+  validUntil?: Date
+  validFrom?: Date
   verifiedAt?: Date
   revokedAt?: Date
 }
