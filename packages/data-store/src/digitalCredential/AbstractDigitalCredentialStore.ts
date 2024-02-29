@@ -1,17 +1,17 @@
 import {
-  AddDigitalCredentialArgs,
-  GetDigitalCredentialArgs,
-  GetDigitalCredentialsArgs,
-  GetDigitalCredentialsResponse,
-  RemoveDigitalCredentialArgs,
-  UpdateDigitalCredentialStateArgs,
+  AddCredentialArgs,
+  GetCredentialArgs,
+  GetCredentialsArgs,
+  GetCredentialsResponse,
+  RemoveCredentialArgs,
+  UpdateCredentialStateArgs,
 } from '../types/digitalCredential/IAbstractDigitalCredentialStore'
 import { DigitalCredentialEntity } from '../entities/digitalCredential/DigitalCredentialEntity'
 
 export abstract class AbstractDigitalCredentialStore {
-  abstract getDigitalCredential(args: GetDigitalCredentialArgs): Promise<DigitalCredentialEntity>
-  abstract getDigitalCredentials(args?: GetDigitalCredentialsArgs): Promise<GetDigitalCredentialsResponse>
-  abstract addDigitalCredential(args: AddDigitalCredentialArgs): Promise<DigitalCredentialEntity>
-  abstract updateDigitalCredentialState(args: UpdateDigitalCredentialStateArgs): Promise<DigitalCredentialEntity>
-  abstract removeDigitalCredential(args: RemoveDigitalCredentialArgs): Promise<boolean>
+  abstract getCredential(args: GetCredentialArgs): Promise<DigitalCredentialEntity>
+  abstract getCredentials(args?: GetCredentialsArgs): Promise<GetCredentialsResponse>
+  abstract addCredential(args: AddCredentialArgs): Promise<DigitalCredentialEntity>
+  abstract updateCredentialState(args: UpdateCredentialStateArgs): Promise<DigitalCredentialEntity>
+  abstract removeCredential(args: RemoveCredentialArgs): Promise<boolean>
 }

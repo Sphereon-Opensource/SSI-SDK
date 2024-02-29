@@ -9,7 +9,7 @@ import {
   NonPersistedDigitalCredential,
 } from '../types/digitalCredential/digitalCredential'
 import { computeEntryHash } from '@veramo/utils'
-import { AddDigitalCredentialArgs } from '../types/digitalCredential/IAbstractDigitalCredentialStore'
+import { AddCredentialArgs } from '../types/digitalCredential/IAbstractDigitalCredentialStore'
 import { nonPersistedDigitalCredentialEntityFromAddArgs } from '../utils/digitalCredential/MappingUtils'
 
 describe('Database entities tests', (): void => {
@@ -36,7 +36,7 @@ describe('Database entities tests', (): void => {
   it('should save digital credential to database', async (): Promise<void> => {
     const rawCredential: string =
       'eyJraWQiOiJkaWQ6a2V5Ono2TWtyaGt5M3B1c20yNk1laUZhWFUzbjJuZWtyYW13RlVtZ0dyZUdHa0RWNnpRaiN6Nk1rcmhreTNwdXNtMjZNZWlGYVhVM24ybmVrcmFtd0ZVbWdHcmVHR2tEVjZ6UWoiLCJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vc3BoZXJlb24tb3BlbnNvdXJjZS5naXRodWIuaW8vc3NpLW1vYmlsZS13YWxsZXQvY29udGV4dC9zcGhlcmVvbi13YWxsZXQtaWRlbnRpdHktdjEuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTcGhlcmVvbldhbGxldElkZW50aXR5Q3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiZW1haWxBZGRyZXNzIjoic0BrIn19LCJzdWIiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJqdGkiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJuYmYiOjE3MDg0NDA4MDgsImlzcyI6ImRpZDprZXk6ejZNa3Joa3kzcHVzbTI2TWVpRmFYVTNuMm5la3JhbXdGVW1nR3JlR0drRFY2elFqIn0.G0M84XVAxSmzGY-NQuB9NBofNrINSn6lvxW6761Vlq6ypvYgtc2xNdpiRmw8ryVNfnpzrr4Z5cB1RlrC05rJAw'
-    const digitalCredential: AddDigitalCredentialArgs = {
+    const digitalCredential: AddCredentialArgs = {
       raw: rawCredential,
       issuerCorrelationType: CredentialCorrelationType.DID,
       subjectCorrelationType: CredentialCorrelationType.DID,

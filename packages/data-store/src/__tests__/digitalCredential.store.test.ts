@@ -4,9 +4,9 @@ import { DataStoreDigitalCredentialEntities } from '../index'
 import { DigitalCredentialStore } from '../digitalCredential/DigitalCredentialStore'
 import { CredentialCorrelationType, CredentialStateType, CredentialType, DigitalCredential } from '../types/digitalCredential/digitalCredential'
 import {
-  AddDigitalCredentialArgs,
-  GetDigitalCredentialsArgs,
-  GetDigitalCredentialsResponse,
+  AddCredentialArgs,
+  GetCredentialsArgs,
+  GetCredentialsResponse,
 } from '../types/digitalCredential/IAbstractDigitalCredentialStore'
 import { IVerifiablePresentation } from '@sphereon/ssi-types'
 
@@ -36,7 +36,7 @@ describe('Database entities tests', (): void => {
   it('should store digital credential', async (): Promise<void> => {
     const rawCredential: string =
       'eyJraWQiOiJkaWQ6a2V5Ono2TWtyaGt5M3B1c20yNk1laUZhWFUzbjJuZWtyYW13RlVtZ0dyZUdHa0RWNnpRaiN6Nk1rcmhreTNwdXNtMjZNZWlGYVhVM24ybmVrcmFtd0ZVbWdHcmVHR2tEVjZ6UWoiLCJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vc3BoZXJlb24tb3BlbnNvdXJjZS5naXRodWIuaW8vc3NpLW1vYmlsZS13YWxsZXQvY29udGV4dC9zcGhlcmVvbi13YWxsZXQtaWRlbnRpdHktdjEuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTcGhlcmVvbldhbGxldElkZW50aXR5Q3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiZW1haWxBZGRyZXNzIjoic0BrIn19LCJzdWIiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJqdGkiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJuYmYiOjE3MDg0NDA4MDgsImlzcyI6ImRpZDprZXk6ejZNa3Joa3kzcHVzbTI2TWVpRmFYVTNuMm5la3JhbXdGVW1nR3JlR0drRFY2elFqIn0.G0M84XVAxSmzGY-NQuB9NBofNrINSn6lvxW6761Vlq6ypvYgtc2xNdpiRmw8ryVNfnpzrr4Z5cB1RlrC05rJAw'
-    const digitalCredential: AddDigitalCredentialArgs = {
+    const digitalCredential: AddCredentialArgs = {
       raw: rawCredential,
       issuerCorrelationType: CredentialCorrelationType.DID,
       subjectCorrelationType: CredentialCorrelationType.DID,
@@ -45,12 +45,12 @@ describe('Database entities tests', (): void => {
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     }
 
-    const savedDigitalCredential: DigitalCredential = await digitalCredentialStore.addDigitalCredential(digitalCredential)
+    const savedDigitalCredential: DigitalCredential = await digitalCredentialStore.addCredential(digitalCredential)
     expect(savedDigitalCredential).toBeDefined()
   })
 
   it('should get all digital credentials', async (): Promise<void> => {
-    const addCredentialArgs1: AddDigitalCredentialArgs = {
+    const addCredentialArgs1: AddCredentialArgs = {
       raw: 'eyJraWQiOiJkaWQ6a2V5Ono2TWtyaGt5M3B1c20yNk1laUZhWFUzbjJuZWtyYW13RlVtZ0dyZUdHa0RWNnpRaiN6Nk1rcmhreTNwdXNtMjZNZWlGYVhVM24ybmVrcmFtd0ZVbWdHcmVHR2tEVjZ6UWoiLCJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vc3BoZXJlb24tb3BlbnNvdXJjZS5naXRodWIuaW8vc3NpLW1vYmlsZS13YWxsZXQvY29udGV4dC9zcGhlcmVvbi13YWxsZXQtaWRlbnRpdHktdjEuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTcGhlcmVvbldhbGxldElkZW50aXR5Q3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiZW1haWxBZGRyZXNzIjoic0BrIn19LCJzdWIiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJqdGkiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJuYmYiOjE3MDg0NDA4MDgsImlzcyI6ImRpZDprZXk6ejZNa3Joa3kzcHVzbTI2TWVpRmFYVTNuMm5la3JhbXdGVW1nR3JlR0drRFY2elFqIn0.G0M84XVAxSmzGY-NQuB9NBofNrINSn6lvxW6761Vlq6ypvYgtc2xNdpiRmw8ryVNfnpzrr4Z5cB1RlrC05rJAw',
       issuerCorrelationType: CredentialCorrelationType.DID,
       subjectCorrelationType: CredentialCorrelationType.DID,
@@ -58,7 +58,7 @@ describe('Database entities tests', (): void => {
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     }
-    const addCredentialArgs2: AddDigitalCredentialArgs = {
+    const addCredentialArgs2: AddCredentialArgs = {
       raw: 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDkyMTQxNzgsInZjIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJHdWVzdENyZWRlbnRpYWwiXSwiY3JlZGVudGlhbFN1YmplY3QiOnsiZmlyc3ROYW1lIjoiUyIsImxhc3ROYW1lIjoiSyIsIkUtbWFpbCI6IiIsInR5cGUiOiJTcGhlcmVvbiBHdWVzdCIsImlkIjoiZGlkOmp3azpleUpoYkdjaU9pSkZVekkxTmtzaUxDSjFjMlVpT2lKemFXY2lMQ0pyZEhraU9pSkZReUlzSW1OeWRpSTZJbk5sWTNBeU5UWnJNU0lzSW5naU9pSldjWGhIZVhWUk5WUTBXVEpzZGpKSFkybE9TaTFEYURCVWFGVm1kVk5RWm0wdFJYVlNZbGRNWlVOM0lpd2llU0k2SW01T1FWQnBiR0V5VDBRNGRXOXBXbk5LVm1aUmFrbDJTMUZUZWxBelFqVlBXbVZSYkVoQ1VUbHliVFFpZlEifX0sIkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJHdWVzdENyZWRlbnRpYWwiXSwiZXhwaXJhdGlvbkRhdGUiOiIyMDI0LTAyLTI5VDEzOjQyOjU4LjgzNVoiLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiRS1tYWlsIjoiIiwidHlwZSI6IlNwaGVyZW9uIEd1ZXN0IiwiaWQiOiJkaWQ6andrOmV5SmhiR2NpT2lKRlV6STFOa3NpTENKMWMyVWlPaUp6YVdjaUxDSnJkSGtpT2lKRlF5SXNJbU55ZGlJNkluTmxZM0F5TlRack1TSXNJbmdpT2lKV2NYaEhlWFZSTlZRMFdUSnNkakpIWTJsT1NpMURhREJVYUZWbWRWTlFabTB0UlhWU1lsZE1aVU4zSWl3aWVTSTZJbTVPUVZCcGJHRXlUMFE0ZFc5cFduTktWbVpSYWtsMlMxRlRlbEF6UWpWUFdtVlJiRWhDVVRseWJUUWlmUSJ9LCJpc3N1ZXIiOiJkaWQ6andrOmV5SmhiR2NpT2lKRlV6STFOaUlzSW5WelpTSTZJbk5wWnlJc0ltdDBlU0k2SWtWRElpd2lZM0oySWpvaVVDMHlOVFlpTENKNElqb2lWRWN5U0RKNE1tUlhXRTR6ZFVOeFduQnhSakY1YzBGUVVWWkVTa1ZPWDBndFEwMTBZbWRxWWkxT1p5SXNJbmtpT2lJNVRUaE9lR1F3VUU0eU1rMDViRkJFZUdSd1JIQnZWRXg2TVRWM1pubGFTbk0yV21oTFNWVktNek00SW4wIiwiaXNzdWFuY2VEYXRlIjoiMjAyNC0wMi0yMlQxMzo0Mjo1OC44MzVaIiwic3ViIjoiZGlkOmp3azpleUpoYkdjaU9pSkZVekkxTmtzaUxDSjFjMlVpT2lKemFXY2lMQ0pyZEhraU9pSkZReUlzSW1OeWRpSTZJbk5sWTNBeU5UWnJNU0lzSW5naU9pSldjWGhIZVhWUk5WUTBXVEpzZGpKSFkybE9TaTFEYURCVWFGVm1kVk5RWm0wdFJYVlNZbGRNWlVOM0lpd2llU0k2SW01T1FWQnBiR0V5VDBRNGRXOXBXbk5LVm1aUmFrbDJTMUZUZWxBelFqVlBXbVZSYkVoQ1VUbHliVFFpZlEiLCJuYmYiOjE3MDg2MDkzNzgsImlzcyI6ImRpZDpqd2s6ZXlKaGJHY2lPaUpGVXpJMU5pSXNJblZ6WlNJNkluTnBaeUlzSW10MGVTSTZJa1ZESWl3aVkzSjJJam9pVUMweU5UWWlMQ0o0SWpvaVZFY3lTREo0TW1SWFdFNHpkVU54V25CeFJqRjVjMEZRVVZaRVNrVk9YMGd0UTAxMFltZHFZaTFPWnlJc0lua2lPaUk1VFRoT2VHUXdVRTR5TWswNWJGQkVlR1J3UkhCdlZFeDZNVFYzWm5sYVNuTTJXbWhMU1ZWS016TTRJbjAifQ.GgLRWHO674wu6QF_xUGbCi_2zDD8jNf_xoWNvH5K605xvBoz6qKx0ndmxLeGQWWUA-4VuAkznf3ROcp9wpgbEw',
       issuerCorrelationType: CredentialCorrelationType.DID,
       subjectCorrelationType: CredentialCorrelationType.DID,
@@ -67,17 +67,17 @@ describe('Database entities tests', (): void => {
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     }
 
-    const digitalCredential1: DigitalCredential = await digitalCredentialStore.addDigitalCredential(addCredentialArgs1)
+    const digitalCredential1: DigitalCredential = await digitalCredentialStore.addCredential(addCredentialArgs1)
     expect(digitalCredential1).toBeDefined()
-    const digitalCredential2: DigitalCredential = await digitalCredentialStore.addDigitalCredential(addCredentialArgs2)
+    const digitalCredential2: DigitalCredential = await digitalCredentialStore.addCredential(addCredentialArgs2)
     expect(digitalCredential2).toBeDefined()
 
-    const result: GetDigitalCredentialsResponse = await digitalCredentialStore.getDigitalCredentials()
+    const result: GetCredentialsResponse = await digitalCredentialStore.getCredentials()
     expect(result.total).toEqual(2)
   })
 
   it('should get digital credentials by filters and pagination', async (): Promise<void> => {
-    const addCredentialArgs1: AddDigitalCredentialArgs = {
+    const addCredentialArgs1: AddCredentialArgs = {
       raw: 'eyJraWQiOiJkaWQ6a2V5Ono2TWtyaGt5M3B1c20yNk1laUZhWFUzbjJuZWtyYW13RlVtZ0dyZUdHa0RWNnpRaiN6Nk1rcmhreTNwdXNtMjZNZWlGYVhVM24ybmVrcmFtd0ZVbWdHcmVHR2tEVjZ6UWoiLCJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vc3BoZXJlb24tb3BlbnNvdXJjZS5naXRodWIuaW8vc3NpLW1vYmlsZS13YWxsZXQvY29udGV4dC9zcGhlcmVvbi13YWxsZXQtaWRlbnRpdHktdjEuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTcGhlcmVvbldhbGxldElkZW50aXR5Q3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiZW1haWxBZGRyZXNzIjoic0BrIn19LCJzdWIiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJqdGkiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJuYmYiOjE3MDg0NDA4MDgsImlzcyI6ImRpZDprZXk6ejZNa3Joa3kzcHVzbTI2TWVpRmFYVTNuMm5la3JhbXdGVW1nR3JlR0drRFY2elFqIn0.G0M84XVAxSmzGY-NQuB9NBofNrINSn6lvxW6761Vlq6ypvYgtc2xNdpiRmw8ryVNfnpzrr4Z5cB1RlrC05rJAw',
       issuerCorrelationType: CredentialCorrelationType.DID,
       subjectCorrelationType: CredentialCorrelationType.DID,
@@ -124,7 +124,7 @@ describe('Database entities tests', (): void => {
         verificationMethod: 'did:example:holder#key-1',
       },
     }
-    const addCredentialArgs2: AddDigitalCredentialArgs = {
+    const addCredentialArgs2: AddCredentialArgs = {
       raw: JSON.stringify(sampleVP),
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
       issuerCorrelationType: CredentialCorrelationType.DID,
@@ -132,7 +132,7 @@ describe('Database entities tests', (): void => {
       subjectCorrelationType: CredentialCorrelationType.DID,
       subjectCorrelationId: 'did:example:holder',
     }
-    const addCredentialArgs3: AddDigitalCredentialArgs = {
+    const addCredentialArgs3: AddCredentialArgs = {
       raw: 'eyJhbGciOiJFZERTQSIsInR5cCI6InZjK3NkLWp3dCIsImtpZCI6IiN6Nk1rdHF0WE5HOENEVVk5UHJydG9TdEZ6ZUNuaHBNbWd4WUwxZ2lrY1czQnp2TlcifQ.eyJ2Y3QiOiJJZGVudGl0eUNyZWRlbnRpYWwiLCJmYW1pbHlfbmFtZSI6IkRvZSIsInBob25lX251bWJlciI6IisxLTIwMi01NTUtMDEwMSIsImFkZHJlc3MiOnsic3RyZWV0X2FkZHJlc3MiOiIxMjMgTWFpbiBTdCIsImxvY2FsaXR5IjoiQW55dG93biIsIl9zZCI6WyJOSm5tY3QwQnFCTUUxSmZCbEM2alJRVlJ1ZXZwRU9OaVl3N0E3TUh1SnlRIiwib201Wnp0WkhCLUdkMDBMRzIxQ1ZfeE00RmFFTlNvaWFPWG5UQUpOY3pCNCJdfSwiY25mIjp7Imp3ayI6eyJrdHkiOiJPS1AiLCJjcnYiOiJFZDI1NTE5IiwieCI6Im9FTlZzeE9VaUg1NFg4d0pMYVZraWNDUmswMHdCSVE0c1JnYms1NE44TW8ifX0sImlzcyI6ImRpZDprZXk6ejZNa3RxdFhORzhDRFVZOVBycnRvU3RGemVDbmhwTW1neFlMMWdpa2NXM0J6dk5XIiwiaWF0IjoxNjk4MTUxNTMyLCJfc2RfYWxnIjoic2hhLTI1NiIsIl9zZCI6WyIxQ3VyMmsyQTJvSUI1Q3NoU0lmX0FfS2ctbDI2dV9xS3VXUTc5UDBWZGFzIiwiUjF6VFV2T1lIZ2NlcGowakh5cEdIejlFSHR0VktmdDB5c3diYzlFVFBiVSIsImVEcVFwZFRYSlhiV2hmLUVzSTd6dzVYNk92WW1GTi1VWlFRTWVzWHdLUHciLCJwZERrMl9YQUtIbzdnT0Fmd0YxYjdPZENVVlRpdDJrSkhheFNFQ1E5eGZjIiwicHNhdUtVTldFaTA5bnUzQ2w4OXhLWGdtcFdFTlpsNXV5MU4xbnluX2pNayIsInNOX2dlMHBIWEY2cW1zWW5YMUE5U2R3SjhjaDhhRU5reGJPRHNUNzRZd0kiXX0.coOK8NzJmEWz4qx-qRhjo-RK7aejrSkQM9La9Cw3eWmzcja9DXrkBoQZKbIJtNoSzSPLjwK2V71W78z0miZsDQ~WyJzYWx0IiwiaXNfb3Zlcl82NSIsdHJ1ZV0~WyJzYWx0IiwiaXNfb3Zlcl8yMSIsdHJ1ZV0~WyJzYWx0IiwiZW1haWwiLCJqb2huZG9lQGV4YW1wbGUuY29tIl0~WyJzYWx0IiwiY291bnRyeSIsIlVTIl0~WyJzYWx0IiwiZ2l2ZW5fbmFtZSIsIkpvaG4iXQ~eyJhbGciOiJFZERTQSIsInR5cCI6ImtiK2p3dCJ9.eyJpYXQiOjE2OTgxNTE1MzIsIm5vbmNlIjoic2FsdCIsImF1ZCI6ImRpZDprZXk6elVDNzRWRXFxaEVIUWNndjR6YWdTUGtxRkp4dU5XdW9CUEtqSnVIRVRFVWVITG9TcVd0OTJ2aVNzbWFXank4MnkiLCJfc2RfaGFzaCI6Ii1kTUd4OGZhUnpOQm91a2EwU0R6V2JkS3JYckw1TFVmUlNQTHN2Q2xPMFkifQ.TQQLqc4ZzoKjQfAghAzC_4aaU3KCS8YqzxAJtzT124guzkv9XSHtPN8d3z181_v-ca2ATXjTRoRciozitE6wBA',
       issuerCorrelationType: CredentialCorrelationType.DID,
       subjectCorrelationType: CredentialCorrelationType.DID,
@@ -141,33 +141,33 @@ describe('Database entities tests', (): void => {
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     }
 
-    const savedDigitalCredential1: DigitalCredential = await digitalCredentialStore.addDigitalCredential(addCredentialArgs1)
+    const savedDigitalCredential1: DigitalCredential = await digitalCredentialStore.addCredential(addCredentialArgs1)
     expect(savedDigitalCredential1).toBeDefined()
-    const savedDigitalCredential2: DigitalCredential = await digitalCredentialStore.addDigitalCredential(addCredentialArgs2)
+    const savedDigitalCredential2: DigitalCredential = await digitalCredentialStore.addCredential(addCredentialArgs2)
     expect(savedDigitalCredential2).toBeDefined()
-    const savedDigitalCredential3: DigitalCredential = await digitalCredentialStore.addDigitalCredential(addCredentialArgs3)
+    const savedDigitalCredential3: DigitalCredential = await digitalCredentialStore.addCredential(addCredentialArgs3)
     expect(savedDigitalCredential3).toBeDefined()
-    const args1: GetDigitalCredentialsArgs = {
+    const args1: GetCredentialsArgs = {
       filter: [{ credentialType: CredentialType.VP }],
     }
-    const result1: GetDigitalCredentialsResponse = await digitalCredentialStore.getDigitalCredentials(args1)
+    const result1: GetCredentialsResponse = await digitalCredentialStore.getCredentials(args1)
     expect(result1.total).toEqual(1)
     expect(result1.hasMore).toEqual(true)
-    const args2: GetDigitalCredentialsArgs = {
+    const args2: GetCredentialsArgs = {
       skip: 1,
       take: 10,
     }
-    const result2: GetDigitalCredentialsResponse = await digitalCredentialStore.getDigitalCredentials(args2)
+    const result2: GetCredentialsResponse = await digitalCredentialStore.getCredentials(args2)
     expect(result2.data.length).toEqual(2)
     expect(result2.total).toEqual(3)
     expect(result2.hasMore).toEqual(false)
   })
 
   it('should return no digital credentials if filter does not match', async (): Promise<void> => {
-    const args: GetDigitalCredentialsArgs = {
+    const args: GetCredentialsArgs = {
       filter: [{ issuerCorrelationId: 'unknown_id' }],
     }
-    const result: GetDigitalCredentialsResponse = await digitalCredentialStore.getDigitalCredentials(args)
+    const result: GetCredentialsResponse = await digitalCredentialStore.getCredentials(args)
 
     expect(result.data.length).toEqual(0)
     expect(result.total).toEqual(0)
@@ -176,7 +176,7 @@ describe('Database entities tests', (): void => {
   it('should delete stored digital credential', async (): Promise<void> => {
     const rawCredential: string =
       'eyJraWQiOiJkaWQ6a2V5Ono2TWtyaGt5M3B1c20yNk1laUZhWFUzbjJuZWtyYW13RlVtZ0dyZUdHa0RWNnpRaiN6Nk1rcmhreTNwdXNtMjZNZWlGYVhVM24ybmVrcmFtd0ZVbWdHcmVHR2tEVjZ6UWoiLCJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vc3BoZXJlb24tb3BlbnNvdXJjZS5naXRodWIuaW8vc3NpLW1vYmlsZS13YWxsZXQvY29udGV4dC9zcGhlcmVvbi13YWxsZXQtaWRlbnRpdHktdjEuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTcGhlcmVvbldhbGxldElkZW50aXR5Q3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiZW1haWxBZGRyZXNzIjoic0BrIn19LCJzdWIiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJqdGkiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJuYmYiOjE3MDg0NDA4MDgsImlzcyI6ImRpZDprZXk6ejZNa3Joa3kzcHVzbTI2TWVpRmFYVTNuMm5la3JhbXdGVW1nR3JlR0drRFY2elFqIn0.G0M84XVAxSmzGY-NQuB9NBofNrINSn6lvxW6761Vlq6ypvYgtc2xNdpiRmw8ryVNfnpzrr4Z5cB1RlrC05rJAw'
-    const digitalCredential: AddDigitalCredentialArgs = {
+    const digitalCredential: AddCredentialArgs = {
       raw: rawCredential,
       issuerCorrelationType: CredentialCorrelationType.DID,
       subjectCorrelationType: CredentialCorrelationType.DID,
@@ -185,20 +185,20 @@ describe('Database entities tests', (): void => {
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     }
 
-    const savedDigitalCredential: DigitalCredential = await digitalCredentialStore.addDigitalCredential(digitalCredential)
-    let result = await digitalCredentialStore.removeDigitalCredential({ id: savedDigitalCredential.id })
+    const savedDigitalCredential: DigitalCredential = await digitalCredentialStore.addCredential(digitalCredential)
+    let result = await digitalCredentialStore.removeCredential({ id: savedDigitalCredential.id })
     expect(result).toEqual(true)
   })
 
   it('should not delete stored digital credential if id not found', async (): Promise<void> => {
-    const result = await digitalCredentialStore.removeDigitalCredential({ id: 'unknown_id' })
+    const result = await digitalCredentialStore.removeCredential({ id: 'unknown_id' })
     expect(result).toEqual(false)
   })
 
   it('should update stored digital credential', async (): Promise<void> => {
     const rawCredential: string =
       'eyJraWQiOiJkaWQ6a2V5Ono2TWtyaGt5M3B1c20yNk1laUZhWFUzbjJuZWtyYW13RlVtZ0dyZUdHa0RWNnpRaiN6Nk1rcmhreTNwdXNtMjZNZWlGYVhVM24ybmVrcmFtd0ZVbWdHcmVHR2tEVjZ6UWoiLCJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vc3BoZXJlb24tb3BlbnNvdXJjZS5naXRodWIuaW8vc3NpLW1vYmlsZS13YWxsZXQvY29udGV4dC9zcGhlcmVvbi13YWxsZXQtaWRlbnRpdHktdjEuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTcGhlcmVvbldhbGxldElkZW50aXR5Q3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiZW1haWxBZGRyZXNzIjoic0BrIn19LCJzdWIiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJqdGkiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJuYmYiOjE3MDg0NDA4MDgsImlzcyI6ImRpZDprZXk6ejZNa3Joa3kzcHVzbTI2TWVpRmFYVTNuMm5la3JhbXdGVW1nR3JlR0drRFY2elFqIn0.G0M84XVAxSmzGY-NQuB9NBofNrINSn6lvxW6761Vlq6ypvYgtc2xNdpiRmw8ryVNfnpzrr4Z5cB1RlrC05rJAw'
-    const digitalCredential: AddDigitalCredentialArgs = {
+    const digitalCredential: AddCredentialArgs = {
       raw: rawCredential,
       issuerCorrelationType: CredentialCorrelationType.DID,
       subjectCorrelationType: CredentialCorrelationType.DID,
@@ -207,9 +207,9 @@ describe('Database entities tests', (): void => {
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     }
 
-    const savedDigitalCredential: DigitalCredential = await digitalCredentialStore.addDigitalCredential(digitalCredential)
+    const savedDigitalCredential: DigitalCredential = await digitalCredentialStore.addCredential(digitalCredential)
 
-    const result = await digitalCredentialStore.updateDigitalCredentialState({
+    const result = await digitalCredentialStore.updateCredentialState({
       id: savedDigitalCredential.id,
       verifiedState: CredentialStateType.REVOKED,
     })

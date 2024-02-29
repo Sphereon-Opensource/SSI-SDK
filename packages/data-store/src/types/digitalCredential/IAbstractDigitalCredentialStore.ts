@@ -1,23 +1,23 @@
 import { CredentialCorrelationType, CredentialStateType, DigitalCredential } from './digitalCredential'
 
-export type GetDigitalCredentialArgs = { id: string } | { hash: string }
+export type GetCredentialArgs = { id: string } | { hash: string }
 
 export type FindDigitalCredentialArgs = Array<Partial<DigitalCredential>>
 
-export type GetDigitalCredentialsArgs = {
+export type GetCredentialsArgs = {
   filter?: FindDigitalCredentialArgs
   skip?: number
   take?: number
   order?: { [key in keyof DigitalCredential]: 'ASC' | 'DESC' }
 }
 
-export type GetDigitalCredentialsResponse = {
+export type GetCredentialsResponse = {
   data: DigitalCredential[]
   total: number
   hasMore: boolean
 }
 
-export type AddDigitalCredentialArgs = {
+export type AddCredentialArgs = {
   raw: string
   issuerCorrelationType: CredentialCorrelationType
   subjectCorrelationType?: CredentialCorrelationType
@@ -29,6 +29,6 @@ export type AddDigitalCredentialArgs = {
   revocationDate?: Date
 }
 
-export type UpdateDigitalCredentialStateArgs = GetDigitalCredentialArgs & { verifiedState: CredentialStateType; verificationDate?: Date }
+export type UpdateCredentialStateArgs = GetCredentialArgs & { verifiedState: CredentialStateType; verificationDate?: Date }
 
-export type RemoveDigitalCredentialArgs = GetDigitalCredentialArgs
+export type RemoveCredentialArgs = GetCredentialArgs

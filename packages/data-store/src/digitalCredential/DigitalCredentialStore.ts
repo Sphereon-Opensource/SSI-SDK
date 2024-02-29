@@ -1,11 +1,11 @@
 import { AbstractDigitalCredentialStore } from './AbstractDigitalCredentialStore'
 import {
-  AddDigitalCredentialArgs,
-  GetDigitalCredentialArgs,
-  GetDigitalCredentialsArgs,
-  GetDigitalCredentialsResponse,
-  RemoveDigitalCredentialArgs,
-  UpdateDigitalCredentialStateArgs,
+  AddCredentialArgs,
+  GetCredentialArgs,
+  GetCredentialsArgs,
+  GetCredentialsResponse,
+  RemoveCredentialArgs,
+  UpdateCredentialStateArgs,
 } from '../types/digitalCredential/IAbstractDigitalCredentialStore'
 import { OrPromise } from '@sphereon/ssi-types'
 import { DataSource, Repository } from 'typeorm'
@@ -25,7 +25,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
     this.dbConnection = dbConnection
   }
 
-  addDigitalCredential = async (args: AddDigitalCredentialArgs): Promise<DigitalCredentialEntity> => {
+  addCredential = async (args: AddCredentialArgs): Promise<DigitalCredentialEntity> => {
     debug('Adding credential', args)
     const digitalCredentialEntityRepository: Repository<DigitalCredentialEntity> = (await this.dbConnection).getRepository(DigitalCredentialEntity)
     const credentialEntity: NonPersistedDigitalCredential = nonPersistedDigitalCredentialEntityFromAddArgs(args)
@@ -33,7 +33,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
     return Promise.resolve(createdResult)
   }
 
-  getDigitalCredential = async (args: GetDigitalCredentialArgs): Promise<DigitalCredentialEntity> => {
+  getCredential = async (args: GetCredentialArgs): Promise<DigitalCredentialEntity> => {
     const result: DigitalCredentialEntity | null = await (await this.dbConnection).getRepository(DigitalCredentialEntity).findOne({
       where: args,
     })
@@ -44,7 +44,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
     return result
   }
 
-  getDigitalCredentials = async (args?: GetDigitalCredentialsArgs): Promise<GetDigitalCredentialsResponse> => {
+  getCredentials = async (args?: GetCredentialsArgs): Promise<GetCredentialsResponse> => {
     const { filter = {}, skip, take, order = { createdAt: 'DESC' } } = args ?? {}
     const [result, total] = await (await this.dbConnection).getRepository(DigitalCredentialEntity).findAndCount({
       where: filter,
@@ -62,7 +62,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
     }
   }
 
-  removeDigitalCredential = async (args: RemoveDigitalCredentialArgs): Promise<boolean> => {
+  removeCredential = async (args: RemoveCredentialArgs): Promise<boolean> => {
     if (!args) {
       return false
     }
@@ -86,7 +86,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
     }
   }
 
-  updateDigitalCredentialState = async (args: UpdateDigitalCredentialStateArgs): Promise<DigitalCredentialEntity> => {
+  updateCredentialState = async (args: UpdateCredentialStateArgs): Promise<DigitalCredentialEntity> => {
     const credentialRepository: Repository<DigitalCredentialEntity> = (await this.dbConnection).getRepository(DigitalCredentialEntity)
     const whereClause: Record<string, any> = {}
     if ('id' in args) {

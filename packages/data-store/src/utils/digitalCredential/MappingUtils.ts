@@ -1,4 +1,4 @@
-import { AddDigitalCredentialArgs } from '../../types/digitalCredential/IAbstractDigitalCredentialStore'
+import { AddCredentialArgs } from '../../types/digitalCredential/IAbstractDigitalCredentialStore'
 import { DigitalCredentialEntity } from '../../entities/digitalCredential/DigitalCredentialEntity'
 import {
   CredentialMapper,
@@ -77,7 +77,7 @@ export const handleSdJwt = (rawCredential: string): SdJwtDecodedVerifiableCreden
     : JSON.parse(rawCredential)
 }
 
-export const nonPersistedDigitalCredentialEntityFromAddArgs = (addCredentialArgs: AddDigitalCredentialArgs): NonPersistedDigitalCredential => {
+export const nonPersistedDigitalCredentialEntityFromAddArgs = (addCredentialArgs: AddCredentialArgs): NonPersistedDigitalCredential => {
   const credentialType: CredentialType = determineCredentialType(addCredentialArgs.raw)
   const documentFormat: DocumentFormat = CredentialMapper.detectDocumentType(addCredentialArgs.raw)
   const uniformDocument =
