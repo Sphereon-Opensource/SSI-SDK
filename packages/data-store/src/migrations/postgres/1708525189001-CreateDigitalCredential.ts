@@ -28,7 +28,7 @@ export class CreateDigitalCredential1708525189001 implements MigrationInterface 
         "issued_at" DATE,
         "expires_at" DATE,
         "verified_at" DATE,
-        "revocation_date" DATE,
+        "revoked_at" DATE,
         PRIMARY KEY ("id")
       )
     `)

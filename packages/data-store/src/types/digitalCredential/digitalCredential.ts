@@ -18,7 +18,7 @@ export type DigitalCredential = {
   expiresAt?: Date
   issuedAt?: Date
   verifiedAt?: Date
-  revocationDate?: Date
+  revokedAt?: Date
 }
 
 export enum CredentialType {

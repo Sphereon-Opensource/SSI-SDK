@@ -23,7 +23,7 @@ export class CreateDigitalCredential1708525189002 implements MigrationInterface 
                 "issued_at" datetime,
                 "expires_at" datetime,
                 "verified_at" datetime,
-                "revocation_date" datetime
+                "revoked_at" datetime
             )
         `)
   }
