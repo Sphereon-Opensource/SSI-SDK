@@ -226,7 +226,7 @@ describe('Database entities tests', (): void => {
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     })
     expect(digitalCredential.credentialType).toEqual(CredentialType.VP)
-    expect(digitalCredential.validFrom).toEqual(new Date('2018-09-14T21:19:10.000Z'))
+    expect(digitalCredential.validFrom).toEqual(undefined)
     expect(digitalCredential.documentFormat).toEqual(CredentialDocumentFormat.JSON_LD)
     expect(digitalCredential.validUntil).toEqual(undefined)
   })

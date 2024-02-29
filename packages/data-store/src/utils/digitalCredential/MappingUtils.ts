@@ -4,7 +4,6 @@ import {
   CredentialMapper,
   decodeSdJwtVc,
   DocumentFormat,
-  IProof,
   IVerifiableCredential,
   IVerifiablePresentation,
   OriginalVerifiableCredential,
@@ -73,14 +72,8 @@ function getValidUntil(uniformDocument: IVerifiableCredential | IVerifiablePrese
 }
 
 function getValidFrom(uniformDocument: IVerifiableCredential | IVerifiablePresentation | SdJwtDecodedVerifiableCredentialPayload): Date | undefined {
-  let proof: IProof | undefined = undefined
-  if (uniformDocument.proof && !uniformDocument.vct) {
-    proof = Array.isArray(uniformDocument.proof) ? <IProof>uniformDocument.proof[0] : <IProof>uniformDocument.proof
-  }
   if ('issuanceDate' in uniformDocument) {
     return new Date(uniformDocument.issuanceDate)
-  } else if (proof && proof.created) {
-    return new Date(proof.created)
   } else if ('validFrom' in uniformDocument) {
     return new Date(uniformDocument['validFrom'])
   } else if ('nbf' in uniformDocument) {
