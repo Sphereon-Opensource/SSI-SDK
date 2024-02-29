@@ -25,10 +25,10 @@ export type AddCredentialArgs = {
   subjectCorrelationId?: string
   tenantId?: string
   state?: CredentialStateType
-  verificationDate?: Date
-  revocationDate?: Date
+  verifiedAt?: Date
+  revokedAt?: Date
 }
 
-export type UpdateCredentialStateArgs = GetCredentialArgs & { verifiedState: CredentialStateType; verificationDate?: Date }
+export type UpdateCredentialStateArgs = GetCredentialArgs & { verifiedState: CredentialStateType; verifiedAt?: Date, revokedAt?: Date }
 
 export type RemoveCredentialArgs = GetCredentialArgs

@@ -1,4 +1,4 @@
-import { AbstractDigitalCredentialStore } from './AbstractDigitalCredentialStore'
+import {AbstractDigitalCredentialStore} from './AbstractDigitalCredentialStore'
 import {
   AddCredentialArgs,
   GetCredentialArgs,
@@ -7,13 +7,13 @@ import {
   RemoveCredentialArgs,
   UpdateCredentialStateArgs,
 } from '../types/digitalCredential/IAbstractDigitalCredentialStore'
-import { OrPromise } from '@sphereon/ssi-types'
-import { DataSource, Repository } from 'typeorm'
+import {OrPromise} from '@sphereon/ssi-types'
+import {DataSource, Repository} from 'typeorm'
 import Debug from 'debug'
-import { DigitalCredentialEntity } from '../entities/digitalCredential/DigitalCredentialEntity'
-import { nonPersistedDigitalCredentialEntityFromAddArgs } from '../utils/digitalCredential/MappingUtils'
-import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere'
-import { CredentialStateType, DigitalCredential, NonPersistedDigitalCredential } from '../types/digitalCredential/digitalCredential'
+import {DigitalCredentialEntity} from '../entities/digitalCredential/DigitalCredentialEntity'
+import {nonPersistedDigitalCredentialEntityFromAddArgs} from '../utils/digitalCredential/MappingUtils'
+import {FindOptionsWhere} from 'typeorm/find-options/FindOptionsWhere'
+import {CredentialStateType, DigitalCredential, NonPersistedDigitalCredential} from '../types/digitalCredential/digitalCredential'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:credential-store')
 
@@ -91,9 +91,16 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
     const whereClause: Record<string, any> = {}
     if ('id' in args) {
       whereClause.id = args.id
-    }
-    if ('hash' in args) {
+    } else if ('hash' in args) {
       whereClause.hash = args.hash
+    } else {
+      throw new Error('No id or hash param is provided.')
+    }
+    if (!args.verifiedState) {
+      throw new Error('No verifiedState param is provided.')
+    }
+    if (args.verifiedState === CredentialStateType.REVOKED && !args.revokedAt) {
+      throw new Error('No revokedAt param is provided for revoked credential.')
     }
     const credential: DigitalCredentialEntity | null = await credentialRepository.findOne({
       where: whereClause,
@@ -104,9 +111,9 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
     }
     const updatedCredential: DigitalCredential = {
       ...credential,
-      verifiedAt: args.verificationDate ?? new Date(),
+      ...(args.verifiedState !== CredentialStateType.REVOKED && {verifiedAt: args.verifiedAt ?? new Date()}),
+      ...(args.verifiedState === CredentialStateType.REVOKED && {revokedAt: args.revokedAt}),
       lastUpdatedAt: new Date(),
-      ...(args.verifiedState === CredentialStateType.REVOKED && { revocationDate: args.verificationDate ?? new Date() }),
       verifiedState: args.verifiedState,
     }
     debug('Updating credential', credential)
