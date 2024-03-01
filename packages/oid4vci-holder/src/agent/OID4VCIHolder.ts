@@ -273,7 +273,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     const localeBranding: Array<IBasicCredentialLocaleBranding> | undefined = credentialBranding?.get(selectedCredentials[0])
     if (localeBranding && localeBranding.length > 0) {
-      await context.agent.addCredentialBranding({
+      await context.agent.ibAddCredentialBranding({
         vcHash: computeEntryHash(credentialsToAccept[0].rawVerifiableCredential),
         issuerCorrelationId: new URL(serverMetadata.issuer).hostname,
         localeBranding,
@@ -284,7 +284,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   private async oid4vciHolderStoreCredentials(args: StoreCredentialsArgs, context: RequiredContext): Promise<void> {
     const { credentialsToAccept } = args
 
-    const verifiableCredential: VerifiableCredential = credentialsToAccept[0].rawVerifiableCredential
+    const verifiableCredential = credentialsToAccept[0].uniformVerifiableCredential as VerifiableCredential
     const vcHash = await context.agent.dataStoreSaveVerifiableCredential({ verifiableCredential })
 
     await context.agent.emit(OID4VCIHolderEvent.CREDENTIAL_STORED, {
