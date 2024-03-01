@@ -2694,10 +2694,6 @@ importers:
         version: 2.0.27
 
   packages/xstate-persistence:
-    dependencies:
-      react-native-securerandom:
-        specifier: ^1.0.1
-        version: 1.0.1(react-native@0.73.2)
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
