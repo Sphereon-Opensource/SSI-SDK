@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.19.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.18.1...v0.19.0) (2024-03-02)
+
+### Reverts
+
+- Revert "chore: update deps" ([f83aee5](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/f83aee5e7c3a22a6727ed55dd9b92f33ba5c0fc8))
+
 ## [0.18.1](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.18.0...v0.18.1) (2024-01-19)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.vc-status-list-issuer-rest-api

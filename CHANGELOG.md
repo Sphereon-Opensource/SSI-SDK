@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.19.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.18.1...v0.19.0) (2024-03-02)
+
+### Bug Fixes
+
+- changed image-size library version to a react friendly one ([308bad7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/308bad797278ed1ba79102a4115d36ff53c4207a))
+- changed the image-size usage to handle uint8array ([1a0e080](https://github.com/Sphereon-Opensource/SSI-SDK/commit/1a0e0808b05208dad3392d0e3292aa0438cfd4af))
+- fixed the svg problem with image-size ([d7823eb](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d7823eb6ee48fb3529e868e7f22a9a001f70983e))
+- Instead of figuring out the proof format, we defaulted to JWT credentials if the format was not supplied, bypassing the detection code ([8cba122](https://github.com/Sphereon-Opensource/SSI-SDK/commit/8cba12221d70e8436eaace2d1e770017199aa6ce))
+- JWT VP sometimes was constructed as a JSON LD VP with JwtProof2020 ([abb012c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/abb012c99ff4fbce241b3c78b602783d22c88b5e))
+- modified handling svg files in ssi-sdk.core ([c86188e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c86188e5725e5d2d3cf8e18612ba987cea6944f0))
+- Several JWT Verifiable Presentation fixes, like missing kid, iat, exp values. Also include a holder in the vp payload, as some RPs require it, although it is optional for a JWT ([30d8c54](https://github.com/Sphereon-Opensource/SSI-SDK/commit/30d8c549d9d2387808407e173a0ef80850d9b9c0))
+- VCI holder agent plugin credential and branding storage fixes ([901ff44](https://github.com/Sphereon-Opensource/SSI-SDK/commit/901ff4479e5442e8bca14ee1cd24f05b827874c2))
+
+### Features
+
+- Add initial OID4VP ID2 support ([85325ae](https://github.com/Sphereon-Opensource/SSI-SDK/commit/85325ae7cdf6b28d32442a38779f25ee627dd86f))
+- added oid4vci-holder plugin ([e8507d4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e8507d4c5ca361886adf800c21e368c44ee8ffac))
+- added physical and electronic addresses to contact-manager ([76f78b3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/76f78b34b99c47b4c16fd9682d2520a7637219f7))
+- added remote-server-rest-api ([0076160](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0076160849ea57f37228819d675a797595c1df32))
+- Allow i18n for JSONLD credentials ([1ce843e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/1ce843e01cf842adbe9a82f9e6f69c94af9610b5))
+- Allow to pass in nonce when creating the auth request URI ([82f82ef](https://github.com/Sphereon-Opensource/SSI-SDK/commit/82f82efe4dd058dc3c30c977493f2ed5f1fe206f))
+- Correct submission_data when send in incorrectly as string ([c5d6b76](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c5d6b7663cbddd4ff62260508b64faab90ade097))
+- event-logger improvements ([a3fdcd2](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a3fdcd2c64c6ead46266e09a599785bbbdd45579))
+- Reuse existing PEX for performance ([9c8966c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9c8966c94e39130aeace3ad73ac6583312ba42f2))
+- Support selecting did methods from aud claim of request. ([0bfc03d](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0bfc03d3e5713b6d8c4e129c79fcbb8eb1ac794a))
+
+### Reverts
+
+- Revert "chore: update deps" ([f83aee5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f83aee5e7c3a22a6727ed55dd9b92f33ba5c0fc8))
+
 ## [0.18.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.18.0...v0.18.1) (2024-01-19)
 
 **Note:** Version bump only for package @sphereon/sphereon-sdk.workspace
