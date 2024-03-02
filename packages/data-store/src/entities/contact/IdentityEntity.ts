@@ -73,7 +73,7 @@ export class IdentityEntity extends BaseEntity {
   party!: PartyEntity
 
   @Column({ name: 'partyId', nullable: true })
-  partyId!: string
+  partyId?: string
 
   // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.
   @BeforeInsert()

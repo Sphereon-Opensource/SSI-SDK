@@ -9,6 +9,10 @@ import { EventLoggerOptions, GetAuditEventsArgs, IEventLogger, RequiredContext, 
  * {@inheritDoc IEventLogger}
  */
 
+// Exposing the methods here for any REST implementation
+export const eventLoggerAuditMethods: Array<string> = ['loggerGetAuditEvents', 'loggerLogAuditEvent']
+export const eventLoggerMethods: Array<string> = [...eventLoggerAuditMethods]
+
 export class EventLogger implements IAgentPlugin {
   readonly schema = schema.IEventLogger
   readonly eventTypes: Array<LoggingEventType> = []
@@ -18,7 +22,7 @@ export class EventLogger implements IAgentPlugin {
     loggerLogAuditEvent: this.loggerLogAuditEvent.bind(this),
   }
 
-  private readonly store: AbstractEventLoggerStore
+  private readonly store?: AbstractEventLoggerStore
 
   constructor(options: EventLoggerOptions) {
     const { store, eventTypes } = options
@@ -29,27 +33,37 @@ export class EventLogger implements IAgentPlugin {
   public async onEvent(event: LoggingEvent, context: RequiredContext): Promise<void> {
     switch (event.type) {
       case LoggingEventType.AUDIT:
-        await this.loggerLogAuditEvent({ event: event.data }, context)
+        // Calling the context of the agent to make sure the REST client is called when configured
+        await context.agent.loggerLogAuditEvent({ event: event.data })
         break
       default:
-        return Promise.reject(Error('Event type not supported'))
+        return Promise.reject(Error(`Event type ${event.type} not supported`))
     }
   }
 
   private async loggerGetAuditEvents(args?: GetAuditEventsArgs): Promise<Array<AuditLoggingEvent>> {
     const { filter } = args ?? {}
 
+    if (!this.store) {
+      return Promise.reject(Error('No store available in options'))
+    }
+
     return this.store.getAuditEvents({ filter })
   }
 
-  private async loggerLogAuditEvent(args: LogAuditEventArgs, context: RequiredContext): Promise<AuditLoggingEvent> {
+  private async loggerLogAuditEvent(args: LogAuditEventArgs): Promise<AuditLoggingEvent> {
     const { event } = args
+
+    if (!this.store) {
+      return Promise.reject(Error('No store available in options'))
+    }
 
     return this.store.storeAuditEvent({
       event: {
         ...event,
         system: event.system,
         subSystemType: event.subSystemType,
+        initiatorType: event.initiatorType,
         level: event.level ?? LogLevel.INFO,
         correlationId: event.correlationId ?? uuidv4(),
         timestamp: new Date(),

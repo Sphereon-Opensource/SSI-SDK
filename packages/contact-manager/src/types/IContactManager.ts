@@ -1,18 +1,24 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import {
-  Identity,
-  NonPersistedIdentity,
-  FindRelationshipArgs,
+  ElectronicAddress,
+  FindElectronicAddressArgs,
   FindIdentityArgs,
-  NonPersistedContact,
-  PartyTypeEnum as ContactTypeEnum,
-  NonPersistedPartyType as NonPersistedContactType,
-  FindPartyTypeArgs as FindContactTypeArgs,
   FindPartyArgs as FindContactArgs,
+  FindPartyTypeArgs as FindContactTypeArgs,
+  FindPhysicalAddressArgs,
+  FindRelationshipArgs,
+  Identity,
+  NonPersistedContact,
+  NonPersistedElectronicAddress,
+  NonPersistedIdentity,
+  NonPersistedParty,
+  NonPersistedPartyType as NonPersistedContactType,
+  NonPersistedPhysicalAddress,
+  Party as Contact,
   PartyRelationship as ContactRelationship,
   PartyType as ContactType,
-  Party as Contact,
-  NonPersistedParty,
+  PartyTypeEnum as ContactTypeEnum,
+  PhysicalAddress,
 } from '@sphereon/ssi-sdk.data-store'
 
 export interface IContactManager extends IPluginMethodMap {
@@ -36,6 +42,16 @@ export interface IContactManager extends IPluginMethodMap {
   cmAddContactType(args: AddContactTypeArgs, context: RequiredContext): Promise<ContactType>
   cmUpdateContactType(args: UpdateContactTypeArgs, context: RequiredContext): Promise<ContactType>
   cmRemoveContactType(args: RemoveContactTypeArgs, context: RequiredContext): Promise<boolean>
+  cmGetElectronicAddress(args: GetElectronicAddressArgs, context: RequiredContext): Promise<ElectronicAddress>
+  cmGetElectronicAddresses(args?: GetElectronicAddressesArgs): Promise<Array<ElectronicAddress>>
+  cmAddElectronicAddress(args: AddElectronicAddressArgs): Promise<ElectronicAddress>
+  cmUpdateElectronicAddress(args: UpdateElectronicAddressArgs): Promise<ElectronicAddress>
+  cmRemoveElectronicAddress(args: RemoveElectronicAddressArgs): Promise<boolean>
+  cmGetPhysicalAddress(args: GetPhysicalAddressArgs): Promise<PhysicalAddress>
+  cmGetPhysicalAddresses(args?: GetPhysicalAddressesArgs): Promise<Array<PhysicalAddress>>
+  cmAddPhysicalAddress(args: AddPhysicalAddressArgs): Promise<PhysicalAddress>
+  cmUpdatePhysicalAddress(args: UpdatePhysicalAddressArgs): Promise<PhysicalAddress>
+  cmRemovePhysicalAddress(args: RemovePhysicalAddressArgs): Promise<boolean>
 }
 
 export type GetContactArgs = {
@@ -45,12 +61,6 @@ export type GetContactArgs = {
 export type GetContactsArgs = {
   filter?: FindContactArgs
 }
-
-// export type AddContactArgs = {
-//   uri?: string
-//   contactType: NonPersistedContactType
-//   identities?: Array<NonPersistedIdentity>
-// } & NonPersistedNaturalPerson | NonPersistedOrganization
 
 export type AddContactArgs = Omit<NonPersistedParty, 'contact' | 'partyType'> &
   NonPersistedContact & {
@@ -128,6 +138,48 @@ export type UpdateContactTypeArgs = {
 
 export type RemoveContactTypeArgs = {
   contactTypeId: string
+}
+
+export type GetElectronicAddressArgs = {
+  electronicAddressId: string
+}
+
+export type GetElectronicAddressesArgs = {
+  filter?: FindElectronicAddressArgs
+}
+
+export type AddElectronicAddressArgs = {
+  contactId: string
+  electronicAddress: NonPersistedElectronicAddress
+}
+
+export type UpdateElectronicAddressArgs = {
+  electronicAddress: ElectronicAddress
+}
+
+export type RemoveElectronicAddressArgs = {
+  electronicAddressId: string
+}
+
+export type GetPhysicalAddressArgs = {
+  physicalAddressId: string
+}
+
+export type GetPhysicalAddressesArgs = {
+  filter?: FindPhysicalAddressArgs
+}
+
+export type AddPhysicalAddressArgs = {
+  contactId: string
+  physicalAddress: NonPersistedPhysicalAddress
+}
+
+export type UpdatePhysicalAddressArgs = {
+  physicalAddress: PhysicalAddress
+}
+
+export type RemovePhysicalAddressArgs = {
+  physicalAddressId: string
 }
 
 export type RequiredContext = IAgentContext<never>

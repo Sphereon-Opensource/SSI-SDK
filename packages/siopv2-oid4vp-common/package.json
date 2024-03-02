@@ -12,14 +12,16 @@
     "access": "public"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.4.2",
+    "@sphereon/did-auth-siop": "0.6.0",
     "@sphereon/ssi-types": "workspace:*",
+    "@sphereon/ssi-sdk.core": "workspace:*",
     "uint8arrays": "3.1.1"
   },
   "scripts": {
     "build": "tsc"
   },
   "devDependencies": {
+    "typeorm": "0.3.12",
     "@types/node": "^16.18.0"
   },
   "files": [

@@ -17,6 +17,7 @@
     { "path": "vc-status-list-issuer-rest-api" },
     { "path": "vc-handler-ld-local" },
     { "path": "presentation-exchange" },
+    { "path": "oid4vci-holder" },
     { "path": "oid4vci-issuer-store" },
     { "path": "oid4vci-issuer" },
     { "path": "oid4vci-issuer-rest-api" },
@@ -28,12 +29,14 @@
     { "path": "siopv2-oid4vp-rp-rest-client" },
     { "path": "qr-code-generator" },
     { "path": "contact-manager" },
+    { "path": "contact-manager-rest-api" },
     { "path": "data-store" },
     { "path": "wellknown-did-issuer" },
     { "path": "wellknown-did-verifier" },
     { "path": "kv-store" },
     { "path": "issuance-branding" },
     { "path": "headless-web3-provider" },
-    { "path": "event-logger" }
+    { "path": "event-logger" },
+    { "path": "remote-server-rest-api" }
   ]
 }

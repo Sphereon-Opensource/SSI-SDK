@@ -5,20 +5,10 @@ import { AdditionalClaims } from '@sphereon/ssi-types'
 export interface ClaimPayloadCommonOpts {
   [x: string]: any
 }
-export enum AuthorizationRequestStateStatus {
-  CREATED = 'created',
-  SENT = 'sent',
-  RECEIVED = 'received',
-  VERIFIED = 'verified',
-  ERROR = 'error',
-}
-export enum AuthorizationResponseStateStatus {
-  CREATED = 'created',
-  SENT = 'sent',
-  RECEIVED = 'received',
-  VERIFIED = 'verified',
-  ERROR = 'error',
-}
+
+export type AuthorizationRequestStateStatus = 'created' | 'sent' | 'received' | 'verified' | 'error'
+
+export type AuthorizationResponseStateStatus = 'created' | 'sent' | 'received' | 'verified' | 'error'
 
 export interface GenerateAuthRequestURIResponse {
   correlationId: string

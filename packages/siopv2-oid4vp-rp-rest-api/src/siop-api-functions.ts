@@ -1,10 +1,14 @@
 import { AuthorizationResponsePayload, PresentationDefinitionLocation } from '@sphereon/did-auth-siop'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
-import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import { PresentationSubmission } from '@sphereon/ssi-types'
 import { Request, Response, Router } from 'express'
 import { IRequiredContext } from './types'
 
-export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
+export function verifyAuthResponseSIOPv2Endpoint(
+  router: Router,
+  context: IRequiredContext,
+  opts?: ISingleEndpointOpts & { presentationDefinitionLocation?: PresentationDefinitionLocation }
+) {
   if (opts?.enabled === false) {
     console.log(`verifyAuthResponse SIOP endpoint is disabled`)
     return
@@ -21,7 +25,12 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
       console.log('Authorization Response (siop-sessions')
       console.log(JSON.stringify(request.body, null, 2))
       const definition = await context.agent.pexStoreGetDefinition({ definitionId })
-      const authorizationResponse = typeof request.body === 'string' ? request.body : (request.body as AuthorizationResponsePayload)
+      const authorizationResponse =
+        typeof request.body === 'string' ? (JSON.parse(request.body) as AuthorizationResponsePayload) : (request.body as AuthorizationResponsePayload)
+      if (typeof authorizationResponse.presentation_submission === 'string') {
+        console.log(`Supplied presentation_submission was a string instead of JSON. Correctig, but external party should fix their implementation!`)
+        authorizationResponse.presentation_submission = JSON.parse(authorizationResponse.presentation_submission) as PresentationSubmission
+      }
       console.log(`URI: ${JSON.stringify(authorizationResponse)}`)
       if (!definition) {
         response.statusCode = 404
@@ -34,7 +43,7 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
         definitionId,
         presentationDefinitions: [
           {
-            location: PresentationDefinitionLocation.CLAIMS_VP_TOKEN,
+            location: opts?.presentationDefinitionLocation ?? PresentationDefinitionLocation.TOPLEVEL_PRESENTATION_DEF,
             definition,
           },
         ],
@@ -54,7 +63,7 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
       return response.send()
     } catch (error) {
       console.error(error)
-      return sendErrorResponse(response, 500, 'Could not verify auth status', error.message)
+      return sendErrorResponse(response, 500, 'Could not verify auth status', error)
     }
   })
 }
@@ -99,7 +108,7 @@ export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredC
         await context.agent.siopUpdateAuthRequestState({
           correlationId,
           definitionId,
-          state: AuthorizationRequestStateStatus.SENT,
+          state: 'sent',
           error,
         })
       }

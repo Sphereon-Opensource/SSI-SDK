@@ -1,6 +1,6 @@
 import { IAgentContext } from '@veramo/core'
 import EventLogger from './EventLogger'
-import { LogLevel, SubSystem, System } from '../../types'
+import { InitiatorType, LogLevel, SubSystem, System } from '../../types'
 
 class EventLoggerBuilder {
   private context?: IAgentContext<any>
@@ -8,6 +8,7 @@ class EventLoggerBuilder {
   private system?: System
   private subSystem?: SubSystem
   private logLevel?: LogLevel
+  private initiatorType?: InitiatorType
 
   withContext(context: IAgentContext<any>): this {
     this.context = context
@@ -34,6 +35,11 @@ class EventLoggerBuilder {
     return this
   }
 
+  withInitiatorType(initiatorType: InitiatorType): this {
+    this.initiatorType = initiatorType
+    return this
+  }
+
   public build(): EventLogger {
     return new EventLogger({
       context: this.context,
@@ -41,6 +47,7 @@ class EventLoggerBuilder {
       system: this.system,
       subSystem: this.subSystem,
       logLevel: this.logLevel,
+      initiatorType: this.initiatorType,
     })
   }
 }

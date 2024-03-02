@@ -24,6 +24,16 @@ constants:
     - cmAddContactType
     - cmUpdateContactType
     - cmRemoveContactType
+    - cmGetElectronicAddress
+    - cmGetElectronicAddresses
+    - cmAddElectronicAddress
+    - cmUpdateElectronicAddress
+    - cmRemoveElectronicAddress
+    - cmGetPhysicalAddress
+    - cmGetPhysicalAddresses
+    - cmAddPhysicalAddress
+    - cmUpdatePhysicalAddress
+    - cmRemovePhysicalAddress
 
 dbConnection:
   $require: typeorm?t=function#createConnection

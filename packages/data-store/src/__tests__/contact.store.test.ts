@@ -2,22 +2,28 @@ import { DataSource } from 'typeorm'
 import { DataStoreMigrations, DataStoreContactEntities } from '../index'
 import { ContactStore } from '../contact/ContactStore'
 import {
-  IdentityRoleEnum,
-  PartyTypeEnum,
-  NonPersistedParty,
-  Party,
   CorrelationIdentifierEnum,
-  Identity,
-  NaturalPerson,
-  NonPersistedNaturalPerson,
-  NonPersistedIdentity,
+  ElectronicAddress,
+  GetElectronicAddressesArgs,
   GetIdentitiesArgs,
   GetPartiesArgs,
+  GetPhysicalAddressesArgs,
+  GetRelationshipsArgs,
+  Identity,
+  IdentityRoleEnum,
+  NaturalPerson,
+  NonPersistedElectronicAddress,
+  NonPersistedIdentity,
+  NonPersistedNaturalPerson,
+  NonPersistedParty,
   NonPersistedPartyRelationship,
+  NonPersistedPartyType,
+  NonPersistedPhysicalAddress,
+  Party,
   PartyRelationship,
   PartyType,
-  GetRelationshipsArgs,
-  NonPersistedPartyType,
+  PartyTypeEnum,
+  PhysicalAddress,
 } from '../types'
 
 describe('Contact store tests', (): void => {
@@ -204,7 +210,7 @@ describe('Contact store tests', (): void => {
       electronicAddresses: [
         {
           type: 'email',
-          electronicAddress: 'sphereon@sphereon.com',
+          electronicAddress: 'example_electronic_address',
         },
       ],
     }
@@ -1676,6 +1682,7 @@ describe('Contact store tests', (): void => {
     expect(resultPartyType).toBeDefined()
 
     const includingMigrationPartyTypes: Array<PartyType> = await contactStore.getPartyTypes()
+    // We are checking for 2 types here as we include the one from the migrations
     expect(includingMigrationPartyTypes.length).toEqual(2)
 
     await contactStore.removePartyType({ partyTypeId: savedPartyType.id })
@@ -1775,5 +1782,617 @@ describe('Contact store tests', (): void => {
     }
 
     await expect(contactStore.addParty(party)).rejects.toThrow(`Party type ${partyType}, does not match for provided contact`)
+  })
+
+  it('should get electronic address by id', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const electronicAddress: NonPersistedElectronicAddress = {
+      type: 'email',
+      electronicAddress: 'example_electronic_address',
+    }
+    const savedElectronicAddress: ElectronicAddress = await contactStore.addElectronicAddress({ partyId: savedParty.id, electronicAddress })
+    expect(savedElectronicAddress).toBeDefined()
+
+    const result: ElectronicAddress = await contactStore.getElectronicAddress({ electronicAddressId: savedElectronicAddress.id })
+
+    expect(result).toBeDefined()
+  })
+
+  it('should throw error when getting electronic address with unknown id', async (): Promise<void> => {
+    const electronicAddressId = 'unknownElectronicAddressId'
+
+    await expect(contactStore.getElectronicAddress({ electronicAddressId })).rejects.toThrow(
+      `No electronic address found for id: ${electronicAddressId}`
+    )
+  })
+
+  it('should get all electronic addresses for contact', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const electronicAddress1: NonPersistedElectronicAddress = {
+      type: 'email',
+      electronicAddress: 'example_electronic_address1',
+    }
+    const savedElectronicAddress1: ElectronicAddress = await contactStore.addElectronicAddress({
+      partyId: savedParty.id,
+      electronicAddress: electronicAddress1,
+    })
+    expect(savedElectronicAddress1).toBeDefined()
+
+    const electronicAddress2: NonPersistedElectronicAddress = {
+      type: 'email',
+      electronicAddress: 'example_electronic_address2',
+    }
+    const savedElectronicAddress2: ElectronicAddress = await contactStore.addElectronicAddress({
+      partyId: savedParty.id,
+      electronicAddress: electronicAddress2,
+    })
+    expect(savedElectronicAddress2).toBeDefined()
+
+    const args: GetElectronicAddressesArgs = {
+      filter: [{ partyId: savedParty.id }],
+    }
+
+    const result: Array<ElectronicAddress> = await contactStore.getElectronicAddresses(args)
+
+    expect(result.length).toEqual(2)
+  })
+
+  it('should get all electronic addresses', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const electronicAddress1: NonPersistedElectronicAddress = {
+      type: 'email',
+      electronicAddress: 'example_electronic_address1',
+    }
+    const savedElectronicAddress1: ElectronicAddress = await contactStore.addElectronicAddress({
+      partyId: savedParty.id,
+      electronicAddress: electronicAddress1,
+    })
+    expect(savedElectronicAddress1).toBeDefined()
+
+    const electronicAddress2: NonPersistedElectronicAddress = {
+      type: 'email',
+      electronicAddress: 'example_electronic_address2',
+    }
+    const savedElectronicAddress2: ElectronicAddress = await contactStore.addElectronicAddress({
+      partyId: savedParty.id,
+      electronicAddress: electronicAddress2,
+    })
+    expect(savedElectronicAddress2).toBeDefined()
+
+    const result: Array<ElectronicAddress> = await contactStore.getElectronicAddresses()
+
+    expect(result.length).toEqual(2)
+  })
+
+  it('should get electronic addresses by filter', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const electronicAddress = 'example_electronic_address1'
+    const electronicAddress1: NonPersistedElectronicAddress = {
+      type: 'email',
+      electronicAddress,
+    }
+    const savedElectronicAddress1: ElectronicAddress = await contactStore.addElectronicAddress({
+      partyId: savedParty.id,
+      electronicAddress: electronicAddress1,
+    })
+    expect(savedElectronicAddress1).toBeDefined()
+
+    const electronicAddress2: NonPersistedElectronicAddress = {
+      type: 'email',
+      electronicAddress: 'example_electronic_address2',
+    }
+    const savedElectronicAddress2: ElectronicAddress = await contactStore.addElectronicAddress({
+      partyId: savedParty.id,
+      electronicAddress: electronicAddress2,
+    })
+    expect(savedElectronicAddress2).toBeDefined()
+
+    const args: GetElectronicAddressesArgs = {
+      filter: [{ electronicAddress }],
+    }
+
+    const result: Array<ElectronicAddress> = await contactStore.getElectronicAddresses(args)
+
+    expect(result.length).toEqual(1)
+  })
+
+  it('should add electronic address to contact', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const electronicAddress: NonPersistedElectronicAddress = {
+      type: 'email',
+      electronicAddress: 'example_electronic_address',
+    }
+    const savedElectronicAddress: ElectronicAddress = await contactStore.addElectronicAddress({ partyId: savedParty.id, electronicAddress })
+    expect(savedElectronicAddress).toBeDefined()
+
+    const result: Party = await contactStore.getParty({ partyId: savedParty.id })
+    expect(result.electronicAddresses.length).toEqual(1)
+  })
+
+  it('should update electronic address by id', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const electronicAddress: NonPersistedElectronicAddress = {
+      type: 'email',
+      electronicAddress: 'example_electronic_address',
+    }
+    const savedElectronicAddress: ElectronicAddress = await contactStore.addElectronicAddress({ partyId: savedParty.id, electronicAddress })
+    const newElectronicAddress = 'new_example_electronic_address'
+    savedElectronicAddress.electronicAddress = newElectronicAddress
+
+    await contactStore.updateElectronicAddress({ electronicAddress: savedElectronicAddress })
+    const result: ElectronicAddress = await contactStore.getElectronicAddress({ electronicAddressId: savedElectronicAddress.id })
+
+    expect(result).toBeDefined()
+    expect(result.electronicAddress).toEqual(newElectronicAddress)
+  })
+
+  it('should remove electronic address', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const electronicAddress: NonPersistedElectronicAddress = {
+      type: 'email',
+      electronicAddress: 'example_electronic_address',
+    }
+    const savedElectronicAddress: ElectronicAddress = await contactStore.addElectronicAddress({ partyId: savedParty.id, electronicAddress })
+    expect(savedElectronicAddress).toBeDefined()
+
+    await contactStore.removeElectronicAddress({ electronicAddressId: savedElectronicAddress.id })
+
+    await expect(contactStore.getElectronicAddress({ electronicAddressId: savedElectronicAddress.id })).rejects.toThrow(
+      `No electronic address found for id: ${savedElectronicAddress.id}`
+    )
+  })
+
+  it('should throw error when removing electronic address with unknown id', async (): Promise<void> => {
+    const electronicAddressId = 'unknownElectronicAddressId'
+
+    await expect(contactStore.removeElectronicAddress({ electronicAddressId })).rejects.toThrow(
+      `No electronic address found for id: ${electronicAddressId}`
+    )
+  })
+
+  it('should get physical address by id', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const physicalAddress: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName: 'example_street_name',
+      streetNumber: 'example_street_number',
+      buildingName: 'example_building_name',
+      postalCode: 'example_postal_code',
+      cityName: 'example_city_name',
+      provinceName: 'example_province_name',
+      countryCode: 'example_country_code',
+    }
+    const savedPhysicalAddress: PhysicalAddress = await contactStore.addPhysicalAddress({ partyId: savedParty.id, physicalAddress })
+    expect(savedPhysicalAddress).toBeDefined()
+
+    const result: PhysicalAddress = await contactStore.getPhysicalAddress({ physicalAddressId: savedPhysicalAddress.id })
+
+    expect(result).toBeDefined()
+  })
+
+  it('should throw error when getting physical address with unknown id', async (): Promise<void> => {
+    const physicalAddressId = 'unknownPhysicalAddressId'
+
+    await expect(contactStore.getPhysicalAddress({ physicalAddressId })).rejects.toThrow(`No physical address found for id: ${physicalAddressId}`)
+  })
+
+  it('should get all physical addresses for contact', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const physicalAddress1: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName: 'example_street_name',
+      streetNumber: 'example_street_number',
+      buildingName: 'example_building_name',
+      postalCode: 'example_postal_code',
+      cityName: 'example_city_name',
+      provinceName: 'example_province_name',
+      countryCode: 'example_country_code',
+    }
+    const savedPhysicalAddress1: PhysicalAddress = await contactStore.addPhysicalAddress({
+      partyId: savedParty.id,
+      physicalAddress: physicalAddress1,
+    })
+    expect(savedPhysicalAddress1).toBeDefined()
+
+    const physicalAddress2: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName: 'example_street_name',
+      streetNumber: 'example_street_number',
+      buildingName: 'example_building_name',
+      postalCode: 'example_postal_code',
+      cityName: 'example_city_name',
+      provinceName: 'example_province_name',
+      countryCode: 'example_country_code',
+    }
+    const savedPhysicalAddress2: PhysicalAddress = await contactStore.addPhysicalAddress({
+      partyId: savedParty.id,
+      physicalAddress: physicalAddress2,
+    })
+    expect(savedPhysicalAddress2).toBeDefined()
+
+    const args: GetPhysicalAddressesArgs = {
+      filter: [{ partyId: savedParty.id }],
+    }
+
+    const result: Array<PhysicalAddress> = await contactStore.getPhysicalAddresses(args)
+
+    expect(result.length).toEqual(2)
+  })
+
+  it('should get all electronic addresses', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const physicalAddress1: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName: 'example_street_name',
+      streetNumber: 'example_street_number',
+      buildingName: 'example_building_name',
+      postalCode: 'example_postal_code',
+      cityName: 'example_city_name',
+      provinceName: 'example_province_name',
+      countryCode: 'example_country_code',
+    }
+    const savedPhysicalAddress1: PhysicalAddress = await contactStore.addPhysicalAddress({
+      partyId: savedParty.id,
+      physicalAddress: physicalAddress1,
+    })
+    expect(savedPhysicalAddress1).toBeDefined()
+
+    const physicalAddress2: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName: 'example_street_name',
+      streetNumber: 'example_street_number',
+      buildingName: 'example_building_name',
+      postalCode: 'example_postal_code',
+      cityName: 'example_city_name',
+      provinceName: 'example_province_name',
+      countryCode: 'example_country_code',
+    }
+    const savedPhysicalAddress2: PhysicalAddress = await contactStore.addPhysicalAddress({
+      partyId: savedParty.id,
+      physicalAddress: physicalAddress2,
+    })
+    expect(savedPhysicalAddress2).toBeDefined()
+
+    const result: Array<PhysicalAddress> = await contactStore.getPhysicalAddresses()
+
+    expect(result.length).toEqual(2)
+  })
+
+  it('should get electronic addresses by filter', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const streetName = 'example_electronic_address1'
+    const physicalAddress1: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName,
+      streetNumber: 'example_street_number1',
+      buildingName: 'example_building_name1',
+      postalCode: 'example_postal_code1',
+      cityName: 'example_city_name1',
+      provinceName: 'example_province_name1',
+      countryCode: 'example_country_code1',
+    }
+    const savedPhysicalAddress1: PhysicalAddress = await contactStore.addPhysicalAddress({
+      partyId: savedParty.id,
+      physicalAddress: physicalAddress1,
+    })
+    expect(savedPhysicalAddress1).toBeDefined()
+
+    const physicalAddress2: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName: 'example_street_name2',
+      streetNumber: 'example_street_number2',
+      buildingName: 'example_building_name2',
+      postalCode: 'example_postal_code2',
+      cityName: 'example_city_name2',
+      provinceName: 'example_province_name2',
+      countryCode: 'example_country_code2',
+    }
+    const savedPhysicalAddress2: PhysicalAddress = await contactStore.addPhysicalAddress({
+      partyId: savedParty.id,
+      physicalAddress: physicalAddress2,
+    })
+    expect(savedPhysicalAddress2).toBeDefined()
+
+    const args: GetPhysicalAddressesArgs = {
+      filter: [{ streetName }],
+    }
+
+    const result: Array<PhysicalAddress> = await contactStore.getPhysicalAddresses(args)
+
+    expect(result.length).toEqual(1)
+  })
+
+  it('should add physical address to contact', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const physicalAddress: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName: 'example_street_name',
+      streetNumber: 'example_street_number',
+      buildingName: 'example_building_name',
+      postalCode: 'example_postal_code',
+      cityName: 'example_city_name',
+      provinceName: 'example_province_name',
+      countryCode: 'example_country_code',
+    }
+    const savedPhysicalAddress: PhysicalAddress = await contactStore.addPhysicalAddress({ partyId: savedParty.id, physicalAddress })
+    expect(savedPhysicalAddress).toBeDefined()
+
+    const result: Party = await contactStore.getParty({ partyId: savedParty.id })
+    expect(result.physicalAddresses.length).toEqual(1)
+  })
+
+  it('should update physical address by id', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const physicalAddress: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName: 'example_street_name',
+      streetNumber: 'example_street_number',
+      buildingName: 'example_building_name',
+      postalCode: 'example_postal_code',
+      cityName: 'example_city_name',
+      provinceName: 'example_province_name',
+      countryCode: 'example_country_code',
+    }
+    const savedPhysicalAddress: PhysicalAddress = await contactStore.addPhysicalAddress({ partyId: savedParty.id, physicalAddress })
+    const newStreetName = 'new_example_street_name'
+    savedPhysicalAddress.streetName = newStreetName
+
+    await contactStore.updatePhysicalAddress({ physicalAddress: savedPhysicalAddress })
+    const result: PhysicalAddress = await contactStore.getPhysicalAddress({ physicalAddressId: savedPhysicalAddress.id })
+
+    expect(result).toBeDefined()
+    expect(result.streetName).toEqual(newStreetName)
+  })
+
+  it('should remove physical address', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const physicalAddress: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName: 'example_street_name',
+      streetNumber: 'example_street_number',
+      buildingName: 'example_building_name',
+      postalCode: 'example_postal_code',
+      cityName: 'example_city_name',
+      provinceName: 'example_province_name',
+      countryCode: 'example_country_code',
+    }
+    const savedPhysicalAddress: PhysicalAddress = await contactStore.addPhysicalAddress({ partyId: savedParty.id, physicalAddress })
+    expect(savedPhysicalAddress).toBeDefined()
+
+    await contactStore.removePhysicalAddress({ physicalAddressId: savedPhysicalAddress.id })
+
+    await expect(contactStore.getPhysicalAddress({ physicalAddressId: savedPhysicalAddress.id })).rejects.toThrow(
+      `No physical address found for id: ${savedPhysicalAddress.id}`
+    )
+  })
+
+  it('should throw error when removing physical address with unknown id', async (): Promise<void> => {
+    const physicalAddressId = 'unknownPhysicalAddressId'
+
+    await expect(contactStore.removePhysicalAddress({ physicalAddressId })).rejects.toThrow(`No physical address found for id: ${physicalAddressId}`)
   })
 })

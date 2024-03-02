@@ -1,0 +1,59 @@
+{
+  "name": "@sphereon/ssi-sdk.oid4vci-holder",
+  "version": "0.18.1",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "veramo": {
+    "pluginInterfaces": {
+      "IOID4VCIFlow": "./src/types/IOID4VCIFlow.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:clean": "tsc --build --clean && tsc --build"
+  },
+  "dependencies": {
+    "@sphereon/ssi-sdk.data-store": "workspace:*",
+    "@sphereon/ssi-sdk.issuance-branding": "workspace:*",
+    "@sphereon/ssi-sdk.contact-manager": "workspace:*",
+    "@sphereon/ssi-types": "workspace:*",
+    "@sphereon/oid4vci-client": "0.10.0",
+    "@sphereon/oid4vci-common": "0.10.0",
+    "@veramo/utils": "4.2.0",
+    "@veramo/core": "4.2.0",
+    "@veramo/data-store": "4.2.0",
+    "xstate": "^4.38.3",
+    "uuid": "^9.0.1",
+    "i18n-js": "^3.8.0",
+    "lodash.memoize": "^4.1.2"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5",
+    "typeorm": "0.3.12",
+    "@veramo/remote-client": "4.2.0",
+    "@veramo/remote-server": "4.2.0",
+    "@types/uuid": "^9.0.8",
+    "@types/i18n-js": "^3.8.4",
+    "@types/lodash.memoize": "^4.1.7"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "plugin.schema.json",
+    "LICENSE"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sphereon",
+    "OID4VCI",
+    "State Machine"
+  ]
+}

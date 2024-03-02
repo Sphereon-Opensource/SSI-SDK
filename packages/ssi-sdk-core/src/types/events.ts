@@ -1,7 +1,8 @@
 import { IAgentContext } from '@veramo/core'
 
 export enum LogLevel {
-  DEBUG = 0,
+  TRACE = 0,
+  DEBUG,
   INFO,
   WARNING,
   ERROR,
@@ -102,11 +103,15 @@ export type AuditLoggingEvent = {
 }
 export type PartialAuditLoggingEvent = Partial<AuditLoggingEvent>
 
-export type NonPersistedAuditLoggingEvent = Omit<AuditLoggingEvent, 'id' | 'timestamp' | 'level' | 'correlationId' | 'system' | 'subSystemType'> & {
+export type NonPersistedAuditLoggingEvent = Omit<
+  AuditLoggingEvent,
+  'id' | 'timestamp' | 'level' | 'correlationId' | 'system' | 'subSystemType' | 'initiatorType'
+> & {
   level?: LogLevel
   correlationId?: string
   system?: System
   subSystemType?: SubSystem
+  initiatorType?: InitiatorType
 }
 
 export type LoggingEvent = {
@@ -120,4 +125,5 @@ export type EventLoggerArgs = {
   system?: System
   subSystem?: SubSystem
   logLevel?: LogLevel
+  initiatorType?: InitiatorType
 }

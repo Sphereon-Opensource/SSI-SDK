@@ -1,39 +1,51 @@
+import {
+  AbstractContactStore,
+  ElectronicAddress,
+  Identity,
+  NonPersistedContact,
+  Party as Contact,
+  PartyRelationship as ContactRelationship,
+  PartyType as ContactType,
+  PhysicalAddress,
+  isNaturalPerson,
+  isOrganization,
+} from '@sphereon/ssi-sdk.data-store'
 import { IAgentPlugin } from '@veramo/core'
 import { schema } from '../index'
 import {
   AddContactArgs,
-  UpdateContactArgs,
-  GetIdentitiesArgs,
-  RemoveContactArgs,
-  AddIdentityArgs,
-  IContactManager,
-  GetIdentityArgs,
-  RemoveIdentityArgs,
-  RequiredContext,
-  UpdateIdentityArgs,
-  GetContactsArgs,
-  GetContactArgs,
-  AddRelationshipArgs,
-  RemoveRelationshipArgs,
-  GetRelationshipArgs,
-  GetRelationshipsArgs,
-  UpdateRelationshipArgs,
   AddContactTypeArgs,
+  AddElectronicAddressArgs,
+  AddIdentityArgs,
+  AddPhysicalAddressArgs,
+  AddRelationshipArgs,
+  GetContactArgs,
   GetContactTypeArgs,
   GetContactTypesArgs,
+  GetContactsArgs,
+  GetElectronicAddressArgs,
+  GetElectronicAddressesArgs,
+  GetIdentitiesArgs,
+  GetIdentityArgs,
+  GetPhysicalAddressArgs,
+  GetPhysicalAddressesArgs,
+  GetRelationshipArgs,
+  GetRelationshipsArgs,
+  IContactManager,
+  RemoveContactArgs,
   RemoveContactTypeArgs,
+  RemoveElectronicAddressArgs,
+  RemoveIdentityArgs,
+  RemovePhysicalAddressArgs,
+  RemoveRelationshipArgs,
+  RequiredContext,
+  UpdateContactArgs,
   UpdateContactTypeArgs,
+  UpdateElectronicAddressArgs,
+  UpdateIdentityArgs,
+  UpdatePhysicalAddressArgs,
+  UpdateRelationshipArgs,
 } from '../types/IContactManager'
-import {
-  AbstractContactStore,
-  Party as Contact,
-  Identity,
-  PartyRelationship as ContactRelationship,
-  PartyType as ContactType,
-  NonPersistedContact,
-  isNaturalPerson,
-  isOrganization,
-} from '@sphereon/ssi-sdk.data-store'
 
 /**
  * {@inheritDoc IContactManager}
@@ -61,6 +73,16 @@ export class ContactManager implements IAgentPlugin {
     cmAddContactType: this.cmAddContactType.bind(this),
     cmUpdateContactType: this.cmUpdateContactType.bind(this),
     cmRemoveContactType: this.cmRemoveContactType.bind(this),
+    cmGetElectronicAddress: this.cmGetElectronicAddress.bind(this),
+    cmGetElectronicAddresses: this.cmGetElectronicAddresses.bind(this),
+    cmAddElectronicAddress: this.cmAddElectronicAddress.bind(this),
+    cmUpdateElectronicAddress: this.cmUpdateElectronicAddress.bind(this),
+    cmRemoveElectronicAddress: this.cmRemoveElectronicAddress.bind(this),
+    cmGetPhysicalAddress: this.cmGetPhysicalAddress.bind(this),
+    cmGetPhysicalAddresses: this.cmGetPhysicalAddresses.bind(this),
+    cmAddPhysicalAddress: this.cmAddPhysicalAddress.bind(this),
+    cmUpdatePhysicalAddress: this.cmUpdatePhysicalAddress.bind(this),
+    cmRemovePhysicalAddress: this.cmRemovePhysicalAddress.bind(this),
   }
 
   private readonly store: AbstractContactStore
@@ -71,7 +93,8 @@ export class ContactManager implements IAgentPlugin {
 
   /** {@inheritDoc IContactManager.cmGetContact} */
   private async cmGetContact(args: GetContactArgs, context: RequiredContext): Promise<Contact> {
-    return this.store.getParty({ partyId: args.contactId })
+    const { contactId } = args
+    return this.store.getParty({ partyId: contactId })
   }
 
   /** {@inheritDoc IContactManager.cmGetContacts} */
@@ -81,23 +104,28 @@ export class ContactManager implements IAgentPlugin {
 
   /** {@inheritDoc IContactManager.cmAddContact} */
   private async cmAddContact(args: AddContactArgs, context: RequiredContext): Promise<Contact> {
+    const { uri, contactType, identities, electronicAddresses, physicalAddresses } = args
+
     return this.store.addParty({
-      uri: args.uri,
-      partyType: args.contactType,
+      uri,
+      partyType: contactType,
       contact: this.getContactInformationFrom(args),
-      identities: args.identities,
-      electronicAddresses: args.electronicAddresses,
+      identities,
+      electronicAddresses,
+      physicalAddresses,
     })
   }
 
   /** {@inheritDoc IContactManager.cmUpdateContact} */
   private async cmUpdateContact(args: UpdateContactArgs, context: RequiredContext): Promise<Contact> {
-    return this.store.updateParty({ party: args.contact })
+    const { contact } = args
+    return this.store.updateParty({ party: contact })
   }
 
   /** {@inheritDoc IContactManager.cmRemoveContact} */
   private async cmRemoveContact(args: RemoveContactArgs, context: RequiredContext): Promise<boolean> {
-    return this.store.removeParty({ partyId: args.contactId }).then(() => true)
+    const { contactId } = args
+    return this.store.removeParty({ partyId: contactId }).then((): boolean => true)
   }
 
   /** {@inheritDoc IContactManager.cmGetIdentity} */
@@ -112,7 +140,8 @@ export class ContactManager implements IAgentPlugin {
 
   /** {@inheritDoc IContactManager.cmAddIdentity} */
   private async cmAddIdentity(args: AddIdentityArgs, context: RequiredContext): Promise<Identity> {
-    return this.store.addIdentity({ partyId: args.contactId, identity: args.identity })
+    const { contactId, identity } = args
+    return this.store.addIdentity({ partyId: contactId, identity })
   }
 
   /** {@inheritDoc IContactManager.cmUpdateIdentity} */
@@ -122,7 +151,7 @@ export class ContactManager implements IAgentPlugin {
 
   /** {@inheritDoc IContactManager.cmRemoveIdentity} */
   private async cmRemoveIdentity(args: RemoveIdentityArgs, context: RequiredContext): Promise<boolean> {
-    return this.store.removeIdentity(args).then(() => true)
+    return this.store.removeIdentity(args).then((): boolean => true)
   }
 
   /** {@inheritDoc IContactManager.cmAddRelationship} */
@@ -132,7 +161,7 @@ export class ContactManager implements IAgentPlugin {
 
   /** {@inheritDoc IContactManager.cmRemoveRelationship} */
   private async cmRemoveRelationship(args: RemoveRelationshipArgs, context: RequiredContext): Promise<boolean> {
-    return this.store.removeRelationship(args).then(() => true)
+    return this.store.removeRelationship(args).then((): boolean => true)
   }
 
   /** {@inheritDoc IContactManager.cmGetRelationship} */
@@ -152,7 +181,8 @@ export class ContactManager implements IAgentPlugin {
 
   /** {@inheritDoc IContactManager.cmGetContactType} */
   private async cmGetContactType(args: GetContactTypeArgs, context: RequiredContext): Promise<ContactType> {
-    return this.store.getPartyType({ partyTypeId: args.contactTypeId })
+    const { contactTypeId } = args
+    return this.store.getPartyType({ partyTypeId: contactTypeId })
   }
 
   /** {@inheritDoc IContactManager.cmGetContactTypes} */
@@ -167,12 +197,66 @@ export class ContactManager implements IAgentPlugin {
 
   /** {@inheritDoc IContactManager.cmUpdateContactType} */
   private async cmUpdateContactType(args: UpdateContactTypeArgs, context: RequiredContext): Promise<ContactType> {
-    return this.store.updatePartyType({ partyType: args.contactType })
+    const { contactType } = args
+    return this.store.updatePartyType({ partyType: contactType })
   }
 
   /** {@inheritDoc IContactManager.cmRemoveContactType} */
   private async cmRemoveContactType(args: RemoveContactTypeArgs, context: RequiredContext): Promise<boolean> {
-    return this.store.removePartyType({ partyTypeId: args.contactTypeId }).then(() => true)
+    const { contactTypeId } = args
+    return this.store.removePartyType({ partyTypeId: contactTypeId }).then((): boolean => true)
+  }
+
+  /** {@inheritDoc IContactManager.cmGetElectronicAddress} */
+  private async cmGetElectronicAddress(args: GetElectronicAddressArgs, context: RequiredContext): Promise<ElectronicAddress> {
+    return this.store.getElectronicAddress(args)
+  }
+
+  /** {@inheritDoc IContactManager.cmGetElectronicAddresses} */
+  private async cmGetElectronicAddresses(args?: GetElectronicAddressesArgs): Promise<Array<ElectronicAddress>> {
+    return this.store.getElectronicAddresses(args)
+  }
+
+  /** {@inheritDoc IContactManager.cmAddElectronicAddress} */
+  private async cmAddElectronicAddress(args: AddElectronicAddressArgs): Promise<ElectronicAddress> {
+    const { contactId, electronicAddress } = args
+    return this.store.addElectronicAddress({ partyId: contactId, electronicAddress })
+  }
+
+  /** {@inheritDoc IContactManager.cmUpdateElectronicAddress} */
+  private async cmUpdateElectronicAddress(args: UpdateElectronicAddressArgs): Promise<ElectronicAddress> {
+    return this.store.updateElectronicAddress(args)
+  }
+
+  /** {@inheritDoc IContactManager.cmRemoveElectronicAddress} */
+  private async cmRemoveElectronicAddress(args: RemoveElectronicAddressArgs): Promise<boolean> {
+    return this.store.removeElectronicAddress(args).then((): boolean => true)
+  }
+
+  /** {@inheritDoc IContactManager.cmGetPhysicalAddress} */
+  private async cmGetPhysicalAddress(args: GetPhysicalAddressArgs): Promise<PhysicalAddress> {
+    return this.store.getPhysicalAddress(args)
+  }
+
+  /** {@inheritDoc IContactManager.cmGetPhysicalAddresses} */
+  private async cmGetPhysicalAddresses(args?: GetPhysicalAddressesArgs): Promise<Array<PhysicalAddress>> {
+    return this.store.getPhysicalAddresses(args)
+  }
+
+  /** {@inheritDoc IContactManager.cmAddPhysicalAddress} */
+  private async cmAddPhysicalAddress(args: AddPhysicalAddressArgs): Promise<PhysicalAddress> {
+    const { contactId, physicalAddress } = args
+    return this.store.addPhysicalAddress({ partyId: contactId, physicalAddress })
+  }
+
+  /** {@inheritDoc IContactManager.cmUpdatePhysicalAddress} */
+  private async cmUpdatePhysicalAddress(args: UpdatePhysicalAddressArgs): Promise<PhysicalAddress> {
+    return this.store.updatePhysicalAddress(args)
+  }
+
+  /** {@inheritDoc IContactManager.cmRemovePhysicalAddress} */
+  private async cmRemovePhysicalAddress(args: RemovePhysicalAddressArgs): Promise<boolean> {
+    return this.store.removePhysicalAddress(args).then((): boolean => true)
   }
 
   private getContactInformationFrom(contact: any): NonPersistedContact {
