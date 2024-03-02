@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.19.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.18.1...v0.19.0) (2024-03-02)
+
+### Features
+
+- added physical and electronic addresses to contact-manager ([76f78b3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/76f78b34b99c47b4c16fd9682d2520a7637219f7))
+- event-logger improvements ([a3fdcd2](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a3fdcd2c64c6ead46266e09a599785bbbdd45579))
+
 ## [0.18.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.18.0...v0.18.1) (2024-01-19)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.data-store

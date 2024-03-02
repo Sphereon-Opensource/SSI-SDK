@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.19.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.18.1...v0.19.0) (2024-03-02)
+
+### Bug Fixes
+
+- changed image-size library version to a react friendly one ([308bad7](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/308bad797278ed1ba79102a4115d36ff53c4207a))
+- changed the image-size usage to handle uint8array ([1a0e080](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/1a0e0808b05208dad3392d0e3292aa0438cfd4af))
+- fixed the svg problem with image-size ([d7823eb](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/d7823eb6ee48fb3529e868e7f22a9a001f70983e))
+- modified handling svg files in ssi-sdk.core ([c86188e](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/c86188e5725e5d2d3cf8e18612ba987cea6944f0))
+
+### Features
+
+- Add initial OID4VP ID2 support ([85325ae](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/85325ae7cdf6b28d32442a38779f25ee627dd86f))
+- event-logger improvements ([a3fdcd2](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/a3fdcd2c64c6ead46266e09a599785bbbdd45579))
+
 ## [0.18.1](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.18.0...v0.18.1) (2024-01-19)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.core
