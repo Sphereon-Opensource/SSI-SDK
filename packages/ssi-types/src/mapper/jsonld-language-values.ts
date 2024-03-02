@@ -72,14 +72,14 @@ export const mapLanguageValue = (
   return claim
 }
 
-export const mapLanguageValues = (
-  claimsOrCredential: object,
+export const mapLanguageValues = <T extends object>(
+  claimsOrCredential: T,
   opts?: {
     language?: string
     fallbackToFirstObject?: boolean
     noDeepClone?: boolean
   }
-): any => {
+): T => {
   const result = opts?.noDeepClone ? claimsOrCredential : JSON.parse(JSON.stringify(claimsOrCredential))
   Object.keys(claimsOrCredential).forEach((key) => {
     result[key] = mapLanguageValue(result[key], opts)
