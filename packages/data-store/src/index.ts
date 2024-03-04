@@ -24,12 +24,22 @@ import { PartyTypeEntity } from './entities/contact/PartyTypeEntity'
 import { OrganizationEntity } from './entities/contact/OrganizationEntity'
 import { NaturalPersonEntity } from './entities/contact/NaturalPersonEntity'
 import { ElectronicAddressEntity } from './entities/contact/ElectronicAddressEntity'
+import { PhysicalAddressEntity } from './entities/contact/PhysicalAddressEntity'
 export { ContactStore } from './contact/ContactStore'
 export { AbstractContactStore } from './contact/AbstractContactStore'
 export { AbstractIssuanceBrandingStore } from './issuanceBranding/AbstractIssuanceBrandingStore'
 export { IssuanceBrandingStore } from './issuanceBranding/IssuanceBrandingStore'
 export { StatusListStore } from './statusList/StatusListStore'
-export { DataStoreMigrations } from './migrations'
+import { AuditEventEntity, auditEventEntityFrom } from './entities/eventLogger/AuditEventEntity'
+export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
+export { EventLoggerStore } from './eventLogger/EventLoggerStore'
+export {
+  DataStoreMigrations,
+  DataStoreEventLoggerMigrations,
+  DataStoreContactMigrations,
+  DataStoreIssuanceBrandingMigrations,
+  DataStoreStatusListMigrations,
+} from './migrations'
 export * from './types'
 export * from './utils/contact/MappingUtils'
 
@@ -48,6 +58,7 @@ export const DataStoreContactEntities = [
   OrganizationEntity,
   NaturalPersonEntity,
   ElectronicAddressEntity,
+  PhysicalAddressEntity,
 ]
 
 export const DataStoreIssuanceBrandingEntities = [
@@ -64,8 +75,15 @@ export const DataStoreIssuanceBrandingEntities = [
 
 export const DataStoreStatusListEntities = [StatusListEntity, StatusListEntryEntity]
 
+export const DataStoreEventLoggerEntities = [AuditEventEntity]
+
 // All entities combined if a party wants to enable them all at once
-export const DataStoreEntities = [...DataStoreContactEntities, ...DataStoreIssuanceBrandingEntities, ...DataStoreStatusListEntities]
+export const DataStoreEntities = [
+  ...DataStoreContactEntities,
+  ...DataStoreIssuanceBrandingEntities,
+  ...DataStoreStatusListEntities,
+  ...DataStoreEventLoggerEntities,
+]
 
 export {
   BaseConfigEntity,
@@ -86,6 +104,7 @@ export {
   CredentialLocaleBrandingEntity,
   IssuerLocaleBrandingEntity,
   ElectronicAddressEntity,
+  PhysicalAddressEntity,
   backgroundAttributesEntityFrom,
   credentialBrandingEntityFrom,
   imageAttributesEntityFrom,
@@ -98,4 +117,6 @@ export {
   IStatusListEntryEntity,
   StatusListEntity,
   StatusListEntryEntity,
+  AuditEventEntity,
+  auditEventEntityFrom,
 }

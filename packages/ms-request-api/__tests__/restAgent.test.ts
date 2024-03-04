@@ -6,10 +6,10 @@ import { IAgent, createAgent, IAgentOptions, IDataStore, IDataStoreORM } from '@
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { getConfig, createObjects } from '@sphereon/ssi-sdk.agent-config'
-import { IMsRequestApi } from '../src/types/IMsRequestApi'
+import { IMsRequestApi } from '../src'
 import msRequestApiAgentLogic from './shared/msRequestApiAgentLogic'
 
-jest.setTimeout(30000)
+jest.setTimeout(60000)
 
 const port = 3002
 const basePath = '/agent'

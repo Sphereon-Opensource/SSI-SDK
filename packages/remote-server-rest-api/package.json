@@ -1,0 +1,42 @@
+{
+  "name": "@sphereon/ssi-sdk.remote-server-rest-api",
+  "version": "0.19.0",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build",
+    "start:prod": "node build/index.js"
+  },
+  "dependencies": {
+    "@sphereon/ssi-express-support": "workspace:*",
+    "@veramo/core": "4.2.0",
+    "@veramo/remote-server": "4.2.0",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/express-http-proxy": "^1.6.3"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sphereon",
+    "Veramo",
+    "Remote server",
+    "REST",
+    "API"
+  ]
+}

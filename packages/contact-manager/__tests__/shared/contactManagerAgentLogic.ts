@@ -1,16 +1,20 @@
 import { TAgent } from '@veramo/core'
-import { AddContactArgs, IContactManager } from '../../src'
 import {
-  PartyTypeEnum,
   CorrelationIdentifierEnum,
-  NonPersistedIdentity,
-  Party,
-  IdentityRoleEnum,
-  Identity,
-  NaturalPerson,
+  ElectronicAddress,
   GetPartiesArgs,
+  Identity,
+  IdentityRoleEnum,
+  NaturalPerson,
+  NonPersistedElectronicAddress,
+  NonPersistedIdentity,
+  NonPersistedPhysicalAddress,
+  Party,
   PartyRelationship,
+  PartyTypeEnum,
+  PhysicalAddress,
 } from '../../../data-store/src'
+import { AddContactArgs, IContactManager } from '../../src'
 
 type ConfiguredAgent = TAgent<IContactManager>
 
@@ -25,7 +29,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       agent = testContext.getAgent()
 
       const contact: AddContactArgs = {
-        //NonPersistedParty
         firstName: 'default_first_name',
         middleName: 'default_middle_name',
         lastName: 'default_last_name',
@@ -35,12 +38,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
           name: 'example_name',
         },
-        // contact: {
-        //   firstName: 'default_first_name',
-        //   middleName: 'default_middle_name',
-        //   lastName: 'default_last_name',
-        //   displayName: 'default_display_name',
-        // },
         uri: 'example.com',
       }
       const correlationId = 'default_example_did'
@@ -139,7 +136,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should add contact', async (): Promise<void> => {
       const contact: AddContactArgs = {
-        //NonPersistedParty
         firstName: 'new_first_name',
         middleName: 'new_middle_name',
         lastName: 'new_last_name',
@@ -150,18 +146,23 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           name: 'new_name',
           description: 'new_description',
         },
-        // contact: {
-        //   firstName: 'new_first_name',
-        //   middleName: 'new_middle_name',
-        //   lastName: 'new_last_name',
-        //   displayName: 'new_display_name',
-        // },
         uri: 'example.com',
-        // TODO create better tests for electronicAddresses
         electronicAddresses: [
           {
             type: 'email',
             electronicAddress: 'sphereon@sphereon.com',
+          },
+        ],
+        physicalAddresses: [
+          {
+            type: 'home',
+            streetName: 'example_street_name',
+            streetNumber: 'example_street_number',
+            buildingName: 'example_building_name',
+            postalCode: 'example_postal_code',
+            cityName: 'example_city_name',
+            provinceName: 'example_province_name',
+            countryCode: 'example_country_code',
           },
         ],
       }
@@ -178,6 +179,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.uri).toEqual(contact.uri)
       expect(result.electronicAddresses).toBeDefined()
       expect(result.electronicAddresses.length).toEqual(1)
+      expect(result.physicalAddresses).toBeDefined()
+      expect(result.physicalAddresses.length).toEqual(1)
     })
 
     it('should update contact by id', async (): Promise<void> => {
@@ -308,7 +311,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should add relationship', async (): Promise<void> => {
       const contact: AddContactArgs = {
-        //NonPersistedParty
         firstName: 'relation_first_name',
         middleName: 'relation_middle_name',
         lastName: 'relation_last_name',
@@ -319,26 +321,16 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           name: 'relation_contact_type_name',
           description: 'new_description',
         },
-        // contact: {
-        //   firstName: 'relation_first_name',
-        //   middleName: 'relation_middle_name',
-        //   lastName: 'relation_last_name',
-        //   displayName: 'relation_display_name',
-        // },
         uri: 'example.com',
       }
 
       const savedContact: Party = await agent.cmAddContact(contact)
 
-      // TODO why does this filter not work on only first name?
-      const args1: GetPartiesArgs = {
-        filter: [
-          { contact: { firstName: 'default_first_name' } },
-          { contact: { middleName: 'default_middle_name' } },
-          // { contactOwner: { lastName: 'default_last_name'} },
-        ],
+      // FIXME why does this filter not work on only first name?
+      const defaultContactFilter: GetPartiesArgs = {
+        filter: [{ contact: { firstName: 'default_first_name' } }, { contact: { middleName: 'default_middle_name' } }],
       }
-      const otherContacts: Array<Party> = await agent.cmGetContacts(args1)
+      const otherContacts: Array<Party> = await agent.cmGetContacts(defaultContactFilter)
 
       expect(otherContacts.length).toEqual(1)
 
@@ -349,11 +341,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(relationship).toBeDefined()
 
-      // TODO why does this filter not work on only first name?
-      const args2: GetPartiesArgs = {
+      // FIXME why does this filter not work on only first name?
+      const relationContactFilter: GetPartiesArgs = {
         filter: [{ contact: { firstName: 'relation_first_name' } }, { contact: { middleName: 'relation_middle_name' } }],
       }
-      const result: Array<Party> = await agent.cmGetContacts(args2)
+      const result: Array<Party> = await agent.cmGetContacts(relationContactFilter)
 
       expect(result.length).toEqual(1)
       expect(result[0].relationships.length).toEqual(1)
@@ -363,7 +355,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should remove relationship', async (): Promise<void> => {
       const contact: AddContactArgs = {
-        //NonPersistedParty
         firstName: 'remove_relation_first_name',
         middleName: 'remove_relation_middle_name',
         lastName: 'remove_relation_last_name',
@@ -374,26 +365,16 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           name: 'remove_relation_contact_type_name',
           description: 'new_description',
         },
-        // contact: {
-        //   firstName: 'remove_relation_first_name',
-        //   middleName: 'remove_relation_middle_name',
-        //   lastName: 'remove_relation_last_name',
-        //   displayName: 'remove_relation_display_name',
-        // },
         uri: 'example.com',
       }
 
       const savedContact: Party = await agent.cmAddContact(contact)
 
-      // TODO why does this filter not work on only first name?
-      const args1: GetPartiesArgs = {
-        filter: [
-          { contact: { firstName: 'default_first_name' } },
-          { contact: { middleName: 'default_middle_name' } },
-          // { contactOwner: { lastName: 'default_last_name'} },
-        ],
+      // FIXME why does this filter not work on only first name?
+      const defaultContactFilter: GetPartiesArgs = {
+        filter: [{ contact: { firstName: 'default_first_name' } }, { contact: { middleName: 'default_middle_name' } }],
       }
-      const otherContacts: Array<Party> = await agent.cmGetContacts(args1)
+      const otherContacts: Array<Party> = await agent.cmGetContacts(defaultContactFilter)
 
       expect(otherContacts.length).toEqual(1)
 
@@ -404,27 +385,366 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(relationship).toBeDefined()
 
-      // TODO why does this filter not work on only first name?
-      const args2: GetPartiesArgs = {
-        filter: [
-          { contact: { firstName: 'relation_first_name' } },
-          { contact: { middleName: 'relation_middle_name' } },
-          // { contactOwner: { lastName: 'default_last_name'} },
-        ],
+      // FIXME why does this filter not work on only first name?
+      const relationContactFilter: GetPartiesArgs = {
+        filter: [{ contact: { firstName: 'relation_first_name' } }, { contact: { middleName: 'relation_middle_name' } }],
       }
-      const retrievedContact: Array<Party> = await agent.cmGetContacts(args2)
+      const retrievedContact: Array<Party> = await agent.cmGetContacts(relationContactFilter)
 
       expect(retrievedContact.length).toEqual(1)
       expect(retrievedContact[0].relationships.length).toEqual(1)
-      // expect(result[0].relationships[0].leftContactId).toEqual(savedContact.id)
-      // expect(result[0].relationships[0].rightContactId).toEqual(otherContacts[0].id)
 
       const removeRelationshipResult: boolean = await agent.cmRemoveRelationship({ relationshipId: relationship.id })
       expect(removeRelationshipResult).toBeTruthy()
 
       const result: Party = await agent.cmGetContact({ contactId: savedContact.id })
 
+      expect(removeRelationshipResult).toEqual(true)
       expect(result.relationships.length).toEqual(0)
+    })
+
+    it('should add electronic address to contact', async (): Promise<void> => {
+      const contact: AddContactArgs = {
+        firstName: 'add_electronic_address_first_name',
+        lastName: 'add_electronic_address_last_name',
+        displayName: 'add_electronic_address_display_name',
+        contactType: {
+          type: PartyTypeEnum.NATURAL_PERSON,
+          tenantId: 'a85a8aa0-fdeb-4c00-b22e-60423f52a873',
+          name: 'add_electronic_address_name',
+          description: 'add_electronic_address_description',
+        },
+      }
+
+      const savedContact: Party = await agent.cmAddContact(contact)
+      expect(savedContact).not.toBeNull()
+
+      const electronicAddress: NonPersistedElectronicAddress = {
+        type: 'email',
+        electronicAddress: 'example_electronic_address',
+      }
+
+      const result: ElectronicAddress = await agent.cmAddElectronicAddress({ contactId: savedContact.id, electronicAddress })
+      const contactResult: Party = await agent.cmGetContact({ contactId: savedContact.id })
+
+      expect(result).not.toBeNull()
+      expect(contactResult.electronicAddresses.length).toEqual(1)
+    })
+
+    it('should get electronic address by id', async (): Promise<void> => {
+      const contact: AddContactArgs = {
+        firstName: 'get_electronic_address_first_name',
+        lastName: 'get_electronic_address_last_name',
+        displayName: 'get_electronic_address_display_name',
+        contactType: {
+          type: PartyTypeEnum.NATURAL_PERSON,
+          tenantId: 'f2947075-53eb-4176-b155-ab4b18715288',
+          name: 'get_electronic_address_name',
+          description: 'get_electronic_address_description',
+        },
+      }
+
+      const savedContact: Party = await agent.cmAddContact(contact)
+      expect(savedContact).not.toBeNull()
+
+      const electronicAddress: NonPersistedElectronicAddress = {
+        type: 'email',
+        electronicAddress: 'example_electronic_address',
+      }
+
+      const savedElectronicAddress: ElectronicAddress = await agent.cmAddElectronicAddress({ contactId: defaultContact.id, electronicAddress })
+      const result: ElectronicAddress = await agent.cmGetElectronicAddress({ electronicAddressId: savedElectronicAddress.id })
+
+      expect(result).not.toBeNull()
+    })
+
+    it('should get all electronic addresses for contact', async (): Promise<void> => {
+      const contact: AddContactArgs = {
+        firstName: 'get_all_electronic_address_first_name',
+        lastName: 'get_all_electronic_address_last_name',
+        displayName: 'get_all_electronic_address_display_name',
+        contactType: {
+          type: PartyTypeEnum.NATURAL_PERSON,
+          tenantId: '5c0157ec-4678-4273-8f53-413bc6435134',
+          name: 'get_all_electronic_address_name',
+          description: 'get_all_electronic_address_description',
+        },
+      }
+
+      const savedContact: Party = await agent.cmAddContact(contact)
+      expect(savedContact).not.toBeNull()
+
+      const electronicAddress: NonPersistedElectronicAddress = {
+        type: 'email',
+        electronicAddress: 'example_electronic_address',
+      }
+
+      await agent.cmAddElectronicAddress({ contactId: savedContact.id, electronicAddress })
+      await agent.cmAddElectronicAddress({ contactId: savedContact.id, electronicAddress })
+      const result: Array<ElectronicAddress> = await agent.cmGetElectronicAddresses({ filter: [{ partyId: savedContact.id }] })
+
+      expect(result.length).toEqual(2)
+    })
+
+    it('should update electronic address', async (): Promise<void> => {
+      const contact: AddContactArgs = {
+        firstName: 'update_electronic_address_first_name',
+        lastName: 'update_electronic_address_last_name',
+        displayName: 'update_electronic_address_display_name',
+        contactType: {
+          type: PartyTypeEnum.NATURAL_PERSON,
+          tenantId: '6b64c3dd-cf40-4919-b8b8-2ec3c510c5b7',
+          name: 'update_electronic_address_name',
+          description: 'update_electronic_address_description',
+        },
+      }
+
+      const savedContact: Party = await agent.cmAddContact(contact)
+      expect(savedContact).not.toBeNull()
+
+      const electronicAddress: NonPersistedElectronicAddress = {
+        type: 'email',
+        electronicAddress: 'example_electronic_address',
+      }
+
+      const savedElectronicAddress: ElectronicAddress = await agent.cmAddElectronicAddress({ contactId: savedContact.id, electronicAddress })
+
+      const updatedElectronicAddress: ElectronicAddress = {
+        ...savedElectronicAddress,
+        electronicAddress: 'updated_electronic_address',
+      }
+
+      const result: ElectronicAddress = await agent.cmUpdateElectronicAddress({ electronicAddress: updatedElectronicAddress })
+
+      expect(result).not.toBeNull()
+      expect(result.id).toEqual(savedElectronicAddress.id)
+      expect(result.electronicAddress).toEqual(updatedElectronicAddress.electronicAddress)
+    })
+
+    it('should remove electronic address', async (): Promise<void> => {
+      const contact: AddContactArgs = {
+        firstName: 'remove_electronic_address_first_name',
+        lastName: 'remove_electronic_address_last_name',
+        displayName: 'remove_electronic_address_display_name',
+        contactType: {
+          type: PartyTypeEnum.NATURAL_PERSON,
+          tenantId: '41b45c65-971e-4c26-8115-cb8bc7c67cf3',
+          name: 'remove_electronic_address_name',
+          description: 'remove_electronic_address_description',
+        },
+      }
+
+      const savedContact: Party = await agent.cmAddContact(contact)
+      expect(savedContact).not.toBeNull()
+
+      const electronicAddress: NonPersistedElectronicAddress = {
+        type: 'email',
+        electronicAddress: 'example_electronic_address',
+      }
+
+      const savedElectronicAddress: ElectronicAddress = await agent.cmAddElectronicAddress({ contactId: savedContact.id, electronicAddress })
+
+      const contactResultBeforeRemove: Party = await agent.cmGetContact({ contactId: savedContact.id })
+      expect(contactResultBeforeRemove.electronicAddresses.length).toEqual(1)
+
+      const removeElectronicAddressResult: boolean = await agent.cmRemoveElectronicAddress({ electronicAddressId: savedElectronicAddress.id })
+      const contactResultAfterRemove: Party = await agent.cmGetContact({ contactId: savedContact.id })
+
+      expect(removeElectronicAddressResult).toEqual(true)
+      expect(contactResultAfterRemove.electronicAddresses.length).toEqual(0)
+    })
+
+    it('should add physical address to contact', async (): Promise<void> => {
+      const contact: AddContactArgs = {
+        firstName: 'add_physical_address_first_name',
+        lastName: 'add_physical_address_last_name',
+        displayName: 'add_physical_address_display_name',
+        contactType: {
+          type: PartyTypeEnum.NATURAL_PERSON,
+          tenantId: '5aeb828e-16d6-4244-95a7-e12424474eb7',
+          name: 'add_physical_address_name',
+          description: 'add_physical_address_description',
+        },
+      }
+
+      const savedContact: Party = await agent.cmAddContact(contact)
+      expect(savedContact).not.toBeNull()
+
+      const physicalAddress: NonPersistedPhysicalAddress = {
+        type: 'home',
+        streetName: 'example_street_name',
+        streetNumber: 'example_street_number',
+        buildingName: 'example_building_name',
+        postalCode: 'example_postal_code',
+        cityName: 'example_city_name',
+        provinceName: 'example_province_name',
+        countryCode: 'example_country_code',
+      }
+
+      const result: PhysicalAddress = await agent.cmAddPhysicalAddress({ contactId: savedContact.id, physicalAddress })
+      const contactResult: Party = await agent.cmGetContact({ contactId: savedContact.id })
+
+      expect(result).not.toBeNull()
+      expect(contactResult.physicalAddresses.length).toEqual(1)
+    })
+
+    it('should get physical address by id', async (): Promise<void> => {
+      const contact: AddContactArgs = {
+        firstName: 'get_physical_address_first_name',
+        lastName: 'get_physical_address_last_name',
+        displayName: 'get_physical_address_display_name',
+        contactType: {
+          type: PartyTypeEnum.NATURAL_PERSON,
+          tenantId: '7c5dbbd9-1721-4246-b261-44e237560a15',
+          name: 'get_physical_address_name',
+          description: 'get_physical_address_description',
+        },
+      }
+
+      const savedContact: Party = await agent.cmAddContact(contact)
+      expect(savedContact).not.toBeNull()
+
+      const physicalAddress: NonPersistedPhysicalAddress = {
+        type: 'home',
+        streetName: 'example_street_name',
+        streetNumber: 'example_street_number',
+        buildingName: 'example_building_name',
+        postalCode: 'example_postal_code',
+        cityName: 'example_city_name',
+        provinceName: 'example_province_name',
+        countryCode: 'example_country_code',
+      }
+
+      const savedPhysicalAddress: PhysicalAddress = await agent.cmAddPhysicalAddress({ contactId: savedContact.id, physicalAddress })
+      const result: PhysicalAddress = await agent.cmGetPhysicalAddress({ physicalAddressId: savedPhysicalAddress.id })
+
+      expect(result).not.toBeNull()
+    })
+
+    it('should get all physical addresses for contact', async (): Promise<void> => {
+      const contact: AddContactArgs = {
+        firstName: 'get_all_physical_address_first_name',
+        lastName: 'get_all_physical_address_last_name',
+        displayName: 'get_all_physical_address_display_name',
+        contactType: {
+          type: PartyTypeEnum.NATURAL_PERSON,
+          tenantId: '0c0eafd8-1e8c-44bf-8e0d-768fb11a40c3',
+          name: 'get_all_physical_address_name',
+          description: 'get_all_physical_address_description',
+        },
+      }
+
+      const savedContact: Party = await agent.cmAddContact(contact)
+      expect(savedContact).not.toBeNull()
+
+      const physicalAddress: NonPersistedPhysicalAddress = {
+        type: 'home',
+        streetName: 'example_street_name',
+        streetNumber: 'example_street_number',
+        buildingName: 'example_building_name',
+        postalCode: 'example_postal_code',
+        cityName: 'example_city_name',
+        provinceName: 'example_province_name',
+        countryCode: 'example_country_code',
+      }
+
+      await agent.cmAddPhysicalAddress({ contactId: savedContact.id, physicalAddress })
+      await agent.cmAddPhysicalAddress({ contactId: savedContact.id, physicalAddress })
+      const result: Array<PhysicalAddress> = await agent.cmGetPhysicalAddresses({ filter: [{ partyId: savedContact.id }] })
+
+      expect(result.length).toEqual(2)
+    })
+
+    it('should update physical address', async (): Promise<void> => {
+      const contact: AddContactArgs = {
+        firstName: 'update_physical_address_first_name',
+        lastName: 'update_physical_address_last_name',
+        displayName: 'update_physical_address_display_name',
+        contactType: {
+          type: PartyTypeEnum.NATURAL_PERSON,
+          tenantId: 'f2b4eb1c-e36f-4863-90b3-90720471c397',
+          name: 'update_physical_address_name',
+          description: 'update_physical_address_description',
+        },
+      }
+
+      const savedContact: Party = await agent.cmAddContact(contact)
+      expect(savedContact).not.toBeNull()
+
+      const physicalAddress: NonPersistedPhysicalAddress = {
+        type: 'home',
+        streetName: 'example_street_name',
+        streetNumber: 'example_street_number',
+        buildingName: 'example_building_name',
+        postalCode: 'example_postal_code',
+        cityName: 'example_city_name',
+        provinceName: 'example_province_name',
+        countryCode: 'example_country_code',
+      }
+
+      const savedPhysicalAddress: PhysicalAddress = await agent.cmAddPhysicalAddress({ contactId: savedContact.id, physicalAddress })
+
+      const updatedPhysicalAddress: PhysicalAddress = {
+        ...savedPhysicalAddress,
+        streetName: 'updated_street_name',
+        streetNumber: 'updated_street_number',
+        buildingName: 'updated_building_name',
+        postalCode: 'updated_postal_code',
+        cityName: 'updated_city_name',
+        provinceName: 'updated_province_name',
+        countryCode: 'updated_country_code',
+      }
+
+      const result: PhysicalAddress = await agent.cmUpdatePhysicalAddress({ physicalAddress: updatedPhysicalAddress })
+
+      expect(result).not.toBeNull()
+      expect(result.id).toEqual(savedPhysicalAddress.id)
+      expect(result.streetName).toEqual(updatedPhysicalAddress.streetName)
+      expect(result.streetNumber).toEqual(updatedPhysicalAddress.streetNumber)
+      expect(result.buildingName).toEqual(updatedPhysicalAddress.buildingName)
+      expect(result.postalCode).toEqual(updatedPhysicalAddress.postalCode)
+      expect(result.cityName).toEqual(updatedPhysicalAddress.cityName)
+      expect(result.provinceName).toEqual(updatedPhysicalAddress.provinceName)
+      expect(result.countryCode).toEqual(updatedPhysicalAddress.countryCode)
+    })
+
+    it('should remove physical address', async (): Promise<void> => {
+      const contact: AddContactArgs = {
+        firstName: 'remove_physical_address_first_name',
+        lastName: 'remove_physical_address_last_name',
+        displayName: 'remove_physical_address_display_name',
+        contactType: {
+          type: PartyTypeEnum.NATURAL_PERSON,
+          tenantId: '20b11d1e-6489-4258-af33-32a2cfa4dc85',
+          name: 'remove_physical_address_name',
+          description: 'remove_physical_address_description',
+        },
+      }
+
+      const savedContact: Party = await agent.cmAddContact(contact)
+      expect(savedContact).not.toBeNull()
+
+      const physicalAddress: NonPersistedPhysicalAddress = {
+        type: 'home',
+        streetName: 'example_street_name',
+        streetNumber: 'example_street_number',
+        buildingName: 'example_building_name',
+        postalCode: 'example_postal_code',
+        cityName: 'example_city_name',
+        provinceName: 'example_province_name',
+        countryCode: 'example_country_code',
+      }
+
+      const savedPhysicalAddress: PhysicalAddress = await agent.cmAddPhysicalAddress({ contactId: savedContact.id, physicalAddress })
+
+      const contactResultBeforeRemove: Party = await agent.cmGetContact({ contactId: savedContact.id })
+      expect(contactResultBeforeRemove.physicalAddresses.length).toEqual(1)
+
+      const removePhysicalAddressResult: boolean = await agent.cmRemovePhysicalAddress({ physicalAddressId: savedPhysicalAddress.id })
+      const contactResultAfterRemove: Party = await agent.cmGetContact({ contactId: savedContact.id })
+
+      expect(removePhysicalAddressResult).toEqual(true)
+      expect(contactResultAfterRemove.physicalAddresses.length).toEqual(0)
     })
   })
 }

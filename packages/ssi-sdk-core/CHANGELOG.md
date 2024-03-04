@@ -3,13 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [0.17.5](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.17.4...v0.17.5) (2023-10-01)
+# [0.19.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.18.1...v0.19.0) (2024-03-02)
+
+### Bug Fixes
+
+- changed image-size library version to a react friendly one ([308bad7](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/308bad797278ed1ba79102a4115d36ff53c4207a))
+- changed the image-size usage to handle uint8array ([1a0e080](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/1a0e0808b05208dad3392d0e3292aa0438cfd4af))
+- fixed the svg problem with image-size ([d7823eb](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/d7823eb6ee48fb3529e868e7f22a9a001f70983e))
+- modified handling svg files in ssi-sdk.core ([c86188e](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/c86188e5725e5d2d3cf8e18612ba987cea6944f0))
+
+### Features
+
+- Add initial OID4VP ID2 support ([85325ae](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/85325ae7cdf6b28d32442a38779f25ee627dd86f))
+- event-logger improvements ([a3fdcd2](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/a3fdcd2c64c6ead46266e09a599785bbbdd45579))
+
+## [0.18.1](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.18.0...v0.18.1) (2024-01-19)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.core
 
+# [0.18.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.17.5...v0.18.0) (2024-01-13)
 
+### Bug Fixes
 
+- added ssi-sdk.core to data-store tsconfig plus added exposed query function to enablePostgresUuidExtension signature ([cb5d8cb](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/cb5d8cb2d9b5f89ced3957e3127d197190de03c2))
+- added WithTypeOrmQuery type to core module and renamed enableUuidv4 to enablePostgresUuidExtension ([9bfb597](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/9bfb597c378d3ca269cabcc001dc672f56a1be0a))
+- document added ([80112ec](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/80112eca96026d09cc22b89f3651252559542e44))
+- export enablePostgresUuidExtension and WithTypeOrmQuery to core exports ([5161837](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/5161837faa55b7632cbaa66200d6875ae3534569))
+- refactored usages of enablePostgresUuidExtension to accept queryRunner as the main param ([3654a8a](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/3654a8a070bed87fd9cab66184603cce4c298a05))
 
+### Features
+
+- Add bearer token support using callback function ([4528881](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/4528881563104ac00b9af8d9615479c76af8a3be))
+- Add static bearer token callback function option ([2d5cd5a](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/2d5cd5ad429aa5bf7a1864ce6a09bf2196e37d63))
+
+## [0.17.5](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.17.4...v0.17.5) (2023-10-01)
+
+**Note:** Version bump only for package @sphereon/ssi-sdk.core
 
 ## [0.17.4](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.17.3...v0.17.4) (2023-10-01)
 

@@ -1,6 +1,6 @@
 import { IOpSessionArgs, schema } from '../index'
 import { IAgentPlugin } from '@veramo/core'
-import { OpSession } from '../session/OpSession'
+import { OpSession } from '../session'
 import { v4 as uuidv4 } from 'uuid'
 
 import {
@@ -19,11 +19,6 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     siopGetOPSession: this.siopGetOPSession.bind(this),
     siopRegisterOPSession: this.siopRegisterOPSession.bind(this),
     siopRemoveOPSession: this.siopRemoveOPSession.bind(this),
-    /*authenticateWithSiop: this.authenticateWithSiop.bind(this),
-    getSiopAuthorizationRequestFromRP: this.siopGetAuthorizationRequestFromRP.bind(this),
-    getSiopAuthorizationRequestDetails: this.getSiopAuthorizationRequestDetails.bind(this),
-    verifySiopAuthorizationRequestURI: this.siopVerifyAuthorizationRequestURI.bind(this),
-    sendSiopAuthorizationResponse: this.sendSiopAuthorizationResponse.bind(this),*/
     siopRegisterOPCustomApproval: this.siopRegisterOPCustomApproval.bind(this),
     siopRemoveOPCustomApproval: this.siopRemoveOPCustomApproval.bind(this),
   }
@@ -79,53 +74,4 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   private async siopRemoveOPCustomApproval(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean> {
     return delete this.customApprovals[args.key]
   }
-  /*
-  private async authenticateWithSiop(args: IAuthenticateWithSiopArgs, context: IRequiredContext): Promise<Response> {
-    return this.siopGetOPSession({ sessionId: args.sessionId }, context).then((session: OpSession) =>
-      session.authenticateWithSiop({
-        ...args,
-        customApprovals: this.customApprovals,
-      }).then(async (response: Response) => {
-        await context.agent.emit(events.DID_SIOP_AUTHENTICATED, response)
-        return response
-      }),
-    )
-  }
-
-
-  private async getSiopAuthorizationRequestDetails(
-    args: IGetSiopAuthorizationRequestDetailsArgs,
-    context: IRequiredContext,
-  ): Promise<IAuthRequestDetails> {
-    const uniqueVcs: Array<UniqueVerifiableCredential> = await context.agent.dataStoreORMGetVerifiableCredentials(args.credentialFilter)
-    const verifiableCredentials: W3CVerifiableCredential[] = uniqueVcs.map(
-      (uniqueVc: UniqueVerifiableCredential) => uniqueVc.verifiableCredential as W3CVerifiableCredential,
-    )
-
-    return this.siopGetOPSession({ sessionId: args.sessionId }, context).then((session: OpSession) =>
-      session.getSiopAuthorizationRequestDetails({
-        ...args,
-        verifiableCredentials,
-        presentationSignCallback: this.presentationSignCallback,
-      }),
-    )
-  }
-
-  private async siopVerifyAuthorizationRequestURI(
-    args: IVerifySiopAuthorizationRequestUriArgs,
-    context: IRequiredContext,
-  ): Promise<VerifiedAuthorizationRequest> {
-    return this.siopGetOPSession({ sessionId: args.sessionId }, context).then((session: OpSession) =>
-      session.verifyAuthorizationRequest(args),
-    )
-  }
-
-  private async sendSiopAuthorizationResponse(args: ISendSiopAuthorizationResponseArgs, context: IRequiredContext): Promise<Response> {
-    return this.siopGetOPSession({ sessionId: args.sessionId }, context).then((session: OpSession) =>
-      session.sendSiopAuthorizationResponse(args).then(async (response: Response) => {
-        await context.agent.emit(events.DID_SIOP_AUTHENTICATED, response)
-        return response
-      }),
-    )
-  }*/
 }

@@ -63,6 +63,7 @@ export class LdDocumentLoader {
       }
       // did resolution
       if (url.toLowerCase().startsWith('did:')) {
+        // const parsedDID = parseDid(url)
         const resolutionResult = await getAgentResolver(context, {
           localResolution: this.localResolution,
           resolverResolution: this.resolverResolution,

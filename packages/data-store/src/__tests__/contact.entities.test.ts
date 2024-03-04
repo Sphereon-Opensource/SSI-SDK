@@ -1,37 +1,41 @@
 import { DataSource, FindOptionsWhere } from 'typeorm'
-
 import { DataStoreContactEntities, DataStoreMigrations } from '../index'
-import { NaturalPersonEntity } from '../entities/contact/NaturalPersonEntity'
-import { OrganizationEntity } from '../entities/contact/OrganizationEntity'
-import { PartyRelationshipEntity } from '../entities/contact/PartyRelationshipEntity'
-import { PartyTypeEntity } from '../entities/contact/PartyTypeEntity'
-import { PartyEntity } from '../entities/contact/PartyEntity'
-import { IdentityEntity } from '../entities/contact/IdentityEntity'
-import { OpenIdConfigEntity } from '../entities/contact/OpenIdConfigEntity'
-import { DidAuthConfigEntity } from '../entities/contact/DidAuthConfigEntity'
+import { BaseContactEntity } from '../entities/contact/BaseContactEntity'
 import { ConnectionEntity } from '../entities/contact/ConnectionEntity'
 import { CorrelationIdentifierEntity } from '../entities/contact/CorrelationIdentifierEntity'
+import { DidAuthConfigEntity } from '../entities/contact/DidAuthConfigEntity'
+import { ElectronicAddressEntity } from '../entities/contact/ElectronicAddressEntity'
+import { IdentityEntity } from '../entities/contact/IdentityEntity'
 import { IdentityMetadataItemEntity } from '../entities/contact/IdentityMetadataItemEntity'
-import { BaseContactEntity } from '../entities/contact/BaseContactEntity'
+import { NaturalPersonEntity } from '../entities/contact/NaturalPersonEntity'
+import { OpenIdConfigEntity } from '../entities/contact/OpenIdConfigEntity'
+import { OrganizationEntity } from '../entities/contact/OrganizationEntity'
+import { PartyEntity } from '../entities/contact/PartyEntity'
+import { PartyRelationshipEntity } from '../entities/contact/PartyRelationshipEntity'
+import { PartyTypeEntity } from '../entities/contact/PartyTypeEntity'
+import { PhysicalAddressEntity } from '../entities/contact/PhysicalAddressEntity'
 import {
-  NonPersistedParty,
-  PartyTypeEnum,
-  NaturalPerson,
-  Organization,
-  IdentityRoleEnum,
-  CorrelationIdentifierEnum,
   ConnectionTypeEnum,
-  NonPersistedPartyType,
-  NonPersistedOrganization,
-  NonPersistedNaturalPerson,
+  CorrelationIdentifierEnum,
+  IdentityRoleEnum,
+  NaturalPerson,
   NonPersistedConnection,
-  NonPersistedIdentity,
   NonPersistedDidAuthConfig,
+  NonPersistedElectronicAddress,
+  NonPersistedIdentity,
+  NonPersistedNaturalPerson,
   NonPersistedOpenIdConfig,
+  NonPersistedOrganization,
+  NonPersistedParty,
+  NonPersistedPartyType,
+  NonPersistedPhysicalAddress,
+  Organization,
+  PartyTypeEnum,
 } from '../types'
 import {
   connectionEntityFrom,
   didAuthConfigEntityFrom,
+  electronicAddressEntityFrom,
   identityEntityFrom,
   naturalPersonEntityFrom,
   openIdConfigEntityFrom,
@@ -39,6 +43,7 @@ import {
   partyEntityFrom,
   partyRelationshipEntityFrom,
   partyTypeEntityFrom,
+  physicalAddressEntityFrom,
 } from '../utils/contact/MappingUtils'
 
 // TODO write test adding two contacts reusing the same contactType
@@ -81,12 +86,12 @@ describe('Database entities tests', (): void => {
     }
 
     const partyEntity: PartyEntity = partyEntityFrom(party)
-    await dbConnection.getRepository(PartyEntity).save(partyEntity, {
+    const savedParty: PartyEntity = await dbConnection.getRepository(PartyEntity).save(partyEntity, {
       transaction: true,
     })
 
     const fromDb: PartyEntity | null = await dbConnection.getRepository(PartyEntity).findOne({
-      where: { id: partyEntity.id },
+      where: { id: savedParty.id },
     })
 
     expect(fromDb).toBeDefined()
@@ -118,12 +123,12 @@ describe('Database entities tests', (): void => {
     }
 
     const partyEntity: PartyEntity = partyEntityFrom(party)
-    await dbConnection.getRepository(PartyEntity).save(partyEntity, {
+    const savedParty: PartyEntity = await dbConnection.getRepository(PartyEntity).save(partyEntity, {
       transaction: true,
     })
 
     const fromDb: PartyEntity | null = await dbConnection.getRepository(PartyEntity).findOne({
-      where: { id: partyEntity.id },
+      where: { id: savedParty.id },
     })
 
     expect(fromDb).toBeDefined()
@@ -838,6 +843,19 @@ describe('Database entities tests', (): void => {
 
     expect(savedIdentity).toBeDefined()
 
+    const electronicAddress: NonPersistedElectronicAddress = {
+      type: 'email',
+      electronicAddress: 'example_electronic_address',
+    }
+    const electronicAddressEntity: ElectronicAddressEntity = electronicAddressEntityFrom(electronicAddress)
+    electronicAddressEntity.party = savedParty1
+
+    const savedElectronicAddress: ElectronicAddressEntity | null = await dbConnection
+      .getRepository(ElectronicAddressEntity)
+      .save(electronicAddressEntity)
+
+    expect(savedElectronicAddress).toBeDefined()
+
     const relationship: PartyRelationshipEntity = partyRelationshipEntityFrom({
       leftId: savedParty1.id,
       rightId: savedParty2.id,
@@ -896,6 +914,13 @@ describe('Database entities tests', (): void => {
     expect(
       await dbConnection.getRepository(IdentityMetadataItemEntity).findOne({
         where: { id: savedIdentity.metadata![0].id },
+      })
+    ).toBeNull()
+
+    // check electronic address
+    expect(
+      await dbConnection.getRepository(ElectronicAddressEntity).findOne({
+        where: { id: savedParty1.id },
       })
     ).toBeNull()
 
@@ -2171,5 +2196,297 @@ describe('Database entities tests', (): void => {
 
     expect(fromDb).toBeDefined()
     expect(fromDb?.createdAt).toEqual(savedPartyType?.createdAt)
+  })
+
+  it('Should save email electronic address to database', async (): Promise<void> => {
+    const electronicAddress: NonPersistedElectronicAddress = {
+      type: 'email',
+      electronicAddress: 'example_email_address',
+    }
+
+    const electronicAddressEntity: ElectronicAddressEntity = electronicAddressEntityFrom(electronicAddress)
+    const savedElectronicAddress: ElectronicAddressEntity = await dbConnection.getRepository(ElectronicAddressEntity).save(electronicAddressEntity, {
+      transaction: true,
+    })
+
+    const fromDb: ElectronicAddressEntity | null = await dbConnection.getRepository(ElectronicAddressEntity).findOne({
+      where: { id: savedElectronicAddress.id },
+    })
+
+    expect(fromDb).toBeDefined()
+    expect(fromDb?.type).toEqual(electronicAddress.type)
+    expect(fromDb?.electronicAddress).toEqual(electronicAddress.electronicAddress)
+    expect(fromDb?.createdAt).toBeDefined()
+    expect(fromDb?.lastUpdatedAt).toBeDefined()
+  })
+
+  it('Should save phone electronic address to database', async (): Promise<void> => {
+    const electronicAddress: NonPersistedElectronicAddress = {
+      type: 'phone',
+      electronicAddress: 'example_phone_number',
+    }
+
+    const electronicAddressEntity: ElectronicAddressEntity = electronicAddressEntityFrom(electronicAddress)
+    const savedElectronicAddress: ElectronicAddressEntity = await dbConnection.getRepository(ElectronicAddressEntity).save(electronicAddressEntity, {
+      transaction: true,
+    })
+
+    const fromDb: ElectronicAddressEntity | null = await dbConnection.getRepository(ElectronicAddressEntity).findOne({
+      where: { id: savedElectronicAddress.id },
+    })
+
+    expect(fromDb).toBeDefined()
+    expect(fromDb?.type).toEqual(electronicAddress.type)
+    expect(fromDb?.electronicAddress).toEqual(electronicAddress.electronicAddress)
+    expect(fromDb?.createdAt).toBeDefined()
+    expect(fromDb?.lastUpdatedAt).toBeDefined()
+  })
+
+  it('should throw error when saving electronic address with blank electronic address', async (): Promise<void> => {
+    const electronicAddress: NonPersistedElectronicAddress = {
+      type: 'email',
+      electronicAddress: '',
+    }
+
+    const electronicAddressEntity: ElectronicAddressEntity = electronicAddressEntityFrom(electronicAddress)
+
+    await expect(dbConnection.getRepository(ElectronicAddressEntity).save(electronicAddressEntity)).rejects.toThrowError(
+      'Blank electronic addresses are not allowed'
+    )
+  })
+
+  it('Should save home physical address to database', async (): Promise<void> => {
+    const physicalAddress: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName: 'example_street_name',
+      streetNumber: 'example_street_number',
+      buildingName: 'example_building_name',
+      postalCode: 'example_postal_code',
+      cityName: 'example_city_name',
+      provinceName: 'example_province_name',
+      countryCode: 'example_country_code',
+    }
+
+    const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
+    const savedPhysicalAddress: PhysicalAddressEntity = await dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity, {
+      transaction: true,
+    })
+
+    const fromDb: PhysicalAddressEntity | null = await dbConnection.getRepository(PhysicalAddressEntity).findOne({
+      where: { id: savedPhysicalAddress.id },
+    })
+
+    expect(fromDb).toBeDefined()
+    expect(fromDb?.type).toEqual(physicalAddress.type)
+    expect(fromDb?.streetName).toEqual(physicalAddress.streetName)
+    expect(fromDb?.streetNumber).toEqual(physicalAddress.streetNumber)
+    expect(fromDb?.buildingName).toEqual(physicalAddress.buildingName)
+    expect(fromDb?.postalCode).toEqual(physicalAddress.postalCode)
+    expect(fromDb?.cityName).toEqual(physicalAddress.cityName)
+    expect(fromDb?.provinceName).toEqual(physicalAddress.provinceName)
+    expect(fromDb?.countryCode).toEqual(physicalAddress.countryCode)
+    expect(fromDb?.createdAt).toBeDefined()
+    expect(fromDb?.lastUpdatedAt).toBeDefined()
+  })
+
+  it('Should save visit physical address to database', async (): Promise<void> => {
+    const physicalAddress: NonPersistedPhysicalAddress = {
+      type: 'visit',
+      streetName: 'example_street_name',
+      streetNumber: 'example_street_number',
+      buildingName: 'example_building_name',
+      postalCode: 'example_postal_code',
+      cityName: 'example_city_name',
+      provinceName: 'example_province_name',
+      countryCode: 'example_country_code',
+    }
+
+    const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
+    const savedPhysicalAddress: PhysicalAddressEntity = await dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity, {
+      transaction: true,
+    })
+
+    const fromDb: PhysicalAddressEntity | null = await dbConnection.getRepository(PhysicalAddressEntity).findOne({
+      where: { id: savedPhysicalAddress.id },
+    })
+
+    expect(fromDb).toBeDefined()
+    expect(fromDb?.type).toEqual(physicalAddress.type)
+    expect(fromDb?.streetName).toEqual(physicalAddress.streetName)
+    expect(fromDb?.streetNumber).toEqual(physicalAddress.streetNumber)
+    expect(fromDb?.buildingName).toEqual(physicalAddress.buildingName)
+    expect(fromDb?.postalCode).toEqual(physicalAddress.postalCode)
+    expect(fromDb?.cityName).toEqual(physicalAddress.cityName)
+    expect(fromDb?.provinceName).toEqual(physicalAddress.provinceName)
+    expect(fromDb?.countryCode).toEqual(physicalAddress.countryCode)
+    expect(fromDb?.createdAt).toBeDefined()
+    expect(fromDb?.lastUpdatedAt).toBeDefined()
+  })
+
+  it('Should save postal physical address to database', async (): Promise<void> => {
+    const physicalAddress: NonPersistedPhysicalAddress = {
+      type: 'postal',
+      streetName: 'example_street_name',
+      streetNumber: 'example_street_number',
+      buildingName: 'example_building_name',
+      postalCode: 'example_postal_code',
+      cityName: 'example_city_name',
+      provinceName: 'example_province_name',
+      countryCode: 'example_country_code',
+    }
+
+    const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
+    const savedPhysicalAddress: PhysicalAddressEntity = await dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity, {
+      transaction: true,
+    })
+
+    const fromDb: PhysicalAddressEntity | null = await dbConnection.getRepository(PhysicalAddressEntity).findOne({
+      where: { id: savedPhysicalAddress.id },
+    })
+
+    expect(fromDb).toBeDefined()
+    expect(fromDb?.type).toEqual(physicalAddress.type)
+    expect(fromDb?.streetName).toEqual(physicalAddress.streetName)
+    expect(fromDb?.streetNumber).toEqual(physicalAddress.streetNumber)
+    expect(fromDb?.buildingName).toEqual(physicalAddress.buildingName)
+    expect(fromDb?.postalCode).toEqual(physicalAddress.postalCode)
+    expect(fromDb?.cityName).toEqual(physicalAddress.cityName)
+    expect(fromDb?.provinceName).toEqual(physicalAddress.provinceName)
+    expect(fromDb?.countryCode).toEqual(physicalAddress.countryCode)
+    expect(fromDb?.createdAt).toBeDefined()
+    expect(fromDb?.lastUpdatedAt).toBeDefined()
+  })
+
+  it('should throw error when saving physical address with blank street name', async (): Promise<void> => {
+    const physicalAddress: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName: '',
+      streetNumber: 'example_street_number',
+      buildingName: 'example_building_name',
+      postalCode: 'example_postal_code',
+      cityName: 'example_city_name',
+      provinceName: 'example_province_name',
+      countryCode: 'example_country_code',
+    }
+
+    const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
+
+    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
+      'Blank street names are not allowed'
+    )
+  })
+
+  it('should throw error when saving physical address with blank street number', async (): Promise<void> => {
+    const physicalAddress: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName: 'example_street_name',
+      streetNumber: '',
+      buildingName: 'example_building_name',
+      postalCode: 'example_postal_code',
+      cityName: 'example_city_name',
+      provinceName: 'example_province_name',
+      countryCode: 'example_country_code',
+    }
+
+    const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
+
+    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
+      'Blank street numbers are not allowed'
+    )
+  })
+
+  it('should throw error when saving physical address with blank building name', async (): Promise<void> => {
+    const physicalAddress: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName: 'example_street_name',
+      streetNumber: 'example_street_number',
+      buildingName: '',
+      postalCode: 'example_postal_code',
+      cityName: 'example_city_name',
+      provinceName: 'example_province_name',
+      countryCode: 'example_country_code',
+    }
+
+    const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
+
+    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
+      'Blank building names are not allowed'
+    )
+  })
+
+  it('should throw error when saving physical address with blank postal code', async (): Promise<void> => {
+    const physicalAddress: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName: 'example_street_name',
+      streetNumber: 'example_street_number',
+      buildingName: 'example_building_name',
+      postalCode: '',
+      cityName: 'example_city_name',
+      provinceName: 'example_province_name',
+      countryCode: 'example_country_code',
+    }
+
+    const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
+
+    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
+      'Blank postal codes are not allowed'
+    )
+  })
+
+  it('should throw error when saving physical address with blank city name', async (): Promise<void> => {
+    const physicalAddress: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName: 'example_street_name',
+      streetNumber: 'example_street_number',
+      buildingName: 'example_building_name',
+      postalCode: 'example_postal_code',
+      cityName: '',
+      provinceName: 'example_province_name',
+      countryCode: 'example_country_code',
+    }
+
+    const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
+
+    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
+      'Blank city names are not allowed'
+    )
+  })
+
+  it('should throw error when saving physical address with blank province name', async (): Promise<void> => {
+    const physicalAddress: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName: 'example_street_name',
+      streetNumber: 'example_street_number',
+      buildingName: 'example_building_name',
+      postalCode: 'example_postal_code',
+      cityName: 'example_city_name',
+      provinceName: '',
+      countryCode: 'example_country_code',
+    }
+
+    const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
+
+    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
+      'Blank province names are not allowed'
+    )
+  })
+
+  it('should throw error when saving physical address with blank country code', async (): Promise<void> => {
+    const physicalAddress: NonPersistedPhysicalAddress = {
+      type: 'home',
+      streetName: 'example_street_name',
+      streetNumber: 'example_street_number',
+      buildingName: 'example_building_name',
+      postalCode: 'example_postal_code',
+      cityName: 'example_city_name',
+      provinceName: 'example_province_name',
+      countryCode: '',
+    }
+
+    const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
+
+    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
+      'Blank country codes are not allowed'
+    )
   })
 })

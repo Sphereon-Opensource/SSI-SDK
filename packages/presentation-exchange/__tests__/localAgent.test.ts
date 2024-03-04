@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import presentationExchangeAgentLogic from './shared/presentationExchangeAgentLogic'
 
-jest.setTimeout(30000)
+jest.setTimeout(60000)
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')

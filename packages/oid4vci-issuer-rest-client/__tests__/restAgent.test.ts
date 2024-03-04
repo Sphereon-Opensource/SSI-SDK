@@ -9,7 +9,7 @@ import { createObjects, getConfig } from '../../agent-config/dist'
 import { IOID4VCIRestClient } from '../src'
 import issuanceRestClientAgentLogic from './shared/issuanceRestClientAgentLogic'
 
-jest.setTimeout(30000)
+jest.setTimeout(60000)
 
 const port = 3002
 const basePath = '/agent'

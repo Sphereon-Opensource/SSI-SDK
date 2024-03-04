@@ -1,27 +1,39 @@
 import {
-  Party,
-  Identity,
+  AddElectronicAddressArgs,
   AddIdentityArgs,
-  GetIdentityArgs,
-  GetIdentitiesArgs,
-  GetPartyArgs,
-  RemoveIdentityArgs,
-  UpdateIdentityArgs,
   AddPartyArgs,
-  GetPartiesArgs,
-  RemovePartyArgs,
-  UpdatePartyArgs,
-  AddRelationshipArgs,
-  PartyRelationship,
-  RemoveRelationshipArgs,
   AddPartyTypeArgs,
-  PartyType,
+  AddPhysicalAddressArgs,
+  AddRelationshipArgs,
+  ElectronicAddress,
+  GetElectronicAddressArgs,
+  GetElectronicAddressesArgs,
+  GetIdentitiesArgs,
+  GetIdentityArgs,
+  GetPartiesArgs,
+  GetPartyArgs,
   GetPartyTypeArgs,
-  UpdatePartyTypeArgs,
   GetPartyTypesArgs,
-  RemovePartyTypeArgs,
-  GetRelationshipsArgs,
+  GetPhysicalAddressArgs,
+  GetPhysicalAddressesArgs,
   GetRelationshipArgs,
+  GetRelationshipsArgs,
+  Identity,
+  Party,
+  PartyRelationship,
+  PartyType,
+  PhysicalAddress,
+  RemoveElectronicAddressArgs,
+  RemoveIdentityArgs,
+  RemovePartyArgs,
+  RemovePartyTypeArgs,
+  RemovePhysicalAddressArgs,
+  RemoveRelationshipArgs,
+  UpdateElectronicAddressArgs,
+  UpdateIdentityArgs,
+  UpdatePartyArgs,
+  UpdatePartyTypeArgs,
+  UpdatePhysicalAddressArgs,
   UpdateRelationshipArgs,
 } from '../types'
 
@@ -46,4 +58,14 @@ export abstract class AbstractContactStore {
   abstract addPartyType(args: AddPartyTypeArgs): Promise<PartyType>
   abstract updatePartyType(args: UpdatePartyTypeArgs): Promise<PartyType>
   abstract removePartyType(args: RemovePartyTypeArgs): Promise<void>
+  abstract getElectronicAddress(args: GetElectronicAddressArgs): Promise<ElectronicAddress>
+  abstract getElectronicAddresses(args?: GetElectronicAddressesArgs): Promise<Array<ElectronicAddress>>
+  abstract addElectronicAddress(args: AddElectronicAddressArgs): Promise<ElectronicAddress>
+  abstract updateElectronicAddress(args: UpdateElectronicAddressArgs): Promise<ElectronicAddress>
+  abstract removeElectronicAddress(args: RemoveElectronicAddressArgs): Promise<void>
+  abstract getPhysicalAddress(args: GetPhysicalAddressArgs): Promise<PhysicalAddress>
+  abstract getPhysicalAddresses(args?: GetPhysicalAddressesArgs): Promise<Array<PhysicalAddress>>
+  abstract addPhysicalAddress(args: AddPhysicalAddressArgs): Promise<PhysicalAddress>
+  abstract updatePhysicalAddress(args: UpdatePhysicalAddressArgs): Promise<PhysicalAddress>
+  abstract removePhysicalAddress(args: RemovePhysicalAddressArgs): Promise<void>
 }

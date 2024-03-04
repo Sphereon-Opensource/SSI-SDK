@@ -3,13 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [0.17.5](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.17.4...v0.17.5) (2023-10-01)
+# [0.19.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.18.1...v0.19.0) (2024-03-02)
+
+### Features
+
+- Add initial OID4VP ID2 support ([85325ae](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/85325ae7cdf6b28d32442a38779f25ee627dd86f))
+
+## [0.18.1](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.18.0...v0.18.1) (2024-01-19)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-client
 
+# [0.18.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.17.5...v0.18.0) (2024-01-13)
 
+### Features
 
+- Add bearer token support using callback function ([4528881](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/4528881563104ac00b9af8d9615479c76af8a3be))
+- Add static bearer token callback function option ([2d5cd5a](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/2d5cd5ad429aa5bf7a1864ce6a09bf2196e37d63))
 
+## [0.17.5](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.17.4...v0.17.5) (2023-10-01)
+
+**Note:** Version bump only for package @sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-client
 
 ## [0.17.4](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.17.3...v0.17.4) (2023-10-01)
 

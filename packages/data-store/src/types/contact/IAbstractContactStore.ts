@@ -1,23 +1,30 @@
 import {
-  NonPersistedPartyType,
-  NonPersistedContact,
-  NonPersistedIdentity,
-  Party,
+  ElectronicAddress,
   Identity,
-  PartialParty,
+  NonPersistedContact,
+  NonPersistedElectronicAddress,
+  NonPersistedIdentity,
+  NonPersistedPartyType,
+  NonPersistedPhysicalAddress,
+  PartialElectronicAddress,
   PartialIdentity,
-  PartyTypeEnum,
-  PartyType,
-  PartyRelationship,
+  PartialParty,
   PartialPartyRelationship,
   PartialPartyType,
-  NonPersistedElectronicAddress,
+  PartialPhysicalAddress,
+  Party,
+  PartyRelationship,
+  PartyType,
+  PartyTypeEnum,
+  PhysicalAddress,
 } from './contact'
 
 export type FindPartyArgs = Array<PartialParty>
 export type FindIdentityArgs = Array<PartialIdentity>
 export type FindPartyTypeArgs = Array<PartialPartyType>
 export type FindRelationshipArgs = Array<PartialPartyRelationship>
+export type FindElectronicAddressArgs = Array<PartialElectronicAddress>
+export type FindPhysicalAddressArgs = Array<PartialPhysicalAddress>
 
 export type GetPartyArgs = {
   partyId: string
@@ -33,6 +40,7 @@ export type AddPartyArgs = {
   contact: NonPersistedContact
   identities?: Array<NonPersistedIdentity>
   electronicAddresses?: Array<NonPersistedElectronicAddress>
+  physicalAddresses?: Array<NonPersistedPhysicalAddress>
 }
 
 export type UpdatePartyArgs = {
@@ -106,4 +114,46 @@ export type UpdatePartyTypeArgs = {
 
 export type RemovePartyTypeArgs = {
   partyTypeId: string
+}
+
+export type GetElectronicAddressArgs = {
+  electronicAddressId: string
+}
+
+export type GetElectronicAddressesArgs = {
+  filter?: FindElectronicAddressArgs
+}
+
+export type AddElectronicAddressArgs = {
+  partyId: string
+  electronicAddress: NonPersistedElectronicAddress
+}
+
+export type UpdateElectronicAddressArgs = {
+  electronicAddress: ElectronicAddress
+}
+
+export type RemoveElectronicAddressArgs = {
+  electronicAddressId: string
+}
+
+export type GetPhysicalAddressArgs = {
+  physicalAddressId: string
+}
+
+export type GetPhysicalAddressesArgs = {
+  filter?: FindPhysicalAddressArgs
+}
+
+export type AddPhysicalAddressArgs = {
+  partyId: string
+  physicalAddress: NonPersistedPhysicalAddress
+}
+
+export type UpdatePhysicalAddressArgs = {
+  physicalAddress: PhysicalAddress
+}
+
+export type RemovePhysicalAddressArgs = {
+  physicalAddressId: string
 }

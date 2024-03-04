@@ -3,226 +3,217 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [0.17.5](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.4...v0.17.5) (2023-10-01)
+# [0.19.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.18.1...v0.19.0) (2024-03-02)
+
+### Bug Fixes
+
+- changed image-size library version to a react friendly one ([308bad7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/308bad797278ed1ba79102a4115d36ff53c4207a))
+- changed the image-size usage to handle uint8array ([1a0e080](https://github.com/Sphereon-Opensource/SSI-SDK/commit/1a0e0808b05208dad3392d0e3292aa0438cfd4af))
+- fixed the svg problem with image-size ([d7823eb](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d7823eb6ee48fb3529e868e7f22a9a001f70983e))
+- Instead of figuring out the proof format, we defaulted to JWT credentials if the format was not supplied, bypassing the detection code ([8cba122](https://github.com/Sphereon-Opensource/SSI-SDK/commit/8cba12221d70e8436eaace2d1e770017199aa6ce))
+- JWT VP sometimes was constructed as a JSON LD VP with JwtProof2020 ([abb012c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/abb012c99ff4fbce241b3c78b602783d22c88b5e))
+- modified handling svg files in ssi-sdk.core ([c86188e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c86188e5725e5d2d3cf8e18612ba987cea6944f0))
+- Several JWT Verifiable Presentation fixes, like missing kid, iat, exp values. Also include a holder in the vp payload, as some RPs require it, although it is optional for a JWT ([30d8c54](https://github.com/Sphereon-Opensource/SSI-SDK/commit/30d8c549d9d2387808407e173a0ef80850d9b9c0))
+- VCI holder agent plugin credential and branding storage fixes ([901ff44](https://github.com/Sphereon-Opensource/SSI-SDK/commit/901ff4479e5442e8bca14ee1cd24f05b827874c2))
+
+### Features
+
+- Add initial OID4VP ID2 support ([85325ae](https://github.com/Sphereon-Opensource/SSI-SDK/commit/85325ae7cdf6b28d32442a38779f25ee627dd86f))
+- added oid4vci-holder plugin ([e8507d4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e8507d4c5ca361886adf800c21e368c44ee8ffac))
+- added physical and electronic addresses to contact-manager ([76f78b3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/76f78b34b99c47b4c16fd9682d2520a7637219f7))
+- added remote-server-rest-api ([0076160](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0076160849ea57f37228819d675a797595c1df32))
+- Allow i18n for JSONLD credentials ([1ce843e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/1ce843e01cf842adbe9a82f9e6f69c94af9610b5))
+- Allow to pass in nonce when creating the auth request URI ([82f82ef](https://github.com/Sphereon-Opensource/SSI-SDK/commit/82f82efe4dd058dc3c30c977493f2ed5f1fe206f))
+- Correct submission_data when send in incorrectly as string ([c5d6b76](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c5d6b7663cbddd4ff62260508b64faab90ade097))
+- event-logger improvements ([a3fdcd2](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a3fdcd2c64c6ead46266e09a599785bbbdd45579))
+- Reuse existing PEX for performance ([9c8966c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9c8966c94e39130aeace3ad73ac6583312ba42f2))
+- Support selecting did methods from aud claim of request. ([0bfc03d](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0bfc03d3e5713b6d8c4e129c79fcbb8eb1ac794a))
+
+### Reverts
+
+- Revert "chore: update deps" ([f83aee5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f83aee5e7c3a22a6727ed55dd9b92f33ba5c0fc8))
+
+## [0.18.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.18.0...v0.18.1) (2024-01-19)
 
 **Note:** Version bump only for package @sphereon/sphereon-sdk.workspace
 
+# [0.18.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.5...v0.18.0) (2024-01-13)
 
+### Bug Fixes
 
+- added ssi-sdk.core to data-store tsconfig plus added exposed query function to enablePostgresUuidExtension signature ([cb5d8cb](https://github.com/Sphereon-Opensource/SSI-SDK/commit/cb5d8cb2d9b5f89ced3957e3127d197190de03c2))
+- added WithTypeOrmQuery type to core module and renamed enableUuidv4 to enablePostgresUuidExtension ([9bfb597](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9bfb597c378d3ca269cabcc001dc672f56a1be0a))
+- document added ([80112ec](https://github.com/Sphereon-Opensource/SSI-SDK/commit/80112eca96026d09cc22b89f3651252559542e44))
+- export enablePostgresUuidExtension and WithTypeOrmQuery to core exports ([5161837](https://github.com/Sphereon-Opensource/SSI-SDK/commit/5161837faa55b7632cbaa66200d6875ae3534569))
+- refactored usages of enablePostgresUuidExtension to accept queryRunner as the main param ([3654a8a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/3654a8a070bed87fd9cab66184603cce4c298a05))
 
+### Features
+
+- Add bearer token support using callback function ([4528881](https://github.com/Sphereon-Opensource/SSI-SDK/commit/4528881563104ac00b9af8d9615479c76af8a3be))
+- Add static bearer token callback function option ([2d5cd5a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2d5cd5ad429aa5bf7a1864ce6a09bf2196e37d63))
+- added enableUuidv4 to data-store exports ([d7c1237](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d7c1237c3c384fa6fc9d775f8f165abb6a96a40a))
+- **ssi-types:** add kid to cnf ([0fb3886](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0fb3886eb36e1b9e31f38a4a7812cd8e36437f54))
+- **ssi-types:** sd-jwt support ([b9154a0](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b9154a097cb3428204f65eca024222e70e8ca17b))
+
+### Reverts
+
+- Revert "chore: update deps" ([a1cd971](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a1cd971c4edcff58e0ee225dd159a4e6958f58d1))
+
+## [0.17.5](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.4...v0.17.5) (2023-10-01)
+
+**Note:** Version bump only for package @sphereon/sphereon-sdk.workspace
 
 ## [0.17.4](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.3...v0.17.4) (2023-10-01)
 
 **Note:** Version bump only for package @sphereon/sphereon-sdk.workspace
 
-
-
-
-
 ## [0.17.3](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.2...v0.17.3) (2023-09-30)
 
 **Note:** Version bump only for package @sphereon/sphereon-sdk.workspace
-
-
-
-
 
 ## [0.17.2](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.1...v0.17.2) (2023-09-30)
 
 **Note:** Version bump only for package @sphereon/sphereon-sdk.workspace
 
-
-
-
-
 ## [0.17.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.0...v0.17.1) (2023-09-28)
-
 
 ### Bug Fixes
 
-* update deps to fix an issue with VCI offer ids not mapping on issuer metadata ([aa6f98c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/aa6f98c951b41b9273a9128fbc0c08f4eb5aa41b))
-
-
-
-
+- update deps to fix an issue with VCI offer ids not mapping on issuer metadata ([aa6f98c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/aa6f98c951b41b9273a9128fbc0c08f4eb5aa41b))
 
 # [0.17.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.16.0...v0.17.0) (2023-09-28)
 
-
 ### Features
 
-* Do not raise an error by default in case we encounter a VC with a statuslist we do not support. More strict scenario's are supported with an optional parm ([2dde4b7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2dde4b7ec63f579d208a8ea676e063cfe3b3a2ed))
-* Do not raise an error by default in case we encounter a VC with a statuslist we do not support. More strict scenario's are supported with an optional parm ([4a634b7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/4a634b77aadb59b93dd384018e64045fe95762e7))
-
-
-
-
+- Do not raise an error by default in case we encounter a VC with a statuslist we do not support. More strict scenario's are supported with an optional parm ([2dde4b7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2dde4b7ec63f579d208a8ea676e063cfe3b3a2ed))
+- Do not raise an error by default in case we encounter a VC with a statuslist we do not support. More strict scenario's are supported with an optional parm ([4a634b7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/4a634b77aadb59b93dd384018e64045fe95762e7))
 
 # [0.16.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.15.1...v0.16.0) (2023-09-28)
 
-
 ### Bug Fixes
 
-* Create a issuer.id in a uniform credential in case the issuer is already an object and there is an iss claim in the JWT ([706baff](https://github.com/Sphereon-Opensource/SSI-SDK/commit/706baffee81c1a6993bf1573a083696c45cb3ab9))
-* Ed25519 2018 handling for verification ([b858710](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b858710167a34a6a1c968f459cfae207b0d5a226))
-* Ed25519 2018 handling for verification ([14125e5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/14125e58070e89b0c1a95769f24af79c0c1e1df5))
-* Fix multibase/codec code ([4354927](https://github.com/Sphereon-Opensource/SSI-SDK/commit/43549278bb1a2f10f8eb4fab03abcd78c234bda2))
-* fixed partyId property in rest api ([51861fd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/51861fd35110b57975c4d897893a65f670e50430))
-* Internally alg needs uppercase ([0388f11](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0388f117d6cf1d753cf0eff10a3ab6a98f10faa0))
-* Make sure we do not throw an error when the IDP does not have an end_session_url ([781e250](https://github.com/Sphereon-Opensource/SSI-SDK/commit/781e2500a3296fb74f3c774b8e2862cbca9abdb0))
-* Secp256k recovery 2020 fix ([196ad4c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/196ad4c158cc5c51400c17ed52f521b3deeb52e8))
-* Secp256k recovery 2020 fix ([8be1da2](https://github.com/Sphereon-Opensource/SSI-SDK/commit/8be1da2a13572ec3dace13d87f9206d357f34266))
-
+- Create a issuer.id in a uniform credential in case the issuer is already an object and there is an iss claim in the JWT ([706baff](https://github.com/Sphereon-Opensource/SSI-SDK/commit/706baffee81c1a6993bf1573a083696c45cb3ab9))
+- Ed25519 2018 handling for verification ([b858710](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b858710167a34a6a1c968f459cfae207b0d5a226))
+- Ed25519 2018 handling for verification ([14125e5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/14125e58070e89b0c1a95769f24af79c0c1e1df5))
+- Fix multibase/codec code ([4354927](https://github.com/Sphereon-Opensource/SSI-SDK/commit/43549278bb1a2f10f8eb4fab03abcd78c234bda2))
+- fixed partyId property in rest api ([51861fd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/51861fd35110b57975c4d897893a65f670e50430))
+- Internally alg needs uppercase ([0388f11](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0388f117d6cf1d753cf0eff10a3ab6a98f10faa0))
+- Make sure we do not throw an error when the IDP does not have an end_session_url ([781e250](https://github.com/Sphereon-Opensource/SSI-SDK/commit/781e2500a3296fb74f3c774b8e2862cbca9abdb0))
+- Secp256k recovery 2020 fix ([196ad4c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/196ad4c158cc5c51400c17ed52f521b3deeb52e8))
+- Secp256k recovery 2020 fix ([8be1da2](https://github.com/Sphereon-Opensource/SSI-SDK/commit/8be1da2a13572ec3dace13d87f9206d357f34266))
 
 ### Features
 
-* Add auth support to VCI REST client ([c541b23](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c541b2347f4d602e5a017116e5d0155e8d6290dd))
-* Add initial versions of VC API clients back ([f6465cf](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f6465cf91e32e29349e91e203a2354cb229052ad))
-* Add static header support to siop rest client ([e9fb5ee](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e9fb5ee97e9f466b87a7a0424392571cff9fd56c))
-* Add support for an OIDC BFF Passport based solution to express. Allows for SPA to work IDPs that require confidential clients ([d4e082c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d4e082c76693b2449a0bf101db99e974fe4a796f))
-* Add web3 signer/wallet support directly using KMS, so you can use keys managed by the KMS in web3, without ever having to expose private keys ([e3d3df7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e3d3df746efd076a93d8452c79360840026f58b5))
-* added contact test data ([daeb87d](https://github.com/Sphereon-Opensource/SSI-SDK/commit/daeb87d5a5f3f955b096be44e098d053f78a885b))
-* Allow VCI issuer to also supply the issuer DID when the credential issuer is an object without an id ([7c72d31](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7c72d31e05b90d0064dcff5ab25c985636438ec8))
-* statuslist2021 functions ([61729f3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/61729f3c2808a96339ee64a82ff8cce12b1ecef2))
-* statuslist2021 support ([2649b95](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2649b95dc5fe5882d6b43ccfdcf085e37918e713))
-* statuslist2021 support ([46986dd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/46986dd9eae27aaa6a980eac55a8d5e1d5c85a57))
-* web3 headless provider and wallet ([00fc40a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/00fc40a6fd2ade1cab03d750a1c012ca8cb6d05a))
-* web3 headless provider and wallet ([c69cf9e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c69cf9e65de30180e2898ed2289c572fe228eb20))
-* web3 headless provider and wallet ([62dc7df](https://github.com/Sphereon-Opensource/SSI-SDK/commit/62dc7dfb43b0461707d4ef2afc6f21406e57ae5e))
-
-
-
-
+- Add auth support to VCI REST client ([c541b23](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c541b2347f4d602e5a017116e5d0155e8d6290dd))
+- Add initial versions of VC API clients back ([f6465cf](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f6465cf91e32e29349e91e203a2354cb229052ad))
+- Add static header support to siop rest client ([e9fb5ee](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e9fb5ee97e9f466b87a7a0424392571cff9fd56c))
+- Add support for an OIDC BFF Passport based solution to express. Allows for SPA to work IDPs that require confidential clients ([d4e082c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d4e082c76693b2449a0bf101db99e974fe4a796f))
+- Add web3 signer/wallet support directly using KMS, so you can use keys managed by the KMS in web3, without ever having to expose private keys ([e3d3df7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e3d3df746efd076a93d8452c79360840026f58b5))
+- added contact test data ([daeb87d](https://github.com/Sphereon-Opensource/SSI-SDK/commit/daeb87d5a5f3f955b096be44e098d053f78a885b))
+- Allow VCI issuer to also supply the issuer DID when the credential issuer is an object without an id ([7c72d31](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7c72d31e05b90d0064dcff5ab25c985636438ec8))
+- statuslist2021 functions ([61729f3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/61729f3c2808a96339ee64a82ff8cce12b1ecef2))
+- statuslist2021 support ([2649b95](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2649b95dc5fe5882d6b43ccfdcf085e37918e713))
+- statuslist2021 support ([46986dd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/46986dd9eae27aaa6a980eac55a8d5e1d5c85a57))
+- web3 headless provider and wallet ([00fc40a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/00fc40a6fd2ade1cab03d750a1c012ca8cb6d05a))
+- web3 headless provider and wallet ([c69cf9e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c69cf9e65de30180e2898ed2289c572fe228eb20))
+- web3 headless provider and wallet ([62dc7df](https://github.com/Sphereon-Opensource/SSI-SDK/commit/62dc7dfb43b0461707d4ef2afc6f21406e57ae5e))
 
 ## [0.15.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.15.0...v0.15.1) (2023-08-10)
 
-
 ### Bug Fixes
 
-* /well-known/did/json wasn't resolving anymore because of an incorrect path match ([e94f4da](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e94f4dad1eef2f1e428eef0967b4c75c6509f77c))
-
-
-
-
+- /well-known/did/json wasn't resolving anymore because of an incorrect path match ([e94f4da](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e94f4dad1eef2f1e428eef0967b4c75c6509f77c))
 
 # [0.15.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.14.1...v0.15.0) (2023-08-10)
 
-
 ### Bug Fixes
 
-* Alg header was not correctly set, and we do support ES256 for JsonWebSignature2020 now ([d8e961c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d8e961c984ca522ebb657b420853e4c0687161f8))
-* Authentication fixes ([adafd6b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/adafd6bd09142492f7b3bddbab8d03ae24cf8600))
-
+- Alg header was not correctly set, and we do support ES256 for JsonWebSignature2020 now ([d8e961c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d8e961c984ca522ebb657b420853e4c0687161f8))
+- Authentication fixes ([adafd6b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/adafd6bd09142492f7b3bddbab8d03ae24cf8600))
 
 ### Features
 
-* Add graceful http server termination ([bba073b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/bba073b22afe1e09663532ac4427cf3a16a9e734))
-* Add morgan logging to express builder. Allow expres to start from build result ([caa4909](https://github.com/Sphereon-Opensource/SSI-SDK/commit/caa4909009d33d0bade1df637b354af8a89d9a4b))
-* Add optional entra ID auth builder ([960f2df](https://github.com/Sphereon-Opensource/SSI-SDK/commit/960f2dfc645ca09567765e6cb67df5915cd02183))
-* Add optional static bearer auth builder, with hashed tokens ([6a7dd17](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6a7dd1799ada74a4fa8d1a8b0ce3f89ffc043d5a))
-* Allow document loader to also load DID from the agent and fall back to the universal resolver (all configurable) ([f2f9fbc](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f2f9fbc0c999664c8c1cfdd4b0f0204ea1b8ccf1))
-* allow signing credential with local resolved DID. Especially handy for did:web that is not yet published/exposed ([34793e9](https://github.com/Sphereon-Opensource/SSI-SDK/commit/34793e9bacc7dfcc689ad8c11119d5f7d7b1d3ef))
-* Separate SIOPv2 REST API into individual functions and use express-support ([2495980](https://github.com/Sphereon-Opensource/SSI-SDK/commit/24959808b9a4b59cec5171e2abb5fdc260448b98))
-
-
-
-
+- Add graceful http server termination ([bba073b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/bba073b22afe1e09663532ac4427cf3a16a9e734))
+- Add morgan logging to express builder. Allow expres to start from build result ([caa4909](https://github.com/Sphereon-Opensource/SSI-SDK/commit/caa4909009d33d0bade1df637b354af8a89d9a4b))
+- Add optional entra ID auth builder ([960f2df](https://github.com/Sphereon-Opensource/SSI-SDK/commit/960f2dfc645ca09567765e6cb67df5915cd02183))
+- Add optional static bearer auth builder, with hashed tokens ([6a7dd17](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6a7dd1799ada74a4fa8d1a8b0ce3f89ffc043d5a))
+- Allow document loader to also load DID from the agent and fall back to the universal resolver (all configurable) ([f2f9fbc](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f2f9fbc0c999664c8c1cfdd4b0f0204ea1b8ccf1))
+- allow signing credential with local resolved DID. Especially handy for did:web that is not yet published/exposed ([34793e9](https://github.com/Sphereon-Opensource/SSI-SDK/commit/34793e9bacc7dfcc689ad8c11119d5f7d7b1d3ef))
+- Separate SIOPv2 REST API into individual functions and use express-support ([2495980](https://github.com/Sphereon-Opensource/SSI-SDK/commit/24959808b9a4b59cec5171e2abb5fdc260448b98))
 
 ## [0.14.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.14.0...v0.14.1) (2023-07-31)
 
 **Note:** Version bump only for package @sphereon/sphereon-sdk.workspace
 
-
-
-
-
 # [0.14.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.13.0...v0.14.0) (2023-07-30)
-
 
 ### Bug Fixes
 
-* also publish when on a fix branch ([e8b678e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e8b678e13205c68e44c0ec63d8a915c5e7d63b24))
-* also publish when on a fix branch. Also run a diff before the frozen lockfile install so we can see what's going on ([69a3200](https://github.com/Sphereon-Opensource/SSI-SDK/commit/69a3200b6185498dd9554193717db0c81fbdd31a))
-* CI was still using yarn instead if pnpm in several places ([ca16f70](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ca16f70274168a50fed284aeea2f29ed40e4ec5b))
-* CI was still using yarn instead if pnpm in several places ([c167259](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c16725978df96647cb346c47c8a1ef4489ab13cb))
-* Fix relative DID resolution and Json websignature 2020 verification for ED25519 and some other algs ([ca2682c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ca2682c0b747f5052143c943a06f23acc7aa22cc))
-* Use agent resolver if not set, with fallback to universal resolver. Fix bug in response message ([43c9313](https://github.com/Sphereon-Opensource/SSI-SDK/commit/43c9313ee623fa0848dca8dcd4e2e509692c28d7))
-* VCI did resolution from agent ([7aa2bd3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7aa2bd30e4ee51d3322415b8a06533e91f07b97d))
-* VCI did resolution from agent ([2c913db](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2c913dbe635337f0931032023a17c0cfd3d739ce))
-* VP did resolution from agent ([aa3f3f1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/aa3f3f1173f502c5414a2237231306311ed4d1fc))
-
+- also publish when on a fix branch ([e8b678e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e8b678e13205c68e44c0ec63d8a915c5e7d63b24))
+- also publish when on a fix branch. Also run a diff before the frozen lockfile install so we can see what's going on ([69a3200](https://github.com/Sphereon-Opensource/SSI-SDK/commit/69a3200b6185498dd9554193717db0c81fbdd31a))
+- CI was still using yarn instead if pnpm in several places ([ca16f70](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ca16f70274168a50fed284aeea2f29ed40e4ec5b))
+- CI was still using yarn instead if pnpm in several places ([c167259](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c16725978df96647cb346c47c8a1ef4489ab13cb))
+- Fix relative DID resolution and Json websignature 2020 verification for ED25519 and some other algs ([ca2682c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ca2682c0b747f5052143c943a06f23acc7aa22cc))
+- Use agent resolver if not set, with fallback to universal resolver. Fix bug in response message ([43c9313](https://github.com/Sphereon-Opensource/SSI-SDK/commit/43c9313ee623fa0848dca8dcd4e2e509692c28d7))
+- VCI did resolution from agent ([7aa2bd3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7aa2bd30e4ee51d3322415b8a06533e91f07b97d))
+- VCI did resolution from agent ([2c913db](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2c913dbe635337f0931032023a17c0cfd3d739ce))
+- VP did resolution from agent ([aa3f3f1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/aa3f3f1173f502c5414a2237231306311ed4d1fc))
 
 ### Features
 
-* Add express builder, cors configurer, passport authentication and casbin authorization support for APIs. ([cb04fe8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/cb04fe8b84ce6f4c840afef43d628f23cb8e9e36))
-* Add global web resolution provider. Add json error handler ([f19d1d1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f19d1d135a9944a6c9e4c6040c58e7563c4442f2))
-* Add partial DIF Universal Registrar and Resolver support ([69c8046](https://github.com/Sphereon-Opensource/SSI-SDK/commit/69c8046b214771b54d731c19f295341cf22d0616))
-* Add seperate did:web service to host did.json files managed by the agent ([0a8a0bb](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0a8a0bb201742c3208f98267f9a03fcaeb32ec56))
-* Add support for ES256(k/r) in JsonWebsignature2020 signing ([cd511d5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/cd511d55a66798936218b5968f8daac9a549a9b7))
-* Allow objects for error response. Improve json handling in error responses ([4151c73](https://github.com/Sphereon-Opensource/SSI-SDK/commit/4151c73b4cdeb931c0deb8b8f34ed9c215efe5ba))
-* Better support for MS Azure auth and re-using a MSAL client from Azure Request API ([61bdfaf](https://github.com/Sphereon-Opensource/SSI-SDK/commit/61bdfaf202ee8e5fc6f1e9b83138298798a7a440))
-* Move VC API endpoints to functions, to more easily create your own API server, only supporting certain endpoints ([fc03507](https://github.com/Sphereon-Opensource/SSI-SDK/commit/fc0350735c8cd42a60e1152add9cb49da5c39e62))
-
-
-
-
+- Add express builder, cors configurer, passport authentication and casbin authorization support for APIs. ([cb04fe8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/cb04fe8b84ce6f4c840afef43d628f23cb8e9e36))
+- Add global web resolution provider. Add json error handler ([f19d1d1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f19d1d135a9944a6c9e4c6040c58e7563c4442f2))
+- Add partial DIF Universal Registrar and Resolver support ([69c8046](https://github.com/Sphereon-Opensource/SSI-SDK/commit/69c8046b214771b54d731c19f295341cf22d0616))
+- Add seperate did:web service to host did.json files managed by the agent ([0a8a0bb](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0a8a0bb201742c3208f98267f9a03fcaeb32ec56))
+- Add support for ES256(k/r) in JsonWebsignature2020 signing ([cd511d5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/cd511d55a66798936218b5968f8daac9a549a9b7))
+- Allow objects for error response. Improve json handling in error responses ([4151c73](https://github.com/Sphereon-Opensource/SSI-SDK/commit/4151c73b4cdeb931c0deb8b8f34ed9c215efe5ba))
+- Better support for MS Azure auth and re-using a MSAL client from Azure Request API ([61bdfaf](https://github.com/Sphereon-Opensource/SSI-SDK/commit/61bdfaf202ee8e5fc6f1e9b83138298798a7a440))
+- Move VC API endpoints to functions, to more easily create your own API server, only supporting certain endpoints ([fc03507](https://github.com/Sphereon-Opensource/SSI-SDK/commit/fc0350735c8cd42a60e1152add9cb49da5c39e62))
 
 # [0.13.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.12.0...v0.13.0) (2023-06-24)
 
-
 ### Features
 
-* allow default opts to be set when OID4VCI is running ([7142273](https://github.com/Sphereon-Opensource/SSI-SDK/commit/71422737036c01c095459676858b754b7b10ddfd))
-* allow did opts from default options to be populated in instance options ([41deb99](https://github.com/Sphereon-Opensource/SSI-SDK/commit/41deb9974dcffcca007c4fba9f037f2f75a0bda4))
-* allow instance opts to be set when OID4VCI is running but only when having access to the object directly ([51f873e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/51f873e34dec7ddca92cae6d625c1694a483b2cb))
-* Allow setting SIOP RP default opts also after construction, as sometimes you need to agent which is not available yet at construction time ([bf871da](https://github.com/Sphereon-Opensource/SSI-SDK/commit/bf871dab0dc670c4e072d177998c6890f28b8fa7))
-
-
-
-
+- allow default opts to be set when OID4VCI is running ([7142273](https://github.com/Sphereon-Opensource/SSI-SDK/commit/71422737036c01c095459676858b754b7b10ddfd))
+- allow did opts from default options to be populated in instance options ([41deb99](https://github.com/Sphereon-Opensource/SSI-SDK/commit/41deb9974dcffcca007c4fba9f037f2f75a0bda4))
+- allow instance opts to be set when OID4VCI is running but only when having access to the object directly ([51f873e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/51f873e34dec7ddca92cae6d625c1694a483b2cb))
+- Allow setting SIOP RP default opts also after construction, as sometimes you need to agent which is not available yet at construction time ([bf871da](https://github.com/Sphereon-Opensource/SSI-SDK/commit/bf871dab0dc670c4e072d177998c6890f28b8fa7))
 
 # [0.12.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.11.0...v0.12.0) (2023-06-21)
 
-
 ### Bug Fixes
 
-* added dev dependencies for oid4vci-issuer-rest-client plus prettier ([7b6c2b3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7b6c2b3d08aedfe357345fac47e94be4dcd3d243))
-* added schema export for oid4vci-issuer-rest-client and some docs ([7db9c1b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7db9c1be4775f55cf6db4470db1d99e0efdf5caa))
-* changed credentials and grants to mandatory plus renamed the uri to url ([2df3612](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2df36125a3062250ab0a7a69eca3c83cdb8c450d))
-* fix test cases and REST arguments ([975801e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/975801e1e6c8270fd470acd7e2ce67ae4971a16f))
-* fixed a bug in calling cross-fetch with post, modified the tests ([a3defeb](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a3defeb5d62ff7f4007a88cd772b2164c136da7a))
-* skipped integration tests in oid4vci-issuer-rest-client ([c43759b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c43759bebc7350cc400d668369105a8cff0e3ee1))
-* unify naming ([aee0bf1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/aee0bf1a7a94142c10561fd7295d1d0950c29221))
-* unify naming ([ec7d0b6](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ec7d0b6ced54a792ede23937c7043e53d7121e42))
-* unify naming ([94165cd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/94165cdb8d1cf14f866de7fc5fe2c518a97b1986))
-* updated generate-plugin-schema for oid4vci-rest-client ([70e7820](https://github.com/Sphereon-Opensource/SSI-SDK/commit/70e7820b6e59b3bfdd9de5b15de0718de1826738))
-
+- added dev dependencies for oid4vci-issuer-rest-client plus prettier ([7b6c2b3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7b6c2b3d08aedfe357345fac47e94be4dcd3d243))
+- added schema export for oid4vci-issuer-rest-client and some docs ([7db9c1b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7db9c1be4775f55cf6db4470db1d99e0efdf5caa))
+- changed credentials and grants to mandatory plus renamed the uri to url ([2df3612](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2df36125a3062250ab0a7a69eca3c83cdb8c450d))
+- fix test cases and REST arguments ([975801e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/975801e1e6c8270fd470acd7e2ce67ae4971a16f))
+- fixed a bug in calling cross-fetch with post, modified the tests ([a3defeb](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a3defeb5d62ff7f4007a88cd772b2164c136da7a))
+- skipped integration tests in oid4vci-issuer-rest-client ([c43759b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c43759bebc7350cc400d668369105a8cff0e3ee1))
+- unify naming ([aee0bf1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/aee0bf1a7a94142c10561fd7295d1d0950c29221))
+- unify naming ([ec7d0b6](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ec7d0b6ced54a792ede23937c7043e53d7121e42))
+- unify naming ([94165cd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/94165cdb8d1cf14f866de7fc5fe2c518a97b1986))
+- updated generate-plugin-schema for oid4vci-rest-client ([70e7820](https://github.com/Sphereon-Opensource/SSI-SDK/commit/70e7820b6e59b3bfdd9de5b15de0718de1826738))
 
 ### Features
 
-* Add issue status support to OID4VCI REST client ([40abd83](https://github.com/Sphereon-Opensource/SSI-SDK/commit/40abd8320dd0097e2e024c2e61ce2f03359926ab))
-* Add key value store plugin ([95244fa](https://github.com/Sphereon-Opensource/SSI-SDK/commit/95244fa9f6c79d47660f1afee39c2c9db50f0e27))
-* Add OID4VCI issuer modules ([af85f1e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/af85f1e2aace201c5749eef2e1a3fb8223ae7937))
-* Add Presentation Exchange module ([a085c81](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a085c81a2608dd072e9b2c3d49174b76dab9705a))
-* Add SIOPv2 Relying Party logic and REST API ([01f2023](https://github.com/Sphereon-Opensource/SSI-SDK/commit/01f2023a4112f04412df4df318c6eacf9da536a7))
-* Add SIOPv2OID4VP RP auth and REST module ([91b1da3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/91b1da3548fd425aa93424411339e1ec2a2e0fd3))
-* added oid4vci-rest-client package ([910f697](https://github.com/Sphereon-Opensource/SSI-SDK/commit/910f697f08dc05e3c16dafb239b7ee85bc68b431))
-* Allow to supply data for VCI Issuer REST client and server during offer ([0878c28](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0878c2848aa5144ee863e6f192c9f8b8eb46ff34))
-* changed the test structure and few other pr notes addressed ([6520fbe](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6520fbe297ab9a1c5f5fbaff5cabb98f51d3cbea))
-* More support for definition Formats when creating VPs from SIOP ([846ef0b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/846ef0b359c4ec5755d9385c5f1c6db1fb14b0c1))
-* move schema generation to own plugin because of transitive dependency issues upstream ([51c5156](https://github.com/Sphereon-Opensource/SSI-SDK/commit/51c5156bdf83e12d55bc4e609d741c6ff878daa8))
-* move schema generation to own plugin because of transitive dependency issues upstream ([58002a8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/58002a861f7ed504b0e1d4250d556f8414f961a0))
-* move to pnpm ([2714a9c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2714a9c786b8591de41310a83aff19f62cf65e77))
-
+- Add issue status support to OID4VCI REST client ([40abd83](https://github.com/Sphereon-Opensource/SSI-SDK/commit/40abd8320dd0097e2e024c2e61ce2f03359926ab))
+- Add key value store plugin ([95244fa](https://github.com/Sphereon-Opensource/SSI-SDK/commit/95244fa9f6c79d47660f1afee39c2c9db50f0e27))
+- Add OID4VCI issuer modules ([af85f1e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/af85f1e2aace201c5749eef2e1a3fb8223ae7937))
+- Add Presentation Exchange module ([a085c81](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a085c81a2608dd072e9b2c3d49174b76dab9705a))
+- Add SIOPv2 Relying Party logic and REST API ([01f2023](https://github.com/Sphereon-Opensource/SSI-SDK/commit/01f2023a4112f04412df4df318c6eacf9da536a7))
+- Add SIOPv2OID4VP RP auth and REST module ([91b1da3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/91b1da3548fd425aa93424411339e1ec2a2e0fd3))
+- added oid4vci-rest-client package ([910f697](https://github.com/Sphereon-Opensource/SSI-SDK/commit/910f697f08dc05e3c16dafb239b7ee85bc68b431))
+- Allow to supply data for VCI Issuer REST client and server during offer ([0878c28](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0878c2848aa5144ee863e6f192c9f8b8eb46ff34))
+- changed the test structure and few other pr notes addressed ([6520fbe](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6520fbe297ab9a1c5f5fbaff5cabb98f51d3cbea))
+- More support for definition Formats when creating VPs from SIOP ([846ef0b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/846ef0b359c4ec5755d9385c5f1c6db1fb14b0c1))
+- move schema generation to own plugin because of transitive dependency issues upstream ([51c5156](https://github.com/Sphereon-Opensource/SSI-SDK/commit/51c5156bdf83e12d55bc4e609d741c6ff878daa8))
+- move schema generation to own plugin because of transitive dependency issues upstream ([58002a8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/58002a861f7ed504b0e1d4250d556f8414f961a0))
+- move to pnpm ([2714a9c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2714a9c786b8591de41310a83aff19f62cf65e77))
 
 ### Reverts
 
-* Revert "chore: remove plugin schemas" ([2870d77](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2870d77a6e1919e94f554e71100fbcdb4fed47af))
-* Revert "chore: remove plugin schemas" ([07af699](https://github.com/Sphereon-Opensource/SSI-SDK/commit/07af6996b3209e86d588666c0c0da9ea9e17442c))
-
-
-
-
+- Revert "chore: remove plugin schemas" ([2870d77](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2870d77a6e1919e94f554e71100fbcdb4fed47af))
+- Revert "chore: remove plugin schemas" ([07af699](https://github.com/Sphereon-Opensource/SSI-SDK/commit/07af6996b3209e86d588666c0c0da9ea9e17442c))
 
 # [0.11.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.10.1...v0.11.0) (2023-05-07)
 

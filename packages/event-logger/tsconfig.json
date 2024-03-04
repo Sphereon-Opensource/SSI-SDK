@@ -1,0 +1,20 @@
+{
+  "extends": "../tsconfig-base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "declarationDir": "dist",
+    "strictPropertyInitialization": false
+  },
+  "references": [
+    {
+      "path": "../data-store"
+    },
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    }
+  ]
+}

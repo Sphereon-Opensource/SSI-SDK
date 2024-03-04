@@ -22,11 +22,13 @@ import {
   NonPersistedParty,
   NonPersistedPartyRelationship,
   NonPersistedPartyType,
+  NonPersistedPhysicalAddress,
   OpenIdConfig,
   Organization,
   Party,
   PartyRelationship,
   PartyType,
+  PhysicalAddress,
 } from '../../types'
 import { PartyEntity } from '../../entities/contact/PartyEntity'
 import { IdentityEntity } from '../../entities/contact/IdentityEntity'
@@ -42,6 +44,7 @@ import { DidAuthConfigEntity } from '../../entities/contact/DidAuthConfigEntity'
 import { IdentityMetadataItemEntity } from '../../entities/contact/IdentityMetadataItemEntity'
 import { OpenIdConfigEntity } from '../../entities/contact/OpenIdConfigEntity'
 import { PartyTypeEntity } from '../../entities/contact/PartyTypeEntity'
+import { PhysicalAddressEntity } from '../../entities/contact/PhysicalAddressEntity'
 
 export const partyEntityFrom = (party: NonPersistedParty): PartyEntity => {
   const partyEntity: PartyEntity = new PartyEntity()
@@ -49,6 +52,9 @@ export const partyEntityFrom = (party: NonPersistedParty): PartyEntity => {
   partyEntity.identities = party.identities ? party.identities.map((identity: NonPersistedIdentity) => identityEntityFrom(identity)) : []
   partyEntity.electronicAddresses = party.electronicAddresses
     ? party.electronicAddresses.map((electronicAddress: NonPersistedElectronicAddress) => electronicAddressEntityFrom(electronicAddress))
+    : []
+  partyEntity.physicalAddresses = party.physicalAddresses
+    ? party.physicalAddresses.map((physicalAddress: NonPersistedPhysicalAddress) => physicalAddressEntityFrom(physicalAddress))
     : []
   partyEntity.partyType = partyTypeEntityFrom(party.partyType)
   partyEntity.contact = contactEntityFrom(party.contact)
@@ -64,6 +70,9 @@ export const partyFrom = (party: PartyEntity): Party => {
     identities: party.identities ? party.identities.map((identity: IdentityEntity) => identityFrom(identity)) : [],
     electronicAddresses: party.electronicAddresses
       ? party.electronicAddresses.map((electronicAddress: ElectronicAddressEntity) => electronicAddressFrom(electronicAddress))
+      : [],
+    physicalAddresses: party.physicalAddresses
+      ? party.physicalAddresses.map((physicalAddress: PhysicalAddressEntity) => physicalAddressFrom(physicalAddress))
       : [],
     relationships: party.relationships ? party.relationships.map((relationship: PartyRelationshipEntity) => partyRelationshipFrom(relationship)) : [],
     partyType: partyTypeFrom(party.partyType),
@@ -165,6 +174,36 @@ export const electronicAddressFrom = (electronicAddress: ElectronicAddressEntity
     electronicAddress: electronicAddress.electronicAddress,
     createdAt: electronicAddress.createdAt,
     lastUpdatedAt: electronicAddress.lastUpdatedAt,
+  }
+}
+
+export const physicalAddressEntityFrom = (physicalAddress: NonPersistedPhysicalAddress): PhysicalAddressEntity => {
+  const physicalAddressEntity: PhysicalAddressEntity = new PhysicalAddressEntity()
+  physicalAddressEntity.type = physicalAddress.type
+  physicalAddressEntity.streetName = physicalAddress.streetName
+  physicalAddressEntity.streetNumber = physicalAddress.streetNumber
+  physicalAddressEntity.postalCode = physicalAddress.postalCode
+  physicalAddressEntity.cityName = physicalAddress.cityName
+  physicalAddressEntity.provinceName = physicalAddress.provinceName
+  physicalAddressEntity.countryCode = physicalAddress.countryCode
+  physicalAddressEntity.buildingName = physicalAddress.buildingName
+
+  return physicalAddressEntity
+}
+
+export const physicalAddressFrom = (physicalAddress: PhysicalAddressEntity): PhysicalAddress => {
+  return {
+    id: physicalAddress.id,
+    type: physicalAddress.type,
+    streetName: physicalAddress.streetName,
+    streetNumber: physicalAddress.streetNumber,
+    postalCode: physicalAddress.postalCode,
+    cityName: physicalAddress.cityName,
+    provinceName: physicalAddress.provinceName,
+    countryCode: physicalAddress.countryCode,
+    buildingName: physicalAddress.buildingName,
+    createdAt: physicalAddress.createdAt,
+    lastUpdatedAt: physicalAddress.lastUpdatedAt,
   }
 }
 

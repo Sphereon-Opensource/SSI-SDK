@@ -1,0 +1,29 @@
+{
+  "IOID4VCIHolder": {
+    "components": {
+      "schemas": {
+        "GetMachineArgs": {
+          "type": "object",
+          "properties": {
+            "requestData": {}
+          },
+          "required": ["requestData"]
+        }
+      },
+      "methods": {
+        "oid4vciGetMachine": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/GetMachineArgs"
+          },
+          "returnType": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

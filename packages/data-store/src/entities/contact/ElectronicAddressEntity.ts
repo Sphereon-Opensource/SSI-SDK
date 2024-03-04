@@ -32,6 +32,9 @@ export class ElectronicAddressEntity extends BaseEntity {
   })
   party!: PartyEntity
 
+  @Column({ name: 'partyId', nullable: true })
+  partyId?: string
+
   @CreateDateColumn({ name: 'created_at', nullable: false })
   createdAt!: Date
 

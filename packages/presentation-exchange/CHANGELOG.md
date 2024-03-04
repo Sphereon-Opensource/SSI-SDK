@@ -3,13 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [0.17.5](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.4...v0.17.5) (2023-10-01)
+# [0.19.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.18.1...v0.19.0) (2024-03-02)
+
+### Bug Fixes
+
+- Instead of figuring out the proof format, we defaulted to JWT credentials if the format was not supplied, bypassing the detection code ([8cba122](https://github.com/Sphereon-Opensource/SSI-SDK/commit/8cba12221d70e8436eaace2d1e770017199aa6ce))
+- Several JWT Verifiable Presentation fixes, like missing kid, iat, exp values. Also include a holder in the vp payload, as some RPs require it, although it is optional for a JWT ([30d8c54](https://github.com/Sphereon-Opensource/SSI-SDK/commit/30d8c549d9d2387808407e173a0ef80850d9b9c0))
+
+### Features
+
+- Add initial OID4VP ID2 support ([85325ae](https://github.com/Sphereon-Opensource/SSI-SDK/commit/85325ae7cdf6b28d32442a38779f25ee627dd86f))
+- Reuse existing PEX for performance ([9c8966c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9c8966c94e39130aeace3ad73ac6583312ba42f2))
+- Support selecting did methods from aud claim of request. ([0bfc03d](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0bfc03d3e5713b6d8c4e129c79fcbb8eb1ac794a))
+
+### Reverts
+
+- Revert "chore: update deps" ([f83aee5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f83aee5e7c3a22a6727ed55dd9b92f33ba5c0fc8))
+
+## [0.18.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.18.0...v0.18.1) (2024-01-19)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.presentation-exchange
 
+# [0.18.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.5...v0.18.0) (2024-01-13)
 
+### Features
 
+- Add static bearer token callback function option ([2d5cd5a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2d5cd5ad429aa5bf7a1864ce6a09bf2196e37d63))
 
+### Reverts
+
+- Revert "chore: update deps" ([a1cd971](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a1cd971c4edcff58e0ee225dd159a4e6958f58d1))
+
+## [0.17.5](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.4...v0.17.5) (2023-10-01)
+
+**Note:** Version bump only for package @sphereon/ssi-sdk.presentation-exchange
 
 ## [0.17.4](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.3...v0.17.4) (2023-10-01)
 

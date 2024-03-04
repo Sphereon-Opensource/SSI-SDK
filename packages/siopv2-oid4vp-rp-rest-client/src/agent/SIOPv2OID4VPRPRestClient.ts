@@ -33,16 +33,18 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
     this.authOpts = args?.authentication
   }
 
-  private createHeaders(existing?: Record<string, any>): HeadersInit {
+  private async createHeaders(existing?: Record<string, any>): Promise<HeadersInit> {
     const headers: HeadersInit = {
       ...existing,
       Accept: 'application/json',
     }
     if (this.authOpts?.enabled === true) {
-      if (!this.authOpts.staticBearerToken) {
+      if (!this.authOpts.bearerToken) {
         throw Error(`Cannot have authentication enabled, whilst not enabling static bearer tokens at this point`)
       }
-      headers.Authorization = `Bearer ${this.authOpts.staticBearerToken}`
+      headers.Authorization = `Bearer ${
+        typeof this.authOpts.bearerToken === 'string' ? this.authOpts.bearerToken : await this.authOpts.bearerToken()
+      }`
     }
     return headers
   }
@@ -51,7 +53,7 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
     await fetch(this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests/${args.correlationId}`, baseUrl), {
-      headers: this.createHeaders(),
+      headers: await this.createHeaders(),
       method: 'DELETE',
     })
     return true
@@ -63,7 +65,7 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
     const definitionId = this.checkDefinitionIdParameter(args.definitionId)
     const statusResponse = await fetch(url, {
       method: 'POST',
-      headers: this.createHeaders({ 'Content-Type': 'application/json' }),
+      headers: await this.createHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({
         correlationId: args.correlationId,
         definitionId,
@@ -83,7 +85,7 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
     const url = this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests`, baseUrl)
     const origResponse = await fetch(url, {
       method: 'POST',
-      headers: this.createHeaders({ 'Content-Type': 'application/json' }),
+      headers: await this.createHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({}),
     })
     return await origResponse.json()
