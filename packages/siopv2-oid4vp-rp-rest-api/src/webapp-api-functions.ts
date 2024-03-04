@@ -30,7 +30,7 @@ export function createAuthRequestWebappEndpoint(router: Router, context: IRequir
         state,
         nonce: opts?.nonce,
         requestByReferenceURI,
-        responseURIType: 'redirect_uri',
+        responseURIType: 'response_uri',
         responseURI,
       })
       const authRequestBody: GenerateAuthRequestURIResponse = {
