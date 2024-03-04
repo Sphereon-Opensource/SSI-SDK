@@ -15,7 +15,16 @@ export type Party = {
 }
 export type NonPersistedParty = Omit<
   Party,
-  'id' | 'identities' | 'electronicAddresses' | 'physicalAddresses' | 'contact' | 'roles' | 'partyType' | 'relationships' | 'createdAt' | 'lastUpdatedAt'
+  | 'id'
+  | 'identities'
+  | 'electronicAddresses'
+  | 'physicalAddresses'
+  | 'contact'
+  | 'roles'
+  | 'partyType'
+  | 'relationships'
+  | 'createdAt'
+  | 'lastUpdatedAt'
 > & {
   identities?: Array<NonPersistedIdentity>
   electronicAddresses?: Array<NonPersistedElectronicAddress>
@@ -24,7 +33,9 @@ export type NonPersistedParty = Omit<
   partyType: NonPersistedPartyType
   relationships?: Array<NonPersistedPartyRelationship>
 }
-export type PartialParty = Partial<Omit<Party, 'identities' | 'electronicAddresses' | 'physicalAddresses' | 'contact' | 'partyType' | 'relationships'>> & {
+export type PartialParty = Partial<
+  Omit<Party, 'identities' | 'electronicAddresses' | 'physicalAddresses' | 'contact' | 'partyType' | 'relationships'>
+> & {
   identities?: PartialIdentity
   electronicAddresses?: PartialElectronicAddress
   physicalAddresses?: PartialPhysicalAddress

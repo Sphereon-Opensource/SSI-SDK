@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.19.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.18.1...v0.19.0) (2024-03-02)
+
+### Bug Fixes
+
+- JWT VP sometimes was constructed as a JSON LD VP with JwtProof2020 ([abb012c](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/abb012c99ff4fbce241b3c78b602783d22c88b5e))
+
+### Features
+
+- Add initial OID4VP ID2 support ([85325ae](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/85325ae7cdf6b28d32442a38779f25ee627dd86f))
+- Allow i18n for JSONLD credentials ([1ce843e](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/1ce843e01cf842adbe9a82f9e6f69c94af9610b5))
+
 ## [0.18.1](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.18.0...v0.18.1) (2024-01-19)
 
 **Note:** Version bump only for package @sphereon/ssi-types

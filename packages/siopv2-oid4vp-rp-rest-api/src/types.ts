@@ -20,6 +20,7 @@ export interface ICreateAuthRequestWebappEndpointOpts extends ISingleEndpointOpt
   siopBaseURI?: string
   webappAuthStatusPath?: string
   webappBaseURI?: string
+  nonce?: string
 }
 
 export type IRequiredPlugins = /*IDataStoreORM & IResolver & IDIDManager & IKeyManager &  */ ICredentialVerifier & ISIOPv2RP & IPresentationExchange

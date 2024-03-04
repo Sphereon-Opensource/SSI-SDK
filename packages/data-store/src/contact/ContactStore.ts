@@ -29,7 +29,7 @@ import {
   partyTypeEntityFrom,
   partyTypeFrom,
   physicalAddressEntityFrom,
-  physicalAddressFrom
+  physicalAddressFrom,
 } from '../utils/contact/MappingUtils'
 import {
   AddElectronicAddressArgs,
@@ -653,23 +653,27 @@ export class ContactStore extends AbstractContactStore {
     const identityRepository: Repository<IdentityEntity> = connection.getRepository(IdentityEntity)
 
     identities.map(async (identity: IdentityEntity): Promise<void> => {
-      await correlationIdentifierRepository.delete(identity.identifier.id)
+      await correlationIdentifierRepository
+        .delete(identity.identifier.id)
         .catch((error) => Promise.reject(Error(`Unable to remove identity.identifier with id ${identity.identifier.id}. ${error}`)))
 
       if (identity.connection) {
         await baseConfigRepository.delete(identity.connection.config.id)
-        await connectionRepository.delete(identity.connection.id)
+        await connectionRepository
+          .delete(identity.connection.id)
           .catch((error) => Promise.reject(Error(`Unable to remove identity.connection with id ${identity.connection?.id}. ${error}`)))
       }
 
       if (identity.metadata) {
         identity.metadata.map(async (metadataItem: IdentityMetadataItemEntity): Promise<void> => {
-          await identityMetadataItemRepository.delete(metadataItem.id)
+          await identityMetadataItemRepository
+            .delete(metadataItem.id)
             .catch((error) => Promise.reject(Error(`Unable to remove identity.metadataItem with id ${metadataItem.id}. ${error}`)))
         })
       }
 
-      await identityRepository.delete(identity.id)
+      await identityRepository
+        .delete(identity.id)
         .catch((error) => Promise.reject(Error(`Unable to remove identity with id ${identity.id}. ${error}`)))
     })
   }
@@ -679,8 +683,9 @@ export class ContactStore extends AbstractContactStore {
 
     const electronicAddressRepository: Repository<ElectronicAddressEntity> = (await this.dbConnection).getRepository(ElectronicAddressEntity)
     electronicAddresses.map(async (electronicAddress: ElectronicAddressEntity): Promise<void> => {
-      await electronicAddressRepository.delete(electronicAddress.id)
-      .catch((error) => Promise.reject(Error(`Unable to remove electronic address with id ${electronicAddress.id}. ${error}`)))
+      await electronicAddressRepository
+        .delete(electronicAddress.id)
+        .catch((error) => Promise.reject(Error(`Unable to remove electronic address with id ${electronicAddress.id}. ${error}`)))
     })
   }
 
@@ -689,8 +694,9 @@ export class ContactStore extends AbstractContactStore {
 
     const physicalAddressRepository: Repository<PhysicalAddressEntity> = (await this.dbConnection).getRepository(PhysicalAddressEntity)
     physicalAddresses.map(async (physicalAddress: PhysicalAddressEntity): Promise<void> => {
-      await physicalAddressRepository.delete(physicalAddress.id)
-      .catch((error) => Promise.reject(Error(`Unable to remove physical address with id ${physicalAddress.id}. ${error}`)))
+      await physicalAddressRepository
+        .delete(physicalAddress.id)
+        .catch((error) => Promise.reject(Error(`Unable to remove physical address with id ${physicalAddress.id}. ${error}`)))
     })
   }
 

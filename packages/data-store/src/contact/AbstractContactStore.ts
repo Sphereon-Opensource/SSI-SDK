@@ -21,7 +21,8 @@ import {
   Identity,
   Party,
   PartyRelationship,
-  PartyType, PhysicalAddress,
+  PartyType,
+  PhysicalAddress,
   RemoveElectronicAddressArgs,
   RemoveIdentityArgs,
   RemovePartyArgs,
@@ -33,7 +34,7 @@ import {
   UpdatePartyArgs,
   UpdatePartyTypeArgs,
   UpdatePhysicalAddressArgs,
-  UpdateRelationshipArgs
+  UpdateRelationshipArgs,
 } from '../types'
 
 export abstract class AbstractContactStore {

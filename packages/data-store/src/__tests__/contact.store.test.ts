@@ -1804,7 +1804,7 @@ describe('Contact store tests', (): void => {
 
     const electronicAddress: NonPersistedElectronicAddress = {
       type: 'email',
-      electronicAddress: 'example_electronic_address'
+      electronicAddress: 'example_electronic_address',
     }
     const savedElectronicAddress: ElectronicAddress = await contactStore.addElectronicAddress({ partyId: savedParty.id, electronicAddress })
     expect(savedElectronicAddress).toBeDefined()
@@ -1817,7 +1817,9 @@ describe('Contact store tests', (): void => {
   it('should throw error when getting electronic address with unknown id', async (): Promise<void> => {
     const electronicAddressId = 'unknownElectronicAddressId'
 
-    await expect(contactStore.getElectronicAddress({ electronicAddressId })).rejects.toThrow(`No electronic address found for id: ${electronicAddressId}`)
+    await expect(contactStore.getElectronicAddress({ electronicAddressId })).rejects.toThrow(
+      `No electronic address found for id: ${electronicAddressId}`
+    )
   })
 
   it('should get all electronic addresses for contact', async (): Promise<void> => {
@@ -1840,16 +1842,22 @@ describe('Contact store tests', (): void => {
 
     const electronicAddress1: NonPersistedElectronicAddress = {
       type: 'email',
-      electronicAddress: 'example_electronic_address1'
+      electronicAddress: 'example_electronic_address1',
     }
-    const savedElectronicAddress1: ElectronicAddress = await contactStore.addElectronicAddress({ partyId: savedParty.id, electronicAddress: electronicAddress1 })
+    const savedElectronicAddress1: ElectronicAddress = await contactStore.addElectronicAddress({
+      partyId: savedParty.id,
+      electronicAddress: electronicAddress1,
+    })
     expect(savedElectronicAddress1).toBeDefined()
 
     const electronicAddress2: NonPersistedElectronicAddress = {
       type: 'email',
-      electronicAddress: 'example_electronic_address2'
+      electronicAddress: 'example_electronic_address2',
     }
-    const savedElectronicAddress2: ElectronicAddress = await contactStore.addElectronicAddress({ partyId: savedParty.id, electronicAddress: electronicAddress2 })
+    const savedElectronicAddress2: ElectronicAddress = await contactStore.addElectronicAddress({
+      partyId: savedParty.id,
+      electronicAddress: electronicAddress2,
+    })
     expect(savedElectronicAddress2).toBeDefined()
 
     const args: GetElectronicAddressesArgs = {
@@ -1881,16 +1889,22 @@ describe('Contact store tests', (): void => {
 
     const electronicAddress1: NonPersistedElectronicAddress = {
       type: 'email',
-      electronicAddress: 'example_electronic_address1'
+      electronicAddress: 'example_electronic_address1',
     }
-    const savedElectronicAddress1: ElectronicAddress = await contactStore.addElectronicAddress({ partyId: savedParty.id, electronicAddress: electronicAddress1 })
+    const savedElectronicAddress1: ElectronicAddress = await contactStore.addElectronicAddress({
+      partyId: savedParty.id,
+      electronicAddress: electronicAddress1,
+    })
     expect(savedElectronicAddress1).toBeDefined()
 
     const electronicAddress2: NonPersistedElectronicAddress = {
       type: 'email',
-      electronicAddress: 'example_electronic_address2'
+      electronicAddress: 'example_electronic_address2',
     }
-    const savedElectronicAddress2: ElectronicAddress = await contactStore.addElectronicAddress({ partyId: savedParty.id, electronicAddress: electronicAddress2 })
+    const savedElectronicAddress2: ElectronicAddress = await contactStore.addElectronicAddress({
+      partyId: savedParty.id,
+      electronicAddress: electronicAddress2,
+    })
     expect(savedElectronicAddress2).toBeDefined()
 
     const result: Array<ElectronicAddress> = await contactStore.getElectronicAddresses()
@@ -1919,16 +1933,22 @@ describe('Contact store tests', (): void => {
     const electronicAddress = 'example_electronic_address1'
     const electronicAddress1: NonPersistedElectronicAddress = {
       type: 'email',
-      electronicAddress
+      electronicAddress,
     }
-    const savedElectronicAddress1: ElectronicAddress = await contactStore.addElectronicAddress({ partyId: savedParty.id, electronicAddress: electronicAddress1 })
+    const savedElectronicAddress1: ElectronicAddress = await contactStore.addElectronicAddress({
+      partyId: savedParty.id,
+      electronicAddress: electronicAddress1,
+    })
     expect(savedElectronicAddress1).toBeDefined()
 
     const electronicAddress2: NonPersistedElectronicAddress = {
       type: 'email',
-      electronicAddress: 'example_electronic_address2'
+      electronicAddress: 'example_electronic_address2',
     }
-    const savedElectronicAddress2: ElectronicAddress = await contactStore.addElectronicAddress({ partyId: savedParty.id, electronicAddress: electronicAddress2 })
+    const savedElectronicAddress2: ElectronicAddress = await contactStore.addElectronicAddress({
+      partyId: savedParty.id,
+      electronicAddress: electronicAddress2,
+    })
     expect(savedElectronicAddress2).toBeDefined()
 
     const args: GetElectronicAddressesArgs = {
@@ -1960,7 +1980,7 @@ describe('Contact store tests', (): void => {
 
     const electronicAddress: NonPersistedElectronicAddress = {
       type: 'email',
-      electronicAddress: 'example_electronic_address'
+      electronicAddress: 'example_electronic_address',
     }
     const savedElectronicAddress: ElectronicAddress = await contactStore.addElectronicAddress({ partyId: savedParty.id, electronicAddress })
     expect(savedElectronicAddress).toBeDefined()
@@ -1989,7 +2009,7 @@ describe('Contact store tests', (): void => {
 
     const electronicAddress: NonPersistedElectronicAddress = {
       type: 'email',
-      electronicAddress: 'example_electronic_address'
+      electronicAddress: 'example_electronic_address',
     }
     const savedElectronicAddress: ElectronicAddress = await contactStore.addElectronicAddress({ partyId: savedParty.id, electronicAddress })
     const newElectronicAddress = 'new_example_electronic_address'
@@ -2022,20 +2042,24 @@ describe('Contact store tests', (): void => {
 
     const electronicAddress: NonPersistedElectronicAddress = {
       type: 'email',
-      electronicAddress: 'example_electronic_address'
+      electronicAddress: 'example_electronic_address',
     }
     const savedElectronicAddress: ElectronicAddress = await contactStore.addElectronicAddress({ partyId: savedParty.id, electronicAddress })
     expect(savedElectronicAddress).toBeDefined()
 
     await contactStore.removeElectronicAddress({ electronicAddressId: savedElectronicAddress.id })
 
-    await expect(contactStore.getElectronicAddress({ electronicAddressId: savedElectronicAddress.id })).rejects.toThrow(`No electronic address found for id: ${savedElectronicAddress.id}`)
+    await expect(contactStore.getElectronicAddress({ electronicAddressId: savedElectronicAddress.id })).rejects.toThrow(
+      `No electronic address found for id: ${savedElectronicAddress.id}`
+    )
   })
 
   it('should throw error when removing electronic address with unknown id', async (): Promise<void> => {
     const electronicAddressId = 'unknownElectronicAddressId'
 
-    await expect(contactStore.removeElectronicAddress({ electronicAddressId })).rejects.toThrow(`No electronic address found for id: ${electronicAddressId}`)
+    await expect(contactStore.removeElectronicAddress({ electronicAddressId })).rejects.toThrow(
+      `No electronic address found for id: ${electronicAddressId}`
+    )
   })
 
   it('should get physical address by id', async (): Promise<void> => {
@@ -2108,7 +2132,10 @@ describe('Contact store tests', (): void => {
       provinceName: 'example_province_name',
       countryCode: 'example_country_code',
     }
-    const savedPhysicalAddress1: PhysicalAddress = await contactStore.addPhysicalAddress({ partyId: savedParty.id, physicalAddress: physicalAddress1 })
+    const savedPhysicalAddress1: PhysicalAddress = await contactStore.addPhysicalAddress({
+      partyId: savedParty.id,
+      physicalAddress: physicalAddress1,
+    })
     expect(savedPhysicalAddress1).toBeDefined()
 
     const physicalAddress2: NonPersistedPhysicalAddress = {
@@ -2121,7 +2148,10 @@ describe('Contact store tests', (): void => {
       provinceName: 'example_province_name',
       countryCode: 'example_country_code',
     }
-    const savedPhysicalAddress2: PhysicalAddress = await contactStore.addPhysicalAddress({ partyId: savedParty.id, physicalAddress: physicalAddress2 })
+    const savedPhysicalAddress2: PhysicalAddress = await contactStore.addPhysicalAddress({
+      partyId: savedParty.id,
+      physicalAddress: physicalAddress2,
+    })
     expect(savedPhysicalAddress2).toBeDefined()
 
     const args: GetPhysicalAddressesArgs = {
@@ -2130,7 +2160,7 @@ describe('Contact store tests', (): void => {
 
     const result: Array<PhysicalAddress> = await contactStore.getPhysicalAddresses(args)
 
-    expect(result.length). toEqual(2)
+    expect(result.length).toEqual(2)
   })
 
   it('should get all electronic addresses', async (): Promise<void> => {
@@ -2161,7 +2191,10 @@ describe('Contact store tests', (): void => {
       provinceName: 'example_province_name',
       countryCode: 'example_country_code',
     }
-    const savedPhysicalAddress1: PhysicalAddress = await contactStore.addPhysicalAddress({ partyId: savedParty.id, physicalAddress: physicalAddress1 })
+    const savedPhysicalAddress1: PhysicalAddress = await contactStore.addPhysicalAddress({
+      partyId: savedParty.id,
+      physicalAddress: physicalAddress1,
+    })
     expect(savedPhysicalAddress1).toBeDefined()
 
     const physicalAddress2: NonPersistedPhysicalAddress = {
@@ -2174,7 +2207,10 @@ describe('Contact store tests', (): void => {
       provinceName: 'example_province_name',
       countryCode: 'example_country_code',
     }
-    const savedPhysicalAddress2: PhysicalAddress = await contactStore.addPhysicalAddress({ partyId: savedParty.id, physicalAddress: physicalAddress2 })
+    const savedPhysicalAddress2: PhysicalAddress = await contactStore.addPhysicalAddress({
+      partyId: savedParty.id,
+      physicalAddress: physicalAddress2,
+    })
     expect(savedPhysicalAddress2).toBeDefined()
 
     const result: Array<PhysicalAddress> = await contactStore.getPhysicalAddresses()
@@ -2211,7 +2247,10 @@ describe('Contact store tests', (): void => {
       provinceName: 'example_province_name1',
       countryCode: 'example_country_code1',
     }
-    const savedPhysicalAddress1: PhysicalAddress = await contactStore.addPhysicalAddress({ partyId: savedParty.id, physicalAddress: physicalAddress1 })
+    const savedPhysicalAddress1: PhysicalAddress = await contactStore.addPhysicalAddress({
+      partyId: savedParty.id,
+      physicalAddress: physicalAddress1,
+    })
     expect(savedPhysicalAddress1).toBeDefined()
 
     const physicalAddress2: NonPersistedPhysicalAddress = {
@@ -2224,7 +2263,10 @@ describe('Contact store tests', (): void => {
       provinceName: 'example_province_name2',
       countryCode: 'example_country_code2',
     }
-    const savedPhysicalAddress2: PhysicalAddress = await contactStore.addPhysicalAddress({ partyId: savedParty.id, physicalAddress: physicalAddress2 })
+    const savedPhysicalAddress2: PhysicalAddress = await contactStore.addPhysicalAddress({
+      partyId: savedParty.id,
+      physicalAddress: physicalAddress2,
+    })
     expect(savedPhysicalAddress2).toBeDefined()
 
     const args: GetPhysicalAddressesArgs = {
@@ -2343,7 +2385,9 @@ describe('Contact store tests', (): void => {
 
     await contactStore.removePhysicalAddress({ physicalAddressId: savedPhysicalAddress.id })
 
-    await expect(contactStore.getPhysicalAddress({ physicalAddressId: savedPhysicalAddress.id })).rejects.toThrow(`No physical address found for id: ${savedPhysicalAddress.id}`)
+    await expect(contactStore.getPhysicalAddress({ physicalAddressId: savedPhysicalAddress.id })).rejects.toThrow(
+      `No physical address found for id: ${savedPhysicalAddress.id}`
+    )
   })
 
   it('should throw error when removing physical address with unknown id', async (): Promise<void> => {
@@ -2351,5 +2395,4 @@ describe('Contact store tests', (): void => {
 
     await expect(contactStore.removePhysicalAddress({ physicalAddressId })).rejects.toThrow(`No physical address found for id: ${physicalAddressId}`)
   })
-
 })
