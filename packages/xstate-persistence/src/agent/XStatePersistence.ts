@@ -1,13 +1,12 @@
-import { DeleteStateArgs, IAbstractXStateStore, State } from '@sphereon/ssi-sdk.data-store'
+import { IAbstractXStateStore, State } from '@sphereon/ssi-sdk.data-store'
 import { IAgentPlugin } from '@veramo/core'
 
 import {
   DeleteExpiredStatesArgs,
   DeleteStateResult,
-  NonPersistedXStatePersistenceEvent,
+  NonPersistedMachineSnapshot,
   RequiredContext,
   schema,
-  SQLDialect,
   XStatePersistenceEvent,
   XStatePersistenceEventType,
   XStateStateManagerOptions,
@@ -36,7 +35,7 @@ export class XStatePersistence implements IAgentPlugin {
     this.methods = {
       loadState: this.loadState.bind(this),
       deleteExpiredStates: this.deleteExpiredStates.bind(this),
-      persistState: this.persistState.bind(this),
+      persistMachineSnapshot: this.persistMachineSnapshot.bind(this),
     }
   }
 
@@ -44,14 +43,14 @@ export class XStatePersistence implements IAgentPlugin {
     switch (event.type) {
       case XStatePersistenceEventType.EVERY:
         // Calling the context of the agent to make sure the REST client is called when configured
-        await context.agent.persistState({ ...event.data })
+        await context.agent.persistMachineSnapshot({ ...event.data })
         break
       default:
         return Promise.reject(Error('Event type not supported'))
     }
   }
 
-  private async persistState(args: NonPersistedXStatePersistenceEvent): Promise<State> {
+  private async persistMachineSnapshot(args: NonPersistedMachineSnapshot): Promise<State> {
     if (!this.store) {
       return Promise.reject(Error('No store available in options'))
     }
@@ -69,25 +68,6 @@ export class XStatePersistence implements IAgentPlugin {
     if (!this.store) {
       return Promise.reject(Error('No store available in options'))
     }
-    const sqLiteParams: DeleteStateArgs = {
-      where: `created_at < datetime('now', :duration)`,
-      parameters: {
-        duration: `-${args.duration / 1000} seconds`,
-      },
-    }
-    const postgreSQLParams: DeleteStateArgs = {
-      where: 'created_at < :duration',
-      parameters: {
-        duration: `NOW() - ${args.duration / 1000} seconds::interval`,
-      },
-    }
-    switch (args.dialect) {
-      case SQLDialect.SQLite3:
-        return this.store.deleteState(sqLiteParams)
-      case SQLDialect.PostgreSQL:
-        return this.store.deleteState(postgreSQLParams)
-      default:
-        return Promise.reject(Error('Invalid database dialect'))
-    }
+    return this.store.deleteExpiredStates(args)
   }
 }

@@ -9,17 +9,11 @@ export enum XStatePersistenceEventType {
   EVERY = 'every',
 }
 
-export enum SQLDialect {
-  SQLite3 = 'SQLite3',
-  PostgreSQL = 'PostgreSQL',
-}
-
 export type DeleteExpiredStatesArgs = {
-  duration: number
-  dialect: SQLDialect
+  type?: string
 }
 
-export type NonPersistedXStatePersistenceEvent = SaveStateArgs
+export type NonPersistedMachineSnapshot = SaveStateArgs
 
 export type LoadStateArgs = GetStateArgs
 
@@ -29,7 +23,7 @@ export type DeleteStateResult = boolean
 
 export type XStatePersistenceEvent = {
   type: XStatePersistenceEventType
-  data: NonPersistedXStatePersistenceEvent
+  data: NonPersistedMachineSnapshot
 }
 
 export type RequiredContext = IAgentContext<IXStatePersistence>

@@ -1,12 +1,12 @@
 import { OrPromise } from '@sphereon/ssi-types'
 import Debug from 'debug'
-import { DataSource, DeleteResult } from 'typeorm'
+import { DataSource, FindOptionsWhere, LessThan } from 'typeorm'
 
-import { StateEntity } from '../entities/xstatePersistence/StateEntity'
-import { DeleteStateArgs, GetStateArgs, GetStatesArgs, SaveStateArgs, State } from '../types'
+import { StateEntity } from '../entities/xstate/StateEntity'
+import { DeleteExpiredStateArgs, DeleteStateArgs, GetStateArgs, GetStatesArgs, SaveStateArgs, State } from '../types'
 import { IAbstractXStateStore } from './IAbstractXStateStore'
 
-const debug = Debug('sphereon:ssi-sdk:xstatePersistence')
+const debug = Debug('sphereon:ssi-sdk:xstate')
 
 export class XStateStore extends IAbstractXStateStore {
   private readonly dbConnection: OrPromise<DataSource>
@@ -45,11 +45,32 @@ export class XStateStore extends IAbstractXStateStore {
   }
 
   async deleteState(args: DeleteStateArgs): Promise<boolean> {
+    if (!args.id) {
+      throw new Error('No id parameter is provided.')
+    }
     try {
       const connection: DataSource = await this.dbConnection
-      debug(`Executing deleteState query with where clause: ${args.where} and params: ${JSON.stringify(args.parameters)}`)
-      const result: DeleteResult = await connection.createQueryBuilder().delete().from(StateEntity).where(args.where, args.parameters).execute()
+      debug(`Executing deleteState query with id: ${args.id}`)
+      const result = await connection.getRepository(StateEntity).delete(args.id)
+      return result.affected != null && result.affected > 0
+    } catch (error) {
+      debug(`Error deleting state: ${error}`)
+      return false
+    }
+  }
 
+  async deleteExpiredStates(args: DeleteExpiredStateArgs): Promise<boolean> {
+    try {
+      const connection: DataSource = await this.dbConnection
+      debug(`Executing deleteExpiredStates query with params: ${JSON.stringify(args)}`)
+      let deleteCriteria: FindOptionsWhere<StateEntity> = { expiresAt: LessThan(new Date()) }
+      if (args.type) {
+        deleteCriteria = {
+          type: args.type,
+        }
+      }
+
+      const result = await connection.getRepository(StateEntity).delete(deleteCriteria)
       return result.affected != null && result.affected > 0
     } catch (error) {
       debug(`Error deleting state: ${error}`)
@@ -59,12 +80,7 @@ export class XStateStore extends IAbstractXStateStore {
 
   private stateFrom = (state: StateEntity): State => {
     return {
-      state: state.id,
-      type: state.type,
-      createdAt: state.createdAt,
-      updatedAt: state.updatedAt,
-      completedAt: state.completedAt,
-      tenantId: state.tenantId,
+      ...state,
     }
   }
 }

@@ -18,7 +18,7 @@ import { IssuerBrandingEntity, issuerBrandingEntityFrom } from './entities/issua
 import { TextAttributesEntity, textAttributesEntityFrom } from './entities/issuanceBranding/TextAttributesEntity'
 import { StatusListEntity } from './entities/statusList2021/StatusList2021Entity'
 import { StatusListEntryEntity } from './entities/statusList2021/StatusList2021EntryEntity'
-import { StateEntity } from './entities/xstatePersistence/StateEntity'
+import { StateEntity } from './entities/xstate/StateEntity'
 import { IStatusListEntity, IStatusListEntryEntity } from './types'
 import { PartyRelationshipEntity } from './entities/contact/PartyRelationshipEntity'
 import { PartyTypeEntity } from './entities/contact/PartyTypeEntity'
@@ -34,8 +34,8 @@ export { StatusListStore } from './statusList/StatusListStore'
 import { AuditEventEntity, auditEventEntityFrom } from './entities/eventLogger/AuditEventEntity'
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
 export { EventLoggerStore } from './eventLogger/EventLoggerStore'
-export { IAbstractXStateStore } from './xstatePersistence/IAbstractXStateStore'
-export { XStateStore } from './xstatePersistence/XStateStore'
+export { IAbstractXStateStore } from './xstate/IAbstractXStateStore'
+export { XStateStore } from './xstate/XStateStore'
 
 export {
   DataStoreMigrations,

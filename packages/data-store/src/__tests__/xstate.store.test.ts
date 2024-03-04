@@ -27,11 +27,11 @@ describe('Database entities tests', (): void => {
 
   it('should store xstate event', async (): Promise<void> => {
     const xstateEvent: NonPersistedXStateStoreEvent = {
+      step: 'enterPersonalDetails',
+      type: 'Onboarding',
+      eventName: 'SET_PERSONAL_DATA',
       state: 'test_state',
-      type: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      completedAt: new Date(),
+      expiresAt: new Date(new Date().getDate() + 100000),
       tenantId: 'test_tenant_id',
     }
 
@@ -41,9 +41,11 @@ describe('Database entities tests', (): void => {
 
   it('should get all state events', async (): Promise<void> => {
     const xstateEvent: NonPersistedXStateStoreEvent = {
+      step: 'enterPersonalDetails',
+      type: 'Onboarding',
+      eventName: 'SET_PERSONAL_DATA',
       state: 'test_state',
-      type: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
-      completedAt: new Date(),
+      expiresAt: new Date(new Date().getDate() + 100000),
       tenantId: 'test_tenant_id',
     }
 
@@ -59,9 +61,11 @@ describe('Database entities tests', (): void => {
 
   it('should retrieve an xstate event', async (): Promise<void> => {
     const xstateEvent: NonPersistedXStateStoreEvent = {
+      step: 'enterPersonalDetails',
+      type: 'Onboarding',
+      eventName: 'SET_PERSONAL_DATA',
       state: 'test_state',
-      type: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
-      completedAt: new Date(),
+      expiresAt: new Date(new Date().getDate() + 100000),
       tenantId: 'test_tenant_id',
     }
 
@@ -70,6 +74,23 @@ describe('Database entities tests', (): void => {
 
     const result: State = await xstateStore.getState(xstateEvent)
     expect(result).toBeDefined()
+  })
+
+  it('should delete an xstate event', async (): Promise<void> => {
+    const xstateEvent: NonPersistedXStateStoreEvent = {
+      step: 'enterPersonalDetails',
+      type: 'Onboarding',
+      eventName: 'SET_PERSONAL_DATA',
+      state: 'test_state',
+      expiresAt: new Date(new Date().getDate() + 100000),
+      tenantId: 'test_tenant_id',
+    }
+
+    const savedXStoreEvent: State = await xstateStore.saveState(xstateEvent)
+    expect(savedXStoreEvent).toBeDefined()
+
+    const result: boolean = await xstateStore.deleteState({ id: savedXStoreEvent.id })
+    expect(result).toBeTruthy()
   })
 
   it('should return an error if type filter does not match', async (): Promise<void> => {
@@ -81,27 +102,34 @@ describe('Database entities tests', (): void => {
   })
 
   it('should delete the expired records', async () => {
-    const now = new Date()
-    const newestXstateEvent: NonPersistedXStateStoreEvent = {
-      state: 'test_state',
-      type: 'test_type_1',
-      createdAt: now,
-      completedAt: new Date(),
-      tenantId: 'test_tenant_id',
-    }
-    const middleXstateEvent: NonPersistedXStateStoreEvent = {
-      state: 'test_state',
-      type: 'test_type_2',
-      createdAt: new Date(+now - 30000),
-      completedAt: new Date(),
-      tenantId: 'test_tenant_id',
-    }
+    const futureExpiresAt = new Date()
+    futureExpiresAt.setTime(futureExpiresAt.getTime() + 100000) // Future expiration
 
-    const oldestXstateEvent: NonPersistedXStateStoreEvent = {
+    const pastExpiresAt = new Date()
+    pastExpiresAt.setTime(pastExpiresAt.getTime() - 100000) // Past expiration, already expired
+
+    const oldestXstateEvent = {
+      step: 'acceptAgreement',
+      type: 'Onboarding1',
+      eventName: 'SET_TOC',
       state: 'test_state',
-      type: 'test_type_3',
-      createdAt: new Date(+now - 60000),
-      completedAt: new Date(),
+      expiresAt: futureExpiresAt,
+      tenantId: 'test_tenant_id',
+    }
+    const middleXstateEvent = {
+      step: 'acceptAgreement',
+      type: 'Onboarding2',
+      eventName: 'SET_POLICY2',
+      state: 'test_state',
+      expiresAt: futureExpiresAt,
+      tenantId: 'test_tenant_id',
+    }
+    const newestXstateEvent = {
+      step: 'enterPersonalDetails',
+      type: 'Onboarding3',
+      eventName: 'SET_PERSONAL_DATA',
+      state: 'test_state',
+      expiresAt: pastExpiresAt, // This event should be already expired
       tenantId: 'test_tenant_id',
     }
 
@@ -109,13 +137,10 @@ describe('Database entities tests', (): void => {
     await xstateStore.saveState(middleXstateEvent)
     await xstateStore.saveState(newestXstateEvent)
 
-    await xstateStore.deleteState({
-      where: `created_at < datetime('now', :ttl)`,
-      parameters: { ttl: '-30 seconds' },
-    })
+    await xstateStore.deleteExpiredStates({})
 
-    await expect(xstateStore.getState({ type: 'test_type_1' })).resolves.toBeDefined()
-    await expect(xstateStore.getState({ type: 'test_type_2' })).resolves.toBeDefined()
-    await expect(xstateStore.getState({ type: 'test_type_3' })).rejects.toEqual(Error('No state found for type: test_type_3'))
+    await expect(xstateStore.getState({ type: 'Onboarding1' })).resolves.toBeDefined()
+    await expect(xstateStore.getState({ type: 'Onboarding2' })).resolves.toBeDefined()
+    await expect(xstateStore.getState({ type: 'Onboarding3' })).rejects.toEqual(Error('No state found for type: Onboarding3'))
   })
 })

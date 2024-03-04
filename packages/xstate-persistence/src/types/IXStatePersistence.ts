@@ -1,14 +1,7 @@
 import { State } from '@sphereon/ssi-sdk.data-store'
 import { IPluginMethodMap } from '@veramo/core'
 
-import {
-  DeleteExpiredStatesArgs,
-  DeleteStateResult,
-  LoadStateArgs,
-  LoadStateResult,
-  NonPersistedXStatePersistenceEvent,
-  RequiredContext,
-} from './types'
+import { DeleteExpiredStatesArgs, DeleteStateResult, LoadStateArgs, LoadStateResult, NonPersistedMachineSnapshot, RequiredContext } from './types'
 
 /**
  * The interface definition for a plugin that can issue and verify Verifiable Credentials and Presentations
@@ -51,5 +44,5 @@ export interface IXStatePersistence extends IPluginMethodMap {
    * @param context
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
-  persistState(event: NonPersistedXStatePersistenceEvent, context: RequiredContext): Promise<State>
+  persistMachineSnapshot(event: NonPersistedMachineSnapshot, context: RequiredContext): Promise<State>
 }

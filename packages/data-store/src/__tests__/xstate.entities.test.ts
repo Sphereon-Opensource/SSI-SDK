@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm'
-import { StateEntity, stateEntityFrom } from '../entities/xstatePersistence/StateEntity'
+import { StateEntity, stateEntityFrom } from '../entities/xstate/StateEntity'
 
 import { DataStoreXStateStoreEntities, DataStoreXStateStoreMigrations, NonPersistedXStateStoreEvent } from '../index'
 
@@ -26,9 +26,11 @@ describe('Database entities tests', (): void => {
 
   it('should save xstate event to database', async (): Promise<void> => {
     const xstateEvent: NonPersistedXStateStoreEvent = {
+      step: 'acceptAgreement',
+      type: 'Onboarding',
+      eventName: 'SET_TOC',
       state: 'test_state',
-      type: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
-      completedAt: new Date(),
+      expiresAt: new Date(new Date().getDate() + 100000),
       tenantId: 'test_tenant_id',
     }
 
@@ -40,6 +42,6 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.type).toEqual(xstateEvent.type)
     expect(fromDb?.state).toEqual(xstateEvent.state)
     expect(fromDb?.tenantId).toEqual(xstateEvent.tenantId)
-    expect(fromDb?.completedAt).toEqual(xstateEvent.completedAt)
+    expect(fromDb?.completedAt).toBeNull()
   })
 })

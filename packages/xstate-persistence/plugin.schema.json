@@ -5,24 +5,10 @@
         "DeleteExpiredStatesArgs": {
           "type": "object",
           "properties": {
-            "duration": {
-              "type": "number"
-            },
-            "dialect": {
-              "$ref": "#/components/schemas/SQLDialect"
+            "type": {
+              "type": "string"
             }
-          },
-          "required": [
-            "duration",
-            "dialect"
-          ]
-        },
-        "SQLDialect": {
-          "type": "string",
-          "enum": [
-            "SQLite3",
-            "PostgreSQL"
-          ]
+          }
         },
         "DeleteStateResult": {
           "type": "boolean"
@@ -37,9 +23,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "type"
-          ],
+          "required": ["type"],
           "additionalProperties": false
         },
         "LoadStateResult": {
@@ -48,13 +32,26 @@
         "State": {
           "type": "object",
           "properties": {
-            "state": {
+            "id": {
+              "type": "string"
+            },
+            "step": {
               "type": "string"
             },
             "type": {
               "type": "string"
             },
+            "eventName": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string"
+            },
             "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "expiresAt": {
               "type": "string",
               "format": "date-time"
             },
@@ -70,30 +67,27 @@
               "type": "string"
             }
           },
-          "required": [
-            "state",
-            "type",
-            "createdAt",
-            "updatedAt"
-          ]
+          "required": ["id", "step", "type", "eventName", "state", "createdAt", "updatedAt"]
         },
-        "NonPersistedXStatePersistenceEvent": {
+        "NonPersistedMachineSnapshot": {
           "$ref": "#/components/schemas/SaveStateArgs"
         },
         "SaveStateArgs": {
           "type": "object",
           "properties": {
-            "state": {
+            "step": {
               "type": "string"
             },
             "type": {
               "type": "string"
             },
-            "createdAt": {
-              "type": "string",
-              "format": "date-time"
+            "eventName": {
+              "type": "string"
             },
-            "updatedAt": {
+            "state": {
+              "type": "string"
+            },
+            "expiresAt": {
               "type": "string",
               "format": "date-time"
             },
@@ -105,10 +99,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "state",
-            "type"
-          ]
+          "required": ["step", "type", "eventName", "state"]
         }
       },
       "methods": {
@@ -130,10 +121,10 @@
             "$ref": "#/components/schemas/LoadStateResult"
           }
         },
-        "persistState": {
+        "persistMachineSnapshot": {
           "description": "Persists the state whenever an event is emitted",
           "arguments": {
-            "$ref": "#/components/schemas/NonPersistedXStatePersistenceEvent"
+            "$ref": "#/components/schemas/NonPersistedMachineSnapshot"
           },
           "returnType": {
             "$ref": "#/components/schemas/State"
