@@ -3,7 +3,7 @@ import {
   CredentialCorrelationType,
   CredentialDocumentFormat,
   CredentialStateType,
-  CredentialType,
+  DocumentType,
 } from '../../types/digitalCredential/digitalCredential'
 
 @Entity('DigitalCredential')
@@ -11,14 +11,14 @@ export class DigitalCredentialEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum', { name: 'credential_type', enum: CredentialType, nullable: false })
-  credentialType!: CredentialType
+  @Column('simple-enum', { name: 'document_type', enum: DocumentType, nullable: false })
+  documentType!: DocumentType
 
   @Column('simple-enum', { name: 'document_format', enum: CredentialDocumentFormat, nullable: false })
   documentFormat!: CredentialDocumentFormat
 
-  @Column('text', { name: 'raw', nullable: false })
-  raw!: string
+  @Column('text', { name: 'raw_document', nullable: false })
+  rawDocument!: string
 
   @Column('text', { name: 'uniform_document', nullable: false })
   uniformDocument!: string

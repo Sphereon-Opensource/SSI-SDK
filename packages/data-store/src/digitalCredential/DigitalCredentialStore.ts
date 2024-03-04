@@ -47,7 +47,10 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
 
   getCredentials = async (args?: GetCredentialsArgs): Promise<GetCredentialsResponse> => {
     const { filter = {}, offset, limit, order = 'id.asc' } = args ?? {}
-    const sortOptions: FindOptionsOrder<DigitalCredentialEntity> = parseAndValidateOrderOptions<DigitalCredentialEntity>(order)
+    const sortOptions: FindOptionsOrder<DigitalCredentialEntity> =
+      order && typeof order === 'string'
+        ? parseAndValidateOrderOptions<DigitalCredentialEntity>(order)
+        : <FindOptionsOrder<DigitalCredentialEntity>>order
     const [result, total] = await (await this.dbConnection).getRepository(DigitalCredentialEntity).findAndCount({
       where: filter,
       skip: offset,

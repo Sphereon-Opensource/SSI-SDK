@@ -4,7 +4,7 @@ export class CreateDigitalCredential1708525189001 implements MigrationInterface 
   name = 'CreateDigitalCredential1708525189001'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`CREATE TYPE "digital_credential_type" AS ENUM('VC', 'VP', 'C', 'P')`)
+    await queryRunner.query(`CREATE TYPE "digital_document_type" AS ENUM('VC', 'VP', 'C', 'P')`)
     await queryRunner.query(`CREATE TYPE "digital_credential_document_format" AS ENUM('JSON_LD', 'JWT', 'SD_JWT', 'MDOC')`)
     await queryRunner.query(`CREATE TYPE "digital_credential_correlation_type" AS ENUM('DID')`)
     await queryRunner.query(`CREATE TYPE "digital_credential_state_type" AS ENUM('REVOKED', 'VERIFIED', 'EXPIRED')`)
@@ -12,9 +12,9 @@ export class CreateDigitalCredential1708525189001 implements MigrationInterface 
     await queryRunner.query(`
       CREATE TABLE "DigitalCredential" (
         "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-        "credential_type" "digital_credential_type" NOT NULL,
+        "document_type" "digital_document_type" NOT NULL,
         "document_format" "digital_credential_document_format" NOT NULL,
-        "raw" text NOT NULL,
+        "raw_document" text NOT NULL,
         "uniform_document" text NOT NULL,
         "hash" text NOT NULL UNIQUE,
         "issuer_correlation_type" "digital_credential_correlation_type" NOT NULL,
@@ -39,6 +39,6 @@ export class CreateDigitalCredential1708525189001 implements MigrationInterface 
     await queryRunner.query(`DROP TYPE "digital_credential_state_type"`)
     await queryRunner.query(`DROP TYPE "digital_credential_correlation_type"`)
     await queryRunner.query(`DROP TYPE "digital_credential_document_format"`)
-    await queryRunner.query(`DROP TYPE "digital_credential_type"`)
+    await queryRunner.query(`DROP TYPE "digital_document_type"`)
   }
 }

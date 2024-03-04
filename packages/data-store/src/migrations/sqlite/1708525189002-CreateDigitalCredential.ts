@@ -7,9 +7,9 @@ export class CreateDigitalCredential1708525189002 implements MigrationInterface 
     await queryRunner.query(`
             CREATE TABLE "DigitalCredential" (
                 "id" varchar PRIMARY KEY NOT NULL,
-                "credential_type" varchar CHECK( "credential_type" IN ('VC', 'VP', 'C', 'P') ) NOT NULL,
+                "document_type" varchar CHECK( "document_type" IN ('VC', 'VP', 'C', 'P') ) NOT NULL,
                 "document_format" varchar CHECK( "document_format" IN ('JSON_LD', 'JWT', 'SD_JWT', 'MDOC') ) NOT NULL,
-                "raw" text NOT NULL,
+                "raw_document" text NOT NULL,
                 "uniform_document" text NOT NULL,
                 "hash" text NOT NULL UNIQUE,
                 "issuer_correlation_type" varchar CHECK( "issuer_correlation_type" IN ('DID') ) NOT NULL,

@@ -1,5 +1,7 @@
 import { CredentialCorrelationType, CredentialStateType, DigitalCredential } from './digitalCredential'
 import { Hasher } from '@sphereon/ssi-types'
+import { FindOptionsOrder } from 'typeorm'
+import { DigitalCredentialEntity } from '../../entities/digitalCredential/DigitalCredentialEntity'
 
 export type GetCredentialArgs = { id: string } | { hash: string }
 
@@ -9,7 +11,7 @@ export type GetCredentialsArgs = {
   filter?: FindDigitalCredentialArgs
   offset?: number
   limit?: number
-  order?: string
+  order?: string | FindOptionsOrder<DigitalCredentialEntity>
 }
 
 export type GetCredentialsResponse = {
@@ -18,7 +20,7 @@ export type GetCredentialsResponse = {
 }
 
 export type AddCredentialArgs = {
-  raw: string
+  rawDocument: string
   issuerCorrelationType: CredentialCorrelationType
   subjectCorrelationType?: CredentialCorrelationType
   issuerCorrelationId: string

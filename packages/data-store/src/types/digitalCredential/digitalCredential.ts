@@ -2,9 +2,9 @@ export type NonPersistedDigitalCredential = Omit<DigitalCredential, 'id'>
 
 export type DigitalCredential = {
   id: string
-  credentialType: CredentialType
+  documentType: DocumentType
   documentFormat: CredentialDocumentFormat
-  raw: string
+  rawDocument: string
   uniformDocument: string
   hash: string
   issuerCorrelationType: CredentialCorrelationType
@@ -21,7 +21,7 @@ export type DigitalCredential = {
   revokedAt?: Date
 }
 
-export enum CredentialType {
+export enum DocumentType {
   VC = 'VC',
   VP = 'VP',
   P = 'P',
