@@ -28,8 +28,7 @@ export interface IXStatePersistence extends IPluginMethodMap {
    * Deletes the state of an xstate machine in the database.
    *
    * @param args DeleteExpiredStatesArgs
-   * duration in milliseconds
-   * dialect 'SQLite3' or 'PostgreSQL'
+   * type: optional type of the machine
    *
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
