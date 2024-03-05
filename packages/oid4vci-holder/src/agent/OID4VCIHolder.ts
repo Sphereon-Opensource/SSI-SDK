@@ -9,6 +9,7 @@ import {
   Party,
 } from '@sphereon/ssi-sdk.data-store'
 import { IAgentPlugin, VerifiableCredential } from '@veramo/core'
+import { IEventListener } from '@veramo/core/src/types/IAgent'
 import { computeEntryHash } from '@veramo/utils'
 import { v4 as uuidv4 } from 'uuid'
 import { OID4VCIMachine } from '../machine/oid4vciMachine'
@@ -49,7 +50,7 @@ import {
  * {@inheritDoc IOID4VCIHolder}
  */
 
-export class OID4VCIHolder implements IAgentPlugin {
+export class OID4VCIHolder implements IAgentPlugin, IEventListener {
   readonly eventTypes: Array<OID4VCIHolderEvent> = [OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED, OID4VCIHolderEvent.CREDENTIAL_STORED]
 
   readonly methods: IOID4VCIHolder = {
