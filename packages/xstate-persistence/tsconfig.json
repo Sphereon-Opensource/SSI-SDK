@@ -11,22 +11,7 @@
   "include": ["src/**/*.json", "src/**/*.ts"],
   "references": [
     {
-      "path": "../vc-status-list"
-    },
-    {
-      "path": "../vc-status-list-issuer-drivers"
-    },
-    {
       "path": "../data-store"
-    },
-    {
-      "path": "../ssi-types"
-    },
-    {
-      "path": "../ssi-sdk-core"
-    },
-    {
-      "path": "../agent-config"
     }
   ]
 }
