@@ -1,5 +1,12 @@
 import { DataSource } from 'typeorm'
-import { DataStoreXStateStoreEntities, GetActiveStateArgs, NonPersistedXStateStoreEvent, SaveStateArgs, State, XStateStore } from '../index'
+import {
+  DataStoreXStateStoreEntities,
+  GetActiveStateArgs,
+  NonPersistedXStateStoreEvent,
+  SaveStateArgs,
+  State,
+  XStateStore,
+} from '../index'
 import { DataStoreXStateStoreMigrations } from '../migrations'
 
 describe('Database entities tests', (): void => {

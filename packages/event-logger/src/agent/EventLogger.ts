@@ -1,7 +1,6 @@
 import { IAgentPlugin } from '@veramo/core'
 import { AbstractEventLoggerStore } from '@sphereon/ssi-sdk.data-store'
 import { AuditLoggingEvent, LoggingEventType, LogLevel } from '@sphereon/ssi-sdk.core'
-import { IEventListener } from '@veramo/core/src/types/IAgent'
 import { v4 as uuidv4 } from 'uuid'
 import { schema } from '../index'
 import { EventLoggerOptions, GetAuditEventsArgs, IEventLogger, RequiredContext, LogAuditEventArgs, LoggingEvent } from '../types/IEventLogger'
@@ -14,7 +13,7 @@ import { EventLoggerOptions, GetAuditEventsArgs, IEventLogger, RequiredContext, 
 export const eventLoggerAuditMethods: Array<string> = ['loggerGetAuditEvents', 'loggerLogAuditEvent']
 export const eventLoggerMethods: Array<string> = [...eventLoggerAuditMethods]
 
-export class EventLogger implements IAgentPlugin, IEventListener {
+export class EventLogger implements IAgentPlugin {
   readonly schema = schema.IEventLogger
   readonly eventTypes: Array<LoggingEventType> = []
 

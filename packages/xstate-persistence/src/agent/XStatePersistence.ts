@@ -1,6 +1,5 @@
 import { IAbstractXStateStore, State } from '@sphereon/ssi-sdk.data-store'
 import { IAgentPlugin } from '@veramo/core'
-import { IEventListener } from '@veramo/core/src/types/IAgent'
 
 import {
   DeleteExpiredStatesArgs,
@@ -21,7 +20,7 @@ import { IXStatePersistence, LoadActiveStateArgs } from '../types'
  *
  * @beta This API may change without a BREAKING CHANGE notice.
  */
-export class XStatePersistence implements IAgentPlugin, IEventListener {
+export class XStatePersistence implements IAgentPlugin {
   readonly schema = schema.IXStatePersistence
   readonly methods: IXStatePersistence
   readonly eventTypes: Array<string>

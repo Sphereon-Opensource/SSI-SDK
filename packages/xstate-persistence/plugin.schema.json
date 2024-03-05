@@ -10,7 +10,9 @@
               "description": "Machine type/id"
             }
           },
-          "required": ["machineType"],
+          "required": [
+            "machineType"
+          ],
           "additionalProperties": false
         },
         "DeleteStateResult": {
@@ -30,7 +32,9 @@
               "type": "string"
             }
           },
-          "required": ["machineType"]
+          "required": [
+            "machineType"
+          ]
         },
         "State": {
           "type": "object",
@@ -73,7 +77,15 @@
               "type": "string"
             }
           },
-          "required": ["id", "stateName", "machineType", "xStateEventType", "state", "createdAt", "updatedAt"]
+          "required": [
+            "id",
+            "stateName",
+            "machineType",
+            "xStateEventType",
+            "state",
+            "createdAt",
+            "updatedAt"
+          ]
         },
         "NonPersistedMachineSnapshot": {
           "$ref": "#/components/schemas/SaveStateArgs"
@@ -108,7 +120,12 @@
               "type": "string"
             }
           },
-          "required": ["stateName", "machineType", "xStateEventType", "state"]
+          "required": [
+            "stateName",
+            "machineType",
+            "xStateEventType",
+            "state"
+          ]
         }
       },
       "methods": {
