@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
 
-export class CreateXStateStore1708096002272 implements MigrationInterface {
-  name = 'CreateXStateStore1708096002272'
+export class CreateXStateStore1708796002272 implements MigrationInterface {
+  name = 'CreateXStateStore1708796002272'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`

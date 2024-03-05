@@ -1,8 +1,8 @@
 import { enablePostgresUuidExtension } from '@sphereon/ssi-sdk.core'
 import { MigrationInterface, QueryRunner } from 'typeorm'
 
-export class CreateXStateStore1708097018115 implements MigrationInterface {
-  name = 'CreateXStateStore1708097018115'
+export class CreateXStateStore1708797018115 implements MigrationInterface {
+  name = 'CreateXStateStore1708797018115'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await enablePostgresUuidExtension(queryRunner)
