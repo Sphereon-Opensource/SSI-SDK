@@ -33,9 +33,9 @@ export class XStatePersistence implements IAgentPlugin {
     this.eventTypes = eventTypes
 
     this.methods = {
-      loadState: this.loadState.bind(this),
-      deleteExpiredStates: this.deleteExpiredStates.bind(this),
-      persistMachineSnapshot: this.persistMachineSnapshot.bind(this),
+      stateLoad: this.stateLoad.bind(this),
+      stateDeleteExpired: this.stateDeleteExpired.bind(this),
+      statePersist: this.statePersist.bind(this),
     }
   }
 
@@ -43,28 +43,28 @@ export class XStatePersistence implements IAgentPlugin {
     switch (event.type) {
       case XStatePersistenceEventType.EVERY:
         // Calling the context of the agent to make sure the REST client is called when configured
-        await context.agent.persistMachineSnapshot({ ...event.data })
+        await context.agent.statePersist({ ...event.data })
         break
       default:
         return Promise.reject(Error('Event type not supported'))
     }
   }
 
-  private async persistMachineSnapshot(args: NonPersistedMachineSnapshot): Promise<State> {
+  private async statePersist(args: NonPersistedMachineSnapshot): Promise<State> {
     if (!this.store) {
       return Promise.reject(Error('No store available in options'))
     }
     return this.store.saveState(args)
   }
 
-  private async loadState(args: LoadStateArgs): Promise<LoadStateResult> {
+  private async stateLoad(args: LoadStateArgs): Promise<LoadStateResult> {
     if (!this.store) {
       return Promise.reject(Error('No store available in options'))
     }
     return this.store.getState(args)
   }
 
-  private async deleteExpiredStates(args: DeleteExpiredStatesArgs): Promise<DeleteStateResult> {
+  private async stateDeleteExpired(args: DeleteExpiredStatesArgs): Promise<DeleteStateResult> {
     if (!this.store) {
       return Promise.reject(Error('No store available in options'))
     }

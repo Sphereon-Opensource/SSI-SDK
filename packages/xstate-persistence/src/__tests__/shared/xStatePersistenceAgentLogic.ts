@@ -25,7 +25,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         tenantId: 'test_tenant_id',
       }
 
-      const savedXStoreEvent: State = await agent.persistMachineSnapshot(xstateEvent)
+      const savedXStoreEvent: State = await agent.statePersist(xstateEvent)
       expect(savedXStoreEvent).toBeDefined()
     })
 
@@ -39,10 +39,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         tenantId: 'test_tenant_id',
       }
 
-      const savedXStoreEvent: State = await agent.persistMachineSnapshot({ ...xstateEvent })
+      const savedXStoreEvent: State = await agent.statePersist({ ...xstateEvent })
       expect(savedXStoreEvent).toBeDefined()
 
-      const result: State = await agent.loadState({ type: savedXStoreEvent.type })
+      const result: State = await agent.stateLoad({ type: savedXStoreEvent.type })
       expect(result).toBeDefined()
     })
 
@@ -76,14 +76,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         tenantId: 'test_tenant_id',
       }
 
-      await agent.persistMachineSnapshot(newestXstateEvent)
-      await agent.persistMachineSnapshot(middleXstateEvent)
-      await agent.persistMachineSnapshot(oldestXstateEvent)
-      await agent.deleteExpiredStates({ type: 'Onboarding3' })
+      await agent.statePersist(newestXstateEvent)
+      await agent.statePersist(middleXstateEvent)
+      await agent.statePersist(oldestXstateEvent)
+      await agent.stateDeleteExpired({ type: 'Onboarding3' })
 
-      await expect(agent.loadState({ type: 'Onboarding1' })).resolves.toBeDefined()
-      await expect(agent.loadState({ type: 'Onboarding2' })).resolves.toBeDefined()
-      await expect(agent.loadState({ type: 'Onboarding3' })).rejects.toEqual(Error('No state found for type: Onboarding3'))
+      await expect(agent.stateLoad({ type: 'Onboarding1' })).resolves.toBeDefined()
+      await expect(agent.stateLoad({ type: 'Onboarding2' })).resolves.toBeDefined()
+      await expect(agent.stateLoad({ type: 'Onboarding3' })).rejects.toEqual(Error('No state found for type: Onboarding3'))
     })
   })
 }

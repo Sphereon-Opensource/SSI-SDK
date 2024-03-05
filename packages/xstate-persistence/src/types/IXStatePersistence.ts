@@ -22,7 +22,7 @@ export interface IXStatePersistence extends IPluginMethodMap {
    *
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
-  loadState(args: LoadStateArgs): Promise<LoadStateResult>
+  stateLoad(args: LoadStateArgs): Promise<LoadStateResult>
 
   /**
    * Deletes the state of an xstate machine in the database.
@@ -32,7 +32,7 @@ export interface IXStatePersistence extends IPluginMethodMap {
    *
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
-  deleteExpiredStates(args: DeleteExpiredStatesArgs): Promise<DeleteStateResult>
+  stateDeleteExpired(args: DeleteExpiredStatesArgs): Promise<DeleteStateResult>
 
   /**
    * Persists the state whenever an event is emitted
@@ -43,5 +43,5 @@ export interface IXStatePersistence extends IPluginMethodMap {
    * @param context
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
-  persistMachineSnapshot(event: NonPersistedMachineSnapshot, context: RequiredContext): Promise<State>
+  statePersist(event: NonPersistedMachineSnapshot, context: RequiredContext): Promise<State>
 }

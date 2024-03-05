@@ -36,16 +36,20 @@
               "type": "string"
             },
             "step": {
-              "type": "string"
+              "type": "string",
+              "description": "value of the state. top level of eventName. examples: acceptAgreement, enterPersonalDetails"
             },
             "type": {
-              "type": "string"
+              "type": "string",
+              "description": "Machine id"
             },
             "eventName": {
-              "type": "string"
+              "type": "string",
+              "description": "event name like SET_TOC, SET_FIRSTNAME, ..."
             },
             "state": {
-              "type": "string"
+              "type": "string",
+              "description": "stringified value of the state"
             },
             "createdAt": {
               "type": "string",
