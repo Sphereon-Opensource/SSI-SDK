@@ -21,7 +21,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         machineType: 'Onboarding',
         xStateEventType: 'SET_TOC',
         state: 'test_state',
-        expiresAt: new Date(new Date().getDate() + 100000),
+        expiresAt: new Date(new Date().getTime() + 100000),
         tenantId: 'test_tenant_id',
       }
 
@@ -35,7 +35,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         machineType: 'Onboarding',
         xStateEventType: 'SET_TOC',
         state: { myState: 'test_state' },
-        expiresAt: new Date(new Date().getDate() + 100000),
+        expiresAt: new Date(new Date().getTime() + 100000),
         tenantId: 'test_tenant_id',
       }
 
