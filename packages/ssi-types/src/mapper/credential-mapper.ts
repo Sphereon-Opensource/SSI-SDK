@@ -293,6 +293,64 @@ export class CredentialMapper {
     return '@context' in credential && ((credential as ICredential).type?.includes('VerifiableCredential') || false)
   }
 
+  public static isCredential(original: OriginalVerifiableCredential | OriginalVerifiablePresentation): boolean {
+    try {
+      if (CredentialMapper.isJwtEncoded(original)) {
+        const vc: IVerifiableCredential = CredentialMapper.toUniformCredential(original)
+        return CredentialMapper.isW3cCredential(vc)
+      } else if (CredentialMapper.isSdJwtEncoded(original)) {
+        return true
+      }
+      return (
+        CredentialMapper.isW3cCredential(original as ICredential) ||
+        CredentialMapper.isSdJwtDecodedCredentialPayload(original as ICredential) ||
+        CredentialMapper.isJwtDecodedCredential(original as OriginalVerifiableCredential) ||
+        CredentialMapper.isSdJwtDecodedCredential(original as OriginalVerifiableCredential)
+      )
+    } catch (e) {
+      return false
+    }
+  }
+
+  public static isPresentation(original: OriginalVerifiableCredential | OriginalVerifiablePresentation): boolean {
+    try {
+      if (CredentialMapper.isJwtEncoded(original)) {
+        const vp: IVerifiablePresentation = CredentialMapper.toUniformPresentation(original)
+        return CredentialMapper.isW3cPresentation(vp)
+      } else if (CredentialMapper.isSdJwtEncoded(original)) {
+        return false
+      }
+      return (
+        CredentialMapper.isW3cPresentation(original as IPresentation) ||
+        CredentialMapper.isSdJwtDecodedCredentialPayload(original as ICredential) ||
+        CredentialMapper.isJwtDecodedPresentation(original as OriginalVerifiablePresentation) ||
+        CredentialMapper.isSdJwtDecodedCredential(original as OriginalVerifiableCredential)
+      )
+    } catch (e) {
+      return false
+    }
+  }
+
+  public static hasProof(original: OriginalVerifiableCredential | OriginalVerifiablePresentation | string): boolean {
+    try {
+      if (CredentialMapper.isJwtEncoded(original) || CredentialMapper.isJwtDecodedCredential(original as OriginalVerifiableCredential)) {
+        return true
+      } else if (CredentialMapper.isSdJwtEncoded(original) || CredentialMapper.isSdJwtDecodedCredential(original)) {
+        //todo: we might want to revisit this
+        return true
+      }
+      if ('vc' in (original as JwtDecodedVerifiableCredential) && (original as JwtDecodedVerifiableCredential).vc.proof) {
+        return true
+      }
+      if ('vp' in (original as JwtDecodedVerifiablePresentation) && (original as JwtDecodedVerifiablePresentation).vp.proof) {
+        return true
+      }
+      return !!(original as IVerifiableCredential | IVerifiablePresentation).proof
+    } catch (e) {
+      return false
+    }
+  }
+
   public static isW3cPresentation(
     presentation: UniformVerifiablePresentation | IPresentation | SdJwtDecodedVerifiableCredential
   ): presentation is IPresentation {

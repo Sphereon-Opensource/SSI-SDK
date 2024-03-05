@@ -3,6 +3,7 @@ import { CreateIssuanceBranding1659463079429 } from './2-CreateIssuanceBranding'
 import { CreateContacts1690925872318 } from './3-CreateContacts'
 import { CreateStatusList1693866470000 } from './4-CreateStatusList'
 import { CreateAuditEvents1701635835330 } from './5-CreateAuditEvents'
+import { CreateDigitalCredential1708525189000 } from './6-CreateDigitalCredential'
 import { CreateXStateStore1708098041262 } from './6-CreateXStateStore'
 
 /**
@@ -18,6 +19,7 @@ export const DataStoreContactMigrations = [CreateContacts1659463079429, CreateCo
 export const DataStoreIssuanceBrandingMigrations = [CreateIssuanceBranding1659463079429]
 export const DataStoreStatusListMigrations = [CreateStatusList1693866470000]
 export const DataStoreEventLoggerMigrations = [CreateAuditEvents1701635835330]
+export const DataStoreDigitalCredentialMigrations = [CreateDigitalCredential1708525189000]
 export const DataStoreXStateStoreMigrations = [CreateXStateStore1708098041262]
 
 // All migrations together
@@ -26,5 +28,6 @@ export const DataStoreMigrations = [
   ...DataStoreIssuanceBrandingMigrations,
   ...DataStoreStatusListMigrations,
   ...DataStoreEventLoggerMigrations,
+  ...DataStoreDigitalCredentialMigrations,
   ...DataStoreXStateStoreMigrations,
 ]
