@@ -63,13 +63,7 @@ export class XStateStore extends IAbstractXStateStore {
     try {
       const connection: DataSource = await this.dbConnection
       debug(`Executing deleteExpiredStates query with params: ${JSON.stringify(args)}`)
-      let deleteCriteria: FindOptionsWhere<StateEntity> = { expiresAt: LessThan(new Date()) }
-      if (args.type) {
-        deleteCriteria = {
-          type: args.type,
-        }
-      }
-
+      const deleteCriteria: FindOptionsWhere<StateEntity> = { expiresAt: LessThan(new Date()), ...(args.type && { type: args.type }) }
       const result = await connection.getRepository(StateEntity).delete(deleteCriteria)
       return result.affected != null && result.affected > 0
     } catch (error) {
