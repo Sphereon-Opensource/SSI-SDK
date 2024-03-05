@@ -5,29 +5,32 @@
         "DeleteExpiredStatesArgs": {
           "type": "object",
           "properties": {
-            "type": {
-              "type": "string"
+            "machineType": {
+              "type": "string",
+              "description": "Machine type/id"
             }
-          }
+          },
+          "required": ["machineType"],
+          "additionalProperties": false
         },
         "DeleteStateResult": {
           "type": "boolean"
         },
-        "LoadStateArgs": {
-          "$ref": "#/components/schemas/GetStateArgs"
+        "LoadActiveStateArgs": {
+          "$ref": "#/components/schemas/GetActiveStateArgs"
         },
-        "GetStateArgs": {
+        "GetActiveStateArgs": {
           "type": "object",
           "properties": {
-            "type": {
+            "machineType": {
+              "type": "string",
+              "description": "Machine type/id"
+            },
+            "tenantId": {
               "type": "string"
             }
           },
-          "required": ["type"],
-          "additionalProperties": false
-        },
-        "LoadStateResult": {
-          "$ref": "#/components/schemas/State"
+          "required": ["machineType"]
         },
         "State": {
           "type": "object",
@@ -35,21 +38,20 @@
             "id": {
               "type": "string"
             },
-            "step": {
+            "stateName": {
               "type": "string",
-              "description": "value of the state. top level of eventName. examples: acceptAgreement, enterPersonalDetails"
+              "description": "value of the state's name. top level of event type. examples: acceptAgreement, enterPersonalDetails"
             },
-            "type": {
+            "machineType": {
               "type": "string",
-              "description": "Machine id"
+              "description": "Machine type/id"
             },
-            "eventName": {
+            "xStateEventType": {
               "type": "string",
-              "description": "event name like SET_TOC, SET_FIRSTNAME, ..."
+              "description": "event types like SET_TOC, SET_FIRSTNAME, ..."
             },
             "state": {
-              "type": "string",
-              "description": "stringified value of the state"
+              "description": "state of the machine in this snapshot"
             },
             "createdAt": {
               "type": "string",
@@ -71,7 +73,7 @@
               "type": "string"
             }
           },
-          "required": ["id", "step", "type", "eventName", "state", "createdAt", "updatedAt"]
+          "required": ["id", "stateName", "machineType", "xStateEventType", "state", "createdAt", "updatedAt"]
         },
         "NonPersistedMachineSnapshot": {
           "$ref": "#/components/schemas/SaveStateArgs"
@@ -79,17 +81,20 @@
         "SaveStateArgs": {
           "type": "object",
           "properties": {
-            "step": {
-              "type": "string"
+            "stateName": {
+              "type": "string",
+              "description": "value of the state's name. top level of event type. examples: acceptAgreement, enterPersonalDetails"
             },
-            "type": {
-              "type": "string"
+            "machineType": {
+              "type": "string",
+              "description": "Machine type/id"
             },
-            "eventName": {
-              "type": "string"
+            "xStateEventType": {
+              "type": "string",
+              "description": "event types like SET_TOC, SET_FIRSTNAME, ..."
             },
             "state": {
-              "type": "string"
+              "description": "state of the machine in this snapshot"
             },
             "expiresAt": {
               "type": "string",
@@ -103,7 +108,7 @@
               "type": "string"
             }
           },
-          "required": ["step", "type", "eventName", "state"]
+          "required": ["stateName", "machineType", "xStateEventType", "state"]
         }
       },
       "methods": {
@@ -116,13 +121,13 @@
             "$ref": "#/components/schemas/DeleteStateResult"
           }
         },
-        "stateLoad": {
+        "stateLoadActive": {
           "description": "Loads the state of an xstate machine from the database.",
           "arguments": {
-            "$ref": "#/components/schemas/LoadStateArgs"
+            "$ref": "#/components/schemas/LoadActiveStateArgs"
           },
           "returnType": {
-            "$ref": "#/components/schemas/LoadStateResult"
+            "$ref": "#/components/schemas/State"
           }
         },
         "statePersist": {

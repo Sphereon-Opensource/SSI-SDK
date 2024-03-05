@@ -1,9 +1,9 @@
 import { OrPromise } from '@sphereon/ssi-types'
 import Debug from 'debug'
-import { DataSource, FindOptionsWhere, LessThan } from 'typeorm'
+import { Brackets, DataSource, FindOptionsWhere, LessThan } from 'typeorm'
 
 import { StateEntity } from '../entities/xstate/StateEntity'
-import { DeleteExpiredStateArgs, DeleteStateArgs, GetStateArgs, GetStatesArgs, SaveStateArgs, State } from '../types'
+import { DeleteExpiredStateArgs, DeleteStateArgs, GetActiveStateArgs, GetStatesArgs, SaveStateArgs, State } from '../types'
 import { IAbstractXStateStore } from './IAbstractXStateStore'
 
 const debug = Debug('sphereon:ssi-sdk:xstate')
@@ -19,29 +19,48 @@ export class XStateStore extends IAbstractXStateStore {
   async saveState(state: SaveStateArgs): Promise<State> {
     const connection: DataSource = await this.dbConnection
     debug(`Executing saveState with state: ${JSON.stringify(state)}`)
-    return connection.getRepository(StateEntity).save(state)
+    return connection.getRepository(StateEntity).save(XStateStore.stateEntityFrom(state))
   }
 
-  async getState(args: GetStateArgs): Promise<State> {
+  async getActiveState(args: GetActiveStateArgs): Promise<State> {
+    const { tenantId, machineType } = args
     const connection: DataSource = await this.dbConnection
-    debug(`Executing loadState query with type: ${args.type}`)
-    const result: StateEntity | null = await connection.getRepository(StateEntity).findOne({
-      where: { type: args.type },
-    })
-    if (!result) {
-      return Promise.reject(Error(`No state found for type: ${args.type}`))
+    debug(`Executing getActiveState query with machineType: ${machineType}, tenantId: ${tenantId}`)
+
+    const queryBuilder = connection
+      .getRepository(StateEntity)
+      .createQueryBuilder('state')
+      .where('state.completedAt IS NULL')
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('state.expiresAt IS NULL').orWhere('state.expiresAt > :now', { now: new Date() })
+        })
+      )
+      .orderBy('state.updatedAt', 'DESC')
+
+    if (tenantId) {
+      queryBuilder.andWhere('state.tenantId = :tenantId', { tenantId })
     }
-    return this.stateFrom(result)
+    if (machineType) {
+      queryBuilder.andWhere('state.machineType = :machineType', { machineType })
+    }
+
+    const result = await queryBuilder.getOne()
+
+    if (!result) {
+      throw new Error(`No active state found for machineType: ${machineType}, tenantId: ${tenantId}`)
+    }
+    return XStateStore.stateFrom(result)
   }
 
   async getStates(args?: GetStatesArgs): Promise<Array<State>> {
-    const connection: DataSource = await this.dbConnection // TODO apply everywhere
+    const connection: DataSource = await this.dbConnection
     debug('Getting states', args)
     const result: Array<StateEntity> = await connection.getRepository(StateEntity).find({
       ...(args?.filter && { where: args?.filter }),
     })
 
-    return result.map((event: StateEntity) => this.stateFrom(event))
+    return result.map((event: StateEntity) => XStateStore.stateFrom(event))
   }
 
   async deleteState(args: DeleteStateArgs): Promise<boolean> {
@@ -63,7 +82,7 @@ export class XStateStore extends IAbstractXStateStore {
     try {
       const connection: DataSource = await this.dbConnection
       debug(`Executing deleteExpiredStates query with params: ${JSON.stringify(args)}`)
-      const deleteCriteria: FindOptionsWhere<StateEntity> = { expiresAt: LessThan(new Date()), ...(args.type && { type: args.type }) }
+      const deleteCriteria: FindOptionsWhere<StateEntity> = { expiresAt: LessThan(new Date()), ...(args.machineType && { type: args.machineType }) }
       const result = await connection.getRepository(StateEntity).delete(deleteCriteria)
       return result.affected != null && result.affected > 0
     } catch (error) {
@@ -72,9 +91,17 @@ export class XStateStore extends IAbstractXStateStore {
     }
   }
 
-  private stateFrom = (state: StateEntity): State => {
+  public static stateFrom = (stateEntity: StateEntity): State => {
     return {
-      ...state,
+      ...stateEntity,
+      state: JSON.parse(stateEntity.state),
     }
+  }
+
+  public static stateEntityFrom = (state: State | SaveStateArgs): StateEntity => {
+    const entity = new StateEntity()
+    Object.assign(entity, state)
+    entity.state = JSON.stringify(state.state)
+    return entity
   }
 }

@@ -11,7 +11,7 @@ import {
   XStatePersistenceEventType,
   XStateStateManagerOptions,
 } from '../index'
-import { IXStatePersistence, LoadStateArgs, LoadStateResult } from '../types'
+import { IXStatePersistence, LoadActiveStateArgs } from '../types'
 
 /**
  * This class implements the IXStateStateManager interface using a TypeORM compatible database.
@@ -33,7 +33,7 @@ export class XStatePersistence implements IAgentPlugin {
     this.eventTypes = eventTypes
 
     this.methods = {
-      stateLoad: this.stateLoad.bind(this),
+      stateLoadActive: this.stateLoadActive.bind(this),
       stateDeleteExpired: this.stateDeleteExpired.bind(this),
       statePersist: this.statePersist.bind(this),
     }
@@ -57,11 +57,11 @@ export class XStatePersistence implements IAgentPlugin {
     return this.store.saveState(args)
   }
 
-  private async stateLoad(args: LoadStateArgs): Promise<LoadStateResult> {
+  private async stateLoadActive(args: LoadActiveStateArgs): Promise<State> {
     if (!this.store) {
       return Promise.reject(Error('No store available in options'))
     }
-    return this.store.getState(args)
+    return this.store.getActiveState(args)
   }
 
   private async stateDeleteExpired(args: DeleteExpiredStatesArgs): Promise<DeleteStateResult> {

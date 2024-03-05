@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm'
 import { StateEntity } from '../entities/xstate/StateEntity'
 
-import { DataStoreXStateStoreEntities, DataStoreXStateStoreMigrations, NonPersistedXStateStoreEvent } from '../index'
+import { DataStoreXStateStoreEntities, DataStoreXStateStoreMigrations, SaveStateArgs, XStateStore } from '../index'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource
@@ -25,20 +25,22 @@ describe('Database entities tests', (): void => {
   })
 
   it('should save xstate event to database', async (): Promise<void> => {
-    const xstateEvent: NonPersistedXStateStoreEvent = {
-      step: 'acceptAgreement',
-      type: 'Onboarding',
-      eventName: 'SET_TOC',
-      state: 'test_state',
+    const expiresAt = new Date()
+    expiresAt.setTime(expiresAt.getTime() + 100000)
+    const xstateEvent: SaveStateArgs = {
+      stateName: 'acceptAgreement',
+      machineType: 'Onboarding',
+      xStateEventType: 'SET_TOC',
+      state: { myState: 'test_state' },
       tenantId: 'test_tenant_id',
-      expiresAt: new Date(new Date().getDate() + 100000),
+      expiresAt,
     }
-    const fromDb: StateEntity = await dbConnection.getRepository(StateEntity).save(xstateEvent)
+    const fromDb: StateEntity = await dbConnection.getRepository(StateEntity).save(XStateStore.stateEntityFrom(xstateEvent))
 
     expect(fromDb).toBeDefined()
     expect(fromDb?.id).not.toBeNull()
-    expect(fromDb?.type).toEqual(xstateEvent.type)
-    expect(fromDb?.state).toEqual(xstateEvent.state)
+    expect(fromDb?.machineType).toEqual(xstateEvent.machineType)
+    expect(JSON.parse(fromDb?.state)).toEqual(xstateEvent.state)
     expect(fromDb?.tenantId).toEqual(xstateEvent.tenantId)
     expect(fromDb?.completedAt).toBeNull()
   })

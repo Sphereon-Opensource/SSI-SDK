@@ -7,9 +7,9 @@ export class CreateXStateStore1708796002272 implements MigrationInterface {
     await queryRunner.query(`
             CREATE TABLE "StateEntity" (
                 "id" varchar PRIMARY KEY NOT NULL,
-                "step" varchar NOT NULL,
-                "type" varchar NOT NULL,
-                "event_name" varchar NOT NULL,
+                "state_name" varchar NOT NULL,
+                "machine_type" varchar NOT NULL,
+                "xstate_event_type" varchar NOT NULL,
                 "state" text NOT NULL,
                 "created_at" datetime NOT NULL DEFAULT (datetime('now')),
                 "updated_at" datetime NOT NULL DEFAULT (datetime('now')),

@@ -1,16 +1,8 @@
-export type SaveStateArgs = {
-  step: string
-  type: string
-  eventName: string
-  state: string
-  expiresAt?: Date
-  completedAt?: Date
-  tenantId?: string
-}
+export type SaveStateArgs = Omit<State, 'id' | 'createdAt' | 'updatedAt'>
 
-export type GetStateArgs = Pick<SaveStateArgs, 'type'>
+export type GetActiveStateArgs = Pick<State, 'machineType' | 'tenantId'>
 
-export type FindStatesArgs = Partial<SaveStateArgs>
+export type FindStatesArgs = Array<Partial<Omit<State, 'state'>>>
 
 export type GetStatesArgs = {
   filter: FindStatesArgs
@@ -19,26 +11,26 @@ export type GetStatesArgs = {
 export type NonPersistedXStateStoreEvent = SaveStateArgs
 
 export type DeleteStateArgs = { id: string }
-export type DeleteExpiredStateArgs = { type?: string }
+export type DeleteExpiredStateArgs = { machineType?: string }
 
 export type State = {
   id: string
   /**
-   * value of the state. top level of eventName. examples: acceptAgreement, enterPersonalDetails
+   * value of the state's name. top level of event type. examples: acceptAgreement, enterPersonalDetails
    */
-  step: string
+  stateName: string
   /**
-   * Machine id
+   * Machine type/id
    */
-  type: string
+  machineType: string
   /**
-   * event name like SET_TOC, SET_FIRSTNAME, ...
+   * event types like SET_TOC, SET_FIRSTNAME, ...
    */
-  eventName: string
+  xStateEventType: string
   /**
-   * stringified value of the state
+   * state of the machine in this snapshot
    */
-  state: string
+  state: unknown
   createdAt: Date
   expiresAt?: Date
   updatedAt: Date

@@ -1,5 +1,12 @@
 import { DataSource } from 'typeorm'
-import { DataStoreXStateStoreEntities, GetStateArgs, NonPersistedXStateStoreEvent, State, XStateStore } from '../index'
+import {
+  DataStoreXStateStoreEntities,
+  GetActiveStateArgs,
+  NonPersistedXStateStoreEvent,
+  SaveStateArgs,
+  State,
+  XStateStore,
+} from '../index'
 import { DataStoreXStateStoreMigrations } from '../migrations'
 
 describe('Database entities tests', (): void => {
@@ -27,9 +34,9 @@ describe('Database entities tests', (): void => {
 
   it('should store xstate event', async (): Promise<void> => {
     const xstateEvent: NonPersistedXStateStoreEvent = {
-      step: 'enterPersonalDetails',
-      type: 'Onboarding',
-      eventName: 'SET_PERSONAL_DATA',
+      stateName: 'enterPersonalDetails',
+      machineType: 'Onboarding',
+      xStateEventType: 'SET_PERSONAL_DATA',
       state: 'test_state',
       expiresAt: new Date(new Date().getDate() + 100000),
       tenantId: 'test_tenant_id',
@@ -41,9 +48,9 @@ describe('Database entities tests', (): void => {
 
   it('should get all state events', async (): Promise<void> => {
     const xstateEvent: NonPersistedXStateStoreEvent = {
-      step: 'enterPersonalDetails',
-      type: 'Onboarding',
-      eventName: 'SET_PERSONAL_DATA',
+      stateName: 'enterPersonalDetails',
+      machineType: 'Onboarding',
+      xStateEventType: 'SET_PERSONAL_DATA',
       state: 'test_state',
       expiresAt: new Date(new Date().getDate() + 100000),
       tenantId: 'test_tenant_id',
@@ -60,27 +67,28 @@ describe('Database entities tests', (): void => {
   })
 
   it('should retrieve an xstate event', async (): Promise<void> => {
-    const xstateEvent: NonPersistedXStateStoreEvent = {
-      step: 'enterPersonalDetails',
-      type: 'Onboarding',
-      eventName: 'SET_PERSONAL_DATA',
+    const expiresAt = new Date()
+    expiresAt.setTime(expiresAt.getTime() + 100000)
+    const xstateEvent: SaveStateArgs = {
+      stateName: 'enterPersonalDetails',
+      machineType: 'Onboarding',
+      xStateEventType: 'SET_PERSONAL_DATA',
       state: 'test_state',
-      expiresAt: new Date(new Date().getDate() + 100000),
+      expiresAt,
       tenantId: 'test_tenant_id',
     }
 
     const savedXStoreEvent1: State = await xstateStore.saveState(xstateEvent)
     expect(savedXStoreEvent1).toBeDefined()
-
-    const result: State = await xstateStore.getState(xstateEvent)
+    const result: State = await xstateStore.getActiveState({ machineType: xstateEvent.machineType, tenantId: xstateEvent.tenantId })
     expect(result).toBeDefined()
   })
 
   it('should delete an xstate event', async (): Promise<void> => {
     const xstateEvent: NonPersistedXStateStoreEvent = {
-      step: 'enterPersonalDetails',
-      type: 'Onboarding',
-      eventName: 'SET_PERSONAL_DATA',
+      stateName: 'enterPersonalDetails',
+      machineType: 'Onboarding',
+      xStateEventType: 'SET_PERSONAL_DATA',
       state: 'test_state',
       expiresAt: new Date(new Date().getDate() + 100000),
       tenantId: 'test_tenant_id',
@@ -94,11 +102,13 @@ describe('Database entities tests', (): void => {
   })
 
   it('should return an error if type filter does not match', async (): Promise<void> => {
-    const args: GetStateArgs = {
-      type: 'unknown_event',
+    const args: GetActiveStateArgs = {
+      machineType: 'unknown_machine',
     }
 
-    await expect(xstateStore.getState(args)).rejects.toEqual(Error('No state found for type: unknown_event'))
+    await expect(xstateStore.getActiveState(args)).rejects.toEqual(
+      Error('No active state found for machineType: unknown_machine, tenantId: undefined')
+    )
   })
 
   it('should delete the expired records', async () => {
@@ -108,26 +118,26 @@ describe('Database entities tests', (): void => {
     const pastExpiresAt = new Date()
     pastExpiresAt.setTime(pastExpiresAt.getTime() - 100000) // Past expiration, already expired
 
-    const oldestXstateEvent = {
-      step: 'acceptAgreement',
-      type: 'Onboarding1',
-      eventName: 'SET_TOC',
+    const oldestXstateEvent: SaveStateArgs = {
+      stateName: 'acceptAgreement',
+      machineType: 'Onboarding1',
+      xStateEventType: 'SET_TOC',
       state: 'test_state',
       expiresAt: futureExpiresAt,
       tenantId: 'test_tenant_id',
     }
-    const middleXstateEvent = {
-      step: 'acceptAgreement',
-      type: 'Onboarding2',
-      eventName: 'SET_POLICY2',
+    const middleXstateEvent: SaveStateArgs = {
+      stateName: 'acceptAgreement',
+      machineType: 'Onboarding2',
+      xStateEventType: 'SET_POLICY2',
       state: 'test_state',
       expiresAt: futureExpiresAt,
       tenantId: 'test_tenant_id',
     }
-    const newestXstateEvent = {
-      step: 'enterPersonalDetails',
-      type: 'Onboarding3',
-      eventName: 'SET_PERSONAL_DATA',
+    const newestXstateEvent: SaveStateArgs = {
+      stateName: 'enterPersonalDetails',
+      machineType: 'Onboarding3',
+      xStateEventType: 'SET_PERSONAL_DATA',
       state: 'test_state',
       expiresAt: pastExpiresAt, // This event should be already expired
       tenantId: 'test_tenant_id',
@@ -139,8 +149,10 @@ describe('Database entities tests', (): void => {
 
     await xstateStore.deleteExpiredStates({})
 
-    await expect(xstateStore.getState({ type: 'Onboarding1' })).resolves.toBeDefined()
-    await expect(xstateStore.getState({ type: 'Onboarding2' })).resolves.toBeDefined()
-    await expect(xstateStore.getState({ type: 'Onboarding3' })).rejects.toEqual(Error('No state found for type: Onboarding3'))
+    await expect(xstateStore.getActiveState({ machineType: 'Onboarding1' })).resolves.toBeDefined()
+    await expect(xstateStore.getActiveState({ machineType: 'Onboarding2' })).resolves.toBeDefined()
+    await expect(xstateStore.getActiveState({ machineType: 'Onboarding3' })).rejects.toEqual(
+      Error('No active state found for machineType: Onboarding3, tenantId: undefined')
+    )
   })
 })

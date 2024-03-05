@@ -1,4 +1,4 @@
-import { NonPersistedXStateStoreEvent, State } from '@sphereon/ssi-sdk.data-store'
+import { SaveStateArgs, State } from '@sphereon/ssi-sdk.data-store'
 import { TAgent } from '@veramo/core'
 import { IXStatePersistence } from '../../index'
 
@@ -16,10 +16,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     afterAll(testContext.tearDown)
 
     it('should store xstate event', async (): Promise<void> => {
-      const xstateEvent: NonPersistedXStateStoreEvent = {
-        step: 'acceptAgreement',
-        type: 'Onboarding',
-        eventName: 'SET_TOC',
+      const xstateEvent: SaveStateArgs = {
+        stateName: 'acceptAgreement',
+        machineType: 'Onboarding',
+        xStateEventType: 'SET_TOC',
         state: 'test_state',
         expiresAt: new Date(new Date().getDate() + 100000),
         tenantId: 'test_tenant_id',
@@ -30,11 +30,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should retrieve an xstate event', async (): Promise<void> => {
-      const xstateEvent: NonPersistedXStateStoreEvent = {
-        step: 'acceptAgreement',
-        type: 'Onboarding',
-        eventName: 'SET_TOC',
-        state: 'test_state',
+      const xstateEvent: SaveStateArgs = {
+        stateName: 'acceptAgreement',
+        machineType: 'Onboarding',
+        xStateEventType: 'SET_TOC',
+        state: { myState: 'test_state' },
         expiresAt: new Date(new Date().getDate() + 100000),
         tenantId: 'test_tenant_id',
       }
@@ -42,7 +42,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const savedXStoreEvent: State = await agent.statePersist({ ...xstateEvent })
       expect(savedXStoreEvent).toBeDefined()
 
-      const result: State = await agent.stateLoad({ type: savedXStoreEvent.type })
+      const result: State = await agent.stateLoadActive({ machineType: savedXStoreEvent.machineType })
       expect(result).toBeDefined()
     })
 
@@ -51,26 +51,26 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const expiresAt = new Date(now.getTime() + 100000000)
       const expired = new Date(now.getTime() - 100000000)
 
-      const newestXstateEvent = {
-        step: 'enterPersonalDetails',
+      const newestXstateEvent: SaveStateArgs = {
+        stateName: 'enterPersonalDetails',
         state: 'test_state',
-        type: 'Onboarding3',
-        eventName: 'SET_PERSONAL_DATA',
+        machineType: 'Onboarding3',
+        xStateEventType: 'SET_PERSONAL_DATA',
         expiresAt: expired, // This event is expired
         tenantId: 'test_tenant_id',
       }
-      const middleXstateEvent = {
-        step: 'acceptAgreement',
-        type: 'Onboarding2',
-        eventName: 'SET_POLICY',
+      const middleXstateEvent: SaveStateArgs = {
+        stateName: 'acceptAgreement',
+        machineType: 'Onboarding2',
+        xStateEventType: 'SET_POLICY',
         state: 'test_state',
         expiresAt, // This event is not expired
         tenantId: 'test_tenant_id',
       }
-      const oldestXstateEvent = {
-        step: 'acceptAgreement',
-        type: 'Onboarding1',
-        eventName: 'SET_TOC',
+      const oldestXstateEvent: SaveStateArgs = {
+        stateName: 'acceptAgreement',
+        machineType: 'Onboarding1',
+        xStateEventType: 'SET_TOC',
         state: 'test_state',
         expiresAt, // This event is not expired
         tenantId: 'test_tenant_id',
@@ -79,11 +79,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await agent.statePersist(newestXstateEvent)
       await agent.statePersist(middleXstateEvent)
       await agent.statePersist(oldestXstateEvent)
-      await agent.stateDeleteExpired({ type: 'Onboarding3' })
+      await agent.stateDeleteExpired({ machineType: 'Onboarding3' })
 
-      await expect(agent.stateLoad({ type: 'Onboarding1' })).resolves.toBeDefined()
-      await expect(agent.stateLoad({ type: 'Onboarding2' })).resolves.toBeDefined()
-      await expect(agent.stateLoad({ type: 'Onboarding3' })).rejects.toEqual(Error('No state found for type: Onboarding3'))
+      await expect(agent.stateLoadActive({ machineType: 'Onboarding1' })).resolves.toBeDefined()
+      await expect(agent.stateLoadActive({ machineType: 'Onboarding2' })).resolves.toBeDefined()
+      await expect(agent.stateLoadActive({ machineType: 'Onboarding3' })).rejects.toEqual(
+        Error('No active state found for machineType: Onboarding3, tenantId: undefined')
+      )
     })
   })
 }

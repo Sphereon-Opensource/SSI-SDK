@@ -1,4 +1,4 @@
-import { GetStateArgs, IAbstractXStateStore, SaveStateArgs, State } from '@sphereon/ssi-sdk.data-store'
+import { GetActiveStateArgs, IAbstractXStateStore, SaveStateArgs, State } from '@sphereon/ssi-sdk.data-store'
 import { IAgentContext } from '@veramo/core'
 
 import { IXStatePersistence } from './IXStatePersistence'
@@ -9,15 +9,11 @@ export enum XStatePersistenceEventType {
   EVERY = 'every',
 }
 
-export type DeleteExpiredStatesArgs = {
-  type?: string
-}
+export type DeleteExpiredStatesArgs = Pick<State, 'machineType'>
 
 export type NonPersistedMachineSnapshot = SaveStateArgs
 
-export type LoadStateArgs = GetStateArgs
-
-export type LoadStateResult = State
+export type LoadActiveStateArgs = GetActiveStateArgs
 
 export type DeleteStateResult = boolean
 

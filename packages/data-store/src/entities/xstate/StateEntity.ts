@@ -5,14 +5,14 @@ export class StateEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id!: string
 
-  @Column({ name: 'step', nullable: false })
-  step!: string
+  @Column({ name: 'state_name', nullable: false })
+  stateName!: string
 
-  @Column({ name: 'type', nullable: false })
-  type!: string
+  @Column({ name: 'machine_type', nullable: false })
+  machineType!: string
 
-  @Column({ name: 'event_name', nullable: false })
-  eventName!: string
+  @Column({ name: 'xstate_event_type', nullable: false })
+  xStateEventType!: string
 
   @Column({ name: 'state', nullable: false })
   state!: string
