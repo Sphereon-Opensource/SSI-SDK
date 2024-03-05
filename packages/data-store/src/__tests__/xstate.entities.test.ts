@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm'
-import { StateEntity, stateEntityFrom } from '../entities/xstate/StateEntity'
+import { StateEntity } from '../entities/xstate/StateEntity'
 
 import { DataStoreXStateStoreEntities, DataStoreXStateStoreMigrations, NonPersistedXStateStoreEvent } from '../index'
 
@@ -30,12 +30,10 @@ describe('Database entities tests', (): void => {
       type: 'Onboarding',
       eventName: 'SET_TOC',
       state: 'test_state',
-      expiresAt: new Date(new Date().getDate() + 100000),
       tenantId: 'test_tenant_id',
+      expiresAt: new Date(new Date().getDate() + 100000),
     }
-
-    const xstateEventEntity: StateEntity = stateEntityFrom(xstateEvent)
-    const fromDb: StateEntity = await dbConnection.getRepository(StateEntity).save(xstateEventEntity)
+    const fromDb: StateEntity = await dbConnection.getRepository(StateEntity).save(xstateEvent)
 
     expect(fromDb).toBeDefined()
     expect(fromDb?.id).not.toBeNull()

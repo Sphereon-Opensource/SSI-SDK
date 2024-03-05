@@ -107,7 +107,7 @@
         }
       },
       "methods": {
-        "deleteExpiredStates": {
+        "stateDeleteExpired": {
           "description": "Deletes the state of an xstate machine in the database.",
           "arguments": {
             "$ref": "#/components/schemas/DeleteExpiredStatesArgs"
@@ -116,7 +116,7 @@
             "$ref": "#/components/schemas/DeleteStateResult"
           }
         },
-        "loadState": {
+        "stateLoad": {
           "description": "Loads the state of an xstate machine from the database.",
           "arguments": {
             "$ref": "#/components/schemas/LoadStateArgs"
@@ -125,7 +125,7 @@
             "$ref": "#/components/schemas/LoadStateResult"
           }
         },
-        "persistMachineSnapshot": {
+        "statePersist": {
           "description": "Persists the state whenever an event is emitted",
           "arguments": {
             "$ref": "#/components/schemas/NonPersistedMachineSnapshot"

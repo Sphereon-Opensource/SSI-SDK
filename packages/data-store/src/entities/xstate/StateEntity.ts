@@ -1,5 +1,4 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
-import { NonPersistedXStateStoreEvent } from '../../types'
 
 @Entity('StateEntity')
 export class StateEntity extends BaseEntity {
@@ -32,16 +31,4 @@ export class StateEntity extends BaseEntity {
 
   @Column({ name: 'tenant_id', type: 'varchar', nullable: true })
   tenantId?: string
-}
-
-export const stateEntityFrom = (args: NonPersistedXStateStoreEvent): StateEntity => {
-  const stateEntity = new StateEntity()
-  stateEntity.step = args.step
-  stateEntity.type = args.type
-  stateEntity.eventName = args.eventName
-  stateEntity.state = args.state
-  stateEntity.expiresAt = args.expiresAt
-  stateEntity.completedAt = args.completedAt
-  stateEntity.tenantId = args.tenantId
-  return stateEntity
 }
