@@ -31,6 +31,8 @@ export { AbstractIssuanceBrandingStore } from './issuanceBranding/AbstractIssuan
 export { IssuanceBrandingStore } from './issuanceBranding/IssuanceBrandingStore'
 export { StatusListStore } from './statusList/StatusListStore'
 import { AuditEventEntity, auditEventEntityFrom } from './entities/eventLogger/AuditEventEntity'
+import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCredentialEntity'
+import { digitalCredentialFrom, digitalCredentialsFrom, nonPersistedDigitalCredentialEntityFromAddArgs } from './utils/digitalCredential/MappingUtils'
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
 export { EventLoggerStore } from './eventLogger/EventLoggerStore'
 export {
@@ -77,12 +79,15 @@ export const DataStoreStatusListEntities = [StatusListEntity, StatusListEntryEnt
 
 export const DataStoreEventLoggerEntities = [AuditEventEntity]
 
+export const DataStoreDigitalCredentialEntities = [DigitalCredentialEntity]
+
 // All entities combined if a party wants to enable them all at once
 export const DataStoreEntities = [
   ...DataStoreContactEntities,
   ...DataStoreIssuanceBrandingEntities,
   ...DataStoreStatusListEntities,
   ...DataStoreEventLoggerEntities,
+  ...DataStoreDigitalCredentialEntities,
 ]
 
 export {
@@ -119,4 +124,8 @@ export {
   StatusListEntryEntity,
   AuditEventEntity,
   auditEventEntityFrom,
+  DigitalCredentialEntity,
+  digitalCredentialFrom,
+  digitalCredentialsFrom,
+  nonPersistedDigitalCredentialEntityFromAddArgs,
 }
