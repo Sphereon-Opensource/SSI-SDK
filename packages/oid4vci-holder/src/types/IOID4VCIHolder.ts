@@ -164,6 +164,7 @@ export type CreateOID4VCIMachineOpts = {
   requestData: RequestData
   machineId?: string
   locale?: string
+  stateDefinition?: OID4VCIMachineState
 }
 
 export type OID4VCIMachineInstanceOpts = {

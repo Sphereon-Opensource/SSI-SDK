@@ -679,6 +679,9 @@ importers:
       '@sphereon/ssi-sdk.issuance-branding':
         specifier: workspace:*
         version: link:../issuance-branding
+      '@sphereon/ssi-sdk.xstate-state-manager':
+        specifier: workspace:*
+        version: link:../xstate-persistence
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -2700,6 +2703,16 @@ importers:
         version: 2.0.27
 
   packages/xstate-persistence:
+    dependencies:
+      '@sphereon/ssi-sdk.data-store':
+        specifier: workspace:*
+        version: link:../data-store
+      '@veramo/core':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      xstate:
+        specifier: ^4.38.3
+        version: 4.38.3
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
@@ -2707,9 +2720,6 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
-      '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
-        version: link:../data-store
       '@typescript-eslint/eslint-plugin':
         specifier: ^4.31.1
         version: 4.33.0(@typescript-eslint/parser@4.33.0)(eslint@7.32.0)(typescript@4.9.5)
@@ -20236,6 +20246,9 @@ packages:
   /sqlite3@5.1.7:
     resolution: {integrity: sha512-GGIyOiFaG+TUra3JIfkI/zGP8yZYLPQ0pl1bH+ODjiX57sPhrLU5sQJn1y9bDKZUFYkX1crlrPfSYt0BKKdkog==}
     requiresBuild: true
+    peerDependenciesMeta:
+      node-gyp:
+        optional: true
     dependencies:
       bindings: 1.5.0
       node-addon-api: 7.0.0

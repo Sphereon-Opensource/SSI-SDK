@@ -7,7 +7,7 @@ import express, { Router } from 'express'
 import { Server } from 'http'
 import { DataSource } from 'typeorm'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
-import { IXStatePersistence } from '../index'
+import { IMachineStatePersistence } from '../index'
 import xStatePersistenceAgentLogic from './shared/xStatePersistenceAgentLogic'
 
 jest.setTimeout(60000)
@@ -20,7 +20,7 @@ let restServer: Server
 let dbConnection: Promise<DataSource>
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IXStatePersistence>({
+  createAgent<IMachineStatePersistence>({
     ...options,
     plugins: [
       new AgentRestClient({

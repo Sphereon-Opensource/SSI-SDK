@@ -1,61 +1,225 @@
 {
-  "IXStatePersistence": {
+  "IMachineStatePersistence": {
     "components": {
       "schemas": {
-        "DeleteExpiredStatesArgs": {
+        "NonPersistedMachineInstance": {
+          "$ref": "#/components/schemas/MachineStatePersistArgs"
+        },
+        "MachineStatePersistArgs": {
           "type": "object",
           "properties": {
-            "machineType": {
-              "type": "string",
+            "state": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "$ref": "#/components/schemas/StateValue"
+                },
+                "context": {},
+                "_event": {
+                  "$ref": "#/components/schemas/SCXML.Event<AnyEventObject>"
+                },
+                "_sessionid": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "historyValue": {
+                  "$ref": "#/components/schemas/HistoryValue"
+                },
+                "history": {},
+                "actions": {
+                  "type": "array",
+                  "items": {}
+                },
+                "activities": {
+                  "deprecated": true
+                },
+                "meta": {},
+                "events": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AnyEventObject"
+                  },
+                  "deprecated": true
+                },
+                "configuration": {
+                  "type": "array",
+                  "items": {}
+                },
+                "transitions": {
+                  "type": "array",
+                  "items": {}
+                },
+                "children": {
+                  "type": "object"
+                },
+                "done": {
+                  "type": "boolean"
+                },
+                "tags": {
+                  "type": "object",
+                  "properties": {
+                    "size": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "size"
+                  ]
+                },
+                "machine": {}
+              },
+              "required": [
+                "_event",
+                "_sessionid",
+                "children",
+                "configuration",
+                "context",
+                "transitions",
+                "value"
+              ]
+            },
+            "machineId": {
+              "type": "object",
+              "properties": {},
               "description": "Machine type/id"
-            }
-          },
-          "required": [
-            "machineType"
-          ],
-          "additionalProperties": false
-        },
-        "DeleteStateResult": {
-          "type": "boolean"
-        },
-        "LoadActiveStateArgs": {
-          "$ref": "#/components/schemas/GetActiveStateArgs"
-        },
-        "GetActiveStateArgs": {
-          "type": "object",
-          "properties": {
-            "machineType": {
+            },
+            "expiresAt": {
               "type": "string",
-              "description": "Machine type/id"
+              "format": "date-time"
             },
             "tenantId": {
               "type": "string"
             }
           },
           "required": [
-            "machineType"
+            "state",
+            "machineId"
           ]
         },
-        "State": {
-          "type": "object",
-          "properties": {
-            "id": {
+        "StateValue": {
+          "anyOf": [
+            {
               "type": "string"
             },
-            "stateName": {
+            {
+              "$ref": "#/components/schemas/StateValueMap"
+            }
+          ],
+          "description": "The string or object representing the state value relative to the parent state node.\n\n- For a child atomic state node, this is a string, e.g., `\"pending\"`.\n- For complex state nodes, this is an object, e.g., `{ success: \"someChildState\" }`."
+        },
+        "StateValueMap": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/components/schemas/StateValue"
+          }
+        },
+        "SCXML.Event<AnyEventObject>": {
+          "type": "object",
+          "properties": {
+            "name": {
               "type": "string",
-              "description": "value of the state's name. top level of event type. examples: acceptAgreement, enterPersonalDetails"
+              "description": "This is a character string giving the name of the event. The SCXML Processor must set the name field to the name of this event. It is what is matched against the 'event' attribute of <transition>. Note that transitions can do additional tests by using the value of this field inside boolean expressions in the 'cond' attribute."
             },
-            "machineType": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "platform",
+                "internal",
+                "external"
+              ],
+              "description": "This field describes the event type. The SCXML Processor must set it to: \"platform\" (for events raised by the platform itself, such as error events), \"internal\" (for events raised by <raise> and <send> with target '_internal') or \"external\" (for all other events)."
+            },
+            "sendid": {
+              "type": "string",
+              "description": "If the sending entity has specified a value for this, the Processor must set this field to that value (see C Event I/O Processors for details). Otherwise, in the case of error events triggered by a failed attempt to send an event, the Processor must set this field to the send id of the triggering <send> element. Otherwise it must leave it blank."
+            },
+            "origin": {
+              "type": "string",
+              "description": "This is a URI, equivalent to the 'target' attribute on the <send> element. For external events, the SCXML Processor should set this field to a value which, when used as the value of 'target', will allow the receiver of the event to <send> a response back to the originating entity via the Event I/O Processor specified in 'origintype'. For internal and platform events, the Processor must leave this field blank."
+            },
+            "origintype": {
+              "type": "string",
+              "description": "This is equivalent to the 'type' field on the <send> element. For external events, the SCXML Processor should set this field to a value which, when used as the value of 'type', will allow the receiver of the event to <send> a response back to the originating entity at the URI specified by 'origin'. For internal and platform events, the Processor must leave this field blank."
+            },
+            "invokeid": {
+              "type": "string",
+              "description": "If this event is generated from an invoked child process, the SCXML Processor must set this field to the invoke id of the invocation that triggered the child process. Otherwise it must leave it blank."
+            },
+            "data": {
+              "$ref": "#/components/schemas/AnyEventObject",
+              "description": "This field contains whatever data the sending entity chose to include in this event. The receiving SCXML Processor should reformat this data to match its data model, but must not otherwise modify it.\n\nIf the conversion is not possible, the Processor must leave the field blank and must place an error 'error.execution' in the internal event queue."
+            },
+            "$$type": {
+              "type": "string",
+              "const": "scxml"
+            }
+          },
+          "required": [
+            "name",
+            "type",
+            "data",
+            "$$type"
+          ]
+        },
+        "AnyEventObject": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "description": "The type of event that is sent."
+            }
+          },
+          "required": [
+            "type"
+          ]
+        },
+        "HistoryValue": {
+          "type": "object",
+          "properties": {
+            "states": {
+              "type": "object",
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/HistoryValue"
+                  },
+                  {
+                    "not": {}
+                  }
+                ]
+              }
+            },
+            "current": {
+              "$ref": "#/components/schemas/StateValue"
+            }
+          },
+          "required": [
+            "states"
+          ]
+        },
+        "MachineStateInfo": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "$ref": "#/components/schemas/SerializableState"
+            },
+            "id": {
+              "type": "string",
+              "description": "Unique instance ID of the machine"
+            },
+            "machineId": {
               "type": "string",
               "description": "Machine type/id"
             },
-            "xStateEventType": {
+            "latestStateName": {
               "type": "string",
-              "description": "event types like SET_TOC, SET_FIRSTNAME, ..."
+              "description": "The latest state name. Can be empty for a newly initialize machine"
             },
-            "state": {
-              "description": "state of the machine in this snapshot"
+            "latestEventType": {
+              "type": "string",
+              "description": "event types like SET_TOC, SET_FIRSTNAME, .... Will be xstate.init on a newly initialized machine"
             },
             "createdAt": {
               "type": "string",
@@ -78,58 +242,135 @@
             }
           },
           "required": [
-            "id",
-            "stateName",
-            "machineType",
-            "xStateEventType",
-            "state",
             "createdAt",
+            "id",
+            "latestEventType",
+            "machineId",
+            "state",
             "updatedAt"
           ]
         },
-        "NonPersistedMachineSnapshot": {
-          "$ref": "#/components/schemas/SaveStateArgs"
+        "SerializableState": {
+          "$ref": "#/components/schemas/XStateConfig<any,AnyEventObject>"
         },
-        "SaveStateArgs": {
+        "XStateConfig<any,AnyEventObject>": {
           "type": "object",
           "properties": {
-            "stateName": {
-              "type": "string",
-              "description": "value of the state's name. top level of event type. examples: acceptAgreement, enterPersonalDetails"
+            "value": {
+              "$ref": "#/components/schemas/StateValue"
             },
-            "machineType": {
+            "context": {},
+            "_event": {
+              "$ref": "#/components/schemas/SCXML.Event<AnyEventObject>"
+            },
+            "_sessionid": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "historyValue": {
+              "$ref": "#/components/schemas/HistoryValue"
+            },
+            "history": {},
+            "actions": {
+              "type": "array",
+              "items": {}
+            },
+            "activities": {
+              "deprecated": true
+            },
+            "meta": {},
+            "events": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/AnyEventObject"
+              },
+              "deprecated": true
+            },
+            "configuration": {
+              "type": "array",
+              "items": {}
+            },
+            "transitions": {
+              "type": "array",
+              "items": {}
+            },
+            "children": {
+              "type": "object"
+            },
+            "done": {
+              "type": "boolean"
+            },
+            "tags": {
+              "type": "object",
+              "properties": {
+                "size": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "size"
+              ]
+            },
+            "machine": {}
+          },
+          "required": [
+            "value",
+            "context",
+            "_event",
+            "_sessionid",
+            "configuration",
+            "transitions",
+            "children"
+          ]
+        },
+        "DeleteExpiredStatesArgs": {
+          "type": "object",
+          "properties": {
+            "machineId": {
               "type": "string",
               "description": "Machine type/id"
-            },
-            "xStateEventType": {
+            }
+          },
+          "required": [
+            "machineId"
+          ],
+          "additionalProperties": false
+        },
+        "DeleteStateResult": {
+          "type": "boolean"
+        },
+        "FindActiveStatesArgs": {
+          "$ref": "#/components/schemas/StoreFindActiveMachinesArgs"
+        },
+        "StoreFindActiveMachinesArgs": {
+          "type": "object",
+          "properties": {
+            "machineId": {
               "type": "string",
-              "description": "event types like SET_TOC, SET_FIRSTNAME, ..."
-            },
-            "state": {
-              "description": "state of the machine in this snapshot"
-            },
-            "expiresAt": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "completedAt": {
-              "type": "string",
-              "format": "date-time"
+              "description": "Machine type/id"
             },
             "tenantId": {
               "type": "string"
             }
           },
           "required": [
-            "stateName",
-            "machineType",
-            "xStateEventType",
-            "state"
+            "machineId"
           ]
         }
       },
       "methods": {
-        "stateDeleteExpired": {
+        "machineStatePersist": {
+          "description": "Persists the state whenever an event is emitted",
+          "arguments": {
+            "$ref": "#/components/schemas/NonPersistedMachineInstance"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/MachineStateInfo"
+          }
+        },
+        "machineStatesDeleteExpired": {
           "description": "Deletes the state of an xstate machine in the database.",
           "arguments": {
             "$ref": "#/components/schemas/DeleteExpiredStatesArgs"
@@ -138,22 +379,16 @@
             "$ref": "#/components/schemas/DeleteStateResult"
           }
         },
-        "stateLoadActive": {
-          "description": "Loads the state of an xstate machine from the database.",
+        "machineStatesFindActive": {
+          "description": "Loads the states of active xstate machines from the database.",
           "arguments": {
-            "$ref": "#/components/schemas/LoadActiveStateArgs"
+            "$ref": "#/components/schemas/FindActiveStatesArgs"
           },
           "returnType": {
-            "$ref": "#/components/schemas/State"
-          }
-        },
-        "statePersist": {
-          "description": "Persists the state whenever an event is emitted",
-          "arguments": {
-            "$ref": "#/components/schemas/NonPersistedMachineSnapshot"
-          },
-          "returnType": {
-            "$ref": "#/components/schemas/State"
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MachineStateInfo"
+            }
           }
         }
       }

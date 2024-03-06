@@ -1,2 +1,2 @@
-export * from './IXStatePersistence'
+export * from './IMachineStatePersistence'
 export * from './types'

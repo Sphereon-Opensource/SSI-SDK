@@ -6,9 +6,9 @@ constants:
   # please use your own X25519 key, this is only an example
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
-    - persistState
-    - loadState
-    - deleteExpiredStates
+    - machineStatePersist
+    - machineStatesFindActive
+    - machineStatesDeleteExpired
 dbConnection:
   $require: typeorm?t=function#createConnection
   $args:
@@ -19,7 +19,7 @@ dbConnection:
       migrations:
         $require: './packages/data-store?t=object#DataStoreMigrations'
       entities:
-        $require: './packages/data-store?t=object#DataStoreXStateStoreEntities'
+        $require: './packages/data-store?t=object#DataStoreMachineInfoEntities'
 
 server:
   baseUrl:
@@ -83,9 +83,9 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/xstate-persistence/dist#XStatePersistence
+        - $require: ./packages/xstate-persistence/dist#MachineStatePersistence
           $args:
             - store:
-                $require: './packages/data-store/dist#XStateStore'
+                $require: './packages/data-store/dist#MachineStateInfoStore'
                 $args:
                   - $ref: /dbConnection

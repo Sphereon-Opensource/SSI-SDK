@@ -1,7 +1,13 @@
-import { State } from '@sphereon/ssi-sdk.data-store'
 import { IPluginMethodMap } from '@veramo/core'
 
-import { DeleteExpiredStatesArgs, DeleteStateResult, LoadActiveStateArgs, NonPersistedMachineSnapshot, RequiredContext } from './types'
+import {
+  DeleteExpiredStatesArgs,
+  DeleteStateResult,
+  FindActiveStatesArgs,
+  MachineStateInfo,
+  NonPersistedMachineInstance,
+  RequiredContext,
+} from './types'
 
 /**
  * The interface definition for a plugin that can issue and verify Verifiable Credentials and Presentations
@@ -11,9 +17,9 @@ import { DeleteExpiredStatesArgs, DeleteStateResult, LoadActiveStateArgs, NonPer
  *
  * @beta This API is likely to change without a BREAKING CHANGE notice
  */
-export interface IXStatePersistence extends IPluginMethodMap {
+export interface IMachineStatePersistence extends IPluginMethodMap {
   /**
-   * Loads the state of an xstate machine from the database.
+   * Loads the states of active xstate machines from the database.
    *
    * @param args LoadStateArgs
    * type of the event
@@ -22,7 +28,7 @@ export interface IXStatePersistence extends IPluginMethodMap {
    *
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
-  stateLoadActive(args: LoadActiveStateArgs): Promise<State>
+  machineStatesFindActive(args: FindActiveStatesArgs): Promise<Array<MachineStateInfo>>
 
   /**
    * Deletes the state of an xstate machine in the database.
@@ -32,7 +38,7 @@ export interface IXStatePersistence extends IPluginMethodMap {
    *
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
-  stateDeleteExpired(args: DeleteExpiredStatesArgs): Promise<DeleteStateResult>
+  machineStatesDeleteExpired(args: DeleteExpiredStatesArgs): Promise<DeleteStateResult>
 
   /**
    * Persists the state whenever an event is emitted
@@ -43,5 +49,5 @@ export interface IXStatePersistence extends IPluginMethodMap {
    * @param context
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
-  statePersist(event: NonPersistedMachineSnapshot, context: RequiredContext): Promise<State>
+  machineStatePersist(event: NonPersistedMachineInstance, context: RequiredContext): Promise<MachineStateInfo>
 }

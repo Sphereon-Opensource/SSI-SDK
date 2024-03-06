@@ -1,18 +1,18 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm'
 
-@Entity('StateEntity')
-export class StateEntity extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid', { name: 'id' })
+@Entity('MachineStateInfoEntity')
+export class MachineStateInfoEntity extends BaseEntity {
+  @PrimaryColumn({ name: 'id' })
   id!: string
 
-  @Column({ name: 'state_name', nullable: false })
-  stateName!: string
+  @Column({ name: 'machine_id', nullable: false })
+  machineId!: string
 
-  @Column({ name: 'machine_type', nullable: false })
-  machineType!: string
+  @Column({ name: 'latest_state_name', nullable: false })
+  latestStateName!: string
 
-  @Column({ name: 'xstate_event_type', nullable: false })
-  xStateEventType!: string
+  @Column({ name: 'latest_event_type', nullable: false })
+  latestEventType!: string
 
   @Column({ name: 'state', nullable: false })
   state!: string

@@ -1,21 +1,21 @@
 import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import Debug from 'debug'
-import { CreateXStateStore1708797018115 } from '../postgres/1708797018115-CreateXStateStore'
-import { CreateXStateStore1708796002272 } from '../sqlite/1708796002272-CreateXStateStore'
+import { CreateMachineStateStore1708797018115 } from '../postgres/1708797018115-CreateMachineStateStore'
+import { CreateMachineStateStore1708796002272 } from '../sqlite/1708796002272-CreateMachineStateStore'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:migrations')
 
-export class CreateXStateStore1708098041262 implements MigrationInterface {
-  name = 'CreateXStateStore1708098041262'
+export class CreateMachineStateStore1708098041262 implements MigrationInterface {
+  name = 'CreateMachineStateStore1708098041262'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    debug('migration: creating contacts tables')
+    debug('migration: creating machine state tables')
     const dbType: DatabaseType = queryRunner.connection.driver.options.type
 
     switch (dbType) {
       case 'postgres': {
         debug('using postgres migration file')
-        const mig: CreateXStateStore1708797018115 = new CreateXStateStore1708797018115()
+        const mig: CreateMachineStateStore1708797018115 = new CreateMachineStateStore1708797018115()
         await mig.up(queryRunner)
         debug('Migration statements executed')
         return
@@ -24,7 +24,7 @@ export class CreateXStateStore1708098041262 implements MigrationInterface {
       case 'expo':
       case 'react-native': {
         debug('using sqlite/react-native migration file')
-        const mig: CreateXStateStore1708796002272 = new CreateXStateStore1708796002272()
+        const mig: CreateMachineStateStore1708796002272 = new CreateMachineStateStore1708796002272()
         await mig.up(queryRunner)
         debug('Migration statements executed')
         return
@@ -43,7 +43,7 @@ export class CreateXStateStore1708098041262 implements MigrationInterface {
     switch (dbType) {
       case 'postgres': {
         debug('using postgres migration file')
-        const mig: CreateXStateStore1708797018115 = new CreateXStateStore1708797018115()
+        const mig: CreateMachineStateStore1708797018115 = new CreateMachineStateStore1708797018115()
         await mig.down(queryRunner)
         debug('Migration statements executed')
         return
@@ -52,7 +52,7 @@ export class CreateXStateStore1708098041262 implements MigrationInterface {
       case 'expo':
       case 'react-native': {
         debug('using sqlite/react-native migration file')
-        const mig: CreateXStateStore1708796002272 = new CreateXStateStore1708796002272()
+        const mig: CreateMachineStateStore1708796002272 = new CreateMachineStateStore1708796002272()
         await mig.down(queryRunner)
         debug('Migration statements executed')
         return

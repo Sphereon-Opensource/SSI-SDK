@@ -1,36 +1,43 @@
-export type SaveStateArgs = Omit<State, 'id' | 'createdAt' | 'updatedAt'>
+export type StorePersistMachineArgs = Omit<StoreMachineStateInfo, 'createdAt' | 'updatedAt'>
 
-export type GetActiveStateArgs = Pick<State, 'machineType' | 'tenantId'>
+export type StoreFindActiveMachinesArgs = Pick<StoreMachineStateInfo, 'machineId' | 'tenantId'>
 
-export type FindStatesArgs = Array<Partial<Omit<State, 'state'>>>
+export type FindMachinesFilterArgs = Array<Partial<Omit<StoreMachineStateInfo, 'state'>>>
 
-export type GetStatesArgs = {
-  filter: FindStatesArgs
+export type StoreFindMachinesArgs = {
+  filter: FindMachinesFilterArgs
 }
 
-export type NonPersistedXStateStoreEvent = SaveStateArgs
-
-export type DeleteStateArgs = { id: string }
-export type DeleteExpiredStateArgs = { machineType?: string }
-
-export type State = {
+export type StoreGetMachineArgs = {
   id: string
+}
+
+// export type NonPersistedXStateStoreEvent = StoreSaveMachineArgs
+
+export type StoreDeleteMachineArgs = StoreGetMachineArgs
+export type StoreDeleteExpiredMachineArgs = { machineId?: string }
+
+export type StoreMachineStateInfo = {
   /**
-   * value of the state's name. top level of event type. examples: acceptAgreement, enterPersonalDetails
+   * Unique instance ID of the machine
    */
-  stateName: string
+  id: string // Todo add session id
   /**
    * Machine type/id
    */
-  machineType: string
+  machineId: string
   /**
-   * event types like SET_TOC, SET_FIRSTNAME, ...
+   * The latest state name. Can be empty for a newly initialize machine
    */
-  xStateEventType: string
+  latestStateName?: string
   /**
-   * state of the machine in this snapshot
+   * event types like SET_TOC, SET_FIRSTNAME, .... Will be xstate.init on a newly initialized machine
    */
-  state: unknown
+  latestEventType: string
+  /**
+   * Machine state exported to JSON with the toJSON() method
+   */
+  state: string
   createdAt: Date
   expiresAt?: Date
   updatedAt: Date

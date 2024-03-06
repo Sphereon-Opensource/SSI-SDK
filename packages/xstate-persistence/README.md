@@ -60,7 +60,7 @@ To save the current state of an XState machine:
 ```typescript
 await agent.persistMachineSnapshot({
   stateId: 'your-state-id',
-  type: 'YourMachineType',
+  type: 'YourmachineId',
   eventName: 'YOUR_EVENT_NAME',
   state: 'serialized-state-here', // Your XState machine state serialized as a string
   expiresAt: new Date('2023-01-01'), // Optional expiration date
@@ -73,7 +73,7 @@ To load the latest snapshot of a specific machine type:
 
 ```typescript
 const state = await agent.loadState({
-  type: 'YourMachineType',
+  type: 'YourmachineId',
 })
 ```
 
@@ -82,8 +82,8 @@ Deleting Expired States
 To clean up expired states from the storage:
 
 ````typescript
-await agent.deleteExpiredStates({
-type: 'YourMachineType', // Optional: Specify the machine type to narrow down the deletion
+await agent.deleteExpiredMachineStates({
+type: 'YourmachineId', // Optional: Specify the machine type to narrow down the deletion
 });```
 
 Contributing

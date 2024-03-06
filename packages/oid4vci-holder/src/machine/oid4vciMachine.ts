@@ -1,14 +1,18 @@
 import { AuthzFlowType, toAuthorizationResponsePayload } from '@sphereon/oid4vci-common'
-import { Party, Identity } from '@sphereon/ssi-sdk.data-store'
-import { v4 as uuidv4 } from 'uuid'
-import { assign, createMachine, DoneInvokeEvent, interpret } from 'xstate'
+import { Identity, Party } from '@sphereon/ssi-sdk.data-store'
+import { emitMachineStatePersistEvent, MachineStatePersistEventType } from '@sphereon/ssi-sdk.xstate-state-manager'
+import { IAgentContext } from '@veramo/core'
+import { assign, createMachine, DoneInvokeEvent, interpret, State } from 'xstate'
+import { translate } from '../localization/Localization'
 import {
+  AuthorizationResponseEvent,
   ContactAliasEvent,
   ContactConsentEvent,
   CreateContactEvent,
   CreateOID4VCIMachineOpts,
-  ErrorDetails,
   CredentialTypeSelection,
+  ErrorDetails,
+  InitiationData,
   MappedCredentialToAccept,
   OID4VCIMachineAddContactStates,
   OID4VCIMachineContext,
@@ -22,13 +26,11 @@ import {
   OID4VCIMachineStates,
   OID4VCIMachineVerifyPinStates,
   OID4VCIStateMachine,
+  RequiredContext,
   SelectCredentialsEvent,
-  VerificationCodeEvent,
-  InitiationData,
   SetAuthorizationCodeURLEvent,
-  AuthorizationResponseEvent,
+  VerificationCodeEvent,
 } from '../types/IOID4VCIHolder'
-import { translate } from '../localization/Localization'
 
 const oid4vciHasNoContactGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
   const { contact } = _ctx
@@ -104,7 +106,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
   }
 
   return createMachine<OID4VCIMachineContext, OID4VCIMachineEventTypes>({
-    id: opts?.machineId ?? uuidv4(),
+    id: opts?.machineId ?? 'OID4VCIHolder',
     predictableActionArguments: true,
     initial: OID4VCIMachineStates.initiateOID4VCI,
     schema: {
@@ -530,7 +532,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
 }
 
 export class OID4VCIMachine {
-  static newInstance(opts?: OID4VCIMachineInstanceOpts): OID4VCIMachineInterpreter {
+  static newInstance(opts: OID4VCIMachineInstanceOpts, context: RequiredContext): OID4VCIMachineInterpreter {
     const instance: OID4VCIMachineInterpreter = interpret(
       createOID4VCIMachine(opts).withConfig({
         services: {
@@ -550,10 +552,28 @@ export class OID4VCIMachine {
         },
       })
     )
+    if (context.agent.availableMethods().includes('statePersist')) {
+      // XState persistence plugin is available. So let's emit events on every transition, so it can persist the state
+      instance.onTransition((state: State<any, any, any, any>, event) => {
+        emitMachineStatePersistEvent(
+          {
+            type: MachineStatePersistEventType.EVERY,
+            data: {
+              state,
+              tenantId: undefined, // TODO: Not used yet
+              expiresAt: new Date(new Date().getTime() + 10 * 60 * 1000), // TODO: Magic number
+              machineId: 'OID4VCIHolder' /*TODO, make string literal*/,
+            },
+          },
+          context as IAgentContext<never>
+        )
+      })
+    }
 
     if (typeof opts?.subscription === 'function') {
       instance.onTransition(opts.subscription)
-    } else if (opts?.requireCustomNavigationHook !== true) {
+    }
+    if (opts?.requireCustomNavigationHook !== true) {
       instance.onTransition((snapshot: OID4VCIMachineState): void => {
         opts?.stateNavigationListener(instance, snapshot)
       })

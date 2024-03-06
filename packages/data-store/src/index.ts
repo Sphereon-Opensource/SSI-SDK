@@ -18,7 +18,7 @@ import { IssuerBrandingEntity, issuerBrandingEntityFrom } from './entities/issua
 import { TextAttributesEntity, textAttributesEntityFrom } from './entities/issuanceBranding/TextAttributesEntity'
 import { StatusListEntity } from './entities/statusList2021/StatusList2021Entity'
 import { StatusListEntryEntity } from './entities/statusList2021/StatusList2021EntryEntity'
-import { StateEntity } from './entities/xstate/StateEntity'
+import { MachineStateInfoEntity } from './entities/machineState/MachineStateInfoEntity'
 import { IStatusListEntity, IStatusListEntryEntity } from './types'
 import { PartyRelationshipEntity } from './entities/contact/PartyRelationshipEntity'
 import { PartyTypeEntity } from './entities/contact/PartyTypeEntity'
@@ -36,8 +36,8 @@ import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCre
 import { digitalCredentialFrom, digitalCredentialsFrom, nonPersistedDigitalCredentialEntityFromAddArgs } from './utils/digitalCredential/MappingUtils'
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
 export { EventLoggerStore } from './eventLogger/EventLoggerStore'
-export { IAbstractXStateStore } from './xstate/IAbstractXStateStore'
-export { XStateStore } from './xstate/XStateStore'
+export { IAbstractMachineStateInfoStore } from './machineState/IAbstractMachineStateInfoStore'
+export { MachineStateInfoStore } from './machineState/MachineStateInfoStore'
 
 export {
   DataStoreMigrations,
@@ -86,7 +86,7 @@ export const DataStoreEventLoggerEntities = [AuditEventEntity]
 
 export const DataStoreDigitalCredentialEntities = [DigitalCredentialEntity]
 
-export const DataStoreXStateStoreEntities = [StateEntity]
+export const DataStoreMachineStateInfoEntities = [MachineStateInfoEntity]
 
 // All entities combined if a party wants to enable them all at once
 export const DataStoreEntities = [
@@ -95,7 +95,7 @@ export const DataStoreEntities = [
   ...DataStoreStatusListEntities,
   ...DataStoreEventLoggerEntities,
   ...DataStoreDigitalCredentialEntities,
-  ...DataStoreXStateStoreEntities,
+  ...DataStoreMachineStateInfoEntities,
 ]
 
 export {
@@ -136,5 +136,5 @@ export {
   digitalCredentialFrom,
   digitalCredentialsFrom,
   nonPersistedDigitalCredentialEntityFromAddArgs,
-  StateEntity,
+  MachineStateInfoEntity,
 }
