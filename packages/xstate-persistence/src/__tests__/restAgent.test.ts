@@ -8,7 +8,7 @@ import { Server } from 'http'
 import { DataSource } from 'typeorm'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { IMachineStatePersistence } from '../index'
-import xStatePersistenceAgentLogic from './shared/xStatePersistenceAgentLogic'
+import xStatePersistenceAgentLogic from './shared/MachineStatePersistenceAgentLogic'
 
 jest.setTimeout(60000)
 

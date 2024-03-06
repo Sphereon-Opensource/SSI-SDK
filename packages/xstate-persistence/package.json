@@ -1,5 +1,5 @@
 {
-  "name": "@sphereon/ssi-sdk.xstate-state-manager",
+  "name": "@sphereon/ssi-sdk.xstate-machine-persistence",
   "version": "0.18.1",
   "source": "src/index.ts",
   "main": "dist/index.js",

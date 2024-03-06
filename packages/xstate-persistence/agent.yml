@@ -19,7 +19,7 @@ dbConnection:
       migrations:
         $require: './packages/data-store?t=object#DataStoreMigrations'
       entities:
-        $require: './packages/data-store?t=object#DataStoreMachineInfoEntities'
+        $require: './packages/data-store?t=object#DataStoreMachineStateInfoEntities'
 
 server:
   baseUrl:

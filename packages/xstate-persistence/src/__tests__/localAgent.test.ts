@@ -3,7 +3,7 @@ import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 
 jest.setTimeout(60000)
 
-import xStatePersistenceAgentLogic from './shared/xStatePersistenceAgentLogic'
+import machineStatePersistenceAgentLogic from './shared/MachineStatePersistenceAgentLogic'
 
 let dbConnection: Promise<DataSource>
 let agent: any
@@ -30,5 +30,5 @@ const testContext = {
 }
 
 describe('Local integration tests', (): void => {
-  xStatePersistenceAgentLogic(testContext)
+  machineStatePersistenceAgentLogic(testContext)
 })
