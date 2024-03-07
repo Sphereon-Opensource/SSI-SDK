@@ -28,10 +28,7 @@ export const counterMachine = createMachine({
       on: {
         increment: {
           actions: assign({
-            count: (context) => {
-              console.log(context.count + 1)
-              return context.count + 1
-            },
+            count: (context) => context.count + 1,
           }),
         },
         finalize: {
@@ -137,6 +134,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should automatically store xstate state changes', async (): Promise<void> => {
       const init = await machineStatePersistRegistration({ context, instance, machineName: instance.machine.id })
+      console.log(JSON.stringify(init, null, 2))
       if (!init) {
         return Promise.reject(new Error('No init'))
       }
@@ -156,6 +154,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(activeStates[0].createdAt).toBeDefined()
       expect(activeStates[0].state).toBeDefined()
       expect(activeStates[0].state.context.count).toEqual(1)
+      console.log(JSON.stringify(activeStates[0], null, 2))
 
       instance.send('increment')
       // Wait some time since events are async

@@ -80,9 +80,12 @@ export class MachineStatePersistence implements IAgentPlugin {
   }
 
   private async machineStateInit(args: InitMachineStateArgs): Promise<MachineStateInit> {
-    debug(`machineStateInit for machine name ${args.machineName} and tenant ${args.tenantId}`)
-    const machineInit = {
-      ...args,
+    const { tenantId, machineName, expiresAt } = args
+    debug(`machineStateInit for machine name ${machineName} and tenant ${tenantId}`)
+    const machineInit: MachineStateInit = {
+      machineName,
+      tenantId,
+      expiresAt,
       instanceId: args.instanceId ?? uuidv4(),
       createdAt: args.createdAt ?? new Date(),
     }

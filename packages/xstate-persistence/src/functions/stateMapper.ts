@@ -3,6 +3,13 @@ import { State } from 'xstate'
 import { EventObject } from 'xstate/lib/types'
 import { MachineStatePersistArgs, SerializableState } from '../types'
 
+/**
+ * Create a machine state info object useful for the store, based on the provided machine info and existing state.
+ *
+ * @param {MachineStatePersistArgs} machineInfo - The machine info object.
+ * @param {Partial<StoreMachineStateInfo>} [existingState] - The optional existing state object.
+ * @returns {StoreMachineStateInfo} - The store machine state info object.
+ */
 export const machineStateToStoreInfo = (
   machineInfo: MachineStatePersistArgs,
   existingState?: Partial<StoreMachineStateInfo>
@@ -34,6 +41,12 @@ export const machineStateToStoreInfo = (
   }
 }
 
+/**
+ * Serializes a machine state to a string representation.
+ *
+ * @param {State<T, TEvent> | SerializableState | string} state - The machine state to serialize.
+ * @returns {string} - The serialized machine state.
+ */
 export const serializeMachineState = <T, TEvent extends EventObject>(state: State<T, TEvent> | SerializableState | string): string => {
   if (typeof state === 'string') {
     return state
@@ -41,6 +54,14 @@ export const serializeMachineState = <T, TEvent extends EventObject>(state: Stat
   const jsonState = 'toJSON' in state ? state.toJSON() : state
   return JSON.stringify(jsonState)
 }
+/**
+ * Deserializes a serialized machine state.
+ *
+ * @template T - The type of the machine's context.
+ * @template TEvent - The type of the events that the machine handles.
+ * @param {string} state - The serialized machine state.
+ * @returns {State<T, TEvent>} - The deserialized machine state.
+ */
 export const deserializeMachineState = <T, TEvent extends EventObject>(state: string): State<T, TEvent> => {
   return State.create(JSON.parse(state))
 }

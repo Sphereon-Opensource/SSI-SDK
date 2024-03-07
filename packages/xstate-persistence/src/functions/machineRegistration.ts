@@ -1,8 +1,16 @@
 import { IAgentContext } from '@veramo/core'
 import { DefaultContext, EventObject, Interpreter, StateSchema, TypegenDisabled, Typestate } from 'xstate'
-import { InitMachineStateArgs, MachineStateInit, MachineStatePersistEventType } from '../types'
+import { IMachineStatePersistence, InitMachineStateArgs, MachineStateInit, MachineStatePersistEventType } from '../types'
 import { emitMachineStatePersistEvent } from './stateEventEmitter'
 
+/**
+ * Initialize the machine state persistence. Returns a unique instanceId and the machine name amongst others
+ *
+ * @param {Object} opts - The options for initializing the machine state persistence.
+ * @param {InitMachineStateArgs} opts - The arguments for initializing the machine state.
+ * @param {IAgentContext<any>} opts.context - The agent context.
+ * @returns {Promise<MachineStateInit | undefined>} - A promise that resolves to the initialized machine state, or undefined if the agent isn't using the Xstate plugin.
+ */
 export const machineStatePersistInit = async (
   opts: InitMachineStateArgs & {
     context: IAgentContext<any> // We use any as this method could be called from an agent with access to, but not exposing this plugin
@@ -13,9 +21,19 @@ export const machineStatePersistInit = async (
     console.log(`IMachineStatePersistence was not exposed in the current agent. Not initializing new persistence object`)
     return
   }
-  return await context.agent.machineStateInit(args)
+  return await (context as IAgentContext<IMachineStatePersistence>).agent.machineStateInit(args)
 }
 
+/**
+ * This function allows for the persistence of machine state on every xstate transition. It emits an event with the new state
+ * and other relevant data to be handled by the persistence plugin when enabled.
+ *
+ * @param {Object} opts - The options object.
+ * @param {Interpreter} opts.instance - The XState machine interpreter instance.
+ * @param {IAgentContext<any>} opts.context - The agent context.
+ * @param {MachineStateInit} opts.init - The initial persistence options, containing the unique instanceId.
+ * @returns {Promise<void>} - A promise that resolves when the persistence event is emitted.
+ */
 export const machineStatePersistOnTransition = async <
   TContext = DefaultContext,
   TStateSchema extends StateSchema = any,
@@ -55,6 +73,13 @@ export const machineStatePersistOnTransition = async <
   })
 }
 
+/**
+ * Persist the initial state of a machine and register it with the given machine instance.
+ *
+ * @param {InitMachineStateArgs & {instance: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>, context: IAgentContext<any>}} args - The options for initializing
+ * machine state and registering it.
+ * @returns {Promise<MachineStateInit | undefined>} - A promise that resolves to the initial state of the machine, or undefined if the agent isn't using the Xstate plugin.
+ */
 export const machineStatePersistRegistration = async <
   TContext = DefaultContext,
   TStateSchema extends StateSchema = any,
@@ -65,14 +90,16 @@ export const machineStatePersistRegistration = async <
   },
   TResolvedTypesMeta = TypegenDisabled
 >(
-  opts: InitMachineStateArgs & {
-    instance: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
-    context: IAgentContext<any> // We use any as this method could be called from an agent with access to, but not exposing this plugin
-  }
+  args: InitMachineStateArgs &
+    Partial<Pick<InitMachineStateArgs, 'machineName'>> & {
+      instance: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
+      context: IAgentContext<any> // We use any as this method could be called from an agent with access to, but not exposing this plugin
+    }
 ): Promise<MachineStateInit | undefined> => {
-  const init = await machineStatePersistInit(opts)
+  const machineName = args.machineName ?? args.instance.machine.id ?? args.instance.id
+  const init = await machineStatePersistInit({ ...args, machineName })
   if (init) {
-    await machineStatePersistOnTransition({ ...opts, init })
+    await machineStatePersistOnTransition({ ...args, init })
   }
   return init
 }

@@ -1,5 +1,22 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm'
 
+/**
+ * @class MachineStateInfoEntity
+ * Represents a machine state. It allows to continue a machine at a later point in time at the point it was left of
+ *
+ * @param {string} instanceId - The instance ID of the machine state.
+ * @param {string} [sessionId] - The session ID of the machine state. (optional)
+ * @param {string} machineName - The name of the machine.
+ * @param {string} [latestStateName] - The name of the latest state. (optional)
+ * @param {string} latestEventType - The type of the latest event.
+ * @param {string} state - The current state of the machine.
+ * @param {Date} createdAt - The date and time when the machine state was created.
+ * @param {Date} updatedAt - The date and time when the machine state was last updated.
+ * @param {number} updatedCount - The number of times the machine state has been updated.
+ * @param {Date} [expiresAt] - The date and time when the machine state expires. (optional)
+ * @param {Date} [completedAt] - The date and time when the machine state was completed. (optional)
+ * @param {string} [tenantId] - The ID of the tenant associated with the machine state. (optional)
+ */
 @Entity('MachineStateInfoEntity')
 export class MachineStateInfoEntity extends BaseEntity {
   @PrimaryColumn({ name: 'instance_id', type: 'varchar', nullable: false })

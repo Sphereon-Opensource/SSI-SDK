@@ -16,6 +16,9 @@ import { IAbstractMachineStateStore } from './IAbstractMachineStateStore'
 
 const debug = Debug('sphereon:ssi-sdk:machine-state:store')
 
+/**
+ * Represents a data store for managing machine states.
+ */
 export class MachineStateStore extends IAbstractMachineStateStore {
   private readonly _dbConnection: OrPromise<DataSource>
 
