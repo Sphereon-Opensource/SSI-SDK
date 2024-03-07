@@ -102,15 +102,15 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(machineStateInfoIncrement).toMatchObject({
         completedAt: null,
         instanceId: machineStateInfo.instanceId,
-        createdAt: expect.any(Date),
-        expiresAt: expect.any(Date),
+        createdAt: expectDateOrString(),
+        expiresAt: expectDateOrString(),
         sessionId: 'x:0',
         latestEventType: 'increment',
         latestStateName: null,
         machineName: machineStateInit.machineName,
         state: expect.anything(),
         tenantId: machineStateInit.tenantId,
-        updatedAt: expect.any(Date),
+        updatedAt: expectDateOrString(),
       })
       // count should have increased to 1
       expect(machineStateInfoIncrement.state.context.count).toEqual(1)
