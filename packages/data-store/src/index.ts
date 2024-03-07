@@ -45,7 +45,7 @@ export {
   DataStoreContactMigrations,
   DataStoreIssuanceBrandingMigrations,
   DataStoreStatusListMigrations,
-  DataStoreXStateStoreMigrations,
+  DataStoreMachineStateMigrations,
 } from './migrations'
 export * from './types'
 export * from './utils/contact/MappingUtils'
@@ -86,7 +86,7 @@ export const DataStoreEventLoggerEntities = [AuditEventEntity]
 
 export const DataStoreDigitalCredentialEntities = [DigitalCredentialEntity]
 
-export const DataStoreMachineStateInfoEntities = [MachineStateInfoEntity]
+export const DataStoreMachineStateEntities = [MachineStateInfoEntity]
 
 // All entities combined if a party wants to enable them all at once
 export const DataStoreEntities = [
@@ -95,7 +95,7 @@ export const DataStoreEntities = [
   ...DataStoreStatusListEntities,
   ...DataStoreEventLoggerEntities,
   ...DataStoreDigitalCredentialEntities,
-  ...DataStoreMachineStateInfoEntities,
+  ...DataStoreMachineStateEntities,
 ]
 
 export {

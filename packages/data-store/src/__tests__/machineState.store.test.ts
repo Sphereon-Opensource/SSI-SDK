@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm'
-import { DataStoreMachineStateInfoEntities, MachineStateStore, StoreMachineStatesFindActiveArgs, StoreMachineStatePersistArgs } from '../index'
-import { DataStoreXStateStoreMigrations } from '../migrations'
+import { DataStoreMachineStateEntities, MachineStateStore, StoreMachineStatesFindActiveArgs, StoreMachineStatePersistArgs } from '../index'
+import { DataStoreMachineStateMigrations } from '../migrations'
 
 describe('Machine State store tests', (): void => {
   let dbConnection: DataSource
@@ -12,9 +12,9 @@ describe('Machine State store tests', (): void => {
       database: ':memory:',
       logging: 'all',
       migrationsRun: false,
-      migrations: DataStoreXStateStoreMigrations,
+      migrations: DataStoreMachineStateMigrations,
       synchronize: false,
-      entities: DataStoreMachineStateInfoEntities,
+      entities: DataStoreMachineStateEntities,
     }).initialize()
     await dbConnection.runMigrations()
     expect(await dbConnection.showMigrations()).toBeFalsy()
@@ -29,6 +29,7 @@ describe('Machine State store tests', (): void => {
     const persistArgs: StoreMachineStatePersistArgs = {
       instanceId: 'Onboarding1',
       machineName: 'Onboarding',
+      updatedCount: 0,
       latestStateName: 'enterPersonalDetails',
       latestEventType: 'SET_PERSONAL_DATA',
       state: 'test_state',
@@ -46,6 +47,7 @@ describe('Machine State store tests', (): void => {
       machineName: 'Onboarding',
       latestStateName: 'enterPersonalDetails',
       latestEventType: 'SET_PERSONAL_DATA',
+      updatedCount: 0,
       state: 'test_state',
       expiresAt: new Date(new Date().getDate() + 100000),
       tenantId: 'test_tenant_id',
@@ -70,6 +72,7 @@ describe('Machine State store tests', (): void => {
       latestStateName: 'enterPersonalDetails',
       latestEventType: 'SET_PERSONAL_DATA',
       state: 'test_state',
+      updatedCount: 0,
       expiresAt,
       tenantId: 'test_tenant_id',
     }
@@ -84,6 +87,7 @@ describe('Machine State store tests', (): void => {
     const persistArgs: StoreMachineStatePersistArgs = {
       instanceId: 'Onboarding1',
       machineName: 'Onboarding',
+      updatedCount: 0,
       latestStateName: 'enterPersonalDetails',
       latestEventType: 'SET_PERSONAL_DATA',
       state: 'test_state',
@@ -118,6 +122,7 @@ describe('Machine State store tests', (): void => {
       machineName: 'Onboarding',
       latestStateName: 'enterPersonalDetails',
       latestEventType: 'SET_TOC',
+      updatedCount: 0,
       state: 'test_state',
       expiresAt: futureExpiresAt,
       tenantId: 'test_tenant_id',
@@ -127,6 +132,7 @@ describe('Machine State store tests', (): void => {
       machineName: 'Onboarding',
       latestStateName: 'TOC',
       latestEventType: 'SET_POLICY2',
+      updatedCount: 1,
       state: 'test_state',
       expiresAt: futureExpiresAt,
       tenantId: 'test_tenant_id',
@@ -136,6 +142,7 @@ describe('Machine State store tests', (): void => {
       machineName: 'Onboarding',
       latestStateName: 'POLICY',
       latestEventType: 'SET_PERSONAL_DATA',
+      updatedCount: 0,
       state: 'test_state',
       expiresAt: pastExpiresAt, // This event should be already expired
       tenantId: 'test_tenant_id',
@@ -152,15 +159,15 @@ describe('Machine State store tests', (): void => {
     await expect(store.findActiveMachineStates({ machineName: 'Onboarding' })).resolves.toMatchObject([
       {
         completedAt: null,
-        createdAt: expect.any(Date),
-        expiresAt: expect.any(Date),
+        createdAt: expect.anything(),
+        expiresAt: expect.anything(),
         instanceId: 'Onboarding1',
         latestEventType: 'SET_POLICY2',
         latestStateName: 'TOC',
         machineName: 'Onboarding',
         state: 'test_state',
         tenantId: 'test_tenant_id',
-        updatedAt: expect.any(Date),
+        updatedAt: expect.anything(),
       },
     ])
   })

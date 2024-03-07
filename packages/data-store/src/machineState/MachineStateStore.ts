@@ -26,7 +26,8 @@ export class MachineStateStore extends IAbstractMachineStateStore {
 
   async persistMachineState(state: StoreMachineStatePersistArgs): Promise<StoreMachineStateInfo> {
     const connection: DataSource = await this._dbConnection
-    debug(`Executing persistMachineState with state context: ${JSON.stringify(JSON.parse(state.state).context)}`)
+    const { machineName, instanceId, tenantId } = state
+    debug(`Executing persistMachineState for machine ${machineName}, instance ${instanceId}, tenantId: ${tenantId}...`)
     const entity = MachineStateStore.machineStateInfoEntityFrom(state)
     const existing = await connection.getRepository(MachineStateInfoEntity).findOne({
       where: {
@@ -44,7 +45,7 @@ export class MachineStateStore extends IAbstractMachineStateStore {
     }
     // No need for a transaction. This is a single entity. We don't want to be surprised by an isolation level hiding the state from others
     const result = await connection.getRepository(MachineStateInfoEntity).save(entity, { transaction: false })
-    debug(`Done persistMachineState with state hasId: ${result.hasId()} and context: ${JSON.stringify(JSON.parse(state.state).context)}`)
+    debug(`Done persistMachineState machine ${machineName}, instance ${instanceId}, tenantId: ${tenantId}`)
     return MachineStateStore.machineInfoFrom(result)
   }
 

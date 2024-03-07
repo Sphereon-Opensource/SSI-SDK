@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm'
 import { MachineStateInfoEntity } from '../entities/machineState/MachineStateInfoEntity'
 
-import { DataStoreMachineStateInfoEntities, DataStoreXStateStoreMigrations, StoreMachineStatePersistArgs, MachineStateStore } from '../index'
+import { DataStoreMachineStateEntities, DataStoreMachineStateMigrations, StoreMachineStatePersistArgs, MachineStateStore } from '../index'
 
 describe('Machine State Info Database entities tests', (): void => {
   let dbConnection: DataSource
@@ -12,9 +12,9 @@ describe('Machine State Info Database entities tests', (): void => {
       database: ':memory:',
       //logging: 'all',
       migrationsRun: false,
-      migrations: DataStoreXStateStoreMigrations,
+      migrations: DataStoreMachineStateMigrations,
       synchronize: false,
-      entities: [...DataStoreMachineStateInfoEntities],
+      entities: [...DataStoreMachineStateEntities],
     }).initialize()
     await dbConnection.runMigrations()
     expect(await dbConnection.showMigrations()).toBeFalsy()
@@ -31,6 +31,7 @@ describe('Machine State Info Database entities tests', (): void => {
       instanceId: 'Onboarding1',
       latestStateName: 'acceptAgreement',
       machineName: 'Onboarding',
+      updatedCount: 0,
       latestEventType: 'SET_TOC',
       state: JSON.stringify({ myState: 'test_state' }),
       tenantId: 'test_tenant_id',
