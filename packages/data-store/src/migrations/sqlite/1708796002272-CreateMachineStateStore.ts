@@ -6,9 +6,10 @@ export class CreateMachineStateStore1708796002272 implements MigrationInterface 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
             CREATE TABLE "MachineStateInfoEntity" (
-                "id" varchar PRIMARY KEY NOT NULL,
-                "latest_state_name" varchar NOT NULL,
-                "machine_id" varchar NOT NULL,
+                "instance_id" varchar PRIMARY KEY NOT NULL,
+                "session_id" varchar,
+                "machine_name" varchar NOT NULL,
+                "latest_state_name" varchar,
                 "latest_event_type" varchar NOT NULL,
                 "state" text NOT NULL,
                 "created_at" datetime NOT NULL DEFAULT (datetime('now')),

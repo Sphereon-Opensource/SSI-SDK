@@ -59,7 +59,7 @@ To save the current state of an XState machine:
 
 ```typescript
 await agent.persistMachineSnapshot({
-  stateId: 'your-state-id',
+  stateId: 'your-state-instanceId',
   type: 'YourmachineId',
   eventName: 'YOUR_EVENT_NAME',
   state: 'serialized-state-here', // Your XState machine state serialized as a string

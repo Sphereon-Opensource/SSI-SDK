@@ -8,17 +8,18 @@ export class CreateMachineStateStore1708797018115 implements MigrationInterface 
     await enablePostgresUuidExtension(queryRunner)
     await queryRunner.query(`
             CREATE TABLE "MachineStateInfoEntity" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "latest_state_name" character varying NOT NULL,
-                "machine_id" character varying NOT NULL,
-                "latest_event_type" character varying NOT NULL,
+                "instance_id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "session_id" text,
+                "latest_state_name" text,
+                "machine_name" text NOT NULL,
+                "latest_event_type" text NOT NULL,
                 "state" text NOT NULL,
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "expires_at" TIMESTAMP,
                 "completed_at" TIMESTAMP,
-                "tenant_id" character varying,
-                CONSTRAINT "PK_MachineStateInfoEntity_id" PRIMARY KEY ("id")
+                "tenant_id" text,
+                CONSTRAINT "PK_MachineStateInfoEntity_id" PRIMARY KEY ("instance_id")
             )
         `)
   }

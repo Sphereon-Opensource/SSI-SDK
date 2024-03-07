@@ -17,12 +17,14 @@
   "dependencies": {
     "xstate": "^4.38.3",
     "@veramo/core": "4.2.0",
+    "uuid": "^9.0.1",
     "@sphereon/ssi-sdk.data-store": "workspace:*"
   },
   "devDependencies": {
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/parser": "^4.31.1",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",

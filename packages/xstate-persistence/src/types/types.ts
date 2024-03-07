@@ -1,27 +1,25 @@
-import { IAbstractMachineStateInfoStore, StoreFindActiveMachinesArgs, StoreMachineStateInfo } from '@sphereon/ssi-sdk.data-store'
+import { IAbstractMachineStateStore, StoreMachineStateInfo, StoreMachineStatesFindActiveArgs } from '@sphereon/ssi-sdk.data-store'
 import { IAgentContext } from '@veramo/core'
-import { AnyEventObject, HistoryValue, SCXML, StateValue } from 'xstate'
-import { EventObject } from 'xstate/lib/types'
+import { AnyEventObject, EventObject, HistoryValue, SCXML, StateValue } from 'xstate'
 
 import { IMachineStatePersistence } from './IMachineStatePersistence'
 
-export type MachineStatePersistOpts = { store: IAbstractMachineStateInfoStore; eventTypes: Array<string> }
+export type MachineStatePersistOpts = { store: IAbstractMachineStateStore; eventTypes: Array<string> }
 
 export enum MachineStatePersistEventType {
-  EVERY = 'every',
+  INIT = 'INIT',
+  EVERY = 'EVERY',
 }
 
-export type DeleteExpiredStatesArgs = Pick<StoreMachineStateInfo, 'machineId'>
+export type DeleteExpiredStatesArgs = Pick<StoreMachineStateInfo, 'machineName'>
 
-export type NonPersistedMachineInstance = MachineStatePersistArgs
-
-export type FindActiveStatesArgs = StoreFindActiveMachinesArgs
+export type FindActiveStatesArgs = StoreMachineStatesFindActiveArgs
 
 export type DeleteStateResult = boolean
 
 export type MachineStatePersistEvent = {
   type: MachineStatePersistEventType
-  data: NonPersistedMachineInstance
+  data: MachineStatePersistArgs
 }
 
 export type RequiredContext = IAgentContext<IMachineStatePersistence>
@@ -30,13 +28,13 @@ export type MachineStateInfo = Omit<StoreMachineStateInfo, 'state'> & {
   state: SerializableState
 }
 
-export type MachineStatePersistArgs = Pick<MachineStateInfo, 'state' | 'machineId' | 'expiresAt' | 'tenantId'>
+export type MachineStateInit = Pick<MachineStateInfo, 'instanceId' | 'machineName' | 'tenantId' | 'createdAt' | 'expiresAt'>
 
-// export type SerializableState = XStateConfig<any, AnyEventObject>
+export type InitMachineStateArgs = Partial<MachineStateInit> & Pick<MachineStateInfo, 'machineName'>
+
+export type MachineStatePersistArgs = Omit<MachineStateInit, 'createdAt'> & Pick<MachineStateInfo, 'state' | 'instanceId'>
+
 export type SerializableState = XStateConfig<any, AnyEventObject>
-
-/*
-export type XStateNode = Omit<StateNode, 'initial'| 'states'> & { initial?: any, states?: any}*/
 
 // Simplified StateConfig object from XState so we have a minimal typed structure
 export interface XStateConfig<TContext, TEvent extends EventObject> {
@@ -45,20 +43,10 @@ export interface XStateConfig<TContext, TEvent extends EventObject> {
   _event: SCXML.Event<TEvent>
   _sessionid: string | null
   historyValue?: HistoryValue | undefined
-
-  // @ts-ignore
   history?: any
-
   actions?: Array<any>
-
-  /**
-   * @deprecated
-   */
   activities?: any
   meta?: any
-  /**
-   * @deprecated
-   */
   events?: TEvent[]
   configuration: Array<any>
   transitions: Array<any>

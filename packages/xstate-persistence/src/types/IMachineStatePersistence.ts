@@ -5,8 +5,10 @@ import {
   DeleteStateResult,
   FindActiveStatesArgs,
   MachineStateInfo,
-  NonPersistedMachineInstance,
+  MachineStateInit,
+  InitMachineStateArgs,
   RequiredContext,
+  MachineStatePersistArgs,
 } from './types'
 
 /**
@@ -21,7 +23,7 @@ export interface IMachineStatePersistence extends IPluginMethodMap {
   /**
    * Loads the states of active xstate machines from the database.
    *
-   * @param args LoadStateArgs
+   * @param args FindActiveStatesArgs
    * type of the event
    *
    * @returns state or null
@@ -41,13 +43,17 @@ export interface IMachineStatePersistence extends IPluginMethodMap {
   machineStatesDeleteExpired(args: DeleteExpiredStatesArgs): Promise<DeleteStateResult>
 
   /**
+   * Initializes a state object for a new machine. Does not persist anything
+   * @param args Requires a machineName, instanceId and tenantId are optional
+   */
+  machineStateInit(args: InitMachineStateArgs): Promise<MachineStateInit>
+
+  /**
    * Persists the state whenever an event is emitted
-   * @param event NonPersistedXStatePersistenceEvent
-   * type of the event ('every' is the only one available at the moment)
-   * data of the event
+   * @param args NonPersistedMachineInstance
    *
    * @param context
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
-  machineStatePersist(event: NonPersistedMachineInstance, context: RequiredContext): Promise<MachineStateInfo>
+  machineStatePersist(args: MachineStatePersistArgs, context: RequiredContext): Promise<MachineStateInfo>
 }

@@ -1,10 +1,10 @@
 import { DataSource } from 'typeorm'
-import { DataStoreMachineStateInfoEntities, MachineStateInfoStore, StoreFindActiveMachinesArgs, StorePersistMachineArgs } from '../index'
+import { DataStoreMachineStateInfoEntities, MachineStateStore, StoreMachineStatesFindActiveArgs, StoreMachineStatePersistArgs } from '../index'
 import { DataStoreXStateStoreMigrations } from '../migrations'
 
 describe('Machine State store tests', (): void => {
   let dbConnection: DataSource
-  let store: MachineStateInfoStore
+  let store: MachineStateStore
 
   beforeEach(async (): Promise<void> => {
     dbConnection = await new DataSource({
@@ -18,7 +18,7 @@ describe('Machine State store tests', (): void => {
     }).initialize()
     await dbConnection.runMigrations()
     expect(await dbConnection.showMigrations()).toBeFalsy()
-    store = new MachineStateInfoStore(dbConnection)
+    store = new MachineStateStore(dbConnection)
   })
 
   afterEach(async (): Promise<void> => {
@@ -26,9 +26,9 @@ describe('Machine State store tests', (): void => {
   })
 
   it('should store machine state info', async (): Promise<void> => {
-    const persistArgs: StorePersistMachineArgs = {
-      id: 'Onboarding1',
-      machineId: 'Onboarding',
+    const persistArgs: StoreMachineStatePersistArgs = {
+      instanceId: 'Onboarding1',
+      machineName: 'Onboarding',
       latestStateName: 'enterPersonalDetails',
       latestEventType: 'SET_PERSONAL_DATA',
       state: 'test_state',
@@ -41,9 +41,9 @@ describe('Machine State store tests', (): void => {
   })
 
   it('should get all machines with their current state', async (): Promise<void> => {
-    const persistArgs: StorePersistMachineArgs = {
-      id: 'Onboarding1',
-      machineId: 'Onboarding',
+    const persistArgs: StoreMachineStatePersistArgs = {
+      instanceId: 'Onboarding1',
+      machineName: 'Onboarding',
       latestStateName: 'enterPersonalDetails',
       latestEventType: 'SET_PERSONAL_DATA',
       state: 'test_state',
@@ -54,7 +54,7 @@ describe('Machine State store tests', (): void => {
     const stateEvent1 = await store.persistMachineState({ ...persistArgs })
     expect(stateEvent1).toBeDefined()
 
-    const stateEvent2 = await store.persistMachineState({ ...persistArgs, id: 'Onboarding2' })
+    const stateEvent2 = await store.persistMachineState({ ...persistArgs, instanceId: 'Onboarding2' })
     expect(stateEvent2).toBeDefined()
 
     const result = await store.findMachineStates()
@@ -64,9 +64,9 @@ describe('Machine State store tests', (): void => {
   it('should retrieve a machine state', async (): Promise<void> => {
     const expiresAt = new Date()
     expiresAt.setTime(expiresAt.getTime() + 100000)
-    const persistArgs: StorePersistMachineArgs = {
-      id: 'Onboarding1',
-      machineId: 'Onboarding',
+    const persistArgs: StoreMachineStatePersistArgs = {
+      instanceId: 'Onboarding1',
+      machineName: 'Onboarding',
       latestStateName: 'enterPersonalDetails',
       latestEventType: 'SET_PERSONAL_DATA',
       state: 'test_state',
@@ -76,14 +76,14 @@ describe('Machine State store tests', (): void => {
 
     const machineStatePersisted = await store.persistMachineState(persistArgs)
     expect(machineStatePersisted).toBeDefined()
-    const result = await store.findActiveMachineStates({ machineId: persistArgs.machineId, tenantId: persistArgs.tenantId })
+    const result = await store.findActiveMachineStates({ machineName: persistArgs.machineName, tenantId: persistArgs.tenantId })
     expect(result).toBeDefined()
   })
 
   it('should delete a machine state', async (): Promise<void> => {
-    const persistArgs: StorePersistMachineArgs = {
-      id: 'Onboarding1',
-      machineId: 'Onboarding',
+    const persistArgs: StoreMachineStatePersistArgs = {
+      instanceId: 'Onboarding1',
+      machineName: 'Onboarding',
       latestStateName: 'enterPersonalDetails',
       latestEventType: 'SET_PERSONAL_DATA',
       state: 'test_state',
@@ -94,13 +94,13 @@ describe('Machine State store tests', (): void => {
     const persistedState = await store.persistMachineState(persistArgs)
     expect(persistedState).toBeDefined()
 
-    const result: boolean = await store.deleteMachineState({ id: persistedState.id })
+    const result: boolean = await store.deleteMachineState({ id: persistedState.instanceId })
     expect(result).toBeTruthy()
   })
 
   it('should return an error if type filter does not match', async (): Promise<void> => {
-    const args: StoreFindActiveMachinesArgs = {
-      machineId: 'unknown_machine',
+    const args: StoreMachineStatesFindActiveArgs = {
+      machineName: 'unknown_machine',
     }
 
     await expect(store.findActiveMachineStates(args)).resolves.toEqual([])
@@ -113,27 +113,27 @@ describe('Machine State store tests', (): void => {
     const pastExpiresAt = new Date()
     pastExpiresAt.setTime(pastExpiresAt.getTime() - 100000) // Past expiration, already expired
 
-    const oldestXstateEvent: StorePersistMachineArgs = {
-      id: 'Onboarding1',
-      machineId: 'Onboarding',
+    const oldestXstateEvent: StoreMachineStatePersistArgs = {
+      instanceId: 'Onboarding1',
+      machineName: 'Onboarding',
       latestStateName: 'enterPersonalDetails',
       latestEventType: 'SET_TOC',
       state: 'test_state',
       expiresAt: futureExpiresAt,
       tenantId: 'test_tenant_id',
     }
-    const middleXstateEvent: StorePersistMachineArgs = {
-      id: 'Onboarding1',
-      machineId: 'Onboarding',
+    const middleXstateEvent: StoreMachineStatePersistArgs = {
+      instanceId: 'Onboarding1',
+      machineName: 'Onboarding',
       latestStateName: 'TOC',
       latestEventType: 'SET_POLICY2',
       state: 'test_state',
       expiresAt: futureExpiresAt,
       tenantId: 'test_tenant_id',
     }
-    const newestXstateEvent: StorePersistMachineArgs = {
-      id: 'OnboardingExpired',
-      machineId: 'Onboarding',
+    const newestXstateEvent: StoreMachineStatePersistArgs = {
+      instanceId: 'OnboardingExpired',
+      machineName: 'Onboarding',
       latestStateName: 'POLICY',
       latestEventType: 'SET_PERSONAL_DATA',
       state: 'test_state',
@@ -145,22 +145,22 @@ describe('Machine State store tests', (): void => {
     await store.persistMachineState(middleXstateEvent)
     await store.persistMachineState(newestXstateEvent)
 
-    await expect(store.findActiveMachineStates({ machineId: 'Onboarding' })).resolves.toHaveLength(1)
+    await expect(store.findActiveMachineStates({ machineName: 'Onboarding' })).resolves.toHaveLength(1)
 
     await store.deleteExpiredMachineStates({})
-    await expect(store.findActiveMachineStates({ machineId: 'Onboarding' })).resolves.toHaveLength(1)
-    await expect(store.findActiveMachineStates({ machineId: 'Onboarding' })).resolves.toMatchObject([
+    await expect(store.findActiveMachineStates({ machineName: 'Onboarding' })).resolves.toHaveLength(1)
+    await expect(store.findActiveMachineStates({ machineName: 'Onboarding' })).resolves.toMatchObject([
       {
         completedAt: null,
-        createdAt: {},
-        expiresAt: {},
-        id: 'Onboarding1',
+        createdAt: expect.any(Date),
+        expiresAt: expect.any(Date),
+        instanceId: 'Onboarding1',
         latestEventType: 'SET_POLICY2',
         latestStateName: 'TOC',
-        machineId: 'Onboarding',
+        machineName: 'Onboarding',
         state: 'test_state',
         tenantId: 'test_tenant_id',
-        updatedAt: {},
+        updatedAt: expect.any(Date),
       },
     ])
   })

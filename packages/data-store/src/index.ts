@@ -36,8 +36,8 @@ import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCre
 import { digitalCredentialFrom, digitalCredentialsFrom, nonPersistedDigitalCredentialEntityFromAddArgs } from './utils/digitalCredential/MappingUtils'
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
 export { EventLoggerStore } from './eventLogger/EventLoggerStore'
-export { IAbstractMachineStateInfoStore } from './machineState/IAbstractMachineStateInfoStore'
-export { MachineStateInfoStore } from './machineState/MachineStateInfoStore'
+export { IAbstractMachineStateStore } from './machineState/IAbstractMachineStateStore'
+export { MachineStateStore } from './machineState/MachineStateStore'
 
 export {
   DataStoreMigrations,

@@ -37,7 +37,7 @@ export class CreateMachineStateStore1708098041262 implements MigrationInterface 
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    debug('migration: reverting contacts tables')
+    debug('migration: reverting machine state tables')
     const dbType: DatabaseType = queryRunner.connection.driver.options.type
 
     switch (dbType) {

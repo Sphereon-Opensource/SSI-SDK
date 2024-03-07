@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm'
 import { MachineStateInfoEntity } from '../entities/machineState/MachineStateInfoEntity'
 
-import { DataStoreMachineStateInfoEntities, DataStoreXStateStoreMigrations, StorePersistMachineArgs, MachineStateInfoStore } from '../index'
+import { DataStoreMachineStateInfoEntities, DataStoreXStateStoreMigrations, StoreMachineStatePersistArgs, MachineStateStore } from '../index'
 
 describe('Machine State Info Database entities tests', (): void => {
   let dbConnection: DataSource
@@ -27,10 +27,10 @@ describe('Machine State Info Database entities tests', (): void => {
   it('should save machine state info to database', async (): Promise<void> => {
     const expiresAt = new Date()
     expiresAt.setTime(expiresAt.getTime() + 100000)
-    const machineInfo: StorePersistMachineArgs = {
-      id: 'Onboarding1',
+    const machineInfo: StoreMachineStatePersistArgs = {
+      instanceId: 'Onboarding1',
       latestStateName: 'acceptAgreement',
-      machineId: 'Onboarding',
+      machineName: 'Onboarding',
       latestEventType: 'SET_TOC',
       state: JSON.stringify({ myState: 'test_state' }),
       tenantId: 'test_tenant_id',
@@ -38,12 +38,12 @@ describe('Machine State Info Database entities tests', (): void => {
     }
     const fromDb: MachineStateInfoEntity = await dbConnection
       .getRepository(MachineStateInfoEntity)
-      .save(MachineStateInfoStore.machineStateInfoEntityFrom(machineInfo))
+      .save(MachineStateStore.machineStateInfoEntityFrom(machineInfo))
 
     expect(fromDb).toBeDefined()
-    expect(fromDb?.id).not.toBeNull()
-    expect(fromDb?.machineId).toEqual(machineInfo.machineId)
-    expect(JSON.parse(fromDb?.state)).toEqual(machineInfo.state)
+    expect(fromDb?.instanceId).not.toBeNull()
+    expect(fromDb?.machineName).toEqual(machineInfo.machineName)
+    expect(fromDb?.state).toEqual(machineInfo.state)
     expect(fromDb?.tenantId).toEqual(machineInfo.tenantId)
     expect(fromDb?.completedAt).toBeNull()
   })

@@ -7,20 +7,21 @@ export const machineStateToStoreInfo = (
   machineInfo: MachineStatePersistArgs,
   existingState?: Partial<StoreMachineStateInfo>
 ): StoreMachineStateInfo => {
-  const { state, machineId, tenantId, expiresAt } = machineInfo
+  const { state, machineName, tenantId, expiresAt, instanceId } = machineInfo
 
-  const existing: Partial<StoreMachineStateInfo> = existingState ?? { machineId, createdAt: new Date(), expiresAt }
+  const existing: Partial<StoreMachineStateInfo> = existingState ?? { machineName, createdAt: new Date(), expiresAt }
   const stateInstance = State.create(machineInfo.state)
-  if (!stateInstance._sessionid) {
-    throw Error(`No session id found for state machine ${machineId}`)
-  }
   let latestStateName = undefined
   if (stateInstance.value) {
     latestStateName = typeof stateInstance.value === 'string' ? stateInstance.value : JSON.stringify(stateInstance.value)
   }
+  if (latestStateName === '{}') {
+    latestStateName = undefined
+  }
   return {
-    id: stateInstance._sessionid,
-    machineId,
+    instanceId,
+    sessionId: stateInstance._sessionid ?? undefined,
+    machineName,
     state: serializeMachineState(state),
     tenantId,
     latestStateName,
@@ -32,7 +33,10 @@ export const machineStateToStoreInfo = (
   }
 }
 
-export const serializeMachineState = <T, TEvent extends EventObject>(state: State<T, TEvent> | SerializableState): string => {
+export const serializeMachineState = <T, TEvent extends EventObject>(state: State<T, TEvent> | SerializableState | string): string => {
+  if (typeof state === 'string') {
+    return state
+  }
   const jsonState = 'toJSON' in state ? state.toJSON() : state
   return JSON.stringify(jsonState)
 }

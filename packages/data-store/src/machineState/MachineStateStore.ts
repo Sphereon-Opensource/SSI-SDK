@@ -4,19 +4,19 @@ import { Brackets, DataSource, FindOptionsWhere, LessThan } from 'typeorm'
 
 import { MachineStateInfoEntity } from '../entities/machineState/MachineStateInfoEntity'
 import {
-  StoreDeleteExpiredMachineArgs,
-  StoreDeleteMachineArgs,
-  StoreFindActiveMachinesArgs,
-  StoreFindMachinesArgs,
-  StorePersistMachineArgs,
+  StoreMachineStateDeleteExpiredArgs,
+  StoreMachineStateDeleteArgs,
+  StoreMachineStatesFindActiveArgs,
+  StoreFindMachineStatesArgs,
+  StoreMachineStatePersistArgs,
   StoreMachineStateInfo,
-  StoreGetMachineArgs,
+  StoreMachineStateGetArgs,
 } from '../types'
-import { IAbstractMachineStateInfoStore } from './IAbstractMachineStateInfoStore'
+import { IAbstractMachineStateStore } from './IAbstractMachineStateStore'
 
-const debug = Debug('sphereon:ssi-sdk:machine-state-info-store')
+const debug = Debug('sphereon:ssi-sdk:machine-state:store')
 
-export class MachineStateInfoStore extends IAbstractMachineStateInfoStore {
+export class MachineStateStore extends IAbstractMachineStateStore {
   private readonly _dbConnection: OrPromise<DataSource>
 
   constructor(dbConnection: OrPromise<DataSource>) {
@@ -24,16 +24,18 @@ export class MachineStateInfoStore extends IAbstractMachineStateInfoStore {
     this._dbConnection = dbConnection
   }
 
-  async persistMachineState(state: StorePersistMachineArgs): Promise<StoreMachineStateInfo> {
+  async persistMachineState(state: StoreMachineStatePersistArgs): Promise<StoreMachineStateInfo> {
     const connection: DataSource = await this._dbConnection
     debug(`Executing persistMachineState with state: ${JSON.stringify(state)}`)
-    return connection.getRepository(MachineStateInfoEntity).save(MachineStateInfoStore.machineStateInfoEntityFrom(state))
+    const entity = MachineStateStore.machineStateInfoEntityFrom(state)
+    const result = await connection.getRepository(MachineStateInfoEntity).save(entity)
+    return MachineStateStore.machineInfoFrom(result)
   }
 
-  async findActiveMachineStates(args: StoreFindActiveMachinesArgs): Promise<Array<StoreMachineStateInfo>> {
-    const { tenantId, machineId } = args
+  async findActiveMachineStates(args: StoreMachineStatesFindActiveArgs): Promise<Array<StoreMachineStateInfo>> {
+    const { tenantId, machineName, sessionId } = args
     const connection: DataSource = await this._dbConnection
-    debug(`Executing findActiveMachineStates query with machineId: ${machineId}, tenantId: ${tenantId}`)
+    debug(`Executing findActiveMachineStates query with machineName: ${machineName}, tenantId: ${tenantId}`)
 
     const queryBuilder = connection
       .getRepository(MachineStateInfoEntity)
@@ -44,38 +46,45 @@ export class MachineStateInfoStore extends IAbstractMachineStateInfoStore {
           qb.where('state.expiresAt IS NULL').orWhere('state.expiresAt > :now', { now: new Date() })
         })
       )
-      .orderBy('state.updatedAt', 'DESC')
 
     if (tenantId) {
       queryBuilder.andWhere('state.tenantId = :tenantId', { tenantId })
     }
-    if (machineId) {
-      queryBuilder.andWhere('state.machineId = :machineId', { machineId })
+    if (machineName) {
+      queryBuilder.andWhere('state.machineName = :machineName', { machineName })
+    }
+    if (sessionId) {
+      queryBuilder.andWhere('state.sessionId = :sessionId', { sessionId })
     }
 
-    return (await queryBuilder.getMany().then((entities) => entities.map((entity) => MachineStateInfoStore.machineInfoFrom(entity)))) ?? []
+    return (
+      (await queryBuilder
+        .orderBy('state.updatedAt', 'DESC')
+        .getMany()
+        .then((entities) => entities.map(MachineStateStore.machineInfoFrom))) ?? []
+    )
   }
 
-  async findMachineStates(args?: StoreFindMachinesArgs): Promise<Array<StoreMachineStateInfo>> {
+  async findMachineStates(args?: StoreFindMachineStatesArgs): Promise<Array<StoreMachineStateInfo>> {
     const connection: DataSource = await this._dbConnection
     debug('findMachineStates', args)
     const result: Array<MachineStateInfoEntity> = await connection.getRepository(MachineStateInfoEntity).find({
       ...(args?.filter && { where: args?.filter }),
     })
 
-    return result.map((event: MachineStateInfoEntity) => MachineStateInfoStore.machineInfoFrom(event))
+    return result.map((event: MachineStateInfoEntity) => MachineStateStore.machineInfoFrom(event))
   }
 
-  async getMachineState(args: StoreGetMachineArgs): Promise<StoreMachineStateInfo> {
+  async getMachineState(args: StoreMachineStateGetArgs): Promise<StoreMachineStateInfo> {
     const connection: DataSource = await this._dbConnection
     debug('getMachineState', args)
-    return connection.getRepository(MachineStateInfoEntity).findOneOrFail({ where: { id: args.id } })
+    return connection.getRepository(MachineStateInfoEntity).findOneOrFail({ where: { instanceId: args.id } })
   }
 
-  async deleteMachineState(args: StoreDeleteMachineArgs): Promise<boolean> {
+  async deleteMachineState(args: StoreMachineStateDeleteArgs): Promise<boolean> {
     debug(`Executing deleteMachineState query with id: ${args.id}`)
     if (!args.id) {
-      throw new Error('No id parameter is provided.')
+      throw new Error('No instanceId parameter is provided.')
     }
     try {
       const connection: DataSource = await this._dbConnection
@@ -88,13 +97,13 @@ export class MachineStateInfoStore extends IAbstractMachineStateInfoStore {
     }
   }
 
-  async deleteExpiredMachineStates(args: StoreDeleteExpiredMachineArgs): Promise<boolean> {
+  async deleteExpiredMachineStates(args: StoreMachineStateDeleteExpiredArgs): Promise<boolean> {
     debug(`Executing deleteExpiredMachineStates query with params: ${JSON.stringify(args)}`)
     try {
       const connection: DataSource = await this._dbConnection
       const deleteCriteria: FindOptionsWhere<MachineStateInfoEntity> = {
         expiresAt: LessThan(new Date()),
-        ...(args.machineId && { type: args.machineId }),
+        ...(args.machineName && { type: args.machineName }),
       }
       const result = await connection.getRepository(MachineStateInfoEntity).delete(deleteCriteria)
       return result.affected != null && result.affected > 0
@@ -104,17 +113,17 @@ export class MachineStateInfoStore extends IAbstractMachineStateInfoStore {
     }
   }
 
-  protected static machineInfoFrom = (MachineStateInfoEntity: MachineStateInfoEntity): StoreMachineStateInfo => {
-    return {
-      ...MachineStateInfoEntity,
-      state: JSON.parse(MachineStateInfoEntity.state),
-    }
+  protected static machineInfoFrom = (machineStateInfoEntity: MachineStateInfoEntity): StoreMachineStateInfo => {
+    // We are making sure no entity function get copied
+    return { ...machineStateInfoEntity }
+    /*const info = {} as StoreMachineStateInfo
+    Object.assign(info, machineStateInfoEntity)
+    return info*/
   }
 
-  static machineStateInfoEntityFrom = (machineStateInfo: StoreMachineStateInfo | StorePersistMachineArgs): MachineStateInfoEntity => {
+  static machineStateInfoEntityFrom = (machineStateInfo: StoreMachineStateInfo | StoreMachineStatePersistArgs): MachineStateInfoEntity => {
     const entity = new MachineStateInfoEntity()
     Object.assign(entity, machineStateInfo)
-    entity.state = JSON.stringify(machineStateInfo.state)
     return entity
   }
 }

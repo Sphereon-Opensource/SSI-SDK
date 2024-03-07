@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 
-jest.setTimeout(60000)
+jest.setTimeout(30000)
 
 import machineStatePersistenceAgentLogic from './shared/MachineStatePersistenceAgentLogic'
 

@@ -1,6 +1,6 @@
 import { AuthzFlowType, toAuthorizationResponsePayload } from '@sphereon/oid4vci-common'
 import { Identity, Party } from '@sphereon/ssi-sdk.data-store'
-import { emitMachineStatePersistEvent, MachineStatePersistEventType } from '@sphereon/ssi-sdk.xstate-state-manager'
+import { emitMachineStatePersistEvent, MachineStateInit, MachineStatePersistEventType } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { IAgentContext } from '@veramo/core'
 import { assign, createMachine, DoneInvokeEvent, interpret, State } from 'xstate'
 import { translate } from '../localization/Localization'
@@ -532,7 +532,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
 }
 
 export class OID4VCIMachine {
-  static newInstance(opts: OID4VCIMachineInstanceOpts, context: RequiredContext): OID4VCIMachineInterpreter {
+  static async newInstance(opts: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<OID4VCIMachineInterpreter> {
     const instance: OID4VCIMachineInterpreter = interpret(
       createOID4VCIMachine(opts).withConfig({
         services: {
@@ -552,17 +552,18 @@ export class OID4VCIMachine {
         },
       })
     )
-    if (context.agent.availableMethods().includes('statePersist')) {
+
+    // TODO: This can become a function in the xstate-persistence plugin
+    if (context.agent.availableMethods().includes('machineStatePersist') && 'machineStatePersist' in context.agent) {
+      const init = (await context.agent.machineStatePersist({ machineName: 'OID4VCIHolder' })) as MachineStateInit
       // XState persistence plugin is available. So let's emit events on every transition, so it can persist the state
       instance.onTransition((state: State<any, any, any, any>, event) => {
         emitMachineStatePersistEvent(
           {
             type: MachineStatePersistEventType.EVERY,
             data: {
+              ...init,
               state,
-              tenantId: undefined, // TODO: Not used yet
-              expiresAt: new Date(new Date().getTime() + 10 * 60 * 1000), // TODO: Magic number
-              machineId: 'OID4VCIHolder' /*TODO, make string literal*/,
             },
           },
           context as IAgentContext<never>

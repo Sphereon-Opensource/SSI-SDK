@@ -1,26 +1,30 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm'
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 
 @Entity('MachineStateInfoEntity')
 export class MachineStateInfoEntity extends BaseEntity {
-  @PrimaryColumn({ name: 'id' })
-  id!: string
+  @PrimaryGeneratedColumn('uuid', { name: 'instance_id' })
+  instanceId!: string
 
-  @Column({ name: 'machine_id', nullable: false })
-  machineId!: string
+  @Column({ name: 'session_id', type: 'varchar', nullable: true })
+  sessionId?: string
 
-  @Column({ name: 'latest_state_name', nullable: false })
-  latestStateName!: string
+  // Xstate moved to name instead of instanceId for V5. Also makes more sense
+  @Column({ name: 'machine_name', type: 'varchar', nullable: false })
+  machineName!: string
 
-  @Column({ name: 'latest_event_type', nullable: false })
+  @Column({ name: 'latest_state_name', type: 'varchar', nullable: true })
+  latestStateName?: string
+
+  @Column({ name: 'latest_event_type', type: 'varchar', nullable: false })
   latestEventType!: string
 
-  @Column({ name: 'state', nullable: false })
+  @Column({ name: 'state', type: 'text', nullable: false })
   state!: string
 
-  @CreateDateColumn({ name: 'created_at', nullable: false })
+  @CreateDateColumn({ name: 'created_at', type: 'datetime', nullable: false })
   createdAt!: Date
 
-  @UpdateDateColumn({ name: 'updated_at', nullable: false })
+  @UpdateDateColumn({ name: 'updated_at', type: 'datetime', nullable: false })
   updatedAt!: Date
 
   @Column({ name: 'expires_at', type: 'datetime', nullable: true })
