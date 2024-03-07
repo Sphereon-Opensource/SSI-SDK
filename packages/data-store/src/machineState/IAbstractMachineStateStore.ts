@@ -14,5 +14,5 @@ export abstract class IAbstractMachineStateStore {
   abstract getMachineState(args: StoreMachineStateGetArgs): Promise<StoreMachineStateInfo>
   abstract findMachineStates(args?: StoreFindMachineStatesArgs): Promise<Array<StoreMachineStateInfo>>
   abstract deleteMachineState(args: StoreMachineStateDeleteArgs): Promise<boolean>
-  abstract deleteExpiredMachineStates(args: StoreMachineStateDeleteExpiredArgs): Promise<boolean>
+  abstract deleteExpiredMachineStates(args: StoreMachineStateDeleteExpiredArgs): Promise<number>
 }

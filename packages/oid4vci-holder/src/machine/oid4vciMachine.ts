@@ -1,8 +1,7 @@
 import { AuthzFlowType, toAuthorizationResponsePayload } from '@sphereon/oid4vci-common'
 import { Identity, Party } from '@sphereon/ssi-sdk.data-store'
-import { emitMachineStatePersistEvent, MachineStateInit, MachineStatePersistEventType } from '@sphereon/ssi-sdk.xstate-machine-persistence'
-import { IAgentContext } from '@veramo/core'
-import { assign, createMachine, DoneInvokeEvent, interpret, State } from 'xstate'
+import { machineStatePersistRegistration } from '@sphereon/ssi-sdk.xstate-machine-persistence'
+import { assign, createMachine, DoneInvokeEvent, interpret } from 'xstate'
 import { translate } from '../localization/Localization'
 import {
   AuthorizationResponseEvent,
@@ -553,23 +552,7 @@ export class OID4VCIMachine {
       })
     )
 
-    // TODO: This can become a function in the xstate-persistence plugin
-    if (context.agent.availableMethods().includes('machineStatePersist') && 'machineStatePersist' in context.agent) {
-      const init = (await context.agent.machineStatePersist({ machineName: 'OID4VCIHolder' })) as MachineStateInit
-      // XState persistence plugin is available. So let's emit events on every transition, so it can persist the state
-      instance.onTransition((state: State<any, any, any, any>, event) => {
-        emitMachineStatePersistEvent(
-          {
-            type: MachineStatePersistEventType.EVERY,
-            data: {
-              ...init,
-              state,
-            },
-          },
-          context as IAgentContext<never>
-        )
-      })
-    }
+    await machineStatePersistRegistration({ instance, context, machineName: 'OID4VCIHolder' })
 
     if (typeof opts?.subscription === 'function') {
       instance.onTransition(opts.subscription)

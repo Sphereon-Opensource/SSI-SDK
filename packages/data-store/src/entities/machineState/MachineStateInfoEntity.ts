@@ -1,8 +1,8 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm'
 
 @Entity('MachineStateInfoEntity')
 export class MachineStateInfoEntity extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid', { name: 'instance_id' })
+  @PrimaryColumn({ name: 'instance_id', type: 'varchar', nullable: false })
   instanceId!: string
 
   @Column({ name: 'session_id', type: 'varchar', nullable: true })
@@ -26,6 +26,9 @@ export class MachineStateInfoEntity extends BaseEntity {
 
   @UpdateDateColumn({ name: 'updated_at', type: 'datetime', nullable: false })
   updatedAt!: Date
+
+  @Column({ name: 'updated_count', type: 'integer', nullable: false })
+  updatedCount!: number
 
   @Column({ name: 'expires_at', type: 'datetime', nullable: true })
   expiresAt?: Date

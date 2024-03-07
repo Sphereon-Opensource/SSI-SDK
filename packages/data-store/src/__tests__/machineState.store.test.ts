@@ -94,7 +94,7 @@ describe('Machine State store tests', (): void => {
     const persistedState = await store.persistMachineState(persistArgs)
     expect(persistedState).toBeDefined()
 
-    const result: boolean = await store.deleteMachineState({ id: persistedState.instanceId })
+    const result: boolean = await store.deleteMachineState({ instanceId: persistedState.instanceId })
     expect(result).toBeTruthy()
   })
 

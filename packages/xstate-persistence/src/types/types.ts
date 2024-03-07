@@ -1,4 +1,9 @@
-import { IAbstractMachineStateStore, StoreMachineStateInfo, StoreMachineStatesFindActiveArgs } from '@sphereon/ssi-sdk.data-store'
+import {
+  IAbstractMachineStateStore,
+  StoreMachineStateDeleteExpiredArgs,
+  StoreMachineStateInfo,
+  StoreMachineStatesFindActiveArgs,
+} from '@sphereon/ssi-sdk.data-store'
 import { IAgentContext } from '@veramo/core'
 import { AnyEventObject, EventObject, HistoryValue, SCXML, StateValue } from 'xstate'
 
@@ -11,15 +16,15 @@ export enum MachineStatePersistEventType {
   EVERY = 'EVERY',
 }
 
-export type DeleteExpiredStatesArgs = Pick<StoreMachineStateInfo, 'machineName'>
+export type DeleteExpiredStatesArgs = Pick<StoreMachineStateDeleteExpiredArgs, 'deleteDoneStates' | 'machineName' | 'tenantId'>
 
 export type FindActiveStatesArgs = StoreMachineStatesFindActiveArgs
 
-export type DeleteStateResult = boolean
+export type DeleteStateResult = number
 
 export type MachineStatePersistEvent = {
   type: MachineStatePersistEventType
-  data: MachineStatePersistArgs
+  data: MachineStatePersistArgs & { _eventCounter: number; _eventDate: Date }
 }
 
 export type RequiredContext = IAgentContext<IMachineStatePersistence>
@@ -32,7 +37,12 @@ export type MachineStateInit = Pick<MachineStateInfo, 'instanceId' | 'machineNam
 
 export type InitMachineStateArgs = Partial<MachineStateInit> & Pick<MachineStateInfo, 'machineName'>
 
-export type MachineStatePersistArgs = Omit<MachineStateInit, 'createdAt'> & Pick<MachineStateInfo, 'state' | 'instanceId'>
+export type MachineStatePersistArgs = Omit<MachineStateInit, 'createdAt'> &
+  Pick<MachineStateInfo, 'state' | 'instanceId'> &
+  Partial<Pick<MachineStateInfo, 'updatedCount'>>
+
+export type MachineStateGetArgs = Pick<StoreMachineStateInfo, 'instanceId' | 'tenantId'>
+export type MachineStateDeleteArgs = Pick<StoreMachineStateInfo, 'instanceId' | 'tenantId'>
 
 export type SerializableState = XStateConfig<any, AnyEventObject>
 

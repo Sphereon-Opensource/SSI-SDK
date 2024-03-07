@@ -90,3 +90,4 @@ agent:
                 $require: './packages/data-store/dist#MachineStateStore'
                 $args:
                   - $ref: /dbConnection
+              eventTypes: ['EVERY']

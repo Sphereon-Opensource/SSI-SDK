@@ -1,14 +1,12 @@
-import { enablePostgresUuidExtension } from '@sphereon/ssi-sdk.core'
 import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class CreateMachineStateStore1708797018115 implements MigrationInterface {
   name = 'CreateMachineStateStore1708797018115'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await enablePostgresUuidExtension(queryRunner)
     await queryRunner.query(`
             CREATE TABLE "MachineStateInfoEntity" (
-                "instance_id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "instance_id" text NOT NULL,
                 "session_id" text,
                 "latest_state_name" text,
                 "machine_name" text NOT NULL,
@@ -16,6 +14,7 @@ export class CreateMachineStateStore1708797018115 implements MigrationInterface 
                 "state" text NOT NULL,
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_count" integer NOT NULL DEFAULT 0,
                 "expires_at" TIMESTAMP,
                 "completed_at" TIMESTAMP,
                 "tenant_id" text,

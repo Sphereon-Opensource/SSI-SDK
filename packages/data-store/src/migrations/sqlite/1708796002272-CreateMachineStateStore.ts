@@ -14,6 +14,7 @@ export class CreateMachineStateStore1708796002272 implements MigrationInterface 
                 "state" text NOT NULL,
                 "created_at" datetime NOT NULL DEFAULT (datetime('now')),
                 "updated_at" datetime NOT NULL DEFAULT (datetime('now')),
+                "updated_count" integer NOT NULL DEFAULT 0,
                 "expires_at" datetime,
                 "completed_at" datetime,
                 "tenant_id" varchar

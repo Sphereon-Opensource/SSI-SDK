@@ -7,7 +7,7 @@ export const machineStateToStoreInfo = (
   machineInfo: MachineStatePersistArgs,
   existingState?: Partial<StoreMachineStateInfo>
 ): StoreMachineStateInfo => {
-  const { state, machineName, tenantId, expiresAt, instanceId } = machineInfo
+  const { state, machineName, tenantId, expiresAt, instanceId, updatedCount } = machineInfo
 
   const existing: Partial<StoreMachineStateInfo> = existingState ?? { machineName, createdAt: new Date(), expiresAt }
   const stateInstance = State.create(machineInfo.state)
@@ -20,6 +20,7 @@ export const machineStateToStoreInfo = (
   }
   return {
     instanceId,
+    updatedCount: updatedCount ?? (existing?.updatedCount ? existing.updatedCount++ : 0),
     sessionId: stateInstance._sessionid ?? undefined,
     machineName,
     state: serializeMachineState(state),

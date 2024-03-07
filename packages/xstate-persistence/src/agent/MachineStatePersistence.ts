@@ -8,6 +8,8 @@ import {
   DeleteExpiredStatesArgs,
   DeleteStateResult,
   InitMachineStateArgs,
+  MachineStateDeleteArgs,
+  MachineStateGetArgs,
   MachineStateInfo,
   MachineStateInit,
   MachineStatePersistArgs,
@@ -48,21 +50,29 @@ export class MachineStatePersistence implements IAgentPlugin {
       machineStatesDeleteExpired: this.machineStatesDeleteExpired.bind(this),
       machineStateInit: this.machineStateInit.bind(this),
       machineStatePersist: this.machineStatePersist.bind(this),
+      machineStateGet: this.machineStateGet.bind(this),
+      machineStateDelete: this.machineStateDelete.bind(this),
     }
   }
 
   public async onEvent(event: MachineStatePersistEvent, context: RequiredContext): Promise<void> {
+    debug(`Received machine state persistence event '${event.type}' counter: ${event.data._eventCounter}`)
     if (!this.eventTypes.includes(event.type)) {
+      console.log(`event type ${event.type} not registered for agent. Registered: ${JSON.stringify(this.eventTypes)}`)
       return
     }
+
+    // Below we are calling the context of the agent instead of this to make sure the REST client is called when configured
     switch (event.type) {
       case MachineStatePersistEventType.INIT:
-        // Calling the context of the agent instead of this to make sure the REST client is called when configured
         await context.agent.machineStateInit({ ...event.data })
         break
       case MachineStatePersistEventType.EVERY:
-        // Calling the context of the agent instead of this to make sure the REST client is called when configured
-        void context.agent.machineStatePersist({ ...event.data })
+        if (event.data.state.done) {
+          // TODO: Cleanup on done
+        }
+        // We are keeping track of the update counter in the events, ensuring we do not process out of order
+        await context.agent.machineStatePersist({ ...event.data, updatedCount: event.data._eventCounter ?? event.data.updatedCount })
         break
       default:
         return Promise.reject(Error('Event type not supported'))
@@ -80,15 +90,15 @@ export class MachineStatePersistence implements IAgentPlugin {
     return machineInit
   }
   private async machineStatePersist(args: MachineStatePersistArgs): Promise<MachineStateInfo> {
-    const { instanceId, tenantId, machineName } = args
-    debug(`machineStatePersist for machine name ${machineName}, instance ${instanceId} and tenant ${tenantId}...`)
+    const { instanceId, tenantId, machineName, updatedCount } = args
+    debug(`machineStatePersist for machine name ${machineName}, updateCount: ${updatedCount}, instance ${instanceId} and tenant ${tenantId}...`)
     const queriedStates = await this.store.findMachineStates({ filter: [{ instanceId, tenantId }] })
     const existingState = queriedStates.length === 1 ? queriedStates[0] : undefined
     const storeInfoArgs = machineStateToStoreInfo(args, existingState)
     const storedState = await this.store.persistMachineState(storeInfoArgs)
     const machineStateInfo = { ...storedState, state: deserializeMachineState(storedState.state) }
     debug(
-      `machineStatePersist success for machine name ${machineName}, instance ${instanceId}, tenant ${tenantId}, last event: ${machineStateInfo.latestEventType}, last state: ${machineStateInfo.latestStateName}`
+      `machineStatePersist success for machine name ${machineName}, instance ${instanceId}, update count ${machineStateInfo.updatedCount}, tenant ${tenantId}, last event: ${machineStateInfo.latestEventType}, last state: ${machineStateInfo.latestStateName}`
     )
     return machineStateInfo
   }
@@ -105,6 +115,27 @@ export class MachineStatePersistence implements IAgentPlugin {
   }
 
   private async machineStatesDeleteExpired(args: DeleteExpiredStatesArgs): Promise<DeleteStateResult> {
-    return this.store.deleteExpiredMachineStates(args)
+    const { machineName, tenantId } = args
+    debug(`machineStatesDeleteExpired for machine name ${machineName} and tenant ${tenantId}...`)
+    const deleteResult = await this.store.deleteExpiredMachineStates(args)
+    debug(`machineStatesDeleteExpired result for machine name ${machineName} and tenant ${tenantId}: ${deleteResult}`)
+    return deleteResult
+  }
+
+  private async machineStateGet(args: MachineStateGetArgs, context: RequiredContext): Promise<MachineStateInfo> {
+    const { instanceId, tenantId } = args
+    debug(`machineStateGet for machine instance ${instanceId} and tenant ${tenantId}...`)
+    const storedState = await this.store.getMachineState(args)
+    const machineInfo = { ...storedState, state: deserializeMachineState(storedState.state) }
+    debug(`machineStateGet result for machine instance ${instanceId} and tenant ${tenantId}: ${machineInfo}`)
+    return machineInfo
+  }
+
+  private async machineStateDelete(args: MachineStateDeleteArgs, context: RequiredContext): Promise<boolean> {
+    const { instanceId, tenantId } = args
+    debug(`machineStateDelete for machine instance ${instanceId} and tenant ${tenantId}...`)
+    const deleteResult = await this.store.deleteMachineState(args)
+    debug(`machineStateDelete result for machine instance ${instanceId} and tenant ${tenantId}: ${deleteResult}`)
+    return deleteResult
   }
 }

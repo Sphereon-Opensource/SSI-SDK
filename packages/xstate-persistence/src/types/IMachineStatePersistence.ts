@@ -9,6 +9,8 @@ import {
   InitMachineStateArgs,
   RequiredContext,
   MachineStatePersistArgs,
+  MachineStateGetArgs,
+  MachineStateDeleteArgs,
 } from './types'
 
 /**
@@ -49,11 +51,29 @@ export interface IMachineStatePersistence extends IPluginMethodMap {
   machineStateInit(args: InitMachineStateArgs): Promise<MachineStateInit>
 
   /**
-   * Persists the state whenever an event is emitted
-   * @param args NonPersistedMachineInstance
+   * Persists the state
+   * @param args MachineStatePersistArgs
    *
    * @param context
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
   machineStatePersist(args: MachineStatePersistArgs, context: RequiredContext): Promise<MachineStateInfo>
+
+  /**
+   * Get a particular machine state by instance id and tenant id
+   * @param args instance id and tenant id
+   *
+   * @param context
+   * @beta This API is likely to change without a BREAKING CHANGE notice
+   */
+  machineStateGet(args: MachineStateGetArgs, context: RequiredContext): Promise<MachineStateInfo>
+
+  /**
+   * Delete a particular machine state by instance id and tenant id
+   * @param args instance id and tenant id
+   *
+   * @param context
+   * @beta This API is likely to change without a BREAKING CHANGE notice
+   */
+  machineStateDelete(args: MachineStateDeleteArgs, context: RequiredContext): Promise<boolean>
 }

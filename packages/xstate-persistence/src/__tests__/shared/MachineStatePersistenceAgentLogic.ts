@@ -1,4 +1,4 @@
-import { TAgent } from '@veramo/core'
+import { IAgentContext, TAgent } from '@veramo/core'
 import {
   AnyEventObject,
   assign,
@@ -10,25 +10,38 @@ import {
   ServiceMap,
   TypegenDisabled,
 } from 'xstate'
-import { IMachineStatePersistence, MachineStatePersistArgs } from '../../index'
+import { IMachineStatePersistence, MachineStatePersistArgs, machineStatePersistRegistration } from '../../index'
 
 type ConfiguredAgent = TAgent<IMachineStatePersistence>
 
 export const counterMachine = createMachine({
+  predictableActionArguments: true,
   id: 'counter',
   context: {
     count: 0,
   },
-  on: {
-    increment: {
-      actions: assign({
-        count: (context) => context.count + 1,
-      }),
+  initial: 'init',
+
+  states: {
+    init: {
+      id: 'init',
+      on: {
+        increment: {
+          actions: assign({
+            count: (context) => {
+              console.log(context.count + 1)
+              return context.count + 1
+            },
+          }),
+        },
+        finalize: {
+          target: 'final',
+        },
+      },
     },
-    decrement: {
-      actions: assign({
-        count: (context) => context.count - 1,
-      }),
+    final: {
+      id: 'final',
+      type: 'final',
     },
   },
 })
@@ -46,6 +59,9 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       },
       ResolveTypegenMeta<TypegenDisabled, AnyEventObject, BaseActionObject, ServiceMap>
     >
+
+    let context: IAgentContext<any>
+
     beforeEach(() => {
       instance = interpret(counterMachine).start()
     })
@@ -57,11 +73,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     beforeAll(async (): Promise<void> => {
       await testContext.setup()
       agent = testContext.getAgent()
+      context = { ...agent.context, agent }
     })
 
     afterAll(testContext.tearDown)
 
-    it('should store xstate event', async (): Promise<void> => {
+    it('should store xstate state changes', async (): Promise<void> => {
       const machineStateInit = await agent.machineStateInit({
         machineName: counterMachine.id,
         expiresAt: new Date(new Date().getTime() + 100000),
@@ -78,11 +95,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(machineStateInfo).toMatchObject({
         completedAt: null,
         instanceId: expect.anything(),
-        createdAt: expectDateOrString(),
+        createdAt: expectDateOrString(true),
         expiresAt: expectDateOrString(),
         sessionId: 'x:0',
         latestEventType: 'xstate.init',
-        latestStateName: null,
+        latestStateName: 'init',
         machineName: machineStateInit.machineName,
         state: expect.anything(),
         tenantId: machineStateInit.tenantId,
@@ -106,7 +123,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         expiresAt: expectDateOrString(),
         sessionId: 'x:0',
         latestEventType: 'increment',
-        latestStateName: null,
+        latestStateName: 'init',
         machineName: machineStateInit.machineName,
         state: expect.anything(),
         tenantId: machineStateInit.tenantId,
@@ -114,70 +131,73 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       })
       // count should have increased to 1
       expect(machineStateInfoIncrement.state.context.count).toEqual(1)
+
+      await expect(agent.machineStateDelete({ instanceId: machineStateInfo.instanceId })).resolves.toEqual(true)
     })
 
-    /*it('should retrieve an xstate event', async (): Promise<void> => {
-              const xstateEvent: StoreMachineStatePersistArgs = {
-                machineName: 'acceptAgreement',
-                machineName: 'Onboarding',
-                latestEventType: 'SET_TOC',
-                state: { myState: 'test_state' },
-                expiresAt: new Date(new Date().getTime() + 100000),
-                tenantId: 'test_tenant_id',
-              }
+    it('should automatically store xstate state changes', async (): Promise<void> => {
+      const init = await machineStatePersistRegistration({ context, instance, machineName: instance.machine.id })
+      if (!init) {
+        return Promise.reject(new Error('No init'))
+      }
+      expect(init).toBeDefined()
 
-              const savedXStoreEvent: StoreMachineStateInfo = await agent.machineStatePersist({ ...xstateEvent })
-              expect(savedXStoreEvent).toBeDefined()
+      const { instanceId, machineName } = init
 
-              const result: StoreMachineStateInfo = await agent.machineStatesFindActive({ machineName: savedXStoreEvent.machineName })
-              expect(result).toBeDefined()
-            })
+      // Wait some time since events are async
+      await new Promise((res) => setTimeout(res, 100))
+      instance.send('increment')
 
-            it('should delete the expired records', async () => {
-              const now = new Date()
-              const expiresAt = new Date(now.getTime() + 100000000)
-              const expired = new Date(now.getTime() - 100000000)
+      // Wait some time since events are async
+      await new Promise((res) => setTimeout(res, 100))
+      let activeStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })
+      expect(activeStates).toHaveLength(1)
+      expect(activeStates[0].instanceId).toEqual(instanceId)
+      expect(activeStates[0].createdAt).toBeDefined()
+      expect(activeStates[0].state).toBeDefined()
+      expect(activeStates[0].state.context.count).toEqual(1)
 
-              const newestXstateEvent: StoreMachineStatePersistArgs = {
-                machineName: 'enterPersonalDetails',
-                state: 'test_state',
-                machineName: 'Onboarding3',
-                latestEventType: 'SET_PERSONAL_DATA',
-                expiresAt: expired, // This event is expired
-                tenantId: 'test_tenant_id',
-              }
-              const middleXstateEvent: StoreMachineStatePersistArgs = {
-                machineName: 'acceptAgreement',
-                machineName: 'Onboarding2',
-                latestEventType: 'SET_POLICY',
-                state: 'test_state',
-                expiresAt, // This event is not expired
-                tenantId: 'test_tenant_id',
-              }
-              const oldestXstateEvent: StoreMachineStatePersistArgs = {
-                machineName: 'acceptAgreement',
-                machineName: 'Onboarding1',
-                latestEventType: 'SET_TOC',
-                state: 'test_state',
-                expiresAt, // This event is not expired
-                tenantId: 'test_tenant_id',
-              }
+      instance.send('increment')
+      // Wait some time since events are async
+      await new Promise((res) => setTimeout(res, 100))
+      activeStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })
+      expect(activeStates).toHaveLength(1)
+      expect(activeStates[0].state.context.count).toEqual(2)
 
-              await agent.machineStatePersist(newestXstateEvent)
-              await agent.machineStatePersist(middleXstateEvent)
-              await agent.machineStatePersist(oldestXstateEvent)
-              await agent.machineStatesDeleteExpired({ machineName: 'Onboarding3' })
+      let machineState = await agent.machineStateGet({ instanceId })
+      expect(machineState.state.context).toEqual(activeStates[0].state.context)
 
-              await expect(agent.machineStatesFindActive({ machineName: 'Onboarding1' })).resolves.toBeDefined()
-              await expect(agent.machineStatesFindActive({ machineName: 'Onboarding2' })).resolves.toBeDefined()
-              await expect(agent.machineStatesFindActive({ machineName: 'Onboarding3' })).rejects.toEqual(
-                Error('No active state found for machineName: Onboarding3, tenantId: undefined')
-              )
-            })*/
+      // Should not delete anything, given the machine is not in a final state and we have no expirationDate
+      await expect(agent.machineStatesDeleteExpired({ deleteDoneStates: true })).resolves.toEqual(0)
+      await expect(agent.machineStatesDeleteExpired({ deleteDoneStates: true, machineName })).resolves.toEqual(0)
+      await expect(agent.machineStatesDeleteExpired({ deleteDoneStates: false })).resolves.toEqual(0)
+      await expect(agent.machineStatesDeleteExpired({ deleteDoneStates: false, machineName })).resolves.toEqual(0)
+
+      // Let's move to the final state. There should be no more active state available afterwards
+      instance.send('finalize')
+      // Wait some time since events are async
+      await new Promise((res) => setTimeout(res, 100))
+      const finalActiveStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })
+      expect(finalActiveStates).toHaveLength(0)
+
+      machineState = await agent.machineStateGet({ instanceId })
+      expect(machineState.state.context).toEqual(activeStates[0].state.context)
+      expect(machineState.completedAt).toBeDefined()
+      expect(machineState.latestStateName).toEqual('final')
+
+      // Should not delete anything, given the we look at expiration dates only when deleteDoneStates is false
+      await expect(agent.machineStatesDeleteExpired({ deleteDoneStates: false })).resolves.toEqual(0)
+      // Delete done states, but invalid machine name provided. So nothing should be deleted
+      await expect(agent.machineStatesDeleteExpired({ deleteDoneStates: true, machineName: 'does not exist' })).resolves.toEqual(0)
+
+      // Delete done states, with valid machine name provided. It should be gone
+      await expect(agent.machineStatesDeleteExpired({ deleteDoneStates: true, machineName })).resolves.toEqual(1)
+      await expect(agent.machineStateGet({ instanceId })).rejects.toThrowError()
+    })
   })
 }
 
-const expectDateOrString = () => {
-  console.log(`WARN: Convert Dat issue applies: https://sphereon.atlassian.net/browse/SDK-6`)
+const expectDateOrString = (warn?: boolean) => {
+  warn && console.log(`WARN: Convert Date issue applies: https://sphereon.atlassian.net/browse/SDK-6`)
   return expect.anything()
 }
