@@ -4,6 +4,7 @@ import { CreateContacts1690925872318 } from './3-CreateContacts'
 import { CreateStatusList1693866470000 } from './4-CreateStatusList'
 import { CreateAuditEvents1701635835330 } from './5-CreateAuditEvents'
 import { CreateDigitalCredential1708525189000 } from './6-CreateDigitalCredential'
+import { CreateMachineStateStore1708098041262 } from './7-CreateMachineStateStore'
 
 /**
  * The migrations array that SHOULD be used when initializing a TypeORM database connection.
@@ -19,6 +20,7 @@ export const DataStoreIssuanceBrandingMigrations = [CreateIssuanceBranding165946
 export const DataStoreStatusListMigrations = [CreateStatusList1693866470000]
 export const DataStoreEventLoggerMigrations = [CreateAuditEvents1701635835330]
 export const DataStoreDigitalCredentialMigrations = [CreateDigitalCredential1708525189000]
+export const DataStoreMachineStateMigrations = [CreateMachineStateStore1708098041262]
 
 // All migrations together
 export const DataStoreMigrations = [
@@ -27,4 +29,5 @@ export const DataStoreMigrations = [
   ...DataStoreStatusListMigrations,
   ...DataStoreEventLoggerMigrations,
   ...DataStoreDigitalCredentialMigrations,
+  ...DataStoreMachineStateMigrations,
 ]

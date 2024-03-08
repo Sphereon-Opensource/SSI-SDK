@@ -13,13 +13,6 @@ import { computeEntryHash } from '@veramo/utils'
 import { v4 as uuidv4 } from 'uuid'
 import { OID4VCIMachine } from '../machine/oid4vciMachine'
 import {
-  getCredentialBranding,
-  getSupportedCredentials,
-  mapCredentialToAccept,
-  selectCredentialLocaleBranding,
-  verifyCredentialToAccept,
-} from './OID4VCIHolderService'
-import {
   AddContactIdentityArgs,
   AssertValidCredentialsArgs,
   CreateCredentialSelectionArgs,
@@ -27,23 +20,29 @@ import {
   CredentialTypeSelection,
   GetContactArgs,
   GetCredentialsArgs,
-  OnGetCredentialsArgs,
-  IOID4VCIHolder,
   InitiateOID4VCIArgs,
   InitiationData,
+  IOID4VCIHolder,
   MappedCredentialToAccept,
   OID4VCIHolderEvent,
   OID4VCIHolderOptions,
-  OID4VCIMachine as OID4VCIMachineType,
+  OID4VCIMachine as OID4VCImachineId,
   OID4VCIMachineInstanceOpts,
-  OID4VCIMachineInterpreter,
   OnContactIdentityCreatedArgs,
   OnCredentialStoredArgs,
+  OnGetCredentialsArgs,
   RequestType,
   RequiredContext,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
 } from '../types/IOID4VCIHolder'
+import {
+  getCredentialBranding,
+  getSupportedCredentials,
+  mapCredentialToAccept,
+  selectCredentialLocaleBranding,
+  verifyCredentialToAccept,
+} from './OID4VCIHolderService'
 
 /**
  * {@inheritDoc IOID4VCIHolder}
@@ -93,7 +92,10 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
   }
 
-  private async oid4vciHolderGetMachineInterpreter(args: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<OID4VCIMachineType> {
+  /**
+   * FIXME: This method can only be used locally. Creating the interpreter should be local to where the agent is running
+   */
+  private async oid4vciHolderGetMachineInterpreter(args: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<OID4VCImachineId> {
     const services = {
       initiateOID4VCI: (args: InitiateOID4VCIArgs) => this.oid4vciHolderGetCredentialOfferData(args, context),
       createCredentialSelection: (args: CreateCredentialSelectionArgs) => this.oid4vciHolderCreateCredentialSelection(args, context),
@@ -113,10 +115,10 @@ export class OID4VCIHolder implements IAgentPlugin {
       },
     }
 
-    const interpreter: OID4VCIMachineInterpreter = OID4VCIMachine.newInstance(oid4vciMachineInstanceArgs)
+    const { machineStateInit, interpreter } = await OID4VCIMachine.newInstance(oid4vciMachineInstanceArgs, context)
 
     return {
-      id: interpreter.id,
+      machineStateInit,
       interpreter,
     }
   }
