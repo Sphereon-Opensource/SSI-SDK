@@ -8,7 +8,7 @@ export type StoreFindMachineStatesArgs = {
   filter: FindMachineStatesFilterArgs
 }
 
-export type StoreMachineStateGetArgs = Pick<StoreMachineStateInfo, 'instanceId'>
+export type StoreMachineStateGetArgs = Pick<StoreMachineStateInfo, 'instanceId' | 'tenantId'>
 
 export type StoreMachineStateDeleteArgs = StoreMachineStateGetArgs
 export type StoreMachineStateDeleteExpiredArgs = { machineName?: string; tenantId?: string; deleteDoneStates?: boolean }

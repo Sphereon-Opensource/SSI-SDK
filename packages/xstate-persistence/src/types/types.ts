@@ -77,17 +77,29 @@ export type MachineStateInfo = Omit<StoreMachineStateInfo, 'state'> & {
   state: SerializableState
 }
 
+export type MachineStatePersistenceOpts = {
+  disablePersistence?: boolean // Disable persistence altogether
+  customInstanceId?: string // Used when creating a machine using a custom new instance id
+  existingInstanceId?: string // Used when creating a machine using an existing instance (rehydrating a persisted machine)
+  expireInMS?: number // Expire in an amount of MS (takes precedence over date if both are provided!)
+  expiresAt?: Date // Expire at a specific date
+}
+
+export type MachineStateInitType = 'new' | 'existing'
+
 /**
  * Represents the initial state for a machine.
  *
  * @typedef {Object} MachineStateInit
- * @property {string} instanceId - The unique identifier for the machine instance.
+ * @property {string} existingInstanceId - The unique identifier for the machine instance.
  * @property {string} machineName - The name of the machine.
  * @property {string} tenantId - The identifier for the tenant associated with the machine.
  * @property {Date} createdAt - The date and time when the machine was created.
  * @property {Date} expiresAt - The date and time when the machine's state expires.
  */
-export type MachineStateInit = Pick<MachineStateInfo, 'instanceId' | 'machineName' | 'tenantId' | 'createdAt' | 'expiresAt'>
+export type MachineStateInit = Pick<MachineStateInfo, 'instanceId' | 'machineName' | 'tenantId' | 'createdAt' | 'expiresAt'> & {
+  stateType: MachineStateInitType
+}
 
 /**
  * Represents the arguments required to initialize the machine state.
@@ -95,7 +107,9 @@ export type MachineStateInit = Pick<MachineStateInfo, 'instanceId' | 'machineNam
  * @property {string} machineName - The name of the machine.
  * @property {Partial<MachineStateInit>} [additionalArgs] - Additional initialization arguments for the machine state.
  */
-export type InitMachineStateArgs = Partial<MachineStateInit> & Pick<MachineStateInfo, 'machineName'>
+export type InitMachineStateArgs = Omit<Partial<MachineStateInit>, 'instanceId'> &
+  Pick<MachineStateInfo, 'machineName'> &
+  Pick<MachineStatePersistenceOpts, 'customInstanceId' | 'existingInstanceId'>
 
 /**
  * Represents the arguments required to persist the machine state.
@@ -107,7 +121,7 @@ export type MachineStatePersistArgs = Omit<MachineStateInit, 'createdAt'> &
 /**
  * Represents the arguments required to get machine state.
  * @typedef {Object} MachineStateGetArgs
- * @property {string} instanceId - The ID of the machine instance.
+ * @property {string} existingInstanceId - The ID of the machine instance.
  * @property {string} tenantId - The ID of the tenant the machine belongs to.
  */
 export type MachineStateGetArgs = Pick<StoreMachineStateInfo, 'instanceId' | 'tenantId'>
@@ -116,7 +130,7 @@ export type MachineStateGetArgs = Pick<StoreMachineStateInfo, 'instanceId' | 'te
  * Represents the arguments required for deleting a machine state.
  *
  * @typedef {object} MachineStateDeleteArgs
- * @property {string} instanceId - The ID of the machine instance to delete the state for.
+ * @property {string} existingInstanceId - The ID of the machine instance to delete the state for.
  * @property {string} tenantId - The ID of the tenant owning the machine instance.
  */
 export type MachineStateDeleteArgs = Pick<StoreMachineStateInfo, 'instanceId' | 'tenantId'>

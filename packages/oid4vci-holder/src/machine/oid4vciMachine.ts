@@ -1,6 +1,6 @@
 import { AuthzFlowType, toAuthorizationResponsePayload } from '@sphereon/oid4vci-common'
 import { Identity, Party } from '@sphereon/ssi-sdk.data-store'
-import { machineStatePersistRegistration } from '@sphereon/ssi-sdk.xstate-machine-persistence'
+import { MachineStateInit, machineStatePersistRegistration } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { assign, createMachine, DoneInvokeEvent, interpret } from 'xstate'
 import { translate } from '../localization/Localization'
 import {
@@ -105,7 +105,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
   }
 
   return createMachine<OID4VCIMachineContext, OID4VCIMachineEventTypes>({
-    id: opts?.machineId ?? 'OID4VCIHolder',
+    id: opts?.machineName ?? 'OID4VCIHolder',
     predictableActionArguments: true,
     initial: OID4VCIMachineStates.initiateOID4VCI,
     schema: {
@@ -531,8 +531,13 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
 }
 
 export class OID4VCIMachine {
-  static async newInstance(opts: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<OID4VCIMachineInterpreter> {
-    const instance: OID4VCIMachineInterpreter = interpret(
+  static async newInstance(
+    opts: OID4VCIMachineInstanceOpts,
+    context: RequiredContext
+  ): Promise<{ interpreter: OID4VCIMachineInterpreter; machineStateInit?: MachineStateInit }> {
+    const { machineName, statePersistence } = opts
+    const { expireInMS, disablePersistence, expiresAt, customInstanceId, existingInstanceId } = statePersistence ?? {}
+    const interpreter: OID4VCIMachineInterpreter = interpret(
       createOID4VCIMachine(opts).withConfig({
         services: {
           ...opts?.services,
@@ -552,17 +557,26 @@ export class OID4VCIMachine {
       })
     )
 
-    await machineStatePersistRegistration({ instance, context, machineName: 'OID4VCIHolder' })
+    const machineStateInit = await machineStatePersistRegistration({
+      interpreter,
+      context,
+      machineName,
+      expiresAt,
+      expireInMS,
+      disablePersistence,
+      customInstanceId,
+      existingInstanceId /* TODO:, tenantId*/,
+    })
 
     if (typeof opts?.subscription === 'function') {
-      instance.onTransition(opts.subscription)
+      interpreter.onTransition(opts.subscription)
     }
     if (opts?.requireCustomNavigationHook !== true) {
-      instance.onTransition((snapshot: OID4VCIMachineState): void => {
-        opts?.stateNavigationListener(instance, snapshot)
+      interpreter.onTransition((snapshot: OID4VCIMachineState): void => {
+        opts?.stateNavigationListener(interpreter, snapshot)
       })
     }
 
-    return instance
+    return { interpreter, machineStateInit }
   }
 }

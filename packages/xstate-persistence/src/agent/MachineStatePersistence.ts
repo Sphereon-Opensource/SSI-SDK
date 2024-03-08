@@ -3,7 +3,7 @@ import { IAgentPlugin } from '@veramo/core'
 import * as console from 'console'
 import Debug from 'debug'
 import { v4 as uuidv4 } from 'uuid'
-import { deserializeMachineState, machineStateToStoreInfo } from '../functions'
+import { deserializeMachineState, machineStateToStoreInfo, storeInfoToMachineInit } from '../functions'
 
 import {
   DeleteExpiredStatesArgs,
@@ -91,14 +91,31 @@ export class MachineStatePersistence implements IAgentPlugin {
   }
 
   private async machineStateInit(args: InitMachineStateArgs): Promise<MachineStateInit> {
-    const { tenantId, machineName, expiresAt } = args
-    debug(`machineStateInit for machine name ${machineName} and tenant ${tenantId}`)
-    const machineInit: MachineStateInit = {
-      machineName,
-      tenantId,
-      expiresAt,
-      instanceId: args.instanceId ?? uuidv4(),
-      createdAt: args.createdAt ?? new Date(),
+    const { tenantId, machineName, expiresAt, customInstanceId, existingInstanceId } = args
+    debug(
+      `machineStateInit for machine name ${machineName}, tenant ${tenantId}, custom instance ${customInstanceId}, existing id ${existingInstanceId}`
+    )
+    let machineInit: MachineStateInit | undefined = undefined
+    if (customInstanceId && existingInstanceId) {
+      return Promise.reject(new Error(`Cannot have both a custom and existing instance id at the same time`))
+    } else if (existingInstanceId) {
+      // An instanceId is provided. First lookup whether this id is persisted, if not an error is thrown
+      debug(`machineStateInit is using a previously persisted instance id (${existingInstanceId})`)
+      const state = await this.store.getMachineState({ tenantId, instanceId: existingInstanceId })
+      machineInit = storeInfoToMachineInit({ ...state, stateType: 'existing' })
+    } else if (customInstanceId) {
+      // An custom instanceId is provided.
+      debug(`machineStateInit is using a custom instance id (${existingInstanceId})`)
+    }
+    if (!machineInit) {
+      machineInit = {
+        machineName,
+        tenantId,
+        expiresAt,
+        instanceId: customInstanceId ?? uuidv4(),
+        createdAt: args.createdAt ?? new Date(),
+        stateType: 'new',
+      }
     }
     debug(`machineStateInit result: ${JSON.stringify(machineInit)}`)
     return machineInit

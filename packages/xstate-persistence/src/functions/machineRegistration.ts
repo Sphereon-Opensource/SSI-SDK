@@ -1,6 +1,6 @@
 import { IAgentContext } from '@veramo/core'
 import { DefaultContext, EventObject, Interpreter, StateSchema, TypegenDisabled, Typestate } from 'xstate'
-import { IMachineStatePersistence, InitMachineStateArgs, MachineStateInit, MachineStatePersistEventType } from '../types'
+import { IMachineStatePersistence, InitMachineStateArgs, MachineStateInit, MachineStatePersistenceOpts, MachineStatePersistEventType } from '../types'
 import { emitMachineStatePersistEvent } from './stateEventEmitter'
 
 /**
@@ -12,10 +12,12 @@ import { emitMachineStatePersistEvent } from './stateEventEmitter'
  * @returns {Promise<MachineStateInit | undefined>} - A promise that resolves to the initialized machine state, or undefined if the agent isn't using the Xstate plugin.
  */
 export const machineStatePersistInit = async (
-  opts: InitMachineStateArgs & {
-    context: IAgentContext<any> // We use any as this method could be called from an agent with access to, but not exposing this plugin
-  }
+  opts: InitMachineStateArgs &
+    Pick<MachineStatePersistenceOpts, 'existingInstanceId' | 'customInstanceId'> & {
+      context: IAgentContext<any> // We use any as this method could be called from an agent with access to, but not exposing this plugin
+    }
 ): Promise<MachineStateInit | undefined> => {
+  // make sure the machine context does not end up in the machine state init args
   const { context, ...args } = opts
   if (!(context.agent.availableMethods().includes('machineStateInit') && 'machineStateInit' in context.agent)) {
     console.log(`IMachineStatePersistence was not exposed in the current agent. Not initializing new persistence object`)
@@ -44,11 +46,11 @@ export const machineStatePersistOnTransition = async <
   },
   TResolvedTypesMeta = TypegenDisabled
 >(opts: {
-  instance: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
+  interpreter: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
   context: IAgentContext<any> // We use any as this method could be called from an agent with access to, but not exposing this plugin
   init: MachineStateInit
 }): Promise<void> => {
-  const { context, init, instance } = opts
+  const { context, init, interpreter } = opts
   if (!(context.agent.availableMethods().includes('machineStatePersist') && 'machineStatePersist' in context.agent)) {
     console.log(`IMachineStatePersistence was not exposed in the current agent. Disabling machine state persistence events`)
     return
@@ -57,7 +59,7 @@ export const machineStatePersistOnTransition = async <
   let _eventCounter = 0
 
   // XState persistence plugin is available. So let's emit events on every transition, so it can persist the state
-  instance.subscribe((state) => {
+  interpreter.subscribe((state) => {
     emitMachineStatePersistEvent(
       {
         type: MachineStatePersistEventType.EVERY,
@@ -90,14 +92,22 @@ export const machineStatePersistRegistration = async <
   },
   TResolvedTypesMeta = TypegenDisabled
 >(
-  args: InitMachineStateArgs &
-    Partial<Pick<InitMachineStateArgs, 'machineName'>> & {
-      instance: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
+  args: Omit<InitMachineStateArgs, 'machineName'> &
+    Partial<Pick<InitMachineStateArgs, 'machineName'>> &
+    MachineStatePersistenceOpts & {
+      interpreter: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
       context: IAgentContext<any> // We use any as this method could be called from an agent with access to, but not exposing this plugin
     }
 ): Promise<MachineStateInit | undefined> => {
-  const machineName = args.machineName ?? args.instance.machine.id ?? args.instance.id
-  const init = await machineStatePersistInit({ ...args, machineName })
+  const { disablePersistence } = args
+  if (disablePersistence === true) {
+    return
+  }
+
+  // We use expires in MS first. If not provided, look at expires at. If not provided, the persistence will not expire
+  const expiresAt = args.expireInMS ? new Date(Date.now() + args.expireInMS) : args.expiresAt
+  const machineName = args.machineName ?? args.interpreter.machine.id ?? args.interpreter.id
+  const init = await machineStatePersistInit({ ...args, machineName, expiresAt })
   if (init) {
     await machineStatePersistOnTransition({ ...args, init })
   }
