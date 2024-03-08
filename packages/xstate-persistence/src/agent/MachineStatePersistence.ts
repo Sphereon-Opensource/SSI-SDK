@@ -1,5 +1,6 @@
 import { IAbstractMachineStateStore, StoreMachineStateInfo } from '@sphereon/ssi-sdk.data-store'
 import { IAgentPlugin } from '@veramo/core'
+import * as console from 'console'
 import Debug from 'debug'
 import { v4 as uuidv4 } from 'uuid'
 import { deserializeMachineState, machineStateToStoreInfo } from '../functions'
@@ -7,6 +8,8 @@ import { deserializeMachineState, machineStateToStoreInfo } from '../functions'
 import {
   DeleteExpiredStatesArgs,
   DeleteStateResult,
+  FindActiveStatesArgs,
+  IMachineStatePersistence,
   InitMachineStateArgs,
   MachineStateDeleteArgs,
   MachineStateGetArgs,
@@ -19,7 +22,6 @@ import {
   RequiredContext,
   schema,
 } from '../index'
-import { FindActiveStatesArgs, IMachineStatePersistence } from '../types'
 
 const debug = Debug('sphereon:ssi-sdk:machine-state:xstate-persistence')
 
@@ -32,19 +34,20 @@ const debug = Debug('sphereon:ssi-sdk:machine-state:xstate-persistence')
  */
 export class MachineStatePersistence implements IAgentPlugin {
   readonly schema = schema.IMachineStatePersistence
-  readonly methods: IMachineStatePersistence
+  readonly methods: IMachineStatePersistence | {}
   readonly eventTypes: Array<string>
-  readonly store: IAbstractMachineStateStore
+  private readonly _store?: IAbstractMachineStateStore
 
-  constructor(opts: MachineStatePersistOpts) {
-    const { store, eventTypes } = opts
-
-    this.store = store
-    this.eventTypes = eventTypes
-
-    if (!this.store) {
+  get store(): IAbstractMachineStateStore {
+    if (!this._store) {
       throw Error('No store available in options')
     }
+    return this._store
+  }
+
+  constructor(opts: MachineStatePersistOpts) {
+    const { store, eventTypes, isRESTClient } = opts
+    this.eventTypes = eventTypes
     this.methods = {
       machineStatesFindActive: this.machineStatesFindActive.bind(this),
       machineStatesDeleteExpired: this.machineStatesDeleteExpired.bind(this),
@@ -52,6 +55,14 @@ export class MachineStatePersistence implements IAgentPlugin {
       machineStatePersist: this.machineStatePersist.bind(this),
       machineStateGet: this.machineStateGet.bind(this),
       machineStateDelete: this.machineStateDelete.bind(this),
+    }
+    this._store = store
+    if (isRESTClient) {
+      // Methods are delegated to the REMOTE Agent. We need the above eventTypes however, to ensure the local eventBus works
+      // We do set the store, because we might have some local and some remote methods
+      return
+    } else if (!store) {
+      throw Error('No store available in options')
     }
   }
 

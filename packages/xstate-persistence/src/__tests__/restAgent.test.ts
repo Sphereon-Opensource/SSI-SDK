@@ -7,10 +7,8 @@ import express, { Router } from 'express'
 import { Server } from 'http'
 import { DataSource } from 'typeorm'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
-import { IMachineStatePersistence } from '../index'
+import { IMachineStatePersistence, MachineStatePersistence, MachineStatePersistEventType } from '../index'
 import xStatePersistenceAgentLogic from './shared/MachineStatePersistenceAgentLogic'
-
-jest.setTimeout(60000)
 
 const port = 3003
 const basePath = '/agent'
@@ -23,6 +21,10 @@ const getAgent = (options?: IAgentOptions) =>
   createAgent<IMachineStatePersistence>({
     ...options,
     plugins: [
+      new MachineStatePersistence({
+        eventTypes: [MachineStatePersistEventType.EVERY],
+        isRESTClient: true,
+      }),
       new AgentRestClient({
         url: 'http://localhost:' + port + basePath,
         enabledMethods: serverAgent.availableMethods(),

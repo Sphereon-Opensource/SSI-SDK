@@ -16,7 +16,7 @@ import { IMachineStatePersistence } from './IMachineStatePersistence'
  * @property {IAbstractMachineStateStore} store - The store used to persist the machine state.
  * @property {Array<string>} eventTypes - The types of events to be persisted.
  */
-export type MachineStatePersistOpts = { store: IAbstractMachineStateStore; eventTypes: Array<string> }
+export type MachineStatePersistOpts = { store?: IAbstractMachineStateStore; eventTypes: Array<string>; isRESTClient?: boolean }
 
 /**
  * Enum representing the types of machine state persist events.
