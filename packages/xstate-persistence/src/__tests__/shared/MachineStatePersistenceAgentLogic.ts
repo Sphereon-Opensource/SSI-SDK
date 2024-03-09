@@ -236,7 +236,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should automatically start 2 new state machines with for the same machine in case singleton check is false', async (): Promise<void> => {
-      await interpreterStartOrResume({ stateType: 'new', machineName: 'counter', context, singletonCheck: false, interpreter: instance })
+      await interpreterStartOrResume({
+        stateType: 'new',
+        machineName: 'counter',
+        context,
+        singletonCheck: false,
+        interpreter: instance,
+        cleanupOnFinalState: false,
+      })
       // Wait some time since events are async
       await new Promise((res) => setTimeout(res, 50))
       let activeStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })
@@ -244,7 +251,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(activeStates[0].state).toBeDefined()
 
       await expect(
-        interpreterStartOrResume({ stateType: 'new', machineName: 'counter', context, singletonCheck: false, interpreter: interpret(counterMachine) })
+        interpreterStartOrResume({
+          stateType: 'new',
+          machineName: 'counter',
+          context,
+          singletonCheck: false,
+          interpreter: interpret(counterMachine),
+          cleanupOnFinalState: false,
+        })
       ).resolves.toBeDefined()
       await new Promise((res) => setTimeout(res, 50))
       activeStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })
@@ -255,7 +269,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should automatically start 1 new state machine and resume it after it was stopped', async (): Promise<void> => {
-      const info = await interpreterStartOrResume({ stateType: 'new', machineName: 'counter', context, singletonCheck: true, interpreter: instance })
+      const info = await interpreterStartOrResume({
+        stateType: 'new',
+        machineName: 'counter',
+        context,
+        singletonCheck: true,
+        interpreter: instance,
+        cleanupOnFinalState: false,
+      })
       // Wait some time since events are async
       await new Promise((res) => setTimeout(res, 50))
       instance.send('increment')

@@ -99,7 +99,7 @@ export class MachineStatePersistence implements IAgentPlugin {
     if (customInstanceId && existingInstanceId) {
       return Promise.reject(new Error(`Cannot have both a custom and existing instance id at the same time`))
     }
-    if (cleanupAllOtherInstances !== false) {
+    if (cleanupAllOtherInstances) {
       await context.agent.machineStatesDeleteExpired({ machineName, tenantId, deleteDoneStates: true })
       await context.agent.machineStatesDeleteExpired({ machineName, tenantId, deleteDoneStates: false })
       const activeMachineStates = (await context.agent.machineStatesFindActive({ machineName, tenantId })).filter(

@@ -158,10 +158,12 @@ export const interpreterResumeFromState = async <
 >(args: {
   machineState: MachineStateInfo
   noRegistration?: boolean
+  cleanupAllOtherInstances?: boolean
+  cleanupOnFinalState?: boolean
   interpreter: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
   context: IAgentContext<IMachineStatePersistence>
 }): Promise<StartedInterpreterInfo<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>> => {
-  const { interpreter, machineState, context, noRegistration } = args
+  const { interpreter, machineState, context, noRegistration, cleanupAllOtherInstances, cleanupOnFinalState } = args
   const { machineName, instanceId, tenantId } = machineState
   assertNonExpired(machineState)
   if (noRegistration !== true) {
@@ -170,6 +172,8 @@ export const interpreterResumeFromState = async <
       machineName,
       tenantId,
       existingInstanceId: instanceId,
+      cleanupAllOtherInstances,
+      cleanupOnFinalState,
       context,
       interpreter,
     })
@@ -213,11 +217,12 @@ export const interpreterStartOrResumeFromInit = async <
 >(args: {
   init: MachineStateInit & { stateType?: MachineStateInitType }
   cleanupAllOtherInstances?: boolean
+  cleanupOnFinalState?: boolean
   noRegistration?: boolean
   interpreter: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
   context: IAgentContext<IMachineStatePersistence>
 }): Promise<StartedInterpreterInfo<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>> => {
-  const { init, noRegistration, interpreter, cleanupAllOtherInstances, context } = args
+  const { init, noRegistration, interpreter, cleanupOnFinalState, cleanupAllOtherInstances, context } = args
   const { stateType, instanceId, machineName, tenantId, expiresAt } = init
   if (init.machineName !== interpreter.id) {
     throw new Error(`Machine state init machine name ${init.machineName} does not match name from state machine interpreter ${interpreter.id}`)
@@ -231,6 +236,7 @@ export const interpreterStartOrResumeFromInit = async <
       ...(stateType === 'existing' && { existingInstanceId: instanceId }),
       ...(stateType === 'new' && { customInstanceId: instanceId }),
       cleanupAllOtherInstances,
+      cleanupOnFinalState,
       context,
       interpreter,
     })
@@ -285,10 +291,12 @@ export const interpreterStartOrResume = async <
   singletonCheck: boolean
   noRegistration?: boolean
   cleanupAllOtherInstances?: boolean
+  cleanupOnFinalState?: boolean
   interpreter: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
   context: IAgentContext<IMachineStatePersistence>
 }): Promise<StartedInterpreterInfo<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>> => {
-  const { stateType, singletonCheck, instanceId, tenantId, noRegistration, context, interpreter, cleanupAllOtherInstances } = args
+  const { stateType, singletonCheck, instanceId, tenantId, noRegistration, context, interpreter, cleanupAllOtherInstances, cleanupOnFinalState } =
+    args
   const machineName = args.machineName ?? interpreter.id
   let activeStates = await context.agent.machineStatesFindActive({
     machineName,
@@ -324,7 +332,7 @@ export const interpreterStartOrResume = async <
       tenantId,
       cleanupAllOtherInstances,
     })
-    return await interpreterStartOrResumeFromInit({ init, noRegistration, interpreter, context })
+    return await interpreterStartOrResumeFromInit({ init, noRegistration, interpreter, context, cleanupOnFinalState, cleanupAllOtherInstances })
   }
   if (activeStates.length === 0) {
     if (stateType === 'existing') {
@@ -337,10 +345,17 @@ export const interpreterStartOrResume = async <
       tenantId,
       cleanupAllOtherInstances,
     })
-    return await interpreterStartOrResumeFromInit({ init, noRegistration, interpreter, context })
+    return await interpreterStartOrResumeFromInit({ init, noRegistration, interpreter, context, cleanupOnFinalState, cleanupAllOtherInstances })
   }
 
   // activeStates length >= 1
   const activeState = activeStates[0]
-  return interpreterResumeFromState({ machineState: activeState, noRegistration, interpreter, context })
+  return interpreterResumeFromState({
+    machineState: activeState,
+    noRegistration,
+    interpreter,
+    context,
+    cleanupOnFinalState,
+    cleanupAllOtherInstances,
+  })
 }
