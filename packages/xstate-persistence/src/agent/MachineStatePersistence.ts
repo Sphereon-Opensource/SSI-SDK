@@ -99,13 +99,13 @@ export class MachineStatePersistence implements IAgentPlugin {
     if (customInstanceId && existingInstanceId) {
       return Promise.reject(new Error(`Cannot have both a custom and existing instance id at the same time`))
     } else if (existingInstanceId) {
-      // An instanceId is provided. First lookup whether this id is persisted, if not an error is thrown
+      // A existing instanceId is provided. First lookup whether this id is persisted, if not an error is thrown
       debug(`machineStateInit is using a previously persisted instance id (${existingInstanceId})`)
       const state = await this.store.getMachineState({ tenantId, instanceId: existingInstanceId })
       machineInit = storeInfoToMachineInit({ ...state, stateType: 'existing' })
     } else if (customInstanceId) {
-      // An custom instanceId is provided.
-      debug(`machineStateInit is using a custom instance id (${existingInstanceId})`)
+      // A custom instanceId is provided.
+      debug(`machineStateInit is using a custom instance id (${customInstanceId})`)
     }
     if (!machineInit) {
       machineInit = {

@@ -5,7 +5,18 @@ import {
   StoreMachineStatesFindActiveArgs,
 } from '@sphereon/ssi-sdk.data-store'
 import { IAgentContext } from '@veramo/core'
-import { AnyEventObject, EventObject, HistoryValue, SCXML, StateValue } from 'xstate'
+import {
+  AnyEventObject,
+  DefaultContext,
+  EventObject,
+  HistoryValue,
+  Interpreter,
+  SCXML,
+  StateSchema,
+  StateValue,
+  TypegenDisabled,
+  Typestate,
+} from 'xstate'
 
 import { IMachineStatePersistence } from './IMachineStatePersistence'
 
@@ -134,6 +145,30 @@ export type MachineStateGetArgs = Pick<StoreMachineStateInfo, 'instanceId' | 'te
  * @property {string} tenantId - The ID of the tenant owning the machine instance.
  */
 export type MachineStateDeleteArgs = Pick<StoreMachineStateInfo, 'instanceId' | 'tenantId'>
+
+/**
+ * Represents the information for a started interpreter.
+ *
+ * @template TContext The type of the context object.
+ * @template TStateSchema The type of the state schema.
+ * @template TEvent The type of the event object.
+ * @template TTypestate The type of the typestate object.
+ * @template TResolvedTypesMeta The type of the resolved types meta object.
+ */
+export type StartedInterpreterInfo<
+  TContext = DefaultContext,
+  TStateSchema extends StateSchema = any,
+  TEvent extends EventObject = EventObject,
+  TTypestate extends Typestate<TContext> = {
+    value: any
+    context: TContext
+  },
+  TResolvedTypesMeta = TypegenDisabled
+> = {
+  interpreter: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
+  machineState?: MachineStateInfo
+  init: MachineStateInit
+}
 
 /**
  * Represents the serializable state of a machine.

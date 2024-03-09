@@ -10,7 +10,7 @@ import {
   ServiceMap,
   TypegenDisabled,
 } from 'xstate'
-import { IMachineStatePersistence, MachineStatePersistArgs, machineStatePersistRegistration } from '../../index'
+import { IMachineStatePersistence, interpreterStartOrResume, MachineStatePersistArgs, machineStatePersistRegistration } from '../../index'
 
 type ConfiguredAgent = TAgent<IMachineStatePersistence>
 
@@ -60,7 +60,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     let context: IAgentContext<any>
 
     beforeEach(() => {
-      instance = interpret(counterMachine).start()
+      instance = interpret(counterMachine)
     })
 
     afterEach(() => {
@@ -76,6 +76,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     afterAll(testContext.tearDown)
 
     it('should store xstate state changes', async (): Promise<void> => {
+      instance.start()
       const machineStateInit = await agent.machineStateInit({
         machineName: counterMachine.id,
         expiresAt: new Date(new Date().getTime() + 100000),
@@ -133,6 +134,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should automatically store xstate state changes', async (): Promise<void> => {
+      instance.start()
       const init = await machineStatePersistRegistration({ context, interpreter: instance, machineName: instance.machine.id })
       console.log(JSON.stringify(init, null, 2))
       if (!init) {
@@ -143,11 +145,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const { instanceId, machineName } = init
 
       // Wait some time since events are async
-      await new Promise((res) => setTimeout(res, 100))
+      await new Promise((res) => setTimeout(res, 50))
       instance.send('increment')
 
       // Wait some time since events are async
-      await new Promise((res) => setTimeout(res, 100))
+      await new Promise((res) => setTimeout(res, 50))
       let activeStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })
       expect(activeStates).toHaveLength(1)
       expect(activeStates[0].instanceId).toEqual(instanceId)
@@ -158,7 +160,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       instance.send('increment')
       // Wait some time since events are async
-      await new Promise((res) => setTimeout(res, 100))
+      await new Promise((res) => setTimeout(res, 50))
       activeStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })
       expect(activeStates).toHaveLength(1)
       expect(activeStates[0].state.context.count).toEqual(2)
@@ -175,7 +177,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       // Let's move to the final state. There should be no more active state available afterwards
       instance.send('finalize')
       // Wait some time since events are async
-      await new Promise((res) => setTimeout(res, 100))
+      await new Promise((res) => setTimeout(res, 50))
       const finalActiveStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })
       expect(finalActiveStates).toHaveLength(0)
 
@@ -192,6 +194,100 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       // Delete done states, with valid machine name provided. It should be gone
       await expect(agent.machineStatesDeleteExpired({ deleteDoneStates: true, machineName })).resolves.toEqual(1)
       await expect(agent.machineStateGet({ instanceId })).rejects.toThrowError()
+    })
+
+    it('should automatically start a new state machine with provided id', async (): Promise<void> => {
+      await interpreterStartOrResume({
+        stateType: 'new',
+        machineName: 'counter',
+        instanceId: 'autoStart',
+        context,
+        singletonCheck: true,
+        interpreter: instance,
+      })
+
+      instance.send('increment')
+
+      // Wait some time since events are async
+      await new Promise((res) => setTimeout(res, 50))
+      let activeStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })
+      expect(activeStates).toHaveLength(1)
+      expect(activeStates[0].state).toBeDefined()
+      await agent.machineStateDelete({ instanceId: 'autoStart' })
+    })
+
+    it('should not automatically start a new state machine with for the same machine in case singleton check is true', async (): Promise<void> => {
+      await interpreterStartOrResume({ stateType: 'new', machineName: 'counter', context, singletonCheck: true, interpreter: instance })
+      // Wait some time since events are async
+      await new Promise((res) => setTimeout(res, 50))
+      let activeStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })
+      expect(activeStates).toHaveLength(1)
+      expect(activeStates[0].state).toBeDefined()
+
+      await expect(
+        interpreterStartOrResume({ stateType: 'new', machineName: 'counter', context, singletonCheck: true, interpreter: interpret(counterMachine) })
+      ).rejects.toThrowError()
+      await agent.machineStateDelete({ instanceId: activeStates[0].instanceId })
+    })
+
+    it('should automatically start 2 new state machines with for the same machine in case singleton check is false', async (): Promise<void> => {
+      await interpreterStartOrResume({ stateType: 'new', machineName: 'counter', context, singletonCheck: false, interpreter: instance })
+      // Wait some time since events are async
+      await new Promise((res) => setTimeout(res, 50))
+      let activeStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })
+      expect(activeStates).toHaveLength(1)
+      expect(activeStates[0].state).toBeDefined()
+
+      await expect(
+        interpreterStartOrResume({ stateType: 'new', machineName: 'counter', context, singletonCheck: false, interpreter: interpret(counterMachine) })
+      ).resolves.toBeDefined()
+      await new Promise((res) => setTimeout(res, 50))
+      activeStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })
+
+      expect(activeStates).toHaveLength(2)
+      expect(activeStates[1].state).toBeDefined()
+      activeStates.forEach(async (state) => await agent.machineStateDelete({ instanceId: state.instanceId }))
+    })
+
+    it('should automatically start 1 new state machine and resume it after it was stopped', async (): Promise<void> => {
+      const info = await interpreterStartOrResume({ stateType: 'new', machineName: 'counter', context, singletonCheck: true, interpreter: instance })
+      // Wait some time since events are async
+      await new Promise((res) => setTimeout(res, 50))
+      instance.send('increment')
+
+      // Wait some time since events are async
+      await new Promise((res) => setTimeout(res, 50))
+      let activeStates = await agent.machineStatesFindActive({ machineName: info.init.machineName })
+      expect(activeStates).toHaveLength(1)
+      console.log(JSON.stringify(activeStates[0], null, 2))
+      const originalSessionId = instance.sessionId
+      instance.stop()
+
+      const resumeInterpreter = interpret(counterMachine)
+      const resumeInfo = await interpreterStartOrResume({
+        stateType: 'existing',
+        instanceId: info.init.instanceId,
+        machineName: 'counter',
+        context,
+        singletonCheck: true,
+        interpreter: resumeInterpreter,
+      })
+      expect(originalSessionId).not.toEqual(resumeInterpreter.sessionId)
+      expect(resumeInfo.init.instanceId).toEqual(info.init.instanceId)
+      await new Promise((res) => setTimeout(res, 50))
+      activeStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })
+
+      expect(activeStates).toHaveLength(1)
+      expect(activeStates[0].state).toBeDefined()
+
+      resumeInterpreter.send('increment')
+      // Wait some time since events are async
+      await new Promise((res) => setTimeout(res, 50))
+      activeStates = await agent.machineStatesFindActive({ machineName: info.init.machineName })
+      expect(activeStates).toHaveLength(1)
+      console.log(JSON.stringify(activeStates[0], null, 2))
+
+      activeStates.forEach(async (state) => await agent.machineStateDelete({ instanceId: state.instanceId }))
     })
   })
 }

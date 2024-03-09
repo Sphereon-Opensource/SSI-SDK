@@ -1,7 +1,17 @@
 import { IAgentContext } from '@veramo/core'
 import { DefaultContext, EventObject, Interpreter, StateSchema, TypegenDisabled, Typestate } from 'xstate'
-import { IMachineStatePersistence, InitMachineStateArgs, MachineStateInit, MachineStatePersistenceOpts, MachineStatePersistEventType } from '../types'
+import {
+  IMachineStatePersistence,
+  InitMachineStateArgs,
+  MachineStateInfo,
+  MachineStateInit,
+  MachineStateInitType,
+  MachineStatePersistenceOpts,
+  MachineStatePersistEventType,
+  StartedInterpreterInfo,
+} from '../types'
 import { emitMachineStatePersistEvent } from './stateEventEmitter'
+import { machineStateToMachineInit, machineStateToStoreInfo } from './stateMapper'
 
 /**
  * Initialize the machine state persistence. Returns a unique instanceId and the machine name amongst others
@@ -112,4 +122,206 @@ export const machineStatePersistRegistration = async <
     await machineStatePersistOnTransition({ ...args, init })
   }
   return init
+}
+
+const assertNonExpired = (args: { expiresAt?: Date; machineName: string }) => {
+  const { expiresAt, machineName } = args
+  if (expiresAt && expiresAt.getTime() < Date.now()) {
+    throw new Error(`Cannot resume ${machineName}. It expired at ${expiresAt.toLocaleString()}`)
+  }
+}
+
+/**
+ * Resumes the interpreter from a given state.
+ *
+ * @param {Object} args - The arguments for resuming the interpreter.
+ * @param {MachineStateInfo} args.machineState - The machine state information.
+ * @param {boolean} [args.noRegistration] - If true, no registration will be performed.
+ * @param {Interpreter} args.interpreter - The interpreter instance.
+ * @param {IAgentContext<IMachineStatePersistence>} args.context - The context for machine state persistence.
+ *
+ * @returns {Promise<Interpreter>} - A promise that resolves to the resumed interpreter.
+ */
+export const interpreterResumeFromState = async <
+  TContext = DefaultContext,
+  TStateSchema extends StateSchema = any,
+  TEvent extends EventObject = EventObject,
+  TTypestate extends Typestate<TContext> = {
+    value: any
+    context: TContext
+  },
+  TResolvedTypesMeta = TypegenDisabled
+>(args: {
+  machineState: MachineStateInfo
+  noRegistration?: boolean
+  interpreter: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
+  context: IAgentContext<IMachineStatePersistence>
+}): Promise<StartedInterpreterInfo<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>> => {
+  const { interpreter, machineState, context, noRegistration } = args
+  const { machineName, instanceId, tenantId } = machineState
+  assertNonExpired(machineState)
+  if (noRegistration !== true) {
+    await machineStatePersistRegistration({
+      stateType: 'existing',
+      machineName,
+      tenantId,
+      existingInstanceId: instanceId,
+      context,
+      interpreter,
+    })
+  }
+
+  return {
+    machineState,
+    init: machineStateToMachineInit(
+      {
+        ...machineState,
+        stateType: 'existing',
+      },
+      machineStateToStoreInfo({ ...machineState, stateType: 'existing' })
+    ),
+    // @ts-ignore
+    interpreter: interpreter.start(machineState.state),
+  }
+}
+
+/**
+ * Resumes or starts the interpreter from the initial machine state.
+ *
+ * @async
+ * @param {Object} args - The arguments for the function.
+ * @param {MachineStateInit & {stateType?: MachineStateInitType}} args.init - The initialization state of the machine.
+ * @param {boolean} args.noRegistration - Whether registration is required, defaults to false.
+ * @param {Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>} args.interpreter - The interpreter object.
+ * @param {IAgentContext<IMachineStatePersistence>} args.context - The context object.
+ * @returns {Promise} - A promise that resolves to the interpreter instance.
+ * @throws {Error} - If the machine name from init does not match the interpreter id.
+ */
+export const interpreterStartOrResumeFromInit = async <
+  TContext = DefaultContext,
+  TStateSchema extends StateSchema = any,
+  TEvent extends EventObject = EventObject,
+  TTypestate extends Typestate<TContext> = {
+    value: any
+    context: TContext
+  },
+  TResolvedTypesMeta = TypegenDisabled
+>(args: {
+  init: MachineStateInit & { stateType?: MachineStateInitType }
+  noRegistration?: boolean
+  interpreter: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
+  context: IAgentContext<IMachineStatePersistence>
+}): Promise<StartedInterpreterInfo<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>> => {
+  const { init, noRegistration, interpreter, context } = args
+  const { stateType, instanceId, machineName, tenantId, expiresAt } = init
+  if (init.machineName !== interpreter.id) {
+    throw new Error(`Machine state init machine name ${init.machineName} does not match name from state machine interpreter ${interpreter.id}`)
+  }
+  assertNonExpired({ machineName, expiresAt })
+  if (noRegistration !== true) {
+    await machineStatePersistRegistration({
+      stateType: stateType ?? 'existing',
+      machineName,
+      tenantId,
+      ...(stateType === 'existing' && { existingInstanceId: instanceId }),
+      ...(stateType === 'new' && { customInstanceId: instanceId }),
+      context,
+      interpreter,
+    })
+  }
+  let machineState: MachineStateInfo | undefined
+  if (stateType === 'new') {
+    interpreter.start()
+  } else {
+    machineState = await context.agent.machineStateGet({ tenantId, instanceId })
+    // @ts-ignore
+    interpreter.start(machineState.state)
+  }
+  return {
+    interpreter,
+    machineState,
+    init,
+  }
+}
+
+/**
+ * Starts or resumes the given state machine interpreter.
+ *
+ * @async
+ * @param {Object} args - The arguments for starting or resuming the interpreter.
+ * @param {MachineStateInitType | 'auto'} [args.stateType] - The state type. Defaults to 'auto'.
+ * @param {string} [args.instanceId] - The instance ID.
+ * @param {string} [args.machineName] - The machine name.
+ * @param {string} [args.tenantId] - The tenant ID.
+ * @param {boolean} args.singletonCheck - Whether to perform a singleton check or not. If more than one machine instance is found an error will be thrown
+ * @param {boolean} [args.noRegistration] - Whether to skip state change event registration or not.
+ * @param {Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>} args.interpreter - The interpreter to start or resume.
+ * @param {IAgentContext<IMachineStatePersistence>} args.context - The agent context.
+ * @returns {Promise} A promise that resolves when the interpreter is started or resumed.
+ * @throws {Error} If there are multiple active instances of the machine and singletonCheck is true.
+ * @throws {Error} If a new instance was requested with the same ID as an existing active instance.
+ * @throws {Error} If the existing state machine with the given machine name and instance ID cannot be found.
+ */
+export const interpreterStartOrResume = async <
+  TContext = DefaultContext,
+  TStateSchema extends StateSchema = any,
+  TEvent extends EventObject = EventObject,
+  TTypestate extends Typestate<TContext> = {
+    value: any
+    context: TContext
+  },
+  TResolvedTypesMeta = TypegenDisabled
+>(args: {
+  stateType?: MachineStateInitType | 'auto'
+  instanceId?: string
+  machineName?: string
+  tenantId?: string
+  singletonCheck: boolean
+  noRegistration?: boolean
+  interpreter: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
+  context: IAgentContext<IMachineStatePersistence>
+}): Promise<StartedInterpreterInfo<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>> => {
+  const { stateType, singletonCheck, instanceId, tenantId, noRegistration, context, interpreter } = args
+  const machineName = args.machineName ?? interpreter.id
+  const activeStates = await context.agent.machineStatesFindActive({
+    machineName,
+    tenantId,
+    instanceId,
+  })
+  if (singletonCheck && activeStates.length > 0) {
+    if (stateType === 'new' || activeStates.every((state) => state.instanceId !== instanceId)) {
+      return Promise.reject(new Error(`Found ${activeStates.length} active '${machineName}' instances, but only one is allows at the same time`))
+    }
+  }
+  if (stateType === 'new') {
+    if (instanceId && activeStates.length > 0) {
+      // Since an instanceId was provided it means the activeStates includes a machine with this instance. But stateType is 'new'
+      return Promise.reject(
+        new Error(`Found an active '${machineName}' instance with id ${instanceId}, but a new instance was requested with the same id`)
+      )
+    }
+    const init = await context.agent.machineStateInit({
+      stateType: 'new',
+      customInstanceId: instanceId,
+      machineName: machineName ?? interpreter.id,
+      tenantId,
+    })
+    return await interpreterStartOrResumeFromInit({ init, noRegistration, interpreter, context })
+  }
+  if (activeStates.length === 0) {
+    if (stateType === 'existing') {
+      return Promise.reject(new Error(`Could not find existing state machine ${machineName}, instanceId ${instanceId}`))
+    }
+    const init = await context.agent.machineStateInit({
+      stateType: 'new',
+      customInstanceId: instanceId,
+      machineName: machineName ?? interpreter.id,
+      tenantId,
+    })
+    return await interpreterStartOrResumeFromInit({ init, noRegistration, interpreter, context })
+  }
+
+  // activeStates length >= 1
+  const activeState = activeStates[0]
+  return interpreterResumeFromState({ machineState: activeState, noRegistration, interpreter, context })
 }

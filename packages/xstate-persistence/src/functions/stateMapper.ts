@@ -52,6 +52,10 @@ export const storeInfoToMachineInit = (machineState: StoreMachineStateInfo & { s
   }
 }
 
+export const machineStateToMachineInit = (machineInfo: MachineStatePersistArgs, existingState: Partial<StoreMachineStateInfo>): MachineStateInit => {
+  return storeInfoToMachineInit({ ...machineStateToStoreInfo(machineInfo, existingState), stateType: 'existing' })
+}
+
 /**
  * Serializes a machine state to a string representation.
  *
