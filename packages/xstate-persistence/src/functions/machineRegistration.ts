@@ -59,8 +59,9 @@ export const machineStatePersistOnTransition = async <
   interpreter: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
   context: IAgentContext<any> // We use any as this method could be called from an agent with access to, but not exposing this plugin
   init: MachineStateInit
+  cleanupOnFinalState?: boolean
 }): Promise<void> => {
-  const { context, init, interpreter } = opts
+  const { cleanupOnFinalState, context, init, interpreter } = opts
   if (!(context.agent.availableMethods().includes('machineStatePersist') && 'machineStatePersist' in context.agent)) {
     console.log(`IMachineStatePersistence was not exposed in the current agent. Disabling machine state persistence events`)
     return
@@ -78,6 +79,7 @@ export const machineStatePersistOnTransition = async <
           state,
           _eventCounter: _eventCounter++,
           _eventDate: new Date(),
+          _cleanupOnFinalState: cleanupOnFinalState !== false,
         },
       },
       context
@@ -105,6 +107,8 @@ export const machineStatePersistRegistration = async <
   args: Omit<InitMachineStateArgs, 'machineName'> &
     Partial<Pick<InitMachineStateArgs, 'machineName'>> &
     MachineStatePersistenceOpts & {
+      cleanupOnFinalState?: boolean
+      cleanupAllOtherInstances?: boolean
       interpreter: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
       context: IAgentContext<any> // We use any as this method could be called from an agent with access to, but not exposing this plugin
     }
@@ -208,11 +212,12 @@ export const interpreterStartOrResumeFromInit = async <
   TResolvedTypesMeta = TypegenDisabled
 >(args: {
   init: MachineStateInit & { stateType?: MachineStateInitType }
+  cleanupAllOtherInstances?: boolean
   noRegistration?: boolean
   interpreter: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
   context: IAgentContext<IMachineStatePersistence>
 }): Promise<StartedInterpreterInfo<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>> => {
-  const { init, noRegistration, interpreter, context } = args
+  const { init, noRegistration, interpreter, cleanupAllOtherInstances, context } = args
   const { stateType, instanceId, machineName, tenantId, expiresAt } = init
   if (init.machineName !== interpreter.id) {
     throw new Error(`Machine state init machine name ${init.machineName} does not match name from state machine interpreter ${interpreter.id}`)
@@ -225,6 +230,7 @@ export const interpreterStartOrResumeFromInit = async <
       tenantId,
       ...(stateType === 'existing' && { existingInstanceId: instanceId }),
       ...(stateType === 'new' && { customInstanceId: instanceId }),
+      cleanupAllOtherInstances,
       context,
       interpreter,
     })
@@ -278,16 +284,27 @@ export const interpreterStartOrResume = async <
   tenantId?: string
   singletonCheck: boolean
   noRegistration?: boolean
+  cleanupAllOtherInstances?: boolean
   interpreter: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
   context: IAgentContext<IMachineStatePersistence>
 }): Promise<StartedInterpreterInfo<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>> => {
-  const { stateType, singletonCheck, instanceId, tenantId, noRegistration, context, interpreter } = args
+  const { stateType, singletonCheck, instanceId, tenantId, noRegistration, context, interpreter, cleanupAllOtherInstances } = args
   const machineName = args.machineName ?? interpreter.id
-  const activeStates = await context.agent.machineStatesFindActive({
+  let activeStates = await context.agent.machineStatesFindActive({
     machineName,
     tenantId,
     instanceId,
   })
+  if (activeStates.length > 0 && cleanupAllOtherInstances) {
+    // We cleanup here to not influence the logic below. Normally the agent machineStateInit method does the cleanup
+    await Promise.all(activeStates.map((state) => context.agent.machineStateDelete({ tenantId: args.tenantId, instanceId: state.instanceId })))
+    // We search again, given the delete is using the passed in tenantId, instead of relying on the persisted tenantId. Should not matter, but just making sure
+    activeStates = await context.agent.machineStatesFindActive({
+      machineName,
+      tenantId,
+      instanceId,
+    })
+  }
   if (singletonCheck && activeStates.length > 0) {
     if (stateType === 'new' || activeStates.every((state) => state.instanceId !== instanceId)) {
       return Promise.reject(new Error(`Found ${activeStates.length} active '${machineName}' instances, but only one is allows at the same time`))
@@ -305,6 +322,7 @@ export const interpreterStartOrResume = async <
       customInstanceId: instanceId,
       machineName: machineName ?? interpreter.id,
       tenantId,
+      cleanupAllOtherInstances,
     })
     return await interpreterStartOrResumeFromInit({ init, noRegistration, interpreter, context })
   }
@@ -317,6 +335,7 @@ export const interpreterStartOrResume = async <
       customInstanceId: instanceId,
       machineName: machineName ?? interpreter.id,
       tenantId,
+      cleanupAllOtherInstances,
     })
     return await interpreterStartOrResumeFromInit({ init, noRegistration, interpreter, context })
   }

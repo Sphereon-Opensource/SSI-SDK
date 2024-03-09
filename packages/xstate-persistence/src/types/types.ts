@@ -66,7 +66,7 @@ export type DeleteStateResult = number
  */
 export type MachineStatePersistEvent = {
   type: MachineStatePersistEventType
-  data: MachineStatePersistArgs & { _eventCounter: number; _eventDate: Date }
+  data: MachineStatePersistArgs & { _eventCounter: number; _eventDate: Date; _cleanupOnFinalState: boolean }
 }
 
 /**
@@ -120,14 +120,14 @@ export type MachineStateInit = Pick<MachineStateInfo, 'instanceId' | 'machineNam
  */
 export type InitMachineStateArgs = Omit<Partial<MachineStateInit>, 'instanceId'> &
   Pick<MachineStateInfo, 'machineName'> &
-  Pick<MachineStatePersistenceOpts, 'customInstanceId' | 'existingInstanceId'>
+  Pick<MachineStatePersistenceOpts, 'customInstanceId' | 'existingInstanceId'> & { cleanupAllOtherInstances?: boolean }
 
 /**
  * Represents the arguments required to persist the machine state.
  */
 export type MachineStatePersistArgs = Omit<MachineStateInit, 'createdAt'> &
   Pick<MachineStateInfo, 'state' | 'instanceId'> &
-  Partial<Pick<MachineStateInfo, 'updatedCount'>>
+  Partial<Pick<MachineStateInfo, 'updatedCount'>> & { cleanupOnFinalState?: boolean }
 
 /**
  * Represents the arguments required to get machine state.

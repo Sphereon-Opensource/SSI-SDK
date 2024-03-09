@@ -135,7 +135,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should automatically store xstate state changes', async (): Promise<void> => {
       instance.start()
-      const init = await machineStatePersistRegistration({ context, interpreter: instance, machineName: instance.machine.id })
+      const init = await machineStatePersistRegistration({
+        context,
+        interpreter: instance,
+        machineName: instance.machine.id,
+        cleanupOnFinalState: false,
+      })
       console.log(JSON.stringify(init, null, 2))
       if (!init) {
         return Promise.reject(new Error('No init'))
