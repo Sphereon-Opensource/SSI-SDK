@@ -1,6 +1,5 @@
 import { IAbstractMachineStateStore, StoreMachineStateInfo } from '@sphereon/ssi-sdk.data-store'
 import { IAgentPlugin } from '@veramo/core'
-import * as console from 'console'
 import Debug from 'debug'
 import { v4 as uuidv4 } from 'uuid'
 import { deserializeMachineState, machineStateToStoreInfo, storeInfoToMachineInit } from '../functions'
