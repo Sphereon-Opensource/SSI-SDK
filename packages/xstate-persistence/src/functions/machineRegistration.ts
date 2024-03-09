@@ -303,7 +303,7 @@ export const interpreterStartOrResume = async <
     tenantId,
     instanceId,
   })
-  if (activeStates.length > 0 && cleanupAllOtherInstances) {
+  if (stateType === 'new' && activeStates.length > 0 && cleanupAllOtherInstances)  {
     // We cleanup here to not influence the logic below. Normally the agent machineStateInit method does the cleanup
     await Promise.all(activeStates.map((state) => context.agent.machineStateDelete({ tenantId: args.tenantId, instanceId: state.instanceId })))
     // We search again, given the delete is using the passed in tenantId, instead of relying on the persisted tenantId. Should not matter, but just making sure
