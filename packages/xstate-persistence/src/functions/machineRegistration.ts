@@ -303,9 +303,16 @@ export const interpreterStartOrResume = async <
     tenantId,
     instanceId,
   })
-  if (stateType === 'new' && activeStates.length > 0 && cleanupAllOtherInstances)  {
+  if (stateType === 'new' && activeStates.length > 0 && cleanupAllOtherInstances) {
     // We cleanup here to not influence the logic below. Normally the agent machineStateInit method does the cleanup
-    await Promise.all(activeStates.map((state) => context.agent.machineStateDelete({ tenantId: args.tenantId, instanceId: state.instanceId })))
+    await Promise.all(
+      activeStates.map((state) =>
+        context.agent.machineStateDelete({
+          tenantId: args.tenantId,
+          instanceId: state.instanceId,
+        })
+      )
+    )
     // We search again, given the delete is using the passed in tenantId, instead of relying on the persisted tenantId. Should not matter, but just making sure
     activeStates = await context.agent.machineStatesFindActive({
       machineName,
@@ -314,7 +321,11 @@ export const interpreterStartOrResume = async <
     })
   }
   if (singletonCheck && activeStates.length > 0) {
-    if (stateType === 'new' || activeStates.every((state) => state.instanceId !== instanceId)) {
+    if (
+      stateType === 'new' ||
+      (stateType === 'existing' &&
+        ((!instanceId && activeStates.length > 1) || (instanceId && activeStates.every((state) => state.instanceId !== instanceId))))
+    ) {
       return Promise.reject(new Error(`Found ${activeStates.length} active '${machineName}' instances, but only one is allows at the same time`))
     }
   }
@@ -332,7 +343,14 @@ export const interpreterStartOrResume = async <
       tenantId,
       cleanupAllOtherInstances,
     })
-    return await interpreterStartOrResumeFromInit({ init, noRegistration, interpreter, context, cleanupOnFinalState, cleanupAllOtherInstances })
+    return await interpreterStartOrResumeFromInit({
+      init,
+      noRegistration,
+      interpreter,
+      context,
+      cleanupOnFinalState,
+      cleanupAllOtherInstances,
+    })
   }
   if (activeStates.length === 0) {
     if (stateType === 'existing') {
@@ -345,7 +363,14 @@ export const interpreterStartOrResume = async <
       tenantId,
       cleanupAllOtherInstances,
     })
-    return await interpreterStartOrResumeFromInit({ init, noRegistration, interpreter, context, cleanupOnFinalState, cleanupAllOtherInstances })
+    return await interpreterStartOrResumeFromInit({
+      init,
+      noRegistration,
+      interpreter,
+      context,
+      cleanupOnFinalState,
+      cleanupAllOtherInstances,
+    })
   }
 
   // activeStates length >= 1
