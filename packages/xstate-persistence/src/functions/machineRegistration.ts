@@ -1,5 +1,5 @@
 import { IAgentContext } from '@veramo/core'
-import { DefaultContext, EventObject, Interpreter, StateSchema, TypegenDisabled, Typestate } from 'xstate'
+import {DefaultContext, EventObject, Interpreter, State, StateSchema, TypegenDisabled, Typestate} from 'xstate'
 import {
   IMachineStatePersistence,
   InitMachineStateArgs,
@@ -71,13 +71,13 @@ export const machineStatePersistOnTransition = async <
   let _eventCounter = init.machineState?.updatedCount ?? 0
 
   // XState persistence plugin is available. So let's emit events on every transition, so it can persist the state
-  interpreter.subscribe((state) => {
+  interpreter.onTransition((state) => {
     emitMachineStatePersistEvent(
       {
         type: MachineStatePersistEventType.EVERY,
         data: {
           ...initEventData, // init value with machineState removed, as we are getting the latest state here
-          state,
+          state: state,
           _eventCounter: ++_eventCounter,
           _eventDate: new Date(),
           _cleanupOnFinalState: cleanupOnFinalState !== false,
@@ -86,6 +86,7 @@ export const machineStatePersistOnTransition = async <
       context
     )
   })
+  // TODO: Complete listener to cleanup
 }
 
 /**
@@ -189,8 +190,8 @@ export const interpreterResumeFromState = async <
       },
       machineStateToStoreInfo({ ...machineState, stateType: 'existing' })
     ),
-    // @ts-ignore
-    interpreter: interpreter.start(machineState.state),
+
+    interpreter: interpreter.start(State.inert(machineState.state.value, machineState.state.context)),
   }
 }
 
