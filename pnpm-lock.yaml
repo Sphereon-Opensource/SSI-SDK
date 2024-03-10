@@ -1640,8 +1640,8 @@ importers:
   packages/ssi-types:
     dependencies:
       '@sd-jwt/decode':
-        specifier: 0.3.2-next.108
-        version: 0.3.2-next.108
+        specifier: ^0.4.0
+        version: 0.4.0
       jwt-decode:
         specifier: ^3.1.2
         version: 3.1.2
@@ -6976,12 +6976,12 @@ packages:
       '@sd-jwt/types': 0.3.0
       '@sd-jwt/utils': 0.3.0
 
-  /@sd-jwt/decode@0.3.2-next.108:
-    resolution: {integrity: sha512-CRHbJrGYC+aHF3rdQ0loUvnavD5jU8U7AEoCVg7tAxf013+UQr/6kgllNODtt82AvsV1uMo1tUp+4svrE2Wtvg==}
+  /@sd-jwt/decode@0.4.0:
+    resolution: {integrity: sha512-f05la4k5D5BlbLD/5QG+mojzsh4ksR09+tDDsSIIoUc9tOdZkydYLoURDZ8kWZBKcAu2TxE3mhFndp/dspkHgg==}
     engines: {node: '>=16'}
     dependencies:
-      '@sd-jwt/types': 0.3.2-next.108
-      '@sd-jwt/utils': 0.3.2-next.108
+      '@sd-jwt/types': 0.4.0
+      '@sd-jwt/utils': 0.4.0
     dev: false
 
   /@sd-jwt/present@0.3.0:
@@ -6993,8 +6993,8 @@ packages:
   /@sd-jwt/types@0.3.0:
     resolution: {integrity: sha512-JbpZICZ+nWPiKPKw+Veg5tf0Oftit4EzxhLJyvcd0u4R6IulNZvi6LCoUL7b2IT1H86eYPd/qB1KvSh43ByZOA==}
 
-  /@sd-jwt/types@0.3.2-next.108:
-    resolution: {integrity: sha512-xXPdajKdqwilPmi150+Thwwz8FJqpSWyw2qQU17rhfb8qHAYl30Qrf0pnk86SxvAOEELXGuBDTwl/44SwKecfg==}
+  /@sd-jwt/types@0.4.0:
+    resolution: {integrity: sha512-HbIXo6ISZue+u0nCaR5s4tevHpW8T0kwe9Z3COQJ1pBoF66yUa7U3gZvacwG5dWWa2jyjGyRWcX1F9wa/idgNw==}
     engines: {node: '>=16'}
     dev: false
 
@@ -7004,11 +7004,11 @@ packages:
       '@sd-jwt/types': 0.3.0
       buffer: 6.0.3
 
-  /@sd-jwt/utils@0.3.2-next.108:
-    resolution: {integrity: sha512-eMq1MYSjXzPOPlMt3QCqq+8v9WzNu2yrJMH7ej6zLu9ELLM3Z37ZVEFpEW1bcWlLun8zpV91af1fPx1Hz9rhYg==}
+  /@sd-jwt/utils@0.4.0:
+    resolution: {integrity: sha512-dgIrSn/q54QmfVkmg9o6LtEFDEzdrn+jQutVoKj/ptJFI8rRZ5SPKQqaaTj+qn59PvWI3bJefiUo+nWwCykboA==}
     engines: {node: '>=16'}
     dependencies:
-      '@sd-jwt/types': 0.3.2-next.108
+      '@sd-jwt/types': 0.4.0
       js-base64: 3.7.7
     dev: false
 
