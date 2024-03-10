@@ -110,6 +110,7 @@ export type MachineStateInitType = 'new' | 'existing'
  */
 export type MachineStateInit = Pick<MachineStateInfo, 'instanceId' | 'machineName' | 'tenantId' | 'createdAt' | 'expiresAt'> & {
   stateType: MachineStateInitType
+  machineState?: MachineStateInfo // Only available when stateType is 'existing'
 }
 
 /**

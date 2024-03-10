@@ -38,11 +38,13 @@ export class MachineStateStore extends IAbstractMachineStateStore {
       },
     })
     if (existing && existing.updatedCount > state.updatedCount) {
+      const error = `Updating machine state with an older version is not allowed. Machine ${existing.machineName}, last count: ${
+          existing.updatedCount
+      }, new count: ${existing.updatedCount}, last updated: ${existing.updatedAt}, current: ${new Date()}, instance: ${existing.instanceId}`
+      console.log(error)
       return Promise.reject(
         new Error(
-          `Updating machine state with an older version is not allowed. Machine ${existing.machineName}, last count: ${
-            existing.updatedCount
-          }, new count: ${existing.updatedCount}, last updated: ${existing.updatedAt}, current: ${new Date()}, instance: ${existing.instanceId}`
+          error
         )
       )
     }

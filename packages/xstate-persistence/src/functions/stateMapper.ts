@@ -1,7 +1,7 @@
 import { StoreMachineStateInfo } from '@sphereon/ssi-sdk.data-store'
 import { State } from 'xstate'
 import { EventObject } from 'xstate/lib/types'
-import { MachineStateInit, MachineStateInitType, MachineStatePersistArgs, SerializableState } from '../types'
+import { MachineStateInfo, MachineStateInit, MachineStateInitType, MachineStatePersistArgs, SerializableState } from '../types'
 
 /**
  * Create a machine state info object useful for the store, based on the provided machine info and existing state.
@@ -40,8 +40,10 @@ export const machineStateToStoreInfo = (
     completedAt: existing.completedAt ?? (stateInstance.done ? new Date() : undefined),
   }
 }
-export const storeInfoToMachineInit = (machineState: StoreMachineStateInfo & { stateType: MachineStateInitType }): MachineStateInit => {
-  const { instanceId, machineName, tenantId, expiresAt, createdAt, stateType } = machineState
+export const storeInfoToMachineInit = (
+  args: StoreMachineStateInfo & { stateType: MachineStateInitType; machineState?: MachineStateInfo }
+): MachineStateInit => {
+  const { instanceId, machineName, tenantId, expiresAt, createdAt, stateType, machineState } = args
   return {
     stateType,
     machineName,
@@ -49,11 +51,16 @@ export const storeInfoToMachineInit = (machineState: StoreMachineStateInfo & { s
     expiresAt,
     instanceId,
     createdAt,
+    machineState,
   }
 }
 
 export const machineStateToMachineInit = (machineInfo: MachineStatePersistArgs, existingState: Partial<StoreMachineStateInfo>): MachineStateInit => {
-  return storeInfoToMachineInit({ ...machineStateToStoreInfo(machineInfo, existingState), stateType: 'existing' })
+  return storeInfoToMachineInit({
+    ...machineStateToStoreInfo(machineInfo, existingState),
+    stateType: 'existing',
+    machineState: machineInfo.machineState,
+  })
 }
 
 /**

@@ -67,7 +67,7 @@ export const machineStatePersistOnTransition = async <
     return
   }
   // We are using the event counter and evenDate to ensure we do not overwrite newer states. Events could come in out of order
-  let _eventCounter = 0
+  let _eventCounter = init.machineState?.updatedCount ?? 0
 
   // XState persistence plugin is available. So let's emit events on every transition, so it can persist the state
   interpreter.subscribe((state) => {
