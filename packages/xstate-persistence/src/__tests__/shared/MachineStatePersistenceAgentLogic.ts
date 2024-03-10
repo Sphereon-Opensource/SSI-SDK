@@ -7,16 +7,16 @@ import {
   interpret,
   Interpreter,
   ResolveTypegenMeta,
-  ServiceMap,
+  ServiceMap, StateMachine,
   TypegenDisabled,
 } from 'xstate'
 import { IMachineStatePersistence, interpreterStartOrResume, MachineStatePersistArgs, machineStatePersistRegistration } from '../../index'
 
 type ConfiguredAgent = TAgent<IMachineStatePersistence>
 
-export const counterMachine = createMachine({
+export const newCounterMachine = (name?: string) => createMachine({
   predictableActionArguments: true,
-  id: 'counter',
+  id: name ?? 'counter',
   context: {
     count: 0,
   },
@@ -45,6 +45,7 @@ export const counterMachine = createMachine({
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
   describe('xstate-persistence agent plugin', (): void => {
+    let counterMachine: StateMachine<any, any, any>
     let agent: ConfiguredAgent
     let instance: Interpreter<
       { count: number },
@@ -60,6 +61,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     let context: IAgentContext<any>
 
     beforeEach(() => {
+      counterMachine = newCounterMachine(`counter-${Date.now()}`)
       instance = interpret(counterMachine)
     })
 
@@ -140,6 +142,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         interpreter: instance,
         machineName: instance.machine.id,
         cleanupOnFinalState: false,
+        cleanupAllOtherInstances: true
       })
       console.log(JSON.stringify(init, null, 2))
       if (!init) {
@@ -204,11 +207,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should automatically start a new state machine with provided id', async (): Promise<void> => {
       await interpreterStartOrResume({
         stateType: 'new',
-        machineName: 'counter',
+        machineName: counterMachine.id,
         instanceId: 'autoStart',
         context,
         singletonCheck: true,
         interpreter: instance,
+        cleanupAllOtherInstances: true
       })
 
       instance.send('increment')
@@ -222,7 +226,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should not automatically start a new state machine with for the same machine in case singleton check is true', async (): Promise<void> => {
-      await interpreterStartOrResume({ stateType: 'new', machineName: 'counter', context, singletonCheck: true, interpreter: instance })
+      await interpreterStartOrResume({ stateType: 'new', machineName: counterMachine.id, context, singletonCheck: true, interpreter: instance })
       // Wait some time since events are async
       await new Promise((res) => setTimeout(res, 50))
       let activeStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })
@@ -238,11 +242,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should automatically start 2 new state machines with for the same machine in case singleton check is false', async (): Promise<void> => {
       await interpreterStartOrResume({
         stateType: 'new',
-        machineName: 'counter',
+        machineName: counterMachine.id,
         context,
         singletonCheck: false,
         interpreter: instance,
         cleanupOnFinalState: false,
+        cleanupAllOtherInstances: true
       })
       // Wait some time since events are async
       await new Promise((res) => setTimeout(res, 50))
@@ -253,7 +258,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await expect(
         interpreterStartOrResume({
           stateType: 'new',
-          machineName: 'counter',
+          machineName: counterMachine.id,
           context,
           singletonCheck: false,
           interpreter: interpret(counterMachine),
@@ -271,7 +276,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should automatically start 1 new state machine and resume it after it was stopped', async (): Promise<void> => {
       const info = await interpreterStartOrResume({
         stateType: 'new',
-        machineName: 'counter',
         context,
         singletonCheck: true,
         interpreter: instance,
@@ -293,7 +297,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const resumeInfo = await interpreterStartOrResume({
         stateType: 'existing',
         instanceId: info.init.instanceId,
-        machineName: 'counter',
         context,
         singletonCheck: true,
         interpreter: resumeInterpreter,
