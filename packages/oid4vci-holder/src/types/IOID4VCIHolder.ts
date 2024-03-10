@@ -3,7 +3,6 @@ import { AuthorizationResponse, CredentialResponse, CredentialSupported, Endpoin
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
-import { MachineStateInit, MachineStatePersistenceOpts } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { IVerifiableCredential, WrappedVerifiableCredential, WrappedVerifiablePresentation } from '@sphereon/ssi-types'
 import { IAgentContext, ICredentialPlugin, IPluginMethodMap, TKeyType, VerifiableCredential } from '@veramo/core'
 import { IDataStore, IDataStoreORM } from '@veramo/data-store'
@@ -166,7 +165,7 @@ export type CreateOID4VCIMachineOpts = {
   machineName?: string
   locale?: string
   stateDefinition?: OID4VCIMachineState
-  statePersistence?: MachineStatePersistenceOpts
+  // statePersistence?: MachineStatePersistenceOpts
 }
 
 export type OID4VCIMachineInstanceOpts = {
@@ -276,7 +275,7 @@ export type CredentialTypeSelection = {
 }
 
 export type OID4VCIMachine = {
-  machineStateInit?: MachineStateInit
+  // machineStateInit?: MachineStateInit
   interpreter: OID4VCIMachineInterpreter
 }
 

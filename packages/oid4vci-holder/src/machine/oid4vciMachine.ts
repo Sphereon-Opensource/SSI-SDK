@@ -1,6 +1,5 @@
 import { AuthzFlowType, toAuthorizationResponsePayload } from '@sphereon/oid4vci-common'
 import { Identity, Party } from '@sphereon/ssi-sdk.data-store'
-import { MachineStateInit, machineStatePersistRegistration } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { assign, createMachine, DoneInvokeEvent, interpret } from 'xstate'
 import { translate } from '../localization/Localization'
 import {
@@ -531,12 +530,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
 }
 
 export class OID4VCIMachine {
-  static async newInstance(
-    opts: OID4VCIMachineInstanceOpts,
-    context: RequiredContext
-  ): Promise<{ interpreter: OID4VCIMachineInterpreter; machineStateInit?: MachineStateInit }> {
-    const { machineName, statePersistence } = opts
-    const { expireInMS, disablePersistence, expiresAt, customInstanceId, existingInstanceId } = statePersistence ?? {}
+  static async newInstance(opts: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<{ interpreter: OID4VCIMachineInterpreter }> {
     const interpreter: OID4VCIMachineInterpreter = interpret(
       createOID4VCIMachine(opts).withConfig({
         services: {
@@ -557,17 +551,6 @@ export class OID4VCIMachine {
       })
     )
 
-    const machineStateInit = await machineStatePersistRegistration({
-      interpreter,
-      context,
-      machineName,
-      expiresAt,
-      expireInMS,
-      disablePersistence,
-      customInstanceId,
-      existingInstanceId /* TODO:, tenantId*/,
-    })
-
     if (typeof opts?.subscription === 'function') {
       interpreter.onTransition(opts.subscription)
     }
@@ -577,6 +560,6 @@ export class OID4VCIMachine {
       })
     }
 
-    return { interpreter, machineStateInit }
+    return { interpreter }
   }
 }

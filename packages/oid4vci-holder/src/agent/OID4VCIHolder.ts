@@ -115,10 +115,9 @@ export class OID4VCIHolder implements IAgentPlugin {
       },
     }
 
-    const { machineStateInit, interpreter } = await OID4VCIMachine.newInstance(oid4vciMachineInstanceArgs, context)
+    const { interpreter } = await OID4VCIMachine.newInstance(oid4vciMachineInstanceArgs, context)
 
     return {
-      machineStateInit,
       interpreter,
     }
   }

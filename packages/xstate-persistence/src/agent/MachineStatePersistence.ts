@@ -93,16 +93,19 @@ export class MachineStatePersistence implements IAgentPlugin {
   private async machineStateInit(args: InitMachineStateArgs, context: RequiredContext): Promise<MachineStateInit> {
     const { tenantId, machineName, expiresAt, customInstanceId, existingInstanceId, cleanupAllOtherInstances } = args
     debug(
-      `machineStateInit for machine name ${machineName}, tenant ${tenantId}, custom instance ${customInstanceId}, existing id ${existingInstanceId}`
+      `#### machineStateInit for machine name ${machineName}, tenant ${tenantId}, custom instance ${customInstanceId}, existing id ${existingInstanceId}`
     )
     if (customInstanceId && existingInstanceId) {
       return Promise.reject(new Error(`Cannot have both a custom and existing instance id at the same time`))
     }
     if (cleanupAllOtherInstances) {
+      // First remove all states for this machine name and tenant that are in done state
       await context.agent.machineStatesDeleteExpired({ machineName, tenantId, deleteDoneStates: true })
+      // Now cleanup all states for this machine name and tenant that are expired
       await context.agent.machineStatesDeleteExpired({ machineName, tenantId, deleteDoneStates: false })
+      // Now remove all machines that are not equal to the existing instance id if provided, or all others if not provided
       const activeMachineStates = (await context.agent.machineStatesFindActive({ machineName, tenantId })).filter(
-        (state) => !existingInstanceId || state.instanceId !== existingInstanceId
+        (state) =>  !existingInstanceId || state.instanceId !== existingInstanceId
       )
       await Promise.all(activeMachineStates.map((state) => context.agent.machineStateDelete({ instanceId: state.instanceId, tenantId })))
     }
@@ -110,7 +113,7 @@ export class MachineStatePersistence implements IAgentPlugin {
 
     if (existingInstanceId) {
       // A existing instanceId is provided. First lookup whether this id is persisted, if not an error is thrown
-      debug(`machineStateInit is using a previously persisted instance id (${existingInstanceId})`)
+      debug(`### machineStateInit is using a previously persisted instance id (${existingInstanceId})`)
       const state = await this.store.getMachineState({ tenantId, instanceId: existingInstanceId })
       machineInit = storeInfoToMachineInit({ ...state, stateType: 'existing' })
     }
