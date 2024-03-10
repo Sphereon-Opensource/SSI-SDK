@@ -66,7 +66,7 @@ export class MachineStatePersistence implements IAgentPlugin {
   }
 
   public async onEvent(event: MachineStatePersistEvent, context: RequiredContext): Promise<void> {
-    debug(`Received machine state persistence event '${event.type}' counter: ${event.data._eventCounter}`)
+    debug(`Received machine state persistence event '${event.type}' counter: ${event.data._eventCounter}, state ${JSON.stringify(event.data.state.value)}`, event.data.state)
     if (!this.eventTypes.includes(event.type)) {
       console.log(`event type ${event.type} not registered for agent. Registered: ${JSON.stringify(this.eventTypes)}`)
       return

@@ -62,6 +62,7 @@ export const machineStatePersistOnTransition = async <
   cleanupOnFinalState?: boolean
 }): Promise<void> => {
   const { cleanupOnFinalState, context, init, interpreter } = opts
+  const { machineState, ...initEventData} = init
   if (!(context.agent.availableMethods().includes('machineStatePersist') && 'machineStatePersist' in context.agent)) {
     console.log(`IMachineStatePersistence was not exposed in the current agent. Disabling machine state persistence events`)
     return
@@ -75,9 +76,9 @@ export const machineStatePersistOnTransition = async <
       {
         type: MachineStatePersistEventType.EVERY,
         data: {
-          ...init,
+          ...initEventData, // init value with machineState removed, as we are getting the latest state here
           state,
-          _eventCounter: _eventCounter++,
+          _eventCounter: ++_eventCounter,
           _eventDate: new Date(),
           _cleanupOnFinalState: cleanupOnFinalState !== false,
         },
