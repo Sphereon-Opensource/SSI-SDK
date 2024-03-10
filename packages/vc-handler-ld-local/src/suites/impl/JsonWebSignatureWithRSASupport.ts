@@ -209,7 +209,7 @@ export class JsonWebSignature {
     }
 
     if (typeof verificationMethod === 'object') {
-      verificationMethod = verificationMethod.id
+      verificationMethod = verificationMethod.instanceId
     }
 
     if (!verificationMethod) {
@@ -230,7 +230,7 @@ export class JsonWebSignature {
       {
         // use the cache of the document we just resolved when framing
         documentLoader: (iri: string) => {
-          if (iri.startsWith(document.id)) {
+          if (iri.startsWith(document.instanceId)) {
             return {
               documentUrl: iri,
               document,

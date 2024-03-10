@@ -22,6 +22,9 @@
     },
     {
       "path": "../ssi-types"
+    },
+    {
+      "path": "../xstate-persistence"
     }
   ]
 }

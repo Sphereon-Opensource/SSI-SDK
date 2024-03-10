@@ -135,7 +135,7 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
     wrappedVC.decoded?.iss?.includes('did:ebsi:') ||
     (typeof wrappedVC.decoded?.vc?.issuer === 'string'
       ? wrappedVC.decoded?.vc?.issuer?.includes('did:ebsi:')
-      : wrappedVC.decoded?.vc?.issuer?.id?.includes('did:ebsi:'))
+      : wrappedVC.decoded?.vc?.issuer?.existingInstanceId?.includes('did:ebsi:'))
   ) {
     // TODO: Skipping VC validation for EBSI conformance issued credential, as their Issuer is not present in the ledger (sigh)
     if (JSON.stringify(wrappedVC.decoded).includes('vc:ebsi:conformance')) {
