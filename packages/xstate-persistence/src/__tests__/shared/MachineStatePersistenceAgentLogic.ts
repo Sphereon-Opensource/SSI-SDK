@@ -318,7 +318,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(activeStates).toHaveLength(1)
       console.log(JSON.stringify(activeStates[0], null, 2))
 
-      activeStates.forEach(async (state) => await agent.machineStateDelete({ instanceId: state.instanceId }))
+      await Promise.all(activeStates.map((state) => agent.machineStateDelete({ instanceId: state.instanceId })))
     })
   })
 }

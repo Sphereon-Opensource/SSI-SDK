@@ -67,7 +67,6 @@ export type DeleteStateResult = number
 export type MachineStatePersistEvent = {
   type: MachineStatePersistEventType
   data: Omit<MachineStatePersistArgs, 'machineState'> & {
-    lastStateEvent: EventObject
     _eventCounter: number
     _eventDate: Date
     _cleanupOnFinalState: boolean
