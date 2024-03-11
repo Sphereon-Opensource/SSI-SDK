@@ -7,41 +7,43 @@ import {
   interpret,
   Interpreter,
   ResolveTypegenMeta,
-  ServiceMap, StateMachine,
+  ServiceMap,
+  StateMachine,
   TypegenDisabled,
 } from 'xstate'
 import { IMachineStatePersistence, interpreterStartOrResume, MachineStatePersistArgs, machineStatePersistRegistration } from '../../index'
 
 type ConfiguredAgent = TAgent<IMachineStatePersistence>
 
-export const newCounterMachine = (name?: string) => createMachine({
-  predictableActionArguments: true,
-  id: name ?? 'counter',
-  context: {
-    count: 0,
-  },
-  initial: 'init',
+export const newCounterMachine = (name?: string) =>
+  createMachine({
+    predictableActionArguments: true,
+    id: name ?? 'counter',
+    context: {
+      count: 0,
+    },
+    initial: 'init',
 
-  states: {
-    init: {
-      id: 'init',
-      on: {
-        increment: {
-          actions: assign({
-            count: (context) => context.count + 1,
-          }),
-        },
-        finalize: {
-          target: 'final',
+    states: {
+      init: {
+        id: 'init',
+        on: {
+          increment: {
+            actions: assign({
+              count: (context) => context.count + 1,
+            }),
+          },
+          finalize: {
+            target: 'final',
+          },
         },
       },
+      final: {
+        id: 'final',
+        type: 'final',
+      },
     },
-    final: {
-      id: 'final',
-      type: 'final',
-    },
-  },
-})
+  })
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
   describe('xstate-persistence agent plugin', (): void => {
@@ -142,7 +144,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         interpreter: instance,
         machineName: instance.machine.id,
         cleanupOnFinalState: false,
-        cleanupAllOtherInstances: true
+        cleanupAllOtherInstances: true,
       })
       console.log(JSON.stringify(init, null, 2))
       if (!init) {
@@ -212,7 +214,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         context,
         singletonCheck: true,
         interpreter: instance,
-        cleanupAllOtherInstances: true
+        cleanupAllOtherInstances: true,
       })
 
       instance.send('increment')
@@ -247,7 +249,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         singletonCheck: false,
         interpreter: instance,
         cleanupOnFinalState: false,
-        cleanupAllOtherInstances: true
+        cleanupAllOtherInstances: true,
       })
       // Wait some time since events are async
       await new Promise((res) => setTimeout(res, 50))

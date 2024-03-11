@@ -66,7 +66,12 @@ export class MachineStatePersistence implements IAgentPlugin {
   }
 
   public async onEvent(event: MachineStatePersistEvent, context: RequiredContext): Promise<void> {
-    debug(`Received machine state persistence event '${event.type}' counter: ${event.data._eventCounter}, state ${JSON.stringify(event.data.state.value)}`, event.data.state)
+    debug(
+      `Received machine state persistence event '${event.type}' counter: ${event.data._eventCounter}, state ${JSON.stringify(
+        event.data.state.value
+      )}`,
+      event.data.state
+    )
     if (!this.eventTypes.includes(event.type)) {
       console.log(`event type ${event.type} not registered for agent. Registered: ${JSON.stringify(this.eventTypes)}`)
       return
@@ -155,13 +160,13 @@ export class MachineStatePersistence implements IAgentPlugin {
     const cleanupOnFinalState = args.cleanupOnFinalState !== false
     debug(`machineStatePersist for machine name ${machineName}, updateCount: ${updatedCount}, instance ${instanceId} and tenant ${tenantId}...`)
     try {
-      const queriedStates = await this.store.findMachineStates({filter: [{instanceId, tenantId}]})
+      const queriedStates = await this.store.findMachineStates({ filter: [{ instanceId, tenantId }] })
       const existingState = queriedStates.length === 1 ? queriedStates[0] : undefined
       const storeInfoArgs = machineStateToStoreInfo(args, existingState)
       const storedState = await this.store.persistMachineState(storeInfoArgs)
-      const machineStateInfo = {...storedState, state: deserializeMachineState(storedState.state)}
+      const machineStateInfo = { ...storedState, state: deserializeMachineState(storedState.state) }
       debug(
-          `machineStatePersist success for machine name ${machineName}, instance ${instanceId}, update count ${machineStateInfo.updatedCount}, tenant ${tenantId}, last event: ${machineStateInfo.latestEventType}, last state: ${machineStateInfo.latestStateName}`
+        `machineStatePersist success for machine name ${machineName}, instance ${instanceId}, update count ${machineStateInfo.updatedCount}, tenant ${tenantId}, last event: ${machineStateInfo.latestEventType}, last state: ${machineStateInfo.latestStateName}`
       )
       if (cleanupOnFinalState && machineStateInfo.state.done) {
         debug(`reached final state for machine ${machineName} instance ${instanceId} and auto cleanup was enabled. Deleting machine state`)
