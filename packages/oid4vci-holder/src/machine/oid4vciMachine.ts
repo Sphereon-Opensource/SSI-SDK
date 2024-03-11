@@ -71,8 +71,8 @@ const oid4vciHasSelectedCredentialsGuard = (_ctx: OID4VCIMachineContext, _event:
 }
 
 // FIXME refactor this guard
-const oid4vciRequireAuthorizationGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
-  const { openID4VCIClientState } = _ctx
+const oid4vciRequireAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
+  const { openID4VCIClientState } = ctx
 
   if (!openID4VCIClientState) {
     throw Error('Missing openID4VCI client state in context')
@@ -87,7 +87,7 @@ const oid4vciRequireAuthorizationGuard = (_ctx: OID4VCIMachineContext, _event: O
     return false
   }
 
-  return !openID4VCIClientState.accessTokenResponse
+  return !ctx.authorizationCodeResponse
 }
 
 const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMachine => {
@@ -227,12 +227,12 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             cond: OID4VCIMachineGuards.selectCredentialGuard,
           },
           {
-            target: OID4VCIMachineStates.verifyPin,
-            cond: OID4VCIMachineGuards.requirePinGuard,
-          },
-          {
             target: OID4VCIMachineStates.initiateAuthorizationRequest,
             cond: OID4VCIMachineGuards.requireAuthorizationGuard,
+          },
+          {
+            target: OID4VCIMachineStates.verifyPin,
+            cond: OID4VCIMachineGuards.requirePinGuard,
           },
           {
             target: OID4VCIMachineStates.getCredentials,
@@ -284,10 +284,13 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             cond: OID4VCIMachineGuards.selectCredentialGuard,
           },
           {
+            target: OID4VCIMachineStates.initiateAuthorizationRequest,
+            cond: OID4VCIMachineGuards.requireAuthorizationGuard,
+          },
+          {
             target: OID4VCIMachineStates.verifyPin,
             cond: OID4VCIMachineGuards.requirePinGuard,
           },
-          // TODO are we not missing initiateAuthorizationRequest here???
           {
             target: OID4VCIMachineStates.getCredentials,
           },
@@ -341,8 +344,12 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           [OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE]: {
             target: OID4VCIMachineStates.transitionFromSelectingCredentials,
             actions: assign({
-              authorizationCodeResponse: (_ctx: OID4VCIMachineContext, _event: AuthorizationResponseEvent) =>
-                toAuthorizationResponsePayload(_event.data),
+              authorizationCodeResponse: (_ctx: OID4VCIMachineContext, _event: AuthorizationResponseEvent) => {
+                console.log(`=> Assigning authorizationCodeResponse using event data ${JSON.stringify(_event.data)}`)
+                const payload = toAuthorizationResponsePayload(_event.data)
+                console.log(`=> Assigned authorizationCodeResponse value ${JSON.stringify(payload)}`)
+                return payload
+              }
             }), // TODO can we not call toAuthorizationResponsePayload before
           },
         },
