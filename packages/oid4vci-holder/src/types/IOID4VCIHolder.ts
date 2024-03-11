@@ -213,6 +213,7 @@ export enum OID4VCIMachineGuards {
   selectCredentialGuard = 'oid4vciSelectCredentialsGuard',
   requirePinGuard = 'oid4vciRequirePinGuard',
   requireAuthorizationGuard = 'oid4vciRequireAuthorizationGuard',
+  noAuthorizationGuard = 'oid4vciNoAuthorizationGuard',
   hasAuthorizationResponse = 'oid4vciHasAuthorizationResponse',
   hasNoContactIdentityGuard = 'oid4vciHasNoContactIdentityGuard',
   verificationCodeGuard = 'oid4vciVerificationCodeGuard',

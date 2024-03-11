@@ -71,6 +71,10 @@ const oid4vciHasSelectedCredentialsGuard = (_ctx: OID4VCIMachineContext, _event:
 }
 
 // FIXME refactor this guard
+
+const oid4vciNoAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
+  return !oid4vciHasAuthorizationResponse(ctx, _event)
+}
 const oid4vciRequireAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
   const { openID4VCIClientState } = ctx
 
@@ -118,6 +122,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         | { type: OID4VCIMachineGuards.selectCredentialGuard }
         | { type: OID4VCIMachineGuards.requirePinGuard }
         | { type: OID4VCIMachineGuards.requireAuthorizationGuard }
+        | { type: OID4VCIMachineGuards.noAuthorizationGuard }
         | { type: OID4VCIMachineGuards.hasNoContactIdentityGuard }
         | { type: OID4VCIMachineGuards.verificationCodeGuard }
         | { type: OID4VCIMachineGuards.hasContactGuard }
@@ -241,11 +246,13 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           },
           {
             target: OID4VCIMachineStates.getCredentials,
+            cond: OID4VCIMachineGuards.noAuthorizationGuard,
           },
         ],
         on: {
           [OID4VCIMachineEvents.SET_AUTHORIZATION_CODE_URL]: {
             actions: assign({ authorizationCodeURL: (_ctx: OID4VCIMachineContext, _event: SetAuthorizationCodeURLEvent) => _event.data }),
+            target: OID4VCIMachineStates.transitionFromSetup
           },
         },
       },
@@ -298,6 +305,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           },
           {
             target: OID4VCIMachineStates.getCredentials,
+            cond: OID4VCIMachineGuards.noAuthorizationGuard,
           },
         ],
       },
@@ -329,6 +337,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           },
           {
             target: OID4VCIMachineStates.getCredentials,
+            cond: OID4VCIMachineGuards.noAuthorizationGuard,
           },
         ],
       },
@@ -365,7 +374,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         always: [
           {
             cond: OID4VCIMachineGuards.hasAuthorizationResponse,
-            target: OID4VCIMachineStates.transitionFromSelectingCredentials,
+            target: OID4VCIMachineStates.getCredentials,
           },
         ],
       },
@@ -568,6 +577,7 @@ export class OID4VCIMachine {
           oid4vciCreateContactGuard,
           oid4vciHasSelectedCredentialsGuard,
           oid4vciRequireAuthorizationGuard,
+          oid4vciNoAuthorizationGuard,
           oid4vciHasAuthorizationResponse,
           ...opts?.guards,
         },
