@@ -1,5 +1,5 @@
-import { IAgentContext } from '@veramo/core'
-import { DefaultContext, EventObject, Interpreter, State, StateSchema, TypegenDisabled, Typestate } from 'xstate'
+import {IAgentContext, TAgent} from '@veramo/core'
+import {DefaultContext, EventObject, Interpreter, State, StateSchema, TypegenDisabled, Typestate} from 'xstate'
 import {waitFor} from "xstate/lib/waitFor";
 import {
   IMachineStatePersistence,
@@ -8,11 +8,9 @@ import {
   MachineStateInit,
   MachineStateInitType,
   MachineStatePersistenceOpts,
-  MachineStatePersistEventType,
   StartedInterpreterInfo,
 } from '../types'
-import { emitMachineStatePersistEvent } from './stateEventEmitter'
-import { machineStateToMachineInit, machineStateToStoreInfo } from './stateMapper'
+import {machineStateToMachineInit, machineStateToStoreInfo} from './stateMapper'
 
 /**
  * Initialize the machine state persistence. Returns a unique instanceId and the machine name amongst others
@@ -72,8 +70,14 @@ export const machineStatePersistOnTransition = async <
   let _eventCounter = init.machineState?.updatedCount ?? 0
 
   // XState persistence plugin is available. So let's emit events on every transition, so it can persist the state
-  interpreter.onChange((_machineContext) => {
-    emitMachineStatePersistEvent(
+  interpreter.onChange(async (_machineContext) => {
+    await (context.agent as unknown as TAgent<IMachineStatePersistence>).machineStatePersist({
+      ...initEventData, // init value with machineState removed, as we are getting the latest state here
+      state: interpreter.getSnapshot(),
+      updatedCount: ++_eventCounter,
+      cleanupOnFinalState: cleanupOnFinalState !== false
+    })
+    /*emitMachineStatePersistEvent(
       {
         type: MachineStatePersistEventType.EVERY,
         data: {
@@ -85,7 +89,7 @@ export const machineStatePersistOnTransition = async <
         },
       },
       context
-    )
+    )*/
   })
   // TODO: Complete listener to cleanup
 }
@@ -257,6 +261,8 @@ export const interpreterStartOrResumeFromInit = async <
     // @ts-ignore
     interpreter.start(machineState.state)
   }
+  // We are waiting a bit
+  await new Promise((res) => setTimeout(res, 50))
   return {
     interpreter,
     machineState,

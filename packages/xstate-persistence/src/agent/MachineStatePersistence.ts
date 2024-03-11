@@ -165,8 +165,8 @@ export class MachineStatePersistence implements IAgentPlugin {
 
       const storeInfoArgs = machineStateToStoreInfo(args, existingState)
       let storedState: StoreMachineStateInfo
-      if (updatedCount && updatedCount > 0 && args.machineState?.latestEventType === 'xstate.init') {
-        console.log(`Not persisting machine state for resumed init event for machine ${machineName}, tenant ${tenantId} and state with id ${args.machineState.instanceId}`)
+      if (updatedCount !== undefined && updatedCount > 1 && storeInfoArgs.latestEventType === 'xstate.init') {
+        console.log(`Not persisting machine state for resumed init event for machine ${machineName}, tenant ${tenantId} and state with id ${instanceId}`)
         storedState = storeInfoArgs
       } else {
         storedState = await this.store.persistMachineState(storeInfoArgs)

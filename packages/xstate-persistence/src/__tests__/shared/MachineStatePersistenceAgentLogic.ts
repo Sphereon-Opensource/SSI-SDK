@@ -154,8 +154,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const { instanceId, machineName } = init
 
-      // Wait some time since events are async
-      await new Promise((res) => setTimeout(res, 50))
       instance.send('increment')
 
       // Wait some time since events are async
@@ -207,30 +205,30 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should automatically start a new state machine with provided id', async (): Promise<void> => {
+      const instanceId = 'autoStart-' + Date.now()
       await interpreterStartOrResume({
         stateType: 'new',
         machineName: counterMachine.id,
-        instanceId: 'autoStart',
+        instanceId,
         context,
         singletonCheck: true,
         interpreter: instance,
         cleanupAllOtherInstances: true,
       })
 
+      await new Promise((res) => setTimeout(res, 50))
       instance.send('increment')
 
       // Wait some time since events are async
-      await new Promise((res) => setTimeout(res, 50))
+      await new Promise((res) => setTimeout(res, 100))
       let activeStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })
       expect(activeStates).toHaveLength(1)
       expect(activeStates[0].state).toBeDefined()
-      await agent.machineStateDelete({ instanceId: 'autoStart' })
+      await agent.machineStateDelete({ instanceId })
     })
 
     it('should not automatically start a new state machine with for the same machine in case singleton check is true', async (): Promise<void> => {
       await interpreterStartOrResume({ stateType: 'new', machineName: counterMachine.id, context, singletonCheck: true, interpreter: instance })
-      // Wait some time since events are async
-      await new Promise((res) => setTimeout(res, 50))
       let activeStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })
       expect(activeStates).toHaveLength(1)
       expect(activeStates[0].state).toBeDefined()
@@ -251,8 +249,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         cleanupOnFinalState: false,
         cleanupAllOtherInstances: true,
       })
-      // Wait some time since events are async
-      await new Promise((res) => setTimeout(res, 50))
       let activeStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })
       expect(activeStates).toHaveLength(1)
       expect(activeStates[0].state).toBeDefined()
@@ -283,8 +279,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         interpreter: instance,
         cleanupOnFinalState: false,
       })
-      // Wait some time since events are async
-      await new Promise((res) => setTimeout(res, 50))
       instance.send('increment')
 
       // Wait some time since events are async
