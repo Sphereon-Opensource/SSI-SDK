@@ -90,6 +90,10 @@ const oid4vciRequireAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OI
   return !ctx.authorizationCodeResponse
 }
 
+const oid4vciHasAuthorizationResponse = (ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
+  return !!ctx.authorizationCodeResponse
+}
+
 const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMachine => {
   const initialContext: OID4VCIMachineContext = {
     // TODO WAL-671 we need to store the data from OpenIdProvider here in the context and make sure we can restart the machine with it and init the OpenIdProvider
@@ -118,7 +122,8 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         | { type: OID4VCIMachineGuards.verificationCodeGuard }
         | { type: OID4VCIMachineGuards.hasContactGuard }
         | { type: OID4VCIMachineGuards.createContactGuard }
-        | { type: OID4VCIMachineGuards.hasSelectedCredentialsGuard },
+        | { type: OID4VCIMachineGuards.hasSelectedCredentialsGuard }
+        | { type: OID4VCIMachineGuards.hasAuthorizationResponse },
       services: {} as {
         [OID4VCIMachineServices.initiateOID4VCI]: {
           data: InitiationData
@@ -318,7 +323,10 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             target: OID4VCIMachineStates.verifyPin,
             cond: OID4VCIMachineGuards.requirePinGuard,
           },
-          // TODO missing initiateAuthorizationRequest ??
+          {
+            target: OID4VCIMachineStates.initiateAuthorizationRequest,
+            cond: OID4VCIMachineGuards.requireAuthorizationGuard,
+          },
           {
             target: OID4VCIMachineStates.getCredentials,
           },
@@ -342,17 +350,24 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             target: OID4VCIMachineStates.initiateAuthorizationRequest,
           },
           [OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE]: {
-            target: OID4VCIMachineStates.transitionFromSelectingCredentials,
             actions: assign({
               authorizationCodeResponse: (_ctx: OID4VCIMachineContext, _event: AuthorizationResponseEvent) => {
                 console.log(`=> Assigning authorizationCodeResponse using event data ${JSON.stringify(_event.data)}`)
                 const payload = toAuthorizationResponsePayload(_event.data)
                 console.log(`=> Assigned authorizationCodeResponse value ${JSON.stringify(payload)}`)
                 return payload
-              }
+              },
             }), // TODO can we not call toAuthorizationResponsePayload before
+            target: OID4VCIMachineStates.waitForAuthorizationResponse,
+            // target: OID4VCIMachineStates.transitionFromSelectingCredentials,
           },
         },
+        always: [
+          {
+            cond: OID4VCIMachineGuards.hasAuthorizationResponse,
+            target: OID4VCIMachineStates.transitionFromSelectingCredentials,
+          },
+        ],
       },
       [OID4VCIMachineStates.verifyPin]: {
         id: OID4VCIMachineStates.verifyPin,
@@ -553,6 +568,7 @@ export class OID4VCIMachine {
           oid4vciCreateContactGuard,
           oid4vciHasSelectedCredentialsGuard,
           oid4vciRequireAuthorizationGuard,
+          oid4vciHasAuthorizationResponse,
           ...opts?.guards,
         },
       })

@@ -1,6 +1,6 @@
-import {IAgentContext, TAgent} from '@veramo/core'
-import {DefaultContext, EventObject, Interpreter, State, StateSchema, TypegenDisabled, Typestate} from 'xstate'
-import {waitFor} from "xstate/lib/waitFor";
+import { IAgentContext, TAgent } from '@veramo/core'
+import { DefaultContext, EventObject, Interpreter, State, StateSchema, TypegenDisabled, Typestate } from 'xstate'
+import { waitFor } from 'xstate/lib/waitFor'
 import {
   IMachineStatePersistence,
   InitMachineStateArgs,
@@ -8,9 +8,11 @@ import {
   MachineStateInit,
   MachineStateInitType,
   MachineStatePersistenceOpts,
+  MachineStatePersistEventType,
   StartedInterpreterInfo,
 } from '../types'
-import {machineStateToMachineInit, machineStateToStoreInfo} from './stateMapper'
+import { emitMachineStatePersistEvent } from './stateEventEmitter'
+import { machineStateToMachineInit, machineStateToStoreInfo } from './stateMapper'
 
 /**
  * Initialize the machine state persistence. Returns a unique instanceId and the machine name amongst others
@@ -71,13 +73,13 @@ export const machineStatePersistOnTransition = async <
 
   // XState persistence plugin is available. So let's emit events on every transition, so it can persist the state
   interpreter.onChange(async (_machineContext) => {
-    await (context.agent as unknown as TAgent<IMachineStatePersistence>).machineStatePersist({
-      ...initEventData, // init value with machineState removed, as we are getting the latest state here
-      state: interpreter.getSnapshot(),
-      updatedCount: ++_eventCounter,
-      cleanupOnFinalState: cleanupOnFinalState !== false
-    })
-    /*emitMachineStatePersistEvent(
+    /*await (context.agent as TAgent<IMachineStatePersistence>).machineStatePersist({
+          ...initEventData, // init value with machineState removed, as we are getting the latest state here
+          state: interpreter.getSnapshot(),
+          updatedCount: ++_eventCounter,
+          cleanupOnFinalState: cleanupOnFinalState !== false,
+        })*/
+    emitMachineStatePersistEvent(
       {
         type: MachineStatePersistEventType.EVERY,
         data: {
@@ -89,9 +91,16 @@ export const machineStatePersistOnTransition = async <
         },
       },
       context
-    )*/
+    )
   })
-  // TODO: Complete listener to cleanup
+  if (cleanupOnFinalState && context.agent.availableMethods().includes('machineStateDelete')) {
+    interpreter.onDone((doneEvent) => {
+      ;(context.agent as TAgent<IMachineStatePersistence>).machineStateDelete({
+        tenantId: initEventData.tenantId,
+        instanceId: initEventData.instanceId,
+      })
+    })
+  }
 }
 
 /**
@@ -189,7 +198,7 @@ export const interpreterResumeFromState = async <
   // @ts-ignore
   interpreter.start(state)
   // @ts-ignore
-  await waitFor(interpreter, (awaitState) => awaitState.matches(state.value));
+  await waitFor(interpreter, (awaitState) => awaitState.matches(state.value))
 
   return {
     machineState,
@@ -201,7 +210,7 @@ export const interpreterResumeFromState = async <
       machineStateToStoreInfo({ ...machineState, stateType: 'existing' })
     ),
 
-    interpreter
+    interpreter,
   }
 }
 
