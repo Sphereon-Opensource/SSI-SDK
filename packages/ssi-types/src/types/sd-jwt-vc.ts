@@ -194,16 +194,15 @@ export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): S
   const signedPayload = jwt.payload as SdJwtSignedVerifiableCredentialPayload
   const decodedPayload = getClaimsSync(signedPayload, disclosures, hasher)
 
-  const { _sd_alg } = signedPayload
-
   return {
     compactSdJwtVc,
     decodedPayload: decodedPayload as SdJwtDecodedVerifiableCredentialPayload,
     disclosures: disclosures.map((d) => {
       const decoded = d.key ? [d.salt, d.key, d.value] : [d.salt, d.value]
+      if (!d._digest) throw new Error('Implementation error: digest not present in disclosure')
       return {
         decoded: decoded as SdJwtDecodedDisclosure,
-        digest: d.digestSync({ hasher, alg: _sd_alg ?? 'sha-256' }),
+        digest: d._digest,
         encoded: d.encode(),
       } satisfies SdJwtDisclosure
     }),
@@ -224,21 +223,18 @@ export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher:
   const signedPayload = jwt.payload as SdJwtSignedVerifiableCredentialPayload
   const decodedPayload = await getClaims(signedPayload, disclosures, hasher)
 
-  const { _sd_alg } = signedPayload
-
   return {
     compactSdJwtVc,
     decodedPayload: decodedPayload as SdJwtDecodedVerifiableCredentialPayload,
-    disclosures: await Promise.all(
-      disclosures.map(async (d) => {
-        const decoded = d.key ? [d.salt, d.key, d.value] : [d.salt, d.value]
-        return {
-          decoded: decoded as SdJwtDecodedDisclosure,
-          digest: await d.digest({ hasher, alg: _sd_alg ?? 'sha-256' }),
-          encoded: d.encode(),
-        } satisfies SdJwtDisclosure
-      })
-    ),
+    disclosures: disclosures.map((d) => {
+      const decoded = d.key ? [d.salt, d.key, d.value] : [d.salt, d.value]
+      if (!d._digest) throw new Error('Implementation error: digest not present in disclosure')
+      return {
+        decoded: decoded as SdJwtDecodedDisclosure,
+        digest: d._digest,
+        encoded: d.encode(),
+      } satisfies SdJwtDisclosure
+    }),
     signedPayload: signedPayload as SdJwtSignedVerifiableCredentialPayload,
   }
 }
