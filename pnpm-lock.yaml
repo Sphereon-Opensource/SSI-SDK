@@ -1643,8 +1643,8 @@ importers:
   packages/ssi-types:
     dependencies:
       '@sd-jwt/decode':
-        specifier: ^0.5.0
-        version: 0.5.0
+        specifier: ^0.6.0
+        version: 0.6.0
       jwt-decode:
         specifier: ^3.1.2
         version: 3.1.2
@@ -4876,7 +4876,7 @@ packages:
       md5hex: 1.0.0
       minimatch: 3.1.2
       minipass: 3.3.6
-      node-fetch: 2.6.12
+      node-fetch: 2.7.0
       node-forge: 1.3.1
       npm-package-arg: 7.0.0
       open: 8.4.2
@@ -6825,7 +6825,7 @@ packages:
       chalk: 4.1.2
       find-up: 5.0.0
       mime: 2.6.0
-      node-fetch: 2.6.12
+      node-fetch: 2.7.0
       open: 6.4.0
       ora: 5.4.1
       semver: 7.6.0
@@ -6963,7 +6963,7 @@ packages:
       metro: 0.80.6
       metro-config: 0.80.6
       metro-core: 0.80.6
-      node-fetch: 2.6.12
+      node-fetch: 2.7.0
       readline: 1.3.0
     transitivePeerDependencies:
       - '@babel/core'
@@ -7102,12 +7102,12 @@ packages:
       '@sd-jwt/types': 0.3.0
       '@sd-jwt/utils': 0.3.0
 
-  /@sd-jwt/decode@0.5.0:
-    resolution: {integrity: sha512-QQcaTU+XNh8537IDrB1/9PMAeO1tJqFrfJpg7/cWrWlUmS/VZTTaOSSZSxqG2+p36X7QvUq044uKUWI5Isp5Yw==}
+  /@sd-jwt/decode@0.6.0:
+    resolution: {integrity: sha512-zdNxEBMUjXd+myOj22+qSidLmcKVajKm8ALaPdcvfRu52gVAvohfA1PyefmczYlc0WHHC+Xne9z/eVn97YtUZQ==}
     engines: {node: '>=16'}
     dependencies:
-      '@sd-jwt/types': 0.5.0
-      '@sd-jwt/utils': 0.5.0
+      '@sd-jwt/types': 0.6.0
+      '@sd-jwt/utils': 0.6.0
     dev: false
 
   /@sd-jwt/present@0.3.0:
@@ -7119,8 +7119,8 @@ packages:
   /@sd-jwt/types@0.3.0:
     resolution: {integrity: sha512-JbpZICZ+nWPiKPKw+Veg5tf0Oftit4EzxhLJyvcd0u4R6IulNZvi6LCoUL7b2IT1H86eYPd/qB1KvSh43ByZOA==}
 
-  /@sd-jwt/types@0.5.0:
-    resolution: {integrity: sha512-hYoXOLgnMv9ryX80Nuf5mNqhhElanjcp5oe5Oa9leH9OoGCqdNAJH6fs3ARo0rNDjOLRfA09jqMSsgoH7kbAjw==}
+  /@sd-jwt/types@0.6.0:
+    resolution: {integrity: sha512-kdrzR292bhsGormk6E3T1qXKwj1AyRPQXZ3crLSNQjwjEbT53/INlTm58WcxK4wDz9RlxzBj6j514AR/u1rq5Q==}
     engines: {node: '>=16'}
     dev: false
 
@@ -7130,11 +7130,11 @@ packages:
       '@sd-jwt/types': 0.3.0
       buffer: 6.0.3
 
-  /@sd-jwt/utils@0.5.0:
-    resolution: {integrity: sha512-huU4d1dXFqSnAXqb55l5l4bUGSXVA85uHZCXAaq4BYgk4kLYRieci5OTZd6ajDbuJlJySw+KCECPufjGSS3m6Q==}
+  /@sd-jwt/utils@0.6.0:
+    resolution: {integrity: sha512-1uu9MNPsnEFUbGEQYk5GNYt+IQAPc9wKz1u8Cgm7wj5hRwiyiR8iBB9xdAXFPXj6A3uz7buXKcgoS9nNT3uccA==}
     engines: {node: '>=16'}
     dependencies:
-      '@sd-jwt/types': 0.5.0
+      '@sd-jwt/types': 0.6.0
       js-base64: 3.7.7
     dev: false
 
@@ -17653,6 +17653,7 @@ packages:
   /node-fetch@2.6.12:
     resolution: {integrity: sha512-C/fGU2E8ToujUivIO0H+tpQ6HWo4eEmchoPIoXtxCrVghxdKq+QOHqEZW7tuP3KlV3bC8FRMO5nMCC7Zm1VP6g==}
     engines: {node: 4.x || >=6.0.0}
+    requiresBuild: true
     peerDependencies:
       encoding: ^0.1.0
     peerDependenciesMeta:
@@ -17660,6 +17661,7 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
+    optional: true
 
   /node-fetch@2.6.7:
     resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
