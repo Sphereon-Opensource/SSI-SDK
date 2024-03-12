@@ -91,11 +91,11 @@ const oid4vciRequireAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OI
     return false
   }
 
-  return !ctx.authorizationCodeResponse
+  return !ctx.openID4VCIClientState?.authorizationCodeResponse
 }
 
 const oid4vciHasAuthorizationResponse = (ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
-  return !!ctx.authorizationCodeResponse
+  return !!ctx.openID4VCIClientState?.authorizationCodeResponse
 }
 
 const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMachine => {
@@ -360,11 +360,12 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           },
           [OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE]: {
             actions: assign({
-              authorizationCodeResponse: (_ctx: OID4VCIMachineContext, _event: AuthorizationResponseEvent) => {
+
+              openID4VCIClientState: (_ctx: OID4VCIMachineContext, _event: AuthorizationResponseEvent) => {
                 console.log(`=> Assigning authorizationCodeResponse using event data ${JSON.stringify(_event.data)}`)
-                const payload = toAuthorizationResponsePayload(_event.data)
-                console.log(`=> Assigned authorizationCodeResponse value ${JSON.stringify(payload)}`)
-                return payload
+                const authorizationCodeResponse = toAuthorizationResponsePayload(_event.data)
+                console.log(`=> Assigned authorizationCodeResponse value ${JSON.stringify(authorizationCodeResponse)}`)
+                return {..._ctx.openID4VCIClientState!, authorizationCodeResponse}
               },
             }), // TODO can we not call toAuthorizationResponsePayload before
             target: OID4VCIMachineStates.waitForAuthorizationResponse,

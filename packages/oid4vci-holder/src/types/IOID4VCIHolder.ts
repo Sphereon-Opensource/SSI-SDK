@@ -97,7 +97,6 @@ export type OID4VCIMachineContext = {
   contactAlias: string
   contact?: Party
   selectedCredentials: Array<string>
-  authorizationCodeResponse?: AuthorizationResponse
   credentialsToAccept: Array<MappedCredentialToAccept>
   verificationCode?: string // TODO WAL-672 refactor to not store verificationCode in the context
   hasContactConsent: boolean
