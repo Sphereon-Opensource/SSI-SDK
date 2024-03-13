@@ -245,14 +245,12 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             cond: OID4VCIMachineGuards.requirePinGuard,
           },
           {
-            target: OID4VCIMachineStates.getCredentials,
-            cond: OID4VCIMachineGuards.noAuthorizationGuard,
+            target: OID4VCIMachineStates.getCredentials
           },
         ],
         on: {
           [OID4VCIMachineEvents.SET_AUTHORIZATION_CODE_URL]: {
-            actions: assign({ authorizationCodeURL: (_ctx: OID4VCIMachineContext, _event: SetAuthorizationCodeURLEvent) => _event.data }),
-            target: OID4VCIMachineStates.transitionFromSetup
+            actions: assign({ authorizationCodeURL: (_ctx: OID4VCIMachineContext, _event: SetAuthorizationCodeURLEvent) => _event.data })
           },
         },
       },
@@ -305,7 +303,6 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           },
           {
             target: OID4VCIMachineStates.getCredentials,
-            cond: OID4VCIMachineGuards.noAuthorizationGuard,
           },
         ],
       },
@@ -337,7 +334,6 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           },
           {
             target: OID4VCIMachineStates.getCredentials,
-            cond: OID4VCIMachineGuards.noAuthorizationGuard,
           },
         ],
       },
@@ -368,7 +364,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
                 return {..._ctx.openID4VCIClientState!, authorizationCodeResponse}
               },
             }), // TODO can we not call toAuthorizationResponsePayload before
-            target: OID4VCIMachineStates.waitForAuthorizationResponse,
+            // target: OID4VCIMachineStates.waitForAuthorizationResponse,
             // target: OID4VCIMachineStates.transitionFromSelectingCredentials,
           },
         },
