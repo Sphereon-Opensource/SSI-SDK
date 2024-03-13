@@ -170,7 +170,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         // FIXME this allows for duplicate VerifiableCredential, which the user has no idea which ones those are and we also have a branding map with unique keys, so some branding will not match
         const defaultCredentialType = 'VerifiableCredential'
         const credentialType = credentialMetadata.types.find((type: string): boolean => type !== defaultCredentialType) ?? defaultCredentialType
-        const localeBranding = credentialBranding?.get(credentialType)
+        const localeBranding = credentialBranding?.[credentialType]
         const credentialAlias = (await selectCredentialLocaleBranding({ locale, localeBranding }))?.alias
 
         return {
@@ -273,7 +273,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       return Promise.reject(Error('Missing serverMetadata in context'))
     }
 
-    const localeBranding: Array<IBasicCredentialLocaleBranding> | undefined = credentialBranding?.get(selectedCredentials[0])
+    const localeBranding: Array<IBasicCredentialLocaleBranding> | undefined = credentialBranding?.[selectedCredentials[0]]
     if (localeBranding && localeBranding.length > 0) {
       await context.agent.ibAddCredentialBranding({
         vcHash: computeEntryHash(credentialsToAccept[0].rawVerifiableCredential),

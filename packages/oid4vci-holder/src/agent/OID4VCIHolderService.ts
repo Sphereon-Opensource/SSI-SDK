@@ -53,9 +53,9 @@ export const getSupportedCredentials = async (args: GetSupportedCredentialsArgs)
   return getPreferredCredentialFormats({ credentials: credentialsSupported, vcFormatPreferences })
 }
 
-export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Map<string, Array<IBasicCredentialLocaleBranding>>> => {
+export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
-  const credentialBranding = new Map<string, Array<IBasicCredentialLocaleBranding>>()
+  const credentialBranding : Record<string, Array<IBasicCredentialLocaleBranding>> = {}
   await Promise.all(
     credentialsSupported.map(async (credential: CredentialSupported): Promise<void> => {
       const localeBranding: Array<IBasicCredentialLocaleBranding> = await Promise.all(
@@ -77,7 +77,7 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
           : // @ts-ignore
             credential.types
 
-      credentialBranding.set(credentialTypes[0], localeBranding) // TODO for now taking the first type
+      credentialBranding[credentialTypes[0]] = localeBranding // TODO for now taking the first type
     })
   )
 

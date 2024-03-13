@@ -89,7 +89,7 @@ export type OID4VCIMachineContext = {
   requestData?: RequestData // TODO WAL-673 fix type as this is not always a qr code (deeplink)
   locale?: string
   authorizationCodeURL?: string
-  credentialBranding?: Map<string, Array<IBasicCredentialLocaleBranding>>
+  credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>>
   credentialsSupported: Array<CredentialSupported>
   serverMetadata?: EndpointMetadataResult
   openID4VCIClientState?: OpenID4VCIClientState
@@ -282,7 +282,7 @@ export type OID4VCIMachine = {
 
 export type InitiationData = {
   authorizationCodeURL?: string
-  credentialBranding: Map<string, Array<IBasicCredentialLocaleBranding>>
+  credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>>
   credentialsSupported: Array<CredentialSupported>
   serverMetadata: EndpointMetadataResult
   openID4VCIClientState: OpenID4VCIClientState
