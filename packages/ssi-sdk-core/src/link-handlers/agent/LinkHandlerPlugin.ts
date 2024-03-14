@@ -36,7 +36,7 @@ export class LinkHandlerPlugin implements IAgentPlugin {
   private async linkHandlerHandleURL(args: LinkHandlerEventArgs): Promise<void> {
     const { url, source } = args
     debug(`received url '${url} from source ${source}`)
-    return this.handlers.handle(args.url)
+    return await this.handlers.handle(args.url)
   }
 
 }

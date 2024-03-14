@@ -48,10 +48,16 @@ export class LinkHandlers implements LinkHandler, LinkHandlerRegistry {
 
         if ((handlers.length === 0 || handlers.length === 1 && handlers[0].id === LogLinkHandler.ID) && opts?.noExceptionOnNoHandler !== true) {
             return Promise.reject(new Error(`No link handler was registered that supports URL: ${url}`))
-        } else if (opts?.singleHandlerOnly === true) {
-            return await handlers[0].handle(url)
         }
-        await Promise.all(handlers.map(handler => handler.handle(url)));
+        try {
+            if (opts?.singleHandlerOnly === true) {
+                return await handlers[0].handle(url)
+            }
+            handlers.map(async handler => await handler.handle(url));
+        } catch (e) {
+            console.log(`Linkhandler error: ${e.message}`, e)
+            return Promise.reject(e)
+        }
     }
 
     add(handler: LinkHandler): this {
@@ -99,7 +105,11 @@ export abstract class LinkHandlerAdapter implements LinkHandler {
     private _priority: number | DefaultLinkPriorities;
     private _protocols: Array<string | RegExp>;
 
-    protected constructor(args: { id: string, priority?: number | DefaultLinkPriorities, protocols?: Array<string | RegExp> }) {
+    protected constructor(args: {
+        id: string,
+        priority?: number | DefaultLinkPriorities,
+        protocols?: Array<string | RegExp>
+    }) {
         this._id = args.id;
         this._priority = args.priority ?? DefaultLinkPriorities.DEFAULT
         this._protocols = args.protocols ?? []
@@ -150,7 +160,11 @@ export class LogLinkHandler extends LinkHandlerAdapter {
     static ID = '_log'
 
     constructor(args?: { priority?: number | DefaultLinkPriorities; protocols?: Array<string | RegExp> }) {
-        super({id: LogLinkHandler.ID, protocols: args?.protocols ?? [/.*/], priority: args?.priority ?? DefaultLinkPriorities.LOWEST});
+        super({
+            id: LogLinkHandler.ID,
+            protocols: args?.protocols ?? [/.*/],
+            priority: args?.priority ?? DefaultLinkPriorities.LOWEST
+        });
     }
 
     handle(url: string | URL): Promise<void> {
