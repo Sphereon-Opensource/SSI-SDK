@@ -38,7 +38,7 @@ export type LinkHandlerEventData = {
     url: string | URL
 }
 
-export const emitLinkHandlerURLEvent = (event: LinkHandlerEvent, context: IAgentContext<any>): Promise<void> => {
+export const emitLinkHandlerURLEvent = (event: LinkHandlerEventData, context: IAgentContext<any>): Promise<void> => {
     return context.agent.emit(LinkHandlerEventType.LINK_HANDLER_URL, event)
 }
 
