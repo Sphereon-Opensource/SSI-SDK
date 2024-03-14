@@ -55,7 +55,7 @@ export const getSupportedCredentials = async (args: GetSupportedCredentialsArgs)
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
-  const credentialBranding : Record<string, Array<IBasicCredentialLocaleBranding>> = {}
+  const credentialBranding: Record<string, Array<IBasicCredentialLocaleBranding>> = {}
   await Promise.all(
     credentialsSupported.map(async (credential: CredentialSupported): Promise<void> => {
       const localeBranding: Array<IBasicCredentialLocaleBranding> = await Promise.all(

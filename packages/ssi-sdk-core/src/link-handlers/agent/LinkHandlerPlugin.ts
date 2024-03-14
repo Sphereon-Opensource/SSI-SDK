@@ -1,6 +1,6 @@
-import {IAgentContext, IAgentPlugin} from '@veramo/core'
-import Debug from "debug";
-import {ILinkHandlerPlugin, LinkHandlerEvent, LinkHandlerEventArgs, LinkHandlerEventType, LinkHandlers} from '../index'
+import { IAgentContext, IAgentPlugin } from '@veramo/core'
+import Debug from 'debug'
+import { ILinkHandlerPlugin, LinkHandlerEvent, LinkHandlerEventArgs, LinkHandlerEventType, LinkHandlers } from '../index'
 
 const debug = Debug(`sphereon:ssi-sdk:LinkHandler`)
 /**
@@ -16,7 +16,7 @@ export class LinkHandlerPlugin implements IAgentPlugin {
     linkHandlerHandleURL: this.linkHandlerHandleURL.bind(this),
   }
 
-  constructor(options: {eventTypes?: LinkHandlerEventType[], handlers: LinkHandlers}) {
+  constructor(options: { eventTypes?: LinkHandlerEventType[]; handlers: LinkHandlers }) {
     const { eventTypes, handlers } = options
     this.eventTypes = eventTypes
     this.handlers = handlers
@@ -38,5 +38,4 @@ export class LinkHandlerPlugin implements IAgentPlugin {
     debug(`received url '${url} from source ${source}`)
     return await this.handlers.handle(args.url)
   }
-
 }

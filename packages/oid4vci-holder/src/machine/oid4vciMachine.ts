@@ -245,12 +245,12 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             cond: OID4VCIMachineGuards.requirePinGuard,
           },
           {
-            target: OID4VCIMachineStates.getCredentials
+            target: OID4VCIMachineStates.getCredentials,
           },
         ],
         on: {
           [OID4VCIMachineEvents.SET_AUTHORIZATION_CODE_URL]: {
-            actions: assign({ authorizationCodeURL: (_ctx: OID4VCIMachineContext, _event: SetAuthorizationCodeURLEvent) => _event.data })
+            actions: assign({ authorizationCodeURL: (_ctx: OID4VCIMachineContext, _event: SetAuthorizationCodeURLEvent) => _event.data }),
           },
         },
       },
@@ -356,12 +356,11 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           },
           [OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE]: {
             actions: assign({
-
               openID4VCIClientState: (_ctx: OID4VCIMachineContext, _event: AuthorizationResponseEvent) => {
                 console.log(`=> Assigning authorizationCodeResponse using event data ${JSON.stringify(_event.data)}`)
                 const authorizationCodeResponse = toAuthorizationResponsePayload(_event.data)
                 console.log(`=> Assigned authorizationCodeResponse value ${JSON.stringify(authorizationCodeResponse)}`)
-                return {..._ctx.openID4VCIClientState!, authorizationCodeResponse}
+                return { ..._ctx.openID4VCIClientState!, authorizationCodeResponse }
               },
             }), // TODO can we not call toAuthorizationResponsePayload before
             // target: OID4VCIMachineStates.waitForAuthorizationResponse,

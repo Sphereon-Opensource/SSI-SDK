@@ -1,4 +1,4 @@
-import {LinkHandlers, LogLinkHandler} from "../src/link-handlers";
+import { LinkHandlers, LogLinkHandler } from '../src'
 
 describe('link handlers', () => {
   it('Should return false if no handler is registered handling the url', () => {
@@ -19,12 +19,10 @@ describe('link handlers', () => {
   })
 
   it('Should return false if a handler is registered not handling the url', () => {
-    const logLinkHandler = new LogLinkHandler({protocols: ['nope']})
+    const logLinkHandler = new LogLinkHandler({ protocols: ['nope'] })
     const handlers = new LinkHandlers()
     handlers.add(logLinkHandler)
     expect(logLinkHandler.supports('https://localhost')).toEqual(false)
     expect(handlers.supports('https://localhost')).toEqual(false)
-
   })
-
 })
