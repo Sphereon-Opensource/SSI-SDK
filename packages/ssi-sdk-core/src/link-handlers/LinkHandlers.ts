@@ -99,7 +99,7 @@ export abstract class LinkHandlerAdapter implements LinkHandler {
     private _priority: number | DefaultLinkPriorities;
     private _protocols: Array<string | RegExp>;
 
-    constructor(args: { id: string, priority?: number | DefaultLinkPriorities, protocols?: Array<string | RegExp> }) {
+    protected constructor(args: { id: string, priority?: number | DefaultLinkPriorities, protocols?: Array<string | RegExp> }) {
         this._id = args.id;
         this._priority = args.priority ?? DefaultLinkPriorities.DEFAULT
         this._protocols = args.protocols ?? []
@@ -131,8 +131,13 @@ export abstract class LinkHandlerAdapter implements LinkHandler {
     }
 
 
-    supports(url: string | URL): boolean {
-        return false;
+    supports(urlArg: string | URL): boolean {
+        const url = LinkHandlerAdapter.toURL(urlArg)
+        return this.protocols.some(predicate => typeof predicate === 'string' ? url.protocol === predicate.toLowerCase() : predicate.test(url.protocol))
+    }
+
+    protected static toURL(url: string | URL) {
+        return new URL(url)
     }
 
 }
@@ -150,12 +155,6 @@ export class LogLinkHandler extends LinkHandlerAdapter {
 
     handle(url: string | URL): Promise<void> {
         return Promise.resolve(debug(url))
-    }
-
-    supports(urlArg: string | URL): boolean {
-        const url = new URL(urlArg)
-        return this.protocols.some(predicate => typeof predicate === 'string' ? url.protocol === predicate.toLowerCase() : predicate.test(url.protocol))
-
     }
 }
 
