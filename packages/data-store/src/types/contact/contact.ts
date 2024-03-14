@@ -3,7 +3,9 @@ import { IIdentifier } from '@veramo/core'
 export type Party = {
   id: string
   uri?: string
-  roles: Array<IdentityRoleEnum>
+  ownerId?: string
+  tenantId?: string
+  roles: Array<CredentialRole>
   identities: Array<Identity>
   electronicAddresses: Array<ElectronicAddress>
   physicalAddresses: Array<PhysicalAddress>
@@ -47,23 +49,28 @@ export type PartialParty = Partial<
 export type Identity = {
   id: string
   alias: string
-  roles: Array<IdentityRoleEnum>
+  ownerId?: string
+  tenantId?: string
+  origin: IdentityOrigin
+  roles: Array<CredentialRole>
   identifier: CorrelationIdentifier
   connection?: Connection
   metadata?: Array<MetadataItem>
   createdAt: Date
   lastUpdatedAt: Date
 }
-export type NonPersistedIdentity = Omit<Identity, 'id' | 'identifier' | 'connection' | 'metadata' | 'createdAt' | 'lastUpdatedAt'> & {
+export type NonPersistedIdentity = Omit<Identity, 'id' | 'identifier' | 'connection' | 'metadata' | 'origin' | 'createdAt' | 'lastUpdatedAt'> & {
+  origin?: IdentityOrigin
   identifier: NonPersistedCorrelationIdentifier
   connection?: NonPersistedConnection
   metadata?: Array<NonPersistedMetadataItem>
 }
-export type PartialIdentity = Partial<Omit<Identity, 'identifier' | 'connection' | 'metadata' | 'roles'>> & {
+export type PartialIdentity = Partial<Omit<Identity, 'identifier' | 'connection' | 'metadata' | 'origin' | 'roles'>> & {
   identifier?: PartialCorrelationIdentifier
   connection?: PartialConnection
   metadata?: PartialMetadataItem
-  roles?: IdentityRoleEnum
+  origin?: IdentityOrigin
+  roles?: CredentialRole
   partyId?: string
 }
 
@@ -77,6 +84,8 @@ export type PartialMetadataItem = Partial<MetadataItem>
 
 export type CorrelationIdentifier = {
   id: string
+  ownerId?: string
+  tenantId?: string
   type: CorrelationIdentifierEnum
   correlationId: string
 }
@@ -85,6 +94,8 @@ export type PartialCorrelationIdentifier = Partial<CorrelationIdentifier>
 
 export type Connection = {
   id: string
+  ownerId?: string
+  tenantId?: string
   type: ConnectionTypeEnum
   config: ConnectionConfig
 }
@@ -99,6 +110,8 @@ export type OpenIdConfig = {
   id: string
   clientId: string
   clientSecret: string
+  ownerId?: string
+  tenantId?: string
   scopes: Array<string>
   issuer: string
   redirectUrl: string
@@ -112,6 +125,8 @@ export type DidAuthConfig = {
   id: string
   identifier: IIdentifier
   stateId: string
+  ownerId?: string
+  tenantId?: string
   redirectUrl: string
   sessionId: string
 }
@@ -130,6 +145,8 @@ export type NaturalPerson = {
   lastName: string
   middleName?: string
   displayName: string
+  ownerId?: string
+  tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
 }
@@ -140,6 +157,8 @@ export type Organization = {
   id: string
   legalName: string
   displayName: string
+  ownerId?: string
+  tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
 }
@@ -168,6 +187,8 @@ export type PartyRelationship = {
   id: string
   leftId: string
   rightId: string
+  ownerId?: string
+  tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
 }
@@ -178,6 +199,8 @@ export type ElectronicAddress = {
   id: string
   type: ElectronicAddressType
   electronicAddress: string
+  ownerId?: string
+  tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
 }
@@ -196,6 +219,8 @@ export type PhysicalAddress = {
   provinceName: string
   countryCode: string
   buildingName?: string
+  ownerId?: string
+  tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
 }
@@ -208,7 +233,12 @@ export type ElectronicAddressType = 'email' | 'phone'
 
 export type PhysicalAddressType = 'home' | 'visit' | 'postal'
 
-export enum IdentityRoleEnum {
+export enum IdentityOrigin {
+  INTERNAL = 'internal',
+  EXTRERNAL = 'external',
+}
+
+export enum CredentialRole {
   ISSUER = 'issuer',
   VERIFIER = 'verifier',
   HOLDER = 'holder',

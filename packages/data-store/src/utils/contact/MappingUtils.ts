@@ -6,6 +6,7 @@ import {
   DidAuthConfig,
   ElectronicAddress,
   Identity,
+  IdentityOrigin,
   MetadataItem,
   NaturalPerson,
   NonPersistedConnection,
@@ -30,21 +31,21 @@ import {
   PartyType,
   PhysicalAddress,
 } from '../../types'
-import { PartyEntity } from '../../entities/contact/PartyEntity'
-import { IdentityEntity } from '../../entities/contact/IdentityEntity'
-import { ElectronicAddressEntity } from '../../entities/contact/ElectronicAddressEntity'
-import { PartyRelationshipEntity } from '../../entities/contact/PartyRelationshipEntity'
-import { BaseContactEntity } from '../../entities/contact/BaseContactEntity'
-import { NaturalPersonEntity } from '../../entities/contact/NaturalPersonEntity'
-import { OrganizationEntity } from '../../entities/contact/OrganizationEntity'
-import { ConnectionEntity } from '../../entities/contact/ConnectionEntity'
-import { BaseConfigEntity } from '../../entities/contact/BaseConfigEntity'
-import { CorrelationIdentifierEntity } from '../../entities/contact/CorrelationIdentifierEntity'
-import { DidAuthConfigEntity } from '../../entities/contact/DidAuthConfigEntity'
-import { IdentityMetadataItemEntity } from '../../entities/contact/IdentityMetadataItemEntity'
-import { OpenIdConfigEntity } from '../../entities/contact/OpenIdConfigEntity'
-import { PartyTypeEntity } from '../../entities/contact/PartyTypeEntity'
-import { PhysicalAddressEntity } from '../../entities/contact/PhysicalAddressEntity'
+import {PartyEntity} from '../../entities/contact/PartyEntity'
+import {IdentityEntity} from '../../entities/contact/IdentityEntity'
+import {ElectronicAddressEntity} from '../../entities/contact/ElectronicAddressEntity'
+import {PartyRelationshipEntity} from '../../entities/contact/PartyRelationshipEntity'
+import {BaseContactEntity} from '../../entities/contact/BaseContactEntity'
+import {NaturalPersonEntity} from '../../entities/contact/NaturalPersonEntity'
+import {OrganizationEntity} from '../../entities/contact/OrganizationEntity'
+import {ConnectionEntity} from '../../entities/contact/ConnectionEntity'
+import {BaseConfigEntity} from '../../entities/contact/BaseConfigEntity'
+import {CorrelationIdentifierEntity} from '../../entities/contact/CorrelationIdentifierEntity'
+import {DidAuthConfigEntity} from '../../entities/contact/DidAuthConfigEntity'
+import {IdentityMetadataItemEntity} from '../../entities/contact/IdentityMetadataItemEntity'
+import {OpenIdConfigEntity} from '../../entities/contact/OpenIdConfigEntity'
+import {PartyTypeEntity} from '../../entities/contact/PartyTypeEntity'
+import {PhysicalAddressEntity} from '../../entities/contact/PhysicalAddressEntity'
 
 export const partyEntityFrom = (party: NonPersistedParty): PartyEntity => {
   const partyEntity: PartyEntity = new PartyEntity()
@@ -58,6 +59,8 @@ export const partyEntityFrom = (party: NonPersistedParty): PartyEntity => {
     : []
   partyEntity.partyType = partyTypeEntityFrom(party.partyType)
   partyEntity.contact = contactEntityFrom(party.contact)
+  partyEntity.ownerId = party.ownerId
+  partyEntity.tenantId = party.tenantId
 
   return partyEntity
 }
@@ -77,6 +80,8 @@ export const partyFrom = (party: PartyEntity): Party => {
     relationships: party.relationships ? party.relationships.map((relationship: PartyRelationshipEntity) => partyRelationshipFrom(relationship)) : [],
     partyType: partyTypeFrom(party.partyType),
     contact: contactFrom(party.contact),
+    ownerId: party.ownerId,
+    tenantId: party.tenantId,
     createdAt: party.createdAt,
     lastUpdatedAt: party.lastUpdatedAt,
   }
@@ -112,6 +117,8 @@ export const connectionEntityFrom = (connection: NonPersistedConnection): Connec
   const connectionEntity: ConnectionEntity = new ConnectionEntity()
   connectionEntity.type = connection.type
   connectionEntity.config = configEntityFrom(connection.config)
+  connectionEntity.ownerId = connection.ownerId
+  connectionEntity.tenantId = connection.tenantId
 
   return connectionEntity
 }
@@ -120,6 +127,8 @@ export const connectionFrom = (connection: ConnectionEntity): Connection => {
   return {
     id: connection.id,
     type: connection.type,
+    ownerId: connection.ownerId,
+    tenantId: connection.tenantId,
     config: configFrom(connection.config),
   }
 }
@@ -138,6 +147,8 @@ export const correlationIdentifierEntityFrom = (identifier: NonPersistedCorrelat
   const identifierEntity: CorrelationIdentifierEntity = new CorrelationIdentifierEntity()
   identifierEntity.type = identifier.type
   identifierEntity.correlationId = identifier.correlationId
+  identifierEntity.ownerId = identifier.ownerId
+  identifierEntity.tenantId = identifier.tenantId
 
   return identifierEntity
 }
@@ -147,6 +158,8 @@ export const correlationIdentifierFrom = (identifier: CorrelationIdentifierEntit
     id: identifier.id,
     type: identifier.type,
     correlationId: identifier.correlationId,
+    ownerId: identifier.ownerId,
+    tenantId: identifier.tenantId,
   }
 }
 
@@ -155,7 +168,8 @@ export const didAuthConfigEntityFrom = (config: NonPersistedDidAuthConfig): DidA
   didAuthConfig.identifier = config.identifier.did
   didAuthConfig.redirectUrl = config.redirectUrl
   didAuthConfig.sessionId = config.sessionId
-
+  didAuthConfig.ownerId = config.ownerId
+  didAuthConfig.tenantId = config.tenantId
   return didAuthConfig
 }
 
@@ -163,6 +177,8 @@ export const electronicAddressEntityFrom = (electronicAddress: NonPersistedElect
   const electronicAddressEntity: ElectronicAddressEntity = new ElectronicAddressEntity()
   electronicAddressEntity.type = electronicAddress.type
   electronicAddressEntity.electronicAddress = electronicAddress.electronicAddress
+  electronicAddressEntity.ownerId = electronicAddress.ownerId
+  electronicAddressEntity.tenantId = electronicAddress.tenantId
 
   return electronicAddressEntity
 }
@@ -172,6 +188,8 @@ export const electronicAddressFrom = (electronicAddress: ElectronicAddressEntity
     id: electronicAddress.id,
     type: electronicAddress.type,
     electronicAddress: electronicAddress.electronicAddress,
+    ownerId: electronicAddress.ownerId,
+    tenantId: electronicAddress.tenantId,
     createdAt: electronicAddress.createdAt,
     lastUpdatedAt: electronicAddress.lastUpdatedAt,
   }
@@ -187,6 +205,8 @@ export const physicalAddressEntityFrom = (physicalAddress: NonPersistedPhysicalA
   physicalAddressEntity.provinceName = physicalAddress.provinceName
   physicalAddressEntity.countryCode = physicalAddress.countryCode
   physicalAddressEntity.buildingName = physicalAddress.buildingName
+  physicalAddressEntity.ownerId = physicalAddress.ownerId
+  physicalAddressEntity.tenantId = physicalAddress.tenantId
 
   return physicalAddressEntity
 }
@@ -202,6 +222,8 @@ export const physicalAddressFrom = (physicalAddress: PhysicalAddressEntity): Phy
     provinceName: physicalAddress.provinceName,
     countryCode: physicalAddress.countryCode,
     buildingName: physicalAddress.buildingName,
+    ownerId: physicalAddress.ownerId,
+    tenantId: physicalAddress.tenantId,
     createdAt: physicalAddress.createdAt,
     lastUpdatedAt: physicalAddress.lastUpdatedAt,
   }
@@ -210,6 +232,9 @@ export const physicalAddressFrom = (physicalAddress: PhysicalAddressEntity): Phy
 export const identityEntityFrom = (args: NonPersistedIdentity): IdentityEntity => {
   const identityEntity: IdentityEntity = new IdentityEntity()
   identityEntity.alias = args.alias
+  identityEntity.origin = args.origin ?? IdentityOrigin.EXTRERNAL
+  identityEntity.ownerId = args.ownerId
+  identityEntity.tenantId = args.tenantId
   identityEntity.roles = args.roles
   identityEntity.identifier = correlationIdentifierEntityFrom(args.identifier)
   identityEntity.connection = args.connection ? connectionEntityFrom(args.connection) : undefined
@@ -222,7 +247,10 @@ export const identityFrom = (identity: IdentityEntity): Identity => {
   return {
     id: identity.id,
     alias: identity.alias,
+    origin: identity.origin,
     roles: identity.roles,
+    tenantId: identity.tenantId,
+    ownerId: identity.ownerId,
     identifier: correlationIdentifierFrom(identity.identifier),
     ...(identity.connection && { connection: connectionFrom(identity.connection) }),
     metadata: identity.metadata ? identity.metadata.map((item: IdentityMetadataItemEntity) => metadataItemFrom(item)) : [],
@@ -253,6 +281,8 @@ export const naturalPersonEntityFrom = (naturalPerson: NonPersistedNaturalPerson
   naturalPersonEntity.middleName = naturalPerson.middleName
   naturalPersonEntity.lastName = naturalPerson.lastName
   naturalPersonEntity.displayName = naturalPerson.displayName
+  naturalPersonEntity.ownerId = naturalPerson.ownerId
+  naturalPersonEntity.tenantId = naturalPerson.tenantId
 
   return naturalPersonEntity
 }
@@ -264,6 +294,8 @@ export const naturalPersonFrom = (naturalPerson: NaturalPersonEntity): NaturalPe
     middleName: naturalPerson.middleName,
     lastName: naturalPerson.lastName,
     displayName: naturalPerson.displayName,
+    ownerId: naturalPerson.ownerId,
+    tenantId: naturalPerson.tenantId,
     createdAt: naturalPerson.createdAt,
     lastUpdatedAt: naturalPerson.lastUpdatedAt,
   }
@@ -278,6 +310,8 @@ export const openIdConfigEntityFrom = (config: NonPersistedOpenIdConfig): OpenId
   openIdConfig.redirectUrl = config.redirectUrl
   openIdConfig.dangerouslyAllowInsecureHttpRequests = config.dangerouslyAllowInsecureHttpRequests
   openIdConfig.clientAuthMethod = config.clientAuthMethod
+  openIdConfig.ownerId = config.ownerId
+  openIdConfig.tenantId = config.tenantId
 
   return openIdConfig
 }
@@ -286,6 +320,8 @@ export const organizationEntityFrom = (organization: NonPersistedOrganization): 
   const organizationEntity: OrganizationEntity = new OrganizationEntity()
   organizationEntity.legalName = organization.legalName
   organizationEntity.displayName = organization.displayName
+  organizationEntity.ownerId = organization.ownerId
+  organizationEntity.tenantId = organization.tenantId
 
   return organizationEntity
 }
@@ -295,6 +331,8 @@ export const organizationFrom = (organization: OrganizationEntity): Organization
     id: organization.id,
     legalName: organization.legalName,
     displayName: organization.displayName,
+    ownerId: organization.ownerId,
+    tenantId: organization.tenantId,
     createdAt: organization.createdAt,
     lastUpdatedAt: organization.lastUpdatedAt,
   }
@@ -304,7 +342,8 @@ export const partyRelationshipEntityFrom = (relationship: NonPersistedPartyRelat
   const partyRelationshipEntity: PartyRelationshipEntity = new PartyRelationshipEntity()
   partyRelationshipEntity.leftId = relationship.leftId
   partyRelationshipEntity.rightId = relationship.rightId
-
+  partyRelationshipEntity.ownerId = relationship.ownerId
+  partyRelationshipEntity.tenantId = relationship.tenantId
   return partyRelationshipEntity
 }
 
@@ -313,6 +352,8 @@ export const partyRelationshipFrom = (relationship: PartyRelationshipEntity): Pa
     id: relationship.id,
     leftId: relationship.leftId,
     rightId: relationship.rightId,
+    ownerId: relationship.ownerId,
+    tenantId: relationship.tenantId,
     createdAt: relationship.createdAt,
     lastUpdatedAt: relationship.lastUpdatedAt,
   }
@@ -363,6 +404,8 @@ export const openIdConfigFrom = (config: OpenIdConfigEntity): OpenIdConfig => {
     redirectUrl: config.redirectUrl,
     dangerouslyAllowInsecureHttpRequests: config.dangerouslyAllowInsecureHttpRequests,
     clientAuthMethod: config.clientAuthMethod,
+    ownerId: config.ownerId,
+    tenantId: config.tenantId,
   }
 }
 
@@ -373,6 +416,8 @@ export const didAuthConfigFrom = (config: DidAuthConfigEntity): DidAuthConfig =>
     stateId: '', // FIXME
     redirectUrl: config.redirectUrl,
     sessionId: config.sessionId,
+    ownerId: config.ownerId,
+    tenantId: config.tenantId,
   }
 }
 
