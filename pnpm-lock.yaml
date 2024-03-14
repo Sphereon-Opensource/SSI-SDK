@@ -673,6 +673,9 @@ importers:
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
+      '@sphereon/ssi-sdk.core':
+        specifier: workspace:*
+        version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
