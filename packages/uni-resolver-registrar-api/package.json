@@ -63,7 +63,7 @@
     "passport": "^0.6.0",
     "passport-azure-ad": "^4.3.5",
     "ts-node": "^10.9.1",
-    "typeorm": "^0.3.12",
+    "typeorm": "^0.3.20",
     "web-did-resolver": "^2.0.27"
   },
   "files": [
