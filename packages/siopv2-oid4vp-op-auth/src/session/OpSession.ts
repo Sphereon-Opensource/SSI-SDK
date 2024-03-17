@@ -3,9 +3,12 @@ import { PresentationExchangeResponseOpts } from '@sphereon/did-auth-siop/dist/a
 import { getAgentDIDMethods, getAgentResolver, getDID } from '@sphereon/ssi-sdk-ext.did-utils'
 import { CredentialMapper, parseDid } from '@sphereon/ssi-types'
 import { IIdentifier } from '@veramo/core'
+import Debug from 'debug'
 import { IOPOptions, IOpSessionArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
+
+const debug = Debug(`sphereon:sdk:siop:op-session`)
 
 export class OpSession {
   public readonly ts = new Date().getDate()
@@ -66,12 +69,13 @@ export class OpSession {
   }
 
   public async getSupportedDIDMethods(didPrefix?: boolean) {
-    const agentMethods = this.getAgentDIDMethodsSupported()
+    const agentMethods = this.getAgentDIDMethodsSupported({ didPrefix })
     let rpMethods = await this.getRPDIDMethodsSupported({ didPrefix, agentMethods })
 
     let intersection: string[]
     if (rpMethods.dids.length === 0 || rpMethods.dids.includes('did')) {
-      intersection = agentMethods || (await getAgentDIDMethods(this.context)) // fallback to the agent in case the agent methods are undefined
+      intersection =
+        agentMethods || (await getAgentDIDMethods(this.context)).map((method) => (didPrefix === false ? method.replace('did:', '') : method)) // fallback to the agent in case the agent methods are undefined
     } else if (!agentMethods || agentMethods.length === 0) {
       intersection = rpMethods.dids
     } else {
@@ -83,19 +87,35 @@ export class OpSession {
     return intersection.map((value) => (didPrefix === false ? value : `did:${value}`))
   }
 
-  private getAgentDIDMethodsSupported() {
-    const agentMethods = this.options.supportedDIDMethods?.map((method) => method.toLowerCase().replace('did:', ''))
+  private getAgentDIDMethodsSupported(opts: { didPrefix?: boolean }) {
+    const agentMethods = this.options.supportedDIDMethods?.map((method) =>
+      opts.didPrefix === false
+        ? method.toLowerCase().replace('did:', '')
+        : method.startsWith('did:')
+        ? method.toLowerCase()
+        : `did:${method.toLowerCase()}`
+    )
+    debug(`agent methods: ${JSON.stringify(agentMethods)}`)
     return agentMethods
   }
 
   private async getRPDIDMethodsSupported(opts: { didPrefix?: boolean; agentMethods?: string[] }) {
-    const agentMethods = opts.agentMethods ?? this.getAgentDIDMethodsSupported()
+    const agentMethods =
+      (opts.agentMethods ?? this.getAgentDIDMethodsSupported(opts))?.map((method) =>
+        opts.didPrefix === false ? method.replace('did:', '') : method
+      ) ?? []
+    debug(`agent methods in rp method supported: ${JSON.stringify(agentMethods)}`)
     const authReq = await this.getAuthorizationRequest()
-    const subjectSyntaxTypesSupported = authReq.registrationMetadataPayload?.subject_syntax_types_supported
+    const subjectSyntaxTypesSupported =
+      authReq.registrationMetadataPayload?.subject_syntax_types_supported?.map((method) =>
+        opts.didPrefix === false ? method.replace('did:', '') : method
+      ) ?? []
+    debug(`subject syntact types supported in rp method supported: ${JSON.stringify(agentMethods)}`)
     const aud = await authReq.authorizationRequest.getMergedProperty<string>('aud')
     let rpMethods: string[] = []
     if (aud && aud.startsWith('did:')) {
-      const didMethod = parseDid(aud).method.toLowerCase().replace('did:', '')
+      const didMethod = `${opts.didPrefix === false ? '' : 'did:'}${parseDid(aud).method}`
+      debug(`aud did method: ${didMethod}`)
 
       // The RP knows our DID, so we can use it to determine the supported DID methods
       // If the aud did:method is not in the supported types, there still is something wrong, unless the RP signals to support all did methods
@@ -105,7 +125,7 @@ export class OpSession {
       rpMethods = [didMethod]
     } else if (subjectSyntaxTypesSupported) {
       rpMethods = (Array.isArray(subjectSyntaxTypesSupported) ? subjectSyntaxTypesSupported : [subjectSyntaxTypesSupported]).map((method) =>
-        method.toLowerCase().replace('did:', '')
+        opts.didPrefix === false ? method.toLowerCase().replace('did:', '') : method.toLowerCase()
       )
     }
     const isEBSI =
@@ -113,32 +133,42 @@ export class OpSession {
       (authReq.issuer?.includes('.ebsi.eu') || (await authReq.authorizationRequest.getMergedProperty<string>('client_id'))?.includes('.ebsi.eu'))
     let codecName: string | undefined = undefined
     if (isEBSI) {
-      console.log(`EBSI detected, adding did:key to supported DID methods for RP`)
+      debug(`EBSI detected, adding did:key to supported DID methods for RP`)
       if (!agentMethods?.includes('key')) {
         throw Error(`EBSI detected, but agent did not support did:key. Please reconfigure agent`)
       }
       rpMethods = [`${opts.didPrefix ? 'did:' : ''}key`]
       codecName = 'jwk_jcs-pub'
     }
-    return { dids: rpMethods.map(did => opts.didPrefix && !did.includes('did:') ? `did:${did}` : did), codecName }
+    return { dids: rpMethods, codecName }
   }
 
   public async getSupportedIdentifiers(opts?: { createInCaseNoDIDFound?: boolean }): Promise<IIdentifier[]> {
     // todo: we also need to check signature algo
     const methods = await this.getSupportedDIDMethods(true)
+    debug(`supported DID methods (did: prefix = true): ${JSON.stringify(methods)}`)
     if (methods.length === 0) {
       throw Error(`No DID methods are supported`)
     }
     const identifiers = await this.context.agent.didManagerFind().then((ids) => ids.filter((id) => methods.includes(id.provider)))
     if (identifiers.length === 0) {
-      console.log(`No identifiers available in agent supporting methods ${JSON.stringify(methods)}`)
+      debug(`No identifiers available in agent supporting methods ${JSON.stringify(methods)}`)
       if (opts?.createInCaseNoDIDFound !== false) {
-        const codecName = (await this.getRPDIDMethodsSupported({ didPrefix: true, agentMethods: methods })).codecName
-        const identifier = await this.context.agent.didManagerCreate({ provider: methods[0], options: { codecName } })
-        console.log(`Created a new identifier for the SIOP interaction: ${identifier.did}`)
+        const codecName = (
+          await this.getRPDIDMethodsSupported({
+            didPrefix: true,
+            agentMethods: methods,
+          })
+        ).codecName
+        const identifier = await this.context.agent.didManagerCreate({
+          provider: methods[0],
+          options: { codecName },
+        })
+        debug(`Created a new identifier for the SIOP interaction: ${identifier.did}`)
         identifiers.push(identifier)
       }
     }
+    debug(`supported identifiers: ${JSON.stringify(identifiers.map((id) => id.did))}`)
     return identifiers
   }
 
@@ -160,8 +190,8 @@ export class OpSession {
   }
 
   /*private async getMergedRequestPayload(): Promise<RequestObjectPayload> {
-          return await (await this.getAuthorizationRequest()).authorizationRequest.mergedPayloads()
-        }*/
+            return await (await this.getAuthorizationRequest()).authorizationRequest.mergedPayloads()
+          }*/
   public async sendAuthorizationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
     const resolveOpts: ResolveOpts = this.options.resolveOpts ?? {
       resolver: getAgentResolver(this.context, {
