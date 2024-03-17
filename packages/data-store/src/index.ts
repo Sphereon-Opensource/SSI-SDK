@@ -102,6 +102,7 @@ export {
   BaseConfigEntity,
   ConnectionEntity,
   PartyEntity,
+  BaseContactEntity,
   CorrelationIdentifierEntity,
   DidAuthConfigEntity,
   IdentityEntity,
