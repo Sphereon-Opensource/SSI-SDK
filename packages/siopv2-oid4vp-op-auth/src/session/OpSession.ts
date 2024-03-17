@@ -100,10 +100,22 @@ export class OpSession {
     return intersection.map((value) => (didPrefix === false ? value : `did:${value}`))
   }
 
-  public async getSupportedIdentifiers(): Promise<IIdentifier[]> {
+  public async getSupportedIdentifiers(opts?: {createInCaseNoDIDFound?: boolean}): Promise<IIdentifier[]> {
     // todo: we also need to check signature algo
     const methods = await this.getSupportedDIDMethods(true)
-    return await this.context.agent.didManagerFind().then((ids) => ids.filter((id) => methods.includes(id.provider)))
+    if (methods.length === 0) {
+      throw Error(`No DID methods are supported`)
+    }
+    const identifiers = await this.context.agent.didManagerFind().then((ids) => ids.filter((id) => methods.includes(id.provider)))
+    if (identifiers.length === 0) {
+      console.log(`No identifiers available in agent supporting methods ${JSON.stringify(methods)}`)
+      if (opts?.createInCaseNoDIDFound !== false) {
+        const identifier = await this.context.agent.didManagerCreate({provider: methods[0]})
+        console.log(`Created a new identifier for the SIOP interaction: ${identifier.did}`)
+        identifiers.push(identifier)
+      }
+    }
+    return identifiers
   }
 
   public async getSupportedDIDs(): Promise<string[]> {
