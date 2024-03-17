@@ -134,7 +134,7 @@ export class OpSession {
     let codecName: string | undefined = undefined
     if (isEBSI) {
       debug(`EBSI detected, adding did:key to supported DID methods for RP`)
-      if (!agentMethods?.includes('key')) {
+      if (!agentMethods?.includes(opts.didPrefix === false ? 'key' : 'did:key')) {
         throw Error(`EBSI detected, but agent did not support did:key. Please reconfigure agent`)
       }
       rpMethods = [`${opts.didPrefix ? 'did:' : ''}key`]
