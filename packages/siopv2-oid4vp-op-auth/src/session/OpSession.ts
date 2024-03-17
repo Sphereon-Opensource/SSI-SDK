@@ -74,10 +74,9 @@ export class OpSession {
 
     let intersection: string[]
     if (rpMethods.dids.length === 0 || rpMethods.dids.includes('did')) {
-      intersection =
-        agentMethods || (await getAgentDIDMethods(this.context)).map((method) => (didPrefix === false ? method.replace('did:', '') : method)) // fallback to the agent in case the agent methods are undefined
+      intersection = agentMethods && agentMethods.length > 0 ? agentMethods : (await getAgentDIDMethods(this.context)).map((method) => convertDidMethod(method, didPrefix)) // fallback to the agent in case the agent methods are undefined
     } else if (!agentMethods || agentMethods.length === 0) {
-      intersection = rpMethods.dids
+      intersection = rpMethods.dids?.map(method => convertDidMethod(method, didPrefix))
     } else {
       intersection = agentMethods.filter((value) => rpMethods.dids.includes(value))
     }
@@ -88,33 +87,25 @@ export class OpSession {
   }
 
   private getAgentDIDMethodsSupported(opts: { didPrefix?: boolean }) {
-    const agentMethods = this.options.supportedDIDMethods?.map((method) =>
-      opts.didPrefix === false
-        ? method.toLowerCase().replace('did:', '')
-        : method.startsWith('did:')
-        ? method.toLowerCase()
-        : `did:${method.toLowerCase()}`
-    )
+    const agentMethods = this.options.supportedDIDMethods?.map((method) => convertDidMethod(method, opts.didPrefix))
     debug(`agent methods: ${JSON.stringify(agentMethods)}`)
     return agentMethods
   }
 
   private async getRPDIDMethodsSupported(opts: { didPrefix?: boolean; agentMethods?: string[] }) {
     const agentMethods =
-      (opts.agentMethods ?? this.getAgentDIDMethodsSupported(opts))?.map((method) =>
-        opts.didPrefix === false ? method.replace('did:', '') : method
-      ) ?? []
+      (opts.agentMethods ?? this.getAgentDIDMethodsSupported(opts))?.map((method) => convertDidMethod(method, opts.didPrefix)) ?? []
     debug(`agent methods in rp method supported: ${JSON.stringify(agentMethods)}`)
     const authReq = await this.getAuthorizationRequest()
     const subjectSyntaxTypesSupported =
       authReq.registrationMetadataPayload?.subject_syntax_types_supported?.map((method) =>
-        opts.didPrefix === false ? method.replace('did:', '') : method
+       convertDidMethod(method, opts.didPrefix)
       ) ?? []
-    debug(`subject syntact types supported in rp method supported: ${JSON.stringify(agentMethods)}`)
+    debug(`subject syntact types supported in rp method supported: ${JSON.stringify(subjectSyntaxTypesSupported)}`)
     const aud = await authReq.authorizationRequest.getMergedProperty<string>('aud')
     let rpMethods: string[] = []
     if (aud && aud.startsWith('did:')) {
-      const didMethod = `${opts.didPrefix === false ? '' : 'did:'}${parseDid(aud).method}`
+      const didMethod = convertDidMethod(parseDid(aud).method, opts.didPrefix)
       debug(`aud did method: ${didMethod}`)
 
       // The RP knows our DID, so we can use it to determine the supported DID methods
@@ -125,7 +116,7 @@ export class OpSession {
       rpMethods = [didMethod]
     } else if (subjectSyntaxTypesSupported) {
       rpMethods = (Array.isArray(subjectSyntaxTypesSupported) ? subjectSyntaxTypesSupported : [subjectSyntaxTypesSupported]).map((method) =>
-        opts.didPrefix === false ? method.toLowerCase().replace('did:', '') : method.toLowerCase()
+        convertDidMethod(method, opts.didPrefix)
       )
     }
     const isEBSI =
@@ -137,7 +128,7 @@ export class OpSession {
       if (!agentMethods?.includes(opts.didPrefix === false ? 'key' : 'did:key')) {
         throw Error(`EBSI detected, but agent did not support did:key. Please reconfigure agent`)
       }
-      rpMethods = [`${opts.didPrefix ? 'did:' : ''}key`]
+      rpMethods = [convertDidMethod('did:key', opts.didPrefix)]
       codecName = 'jwk_jcs-pub'
     }
     return { dids: rpMethods, codecName }
@@ -262,4 +253,11 @@ export class OpSession {
       return response
     }
   }
+}
+
+function convertDidMethod(didMethod: string, didPrefix?: boolean): string {
+  if (didPrefix === false) {
+    return didMethod.startsWith('did:') ? didMethod.toLowerCase().substring(4) : didMethod.toLowerCase()
+  }
+  return didMethod.startsWith('did:') ? didMethod.toLowerCase() : `did:${didMethod.toLowerCase()}`
 }
