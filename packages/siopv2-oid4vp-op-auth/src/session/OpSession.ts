@@ -95,14 +95,14 @@ export class OpSession {
     const aud = await authReq.authorizationRequest.getMergedProperty<string>('aud')
     let rpMethods: string[] = []
     if (aud && aud.startsWith('did:')) {
-      const did = parseDid(aud).method
+      const didMethod = parseDid(aud).method.toLowerCase().replace('did:', '')
 
       // The RP knows our DID, so we can use it to determine the supported DID methods
       // If the aud did:method is not in the supported types, there still is something wrong, unless the RP signals to support all did methods
-      if (subjectSyntaxTypesSupported && !subjectSyntaxTypesSupported.includes('did') && !subjectSyntaxTypesSupported.includes(did)) {
-        throw Error(`The aud DID method ${did} is not in the supported types ${subjectSyntaxTypesSupported}`)
+      if (subjectSyntaxTypesSupported && !subjectSyntaxTypesSupported.includes('did') && !subjectSyntaxTypesSupported.includes(didMethod)) {
+        throw Error(`The aud DID method ${didMethod} is not in the supported types ${subjectSyntaxTypesSupported}`)
       }
-      rpMethods = [did]
+      rpMethods = [didMethod]
     } else if (subjectSyntaxTypesSupported) {
       rpMethods = (Array.isArray(subjectSyntaxTypesSupported) ? subjectSyntaxTypesSupported : [subjectSyntaxTypesSupported]).map((method) =>
         method.toLowerCase().replace('did:', '')
@@ -120,7 +120,7 @@ export class OpSession {
       rpMethods = [`${opts.didPrefix ? 'did:' : ''}key`]
       codecName = 'jwk_jcs-pub'
     }
-    return { dids: rpMethods, codecName }
+    return { dids: rpMethods.map(did => opts.didPrefix && !did.includes('did:') ? `did:${did}` : did), codecName }
   }
 
   public async getSupportedIdentifiers(opts?: { createInCaseNoDIDFound?: boolean }): Promise<IIdentifier[]> {
