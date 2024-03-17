@@ -63,7 +63,8 @@ export enum OID4VCIHolderEvent {
 }
 
 export type RequestData = {
-  credentialOffer: any
+  credentialOffer?: any
+  code?: string
   uri: string
   [x: string]: any
 }

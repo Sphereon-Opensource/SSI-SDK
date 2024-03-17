@@ -27,12 +27,13 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
     const uri = new URL(url).toString()
     const offerData = convertURIToJsonObject(uri) as Record<string, unknown>
     const hasCode = 'code' in offerData && !!offerData.code && !('issuer' in offerData)
-    const code = hasCode ? offerData.code : undefined
+    const code = hasCode ? (offerData.code as string) : undefined
     console.log('offer contained code: ', code)
 
     const oid4vciMachine = await this.context.agent.oid4vciHolderGetMachineInterpreter({
       requestData: {
-        credentialOffer: await CredentialOfferClient.fromURI(uri),
+        ...(!hasCode && { credentialOffer: await CredentialOfferClient.fromURI(uri) }),
+        ...(hasCode && { code: code }),
         uri,
       },
       stateNavigationListener: this.stateNavigationListener,
