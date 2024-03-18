@@ -83,7 +83,7 @@ export class OpSession {
     if (intersection.length === 0) {
       throw Error('No matching DID methods between agent and relying party')
     }
-    return intersection.map((value) => (didPrefix === false ? value : `did:${value}`))
+    return intersection.map((value) => convertDidMethod(value, didPrefix))
   }
 
   private getAgentDIDMethodsSupported(opts: { didPrefix?: boolean }) {
@@ -101,7 +101,7 @@ export class OpSession {
       authReq.registrationMetadataPayload?.subject_syntax_types_supported?.map((method) =>
        convertDidMethod(method, opts.didPrefix)
       ) ?? []
-    debug(`subject syntact types supported in rp method supported: ${JSON.stringify(subjectSyntaxTypesSupported)}`)
+    debug(`subject syntax types supported in rp method supported: ${JSON.stringify(subjectSyntaxTypesSupported)}`)
     const aud = await authReq.authorizationRequest.getMergedProperty<string>('aud')
     let rpMethods: string[] = []
     if (aud && aud.startsWith('did:')) {
@@ -125,10 +125,11 @@ export class OpSession {
     let codecName: string | undefined = undefined
     if (isEBSI) {
       debug(`EBSI detected, adding did:key to supported DID methods for RP`)
-      if (!agentMethods?.includes(opts.didPrefix === false ? 'key' : 'did:key')) {
+      const didKeyMethod = convertDidMethod('did:key', opts.didPrefix)
+      if (!agentMethods?.includes(didKeyMethod)) {
         throw Error(`EBSI detected, but agent did not support did:key. Please reconfigure agent`)
       }
-      rpMethods = [convertDidMethod('did:key', opts.didPrefix)]
+      rpMethods = [didKeyMethod]
       codecName = 'jwk_jcs-pub'
     }
     return { dids: rpMethods, codecName }
@@ -257,7 +258,7 @@ export class OpSession {
 
 function convertDidMethod(didMethod: string, didPrefix?: boolean): string {
   if (didPrefix === false) {
-    return didMethod.startsWith('did:') ? didMethod.toLowerCase().substring(4) : didMethod.toLowerCase()
+    return didMethod.startsWith('did:') ? didMethod.toLowerCase().replace('did:', '') : didMethod.toLowerCase()
   }
-  return didMethod.startsWith('did:') ? didMethod.toLowerCase() : `did:${didMethod.toLowerCase()}`
+  return didMethod.startsWith('did:') ? didMethod.toLowerCase() : `did:${didMethod.toLowerCase().replace('did:', '')}`
 }
