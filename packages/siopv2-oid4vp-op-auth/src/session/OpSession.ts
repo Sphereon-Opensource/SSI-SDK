@@ -101,7 +101,7 @@ export class OpSession {
     const subjectSyntaxTypesSupported =
       authReq.registrationMetadataPayload?.subject_syntax_types_supported?.map((method) =>
        convertDidMethod(method, opts.didPrefix)
-      ) ?? []
+      )
     debug(`subject syntax types supported in rp method supported: ${JSON.stringify(subjectSyntaxTypesSupported)}`)
     const aud = await authReq.authorizationRequest.getMergedProperty<string>('aud')
     let rpMethods: string[] = []
@@ -111,7 +111,7 @@ export class OpSession {
 
       // The RP knows our DID, so we can use it to determine the supported DID methods
       // If the aud did:method is not in the supported types, there still is something wrong, unless the RP signals to support all did methods
-      if (subjectSyntaxTypesSupported && !subjectSyntaxTypesSupported.includes('did') && !subjectSyntaxTypesSupported.includes(didMethod)) {
+      if (subjectSyntaxTypesSupported && subjectSyntaxTypesSupported.length > 0 && !subjectSyntaxTypesSupported.includes('did') && !subjectSyntaxTypesSupported.includes(didMethod)) {
         throw Error(`The aud DID method ${didMethod} is not in the supported types ${subjectSyntaxTypesSupported}`)
       }
       rpMethods = [didMethod]
