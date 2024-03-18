@@ -49,8 +49,8 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
       cleanupOnFinalState: true,
       singletonCheck: true,
     })
-    if (code && offerData.uri) {
-      interpreter.send(OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE, { data: offerData.uri })
+    if (hasCode) {
+      interpreter.send(OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE, { data: uri })
     }
   }
 }

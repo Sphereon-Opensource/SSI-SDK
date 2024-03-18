@@ -1,5 +1,4 @@
-import { CheckLinkedDomain, ResolveOpts, URI, Verification, VerificationMode, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
-import { PresentationExchangeResponseOpts } from '@sphereon/did-auth-siop/dist/authorization-response'
+import { PresentationExchangeResponseOpts, CheckLinkedDomain, ResolveOpts, URI, Verification, VerificationMode, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
 import { getAgentDIDMethods, getAgentResolver, getDID } from '@sphereon/ssi-sdk-ext.did-utils'
 import { CredentialMapper, parseDid } from '@sphereon/ssi-types'
 import {IIdentifier, TKeyType} from "@veramo/core";
