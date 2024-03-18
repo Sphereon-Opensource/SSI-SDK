@@ -2,7 +2,7 @@ import { CheckLinkedDomain, ResolveOpts, URI, Verification, VerificationMode, Ve
 import { PresentationExchangeResponseOpts } from '@sphereon/did-auth-siop/dist/authorization-response'
 import { getAgentDIDMethods, getAgentResolver, getDID } from '@sphereon/ssi-sdk-ext.did-utils'
 import { CredentialMapper, parseDid } from '@sphereon/ssi-types'
-import { IIdentifier } from '@veramo/core'
+import {IIdentifier, TKeyType} from "@veramo/core";
 import Debug from 'debug'
 import { IOPOptions, IOpSessionArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
 import { createOP } from './functions'
@@ -93,6 +93,7 @@ export class OpSession {
   }
 
   private async getRPDIDMethodsSupported(opts: { didPrefix?: boolean; agentMethods?: string[] }) {
+    let keyType: TKeyType | undefined
     const agentMethods =
       (opts.agentMethods ?? this.getAgentDIDMethodsSupported(opts))?.map((method) => convertDidMethod(method, opts.didPrefix)) ?? []
     debug(`agent methods in rp method supported: ${JSON.stringify(agentMethods)}`)
@@ -130,9 +131,10 @@ export class OpSession {
         throw Error(`EBSI detected, but agent did not support did:key. Please reconfigure agent`)
       }
       rpMethods = [didKeyMethod]
+      keyType = 'Secp256r1'
       codecName = 'jwk_jcs-pub'
     }
-    return { dids: rpMethods, codecName }
+    return { dids: rpMethods, codecName, keyType }
   }
 
   public async getSupportedIdentifiers(opts?: { createInCaseNoDIDFound?: boolean }): Promise<IIdentifier[]> {
@@ -146,15 +148,15 @@ export class OpSession {
     if (identifiers.length === 0) {
       debug(`No identifiers available in agent supporting methods ${JSON.stringify(methods)}`)
       if (opts?.createInCaseNoDIDFound !== false) {
-        const codecName = (
+        const {codecName, keyType} = (
           await this.getRPDIDMethodsSupported({
             didPrefix: true,
             agentMethods: methods,
           })
-        ).codecName
+        )
         const identifier = await this.context.agent.didManagerCreate({
           provider: methods[0],
-          options: { codecName },
+          options: { codecName, keyType, type: keyType }, // both keyType and type, because not every did provider has the same param
         })
         debug(`Created a new identifier for the SIOP interaction: ${identifier.did}`)
         identifiers.push(identifier)
