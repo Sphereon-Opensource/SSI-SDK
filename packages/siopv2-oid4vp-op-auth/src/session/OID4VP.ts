@@ -51,7 +51,7 @@ export class OID4VP {
       identifierOpts?: IIdentifierOpts
       holderDID?: string
       subjectIsHolder?: boolean
-    }
+    },
   ): Promise<VerifiablePresentationWithDefinition[]> {
     return await Promise.all(credentialsWithDefinitions.map((cred) => this.createVerifiablePresentation(cred, opts)))
   }
@@ -66,7 +66,7 @@ export class OID4VP {
       holderDID?: string
       subjectIsHolder?: boolean
       applyFilter?: boolean
-    }
+    },
   ): Promise<VerifiablePresentationWithDefinition> {
     if (opts?.subjectIsHolder && opts?.holderDID) {
       throw Error('Cannot both have subject is holder and a holderDID value at the same time (programming error)')
@@ -125,7 +125,7 @@ export class OID4VP {
       {
         proofOptions,
         holderDID: getDID(idOpts),
-      }
+      },
     )
 
     const verifiablePresentation =
@@ -168,7 +168,7 @@ export class OID4VP {
       holderDIDs?: string[]
       restrictToFormats?: Format
       restrictToDIDMethods?: string[]
-    }
+    },
   ): Promise<VerifiableCredentialsWithDefinition> {
     return {
       definition: presentationDefinition,
@@ -183,10 +183,10 @@ export class OID4VP {
       holderDIDs?: string[]
       restrictToFormats?: Format
       restrictToDIDMethods?: string[]
-    }
+    },
   ): Promise<SelectResults> {
     const selectionResults: SelectResults = await this.getPresentationExchange(
-      await this.getCredentials(opts?.filterOpts)
+      await this.getCredentials(opts?.filterOpts),
     ).selectVerifiableCredentialsForSubmission(presentationDefinition.definition, opts)
     if (selectionResults.errors && selectionResults.errors.length > 0) {
       throw Error(JSON.stringify(selectionResults.errors))

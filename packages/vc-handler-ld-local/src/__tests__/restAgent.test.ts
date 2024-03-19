@@ -9,7 +9,7 @@ import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import express from 'express'
 
 import { LdDefaultContexts } from '../ld-default-contexts'
-import { SphereonBbsBlsSignature2020, SphereonEd25519Signature2018, SphereonEd25519Signature2020 } from '../suites'
+import { SphereonEd25519Signature2018, SphereonEd25519Signature2020 } from '../suites'
 
 import vcHandlerLocalAgentLogic from './shared/vcHandlerLocalAgentLogic'
 
@@ -26,7 +26,6 @@ const setup = async (): Promise<boolean> => {
     (config.agent.$args[0].plugins[0].$args[0].suites = [
       new SphereonEd25519Signature2018(),
       new SphereonEd25519Signature2020(),
-      new SphereonBbsBlsSignature2020(),
     ])
   const { agent } = await createObjects(config, { agent: '/agent' })
   serverAgent = agent

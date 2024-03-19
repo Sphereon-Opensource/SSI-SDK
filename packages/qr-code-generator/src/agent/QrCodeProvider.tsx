@@ -37,7 +37,7 @@ export class QrCodeProvider implements IAgentPlugin {
   /** {@inheritDoc IQRCodeGenerator.didCommOobInvitationValue} */
   private static async qrDIDCommOobInvitationValue(
     args: CreateValueArgs<QRType.DIDCOMM_V2_OOB_INVITATION, DIDCommV2OOBInvitationData>,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<string> {
     const { object } = args.data
     const encoded = DidCommOutOfBandMessage.urlEncode(object.oobInvitation)
@@ -48,7 +48,7 @@ export class QrCodeProvider implements IAgentPlugin {
   /** {@inheritDoc IQRCodeGenerator.didCommOobInvitationElement} */
   private static async qrDIDCommOobInvitationElement(
     args: CreateElementArgs<QRType.DIDCOMM_V2_OOB_INVITATION, DIDCommV2OOBInvitationData>,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<JSX.Element> {
     const content = await QrCodeProvider.qrDIDCommOobInvitationValue(args, context)
     return generateQRCodeReactElementImpl(
@@ -57,7 +57,7 @@ export class QrCodeProvider implements IAgentPlugin {
         data: { ...args.data, object: content },
       } as CreateElementArgs<QRType.DIDCOMM_V2_OOB_INVITATION, string>,
       args,
-      context
+      context,
     )
   }
 
@@ -76,13 +76,13 @@ export class QrCodeProvider implements IAgentPlugin {
   /** {@inheritDoc IQRCodeGenerator.siopv2Element} */
   private static async qrSIOPv2Element(
     args: CreateElementArgs<QRType.SIOPV2, SIOPv2DataWithScheme>,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<JSX.Element> {
     const content = await QrCodeProvider.qrSIOPv2Value(args, context)
     return generateQRCodeReactElementImpl(
       { ...args, data: { ...args.data, object: content } } as CreateElementArgs<QRType.SIOPV2, string>,
       args,
-      context
+      context,
     )
   }
 
@@ -92,14 +92,14 @@ export class QrCodeProvider implements IAgentPlugin {
     return generateQRCodeReactElementImpl(
       { ...args, data: { ...args.data, object: content } } as CreateElementArgs<QRType.OpenID4VCI, string>,
       args,
-      context
+      context,
     )
   }
 
   /** {@inheritDoc IQRCodeGenerator.qrOpenID4VCIValue} */
   private static async qrOpenID4VCIValue(
     args: CreateValueArgs<QRType.OpenID4VCI, OpenID4VCIDataWithScheme>,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<string> {
     const { object } = args.data
     if (!object.credentialOffer && !object.credentialOfferUri) {

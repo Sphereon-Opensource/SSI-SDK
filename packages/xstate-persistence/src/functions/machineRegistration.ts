@@ -26,7 +26,7 @@ export const machineStatePersistInit = async (
   opts: InitMachineStateArgs &
     Pick<MachineStatePersistenceOpts, 'existingInstanceId' | 'customInstanceId'> & {
       context: IAgentContext<any> // We use any as this method could be called from an agent with access to, but not exposing this plugin
-    }
+    },
 ): Promise<MachineStateInit | undefined> => {
   // make sure the machine context does not end up in the machine state init args
   const { context, ...args } = opts
@@ -55,7 +55,7 @@ export const machineStatePersistOnTransition = async <
     value: any
     context: TContext
   },
-  TResolvedTypesMeta = TypegenDisabled
+  TResolvedTypesMeta = TypegenDisabled,
 >(opts: {
   interpreter: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
   context: IAgentContext<any> // We use any as this method could be called from an agent with access to, but not exposing this plugin
@@ -90,7 +90,7 @@ export const machineStatePersistOnTransition = async <
           _cleanupOnFinalState: cleanupOnFinalState !== false,
         },
       },
-      context
+      context,
     )
   })
   if (cleanupOnFinalState && context.agent.availableMethods().includes('machineStateDelete')) {
@@ -118,7 +118,7 @@ export const machineStatePersistRegistration = async <
     value: any
     context: TContext
   },
-  TResolvedTypesMeta = TypegenDisabled
+  TResolvedTypesMeta = TypegenDisabled,
 >(
   args: Omit<InitMachineStateArgs, 'machineName'> &
     Partial<Pick<InitMachineStateArgs, 'machineName'>> &
@@ -127,7 +127,7 @@ export const machineStatePersistRegistration = async <
       cleanupAllOtherInstances?: boolean
       interpreter: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
       context: IAgentContext<any> // We use any as this method could be called from an agent with access to, but not exposing this plugin
-    }
+    },
 ): Promise<MachineStateInit | undefined> => {
   const { disablePersistence } = args
   if (disablePersistence === true) {
@@ -170,7 +170,7 @@ export const interpreterResumeFromState = async <
     value: any
     context: TContext
   },
-  TResolvedTypesMeta = TypegenDisabled
+  TResolvedTypesMeta = TypegenDisabled,
 >(args: {
   machineState: MachineStateInfo
   noRegistration?: boolean
@@ -207,7 +207,7 @@ export const interpreterResumeFromState = async <
         ...machineState,
         stateType: 'existing',
       },
-      machineStateToStoreInfo({ ...machineState, stateType: 'existing' })
+      machineStateToStoreInfo({ ...machineState, stateType: 'existing' }),
     ),
 
     interpreter,
@@ -234,7 +234,7 @@ export const interpreterStartOrResumeFromInit = async <
     value: any
     context: TContext
   },
-  TResolvedTypesMeta = TypegenDisabled
+  TResolvedTypesMeta = TypegenDisabled,
 >(args: {
   init: MachineStateInit & { stateType?: MachineStateInitType }
   cleanupAllOtherInstances?: boolean
@@ -305,7 +305,7 @@ export const interpreterStartOrResume = async <
     value: any
     context: TContext
   },
-  TResolvedTypesMeta = TypegenDisabled
+  TResolvedTypesMeta = TypegenDisabled,
 >(args: {
   stateType?: MachineStateInitType | 'auto'
   instanceId?: string
@@ -333,8 +333,8 @@ export const interpreterStartOrResume = async <
         context.agent.machineStateDelete({
           tenantId: args.tenantId,
           instanceId: state.instanceId,
-        })
-      )
+        }),
+      ),
     )
     // We search again, given the delete is using the passed in tenantId, instead of relying on the persisted tenantId. Should not matter, but just making sure
     activeStates = await context.agent.machineStatesFindActive({
@@ -356,7 +356,7 @@ export const interpreterStartOrResume = async <
     if (instanceId && activeStates.length > 0) {
       // Since an instanceId was provided it means the activeStates includes a machine with this instance. But stateType is 'new'
       return Promise.reject(
-        new Error(`Found an active '${machineName}' instance with id ${instanceId}, but a new instance was requested with the same id`)
+        new Error(`Found an active '${machineName}' instance with id ${instanceId}, but a new instance was requested with the same id`),
       )
     }
     const init = await context.agent.machineStateInit({

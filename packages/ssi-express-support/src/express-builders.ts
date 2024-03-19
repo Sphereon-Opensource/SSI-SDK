@@ -21,7 +21,7 @@ import { ExpressSupport, IExpressServerOpts } from './types'
 type Handler<Request extends http.IncomingMessage, Response extends http.ServerResponse> = (
   req: Request,
   res: Response,
-  callback: (err?: Error) => void
+  callback: (err?: Error) => void,
 ) => void
 
 export class ExpressBuilder {

@@ -34,7 +34,7 @@ overrides:
   did-jwt-vc: 3.1.3
   ethr-did: 2.3.9
   typeorm: ^0.3.20
-  '@mattrglobal/jsonld-signatures-bbs@1.1.0>jsonld': 4.0.1
+  '@transmute/jsonld': ^0.0.4
   jsonld: link:./node_modules/.pnpm/@digitalcredentials+jsonld@6.0.0/node_modules/@digitalcredentials/jsonld
   isomorphic-webcrypto: link:./node_modules/@sphereon/isomorphic-webcrypto
 
@@ -73,20 +73,20 @@ importers:
         specifier: ^7.21.5
         version: 7.23.3(@babel/core@7.24.0)
       '@types/debug':
-        specifier: ^4.1.7
+        specifier: ^4.1.12
         version: 4.1.12
       '@types/jest':
         specifier: ^27.5.2
         version: 27.5.2
       '@types/node':
-        specifier: ^18.15.11
-        version: 18.19.22
+        specifier: ^18.19.26
+        version: 18.19.26
       '@typescript-eslint/eslint-plugin':
         specifier: ^5.59.2
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@4.9.5)
+        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.4.2)
       '@typescript-eslint/parser':
         specifier: ^5.59.2
-        version: 5.62.0(eslint@8.57.0)(typescript@4.9.5)
+        version: 5.62.0(eslint@8.57.0)(typescript@5.4.2)
       codecov:
         specifier: ^3.8.3
         version: 3.8.3
@@ -97,7 +97,7 @@ importers:
         specifier: 6.11.6
         version: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       eslint:
-        specifier: ^8.35.0
+        specifier: ^8.57.0
         version: 8.57.0
       eslint-config-prettier:
         specifier: ^8.7.0
@@ -139,14 +139,14 @@ importers:
         specifier: ^12.1.0
         version: 12.1.3
       patch-package:
-        specifier: ^6.5.1
-        version: 6.5.1
+        specifier: ^8.0.0
+        version: 8.0.0
       prettier:
-        specifier: ^2.8.8
-        version: 2.8.8
+        specifier: ^3.2.5
+        version: 3.2.5
       pretty-quick:
         specifier: ^3.1.3
-        version: 3.3.1(prettier@2.8.8)
+        version: 3.3.1(prettier@3.2.5)
       rimraf:
         specifier: ^4.4.0
         version: 4.4.1
@@ -155,13 +155,13 @@ importers:
         version: 19.0.5
       ts-jest:
         specifier: ^27.1.5
-        version: 27.1.5(@babel/core@7.24.0)(@types/jest@27.5.2)(jest@27.5.1)(typescript@4.9.5)
+        version: 27.1.5(@babel/core@7.24.0)(@types/jest@27.5.2)(jest@27.5.1)(typescript@5.4.2)
       ts-node:
-        specifier: ^10.9.1
-        version: 10.9.2(@types/node@18.19.22)(typescript@4.9.5)
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@18.19.26)(typescript@5.4.2)
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.4.2
+        version: 5.4.2
 
   packages/agent-config:
     dependencies:
@@ -191,8 +191,8 @@ importers:
         specifier: ^1.4.8
         version: 1.4.11
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.4.2
+        version: 5.4.2
 
   packages/contact-manager:
     dependencies:
@@ -353,7 +353,7 @@ importers:
         version: 1.0.1
       ts-node:
         specifier: ^10.9.1
-        version: 10.9.2(@types/node@18.19.22)(typescript@4.9.5)
+        version: 10.9.2(@types/node@18.19.22)(typescript@5.4.2)
       typeorm:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.11.3)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -393,10 +393,10 @@ importers:
     dependencies:
       '@microsoft/api-extractor':
         specifier: ^7.33.8
-        version: 7.42.3(@types/node@18.19.22)
+        version: 7.42.3(@types/node@18.19.26)
       '@microsoft/api-extractor-model':
         specifier: ^7.25.3
-        version: 7.28.13(@types/node@18.19.22)
+        version: 7.28.13(@types/node@18.19.26)
       commander:
         specifier: ^10.0.0
         version: 10.0.1
@@ -444,8 +444,8 @@ importers:
         specifier: ^1.4.8
         version: 1.4.11
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.4.2
+        version: 5.4.2
 
   packages/event-logger:
     dependencies:
@@ -481,8 +481,8 @@ importers:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.11.3)(sqlite3@5.1.7)(ts-node@10.9.2)
       typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
+        specifier: ^5.4.2
+        version: 5.4.2
 
   packages/issuance-branding:
     dependencies:
@@ -564,8 +564,8 @@ importers:
         specifier: ^2.2.0
         version: 2.3.1
       typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
+        specifier: ^5.4.2
+        version: 5.4.2
 
   packages/ms-authenticator:
     dependencies:
@@ -590,13 +590,13 @@ importers:
         version: 3.0.6
       jest:
         specifier: ^29.6.1
-        version: 29.7.0(@types/node@18.19.22)(ts-node@10.9.2)
+        version: 29.7.0(@types/node@18.19.26)(ts-node@10.9.2)
       prettier:
         specifier: ^2.8.8
         version: 2.8.8
       ts-jest:
         specifier: ^29.1.1
-        version: 29.1.2(@babel/core@7.24.0)(jest@29.7.0)(typescript@4.9.5)
+        version: 29.1.2(@babel/core@7.24.0)(jest@29.7.0)(typescript@5.4.2)
 
   packages/ms-request-api:
     dependencies:
@@ -654,13 +654,13 @@ importers:
         version: 5.1.7
       ts-jest:
         specifier: ^27.1.5
-        version: 27.1.5(@babel/core@7.24.0)(@types/jest@27.5.2)(jest@27.5.1)(typescript@4.9.5)
+        version: 27.1.5(@babel/core@7.24.0)(@types/jest@27.5.2)(jest@27.5.1)(typescript@5.4.2)
       typeorm:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.11.3)(sqlite3@5.1.7)(ts-node@10.9.2)
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.4.2
+        version: 5.4.2
       uuid:
         specifier: ^9.0.0
         version: 9.0.1
@@ -732,8 +732,8 @@ importers:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.11.3)(sqlite3@5.1.7)(ts-node@10.9.2)
       typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
+        specifier: ^5.4.2
+        version: 5.4.2
 
   packages/oid4vci-issuer:
     dependencies:
@@ -744,8 +744,8 @@ importers:
         specifier: 0.10.1-next.3
         version: 0.10.1-next.3(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -863,17 +863,17 @@ importers:
         specifier: ^2.2.2
         version: 2.2.2
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -945,7 +945,7 @@ importers:
         version: 13.5.4
       ts-node:
         specifier: ^10.9.1
-        version: 10.9.2(@types/node@18.19.22)(typescript@4.9.5)
+        version: 10.9.2(@types/node@18.19.22)(typescript@5.4.2)
       typeorm:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.11.3)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -985,10 +985,10 @@ importers:
         version: 13.5.4
       ts-node:
         specifier: ^10.9.1
-        version: 10.9.2(@types/node@18.19.22)(typescript@4.9.5)
+        version: 10.9.2(@types/node@18.19.22)(typescript@5.4.2)
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.4.2
+        version: 5.4.2
 
   packages/oid4vci-issuer-store:
     dependencies:
@@ -996,8 +996,8 @@ importers:
         specifier: 0.10.1-next.3
         version: 0.10.1-next.3(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1045,8 +1045,8 @@ importers:
         specifier: ^2.2.2
         version: 2.2.2
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1199,8 +1199,8 @@ importers:
         specifier: 2.2.2
         version: 2.2.2
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1269,8 +1269,8 @@ importers:
         specifier: ^3.3.0
         version: 3.3.0
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1394,8 +1394,8 @@ importers:
         specifier: ^2.2.2
         version: 2.2.2
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1485,7 +1485,7 @@ importers:
         version: 1.0.1
       ts-node:
         specifier: ^10.9.1
-        version: 10.9.2(@types/node@18.19.22)(typescript@4.9.5)
+        version: 10.9.2(@types/node@18.19.22)(typescript@5.4.2)
       typeorm:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.11.3)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -1516,10 +1516,10 @@ importers:
         version: 13.5.4
       ts-node:
         specifier: ^10.9.1
-        version: 10.9.2(@types/node@18.19.22)(typescript@4.9.5)
+        version: 10.9.2(@types/node@18.19.22)(typescript@5.4.2)
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.4.2
+        version: 5.4.2
 
   packages/ssi-express-support:
     dependencies:
@@ -1618,8 +1618,8 @@ importers:
         specifier: ^4.14.4
         version: 4.15.4
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.4.2
+        version: 5.4.2
 
   packages/ssi-sdk-core:
     dependencies:
@@ -1672,10 +1672,10 @@ importers:
         version: 2.8.8
       ts-jest:
         specifier: ^27.1.5
-        version: 27.1.5(@babel/core@7.24.0)(@types/jest@27.5.2)(jest@27.5.1)(typescript@4.9.5)
+        version: 27.1.5(@babel/core@7.24.0)(@types/jest@27.5.2)(jest@27.5.1)(typescript@5.4.2)
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.4.2
+        version: 5.4.2
 
   packages/uni-resolver-registrar-api:
     dependencies:
@@ -1683,14 +1683,14 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1735,11 +1735,11 @@ importers:
         specifier: ^0.6.0
         version: 0.6.1
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.15.0
-        version: 0.15.0
+        specifier: 0.18.0
+        version: 0.18.0
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1829,7 +1829,7 @@ importers:
         version: 4.3.5
       ts-node:
         specifier: ^10.9.1
-        version: 10.9.2(@types/node@18.19.22)(typescript@4.9.5)
+        version: 10.9.2(@types/node@18.19.22)(typescript@5.4.2)
       typeorm:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.11.3)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -1860,9 +1860,6 @@ importers:
       '@digitalcredentials/x25519-key-agreement-2020-context':
         specifier: ^1.0.0
         version: 1.0.0
-      '@mattrglobal/jsonld-signatures-bbs':
-        specifier: ^1.2.0
-        version: 1.2.0
       '@noble/hashes':
         specifier: 1.2.0
         version: 1.2.0
@@ -1870,11 +1867,11 @@ importers:
         specifier: ^2.4.0-unstable.4
         version: 2.4.0-unstable.4(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -1909,8 +1906,8 @@ importers:
         specifier: 0.7.0-unstable.81
         version: 0.7.0-unstable.81
       '@transmute/jsonld':
-        specifier: ^0.1.0
-        version: 0.1.0
+        specifier: ^0.0.4
+        version: 0.0.4
       '@transmute/jsonld-document-loader':
         specifier: ^0.7.0-unstable.81
         version: 0.7.0-unstable.82
@@ -1967,17 +1964,17 @@ importers:
         specifier: ^0.6.0
         version: 0.6.1
       '@sphereon/ssi-sdk-ext.did-provider-key':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-provider-lto':
-        specifier: 0.15.0
-        version: 0.15.0(typescript@4.9.5)
+        specifier: 0.18.0
+        version: 0.18.0(typescript@5.4.2)
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@transmute/lds-ecdsa-secp256k1-recovery2020':
         specifier: ^0.0.7
         version: 0.0.7
@@ -1989,10 +1986,10 @@ importers:
         version: 18.15.3
       '@typescript-eslint/eslint-plugin':
         specifier: ^4.31.1
-        version: 4.33.0(@typescript-eslint/parser@4.33.0)(eslint@7.32.0)(typescript@4.9.5)
+        version: 4.33.0(@typescript-eslint/parser@4.33.0)(eslint@7.32.0)(typescript@5.4.2)
       '@typescript-eslint/parser':
         specifier: ^4.31.1
-        version: 4.33.0(eslint@7.32.0)(typescript@4.9.5)
+        version: 4.33.0(eslint@7.32.0)(typescript@5.4.2)
       '@veramo/credential-ld':
         specifier: 4.2.0
         version: 4.2.0
@@ -2037,10 +2034,10 @@ importers:
         version: 13.5.4
       ts-node:
         specifier: ^10.9.1
-        version: 10.9.2(@types/node@18.15.3)(typescript@4.9.5)
+        version: 10.9.2(@types/node@18.15.3)(typescript@5.4.2)
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.4.2
+        version: 5.4.2
       uint8arrays:
         specifier: ^3.1.1
         version: 3.1.1
@@ -2051,8 +2048,8 @@ importers:
   packages/vc-status-list:
     dependencies:
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -2088,8 +2085,8 @@ importers:
         specifier: ^7.21.5
         version: 7.23.3(@babel/core@7.24.0)
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.4.2
+        version: 5.4.2
 
   packages/vc-status-list-issuer-drivers:
     dependencies:
@@ -2097,8 +2094,8 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: ^0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: ^0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2137,8 +2134,8 @@ importers:
         specifier: ^18.15.0
         version: 18.19.22
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.4.2
+        version: 5.4.2
 
   packages/vc-status-list-issuer-rest-api:
     dependencies:
@@ -2146,8 +2143,8 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2195,11 +2192,11 @@ importers:
         specifier: ^0.6.0
         version: 0.6.1
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.15.0
-        version: 0.15.0
+        specifier: 0.18.0
+        version: 0.18.0
       '@sphereon/ssi-sdk.vc-handler-ld-local':
         specifier: workspace:*
         version: link:../vc-handler-ld-local
@@ -2270,8 +2267,8 @@ importers:
         specifier: ^1.10.0
         version: 1.10.0
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.4.2
+        version: 5.4.2
 
   packages/w3c-vc-api:
     dependencies:
@@ -2334,17 +2331,17 @@ importers:
         specifier: ^0.6.1
         version: 0.6.1
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.15.0
-        version: 0.15.0
+        specifier: 0.18.0
+        version: 0.18.0
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2440,7 +2437,7 @@ importers:
         version: 4.3.5
       ts-node:
         specifier: ^10.9.1
-        version: 10.9.2(@types/node@18.19.22)(typescript@4.9.5)
+        version: 10.9.2(@types/node@18.19.22)(typescript@5.4.2)
       typeorm:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.11.3)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -2462,7 +2459,7 @@ importers:
     devDependencies:
       '@veramo/cli':
         specifier: 4.2.0
-        version: 4.2.0(@types/node@18.19.22)(ts-node@10.9.2)
+        version: 4.2.0(@types/node@18.19.26)(ts-node@10.9.2)
       '@veramo/remote-client':
         specifier: 4.2.0
         version: 4.2.0
@@ -2484,7 +2481,7 @@ importers:
         version: link:../dev
       '@veramo/cli':
         specifier: 4.2.0
-        version: 4.2.0(@types/node@18.19.22)(ts-node@10.9.2)
+        version: 4.2.0(@types/node@18.19.26)(ts-node@10.9.2)
       '@veramo/remote-client':
         specifier: 4.2.0
         version: 4.2.0
@@ -2580,11 +2577,11 @@ importers:
         version: 2.0.4
     devDependencies:
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: ^0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: ^0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: ^0.15.0
-        version: 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: ^0.18.0
+        version: 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@types/body-parser':
         specifier: ^1.19.2
         version: 1.19.5
@@ -2623,10 +2620,10 @@ importers:
         version: 4.1.0
       jest:
         specifier: ^29.6.2
-        version: 29.7.0(@types/node@18.19.22)(ts-node@10.9.2)
+        version: 29.7.0(@types/node@18.19.26)(ts-node@10.9.2)
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.4.2
+        version: 5.4.2
 
   packages/wellknown-did-issuer:
     dependencies:
@@ -2680,8 +2677,8 @@ importers:
         specifier: ^13.2.9
         version: 13.5.4
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.4.2
+        version: 5.4.2
 
   packages/wellknown-did-verifier:
     dependencies:
@@ -2734,10 +2731,10 @@ importers:
         version: 9.0.8
       '@typescript-eslint/eslint-plugin':
         specifier: ^4.31.1
-        version: 4.33.0(@typescript-eslint/parser@4.33.0)(eslint@7.32.0)(typescript@4.9.5)
+        version: 4.33.0(@typescript-eslint/parser@4.33.0)(eslint@7.32.0)(typescript@5.4.2)
       '@typescript-eslint/parser':
         specifier: ^4.31.1
-        version: 4.33.0(eslint@7.32.0)(typescript@4.9.5)
+        version: 4.33.0(eslint@7.32.0)(typescript@5.4.2)
       '@veramo/remote-client':
         specifier: 4.2.0
         version: 4.2.0
@@ -2746,13 +2743,13 @@ importers:
         version: 4.2.0(express@4.18.3)
       ts-node:
         specifier: ^10.9.1
-        version: 10.9.2(@types/node@18.19.22)(typescript@4.9.5)
+        version: 10.9.2(@types/node@18.19.26)(typescript@5.4.2)
       typeorm:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.11.3)(sqlite3@5.1.7)(ts-node@10.9.2)
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.4.2
+        version: 5.4.2
 
 packages:
 
@@ -4882,7 +4879,7 @@ packages:
       md5hex: 1.0.0
       minimatch: 3.1.2
       minipass: 3.3.6
-      node-fetch: 2.6.12
+      node-fetch: 2.7.0
       node-forge: 1.3.1
       npm-package-arg: 7.0.0
       open: 8.4.2
@@ -5268,7 +5265,7 @@ packages:
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
       '@jest/types': 27.5.1
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       chalk: 4.1.2
       jest-message-util: 27.5.1
       jest-util: 27.5.1
@@ -5280,7 +5277,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       chalk: 4.1.2
       jest-message-util: 29.7.0
       jest-util: 29.7.0
@@ -5301,7 +5298,7 @@ packages:
       '@jest/test-result': 27.5.1
       '@jest/transform': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.8.1
@@ -5346,14 +5343,14 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       ci-info: 3.9.0
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 29.7.0
-      jest-config: 29.7.0(@types/node@18.19.22)(ts-node@10.9.2)
+      jest-config: 29.7.0(@types/node@18.19.26)(ts-node@10.9.2)
       jest-haste-map: 29.7.0
       jest-message-util: 29.7.0
       jest-regex-util: 29.6.3
@@ -5387,7 +5384,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       jest-mock: 27.5.1
     dev: true
 
@@ -5397,7 +5394,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       jest-mock: 29.7.0
 
   /@jest/expect-utils@29.7.0:
@@ -5423,7 +5420,7 @@ packages:
     dependencies:
       '@jest/types': 27.5.1
       '@sinonjs/fake-timers': 8.1.0
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       jest-message-util: 27.5.1
       jest-mock: 27.5.1
       jest-util: 27.5.1
@@ -5435,7 +5432,7 @@ packages:
     dependencies:
       '@jest/types': 29.6.3
       '@sinonjs/fake-timers': 10.3.0
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       jest-message-util: 29.7.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
@@ -5475,7 +5472,7 @@ packages:
       '@jest/test-result': 27.5.1
       '@jest/transform': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       chalk: 4.1.2
       collect-v8-coverage: 1.0.2
       exit: 0.1.2
@@ -5514,7 +5511,7 @@ packages:
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
       '@jridgewell/trace-mapping': 0.3.25
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       chalk: 4.1.2
       collect-v8-coverage: 1.0.2
       exit: 0.1.2
@@ -5654,7 +5651,7 @@ packages:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       '@types/yargs': 15.0.19
       chalk: 4.1.2
 
@@ -5664,7 +5661,7 @@ packages:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       '@types/yargs': 16.0.9
       chalk: 4.1.2
     dev: true
@@ -5676,7 +5673,7 @@ packages:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       '@types/yargs': 17.0.32
       chalk: 4.1.2
 
@@ -5760,7 +5757,7 @@ packages:
     resolution: {integrity: sha512-QyKIWEnKQFnYu2ey+SAAm1A5xjzJLJJj3bhIZd3QKyXKKjaJ0hlxam/OsWSltxTNbcyH1jRJjC6Cxv31usv0Ag==}
     engines: {node: ^14.17.0 || >=16.0.0}
     dependencies:
-      chalk: 4.1.0
+      chalk: 4.1.2
       execa: 5.0.0
       strong-log-transformer: 2.1.0
     dev: true
@@ -5876,7 +5873,7 @@ packages:
       tweetnacl: 1.0.3
     dev: true
 
-  /@lto-network/lto-transactions@1.2.12(debug@4.3.4)(typescript@4.9.5):
+  /@lto-network/lto-transactions@1.2.12(debug@4.3.4)(typescript@5.4.2):
     resolution: {integrity: sha512-bUCwN1xFMr8HFg+rdpxfj5vyCM/2aBSq8kyXyhFw2t8Ovl6BL4rI9zK+4UnOHl5e5z72UWsHgdT3taicxPQiug==}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     peerDependencies:
@@ -5888,7 +5885,7 @@ packages:
       base64-js: 1.5.1
       long: 4.0.0
       parse-json-bignumber: 0.1.3
-      typescript: 4.9.5
+      typescript: 5.4.2
     transitivePeerDependencies:
       - debug
     dev: true
@@ -5924,18 +5921,6 @@ packages:
       - supports-color
     optional: true
 
-  /@mattrglobal/bbs-signatures@1.2.0:
-    resolution: {integrity: sha512-DwSzMKMWXfVpw1NDtVY57LHqi6GZFRbRqDrmtDBVr4P/4sOoawGev62J7uvKxIdLamqPX47iCY/Qf2tZ6b5N6w==}
-    engines: {node: '>=14'}
-    dependencies:
-      '@stablelib/random': 1.0.0
-    optionalDependencies:
-      '@mattrglobal/node-bbs-signatures': 0.17.0
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-    dev: false
-
   /@mattrglobal/bbs-signatures@1.3.1:
     resolution: {integrity: sha512-syZGkapPpktD2el4lPTCQRw/LSia6/NwBS83hzCKu4dTlaJRO636qo5NCiiQb+iBYWyZQQEzN0jdRik8N9EUGA==}
     engines: {node: '>=14'}
@@ -5946,18 +5931,6 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
-
-  /@mattrglobal/bls12381-key-pair@1.1.0:
-    resolution: {integrity: sha512-idyPlUtc3SBZVtgyGpZYG9w4D/WPzMX0AFDrcSNncNCCZXHwWnGNDOssp+9pU/NhEtuiI285GAlUXjD8Esu12Q==}
-    engines: {node: '>=14.0.0'}
-    dependencies:
-      '@mattrglobal/bbs-signatures': 1.2.0
-      bs58: 4.0.1
-      rfc4648: 1.5.2
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-    dev: false
 
   /@mattrglobal/bls12381-key-pair@1.2.1:
     resolution: {integrity: sha512-Xh63NP1iSGBLW10N5uRpDyoPo2LtNHHh/TRGVJEHRgo+07yxgl8tS06Q2zO9gN9+b+GU5COKvR3lACwrvn+MYw==}
@@ -5970,34 +5943,6 @@ packages:
       - encoding
       - supports-color
     dev: true
-
-  /@mattrglobal/jsonld-signatures-bbs@1.2.0:
-    resolution: {integrity: sha512-iW/kwlUM412a0AkJEqwaYZm/QhFeTCtebI3L9v9ZSm68wfvPdL2Gha8MkpKNnaqK8MIFEDIFUmL1iVk5qxvNYA==}
-    engines: {node: '>=14.0.0'}
-    dependencies:
-      '@mattrglobal/bbs-signatures': 1.2.0
-      '@mattrglobal/bls12381-key-pair': 1.1.0
-      '@stablelib/random': 1.0.0
-      bs58: 4.0.1
-      jsonld: link:node_modules/.pnpm/@digitalcredentials+jsonld@6.0.0/node_modules/@digitalcredentials/jsonld
-      jsonld-signatures: 7.0.0
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-    dev: false
-
-  /@mattrglobal/node-bbs-signatures@0.17.0:
-    resolution: {integrity: sha512-midEd1qGYfAKjILyIdEgyY7tbVwIFR7ozWli8AaxBaiDie2oBaj6O1A2rh/GCOKTpBZ3Thbi+CE0QZntWf+Xzg==}
-    engines: {node: '>=14', yarn: 1.x}
-    requiresBuild: true
-    dependencies:
-      '@mapbox/node-pre-gyp': 1.0.11
-      neon-cli: 0.10.1
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-    dev: false
-    optional: true
 
   /@mattrglobal/node-bbs-signatures@0.18.1:
     resolution: {integrity: sha512-s9ccL/1TTvCP1N//4QR84j/d5D/stx/AI1kPcRgiE4O3KrxyF7ZdL9ca8fmFuN6yh9LAbn/OiGRnOXgvn38Dgg==}
@@ -6073,26 +6018,26 @@ packages:
       - supports-color
     dev: false
 
-  /@microsoft/api-extractor-model@7.28.13(@types/node@18.19.22):
+  /@microsoft/api-extractor-model@7.28.13(@types/node@18.19.26):
     resolution: {integrity: sha512-39v/JyldX4MS9uzHcdfmjjfS6cYGAoXV+io8B5a338pkHiSt+gy2eXQ0Q7cGFJ7quSa1VqqlMdlPrB6sLR/cAw==}
     dependencies:
       '@microsoft/tsdoc': 0.14.2
       '@microsoft/tsdoc-config': 0.16.2
-      '@rushstack/node-core-library': 4.0.2(@types/node@18.19.22)
+      '@rushstack/node-core-library': 4.0.2(@types/node@18.19.26)
     transitivePeerDependencies:
       - '@types/node'
 
-  /@microsoft/api-extractor@7.42.3(@types/node@18.19.22):
+  /@microsoft/api-extractor@7.42.3(@types/node@18.19.26):
     resolution: {integrity: sha512-JNLJFpGHz6ekjS6bvYXxUBeRGnSHeCMFNvRbCQ+7XXB/ZFrgLSMPwWtEq40AiWAy+oyG5a4RSNwdJTp0B2USvQ==}
     hasBin: true
     dependencies:
-      '@microsoft/api-extractor-model': 7.28.13(@types/node@18.19.22)
+      '@microsoft/api-extractor-model': 7.28.13(@types/node@18.19.26)
       '@microsoft/tsdoc': 0.14.2
       '@microsoft/tsdoc-config': 0.16.2
-      '@rushstack/node-core-library': 4.0.2(@types/node@18.19.22)
+      '@rushstack/node-core-library': 4.0.2(@types/node@18.19.26)
       '@rushstack/rig-package': 0.5.2
-      '@rushstack/terminal': 0.10.0(@types/node@18.19.22)
-      '@rushstack/ts-command-line': 4.19.1(@types/node@18.19.22)
+      '@rushstack/terminal': 0.10.0(@types/node@18.19.26)
+      '@rushstack/ts-command-line': 4.19.1(@types/node@18.19.26)
       lodash: 4.17.21
       minimatch: 3.0.8
       resolve: 1.22.8
@@ -6829,7 +6774,7 @@ packages:
       chalk: 4.1.2
       find-up: 5.0.0
       mime: 2.6.0
-      node-fetch: 2.6.12
+      node-fetch: 2.7.0
       open: 6.4.0
       ora: 5.4.1
       semver: 7.6.0
@@ -7040,7 +6985,7 @@ packages:
       nullthrows: 1.1.1
       react-native: 0.73.5(@babel/core@7.24.0)(@babel/preset-env@7.24.0)(react@18.2.0)
 
-  /@rushstack/node-core-library@4.0.2(@types/node@18.19.22):
+  /@rushstack/node-core-library@4.0.2(@types/node@18.19.26):
     resolution: {integrity: sha512-hyES82QVpkfQMeBMteQUnrhASL/KHPhd7iJ8euduwNJG4mu2GSOKybf0rOEjOm1Wz7CwJEUm9y0yD7jg2C1bfg==}
     peerDependencies:
       '@types/node': '*'
@@ -7048,7 +6993,7 @@ packages:
       '@types/node':
         optional: true
     dependencies:
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       fs-extra: 7.0.1
       import-lazy: 4.0.0
       jju: 1.4.0
@@ -7062,7 +7007,7 @@ packages:
       resolve: 1.22.8
       strip-json-comments: 3.1.1
 
-  /@rushstack/terminal@0.10.0(@types/node@18.19.22):
+  /@rushstack/terminal@0.10.0(@types/node@18.19.26):
     resolution: {integrity: sha512-UbELbXnUdc7EKwfH2sb8ChqNgapUOdqcCIdQP4NGxBpTZV2sQyeekuK3zmfQSa/MN+/7b4kBogl2wq0vpkpYGw==}
     peerDependencies:
       '@types/node': '*'
@@ -7070,14 +7015,14 @@ packages:
       '@types/node':
         optional: true
     dependencies:
-      '@rushstack/node-core-library': 4.0.2(@types/node@18.19.22)
-      '@types/node': 18.19.22
+      '@rushstack/node-core-library': 4.0.2(@types/node@18.19.26)
+      '@types/node': 18.19.26
       supports-color: 8.1.1
 
-  /@rushstack/ts-command-line@4.19.1(@types/node@18.19.22):
+  /@rushstack/ts-command-line@4.19.1(@types/node@18.19.26):
     resolution: {integrity: sha512-J7H768dgcpG60d7skZ5uSSwyCZs/S2HrWP1Ds8d1qYAyaaeJmpmmLr9BVw97RjFzmQPOYnoXcKA4GkqDCkduQg==}
     dependencies:
-      '@rushstack/terminal': 0.10.0(@types/node@18.19.22)
+      '@rushstack/terminal': 0.10.0(@types/node@18.19.26)
       '@types/argparse': 1.0.38
       argparse: 1.0.10
       string-argv: 0.3.2
@@ -7404,11 +7349,11 @@ packages:
       str2buf: 1.3.0
       webcrypto-shim: 0.1.7
 
-  /@sphereon/lto-did-ts@0.1.8-unstable.0(debug@4.3.4)(typescript@4.9.5):
+  /@sphereon/lto-did-ts@0.1.8-unstable.0(debug@4.3.4)(typescript@5.4.2):
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
     dependencies:
       '@lto-network/lto-crypto': 1.1.1
-      '@lto-network/lto-transactions': 1.2.12(debug@4.3.4)(typescript@4.9.5)
+      '@lto-network/lto-transactions': 1.2.12(debug@4.3.4)(typescript@5.4.2)
       '@lto-network/signature-generator': 1.0.0
       '@sphereon/did-uni-client': 0.4.0
       '@waves/ts-lib-crypto': 1.4.4-beta.1
@@ -7564,12 +7509,12 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-ZUqtCs5xaxZcLZuuaDqSCiDSxoLJmpOpSqi117gYg3DBozS1mLUzG4BEKMrr+XjNKNu3O6t8Sezm/fjsmIwHOg==}
+  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-bBFI4f9GbEKE/NOmkiHfAqMQeA978vIHOMsyHp2a5JTlHf76JHzvJIPB1tM8qKdyamqK4uE9FtO8wO2pTKdRdg==}
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/ssi-sdk-ext.did-utils': 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -7587,19 +7532,20 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-provider-key@0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-W/vymnARZtNgVTyXwRGBEIFMnhS5o+oT8J+cBn7BlR4gazO4ZJq4jLIIUuiOLSv1l5mzCQChorCzUm+Z6e/b5g==}
+  /@sphereon/ssi-sdk-ext.did-provider-key@0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-WxAxVMqpVaNulmFbx936QwYLJtTnZREzxFtRw27aHACM3UciqaPpzIOMwE6K/z2b1sCSIsvCRNrbK2tBx9vYfw==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@transmute/did-key-bls12381': 0.3.0-unstable.10
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
-      '@veramo/did-provider-key': 4.2.0
       debug: 4.3.4
+      did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-resolver: 4.1.0
       multibase: 4.0.6
       multicodec: 3.2.1
+      uint8arrays: 3.1.1
     transitivePeerDependencies:
       - encoding
       - expo
@@ -7609,14 +7555,14 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-provider-lto@0.15.0(typescript@4.9.5):
-    resolution: {integrity: sha512-5H41cHeN2SOXNs4ihQSDNMayXQ2X4EkQXxmIjCaTPCs6NnbE6Xgt5ohR4wkKmbQZrJO3TLf0m4ElsU2uBeCG1Q==}
+  /@sphereon/ssi-sdk-ext.did-provider-lto@0.18.0(typescript@5.4.2):
+    resolution: {integrity: sha512-hyBZObEVQ2NU9YGfpwRIjwhJsvI5NGpFWyrM4HkneWiphxBGqi3YZ2TdO/jhnI3v5yhHKHd6FhMeHLgtB0h67Q==}
     dependencies:
       '@lto-network/lto-crypto': 1.1.1
-      '@lto-network/lto-transactions': 1.2.12(debug@4.3.4)(typescript@4.9.5)
+      '@lto-network/lto-transactions': 1.2.12(debug@4.3.4)(typescript@5.4.2)
       '@lto-network/signature-generator': 1.0.0
       '@sphereon/did-uni-client': 0.6.1
-      '@sphereon/lto-did-ts': 0.1.8-unstable.0(debug@4.3.4)(typescript@4.9.5)
+      '@sphereon/lto-did-ts': 0.1.8-unstable.0(debug@4.3.4)(typescript@5.4.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
       debug: 4.3.4
@@ -7627,8 +7573,8 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.15.0:
-    resolution: {integrity: sha512-FwjC7zeQI015rXq4wZ9DQfkbFKv65AMeSbkVTOYzspzP+ZxfHavoc0heqVpFU/v2H55CjKKygPl0XbTGE/7+hw==}
+  /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.18.0:
+    resolution: {integrity: sha512-xdlXoGn0L0fzxLqSopbCmY7gfLdpNWxCSb3TeWo4lt7EuCs20zGSOBA0B/W8PrQWIbnI6llCSfg4SjKuqaYnaw==}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       base64url: 3.0.1
@@ -7639,10 +7585,10 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-resolver-key@0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-BQ4S3+3pRL2djk5MmwRu00Ch0J8KrgtCi2Z3THyaPAvHe8z7gEL1Nib3wz4uSR25dST/1SqzP3R2RNlDZ81dKA==}
+  /@sphereon/ssi-sdk-ext.did-resolver-key@0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-3udqrLEBc/TuJVk0STPptugBY6rpUAunrp1UrHEovVyABZ6R4uFPemN4PuuqYSzfDJKBvSveV1NXGAY750zX5Q==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.key-utils': 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@stablelib/ed25519': 1.0.3
       bigint-mod-arith: 3.3.1
       did-resolver: 4.1.0
@@ -7684,12 +7630,12 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-utils@0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-LobpJn6zS7j+Cha4fyuyMNSgJrl6Q6yN+rqUKoW5exDSXPkfkIJVoeTt4LN9g7X8id8q2CVlGgba9swogBzc7Q==}
+  /@sphereon/ssi-sdk-ext.did-utils@0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-c+3xw8JPGuqzMwPr0t1IY6aBILd6fdoDjzRZkD5HIYV+K0dBTFnAIpKn2QwwzKzZzs9I9Smb/Y4b8N+AxTAnGw==}
     dependencies:
       '@ethersproject/transactions': 5.7.0
       '@sphereon/did-uni-client': 0.6.1
-      '@sphereon/ssi-sdk-ext.key-utils': 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -7722,14 +7668,14 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk-ext.key-manager@0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-ks3ly3p3Q8yyuxXKp0ztuq5TSkhXBZFb6iWf3hIdkI5GRMwSqK78Il0KQzuxeyFgp4Y6xwEx9nlnujvBkoEFRg==}
+  /@sphereon/ssi-sdk-ext.key-manager@0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-+nw+VZWdaYGk9m6ZG3gy0LOpxkUSs2TMxPSrFn8SznOdLAg0grnnZVfOQ59EASdjBFkUqxbWIfo/JJmmWnI2Rg==}
     dependencies:
-      '@mattrglobal/bbs-signatures': 1.3.1
-      '@sphereon/ssi-sdk-ext.kms-local': 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.kms-local': 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
     transitivePeerDependencies:
+      - '@mattrglobal/bbs-signatures'
       - encoding
       - expo
       - expo-crypto
@@ -7789,8 +7735,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk-ext.key-utils@0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-Tz0nYaslr4Kjm+YylWtnpoNyOfxUWY0eOv1cPkjGYvx21bVzhD4Mt5AU2jVyJF/YY8tH3OPEQxCSCRViVTlZrg==}
+  /@sphereon/ssi-sdk-ext.key-utils@0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-2H0IvcEJMKV6zrNGcx55TjXZasvAbBfIiPqxXK1R2pAflcYNG4Eq6UCt/ZuKhQSikFgZixi0/CQfUv7ZUcypnw==}
     dependencies:
       '@ethersproject/random': 5.7.0
       '@sphereon/isomorphic-webcrypto': 2.4.0-unstable.4(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -7836,13 +7782,17 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk-ext.kms-local@0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-5bYdDN5l/R1RhHi6lZZ9FErOnHOwjMSuxWD7nUM5Yw164fdxcNNVGTvZ3WbD9sCzJ6L0PZdFc+fybgFqkMYx3Q==}
+  /@sphereon/ssi-sdk-ext.kms-local@0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-2LOTdgQ0QMC8K/fbpQ33WKyl/CU+8SJthw8cpwRj3mddwjvQ3zO0G479ibFCBRU123k1Srhga5NY6mYVN2hWVQ==}
+    peerDependencies:
+      '@mattrglobal/bbs-signatures': ^1.3.1
+    peerDependenciesMeta:
+      '@mattrglobal/bbs-signatures':
+        optional: true
     dependencies:
-      '@mattrglobal/bbs-signatures': 1.3.1
       '@sphereon/isomorphic-webcrypto': 2.4.0-unstable.4(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.15.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.18.0(expo-crypto@12.8.1)(expo@50.0.8)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@trust/keyto': 2.0.0-alpha1
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
@@ -8323,14 +8273,6 @@ packages:
       json-pointer: 0.6.2
       jsonld: link:node_modules/.pnpm/@digitalcredentials+jsonld@6.0.0/node_modules/@digitalcredentials/jsonld
 
-  /@transmute/jsonld@0.1.0:
-    resolution: {integrity: sha512-ZoRnufdHvGCI+lRM7u9JH9lRRWBAsvMj9H4ZIq/irBDWl1sWgQGsUmr4q56tGg/PcMC7/rBpXX2Af1RpyIbCZA==}
-    engines: {node: '>=16'}
-    dependencies:
-      json-pointer: 0.6.2
-      jsonld: link:node_modules/.pnpm/@digitalcredentials+jsonld@6.0.0/node_modules/@digitalcredentials/jsonld
-    dev: false
-
   /@transmute/ld-key-pair@0.6.1-unstable.37:
     resolution: {integrity: sha512-DcTpEruAQBfOd2laZkg3uCQ+67Y7dw2hsvo42NAQ5tItCIx5AClP7zccri7T2JUcfDUFaE32z/BLTMEKYt3XZQ==}
 
@@ -8515,7 +8457,7 @@ packages:
   /@types/accepts@1.3.7:
     resolution: {integrity: sha512-Pay9fq2lM2wXPWbteBsRAGiWH2hig4ZE2asK+mm7kUzlxRTfL961rj89I6zV/E3PcIkDqyuBEcMxFT7rccugeQ==}
     dependencies:
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
     dev: true
 
   /@types/argparse@1.0.38:
@@ -8557,20 +8499,20 @@ packages:
   /@types/blessed@0.1.25:
     resolution: {integrity: sha512-kQsjBgtsbJLmG6CJA+Z6Nujj+tq1fcSE3UIowbDvzQI4wWmoTV7djUDhSo5lDjgwpIN0oRvks0SA5mMdKE5eFg==}
     dependencies:
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
     dev: true
 
   /@types/body-parser@1.19.5:
     resolution: {integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==}
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
     dev: true
 
   /@types/connect@3.4.38:
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
     dependencies:
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
     dev: true
 
   /@types/content-disposition@0.5.8:
@@ -8596,13 +8538,13 @@ packages:
       '@types/connect': 3.4.38
       '@types/express': 4.17.21
       '@types/keygrip': 1.0.6
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
     dev: true
 
   /@types/cors@2.8.17:
     resolution: {integrity: sha512-8CGDvrBj1zgo2qE+oS3pOCyYNqCPryMWY2bGfwA0dcfopWGgxs+78df0Rs3rc9THP4JkOhLsAa+15VdpAqkcUA==}
     dependencies:
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
     dev: true
 
   /@types/crypto-js@3.1.47:
@@ -8627,7 +8569,7 @@ packages:
   /@types/express-serve-static-core@4.17.43:
     resolution: {integrity: sha512-oaYtiBirUOPQGSWNGPWnzyAFJ0BP3cwvN4oWZQY+zUBwpVIGsKUkpBpSztp74drYcjavs7SKFZ4DX1V2QeN8rg==}
     dependencies:
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       '@types/qs': 6.9.12
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -8660,7 +8602,7 @@ packages:
   /@types/graceful-fs@4.1.9:
     resolution: {integrity: sha512-olP3sd1qOEe5dXTSaFvQG+02VdRXcdytWLAZsAq1PecU8uqQAhkrnbli7DagjtXKW/Bl7YJbUsa8MPcuc8LHEQ==}
     dependencies:
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
     dev: true
 
   /@types/http-assert@1.5.5:
@@ -8674,7 +8616,7 @@ packages:
   /@types/http-terminator@2.0.5:
     resolution: {integrity: sha512-/aynyldxPiDBRxW2qlf8SiwQm2CxcCID/F+FDt7Qd/U7aUCh/QMlMRUNRYVakBQ+YSi9NVQqSRrI7pyCO23Qpw==}
     dependencies:
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
     dev: true
 
   /@types/i18n-js@3.8.9:
@@ -8752,7 +8694,7 @@ packages:
       '@types/http-errors': 2.0.4
       '@types/keygrip': 1.0.6
       '@types/koa-compose': 3.2.8
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
     dev: true
 
   /@types/lodash.memoize@4.1.9:
@@ -8784,7 +8726,7 @@ packages:
   /@types/morgan@1.9.9:
     resolution: {integrity: sha512-iRYSDKVaC6FkGSpEVVIvrRGw0DfJMiQzIn3qr2G5B3C//AWkulhXgaBd7tS9/J79GWSYMTHGs7PfI5b3Y8m+RQ==}
     dependencies:
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
     dev: true
 
   /@types/ms@0.7.34:
@@ -8809,6 +8751,12 @@ packages:
 
   /@types/node@18.19.22:
     resolution: {integrity: sha512-p3pDIfuMg/aXBmhkyanPshdfJuX5c5+bQjYLIikPLXAUycEogij/c50n/C+8XOA5L93cU4ZRXtn+dNQGi0IZqQ==}
+    dependencies:
+      undici-types: 5.26.5
+    dev: true
+
+  /@types/node@18.19.26:
+    resolution: {integrity: sha512-+wiMJsIwLOYCvUqSdKTrfkS8mpTp+MPINe6+Np4TAGFWWRWiBQ5kSq9nZGCSPkzx9mvT+uEukzpX4MOSCydcvw==}
     dependencies:
       undici-types: 5.26.5
 
@@ -8891,7 +8839,7 @@ packages:
     resolution: {integrity: sha512-x2EM6TJOybec7c52BX0ZspPodMsQUd5L6PRwOunVyVUhXiBSKf3AezDL8Dgvgt5o0UfKNfuA0eMLr2wLT4AiBA==}
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
     dev: true
 
   /@types/serve-static@1.15.5:
@@ -8899,7 +8847,7 @@ packages:
     dependencies:
       '@types/http-errors': 2.0.4
       '@types/mime': 3.0.4
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
     dev: true
 
   /@types/stack-utils@2.0.3:
@@ -8921,7 +8869,7 @@ packages:
   /@types/through@0.0.33:
     resolution: {integrity: sha512-HsJ+z3QuETzP3cswwtzt2vEIiHBk/dCcHGhbmG5X3ecnwFD/lPrMpliGXxSCg03L9AhrdwA4Oz/qfspkDW+xGQ==}
     dependencies:
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
     dev: true
 
   /@types/url-parse@1.4.11:
@@ -8942,7 +8890,7 @@ packages:
   /@types/ws@8.5.3:
     resolution: {integrity: sha512-6YOoWjruKj1uLf3INHH7D3qTXwFfEsg1kf3c0uDdSBJwfa/llkwIjrAGV7j7mVgGNbzTQ3HiHKKDXl6bJPD97w==}
     dependencies:
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
     dev: false
 
   /@types/yargs-parser@21.0.3:
@@ -8964,7 +8912,7 @@ packages:
     dependencies:
       '@types/yargs-parser': 21.0.3
 
-  /@typescript-eslint/eslint-plugin@4.33.0(@typescript-eslint/parser@4.33.0)(eslint@7.32.0)(typescript@4.9.5):
+  /@typescript-eslint/eslint-plugin@4.33.0(@typescript-eslint/parser@4.33.0)(eslint@7.32.0)(typescript@5.4.2):
     resolution: {integrity: sha512-aINiAxGVdOl1eJyVjaWn/YcVAq4Gi/Yo35qHGCnqbWVz61g39D0h23veY/MA0rFFGfxK7TySg2uwDeNv+JgVpg==}
     engines: {node: ^10.12.0 || >=12.0.0}
     peerDependencies:
@@ -8975,8 +8923,8 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@typescript-eslint/experimental-utils': 4.33.0(eslint@7.32.0)(typescript@4.9.5)
-      '@typescript-eslint/parser': 4.33.0(eslint@7.32.0)(typescript@4.9.5)
+      '@typescript-eslint/experimental-utils': 4.33.0(eslint@7.32.0)(typescript@5.4.2)
+      '@typescript-eslint/parser': 4.33.0(eslint@7.32.0)(typescript@5.4.2)
       '@typescript-eslint/scope-manager': 4.33.0
       debug: 4.3.4
       eslint: 7.32.0
@@ -8984,13 +8932,13 @@ packages:
       ignore: 5.3.1
       regexpp: 3.2.0
       semver: 7.6.0
-      tsutils: 3.21.0(typescript@4.9.5)
-      typescript: 4.9.5
+      tsutils: 3.21.0(typescript@5.4.2)
+      typescript: 5.4.2
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@typescript-eslint/eslint-plugin@5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@4.9.5):
+  /@typescript-eslint/eslint-plugin@5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.4.2):
     resolution: {integrity: sha512-TiZzBSJja/LbhNPvk6yc0JrX9XqhQ0hdh6M2svYfsHGejaKFIAGd9MQ+ERIMzLGlN/kZoYIgdxFV0PuljTKXag==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -9002,23 +8950,23 @@ packages:
         optional: true
     dependencies:
       '@eslint-community/regexpp': 4.10.0
-      '@typescript-eslint/parser': 5.62.0(eslint@8.57.0)(typescript@4.9.5)
+      '@typescript-eslint/parser': 5.62.0(eslint@8.57.0)(typescript@5.4.2)
       '@typescript-eslint/scope-manager': 5.62.0
-      '@typescript-eslint/type-utils': 5.62.0(eslint@8.57.0)(typescript@4.9.5)
-      '@typescript-eslint/utils': 5.62.0(eslint@8.57.0)(typescript@4.9.5)
+      '@typescript-eslint/type-utils': 5.62.0(eslint@8.57.0)(typescript@5.4.2)
+      '@typescript-eslint/utils': 5.62.0(eslint@8.57.0)(typescript@5.4.2)
       debug: 4.3.4
       eslint: 8.57.0
       graphemer: 1.4.0
       ignore: 5.3.1
       natural-compare-lite: 1.4.0
       semver: 7.6.0
-      tsutils: 3.21.0(typescript@4.9.5)
-      typescript: 4.9.5
+      tsutils: 3.21.0(typescript@5.4.2)
+      typescript: 5.4.2
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@typescript-eslint/experimental-utils@4.33.0(eslint@7.32.0)(typescript@4.9.5):
+  /@typescript-eslint/experimental-utils@4.33.0(eslint@7.32.0)(typescript@5.4.2):
     resolution: {integrity: sha512-zeQjOoES5JFjTnAhI5QY7ZviczMzDptls15GFsI6jyUOq0kOf9+WonkhtlIhh0RgHRnqj5gdNxW5j1EvAyYg6Q==}
     engines: {node: ^10.12.0 || >=12.0.0}
     peerDependencies:
@@ -9027,7 +8975,7 @@ packages:
       '@types/json-schema': 7.0.15
       '@typescript-eslint/scope-manager': 4.33.0
       '@typescript-eslint/types': 4.33.0
-      '@typescript-eslint/typescript-estree': 4.33.0(typescript@4.9.5)
+      '@typescript-eslint/typescript-estree': 4.33.0(typescript@5.4.2)
       eslint: 7.32.0
       eslint-scope: 5.1.1
       eslint-utils: 3.0.0(eslint@7.32.0)
@@ -9036,7 +8984,7 @@ packages:
       - typescript
     dev: true
 
-  /@typescript-eslint/parser@4.33.0(eslint@7.32.0)(typescript@4.9.5):
+  /@typescript-eslint/parser@4.33.0(eslint@7.32.0)(typescript@5.4.2):
     resolution: {integrity: sha512-ZohdsbXadjGBSK0/r+d87X0SBmKzOq4/S5nzK6SBgJspFo9/CUDJ7hjayuze+JK7CZQLDMroqytp7pOcFKTxZA==}
     engines: {node: ^10.12.0 || >=12.0.0}
     peerDependencies:
@@ -9048,15 +8996,15 @@ packages:
     dependencies:
       '@typescript-eslint/scope-manager': 4.33.0
       '@typescript-eslint/types': 4.33.0
-      '@typescript-eslint/typescript-estree': 4.33.0(typescript@4.9.5)
+      '@typescript-eslint/typescript-estree': 4.33.0(typescript@5.4.2)
       debug: 4.3.4
       eslint: 7.32.0
-      typescript: 4.9.5
+      typescript: 5.4.2
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@4.9.5):
+  /@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.4.2):
     resolution: {integrity: sha512-VlJEV0fOQ7BExOsHYAGrgbEiZoi8D+Bl2+f6V2RrXerRSylnp+ZBHmPvaIa8cz0Ajx7WO7Z5RqfgYg7ED1nRhA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -9068,10 +9016,10 @@ packages:
     dependencies:
       '@typescript-eslint/scope-manager': 5.62.0
       '@typescript-eslint/types': 5.62.0
-      '@typescript-eslint/typescript-estree': 5.62.0(typescript@4.9.5)
+      '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.4.2)
       debug: 4.3.4
       eslint: 8.57.0
-      typescript: 4.9.5
+      typescript: 5.4.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -9092,7 +9040,7 @@ packages:
       '@typescript-eslint/visitor-keys': 5.62.0
     dev: true
 
-  /@typescript-eslint/type-utils@5.62.0(eslint@8.57.0)(typescript@4.9.5):
+  /@typescript-eslint/type-utils@5.62.0(eslint@8.57.0)(typescript@5.4.2):
     resolution: {integrity: sha512-xsSQreu+VnfbqQpW5vnCJdq1Z3Q0U31qiWmRhr98ONQmcp/yhiPJFPq8MXiJVLiksmOKSjIldZzkebzHuCGzew==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -9102,12 +9050,12 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@typescript-eslint/typescript-estree': 5.62.0(typescript@4.9.5)
-      '@typescript-eslint/utils': 5.62.0(eslint@8.57.0)(typescript@4.9.5)
+      '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.4.2)
+      '@typescript-eslint/utils': 5.62.0(eslint@8.57.0)(typescript@5.4.2)
       debug: 4.3.4
       eslint: 8.57.0
-      tsutils: 3.21.0(typescript@4.9.5)
-      typescript: 4.9.5
+      tsutils: 3.21.0(typescript@5.4.2)
+      typescript: 5.4.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -9122,7 +9070,7 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@typescript-eslint/typescript-estree@4.33.0(typescript@4.9.5):
+  /@typescript-eslint/typescript-estree@4.33.0(typescript@5.4.2):
     resolution: {integrity: sha512-rkWRY1MPFzjwnEVHsxGemDzqqddw2QbTJlICPD9p9I9LfsO8fdmfQPOX3uKfUaGRDFJbfrtm/sXhVXN4E+bzCA==}
     engines: {node: ^10.12.0 || >=12.0.0}
     peerDependencies:
@@ -9137,13 +9085,13 @@ packages:
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.6.0
-      tsutils: 3.21.0(typescript@4.9.5)
-      typescript: 4.9.5
+      tsutils: 3.21.0(typescript@5.4.2)
+      typescript: 5.4.2
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@typescript-eslint/typescript-estree@5.62.0(typescript@4.9.5):
+  /@typescript-eslint/typescript-estree@5.62.0(typescript@5.4.2):
     resolution: {integrity: sha512-CmcQ6uY7b9y694lKdRB8FEel7JbU/40iSAPomu++SjLMntB+2Leay2LO6i8VnJk58MtE9/nQSFIH6jpyRWyYzA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -9158,13 +9106,13 @@ packages:
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.6.0
-      tsutils: 3.21.0(typescript@4.9.5)
-      typescript: 4.9.5
+      tsutils: 3.21.0(typescript@5.4.2)
+      typescript: 5.4.2
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@typescript-eslint/utils@5.62.0(eslint@8.57.0)(typescript@4.9.5):
+  /@typescript-eslint/utils@5.62.0(eslint@8.57.0)(typescript@5.4.2):
     resolution: {integrity: sha512-n8oxjeb5aIbPFEtmQxQYOLI0i9n5ySBEY/ZEHHZqKQSFnxio1rv6dthascc9dLuwrL0RC5mPCxB7vnAVGAYWAQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -9175,7 +9123,7 @@ packages:
       '@types/semver': 7.5.8
       '@typescript-eslint/scope-manager': 5.62.0
       '@typescript-eslint/types': 5.62.0
-      '@typescript-eslint/typescript-estree': 5.62.0(typescript@4.9.5)
+      '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.4.2)
       eslint: 8.57.0
       eslint-scope: 5.1.1
       semver: 7.6.0
@@ -9222,12 +9170,12 @@ packages:
       graphql: 15.8.0
       wonka: 4.0.15
 
-  /@veramo/cli@4.2.0(@types/node@18.19.22)(ts-node@10.9.2):
+  /@veramo/cli@4.2.0(@types/node@18.19.26)(ts-node@10.9.2):
     resolution: {integrity: sha512-73jG//N0ikpqbpUtokmydIjDKQeOysmHX0LFMP+zXh81kFhkGvEWk7Am9BBibKuWtq0uDCAXvk0TqsnK+Ajcqg==}
     hasBin: true
     dependencies:
-      '@microsoft/api-extractor': 7.42.3(@types/node@18.19.22)
-      '@microsoft/api-extractor-model': 7.28.13(@types/node@18.19.22)
+      '@microsoft/api-extractor': 7.42.3(@types/node@18.19.26)
+      '@microsoft/api-extractor-model': 7.28.13(@types/node@18.19.26)
       '@types/blessed': 0.1.25
       '@types/swagger-ui-express': 4.1.6
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -11037,7 +10985,7 @@ packages:
     engines: {node: '>=12.13.0'}
     hasBin: true
     dependencies:
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -11047,7 +10995,7 @@ packages:
   /chromium-edge-launcher@1.0.0:
     resolution: {integrity: sha512-pgtgjNKZ7i5U++1g1PWv75umkHvhVTDOQIZ+sjeUX9483S7Y6MUvO0lrd7ShGlQlFHMN4SwKTCq/X8hWrbv2KA==}
     dependencies:
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -11639,7 +11587,7 @@ packages:
       sha.js: 2.4.11
     dev: true
 
-  /create-jest@29.7.0(@types/node@18.19.22)(ts-node@10.9.2):
+  /create-jest@29.7.0(@types/node@18.19.26)(ts-node@10.9.2):
     resolution: {integrity: sha512-Adz2bdH0Vq3F53KEMJOoftQFutWCukm6J24wbPWRO4k1kMY7gS7ds/uoJkNuV8wDCtWWnuwGcJwpWcih+zEW1Q==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     hasBin: true
@@ -11648,7 +11596,7 @@ packages:
       chalk: 4.1.2
       exit: 0.1.2
       graceful-fs: 4.2.11
-      jest-config: 29.7.0(@types/node@18.19.22)(ts-node@10.9.2)
+      jest-config: 29.7.0(@types/node@18.19.26)(ts-node@10.9.2)
       jest-util: 29.7.0
       prompts: 2.4.2
     transitivePeerDependencies:
@@ -12540,7 +12488,7 @@ packages:
       eslint-import-resolver-webpack:
         optional: true
     dependencies:
-      '@typescript-eslint/parser': 5.62.0(eslint@8.57.0)(typescript@4.9.5)
+      '@typescript-eslint/parser': 5.62.0(eslint@8.57.0)(typescript@5.4.2)
       debug: 3.2.7
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
@@ -12569,7 +12517,7 @@ packages:
       '@typescript-eslint/parser':
         optional: true
     dependencies:
-      '@typescript-eslint/parser': 5.62.0(eslint@8.57.0)(typescript@4.9.5)
+      '@typescript-eslint/parser': 5.62.0(eslint@8.57.0)(typescript@5.4.2)
       array-includes: 3.1.7
       array.prototype.findlastindex: 1.2.4
       array.prototype.flat: 1.3.2
@@ -13593,7 +13541,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       at-least-node: 1.0.0
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jsonfile: 6.1.0
       universalify: 2.0.1
 
@@ -14965,7 +14913,7 @@ packages:
       '@jest/environment': 27.5.1
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       chalk: 4.1.2
       co: 4.6.0
       dedent: 0.7.0
@@ -14993,7 +14941,7 @@ packages:
       '@jest/expect': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       chalk: 4.1.2
       co: 4.6.0
       dedent: 1.5.1
@@ -15044,7 +14992,7 @@ packages:
       - utf-8-validate
     dev: true
 
-  /jest-cli@29.7.0(@types/node@18.19.22)(ts-node@10.9.2):
+  /jest-cli@29.7.0(@types/node@18.19.26)(ts-node@10.9.2):
     resolution: {integrity: sha512-OVVobw2IubN/GSYsxETi+gOe7Ka59EFMR/twOU3Jb2GnKKeMGJB5SGUUrEz3SFVmJASUdZUzy83sLNNQ2gZslg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     hasBin: true
@@ -15058,10 +15006,10 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
       chalk: 4.1.2
-      create-jest: 29.7.0(@types/node@18.19.22)(ts-node@10.9.2)
+      create-jest: 29.7.0(@types/node@18.19.26)(ts-node@10.9.2)
       exit: 0.1.2
       import-local: 3.1.0
-      jest-config: 29.7.0(@types/node@18.19.22)(ts-node@10.9.2)
+      jest-config: 29.7.0(@types/node@18.19.26)(ts-node@10.9.2)
       jest-util: 29.7.0
       jest-validate: 29.7.0
       yargs: 17.7.2
@@ -15105,7 +15053,7 @@ packages:
       pretty-format: 27.5.1
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.2(@types/node@18.19.22)(typescript@4.9.5)
+      ts-node: 10.9.2(@types/node@18.19.26)(typescript@5.4.2)
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -15113,7 +15061,7 @@ packages:
       - utf-8-validate
     dev: true
 
-  /jest-config@29.7.0(@types/node@18.19.22)(ts-node@10.9.2):
+  /jest-config@29.7.0(@types/node@18.19.26)(ts-node@10.9.2):
     resolution: {integrity: sha512-uXbpfeQ7R6TZBqI3/TxCU4q4ttk3u0PJeC+E0zbfSoSjq6bJ7buBPxzQPL0ifrkY4DNu4JUdk0ImlBUYi840eQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     peerDependencies:
@@ -15128,7 +15076,7 @@ packages:
       '@babel/core': 7.24.0
       '@jest/test-sequencer': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       babel-jest: 29.7.0(@babel/core@7.24.0)
       chalk: 4.1.2
       ci-info: 3.9.0
@@ -15148,7 +15096,7 @@ packages:
       pretty-format: 29.7.0
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.2(@types/node@18.19.22)(typescript@4.9.5)
+      ts-node: 10.9.2(@types/node@18.19.26)(typescript@5.4.2)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -15217,7 +15165,7 @@ packages:
       '@jest/environment': 27.5.1
       '@jest/fake-timers': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       jest-mock: 27.5.1
       jest-util: 27.5.1
       jsdom: 16.7.0
@@ -15235,7 +15183,7 @@ packages:
       '@jest/environment': 27.5.1
       '@jest/fake-timers': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       jest-mock: 27.5.1
       jest-util: 27.5.1
     dev: true
@@ -15247,7 +15195,7 @@ packages:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       jest-mock: 29.7.0
       jest-util: 29.7.0
 
@@ -15275,7 +15223,7 @@ packages:
     dependencies:
       '@jest/types': 27.5.1
       '@types/graceful-fs': 4.1.9
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -15295,7 +15243,7 @@ packages:
     dependencies:
       '@jest/types': 29.6.3
       '@types/graceful-fs': 4.1.9
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -15316,7 +15264,7 @@ packages:
       '@jest/source-map': 27.5.1
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       chalk: 4.1.2
       co: 4.6.0
       expect: 27.5.1
@@ -15403,7 +15351,7 @@ packages:
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
       '@jest/types': 27.5.1
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
     dev: true
 
   /jest-mock@29.7.0:
@@ -15411,7 +15359,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       jest-util: 29.7.0
 
   /jest-pnp-resolver@1.2.3(jest-resolve@27.5.1):
@@ -15509,7 +15457,7 @@ packages:
       '@jest/test-result': 27.5.1
       '@jest/transform': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       chalk: 4.1.2
       emittery: 0.8.1
       graceful-fs: 4.2.11
@@ -15541,7 +15489,7 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       chalk: 4.1.2
       emittery: 0.13.1
       graceful-fs: 4.2.11
@@ -15602,7 +15550,7 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       chalk: 4.1.2
       cjs-module-lexer: 1.2.3
       collect-v8-coverage: 1.0.2
@@ -15625,7 +15573,7 @@ packages:
     resolution: {integrity: sha512-jZCyo6iIxO1aqUxpuBlwTDMkzOAJS4a3eYz3YzgxxVQFwLeSA7Jfq5cbqCY+JLvTDrWirgusI/0KwxKMgrdf7w==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       graceful-fs: 4.2.11
     dev: true
 
@@ -15692,7 +15640,7 @@ packages:
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
       '@jest/types': 27.5.1
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -15704,7 +15652,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -15739,7 +15687,7 @@ packages:
     dependencies:
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       jest-util: 27.5.1
@@ -15752,7 +15700,7 @@ packages:
     dependencies:
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.13.1
@@ -15764,7 +15712,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
@@ -15773,7 +15721,7 @@ packages:
     resolution: {integrity: sha512-eIz2msL/EzL9UFTFFx7jBTkeZfku0yUAyZZZmJ93H2TYEiroIx2PQjEXcwYtYl8zXCxb+PAmA2hLIt/6ZEkPHw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@types/node': 18.19.22
+      '@types/node': 18.19.26
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
@@ -15799,7 +15747,7 @@ packages:
       - utf-8-validate
     dev: true
 
-  /jest@29.7.0(@types/node@18.19.22)(ts-node@10.9.2):
+  /jest@29.7.0(@types/node@18.19.26)(ts-node@10.9.2):
     resolution: {integrity: sha512-NIy3oAFp9shda19hy4HK0HRTWKtPJmGdnvywu01nOqNC2vZg+Z+fvJDxpMQA88eb2I9EcafcdjYgsDthnYTvGw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     hasBin: true
@@ -15812,7 +15760,7 @@ packages:
       '@jest/core': 29.7.0(ts-node@10.9.2)
       '@jest/types': 29.6.3
       import-local: 3.1.0
-      jest-cli: 29.7.0(@types/node@18.19.22)(ts-node@10.9.2)
+      jest-cli: 29.7.0(@types/node@18.19.26)(ts-node@10.9.2)
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -16059,6 +16007,16 @@ packages:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
     dev: true
 
+  /json-stable-stringify@1.1.1:
+    resolution: {integrity: sha512-SU/971Kt5qVQfJpyDveVhQ/vya+5hvrjClFOcr8c0Fq5aODJjMwutrOfCU+eCnVD5gpx1Q3fEqkyom77zH1iIg==}
+    engines: {node: '>= 0.4'}
+    dependencies:
+      call-bind: 1.0.7
+      isarray: 2.0.5
+      jsonify: 0.0.1
+      object-keys: 1.1.1
+    dev: true
+
   /json-stringify-deterministic@1.0.12:
     resolution: {integrity: sha512-q3PN0lbUdv0pmurkBNdJH3pfFvOTL/Zp0lquqpvcjfKzt6Y0j49EPHAmVHCAS4Ceq/Y+PejWTzyiVpoY71+D6g==}
     engines: {node: '>= 4'}
@@ -16104,6 +16062,10 @@ packages:
       universalify: 2.0.1
     optionalDependencies:
       graceful-fs: 4.2.11
+
+  /jsonify@0.0.1:
+    resolution: {integrity: sha512-2/Ki0GcmuqSrgFyelQq9M05y7PS0mEwuIzrf3f1fPqkVDVRvZrPZtVSMHxdgo8Aq0sxAOb/cr2aqqA3LeWHVPg==}
+    dev: true
 
   /jsonld-checker@0.1.8:
     resolution: {integrity: sha512-jclmnPRrm5SEpaIV6IiSTJxplRAqIWHduQLsUfrYpZM41Ng48m1RN2/aUyHze/ynfO0D2UhlJBt8SdObsH5GBw==}
@@ -16541,7 +16503,7 @@ packages:
     resolution: {integrity: sha512-gUD/epcRms75Cw8RT1pUdHugZYM5ce64ucs2GEISABwkRsOQr0q2wm/MV2TKThycIe5e0ytRweW2RZxclogCdQ==}
     engines: {node: '>=8'}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       parse-json: 5.2.0
       strip-bom: 4.0.0
       type-fest: 0.6.0
@@ -17722,7 +17684,7 @@ packages:
       env-paths: 2.2.1
       exponential-backoff: 3.1.1
       glob: 7.2.3
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       make-fetch-happen: 10.2.1
       nopt: 6.0.0
       npmlog: 6.0.2
@@ -18130,7 +18092,7 @@ packages:
       '@yarnpkg/parsers': 3.0.0-rc.46
       '@zkochan/js-yaml': 0.0.6
       axios: 1.6.7
-      chalk: 4.1.0
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       cliui: 7.0.4
@@ -18687,25 +18649,26 @@ packages:
       ansi-escapes: 4.3.2
       cross-spawn: 7.0.3
 
-  /patch-package@6.5.1:
-    resolution: {integrity: sha512-I/4Zsalfhc6bphmJTlrLoOcAF87jcxko4q0qsv4bGcurbr8IskEOtdnt9iCmsQVGL1B+iUhSQqweyTLJfCF9rA==}
-    engines: {node: '>=10', npm: '>5'}
+  /patch-package@8.0.0:
+    resolution: {integrity: sha512-da8BVIhzjtgScwDJ2TtKsfT5JFWz1hYoBl9rUQ1f38MC2HwnEIkK8VN3dKMKcP7P7bvvgzNDbfNHtx3MsQb5vA==}
+    engines: {node: '>=14', npm: '>5'}
     hasBin: true
     dependencies:
       '@yarnpkg/lockfile': 1.1.0
       chalk: 4.1.2
-      cross-spawn: 6.0.5
+      ci-info: 3.9.0
+      cross-spawn: 7.0.3
       find-yarn-workspace-root: 2.0.0
       fs-extra: 9.1.0
-      is-ci: 2.0.0
+      json-stable-stringify: 1.1.1
       klaw-sync: 6.0.0
       minimist: 1.2.8
       open: 7.4.2
       rimraf: 2.7.1
-      semver: 5.7.2
+      semver: 7.6.0
       slash: 2.0.0
       tmp: 0.0.33
-      yaml: 1.10.2
+      yaml: 2.4.1
     dev: true
 
   /path-exists@3.0.0:
@@ -18949,6 +18912,12 @@ packages:
     hasBin: true
     dev: true
 
+  /prettier@3.2.5:
+    resolution: {integrity: sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dev: true
+
   /pretty-bytes@5.6.0:
     resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
     engines: {node: '>=6'}
@@ -18988,7 +18957,7 @@ packages:
       ansi-styles: 5.2.0
       react-is: 18.2.0
 
-  /pretty-quick@3.3.1(prettier@2.8.8):
+  /pretty-quick@3.3.1(prettier@3.2.5):
     resolution: {integrity: sha512-3b36UXfYQ+IXXqex6mCca89jC8u0mYLqFAN5eTQKoXO6oCQYcIVYZEB/5AlBHI7JPYygReM2Vv6Vom/Gln7fBg==}
     engines: {node: '>=10.13'}
     hasBin: true
@@ -19001,7 +18970,7 @@ packages:
       mri: 1.2.0
       picocolors: 1.0.0
       picomatch: 3.0.1
-      prettier: 2.8.8
+      prettier: 3.2.5
       tslib: 2.6.2
     dev: true
 
@@ -19680,6 +19649,7 @@ packages:
 
   /rfc4648@1.5.2:
     resolution: {integrity: sha512-tLOizhR6YGovrEBLatX1sdcuhoSCXddw3mqNVAcKxGJ+J0hFeJ+SjeWCv5UPA/WU3YzWPPuCVYgXBKZUPGpKtg==}
+    dev: true
 
   /rimraf@2.4.5:
     resolution: {integrity: sha512-J5xnxTyqaiw06JjMftq7L9ouA448dw/E7dKghkP9WpKNuwmARNNg+Gk8/u5ryb9N/Yo2+z3MCwuqFK/+qPOPfQ==}
@@ -20948,7 +20918,42 @@ packages:
       yargs-parser: 20.2.9
     dev: true
 
-  /ts-jest@29.1.2(@babel/core@7.24.0)(jest@29.7.0)(typescript@4.9.5):
+  /ts-jest@27.1.5(@babel/core@7.24.0)(@types/jest@27.5.2)(jest@27.5.1)(typescript@5.4.2):
+    resolution: {integrity: sha512-Xv6jBQPoBEvBq/5i2TeSG9tt/nqkbpcurrEG1b+2yfBrcJelOZF9Ml6dmyMh7bcW9JyFbRYpR5rxROSlBLTZHA==}
+    engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
+    hasBin: true
+    peerDependencies:
+      '@babel/core': '>=7.0.0-beta.0 <8'
+      '@types/jest': ^27.0.0
+      babel-jest: '>=27.0.0 <28'
+      esbuild: '*'
+      jest: ^27.0.0
+      typescript: '>=3.8 <5.0'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@types/jest':
+        optional: true
+      babel-jest:
+        optional: true
+      esbuild:
+        optional: true
+    dependencies:
+      '@babel/core': 7.24.0
+      '@types/jest': 27.5.2
+      bs-logger: 0.2.6
+      fast-json-stable-stringify: 2.1.0
+      jest: 27.5.1(ts-node@10.9.2)
+      jest-util: 27.5.1
+      json5: 2.2.3
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.6.0
+      typescript: 5.4.2
+      yargs-parser: 20.2.9
+    dev: true
+
+  /ts-jest@29.1.2(@babel/core@7.24.0)(jest@29.7.0)(typescript@5.4.2):
     resolution: {integrity: sha512-br6GJoH/WUX4pu7FbZXuWGKGNDuU7b8Uj77g/Sp7puZV6EXzuByl6JrECvm0MzVzSTkSHWTihsXt+5XYER5b+g==}
     engines: {node: ^16.10.0 || ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -20972,13 +20977,13 @@ packages:
       '@babel/core': 7.24.0
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 29.7.0(@types/node@18.19.22)(ts-node@10.9.2)
+      jest: 29.7.0(@types/node@18.19.26)(ts-node@10.9.2)
       jest-util: 29.7.0
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
       semver: 7.6.0
-      typescript: 4.9.5
+      typescript: 5.4.2
       yargs-parser: 21.1.1
     dev: true
 
@@ -20995,7 +21000,7 @@ packages:
       safe-stable-stringify: 2.4.3
       typescript: 5.3.3
 
-  /ts-node@10.9.2(@types/node@18.15.3)(typescript@4.9.5):
+  /ts-node@10.9.2(@types/node@18.15.3)(typescript@5.4.2):
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
     hasBin: true
     peerDependencies:
@@ -21021,12 +21026,12 @@ packages:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 4.9.5
+      typescript: 5.4.2
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     dev: true
 
-  /ts-node@10.9.2(@types/node@18.19.22)(typescript@4.9.5):
+  /ts-node@10.9.2(@types/node@18.19.22)(typescript@5.4.2):
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
     hasBin: true
     peerDependencies:
@@ -21052,7 +21057,38 @@ packages:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 4.9.5
+      typescript: 5.4.2
+      v8-compile-cache-lib: 3.0.1
+      yn: 3.1.1
+    dev: true
+
+  /ts-node@10.9.2(@types/node@18.19.26)(typescript@5.4.2):
+    resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
+    hasBin: true
+    peerDependencies:
+      '@swc/core': '>=1.2.50'
+      '@swc/wasm': '>=1.2.50'
+      '@types/node': '*'
+      typescript: '>=2.7'
+    peerDependenciesMeta:
+      '@swc/core':
+        optional: true
+      '@swc/wasm':
+        optional: true
+    dependencies:
+      '@cspotcode/source-map-support': 0.8.1
+      '@tsconfig/node10': 1.0.9
+      '@tsconfig/node12': 1.0.11
+      '@tsconfig/node14': 1.0.3
+      '@tsconfig/node16': 1.0.4
+      '@types/node': 18.19.26
+      acorn: 8.11.3
+      acorn-walk: 8.3.2
+      arg: 4.1.3
+      create-require: 1.1.1
+      diff: 4.0.2
+      make-error: 1.3.6
+      typescript: 5.4.2
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
 
@@ -21094,14 +21130,14 @@ packages:
     engines: {node: '>=0.6.x'}
     dev: false
 
-  /tsutils@3.21.0(typescript@4.9.5):
+  /tsutils@3.21.0(typescript@5.4.2):
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
     engines: {node: '>= 6'}
     peerDependencies:
       typescript: '>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta'
     dependencies:
       tslib: 1.14.1
-      typescript: 4.9.5
+      typescript: 5.4.2
     dev: true
 
   /tuf-js@1.1.7:
@@ -21329,7 +21365,7 @@ packages:
       reflect-metadata: 0.2.1
       sha.js: 2.4.11
       sqlite3: 5.1.7
-      ts-node: 10.9.2(@types/node@18.19.22)(typescript@4.9.5)
+      ts-node: 10.9.2(@types/node@18.19.26)(typescript@5.4.2)
       tslib: 2.6.2
       uuid: 9.0.1
       yargs: 17.7.2
@@ -21340,9 +21376,15 @@ packages:
     resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
     hasBin: true
+    dev: true
 
   /typescript@5.3.3:
     resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+  /typescript@5.4.2:
+    resolution: {integrity: sha512-+2/g0Fds1ERlP6JsakQQDXjZdZMM+rqpamFZJEKh4kwTIn3iDkgKtby0CeNd5ATNZ4Ry1ax15TMx0W2V+miizQ==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -22009,7 +22051,7 @@ packages:
   /write-file-atomic@2.4.3:
     resolution: {integrity: sha512-GaETH5wwsX+GcnzhPgKcKjJ6M2Cq3/iZp1WyY/X1CSqrW+jVNM9Y7D8EC2sM4ZG/V8wZlSniJnCKWPmBYAucRQ==}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       imurmurhash: 0.1.4
       signal-exit: 3.0.7
 
@@ -22051,7 +22093,7 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       detect-indent: 5.0.0
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       make-dir: 2.1.0
       pify: 4.0.1
       sort-keys: 2.0.0

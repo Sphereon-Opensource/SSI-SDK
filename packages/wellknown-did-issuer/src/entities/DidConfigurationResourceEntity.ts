@@ -35,7 +35,7 @@ const linkedDidsFrom = (credentials: Array<Credential>): Array<DomainLinkageCred
   return credentials.map((credential: Credential) =>
     credential?.raw?.proof?.type === 'JwtProof2020' && typeof credential?.raw?.proof?.jwt === 'string'
       ? credential.raw.proof.jwt
-      : (credential.raw as ISignedDomainLinkageCredential)
+      : (credential.raw as ISignedDomainLinkageCredential),
   )
 }
 

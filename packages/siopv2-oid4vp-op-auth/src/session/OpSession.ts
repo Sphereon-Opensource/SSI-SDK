@@ -1,7 +1,15 @@
-import { PresentationExchangeResponseOpts, CheckLinkedDomain, ResolveOpts, URI, Verification, VerificationMode, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
+import {
+  PresentationExchangeResponseOpts,
+  CheckLinkedDomain,
+  ResolveOpts,
+  URI,
+  Verification,
+  VerificationMode,
+  VerifiedAuthorizationRequest,
+} from '@sphereon/did-auth-siop'
 import { getAgentDIDMethods, getAgentResolver, getDID } from '@sphereon/ssi-sdk-ext.did-utils'
 import { CredentialMapper, parseDid } from '@sphereon/ssi-types'
-import {IIdentifier, TKeyType} from "@veramo/core";
+import { IIdentifier, TKeyType } from '@veramo/core'
 import Debug from 'debug'
 import { IOPOptions, IOpSessionArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
 import { createOP } from './functions'
@@ -73,9 +81,12 @@ export class OpSession {
 
     let intersection: string[]
     if (rpMethods.dids.length === 0 || rpMethods.dids.includes('did')) {
-      intersection = agentMethods && agentMethods.length > 0 ? agentMethods : (await getAgentDIDMethods(this.context)).map((method) => convertDidMethod(method, didPrefix)) // fallback to the agent in case the agent methods are undefined
+      intersection =
+        agentMethods && agentMethods.length > 0
+          ? agentMethods
+          : (await getAgentDIDMethods(this.context)).map((method) => convertDidMethod(method, didPrefix)) // fallback to the agent in case the agent methods are undefined
     } else if (!agentMethods || agentMethods.length === 0) {
-      intersection = rpMethods.dids?.map(method => convertDidMethod(method, didPrefix))
+      intersection = rpMethods.dids?.map((method) => convertDidMethod(method, didPrefix))
     } else {
       intersection = agentMethods.filter((value) => rpMethods.dids.includes(value))
     }
@@ -97,10 +108,9 @@ export class OpSession {
       (opts.agentMethods ?? this.getAgentDIDMethodsSupported(opts))?.map((method) => convertDidMethod(method, opts.didPrefix)) ?? []
     debug(`agent methods in rp method supported: ${JSON.stringify(agentMethods)}`)
     const authReq = await this.getAuthorizationRequest()
-    const subjectSyntaxTypesSupported =
-      authReq.registrationMetadataPayload?.subject_syntax_types_supported?.map((method) =>
-       convertDidMethod(method, opts.didPrefix)
-      )
+    const subjectSyntaxTypesSupported = authReq.registrationMetadataPayload?.subject_syntax_types_supported?.map((method) =>
+      convertDidMethod(method, opts.didPrefix),
+    )
     debug(`subject syntax types supported in rp method supported: ${JSON.stringify(subjectSyntaxTypesSupported)}`)
     const aud = await authReq.authorizationRequest.getMergedProperty<string>('aud')
     let rpMethods: string[] = []
@@ -110,13 +120,18 @@ export class OpSession {
 
       // The RP knows our DID, so we can use it to determine the supported DID methods
       // If the aud did:method is not in the supported types, there still is something wrong, unless the RP signals to support all did methods
-      if (subjectSyntaxTypesSupported && subjectSyntaxTypesSupported.length > 0 && !subjectSyntaxTypesSupported.includes('did') && !subjectSyntaxTypesSupported.includes(didMethod)) {
+      if (
+        subjectSyntaxTypesSupported &&
+        subjectSyntaxTypesSupported.length > 0 &&
+        !subjectSyntaxTypesSupported.includes('did') &&
+        !subjectSyntaxTypesSupported.includes(didMethod)
+      ) {
         throw Error(`The aud DID method ${didMethod} is not in the supported types ${subjectSyntaxTypesSupported}`)
       }
       rpMethods = [didMethod]
     } else if (subjectSyntaxTypesSupported) {
       rpMethods = (Array.isArray(subjectSyntaxTypesSupported) ? subjectSyntaxTypesSupported : [subjectSyntaxTypesSupported]).map((method) =>
-        convertDidMethod(method, opts.didPrefix)
+        convertDidMethod(method, opts.didPrefix),
       )
     }
     const isEBSI =
@@ -147,12 +162,10 @@ export class OpSession {
     if (identifiers.length === 0) {
       debug(`No identifiers available in agent supporting methods ${JSON.stringify(methods)}`)
       if (opts?.createInCaseNoDIDFound !== false) {
-        const {codecName, keyType} = (
-          await this.getRPDIDMethodsSupported({
-            didPrefix: true,
-            agentMethods: methods,
-          })
-        )
+        const { codecName, keyType } = await this.getRPDIDMethodsSupported({
+          didPrefix: true,
+          agentMethods: methods,
+        })
         const identifier = await this.context.agent.didManagerCreate({
           provider: methods[0],
           options: { codecName, keyType, type: keyType }, // both keyType and type, because not every did provider has the same param
@@ -211,7 +224,7 @@ export class OpSession {
         args.verifiablePresentations.length !== request.presentationDefinitions.length
       ) {
         throw Error(
-          `Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${request.presentationDefinitions?.length}`
+          `Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${request.presentationDefinitions?.length}`,
         )
       } else if (!args.presentationSubmission) {
         throw Error(`Presentation submission is required when verifiable presentations are required`)

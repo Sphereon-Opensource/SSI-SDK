@@ -23,7 +23,7 @@ export class EthersHeadlessProvider extends EventEmitter implements IWeb3Provide
     signers: Signer[],
     private readonly chains: ChainConnection[],
     // @ts-ignore
-    config: Web3ProviderConfig = {}
+    config: Web3ProviderConfig = {},
   ) {
     super()
     this._signers = signers
@@ -71,7 +71,7 @@ export class EthersHeadlessProvider extends EventEmitter implements IWeb3Provide
             return Promise.all(this._signers.map((wallet) => wallet.getAddress()))
           },
           true,
-          'eth_requestAccounts'
+          'eth_requestAccounts',
         )
 
       case 'eth_chainId': {
@@ -228,8 +228,8 @@ export class EthersHeadlessProvider extends EventEmitter implements IWeb3Provide
         first(),
         tap((item) => {
           this._pendingRequests.next(without(this._pendingRequests.getValue(), item))
-        })
-      )
+        }),
+      ),
     )
   }
 

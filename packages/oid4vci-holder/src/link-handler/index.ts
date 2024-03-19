@@ -16,7 +16,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
       priority?: number | DefaultLinkPriorities
       protocols?: Array<string | RegExp>
       context: IAgentContext<IOID4VCIHolder & IMachineStatePersistence>
-    }
+    },
   ) {
     super({ ...args, id: 'OID4VCIHolder' })
     this.context = args.context

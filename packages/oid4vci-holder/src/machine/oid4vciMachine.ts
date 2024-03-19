@@ -577,7 +577,7 @@ export class OID4VCIMachine {
           oid4vciHasAuthorizationResponse,
           ...opts?.guards,
         },
-      })
+      }),
     )
 
     if (typeof opts?.subscription === 'function') {

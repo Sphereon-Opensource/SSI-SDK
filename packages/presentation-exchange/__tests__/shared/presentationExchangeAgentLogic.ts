@@ -98,13 +98,13 @@ export default (testContext: {
 
     it('should not store invalid definition by default', async () => {
       await expect(agent.pexStorePersistDefinition({ definition: { invalid: 'definition' } as unknown as IPresentationDefinition })).rejects.toThrow(
-        'Invalid definition. This is not a valid PresentationDefinition'
+        'Invalid definition. This is not a valid PresentationDefinition',
       )
     })
 
     it('should not store invalid definition if validation is enabled', async () => {
       await expect(
-        agent.pexStorePersistDefinition({ validation: true, definition: { invalid: 'definition' } as unknown as IPresentationDefinition })
+        agent.pexStorePersistDefinition({ validation: true, definition: { invalid: 'definition' } as unknown as IPresentationDefinition }),
       ).rejects.toThrow('Invalid definition. This is not a valid PresentationDefinition')
     })
 

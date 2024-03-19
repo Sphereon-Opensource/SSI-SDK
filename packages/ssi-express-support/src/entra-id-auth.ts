@@ -36,8 +36,8 @@ export class EntraIDAuth {
               return cb(null, token)
             }
             return cb('bearer token not found or incorrect', null)
-          })
-        )
+          }),
+        ),
       )
       .catch((reason) => {
         console.log(reason)

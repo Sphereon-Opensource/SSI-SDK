@@ -10,7 +10,7 @@ import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { IMachineStatePersistence, MachineStatePersistence, MachineStatePersistEventType } from '../index'
 import xStatePersistenceAgentLogic from './shared/MachineStatePersistenceAgentLogic'
 
-const port = 3003
+const port = 3403
 const basePath = '/agent'
 
 let serverAgent: IAgent
@@ -57,7 +57,7 @@ const setup = async (): Promise<boolean> => {
 }
 
 const tearDown = async (): Promise<boolean> => {
-  restServer.close()
+  restServer?.close()
   await (await dbConnection).destroy()
   return true
 }

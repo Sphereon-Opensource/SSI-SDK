@@ -2,7 +2,7 @@ import { IAgentContext, IDataStore, IDataStoreORM, VerifiableCredential } from '
 
 export async function getCredentialByIdOrHash(
   context: IAgentContext<IDataStore & IDataStoreORM>,
-  idOrHash: string
+  idOrHash: string,
 ): Promise<{
   id: string
   hash?: string

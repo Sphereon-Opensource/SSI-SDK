@@ -19,7 +19,7 @@ export async function createPEXPresentationSignCallback(
     domain?: string
     challenge?: string
   },
-  context: IRequiredContext
+  context: IRequiredContext,
 ): Promise<IPEXPresentationSignCallback> {
   function determineProofFormat({
     format,

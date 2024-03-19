@@ -31,7 +31,7 @@ export class CreateDigitalCredential1708525189000 implements MigrationInterface 
       }
       default:
         return Promise.reject(
-          `Migrations are currently only supported for sqlite, react-native, expo, and postgres for UniformCredential. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`
+          `Migrations are currently only supported for sqlite, react-native, expo, and postgres for UniformCredential. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`,
         )
     }
   }
@@ -59,7 +59,7 @@ export class CreateDigitalCredential1708525189000 implements MigrationInterface 
       }
       default:
         return Promise.reject(
-          `Migrations are currently only supported for sqlite, react-native, expo, and postgres for DigitalCredential. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`
+          `Migrations are currently only supported for sqlite, react-native, expo, and postgres for DigitalCredential. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`,
         )
     }
   }

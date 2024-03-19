@@ -61,7 +61,7 @@ export class MachineStateStore extends IAbstractMachineStateStore {
       .andWhere(
         new Brackets((qb) => {
           qb.where('state.expiresAt IS NULL').orWhere('state.expiresAt > :now', { now: new Date() })
-        })
+        }),
       )
 
     if (instanceId) {

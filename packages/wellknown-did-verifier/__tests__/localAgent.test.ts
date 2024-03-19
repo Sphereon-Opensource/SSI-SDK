@@ -16,7 +16,7 @@ const setup = async (): Promise<boolean> => {
       callbackName: 'verified',
       signatureVerification: () => Promise.resolve({ verified: true }),
     },
-    null
+    null,
   )
 
   const DID = 'did:key:z6MkoTHsgNNrby8JzCNQ1iRLyW5QQ6R8Xuu6AA8igGrMVPUM'

@@ -1,18 +1,17 @@
-import crypto from '@sphereon/isomorphic-webcrypto'
 import { sha256 } from '@noble/hashes/sha256'
+import crypto from '@sphereon/isomorphic-webcrypto'
 import sec from '@transmute/security-context'
+import { IAgentContext } from '@veramo/core'
 import { decodeJoseBlob } from '@veramo/utils'
-import { JWTHeader } from 'did-jwt'
 import Debug from 'debug'
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+import { JWTHeader } from 'did-jwt'
 import jsonld from 'jsonld'
 import * as u8a from 'uint8arrays'
 
-import { JsonWebKey } from './JsonWebKeyWithRSASupport'
-import { IAgentContext } from '@veramo/core'
 import { RequiredAgentMethods } from '../../ld-suites'
+
+import { JsonWebKey } from './JsonWebKeyWithRSASupport'
+
 // import { getJwaAlgFromJwk } from '@transmute/web-crypto-key-pair/dist/signatures/jws'
 
 const subtle = crypto.subtle
@@ -238,7 +237,7 @@ export class JsonWebSignature {
           }
           return documentLoader(iri)
         },
-      }
+      },
     )
 
     if (!instance) {
@@ -280,7 +279,7 @@ export class JsonWebSignature {
         key,
         // detached signature b64 header is false, so no base64url
         u8a.fromString(signature, 'base64url'),
-        messageBuffer
+        messageBuffer,
       )
     } else {
       const verifier = await verificationMethod.verifier()

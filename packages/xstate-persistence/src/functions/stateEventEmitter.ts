@@ -13,9 +13,9 @@ const debug = Debug('sphereon:ssi-sdk:machine-state:xstate-persistence')
 export const emitMachineStatePersistEvent = (event: MachineStatePersistEvent, context: RequiredContext) => {
   debug(
     `Emitting machine state persistence event '${event.type}' with counter: ${event.data._eventCounter} and state ${JSON.stringify(
-      event.data.state.value
+      event.data.state.value,
     )}`,
-    event.data.state
+    event.data.state,
   )
   void context.agent.emit(event.type, event.data)
 }

@@ -159,7 +159,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
   private async oid4vciHolderCreateCredentialSelection(
     args: CreateCredentialSelectionArgs,
-    context: RequiredContext
+    context: RequiredContext,
   ): Promise<Array<CredentialTypeSelection>> {
     const { credentialsSupported, credentialBranding, locale, selectedCredentials } = args
     const credentialSelection: Array<CredentialTypeSelection> = await Promise.all(
@@ -179,7 +179,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           credentialAlias: credentialAlias ?? credentialType,
           isSelected: false,
         }
-      })
+      }),
     )
 
     // TODO find better place to do this, would be nice if the machine does this?
@@ -261,8 +261,8 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     await Promise.all(
       credentialsToAccept.map(
-        async (mappedCredential: MappedCredentialToAccept): Promise<void> => verifyCredentialToAccept({ mappedCredential, context })
-      )
+        async (mappedCredential: MappedCredentialToAccept): Promise<void> => verifyCredentialToAccept({ mappedCredential, context }),
+      ),
     )
   }
 

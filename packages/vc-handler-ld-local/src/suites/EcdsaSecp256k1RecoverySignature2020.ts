@@ -1,7 +1,7 @@
 import { CredentialPayload, DIDDocument, IAgentContext, IKey, TKeyType } from '@veramo/core'
 import { asArray, encodeJoseBlob } from '@veramo/utils'
-import * as u8a from 'uint8arrays'
 import ldsEcdsa from '@veramo-community/lds-ecdsa-secp256k1-recovery2020'
+import * as u8a from 'uint8arrays'
 const { EcdsaSecp256k1RecoveryMethod2020, EcdsaSecp256k1RecoverySignature2020 } = ldsEcdsa
 
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'

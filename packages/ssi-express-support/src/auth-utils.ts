@@ -28,7 +28,7 @@ const checkAuthenticationImpl = (req: express.Request, res: express.Response, ne
     err: any,
     user?: Express.User | false | null,
     _info?: object | string | Array<string | undefined>,
-    _status?: number | Array<number | undefined>
+    _status?: number | Array<number | undefined>,
   ) => {
     if (err) {
       const message = 'message' in err ? err.message : err

@@ -94,8 +94,8 @@ export const nonPersistedDigitalCredentialEntityFromAddArgs = (addCredentialArgs
     documentFormat === DocumentFormat.SD_JWT_VC
       ? decodeSdJwtVc(addCredentialArgs.rawDocument, addCredentialArgs.opts!.hasher!).decodedPayload
       : documentType === DocumentType.VC || documentType === DocumentType.C
-      ? CredentialMapper.toUniformCredential(addCredentialArgs.rawDocument)
-      : CredentialMapper.toUniformPresentation(addCredentialArgs.rawDocument)
+        ? CredentialMapper.toUniformCredential(addCredentialArgs.rawDocument)
+        : CredentialMapper.toUniformPresentation(addCredentialArgs.rawDocument)
   const validFrom: Date | undefined = getValidFrom(uniformDocument)
   const validUntil: Date | undefined = getValidUntil(uniformDocument)
   return {

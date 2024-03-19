@@ -67,7 +67,7 @@ export class OID4VCIStore implements IAgentPlugin {
         new KeyValueStore({
           namespace: this.defaultNamespace,
           store: new Map<string, CredentialIssuerMetadata>(),
-        })
+        }),
       )
     }
     if (opts && Array.isArray(opts?.importMetadatas)) {
@@ -78,7 +78,7 @@ export class OID4VCIStore implements IAgentPlugin {
           correlationId: meta.correlationId,
           namespace: meta.namespace ?? this.defaultNamespace,
           overwriteExisting: meta.overwriteExisting === undefined ? true : meta.overwriteExisting,
-        })
+        }),
       )
     }
 
@@ -92,7 +92,7 @@ export class OID4VCIStore implements IAgentPlugin {
         new KeyValueStore({
           namespace: this.defaultNamespace,
           store: new Map<string, IIssuerOptions>(),
-        })
+        }),
       )
     }
     if (opts && Array.isArray(opts?.importIssuerOpts)) {
@@ -106,7 +106,7 @@ export class OID4VCIStore implements IAgentPlugin {
         this.prefix({
           namespace,
           correlationId,
-        })
+        }),
       )) ?? this.defaultOpts
     )
   }
@@ -130,7 +130,7 @@ export class OID4VCIStore implements IAgentPlugin {
       this.prefix({
         namespace,
         correlationId,
-      })
+      }),
     )
     if (!existing.value || (existing.value && args.overwriteExisting !== false)) {
       return await this.store({ stores: this._optionStores, storeId }).set(
@@ -139,7 +139,7 @@ export class OID4VCIStore implements IAgentPlugin {
           correlationId,
         }),
         issuerOpts,
-        ttl
+        ttl,
       )
     }
     return existing
@@ -182,7 +182,7 @@ export class OID4VCIStore implements IAgentPlugin {
           correlationId: correlationId,
         }),
         metadata as CredentialIssuerMetadata,
-        ttl
+        ttl,
       )
     }
     return existing
@@ -195,7 +195,7 @@ export class OID4VCIStore implements IAgentPlugin {
       this.prefix({
         namespace,
         correlationId: args.correlationId,
-      })
+      }),
     )
   }
 

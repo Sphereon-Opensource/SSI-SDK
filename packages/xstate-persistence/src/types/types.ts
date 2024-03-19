@@ -168,7 +168,7 @@ export type StartedInterpreterInfo<
     value: any
     context: TContext
   },
-  TResolvedTypesMeta = TypegenDisabled
+  TResolvedTypesMeta = TypegenDisabled,
 > = {
   interpreter: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
   machineState?: MachineStateInfo

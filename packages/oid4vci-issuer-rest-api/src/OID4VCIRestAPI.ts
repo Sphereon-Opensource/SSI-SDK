@@ -56,7 +56,7 @@ export class OID4VCIRestAPI {
           ...tokenOpts,
           keyRef,
         },
-        args.context
+        args.context,
       )
     }
     return new OID4VCIRestAPI({ context, issuerInstanceArgs, expressSupport, opts, instance, issuer })

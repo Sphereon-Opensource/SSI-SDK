@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@sphereon/ssi-express-support": "workspace:*",
-    "@sphereon/ssi-sdk-ext.did-utils": "^0.15.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "^0.18.0",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
@@ -26,7 +26,7 @@
   "devDependencies": {
     "@types/debug": "^4.1.8",
     "@types/node": "^18.15.0",
-    "typescript": "4.9.5"
+    "typescript": "5.4.2"
   },
   "files": [
     "dist/**/*",

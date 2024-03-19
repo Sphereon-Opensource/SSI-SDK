@@ -447,8 +447,8 @@ describe('JWT Verifiable Credential, should be', () => {
           x: 'xNCU9OyorlgxWmolagucwuWyKrKxBnEmEUY6TPEF7kY',
           y: 'rmiUJLLX3BX5OVf0PEJdz8nS3aX3ylw9s7Nn_wxb22Y',
           alg: 'ES256',
-        })
-      )
+        }),
+      ),
     ).rejects.toThrow()
   })
 })

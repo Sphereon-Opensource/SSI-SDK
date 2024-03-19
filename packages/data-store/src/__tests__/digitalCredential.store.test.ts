@@ -64,7 +64,7 @@ describe('Database entities tests', (): void => {
     }
 
     await expect(digitalCredentialStore.addCredential(digitalCredential)).rejects.toThrowError(
-      'No hasher function is provided for SD_JWT credential.'
+      'No hasher function is provided for SD_JWT credential.',
     )
   })
 
@@ -265,7 +265,7 @@ describe('Database entities tests', (): void => {
       digitalCredentialStore.updateCredentialState({
         id: savedDigitalCredential.id,
         verifiedState: CredentialStateType.REVOKED,
-      })
+      }),
     ).rejects.toThrowError('No revokedAt param is provided.')
   })
 

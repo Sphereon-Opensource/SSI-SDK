@@ -61,8 +61,8 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
       const localeBranding: Array<IBasicCredentialLocaleBranding> = await Promise.all(
         (credential.display ?? []).map(
           async (display: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> =>
-            await context.agent.ibCredentialLocaleBrandingFrom({ localeBranding: await credentialLocaleBrandingFrom(display) })
-        )
+            await context.agent.ibCredentialLocaleBrandingFrom({ localeBranding: await credentialLocaleBrandingFrom(display) }),
+        ),
       )
 
       const defaultCredentialType = 'VerifiableCredential'
@@ -72,13 +72,13 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
           ? // @ts-ignore
             credential.types.filter((type: string): boolean => type !== defaultCredentialType)
           : // @ts-ignore
-          credential.types.length === 0
-          ? [defaultCredentialType]
-          : // @ts-ignore
-            credential.types
+            credential.types.length === 0
+            ? [defaultCredentialType]
+            : // @ts-ignore
+              credential.types
 
       credentialBranding[credentialTypes[0]] = localeBranding // TODO for now taking the first type
-    })
+    }),
   )
 
   return credentialBranding
@@ -92,9 +92,9 @@ export const getPreferredCredentialFormats = async (args: GetPreferredCredential
       .reduce(
         // @ts-ignore
         (map: Map<any, any>, value: CredentialSupported) => map.set(value.types.toString(), [...(map.get(value.types.toString()) || []), value]),
-        new Map()
+        new Map(),
       )
-      .values()
+      .values(),
   )
 
   const preferredCredentials: Array<CredentialSupported> = []
@@ -113,13 +113,13 @@ export const getPreferredCredentialFormats = async (args: GetPreferredCredential
 }
 
 export const selectCredentialLocaleBranding = (
-  args: SelectAppLocaleBrandingArgs
+  args: SelectAppLocaleBrandingArgs,
 ): Promise<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding | undefined> => {
   const { locale, localeBranding } = args
 
   const branding = localeBranding?.find(
     (branding: IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding) =>
-      locale ? branding.locale?.startsWith(locale) || branding.locale === undefined : branding.locale === undefined // TODO refactor as we duplicate code
+      locale ? branding.locale?.startsWith(locale) || branding.locale === undefined : branding.locale === undefined, // TODO refactor as we duplicate code
   )
 
   // FIXME as we should be able to just return the value directly
@@ -154,12 +154,12 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
         issuanceDate: false,
       },
     },
-    context
+    context,
   )
 
   if (!verificationResult.result || verificationResult.error) {
     return Promise.reject(
-      Error(verificationResult.result ? verificationResult.error : translate('oid4vci_machine_credential_verification_failed_message'))
+      Error(verificationResult.result ? verificationResult.error : translate('oid4vci_machine_credential_verification_failed_message')),
     )
   }
 }
@@ -210,7 +210,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
     const credentialResponse: CredentialResponse = credential.credentialResponse
     const verifiableCredential: W3CVerifiableCredential | undefined = credentialResponse.credential
     const wrappedVerifiableCredential: WrappedVerifiableCredential = CredentialMapper.toWrappedVerifiableCredential(
-      verifiableCredential as OriginalVerifiableCredential
+      verifiableCredential as OriginalVerifiableCredential,
     )
     if (wrappedVerifiableCredential?.credential?.compactSdJwtVc) {
       throw Error('SD-JWT not supported yet')

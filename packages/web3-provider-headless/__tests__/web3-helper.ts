@@ -24,7 +24,7 @@ export function injectWeb3Provider(opts?: { signers?: Signer[] }): [Signer[], IW
     wallets,
     [100], // Chain ID - 31337 or  is a common testnet id
     // [1337], 'http://127.0.0.1:8545' // Ethereum client's JSON-RPC URL
-    'https://rpc.genx.minimal-gaia-x.eu'
+    'https://rpc.genx.minimal-gaia-x.eu',
   )
 
   // Expose the web3Provider instance to the global window object

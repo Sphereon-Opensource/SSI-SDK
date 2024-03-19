@@ -416,7 +416,7 @@ describe('Database entities tests', (): void => {
     }
     const identity2Entity: IdentityEntity = identityEntityFrom(identity2)
     await expect(dbConnection.getRepository(IdentityEntity).save(identity2Entity)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: Identity.alias'
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: Identity.alias',
     )
   })
 
@@ -443,7 +443,7 @@ describe('Database entities tests', (): void => {
     }
     const identity2Entity: IdentityEntity = identityEntityFrom(identity2)
     await expect(dbConnection.getRepository(IdentityEntity).save(identity2Entity)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: CorrelationIdentifier.correlation_id'
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: CorrelationIdentifier.correlation_id',
     )
   })
 
@@ -641,7 +641,7 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.connection?.type).toEqual(identity.connection?.type)
     expect(fromDb?.connection?.config).toBeDefined()
     expect((<DidAuthConfigEntity>fromDb?.connection?.config).identifier).toEqual(
-      (<NonPersistedDidAuthConfig>identity.connection?.config).identifier.did
+      (<NonPersistedDidAuthConfig>identity.connection?.config).identifier.did,
     )
   })
 
@@ -870,7 +870,7 @@ describe('Database entities tests', (): void => {
     expect(
       await dbConnection.getRepository(PartyEntity).findOne({
         where: { id: savedParty1.id },
-      })
+      }),
     ).toBeDefined()
 
     await dbConnection.getRepository(PartyEntity).delete({ id: savedParty1.id })
@@ -879,70 +879,70 @@ describe('Database entities tests', (): void => {
     await expect(
       await dbConnection.getRepository(PartyEntity).findOne({
         where: { id: savedParty1.id },
-      })
+      }),
     ).toBeNull()
 
     // check identity
     expect(
       await dbConnection.getRepository(IdentityEntity).findOne({
         where: { id: savedParty1.id },
-      })
+      }),
     ).toBeNull()
 
     // check identity identifier
     expect(
       await dbConnection.getRepository(CorrelationIdentifierEntity).findOne({
         where: { id: savedIdentity.identifier.id },
-      })
+      }),
     ).toBeNull()
 
     // check identity connection
     expect(
       await dbConnection.getRepository(ConnectionEntity).findOne({
         where: { id: savedIdentity.connection!.id },
-      })
+      }),
     ).toBeNull()
 
     // check connection config
     expect(
       await dbConnection.getRepository(OpenIdConfigEntity).findOne({
         where: { id: savedIdentity.connection!.config.id },
-      })
+      }),
     ).toBeNull()
 
     // check identity metadata
     expect(
       await dbConnection.getRepository(IdentityMetadataItemEntity).findOne({
         where: { id: savedIdentity.metadata![0].id },
-      })
+      }),
     ).toBeNull()
 
     // check electronic address
     expect(
       await dbConnection.getRepository(ElectronicAddressEntity).findOne({
         where: { id: savedParty1.id },
-      })
+      }),
     ).toBeNull()
 
     // check contact
     expect(
       await dbConnection.getRepository(BaseContactEntity).findOne({
         where: { id: savedParty1.contact.id },
-      })
+      }),
     ).toBeNull()
 
     // check party type
     expect(
       await dbConnection.getRepository(PartyTypeEntity).findOne({
         where: { id: savedParty1.partyType.id },
-      })
+      }),
     ).toBeDefined()
 
     // check relation
     expect(
       await dbConnection.getRepository(PartyRelationshipEntity).findOne({
         where: { id: savedRelationship.id },
-      })
+      }),
     ).toBeNull()
   })
 
@@ -1005,7 +1005,7 @@ describe('Database entities tests', (): void => {
     expect(
       await dbConnection.getRepository(PartyEntity).findOne({
         where: { id: savedParty.id },
-      })
+      }),
     ).toBeDefined()
 
     await dbConnection.getRepository(IdentityEntity).delete({ id: savedIdentity.id })
@@ -1014,35 +1014,35 @@ describe('Database entities tests', (): void => {
     expect(
       await dbConnection.getRepository(IdentityEntity).findOne({
         where: { alias: correlationId },
-      })
+      }),
     ).toBeNull()
 
     // check identity identifier
     expect(
       await dbConnection.getRepository(CorrelationIdentifierEntity).findOne({
         where: { id: savedIdentity.identifier.id },
-      })
+      }),
     ).toBeNull()
 
     // check identity connection
     expect(
       await dbConnection.getRepository(ConnectionEntity).findOne({
         where: { id: savedIdentity.connection!.id },
-      })
+      }),
     ).toBeNull()
 
     // check connection config
     expect(
       await dbConnection.getRepository(OpenIdConfigEntity).findOne({
         where: { id: savedIdentity.connection!.config.id },
-      })
+      }),
     ).toBeNull()
 
     // check identity metadata
     expect(
       await dbConnection.getRepository(IdentityMetadataItemEntity).findOne({
         where: { id: savedIdentity.metadata![0].id },
-      })
+      }),
     ).toBeNull()
   })
 
@@ -1110,14 +1110,14 @@ describe('Database entities tests', (): void => {
     expect(
       await dbConnection.getRepository(IdentityEntity).findOne({
         where: { id: savedIdentity.id },
-      })
+      }),
     ).toBeNull()
 
     // check party
     expect(
       await dbConnection.getRepository(PartyEntity).findOne({
         where: { id: savedParty.id },
-      })
+      }),
     ).toBeDefined()
   })
 
@@ -1398,7 +1398,7 @@ describe('Database entities tests', (): void => {
 
     const partyTypeEntity2: PartyTypeEntity = partyTypeEntityFrom(partyType2)
     await expect(dbConnection.getRepository(PartyTypeEntity).save(partyTypeEntity2)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: PartyType.type, PartyType.tenant_id'
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: PartyType.type, PartyType.tenant_id',
     )
   })
 
@@ -1423,7 +1423,7 @@ describe('Database entities tests', (): void => {
 
     const partyTypeEntity2: PartyTypeEntity = partyTypeEntityFrom(partyType2)
     await expect(dbConnection.getRepository(PartyTypeEntity).save(partyTypeEntity2)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: PartyType.name'
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: PartyType.name',
     )
   })
 
@@ -1448,7 +1448,7 @@ describe('Database entities tests', (): void => {
 
     const organizationEntity2: OrganizationEntity = organizationEntityFrom(organization2)
     await expect(dbConnection.getRepository(OrganizationEntity).save(organizationEntity2)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: BaseContact.legal_name'
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: BaseContact.legal_name',
     )
   })
 
@@ -1473,7 +1473,7 @@ describe('Database entities tests', (): void => {
 
     const organizationEntity2: OrganizationEntity = organizationEntityFrom(organization2)
     await expect(dbConnection.getRepository(OrganizationEntity).save(organizationEntity2)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: BaseContact.legal_name'
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: BaseContact.legal_name',
     )
   })
 
@@ -1791,7 +1791,7 @@ describe('Database entities tests', (): void => {
     })
 
     await expect(dbConnection.getRepository(PartyRelationshipEntity).save(relationship2)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: PartyRelationship.left_id, PartyRelationship.right_id'
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: PartyRelationship.left_id, PartyRelationship.right_id',
     )
   })
 
@@ -2020,7 +2020,7 @@ describe('Database entities tests', (): void => {
     })
 
     await expect(dbConnection.getRepository(PartyRelationshipEntity).save(relationship)).rejects.toThrowError(
-      'Cannot use the same id for both sides of the relationship'
+      'Cannot use the same id for both sides of the relationship',
     )
   })
 
@@ -2085,7 +2085,7 @@ describe('Database entities tests', (): void => {
     await expect(
       await dbConnection.getRepository(PartyRelationshipEntity).findOne({
         where: { id: savedRelationship.id },
-      })
+      }),
     ).toBeNull()
   })
 
@@ -2106,7 +2106,7 @@ describe('Database entities tests', (): void => {
     await expect(
       await dbConnection.getRepository(PartyTypeEntity).findOne({
         where: { id: savedPartyType.id },
-      })
+      }),
     ).toBeNull()
   })
 
@@ -2134,7 +2134,7 @@ describe('Database entities tests', (): void => {
     expect(savedParty).toBeDefined()
 
     await expect(dbConnection.getRepository(PartyTypeEntity).delete({ id: savedParty.partyType.id })).rejects.toThrowError(
-      'FOREIGN KEY constraint failed'
+      'FOREIGN KEY constraint failed',
     )
   })
 
@@ -2251,7 +2251,7 @@ describe('Database entities tests', (): void => {
     const electronicAddressEntity: ElectronicAddressEntity = electronicAddressEntityFrom(electronicAddress)
 
     await expect(dbConnection.getRepository(ElectronicAddressEntity).save(electronicAddressEntity)).rejects.toThrowError(
-      'Blank electronic addresses are not allowed'
+      'Blank electronic addresses are not allowed',
     )
   })
 
@@ -2372,7 +2372,7 @@ describe('Database entities tests', (): void => {
     const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
 
     await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
-      'Blank street names are not allowed'
+      'Blank street names are not allowed',
     )
   })
 
@@ -2391,7 +2391,7 @@ describe('Database entities tests', (): void => {
     const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
 
     await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
-      'Blank street numbers are not allowed'
+      'Blank street numbers are not allowed',
     )
   })
 
@@ -2410,7 +2410,7 @@ describe('Database entities tests', (): void => {
     const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
 
     await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
-      'Blank building names are not allowed'
+      'Blank building names are not allowed',
     )
   })
 
@@ -2429,7 +2429,7 @@ describe('Database entities tests', (): void => {
     const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
 
     await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
-      'Blank postal codes are not allowed'
+      'Blank postal codes are not allowed',
     )
   })
 
@@ -2448,7 +2448,7 @@ describe('Database entities tests', (): void => {
     const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
 
     await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
-      'Blank city names are not allowed'
+      'Blank city names are not allowed',
     )
   })
 
@@ -2467,7 +2467,7 @@ describe('Database entities tests', (): void => {
     const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
 
     await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
-      'Blank province names are not allowed'
+      'Blank province names are not allowed',
     )
   })
 
@@ -2486,7 +2486,7 @@ describe('Database entities tests', (): void => {
     const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
 
     await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
-      'Blank country codes are not allowed'
+      'Blank country codes are not allowed',
     )
   })
 })

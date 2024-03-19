@@ -36,7 +36,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       return await expect(
         agent.vcApiClientIssueCredential({
           credential,
-        })
+        }),
       ).resolves.not.toBeNull()
     })
   })

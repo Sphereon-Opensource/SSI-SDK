@@ -93,7 +93,7 @@ export class MachineStatePersistence implements IAgentPlugin {
   private async machineStateInit(args: InitMachineStateArgs, context: RequiredContext): Promise<MachineStateInit> {
     const { tenantId, machineName, expiresAt, customInstanceId, existingInstanceId, cleanupAllOtherInstances } = args
     debug(
-      `machineStateInit for machine name ${machineName}, tenant ${tenantId}, custom instance ${customInstanceId}, existing id ${existingInstanceId}`
+      `machineStateInit for machine name ${machineName}, tenant ${tenantId}, custom instance ${customInstanceId}, existing id ${existingInstanceId}`,
     )
     if (customInstanceId && existingInstanceId) {
       return Promise.reject(new Error(`Cannot have both a custom and existing instance id at the same time`))
@@ -105,15 +105,15 @@ export class MachineStatePersistence implements IAgentPlugin {
       await context.agent.machineStatesDeleteExpired({ machineName, tenantId, deleteDoneStates: false })
       // Now remove all machines that are not equal to the existing instance id if provided, or all others if not provided
       const activeMachineStates = (await context.agent.machineStatesFindActive({ machineName, tenantId })).filter(
-        (state) => !existingInstanceId || state.instanceId !== existingInstanceId
+        (state) => !existingInstanceId || state.instanceId !== existingInstanceId,
       )
       await Promise.all(
         activeMachineStates.map((state) =>
           context.agent.machineStateDelete({
             instanceId: state.instanceId,
             tenantId,
-          })
-        )
+          }),
+        ),
       )
     }
     let machineInit: MachineStateInit | undefined = undefined
@@ -129,7 +129,7 @@ export class MachineStatePersistence implements IAgentPlugin {
           machineState: machineState,
           stateType: 'existing',
         },
-        { ...machineState, state: serializeMachineState(machineState.state) }
+        { ...machineState, state: serializeMachineState(machineState.state) },
       )
     }
     if (customInstanceId) {
@@ -162,7 +162,7 @@ export class MachineStatePersistence implements IAgentPlugin {
       let storedState: StoreMachineStateInfo
       if (updatedCount !== undefined && updatedCount > 1 && storeInfoArgs.latestEventType === 'xstate.init') {
         console.log(
-          `Not persisting machine state for resumed init event for machine ${machineName}, tenant ${tenantId} and state with id ${instanceId}`
+          `Not persisting machine state for resumed init event for machine ${machineName}, tenant ${tenantId} and state with id ${instanceId}`,
         )
         storedState = storeInfoArgs
       } else {
@@ -170,7 +170,7 @@ export class MachineStatePersistence implements IAgentPlugin {
       }
       const machineStateInfo = { ...storedState, state: deserializeMachineState(storedState.state) }
       debug(
-        `machineStatePersist success for machine name ${machineName}, instance ${instanceId}, update count ${machineStateInfo.updatedCount}, tenant ${tenantId}, last event: ${machineStateInfo.latestEventType}, last state: ${machineStateInfo.latestStateName}`
+        `machineStatePersist success for machine name ${machineName}, instance ${instanceId}, update count ${machineStateInfo.updatedCount}, tenant ${tenantId}, last event: ${machineStateInfo.latestEventType}, last state: ${machineStateInfo.latestStateName}`,
       )
       if (cleanupOnFinalState && machineStateInfo.state.done) {
         debug(`reached final state for machine ${machineName} instance ${instanceId} and auto cleanup was enabled. Deleting machine state`)

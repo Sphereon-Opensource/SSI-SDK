@@ -34,7 +34,7 @@ export class IssuerInstance {
           metadata: this.metadata,
           credentialDataSupplier: opts?.credentialDataSupplier,
         },
-        opts.context
+        opts.context,
       )
       this._issuer = builder.build()
     }

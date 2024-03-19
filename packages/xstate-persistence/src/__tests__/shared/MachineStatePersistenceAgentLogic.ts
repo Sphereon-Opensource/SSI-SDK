@@ -234,7 +234,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(activeStates[0].state).toBeDefined()
 
       await expect(
-        interpreterStartOrResume({ stateType: 'new', machineName: 'counter', context, singletonCheck: true, interpreter: interpret(counterMachine) })
+        interpreterStartOrResume({ stateType: 'new', machineName: 'counter', context, singletonCheck: true, interpreter: interpret(counterMachine) }),
       ).rejects.toThrowError()
       await agent.machineStateDelete({ instanceId: activeStates[0].instanceId })
     })
@@ -261,7 +261,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           singletonCheck: false,
           interpreter: interpret(counterMachine),
           cleanupOnFinalState: false,
-        })
+        }),
       ).resolves.toBeDefined()
       await new Promise((res) => setTimeout(res, 50))
       activeStates = await agent.machineStatesFindActive({ machineName: instance.machine.id })

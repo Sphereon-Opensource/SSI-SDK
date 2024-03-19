@@ -154,7 +154,7 @@ export async function checkStatusIndexFromStatusListCredential(args: {
   if (args.statusPurpose && 'statusPurpose' in credentialSubject) {
     if (args.statusPurpose !== credentialSubject.statusPurpose) {
       throw Error(
-        `Status purpose in StatusList credential with id ${id} and value ${credentialSubject.statusPurpose} does not match supplied purpose: ${args.statusPurpose}`
+        `Status purpose in StatusList credential with id ${id} and value ${credentialSubject.statusPurpose} does not match supplied purpose: ${args.statusPurpose}`,
       )
     }
   } else if (args.id && args.id !== id) {
@@ -173,7 +173,7 @@ export async function checkStatusIndexFromStatusListCredential(args: {
 
 export async function createNewStatusList(
   args: CreateNewStatusListArgs,
-  context: IAgentContext<ICredentialPlugin & IDIDManager & IResolver>
+  context: IAgentContext<ICredentialPlugin & IDIDManager & IResolver>,
 ): Promise<StatusListResult> {
   const length = args?.length ?? 250000
   const proofFormat = args?.proofFormat ?? 'lds'
@@ -190,7 +190,7 @@ export async function createNewStatusList(
       proofFormat,
       encodedList,
     },
-    context
+    context,
   )
 
   return {
@@ -209,7 +209,7 @@ export async function createNewStatusList(
 
 export async function updateStatusIndexFromStatusListCredential(
   args: UpdateStatusListFromStatusListCredentialArgs,
-  context: IAgentContext<ICredentialPlugin & IDIDManager & IResolver>
+  context: IAgentContext<ICredentialPlugin & IDIDManager & IResolver>,
 ): Promise<StatusListDetails> {
   return updateStatusListIndexFromEncodedList(
     {
@@ -217,7 +217,7 @@ export async function updateStatusIndexFromStatusListCredential(
       statusListIndex: args.statusListIndex,
       value: args.value,
     },
-    context
+    context,
   )
 }
 
@@ -253,7 +253,7 @@ export async function statusListCredentialToDetails(args: {
 
 export async function updateStatusListIndexFromEncodedList(
   args: UpdateStatusListFromEncodedListArgs,
-  context: IAgentContext<ICredentialPlugin & IDIDManager & IResolver>
+  context: IAgentContext<ICredentialPlugin & IDIDManager & IResolver>,
 ): Promise<StatusListDetails> {
   const { issuer, type, id } = getAssertedValues(args)
   const proofFormat = args?.proofFormat ?? 'lds'
@@ -272,7 +272,7 @@ export async function updateStatusListIndexFromEncodedList(
       proofFormat,
       encodedList,
     },
-    context
+    context,
   )
   return {
     encodedList,
@@ -289,7 +289,7 @@ export async function updateStatusListIndexFromEncodedList(
 
 export async function statusList2021ToVerifiableCredential(
   args: StatusList2021ToVerifiableCredentialArgs,
-  context: IAgentContext<ICredentialPlugin & IDIDManager & IResolver>
+  context: IAgentContext<ICredentialPlugin & IDIDManager & IResolver>,
 ): Promise<OriginalVerifiableCredential> {
   const { issuer, id, type } = getAssertedValues(args)
   const identifier = await getIdentifier({ identifier: typeof issuer === 'string' ? issuer : issuer.id }, context)

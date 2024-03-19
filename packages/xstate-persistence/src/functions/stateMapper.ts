@@ -12,7 +12,7 @@ import { MachineStateInfo, MachineStateInit, MachineStateInitType, MachineStateP
  */
 export const machineStateToStoreInfo = (
   machineInfo: MachineStatePersistArgs,
-  existingState?: Partial<StoreMachineStateInfo>
+  existingState?: Partial<StoreMachineStateInfo>,
 ): StoreMachineStateInfo => {
   const { state, machineName, tenantId, expiresAt, instanceId, updatedCount } = machineInfo
 
@@ -41,7 +41,7 @@ export const machineStateToStoreInfo = (
   }
 }
 export const storeInfoToMachineInit = (
-  args: StoreMachineStateInfo & { stateType: MachineStateInitType; machineState?: MachineStateInfo }
+  args: StoreMachineStateInfo & { stateType: MachineStateInitType; machineState?: MachineStateInfo },
 ): MachineStateInit => {
   const { instanceId, machineName, tenantId, expiresAt, createdAt, stateType, machineState } = args
   return {

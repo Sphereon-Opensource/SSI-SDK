@@ -73,7 +73,7 @@ describe('Status list', () => {
         length: 99999,
         correlationId: '' + new Date().toISOString(),
       },
-      { agent }
+      { agent },
     )
     expect(statusList).toBeDefined()
     expect(statusList.id).toEqual('http://localhost:9543/list1')
@@ -95,17 +95,17 @@ describe('Status list', () => {
         length: 99999,
         correlationId: '' + new Date().toISOString(),
       },
-      { agent }
+      { agent },
     )
     expect(initialList).toBeDefined()
 
     let statusList = await updateStatusIndexFromStatusListCredential(
       { statusListCredential: initialList.statusListCredential, statusListIndex: 2, value: true },
-      { agent }
+      { agent },
     )
     statusList = await updateStatusIndexFromStatusListCredential(
       { statusListCredential: statusList.statusListCredential, statusListIndex: 4, value: true },
-      { agent }
+      { agent },
     )
 
     expect(statusList.id).toEqual('http://localhost:9543/list2')
@@ -135,7 +135,7 @@ describe('Status list', () => {
 
     statusList = await updateStatusIndexFromStatusListCredential(
       { statusListCredential: statusList.statusListCredential, statusListIndex: 4, value: false },
-      { agent }
+      { agent },
     )
     const result4Updated = await checkStatusIndexFromStatusListCredential({
       statusListCredential: statusList.statusListCredential,

@@ -35,7 +35,7 @@ export class LinkHandlers implements LinkHandler, LinkHandlerRegistry {
     // Optimization, does not take into account regexp registrations, but these are taken care of via the handlers
     if (
       !Array.from(this._protocols.values()).some((predicate) =>
-        typeof predicate === 'string' ? url.protocol === predicate.toLowerCase() : predicate.test(url.protocol)
+        typeof predicate === 'string' ? url.protocol === predicate.toLowerCase() : predicate.test(url.protocol),
       )
     ) {
       return false
@@ -48,7 +48,7 @@ export class LinkHandlers implements LinkHandler, LinkHandlerRegistry {
     opts?: {
       singleHandlerOnly?: boolean
       noExceptionOnNoHandler?: boolean
-    }
+    },
   ): Promise<void> {
     const handlers = this.all().filter((handler) => handler.supports(url))
 
@@ -71,7 +71,7 @@ export class LinkHandlers implements LinkHandler, LinkHandlerRegistry {
     handlers.forEach((handler) => {
       this._handlers.set(handler.id, handler)
       handler.protocols.forEach((protocol) =>
-        this._protocols.add(typeof protocol === 'string' ? (protocol.endsWith(':') ? protocol : `${protocol}:`) : protocol)
+        this._protocols.add(typeof protocol === 'string' ? (protocol.endsWith(':') ? protocol : `${protocol}:`) : protocol),
       )
     })
     return this
@@ -96,7 +96,7 @@ export class LinkHandlers implements LinkHandler, LinkHandlerRegistry {
   all(): LinkHandler[] {
     // Returns the handlers sorted in priority order, not insertion order
     return Array.from(this._handlers.values()).sort(
-      (handler1, handler2) => (handler1.priority ?? DefaultLinkPriorities.DEFAULT) - (handler2.priority ?? DefaultLinkPriorities.DEFAULT)
+      (handler1, handler2) => (handler1.priority ?? DefaultLinkPriorities.DEFAULT) - (handler2.priority ?? DefaultLinkPriorities.DEFAULT),
     )
   }
 
@@ -123,7 +123,7 @@ export abstract class LinkHandlerAdapter implements LinkHandler {
     this._priority = args.priority ?? DefaultLinkPriorities.DEFAULT
     this._protocols =
       args.protocols?.map((protocol) =>
-        typeof protocol !== 'string' ? protocol : protocol.endsWith(':') ? protocol.toLowerCase() : `${protocol.toLowerCase()}:`
+        typeof protocol !== 'string' ? protocol : protocol.endsWith(':') ? protocol.toLowerCase() : `${protocol.toLowerCase()}:`,
       ) ?? []
   }
 
@@ -154,7 +154,7 @@ export abstract class LinkHandlerAdapter implements LinkHandler {
   supports(urlArg: string | URL): boolean {
     const url = LinkHandlerAdapter.toURL(urlArg)
     return this.protocols.some((predicate) =>
-      typeof predicate === 'string' ? url.protocol === predicate.toLowerCase() : predicate.test(url.protocol)
+      typeof predicate === 'string' ? url.protocol === predicate.toLowerCase() : predicate.test(url.protocol),
     )
   }
 

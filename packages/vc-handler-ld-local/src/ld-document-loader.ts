@@ -50,7 +50,7 @@ export class LdDocumentLoader {
     {
       attemptToFetchContexts = false,
       verifiableData,
-    }: { attemptToFetchContexts: boolean; verifiableData: VerifiableCredential | VerifiablePresentation | CredentialPayload | PresentationPayload }
+    }: { attemptToFetchContexts: boolean; verifiableData: VerifiableCredential | VerifiablePresentation | CredentialPayload | PresentationPayload },
   ) {
     return extendContextLoader(async (url: string) => {
       if (!url || url.trim().length === 0) {

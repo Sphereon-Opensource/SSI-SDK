@@ -50,7 +50,7 @@ export interface ISIOPv2RP extends IPluginMethodMap {
   siopGetAuthRequestState(args: IGetAuthRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState | undefined>
   siopGetAuthResponseState(
     args: IGetAuthResponseStateArgs,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<AuthorizationResponseStateWithVerifiedData | undefined>
   siopUpdateAuthRequestState(args: IUpdateRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState>
   siopDeleteAuthState(args: IDeleteAuthStateArgs, context: IRequiredContext): Promise<boolean>

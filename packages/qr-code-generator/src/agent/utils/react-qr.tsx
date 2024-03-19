@@ -4,7 +4,7 @@ import React from 'react'
 
 export async function generateQRCodeValue<T extends QRType>(
   args: CreateValueArgs<T, string> | CreateElementArgs<T, string>,
-  context?: IRequiredContext
+  context?: IRequiredContext,
 ): Promise<ValueResult<T, string>> {
   return generateQRCodeValueImpl(args, args, context)
 }
@@ -12,7 +12,7 @@ export async function generateQRCodeValue<T extends QRType>(
 export async function generateQRCodeValueImpl<T extends QRType>(
   args: CreateValueArgs<T, string> | CreateElementArgs<T, string>,
   orig: CreateValueArgs<T, any> | CreateElementArgs<T, any>,
-  context?: IRequiredContext
+  context?: IRequiredContext,
 ): Promise<ValueResult<T, string>> {
   const { onGenerate } = orig
   const { id } = orig.data
@@ -39,7 +39,7 @@ export async function generateQRCodeValueImpl<T extends QRType>(
 
 export async function generateQRCodeReactElement<T extends QRType>(
   args: CreateElementArgs<T, string>,
-  context: IRequiredContext
+  context: IRequiredContext,
 ): Promise<JSX.Element> {
   return generateQRCodeReactElementImpl(args, args, context)
 }
@@ -47,7 +47,7 @@ export async function generateQRCodeReactElement<T extends QRType>(
 export async function generateQRCodeReactElementImpl<T extends QRType>(
   args: CreateElementArgs<T, string>,
   orig: CreateElementArgs<T, any>,
-  context: IRequiredContext
+  context: IRequiredContext,
 ): Promise<JSX.Element> {
   const { renderingProps } = args
   const { bgColor, fgColor, level, size, title } = renderingProps

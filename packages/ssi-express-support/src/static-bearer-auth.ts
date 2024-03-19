@@ -67,7 +67,7 @@ export class StaticBearerAuth {
           this.strategy,
           new httpBearer.Strategy({ passReqToCallback: false }, function (
             token: string,
-            cb: (error: any, user: any, options?: IStaticBearerVerifyOptions | string) => void
+            cb: (error: any, user: any, options?: IStaticBearerVerifyOptions | string) => void,
           ): void {
             if (hashTokens) {
               import('@noble/hashes/sha256')
@@ -81,7 +81,7 @@ export class StaticBearerAuth {
             } else {
               findUser(token, cb)
             }
-          })
+          }),
         )
       })
       .catch((error) => {

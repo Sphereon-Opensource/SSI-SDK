@@ -46,7 +46,7 @@ export async function createAgentFromConfig<T extends IPluginMethodMap>(config: 
  * @public
  */
 export async function createAgent<T extends IPluginMethodMap, C = Record<string, any>>(
-  options: IAgentOptions & { context?: C }
+  options: IAgentOptions & { context?: C },
 ): Promise<TAgent<T> & { context?: C }> {
   //@ts-ignore
   return new Agent(options) as TAgent<T>
