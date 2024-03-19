@@ -63,7 +63,8 @@ export enum OID4VCIHolderEvent {
 }
 
 export type RequestData = {
-  credentialOffer: any
+  credentialOffer?: any
+  code?: string
   uri: string
   [x: string]: any
 }
@@ -89,7 +90,7 @@ export type OID4VCIMachineContext = {
   requestData?: RequestData // TODO WAL-673 fix type as this is not always a qr code (deeplink)
   locale?: string
   authorizationCodeURL?: string
-  credentialBranding?: Map<string, Array<IBasicCredentialLocaleBranding>>
+  credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>>
   credentialsSupported: Array<CredentialSupported>
   serverMetadata?: EndpointMetadataResult
   openID4VCIClientState?: OpenID4VCIClientState
@@ -97,7 +98,6 @@ export type OID4VCIMachineContext = {
   contactAlias: string
   contact?: Party
   selectedCredentials: Array<string>
-  authorizationCodeResponse?: AuthorizationResponse
   credentialsToAccept: Array<MappedCredentialToAccept>
   verificationCode?: string // TODO WAL-672 refactor to not store verificationCode in the context
   hasContactConsent: boolean
@@ -162,8 +162,10 @@ export type OID4VCIStateMachine = StateMachine<
 
 export type CreateOID4VCIMachineOpts = {
   requestData: RequestData
-  machineId?: string
+  machineName?: string
   locale?: string
+  stateDefinition?: OID4VCIMachineState
+  // statePersistence?: MachineStatePersistenceOpts
 }
 
 export type OID4VCIMachineInstanceOpts = {
@@ -211,6 +213,8 @@ export enum OID4VCIMachineGuards {
   selectCredentialGuard = 'oid4vciSelectCredentialsGuard',
   requirePinGuard = 'oid4vciRequirePinGuard',
   requireAuthorizationGuard = 'oid4vciRequireAuthorizationGuard',
+  noAuthorizationGuard = 'oid4vciNoAuthorizationGuard',
+  hasAuthorizationResponse = 'oid4vciHasAuthorizationResponse',
   hasNoContactIdentityGuard = 'oid4vciHasNoContactIdentityGuard',
   verificationCodeGuard = 'oid4vciVerificationCodeGuard',
   createContactGuard = 'oid4vciCreateContactGuard',
@@ -273,13 +277,13 @@ export type CredentialTypeSelection = {
 }
 
 export type OID4VCIMachine = {
-  id: string
+  // machineStateInit?: MachineStateInit
   interpreter: OID4VCIMachineInterpreter
 }
 
 export type InitiationData = {
   authorizationCodeURL?: string
-  credentialBranding: Map<string, Array<IBasicCredentialLocaleBranding>>
+  credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>>
   credentialsSupported: Array<CredentialSupported>
   serverMetadata: EndpointMetadataResult
   openID4VCIClientState: OpenID4VCIClientState

@@ -7,7 +7,7 @@ import { IRequiredContext } from './types'
 export function verifyAuthResponseSIOPv2Endpoint(
   router: Router,
   context: IRequiredContext,
-  opts?: ISingleEndpointOpts & { presentationDefinitionLocation?: PresentationDefinitionLocation }
+  opts?: ISingleEndpointOpts & { presentationDefinitionLocation?: PresentationDefinitionLocation },
 ) {
   if (opts?.enabled === false) {
     console.log(`verifyAuthResponse SIOP endpoint is disabled`)
@@ -25,18 +25,20 @@ export function verifyAuthResponseSIOPv2Endpoint(
       console.log('Authorization Response (siop-sessions')
       console.log(JSON.stringify(request.body, null, 2))
       const definition = await context.agent.pexStoreGetDefinition({ definitionId })
-      const authorizationResponse =
-        typeof request.body === 'string' ? (JSON.parse(request.body) as AuthorizationResponsePayload) : (request.body as AuthorizationResponsePayload)
-      if (typeof authorizationResponse.presentation_submission === 'string') {
-        console.log(`Supplied presentation_submission was a string instead of JSON. Correctig, but external party should fix their implementation!`)
-        authorizationResponse.presentation_submission = JSON.parse(authorizationResponse.presentation_submission) as PresentationSubmission
-      }
-      console.log(`URI: ${JSON.stringify(authorizationResponse)}`)
       if (!definition) {
+        console.log(`Could not get definition ${definitionId} from agent. Will return 404`)
         response.statusCode = 404
         response.statusMessage = `No definition ${definitionId}`
         return response.send()
       }
+      const authorizationResponse =
+        typeof request.body === 'string' ? (JSON.parse(request.body) as AuthorizationResponsePayload) : (request.body as AuthorizationResponsePayload)
+      if (typeof authorizationResponse.presentation_submission === 'string') {
+        console.log(`Supplied presentation_submission was a string instead of JSON. Correcting, but external party should fix their implementation!`)
+        authorizationResponse.presentation_submission = JSON.parse(authorizationResponse.presentation_submission) as PresentationSubmission
+      }
+      console.log(`URI: ${JSON.stringify(authorizationResponse)}`)
+
       const verifiedResponse = await context.agent.siopVerifyAuthResponse({
         authorizationResponse,
         correlationId,
@@ -53,12 +55,13 @@ export function verifyAuthResponseSIOPv2Endpoint(
       if (wrappedPresentation) {
         // const credentialSubject = wrappedPresentation.presentation.verifiableCredential[0]?.credential?.credentialSubject
         // console.log(JSON.stringify(credentialSubject, null, 2))
-        console.log(JSON.stringify(wrappedPresentation.presentation, null, 2))
+        console.log('PRESENTATION:' + JSON.stringify(wrappedPresentation.presentation, null, 2))
         response.statusCode = 200
         // todo: delete session
       } else {
+        console.log('Missing Presentation (Verifiable Credentials)')
         response.statusCode = 500
-        response.statusMessage = 'Missing Credentials'
+        response.statusMessage = 'Missing Presentation (Verifiable Credentials)'
       }
       return response.send()
     } catch (error) {
@@ -89,7 +92,7 @@ export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredC
       })
       if (!requestState) {
         console.log(
-          `No authorization request could be found for the given url in the state manager. correlationId: ${correlationId}, definitionId: ${definitionId}`
+          `No authorization request could be found for the given url in the state manager. correlationId: ${correlationId}, definitionId: ${definitionId}`,
         )
         return sendErrorResponse(response, 404, `No authorization request could be found`)
       }

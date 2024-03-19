@@ -37,7 +37,7 @@ export class CredentialBrandingEntity extends BaseEntity {
       onDelete: 'CASCADE',
       eager: true,
       nullable: false,
-    }
+    },
   )
   @ArrayMinSize(1, { message: 'localeBranding cannot be empty' })
   localeBranding!: Array<CredentialLocaleBrandingEntity>
@@ -71,7 +71,7 @@ export const credentialBrandingEntityFrom = (args: IBasicCredentialBranding): Cr
   credentialBrandingEntity.issuerCorrelationId = args.issuerCorrelationId
   credentialBrandingEntity.vcHash = args.vcHash
   credentialBrandingEntity.localeBranding = args.localeBranding.map((localeBranding: IBasicCredentialLocaleBranding) =>
-    credentialLocaleBrandingEntityFrom(localeBranding)
+    credentialLocaleBrandingEntityFrom(localeBranding),
   )
 
   return credentialBrandingEntity

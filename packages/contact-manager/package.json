@@ -15,12 +15,12 @@
   },
   "dependencies": {
     "@sphereon/ssi-sdk.data-store": "workspace:*",
+    "debug": "^4.3.4",
     "cross-fetch": "^3.1.8",
-    "typeorm": "^0.3.12"
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
-    "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0"
   },

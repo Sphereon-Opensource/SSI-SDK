@@ -13,7 +13,7 @@ export class LdSuiteLoader {
       const verificationType = obj.getSupportedVerificationType()
       if (this.signatureMap[veramoKeyType]) {
         debug(
-          `Registered another signature suite ${obj} for key type: ${veramoKeyType} overriding the old one. Previous one: ${this.signatureMap[veramoKeyType]}`
+          `Registered another signature suite ${obj} for key type: ${veramoKeyType} overriding the old one. Previous one: ${this.signatureMap[veramoKeyType]}`,
         )
         // throw Error(`Cannot register 2 suites for the same type ${veramoKeyType}`)
       }

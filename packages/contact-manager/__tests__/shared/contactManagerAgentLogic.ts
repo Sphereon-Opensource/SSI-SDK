@@ -223,7 +223,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await expect(
         agent.cmGetIdentity({
           identityId,
-        })
+        }),
       ).rejects.toThrow(`No identity found for id: ${identityId}`)
     })
 
@@ -269,7 +269,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
 
       await expect(agent.cmAddIdentity({ contactId: defaultContact.id, identity })).rejects.toThrow(
-        `Identity with correlation type url should contain a connection`
+        `Identity with correlation type url should contain a connection`,
       )
     })
 

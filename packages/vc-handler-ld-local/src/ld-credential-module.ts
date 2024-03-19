@@ -1,13 +1,12 @@
 import { purposes } from '@digitalcredentials/jsonld-signatures'
 import * as vc from '@digitalcredentials/vc'
 import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
-import { BbsBlsSignature2020 } from '@mattrglobal/jsonld-signatures-bbs'
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
+import { IStatusListEntryEntity } from '@sphereon/ssi-sdk.data-store'
 import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import { IVerifyResult, StatusListCredentialIdMode } from '@sphereon/ssi-types'
 import { CredentialPayload, IAgentContext, IKey, PresentationPayload, VerifiableCredential, VerifiablePresentation } from '@veramo/core'
-import { IStatusListEntryEntity } from '@sphereon/ssi-sdk.data-store'
 import Debug from 'debug'
 
 import { LdContextLoader } from './ld-context-loader'
@@ -61,7 +60,7 @@ export class LdCredentialModule {
       purpose: typeof ProofPurpose
       credentialStatusOpts?: IIssueCredentialStatusOpts
     },
-    context: IAgentContext<RequiredAgentMethods>
+    context: IAgentContext<RequiredAgentMethods>,
   ): Promise<VerifiableCredentialSP> {
     const { key, issuerDid, verificationMethodId, credential } = args
     const purpose = args.purpose ?? new CredentialIssuancePurpose()
@@ -108,7 +107,7 @@ export class LdCredentialModule {
       debug(`Creating new credentialStatus object for credential with id ${credentialId} and statusListId ${statusListId}...`)
       if (!statusListId) {
         throw Error(
-          `A credential status is requested, but we could not determine the status list id from 'statusListCredential' value or configuration`
+          `A credential status is requested, but we could not determine the status list id from 'statusListCredential' value or configuration`,
         )
       }
 
@@ -127,7 +126,7 @@ export class LdCredentialModule {
 
       if (!credentialId && statusList.credentialIdMode === StatusListCredentialIdMode.ISSUANCE) {
         throw Error(
-          'No credential.id was provided in the credential, whilst the issuer is configured to persist credentialIds. Please adjust your input credential to contain an id'
+          'No credential.id was provided in the credential, whilst the issuer is configured to persist credentialIds. Please adjust your input credential to contain an id',
         )
       }
       let existingEntry: IStatusListEntryEntity | undefined = undefined
@@ -138,7 +137,7 @@ export class LdCredentialModule {
           errorOnNotFound: false,
         })
         debug(
-          `Existing statusList entry and index ${existingEntry?.statusListIndex} found for credential with id ${credentialId} and statusListId ${statusListId}. Will reuse the index`
+          `Existing statusList entry and index ${existingEntry?.statusListIndex} found for credential with id ${credentialId} and statusListId ${statusListId}. Will reuse the index`,
         )
       }
       let statusListIndex = existingEntry?.statusListIndex ?? credential.credentialStatus.statusListIndex ?? credentialStatusOpts?.credentialId
@@ -151,16 +150,16 @@ export class LdCredentialModule {
         debug(
           `${!existingEntry && 'no'} existing statusList entry and index ${
             existingEntry?.statusListIndex
-          } for credential with id ${credentialId} and statusListId ${statusListId}. Will reuse the index`
+          } for credential with id ${credentialId} and statusListId ${statusListId}. Will reuse the index`,
         )
         if (existingEntry && credentialId && existingEntry.credentialId && existingEntry.credentialId !== credentialId) {
           throw Error(
-            `A credential with new id (${credentialId}) is issued, but its id does not match a registered statusListEntry id ${existingEntry.credentialId} for index ${statusListIndex} `
+            `A credential with new id (${credentialId}) is issued, but its id does not match a registered statusListEntry id ${existingEntry.credentialId} for index ${statusListIndex} `,
           )
         }
       } else {
         debug(
-          `Will generate a new random statusListIndex since the credential did not contain a statusListIndex for credential with id ${credentialId} and statusListId ${statusListId}...`
+          `Will generate a new random statusListIndex since the credential did not contain a statusListIndex for credential with id ${credentialId} and statusListId ${statusListId}...`,
         )
         statusListIndex = await slDriver.getRandomNewStatusListIndex({ correlationId: statusList.correlationId })
         debug(`Random statusListIndex ${statusListIndex} assigned for credential with id ${credentialId} and statusListId ${statusListId}`)
@@ -194,7 +193,7 @@ export class LdCredentialModule {
           domain,
           challenge,
         }),
-    context: IAgentContext<RequiredAgentMethods>
+    context: IAgentContext<RequiredAgentMethods>,
   ): Promise<VerifiablePresentationSP> {
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
     const documentLoader = this.ldDocumentLoader.getLoader(context, {
@@ -228,15 +227,16 @@ export class LdCredentialModule {
     context: IAgentContext<RequiredAgentMethods>,
     fetchRemoteContexts = false,
     purpose: typeof ProofPurpose = new AssertionProofPurpose(),
-    checkStatus?: Function
+    checkStatus?: Function,
   ): Promise<IVerifyResult> {
     const verificationSuites = this.getAllVerificationSuites(context)
     this.ldSuiteLoader.getAllSignatureSuites().forEach((suite) => suite.preVerificationCredModification(credential))
-    let result: IVerifyResult
+    // let result: IVerifyResult
     const documentLoader = this.ldDocumentLoader.getLoader(context, {
       attemptToFetchContexts: fetchRemoteContexts,
       verifiableData: credential,
     })
+    /*
     const isBls = credential.proof.type?.includes('BbsBlsSignature2020')
     const suite = isBls
       ? (this.ldSuiteLoader
@@ -253,16 +253,16 @@ export class LdCredentialModule {
         documentLoader,
         compactProof: true,
       })
-    } else {
-      result = await vc.verifyCredential({
-        credential,
-        suite: verificationSuites,
-        documentLoader,
-        purpose,
-        compactProof: false,
-        checkStatus,
-      })
-    }
+    } else {*/
+    const result = await vc.verifyCredential({
+      credential,
+      suite: verificationSuites,
+      documentLoader,
+      purpose,
+      compactProof: false,
+      checkStatus,
+    })
+    // }
     if (result.verified) {
       void context.agent.emit(events.CREDENTIAL_VERIFIED, { credential, ...result })
     } else {
@@ -287,10 +287,10 @@ export class LdCredentialModule {
     presentationPurpose: typeof ProofPurpose = !challenge && !domain
       ? new AssertionProofPurpose()
       : new AuthenticationProofPurpose({ domain, challenge }),
-    checkStatus?: Function
+    checkStatus?: Function,
     //AssertionProofPurpose()
   ): Promise<IVerifyResult> {
-    let result: IVerifyResult
+    /* let result: IVerifyResult
     if (presentation.proof.type?.includes('BbsBlsSignature2020')) {
       //Should never be null or undefined
       const suite = this.ldSuiteLoader
@@ -306,21 +306,21 @@ export class LdCredentialModule {
         }),
         compactProof: true,
       })
-    } else {
-      result = await vc.verify({
-        presentation,
-        suite: this.getAllVerificationSuites(context),
-        documentLoader: this.ldDocumentLoader.getLoader(context, {
-          attemptToFetchContexts: fetchRemoteContexts,
-          verifiableData: presentation,
-        }),
-        challenge,
-        domain,
-        presentationPurpose,
-        compactProof: false,
-        checkStatus,
-      })
-    }
+    } else {*/
+    const result = await vc.verify({
+      presentation,
+      suite: this.getAllVerificationSuites(context),
+      documentLoader: this.ldDocumentLoader.getLoader(context, {
+        attemptToFetchContexts: fetchRemoteContexts,
+        verifiableData: presentation,
+      }),
+      challenge,
+      domain,
+      presentationPurpose,
+      compactProof: false,
+      checkStatus,
+    })
+    // }
 
     if (result.verified && (!result.presentationResult || result.presentationResult.verified)) {
       context.agent.emit(events.PRESENTATION_VERIFIED, { presentation, ...result })

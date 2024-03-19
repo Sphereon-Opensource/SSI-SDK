@@ -40,7 +40,7 @@ const setup = async (): Promise<boolean> => {
       callbackName: 'issueJwt',
       credentialIssuance: () => Promise.resolve(COMPACT_JWT_DOMAIN_LINKAGE_CREDENTIAL),
     },
-    null
+    null,
   )
 
   await localAgent.registerCredentialIssuance(
@@ -48,7 +48,7 @@ const setup = async (): Promise<boolean> => {
       callbackName: 'issueJsonld',
       credentialIssuance: () => Promise.resolve(JSON_LD_DOMAIN_LINKAGE_CREDENTIAL),
     },
-    null
+    null,
   )
 
   localAgent.didManagerGet = jest.fn().mockReturnValue(
@@ -61,7 +61,7 @@ const setup = async (): Promise<boolean> => {
           serviceEndpoint: ORIGIN,
         },
       ],
-    })
+    }),
   )
 
   agent = localAgent

@@ -20,7 +20,7 @@ describe('@sphereon/siopv2-oid4vp-rp-rest-client', () => {
     await expect(
       agent.siopClientRemoveAuthRequestState({
         correlationId: 'test-correlation-id',
-      })
+      }),
     ).resolves.toEqual(true)
   })
 
@@ -40,7 +40,7 @@ describe('@sphereon/siopv2-oid4vp-rp-rest-client', () => {
     await expect(
       agent.siopClientGetAuthStatus({
         correlationId: 'my-correlation-id',
-      })
+      }),
     ).resolves.toBeDefined()
   })
 })

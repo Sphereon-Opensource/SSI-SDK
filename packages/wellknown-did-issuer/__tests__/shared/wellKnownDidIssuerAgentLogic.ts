@@ -158,7 +158,7 @@ export default (testContext: {
               credentialIssuance: 'issueJwt',
             },
           ],
-        })
+        }),
       ).rejects.toThrow('All verifiableCredentials should be issued for the same origin')
     })
 
@@ -176,7 +176,7 @@ export default (testContext: {
               credentialIssuance: CALLBACK_NAME,
             },
           ],
-        })
+        }),
       ).rejects.toThrow(`Credential issuance not found for callbackName: ${CALLBACK_NAME}`)
     })
 
@@ -245,7 +245,7 @@ export default (testContext: {
           expirationDate: new Date().toISOString(),
           options: { proofFormat: ProofFormatTypesEnum.JSON_WEB_TOKEN },
           credentialIssuance: CALLBACK_NAME,
-        })
+        }),
       ).rejects.toThrow(`Credential issuance not found for callbackName: ${CALLBACK_NAME}`)
     })
 
@@ -258,7 +258,7 @@ export default (testContext: {
           expirationDate: new Date().toISOString(),
           options: { proofFormat: ProofFormatTypesEnum.JSON_WEB_TOKEN },
           credentialIssuance: 'issueJwt',
-        })
+        }),
       ).rejects.toThrow('Invalid URL')
     })
 
@@ -273,7 +273,7 @@ export default (testContext: {
           expirationDate: new Date().toISOString(),
           options: { proofFormat: ProofFormatTypesEnum.JSON_WEB_TOKEN },
           credentialIssuance: 'issueJwt',
-        })
+        }),
       ).rejects.toThrow(`Origin ${ORIGIN} is not valid`)
     })
 
@@ -288,7 +288,7 @@ export default (testContext: {
           expirationDate: new Date().toISOString(),
           options: { proofFormat: ProofFormatTypesEnum.JSON_WEB_TOKEN },
           credentialIssuance: 'issueJwt',
-        })
+        }),
       ).rejects.toThrow(`Origin ${ORIGIN} is not a https URL`)
     })
 
@@ -303,7 +303,7 @@ export default (testContext: {
           expirationDate: new Date().toISOString(),
           options: { proofFormat: ProofFormatTypesEnum.JSON_WEB_TOKEN },
           credentialIssuance: 'issueJwt',
-        })
+        }),
       ).rejects.toThrow(`IssuanceDate ${ISSUANCE_DATE} is not a valid date`)
     })
 
@@ -318,7 +318,7 @@ export default (testContext: {
           expirationDate: EXPIRATION_DATE,
           options: { proofFormat: ProofFormatTypesEnum.JSON_WEB_TOKEN },
           credentialIssuance: 'issueJwt',
-        })
+        }),
       ).rejects.toThrow(`ExpirationDate ${EXPIRATION_DATE} is not a valid date`)
     })
 
@@ -327,7 +327,7 @@ export default (testContext: {
         agent.addLinkedDomainsService({
           did: DID,
           origin: 'invalid_origin',
-        })
+        }),
       ).rejects.toThrow('Invalid URL')
     })
 
@@ -338,7 +338,7 @@ export default (testContext: {
         agent.addLinkedDomainsService({
           did: DID,
           origin: ORIGIN,
-        })
+        }),
       ).rejects.toThrow(`Origin ${ORIGIN} is not valid`)
     })
 
@@ -349,7 +349,7 @@ export default (testContext: {
         agent.addLinkedDomainsService({
           did: DID,
           origin: ORIGIN,
-        })
+        }),
       ).rejects.toThrow(`Origin ${ORIGIN} is not a https URL`)
     })
 
@@ -377,7 +377,7 @@ export default (testContext: {
           agent.registerCredentialIssuance({
             callbackName: CALLBACK_NAME,
             credentialIssuance: () => Promise.resolve(COMPACT_JWT_DOMAIN_LINKAGE_CREDENTIAL),
-          })
+          }),
         ).rejects.toThrow(`Credential issuance with callbackName: ${CALLBACK_NAME} already present`)
       })
 

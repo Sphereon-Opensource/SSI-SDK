@@ -31,7 +31,7 @@ export interface IPresentationExchange extends IPluginMethodMap {
 
   pexDefinitionFilterCredentialsPerInputDescriptor(
     args: IDefinitionCredentialFilterArgs,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<IPEXFilterResultWithInputDescriptor[]>
 }
 

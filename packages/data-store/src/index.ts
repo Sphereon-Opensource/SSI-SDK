@@ -18,6 +18,7 @@ import { IssuerBrandingEntity, issuerBrandingEntityFrom } from './entities/issua
 import { TextAttributesEntity, textAttributesEntityFrom } from './entities/issuanceBranding/TextAttributesEntity'
 import { StatusListEntity } from './entities/statusList2021/StatusList2021Entity'
 import { StatusListEntryEntity } from './entities/statusList2021/StatusList2021EntryEntity'
+import { MachineStateInfoEntity } from './entities/machineState/MachineStateInfoEntity'
 import { IStatusListEntity, IStatusListEntryEntity } from './types'
 import { PartyRelationshipEntity } from './entities/contact/PartyRelationshipEntity'
 import { PartyTypeEntity } from './entities/contact/PartyTypeEntity'
@@ -31,14 +32,20 @@ export { AbstractIssuanceBrandingStore } from './issuanceBranding/AbstractIssuan
 export { IssuanceBrandingStore } from './issuanceBranding/IssuanceBrandingStore'
 export { StatusListStore } from './statusList/StatusListStore'
 import { AuditEventEntity, auditEventEntityFrom } from './entities/eventLogger/AuditEventEntity'
+import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCredentialEntity'
+import { digitalCredentialFrom, digitalCredentialsFrom, nonPersistedDigitalCredentialEntityFromAddArgs } from './utils/digitalCredential/MappingUtils'
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
 export { EventLoggerStore } from './eventLogger/EventLoggerStore'
+export { IAbstractMachineStateStore } from './machineState/IAbstractMachineStateStore'
+export { MachineStateStore } from './machineState/MachineStateStore'
+
 export {
   DataStoreMigrations,
   DataStoreEventLoggerMigrations,
   DataStoreContactMigrations,
   DataStoreIssuanceBrandingMigrations,
   DataStoreStatusListMigrations,
+  DataStoreMachineStateMigrations,
 } from './migrations'
 export * from './types'
 export * from './utils/contact/MappingUtils'
@@ -77,18 +84,25 @@ export const DataStoreStatusListEntities = [StatusListEntity, StatusListEntryEnt
 
 export const DataStoreEventLoggerEntities = [AuditEventEntity]
 
+export const DataStoreDigitalCredentialEntities = [DigitalCredentialEntity]
+
+export const DataStoreMachineStateEntities = [MachineStateInfoEntity]
+
 // All entities combined if a party wants to enable them all at once
 export const DataStoreEntities = [
   ...DataStoreContactEntities,
   ...DataStoreIssuanceBrandingEntities,
   ...DataStoreStatusListEntities,
   ...DataStoreEventLoggerEntities,
+  ...DataStoreDigitalCredentialEntities,
+  ...DataStoreMachineStateEntities,
 ]
 
 export {
   BaseConfigEntity,
   ConnectionEntity,
   PartyEntity,
+  BaseContactEntity,
   CorrelationIdentifierEntity,
   DidAuthConfigEntity,
   IdentityEntity,
@@ -119,4 +133,9 @@ export {
   StatusListEntryEntity,
   AuditEventEntity,
   auditEventEntityFrom,
+  DigitalCredentialEntity,
+  digitalCredentialFrom,
+  digitalCredentialsFrom,
+  nonPersistedDigitalCredentialEntityFromAddArgs,
+  MachineStateInfoEntity,
 }

@@ -99,7 +99,7 @@ export const contactFrom = (contact: BaseContactEntity): Contact => {
     return organizationFrom(<OrganizationEntity>contact)
   }
 
-  throw new Error('Contact not supported')
+  throw new Error(`Contact type not supported`)
 }
 
 export const isNaturalPerson = (contact: NonPersistedContact | BaseContactEntity): contact is NonPersistedNaturalPerson | NaturalPersonEntity =>

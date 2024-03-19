@@ -66,13 +66,13 @@ export class RPInstance {
         requestByReferenceURI,
         responseURI,
         responseURIType,
-      })
+      }),
     )
   }
 
   public async createAuthorizationRequest(
     createArgs: Omit<ICreateAuthRequestArgs, 'definitionId'>,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<AuthorizationRequest> {
     const { correlationId, claims, requestByReferenceURI, responseURI, responseURIType } = createArgs
     const nonce = createArgs.nonce ?? uuidv4()
@@ -87,7 +87,7 @@ export class RPInstance {
         requestByReferenceURI,
         responseURIType,
         responseURI,
-      })
+      }),
     )
   }
 }

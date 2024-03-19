@@ -102,7 +102,7 @@ describe('Issuance branding store tests', (): void => {
     }
 
     await expect(issuanceBrandingStore.addCredentialBranding(credentialBranding2)).rejects.toThrowError(
-      `Credential branding already present for vc with hash: ${credentialBranding2.vcHash}`
+      `Credential branding already present for vc with hash: ${credentialBranding2.vcHash}`,
     )
   })
 
@@ -123,7 +123,7 @@ describe('Issuance branding store tests', (): void => {
     }
 
     await expect(issuanceBrandingStore.addCredentialBranding(credentialBranding1)).rejects.toThrowError(
-      'Credential branding contains duplicate locales'
+      'Credential branding contains duplicate locales',
     )
 
     const credentialBranding2: IBasicCredentialBranding = {
@@ -140,7 +140,7 @@ describe('Issuance branding store tests', (): void => {
     }
 
     await expect(issuanceBrandingStore.addCredentialBranding(credentialBranding2)).rejects.toThrowError(
-      'Credential branding contains duplicate locales'
+      'Credential branding contains duplicate locales',
     )
   })
 
@@ -482,7 +482,7 @@ describe('Issuance branding store tests', (): void => {
     }
 
     await expect(issuanceBrandingStore.updateCredentialBranding({ credentialBranding })).rejects.toThrowError(
-      `No credential branding found for id: ${credentialBranding.id}`
+      `No credential branding found for id: ${credentialBranding.id}`,
     )
   })
 
@@ -534,49 +534,49 @@ describe('Issuance branding store tests', (): void => {
     expect(
       await dbConnection.getRepository(ImageDimensionsEntity).findOne({
         where: { id: savedCredentialBranding?.localeBranding[0]?.background?.image?.dimensions?.id },
-      })
+      }),
     ).toBeNull()
 
     // check background image
     expect(
       await dbConnection.getRepository(ImageAttributesEntity).findOne({
         where: { id: savedCredentialBranding?.localeBranding[0]?.background?.image?.id },
-      })
+      }),
     ).toBeNull()
 
     // check background
     expect(
       await dbConnection.getRepository(BackgroundAttributesEntity).findOne({
         where: { id: savedCredentialBranding?.localeBranding[0]?.background?.id },
-      })
+      }),
     ).toBeNull()
 
     // check logo dimensions
     expect(
       await dbConnection.getRepository(ImageDimensionsEntity).findOne({
         where: { id: savedCredentialBranding?.localeBranding[0]?.logo?.dimensions?.id },
-      })
+      }),
     ).toBeNull()
 
     // check logo
     expect(
       await dbConnection.getRepository(ImageAttributesEntity).findOne({
         where: { id: savedCredentialBranding?.localeBranding[0]?.logo?.id },
-      })
+      }),
     ).toBeNull()
 
     // check text
     expect(
       await dbConnection.getRepository(TextAttributesEntity).findOne({
         where: { id: savedCredentialBranding?.localeBranding[0]?.text?.id },
-      })
+      }),
     ).toBeNull()
 
     // check credential locale branding
     expect(
       await dbConnection.getRepository(CredentialLocaleBrandingEntity).findOne({
         where: { id: savedCredentialBranding?.localeBranding[0]?.id },
-      })
+      }),
     ).toBeNull()
 
     const result: Array<ICredentialBranding> = await issuanceBrandingStore.getCredentialBranding()
@@ -626,7 +626,7 @@ describe('Issuance branding store tests', (): void => {
     }
 
     await expect(issuanceBrandingStore.addCredentialLocaleBranding(addCredentialLocaleBrandingArgs)).rejects.toThrowError(
-      `No credential branding found for id: ${addCredentialLocaleBrandingArgs.credentialBrandingId}`
+      `No credential branding found for id: ${addCredentialLocaleBrandingArgs.credentialBrandingId}`,
     )
   })
 
@@ -665,8 +665,8 @@ describe('Issuance branding store tests', (): void => {
 
     await expect(issuanceBrandingStore.addCredentialLocaleBranding(addCredentialLocaleBrandingArgs)).rejects.toThrowError(
       `Credential branding already contains locales: ${addCredentialLocaleBrandingArgs.localeBranding.map(
-        (localeBranding: IBasicCredentialLocaleBranding) => localeBranding.locale
-      )}`
+        (localeBranding: IBasicCredentialLocaleBranding) => localeBranding.locale,
+      )}`,
     )
   })
 
@@ -790,7 +790,7 @@ describe('Issuance branding store tests', (): void => {
     }
 
     await expect(issuanceBrandingStore.updateCredentialLocaleBranding(updateCredentialLocaleBrandingArgs)).rejects.toThrowError(
-      `Credential branding: ${savedCredentialBranding.id} already contains locale: ${locale}`
+      `Credential branding: ${savedCredentialBranding.id} already contains locale: ${locale}`,
     )
   })
 
@@ -842,49 +842,49 @@ describe('Issuance branding store tests', (): void => {
     expect(
       await dbConnection.getRepository(ImageDimensionsEntity).findOne({
         where: { id: savedCredentialBranding?.localeBranding[0]?.background?.image?.dimensions?.id },
-      })
+      }),
     ).toBeNull()
 
     // check background image
     expect(
       await dbConnection.getRepository(ImageAttributesEntity).findOne({
         where: { id: savedCredentialBranding?.localeBranding[0]?.background?.image?.id },
-      })
+      }),
     ).toBeNull()
 
     // check background
     expect(
       await dbConnection.getRepository(BackgroundAttributesEntity).findOne({
         where: { id: savedCredentialBranding?.localeBranding[0]?.background?.id },
-      })
+      }),
     ).toBeNull()
 
     // check logo dimensions
     expect(
       await dbConnection.getRepository(ImageDimensionsEntity).findOne({
         where: { id: savedCredentialBranding?.localeBranding[0]?.logo?.dimensions?.id },
-      })
+      }),
     ).toBeNull()
 
     // check logo
     expect(
       await dbConnection.getRepository(ImageAttributesEntity).findOne({
         where: { id: savedCredentialBranding?.localeBranding[0]?.logo?.id },
-      })
+      }),
     ).toBeNull()
 
     // check text
     expect(
       await dbConnection.getRepository(TextAttributesEntity).findOne({
         where: { id: savedCredentialBranding?.localeBranding[0]?.text?.id },
-      })
+      }),
     ).toBeNull()
 
     // check credential locale branding
     expect(
       await dbConnection.getRepository(CredentialLocaleBrandingEntity).findOne({
         where: { id: savedCredentialBranding?.localeBranding[0]?.id },
-      })
+      }),
     ).toBeNull()
 
     const result: Array<ICredentialLocaleBranding> = await issuanceBrandingStore.getCredentialLocaleBranding()
@@ -1037,7 +1037,7 @@ describe('Issuance branding store tests', (): void => {
     }
 
     await expect(issuanceBrandingStore.addIssuerBranding(issuerBranding2)).rejects.toThrowError(
-      `Issuer branding already present for issuer with correlation id: ${issuerBranding2.issuerCorrelationId}`
+      `Issuer branding already present for issuer with correlation id: ${issuerBranding2.issuerCorrelationId}`,
     )
   })
 
@@ -1395,7 +1395,7 @@ describe('Issuance branding store tests', (): void => {
     }
 
     await expect(issuanceBrandingStore.updateIssuerBranding({ issuerBranding })).rejects.toThrowError(
-      `No issuer branding found for id: ${issuerBranding.id}`
+      `No issuer branding found for id: ${issuerBranding.id}`,
     )
   })
 
@@ -1446,49 +1446,49 @@ describe('Issuance branding store tests', (): void => {
     expect(
       await dbConnection.getRepository(ImageDimensionsEntity).findOne({
         where: { id: savedIssuerBranding?.localeBranding[0]?.background?.image?.dimensions?.id },
-      })
+      }),
     ).toBeNull()
 
     // check background image
     expect(
       await dbConnection.getRepository(ImageAttributesEntity).findOne({
         where: { id: savedIssuerBranding?.localeBranding[0]?.background?.image?.id },
-      })
+      }),
     ).toBeNull()
 
     // check background
     expect(
       await dbConnection.getRepository(BackgroundAttributesEntity).findOne({
         where: { id: savedIssuerBranding?.localeBranding[0]?.background?.id },
-      })
+      }),
     ).toBeNull()
 
     // check logo dimensions
     expect(
       await dbConnection.getRepository(ImageDimensionsEntity).findOne({
         where: { id: savedIssuerBranding?.localeBranding[0]?.logo?.dimensions?.id },
-      })
+      }),
     ).toBeNull()
 
     // check logo
     expect(
       await dbConnection.getRepository(ImageAttributesEntity).findOne({
         where: { id: savedIssuerBranding?.localeBranding[0]?.logo?.id },
-      })
+      }),
     ).toBeNull()
 
     // check text
     expect(
       await dbConnection.getRepository(TextAttributesEntity).findOne({
         where: { id: savedIssuerBranding?.localeBranding[0]?.text?.id },
-      })
+      }),
     ).toBeNull()
 
     // check issuer locale branding
     expect(
       await dbConnection.getRepository(IssuerLocaleBrandingEntity).findOne({
         where: { id: savedIssuerBranding?.localeBranding[0]?.id },
-      })
+      }),
     ).toBeNull()
   })
 
@@ -1533,7 +1533,7 @@ describe('Issuance branding store tests', (): void => {
     }
 
     await expect(issuanceBrandingStore.addIssuerLocaleBranding(addIssuerLocaleBrandingArgs)).rejects.toThrowError(
-      `No issuer branding found for id: ${addIssuerLocaleBrandingArgs.issuerBrandingId}`
+      `No issuer branding found for id: ${addIssuerLocaleBrandingArgs.issuerBrandingId}`,
     )
   })
 
@@ -1571,8 +1571,8 @@ describe('Issuance branding store tests', (): void => {
 
     await expect(issuanceBrandingStore.addIssuerLocaleBranding(addIssuerLocaleBrandingArgs)).rejects.toThrowError(
       `Issuer branding already contains locales: ${addIssuerLocaleBrandingArgs.localeBranding.map(
-        (localeBranding: IBasicIssuerLocaleBranding) => localeBranding.locale
-      )}`
+        (localeBranding: IBasicIssuerLocaleBranding) => localeBranding.locale,
+      )}`,
     )
   })
 
@@ -1692,7 +1692,7 @@ describe('Issuance branding store tests', (): void => {
     }
 
     await expect(issuanceBrandingStore.updateIssuerLocaleBranding(updateIssuerLocaleBrandingArgs)).rejects.toThrowError(
-      `Issuer branding: ${savedIssuerBranding.id} already contains locale: ${locale}`
+      `Issuer branding: ${savedIssuerBranding.id} already contains locale: ${locale}`,
     )
   })
 
@@ -1743,49 +1743,49 @@ describe('Issuance branding store tests', (): void => {
     expect(
       await dbConnection.getRepository(ImageDimensionsEntity).findOne({
         where: { id: savedIssuerBranding?.localeBranding[0]?.background?.image?.dimensions?.id },
-      })
+      }),
     ).toBeNull()
 
     // check background image
     expect(
       await dbConnection.getRepository(ImageAttributesEntity).findOne({
         where: { id: savedIssuerBranding?.localeBranding[0]?.background?.image?.id },
-      })
+      }),
     ).toBeNull()
 
     // check background
     expect(
       await dbConnection.getRepository(BackgroundAttributesEntity).findOne({
         where: { id: savedIssuerBranding?.localeBranding[0]?.background?.id },
-      })
+      }),
     ).toBeNull()
 
     // check logo dimensions
     expect(
       await dbConnection.getRepository(ImageDimensionsEntity).findOne({
         where: { id: savedIssuerBranding?.localeBranding[0]?.logo?.dimensions?.id },
-      })
+      }),
     ).toBeNull()
 
     // check logo
     expect(
       await dbConnection.getRepository(ImageAttributesEntity).findOne({
         where: { id: savedIssuerBranding?.localeBranding[0]?.logo?.id },
-      })
+      }),
     ).toBeNull()
 
     // check text
     expect(
       await dbConnection.getRepository(TextAttributesEntity).findOne({
         where: { id: savedIssuerBranding?.localeBranding[0]?.text?.id },
-      })
+      }),
     ).toBeNull()
 
     // check issuer locale branding
     expect(
       await dbConnection.getRepository(IssuerLocaleBrandingEntity).findOne({
         where: { id: savedIssuerBranding?.localeBranding[0]?.id },
-      })
+      }),
     ).toBeNull()
   })
 

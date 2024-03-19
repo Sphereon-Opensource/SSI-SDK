@@ -67,22 +67,22 @@ var length = function (value) {
   return value < N1
     ? 1
     : value < N2
-    ? 2
-    : value < N3
-    ? 3
-    : value < N4
-    ? 4
-    : value < N5
-    ? 5
-    : value < N6
-    ? 6
-    : value < N7
-    ? 7
-    : value < N8
-    ? 8
-    : value < N9
-    ? 9
-    : 10
+      ? 2
+      : value < N3
+        ? 3
+        : value < N4
+          ? 4
+          : value < N5
+            ? 5
+            : value < N6
+              ? 6
+              : value < N7
+                ? 7
+                : value < N8
+                  ? 8
+                  : value < N9
+                    ? 9
+                    : 10
 }
 
 var varint = {

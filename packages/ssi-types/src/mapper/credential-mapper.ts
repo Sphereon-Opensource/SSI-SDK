@@ -53,7 +53,7 @@ export class CredentialMapper {
    */
   static decodeVerifiablePresentation(
     presentation: OriginalVerifiablePresentation,
-    hasher?: Hasher
+    hasher?: Hasher,
   ): JwtDecodedVerifiablePresentation | IVerifiablePresentation | SdJwtDecodedVerifiableCredential {
     if (CredentialMapper.isJwtEncoded(presentation)) {
       const payload = jwt_decode(presentation as string) as JwtDecodedVerifiablePresentation
@@ -94,7 +94,7 @@ export class CredentialMapper {
    */
   static decodeVerifiableCredential(
     credential: OriginalVerifiableCredential,
-    hasher?: Hasher
+    hasher?: Hasher,
   ): JwtDecodedVerifiableCredential | IVerifiableCredential | SdJwtDecodedVerifiableCredential {
     if (CredentialMapper.isJwtEncoded(credential)) {
       const payload = jwt_decode(credential as string) as JwtDecodedVerifiableCredential
@@ -134,7 +134,7 @@ export class CredentialMapper {
    */
   static toWrappedVerifiablePresentation(
     originalPresentation: OriginalVerifiablePresentation,
-    opts?: { maxTimeSkewInMS?: number; hasher?: Hasher }
+    opts?: { maxTimeSkewInMS?: number; hasher?: Hasher },
   ): WrappedVerifiablePresentation {
     // SD-JWT
     if (CredentialMapper.isSdJwtDecodedCredential(originalPresentation) || CredentialMapper.isSdJwtEncoded(originalPresentation)) {
@@ -164,7 +164,7 @@ export class CredentialMapper {
       typeof originalPresentation !== 'string' && CredentialMapper.hasJWTProofType(originalPresentation) ? proof?.jwt : originalPresentation
     if (!original) {
       throw Error(
-        'Could not determine original presentation, probably it was a converted JWT presentation, that is now missing the JWT value in the proof'
+        'Could not determine original presentation, probably it was a converted JWT presentation, that is now missing the JWT value in the proof',
       )
     }
     const decoded = CredentialMapper.decodeVerifiablePresentation(original) as IVerifiablePresentation | JwtDecodedVerifiablePresentation
@@ -185,7 +185,7 @@ export class CredentialMapper {
     }
     const vcs = CredentialMapper.toWrappedVerifiableCredentials(
       vp.verifiableCredential /*.map(value => value.original)*/,
-      opts
+      opts,
     ) as WrappedW3CVerifiableCredential[]
 
     const presentation = {
@@ -213,7 +213,7 @@ export class CredentialMapper {
    */
   static toWrappedVerifiableCredentials(
     verifiableCredentials: OriginalVerifiableCredential[],
-    opts?: { maxTimeSkewInMS?: number; hasher?: Hasher }
+    opts?: { maxTimeSkewInMS?: number; hasher?: Hasher },
   ): WrappedVerifiableCredential[] {
     return verifiableCredentials.map((vc) => CredentialMapper.toWrappedVerifiableCredential(vc, opts))
   }
@@ -229,7 +229,7 @@ export class CredentialMapper {
    */
   static toWrappedVerifiableCredential(
     verifiableCredential: OriginalVerifiableCredential,
-    opts?: { maxTimeSkewInMS?: number; hasher?: Hasher }
+    opts?: { maxTimeSkewInMS?: number; hasher?: Hasher },
   ): WrappedVerifiableCredential {
     // SD-JWT
     if (CredentialMapper.isSdJwtDecodedCredential(verifiableCredential) || CredentialMapper.isSdJwtEncoded(verifiableCredential)) {
@@ -257,7 +257,7 @@ export class CredentialMapper {
     const original = CredentialMapper.hasJWTProofType(verifiableCredential) && proof ? proof.jwt ?? verifiableCredential : verifiableCredential
     if (!original) {
       throw Error(
-        'Could not determine original credential, probably it was a converted JWT credential, that is now missing the JWT value in the proof'
+        'Could not determine original credential, probably it was a converted JWT credential, that is now missing the JWT value in the proof',
       )
     }
     const decoded = CredentialMapper.decodeVerifiableCredential(original) as JwtDecodedVerifiableCredential | IVerifiableCredential
@@ -293,14 +293,72 @@ export class CredentialMapper {
     return '@context' in credential && ((credential as ICredential).type?.includes('VerifiableCredential') || false)
   }
 
+  public static isCredential(original: OriginalVerifiableCredential | OriginalVerifiablePresentation): boolean {
+    try {
+      if (CredentialMapper.isJwtEncoded(original)) {
+        const vc: IVerifiableCredential = CredentialMapper.toUniformCredential(original)
+        return CredentialMapper.isW3cCredential(vc)
+      } else if (CredentialMapper.isSdJwtEncoded(original)) {
+        return true
+      }
+      return (
+        CredentialMapper.isW3cCredential(original as ICredential) ||
+        CredentialMapper.isSdJwtDecodedCredentialPayload(original as ICredential) ||
+        CredentialMapper.isJwtDecodedCredential(original as OriginalVerifiableCredential) ||
+        CredentialMapper.isSdJwtDecodedCredential(original as OriginalVerifiableCredential)
+      )
+    } catch (e) {
+      return false
+    }
+  }
+
+  public static isPresentation(original: OriginalVerifiableCredential | OriginalVerifiablePresentation): boolean {
+    try {
+      if (CredentialMapper.isJwtEncoded(original)) {
+        const vp: IVerifiablePresentation = CredentialMapper.toUniformPresentation(original)
+        return CredentialMapper.isW3cPresentation(vp)
+      } else if (CredentialMapper.isSdJwtEncoded(original)) {
+        return false
+      }
+      return (
+        CredentialMapper.isW3cPresentation(original as IPresentation) ||
+        CredentialMapper.isSdJwtDecodedCredentialPayload(original as ICredential) ||
+        CredentialMapper.isJwtDecodedPresentation(original as OriginalVerifiablePresentation) ||
+        CredentialMapper.isSdJwtDecodedCredential(original as OriginalVerifiableCredential)
+      )
+    } catch (e) {
+      return false
+    }
+  }
+
+  public static hasProof(original: OriginalVerifiableCredential | OriginalVerifiablePresentation | string): boolean {
+    try {
+      if (CredentialMapper.isJwtEncoded(original) || CredentialMapper.isJwtDecodedCredential(original as OriginalVerifiableCredential)) {
+        return true
+      } else if (CredentialMapper.isSdJwtEncoded(original) || CredentialMapper.isSdJwtDecodedCredential(original)) {
+        //todo: we might want to revisit this
+        return true
+      }
+      if ('vc' in (original as JwtDecodedVerifiableCredential) && (original as JwtDecodedVerifiableCredential).vc.proof) {
+        return true
+      }
+      if ('vp' in (original as JwtDecodedVerifiablePresentation) && (original as JwtDecodedVerifiablePresentation).vp.proof) {
+        return true
+      }
+      return !!(original as IVerifiableCredential | IVerifiablePresentation).proof
+    } catch (e) {
+      return false
+    }
+  }
+
   public static isW3cPresentation(
-    presentation: UniformVerifiablePresentation | IPresentation | SdJwtDecodedVerifiableCredential
+    presentation: UniformVerifiablePresentation | IPresentation | SdJwtDecodedVerifiableCredential,
   ): presentation is IPresentation {
     return '@context' in presentation && ((presentation as IPresentation).type?.includes('VerifiablePresentation') || false)
   }
 
   public static isSdJwtDecodedCredentialPayload(
-    credential: ICredential | SdJwtDecodedVerifiableCredentialPayload
+    credential: ICredential | SdJwtDecodedVerifiableCredentialPayload,
   ): credential is SdJwtDecodedVerifiableCredentialPayload {
     return 'vct' in credential
   }
@@ -322,7 +380,7 @@ export class CredentialMapper {
   }
 
   public static isSdJwtDecodedCredential(
-    original: OriginalVerifiableCredential | OriginalVerifiablePresentation | ICredential | IPresentation
+    original: OriginalVerifiableCredential | OriginalVerifiablePresentation | ICredential | IPresentation,
   ): original is SdJwtDecodedVerifiableCredential {
     return (<SdJwtDecodedVerifiableCredential>original).compactSdJwtVc !== undefined
   }
@@ -343,7 +401,7 @@ export class CredentialMapper {
   static jwtEncodedPresentationToUniformPresentation(
     jwt: string,
     makeCredentialsUniform: boolean = true,
-    opts?: { maxTimeSkewInMS?: number }
+    opts?: { maxTimeSkewInMS?: number },
   ): IPresentation {
     return CredentialMapper.jwtDecodedPresentationToUniformPresentation(jwt_decode(jwt), makeCredentialsUniform, opts)
   }
@@ -351,7 +409,7 @@ export class CredentialMapper {
   static jwtDecodedPresentationToUniformPresentation(
     decoded: JwtDecodedVerifiablePresentation,
     makeCredentialsUniform: boolean = true,
-    opts?: { maxTimeSkewInMS?: number }
+    opts?: { maxTimeSkewInMS?: number },
   ): IVerifiablePresentation {
     const { iss, aud, jti, vp, ...rest } = decoded
 
@@ -397,7 +455,7 @@ export class CredentialMapper {
     verifiableCredential: OriginalVerifiableCredential,
     opts?: {
       maxTimeSkewInMS?: number
-    }
+    },
   ): IVerifiableCredential {
     if (CredentialMapper.isSdJwtDecodedCredential(verifiableCredential)) {
       throw new Error('Converting SD-JWT VC to uniform VC is not supported.')
@@ -408,7 +466,7 @@ export class CredentialMapper {
         : verifiableCredential
     if (!original) {
       throw Error(
-        'Could not determine original credential from passed in credential. Probably because a JWT proof type was present, but now is not available anymore'
+        'Could not determine original credential from passed in credential. Probably because a JWT proof type was present, but now is not available anymore',
       )
     }
     const decoded = CredentialMapper.decodeVerifiableCredential(original)
@@ -425,7 +483,7 @@ export class CredentialMapper {
 
   static toUniformPresentation(
     presentation: OriginalVerifiablePresentation,
-    opts?: { maxTimeSkewInMS?: number; addContextIfMissing?: boolean }
+    opts?: { maxTimeSkewInMS?: number; addContextIfMissing?: boolean },
   ): IVerifiablePresentation {
     if (CredentialMapper.isSdJwtDecodedCredential(presentation)) {
       throw new Error('Converting SD-JWT VC to uniform VP is not supported.')
@@ -435,7 +493,7 @@ export class CredentialMapper {
     const original = typeof presentation !== 'string' && CredentialMapper.hasJWTProofType(presentation) ? proof?.jwt : presentation
     if (!original) {
       throw Error(
-        'Could not determine original presentation, probably it was a converted JWT presentation, that is now missing the JWT value in the proof'
+        'Could not determine original presentation, probably it was a converted JWT presentation, that is now missing the JWT value in the proof',
       )
     }
     const decoded = CredentialMapper.decodeVerifiablePresentation(original)
@@ -452,7 +510,7 @@ export class CredentialMapper {
     }
 
     uniformPresentation.verifiableCredential = uniformPresentation.verifiableCredential?.map((vc) =>
-      CredentialMapper.toUniformCredential(vc, opts)
+      CredentialMapper.toUniformCredential(vc, opts),
     ) as IVerifiableCredential[] // We cast it because we IPresentation needs a VC. The internal Credential doesn't have the required Proof anymore (that is intended)
     return uniformPresentation
   }
@@ -461,14 +519,14 @@ export class CredentialMapper {
     jwt: string,
     opts?: {
       maxTimeSkewInMS?: number
-    }
+    },
   ): IVerifiableCredential {
     return CredentialMapper.jwtDecodedCredentialToUniformCredential(jwt_decode(jwt), opts)
   }
 
   static jwtDecodedCredentialToUniformCredential(
     decoded: JwtDecodedVerifiableCredential,
-    opts?: { maxTimeSkewInMS?: number }
+    opts?: { maxTimeSkewInMS?: number },
   ): IVerifiableCredential {
     const { exp, nbf, iss, vc, sub, jti, ...rest } = decoded
     const credential: IVerifiableCredential = {
@@ -620,7 +678,7 @@ export class CredentialMapper {
   }
 
   static toCompactJWT(
-    jwtDocument: W3CVerifiableCredential | JwtDecodedVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiablePresentation | string
+    jwtDocument: W3CVerifiableCredential | JwtDecodedVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiablePresentation | string,
   ): string {
     if (!jwtDocument || CredentialMapper.detectDocumentType(jwtDocument) !== DocumentFormat.JWT) {
       throw Error('Cannot convert non JWT credential to JWT')
@@ -648,7 +706,7 @@ export class CredentialMapper {
       | W3CVerifiablePresentation
       | JwtDecodedVerifiableCredential
       | JwtDecodedVerifiablePresentation
-      | SdJwtDecodedVerifiableCredential
+      | SdJwtDecodedVerifiableCredential,
   ): DocumentFormat {
     if (this.isJsonLdAsString(document)) {
       return DocumentFormat.JSONLD
@@ -670,7 +728,7 @@ export class CredentialMapper {
   }
 
   private static hasJWTProofType(
-    document: W3CVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiableCredential | JwtDecodedVerifiablePresentation
+    document: W3CVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiableCredential | JwtDecodedVerifiablePresentation,
   ): boolean {
     if (typeof document === 'string') {
       return false
@@ -679,7 +737,7 @@ export class CredentialMapper {
   }
 
   private static getFirstProof(
-    document: W3CVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiableCredential | JwtDecodedVerifiablePresentation
+    document: W3CVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiableCredential | JwtDecodedVerifiablePresentation,
   ): IProof | undefined {
     if (!document || typeof document === 'string') {
       return undefined

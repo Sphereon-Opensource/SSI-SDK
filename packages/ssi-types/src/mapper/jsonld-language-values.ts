@@ -45,7 +45,7 @@ export const mapLanguageValue = (
   opts?: {
     language?: string
     fallbackToFirstObject?: boolean
-  }
+  },
 ): any => {
   const langValues = toLanguageValueObjects(claim)
   if (Array.isArray(langValues)) {
@@ -78,7 +78,7 @@ export const mapLanguageValues = <T extends object>(
     language?: string
     fallbackToFirstObject?: boolean
     noDeepClone?: boolean
-  }
+  },
 ): T => {
   const result = opts?.noDeepClone ? claimsOrCredential : JSON.parse(JSON.stringify(claimsOrCredential))
   Object.keys(claimsOrCredential).forEach((key) => {

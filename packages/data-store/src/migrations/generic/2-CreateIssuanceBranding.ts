@@ -30,7 +30,7 @@ export class CreateIssuanceBranding1659463079429 implements MigrationInterface {
       }
       default:
         return Promise.reject(
-          `Migrations are currently only supported for sqlite, react-native, expo and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`
+          `Migrations are currently only supported for sqlite, react-native, expo and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`,
         )
     }
   }
@@ -57,7 +57,7 @@ export class CreateIssuanceBranding1659463079429 implements MigrationInterface {
       }
       default:
         return Promise.reject(
-          `Migrations are currently only supported for sqlite, react-native, expo and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`
+          `Migrations are currently only supported for sqlite, react-native, expo and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`,
         )
     }
   }

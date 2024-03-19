@@ -158,7 +158,7 @@ export class Keyv<Value = any> extends EventEmitter implements KeyvStore<Value> 
 
   async get(
     key: string | string[],
-    options?: { raw?: boolean }
+    options?: { raw?: boolean },
   ): Promise<Value | string | KeyvDeserializedData<Value> | KeyvStoredData<Value>[] | undefined> {
     const isArray = Array.isArray(key)
     return Promise.resolve()

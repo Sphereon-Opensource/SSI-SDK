@@ -27,8 +27,8 @@
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
     "jest": "^27.5.1",
-    "typeorm": "0.3.17",
-    "typescript": "^4.9.5"
+    "typeorm": "^0.3.20",
+    "typescript": "^5.4.2"
   },
   "files": [
     "dist/**/*",

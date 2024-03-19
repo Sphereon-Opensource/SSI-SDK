@@ -176,12 +176,12 @@ export default (testContext: {
       agent = testContext.getAgent()
 
       const idCardCredential: VerifiableCredential = getFileAsJson(
-        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vc/vc_idCardCredential.json'
+        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vc/vc_idCardCredential.json',
       )
       await agent.dataStoreSaveVerifiableCredential({ verifiableCredential: idCardCredential })
 
       const driverLicenseCredential: VerifiableCredential = getFileAsJson(
-        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vc/vc_driverLicense.json'
+        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vc/vc_driverLicense.json',
       )
       await agent.dataStoreSaveVerifiableCredential({ verifiableCredential: driverLicenseCredential })
 
@@ -239,7 +239,7 @@ export default (testContext: {
       await expect(
         agent.siopGetOPSession({
           sessionId: otherSessionId,
-        })
+        }),
       ).rejects.toThrow(`No session found for id: ${otherSessionId}`)
     })
 
@@ -249,7 +249,7 @@ export default (testContext: {
           agent.siopRegisterOPCustomApproval({
             key: 'test_register',
             customApproval: (verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => Promise.resolve(),
-          })
+          }),
         ).resolves.not.toThrow()
       })
 
@@ -299,7 +299,7 @@ export default (testContext: {
           stateId,
           redirectUrl,
           customApproval: customApprovalKey,
-        })
+        }),
       ).rejects.toThrow(`Custom approval not found for key: ${customApprovalKey}`)
     })
 
@@ -315,7 +315,7 @@ export default (testContext: {
             : (verifiedAuthenticationRequest: VerifiedAuthorizationRequest) => {
                 return Promise.reject(new Error(denied))
               },
-        })
+        }),
       ).rejects.toThrow(denied)
     })
 
@@ -331,7 +331,7 @@ export default (testContext: {
 
     it('should get authentication details with single credential', async () => {
       const pd_single: PresentationDefinitionWithLocation = getFileAsJson(
-        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_single.json'
+        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_single.json',
       )
       const vp_single: IPresentationWithDefinition = getFileAsJson('./packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_single.json')
       const presentation = CredentialMapper.toWrappedVerifiablePresentation(vp_single.presentation) as WrappedW3CVerifiablePresentation
@@ -360,7 +360,7 @@ export default (testContext: {
 
     it('should get authentication details with getting specific verifiableCredentials', async () => {
       const pdSingle: PresentationDefinitionWithLocation = getFileAsJson(
-        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_single.json'
+        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_single.json',
       )
       const vpSingle: IPresentationWithDefinition = getFileAsJson('./packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_single.json')
       const presentation = CredentialMapper.toWrappedVerifiablePresentation(vpSingle.presentation) as WrappedW3CVerifiablePresentation
@@ -393,10 +393,10 @@ export default (testContext: {
 
     it('should get authentication details with multiple verifiableCredentials', async () => {
       const pdMultiple: PresentationDefinitionWithLocation = getFileAsJson(
-        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_multiple.json'
+        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_multiple.json',
       )
       const vpMultiple: IPresentationWithDefinition = getFileAsJson(
-        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_multiple.json'
+        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_multiple.json',
       )
       const presentation = CredentialMapper.toWrappedVerifiablePresentation(vpMultiple.presentation) as WrappedW3CVerifiablePresentation
       presentation.presentation.presentation_submission!.id = expect.any(String)
@@ -446,7 +446,7 @@ export default (testContext: {
 
     it('should send authentication response', async () => {
       const pdMultiple: PresentationDefinitionWithLocation = getFileAsJson(
-        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_multiple.json'
+        './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_multiple.json',
       )
 
       const result = await agent.sendSiopAuthorizationResponse({

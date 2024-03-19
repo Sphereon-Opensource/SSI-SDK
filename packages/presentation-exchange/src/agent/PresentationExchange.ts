@@ -52,7 +52,7 @@ export class PresentationExchange implements IAgentPlugin {
         new KeyValueStore({
           namespace: this.defaultNamespace,
           store: new Map<string, IPresentationDefinition>(),
-        })
+        }),
       )
     }
     if (opts && Array.isArray(opts?.importDefinitions)) {
@@ -84,8 +84,8 @@ export class PresentationExchange implements IAgentPlugin {
             typeof error === 'string'
               ? error
               : typeof error === 'object' && 'message' in (error as object)
-              ? (error as Error).message
-              : 'unknown error',
+                ? (error as Error).message
+                : 'unknown error',
           tag: 'validation',
         })
       }
@@ -132,7 +132,7 @@ export class PresentationExchange implements IAgentPlugin {
 
   async pexDefinitionFilterCredentialsPerInputDescriptor(
     args: IDefinitionCredentialFilterArgs,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<IPEXFilterResultWithInputDescriptor[]> {
     const origDefinition = args.presentationDefinition
     const credentials = await this.pexFilterCredentials(args.credentialFilterOpts ?? {}, context)
@@ -156,8 +156,8 @@ export class PresentationExchange implements IAgentPlugin {
             holderDIDs,
             limitDisclosureSignatureSuites,
           },
-          context
-        )
+          context,
+        ),
       )
     })
     await Promise.all(promises.values())
@@ -173,7 +173,7 @@ export class PresentationExchange implements IAgentPlugin {
       verifiableCredentials?: W3CVerifiableCredential[]
       filter?: FindCredentialsArgs
     },
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<W3CVerifiableCredential[]> {
     if (filterOpts?.verifiableCredentials && filterOpts.verifiableCredentials.length > 0) {
       return filterOpts.verifiableCredentials as W3CVerifiableCredential[]

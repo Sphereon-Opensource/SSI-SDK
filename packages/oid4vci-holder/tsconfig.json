@@ -22,6 +22,12 @@
     },
     {
       "path": "../ssi-types"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../xstate-persistence"
     }
   ]
 }

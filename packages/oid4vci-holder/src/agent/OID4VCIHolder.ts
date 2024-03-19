@@ -13,13 +13,6 @@ import { computeEntryHash } from '@veramo/utils'
 import { v4 as uuidv4 } from 'uuid'
 import { OID4VCIMachine } from '../machine/oid4vciMachine'
 import {
-  getCredentialBranding,
-  getSupportedCredentials,
-  mapCredentialToAccept,
-  selectCredentialLocaleBranding,
-  verifyCredentialToAccept,
-} from './OID4VCIHolderService'
-import {
   AddContactIdentityArgs,
   AssertValidCredentialsArgs,
   CreateCredentialSelectionArgs,
@@ -27,23 +20,29 @@ import {
   CredentialTypeSelection,
   GetContactArgs,
   GetCredentialsArgs,
-  OnGetCredentialsArgs,
-  IOID4VCIHolder,
   InitiateOID4VCIArgs,
   InitiationData,
+  IOID4VCIHolder,
   MappedCredentialToAccept,
   OID4VCIHolderEvent,
   OID4VCIHolderOptions,
-  OID4VCIMachine as OID4VCIMachineType,
+  OID4VCIMachine as OID4VCImachineId,
   OID4VCIMachineInstanceOpts,
-  OID4VCIMachineInterpreter,
   OnContactIdentityCreatedArgs,
   OnCredentialStoredArgs,
+  OnGetCredentialsArgs,
   RequestType,
   RequiredContext,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
 } from '../types/IOID4VCIHolder'
+import {
+  getCredentialBranding,
+  getSupportedCredentials,
+  mapCredentialToAccept,
+  selectCredentialLocaleBranding,
+  verifyCredentialToAccept,
+} from './OID4VCIHolderService'
 
 /**
  * {@inheritDoc IOID4VCIHolder}
@@ -54,7 +53,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
   readonly methods: IOID4VCIHolder = {
     oid4vciHolderGetMachineInterpreter: this.oid4vciHolderGetMachineInterpreter.bind(this),
-    oid4vciHolderGetInitiationData: this.oid4vciHolderGetInitiationData.bind(this),
+    oid4vciHolderGetInitiationData: this.oid4vciHolderGetCredentialOfferData.bind(this),
     oid4vciHolderCreateCredentialSelection: this.oid4vciHolderCreateCredentialSelection.bind(this),
     oid4vciHolderGetContact: this.oid4vciHolderGetContact.bind(this),
     oid4vciHolderGetCredentials: this.oid4vciHolderGetCredentials.bind(this),
@@ -93,9 +92,12 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
   }
 
-  private async oid4vciHolderGetMachineInterpreter(args: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<OID4VCIMachineType> {
+  /**
+   * FIXME: This method can only be used locally. Creating the interpreter should be local to where the agent is running
+   */
+  private async oid4vciHolderGetMachineInterpreter(args: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<OID4VCImachineId> {
     const services = {
-      initiateOID4VCI: (args: InitiateOID4VCIArgs) => this.oid4vciHolderGetInitiationData(args, context),
+      initiateOID4VCI: (args: InitiateOID4VCIArgs) => this.oid4vciHolderGetCredentialOfferData(args, context),
       createCredentialSelection: (args: CreateCredentialSelectionArgs) => this.oid4vciHolderCreateCredentialSelection(args, context),
       getContact: (args: GetContactArgs) => this.oid4vciHolderGetContact(args, context),
       getCredentials: (args: GetCredentialsArgs) => this.oid4vciHolderGetCredentials(args, context),
@@ -113,15 +115,14 @@ export class OID4VCIHolder implements IAgentPlugin {
       },
     }
 
-    const interpreter: OID4VCIMachineInterpreter = OID4VCIMachine.newInstance(oid4vciMachineInstanceArgs)
+    const { interpreter } = await OID4VCIMachine.newInstance(oid4vciMachineInstanceArgs, context)
 
     return {
-      id: interpreter.id,
       interpreter,
     }
   }
 
-  private async oid4vciHolderGetInitiationData(args: InitiateOID4VCIArgs, context: RequiredContext): Promise<InitiationData> {
+  private async oid4vciHolderGetCredentialOfferData(args: InitiateOID4VCIArgs, context: RequiredContext): Promise<InitiationData> {
     const { requestData } = args
 
     if (requestData?.uri === undefined) {
@@ -132,11 +133,12 @@ export class OID4VCIHolder implements IAgentPlugin {
       !requestData?.uri ||
       !(requestData?.uri.startsWith(RequestType.OPENID_INITIATE_ISSUANCE) || requestData?.uri.startsWith(RequestType.OPENID_CREDENTIAL_OFFER))
     ) {
-      return Promise.reject(Error(`Invalid OID4VCI URI: ${requestData?.uri}`))
+      return Promise.reject(Error(`Invalid OID4VCI credential offer URI: ${requestData?.uri}`))
     }
 
     const openID4VCIClient = await OpenID4VCIClient.fromURI({
       uri: requestData?.uri,
+      // TODO: It would be nice to be able to configure the plugin with a custom redirect URI, mainly for mobile
       authorizationRequest: { redirectUri: `${DefaultURISchemes.CREDENTIAL_OFFER}://` },
     })
 
@@ -157,7 +159,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
   private async oid4vciHolderCreateCredentialSelection(
     args: CreateCredentialSelectionArgs,
-    context: RequiredContext
+    context: RequiredContext,
   ): Promise<Array<CredentialTypeSelection>> {
     const { credentialsSupported, credentialBranding, locale, selectedCredentials } = args
     const credentialSelection: Array<CredentialTypeSelection> = await Promise.all(
@@ -168,7 +170,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         // FIXME this allows for duplicate VerifiableCredential, which the user has no idea which ones those are and we also have a branding map with unique keys, so some branding will not match
         const defaultCredentialType = 'VerifiableCredential'
         const credentialType = credentialMetadata.types.find((type: string): boolean => type !== defaultCredentialType) ?? defaultCredentialType
-        const localeBranding = credentialBranding?.get(credentialType)
+        const localeBranding = credentialBranding?.[credentialType]
         const credentialAlias = (await selectCredentialLocaleBranding({ locale, localeBranding }))?.alias
 
         return {
@@ -177,7 +179,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           credentialAlias: credentialAlias ?? credentialType,
           isSelected: false,
         }
-      })
+      }),
     )
 
     // TODO find better place to do this, would be nice if the machine does this?
@@ -259,8 +261,8 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     await Promise.all(
       credentialsToAccept.map(
-        async (mappedCredential: MappedCredentialToAccept): Promise<void> => verifyCredentialToAccept({ mappedCredential, context })
-      )
+        async (mappedCredential: MappedCredentialToAccept): Promise<void> => verifyCredentialToAccept({ mappedCredential, context }),
+      ),
     )
   }
 
@@ -271,7 +273,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       return Promise.reject(Error('Missing serverMetadata in context'))
     }
 
-    const localeBranding: Array<IBasicCredentialLocaleBranding> | undefined = credentialBranding?.get(selectedCredentials[0])
+    const localeBranding: Array<IBasicCredentialLocaleBranding> | undefined = credentialBranding?.[selectedCredentials[0]]
     if (localeBranding && localeBranding.length > 0) {
       await context.agent.ibAddCredentialBranding({
         vcHash: computeEntryHash(credentialsToAccept[0].rawVerifiableCredential),

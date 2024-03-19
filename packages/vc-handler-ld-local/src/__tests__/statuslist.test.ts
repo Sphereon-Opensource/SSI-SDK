@@ -16,7 +16,11 @@ import {
 } from '@sphereon/ssi-sdk.vc-status-list'
 import { CredentialHandlerLDLocal } from '../agent'
 import { LdDefaultContexts } from '../ld-default-contexts'
-import { SphereonEd25519Signature2018, SphereonEd25519Signature2020 } from '../suites'
+import {
+  SphereonEcdsaSecp256k1RecoverySignature2020,
+  SphereonEd25519Signature2018,
+  SphereonEd25519Signature2020
+} from '../suites'
 import { ICredentialHandlerLDLocal, MethodNames } from '../types'
 
 jest.setTimeout(100000)
@@ -50,7 +54,7 @@ describe('Status list', () => {
         new CredentialPlugin(),
         new CredentialHandlerLDLocal({
           contextMaps: [LdDefaultContexts],
-          suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
+          suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020(), new SphereonEcdsaSecp256k1RecoverySignature2020()],
           bindingOverrides: new Map([
             // Bindings to test overrides of credential-ld plugin methods
             ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
@@ -73,7 +77,7 @@ describe('Status list', () => {
         length: 99999,
         correlationId: '' + new Date().toISOString(),
       },
-      { agent }
+      { agent },
     )
     expect(statusList).toBeDefined()
     expect(statusList.id).toEqual('http://localhost:9543/list1')
@@ -95,17 +99,17 @@ describe('Status list', () => {
         length: 99999,
         correlationId: '' + new Date().toISOString(),
       },
-      { agent }
+      { agent },
     )
     expect(initialList).toBeDefined()
 
     let statusList = await updateStatusIndexFromStatusListCredential(
       { statusListCredential: initialList.statusListCredential, statusListIndex: 2, value: true },
-      { agent }
+      { agent },
     )
     statusList = await updateStatusIndexFromStatusListCredential(
       { statusListCredential: statusList.statusListCredential, statusListIndex: 4, value: true },
-      { agent }
+      { agent },
     )
 
     expect(statusList.id).toEqual('http://localhost:9543/list2')
@@ -135,7 +139,7 @@ describe('Status list', () => {
 
     statusList = await updateStatusIndexFromStatusListCredential(
       { statusListCredential: statusList.statusListCredential, statusListIndex: 4, value: false },
-      { agent }
+      { agent },
     )
     const result4Updated = await checkStatusIndexFromStatusListCredential({
       statusListCredential: statusList.statusListCredential,

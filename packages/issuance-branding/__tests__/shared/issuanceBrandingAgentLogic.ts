@@ -314,7 +314,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
 
       await expect(agent.ibUpdateCredentialBranding({ credentialBranding: updatedCredentialBranding })).rejects.toThrowError(
-        `No credential branding found for id: ${unknownId}`
+        `No credential branding found for id: ${unknownId}`,
       )
     })
 
@@ -469,7 +469,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
 
       await expect(agent.ibUpdateCredentialLocaleBranding({ localeBranding: updatedCredentialLocaleBranding })).rejects.toThrowError(
-        `No credential locale branding found for id: ${unknownId}`
+        `No credential locale branding found for id: ${unknownId}`,
       )
     })
 
@@ -751,10 +751,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result?.localeBranding[0].logo?.dimensions?.height).toEqual(credentialBranding.localeBranding[0].logo!.dimensions!.height)
       expect(result?.localeBranding[0].background?.image?.mediaType).toEqual(credentialBranding.localeBranding[0].background!.image!.mediaType)
       expect(result?.localeBranding[0].background?.image?.dimensions?.width).toEqual(
-        credentialBranding.localeBranding[0].background!.image!.dimensions!.width
+        credentialBranding.localeBranding[0].background!.image!.dimensions!.width,
       )
       expect(result?.localeBranding[0].background?.image?.dimensions?.height).toEqual(
-        credentialBranding.localeBranding[0].background!.image!.dimensions!.height
+        credentialBranding.localeBranding[0].background!.image!.dimensions!.height,
       )
     })
 
@@ -1025,7 +1025,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
 
       await expect(agent.ibUpdateIssuerBranding({ issuerBranding: updatedIssuerBranding })).rejects.toThrowError(
-        `No issuer branding found for id: ${unknownId}`
+        `No issuer branding found for id: ${unknownId}`,
       )
     })
 
@@ -1176,7 +1176,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
 
       await expect(agent.ibUpdateIssuerLocaleBranding({ localeBranding: updatedIssuerLocaleBranding })).rejects.toThrowError(
-        `No issuer locale branding found for id: ${unknownId}`
+        `No issuer locale branding found for id: ${unknownId}`,
       )
     })
 
@@ -1450,10 +1450,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result?.localeBranding[0].logo?.dimensions?.height).toEqual(issuerBranding.localeBranding[0].logo!.dimensions!.height)
       expect(result?.localeBranding[0].background?.image?.mediaType).toEqual(issuerBranding.localeBranding[0].background!.image!.mediaType)
       expect(result?.localeBranding[0].background?.image?.dimensions?.width).toEqual(
-        issuerBranding.localeBranding[0].background!.image!.dimensions!.width
+        issuerBranding.localeBranding[0].background!.image!.dimensions!.width,
       )
       expect(result?.localeBranding[0].background?.image?.dimensions?.height).toEqual(
-        issuerBranding.localeBranding[0].background!.image!.dimensions!.height
+        issuerBranding.localeBranding[0].background!.image!.dimensions!.height,
       )
     })
   })
