@@ -16,7 +16,11 @@ import {
 } from '@sphereon/ssi-sdk.vc-status-list'
 import { CredentialHandlerLDLocal } from '../agent'
 import { LdDefaultContexts } from '../ld-default-contexts'
-import { SphereonEd25519Signature2018, SphereonEd25519Signature2020 } from '../suites'
+import {
+  SphereonEcdsaSecp256k1RecoverySignature2020,
+  SphereonEd25519Signature2018,
+  SphereonEd25519Signature2020
+} from '../suites'
 import { ICredentialHandlerLDLocal, MethodNames } from '../types'
 
 jest.setTimeout(100000)
@@ -50,7 +54,7 @@ describe('Status list', () => {
         new CredentialPlugin(),
         new CredentialHandlerLDLocal({
           contextMaps: [LdDefaultContexts],
-          suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
+          suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020(), new SphereonEcdsaSecp256k1RecoverySignature2020()],
           bindingOverrides: new Map([
             // Bindings to test overrides of credential-ld plugin methods
             ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
