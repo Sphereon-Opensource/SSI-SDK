@@ -14,7 +14,7 @@ export class PartyTypeEntity {
   @Column('simple-enum', { name: 'type', enum: PartyTypeEnum, nullable: false, unique: false })
   type!: PartyTypeEnum
 
-  @Column('simple-enum', { name: 'type', enum: PartyOriginEnum, nullable: false, unique: false })
+  @Column('simple-enum', { name: 'origin', enum: PartyOriginEnum, nullable: false, unique: false })
   origin!: PartyOriginEnum
 
   @Column({ name: 'name', length: 255, nullable: false, unique: true })
