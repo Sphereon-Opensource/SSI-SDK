@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.21.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.19.0...v0.21.0) (2024-03-20)
+
+### Bug Fixes
+
+- Use response_uri instead of redirect_uri ([9c7c9ef](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9c7c9efc9c766ab43a01760bc5cedf3abea4c769))
+
 # [0.19.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.18.1...v0.19.0) (2024-03-02)
 
 ### Features
