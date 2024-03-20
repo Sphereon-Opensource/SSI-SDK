@@ -7,11 +7,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-- Resume OID4VCI with linkhandler and auth code flow was broken ([654cef4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/654cef4b64b0eb46f52c209e8dd6ae82528b02c9))
-- Use response_uri instead of redirect_uri ([9c7c9ef](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9c7c9efc9c766ab43a01760bc5cedf3abea4c769))
+- fixed XStatePersistence plugin and fixed the tests ([56d8f18](https://github.com/Sphereon-Opensource/SSI-SDK/commit/56d8f1883802208a2d15f2f25ec03b0bcfb0a4e3))
 
 ### Features
 
+- Add rest client mode to xstate-machine-persistence, allowing to process local events but delegate the execution to a REST server ([02c5e12](https://github.com/Sphereon-Opensource/SSI-SDK/commit/02c5e12f68c94f7a2d099b59de1d13b4c77ea5a4))
+- Add support to automatically cleanup on final states, as well as to cleanup all other instances when starting a machine ([484fc21](https://github.com/Sphereon-Opensource/SSI-SDK/commit/484fc215a95232b861b81d6def6e42260ac8a1f9))
+- Add support to start and resume xstate statemachines, with automatic persistence on state changes ([f6baae0](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f6baae0527a80acfd423e4efe1c2f2b79e60bb8c))
+- added unit tests and refactored plugin methods ([31eac66](https://github.com/Sphereon-Opensource/SSI-SDK/commit/31eac66d70168a74e9a79c0bb2e50c7dc942682a))
 - Allow to use a customInstanceId as well as an existingInstanceId, so we can differentiate between re-using an existing machine and using a custom id ([3aeb93d](https://github.com/Sphereon-Opensource/SSI-SDK/commit/3aeb93d9b4dd373f445cec5cbe33d08364b2df74))
 
 ### Reverts
@@ -22,15 +25,3 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### BREAKING CHANGES
 
 - Remove BBS support. Upstream support for Windows and RN is missing. Needs to be revisited at a later point in time
-
-# [0.19.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.18.1...v0.19.0) (2024-03-02)
-
-### Bug Fixes
-
-- VCI holder agent plugin credential and branding storage fixes ([901ff44](https://github.com/Sphereon-Opensource/SSI-SDK/commit/901ff4479e5442e8bca14ee1cd24f05b827874c2))
-
-### Features
-
-- added oid4vci-holder plugin ([e8507d4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e8507d4c5ca361886adf800c21e368c44ee8ffac))
-
-# Change Log

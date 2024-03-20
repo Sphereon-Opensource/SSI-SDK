@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.21.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.19.0...v0.21.0) (2024-03-20)
+
+### Bug Fixes
+
+- Use response_uri instead of redirect_uri ([9c7c9ef](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9c7c9efc9c766ab43a01760bc5cedf3abea4c769))
+
+### Features
+
+- Add support to create DID on demand when talking to RP with SIOP ([68a6dee](https://github.com/Sphereon-Opensource/SSI-SDK/commit/68a6dee252e1325f4eb6fbdfa3b1a2a5d9ccaf61))
+
+### Reverts
+
+- Remove BBS support. ([205e0db](https://github.com/Sphereon-Opensource/SSI-SDK/commit/205e0db2bb985bf33a618576955d8b28a39ff932))
+
+### BREAKING CHANGES
+
+- Remove BBS support. Upstream support for Windows and RN is missing. Needs to be revisited at a later point in time
+
 # [0.19.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.18.1...v0.19.0) (2024-03-02)
 
 ### Bug Fixes
