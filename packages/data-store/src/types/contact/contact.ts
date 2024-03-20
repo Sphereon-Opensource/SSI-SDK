@@ -150,9 +150,15 @@ export type Contact = NaturalPerson | Organization
 export type NonPersistedContact = NonPersistedNaturalPerson | NonPersistedOrganization
 export type PartialContact = PartialNaturalPerson | PartialOrganization
 
+export enum PartyOriginEnum {
+  INTERNAL = 'internal',
+  EXTERNAL = 'external',
+}
+
 export type PartyType = {
   id: string
   type: PartyTypeEnum
+  origin: PartyOriginEnum
   name: string
   tenantId: string
   description?: string
