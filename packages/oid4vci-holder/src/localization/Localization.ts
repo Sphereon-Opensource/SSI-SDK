@@ -27,7 +27,7 @@ class Localization {
 
       return i18n.t(key, config)
     },
-    (key: Scope, config?: TranslateOptions) => (config ? key + JSON.stringify(config) : key)
+    (key: Scope, config?: TranslateOptions) => (config ? key + JSON.stringify(config) : key),
   )
 
   private static findSupportedLanguage = (locale: string): string | undefined => {

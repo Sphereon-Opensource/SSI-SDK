@@ -1,6 +1,5 @@
 import { TAgent, IPluginMethodMap, IAgentOptions } from '@veramo/core'
 import { createObjects } from './objectCreator.js'
-import fs from 'fs'
 import yaml from 'yaml'
 
 /**
@@ -47,7 +46,7 @@ export async function createAgentFromConfig<T extends IPluginMethodMap>(config: 
  * @public
  */
 export async function createAgent<T extends IPluginMethodMap, C = Record<string, any>>(
-  options: IAgentOptions & { context?: C }
+  options: IAgentOptions & { context?: C },
 ): Promise<TAgent<T> & { context?: C }> {
   //@ts-ignore
   return new Agent(options) as TAgent<T>
@@ -57,11 +56,12 @@ export async function createAgent<T extends IPluginMethodMap, C = Record<string,
  * Parses a yaml config file and returns a config object
  * @param filePath
  */
-export const getConfig = async (filePath: fs.PathLike): Promise<{ version?: number; [x: string]: any }> => {
+export const getConfig = async (filePath: string | Buffer | URL): Promise<{ version?: number; [x: string]: any }> => {
   let fileContent: string
 
   // read file async
   try {
+    const fs = await import('fs')
     fileContent = await fs.promises.readFile(filePath, 'utf8')
   } catch (e) {
     console.log('Config file not found: ' + filePath)

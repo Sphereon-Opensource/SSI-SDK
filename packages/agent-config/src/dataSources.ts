@@ -67,7 +67,7 @@ export class DataSources {
       debug(`WARNING: Automatic migrations need to be disabled in this app! Adjust the database configuration and set synchronize to false`)
     } else if (config.migrationsRun) {
       debug(
-        `Migrations are currently managed from config. Please set migrationsRun and synchronize to false to get consistent behaviour. We run migrations from code explicitly`
+        `Migrations are currently managed from config. Please set migrationsRun and synchronize to false to get consistent behaviour. We run migrations from code explicitly`,
       )
     } else {
       debug(`Running ${dataSource.migrations.length} migration(s) from code if needed...`)

@@ -79,7 +79,7 @@ describe('credential-LD full flow', () => {
         correlationId: '1234',
         type: StatusListType.StatusList2021,
       },
-      { agent }
+      { agent },
     )
     expect(statusList).toBeDefined()
     expect(statusList.id).toEqual('http://localhost:9543/list1')

@@ -36,7 +36,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should create DIDComm V2 OOB Invitation qr code value', async () => {
       await agent.qrDIDCommOobInvitationValue(oobInvitationCreateValue).then((ssiQrCode) => {
         expect(ssiQrCode).toEqual(
-          'https://example.com/?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNTk5ZjM2MzgtYjU2My00OTM3LTk0ODctZGZlNTUwOTlkOTAwIiwiZnJvbSI6ImRpZDprZXk6enJmZGprZ2ZqZ2ZkamsiLCJib2R5Ijp7ImdvYWxfY29kZSI6InN0cmVhbWxpbmVkLXZwIiwiYWNjZXB0IjpbImRpZGNvbW0vdjIiXX19'
+          'https://example.com/?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNTk5ZjM2MzgtYjU2My00OTM3LTk0ODctZGZlNTUwOTlkOTAwIiwiZnJvbSI6ImRpZDprZXk6enJmZGprZ2ZqZ2ZkamsiLCJib2R5Ijp7ImdvYWxfY29kZSI6InN0cmVhbWxpbmVkLXZwIiwiYWNjZXB0IjpbImRpZGNvbW0vdjIiXX19',
         )
       })
     })
@@ -50,7 +50,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         expect(div!.childNodes[0]!.textContent).toEqual('did:key:zrfdjkgfjgfdjk')
 
         expect(ssiQrCode.props.value).toEqual(
-          'https://example.com/?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNTk5ZjM2MzgtYjU2My00OTM3LTk0ODctZGZlNTUwOTlkOTAwIiwiZnJvbSI6ImRpZDprZXk6enJmZGprZ2ZqZ2ZkamsiLCJib2R5Ijp7ImdvYWxfY29kZSI6InN0cmVhbWxpbmVkLXZwIiwiYWNjZXB0IjpbImRpZGNvbW0vdjIiXX19'
+          'https://example.com/?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNTk5ZjM2MzgtYjU2My00OTM3LTk0ODctZGZlNTUwOTlkOTAwIiwiZnJvbSI6ImRpZDprZXk6enJmZGprZ2ZqZ2ZkamsiLCJib2R5Ijp7ImdvYWxfY29kZSI6InN0cmVhbWxpbmVkLXZwIiwiYWNjZXB0IjpbImRpZGNvbW0vdjIiXX19',
         )
         screen.debug()
       })
@@ -102,7 +102,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should fail to create OpenID4VCI qr code value - by value, scheme in baseUri and different scheme', async () => {
       await expect(() => agent.qrOpenID4VCIValue(openid4vciCreateValueWrong)).rejects.toThrow(
-        Error('The uri must contain the same scheme or omit it')
+        Error('The uri must contain the same scheme or omit it'),
       )
     })
 

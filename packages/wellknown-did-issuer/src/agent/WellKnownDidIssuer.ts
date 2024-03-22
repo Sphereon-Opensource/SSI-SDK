@@ -45,7 +45,10 @@ export class WellKnownDidIssuer implements IAgentPlugin {
   private readonly credentialIssuances: Record<string, IssuanceCallback>
   private readonly didConfigurationResourceRelations = ['linkedDids']
 
-  constructor(private dbConnection: OrPromise<Connection>, args?: IWellKnownDidIssuerOptionsArgs) {
+  constructor(
+    private dbConnection: OrPromise<Connection>,
+    args?: IWellKnownDidIssuerOptionsArgs,
+  ) {
     this.credentialIssuances = (args && args.credentialIssuances) || {}
   }
 
@@ -66,7 +69,7 @@ export class WellKnownDidIssuer implements IAgentPlugin {
   /** {@inheritDoc IWellKnownDidIssuer.issueDidConfigurationResource} */
   private async issueDidConfigurationResource(
     args: IIssueDidConfigurationResourceArgs,
-    context: RequiredContext
+    context: RequiredContext,
   ): Promise<IDidConfigurationResource> {
     if (!args.issuances.every((issuance: IIssueDomainLinkageCredentialArgs) => issuance.origin === args.issuances[0].origin)) {
       return Promise.reject(Error('All verifiableCredentials should be issued for the same origin'))
@@ -80,8 +83,8 @@ export class WellKnownDidIssuer implements IAgentPlugin {
           origin: issuance.origin,
           serviceId: issuance.serviceId,
         },
-        context
-      )
+        context,
+      ),
     )
 
     return Promise.all(addServices).then(async () =>
@@ -98,7 +101,7 @@ export class WellKnownDidIssuer implements IAgentPlugin {
           }
           return didConfigurationResource
         })
-        .catch((error: Error) => Promise.reject(Error(`Unable to issue DID configuration resource. Error: ${error.message}`)))
+        .catch((error: Error) => Promise.reject(Error(`Unable to issue DID configuration resource. Error: ${error.message}`))),
     )
   }
 
@@ -108,7 +111,7 @@ export class WellKnownDidIssuer implements IAgentPlugin {
       origin: args.origin,
       context: args.didConfigurationResource['@context'],
       linkedDids: args.didConfigurationResource.linked_dids.map((credential: DomainLinkageCredential) =>
-        createCredentialEntity(this.normalizeCredential(credential))
+        createCredentialEntity(this.normalizeCredential(credential)),
       ),
     }
 
@@ -192,7 +195,7 @@ export class WellKnownDidIssuer implements IAgentPlugin {
           !identifier.services ||
           identifier.services.filter(
             // TODO we should also check for the origins in the serviceEndpoint objects when we start supporting multiple origins
-            (service: Service) => service.type === ServiceTypesEnum.LINKED_DOMAINS && service.serviceEndpoint === args.origin
+            (service: Service) => service.type === ServiceTypesEnum.LINKED_DOMAINS && service.serviceEndpoint === args.origin,
           ).length === 0
         ) {
           await context.agent.didManagerAddService({

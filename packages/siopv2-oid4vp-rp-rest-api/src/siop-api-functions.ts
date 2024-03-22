@@ -7,7 +7,7 @@ import { IRequiredContext } from './types'
 export function verifyAuthResponseSIOPv2Endpoint(
   router: Router,
   context: IRequiredContext,
-  opts?: ISingleEndpointOpts & { presentationDefinitionLocation?: PresentationDefinitionLocation }
+  opts?: ISingleEndpointOpts & { presentationDefinitionLocation?: PresentationDefinitionLocation },
 ) {
   if (opts?.enabled === false) {
     console.log(`verifyAuthResponse SIOP endpoint is disabled`)
@@ -92,7 +92,7 @@ export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredC
       })
       if (!requestState) {
         console.log(
-          `No authorization request could be found for the given url in the state manager. correlationId: ${correlationId}, definitionId: ${definitionId}`
+          `No authorization request could be found for the given url in the state manager. correlationId: ${correlationId}, definitionId: ${definitionId}`,
         )
         return sendErrorResponse(response, 404, `No authorization request could be found`)
       }

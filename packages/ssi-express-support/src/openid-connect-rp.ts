@@ -21,7 +21,7 @@ export async function oidcGetClient(
   opts?: {
     jwks?: { keys: JsonWebKey[] }
     options?: ClientOptions
-  }
+  },
 ) {
   // @ts-ignore
   return new issuer.Client(metadata, opts?.jwks, opts?.options)
@@ -47,8 +47,8 @@ export function getLoginEndpoint(router: Router, opts?: ISingleEndpointOpts & { 
     passport.authenticate(
       strategy,
       { ...opts.authentication?.strategyOptions, ...opts.endpoint?.authentication?.strategyOptions, keepSessionInfo: false },
-      undefined
-    )
+      undefined,
+    ),
   )
 }
 
@@ -67,7 +67,7 @@ export function getLoginCallbackEndpoint(router: Router, opts?: ISingleEndpointO
     passport.authenticate(
       strategy,
       { ...opts.authentication?.strategyOptions, ...opts.endpoint?.authentication?.strategyOptions, keepSessionInfo: true },
-      undefined
+      undefined,
     ),
     (req: any, res: any, next) => {
       if (req.user) {
@@ -80,7 +80,7 @@ export function getLoginCallbackEndpoint(router: Router, opts?: ISingleEndpointO
       } else {
         return res.redirect(env('OIDC_FRONTEND_LOGIN_URL', PREFIX) ?? 'http://localhost:3001/authentication/login')
       }
-    }
+    },
   )
 }
 

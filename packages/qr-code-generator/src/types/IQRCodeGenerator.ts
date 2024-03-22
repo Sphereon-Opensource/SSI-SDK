@@ -3,12 +3,12 @@ import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 export interface IQRCodeGenerator extends IPluginMethodMap {
   qrDIDCommOobInvitationElement(
     args: CreateElementArgs<QRType.DIDCOMM_V2_OOB_INVITATION, DIDCommV2OOBInvitationData>,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<JSX.Element>
 
   qrDIDCommOobInvitationValue(
     args: CreateValueArgs<QRType.DIDCOMM_V2_OOB_INVITATION, DIDCommV2OOBInvitationData>,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<string>
 
   qrSIOPv2Element(args: CreateElementArgs<QRType.SIOPV2, SIOPv2DataWithScheme>, context: IRequiredContext): Promise<JSX.Element>

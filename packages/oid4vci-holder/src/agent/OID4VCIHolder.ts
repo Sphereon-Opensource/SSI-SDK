@@ -116,10 +116,9 @@ export class OID4VCIHolder implements IAgentPlugin {
       },
     }
 
-    const { machineStateInit, interpreter } = await OID4VCIMachine.newInstance(oid4vciMachineInstanceArgs, context)
+    const { interpreter } = await OID4VCIMachine.newInstance(oid4vciMachineInstanceArgs, context)
 
     return {
-      machineStateInit,
       interpreter,
     }
   }
@@ -161,7 +160,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
   private async oid4vciHolderCreateCredentialSelection(
     args: CreateCredentialSelectionArgs,
-    context: RequiredContext
+    context: RequiredContext,
   ): Promise<Array<CredentialTypeSelection>> {
     const { credentialsSupported, credentialBranding, locale, selectedCredentials } = args
     const credentialSelection: Array<CredentialTypeSelection> = await Promise.all(
@@ -172,7 +171,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         // FIXME this allows for duplicate VerifiableCredential, which the user has no idea which ones those are and we also have a branding map with unique keys, so some branding will not match
         const defaultCredentialType = 'VerifiableCredential'
         const credentialType = credentialMetadata.types.find((type: string): boolean => type !== defaultCredentialType) ?? defaultCredentialType
-        const localeBranding = credentialBranding?.get(credentialType)
+        const localeBranding = credentialBranding?.[credentialType]
         const credentialAlias = (await selectCredentialLocaleBranding({ locale, localeBranding }))?.alias
 
         return {
@@ -181,7 +180,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           credentialAlias: credentialAlias ?? credentialType,
           isSelected: false,
         }
-      })
+      }),
     )
 
     // TODO find better place to do this, would be nice if the machine does this?
@@ -265,8 +264,8 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     await Promise.all(
       credentialsToAccept.map(
-        async (mappedCredential: MappedCredentialToAccept): Promise<void> => verifyCredentialToAccept({ mappedCredential, context })
-      )
+        async (mappedCredential: MappedCredentialToAccept): Promise<void> => verifyCredentialToAccept({ mappedCredential, context }),
+      ),
     )
   }
 
@@ -277,7 +276,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       return Promise.reject(Error('Missing serverMetadata in context'))
     }
 
-    const localeBranding: Array<IBasicCredentialLocaleBranding> | undefined = credentialBranding?.get(selectedCredentials[0])
+    const localeBranding: Array<IBasicCredentialLocaleBranding> | undefined = credentialBranding?.[selectedCredentials[0]]
     if (localeBranding && localeBranding.length > 0) {
       await context.agent.ibAddCredentialBranding({
         vcHash: computeEntryHash(credentialsToAccept[0].rawVerifiableCredential),

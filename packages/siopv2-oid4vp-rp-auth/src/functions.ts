@@ -128,12 +128,12 @@ export async function createRPBuilder(args: {
           resolverResolution: true,
           localResolution: true,
           uniresolverResolution: rpOpts.didOpts.resolveOpts?.noUniversalResolverFallback !== true,
-        })
+        }),
     )
     .withClientId(did, PropertyTarget.REQUEST_OBJECT)
     // todo: move to options fill/correct method
     .withSupportedVersions(
-      rpOpts.supportedVersions ?? [SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_ID1, SupportedVersion.SIOPv2_D11]
+      rpOpts.supportedVersions ?? [SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_ID1, SupportedVersion.SIOPv2_D11],
     )
 
     .withEventEmitter(eventEmitter)

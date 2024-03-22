@@ -157,7 +157,7 @@ export class JsonWebKey {
       kty: 'OKP',
       crv: 'Ed25519',
       detached: true,
-    }
+    },
   ) => {
     const KeyPair = getKeyPairForKtyAndCrv(options.kty, options.crv)
     if (!options.secureRandom) {
@@ -176,7 +176,7 @@ export class JsonWebKey {
 
   static from = async (
     k: JsonWebKey2020 | P256Key2021 | P384Key2021 | P521Key2021 | Ed25519VerificationKey2018 | EcdsaSecp256k1VerificationKey2019,
-    options: any = { detached: true }
+    options: any = { detached: true },
   ) => {
     let kp: any | undefined
     const context: IAgentContext<RequiredAgentMethods> = options.context
@@ -196,7 +196,7 @@ export class JsonWebKey {
             // publicExponent: new Uint8Array([1, 0, 1]),
           } as RsaHashedImportParams,
           true,
-          ['sign', 'verify']
+          ['sign', 'verify'],
         )
 
         kp = new WebCryptoKey({

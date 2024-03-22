@@ -1,5 +1,6 @@
 import {
   AbstractContactStore,
+  BaseContactEntity,
   ElectronicAddress,
   Identity,
   NonPersistedContact,
@@ -263,7 +264,7 @@ export class ContactManager implements IAgentPlugin {
     return this.store.removePhysicalAddress(args).then((): boolean => true)
   }
 
-  private getContactInformationFrom(contact: any): NonPersistedContact {
+  private getContactInformationFrom(contact: NonPersistedContact | BaseContactEntity): NonPersistedContact {
     if (isNaturalPerson(contact)) {
       return { firstName: contact.firstName, middleName: contact.middleName, lastName: contact.lastName, displayName: contact.displayName }
     } else if (isOrganization(contact)) {

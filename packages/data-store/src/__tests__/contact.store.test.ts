@@ -891,7 +891,7 @@ describe('Contact store tests', (): void => {
     }
 
     await expect(contactStore.addIdentity({ partyId: savedParty.id, identity })).rejects.toThrow(
-      `Identity with correlation type url should contain a connection`
+      `Identity with correlation type url should contain a connection`,
     )
   })
 
@@ -926,7 +926,7 @@ describe('Contact store tests', (): void => {
     storedIdentity.identifier = { ...storedIdentity.identifier, type: CorrelationIdentifierEnum.URL }
 
     await expect(contactStore.updateIdentity({ identity: storedIdentity })).rejects.toThrow(
-      `Identity with correlation type url should contain a connection`
+      `Identity with correlation type url should contain a connection`,
     )
   })
 
@@ -1426,7 +1426,7 @@ describe('Contact store tests', (): void => {
     }
 
     await expect(contactStore.updateRelationship({ relationship: updatedRelationship })).rejects.toThrow(
-      `No party relationship found for id: ${relationshipId}`
+      `No party relationship found for id: ${relationshipId}`,
     )
   })
 
@@ -1478,7 +1478,7 @@ describe('Contact store tests', (): void => {
     }
 
     await expect(contactStore.updateRelationship({ relationship: updatedRelationship })).rejects.toThrow(
-      `No party found for right side of the relationship, party id: ${partyId}`
+      `No party found for right side of the relationship, party id: ${partyId}`,
     )
   })
 
@@ -1530,7 +1530,7 @@ describe('Contact store tests', (): void => {
     }
 
     await expect(contactStore.updateRelationship({ relationship: updatedRelationship })).rejects.toThrow(
-      `No party found for left side of the relationship, party id: ${partyId}`
+      `No party found for left side of the relationship, party id: ${partyId}`,
     )
   })
 
@@ -1712,7 +1712,7 @@ describe('Contact store tests', (): void => {
     expect(savedParty).toBeDefined()
 
     await expect(contactStore.removePartyType({ partyTypeId: savedParty.partyType.id })).rejects.toThrow(
-      `Unable to remove party type with id: ${savedParty.partyType.id}. Party type is in use`
+      `Unable to remove party type with id: ${savedParty.partyType.id}. Party type is in use`,
     )
   })
 
@@ -1818,7 +1818,7 @@ describe('Contact store tests', (): void => {
     const electronicAddressId = 'unknownElectronicAddressId'
 
     await expect(contactStore.getElectronicAddress({ electronicAddressId })).rejects.toThrow(
-      `No electronic address found for id: ${electronicAddressId}`
+      `No electronic address found for id: ${electronicAddressId}`,
     )
   })
 
@@ -2050,7 +2050,7 @@ describe('Contact store tests', (): void => {
     await contactStore.removeElectronicAddress({ electronicAddressId: savedElectronicAddress.id })
 
     await expect(contactStore.getElectronicAddress({ electronicAddressId: savedElectronicAddress.id })).rejects.toThrow(
-      `No electronic address found for id: ${savedElectronicAddress.id}`
+      `No electronic address found for id: ${savedElectronicAddress.id}`,
     )
   })
 
@@ -2058,7 +2058,7 @@ describe('Contact store tests', (): void => {
     const electronicAddressId = 'unknownElectronicAddressId'
 
     await expect(contactStore.removeElectronicAddress({ electronicAddressId })).rejects.toThrow(
-      `No electronic address found for id: ${electronicAddressId}`
+      `No electronic address found for id: ${electronicAddressId}`,
     )
   })
 
@@ -2386,7 +2386,7 @@ describe('Contact store tests', (): void => {
     await contactStore.removePhysicalAddress({ physicalAddressId: savedPhysicalAddress.id })
 
     await expect(contactStore.getPhysicalAddress({ physicalAddressId: savedPhysicalAddress.id })).rejects.toThrow(
-      `No physical address found for id: ${savedPhysicalAddress.id}`
+      `No physical address found for id: ${savedPhysicalAddress.id}`,
     )
   })
 

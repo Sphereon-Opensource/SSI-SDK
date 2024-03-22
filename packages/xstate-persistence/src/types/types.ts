@@ -5,7 +5,18 @@ import {
   StoreMachineStatesFindActiveArgs,
 } from '@sphereon/ssi-sdk.data-store'
 import { IAgentContext } from '@veramo/core'
-import { AnyEventObject, EventObject, HistoryValue, SCXML, StateValue } from 'xstate'
+import {
+  AnyEventObject,
+  DefaultContext,
+  EventObject,
+  HistoryValue,
+  Interpreter,
+  SCXML,
+  StateSchema,
+  StateValue,
+  TypegenDisabled,
+  Typestate,
+} from 'xstate'
 
 import { IMachineStatePersistence } from './IMachineStatePersistence'
 
@@ -55,7 +66,11 @@ export type DeleteStateResult = number
  */
 export type MachineStatePersistEvent = {
   type: MachineStatePersistEventType
-  data: MachineStatePersistArgs & { _eventCounter: number; _eventDate: Date }
+  data: Omit<MachineStatePersistArgs, 'machineState'> & {
+    _eventCounter: number
+    _eventDate: Date
+    _cleanupOnFinalState: boolean
+  }
 }
 
 /**
@@ -99,6 +114,7 @@ export type MachineStateInitType = 'new' | 'existing'
  */
 export type MachineStateInit = Pick<MachineStateInfo, 'instanceId' | 'machineName' | 'tenantId' | 'createdAt' | 'expiresAt'> & {
   stateType: MachineStateInitType
+  machineState?: MachineStateInfo // Only available when stateType is 'existing'
 }
 
 /**
@@ -109,14 +125,14 @@ export type MachineStateInit = Pick<MachineStateInfo, 'instanceId' | 'machineNam
  */
 export type InitMachineStateArgs = Omit<Partial<MachineStateInit>, 'instanceId'> &
   Pick<MachineStateInfo, 'machineName'> &
-  Pick<MachineStatePersistenceOpts, 'customInstanceId' | 'existingInstanceId'>
+  Pick<MachineStatePersistenceOpts, 'customInstanceId' | 'existingInstanceId'> & { cleanupAllOtherInstances?: boolean }
 
 /**
  * Represents the arguments required to persist the machine state.
  */
 export type MachineStatePersistArgs = Omit<MachineStateInit, 'createdAt'> &
   Pick<MachineStateInfo, 'state' | 'instanceId'> &
-  Partial<Pick<MachineStateInfo, 'updatedCount'>>
+  Partial<Pick<MachineStateInfo, 'updatedCount'>> & { cleanupOnFinalState?: boolean }
 
 /**
  * Represents the arguments required to get machine state.
@@ -134,6 +150,30 @@ export type MachineStateGetArgs = Pick<StoreMachineStateInfo, 'instanceId' | 'te
  * @property {string} tenantId - The ID of the tenant owning the machine instance.
  */
 export type MachineStateDeleteArgs = Pick<StoreMachineStateInfo, 'instanceId' | 'tenantId'>
+
+/**
+ * Represents the information for a started interpreter.
+ *
+ * @template TContext The type of the context object.
+ * @template TStateSchema The type of the state schema.
+ * @template TEvent The type of the event object.
+ * @template TTypestate The type of the typestate object.
+ * @template TResolvedTypesMeta The type of the resolved types meta object.
+ */
+export type StartedInterpreterInfo<
+  TContext = DefaultContext,
+  TStateSchema extends StateSchema = any,
+  TEvent extends EventObject = EventObject,
+  TTypestate extends Typestate<TContext> = {
+    value: any
+    context: TContext
+  },
+  TResolvedTypesMeta = TypegenDisabled,
+> = {
+  interpreter: Interpreter<TContext, TStateSchema, TEvent, TTypestate, TResolvedTypesMeta>
+  machineState?: MachineStateInfo
+  init: MachineStateInit
+}
 
 /**
  * Represents the serializable state of a machine.

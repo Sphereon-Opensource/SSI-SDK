@@ -69,7 +69,7 @@ export function authStatusWebappEndpoint(router: Router, context: IRequiredConte
           : undefined
       if (!requestState || !definitionId || !correlationId) {
         console.log(
-          `No authentication request mapping could be found for the given URL. correlation: ${correlationId}, definitionId: ${definitionId}`
+          `No authentication request mapping could be found for the given URL. correlation: ${correlationId}, definitionId: ${definitionId}`,
         )
         response.statusCode = 404
         const statusBody: AuthStatusResponse = {

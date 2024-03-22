@@ -1,6 +1,5 @@
 import { AuthzFlowType, toAuthorizationResponsePayload } from '@sphereon/oid4vci-common'
 import { Identity, Party } from '@sphereon/ssi-sdk.data-store'
-import { MachineStateInit, machineStatePersistRegistration } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { assign, createMachine, DoneInvokeEvent, interpret } from 'xstate'
 import { translate } from '../localization/Localization'
 import {
@@ -72,8 +71,12 @@ const oid4vciHasSelectedCredentialsGuard = (_ctx: OID4VCIMachineContext, _event:
 }
 
 // FIXME refactor this guard
-const oid4vciRequireAuthorizationGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
-  const { openID4VCIClientState } = _ctx
+
+const oid4vciNoAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
+  return !oid4vciHasAuthorizationResponse(ctx, _event)
+}
+const oid4vciRequireAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
+  const { openID4VCIClientState } = ctx
 
   if (!openID4VCIClientState) {
     throw Error('Missing openID4VCI client state in context')
@@ -88,7 +91,11 @@ const oid4vciRequireAuthorizationGuard = (_ctx: OID4VCIMachineContext, _event: O
     return false
   }
 
-  return !openID4VCIClientState.accessTokenResponse
+  return !ctx.openID4VCIClientState?.authorizationCodeResponse
+}
+
+const oid4vciHasAuthorizationResponse = (ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
+  return !!ctx.openID4VCIClientState?.authorizationCodeResponse
 }
 
 const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMachine => {
@@ -115,11 +122,13 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         | { type: OID4VCIMachineGuards.selectCredentialGuard }
         | { type: OID4VCIMachineGuards.requirePinGuard }
         | { type: OID4VCIMachineGuards.requireAuthorizationGuard }
+        | { type: OID4VCIMachineGuards.noAuthorizationGuard }
         | { type: OID4VCIMachineGuards.hasNoContactIdentityGuard }
         | { type: OID4VCIMachineGuards.verificationCodeGuard }
         | { type: OID4VCIMachineGuards.hasContactGuard }
         | { type: OID4VCIMachineGuards.createContactGuard }
-        | { type: OID4VCIMachineGuards.hasSelectedCredentialsGuard },
+        | { type: OID4VCIMachineGuards.hasSelectedCredentialsGuard }
+        | { type: OID4VCIMachineGuards.hasAuthorizationResponse },
       services: {} as {
         [OID4VCIMachineServices.initiateOID4VCI]: {
           data: InitiationData
@@ -157,7 +166,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             target: OID4VCIMachineStates.createCredentialSelection,
             actions: assign({
               authorizationCodeURL: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<InitiationData>) => _event.data.authorizationCodeURL,
-              credentialBranding: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<InitiationData>) => _event.data.credentialBranding,
+              credentialBranding: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<InitiationData>) => _event.data.credentialBranding ?? {},
               credentialsSupported: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<InitiationData>) => _event.data.credentialsSupported,
               serverMetadata: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<InitiationData>) => _event.data.serverMetadata,
               openID4VCIClientState: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<InitiationData>) => _event.data.openID4VCIClientState,
@@ -228,12 +237,12 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             cond: OID4VCIMachineGuards.selectCredentialGuard,
           },
           {
-            target: OID4VCIMachineStates.verifyPin,
-            cond: OID4VCIMachineGuards.requirePinGuard,
-          },
-          {
             target: OID4VCIMachineStates.initiateAuthorizationRequest,
             cond: OID4VCIMachineGuards.requireAuthorizationGuard,
+          },
+          {
+            target: OID4VCIMachineStates.verifyPin,
+            cond: OID4VCIMachineGuards.requirePinGuard,
           },
           {
             target: OID4VCIMachineStates.getCredentials,
@@ -285,10 +294,13 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             cond: OID4VCIMachineGuards.selectCredentialGuard,
           },
           {
+            target: OID4VCIMachineStates.initiateAuthorizationRequest,
+            cond: OID4VCIMachineGuards.requireAuthorizationGuard,
+          },
+          {
             target: OID4VCIMachineStates.verifyPin,
             cond: OID4VCIMachineGuards.requirePinGuard,
           },
-          // TODO are we not missing initiateAuthorizationRequest here???
           {
             target: OID4VCIMachineStates.getCredentials,
           },
@@ -316,7 +328,10 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             target: OID4VCIMachineStates.verifyPin,
             cond: OID4VCIMachineGuards.requirePinGuard,
           },
-          // TODO missing initiateAuthorizationRequest ??
+          {
+            target: OID4VCIMachineStates.initiateAuthorizationRequest,
+            cond: OID4VCIMachineGuards.requireAuthorizationGuard,
+          },
           {
             target: OID4VCIMachineStates.getCredentials,
           },
@@ -340,13 +355,24 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             target: OID4VCIMachineStates.initiateAuthorizationRequest,
           },
           [OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE]: {
-            target: OID4VCIMachineStates.transitionFromSelectingCredentials,
             actions: assign({
-              authorizationCodeResponse: (_ctx: OID4VCIMachineContext, _event: AuthorizationResponseEvent) =>
-                toAuthorizationResponsePayload(_event.data),
+              openID4VCIClientState: (_ctx: OID4VCIMachineContext, _event: AuthorizationResponseEvent) => {
+                console.log(`=> Assigning authorizationCodeResponse using event data ${JSON.stringify(_event.data)}`)
+                const authorizationCodeResponse = toAuthorizationResponsePayload(_event.data)
+                console.log(`=> Assigned authorizationCodeResponse value ${JSON.stringify(authorizationCodeResponse)}`)
+                return { ..._ctx.openID4VCIClientState!, authorizationCodeResponse }
+              },
             }), // TODO can we not call toAuthorizationResponsePayload before
+            // target: OID4VCIMachineStates.waitForAuthorizationResponse,
+            // target: OID4VCIMachineStates.transitionFromSelectingCredentials,
           },
         },
+        always: [
+          {
+            cond: OID4VCIMachineGuards.hasAuthorizationResponse,
+            target: OID4VCIMachineStates.getCredentials,
+          },
+        ],
       },
       [OID4VCIMachineStates.verifyPin]: {
         id: OID4VCIMachineStates.verifyPin,
@@ -531,12 +557,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
 }
 
 export class OID4VCIMachine {
-  static async newInstance(
-    opts: OID4VCIMachineInstanceOpts,
-    context: RequiredContext
-  ): Promise<{ interpreter: OID4VCIMachineInterpreter; machineStateInit?: MachineStateInit }> {
-    const { machineName, statePersistence } = opts
-    const { expireInMS, disablePersistence, expiresAt, customInstanceId, existingInstanceId } = statePersistence ?? {}
+  static async newInstance(opts: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<{ interpreter: OID4VCIMachineInterpreter }> {
     const interpreter: OID4VCIMachineInterpreter = interpret(
       createOID4VCIMachine(opts).withConfig({
         services: {
@@ -552,21 +573,12 @@ export class OID4VCIMachine {
           oid4vciCreateContactGuard,
           oid4vciHasSelectedCredentialsGuard,
           oid4vciRequireAuthorizationGuard,
+          oid4vciNoAuthorizationGuard,
+          oid4vciHasAuthorizationResponse,
           ...opts?.guards,
         },
-      })
+      }),
     )
-
-    const machineStateInit = await machineStatePersistRegistration({
-      interpreter,
-      context,
-      machineName,
-      expiresAt,
-      expireInMS,
-      disablePersistence,
-      customInstanceId,
-      existingInstanceId /* TODO:, tenantId*/,
-    })
 
     if (typeof opts?.subscription === 'function') {
       interpreter.onTransition(opts.subscription)
@@ -577,6 +589,6 @@ export class OID4VCIMachine {
       })
     }
 
-    return { interpreter, machineStateInit }
+    return { interpreter }
   }
 }

@@ -37,7 +37,7 @@ export class CreateKVDatabaseMigration implements MigrationInterface {
           },
         ],
       }),
-      true
+      true,
     )
   }
 

@@ -46,7 +46,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
             delete result.session
           }
           return result
-        })
+        }),
       )
   }
 
@@ -58,7 +58,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
 
   private async oid4vciCreateAccessTokenResponse(
     accessTokenArgs: IAssertValidAccessTokenArgs,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<AccessTokenResponse> {
     return await this.oid4vciGetInstance(accessTokenArgs, context).then(async (instance) => {
       const issuer = await instance.get({ context })
@@ -110,7 +110,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
       storeId?: string
       namespace?: string
     },
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<IIssuerOptions> {
     const credentialIssuer = opts.credentialIssuer
     const storeId = await this.storeId(opts, context)
@@ -132,7 +132,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
       storeId?: string
       namespace?: string
     },
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<IMetadataOptions> {
     const credentialIssuer = opts.credentialIssuer
     const storeId = await this.storeId(opts, context)
@@ -146,7 +146,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
       storeId?: string
       namespace?: string
     },
-    context: IRequiredContext
+    context: IRequiredContext,
   ) {
     const metadataOpts = await this.getMetadataOpts(opts, context)
     let metadata = await context.agent.oid4vciStoreGetMetadata({

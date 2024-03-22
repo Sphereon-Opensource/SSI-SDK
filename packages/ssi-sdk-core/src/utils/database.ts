@@ -15,7 +15,7 @@ export const enablePostgresUuidExtension = async (queryRunner: QueryRunnerType) 
     await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
   } catch (error) {
     console.error(
-      `Please enable the uuid-ossp.control extension in your PostgreSQL installation. It enables generating V4 UUID and can be found in the postgresql-contrib package`
+      `Please enable the uuid-ossp.control extension in your PostgreSQL installation. It enables generating V4 UUID and can be found in the postgresql-contrib package`,
     )
     throw error
   }

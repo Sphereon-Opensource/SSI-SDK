@@ -149,7 +149,7 @@ export function updateW3CStatusEndpoint(router: Router, context: IRequiredContex
         return sendErrorResponse(
           response,
           404,
-          `status list index for credential id ${credentialId} was never recorded for ${statusListId}. This means the status will be 0`
+          `status list index for credential id ${credentialId} was never recorded for ${statusListId}. This means the status will be 0`,
         )
       }
       const statusListIndex = statusListEntry.statusListIndex

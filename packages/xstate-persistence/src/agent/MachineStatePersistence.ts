@@ -1,9 +1,8 @@
 import { IAbstractMachineStateStore, StoreMachineStateInfo } from '@sphereon/ssi-sdk.data-store'
 import { IAgentPlugin } from '@veramo/core'
-import * as console from 'console'
 import Debug from 'debug'
 import { v4 as uuidv4 } from 'uuid'
-import { deserializeMachineState, machineStateToStoreInfo, storeInfoToMachineInit } from '../functions'
+import { deserializeMachineState, machineStateToMachineInit, machineStateToStoreInfo, serializeMachineState } from '../functions'
 
 import {
   DeleteExpiredStatesArgs,
@@ -67,7 +66,7 @@ export class MachineStatePersistence implements IAgentPlugin {
   }
 
   public async onEvent(event: MachineStatePersistEvent, context: RequiredContext): Promise<void> {
-    debug(`Received machine state persistence event '${event.type}' counter: ${event.data._eventCounter}`)
+    debug(`Received machine state persistence event '${event.type}' counter: ${event.data._eventCounter}}`)
     if (!this.eventTypes.includes(event.type)) {
       console.log(`event type ${event.type} not registered for agent. Registered: ${JSON.stringify(this.eventTypes)}`)
       return
@@ -79,33 +78,63 @@ export class MachineStatePersistence implements IAgentPlugin {
         await context.agent.machineStateInit({ ...event.data })
         break
       case MachineStatePersistEventType.EVERY:
-        if (event.data.state.done) {
-          // TODO: Cleanup on done
-        }
         // We are keeping track of the update counter in the events, ensuring we do not process out of order
-        await context.agent.machineStatePersist({ ...event.data, updatedCount: event.data._eventCounter ?? event.data.updatedCount })
+        await context.agent.machineStatePersist({
+          ...event.data,
+          cleanupOnFinalState: event.data.cleanupOnFinalState ?? event.data._cleanupOnFinalState,
+          updatedCount: event.data._eventCounter ?? event.data.updatedCount,
+        })
         break
       default:
-        return Promise.reject(Error('Event type not supported'))
+        return Promise.reject(Error(`Event type ${event.type} not supported`))
     }
   }
 
-  private async machineStateInit(args: InitMachineStateArgs): Promise<MachineStateInit> {
-    const { tenantId, machineName, expiresAt, customInstanceId, existingInstanceId } = args
+  private async machineStateInit(args: InitMachineStateArgs, context: RequiredContext): Promise<MachineStateInit> {
+    const { tenantId, machineName, expiresAt, customInstanceId, existingInstanceId, cleanupAllOtherInstances } = args
     debug(
-      `machineStateInit for machine name ${machineName}, tenant ${tenantId}, custom instance ${customInstanceId}, existing id ${existingInstanceId}`
+      `machineStateInit for machine name ${machineName}, tenant ${tenantId}, custom instance ${customInstanceId}, existing id ${existingInstanceId}`,
     )
-    let machineInit: MachineStateInit | undefined = undefined
     if (customInstanceId && existingInstanceId) {
       return Promise.reject(new Error(`Cannot have both a custom and existing instance id at the same time`))
-    } else if (existingInstanceId) {
-      // An instanceId is provided. First lookup whether this id is persisted, if not an error is thrown
+    }
+    if (cleanupAllOtherInstances) {
+      // First remove all states for this machine name and tenant that are in done state
+      await context.agent.machineStatesDeleteExpired({ machineName, tenantId, deleteDoneStates: true })
+      // Now cleanup all states for this machine name and tenant that are expired
+      await context.agent.machineStatesDeleteExpired({ machineName, tenantId, deleteDoneStates: false })
+      // Now remove all machines that are not equal to the existing instance id if provided, or all others if not provided
+      const activeMachineStates = (await context.agent.machineStatesFindActive({ machineName, tenantId })).filter(
+        (state) => !existingInstanceId || state.instanceId !== existingInstanceId,
+      )
+      await Promise.all(
+        activeMachineStates.map((state) =>
+          context.agent.machineStateDelete({
+            instanceId: state.instanceId,
+            tenantId,
+          }),
+        ),
+      )
+    }
+    let machineInit: MachineStateInit | undefined = undefined
+    let machineState: MachineStateInfo | undefined
+
+    if (existingInstanceId) {
+      // A existing instanceId is provided. First lookup whether this id is persisted, if not an error is thrown
       debug(`machineStateInit is using a previously persisted instance id (${existingInstanceId})`)
-      const state = await this.store.getMachineState({ tenantId, instanceId: existingInstanceId })
-      machineInit = storeInfoToMachineInit({ ...state, stateType: 'existing' })
-    } else if (customInstanceId) {
-      // An custom instanceId is provided.
-      debug(`machineStateInit is using a custom instance id (${existingInstanceId})`)
+      machineState = await context.agent.machineStateGet({ tenantId, instanceId: existingInstanceId })
+      machineInit = machineStateToMachineInit(
+        {
+          ...machineState,
+          machineState: machineState,
+          stateType: 'existing',
+        },
+        { ...machineState, state: serializeMachineState(machineState.state) },
+      )
+    }
+    if (customInstanceId) {
+      // A custom instanceId is provided.
+      debug(`machineStateInit is using a custom instance id (${customInstanceId})`)
     }
     if (!machineInit) {
       machineInit = {
@@ -120,18 +149,38 @@ export class MachineStatePersistence implements IAgentPlugin {
     debug(`machineStateInit result: ${JSON.stringify(machineInit)}`)
     return machineInit
   }
-  private async machineStatePersist(args: MachineStatePersistArgs): Promise<MachineStateInfo> {
+
+  private async machineStatePersist(args: MachineStatePersistArgs, context: RequiredContext): Promise<MachineStateInfo> {
     const { instanceId, tenantId, machineName, updatedCount } = args
+    const cleanupOnFinalState = args.cleanupOnFinalState !== false
     debug(`machineStatePersist for machine name ${machineName}, updateCount: ${updatedCount}, instance ${instanceId} and tenant ${tenantId}...`)
-    const queriedStates = await this.store.findMachineStates({ filter: [{ instanceId, tenantId }] })
-    const existingState = queriedStates.length === 1 ? queriedStates[0] : undefined
-    const storeInfoArgs = machineStateToStoreInfo(args, existingState)
-    const storedState = await this.store.persistMachineState(storeInfoArgs)
-    const machineStateInfo = { ...storedState, state: deserializeMachineState(storedState.state) }
-    debug(
-      `machineStatePersist success for machine name ${machineName}, instance ${instanceId}, update count ${machineStateInfo.updatedCount}, tenant ${tenantId}, last event: ${machineStateInfo.latestEventType}, last state: ${machineStateInfo.latestStateName}`
-    )
-    return machineStateInfo
+    try {
+      const queriedStates = await this.store.findMachineStates({ filter: [{ instanceId, tenantId }] })
+      const existingState = queriedStates.length === 1 ? queriedStates[0] : undefined
+
+      const storeInfoArgs = machineStateToStoreInfo(args, existingState)
+      let storedState: StoreMachineStateInfo
+      if (updatedCount !== undefined && updatedCount > 1 && storeInfoArgs.latestEventType === 'xstate.init') {
+        console.log(
+          `Not persisting machine state for resumed init event for machine ${machineName}, tenant ${tenantId} and state with id ${instanceId}`,
+        )
+        storedState = storeInfoArgs
+      } else {
+        storedState = await this.store.persistMachineState(storeInfoArgs)
+      }
+      const machineStateInfo = { ...storedState, state: deserializeMachineState(storedState.state) }
+      debug(
+        `machineStatePersist success for machine name ${machineName}, instance ${instanceId}, update count ${machineStateInfo.updatedCount}, tenant ${tenantId}, last event: ${machineStateInfo.latestEventType}, last state: ${machineStateInfo.latestStateName}`,
+      )
+      if (cleanupOnFinalState && machineStateInfo.state.done) {
+        debug(`reached final state for machine ${machineName} instance ${instanceId} and auto cleanup was enabled. Deleting machine state`)
+        await context.agent.machineStateDelete(machineStateInfo)
+      }
+      return machineStateInfo
+    } catch (error) {
+      console.log(error)
+      return Promise.reject(error)
+    }
   }
 
   private async machineStatesFindActive(args: FindActiveStatesArgs): Promise<Array<MachineStateInfo>> {

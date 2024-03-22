@@ -656,7 +656,7 @@ agent
   .didManagerGet({ did: RP_DID_JWK })
   .then((id) => {
     console.log(
-      `==DID JWK existed:  \r\n${JSON.stringify(id, null, 2)}\r\nJWK:\r\n${JSON.stringify(toJwk(id.keys[0].publicKeyHex, 'Secp256r1'), null, 2)}`
+      `==DID JWK existed:  \r\n${JSON.stringify(id, null, 2)}\r\nJWK:\r\n${JSON.stringify(toJwk(id.keys[0].publicKeyHex, 'Secp256r1'), null, 2)}`,
     )
   })
   .catch((error) => {

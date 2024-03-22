@@ -7,7 +7,7 @@ type Fn = (...args: any[]) => any
 
 function relayEvents(
   eventEmitter: EventEmitter,
-  execute: <T extends keyof IWeb3Provider>(method: T, ...args: IWeb3Provider[T] extends Fn ? Parameters<IWeb3Provider[T]> : []) => Promise<void>
+  execute: <T extends keyof IWeb3Provider>(method: T, ...args: IWeb3Provider[T] extends Fn ? Parameters<IWeb3Provider[T]> : []) => Promise<void>,
 ): void {
   const emit_ = eventEmitter.emit
   eventEmitter.emit = (eventName, ...args) => {
@@ -24,7 +24,7 @@ export function createWeb3Provider(
     method: T,
     ...args: IWeb3Provider[T] extends Fn ? Parameters<IWeb3Provider[T]> : []
   ) => Promise<void> = async () => {},
-  config?: Web3ProviderConfig
+  config?: Web3ProviderConfig,
 ): IWeb3Provider {
   const chainIds: number[] = Array.isArray(chainId) ? chainId : [chainId]
   const chains = chainIds.map((chainId) => {

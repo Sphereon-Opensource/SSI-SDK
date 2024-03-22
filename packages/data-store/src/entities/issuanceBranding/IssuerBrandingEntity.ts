@@ -32,7 +32,7 @@ export class IssuerBrandingEntity extends BaseEntity {
       onDelete: 'CASCADE',
       eager: true,
       nullable: false,
-    }
+    },
   )
   @ArrayMinSize(1, { message: 'localeBranding cannot be empty' })
   localeBranding!: Array<IssuerLocaleBrandingEntity>
@@ -65,7 +65,7 @@ export const issuerBrandingEntityFrom = (args: IBasicIssuerBranding): IssuerBran
   const issuerBrandingEntity: IssuerBrandingEntity = new IssuerBrandingEntity()
   issuerBrandingEntity.issuerCorrelationId = args.issuerCorrelationId
   issuerBrandingEntity.localeBranding = args.localeBranding.map((localeBranding: IBasicIssuerLocaleBranding) =>
-    issuerLocaleBrandingEntityFrom(localeBranding)
+    issuerLocaleBrandingEntityFrom(localeBranding),
   )
 
   return issuerBrandingEntity

@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.21.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.19.0...v0.21.0) (2024-03-20)
+
+### Bug Fixes
+
+- fixed failing test cases and added more test cases for getting data from the raw data ([6f5b50b](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/6f5b50bbcc9c1822f2d0a4dbf5a13e197603d802))
+- refactored UniformCredential names to digitalCredential, added utility methods for getting the credential document type ([a0c5530](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/a0c553048d3fbadaa55b7e987219064d32820221))
+
+### Features
+
+- upgrade SD-JWT package ([6563973](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/656397349c5d36334cde10f08c469242eb4c48f5))
+
+### Reverts
+
+- Remove BBS support. ([205e0db](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/205e0db2bb985bf33a618576955d8b28a39ff932))
+
+### BREAKING CHANGES
+
+- Remove BBS support. Upstream support for Windows and RN is missing. Needs to be revisited at a later point in time
+
 # [0.19.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.18.1...v0.19.0) (2024-03-02)
 
 ### Bug Fixes

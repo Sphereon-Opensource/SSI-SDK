@@ -60,7 +60,7 @@ export default (testContext: {
         agent.verifyDomainLinkage({
           did: DID,
           signatureVerification: signatureVerificationKey,
-        })
+        }),
       ).rejects.toThrow(`Signature validation not found for key: ${signatureVerificationKey}`)
     })
 
@@ -71,7 +71,7 @@ export default (testContext: {
         agent.verifyDidConfigurationResource({
           signatureVerification: signatureVerificationKey,
           origin: 'https://example.com',
-        })
+        }),
       ).rejects.toThrow(`Signature validation not found for key: ${signatureVerificationKey}`)
     })
 
@@ -79,7 +79,7 @@ export default (testContext: {
       await expect(
         agent.verifyDidConfigurationResource({
           signatureVerification: 'verified',
-        })
+        }),
       ).rejects.toThrow('No DID configuration resource or origin supplied.')
     })
 
@@ -89,7 +89,7 @@ export default (testContext: {
           signatureVerification: 'verified',
           configuration: DID_CONFIGURATION,
           origin: 'https://example.com',
-        })
+        }),
       ).rejects.toThrow('Cannot supply both a DID configuration resource and an origin.')
     })
 
@@ -139,7 +139,7 @@ export default (testContext: {
           agent.registerSignatureVerification({
             callbackName,
             signatureVerification: () => Promise.resolve({ verified: true }),
-          })
+          }),
         ).rejects.toThrow(`Signature validation with key: ${callbackName} already present`)
       })
 

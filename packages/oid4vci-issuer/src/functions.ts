@@ -49,7 +49,7 @@ export async function getAccessTokenKeyRef(
     keyRef?: string
     didOpts?: IDIDOptions
   },
-  context: IRequiredContext
+  context: IRequiredContext,
 ) {
   let keyRef =
     opts.keyRef ??
@@ -57,8 +57,8 @@ export async function getAccessTokenKeyRef(
     (typeof opts.didOpts?.identifierOpts.identifier === 'object'
       ? (opts.didOpts?.identifierOpts.identifier as IIdentifier).keys[0].kid
       : !!opts.didOpts?.identifierOpts.kid
-      ? opts.didOpts?.identifierOpts.kid
-      : undefined)
+        ? opts.didOpts?.identifierOpts.kid
+        : undefined)
   if (!keyRef) {
     throw Error('Key ref is needed for access token signer')
   }
@@ -91,7 +91,7 @@ export function getAccessTokenSignerCallback(
     keyRef?: string
     didOpts?: IDIDOptions
   },
-  context: IRequiredContext
+  context: IRequiredContext,
 ) {
   const signer = (data: string | Uint8Array) => {
     let dataString, encoding: 'base64' | undefined
@@ -169,7 +169,7 @@ export async function createVciIssuerBuilder(
     resolver?: Resolvable
     credentialDataSupplier?: CredentialDataSupplier
   },
-  context: IRequiredContext
+  context: IRequiredContext,
 ): Promise<VcIssuerBuilder<DIDDocument>> {
   const { issuerOpts, metadata } = args
   const { didOpts } = issuerOpts
@@ -208,7 +208,7 @@ export async function createVciIssuer(
     metadata: CredentialIssuerMetadata
     credentialDataSupplier?: CredentialDataSupplier
   },
-  context: IRequiredContext
+  context: IRequiredContext,
 ): Promise<VcIssuer<DIDDocument>> {
   return (await createVciIssuerBuilder({ issuerOpts, metadata, credentialDataSupplier }, context)).build()
 }

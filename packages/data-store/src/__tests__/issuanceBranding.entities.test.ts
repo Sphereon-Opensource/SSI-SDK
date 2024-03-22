@@ -103,10 +103,10 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.localeBranding[0].background!.image!.mediaType).toEqual(credentialBranding.localeBranding[0].background!.image!.mediaType)
     expect(fromDb?.localeBranding[0].background!.image!.dimensions).toBeDefined()
     expect(fromDb?.localeBranding[0].background!.image!.dimensions!.width).toEqual(
-      credentialBranding.localeBranding[0].background!.image!.dimensions!.width
+      credentialBranding.localeBranding[0].background!.image!.dimensions!.width,
     )
     expect(fromDb?.localeBranding[0].background!.image!.dimensions!.height).toEqual(
-      credentialBranding.localeBranding[0].background!.image!.dimensions!.height
+      credentialBranding.localeBranding[0].background!.image!.dimensions!.height,
     )
     expect(fromDb?.localeBranding[0].text).toBeDefined()
     expect(fromDb?.localeBranding[0].text!.color).toEqual(credentialBranding.localeBranding[0].text!.color)
@@ -143,7 +143,7 @@ describe('Database entities tests', (): void => {
     const credentialBrandingEntity2: CredentialBrandingEntity = credentialBrandingEntityFrom(credentialBranding2)
 
     await expect(repository.save(credentialBrandingEntity2)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: CredentialBranding.vcHash'
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: CredentialBranding.vcHash',
     )
   })
 
@@ -161,7 +161,7 @@ describe('Database entities tests', (): void => {
     const credentialBrandingEntity: CredentialBrandingEntity = credentialBrandingEntityFrom(credentialBranding)
 
     await expect(dbConnection.getRepository(CredentialBrandingEntity).save(credentialBrandingEntity)).rejects.toThrowError(
-      'Blank vcHashes are not allowed'
+      'Blank vcHashes are not allowed',
     )
   })
 
@@ -179,7 +179,7 @@ describe('Database entities tests', (): void => {
     const credentialBrandingEntity: CredentialBrandingEntity = credentialBrandingEntityFrom(credentialBranding)
 
     await expect(dbConnection.getRepository(CredentialBrandingEntity).save(credentialBrandingEntity)).rejects.toThrowError(
-      'Blank issuerCorrelationIds are not allowed'
+      'Blank issuerCorrelationIds are not allowed',
     )
   })
 
@@ -192,7 +192,7 @@ describe('Database entities tests', (): void => {
 
     const credentialBrandingEntity: CredentialBrandingEntity = credentialBrandingEntityFrom(credentialBranding)
     await expect(dbConnection.getRepository(CredentialBrandingEntity).save(credentialBrandingEntity)).rejects.toThrow(
-      'localeBranding cannot be empty'
+      'localeBranding cannot be empty',
     )
   })
 
@@ -242,7 +242,7 @@ describe('Database entities tests', (): void => {
     const credentialBrandingEntity: CredentialBrandingEntity = credentialBrandingEntityFrom(credentialBranding)
 
     await expect(dbConnection.getRepository(CredentialBrandingEntity).save(credentialBrandingEntity)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: BaseLocaleBranding.credentialBrandingId, BaseLocaleBranding.locale'
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: BaseLocaleBranding.credentialBrandingId, BaseLocaleBranding.locale',
     )
   })
 
@@ -263,7 +263,7 @@ describe('Database entities tests', (): void => {
     const credentialBrandingEntity: CredentialBrandingEntity = credentialBrandingEntityFrom(credentialBranding)
 
     await expect(dbConnection.getRepository(CredentialBrandingEntity).save(credentialBrandingEntity)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: BaseLocaleBranding.credentialBrandingId, BaseLocaleBranding.locale'
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: BaseLocaleBranding.credentialBrandingId, BaseLocaleBranding.locale',
     )
   })
 
@@ -366,7 +366,7 @@ describe('Database entities tests', (): void => {
     await expect(
       await repository.findOne({
         where: { id: fromDb.id },
-      })
+      }),
     ).toBeNull()
   })
 
@@ -393,7 +393,7 @@ describe('Database entities tests', (): void => {
     await expect(
       await localeBrandingRepository.findOne({
         where: { id: fromDb.id },
-      })
+      }),
     ).toBeNull()
 
     const result: CredentialBrandingEntity | null = await credentialBrandingRepository.findOne({ where: { id: fromDb.id } })
@@ -522,10 +522,10 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.localeBranding[0].background!.image!.mediaType).toEqual(issuerBranding.localeBranding[0].background!.image!.mediaType)
     expect(fromDb?.localeBranding[0].background!.image!.dimensions).toBeDefined()
     expect(fromDb?.localeBranding[0].background!.image!.dimensions!.width).toEqual(
-      issuerBranding.localeBranding[0].background!.image!.dimensions!.width
+      issuerBranding.localeBranding[0].background!.image!.dimensions!.width,
     )
     expect(fromDb?.localeBranding[0].background!.image!.dimensions!.height).toEqual(
-      issuerBranding.localeBranding[0].background!.image!.dimensions!.height
+      issuerBranding.localeBranding[0].background!.image!.dimensions!.height,
     )
     expect(fromDb?.localeBranding[0].text).toBeDefined()
     expect(fromDb?.localeBranding[0].text!.color).toEqual(issuerBranding.localeBranding[0].text!.color)
@@ -560,7 +560,7 @@ describe('Database entities tests', (): void => {
     const issuerBrandingEntity2: IssuerBrandingEntity = issuerBrandingEntityFrom(issuerBranding2)
 
     await expect(repository.save(issuerBrandingEntity2)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: IssuerBranding.issuerCorrelationId'
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: IssuerBranding.issuerCorrelationId',
     )
   })
 
@@ -577,7 +577,7 @@ describe('Database entities tests', (): void => {
     const issuerBrandingEntity: IssuerBrandingEntity = issuerBrandingEntityFrom(issuerBranding)
 
     await expect(dbConnection.getRepository(IssuerBrandingEntity).save(issuerBrandingEntity)).rejects.toThrowError(
-      'Blank issuerCorrelationIds are not allowed'
+      'Blank issuerCorrelationIds are not allowed',
     )
   })
 
@@ -635,7 +635,7 @@ describe('Database entities tests', (): void => {
     const issuerBrandingEntity: IssuerBrandingEntity = issuerBrandingEntityFrom(issuerBranding)
 
     await expect(dbConnection.getRepository(IssuerBrandingEntity).save(issuerBrandingEntity)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: BaseLocaleBranding.issuerBrandingId, BaseLocaleBranding.locale'
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: BaseLocaleBranding.issuerBrandingId, BaseLocaleBranding.locale',
     )
   })
 
@@ -655,7 +655,7 @@ describe('Database entities tests', (): void => {
     const issuerBrandingEntity: IssuerBrandingEntity = issuerBrandingEntityFrom(issuerBranding)
 
     await expect(dbConnection.getRepository(IssuerBrandingEntity).save(issuerBrandingEntity)).rejects.toThrowError(
-      'SQLITE_CONSTRAINT: UNIQUE constraint failed: BaseLocaleBranding.issuerBrandingId, BaseLocaleBranding.locale'
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: BaseLocaleBranding.issuerBrandingId, BaseLocaleBranding.locale',
     )
   })
 
@@ -755,7 +755,7 @@ describe('Database entities tests', (): void => {
     await expect(
       await repository.findOne({
         where: { id: fromDb.id },
-      })
+      }),
     ).toBeNull()
   })
 
@@ -781,7 +781,7 @@ describe('Database entities tests', (): void => {
     await expect(
       await localeBrandingRepository.findOne({
         where: { id: fromDb.id },
-      })
+      }),
     ).toBeNull()
 
     const result: IssuerBrandingEntity | null = await issuerBrandingRepository.findOne({ where: { id: fromDb.id } })

@@ -102,14 +102,14 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     debug('Removing credential locale branding', args)
     const localeBrandingDeletions: Array<Array<Promise<void>>> = credentialBranding.map((credentialBranding: CredentialBrandingEntity) =>
       credentialBranding.localeBranding.map(
-        async (localeBranding: CredentialLocaleBrandingEntity): Promise<void> => this.removeLocaleBranding(localeBranding)
-      )
+        async (localeBranding: CredentialLocaleBrandingEntity): Promise<void> => this.removeLocaleBranding(localeBranding),
+      ),
     )
     await Promise.all(localeBrandingDeletions)
 
     debug('Removing credential branding', args)
     const credentialBrandingDeletions: Array<Promise<DeleteResult>> = filter.map(
-      async (filter: ICredentialBrandingFilter): Promise<DeleteResult> => await repository.delete(filter)
+      async (filter: ICredentialBrandingFilter): Promise<DeleteResult> => await repository.delete(filter),
     )
     await Promise.all(credentialBrandingDeletions)
   }
@@ -160,14 +160,14 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
       return Promise.reject(
         Error(
           `Credential branding already contains locales: ${locales?.map(
-            (credentialLocaleBrandingEntity: CredentialLocaleBrandingEntity) => credentialLocaleBrandingEntity.locale
-          )}`
-        )
+            (credentialLocaleBrandingEntity: CredentialLocaleBrandingEntity) => credentialLocaleBrandingEntity.locale,
+          )}`,
+        ),
       )
     }
 
     const credentialLocaleBrandingRepository: Repository<CredentialLocaleBrandingEntity> = (await this.dbConnection).getRepository(
-      CredentialLocaleBrandingEntity
+      CredentialLocaleBrandingEntity,
     )
     const addCredentialLocaleBranding: Array<Promise<void>> = localeBranding.map(
       async (localeBranding: IBasicCredentialLocaleBranding): Promise<void> => {
@@ -175,7 +175,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
         debug('Adding credential locale branding', credentialLocaleBrandingEntity)
         credentialLocaleBrandingEntity.credentialBranding = credentialBranding
         await credentialLocaleBrandingRepository.save(credentialLocaleBrandingEntity, { transaction: true })
-      }
+      },
     )
 
     await Promise.all(addCredentialLocaleBranding)
@@ -210,7 +210,8 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
 
     return credentialBrandingLocale
       ? credentialBrandingLocale.map(
-          (credentialLocaleBranding: CredentialLocaleBrandingEntity) => this.localeBrandingFrom(credentialLocaleBranding) as ICredentialLocaleBranding
+          (credentialLocaleBranding: CredentialLocaleBrandingEntity) =>
+            this.localeBrandingFrom(credentialLocaleBranding) as ICredentialLocaleBranding,
         )
       : []
   }
@@ -225,7 +226,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
 
     debug('Removing credential locale branding', args)
     const localeBrandingDeletions: Array<Promise<void>> = credentialLocaleBranding.map(
-      async (localeBranding: CredentialLocaleBrandingEntity): Promise<void> => this.removeLocaleBranding(localeBranding)
+      async (localeBranding: CredentialLocaleBrandingEntity): Promise<void> => this.removeLocaleBranding(localeBranding),
     )
     await Promise.all(localeBrandingDeletions)
   }
@@ -311,14 +312,14 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     debug('Removing issuer locale branding', args)
     const localeBrandingDeletions: Array<Array<Promise<void>>> = issuerBranding.map((issuerBranding: IssuerBrandingEntity) =>
       issuerBranding.localeBranding.map(
-        async (localeBranding: IssuerLocaleBrandingEntity): Promise<void> => this.removeLocaleBranding(localeBranding)
-      )
+        async (localeBranding: IssuerLocaleBrandingEntity): Promise<void> => this.removeLocaleBranding(localeBranding),
+      ),
     )
     await Promise.all(localeBrandingDeletions)
 
     debug('Removing issuer branding', args)
     const issuerBrandingDeletions: Array<Promise<DeleteResult>> = filter.map(
-      async (filter: IIssuerBrandingFilter): Promise<DeleteResult> => await repository.delete(filter)
+      async (filter: IIssuerBrandingFilter): Promise<DeleteResult> => await repository.delete(filter),
     )
     await Promise.all(issuerBrandingDeletions)
   }
@@ -369,9 +370,9 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
       return Promise.reject(
         Error(
           `Issuer branding already contains locales: ${locales?.map(
-            (issuerLocaleBrandingEntity: IssuerLocaleBrandingEntity) => issuerLocaleBrandingEntity.locale
-          )}`
-        )
+            (issuerLocaleBrandingEntity: IssuerLocaleBrandingEntity) => issuerLocaleBrandingEntity.locale,
+          )}`,
+        ),
       )
     }
 
@@ -415,7 +416,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
 
     return issuerLocaleBranding
       ? issuerLocaleBranding.map(
-          (issuerLocaleBranding: IssuerLocaleBrandingEntity) => this.localeBrandingFrom(issuerLocaleBranding) as IIssuerLocaleBranding
+          (issuerLocaleBranding: IssuerLocaleBrandingEntity) => this.localeBrandingFrom(issuerLocaleBranding) as IIssuerLocaleBranding,
         )
       : []
   }
@@ -428,7 +429,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
 
     debug('Removing credential locale branding', args)
     const localeBrandingDeletions: Array<Promise<void>> = issuerLocaleBranding.map(
-      async (localeBranding: IssuerLocaleBrandingEntity): Promise<void> => this.removeLocaleBranding(localeBranding)
+      async (localeBranding: IssuerLocaleBrandingEntity): Promise<void> => this.removeLocaleBranding(localeBranding),
     )
     await Promise.all(localeBrandingDeletions)
   }

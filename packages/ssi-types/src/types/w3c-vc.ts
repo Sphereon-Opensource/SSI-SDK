@@ -223,7 +223,7 @@ export interface IVerifyResult {
       verified: boolean
       error?: IError
       log: [{ id: string; valid: boolean }]
-    }
+    },
   ]
 
   statusResult?: IVerifyStatusResult

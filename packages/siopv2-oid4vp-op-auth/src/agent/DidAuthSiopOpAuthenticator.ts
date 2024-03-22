@@ -29,7 +29,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
 
   constructor(
     presentationSignCallback?: PresentationSignCallback,
-    customApprovals?: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>
+    customApprovals?: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>,
   ) {
     this.sessions = new Map<string, OpSession>()
     this.customApprovals = customApprovals || {}

@@ -45,14 +45,18 @@ export async function getDriver(args: { id?: string; correlationId?: string; dbN
 export class AgentTypeORMDriver implements Driver {
   private _statusListLength: number | undefined
 
-  private constructor(private _dataSource: DataSource, private _statusListStore: StatusListStore, private options: StatusListManagementOptions) {}
+  private constructor(
+    private _dataSource: DataSource,
+    private _statusListStore: StatusListStore,
+    private options: StatusListManagementOptions,
+  ) {}
 
   public static async init(
     options: StatusListManagementOptions,
     dbArgs?: {
       dataSources?: DataSources
       dataSource?: DataSource
-    }
+    },
   ): Promise<AgentTypeORMDriver> {
     if (options.driverType !== StatusListDriverType.AGENT_TYPEORM) {
       throw Error(`TypeORM driver can only be used when the TypeORM driver type is selected in the configuration. Got: ${options.driverType}`)

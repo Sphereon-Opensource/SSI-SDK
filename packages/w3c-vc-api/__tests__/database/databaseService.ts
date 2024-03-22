@@ -13,7 +13,7 @@ const dataSources = new Map()
 export const getDbConnection = async (dbName: string): Promise<DataSource> => {
   if (sqliteConfig.synchronize) {
     return Promise.reject(
-      `WARNING: Migrations need to be enabled in this app! Adjust the database configuration and set migrationsRun and synchronize to false`
+      `WARNING: Migrations need to be enabled in this app! Adjust the database configuration and set migrationsRun and synchronize to false`,
     )
   }
 
@@ -25,7 +25,7 @@ export const getDbConnection = async (dbName: string): Promise<DataSource> => {
   dataSources.set(dbName, dataSource)
   if (sqliteConfig.migrationsRun) {
     debug(
-      `Migrations are currently managed from config. Please set migrationsRun and synchronize to false to get consistent behaviour. We run migrations from code explicitly`
+      `Migrations are currently managed from config. Please set migrationsRun and synchronize to false to get consistent behaviour. We run migrations from code explicitly`,
     )
   } else {
     debug(`Running ${dataSource.migrations.length} migration(s) from code if needed...`)

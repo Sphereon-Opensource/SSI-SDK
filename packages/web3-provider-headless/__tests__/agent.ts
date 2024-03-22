@@ -70,7 +70,7 @@ if (configJSON && Array.isArray(configJSON.configs)) {
             console.log(`Imported key ${JSON.stringify(key)}`)
             return key
           })
-          .catch((e) => console.log(e))
+          .catch((e) => console.log(e)),
       )
 
       return Promise.all(importedKeys)
@@ -85,7 +85,7 @@ if (configJSON && Array.isArray(configJSON.configs)) {
               new EthersKMSSignerBuilder()
                 .withContext(context)
                 .withKeyRef(key as ManagedKeyInfo)
-                .build()
+                .build(),
             )
           let signers: Signer[]
           let web3Provider: IWeb3Provider

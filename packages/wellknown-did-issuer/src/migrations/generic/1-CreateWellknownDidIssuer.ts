@@ -25,7 +25,7 @@ export class CreateWellknownDidIssuer1661162010000 implements MigrationInterface
       return up
     } else {
       return Promise.reject(
-        `Migrations are currently only supported for sqlite, react-native, expor and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`
+        `Migrations are currently only supported for sqlite, react-native, expor and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`,
       )
     }
   }
@@ -47,7 +47,7 @@ export class CreateWellknownDidIssuer1661162010000 implements MigrationInterface
       return down
     } else {
       return Promise.reject(
-        `Migrations are currently only supported for sqlite, react-native, expor and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`
+        `Migrations are currently only supported for sqlite, react-native, expor and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`,
       )
     }
   }

@@ -38,13 +38,11 @@ export class MachineStateStore extends IAbstractMachineStateStore {
       },
     })
     if (existing && existing.updatedCount > state.updatedCount) {
-      return Promise.reject(
-        new Error(
-          `Updating machine state with an older version is not allowed. Machine ${existing.machineName}, last count: ${
-            existing.updatedCount
-          }, new count: ${existing.updatedCount}, last updated: ${existing.updatedAt}, current: ${new Date()}, instance: ${existing.instanceId}`
-        )
-      )
+      const error = `Updating machine state with an older version is not allowed. Machine ${existing.machineName}, last count: ${
+        existing.updatedCount
+      }, new count: ${existing.updatedCount}, last updated: ${existing.updatedAt}, current: ${new Date()}, instance: ${existing.instanceId}`
+      console.log(error)
+      return Promise.reject(new Error(error))
     }
     // No need for a transaction. This is a single entity. We don't want to be surprised by an isolation level hiding the state from others
     const result = await connection.getRepository(MachineStateInfoEntity).save(entity, { transaction: false })
@@ -63,7 +61,7 @@ export class MachineStateStore extends IAbstractMachineStateStore {
       .andWhere(
         new Brackets((qb) => {
           qb.where('state.expiresAt IS NULL').orWhere('state.expiresAt > :now', { now: new Date() })
-        })
+        }),
       )
 
     if (instanceId) {

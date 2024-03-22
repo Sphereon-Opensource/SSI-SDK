@@ -43,7 +43,7 @@ async function init() {
 
     .withMorganLogging()
     .withCorsConfigurer(
-      new ExpressCorsConfigurer().allowOrigin(env('OIDC_FRONTEND_CORS_ORIGIN', PREFIX) ?? 'http://localhost:3001').allowCredentials(true)
+      new ExpressCorsConfigurer().allowOrigin(env('OIDC_FRONTEND_CORS_ORIGIN', PREFIX) ?? 'http://localhost:3001').allowCredentials(true),
     )
     .withPassportAuth(true)
     .withSessionOptions({
@@ -75,8 +75,8 @@ async function init() {
           ...tokenSet.claims(),
         }
         return done(null, authInfo)
-      }
-    )
+      },
+    ),
   )
   passport.serializeUser(function (user, done) {
     done(null, user)

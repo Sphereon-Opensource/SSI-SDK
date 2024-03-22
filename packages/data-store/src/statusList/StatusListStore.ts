@@ -70,7 +70,7 @@ export class StatusListStore implements IStatusListStore {
       await this.getStatusListEntryRepo()
     ).upsert(
       { ...(result ?? { statusList: args.statusList, statusListIndex: args.statusListIndex }), ...updatedEntry },
-      { conflictPaths: ['statusList', 'statusListIndex'] }
+      { conflictPaths: ['statusList', 'statusListIndex'] },
     )
     console.log(updateResult)
     return (await this.getStatusListEntryByIndex({ ...args, statusListId, errorOnNotFound: true })) as IStatusListEntryEntity

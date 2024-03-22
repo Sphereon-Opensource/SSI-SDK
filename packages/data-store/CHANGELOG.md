@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.21.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.19.0...v0.21.0) (2024-03-20)
+
+### Bug Fixes
+
+- changed the logic for getting validFrom ([7a7940b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7a7940b9e30358fef044f167622bc771df14a95f))
+- fixed failing test cases and added more test cases for getting data from the raw data ([6f5b50b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6f5b50bbcc9c1822f2d0a4dbf5a13e197603d802))
+- fixed import ([cf67a50](https://github.com/Sphereon-Opensource/SSI-SDK/commit/cf67a507fdc5870e74a5e76b563721340c39fbfb))
+- fixed XStatePersistence plugin and fixed the tests ([56d8f18](https://github.com/Sphereon-Opensource/SSI-SDK/commit/56d8f1883802208a2d15f2f25ec03b0bcfb0a4e3))
+- refactored UniformCredential names to digitalCredential, added utility methods for getting the credential document type ([a0c5530](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a0c553048d3fbadaa55b7e987219064d32820221))
+
+### Features
+
+- (WIP) added tenant aware credential store ([db68113](https://github.com/Sphereon-Opensource/SSI-SDK/commit/db681137e4163a2144793c91c6efe3c46d76cce6))
+- added pagination to digital credential store ([ecefdcf](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ecefdcf4eccfa2d78fb9e815efdbe3881aa9e2f8))
+- added tenant aware credential store ([312698e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/312698e42d18010e1c86ef14db7b96005043294f))
+- Allow to use a customInstanceId as well as an existingInstanceId, so we can differentiate between re-using an existing machine and using a custom id ([3aeb93d](https://github.com/Sphereon-Opensource/SSI-SDK/commit/3aeb93d9b4dd373f445cec5cbe33d08364b2df74))
+- Created migrations and refactored the database layer ([8672b82](https://github.com/Sphereon-Opensource/SSI-SDK/commit/8672b82ecb9904223130bfc897855cedbf57cb29))
+
+### Reverts
+
+- Revert "chore: Make sure plugins having listener methods, actually expose the interface" ([99db568](https://github.com/Sphereon-Opensource/SSI-SDK/commit/99db56856054c86c2e8955d43a0b6e2c7a5228bf))
+- Remove BBS support. ([205e0db](https://github.com/Sphereon-Opensource/SSI-SDK/commit/205e0db2bb985bf33a618576955d8b28a39ff932))
+
+### BREAKING CHANGES
+
+- Remove BBS support. Upstream support for Windows and RN is missing. Needs to be revisited at a later point in time
+
 # [0.19.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.18.1...v0.19.0) (2024-03-02)
 
 ### Features

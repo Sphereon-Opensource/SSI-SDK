@@ -88,7 +88,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   /** {@inheritDoc ICredentialIssuerLDLocal.createVerifiableCredentialLDLocal} */
   private async createVerifiableCredentialLDLocal(
     args: ICreateVerifiableCredentialLDArgs,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<VerifiableCredentialSP> {
     debug('Entry of createVerifiableCredentialLDLocal')
     const credentialContext = processEntryToArray(args?.credential?.['@context'], MANDATORY_CREDENTIAL_CONTEXT)
@@ -131,7 +131,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
           purpose: args.purpose,
           credentialStatusOpts: args.credentialStatusOpts,
         },
-        context
+        context,
       )
     } catch (error) {
       debug(error)
@@ -158,7 +158,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   /** {@inheritdoc ICredentialIssuerLD.createVerifiablePresentationLD} */
   private async createVerifiablePresentationLDLocal(
     args: ICreateVerifiablePresentationLDArgs,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<VerifiablePresentationSP> {
     const presentationContext = processEntryToArray(args?.presentation?.['@context'], MANDATORY_CREDENTIAL_CONTEXT)
     const presentationType = processEntryToArray(args?.presentation?.type, 'VerifiablePresentation')
@@ -210,7 +210,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
         args.challenge,
         args.domain,
         args.purpose,
-        context
+        context,
       )
     } catch (error) {
       debug(error)
@@ -245,7 +245,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       context,
       args.fetchRemoteContexts,
       args.presentationPurpose,
-      checkStatus
+      checkStatus,
     )
   }
 
@@ -255,7 +255,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     opts?: {
       keyRef?: string
       didDocument?: DIDDocument
-    }
+    },
   ): Promise<{ signingKey: IKey; verificationMethodId: string }> {
     const keyRef = opts?.keyRef
     debug(`Retrieving signing key for id ${identifier.did} keyref ${keyRef}...`)

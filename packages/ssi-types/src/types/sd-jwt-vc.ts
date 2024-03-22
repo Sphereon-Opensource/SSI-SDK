@@ -1,5 +1,5 @@
 import { OriginalType, WrappedVerifiableCredential, WrappedVerifiablePresentation } from './vc'
-import { decodeSdJwtVc as _decodeSdJwtVc } from '@sd-jwt/decode'
+import { decodeSdJwtSync, decodeSdJwt, getClaims, getClaimsSync } from '@sd-jwt/decode'
 
 type JsonValue = string | number | boolean | { [x: string]: JsonValue | undefined } | Array<JsonValue>
 
@@ -189,20 +189,24 @@ export type AsyncHasher = (data: string, alg: string) => Promise<Uint8Array>
  * this method hides the actual implementation of SD-JWT (which is currently based on @sd-jwt/core)
  */
 export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): SdJwtDecodedVerifiableCredential {
-  const { signedPayload, decodedPayload, disclosures } = _decodeSdJwtVc(compactSdJwtVc, hasher)
+  const { jwt, disclosures } = decodeSdJwtSync(compactSdJwtVc, hasher)
+
+  const signedPayload = jwt.payload as SdJwtSignedVerifiableCredentialPayload
+  const decodedPayload = getClaimsSync(signedPayload, disclosures, hasher)
 
   return {
     compactSdJwtVc,
     decodedPayload: decodedPayload as SdJwtDecodedVerifiableCredentialPayload,
     disclosures: disclosures.map((d) => {
       const decoded = d.key ? [d.salt, d.key, d.value] : [d.salt, d.value]
+      if (!d._digest) throw new Error('Implementation error: digest not present in disclosure')
       return {
         decoded: decoded as SdJwtDecodedDisclosure,
-        digest: d.digest,
-        encoded: d.encoded,
+        digest: d._digest,
+        encoded: d.encode(),
       } satisfies SdJwtDisclosure
     }),
-    signedPayload: signedPayload as SdJwtDecodedVerifiableCredentialPayload,
+    signedPayload: signedPayload as SdJwtSignedVerifiableCredentialPayload,
   }
 }
 
@@ -214,19 +218,23 @@ export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): S
  * this method hides the actual implementation of SD-JWT (which is currently based on @sd-jwt/core)
  */
 export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher: AsyncHasher): Promise<SdJwtDecodedVerifiableCredential> {
-  const { signedPayload, decodedPayload, disclosures } = await _decodeSdJwtVc(compactSdJwtVc, hasher)
+  const { jwt, disclosures } = await decodeSdJwt(compactSdJwtVc, hasher)
+
+  const signedPayload = jwt.payload as SdJwtSignedVerifiableCredentialPayload
+  const decodedPayload = await getClaims(signedPayload, disclosures, hasher)
 
   return {
     compactSdJwtVc,
     decodedPayload: decodedPayload as SdJwtDecodedVerifiableCredentialPayload,
     disclosures: disclosures.map((d) => {
       const decoded = d.key ? [d.salt, d.key, d.value] : [d.salt, d.value]
+      if (!d._digest) throw new Error('Implementation error: digest not present in disclosure')
       return {
         decoded: decoded as SdJwtDecodedDisclosure,
-        digest: d.digest,
-        encoded: d.encoded,
+        digest: d._digest,
+        encoded: d.encode(),
       } satisfies SdJwtDisclosure
     }),
-    signedPayload: signedPayload as SdJwtDecodedVerifiableCredentialPayload,
+    signedPayload: signedPayload as SdJwtSignedVerifiableCredentialPayload,
   }
 }

@@ -6,7 +6,7 @@ import { Web3Method } from './types'
 export function createRpcServer(
   provider: EthersHeadlessProvider,
   expressSupport: ExpressSupport,
-  opts?: ISingleEndpointOpts & { basePath?: string }
+  opts?: ISingleEndpointOpts & { basePath?: string },
 ) {
   const express = expressSupport.express
   const router = Router()
@@ -68,7 +68,7 @@ export function createRpcServer(
         }
       }
       return next()
-    }
+    },
   )
   express.use(opts?.basePath ?? '', router)
 }

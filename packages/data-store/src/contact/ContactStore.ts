@@ -99,6 +99,7 @@ export class ContactStore extends AbstractContactStore {
   }
 
   getParties = async (args?: GetPartiesArgs): Promise<Array<Party>> => {
+    debug(`getParties()`, args)
     const { filter } = args ?? {}
     const partyRepository: Repository<PartyEntity> = (await this.dbConnection).getRepository(PartyEntity)
     const initialResult: Array<PartyEntity> = await partyRepository.find({
@@ -110,6 +111,7 @@ export class ContactStore extends AbstractContactStore {
         id: In(initialResult.map((party: PartyEntity) => party.id)),
       },
     })
+    debug(`getParties() resulted in ${result.length} parties`)
 
     return result.map((party: PartyEntity) => partyFrom(party))
   }

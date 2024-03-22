@@ -59,7 +59,7 @@ export async function createOPBuilder({
         SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1,
         SupportedVersion.SIOPv2_D11,
         SupportedVersion.SIOPv2_D12_OID4VP_D18,
-      ]
+      ],
     )
     .withExpiresIn(opOptions.expiresIn ?? 300)
     .withCheckLinkedDomain(opOptions.checkLinkedDomains ?? CheckLinkedDomain.IF_PRESENT)
@@ -69,7 +69,7 @@ export async function createOPBuilder({
           uniresolverResolution: opOptions.resolveOpts?.noUniversalResolverFallback !== true,
           localResolution: true,
           resolverResolution: true,
-        })
+        }),
     )
     .withEventEmitter(eventEmitter)
     .withRegistration({
@@ -95,14 +95,14 @@ export async function createOPBuilder({
       SuppliedSigner(key, context, getSigningAlgo(key.type) as unknown as KeyAlgo),
       getDID(idOpts),
       kid,
-      getSigningAlgo(key.type)
+      getSigningAlgo(key.type),
     )
     builder.withPresentationSignCallback(
       await createOID4VPPresentationSignCallback({
         presentationSignCallback: opOptions.presentationSignCallback,
         idOpts,
         context,
-      })
+      }),
     )
   }
   return builder

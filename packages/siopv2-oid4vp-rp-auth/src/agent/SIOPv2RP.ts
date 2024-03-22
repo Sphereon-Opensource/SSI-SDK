@@ -65,7 +65,7 @@ export class SIOPv2RP implements IAgentPlugin {
 
   private async createAuthorizationRequestPayloads(
     createArgs: ICreateAuthRequestArgs,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<IAuthorizationRequestPayloads> {
     return await this.getRPInstance({ definitionId: createArgs.definitionId }, context)
       .then((rp) => rp.createAuthorizationRequest(createArgs, context))
@@ -81,16 +81,16 @@ export class SIOPv2RP implements IAgentPlugin {
 
   private async siopGetRequestState(args: IGetAuthRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState | undefined> {
     return await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
-      rp.get(context).then((rp) => rp.sessionManager.getRequestStateByCorrelationId(args.correlationId, args.errorOnNotFound))
+      rp.get(context).then((rp) => rp.sessionManager.getRequestStateByCorrelationId(args.correlationId, args.errorOnNotFound)),
     )
   }
 
   private async siopGetResponseState(
     args: IGetAuthResponseStateArgs,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<AuthorizationResponseStateWithVerifiedData | undefined> {
     const rpInstance = await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
-      rp.get(context).then((rp) => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound))
+      rp.get(context).then((rp) => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound)),
     )
     if (rpInstance === undefined) {
       return undefined
@@ -103,7 +103,7 @@ export class SIOPv2RP implements IAgentPlugin {
       args.includeVerifiedData !== VerifiedDataMode.NONE
     ) {
       const presentationDecoded = CredentialMapper.decodeVerifiablePresentation(
-        responseState.response.payload.vp_token as OriginalVerifiablePresentation
+        responseState.response.payload.vp_token as OriginalVerifiablePresentation,
       )
       const presentation = CredentialMapper.toUniformPresentation(presentationDecoded as OriginalVerifiablePresentation)
       switch (args.includeVerifiedData) {
@@ -144,7 +144,7 @@ export class SIOPv2RP implements IAgentPlugin {
             error: args.error ? new Error(args.error) : undefined,
           })
           return (await rp.sessionManager.getRequestStateByCorrelationId(args.correlationId, true)) as AuthorizationRequestState
-        })
+        }),
       )
   }
 
@@ -168,8 +168,8 @@ export class SIOPv2RP implements IAgentPlugin {
           correlationId: args.correlationId,
           presentationDefinitions: args.presentationDefinitions,
           audience: args.audience,
-        })
-      )
+        }),
+      ),
     )
   }
 

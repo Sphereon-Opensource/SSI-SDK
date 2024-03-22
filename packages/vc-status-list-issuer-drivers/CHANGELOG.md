@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.21.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.19.0...v0.21.0) (2024-03-20)
+
+### Reverts
+
+- Remove BBS support. ([205e0db](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/205e0db2bb985bf33a618576955d8b28a39ff932))
+
+### BREAKING CHANGES
+
+- Remove BBS support. Upstream support for Windows and RN is missing. Needs to be revisited at a later point in time
+
 # [0.19.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.18.1...v0.19.0) (2024-03-02)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.vc-status-list-issuer-drivers
