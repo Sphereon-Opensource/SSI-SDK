@@ -1,4 +1,4 @@
-import { IIdentifier } from '@veramo/core'
+import {IIdentifier} from '@veramo/core'
 
 export type Party = {
   id: string
@@ -150,9 +150,15 @@ export type Contact = NaturalPerson | Organization
 export type NonPersistedContact = NonPersistedNaturalPerson | NonPersistedOrganization
 export type PartialContact = PartialNaturalPerson | PartialOrganization
 
+export enum PartyOrigin {
+  INTERNAL = 'internal',
+  EXTERNAL = 'external',
+}
+
 export type PartyType = {
   id: string
   type: PartyTypeEnum
+  origin?: PartyOrigin
   name: string
   tenantId: string
   description?: string

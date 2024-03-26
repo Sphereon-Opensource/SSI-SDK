@@ -324,6 +324,7 @@ export const partyTypeEntityFrom = (args: NonPersistedPartyType): PartyTypeEntit
     partyTypeEntity.id = args.id
   }
   partyTypeEntity.type = args.type
+  partyTypeEntity.origin = args.origin
   partyTypeEntity.name = args.name
   partyTypeEntity.description = args.description
   partyTypeEntity.tenantId = args.tenantId
@@ -335,6 +336,7 @@ export const partyTypeFrom = (partyType: PartyTypeEntity): PartyType => {
   return {
     id: partyType.id,
     type: partyType.type,
+    origin: partyType.origin,
     name: partyType.name,
     tenantId: partyType.tenantId,
     description: partyType.description,
