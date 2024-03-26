@@ -149,6 +149,9 @@ export class CreateContacts1690925872693 implements MigrationInterface {
       `INSERT INTO "BaseContact"(id, legal_name, display_name, party_id, created_at, last_updated_at, type) SELECT id, name, alias, id, created_at, last_updated_at, 'Organization' FROM "Contact"`,
     )
     await queryRunner.query(`DROP TABLE "Contact"`)
+    await queryRunner.query(
+        `ALTER TABLE "PartyType" ADD COLUMN "origin" varchar CHECK( "origin" IN ('internal', 'external') )`
+    )
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

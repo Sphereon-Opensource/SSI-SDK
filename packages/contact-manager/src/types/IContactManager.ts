@@ -15,7 +15,7 @@ import {
   NonPersistedPartyType as NonPersistedContactType,
   NonPersistedPhysicalAddress,
   Party as Contact,
-  PartyOriginEnum,
+  PartyOrigin,
   PartyRelationship as ContactRelationship,
   PartyType as ContactType,
   PartyTypeEnum as ContactTypeEnum,
@@ -120,7 +120,7 @@ export type UpdateRelationshipArgs = {
 
 export type AddContactTypeArgs = {
   type: ContactTypeEnum
-  origin: PartyOriginEnum
+  origin?: PartyOrigin
   name: string
   tenantId: string
   description?: string

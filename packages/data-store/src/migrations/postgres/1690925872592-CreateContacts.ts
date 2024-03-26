@@ -85,6 +85,12 @@ export class CreateContacts1690925872592 implements MigrationInterface {
       `INSERT INTO "BaseContact"(id, legal_name, display_name, party_id, created_at, last_updated_at, type) SELECT id, name, alias, id, created_at, last_updated_at, 'Organization' FROM "Contact"`,
     )
     await queryRunner.query(`DROP TABLE "Contact"`)
+    await queryRunner.query(
+        `CREATE TYPE "public"."partyOrigin_type_enum" AS ENUM('internal', 'external')`
+    )
+    await queryRunner.query(
+        `ALTER TABLE "PartyType" ADD COLUMN "origin" "public"."partyOrigin_type_enum" NOT NULL`
+    )
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

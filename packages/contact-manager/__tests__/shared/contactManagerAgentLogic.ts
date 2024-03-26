@@ -10,7 +10,7 @@ import {
   NonPersistedIdentity,
   NonPersistedPhysicalAddress,
   Party,
-  PartyOriginEnum,
+  PartyOrigin,
   PartyRelationship,
   PartyTypeEnum,
   PhysicalAddress,
@@ -36,7 +36,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         displayName: 'default_display_name',
         contactType: {
           type: PartyTypeEnum.NATURAL_PERSON,
-          origin: PartyOriginEnum.EXTERNAL,
+          origin: PartyOrigin.EXTERNAL,
           tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
           name: 'example_name',
         },
@@ -144,7 +144,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         displayName: 'new_display_name',
         contactType: {
           type: PartyTypeEnum.NATURAL_PERSON,
-          origin: PartyOriginEnum.INTERNAL,
+          origin: PartyOrigin.INTERNAL,
           tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
           name: 'new_name',
           description: 'new_description',
@@ -321,7 +321,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         displayName: 'relation_display_name',
         contactType: {
           type: PartyTypeEnum.NATURAL_PERSON,
-          origin: PartyOriginEnum.INTERNAL,
+          origin: PartyOrigin.INTERNAL,
           tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d285',
           name: 'relation_contact_type_name',
           description: 'new_description',
@@ -366,7 +366,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         displayName: 'remove_relation_display_name',
         contactType: {
           type: PartyTypeEnum.NATURAL_PERSON,
-          origin: PartyOriginEnum.EXTERNAL,
+          origin: PartyOrigin.EXTERNAL,
           tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d286',
           name: 'remove_relation_contact_type_name',
           description: 'new_description',
@@ -416,7 +416,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         displayName: 'add_electronic_address_display_name',
         contactType: {
           type: PartyTypeEnum.NATURAL_PERSON,
-          origin: PartyOriginEnum.INTERNAL,
+          origin: PartyOrigin.INTERNAL,
           tenantId: 'a85a8aa0-fdeb-4c00-b22e-60423f52a873',
           name: 'add_electronic_address_name',
           description: 'add_electronic_address_description',
@@ -445,7 +445,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         displayName: 'get_electronic_address_display_name',
         contactType: {
           type: PartyTypeEnum.NATURAL_PERSON,
-          origin: PartyOriginEnum.EXTERNAL,
+          origin: PartyOrigin.EXTERNAL,
           tenantId: 'f2947075-53eb-4176-b155-ab4b18715288',
           name: 'get_electronic_address_name',
           description: 'get_electronic_address_description',
@@ -473,7 +473,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         displayName: 'get_all_electronic_address_display_name',
         contactType: {
           type: PartyTypeEnum.NATURAL_PERSON,
-          origin: PartyOriginEnum.INTERNAL,
+          origin: PartyOrigin.INTERNAL,
           tenantId: '5c0157ec-4678-4273-8f53-413bc6435134',
           name: 'get_all_electronic_address_name',
           description: 'get_all_electronic_address_description',
@@ -502,7 +502,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         displayName: 'update_electronic_address_display_name',
         contactType: {
           type: PartyTypeEnum.NATURAL_PERSON,
-          origin: PartyOriginEnum.EXTERNAL,
+          origin: PartyOrigin.EXTERNAL,
           tenantId: '6b64c3dd-cf40-4919-b8b8-2ec3c510c5b7',
           name: 'update_electronic_address_name',
           description: 'update_electronic_address_description',
@@ -538,7 +538,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         displayName: 'remove_electronic_address_display_name',
         contactType: {
           type: PartyTypeEnum.NATURAL_PERSON,
-          origin: PartyOriginEnum.EXTERNAL,
+          origin: PartyOrigin.EXTERNAL,
           tenantId: '41b45c65-971e-4c26-8115-cb8bc7c67cf3',
           name: 'remove_electronic_address_name',
           description: 'remove_electronic_address_description',
@@ -572,7 +572,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         displayName: 'add_physical_address_display_name',
         contactType: {
           type: PartyTypeEnum.NATURAL_PERSON,
-          origin: PartyOriginEnum.INTERNAL,
+          origin: PartyOrigin.INTERNAL,
           tenantId: '5aeb828e-16d6-4244-95a7-e12424474eb7',
           name: 'add_physical_address_name',
           description: 'add_physical_address_description',
@@ -607,7 +607,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         displayName: 'get_physical_address_display_name',
         contactType: {
           type: PartyTypeEnum.NATURAL_PERSON,
-          origin: PartyOriginEnum.EXTERNAL,
+          origin: PartyOrigin.EXTERNAL,
           tenantId: '7c5dbbd9-1721-4246-b261-44e237560a15',
           name: 'get_physical_address_name',
           description: 'get_physical_address_description',
@@ -641,7 +641,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         displayName: 'get_all_physical_address_display_name',
         contactType: {
           type: PartyTypeEnum.NATURAL_PERSON,
-          origin: PartyOriginEnum.INTERNAL,
+          origin: PartyOrigin.INTERNAL,
           tenantId: '0c0eafd8-1e8c-44bf-8e0d-768fb11a40c3',
           name: 'get_all_physical_address_name',
           description: 'get_all_physical_address_description',
@@ -676,7 +676,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         displayName: 'update_physical_address_display_name',
         contactType: {
           type: PartyTypeEnum.NATURAL_PERSON,
-          origin: PartyOriginEnum.INTERNAL,
+          origin: PartyOrigin.INTERNAL,
           tenantId: 'f2b4eb1c-e36f-4863-90b3-90720471c397',
           name: 'update_physical_address_name',
           description: 'update_physical_address_description',
@@ -730,7 +730,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         displayName: 'remove_physical_address_display_name',
         contactType: {
           type: PartyTypeEnum.NATURAL_PERSON,
-          origin: PartyOriginEnum.INTERNAL,
+          origin: PartyOrigin.INTERNAL,
           tenantId: '20b11d1e-6489-4258-af33-32a2cfa4dc85',
           name: 'remove_physical_address_name',
           description: 'remove_physical_address_description',
