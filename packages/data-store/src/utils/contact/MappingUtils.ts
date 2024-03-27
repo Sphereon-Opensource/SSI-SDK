@@ -23,13 +23,13 @@ import {
   NonPersistedParty,
   NonPersistedPartyRelationship,
   NonPersistedPartyType,
-  NonPersistedPhysicalAddress,
+  NonPersistedPhysicalAddress, NonPersistedStudent,
   OpenIdConfig,
   Organization,
   Party,
   PartyRelationship,
   PartyType,
-  PhysicalAddress,
+  PhysicalAddress, Student,
 } from '../../types'
 import {PartyEntity} from '../../entities/contact/PartyEntity'
 import {IdentityEntity} from '../../entities/contact/IdentityEntity'
@@ -46,6 +46,7 @@ import {IdentityMetadataItemEntity} from '../../entities/contact/IdentityMetadat
 import {OpenIdConfigEntity} from '../../entities/contact/OpenIdConfigEntity'
 import {PartyTypeEntity} from '../../entities/contact/PartyTypeEntity'
 import {PhysicalAddressEntity} from '../../entities/contact/PhysicalAddressEntity'
+import {StudentEntity} from "../../entities/contact/StudentEntity";
 
 export const partyEntityFrom = (party: NonPersistedParty): PartyEntity => {
   const partyEntity: PartyEntity = new PartyEntity()
@@ -92,6 +93,8 @@ export const contactEntityFrom = (contact: NonPersistedContact): BaseContactEnti
     return naturalPersonEntityFrom(<NonPersistedNaturalPerson>contact)
   } else if (isOrganization(contact)) {
     return organizationEntityFrom(<NonPersistedOrganization>contact)
+  } else if (isStudent(contact)) {
+    return studentEntityFrom(<NonPersistedStudent>contact)
   }
 
   throw new Error('Contact not supported')
@@ -102,16 +105,21 @@ export const contactFrom = (contact: BaseContactEntity): Contact => {
     return naturalPersonFrom(<NaturalPersonEntity>contact)
   } else if (isOrganization(contact)) {
     return organizationFrom(<OrganizationEntity>contact)
+  } else if (isStudent(contact)) {
+    return studentFrom(<StudentEntity>contact)
   }
 
   throw new Error(`Contact type not supported`)
 }
 
 export const isNaturalPerson = (contact: NonPersistedContact | BaseContactEntity): contact is NonPersistedNaturalPerson | NaturalPersonEntity =>
-  'firstName' in contact && 'lastName' in contact
+  'firstName' in contact && 'lastName' in contact && !('grade' in contact) && !('dateOfBirth' in contact)
 
 export const isOrganization = (contact: NonPersistedContact | BaseContactEntity): contact is NonPersistedOrganization | OrganizationEntity =>
   'legalName' in contact
+
+export const isStudent = (contact: NonPersistedContact | BaseContactEntity): contact is NonPersistedStudent | StudentEntity =>
+    'grade' in contact && 'dateOfBirth' in contact
 
 export const connectionEntityFrom = (connection: NonPersistedConnection): ConnectionEntity => {
   const connectionEntity: ConnectionEntity = new ConnectionEntity()
@@ -324,6 +332,36 @@ export const organizationEntityFrom = (organization: NonPersistedOrganization): 
   organizationEntity.tenantId = organization.tenantId
 
   return organizationEntity
+}
+
+export const studentEntityFrom = (student: NonPersistedStudent): StudentEntity => {
+  const studentEntity: StudentEntity = new StudentEntity()
+  studentEntity.displayName = student.displayName
+  studentEntity.firstName = student.firstName
+  studentEntity.middleName = student.middleName
+  studentEntity.lastName = student.lastName
+  studentEntity.grade = student.grade
+  studentEntity.dateOfBirth = student.dateOfBirth
+  studentEntity.ownerId = student.ownerId
+  studentEntity.tenantId = student.tenantId
+
+  return studentEntity
+}
+
+export const studentFrom = (student: StudentEntity): Student => {
+  return {
+    id: student.id,
+    displayName: student.displayName,
+    firstName: student.firstName,
+    middleName: student.middleName,
+    lastName: student.lastName,
+    grade: student.grade,
+    dateOfBirth: student.dateOfBirth,
+    ownerId: student.ownerId,
+    tenantId: student.tenantId,
+    createdAt: student.createdAt,
+    lastUpdatedAt: student.lastUpdatedAt,
+  }
 }
 
 export const organizationFrom = (organization: OrganizationEntity): Organization => {

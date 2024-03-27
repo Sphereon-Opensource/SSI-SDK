@@ -1410,7 +1410,7 @@ describe('Database entities tests', (): void => {
     const partyType2: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
       tenantId,
-      name,
+      name: `${name} + 1`,
     }
 
     const partyTypeEntity2: PartyTypeEntity = partyTypeEntityFrom(partyType2)

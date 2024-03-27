@@ -153,6 +153,23 @@ export type NaturalPerson = {
 export type NonPersistedNaturalPerson = Omit<NaturalPerson, 'id' | 'createdAt' | 'lastUpdatedAt'>
 export type PartialNaturalPerson = Partial<NaturalPerson>
 
+export type Student = {
+  id: string
+  firstName: string
+  lastName: string
+  middleName?: string
+  grade: string
+  dateOfBirth: Date
+  displayName: string
+  ownerId?: string
+  tenantId?: string
+  createdAt: Date
+  lastUpdatedAt: Date
+}
+
+export type NonPersistedStudent = Omit<Student, 'id' | 'createdAt' | 'lastUpdatedAt'>
+export type PartialStudent = Partial<Student>
+
 export type Organization = {
   id: string
   legalName: string
@@ -165,9 +182,9 @@ export type Organization = {
 export type NonPersistedOrganization = Omit<Organization, 'id' | 'createdAt' | 'lastUpdatedAt'>
 export type PartialOrganization = Partial<Organization>
 
-export type Contact = NaturalPerson | Organization
-export type NonPersistedContact = NonPersistedNaturalPerson | NonPersistedOrganization
-export type PartialContact = PartialNaturalPerson | PartialOrganization
+export type Contact = NaturalPerson | Organization | Student
+export type NonPersistedContact = NonPersistedNaturalPerson | NonPersistedOrganization | NonPersistedStudent
+export type PartialContact = PartialNaturalPerson | PartialOrganization | PartialStudent
 
 export type PartyType = {
   id: string
@@ -258,4 +275,5 @@ export enum CorrelationIdentifierEnum {
 export enum PartyTypeEnum {
   NATURAL_PERSON = 'naturalPerson',
   ORGANIZATION = 'organization',
+  STUDENT = 'student'
 }

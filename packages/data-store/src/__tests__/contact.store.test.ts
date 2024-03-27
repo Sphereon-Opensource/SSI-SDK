@@ -49,6 +49,32 @@ describe('Contact store tests', (): void => {
     await (await dbConnection).destroy()
   })
 
+  it('should get a party/student by id', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeEnum.STUDENT,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        grade: '5th',
+        dateOfBirth: new Date(2016, 0, 5),
+        displayName: 'example_display_name',
+      },
+    }
+
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const result: Party = await contactStore.getParty({ partyId: savedParty.id })
+
+    expect(result).toBeDefined()
+  })
+
   it('should get party by id', async (): Promise<void> => {
     const party: NonPersistedParty = {
       uri: 'example.com',
@@ -1766,6 +1792,26 @@ describe('Contact store tests', (): void => {
     await expect(contactStore.addParty(party)).rejects.toThrow(`Party type ${partyType}, does not match for provided contact`)
   })
 
+  it('should throw error when adding person party with student contact type', async (): Promise<void> => {
+    const partyType = PartyTypeEnum.STUDENT
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: partyType,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+
+    await expect(contactStore.addParty(party)).rejects.toThrow(`Party type ${partyType}, does not match for provided contact`)
+  })
+
   it('should throw error when adding organization party with wrong contact type', async (): Promise<void> => {
     const partyType = PartyTypeEnum.NATURAL_PERSON
     const party: NonPersistedParty = {
@@ -1778,6 +1824,28 @@ describe('Contact store tests', (): void => {
       contact: {
         legalName: 'example_legal_name',
         displayName: 'example_display_name',
+      },
+    }
+
+    await expect(contactStore.addParty(party)).rejects.toThrow(`Party type ${partyType}, does not match for provided contact`)
+  })
+
+  it('should throw error when adding student party with wrong contact type', async (): Promise<void> => {
+    const partyType = PartyTypeEnum.NATURAL_PERSON
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: partyType,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+        grade: '3rd',
+        dateOfBirth: new Date(2016, 2, 15)
       },
     }
 

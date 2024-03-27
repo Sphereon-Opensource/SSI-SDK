@@ -4,14 +4,14 @@ export class CreateContacts1710438363001 implements MigrationInterface {
   name = 'CreateContacts1710438363001'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`CREATE TYPE "identity_origin_type" AS ENUM('INTERNAL', 'EXTERNAL')`)
+    await queryRunner.query(`CREATE TYPE "public"."IdentityOrigin_type" AS ENUM('internal', 'external')`)
 
     await queryRunner.query(`ALTER TABLE "Party" ADD COLUMN "owner_id" text`);
     await queryRunner.query(`ALTER TABLE "Party" ADD COLUMN "tenant_id" text`);
 
     await queryRunner.query(`ALTER TABLE "Identity" ADD COLUMN "owner_id" text`);
     await queryRunner.query(`ALTER TABLE "Identity" ADD COLUMN "tenant_id" text`);
-    await queryRunner.query(`ALTER TABLE "Identity" ADD COLUMN "origin" varchar CHECK( "identity_origin_type" IN ('INTERNAL', 'EXTERNAL') ) NOT NULL`);
+    await queryRunner.query(`ALTER TABLE "Identity" ADD COLUMN "origin" "public"."IdentityOrigin_type" NOT NULL`);
 
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" ADD COLUMN "owner_id" text`);
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" ADD COLUMN "tenant_id" text`);
@@ -24,6 +24,8 @@ export class CreateContacts1710438363001 implements MigrationInterface {
 
     await queryRunner.query(`ALTER TABLE "BaseContact" ADD COLUMN "owner_id" text`);
     await queryRunner.query(`ALTER TABLE "BaseContact" ADD COLUMN "tenant_id" text`);
+    await queryRunner.query(`ALTER TABLE "BaseContact" ADD COLUMN "grade" text`);
+    await queryRunner.query(`ALTER TABLE "BaseContact" ADD COLUMN "date_of_birth" TIMESTAMP`);
 
     await queryRunner.query(`ALTER TABLE "PartyRelationship" ADD COLUMN "owner_id" text`);
     await queryRunner.query(`ALTER TABLE "PartyRelationship" ADD COLUMN "tenant_id" text`);
@@ -33,7 +35,7 @@ export class CreateContacts1710438363001 implements MigrationInterface {
 
     await queryRunner.query(`ALTER TABLE "PhysicalAddress" ADD COLUMN "owner_id" text`);
     await queryRunner.query(`ALTER TABLE "PhysicalAddress" ADD COLUMN "tenant_id" text`);
-
+    await queryRunner.query(`ALTER TYPE "public"."PartyType_type_enum" ADD VALUE 'student'`)
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
