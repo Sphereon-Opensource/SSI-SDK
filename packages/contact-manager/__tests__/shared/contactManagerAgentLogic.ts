@@ -1,10 +1,11 @@
-import { TAgent } from '@veramo/core'
+import {TAgent} from '@veramo/core'
 import {
   CorrelationIdentifierEnum,
+  CredentialRole,
   ElectronicAddress,
   GetPartiesArgs,
   Identity,
-  IdentityRoleEnum,
+  IdentityOrigin,
   NaturalPerson,
   NonPersistedElectronicAddress,
   NonPersistedIdentity,
@@ -14,7 +15,7 @@ import {
   PartyTypeEnum,
   PhysicalAddress,
 } from '../../../data-store/src'
-import { AddContactArgs, IContactManager } from '../../src'
+import {AddContactArgs, IContactManager} from '../../src'
 
 type ConfiguredAgent = TAgent<IContactManager>
 
@@ -43,7 +44,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'default_example_did'
       const identity: NonPersistedIdentity = {
         alias: correlationId,
-        roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+        origin: IdentityOrigin.EXTRERNAL,
+        roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierEnum.DID,
           correlationId,
@@ -237,7 +239,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'new_example_did'
       const identity: NonPersistedIdentity = {
         alias: correlationId,
-        roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+        origin: IdentityOrigin.EXTRERNAL,
+        roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierEnum.DID,
           correlationId,
@@ -261,7 +264,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'missing_connection_add_example'
       const identity: NonPersistedIdentity = {
         alias: correlationId,
-        roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+        origin: IdentityOrigin.EXTRERNAL,
+        roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierEnum.URL,
           correlationId,
@@ -277,7 +281,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'missing_connection_update_example'
       const identity: NonPersistedIdentity = {
         alias: correlationId,
-        roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+
+        roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierEnum.DID,
           correlationId,
@@ -293,7 +298,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'new_update_example_did'
       const identity: NonPersistedIdentity = {
         alias: 'update_example_did',
-        roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+        origin: IdentityOrigin.EXTRERNAL,
+        roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierEnum.DID,
           correlationId: 'update_example_did',

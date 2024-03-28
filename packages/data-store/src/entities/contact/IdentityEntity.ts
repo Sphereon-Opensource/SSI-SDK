@@ -16,7 +16,7 @@ import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { CorrelationIdentifierEntity } from './CorrelationIdentifierEntity'
 import { ConnectionEntity } from './ConnectionEntity'
 import { IdentityMetadataItemEntity } from './IdentityMetadataItemEntity'
-import { IdentityRoleEnum, ValidationConstraint } from '../../types'
+import { CredentialRole, IdentityOrigin, ValidationConstraint } from '../../types'
 import { PartyEntity } from './PartyEntity'
 import { getConstraint } from '../../utils/ValidatorUtils'
 
@@ -34,8 +34,17 @@ export class IdentityEntity extends BaseEntity {
   @IsNotEmpty({ message: 'Blank aliases are not allowed' })
   alias!: string
 
+  @Column('simple-enum', { name: 'origin', enum: IdentityOrigin, nullable: false })
+  origin!: IdentityOrigin
+
+  @Column({name:'owner_id', nullable:true})
+  ownerId?: string
+
+  @Column({name:'tenant_id', nullable:true})
+  tenantId?: string
+
   @Column('simple-array', { name: 'roles', nullable: false })
-  roles!: Array<IdentityRoleEnum>
+  roles!: Array<CredentialRole>
 
   @OneToOne(() => CorrelationIdentifierEntity, (identifier: CorrelationIdentifierEntity) => identifier.identity, {
     cascade: true,
