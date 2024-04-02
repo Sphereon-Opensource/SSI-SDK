@@ -24,8 +24,8 @@ export class PartyTypeEntity {
   @Column('simple-enum', { name: 'type', enum: PartyTypeEnum, nullable: false, unique: false })
   type!: PartyTypeEnum
 
-  @Column('simple-enum', { name: 'origin', enum: PartyOrigin, nullable: true, unique: false })
-  origin?: PartyOrigin
+  @Column('simple-enum', { name: 'origin', enum: PartyOrigin, default: 'external', nullable: false, unique: false })
+  origin: PartyOrigin
 
   @Column({ name: 'name', length: 255, nullable: false, unique: true })
   @IsNotEmpty({ message: 'Blank names are not allowed' })
