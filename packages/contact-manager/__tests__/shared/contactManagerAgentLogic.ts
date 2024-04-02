@@ -1,4 +1,4 @@
-import {TAgent} from '@veramo/core'
+import { TAgent } from '@veramo/core'
 import {
   CorrelationIdentifierEnum,
   ElectronicAddress,
@@ -15,7 +15,7 @@ import {
   PartyTypeEnum,
   PhysicalAddress,
 } from '../../../data-store/src'
-import {AddContactArgs, IContactManager} from '../../src'
+import { AddContactArgs, IContactManager } from '../../src'
 
 type ConfiguredAgent = TAgent<IContactManager>
 

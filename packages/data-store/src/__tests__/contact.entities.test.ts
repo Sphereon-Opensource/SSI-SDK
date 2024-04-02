@@ -1,19 +1,19 @@
-import {DataSource, FindOptionsWhere} from 'typeorm'
-import {DataStoreContactEntities, DataStoreMigrations, PartyOrigin} from '../index'
-import {BaseContactEntity} from '../entities/contact/BaseContactEntity'
-import {ConnectionEntity} from '../entities/contact/ConnectionEntity'
-import {CorrelationIdentifierEntity} from '../entities/contact/CorrelationIdentifierEntity'
-import {DidAuthConfigEntity} from '../entities/contact/DidAuthConfigEntity'
-import {ElectronicAddressEntity} from '../entities/contact/ElectronicAddressEntity'
-import {IdentityEntity} from '../entities/contact/IdentityEntity'
-import {IdentityMetadataItemEntity} from '../entities/contact/IdentityMetadataItemEntity'
-import {NaturalPersonEntity} from '../entities/contact/NaturalPersonEntity'
-import {OpenIdConfigEntity} from '../entities/contact/OpenIdConfigEntity'
-import {OrganizationEntity} from '../entities/contact/OrganizationEntity'
-import {PartyEntity} from '../entities/contact/PartyEntity'
-import {PartyRelationshipEntity} from '../entities/contact/PartyRelationshipEntity'
-import {PartyTypeEntity} from '../entities/contact/PartyTypeEntity'
-import {PhysicalAddressEntity} from '../entities/contact/PhysicalAddressEntity'
+import { DataSource, FindOptionsWhere } from 'typeorm'
+import { DataStoreContactEntities, DataStoreMigrations, PartyOrigin } from '../index'
+import { BaseContactEntity } from '../entities/contact/BaseContactEntity'
+import { ConnectionEntity } from '../entities/contact/ConnectionEntity'
+import { CorrelationIdentifierEntity } from '../entities/contact/CorrelationIdentifierEntity'
+import { DidAuthConfigEntity } from '../entities/contact/DidAuthConfigEntity'
+import { ElectronicAddressEntity } from '../entities/contact/ElectronicAddressEntity'
+import { IdentityEntity } from '../entities/contact/IdentityEntity'
+import { IdentityMetadataItemEntity } from '../entities/contact/IdentityMetadataItemEntity'
+import { NaturalPersonEntity } from '../entities/contact/NaturalPersonEntity'
+import { OpenIdConfigEntity } from '../entities/contact/OpenIdConfigEntity'
+import { OrganizationEntity } from '../entities/contact/OrganizationEntity'
+import { PartyEntity } from '../entities/contact/PartyEntity'
+import { PartyRelationshipEntity } from '../entities/contact/PartyRelationshipEntity'
+import { PartyTypeEntity } from '../entities/contact/PartyTypeEntity'
+import { PhysicalAddressEntity } from '../entities/contact/PhysicalAddressEntity'
 import {
   ConnectionTypeEnum,
   CorrelationIdentifierEnum,
@@ -1433,7 +1433,7 @@ describe('Database entities tests', (): void => {
     const name = 'non_unique_value'
     const partyType1: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
-      origin:PartyOrigin.internal,
+      origin: PartyOrigin.internal,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name,
     }

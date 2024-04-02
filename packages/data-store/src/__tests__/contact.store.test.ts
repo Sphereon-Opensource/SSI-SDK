@@ -1,6 +1,6 @@
-import {DataSource} from 'typeorm'
-import {DataStoreContactEntities, DataStoreMigrations, PartyOrigin} from '../index'
-import {ContactStore} from '../contact/ContactStore'
+import { DataSource } from 'typeorm'
+import { DataStoreContactEntities, DataStoreMigrations, PartyOrigin } from '../index'
+import { ContactStore } from '../contact/ContactStore'
 import {
   CorrelationIdentifierEnum,
   ElectronicAddress,

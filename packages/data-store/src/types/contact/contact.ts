@@ -1,4 +1,4 @@
-import {IIdentifier} from '@veramo/core'
+import { IIdentifier } from '@veramo/core'
 
 export type Party = {
   id: string

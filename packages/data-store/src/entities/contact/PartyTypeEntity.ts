@@ -1,19 +1,9 @@
-import {
-  BeforeInsert,
-  BeforeUpdate,
-  Column,
-  CreateDateColumn,
-  Entity,
-  Index,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn
-} from 'typeorm'
-import {PartyEntity} from './PartyEntity'
-import {PartyOrigin, PartyTypeEnum, ValidationConstraint} from '../../types'
-import {IsNotEmpty, Validate, validate, ValidationError} from 'class-validator'
-import {IsNonEmptyStringConstraint} from '../validators'
-import {getConstraint} from '../../utils/ValidatorUtils'
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, Index, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { PartyEntity } from './PartyEntity'
+import { PartyOrigin, PartyTypeEnum, ValidationConstraint } from '../../types'
+import { IsNotEmpty, Validate, validate, ValidationError } from 'class-validator'
+import { IsNonEmptyStringConstraint } from '../validators'
+import { getConstraint } from '../../utils/ValidatorUtils'
 
 @Entity('PartyType')
 @Index('IDX_PartyType_type_tenant_id', ['type', 'tenantId'], { unique: true })
