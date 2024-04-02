@@ -74,7 +74,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -115,7 +115,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.ORGANIZATION,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -152,7 +152,7 @@ describe('Database entities tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -173,7 +173,7 @@ describe('Database entities tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -218,7 +218,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -240,7 +240,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.EXTERNAL,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -262,7 +262,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.EXTERNAL,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -284,7 +284,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.EXTERNAL,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -306,7 +306,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.ORGANIZATION,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -326,7 +326,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.ORGANIZATION,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -346,7 +346,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.EXTERNAL,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: '',
       },
@@ -368,7 +368,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
         description: '',
@@ -391,7 +391,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.EXTERNAL,
+        origin: PartyOrigin.external,
         tenantId: '',
         name: 'example_name',
       },
@@ -787,7 +787,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -808,7 +808,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -968,7 +968,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.EXTERNAL,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1069,7 +1069,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.EXTERNAL,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1145,7 +1145,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1173,7 +1173,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1269,7 +1269,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1297,7 +1297,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.EXTERNAL,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1340,7 +1340,7 @@ describe('Database entities tests', (): void => {
   it('Should set last updated date when saving party type', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.EXTERNAL,
+      origin: PartyOrigin.external,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
@@ -1359,7 +1359,7 @@ describe('Database entities tests', (): void => {
   it('Should set last creation date when saving party type', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.INTERNAL,
+      origin: PartyOrigin.internal,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
@@ -1406,7 +1406,7 @@ describe('Database entities tests', (): void => {
     const name = 'non_unique_value'
     const partyType1: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.EXTERNAL,
+      origin: PartyOrigin.external,
       tenantId,
       name,
     }
@@ -1418,7 +1418,7 @@ describe('Database entities tests', (): void => {
 
     const partyType2: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.INTERNAL,
+      origin: PartyOrigin.internal,
       tenantId,
       name,
     }
@@ -1433,7 +1433,7 @@ describe('Database entities tests', (): void => {
     const name = 'non_unique_value'
     const partyType1: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
-      origin:PartyOrigin.INTERNAL,
+      origin:PartyOrigin.internal,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name,
     }
@@ -1445,7 +1445,7 @@ describe('Database entities tests', (): void => {
 
     const partyType2: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.INTERNAL,
+      origin: PartyOrigin.internal,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
       name,
     }
@@ -1511,7 +1511,7 @@ describe('Database entities tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1534,7 +1534,7 @@ describe('Database entities tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1575,7 +1575,7 @@ describe('Database entities tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1596,7 +1596,7 @@ describe('Database entities tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1635,7 +1635,7 @@ describe('Database entities tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1656,7 +1656,7 @@ describe('Database entities tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1695,7 +1695,7 @@ describe('Database entities tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1718,7 +1718,7 @@ describe('Database entities tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1771,7 +1771,7 @@ describe('Database entities tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1794,7 +1794,7 @@ describe('Database entities tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1837,7 +1837,7 @@ describe('Database entities tests', (): void => {
   it('Should save party type to database', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.INTERNAL,
+      origin: PartyOrigin.internal,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
@@ -1973,7 +1973,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2007,7 +2007,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.ORGANIZATION,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2038,7 +2038,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2072,7 +2072,7 @@ describe('Database entities tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -2095,7 +2095,7 @@ describe('Database entities tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -2137,7 +2137,7 @@ describe('Database entities tests', (): void => {
   it('Should delete party type', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.INTERNAL,
+      origin: PartyOrigin.internal,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
@@ -2161,7 +2161,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2188,7 +2188,7 @@ describe('Database entities tests', (): void => {
   it('Should save party with existing party type', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.INTERNAL,
+      origin: PartyOrigin.internal,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
@@ -2229,7 +2229,7 @@ describe('Database entities tests', (): void => {
   it('Should not update creation date when saving party type', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.INTERNAL,
+      origin: PartyOrigin.internal,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
