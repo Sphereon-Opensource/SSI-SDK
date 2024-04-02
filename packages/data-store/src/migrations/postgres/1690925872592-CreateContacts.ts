@@ -13,8 +13,9 @@ export class CreateContacts1690925872592 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" RENAME COLUMN "identityId" TO "identity_id"`)
     await queryRunner.query(`ALTER TABLE "Connection" RENAME COLUMN "identityId" TO "identity_id"`)
     await queryRunner.query(`CREATE TYPE "public"."PartyType_type_enum" AS ENUM('naturalPerson', 'organization')`)
+    await queryRunner.query(`CREATE TYPE "public"."PartyOrigin_type_enum" AS ENUM('internal', 'external')`)
     await queryRunner.query(
-      `CREATE TABLE "PartyType" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."PartyType_type_enum" NOT NULL, "name" character varying(255) NOT NULL, "description" character varying(255), "tenant_id" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_PartyType_name" UNIQUE ("name"), CONSTRAINT "PK_PartyType_id" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "PartyType" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."PartyType_type_enum" NOT NULL, "origin" "public"."PartyOrigin_type_enum" NOT NULL, "name" character varying(255) NOT NULL, "description" character varying(255), "tenant_id" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_PartyType_name" UNIQUE ("name"), CONSTRAINT "PK_PartyType_id" PRIMARY KEY ("id"))`,
     )
     await queryRunner.query(`CREATE UNIQUE INDEX "IDX_PartyType_type_tenant_id" ON "PartyType" ("type", "tenant_id")`)
     await queryRunner.query(
@@ -85,12 +86,6 @@ export class CreateContacts1690925872592 implements MigrationInterface {
       `INSERT INTO "BaseContact"(id, legal_name, display_name, party_id, created_at, last_updated_at, type) SELECT id, name, alias, id, created_at, last_updated_at, 'Organization' FROM "Contact"`,
     )
     await queryRunner.query(`DROP TABLE "Contact"`)
-    await queryRunner.query(
-        `CREATE TYPE "public"."partyOrigin_type_enum" AS ENUM('internal', 'external')`
-    )
-    await queryRunner.query(
-        `ALTER TABLE "PartyType" ADD COLUMN "origin" "public"."partyOrigin_type_enum" NOT NULL`
-    )
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
