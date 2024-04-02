@@ -49,7 +49,7 @@ export class CreateContacts1690925872693 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "Connection"`)
     await queryRunner.query(`ALTER TABLE "temporary_Connection" RENAME TO "Connection"`)
     await queryRunner.query(
-      `CREATE TABLE "PartyType" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('naturalPerson','organization') ) NOT NULL, "origin" varchar CHECK( "origin" IN ('internal', 'external') ) NOT NULL, "name" varchar(255) NOT NULL, "description" varchar(255), "tenant_id" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), CONSTRAINT "UQ_PartyType_name" UNIQUE ("name"))`,
+      `CREATE TABLE "PartyType" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('naturalPerson','organization') ) NOT NULL, "origin" varchar CHECK( "origin" IN ('internal', 'external') ) NOT NULL DEFAULT 'external', "name" varchar(255) NOT NULL, "description" varchar(255), "tenant_id" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), CONSTRAINT "UQ_PartyType_name" UNIQUE ("name"))`,
     )
     await queryRunner.query(`CREATE UNIQUE INDEX "IDX_PartyType_type_tenant_id" ON "PartyType" ("type", "tenant_id")`)
     await queryRunner.query(
