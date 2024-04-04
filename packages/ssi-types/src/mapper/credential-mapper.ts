@@ -293,7 +293,7 @@ export class CredentialMapper {
     return '@context' in credential && ((credential as ICredential).type?.includes('VerifiableCredential') || false)
   }
 
-  public static isCredential(original: OriginalVerifiableCredential | OriginalVerifiablePresentation): boolean {
+  public static isCredential(original: OriginalVerifiableCredential | OriginalVerifiablePresentation): original is OriginalVerifiableCredential {
     try {
       if (CredentialMapper.isJwtEncoded(original)) {
         const vc: IVerifiableCredential = CredentialMapper.toUniformCredential(original)
@@ -312,7 +312,7 @@ export class CredentialMapper {
     }
   }
 
-  public static isPresentation(original: OriginalVerifiableCredential | OriginalVerifiablePresentation): boolean {
+  public static isPresentation(original: OriginalVerifiableCredential | OriginalVerifiablePresentation): original is OriginalVerifiablePresentation {
     try {
       if (CredentialMapper.isJwtEncoded(original)) {
         const vp: IVerifiablePresentation = CredentialMapper.toUniformPresentation(original)
