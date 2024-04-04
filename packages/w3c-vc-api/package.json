@@ -62,7 +62,7 @@
     "@veramo/kms-local": "4.2.0",
     "@veramo/utils": "4.2.0",
     "did-resolver": "^4.1.0",
-    "jose": "^5.1.3",
+    "jose": "^4.15.5",
     "morgan": "^1.10.0",
     "nock": "^13.2.1",
     "passport": "^0.6.0",
