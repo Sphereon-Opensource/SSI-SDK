@@ -10,16 +10,19 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
   private readonly stateNavigationListener:
     | ((oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>)
     | undefined
+  private noStateMachinePersistence: boolean;
 
   constructor(
     args: Pick<GetMachineArgs, 'stateNavigationListener'> & {
       priority?: number | DefaultLinkPriorities
       protocols?: Array<string | RegExp>
+      noStateMachinePersistence?: boolean
       context: IAgentContext<IOID4VCIHolder & IMachineStatePersistence>
     },
   ) {
     super({ ...args, id: 'OID4VCIHolder' })
     this.context = args.context
+    this.noStateMachinePersistence = args.noStateMachinePersistence === true
     this.stateNavigationListener = args.stateNavigationListener
   }
 
@@ -48,6 +51,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
       cleanupAllOtherInstances: true,
       cleanupOnFinalState: true,
       singletonCheck: true,
+      noRegistration: this.noStateMachinePersistence
     })
     if (hasCode) {
       interpreter.send(OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE, { data: uri })
