@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
-      "IOID4VCIFlow": "./src/types/IOID4VCIFlow.ts"
+      "IOID4VCIHolder": "./src/types/IOID4VCIHolder.ts"
     }
   },
   "scripts": {
@@ -14,8 +14,8 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/oid4vci-client": "0.10.1-next.3",
-    "@sphereon/oid4vci-common": "0.10.1-next.3",
+    "@sphereon/oid4vci-client": "0.10.3-next.3",
+    "@sphereon/oid4vci-common": "0.10.3-next.3",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
