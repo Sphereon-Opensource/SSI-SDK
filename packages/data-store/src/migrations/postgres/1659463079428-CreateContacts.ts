@@ -42,24 +42,6 @@ export class CreateContacts1659463079428 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "Connection" ADD CONSTRAINT "FK_Connection_identityId" FOREIGN KEY ("identityId") REFERENCES "Identity"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     )
-
-    await queryRunner.query(`
-      CREATE TABLE "PhysicalAddress" (
-          "id" text PRIMARY KEY NOT NULL,
-          "type" varchar(255) NOT NULL,
-          "street_name" varchar(255) NOT NULL,
-          "street_number" varchar(255) NOT NULL,
-          "postal_code" varchar(255) NOT NULL,
-          "city_name" varchar(255) NOT NULL,
-          "province_name" varchar(255) NOT NULL,
-          "country_code" varchar(2) NOT NULL,
-          "building_name" varchar(255),
-          "partyId" uuid,
-          "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          "last_updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          CONSTRAINT "FK_PhysicalAddressEntity_partyId" FOREIGN KEY ("partyId") REFERENCES "Party" ("id") ON DELETE CASCADE
-      );`
-    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -77,6 +59,5 @@ export class CreateContacts1659463079428 implements MigrationInterface {
     await queryRunner.query(`DROP TYPE "public"."CorrelationIdentifier_type_enum"`)
     await queryRunner.query(`DROP INDEX "public"."IDX_BaseConfigEntity_type"`)
     await queryRunner.query(`DROP TABLE "BaseConfigEntity"`)
-    await queryRunner.query(`DROP TABLE "PhysicalAddress"`)
   }
 }

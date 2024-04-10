@@ -29,7 +29,7 @@ export class CreateContacts1690925872592 implements MigrationInterface {
       `CREATE TABLE "ElectronicAddress" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" character varying(255) NOT NULL, "electronic_address" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "partyId" uuid, CONSTRAINT "PK_ElectronicAddress_id" PRIMARY KEY ("id"))`,
     )
     await queryRunner.query(
-      `CREATE TABLE "Party" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "uri" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "party_type_id" uuid NOT NULL, CONSTRAINT "PK_Party_id" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "Party" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "uri" character varying(255), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "party_type_id" uuid NOT NULL, CONSTRAINT "PK_Party_id" PRIMARY KEY ("id"))`,
     )
     await queryRunner.query(
       `CREATE TABLE "BaseConfig" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "identifier" character varying(255), "redirect_url" character varying(255), "session_id" character varying(255), "client_id" character varying(255), "client_secret" character varying(255), "scopes" text, "issuer" character varying(255), "dangerously_allow_insecure_http_requests" boolean, "client_auth_method" text, "type" character varying NOT NULL, "connection_id" uuid, CONSTRAINT "REL_BaseConfig_connection_id" UNIQUE ("connection_id"), CONSTRAINT "PK_BaseConfig_id" PRIMARY KEY ("id"))`,
@@ -85,6 +85,24 @@ export class CreateContacts1690925872592 implements MigrationInterface {
       `INSERT INTO "BaseContact"(id, legal_name, display_name, party_id, created_at, last_updated_at, type) SELECT id, name, alias, id, created_at, last_updated_at, 'Organization' FROM "Contact"`,
     )
     await queryRunner.query(`DROP TABLE "Contact"`)
+    
+    await queryRunner.query(`
+      CREATE TABLE "PhysicalAddress" (
+          "id" text PRIMARY KEY NOT NULL,
+          "type" varchar(255) NOT NULL,
+          "street_name" varchar(255) NOT NULL,
+          "street_number" varchar(255) NOT NULL,
+          "postal_code" varchar(255) NOT NULL,
+          "city_name" varchar(255) NOT NULL,
+          "province_name" varchar(255) NOT NULL,
+          "country_code" varchar(2) NOT NULL,
+          "building_name" varchar(255),
+          "partyId" uuid,
+          "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          "last_updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          CONSTRAINT "FK_PhysicalAddressEntity_partyId" FOREIGN KEY ("partyId") REFERENCES "Party" ("id") ON DELETE CASCADE
+      );`
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
