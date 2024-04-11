@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, Index, CreateDateColumn, UpdateDateColumn, OneToMany, BeforeInsert, BeforeUpdate } from 'typeorm'
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, Index, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { PartyEntity } from './PartyEntity'
-import { PartyTypeEnum, ValidationConstraint } from '../../types'
+import { PartyOrigin, PartyTypeEnum, ValidationConstraint } from '../../types'
 import { IsNotEmpty, Validate, validate, ValidationError } from 'class-validator'
 import { IsNonEmptyStringConstraint } from '../validators'
 import { getConstraint } from '../../utils/ValidatorUtils'
@@ -13,6 +13,9 @@ export class PartyTypeEntity {
 
   @Column('simple-enum', { name: 'type', enum: PartyTypeEnum, nullable: false, unique: false })
   type!: PartyTypeEnum
+
+  @Column('simple-enum', { name: 'origin', enum: PartyOrigin, default: 'external', nullable: false, unique: false })
+  origin!: PartyOrigin
 
   @Column({ name: 'name', length: 255, nullable: false, unique: true })
   @IsNotEmpty({ message: 'Blank names are not allowed' })
