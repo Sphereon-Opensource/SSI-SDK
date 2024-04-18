@@ -34,10 +34,25 @@ export interface IEBSIAuthorizationClient extends IPluginMethodMap {
 /**
  * @typedef GetOIDProviderMetadataSuccessResponse
  * @type {object}
- * @property {(URL | string)} issuer REQUIRED. URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. MUST be identical to the iss Claim value in ID Tokens issued from this Issuer.
- *
- * Note: issuer refers to OpenID Connect issuer or the Authorization Server and not to the Verifiable Credential issuer.
- *
+ * @property {(URL | string)} issuer URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. MUST be identical to the iss Claim value in ID Tokens issued from this Issuer.
+ * @property {(URL | string)} authorization_endpoint URL of the OP's OAuth 2.0 Authorization Endpoint.
+ * @property {(URL | string)} token_endpoint URL of the OP's OAuth 2.0 Token Endpoint.
+ * @property {(URL | string)} [presentation_definition_endpoint] URL of the OP's presentation definitions endpoint. Non-standard, used in EBSI
+ * @property {(URL | string)} jwks_uri URL of the authorization server's JWK Set [JWK] document
+ * @property {string[]} scopes_supported JSON array containing a list of the OAuth 2.0 [RFC6749] scope values that this server supports. (SIOP v2)
+ * @property {string[]} response_types_supported JSON array containing a list of the OAuth 2.0 "response_type" values that this authorization server supports (SIOP v2)
+ * @property {string[]} [response_mode_supported] JSON array containing a list of the OAuth 2.0 response_mode values that this OP supports
+ * @property {string[]} [grant_types_supported] JSON array containing a list of the OAuth 2.0 grant type values that this authorization server supports.
+ * @property {string[]} subject_types_supported JSON array containing a list of the Subject Identifier types that this OP supports.
+ * @property {string[]} id_token_signing_alg_values_supported JSON array containing a list of the JWS signing algorithms (alg values) supported by the OP for the ID Token to encode the Claims in a JWT
+ * @property {string[]} [request_object_signing_alg_values_supported] JSON array containing a list of the JWS signing algorithms (alg values) supported by the OP for Request Objects
+ * @property {string[]} [request_parameter_supported] Boolean value specifying whether the OP supports use of the request parameter, with true indicating support
+ * @property {string[]} [token_endpoint_auth_methods_supported] JSON array containing a list of client authentication methods supported by this token endpoint
+ * @property {{ authorization_endpoint: string[] }} [request_authentication_methods_supported] A JSON Object defining the client authentications supported for each endpoint
+ * @property {string[]} [vp_formats_supported] An object containing a list of key value pairs, where the key is a string identifying a credential format supported by the AS
+ * @property {(URL[] | string[])} [subject_syntax_types_supported]  A JSON array of strings representing URI scheme identifiers and optionally method names of supported Subject Syntax Types
+ * @property {string[]} [subject_trust_frameworks_supported] A JSON array of supported trust frameworks.
+ * @property {string[]} [id_token_types_supported] A JSON array of strings containing the list of ID Token types supported by the OP
  */
 export interface GetOIDProviderMetadataSuccessResponse {
     issuer: URL | string
