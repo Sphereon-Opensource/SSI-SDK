@@ -1,5 +1,5 @@
-import {IPluginMethodMap} from "@veramo/core";
-import {Format, PresentationDefinitionV2} from '@sphereon/pex-models'
+import { IPluginMethodMap } from '@veramo/core'
+import { Format, PresentationDefinitionV2 } from '@sphereon/pex-models'
 
 /**
  * The OpenID scope
@@ -7,28 +7,28 @@ import {Format, PresentationDefinitionV2} from '@sphereon/pex-models'
  * @enum {string}
  */
 export enum OpenIDScope {
-    didr_write = 'openid%20didr_write',
-    didr_invite = 'openid%20didr_invite',
-    tir_write = 'openid%20tir_write',
-    tir_invite = 'openid%20tir_invite',
-    timestamp_write = 'openid%20timestamp_write',
-    tnt_authorise = 'openid%20tnt_authorise',
-    tnt_create = 'openid%20tnt_create',
-    tnt_write = 'openid%20tnt_write'
+  didr_write = 'openid%20didr_write',
+  didr_invite = 'openid%20didr_invite',
+  tir_write = 'openid%20tir_write',
+  tir_invite = 'openid%20tir_invite',
+  timestamp_write = 'openid%20timestamp_write',
+  tnt_authorise = 'openid%20tnt_authorise',
+  tnt_create = 'openid%20tnt_create',
+  tnt_write = 'openid%20tnt_write',
 }
 
 export enum TokenType {
-    BEARER = 'Bearer',
+  BEARER = 'Bearer',
 }
 
 export interface IEBSIAuthorizationClient extends IPluginMethodMap {
-    getOIDProviderMetadata(): Promise<GetOIDProviderMetadataResponse>
-    getOIDProviderJwks(): Promise<GetOIDProviderJwksResponse>
-    getPresentationDefinition(args: GetPresentationDefinitionArgs): Promise<GetPresentationDefinitionResponse>
-    getAccessToken(args: GetAccessTokenArgs): Promise<GetAccessTokenResponse>
-    initiateSIOPDidAuthRequest(args: InitiateSIOPDidAuthRequestArgs): Promise<InitiateSIOPDidAuthRequestResponse>
-    createSIOPSession(args: CreateSIOPSessionArgs): Promise<CreateSIOPSessionResponse>
-    createOAuth2Session(args: CreateOAuth2SessionArgs): Promise<CreateOAuth2SessionResponse>
+  getOIDProviderMetadata(): Promise<GetOIDProviderMetadataResponse>
+  getOIDProviderJwks(): Promise<GetOIDProviderJwksResponse>
+  getPresentationDefinition(args: GetPresentationDefinitionArgs): Promise<GetPresentationDefinitionResponse>
+  getAccessToken(args: GetAccessTokenArgs): Promise<GetAccessTokenResponse>
+  initiateSIOPDidAuthRequest(args: InitiateSIOPDidAuthRequestArgs): Promise<InitiateSIOPDidAuthRequestResponse>
+  createSIOPSession(args: CreateSIOPSessionArgs): Promise<CreateSIOPSessionResponse>
+  createOAuth2Session(args: CreateOAuth2SessionArgs): Promise<CreateOAuth2SessionResponse>
 }
 
 /**
@@ -55,25 +55,25 @@ export interface IEBSIAuthorizationClient extends IPluginMethodMap {
  * @property {string[]} [id_token_types_supported] A JSON array of strings containing the list of ID Token types supported by the OP
  */
 export interface GetOIDProviderMetadataSuccessResponse {
-    issuer: URL | string
-    authorization_endpoint: URL | string
-    token_endpoint: URL | string
-    presentation_definition_endpoint?: URL | string
-    jwks_uri: URL | string
-    scopes_supported: string[]
-    response_types_supported: string[]
-    response_mode_supported?: string[]
-    grant_types_supported?: string[]
-    subject_types_supported: string[]
-    id_token_signing_alg_values_supported: string[]
-    request_object_signing_alg_values_supported?: string[]
-    request_parameter_supported?: string[]
-    token_endpoint_auth_methods_supported?: string[]
-    request_authentication_methods_supported?: { authorization_endpoint: string[] }
-    vp_formats_supported?: string[]
-    subject_syntax_types_supported?: URL[] | string[]
-    subject_trust_frameworks_supported?: string[]
-    id_token_types_supported?: string[]
+  issuer: URL | string
+  authorization_endpoint: URL | string
+  token_endpoint: URL | string
+  presentation_definition_endpoint?: URL | string
+  jwks_uri: URL | string
+  scopes_supported: string[]
+  response_types_supported: string[]
+  response_mode_supported?: string[]
+  grant_types_supported?: string[]
+  subject_types_supported: string[]
+  id_token_signing_alg_values_supported: string[]
+  request_object_signing_alg_values_supported?: string[]
+  request_parameter_supported?: string[]
+  token_endpoint_auth_methods_supported?: string[]
+  request_authentication_methods_supported?: { authorization_endpoint: string[] }
+  vp_formats_supported?: string[]
+  subject_syntax_types_supported?: URL[] | string[]
+  subject_trust_frameworks_supported?: string[]
+  id_token_types_supported?: string[]
 }
 
 /**
@@ -87,12 +87,12 @@ export interface GetOIDProviderMetadataSuccessResponse {
  * @property {string} [kid]
  */
 export interface Key {
-    kty?: string
-    crv?: string
-    alg?: string
-    x?: string
-    y?: string
-    kid?: string
+  kty?: string
+  crv?: string
+  alg?: string
+  x?: string
+  y?: string
+  kid?: string
 }
 
 /**
@@ -101,7 +101,7 @@ export interface Key {
  * @property {Key[]} keys
  */
 export interface GetOIDProviderJwksSuccessResponse {
-    keys: Key[]
+  keys: Key[]
 }
 
 /**
@@ -110,7 +110,7 @@ export interface GetOIDProviderJwksSuccessResponse {
  * @property {OpenIDScope} scope
  */
 export interface GetPresentationDefinitionArgs {
-    scope: OpenIDScope
+  scope: OpenIDScope
 }
 
 /**
@@ -126,7 +126,7 @@ export interface GetPresentationDefinitionArgs {
  * @property {object} [frame] a JSON LD Framing Document object.
  */
 export type GetPresentationDefinitionSuccessResponse = PresentationDefinitionV2 & {
-    format?: Pick<Format, 'jwt_vc' | 'jwt_vc_json' | 'jwt_vp' | 'jwt_vp_json'>
+  format?: Pick<Format, 'jwt_vc' | 'jwt_vc_json' | 'jwt_vp' | 'jwt_vp_json'>
 }
 
 /**
@@ -138,10 +138,10 @@ export type GetPresentationDefinitionSuccessResponse = PresentationDefinitionV2 
  * @property {OpenIDScope} scope Possible values: [openid didr_write, openid didr_invite, openid tir_write, openid tir_invite, openid timestamp_write, openid tnt_authorise, openid tnt_create, openid tnt_write] OIDC scope
  */
 export interface GetAccessTokenArgs {
-    grant_type: string
-    vp_token: string
-    presentation_submission: string
-    scope: OpenIDScope
+  grant_type: string
+  vp_token: string
+  presentation_submission: string
+  scope: OpenIDScope
 }
 
 /**
@@ -154,11 +154,11 @@ export interface GetAccessTokenArgs {
  * @property {string} id_token ^(([A-Za-z0-9\-_])+\.)([A-Za-z0-9\-_]+)(\.([A-Za-z0-9\-_]+)?$ ID Token value associated with the authenticated session. Presents client's identity. ID Token is issued in a JWS format. See also the "ID Token" schema definition.
  */
 export interface GetAccessTokenSuccessResponse {
-    access_token: string
-    token_type: TokenType
-    expires_in?: number
-    scope: OpenIDScope
-    id_token: string
+  access_token: string
+  token_type: TokenType
+  expires_in?: number
+  scope: OpenIDScope
+  id_token: string
 }
 
 /**
@@ -168,7 +168,7 @@ export interface GetAccessTokenSuccessResponse {
  * @property {OpenIDScope} scope Scope is used to define the authentication response method.
  */
 export interface InitiateSIOPDidAuthRequestArgs {
-    scope: OpenIDScope
+  scope: OpenIDScope
 }
 
 /**
@@ -178,7 +178,7 @@ export interface InitiateSIOPDidAuthRequestArgs {
  * @property {string} [uri]
  */
 export interface InitiateSIOPDidAuthRequestSuccessResponse {
-    uri: string
+  uri: string
 }
 
 /**
@@ -202,8 +202,8 @@ export interface InitiateSIOPDidAuthRequestSuccessResponse {
  * @property {string} [vp_token] A Verifiable Presentation JWT. Only for onboarding.
  */
 export interface CreateSIOPSessionArgs {
-    id_token: string
-    vp_token?: string
+  id_token: string
+  vp_token?: string
 }
 
 /**
@@ -218,13 +218,13 @@ export interface CreateSIOPSessionArgs {
  * @property {string} [iss] Issuer (Authorisation API)
  */
 export interface Ake1SigPayload {
-    ake1_enc_payload?: string
-    ake1_nonce?: string
-    did?: string
-    kid?: string
-    iat?: number
-    exp?: number
-    iss?: string
+  ake1_enc_payload?: string
+  ake1_nonce?: string
+  did?: string
+  kid?: string
+  iat?: number
+  exp?: number
+  iss?: string
 }
 
 /**
@@ -236,10 +236,10 @@ export interface Ake1SigPayload {
  * @property {string} [kid] API KID
  */
 export interface CreateSIOPSessionSuccessResponse {
-    ake1_enc_payload?: string
-    ake1_jws_detached?: string
-    ake1_sig_payload?: Ake1SigPayload
-    kid?: string
+  ake1_enc_payload?: string
+  ake1_jws_detached?: string
+  ake1_sig_payload?: Ake1SigPayload
+  kid?: string
 }
 
 /**
@@ -251,10 +251,10 @@ export interface CreateSIOPSessionSuccessResponse {
  * @property {OpenIDScope} scope Scope is used to define the authentication method. Must be set to "openid did_authn"
  */
 export interface CreateOAuth2SessionArgs {
-    grantType: string
-    clientAssertionType: string
-    clientAssertion: string
-    scope: OpenIDScope
+  grantType: string
+  clientAssertionType: string
+  clientAssertion: string
+  scope: OpenIDScope
 }
 
 /**
@@ -266,10 +266,10 @@ export interface CreateOAuth2SessionArgs {
  * @property {string} [kid] API KID
  */
 export interface CreateOAuth2SessionSuccessResponse {
-    ake1_enc_payload: string
-    ake1_jws_detached: string
-    ake1_sig_payload: Ake1SigPayload
-    kid: string
+  ake1_enc_payload: string
+  ake1_jws_detached: string
+  ake1_sig_payload: Ake1SigPayload
+  kid: string
 }
 
 /**
@@ -282,11 +282,11 @@ export interface CreateOAuth2SessionSuccessResponse {
  * @property {(URL | string)} [instance] An absolute URI that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
  */
 export interface ExceptionResponse {
-    type?: URL | string
-    title?: string
-    status?: number
-    detail?: string
-    instance?: URL | string
+  type?: URL | string
+  title?: string
+  status?: number
+  detail?: string
+  instance?: URL | string
 }
 
 export type GetOIDProviderMetadataResponse = GetOIDProviderMetadataSuccessResponse | ExceptionResponse

@@ -18,12 +18,7 @@
               "$ref": "#/components/schemas/OpenIDScope"
             }
           },
-          "required": [
-            "grantType",
-            "clientAssertionType",
-            "clientAssertion",
-            "scope"
-          ]
+          "required": ["grantType", "clientAssertionType", "clientAssertion", "scope"]
         },
         "OpenIDScope": {
           "type": "string",
@@ -65,12 +60,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "ake1_enc_payload",
-            "ake1_jws_detached",
-            "ake1_sig_payload",
-            "kid"
-          ]
+          "required": ["ake1_enc_payload", "ake1_jws_detached", "ake1_sig_payload", "kid"]
         },
         "Ake1SigPayload": {
           "type": "object",
@@ -128,9 +118,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id_token"
-          ]
+          "required": ["id_token"]
         },
         "CreateSIOPSessionResponse": {
           "anyOf": [
@@ -175,12 +163,7 @@
               "$ref": "#/components/schemas/OpenIDScope"
             }
           },
-          "required": [
-            "grant_type",
-            "vp_token",
-            "presentation_submission",
-            "scope"
-          ]
+          "required": ["grant_type", "vp_token", "presentation_submission", "scope"]
         },
         "GetAccessTokenResponse": {
           "anyOf": [
@@ -211,12 +194,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "access_token",
-            "token_type",
-            "scope",
-            "id_token"
-          ]
+          "required": ["access_token", "token_type", "scope", "id_token"]
         },
         "TokenType": {
           "type": "string",
@@ -242,9 +220,7 @@
               }
             }
           },
-          "required": [
-            "keys"
-          ]
+          "required": ["keys"]
         },
         "Key": {
           "type": "object",
@@ -361,9 +337,7 @@
                   }
                 }
               },
-              "required": [
-                "authorization_endpoint"
-              ]
+              "required": ["authorization_endpoint"]
             },
             "vp_formats_supported": {
               "type": "array",
@@ -419,9 +393,7 @@
               "$ref": "#/components/schemas/OpenIDScope"
             }
           },
-          "required": [
-            "scope"
-          ]
+          "required": ["scope"]
         },
         "GetPresentationDefinitionResponse": {
           "anyOf": [
@@ -464,10 +436,7 @@
               "type": "object"
             }
           },
-          "required": [
-            "id",
-            "input_descriptors"
-          ]
+          "required": ["id", "input_descriptors"]
         },
         "Format": {
           "type": "object",
@@ -520,9 +489,7 @@
               }
             }
           },
-          "required": [
-            "alg"
-          ]
+          "required": ["alg"]
         },
         "LdpObject": {
           "type": "object",
@@ -534,9 +501,7 @@
               }
             }
           },
-          "required": [
-            "proof_type"
-          ]
+          "required": ["proof_type"]
         },
         "DiObject": {
           "type": "object",
@@ -554,10 +519,7 @@
               }
             }
           },
-          "required": [
-            "proof_type",
-            "cryptosuite"
-          ]
+          "required": ["proof_type", "cryptosuite"]
         },
         "SdJwtObject": {
           "type": "object",
@@ -607,16 +569,11 @@
               }
             }
           },
-          "required": [
-            "rule"
-          ]
+          "required": ["rule"]
         },
         "Rules": {
           "type": "string",
-          "enum": [
-            "all",
-            "pick"
-          ]
+          "enum": ["all", "pick"]
         },
         "InputDescriptorV2": {
           "type": "object",
@@ -649,10 +606,7 @@
               "$ref": "#/components/schemas/ConstraintsV2"
             }
           },
-          "required": [
-            "id",
-            "constraints"
-          ]
+          "required": ["id", "constraints"]
         },
         "Issuance": {
           "type": "object",
@@ -697,10 +651,7 @@
         },
         "Optionality": {
           "type": "string",
-          "enum": [
-            "required",
-            "preferred"
-          ]
+          "enum": ["required", "preferred"]
         },
         "Statuses": {
           "type": "object",
@@ -726,11 +677,7 @@
         },
         "Directives": {
           "type": "string",
-          "enum": [
-            "required",
-            "allowed",
-            "disallowed"
-          ]
+          "enum": ["required", "allowed", "disallowed"]
         },
         "FieldV2": {
           "type": "object",
@@ -757,9 +704,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "path"
-          ]
+          "required": ["path"]
         },
         "FilterV2": {
           "type": "object",
@@ -822,15 +767,10 @@
               "$ref": "#/components/schemas/FilterV2BaseItems"
             }
           },
-          "required": [
-            "type"
-          ]
+          "required": ["type"]
         },
         "OneOfNumberString": {
-          "type": [
-            "number",
-            "string"
-          ]
+          "type": ["number", "string"]
         },
         "FilterV2Base": {
           "type": "object",
@@ -955,9 +895,7 @@
               "$ref": "#/components/schemas/FilterV2BaseItems"
             }
           },
-          "required": [
-            "type"
-          ]
+          "required": ["type"]
         },
         "HolderSubject": {
           "type": "object",
@@ -972,10 +910,7 @@
               "$ref": "#/components/schemas/Optionality"
             }
           },
-          "required": [
-            "field_id",
-            "directive"
-          ]
+          "required": ["field_id", "directive"]
         },
         "InitiateSIOPDidAuthRequestArgs": {
           "type": "object",
@@ -984,9 +919,7 @@
               "$ref": "#/components/schemas/OpenIDScope"
             }
           },
-          "required": [
-            "scope"
-          ]
+          "required": ["scope"]
         },
         "InitiateSIOPDidAuthRequestResponse": {
           "anyOf": [
@@ -1005,9 +938,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "uri"
-          ]
+          "required": ["uri"]
         }
       },
       "methods": {
