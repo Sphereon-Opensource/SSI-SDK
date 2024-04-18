@@ -4,8 +4,20 @@
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "veramo": {
+    "pluginInterfaces": {
+      "IEBSIAuthorizationClient": "./src/types/IEBSIAuthorizationClient.ts"
+    }
+  },
   "scripts": {
-    "build": "tsc --build"
+    "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build",
+    "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
+  },
+  "dependencies": {
+    "@sphereon/pex-models": "^2.2.2",
+    "@veramo/core": "4.2.0",
+    "cross-fetch": "^3.1.8"
   },
   "files": [
     "dist/**/*",
