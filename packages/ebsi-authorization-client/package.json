@@ -15,10 +15,14 @@
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk.oid4vci-holder": "workspace:*",
     "@sphereon/pex-models": "^2.2.2",
+    "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth": "workspace:*",
+    "@transmute/json-web-signature": "0.7.0-unstable.81",
     "@veramo/core": "4.2.0",
-    "cross-fetch": "^3.1.8"
+    "cross-fetch": "^3.1.8",
+    "jose": "^5.2.4",
+    "uint8arrays": "^5.0.3",
+    "uuidv4": "^6.2.13"
   },
   "files": [
     "dist/**/*",

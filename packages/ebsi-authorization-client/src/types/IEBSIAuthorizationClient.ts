@@ -1,5 +1,5 @@
-import { IPluginMethodMap } from '@veramo/core'
-import { Format, PresentationDefinitionV2 } from '@sphereon/pex-models'
+import { IAgentContext, ICredentialPlugin, IDIDManager, IKeyManager, IPluginMethodMap } from '@veramo/core'
+import { Format, PresentationDefinitionV2, PresentationSubmission } from '@sphereon/pex-models'
 
 /**
  * The OpenID scope
@@ -15,6 +15,17 @@ export enum OpenIDScope {
   tnt_authorise = 'openid%20tnt_authorise',
   tnt_create = 'openid%20tnt_create',
   tnt_write = 'openid%20tnt_write',
+}
+
+export enum ScopeByDefinition {
+  didr_invite_presentation = 'openid didr_invite',
+  didr_write_presentation = 'openid didr_write',
+  tir_invite_presentation = 'openid tir_invite',
+  tir_write_presentation = 'openid tir_write',
+  timestamp_write_presentation = 'openid timestamp_write',
+  tnt_authorise_presentation = 'openid tnt_authorise',
+  tnt_create_presentation = 'openid tnt_create',
+  tnt_write_presentation = 'openid tnt_write',
 }
 
 export enum TokenType {
@@ -134,13 +145,13 @@ export type GetPresentationDefinitionSuccessResponse = PresentationDefinitionV2 
  * @type {object}
  * @property {string} grant_type MUST be set to "vp_token"
  * @property {string} vp_token  Signed Verifiable Presentation. See also the VP Token schema definition.
- * @property {string} presentation_submission Descriptor for the vp_token, linked by presentation_definition. See also the Presentation Definition schema.
+ * @property {PresentationSubmission} presentation_submission Descriptor for the vp_token, linked by presentation_definition. See also the Presentation Definition schema.
  * @property {OpenIDScope} scope Possible values: [openid didr_write, openid didr_invite, openid tir_write, openid tir_invite, openid timestamp_write, openid tnt_authorise, openid tnt_create, openid tnt_write] OIDC scope
  */
 export interface GetAccessTokenArgs {
-  grant_type: string
+  grant_type?: string
   vp_token: string
-  presentation_submission: string
+  presentation_submission: PresentationSubmission
   scope: OpenIDScope
 }
 
@@ -296,3 +307,4 @@ export type GetAccessTokenResponse = GetAccessTokenSuccessResponse | ExceptionRe
 export type InitiateSIOPDidAuthRequestResponse = InitiateSIOPDidAuthRequestSuccessResponse | ExceptionResponse
 export type CreateSIOPSessionResponse = CreateSIOPSessionSuccessResponse | ExceptionResponse
 export type CreateOAuth2SessionResponse = CreateOAuth2SessionSuccessResponse | ExceptionResponse
+export type IRequiredContext = IAgentContext<IKeyManager & IDIDManager & ICredentialPlugin>

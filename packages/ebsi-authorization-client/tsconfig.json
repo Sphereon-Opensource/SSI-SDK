@@ -8,7 +8,9 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false
   },
-  "references": [{
-    "path": "../oid4vci-holder"
-  }]
+  "references": [
+    {
+      "path": "../siopv2-oid4vp-op-auth"
+    }
+  ]
 }
