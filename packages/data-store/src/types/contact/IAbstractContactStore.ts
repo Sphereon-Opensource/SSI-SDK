@@ -13,6 +13,7 @@ import {
   PartialPartyType,
   PartialPhysicalAddress,
   Party,
+  PartyOrigin,
   PartyRelationship,
   PartyType,
   PartyTypeEnum,
@@ -95,6 +96,7 @@ export type UpdateRelationshipArgs = {
 
 export type AddPartyTypeArgs = {
   type: PartyTypeEnum
+  origin: PartyOrigin
   name: string
   tenantId: string
   description?: string

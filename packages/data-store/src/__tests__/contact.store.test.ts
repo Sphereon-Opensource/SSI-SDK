@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm'
-import { DataStoreMigrations, DataStoreContactEntities } from '../index'
+import { DataStoreContactEntities, DataStoreMigrations, PartyOrigin } from '../index'
 import { ContactStore } from '../contact/ContactStore'
 import {
   CorrelationIdentifierEnum,
@@ -54,6 +54,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -84,6 +85,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -101,6 +103,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -125,6 +128,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -172,6 +176,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -239,6 +244,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'something',
       },
@@ -282,6 +288,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -315,6 +322,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -366,6 +374,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -391,6 +400,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -434,6 +444,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'something',
       },
@@ -471,6 +482,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -528,6 +540,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -560,6 +573,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -594,6 +608,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -634,6 +649,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -683,6 +699,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -728,6 +745,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -778,6 +796,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -828,6 +847,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -867,6 +887,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -900,6 +921,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -935,6 +957,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -972,6 +995,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1022,6 +1046,7 @@ describe('Contact store tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1039,6 +1064,7 @@ describe('Contact store tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1071,6 +1097,7 @@ describe('Contact store tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1088,6 +1115,7 @@ describe('Contact store tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1125,6 +1153,7 @@ describe('Contact store tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1142,6 +1171,7 @@ describe('Contact store tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1178,6 +1208,7 @@ describe('Contact store tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1195,6 +1226,7 @@ describe('Contact store tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1240,6 +1272,7 @@ describe('Contact store tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1257,6 +1290,7 @@ describe('Contact store tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1309,6 +1343,7 @@ describe('Contact store tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1326,6 +1361,7 @@ describe('Contact store tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1343,6 +1379,7 @@ describe('Contact store tests', (): void => {
       uri: 'example3.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d287',
         name: 'example_name3',
       },
@@ -1382,6 +1419,7 @@ describe('Contact store tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1399,6 +1437,7 @@ describe('Contact store tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1435,6 +1474,7 @@ describe('Contact store tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1452,6 +1492,7 @@ describe('Contact store tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1487,6 +1528,7 @@ describe('Contact store tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1504,6 +1546,7 @@ describe('Contact store tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1537,6 +1580,7 @@ describe('Contact store tests', (): void => {
   it('should add party type', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
+      origin: PartyOrigin.external,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
       name: 'example_name',
       description: 'example_description',
@@ -1548,6 +1592,7 @@ describe('Contact store tests', (): void => {
     expect(result).toBeDefined()
     expect(result.name).toEqual(partyType.name)
     expect(result.type).toEqual(partyType.type)
+    expect(result.origin).toEqual(partyType.origin)
     expect(result.tenantId).toEqual(partyType.tenantId)
     expect(result.description).toEqual(partyType.description)
     expect(result.lastUpdatedAt).toBeDefined()
@@ -1557,6 +1602,7 @@ describe('Contact store tests', (): void => {
   it('should get party types by filter', async (): Promise<void> => {
     const partyType1: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
+      origin: PartyOrigin.external,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
       name: 'example_name1',
       description: 'example_description1',
@@ -1566,6 +1612,7 @@ describe('Contact store tests', (): void => {
 
     const partyType2: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
+      origin: PartyOrigin.external,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d287',
       name: 'example_name2',
       description: 'example_description2',
@@ -1590,6 +1637,7 @@ describe('Contact store tests', (): void => {
   it('should return no party types if filter does not match', async (): Promise<void> => {
     const partyType1: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
+      origin: PartyOrigin.internal,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
       name: 'example_name1',
       description: 'example_description1',
@@ -1599,6 +1647,7 @@ describe('Contact store tests', (): void => {
 
     const partyType2: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
+      origin: PartyOrigin.internal,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d287',
       name: 'example_name2',
       description: 'example_description2',
@@ -1623,6 +1672,7 @@ describe('Contact store tests', (): void => {
   it('should throw error when updating party type with unknown id', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
+      origin: PartyOrigin.internal,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
       name: 'example_name',
       description: 'example_description',
@@ -1643,6 +1693,7 @@ describe('Contact store tests', (): void => {
   it('should update party type by id', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
+      origin: PartyOrigin.external,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
       name: 'example_name',
       description: 'example_description',
@@ -1671,6 +1722,7 @@ describe('Contact store tests', (): void => {
   it('should remove party type', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
+      origin: PartyOrigin.internal,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
       name: 'example_name',
       description: 'example_description',
@@ -1698,6 +1750,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1719,6 +1772,7 @@ describe('Contact store tests', (): void => {
   it('Should save party with existing party type', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
       type: PartyTypeEnum.NATURAL_PERSON,
+      origin: PartyOrigin.internal,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
@@ -1742,16 +1796,19 @@ describe('Contact store tests', (): void => {
     expect(result?.partyType).toBeDefined()
     expect(result?.partyType.id).toEqual(savedPartyType.id)
     expect(result?.partyType.type).toEqual(savedPartyType.type)
+    expect(result?.partyType.origin).toEqual(savedPartyType.origin)
     expect(result?.partyType.tenantId).toEqual(savedPartyType.tenantId)
     expect(result?.partyType.name).toEqual(savedPartyType.name)
   })
 
   it('should throw error when adding person party with wrong contact type', async (): Promise<void> => {
     const partyType = PartyTypeEnum.ORGANIZATION
+    const partyTypeOrigin = PartyOrigin.internal
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
         type: partyType,
+        origin: partyTypeOrigin,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1768,10 +1825,12 @@ describe('Contact store tests', (): void => {
 
   it('should throw error when adding organization party with wrong contact type', async (): Promise<void> => {
     const partyType = PartyTypeEnum.NATURAL_PERSON
+    const partyTypeOrigin = PartyOrigin.external
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
         type: partyType,
+        origin: partyTypeOrigin,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1789,6 +1848,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1827,6 +1887,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1874,6 +1935,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1917,6 +1979,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1965,6 +2028,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1994,6 +2058,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2027,6 +2092,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2067,6 +2133,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2109,6 +2176,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2168,6 +2236,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2223,6 +2292,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2283,6 +2353,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2318,6 +2389,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.internal,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2357,6 +2429,7 @@ describe('Contact store tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeEnum.NATURAL_PERSON,
+        origin: PartyOrigin.external,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
