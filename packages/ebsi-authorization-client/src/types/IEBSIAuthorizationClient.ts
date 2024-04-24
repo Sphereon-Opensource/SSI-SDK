@@ -1,6 +1,7 @@
 import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap } from '@veramo/core'
 import { Format, PresentationDefinitionV2, PresentationSubmission } from '@sphereon/pex-models'
-import {DiscoveryMetadataPayload, JWK} from '@sphereon/did-auth-siop'
+import { DiscoveryMetadataPayload, JWK } from '@sphereon/did-auth-siop'
+import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 
 /**
  * The OpenID scope
@@ -69,7 +70,6 @@ export interface IEBSIAuthorizationClient extends IPluginMethodMap {
 export type EBSIOIDMetadata = DiscoveryMetadataPayload & {
   presentation_definition_endpoint?: URL | string
 }
-
 
 /**
  * JSON Web Key Set
@@ -151,10 +151,12 @@ export interface InitiateSIOPDidAuthRequestArgs {
  * OpenId DID SIOP Uri response.
  * @typedef InitiateSIOPDidAuthRequestSuccessResponse
  * @type {object}
- * @property {string} [uri]
+ * @property {string} client_id
+ * @property {string} request
  */
 export interface InitiateSIOPDidAuthRequestSuccessResponse {
-  uri: string
+  client_id: string
+  request: string
 }
 
 /**
@@ -269,7 +271,7 @@ export type GetOIDProviderMetadataResponse = EBSIOIDMetadata | ExceptionResponse
 export type GetOIDProviderJwksResponse = GetOIDProviderJwksSuccessResponse | ExceptionResponse
 export type GetPresentationDefinitionResponse = GetPresentationDefinitionSuccessResponse | ExceptionResponse
 export type GetAccessTokenResponse = GetAccessTokenSuccessResponse | ExceptionResponse
-export type InitiateSIOPDidAuthRequestResponse = InitiateSIOPDidAuthRequestSuccessResponse | ExceptionResponse
+export type InitiateSIOPDidAuthRequestResponse = string | ExceptionResponse
 export type CreateSIOPSessionResponse = CreateSIOPSessionSuccessResponse | ExceptionResponse
 export type CreateOAuth2SessionResponse = CreateOAuth2SessionSuccessResponse | ExceptionResponse
-export type IRequiredContext = IAgentContext<IKeyManager & IDIDManager>
+export type IRequiredContext = IAgentContext<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator>

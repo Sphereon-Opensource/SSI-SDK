@@ -84,6 +84,49 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
     return tokenResponse
   }
 
+  async siop(args: { scope: EBSIScope; callbackUrl: string; did: string }, context: IRequiredContext) {
+    const { scope, callbackUrl, did } = args
+
+    const authRequest = await this.initiateSIOPDidAuthRequest({ scope })
+
+    // TODO add proper error handling
+    if (!(typeof authRequest === 'string')) {
+      throw new Error(`Failed to receive the SIOP DID auth request${authRequest}`)
+    }
+
+    const opSession = await context.agent.siopRegisterOPSession({
+      sessionId: 'ebsi-authorization-client-session',
+      requestJwtOrUri: authRequest,
+    })
+
+    const identifier = await context.agent.didManagerGet({ did })
+    const resp: Response = await opSession.sendAuthorizationResponse({
+      responseSignerOpts: { identifier: identifier },
+    })
+
+    //TODO verify the response and retrieve the access token
+
+    /**
+     * export interface CreateResponseOptions {
+     *
+     *   responseMode?: ResponseMode;
+     *
+     *   syntaxType?: "jwk_thumbprint_subject" | "did_subject";
+     *
+     * }
+     *
+     * export type ResponseMode = "fragment" | "form_post" | "post" | "query";
+     *
+     * export interface RequestPayload {
+     *       redirectUri?: string;
+     *       responseMode?: ResponseMode;
+     *       responseContext?: string;
+     *       claims?: RequestClaims;
+     *       [x: string]: unknown;
+     *     }
+     */
+  }
+
   private getDescriptorMap(definitionId: ScopeByDefinition) {
     switch (definitionId) {
       case ScopeByDefinition.didr_invite_presentation:
@@ -170,6 +213,7 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
     ).json()
   }
 
+  //OP
   private async initiateSIOPDidAuthRequest(args: InitiateSIOPDidAuthRequestArgs): Promise<InitiateSIOPDidAuthRequestResponse> {
     if (!this.discoveryMetadata) {
       this.discoveryMetadata = await this.getOIDProviderMetadata()
