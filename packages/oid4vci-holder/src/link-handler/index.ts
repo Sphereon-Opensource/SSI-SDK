@@ -24,6 +24,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
   }
 
   async handle(url: string | URL): Promise<void> {
+    // FIXME CWALL-199 add support for URL's
     const uri = new URL(url).toString().replace(new RegExp('.*\\?'), 'openid-credential-offer://?')
     const offerData = convertURIToJsonObject(uri) as Record<string, unknown>
     const hasCode = 'code' in offerData && !!offerData.code && !('issuer' in offerData)
