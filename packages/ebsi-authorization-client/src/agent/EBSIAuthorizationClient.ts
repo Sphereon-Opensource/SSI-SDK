@@ -1,5 +1,5 @@
-import { CredentialPayload, IAgentPlugin } from '@veramo/core'
-import { GetOIDProviderMetadataSuccessResponse, IRequiredContext, OpenIDScope, schema, ScopeByDefinition } from '../index'
+import {CredentialPayload, IAgentPlugin} from '@veramo/core'
+import {GetOIDProviderMetadataSuccessResponse, IRequiredContext, OpenIDScope, schema, ScopeByDefinition} from '../index'
 import {
   CreateOAuth2SessionArgs,
   CreateOAuth2SessionResponse,
@@ -16,12 +16,11 @@ import {
   InitiateSIOPDidAuthRequestArgs,
   InitiateSIOPDidAuthRequestResponse,
 } from '../types/IEBSIAuthorizationClient'
-import { uuid } from 'uuidv4'
-import { Descriptor } from '@sphereon/pex-models'
-import { JWTHeader, JWTPayload } from 'did-jwt'
-import { exportJWK, importJWK, JWK, SignJWT } from 'jose'
+import {uuid} from 'uuidv4'
+import {JWTHeader, JWTPayload} from 'did-jwt'
+import {exportJWK, importJWK, JWK, SignJWT} from 'jose'
 import * as u8a from 'uint8arrays'
-import { JsonWebKey, JsonWebKey2020 } from '@transmute/json-web-signature'
+import {JsonWebKey, JsonWebKey2020} from '@transmute/json-web-signature'
 
 export class EBSIAuthorizationClient implements IAgentPlugin {
   readonly schema = schema.IEBSIAuthorizationClient
@@ -70,49 +69,7 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
       },
       context,
     )
-
-    let descriptorMap: Descriptor[] = []
-
-    if (definitionId === ScopeByDefinition.didr_invite_presentation) {
-      descriptorMap = [
-        {
-          id: 'didr_invite_credential',
-          format: 'jwt_vp',
-          path: '$',
-          path_nested: {
-            id: 'didr_invite_credential',
-            format: 'jwt_vc',
-            path: '$.vp.verifiableCredential[0]',
-          },
-        },
-      ]
-    } else if (definitionId === ScopeByDefinition.tir_invite_presentation) {
-      descriptorMap = [
-        {
-          id: 'tir_invite_credential',
-          format: 'jwt_vp',
-          path: '$',
-          path_nested: {
-            id: 'tir_invite_credential',
-            format: 'jwt_vc',
-            path: '$.vp.verifiableCredential[0]',
-          },
-        },
-      ]
-    } else if (definitionId === ScopeByDefinition.tnt_authorise_presentation) {
-      descriptorMap = [
-        {
-          id: 'tnt_authorise_credential',
-          format: 'jwt_vp',
-          path: '$',
-          path_nested: {
-            id: 'tnt_authorise_credential',
-            format: 'jwt_vc',
-            path: '$.vp.verifiableCredential[0]',
-          },
-        },
-      ]
-    }
+    let descriptorMap = this.getDescriptorMap(definitionId);
 
     const presentationSubmission = {
       id: uuid(),
@@ -130,6 +87,29 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
       throw new Error(JSON.stringify(tokenResponse))
     }
     return tokenResponse
+  }
+
+  private getDescriptorMap(definitionId: ScopeByDefinition) {
+    switch (definitionId) {
+      case ScopeByDefinition.didr_invite_presentation:
+      case ScopeByDefinition.tir_invite_presentation:
+      case ScopeByDefinition.tnt_authorise_presentation:
+        const id = Object.keys(ScopeByDefinition)[Object.values(ScopeByDefinition).indexOf(definitionId)]
+      return [
+        {
+          id: `${id}`,
+          format: 'jwt_vp',
+          path: '$',
+          path_nested: {
+            id: `${id}`,
+            format: 'jwt_vc',
+            path: '$.vp.verifiableCredential[0]',
+          },
+        },
+      ]
+      default:
+        throw new Error(`${definitionId} is not supported`)
+    }
   }
 
   private async getOIDProviderMetadata(): Promise<GetOIDProviderMetadataResponse> {
