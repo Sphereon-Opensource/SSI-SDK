@@ -2509,7 +2509,7 @@ importers:
         specifier: ^6.0.0
         version: 6.0.2
       '@sphereon/ssi-express-support':
-        specifier: ^0.22.0
+        specifier: ^0.23.0
         version: link:../ssi-express-support
       '@veramo/core':
         specifier: 4.2.0
