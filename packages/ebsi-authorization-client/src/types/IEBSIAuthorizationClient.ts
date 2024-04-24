@@ -1,6 +1,6 @@
-import {IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap} from '@veramo/core'
-import {Format, PresentationDefinitionV2, PresentationSubmission} from '@sphereon/pex-models'
-import {DiscoveryMetadataPayload} from '@sphereon/did-auth-siop'
+import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap } from '@veramo/core'
+import { Format, PresentationDefinitionV2, PresentationSubmission } from '@sphereon/pex-models'
+import { DiscoveryMetadataPayload } from '@sphereon/did-auth-siop'
 
 /**
  * The OpenID scope
@@ -44,7 +44,7 @@ export interface IEBSIAuthorizationClient extends IPluginMethodMap {
 }
 
 /**
- * @typedef GetOIDProviderMetadataSuccessResponse
+ * @typedef EBSIOIDMetadata
  * @type {object}
  * @property {(URL | string)} issuer URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. MUST be identical to the iss Claim value in ID Tokens issued from this Issuer.
  * @property {(URL | string)} authorization_endpoint URL of the OP's OAuth 2.0 Authorization Endpoint.
@@ -66,7 +66,7 @@ export interface IEBSIAuthorizationClient extends IPluginMethodMap {
  * @property {string[]} [subject_trust_frameworks_supported] A JSON array of supported trust frameworks.
  * @property {string[]} [id_token_types_supported] A JSON array of strings containing the list of ID Token types supported by the OP
  */
-export type GetOIDProviderMetadataSuccessResponse = DiscoveryMetadataPayload & {
+export type EBSIOIDMetadata = DiscoveryMetadataPayload & {
   presentation_definition_endpoint?: URL | string
 }
 
@@ -283,7 +283,7 @@ export interface ExceptionResponse {
   instance?: URL | string
 }
 
-export type GetOIDProviderMetadataResponse = GetOIDProviderMetadataSuccessResponse | ExceptionResponse
+export type GetOIDProviderMetadataResponse = EBSIOIDMetadata | ExceptionResponse
 export type GetOIDProviderJwksResponse = GetOIDProviderJwksSuccessResponse | ExceptionResponse
 export type GetPresentationDefinitionResponse = GetPresentationDefinitionSuccessResponse | ExceptionResponse
 export type GetAccessTokenResponse = GetAccessTokenSuccessResponse | ExceptionResponse
