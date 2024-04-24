@@ -1,5 +1,5 @@
-import {CredentialPayload, IAgentPlugin} from '@veramo/core'
-import {GetOIDProviderMetadataSuccessResponse, IRequiredContext, EBSIScope, schema, ScopeByDefinition} from '../index'
+import { CredentialPayload, IAgentPlugin } from '@veramo/core'
+import { EBSIScope, GetOIDProviderMetadataSuccessResponse, IRequiredContext, schema, ScopeByDefinition } from '../index'
 import {
   CreateOAuth2SessionArgs,
   CreateOAuth2SessionResponse,
@@ -16,11 +16,7 @@ import {
   InitiateSIOPDidAuthRequestArgs,
   InitiateSIOPDidAuthRequestResponse,
 } from '../types/IEBSIAuthorizationClient'
-import {uuid} from 'uuidv4'
-import {JWTHeader, JWTPayload} from 'did-jwt'
-import {exportJWK, importJWK, JWK, SignJWT} from 'jose'
-import * as u8a from 'uint8arrays'
-import {JsonWebKey, JsonWebKey2020} from '@transmute/json-web-signature'
+import { uuid } from 'uuidv4'
 
 export class EBSIAuthorizationClient implements IAgentPlugin {
   readonly schema = schema.IEBSIAuthorizationClient
@@ -40,11 +36,8 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
     // TODO call configuration endpoint
   }
 
-  async authorize(
-    args: { credential: CredentialPayload; definitionId: ScopeByDefinition; keyPair: { privateKeyHex: string; publicKeyHex: string } },
-    context: IRequiredContext,
-  ) {
-    const { credential, definitionId, keyPair } = args
+  async authorize(args: { credential: CredentialPayload; definitionId: ScopeByDefinition; kid: string; alg?: string }, context: IRequiredContext) {
+    const { credential, definitionId, kid, alg } = args
 
     const metadataResponse = await this.getOIDProviderMetadata()
     if ('status' in metadataResponse) {
@@ -53,15 +46,16 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
 
     const vc = await createVcJwt(
       {
-        privateKeyHex: keyPair.privateKeyHex,
         payloadVc: credential,
+        kid,
+        alg,
       },
       context,
     )
 
     const vpJwt = await createVPJwt(
       {
-        keyPair,
+        kid,
         did: this.configuration.issuer.toString(),
         vc,
         audience: this.configuration.issuer.toString(),
@@ -69,7 +63,7 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
       },
       context,
     )
-    let descriptorMap = this.getDescriptorMap(definitionId);
+    let descriptorMap = this.getDescriptorMap(definitionId)
 
     const presentationSubmission = {
       id: uuid(),
@@ -95,18 +89,18 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
       case ScopeByDefinition.tir_invite_presentation:
       case ScopeByDefinition.tnt_authorise_presentation:
         const id = Object.keys(ScopeByDefinition)[Object.values(ScopeByDefinition).indexOf(definitionId)]
-      return [
-        {
-          id: `${id}`,
-          format: 'jwt_vp',
-          path: '$',
-          path_nested: {
+        return [
+          {
             id: `${id}`,
-            format: 'jwt_vc',
-            path: '$.vp.verifiableCredential[0]',
+            format: 'jwt_vp',
+            path: '$',
+            path_nested: {
+              id: `${id}`,
+              format: 'jwt_vc',
+              path: '$.vp.verifiableCredential[0]',
+            },
           },
-        },
-      ]
+        ]
       default:
         throw new Error(`${definitionId} is not supported`)
     }
@@ -210,7 +204,8 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
 
 export async function createVPJwt(
   args: {
-    keyPair: { publicKeyHex: string; privateKeyHex: string }
+    kid: string
+    alg?: string
     did: string
     vc: string
     audience: string
@@ -221,24 +216,19 @@ export async function createVPJwt(
   },
   context: IRequiredContext,
 ): Promise<string> {
-  const { keyPair, did, vc, audience, nbf, exp, nonce } = args
+  const { kid, alg = 'ES256', did, vc, audience, nbf, exp, nonce } = args
 
-  if (!keyPair || !keyPair.privateKeyHex || !keyPair.publicKeyHex) {
-    throw new Error(`Private key is required`)
+  if (!kid) {
+    throw new Error(`kid is required`)
   }
 
   if (!args.vc) {
     throw new Error('Verifiable Credential not defined')
   }
 
-  const privateKeyJWT = await exportJWK(u8a.fromString(keyPair.privateKeyHex, 'hex'))
-  const publicKeyJWT = await exportJWK(u8a.fromString(keyPair.publicKeyHex, 'hex'))
-
   let verifiableCredential: string[]
 
-  if (vc === 'empty') {
-    verifiableCredential = []
-  } else if (Array.isArray(vc)) {
+  if (Array.isArray(vc)) {
     verifiableCredential = vc
   } else {
     verifiableCredential = [vc]
@@ -249,7 +239,13 @@ export async function createVPJwt(
     throw new Error(`${did} could not be resolved`)
   }
 
-  const payload = {
+  const protectedHeader = {
+    typ: 'JWT',
+    kid: kid,
+    alg,
+  }
+
+  const vpPayload = {
     id: `urn:did:${uuid()}`,
     '@context': ['https://www.w3.org/2018/credentials/v1'],
     type: ['VerifiablePresentation'],
@@ -257,55 +253,33 @@ export async function createVPJwt(
     verifiableCredential,
   }
 
-  const vpJwtPayload = {
+  const payload = {
     holder: did,
-    jti: typeof payload['id'] === 'string' ? payload['id'] : '',
+    jti: typeof vpPayload['id'] === 'string' ? vpPayload['id'] : '',
     sub: did,
     iss: did,
     ...(nbf && { nbf }),
     ...(exp && { exp }),
     iat: Math.floor(Date.now() / 1000),
     aud: audience,
-    vp: payload,
+    vp: vpPayload,
     nonce: nonce ?? uuid(),
     exp: Math.floor(Date.now() / 1000) + 900,
     nbf: Math.floor(Date.now() / 1000) - 100,
   }
 
-  const jwtHeader: JWTHeader = {
-    typ: 'JWT',
-    kid: privateKeyJWT.kid,
-    alg: privateKeyJWT.alg ?? 'ES256',
-  }
-
-  const holderKey: JsonWebKey2020 = {
-    id: privateKeyJWT.kid!,
-    type: 'JsonWebKey2020',
-    controller: did,
-    publicKeyJwk: publicKeyJWT,
-    privateKeyJwk: privateKeyJWT,
-  }
-
-  const signingKey = await JsonWebKey.from(holderKey)
-  const vpKey = await JsonWebKey.from(
-    await signingKey.export({
-      type: 'JsonWebKey2020',
-      privateKey: true,
-    }),
-    {
-      detached: false,
-      header: jwtHeader,
-    },
-  )
-  const vpSigner = vpKey.signer()
-  return await vpSigner.sign({ data: vpJwtPayload })
+  return await context.agent.keyManagerSignJWT({
+    kid,
+    data: JSON.stringify({ protectedHeader, payload }),
+  })
 }
 
-const createVcJwt = async (args: { payloadVc: CredentialPayload; privateKeyHex: string; payloadJwt?: JWTPayload }, context: IRequiredContext) => {
-  const { payloadVc, payloadJwt, privateKeyHex } = args
+const createVcJwt = async (
+  args: { payloadVc: CredentialPayload; kid: string; alg?: string; payloadJwt?: {} },
+  context: IRequiredContext,
+): Promise<string> => {
+  const { payloadVc, payloadJwt, kid, alg = 'ES256' } = args
 
-  const privateKeyJWK: JWK = await exportJWK(u8a.fromString(privateKeyHex, 'hex'))
-  const privateKey = await importJWK(privateKeyJWK)
   const iat = Math.floor(Date.now() / 1000) - 10
   const exp = iat + 365 * 24 * 3600
   const issuanceDate = `${new Date(iat * 1000).toISOString().slice(0, -5)}Z`
@@ -313,7 +287,13 @@ const createVcJwt = async (args: { payloadVc: CredentialPayload; privateKeyHex: 
   const jti = payloadVc.id || `urn:uuid:${uuid()}`
   const sub = payloadVc.credentialSubject?.id
 
-  const payload: CredentialPayload = {
+  const protectedHeader = {
+    typ: 'JWT',
+    kid,
+    alg,
+  }
+
+  const payload = {
     issuer: payloadVc.issuer,
     iat,
     jti,
@@ -333,12 +313,8 @@ const createVcJwt = async (args: { payloadVc: CredentialPayload; privateKeyHex: 
     ...payloadJwt,
   }
 
-  return await new SignJWT(payload)
-    .setProtectedHeader({
-      alg: privateKeyJWK.alg ?? 'ES256',
-      typ: 'JWT',
-      kid: privateKeyJWK.kid,
-    })
-    .setIssuer(payloadVc.issuer.toString())
-    .sign(privateKey)
+  return await context.agent.keyManagerSignJWT({
+    kid,
+    data: JSON.stringify({ protectedHeader, payload }),
+  })
 }

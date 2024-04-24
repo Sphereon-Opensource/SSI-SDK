@@ -1,6 +1,6 @@
-import { IAgentContext, ICredentialPlugin, IDIDManager, IKeyManager, IPluginMethodMap } from '@veramo/core'
-import { Format, PresentationDefinitionV2, PresentationSubmission } from '@sphereon/pex-models'
-import {DiscoveryMetadataPayload} from "@sphereon/did-auth-siop";
+import {IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap} from '@veramo/core'
+import {Format, PresentationDefinitionV2, PresentationSubmission} from '@sphereon/pex-models'
+import {DiscoveryMetadataPayload} from '@sphereon/did-auth-siop'
 
 /**
  * The OpenID scope
@@ -290,4 +290,4 @@ export type GetAccessTokenResponse = GetAccessTokenSuccessResponse | ExceptionRe
 export type InitiateSIOPDidAuthRequestResponse = InitiateSIOPDidAuthRequestSuccessResponse | ExceptionResponse
 export type CreateSIOPSessionResponse = CreateSIOPSessionSuccessResponse | ExceptionResponse
 export type CreateOAuth2SessionResponse = CreateOAuth2SessionSuccessResponse | ExceptionResponse
-export type IRequiredContext = IAgentContext<IKeyManager & IDIDManager & ICredentialPlugin>
+export type IRequiredContext = IAgentContext<IKeyManager & IDIDManager>

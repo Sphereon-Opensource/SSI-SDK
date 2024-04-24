@@ -18,6 +18,7 @@
     "@sphereon/did-auth-siop": "0.6.3",
     "@sphereon/pex-models": "^2.2.2",
     "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth": "workspace:*",
+    "@sphereon/ssi-types": "workspace:*",
     "@transmute/json-web-signature": "0.7.0-unstable.81",
     "@veramo/core": "4.2.0",
     "cross-fetch": "^3.1.8",

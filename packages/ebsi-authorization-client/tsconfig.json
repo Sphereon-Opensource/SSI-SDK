@@ -11,6 +11,9 @@
   "references": [
     {
       "path": "../siopv2-oid4vp-op-auth"
+    },
+    {
+      "path": "../ssi-types"
     }
   ]
 }

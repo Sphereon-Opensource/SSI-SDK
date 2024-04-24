@@ -458,6 +458,9 @@ importers:
       '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth':
         specifier: workspace:*
         version: link:../siopv2-oid4vp-op-auth
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
       '@transmute/json-web-signature':
         specifier: 0.7.0-unstable.81
         version: 0.7.0-unstable.81
