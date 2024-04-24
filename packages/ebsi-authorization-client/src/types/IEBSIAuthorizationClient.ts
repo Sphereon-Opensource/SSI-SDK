@@ -6,15 +6,15 @@ import { Format, PresentationDefinitionV2, PresentationSubmission } from '@spher
  * @readonly
  * @enum {string}
  */
-export enum OpenIDScope {
-  didr_write = 'openid%20didr_write',
-  didr_invite = 'openid%20didr_invite',
-  tir_write = 'openid%20tir_write',
-  tir_invite = 'openid%20tir_invite',
-  timestamp_write = 'openid%20timestamp_write',
-  tnt_authorise = 'openid%20tnt_authorise',
-  tnt_create = 'openid%20tnt_create',
-  tnt_write = 'openid%20tnt_write',
+export enum EBSIScope {
+  didr_write = 'didr_write',
+  didr_invite = 'didr_invite',
+  tir_write = 'tir_write',
+  tir_invite = 'tir_invite',
+  timestamp_write = 'timestamp_write',
+  tnt_authorise = 'tnt_authorise',
+  tnt_create = 'tnt_create',
+  tnt_write = 'tnt_write',
 }
 
 export enum ScopeByDefinition {
@@ -65,6 +65,8 @@ export interface IEBSIAuthorizationClient extends IPluginMethodMap {
  * @property {string[]} [subject_trust_frameworks_supported] A JSON array of supported trust frameworks.
  * @property {string[]} [id_token_types_supported] A JSON array of strings containing the list of ID Token types supported by the OP
  */
+
+
 export interface GetOIDProviderMetadataSuccessResponse {
   issuer: URL | string
   authorization_endpoint: URL | string
@@ -118,10 +120,10 @@ export interface GetOIDProviderJwksSuccessResponse {
 /**
  * @typedef GetPresentationDefinitionArgs
  * @type {object}
- * @property {OpenIDScope} scope
+ * @property {EBSIScope} scope
  */
 export interface GetPresentationDefinitionArgs {
-  scope: OpenIDScope
+  scope: EBSIScope
 }
 
 /**
@@ -146,13 +148,13 @@ export type GetPresentationDefinitionSuccessResponse = PresentationDefinitionV2 
  * @property {string} grant_type MUST be set to "vp_token"
  * @property {string} vp_token  Signed Verifiable Presentation. See also the VP Token schema definition.
  * @property {PresentationSubmission} presentation_submission Descriptor for the vp_token, linked by presentation_definition. See also the Presentation Definition schema.
- * @property {OpenIDScope} scope Possible values: [openid didr_write, openid didr_invite, openid tir_write, openid tir_invite, openid timestamp_write, openid tnt_authorise, openid tnt_create, openid tnt_write] OIDC scope
+ * @property {EBSIScope} scope Possible values: [openid didr_write, openid didr_invite, openid tir_write, openid tir_invite, openid timestamp_write, openid tnt_authorise, openid tnt_create, openid tnt_write] OIDC scope
  */
 export interface GetAccessTokenArgs {
   grant_type?: string
   vp_token: string
   presentation_submission: PresentationSubmission
-  scope: OpenIDScope
+  scope: EBSIScope
 }
 
 /**
@@ -161,14 +163,14 @@ export interface GetAccessTokenArgs {
  * @property {string} access_token ^(([A-Za-z0-9\-_])+\.)([A-Za-z0-9\-_]+)(\.([A-Za-z0-9\-_]+)?$ The access token issued by the authorization server in JWS format. See also the "Access Token" schema definition
  * @property {TokenType} token_type Possible values: [Bearer]/MUST be Bearer
  * @property {number} [expires_in] Possible values: >= 1. The lifetime in seconds of the access token
- * @property {OpenIDScope} scope  Possible values: [openid didr_write, openid didr_invite, openid tir_invite, openid tir_write, openid timestamp_write, openid tnt_authorise, openid tnt_create, openid tnt_write] The scope of the access token
+ * @property {EBSIScope} scope  Possible values: [openid didr_write, openid didr_invite, openid tir_invite, openid tir_write, openid timestamp_write, openid tnt_authorise, openid tnt_create, openid tnt_write] The scope of the access token
  * @property {string} id_token ^(([A-Za-z0-9\-_])+\.)([A-Za-z0-9\-_]+)(\.([A-Za-z0-9\-_]+)?$ ID Token value associated with the authenticated session. Presents client's identity. ID Token is issued in a JWS format. See also the "ID Token" schema definition.
  */
 export interface GetAccessTokenSuccessResponse {
   access_token: string
   token_type: TokenType
   expires_in?: number
-  scope: OpenIDScope
+  scope: EBSIScope
   id_token: string
 }
 
@@ -176,10 +178,10 @@ export interface GetAccessTokenSuccessResponse {
  * Natural Person and Legal Entities entry point to initiate a SIOP DID Auth Request.
  * @typedef InitiateSIOPDidAuthRequestArgs
  * @type {object}
- * @property {OpenIDScope} scope Scope is used to define the authentication response method.
+ * @property {EBSIScope} scope Scope is used to define the authentication response method.
  */
 export interface InitiateSIOPDidAuthRequestArgs {
-  scope: OpenIDScope
+  scope: EBSIScope
 }
 
 /**
@@ -259,13 +261,13 @@ export interface CreateSIOPSessionSuccessResponse {
  * @property {string} grantType Grant type. Must be set to "client_credentials"
  * @property {string} clientAssertionType Client Assertion type. Must be set to "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
  * @property {string} clientAssertion Self-signed JWT
- * @property {OpenIDScope} scope Scope is used to define the authentication method. Must be set to "openid did_authn"
+ * @property {EBSIScope} scope Scope is used to define the authentication method. Must be set to "openid did_authn"
  */
 export interface CreateOAuth2SessionArgs {
   grantType: string
   clientAssertionType: string
   clientAssertion: string
-  scope: OpenIDScope
+  scope: EBSIScope
 }
 
 /**

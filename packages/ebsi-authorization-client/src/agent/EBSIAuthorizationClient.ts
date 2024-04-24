@@ -1,5 +1,5 @@
 import {CredentialPayload, IAgentPlugin} from '@veramo/core'
-import {GetOIDProviderMetadataSuccessResponse, IRequiredContext, OpenIDScope, schema, ScopeByDefinition} from '../index'
+import {GetOIDProviderMetadataSuccessResponse, IRequiredContext, EBSIScope, schema, ScopeByDefinition} from '../index'
 import {
   CreateOAuth2SessionArgs,
   CreateOAuth2SessionResponse,
@@ -81,7 +81,7 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
       grant_type: 'vp_token',
       vp_token: vpJwt,
       presentation_submission: presentationSubmission,
-      scope: OpenIDScope.didr_invite,
+      scope: EBSIScope.didr_invite,
     })
     if ('status' in tokenResponse) {
       throw new Error(JSON.stringify(tokenResponse))
@@ -136,8 +136,9 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
 
   private async getPresentationDefinition(args: GetPresentationDefinitionArgs): Promise<GetPresentationDefinitionResponse> {
     const { scope } = args
+    const ebsiScope = Object.keys(EBSIScope)[Object.values(EBSIScope).indexOf(scope)]
     return await (
-      await fetch(`${this.configuration.presentation_definition_endpoint}?scope=${scope}`, {
+      await fetch(`${this.configuration.presentation_definition_endpoint}?scope=openid%20${ebsiScope}`, {
         method: 'GET',
         headers: new Headers({
           Accept: 'application/json',
