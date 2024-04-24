@@ -449,6 +449,9 @@ importers:
 
   packages/ebsi-authorization-client:
     dependencies:
+      '@sphereon/did-auth-siop':
+        specifier: 0.6.3
+        version: 0.6.3
       '@sphereon/pex-models':
         specifier: ^2.2.2
         version: 2.2.2

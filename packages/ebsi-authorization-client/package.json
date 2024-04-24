@@ -15,6 +15,7 @@
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
+    "@sphereon/did-auth-siop": "0.6.3",
     "@sphereon/pex-models": "^2.2.2",
     "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth": "workspace:*",
     "@transmute/json-web-signature": "0.7.0-unstable.81",

@@ -1,5 +1,6 @@
 import { IAgentContext, ICredentialPlugin, IDIDManager, IKeyManager, IPluginMethodMap } from '@veramo/core'
 import { Format, PresentationDefinitionV2, PresentationSubmission } from '@sphereon/pex-models'
+import {DiscoveryMetadataPayload} from "@sphereon/did-auth-siop";
 
 /**
  * The OpenID scope
@@ -65,28 +66,8 @@ export interface IEBSIAuthorizationClient extends IPluginMethodMap {
  * @property {string[]} [subject_trust_frameworks_supported] A JSON array of supported trust frameworks.
  * @property {string[]} [id_token_types_supported] A JSON array of strings containing the list of ID Token types supported by the OP
  */
-
-
-export interface GetOIDProviderMetadataSuccessResponse {
-  issuer: URL | string
-  authorization_endpoint: URL | string
-  token_endpoint: URL | string
+export type GetOIDProviderMetadataSuccessResponse = DiscoveryMetadataPayload & {
   presentation_definition_endpoint?: URL | string
-  jwks_uri: URL | string
-  scopes_supported: string[]
-  response_types_supported: string[]
-  response_mode_supported?: string[]
-  grant_types_supported?: string[]
-  subject_types_supported: string[]
-  id_token_signing_alg_values_supported: string[]
-  request_object_signing_alg_values_supported?: string[]
-  request_parameter_supported?: string[]
-  token_endpoint_auth_methods_supported?: string[]
-  request_authentication_methods_supported?: { authorization_endpoint: string[] }
-  vp_formats_supported?: string[]
-  subject_syntax_types_supported?: URL[] | string[]
-  subject_trust_frameworks_supported?: string[]
-  id_token_types_supported?: string[]
 }
 
 /**
