@@ -154,7 +154,7 @@ export abstract class LinkHandlerAdapter implements LinkHandler {
   supports(urlArg: string | URL): boolean {
     const url = LinkHandlerAdapter.toURL(urlArg)
     return this.protocols.some((predicate) =>
-      typeof predicate === 'string' ? url.protocol === predicate.toLowerCase() : predicate.test(url.protocol),
+      typeof predicate === 'string' ? url.protocol === predicate.toLowerCase() : predicate.test(url.toString()),
     )
   }
 

@@ -52,7 +52,7 @@ const oid4vciRequirePinGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMach
 
 const oid4vciHasNoContactIdentityGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
   const { contact, credentialsToAccept } = _ctx
-  return !contact?.identities!.some((identity: Identity): boolean => identity.identifier.correlationId === credentialsToAccept[0].correlationId)
+  return !contact?.identities.some((identity: Identity): boolean => identity.identifier.correlationId === credentialsToAccept[0].correlationId)
 }
 
 const oid4vciVerificationCodeGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {

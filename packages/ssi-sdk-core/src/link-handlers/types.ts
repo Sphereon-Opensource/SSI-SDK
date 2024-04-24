@@ -23,7 +23,7 @@ export type LinkHandlerRegistry = {
   clear: () => LinkHandlerRegistry
 }
 
-export type LinkHandlerEventSource = 'QR' | 'IntentHandler'
+export type LinkHandlerEventSource = 'QR' | 'IntentHandler' | 'URL'
 
 export type LinkHandlerEvent = {
   type: LinkHandlerEventType

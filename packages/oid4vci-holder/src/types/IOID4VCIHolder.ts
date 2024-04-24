@@ -4,16 +4,30 @@ import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import { IVerifiableCredential, WrappedVerifiableCredential, WrappedVerifiablePresentation } from '@sphereon/ssi-types'
-import { IAgentContext, ICredentialPlugin, IPluginMethodMap, TKeyType, VerifiableCredential } from '@veramo/core'
+import {
+  IAgentContext,
+  ICredentialVerifier,
+  IDIDManager,
+  IIdentifier,
+  IKey,
+  IKeyManager,
+  IPluginMethodMap,
+  IResolver,
+  TKeyType,
+  VerifiableCredential,
+} from '@veramo/core'
 import { IDataStore, IDataStoreORM } from '@veramo/data-store'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
+import { JWTHeader, JWTPayload } from 'did-jwt'
+import { _ExtendedIKey } from '@veramo/utils'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<OID4VCIMachine>
   oid4vciHolderGetInitiationData(args: InitiateOID4VCIArgs, context: RequiredContext): Promise<InitiationData>
   oid4vciHolderCreateCredentialSelection(args: CreateCredentialSelectionArgs, context: RequiredContext): Promise<Array<CredentialTypeSelection>>
   oid4vciHolderGetContact(args: GetContactArgs, context: RequiredContext): Promise<Party | undefined>
-  oid4vciHolderGetCredentials(args: GetCredentialsArgs, context: RequiredContext): Promise<Array<MappedCredentialToAccept> | undefined>
+  oid4vciHolderGetCredentials(args: GetCredentialsArgs, context: RequiredContext): Promise<Array<MappedCredentialToAccept>>
+  oid4vciHolderGetCredential(args: GetCredentialArgs, context: RequiredContext): Promise<MappedCredentialToAccept>
   oid4vciHolderAddContactIdentity(args: AddContactIdentityArgs, context: RequiredContext): Promise<Identity>
   oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<void>
   oid4vciHolderStoreCredentialBranding(args: StoreCredentialBrandingArgs, context: RequiredContext): Promise<void>
@@ -23,8 +37,11 @@ export interface IOID4VCIHolder extends IPluginMethodMap {
 export type OID4VCIHolderOptions = {
   onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
-  onGetCredentials: (args: OnGetCredentialsArgs) => Promise<Array<CredentialToAccept>>
+  onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
   vcFormatPreferences?: Array<string>
+  jsonldCryptographicSuitePreferences?: Array<string>
+  didMethodPreferences?: Array<SupportedDidMethodEnum>
+  jwtCryptographicSuitePreferences?: Array<SignatureAlgorithmEnum>
 }
 
 export type OnContactIdentityCreatedArgs = {
@@ -35,6 +52,10 @@ export type OnContactIdentityCreatedArgs = {
 export type OnCredentialStoredArgs = {
   vcHash: string
   credential: VerifiableCredential
+}
+
+export type OnIdentifierCreatedArgs = {
+  identifier: IIdentifier
 }
 
 export type GetMachineArgs = {
@@ -48,7 +69,7 @@ export type CreateCredentialSelectionArgs = Pick<
   'credentialsSupported' | 'credentialBranding' | 'selectedCredentials' | 'locale'
 >
 export type GetContactArgs = Pick<OID4VCIMachineContext, 'serverMetadata'>
-export type GetCredentialsArgs = Pick<OID4VCIMachineContext, 'verificationCode' | 'selectedCredentials' | 'openID4VCIClientState'>
+export type GetCredentialsArgs = Pick<OID4VCIMachineContext, 'verificationCode' | 'openID4VCIClientState'>
 export type AddContactIdentityArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'contact'>
 export type AssertValidCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept'>
 export type StoreCredentialBrandingArgs = Pick<
@@ -60,6 +81,7 @@ export type StoreCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAcc
 export enum OID4VCIHolderEvent {
   CONTACT_IDENTITY_CREATED = 'contact_identity_created',
   CREDENTIAL_STORED = 'credential_stored',
+  IDENTIFIER_CREATED = 'identifier_created',
 }
 
 export type RequestData = {
@@ -165,7 +187,6 @@ export type CreateOID4VCIMachineOpts = {
   machineName?: string
   locale?: string
   stateDefinition?: OID4VCIMachineState
-  // statePersistence?: MachineStatePersistenceOpts
 }
 
 export type OID4VCIMachineInstanceOpts = {
@@ -277,7 +298,6 @@ export type CredentialTypeSelection = {
 }
 
 export type OID4VCIMachine = {
-  // machineStateInit?: MachineStateInit
   interpreter: OID4VCIMachineInterpreter
 }
 
@@ -294,15 +314,12 @@ export type SelectAppLocaleBrandingArgs = {
   localeBranding?: Array<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding>
 }
 
-export interface OnGetCredentialsArgs {
-  pin?: string
-  credentials?: Array<string>
-  openID4VCIClientState: OpenID4VCIClientState
-}
-
 export type IssuanceOpts = CredentialSupported & {
   didMethod: SupportedDidMethodEnum
   keyType: TKeyType
+  codecName?: string
+  kid?: string
+  identifier: IIdentifier
 }
 
 export enum SupportedDidMethodEnum {
@@ -350,7 +367,140 @@ export type GetPreferredCredentialFormatsArgs = {
 }
 
 export type MapCredentialToAcceptArgs = {
-  credentials: Array<CredentialToAccept>
+  credential: CredentialToAccept
 }
 
-export type RequiredContext = IAgentContext<IIssuanceBranding | IContactManager | ICredentialPlugin | IDataStore | IDataStoreORM>
+export type GetDefaultIssuanceOptsArgs = {
+  credentialSupported: CredentialSupported
+  opts: DefaultIssuanceOpts
+  context: RequiredContext
+}
+
+export type DefaultIssuanceOpts = {
+  client: OpenID4VCIClient
+}
+
+export type GetIdentifierArgs = {
+  issuanceOpt: IssuanceOpts
+  context: RequiredContext
+}
+
+export type GetAuthenticationKeyArgs = {
+  identifier: IIdentifier
+  context: RequiredContext
+}
+
+export type GetOrCreatePrimaryIdentifierArgs = {
+  context: RequiredContext
+  opts?: CreateOrGetIdentifierOpts
+}
+
+export type CreateIdentifierArgs = {
+  context: RequiredContext
+  opts?: CreateIdentifierOpts
+}
+
+export type CreateIdentifierOpts = {
+  method: SupportedDidMethodEnum
+  createOpts?: CreateIdentifierCreateOpts
+}
+
+export type CreateIdentifierCreateOpts = {
+  kms?: KeyManagementSystemEnum
+  alias?: string
+  options?: IdentifierProviderOpts
+}
+
+export type GetCredentialsSupportedArgs = {
+  client: OpenID4VCIClient
+  vcFormatPreferences: Array<string>
+}
+
+export type GetIssuanceOptsArgs = {
+  client: OpenID4VCIClient
+  credentialsSupported: Array<CredentialSupported>
+  serverMetadata: EndpointMetadataResult
+  context: RequiredContext
+  didMethodPreferences: Array<SupportedDidMethodEnum>
+  jwtCryptographicSuitePreferences: Array<SignatureAlgorithmEnum>
+  jsonldCryptographicSuitePreferences: Array<string>
+}
+
+export type GetIssuanceDidMethodArgs = {
+  credentialSupported: CredentialSupported
+  client: OpenID4VCIClient
+  didMethodPreferences: Array<SupportedDidMethodEnum>
+}
+
+export type GetIssuanceCryptoSuiteArgs = {
+  credentialSupported: CredentialSupported
+  client: OpenID4VCIClient
+  jwtCryptographicSuitePreferences: Array<SignatureAlgorithmEnum>
+  jsonldCryptographicSuitePreferences: Array<string>
+}
+
+export type SignatureAlgorithmFromKeyArgs = {
+  key: IKey
+}
+
+export type SignatureAlgorithmFromKeyTypeArgs = {
+  type: TKeyType
+}
+
+export type KeyTypeFromCryptographicSuiteArgs = {
+  suite: string
+}
+
+export type SignJwtArgs = {
+  identifier: IIdentifier
+  header: Partial<JWTHeader>
+  payload: Partial<JWTPayload>
+  options: { issuer: string; expiresIn?: number; canonicalize?: boolean }
+  context: RequiredContext
+}
+
+export type GetSignerArgs = {
+  identifier: IIdentifier
+  context: RequiredContext
+}
+
+export type GetCredentialArgs = {
+  pin?: string
+  issuanceOpt: IssuanceOpts
+  client: OpenID4VCIClient
+}
+
+export enum SignatureAlgorithmEnum {
+  EdDSA = 'EdDSA',
+  ES256 = 'ES256',
+  ES256K = 'ES256K',
+}
+
+export enum IdentifierAliasEnum {
+  PRIMARY = 'primary',
+}
+
+export type CreateOrGetIdentifierOpts = {
+  method: SupportedDidMethodEnum
+  createOpts?: CreateIdentifierCreateOpts
+}
+
+export type IdentifierProviderOpts = {
+  type?: TKeyType
+  use?: string
+  [x: string]: any
+}
+
+export enum KeyManagementSystemEnum {
+  LOCAL = 'local',
+}
+
+export type IdentifierOpts = {
+  identifier: IIdentifier
+  key: _ExtendedIKey
+  kid: string
+}
+
+export type RequiredContext = IAgentContext<
+  IIssuanceBranding | IContactManager | ICredentialVerifier | IDataStore | IDataStoreORM | IDIDManager | IResolver | IKeyManager
+>
