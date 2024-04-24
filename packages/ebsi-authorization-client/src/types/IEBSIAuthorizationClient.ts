@@ -1,6 +1,6 @@
 import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap } from '@veramo/core'
 import { Format, PresentationDefinitionV2, PresentationSubmission } from '@sphereon/pex-models'
-import { DiscoveryMetadataPayload } from '@sphereon/did-auth-siop'
+import {DiscoveryMetadataPayload, JWK} from '@sphereon/did-auth-siop'
 
 /**
  * The OpenID scope
@@ -70,32 +70,14 @@ export type EBSIOIDMetadata = DiscoveryMetadataPayload & {
   presentation_definition_endpoint?: URL | string
 }
 
-/**
- * @typedef Key
- * @type {object}
- * @property {string} [kty]
- * @property {string} [crv]
- * @property {string} [alg]
- * @property {string} [x]
- * @property {string} [y]
- * @property {string} [kid]
- */
-export interface Key {
-  kty?: string
-  crv?: string
-  alg?: string
-  x?: string
-  y?: string
-  kid?: string
-}
 
 /**
  * JSON Web Key Set
  * @typedef GetOIDProviderJwksSuccessResponse
- * @property {Key[]} keys
+ * @property {JWK[]} keys
  */
 export interface GetOIDProviderJwksSuccessResponse {
-  keys: Key[]
+  keys: JWK[]
 }
 
 /**
