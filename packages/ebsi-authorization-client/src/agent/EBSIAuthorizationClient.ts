@@ -21,13 +21,13 @@ import { uuid } from 'uuidv4'
 export class EBSIAuthorizationClient implements IAgentPlugin {
   readonly schema = schema.IEBSIAuthorizationClient
   readonly methods: IEBSIAuthorizationClient = {
-    getOIDProviderMetadata: this.getOIDProviderMetadata.bind(this),
-    getOIDProviderJwks: this.getOIDProviderJwks.bind(this),
-    getPresentationDefinition: this.getPresentationDefinition.bind(this),
-    getAccessToken: this.getAccessToken.bind(this),
-    initiateSIOPDidAuthRequest: this.initiateSIOPDidAuthRequest.bind(this),
-    createSIOPSession: this.createSIOPSession.bind(this),
-    createOAuth2Session: this.createOAuth2Session.bind(this),
+    ebsiAuthASDiscoveryMetadataGet: this.ebsiAuthASDiscoveryMetadataGet.bind(this),
+    ebsiAuthASJwksGet: this.ebsiAuthASJwksGet.bind(this),
+    ebsiAuthPresentationDefinitionGet: this.ebsiAuthPresentationDefinitionGet.bind(this),
+    ebsiAuthAccessTokenGet: this.ebsiAuthAccessTokenGet.bind(this),
+    ebsiAuthinitiateSIOPDidAuthRequest: this.ebsiAuthinitiateSIOPDidAuthRequest.bind(this),
+    ebsiAuthCreateSIOPSession: this.ebsiAuthCreateSIOPSession.bind(this),
+    ebsiAuthCreateOAuth2Session: this.ebsiAuthCreateOAuth2Session.bind(this),
   }
 
   private discoveryMetadata: EBSIOIDMetadata
@@ -40,7 +40,7 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
   ) {
     const { credential, definitionId, did, kid, alg } = args
 
-    const metadataResponse = await this.getOIDProviderMetadata()
+    const metadataResponse = await this.ebsiAuthASDiscoveryMetadataGet()
     if ('status' in metadataResponse) {
       throw Error(JSON.stringify(metadataResponse))
     }
@@ -72,7 +72,7 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
       descriptor_map: descriptorMap,
     }
 
-    const tokenResponse = await this.getAccessToken({
+    const tokenResponse = await this.ebsiAuthAccessTokenGet({
       grant_type: 'vp_token',
       vp_token: vpJwt,
       presentation_submission: presentationSubmission,
@@ -87,10 +87,10 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
   async siop(args: { scope: EBSIScope; callbackUrl: string; did: string }, context: IRequiredContext) {
     const { scope, callbackUrl, did } = args
 
-    const authRequest = await this.initiateSIOPDidAuthRequest({ scope })
+    const authRequest = await this.ebsiAuthinitiateSIOPDidAuthRequest({ scope })
 
     // TODO add proper error handling
-    if (!(typeof authRequest === 'string')) {
+    if (typeof authRequest !== 'string') {
       throw new Error(`Failed to receive the SIOP DID auth request${authRequest}`)
     }
 
@@ -100,11 +100,13 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
     })
 
     const identifier = await context.agent.didManagerGet({ did })
-    const resp: Response = await opSession.sendAuthorizationResponse({
+    const resp = await opSession.sendAuthorizationResponse({
       responseSignerOpts: { identifier: identifier },
     })
 
     //TODO verify the response and retrieve the access token
+
+
 
     /**
      * export interface CreateResponseOptions {
@@ -150,7 +152,7 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
     }
   }
 
-  private async getOIDProviderMetadata(): Promise<GetOIDProviderMetadataResponse> {
+  private async ebsiAuthASDiscoveryMetadataGet(): Promise<GetOIDProviderMetadataResponse> {
     return await (
       await fetch(`${this.baseUrl}/.well-known/openid-configuration`, {
         method: 'GET',
@@ -161,9 +163,9 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
     ).json()
   }
 
-  private async getOIDProviderJwks(): Promise<GetOIDProviderJwksResponse | ExceptionResponse> {
+  private async ebsiAuthASJwksGet(): Promise<GetOIDProviderJwksResponse | ExceptionResponse> {
     if (!this.discoveryMetadata) {
-      this.discoveryMetadata = await this.getOIDProviderMetadata()
+      this.discoveryMetadata = await this.ebsiAuthASDiscoveryMetadataGet()
     }
     return await (
       await fetch(`${this.discoveryMetadata.jwks_uri}`, {
@@ -175,10 +177,10 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
     ).json()
   }
 
-  private async getPresentationDefinition(args: GetPresentationDefinitionArgs): Promise<GetPresentationDefinitionResponse> {
+  private async ebsiAuthPresentationDefinitionGet(args: GetPresentationDefinitionArgs): Promise<GetPresentationDefinitionResponse> {
     const { scope } = args
     if (!this.discoveryMetadata) {
-      this.discoveryMetadata = await this.getOIDProviderMetadata()
+      this.discoveryMetadata = await this.ebsiAuthASDiscoveryMetadataGet()
     }
     const ebsiScope = Object.keys(EBSIScope)[Object.values(EBSIScope).indexOf(scope)]
     return await (
@@ -191,10 +193,10 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
     ).json()
   }
 
-  private async getAccessToken(args: GetAccessTokenArgs): Promise<GetAccessTokenResponse> {
+  private async ebsiAuthAccessTokenGet(args: GetAccessTokenArgs): Promise<GetAccessTokenResponse> {
     const { grant_type = 'vp_token', scope, vp_token, presentation_submission } = args
     if (!this.discoveryMetadata) {
-      this.discoveryMetadata = await this.getOIDProviderMetadata()
+      this.discoveryMetadata = await this.ebsiAuthASDiscoveryMetadataGet()
     }
     return await (
       await fetch(`${this.discoveryMetadata.token_endpoint}`, {
@@ -214,9 +216,9 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
   }
 
   //OP
-  private async initiateSIOPDidAuthRequest(args: InitiateSIOPDidAuthRequestArgs): Promise<InitiateSIOPDidAuthRequestResponse> {
+  private async ebsiAuthinitiateSIOPDidAuthRequest(args: InitiateSIOPDidAuthRequestArgs): Promise<InitiateSIOPDidAuthRequestResponse> {
     if (!this.discoveryMetadata) {
-      this.discoveryMetadata = await this.getOIDProviderMetadata()
+      this.discoveryMetadata = await this.ebsiAuthASDiscoveryMetadataGet()
     }
     return await (
       await fetch(`${this.discoveryMetadata.issuer}/authentication-requests`, {
@@ -230,10 +232,10 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
     ).json()
   }
 
-  private async createSIOPSession(args: CreateSIOPSessionArgs): Promise<CreateSIOPSessionResponse> {
+  private async ebsiAuthCreateSIOPSession(args: CreateSIOPSessionArgs): Promise<CreateSIOPSessionResponse> {
     const { id_token, vp_token } = args
     if (!this.discoveryMetadata) {
-      this.discoveryMetadata = await this.getOIDProviderMetadata()
+      this.discoveryMetadata = await this.ebsiAuthASDiscoveryMetadataGet()
     }
     const formData = new FormData()
     Object.entries(args).forEach((entry) => formData.append(entry[0], entry[1]))
@@ -252,9 +254,9 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
     ).json()
   }
 
-  private async createOAuth2Session(args: CreateOAuth2SessionArgs): Promise<CreateOAuth2SessionResponse> {
+  private async ebsiAuthCreateOAuth2Session(args: CreateOAuth2SessionArgs): Promise<CreateOAuth2SessionResponse> {
     if (!this.discoveryMetadata) {
-      this.discoveryMetadata = await this.getOIDProviderMetadata()
+      this.discoveryMetadata = await this.ebsiAuthASDiscoveryMetadataGet()
     }
     return await (
       await fetch(`${this.discoveryMetadata.issuer}/oauth2-session`, {

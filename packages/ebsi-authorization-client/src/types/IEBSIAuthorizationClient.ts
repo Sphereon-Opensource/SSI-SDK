@@ -35,13 +35,13 @@ export enum TokenType {
 }
 
 export interface IEBSIAuthorizationClient extends IPluginMethodMap {
-  getOIDProviderMetadata(): Promise<GetOIDProviderMetadataResponse>
-  getOIDProviderJwks(): Promise<GetOIDProviderJwksResponse>
-  getPresentationDefinition(args: GetPresentationDefinitionArgs): Promise<GetPresentationDefinitionResponse>
-  getAccessToken(args: GetAccessTokenArgs): Promise<GetAccessTokenResponse>
-  initiateSIOPDidAuthRequest(args: InitiateSIOPDidAuthRequestArgs): Promise<InitiateSIOPDidAuthRequestResponse>
-  createSIOPSession(args: CreateSIOPSessionArgs): Promise<CreateSIOPSessionResponse>
-  createOAuth2Session(args: CreateOAuth2SessionArgs): Promise<CreateOAuth2SessionResponse>
+  ebsiAuthASDiscoveryMetadataGet(): Promise<GetOIDProviderMetadataResponse>
+  ebsiAuthASJwksGet(): Promise<GetOIDProviderJwksResponse>
+  ebsiAuthPresentationDefinitionGet(args: GetPresentationDefinitionArgs): Promise<GetPresentationDefinitionResponse>
+  ebsiAuthAccessTokenGet(args: GetAccessTokenArgs): Promise<GetAccessTokenResponse>
+  ebsiAuthinitiateSIOPDidAuthRequest(args: InitiateSIOPDidAuthRequestArgs): Promise<InitiateSIOPDidAuthRequestResponse>
+  ebsiAuthCreateSIOPSession(args: CreateSIOPSessionArgs): Promise<CreateSIOPSessionResponse>
+  ebsiAuthCreateOAuth2Session(args: CreateOAuth2SessionArgs): Promise<CreateOAuth2SessionResponse>
 }
 
 /**
