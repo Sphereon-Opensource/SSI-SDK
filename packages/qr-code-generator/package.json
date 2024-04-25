@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.qr-code-generator",
-  "version": "0.21.0",
+  "version": "0.23.0",
   "description": "QR Code provider (react)",
   "source": "src/index.ts",
   "main": "dist/index.js",

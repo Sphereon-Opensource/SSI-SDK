@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.presentation-exchange",
-  "version": "0.21.1",
+  "version": "0.23.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,15 +14,15 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/pex": "^3.3.1",
-    "@sphereon/pex-models": "^2.2.2",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.18.1",
+    "@sphereon/pex": "^3.3.3",
+    "@sphereon/pex-models": "^2.2.4",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.19.0",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0"
   },
   "devDependencies": {
-    "@sphereon/did-uni-client": "^0.6.2",
+    "@sphereon/did-uni-client": "^0.6.3",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@types/json-buffer": "^3.0.0",
     "@veramo/did-provider-key": "4.2.0",

@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.23.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.22.0...v0.23.0) (2024-04-24)
+
+### Bug Fixes
+
+- made party origin mandatory in the \*Args types ([d8e8560](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d8e8560a27a61ff34e41b4513811e7a112bdd1a2))
+
+### Features
+
+- Added PartyOriginEnum to PartyType, wrote migrations and updated tests and updated the contact manager plugin ([07d8c1f](https://github.com/Sphereon-Opensource/SSI-SDK/commit/07d8c1f7cdec110ced10277abd4d70edeb15c2d3))
+
+# [0.22.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.21.1...v0.22.0) (2024-04-04)
+
+**Note:** Version bump only for package @sphereon/ssi-sdk.contact-manager
+
 ## [0.21.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.21.0...v0.21.1) (2024-04-04)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.contact-manager

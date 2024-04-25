@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.23.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.22.0...v0.23.0) (2024-04-24)
+
+### Bug Fixes
+
+- add PhysicalAddress migrations to postgres ([afd441c](https://github.com/Sphereon-Opensource/SSI-SDK/commit/afd441ca1eccdb9438115de8b8e45d597dbf1fca))
+- added default value to PartyType.origin ([8b9d5d2](https://github.com/Sphereon-Opensource/SSI-SDK/commit/8b9d5d205896b40c1f1f59bc0ab8dee9a4a2c16b))
+- adjust PhysicalAddress postgres migration to follow code standards ([b8540fe](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b8540fecc85906f76ed8417e439324f833bc9983))
+- Allowing null values of enum type column ([a4bc42b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a4bc42b404f26aebe110471b5248bbdaf1a672ba))
+- Fixed origin column name ([d7a6ec1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d7a6ec15e9f7e9f422ca3a6574802d9602b85f60))
+- made party origin mandatory in the \*Args types ([d8e8560](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d8e8560a27a61ff34e41b4513811e7a112bdd1a2))
+- rework fix to include missing table in existing migration ([0862dbd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0862dbd4a479f120302afb83a4a21c70c9fe6e08))
+- set uri to nullable in Party table ([38318ae](https://github.com/Sphereon-Opensource/SSI-SDK/commit/38318ae7a47e578c874d54495b6d75ebb03224e1))
+
+### Features
+
+- Added PartyOriginEnum to PartyType, wrote migrations and updated tests and updated the contact manager plugin ([07d8c1f](https://github.com/Sphereon-Opensource/SSI-SDK/commit/07d8c1f7cdec110ced10277abd4d70edeb15c2d3))
+
+# [0.22.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.21.1...v0.22.0) (2024-04-04)
+
+**Note:** Version bump only for package @sphereon/ssi-sdk.data-store
+
 ## [0.21.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.21.0...v0.21.1) (2024-04-04)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.data-store
