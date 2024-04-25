@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth",
-  "version": "0.23.1",
+  "version": "0.23.2",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
