@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.23.4](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.23.2...v0.23.4) (2024-04-25)
+
+**Note:** Version bump only for package @sphereon/ssi-sdk.w3c-vc-api-verifier-rest-client
+
 # [0.23.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.22.0...v0.23.0) (2024-04-24)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.w3c-vc-api-verifier-rest-client
