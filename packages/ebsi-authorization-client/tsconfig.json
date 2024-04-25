@@ -10,6 +10,9 @@
   },
   "references": [
     {
+      "path": "../agent-config"
+    },
+    {
       "path": "../siopv2-oid4vp-op-auth"
     },
     {

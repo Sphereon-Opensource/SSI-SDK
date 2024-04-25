@@ -1,5 +1,5 @@
 import { CredentialPayload, IAgentPlugin } from '@veramo/core'
-import { EBSIOIDMetadata, EBSIScope, IRequiredContext, schema, ScopeByDefinition } from '../index'
+import { EBSIAuthAccessTokenGetArgs, EBSIOIDMetadata, EBSIScope, IRequiredContext, schema, ScopeByDefinition } from '../index'
 import {
   CreateOAuth2SessionArgs,
   CreateOAuth2SessionResponse,
@@ -17,6 +17,8 @@ import {
   InitiateSIOPDidAuthRequestResponse,
 } from '../types/IEBSIAuthorizationClient'
 import { uuid } from 'uuidv4'
+import fetch from 'cross-fetch'
+import * as u8a from 'uint8arrays'
 
 export class EBSIAuthorizationClient implements IAgentPlugin {
   readonly schema = schema.IEBSIAuthorizationClient
@@ -25,19 +27,144 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
     ebsiAuthASJwksGet: this.ebsiAuthASJwksGet.bind(this),
     ebsiAuthPresentationDefinitionGet: this.ebsiAuthPresentationDefinitionGet.bind(this),
     ebsiAuthAccessTokenGet: this.ebsiAuthAccessTokenGet.bind(this),
-    ebsiAuthinitiateSIOPDidAuthRequest: this.ebsiAuthinitiateSIOPDidAuthRequest.bind(this),
+    ebsiAuthInitiateSIOPDidAuthRequest: this.ebsiAuthInitiateSIOPDidAuthRequest.bind(this),
     ebsiAuthCreateSIOPSession: this.ebsiAuthCreateSIOPSession.bind(this),
     ebsiAuthCreateOAuth2Session: this.ebsiAuthCreateOAuth2Session.bind(this),
   }
 
-  private discoveryMetadata: EBSIOIDMetadata
+  private discoveryMetadata?: EBSIOIDMetadata
 
-  constructor(readonly baseUrl: string = 'https://api-pilot.ebsi.eu/authorisation/v4/') {}
+  constructor(private readonly baseUrl: string = 'https://api-pilot.ebsi.eu/authorisation/v4') {}
 
-  async authorize(
-    args: { credential: CredentialPayload; definitionId: ScopeByDefinition; did: string; kid: string; alg?: string },
-    context: IRequiredContext,
-  ) {
+  async siop(args: { scope: EBSIScope; did: string }, context: IRequiredContext): Promise<Response> {
+    const { scope, did } = args
+
+    const authRequest = await this.ebsiAuthInitiateSIOPDidAuthRequest({ scope })
+
+    // TODO add proper error handling
+    if (typeof authRequest !== 'string') {
+      throw new Error(`Failed to receive the SIOP DID auth request${authRequest}`)
+    }
+
+    const opSession = await context.agent.siopRegisterOPSession({
+      sessionId: 'ebsi-authorization-client-session',
+      requestJwtOrUri: authRequest,
+    })
+
+    const identifier = await context.agent.didManagerGet({ did })
+    return await opSession.sendAuthorizationResponse({
+      responseSignerOpts: { identifier: identifier },
+    })
+
+    /**
+     * export interface CreateResponseOptions {
+     *
+     *   responseMode?: ResponseMode;
+     *
+     *   syntaxType?: "jwk_thumbprint_subject" | "did_subject";
+     *
+     * }
+     *
+     * export type ResponseMode = "fragment" | "form_post" | "post" | "query";
+     *
+     * export interface RequestPayload {
+     *       redirectUri?: string;
+     *       responseMode?: ResponseMode;
+     *       responseContext?: string;
+     *       claims?: RequestClaims;
+     *       [x: string]: unknown;
+     *     }
+     */
+  }
+
+  private getDescriptorMap(definitionId: ScopeByDefinition) {
+    switch (definitionId) {
+      case ScopeByDefinition.didr_invite_presentation:
+        return [
+          {
+            id: `didr_invite_credential`,
+            format: 'jwt_vp',
+            path: '$',
+            path_nested: {
+              id: `didr_invite_credential`,
+              format: 'jwt_vc',
+              path: '$.vp.verifiableCredential[0]',
+            },
+          },
+        ]
+      case ScopeByDefinition.tir_invite_presentation:
+        return [
+          {
+            id: `tir_invite_credential`,
+            format: 'jwt_vp',
+            path: '$',
+            path_nested: {
+              id: `tir_invite_credential`,
+              format: 'jwt_vc',
+              path: '$.vp.verifiableCredential[0]',
+            },
+          },
+        ]
+      case ScopeByDefinition.tnt_authorise_presentation:
+        return [
+          {
+            id: `tnt_authorise_credential`,
+            format: 'jwt_vp',
+            path: '$',
+            path_nested: {
+              id: `tnt_authorise_credential`,
+              format: 'jwt_vc',
+              path: '$.vp.verifiableCredential[0]',
+            },
+          },
+        ]
+      default:
+        throw new Error(`${definitionId} is not supported`)
+    }
+  }
+
+  private async ebsiAuthASDiscoveryMetadataGet(): Promise<GetOIDProviderMetadataResponse> {
+    return await (
+      await fetch(`https://api-pilot.ebsi.eu/authorisation/v4/.well-known/openid-configuration`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+        },
+      })
+    ).json()
+  }
+
+  private async ebsiAuthASJwksGet(): Promise<GetOIDProviderJwksResponse | ExceptionResponse> {
+    if (!this.discoveryMetadata) {
+      this.discoveryMetadata = await this.ebsiAuthASDiscoveryMetadataGet()
+    }
+    return await (
+      await fetch(`${this.discoveryMetadata.jwks_uri}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/jwk-set+json',
+        },
+      })
+    ).json()
+  }
+
+  private async ebsiAuthPresentationDefinitionGet(args: GetPresentationDefinitionArgs): Promise<GetPresentationDefinitionResponse> {
+    const { scope } = args
+    if (!this.discoveryMetadata) {
+      this.discoveryMetadata = await this.ebsiAuthASDiscoveryMetadataGet()
+    }
+    const ebsiScope = Object.keys(EBSIScope)[Object.values(EBSIScope).indexOf(scope)]
+    return await (
+      await fetch(`${this.discoveryMetadata.presentation_definition_endpoint}?scope=openid%20${ebsiScope}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+        },
+      })
+    ).json()
+  }
+
+  private async ebsiAuthAccessTokenGet(args: EBSIAuthAccessTokenGetArgs, context: IRequiredContext): Promise<GetAccessTokenResponse> {
     const { credential, definitionId, did, kid, alg } = args
 
     const metadataResponse = await this.ebsiAuthASDiscoveryMetadataGet()
@@ -66,13 +193,14 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
     )
     let descriptorMap = this.getDescriptorMap(definitionId)
 
+    const id = Object.keys(ScopeByDefinition)[Object.values(ScopeByDefinition).indexOf(definitionId)]
     const presentationSubmission = {
       id: uuid(),
-      definition_id: definitionId,
+      definition_id: id,
       descriptor_map: descriptorMap,
     }
 
-    const tokenResponse = await this.ebsiAuthAccessTokenGet({
+    const tokenResponse = await this.getAccessToken({
       grant_type: 'vp_token',
       vp_token: vpJwt,
       presentation_submission: presentationSubmission,
@@ -84,116 +212,7 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
     return tokenResponse
   }
 
-  async siop(args: { scope: EBSIScope; callbackUrl: string; did: string }, context: IRequiredContext) {
-    const { scope, callbackUrl, did } = args
-
-    const authRequest = await this.ebsiAuthinitiateSIOPDidAuthRequest({ scope })
-
-    // TODO add proper error handling
-    if (typeof authRequest !== 'string') {
-      throw new Error(`Failed to receive the SIOP DID auth request${authRequest}`)
-    }
-
-    const opSession = await context.agent.siopRegisterOPSession({
-      sessionId: 'ebsi-authorization-client-session',
-      requestJwtOrUri: authRequest,
-    })
-
-    const identifier = await context.agent.didManagerGet({ did })
-    const resp = await opSession.sendAuthorizationResponse({
-      responseSignerOpts: { identifier: identifier },
-    })
-
-    //TODO verify the response and retrieve the access token
-
-
-
-    /**
-     * export interface CreateResponseOptions {
-     *
-     *   responseMode?: ResponseMode;
-     *
-     *   syntaxType?: "jwk_thumbprint_subject" | "did_subject";
-     *
-     * }
-     *
-     * export type ResponseMode = "fragment" | "form_post" | "post" | "query";
-     *
-     * export interface RequestPayload {
-     *       redirectUri?: string;
-     *       responseMode?: ResponseMode;
-     *       responseContext?: string;
-     *       claims?: RequestClaims;
-     *       [x: string]: unknown;
-     *     }
-     */
-  }
-
-  private getDescriptorMap(definitionId: ScopeByDefinition) {
-    switch (definitionId) {
-      case ScopeByDefinition.didr_invite_presentation:
-      case ScopeByDefinition.tir_invite_presentation:
-      case ScopeByDefinition.tnt_authorise_presentation:
-        const id = Object.keys(ScopeByDefinition)[Object.values(ScopeByDefinition).indexOf(definitionId)]
-        return [
-          {
-            id: `${id}`,
-            format: 'jwt_vp',
-            path: '$',
-            path_nested: {
-              id: `${id}`,
-              format: 'jwt_vc',
-              path: '$.vp.verifiableCredential[0]',
-            },
-          },
-        ]
-      default:
-        throw new Error(`${definitionId} is not supported`)
-    }
-  }
-
-  private async ebsiAuthASDiscoveryMetadataGet(): Promise<GetOIDProviderMetadataResponse> {
-    return await (
-      await fetch(`${this.baseUrl}/.well-known/openid-configuration`, {
-        method: 'GET',
-        headers: new Headers({
-          Accept: 'application/json',
-        }),
-      })
-    ).json()
-  }
-
-  private async ebsiAuthASJwksGet(): Promise<GetOIDProviderJwksResponse | ExceptionResponse> {
-    if (!this.discoveryMetadata) {
-      this.discoveryMetadata = await this.ebsiAuthASDiscoveryMetadataGet()
-    }
-    return await (
-      await fetch(`${this.discoveryMetadata.jwks_uri}`, {
-        method: 'GET',
-        headers: new Headers({
-          Accept: 'application/jwk-set+json',
-        }),
-      })
-    ).json()
-  }
-
-  private async ebsiAuthPresentationDefinitionGet(args: GetPresentationDefinitionArgs): Promise<GetPresentationDefinitionResponse> {
-    const { scope } = args
-    if (!this.discoveryMetadata) {
-      this.discoveryMetadata = await this.ebsiAuthASDiscoveryMetadataGet()
-    }
-    const ebsiScope = Object.keys(EBSIScope)[Object.values(EBSIScope).indexOf(scope)]
-    return await (
-      await fetch(`${this.discoveryMetadata.presentation_definition_endpoint}?scope=openid%20${ebsiScope}`, {
-        method: 'GET',
-        headers: new Headers({
-          Accept: 'application/json',
-        }),
-      })
-    ).json()
-  }
-
-  private async ebsiAuthAccessTokenGet(args: GetAccessTokenArgs): Promise<GetAccessTokenResponse> {
+  private async getAccessToken(args: GetAccessTokenArgs): Promise<GetAccessTokenResponse> {
     const { grant_type = 'vp_token', scope, vp_token, presentation_submission } = args
     if (!this.discoveryMetadata) {
       this.discoveryMetadata = await this.ebsiAuthASDiscoveryMetadataGet()
@@ -201,13 +220,13 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
     return await (
       await fetch(`${this.discoveryMetadata.token_endpoint}`, {
         method: 'POST',
-        headers: new Headers({
+        headers: {
           ContentType: 'application/x-www-form-urlencoded',
           Accept: 'application/json',
-        }),
+        },
         body: new URLSearchParams({
           grant_type,
-          scope,
+          scope: `openid ${scope}`,
           vp_token,
           presentation_submission: JSON.stringify(presentation_submission),
         }),
@@ -216,17 +235,17 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
   }
 
   //OP
-  private async ebsiAuthinitiateSIOPDidAuthRequest(args: InitiateSIOPDidAuthRequestArgs): Promise<InitiateSIOPDidAuthRequestResponse> {
+  private async ebsiAuthInitiateSIOPDidAuthRequest(args: InitiateSIOPDidAuthRequestArgs): Promise<InitiateSIOPDidAuthRequestResponse> {
     if (!this.discoveryMetadata) {
       this.discoveryMetadata = await this.ebsiAuthASDiscoveryMetadataGet()
     }
     return await (
       await fetch(`${this.discoveryMetadata.issuer}/authentication-requests`, {
         method: 'POST',
-        headers: new Headers({
+        headers: {
           ContentType: 'application/json',
           Accept: 'application/json',
-        }),
+        },
         body: JSON.stringify(args),
       })
     ).json()
@@ -242,10 +261,10 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
     return await (
       await fetch(`${this.discoveryMetadata.issuer}/siop-sessions`, {
         method: 'POST',
-        headers: new Headers({
+        headers: {
           ContentType: 'application/x-www-form-urlencoded',
           Accept: 'application/json',
-        }),
+        },
         body: new URLSearchParams({
           id_token,
           ...(vp_token && { vp_token }),
@@ -261,10 +280,10 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
     return await (
       await fetch(`${this.discoveryMetadata.issuer}/oauth2-session`, {
         method: 'POST',
-        headers: new Headers({
+        headers: {
           ContentType: 'application/json',
           Accept: 'application/json',
-        }),
+        },
         body: JSON.stringify(args),
       })
     ).json()
@@ -336,10 +355,15 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
       nbf: Math.floor(Date.now() / 1000) - 100,
     }
 
-    return await context.agent.keyManagerSignJWT({
+    const encodedHeader = u8a.toString(u8a.fromString(JSON.stringify(protectedHeader), 'utf-8'), 'base64url')
+    const encodedBody = u8a.toString(u8a.fromString(JSON.stringify(payload), 'utf-8'), 'base64url')
+
+    const signature = await context.agent.keyManagerSignJWT({
       kid,
-      data: JSON.stringify({ protectedHeader, payload }),
+      data: `${encodedHeader}.${encodedBody}`,
     })
+    const encodedSignature = u8a.toString(u8a.fromString(signature, 'utf-8'), 'base64url')
+    return `${encodedHeader}.${encodedBody}.${encodedSignature}`
   }
 
   private async createVcJwt(
@@ -381,9 +405,14 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
       ...payloadJwt,
     }
 
-    return await context.agent.keyManagerSignJWT({
+    const encodedHeader = u8a.toString(u8a.fromString(JSON.stringify(protectedHeader), 'utf-8'), 'base64url')
+    const encodedBody = u8a.toString(u8a.fromString(JSON.stringify(payload), 'utf-8'), 'base64url')
+
+    const signature = await context.agent.keyManagerSignJWT({
       kid,
-      data: JSON.stringify({ protectedHeader, payload }),
+      data: `${encodedHeader}.${encodedBody}`,
     })
+    const encodedSignature = u8a.toString(u8a.fromString(signature, 'utf-8'), 'base64url')
+    return `${encodedHeader}.${encodedBody}.${encodedSignature}`
   }
 }

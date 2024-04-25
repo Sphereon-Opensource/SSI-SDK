@@ -1,7 +1,8 @@
-import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap } from '@veramo/core'
-import { Format, PresentationDefinitionV2, PresentationSubmission } from '@sphereon/pex-models'
+import { CredentialPayload, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap } from '@veramo/core'
+import { Format, PresentationDefinitionV2 } from '@sphereon/pex-models'
 import { DiscoveryMetadataPayload, JWK } from '@sphereon/did-auth-siop'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
+import { PresentationSubmission } from '@sphereon/ssi-types'
 
 /**
  * The OpenID scope
@@ -38,8 +39,8 @@ export interface IEBSIAuthorizationClient extends IPluginMethodMap {
   ebsiAuthASDiscoveryMetadataGet(): Promise<GetOIDProviderMetadataResponse>
   ebsiAuthASJwksGet(): Promise<GetOIDProviderJwksResponse>
   ebsiAuthPresentationDefinitionGet(args: GetPresentationDefinitionArgs): Promise<GetPresentationDefinitionResponse>
-  ebsiAuthAccessTokenGet(args: GetAccessTokenArgs): Promise<GetAccessTokenResponse>
-  ebsiAuthinitiateSIOPDidAuthRequest(args: InitiateSIOPDidAuthRequestArgs): Promise<InitiateSIOPDidAuthRequestResponse>
+  ebsiAuthAccessTokenGet(args: EBSIAuthAccessTokenGetArgs, context: IRequiredContext): Promise<GetAccessTokenResponse>
+  ebsiAuthInitiateSIOPDidAuthRequest(args: InitiateSIOPDidAuthRequestArgs): Promise<InitiateSIOPDidAuthRequestResponse>
   ebsiAuthCreateSIOPSession(args: CreateSIOPSessionArgs): Promise<CreateSIOPSessionResponse>
   ebsiAuthCreateOAuth2Session(args: CreateOAuth2SessionArgs): Promise<CreateOAuth2SessionResponse>
 }
@@ -118,6 +119,23 @@ export interface GetAccessTokenArgs {
   vp_token: string
   presentation_submission: PresentationSubmission
   scope: EBSIScope
+}
+
+/**
+ * @typedef EBSIAuthAccessTokenGetArgs
+ * @type {object}
+ * @property {CredentialPayload} credential The credential payload
+ * @property {ScopeByDefinition} definitionId The presentation definition id
+ * @property {string} did
+ * @property {string} kid
+ * @property {string} [alg]
+ */
+export interface EBSIAuthAccessTokenGetArgs {
+  credential: CredentialPayload
+  definitionId: ScopeByDefinition
+  did: string
+  kid: string
+  alg?: string
 }
 
 /**
