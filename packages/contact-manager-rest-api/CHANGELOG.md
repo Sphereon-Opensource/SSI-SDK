@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.23.4](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.23.2...v0.23.4) (2024-04-25)
+
+**Note:** Version bump only for package @sphereon/ssi-sdk.contact-manager-rest-api
+
 ## [0.23.2](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.23.1...v0.23.2) (2024-04-25)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.contact-manager-rest-api
