@@ -105,16 +105,7 @@
         },
         "ScopeByDefinition": {
           "type": "string",
-          "enum": [
-            "openid didr_invite",
-            "openid didr_write",
-            "openid tir_invite",
-            "openid tir_write",
-            "openid timestamp_write",
-            "openid tnt_authorise",
-            "openid tnt_create",
-            "openid tnt_write"
-          ]
+          "enum": ["didr_invite", "didr_write", "tir_invite", "tir_write", "timestamp_write", "tnt_authorise", "tnt_create", "tnt_write"]
         },
         "GetAccessTokenResponse": {
           "anyOf": [
@@ -1953,6 +1944,9 @@
             },
             "name": {
               "type": "string"
+            },
+            "optional": {
+              "type": "boolean"
             }
           },
           "required": ["path"]
@@ -1961,12 +1955,12 @@
           "type": "object",
           "properties": {
             "const": {
-              "$ref": "#/components/schemas/OneOfNumberString"
+              "$ref": "#/components/schemas/OneOfNumberStringBoolean"
             },
             "enum": {
               "type": "array",
               "items": {
-                "$ref": "#/components/schemas/OneOfNumberString"
+                "$ref": "#/components/schemas/OneOfNumberStringBoolean"
               }
             },
             "exclusiveMinimum": {
@@ -2020,6 +2014,9 @@
           },
           "required": ["type"]
         },
+        "OneOfNumberStringBoolean": {
+          "type": ["boolean", "number", "string"]
+        },
         "OneOfNumberString": {
           "type": ["number", "string"]
         },
@@ -2027,12 +2024,12 @@
           "type": "object",
           "properties": {
             "const": {
-              "$ref": "#/components/schemas/OneOfNumberString"
+              "$ref": "#/components/schemas/OneOfNumberStringBoolean"
             },
             "enum": {
               "type": "array",
               "items": {
-                "$ref": "#/components/schemas/OneOfNumberString"
+                "$ref": "#/components/schemas/OneOfNumberStringBoolean"
               }
             },
             "exclusiveMinimum": {
@@ -2089,12 +2086,12 @@
           "type": "object",
           "properties": {
             "const": {
-              "$ref": "#/components/schemas/OneOfNumberString"
+              "$ref": "#/components/schemas/OneOfNumberStringBoolean"
             },
             "enum": {
               "type": "array",
               "items": {
-                "$ref": "#/components/schemas/OneOfNumberString"
+                "$ref": "#/components/schemas/OneOfNumberStringBoolean"
               }
             },
             "exclusiveMinimum": {

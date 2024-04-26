@@ -36,7 +36,7 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
 
   constructor(private readonly baseUrl: string = 'https://api-pilot.ebsi.eu/authorisation/v4') {}
 
-  async siop(args: { scope: EBSIScope; did: string }, context: IRequiredContext): Promise<Response> {
+  async siop(args: { scope: EBSIScope; did: string }, context: IRequiredContext) {
     const { scope, did } = args
 
     const authRequest = await this.ebsiAuthInitiateSIOPDidAuthRequest({ scope })
@@ -204,7 +204,7 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
       grant_type: 'vp_token',
       vp_token: vpJwt,
       presentation_submission: presentationSubmission,
-      scope: EBSIScope.didr_invite,
+      scope: EBSIScope[definitionId],
     })
     if ('status' in tokenResponse) {
       throw new Error(JSON.stringify(tokenResponse))

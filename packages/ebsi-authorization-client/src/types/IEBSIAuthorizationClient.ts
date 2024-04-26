@@ -21,14 +21,14 @@ export enum EBSIScope {
 }
 
 export enum ScopeByDefinition {
-  didr_invite_presentation = 'openid didr_invite',
-  didr_write_presentation = 'openid didr_write',
-  tir_invite_presentation = 'openid tir_invite',
-  tir_write_presentation = 'openid tir_write',
-  timestamp_write_presentation = 'openid timestamp_write',
-  tnt_authorise_presentation = 'openid tnt_authorise',
-  tnt_create_presentation = 'openid tnt_create',
-  tnt_write_presentation = 'openid tnt_write',
+  didr_invite_presentation = 'didr_invite',
+  didr_write_presentation = 'didr_write',
+  tir_invite_presentation = 'tir_invite',
+  tir_write_presentation = 'tir_write',
+  timestamp_write_presentation = 'timestamp_write',
+  tnt_authorise_presentation = 'tnt_authorise',
+  tnt_create_presentation = 'tnt_create',
+  tnt_write_presentation = 'tnt_write',
 }
 
 export enum TokenType {

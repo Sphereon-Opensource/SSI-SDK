@@ -170,12 +170,23 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       })
     })
 
+    // TODO create a proper credential
     it('should retrieve the authorization token', async () => {
       await expect(
         agent.ebsiAuthAccessTokenGet({
           credential: {
+            '@context': ['https://www.w3.org/2018/credentials/v1'],
+            type: ['VerifiableCredential', 'VerifiableAttestation', 'VerifiableAuthorisationToOnboard'],
             issuer: identifier.did,
-            type: ['VerifiableAuthorisationToOnboard'],
+            credentialSubject: { id: identifier.did, accreditedFor: [] },
+            termsOfUse: {
+              id: identifier.did,
+              type: 'IssuanceCertificate',
+            },
+            credentialSchema: {
+              id: 'https://api-pilot.ebsi.eu/trusted-schemas-registry/v2/schemas/z3MgUFUkb722uq4x3dv5yAJmnNmzDFeK5UC8x83QoeLJM',
+              type: 'FullJsonSchemaValidator2021',
+            },
           },
           definitionId: ScopeByDefinition.didr_invite_presentation,
           did: identifier.did,
