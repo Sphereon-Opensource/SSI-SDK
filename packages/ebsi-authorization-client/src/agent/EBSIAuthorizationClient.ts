@@ -20,6 +20,8 @@ import { uuid } from 'uuidv4'
 import fetch from 'cross-fetch'
 import * as u8a from 'uint8arrays'
 
+const encodeBase64url = (input: string): string => u8a.toString(u8a.fromString(input), 'base64url')
+
 export class EBSIAuthorizationClient implements IAgentPlugin {
   readonly schema = schema.IEBSIAuthorizationClient
   readonly methods: IEBSIAuthorizationClient = {
@@ -303,7 +305,7 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
     },
     context: IRequiredContext,
   ): Promise<string> {
-    const { kid, alg = 'ES256', did, vc, audience, nbf, exp, nonce } = args
+    const { kid, alg = 'ES256K', did, vc, audience, nbf, exp, nonce } = args
 
     if (!kid) {
       throw new Error(`kid is required`)
@@ -355,22 +357,23 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
       nbf: Math.floor(Date.now() / 1000) - 100,
     }
 
-    const encodedHeader = u8a.toString(u8a.fromString(JSON.stringify(protectedHeader), 'utf-8'), 'base64url')
-    const encodedBody = u8a.toString(u8a.fromString(JSON.stringify(payload), 'utf-8'), 'base64url')
+    const encodedHeader = u8a.fromString(encodeBase64url(JSON.stringify(protectedHeader)))
+    const encodedBody = u8a.fromString(encodeBase64url(JSON.stringify(payload)))
+    const data = u8a.concat([encodedHeader, u8a.fromString('.'), encodedBody])
 
     const signature = await context.agent.keyManagerSignJWT({
       kid,
-      data: `${encodedHeader}.${encodedBody}`,
+      data,
     })
-    const encodedSignature = u8a.toString(u8a.fromString(signature, 'utf-8'), 'base64url')
-    return `${encodedHeader}.${encodedBody}.${encodedSignature}`
+    const encodedSignature = encodeBase64url(signature)
+    return `${u8a.toString(encodedHeader)}.${u8a.toString(encodedBody)}.${encodedSignature}`
   }
 
   private async createVcJwt(
     args: { payloadVc: CredentialPayload; kid: string; alg?: string; payloadJwt?: {} },
     context: IRequiredContext,
   ): Promise<string> {
-    const { payloadVc, payloadJwt, kid, alg = 'ES256' } = args
+    const { payloadVc, payloadJwt, kid, alg = 'ES256K' } = args
 
     const iat = Math.floor(Date.now() / 1000) - 10
     const exp = iat + 365 * 24 * 3600
@@ -405,14 +408,15 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
       ...payloadJwt,
     }
 
-    const encodedHeader = u8a.toString(u8a.fromString(JSON.stringify(protectedHeader), 'utf-8'), 'base64url')
-    const encodedBody = u8a.toString(u8a.fromString(JSON.stringify(payload), 'utf-8'), 'base64url')
+    const encodedHeader = u8a.fromString(encodeBase64url(JSON.stringify(protectedHeader)))
+    const encodedBody = u8a.fromString(encodeBase64url(JSON.stringify(payload)))
+    const data = u8a.concat([encodedHeader, u8a.fromString('.'), encodedBody])
 
     const signature = await context.agent.keyManagerSignJWT({
       kid,
-      data: `${encodedHeader}.${encodedBody}`,
+      data,
     })
-    const encodedSignature = u8a.toString(u8a.fromString(signature, 'utf-8'), 'base64url')
-    return `${encodedHeader}.${encodedBody}.${encodedSignature}`
+    const encodedSignature = encodeBase64url(signature)
+    return `${u8a.toString(encodedHeader)}.${u8a.toString(encodedBody)}.${encodedSignature}`
   }
 }

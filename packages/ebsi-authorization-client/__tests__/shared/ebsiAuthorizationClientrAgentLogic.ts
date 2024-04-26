@@ -5,9 +5,6 @@ import { EBSIScope, IEBSIAuthorizationClient, ScopeByDefinition } from '../../sr
 type ConfiguredAgent = TAgent<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IEBSIAuthorizationClient>
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
-  // let secp256k1ManagedKey: ManagedKeyInfo
-  // let secp256r1ManagedKey: ManagedKeyInfo
-
   const secp256k1: MinimalImportableKey = {
     privateKeyHex: '6e491660cf923f7d9ce4a03401444b361817df9e76b926b55e21ffe7144d2ee6',
     kms: 'local',
@@ -61,8 +58,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     beforeAll(async (): Promise<void> => {
       await testContext.setup()
       agent = testContext.getAgent()
-      // secp256k1ManagedKey = await agent.keyManagerImport(secp256k1)
-      // secp256r1ManagedKey = await agent.keyManagerImport(secp256r1)
       id = await agent.didManagerImport({
         did: identifier.did,
         provider: 'did:ebsi',
@@ -170,14 +165,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       })
     })
 
-    // TODO create a proper credential
     it('should retrieve the authorization token', async () => {
       await expect(
         agent.ebsiAuthAccessTokenGet({
           credential: {
             '@context': ['https://www.w3.org/2018/credentials/v1'],
             type: ['VerifiableCredential', 'VerifiableAttestation', 'VerifiableAuthorisationToOnboard'],
-            issuer: identifier.did,
+            issuer: 'did:ebsi:ziDnioxYYLW1a3qUbqTFz4W',
             credentialSubject: { id: identifier.did, accreditedFor: [] },
             termsOfUse: {
               id: identifier.did,
@@ -193,9 +187,38 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           kid: id.keys[1].kid,
         }),
       ).resolves.toEqual({})
-      // Rejected to value: [Error: {"title":"Internal Server Error","status":500,"type":"about:blank","detail":"The server encountered an internal error and was unable to complete your request"}]
     })
 
     afterAll(testContext.tearDown)
   })
 }
+
+/*
+ Resolvable DID
+{
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    "https://w3id.org/security/suites/jws-2020/v1"
+  ],
+  "id": "did:ebsi:ziDnioxYYLW1a3qUbqTFz4W",
+  "verificationMethod": [
+    {
+      "id": "did:ebsi:ziDnioxYYLW1a3qUbqTFz4W#keys-1",
+      "type": "JsonWebKey2020",
+      "controller": "did:ebsi:ziDnioxYYLW1a3qUbqTFz4W",
+      "publicKeyJwk": {
+        "kty": "EC",
+        "crv": "secp256k1",
+        "x": "Yr5dSC8vVBhz_a_EiIjH63shj1uqPeg8UjtoUXtsVZU",
+        "y": "NicHUkZrnM1GgWn1GO4Dl27Q5rD-kG-ODF_jhZYSyQw"
+      }
+    }
+  ],
+  "authentication": [
+    "did:ebsi:ziDnioxYYLW1a3qUbqTFz4W#keys-1"
+  ],
+  "assertionMethod": [
+    "did:ebsi:ziDnioxYYLW1a3qUbqTFz4W#keys-1"
+  ]
+}
+ */
