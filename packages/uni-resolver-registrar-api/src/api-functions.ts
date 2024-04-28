@@ -169,7 +169,6 @@ export function resolveDidEndpoint(router: Router, context: IRequiredContext, op
 }
 
 /**
- * @deprecated
  * @param router
  * @param context
  * @param opts
