@@ -168,23 +168,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should retrieve the authorization token', async () => {
       await expect(
         agent.ebsiAuthAccessTokenGet({
-          credential: {
-            '@context': ['https://www.w3.org/2018/credentials/v1'],
-            type: ['VerifiableCredential', 'VerifiableAttestation', 'VerifiableAuthorisationToOnboard'],
-            issuer: 'did:ebsi:ziDnioxYYLW1a3qUbqTFz4W',
-            credentialSubject: { id: identifier.did, accreditedFor: [] },
-            termsOfUse: {
-              id: identifier.did,
-              type: 'IssuanceCertificate',
-            },
-            credentialSchema: {
-              id: 'https://api-pilot.ebsi.eu/trusted-schemas-registry/v2/schemas/z3MgUFUkb722uq4x3dv5yAJmnNmzDFeK5UC8x83QoeLJM',
-              type: 'FullJsonSchemaValidator2021',
-            },
-          },
+          vc: 'eyJ0eXAiOiJKV1QiLCJraWQiOiIxODNkY2E4NDRiNzM5OGM4MTQ0ZTJiMzk5OWM3MzA2Y2I3OTYzMDJhZWQxNDdkNjY4ZmI2ZmI5YmE0OTZkNTBkIiwiYWxnIjoiRVMyNTZLIn0.eyJpc3N1ZXIiOiJkaWQ6ZWJzaTp6aURuaW94WVlMVzFhM3FVYnFURno0VyIsImlhdCI6MTcxNDQxMzA4OCwianRpIjoidXJuOnV1aWQ6NWZiN2Q5OGItMTA4Yy00YmMwLTlmZmMtYzY5Zjg0ZWQ3ODhmIiwibmJmIjoxNzE0NDEzMDg4LCJleHAiOjE3NDU5NDkwODgsInN1YiI6ImRpZDplYnNpOnpleWJBaUp4elVVcldRMVlNNTFTWTM1IiwidmMiOnsiQGNvbnRleHQiOlsiaHR0cHM6Ly93d3cudzMub3JnLzIwMTgvY3JlZGVudGlhbHMvdjEiXSwiaWQiOiJ1cm46dXVpZDo1ZmI3ZDk4Yi0xMDhjLTRiYzAtOWZmYy1jNjlmODRlZDc4OGYiLCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIiwiVmVyaWZpYWJsZUF0dGVzdGF0aW9uIiwiVmVyaWZpYWJsZUF1dGhvcmlzYXRpb25Ub09uYm9hcmQiXSwiaXNzdWFuY2VEYXRlIjoiMjAyNC0wNC0yOVQxNzo1MToyOFoiLCJpc3N1ZWQiOiIyMDI0LTA0LTI5VDE3OjUxOjI4WiIsInZhbGlkRnJvbSI6IjIwMjQtMDQtMjlUMTc6NTE6MjhaIiwiZXhwaXJhdGlvbkRhdGUiOiIyMDI1LTA0LTI5VDE3OjUxOjI4WiIsImlzc3VlciI6ImRpZDplYnNpOnppRG5pb3hZWUxXMWEzcVVicVRGejRXIiwiY3JlZGVudGlhbFN1YmplY3QiOnsiaWQiOiJkaWQ6ZWJzaTp6ZXliQWlKeHpVVXJXUTFZTTUxU1kzNSIsImFjY3JlZGl0ZWRGb3IiOltdfSwidGVybXNPZlVzZSI6eyJpZCI6ImRpZDplYnNpOnpleWJBaUp4elVVcldRMVlNNTFTWTM1IiwidHlwZSI6Iklzc3VhbmNlQ2VydGlmaWNhdGUifSwiY3JlZGVudGlhbFNjaGVtYSI6eyJpZCI6Imh0dHBzOi8vYXBpLXBpbG90LmVic2kuZXUvdHJ1c3RlZC1zY2hlbWFzLXJlZ2lzdHJ5L3YyL3NjaGVtYXMvejNNZ1VGVWtiNzIydXE0eDNkdjV5QUptbk5tekRGZUs1VUM4eDgzUW9lTEpNIiwidHlwZSI6IkZ1bGxKc29uU2NoZW1hVmFsaWRhdG9yMjAyMSJ9fX0.QWNWTWlrbUpLcFJaLVBGczQ0U3Mxb200Mk4yb3JzWndsTXp3REpHTTMxSUM2WG5ZVXJ0ZlY4RHFTbVQtaXBIMEdLSDZhclFEcGtrbXZTTy1NenYxWEE',
           definitionId: ScopeByDefinition.didr_invite_presentation,
           did: identifier.did,
-          kid: id.keys[1].kid,
+          kid: `${identifier.did}#${id.keys[1].kid}`,
+          scope: EBSIScope.didr_invite,
         }),
       ).resolves.toEqual({})
     })

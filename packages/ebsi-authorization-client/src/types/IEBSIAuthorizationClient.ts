@@ -1,4 +1,4 @@
-import { CredentialPayload, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap } from '@veramo/core'
+import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap } from '@veramo/core'
 import { Format, PresentationDefinitionV2 } from '@sphereon/pex-models'
 import { DiscoveryMetadataPayload, JWK } from '@sphereon/did-auth-siop'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
@@ -18,6 +18,7 @@ export enum EBSIScope {
   tnt_authorise = 'tnt_authorise',
   tnt_create = 'tnt_create',
   tnt_write = 'tnt_write',
+  did_authn = 'did_authn',
 }
 
 export enum ScopeByDefinition {
@@ -124,18 +125,20 @@ export interface GetAccessTokenArgs {
 /**
  * @typedef EBSIAuthAccessTokenGetArgs
  * @type {object}
- * @property {CredentialPayload} credential The credential payload
+ * @property {string} vc Verifiable Credential (Verifiable Authorisation to Onboard) JWT format
  * @property {ScopeByDefinition} definitionId The presentation definition id
- * @property {string} did
- * @property {string} kid
- * @property {string} [alg]
+ * @property {string} [domain] The domain of the issuer
+ * @property {string} did The did of the VP issuer
+ * @property {string} kid kid in the format: did#kid
+ * @property {EBSIScope} scope Needed to retrieve the authentication request
  */
 export interface EBSIAuthAccessTokenGetArgs {
-  credential: CredentialPayload
+  vc: string
   definitionId: ScopeByDefinition
+  domain?: string
   did: string
   kid: string
-  alg?: string
+  scope: EBSIScope
 }
 
 /**
