@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-types",
   "description": "SSI Common Types",
-  "version": "0.21.1",
+  "version": "0.23.4",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

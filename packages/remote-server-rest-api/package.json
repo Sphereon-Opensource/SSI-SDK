@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.remote-server-rest-api",
-  "version": "0.21.0",
+  "version": "0.23.4",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

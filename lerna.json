@@ -1,7 +1,10 @@
 {
-  "version": "0.21.1",
+  "version": "0.23.4",
   "npmClient": "pnpm",
   "command": {
+    "version": {
+      "forcePublish": true
+    },
     "publish": {
       "allowBranch": ["main", "master"],
       "conventionalCommits": true,

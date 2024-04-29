@@ -9,6 +9,7 @@ import { v4 } from 'uuid'
 import {
   CreateState,
   DidRegistrationCreateRequest,
+  DidRegistrationDeactivateRequest,
   DidStateValue,
   ICreateDidEndpointOpts,
   IGlobalDidWebEndpointOpts,
@@ -167,7 +168,12 @@ export function resolveDidEndpoint(router: Router, context: IRequiredContext, op
   })
 }
 
-export function deactivateDidEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
+/**
+ * @param router
+ * @param context
+ * @param opts
+ */
+export function deleteDidEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`Deactivate DID endpoint is disabled`)
     return
@@ -187,6 +193,41 @@ export function deactivateDidEndpoint(router: Router, context: IRequiredContext,
       return response.send()
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)
+    }
+  })
+}
+
+export function deactivateDidEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
+  if (opts?.enabled === false) {
+    console.log('Deactivate DID endpoint is disabled')
+    return
+  }
+
+  router.post(opts?.path ?? '/deactivate', checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
+    try {
+      const deactivateRequest: DidRegistrationDeactivateRequest = request.body
+      if (!deactivateRequest) {
+        return sendErrorResponse(response, 400, 'Invalid request body', { state: 'failed' })
+      }
+
+      const { did, jobId = v4() } = deactivateRequest
+      if (!did) {
+        return sendErrorResponse(response, 400, 'No DID provided', { state: 'failed' })
+      }
+
+      const result = await context.agent.didManagerDelete({ did })
+      if (!result) {
+        return sendErrorResponse(response, 404, `DID ${did} not found`, { state: 'failed' })
+      }
+
+      response.status(200).json({
+        state: 'finished',
+        did,
+        jobId,
+      })
+      return response.send()
+    } catch (e) {
+      return sendErrorResponse(response, 500, e.message as string, { state: 'failed', errorDetails: e })
     }
   })
 }
