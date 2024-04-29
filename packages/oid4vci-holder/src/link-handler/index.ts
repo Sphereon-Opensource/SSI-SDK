@@ -1,25 +1,28 @@
 import { CredentialOfferClient } from '@sphereon/oid4vci-client'
 import { convertURIToJsonObject } from '@sphereon/oid4vci-common'
 import { DefaultLinkPriorities, LinkHandlerAdapter } from '@sphereon/ssi-sdk.core'
+import { IMachineStatePersistence, interpreterStartOrResume } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { IAgentContext } from '@veramo/core'
 import { GetMachineArgs, IOID4VCIHolder, OID4VCIMachineEvents, OID4VCIMachineInterpreter, OID4VCIMachineState } from '../types/IOID4VCIHolder'
 
 export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
-  private readonly context: IAgentContext<IOID4VCIHolder>
+  private readonly context: IAgentContext<IOID4VCIHolder & IMachineStatePersistence>
   private readonly stateNavigationListener:
     | ((oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>)
     | undefined
+  private noStateMachinePersistence: boolean;
 
   constructor(
     args: Pick<GetMachineArgs, 'stateNavigationListener'> & {
       priority?: number | DefaultLinkPriorities
       protocols?: Array<string | RegExp>
       noStateMachinePersistence?: boolean
-      context: IAgentContext<IOID4VCIHolder>
+      context: IAgentContext<IOID4VCIHolder & IMachineStatePersistence>
     },
   ) {
     super({ ...args, id: 'OID4VCIHolder' })
     this.context = args.context
+    this.noStateMachinePersistence = args.noStateMachinePersistence === true
     this.stateNavigationListener = args.stateNavigationListener
   }
 
@@ -41,7 +44,21 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
     })
 
     const interpreter = oid4vciMachine.interpreter
-    interpreter.start()
+    //FIXME we need a better way to check if the state persistence plugin is available in the agent
+    if (this.context.agent.availableMethods().includes('machineStatesFindActive')) {
+      const stateType = hasCode ? 'existing' : 'new'
+      await interpreterStartOrResume({
+        stateType,
+        interpreter,
+        context: this.context,
+        cleanupAllOtherInstances: true,
+        cleanupOnFinalState: true,
+        singletonCheck: true,
+        noRegistration: this.noStateMachinePersistence
+      })
+    } else {
+      interpreter.start()
+    }
 
     if (hasCode) {
       interpreter.send(OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE, { data: uri })
