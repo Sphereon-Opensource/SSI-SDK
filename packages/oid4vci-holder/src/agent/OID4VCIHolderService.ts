@@ -506,7 +506,6 @@ export const signJWT = async (args: SignJwtArgs): Promise<string> => {
 }
 
 export const getSigner = async (args: GetSignerArgs): Promise<Signer> => {
-  // TODO
   const { identifier, context } = args
   // TODO currently we assume an identifier only has one key
   const key = identifier.keys[0]
@@ -540,7 +539,6 @@ export const signatureAlgorithmFromKeyType = (args: SignatureAlgorithmFromKeyTyp
 
 // TODO improve this conversion for jwt and jsonld, not a fan of current structure
 export const keyTypeFromCryptographicSuite = (args: KeyTypeFromCryptographicSuiteArgs): TKeyType => {
-  // TODO async?
   const { suite } = args
   switch (suite) {
     case 'EdDSA':
