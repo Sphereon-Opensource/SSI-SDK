@@ -27,7 +27,8 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
   }
 
   async handle(url: string | URL): Promise<void> {
-    const uri = new URL(url).toString()
+    // FIXME CWALL-199 add support for URL's
+    const uri = new URL(url).toString().replace(new RegExp('.*\\?'), 'openid-credential-offer://?')
     const offerData = convertURIToJsonObject(uri) as Record<string, unknown>
     const hasCode = 'code' in offerData && !!offerData.code && !('issuer' in offerData)
     const code = hasCode ? (offerData.code as string) : undefined
@@ -42,17 +43,23 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
       stateNavigationListener: this.stateNavigationListener,
     })
 
-    const stateType = hasCode ? 'existing' : 'new'
     const interpreter = oid4vciMachine.interpreter
-    await interpreterStartOrResume({
-      stateType,
-      interpreter: oid4vciMachine.interpreter,
-      context: this.context,
-      cleanupAllOtherInstances: true,
-      cleanupOnFinalState: true,
-      singletonCheck: true,
-      noRegistration: this.noStateMachinePersistence
-    })
+    //FIXME we need a better way to check if the state persistence plugin is available in the agent
+    if (this.context.agent.availableMethods().includes('machineStatesFindActive')) {
+      const stateType = hasCode ? 'existing' : 'new'
+      await interpreterStartOrResume({
+        stateType,
+        interpreter,
+        context: this.context,
+        cleanupAllOtherInstances: true,
+        cleanupOnFinalState: true,
+        singletonCheck: true,
+        noRegistration: this.noStateMachinePersistence
+      })
+    } else {
+      interpreter.start()
+    }
+
     if (hasCode) {
       interpreter.send(OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE, { data: uri })
     }
