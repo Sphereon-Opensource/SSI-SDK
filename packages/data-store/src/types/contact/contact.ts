@@ -3,7 +3,7 @@ import { IIdentifier } from '@veramo/core'
 export type Party = {
   id: string
   uri?: string
-  roles: Array<IdentityRoleType>
+  roles: Array<IdentityRole>
   identities: Array<Identity>
   electronicAddresses: Array<ElectronicAddress>
   physicalAddresses: Array<PhysicalAddress>
@@ -47,7 +47,7 @@ export type PartialParty = Partial<
 export type Identity = {
   id: string
   alias: string
-  roles: Array<IdentityRoleType>
+  roles: Array<IdentityRole>
   identifier: CorrelationIdentifier
   connection?: Connection
   metadata?: Array<MetadataItem>
@@ -63,7 +63,7 @@ export type PartialIdentity = Partial<Omit<Identity, 'identifier' | 'connection'
   identifier?: PartialCorrelationIdentifier
   connection?: PartialConnection
   metadata?: PartialMetadataItem
-  roles?: IdentityRoleType
+  roles?: IdentityRole
   partyId?: string
 }
 
@@ -209,7 +209,7 @@ export type ElectronicAddressType = 'email' | 'phone'
 
 export type PhysicalAddressType = 'home' | 'visit' | 'postal'
 
-export enum IdentityRoleType {
+export enum IdentityRole {
   ISSUER = 'issuer',
   VERIFIER = 'verifier',
   HOLDER = 'holder',

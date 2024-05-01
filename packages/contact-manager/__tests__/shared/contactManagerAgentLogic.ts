@@ -4,7 +4,7 @@ import {
   ElectronicAddress,
   GetPartiesArgs,
   Identity,
-  IdentityRoleType,
+  IdentityRole,
   NaturalPerson,
   NonPersistedElectronicAddress,
   NonPersistedIdentity,
@@ -45,7 +45,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'default_example_did'
       const identity: NonPersistedIdentity = {
         alias: correlationId,
-        roles: [IdentityRoleType.ISSUER, IdentityRoleType.VERIFIER],
+        roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierType.DID,
           correlationId,
@@ -241,7 +241,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'new_example_did'
       const identity: NonPersistedIdentity = {
         alias: correlationId,
-        roles: [IdentityRoleType.ISSUER, IdentityRoleType.VERIFIER],
+        roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierType.DID,
           correlationId,
@@ -265,7 +265,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'missing_connection_add_example'
       const identity: NonPersistedIdentity = {
         alias: correlationId,
-        roles: [IdentityRoleType.ISSUER, IdentityRoleType.VERIFIER],
+        roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierType.URL,
           correlationId,
@@ -281,7 +281,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'missing_connection_update_example'
       const identity: NonPersistedIdentity = {
         alias: correlationId,
-        roles: [IdentityRoleType.ISSUER, IdentityRoleType.VERIFIER],
+        roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierType.DID,
           correlationId,
@@ -297,7 +297,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'new_update_example_did'
       const identity: NonPersistedIdentity = {
         alias: 'update_example_did',
-        roles: [IdentityRoleType.ISSUER, IdentityRoleType.VERIFIER],
+        roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierType.DID,
           correlationId: 'update_example_did',

@@ -4,7 +4,7 @@ import {
   CorrelationIdentifierType,
   IBasicCredentialLocaleBranding,
   Identity,
-  IdentityRoleType,
+  IdentityRole,
   NonPersistedIdentity,
   Party
 } from '@sphereon/ssi-sdk.data-store'
@@ -404,7 +404,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     const correlationId: string = credentialsToAccept[0].correlationId
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      roles: [IdentityRoleType.ISSUER],
+      roles: [IdentityRole.ISSUER],
       identifier: {
         type: CorrelationIdentifierType.DID,
         correlationId,
