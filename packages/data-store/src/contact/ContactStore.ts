@@ -38,8 +38,8 @@ import {
   AddPartyTypeArgs,
   AddPhysicalAddressArgs,
   AddRelationshipArgs,
-  ConnectionTypeEnum,
-  CorrelationIdentifierEnum,
+  ConnectionType,
+  CorrelationIdentifierType,
   ElectronicAddress,
   GetElectronicAddressArgs,
   GetElectronicAddressesArgs,
@@ -59,7 +59,7 @@ import {
   Party,
   PartyRelationship,
   PartyType,
-  PartyTypeEnum,
+  PartyTypeType,
   PhysicalAddress,
   RemoveElectronicAddressArgs,
   RemoveIdentityArgs,
@@ -126,9 +126,9 @@ export class ContactStore extends AbstractContactStore {
     }
 
     for (const identity of identities ?? []) {
-      if (identity.identifier.type === CorrelationIdentifierEnum.URL) {
+      if (identity.identifier.type === CorrelationIdentifierType.URL) {
         if (!identity.connection) {
-          return Promise.reject(Error(`Identity with correlation type ${CorrelationIdentifierEnum.URL} should contain a connection`))
+          return Promise.reject(Error(`Identity with correlation type ${CorrelationIdentifierType.URL} should contain a connection`))
         }
 
         if (!this.hasCorrectConnectionConfig(identity.connection.type, identity.connection.config)) {
@@ -235,9 +235,9 @@ export class ContactStore extends AbstractContactStore {
       return Promise.reject(Error(`No party found for id: ${partyId}`))
     }
 
-    if (identity.identifier.type === CorrelationIdentifierEnum.URL) {
+    if (identity.identifier.type === CorrelationIdentifierType.URL) {
       if (!identity.connection) {
-        return Promise.reject(Error(`Identity with correlation type ${CorrelationIdentifierEnum.URL} should contain a connection`))
+        return Promise.reject(Error(`Identity with correlation type ${CorrelationIdentifierType.URL} should contain a connection`))
       }
 
       if (!this.hasCorrectConnectionConfig(identity.connection.type, identity.connection.config)) {
@@ -266,9 +266,9 @@ export class ContactStore extends AbstractContactStore {
       return Promise.reject(Error(`No identity found for id: ${identity.id}`))
     }
 
-    if (identity.identifier.type === CorrelationIdentifierEnum.URL) {
+    if (identity.identifier.type === CorrelationIdentifierType.URL) {
       if (!identity.connection) {
-        return Promise.reject(Error(`Identity with correlation type ${CorrelationIdentifierEnum.URL} should contain a connection`))
+        return Promise.reject(Error(`Identity with correlation type ${CorrelationIdentifierType.URL} should contain a connection`))
       }
 
       if (!this.hasCorrectConnectionConfig(identity.connection.type, identity.connection.config)) {
@@ -622,22 +622,22 @@ export class ContactStore extends AbstractContactStore {
     await physicalAddressRepository.delete(physicalAddressId)
   }
 
-  private hasCorrectConnectionConfig(type: ConnectionTypeEnum, config: NonPersistedConnectionConfig): boolean {
+  private hasCorrectConnectionConfig(type: ConnectionType, config: NonPersistedConnectionConfig): boolean {
     switch (type) {
-      case ConnectionTypeEnum.OPENID_CONNECT:
+      case ConnectionType.OPENID_CONNECT:
         return isOpenIdConfig(config)
-      case ConnectionTypeEnum.SIOPv2:
+      case ConnectionType.SIOPv2:
         return isDidAuthConfig(config)
       default:
         throw new Error('Connection type not supported')
     }
   }
 
-  private hasCorrectPartyType(type: PartyTypeEnum, contact: NonPersistedContact): boolean {
+  private hasCorrectPartyType(type: PartyTypeType, contact: NonPersistedContact): boolean {
     switch (type) {
-      case PartyTypeEnum.NATURAL_PERSON:
+      case PartyTypeType.NATURAL_PERSON:
         return isNaturalPerson(contact)
-      case PartyTypeEnum.ORGANIZATION:
+      case PartyTypeType.ORGANIZATION:
         return isOrganization(contact)
       default:
         throw new Error('Party type not supported')
