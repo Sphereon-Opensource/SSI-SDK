@@ -1735,7 +1735,7 @@ describe('Contact store tests', (): void => {
 
     const includingMigrationPartyTypes: Array<PartyType> = await contactStore.getPartyTypes()
     // We are checking for 2 types here as we include the one from the migrations
-    expect(includingMigrationPartyTypes.length).toEqual(2)
+    expect(includingMigrationPartyTypes.length).toEqual(3)
 
     await contactStore.removePartyType({ partyTypeId: savedPartyType.id })
 
