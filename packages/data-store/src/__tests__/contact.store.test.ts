@@ -1734,7 +1734,7 @@ describe('Contact store tests', (): void => {
     expect(resultPartyType).toBeDefined()
 
     const includingMigrationPartyTypes: Array<PartyType> = await contactStore.getPartyTypes()
-    // We are checking for 2 types here as we include the one from the migrations
+    // We are checking for 3 types here as we include the ones from the migrations
     expect(includingMigrationPartyTypes.length).toEqual(3)
 
     await contactStore.removePartyType({ partyTypeId: savedPartyType.id })
@@ -1742,7 +1742,7 @@ describe('Contact store tests', (): void => {
     const result: Array<PartyType> = await contactStore.getPartyTypes()
 
     expect(result).toBeDefined()
-    expect(result.length).toEqual(1)
+    expect(result.length).toEqual(2)
   })
 
   it('should throw error when removing party type attached to contact', async (): Promise<void> => {
