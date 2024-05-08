@@ -10,7 +10,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
   private readonly stateNavigationListener:
     | ((oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>)
     | undefined
-  private noStateMachinePersistence: boolean;
+  private noStateMachinePersistence: boolean
 
   constructor(
     args: Pick<GetMachineArgs, 'stateNavigationListener'> & {
@@ -53,7 +53,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
         cleanupAllOtherInstances: true,
         cleanupOnFinalState: true,
         singletonCheck: true,
-        noRegistration: this.noStateMachinePersistence
+        noRegistration: this.noStateMachinePersistence,
       })
     } else {
       interpreter.start()
