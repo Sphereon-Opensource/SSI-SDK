@@ -16,13 +16,13 @@
   "dependencies": {
     "@sphereon/oid4vci-client": " 0.10.4-unstable.6",
     "@sphereon/oid4vci-common": " 0.10.4-unstable.6",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.18.0",
     "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.18.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.18.0",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
-    "@sphereon/ssi-sdk.xstate-machine-persistence": "workspace:*",
     "@sphereon/ssi-sdk.issuance-branding": "workspace:*",
+    "@sphereon/ssi-sdk.xstate-machine-persistence": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/data-store": "4.2.0",
@@ -38,6 +38,7 @@
     "@types/uuid": "^9.0.8",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
+    "nock": "^13.5.4",
     "typeorm": "^0.3.20",
     "typescript": "^5.4.2"
   },

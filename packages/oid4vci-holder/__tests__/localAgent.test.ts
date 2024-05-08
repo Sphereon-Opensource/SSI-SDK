@@ -3,14 +3,14 @@ import { createObjects, getConfig } from '../../agent-config/dist'
 
 jest.setTimeout(60000)
 
-import eventLoggerAgentLogic from './shared/eventLoggerAgentLogic'
+import eventLoggerAgentLogic from './shared/oid4vciHolderLogicAgentLogic'
 
 let dbConnection: Promise<DataSource>
 let agent: any
 
 const setup = async (): Promise<boolean> => {
-  const config = await getConfig('packages/event-logger/agent.yml')
-  const { localAgent, db } = await createObjects(config, { localAgent: '/agent', db: '/dbConnection' })
+  const config = await getConfig('packages/oid4vci-holder/agent.yml')
+  const { localAgent, db } = await createObjects(config, { localAgent: '/agent' })
   agent = localAgent
   dbConnection = db
 

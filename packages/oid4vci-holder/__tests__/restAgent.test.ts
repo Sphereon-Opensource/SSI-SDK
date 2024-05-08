@@ -7,7 +7,7 @@ import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/dist'
-import eventLoggerAgentLogic from './shared/eventLoggerAgentLogic'
+import eventLoggerAgentLogic from './shared/oid4vciHolderLogicAgentLogic'
 import { IOID4VCIHolder } from '../src'
 
 jest.setTimeout(60000)
@@ -32,7 +32,7 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const config = await getConfig('packages/event-logger/agent.yml')
+  const config = await getConfig('packages/oid4vci-holder/agent.yml')
   const { agent, db } = await createObjects(config, { agent: '/agent', db: '/dbConnection' })
   serverAgent = agent
   dbConnection = db
