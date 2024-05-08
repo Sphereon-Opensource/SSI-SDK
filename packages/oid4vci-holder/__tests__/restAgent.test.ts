@@ -2,8 +2,7 @@ import 'cross-fetch/polyfill'
 // @ts-ignore
 import express, { Router } from 'express'
 import { Server } from 'http'
-import { DataSource } from 'typeorm'
-import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
+import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/dist'
@@ -17,7 +16,6 @@ const basePath = '/agent'
 
 let serverAgent: IAgent
 let restServer: Server
-let dbConnection: Promise<DataSource>
 
 const getAgent = (options?: IAgentOptions) =>
   createAgent<IOID4VCIHolder>({
@@ -33,9 +31,8 @@ const getAgent = (options?: IAgentOptions) =>
 
 const setup = async (): Promise<boolean> => {
   const config = await getConfig('packages/oid4vci-holder/agent.yml')
-  const { agent, db } = await createObjects(config, { agent: '/agent', db: '/dbConnection' })
+  const { agent } = await createObjects(config, { agent: '/agent' })
   serverAgent = agent
-  dbConnection = db
 
   const agentRouter: Router = AgentRouter({
     exposedMethods: serverAgent.availableMethods(),
@@ -56,7 +53,6 @@ const setup = async (): Promise<boolean> => {
 
 const tearDown = async (): Promise<boolean> => {
   restServer.close()
-  await (await dbConnection).close()
   return true
 }
 
