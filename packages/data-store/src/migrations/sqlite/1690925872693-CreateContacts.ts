@@ -49,7 +49,7 @@ export class CreateContacts1690925872693 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "Connection"`)
     await queryRunner.query(`ALTER TABLE "temporary_Connection" RENAME TO "Connection"`)
     await queryRunner.query(
-      `CREATE TABLE "PartyType" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('naturalPerson','organization') ) NOT NULL, "origin" varchar CHECK( "origin" IN ('internal', 'external') ) NOT NULL DEFAULT 'external', "name" varchar(255) NOT NULL, "description" varchar(255), "tenant_id" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), CONSTRAINT "UQ_PartyType_name" UNIQUE ("name"))`,
+      `CREATE TABLE "PartyType" ("id" varchar PRIMARY KEY NOT NULL, "type" varchar CHECK( "type" IN ('naturalPerson','organization') ) NOT NULL, "origin" varchar CHECK( "origin" IN ('INTERNAL', 'EXTERNAL') ) NOT NULL DEFAULT 'EXTERNAL', "name" varchar(255) NOT NULL, "description" varchar(255), "tenant_id" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), CONSTRAINT "UQ_PartyType_name" UNIQUE ("name"))`,
     )
     await queryRunner.query(`CREATE UNIQUE INDEX "IDX_PartyType_type_tenant_id" ON "PartyType" ("type", "tenant_id")`)
     await queryRunner.query(
@@ -140,7 +140,10 @@ export class CreateContacts1690925872693 implements MigrationInterface {
     )
     await queryRunner.query(`DROP TABLE "BaseConfigEntity"`)
     await queryRunner.query(
-      `INSERT INTO "PartyType"(id, type, name, description, tenant_id, created_at, last_updated_at) VALUES ('3875c12e-fdaa-4ef6-a340-c936e054b627', 'organization', 'Sphereon_default_type', 'sphereon_default_organization', '95e09cfc-c974-4174-86aa-7bf1d5251fb4', datetime('now'), datetime('now'))`,
+      `INSERT INTO "PartyType"(id, type, origin, name, description, tenant_id, created_at, last_updated_at) VALUES ('3875c12e-fdaa-4ef6-a340-c936e054b627', 'organization', 'INTERNAL', 'Sphereon_default_organization_type', 'sphereon_default_organization', '95e09cfc-c974-4174-86aa-7bf1d5251fb4', datetime('now'), datetime('now'))`,
+    )
+    await queryRunner.query(
+      `INSERT INTO "PartyType"(id, type, origin, name, description, tenant_id, created_at, last_updated_at) VALUES ('7d248798-41ca-4fc1-a130-9934b43d532e', 'naturalPerson', 'INTERNAL', 'Sphereon_default_natural_person_type', 'sphereon_default_natural_person', '95e09cfc-c974-4174-86aa-7bf1d5251fb4', datetime('now'), datetime('now'))`,
     )
     await queryRunner.query(
       `INSERT INTO "Party"(id, uri, created_at, last_updated_at, party_type_id) SELECT id, uri, created_at, last_updated_at, '3875c12e-fdaa-4ef6-a340-c936e054b627' FROM "Contact"`,

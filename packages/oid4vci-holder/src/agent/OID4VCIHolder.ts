@@ -1,12 +1,12 @@
 import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
 import { CredentialSupported, DefaultURISchemes, Jwt, ProofOfPossessionCallbacks } from '@sphereon/oid4vci-common'
 import {
-  CorrelationIdentifierEnum,
+  CorrelationIdentifierType,
   IBasicCredentialLocaleBranding,
   Identity,
-  IdentityRoleEnum,
+  IdentityRole,
   NonPersistedIdentity,
-  Party,
+  Party
 } from '@sphereon/ssi-sdk.data-store'
 import { DIDDocument, IAgentPlugin, VerifiableCredential } from '@veramo/core'
 import { computeEntryHash } from '@veramo/utils'
@@ -404,9 +404,9 @@ export class OID4VCIHolder implements IAgentPlugin {
     const correlationId: string = credentialsToAccept[0].correlationId
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      roles: [IdentityRoleEnum.ISSUER],
+      roles: [IdentityRole.ISSUER],
       identifier: {
-        type: CorrelationIdentifierEnum.DID,
+        type: CorrelationIdentifierType.DID,
         correlationId,
       },
     }

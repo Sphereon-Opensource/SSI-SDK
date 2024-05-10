@@ -2,7 +2,7 @@ import { DataSource } from 'typeorm'
 import { DataStoreContactEntities, DataStoreMigrations, PartyOrigin } from '../index'
 import { ContactStore } from '../contact/ContactStore'
 import {
-  CorrelationIdentifierEnum,
+  CorrelationIdentifierType,
   ElectronicAddress,
   GetElectronicAddressesArgs,
   GetIdentitiesArgs,
@@ -10,7 +10,7 @@ import {
   GetPhysicalAddressesArgs,
   GetRelationshipsArgs,
   Identity,
-  IdentityRoleEnum,
+  IdentityRole,
   NaturalPerson,
   NonPersistedElectronicAddress,
   NonPersistedIdentity,
@@ -22,7 +22,7 @@ import {
   Party,
   PartyRelationship,
   PartyType,
-  PartyTypeEnum,
+  PartyTypeType,
   PhysicalAddress,
 } from '../types'
 
@@ -53,8 +53,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -84,8 +84,8 @@ describe('Contact store tests', (): void => {
     const party1: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -102,8 +102,8 @@ describe('Contact store tests', (): void => {
     const party2: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -127,8 +127,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -175,8 +175,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -189,25 +189,25 @@ describe('Contact store tests', (): void => {
       identities: [
         {
           alias: 'test_alias1',
-          roles: [IdentityRoleEnum.ISSUER],
+          roles: [IdentityRole.ISSUER],
           identifier: {
-            type: CorrelationIdentifierEnum.DID,
+            type: CorrelationIdentifierType.DID,
             correlationId: 'example_did1',
           },
         },
         {
           alias: 'test_alias2',
-          roles: [IdentityRoleEnum.VERIFIER],
+          roles: [IdentityRole.VERIFIER],
           identifier: {
-            type: CorrelationIdentifierEnum.DID,
+            type: CorrelationIdentifierType.DID,
             correlationId: 'example_did2',
           },
         },
         {
           alias: 'test_alias3',
-          roles: [IdentityRoleEnum.HOLDER],
+          roles: [IdentityRole.HOLDER],
           identifier: {
-            type: CorrelationIdentifierEnum.DID,
+            type: CorrelationIdentifierType.DID,
             correlationId: 'example_did3',
           },
         },
@@ -243,8 +243,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'something',
       },
@@ -287,8 +287,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -321,8 +321,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -373,8 +373,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -399,8 +399,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -413,17 +413,17 @@ describe('Contact store tests', (): void => {
       identities: [
         {
           alias: 'test_alias1',
-          roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+          roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
           identifier: {
-            type: CorrelationIdentifierEnum.DID,
+            type: CorrelationIdentifierType.DID,
             correlationId: 'example_did1',
           },
         },
         {
           alias: 'test_alias2',
-          roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+          roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
           identifier: {
-            type: CorrelationIdentifierEnum.DID,
+            type: CorrelationIdentifierType.DID,
             correlationId: 'example_did2',
           },
         },
@@ -443,8 +443,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'something',
       },
@@ -457,17 +457,17 @@ describe('Contact store tests', (): void => {
       identities: [
         {
           alias: 'test_alias1',
-          roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+          roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
           identifier: {
-            type: CorrelationIdentifierEnum.URL,
+            type: CorrelationIdentifierType.URL,
             correlationId: 'example_did1',
           },
         },
         {
           alias: 'test_alias2',
-          roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+          roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
           identifier: {
-            type: CorrelationIdentifierEnum.DID,
+            type: CorrelationIdentifierType.DID,
             correlationId: 'example_did2',
           },
         },
@@ -481,8 +481,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -498,9 +498,9 @@ describe('Contact store tests', (): void => {
 
     const identity1: NonPersistedIdentity = {
       alias: 'test_alias1',
-      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
-        type: CorrelationIdentifierEnum.DID,
+        type: CorrelationIdentifierType.DID,
         correlationId: 'example_did1',
       },
     }
@@ -509,9 +509,9 @@ describe('Contact store tests', (): void => {
 
     const identity2: NonPersistedIdentity = {
       alias: 'test_alias2',
-      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
-        type: CorrelationIdentifierEnum.DID,
+        type: CorrelationIdentifierType.DID,
         correlationId: 'example_did2',
       },
     }
@@ -539,8 +539,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -572,8 +572,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -589,9 +589,9 @@ describe('Contact store tests', (): void => {
 
     const identity: NonPersistedIdentity = {
       alias: 'test_alias',
-      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
-        type: CorrelationIdentifierEnum.DID,
+        type: CorrelationIdentifierType.DID,
         correlationId: 'example_did',
       },
     }
@@ -607,8 +607,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -624,9 +624,9 @@ describe('Contact store tests', (): void => {
 
     const identity: NonPersistedIdentity = {
       alias: 'test_alias',
-      roles: [IdentityRoleEnum.HOLDER],
+      roles: [IdentityRole.HOLDER],
       identifier: {
-        type: CorrelationIdentifierEnum.DID,
+        type: CorrelationIdentifierType.DID,
         correlationId: 'example_did',
       },
     }
@@ -648,8 +648,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -665,9 +665,9 @@ describe('Contact store tests', (): void => {
 
     const identity1: NonPersistedIdentity = {
       alias: 'test_alias1',
-      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
-        type: CorrelationIdentifierEnum.DID,
+        type: CorrelationIdentifierType.DID,
         correlationId: 'example_did1',
       },
     }
@@ -676,9 +676,9 @@ describe('Contact store tests', (): void => {
 
     const identity2: NonPersistedIdentity = {
       alias: 'test_alias2',
-      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
-        type: CorrelationIdentifierEnum.DID,
+        type: CorrelationIdentifierType.DID,
         correlationId: 'example_did2',
       },
     }
@@ -698,8 +698,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -715,9 +715,9 @@ describe('Contact store tests', (): void => {
 
     const identity1: NonPersistedIdentity = {
       alias: 'test_alias1',
-      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
-        type: CorrelationIdentifierEnum.DID,
+        type: CorrelationIdentifierType.DID,
         correlationId: 'example_did1',
       },
     }
@@ -726,9 +726,9 @@ describe('Contact store tests', (): void => {
 
     const identity2: NonPersistedIdentity = {
       alias: 'test_alias2',
-      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
-        type: CorrelationIdentifierEnum.DID,
+        type: CorrelationIdentifierType.DID,
         correlationId: 'example_did2',
       },
     }
@@ -744,8 +744,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -762,9 +762,9 @@ describe('Contact store tests', (): void => {
     const alias = 'test_alias1'
     const identity1: NonPersistedIdentity = {
       alias,
-      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
-        type: CorrelationIdentifierEnum.DID,
+        type: CorrelationIdentifierType.DID,
         correlationId: 'example_did1',
       },
     }
@@ -773,9 +773,9 @@ describe('Contact store tests', (): void => {
 
     const identity2: NonPersistedIdentity = {
       alias: 'test_alias2',
-      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
-        type: CorrelationIdentifierEnum.DID,
+        type: CorrelationIdentifierType.DID,
         correlationId: 'example_did2',
       },
     }
@@ -795,8 +795,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -813,9 +813,9 @@ describe('Contact store tests', (): void => {
     const alias = 'test_alias1'
     const identity1: NonPersistedIdentity = {
       alias,
-      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
-        type: CorrelationIdentifierEnum.DID,
+        type: CorrelationIdentifierType.DID,
         correlationId: 'example_did1',
       },
       metadata: [
@@ -846,8 +846,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -863,9 +863,9 @@ describe('Contact store tests', (): void => {
 
     const identity: NonPersistedIdentity = {
       alias: 'test_alias',
-      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
-        type: CorrelationIdentifierEnum.DID,
+        type: CorrelationIdentifierType.DID,
         correlationId: 'example_did',
       },
     }
@@ -886,8 +886,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -904,9 +904,9 @@ describe('Contact store tests', (): void => {
     const correlationId = 'missing_connection_example'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
-        type: CorrelationIdentifierEnum.URL,
+        type: CorrelationIdentifierType.URL,
         correlationId,
       },
     }
@@ -920,8 +920,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -938,14 +938,14 @@ describe('Contact store tests', (): void => {
     const correlationId = 'missing_connection_example'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER, IdentityRoleEnum.HOLDER],
+      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER, IdentityRole.HOLDER],
       identifier: {
-        type: CorrelationIdentifierEnum.DID,
+        type: CorrelationIdentifierType.DID,
         correlationId,
       },
     }
     const storedIdentity: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity })
-    storedIdentity.identifier = { ...storedIdentity.identifier, type: CorrelationIdentifierEnum.URL }
+    storedIdentity.identifier = { ...storedIdentity.identifier, type: CorrelationIdentifierType.URL }
 
     await expect(contactStore.updateIdentity({ identity: storedIdentity })).rejects.toThrow(
       `Identity with correlation type url should contain a connection`,
@@ -956,8 +956,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -973,9 +973,9 @@ describe('Contact store tests', (): void => {
 
     const identity: NonPersistedIdentity = {
       alias: 'example_did',
-      roles: [IdentityRoleEnum.ISSUER, IdentityRoleEnum.VERIFIER],
+      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
-        type: CorrelationIdentifierEnum.DID,
+        type: CorrelationIdentifierType.DID,
         correlationId: 'example_did',
       },
     }
@@ -994,8 +994,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1008,25 +1008,25 @@ describe('Contact store tests', (): void => {
       identities: [
         {
           alias: 'test_alias1',
-          roles: [IdentityRoleEnum.VERIFIER],
+          roles: [IdentityRole.VERIFIER],
           identifier: {
-            type: CorrelationIdentifierEnum.DID,
+            type: CorrelationIdentifierType.DID,
             correlationId: 'example_did1',
           },
         },
         {
           alias: 'test_alias2',
-          roles: [IdentityRoleEnum.ISSUER],
+          roles: [IdentityRole.ISSUER],
           identifier: {
-            type: CorrelationIdentifierEnum.DID,
+            type: CorrelationIdentifierType.DID,
             correlationId: 'example_did2',
           },
         },
         {
           alias: 'test_alias3',
-          roles: [IdentityRoleEnum.HOLDER],
+          roles: [IdentityRole.HOLDER],
           identifier: {
-            type: CorrelationIdentifierEnum.DID,
+            type: CorrelationIdentifierType.DID,
             correlationId: 'example_did3',
           },
         },
@@ -1038,15 +1038,15 @@ describe('Contact store tests', (): void => {
 
     expect(result.roles).toBeDefined()
     expect(result.roles.length).toEqual(3)
-    expect(result.roles).toEqual([IdentityRoleEnum.VERIFIER, IdentityRoleEnum.ISSUER, IdentityRoleEnum.HOLDER])
+    expect(result.roles).toEqual([IdentityRole.VERIFIER, IdentityRole.ISSUER, IdentityRole.HOLDER])
   })
 
   it('should add relationship', async (): Promise<void> => {
     const party1: NonPersistedParty = {
       uri: 'example1.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1063,8 +1063,8 @@ describe('Contact store tests', (): void => {
     const party2: NonPersistedParty = {
       uri: 'example2.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.external,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1096,8 +1096,8 @@ describe('Contact store tests', (): void => {
     const party1: NonPersistedParty = {
       uri: 'example1.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1114,8 +1114,8 @@ describe('Contact store tests', (): void => {
     const party2: NonPersistedParty = {
       uri: 'example2.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1152,8 +1152,8 @@ describe('Contact store tests', (): void => {
     const party1: NonPersistedParty = {
       uri: 'example1.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1170,8 +1170,8 @@ describe('Contact store tests', (): void => {
     const party2: NonPersistedParty = {
       uri: 'example2.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1207,8 +1207,8 @@ describe('Contact store tests', (): void => {
     const party1: NonPersistedParty = {
       uri: 'example1.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1225,8 +1225,8 @@ describe('Contact store tests', (): void => {
     const party2: NonPersistedParty = {
       uri: 'example2.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1271,8 +1271,8 @@ describe('Contact store tests', (): void => {
     const party1: NonPersistedParty = {
       uri: 'example1.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1289,8 +1289,8 @@ describe('Contact store tests', (): void => {
     const party2: NonPersistedParty = {
       uri: 'example2.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.external,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1342,8 +1342,8 @@ describe('Contact store tests', (): void => {
     const party1: NonPersistedParty = {
       uri: 'example1.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1360,8 +1360,8 @@ describe('Contact store tests', (): void => {
     const party2: NonPersistedParty = {
       uri: 'example2.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.external,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1378,8 +1378,8 @@ describe('Contact store tests', (): void => {
     const party3: NonPersistedParty = {
       uri: 'example3.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d287',
         name: 'example_name3',
       },
@@ -1418,8 +1418,8 @@ describe('Contact store tests', (): void => {
     const party1: NonPersistedParty = {
       uri: 'example1.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.external,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1436,8 +1436,8 @@ describe('Contact store tests', (): void => {
     const party2: NonPersistedParty = {
       uri: 'example2.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1473,8 +1473,8 @@ describe('Contact store tests', (): void => {
     const party1: NonPersistedParty = {
       uri: 'example1.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.external,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1491,8 +1491,8 @@ describe('Contact store tests', (): void => {
     const party2: NonPersistedParty = {
       uri: 'example2.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1527,8 +1527,8 @@ describe('Contact store tests', (): void => {
     const party1: NonPersistedParty = {
       uri: 'example1.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.external,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1545,8 +1545,8 @@ describe('Contact store tests', (): void => {
     const party2: NonPersistedParty = {
       uri: 'example2.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.external,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1579,8 +1579,8 @@ describe('Contact store tests', (): void => {
 
   it('should add party type', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
-      type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.external,
+      type: PartyTypeType.NATURAL_PERSON,
+      origin: PartyOrigin.EXTERNAL,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
       name: 'example_name',
       description: 'example_description',
@@ -1601,8 +1601,8 @@ describe('Contact store tests', (): void => {
 
   it('should get party types by filter', async (): Promise<void> => {
     const partyType1: NonPersistedPartyType = {
-      type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.external,
+      type: PartyTypeType.NATURAL_PERSON,
+      origin: PartyOrigin.EXTERNAL,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
       name: 'example_name1',
       description: 'example_description1',
@@ -1611,8 +1611,8 @@ describe('Contact store tests', (): void => {
     expect(savedPartyType1).toBeDefined()
 
     const partyType2: NonPersistedPartyType = {
-      type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.external,
+      type: PartyTypeType.NATURAL_PERSON,
+      origin: PartyOrigin.EXTERNAL,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d287',
       name: 'example_name2',
       description: 'example_description2',
@@ -1623,7 +1623,7 @@ describe('Contact store tests', (): void => {
     const result: Array<PartyType> = await contactStore.getPartyTypes({
       filter: [
         {
-          type: PartyTypeEnum.NATURAL_PERSON,
+          type: PartyTypeType.NATURAL_PERSON,
           name: 'example_name1',
           description: 'example_description1',
         },
@@ -1636,8 +1636,8 @@ describe('Contact store tests', (): void => {
 
   it('should return no party types if filter does not match', async (): Promise<void> => {
     const partyType1: NonPersistedPartyType = {
-      type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.internal,
+      type: PartyTypeType.NATURAL_PERSON,
+      origin: PartyOrigin.INTERNAL,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
       name: 'example_name1',
       description: 'example_description1',
@@ -1646,8 +1646,8 @@ describe('Contact store tests', (): void => {
     expect(savedPartyType1).toBeDefined()
 
     const partyType2: NonPersistedPartyType = {
-      type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.internal,
+      type: PartyTypeType.NATURAL_PERSON,
+      origin: PartyOrigin.INTERNAL,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d287',
       name: 'example_name2',
       description: 'example_description2',
@@ -1658,7 +1658,7 @@ describe('Contact store tests', (): void => {
     const result: Array<PartyType> = await contactStore.getPartyTypes({
       filter: [
         {
-          type: PartyTypeEnum.NATURAL_PERSON,
+          type: PartyTypeType.NATURAL_PERSON,
           name: 'unknown_name',
           description: 'unknown_description',
         },
@@ -1671,8 +1671,8 @@ describe('Contact store tests', (): void => {
 
   it('should throw error when updating party type with unknown id', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
-      type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.internal,
+      type: PartyTypeType.NATURAL_PERSON,
+      origin: PartyOrigin.INTERNAL,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
       name: 'example_name',
       description: 'example_description',
@@ -1692,8 +1692,8 @@ describe('Contact store tests', (): void => {
 
   it('should update party type by id', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
-      type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.external,
+      type: PartyTypeType.NATURAL_PERSON,
+      origin: PartyOrigin.EXTERNAL,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
       name: 'example_name',
       description: 'example_description',
@@ -1721,8 +1721,8 @@ describe('Contact store tests', (): void => {
 
   it('should remove party type', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
-      type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.internal,
+      type: PartyTypeType.NATURAL_PERSON,
+      origin: PartyOrigin.INTERNAL,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
       name: 'example_name',
       description: 'example_description',
@@ -1734,23 +1734,23 @@ describe('Contact store tests', (): void => {
     expect(resultPartyType).toBeDefined()
 
     const includingMigrationPartyTypes: Array<PartyType> = await contactStore.getPartyTypes()
-    // We are checking for 2 types here as we include the one from the migrations
-    expect(includingMigrationPartyTypes.length).toEqual(2)
+    // We are checking for 3 types here as we include the ones from the migrations
+    expect(includingMigrationPartyTypes.length).toEqual(3)
 
     await contactStore.removePartyType({ partyTypeId: savedPartyType.id })
 
     const result: Array<PartyType> = await contactStore.getPartyTypes()
 
     expect(result).toBeDefined()
-    expect(result.length).toEqual(1)
+    expect(result.length).toEqual(2)
   })
 
   it('should throw error when removing party type attached to contact', async (): Promise<void> => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.external,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1771,8 +1771,8 @@ describe('Contact store tests', (): void => {
 
   it('Should save party with existing party type', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
-      type: PartyTypeEnum.NATURAL_PERSON,
-      origin: PartyOrigin.internal,
+      type: PartyTypeType.NATURAL_PERSON,
+      origin: PartyOrigin.INTERNAL,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
@@ -1802,8 +1802,8 @@ describe('Contact store tests', (): void => {
   })
 
   it('should throw error when adding person party with wrong contact type', async (): Promise<void> => {
-    const partyType = PartyTypeEnum.ORGANIZATION
-    const partyTypeOrigin = PartyOrigin.internal
+    const partyType = PartyTypeType.ORGANIZATION
+    const partyTypeOrigin = PartyOrigin.INTERNAL
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
@@ -1824,8 +1824,8 @@ describe('Contact store tests', (): void => {
   })
 
   it('should throw error when adding organization party with wrong contact type', async (): Promise<void> => {
-    const partyType = PartyTypeEnum.NATURAL_PERSON
-    const partyTypeOrigin = PartyOrigin.external
+    const partyType = PartyTypeType.NATURAL_PERSON
+    const partyTypeOrigin = PartyOrigin.EXTERNAL
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
@@ -1847,8 +1847,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1886,8 +1886,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.external,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1934,8 +1934,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1978,8 +1978,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.external,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2027,8 +2027,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2057,8 +2057,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.external,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2091,8 +2091,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2132,8 +2132,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.external,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2175,8 +2175,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2235,8 +2235,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.external,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2291,8 +2291,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2352,8 +2352,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.external,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2388,8 +2388,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.internal,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2428,8 +2428,8 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeEnum.NATURAL_PERSON,
-        origin: PartyOrigin.external,
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },

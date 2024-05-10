@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToOne, JoinColumn, BeforeInsert, BeforeUpdate } from 'typeorm'
-import { CorrelationIdentifierEnum, ValidationConstraint } from '../../types'
+import { CorrelationIdentifierType, ValidationConstraint } from '../../types'
 import { IdentityEntity } from './IdentityEntity'
 import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { getConstraint } from '../../utils/ValidatorUtils'
@@ -9,8 +9,8 @@ export class CorrelationIdentifierEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum', { name: 'type', enum: CorrelationIdentifierEnum, nullable: false })
-  type!: CorrelationIdentifierEnum
+  @Column('simple-enum', { name: 'type', enum: CorrelationIdentifierType, nullable: false })
+  type!: CorrelationIdentifierType
 
   @Column('text', { name: 'correlation_id', nullable: false, unique: true })
   @IsNotEmpty({ message: 'Blank correlation ids are not allowed' })

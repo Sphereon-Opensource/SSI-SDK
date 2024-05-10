@@ -3,7 +3,7 @@ import { IIdentifier } from '@veramo/core'
 export type Party = {
   id: string
   uri?: string
-  roles: Array<IdentityRoleEnum>
+  roles: Array<IdentityRole>
   identities: Array<Identity>
   electronicAddresses: Array<ElectronicAddress>
   physicalAddresses: Array<PhysicalAddress>
@@ -47,7 +47,7 @@ export type PartialParty = Partial<
 export type Identity = {
   id: string
   alias: string
-  roles: Array<IdentityRoleEnum>
+  roles: Array<IdentityRole>
   identifier: CorrelationIdentifier
   connection?: Connection
   metadata?: Array<MetadataItem>
@@ -63,7 +63,7 @@ export type PartialIdentity = Partial<Omit<Identity, 'identifier' | 'connection'
   identifier?: PartialCorrelationIdentifier
   connection?: PartialConnection
   metadata?: PartialMetadataItem
-  roles?: IdentityRoleEnum
+  roles?: IdentityRole
   partyId?: string
 }
 
@@ -77,7 +77,7 @@ export type PartialMetadataItem = Partial<MetadataItem>
 
 export type CorrelationIdentifier = {
   id: string
-  type: CorrelationIdentifierEnum
+  type: CorrelationIdentifierType
   correlationId: string
 }
 export type NonPersistedCorrelationIdentifier = Omit<CorrelationIdentifier, 'id'>
@@ -85,7 +85,7 @@ export type PartialCorrelationIdentifier = Partial<CorrelationIdentifier>
 
 export type Connection = {
   id: string
-  type: ConnectionTypeEnum
+  type: ConnectionType
   config: ConnectionConfig
 }
 export type NonPersistedConnection = Omit<Connection, 'id' | 'config'> & {
@@ -150,14 +150,9 @@ export type Contact = NaturalPerson | Organization
 export type NonPersistedContact = NonPersistedNaturalPerson | NonPersistedOrganization
 export type PartialContact = PartialNaturalPerson | PartialOrganization
 
-export enum PartyOrigin {
-  internal = 'internal',
-  external = 'external',
-}
-
 export type PartyType = {
   id: string
-  type: PartyTypeEnum
+  type: PartyTypeType
   origin: PartyOrigin
   name: string
   tenantId: string
@@ -214,24 +209,29 @@ export type ElectronicAddressType = 'email' | 'phone'
 
 export type PhysicalAddressType = 'home' | 'visit' | 'postal'
 
-export enum IdentityRoleEnum {
+export enum IdentityRole {
   ISSUER = 'issuer',
   VERIFIER = 'verifier',
   HOLDER = 'holder',
 }
 
-export enum ConnectionTypeEnum {
+export enum ConnectionType {
   OPENID_CONNECT = 'OIDC',
   SIOPv2 = 'SIOPv2',
   SIOPv2_OpenID4VP = 'SIOPv2+OpenID4VP',
 }
 
-export enum CorrelationIdentifierEnum {
+export enum CorrelationIdentifierType {
   DID = 'did',
   URL = 'url',
 }
 
-export enum PartyTypeEnum {
+export enum PartyTypeType {
   NATURAL_PERSON = 'naturalPerson',
   ORGANIZATION = 'organization',
+}
+
+export enum PartyOrigin {
+  INTERNAL = 'INTERNAL',
+  EXTERNAL = 'EXTERNAL',
 }
