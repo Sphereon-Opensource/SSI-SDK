@@ -232,6 +232,6 @@ export enum PartyTypeType {
 }
 
 export enum PartyOrigin {
-  INTERNAL = 'internal',
-  EXTERNAL = 'external',
+  INTERNAL = 'INTERNAL',
+  EXTERNAL = 'EXTERNAL',
 }
