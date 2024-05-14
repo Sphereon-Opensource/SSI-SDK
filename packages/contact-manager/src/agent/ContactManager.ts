@@ -47,7 +47,7 @@ import {
   UpdatePhysicalAddressArgs,
   UpdateRelationshipArgs,
 } from '../types/IContactManager'
-import {IdentityOrigin} from "@sphereon/ssi-sdk.data-store/dist";
+import { IdentityOrigin } from '@sphereon/ssi-sdk.data-store/dist'
 
 // Exposing the methods here for any REST implementation
 export const contactManagerMethods: Array<string> = [
@@ -177,8 +177,8 @@ export class ContactManager implements IAgentPlugin {
   /** {@inheritDoc IContactManager.cmAddIdentity} */
   private async cmAddIdentity(args: AddIdentityArgs, context: RequiredContext): Promise<Identity> {
     const { contactId, identity } = args
-    if(!identity.origin) {
-      identity.origin = IdentityOrigin.EXTRERNAL
+    if (!identity.origin) {
+      identity.origin = IdentityOrigin.EXTERNAL
     }
     return this.store.addIdentity({ partyId: contactId, identity })
   }

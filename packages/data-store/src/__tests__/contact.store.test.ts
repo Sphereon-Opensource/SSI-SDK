@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm'
-import { DataStoreContactEntities, DataStoreMigrations, PartyOrigin, PartyTypeType } from '../index'
+import { AllowedValueTypes, DataStoreContactEntities, DataStoreMigrations, MetadataItem, PartyOrigin } from '../index'
 import { ContactStore } from '../contact/ContactStore'
 import {
   CorrelationIdentifierType,
@@ -53,16 +53,19 @@ describe('Contact store tests', (): void => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
-        type: PartyTypeType.STUDENT,
+        type: PartyTypeType.NATURAL_PERSON,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
+        origin: PartyOrigin.EXTERNAL,
       },
       contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
         lastName: 'example_last_name',
-        grade: '5th',
-        dateOfBirth: new Date(2016, 0, 5),
+        metadata: [
+          { label: 'grade', value: '5th' },
+          { label: 'dateOfBirth', value: new Date(2016, 0, 5) },
+        ] as Array<MetadataItem<AllowedValueTypes>>,
         displayName: 'example_display_name',
       },
     }
@@ -859,7 +862,7 @@ describe('Contact store tests', (): void => {
     expect(savedIdentity1).toBeDefined()
 
     const args: GetIdentitiesArgs = {
-      filter: [{ metadata: { label: 'label1' } }],
+      filter: [{ metadata: [{ label: 'label1', value: '%' }] }], // TODO reevaluate mechanism?
     }
 
     const result: Array<Identity> = await contactStore.getIdentities(args)
@@ -1850,13 +1853,14 @@ describe('Contact store tests', (): void => {
   })
 
   it('should throw error when adding person party with student contact type', async (): Promise<void> => {
-    const partyType = PartyTypeEnum.STUDENT
+    const partyType = PartyTypeType.NATURAL_PERSON
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
         type: partyType,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
+        origin: PartyOrigin.EXTERNAL,
       },
       contact: {
         firstName: 'example_first_name',
@@ -1890,21 +1894,24 @@ describe('Contact store tests', (): void => {
   })
 
   it('should throw error when adding student party with wrong contact type', async (): Promise<void> => {
-    const partyType = PartyTypeEnum.NATURAL_PERSON
+    const partyType = PartyTypeType.NATURAL_PERSON
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
         type: partyType,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
+        origin: PartyOrigin.EXTERNAL,
       },
       contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
         lastName: 'example_last_name',
         displayName: 'example_display_name',
-        grade: '3rd',
-        dateOfBirth: new Date(2016, 2, 15)
+        metadata: [
+          { label: 'grade', value: '3rd' },
+          { label: 'dateOfBirth', value: new Date(2016, 2, 15) },
+        ] as Array<MetadataItem<AllowedValueTypes>>,
       },
     }
 

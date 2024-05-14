@@ -21,7 +21,7 @@ import {
   isDidAuthConfig,
   isNaturalPerson,
   isOpenIdConfig,
-  isOrganization, isStudent,
+  isOrganization,
   partyEntityFrom,
   partyFrom,
   partyRelationshipEntityFrom,
@@ -639,8 +639,6 @@ export class ContactStore extends AbstractContactStore {
         return isNaturalPerson(contact)
       case PartyTypeType.ORGANIZATION:
         return isOrganization(contact)
-      case PartyTypeEnum.STUDENT:
-        return isStudent(contact)
       default:
         throw new Error('Party type not supported')
     }

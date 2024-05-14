@@ -1,4 +1,5 @@
 import {
+  AllowedValueTypes,
   Connection,
   ConnectionConfig,
   Contact,
@@ -23,30 +24,30 @@ import {
   NonPersistedParty,
   NonPersistedPartyRelationship,
   NonPersistedPartyType,
-  NonPersistedPhysicalAddress, NonPersistedStudent,
+  NonPersistedPhysicalAddress,
   OpenIdConfig,
   Organization,
   Party,
   PartyRelationship,
   PartyType,
-  PhysicalAddress, Student,
+  PhysicalAddress,
 } from '../../types'
-import {PartyEntity} from '../../entities/contact/PartyEntity'
-import {IdentityEntity} from '../../entities/contact/IdentityEntity'
-import {ElectronicAddressEntity} from '../../entities/contact/ElectronicAddressEntity'
-import {PartyRelationshipEntity} from '../../entities/contact/PartyRelationshipEntity'
-import {BaseContactEntity} from '../../entities/contact/BaseContactEntity'
-import {NaturalPersonEntity} from '../../entities/contact/NaturalPersonEntity'
-import {OrganizationEntity} from '../../entities/contact/OrganizationEntity'
-import {ConnectionEntity} from '../../entities/contact/ConnectionEntity'
-import {BaseConfigEntity} from '../../entities/contact/BaseConfigEntity'
-import {CorrelationIdentifierEntity} from '../../entities/contact/CorrelationIdentifierEntity'
-import {DidAuthConfigEntity} from '../../entities/contact/DidAuthConfigEntity'
-import {IdentityMetadataItemEntity} from '../../entities/contact/IdentityMetadataItemEntity'
-import {OpenIdConfigEntity} from '../../entities/contact/OpenIdConfigEntity'
-import {PartyTypeEntity} from '../../entities/contact/PartyTypeEntity'
-import {PhysicalAddressEntity} from '../../entities/contact/PhysicalAddressEntity'
-import {StudentEntity} from "../../entities/contact/StudentEntity";
+import { PartyEntity } from '../../entities/contact/PartyEntity'
+import { IdentityEntity } from '../../entities/contact/IdentityEntity'
+import { ElectronicAddressEntity } from '../../entities/contact/ElectronicAddressEntity'
+import { PartyRelationshipEntity } from '../../entities/contact/PartyRelationshipEntity'
+import { BaseContactEntity } from '../../entities/contact/BaseContactEntity'
+import { NaturalPersonEntity } from '../../entities/contact/NaturalPersonEntity'
+import { OrganizationEntity } from '../../entities/contact/OrganizationEntity'
+import { ConnectionEntity } from '../../entities/contact/ConnectionEntity'
+import { BaseConfigEntity } from '../../entities/contact/BaseConfigEntity'
+import { CorrelationIdentifierEntity } from '../../entities/contact/CorrelationIdentifierEntity'
+import { DidAuthConfigEntity } from '../../entities/contact/DidAuthConfigEntity'
+import { IdentityMetadataItemEntity } from '../../entities/contact/IdentityMetadataItemEntity'
+import { OpenIdConfigEntity } from '../../entities/contact/OpenIdConfigEntity'
+import { PartyTypeEntity } from '../../entities/contact/PartyTypeEntity'
+import { PhysicalAddressEntity } from '../../entities/contact/PhysicalAddressEntity'
+import { ContactMetadataItemEntity } from '../../entities/contact/ContactMetadataItemEntity'
 
 export const partyEntityFrom = (party: NonPersistedParty): PartyEntity => {
   const partyEntity: PartyEntity = new PartyEntity()
@@ -93,8 +94,6 @@ export const contactEntityFrom = (contact: NonPersistedContact): BaseContactEnti
     return naturalPersonEntityFrom(<NonPersistedNaturalPerson>contact)
   } else if (isOrganization(contact)) {
     return organizationEntityFrom(<NonPersistedOrganization>contact)
-  } else if (isStudent(contact)) {
-    return studentEntityFrom(<NonPersistedStudent>contact)
   }
 
   throw new Error('Contact not supported')
@@ -105,8 +104,6 @@ export const contactFrom = (contact: BaseContactEntity): Contact => {
     return naturalPersonFrom(<NaturalPersonEntity>contact)
   } else if (isOrganization(contact)) {
     return organizationFrom(<OrganizationEntity>contact)
-  } else if (isStudent(contact)) {
-    return studentFrom(<StudentEntity>contact)
   }
 
   throw new Error(`Contact type not supported`)
@@ -117,9 +114,6 @@ export const isNaturalPerson = (contact: NonPersistedContact | BaseContactEntity
 
 export const isOrganization = (contact: NonPersistedContact | BaseContactEntity): contact is NonPersistedOrganization | OrganizationEntity =>
   'legalName' in contact
-
-export const isStudent = (contact: NonPersistedContact | BaseContactEntity): contact is NonPersistedStudent | StudentEntity =>
-    'grade' in contact && 'dateOfBirth' in contact
 
 export const connectionEntityFrom = (connection: NonPersistedConnection): ConnectionEntity => {
   const connectionEntity: ConnectionEntity = new ConnectionEntity()
@@ -237,17 +231,20 @@ export const physicalAddressFrom = (physicalAddress: PhysicalAddressEntity): Phy
   }
 }
 
-export const identityEntityFrom = (args: NonPersistedIdentity): IdentityEntity => {
+export const identityEntityFrom = (entity: NonPersistedIdentity): IdentityEntity => {
   const identityEntity: IdentityEntity = new IdentityEntity()
-  identityEntity.alias = args.alias
-  identityEntity.origin = args.origin ?? IdentityOrigin.EXTRERNAL
-  identityEntity.ownerId = args.ownerId
-  identityEntity.tenantId = args.tenantId
-  identityEntity.roles = args.roles
-  identityEntity.identifier = correlationIdentifierEntityFrom(args.identifier)
-  identityEntity.connection = args.connection ? connectionEntityFrom(args.connection) : undefined
-  identityEntity.metadata = args.metadata ? args.metadata.map((item: NonPersistedMetadataItem) => metadataItemEntityFrom(item)) : []
-
+  identityEntity.alias = entity.alias
+  identityEntity.origin = entity.origin ?? IdentityOrigin.EXTERNAL
+  identityEntity.ownerId = entity.ownerId
+  identityEntity.tenantId = entity.tenantId
+  identityEntity.roles = entity.roles
+  identityEntity.identifier = correlationIdentifierEntityFrom(entity.identifier)
+  identityEntity.connection = entity.connection ? connectionEntityFrom(entity.connection) : undefined
+  identityEntity.metadata = entity.metadata
+    ? entity.metadata
+        .map((item: NonPersistedMetadataItem<AllowedValueTypes>) => identityMetadataItemEntityFrom(item))
+        .filter((entity): entity is IdentityMetadataItemEntity => entity !== undefined)
+    : []
   return identityEntity
 }
 
@@ -267,20 +264,70 @@ export const identityFrom = (identity: IdentityEntity): Identity => {
   }
 }
 
-export const metadataItemEntityFrom = (item: NonPersistedMetadataItem): IdentityMetadataItemEntity => {
-  const metadataItemEntity: IdentityMetadataItemEntity = new IdentityMetadataItemEntity()
-  metadataItemEntity.label = item.label
-  metadataItemEntity.value = item.value
+const metadataItemEntityFrom = <T extends AllowedValueTypes, U extends { new (): any }>(
+  item: NonPersistedMetadataItem<T>,
+  EntityClass: U,
+): InstanceType<U> | undefined => {
+  const { label, value } = item
 
+  const metadataItemEntity = new EntityClass()
+  metadataItemEntity.label = label
+  metadataItemEntity.valueType = typeof value
+
+  switch (typeof value) {
+    case 'undefined':
+      return undefined
+    case 'string':
+      metadataItemEntity.stringValue = value
+      break
+    case 'number':
+      metadataItemEntity.numberValue = value
+      break
+    case 'boolean':
+      metadataItemEntity.boolValue = value
+      break
+    case 'object':
+      metadataItemEntity.valueType = Object.prototype.toString.call(value)
+      if (value instanceof Date) {
+        metadataItemEntity.dateValue = value
+      } else {
+        throw new Error(`Unsupported object type: ${metadataItemEntity.valueType}`)
+      }
+      break
+  }
   return metadataItemEntity
 }
 
-export const metadataItemFrom = (item: IdentityMetadataItemEntity): MetadataItem => {
-  return {
-    id: item.id,
-    label: item.label,
-    value: item.value,
+export const identityMetadataItemEntityFrom = (item: NonPersistedMetadataItem<AllowedValueTypes>): IdentityMetadataItemEntity | undefined => {
+  return metadataItemEntityFrom(item, IdentityMetadataItemEntity)
+}
+
+export const contactMetadataItemEntityFrom = (item: NonPersistedMetadataItem<AllowedValueTypes>): ContactMetadataItemEntity | undefined => {
+  return metadataItemEntityFrom(item, ContactMetadataItemEntity)
+}
+
+export const metadataItemFrom = (entity: IdentityMetadataItemEntity | ContactMetadataItemEntity): MetadataItem<AllowedValueTypes> => {
+  const item: Partial<MetadataItem<AllowedValueTypes>> = {
+    id: entity.id,
+    label: entity.label,
   }
+  switch (entity.valueType) {
+    case 'string':
+      item.value = entity.stringValue
+      break
+    case 'number':
+      item.value = entity.numberValue
+      break
+    case 'Date':
+      item.value = entity.dateValue
+      break
+    case 'boolean':
+      item.value = entity.boolValue
+      break
+    default:
+      throw new Error(`Unsupported valueType ${entity.valueType}`)
+  }
+  return item as MetadataItem<AllowedValueTypes>
 }
 
 export const naturalPersonEntityFrom = (naturalPerson: NonPersistedNaturalPerson): NaturalPersonEntity => {
@@ -291,6 +338,11 @@ export const naturalPersonEntityFrom = (naturalPerson: NonPersistedNaturalPerson
   naturalPersonEntity.displayName = naturalPerson.displayName
   naturalPersonEntity.ownerId = naturalPerson.ownerId
   naturalPersonEntity.tenantId = naturalPerson.tenantId
+  naturalPersonEntity.metadata = naturalPerson.metadata
+    ? naturalPerson.metadata
+        .map((item: NonPersistedMetadataItem<AllowedValueTypes>) => contactMetadataItemEntityFrom(item))
+        .filter((entity): entity is ContactMetadataItemEntity => entity !== undefined)
+    : []
 
   return naturalPersonEntity
 }
@@ -302,6 +354,7 @@ export const naturalPersonFrom = (naturalPerson: NaturalPersonEntity): NaturalPe
     middleName: naturalPerson.middleName,
     lastName: naturalPerson.lastName,
     displayName: naturalPerson.displayName,
+    metadata: naturalPerson.metadata ? naturalPerson.metadata.map((item: ContactMetadataItemEntity) => metadataItemFrom(item)) : [],
     ownerId: naturalPerson.ownerId,
     tenantId: naturalPerson.tenantId,
     createdAt: naturalPerson.createdAt,
@@ -330,38 +383,13 @@ export const organizationEntityFrom = (organization: NonPersistedOrganization): 
   organizationEntity.displayName = organization.displayName
   organizationEntity.ownerId = organization.ownerId
   organizationEntity.tenantId = organization.tenantId
+  organizationEntity.metadata = organization.metadata
+    ? organization.metadata
+        .map((item: NonPersistedMetadataItem<AllowedValueTypes>) => contactMetadataItemEntityFrom(item))
+        .filter((entity): entity is ContactMetadataItemEntity => entity !== undefined)
+    : []
 
   return organizationEntity
-}
-
-export const studentEntityFrom = (student: NonPersistedStudent): StudentEntity => {
-  const studentEntity: StudentEntity = new StudentEntity()
-  studentEntity.displayName = student.displayName
-  studentEntity.firstName = student.firstName
-  studentEntity.middleName = student.middleName
-  studentEntity.lastName = student.lastName
-  studentEntity.grade = student.grade
-  studentEntity.dateOfBirth = student.dateOfBirth
-  studentEntity.ownerId = student.ownerId
-  studentEntity.tenantId = student.tenantId
-
-  return studentEntity
-}
-
-export const studentFrom = (student: StudentEntity): Student => {
-  return {
-    id: student.id,
-    displayName: student.displayName,
-    firstName: student.firstName,
-    middleName: student.middleName,
-    lastName: student.lastName,
-    grade: student.grade,
-    dateOfBirth: student.dateOfBirth,
-    ownerId: student.ownerId,
-    tenantId: student.tenantId,
-    createdAt: student.createdAt,
-    lastUpdatedAt: student.lastUpdatedAt,
-  }
 }
 
 export const organizationFrom = (organization: OrganizationEntity): Organization => {
@@ -369,6 +397,7 @@ export const organizationFrom = (organization: OrganizationEntity): Organization
     id: organization.id,
     legalName: organization.legalName,
     displayName: organization.displayName,
+    metadata: organization.metadata ? organization.metadata.map((item: ContactMetadataItemEntity) => metadataItemFrom(item)) : [],
     ownerId: organization.ownerId,
     tenantId: organization.tenantId,
     createdAt: organization.createdAt,

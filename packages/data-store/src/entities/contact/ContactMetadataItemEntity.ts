@@ -1,11 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, BeforeInsert, BeforeUpdate } from 'typeorm'
 import { ValidationConstraint } from '../../types'
-import { IdentityEntity } from './IdentityEntity'
+import { BaseContactEntity } from './BaseContactEntity'
 import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { getConstraint } from '../../utils/ValidatorUtils'
 
-@Entity('IdentityMetadata')
-export class IdentityMetadataItemEntity extends BaseEntity {
+@Entity('ContactMetadata')
+export class ContactMetadataItemEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
@@ -29,8 +29,11 @@ export class IdentityMetadataItemEntity extends BaseEntity {
   @Column({ name: 'boolValue', nullable: false })
   boolValue?: boolean
 
-  @ManyToOne(() => IdentityEntity, (identity: IdentityEntity) => identity.metadata, { cascade: ['insert', 'update'], onDelete: 'CASCADE' })
-  identity!: IdentityEntity
+  @ManyToOne(() => BaseContactEntity, (contact: BaseContactEntity) => contact.metadata, {
+    cascade: ['insert', 'update'],
+    onDelete: 'CASCADE',
+  })
+  contact!: BaseContactEntity
 
   @BeforeInsert()
   @BeforeUpdate()

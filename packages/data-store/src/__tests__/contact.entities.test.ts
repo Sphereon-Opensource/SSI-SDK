@@ -1,5 +1,5 @@
 import { DataSource, FindOptionsWhere } from 'typeorm'
-import { DataStoreContactEntities, DataStoreMigrations, IdentityOrigin, PartyOrigin } from '../index'
+import { DataStoreContactEntities, DataStoreMigrations, IdentityOrigin, IdentityRole, PartyOrigin } from '../index'
 import { BaseContactEntity } from '../entities/contact/BaseContactEntity'
 import { ConnectionEntity } from '../entities/contact/ConnectionEntity'
 import { CorrelationIdentifierEntity } from '../entities/contact/CorrelationIdentifierEntity'
@@ -17,7 +17,6 @@ import { PhysicalAddressEntity } from '../entities/contact/PhysicalAddressEntity
 import {
   ConnectionType,
   CorrelationIdentifierType,
-  IdentityRole,
   NaturalPerson,
   NonPersistedConnection,
   NonPersistedDidAuthConfig,
@@ -412,7 +411,7 @@ describe('Database entities tests', (): void => {
     const alias = 'non_unique_alias'
     const identity1: NonPersistedIdentity = {
       alias,
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -424,7 +423,7 @@ describe('Database entities tests', (): void => {
 
     const identity2: NonPersistedIdentity = {
       alias: alias,
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -441,7 +440,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'non_unique_correlationId'
     const identity1: NonPersistedIdentity = {
       alias: 'unique_alias1',
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -453,7 +452,7 @@ describe('Database entities tests', (): void => {
 
     const identity2: NonPersistedIdentity = {
       alias: 'unique_alias2',
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -470,7 +469,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'example_did'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -500,7 +499,7 @@ describe('Database entities tests', (): void => {
   it('should throw error when saving identity with blank alias', async (): Promise<void> => {
     const identity: NonPersistedIdentity = {
       alias: '',
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -516,7 +515,7 @@ describe('Database entities tests', (): void => {
   it('should throw error when saving identity with blank correlation id', async (): Promise<void> => {
     const identity: NonPersistedIdentity = {
       alias: 'example_did',
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -533,7 +532,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'example_did'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -556,7 +555,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'example_did'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -579,7 +578,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'example.com'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.URL,
@@ -625,7 +624,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'example.com'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.URL,
@@ -839,7 +838,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'relation_example.com'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.URL,
@@ -1000,7 +999,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'relation_example.com'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.URL,
@@ -1102,7 +1101,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'relation_example.com'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.URL,
@@ -1226,7 +1225,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'example_did'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -1253,7 +1252,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'example_did'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -1395,7 +1394,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'example_did'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,

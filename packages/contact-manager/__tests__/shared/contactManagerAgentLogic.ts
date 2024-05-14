@@ -16,7 +16,7 @@ import {
   PartyTypeType,
   PhysicalAddress,
 } from '../../../data-store/src'
-import {AddContactArgs, IContactManager} from '../../src'
+import { AddContactArgs, IContactManager } from '../../src'
 
 type ConfiguredAgent = TAgent<IContactManager>
 
@@ -46,7 +46,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'default_example_did'
       const identity: NonPersistedIdentity = {
         alias: correlationId,
-        origin: IdentityOrigin.EXTRERNAL,
+        origin: IdentityOrigin.EXTERNAL,
         roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierType.DID,
@@ -243,7 +243,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'new_example_did'
       const identity: NonPersistedIdentity = {
         alias: correlationId,
-        origin: IdentityOrigin.EXTRERNAL,
+        origin: IdentityOrigin.EXTERNAL,
         roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierType.DID,
@@ -268,7 +268,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'missing_connection_add_example'
       const identity: NonPersistedIdentity = {
         alias: correlationId,
-        origin: IdentityOrigin.EXTRERNAL,
+        origin: IdentityOrigin.EXTERNAL,
         roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierType.URL,
@@ -302,7 +302,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'new_update_example_did'
       const identity: NonPersistedIdentity = {
         alias: 'update_example_did',
-        origin: IdentityOrigin.EXTRERNAL,
+        origin: IdentityOrigin.EXTERNAL,
         roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierType.DID,

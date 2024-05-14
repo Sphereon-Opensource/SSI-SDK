@@ -1,5 +1,7 @@
 import { IIdentifier } from '@veramo/core'
 
+export type AllowedValueTypes = string | number | Date | boolean | undefined
+
 export type Party = {
   id: string
   uri?: string
@@ -55,7 +57,7 @@ export type Identity = {
   roles: Array<IdentityRole>
   identifier: CorrelationIdentifier
   connection?: Connection
-  metadata?: Array<MetadataItem>
+  metadata?: Array<MetadataItem<AllowedValueTypes>>
   createdAt: Date
   lastUpdatedAt: Date
 }
@@ -63,24 +65,25 @@ export type NonPersistedIdentity = Omit<Identity, 'id' | 'identifier' | 'connect
   origin?: IdentityOrigin
   identifier: NonPersistedCorrelationIdentifier
   connection?: NonPersistedConnection
-  metadata?: Array<NonPersistedMetadataItem>
+  metadata?: Array<NonPersistedMetadataItem<AllowedValueTypes>>
 }
 export type PartialIdentity = Partial<Omit<Identity, 'identifier' | 'connection' | 'metadata' | 'origin' | 'roles'>> & {
   identifier?: PartialCorrelationIdentifier
   connection?: PartialConnection
-  metadata?: PartialMetadataItem
+  metadata?: Array<NonPersistedMetadataItem<AllowedValueTypes>> // TODO revaluate & test this, metadata is an array in Identity, not a single field
   origin?: IdentityOrigin
   roles?: IdentityRole
   partyId?: string
 }
 
-export type MetadataItem = {
+export type MetadataItem<T extends AllowedValueTypes> = {
   id: string
   label: string
-  value: string
+  value: T
 }
-export type NonPersistedMetadataItem = Omit<MetadataItem, 'id'>
-export type PartialMetadataItem = Partial<MetadataItem>
+
+export type NonPersistedMetadataItem<T extends AllowedValueTypes> = Omit<MetadataItem<T>, 'id'>
+export type PartialMetadataItem<T extends AllowedValueTypes> = Partial<MetadataItem<T>>
 
 export type CorrelationIdentifier = {
   id: string
@@ -145,6 +148,7 @@ export type NaturalPerson = {
   lastName: string
   middleName?: string
   displayName: string
+  metadata?: Array<MetadataItem<AllowedValueTypes>>
   ownerId?: string
   tenantId?: string
   createdAt: Date
@@ -153,27 +157,11 @@ export type NaturalPerson = {
 export type NonPersistedNaturalPerson = Omit<NaturalPerson, 'id' | 'createdAt' | 'lastUpdatedAt'>
 export type PartialNaturalPerson = Partial<NaturalPerson>
 
-export type Student = { // FIXME DELETE-ME
-  id: string
-  firstName: string
-  lastName: string
-  middleName?: string
-  grade: string
-  dateOfBirth: Date
-  displayName: string
-  ownerId?: string
-  tenantId?: string
-  createdAt: Date
-  lastUpdatedAt: Date
-}
-
-export type NonPersistedStudent = Omit<Student, 'id' | 'createdAt' | 'lastUpdatedAt'> // FIXME DELETE-ME
-export type PartialStudent = Partial<Student> // FIXME DELETE-ME
-
 export type Organization = {
   id: string
   legalName: string
   displayName: string
+  metadata?: Array<MetadataItem<AllowedValueTypes>>
   ownerId?: string
   tenantId?: string
   createdAt: Date
@@ -182,9 +170,9 @@ export type Organization = {
 export type NonPersistedOrganization = Omit<Organization, 'id' | 'createdAt' | 'lastUpdatedAt'>
 export type PartialOrganization = Partial<Organization>
 
-export type Contact = NaturalPerson | Organization | Student
-export type NonPersistedContact = NonPersistedNaturalPerson | NonPersistedOrganization | NonPersistedStudent
-export type PartialContact = PartialNaturalPerson | PartialOrganization | PartialStudent
+export type Contact = NaturalPerson | Organization
+export type NonPersistedContact = NonPersistedNaturalPerson | NonPersistedOrganization
+export type PartialContact = PartialNaturalPerson | PartialOrganization
 
 export type PartyType = {
   id: string
@@ -205,7 +193,7 @@ export type PartyRelationship = {
   id: string
   leftId: string
   rightId: string
-  ownerId?: string  // FIXME I don't think we need ownerId & tenantId in junction tables
+  ownerId?: string
   tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
@@ -258,8 +246,8 @@ export enum IdentityRole {
 }
 
 export enum IdentityOrigin {
-    INTERNAL = 'internal',
-    EXTRERNAL = 'external',
+  INTERNAL = 'internal',
+  EXTERNAL = 'external',
 }
 
 export enum ConnectionType {
@@ -276,7 +264,6 @@ export enum CorrelationIdentifierType {
 export enum PartyTypeType {
   NATURAL_PERSON = 'naturalPerson',
   ORGANIZATION = 'organization',
-  STUDENT = 'student' // FIXME DELETE-ME
 }
 
 export enum PartyOrigin {

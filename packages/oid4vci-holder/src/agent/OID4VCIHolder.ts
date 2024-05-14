@@ -1,5 +1,5 @@
-import {OpenID4VCIClient} from '@sphereon/oid4vci-client'
-import {CredentialSupported, DefaultURISchemes, Jwt, ProofOfPossessionCallbacks } from '@sphereon/oid4vci-common'
+import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
+import { CredentialSupported, DefaultURISchemes, Jwt, ProofOfPossessionCallbacks } from '@sphereon/oid4vci-common'
 import {
   CorrelationIdentifierType,
   IBasicCredentialLocaleBranding,
@@ -7,12 +7,13 @@ import {
   IdentityRole,
   IdentityOrigin,
   NonPersistedIdentity,
-  Party
+  Party,
 } from '@sphereon/ssi-sdk.data-store'
-import {DIDDocument,IAgentPlugin, VerifiableCredential} from '@veramo/core'
-import {computeEntryHash} from '@veramo/utils'import { JWTHeader } from 'did-jwt'
-import {v4 as uuidv4} from 'uuid'
-import {OID4VCIMachine} from '../machine/oid4vciMachine'
+import { DIDDocument, IAgentPlugin, VerifiableCredential } from '@veramo/core'
+import { computeEntryHash } from '@veramo/utils'
+import { JWTHeader } from 'did-jwt'
+import { v4 as uuidv4 } from 'uuid'
+import { OID4VCIMachine } from '../machine/oid4vciMachine'
 import {
   getCredentialBranding,
   getCredentialsSupported,
@@ -277,7 +278,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         filter: [
           {
             identities: {
-              origin: IdentityOrigin.EXTRERNAL,
+              origin: IdentityOrigin.EXTERNAL,
               identifier: {
                 correlationId,
               },
@@ -405,7 +406,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     const correlationId: string = credentialsToAccept[0].correlationId
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      origin: IdentityOrigin.EXTRERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER],
       identifier: {
         type: CorrelationIdentifierType.DID,
