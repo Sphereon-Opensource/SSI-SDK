@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.23.4](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.23.2...v0.23.4) (2024-04-25)
+
+**Note:** Version bump only for package @sphereon/ssi-types
+
+# [0.23.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.22.0...v0.23.0) (2024-04-24)
+
+### Features
+
+- add kb-jwt to sd-jwt ([e066f2b](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/e066f2b1a0c3d89796ce00af39511ce8a05b39e7))
+
+# [0.22.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.21.1...v0.22.0) (2024-04-04)
+
+**Note:** Version bump only for package @sphereon/ssi-types
+
+## [0.21.1](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.21.0...v0.21.1) (2024-04-04)
+
+**Note:** Version bump only for package @sphereon/ssi-types
+
 # [0.21.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.19.0...v0.21.0) (2024-03-20)
 
 ### Bug Fixes

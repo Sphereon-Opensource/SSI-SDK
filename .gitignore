@@ -74,3 +74,4 @@ test/*.js
 **/.env.energyshr
 **/.env.local
 /packages/web3-provider-headless/__tests__/config.json
+/packages/event-logger/plugin.schema.json

@@ -129,11 +129,11 @@ const contactId = 'a4a47842-43a7-4741-9562-0fb3a973ec98'
 const identity = {
   alias: correlationId,
   identifier: {
-    type: CorrelationIdentifierEnum.URL,
+    type: CorrelationIdentifierType.URL,
     correlationId,
   },
   connection: {
-    type: ConnectionTypeEnum.DIDAUTH,
+    type: ConnectionType.DIDAUTH,
     config: {
       identifier: {
         did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',

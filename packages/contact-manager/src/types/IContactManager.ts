@@ -15,9 +15,10 @@ import {
   NonPersistedPartyType as NonPersistedContactType,
   NonPersistedPhysicalAddress,
   Party as Contact,
+  PartyOrigin,
   PartyRelationship as ContactRelationship,
   PartyType as ContactType,
-  PartyTypeEnum as ContactTypeEnum,
+  PartyTypeType as ContactTypeType,
   PhysicalAddress,
 } from '@sphereon/ssi-sdk.data-store'
 
@@ -118,7 +119,8 @@ export type UpdateRelationshipArgs = {
 }
 
 export type AddContactTypeArgs = {
-  type: ContactTypeEnum
+  type: ContactTypeType
+  origin: PartyOrigin
   name: string
   tenantId: string
   description?: string

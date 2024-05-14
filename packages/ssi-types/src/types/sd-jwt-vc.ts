@@ -1,5 +1,6 @@
 import { OriginalType, WrappedVerifiableCredential, WrappedVerifiablePresentation } from './vc'
 import { decodeSdJwtSync, decodeSdJwt, getClaims, getClaimsSync } from '@sd-jwt/decode'
+import { CompactJWT } from './w3c-vc'
 
 type JsonValue = string | number | boolean | { [x: string]: JsonValue | undefined } | Array<JsonValue>
 
@@ -116,6 +117,22 @@ export interface SdJwtDecodedVerifiableCredential {
    * for querying the contents of the SD JWT VC using a PEX presentation definition path.
    */
   decodedPayload: SdJwtDecodedVerifiableCredentialPayload
+
+  /**
+   * Key binding JWT
+   */
+  kbJwt?: {
+    compact: CompactJWT
+    payload: SdJwtVcKbJwtPayload
+  }
+}
+
+interface SdJwtVcKbJwtPayload {
+  iat: number
+  aud: string
+  nonce: string
+  sd_hash: string
+  [key: string]: unknown
 }
 
 export interface WrappedSdJwtVerifiableCredential {
@@ -189,10 +206,11 @@ export type AsyncHasher = (data: string, alg: string) => Promise<Uint8Array>
  * this method hides the actual implementation of SD-JWT (which is currently based on @sd-jwt/core)
  */
 export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): SdJwtDecodedVerifiableCredential {
-  const { jwt, disclosures } = decodeSdJwtSync(compactSdJwtVc, hasher)
+  const { jwt, disclosures, kbJwt } = decodeSdJwtSync(compactSdJwtVc, hasher)
 
   const signedPayload = jwt.payload as SdJwtSignedVerifiableCredentialPayload
   const decodedPayload = getClaimsSync(signedPayload, disclosures, hasher)
+  const compactKeyBindingJwt = kbJwt ? compactSdJwtVc.split('~').pop() : undefined
 
   return {
     compactSdJwtVc,
@@ -207,6 +225,13 @@ export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): S
       } satisfies SdJwtDisclosure
     }),
     signedPayload: signedPayload as SdJwtSignedVerifiableCredentialPayload,
+    kbJwt:
+      compactKeyBindingJwt && kbJwt
+        ? {
+            compact: compactKeyBindingJwt,
+            payload: kbJwt.payload as SdJwtVcKbJwtPayload,
+          }
+        : undefined,
   }
 }
 
@@ -218,10 +243,11 @@ export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): S
  * this method hides the actual implementation of SD-JWT (which is currently based on @sd-jwt/core)
  */
 export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher: AsyncHasher): Promise<SdJwtDecodedVerifiableCredential> {
-  const { jwt, disclosures } = await decodeSdJwt(compactSdJwtVc, hasher)
+  const { jwt, disclosures, kbJwt } = await decodeSdJwt(compactSdJwtVc, hasher)
 
   const signedPayload = jwt.payload as SdJwtSignedVerifiableCredentialPayload
   const decodedPayload = await getClaims(signedPayload, disclosures, hasher)
+  const compactKeyBindingJwt = kbJwt ? compactSdJwtVc.split('~').pop() : undefined
 
   return {
     compactSdJwtVc,
@@ -236,5 +262,12 @@ export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher:
       } satisfies SdJwtDisclosure
     }),
     signedPayload: signedPayload as SdJwtSignedVerifiableCredentialPayload,
+    kbJwt:
+      compactKeyBindingJwt && kbJwt
+        ? {
+            compact: compactKeyBindingJwt,
+            payload: kbJwt.payload as SdJwtVcKbJwtPayload,
+          }
+        : undefined,
   }
 }

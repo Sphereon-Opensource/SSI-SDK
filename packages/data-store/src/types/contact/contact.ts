@@ -3,9 +3,9 @@ import { IIdentifier } from '@veramo/core'
 export type Party = {
   id: string
   uri?: string
+  roles: Array<IdentityRole>
   ownerId?: string
   tenantId?: string
-  roles: Array<CredentialRole>
   identities: Array<Identity>
   electronicAddresses: Array<ElectronicAddress>
   physicalAddresses: Array<PhysicalAddress>
@@ -52,7 +52,7 @@ export type Identity = {
   ownerId?: string
   tenantId?: string
   origin: IdentityOrigin
-  roles: Array<CredentialRole>
+  roles: Array<IdentityRole>
   identifier: CorrelationIdentifier
   connection?: Connection
   metadata?: Array<MetadataItem>
@@ -70,7 +70,7 @@ export type PartialIdentity = Partial<Omit<Identity, 'identifier' | 'connection'
   connection?: PartialConnection
   metadata?: PartialMetadataItem
   origin?: IdentityOrigin
-  roles?: CredentialRole
+  roles?: IdentityRole
   partyId?: string
 }
 
@@ -86,7 +86,7 @@ export type CorrelationIdentifier = {
   id: string
   ownerId?: string
   tenantId?: string
-  type: CorrelationIdentifierEnum
+  type: CorrelationIdentifierType
   correlationId: string
 }
 export type NonPersistedCorrelationIdentifier = Omit<CorrelationIdentifier, 'id'>
@@ -96,7 +96,7 @@ export type Connection = {
   id: string
   ownerId?: string
   tenantId?: string
-  type: ConnectionTypeEnum
+  type: ConnectionType
   config: ConnectionConfig
 }
 export type NonPersistedConnection = Omit<Connection, 'id' | 'config'> & {
@@ -153,7 +153,7 @@ export type NaturalPerson = {
 export type NonPersistedNaturalPerson = Omit<NaturalPerson, 'id' | 'createdAt' | 'lastUpdatedAt'>
 export type PartialNaturalPerson = Partial<NaturalPerson>
 
-export type Student = {
+export type Student = { // FIXME DELETE-ME
   id: string
   firstName: string
   lastName: string
@@ -167,8 +167,8 @@ export type Student = {
   lastUpdatedAt: Date
 }
 
-export type NonPersistedStudent = Omit<Student, 'id' | 'createdAt' | 'lastUpdatedAt'>
-export type PartialStudent = Partial<Student>
+export type NonPersistedStudent = Omit<Student, 'id' | 'createdAt' | 'lastUpdatedAt'> // FIXME DELETE-ME
+export type PartialStudent = Partial<Student> // FIXME DELETE-ME
 
 export type Organization = {
   id: string
@@ -188,7 +188,8 @@ export type PartialContact = PartialNaturalPerson | PartialOrganization | Partia
 
 export type PartyType = {
   id: string
-  type: PartyTypeEnum
+  type: PartyTypeType
+  origin: PartyOrigin
   name: string
   tenantId: string
   description?: string
@@ -204,7 +205,7 @@ export type PartyRelationship = {
   id: string
   leftId: string
   rightId: string
-  ownerId?: string
+  ownerId?: string  // FIXME I don't think we need ownerId & tenantId in junction tables
   tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
@@ -250,30 +251,35 @@ export type ElectronicAddressType = 'email' | 'phone'
 
 export type PhysicalAddressType = 'home' | 'visit' | 'postal'
 
-export enum IdentityOrigin {
-  INTERNAL = 'internal',
-  EXTRERNAL = 'external',
-}
-
-export enum CredentialRole {
+export enum IdentityRole {
   ISSUER = 'issuer',
   VERIFIER = 'verifier',
   HOLDER = 'holder',
 }
 
-export enum ConnectionTypeEnum {
+export enum IdentityOrigin {
+    INTERNAL = 'internal',
+    EXTRERNAL = 'external',
+}
+
+export enum ConnectionType {
   OPENID_CONNECT = 'OIDC',
   SIOPv2 = 'SIOPv2',
   SIOPv2_OpenID4VP = 'SIOPv2+OpenID4VP',
 }
 
-export enum CorrelationIdentifierEnum {
+export enum CorrelationIdentifierType {
   DID = 'did',
   URL = 'url',
 }
 
-export enum PartyTypeEnum {
+export enum PartyTypeType {
   NATURAL_PERSON = 'naturalPerson',
   ORGANIZATION = 'organization',
-  STUDENT = 'student'
+  STUDENT = 'student' // FIXME DELETE-ME
+}
+
+export enum PartyOrigin {
+  INTERNAL = 'INTERNAL',
+  EXTERNAL = 'EXTERNAL',
 }

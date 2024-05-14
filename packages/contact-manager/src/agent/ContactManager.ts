@@ -49,6 +49,40 @@ import {
 } from '../types/IContactManager'
 import {IdentityOrigin} from "@sphereon/ssi-sdk.data-store/dist";
 
+// Exposing the methods here for any REST implementation
+export const contactManagerMethods: Array<string> = [
+  'cmGetContact',
+  'cmGetContacts',
+  'cmAddContact',
+  'cmUpdateContact',
+  'cmRemoveContact',
+  'cmGetIdentity',
+  'cmGetIdentities',
+  'cmAddIdentity',
+  'cmUpdateIdentity',
+  'cmRemoveIdentity',
+  'cmAddRelationship',
+  'cmRemoveRelationship',
+  'cmGetRelationship',
+  'cmGetRelationships',
+  'cmUpdateRelationship',
+  'cmGetContactType',
+  'cmGetContactTypes',
+  'cmAddContactType',
+  'cmUpdateContactType',
+  'cmRemoveContactType',
+  'cmGetElectronicAddress',
+  'cmGetElectronicAddresses',
+  'cmAddElectronicAddress',
+  'cmUpdateElectronicAddress',
+  'cmRemoveElectronicAddress',
+  'cmGetPhysicalAddress',
+  'cmGetPhysicalAddresses',
+  'cmAddPhysicalAddress',
+  'cmUpdatePhysicalAddress',
+  'cmRemovePhysicalAddress',
+]
+
 /**
  * {@inheritDoc IContactManager}
  */

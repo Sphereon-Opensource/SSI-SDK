@@ -9,11 +9,11 @@ export class ImageAttributesEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'uri', length: 255, nullable: true, unique: false })
+  @Column({ name: 'uri', nullable: true, unique: false })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank image uri are not allowed' })
   uri?: string
 
-  @Column({ name: 'dataUri', length: 255, nullable: true, unique: false })
+  @Column({ name: 'dataUri', nullable: true, unique: false })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank image data uri are not allowed' })
   dataUri?: string
 
