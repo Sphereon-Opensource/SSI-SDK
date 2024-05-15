@@ -13,9 +13,9 @@ export class CreateContacts1690925872592 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" RENAME COLUMN "identityId" TO "identity_id"`)
     await queryRunner.query(`ALTER TABLE "Connection" RENAME COLUMN "identityId" TO "identity_id"`)
     await queryRunner.query(`CREATE TYPE "public"."PartyType_type_enum" AS ENUM('naturalPerson', 'organization')`)
-    await queryRunner.query(`CREATE TYPE "public"."PartyOrigin_type_enum" AS ENUM('INTERNAL', 'EXTERNAL')`)
+    await queryRunner.query(`CREATE TYPE "public"."party_origin_type_enum" AS ENUM('INTERNAL', 'EXTERNAL')`)
     await queryRunner.query(
-      `CREATE TABLE "PartyType" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."PartyType_type_enum" NOT NULL, "origin" "public"."PartyOrigin_type_enum" NOT NULL DEFAULT 'EXTERNAL', "name" character varying(255) NOT NULL, "description" character varying(255), "tenant_id" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_PartyType_name" UNIQUE ("name"), CONSTRAINT "PK_PartyType_id" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "PartyType" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."PartyType_type_enum" NOT NULL, "party_origin" "public"."party_origin_type_enum" NOT NULL DEFAULT 'EXTERNAL', "name" character varying(255) NOT NULL, "description" character varying(255), "tenant_id" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_PartyType_name" UNIQUE ("name"), CONSTRAINT "PK_PartyType_id" PRIMARY KEY ("id"))`,
     )
     await queryRunner.query(`CREATE UNIQUE INDEX "IDX_PartyType_type_tenant_id" ON "PartyType" ("type", "tenant_id")`)
     await queryRunner.query(
@@ -30,8 +30,8 @@ export class CreateContacts1690925872592 implements MigrationInterface {
       `CREATE TABLE "ElectronicAddress" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" character varying(255) NOT NULL, "electronic_address" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "partyId" uuid, CONSTRAINT "PK_ElectronicAddress_id" PRIMARY KEY ("id"))`,
     )
     await queryRunner.query(
-      `CREATE TABLE "PhysicalAddress" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" character varying(255) NOT NULL, "street_name" character varying(255) NOT NULL, "street_number" character varying(255) NOT NULL, "postal_code" character varying(255) NOT NULL, "city_name" character varying(255) NOT NULL, "province_name" character varying(255) NOT NULL, "country_code" character varying(2) NOT NULL, "building_name" character varying(255), "partyId" uuid, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_PhysicalAddress_id" PRIMARY KEY ("id"))`
-    );
+      `CREATE TABLE "PhysicalAddress" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" character varying(255) NOT NULL, "street_name" character varying(255) NOT NULL, "street_number" character varying(255) NOT NULL, "postal_code" character varying(255) NOT NULL, "city_name" character varying(255) NOT NULL, "province_name" character varying(255) NOT NULL, "country_code" character varying(2) NOT NULL, "building_name" character varying(255), "partyId" uuid, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_PhysicalAddress_id" PRIMARY KEY ("id"))`,
+    )
     await queryRunner.query(
       `CREATE TABLE "Party" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "uri" character varying(255), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "party_type_id" uuid NOT NULL, CONSTRAINT "PK_Party_id" PRIMARY KEY ("id"))`,
     )
@@ -41,6 +41,8 @@ export class CreateContacts1690925872592 implements MigrationInterface {
     await queryRunner.query(`CREATE INDEX "IDX_BaseConfig_type" ON "BaseConfig" ("type")`)
     await queryRunner.query(`ALTER TABLE "Identity" RENAME COLUMN "contactId" TO "partyId"`)
     await queryRunner.query(`ALTER TABLE "Identity" ALTER COLUMN "roles" SET NOT NULL`)
+    await queryRunner.query(`ALTER TABLE "Identity" ADD COLUMN "identity_origin" SET NOT NULL`)
+
     await queryRunner.query(
       `ALTER TABLE "CorrelationIdentifier" ADD CONSTRAINT "FK_CorrelationIdentifier_identity_id" FOREIGN KEY ("identity_id") REFERENCES "Identity"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     )
@@ -83,10 +85,10 @@ export class CreateContacts1690925872592 implements MigrationInterface {
     )
     await queryRunner.query(`DROP TABLE "BaseConfigEntity"`)
     await queryRunner.query(
-      `INSERT INTO "PartyType"(id, type, origin, name, description, tenant_id, created_at, last_updated_at) VALUES ('3875c12e-fdaa-4ef6-a340-c936e054b627', 'organization', 'INTERNAL' 'Sphereon_default_organization_type', 'sphereon_default_organization', '95e09cfc-c974-4174-86aa-7bf1d5251fb4', now(), now())`,
+      `INSERT INTO "PartyType"(id, type, party_origin, name, description, tenant_id, created_at, last_updated_at) VALUES ('3875c12e-fdaa-4ef6-a340-c936e054b627', 'organization', 'INTERNAL' 'Sphereon_default_organization_type', 'sphereon_default_organization', '95e09cfc-c974-4174-86aa-7bf1d5251fb4', now(), now())`,
     )
     await queryRunner.query(
-      `INSERT INTO "PartyType"(id, type, origin, name, description, tenant_id, created_at, last_updated_at) VALUES ('7d248798-41ca-4fc1-a130-9934b43d532e', 'naturalPerson', 'INTERNAL', 'Sphereon_default_natural_person_type', 'sphereon_default_natural_person', '95e09cfc-c974-4174-86aa-7bf1d5251fb4', now(), now())`,
+      `INSERT INTO "PartyType"(id, type, party_origin, name, description, tenant_id, created_at, last_updated_at) VALUES ('7d248798-41ca-4fc1-a130-9934b43d532e', 'naturalPerson', 'INTERNAL', 'Sphereon_default_natural_person_type', 'sphereon_default_natural_person', '95e09cfc-c974-4174-86aa-7bf1d5251fb4', now(), now())`,
     )
     await queryRunner.query(
       `INSERT INTO "Party"(id, uri, created_at, last_updated_at, party_type_id) SELECT id, uri, created_at, last_updated_at, '3875c12e-fdaa-4ef6-a340-c936e054b627' FROM "Contact"`,
@@ -98,7 +100,55 @@ export class CreateContacts1690925872592 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    // TODO DPP-27 implement downgrade
-    return Promise.reject(Error(`Downgrade is not yet implemented for ${this.name}`))
+    await queryRunner.query(`ALTER TABLE "BaseConfig" DROP CONSTRAINT "FK_BaseConfig_connection_id"`)
+    await queryRunner.query(`ALTER TABLE "Connection" DROP CONSTRAINT "FK_Connection_identity_id"`)
+    await queryRunner.query(`ALTER TABLE "Identity" DROP CONSTRAINT "FK_Identity_partyId"`)
+    await queryRunner.query(`ALTER TABLE "Party" DROP CONSTRAINT "FK_Party_party_type_id"`)
+    await queryRunner.query(`ALTER TABLE "PhysicalAddress" DROP CONSTRAINT "FK_PhysicalAddress_partyId"`)
+    await queryRunner.query(`ALTER TABLE "ElectronicAddress" DROP CONSTRAINT "FK_ElectronicAddress_partyId"`)
+    await queryRunner.query(`ALTER TABLE "PartyRelationship" DROP CONSTRAINT "FK_PartyRelationship_right_id"`)
+    await queryRunner.query(`ALTER TABLE "PartyRelationship" DROP CONSTRAINT "FK_PartyRelationship_left_id"`)
+    await queryRunner.query(`ALTER TABLE "BaseContact" DROP CONSTRAINT "FK_BaseContact_party_id"`)
+    await queryRunner.query(`ALTER TABLE "IdentityMetadata" DROP CONSTRAINT "FK_IdentityMetadata_identityId"`)
+    await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" DROP CONSTRAINT "FK_CorrelationIdentifier_identity_id"`)
+
+    await queryRunner.query(`ALTER TABLE "Identity" ALTER COLUMN "roles" DROP NOT NULL`)
+    await queryRunner.query(`ALTER TABLE "Identity" RENAME COLUMN "partyId" TO "contactId"`)
+    await queryRunner.query(`ALTER TABLE "Connection" RENAME COLUMN "identity_id" TO "identityId"`)
+    await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" RENAME COLUMN "identity_id" TO "identityId"`)
+
+    await queryRunner.query(`DROP INDEX "IDX_BaseConfig_type"`)
+    await queryRunner.query(`DROP TABLE "BaseConfig"`)
+    await queryRunner.query(`DROP TABLE "Party"`)
+    await queryRunner.query(`DROP INDEX "IDX_PartyRelationship_left_right"`)
+    await queryRunner.query(`DROP TABLE "PartyRelationship"`)
+    await queryRunner.query(`DROP INDEX "IDX_BaseContact_type"`)
+    await queryRunner.query(`DROP TABLE "BaseContact"`)
+    await queryRunner.query(`DROP TABLE "ElectronicAddress"`)
+    await queryRunner.query(`DROP TABLE "PhysicalAddress"`)
+    await queryRunner.query(`DROP INDEX "IDX_PartyType_type_tenant_id"`)
+    await queryRunner.query(`DROP TABLE "PartyType"`)
+    await queryRunner.query(`DROP TYPE "public"."party_origin_type_enum"`)
+    await queryRunner.query(`DROP TYPE "public"."PartyType_type_enum"`)
+
+    await queryRunner.query(
+      `ALTER TABLE "Connection" ADD CONSTRAINT "FK_Connection_identityId" FOREIGN KEY ("identityId") REFERENCES "Identity"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    )
+    await queryRunner.query(
+      `ALTER TABLE "Identity" ADD CONSTRAINT "FK_Identity_contactId" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    )
+    await queryRunner.query(
+      `ALTER TABLE "IdentityMetadata" ADD CONSTRAINT "FK_IdentityMetadata_identityId" FOREIGN KEY ("identityId") REFERENCES "Identity"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    )
+    await queryRunner.query(
+      `ALTER TABLE "CorrelationIdentifier" ADD CONSTRAINT "FK_CorrelationIdentifier_identityId" FOREIGN KEY ("identityId") REFERENCES "Identity"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    )
+
+    await queryRunner.query(
+      `CREATE TABLE "Contact" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "uri" character varying(255), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "name" character varying(255), "alias" character varying(255), CONSTRAINT "PK_Contact_id" PRIMARY KEY ("id"))`,
+    )
+    await queryRunner.query(
+      `INSERT INTO "Contact"(id, uri, created_at, last_updated_at, name, alias) SELECT id, uri, created_at, last_updated_at, (SELECT legal_name FROM "BaseContact" WHERE "BaseContact"."party_id" = "Party"."id"), (SELECT display_name FROM "BaseContact" WHERE "BaseContact"."party_id" = "Party"."id") FROM "Party" WHERE party_type_id = '3875c12e-fdaa-4ef6-a340-c936e054b627'`,
+    )
   }
 }

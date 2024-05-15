@@ -1,5 +1,5 @@
 import { OrPromise } from '@sphereon/ssi-types'
-import { DataSource, In, Repository } from 'typeorm'
+import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm'
 import Debug from 'debug'
 import { AbstractContactStore } from './AbstractContactStore'
 import { PartyEntity } from '../entities/contact/PartyEntity'
@@ -18,6 +18,7 @@ import {
   electronicAddressFrom,
   identityEntityFrom,
   identityFrom,
+  identityMetadataItemEntityFrom,
   isDidAuthConfig,
   isNaturalPerson,
   isOpenIdConfig,
@@ -56,6 +57,7 @@ import {
   Identity,
   NonPersistedConnectionConfig,
   NonPersistedContact,
+  PartialIdentity,
   Party,
   PartyRelationship,
   PartyType,
@@ -212,10 +214,12 @@ export class ContactStore extends AbstractContactStore {
   getIdentities = async (args?: GetIdentitiesArgs): Promise<Array<Identity>> => {
     const { filter } = args ?? {}
     const identityRepository: Repository<IdentityEntity> = (await this.dbConnection).getRepository(IdentityEntity)
-    const initialResult: Array<IdentityEntity> = await identityRepository.find({
-      ...(filter && { where: filter }),
-    })
 
+    const queryBuilder = this.createIdentityQueryBuilder(identityRepository, filter)
+    const initialResult = await queryBuilder.getMany()
+
+    // Unfortunately we need to re-fetch the records using find(). Even if we add all the leftJoinAndSelects,
+    // the filtered relations will be incomplete in the initialResult.
     const result: Array<IdentityEntity> = await identityRepository.find({
       where: {
         id: In(initialResult.map((identity: IdentityEntity) => identity.id)),
@@ -295,6 +299,57 @@ export class ContactStore extends AbstractContactStore {
     debug('Removing identity', identityId)
 
     await this.deleteIdentities([identity])
+  }
+
+  private createIdentityQueryBuilder(
+    identityRepository: Repository<IdentityEntity>,
+    filter?: Array<PartialIdentity>,
+  ): SelectQueryBuilder<IdentityEntity> {
+    const queryBuilder = identityRepository.createQueryBuilder('identity').leftJoinAndSelect('identity.metadata', 'metadata')
+
+    if (filter) {
+      filter.forEach((condition, index) => {
+        if (condition.metadata) {
+          const metadata = condition.metadata
+          const metadataItemEntity = identityMetadataItemEntityFrom({
+            label: metadata.label!,
+            value: metadata.value,
+          })
+
+          if (metadataItemEntity) {
+            queryBuilder.andWhere(`metadata.label = :label${index}`, { [`label${index}`]: metadata.label })
+
+            switch (typeof metadata.value) {
+              case 'undefined':
+                return
+              case 'string':
+                queryBuilder.andWhere(`metadata.stringValue LIKE :value${index}`, { [`value${index}`]: metadata.value })
+                break
+              case 'number':
+                queryBuilder.andWhere(`metadata.numberValue = :value${index}`, { [`value${index}`]: metadata.value })
+                break
+              case 'boolean':
+                queryBuilder.andWhere(`metadata.boolValue = :value${index}`, { [`value${index}`]: metadata.value })
+                break
+              case 'object':
+                const valueType = Object.prototype.toString.call(metadata.value).slice(8, -1)
+                if (valueType === 'Date') {
+                  queryBuilder.andWhere(`metadata.dateValue = :value${index}`, { [`value${index}`]: metadata.value })
+                } else {
+                  throw new Error(`Unsupported object type: ${valueType}`)
+                }
+                break
+              default:
+                throw new Error(`Unsupported value type: ${typeof metadata.value}`)
+            }
+          }
+        } else {
+          queryBuilder.andWhere(condition)
+        }
+      })
+    }
+
+    return queryBuilder
   }
 
   addRelationship = async (args: AddRelationshipArgs): Promise<PartyRelationship> => {

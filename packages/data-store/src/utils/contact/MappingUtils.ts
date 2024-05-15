@@ -234,7 +234,7 @@ export const physicalAddressFrom = (physicalAddress: PhysicalAddressEntity): Phy
 export const identityEntityFrom = (entity: NonPersistedIdentity): IdentityEntity => {
   const identityEntity: IdentityEntity = new IdentityEntity()
   identityEntity.alias = entity.alias
-  identityEntity.origin = entity.origin ?? IdentityOrigin.EXTERNAL
+  identityEntity.identityOrigin = entity.origin ?? IdentityOrigin.EXTERNAL
   identityEntity.ownerId = entity.ownerId
   identityEntity.tenantId = entity.tenantId
   identityEntity.roles = entity.roles
@@ -252,7 +252,7 @@ export const identityFrom = (identity: IdentityEntity): Identity => {
   return {
     id: identity.id,
     alias: identity.alias,
-    origin: identity.origin,
+    origin: identity.identityOrigin,
     roles: identity.roles,
     tenantId: identity.tenantId,
     ownerId: identity.ownerId,
@@ -287,7 +287,7 @@ const metadataItemEntityFrom = <T extends AllowedValueTypes, U extends { new ():
       metadataItemEntity.boolValue = value
       break
     case 'object':
-      metadataItemEntity.valueType = Object.prototype.toString.call(value)
+      metadataItemEntity.valueType = Object.prototype.toString.call(value).slice(8, -1)
       if (value instanceof Date) {
         metadataItemEntity.dateValue = value
       } else {
@@ -297,7 +297,6 @@ const metadataItemEntityFrom = <T extends AllowedValueTypes, U extends { new ():
   }
   return metadataItemEntity
 }
-
 export const identityMetadataItemEntityFrom = (item: NonPersistedMetadataItem<AllowedValueTypes>): IdentityMetadataItemEntity | undefined => {
   return metadataItemEntityFrom(item, IdentityMetadataItemEntity)
 }
@@ -432,7 +431,7 @@ export const partyTypeEntityFrom = (args: NonPersistedPartyType): PartyTypeEntit
     partyTypeEntity.id = args.id
   }
   partyTypeEntity.type = args.type
-  partyTypeEntity.origin = args.origin
+  partyTypeEntity.partyOrigin = args.origin
   partyTypeEntity.name = args.name
   partyTypeEntity.description = args.description
   partyTypeEntity.tenantId = args.tenantId
@@ -444,7 +443,7 @@ export const partyTypeFrom = (partyType: PartyTypeEntity): PartyType => {
   return {
     id: partyType.id,
     type: partyType.type,
-    origin: partyType.origin,
+    origin: partyType.partyOrigin,
     name: partyType.name,
     tenantId: partyType.tenantId,
     description: partyType.description,

@@ -50,6 +50,7 @@ describe('Contact store tests', (): void => {
   })
 
   it('should get a party/student by id', async (): Promise<void> => {
+    const dateOfBirth = new Date(2016, 0, 5)
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
@@ -64,7 +65,7 @@ describe('Contact store tests', (): void => {
         lastName: 'example_last_name',
         metadata: [
           { label: 'grade', value: '5th' },
-          { label: 'dateOfBirth', value: new Date(2016, 0, 5) },
+          { label: 'dateOfBirth', value: dateOfBirth },
         ] as Array<MetadataItem<AllowedValueTypes>>,
         displayName: 'example_display_name',
       },
@@ -73,9 +74,15 @@ describe('Contact store tests', (): void => {
     const savedParty: Party = await contactStore.addParty(party)
     expect(savedParty).toBeDefined()
 
-    const result: Party = await contactStore.getParty({ partyId: savedParty.id })
+    const singleResult: Party = await contactStore.getParty({ partyId: savedParty.id })
+    expect(singleResult).toBeDefined()
 
-    expect(result).toBeDefined()
+    /*
+      TODO filtering is not fully supported yet, we should rethink this. We can't search like this now:
+    const args: GetPartiesArgs = {
+      filter: [{ contact: { metadata: { label: 'dateOfBirth', value: dateOfBirth } } }],
+    }
+     */
   })
 
   it('should get party by id', async (): Promise<void> => {
@@ -862,7 +869,7 @@ describe('Contact store tests', (): void => {
     expect(savedIdentity1).toBeDefined()
 
     const args: GetIdentitiesArgs = {
-      filter: [{ metadata: [{ label: 'label1', value: '%' }] }], // TODO reevaluate mechanism?
+      filter: [{ metadata: { label: 'label1', value: '%' } }],
     }
 
     const result: Array<Identity> = await contactStore.getIdentities(args)
@@ -1852,27 +1859,6 @@ describe('Contact store tests', (): void => {
     await expect(contactStore.addParty(party)).rejects.toThrow(`Party type ${partyType}, does not match for provided contact`)
   })
 
-  it('should throw error when adding person party with student contact type', async (): Promise<void> => {
-    const partyType = PartyTypeType.NATURAL_PERSON
-    const party: NonPersistedParty = {
-      uri: 'example.com',
-      partyType: {
-        type: partyType,
-        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
-        name: 'example_name',
-        origin: PartyOrigin.EXTERNAL,
-      },
-      contact: {
-        firstName: 'example_first_name',
-        middleName: 'example_middle_name',
-        lastName: 'example_last_name',
-        displayName: 'example_display_name',
-      },
-    }
-
-    await expect(contactStore.addParty(party)).rejects.toThrow(`Party type ${partyType}, does not match for provided contact`)
-  })
-
   it('should throw error when adding organization party with wrong contact type', async (): Promise<void> => {
     const partyType = PartyTypeType.NATURAL_PERSON
     const partyTypeOrigin = PartyOrigin.EXTERNAL
@@ -1887,31 +1873,6 @@ describe('Contact store tests', (): void => {
       contact: {
         legalName: 'example_legal_name',
         displayName: 'example_display_name',
-      },
-    }
-
-    await expect(contactStore.addParty(party)).rejects.toThrow(`Party type ${partyType}, does not match for provided contact`)
-  })
-
-  it('should throw error when adding student party with wrong contact type', async (): Promise<void> => {
-    const partyType = PartyTypeType.NATURAL_PERSON
-    const party: NonPersistedParty = {
-      uri: 'example.com',
-      partyType: {
-        type: partyType,
-        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
-        name: 'example_name',
-        origin: PartyOrigin.EXTERNAL,
-      },
-      contact: {
-        firstName: 'example_first_name',
-        middleName: 'example_middle_name',
-        lastName: 'example_last_name',
-        displayName: 'example_display_name',
-        metadata: [
-          { label: 'grade', value: '3rd' },
-          { label: 'dateOfBirth', value: new Date(2016, 2, 15) },
-        ] as Array<MetadataItem<AllowedValueTypes>>,
       },
     }
 

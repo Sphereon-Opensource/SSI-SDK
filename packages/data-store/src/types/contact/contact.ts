@@ -70,7 +70,7 @@ export type NonPersistedIdentity = Omit<Identity, 'id' | 'identifier' | 'connect
 export type PartialIdentity = Partial<Omit<Identity, 'identifier' | 'connection' | 'metadata' | 'origin' | 'roles'>> & {
   identifier?: PartialCorrelationIdentifier
   connection?: PartialConnection
-  metadata?: Array<NonPersistedMetadataItem<AllowedValueTypes>> // TODO revaluate & test this, metadata is an array in Identity, not a single field
+  metadata?: PartialMetadataItem<AllowedValueTypes> // Usage: FindIdentityArgs = Array<PartialIdentity>
   origin?: IdentityOrigin
   roles?: IdentityRole
   partyId?: string
@@ -245,11 +245,6 @@ export enum IdentityRole {
   HOLDER = 'holder',
 }
 
-export enum IdentityOrigin {
-  INTERNAL = 'internal',
-  EXTERNAL = 'external',
-}
-
 export enum ConnectionType {
   OPENID_CONNECT = 'OIDC',
   SIOPv2 = 'SIOPv2',
@@ -267,6 +262,11 @@ export enum PartyTypeType {
 }
 
 export enum PartyOrigin {
+  INTERNAL = 'INTERNAL',
+  EXTERNAL = 'EXTERNAL',
+}
+
+export enum IdentityOrigin {
   INTERNAL = 'INTERNAL',
   EXTERNAL = 'EXTERNAL',
 }
