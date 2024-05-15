@@ -1,5 +1,5 @@
 import { DataSource, FindOptionsWhere } from 'typeorm'
-import { DataStoreContactEntities, DataStoreMigrations, IdentityOrigin, IdentityRole, PartyOrigin } from '../index'
+import { DataStoreContactEntities, DataStoreMigrations, IdentityOrigin, IdentityRole, PartyOrigin, partyTypeFrom } from '../index'
 import { BaseContactEntity } from '../entities/contact/BaseContactEntity'
 import { ConnectionEntity } from '../entities/contact/ConnectionEntity'
 import { CorrelationIdentifierEntity } from '../entities/contact/CorrelationIdentifierEntity'
@@ -2214,7 +2214,7 @@ describe('Database entities tests', (): void => {
 
     const party: NonPersistedParty = {
       uri: 'example.com',
-      partyType: savedPartyType,
+      partyType: partyTypeFrom(savedPartyType),
       contact: {
         firstName: 'example_first_name',
         middleName: 'example_middle_name',
