@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm'
-import { AllowedValueTypes, DataStoreContactEntities, DataStoreMigrations, MetadataItem, PartyOrigin } from '../index'
+import { MetadataTypes, DataStoreContactEntities, DataStoreMigrations, MetadataItem, PartyOrigin } from '../index'
 import { ContactStore } from '../contact/ContactStore'
 import {
   CorrelationIdentifierType,
@@ -49,7 +49,7 @@ describe('Contact store tests', (): void => {
     await (await dbConnection).destroy()
   })
 
-  it('should get a party/student by id', async (): Promise<void> => {
+  it('should get a party by contact metadata', async (): Promise<void> => {
     const dateOfBirth = new Date(2016, 0, 5)
     const party: NonPersistedParty = {
       uri: 'example.com',
@@ -66,7 +66,7 @@ describe('Contact store tests', (): void => {
         metadata: [
           { label: 'grade', value: '5th' },
           { label: 'dateOfBirth', value: dateOfBirth },
-        ] as Array<MetadataItem<AllowedValueTypes>>,
+        ] as Array<MetadataItem<MetadataTypes>>,
         displayName: 'example_display_name',
       },
     }
@@ -77,12 +77,123 @@ describe('Contact store tests', (): void => {
     const singleResult: Party = await contactStore.getParty({ partyId: savedParty.id })
     expect(singleResult).toBeDefined()
 
-    /*
-      TODO filtering is not fully supported yet, we should rethink this. We can't search like this now:
     const args: GetPartiesArgs = {
       filter: [{ contact: { metadata: { label: 'dateOfBirth', value: dateOfBirth } } }],
     }
-     */
+    const result: Array<Party> = await contactStore.getParties(args)
+    expect(result).toBeDefined()
+    expect(result.length).toEqual(1)
+    expect(result[0]).toBeDefined()
+  })
+
+  it('should get a party by identity metadata', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeType.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+        origin: PartyOrigin.EXTERNAL,
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const identity: NonPersistedIdentity = {
+      alias: 'test_alias',
+      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+      identifier: {
+        type: CorrelationIdentifierType.DID,
+        correlationId: 'example_did',
+      },
+      metadata: [
+        {
+          label: 'label1',
+          value: 'example_value',
+        },
+        {
+          label: 'label2',
+          value: 'example_value',
+        },
+      ],
+    }
+    const savedIdentity: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity: identity })
+    expect(savedIdentity).toBeDefined()
+
+    const args: GetPartiesArgs = {
+      filter: [{ identities: { metadata: { label: 'label1', value: 'example_value' } } }],
+    }
+    const result: Array<Party> = await contactStore.getParties(args)
+    expect(result).toBeDefined()
+    expect(result.length).toEqual(1)
+    expect(result[0]).toBeDefined()
+  })
+
+  it('should get a party by both contact & identity metadata', async (): Promise<void> => {
+    const dateOfBirth = new Date(2016, 0, 5)
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeType.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+        origin: PartyOrigin.EXTERNAL,
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+        metadata: [
+          { label: 'grade', value: '5th' },
+          { label: 'dateOfBirth', value: dateOfBirth },
+        ] as Array<MetadataItem<MetadataTypes>>,
+      },
+    }
+
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const identity: NonPersistedIdentity = {
+      alias: 'test_alias',
+      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+      identifier: {
+        type: CorrelationIdentifierType.DID,
+        correlationId: 'example_did',
+      },
+      metadata: [
+        {
+          label: 'label1',
+          value: 'example_value',
+        },
+        {
+          label: 'label2',
+          value: 'example_value',
+        },
+      ],
+    }
+    const savedIdentity: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity: identity })
+    expect(savedIdentity).toBeDefined()
+
+    const args: GetPartiesArgs = {
+      filter: [
+        {
+          identities: { metadata: { label: 'label1', value: 'example_value' } },
+          contact: { metadata: { label: 'dateOfBirth', value: dateOfBirth } },
+        },
+      ],
+    }
+    const result: Array<Party> = await contactStore.getParties(args)
+    expect(result).toBeDefined()
+    expect(result.length).toEqual(1)
+    expect(result[0]).toBeDefined()
   })
 
   it('should get party by id', async (): Promise<void> => {
@@ -869,7 +980,7 @@ describe('Contact store tests', (): void => {
     expect(savedIdentity1).toBeDefined()
 
     const args: GetIdentitiesArgs = {
-      filter: [{ metadata: { label: 'label1', value: '%' } }],
+      filter: [{ metadata: { label: 'label1', value: 'example_value' } }],
     }
 
     const result: Array<Identity> = await contactStore.getIdentities(args)

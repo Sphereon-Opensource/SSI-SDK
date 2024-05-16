@@ -1,5 +1,5 @@
 import {
-  AllowedValueTypes,
+  MetadataTypes,
   Connection,
   ConnectionConfig,
   Contact,
@@ -242,7 +242,7 @@ export const identityEntityFrom = (entity: NonPersistedIdentity): IdentityEntity
   identityEntity.connection = entity.connection ? connectionEntityFrom(entity.connection) : undefined
   identityEntity.metadata = entity.metadata
     ? entity.metadata
-        .map((item: NonPersistedMetadataItem<AllowedValueTypes>) => identityMetadataItemEntityFrom(item))
+        .map((item: NonPersistedMetadataItem<MetadataTypes>) => identityMetadataItemEntityFrom(item))
         .filter((entity): entity is IdentityMetadataItemEntity => entity !== undefined)
     : []
   return identityEntity
@@ -264,7 +264,7 @@ export const identityFrom = (identity: IdentityEntity): Identity => {
   }
 }
 
-const metadataItemEntityFrom = <T extends AllowedValueTypes, U extends { new (): any }>(
+const metadataItemEntityFrom = <T extends MetadataTypes, U extends { new (): any }>(
   item: NonPersistedMetadataItem<T>,
   EntityClass: U,
 ): InstanceType<U> | undefined => {
@@ -297,16 +297,16 @@ const metadataItemEntityFrom = <T extends AllowedValueTypes, U extends { new ():
   }
   return metadataItemEntity
 }
-export const identityMetadataItemEntityFrom = (item: NonPersistedMetadataItem<AllowedValueTypes>): IdentityMetadataItemEntity | undefined => {
+export const identityMetadataItemEntityFrom = (item: NonPersistedMetadataItem<MetadataTypes>): IdentityMetadataItemEntity | undefined => {
   return metadataItemEntityFrom(item, IdentityMetadataItemEntity)
 }
 
-export const contactMetadataItemEntityFrom = (item: NonPersistedMetadataItem<AllowedValueTypes>): ContactMetadataItemEntity | undefined => {
+export const contactMetadataItemEntityFrom = (item: NonPersistedMetadataItem<MetadataTypes>): ContactMetadataItemEntity | undefined => {
   return metadataItemEntityFrom(item, ContactMetadataItemEntity)
 }
 
-export const metadataItemFrom = (entity: IdentityMetadataItemEntity | ContactMetadataItemEntity): MetadataItem<AllowedValueTypes> => {
-  const item: Partial<MetadataItem<AllowedValueTypes>> = {
+export const metadataItemFrom = (entity: IdentityMetadataItemEntity | ContactMetadataItemEntity): MetadataItem<MetadataTypes> => {
+  const item: Partial<MetadataItem<MetadataTypes>> = {
     id: entity.id,
     label: entity.label,
   }
@@ -326,7 +326,7 @@ export const metadataItemFrom = (entity: IdentityMetadataItemEntity | ContactMet
     default:
       throw new Error(`Unsupported valueType ${entity.valueType}`)
   }
-  return item as MetadataItem<AllowedValueTypes>
+  return item as MetadataItem<MetadataTypes>
 }
 
 export const naturalPersonEntityFrom = (naturalPerson: NonPersistedNaturalPerson): NaturalPersonEntity => {
@@ -339,7 +339,7 @@ export const naturalPersonEntityFrom = (naturalPerson: NonPersistedNaturalPerson
   naturalPersonEntity.tenantId = naturalPerson.tenantId
   naturalPersonEntity.metadata = naturalPerson.metadata
     ? naturalPerson.metadata
-        .map((item: NonPersistedMetadataItem<AllowedValueTypes>) => contactMetadataItemEntityFrom(item))
+        .map((item: NonPersistedMetadataItem<MetadataTypes>) => contactMetadataItemEntityFrom(item))
         .filter((entity): entity is ContactMetadataItemEntity => entity !== undefined)
     : []
 
@@ -384,7 +384,7 @@ export const organizationEntityFrom = (organization: NonPersistedOrganization): 
   organizationEntity.tenantId = organization.tenantId
   organizationEntity.metadata = organization.metadata
     ? organization.metadata
-        .map((item: NonPersistedMetadataItem<AllowedValueTypes>) => contactMetadataItemEntityFrom(item))
+        .map((item: NonPersistedMetadataItem<MetadataTypes>) => contactMetadataItemEntityFrom(item))
         .filter((entity): entity is ContactMetadataItemEntity => entity !== undefined)
     : []
 

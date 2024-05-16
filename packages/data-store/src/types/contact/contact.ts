@@ -1,6 +1,6 @@
 import { IIdentifier } from '@veramo/core'
 
-export type AllowedValueTypes = string | number | Date | boolean | undefined
+export type MetadataTypes = string | number | Date | boolean | undefined
 
 export type Party = {
   id: string
@@ -57,7 +57,7 @@ export type Identity = {
   roles: Array<IdentityRole>
   identifier: CorrelationIdentifier
   connection?: Connection
-  metadata?: Array<MetadataItem<AllowedValueTypes>>
+  metadata?: Array<MetadataItem<MetadataTypes>>
   createdAt: Date
   lastUpdatedAt: Date
 }
@@ -65,25 +65,25 @@ export type NonPersistedIdentity = Omit<Identity, 'id' | 'identifier' | 'connect
   origin?: IdentityOrigin
   identifier: NonPersistedCorrelationIdentifier
   connection?: NonPersistedConnection
-  metadata?: Array<NonPersistedMetadataItem<AllowedValueTypes>>
+  metadata?: Array<NonPersistedMetadataItem<MetadataTypes>>
 }
 export type PartialIdentity = Partial<Omit<Identity, 'identifier' | 'connection' | 'metadata' | 'origin' | 'roles'>> & {
   identifier?: PartialCorrelationIdentifier
   connection?: PartialConnection
-  metadata?: PartialMetadataItem<AllowedValueTypes> // Usage: FindIdentityArgs = Array<PartialIdentity>
+  metadata?: PartialMetadataItem<MetadataTypes> // Usage: FindIdentityArgs = Array<PartialIdentity>
   origin?: IdentityOrigin
   roles?: IdentityRole
   partyId?: string
 }
 
-export type MetadataItem<T extends AllowedValueTypes> = {
+export type MetadataItem<T extends MetadataTypes> = {
   id: string
   label: string
   value: T
 }
 
-export type NonPersistedMetadataItem<T extends AllowedValueTypes> = Omit<MetadataItem<T>, 'id'>
-export type PartialMetadataItem<T extends AllowedValueTypes> = Partial<MetadataItem<T>>
+export type NonPersistedMetadataItem<T extends MetadataTypes> = Omit<MetadataItem<T>, 'id'>
+export type PartialMetadataItem<T extends MetadataTypes> = Partial<MetadataItem<T>>
 
 export type CorrelationIdentifier = {
   id: string
@@ -148,27 +148,33 @@ export type NaturalPerson = {
   lastName: string
   middleName?: string
   displayName: string
-  metadata?: Array<MetadataItem<AllowedValueTypes>>
+  metadata?: Array<MetadataItem<MetadataTypes>>
   ownerId?: string
   tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
 }
+
 export type NonPersistedNaturalPerson = Omit<NaturalPerson, 'id' | 'createdAt' | 'lastUpdatedAt'>
-export type PartialNaturalPerson = Partial<NaturalPerson>
+
+export type PartialNaturalPerson = Partial<Omit<NaturalPerson, 'metadata'>> & {
+  metadata?: PartialMetadataItem<MetadataTypes>
+}
 
 export type Organization = {
   id: string
   legalName: string
   displayName: string
-  metadata?: Array<MetadataItem<AllowedValueTypes>>
+  metadata?: Array<MetadataItem<MetadataTypes>>
   ownerId?: string
   tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
 }
 export type NonPersistedOrganization = Omit<Organization, 'id' | 'createdAt' | 'lastUpdatedAt'>
-export type PartialOrganization = Partial<Organization>
+export type PartialOrganization = Partial<Omit<Organization, 'metadata'>> & {
+  metadata?: PartialMetadataItem<MetadataTypes>
+}
 
 export type Contact = NaturalPerson | Organization
 export type NonPersistedContact = NonPersistedNaturalPerson | NonPersistedOrganization

@@ -1,5 +1,5 @@
 import { OrPromise } from '@sphereon/ssi-types'
-import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm'
+import { BaseEntity, DataSource, FindOptionsWhere, In, Repository } from 'typeorm'
 import Debug from 'debug'
 import { AbstractContactStore } from './AbstractContactStore'
 import { PartyEntity } from '../entities/contact/PartyEntity'
@@ -18,7 +18,6 @@ import {
   electronicAddressFrom,
   identityEntityFrom,
   identityFrom,
-  identityMetadataItemEntityFrom,
   isDidAuthConfig,
   isNaturalPerson,
   isOpenIdConfig,
@@ -55,9 +54,10 @@ import {
   GetRelationshipArgs,
   GetRelationshipsArgs,
   Identity,
+  MetadataTypes,
   NonPersistedConnectionConfig,
   NonPersistedContact,
-  PartialIdentity,
+  PartialMetadataItem,
   Party,
   PartyRelationship,
   PartyType,
@@ -100,22 +100,17 @@ export class ContactStore extends AbstractContactStore {
     return partyFrom(result)
   }
 
-  getParties = async (args?: GetPartiesArgs): Promise<Array<Party>> => {
-    debug(`getParties()`, args)
+  async getParties(args?: GetPartiesArgs): Promise<Array<Party>> {
+    debug('getParties()', args)
     const { filter } = args ?? {}
-    const partyRepository: Repository<PartyEntity> = (await this.dbConnection).getRepository(PartyEntity)
-    const initialResult: Array<PartyEntity> = await partyRepository.find({
-      ...(filter && { where: filter }),
-    })
+    const partyRepository = (await this.dbConnection).getRepository(PartyEntity)
+    const filterConditions = this.buildFilters(filter)
+    const initialResult = await partyRepository.find({ select: ['id'], where: filterConditions })
 
-    const result: Array<PartyEntity> = await partyRepository.find({
-      where: {
-        id: In(initialResult.map((party: PartyEntity) => party.id)),
-      },
-    })
+    // Fetch the complete entities based on the initial result IDs
+    const result = await partyRepository.find({ where: { id: In(initialResult.map((party) => party.id)) } })
     debug(`getParties() resulted in ${result.length} parties`)
-
-    return result.map((party: PartyEntity) => partyFrom(party))
+    return result.map(partyFrom)
   }
 
   addParty = async (args: AddPartyArgs): Promise<Party> => {
@@ -211,22 +206,14 @@ export class ContactStore extends AbstractContactStore {
     return identityFrom(result)
   }
 
-  getIdentities = async (args?: GetIdentitiesArgs): Promise<Array<Identity>> => {
+  async getIdentities(args?: GetIdentitiesArgs): Promise<Array<Identity>> {
     const { filter } = args ?? {}
-    const identityRepository: Repository<IdentityEntity> = (await this.dbConnection).getRepository(IdentityEntity)
+    const identityRepository = (await this.dbConnection).getRepository(IdentityEntity)
+    const filterConditions = this.buildFilters(filter)
+    const initialResult = await identityRepository.find({ select: ['id'], where: filterConditions })
 
-    const queryBuilder = this.createIdentityQueryBuilder(identityRepository, filter)
-    const initialResult = await queryBuilder.getMany()
-
-    // Unfortunately we need to re-fetch the records using find(). Even if we add all the leftJoinAndSelects,
-    // the filtered relations will be incomplete in the initialResult.
-    const result: Array<IdentityEntity> = await identityRepository.find({
-      where: {
-        id: In(initialResult.map((identity: IdentityEntity) => identity.id)),
-      },
-    })
-
-    return result.map((identity: IdentityEntity) => identityFrom(identity))
+    const result = await identityRepository.find({ where: { id: In(initialResult.map((identity) => identity.id)) } })
+    return result.map(identityFrom)
   }
 
   addIdentity = async (args: AddIdentityArgs): Promise<Identity> => {
@@ -299,57 +286,6 @@ export class ContactStore extends AbstractContactStore {
     debug('Removing identity', identityId)
 
     await this.deleteIdentities([identity])
-  }
-
-  private createIdentityQueryBuilder(
-    identityRepository: Repository<IdentityEntity>,
-    filter?: Array<PartialIdentity>,
-  ): SelectQueryBuilder<IdentityEntity> {
-    const queryBuilder = identityRepository.createQueryBuilder('identity').leftJoinAndSelect('identity.metadata', 'metadata')
-
-    if (filter) {
-      filter.forEach((condition, index) => {
-        if (condition.metadata) {
-          const metadata = condition.metadata
-          const metadataItemEntity = identityMetadataItemEntityFrom({
-            label: metadata.label!,
-            value: metadata.value,
-          })
-
-          if (metadataItemEntity) {
-            queryBuilder.andWhere(`metadata.label = :label${index}`, { [`label${index}`]: metadata.label })
-
-            switch (typeof metadata.value) {
-              case 'undefined':
-                return
-              case 'string':
-                queryBuilder.andWhere(`metadata.stringValue LIKE :value${index}`, { [`value${index}`]: metadata.value })
-                break
-              case 'number':
-                queryBuilder.andWhere(`metadata.numberValue = :value${index}`, { [`value${index}`]: metadata.value })
-                break
-              case 'boolean':
-                queryBuilder.andWhere(`metadata.boolValue = :value${index}`, { [`value${index}`]: metadata.value })
-                break
-              case 'object':
-                const valueType = Object.prototype.toString.call(metadata.value).slice(8, -1)
-                if (valueType === 'Date') {
-                  queryBuilder.andWhere(`metadata.dateValue = :value${index}`, { [`value${index}`]: metadata.value })
-                } else {
-                  throw new Error(`Unsupported object type: ${valueType}`)
-                }
-                break
-              default:
-                throw new Error(`Unsupported value type: ${typeof metadata.value}`)
-            }
-          }
-        } else {
-          queryBuilder.andWhere(condition)
-        }
-      })
-    }
-
-    return queryBuilder
   }
 
   addRelationship = async (args: AddRelationshipArgs): Promise<PartyRelationship> => {
@@ -774,5 +710,60 @@ export class ContactStore extends AbstractContactStore {
     if (!rightParty) {
       return Promise.reject(Error(`No party found for right side of the relationship, party id: ${rightId}`))
     }
+  }
+
+  private buildFilters<T extends BaseEntity>(filter?: Array<Record<string, any>>): FindOptionsWhere<T>[] | FindOptionsWhere<T> {
+    if (!filter) return {}
+
+    return filter.map((condition) => {
+      return this.processCondition(condition)
+    })
+  }
+
+  private processCondition(condition: Record<string, any>): Record<string, any> {
+    const conditionObject: Record<string, any> = {}
+
+    Object.keys(condition).forEach((key) => {
+      const value = condition[key]
+
+      if (key === 'metadata' && value) {
+        conditionObject[key] = this.buildMetadataCondition(value)
+      } else if (typeof value === 'object' && value !== null) {
+        conditionObject[key] = this.processCondition(value)
+      } else {
+        conditionObject[key] = value
+      }
+    })
+
+    return conditionObject
+  }
+
+  private buildMetadataCondition(metadata: PartialMetadataItem<MetadataTypes>): FindOptionsWhere<IdentityMetadataItemEntity> {
+    const metadataCondition: FindOptionsWhere<IdentityMetadataItemEntity> = {
+      label: metadata.label,
+    }
+
+    switch (typeof metadata.value) {
+      case 'string':
+        metadataCondition.stringValue = metadata.value
+        break
+      case 'number':
+        metadataCondition.numberValue = metadata.value
+        break
+      case 'boolean':
+        metadataCondition.boolValue = metadata.value
+        break
+      case 'object':
+        if (metadata.value instanceof Date) {
+          metadataCondition.dateValue = metadata.value
+        } else {
+          throw new Error(`Unsupported object type: ${Object.prototype.toString.call(metadata.value).slice(8, -1)}`)
+        }
+        break
+      default:
+        throw new Error(`Unsupported value type: ${typeof metadata.value}`)
+    }
+
+    return metadataCondition
   }
 }
