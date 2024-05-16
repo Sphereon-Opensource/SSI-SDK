@@ -270,6 +270,10 @@ const metadataItemEntityFrom = <T extends MetadataTypes, U extends { new (): any
 ): InstanceType<U> | undefined => {
   const { label, value } = item
 
+  if (value === null || value === undefined) {
+    return undefined
+  }
+
   const metadataItemEntity = new EntityClass()
   metadataItemEntity.label = label
   metadataItemEntity.valueType = typeof value
@@ -297,6 +301,7 @@ const metadataItemEntityFrom = <T extends MetadataTypes, U extends { new (): any
   }
   return metadataItemEntity
 }
+
 export const identityMetadataItemEntityFrom = (item: NonPersistedMetadataItem<MetadataTypes>): IdentityMetadataItemEntity | undefined => {
   return metadataItemEntityFrom(item, IdentityMetadataItemEntity)
 }
