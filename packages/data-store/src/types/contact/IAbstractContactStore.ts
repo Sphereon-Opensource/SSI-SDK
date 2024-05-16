@@ -96,7 +96,7 @@ export type UpdateRelationshipArgs = {
 
 export type AddPartyTypeArgs = {
   type: PartyTypeType
-  origin: PartyOrigin
+  partyOrigin: PartyOrigin
   name: string
   tenantId: string
   description?: string

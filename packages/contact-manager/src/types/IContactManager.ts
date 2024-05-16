@@ -120,7 +120,7 @@ export type UpdateRelationshipArgs = {
 
 export type AddContactTypeArgs = {
   type: ContactTypeType
-  origin: PartyOrigin
+  partyOrigin: PartyOrigin
   name: string
   tenantId: string
   description?: string

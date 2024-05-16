@@ -234,7 +234,7 @@ export const physicalAddressFrom = (physicalAddress: PhysicalAddressEntity): Phy
 export const identityEntityFrom = (entity: NonPersistedIdentity): IdentityEntity => {
   const identityEntity: IdentityEntity = new IdentityEntity()
   identityEntity.alias = entity.alias
-  identityEntity.identityOrigin = entity.origin ?? IdentityOrigin.EXTERNAL
+  identityEntity.identityOrigin = entity.identityOrigin ?? IdentityOrigin.EXTERNAL
   identityEntity.ownerId = entity.ownerId
   identityEntity.tenantId = entity.tenantId
   identityEntity.roles = entity.roles
@@ -252,7 +252,7 @@ export const identityFrom = (identity: IdentityEntity): Identity => {
   return {
     id: identity.id,
     alias: identity.alias,
-    origin: identity.identityOrigin,
+    identityOrigin: identity.identityOrigin,
     roles: identity.roles,
     tenantId: identity.tenantId,
     ownerId: identity.ownerId,
@@ -431,7 +431,7 @@ export const partyTypeEntityFrom = (args: NonPersistedPartyType): PartyTypeEntit
     partyTypeEntity.id = args.id
   }
   partyTypeEntity.type = args.type
-  partyTypeEntity.partyOrigin = args.origin
+  partyTypeEntity.partyOrigin = args.partyOrigin
   partyTypeEntity.name = args.name
   partyTypeEntity.description = args.description
   partyTypeEntity.tenantId = args.tenantId
@@ -443,7 +443,7 @@ export const partyTypeFrom = (partyType: PartyTypeEntity): PartyType => {
   return {
     id: partyType.id,
     type: partyType.type,
-    origin: partyType.partyOrigin,
+    partyOrigin: partyType.partyOrigin,
     name: partyType.name,
     tenantId: partyType.tenantId,
     description: partyType.description,
