@@ -278,7 +278,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         filter: [
           {
             identities: {
-              identityOrigin: IdentityOrigin.EXTERNAL,
+              origin: IdentityOrigin.EXTERNAL,
               identifier: {
                 correlationId,
               },
@@ -406,7 +406,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     const correlationId: string = credentialsToAccept[0].correlationId
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER],
       identifier: {
         type: CorrelationIdentifierType.DID,

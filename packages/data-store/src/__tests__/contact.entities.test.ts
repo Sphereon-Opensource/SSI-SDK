@@ -73,7 +73,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -99,7 +99,7 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.uri).toEqual(party.uri)
     expect(fromDb?.partyType).toBeDefined()
     expect(fromDb?.partyType.type).toEqual(party.partyType.type)
-    expect(fromDb?.partyType.partyOrigin).toEqual(party.partyType.partyOrigin)
+    expect(fromDb?.partyType.origin).toEqual(party.partyType.origin)
     expect(fromDb?.partyType.tenantId).toEqual(party.partyType.tenantId)
     expect(fromDb?.partyType.name).toEqual(party.partyType.name)
     expect(fromDb?.contact).toBeDefined()
@@ -114,7 +114,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.ORGANIZATION,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -138,7 +138,7 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.uri).toEqual(party.uri)
     expect(fromDb?.partyType).toBeDefined()
     expect(fromDb?.partyType.type).toEqual(party.partyType.type)
-    expect(fromDb?.partyType.partyOrigin).toEqual(party.partyType.partyOrigin)
+    expect(fromDb?.partyType.origin).toEqual(party.partyType.origin)
     expect(fromDb?.partyType.tenantId).toEqual(party.partyType.tenantId)
     expect(fromDb?.partyType.name).toEqual(party.partyType.name)
     expect(fromDb?.contact).toBeDefined()
@@ -151,7 +151,7 @@ describe('Database entities tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -172,7 +172,7 @@ describe('Database entities tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -217,7 +217,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -239,7 +239,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.EXTERNAL,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -261,7 +261,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.EXTERNAL,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -283,7 +283,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.EXTERNAL,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -305,7 +305,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.ORGANIZATION,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -325,7 +325,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.ORGANIZATION,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -345,7 +345,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.EXTERNAL,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: '',
       },
@@ -367,7 +367,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
         description: '',
@@ -390,7 +390,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.EXTERNAL,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '',
         name: 'example_name',
       },
@@ -411,7 +411,7 @@ describe('Database entities tests', (): void => {
     const alias = 'non_unique_alias'
     const identity1: NonPersistedIdentity = {
       alias,
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -423,7 +423,7 @@ describe('Database entities tests', (): void => {
 
     const identity2: NonPersistedIdentity = {
       alias: alias,
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -440,7 +440,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'non_unique_correlationId'
     const identity1: NonPersistedIdentity = {
       alias: 'unique_alias1',
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -452,7 +452,7 @@ describe('Database entities tests', (): void => {
 
     const identity2: NonPersistedIdentity = {
       alias: 'unique_alias2',
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -469,7 +469,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'example_did'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -499,7 +499,7 @@ describe('Database entities tests', (): void => {
   it('should throw error when saving identity with blank alias', async (): Promise<void> => {
     const identity: NonPersistedIdentity = {
       alias: '',
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -515,7 +515,7 @@ describe('Database entities tests', (): void => {
   it('should throw error when saving identity with blank correlation id', async (): Promise<void> => {
     const identity: NonPersistedIdentity = {
       alias: 'example_did',
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -532,7 +532,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'example_did'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -555,7 +555,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'example_did'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -578,7 +578,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'example.com'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.URL,
@@ -624,7 +624,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'example.com'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.URL,
@@ -797,7 +797,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -818,7 +818,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -838,7 +838,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'relation_example.com'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.URL,
@@ -979,7 +979,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.EXTERNAL,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -999,7 +999,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'relation_example.com'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.URL,
@@ -1081,7 +1081,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.EXTERNAL,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1101,7 +1101,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'relation_example.com'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.URL,
@@ -1158,7 +1158,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1186,7 +1186,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1225,7 +1225,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'example_did'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -1252,7 +1252,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'example_did'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -1284,7 +1284,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1312,7 +1312,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.EXTERNAL,
+        origin: PartyOrigin.EXTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -1355,7 +1355,7 @@ describe('Database entities tests', (): void => {
   it('Should set last updated date when saving party type', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
       type: PartyTypeType.NATURAL_PERSON,
-      partyOrigin: PartyOrigin.EXTERNAL,
+      origin: PartyOrigin.EXTERNAL,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
@@ -1374,7 +1374,7 @@ describe('Database entities tests', (): void => {
   it('Should set last creation date when saving party type', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
       type: PartyTypeType.NATURAL_PERSON,
-      partyOrigin: PartyOrigin.INTERNAL,
+      origin: PartyOrigin.INTERNAL,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
@@ -1394,7 +1394,7 @@ describe('Database entities tests', (): void => {
     const correlationId = 'example_did'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      identityOrigin: IdentityOrigin.EXTERNAL,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -1422,7 +1422,7 @@ describe('Database entities tests', (): void => {
     const name = 'non_unique_value'
     const partyType1: NonPersistedPartyType = {
       type: PartyTypeType.NATURAL_PERSON,
-      partyOrigin: PartyOrigin.EXTERNAL,
+      origin: PartyOrigin.EXTERNAL,
       tenantId,
       name,
     }
@@ -1434,7 +1434,7 @@ describe('Database entities tests', (): void => {
 
     const partyType2: NonPersistedPartyType = {
       type: PartyTypeType.NATURAL_PERSON,
-      partyOrigin: PartyOrigin.INTERNAL,
+      origin: PartyOrigin.INTERNAL,
       tenantId,
       name: `${name} + 1`,
     }
@@ -1449,7 +1449,7 @@ describe('Database entities tests', (): void => {
     const name = 'non_unique_value'
     const partyType1: NonPersistedPartyType = {
       type: PartyTypeType.NATURAL_PERSON,
-      partyOrigin: PartyOrigin.INTERNAL,
+      origin: PartyOrigin.INTERNAL,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name,
     }
@@ -1461,7 +1461,7 @@ describe('Database entities tests', (): void => {
 
     const partyType2: NonPersistedPartyType = {
       type: PartyTypeType.NATURAL_PERSON,
-      partyOrigin: PartyOrigin.INTERNAL,
+      origin: PartyOrigin.INTERNAL,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
       name,
     }
@@ -1527,7 +1527,7 @@ describe('Database entities tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1550,7 +1550,7 @@ describe('Database entities tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1591,7 +1591,7 @@ describe('Database entities tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1612,7 +1612,7 @@ describe('Database entities tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1651,7 +1651,7 @@ describe('Database entities tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1672,7 +1672,7 @@ describe('Database entities tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1711,7 +1711,7 @@ describe('Database entities tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1734,7 +1734,7 @@ describe('Database entities tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1787,7 +1787,7 @@ describe('Database entities tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -1810,7 +1810,7 @@ describe('Database entities tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -1853,7 +1853,7 @@ describe('Database entities tests', (): void => {
   it('Should save party type to database', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
       type: PartyTypeType.NATURAL_PERSON,
-      partyOrigin: PartyOrigin.INTERNAL,
+      origin: PartyOrigin.INTERNAL,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
@@ -1989,7 +1989,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2023,7 +2023,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.ORGANIZATION,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2054,7 +2054,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2088,7 +2088,7 @@ describe('Database entities tests', (): void => {
       uri: 'example1.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name1',
       },
@@ -2111,7 +2111,7 @@ describe('Database entities tests', (): void => {
       uri: 'example2.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d288',
         name: 'example_name2',
       },
@@ -2153,7 +2153,7 @@ describe('Database entities tests', (): void => {
   it('Should delete party type', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
       type: PartyTypeType.NATURAL_PERSON,
-      partyOrigin: PartyOrigin.INTERNAL,
+      origin: PartyOrigin.INTERNAL,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
@@ -2177,7 +2177,7 @@ describe('Database entities tests', (): void => {
       uri: 'example.com',
       partyType: {
         type: PartyTypeType.NATURAL_PERSON,
-        partyOrigin: PartyOrigin.INTERNAL,
+        origin: PartyOrigin.INTERNAL,
         tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
         name: 'example_name',
       },
@@ -2204,7 +2204,7 @@ describe('Database entities tests', (): void => {
   it('Should save party with existing party type', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
       type: PartyTypeType.NATURAL_PERSON,
-      partyOrigin: PartyOrigin.INTERNAL,
+      origin: PartyOrigin.INTERNAL,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }
@@ -2237,7 +2237,7 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.partyType).toBeDefined()
     expect(fromDb?.partyType.id).toEqual(savedPartyType.id)
     expect(fromDb?.partyType.type).toEqual(savedPartyType.type)
-    expect(fromDb?.partyType.partyOrigin).toEqual(savedPartyType.partyOrigin)
+    expect(fromDb?.partyType.origin).toEqual(savedPartyType.origin)
     expect(fromDb?.partyType.tenantId).toEqual(savedPartyType.tenantId)
     expect(fromDb?.partyType.name).toEqual(savedPartyType.name)
   })
@@ -2245,7 +2245,7 @@ describe('Database entities tests', (): void => {
   it('Should not update creation date when saving party type', async (): Promise<void> => {
     const partyType: NonPersistedPartyType = {
       type: PartyTypeType.NATURAL_PERSON,
-      partyOrigin: PartyOrigin.INTERNAL,
+      origin: PartyOrigin.INTERNAL,
       tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
       name: 'example_name',
     }

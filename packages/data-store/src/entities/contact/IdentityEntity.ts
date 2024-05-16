@@ -35,7 +35,7 @@ export class IdentityEntity extends BaseEntity {
   alias!: string
 
   @Column('simple-enum', { name: 'identity_origin', enum: IdentityOrigin, nullable: false })
-  identityOrigin!: IdentityOrigin
+  origin!: IdentityOrigin
 
   @Column({ name: 'owner_id', nullable: true })
   ownerId?: string

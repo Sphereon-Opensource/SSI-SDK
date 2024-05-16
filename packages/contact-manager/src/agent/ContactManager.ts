@@ -177,8 +177,8 @@ export class ContactManager implements IAgentPlugin {
   /** {@inheritDoc IContactManager.cmAddIdentity} */
   private async cmAddIdentity(args: AddIdentityArgs, context: RequiredContext): Promise<Identity> {
     const { contactId, identity } = args
-    if (!identity.identityOrigin) {
-      identity.identityOrigin = IdentityOrigin.EXTERNAL
+    if (!identity.origin) {
+      identity.origin = IdentityOrigin.EXTERNAL
     }
     return this.store.addIdentity({ partyId: contactId, identity })
   }

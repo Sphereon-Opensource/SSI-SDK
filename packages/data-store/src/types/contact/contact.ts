@@ -53,7 +53,7 @@ export type Identity = {
   alias: string
   ownerId?: string
   tenantId?: string
-  identityOrigin: IdentityOrigin
+  origin: IdentityOrigin
   roles: Array<IdentityRole>
   identifier: CorrelationIdentifier
   connection?: Connection
@@ -61,20 +61,17 @@ export type Identity = {
   createdAt: Date
   lastUpdatedAt: Date
 }
-export type NonPersistedIdentity = Omit<
-  Identity,
-  'id' | 'identifier' | 'connection' | 'metadata' | 'identityOrigin' | 'createdAt' | 'lastUpdatedAt'
-> & {
-  identityOrigin?: IdentityOrigin
+export type NonPersistedIdentity = Omit<Identity, 'id' | 'identifier' | 'connection' | 'metadata' | 'origin' | 'createdAt' | 'lastUpdatedAt'> & {
+  origin?: IdentityOrigin
   identifier: NonPersistedCorrelationIdentifier
   connection?: NonPersistedConnection
   metadata?: Array<NonPersistedMetadataItem<MetadataTypes>>
 }
-export type PartialIdentity = Partial<Omit<Identity, 'identifier' | 'connection' | 'metadata' | 'identityOrigin' | 'roles'>> & {
+export type PartialIdentity = Partial<Omit<Identity, 'identifier' | 'connection' | 'metadata' | 'origin' | 'roles'>> & {
   identifier?: PartialCorrelationIdentifier
   connection?: PartialConnection
   metadata?: PartialMetadataItem<MetadataTypes> // Usage: FindIdentityArgs = Array<PartialIdentity>
-  identityOrigin?: IdentityOrigin
+  origin?: IdentityOrigin
   roles?: IdentityRole
   partyId?: string
 }
@@ -186,7 +183,7 @@ export type PartialContact = PartialNaturalPerson | PartialOrganization
 export type PartyType = {
   id: string
   type: PartyTypeType
-  partyOrigin: PartyOrigin
+  origin: PartyOrigin
   name: string
   tenantId: string
   description?: string
