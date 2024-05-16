@@ -1,5 +1,5 @@
 import { OpenID4VCIClient, OpenID4VCIClientState } from '@sphereon/oid4vci-client'
-import { AuthorizationResponse, CredentialResponse, CredentialSupported, EndpointMetadataResult } from '@sphereon/oid4vci-common'
+import { AuthorizationResponse, CredentialResponse, CredentialSupported, EndpointMetadataResultV1_0_11 } from '@sphereon/oid4vci-common'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
@@ -114,7 +114,7 @@ export type OID4VCIMachineContext = {
   authorizationCodeURL?: string
   credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>>
   credentialsSupported: Array<CredentialSupported>
-  serverMetadata?: EndpointMetadataResult
+  serverMetadata?: EndpointMetadataResultV1_0_11
   openID4VCIClientState?: OpenID4VCIClientState
   credentialSelection: Array<CredentialTypeSelection>
   contactAlias: string
@@ -305,7 +305,7 @@ export type InitiationData = {
   authorizationCodeURL?: string
   credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>>
   credentialsSupported: Array<CredentialSupported>
-  serverMetadata: EndpointMetadataResult
+  serverMetadata: EndpointMetadataResultV1_0_11
   openID4VCIClientState: OpenID4VCIClientState
 }
 
@@ -419,7 +419,7 @@ export type GetCredentialsSupportedArgs = {
 export type GetIssuanceOptsArgs = {
   client: OpenID4VCIClient
   credentialsSupported: Array<CredentialSupported>
-  serverMetadata: EndpointMetadataResult
+  serverMetadata: EndpointMetadataResultV1_0_11
   context: RequiredContext
   didMethodPreferences: Array<SupportedDidMethodEnum>
   jwtCryptographicSuitePreferences: Array<SignatureAlgorithmEnum>

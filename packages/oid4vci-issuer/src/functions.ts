@@ -1,4 +1,4 @@
-import { CredentialIssuerMetadata, Jwt, JwtVerifyResult, OID4VCICredentialFormat, UniformCredentialRequest } from '@sphereon/oid4vci-common'
+import { IssuerMetadataV1_0_13, Jwt, JwtVerifyResult, OID4VCICredentialFormat, UniformCredentialRequest } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, getDID, getFirstKeyWithRelation, getIdentifier, getKey, IDIDOptions, toDID } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
@@ -165,7 +165,7 @@ export function getCredentialSignerCallback(didOpts: IDIDOptions, context: IRequ
 export async function createVciIssuerBuilder(
   args: {
     issuerOpts: IIssuerOptions
-    metadata: CredentialIssuerMetadata
+    metadata: IssuerMetadataV1_0_13
     resolver?: Resolvable
     credentialDataSupplier?: CredentialDataSupplier
   },
@@ -205,7 +205,7 @@ export async function createVciIssuer(
     credentialDataSupplier,
   }: {
     issuerOpts: IIssuerOptions
-    metadata: CredentialIssuerMetadata
+    metadata: IssuerMetadataV1_0_13
     credentialDataSupplier?: CredentialDataSupplier
   },
   context: IRequiredContext,

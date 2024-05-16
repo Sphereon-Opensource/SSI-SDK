@@ -1,4 +1,4 @@
-import { CredentialIssuerMetadata } from '@sphereon/oid4vci-common'
+import { IssuerMetadataV1_0_13 } from '@sphereon/oid4vci-common'
 import { IKeyValueStore, IValueData, KeyValueStore, ValueStoreType } from '@sphereon/ssi-sdk.kv-store-temp'
 import { IAgentPlugin } from '@veramo/core'
 import {
@@ -25,7 +25,7 @@ export class OID4VCIStore implements IAgentPlugin {
     this._defaultOpts = value
   }
 
-  private readonly _metadataStores: Map<string, IKeyValueStore<CredentialIssuerMetadata>>
+  private readonly _metadataStores: Map<string, IKeyValueStore<IssuerMetadataV1_0_13>>
   private readonly _optionStores: Map<string, IKeyValueStore<IIssuerOptions>>
   private readonly defaultStoreId: string
   private readonly defaultNamespace: string
@@ -66,7 +66,7 @@ export class OID4VCIStore implements IAgentPlugin {
         this.defaultStoreId,
         new KeyValueStore({
           namespace: this.defaultNamespace,
-          store: new Map<string, CredentialIssuerMetadata>(),
+          store: new Map<string, IssuerMetadataV1_0_13>(),
         }),
       )
     }
@@ -155,7 +155,7 @@ export class OID4VCIStore implements IAgentPlugin {
       .then(() => true)
   }
 
-  private async oid4vciStoreGetMetadata({ correlationId, storeId, namespace }: Ioid4vciStoreGetArgs): Promise<CredentialIssuerMetadata | undefined> {
+  private async oid4vciStoreGetMetadata({ correlationId, storeId, namespace }: Ioid4vciStoreGetArgs): Promise<IssuerMetadataV1_0_13 | undefined> {
     return this.store({ stores: this._metadataStores, storeId }).get(this.prefix({ namespace, correlationId }))
   }
 
@@ -163,7 +163,7 @@ export class OID4VCIStore implements IAgentPlugin {
     return this.store({ stores: this._metadataStores, storeId }).has(this.prefix({ namespace, correlationId }))
   }
 
-  private async oid4vciStorePersistMetadata(args: IMetadataPersistArgs): Promise<IValueData<CredentialIssuerMetadata>> {
+  private async oid4vciStorePersistMetadata(args: IMetadataPersistArgs): Promise<IValueData<IssuerMetadataV1_0_13>> {
     const namespace = this.namespaceStr(args)
     const storeId = this.storeIdStr(args)
     const { correlationId, metadata, ttl } = args
@@ -181,7 +181,7 @@ export class OID4VCIStore implements IAgentPlugin {
           namespace,
           correlationId: correlationId,
         }),
-        metadata as CredentialIssuerMetadata,
+        metadata as IssuerMetadataV1_0_13,
         ttl,
       )
     }
@@ -209,7 +209,7 @@ export class OID4VCIStore implements IAgentPlugin {
     return Promise.resolve(this.store({ stores: this._optionStores, storeId: this.defaultStoreId }))
   }
 
-  private oid4vciStoreDefaultMetadata(): Promise<IKeyValueStore<CredentialIssuerMetadata>> {
+  private oid4vciStoreDefaultMetadata(): Promise<IKeyValueStore<IssuerMetadataV1_0_13>> {
     return Promise.resolve(this.store({ stores: this._metadataStores, storeId: this.defaultStoreId }))
   }
 

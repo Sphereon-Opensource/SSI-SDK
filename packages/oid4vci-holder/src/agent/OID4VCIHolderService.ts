@@ -385,7 +385,7 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
   }
 
   const getIssuanceOpts: Array<Promise<IssuanceOpts>> = credentialsSupported.map(async (credentialSupported) => {
-    if (!serverMetadata?.credentialIssuerMetadata) {
+    if (!serverMetadata?.IssuerMetadataV1_0_13) {
       return await getDefaultIssuanceOpts({ credentialSupported, opts: { client }, context })
     }
 
