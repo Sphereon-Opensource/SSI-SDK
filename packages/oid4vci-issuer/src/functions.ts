@@ -184,7 +184,7 @@ export async function createVciIssuerBuilder(
     audience: metadata.credential_issuer,
   }
   builder.withIssuerMetadata(metadata)
-  builder.withUserPinRequired(issuerOpts.userPinRequired ?? false)
+  // builder.withUserPinRequired(issuerOpts.userPinRequired ?? false) was removed from implementers draft v1
   builder.withCredentialSignerCallback(getCredentialSignerCallback(didOpts, context))
   builder.withJWTVerifyCallback(getJwtVerifyCallback({ verifyOpts: jwtVerifyOpts }, context))
   if (args.credentialDataSupplier) {
