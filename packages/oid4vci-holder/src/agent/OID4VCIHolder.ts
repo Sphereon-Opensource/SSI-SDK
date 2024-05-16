@@ -1,12 +1,12 @@
 import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
-import { CredentialSupported, DefaultURISchemes, Jwt, ProofOfPossessionCallbacks } from '@sphereon/oid4vci-common'
+import { CredentialConfigurationSupportedV1_0_13, DefaultURISchemes, Jwt, ProofOfPossessionCallbacks } from '@sphereon/oid4vci-common'
 import {
   CorrelationIdentifierType,
   IBasicCredentialLocaleBranding,
   Identity,
   IdentityRole,
   NonPersistedIdentity,
-  Party
+  Party,
 } from '@sphereon/ssi-sdk.data-store'
 import { DIDDocument, IAgentPlugin, VerifiableCredential } from '@veramo/core'
 import { computeEntryHash } from '@veramo/utils'
@@ -214,7 +214,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       vcFormatPreferences: this.vcFormatPreferences,
     })
     const credentialBranding = await getCredentialBranding({ credentialsSupported, context })
-    const authorizationCodeURL = openID4VCIClient.authorizationURL
+    const authorizationCodeURL = openID4VCIClient.getAuthorizationURL()
     const openID4VCIClientState = JSON.parse(await openID4VCIClient.exportState())
 
     return {
@@ -232,28 +232,31 @@ export class OID4VCIHolder implements IAgentPlugin {
   ): Promise<Array<CredentialTypeSelection>> {
     const { credentialsSupported, credentialBranding, locale, selectedCredentials } = args
     const credentialSelection: Array<CredentialTypeSelection> = await Promise.all(
-      credentialsSupported.map(async (credentialMetadata: CredentialSupported): Promise<CredentialTypeSelection> => {
-        if (!('types' in credentialMetadata)) {
-          return Promise.reject(Error('SD-JWT not supported yet'))
-        }
-        // FIXME this allows for duplicate VerifiableCredential, which the user has no idea which ones those are and we also have a branding map with unique keys, so some branding will not match
-        const defaultCredentialType = 'VerifiableCredential'
-        const credentialType = credentialMetadata.types.find((type: string): boolean => type !== defaultCredentialType) ?? defaultCredentialType
-        const localeBranding = credentialBranding?.[credentialType]
-        const credentialAlias = (
-          await selectCredentialLocaleBranding({
-            locale,
-            localeBranding,
-          })
-        )?.alias
+      Object.values(credentialsSupported).map(
+        async (credentialMetadata: CredentialConfigurationSupportedV1_0_13): Promise<CredentialTypeSelection> => {
+          if (!('types' in credentialMetadata)) {
+            return Promise.reject(Error('SD-JWT not supported yet'))
+          }
+          // FIXME this allows for duplicate VerifiableCredential, which the user has no idea which ones those are and we also have a branding map with unique keys, so some branding will not match
+          const defaultCredentialType = 'VerifiableCredential'
+          const credentialType =
+            credentialMetadata.credential_definition.type.find((type: string): boolean => type !== defaultCredentialType) ?? defaultCredentialType
+          const localeBranding = credentialBranding?.[credentialType]
+          const credentialAlias = (
+            await selectCredentialLocaleBranding({
+              locale,
+              localeBranding,
+            })
+          )?.alias
 
-        return {
-          id: uuidv4(),
-          credentialType,
-          credentialAlias: credentialAlias ?? credentialType,
-          isSelected: false,
-        }
-      }),
+          return {
+            id: uuidv4(),
+            credentialType,
+            credentialAlias: credentialAlias ?? credentialType,
+            isSelected: false,
+          }
+        },
+      ),
     )
 
     // TODO find better place to do this, would be nice if the machine does this?
@@ -334,9 +337,11 @@ export class OID4VCIHolder implements IAgentPlugin {
     const callbacks: ProofOfPossessionCallbacks<DIDDocument> = {
       signCallback: (jwt: Jwt, kid?: string) => {
         let iss = jwt.payload.iss
-        if (client.isEBSI()) {
+        /*
+        if (client.isEBSI()) { FIXME
           iss = jwt.header.kid?.split('#')[0]
         }
+*/
         if (!iss) {
           iss = jwt.header.kid?.split('#')[0]
         }
@@ -365,11 +370,8 @@ export class OID4VCIHolder implements IAgentPlugin {
         pin,
         authorizationResponse: JSON.parse(await client.exportState()).authorizationCodeResponse,
       })
-      // @ts-ignore
       const credentialResponse = await client.acquireCredentials({
-        // @ts-ignore
-        credentialTypes: issuanceOpt.types /*.filter((type: string): boolean => type !== 'VerifiableCredential')*/,
-        ...('@context' in issuanceOpt && issuanceOpt['@context'] && { context: issuanceOpt['@context'] }),
+        credentialTypes: issuanceOpt.credential_definition.type,
         proofCallbacks: callbacks,
         format: issuanceOpt.format,
         // TODO: We need to update the machine and add notifications support for actual deferred credentials instead of just waiting/retrying

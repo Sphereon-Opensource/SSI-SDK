@@ -668,11 +668,11 @@ importers:
   packages/oid4vci-holder:
     dependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.10.4-unstable.22+a2b3c22
-        version: 0.10.4-unstable.22(msrcrypto@1.5.8)
+        specifier: 0.10.4-unstable.23+54df45d
+        version: 0.10.4-unstable.23(msrcrypto@1.5.8)
       '@sphereon/oid4vci-common':
-        specifier: 0.10.4-unstable.22+a2b3c22
-        version: 0.10.4-unstable.22(msrcrypto@1.5.8)
+        specifier: 0.10.4-unstable.23+54df45d
+        version: 0.10.4-unstable.23(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.18.0
         version: 0.18.0
@@ -744,11 +744,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.10.4-unstable.22+a2b3c22
-        version: 0.10.4-unstable.22(msrcrypto@1.5.8)
+        specifier: 0.10.4-unstable.23+54df45d
+        version: 0.10.4-unstable.23(msrcrypto@1.5.8)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.10.4-unstable.22+a2b3c22
-        version: 0.10.4-unstable.22(msrcrypto@1.5.8)
+        specifier: 0.10.4-unstable.23+54df45d
+        version: 0.10.4-unstable.23(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.19.0
         version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -802,14 +802,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.10.4-unstable.22+a2b3c22
-        version: 0.10.4-unstable.22(msrcrypto@1.5.8)
+        specifier: 0.10.4-unstable.23+54df45d
+        version: 0.10.4-unstable.23(msrcrypto@1.5.8)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.10.4-unstable.22+a2b3c22
-        version: 0.10.4-unstable.22(msrcrypto@1.5.8)
+        specifier: 0.10.4-unstable.23+54df45d
+        version: 0.10.4-unstable.23(msrcrypto@1.5.8)
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.10.4-unstable.22+a2b3c22
-        version: 0.10.4-unstable.22(msrcrypto@1.5.8)
+        specifier: 0.10.4-unstable.23+54df45d
+        version: 0.10.4-unstable.23(msrcrypto@1.5.8)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -962,8 +962,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.10.4-unstable.22+a2b3c22
-        version: 0.10.4-unstable.22(msrcrypto@1.5.8)
+        specifier: 0.10.4-unstable.23+54df45d
+        version: 0.10.4-unstable.23(msrcrypto@1.5.8)
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -999,8 +999,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.10.4-unstable.22+a2b3c22
-        version: 0.10.4-unstable.22(msrcrypto@1.5.8)
+        specifier: 0.10.4-unstable.23+54df45d
+        version: 0.10.4-unstable.23(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.19.0
         version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -6893,11 +6893,11 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vci-client@0.10.4-unstable.22(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-ki4RaVtV3tOaAhlkmYXDwa9HjwlFzek8LdRVBqf4Fg7+1ujaFz/hzTFh5T3ShS20Um5rVdelhWwQuD5Yz0fXJg==}
+  /@sphereon/oid4vci-client@0.10.4-unstable.23(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-UVsEUEl3ZhZx4xd1O7q3ZcPnffBvvNUWLppUurhj37rzGXj9a2bk6sKPbVyNfQhZPREA9TRwnR+mNCYZVV9I6w==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.4-unstable.22(msrcrypto@1.5.8)
+      '@sphereon/oid4vci-common': 0.10.4-unstable.23(msrcrypto@1.5.8)
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
       debug: 4.3.4
@@ -6907,8 +6907,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-common@0.10.4-unstable.22(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-bM3YfXq2nKmdep+AWow6vakmoVXbjjIjVfXgW3r+7R/bM3k+eyvO2rqVAUAHCWIoX55RdMdKBqCCmlypKl3y7A==}
+  /@sphereon/oid4vci-common@0.10.4-unstable.23(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-xq+2BWrypJDdHM/UN0bEpPOgzLu/7lfNYm6XfUElIdd0uCHDmH1+TCSYqvDyAEmYCo6fsT1mQpKIOF8Jf7Zzjw==}
     engines: {node: '>=18'}
     peerDependencies:
       msrcrypto: ^1.5.8
@@ -6926,12 +6926,12 @@ packages:
       - encoding
     dev: false
 
-  /@sphereon/oid4vci-issuer-server@0.10.4-unstable.22(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-haOfoCH85WBihhokPg0pYzYcqMTJziKgOMA0P9mqp3WgeIqS3YRqDyMlOIVV8Xll4C02fgp13KIT1Dfm1SrMhg==}
+  /@sphereon/oid4vci-issuer-server@0.10.4-unstable.23(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-Qtjgyv71WRXJa+JHFrgIStnveoun21qxOWLXZ/9zTy5ilu7CSDQjboLF+msgDHuyHIQZC2I1ai+UuKUoAC+VcQ==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.4-unstable.22(msrcrypto@1.5.8)
-      '@sphereon/oid4vci-issuer': 0.10.4-unstable.22(msrcrypto@1.5.8)
+      '@sphereon/oid4vci-common': 0.10.4-unstable.23(msrcrypto@1.5.8)
+      '@sphereon/oid4vci-issuer': 0.10.4-unstable.23(msrcrypto@1.5.8)
       '@sphereon/ssi-express-support': 0.23.0
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.2
@@ -6952,8 +6952,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.10.4-unstable.22(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-lAdhFrI/h92RwhToc0EbGNapHjbx/iQSP3ijeRdfwi5bBFbhlnfpnl5hyLAdZBWOt++GSzw3Kh9QrX7iM3jlYw==}
+  /@sphereon/oid4vci-issuer@0.10.4-unstable.23(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-kHRFDMb/n1rDmgfdKVtq4czi6fsPLJS/8OuqJOuLsDV7UZY7qkqNey1sqUMntkGhw11rexUPW3Ol0d7hidAURg==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -6961,7 +6961,7 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.4-unstable.22(msrcrypto@1.5.8)
+      '@sphereon/oid4vci-common': 0.10.4-unstable.23(msrcrypto@1.5.8)
       '@sphereon/ssi-types': link:packages/ssi-types
       uuid: 9.0.1
     transitivePeerDependencies:
