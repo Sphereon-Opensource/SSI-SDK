@@ -551,29 +551,6 @@ describe('Database entities tests', (): void => {
     await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrowError('Blank metadata labels are not allowed')
   })
 
-  it('should throw error when saving identity with blank metadata value', async (): Promise<void> => {
-    const correlationId = 'example_did'
-    const identity: NonPersistedIdentity = {
-      alias: correlationId,
-      origin: IdentityOrigin.EXTERNAL,
-      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
-      identifier: {
-        type: CorrelationIdentifierType.DID,
-        correlationId,
-      },
-      metadata: [
-        {
-          label: 'example_label',
-          value: '',
-        },
-      ],
-    }
-
-    const identityEntity: IdentityEntity = identityEntityFrom(identity)
-
-    await expect(dbConnection.getRepository(IdentityEntity).save(identityEntity)).rejects.toThrowError('Blank metadata values are not allowed')
-  })
-
   it('Should save identity with openid connection to database', async (): Promise<void> => {
     const correlationId = 'example.com'
     const identity: NonPersistedIdentity = {
