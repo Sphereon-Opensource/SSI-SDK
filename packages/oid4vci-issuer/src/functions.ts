@@ -1,4 +1,4 @@
-import { IssuerMetadataV1_0_13, Jwt, JwtVerifyResult, OID4VCICredentialFormat, UniformCredentialRequest } from '@sphereon/oid4vci-common'
+import { IssuerMetadata, Jwt, JwtVerifyResult, OID4VCICredentialFormat, UniformCredentialRequest } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, getDID, getFirstKeyWithRelation, getIdentifier, getKey, IDIDOptions, toDID } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
@@ -165,7 +165,7 @@ export function getCredentialSignerCallback(didOpts: IDIDOptions, context: IRequ
 export async function createVciIssuerBuilder(
   args: {
     issuerOpts: IIssuerOptions
-    metadata: IssuerMetadataV1_0_13
+    metadata: IssuerMetadata
     resolver?: Resolvable
     credentialDataSupplier?: CredentialDataSupplier
   },
@@ -181,7 +181,7 @@ export async function createVciIssuerBuilder(
   const jwtVerifyOpts: JWTVerifyOptions = {
     ...args?.issuerOpts?.didOpts?.resolveOpts?.jwtVerifyOpts,
     resolver,
-    audience: metadata.credential_issuer,
+    audience: metadata.credential_issuer as string, // FIXME legacy version had {display: NameAndLocale | NameAndLocale[]} as credential_issuer
   }
   builder.withIssuerMetadata(metadata)
   // builder.withUserPinRequired(issuerOpts.userPinRequired ?? false) was removed from implementers draft v1
@@ -205,7 +205,7 @@ export async function createVciIssuer(
     credentialDataSupplier,
   }: {
     issuerOpts: IIssuerOptions
-    metadata: IssuerMetadataV1_0_13
+    metadata: IssuerMetadata
     credentialDataSupplier?: CredentialDataSupplier
   },
   context: IRequiredContext,

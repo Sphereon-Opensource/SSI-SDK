@@ -1,5 +1,5 @@
 import {
-  CredentialConfigurationSupportedV1_0_13,
+  CredentialConfigurationSupported,
   CredentialOfferFormat,
   CredentialOfferPayloadV1_0_11,
   CredentialResponse,
@@ -58,9 +58,7 @@ import {
 
 export const DID_PREFIX = 'did'
 
-export const getSupportedCredentials = async (
-  args: GetSupportedCredentialsArgs,
-): Promise<Record<string, CredentialConfigurationSupportedV1_0_13>> => {
+export const getSupportedCredentials = async (args: GetSupportedCredentialsArgs): Promise<Record<string, CredentialConfigurationSupported>> => {
   const { openID4VCIClient } = args
   //const { openID4VCIClient, vcFormatPreferences } = args
 
@@ -80,12 +78,12 @@ export const getSupportedCredentials = async (
     if (format?.length === 0) {
       format = undefined // Otherwise we would match nothing
     }
-    const credentialsSupported: Record<string, CredentialConfigurationSupportedV1_0_13> = openID4VCIClient.getCredentialsSupported(true, format)
+    const credentialsSupported: Record<string, CredentialConfigurationSupported> = openID4VCIClient.getCredentialsSupported(true, format)
     return getPreferredCredentialFormats({ credentials: credentialsSupported, vcFormatPreferences })
   }
 */
   if (openID4VCIClient.version() > OpenId4VCIVersion.VER_1_0_12) {
-    return openID4VCIClient.getCredentialsSupported() as Record<string, CredentialConfigurationSupportedV1_0_13>
+    return openID4VCIClient.getCredentialsSupported() as Record<string, CredentialConfigurationSupported>
   }
   throw new Error('FIXME') // FIXME
 }
@@ -94,7 +92,7 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   const { credentialsSupported, context } = args
   const credentialBranding: Record<string, Array<IBasicCredentialLocaleBranding>> = {}
   await Promise.all(
-    Object.values(credentialsSupported).map(async (credential: CredentialConfigurationSupportedV1_0_13): Promise<void> => {
+    Object.values(credentialsSupported).map(async (credential: CredentialConfigurationSupported): Promise<void> => {
       const localeBranding: Array<IBasicCredentialLocaleBranding> = await Promise.all(
         (credential.display ?? []).map(
           async (display: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> =>
@@ -123,7 +121,7 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
 
 export const getPreferredCredentialFormats = async (
   args: GetPreferredCredentialFormatsArgs,
-): Promise<Record<string, CredentialConfigurationSupportedV1_0_13>> => {
+): Promise<Record<string, CredentialConfigurationSupported>> => {
   return Object.entries(args.credentials)
     .filter(([_, config]) => config.format in args.vcFormatPreferences)
     .reduce(
@@ -131,7 +129,7 @@ export const getPreferredCredentialFormats = async (
         acc[key] = config
         return acc
       },
-      {} as Record<string, CredentialConfigurationSupportedV1_0_13>,
+      {} as Record<string, CredentialConfigurationSupported>,
     )
 }
 
@@ -332,9 +330,7 @@ export const createIdentifier = async (args: CreateIdentifierArgs): Promise<IIde
   return identifier
 }
 
-export const getCredentialsSupported = async (
-  args: GetCredentialsSupportedArgs,
-): Promise<Record<string, CredentialConfigurationSupportedV1_0_13>> => {
+export const getCredentialsSupported = async (args: GetCredentialsSupportedArgs): Promise<Record<string, CredentialConfigurationSupported>> => {
   const { client, vcFormatPreferences } = args
   // todo: remove format here. This is just a temp hack for V11+ issuance of only one credential. Having a single array with formats for multiple credentials will not work. This should be handled in VCI itself
   let format: string[] | undefined = undefined
@@ -353,10 +349,10 @@ export const getCredentialsSupported = async (
   }
 
   // This restricts to initiation types when there is an offer
-  const supportedCredentials = client.getCredentialsSupported() as Record<string, CredentialConfigurationSupportedV1_0_13>
+  const supportedCredentials = client.getCredentialsSupported() as Record<string, CredentialConfigurationSupported>
   let credentialsSupported = await getPreferredCredentialFormats({ credentials: supportedCredentials, vcFormatPreferences })
   if (!credentialsSupported || Object.keys(credentialsSupported).length === 0) {
-    credentialsSupported = client.getCredentialsSupported() as Record<string, CredentialConfigurationSupportedV1_0_13>
+    credentialsSupported = client.getCredentialsSupported() as Record<string, CredentialConfigurationSupported>
     /*  FIXME we don't have credential_offer.credentials anymore in v13
     credentialsSupported =
       client.credentialOffer?.credential_offer.credentials

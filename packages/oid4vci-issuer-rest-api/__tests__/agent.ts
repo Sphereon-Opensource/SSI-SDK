@@ -1,6 +1,6 @@
 import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
 import { getUniResolver } from '@sphereon/did-uni-client'
-import { IssuerMetadataV1_0_13 } from '@sphereon/oid4vci-common'
+import { IssuerMetadata } from '@sphereon/oid4vci-common'
 import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
 import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
@@ -161,7 +161,7 @@ let importMetadatas = [
           cryptographic_suites_supported: ['ES256', 'ES256K', 'EdDSA'],
         },
       ],
-    } as IssuerMetadataV1_0_13,
+    } as IssuerMetadata,
   },
 
   {
@@ -286,7 +286,7 @@ let importMetadatas = [
           cryptographic_suites_supported: ['ES256', 'ES256K', 'EdDSA'],
         },
       ],
-    } as IssuerMetadataV1_0_13,
+    } as IssuerMetadata,
   },
   {
     correlationId: `${baseUrl}/fma2023`,
@@ -426,7 +426,7 @@ let importMetadatas = [
           cryptographic_suites_supported: ['ES256', 'ES256K', 'EdDSA'],
         },
       ],
-    } as IssuerMetadataV1_0_13,
+    } as IssuerMetadata,
   },
   {
     correlationId: `${baseUrl}/triall2023`,
@@ -566,7 +566,7 @@ let importMetadatas = [
           cryptographic_suites_supported: ['ES256', 'ES256K', 'EdDSA'],
         },
       ],
-    } as IssuerMetadataV1_0_13,
+    } as IssuerMetadata,
   },
 ]
 

@@ -1,10 +1,10 @@
-import { IssuerMetadataV1_0_13, CredentialIssuerMetadataOpts } from '@sphereon/oid4vci-common'
+import { IssuerMetadata, CredentialIssuerMetadataOpts } from '@sphereon/oid4vci-common'
 import { IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IKeyValueStore, IValueData } from '@sphereon/ssi-sdk.kv-store-temp'
 import { IAgentContext, IDataStoreORM, IPluginMethodMap } from '@veramo/core'
 
 export interface IOID4VCIStore extends IPluginMethodMap {
-  oid4vciStoreDefaultMetadata(): Promise<IKeyValueStore<IssuerMetadataV1_0_13>>
+  oid4vciStoreDefaultMetadata(): Promise<IKeyValueStore<IssuerMetadata>>
   oid4vciStoreDefaultIssuerOptions(): Promise<IKeyValueStore<IIssuerOptions>>
   oid4vciStoreDefaultStoreId(): Promise<string>
   oid4vciStoreDefaultNamespace(): Promise<string>
@@ -15,9 +15,9 @@ export interface IOID4VCIStore extends IPluginMethodMap {
   oid4vciStoreRemoveIssuerOpts({ storeId, correlationId, namespace }: Ioid4vciStoreRemoveArgs): Promise<boolean>
   oid4vciStoreClearAllIssuerOpts({ storeId }: Ioid4vciStoreClearArgs): Promise<boolean>
 
-  oid4vciStoreGetMetadata({ correlationId, storeId, namespace }: Ioid4vciStoreGetArgs): Promise<IssuerMetadataV1_0_13 | undefined>
+  oid4vciStoreGetMetadata({ correlationId, storeId, namespace }: Ioid4vciStoreGetArgs): Promise<IssuerMetadata | undefined>
   oid4vciStoreHasMetadata({ correlationId, storeId, namespace }: Ioid4vciStoreExistsArgs): Promise<boolean>
-  oid4vciStorePersistMetadata(args: IMetadataPersistArgs): Promise<IValueData<IssuerMetadataV1_0_13>>
+  oid4vciStorePersistMetadata(args: IMetadataPersistArgs): Promise<IValueData<IssuerMetadata>>
   oid4vciStoreRemoveMetadata({ storeId, correlationId, namespace }: Ioid4vciStoreRemoveArgs): Promise<boolean>
   oid4vciStoreClearAllMetadata({ storeId }: Ioid4vciStoreClearArgs): Promise<boolean>
 }
@@ -25,7 +25,7 @@ export interface IOID4VCIStore extends IPluginMethodMap {
 export interface IOID4VCIStoreOpts {
   defaultStore?: string
   defaultNamespace?: string
-  metadataStores?: Map<string, IKeyValueStore<IssuerMetadataV1_0_13>> | IKeyValueStore<IssuerMetadataV1_0_13>
+  metadataStores?: Map<string, IKeyValueStore<IssuerMetadata>> | IKeyValueStore<IssuerMetadata>
   issuerOptsStores?: Map<string, IKeyValueStore<IIssuerOptions>> | IKeyValueStore<IIssuerOptions>
   importMetadatas?: IMetadataImportArgs[]
   importIssuerOpts?: IIssuerOptsImportArgs[]
@@ -66,7 +66,7 @@ export type IMetadataImportArgs = IMetadataPersistArgs
 export type IIssuerOptsImportArgs = IIssuerOptsPersistArgs
 
 export interface IMetadataPersistArgs extends Ioid4vciStorePersistArgs {
-  metadata: IssuerMetadataV1_0_13 | CredentialIssuerMetadataOpts // The actual metadata
+  metadata: IssuerMetadata | CredentialIssuerMetadataOpts // The actual metadata
 }
 
 export interface IIssuerOptsPersistArgs extends Ioid4vciStorePersistArgs {

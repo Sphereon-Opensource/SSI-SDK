@@ -1,7 +1,7 @@
 import { VcIssuer } from '@sphereon/oid4vci-issuer'
 import { DIDDocument } from '@veramo/core'
 import { createVciIssuerBuilder } from './functions'
-import { IssuerMetadataV1_0_13 } from '@sphereon/oid4vci-common'
+import { IssuerMetadata } from '@sphereon/oid4vci-common'
 
 import { CredentialDataSupplier } from '@sphereon/oid4vci-issuer'
 import { IIssuerOptions, IMetadataOptions, IRequiredContext } from './types/IOID4VCIIssuer'
@@ -10,7 +10,7 @@ export class IssuerInstance {
   private _issuer: VcIssuer<DIDDocument> | undefined
   private readonly _metadataOptions: IMetadataOptions
   private readonly _issuerOptions: IIssuerOptions
-  private readonly _metadata: IssuerMetadataV1_0_13
+  private readonly _metadata: IssuerMetadata
 
   public constructor({
     issuerOpts,
@@ -19,7 +19,7 @@ export class IssuerInstance {
   }: {
     issuerOpts: IIssuerOptions
     metadataOpts: IMetadataOptions
-    metadata: IssuerMetadataV1_0_13
+    metadata: IssuerMetadata
   }) {
     this._issuerOptions = issuerOpts
     this._metadataOptions = metadataOpts

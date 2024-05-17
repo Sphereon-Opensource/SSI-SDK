@@ -8,7 +8,7 @@ import {
   CredentialResponse,
   Grant,
   JsonLdIssuerCredentialDefinition,
-  CredentialConfigurationSupportedV1_0_13,
+  CredentialConfigurationSupported,
 } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier } from '@sphereon/oid4vci-issuer'
 import { IDIDOptions, ResolveOpts } from '@sphereon/ssi-sdk-ext.did-utils'
@@ -37,7 +37,7 @@ export interface IIssuerDefaultOpts extends IIssuerOptions {}
 
 export interface ICreateOfferArgs extends IIssuerInstanceArgs {
   grants?: Grant
-  credentials?: Record<string, CredentialConfigurationSupportedV1_0_13>
+  credentials?: Record<string, CredentialConfigurationSupported>
   credentialDefinition?: IssuerCredentialDefinition
   credentialOfferUri?: string
   credentialDataSupplierInput?: CredentialDataSupplierInput // Optional storage that can help the credential Data Supplier. For instance to store credential input data during offer creation, if no additional data can be supplied later on

@@ -1,5 +1,5 @@
 import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
-import { CredentialConfigurationSupportedV1_0_13, DefaultURISchemes, Jwt, ProofOfPossessionCallbacks } from '@sphereon/oid4vci-common'
+import { CredentialConfigurationSupported, DefaultURISchemes, Jwt, ProofOfPossessionCallbacks } from '@sphereon/oid4vci-common'
 import {
   CorrelationIdentifierType,
   IBasicCredentialLocaleBranding,
@@ -214,7 +214,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       vcFormatPreferences: this.vcFormatPreferences,
     })
     const credentialBranding = await getCredentialBranding({ credentialsSupported, context })
-    const authorizationCodeURL = openID4VCIClient.getAuthorizationURL()
+    const authorizationCodeURL = openID4VCIClient.authorizationURL
     const openID4VCIClientState = JSON.parse(await openID4VCIClient.exportState())
 
     return {
@@ -233,27 +233,34 @@ export class OID4VCIHolder implements IAgentPlugin {
     const { credentialsSupported, credentialBranding, locale, selectedCredentials } = args
     const credentialSelection: Array<CredentialTypeSelection> = await Promise.all(
       Object.values(credentialsSupported).map(
-        async (credentialMetadata: CredentialConfigurationSupportedV1_0_13): Promise<CredentialTypeSelection> => {
-          if (!('types' in credentialMetadata)) {
+        async (credentialConfigSupported: CredentialConfigurationSupported): Promise<CredentialTypeSelection> => {
+          if (credentialConfigSupported.format === 'vc+sd-jwt') {
             return Promise.reject(Error('SD-JWT not supported yet'))
           }
-          // FIXME this allows for duplicate VerifiableCredential, which the user has no idea which ones those are and we also have a branding map with unique keys, so some branding will not match
-          const defaultCredentialType = 'VerifiableCredential'
-          const credentialType =
-            credentialMetadata.credential_definition.type.find((type: string): boolean => type !== defaultCredentialType) ?? defaultCredentialType
-          const localeBranding = credentialBranding?.[credentialType]
-          const credentialAlias = (
-            await selectCredentialLocaleBranding({
-              locale,
-              localeBranding,
-            })
-          )?.alias
 
-          return {
-            id: uuidv4(),
-            credentialType,
-            credentialAlias: credentialAlias ?? credentialType,
-            isSelected: false,
+          if ('credential_definition' in credentialConfigSupported) {
+            // FIXME this allows for duplicate VerifiableCredential, which the user has no idea which ones those are and we also have a branding map with unique keys, so some branding will not match
+            const defaultCredentialType = 'VerifiableCredential'
+
+            const credentialType =
+              credentialConfigSupported.credential_definition.type.find((type: string): boolean => type !== defaultCredentialType) ??
+              defaultCredentialType
+            const localeBranding = credentialBranding?.[credentialType]
+            const credentialAlias = (
+              await selectCredentialLocaleBranding({
+                locale,
+                localeBranding,
+              })
+            )?.alias
+
+            return {
+              id: uuidv4(),
+              credentialType,
+              credentialAlias: credentialAlias ?? credentialType,
+              isSelected: false,
+            }
+          } else {
+            throw new Error('CredentialConfigurationSupported is not of version 1.13 or above') // FIXME
           }
         },
       ),
@@ -370,23 +377,27 @@ export class OID4VCIHolder implements IAgentPlugin {
         pin,
         authorizationResponse: JSON.parse(await client.exportState()).authorizationCodeResponse,
       })
-      const credentialResponse = await client.acquireCredentials({
-        credentialTypes: issuanceOpt.credential_definition.type,
-        proofCallbacks: callbacks,
-        format: issuanceOpt.format,
-        // TODO: We need to update the machine and add notifications support for actual deferred credentials instead of just waiting/retrying
-        deferredCredentialAwait: true,
-        kid,
-        alg,
-        jti: uuidv4(),
-      })
+      if ('credential_definition' in issuanceOpt) {
+        const credentialResponse = await client.acquireCredentials({
+          credentialTypes: issuanceOpt.credential_definition.type,
+          proofCallbacks: callbacks,
+          format: issuanceOpt.format,
+          // TODO: We need to update the machine and add notifications support for actual deferred credentials instead of just waiting/retrying
+          deferredCredentialAwait: true,
+          kid,
+          alg,
+          jti: uuidv4(),
+        })
 
-      const credential = {
-        id: issuanceOpt.id,
-        issuanceOpt,
-        credentialResponse,
+        const credential = {
+          id: issuanceOpt.id,
+          issuanceOpt,
+          credentialResponse,
+        }
+        return mapCredentialToAccept({ credential })
+      } else {
+        throw new Error('IssuanceOpt is not of version 1.13 or above') // FIXME
       }
-      return mapCredentialToAccept({ credential })
     } catch (error) {
       return Promise.reject(error)
     }

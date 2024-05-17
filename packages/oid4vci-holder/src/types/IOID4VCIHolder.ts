@@ -1,10 +1,5 @@
 import { OpenID4VCIClient, OpenID4VCIClientState } from '@sphereon/oid4vci-client'
-import {
-  AuthorizationResponse,
-  CredentialConfigurationSupportedV1_0_13,
-  CredentialResponse,
-  EndpointMetadataResultV1_0_13,
-} from '@sphereon/oid4vci-common'
+import { AuthorizationResponse, CredentialConfigurationSupported, CredentialResponse, EndpointMetadataResult } from '@sphereon/oid4vci-common'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
@@ -118,8 +113,8 @@ export type OID4VCIMachineContext = {
   locale?: string
   authorizationCodeURL?: string
   credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>>
-  credentialsSupported: Record<string, CredentialConfigurationSupportedV1_0_13>
-  serverMetadata?: EndpointMetadataResultV1_0_13
+  credentialsSupported: Record<string, CredentialConfigurationSupported>
+  serverMetadata?: EndpointMetadataResult
   openID4VCIClientState?: OpenID4VCIClientState
   credentialSelection: Array<CredentialTypeSelection>
   contactAlias: string
@@ -309,8 +304,8 @@ export type OID4VCIMachine = {
 export type InitiationData = {
   authorizationCodeURL?: string
   credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>>
-  credentialsSupported: Record<string, CredentialConfigurationSupportedV1_0_13>
-  serverMetadata: EndpointMetadataResultV1_0_13
+  credentialsSupported: Record<string, CredentialConfigurationSupported>
+  serverMetadata: EndpointMetadataResult
   openID4VCIClientState: OpenID4VCIClientState
 }
 
@@ -319,7 +314,7 @@ export type SelectAppLocaleBrandingArgs = {
   localeBranding?: Array<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding>
 }
 
-export type IssuanceOpts = CredentialConfigurationSupportedV1_0_13 & {
+export type IssuanceOpts = CredentialConfigurationSupported & {
   didMethod: SupportedDidMethodEnum
   keyType: TKeyType
   codecName?: string
@@ -362,12 +357,12 @@ export type GetSupportedCredentialsArgs = {
 }
 
 export type GetCredentialBrandingArgs = {
-  credentialsSupported: Record<string, CredentialConfigurationSupportedV1_0_13>
+  credentialsSupported: Record<string, CredentialConfigurationSupported>
   context: RequiredContext
 }
 
 export type GetPreferredCredentialFormatsArgs = {
-  credentials: Record<string, CredentialConfigurationSupportedV1_0_13>
+  credentials: Record<string, CredentialConfigurationSupported>
   vcFormatPreferences: Array<string>
 }
 
@@ -376,7 +371,7 @@ export type MapCredentialToAcceptArgs = {
 }
 
 export type GetDefaultIssuanceOptsArgs = {
-  credentialSupported: CredentialConfigurationSupportedV1_0_13
+  credentialSupported: CredentialConfigurationSupported
   opts: DefaultIssuanceOpts
   context: RequiredContext
 }
@@ -423,8 +418,8 @@ export type GetCredentialsSupportedArgs = {
 
 export type GetIssuanceOptsArgs = {
   client: OpenID4VCIClient
-  credentialsSupported: Record<string, CredentialConfigurationSupportedV1_0_13>
-  serverMetadata: EndpointMetadataResultV1_0_13
+  credentialsSupported: Record<string, CredentialConfigurationSupported>
+  serverMetadata: EndpointMetadataResult
   context: RequiredContext
   didMethodPreferences: Array<SupportedDidMethodEnum>
   jwtCryptographicSuitePreferences: Array<SignatureAlgorithmEnum>
@@ -432,13 +427,13 @@ export type GetIssuanceOptsArgs = {
 }
 
 export type GetIssuanceDidMethodArgs = {
-  credentialSupported: CredentialConfigurationSupportedV1_0_13
+  credentialSupported: CredentialConfigurationSupported
   client: OpenID4VCIClient
   didMethodPreferences: Array<SupportedDidMethodEnum>
 }
 
 export type GetIssuanceCryptoSuiteArgs = {
-  credentialSupported: CredentialConfigurationSupportedV1_0_13
+  credentialSupported: CredentialConfigurationSupported
   client: OpenID4VCIClient
   jwtCryptographicSuitePreferences: Array<SignatureAlgorithmEnum>
   jsonldCryptographicSuitePreferences: Array<string>
