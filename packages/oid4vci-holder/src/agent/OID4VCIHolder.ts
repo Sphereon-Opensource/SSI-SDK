@@ -213,7 +213,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       openID4VCIClient,
       vcFormatPreferences: this.vcFormatPreferences,
     })
-    const credentialBranding = await getCredentialBranding({ credentialsSupported, context })
+    const credentialBranding = await getCredentialBranding({ credentialsSupported: credentialsSupported, context })
     const authorizationCodeURL = openID4VCIClient.authorizationURL
     const openID4VCIClientState = JSON.parse(await openID4VCIClient.exportState())
 

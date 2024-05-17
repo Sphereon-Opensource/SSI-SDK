@@ -92,9 +92,9 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   const { credentialsSupported, context } = args
   const credentialBranding: Record<string, Array<IBasicCredentialLocaleBranding>> = {}
   await Promise.all(
-    Object.values(credentialsSupported).map(async (credential: CredentialConfigurationSupported): Promise<void> => {
+    Object.values(credentialsSupported).map(async (credentialsConfigSupported: CredentialConfigurationSupported): Promise<void> => {
       const localeBranding: Array<IBasicCredentialLocaleBranding> = await Promise.all(
-        (credential.display ?? []).map(
+        (credentialsConfigSupported.display ?? []).map(
           async (display: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> =>
             await context.agent.ibCredentialLocaleBrandingFrom({ localeBranding: await credentialLocaleBrandingFrom(display) }),
         ),
@@ -102,17 +102,14 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
 
       const defaultCredentialType = 'VerifiableCredential'
       const credentialTypes: Array<string> =
-        // @ts-ignore
-        credential.types.length > 1
-          ? // @ts-ignore
-            credential.types.filter((type: string): boolean => type !== defaultCredentialType)
-          : // @ts-ignore
-            credential.types.length === 0
-            ? [defaultCredentialType]
-            : // @ts-ignore
-              credential.types
+        'types' in credentialsConfigSupported // TODO credentialsConfigSupported.types is deprecated
+          ? (credentialsConfigSupported.types as string[])
+          : 'credential_definition' in credentialsConfigSupported
+            ? credentialsConfigSupported.credential_definition.type
+            : [defaultCredentialType]
 
-      credentialBranding[credentialTypes[0]] = localeBranding // TODO for now taking the first type
+      const filteredCredentialTypes = credentialTypes.filter((type: string): boolean => type !== defaultCredentialType)
+      credentialBranding[filteredCredentialTypes[0]] = localeBranding // TODO for now taking the first type
     }),
   )
 
