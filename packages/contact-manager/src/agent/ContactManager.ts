@@ -3,6 +3,7 @@ import {
   BaseContactEntity,
   ElectronicAddress,
   Identity,
+  IdentityOrigin,
   NonPersistedContact,
   Party as Contact,
   PartyRelationship as ContactRelationship,
@@ -47,7 +48,6 @@ import {
   UpdatePhysicalAddressArgs,
   UpdateRelationshipArgs,
 } from '../types/IContactManager'
-import { IdentityOrigin } from '@sphereon/ssi-sdk.data-store/dist'
 
 // Exposing the methods here for any REST implementation
 export const contactManagerMethods: Array<string> = [

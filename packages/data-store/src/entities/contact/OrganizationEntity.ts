@@ -15,10 +15,10 @@ export class OrganizationEntity extends BaseContactEntity {
   @IsNotEmpty({ message: 'Blank display names are not allowed' })
   displayName!: string
 
-  @Column({name:'owner_id', nullable:true})
+  @Column({name: 'owner_id', nullable: true})
   ownerId?: string
 
-  @Column({name:'tenant_id', nullable:true})
+  @Column({name: 'tenant_id', nullable: true})
   tenantId?: string
 
   @OneToOne(() => PartyEntity)

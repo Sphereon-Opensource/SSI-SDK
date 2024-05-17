@@ -285,7 +285,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'missing_connection_update_example'
       const identity: NonPersistedIdentity = {
         alias: correlationId,
-
         roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierType.DID,

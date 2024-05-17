@@ -100,7 +100,7 @@ export class ContactStore extends AbstractContactStore {
     return partyFrom(result)
   }
 
-  async getParties(args?: GetPartiesArgs): Promise<Array<Party>> {
+  getParties = async (args?: GetPartiesArgs): Promise<Array<Party>> => {
     debug('getParties()', args)
     const { filter } = args ?? {}
     const partyRepository = (await this.dbConnection).getRepository(PartyEntity)
@@ -206,7 +206,7 @@ export class ContactStore extends AbstractContactStore {
     return identityFrom(result)
   }
 
-  async getIdentities(args?: GetIdentitiesArgs): Promise<Array<Identity>> {
+  getIdentities = async (args?: GetIdentitiesArgs): Promise<Array<Identity>> => {
     const { filter } = args ?? {}
     const identityRepository = (await this.dbConnection).getRepository(IdentityEntity)
     const filterConditions = this.buildFilters(filter)
@@ -613,7 +613,7 @@ export class ContactStore extends AbstractContactStore {
     await physicalAddressRepository.delete(physicalAddressId)
   }
 
-  private hasCorrectConnectionConfig(type: ConnectionType, config: NonPersistedConnectionConfig): boolean {
+  private hasCorrectConnectionConfig = (type: ConnectionType, config: NonPersistedConnectionConfig): boolean => {
     switch (type) {
       case ConnectionType.OPENID_CONNECT:
         return isOpenIdConfig(config)
@@ -624,7 +624,7 @@ export class ContactStore extends AbstractContactStore {
     }
   }
 
-  private hasCorrectPartyType(type: PartyTypeType, contact: NonPersistedContact): boolean {
+  private hasCorrectPartyType = (type: PartyTypeType, contact: NonPersistedContact): boolean => {
     switch (type) {
       case PartyTypeType.NATURAL_PERSON:
         return isNaturalPerson(contact)
@@ -635,7 +635,7 @@ export class ContactStore extends AbstractContactStore {
     }
   }
 
-  private async deleteIdentities(identities: Array<IdentityEntity>): Promise<void> {
+  private deleteIdentities = async (identities: Array<IdentityEntity>): Promise<void> => {
     debug('Removing identities', identities)
 
     const connection: DataSource = await this.dbConnection
@@ -671,7 +671,7 @@ export class ContactStore extends AbstractContactStore {
     })
   }
 
-  private async deleteElectronicAddresses(electronicAddresses: Array<ElectronicAddressEntity>): Promise<void> {
+  private deleteElectronicAddresses = async (electronicAddresses: Array<ElectronicAddressEntity>): Promise<void> => {
     debug('Removing electronic addresses', electronicAddresses)
 
     const electronicAddressRepository: Repository<ElectronicAddressEntity> = (await this.dbConnection).getRepository(ElectronicAddressEntity)
@@ -682,7 +682,7 @@ export class ContactStore extends AbstractContactStore {
     })
   }
 
-  private async deletePhysicalAddresses(physicalAddresses: Array<PhysicalAddressEntity>): Promise<void> {
+  private deletePhysicalAddresses = async (physicalAddresses: Array<PhysicalAddressEntity>): Promise<void> => {
     debug('Removing physical addresses', physicalAddresses)
 
     const physicalAddressRepository: Repository<PhysicalAddressEntity> = (await this.dbConnection).getRepository(PhysicalAddressEntity)
@@ -693,7 +693,7 @@ export class ContactStore extends AbstractContactStore {
     })
   }
 
-  private async assertRelationshipSides(leftId: string, rightId: string): Promise<void> {
+  private assertRelationshipSides = async (leftId: string, rightId: string): Promise<void> => {
     const partyRepository: Repository<PartyEntity> = (await this.dbConnection).getRepository(PartyEntity)
     const leftParty: PartyEntity | null = await partyRepository.findOne({
       where: { id: leftId },
@@ -712,15 +712,13 @@ export class ContactStore extends AbstractContactStore {
     }
   }
 
-  private buildFilters<T extends BaseEntity>(filter?: Array<Record<string, any>>): FindOptionsWhere<T>[] | FindOptionsWhere<T> {
+  private buildFilters = <T extends BaseEntity>(filter?: Array<Record<string, any>>): Array<FindOptionsWhere<T>> | FindOptionsWhere<T> => {
     if (!filter) return {}
 
-    return filter.map((condition) => {
-      return this.processCondition(condition)
-    })
+    return filter.map((condition) => this.processCondition(condition))
   }
 
-  private processCondition(condition: Record<string, any>): Record<string, any> {
+  private processCondition = (condition: Record<string, any>): Record<string, any> => {
     const conditionObject: Record<string, any> = {}
 
     Object.keys(condition).forEach((key) => {
@@ -738,7 +736,7 @@ export class ContactStore extends AbstractContactStore {
     return conditionObject
   }
 
-  private buildMetadataCondition(metadata: PartialMetadataItem<MetadataTypes>): FindOptionsWhere<IdentityMetadataItemEntity> {
+  private buildMetadataCondition = (metadata: PartialMetadataItem<MetadataTypes>): FindOptionsWhere<IdentityMetadataItemEntity> => {
     const metadataCondition: FindOptionsWhere<IdentityMetadataItemEntity> = {
       label: metadata.label,
     }

@@ -49,7 +49,7 @@ describe('Contact store tests', (): void => {
     await (await dbConnection).destroy()
   })
 
-  it('should get a party by contact metadata', async (): Promise<void> => {
+  it('should get party by contact metadata', async (): Promise<void> => {
     const dateOfBirth = new Date(2016, 0, 5)
     const party: NonPersistedParty = {
       uri: 'example.com',
@@ -136,8 +136,8 @@ describe('Contact store tests', (): void => {
     expect(result[0]).toBeDefined()
   })
 
-  it('should get a party by both contact & identity metadata', async (): Promise<void> => {
-    const dateOfBirth = new Date(2016, 0, 5)
+  it('should get party by both contact and identity metadata', async (): Promise<void> => {
+    const example_date = new Date(2016, 0, 5)
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
@@ -152,8 +152,8 @@ describe('Contact store tests', (): void => {
         lastName: 'example_last_name',
         displayName: 'example_display_name',
         metadata: [
-          { label: 'grade', value: '5th' },
-          { label: 'dateOfBirth', value: dateOfBirth },
+          { label: 'label1', value: 'example_value' },
+          { label: 'label2', value: example_date },
         ] as Array<MetadataItem<MetadataTypes>>,
       },
     }
@@ -170,11 +170,11 @@ describe('Contact store tests', (): void => {
       },
       metadata: [
         {
-          label: 'label1',
+          label: 'label3',
           value: 'example_value',
         },
         {
-          label: 'label2',
+          label: 'label4',
           value: 'example_value',
         },
       ],
@@ -185,12 +185,14 @@ describe('Contact store tests', (): void => {
     const args: GetPartiesArgs = {
       filter: [
         {
-          identities: { metadata: { label: 'label1', value: 'example_value' } },
-          contact: { metadata: { label: 'dateOfBirth', value: dateOfBirth } },
+          contact: { metadata: { label: 'label2', value: example_date } },
+          identities: { metadata: { label: 'label3', value: 'example_value' } },
         },
       ],
     }
+
     const result: Array<Party> = await contactStore.getParties(args)
+
     expect(result).toBeDefined()
     expect(result.length).toEqual(1)
     expect(result[0]).toBeDefined()

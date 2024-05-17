@@ -242,7 +242,7 @@ export const identityEntityFrom = (entity: NonPersistedIdentity): IdentityEntity
   identityEntity.connection = entity.connection ? connectionEntityFrom(entity.connection) : undefined
   identityEntity.metadata = entity.metadata
     ? entity.metadata
-        .map((item: NonPersistedMetadataItem<MetadataTypes>) => identityMetadataItemEntityFrom(item))
+        .map(identityMetadataItemEntityFrom)
         .filter((entity): entity is IdentityMetadataItemEntity => entity !== undefined)
     : []
   return identityEntity
@@ -344,7 +344,7 @@ export const naturalPersonEntityFrom = (naturalPerson: NonPersistedNaturalPerson
   naturalPersonEntity.tenantId = naturalPerson.tenantId
   naturalPersonEntity.metadata = naturalPerson.metadata
     ? naturalPerson.metadata
-        .map((item: NonPersistedMetadataItem<MetadataTypes>) => contactMetadataItemEntityFrom(item))
+        .map(contactMetadataItemEntityFrom)
         .filter((entity): entity is ContactMetadataItemEntity => entity !== undefined)
     : []
 
@@ -389,7 +389,7 @@ export const organizationEntityFrom = (organization: NonPersistedOrganization): 
   organizationEntity.tenantId = organization.tenantId
   organizationEntity.metadata = organization.metadata
     ? organization.metadata
-        .map((item: NonPersistedMetadataItem<MetadataTypes>) => contactMetadataItemEntityFrom(item))
+        .map(contactMetadataItemEntityFrom)
         .filter((entity): entity is ContactMetadataItemEntity => entity !== undefined)
     : []
 

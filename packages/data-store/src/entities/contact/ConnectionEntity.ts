@@ -13,10 +13,10 @@ export class ConnectionEntity extends BaseEntity {
   @Column('simple-enum', { name: 'type', enum: ConnectionType, nullable: false })
   type!: ConnectionType
 
-  @Column({name:'tenant_id', nullable:true})
+  @Column({name: 'tenant_id', nullable: true})
   tenantId?: string
 
-  @Column({name:'owner_id', nullable:true})
+  @Column({name: 'owner_id', nullable: true})
   ownerId?: string
 
   @OneToOne(() => BaseConfigEntity, (config: OpenIdConfigEntity | DidAuthConfigEntity) => config.connection, {

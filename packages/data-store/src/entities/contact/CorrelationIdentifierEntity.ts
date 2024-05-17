@@ -16,10 +16,10 @@ export class CorrelationIdentifierEntity extends BaseEntity {
   @IsNotEmpty({ message: 'Blank correlation ids are not allowed' })
   correlationId!: string
 
-  @Column({name:'owner_id', nullable:true})
+  @Column({name: 'owner_id', nullable: true})
   ownerId?: string
 
-  @Column({name:'tenant_id', nullable:true})
+  @Column({name: 'tenant_id', nullable: true})
   tenantId?: string
 
   @OneToOne(() => IdentityEntity, (identity: IdentityEntity) => identity.identifier, {

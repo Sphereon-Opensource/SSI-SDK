@@ -24,9 +24,9 @@ export class OpenIdConfigEntity extends BaseConfigEntity {
   @Column('text', { name: 'client_auth_method', nullable: false })
   clientAuthMethod!: 'basic' | 'post' | undefined
 
-  @Column({name:'owner_id', nullable:true})
+  @Column({name: 'owner_id', nullable: true})
   ownerId?: string
 
-  @Column({name:'tenant_id', nullable:true})
+  @Column({name: 'tenant_id', nullable: true})
   tenantId?: string
 }
