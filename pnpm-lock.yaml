@@ -1042,6 +1042,158 @@ importers:
         specifier: ^13.2.1
         version: 13.5.4
 
+  packages/pd-manager:
+    dependencies:
+      '@sphereon/ssi-sdk.data-store':
+        specifier: workspace:*
+        version: link:../data-store
+      cross-fetch:
+        specifier: ^3.1.8
+        version: 3.1.8
+      debug:
+        specifier: ^4.3.4
+        version: 4.3.4
+      typeorm:
+        specifier: ^0.3.20
+        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+    devDependencies:
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
+      '@veramo/remote-client':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/remote-server':
+        specifier: 4.2.0
+        version: 4.2.0(express@4.19.2)
+
+  packages/pd-manager-rest-api:
+    dependencies:
+      '@sphereon/ssi-express-support':
+        specifier: workspace:*
+        version: link:../ssi-express-support
+      '@sphereon/ssi-sdk.core':
+        specifier: workspace:*
+        version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.data-store':
+        specifier: workspace:*
+        version: link:../data-store
+      '@sphereon/ssi-sdk.pd-manager':
+        specifier: workspace:*
+        version: link:../pd-manager
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+      '@veramo/core':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      body-parser:
+        specifier: ^1.19.0
+        version: 1.20.2
+      casbin:
+        specifier: ^5.26.2
+        version: 5.29.0
+      cookie-parser:
+        specifier: ^1.4.5
+        version: 1.4.6
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
+      cross-fetch:
+        specifier: ^3.1.8
+        version: 3.1.8
+      debug:
+        specifier: ^4.3.4
+        version: 4.3.4
+      dotenv-flow:
+        specifier: ^3.2.0
+        version: 3.3.0
+      express:
+        specifier: ^4.18.2
+        version: 4.19.2
+      short-uuid:
+        specifier: ^4.2.2
+        version: 4.2.2
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
+    devDependencies:
+      '@decentralized-identity/ion-sdk':
+        specifier: ^0.6.0
+        version: 0.6.0
+      '@types/body-parser':
+        specifier: ^1.19.2
+        version: 1.19.5
+      '@types/cookie-parser':
+        specifier: ^1.4.3
+        version: 1.4.7
+      '@types/cors':
+        specifier: ^2.8.13
+        version: 2.8.17
+      '@types/debug':
+        specifier: ^4.1.7
+        version: 4.1.12
+      '@types/dotenv-flow':
+        specifier: ^3.2.0
+        version: 3.3.3
+      '@types/express':
+        specifier: ^4.17.13
+        version: 4.17.21
+      '@types/express-http-proxy':
+        specifier: ^1.6.3
+        version: 1.6.6
+      '@types/morgan':
+        specifier: ^1.9.4
+        version: 1.9.9
+      '@types/node':
+        specifier: ^18.15.0
+        version: 18.19.31
+      '@types/passport':
+        specifier: ^1.0.12
+        version: 1.0.16
+      '@types/passport-azure-ad':
+        specifier: ^4.3.1
+        version: 4.3.6
+      '@types/uuid':
+        specifier: ^9.0.1
+        version: 9.0.8
+      '@veramo/data-store':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@veramo/did-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-provider-ion':
+        specifier: 4.2.0
+        version: 4.2.0(@sphereon/react-native-argon2@2.0.9)(react-native@0.74.0)
+      '@veramo/key-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/kms-local':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/utils':
+        specifier: 4.2.0
+        version: 4.2.0
+      morgan:
+        specifier: ^1.10.0
+        version: 1.10.0
+      nock:
+        specifier: ^13.2.1
+        version: 13.5.4
+      passport:
+        specifier: ^0.6.0
+        version: 0.6.0
+      passport-http-bearer:
+        specifier: ^1.0.1
+        version: 1.0.1
+      ts-node:
+        specifier: ^10.9.1
+        version: 10.9.2(@types/node@18.19.31)(typescript@5.4.2)
+      typeorm:
+        specifier: ^0.3.20
+        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+
   packages/presentation-exchange:
     dependencies:
       '@sphereon/pex':
@@ -6044,7 +6196,7 @@ packages:
       '@octokit/request-error': 3.0.3
       '@octokit/types': 9.3.2
       is-plain-object: 5.0.0
-      node-fetch: 2.6.7
+      node-fetch: 2.7.0
       universal-user-agent: 6.0.1
     transitivePeerDependencies:
       - encoding
@@ -13904,7 +14056,7 @@ packages:
     hasBin: true
     dependencies:
       async: 3.2.5
-      chalk: 4.1.0
+      chalk: 4.1.2
       filelist: 1.0.4
       minimatch: 3.1.2
     dev: true
@@ -17121,7 +17273,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       bl: 4.1.0
-      chalk: 4.1.0
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       is-interactive: 1.0.0
