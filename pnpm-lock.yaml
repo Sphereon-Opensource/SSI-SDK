@@ -1044,6 +1044,12 @@ importers:
 
   packages/pd-manager:
     dependencies:
+      '@sphereon/pex':
+        specifier: ^3.3.3
+        version: 3.3.3
+      '@sphereon/pex-models':
+        specifier: ^2.2.4
+        version: 2.2.4
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
