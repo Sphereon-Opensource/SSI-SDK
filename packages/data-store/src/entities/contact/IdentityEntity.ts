@@ -16,7 +16,7 @@ import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { CorrelationIdentifierEntity } from './CorrelationIdentifierEntity'
 import { ConnectionEntity } from './ConnectionEntity'
 import { IdentityMetadataItemEntity } from './IdentityMetadataItemEntity'
-import { IdentityRoleEnum, ValidationConstraint } from '../../types'
+import { IdentityRole, ValidationConstraint } from '../../types'
 import { PartyEntity } from './PartyEntity'
 import { getConstraint } from '../../utils/ValidatorUtils'
 
@@ -35,7 +35,7 @@ export class IdentityEntity extends BaseEntity {
   alias!: string
 
   @Column('simple-array', { name: 'roles', nullable: false })
-  roles!: Array<IdentityRoleEnum>
+  roles!: Array<IdentityRole>
 
   @OneToOne(() => CorrelationIdentifierEntity, (identifier: CorrelationIdentifierEntity) => identifier.identity, {
     cascade: true,

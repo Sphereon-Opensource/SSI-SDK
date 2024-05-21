@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, BaseEntity } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
-import { ConnectionTypeEnum } from '../../types'
+import { ConnectionType } from '../../types'
 import { IdentityEntity } from './IdentityEntity'
 import { OpenIdConfigEntity } from './OpenIdConfigEntity'
 import { DidAuthConfigEntity } from './DidAuthConfigEntity'
@@ -10,8 +10,8 @@ export class ConnectionEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum', { name: 'type', enum: ConnectionTypeEnum, nullable: false })
-  type!: ConnectionTypeEnum
+  @Column('simple-enum', { name: 'type', enum: ConnectionType, nullable: false })
+  type!: ConnectionType
 
   @OneToOne(() => BaseConfigEntity, (config: OpenIdConfigEntity | DidAuthConfigEntity) => config.connection, {
     cascade: true,

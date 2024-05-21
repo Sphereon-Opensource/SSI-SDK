@@ -9,6 +9,7 @@ constants:
     - oid4vciHolderCreateCredentialSelection
     - oid4vciHolderGetContact
     - oid4vciHolderGetCredentials
+    - oid4vciHolderGetCredential
     - oid4vciHolderAddContactIdentity
     - oid4vciHolderAssertValidCredentials
     - oid4vciHolderStoreCredentialBranding

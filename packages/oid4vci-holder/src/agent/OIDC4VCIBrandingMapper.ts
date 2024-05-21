@@ -1,6 +1,7 @@
 import { CredentialsSupportedDisplay } from '@sphereon/oid4vci-common'
 import { IBasicCredentialLocaleBranding } from '@sphereon/ssi-sdk.data-store'
 
+// FIXME should we not move this to the branding plugin?
 export const credentialLocaleBrandingFrom = async (credentialDisplay: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> => {
   return {
     ...(credentialDisplay.name && {
