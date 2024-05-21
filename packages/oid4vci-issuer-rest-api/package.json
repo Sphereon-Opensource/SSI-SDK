@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@sphereon/oid4vci-common": "0.10.4-unstable.40+d38641",
-    "@sphereon/oid4vci-issuer": "0.10.4-unstable.40+d348641",
-    "@sphereon/oid4vci-issuer-server": "0.10.4-unstable.40+d348641",
+    "@sphereon/oid4vci-issuer": "0.10.4-unstable.41+a46804b",
+    "@sphereon/oid4vci-issuer-server": "0.10.4-unstable.41+a46804b",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@sphereon/ssi-sdk.oid4vci-issuer": "workspace:*",
