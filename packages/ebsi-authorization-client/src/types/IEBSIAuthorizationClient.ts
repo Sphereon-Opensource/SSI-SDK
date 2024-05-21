@@ -5,6 +5,18 @@ import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-
 import { PresentationSubmission } from '@sphereon/ssi-types'
 
 /**
+ * Environment
+ * @readonly
+ * @enum {string}
+ */
+export enum EbsiEnvironment {
+  PILOT = 'pilot',
+  CONFORMANCE = 'conformance',
+  MOCK = 'mock',
+  ISSUER = 'issuer'
+}
+
+/**
  * The OpenID scope
  * @readonly
  * @enum {string}
@@ -37,14 +49,13 @@ export enum TokenType {
 }
 
 export interface IEBSIAuthorizationClient extends IPluginMethodMap {
-  ebsiAuthASDiscoveryMetadataGet(): Promise<GetOIDProviderMetadataResponse>
-  ebsiAuthASJwksGet(): Promise<GetOIDProviderJwksResponse>
+  ebsiAuthASDiscoveryMetadataGet(args?: ApiOpts): Promise<GetOIDProviderMetadataResponse>
+  ebsiAuthASJwksGet(args?: ApiOpts): Promise<GetOIDProviderJwksResponse>
   ebsiAuthPresentationDefinitionGet(args: GetPresentationDefinitionArgs): Promise<GetPresentationDefinitionResponse>
   ebsiAuthAccessTokenGet(args: EBSIAuthAccessTokenGetArgs, context: IRequiredContext): Promise<GetAccessTokenResponse>
-  ebsiAuthInitiateSIOPDidAuthRequest(args: InitiateSIOPDidAuthRequestArgs): Promise<InitiateSIOPDidAuthRequestResponse>
-  ebsiAuthCreateSIOPSession(args: CreateSIOPSessionArgs): Promise<CreateSIOPSessionResponse>
-  ebsiAuthCreateOAuth2Session(args: CreateOAuth2SessionArgs): Promise<CreateOAuth2SessionResponse>
 }
+
+export type ApiOpts = { environment?: EbsiEnvironment; version?: string }
 
 /**
  * @typedef EBSIOIDMetadata
@@ -86,9 +97,11 @@ export interface GetOIDProviderJwksSuccessResponse {
  * @typedef GetPresentationDefinitionArgs
  * @type {object}
  * @property {EBSIScope} scope
+ * @property {ApiOpts} [apiOpts] The environment and version of the API
  */
 export interface GetPresentationDefinitionArgs {
   scope: EBSIScope
+  apiOpts?: ApiOpts
 }
 
 /**
@@ -114,12 +127,14 @@ export type GetPresentationDefinitionSuccessResponse = PresentationDefinitionV2 
  * @property {string} vp_token  Signed Verifiable Presentation. See also the VP Token schema definition.
  * @property {PresentationSubmission} presentation_submission Descriptor for the vp_token, linked by presentation_definition. See also the Presentation Definition schema.
  * @property {EBSIScope} scope Possible values: [openid didr_write, openid didr_invite, openid tir_write, openid tir_invite, openid timestamp_write, openid tnt_authorise, openid tnt_create, openid tnt_write] OIDC scope
+ * @property {ApiOpts} [apiOpts] The environment and the version of the API
  */
 export interface GetAccessTokenArgs {
   grant_type?: string
   vp_token: string
   presentation_submission: PresentationSubmission
   scope: EBSIScope
+  apiOpts?: ApiOpts
 }
 
 /**
@@ -131,6 +146,7 @@ export interface GetAccessTokenArgs {
  * @property {string} did The did of the VP issuer
  * @property {string} kid kid in the format: did#kid
  * @property {EBSIScope} scope Needed to retrieve the authentication request
+ * @property {ApiOpts} [apiOpts] The environment and the version of the API
  */
 export interface EBSIAuthAccessTokenGetArgs {
   vc: string
@@ -139,6 +155,7 @@ export interface EBSIAuthAccessTokenGetArgs {
   did: string
   kid: string
   scope: EBSIScope
+  apiOpts?: ApiOpts
 }
 
 /**
@@ -149,6 +166,7 @@ export interface EBSIAuthAccessTokenGetArgs {
  * @property {number} [expires_in] Possible values: >= 1. The lifetime in seconds of the access token
  * @property {EBSIScope} scope  Possible values: [openid didr_write, openid didr_invite, openid tir_invite, openid tir_write, openid timestamp_write, openid tnt_authorise, openid tnt_create, openid tnt_write] The scope of the access token
  * @property {string} id_token ^(([A-Za-z0-9\-_])+\.)([A-Za-z0-9\-_]+)(\.([A-Za-z0-9\-_]+)?$ ID Token value associated with the authenticated session. Presents client's identity. ID Token is issued in a JWS format. See also the "ID Token" schema definition.
+ * @property {ApiOpts} apiOpts The environment and the version of the API
  */
 export interface GetAccessTokenSuccessResponse {
   access_token: string
@@ -156,120 +174,10 @@ export interface GetAccessTokenSuccessResponse {
   expires_in?: number
   scope: EBSIScope
   id_token: string
+  apiOpts?: ApiOpts
 }
 
-/**
- * Natural Person and Legal Entities entry point to initiate a SIOP DID Auth Request.
- * @typedef InitiateSIOPDidAuthRequestArgs
- * @type {object}
- * @property {EBSIScope} scope Scope is used to define the authentication response method.
- */
-export interface InitiateSIOPDidAuthRequestArgs {
-  scope: EBSIScope
-}
 
-/**
- * OpenId DID SIOP Uri response.
- * @typedef InitiateSIOPDidAuthRequestSuccessResponse
- * @type {object}
- * @property {string} client_id
- * @property {string} request
- */
-export interface InitiateSIOPDidAuthRequestSuccessResponse {
-  client_id: string
-  request: string
-}
-
-/**
- * The request body must contain an ID Token (parameter name: id_token). The VP token is deprecated.
- *
- * The ID Token should be a JWT. Its header must contain the signer's kid (e.g. "kid": "did:ebsi:zbM8cCuoBMFNLeQyLiVFyxw#keys-1"). The ID Token payload must contain the following fields:
- *
- *     aud: the URL of the /siop-sessions endpoint, e.g. "https://api-pilot.ebsi.eu/authorisation/v2/siop-sessions"
- *     sub: the subject
- *     sub_jwk: the JWK used to sign the JWT
- *     nonce: a random UUID
- *     claims:
- *         encryption_key: public key used to encrypt the response
- *     responseMode: should be "form_post",
- *     iss: should be "https://self-issued.me/v2",
- *     _vp_token: only if the request also contains a VP token.
- *         presentation_submission: a VP submission object (https://identity.foundation/presentation-exchange/spec/v2.0.0/#presentation-submission).
- * @typedef CreateSIOPSessionArgs
- * @type {object}
- * @property {string} id_token JWS compact serialised ID Token
- * @property {string} [vp_token] A Verifiable Presentation JWT. Only for onboarding.
- */
-export interface CreateSIOPSessionArgs {
-  id_token: string
-  vp_token?: string
-}
-
-/**
- * @typedef Ake1SigPayload
- * @type {object}
- * @property {string} [ake1_enc_payload] Encrypted payload with user's public key
- * @property {string} [ake1_nonce] Nonce used during the authentication process
- * @property {string} [did] API DID
- * @property {string} [kid] Trusted App KID
- * @property {number} [iat] Issued at
- * @property {number} [exp] Expires at
- * @property {string} [iss] Issuer (Authorisation API)
- */
-export interface Ake1SigPayload {
-  ake1_enc_payload?: string
-  ake1_nonce?: string
-  did?: string
-  kid?: string
-  iat?: number
-  exp?: number
-  iss?: string
-}
-
-/**
- * @typedef CreateSIOPSessionSuccessResponse
- * @type {object}
- * @property {string} [ake1_enc_payload] Encrypted payload with user's public key
- * @property {string} [ake1_jws_detached] Detached JWS of AKE1 Signing Payload
- * @property {Ake1SigPayload} [ake1_sig_payload]
- * @property {string} [kid] API KID
- */
-export interface CreateSIOPSessionSuccessResponse {
-  ake1_enc_payload?: string
-  ake1_jws_detached?: string
-  ake1_sig_payload?: Ake1SigPayload
-  kid?: string
-}
-
-/**
- * @typedef CreateOAuth2SessionArgs
- * @type {object}
- * @property {string} grantType Grant type. Must be set to "client_credentials"
- * @property {string} clientAssertionType Client Assertion type. Must be set to "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
- * @property {string} clientAssertion Self-signed JWT
- * @property {EBSIScope} scope Scope is used to define the authentication method. Must be set to "openid did_authn"
- */
-export interface CreateOAuth2SessionArgs {
-  grantType: string
-  clientAssertionType: string
-  clientAssertion: string
-  scope: EBSIScope
-}
-
-/**
- * @typedef CreateOAuth2SessionSuccessResponse
- * @type {object}
- * @property {string} [ake1_enc_payload] Encrypted payload with user's public key
- * @property {string} [ake1_jws_detached] Detached JWS of AKE1 Signing Payload
- * @property {Ake1SigPayload} [ake1_sig_payload]
- * @property {string} [kid] API KID
- */
-export interface CreateOAuth2SessionSuccessResponse {
-  ake1_enc_payload: string
-  ake1_jws_detached: string
-  ake1_sig_payload: Ake1SigPayload
-  kid: string
-}
 
 /**
  * @typedef ExceptionResponse
@@ -292,7 +200,4 @@ export type GetOIDProviderMetadataResponse = EBSIOIDMetadata | ExceptionResponse
 export type GetOIDProviderJwksResponse = GetOIDProviderJwksSuccessResponse | ExceptionResponse
 export type GetPresentationDefinitionResponse = GetPresentationDefinitionSuccessResponse | ExceptionResponse
 export type GetAccessTokenResponse = GetAccessTokenSuccessResponse | ExceptionResponse
-export type InitiateSIOPDidAuthRequestResponse = string | ExceptionResponse
-export type CreateSIOPSessionResponse = CreateSIOPSessionSuccessResponse | ExceptionResponse
-export type CreateOAuth2SessionResponse = CreateOAuth2SessionSuccessResponse | ExceptionResponse
 export type IRequiredContext = IAgentContext<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator>

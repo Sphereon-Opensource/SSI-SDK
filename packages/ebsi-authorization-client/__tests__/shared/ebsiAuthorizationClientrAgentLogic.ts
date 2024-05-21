@@ -1,6 +1,15 @@
-import { IDIDManager, IIdentifier, IKeyManager, MinimalImportableKey, TAgent } from '@veramo/core'
-import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import { EBSIScope, IEBSIAuthorizationClient, ScopeByDefinition } from '../../src'
+import {IDIDManager, IIdentifier, IKeyManager, MinimalImportableKey, TAgent} from '@veramo/core'
+import {IDidAuthSiopOpAuthenticator} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
+import {EBSIScope, IEBSIAuthorizationClient, ScopeByDefinition} from '../../src'
+import {Alg, CredentialResponse, Jwt} from '@sphereon/oid4vci-common';
+import {toJwk} from '@sphereon/ssi-sdk-ext.key-utils';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore
+import {from} from '@trust/keyto';
+import {fetch} from 'cross-fetch';
+import {importJWK, JWK, SignJWT} from 'jose';
+import {OpenID4VCIClient} from "@sphereon/oid4vci-client";
+
 
 type ConfiguredAgent = TAgent<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IEBSIAuthorizationClient>
 
@@ -51,18 +60,83 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     services: [],
     provider: 'did:ebsi',
   }
+
+  const DID_URL_ENCODED = 'did%3Aebsi%3AzeybAiJxzUUrWQ1YM51SY35'
+  const jwk:JWK = toJwk(secp256r1.privateKeyHex, 'Secp256r1', { isPrivateKey: true })
+  const kid = `${identifier.did}#keys-1`
+
+  async function getCredentialOffer(
+    credentialType: 'CTWalletCrossPreAuthorisedInTime' | 'CTWalletCrossAuthorisedInTime' | 'CTWalletCrossPreAuthorisedDeferred' | 'VerifiableAuthorisationToOnboard',
+  ): Promise<string> {
+    const credentialOffer = await fetch(
+      `https://conformance-test.ebsi.eu/conformance/v3/issuer-mock/credential?credential_type=${credentialType}&client_id=${DID_URL_ENCODED}&credential_offer_endpoint=openid-credential-offer%3A%2F%2F`,
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    return await credentialOffer.text();
+  }
+
+  async function proofOfPossessionCallbackFunction(args: Jwt, kid?: string): Promise<string> {
+    const importedJwk = await importJWK(jwk);
+    return await new SignJWT({ ...args.payload })
+      .setProtectedHeader({ ...args.header, kid: kid! })
+      .setIssuer(identifier.did)
+      .setIssuedAt()
+      .setExpirationTime('15m')
+      .sign(importedJwk);
+  }
+
   let id: IIdentifier
+
   describe('EBSI Authorization Client Agent Plugin', (): void => {
     let agent: ConfiguredAgent
+    let credentialResponse: CredentialResponse
 
     beforeAll(async (): Promise<void> => {
       await testContext.setup()
       agent = testContext.getAgent()
+
       id = await agent.didManagerImport({
         did: identifier.did,
         provider: 'did:ebsi',
         keys: [secp256k1, secp256r1],
       })
+
+      const offer = await getCredentialOffer('VerifiableAuthorisationToOnboard')
+      const client = await OpenID4VCIClient.fromURI({
+        uri: offer,
+        kid,
+        alg: Alg.ES256,
+        clientId: DID_URL_ENCODED
+      })
+
+        const url = await client.createAuthorizationRequestUrl({
+          authorizationRequest: {
+            redirectUri: 'openid4vc%3A',
+          },
+        });
+        const result = await fetch(url);
+        console.log(result.text());
+
+      const accessToken = await client.acquireAccessToken({ pin: '0891' });
+      console.log(accessToken);
+
+      const format = 'jwt_vc';
+      credentialResponse = await client.acquireCredentials({
+        credentialTypes: client.getCredentialOfferTypes()[0],
+        format,
+        proofCallbacks: {
+          signCallback: proofOfPossessionCallbackFunction,
+        },
+        kid,
+        deferredCredentialAwait: true,
+        deferredCredentialIntervalInMS: 5000,
+      });
     })
 
     it('Should retrieve the discovery metadata', async () => {

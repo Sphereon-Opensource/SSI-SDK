@@ -121,5 +121,4 @@ agent:
       plugins:
         - $ref: /keyManager
         - $ref: /didManager
-        - $require: './packages/siopv2-oid4vp-op-auth/dist#DidAuthSiopOpAuthenticator'
         - $require: './packages/ebsi-authorization-client/dist#EBSIAuthorizationClient'

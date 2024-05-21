@@ -480,12 +480,21 @@ importers:
         specifier: ^6.2.13
         version: 6.2.13
     devDependencies:
+      '@sphereon/oid4vci-client':
+        specifier: 0.10.3
+        version: 0.10.3(msrcrypto@1.5.8)
+      '@sphereon/oid4vci-common':
+        specifier: 0.10.3
+        version: 0.10.3(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-provider-ebsi':
         specifier: ^0.18.2
         version: 0.18.2
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: ^0.18.2
         version: 0.18.2(msrcrypto@1.5.8)
+      '@sphereon/ssi-sdk-ext.key-utils':
+        specifier: 0.19.0
+        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: ^0.18.2
         version: 0.18.2(msrcrypto@1.5.8)
@@ -510,6 +519,9 @@ importers:
       '@veramo/remote-server':
         specifier: 4.2.0
         version: 4.2.0(express@4.19.2)
+      jose:
+        specifier: ^5.3.0
+        version: 5.3.0
       typeorm:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -736,7 +748,7 @@ importers:
     dependencies:
       '@sphereon/oid4vci-client':
         specifier: 0.10.3
-        version: 0.10.3
+        version: 0.10.3(msrcrypto@1.5.8)
       '@sphereon/oid4vci-common':
         specifier: 0.10.3
         version: 0.10.3(msrcrypto@1.5.8)
@@ -6978,7 +6990,7 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vci-client@0.10.3:
+  /@sphereon/oid4vci-client@0.10.3(msrcrypto@1.5.8):
     resolution: {integrity: sha512-PkIZrwTMrHlgwcDNimWDQaAgi+9ptkV79g/sQJJAe4g8NCt3WyXtsV9l88CdzxDGVGDtzsnYqPXkimxP4eSScw==}
     engines: {node: '>=18'}
     dependencies:
@@ -6990,7 +7002,6 @@ packages:
       - encoding
       - msrcrypto
       - supports-color
-    dev: false
 
   /@sphereon/oid4vci-common@0.10.3(msrcrypto@1.5.8):
     resolution: {integrity: sha512-VsUnDKkKm2yQ3lzAt2CY6vL06mZDK9dhwFT6T92aq03ncbUcS6gelwccdsXEMEfi5r4baFemiFM1O5v+mPjuEA==}
@@ -7009,7 +7020,6 @@ packages:
       uint8arrays: 3.1.1
     transitivePeerDependencies:
       - encoding
-    dev: false
 
   /@sphereon/oid4vci-issuer-server@0.10.3(msrcrypto@1.5.8):
     resolution: {integrity: sha512-tNXUnoKcevdKPaoL4kVwuQhAjkIs/aSnyCgls0Fqkxb6MvUmN4903/KYMBHqH5csH2uaK24+Grnmng3SlRhJKw==}
@@ -14961,6 +14971,10 @@ packages:
 
   /jose@5.2.4:
     resolution: {integrity: sha512-6ScbIk2WWCeXkmzF6bRPmEuaqy1m8SbsRFMa/FLrSCkGIhj8OLVG/IH+XHVmNMx/KUo8cVWEE6oKR4dJ+S0Rkg==}
+    dev: true
+
+  /jose@5.3.0:
+    resolution: {integrity: sha512-IChe9AtAE79ru084ow8jzkN2lNrG3Ntfiv65Cvj9uOCE2m5LNsdHG+9EbxWxAoWRF9TgDOqLN5jm08++owDVRg==}
     dev: true
 
   /js-base64@3.7.7:

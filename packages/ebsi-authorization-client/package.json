@@ -27,8 +27,11 @@
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {
+    "@sphereon/oid4vci-client": "0.10.3",
+    "@sphereon/oid4vci-common": "0.10.3",
     "@sphereon/ssi-sdk-ext.did-provider-ebsi": "^0.18.2",
     "@sphereon/ssi-sdk-ext.key-manager": "^0.18.2",
+    "@sphereon/ssi-sdk-ext.key-utils": "0.19.0",
     "@sphereon/ssi-sdk-ext.kms-local": "^0.18.2",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@types/express": "^4.17.21",
@@ -37,6 +40,7 @@
     "@veramo/key-manager": "4.2.0",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
+    "jose": "^5.3.0",
     "typeorm": "^0.3.20"
   },
   "files": [
