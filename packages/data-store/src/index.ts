@@ -140,4 +140,5 @@ export {
   digitalCredentialsFrom,
   nonPersistedDigitalCredentialEntityFromAddArgs,
   MachineStateInfoEntity,
+  ContactMetadataItemEntity,
 }
