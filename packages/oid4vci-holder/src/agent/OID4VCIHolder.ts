@@ -344,11 +344,11 @@ export class OID4VCIHolder implements IAgentPlugin {
     const callbacks: ProofOfPossessionCallbacks<DIDDocument> = {
       signCallback: (jwt: Jwt, kid?: string) => {
         let iss = jwt.payload.iss
-        /*
-        if (client.isEBSI()) { FIXME
+
+        if (client.isEBSI()) {
           iss = jwt.header.kid?.split('#')[0]
         }
-*/
+
         if (!iss) {
           iss = jwt.header.kid?.split('#')[0]
         }

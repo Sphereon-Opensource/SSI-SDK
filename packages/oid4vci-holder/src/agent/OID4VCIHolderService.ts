@@ -1,7 +1,6 @@
 import {
   CredentialConfigurationSupported,
-  CredentialOfferFormat,
-  CredentialOfferPayloadV1_0_11,
+  CredentialOfferPayloadV1_0_13,
   CredentialResponse,
   CredentialsSupportedDisplay,
   OpenId4VCIVersion,
@@ -329,44 +328,29 @@ export const createIdentifier = async (args: CreateIdentifierArgs): Promise<IIde
 
 export const getCredentialsSupported = async (args: GetCredentialsSupportedArgs): Promise<Record<string, CredentialConfigurationSupported>> => {
   const { client, vcFormatPreferences } = args
-  // todo: remove format here. This is just a temp hack for V11+ issuance of only one credential. Having a single array with formats for multiple credentials will not work. This should be handled in VCI itself
-  let format: string[] | undefined = undefined
-  if (
-    client.version() > OpenId4VCIVersion.VER_1_0_09 &&
-    client.version() < OpenId4VCIVersion.VER_1_0_13 &&
-    typeof client.credentialOffer?.credential_offer === 'object'
-  ) {
-    const credentialOffer = client.credentialOffer.credential_offer as CredentialOfferPayloadV1_0_11
-    format = credentialOffer.credentials
-      .filter((format: string | CredentialOfferFormat): boolean => typeof format !== 'string')
-      .map((format: string | CredentialOfferFormat) => (format as CredentialOfferFormat).format)
-    if (format.length === 0) {
-      format = undefined // Otherwise we would match nothing
-    }
+
+  if (client.version() < OpenId4VCIVersion.VER_1_0_13 || typeof client.credentialOffer?.credential_offer !== 'object') {
+    throw new Error(`Unsupported client version: ${client.version()}. Upgrade to OID4VCI library version >= 1.0.13.`)
   }
 
-  // This restricts to initiation types when there is an offer
-  const supportedCredentials = client.getCredentialsSupported() as Record<string, CredentialConfigurationSupported>
-  let credentialsSupported = await getPreferredCredentialFormats({ credentials: supportedCredentials, vcFormatPreferences })
-  if (!credentialsSupported || Object.keys(credentialsSupported).length === 0) {
-    credentialsSupported = client.getCredentialsSupported() as Record<string, CredentialConfigurationSupported>
-    /*  FIXME we don't have credential_offer.credentials anymore in v13
-    credentialsSupported =
-      client.credentialOffer?.credential_offer.credentials
-        .filter((format: string | CredentialOfferFormat): boolean => typeof format !== 'string')
-        .map((credential: string | CredentialOfferFormat) => {
-          return {
-            format: (<CredentialOfferFormat>credential).format,
-            // todo: Move this to VCI lib. A function to get the types from an offer format, including older versions of the spec
-            types:
-              (<CredentialOfferFormatJwtVcJsonLdAndLdpVc>credential).credential_definition?.types ??
-              (<CredentialOfferFormatJwtVcJson>credential).types,
-          } as CredentialSupported
-        }) ?? [] // todo check if this addition is ok ?? []
-*/
+  const allSupportedCredentialConfigs = client.getCredentialsSupported() as Record<string, CredentialConfigurationSupported>
+  let credentialConfigsSupported = await getPreferredCredentialFormats({
+    credentials: allSupportedCredentialConfigs,
+    vcFormatPreferences,
+  })
+
+  // Fallback to all configurations if getPreferredCredentialFormats returns none
+  if (Object.keys(credentialConfigsSupported).length === 0) {
+    credentialConfigsSupported = allSupportedCredentialConfigs
   }
 
-  return credentialsSupported
+  // Filter configurations based on the credential offer IDs
+  const credentialOffer = client.credentialOffer.credential_offer as CredentialOfferPayloadV1_0_13
+  const credentialsToOffer = Object.fromEntries(
+    Object.entries(credentialConfigsSupported).filter(([key]) => credentialOffer.credential_configuration_ids.includes(key)),
+  )
+
+  return Object.keys(credentialsToOffer).length > 0 ? credentialsToOffer : credentialConfigsSupported
 }
 
 export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<IssuanceOpts>> => {
