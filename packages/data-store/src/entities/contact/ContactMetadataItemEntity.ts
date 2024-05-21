@@ -5,7 +5,7 @@ import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { getConstraint } from '../../utils/ValidatorUtils'
 
 @Entity('ContactMetadata')
-export class ContactMetadataItemEntity extends BaseEntity {
+export class ContactMetadataItemEntity extends BaseEntity implements MetadataEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
