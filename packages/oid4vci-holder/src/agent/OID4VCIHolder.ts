@@ -15,10 +15,9 @@ import { v4 as uuidv4 } from 'uuid'
 import { OID4VCIMachine } from '../machine/oid4vciMachine'
 import {
   getCredentialBranding,
-  getCredentialsSupported,
+  getCredentialConfigsSupported,
   getIdentifier,
   getIssuanceOpts,
-  getSupportedCredentials,
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
   signatureAlgorithmFromKey,
@@ -209,8 +208,8 @@ export class OID4VCIHolder implements IAgentPlugin {
     })
 
     const serverMetadata = await openID4VCIClient.retrieveServerMetadata()
-    const credentialsSupported = await getSupportedCredentials({
-      openID4VCIClient,
+    const credentialsSupported = await getCredentialConfigsSupported({
+      client: openID4VCIClient,
       vcFormatPreferences: this.vcFormatPreferences,
     })
     const credentialBranding = await getCredentialBranding({ credentialsSupported: credentialsSupported, context })
@@ -305,7 +304,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
 
     const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState })
-    const credentialsSupported = await getCredentialsSupported({ client, vcFormatPreferences: this.vcFormatPreferences })
+    const credentialsSupported = await getCredentialConfigsSupported({ client, vcFormatPreferences: this.vcFormatPreferences })
     const serverMetadata = await client.retrieveServerMetadata()
     const issuanceOpts = await getIssuanceOpts({
       client,

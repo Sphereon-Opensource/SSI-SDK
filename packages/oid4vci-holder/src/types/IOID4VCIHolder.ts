@@ -351,8 +351,8 @@ export type CredentialToAccept = {
   credentialResponse: CredentialResponse
 }
 
-export type GetSupportedCredentialsArgs = {
-  openID4VCIClient: OpenID4VCIClient
+export type GetCredentialConfigsSupportedArgs = {
+  client: OpenID4VCIClient
   vcFormatPreferences: Array<string>
 }
 
@@ -409,11 +409,6 @@ export type CreateIdentifierCreateOpts = {
   kms?: KeyManagementSystemEnum
   alias?: string
   options?: IdentifierProviderOpts
-}
-
-export type GetCredentialsSupportedArgs = {
-  client: OpenID4VCIClient
-  vcFormatPreferences: Array<string>
 }
 
 export type GetIssuanceOptsArgs = {

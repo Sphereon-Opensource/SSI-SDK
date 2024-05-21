@@ -25,7 +25,7 @@ import {
   CreateIdentifierArgs,
   GetAuthenticationKeyArgs,
   GetCredentialBrandingArgs,
-  GetCredentialsSupportedArgs,
+  GetCredentialConfigsSupportedArgs,
   GetDefaultIssuanceOptsArgs,
   GetIdentifierArgs,
   GetIssuanceCryptoSuiteArgs,
@@ -34,7 +34,6 @@ import {
   GetOrCreatePrimaryIdentifierArgs,
   GetPreferredCredentialFormatsArgs,
   GetSignerArgs,
-  GetSupportedCredentialsArgs,
   IdentifierAliasEnum,
   IdentifierOpts,
   IssuanceOpts,
@@ -56,36 +55,6 @@ import {
 } from '../types/IOID4VCIHolder'
 
 export const DID_PREFIX = 'did'
-
-export const getSupportedCredentials = async (args: GetSupportedCredentialsArgs): Promise<Record<string, CredentialConfigurationSupported>> => {
-  const { openID4VCIClient } = args
-  //const { openID4VCIClient, vcFormatPreferences } = args
-
-  if (!openID4VCIClient.credentialOffer) {
-    return Promise.reject(Error('openID4VCIClient has no credentialOffer'))
-  }
-
-  // todo: remove format here. This is just a temp hack for V11+ issuance of only one credential. Having a single array with formats for multiple credentials will not work. This should be handled in VCI itself
-  /* FIXME support older versions again
-  if (openID4VCIClient.version() > OpenId4VCIVersion.VER_1_0_09  && openID4VCIClient.version() < OpenId4VCIVersion.VER_1_0_13
-      && typeof openID4VCIClient.credentialOffer.credential_offer === 'object') {
-    let format: string[] | undefined = undefined
-    const credentialOffer = openID4VCIClient.credentialOffer.credential_offer as CredentialOfferPayloadV1_0_11
-    format = credentialOffer.credentials
-      .filter((format: string | CredentialOfferFormat): boolean => typeof format !== 'string')
-      .map((format: string | CredentialOfferFormat) => (format as CredentialOfferFormat).format)
-    if (format?.length === 0) {
-      format = undefined // Otherwise we would match nothing
-    }
-    const credentialsSupported: Record<string, CredentialConfigurationSupported> = openID4VCIClient.getCredentialsSupported(true, format)
-    return getPreferredCredentialFormats({ credentials: credentialsSupported, vcFormatPreferences })
-  }
-*/
-  if (openID4VCIClient.version() > OpenId4VCIVersion.VER_1_0_12) {
-    return openID4VCIClient.getCredentialsSupported() as Record<string, CredentialConfigurationSupported>
-  }
-  throw new Error('FIXME') // FIXME
-}
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
@@ -326,7 +295,9 @@ export const createIdentifier = async (args: CreateIdentifierArgs): Promise<IIde
   return identifier
 }
 
-export const getCredentialsSupported = async (args: GetCredentialsSupportedArgs): Promise<Record<string, CredentialConfigurationSupported>> => {
+export const getCredentialConfigsSupported = async (
+  args: GetCredentialConfigsSupportedArgs,
+): Promise<Record<string, CredentialConfigurationSupported>> => {
   const { client, vcFormatPreferences } = args
 
   if (client.version() < OpenId4VCIVersion.VER_1_0_13 || typeof client.credentialOffer?.credential_offer !== 'object') {
