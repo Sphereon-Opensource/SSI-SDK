@@ -450,23 +450,23 @@ importers:
   packages/ebsi-authorization-client:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.6.3
-        version: 0.6.3
+        specifier: 0.6.4
+        version: 0.6.4
       '@sphereon/pex':
         specifier: ^3.3.3
         version: 3.3.3
       '@sphereon/pex-models':
-        specifier: ^2.2.2
+        specifier: ^2.2.4
         version: 2.2.4
+      '@sphereon/ssi-sdk.oid4vci-holder':
+        specifier: workspace:*
+        version: link:../oid4vci-holder
       '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth':
         specifier: workspace:*
         version: link:../siopv2-oid4vp-op-auth
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
-      '@transmute/json-web-signature':
-        specifier: 0.7.0-unstable.81
-        version: 0.7.0-unstable.81
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -501,9 +501,15 @@ importers:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
+      '@transmute/json-web-signature':
+        specifier: 0.7.0-unstable.81
+        version: 0.7.0-unstable.81
       '@types/express':
         specifier: ^4.17.21
         version: 4.17.21
+      '@types/express-serve-static-core':
+        specifier: ^4.19.1
+        version: 4.19.1
       '@types/node':
         specifier: ^20.12.7
         version: 20.12.12
@@ -519,6 +525,9 @@ importers:
       '@veramo/remote-server':
         specifier: 4.2.0
         version: 4.2.0(express@4.19.2)
+      express:
+        specifier: ^4.19.2
+        version: 4.19.2
       jose:
         specifier: ^5.3.0
         version: 5.3.0
@@ -6123,7 +6132,7 @@ packages:
       '@octokit/request-error': 3.0.3
       '@octokit/types': 9.3.2
       is-plain-object: 5.0.0
-      node-fetch: 2.6.7
+      node-fetch: 2.7.0
       universal-user-agent: 6.0.1
     transitivePeerDependencies:
       - encoding
@@ -6853,30 +6862,6 @@ packages:
     dependencies:
       '@sinonjs/commons': 1.8.6
     dev: true
-
-  /@sphereon/did-auth-siop@0.6.3:
-    resolution: {integrity: sha512-bcHHlipsp5yKs4v8QiCtW0Hx4cXdSxAlUpFjf9lSWnYYiafWPtjhO6fsccXvw6EbpKbvkBpQd6FOCY3yBIUgMA==}
-    engines: {node: '>=18'}
-    dependencies:
-      '@astronautlabs/jsonpath': 1.1.2
-      '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/pex': 3.3.3
-      '@sphereon/pex-models': 2.2.4
-      '@sphereon/ssi-types': link:packages/ssi-types
-      '@sphereon/wellknown-dids-client': 0.1.3
-      cross-fetch: 4.0.0
-      did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
-      did-resolver: 4.1.0
-      events: 3.3.0
-      language-tags: 1.0.9
-      multiformats: 12.1.3
-      qs: 6.12.1
-      sha.js: 2.4.11
-      uint8arrays: 3.1.1
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - encoding
-    dev: false
 
   /@sphereon/did-auth-siop@0.6.4:
     resolution: {integrity: sha512-0hw/lypy7kHpChJc/206XFd1XVhfUEIg2RIuw2u0RE3POqMeuOL5DWiPHh3e7Oo0nzG9gdgJC8Yffv69d9QIrg==}
@@ -8262,6 +8247,15 @@ packages:
       '@types/send': 0.17.4
     dev: true
 
+  /@types/express-serve-static-core@4.19.1:
+    resolution: {integrity: sha512-ej0phymbFLoCB26dbbq5PGScsf2JAJ4IJHjG10LalgUV36XKTmA4GdA+PVllKvRk0sEKt64X8975qFnkSi0hqA==}
+    dependencies:
+      '@types/node': 18.19.31
+      '@types/qs': 6.9.15
+      '@types/range-parser': 1.2.7
+      '@types/send': 0.17.4
+    dev: true
+
   /@types/express-session@1.18.0:
     resolution: {integrity: sha512-27JdDRgor6PoYlURY+Y5kCakqp5ulC0kmf7y+QwaY+hv9jEFuQOThgkjyA53RP3jmKuBsH5GR6qEfFmvb8mwOA==}
     dependencies:
@@ -8272,7 +8266,7 @@ packages:
     resolution: {integrity: sha512-6bSZTPaTIACxn48l50SR+axgrqm6qXFIxrdAKaG6PaJk3+zuUr35hBlgT7vOmJcum+OEaIBLtHV/qloEAFITeA==}
     dependencies:
       '@types/body-parser': 1.19.5
-      '@types/express-serve-static-core': 4.19.0
+      '@types/express-serve-static-core': 4.19.1
       '@types/qs': 6.9.15
       '@types/serve-static': 1.15.7
     dev: true
