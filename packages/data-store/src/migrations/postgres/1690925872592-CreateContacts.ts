@@ -15,7 +15,7 @@ export class CreateContacts1690925872592 implements MigrationInterface {
     await queryRunner.query(`CREATE TYPE "public"."PartyType_type_enum" AS ENUM('naturalPerson', 'organization')`)
     await queryRunner.query(`CREATE TYPE "public"."PartyOrigin_type_enum" AS ENUM('INTERNAL', 'EXTERNAL')`)
     await queryRunner.query(
-      `CREATE TABLE "PartyType" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."PartyType_type_enum" NOT NULL, "party_origin" "public"."PartyOrigin_type_enum" NOT NULL DEFAULT 'EXTERNAL', "name" character varying(255) NOT NULL, "description" character varying(255), "tenant_id" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_PartyType_name" UNIQUE ("name"), CONSTRAINT "PK_PartyType_id" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "PartyType" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."PartyType_type_enum" NOT NULL, "party_origin" "public"."PartyOrigin_type_enum" NOT NULL, "name" character varying(255) NOT NULL, "description" character varying(255), "tenant_id" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_PartyType_name" UNIQUE ("name"), CONSTRAINT "PK_PartyType_id" PRIMARY KEY ("id"))`,
     )
     await queryRunner.query(`CREATE UNIQUE INDEX "IDX_PartyType_type_tenant_id" ON "PartyType" ("type", "tenant_id")`)
     await queryRunner.query(
@@ -41,7 +41,9 @@ export class CreateContacts1690925872592 implements MigrationInterface {
     await queryRunner.query(`CREATE INDEX "IDX_BaseConfig_type" ON "BaseConfig" ("type")`)
     await queryRunner.query(`ALTER TABLE "Identity" RENAME COLUMN "contactId" TO "partyId"`)
     await queryRunner.query(`ALTER TABLE "Identity" ALTER COLUMN "roles" SET NOT NULL`)
-    await queryRunner.query(`ALTER TABLE "Identity" ADD COLUMN "identity_origin" SET NOT NULL`)
+    await queryRunner.query(`CREATE TYPE "public"."IdentityOrigin_type_enum" AS ENUM('INTERNAL', 'EXTERNAL')`)
+    await queryRunner.query(`ALTER TABLE "Identity" ADD COLUMN "identity_origin" "public"."IdentityOrigin_type_enum" DEFAULT 'EXTERNAL' NOT NULL`)
+    await queryRunner.query(`ALTER TABLE "Identity" ALTER COLUMN "identity_origin" DROP DEFAULT`)
 
     await queryRunner.query(
       `ALTER TABLE "CorrelationIdentifier" ADD CONSTRAINT "FK_CorrelationIdentifier_identity_id" FOREIGN KEY ("identity_id") REFERENCES "Identity"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
