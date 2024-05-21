@@ -86,6 +86,7 @@ export default (testContext: {
     describe('EBSI Authorization Client Agent Plugin', (): void => {
         let agent: ConfiguredAgent
         let credentialResponse: CredentialResponse
+        let server: http.Server<any, any>
 
         beforeAll(async (): Promise<void> => {
             await testContext.setup()
@@ -103,14 +104,16 @@ export default (testContext: {
                 console.log(`MOCK CALLED, with params:\r\n ${JSON.stringify(req.query, null, 2)}`)
                 console.log('TODO: Fix issues the AS responds with and then call the token endpoint etc from here')
 
+                // Once the above is fixed, you will get a code back as query param
+                const code = 'code from query param here'
 
 
-                const accessToken = await client.acquireAccessToken();
+                const accessToken = await client.acquireAccessToken({code});
                 console.log(accessToken);
 
                 const format = 'jwt_vc';
                 credentialResponse = await client.acquireCredentials({
-                    credentialTypes: client.getCredentialOfferTypes()[0],
+                    credentialTypes: ["VerifiableCredential", "VerifiableAttestation", "VerifiableAuthorisationToOnboard"],
                     format,
                     proofCallbacks: {
                         signCallback: proofOfPossessionCallbackFunction,
@@ -122,7 +125,7 @@ export default (testContext: {
                 expect(credentialResponse).toBeDefined()
                 res.json({"message": "Mock called!"});
             });
-            const server = http.createServer(app)
+            server = http.createServer(app)
             server.listen(port)
 
             const REDIRECT_MOCK_URL = `http://localhost:${port}/mock`
@@ -153,7 +156,6 @@ export default (testContext: {
             console.log(`URL: ${url}`)
             const result = await fetch(url);
             console.log(await result.text());
-
 
 
         })
@@ -270,7 +272,11 @@ export default (testContext: {
             ).resolves.toEqual({})
         })
 
-        afterAll(testContext.tearDown)
+        afterAll(() => {
+            server?.close()
+            server?.unref()
+            testContext.tearDown
+        })
     })
 }
 
