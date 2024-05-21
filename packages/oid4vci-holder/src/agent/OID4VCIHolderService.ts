@@ -315,13 +315,19 @@ export const getCredentialConfigsSupported = async (
     credentialConfigsSupported = allSupportedCredentialConfigs
   }
 
-  // Filter configurations based on the credential offer IDs
-  const credentialOffer = client.credentialOffer.credential_offer as CredentialOfferPayloadV1_0_13
-  const credentialsToOffer = Object.fromEntries(
-    Object.entries(credentialConfigsSupported).filter(([key]) => credentialOffer.credential_configuration_ids.includes(key)),
-  )
-
-  return Object.keys(credentialsToOffer).length > 0 ? credentialsToOffer : credentialConfigsSupported
+  if (client.credentialOffer !== undefined) {
+    // Filter configurations based on the credential offer IDs
+    const credentialOffer = client.credentialOffer.credential_offer as CredentialOfferPayloadV1_0_13
+    const credentialsToOffer = Object.fromEntries(
+      Object.entries(credentialConfigsSupported).filter(([key]) => credentialOffer.credential_configuration_ids.includes(key)),
+    )
+    if (Object.keys(credentialsToOffer).length === 0) {
+      throw new Error(`No matching supported credential configs found for offer ${credentialOffer.credential_configuration_ids.join(', ')}`)
+    }
+    return credentialsToOffer
+  } else {
+    return credentialConfigsSupported
+  }
 }
 
 export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<IssuanceOpts>> => {

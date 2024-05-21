@@ -66,7 +66,7 @@ export type GetMachineArgs = {
 export type InitiateOID4VCIArgs = Pick<OID4VCIMachineContext, 'requestData'>
 export type CreateCredentialSelectionArgs = Pick<
   OID4VCIMachineContext,
-  'credentialsSupported' | 'credentialBranding' | 'selectedCredentials' | 'locale'
+  'credentialsSupported' | 'credentialBranding' | 'selectedCredentials' | 'locale' | 'openID4VCIClientState'
 >
 export type GetContactArgs = Pick<OID4VCIMachineContext, 'serverMetadata'>
 export type GetCredentialsArgs = Pick<OID4VCIMachineContext, 'verificationCode' | 'openID4VCIClientState'>

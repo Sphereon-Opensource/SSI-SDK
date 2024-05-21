@@ -229,7 +229,11 @@ export class OID4VCIHolder implements IAgentPlugin {
     args: CreateCredentialSelectionArgs,
     context: RequiredContext,
   ): Promise<Array<CredentialTypeSelection>> {
-    const { credentialsSupported, credentialBranding, locale, selectedCredentials } = args
+    const { credentialBranding, locale, selectedCredentials, openID4VCIClientState } = args
+
+    const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState! }) // TODO see if we need the check openID4VCIClientState defined
+    const credentialsSupported = await getCredentialConfigsSupported({ client, vcFormatPreferences: this.vcFormatPreferences })
+
     const credentialSelection: Array<CredentialTypeSelection> = await Promise.all(
       Object.values(credentialsSupported).map(
         async (credentialConfigSupported: CredentialConfigurationSupported): Promise<CredentialTypeSelection> => {
