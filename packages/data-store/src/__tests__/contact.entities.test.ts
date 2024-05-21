@@ -1,5 +1,15 @@
 import { DataSource, FindOptionsWhere } from 'typeorm'
-import { DataStoreContactEntities, DataStoreMigrations, IdentityOrigin, IdentityRole, PartyOrigin, partyTypeFrom } from '../index'
+import {
+  contactMetadataItemEntityFrom,
+  DataStoreContactEntities,
+  DataStoreMigrations,
+  identityMetadataItemEntityFrom,
+  IdentityOrigin,
+  IdentityRole,
+  MetadataTypes,
+  PartyOrigin,
+  partyTypeFrom,
+} from '../index'
 import { BaseContactEntity } from '../entities/contact/BaseContactEntity'
 import { ConnectionEntity } from '../entities/contact/ConnectionEntity'
 import { CorrelationIdentifierEntity } from '../entities/contact/CorrelationIdentifierEntity'
@@ -44,6 +54,7 @@ import {
   partyTypeEntityFrom,
   physicalAddressEntityFrom,
 } from '../utils/contact/MappingUtils'
+import { ContactMetadataItemEntity } from '../entities/contact/ContactMetadataItemEntity'
 
 // TODO write test adding two contacts reusing the same contactType
 
@@ -1413,7 +1424,7 @@ describe('Database entities tests', (): void => {
       type: PartyTypeType.NATURAL_PERSON,
       origin: PartyOrigin.INTERNAL,
       tenantId,
-      name: `${name} + 1`,
+      name: `${name}2`,
     }
 
     const partyTypeEntity2: PartyTypeEntity = partyTypeEntityFrom(partyType2)
@@ -2531,5 +2542,87 @@ describe('Database entities tests', (): void => {
     await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
       'Blank country codes are not allowed',
     )
+  })
+
+  it('Should save identity metadata item to database', async (): Promise<void> => {
+    const metadataItem = {
+      label: 'example_label',
+      value: 'example_value',
+    }
+
+    const identityMetadataItemEntity = identityMetadataItemEntityFrom(metadataItem)
+
+    await dbConnection.getRepository(IdentityMetadataItemEntity).save(identityMetadataItemEntity!)
+
+    const fromDb = await dbConnection.getRepository(IdentityMetadataItemEntity).findOne({
+      where: { label: metadataItem.label },
+    })
+
+    expect(fromDb).toBeDefined()
+    expect(fromDb?.label).toEqual(metadataItem.label)
+    expect(fromDb?.stringValue).toEqual(metadataItem.value)
+  })
+
+  it('Should throw error when saving identity metadata item with blank label', async (): Promise<void> => {
+    const metadataItem = {
+      label: '',
+      value: 'example_value',
+    }
+
+    const identityMetadataItemEntity = identityMetadataItemEntityFrom(metadataItem)
+
+    await expect(dbConnection.getRepository(IdentityMetadataItemEntity).save(identityMetadataItemEntity!)).rejects.toThrowError(
+      'Blank metadata labels are not allowed',
+    )
+  })
+
+  it('Should throw error when saving identity metadata item with unsupported object type', async (): Promise<void> => {
+    const metadataItem = {
+      label: 'example_label',
+      value: { unsupported: 'object' } as unknown as MetadataTypes, // Force not to have MetadataTypes
+    }
+
+    expect(() => identityMetadataItemEntityFrom(metadataItem)).toThrowError('Unsupported object type: Object for value [object Object]')
+  })
+
+  it('Should save contact metadata item to database', async (): Promise<void> => {
+    const metadataItem = {
+      label: 'example_label',
+      value: 'example_value',
+    }
+
+    const contactMetadataItemEntity = contactMetadataItemEntityFrom(metadataItem)
+
+    await dbConnection.getRepository(ContactMetadataItemEntity).save(contactMetadataItemEntity!)
+
+    const fromDb = await dbConnection.getRepository(ContactMetadataItemEntity).findOne({
+      where: { label: metadataItem.label },
+    })
+
+    expect(fromDb).toBeDefined()
+    expect(fromDb?.label).toEqual(metadataItem.label)
+    expect(fromDb?.stringValue).toEqual(metadataItem.value)
+  })
+
+  it('Should throw error when saving contact metadata item with blank label', async (): Promise<void> => {
+    const metadataItem = {
+      label: '',
+      value: 'example_value',
+    }
+
+    const contactMetadataItemEntity = contactMetadataItemEntityFrom(metadataItem)
+
+    await expect(dbConnection.getRepository(ContactMetadataItemEntity).save(contactMetadataItemEntity!)).rejects.toThrowError(
+      'Blank metadata labels are not allowed',
+    )
+  })
+
+  it('Should throw error when saving contact metadata item with unsupported object type', async (): Promise<void> => {
+    const metadataItem = {
+      label: 'example_label',
+      value: { unsupported: 'object' } as unknown as MetadataTypes, // Force not to have MetadataTypes
+    }
+
+    expect(() => contactMetadataItemEntityFrom(metadataItem)).toThrowError('Unsupported object type: Object for value [object Object]')
   })
 })

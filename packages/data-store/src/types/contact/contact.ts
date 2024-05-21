@@ -62,7 +62,7 @@ export type Identity = {
   lastUpdatedAt: Date
 }
 export type NonPersistedIdentity = Omit<Identity, 'id' | 'identifier' | 'connection' | 'metadata' | 'origin' | 'createdAt' | 'lastUpdatedAt'> & {
-  origin?: IdentityOrigin
+  origin: IdentityOrigin
   identifier: NonPersistedCorrelationIdentifier
   connection?: NonPersistedConnection
   metadata?: Array<NonPersistedMetadataItem<MetadataTypes>>

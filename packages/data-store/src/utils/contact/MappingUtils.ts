@@ -7,7 +7,6 @@ import {
   DidAuthConfig,
   ElectronicAddress,
   Identity,
-  IdentityOrigin,
   MetadataItem,
   NaturalPerson,
   NonPersistedConnection,
@@ -110,7 +109,7 @@ export const contactFrom = (contact: BaseContactEntity): Contact => {
 }
 
 export const isNaturalPerson = (contact: NonPersistedContact | BaseContactEntity): contact is NonPersistedNaturalPerson | NaturalPersonEntity =>
-  'firstName' in contact && 'lastName' in contact && !('grade' in contact) && !('dateOfBirth' in contact)
+  'firstName' in contact && 'lastName' in contact
 
 export const isOrganization = (contact: NonPersistedContact | BaseContactEntity): contact is NonPersistedOrganization | OrganizationEntity =>
   'legalName' in contact
@@ -234,7 +233,7 @@ export const physicalAddressFrom = (physicalAddress: PhysicalAddressEntity): Phy
 export const identityEntityFrom = (entity: NonPersistedIdentity): IdentityEntity => {
   const identityEntity: IdentityEntity = new IdentityEntity()
   identityEntity.alias = entity.alias
-  identityEntity.origin = entity.origin ?? IdentityOrigin.EXTERNAL
+  identityEntity.origin = entity.origin
   identityEntity.ownerId = entity.ownerId
   identityEntity.tenantId = entity.tenantId
   identityEntity.roles = entity.roles
@@ -295,7 +294,8 @@ const metadataItemEntityFrom = <T extends MetadataTypes, U extends { new (): any
       if (value instanceof Date) {
         metadataItemEntity.dateValue = value
       } else {
-        throw new Error(`Unsupported object type: ${metadataItemEntity.valueType}`)
+        // For now, we only support / implement not-primitive type Date in the entity
+        throw new Error(`Unsupported object type: ${metadataItemEntity.valueType} for value ${value}`)
       }
       break
   }

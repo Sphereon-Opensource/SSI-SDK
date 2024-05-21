@@ -20,13 +20,13 @@ export class IdentityMetadataItemEntity extends BaseEntity {
   @Column({ name: 'stringValue', length: 255, nullable: true })
   stringValue?: string
 
-  @Column({ name: 'numberValue', nullable: false })
+  @Column({ name: 'numberValue', nullable: true })
   numberValue?: number
 
-  @Column({ name: 'dateValue', nullable: false })
+  @Column({ name: 'dateValue', nullable: true })
   dateValue?: Date
 
-  @Column({ name: 'boolValue', nullable: false })
+  @Column({ name: 'boolValue', nullable: true })
   boolValue?: boolean
 
   @ManyToOne(() => IdentityEntity, (identity: IdentityEntity) => identity.metadata, { cascade: ['insert', 'update'], onDelete: 'CASCADE' })

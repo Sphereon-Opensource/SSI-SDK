@@ -4,8 +4,8 @@ import {
   ElectronicAddress,
   GetPartiesArgs,
   Identity,
-  IdentityRole,
   IdentityOrigin,
+  IdentityRole,
   NaturalPerson,
   NonPersistedElectronicAddress,
   NonPersistedIdentity,
@@ -285,7 +285,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const correlationId = 'missing_connection_update_example'
       const identity: NonPersistedIdentity = {
         alias: correlationId,
-
+        origin: IdentityOrigin.EXTERNAL,
         roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierType.DID,

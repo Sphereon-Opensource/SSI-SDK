@@ -11,7 +11,7 @@ export class CreateContacts1710438363001 implements MigrationInterface {
 
     await queryRunner.query(`ALTER TABLE "Identity" ADD COLUMN "owner_id" uuid`)
     await queryRunner.query(`ALTER TABLE "Identity" ADD COLUMN "tenant_id" uuid`)
-    await queryRunner.query(`ALTER TABLE "Identity" ADD COLUMN "identity_origin" "public"."identity_origin_type" NOT NULL`)
+    await queryRunner.query(`ALTER TABLE "Identity" ADD COLUMN "identity_origin" "public"."identity_origin_type" NOT NULL DEFAULT 'EXTERNAL'`)
 
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" ADD COLUMN "owner_id" uuid`)
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" ADD COLUMN "tenant_id" uuid`)

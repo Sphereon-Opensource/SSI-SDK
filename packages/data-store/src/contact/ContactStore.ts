@@ -757,7 +757,8 @@ export class ContactStore extends AbstractContactStore {
         if (metadata.value instanceof Date) {
           metadataCondition.dateValue = metadata.value
         } else {
-          throw new Error(`Unsupported object type: ${Object.prototype.toString.call(metadata.value).slice(8, -1)}`)
+          // For now, we only support / implement not-primitive type Date in the entity
+          throw new Error(`Unsupported object type: ${Object.prototype.toString.call(metadata.value).slice(8, -1)} for value ${metadata.value}`)
         }
         break
       default:
