@@ -11,9 +11,9 @@
     "start:dev": "ts-node __tests__/RestAPI.ts"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.10.4-unstable.39+8a6c16f",
-    "@sphereon/oid4vci-issuer": "0.10.4-unstable.39+8a6c16f",
-    "@sphereon/oid4vci-issuer-server": "0.10.4-unstable.39+8a6c16f",
+    "@sphereon/oid4vci-common": "0.10.4-unstable.40+d348641",
+    "@sphereon/oid4vci-issuer": "0.10.4-unstable.40+d348641",
+    "@sphereon/oid4vci-issuer-server": "0.10.4-unstable.40+d348641",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@sphereon/ssi-sdk.oid4vci-issuer": "workspace:*",
