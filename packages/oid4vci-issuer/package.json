@@ -14,8 +14,8 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.10.4-unstable.42+5eacd76",
-    "@sphereon/oid4vci-issuer": "0.10.4-unstable.42+5eacd76",
+    "@sphereon/oid4vci-common": "0.10.4-unstable.45+337775a",
+    "@sphereon/oid4vci-issuer": "0.10.4-unstable.45+337775a",
     "@sphereon/ssi-sdk-ext.did-utils": "0.19.0",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
