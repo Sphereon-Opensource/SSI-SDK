@@ -1,20 +1,28 @@
-import { TAgent } from '@veramo/core'
-import { IOID4VCIHolder } from '../../src'
-import { AccessTokenResponse, WellKnownEndpoints } from '@sphereon/oid4vci-common'
-import nock = require('nock')
+import {IAgentContext, TAgent} from '@veramo/core'
+import {
+  IOID4VCIHolder,
+  OID4VCIHolderLinkHandler,
+  OID4VCIMachine,
+  OID4VCIMachineInterpreter,
+  OID4VCIMachineState
+} from '../../src'
+import {AccessTokenResponse, convertURIToJsonObject, WellKnownEndpoints} from '@sphereon/oid4vci-common'
 import {
   GET_INITIATION_DATA_AUTHORIZATION_CODE_HTTPS,
   GET_INITIATION_DATA_PRE_AUTHORIZED_CODE_HTTPS,
-  GET_INITIATION_DATA_PRE_AUTHORIZED_OPENID_INITIATE_ISSUANCE,
+  GET_INITIATION_DATA_PRE_AUTHORIZED_HTTPS_INITIATE_FLOW,
   GET_INITIATION_DATA_PRE_AUTHORIZED_OPENID_CREDENTIAL_OFFER,
+  GET_INITIATION_DATA_PRE_AUTHORIZED_OPENID_INITIATE_ISSUANCE,
   IDENTIPROOF_AS_METADATA,
   IDENTIPROOF_AS_URL,
   IDENTIPROOF_ISSUER_URL,
   IDENTIPROOF_OID4VCI_METADATA,
-  GET_INITIATION_DATA_PRE_AUTHORIZED_HTTPS_INITIATE_FLOW,
 } from './MetadataMocks'
+import {CredentialOfferClient} from "@sphereon/oid4vci-client";
+import {IMachineStatePersistence} from "@sphereon/ssi-sdk.xstate-machine-persistence";
+import nock = require('nock');
 
-type ConfiguredAgent = TAgent<IOID4VCIHolder>
+type ConfiguredAgent = TAgent<IOID4VCIHolder & IMachineStatePersistence>
 
 const mockedAccessTokenResponse: AccessTokenResponse = {
   access_token: 'ey6546.546654.64565',
@@ -50,6 +58,23 @@ function succeedWithAFullFlowWithClientSetup() {
       format: 'jwt-vc',
       credential: mockedVC,
     })
+}
+
+async function handle(url: string | URL, context: IAgentContext<IOID4VCIHolder>): Promise<OID4VCIMachine> {
+  const uri = new URL(url).toString()
+  const offerData = convertURIToJsonObject(uri) as Record<string, unknown>
+  const hasCode = 'code' in offerData && !!offerData.code && !('issuer' in offerData)
+  const code = hasCode ? (offerData.code as string) : undefined
+  console.log('offer contained code: ', code)
+
+  return await context.agent.oid4vciHolderGetMachineInterpreter({
+    requestData: {
+      ...(!hasCode && { credentialOffer: await CredentialOfferClient.fromURI(uri) }),
+      ...(hasCode && { code: code }),
+      uri,
+    },
+    stateNavigationListener: async (oid4vciMachine: OID4VCIMachineInterpreter,  state: OID4VCIMachineState,  navigation?: any): Promise<void> => {},
+  })
 }
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
@@ -116,6 +141,146 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           },
         }),
       ).resolves.toEqual(GET_INITIATION_DATA_PRE_AUTHORIZED_CODE_HTTPS)
+    })
+
+    it('should initialize the OID4VCI Client in the state machine without errors', async () => {
+      succeedWithAFullFlowWithClientSetup()
+      const linkHandler = new OID4VCIHolderLinkHandler({
+        protocols: [
+          new RegExp('http:\\/\\/.*\\?.*credential_offer=.+'),
+          new RegExp('http:\\/\\/.*\\?.*credential_offer_uri=.+'),
+          new RegExp('https:\\/\\/.*\\?.*credential_offer=.+'),
+          new RegExp('https:\\/\\/.*\\?.*credential_offer_uri=.+')
+        ],
+        stateNavigationListener: async (oid4vciMachine: OID4VCIMachineInterpreter,  state: OID4VCIMachineState,  navigation?: any): Promise<void> => {},
+        context: {...agent.context, agent},
+      })
+      // The method expect(...).toBeCalled() requires a mock function, so we need to use the void operator
+      // to obtain the undefined primitive value from a function that returns Promise<void>
+      // Reference: https://dev.to/rfornal/tobe-void-0-in-a-unit-test-5f6n
+      await expect(linkHandler.handle(HTTPS_OFFER_QR_PRE_AUTHORIZED)).resolves.toBe(void 0)
+    })
+
+    it('should retrieve the machine context after initialization of OID4VCI - pre-authorized_code', async () => {
+      succeedWithAFullFlowWithClientSetup()
+      const machineContext = (await handle(HTTPS_OFFER_QR_PRE_AUTHORIZED, { ...agent.context, agent })).interpreter.getSnapshot().context
+      expect(machineContext).toEqual({
+        "contactAlias": "",
+        "credentialSelection": [],
+        "credentialsSupported": [],
+        "credentialsToAccept": [],
+        "hasContactConsent": true,
+        "requestData": {
+          "credentialOffer": {
+            "baseUrl": "https://issuer.research.identiproof.io/",
+            "credential_offer": {
+              "credential_issuer": "https://issuer.research.identiproof.io",
+              "credentials": [
+                {
+                  "format": "jwt_vc_json",
+                  "types": [
+                    "VerifiableCredential",
+                    "UniversityDegreeCredential"
+                  ]
+                }
+              ],
+              "grants": {
+                "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
+                  "pre-authorized_code": "adhjhdjajkdkhjhdj",
+                  "user_pin_required": true
+                }
+              }
+            },
+            "original_credential_offer": {
+              "credential_issuer": "https://issuer.research.identiproof.io",
+              "credentials": [
+                {
+                  "format": "jwt_vc_json",
+                  "types": [
+                    "VerifiableCredential",
+                    "UniversityDegreeCredential"
+                  ]
+                }
+              ],
+              "grants": {
+                "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
+                  "pre-authorized_code": "adhjhdjajkdkhjhdj",
+                  "user_pin_required": true
+                }
+              }
+            },
+            "preAuthorizedCode": "adhjhdjajkdkhjhdj",
+            "scheme": "https",
+            "supportedFlows": [
+              "Pre-Authorized Code Flow"
+            ],
+            "userPinRequired": true,
+            "version": 1011
+          },
+          "uri": "https://issuer.research.identiproof.io/?credential_offer%3D%7B%22credential_issuer%22%3A%22https%3A%2F%2Fissuer.research.identiproof.io%22%2C%22credentials%22%3A%5B%7B%22format%22%3A%22jwt_vc_json%22%2C%22types%22%3A%5B%22VerifiableCredential%22%2C%22UniversityDegreeCredential%22%5D%7D%5D%2C%22grants%22%3A%7B%22urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Apre-authorized_code%22%3A%7B%22pre-authorized_code%22%3A%22adhjhdjajkdkhjhdj%22%2C%22user_pin_required%22%3Atrue%7D%7D%7D"
+        },
+        "selectedCredentials": []
+      })
+    })
+
+    it('should retrieve the machine context after initialization of OID4VCI - authorization_code', async () => {
+      succeedWithAFullFlowWithClientSetup()
+      const machineContext = (await handle(HTTPS_OFFER_QR_AUTHORIZATION_CODE, { ...agent.context, agent })).interpreter.getSnapshot().context
+      expect(machineContext).toEqual({
+        "contactAlias": "",
+        "credentialSelection": [],
+        "credentialsSupported": [],
+        "credentialsToAccept": [],
+        "hasContactConsent": true,
+        "requestData": {
+          "credentialOffer": {
+            "baseUrl": "https://issuer.research.identiproof.io/",
+            "credential_offer": {
+              "credential_issuer": "https://issuer.research.identiproof.io",
+              "credentials": [
+                {
+                  "format": "jwt_vc_json",
+                  "types": [
+                    "VerifiableCredential",
+                    "UniversityDegreeCredential"
+                  ]
+                }
+              ],
+              "grants": {
+                "authorization_code": {
+                  "issuer_state": "eyJhbGciOiJSU0Et...FYUaBy"
+                }
+              }
+            },
+            "issuerState": "eyJhbGciOiJSU0Et...FYUaBy",
+            "original_credential_offer": {
+              "credential_issuer": "https://issuer.research.identiproof.io",
+              "credentials": [
+                {
+                  "format": "jwt_vc_json",
+                  "types": [
+                    "VerifiableCredential",
+                    "UniversityDegreeCredential"
+                  ]
+                }
+              ],
+              "grants": {
+                "authorization_code": {
+                  "issuer_state": "eyJhbGciOiJSU0Et...FYUaBy"
+                }
+              }
+            },
+            "scheme": "https",
+            "supportedFlows": [
+              "Authorization Code Flow"
+            ],
+            "userPinRequired": false,
+            "version": 1011
+          },
+          "uri": "https://issuer.research.identiproof.io/?credential_offer%3D%7B%22credential_issuer%22%3A%22https%3A%2F%2Fissuer.research.identiproof.io%22%2C%22credentials%22%3A%5B%7B%22format%22%3A%22jwt_vc_json%22%2C%22types%22%3A%5B%22VerifiableCredential%22%2C%22UniversityDegreeCredential%22%5D%7D%5D%2C%22grants%22%3A%7B%22authorization_code%22%3A%7B%22issuer_state%22%3A%22eyJhbGciOiJSU0Et...FYUaBy%22%7D%7D%7D"
+        },
+        "selectedCredentials": []
+      })
     })
   })
 }
