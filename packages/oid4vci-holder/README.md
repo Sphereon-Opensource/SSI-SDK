@@ -14,17 +14,6 @@
 
 ## Usage
 
-### OPENID_INITIATE_ISSUANCE SCHEMA
-
-pre-authorized_code
-
-```typescript
-agent.oid4vciHolderGetInitiationData({
-  requestData: {
-    uri: 'openid-initiate-issuance://?issuer=https%3A%2F%2Fissuer.research.identiproof.io&credential_type=OpenBadgeCredentialUrl&pre-authorized_code=4jLs9xZHEfqcoow0kHE7d1a8hUk6Sy-5bVSV2MqBUGUgiFFQi-ImL62T-FmLIo8hKA1UdMPH0lM1xAgcFkJfxIw9L-lI3mVs0hRT8YVwsEM1ma6N3wzuCdwtMU4bcwKp&user_pin_required=true',
-  },
-})
-```
 
 ### OPENID_CREDENTIAL_OFFER SCHEMA
 
