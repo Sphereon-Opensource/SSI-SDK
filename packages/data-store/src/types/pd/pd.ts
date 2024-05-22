@@ -1,13 +1,15 @@
+import { IPresentationDefinition } from '@sphereon/pex'
 
 export type PresentationDefinitionItem = {
-    id: string
-    tenantId?: string
-    version: string
-    purpose?: string
-    definitionPayload: string
-    createdAt: Date
-    lastUpdatedAt: Date
+  id: string
+  tenantId?: string
+  pdId: string
+  version: string
+  purpose?: string
+  definitionPayload: IPresentationDefinition
+  createdAt: Date
+  lastUpdatedAt: Date
 }
 
-export type NonPresentationDefinitionItem = Omit<PresentationDefinitionItem, 'id' | 'createdAt' | 'lastUpdatedAt'>
+export type NonPersistedPresentationDefinitionItem = Omit<PresentationDefinitionItem, 'id' | 'createdAt' | 'lastUpdatedAt'>
 export type PartialPresentationDefinitionItem = Partial<PresentationDefinitionItem>

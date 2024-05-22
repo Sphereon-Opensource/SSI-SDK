@@ -1,33 +1,95 @@
-import {OrPromise} from "@sphereon/ssi-types";
-import {DataSource} from "typeorm";
-import {AbstractPdStore} from "./AbstractPDStore";
-import Debug from "debug";
-import {AddPDArgs, GetPDArgs, GetPDsArgs, RemovePDArgs, UpdatePDArgs} from "../types/pd/IAbstractPDStore";
-import {PresentationDefinitionItem} from "../types";
-import {PartyEntity} from "../entities/contact/PartyEntity";
+import { OrPromise } from '@sphereon/ssi-types'
+import { DataSource, In } from 'typeorm'
+import { AbstractPdStore } from './AbstractPDStore'
+import Debug from 'debug'
+import { GetPDArgs, GetPDsArgs, DeletePDArgs } from '../types/pd/IAbstractPDStore'
+import { NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '../types'
+import { PresentationDefinitionItemEntity } from '../entities/contact/PresentationDefinitionItemEntity'
+import { presentationDefinitionEntityItemFrom, presentationDefinitionItemFrom } from '../utils/contact/MappingUtils'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:pd-store')
 
 export class PDStore extends AbstractPdStore {
-    private readonly dbConnection: OrPromise<DataSource>
+  private readonly dbConnection: OrPromise<DataSource>
 
-    constructor(dbConnection: OrPromise<DataSource>) {
-        super()
-        this.dbConnection = dbConnection
+  constructor(dbConnection: OrPromise<DataSource>) {
+    super()
+    this.dbConnection = dbConnection
+  }
+
+  getDefinition = async (args: GetPDArgs): Promise<PresentationDefinitionItem> => {
+    const { itemId } = args ?? {}
+    const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
+    const result: PresentationDefinitionItemEntity | null = await pdRepository.findOne({
+      where: { id: itemId },
+    })
+    if (!result) {
+      return Promise.reject(Error(`No presentation definition item found for id: ${itemId}`))
     }
 
-    getDefinition = async (args: GetPDArgs): Promise<PresentationDefinitionItem> => {
-        const repository = (await this.dbConnection).getRepository(PartyEntity)
-        return Promise.resolve({} as PresentationDefinitionItem)
-    };
+    return presentationDefinitionItemFrom(result)
+  }
 
-    getDefinitions = async (args: GetPDsArgs): Promise<PresentationDefinitionItem> => Promise.resolve({} as PresentationDefinitionItem);
+  getDefinitions = async (args: GetPDsArgs): Promise<Array<PresentationDefinitionItem>> => {
+    const { filter } = args
+    const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
+    const initialResult: Array<PresentationDefinitionItemEntity> = await pdRepository.find({
+      ...(filter && { where: filter }),
+    })
 
-    addDefinition = async (args: AddPDArgs): Promise<PresentationDefinitionItem> => Promise.resolve({} as PresentationDefinitionItem);
+    const result: Array<PresentationDefinitionItemEntity> = await pdRepository.find({
+      where: {
+        id: In(initialResult.map((entity: PresentationDefinitionItemEntity) => entity.id)),
+      },
+    })
 
-    updateDefinition = async (args: UpdatePDArgs): Promise<PresentationDefinitionItem> => Promise.resolve({} as PresentationDefinitionItem);
+    return result.map((entity: PresentationDefinitionItemEntity) => presentationDefinitionItemFrom(entity))
+  }
 
-    deleteDefinition = async (args: RemovePDArgs): Promise<boolean> => Promise.resolve(false);
+  addDefinition = async (item: NonPersistedPresentationDefinitionItem): Promise<PresentationDefinitionItem> => {
+    const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
 
+    const entity: PresentationDefinitionItemEntity = presentationDefinitionEntityItemFrom(item)
+    debug('Adding presentation definition item', item)
+    const result: PresentationDefinitionItemEntity = await pdRepository.save(entity, {
+      transaction: true,
+    })
 
+    return presentationDefinitionItemFrom(result)
+  }
+
+  updateDefinition = async (item: PresentationDefinitionItem): Promise<PresentationDefinitionItem> => {
+    const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
+
+    const result: PresentationDefinitionItemEntity | null = await pdRepository.findOne({
+      where: { id: item.id },
+    })
+    if (!result) {
+      return Promise.reject(Error(`No presentation definition item found for id: ${item.id}`))
+    }
+
+    const entity: PresentationDefinitionItemEntity = presentationDefinitionEntityItemFrom(item)
+    debug('Updating presentation definition item', item)
+    const updateResult: PresentationDefinitionItemEntity = await pdRepository.save(entity, {
+      transaction: true,
+    })
+
+    return presentationDefinitionItemFrom(updateResult)
+  }
+
+  deleteDefinition = async (args: DeletePDArgs): Promise<void> => {
+    const { id } = args
+
+    const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
+    const entity: PresentationDefinitionItemEntity | null = await pdRepository.findOne({
+      where: { id: id },
+    })
+
+    if (!entity) {
+      return Promise.reject(Error(`No identity found for id: ${id}`))
+    }
+
+    debug('Removing presentation definition item ', entity)
+    await pdRepository.delete(entity.id)
+  }
 }

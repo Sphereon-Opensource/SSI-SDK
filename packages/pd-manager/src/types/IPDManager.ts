@@ -1,35 +1,30 @@
-import {IAgentContext, IPluginMethodMap} from '@veramo/core'
-import {
-    FindPartyArgs as FindContactArgs,
-    NonPresentationDefinitionItem,
-    PresentationDefinitionItem
-} from "@sphereon/ssi-sdk.data-store";
+import { IAgentContext, IPluginMethodMap } from '@veramo/core'
+import { FindPDArgs, NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
 
 export interface IPDManager extends IPluginMethodMap {
-    pdmGetDefinition(args: GetPDArgs, context: RequiredContext): Promise<PresentationDefinitionItem>
-    pdmGetDefinitions(args: GetPDsArgs, context: RequiredContext): Promise<Array<PresentationDefinitionItem>>
-    pdmAddDefinition(args: AddPDArgs, context: RequiredContext): Promise<PresentationDefinitionItem>
-    pdmUpdateDefinition(args: UpdatePDArgs, context: RequiredContext): Promise<PresentationDefinitionItem>
-    pdmRemoveDefinition(args: RemovePDArgs, context: RequiredContext): Promise<boolean>
+  pdmGetDefinition(args: GetPDArgs, context: RequiredContext): Promise<PresentationDefinitionItem>
+  pdmGetDefinitions(args: GetPDsArgs, context: RequiredContext): Promise<Array<PresentationDefinitionItem>>
+  pdmAddDefinition(args: AddPDArgs, context: RequiredContext): Promise<PresentationDefinitionItem>
+  pdmUpdateDefinition(args: UpdatePDArgs, context: RequiredContext): Promise<PresentationDefinitionItem>
+  pdmDeleteDefinition(args: RemovePDArgs, context: RequiredContext): Promise<boolean>
 }
 
 export type GetPDArgs = {
-    pdId: string
+  itemId: string
 }
 
 export type GetPDsArgs = {
-    filter?: FindPDArgs
+  filter?: FindPDArgs
 }
 
-
-export type AddPDArgs = NonPresentationDefinitionItem
+export type AddPDArgs = NonPersistedPresentationDefinitionItem
 
 export type UpdatePDArgs = {
-    pd: PresentationDefinitionItem
+  pd: PresentationDefinitionItem
 }
 
 export type RemovePDArgs = {
-    pdId: string
+  pdId: string
 }
 
 export type RequiredContext = IAgentContext<never>

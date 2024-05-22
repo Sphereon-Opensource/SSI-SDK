@@ -1,10 +1,10 @@
-
 import { IAgentPlugin } from '@veramo/core'
-import {GetPDArgs, IPDManager, RequiredContext, schema} from '../index'
-import {PresentationDefinitionItem} from "@sphereon/ssi-sdk.data-store";
+import { GetPDArgs, GetPDsArgs, IPDManager, RequiredContext, schema } from '../index'
+import { DeletePDArgs, NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
+import { AbstractPdStore } from '@sphereon/ssi-sdk.data-store/dist/pd/AbstractPDStore'
 
 // Exposing the methods here for any REST implementation
-export const contactManagerMethods: Array<string> = [
+export const pdManagerMethods: Array<string> = [
   'pdmGetDefinition',
   'pdmGetDefinitions',
   'pdmAddDefinition',
@@ -18,18 +18,43 @@ export const contactManagerMethods: Array<string> = [
 export class PDManager implements IAgentPlugin {
   readonly schema = schema.IPDManager
   readonly methods: IPDManager = {
-    pdmGetDefinition: this.pdmGetDefinition.bind(this)
+    pdmGetDefinition: this.pdmGetDefinition.bind(this),
+    pdmGetDefinitions: this.pdmGetDefinitions.bind(this),
+    pdmAddDefinition: this.pdmAddDefinition.bind(this),
+    pdmUpdateDefinition: this.pdmUpdateDefinition.bind(this),
+    pdmDeleteDefinition: this.pdmDeleteDefinition.bind(this),
   }
 
-  private readonly store: AbstractPDStore
+  private readonly store: AbstractPdStore
 
-  constructor(options: { store: AbstractPDStore }) {
+  constructor(options: { store: AbstractPdStore }) {
     this.store = options.store
   }
 
   /** {@inheritDoc IPDManager.pdmGetDefinition} */
   private async pdmGetDefinition(args: GetPDArgs, context: RequiredContext): Promise<PresentationDefinitionItem> {
-    const { contactId } = args
-    return this.store.getParty({ partyId: contactId })
+    const { itemId } = args
+    return this.store.getDefinition({ itemId })
+  }
+
+  /** {@inheritDoc IPDManager.pdmGetDefinitions} */
+  private async pdmGetDefinitions(args: GetPDsArgs, context: RequiredContext): Promise<Array<PresentationDefinitionItem>> {
+    const { filter } = args
+    return this.store.getDefinitions({ filter })
+  }
+
+  /** {@inheritDoc IPDManager.pdmAddDefinition} */
+  private async pdmAddDefinition(args: NonPersistedPresentationDefinitionItem): Promise<PresentationDefinitionItem> {
+    return this.store.addDefinition(args)
+  }
+
+  /** {@inheritDoc IPDManager.pdmUpdateDefinition} */
+  private async pdmUpdateDefinition(args: PresentationDefinitionItem): Promise<PresentationDefinitionItem> {
+    return this.store.updateDefinition(args)
+  }
+
+  /** {@inheritDoc IPDManager.pdmDeleteDefinition} */
+  private async pdmDeleteDefinition(args: DeletePDArgs): Promise<boolean> {
+    return this.store.deleteDefinition(args).then((): boolean => true)
   }
 }
