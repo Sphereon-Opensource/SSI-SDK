@@ -301,7 +301,7 @@ export const getCredentialConfigsSupported = async (
   const { client, vcFormatPreferences } = args
 
   if (client.version() < OpenId4VCIVersion.VER_1_0_13 || typeof client.credentialOffer?.credential_offer !== 'object') {
-    throw new Error(`Unsupported client version: ${client.version()}. Upgrade to OID4VCI library version >= 1.0.13.`)
+    throw new Error(`Unsupported client version: ${client.version()}. Upgrade to OID4VCI library supporting spec version >= 1.0.13.`)
   }
 
   const allSupportedCredentialConfigs = client.getCredentialsSupported() as Record<string, CredentialConfigurationSupported>
