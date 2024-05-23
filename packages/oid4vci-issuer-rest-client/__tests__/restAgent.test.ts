@@ -5,7 +5,7 @@ import { Server } from 'http'
 import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
-import { createObjects, getConfig } from '../../agent-config/dist'
+import { createObjects, getConfig } from '../../agent-config/src'
 import { IOID4VCIRestClient } from '../src'
 import issuanceRestClientAgentLogic from './shared/issuanceRestClientAgentLogic'
 

@@ -4,7 +4,7 @@ import {
   CredentialDataSupplierInput,
   CredentialOfferSession,
   CredentialIssuerMetadataOpts,
-  CredentialRequestV1_0_11,
+  CredentialRequest,
   CredentialResponse,
   Grant,
   JsonLdIssuerCredentialDefinition,
@@ -47,7 +47,7 @@ export interface ICreateOfferArgs extends IIssuerInstanceArgs {
 }
 
 export interface IIssueCredentialArgs extends IIssuerInstanceArgs {
-  credentialRequest: CredentialRequestV1_0_11
+  credentialRequest: CredentialRequest
   credential?: ICredential
   credentialDataSupplier?: CredentialDataSupplier
   credentialDataSupplierInput?: CredentialDataSupplierInput

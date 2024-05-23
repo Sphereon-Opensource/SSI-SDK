@@ -1,4 +1,4 @@
-import { IssuerMetadata, Jwt, JwtVerifyResult, OID4VCICredentialFormat, UniformCredentialRequest } from '@sphereon/oid4vci-common'
+import { CredentialRequest, IssuerMetadata, Jwt, JwtVerifyResult, OID4VCICredentialFormat } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, getDID, getFirstKeyWithRelation, getIdentifier, getKey, IDIDOptions, toDID } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
@@ -123,7 +123,7 @@ export function getAccessTokenSignerCallback(
 
 export function getCredentialSignerCallback(didOpts: IDIDOptions, context: IRequiredContext): CredentialSignerCallback<DIDDocument> {
   async function issueVCCallback(args: {
-    credentialRequest: UniformCredentialRequest
+    credentialRequest: CredentialRequest
     credential: CredentialIssuanceInput
     jwtVerifyResult: JwtVerifyResult<DIDDocument>
     format?: OID4VCICredentialFormat

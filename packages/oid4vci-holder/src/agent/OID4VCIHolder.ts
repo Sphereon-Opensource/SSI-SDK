@@ -382,7 +382,8 @@ export class OID4VCIHolder implements IAgentPlugin {
       })
       if ('credential_definition' in issuanceOpt) {
         const credentialResponse = await client.acquireCredentials({
-          credentialTypes: issuanceOpt.credential_definition.type,
+          //fixme: this isn't the correct way to handle this. the type is wrong. we're not correctly handling moving from Record<string, CredentialConfigSupport>
+          credentialType: issuanceOpt.id ?? issuanceOpt.credential_definition.type[0],
           proofCallbacks: callbacks,
           format: issuanceOpt.format,
           // TODO: We need to update the machine and add notifications support for actual deferred credentials instead of just waiting/retrying

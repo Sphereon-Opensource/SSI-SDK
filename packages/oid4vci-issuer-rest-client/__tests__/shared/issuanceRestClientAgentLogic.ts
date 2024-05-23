@@ -21,7 +21,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         grants: {
           'urn:ietf:params:oauth:grant-type:pre-authorized_code': {
             'pre-authorized_code': '1234',
-            user_pin_required: false,
           },
         },
         credential_configuration_ids: ['dbc2023'],
@@ -37,7 +36,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         grants: {
           'urn:ietf:params:oauth:grant-type:pre-authorized_code': {
             'pre-authorized_code': '1234',
-            user_pin_required: false,
           },
         },
         credential_configuration_ids: ['dbc2023'],
