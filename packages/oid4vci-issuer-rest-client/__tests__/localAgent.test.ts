@@ -1,4 +1,4 @@
-import { createObjects, getConfig } from '../../agent-config/src'
+import { createObjects, getConfig } from '../../agent-config/dist'
 
 jest.setTimeout(60000)
 
