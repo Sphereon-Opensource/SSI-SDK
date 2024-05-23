@@ -31,7 +31,7 @@ export function pdReadEndpoint(router: Router, context: IRequiredContext, opts?:
   router.get(`${path}/:pdId`, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const pdId = request.params.pdId
-      const pd = await context.agent.pdmGetDefinition({ contactId: pdId })
+      const pd = await context.agent.pdmGetDefinition({ itemId: pdId })
       response.statusCode = 200
       return response.send(pd)
     } catch (error) {
@@ -85,7 +85,7 @@ export function pdDeleteEndpoint(router: Router, context: IRequiredContext, opts
   router.delete(`${path}/:pdItemId`, async (request, response) => {
     try {
       const pdItemId = request.params.pdItemId
-      const result = await context.agent.pdmDeleteDefinition({ id: pdItemId } as DeletePDArgs)
+      const result = await context.agent.pdmDeleteDefinition({ itemId: pdItemId } as DeletePDArgs)
       return response.send(result)
     } catch (error) {
       return sendErrorResponse(response, 500, error.message, error)

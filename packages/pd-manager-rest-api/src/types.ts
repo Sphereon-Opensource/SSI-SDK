@@ -10,6 +10,7 @@ export interface IPDManagerAPIEndpointOpts {
     globalAuth?: GenericAuthArgs & { securePDManagerEndpoints?: boolean }
     pdRead?: ISingleEndpointOpts // Overrides read pd entity path
     pdWrite?: ISingleEndpointOpts // Overrides write pd entity path
+    pdDelete?: ISingleEndpointOpts // Overrides write pd entity path
   }
   enableFeatures?: PDManagerMRestApiFeatures[]
 }

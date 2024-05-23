@@ -78,15 +78,15 @@ export class PDStore extends AbstractPdStore {
   }
 
   deleteDefinition = async (args: DeletePDArgs): Promise<void> => {
-    const { id } = args
+    const { itemId } = args
 
     const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
     const entity: PresentationDefinitionItemEntity | null = await pdRepository.findOne({
-      where: { id: id },
+      where: { id: itemId },
     })
 
     if (!entity) {
-      return Promise.reject(Error(`No identity found for id: ${id}`))
+      return Promise.reject(Error(`No identity found for id: ${itemId}`))
     }
 
     debug('Removing presentation definition item ', entity)

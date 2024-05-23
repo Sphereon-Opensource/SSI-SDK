@@ -15,9 +15,9 @@ export class PdManagerApiServer {
   constructor(args: { agent: TAgent<IRequiredPlugins>; expressSupport: ExpressSupport; opts?: IPDManagerAPIEndpointOpts }) {
     const { agent, opts } = args
     this._agent = agent
-    copyGlobalAuthToEndpoints({ opts, keys: ['pdRead', 'pdWrite', 'pdTypeRead', 'identityRead'] })
+    copyGlobalAuthToEndpoints({ opts, keys: ['pdRead', 'pdWrite', 'pdUpdate', 'pdDelete'] })
     if (opts?.endpointOpts?.globalAuth?.securePDManagerEndpoints) {
-      copyGlobalAuthToEndpoints({ opts, keys: ['pdRead', 'pdWrite', 'pdTypeRead', 'identityRead'] })
+      copyGlobalAuthToEndpoints({ opts, keys: ['pdRead', 'pdWrite', 'pdUpdate', 'pdDelete'] })
     }
     this._opts = opts
     this._express = args.expressSupport.express
@@ -33,10 +33,9 @@ export class PdManagerApiServer {
     if (features.includes('pd_write')) {
       pdAddEndpoint(this.router, context, this._opts?.endpointOpts?.pdWrite)
       pdUpdateEndpoint(this.router, context, this._opts?.endpointOpts?.pdWrite)
-      pdDeleteEndpoint(this.router, context, this._opts?.endpointOpts?.pdWrite)
     }
     if (features.includes('pd_delete')) {
-      pdDeleteEndpoint(this.router, context, this._opts?.endpointOpts?.pdWrite)
+      pdDeleteEndpoint(this.router, context, this._opts?.endpointOpts?.pdDelete)
     }
     this._express.use(opts?.endpointOpts?.basePath ?? '', this.router)
   }
@@ -52,6 +51,7 @@ export class PdManagerApiServer {
   get agent(): TAgent<IRequiredPlugins> {
     return this._agent
   }
+
   get opts(): IPDManagerAPIEndpointOpts | undefined {
     return this._opts
   }

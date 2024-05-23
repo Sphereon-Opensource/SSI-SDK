@@ -48,6 +48,7 @@ import { OpenIdConfigEntity } from '../../entities/contact/OpenIdConfigEntity'
 import { PartyTypeEntity } from '../../entities/contact/PartyTypeEntity'
 import { PhysicalAddressEntity } from '../../entities/contact/PhysicalAddressEntity'
 import { PresentationDefinitionItemEntity } from '../../entities/contact/PresentationDefinitionItemEntity'
+import { IPresentationDefinition } from '@sphereon/pex'
 
 export const partyEntityFrom = (party: NonPersistedParty): PartyEntity => {
   const partyEntity: PartyEntity = new PartyEntity()
@@ -394,7 +395,7 @@ export const presentationDefinitionItemFrom = (entity: PresentationDefinitionIte
     pdId: entity.pdId,
     version: entity.version,
     purpose: entity.purpose,
-    definitionPayload: entity.definitionPayload,
+    definitionPayload: JSON.parse(entity.definitionPayload) as IPresentationDefinition,
     createdAt: entity.createdAt,
     lastUpdatedAt: entity.lastUpdatedAt,
   } as PresentationDefinitionItem
@@ -410,7 +411,7 @@ export const presentationDefinitionEntityItemFrom = (item: PartialPresentationDe
   entity.pdId = item.pdId!
   entity.version = item.version!
   entity.purpose = item.purpose
-  entity.definitionPayload = item.definitionPayload!
+  entity.definitionPayload = JSON.stringify(item.definitionPayload!)
   entity.createdAt = item.createdAt!
   entity.lastUpdatedAt = item.lastUpdatedAt!
   return entity

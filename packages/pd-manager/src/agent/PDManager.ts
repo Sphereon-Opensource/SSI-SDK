@@ -1,5 +1,5 @@
 import { IAgentPlugin } from '@veramo/core'
-import { GetPDArgs, GetPDsArgs, IPDManager, RequiredContext, schema } from '../index'
+import { GetPDArgs, GetPDsArgs, IPDManager, RequiredContext, schema, UpdatePDArgs } from '../index'
 import { DeletePDArgs, NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
 import { AbstractPdStore } from '@sphereon/ssi-sdk.data-store/dist/pd/AbstractPDStore'
 
@@ -44,13 +44,13 @@ export class PDManager implements IAgentPlugin {
   }
 
   /** {@inheritDoc IPDManager.pdmAddDefinition} */
-  private async pdmAddDefinition(args: NonPersistedPresentationDefinitionItem): Promise<PresentationDefinitionItem> {
+  private async pdmAddDefinition(args: NonPersistedPresentationDefinitionItem, context: RequiredContext): Promise<PresentationDefinitionItem> {
     return this.store.addDefinition(args)
   }
 
   /** {@inheritDoc IPDManager.pdmUpdateDefinition} */
-  private async pdmUpdateDefinition(args: PresentationDefinitionItem): Promise<PresentationDefinitionItem> {
-    return this.store.updateDefinition(args)
+  private async pdmUpdateDefinition(args: UpdatePDArgs, context: RequiredContext): Promise<PresentationDefinitionItem> {
+    return this.store.updateDefinition(args.pd)
   }
 
   /** {@inheritDoc IPDManager.pdmDeleteDefinition} */

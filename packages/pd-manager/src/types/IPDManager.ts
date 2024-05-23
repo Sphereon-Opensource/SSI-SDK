@@ -6,7 +6,7 @@ export interface IPDManager extends IPluginMethodMap {
   pdmGetDefinitions(args: GetPDsArgs, context: RequiredContext): Promise<Array<PresentationDefinitionItem>>
   pdmAddDefinition(args: AddPDArgs, context: RequiredContext): Promise<PresentationDefinitionItem>
   pdmUpdateDefinition(args: UpdatePDArgs, context: RequiredContext): Promise<PresentationDefinitionItem>
-  pdmDeleteDefinition(args: RemovePDArgs, context: RequiredContext): Promise<boolean>
+  pdmDeleteDefinition(args: DeletePDArgs, context: RequiredContext): Promise<boolean>
 }
 
 export type GetPDArgs = {
@@ -23,8 +23,8 @@ export type UpdatePDArgs = {
   pd: PresentationDefinitionItem
 }
 
-export type RemovePDArgs = {
-  pdId: string
+export type DeletePDArgs = {
+  itemId: string
 }
 
 export type RequiredContext = IAgentContext<never>

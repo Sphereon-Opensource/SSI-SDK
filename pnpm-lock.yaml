@@ -1130,6 +1130,9 @@ importers:
       '@decentralized-identity/ion-sdk':
         specifier: ^0.6.0
         version: 0.6.0
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:^
+        version: link:../agent-config
       '@types/body-parser':
         specifier: ^1.19.2
         version: 1.19.5

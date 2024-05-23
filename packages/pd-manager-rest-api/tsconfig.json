@@ -7,11 +7,10 @@
     "esModuleInterop": true
   },
   "references": [
-    {
-      "path": "../ssi-express-support"
-    },
-    {
-      "path": "../agent-config"
-    }
+    { "path": "../ssi-express-support" },
+    { "path": "../ssi-sdk-core" },
+    { "path": "../data-store" },
+    { "path": "../pd-manager" },
+    { "path": "../ssi-types" }
   ]
 }
