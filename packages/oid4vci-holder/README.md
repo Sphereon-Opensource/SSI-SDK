@@ -14,7 +14,6 @@
 
 ## Usage
 
-
 ### OPENID_CREDENTIAL_OFFER SCHEMA
 
 pre-authorized_code

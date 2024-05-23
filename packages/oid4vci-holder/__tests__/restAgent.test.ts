@@ -6,8 +6,9 @@ import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/dist'
-import eventLoggerAgentLogic from './shared/oid4vciHolderLogicAgentLogic'
+import oid4vciHolderLogicAgentLogic from './shared/oid4vciHolderLogicAgentLogic'
 import { IOID4VCIHolder } from '../src'
+import { IMachineStatePersistence } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 
 jest.setTimeout(60000)
 
@@ -18,7 +19,7 @@ let serverAgent: IAgent
 let restServer: Server
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IOID4VCIHolder>({
+  createAgent<IOID4VCIHolder & IMachineStatePersistence>({
     ...options,
     plugins: [
       new AgentRestClient({
@@ -63,5 +64,5 @@ const testContext = {
 }
 
 describe('REST integration tests', (): void => {
-  eventLoggerAgentLogic(testContext)
+  oid4vciHolderLogicAgentLogic(testContext)
 })
