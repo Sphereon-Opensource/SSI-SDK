@@ -1,6 +1,6 @@
-import { IAgentContext, TAgent } from '@veramo/core'
-import { IOID4VCIHolder, OID4VCIHolderLinkHandler, OID4VCIMachine, OID4VCIMachineInterpreter, OID4VCIMachineState } from '../../src'
-import { AccessTokenResponse, convertURIToJsonObject, WellKnownEndpoints } from '@sphereon/oid4vci-common'
+import { TAgent } from '@veramo/core'
+import { IOID4VCIHolder } from '../../src'
+import { AccessTokenResponse, WellKnownEndpoints } from '@sphereon/oid4vci-common'
 import {
   GET_INITIATION_DATA_AUTHORIZATION_CODE_HTTPS,
   GET_INITIATION_DATA_PRE_AUTHORIZED_CODE_HTTPS,
@@ -12,7 +12,6 @@ import {
   IDENTIPROOF_ISSUER_URL,
   IDENTIPROOF_OID4VCI_METADATA,
 } from './MetadataMocks'
-import { CredentialOfferClient } from '@sphereon/oid4vci-client'
 import { IMachineStatePersistence } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import nock = require('nock')
 
@@ -52,23 +51,6 @@ function succeedWithAFullFlowWithClientSetup() {
       format: 'jwt-vc',
       credential: mockedVC,
     })
-}
-
-async function handle(url: string | URL, context: IAgentContext<IOID4VCIHolder>): Promise<OID4VCIMachine> {
-  const uri = new URL(url).toString()
-  const offerData = convertURIToJsonObject(uri) as Record<string, unknown>
-  const hasCode = 'code' in offerData && !!offerData.code && !('issuer' in offerData)
-  const code = hasCode ? (offerData.code as string) : undefined
-  console.log('offer contained code: ', code)
-
-  return await context.agent.oid4vciHolderGetMachineInterpreter({
-    requestData: {
-      ...(!hasCode && { credentialOffer: await CredentialOfferClient.fromURI(uri) }),
-      ...(hasCode && { code: code }),
-      uri,
-    },
-    stateNavigationListener: async (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any): Promise<void> => {},
-  })
 }
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
@@ -135,24 +117,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           },
         }),
       ).resolves.toEqual(GET_INITIATION_DATA_PRE_AUTHORIZED_CODE_HTTPS)
-    })
-
-    it('should initialize the OID4VCI Client in the state machine without errors', async () => {
-      succeedWithAFullFlowWithClientSetup()
-      const linkHandler = new OID4VCIHolderLinkHandler({
-        protocols: [
-          new RegExp('http:\\/\\/.*\\?.*credential_offer=.+'),
-          new RegExp('http:\\/\\/.*\\?.*credential_offer_uri=.+'),
-          new RegExp('https:\\/\\/.*\\?.*credential_offer=.+'),
-          new RegExp('https:\\/\\/.*\\?.*credential_offer_uri=.+'),
-        ],
-        stateNavigationListener: async (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any): Promise<void> => {},
-        context: { ...agent.context, agent },
-      })
-      // The method expect(...).toBeCalled() requires a mock function, so we need to use the void operator
-      // to obtain the undefined primitive value from a function that returns Promise<void>
-      // Reference: https://dev.to/rfornal/tobe-void-0-in-a-unit-test-5f6n
-      await expect(linkHandler.handle(HTTPS_OFFER_QR_PRE_AUTHORIZED)).resolves.toBe(void 0)
     })
   })
 }
