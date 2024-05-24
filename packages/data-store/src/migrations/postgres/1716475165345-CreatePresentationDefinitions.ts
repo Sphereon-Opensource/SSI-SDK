@@ -8,7 +8,7 @@ export class CreatePresentationDefinitions1716475165345 implements MigrationInte
 CREATE TABLE "PresentationDefinitionItem" (
     "id" uuid NOT NULL DEFAULT uuid_generate_v4(), 
     "tenant_id" TEXT, 
-    "pd_id" TEXT NOT NULL, 
+    "definition_id" TEXT NOT NULL, 
     "version" TEXT NOT NULL, 
     "purpose" TEXT, 
     "definition_payload" TEXT NOT NULL, 
