@@ -1,5 +1,6 @@
 import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import Debug from 'debug'
+import { CreatePresentationDefinitions1716475165345 } from '../postgres/1716475165345-CreatePresentationDefinitions'
 import { CreatePresentationDefinitions1716475165344 } from '../sqlite/1716475165344-CreatePresentationDefinitions'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:migrations')
@@ -12,13 +13,13 @@ export class CreatePresentationDefinitions1716533767523 implements MigrationInte
     const dbType: DatabaseType = queryRunner.connection.driver.options.type
 
     switch (dbType) {
-      // case 'postgres': {
-      //   debug('using postgres migration file')
-      //   const mig: CreatePresentationDefinitionItems1716475165344 = new CreatePresentationDefinitionItems1716475165344()
-      //   await mig.up(queryRunner)
-      //   debug('Migration statements executed')
-      //   return
-      // }
+      case 'postgres': {
+        debug('using postgres migration file')
+        const mig: CreatePresentationDefinitions1716475165345 = new CreatePresentationDefinitions1716475165345()
+        await mig.up(queryRunner)
+        debug('Migration statements executed')
+        return
+      }
       case 'sqlite':
       case 'expo':
       case 'react-native': {
@@ -40,13 +41,13 @@ export class CreatePresentationDefinitions1716533767523 implements MigrationInte
     const dbType: DatabaseType = queryRunner.connection.driver.options.type
 
     switch (dbType) {
-      // case 'postgres': {
-      //   debug('using postgres migration file')
-      //   const mig: CreateMachineStateStore1708797018115 = new CreateMachineStateStore1708797018115()
-      //   await mig.down(queryRunner)
-      //   debug('Migration statements executed')
-      //   return
-      // }
+      case 'postgres': {
+        debug('using postgres migration file')
+        const mig: CreatePresentationDefinitions1716475165345 = new CreatePresentationDefinitions1716475165345()
+        await mig.down(queryRunner)
+        debug('Migration statements executed')
+        return
+      }
       case 'sqlite':
       case 'expo':
       case 'react-native': {

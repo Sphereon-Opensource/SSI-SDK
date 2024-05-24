@@ -49,6 +49,7 @@ export {
   DataStoreIssuanceBrandingMigrations,
   DataStoreStatusListMigrations,
   DataStoreMachineStateMigrations,
+  DataStorePresentationsDefinitionsMigrations
 } from './migrations'
 export * from './types'
 export * from './utils/contact/MappingUtils'
@@ -71,7 +72,7 @@ export const DataStoreContactEntities = [
   PhysicalAddressEntity,
 ]
 
-export const PresentationDefinitionItemEntities = [
+export const DataStorePresentationDefinitionItemEntities = [
   PresentationDefinitionItemEntity
 ]
 
@@ -106,7 +107,7 @@ export const DataStoreEntities = [
   ...DataStoreDigitalCredentialEntities,
   ...DataStoreMachineStateEntities,
   ...DataStorePresentationDefinitionEntities,
-  ...PresentationDefinitionItemEntities
+  ...DataStorePresentationDefinitionItemEntities
 ]
 
 export {
