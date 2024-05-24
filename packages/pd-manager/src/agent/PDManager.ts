@@ -1,7 +1,6 @@
 import { IAgentPlugin } from '@veramo/core'
 import { GetPDArgs, GetPDsArgs, IPDManager, RequiredContext, schema, UpdatePDArgs } from '../index'
-import { DeletePDArgs, NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
-import { AbstractPdStore } from '@sphereon/ssi-sdk.data-store/dist/pd/AbstractPDStore'
+import { DeletePDArgs, NonPersistedPresentationDefinitionItem, PresentationDefinitionItem, AbstractPdStore } from '@sphereon/ssi-sdk.data-store'
 
 // Exposing the methods here for any REST implementation
 export const pdManagerMethods: Array<string> = [

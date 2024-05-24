@@ -1,7 +1,7 @@
 import { BaseEntity, BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { IsNotEmpty } from 'class-validator'
 
-@Entity('PresentationDefinitionItemEntity')
+@Entity('PresentationDefinitionItem')
 export class PresentationDefinitionItemEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
@@ -9,7 +9,7 @@ export class PresentationDefinitionItemEntity extends BaseEntity {
   @Column({ name: 'tenant_id', length: 255, nullable: true, unique: false })
   tenantId?: string
 
-  @Column({ name: 'pd_id', length: 255, nullable: true, unique: false })
+  @Column({ name: 'pd_id', length: 255, nullable: false, unique: false })
   @IsNotEmpty({ message: 'pdId field must not be empty' })
   pdId!: string
 

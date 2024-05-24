@@ -25,12 +25,10 @@ import {
   NonPersistedPhysicalAddress,
   OpenIdConfig,
   Organization,
-  PartialPresentationDefinitionItem,
   Party,
   PartyRelationship,
   PartyType,
-  PhysicalAddress,
-  PresentationDefinitionItem,
+  PhysicalAddress
 } from '../../types'
 import { PartyEntity } from '../../entities/contact/PartyEntity'
 import { IdentityEntity } from '../../entities/contact/IdentityEntity'
@@ -47,8 +45,6 @@ import { IdentityMetadataItemEntity } from '../../entities/contact/IdentityMetad
 import { OpenIdConfigEntity } from '../../entities/contact/OpenIdConfigEntity'
 import { PartyTypeEntity } from '../../entities/contact/PartyTypeEntity'
 import { PhysicalAddressEntity } from '../../entities/contact/PhysicalAddressEntity'
-import { PresentationDefinitionItemEntity } from '../../entities/contact/PresentationDefinitionItemEntity'
-import { IPresentationDefinition } from '@sphereon/pex'
 
 export const partyEntityFrom = (party: NonPersistedParty): PartyEntity => {
   const partyEntity: PartyEntity = new PartyEntity()
@@ -387,32 +383,3 @@ export const isOpenIdConfig = (config: NonPersistedConnectionConfig | BaseConfig
 
 export const isDidAuthConfig = (config: NonPersistedConnectionConfig | BaseConfigEntity): config is DidAuthConfig | DidAuthConfigEntity =>
   'identifier' in config && 'redirectUrl' in config && 'sessionId' in config
-
-export const presentationDefinitionItemFrom = (entity: PresentationDefinitionItemEntity) => {
-  return {
-    id: entity.id,
-    tenantId: entity.tenantId,
-    pdId: entity.pdId,
-    version: entity.version,
-    purpose: entity.purpose,
-    definitionPayload: JSON.parse(entity.definitionPayload) as IPresentationDefinition,
-    createdAt: entity.createdAt,
-    lastUpdatedAt: entity.lastUpdatedAt,
-  } as PresentationDefinitionItem
-}
-
-export const presentationDefinitionEntityItemFrom = (item: PartialPresentationDefinitionItem) => {
-  const entity = new PresentationDefinitionItemEntity()
-  if (item.id) {
-    entity.id = item.id
-  }
-
-  entity.tenantId = item.tenantId!
-  entity.pdId = item.pdId!
-  entity.version = item.version!
-  entity.purpose = item.purpose
-  entity.definitionPayload = JSON.stringify(item.definitionPayload!)
-  entity.createdAt = item.createdAt!
-  entity.lastUpdatedAt = item.lastUpdatedAt!
-  return entity
-}

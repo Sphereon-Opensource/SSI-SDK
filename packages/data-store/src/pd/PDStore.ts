@@ -2,10 +2,9 @@ import { OrPromise } from '@sphereon/ssi-types'
 import { DataSource, In } from 'typeorm'
 import { AbstractPdStore } from './AbstractPDStore'
 import Debug from 'debug'
-import { GetPDArgs, GetPDsArgs, DeletePDArgs } from '../types/pd/IAbstractPDStore'
-import { NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '../types'
-import { PresentationDefinitionItemEntity } from '../entities/contact/PresentationDefinitionItemEntity'
-import { presentationDefinitionEntityItemFrom, presentationDefinitionItemFrom } from '../utils/contact/MappingUtils'
+import { GetPDArgs, GetPDsArgs, DeletePDArgs, NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '../types'
+import { PresentationDefinitionItemEntity } from '../entities/presentationDefinitions/PresentationDefinitionItemEntity'
+import { presentationDefinitionEntityItemFrom, presentationDefinitionItemFrom } from '../utils/presentationDefinitions/MappingUtils'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:pd-store')
 

@@ -34,11 +34,13 @@ export { StatusListStore } from './statusList/StatusListStore'
 import { AuditEventEntity, auditEventEntityFrom } from './entities/eventLogger/AuditEventEntity'
 import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCredentialEntity'
 import { digitalCredentialFrom, digitalCredentialsFrom, nonPersistedDigitalCredentialEntityFromAddArgs } from './utils/digitalCredential/MappingUtils'
-import { PresentationDefinitionItemEntity } from './entities/contact/PresentationDefinitionItemEntity'
+import { PresentationDefinitionItemEntity } from './entities/presentationDefinitions/PresentationDefinitionItemEntity'
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
 export { EventLoggerStore } from './eventLogger/EventLoggerStore'
 export { IAbstractMachineStateStore } from './machineState/IAbstractMachineStateStore'
 export { MachineStateStore } from './machineState/MachineStateStore'
+export { AbstractPdStore } from './pd/AbstractPDStore'
+export { PDStore } from './pd/PDStore'
 
 export {
   DataStoreMigrations,
@@ -67,6 +69,10 @@ export const DataStoreContactEntities = [
   NaturalPersonEntity,
   ElectronicAddressEntity,
   PhysicalAddressEntity,
+]
+
+export const PresentationDefinitionItemEntities = [
+  PresentationDefinitionItemEntity
 ]
 
 export const DataStoreIssuanceBrandingEntities = [
@@ -100,6 +106,7 @@ export const DataStoreEntities = [
   ...DataStoreDigitalCredentialEntities,
   ...DataStoreMachineStateEntities,
   ...DataStorePresentationDefinitionEntities,
+  ...PresentationDefinitionItemEntities
 ]
 
 export {
