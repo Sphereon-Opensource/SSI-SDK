@@ -90,9 +90,9 @@ export default (testContext: {
     afterAll(testContext.tearDown)
 
     it('should store valid definition', async () => {
-      const storeValue = await agent.pexStorePersistDefinition({ definition: singleDefinition })
-      expect(storeValue).toBeDefined()
-      expect(storeValue.value).toBeDefined()
+      const pd = await agent.pexStorePersistDefinition({ definition: singleDefinition })
+      expect(pd).toBeDefined()
+      expect(pd.input_descriptors).toBeDefined()
       await expect(agent.pexStoreHasDefinition({ definitionId: singleDefinition.id })).resolves.toEqual(true)
     })
 
@@ -109,12 +109,12 @@ export default (testContext: {
     })
 
     it('should store invalid definition if validation is disabled', async () => {
-      const storeValue = await agent.pexStorePersistDefinition({
+      const pd = await agent.pexStorePersistDefinition({
         validation: false,
         definition: { invalid: 'definition' } as unknown as IPresentationDefinition,
       })
-      expect(storeValue).toBeDefined()
-      expect(storeValue.value).toBeDefined()
+      expect(pd).toBeDefined()
+      expect(pd.input_descriptors).toBeDefined()
       await expect(agent.pexStoreHasDefinition({ definitionId: singleDefinition.id })).resolves.toEqual(true)
     })
 
