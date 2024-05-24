@@ -2,9 +2,9 @@ import { TAgent } from '@veramo/core'
 import { IOID4VCIHolder } from '../../src'
 import { AccessTokenResponse, WellKnownEndpoints } from '@sphereon/oid4vci-common'
 import {
-  GET_INITIATION_DATA_AUTHORIZATION_CODE_HTTPS,
-  GET_INITIATION_DATA_PRE_AUTHORIZED_CODE_HTTPS,
-  GET_INITIATION_DATA_PRE_AUTHORIZED_OPENID_CREDENTIAL_OFFER,
+  GET_CREDENTIAL_OFFER_AUTHORIZATION_CODE_HTTPS,
+  GET_CREDENTIAL_OFFER_PRE_AUTHORIZED_CODE_HTTPS,
+  GET_PRE_AUTHORIZED_OPENID_CREDENTIAL_OFFER,
   GET_INITIATION_DATA_PRE_AUTHORIZED_OPENID_INITIATE_ISSUANCE,
   IDENTIPROOF_AS_METADATA,
   IDENTIPROOF_AS_URL,
@@ -80,7 +80,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             uri: OFFER_QR_PRE_AUTHORIZED,
           },
         }),
-      ).resolves.toEqual(GET_INITIATION_DATA_PRE_AUTHORIZED_OPENID_CREDENTIAL_OFFER)
+      ).resolves.toEqual(GET_PRE_AUTHORIZED_OPENID_CREDENTIAL_OFFER)
     })
 
     it.skip('should get initialization data using authorization_code and https draft 11 >', async (): Promise<void> => {
@@ -91,7 +91,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             uri: HTTPS_OFFER_QR_AUTHORIZATION_CODE,
           },
         }),
-      ).resolves.toEqual(GET_INITIATION_DATA_AUTHORIZATION_CODE_HTTPS)
+      ).resolves.toEqual(GET_CREDENTIAL_OFFER_AUTHORIZATION_CODE_HTTPS)
     })
 
     it.skip('should get initialization data using pre-authorized_code and https draft 11 >', async (): Promise<void> => {
@@ -102,7 +102,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             uri: HTTPS_OFFER_QR_PRE_AUTHORIZED,
           },
         }),
-      ).resolves.toEqual(GET_INITIATION_DATA_PRE_AUTHORIZED_CODE_HTTPS)
+      ).resolves.toEqual(GET_CREDENTIAL_OFFER_PRE_AUTHORIZED_CODE_HTTPS)
     })
   })
 }
