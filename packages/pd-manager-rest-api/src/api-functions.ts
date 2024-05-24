@@ -1,8 +1,8 @@
 import { checkAuth, sendErrorResponse, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
 import { Request, Response, Router } from 'express'
 import { IRequiredContext } from './types'
-import { AddPDArgs, UpdatePDArgs } from '@sphereon/ssi-sdk.pd-manager'
-import { DeletePDArgs } from '@sphereon/ssi-sdk.data-store'
+import { AddDefinitionArgs, UpdateDefinitionArgs } from '@sphereon/ssi-sdk.pd-manager'
+import { DeleteDefinitionArgs } from '@sphereon/ssi-sdk.data-store'
 
 export function pdsReadEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
   if (opts?.enabled === false) {
@@ -49,7 +49,7 @@ export function pdAddEndpoint(router: Router, context: IRequiredContext, opts?: 
   router.post(path, async (request: Request, response: Response) => {
     try {
       const addPd = request.body
-      const pd = await context.agent.pdmAddDefinition(addPd as AddPDArgs)
+      const pd = await context.agent.pdmAddDefinition(addPd as AddDefinitionArgs)
       response.statusCode = 201
       return response.send(pd)
     } catch (error) {
@@ -67,7 +67,7 @@ export function pdUpdateEndpoint(router: Router, context: IRequiredContext, opts
   router.post(path, async (request: Request, response: Response) => {
     try {
       const updatePd = request.body
-      const pd = await context.agent.pdmUpdateDefinition(updatePd as UpdatePDArgs)
+      const pd = await context.agent.pdmUpdateDefinition(updatePd as UpdateDefinitionArgs)
       response.statusCode = 201
       return response.send(pd)
     } catch (error) {
@@ -85,7 +85,7 @@ export function pdDeleteEndpoint(router: Router, context: IRequiredContext, opts
   router.delete(`${path}/:pdItemId`, async (request, response) => {
     try {
       const pdItemId = request.params.pdItemId
-      const result = await context.agent.pdmDeleteDefinition({ itemId: pdItemId } as DeletePDArgs)
+      const result = await context.agent.pdmDeleteDefinition({ itemId: pdItemId } as DeleteDefinitionArgs)
       return response.send(result)
     } catch (error) {
       return sendErrorResponse(response, 500, error.message, error)

@@ -15,17 +15,15 @@ import {
 import { FindCredentialsArgs, IAgentPlugin } from '@veramo/core'
 
 import { IPresentationExchange } from '../types/IPresentationExchange'
-import { IKeyValueStore, IValueData, KeyValueStore } from '@sphereon/ssi-sdk.kv-store-temp'
 import { Checked, IPresentationDefinition, PEX } from '@sphereon/pex'
 import { CredentialMapper, JWT_PROOF_TYPE_2020, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
 import { toDIDs } from '@sphereon/ssi-sdk-ext.did-utils'
+import { AbstractPdStore, isPresentationDefinitionEqual, NonPersistedPresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
 
 export class PresentationExchange implements IAgentPlugin {
-  private readonly _stores: Map<string, IKeyValueStore<IPresentationDefinition>>
+  private readonly pdStore: AbstractPdStore
   readonly schema = schema.IDidAuthSiopOpAuthenticator
-  private readonly defaultStore: string
-  private readonly defaultNamespace: string
   private readonly pex = new PEX()
 
   readonly methods: IPresentationExchange = {
@@ -39,37 +37,29 @@ export class PresentationExchange implements IAgentPlugin {
     pexDefinitionFilterCredentialsPerInputDescriptor: this.pexDefinitionFilterCredentialsPerInputDescriptor.bind(this),
   }
 
-  constructor(opts?: PEXOpts) {
-    this.defaultStore = opts?.defaultStore ?? '_default'
-    this.defaultNamespace = opts?.defaultNamespace ?? 'pex'
-    if (opts?.stores && opts.stores instanceof Map) {
-      this._stores = opts.stores
-    } else if (opts?.stores) {
-      this._stores = new Map().set(this.defaultStore, opts.stores)
-    } else {
-      this._stores = new Map().set(
-        this.defaultStore,
-        new KeyValueStore({
-          namespace: this.defaultNamespace,
-          store: new Map<string, IPresentationDefinition>(),
-        }),
-      )
-    }
+  constructor(opts: PEXOpts) {
+    this.pdStore = opts.pdStore
+
     if (opts && Array.isArray(opts?.importDefinitions)) {
       opts.importDefinitions.forEach(this.pexStorePersistDefinition)
     }
   }
 
-  private async pexStoreGetDefinition({ definitionId, storeId, namespace }: IDefinitionGetArgs): Promise<IPresentationDefinition | undefined> {
-    return this.store({ storeId }).get(this.prefix({ namespace, definitionId }))
+  private async pexStoreGetDefinition({ definitionId, tenantId, version }: IDefinitionGetArgs): Promise<IPresentationDefinition | undefined> {
+    const definitions = await this.pdStore.getDefinitions({ filter: [{ definitionId, tenantId, version }] })
+    if (definitions.length === 0) {
+      return undefined
+    }
+    return definitions[0].definitionPayload
   }
 
-  private async pexStoreHasDefinition({ definitionId, storeId, namespace }: IDefinitionExistsArgs): Promise<boolean> {
-    return this.store({ storeId }).has(this.prefix({ namespace, definitionId }))
+  private async pexStoreHasDefinition({ definitionId, tenantId, version }: IDefinitionExistsArgs): Promise<boolean> {
+    const definitions = this.pexStoreGetDefinition({ definitionId, tenantId, version })
+    return definitions != undefined // TODO Maybe create pdStore.countDefinitions?
   }
 
-  private async pexStorePersistDefinition(args: IDefinitionPersistArgs): Promise<IValueData<IPresentationDefinition>> {
-    const { definition, ttl, storeId, namespace } = args
+  private async pexStorePersistDefinition(args: IDefinitionPersistArgs): Promise<IPresentationDefinition> {
+    const { definition, tenantId, version } = args // TODO ttl?
     if (args?.validation !== false) {
       let invalids: Checked[] = []
 
@@ -94,21 +84,57 @@ export class PresentationExchange implements IAgentPlugin {
       }
     }
     const definitionId = args.definitionId ?? definition.id
-    const existing = await this.store({ storeId }).getAsValueData(this.prefix({ namespace, definitionId }))
-    if (!existing.value || (existing.value && args.overwriteExisting !== false)) {
-      return await this.store({ storeId }).set(this.prefix({ namespace, definitionId }), definition, ttl)
+    const existing = await this.pdStore.getDefinitions({ filter: [{ definitionId, tenantId, version }] })
+    const existingItem = existing.length > 0 ? existing[0] : undefined
+
+    const definitionItem: NonPersistedPresentationDefinitionItem = {
+      definitionId: definitionId,
+      version: version ?? '1',
+      tenantId: args.tenantId,
+      purpose: definition.purpose,
+      definitionPayload: definition,
     }
-    return existing
+    const isPayloadModified = existingItem === undefined || !isPresentationDefinitionEqual(existingItem, definitionItem)
+    if (!isPayloadModified) {
+      return existingItem.definitionPayload
+    }
+    if (!existingItem) {
+      const persistedItem = await this.pdStore.addDefinition(definitionItem)
+      return persistedItem.definitionPayload
+    } else if (args.overwriteExisting !== false) {
+      existingItem.definitionId = definitionId
+      existingItem.version = version ?? existingItem?.version ?? '1'
+      existingItem.tenantId = args.tenantId
+      existingItem.purpose = definition.purpose
+      existingItem.definitionPayload = definition
+
+      const persistedItem = await this.pdStore.updateDefinition(existingItem)
+      return persistedItem.definitionPayload
+    }
+    throw Error(
+      `Cannot update definition ${definitionId} for tenant ${tenantId} version ${version} because definition exists and overwriteExisting is set to false`,
+    )
   }
 
-  private async pexStoreRemoveDefinition({ storeId, definitionId, namespace }: IDefinitionRemoveArgs): Promise<boolean> {
-    return this.store({ storeId }).delete(this.prefix({ namespace, definitionId }))
+  private async pexStoreRemoveDefinition({ definitionId, tenantId, version }: IDefinitionRemoveArgs): Promise<boolean> {
+    const definition = await this.pexStoreGetDefinition({ definitionId, tenantId, version })
+    if (definition !== undefined) {
+      return await this.pdStore.deleteDefinition({ itemId: definition.id }).then((): boolean => true)
+    }
+    return false
   }
 
-  private async pexStoreClearDefinitions({ storeId }: IDefinitionsClearArgs): Promise<boolean> {
-    return await this.store({ storeId })
-      .clear()
-      .then(() => true)
+  private async pexStoreClearDefinitions({ tenantId }: IDefinitionsClearArgs): Promise<boolean> {
+    const definitions = await this.pdStore.getDefinitions({ filter: [{ tenantId }] })
+    if (definitions.length === 0) {
+      return false
+    }
+    await Promise.all(
+      definitions.map(async (definitionItem) => {
+        await this.pdStore.deleteDefinition({ itemId: definitionItem.id }) // TODO create deleteDefinitions with tenantId filter?
+      }),
+    )
+    return true
   }
 
   async pexDefinitionVersion(presentationDefinition: IPresentationDefinition): Promise<VersionDiscoveryResult> {
@@ -184,24 +210,8 @@ export class PresentationExchange implements IAgentPlugin {
   }
 
   /*private assertIdentifier(identifier?: IIdentifier): void {
-    if (!identifier) {
-      throw Error(`OID4VP needs an identifier at this point`)
-    }
-  }*/
-
-  private store({ storeId }: { storeId?: string }): IKeyValueStore<IPresentationDefinition> {
-    const store = this._stores.get(storeId ?? this.defaultStore)
-    if (!store) {
-      throw Error(`Could not get definition store: ${storeId ?? this.defaultStore}`)
-    }
-    return store
-  }
-
-  private namespace({ namespace }: { namespace?: string }): string {
-    return namespace ?? this.defaultStore
-  }
-
-  private prefix({ namespace, definitionId }: { namespace?: string; definitionId: string }) {
-    return `${this.namespace({ namespace })}:${definitionId}`
-  }
+                if (!identifier) {
+                  throw Error(`OID4VP needs an identifier at this point`)
+                }
+              }*/
 }

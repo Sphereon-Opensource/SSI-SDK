@@ -1,6 +1,6 @@
 import { IAgentPlugin } from '@veramo/core'
-import { GetPDArgs, GetPDsArgs, IPDManager, RequiredContext, schema, UpdatePDArgs } from '../index'
-import { DeletePDArgs, NonPersistedPresentationDefinitionItem, PresentationDefinitionItem, AbstractPdStore } from '@sphereon/ssi-sdk.data-store'
+import { DeleteDefinitionArgs, GetDefinitionArgs, GetDefinitionsArgs, IPDManager, RequiredContext, schema, UpdateDefinitionArgs } from '../index'
+import { NonPersistedPresentationDefinitionItem, PresentationDefinitionItem, AbstractPdStore } from '@sphereon/ssi-sdk.data-store'
 
 // Exposing the methods here for any REST implementation
 export const pdManagerMethods: Array<string> = [
@@ -31,13 +31,13 @@ export class PDManager implements IAgentPlugin {
   }
 
   /** {@inheritDoc IPDManager.pdmGetDefinition} */
-  private async pdmGetDefinition(args: GetPDArgs, context: RequiredContext): Promise<PresentationDefinitionItem> {
+  private async pdmGetDefinition(args: GetDefinitionArgs, context: RequiredContext): Promise<PresentationDefinitionItem> {
     const { itemId } = args
     return this.store.getDefinition({ itemId })
   }
 
   /** {@inheritDoc IPDManager.pdmGetDefinitions} */
-  private async pdmGetDefinitions(args: GetPDsArgs, context: RequiredContext): Promise<Array<PresentationDefinitionItem>> {
+  private async pdmGetDefinitions(args: GetDefinitionsArgs, context: RequiredContext): Promise<Array<PresentationDefinitionItem>> {
     const { filter } = args
     return this.store.getDefinitions({ filter })
   }
@@ -48,12 +48,12 @@ export class PDManager implements IAgentPlugin {
   }
 
   /** {@inheritDoc IPDManager.pdmUpdateDefinition} */
-  private async pdmUpdateDefinition(args: UpdatePDArgs, context: RequiredContext): Promise<PresentationDefinitionItem> {
-    return this.store.updateDefinition(args.pd)
+  private async pdmUpdateDefinition(args: UpdateDefinitionArgs, context: RequiredContext): Promise<PresentationDefinitionItem> {
+    return this.store.updateDefinition(args.definitionItem)
   }
 
   /** {@inheritDoc IPDManager.pdmDeleteDefinition} */
-  private async pdmDeleteDefinition(args: DeletePDArgs): Promise<boolean> {
+  private async pdmDeleteDefinition(args: DeleteDefinitionArgs): Promise<boolean> {
     return this.store.deleteDefinition(args).then((): boolean => true)
   }
 }

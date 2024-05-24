@@ -8,7 +8,7 @@ export class CreatePresentationDefinitions1716475165344 implements MigrationInte
       `CREATE TABLE "PresentationDefinitionItem" (
     "id" varchar PRIMARY KEY NOT NULL, 
     "tenant_id" varchar,
-    "pd_id" varchar NOT NULL,
+    "definition_id" varchar NOT NULL,
     "version" varchar NOT NULL,
     "purpose" varchar,
     "definition_payload" varchar NOT NULL,

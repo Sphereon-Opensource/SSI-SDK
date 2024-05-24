@@ -89,8 +89,7 @@ export async function createRPBuilder(args: {
     (!!pexOpts && pexOpts.definitionId
       ? await context.agent.pexStoreGetDefinition({
           definitionId: pexOpts.definitionId,
-          storeId: pexOpts.storeId,
-          namespace: pexOpts.storeNamespace,
+          tenantId: pexOpts.tenantId,
         })
       : undefined)
   const did = getDID(didOpts.identifierOpts)

@@ -2,8 +2,8 @@ import { IPresentationDefinition } from '@sphereon/pex'
 
 export type PresentationDefinitionItem = {
   id: string
+  definitionId: string
   tenantId?: string
-  pdId: string
   version: string
   purpose?: string
   definitionPayload: IPresentationDefinition

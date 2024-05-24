@@ -10,16 +10,16 @@ import {
   PresentationPayload,
 } from '@veramo/core'
 import { IPresentation, Optional, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
-import { IKeyValueStore, IValueData } from '@sphereon/ssi-sdk.kv-store-temp'
 import { IPresentationDefinition, PEVersion, SelectResults } from '@sphereon/pex'
 import { Format, InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
+import { AbstractPdStore } from '@sphereon/ssi-sdk.data-store'
 
 export interface IPresentationExchange extends IPluginMethodMap {
   pexStoreGetDefinition(args: IDefinitionGetArgs): Promise<IPresentationDefinition | undefined>
 
   pexStoreHasDefinition(args: IDefinitionExistsArgs): Promise<boolean>
 
-  pexStorePersistDefinition(args: IDefinitionPersistArgs): Promise<IValueData<IPresentationDefinition>>
+  pexStorePersistDefinition(args: IDefinitionPersistArgs): Promise<IPresentationDefinition>
 
   pexStoreRemoveDefinition(args: IDefinitionRemoveArgs): Promise<boolean>
 
@@ -36,9 +36,10 @@ export interface IPresentationExchange extends IPluginMethodMap {
 }
 
 export interface IDefinitionGetArgs {
+  // TODO maybe just expose data store GetDefinitionsArgs?
   definitionId: string
-  storeId?: string
-  namespace?: string
+  tenantId?: string
+  version?: string
 }
 
 export type IDefinitionExistsArgs = IDefinitionGetArgs
@@ -50,16 +51,15 @@ export type IDefinitionImportArgs = IDefinitionPersistArgs
 export interface IDefinitionPersistArgs {
   definition: IPresentationDefinition // The actual Presentation definition to be stored/
   definitionId?: string // Allows to define a custom key for storage. By default, the id of the definition will be used
+  version?: string // Allows to define a version. By default, the version of the definition will be 1, or when it was saved before it will copy the most recent version
   overwriteExisting?: boolean // Whether to overwrite any existing definition by id. Defaults to true
   validation?: boolean // Whether to check the definition. Defaults to true
+  tenantId?: string // The tenant id to use. Allows you to use multiple different tenants next to each-other
   ttl?: number // How long should the definition be stored in seconds. By default, it will be indefinite
-  storeId?: string // The store id to use. Allows you to use multiple different stores next to each-other
-  namespace?: string // The namespace (prefix) to use whilst storing the definition. Allows you to partition definitions
 }
 
 export interface IDefinitionsClearArgs {
-  storeId?: string
-  // namespace?: string
+  tenantId?: string
 }
 
 export interface IDefinitionCredentialFilterArgs {
@@ -74,7 +74,7 @@ export interface IDefinitionCredentialFilterArgs {
 export interface PEXOpts {
   defaultStore?: string
   defaultNamespace?: string
-  stores?: Map<string, IKeyValueStore<IPresentationDefinition>> | IKeyValueStore<IPresentationDefinition>
+  pdStore: AbstractPdStore
   importDefinitions?: IDefinitionImportArgs[]
 }
 

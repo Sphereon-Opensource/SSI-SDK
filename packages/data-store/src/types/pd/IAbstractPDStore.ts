@@ -1,19 +1,19 @@
 import { NonPersistedPresentationDefinitionItem, PresentationDefinitionItem, PresentationDefinitionItemFilter } from './pd'
 
-export type FindPDArgs = Array<PresentationDefinitionItemFilter>
+export type FindDefinitionArgs = Array<PresentationDefinitionItemFilter>
 
-export type GetPDArgs = {
+export type GetGetDefinitionArgs = {
   itemId: string
 }
 
-export type GetPDsArgs = {
-  filter?: FindPDArgs
+export type GetDefinitionsArgs = {
+  filter?: FindDefinitionArgs
 }
 
-export type AddPDArgs = NonPersistedPresentationDefinitionItem
+export type AddDefinitionArgs = NonPersistedPresentationDefinitionItem
 
-export type UpdatePDArgs = PresentationDefinitionItem
+export type UpdateDefinitionArgs = PresentationDefinitionItem
 
-export type DeletePDArgs = {
+export type DeleteDefinitionArgs = {
   itemId: string
 }

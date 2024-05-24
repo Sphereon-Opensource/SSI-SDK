@@ -1,21 +1,23 @@
-import { BaseEntity, BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { BaseEntity, BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { IsNotEmpty } from 'class-validator'
 
 @Entity('PresentationDefinitionItem')
+@Index(['version'], { unique: false })
+@Index(['version'], { unique: false })
 export class PresentationDefinitionItemEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'tenant_id', length: 255, nullable: true, unique: false })
-  tenantId?: string
-
-  @Column({ name: 'pd_id', length: 255, nullable: false, unique: false })
-  @IsNotEmpty({ message: 'pdId field must not be empty' })
-  pdId!: string
+  @Column({ name: 'definition_id', length: 255, nullable: false, unique: false })
+  @IsNotEmpty({ message: 'definitionId field must not be empty' })
+  definitionId!: string
 
   @Column({ name: 'version', length: 255, nullable: false, unique: false })
   @IsNotEmpty({ message: 'version field must not be empty' })
   version!: string
+
+  @Column({ name: 'tenant_id', length: 255, nullable: true, unique: false })
+  tenantId?: string
 
   @Column({ name: 'purpose', length: 255, nullable: true, unique: false })
   purpose?: string

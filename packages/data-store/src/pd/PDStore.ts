@@ -2,7 +2,13 @@ import { OrPromise } from '@sphereon/ssi-types'
 import { DataSource, In } from 'typeorm'
 import { AbstractPdStore } from './AbstractPDStore'
 import Debug from 'debug'
-import { GetPDArgs, GetPDsArgs, DeletePDArgs, NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '../types'
+import {
+  GetGetDefinitionArgs,
+  GetDefinitionsArgs,
+  DeleteDefinitionArgs,
+  NonPersistedPresentationDefinitionItem,
+  PresentationDefinitionItem,
+} from '../types'
 import { PresentationDefinitionItemEntity } from '../entities/presentationDefinitions/PresentationDefinitionItemEntity'
 import { presentationDefinitionEntityItemFrom, presentationDefinitionItemFrom } from '../utils/presentationDefinitions/MappingUtils'
 
@@ -16,7 +22,7 @@ export class PDStore extends AbstractPdStore {
     this.dbConnection = dbConnection
   }
 
-  getDefinition = async (args: GetPDArgs): Promise<PresentationDefinitionItem> => {
+  getDefinition = async (args: GetGetDefinitionArgs): Promise<PresentationDefinitionItem> => {
     const { itemId } = args ?? {}
     const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
     const result: PresentationDefinitionItemEntity | null = await pdRepository.findOne({
@@ -29,7 +35,7 @@ export class PDStore extends AbstractPdStore {
     return presentationDefinitionItemFrom(result)
   }
 
-  getDefinitions = async (args: GetPDsArgs): Promise<Array<PresentationDefinitionItem>> => {
+  getDefinitions = async (args: GetDefinitionsArgs): Promise<Array<PresentationDefinitionItem>> => {
     const { filter } = args
     const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
     const initialResult: Array<PresentationDefinitionItemEntity> = await pdRepository.find({
@@ -39,6 +45,9 @@ export class PDStore extends AbstractPdStore {
     const result: Array<PresentationDefinitionItemEntity> = await pdRepository.find({
       where: {
         id: In(initialResult.map((entity: PresentationDefinitionItemEntity) => entity.id)),
+      },
+      order: {
+        version: 'DESC',
       },
     })
 
@@ -76,7 +85,7 @@ export class PDStore extends AbstractPdStore {
     return presentationDefinitionItemFrom(updateResult)
   }
 
-  deleteDefinition = async (args: DeletePDArgs): Promise<void> => {
+  deleteDefinition = async (args: DeleteDefinitionArgs): Promise<void> => {
     const { itemId } = args
 
     const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)

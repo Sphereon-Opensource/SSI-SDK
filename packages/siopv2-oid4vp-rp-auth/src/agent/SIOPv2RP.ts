@@ -201,8 +201,7 @@ export class SIOPv2RP implements IAgentPlugin {
         await context.agent.pexStorePersistDefinition({
           definitionId,
           definition: instanceOpts.definition,
-          storeId: instanceOpts.storeId,
-          namespace: instanceOpts.storeNamespace,
+          tenantId: instanceOpts.tenantId,
           validation: true,
         })
       }

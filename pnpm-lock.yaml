@@ -1217,9 +1217,9 @@ importers:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.19.0
         version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.kv-store-temp':
+      '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
-        version: link:../kv-store
+        version: link:../data-store
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1444,6 +1444,9 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.data-store':
+        specifier: workspace:*
+        version: link:../data-store
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store

@@ -34,6 +34,7 @@ export { StatusListStore } from './statusList/StatusListStore'
 import { AuditEventEntity, auditEventEntityFrom } from './entities/eventLogger/AuditEventEntity'
 import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCredentialEntity'
 import { digitalCredentialFrom, digitalCredentialsFrom, nonPersistedDigitalCredentialEntityFromAddArgs } from './utils/digitalCredential/MappingUtils'
+import { isPresentationDefinitionEqual } from './utils/presentationDefinitions/MappingUtils'
 import { PresentationDefinitionItemEntity } from './entities/presentationDefinitions/PresentationDefinitionItemEntity'
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
 export { EventLoggerStore } from './eventLogger/EventLoggerStore'
@@ -71,9 +72,7 @@ export const DataStoreContactEntities = [
   PhysicalAddressEntity,
 ]
 
-export const PresentationDefinitionItemEntities = [
-  PresentationDefinitionItemEntity
-]
+export const PresentationDefinitionItemEntities = [PresentationDefinitionItemEntity]
 
 export const DataStoreIssuanceBrandingEntities = [
   BackgroundAttributesEntity,
@@ -106,7 +105,7 @@ export const DataStoreEntities = [
   ...DataStoreDigitalCredentialEntities,
   ...DataStoreMachineStateEntities,
   ...DataStorePresentationDefinitionEntities,
-  ...PresentationDefinitionItemEntities
+  ...PresentationDefinitionItemEntities,
 ]
 
 export {
@@ -150,4 +149,5 @@ export {
   nonPersistedDigitalCredentialEntityFromAddArgs,
   MachineStateInfoEntity,
   PresentationDefinitionItemEntity,
+  isPresentationDefinitionEqual,
 }
