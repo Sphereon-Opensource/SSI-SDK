@@ -1,5 +1,5 @@
-import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
-import { CredentialSupported, DefaultURISchemes, Jwt, ProofOfPossessionCallbacks } from '@sphereon/oid4vci-common'
+import {OpenID4VCIClient} from '@sphereon/oid4vci-client'
+import {CredentialSupported, DefaultURISchemes, Jwt, ProofOfPossessionCallbacks} from '@sphereon/oid4vci-common'
 import {
   CorrelationIdentifierEnum,
   IBasicCredentialLocaleBranding,
@@ -8,11 +8,11 @@ import {
   NonPersistedIdentity,
   Party,
 } from '@sphereon/ssi-sdk.data-store'
-import { DIDDocument, IAgentPlugin, VerifiableCredential } from '@veramo/core'
-import { computeEntryHash } from '@veramo/utils'
-import { JWTHeader } from 'did-jwt'
-import { v4 as uuidv4 } from 'uuid'
-import { OID4VCIMachine } from '../machine/oid4vciMachine'
+import {DIDDocument, IAgentPlugin, VerifiableCredential} from '@veramo/core'
+import {computeEntryHash} from '@veramo/utils'
+import {JWTHeader} from 'did-jwt'
+import {v4 as uuidv4} from 'uuid'
+import {OID4VCIMachine} from '../machine/oid4vciMachine'
 import {
   getCredentialBranding,
   getCredentialsSupported,
@@ -200,8 +200,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       !(
         requestData?.uri.startsWith(RequestType.OPENID_INITIATE_ISSUANCE) ||
         requestData?.uri.startsWith(RequestType.OPENID_CREDENTIAL_OFFER) ||
-        requestData?.uri.startsWith(RequestType.HTTPS) ||
-        requestData?.uri.startsWith(RequestType.HTTP)
+        requestData?.uri.startsWith(RequestType.URL)
       )
     ) {
       return Promise.reject(Error(`Invalid OID4VCI credential offer URI: ${requestData?.uri}`))
