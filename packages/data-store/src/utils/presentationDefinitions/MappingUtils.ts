@@ -39,9 +39,9 @@ function hashPayload(payload: IPresentationDefinition): string {
 export function isPresentationDefinitionEqual(left: PartialPresentationDefinitionItem, right: PartialPresentationDefinitionItem): boolean {
   if (
     left.definitionId !== right.definitionId ||
-    left.tenantId !== right.tenantId ||
+    left.tenantId != right.tenantId ||
     left.version !== right.version ||
-    left.purpose !== right.purpose
+    left.purpose != right.purpose
   ) {
     return false
   }
@@ -50,5 +50,5 @@ export function isPresentationDefinitionEqual(left: PartialPresentationDefinitio
     return hashPayload(left.definitionPayload) === hashPayload(right.definitionPayload)
   }
 
-  return left.definitionPayload === right.definitionPayload
+  return left.definitionPayload == right.definitionPayload
 }

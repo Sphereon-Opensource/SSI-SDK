@@ -42,7 +42,7 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   constructor(opts: ISiopv2RPOpts) {
-    this.opts = opts
+    this.opts = opts // TODO should we pre-import all supplied presentation definitions here?
   }
 
   public setDefaultOpts(rpDefaultOpts: IRPDefaultOpts, context: IRequiredContext) {
