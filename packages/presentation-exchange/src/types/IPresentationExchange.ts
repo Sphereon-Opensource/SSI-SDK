@@ -48,11 +48,13 @@ export type IDefinitionRemoveArgs = IDefinitionGetArgs
 
 export type IDefinitionImportArgs = IDefinitionPersistArgs
 
+export type VersionControlMode = 'AutoIncrementMajor' | 'AutoIncrementMinor' | 'Manual' | 'Overwrite' | 'OverwriteLatest'
+
 export interface IDefinitionPersistArgs {
   definition: IPresentationDefinition // The actual Presentation definition to be stored/
   definitionId?: string // Allows to define a custom key for storage. By default, the id of the definition will be used
   version?: string // Allows to define a version. By default, the version of the definition will be 1, or when it was saved before it will copy the most recent version
-  overwriteExisting?: boolean // Whether to overwrite any existing definition by id. Defaults to true
+  versionControlMode?: VersionControlMode // Specify version control mode
   validation?: boolean // Whether to check the definition. Defaults to true
   tenantId?: string // The tenant id to use. Allows you to use multiple different tenants next to each-other
   ttl?: number // How long should the definition be stored in seconds. By default, it will be indefinite

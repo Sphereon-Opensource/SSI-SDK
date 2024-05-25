@@ -19,7 +19,13 @@ import { Checked, IPresentationDefinition, PEX } from '@sphereon/pex'
 import { CredentialMapper, JWT_PROOF_TYPE_2020, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
 import { toDIDs } from '@sphereon/ssi-sdk-ext.did-utils'
-import { AbstractPdStore, isPresentationDefinitionEqual, NonPersistedPresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
+import {
+  AbstractPdStore,
+  isPresentationDefinitionEqual,
+  NonPersistedPresentationDefinitionItem,
+  PresentationDefinitionItem,
+} from '@sphereon/ssi-sdk.data-store'
+import semver from 'semver/preload'
 
 export class PresentationExchange implements IAgentPlugin {
   private readonly pdStore: AbstractPdStore
@@ -59,14 +65,15 @@ export class PresentationExchange implements IAgentPlugin {
   }
 
   private async pexStorePersistDefinition(args: IDefinitionPersistArgs): Promise<IPresentationDefinition> {
-    const { definition, tenantId, version } = args // TODO ttl?
+    const { definition, tenantId, version, versionControlMode = 'AutoIncrementMajor' } = args
+
     if (args?.validation !== false) {
-      let invalids: Checked[] = []
+      const invalids: Checked[] = []
 
       try {
-        const result = PEX.validateDefinition(definition) // throws an error in case the def is not valid
+        const result = PEX.validateDefinition(definition)
         const validations = Array.isArray(result) ? result : [result]
-        invalids = validations.filter((v) => v.status === 'error')
+        invalids.push(...validations.filter((v) => v.status === 'error'))
       } catch (error) {
         invalids.push({
           status: 'error',
@@ -79,13 +86,21 @@ export class PresentationExchange implements IAgentPlugin {
           tag: 'validation',
         })
       }
+
       if (invalids.length > 0) {
         throw Error(`Invalid definition. ${invalids.map((v) => v.message).toString()}`)
       }
     }
+
     const definitionId = args.definitionId ?? definition.id
     const existing = await this.pdStore.getDefinitions({ filter: [{ definitionId, tenantId, version }] })
     const existingItem = existing.length > 0 ? existing[0] : undefined
+    let latestVersionItem: PresentationDefinitionItem | undefined = existingItem
+
+    if (existingItem && version) {
+      const latest = await this.pdStore.getDefinitions({ filter: [{ definitionId, tenantId }] })
+      latestVersionItem = latest.length > 0 ? latest[0] : existingItem
+    }
 
     const definitionItem: NonPersistedPresentationDefinitionItem = {
       definitionId: definitionId,
@@ -94,26 +109,98 @@ export class PresentationExchange implements IAgentPlugin {
       purpose: definition.purpose,
       definitionPayload: definition,
     }
+
     const isPayloadModified = existingItem === undefined || !isPresentationDefinitionEqual(existingItem, definitionItem)
     if (!isPayloadModified) {
       return existingItem.definitionPayload
     }
-    if (!existingItem) {
-      const persistedItem = await this.pdStore.addDefinition(definitionItem)
-      return persistedItem.definitionPayload
-    } else if (args.overwriteExisting !== false) {
+
+    switch (versionControlMode) {
+      case 'Overwrite':
+        return this.handleOverwriteMode(existingItem, definitionItem, definitionId, version)
+
+      case 'OverwriteLatest':
+        return this.handleOverwriteLatestMode(latestVersionItem, definitionItem, definitionId)
+
+      case 'Manual':
+        return this.handleManualMode(existingItem, definitionItem, definitionId, tenantId, version)
+
+      case 'AutoIncrementMajor':
+        return this.handleAutoIncrementMode(latestVersionItem, definitionItem, 'major')
+
+      case 'AutoIncrementMinor':
+        return this.handleAutoIncrementMode(latestVersionItem, definitionItem, 'minor')
+
+      default:
+        throw Error(`Unknown version control mode: ${versionControlMode}`)
+    }
+  }
+
+  private async handleOverwriteMode(
+    existingItem: PresentationDefinitionItem | undefined,
+    definitionItem: NonPersistedPresentationDefinitionItem,
+    definitionId: string,
+    version: string | undefined,
+  ): Promise<IPresentationDefinition> {
+    if (existingItem) {
       existingItem.definitionId = definitionId
-      existingItem.version = version ?? existingItem?.version ?? '1'
-      existingItem.tenantId = args.tenantId
-      existingItem.purpose = definition.purpose
-      existingItem.definitionPayload = definition
+      existingItem.version = version ?? existingItem.version ?? '1'
+      existingItem.tenantId = definitionItem.tenantId
+      existingItem.purpose = definitionItem.purpose
+      existingItem.definitionPayload = definitionItem.definitionPayload
 
       const persistedItem = await this.pdStore.updateDefinition(existingItem)
       return persistedItem.definitionPayload
+    } else {
+      const persistedItem = await this.pdStore.addDefinition(definitionItem)
+      return persistedItem.definitionPayload
     }
-    throw Error(
-      `Cannot update definition ${definitionId} for tenant ${tenantId} version ${version} because definition exists and overwriteExisting is set to false`,
-    )
+  }
+
+  private async handleOverwriteLatestMode(
+    latestVersionItem: PresentationDefinitionItem | undefined,
+    definitionItem: NonPersistedPresentationDefinitionItem,
+    definitionId: string,
+  ): Promise<IPresentationDefinition> {
+    if (latestVersionItem) {
+      latestVersionItem.definitionId = definitionId
+      latestVersionItem.tenantId = definitionItem.tenantId
+      latestVersionItem.purpose = definitionItem.purpose
+      latestVersionItem.definitionPayload = definitionItem.definitionPayload
+
+      const persistedItem = await this.pdStore.updateDefinition(latestVersionItem)
+      return persistedItem.definitionPayload
+    } else {
+      const persistedItem = await this.pdStore.addDefinition(definitionItem)
+      return persistedItem.definitionPayload
+    }
+  }
+
+  private async handleManualMode(
+    existingItem: PresentationDefinitionItem | undefined,
+    definitionItem: NonPersistedPresentationDefinitionItem,
+    definitionId: string,
+    tenantId: string | undefined,
+    version: string | undefined,
+  ): Promise<IPresentationDefinition> {
+    if (existingItem && !isPresentationDefinitionEqual(existingItem, definitionItem)) {
+      throw Error(
+        `Cannot update definition ${definitionId} for tenant ${tenantId} version ${version} because definition exists and manual version control is enabled.`,
+      )
+    } else {
+      const persistedItem = await this.pdStore.addDefinition(definitionItem)
+      return persistedItem.definitionPayload
+    }
+  }
+
+  private async handleAutoIncrementMode(
+    latestVersionItem: PresentationDefinitionItem | undefined,
+    definitionItem: NonPersistedPresentationDefinitionItem,
+    releaseType: 'major' | 'minor',
+  ): Promise<IPresentationDefinition> {
+    definitionItem.version = latestVersionItem ? semver.inc(latestVersionItem.version, releaseType) ?? '1' : '1'
+    const persistedItem = await this.pdStore.addDefinition(definitionItem)
+    return persistedItem.definitionPayload
   }
 
   private async pexStoreRemoveDefinition({ definitionId, tenantId, version }: IDefinitionRemoveArgs): Promise<boolean> {

@@ -10,6 +10,7 @@ import {
   ICreateAuthRequestArgs,
   IGetAuthRequestStateArgs,
   IGetAuthResponseStateArgs,
+  ImportDefinitionsArgs,
   IPEXInstanceOptions,
   IRequiredContext,
   IRPDefaultOpts,
@@ -39,6 +40,7 @@ export class SIOPv2RP implements IAgentPlugin {
     siopUpdateAuthRequestState: this.siopUpdateRequestState.bind(this),
     siopDeleteAuthState: this.siopDeleteState.bind(this),
     siopVerifyAuthResponse: this.siopVerifyAuthResponse.bind(this),
+    siopImportDefinitions: this.siopImportDefinitions.bind(this),
   }
 
   constructor(opts: ISiopv2RPOpts) {
@@ -173,6 +175,22 @@ export class SIOPv2RP implements IAgentPlugin {
     )
   }
 
+  private async siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void> {
+    const { definitions, tenantId, version, versionControlMode } = args
+    await Promise.all(
+      definitions.map((definition) =>
+        context.agent.pexStorePersistDefinition({
+          definitionId: definition.id,
+          definition: definition,
+          tenantId: tenantId,
+          validation: true,
+          version: version,
+          versionControlMode: versionControlMode,
+        }),
+      ),
+    )
+  }
+
   async getRPInstance(args: ISiopRPInstanceArgs, context: IRequiredContext): Promise<RPInstance> {
     const definitionId = args.definitionId
     const instanceId = definitionId ?? SIOPv2RP._DEFAULT_OPTS_KEY
@@ -189,20 +207,6 @@ export class SIOPv2RP implements IAgentPlugin {
           uniresolverResolution: true,
           localResolution: true,
           resolverResolution: true,
-        })
-      }
-
-      /*const definition = args.definition ?? (definitionId ? await context.agent.pexStoreGetDefinition({
-              definitionId,
-              storeId,
-              namespace: storeNamespace,
-            }) : undefined)*/
-      if (instanceOpts?.definition) {
-        await context.agent.pexStorePersistDefinition({
-          definitionId,
-          definition: instanceOpts.definition,
-          tenantId: instanceOpts.tenantId,
-          validation: true,
         })
       }
       this.instances.set(instanceId, new RPInstance({ rpOpts, pexOpts: instanceOpts }))
