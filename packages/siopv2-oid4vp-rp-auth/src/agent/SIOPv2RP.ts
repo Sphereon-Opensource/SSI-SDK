@@ -178,16 +178,17 @@ export class SIOPv2RP implements IAgentPlugin {
   private async siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void> {
     const { definitions, tenantId, version, versionControlMode } = args
     await Promise.all(
-      definitions.map((definition) =>
-        context.agent.pexStorePersistDefinition({
+      definitions.map((definition) => {
+        console.log(`persisting definition ${definition.id} / ${definition.name} with versionControlMode ${versionControlMode}`)
+        return context.agent.pexStorePersistDefinition({
           definitionId: definition.id,
           definition: definition,
           tenantId: tenantId,
           validation: true,
           version: version,
           versionControlMode: versionControlMode,
-        }),
-      ),
+        })
+      }),
     )
   }
 
