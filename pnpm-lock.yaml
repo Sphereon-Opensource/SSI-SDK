@@ -155,7 +155,7 @@ importers:
         version: 19.0.5(encoding@0.1.13)
       ts-jest:
         specifier: ^27.1.5
-        version: 27.1.5(@babel/core@7.24.6)(@types/jest@27.5.2)(babel-jest@29.7.0(@babel/core@7.24.6))(jest@27.5.1(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.2)))(typescript@5.4.2)
+        version: 27.1.5(@babel/core@7.24.6)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.24.6))(jest@27.5.1(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.2)))(typescript@5.4.2)
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@18.19.33)(typescript@5.4.2)
@@ -207,7 +207,7 @@ importers:
         version: 4.3.4
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.5))
+        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.2))
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
@@ -226,10 +226,10 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.19.0
-        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -380,7 +380,7 @@ importers:
         version: 4.3.4
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.5))
+        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.2))
     devDependencies:
       pg:
         specifier: ^8.11.3
@@ -497,7 +497,7 @@ importers:
         version: 4.3.4
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.5))
+        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.2))
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
@@ -556,7 +556,7 @@ importers:
         version: 8.57.0
       eslint-plugin-promise:
         specifier: ^6.1.1
-        version: 6.1.1(eslint@8.57.0)
+        version: 6.2.0(eslint@8.57.0)
       keyv:
         specifier: ^4.5.2
         version: 4.5.4
@@ -654,7 +654,7 @@ importers:
         version: 5.1.7
       ts-jest:
         specifier: ^27.1.5
-        version: 27.1.5(@babel/core@7.24.6)(@types/jest@27.5.2)(babel-jest@29.7.0(@babel/core@7.24.6))(jest@27.5.1(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.2)))(typescript@5.4.2)
+        version: 27.1.5(@babel/core@7.24.6)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.24.6))(jest@27.5.1(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.2)))(typescript@5.4.2)
       typeorm:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.2))
@@ -678,7 +678,7 @@ importers:
         version: 0.18.0
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.18.0
-        version: 0.18.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.18.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -751,7 +751,7 @@ importers:
         version: 0.10.4-unstable.63(encoding@0.1.13)(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.19.0
-        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -870,16 +870,16 @@ importers:
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.19.0
-        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.19.0
-        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.19.0
-        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1003,7 +1003,7 @@ importers:
         version: 0.10.4-unstable.63(encoding@0.1.13)(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.19.0
-        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1052,7 +1052,7 @@ importers:
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.19.0
-        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1147,7 +1147,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       ts-jest:
         specifier: ^27.1.5
-        version: 27.1.5(@babel/core@7.24.6)(@types/jest@27.5.2)(babel-jest@29.7.0(@babel/core@7.24.6))(jest@27.5.1(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.5)))(typescript@5.4.5)
+        version: 27.1.5(@babel/core@7.24.6)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.24.6))(jest@27.5.1(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.5)))(typescript@5.4.5)
 
   packages/remote-server-rest-api:
     dependencies:
@@ -1191,7 +1191,7 @@ importers:
         version: 18.19.33
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.5))
+        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.2))
 
   packages/siopv2-oid4vp-op-auth:
     dependencies:
@@ -1206,7 +1206,7 @@ importers:
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.19.0
-        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1276,7 +1276,7 @@ importers:
         version: 3.3.3
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.19.0
-        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1401,7 +1401,7 @@ importers:
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.19.0
-        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1678,7 +1678,7 @@ importers:
         version: 2.8.8
       ts-jest:
         specifier: ^27.1.5
-        version: 27.1.5(@babel/core@7.24.6)(@types/jest@27.5.2)(babel-jest@29.7.0(@babel/core@7.24.6))(jest@27.5.1(ts-node@10.9.2(@types/node@18.15.3)(typescript@5.4.2)))(typescript@5.4.2)
+        version: 27.1.5(@babel/core@7.24.6)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.24.6))(jest@27.5.1(ts-node@10.9.2(@types/node@18.15.3)(typescript@5.4.2)))(typescript@5.4.2)
       typescript:
         specifier: 5.4.2
         version: 5.4.2
@@ -1690,13 +1690,13 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.19.0
-        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.19.0
-        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1742,7 +1742,7 @@ importers:
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.19.0
-        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.19.0
         version: 0.19.0
@@ -1871,13 +1871,13 @@ importers:
         version: 1.2.0
       '@sphereon/isomorphic-webcrypto':
         specifier: ^2.4.1-unstable.0
-        version: 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.19.0
-        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -1977,10 +1977,10 @@ importers:
         version: 0.19.0(encoding@0.1.13)(typescript@5.4.2)
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.19.0
-        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.19.0
-        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@transmute/lds-ecdsa-secp256k1-recovery2020':
         specifier: ^0.0.7
         version: 0.0.7
@@ -2055,13 +2055,13 @@ importers:
     dependencies:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.19.0
-        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
       '@sphereon/vc-status-list':
         specifier: 7.0.0-next.0
-        version: 7.0.0-next.0(web-streams-polyfill@3.3.3)
+        version: 7.0.0-next.0
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -2101,7 +2101,7 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.19.0
-        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2119,7 +2119,7 @@ importers:
         version: link:../ssi-types
       '@sphereon/vc-status-list':
         specifier: ^7.0.0-next.0
-        version: 7.0.0-next.0(web-streams-polyfill@3.3.3)
+        version: 7.0.0-next.0
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -2150,7 +2150,7 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.19.0
-        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2171,7 +2171,7 @@ importers:
         version: link:../ssi-types
       '@sphereon/vc-status-list':
         specifier: 7.0.0-next.0
-        version: 7.0.0-next.0(web-streams-polyfill@3.3.3)
+        version: 7.0.0-next.0
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -2199,7 +2199,7 @@ importers:
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.19.0
-        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.19.0
         version: 0.19.0
@@ -2338,16 +2338,16 @@ importers:
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.19.0
-        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.19.0
         version: 0.19.0
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.19.0
-        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.19.0
-        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2465,7 +2465,7 @@ importers:
     devDependencies:
       '@veramo/cli':
         specifier: 4.2.0
-        version: 4.2.0(@types/node@18.19.33)(encoding@0.1.13)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.5))(web-streams-polyfill@3.3.3)
+        version: 4.2.0(@types/node@18.19.33)(encoding@0.1.13)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.2))
       '@veramo/remote-client':
         specifier: 4.2.0
         version: 4.2.0(encoding@0.1.13)
@@ -2487,7 +2487,7 @@ importers:
         version: link:../dev
       '@veramo/cli':
         specifier: 4.2.0
-        version: 4.2.0(@types/node@18.19.33)(encoding@0.1.13)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.5))(web-streams-polyfill@3.3.3)
+        version: 4.2.0(@types/node@18.19.33)(encoding@0.1.13)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.2))
       '@veramo/remote-client':
         specifier: 4.2.0
         version: 4.2.0(encoding@0.1.13)
@@ -2584,10 +2584,10 @@ importers:
     devDependencies:
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.19.0
-        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.19.0
-        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+        version: 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@types/body-parser':
         specifier: ^1.19.2
         version: 1.19.5
@@ -6986,11 +6986,11 @@ packages:
       '@typescript-eslint/parser':
         optional: true
 
-  eslint-plugin-promise@6.1.1:
-    resolution: {integrity: sha512-tjqWDwVZQo7UIPMeDReOpUgHCmCiH+ePnVT+5zVapL0uuHnegBUs2smM13CzOs2Xb5+MHMRFTs9v24yjba4Oig==}
+  eslint-plugin-promise@6.2.0:
+    resolution: {integrity: sha512-QmAqwizauvnKOlifxyDj2ObfULpHQawlg/zQdgEixur9vl0CvZGv/LCJV2rtj3210QCoeGBzVMfMXqGAOr/4fA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
-      eslint: ^7.0.0 || ^8.0.0
+      eslint: ^7.0.0 || ^8.0.0 || ^9.0.0
 
   eslint-scope@5.1.1:
     resolution: {integrity: sha512-2NxwbF/hZ0KpepYN0cNbo+FN6XoK7GaHlQhgx/hIZl6Va0bF45RQOOwhLIy8lQDbuCiadSLCBnH2CFYquit5bw==}
@@ -9188,6 +9188,15 @@ packages:
     resolution: {integrity: sha512-ofRW94Ab0T4AOh5Fk8t0h8OBWrmjb0SSB20xh1H8YnPV9EJ+f5AMoYSUQ2zgJ4Iq2HAK0I2l5/Nequ8YzFS3Hg==}
     engines: {node: 4.x || >=6.0.0}
 
+  node-fetch@2.6.12:
+    resolution: {integrity: sha512-C/fGU2E8ToujUivIO0H+tpQ6HWo4eEmchoPIoXtxCrVghxdKq+QOHqEZW7tuP3KlV3bC8FRMO5nMCC7Zm1VP6g==}
+    engines: {node: 4.x || >=6.0.0}
+    peerDependencies:
+      encoding: ^0.1.0
+    peerDependenciesMeta:
+      encoding:
+        optional: true
+
   node-fetch@2.6.7:
     resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
     engines: {node: 4.x || >=6.0.0}
@@ -10795,8 +10804,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  swagger-ui-dist@5.17.12:
-    resolution: {integrity: sha512-gHzs6CYQjgm0rpnFJGsjvWLua6znq+nipi89RDcu0a8R8JPXuVQrybVRBoOFmZ8mVTo9uPJDWgEYqnJRl4dHCQ==}
+  swagger-ui-dist@5.17.13:
+    resolution: {integrity: sha512-dyR3HAjwjK9oTd5ELzFh7rJEoMUyqfgaAQEwn0NGhLpOwg7IEbee17qjp50QIVE3sUA8J2d6ySw4IF50nUrKog==}
 
   swagger-ui-express@4.6.3:
     resolution: {integrity: sha512-CDje4PndhTD2HkgyKH3pab+LKspDeB/NhPN2OF1j+piYIamQqBYwAXWESOT1Yju2xFg51bRW9sUng2WxDjzArw==}
@@ -13666,7 +13675,7 @@ snapshots:
       make-dir: 4.0.0
       minimatch: 3.0.5
       multimatch: 5.0.0
-      node-fetch: 2.6.7(encoding@0.1.13)
+      node-fetch: 2.6.12(encoding@0.1.13)
       npm-package-arg: 8.1.1
       npm-packlist: 5.1.1
       npm-registry-fetch: 14.0.5
@@ -13742,7 +13751,7 @@ snapshots:
       detect-libc: 2.0.3
       https-proxy-agent: 5.0.1
       make-dir: 3.1.0
-      node-fetch: 2.7.0(encoding@0.1.13)
+      node-fetch: 2.6.12(encoding@0.1.13)
       nopt: 5.0.0
       npmlog: 5.0.1
       rimraf: 3.0.2
@@ -14080,7 +14089,7 @@ snapshots:
       '@octokit/request-error': 3.0.3
       '@octokit/types': 9.3.2
       is-plain-object: 5.0.0
-      node-fetch: 2.7.0(encoding@0.1.13)
+      node-fetch: 2.6.7(encoding@0.1.13)
       universal-user-agent: 6.0.1
     transitivePeerDependencies:
       - encoding
@@ -14706,7 +14715,7 @@ snapshots:
       react-native: 0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)
       uint8arrays: 3.1.1
 
-  '@sphereon/isomorphic-webcrypto@2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))':
+  '@sphereon/isomorphic-webcrypto@2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)':
     dependencies:
       '@peculiar/webcrypto': 1.4.6
       asmcrypto.js: 2.3.2
@@ -14836,11 +14845,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.did-provider-jwk@0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))':
+  '@sphereon/ssi-sdk-ext.did-provider-jwk@0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)':
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -14861,7 +14870,7 @@ snapshots:
   '@sphereon/ssi-sdk-ext.did-provider-key@0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))':
     dependencies:
       '@sphereon/ssi-sdk-ext.did-resolver-key': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@transmute/did-key-bls12381': 0.3.0-unstable.10(encoding@0.1.13)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
@@ -14918,7 +14927,7 @@ snapshots:
 
   '@sphereon/ssi-sdk-ext.did-resolver-key@0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))':
     dependencies:
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@stablelib/ed25519': 1.0.3
       bigint-mod-arith: 3.3.1
       did-resolver: 4.1.0
@@ -14937,11 +14946,11 @@ snapshots:
       - react-native-securerandom
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.did-utils@0.18.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))':
+  '@sphereon/ssi-sdk-ext.did-utils@0.18.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)':
     dependencies:
       '@ethersproject/transactions': 5.7.0
       '@sphereon/did-uni-client': 0.6.3(encoding@0.1.13)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.18.2(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+      '@sphereon/ssi-sdk-ext.key-utils': 0.18.2(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -14959,11 +14968,11 @@ snapshots:
       - react-native-securerandom
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.did-utils@0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))':
+  '@sphereon/ssi-sdk-ext.did-utils@0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)':
     dependencies:
       '@ethersproject/transactions': 5.7.0
       '@sphereon/did-uni-client': 0.6.3(encoding@0.1.13)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -14981,9 +14990,9 @@ snapshots:
       - react-native-securerandom
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.key-manager@0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))':
+  '@sphereon/ssi-sdk-ext.key-manager@0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)':
     dependencies:
-      '@sphereon/ssi-sdk-ext.kms-local': 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+      '@sphereon/ssi-sdk-ext.kms-local': 0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
     transitivePeerDependencies:
@@ -14996,10 +15005,10 @@ snapshots:
       - react-native-securerandom
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.key-utils@0.18.2(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))':
+  '@sphereon/ssi-sdk-ext.key-utils@0.18.2(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)':
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+      '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@stablelib/ed25519': 1.0.3
       '@stablelib/sha256': 1.0.1
       '@stablelib/sha512': 1.0.1
@@ -15021,10 +15030,10 @@ snapshots:
       - react-native-securerandom
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.key-utils@0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))':
+  '@sphereon/ssi-sdk-ext.key-utils@0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)':
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+      '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@stablelib/ed25519': 1.0.3
       '@stablelib/sha256': 1.0.1
       '@stablelib/sha512': 1.0.1
@@ -15046,11 +15055,11 @@ snapshots:
       - react-native-securerandom
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.kms-local@0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))':
+  '@sphereon/ssi-sdk-ext.kms-local@0.19.0(@mattrglobal/bbs-signatures@1.3.1(encoding@0.1.13))(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)':
     dependencies:
-      '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1(react-native@0.74.1(@babel/core@7.24.6)(@babel/preset-env@7.24.6(@babel/core@7.24.6))(@types/react@18.3.3)(encoding@0.1.13)(react@18.3.1)))
+      '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(encoding@0.1.13)(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@trust/keyto': 2.0.0-alpha1
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
@@ -15068,7 +15077,7 @@ snapshots:
       - react-native-securerandom
       - supports-color
 
-  '@sphereon/vc-status-list@7.0.0-next.0(web-streams-polyfill@3.3.3)':
+  '@sphereon/vc-status-list@7.0.0-next.0':
     dependencies:
       '@digitalbazaar/vc-status-list-context': 3.1.1
       '@digitalcredentials/bitstring': 2.0.1
@@ -16022,7 +16031,7 @@ snapshots:
       - domexception
       - web-streams-polyfill
 
-  '@veramo/cli@4.2.0(@types/node@18.19.33)(encoding@0.1.13)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.5))(web-streams-polyfill@3.3.3)':
+  '@veramo/cli@4.2.0(@types/node@18.19.33)(encoding@0.1.13)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.2))':
     dependencies:
       '@microsoft/api-extractor': 7.44.1(@types/node@18.19.33)
       '@microsoft/api-extractor-model': 7.28.19(@types/node@18.19.33)
@@ -16032,7 +16041,7 @@ snapshots:
       '@veramo/credential-eip712': 4.2.0(encoding@0.1.13)
       '@veramo/credential-ld': 4.2.0(encoding@0.1.13)(web-streams-polyfill@3.3.3)
       '@veramo/credential-w3c': 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(encoding@0.1.13)(web-streams-polyfill@3.3.3)
-      '@veramo/data-store': 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.5))
+      '@veramo/data-store': 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.2))
       '@veramo/did-comm': 4.2.0(encoding@0.1.13)
       '@veramo/did-discovery': 4.2.0
       '@veramo/did-jwt': 4.2.0
@@ -16046,7 +16055,7 @@ snapshots:
       '@veramo/message-handler': 4.2.0
       '@veramo/remote-client': 4.2.0(encoding@0.1.13)
       '@veramo/remote-server': 4.2.0(encoding@0.1.13)(express@4.19.2)
-      '@veramo/selective-disclosure': 4.2.0(encoding@0.1.13)(web-streams-polyfill@3.3.3)
+      '@veramo/selective-disclosure': 4.2.0(encoding@0.1.13)
       '@veramo/url-handler': 4.2.0(encoding@0.1.13)
       blessed: 0.1.81
       commander: 9.5.0
@@ -16076,7 +16085,7 @@ snapshots:
       sqlite3: 5.1.7
       swagger-ui-express: 4.6.3(express@4.19.2)
       ts-json-schema-generator: 1.5.1
-      typeorm: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.5))
+      typeorm: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.2))
       url-parse: 1.5.10
       web-did-resolver: 2.0.27(encoding@0.1.13)
       ws: 8.17.0
@@ -16449,7 +16458,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@veramo/selective-disclosure@4.2.0(encoding@0.1.13)(web-streams-polyfill@3.3.3)':
+  '@veramo/selective-disclosure@4.2.0(encoding@0.1.13)':
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-w3c': 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(encoding@0.1.13)(web-streams-polyfill@3.3.3)
@@ -18300,7 +18309,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-promise@6.1.1(eslint@8.57.0):
+  eslint-plugin-promise@6.2.0(eslint@8.57.0):
     dependencies:
       eslint: 8.57.0
 
@@ -21679,6 +21688,12 @@ snapshots:
     dependencies:
       http2-client: 1.3.5
 
+  node-fetch@2.6.12(encoding@0.1.13):
+    dependencies:
+      whatwg-url: 5.0.0
+    optionalDependencies:
+      encoding: 0.1.13
+
   node-fetch@2.6.7(encoding@0.1.13):
     dependencies:
       whatwg-url: 5.0.0
@@ -23448,12 +23463,12 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  swagger-ui-dist@5.17.12: {}
+  swagger-ui-dist@5.17.13: {}
 
   swagger-ui-express@4.6.3(express@4.19.2):
     dependencies:
       express: 4.19.2
-      swagger-ui-dist: 5.17.12
+      swagger-ui-dist: 5.17.13
 
   symbol-tree@3.2.4: {}
 
@@ -23615,7 +23630,7 @@ snapshots:
     dependencies:
       ts-utils: 6.1.0
 
-  ts-jest@27.1.5(@babel/core@7.24.6)(@types/jest@27.5.2)(babel-jest@29.7.0(@babel/core@7.24.6))(jest@27.5.1(ts-node@10.9.2(@types/node@18.15.3)(typescript@5.4.2)))(typescript@5.4.2):
+  ts-jest@27.1.5(@babel/core@7.24.6)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.24.6))(jest@27.5.1(ts-node@10.9.2(@types/node@18.15.3)(typescript@5.4.2)))(typescript@5.4.2):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
@@ -23630,9 +23645,9 @@ snapshots:
     optionalDependencies:
       '@babel/core': 7.24.6
       '@types/jest': 27.5.2
-      babel-jest: 29.7.0(@babel/core@7.24.6)
+      babel-jest: 27.5.1(@babel/core@7.24.6)
 
-  ts-jest@27.1.5(@babel/core@7.24.6)(@types/jest@27.5.2)(babel-jest@29.7.0(@babel/core@7.24.6))(jest@27.5.1(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.2)))(typescript@5.4.2):
+  ts-jest@27.1.5(@babel/core@7.24.6)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.24.6))(jest@27.5.1(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.2)))(typescript@5.4.2):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
@@ -23647,9 +23662,9 @@ snapshots:
     optionalDependencies:
       '@babel/core': 7.24.6
       '@types/jest': 27.5.2
-      babel-jest: 29.7.0(@babel/core@7.24.6)
+      babel-jest: 27.5.1(@babel/core@7.24.6)
 
-  ts-jest@27.1.5(@babel/core@7.24.6)(@types/jest@27.5.2)(babel-jest@29.7.0(@babel/core@7.24.6))(jest@27.5.1(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.5)))(typescript@5.4.5):
+  ts-jest@27.1.5(@babel/core@7.24.6)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.24.6))(jest@27.5.1(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.5)))(typescript@5.4.5):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
@@ -23664,7 +23679,7 @@ snapshots:
     optionalDependencies:
       '@babel/core': 7.24.6
       '@types/jest': 27.5.2
-      babel-jest: 29.7.0(@babel/core@7.24.6)
+      babel-jest: 27.5.1(@babel/core@7.24.6)
 
   ts-jest@29.1.3(@babel/core@7.24.6)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.24.6))(jest@29.7.0(@types/node@18.19.33)(ts-node@10.9.2(@types/node@18.19.33)(typescript@5.4.5)))(typescript@5.4.5):
     dependencies:
