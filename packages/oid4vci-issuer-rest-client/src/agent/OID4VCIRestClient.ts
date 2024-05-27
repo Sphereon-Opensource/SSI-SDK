@@ -49,12 +49,12 @@ export class OID4VCIRestClient implements IAgentPlugin {
 
   /** {@inheritDoc IOID4VCIRestClient.vciClientCreateOfferUri} */
   private async oid4vciClientCreateOfferUri(args: IOID4VCIClientCreateOfferUriRequestArgs): Promise<IOID4VCIClientCreateOfferUriResponse> {
-    if (!args.credentials || !args.grants) {
+    if (!args.credential_configuration_ids || !args.grants) {
       return Promise.reject(Error("Can't generate the credential offer url without credentials and grants params present."))
     }
     const baseUrl = this.assertedAgentBaseUrl(args.agentBaseUrl)
     const request: IOID4VCIClientCreateOfferUriRequest = {
-      credentials: args.credentials,
+      credential_configuration_ids: args.credential_configuration_ids,
       grants: args.grants,
       ...(args.credentialDataSupplierInput && { credentialDataSupplierInput: args.credentialDataSupplierInput }),
     }

@@ -23,10 +23,7 @@ let restServer: Server
 const setup = async (): Promise<boolean> => {
   const config = await getConfig('packages/vc-handler-ld-local/agent.yml')
   ;(config.agent.$args[0].plugins[0].$args[0].contextMaps = [LdDefaultContexts /*, customContext*/]),
-    (config.agent.$args[0].plugins[0].$args[0].suites = [
-      new SphereonEd25519Signature2018(),
-      new SphereonEd25519Signature2020(),
-    ])
+    (config.agent.$args[0].plugins[0].$args[0].suites = [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()])
   const { agent } = await createObjects(config, { agent: '/agent' })
   serverAgent = agent
 

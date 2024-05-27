@@ -10,7 +10,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
   private readonly stateNavigationListener:
     | ((oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>)
     | undefined
-  private noStateMachinePersistence: boolean;
+  private noStateMachinePersistence: boolean
 
   constructor(
     args: Pick<GetMachineArgs, 'stateNavigationListener'> & {
@@ -27,8 +27,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
   }
 
   async handle(url: string | URL): Promise<void> {
-    // FIXME CWALL-199 add support for URL's
-    const uri = new URL(url).toString().replace(new RegExp('.*\\?'), 'openid-credential-offer://?')
+    const uri = new URL(url).toString()
     const offerData = convertURIToJsonObject(uri) as Record<string, unknown>
     const hasCode = 'code' in offerData && !!offerData.code && !('issuer' in offerData)
     const code = hasCode ? (offerData.code as string) : undefined
@@ -54,7 +53,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
         cleanupAllOtherInstances: true,
         cleanupOnFinalState: true,
         singletonCheck: true,
-        noRegistration: this.noStateMachinePersistence
+        noRegistration: this.noStateMachinePersistence,
       })
     } else {
       interpreter.start()
