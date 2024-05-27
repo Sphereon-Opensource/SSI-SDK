@@ -73,8 +73,6 @@ export const DataStoreContactEntities = [
   PhysicalAddressEntity,
 ]
 
-export const DataStorePresentationDefinitionItemEntities = [PresentationDefinitionItemEntity]
-
 export const DataStoreIssuanceBrandingEntities = [
   BackgroundAttributesEntity,
   CredentialBrandingEntity,
@@ -105,8 +103,7 @@ export const DataStoreEntities = [
   ...DataStoreEventLoggerEntities,
   ...DataStoreDigitalCredentialEntities,
   ...DataStoreMachineStateEntities,
-  ...DataStorePresentationDefinitionEntities,
-  ...DataStorePresentationDefinitionItemEntities
+  ...DataStorePresentationDefinitionEntities
 ]
 
 export {
