@@ -249,6 +249,25 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   getInstanceOpts(definitionId?: string): IPEXInstanceOptions | undefined {
-    return definitionId ? this.opts.instanceOpts?.find((i) => i.definitionId === definitionId) : undefined
+    if (!this.opts.instanceOpts) return undefined
+
+    const instanceOpt = definitionId ? this.opts.instanceOpts.find((i) => i.definitionId === definitionId) : undefined
+
+    return instanceOpt ?? this.getDefaultOptions(definitionId)
+  }
+
+  private getDefaultOptions(definitionId: string | undefined) {
+    if (!this.opts.instanceOpts) return undefined
+
+    const defaultOptions = this.opts.instanceOpts.find((i) => i.definitionId === 'default')
+    if (defaultOptions) {
+      const clonedOptions = { ...defaultOptions }
+      if (definitionId !== undefined) {
+        clonedOptions.definitionId = definitionId
+      }
+      return clonedOptions
+    }
+
+    return undefined
   }
 }
