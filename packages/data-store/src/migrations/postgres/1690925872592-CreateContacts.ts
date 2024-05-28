@@ -83,7 +83,7 @@ export class CreateContacts1690925872592 implements MigrationInterface {
     )
     await queryRunner.query(`DROP TABLE "BaseConfigEntity"`)
     await queryRunner.query(
-      `INSERT INTO "PartyType"(id, type, origin, name, description, tenant_id, created_at, last_updated_at) VALUES ('3875c12e-fdaa-4ef6-a340-c936e054b627', 'organization', 'INTERNAL' 'Sphereon_default_organization_type', 'sphereon_default_organization', '95e09cfc-c974-4174-86aa-7bf1d5251fb4', now(), now())`,
+      `INSERT INTO "PartyType"(id, type, origin, name, description, tenant_id, created_at, last_updated_at) VALUES ('3875c12e-fdaa-4ef6-a340-c936e054b627', 'organization', 'INTERNAL', 'Sphereon_default_organization_type', 'sphereon_default_organization', '95e09cfc-c974-4174-86aa-7bf1d5251fb4', now(), now())`,
     )
     await queryRunner.query(
       `INSERT INTO "PartyType"(id, type, origin, name, description, tenant_id, created_at, last_updated_at) VALUES ('7d248798-41ca-4fc1-a130-9934b43d532e', 'naturalPerson', 'INTERNAL', 'Sphereon_default_natural_person_type', 'sphereon_default_natural_person', '95e09cfc-c974-4174-86aa-7bf1d5251fb4', now(), now())`,

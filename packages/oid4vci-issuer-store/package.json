@@ -14,7 +14,7 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.10.4-unstable.61+bed9a57",
+    "@sphereon/oid4vci-common": "0.10.4-unstable.63+1d87208",
     "@sphereon/ssi-sdk-ext.did-utils": "0.19.0",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@veramo/core": "4.2.0",
