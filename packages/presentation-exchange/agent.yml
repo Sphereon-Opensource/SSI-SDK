@@ -24,10 +24,9 @@ dbConnection:
       synchronize: false
       migrationsRun: true
       migrations:
-        $require: '@veramo/data-store?t=object#migrations'
-      logging: false
+        $require: ./packages/data-store?t=object#DataStorePresentationsDefinitionsMigrations'
       entities:
-        $require: '@veramo/data-store?t=object#Entities'
+        $require: './packages/data-store?t=object#DataStorePresentationDefinitionEntities'
 
 server:
   baseUrl:
@@ -119,7 +118,9 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: '@veramo/data-store#DataStoreORM'
-          $args:
-            - $ref: /dbConnection
         - $require: ./packages/presentation-exchange/dist#PresentationExchange
+          $args:
+            - pdStore:
+                $require: './packages/data-store/dist#PDStore'
+                $args:
+                  - $ref: /dbConnection
