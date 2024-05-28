@@ -473,6 +473,9 @@ importers:
       cross-fetch:
         specifier: ^3.1.8
         version: 3.1.8
+      qs:
+        specifier: ^6.11.2
+        version: 6.12.1
       uint8arrays:
         specifier: ^3.1.1
         version: 3.1.1
@@ -513,6 +516,9 @@ importers:
       '@types/node':
         specifier: ^20.12.7
         version: 20.12.12
+      '@types/qs':
+        specifier: ^6.9.7
+        version: 6.9.15
       '@veramo/data-store':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -18550,6 +18556,7 @@ packages:
 
   /rimraf@2.6.3:
     resolution: {integrity: sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 7.2.3

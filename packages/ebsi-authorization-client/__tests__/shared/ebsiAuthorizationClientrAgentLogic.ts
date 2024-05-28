@@ -8,7 +8,7 @@ import {from} from '@trust/keyto';
 import {IDIDManager, IIdentifier, IKeyManager, MinimalImportableKey, TAgent} from '@veramo/core'
 import {fetch} from 'cross-fetch';
 //@ts-ignore
-import express, {Request, Response, Application, NextFunction} from "express";
+import express, {Application, NextFunction, Request, Response} from "express";
 import {importJWK, JWK, SignJWT} from 'jose';
 import * as http from "node:http";
 import {EBSIScope, IEBSIAuthorizationClient, ScopeByDefinition} from '../../src'
@@ -97,6 +97,7 @@ export default (testContext: {
                 provider: 'did:ebsi',
                 keys: [secp256k1, secp256r1],
             })
+            const importedJwk = await importJWK(jwk);
 
             const port = process?.env.PORT ?? '5151'
             const app: Application = express();
@@ -150,11 +151,26 @@ export default (testContext: {
             })
             const url = await client.createAuthorizationRequestUrl({
                 authorizationRequest: {
-                    redirectUri: REDIRECT_MOCK_URL,
+                    redirectUri: REDIRECT_MOCK_URL
                 },
             });
-            console.log(`URL: ${url}`)
-            const result = await fetch(url);
+            const urlWithRequest = await new SignJWT({
+              iss: REDIRECT_MOCK_URL,
+              aud: 'https://conformance-test.ebsi.eu/conformance/v3/auth-mock',
+              redirect_uri: REDIRECT_MOCK_URL,
+              scope: 'openid',
+              response_type: 'code',
+              client_id: REDIRECT_MOCK_URL,
+              authorization_details: authorizationDetails,
+              client_metadata: {
+                jwk
+              }
+            }).setProtectedHeader({
+              alg: 'ES256',
+              kid
+            }).sign(importedJwk)
+            console.log(`URL: ${url}&request=${urlWithRequest}`)
+            const result = await fetch(`${url}&request=${urlWithRequest}`);
             console.log(await result.text());
 
 
