@@ -1,14 +1,47 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import { FindDefinitionArgs, NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
-import { IPresentationDefinition } from '@sphereon/pex'
+import {
+  FindDefinitionArgs,
+  NonPersistedPresentationDefinitionItem,
+  PersistablePresentationDefinitionItem,
+  PresentationDefinitionItem,
+} from '@sphereon/ssi-sdk.data-store'
 
 export interface IPDManager extends IPluginMethodMap {
-  pdmGetDefinitionItem(args: GetDefinitionItemArgs): Promise<PresentationDefinitionItem>
-  pdmGetDefinitionsItem(args: GetDefinitionsItemArgs): Promise<Array<PresentationDefinitionItem>>
-  pdmAddDefinitionItem(args: AddDefinitionItemArgs): Promise<PresentationDefinitionItem>
-  pdmUpdateDefinitionItem(args: UpdateDefinitionItemArgs): Promise<PresentationDefinitionItem>
-  pdmDeleteDefinitionItem(args: DeleteDefinitionItemArgs): Promise<boolean>
+  /**
+   * Get a single presentation definition records by primary key
+   * @param args
+   */
+  pdmGetDefinition(args: GetDefinitionItemArgs): Promise<PresentationDefinitionItem>
 
+  /**
+   * Find one or more presentation definition records by filters
+   * @param args
+   */
+  pdmGetDefinitions(args: GetDefinitionsItemArgs): Promise<Array<PresentationDefinitionItem>>
+
+  /**
+   * Add a presentation definition record
+   * @param args
+   */
+  pdmAddDefinition(args: AddDefinitionItemArgs): Promise<PresentationDefinitionItem>
+
+  /**
+   * Update an existing presentation definition record
+   * @param args
+   */
+  pdmUpdateDefinition(args: UpdateDefinitionItemArgs): Promise<PresentationDefinitionItem>
+
+  /**
+   * Delete a single presentation definition records by primary key
+   * @param args
+   */
+  pdmDeleteDefinition(args: DeleteDefinitionItemArgs): Promise<boolean>
+
+  /**
+   * Persist a presentation definition.
+   * It has version control logic which will add or update presentation definition records and has settings for automatic version numbering.
+   * @param args
+   */
   pdmPersistDefinition(args: PersistDefinitionArgs): Promise<PresentationDefinitionItem>
 }
 
@@ -33,9 +66,7 @@ export type DeleteDefinitionItemArgs = {
 }
 
 export type PersistDefinitionArgs = {
-  definition: IPresentationDefinition
-  tenantId?: string
-  version?: string
+  definitionItem: PersistablePresentationDefinitionItem
   versionControlMode?: VersionControlMode
 }
 

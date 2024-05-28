@@ -13,7 +13,7 @@ export function pdReadEndpoint(router: Router, context: IRequiredContext, opts?:
   router.get(`${path}/:pdId`, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const pdId = request.params.pdId
-      const pd = await context.agent.pdmGetDefinitionItem({ itemId: pdId })
+      const pd = await context.agent.pdmGetDefinition({ itemId: pdId })
       response.statusCode = 200
       return response.send(pd)
     } catch (error) {
@@ -31,7 +31,7 @@ export function pdAddEndpoint(router: Router, context: IRequiredContext, opts?: 
   router.post(path, async (request: Request, response: Response) => {
     try {
       const addPd = request.body
-      const pd = await context.agent.pdmAddDefinitionItem(addPd as AddDefinitionItemArgs)
+      const pd = await context.agent.pdmAddDefinition(addPd as AddDefinitionItemArgs)
       response.statusCode = 201
       return response.send(pd)
     } catch (error) {
@@ -49,7 +49,7 @@ export function pdUpdateEndpoint(router: Router, context: IRequiredContext, opts
   router.put(path, async (request: Request, response: Response) => {
     try {
       const updatePd = request.body
-      const pd = await context.agent.pdmUpdateDefinitionItem(updatePd as UpdateDefinitionItemArgs)
+      const pd = await context.agent.pdmUpdateDefinition(updatePd as UpdateDefinitionItemArgs)
       response.statusCode = 201
       return response.send(pd)
     } catch (error) {
@@ -67,7 +67,7 @@ export function pdDeleteEndpoint(router: Router, context: IRequiredContext, opts
   router.delete(`${path}/:pdItemId`, async (request, response) => {
     try {
       const pdItemId = request.params.pdItemId
-      const result = await context.agent.pdmDeleteDefinitionItem({ itemId: pdItemId } as DeleteDefinitionArgs)
+      const result = await context.agent.pdmDeleteDefinition({ itemId: pdItemId } as DeleteDefinitionArgs)
       return response.send(result)
     } catch (error) {
       return sendErrorResponse(response, 500, error.message, error)

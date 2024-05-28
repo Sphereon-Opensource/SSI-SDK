@@ -124,10 +124,10 @@ export default (testContext: {
     })
 
     it('should remove definition', async () => {
-      await agent.pexStorePersistDefinition({ definition: singleDefinition })
-      await expect(agent.pexStoreHasDefinition({ definitionId: singleDefinition.id })).resolves.toEqual(true)
-      await expect(agent.pexStoreRemoveDefinition({ definitionId: singleDefinition.id })).resolves.toEqual(true)
-      await expect(agent.pexStoreHasDefinition({ definitionId: singleDefinition.id })).resolves.toEqual(false)
+      await agent.pexStorePersistDefinition({ definition: singleDefinition, version: 'toDelete', versionControlMode: 'Manual' })
+      await expect(agent.pexStoreHasDefinition({ definitionId: singleDefinition.id, version: 'toDelete' })).resolves.toEqual(true)
+      await expect(agent.pexStoreRemoveDefinition({ definitionId: singleDefinition.id, version: 'toDelete' })).resolves.toEqual(true)
+      await expect(agent.pexStoreHasDefinition({ definitionId: singleDefinition.id, version: 'toDelete' })).resolves.toEqual(false)
     })
 
     it('should clear definitions', async () => {

@@ -42,7 +42,7 @@ export class PresentationExchange implements IAgentPlugin {
     { definitionId, tenantId, version }: IDefinitionGetArgs,
     context: IRequiredContext,
   ): Promise<IPresentationDefinition | undefined> {
-    const definitions = await context.agent.pdmGetDefinitionsItem({ filter: [{ definitionId, tenantId, version }] })
+    const definitions = await context.agent.pdmGetDefinitions({ filter: [{ definitionId, tenantId, version }] })
     if (definitions.length === 0) {
       return undefined
     }
@@ -50,7 +50,7 @@ export class PresentationExchange implements IAgentPlugin {
   }
 
   private async pexStoreHasDefinition({ definitionId, tenantId, version }: IDefinitionExistsArgs, context: IRequiredContext): Promise<boolean> {
-    const definitions = await context.agent.pdmGetDefinitionsItem({ filter: [{ definitionId, tenantId, version }] })
+    const definitions = await context.agent.pdmGetDefinitions({ filter: [{ definitionId, tenantId, version }] })
     return definitions !== undefined && definitions.length > 0 // TODO Maybe create pdStore.countDefinitions?
   }
 
@@ -83,26 +83,33 @@ export class PresentationExchange implements IAgentPlugin {
       }
     }
 
-    const definitionItem = await context.agent.pdmPersistDefinition({ definition: definition, tenantId, version, versionControlMode })
+    const definitionItem = await context.agent.pdmPersistDefinition({
+      definitionItem: {
+        tenantId,
+        version,
+        definitionPayload: definition,
+      },
+      versionControlMode,
+    })
     return definitionItem.definitionPayload
   }
 
   private async pexStoreRemoveDefinition({ definitionId, tenantId, version }: IDefinitionRemoveArgs, context: IRequiredContext): Promise<boolean> {
-    const definitions = await context.agent.pdmGetDefinitionsItem({ filter: [{ definitionId, tenantId, version }] })
+    const definitions = await context.agent.pdmGetDefinitions({ filter: [{ definitionId, tenantId, version }] })
     if (definitions !== undefined && definitions.length > 0) {
-      return await context.agent.pdmDeleteDefinitionItem({ itemId: definitions[0].id }).then((): boolean => true)
+      return await context.agent.pdmDeleteDefinition({ itemId: definitions[0].id }).then((): boolean => true)
     }
     return false
   }
 
   private async pexStoreClearDefinitions({ tenantId }: IDefinitionsClearArgs, context: IRequiredContext): Promise<boolean> {
-    const definitions = await context.agent.pdmGetDefinitionsItem({ filter: [{ tenantId }] })
+    const definitions = await context.agent.pdmGetDefinitions({ filter: [{ tenantId }] })
     if (definitions.length === 0) {
       return false
     }
     await Promise.all(
       definitions.map(async (definitionItem: PresentationDefinitionItem) => {
-        await context.agent.pdmDeleteDefinitionItem({ itemId: definitionItem.id }) // TODO create deleteDefinitions in pdManager with tenantId filter?
+        await context.agent.pdmDeleteDefinition({ itemId: definitionItem.id }) // TODO create deleteDefinitions in pdManager with tenantId filter?
       }),
     )
     return true

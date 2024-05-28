@@ -34,13 +34,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         },
       }
 
-      defaultDefinitionItem = await agent.pdmAddDefinitionItem(definition)
+      defaultDefinitionItem = await agent.pdmAddDefinition(definition)
     })
 
     afterAll(testContext.tearDown)
 
     it('should get definition item by id', async (): Promise<void> => {
-      const result: PresentationDefinitionItem = await agent.pdmGetDefinitionItem({ itemId: defaultDefinitionItem.id })
+      const result: PresentationDefinitionItem = await agent.pdmGetDefinition({ itemId: defaultDefinitionItem.id })
 
       expect(result.id).toEqual(defaultDefinitionItem.id)
     })
@@ -48,11 +48,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should throw error when getting definition item with unknown id', async (): Promise<void> => {
       const itemId = 'unknownItemId'
 
-      await expect(agent.pdmGetDefinitionItem({ itemId })).rejects.toThrow(`No presentation definition item found for id: ${itemId}`)
+      await expect(agent.pdmGetDefinition({ itemId })).rejects.toThrow(`No presentation definition item found for id: ${itemId}`)
     })
 
     it('should get all definition items', async (): Promise<void> => {
-      const result: Array<PresentationDefinitionItem> = await agent.pdmGetDefinitionsItem({})
+      const result: Array<PresentationDefinitionItem> = await agent.pdmGetDefinitions({})
 
       expect(result.length).toBeGreaterThan(0)
     })
@@ -65,7 +65,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           },
         ],
       }
-      const result: Array<PresentationDefinitionItem> = await agent.pdmGetDefinitionsItem(args)
+      const result: Array<PresentationDefinitionItem> = await agent.pdmGetDefinitions(args)
 
       expect(result.length).toBe(1)
     })
@@ -80,14 +80,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         },
       }
 
-      const result: PresentationDefinitionItem = await agent.pdmAddDefinitionItem(definition)
+      const result: PresentationDefinitionItem = await agent.pdmAddDefinition(definition)
 
       expect(result.definitionId).toEqual(definition.definitionId)
       expect(result.version).toEqual(definition.version)
     })
 
     it('should update definition item by id', async (): Promise<void> => {
-      const result: PresentationDefinitionItem = await agent.pdmUpdateDefinitionItem({
+      const result: PresentationDefinitionItem = await agent.pdmUpdateDefinition({
         definitionItem: {
           ...defaultDefinitionItem,
           definitionPayload: singleDefinition,
@@ -104,11 +104,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         id: 'unknownItemId',
       }
 
-      await expect(agent.pdmUpdateDefinitionItem({ definitionItem })).rejects.toThrow(`No presentation definition item found for id: unknownItemId`)
+      await expect(agent.pdmUpdateDefinition({ definitionItem })).rejects.toThrow(`No presentation definition item found for id: unknownItemId`)
     })
 
     it('should delete definition item by id', async (): Promise<void> => {
-      const result = await agent.pdmDeleteDefinitionItem({ itemId: defaultDefinitionItem.id })
+      const result = await agent.pdmDeleteDefinition({ itemId: defaultDefinitionItem.id })
 
       expect(result).toBe(true)
     })
@@ -116,7 +116,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should throw error when deleting definition item with unknown id', async (): Promise<void> => {
       const itemId = 'unknownItemId'
 
-      await expect(agent.pdmDeleteDefinitionItem({ itemId })).rejects.toThrow(`No presentation definition found with id: ${itemId}`)
+      await expect(agent.pdmDeleteDefinition({ itemId })).rejects.toThrow(`No presentation definition found with id: ${itemId}`)
     })
   })
 }
