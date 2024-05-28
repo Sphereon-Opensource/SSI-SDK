@@ -4,24 +4,6 @@ import { IRequiredContext } from './types'
 import { AddDefinitionItemArgs, PersistDefinitionArgs, UpdateDefinitionItemArgs } from '@sphereon/ssi-sdk.pd-manager'
 import { DeleteDefinitionArgs } from '@sphereon/ssi-sdk.data-store'
 
-export function pdsReadEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
-  if (opts?.enabled === false) {
-    console.log(`"pdReadEndpoint" Endpoint is disabled`)
-    return
-  }
-  const path = opts?.path ?? '/presentation-defs'
-  router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
-    try {
-      // later we will add filter to this
-      const pds = await context.agent.pdmGetDefinitionsItem()
-      response.statusCode = 200
-      return response.send(pds)
-    } catch (error) {
-      return sendErrorResponse(response, 500, error.message as string, error)
-    }
-  })
-}
-
 export function pdReadEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`"pdReadEndpoint" Endpoint is disabled`)

@@ -6,14 +6,12 @@ constants:
   # please use your own X25519 key, this is only an example
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
-    - pexStoreGetDefinition
-    - pexStoreHasDefinition
-    - pexStorePersistDefinition
-    - pexStoreRemoveDefinition
-    - pexStoreClearDefinitions
-    - pexDefinitionVersion
-    - pexDefinitionFilterCredentials
-    - pexDefinitionFilterCredentialsPerInputDescriptor
+    - pdmGetDefinitionItem
+    - pdmGetDefinitionsItem
+    - pdmAddDefinitionItem
+    - pdmUpdateDefinitionItem
+    - pdmDeleteDefinitionItem
+    - pdmPersistDefinition
 
 # Database
 dbConnection:
@@ -124,4 +122,3 @@ agent:
                 $require: './packages/data-store/dist#PDStore'
                 $args:
                   - $ref: /dbConnection
-        - $require: ./packages/presentation-exchange/dist#PresentationExchange

@@ -52,6 +52,7 @@ export type VersionControlMode = 'AutoIncrementMajor' | 'AutoIncrementMinor' | '
 
 export interface IDefinitionPersistArgs {
   definition: IPresentationDefinition // The actual Presentation definition to be stored/
+  definitionId?: string // Allows to define a custom key for storage. By default, the id of the definition will be used
   version?: string // Allows to define a version. By default, the version of the definition will be 1, or when it was saved before it will copy the most recent version
   versionControlMode?: VersionControlMode // Specify version control mode
   validation?: boolean // Whether to check the definition. Defaults to true

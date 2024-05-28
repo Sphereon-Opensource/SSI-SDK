@@ -8,6 +8,7 @@ import {
   IPEXFilterResult,
   IPEXFilterResultWithInputDescriptor,
   IRequiredContext,
+  PEXOpts,
   schema,
   VersionDiscoveryResult,
 } from '../index'
@@ -35,6 +36,8 @@ export class PresentationExchange implements IAgentPlugin {
     pexDefinitionFilterCredentialsPerInputDescriptor: this.pexDefinitionFilterCredentialsPerInputDescriptor.bind(this),
   }
 
+  constructor(opts?: PEXOpts) {}
+
   private async pexStoreGetDefinition(
     { definitionId, tenantId, version }: IDefinitionGetArgs,
     context: IRequiredContext,
@@ -52,7 +55,8 @@ export class PresentationExchange implements IAgentPlugin {
   }
 
   private async pexStorePersistDefinition(args: IDefinitionPersistArgs, context: IRequiredContext): Promise<IPresentationDefinition> {
-    const { definition, tenantId, version, versionControlMode } = args
+    const { definitionId, tenantId, version, versionControlMode } = args
+    const definition = definitionId === undefined ? args.definition : { ...args.definition, id: definitionId }
 
     if (args?.validation !== false) {
       const invalids: Checked[] = []
@@ -84,9 +88,9 @@ export class PresentationExchange implements IAgentPlugin {
   }
 
   private async pexStoreRemoveDefinition({ definitionId, tenantId, version }: IDefinitionRemoveArgs, context: IRequiredContext): Promise<boolean> {
-    const definition = await this.pexStoreGetDefinition({ definitionId, tenantId, version }, context)
-    if (definition !== undefined) {
-      return await context.agent.pdmDeleteDefinitionItem({ itemId: definition.id }).then((): boolean => true)
+    const definitions = await context.agent.pdmGetDefinitionsItem({ filter: [{ definitionId, tenantId, version }] })
+    if (definitions !== undefined && definitions.length > 0) {
+      return await context.agent.pdmDeleteDefinitionItem({ itemId: definitions[0].id }).then((): boolean => true)
     }
     return false
   }

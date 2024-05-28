@@ -94,7 +94,7 @@ export class PDStore extends AbstractPDStore {
     })
 
     if (!entity) {
-      return Promise.reject(Error(`No identity found for id: ${itemId}`))
+      return Promise.reject(Error(`No presentation definition found with id: ${itemId}`))
     }
 
     debug('Removing presentation definition item ', entity)
