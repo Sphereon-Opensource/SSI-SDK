@@ -20,7 +20,7 @@ import { CredentialMapper, JWT_PROOF_TYPE_2020, W3CVerifiableCredential } from '
 import { InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
 import { toDIDs } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
-  AbstractPdStore,
+  AbstractPDStore,
   isPresentationDefinitionEqual,
   NonPersistedPresentationDefinitionItem,
   PresentationDefinitionItem,
@@ -28,7 +28,7 @@ import {
 import semver from 'semver/preload'
 
 export class PresentationExchange implements IAgentPlugin {
-  private readonly pdStore: AbstractPdStore
+  private readonly pdStore: AbstractPDStore
   readonly schema = schema.IDidAuthSiopOpAuthenticator
   private readonly pex = new PEX()
 

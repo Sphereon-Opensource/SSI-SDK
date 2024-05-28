@@ -1,6 +1,6 @@
 import { OrPromise } from '@sphereon/ssi-types'
 import { DataSource, In } from 'typeorm'
-import { AbstractPdStore } from './AbstractPDStore'
+import { AbstractPDStore } from './AbstractPDStore'
 import Debug from 'debug'
 import {
   GetGetDefinitionArgs,
@@ -9,12 +9,12 @@ import {
   NonPersistedPresentationDefinitionItem,
   PresentationDefinitionItem,
 } from '../types'
-import { PresentationDefinitionItemEntity } from '../entities/presentationDefinitions/PresentationDefinitionItemEntity'
-import { presentationDefinitionEntityItemFrom, presentationDefinitionItemFrom } from '../utils/presentationDefinitions/MappingUtils'
+import { PresentationDefinitionItemEntity } from '../entities/presentationDefinition/PresentationDefinitionItemEntity'
+import { presentationDefinitionEntityItemFrom, presentationDefinitionItemFrom } from '../utils/presentationDefinition/MappingUtils'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:pd-store')
 
-export class PDStore extends AbstractPdStore {
+export class PDStore extends AbstractPDStore {
   private readonly dbConnection: OrPromise<DataSource>
 
   constructor(dbConnection: OrPromise<DataSource>) {

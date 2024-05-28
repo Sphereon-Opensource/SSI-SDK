@@ -37,7 +37,7 @@ import { IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { AbstractPdStore } from '@sphereon/ssi-sdk.data-store'
+import { AbstractPDStore } from '@sphereon/ssi-sdk.data-store'
 import { VersionControlMode } from '@sphereon/ssi-sdk.presentation-exchange/dist'
 
 export enum VerifiedDataMode {
@@ -152,7 +152,7 @@ export interface IPEXOptions {
   presentationVerifyCallback?: PresentationVerificationCallback
   // definition?: IPresentationDefinition
   definitionId: string
-  store: AbstractPdStore
+  store: AbstractPDStore
   tenantId?: string
 }
 

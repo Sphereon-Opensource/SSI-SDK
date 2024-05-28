@@ -1,4 +1,4 @@
-import { PresentationDefinitionItemEntity } from '../../entities/presentationDefinitions/PresentationDefinitionItemEntity'
+import { PresentationDefinitionItemEntity } from '../../entities/presentationDefinition/PresentationDefinitionItemEntity'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { PartialPresentationDefinitionItem, PresentationDefinitionItem } from '../../types'
 import { createHash } from 'crypto'

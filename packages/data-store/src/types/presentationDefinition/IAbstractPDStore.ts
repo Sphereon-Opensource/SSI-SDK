@@ -1,4 +1,4 @@
-import { NonPersistedPresentationDefinitionItem, PresentationDefinitionItem, PresentationDefinitionItemFilter } from './pd'
+import { NonPersistedPresentationDefinitionItem, PresentationDefinitionItem, PresentationDefinitionItemFilter } from './presentationDefinition'
 
 export type FindDefinitionArgs = Array<PresentationDefinitionItemFilter>
 

@@ -1,6 +1,6 @@
 import { IAgentPlugin } from '@veramo/core'
 import { DeleteDefinitionArgs, GetDefinitionArgs, GetDefinitionsArgs, IPDManager, RequiredContext, schema, UpdateDefinitionArgs } from '../index'
-import { NonPersistedPresentationDefinitionItem, PresentationDefinitionItem, AbstractPdStore } from '@sphereon/ssi-sdk.data-store'
+import { NonPersistedPresentationDefinitionItem, PresentationDefinitionItem, AbstractPDStore } from '@sphereon/ssi-sdk.data-store'
 
 // Exposing the methods here for any REST implementation
 export const pdManagerMethods: Array<string> = [
@@ -24,9 +24,9 @@ export class PDManager implements IAgentPlugin {
     pdmDeleteDefinition: this.pdmDeleteDefinition.bind(this),
   }
 
-  private readonly store: AbstractPdStore
+  private readonly store: AbstractPDStore
 
-  constructor(options: { store: AbstractPdStore }) {
+  constructor(options: { store: AbstractPDStore }) {
     this.store = options.store
   }
 

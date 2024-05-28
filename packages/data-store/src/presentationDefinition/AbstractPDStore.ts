@@ -1,7 +1,12 @@
-import { GetGetDefinitionArgs, GetDefinitionsArgs, DeleteDefinitionArgs } from '../types/pd/IAbstractPDStore'
-import { NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '../types'
+import {
+  GetGetDefinitionArgs,
+  GetDefinitionsArgs,
+  DeleteDefinitionArgs,
+  NonPersistedPresentationDefinitionItem,
+  PresentationDefinitionItem
+} from '../types'
 
-export abstract class AbstractPdStore {
+export abstract class AbstractPDStore {
   abstract getDefinition(args: GetGetDefinitionArgs): Promise<PresentationDefinitionItem>
   abstract getDefinitions(args: GetDefinitionsArgs): Promise<Array<PresentationDefinitionItem>>
   abstract addDefinition(args: NonPersistedPresentationDefinitionItem): Promise<PresentationDefinitionItem>

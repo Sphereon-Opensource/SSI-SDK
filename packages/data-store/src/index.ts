@@ -34,14 +34,14 @@ export { StatusListStore } from './statusList/StatusListStore'
 import { AuditEventEntity, auditEventEntityFrom } from './entities/eventLogger/AuditEventEntity'
 import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCredentialEntity'
 import { digitalCredentialFrom, digitalCredentialsFrom, nonPersistedDigitalCredentialEntityFromAddArgs } from './utils/digitalCredential/MappingUtils'
-import { isPresentationDefinitionEqual } from './utils/presentationDefinitions/MappingUtils'
-import { PresentationDefinitionItemEntity } from './entities/presentationDefinitions/PresentationDefinitionItemEntity'
+import { isPresentationDefinitionEqual } from './utils/presentationDefinition/MappingUtils'
+import { PresentationDefinitionItemEntity } from './entities/presentationDefinition/PresentationDefinitionItemEntity'
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
 export { EventLoggerStore } from './eventLogger/EventLoggerStore'
 export { IAbstractMachineStateStore } from './machineState/IAbstractMachineStateStore'
 export { MachineStateStore } from './machineState/MachineStateStore'
-export { AbstractPdStore } from './pd/AbstractPDStore'
-export { PDStore } from './pd/PDStore'
+export { AbstractPDStore } from './presentationDefinition/AbstractPDStore'
+export { PDStore } from './presentationDefinition/PDStore'
 
 export {
   DataStoreMigrations,

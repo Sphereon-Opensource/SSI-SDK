@@ -12,7 +12,7 @@ import {
 import { IPresentation, Optional, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { IPresentationDefinition, PEVersion, SelectResults } from '@sphereon/pex'
 import { Format, InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
-import { AbstractPdStore } from '@sphereon/ssi-sdk.data-store'
+import { AbstractPDStore } from '@sphereon/ssi-sdk.data-store'
 
 export interface IPresentationExchange extends IPluginMethodMap {
   pexStoreGetDefinition(args: IDefinitionGetArgs): Promise<IPresentationDefinition | undefined>
@@ -76,7 +76,7 @@ export interface IDefinitionCredentialFilterArgs {
 export interface PEXOpts {
   defaultStore?: string
   defaultNamespace?: string
-  pdStore: AbstractPdStore
+  pdStore: AbstractPDStore
   importDefinitions?: IDefinitionImportArgs[]
 }
 
