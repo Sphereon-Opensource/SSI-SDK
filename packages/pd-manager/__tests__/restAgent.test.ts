@@ -1,4 +1,5 @@
 import 'cross-fetch/polyfill'
+// @ts-ignore
 import express, { Router } from 'express'
 import { Server } from 'http'
 import { DataSource } from 'typeorm'
