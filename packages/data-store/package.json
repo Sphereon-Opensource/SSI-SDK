@@ -6,6 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build",
     "typeorm": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ../../node_modules/.pnpm/typeorm@0.3.12_sqlite3@5.1.6_ts-node@10.9.1/node_modules/typeorm/cli.js --config src/migrations/internal-migrations-ormconfig.ts",
     "typeorm-sqlite:migration:generate": "pnpm run typeorm -- migration:generate -c migration-sqlite -d src/migrations/sqlite -n",
     "typeorm-sqlite:migration:run": "pnpm run typeorm -- migration:run -c migration-sqlite",

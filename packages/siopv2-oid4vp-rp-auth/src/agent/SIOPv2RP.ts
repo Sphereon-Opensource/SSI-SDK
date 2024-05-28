@@ -181,7 +181,6 @@ export class SIOPv2RP implements IAgentPlugin {
       definitions.map((definition) => {
         console.log(`persisting definition ${definition.id} / ${definition.name} with versionControlMode ${versionControlMode}`)
         return context.agent.pexStorePersistDefinition({
-          definitionId: definition.id,
           definition: definition,
           tenantId: tenantId,
           validation: true,

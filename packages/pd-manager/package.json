@@ -19,12 +19,14 @@
     "@sphereon/pex-models": "^2.2.4",
     "cross-fetch": "^3.1.8",
     "debug": "^4.3.4",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "semver": "^7.6.2"
   },
   "devDependencies": {
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@veramo/remote-client": "4.2.0",
-    "@veramo/remote-server": "4.2.0"
+    "@veramo/remote-server": "4.2.0",
+    "@types/semver": "^7.5.8"
   },
   "files": [
     "dist/**/*",
