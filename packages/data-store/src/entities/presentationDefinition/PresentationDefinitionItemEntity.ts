@@ -3,7 +3,6 @@ import { IsNotEmpty } from 'class-validator'
 
 @Entity('PresentationDefinitionItem')
 @Index(['version'], { unique: false })
-@Index(['version'], { unique: false })
 export class PresentationDefinitionItemEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
