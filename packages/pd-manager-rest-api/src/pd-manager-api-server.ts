@@ -6,13 +6,19 @@ import { IPDManagerAPIEndpointOpts, IRequiredPlugins } from './types'
 import { pdAddEndpoint, pdDeleteEndpoint, pdPersistEndpoint, pdReadEndpoint, pdUpdateEndpoint } from './api-functions'
 import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-express-support'
 
+type PdManagerApiServerArgs = {
+  agent: TAgent<IRequiredPlugins>
+  expressSupport: ExpressSupport
+  opts?: IPDManagerAPIEndpointOpts
+}
+
 export class PdManagerApiServer {
   private readonly _express: Express
   private readonly _agent: TAgent<IRequiredPlugins>
   private readonly _opts?: IPDManagerAPIEndpointOpts
   private readonly _router: Router
 
-  constructor(args: { agent: TAgent<IRequiredPlugins>; expressSupport: ExpressSupport; opts?: IPDManagerAPIEndpointOpts }) {
+  constructor(args: PdManagerApiServerArgs) {
     const { agent, opts } = args
     this._agent = agent
     copyGlobalAuthToEndpoints({ opts, keys: ['pdRead', 'pdWrite', 'pdUpdate', 'pdDelete'] })
