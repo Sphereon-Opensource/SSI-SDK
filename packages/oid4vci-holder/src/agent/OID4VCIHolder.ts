@@ -1,5 +1,11 @@
 import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
-import { CredentialConfigurationSupported, DefaultURISchemes, Jwt, ProofOfPossessionCallbacks } from '@sphereon/oid4vci-common'
+import {
+  AuthorizationRequestOpts,
+  CredentialConfigurationSupported,
+  DefaultURISchemes,
+  Jwt,
+  ProofOfPossessionCallbacks,
+} from '@sphereon/oid4vci-common'
 import {
   CorrelationIdentifierType,
   IBasicCredentialLocaleBranding,
@@ -109,6 +115,8 @@ export class OID4VCIHolder implements IAgentPlugin {
     SignatureAlgorithmEnum.ES256K,
     SignatureAlgorithmEnum.EdDSA,
   ]
+  private static readonly DEFAULT_MOBILE_REDIRECT_URI = `${DefaultURISchemes.CREDENTIAL_OFFER}://`
+  private readonly defaultAuthorizationRequestOpts: AuthorizationRequestOpts = { redirectUri: OID4VCIHolder.DEFAULT_MOBILE_REDIRECT_URI }
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
@@ -122,6 +130,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       jsonldCryptographicSuitePreferences,
       didMethodPreferences,
       jwtCryptographicSuitePreferences,
+      defaultAuthRequestOptions,
     } = options ?? {}
 
     if (vcFormatPreferences !== undefined && vcFormatPreferences.length > 0) {
@@ -135,6 +144,9 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
     if (jwtCryptographicSuitePreferences !== undefined && jwtCryptographicSuitePreferences.length > 0) {
       this.jwtCryptographicSuitePreferences = jwtCryptographicSuitePreferences
+    }
+    if (defaultAuthRequestOptions) {
+      this.defaultAuthorizationRequestOpts = defaultAuthRequestOptions
     }
     this.onContactIdentityCreated = onContactIdentityCreated
     this.onCredentialStored = onCredentialStored
@@ -174,6 +186,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     const oid4vciMachineInstanceArgs: OID4VCIMachineInstanceOpts = {
       ...args,
+      authorizationRequestOpts: { ...this.defaultAuthorizationRequestOpts, ...args.authorizationRequestOpts },
       services: {
         ...services,
         ...args.services,
@@ -205,11 +218,20 @@ export class OID4VCIHolder implements IAgentPlugin {
     ) {
       return Promise.reject(Error(`Invalid OID4VCI credential offer URI: ${requestData?.uri}`))
     }
+    const authorizationRequest = { ...this.defaultAuthorizationRequestOpts, ...args.authorizationRequestOpts } satisfies AuthorizationRequestOpts
+
+    if (!authorizationRequest.redirectUri) {
+      authorizationRequest.redirectUri = OID4VCIHolder.DEFAULT_MOBILE_REDIRECT_URI
+    }
+    if (authorizationRequest.redirectUri.startsWith('http') && !authorizationRequest.clientId) {
+      // At least set a default for a web based wallet.
+      // TODO: We really need (dynamic) client registration support
+      authorizationRequest.clientId = authorizationRequest.redirectUri
+    }
 
     const openID4VCIClient = await OpenID4VCIClient.fromURI({
       uri: requestData?.uri,
-      // TODO: It would be nice to be able to configure the plugin with a custom redirect URI, mainly for mobile
-      authorizationRequest: { redirectUri: `${DefaultURISchemes.CREDENTIAL_OFFER}://` },
+      authorizationRequest,
     })
 
     const serverMetadata = await openID4VCIClient.retrieveServerMetadata()
@@ -251,7 +273,7 @@ export class OID4VCIHolder implements IAgentPlugin {
             const defaultCredentialType = 'VerifiableCredential'
 
             const credentialType =
-              credentialConfigSupported.credential_definition.type.find((type: string): boolean => type !== defaultCredentialType) ??
+              credentialConfigSupported.credential_definition?.type?.find((type: string): boolean => type !== defaultCredentialType) ??
               defaultCredentialType
             const localeBranding = credentialBranding?.[credentialType]
             const credentialAlias = (
@@ -385,29 +407,31 @@ export class OID4VCIHolder implements IAgentPlugin {
         pin,
         authorizationResponse: JSON.parse(await client.exportState()).authorizationCodeResponse,
       })
-      if ('credential_definition' in issuanceOpt) {
-        const credentialType = issuanceOpt.credential_definition.type.length === 1? issuanceOpt.credential_definition.type[0]: issuanceOpt.credential_definition.type.filter(type=>type!='VerifiableCredential')[0]
-        const credentialResponse = await client.acquireCredentials({
-          //fixme: this isn't the correct way to handle this. the type is wrong. we're not correctly handling moving from Record<string, CredentialConfigSupport>
-          credentialType: issuanceOpt.id ?? credentialType,
-          proofCallbacks: callbacks,
-          format: issuanceOpt.format,
-          // TODO: We need to update the machine and add notifications support for actual deferred credentials instead of just waiting/retrying
-          deferredCredentialAwait: true,
-          kid,
-          alg,
-          jti: uuidv4(),
-        })
-
-        const credential = {
-          id: issuanceOpt.id,
-          issuanceOpt,
-          credentialResponse,
-        }
-        return mapCredentialToAccept({ credential })
-      } else {
-        throw new Error('IssuanceOpt is not of version 1.13 or above') // FIXME
+      // @ts-ignore
+      const definition = issuanceOpt.credential_definition
+      const idFromType =
+        definition?.type?.length === 1 ? definition?.type[0] : definition?.type?.filter((type: string) => type !== 'VerifiableCredential')[0]
+      const credentialType = issuanceOpt.credentialConfigurationId ?? issuanceOpt.id ?? idFromType
+      if (!credentialType) {
+        throw Error('cannot determine credential id to request')
       }
+      const credentialResponse = await client.acquireCredentials({
+        credentialType,
+        proofCallbacks: callbacks,
+        format: issuanceOpt.format,
+        // TODO: We need to update the machine and add notifications support for actual deferred credentials instead of just waiting/retrying
+        deferredCredentialAwait: true,
+        kid,
+        alg,
+        jti: uuidv4(),
+      })
+
+      const credential = {
+        id: issuanceOpt.id,
+        issuanceOpt,
+        credentialResponse,
+      }
+      return mapCredentialToAccept({ credential })
     } catch (error) {
       return Promise.reject(error)
     }
