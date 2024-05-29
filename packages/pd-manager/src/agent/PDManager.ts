@@ -52,7 +52,7 @@ export class PDManager implements IAgentPlugin {
     return this.store.getDefinition({ itemId })
   }
 
-  /** {@inheritDoc IPDManager.pdmGetDefinition} */
+  /** {@inheritDoc IPDManager.pdmGetDefinitions} */
   private async pdmGetDefinitions(args: GetDefinitionsItemArgs): Promise<Array<PresentationDefinitionItem>> {
     const { filter } = args
     return this.store.getDefinitions({ filter })

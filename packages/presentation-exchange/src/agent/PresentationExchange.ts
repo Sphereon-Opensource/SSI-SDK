@@ -186,10 +186,4 @@ export class PresentationExchange implements IAgentPlugin {
       .map((uniqueVC) => uniqueVC.verifiableCredential)
       .map((vc) => (vc.proof && vc.proof.type === JWT_PROOF_TYPE_2020 ? vc.proof.jwt : vc))
   }
-
-  /*private assertIdentifier(identifier?: IIdentifier): void {
-                if (!identifier) {
-                  throw Error(`OID4VP needs an identifier at this point`)
-                }
-              }*/
 }
