@@ -34,10 +34,14 @@ export { StatusListStore } from './statusList/StatusListStore'
 import { AuditEventEntity, auditEventEntityFrom } from './entities/eventLogger/AuditEventEntity'
 import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCredentialEntity'
 import { digitalCredentialFrom, digitalCredentialsFrom, nonPersistedDigitalCredentialEntityFromAddArgs } from './utils/digitalCredential/MappingUtils'
+import { isPresentationDefinitionEqual } from './utils/presentationDefinition/MappingUtils'
+import { PresentationDefinitionItemEntity } from './entities/presentationDefinition/PresentationDefinitionItemEntity'
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
 export { EventLoggerStore } from './eventLogger/EventLoggerStore'
 export { IAbstractMachineStateStore } from './machineState/IAbstractMachineStateStore'
 export { MachineStateStore } from './machineState/MachineStateStore'
+export { AbstractPDStore } from './presentationDefinition/AbstractPDStore'
+export { PDStore } from './presentationDefinition/PDStore'
 
 export {
   DataStoreMigrations,
@@ -46,6 +50,7 @@ export {
   DataStoreIssuanceBrandingMigrations,
   DataStoreStatusListMigrations,
   DataStoreMachineStateMigrations,
+  DataStorePresentationsDefinitionsMigrations
 } from './migrations'
 export * from './types'
 export * from './utils/contact/MappingUtils'
@@ -80,6 +85,8 @@ export const DataStoreIssuanceBrandingEntities = [
   IssuerLocaleBrandingEntity,
 ]
 
+export const DataStorePresentationDefinitionEntities = [PresentationDefinitionItemEntity]
+
 export const DataStoreStatusListEntities = [StatusListEntity, StatusListEntryEntity]
 
 export const DataStoreEventLoggerEntities = [AuditEventEntity]
@@ -96,6 +103,7 @@ export const DataStoreEntities = [
   ...DataStoreEventLoggerEntities,
   ...DataStoreDigitalCredentialEntities,
   ...DataStoreMachineStateEntities,
+  ...DataStorePresentationDefinitionEntities
 ]
 
 export {
@@ -138,4 +146,6 @@ export {
   digitalCredentialsFrom,
   nonPersistedDigitalCredentialEntityFromAddArgs,
   MachineStateInfoEntity,
+  PresentationDefinitionItemEntity,
+  isPresentationDefinitionEqual,
 }

@@ -15,17 +15,14 @@ import {
 import { FindCredentialsArgs, IAgentPlugin } from '@veramo/core'
 
 import { IPresentationExchange } from '../types/IPresentationExchange'
-import { IKeyValueStore, IValueData, KeyValueStore } from '@sphereon/ssi-sdk.kv-store-temp'
 import { Checked, IPresentationDefinition, PEX } from '@sphereon/pex'
 import { CredentialMapper, JWT_PROOF_TYPE_2020, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
 import { toDIDs } from '@sphereon/ssi-sdk-ext.did-utils'
+import { PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
 
 export class PresentationExchange implements IAgentPlugin {
-  private readonly _stores: Map<string, IKeyValueStore<IPresentationDefinition>>
   readonly schema = schema.IDidAuthSiopOpAuthenticator
-  private readonly defaultStore: string
-  private readonly defaultNamespace: string
   private readonly pex = new PEX()
 
   readonly methods: IPresentationExchange = {
@@ -39,44 +36,35 @@ export class PresentationExchange implements IAgentPlugin {
     pexDefinitionFilterCredentialsPerInputDescriptor: this.pexDefinitionFilterCredentialsPerInputDescriptor.bind(this),
   }
 
-  constructor(opts?: PEXOpts) {
-    this.defaultStore = opts?.defaultStore ?? '_default'
-    this.defaultNamespace = opts?.defaultNamespace ?? 'pex'
-    if (opts?.stores && opts.stores instanceof Map) {
-      this._stores = opts.stores
-    } else if (opts?.stores) {
-      this._stores = new Map().set(this.defaultStore, opts.stores)
-    } else {
-      this._stores = new Map().set(
-        this.defaultStore,
-        new KeyValueStore({
-          namespace: this.defaultNamespace,
-          store: new Map<string, IPresentationDefinition>(),
-        }),
-      )
+  constructor(opts?: PEXOpts) {}
+
+  private async pexStoreGetDefinition(
+    { definitionId, tenantId, version }: IDefinitionGetArgs,
+    context: IRequiredContext,
+  ): Promise<IPresentationDefinition | undefined> {
+    const definitions = await context.agent.pdmGetDefinitions({ filter: [{ definitionId, tenantId, version }] })
+    if (definitions.length === 0) {
+      return undefined
     }
-    if (opts && Array.isArray(opts?.importDefinitions)) {
-      opts.importDefinitions.forEach(this.pexStorePersistDefinition)
-    }
+    return definitions[0].definitionPayload // There can be multiple version, but they are ordered by latest version first
   }
 
-  private async pexStoreGetDefinition({ definitionId, storeId, namespace }: IDefinitionGetArgs): Promise<IPresentationDefinition | undefined> {
-    return this.store({ storeId }).get(this.prefix({ namespace, definitionId }))
+  private async pexStoreHasDefinition({ definitionId, tenantId, version }: IDefinitionExistsArgs, context: IRequiredContext): Promise<boolean> {
+    const definitions = await context.agent.pdmGetDefinitions({ filter: [{ definitionId, tenantId, version }] })
+    return definitions !== undefined && definitions.length > 0 // TODO Maybe create pdStore.countDefinitions?
   }
 
-  private async pexStoreHasDefinition({ definitionId, storeId, namespace }: IDefinitionExistsArgs): Promise<boolean> {
-    return this.store({ storeId }).has(this.prefix({ namespace, definitionId }))
-  }
+  private async pexStorePersistDefinition(args: IDefinitionPersistArgs, context: IRequiredContext): Promise<IPresentationDefinition> {
+    const { definitionId, tenantId, version, versionControlMode } = args
+    const definition = definitionId === undefined ? args.definition : { ...args.definition, id: definitionId }
 
-  private async pexStorePersistDefinition(args: IDefinitionPersistArgs): Promise<IValueData<IPresentationDefinition>> {
-    const { definition, ttl, storeId, namespace } = args
     if (args?.validation !== false) {
-      let invalids: Checked[] = []
+      const invalids: Checked[] = []
 
       try {
-        const result = PEX.validateDefinition(definition) // throws an error in case the def is not valid
+        const result = PEX.validateDefinition(definition)
         const validations = Array.isArray(result) ? result : [result]
-        invalids = validations.filter((v) => v.status === 'error')
+        invalids.push(...validations.filter((v) => v.status === 'error'))
       } catch (error) {
         invalids.push({
           status: 'error',
@@ -89,26 +77,42 @@ export class PresentationExchange implements IAgentPlugin {
           tag: 'validation',
         })
       }
+
       if (invalids.length > 0) {
         throw Error(`Invalid definition. ${invalids.map((v) => v.message).toString()}`)
       }
     }
-    const definitionId = args.definitionId ?? definition.id
-    const existing = await this.store({ storeId }).getAsValueData(this.prefix({ namespace, definitionId }))
-    if (!existing.value || (existing.value && args.overwriteExisting !== false)) {
-      return await this.store({ storeId }).set(this.prefix({ namespace, definitionId }), definition, ttl)
+
+    const definitionItem = await context.agent.pdmPersistDefinition({
+      definitionItem: {
+        tenantId,
+        version,
+        definitionPayload: definition,
+      },
+      versionControlMode,
+    })
+    return definitionItem.definitionPayload
+  }
+
+  private async pexStoreRemoveDefinition({ definitionId, tenantId, version }: IDefinitionRemoveArgs, context: IRequiredContext): Promise<boolean> {
+    const definitions = await context.agent.pdmGetDefinitions({ filter: [{ definitionId, tenantId, version }] })
+    if (definitions !== undefined && definitions.length > 0) {
+      return await context.agent.pdmDeleteDefinition({ itemId: definitions[0].id }).then((): boolean => true)
     }
-    return existing
+    return false
   }
 
-  private async pexStoreRemoveDefinition({ storeId, definitionId, namespace }: IDefinitionRemoveArgs): Promise<boolean> {
-    return this.store({ storeId }).delete(this.prefix({ namespace, definitionId }))
-  }
-
-  private async pexStoreClearDefinitions({ storeId }: IDefinitionsClearArgs): Promise<boolean> {
-    return await this.store({ storeId })
-      .clear()
-      .then(() => true)
+  private async pexStoreClearDefinitions({ tenantId }: IDefinitionsClearArgs, context: IRequiredContext): Promise<boolean> {
+    const definitions = await context.agent.pdmGetDefinitions({ filter: [{ tenantId }] })
+    if (definitions.length === 0) {
+      return false
+    }
+    await Promise.all(
+      definitions.map(async (definitionItem: PresentationDefinitionItem) => {
+        await context.agent.pdmDeleteDefinition({ itemId: definitionItem.id }) // TODO create deleteDefinitions in pdManager with tenantId filter?
+      }),
+    )
+    return true
   }
 
   async pexDefinitionVersion(presentationDefinition: IPresentationDefinition): Promise<VersionDiscoveryResult> {
@@ -184,24 +188,8 @@ export class PresentationExchange implements IAgentPlugin {
   }
 
   /*private assertIdentifier(identifier?: IIdentifier): void {
-    if (!identifier) {
-      throw Error(`OID4VP needs an identifier at this point`)
-    }
-  }*/
-
-  private store({ storeId }: { storeId?: string }): IKeyValueStore<IPresentationDefinition> {
-    const store = this._stores.get(storeId ?? this.defaultStore)
-    if (!store) {
-      throw Error(`Could not get definition store: ${storeId ?? this.defaultStore}`)
-    }
-    return store
-  }
-
-  private namespace({ namespace }: { namespace?: string }): string {
-    return namespace ?? this.defaultStore
-  }
-
-  private prefix({ namespace, definitionId }: { namespace?: string; definitionId: string }) {
-    return `${this.namespace({ namespace })}:${definitionId}`
-  }
+                if (!identifier) {
+                  throw Error(`OID4VP needs an identifier at this point`)
+                }
+              }*/
 }

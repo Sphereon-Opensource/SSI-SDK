@@ -10,20 +10,20 @@ import {
   PresentationPayload,
 } from '@veramo/core'
 import { IPresentation, Optional, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
-import { IKeyValueStore, IValueData } from '@sphereon/ssi-sdk.kv-store-temp'
 import { IPresentationDefinition, PEVersion, SelectResults } from '@sphereon/pex'
 import { Format, InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
+import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
 
 export interface IPresentationExchange extends IPluginMethodMap {
-  pexStoreGetDefinition(args: IDefinitionGetArgs): Promise<IPresentationDefinition | undefined>
+  pexStoreGetDefinition(args: IDefinitionGetArgs, context: IRequiredContext): Promise<IPresentationDefinition | undefined>
 
-  pexStoreHasDefinition(args: IDefinitionExistsArgs): Promise<boolean>
+  pexStoreHasDefinition(args: IDefinitionExistsArgs, context: IRequiredContext): Promise<boolean>
 
-  pexStorePersistDefinition(args: IDefinitionPersistArgs): Promise<IValueData<IPresentationDefinition>>
+  pexStorePersistDefinition(args: IDefinitionPersistArgs, context: IRequiredContext): Promise<IPresentationDefinition>
 
-  pexStoreRemoveDefinition(args: IDefinitionRemoveArgs): Promise<boolean>
+  pexStoreRemoveDefinition(args: IDefinitionRemoveArgs, context: IRequiredContext): Promise<boolean>
 
-  pexStoreClearDefinitions(args: IDefinitionsClearArgs): Promise<boolean>
+  pexStoreClearDefinitions(args: IDefinitionsClearArgs, context: IRequiredContext): Promise<boolean>
 
   pexDefinitionVersion(presentationDefinition: IPresentationDefinition): Promise<VersionDiscoveryResult>
 
@@ -36,30 +36,26 @@ export interface IPresentationExchange extends IPluginMethodMap {
 }
 
 export interface IDefinitionGetArgs {
+  // TODO maybe just expose data store GetDefinitionsArgs?
   definitionId: string
-  storeId?: string
-  namespace?: string
+  tenantId?: string
+  version?: string
 }
 
 export type IDefinitionExistsArgs = IDefinitionGetArgs
-export type IDefinitionClearArgs = IDefinitionGetArgs
+export interface IDefinitionsClearArgs {
+  tenantId?: string
+}
 export type IDefinitionRemoveArgs = IDefinitionGetArgs
-
-export type IDefinitionImportArgs = IDefinitionPersistArgs
 
 export interface IDefinitionPersistArgs {
   definition: IPresentationDefinition // The actual Presentation definition to be stored/
   definitionId?: string // Allows to define a custom key for storage. By default, the id of the definition will be used
-  overwriteExisting?: boolean // Whether to overwrite any existing definition by id. Defaults to true
+  version?: string // Allows to define a version. By default, the version of the definition will be 1, or when it was saved before it will copy the most recent version
+  versionControlMode?: VersionControlMode // Specify version control mode
   validation?: boolean // Whether to check the definition. Defaults to true
+  tenantId?: string // The tenant id to use. Allows you to use multiple different tenants next to each-other
   ttl?: number // How long should the definition be stored in seconds. By default, it will be indefinite
-  storeId?: string // The store id to use. Allows you to use multiple different stores next to each-other
-  namespace?: string // The namespace (prefix) to use whilst storing the definition. Allows you to partition definitions
-}
-
-export interface IDefinitionsClearArgs {
-  storeId?: string
-  // namespace?: string
 }
 
 export interface IDefinitionCredentialFilterArgs {
@@ -74,8 +70,6 @@ export interface IDefinitionCredentialFilterArgs {
 export interface PEXOpts {
   defaultStore?: string
   defaultNamespace?: string
-  stores?: Map<string, IKeyValueStore<IPresentationDefinition>> | IKeyValueStore<IPresentationDefinition>
-  importDefinitions?: IDefinitionImportArgs[]
 }
 
 export interface IPEXOptions {
@@ -114,4 +108,4 @@ export interface IPEXPresentationSignCallBackParams {
   presentationDefinition: IPresentationDefinition
 }
 
-export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IDIDManager & ICredentialPlugin>
+export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IDIDManager & ICredentialPlugin & IPDManager>

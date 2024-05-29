@@ -10,6 +10,7 @@ import {
   ICreateAuthRequestArgs,
   IGetAuthRequestStateArgs,
   IGetAuthResponseStateArgs,
+  ImportDefinitionsArgs,
   IPEXInstanceOptions,
   IRequiredContext,
   IRPDefaultOpts,
@@ -39,6 +40,7 @@ export class SIOPv2RP implements IAgentPlugin {
     siopUpdateAuthRequestState: this.siopUpdateRequestState.bind(this),
     siopDeleteAuthState: this.siopDeleteState.bind(this),
     siopVerifyAuthResponse: this.siopVerifyAuthResponse.bind(this),
+    siopImportDefinitions: this.siopImportDefinitions.bind(this),
   }
 
   constructor(opts: ISiopv2RPOpts) {
@@ -173,6 +175,22 @@ export class SIOPv2RP implements IAgentPlugin {
     )
   }
 
+  private async siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void> {
+    const { definitions, tenantId, version, versionControlMode } = args
+    await Promise.all(
+      definitions.map((definition) => {
+        console.log(`persisting definition ${definition.id} / ${definition.name} with versionControlMode ${versionControlMode}`)
+        return context.agent.pexStorePersistDefinition({
+          definition: definition,
+          tenantId: tenantId,
+          validation: true,
+          version: version,
+          versionControlMode: versionControlMode,
+        })
+      }),
+    )
+  }
+
   async getRPInstance(args: ISiopRPInstanceArgs, context: IRequiredContext): Promise<RPInstance> {
     const definitionId = args.definitionId
     const instanceId = definitionId ?? SIOPv2RP._DEFAULT_OPTS_KEY
@@ -189,21 +207,6 @@ export class SIOPv2RP implements IAgentPlugin {
           uniresolverResolution: true,
           localResolution: true,
           resolverResolution: true,
-        })
-      }
-
-      /*const definition = args.definition ?? (definitionId ? await context.agent.pexStoreGetDefinition({
-              definitionId,
-              storeId,
-              namespace: storeNamespace,
-            }) : undefined)*/
-      if (instanceOpts?.definition) {
-        await context.agent.pexStorePersistDefinition({
-          definitionId,
-          definition: instanceOpts.definition,
-          storeId: instanceOpts.storeId,
-          namespace: instanceOpts.storeNamespace,
-          validation: true,
         })
       }
       this.instances.set(instanceId, new RPInstance({ rpOpts, pexOpts: instanceOpts }))
@@ -245,6 +248,25 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   getInstanceOpts(definitionId?: string): IPEXInstanceOptions | undefined {
-    return definitionId ? this.opts.instanceOpts?.find((i) => i.definitionId === definitionId) : undefined
+    if (!this.opts.instanceOpts) return undefined
+
+    const instanceOpt = definitionId ? this.opts.instanceOpts.find((i) => i.definitionId === definitionId) : undefined
+
+    return instanceOpt ?? this.getDefaultOptions(definitionId)
+  }
+
+  private getDefaultOptions(definitionId: string | undefined) {
+    if (!this.opts.instanceOpts) return undefined
+
+    const defaultOptions = this.opts.instanceOpts.find((i) => i.definitionId === 'default')
+    if (defaultOptions) {
+      const clonedOptions = { ...defaultOptions }
+      if (definitionId !== undefined) {
+        clonedOptions.definitionId = definitionId
+      }
+      return clonedOptions
+    }
+
+    return undefined
   }
 }

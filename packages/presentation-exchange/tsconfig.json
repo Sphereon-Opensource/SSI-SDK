@@ -18,6 +18,9 @@
     },
     {
       "path": "../kv-store"
+    },
+    {
+      "path": "../pd-manager"
     }
   ]
 }
