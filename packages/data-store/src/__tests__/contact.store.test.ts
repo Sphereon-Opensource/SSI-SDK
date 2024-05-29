@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm'
-import { MetadataTypes, DataStoreContactEntities, DataStoreMigrations, MetadataItem, PartyOrigin } from '../index'
+import { DataStoreContactEntities, DataStoreMigrations, IdentityOrigin, MetadataItem, MetadataTypes, PartyOrigin } from '../index'
 import { ContactStore } from '../contact/ContactStore'
 import {
   CorrelationIdentifierType,
@@ -108,6 +108,7 @@ describe('Contact store tests', (): void => {
 
     const identity: NonPersistedIdentity = {
       alias: 'test_alias',
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -163,6 +164,7 @@ describe('Contact store tests', (): void => {
 
     const identity: NonPersistedIdentity = {
       alias: 'test_alias',
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -338,6 +340,7 @@ describe('Contact store tests', (): void => {
       identities: [
         {
           alias: 'test_alias1',
+          origin: IdentityOrigin.EXTERNAL,
           roles: [IdentityRole.ISSUER],
           identifier: {
             type: CorrelationIdentifierType.DID,
@@ -346,6 +349,7 @@ describe('Contact store tests', (): void => {
         },
         {
           alias: 'test_alias2',
+          origin: IdentityOrigin.EXTERNAL,
           roles: [IdentityRole.VERIFIER],
           identifier: {
             type: CorrelationIdentifierType.DID,
@@ -354,6 +358,7 @@ describe('Contact store tests', (): void => {
         },
         {
           alias: 'test_alias3',
+          origin: IdentityOrigin.EXTERNAL,
           roles: [IdentityRole.HOLDER],
           identifier: {
             type: CorrelationIdentifierType.DID,
@@ -562,6 +567,7 @@ describe('Contact store tests', (): void => {
       identities: [
         {
           alias: 'test_alias1',
+          origin: IdentityOrigin.EXTERNAL,
           roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
           identifier: {
             type: CorrelationIdentifierType.DID,
@@ -570,6 +576,7 @@ describe('Contact store tests', (): void => {
         },
         {
           alias: 'test_alias2',
+          origin: IdentityOrigin.EXTERNAL,
           roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
           identifier: {
             type: CorrelationIdentifierType.DID,
@@ -606,6 +613,7 @@ describe('Contact store tests', (): void => {
       identities: [
         {
           alias: 'test_alias1',
+          origin: IdentityOrigin.EXTERNAL,
           roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
           identifier: {
             type: CorrelationIdentifierType.URL,
@@ -614,6 +622,7 @@ describe('Contact store tests', (): void => {
         },
         {
           alias: 'test_alias2',
+          origin: IdentityOrigin.EXTERNAL,
           roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
           identifier: {
             type: CorrelationIdentifierType.DID,
@@ -647,6 +656,7 @@ describe('Contact store tests', (): void => {
 
     const identity1: NonPersistedIdentity = {
       alias: 'test_alias1',
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -658,6 +668,7 @@ describe('Contact store tests', (): void => {
 
     const identity2: NonPersistedIdentity = {
       alias: 'test_alias2',
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -738,6 +749,7 @@ describe('Contact store tests', (): void => {
 
     const identity: NonPersistedIdentity = {
       alias: 'test_alias',
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -773,6 +785,7 @@ describe('Contact store tests', (): void => {
 
     const identity: NonPersistedIdentity = {
       alias: 'test_alias',
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.HOLDER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -814,6 +827,7 @@ describe('Contact store tests', (): void => {
 
     const identity1: NonPersistedIdentity = {
       alias: 'test_alias1',
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -825,6 +839,7 @@ describe('Contact store tests', (): void => {
 
     const identity2: NonPersistedIdentity = {
       alias: 'test_alias2',
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -864,6 +879,7 @@ describe('Contact store tests', (): void => {
 
     const identity1: NonPersistedIdentity = {
       alias: 'test_alias1',
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -875,6 +891,7 @@ describe('Contact store tests', (): void => {
 
     const identity2: NonPersistedIdentity = {
       alias: 'test_alias2',
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -911,6 +928,7 @@ describe('Contact store tests', (): void => {
     const alias = 'test_alias1'
     const identity1: NonPersistedIdentity = {
       alias,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -922,6 +940,7 @@ describe('Contact store tests', (): void => {
 
     const identity2: NonPersistedIdentity = {
       alias: 'test_alias2',
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -962,6 +981,7 @@ describe('Contact store tests', (): void => {
     const alias = 'test_alias1'
     const identity1: NonPersistedIdentity = {
       alias,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -1012,6 +1032,7 @@ describe('Contact store tests', (): void => {
 
     const identity: NonPersistedIdentity = {
       alias: 'test_alias',
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -1053,6 +1074,7 @@ describe('Contact store tests', (): void => {
     const correlationId = 'missing_connection_example'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.URL,
@@ -1087,6 +1109,7 @@ describe('Contact store tests', (): void => {
     const correlationId = 'missing_connection_example'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER, IdentityRole.HOLDER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -1122,6 +1145,7 @@ describe('Contact store tests', (): void => {
 
     const identity: NonPersistedIdentity = {
       alias: 'example_did',
+      origin: IdentityOrigin.EXTERNAL,
       roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
@@ -1157,6 +1181,7 @@ describe('Contact store tests', (): void => {
       identities: [
         {
           alias: 'test_alias1',
+          origin: IdentityOrigin.EXTERNAL,
           roles: [IdentityRole.VERIFIER],
           identifier: {
             type: CorrelationIdentifierType.DID,
@@ -1165,6 +1190,7 @@ describe('Contact store tests', (): void => {
         },
         {
           alias: 'test_alias2',
+          origin: IdentityOrigin.EXTERNAL,
           roles: [IdentityRole.ISSUER],
           identifier: {
             type: CorrelationIdentifierType.DID,
@@ -1173,6 +1199,7 @@ describe('Contact store tests', (): void => {
         },
         {
           alias: 'test_alias3',
+          origin: IdentityOrigin.EXTERNAL,
           roles: [IdentityRole.HOLDER],
           identifier: {
             type: CorrelationIdentifierType.DID,

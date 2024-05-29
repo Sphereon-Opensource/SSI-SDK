@@ -54,10 +54,10 @@ import {
   GetRelationshipArgs,
   GetRelationshipsArgs,
   Identity,
+  MetadataItem,
   MetadataTypes,
   NonPersistedConnectionConfig,
   NonPersistedContact,
-  PartialMetadataItem,
   Party,
   PartyRelationship,
   PartyType,
@@ -736,24 +736,24 @@ export class ContactStore extends AbstractContactStore {
     return conditionObject
   }
 
-  private buildMetadataCondition = (metadata: PartialMetadataItem<MetadataTypes>): FindOptionsWhere<IdentityMetadataItemEntity> => {
-    const metadataCondition: FindOptionsWhere<IdentityMetadataItemEntity> = {
+  private buildMetadataCondition = <T extends MetadataItem<MetadataTypes>>(metadata: Partial<T>): FindOptionsWhere<IMetadataEntity> => {
+    const metadataCondition: FindOptionsWhere<any> = {
       label: metadata.label,
     }
 
     switch (typeof metadata.value) {
       case 'string':
-        metadataCondition.stringValue = metadata.value
+        metadataCondition.stringValue = metadata.value as string
         break
       case 'number':
-        metadataCondition.numberValue = metadata.value
+        metadataCondition.numberValue = metadata.value as number
         break
       case 'boolean':
-        metadataCondition.boolValue = metadata.value
+        metadataCondition.boolValue = metadata.value as boolean
         break
       case 'object':
         if (metadata.value instanceof Date) {
-          metadataCondition.dateValue = metadata.value
+          metadataCondition.dateValue = metadata.value as Date
         } else {
           // For now, we only support / implement not-primitive type Date in the entity
           throw new Error(`Unsupported object type: ${Object.prototype.toString.call(metadata.value).slice(8, -1)} for value ${metadata.value}`)
@@ -762,7 +762,6 @@ export class ContactStore extends AbstractContactStore {
       default:
         throw new Error(`Unsupported value type: ${typeof metadata.value}`)
     }
-
     return metadataCondition
   }
 }
