@@ -278,7 +278,6 @@ export class OID4VCIHolder implements IAgentPlugin {
         filter: [
           {
             identities: {
-              //              origin: IdentityOrigin.EXTERNAL, TODO do we need to ban INTERNAL contacts from oid4vciHolderGetContact?
               identifier: {
                 correlationId,
               },
