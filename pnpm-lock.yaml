@@ -1456,9 +1456,6 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
-      '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
-        version: link:../data-store
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
