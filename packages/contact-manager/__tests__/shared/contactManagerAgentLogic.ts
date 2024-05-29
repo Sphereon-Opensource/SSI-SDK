@@ -4,7 +4,7 @@ import {
   ElectronicAddress,
   GetPartiesArgs,
   Identity,
-  IdentityRole,
+  CredentialRole,
   IdentityOrigin,
   NaturalPerson,
   NonPersistedElectronicAddress,
@@ -47,7 +47,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const identity: NonPersistedIdentity = {
         alias: correlationId,
         origin: IdentityOrigin.EXTERNAL,
-        roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+        roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierType.DID,
           correlationId,
@@ -244,7 +244,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const identity: NonPersistedIdentity = {
         alias: correlationId,
         origin: IdentityOrigin.EXTERNAL,
-        roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+        roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierType.DID,
           correlationId,
@@ -269,7 +269,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const identity: NonPersistedIdentity = {
         alias: correlationId,
         origin: IdentityOrigin.EXTERNAL,
-        roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+        roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierType.URL,
           correlationId,
@@ -286,7 +286,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const identity: NonPersistedIdentity = {
         alias: correlationId,
         origin: IdentityOrigin.EXTERNAL,
-        roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+        roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierType.DID,
           correlationId,
@@ -303,7 +303,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const identity: NonPersistedIdentity = {
         alias: 'update_example_did',
         origin: IdentityOrigin.EXTERNAL,
-        roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+        roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
         identifier: {
           type: CorrelationIdentifierType.DID,
           correlationId: 'update_example_did',

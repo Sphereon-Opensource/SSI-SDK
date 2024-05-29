@@ -5,7 +5,7 @@ export type MetadataTypes = string | number | Date | boolean | undefined
 export type Party = {
   id: string
   uri?: string
-  roles: Array<IdentityRole>
+  roles: Array<CredentialRole>
   ownerId?: string
   tenantId?: string
   identities: Array<Identity>
@@ -54,7 +54,7 @@ export type Identity = {
   ownerId?: string
   tenantId?: string
   origin: IdentityOrigin
-  roles: Array<IdentityRole>
+  roles: Array<CredentialRole>
   identifier: CorrelationIdentifier
   connection?: Connection
   metadata?: Array<MetadataItem<MetadataTypes>>
@@ -72,7 +72,7 @@ export type PartialIdentity = Partial<Omit<Identity, 'identifier' | 'connection'
   connection?: PartialConnection
   metadata?: PartialMetadataItem<MetadataTypes> // Usage: FindIdentityArgs = Array<PartialIdentity>
   origin?: IdentityOrigin
-  roles?: IdentityRole
+  roles?: CredentialRole
   partyId?: string
 }
 
@@ -245,7 +245,7 @@ export type ElectronicAddressType = 'email' | 'phone'
 
 export type PhysicalAddressType = 'home' | 'visit' | 'postal'
 
-export enum IdentityRole {
+export enum CredentialRole {
   ISSUER = 'issuer',
   VERIFIER = 'verifier',
   HOLDER = 'holder',

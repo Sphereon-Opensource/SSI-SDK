@@ -4,7 +4,7 @@ import {
   CorrelationIdentifierType,
   IBasicCredentialLocaleBranding,
   Identity,
-  IdentityRole,
+  CredentialRole,
   IdentityOrigin,
   NonPersistedIdentity,
   Party,
@@ -407,7 +407,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     const identity: NonPersistedIdentity = {
       alias: correlationId,
       origin: IdentityOrigin.EXTERNAL,
-      roles: [IdentityRole.ISSUER],
+      roles: [CredentialRole.ISSUER],
       identifier: {
         type: CorrelationIdentifierType.DID,
         correlationId,
