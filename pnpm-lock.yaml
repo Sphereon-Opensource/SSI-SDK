@@ -360,6 +360,9 @@ importers:
 
   packages/data-store:
     dependencies:
+      '@sphereon/pex':
+        specifier: ^3.3.3
+        version: 3.3.3
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1042,6 +1045,173 @@ importers:
         specifier: ^13.2.1
         version: 13.5.4
 
+  packages/pd-manager:
+    dependencies:
+      '@sphereon/pex':
+        specifier: ^3.3.3
+        version: 3.3.3
+      '@sphereon/pex-models':
+        specifier: ^2.2.4
+        version: 2.2.4
+      '@sphereon/ssi-sdk.data-store':
+        specifier: workspace:*
+        version: link:../data-store
+      cross-fetch:
+        specifier: ^3.1.8
+        version: 3.1.8
+      debug:
+        specifier: ^4.3.4
+        version: 4.3.4
+      semver:
+        specifier: ^7.6.2
+        version: 7.6.2
+      typeorm:
+        specifier: ^0.3.20
+        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+    devDependencies:
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
+      '@types/semver':
+        specifier: ^7.5.8
+        version: 7.5.8
+      '@veramo/remote-client':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/remote-server':
+        specifier: 4.2.0
+        version: 4.2.0(express@4.19.2)
+
+  packages/pd-manager-rest-api:
+    dependencies:
+      '@sphereon/ssi-express-support':
+        specifier: workspace:*
+        version: link:../ssi-express-support
+      '@sphereon/ssi-sdk.core':
+        specifier: workspace:*
+        version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.data-store':
+        specifier: workspace:*
+        version: link:../data-store
+      '@sphereon/ssi-sdk.pd-manager':
+        specifier: workspace:*
+        version: link:../pd-manager
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+      '@veramo/core':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      body-parser:
+        specifier: ^1.19.0
+        version: 1.20.2
+      casbin:
+        specifier: ^5.26.2
+        version: 5.30.0
+      cookie-parser:
+        specifier: ^1.4.5
+        version: 1.4.6
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
+      cross-fetch:
+        specifier: ^3.1.8
+        version: 3.1.8
+      debug:
+        specifier: ^4.3.4
+        version: 4.3.4
+      dotenv-flow:
+        specifier: ^3.2.0
+        version: 3.3.0
+      express:
+        specifier: ^4.18.2
+        version: 4.19.2
+      short-uuid:
+        specifier: ^4.2.2
+        version: 4.2.2
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
+    devDependencies:
+      '@decentralized-identity/ion-sdk':
+        specifier: ^0.6.0
+        version: 0.6.0
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:^
+        version: link:../agent-config
+      '@types/body-parser':
+        specifier: ^1.19.2
+        version: 1.19.5
+      '@types/cookie-parser':
+        specifier: ^1.4.3
+        version: 1.4.7
+      '@types/cors':
+        specifier: ^2.8.13
+        version: 2.8.17
+      '@types/debug':
+        specifier: ^4.1.7
+        version: 4.1.12
+      '@types/dotenv-flow':
+        specifier: ^3.2.0
+        version: 3.3.3
+      '@types/express':
+        specifier: ^4.17.13
+        version: 4.17.21
+      '@types/express-http-proxy':
+        specifier: ^1.6.3
+        version: 1.6.6
+      '@types/morgan':
+        specifier: ^1.9.4
+        version: 1.9.9
+      '@types/node':
+        specifier: ^18.15.0
+        version: 18.19.33
+      '@types/passport':
+        specifier: ^1.0.12
+        version: 1.0.16
+      '@types/passport-azure-ad':
+        specifier: ^4.3.1
+        version: 4.3.6
+      '@types/uuid':
+        specifier: ^9.0.1
+        version: 9.0.8
+      '@veramo/data-store':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@veramo/did-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-provider-ion':
+        specifier: 4.2.0
+        version: 4.2.0(@sphereon/react-native-argon2@2.0.9)(react-native@0.74.1)
+      '@veramo/key-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/kms-local':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/utils':
+        specifier: 4.2.0
+        version: 4.2.0
+      morgan:
+        specifier: ^1.10.0
+        version: 1.10.0
+      nock:
+        specifier: ^13.2.1
+        version: 13.5.4
+      passport:
+        specifier: ^0.6.0
+        version: 0.6.0
+      passport-http-bearer:
+        specifier: ^1.0.1
+        version: 1.0.1
+      ts-node:
+        specifier: ^10.9.1
+        version: 10.9.2(@types/node@18.19.33)(typescript@5.4.2)
+      typeorm:
+        specifier: ^0.3.20
+        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+
   packages/presentation-exchange:
     dependencies:
       '@sphereon/pex':
@@ -1053,9 +1223,12 @@ importers:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.19.0
         version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.kv-store-temp':
+      '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
-        version: link:../kv-store
+        version: link:../data-store
+      '@sphereon/ssi-sdk.pd-manager':
+        specifier: workspace:*
+        version: link:../pd-manager
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1210,6 +1383,9 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.pd-manager':
+        specifier: workspace:*
+        version: link:../pd-manager
       '@sphereon/ssi-sdk.presentation-exchange':
         specifier: workspace:*
         version: link:../presentation-exchange
@@ -6781,7 +6957,7 @@ packages:
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/pex': 3.3.2
+      '@sphereon/pex': 3.3.3
       '@sphereon/pex-models': 2.2.4
       '@sphereon/ssi-types': link:packages/ssi-types
       '@sphereon/wellknown-dids-client': 0.1.3
@@ -6971,25 +7147,6 @@ packages:
 
   /@sphereon/pex-models@2.2.4:
     resolution: {integrity: sha512-pGlp+wplneE1+Lk3U48/2htYKTbONMeG5/x7vhO6AnPUOsnOXeJdftPrBYWVSzz/JH5GJptAc6+pAyYE1zMu4Q==}
-
-  /@sphereon/pex@3.3.2:
-    resolution: {integrity: sha512-d83GLa07e1IZBGTUTZ5cQIrnrOtPcFfiLuLaDa/G/G/Xs3GiieZemgSQ3Dojvd6/Cosxh7LDCTdtFcyc4J18Ow==}
-    engines: {node: '>=18'}
-    requiresBuild: true
-    dependencies:
-      '@astronautlabs/jsonpath': 1.1.2
-      '@sd-jwt/decode': 0.6.1
-      '@sd-jwt/present': 0.6.1
-      '@sd-jwt/types': 0.6.1
-      '@sphereon/pex-models': 2.2.4
-      '@sphereon/ssi-types': link:packages/ssi-types
-      ajv: 8.13.0
-      ajv-formats: 2.1.1(ajv@8.13.0)
-      jwt-decode: 3.1.2
-      nanoid: 3.3.7
-      string.prototype.matchall: 4.0.11
-      uint8arrays: 3.1.1
-    dev: false
 
   /@sphereon/pex@3.3.3:
     resolution: {integrity: sha512-CXwdEcMTUh2z/5AriBn3OuShEG06l2tgiIr7qDJthnkez8DQ3sZo2vr4NEQWKKAL+DeAWAI4FryQGO4KuK7yfg==}
@@ -12954,6 +13111,7 @@ packages:
 
   /glob@6.0.4:
     resolution: {integrity: sha512-MKZeRNyYZAVVVG1oZeLaWie1uweH40m9AZwIwxyPbTSX4hHrVYSzLg0Ro5Z5R7XKkIX+Cc6oD1rqeDJnwsB8/A==}
+    deprecated: Glob versions prior to v9 are no longer supported
     requiresBuild: true
     dependencies:
       inflight: 1.0.6
@@ -13948,7 +14106,7 @@ packages:
     hasBin: true
     dependencies:
       async: 3.2.5
-      chalk: 4.1.0
+      chalk: 4.1.2
       filelist: 1.0.4
       minimatch: 3.1.2
     dev: true
@@ -17167,7 +17325,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       bl: 4.1.0
-      chalk: 4.1.0
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       is-interactive: 1.0.0
