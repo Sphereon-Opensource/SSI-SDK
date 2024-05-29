@@ -34,11 +34,9 @@ import { DIDDocument } from '@sphereon/did-uni-client'
 import { EventEmitter } from 'events'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
-import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
+import { IPresentationExchange, VersionControlMode } from '@sphereon/ssi-sdk.presentation-exchange'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { AbstractPDStore } from '@sphereon/ssi-sdk.data-store'
-import { VersionControlMode } from '@sphereon/ssi-sdk.presentation-exchange/dist'
 
 export enum VerifiedDataMode {
   NONE = 'none',
@@ -152,7 +150,6 @@ export interface IPEXOptions {
   presentationVerifyCallback?: PresentationVerificationCallback
   // definition?: IPresentationDefinition
   definitionId: string
-  store: AbstractPDStore
   tenantId?: string
 }
 
