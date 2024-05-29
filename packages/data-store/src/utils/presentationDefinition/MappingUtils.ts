@@ -51,5 +51,6 @@ export function isPresentationDefinitionEqual(left: PartialPresentationDefinitio
     return hashPayload(left.definitionPayload) === hashPayload(right.definitionPayload)
   }
 
+  // return false when either or both are null or undefined
   return left.definitionPayload == right.definitionPayload
 }
