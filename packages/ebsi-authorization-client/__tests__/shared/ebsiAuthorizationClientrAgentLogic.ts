@@ -103,12 +103,43 @@ export default (testContext: {
             const app: Application = express();
             app.use("/mock", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
                 console.log(`MOCK CALLED, with params:\r\n ${JSON.stringify(req.query, null, 2)}`)
-                console.log('TODO: Fix issues the AS responds with and then call the token endpoint etc from here')
+                if (req.query.error) {
+                  res.json(req.query)
+                }
 
-                // Once the above is fixed, you will get a code back as query param
-                const code = 'code from query param here'
+                const parsedRequest = JSON.parse(JSON.stringify(req.query))
 
+                const id_token = await new SignJWT({
+                  iss: identifier.did,
+                  sub: identifier.did,
+                  aud: parsedRequest.client_id,
+                  iat: Math.floor(Date.now()),
+                  exp: Math.floor(Date.now()) + 900,
+                  nonce: parsedRequest.nonce,
+                  state: parsedRequest.state
+                }).setProtectedHeader({
+                  typ: 'JWT',
+                  alg: 'ES256',
+                  kid
+                }).sign(importedJwk)
 
+                const authResponse = await (await fetch(`${parsedRequest.redirect_uri}`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                  },
+                  body: `id_token=${id_token}&state=${parsedRequest.state}`
+                })).json()
+
+                console.log(`Authentication response: ${JSON.stringify(authResponse)}`)
+
+                if (req.query.error) {
+                  res.json(req.query)
+                }
+
+                const code = JSON.parse(JSON.stringify(authResponse)).code
+
+                // TODO acquire access token
                 const accessToken = await client.acquireAccessToken({code});
                 console.log(accessToken);
 
@@ -129,8 +160,7 @@ export default (testContext: {
             server = http.createServer(app)
             server.listen(port)
 
-            const REDIRECT_MOCK_URL = `http://localhost:${port}/mock`
-
+            const REDIRECT_MOCK_URL= `http://localhost:${port}/mock`
 
             const authorizationDetails = [
                 {
@@ -144,16 +174,19 @@ export default (testContext: {
             const client = await OpenID4VCIClient.fromCredentialIssuer({
                 credentialIssuer: 'https://conformance-test.ebsi.eu/conformance/v3/issuer-mock',
                 // @ts-ignore
-                authorizationRequest: {authorizationDetails, redirectUri: REDIRECT_MOCK_URL, scope: "openid"},
+                authorizationRequest: {authorizationDetails, redirectUri: REDIRECT_MOCK_URL, scope: "openid", clientId: REDIRECT_MOCK_URL},
                 kid,
                 alg: Alg.ES256,
                 clientId: REDIRECT_MOCK_URL
             })
             const url = await client.createAuthorizationRequestUrl({
                 authorizationRequest: {
-                    redirectUri: REDIRECT_MOCK_URL
+                    redirectUri: REDIRECT_MOCK_URL,
+                    clientId: REDIRECT_MOCK_URL,
+                    scope: 'openid'
                 },
             });
+
             const urlWithRequest = await new SignJWT({
               iss: REDIRECT_MOCK_URL,
               aud: 'https://conformance-test.ebsi.eu/conformance/v3/auth-mock',
@@ -163,7 +196,11 @@ export default (testContext: {
               client_id: REDIRECT_MOCK_URL,
               authorization_details: authorizationDetails,
               client_metadata: {
-                jwks_uri: 'https://raw.githubusercontent.com/Sphereon-Opensource/SSI-SDK/feature/SDK-10/packages/ebsi-authorization-client/__tests__/shared/jwks.json'
+                jwks_uri: 'https://raw.githubusercontent.com/Sphereon-Opensource/SSI-SDK/feature/SDK-10/packages/ebsi-authorization-client/__tests__/shared/jwks.json',
+                vp_formats_supported: {"jwt_vp":{"alg":["ES256"]},
+                jwt_vc:{ alg:["ES256"]}},
+                response_types_supported:["vp_token","id_token"],
+                authorization_endpoint: REDIRECT_MOCK_URL,
               }
             }).setProtectedHeader({
               alg: 'ES256',
@@ -172,8 +209,6 @@ export default (testContext: {
             console.log(`URL: ${url}&request=${urlWithRequest}`)
             const result = await fetch(`${url}&request=${urlWithRequest}`);
             console.log(await result.text());
-
-
         })
 
         it('Should retrieve the discovery metadata', async () => {
