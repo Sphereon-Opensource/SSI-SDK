@@ -4,7 +4,7 @@ import { PartialPresentationDefinitionItem, PresentationDefinitionItem } from '.
 import { createHash } from 'crypto'
 
 export const presentationDefinitionItemFrom = (entity: PresentationDefinitionItemEntity) => {
-  return {
+  const item: PresentationDefinitionItem = {
     id: entity.id,
     tenantId: entity.tenantId,
     definitionId: entity.definitionId,
@@ -13,7 +13,8 @@ export const presentationDefinitionItemFrom = (entity: PresentationDefinitionIte
     definitionPayload: JSON.parse(entity.definitionPayload) as IPresentationDefinition,
     createdAt: entity.createdAt,
     lastUpdatedAt: entity.lastUpdatedAt,
-  } as PresentationDefinitionItem
+  }
+  return item
 }
 
 export const presentationDefinitionEntityItemFrom = (item: PartialPresentationDefinitionItem) => {
@@ -22,7 +23,7 @@ export const presentationDefinitionEntityItemFrom = (item: PartialPresentationDe
     entity.id = item.id
   }
 
-  entity.tenantId = item.tenantId!
+  entity.tenantId = item.tenantId
   entity.definitionId = item.definitionId!
   entity.version = item.version!
   entity.purpose = item.purpose

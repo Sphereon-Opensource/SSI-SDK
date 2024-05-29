@@ -4,16 +4,18 @@ import { IRequiredContext } from './types'
 import { AddDefinitionItemArgs, PersistDefinitionArgs, UpdateDefinitionItemArgs } from '@sphereon/ssi-sdk.pd-manager'
 import { DeleteDefinitionArgs } from '@sphereon/ssi-sdk.data-store'
 
+const operation = '/presentation-definitions'
+
 export function pdReadEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`"pdReadEndpoint" Endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/presentation-defs'
-  router.get(`${path}/:pdId`, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
+  const path = opts?.path ?? operation
+  router.get(`${path}/:itemId`, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
-      const pdId = request.params.pdId
-      const pd = await context.agent.pdmGetDefinition({ itemId: pdId })
+      const itemId = request.params.itemId
+      const pd = await context.agent.pdmGetDefinition({ itemId: itemId })
       response.statusCode = 200
       return response.send(pd)
     } catch (error) {
@@ -27,7 +29,7 @@ export function pdAddEndpoint(router: Router, context: IRequiredContext, opts?: 
     console.log(`"pdAddEndpoint" Endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/presentation-defs'
+  const path = opts?.path ?? operation
   router.post(path, async (request: Request, response: Response) => {
     try {
       const addPd = request.body
@@ -45,12 +47,17 @@ export function pdUpdateEndpoint(router: Router, context: IRequiredContext, opts
     console.log(`"pdAddEndpoint" Endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/presentation-defs'
-  router.put(path, async (request: Request, response: Response) => {
+  const path = opts?.path ?? operation
+  router.put(`${path}/:itemId`, async (request: Request, response: Response) => {
     try {
       const updatePd = request.body
+      const itemId = request.params.itemId
+      if (itemId !== updatePd.itemId) {
+        throw new Error(`path item id not matching the payload's item id`)
+      }
+
       const pd = await context.agent.pdmUpdateDefinition(updatePd as UpdateDefinitionItemArgs)
-      response.statusCode = 201
+      response.statusCode = 200
       return response.send(pd)
     } catch (error) {
       return sendErrorResponse(response, 500, error.message, error)
@@ -63,11 +70,12 @@ export function pdDeleteEndpoint(router: Router, context: IRequiredContext, opts
     console.log(`"pdDeleteEndpoint" Endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/presentation-defs'
-  router.delete(`${path}/:pdItemId`, async (request, response) => {
+  const path = opts?.path ?? operation
+  router.delete(`${path}/:itemId`, async (request, response) => {
     try {
-      const pdItemId = request.params.pdItemId
-      const result = await context.agent.pdmDeleteDefinition({ itemId: pdItemId } as DeleteDefinitionArgs)
+      const itemId = request.params.itemId
+      const result = await context.agent.pdmDeleteDefinition({ itemId: itemId } as DeleteDefinitionArgs)
+      response.statusCode = 200
       return response.send(result)
     } catch (error) {
       return sendErrorResponse(response, 500, error.message, error)
@@ -80,7 +88,7 @@ export function pdPersistEndpoint(router: Router, context: IRequiredContext, opt
     console.log(`"pdPersistEndpoint" Endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/presentation-defs/persist'
+  const path = opts?.path ?? '/presentation-defiinitions/persist'
   router.post(path, async (request: Request, response: Response) => {
     try {
       const addPd = request.body

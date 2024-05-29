@@ -2,7 +2,7 @@ import { NonPersistedPresentationDefinitionItem, PresentationDefinitionItem, Pre
 
 export type FindDefinitionArgs = Array<PresentationDefinitionItemFilter>
 
-export type GetGetDefinitionArgs = {
+export type GetDefinitionArgs = {
   itemId: string
 }
 

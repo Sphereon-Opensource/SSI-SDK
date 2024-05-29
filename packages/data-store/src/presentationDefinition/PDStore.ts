@@ -3,7 +3,7 @@ import { DataSource, In } from 'typeorm'
 import { AbstractPDStore } from './AbstractPDStore'
 import Debug from 'debug'
 import {
-  GetGetDefinitionArgs,
+  GetDefinitionArgs,
   GetDefinitionsArgs,
   DeleteDefinitionArgs,
   NonPersistedPresentationDefinitionItem,
@@ -22,7 +22,7 @@ export class PDStore extends AbstractPDStore {
     this.dbConnection = dbConnection
   }
 
-  getDefinition = async (args: GetGetDefinitionArgs): Promise<PresentationDefinitionItem> => {
+  getDefinition = async (args: GetDefinitionArgs): Promise<PresentationDefinitionItem> => {
     const { itemId } = args ?? {}
     const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
     const result: PresentationDefinitionItemEntity | null = await pdRepository.findOne({
