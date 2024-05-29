@@ -12,7 +12,7 @@ import {
 import { IPresentation, Optional, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { IPresentationDefinition, PEVersion, SelectResults } from '@sphereon/pex'
 import { Format, InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
-import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
+import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
 
 export interface IPresentationExchange extends IPluginMethodMap {
   pexStoreGetDefinition(args: IDefinitionGetArgs, context: IRequiredContext): Promise<IPresentationDefinition | undefined>
@@ -47,8 +47,6 @@ export interface IDefinitionsClearArgs {
   tenantId?: string
 }
 export type IDefinitionRemoveArgs = IDefinitionGetArgs
-
-export type VersionControlMode = 'AutoIncrementMajor' | 'AutoIncrementMinor' | 'Manual' | 'Overwrite' | 'OverwriteLatest'
 
 export interface IDefinitionPersistArgs {
   definition: IPresentationDefinition // The actual Presentation definition to be stored/
