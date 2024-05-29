@@ -3,7 +3,6 @@ import {
   BaseContactEntity,
   ElectronicAddress,
   Identity,
-  IdentityOrigin,
   NonPersistedContact,
   Party as Contact,
   PartyRelationship as ContactRelationship,
