@@ -163,7 +163,7 @@ export default (testContext: {
               client_id: REDIRECT_MOCK_URL,
               authorization_details: authorizationDetails,
               client_metadata: {
-                jwk
+                jwks_uri: 'https://raw.githubusercontent.com/Sphereon-Opensource/SSI-SDK/feature/SDK-10/packages/ebsi-authorization-client/__tests__/shared/jwks.json'
               }
             }).setProtectedHeader({
               alg: 'ES256',
