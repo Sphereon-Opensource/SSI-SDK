@@ -262,7 +262,7 @@ export class ExpressBuilder {
     opts?.handlers && app.use(opts.handlers)
     //fixme: this should come from the config
     app.use(bodyParser.urlencoded({ extended: true }))
-    app.use(bodyParser.json({limit:'5mb'}))
+    app.use(bodyParser.json({ limit: '5mb' }))
     return app
   }
 }

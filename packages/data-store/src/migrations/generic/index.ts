@@ -32,5 +32,5 @@ export const DataStoreMigrations = [
   ...DataStoreEventLoggerMigrations,
   ...DataStoreDigitalCredentialMigrations,
   ...DataStoreMachineStateMigrations,
-  ...DataStorePresentationsDefinitionsMigrations
+  ...DataStorePresentationsDefinitionsMigrations,
 ]

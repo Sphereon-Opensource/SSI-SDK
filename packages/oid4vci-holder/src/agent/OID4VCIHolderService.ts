@@ -60,25 +60,27 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   const { credentialsSupported, context } = args
   const credentialBranding: Record<string, Array<IBasicCredentialLocaleBranding>> = {}
   await Promise.all(
-    Object.values(credentialsSupported).map(async (credentialsConfigSupported: CredentialConfigurationSupported): Promise<void> => {
-      const localeBranding: Array<IBasicCredentialLocaleBranding> = await Promise.all(
-        (credentialsConfigSupported.display ?? []).map(
-          async (display: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> =>
-            await context.agent.ibCredentialLocaleBrandingFrom({ localeBranding: await credentialLocaleBrandingFrom(display) }),
-        ),
-      )
+    Object.entries(credentialsSupported).map(
+      ([configId, _credentialsSupported]) =>
+        async (credentialsConfigSupported: CredentialConfigurationSupported): Promise<void> => {
+          const localeBranding: Array<IBasicCredentialLocaleBranding> = await Promise.all(
+            (credentialsConfigSupported.display ?? []).map(
+              async (display: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> =>
+                await context.agent.ibCredentialLocaleBrandingFrom({ localeBranding: await credentialLocaleBrandingFrom(display) }),
+            ),
+          )
 
-      const defaultCredentialType = 'VerifiableCredential'
-      const credentialTypes: Array<string> =
-        'types' in credentialsConfigSupported // TODO credentialsConfigSupported.types is deprecated
-          ? (credentialsConfigSupported.types as string[])
-          : 'credential_definition' in credentialsConfigSupported
-            ? credentialsConfigSupported.credential_definition.type
-            : [defaultCredentialType]
+          const defaultCredentialType = 'VerifiableCredential'
+          const credentialTypes: Array<string> = ('types' in credentialsConfigSupported // TODO credentialsConfigSupported.types is deprecated
+            ? (credentialsConfigSupported.types as string[])
+            : 'credential_definition' in credentialsConfigSupported
+              ? credentialsConfigSupported.credential_definition.type
+              : [defaultCredentialType]) ?? [configId]
 
-      const filteredCredentialTypes = credentialTypes.filter((type: string): boolean => type !== defaultCredentialType)
-      credentialBranding[filteredCredentialTypes[0]] = localeBranding // TODO for now taking the first type
-    }),
+          const filteredCredentialTypes = credentialTypes.filter((type: string): boolean => type !== defaultCredentialType)
+          credentialBranding[filteredCredentialTypes[0]] = localeBranding // TODO for now taking the first type
+        },
+    ),
   )
 
   return credentialBranding
@@ -217,13 +219,11 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
 }
 
 export const getDefaultIssuanceOpts = async (args: GetDefaultIssuanceOptsArgs): Promise<IssuanceOpts> => {
-  //const { credentialSupported, opts, context } = args
-  const { credentialSupported, context } = args
+  const { credentialSupported, opts, context } = args
 
   const issuanceOpt = {
     ...credentialSupported,
-    didMethod: SupportedDidMethodEnum.DID_JWK,
-    //didMethod: opts.client.isEBSI() ? SupportedDidMethodEnum.DID_KEY : SupportedDidMethodEnum.DID_JWK, FIXME
+    didMethod: opts.client.isEBSI() ? SupportedDidMethodEnum.DID_KEY : SupportedDidMethodEnum.DID_JWK,
     keyType: 'Secp256r1',
   } as IssuanceOpts
   const identifierOpts = await getIdentifier({ issuanceOpt, context })
@@ -365,9 +365,8 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
       ...credentialSupported,
       didMethod,
       format: credentialSupported.format,
-      //      keyType: client.isEBSI() ? 'Secp256r1' : keyTypeFromCryptographicSuite({ suite: cryptographicSuite }), FIXME
-      keyType: keyTypeFromCryptographicSuite({ suite: cryptographicSuite }),
-      //      ...(client.isEBSI() && { codecName: 'EBSI' }), FIXME
+      keyType: client.isEBSI() ? 'Secp256r1' : keyTypeFromCryptographicSuite({ suite: cryptographicSuite }),
+      ...(client.isEBSI() && { codecName: 'EBSI' }),
     } as IssuanceOpts
     const identifierOpts = await getIdentifier({ issuanceOpt, context })
     if (!client.clientId) {
@@ -383,7 +382,7 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
 }
 
 export const getIssuanceDidMethod = async (opts: GetIssuanceDidMethodArgs): Promise<SupportedDidMethodEnum> => {
-  const { credentialSupported, didMethodPreferences } = opts
+  const { client, credentialSupported, didMethodPreferences } = opts
   const { format, cryptographic_binding_methods_supported } = credentialSupported
   if (cryptographic_binding_methods_supported && Array.isArray(cryptographic_binding_methods_supported)) {
     const method: SupportedDidMethodEnum | undefined = didMethodPreferences.find((method: SupportedDidMethodEnum) =>
@@ -396,11 +395,10 @@ export const getIssuanceDidMethod = async (opts: GetIssuanceDidMethodArgs): Prom
     }
   }
 
-  /*
-  if (client.isEBSI()) { FIXME
+  if (client.isEBSI()) {
     return SupportedDidMethodEnum.DID_KEY
   }
-*/
+
   if (!format || (format.includes('jwt') && !format?.includes('jwt_vc_json_ld'))) {
     return format ? didMethodPreferences[1] : didMethodPreferences[0]
   } else {
@@ -410,7 +408,7 @@ export const getIssuanceDidMethod = async (opts: GetIssuanceDidMethodArgs): Prom
 }
 
 export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): Promise<string> => {
-  const { credentialSupported, jwtCryptographicSuitePreferences, jsonldCryptographicSuitePreferences } = opts
+  const { client, credentialSupported, jwtCryptographicSuitePreferences, jsonldCryptographicSuitePreferences } = opts
   const signing_algs_supported: Array<string> = credentialSupported.credential_signing_alg_values_supported ?? []
 
   // TODO: Return array, so the wallet/user could choose
@@ -425,9 +423,9 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
 
       if (supportedPreferences.length > 0) {
         return supportedPreferences[0]
-      } /*else if (client.isEBSI()) { FIXME
+      } else if (client.isEBSI()) {
         return SignatureAlgorithmEnum.ES256
-      }*/
+      }
 
       // if we cannot find supported cryptographic suites, we just try with the first preference
       const fallback = jwtCryptographicSuitePreferences[0]

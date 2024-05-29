@@ -50,7 +50,7 @@ export {
   DataStoreIssuanceBrandingMigrations,
   DataStoreStatusListMigrations,
   DataStoreMachineStateMigrations,
-  DataStorePresentationsDefinitionsMigrations
+  DataStorePresentationsDefinitionsMigrations,
 } from './migrations'
 export * from './types'
 export * from './utils/contact/MappingUtils'
@@ -106,7 +106,7 @@ export const DataStoreEntities = [
   ...DataStoreDigitalCredentialEntities,
   ...DataStoreMachineStateEntities,
   ...DataStorePresentationDefinitionEntities,
-  ...DataStorePresentationDefinitionItemEntities
+  ...DataStorePresentationDefinitionItemEntities,
 ]
 
 export {

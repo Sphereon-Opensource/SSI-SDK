@@ -1,5 +1,11 @@
 import { OpenID4VCIClient, OpenID4VCIClientState } from '@sphereon/oid4vci-client'
-import { AuthorizationResponse, CredentialConfigurationSupported, CredentialResponse, EndpointMetadataResult } from '@sphereon/oid4vci-common'
+import {
+  AuthorizationRequestOpts,
+  AuthorizationResponse,
+  CredentialConfigurationSupported,
+  CredentialResponse,
+  EndpointMetadataResult,
+} from '@sphereon/oid4vci-common'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
@@ -40,6 +46,7 @@ export type OID4VCIHolderOptions = {
   onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
   vcFormatPreferences?: Array<string>
   jsonldCryptographicSuitePreferences?: Array<string>
+  defaultAuthRequestOptions?: AuthorizationRequestOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   jwtCryptographicSuitePreferences?: Array<SignatureAlgorithmEnum>
 }
@@ -60,10 +67,11 @@ export type OnIdentifierCreatedArgs = {
 
 export type GetMachineArgs = {
   requestData: RequestData
+  options?: OID4VCIHolderOptions
   stateNavigationListener?: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
 }
 
-export type InitiateOID4VCIArgs = Pick<OID4VCIMachineContext, 'requestData'>
+export type InitiateOID4VCIArgs = Pick<OID4VCIMachineContext, 'requestData' | 'authorizationRequestOpts'>
 export type CreateCredentialSelectionArgs = Pick<
   OID4VCIMachineContext,
   'credentialsSupported' | 'credentialBranding' | 'selectedCredentials' | 'locale' | 'openID4VCIClientState'
@@ -109,6 +117,7 @@ export type MappedCredentialToAccept = {
 }
 
 export type OID4VCIMachineContext = {
+  authorizationRequestOpts?: AuthorizationRequestOpts
   requestData?: RequestData // TODO WAL-673 fix type as this is not always a qr code (deeplink)
   locale?: string
   authorizationCodeURL?: string
@@ -194,6 +203,7 @@ export type OID4VCIMachineInstanceOpts = {
   guards?: any
   subscription?: () => void
   requireCustomNavigationHook?: boolean
+  authorizationRequestOpts?: AuthorizationRequestOpts
   stateNavigationListener: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
 } & CreateOID4VCIMachineOpts
 
@@ -317,6 +327,7 @@ export type SelectAppLocaleBrandingArgs = {
 }
 
 export type IssuanceOpts = CredentialConfigurationSupported & {
+  credentialConfigurationId?: string // Explicit ID for a credential
   didMethod: SupportedDidMethodEnum
   keyType: TKeyType
   codecName?: string
