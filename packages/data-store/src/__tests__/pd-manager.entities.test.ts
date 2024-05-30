@@ -28,8 +28,6 @@ describe('PresentationDefinitionItemEntity tests', (): void => {
     entity.definitionId = 'definition1'
     entity.version = '1.0'
     entity.definitionPayload = JSON.stringify({ id: 'definition1', input_descriptors: [] })
-    entity.createdAt = new Date()
-    entity.lastUpdatedAt = new Date()
 
     const savedEntity = await repository.save(entity)
     expect(savedEntity).toBeDefined()
@@ -46,8 +44,6 @@ describe('PresentationDefinitionItemEntity tests', (): void => {
     entity.definitionId = 'definition1'
     entity.version = '1.0'
     entity.definitionPayload = JSON.stringify({ id: 'definition1', input_descriptors: [] })
-    entity.createdAt = new Date()
-    entity.lastUpdatedAt = new Date()
 
     const savedEntity = await repository.save(entity)
     expect(savedEntity).toBeDefined()
@@ -64,8 +60,6 @@ describe('PresentationDefinitionItemEntity tests', (): void => {
     entity.definitionId = 'definition1'
     entity.version = '1.0'
     entity.definitionPayload = JSON.stringify({ id: 'definition1', input_descriptors: [] })
-    entity.createdAt = new Date()
-    entity.lastUpdatedAt = new Date()
 
     const savedEntity = await repository.save(entity)
     expect(savedEntity).toBeDefined()
