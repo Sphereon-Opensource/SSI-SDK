@@ -1,7 +1,7 @@
 import {
   DataStoreContactEntities,
   DataStorePresentationDefinitionEntities,
-  DataStorePresentationDefinitionsMigrations,
+  DataStorePresentationDefinitionMigrations,
 } from '@sphereon/ssi-sdk.data-store'
 import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions'
 import { DataStoreContactMigrations } from '@sphereon/ssi-sdk.data-store/dist/migrations/generic'
@@ -15,7 +15,7 @@ const sqliteConfig: SqliteConnectionOptions = {
   type: 'sqlite',
   database: '__tests__/database/test.sqlite',
   entities: [...DataStorePresentationDefinitionEntities, ...VeramoDataStoreEntities],
-  migrations: [...DataStorePresentationDefinitionsMigrations, ...VeramoDataStoreMigrations],
+  migrations: [...DataStorePresentationDefinitionMigrations, ...VeramoDataStoreMigrations],
   migrationsRun: false, // We run migrations from code to ensure proper ordering with Redux
   synchronize: false, // We do not enable synchronize, as we use migrations from code
   migrationsTransactionMode: 'each', // protect every migration with a separate transaction

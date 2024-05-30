@@ -14,6 +14,7 @@ export type PresentationDefinitionItem = {
 export type NonPersistedPresentationDefinitionItem = Omit<PresentationDefinitionItem, 'id' | 'createdAt' | 'lastUpdatedAt'>
 
 export type PersistablePresentationDefinitionItem = Omit<NonPersistedPresentationDefinitionItem, 'definitionId' | 'version'> & {
+  id?: string
   definitionId?: string
   version?: string
 }

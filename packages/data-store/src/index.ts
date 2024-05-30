@@ -50,7 +50,7 @@ export {
   DataStoreIssuanceBrandingMigrations,
   DataStoreStatusListMigrations,
   DataStoreMachineStateMigrations,
-  DataStorePresentationDefinitionsMigrations,
+  DataStorePresentationDefinitionMigrations,
 } from './migrations'
 export * from './types'
 export * from './utils/contact/MappingUtils'

@@ -20,6 +20,7 @@
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@sphereon/ssi-sdk.presentation-exchange": "workspace:*",
+    "@sphereon/ssi-sdk.pd-manager": "workspace:*",
     "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@sphereon/wellknown-dids-client": "^0.1.3",

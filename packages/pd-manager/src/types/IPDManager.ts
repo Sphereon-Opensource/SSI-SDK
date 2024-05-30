@@ -1,10 +1,5 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import {
-  FindDefinitionArgs,
-  NonPersistedPresentationDefinitionItem,
-  PersistablePresentationDefinitionItem,
-  PresentationDefinitionItem,
-} from '@sphereon/ssi-sdk.data-store'
+import { FindDefinitionArgs, PersistablePresentationDefinitionItem, PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
 
 export interface IPDManager extends IPluginMethodMap {
   /**
@@ -14,22 +9,22 @@ export interface IPDManager extends IPluginMethodMap {
   pdmGetDefinition(args: GetDefinitionItemArgs): Promise<PresentationDefinitionItem>
 
   /**
-   * Find one or more presentation definition records by filters
+   * Find one or more presentation definition records using filters
    * @param args
    */
-  pdmGetDefinitions(args: GetDefinitionsItemArgs): Promise<Array<PresentationDefinitionItem>>
+  pdmGetDefinitions(args: GetDefinitionItemsArgs): Promise<Array<PresentationDefinitionItem>>
 
   /**
-   * Add a presentation definition record
+   * Checks whether a presentation definition record exists by primary key
    * @param args
    */
-  pdmAddDefinition(args: AddDefinitionItemArgs): Promise<PresentationDefinitionItem>
+  pdmHasDefinition(args: HasDefinitionItemArgs): Promise<boolean>
 
   /**
-   * Update an existing presentation definition record
+   * Checks whether one or more presentation definition records exist using filters
    * @param args
    */
-  pdmUpdateDefinition(args: UpdateDefinitionItemArgs): Promise<PresentationDefinitionItem>
+  pdmHasDefinitions(args: HasDefinitionItemsArgs): Promise<boolean>
 
   /**
    * Delete a single presentation definition records by primary key
@@ -38,7 +33,13 @@ export interface IPDManager extends IPluginMethodMap {
   pdmDeleteDefinition(args: DeleteDefinitionItemArgs): Promise<boolean>
 
   /**
-   * Persist a presentation definition.
+   * Delete multiple presentation definitions records using filters
+   * @param args
+   */
+  pdmDeleteDefinitions(args: DeleteDefinitionItemsArgs): Promise<number>
+
+  /**
+   * Check in a presentation definition.
    * It has version control logic which will add or update presentation definition records and has settings for automatic version numbering.
    * @param args
    */
@@ -51,23 +52,27 @@ export type GetDefinitionItemArgs = {
   itemId: string
 }
 
-export type GetDefinitionsItemArgs = {
+export type HasDefinitionItemArgs = GetDefinitionItemArgs
+
+export type GetDefinitionItemsArgs = {
   filter?: FindDefinitionArgs
 }
 
-export type AddDefinitionItemArgs = NonPersistedPresentationDefinitionItem
-
-export type UpdateDefinitionItemArgs = {
-  definitionItem: PresentationDefinitionItem
-}
+export type HasDefinitionItemsArgs = GetDefinitionItemsArgs
 
 export type DeleteDefinitionItemArgs = {
   itemId: string
 }
 
+export type DeleteDefinitionItemsArgs = GetDefinitionItemsArgs
+
+export type PersistOptions = {
+  versionControlMode?: VersionControlMode
+}
+
 export type PersistDefinitionArgs = {
   definitionItem: PersistablePresentationDefinitionItem
-  versionControlMode?: VersionControlMode
+  opts?: PersistOptions
 }
 
 export type RequiredContext = IAgentContext<never>

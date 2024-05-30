@@ -1,10 +1,6 @@
 import {
   IDefinitionCredentialFilterArgs,
-  IDefinitionExistsArgs,
-  IDefinitionGetArgs,
-  IDefinitionPersistArgs,
-  IDefinitionRemoveArgs,
-  IDefinitionsClearArgs,
+  IDefinitionValidateArgs,
   IPEXFilterResult,
   IPEXFilterResultWithInputDescriptor,
   IRequiredContext,
@@ -12,25 +8,20 @@ import {
   schema,
   VersionDiscoveryResult,
 } from '../index'
-import { FindCredentialsArgs, IAgentPlugin } from '@veramo/core'
+import { FindCredentialsArgs, IAgentPlugin, ProofType, UniqueVerifiableCredential, UnsignedCredential } from '@veramo/core'
 
 import { IPresentationExchange } from '../types/IPresentationExchange'
 import { Checked, IPresentationDefinition, PEX } from '@sphereon/pex'
 import { CredentialMapper, JWT_PROOF_TYPE_2020, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
 import { toDIDs } from '@sphereon/ssi-sdk-ext.did-utils'
-import { PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
 
 export class PresentationExchange implements IAgentPlugin {
   readonly schema = schema.IDidAuthSiopOpAuthenticator
   private readonly pex = new PEX()
 
   readonly methods: IPresentationExchange = {
-    pexStoreGetDefinition: this.pexStoreGetDefinition.bind(this),
-    pexStorePersistDefinition: this.pexStorePersistDefinition.bind(this),
-    pexStoreHasDefinition: this.pexStoreHasDefinition.bind(this),
-    pexStoreRemoveDefinition: this.pexStoreRemoveDefinition.bind(this),
-    pexStoreClearDefinitions: this.pexStoreClearDefinitions.bind(this),
+    pexValidateDefinition: this.pexValidateDefinition.bind(this),
     pexDefinitionVersion: this.pexDefinitionVersion.bind(this),
     pexDefinitionFilterCredentials: this.pexDefinitionFilterCredentials.bind(this),
     pexDefinitionFilterCredentialsPerInputDescriptor: this.pexDefinitionFilterCredentialsPerInputDescriptor.bind(this),
@@ -38,81 +29,30 @@ export class PresentationExchange implements IAgentPlugin {
 
   constructor(opts?: PEXOpts) {}
 
-  private async pexStoreGetDefinition(
-    { definitionId, tenantId, version }: IDefinitionGetArgs,
-    context: IRequiredContext,
-  ): Promise<IPresentationDefinition | undefined> {
-    const definitions = await context.agent.pdmGetDefinitions({ filter: [{ definitionId, tenantId, version }] })
-    if (definitions.length === 0) {
-      return undefined
-    }
-    return definitions[0].definitionPayload // There can be multiple version, but they are ordered by latest version first
-  }
+  private async pexValidateDefinition(args: IDefinitionValidateArgs): Promise<void> {
+    const { definition } = args
+    const invalids: Checked[] = []
 
-  private async pexStoreHasDefinition({ definitionId, tenantId, version }: IDefinitionExistsArgs, context: IRequiredContext): Promise<boolean> {
-    const definitions = await context.agent.pdmGetDefinitions({ filter: [{ definitionId, tenantId, version }] })
-    return definitions !== undefined && definitions.length > 0 // TODO Maybe create pdStore.countDefinitions?
-  }
-
-  private async pexStorePersistDefinition(args: IDefinitionPersistArgs, context: IRequiredContext): Promise<IPresentationDefinition> {
-    const { definitionId, tenantId, version, versionControlMode } = args
-    const definition = definitionId === undefined ? args.definition : { ...args.definition, id: definitionId }
-
-    if (args?.validation !== false) {
-      const invalids: Checked[] = []
-
-      try {
-        const result = PEX.validateDefinition(definition)
-        const validations = Array.isArray(result) ? result : [result]
-        invalids.push(...validations.filter((v) => v.status === 'error'))
-      } catch (error) {
-        invalids.push({
-          status: 'error',
-          message:
-            typeof error === 'string'
-              ? error
-              : typeof error === 'object' && 'message' in (error as object)
-                ? (error as Error).message
-                : 'unknown error',
-          tag: 'validation',
-        })
-      }
-
-      if (invalids.length > 0) {
-        throw Error(`Invalid definition. ${invalids.map((v) => v.message).toString()}`)
-      }
+    try {
+      const result = PEX.validateDefinition(definition)
+      const validations = Array.isArray(result) ? result : [result]
+      invalids.push(...validations.filter((v) => v.status === 'error'))
+    } catch (error) {
+      invalids.push({
+        status: 'error',
+        message:
+          typeof error === 'string'
+            ? error
+            : typeof error === 'object' && 'message' in (error as object)
+              ? (error as Error).message
+              : 'unknown error',
+        tag: 'validation',
+      })
     }
 
-    const definitionItem = await context.agent.pdmPersistDefinition({
-      definitionItem: {
-        tenantId,
-        version,
-        definitionPayload: definition,
-      },
-      versionControlMode,
-    })
-    return definitionItem.definitionPayload
-  }
-
-  private async pexStoreRemoveDefinition({ definitionId, tenantId, version }: IDefinitionRemoveArgs, context: IRequiredContext): Promise<boolean> {
-    const definitions = await context.agent.pdmGetDefinitions({ filter: [{ definitionId, tenantId, version }] })
-    if (definitions !== undefined && definitions.length > 0) {
-      return await context.agent.pdmDeleteDefinition({ itemId: definitions[0].id }).then((): boolean => true)
+    if (invalids.length > 0) {
+      throw Error(`Invalid definition. ${invalids.map((v) => v.message).toString()}`)
     }
-    return false
-  }
-
-  private async pexStoreClearDefinitions({ tenantId }: IDefinitionsClearArgs, context: IRequiredContext): Promise<boolean> {
-    const definitions = await context.agent.pdmGetDefinitions({ filter: [{ tenantId }] })
-    if (definitions.length === 0) {
-      return false
-    }
-    await Promise.all(
-      definitions.map(async (definitionItem: PresentationDefinitionItem) => {
-        await context.agent.pdmDeleteDefinition({ itemId: definitionItem.id }) // TODO create deleteDefinitions in pdManager with tenantId filter?
-      }),
-    )
-    return true
   }
 
   async pexDefinitionVersion(presentationDefinition: IPresentationDefinition): Promise<VersionDiscoveryResult> {
@@ -183,7 +123,7 @@ export class PresentationExchange implements IAgentPlugin {
       return filterOpts.verifiableCredentials as W3CVerifiableCredential[]
     }
     return (await context.agent.dataStoreORMGetVerifiableCredentials(filterOpts?.filter))
-      .map((uniqueVC) => uniqueVC.verifiableCredential)
-      .map((vc) => (vc.proof && vc.proof.type === JWT_PROOF_TYPE_2020 ? vc.proof.jwt : vc))
+      .map((uniqueVC: UniqueVerifiableCredential) => uniqueVC.verifiableCredential)
+      .map((vc: UnsignedCredential & { proof: ProofType }) => (vc.proof && vc.proof.type === JWT_PROOF_TYPE_2020 ? vc.proof.jwt : vc))
   }
 }
