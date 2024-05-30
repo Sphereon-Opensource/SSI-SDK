@@ -1,13 +1,5 @@
-import {IAgentPlugin} from '@veramo/core'
-import {
-  ApiOpts,
-  EBSIAuthAccessTokenGetArgs,
-  EbsiEnvironment,
-  EBSIOIDMetadata,
-  EBSIScope,
-  IRequiredContext,
-  schema
-} from '../index'
+import { IAgentPlugin } from '@veramo/core'
+import { ApiOpts, EBSIAuthAccessTokenGetArgs, EbsiEnvironment, EBSIOIDMetadata, EBSIScope, IRequiredContext, schema } from '../index'
 import {
   ExceptionResponse,
   GetAccessTokenArgs,
@@ -57,7 +49,7 @@ export class EBSIAuthorizationClient implements IAgentPlugin {
 
   private async ebsiAuthPresentationDefinitionGet(args: GetPresentationDefinitionArgs): Promise<GetPresentationDefinitionResponse> {
     const { scope, apiOpts } = args
-      const discoveryMetadata: EBSIOIDMetadata = await this.ebsiAuthASDiscoveryMetadataGet(apiOpts)
+    const discoveryMetadata: EBSIOIDMetadata = await this.ebsiAuthASDiscoveryMetadataGet(apiOpts)
     const ebsiScope = Object.keys(EBSIScope)[Object.values(EBSIScope).indexOf(scope)]
     return await (
       await fetch(`${discoveryMetadata.presentation_definition_endpoint}?scope=openid%20${ebsiScope}`, {

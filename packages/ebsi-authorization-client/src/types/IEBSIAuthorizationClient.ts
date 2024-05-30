@@ -13,7 +13,7 @@ export enum EbsiEnvironment {
   PILOT = 'pilot',
   CONFORMANCE = 'conformance',
   MOCK = 'mock',
-  ISSUER = 'issuer'
+  ISSUER = 'issuer',
 }
 
 /**
@@ -176,8 +176,6 @@ export interface GetAccessTokenSuccessResponse {
   id_token: string
   apiOpts?: ApiOpts
 }
-
-
 
 /**
  * @typedef ExceptionResponse
