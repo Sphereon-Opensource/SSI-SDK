@@ -29,7 +29,7 @@ export class PresentationExchange implements IAgentPlugin {
 
   constructor(opts?: PEXOpts) {}
 
-  private async pexValidateDefinition(args: IDefinitionValidateArgs): Promise<void> {
+  private async pexValidateDefinition(args: IDefinitionValidateArgs): Promise<boolean> {
     const { definition } = args
     const invalids: Checked[] = []
 
@@ -53,6 +53,7 @@ export class PresentationExchange implements IAgentPlugin {
     if (invalids.length > 0) {
       throw Error(`Invalid definition. ${invalids.map((v) => v.message).toString()}`)
     }
+    return true // Never returns false, but REST API does not allow Promise<void>
   }
 
   async pexDefinitionVersion(presentationDefinition: IPresentationDefinition): Promise<VersionDiscoveryResult> {

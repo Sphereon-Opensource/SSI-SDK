@@ -14,7 +14,7 @@ import { IPresentationDefinition, PEVersion, SelectResults } from '@sphereon/pex
 import { Format, InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
 
 export interface IPresentationExchange extends IPluginMethodMap {
-  pexValidateDefinition(args: IDefinitionValidateArgs): Promise<void>
+  pexValidateDefinition(args: IDefinitionValidateArgs): Promise<boolean>
 
   pexDefinitionVersion(presentationDefinition: IPresentationDefinition): Promise<VersionDiscoveryResult>
 
