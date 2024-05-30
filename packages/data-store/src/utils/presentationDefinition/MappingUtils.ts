@@ -37,20 +37,20 @@ function hashPayload(payload: IPresentationDefinition): string {
   return createHash('md5').update(JSON.stringify(payload)).digest('hex')
 }
 
-export function isPresentationDefinitionEqual(left: PartialPresentationDefinitionItem, right: PartialPresentationDefinitionItem): boolean {
+export function isPresentationDefinitionEqual(base: PartialPresentationDefinitionItem, compare: PartialPresentationDefinitionItem): boolean {
   if (
-    left.definitionId !== right.definitionId ||
-    left.tenantId != right.tenantId ||
-    left.version !== right.version ||
-    left.purpose != right.purpose
+    base.definitionId !== compare.definitionId ||
+    base.tenantId != compare.tenantId ||
+    base.version !== compare.version ||
+    base.purpose != compare.purpose
   ) {
     return false
   }
 
-  if (left.definitionPayload && right.definitionPayload) {
-    return hashPayload(left.definitionPayload) === hashPayload(right.definitionPayload)
+  if (base.definitionPayload && compare.definitionPayload) {
+    return hashPayload(base.definitionPayload) === hashPayload(compare.definitionPayload)
   }
 
   // return false when either or both are null or undefined
-  return left.definitionPayload == right.definitionPayload
+  return base.definitionPayload == compare.definitionPayload
 }
