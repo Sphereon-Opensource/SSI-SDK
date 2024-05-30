@@ -1,8 +1,8 @@
 import { TAgent } from '@veramo/core'
-import { AddDefinitionItemArgs, GetDefinitionsItemArgs, IPDManager } from '../../src'
+import { GetDefinitionItemsArgs, IPDManager, PersistDefinitionArgs } from '../../src'
 import { IPresentationDefinition } from '@sphereon/pex'
 import * as fs from 'fs'
-import { NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
+import { PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
 
 type ConfiguredAgent = TAgent<IPDManager>
 
@@ -25,24 +25,49 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await testContext.setup()
       agent = testContext.getAgent()
 
-      const definition: AddDefinitionItemArgs = {
-        definitionId: 'default_definition_id',
-        version: '1.0.0',
-        definitionPayload: {
-          id: 'default_definition_id',
-          input_descriptors: [],
+      const definition: PersistDefinitionArgs = {
+        definitionItem: {
+          definitionId: 'default_definition_id',
+          version: '1.0.0',
+          definitionPayload: singleDefinition,
         },
       }
 
-      defaultDefinitionItem = await agent.pdmAddDefinition(definition)
+      defaultDefinitionItem = await agent.pdmPersistDefinition(definition)
     })
 
     afterAll(testContext.tearDown)
+
+    it('should check if a definition item exists by id', async (): Promise<void> => {
+      const result: boolean = await agent.pdmHasDefinition({ itemId: defaultDefinitionItem.id })
+
+      expect(result).toBe(true)
+    })
 
     it('should get definition item by id', async (): Promise<void> => {
       const result: PresentationDefinitionItem = await agent.pdmGetDefinition({ itemId: defaultDefinitionItem.id })
 
       expect(result.id).toEqual(defaultDefinitionItem.id)
+    })
+
+    it('should return false when checking for a non-existing definition item by id', async (): Promise<void> => {
+      const itemId = 'unknownItemId'
+      const result: boolean = await agent.pdmHasDefinition({ itemId })
+
+      expect(result).toBe(false)
+    })
+
+    it('should check if any definition items exist by filter', async (): Promise<void> => {
+      const args: GetDefinitionItemsArgs = {
+        filter: [
+          {
+            definitionId: 'default_definition_id',
+          },
+        ],
+      }
+      const result: boolean = await agent.pdmHasDefinitions(args)
+
+      expect(result).toBe(true)
     })
 
     it('should throw error when getting definition item with unknown id', async (): Promise<void> => {
@@ -58,7 +83,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get definition items by filter', async (): Promise<void> => {
-      const args: GetDefinitionsItemArgs = {
+      const args: GetDefinitionItemsArgs = {
         filter: [
           {
             definitionId: 'default_definition_id',
@@ -71,40 +96,63 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should add definition item', async (): Promise<void> => {
-      const definition: NonPersistedPresentationDefinitionItem = {
-        definitionId: 'new_definition_id',
-        version: '1.0.0',
-        definitionPayload: {
-          id: 'new_definition_id',
-          input_descriptors: [],
+      const definition: PersistDefinitionArgs = {
+        definitionItem: {
+          definitionId: 'new_definition_id',
+          version: '1.0.0',
+          definitionPayload: singleDefinition,
         },
       }
 
-      const result: PresentationDefinitionItem = await agent.pdmAddDefinition(definition)
+      const result: PresentationDefinitionItem = await agent.pdmPersistDefinition(definition)
 
-      expect(result.definitionId).toEqual(definition.definitionId)
-      expect(result.version).toEqual(definition.version)
+      expect(result.definitionId).toEqual(definition.definitionItem.definitionId)
+      expect(result.version).toEqual(definition.definitionItem.version)
     })
 
     it('should update definition item by id', async (): Promise<void> => {
-      const result: PresentationDefinitionItem = await agent.pdmUpdateDefinition({
-        definitionItem: {
-          ...defaultDefinitionItem,
-          definitionPayload: singleDefinition,
-        },
+      const updatedDefinitionItem: PresentationDefinitionItem = {
+        ...defaultDefinitionItem,
+      }
+      updatedDefinitionItem.definitionPayload.input_descriptors[0].id = 'Updated Credential'
+      const result: PresentationDefinitionItem = await agent.pdmPersistDefinition({
+        definitionItem: updatedDefinitionItem,
+        opts: { versionControlMode: 'Overwrite' },
       })
 
       expect(result.definitionPayload.input_descriptors.length).toEqual(1)
-      expect(result.definitionPayload.input_descriptors[0].id).toEqual('ID Card Credential')
+      expect(result.definitionPayload.input_descriptors[0].id).toEqual('Updated Credential')
     })
 
-    it('should throw error when updating definition item with unknown id', async (): Promise<void> => {
-      const definitionItem = {
+    it('should create a new major version of the definition item', async (): Promise<void> => {
+      const updatedDefinitionItem: PresentationDefinitionItem = {
         ...defaultDefinitionItem,
-        id: 'unknownItemId',
       }
+      updatedDefinitionItem.definitionPayload.input_descriptors[0].id = 'New major version'
+      const result: PresentationDefinitionItem = await agent.pdmPersistDefinition({
+        definitionItem: updatedDefinitionItem,
+      })
 
-      await expect(agent.pdmUpdateDefinition({ definitionItem })).rejects.toThrow(`No presentation definition item found for id: unknownItemId`)
+      expect(result.version).toEqual('2.0.0')
+      expect(result.definitionPayload.input_descriptors.length).toEqual(1)
+      expect(result.definitionPayload.input_descriptors[0].id).toEqual('New major version')
+
+      defaultDefinitionItem.version = result.version
+    })
+
+    it('should create a new minor version of the definition item', async (): Promise<void> => {
+      const updatedDefinitionItem: PresentationDefinitionItem = {
+        ...defaultDefinitionItem,
+      }
+      updatedDefinitionItem.definitionPayload.input_descriptors[0].id = 'New minor version'
+      const result: PresentationDefinitionItem = await agent.pdmPersistDefinition({
+        definitionItem: updatedDefinitionItem,
+        opts: { versionControlMode: 'AutoIncrementMinor' },
+      })
+
+      expect(result.version).toEqual('2.1.0')
+      expect(result.definitionPayload.input_descriptors.length).toEqual(1)
+      expect(result.definitionPayload.input_descriptors[0].id).toEqual('New minor version')
     })
 
     it('should delete definition item by id', async (): Promise<void> => {
@@ -117,6 +165,33 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const itemId = 'unknownItemId'
 
       await expect(agent.pdmDeleteDefinition({ itemId })).rejects.toThrow(`No presentation definition found with id: ${itemId}`)
+    })
+
+    it('should return false when checking for non-existing definition items by filter', async (): Promise<void> => {
+      const args: GetDefinitionItemsArgs = {
+        filter: [
+          {
+            definitionId: 'non_existing_definition_id',
+          },
+        ],
+      }
+      const result: boolean = await agent.pdmHasDefinitions(args)
+
+      expect(result).toBe(false)
+    })
+
+    it('should delete multiple definition items by filter', async (): Promise<void> => {
+      const args: GetDefinitionItemsArgs = {
+        filter: [
+          {
+            definitionId: 'default_definition_id',
+          },
+        ],
+      }
+      await agent.pdmDeleteDefinitions(args)
+
+      const result: boolean = await agent.pdmHasDefinitions(args)
+      expect(result).toBe(false)
     })
   })
 }

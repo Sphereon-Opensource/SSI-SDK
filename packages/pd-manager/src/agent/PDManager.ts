@@ -1,12 +1,14 @@
 import { IAgentPlugin } from '@veramo/core'
 import {
   DeleteDefinitionItemArgs,
+  DeleteDefinitionItemsArgs,
   GetDefinitionItemArgs,
-  GetDefinitionsItemArgs,
+  GetDefinitionItemsArgs,
+  HasDefinitionItemArgs,
+  HasDefinitionItemsArgs,
   IPDManager,
   PersistDefinitionArgs,
   schema,
-  UpdateDefinitionItemArgs,
 } from '../index'
 import {
   AbstractPDStore,
@@ -18,12 +20,13 @@ import semver from 'semver/preload'
 
 // Exposing the methods here for any REST implementation
 export const pdManagerMethods: Array<string> = [
+  'pdmHasDefinition',
+  'pdmHasGetDefinitions',
   'pdmGetDefinition',
   'pdmGetDefinitions',
-  'pdmAddDefinition',
-  'pdmUpdateDefinition',
-  'pdmRemoveDefinition',
   'pdmPersistDefinition',
+  'pdmDeleteDefinition',
+  'pdmDeleteDefinitions',
 ]
 
 /**
@@ -32,12 +35,13 @@ export const pdManagerMethods: Array<string> = [
 export class PDManager implements IAgentPlugin {
   readonly schema = schema.IPDManager
   readonly methods: IPDManager = {
+    pdmPersistDefinition: this.pdmPersistDefinition.bind(this),
+    pdmHasDefinition: this.pdmHasDefinition.bind(this),
+    pdmHasDefinitions: this.pdmHasDefinitions.bind(this),
     pdmGetDefinition: this.pdmGetDefinition.bind(this),
     pdmGetDefinitions: this.pdmGetDefinitions.bind(this),
-    pdmAddDefinition: this.pdmAddDefinition.bind(this),
-    pdmUpdateDefinition: this.pdmUpdateDefinition.bind(this),
     pdmDeleteDefinition: this.pdmDeleteDefinition.bind(this),
-    pdmPersistDefinition: this.pdmPersistDefinition.bind(this),
+    pdmDeleteDefinitions: this.pdmDeleteDefinitions.bind(this),
   }
 
   private readonly store: AbstractPDStore
@@ -46,38 +50,51 @@ export class PDManager implements IAgentPlugin {
     this.store = options.store
   }
 
+  /** {@inheritDoc IPDManager.pdmHasDefinition} */
+  private async pdmHasDefinition(args: HasDefinitionItemArgs): Promise<boolean> {
+    const { itemId } = args
+    return this.store.hasDefinition({ itemId })
+  }
+
+  /** {@inheritDoc IPDManager.pdmHasDefinitions} */
+  private async pdmHasDefinitions(args: HasDefinitionItemsArgs): Promise<boolean> {
+    const { filter } = args
+    return this.store.hasDefinitions({ filter })
+  }
+
   /** {@inheritDoc IPDManager.pdmGetDefinition} */
   private async pdmGetDefinition(args: GetDefinitionItemArgs): Promise<PresentationDefinitionItem> {
     const { itemId } = args
     return this.store.getDefinition({ itemId })
   }
 
-  /** {@inheritDoc IPDManager.pdmGetDefinition} */
-  private async pdmGetDefinitions(args: GetDefinitionsItemArgs): Promise<Array<PresentationDefinitionItem>> {
+  /** {@inheritDoc IPDManager.pdmGetDefinitions} */
+  private async pdmGetDefinitions(args: GetDefinitionItemsArgs): Promise<Array<PresentationDefinitionItem>> {
     const { filter } = args
     return this.store.getDefinitions({ filter })
   }
 
-  /** {@inheritDoc IPDManager.pdmAddDefinition} */
-  private async pdmAddDefinition(args: NonPersistedPresentationDefinitionItem): Promise<PresentationDefinitionItem> {
-    return this.store.addDefinition(args)
-  }
-
-  /** {@inheritDoc IPDManager.pdmUpdateDefinition} */
-  private async pdmUpdateDefinition(args: UpdateDefinitionItemArgs): Promise<PresentationDefinitionItem> {
-    return this.store.updateDefinition(args.definitionItem)
-  }
-
   /** {@inheritDoc IPDManager.pdmDeleteDefinition} */
   private async pdmDeleteDefinition(args: DeleteDefinitionItemArgs): Promise<boolean> {
-    return this.store.deleteDefinition(args).then((): boolean => true)
+    return this.store.deleteDefinition(args).then((value) => true)
+  }
+
+  /** {@inheritDoc IPDManager.pdmDeleteDefinitions} */
+  private async pdmDeleteDefinitions(args: DeleteDefinitionItemsArgs): Promise<number> {
+    return this.store.deleteDefinitions(args)
   }
 
   /** {@inheritDoc IPDManager.pdmPersistDefinition} */
   private async pdmPersistDefinition(args: PersistDefinitionArgs): Promise<PresentationDefinitionItem> {
-    const { definitionItem, versionControlMode = 'AutoIncrementMajor' } = args
+    const { definitionItem, opts } = args
+    const { versionControlMode } = opts ?? { versionControlMode: 'AutoIncrementMajor' }
     const { version, tenantId } = definitionItem
     const definitionId = definitionItem.definitionId ?? definitionItem.definitionPayload.id
+
+    let { id } = definitionItem
+    if (id !== undefined && versionControlMode !== 'Overwrite') {
+      id = undefined
+    }
 
     const nonPersistedDefinitionItem: NonPersistedPresentationDefinitionItem = {
       ...definitionItem,
@@ -85,12 +102,12 @@ export class PDManager implements IAgentPlugin {
       version: definitionItem.version ?? '1',
     }
 
-    const existing = await this.store.getDefinitions({ filter: [{ definitionId, tenantId, version }] })
+    const existing = await this.store.getDefinitions({ filter: [{ id, definitionId, tenantId, version }] })
     const existingItem = existing[0]
     let latestVersionItem: PresentationDefinitionItem | undefined = existingItem
 
     if (existingItem && version) {
-      const latest = await this.store.getDefinitions({ filter: [{ definitionId, tenantId }] })
+      const latest = await this.store.getDefinitions({ filter: [{ id, definitionId, tenantId }] })
       latestVersionItem = latest[0] ?? existingItem
     }
 
@@ -167,7 +184,12 @@ export class PDManager implements IAgentPlugin {
     definitionItem: NonPersistedPresentationDefinitionItem,
     releaseType: 'major' | 'minor',
   ): Promise<PresentationDefinitionItem> {
-    definitionItem.version = latestVersionItem ? semver.inc(latestVersionItem.version, releaseType) ?? '1' : '1'
+    const currentVersion = latestVersionItem?.version ?? definitionItem.version ?? '1'
+    const newVersion = latestVersionItem ? semver.inc(currentVersion, releaseType) : currentVersion
+    if (!newVersion) {
+      throw Error(`Could not increment ${releaseType} version on ${currentVersion}`)
+    }
+    definitionItem.version = newVersion
     return await this.store.addDefinition(definitionItem)
   }
 }

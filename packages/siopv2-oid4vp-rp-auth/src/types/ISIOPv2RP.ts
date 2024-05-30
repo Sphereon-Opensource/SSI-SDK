@@ -34,9 +34,10 @@ import { DIDDocument } from '@sphereon/did-uni-client'
 import { EventEmitter } from 'events'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
-import { IPresentationExchange, VersionControlMode } from '@sphereon/ssi-sdk.presentation-exchange'
+import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
 
 export enum VerifiedDataMode {
   NONE = 'none',
@@ -150,6 +151,7 @@ export interface IPEXOptions {
   presentationVerifyCallback?: PresentationVerificationCallback
   // definition?: IPresentationDefinition
   definitionId: string
+  version?: string
   tenantId?: string
 }
 
@@ -182,5 +184,5 @@ export interface AuthorizationResponseStateWithVerifiedData extends Authorizatio
 }
 
 export type IRequiredContext = IAgentContext<
-  IDataStoreORM & IResolver & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier & IPresentationExchange
+  IDataStoreORM & IResolver & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier & IPresentationExchange & IPDManager
 >

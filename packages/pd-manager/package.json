@@ -11,7 +11,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build:clean": "tsc --build --clean && tsc --build",
+    "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
     "@sphereon/ssi-sdk.data-store": "workspace:*",
@@ -46,7 +47,6 @@
     "Sphereon",
     "SSI",
     "Veramo",
-    "OpenID",
     "Presentation Defintion Manager",
     "PD Manager"
   ]
