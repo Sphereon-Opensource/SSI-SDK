@@ -1226,9 +1226,6 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
-      '@sphereon/ssi-sdk.pd-manager':
-        specifier: workspace:*
-        version: link:../pd-manager
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1459,6 +1456,9 @@ importers:
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
+      '@sphereon/ssi-sdk.pd-manager':
+        specifier: workspace:*
+        version: link:../pd-manager
       '@sphereon/ssi-sdk.presentation-exchange':
         specifier: workspace:*
         version: link:../presentation-exchange
@@ -1520,6 +1520,9 @@ importers:
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
+      '@sphereon/ssi-sdk.pd-manager':
+        specifier: workspace:*
+        version: link:../pd-manager
       '@sphereon/ssi-sdk.presentation-exchange':
         specifier: workspace:*
         version: link:../presentation-exchange
