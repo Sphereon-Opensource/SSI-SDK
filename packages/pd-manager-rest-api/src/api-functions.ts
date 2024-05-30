@@ -29,7 +29,7 @@ export function pdPersistEndpoint(router: Router, context: IRequiredContext, opt
     console.log(`"pdPersistEndpoint" Endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/presentation-defiinitions'
+  const path = opts?.path ?? operation
   router.post(path, async (request: Request, response: Response) => {
     try {
       const addPd = request.body
