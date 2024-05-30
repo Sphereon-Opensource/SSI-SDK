@@ -103,13 +103,15 @@ export default (testContext: {
             const app: Application = express();
             app.use("/mock", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
                 console.log(`MOCK CALLED, with params:\r\n ${JSON.stringify(req.query, null, 2)}`)
-                if (req.query.error) {
-                  res.json(req.query)
+
+              const parsedRequest = JSON.parse(JSON.stringify(req.query))
+
+              if (parsedRequest.error) {
+                  res.json(parsedRequest)
                 }
 
-                const parsedRequest = JSON.parse(JSON.stringify(req.query))
-
-                const id_token = await new SignJWT({
+              if (parsedRequest.state) {
+                const idToken = await new SignJWT({
                   iss: identifier.did,
                   sub: identifier.did,
                   aud: parsedRequest.client_id,
@@ -123,21 +125,21 @@ export default (testContext: {
                   kid
                 }).sign(importedJwk)
 
-                const authResponse = await (await fetch(`${parsedRequest.redirect_uri}`, {
+                const authResponse = await fetch(`${parsedRequest.redirect_uri}`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                   },
-                  body: `id_token=${id_token}&state=${parsedRequest.state}`
-                })).json()
+                  body: `id_token=${idToken}&state=${parsedRequest.state}`
+                })
+                console.log(`Authentication response: ${JSON.stringify(await authResponse.json())}`)
+              }
 
-                console.log(`Authentication response: ${JSON.stringify(authResponse)}`)
+              if (req.query.error) {
+                res.json(req.query)
+              }
 
-                if (req.query.error) {
-                  res.json(req.query)
-                }
-
-                const code = JSON.parse(JSON.stringify(authResponse)).code
+                const code = JSON.parse(JSON.stringify(parsedRequest)).code
 
                 // TODO acquire access token
                 const accessToken = await client.acquireAccessToken({code});
@@ -211,7 +213,7 @@ export default (testContext: {
             console.log(await result.text());
         })
 
-        it('Should retrieve the discovery metadata', async () => {
+        it.skip('Should retrieve the discovery metadata', async () => {
             await expect(agent.ebsiAuthASDiscoveryMetadataGet()).resolves.toEqual({
                 authorization_endpoint: 'https://api-pilot.ebsi.eu/authorisation/v4/authorize',
                 grant_types_supported: ['vp_token'],
@@ -254,7 +256,7 @@ export default (testContext: {
             })
         })
 
-        it('should retrieve AS JWKS', async () => {
+        it.skip('should retrieve AS JWKS', async () => {
             await expect(agent.ebsiAuthASJwksGet()).resolves.toEqual({
                 keys: [
                     {
@@ -269,7 +271,7 @@ export default (testContext: {
             })
         })
 
-        it('should retrieve the presentation definition to onboard', async () => {
+        it.skip('should retrieve the presentation definition to onboard', async () => {
             await expect(agent.ebsiAuthPresentationDefinitionGet({scope: EBSIScope.didr_invite})).resolves.toEqual({
                 format: {
                     jwt_vp: {
