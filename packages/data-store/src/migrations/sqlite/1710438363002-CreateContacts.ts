@@ -9,9 +9,6 @@ export class CreateContacts1710438363002 implements MigrationInterface {
 
     await queryRunner.query(`ALTER TABLE "Identity" ADD COLUMN "owner_id" text`)
     await queryRunner.query(`ALTER TABLE "Identity" ADD COLUMN "tenant_id" text`)
-    await queryRunner.query(
-      `ALTER TABLE "Identity" ADD COLUMN "identity_origin" varchar CHECK( "identity_origin" IN ('INTERNAL', 'EXTERNAL') ) NOT NULL DEFAULT 'EXTERNAL'`,
-    ) // FIXME SQLite does not support removing default
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" ADD COLUMN "owner_id" text`)
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" ADD COLUMN "tenant_id" text`)
 

@@ -4,8 +4,6 @@ export class CreateContacts1710438363001 implements MigrationInterface {
   name = 'CreateContacts1710438363001'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`CREATE TYPE "public"."identity_origin_type" AS ENUM('INTERNAL', 'EXTERNAL')`)
-
     await queryRunner.query(`ALTER TABLE "Party" ADD COLUMN "owner_id" uuid`)
     await queryRunner.query(`ALTER TABLE "Party" ADD COLUMN "tenant_id" uuid`)
 
@@ -62,7 +60,5 @@ export class CreateContacts1710438363001 implements MigrationInterface {
 
     await queryRunner.query(`ALTER TABLE "Party" DROP COLUMN "tenant_id"`)
     await queryRunner.query(`ALTER TABLE "Party" DROP COLUMN "owner_id"`)
-
-    await queryRunner.query(`DROP TYPE "public"."identity_origin_type"`)
   }
 }
