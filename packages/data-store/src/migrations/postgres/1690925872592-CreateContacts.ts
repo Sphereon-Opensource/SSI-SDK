@@ -114,8 +114,8 @@ export class CreateContacts1690925872592 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "IdentityMetadata" DROP CONSTRAINT "FK_IdentityMetadata_identityId"`)
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" DROP CONSTRAINT "FK_CorrelationIdentifier_identity_id"`)
 
-    await queryRunner.query(`ALTER TABLE "Identity" ALTER COLUMN "roles" DROP`)
-    await queryRunner.query(`ALTER TABLE "Identity" ALTER COLUMN "identity_origin" DROP`)
+    await queryRunner.query(`ALTER TABLE "Identity" ALTER COLUMN "roles" DROP NOT NULL`)
+    await queryRunner.query(`ALTER TABLE "Identity" ALTER COLUMN "identity_origin" DROP NOT NULL`)
     await queryRunner.query(`DROP TYPE "public"."IdentityOrigin_type_enum"`)
     await queryRunner.query(`ALTER TABLE "Identity" RENAME COLUMN "partyId" TO "contactId"`)
     await queryRunner.query(`ALTER TABLE "Connection" RENAME COLUMN "identity_id" TO "identityId"`)
