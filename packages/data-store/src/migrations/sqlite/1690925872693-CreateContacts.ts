@@ -35,10 +35,10 @@ export class CreateContacts1690925872693 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "CorrelationIdentifier"`)
     await queryRunner.query(`ALTER TABLE "temporary_CorrelationIdentifier" RENAME TO "CorrelationIdentifier"`)
     await queryRunner.query(
-      `CREATE TABLE "temporary_Identity" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255) NOT NULL, "roles" text NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "partyId" varchar, CONSTRAINT "UQ_Identity_alias" UNIQUE ("alias"))`,
+      `CREATE TABLE "temporary_Identity" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255) NOT NULL, "roles" text NOT NULL, identity_origin text NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "partyId" varchar, CONSTRAINT "UQ_Identity_alias" UNIQUE ("alias"))`,
     )
     await queryRunner.query(
-      `INSERT INTO "temporary_Identity"("id", "alias", "roles", "created_at", "last_updated_at", "partyId") SELECT "id", "alias", "roles", "created_at", "last_updated_at", "contactId" FROM "Identity"`,
+      `INSERT INTO "temporary_Identity"("id", "alias", "roles", "identity_origin", "created_at", "last_updated_at", "partyId") SELECT "id", "alias", "roles", 'EXTERNAL', "created_at", "last_updated_at", "contactId" FROM "Identity"`,
     )
     await queryRunner.query(`DROP TABLE "Identity"`)
     await queryRunner.query(`ALTER TABLE "temporary_Identity" RENAME TO "Identity"`)

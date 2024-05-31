@@ -54,7 +54,6 @@ export class CreateContacts1710438363001 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" DROP COLUMN "tenant_id"`)
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" DROP COLUMN "owner_id"`)
 
-    await queryRunner.query(`ALTER TABLE "Identity" DROP COLUMN "origin"`)
     await queryRunner.query(`ALTER TABLE "Identity" DROP COLUMN "tenant_id"`)
     await queryRunner.query(`ALTER TABLE "Identity" DROP COLUMN "owner_id"`)
 

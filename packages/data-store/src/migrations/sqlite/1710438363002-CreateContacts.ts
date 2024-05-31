@@ -32,7 +32,6 @@ export class CreateContacts1710438363002 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP INDEX "IDX_PartyType_type_tenant_id"`)
     await queryRunner.query(`ALTER TABLE "PhysicalAddress" DROP COLUMN "tenant_id"`)
     await queryRunner.query(`ALTER TABLE "PhysicalAddress" DROP COLUMN "owner_id"`)
 
@@ -54,7 +53,6 @@ export class CreateContacts1710438363002 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" DROP COLUMN "tenant_id"`)
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" DROP COLUMN "owner_id"`)
 
-    await queryRunner.query(`ALTER TABLE "Identity" DROP COLUMN "identity_origin"`)
     await queryRunner.query(`ALTER TABLE "Identity" DROP COLUMN "tenant_id"`)
     await queryRunner.query(`ALTER TABLE "Identity" DROP COLUMN "owner_id"`)
 
