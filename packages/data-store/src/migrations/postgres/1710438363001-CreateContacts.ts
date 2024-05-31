@@ -11,7 +11,6 @@ export class CreateContacts1710438363001 implements MigrationInterface {
 
     await queryRunner.query(`ALTER TABLE "Identity" ADD COLUMN "owner_id" uuid`)
     await queryRunner.query(`ALTER TABLE "Identity" ADD COLUMN "tenant_id" uuid`)
-    await queryRunner.query(`ALTER TABLE "Identity" ADD COLUMN "identity_origin" "public"."identity_origin_type" NOT NULL DEFAULT 'EXTERNAL'`)
 
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" ADD COLUMN "owner_id" uuid`)
     await queryRunner.query(`ALTER TABLE "CorrelationIdentifier" ADD COLUMN "tenant_id" uuid`)
@@ -24,8 +23,6 @@ export class CreateContacts1710438363001 implements MigrationInterface {
 
     await queryRunner.query(`ALTER TABLE "BaseContact" ADD COLUMN "owner_id" uuid`)
     await queryRunner.query(`ALTER TABLE "BaseContact" ADD COLUMN "tenant_id" uuid`)
-    await queryRunner.query(`ALTER TABLE "BaseContact" ADD COLUMN "grade" uuid`)
-    await queryRunner.query(`ALTER TABLE "BaseContact" ADD COLUMN "date_of_birth" TIMESTAMP`)
 
     await queryRunner.query(`ALTER TABLE "PartyRelationship" ADD COLUMN "owner_id" uuid`)
     await queryRunner.query(`ALTER TABLE "PartyRelationship" ADD COLUMN "tenant_id" uuid`)
@@ -47,8 +44,6 @@ export class CreateContacts1710438363001 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "PartyRelationship" DROP COLUMN "tenant_id"`)
     await queryRunner.query(`ALTER TABLE "PartyRelationship" DROP COLUMN "owner_id"`)
 
-    await queryRunner.query(`ALTER TABLE "BaseContact" DROP COLUMN "date_of_birth"`)
-    await queryRunner.query(`ALTER TABLE "BaseContact" DROP COLUMN "grade"`)
     await queryRunner.query(`ALTER TABLE "BaseContact" DROP COLUMN "tenant_id"`)
     await queryRunner.query(`ALTER TABLE "BaseContact" DROP COLUMN "owner_id"`)
 
