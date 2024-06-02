@@ -147,7 +147,7 @@ export abstract class LinkHandlerAdapter implements LinkHandler {
     this._priority = value
   }
 
-  handle(url: string | URL): Promise<void> {
+  handle(url: string | URL, opts?: Record<string, any>): Promise<void> {
     return Promise.reject(new Error(`Adapter does not handle a URL. Please implement`))
   }
 

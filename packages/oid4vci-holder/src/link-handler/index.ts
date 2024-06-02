@@ -1,7 +1,7 @@
 import { CredentialOfferClient } from '@sphereon/oid4vci-client'
 import { AuthorizationRequestOpts, convertURIToJsonObject } from '@sphereon/oid4vci-common'
 import { DefaultLinkPriorities, LinkHandlerAdapter } from '@sphereon/ssi-sdk.core'
-import { IMachineStatePersistence, interpreterStartOrResume } from '@sphereon/ssi-sdk.xstate-machine-persistence'
+import { IMachineStatePersistence, interpreterStartOrResume, SerializableState } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { IAgentContext } from '@veramo/core'
 import { GetMachineArgs, IOID4VCIHolder, OID4VCIMachineEvents, OID4VCIMachineInterpreter, OID4VCIMachineState } from '../types/IOID4VCIHolder'
 
@@ -28,7 +28,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
     this.stateNavigationListener = args.stateNavigationListener
   }
 
-  async handle(url: string | URL, authorizationRequestOpts?: AuthorizationRequestOpts): Promise<void> {
+  async handle(url: string | URL, opts?: { machineState?: SerializableState; authorizationRequestOpts?: AuthorizationRequestOpts }): Promise<void> {
     const uri = new URL(url).toString()
     const offerData = convertURIToJsonObject(uri) as Record<string, unknown>
     const hasCode = 'code' in offerData && !!offerData.code && !('issuer' in offerData)
@@ -41,13 +41,13 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
         ...(hasCode && { code: code }),
         uri,
       },
-      authorizationRequestOpts: { ...this.authorizationRequestOpts, ...authorizationRequestOpts },
+      authorizationRequestOpts: { ...this.authorizationRequestOpts, ...opts?.authorizationRequestOpts },
       stateNavigationListener: this.stateNavigationListener,
     })
 
     const interpreter = oid4vciMachine.interpreter
     //FIXME we need a better way to check if the state persistence plugin is available in the agent
-    if (this.context.agent.availableMethods().includes('machineStatesFindActive')) {
+    if (!opts?.machineState && this.context.agent.availableMethods().includes('machineStatesFindActive')) {
       const stateType = hasCode ? 'existing' : 'new'
       await interpreterStartOrResume({
         stateType,
@@ -59,7 +59,8 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
         noRegistration: this.noStateMachinePersistence,
       })
     } else {
-      interpreter.start()
+      // @ts-ignore
+      interpreter.start(opts?.machineState)
     }
 
     if (hasCode) {

@@ -11,7 +11,7 @@ export type LinkHandler = {
   priority?: number | DefaultLinkPriorities
   supports: (url: string | URL) => boolean
   protocols: Array<string | RegExp>
-  handle: (url: string | URL) => Promise<void>
+  handle: (url: string | URL, opts?: Record<string, any>) => Promise<void>
 }
 
 export type LinkHandlerRegistry = {
