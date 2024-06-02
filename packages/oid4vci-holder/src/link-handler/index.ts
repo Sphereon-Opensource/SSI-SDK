@@ -1,16 +1,9 @@
 import { CredentialOfferClient } from '@sphereon/oid4vci-client'
-import { convertURIToJsonObject } from '@sphereon/oid4vci-common'
+import { AuthorizationRequestOpts, convertURIToJsonObject } from '@sphereon/oid4vci-common'
 import { DefaultLinkPriorities, LinkHandlerAdapter } from '@sphereon/ssi-sdk.core'
 import { IMachineStatePersistence, interpreterStartOrResume } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { IAgentContext } from '@veramo/core'
-import {
-  GetMachineArgs,
-  IOID4VCIHolder,
-  OID4VCIHolderOptions,
-  OID4VCIMachineEvents,
-  OID4VCIMachineInterpreter,
-  OID4VCIMachineState,
-} from '../types/IOID4VCIHolder'
+import { GetMachineArgs, IOID4VCIHolder, OID4VCIMachineEvents, OID4VCIMachineInterpreter, OID4VCIMachineState } from '../types/IOID4VCIHolder'
 
 export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
   private readonly context: IAgentContext<IOID4VCIHolder & IMachineStatePersistence>
@@ -18,10 +11,10 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
     | ((oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>)
     | undefined
   private readonly noStateMachinePersistence: boolean
-  private readonly options?: OID4VCIHolderOptions
+  private readonly authorizationRequestOpts?: AuthorizationRequestOpts
 
   constructor(
-    args: Pick<GetMachineArgs, 'stateNavigationListener' | 'options'> & {
+    args: Pick<GetMachineArgs, 'stateNavigationListener' | 'authorizationRequestOpts'> & {
       priority?: number | DefaultLinkPriorities
       protocols?: Array<string | RegExp>
       noStateMachinePersistence?: boolean
@@ -29,13 +22,13 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
     },
   ) {
     super({ ...args, id: 'OID4VCIHolder' })
-    this.options = args.options
+    this.authorizationRequestOpts = args.authorizationRequestOpts
     this.context = args.context
     this.noStateMachinePersistence = args.noStateMachinePersistence === true
     this.stateNavigationListener = args.stateNavigationListener
   }
 
-  async handle(url: string | URL, options?: OID4VCIHolderOptions): Promise<void> {
+  async handle(url: string | URL, authorizationRequestOpts?: AuthorizationRequestOpts): Promise<void> {
     const uri = new URL(url).toString()
     const offerData = convertURIToJsonObject(uri) as Record<string, unknown>
     const hasCode = 'code' in offerData && !!offerData.code && !('issuer' in offerData)
@@ -48,7 +41,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
         ...(hasCode && { code: code }),
         uri,
       },
-      options: { ...this.options, ...options },
+      authorizationRequestOpts: { ...this.authorizationRequestOpts, ...authorizationRequestOpts },
       stateNavigationListener: this.stateNavigationListener,
     })
 

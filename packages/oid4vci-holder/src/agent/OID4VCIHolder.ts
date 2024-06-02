@@ -130,7 +130,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       jsonldCryptographicSuitePreferences,
       didMethodPreferences,
       jwtCryptographicSuitePreferences,
-      defaultAuthRequestOptions,
+      defaultAuthorizationRequestOptions,
     } = options ?? {}
 
     if (vcFormatPreferences !== undefined && vcFormatPreferences.length > 0) {
@@ -145,8 +145,8 @@ export class OID4VCIHolder implements IAgentPlugin {
     if (jwtCryptographicSuitePreferences !== undefined && jwtCryptographicSuitePreferences.length > 0) {
       this.jwtCryptographicSuitePreferences = jwtCryptographicSuitePreferences
     }
-    if (defaultAuthRequestOptions) {
-      this.defaultAuthorizationRequestOpts = defaultAuthRequestOptions
+    if (defaultAuthorizationRequestOptions) {
+      this.defaultAuthorizationRequestOpts = defaultAuthorizationRequestOptions
     }
     this.onContactIdentityCreated = onContactIdentityCreated
     this.onCredentialStored = onCredentialStored
@@ -175,7 +175,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   private async oid4vciHolderGetMachineInterpreter(args: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<OID4VCIMachineId> {
     const authorizationRequestOpts = { ...this.defaultAuthorizationRequestOpts, ...args.authorizationRequestOpts }
     const services = {
-      initiateOID4VCI: (args: InitiateOID4VCIArgs) => this.oid4vciHolderGetCredentialOfferData({ ...args, ...authorizationRequestOpts }, context),
+      initiateOID4VCI: (args: InitiateOID4VCIArgs) => this.oid4vciHolderGetCredentialOfferData({ ...args, authorizationRequestOpts }, context),
       createCredentialSelection: (args: CreateCredentialSelectionArgs) => this.oid4vciHolderCreateCredentialSelection(args, context),
       getContact: (args: GetContactArgs) => this.oid4vciHolderGetContact(args, context),
       getCredentials: (args: GetCredentialsArgs) => this.oid4vciHolderGetCredentials(args, context),

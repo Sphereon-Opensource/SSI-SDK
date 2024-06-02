@@ -46,7 +46,7 @@ export type OID4VCIHolderOptions = {
   onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
   vcFormatPreferences?: Array<string>
   jsonldCryptographicSuitePreferences?: Array<string>
-  defaultAuthRequestOptions?: AuthorizationRequestOpts
+  defaultAuthorizationRequestOptions?: AuthorizationRequestOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   jwtCryptographicSuitePreferences?: Array<SignatureAlgorithmEnum>
 }
@@ -67,7 +67,7 @@ export type OnIdentifierCreatedArgs = {
 
 export type GetMachineArgs = {
   requestData: RequestData
-  options?: OID4VCIHolderOptions
+  authorizationRequestOpts?: AuthorizationRequestOpts
   stateNavigationListener?: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
 }
 
