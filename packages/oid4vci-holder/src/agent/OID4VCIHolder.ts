@@ -173,8 +173,9 @@ export class OID4VCIHolder implements IAgentPlugin {
    * FIXME: This method can only be used locally. Creating the interpreter should be local to where the agent is running
    */
   private async oid4vciHolderGetMachineInterpreter(args: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<OID4VCIMachineId> {
+    const authorizationRequestOpts = { ...this.defaultAuthorizationRequestOpts, ...args.authorizationRequestOpts }
     const services = {
-      initiateOID4VCI: (args: InitiateOID4VCIArgs) => this.oid4vciHolderGetCredentialOfferData(args, context),
+      initiateOID4VCI: (args: InitiateOID4VCIArgs) => this.oid4vciHolderGetCredentialOfferData({ ...args, ...authorizationRequestOpts }, context),
       createCredentialSelection: (args: CreateCredentialSelectionArgs) => this.oid4vciHolderCreateCredentialSelection(args, context),
       getContact: (args: GetContactArgs) => this.oid4vciHolderGetContact(args, context),
       getCredentials: (args: GetCredentialsArgs) => this.oid4vciHolderGetCredentials(args, context),
@@ -186,7 +187,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     const oid4vciMachineInstanceArgs: OID4VCIMachineInstanceOpts = {
       ...args,
-      authorizationRequestOpts: { ...this.defaultAuthorizationRequestOpts, ...args.authorizationRequestOpts },
+      authorizationRequestOpts,
       services: {
         ...services,
         ...args.services,
@@ -218,20 +219,21 @@ export class OID4VCIHolder implements IAgentPlugin {
     ) {
       return Promise.reject(Error(`Invalid OID4VCI credential offer URI: ${requestData?.uri}`))
     }
-    const authorizationRequest = { ...this.defaultAuthorizationRequestOpts, ...args.authorizationRequestOpts } satisfies AuthorizationRequestOpts
+    const authorizationRequestOpts = { ...this.defaultAuthorizationRequestOpts, ...args.authorizationRequestOpts } satisfies AuthorizationRequestOpts
 
-    if (!authorizationRequest.redirectUri) {
-      authorizationRequest.redirectUri = OID4VCIHolder.DEFAULT_MOBILE_REDIRECT_URI
+    if (!authorizationRequestOpts.redirectUri) {
+      authorizationRequestOpts.redirectUri = OID4VCIHolder.DEFAULT_MOBILE_REDIRECT_URI
     }
-    if (authorizationRequest.redirectUri.startsWith('http') && !authorizationRequest.clientId) {
+    if (authorizationRequestOpts.redirectUri.startsWith('http') && !authorizationRequestOpts.clientId) {
       // At least set a default for a web based wallet.
       // TODO: We really need (dynamic) client registration support
-      authorizationRequest.clientId = authorizationRequest.redirectUri
+      authorizationRequestOpts.clientId = authorizationRequestOpts.redirectUri
     }
 
     const openID4VCIClient = await OpenID4VCIClient.fromURI({
       uri: requestData?.uri,
-      authorizationRequest,
+      authorizationRequest: authorizationRequestOpts,
+      clientId: authorizationRequestOpts.clientId,
     })
 
     const serverMetadata = await openID4VCIClient.retrieveServerMetadata()
@@ -377,9 +379,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
         if (client.isEBSI()) {
           iss = jwt.header.kid?.split('#')[0]
-        }
-
-        if (!iss) {
+        } else if (!iss) {
           iss = jwt.header.kid?.split('#')[0]
         }
         if (!iss) {

@@ -35,7 +35,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
     this.stateNavigationListener = args.stateNavigationListener
   }
 
-  async handle(url: string | URL): Promise<void> {
+  async handle(url: string | URL, options?: OID4VCIHolderOptions): Promise<void> {
     const uri = new URL(url).toString()
     const offerData = convertURIToJsonObject(uri) as Record<string, unknown>
     const hasCode = 'code' in offerData && !!offerData.code && !('issuer' in offerData)
@@ -48,7 +48,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
         ...(hasCode && { code: code }),
         uri,
       },
-      options: this.options,
+      options: { ...this.options, ...options },
       stateNavigationListener: this.stateNavigationListener,
     })
 

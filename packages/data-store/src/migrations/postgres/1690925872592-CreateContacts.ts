@@ -30,8 +30,8 @@ export class CreateContacts1690925872592 implements MigrationInterface {
       `CREATE TABLE "ElectronicAddress" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" character varying(255) NOT NULL, "electronic_address" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "partyId" uuid, CONSTRAINT "PK_ElectronicAddress_id" PRIMARY KEY ("id"))`,
     )
     await queryRunner.query(
-      `CREATE TABLE "PhysicalAddress" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" character varying(255) NOT NULL, "street_name" character varying(255) NOT NULL, "street_number" character varying(255) NOT NULL, "postal_code" character varying(255) NOT NULL, "city_name" character varying(255) NOT NULL, "province_name" character varying(255) NOT NULL, "country_code" character varying(2) NOT NULL, "building_name" character varying(255), "partyId" uuid, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_PhysicalAddress_id" PRIMARY KEY ("id"))`
-    );
+      `CREATE TABLE "PhysicalAddress" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" character varying(255) NOT NULL, "street_name" character varying(255) NOT NULL, "street_number" character varying(255) NOT NULL, "postal_code" character varying(255) NOT NULL, "city_name" character varying(255) NOT NULL, "province_name" character varying(255) NOT NULL, "country_code" character varying(2) NOT NULL, "building_name" character varying(255), "partyId" uuid, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_PhysicalAddress_id" PRIMARY KEY ("id"))`,
+    )
     await queryRunner.query(
       `CREATE TABLE "Party" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "uri" character varying(255), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), "party_type_id" uuid NOT NULL, CONSTRAINT "PK_Party_id" PRIMARY KEY ("id"))`,
     )
