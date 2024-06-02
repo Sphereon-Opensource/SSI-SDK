@@ -8,11 +8,11 @@ export class PresentationDefinitionItemEntity extends BaseEntity {
   id!: string
 
   @Column({ name: 'definition_id', length: 255, nullable: false, unique: false })
-  @IsNotEmpty({ message: 'definitionId field must not be empty' })
+  @IsNotEmpty({ message: 'A blank definitionId field is not allowed' })
   definitionId!: string
 
   @Column({ name: 'version', length: 255, nullable: false, unique: false })
-  @IsNotEmpty({ message: 'version field must not be empty' })
+  @IsNotEmpty({ message: 'A blank version field is not allowed' })
   version!: string
 
   @Column({ name: 'tenant_id', length: 255, nullable: true, unique: false })
@@ -22,7 +22,7 @@ export class PresentationDefinitionItemEntity extends BaseEntity {
   purpose?: string
 
   @Column({ name: 'definition_payload', type: 'text', nullable: false, unique: false })
-  @IsNotEmpty({ message: 'definitionPayload field must not be empty' })
+  @IsNotEmpty({ message: 'A blank definitionPayload field is not allowed' })
   definitionPayload!: string
 
   @CreateDateColumn({ name: 'created_at', nullable: false })

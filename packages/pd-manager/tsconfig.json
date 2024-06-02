@@ -8,7 +8,7 @@
   },
   "references": [
     {
-      "path": "../ssi-express-support"
+      "path": "../data-store"
     },
     {
       "path": "../agent-config"

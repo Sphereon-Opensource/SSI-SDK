@@ -6,12 +6,13 @@ constants:
   # please use your own X25519 key, this is only an example
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
-    - pdmGetDefinitionItem
-    - pdmGetDefinitionsItem
-    - pdmAddDefinitionItem
-    - pdmUpdateDefinitionItem
-    - pdmDeleteDefinitionItem
+    - pdmHasDefinition
+    - pdmHasDefinitions
+    - pdmGetDefinition
+    - pdmGetDefinitions
     - pdmPersistDefinition
+    - pdmDeleteDefinition
+    - pdmDeleteDefinitions
 
 # Database
 dbConnection:
@@ -22,7 +23,7 @@ dbConnection:
       synchronize: false
       migrationsRun: true
       migrations:
-        $require: './packages/data-store?t=object#DataStorePresentationsDefinitionsMigrations'
+        $require: './packages/data-store?t=object#DataStorePresentationDefinitionMigrations'
       entities:
         $require: './packages/data-store?t=object#DataStorePresentationDefinitionEntities'
 

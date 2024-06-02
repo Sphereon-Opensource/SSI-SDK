@@ -1,13 +1,17 @@
 import { OrPromise } from '@sphereon/ssi-types'
-import { DataSource, In } from 'typeorm'
+import { DataSource, In, Repository } from 'typeorm'
 import { AbstractPDStore } from './AbstractPDStore'
 import Debug from 'debug'
 import {
-  GetGetDefinitionArgs,
-  GetDefinitionsArgs,
   DeleteDefinitionArgs,
+  DeleteDefinitionsArgs,
+  GetDefinitionArgs,
+  GetDefinitionsArgs,
+  HasDefinitionArgs,
+  HasDefinitionsArgs,
   NonPersistedPresentationDefinitionItem,
   PresentationDefinitionItem,
+  PresentationDefinitionItemFilter,
 } from '../types'
 import { PresentationDefinitionItemEntity } from '../entities/presentationDefinition/PresentationDefinitionItemEntity'
 import { presentationDefinitionEntityItemFrom, presentationDefinitionItemFrom } from '../utils/presentationDefinition/MappingUtils'
@@ -22,7 +26,7 @@ export class PDStore extends AbstractPDStore {
     this.dbConnection = dbConnection
   }
 
-  getDefinition = async (args: GetGetDefinitionArgs): Promise<PresentationDefinitionItem> => {
+  getDefinition = async (args: GetDefinitionArgs): Promise<PresentationDefinitionItem> => {
     const { itemId } = args ?? {}
     const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
     const result: PresentationDefinitionItemEntity | null = await pdRepository.findOne({
@@ -35,13 +39,31 @@ export class PDStore extends AbstractPDStore {
     return presentationDefinitionItemFrom(result)
   }
 
+  hasDefinition = async (args: HasDefinitionArgs): Promise<boolean> => {
+    const { itemId } = args ?? {}
+    const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
+
+    const resultCount: number = await pdRepository.count({
+      where: { id: itemId },
+    })
+
+    return resultCount > 0
+  }
+
+  hasDefinitions = async (args: HasDefinitionsArgs): Promise<boolean> => {
+    const { filter } = args
+    const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
+
+    const resultCount: number = await pdRepository.count({
+      ...(filter && { where: cleanFilter(filter) }),
+    })
+    return resultCount > 0
+  }
+
   getDefinitions = async (args: GetDefinitionsArgs): Promise<Array<PresentationDefinitionItem>> => {
     const { filter } = args
     const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
-    const initialResult: Array<PresentationDefinitionItemEntity> = await pdRepository.find({
-      ...(filter && { where: filter }),
-    })
-
+    const initialResult = await this.findIds(pdRepository, filter)
     const result: Array<PresentationDefinitionItemEntity> = await pdRepository.find({
       where: {
         id: In(initialResult.map((entity: PresentationDefinitionItemEntity) => entity.id)),
@@ -58,7 +80,7 @@ export class PDStore extends AbstractPDStore {
     const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
 
     const entity: PresentationDefinitionItemEntity = presentationDefinitionEntityItemFrom(item)
-    debug('Adding presentation definition item', item)
+    debug('Adding presentation definition entity', item)
     const result: PresentationDefinitionItemEntity = await pdRepository.save(entity, {
       transaction: true,
     })
@@ -73,7 +95,7 @@ export class PDStore extends AbstractPDStore {
       where: { id: item.id },
     })
     if (!result) {
-      return Promise.reject(Error(`No presentation definition item found for id: ${item.id}`))
+      return Promise.reject(Error(`No presentation definition entity found for id: ${item.id}`))
     }
 
     const entity: PresentationDefinitionItemEntity = presentationDefinitionEntityItemFrom(item)
@@ -97,7 +119,58 @@ export class PDStore extends AbstractPDStore {
       return Promise.reject(Error(`No presentation definition found with id: ${itemId}`))
     }
 
-    debug('Removing presentation definition item ', entity)
+    debug('Deleting presentation definition entity', entity)
     await pdRepository.delete(entity.id)
   }
+
+  deleteDefinitions = async (args: DeleteDefinitionsArgs): Promise<number> => {
+    const { filter } = args
+    const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
+    const initialResult = await this.findIds(pdRepository, filter)
+
+    const result: Array<PresentationDefinitionItemEntity> = await pdRepository.find({
+      where: {
+        id: In(initialResult.map((entity: PresentationDefinitionItemEntity) => entity.id)),
+      },
+    })
+
+    for (const entity of result) {
+      debug('Deleting presentation definition entity', entity.id)
+      await pdRepository.delete(entity.id)
+    }
+    return result.length
+  }
+
+  findIds = async (
+    pdRepository: Repository<PresentationDefinitionItemEntity>,
+    filter: Array<PresentationDefinitionItemFilter> | undefined,
+  ): Promise<Array<PresentationDefinitionItemEntity>> => {
+    const idFilter = filter?.find((f) => f.id !== undefined && f.id !== null)
+    if (idFilter) {
+      return await pdRepository.find({
+        where: { id: idFilter.id },
+      })
+    } else {
+      return await pdRepository.find({
+        ...(filter && { where: cleanFilter(filter) }),
+      })
+    }
+  }
+}
+
+const cleanFilter = (filter: Array<PresentationDefinitionItemFilter> | undefined): Array<PresentationDefinitionItemFilter> | undefined => {
+  if (filter === undefined) {
+    return undefined
+  }
+
+  return filter.map((item) => {
+    const cleanedItem: PresentationDefinitionItemFilter = {}
+    for (const key in item) {
+      const value = item[key as keyof PresentationDefinitionItemFilter]
+      if (value !== undefined) {
+        ;(cleanedItem as any)[key] = value
+      }
+    }
+    return cleanedItem
+  })
 }

@@ -15,12 +15,6 @@
     },
     {
       "path": "../agent-config"
-    },
-    {
-      "path": "../kv-store"
-    },
-    {
-      "path": "../pd-manager"
     }
   ]
 }

@@ -84,63 +84,19 @@ export default (testContext: {
     })
 
     /*  afterEach(async () => {
-      await agent.pexStoreClearDefinitions()
-    })*/
+          await agent.pexStoreClearDefinitions()
+        })*/
 
     afterAll(testContext.tearDown)
 
-    it('should store valid definition', async () => {
-      const pd = await agent.pexStorePersistDefinition({ definition: singleDefinition })
-      expect(pd).toBeDefined()
-      expect(pd.input_descriptors).toBeDefined()
-      await expect(agent.pexStoreHasDefinition({ definitionId: singleDefinition.id })).resolves.toEqual(true)
+    it('should validate valid definition', async () => {
+      await agent.pexValidateDefinition({ definition: singleDefinition })
     })
 
     it('should not store invalid definition by default', async () => {
-      await expect(agent.pexStorePersistDefinition({ definition: { invalid: 'definition' } as unknown as IPresentationDefinition })).rejects.toThrow(
+      await expect(agent.pexValidateDefinition({ definition: { invalid: 'definition' } as unknown as IPresentationDefinition })).rejects.toThrow(
         'Invalid definition. This is not a valid PresentationDefinition',
       )
-    })
-
-    it('should not store invalid definition if validation is enabled', async () => {
-      await expect(
-        agent.pexStorePersistDefinition({ validation: true, definition: { invalid: 'definition' } as unknown as IPresentationDefinition }),
-      ).rejects.toThrow('Invalid definition. This is not a valid PresentationDefinition')
-    })
-
-    it('should store invalid definition if validation is disabled', async () => {
-      const pd = await agent.pexStorePersistDefinition({
-        validation: false,
-        definition: { id: 'someId', invalid: 'definition' } as unknown as IPresentationDefinition,
-      })
-      expect(pd).toBeDefined()
-      expect(pd.id).toBeDefined()
-      await expect(agent.pexStoreHasDefinition({ definitionId: singleDefinition.id })).resolves.toEqual(true)
-    })
-
-    it('should get definition', async () => {
-      await agent.pexStorePersistDefinition({ definition: singleDefinition })
-      await expect(agent.pexStoreGetDefinition({ definitionId: singleDefinition.id })).resolves.toEqual(singleDefinition)
-    })
-
-    it('should remove definition', async () => {
-      await agent.pexStorePersistDefinition({ definition: singleDefinition, version: 'toDelete', versionControlMode: 'Manual' })
-      await expect(agent.pexStoreHasDefinition({ definitionId: singleDefinition.id, version: 'toDelete' })).resolves.toEqual(true)
-      await expect(agent.pexStoreRemoveDefinition({ definitionId: singleDefinition.id, version: 'toDelete' })).resolves.toEqual(true)
-      await expect(agent.pexStoreHasDefinition({ definitionId: singleDefinition.id, version: 'toDelete' })).resolves.toEqual(false)
-    })
-
-    it('should clear definitions', async () => {
-      await agent.pexStorePersistDefinition({ definitionId: 'c1', definition: singleDefinition })
-      await agent.pexStorePersistDefinition({ definitionId: 'c2', definition: singleDefinition })
-      await agent.pexStorePersistDefinition({ definitionId: 'c3', definition: singleDefinition })
-      await expect(agent.pexStoreHasDefinition({ definitionId: 'c1' })).resolves.toEqual(true)
-      await expect(agent.pexStoreHasDefinition({ definitionId: 'c2' })).resolves.toEqual(true)
-      await expect(agent.pexStoreHasDefinition({ definitionId: 'c3' })).resolves.toEqual(true)
-      await agent.pexStoreClearDefinitions()
-      await expect(agent.pexStoreHasDefinition({ definitionId: 'c1' })).resolves.toEqual(false)
-      await expect(agent.pexStoreHasDefinition({ definitionId: 'c2' })).resolves.toEqual(false)
-      await expect(agent.pexStoreHasDefinition({ definitionId: 'c3' })).resolves.toEqual(false)
     })
   })
 }

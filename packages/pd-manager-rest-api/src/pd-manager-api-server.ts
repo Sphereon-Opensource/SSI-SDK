@@ -3,8 +3,14 @@ import { TAgent } from '@veramo/core'
 
 import express, { Express, Router } from 'express'
 import { IPDManagerAPIEndpointOpts, IRequiredPlugins } from './types'
-import { pdAddEndpoint, pdDeleteEndpoint, pdPersistEndpoint, pdReadEndpoint, pdUpdateEndpoint } from './api-functions'
+import { pdDeleteEndpoint, pdPersistEndpoint, pdReadEndpoint } from './api-functions'
 import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-express-support'
+
+type PdManagerApiServerArgs = {
+  agent: TAgent<IRequiredPlugins>
+  expressSupport: ExpressSupport
+  opts?: IPDManagerAPIEndpointOpts
+}
 
 export class PdManagerApiServer {
   private readonly _express: Express
@@ -12,7 +18,7 @@ export class PdManagerApiServer {
   private readonly _opts?: IPDManagerAPIEndpointOpts
   private readonly _router: Router
 
-  constructor(args: { agent: TAgent<IRequiredPlugins>; expressSupport: ExpressSupport; opts?: IPDManagerAPIEndpointOpts }) {
+  constructor(args: PdManagerApiServerArgs) {
     const { agent, opts } = args
     this._agent = agent
     copyGlobalAuthToEndpoints({ opts, keys: ['pdRead', 'pdWrite', 'pdUpdate', 'pdDelete'] })
@@ -31,8 +37,6 @@ export class PdManagerApiServer {
       pdReadEndpoint(this.router, context, this._opts?.endpointOpts?.pdRead)
     }
     if (features.includes('pd_write')) {
-      pdAddEndpoint(this.router, context, this._opts?.endpointOpts?.pdWrite)
-      pdUpdateEndpoint(this.router, context, this._opts?.endpointOpts?.pdWrite)
       pdPersistEndpoint(this.router, context, this._opts?.endpointOpts?.pdWrite)
     }
     if (features.includes('pd_delete')) {

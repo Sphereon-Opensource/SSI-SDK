@@ -13,12 +13,11 @@ export type PresentationDefinitionItem = {
 
 export type NonPersistedPresentationDefinitionItem = Omit<PresentationDefinitionItem, 'id' | 'createdAt' | 'lastUpdatedAt'>
 
-export type PersistablePresentationDefinitionItem = {
+export type PersistablePresentationDefinitionItem = Omit<NonPersistedPresentationDefinitionItem, 'definitionId' | 'version'> & {
+  id?: string
   definitionId?: string
-  tenantId?: string
   version?: string
-  purpose?: string
-  definitionPayload: IPresentationDefinition
 }
+
 export type PartialPresentationDefinitionItem = Partial<PresentationDefinitionItem>
 export type PresentationDefinitionItemFilter = Partial<Omit<PresentationDefinitionItem, 'definitionPayload'>>

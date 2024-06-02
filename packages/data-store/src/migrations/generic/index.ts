@@ -22,7 +22,7 @@ export const DataStoreStatusListMigrations = [CreateStatusList1693866470000]
 export const DataStoreEventLoggerMigrations = [CreateAuditEvents1701635835330]
 export const DataStoreDigitalCredentialMigrations = [CreateDigitalCredential1708525189000]
 export const DataStoreMachineStateMigrations = [CreateMachineStateStore1708098041262]
-export const DataStorePresentationsDefinitionsMigrations = [CreatePresentationDefinitions1716533767523]
+export const DataStorePresentationDefinitionMigrations = [CreatePresentationDefinitions1716533767523]
 
 // All migrations together
 export const DataStoreMigrations = [
@@ -32,5 +32,5 @@ export const DataStoreMigrations = [
   ...DataStoreEventLoggerMigrations,
   ...DataStoreDigitalCredentialMigrations,
   ...DataStoreMachineStateMigrations,
-  ...DataStorePresentationsDefinitionsMigrations
+  ...DataStorePresentationDefinitionMigrations,
 ]
