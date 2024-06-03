@@ -1407,12 +1407,11 @@ describe('Database entities tests', (): void => {
 
   it('Should enforce unique type and tenant id combination when saving party type', async (): Promise<void> => {
     const tenantId = 'non_unique_value'
-    const name = 'non_unique_value'
     const partyType1: NonPersistedPartyType = {
       type: PartyTypeType.NATURAL_PERSON,
       origin: PartyOrigin.EXTERNAL,
       tenantId,
-      name,
+      name: 'example_party_type_name1',
     }
 
     const partyTypeEntity1: PartyTypeEntity = partyTypeEntityFrom(partyType1)
@@ -1424,7 +1423,7 @@ describe('Database entities tests', (): void => {
       type: PartyTypeType.NATURAL_PERSON,
       origin: PartyOrigin.INTERNAL,
       tenantId,
-      name: `${name}2`,
+      name: 'example_party_type_name2',
     }
 
     const partyTypeEntity2: PartyTypeEntity = partyTypeEntityFrom(partyType2)
