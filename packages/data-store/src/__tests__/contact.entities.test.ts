@@ -235,7 +235,7 @@ describe('Database entities tests', (): void => {
     await expect(dbConnection.getRepository(PartyEntity).save(partyEntity)).rejects.toThrowError('Blank first names are not allowed')
   })
 
-  it('should throw error when saving person party with blank middle name', async (): Promise<void> => {
+  it('should not throw error when saving person party with blank middle name', async (): Promise<void> => {
     const party: NonPersistedParty = {
       uri: 'example.com',
       partyType: {
@@ -254,8 +254,21 @@ describe('Database entities tests', (): void => {
 
     const partyEntity: PartyEntity = partyEntityFrom(party)
 
-    await expect(dbConnection.getRepository(PartyEntity).save(partyEntity)).rejects.toThrowError('Blank middle names are not allowed')
-  })
+    await expect(dbConnection.getRepository(PartyEntity).save(partyEntity)).resolves.toEqual({
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeType.NATURAL_PERSON,
+        origin: PartyOrigin.EXTERNAL,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: '',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    })
 
   it('should throw error when saving person party with blank last name', async (): Promise<void> => {
     const party: NonPersistedParty = {
@@ -2445,7 +2458,7 @@ describe('Database entities tests', (): void => {
     )
   })
 
-  it('should throw error when saving physical address with blank building name', async (): Promise<void> => {
+  it('should not throw error when saving physical address with blank building name', async (): Promise<void> => {
     const physicalAddress: NonPersistedPhysicalAddress = {
       type: 'home',
       streetName: 'example_street_name',
@@ -2459,9 +2472,16 @@ describe('Database entities tests', (): void => {
 
     const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
 
-    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).rejects.toThrowError(
-      'Blank building names are not allowed',
-    )
+    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).resolves.toEqual({
+      type: 'home',
+      streetName: 'example_street_name',
+      streetNumber: 'example_street_number',
+      buildingName: '',
+      postalCode: 'example_postal_code',
+      cityName: 'example_city_name',
+      provinceName: 'example_province_name',
+      countryCode: 'example_country_code',
+    })
   })
 
   it('should throw error when saving physical address with blank postal code', async (): Promise<void> => {
