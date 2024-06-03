@@ -1,8 +1,7 @@
-import { Column, ChildEntity, BeforeInsert, BeforeUpdate } from 'typeorm'
+import { BeforeInsert, BeforeUpdate, ChildEntity, Column } from 'typeorm'
 import { BaseContactEntity } from './BaseContactEntity'
 import { ValidationConstraint } from '../../types'
-import { validate, IsNotEmpty, ValidationError, Validate } from 'class-validator'
-import { IsNonEmptyStringConstraint } from '../validators'
+import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { getConstraint } from '../../utils/ValidatorUtils'
 
 @ChildEntity('NaturalPerson')
@@ -12,7 +11,6 @@ export class NaturalPersonEntity extends BaseContactEntity {
   firstName!: string
 
   @Column({ name: 'middle_name', length: 255, nullable: true, unique: false })
-  @Validate(IsNonEmptyStringConstraint, { message: 'Blank middle names are not allowed' })
   middleName?: string
 
   @Column({ name: 'last_name', length: 255, nullable: false, unique: false })

@@ -48,7 +48,6 @@ export class PhysicalAddressEntity extends BaseEntity {
   countryCode!: string
 
   @Column({ name: 'building_name', length: 255, nullable: true })
-  @IsNotEmpty({ message: 'Blank building names are not allowed' })
   buildingName?: string
 
   @ManyToOne(() => PartyEntity, (party: PartyEntity) => party.physicalAddresses, {
