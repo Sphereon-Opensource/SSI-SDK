@@ -267,8 +267,9 @@ describe('Database entities tests', (): void => {
         middleName: '',
         lastName: 'example_last_name',
         displayName: 'example_display_name',
-      },
+      }
     })
+  })
 
   it('should throw error when saving person party with blank last name', async (): Promise<void> => {
     const party: NonPersistedParty = {
