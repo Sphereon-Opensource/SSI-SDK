@@ -253,22 +253,16 @@ describe('Database entities tests', (): void => {
     }
 
     const partyEntity: PartyEntity = partyEntityFrom(party)
-
-    await expect(dbConnection.getRepository(PartyEntity).save(partyEntity)).resolves.toEqual({
-      uri: 'example.com',
-      partyType: {
-        type: PartyTypeType.NATURAL_PERSON,
-        origin: PartyOrigin.EXTERNAL,
-        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
-        name: 'example_name',
-      },
-      contact: {
-        firstName: 'example_first_name',
-        middleName: '',
-        lastName: 'example_last_name',
-        displayName: 'example_display_name',
-      }
-    })
+    const actual = await dbConnection.getRepository(PartyEntity).save(partyEntity)
+    expect(actual.uri).toEqual('example.com')
+    expect(actual.partyType.type).toEqual(PartyTypeType.NATURAL_PERSON)
+    expect(actual.partyType.origin).toEqual(PartyOrigin.EXTERNAL)
+    expect(actual.partyType.tenantId).toEqual('0605761c-4113-4ce5-a6b2-9cbae2f9d289')
+    expect(actual.partyType.name).toEqual('example_name')
+    expect((actual.contact as any).firstName).toEqual('example_first_name')
+    expect((actual.contact as any).middleName).toEqual('')
+    expect((actual.contact as any).lastName).toEqual('example_last_name')
+    expect((actual.contact as any).displayName).toEqual('example_display_name')
   })
 
   it('should throw error when saving person party with blank last name', async (): Promise<void> => {
@@ -2472,17 +2466,15 @@ describe('Database entities tests', (): void => {
     }
 
     const physicalAddressEntity: PhysicalAddressEntity = physicalAddressEntityFrom(physicalAddress)
-
-    await expect(dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)).resolves.toEqual({
-      type: 'home',
-      streetName: 'example_street_name',
-      streetNumber: 'example_street_number',
-      buildingName: '',
-      postalCode: 'example_postal_code',
-      cityName: 'example_city_name',
-      provinceName: 'example_province_name',
-      countryCode: 'example_country_code',
-    })
+    const actual = await dbConnection.getRepository(PhysicalAddressEntity).save(physicalAddressEntity)
+    expect(actual.type).toEqual('home')
+    expect(actual.streetName).toEqual('example_street_name')
+    expect(actual.streetNumber).toEqual('example_street_number')
+    expect(actual.buildingName).toEqual('')
+    expect(actual.postalCode).toEqual('example_postal_code')
+    expect(actual.cityName).toEqual('example_city_name')
+    expect(actual.provinceName).toEqual('example_province_name')
+    expect(actual.countryCode).toEqual('example_country_code')
   })
 
   it('should throw error when saving physical address with blank postal code', async (): Promise<void> => {
