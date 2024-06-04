@@ -24,6 +24,24 @@ export function pdReadEndpoint(router: Router, context: IRequiredContext, opts?:
   })
 }
 
+export function pdsReadEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
+  if (opts?.enabled === false) {
+    console.log(`"pdsReadEndpoint" Endpoint is disabled`)
+    return
+  }
+  const path = opts?.path ?? operation
+  router.get(`${path}`, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
+    try {
+      // TODO Get all of them for now
+      const pd = await context.agent.pdmGetDefinitions()
+      response.statusCode = 200
+      return response.send(pd)
+    } catch (error) {
+      return sendErrorResponse(response, 500, error.message as string, error)
+    }
+  })
+}
+
 export function pdPersistEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`"pdPersistEndpoint" Endpoint is disabled`)
