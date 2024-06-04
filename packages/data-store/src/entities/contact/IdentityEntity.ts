@@ -34,7 +34,7 @@ export class IdentityEntity extends BaseEntity {
   @IsNotEmpty({ message: 'Blank aliases are not allowed' })
   alias!: string
 
-  @Column('simple-enum', { name: 'identity_origin', enum: IdentityOrigin, nullable: false })
+  @Column('simple-enum', { name: 'origin', enum: IdentityOrigin, nullable: false })
   origin!: IdentityOrigin
 
   @Column({ name: 'owner_id', nullable: true })

@@ -7,13 +7,13 @@ export class CreateContacts1710438363002 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "Party" ADD COLUMN "owner_id" text`)
     await queryRunner.query(`ALTER TABLE "Party" ADD COLUMN "tenant_id" text`)
 
-    // Add owner_id, tenant_id & identity_origin
+    // Add owner_id, tenant_id & origin
     await queryRunner.query(
       `CREATE TABLE "temporary_Identity" (
                                              "id" varchar PRIMARY KEY NOT NULL,
                                              "alias" varchar(255) NOT NULL,
                                              "roles" text NOT NULL,
-                                             "identity_origin" text NOT NULL,
+                                             "origin" text NOT NULL,
                                              "created_at" datetime NOT NULL DEFAULT (datetime('now')),
                                              "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')),
                                              "partyId" varchar,
@@ -24,8 +24,8 @@ export class CreateContacts1710438363002 implements MigrationInterface {
          )`,
     )
     await queryRunner.query(
-      `INSERT INTO "temporary_Identity"("id", "alias", "roles", "created_at", "last_updated_at", "partyId", "owner_id", "tenant_id", "identity_origin")
-         SELECT "id", "alias", "roles", 'EXTERNAL' as "identity_origin", "created_at", "last_updated_at", "partyId", NULL as "owner_id", NULL as "tenant_id" FROM "Identity"`,
+      `INSERT INTO "temporary_Identity"("id", "alias", "roles", "created_at", "last_updated_at", "partyId", "owner_id", "tenant_id", "origin")
+         SELECT "id", "alias", "roles", 'EXTERNAL' as "origin", "created_at", "last_updated_at", "partyId", NULL as "owner_id", NULL as "tenant_id" FROM "Identity"`,
     )
     await queryRunner.query(`DROP TABLE "Identity"`)
     await queryRunner.query(`ALTER TABLE "temporary_Identity" RENAME TO "Identity"`)
