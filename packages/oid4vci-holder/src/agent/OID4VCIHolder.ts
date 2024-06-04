@@ -407,16 +407,18 @@ export class OID4VCIHolder implements IAgentPlugin {
         pin,
         authorizationResponse: JSON.parse(await client.exportState()).authorizationCodeResponse,
       })
+
+      // FIXME: This type mapping is wrong. It should use credential_identifier in case the access token response has authorization details
       // @ts-ignore
       const definition = issuanceOpt.credential_definition
       const idFromType =
         definition?.type?.length === 1 ? definition?.type[0] : definition?.type?.filter((type: string) => type !== 'VerifiableCredential')[0]
-      const credentialType = issuanceOpt.credentialConfigurationId ?? issuanceOpt.id ?? idFromType
-      if (!credentialType) {
+      const credentialTypes = issuanceOpt.credentialConfigurationId ?? issuanceOpt.id ?? idFromType
+      if (!credentialTypes) {
         throw Error('cannot determine credential id to request')
       }
       const credentialResponse = await client.acquireCredentials({
-        credentialType,
+        credentialTypes,
         proofCallbacks: callbacks,
         format: issuanceOpt.format,
         // TODO: We need to update the machine and add notifications support for actual deferred credentials instead of just waiting/retrying
