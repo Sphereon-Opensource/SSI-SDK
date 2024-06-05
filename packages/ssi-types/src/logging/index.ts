@@ -20,7 +20,7 @@ export interface SimpleLogEvent {
   correlationId?: string
   timestamp: Date
   data: string
-  diagnosticData?: string
+  diagnosticData?: any
 }
 
 export enum LogMethod {
@@ -175,7 +175,7 @@ export class SimpleLogger implements ISimpleLogger<any> {
         timestamp: new Date(date),
         level,
         type: LoggingEventType.GENERAL,
-        diagnosticData: JSON.stringify(args),
+        diagnosticData: args,
       } satisfies SimpleLogEvent)
     }
   }
