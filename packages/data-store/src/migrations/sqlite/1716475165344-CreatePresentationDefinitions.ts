@@ -9,6 +9,7 @@ export class CreatePresentationDefinitions1716475165344 implements MigrationInte
     "id" varchar PRIMARY KEY NOT NULL, 
     "tenant_id" varchar,
     "definition_id" varchar NOT NULL,
+    "name" varchar,
     "version" varchar NOT NULL,
     "purpose" varchar,
     "definition_payload" varchar NOT NULL,
