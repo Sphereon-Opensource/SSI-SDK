@@ -1,3 +1,4 @@
+import { LogLevel } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
 import { DataStoreEventLoggerMigrations } from '../migrations/generic'
 import { DataStoreEventLoggerEntities } from '../index'
@@ -5,7 +6,6 @@ import {
   ActionType,
   AuditLoggingEvent,
   InitiatorType,
-  LogLevel,
   PartyCorrelationType,
   SubSystem,
   System,
