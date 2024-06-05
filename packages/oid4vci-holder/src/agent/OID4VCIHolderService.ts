@@ -60,27 +60,24 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   const { credentialsSupported, context } = args
   const credentialBranding: Record<string, Array<IBasicCredentialLocaleBranding>> = {}
   await Promise.all(
-    Object.entries(credentialsSupported).map(
-      ([configId, _credentialsSupported]) =>
-        async (credentialsConfigSupported: CredentialConfigurationSupported): Promise<void> => {
-          const localeBranding: Array<IBasicCredentialLocaleBranding> = await Promise.all(
-            (credentialsConfigSupported.display ?? []).map(
-              async (display: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> =>
-                await context.agent.ibCredentialLocaleBrandingFrom({ localeBranding: await credentialLocaleBrandingFrom(display) }),
-            ),
-          )
+    Object.entries(credentialsSupported).map(async ([configId, credentialsConfigSupported]) => {
+      const localeBranding: Array<IBasicCredentialLocaleBranding> = await Promise.all(
+        (credentialsConfigSupported.display ?? []).map(
+          async (display: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> =>
+            await context.agent.ibCredentialLocaleBrandingFrom({ localeBranding: await credentialLocaleBrandingFrom(display) }),
+        ),
+      )
 
-          const defaultCredentialType = 'VerifiableCredential'
-          const credentialTypes: Array<string> = ('types' in credentialsConfigSupported // TODO credentialsConfigSupported.types is deprecated
-            ? (credentialsConfigSupported.types as string[])
-            : 'credential_definition' in credentialsConfigSupported
-              ? credentialsConfigSupported.credential_definition.type
-              : [defaultCredentialType]) ?? [configId]
+      const defaultCredentialType = 'VerifiableCredential'
+      const credentialTypes: Array<string> = ('types' in credentialsConfigSupported // TODO credentialsConfigSupported.types is deprecated
+        ? (credentialsConfigSupported.types as string[])
+        : 'credential_definition' in credentialsConfigSupported
+          ? credentialsConfigSupported.credential_definition.type
+          : [defaultCredentialType]) ?? [configId]
 
-          const filteredCredentialTypes = credentialTypes.filter((type: string): boolean => type !== defaultCredentialType)
-          credentialBranding[filteredCredentialTypes[0]] = localeBranding // TODO for now taking the first type
-        },
-    ),
+      const filteredCredentialTypes = credentialTypes.filter((type: string): boolean => type !== defaultCredentialType)
+      credentialBranding[filteredCredentialTypes[0]] = localeBranding // TODO for now taking the first type
+    }),
   )
 
   return credentialBranding
