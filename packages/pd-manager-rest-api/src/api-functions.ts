@@ -24,6 +24,24 @@ export function pdReadEndpoint(router: Router, context: IRequiredContext, opts?:
   })
 }
 
+export function pdHasEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
+  if (opts?.enabled === false) {
+    console.log(`"pdReadEndpoint" Endpoint is disabled`)
+    return
+  }
+  const path = opts?.path ?? operation
+  router.get(`${path}/:itemId`, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
+    try {
+      const itemId = request.params.itemId
+      const result = await context.agent.pdmHasDefinition({ itemId: itemId })
+      response.statusCode = 200
+      return response.send(result)
+    } catch (error) {
+      return sendErrorResponse(response, 500, error.message as string, error)
+    }
+  })
+}
+
 export function pdsReadEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`"pdsReadEndpoint" Endpoint is disabled`)
@@ -72,6 +90,24 @@ export function pdDeleteEndpoint(router: Router, context: IRequiredContext, opts
       const result = await context.agent.pdmDeleteDefinition({ itemId: itemId } as DeleteDefinitionArgs)
       response.statusCode = 200
       return response.send(result)
+    } catch (error) {
+      return sendErrorResponse(response, 500, error.message, error)
+    }
+  })
+}
+
+export function pdsDeleteEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
+  if (opts?.enabled === false) {
+    console.log(`"pdsDeleteEndpoint" Endpoint is disabled`)
+    return
+  }
+  const path = opts?.path ?? operation
+  router.delete(`${path}/filter`, async (request, response) => {
+    try {
+      // TODO we are not going to delete all PDs without filter like we did with pdsGet...
+      response.statusCode = 500
+      response.statusMessage = 'Not yet implemented'
+      return sendErrorResponse(response, 500, 'Not yet implemented')
     } catch (error) {
       return sendErrorResponse(response, 500, error.message, error)
     }

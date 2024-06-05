@@ -5,6 +5,7 @@ export type PresentationDefinitionItem = {
   definitionId: string
   tenantId?: string
   version: string
+  name?: string
   purpose?: string
   definitionPayload: IPresentationDefinition
   createdAt: Date

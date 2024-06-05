@@ -1,6 +1,6 @@
 import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
 import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
-import { IAgentContext, IDataStore, IDIDManager, IKeyManager } from '@veramo/core'
+import { IAgentContext, IDataStore } from '@veramo/core'
 
 export type PDManagerMRestApiFeatures = 'pd_read' | 'pd_write' | 'pd_delete'
 
@@ -15,5 +15,5 @@ export interface IPDManagerAPIEndpointOpts {
   enableFeatures?: PDManagerMRestApiFeatures[]
 }
 
-export type IRequiredPlugins = IPDManager & IDataStore & IKeyManager & IDIDManager
+export type IRequiredPlugins = IPDManager & IDataStore
 export type IRequiredContext = IAgentContext<IRequiredPlugins>

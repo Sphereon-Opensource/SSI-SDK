@@ -139,6 +139,7 @@ export class PDManager implements IAgentPlugin {
       existingItem.definitionId = definitionItem.definitionId
       existingItem.version = version ?? existingItem.version ?? '1'
       existingItem.tenantId = definitionItem.tenantId
+      existingItem.name = definitionItem.name
       existingItem.purpose = definitionItem.purpose
       existingItem.definitionPayload = definitionItem.definitionPayload
 
@@ -155,6 +156,7 @@ export class PDManager implements IAgentPlugin {
     if (latestVersionItem) {
       latestVersionItem.definitionId = definitionItem.definitionId
       latestVersionItem.tenantId = definitionItem.tenantId
+      latestVersionItem.name = definitionItem.name
       latestVersionItem.purpose = definitionItem.purpose
       latestVersionItem.definitionPayload = definitionItem.definitionPayload
 

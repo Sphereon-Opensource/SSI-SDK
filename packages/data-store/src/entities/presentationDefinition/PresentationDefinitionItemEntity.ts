@@ -21,6 +21,9 @@ export class PresentationDefinitionItemEntity extends BaseEntity {
   @Column({ name: 'purpose', length: 255, nullable: true, unique: false })
   purpose?: string
 
+  @Column({ name: 'name', length: 255, nullable: true, unique: false })
+  name?: string
+
   @Column({ name: 'definition_payload', type: 'text', nullable: false, unique: false })
   @IsNotEmpty({ message: 'A blank definitionPayload field is not allowed' })
   definitionPayload!: string
