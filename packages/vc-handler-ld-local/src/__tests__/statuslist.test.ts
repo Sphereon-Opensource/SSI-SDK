@@ -16,11 +16,7 @@ import {
 } from '@sphereon/ssi-sdk.vc-status-list'
 import { CredentialHandlerLDLocal } from '../agent'
 import { LdDefaultContexts } from '../ld-default-contexts'
-import {
-  SphereonEcdsaSecp256k1RecoverySignature2020,
-  SphereonEd25519Signature2018,
-  SphereonEd25519Signature2020
-} from '../suites'
+import { SphereonEcdsaSecp256k1RecoverySignature2020, SphereonEd25519Signature2018, SphereonEd25519Signature2020 } from '../suites'
 import { ICredentialHandlerLDLocal, MethodNames } from '../types'
 
 jest.setTimeout(100000)

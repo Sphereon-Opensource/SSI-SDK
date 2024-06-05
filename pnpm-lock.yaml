@@ -452,6 +452,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
       uuid:
         specifier: ^8.3.2
         version: 8.3.2
@@ -1657,6 +1660,9 @@ importers:
       '@sd-jwt/decode':
         specifier: ^0.6.1
         version: 0.6.1
+      events:
+        specifier: ^3.3.0
+        version: 3.3.0
       jwt-decode:
         specifier: ^3.1.2
         version: 3.1.2
@@ -18351,6 +18357,7 @@ packages:
 
   /rimraf@2.6.3:
     resolution: {integrity: sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 7.2.3

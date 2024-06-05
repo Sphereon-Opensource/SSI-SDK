@@ -1,6 +1,7 @@
+import { LogLevel } from '@sphereon/ssi-types'
 import { IAgentContext } from '@veramo/core'
 import EventLogger from './EventLogger'
-import { InitiatorType, LogLevel, SubSystem, System } from '../../types'
+import { InitiatorType, SubSystem, System } from '../../types'
 
 class EventLoggerBuilder {
   private context?: IAgentContext<any>

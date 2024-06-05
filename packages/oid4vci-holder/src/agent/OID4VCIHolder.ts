@@ -6,7 +6,7 @@ import {
   Identity,
   IdentityRole,
   NonPersistedIdentity,
-  Party
+  Party,
 } from '@sphereon/ssi-sdk.data-store'
 import { DIDDocument, IAgentPlugin, VerifiableCredential } from '@veramo/core'
 import { computeEntryHash } from '@veramo/utils'
