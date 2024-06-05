@@ -41,7 +41,7 @@ import Debug from 'debug'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:issuance-branding')
 
-export const issuanceBrandingContextMethods: Array<string> = [
+export const issuanceBrandingMethods: Array<string> = [
   'ibAddCredentialBranding',
   'ibGetCredentialBranding',
   'ibUpdateCredentialBranding',
