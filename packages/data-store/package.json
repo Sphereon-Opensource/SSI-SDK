@@ -21,9 +21,11 @@
     "@veramo/utils": "4.2.0",
     "class-validator": "^0.14.0",
     "debug": "^4.3.4",
+    "md5": "^2.3.0",
     "typeorm": "^0.3.20"
   },
   "devDependencies": {
+    "@types/md5": "^2.3.5",
     "pg": "^8.11.3",
     "sqlite3": "^5.1.6"
   },
