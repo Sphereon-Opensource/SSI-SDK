@@ -1,12 +1,5 @@
+import { LoggingEventType, LogLevel, SimpleLogEvent } from '@sphereon/ssi-types'
 import { IAgentContext } from '@veramo/core'
-
-export enum LogLevel {
-  TRACE = 0,
-  DEBUG,
-  INFO,
-  WARNING,
-  ERROR,
-}
 
 export enum System {
   GENERAL = 'general',
@@ -77,14 +70,10 @@ export enum PartyCorrelationType {
   PHONE = 'phone',
 }
 
-export enum LoggingEventType {
-  AUDIT = 'audit',
-}
-
-export type AuditLoggingEvent = {
+export type AuditLoggingEvent = Omit<SimpleLogEvent, 'type' | 'data'> & {
   id: string
-  timestamp: Date
-  level: LogLevel
+  // timestamp: Date
+  // level: LogLevel
   correlationId: string
   system: System
   subSystemType: SubSystem
@@ -99,7 +88,7 @@ export type AuditLoggingEvent = {
   partyAlias?: string
   description: string
   data?: any
-  diagnosticData?: any
+  // diagnosticData?: any
 }
 export type PartialAuditLoggingEvent = Partial<AuditLoggingEvent>
 

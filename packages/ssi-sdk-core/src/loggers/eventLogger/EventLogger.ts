@@ -1,15 +1,16 @@
+import { ISimpleLogger, Loggers, LogLevel, LogMethod, SimpleLogEvent, SimpleLogger, SimpleLogOptions } from '@sphereon/ssi-types'
 import { IAgentContext } from '@veramo/core'
-import Debug, { Debugger } from 'debug'
-import { NonPersistedAuditLoggingEvent, EventLoggerArgs, LoggingEvent, LogLevel, SubSystem, System, InitiatorType } from '../../types'
+import { EventLoggerArgs, InitiatorType, LoggingEvent, NonPersistedAuditLoggingEvent, SubSystem, System } from '../../types'
 
 class EventLogger {
   private readonly context?: IAgentContext<any>
-  private readonly namespace?: string
+  private readonly namespace: string
   private readonly system?: System
   private readonly subSystemType?: SubSystem
   private readonly logLevel: LogLevel
   private readonly initiatorType?: InitiatorType
-  private readonly debug: Debugger
+  private static readonly LOGGERS = Loggers.default()
+
   constructor(args: EventLoggerArgs) {
     const { context, namespace = 'sphereon:ssi-sdk:EventLogger', system, subSystem, logLevel = LogLevel.INFO, initiatorType } = args
 
@@ -19,10 +20,43 @@ class EventLogger {
     this.subSystemType = subSystem
     this.logLevel = logLevel
     this.initiatorType = initiatorType
-    this.debug = Debug(this.namespace)
+  }
+
+  private localListener(event: SimpleLogEvent) {
+    const { level, data, type, ...rest } = event
+    EventLogger.LOGGERS.get(this.namespace).logl(level ?? this.logLevel ?? LogLevel.INFO, data, {
+      ...rest,
+      ...(this.system && { system: this.system }),
+      ...(this.subSystemType && { subSystem: this.subSystemType }),
+    })
+    if (this.context?.agent) {
+      void this.context.agent.emit(type, event)
+    }
+  }
+
+  public simple = (options?: Omit<SimpleLogOptions, 'namespace'>): ISimpleLogger<unknown> => {
+    const logger = EventLogger.LOGGERS.options(
+      this.namespace,
+      options ?? {
+        eventName: this.namespace,
+        methods: [LogMethod.EVENT],
+      },
+    ).get(this.namespace) as SimpleLogger
+    if (!logger.eventEmitter.listeners(logger.options.eventName ?? this.namespace).includes(this.localListener)) {
+      logger.eventEmitter.addListener(logger.options.eventName ?? this.namespace, this.localListener)
+    }
+    return logger
   }
 
   public logEvent = async (event: LoggingEvent): Promise<void> => {
+    const eventData = await this.eventData(event)
+    EventLogger.LOGGERS.get(this.namespace).logl(eventData.level ?? LogLevel.INFO, JSON.stringify(eventData.data), eventData)
+    if (this.context?.agent) {
+      await this.context.agent.emit(event.type, eventData)
+    }
+  }
+
+  private eventData = async (event: LoggingEvent): Promise<NonPersistedAuditLoggingEvent> => {
     if (!this.system || event.data.system) {
       return Promise.reject(Error('Required system is not present'))
     }
@@ -31,19 +65,14 @@ class EventLogger {
       return Promise.reject(Error('Required sub system type is not present'))
     }
 
-    const eventData: NonPersistedAuditLoggingEvent = {
+    const result: NonPersistedAuditLoggingEvent = {
       ...event.data,
       ...(!event.data.level && { level: this.logLevel }),
       ...(!event.data.system && { system: this.system }),
       ...(!event.data.subSystemType && { subSystemType: this.subSystemType }),
       ...(!event.data.initiatorType && { initiatorType: this.initiatorType }),
     }
-
-    // TODO make default behaviour more configurable once we have a logger registry
-    this.debug('logging event:', event)
-    if (this.context?.agent) {
-      await this.context.agent.emit(event.type, eventData)
-    }
+    return result
   }
 }
 
