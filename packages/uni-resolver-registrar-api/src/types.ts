@@ -25,9 +25,9 @@ export interface DidRegistrationUpdateRequest {
 
 export interface DidRegistrationDeactivateRequest {
   did: string
-  jobId: string
-  options: DidRegistrationOptions
-  secret: DidRegistrationSecret
+  jobId?: string
+  options?: DidRegistrationOptions
+  secret?: DidRegistrationSecret
 }
 
 export type DidDocumentOperation = 'setDidDocument' | 'addToDidDocument' | 'removeFromDidDocument' | string

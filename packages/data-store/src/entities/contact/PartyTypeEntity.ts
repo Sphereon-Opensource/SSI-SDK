@@ -1,6 +1,6 @@
 import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, Index, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { PartyEntity } from './PartyEntity'
-import { PartyOrigin, PartyTypeEnum, ValidationConstraint } from '../../types'
+import { PartyOrigin, PartyTypeType, ValidationConstraint } from '../../types'
 import { IsNotEmpty, Validate, validate, ValidationError } from 'class-validator'
 import { IsNonEmptyStringConstraint } from '../validators'
 import { getConstraint } from '../../utils/ValidatorUtils'
@@ -11,10 +11,10 @@ export class PartyTypeEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum', { name: 'type', enum: PartyTypeEnum, nullable: false, unique: false })
-  type!: PartyTypeEnum
+  @Column('simple-enum', { name: 'type', enum: PartyTypeType, nullable: false, unique: false })
+  type!: PartyTypeType
 
-  @Column('simple-enum', { name: 'origin', enum: PartyOrigin, default: 'external', nullable: false, unique: false })
+  @Column('simple-enum', { name: 'origin', enum: PartyOrigin, default: 'EXTERNAL', nullable: false, unique: false })
   origin!: PartyOrigin
 
   @Column({ name: 'name', length: 255, nullable: false, unique: true })

@@ -3,7 +3,7 @@ import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-express
 import { TAgent } from '@veramo/core'
 
 import express, { Express, Router } from 'express'
-import { createDidEndpoint, deactivateDidEndpoint, getDidMethodsEndpoint, resolveDidEndpoint } from './api-functions'
+import { createDidEndpoint, deleteDidEndpoint, deactivateDidEndpoint, getDidMethodsEndpoint, resolveDidEndpoint } from './api-functions'
 import { IDidAPIOpts, IRequiredPlugins } from './types'
 
 export class UniResolverApiServer {
@@ -34,7 +34,8 @@ export class UniResolverApiServer {
     }
     if (features.includes('did-persist')) {
       createDidEndpoint(this.router, context, opts?.endpointOpts?.createDid)
-      deactivateDidEndpoint(this.router, context, opts?.endpointOpts?.deactivateDid) // not in spec.
+      deleteDidEndpoint(this.router, context, opts?.endpointOpts?.deactivateDid) // not in spec.
+      deactivateDidEndpoint(this.router, context, opts?.endpointOpts?.deactivateDid)
     }
     this._express.use(opts?.endpointOpts?.basePath ?? '', this.router)
   }
