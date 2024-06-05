@@ -360,9 +360,6 @@ importers:
 
   packages/data-store:
     dependencies:
-      '@sphereon/pex':
-        specifier: ^3.3.3
-        version: 3.3.3
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -375,9 +372,6 @@ importers:
       '@veramo/utils':
         specifier: 4.2.0
         version: 4.2.0
-      blakejs:
-        specifier: ^1.1.1
-        version: 1.2.1
       class-validator:
         specifier: ^0.14.0
         version: 0.14.1
@@ -1051,173 +1045,6 @@ importers:
         specifier: ^13.2.1
         version: 13.5.4
 
-  packages/pd-manager:
-    dependencies:
-      '@sphereon/pex':
-        specifier: ^3.3.3
-        version: 3.3.3
-      '@sphereon/pex-models':
-        specifier: ^2.2.4
-        version: 2.2.4
-      '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
-        version: link:../data-store
-      cross-fetch:
-        specifier: ^3.1.8
-        version: 3.1.8
-      debug:
-        specifier: ^4.3.4
-        version: 4.3.4
-      semver:
-        specifier: ^7.6.2
-        version: 7.6.2
-      typeorm:
-        specifier: ^0.3.20
-        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-    devDependencies:
-      '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
-        version: link:../agent-config
-      '@types/semver':
-        specifier: ^7.5.8
-        version: 7.5.8
-      '@veramo/remote-client':
-        specifier: 4.2.0
-        version: 4.2.0
-      '@veramo/remote-server':
-        specifier: 4.2.0
-        version: 4.2.0(express@4.19.2)
-
-  packages/pd-manager-rest-api:
-    dependencies:
-      '@sphereon/ssi-express-support':
-        specifier: workspace:*
-        version: link:../ssi-express-support
-      '@sphereon/ssi-sdk.core':
-        specifier: workspace:*
-        version: link:../ssi-sdk-core
-      '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
-        version: link:../data-store
-      '@sphereon/ssi-sdk.pd-manager':
-        specifier: workspace:*
-        version: link:../pd-manager
-      '@sphereon/ssi-types':
-        specifier: workspace:*
-        version: link:../ssi-types
-      '@veramo/core':
-        specifier: 4.2.0
-        version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
-      body-parser:
-        specifier: ^1.19.0
-        version: 1.20.2
-      casbin:
-        specifier: ^5.26.2
-        version: 5.29.0
-      cookie-parser:
-        specifier: ^1.4.5
-        version: 1.4.6
-      cors:
-        specifier: ^2.8.5
-        version: 2.8.5
-      cross-fetch:
-        specifier: ^3.1.8
-        version: 3.1.8
-      debug:
-        specifier: ^4.3.4
-        version: 4.3.4
-      dotenv-flow:
-        specifier: ^3.2.0
-        version: 3.3.0
-      express:
-        specifier: ^4.18.2
-        version: 4.19.2
-      short-uuid:
-        specifier: ^4.2.2
-        version: 4.2.2
-      uuid:
-        specifier: ^9.0.1
-        version: 9.0.1
-    devDependencies:
-      '@decentralized-identity/ion-sdk':
-        specifier: ^0.6.0
-        version: 0.6.0
-      '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
-        version: link:../agent-config
-      '@types/body-parser':
-        specifier: ^1.19.2
-        version: 1.19.5
-      '@types/cookie-parser':
-        specifier: ^1.4.3
-        version: 1.4.7
-      '@types/cors':
-        specifier: ^2.8.13
-        version: 2.8.17
-      '@types/debug':
-        specifier: ^4.1.7
-        version: 4.1.12
-      '@types/dotenv-flow':
-        specifier: ^3.2.0
-        version: 3.3.3
-      '@types/express':
-        specifier: ^4.17.13
-        version: 4.17.21
-      '@types/express-http-proxy':
-        specifier: ^1.6.3
-        version: 1.6.6
-      '@types/morgan':
-        specifier: ^1.9.4
-        version: 1.9.9
-      '@types/node':
-        specifier: ^18.15.0
-        version: 18.19.31
-      '@types/passport':
-        specifier: ^1.0.12
-        version: 1.0.16
-      '@types/passport-azure-ad':
-        specifier: ^4.3.1
-        version: 4.3.6
-      '@types/uuid':
-        specifier: ^9.0.1
-        version: 9.0.8
-      '@veramo/data-store':
-        specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@veramo/did-manager':
-        specifier: 4.2.0
-        version: 4.2.0
-      '@veramo/did-provider-ion':
-        specifier: 4.2.0
-        version: 4.2.0(@sphereon/react-native-argon2@2.0.9)(react-native@0.74.0)
-      '@veramo/key-manager':
-        specifier: 4.2.0
-        version: 4.2.0
-      '@veramo/kms-local':
-        specifier: 4.2.0
-        version: 4.2.0
-      '@veramo/utils':
-        specifier: 4.2.0
-        version: 4.2.0
-      morgan:
-        specifier: ^1.10.0
-        version: 1.10.0
-      nock:
-        specifier: ^13.2.1
-        version: 13.5.4
-      passport:
-        specifier: ^0.6.0
-        version: 0.6.0
-      passport-http-bearer:
-        specifier: ^1.0.1
-        version: 1.0.1
-      ts-node:
-        specifier: ^10.9.1
-        version: 10.9.2(@types/node@18.19.31)(typescript@5.4.2)
-      typeorm:
-        specifier: ^0.3.20
-        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-
   packages/presentation-exchange:
     dependencies:
       '@sphereon/pex':
@@ -1229,9 +1056,9 @@ importers:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.19.0
         version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.data-store':
+      '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
-        version: link:../data-store
+        version: link:../kv-store
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1347,67 +1174,6 @@ importers:
         specifier: ^1.6.3
         version: 1.6.6
 
-  packages/sd-jwt:
-    dependencies:
-      '@sd-jwt/core':
-        specifier: ^0.6.1
-        version: 0.6.1
-      '@sd-jwt/sd-jwt-vc':
-        specifier: ^0.6.1
-        version: 0.6.1
-      '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.19.1-next.48
-        version: 0.19.1-next.48(msrcrypto@1.5.8)
-      '@veramo/utils':
-        specifier: 4.2.0
-        version: 4.2.0
-    devDependencies:
-      '@sd-jwt/decode':
-        specifier: ^0.6.1
-        version: 0.6.1
-      '@sd-jwt/types':
-        specifier: ^0.6.1
-        version: 0.6.1
-      '@sd-jwt/utils':
-        specifier: ^0.6.1
-        version: 0.6.1
-      '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.19.1-next.48
-        version: 0.19.1-next.48(msrcrypto@1.5.8)
-      '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.19.1-next.48
-        version: 0.19.1-next.48
-      '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.19.1-next.48
-        version: 0.19.1-next.48(msrcrypto@1.5.8)
-      '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.19.1-next.48
-        version: 0.19.1-next.48(msrcrypto@1.5.8)
-      '@types/node':
-        specifier: 18.15.3
-        version: 18.15.3
-      '@veramo/core':
-        specifier: 4.2.0
-        version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
-      '@veramo/data-store':
-        specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@veramo/did-manager':
-        specifier: 4.2.0
-        version: 4.2.0
-      '@veramo/did-resolver':
-        specifier: 4.2.0
-        version: 4.2.0
-      did-resolver:
-        specifier: ^4.1.0
-        version: 4.1.0
-      typeorm:
-        specifier: ^0.3.20
-        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
-      typescript:
-        specifier: 5.4.2
-        version: 5.4.2
-
   packages/siopv2-oid4vp-common:
     dependencies:
       '@sphereon/did-auth-siop':
@@ -1447,9 +1213,6 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
-      '@sphereon/ssi-sdk.pd-manager':
-        specifier: workspace:*
-        version: link:../pd-manager
       '@sphereon/ssi-sdk.presentation-exchange':
         specifier: workspace:*
         version: link:../presentation-exchange
@@ -1523,9 +1286,6 @@ importers:
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
-      '@sphereon/ssi-sdk.pd-manager':
-        specifier: workspace:*
-        version: link:../pd-manager
       '@sphereon/ssi-sdk.presentation-exchange':
         specifier: workspace:*
         version: link:../presentation-exchange
@@ -1587,9 +1347,6 @@ importers:
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
-      '@sphereon/ssi-sdk.pd-manager':
-        specifier: workspace:*
-        version: link:../pd-manager
       '@sphereon/ssi-sdk.presentation-exchange':
         specifier: workspace:*
         version: link:../presentation-exchange
@@ -5068,7 +4825,6 @@ packages:
   /@humanwhocodes/config-array@0.5.0:
     resolution: {integrity: sha512-FagtKFz74XrTl7y6HCzQpwDfXP0yhxe9lHLD1UZxjvZIcbyRz8zTFF/yYNfSfzU414eDwZ1SrO0Qvtyf+wFMQg==}
     engines: {node: '>=10.10.0'}
-    deprecated: Use @eslint/config-array instead
     dependencies:
       '@humanwhocodes/object-schema': 1.2.1
       debug: 4.3.4
@@ -5084,7 +4840,6 @@ packages:
 
   /@humanwhocodes/object-schema@1.2.1:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
-    deprecated: Use @eslint/object-schema instead
     dev: true
 
   /@humanwhocodes/object-schema@2.0.3:
@@ -5687,7 +5442,7 @@ packages:
       read-package-json: 6.0.4
       resolve-from: 5.0.0
       rimraf: 4.4.1
-      semver: 7.6.2
+      semver: 7.6.0
       signal-exit: 3.0.7
       slash: 3.0.0
       ssri: 9.0.1
@@ -5769,7 +5524,7 @@ packages:
       nopt: 5.0.0
       npmlog: 5.0.1
       rimraf: 3.0.2
-      semver: 7.6.2
+      semver: 7.6.0
       tar: 6.2.1
     transitivePeerDependencies:
       - encoding
@@ -5857,7 +5612,7 @@ packages:
     dependencies:
       '@types/debug': 4.1.12
       debug: 4.3.4
-      semver: 7.6.2
+      semver: 7.6.0
       superstruct: 1.0.4
     transitivePeerDependencies:
       - supports-color
@@ -5870,7 +5625,7 @@ packages:
       '@ethereumjs/tx': 4.2.0
       '@types/debug': 4.1.12
       debug: 4.3.4
-      semver: 7.6.2
+      semver: 7.6.0
       superstruct: 1.0.4
     transitivePeerDependencies:
       - supports-color
@@ -5981,13 +5736,13 @@ packages:
     resolution: {integrity: sha512-8KG5RD0GVP4ydEzRn/I4BNDuxDtqVbOdm8675T49OIG/NGhaK0pjPX7ZcDlvKYbA+ulvVK3ztfcF4uBdOxuJbQ==}
     dependencies:
       '@gar/promisify': 1.1.3
-      semver: 7.6.2
+      semver: 7.6.0
 
   /@npmcli/fs@3.1.0:
     resolution: {integrity: sha512-7kZUAaLscfgbwBQRbvdMYaZOWyMEcPTH/tJjnyAWJ/dvvs9Ef+CERx/qJb9GExJpl1qipaDGn7KqHnFGGixd0w==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
-      semver: 7.6.2
+      semver: 7.6.0
     dev: true
 
   /@npmcli/git@5.0.6:
@@ -6000,7 +5755,7 @@ packages:
       proc-log: 4.2.0
       promise-inflight: 1.0.1
       promise-retry: 2.0.1
-      semver: 7.6.2
+      semver: 7.6.0
       which: 4.0.0
     transitivePeerDependencies:
       - bluebird
@@ -6083,7 +5838,7 @@ packages:
       enquirer: 2.3.6
       ignore: 5.3.1
       nx: 18.3.3
-      semver: 7.6.2
+      semver: 7.6.0
       tmp: 0.2.3
       tslib: 2.6.2
       yargs-parser: 21.1.1
@@ -6295,7 +6050,7 @@ packages:
       '@octokit/request-error': 3.0.3
       '@octokit/types': 9.3.2
       is-plain-object: 5.0.0
-      node-fetch: 2.7.0
+      node-fetch: 2.6.7
       universal-user-agent: 6.0.1
     transitivePeerDependencies:
       - encoding
@@ -6424,7 +6179,7 @@ packages:
       hermes-profile-transformer: 0.0.6
       node-stream-zip: 1.15.0
       ora: 5.4.1
-      semver: 7.6.2
+      semver: 7.6.0
       strip-ansi: 5.2.0
       wcwidth: 1.0.1
       yaml: 2.4.1
@@ -6501,7 +6256,7 @@ packages:
       node-fetch: 2.7.0
       open: 6.4.0
       ora: 5.4.1
-      semver: 7.6.2
+      semver: 7.6.0
       shell-quote: 1.8.1
       sudo-prompt: 9.2.1
     transitivePeerDependencies:
@@ -6533,7 +6288,7 @@ packages:
       fs-extra: 8.1.0
       graceful-fs: 4.2.11
       prompts: 2.4.2
-      semver: 7.6.2
+      semver: 7.6.0
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -6788,16 +6543,6 @@ packages:
       '@noble/hashes': 1.2.0
       '@scure/base': 1.1.6
 
-  /@sd-jwt/core@0.6.1:
-    resolution: {integrity: sha512-egFTb23o6BGWF93vnjopN02rSiC1HOOnkk9BI8Kao3jz9ipZAHdO6wF7gwfZm5Nlol/Kd1/KSLhbOUPYt++FjA==}
-    engines: {node: '>=16'}
-    dependencies:
-      '@sd-jwt/decode': 0.6.1
-      '@sd-jwt/present': 0.6.1
-      '@sd-jwt/types': 0.6.1
-      '@sd-jwt/utils': 0.6.1
-    dev: false
-
   /@sd-jwt/decode@0.6.1:
     resolution: {integrity: sha512-QgTIoYd5zyKKLgXB4xEYJTrvumVwtsj5Dog0v0L9UH9ZvHekDaeexS247X7A4iSdzTvmZzUpGskgABOa4D8NmQ==}
     engines: {node: '>=16'}
@@ -6812,13 +6557,6 @@ packages:
       '@sd-jwt/decode': 0.6.1
       '@sd-jwt/types': 0.6.1
       '@sd-jwt/utils': 0.6.1
-
-  /@sd-jwt/sd-jwt-vc@0.6.1:
-    resolution: {integrity: sha512-eF7NAFvedBCx+vrw4TVY3evUz5rAG8/FtB/CUudYEigKcpanLgfuNGhk93D45k+lLDG0b24w+qorqbpLZzHA2g==}
-    engines: {node: '>=16'}
-    dependencies:
-      '@sd-jwt/core': 0.6.1
-    dev: false
 
   /@sd-jwt/types@0.6.1:
     resolution: {integrity: sha512-LKpABZJGT77jNhOLvAHIkNNmGqXzyfwBT+6r+DN9zNzMx1CzuNR0qXk1GMUbast9iCfPkGbnEpUv/jHTBvlIvg==}
@@ -6901,7 +6639,7 @@ packages:
       read-pkg: 5.2.0
       registry-auth-token: 5.0.2
       semantic-release: 19.0.5
-      semver: 7.6.2
+      semver: 7.6.0
       tempy: 1.0.1
     dev: true
 
@@ -7321,30 +7059,6 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.19.1-next.48(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-mccVA2CoxUWqWgU774roXNvWCG2Zp5sAPO/pDJWZsZXxu3/rCMBCs2GMsHXOG/e9UtKAHtGNgWcD7GxzSGvvoQ==}
-    dependencies:
-      '@ethersproject/random': 5.7.0
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48(msrcrypto@1.5.8)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.1-next.48(msrcrypto@1.5.8)
-      '@sphereon/ssi-types': link:packages/ssi-types
-      '@stablelib/ed25519': 1.0.3
-      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
-      '@veramo/did-manager': 4.2.0
-      base64url: 3.0.1
-      debug: 4.3.4
-      did-resolver: 4.1.0
-      elliptic: 6.5.4
-    transitivePeerDependencies:
-      - encoding
-      - expo
-      - expo-crypto
-      - msrcrypt
-      - msrcrypto
-      - react-native-securerandom
-      - supports-color
-    dev: true
-
   /@sphereon/ssi-sdk-ext.did-provider-key@0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-k0mtNbnDsTmQCDkkhWMxEpUus/+boaHokqnwb/dr0WsrbNDJi1NmM2DzKPa7wl5zyh11BoQq0A7EMVNVaJsCyA==}
     dependencies:
@@ -7401,18 +7115,6 @@ packages:
 
   /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.19.0:
     resolution: {integrity: sha512-EvSUNOJnzQSGTcDSdvAk5AlqqzIAtfpkwurYo7EMZP+T9EYcwGtycz/qD0CT/OEaW4HTzcrgyjDlLL34o5X4+A==}
-    dependencies:
-      '@sphereon/ssi-types': link:packages/ssi-types
-      base64url: 3.0.1
-      debug: 4.3.4
-      did-resolver: 4.1.0
-      uint8arrays: 3.1.1
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
-  /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.19.1-next.48:
-    resolution: {integrity: sha512-FuLKSOzG/o4+EZM+FSOz7ZiJhDEwM2H9Bn/RyxDfn2iWl3Dit4xHsv+m3mtiMNWpeTUeWm55QfijsPS2aLjXqQ==}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       base64url: 3.0.1
@@ -7493,29 +7195,6 @@ packages:
       - react-native-securerandom
       - supports-color
 
-  /@sphereon/ssi-sdk-ext.did-utils@0.19.1-next.48(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-F/QJq+ET95ptlTqgrfsAeCSS9pSJlvzGm07YywcoKBz/3+BQTYGONcAblqGYERMmQmbAy9jNQKidlDor0d2Tig==}
-    dependencies:
-      '@ethersproject/transactions': 5.7.0
-      '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.1-next.48(msrcrypto@1.5.8)
-      '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
-      '@stablelib/ed25519': 1.0.3
-      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
-      '@veramo/utils': 4.2.0
-      did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
-      did-resolver: 4.1.0
-      elliptic: 6.5.4
-      uint8arrays: 3.1.1
-    transitivePeerDependencies:
-      - encoding
-      - expo
-      - expo-crypto
-      - msrcrypt
-      - msrcrypto
-      - react-native-securerandom
-      - supports-color
-
   /@sphereon/ssi-sdk-ext.key-manager@0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-dbct8S6faGM175epFzNka+XlZnK6qKcoK8mSVFda3ROnH3Vz0HH1DVdQ5aJd+6x8DyMk+wGSHS1BmIH/rCthBg==}
     dependencies:
@@ -7531,23 +7210,6 @@ packages:
       - msrcrypto
       - react-native-securerandom
       - supports-color
-
-  /@sphereon/ssi-sdk-ext.key-manager@0.19.1-next.48(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-CLrNMpn6kOtPO3t4jx15AtbahKJ1b6/G6RSKZcyBAIv1wcBvYWNQ7jBL1RECRegk4xFeN+LSDFg7E+4kwIWF9Q==}
-    dependencies:
-      '@sphereon/ssi-sdk-ext.kms-local': 0.19.1-next.48(msrcrypto@1.5.8)
-      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
-      '@veramo/key-manager': 4.2.0
-    transitivePeerDependencies:
-      - '@mattrglobal/bbs-signatures'
-      - encoding
-      - expo
-      - expo-crypto
-      - msrcrypt
-      - msrcrypto
-      - react-native-securerandom
-      - supports-color
-    dev: true
 
   /@sphereon/ssi-sdk-ext.key-utils@0.18.2(msrcrypto@1.5.8):
     resolution: {integrity: sha512-C7gBp4lhpIr+R8hQngu6h6okbYtffRK123T2Gt389pn176BHh6HzFdxDffxSq5MTEL5gwaXcCDdPHjuWEZ/5gQ==}
@@ -7602,32 +7264,6 @@ packages:
       - react-native-securerandom
       - supports-color
 
-  /@sphereon/ssi-sdk-ext.key-utils@0.19.1-next.48(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-YSZoLOmKJ8WWImRDXqxP/Is1/KOT3vuSpuSFOb+4yoIP48FxUBxbn3GOdCTKQZObzfq4P/SRtXoSuBEhuVvbww==}
-    dependencies:
-      '@ethersproject/random': 5.7.0
-      '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@stablelib/ed25519': 1.0.3
-      '@stablelib/sha256': 1.0.1
-      '@stablelib/sha512': 1.0.1
-      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
-      base64url: 3.0.1
-      debug: 4.3.4
-      did-resolver: 4.1.0
-      elliptic: 6.5.4
-      lodash.isplainobject: 4.0.6
-      multiformats: 9.9.0
-      uint8arrays: 3.1.1
-      varint: 6.0.0
-      web-encoding: 1.1.5
-    transitivePeerDependencies:
-      - expo
-      - expo-crypto
-      - msrcrypt
-      - msrcrypto
-      - react-native-securerandom
-      - supports-color
-
   /@sphereon/ssi-sdk-ext.kms-local@0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-AnmhpnFBnKMLB8EN1juU16GxLxzjlEO9SeOZ1eY/dIB1weVaXy2hqUUS0xbX5pzqwvZyAotHD2+7Br76x7VrCQ==}
     peerDependencies:
@@ -7653,33 +7289,6 @@ packages:
       - msrcrypto
       - react-native-securerandom
       - supports-color
-
-  /@sphereon/ssi-sdk-ext.kms-local@0.19.1-next.48(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-NNLX0ycG5/zoJ/lLegIav7o5lzCZaXi+0z+LNexMCCDdMp+EEazFcVXjgyNN/2iSR94OYbe1focAapPG+Akn0w==}
-    peerDependencies:
-      '@mattrglobal/bbs-signatures': ^1.3.1
-    peerDependenciesMeta:
-      '@mattrglobal/bbs-signatures':
-        optional: true
-    dependencies:
-      '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48(msrcrypto@1.5.8)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.1-next.48(msrcrypto@1.5.8)
-      '@trust/keyto': 2.0.0-alpha1
-      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
-      '@veramo/key-manager': 4.2.0
-      '@veramo/kms-local': 4.2.0
-      elliptic: 6.5.4
-      uint8arrays: 3.1.1
-    transitivePeerDependencies:
-      - encoding
-      - expo
-      - expo-crypto
-      - msrcrypt
-      - msrcrypto
-      - react-native-securerandom
-      - supports-color
-    dev: true
 
   /@sphereon/vc-status-list@7.0.0-next.0:
     resolution: {integrity: sha512-4GIZq12SXbEbO4vCh5TwWzWk7tviDUP8aOzRGsEw6UW2344qZ31CLsU+bHurdnG4OlLRyosv4khN1ha6OiJHZQ==}
@@ -8805,7 +8414,7 @@ packages:
       functional-red-black-tree: 1.0.1
       ignore: 5.3.1
       regexpp: 3.2.0
-      semver: 7.6.2
+      semver: 7.6.0
       tsutils: 3.21.0(typescript@5.4.2)
       typescript: 5.4.2
     transitivePeerDependencies:
@@ -8958,7 +8567,7 @@ packages:
       debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.6.2
+      semver: 7.6.0
       tsutils: 3.21.0(typescript@5.4.2)
       typescript: 5.4.2
     transitivePeerDependencies:
@@ -8979,7 +8588,7 @@ packages:
       debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.6.2
+      semver: 7.6.0
       tsutils: 3.21.0(typescript@5.4.2)
       typescript: 5.4.2
     transitivePeerDependencies:
@@ -9000,7 +8609,7 @@ packages:
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.4.2)
       eslint: 8.57.0
       eslint-scope: 5.1.1
-      semver: 7.6.2
+      semver: 7.6.0
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -10436,7 +10045,7 @@ packages:
   /builtins@5.1.0:
     resolution: {integrity: sha512-SW9lzGTLvWTP1AY8xeAMZimqDrIaSdLQUcVr9DMef51niJ022Ri87SwRRKYm4A6iHfkPaiVUu/Duw2Wc4J7kKg==}
     dependencies:
-      semver: 7.6.2
+      semver: 7.6.0
     dev: true
 
   /bunyan@1.8.15:
@@ -11096,7 +10705,7 @@ packages:
       handlebars: 4.7.8
       json-stringify-safe: 5.0.1
       meow: 8.1.2
-      semver: 7.6.2
+      semver: 7.6.0
       split: 1.0.1
     dev: true
 
@@ -12323,7 +11932,7 @@ packages:
       optionator: 0.9.3
       progress: 2.0.3
       regexpp: 3.2.0
-      semver: 7.6.2
+      semver: 7.6.0
       strip-ansi: 6.0.1
       strip-json-comments: 3.1.1
       table: 6.8.2
@@ -13258,7 +12867,7 @@ packages:
     hasBin: true
     dependencies:
       meow: 8.1.2
-      semver: 7.6.2
+      semver: 7.6.0
     dev: true
 
   /git-up@7.0.0:
@@ -13309,7 +12918,6 @@ packages:
 
   /glob@6.0.4:
     resolution: {integrity: sha512-MKZeRNyYZAVVVG1oZeLaWie1uweH40m9AZwIwxyPbTSX4hHrVYSzLg0Ro5Z5R7XKkIX+Cc6oD1rqeDJnwsB8/A==}
-    deprecated: Glob versions prior to v9 are no longer supported
     requiresBuild: true
     dependencies:
       inflight: 1.0.6
@@ -13788,7 +13396,7 @@ packages:
       promzard: 1.0.1
       read: 2.1.0
       read-package-json: 6.0.4
-      semver: 7.6.2
+      semver: 7.6.0
       validate-npm-package-license: 3.0.4
       validate-npm-package-name: 5.0.0
     dev: true
@@ -14255,7 +13863,7 @@ packages:
       '@babel/parser': 7.24.4
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
-      semver: 7.6.2
+      semver: 7.6.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -14302,7 +13910,7 @@ packages:
     hasBin: true
     dependencies:
       async: 3.2.5
-      chalk: 4.1.2
+      chalk: 4.1.0
       filelist: 1.0.4
       minimatch: 3.1.2
     dev: true
@@ -14540,7 +14148,7 @@ packages:
     resolution: {integrity: sha512-LMIgiIrhigmPrs03JHpxUh2yISK3vLFPkAodPeo0+BuF7wA2FoQbkEg1u8gBYBThncu7e1oEDUfIXVuTqLRUjw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      chalk: 4.1.2
+      chalk: 4.1.0
       diff-sequences: 29.6.3
       jest-get-type: 29.6.3
       pretty-format: 29.7.0
@@ -15026,7 +14634,7 @@ packages:
       jest-util: 27.5.1
       natural-compare: 1.4.0
       pretty-format: 27.5.1
-      semver: 7.6.2
+      semver: 7.6.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -15054,7 +14662,7 @@ packages:
       jest-util: 29.7.0
       natural-compare: 1.4.0
       pretty-format: 29.7.0
-      semver: 7.6.2
+      semver: 7.6.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -15537,7 +15145,7 @@ packages:
       lodash.isstring: 4.0.1
       lodash.once: 4.1.1
       ms: 2.1.3
-      semver: 7.6.2
+      semver: 7.6.0
     dev: false
 
   /jwa@1.4.1:
@@ -15776,7 +15384,7 @@ packages:
       npm-package-arg: 10.1.0
       npm-registry-fetch: 14.0.5
       proc-log: 3.0.0
-      semver: 7.6.2
+      semver: 7.6.0
       sigstore: 1.9.0
       ssri: 10.0.5
     transitivePeerDependencies:
@@ -16024,7 +15632,7 @@ packages:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
     engines: {node: '>=10'}
     dependencies:
-      semver: 7.6.2
+      semver: 7.6.0
     dev: true
 
   /make-error@1.3.6:
@@ -16787,7 +16395,7 @@ packages:
       inquirer: 7.3.3
       make-promises-safe: 5.1.0
       rimraf: 3.0.2
-      semver: 7.6.2
+      semver: 7.6.0
       toml: 3.0.0
       ts-typed-json: 0.3.2
       validate-npm-package-license: 3.0.4
@@ -16825,7 +16433,7 @@ packages:
     resolution: {integrity: sha512-CPMcGa+y33xuL1E0TcNIu4YyaZCxnnvkVaEXrsosR3FxN+fV8xvb7Mzpb7IgKler10qeMkE6+Dp8qJhpzdq35g==}
     engines: {node: '>=10'}
     dependencies:
-      semver: 7.6.2
+      semver: 7.6.0
 
   /node-abort-controller@3.1.1:
     resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
@@ -16911,7 +16519,7 @@ packages:
       make-fetch-happen: 13.0.0
       nopt: 7.2.0
       proc-log: 3.0.0
-      semver: 7.6.2
+      semver: 7.6.0
       tar: 6.1.11
       which: 4.0.0
     transitivePeerDependencies:
@@ -16931,7 +16539,7 @@ packages:
       nopt: 5.0.0
       npmlog: 6.0.2
       rimraf: 3.0.2
-      semver: 7.6.2
+      semver: 7.6.0
       tar: 6.2.1
       which: 2.0.2
     transitivePeerDependencies:
@@ -17009,7 +16617,7 @@ packages:
     dependencies:
       hosted-git-info: 4.1.0
       is-core-module: 2.13.1
-      semver: 7.6.2
+      semver: 7.6.0
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -17019,7 +16627,7 @@ packages:
     dependencies:
       hosted-git-info: 6.1.1
       is-core-module: 2.13.1
-      semver: 7.6.2
+      semver: 7.6.0
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -17029,7 +16637,7 @@ packages:
     dependencies:
       hosted-git-info: 7.0.1
       is-core-module: 2.13.1
-      semver: 7.6.2
+      semver: 7.6.0
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -17059,7 +16667,7 @@ packages:
     resolution: {integrity: sha512-W29RiK/xtpCGqn6f3ixfRYGk+zRyr+Ew9F2E20BfXxT5/euLdA/Nm7fO7OeTGuAmTs30cpgInyJ0cYe708YTZw==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
-      semver: 7.6.2
+      semver: 7.6.0
     dev: true
 
   /npm-normalize-package-bin@1.0.1:
@@ -17077,7 +16685,7 @@ packages:
     dependencies:
       hosted-git-info: 6.1.1
       proc-log: 3.0.0
-      semver: 7.6.2
+      semver: 7.6.0
       validate-npm-package-name: 5.0.0
     dev: true
 
@@ -17087,7 +16695,7 @@ packages:
     dependencies:
       hosted-git-info: 7.0.1
       proc-log: 4.2.0
-      semver: 7.6.2
+      semver: 7.6.0
       validate-npm-package-name: 5.0.0
     dev: true
 
@@ -17096,7 +16704,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       hosted-git-info: 3.0.8
-      semver: 7.6.2
+      semver: 7.6.0
       validate-npm-package-name: 3.0.0
     dev: true
 
@@ -17125,7 +16733,7 @@ packages:
       npm-install-checks: 6.3.0
       npm-normalize-package-bin: 3.0.1
       npm-package-arg: 11.0.2
-      semver: 7.6.2
+      semver: 7.6.0
     dev: true
 
   /npm-registry-fetch@14.0.5:
@@ -17290,7 +16898,7 @@ packages:
       '@yarnpkg/parsers': 3.0.0-rc.46
       '@zkochan/js-yaml': 0.0.6
       axios: 1.6.8
-      chalk: 4.1.2
+      chalk: 4.1.0
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       cliui: 8.0.1
@@ -17310,7 +16918,7 @@ packages:
       npm-run-path: 4.0.1
       open: 8.4.2
       ora: 5.3.0
-      semver: 7.6.2
+      semver: 7.6.0
       string-width: 4.2.3
       strong-log-transformer: 2.1.0
       tar-stream: 2.2.0
@@ -17519,7 +17127,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       bl: 4.1.0
-      chalk: 4.1.2
+      chalk: 4.1.0
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       is-interactive: 1.0.0
@@ -18994,12 +18602,6 @@ packages:
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
-    dev: true
-
-  /semver@7.6.2:
-    resolution: {integrity: sha512-FNAIBWCx9qcRhoHcgcJ0gvU7SN1lYU2ZXuSfl04bSC5OpvDHFyJCjdNHomPXxjQlCBU67YW64PzY7/VIEH7F2w==}
-    engines: {node: '>=10'}
-    hasBin: true
 
   /send@0.18.0:
     resolution: {integrity: sha512-qqWzuOjSFOuqPjFe4NOsMLafToQQwBSOEpS+FwEt3A2V3vKubTquT3vmLTQpFgMXp8AlFWFuP1qKaJZOtPpVXg==}
@@ -19944,7 +19546,7 @@ packages:
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
-      semver: 7.6.2
+      semver: 7.6.0
       typescript: 4.9.5
       yargs-parser: 20.2.9
     dev: true
