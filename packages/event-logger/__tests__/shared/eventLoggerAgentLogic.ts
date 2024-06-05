@@ -1,9 +1,9 @@
+import {LogLevel} from "@sphereon/ssi-types";
 import { TAgent } from '@veramo/core'
 import {
   ActionType,
   AuditLoggingEvent,
   InitiatorType,
-  LogLevel,
   PartyCorrelationType,
   SubSystem,
   System,
