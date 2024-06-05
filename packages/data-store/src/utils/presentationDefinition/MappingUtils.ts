@@ -1,7 +1,7 @@
 import { PresentationDefinitionItemEntity } from '../../entities/presentationDefinition/PresentationDefinitionItemEntity'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { PartialPresentationDefinitionItem, PresentationDefinitionItem } from '../../types'
-import { createHash } from 'crypto'
+import md5 from 'md5'
 
 export const presentationDefinitionItemFrom = (entity: PresentationDefinitionItemEntity) => {
   const item: PresentationDefinitionItem = {
@@ -34,7 +34,7 @@ export const presentationDefinitionEntityItemFrom = (item: PartialPresentationDe
 }
 
 function hashPayload(payload: IPresentationDefinition): string {
-  return createHash('md5').update(JSON.stringify(payload)).digest('hex')
+  return md5(JSON.stringify(payload))
 }
 
 export function isPresentationDefinitionEqual(left: PartialPresentationDefinitionItem, right: PartialPresentationDefinitionItem): boolean {
