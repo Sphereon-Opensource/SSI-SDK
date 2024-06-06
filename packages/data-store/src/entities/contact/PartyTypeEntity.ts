@@ -14,8 +14,7 @@ export class PartyTypeEntity {
   @Column('simple-enum', { name: 'type', enum: PartyTypeType, nullable: false })
   type!: PartyTypeType
 
-  //FIXME what is the use of a default if all the interfaces require the value to be present?
-  @Column('simple-enum', { name: 'origin', enum: PartyOrigin, default: PartyOrigin.EXTERNAL, nullable: false, unique: false })
+  @Column('simple-enum', { name: 'origin', enum: PartyOrigin, nullable: false, unique: false })
   origin!: PartyOrigin
 
   @Column({ name: 'name', length: 255, nullable: false, unique: true })
