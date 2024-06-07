@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.vc-handler-ld-local",
-  "version": "0.23.4",
+  "version": "0.24.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -109,11 +109,6 @@
     "Verifiable Presentations",
     "JsonLd"
   ],
-  "resolutions": {
-    "@types/react": "18.0.12",
-    "@transmute/jsonld": "^0.0.4",
-    "**/jsonld": "npm:@digitalcredentials/jsonld@^5.2.1"
-  },
   "peerDependencies": {
     "react-native-securerandom": "^1.0.1"
   }

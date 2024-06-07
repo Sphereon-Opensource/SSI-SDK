@@ -11,7 +11,7 @@ export class PartyTypeEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum', { name: 'type', enum: PartyTypeType, nullable: false, unique: false })
+  @Column('simple-enum', { name: 'type', enum: PartyTypeType, nullable: false })
   type!: PartyTypeType
 
   @Column('simple-enum', { name: 'origin', enum: PartyOrigin, nullable: false, unique: false })
@@ -21,11 +21,11 @@ export class PartyTypeEntity {
   @IsNotEmpty({ message: 'Blank names are not allowed' })
   name!: string
 
-  @Column({ name: 'description', length: 255, nullable: true, unique: false })
+  @Column({ name: 'description', length: 255, nullable: true })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank descriptions are not allowed' })
   description?: string
 
-  @Column({ name: 'tenant_id', length: 255, nullable: false, unique: false })
+  @Column({ name: 'tenant_id', length: 255, nullable: true })
   @IsNotEmpty({ message: "Blank tenant id's are not allowed" })
   tenantId!: string
 

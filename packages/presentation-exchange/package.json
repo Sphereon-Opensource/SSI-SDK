@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.presentation-exchange",
-  "version": "0.23.4",
+  "version": "0.24.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -32,9 +32,6 @@
     "@veramo/utils": "4.2.0",
     "did-resolver": "^4.1.0",
     "nock": "^13.2.1"
-  },
-  "resolutions": {
-    "@veramo/utils": "4.2.0"
   },
   "files": [
     ".yalc/**/*",
