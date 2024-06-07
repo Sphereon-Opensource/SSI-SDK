@@ -1,10 +1,10 @@
 import { PresentationDefinitionItemEntity } from '../../entities/presentationDefinition/PresentationDefinitionItemEntity'
 import { IPresentationDefinition } from '@sphereon/pex'
-import { PartialPresentationDefinitionItem, PresentationDefinitionItem } from '../../types'
+import { NonPersistedPresentationDefinitionItem, PartialPresentationDefinitionItem, PresentationDefinitionItem } from '../../types'
 import { blake2bHex } from 'blakejs'
 
-export const presentationDefinitionItemFrom = (entity: PresentationDefinitionItemEntity) => {
-  const item: PresentationDefinitionItem = {
+export const presentationDefinitionItemFrom = (entity: PresentationDefinitionItemEntity): PresentationDefinitionItem => {
+  return {
     id: entity.id,
     tenantId: entity.tenantId,
     definitionId: entity.definitionId,
@@ -15,23 +15,17 @@ export const presentationDefinitionItemFrom = (entity: PresentationDefinitionIte
     createdAt: entity.createdAt,
     lastUpdatedAt: entity.lastUpdatedAt,
   }
-  return item
 }
 
-export const presentationDefinitionEntityItemFrom = (item: PartialPresentationDefinitionItem) => {
+export const presentationDefinitionEntityItemFrom = (item: NonPersistedPresentationDefinitionItem): PresentationDefinitionItemEntity => {
   const entity = new PresentationDefinitionItemEntity()
-  if (item.id) {
-    entity.id = item.id
-  }
 
   entity.tenantId = item.tenantId
   entity.definitionId = item.definitionId!
-  entity.version = item.version!
+  entity.version = item.version
   entity.name = item.name
   entity.purpose = item.purpose
   entity.definitionPayload = JSON.stringify(item.definitionPayload!)
-  entity.createdAt = item.createdAt!
-  entity.lastUpdatedAt = item.lastUpdatedAt!
   return entity
 }
 
@@ -54,6 +48,5 @@ export function isPresentationDefinitionEqual(base: PartialPresentationDefinitio
     return hashPayload(base.definitionPayload) === hashPayload(compare.definitionPayload)
   }
 
-  // return false when either or both are null or undefined
-  return base.definitionPayload == compare.definitionPayload
+  return false
 }

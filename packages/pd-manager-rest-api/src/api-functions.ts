@@ -70,7 +70,7 @@ export function pdPersistEndpoint(router: Router, context: IRequiredContext, opt
     try {
       const addPd = request.body
       const pd = await context.agent.pdmPersistDefinitionItem(addPd as PersistDefinitionArgs)
-      response.statusCode = 201
+      response.statusCode = 200 // TODO find out if pdmPersistDefinitionItem added or updated
       return response.send(pd)
     } catch (error) {
       return sendErrorResponse(response, 500, error.message, error)
@@ -104,7 +104,7 @@ export function pdsDeleteEndpoint(router: Router, context: IRequiredContext, opt
   const path = opts?.path ?? operation
   router.delete(`${path}/filter`, async (request, response) => {
     try {
-      // TODO we are not going to delete all PDs without filter like we did with pdsGet...
+      // TODO we are not going to delete all PDs without filter like we did with pdsGet... Finish when filter is implemented
       response.statusCode = 500
       response.statusMessage = 'Not yet implemented'
       return sendErrorResponse(response, 500, 'Not yet implemented')
