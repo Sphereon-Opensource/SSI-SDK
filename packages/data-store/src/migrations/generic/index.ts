@@ -7,7 +7,7 @@ import { CreateDigitalCredential1708525189000 } from './6-CreateDigitalCredentia
 import { CreateMachineStateStore1708098041262 } from './7-CreateMachineStateStore'
 import { CreateContacts1708525189000 } from './8-CreateContacts'
 import { CreateContacts1715761125000 } from './9-CreateContacts'
-import { CreatePresentationDefinitions1716533767523 } from './8-CreatePresentationDefinitions'
+import { CreatePresentationDefinitions1716533767523 } from './10-CreatePresentationDefinitions'
 
 /**
  * The migrations array that SHOULD be used when initializing a TypeORM database connection.
