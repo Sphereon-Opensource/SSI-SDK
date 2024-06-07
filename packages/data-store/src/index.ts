@@ -34,6 +34,7 @@ export { StatusListStore } from './statusList/StatusListStore'
 import { AuditEventEntity, auditEventEntityFrom } from './entities/eventLogger/AuditEventEntity'
 import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCredentialEntity'
 import { digitalCredentialFrom, digitalCredentialsFrom, nonPersistedDigitalCredentialEntityFromAddArgs } from './utils/digitalCredential/MappingUtils'
+import { ContactMetadataItemEntity } from './entities/contact/ContactMetadataItemEntity'
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
 export { EventLoggerStore } from './eventLogger/EventLoggerStore'
 export { IAbstractMachineStateStore } from './machineState/IAbstractMachineStateStore'
@@ -66,6 +67,7 @@ export const DataStoreContactEntities = [
   NaturalPersonEntity,
   ElectronicAddressEntity,
   PhysicalAddressEntity,
+  ContactMetadataItemEntity,
 ]
 
 export const DataStoreIssuanceBrandingEntities = [
@@ -138,4 +140,5 @@ export {
   digitalCredentialsFrom,
   nonPersistedDigitalCredentialEntityFromAddArgs,
   MachineStateInfoEntity,
+  ContactMetadataItemEntity,
 }

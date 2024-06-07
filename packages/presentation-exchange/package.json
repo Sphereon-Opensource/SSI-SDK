@@ -33,9 +33,6 @@
     "did-resolver": "^4.1.0",
     "nock": "^13.2.1"
   },
-  "resolutions": {
-    "@veramo/utils": "4.2.0"
-  },
   "files": [
     ".yalc/**/*",
     "dist/**/*",

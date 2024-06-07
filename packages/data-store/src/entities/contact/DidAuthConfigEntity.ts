@@ -11,4 +11,10 @@ export class DidAuthConfigEntity extends BaseConfigEntity {
 
   @Column({ name: 'session_id', length: 255, nullable: false })
   sessionId!: string
+
+  @Column({name: 'owner_id', nullable: true})
+  ownerId?: string
+
+  @Column({name: 'tenant_id', nullable: true})
+  tenantId?: string
 }

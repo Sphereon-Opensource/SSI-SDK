@@ -1,9 +1,13 @@
 import { IIdentifier } from '@veramo/core'
 
+export type MetadataTypes = string | number | Date | boolean | undefined
+
 export type Party = {
   id: string
   uri?: string
-  roles: Array<IdentityRole>
+  roles: Array<CredentialRole>
+  ownerId?: string
+  tenantId?: string
   identities: Array<Identity>
   electronicAddresses: Array<ElectronicAddress>
   physicalAddresses: Array<PhysicalAddress>
@@ -47,36 +51,44 @@ export type PartialParty = Partial<
 export type Identity = {
   id: string
   alias: string
-  roles: Array<IdentityRole>
+  ownerId?: string
+  tenantId?: string
+  origin: IdentityOrigin
+  roles: Array<CredentialRole>
   identifier: CorrelationIdentifier
   connection?: Connection
-  metadata?: Array<MetadataItem>
+  metadata?: Array<MetadataItem<MetadataTypes>>
   createdAt: Date
   lastUpdatedAt: Date
 }
-export type NonPersistedIdentity = Omit<Identity, 'id' | 'identifier' | 'connection' | 'metadata' | 'createdAt' | 'lastUpdatedAt'> & {
+export type NonPersistedIdentity = Omit<Identity, 'id' | 'identifier' | 'connection' | 'metadata' | 'origin' | 'createdAt' | 'lastUpdatedAt'> & {
+  origin: IdentityOrigin
   identifier: NonPersistedCorrelationIdentifier
   connection?: NonPersistedConnection
-  metadata?: Array<NonPersistedMetadataItem>
+  metadata?: Array<NonPersistedMetadataItem<MetadataTypes>>
 }
-export type PartialIdentity = Partial<Omit<Identity, 'identifier' | 'connection' | 'metadata' | 'roles'>> & {
+export type PartialIdentity = Partial<Omit<Identity, 'identifier' | 'connection' | 'metadata' | 'origin' | 'roles'>> & {
   identifier?: PartialCorrelationIdentifier
   connection?: PartialConnection
-  metadata?: PartialMetadataItem
-  roles?: IdentityRole
+  metadata?: PartialMetadataItem<MetadataTypes> // Usage: FindIdentityArgs = Array<PartialIdentity>
+  origin?: IdentityOrigin
+  roles?: CredentialRole
   partyId?: string
 }
 
-export type MetadataItem = {
+export type MetadataItem<T extends MetadataTypes> = {
   id: string
   label: string
-  value: string
+  value: T
 }
-export type NonPersistedMetadataItem = Omit<MetadataItem, 'id'>
-export type PartialMetadataItem = Partial<MetadataItem>
+
+export type NonPersistedMetadataItem<T extends MetadataTypes> = Omit<MetadataItem<T>, 'id'>
+export type PartialMetadataItem<T extends MetadataTypes> = Partial<MetadataItem<T>>
 
 export type CorrelationIdentifier = {
   id: string
+  ownerId?: string
+  tenantId?: string
   type: CorrelationIdentifierType
   correlationId: string
 }
@@ -85,6 +97,8 @@ export type PartialCorrelationIdentifier = Partial<CorrelationIdentifier>
 
 export type Connection = {
   id: string
+  ownerId?: string
+  tenantId?: string
   type: ConnectionType
   config: ConnectionConfig
 }
@@ -99,6 +113,8 @@ export type OpenIdConfig = {
   id: string
   clientId: string
   clientSecret: string
+  ownerId?: string
+  tenantId?: string
   scopes: Array<string>
   issuer: string
   redirectUrl: string
@@ -112,6 +128,8 @@ export type DidAuthConfig = {
   id: string
   identifier: IIdentifier
   stateId: string
+  ownerId?: string
+  tenantId?: string
   redirectUrl: string
   sessionId: string
 }
@@ -130,21 +148,33 @@ export type NaturalPerson = {
   lastName: string
   middleName?: string
   displayName: string
+  metadata?: Array<MetadataItem<MetadataTypes>>
+  ownerId?: string
+  tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
 }
+
 export type NonPersistedNaturalPerson = Omit<NaturalPerson, 'id' | 'createdAt' | 'lastUpdatedAt'>
-export type PartialNaturalPerson = Partial<NaturalPerson>
+
+export type PartialNaturalPerson = Partial<Omit<NaturalPerson, 'metadata'>> & {
+  metadata?: PartialMetadataItem<MetadataTypes>
+}
 
 export type Organization = {
   id: string
   legalName: string
   displayName: string
+  metadata?: Array<MetadataItem<MetadataTypes>>
+  ownerId?: string
+  tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
 }
 export type NonPersistedOrganization = Omit<Organization, 'id' | 'createdAt' | 'lastUpdatedAt'>
-export type PartialOrganization = Partial<Organization>
+export type PartialOrganization = Partial<Omit<Organization, 'metadata'>> & {
+  metadata?: PartialMetadataItem<MetadataTypes>
+}
 
 export type Contact = NaturalPerson | Organization
 export type NonPersistedContact = NonPersistedNaturalPerson | NonPersistedOrganization
@@ -169,6 +199,8 @@ export type PartyRelationship = {
   id: string
   leftId: string
   rightId: string
+  ownerId?: string
+  tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
 }
@@ -179,6 +211,8 @@ export type ElectronicAddress = {
   id: string
   type: ElectronicAddressType
   electronicAddress: string
+  ownerId?: string
+  tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
 }
@@ -197,6 +231,8 @@ export type PhysicalAddress = {
   provinceName: string
   countryCode: string
   buildingName?: string
+  ownerId?: string
+  tenantId?: string
   createdAt: Date
   lastUpdatedAt: Date
 }
@@ -209,7 +245,7 @@ export type ElectronicAddressType = 'email' | 'phone'
 
 export type PhysicalAddressType = 'home' | 'visit' | 'postal'
 
-export enum IdentityRole {
+export enum CredentialRole {
   ISSUER = 'issuer',
   VERIFIER = 'verifier',
   HOLDER = 'holder',
@@ -232,6 +268,11 @@ export enum PartyTypeType {
 }
 
 export enum PartyOrigin {
+  INTERNAL = 'INTERNAL',
+  EXTERNAL = 'EXTERNAL',
+}
+
+export enum IdentityOrigin {
   INTERNAL = 'INTERNAL',
   EXTERNAL = 'EXTERNAL',
 }
