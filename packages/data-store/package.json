@@ -21,7 +21,7 @@
     "@veramo/utils": "4.2.0",
     "class-validator": "^0.14.0",
     "debug": "^4.3.4",
-    "md5": "^2.3.0",
+    "blakejs": "^1.1.1",
     "typeorm": "^0.3.20"
   },
   "devDependencies": {

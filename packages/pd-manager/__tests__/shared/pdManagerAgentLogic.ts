@@ -28,7 +28,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const definition: PersistDefinitionArgs = {
         definitionItem: {
           definitionId: 'default_definition_id',
-          version: '1.0.0',
           definitionPayload: singleDefinition,
         },
       }
@@ -95,11 +94,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.length).toBe(1)
     })
 
-    it('should add definition item', async (): Promise<void> => {
+    it('should add definition item with default version', async (): Promise<void> => {
       const definition: PersistDefinitionArgs = {
         definitionItem: {
           definitionId: 'new_definition_id',
-          version: '1.0.0',
           definitionPayload: singleDefinition,
         },
       }
@@ -107,7 +105,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const result: PresentationDefinitionItem = await agent.pdmPersistDefinition(definition)
 
       expect(result.definitionId).toEqual(definition.definitionItem.definitionId)
-      expect(result.version).toEqual(definition.definitionItem.version)
+      expect(result.version).toEqual('1')
     })
 
     it('should update definition item by id', async (): Promise<void> => {
@@ -124,9 +122,41 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.definitionPayload.input_descriptors[0].id).toEqual('Updated Credential')
     })
 
-    it('should create a new major version of the definition item', async (): Promise<void> => {
+    it('should create a new major version of the default definition item', async (): Promise<void> => {
       const updatedDefinitionItem: PresentationDefinitionItem = {
         ...defaultDefinitionItem,
+      }
+      updatedDefinitionItem.definitionPayload.input_descriptors[0].id = 'New major version'
+      const result: PresentationDefinitionItem = await agent.pdmPersistDefinition({
+        definitionItem: updatedDefinitionItem,
+      })
+
+      expect(result.version).toEqual('2')
+      expect(result.definitionPayload.input_descriptors.length).toEqual(1)
+      expect(result.definitionPayload.input_descriptors[0].id).toEqual('New major version')
+
+      defaultDefinitionItem.version = result.version
+    })
+
+    let versionedDefinitionItem: PresentationDefinitionItem
+    it('should add definition item v1.0.0', async (): Promise<void> => {
+      const definition: PersistDefinitionArgs = {
+        definitionItem: {
+          definitionId: 'versioned_definition_id',
+          version: '1.0.0',
+          definitionPayload: singleDefinition,
+        },
+      }
+
+      versionedDefinitionItem = await agent.pdmPersistDefinition(definition)
+
+      expect(versionedDefinitionItem.definitionId).toEqual(definition.definitionItem.definitionId)
+      expect(versionedDefinitionItem.version).toEqual(definition.definitionItem.version)
+    })
+
+    it('should create a new major version of the definition item', async (): Promise<void> => {
+      const updatedDefinitionItem: PresentationDefinitionItem = {
+        ...versionedDefinitionItem,
       }
       updatedDefinitionItem.definitionPayload.input_descriptors[0].id = 'New major version'
       const result: PresentationDefinitionItem = await agent.pdmPersistDefinition({
@@ -137,22 +167,55 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.definitionPayload.input_descriptors.length).toEqual(1)
       expect(result.definitionPayload.input_descriptors[0].id).toEqual('New major version')
 
-      defaultDefinitionItem.version = result.version
+      versionedDefinitionItem.version = result.version
     })
 
     it('should create a new minor version of the definition item', async (): Promise<void> => {
       const updatedDefinitionItem: PresentationDefinitionItem = {
-        ...defaultDefinitionItem,
+        ...versionedDefinitionItem,
       }
       updatedDefinitionItem.definitionPayload.input_descriptors[0].id = 'New minor version'
       const result: PresentationDefinitionItem = await agent.pdmPersistDefinition({
         definitionItem: updatedDefinitionItem,
-        opts: { versionControlMode: 'AutoIncrementMinor' },
+        opts: { versionControlMode: 'AutoIncrement', versionIncrementReleaseType: 'minor' },
       })
 
       expect(result.version).toEqual('2.1.0')
       expect(result.definitionPayload.input_descriptors.length).toEqual(1)
       expect(result.definitionPayload.input_descriptors[0].id).toEqual('New minor version')
+    })
+
+    let preReleaseVersionedDefinitionItem: PresentationDefinitionItem
+    it('should add pre-release definition item v1.0.0-beta.1', async (): Promise<void> => {
+      const definition: PersistDefinitionArgs = {
+        definitionItem: {
+          definitionId: 'pr_versioned_definition_id',
+          version: '1.0.0-beta.1',
+          definitionPayload: singleDefinition,
+        },
+      }
+
+      preReleaseVersionedDefinitionItem = await agent.pdmPersistDefinition(definition)
+
+      expect(preReleaseVersionedDefinitionItem.definitionId).toEqual(definition.definitionItem.definitionId)
+      expect(preReleaseVersionedDefinitionItem.version).toEqual(definition.definitionItem.version)
+    })
+
+    it('should create a new pre-release version of the definition item', async (): Promise<void> => {
+      const updatedDefinitionItem: PresentationDefinitionItem = {
+        ...preReleaseVersionedDefinitionItem,
+      }
+      updatedDefinitionItem.definitionPayload.input_descriptors[0].id = 'New pre-release version'
+      const result: PresentationDefinitionItem = await agent.pdmPersistDefinition({
+        definitionItem: updatedDefinitionItem,
+        opts: { versionControlMode: 'AutoIncrement', versionIncrementReleaseType: 'prerelease' },
+      })
+
+      expect(result.version).toEqual('1.0.0-beta.2')
+      expect(result.definitionPayload.input_descriptors.length).toEqual(1)
+      expect(result.definitionPayload.input_descriptors[0].id).toEqual('New pre-release version')
+
+      versionedDefinitionItem.version = result.version
     })
 
     it('should delete definition item by id', async (): Promise<void> => {

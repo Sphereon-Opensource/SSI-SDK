@@ -1,5 +1,6 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import { FindDefinitionArgs, PersistablePresentationDefinitionItem, PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
+import { ReleaseType } from 'semver'
 
 export interface IPDManager extends IPluginMethodMap {
   /**
@@ -46,7 +47,7 @@ export interface IPDManager extends IPluginMethodMap {
   pdmPersistDefinition(args: PersistDefinitionArgs): Promise<PresentationDefinitionItem>
 }
 
-export type VersionControlMode = 'AutoIncrementMajor' | 'AutoIncrementMinor' | 'Manual' | 'Overwrite' | 'OverwriteLatest'
+export type VersionControlMode = 'AutoIncrement' | 'Manual' | 'Overwrite' | 'OverwriteLatest'
 
 export type GetDefinitionItemArgs = {
   itemId: string
@@ -68,6 +69,7 @@ export type DeleteDefinitionItemsArgs = GetDefinitionItemsArgs
 
 export type PersistOptions = {
   versionControlMode?: VersionControlMode
+  versionIncrementReleaseType?: ReleaseType
 }
 
 export type PersistDefinitionArgs = {
