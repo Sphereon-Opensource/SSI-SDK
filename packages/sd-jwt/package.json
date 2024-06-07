@@ -49,7 +49,10 @@
     "access": "public"
   },
   "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
-  "author": "Sphereon <dev@sphereon.com>",
+  "author": "Lukas.J.Han <lukas.j.han@gmail.com>",
+  "contributors": [
+    "Mirko Mollik <mirko.mollik@fit.fraunhofer.de>"
+  ],
   "license": "Apache-2.0",
   "keywords": [
     "SSI",
