@@ -107,7 +107,7 @@ describe('Agent plugin', () => {
       provider: 'did:jwk',
       alias: 'issuer',
       //we use this curve since nodejs does not support ES256k which is the default one.
-      options: { keyType: 'Secp256r1' } //as JwkCreateIdentifierOptions,
+      options: { keyType: 'Secp256r1' }
     })
     .then((did) => {
       // we add a key reference
@@ -119,7 +119,7 @@ describe('Agent plugin', () => {
       provider: 'did:jwk',
       alias: 'holder',
       //we use this curve since nodejs does not support ES256k which is the default one.
-      options: { keyType: 'Secp256r1' } //as JwkCreateIdentifierOptions,
+      options: { keyType: 'Secp256r1' }
     })
     .then((did) => `${did.did}#0`)
     claims.sub = holder
