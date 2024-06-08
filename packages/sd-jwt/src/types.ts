@@ -43,10 +43,10 @@ export interface ISDJwtPlugin extends IPluginMethodMap {
    * @param args - Arguments necessary for the creation of a SD-JWT presentation.
    * @param context - This reserved param is automatically added and handled by the framework, *do not override*
    */
-  createSdJwtVcPresentation(
-    args: ICreateSdJwtVcPresentationArgs,
+  createSdJwtPresentation(
+    args: ICreateSdJwtPresentationArgs,
     context: IRequiredContext,
-  ): Promise<ICreateSdJwtVcPresentationResult>
+  ): Promise<ICreateSdJwtPresentationResult>
 
   /**
    * Verify a signed SD-JWT credential.
@@ -60,10 +60,10 @@ export interface ISDJwtPlugin extends IPluginMethodMap {
    * @param args - Arguments necessary for the verification of a SD-JWT presentation.
    * @param context - This reserved param is automatically added and handled by the framework, *do not override*
    */
-  verifySdJwtVcPresentation(
-    args: IVerifySdJwtVcPresentationArgs,
+  verifySdJwtPresentation(
+    args: IVerifySdJwtPresentationArgs,
     context: IRequiredContext,
-  ): Promise<IVerifySdJwtVcPresentationResult>
+  ): Promise<IVerifySdJwtPresentationResult>
 }
 
 /**
@@ -103,7 +103,7 @@ export interface ICreateSdJwtVcResult {
  *
  * @beta
  */
-export interface ICreateSdJwtVcPresentationArgs {
+export interface ICreateSdJwtPresentationArgs {
   /**
    * Encoded SD-JWT credential
    */
@@ -133,7 +133,7 @@ export interface IPresentationFrame {
  * Created presentation
  * @beta
  */
-export interface ICreateSdJwtVcPresentationResult {
+export interface ICreateSdJwtPresentationResult {
   /**
    * Encoded presentation.
    */
@@ -157,7 +157,7 @@ export type IVerifySdJwtVcResult = {
 /**
  * @beta
  */
-export interface IVerifySdJwtVcPresentationArgs {
+export interface IVerifySdJwtPresentationArgs {
   presentation: string
 
   requiredClaimKeys?: string[]
@@ -168,7 +168,7 @@ export interface IVerifySdJwtVcPresentationArgs {
 /**
  * @beta
  */
-export type IVerifySdJwtVcPresentationResult = {
+export type IVerifySdJwtPresentationResult = {
   verifiedPayloads: Record<string, unknown>
 }
 

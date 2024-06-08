@@ -7,16 +7,16 @@ import {
   SdJWTImplementation,
   ICreateSdJwtVcArgs,
   ICreateSdJwtVcResult,
-  ICreateSdJwtVcPresentationArgs,
-  ICreateSdJwtVcPresentationResult,
+  ICreateSdJwtPresentationArgs,
+  ICreateSdJwtPresentationResult,
   IRequiredContext,
   ISDJwtPlugin,
   IVerifySdJwtVcArgs,
   IVerifySdJwtVcResult,
-  IVerifySdJwtVcPresentationArgs,
-  IVerifySdJwtVcPresentationResult,
+  IVerifySdJwtPresentationArgs,
+  IVerifySdJwtPresentationResult,
   Claims,
-} from './types.js'
+} from './types'
 import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 import { encodeJoseBlob } from '@veramo/utils'
 
@@ -32,9 +32,9 @@ export class SDJwtPlugin implements IAgentPlugin {
   // map the methods your plugin is declaring to their implementation
   readonly methods: ISDJwtPlugin = {
     createSdJwtVc: this.createSdJwtVc.bind(this),
-    createSdJwtVcPresentation: this.createSdJwtVcPresentation.bind(this),
+    createSdJwtPresentation: this.createSdJwtPresentation.bind(this),
     verifySdJwtVc: this.verifySdJwtVc.bind(this),
-    verifySdJwtVcPresentation: this.verifySdJwtVcPresentation.bind(this),
+    verifySdJwtPresentation: this.verifySdJwtPresentation.bind(this),
   }
 
   /**
@@ -107,7 +107,7 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @param context - This reserved param is automatically added and handled by the framework, *do not override*
    * @returns A signed SD-JWT presentation.
    */
-  async createSdJwtVcPresentation(args: ICreateSdJwtVcPresentationArgs, context: IRequiredContext): Promise<ICreateSdJwtVcPresentationResult> {
+  async createSdJwtPresentation(args: ICreateSdJwtPresentationArgs, context: IRequiredContext): Promise<ICreateSdJwtPresentationResult> {
     const cred = await SDJwt.fromEncode(args.presentation, this.algorithms.hasher)
     const claims = await cred.getClaims<Claims>(this.algorithms.hasher)
     let holderDID: string
@@ -208,7 +208,7 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @param context - This reserved param is automatically added and handled by the framework, *do not override*
    * @returns
    */
-  async verifySdJwtVcPresentation(args: IVerifySdJwtVcPresentationArgs, context: IRequiredContext): Promise<IVerifySdJwtVcPresentationResult> {
+  async verifySdJwtPresentation(args: IVerifySdJwtPresentationArgs, context: IRequiredContext): Promise<IVerifySdJwtPresentationResult> {
     // biome-ignore lint/style/useConst: <explanation>
     let sdjwt: SDJwtVcInstance
     const verifier: Verifier = async (data: string, signature: string) =>

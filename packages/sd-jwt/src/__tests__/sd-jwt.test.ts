@@ -180,7 +180,7 @@ describe('Agent plugin', () => {
       credentialPayload,
       disclosureFrame,
     })
-    const presentation = await agent.createSdJwtVcPresentation({
+    const presentation = await agent.createSdJwtPresentation({
       presentation: credential.credential,
       presentationFrame: { given_name: true },
       kb: {
@@ -216,7 +216,7 @@ describe('Agent plugin', () => {
       credentialPayload,
       disclosureFrame,
     })
-    const presentation = await agent.createSdJwtVcPresentation({
+    const presentation = await agent.createSdJwtPresentation({
       presentation: credential.credential,
       presentationFrame: { given_name: true },
       kb: {
@@ -246,7 +246,7 @@ describe('Agent plugin', () => {
       credentialPayload,
       disclosureFrame,
     })
-    const presentation = agent.createSdJwtVcPresentation({
+    const presentation = agent.createSdJwtPresentation({
       presentation: credential.credential,
       presentationFrame: { given_name: true },
       kb: {
@@ -278,7 +278,7 @@ describe('Agent plugin', () => {
       credentialPayload,
       disclosureFrame,
     })
-    const presentation = await agent.createSdJwtVcPresentation({
+    const presentation = await agent.createSdJwtPresentation({
       presentation: credential.credential,
       presentationFrame: { given_name: true },
       kb: {
@@ -289,7 +289,7 @@ describe('Agent plugin', () => {
         },
       },
     })
-    const result = await agent.verifySdJwtVcPresentation({
+    const result = await agent.verifySdJwtPresentation({
       presentation: presentation.presentation,
       requiredClaimKeys: ['given_name'],
       // we are not able to verify the kb yet since we have no reference to the public key of the holder.
@@ -317,7 +317,7 @@ describe('Agent plugin', () => {
       credentialPayload,
       disclosureFrame,
     })
-    const presentation = await agent.createSdJwtVcPresentation({
+    const presentation = await agent.createSdJwtPresentation({
       presentation: credential.credential,
       presentationFrame: { given_name: true },
       kb: {
@@ -328,7 +328,7 @@ describe('Agent plugin', () => {
         },
       },
     })
-    const result = await agent.verifySdJwtVcPresentation({
+    const result = await agent.verifySdJwtPresentation({
       presentation: presentation.presentation,
       requiredClaimKeys: ['given_name'],
       // we are not able to verify the kb yet since we have no reference to the public key of the holder.
