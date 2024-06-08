@@ -87,21 +87,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     if (!key) {
       throw new Error(`No key found with the given id: ${issuer}`)
     }
-    let alg: string
-    //transform the key type to the alg
-    switch (key.type) {
-      case 'Ed25519':
-        alg = 'EdDSA'
-        break
-      case 'Secp256k1':
-        alg = 'ES256K'
-        break
-      case 'Secp256r1':
-        alg = 'ES256'
-        break
-      default:
-        throw new Error(`unsupported key type ${key.type}`)
-    }
+    const alg = this.getKeyTypeAlgorithm(key.type)
 
     return { alg, key }
   }
@@ -232,5 +218,18 @@ export class SDJwtPlugin implements IAgentPlugin {
     const verifiedPayloads = await sdjwt.verify(args.presentation, args.requiredClaimKeys, args.kb)
 
     return { verifiedPayloads }
+  }
+
+  private getKeyTypeAlgorithm(keyType: string) {
+    switch (keyType) {
+      case 'Ed25519':
+        return 'EdDSA'
+      case 'Secp256k1':
+        return 'ES256K'
+      case 'Secp256r1':
+        return 'ES256'
+      default:
+        throw new Error(`unsupported key type ${keyType}`)
+    }
   }
 }
