@@ -80,9 +80,13 @@ export class SDJwtPlugin implements IAgentPlugin {
       did: issuer.split('#')[0],
     })
     const doc = await mapIdentifierKeysToDocWithJwkSupport(identifier, 'assertionMethod', context)
-    if (!doc || doc.length === 0) throw new Error('No key found for signing')
+    if (!doc || doc.length === 0) {
+      throw new Error('No key found for signing')
+    }
     const key = doc.find((key) => key.meta.verificationMethod.id === issuer)
-    if (!key) throw new Error('No key found with the given id')
+    if (!key) {
+      throw new Error(`No key found with the given id: ${issuer}`)
+    }
     let alg: string
     //transform the key type to the alg
     switch (key.type) {
@@ -98,6 +102,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       default:
         throw new Error(`unsupported key type ${key.type}`)
     }
+
     return { alg, key }
   }
 
@@ -114,6 +119,8 @@ export class SDJwtPlugin implements IAgentPlugin {
     // we primarly look for a cnf field, if it's not there we look for a sub field. If this is also not given, we throw an error since we can not sign it.
     if (claims.cnf?.jwk) {
       const key = claims.cnf.jwk
+      //TODO: convert the JWK to hex and search for the appropriate key and associated DID
+      //doesn't apply to did:jwk only, as you can represent any DID key as a JWK. So whenever you encounter a JWK it doesn't mean it had to come from a did:jwk in the system. It just can always be represented as a did:jwk
       holderDID = `did:jwk:${encodeJoseBlob(key)}#0`
     } else if (claims.sub) {
       holderDID = claims.sub as string
@@ -193,11 +200,13 @@ export class SDJwtPlugin implements IAgentPlugin {
     if (!didDoc) {
       throw new Error('invalid_issuer: issuer did not resolve to a did document')
     }
+    //TODO: This should be checking for an assertionMethod and not just an verificationMethod with an id
     const didDocumentKey = didDoc.didDocument?.verificationMethod?.find((key) => key.id)
     if (!didDocumentKey) {
       throw new Error('invalid_issuer: issuer did document does not include referenced key')
     }
-    //TODO: in case it's another did method, the value of the key can be also encoded as a base64url
+    //FIXME: in case it's another did method, the value of the key can be also encoded as a base64url
+    //needs more checks. some DID methods do not expose the keys as publicKeyJwk
     const key = didDocumentKey.publicKeyJwk as JsonWebKey
     return this.algorithms.verifySignature(data, signature, key)
   }
