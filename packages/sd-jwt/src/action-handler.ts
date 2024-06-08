@@ -119,7 +119,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     // we primarly look for a cnf field, if it's not there we look for a sub field. If this is also not given, we throw an error since we can not sign it.
     if (claims.cnf?.jwk) {
       const key = claims.cnf.jwk
-      //TODO: convert the JWK to hex and search for the appropriate key and associated DID
+      //TODO SDK-19: convert the JWK to hex and search for the appropriate key and associated DID
       //doesn't apply to did:jwk only, as you can represent any DID key as a JWK. So whenever you encounter a JWK it doesn't mean it had to come from a did:jwk in the system. It just can always be represented as a did:jwk
       holderDID = `did:jwk:${encodeJoseBlob(key)}#0`
     } else if (claims.sub) {
@@ -200,12 +200,12 @@ export class SDJwtPlugin implements IAgentPlugin {
     if (!didDoc) {
       throw new Error('invalid_issuer: issuer did not resolve to a did document')
     }
-    //TODO: This should be checking for an assertionMethod and not just an verificationMethod with an id
+    //TODO SDK-20: This should be checking for an assertionMethod and not just an verificationMethod with an id
     const didDocumentKey = didDoc.didDocument?.verificationMethod?.find((key) => key.id)
     if (!didDocumentKey) {
       throw new Error('invalid_issuer: issuer did document does not include referenced key')
     }
-    //FIXME: in case it's another did method, the value of the key can be also encoded as a base64url
+    //FIXME SDK-21: in case it's another did method, the value of the key can be also encoded as a base64url
     //needs more checks. some DID methods do not expose the keys as publicKeyJwk
     const key = didDocumentKey.publicKeyJwk as JsonWebKey
     return this.algorithms.verifySignature(data, signature, key)
