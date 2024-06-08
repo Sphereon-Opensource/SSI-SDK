@@ -1,4 +1,4 @@
-import {LogLevel} from "@sphereon/ssi-types";
+import { LogLevel } from '@sphereon/ssi-types'
 import { TAgent } from '@veramo/core'
 import {
   ActionType,
