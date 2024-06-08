@@ -46,8 +46,7 @@ export class RPInstance {
     return this.definitionId
       ? await context.agent.pexStoreGetDefinition({
           definitionId: this.definitionId,
-          storeId: this.pexOptions?.storeId,
-          namespace: this.pexOptions?.storeNamespace,
+          tenantId: this.pexOptions?.tenantId,
         })
       : undefined
   }
