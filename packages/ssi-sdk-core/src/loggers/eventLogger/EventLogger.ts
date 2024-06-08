@@ -1,6 +1,17 @@
-import { ISimpleLogger, Loggers, LogLevel, LogMethod, SimpleLogEvent, SimpleLogger, SimpleLogOptions } from '@sphereon/ssi-types'
+import {
+  InitiatorType,
+  ISimpleLogger,
+  Loggers,
+  LogLevel,
+  LogMethod,
+  SimpleLogEvent,
+  SimpleLogger,
+  SimpleLogOptions,
+  SubSystem,
+  System,
+} from '@sphereon/ssi-types'
 import { IAgentContext } from '@veramo/core'
-import { EventLoggerArgs, InitiatorType, LoggingEvent, NonPersistedAuditLoggingEvent, SubSystem, System } from '../../types'
+import { EventLoggerArgs, LoggingEvent, NonPersistedAuditLoggingEvent } from '../../types'
 
 class EventLogger {
   private readonly context?: IAgentContext<any>
