@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import { Loggers } from '../logging'
+import { Loggers, LogLevel, LogMethod } from '../logging'
 
 export enum System {
   GENERAL = 'general',
@@ -146,7 +146,13 @@ export class EventManager {
     if ('id' in event && 'system' in event && !event.eventName) {
       event.eventName = eventName
     }
-    Loggers.default().get('sphereon:events').log(`Emitting '${eventName.toString()}' event`, event)
+    Loggers.default()
+      .options('sphereon:events', {
+        methods: [LogMethod.CONSOLE],
+        defaultLogLevel: LogLevel.INFO,
+      })
+      .get('sphereon:events')
+      .log(`Emitting '${eventName.toString()}' event`, event)
     const emitters = this.emitters({ eventName })
     emitters.flatMap((emitter) => emitter.emit(eventName, event, args))
   }
