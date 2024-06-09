@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events'
+import { Loggers } from '../logging'
 
 export enum System {
   GENERAL = 'general',
@@ -137,7 +138,15 @@ export class EventManager {
     return Array.from(new Set(this.emitters().flatMap((emitter) => emitter.eventNames())))
   }
 
-  emit(eventName: string | symbol, event: BasicEvent<any, any> | any, ...args: any[]): void {
+  emitBasic(event: BasicEvent<any, any>, ...args: any[]) {
+    return this.emit(event.eventName, event, args)
+  }
+
+  emit(eventName: string | symbol, event: Omit<BasicEvent<any, any>, 'eventName'> | any, ...args: any[]): void {
+    if ('id' in event && 'system' in event && !event.eventName) {
+      event.eventName = eventName
+    }
+    Loggers.default().get('sphereon:events').log(`Emitting '${eventName.toString()}' event`, event)
     const emitters = this.emitters({ eventName })
     emitters.flatMap((emitter) => emitter.emit(eventName, event, args))
   }
