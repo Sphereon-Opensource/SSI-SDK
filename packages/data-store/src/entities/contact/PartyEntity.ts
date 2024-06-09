@@ -30,10 +30,10 @@ export class PartyEntity extends BaseEntity {
   @Column({ name: 'uri', length: 255, nullable: true })
   uri?: string
 
-  @Column({name: 'owner_id', nullable: true})
+  @Column({ name: 'owner_id', nullable: true })
   ownerId?: string
 
-  @Column({name: 'tenant_id', nullable: true})
+  @Column({ name: 'tenant_id', nullable: true })
   tenantId?: string
 
   @OneToMany(() => IdentityEntity, (identity: IdentityEntity) => identity.party, {

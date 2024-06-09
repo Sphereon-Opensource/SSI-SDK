@@ -51,10 +51,10 @@ export class PhysicalAddressEntity extends BaseEntity {
   @IsNotEmpty({ message: 'Blank building names are not allowed' })
   buildingName?: string
 
-  @Column({name: 'owner_id', nullable: true})
+  @Column({ name: 'owner_id', nullable: true })
   ownerId?: string
 
-  @Column({name: 'tenant_id', nullable: true})
+  @Column({ name: 'tenant_id', nullable: true })
   tenantId?: string
 
   @ManyToOne(() => PartyEntity, (party: PartyEntity) => party.physicalAddresses, {

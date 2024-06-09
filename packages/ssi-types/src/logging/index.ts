@@ -138,6 +138,8 @@ export class SimpleLogger implements ISimpleLogger<any> {
 
   logl(level: LogLevel, value: any, ...args: any[]) {
     const date = new Date().toISOString()
+    const filteredArgs = args.filter((v) => v!!)
+    const arg = filteredArgs.length === 0 || filteredArgs[0] == undefined ? undefined : filteredArgs
 
     function toLogValue(options: SimpleLogOptions): any {
       if (typeof value === 'string') {
@@ -150,22 +152,30 @@ export class SimpleLogger implements ISimpleLogger<any> {
     }
 
     const logValue = toLogValue(this.options)
+    const logArgs = [logValue]
+    if (arg) {
+      logArgs.push(args)
+    }
     if (this.options.methods.includes(LogMethod.DEBUG_PKG)) {
-      Debug(this._options.namespace).log(`${date}- ${value}`, args)
+      if (arg) {
+        Debug(this._options.namespace)(`${date}- ${value}`, arg)
+      } else {
+        Debug(this._options.namespace)(`${date}- ${value}`)
+      }
     }
 
     if (this.options.methods.includes(LogMethod.CONSOLE)) {
       switch (level) {
         case LogLevel.TRACE:
-          return console.trace(logValue, args)
+          return console.trace(logArgs)
         case LogLevel.DEBUG:
-          return console.debug(logValue, args)
+          return console.debug(logArgs)
         case LogLevel.INFO:
-          return console.info(logValue, args)
+          return console.info(logArgs)
         case LogLevel.WARNING:
-          return console.warn(logValue, args)
+          return console.warn(logArgs)
         case LogLevel.ERROR:
-          return console.error(logValue, args)
+          return console.error(logArgs)
       }
     }
 
@@ -175,7 +185,7 @@ export class SimpleLogger implements ISimpleLogger<any> {
         timestamp: new Date(date),
         level,
         type: LoggingEventType.GENERAL,
-        diagnosticData: args,
+        diagnosticData: logArgs,
       } satisfies SimpleLogEvent)
     }
   }
@@ -194,5 +204,5 @@ export class SimpleRecordLogger extends SimpleLogger implements ISimpleLogger<Re
 export function log(namespace: string, level: LogLevel, value?: string, args?: any[]) {
   const logValue = value ?? namespace
   const ns = value != undefined ? namespace : 'sphereon:default'
-  Debug(ns).log(logValue, args)
+  Debug(ns)(logValue, args)
 }
