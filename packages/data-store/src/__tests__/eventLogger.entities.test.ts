@@ -1,5 +1,5 @@
-import {PartyCorrelationType} from "@sphereon/ssi-sdk.core";
-import {ActionType, InitiatorType, LogLevel, SubSystem, System, SystemCorrelationIdType} from '@sphereon/ssi-types'
+import { PartyCorrelationType } from '@sphereon/ssi-sdk.core'
+import { ActionType, InitiatorType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
 import { DataStoreEventLoggerEntities } from '../index'
 import { DataStoreEventLoggerMigrations } from '../migrations/generic'
