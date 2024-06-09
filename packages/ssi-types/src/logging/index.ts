@@ -46,10 +46,10 @@ export function logOptions(opts?: SimpleLogOptions): Required<SimpleLogOptions> 
 }
 
 export class Loggers {
-  private static readonly DEFAULT_INSTANCE: Loggers = new Loggers()
+  private static readonly DEFAULT_INSTANCE: Loggers = new Loggers({ defaultLogLevel: LogLevel.INFO, methods: [LogMethod.DEBUG_PKG, LogMethod.EVENT] })
   private static readonly DEFAULT_KEY = '__DEFAULT__'
-  namespaceOptions: Map<string, Required<SimpleLogOptions>> = new Map()
-  loggers: WeakMap<Required<SimpleLogOptions>, ISimpleLogger<any>> = new WeakMap()
+  private readonly namespaceOptions: Map<string, Required<SimpleLogOptions>> = new Map()
+  private readonly loggers: WeakMap<Required<SimpleLogOptions>, ISimpleLogger<any>> = new WeakMap()
 
   constructor(defaultOptions?: Omit<SimpleLogOptions, 'namespace'>) {
     this.defaultOptions(logOptions(defaultOptions))
@@ -199,10 +199,4 @@ export class SimpleRecordLogger extends SimpleLogger implements ISimpleLogger<Re
   constructor(opts?: SimpleLogOptions) {
     super(opts)
   }
-}
-
-export function log(namespace: string, level: LogLevel, value?: string, args?: any[]) {
-  const logValue = value ?? namespace
-  const ns = value != undefined ? namespace : 'sphereon:default'
-  Debug(ns)(logValue, args)
 }
