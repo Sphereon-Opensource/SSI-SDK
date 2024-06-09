@@ -1,11 +1,8 @@
-import {ActionType, InitiatorType, LogLevel, SubSystem, System, SystemCorrelationIdType} from '@sphereon/ssi-types'
+import { ActionType, InitiatorType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
 import { DataStoreEventLoggerMigrations } from '../migrations/generic'
 import { DataStoreEventLoggerEntities } from '../index'
-import {
-  AuditLoggingEvent,
-  PartyCorrelationType,
-} from '@sphereon/ssi-sdk.core'
+import { AuditLoggingEvent, PartyCorrelationType } from '@sphereon/ssi-sdk.core'
 import { EventLoggerStore } from '../eventLogger/EventLoggerStore'
 import { GetAuditEventsArgs, NonPersistedAuditLoggingEvent } from '../types'
 

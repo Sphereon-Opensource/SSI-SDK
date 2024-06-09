@@ -1,4 +1,4 @@
-import debug from 'debug'
+import Debug from 'debug'
 import { EventEmitter } from 'events'
 
 export enum LogLevel {
@@ -151,7 +151,7 @@ export class SimpleLogger implements ISimpleLogger<any> {
 
     const logValue = toLogValue(this.options)
     if (this.options.methods.includes(LogMethod.DEBUG_PKG)) {
-      debug.default(this._options.namespace).log(`${date}- ${value}`, args)
+      Debug(this._options.namespace).log(`${date}- ${value}`, args)
     }
 
     if (this.options.methods.includes(LogMethod.CONSOLE)) {
@@ -194,5 +194,5 @@ export class SimpleRecordLogger extends SimpleLogger implements ISimpleLogger<Re
 export function log(namespace: string, level: LogLevel, value?: string, args?: any[]) {
   const logValue = value ?? namespace
   const ns = value != undefined ? namespace : 'sphereon:default'
-  debug.default(ns).log(logValue, args)
+  Debug(ns).log(logValue, args)
 }
