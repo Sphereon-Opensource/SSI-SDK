@@ -1,31 +1,28 @@
 import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
-import { CredentialSupported, DefaultURISchemes, Jwt, ProofOfPossessionCallbacks } from '@sphereon/oid4vci-common'
+import { CredentialSupported, DefaultURISchemes, Jwt, NotificationRequest, ProofOfPossessionCallbacks } from '@sphereon/oid4vci-common'
 import {
   CorrelationIdentifierType,
+  CredentialRole,
   IBasicCredentialLocaleBranding,
   Identity,
-  CredentialRole,
   IdentityOrigin,
   NonPersistedIdentity,
   Party,
 } from '@sphereon/ssi-sdk.data-store'
-import { DIDDocument, IAgentPlugin, VerifiableCredential } from '@veramo/core'
+import {
+  CredentialMapper,
+  IVerifiableCredential,
+  JwtDecodedVerifiableCredential,
+  Loggers,
+  LogMethod,
+  OriginalVerifiableCredential,
+  SdJwtDecodedVerifiableCredentialPayload,
+} from '@sphereon/ssi-types'
+import { CredentialPayload, DIDDocument, IAgentPlugin, ProofFormat, VerifiableCredential } from '@veramo/core'
 import { computeEntryHash } from '@veramo/utils'
 import { JWTHeader } from 'did-jwt'
 import { v4 as uuidv4 } from 'uuid'
 import { OID4VCIMachine } from '../machine/oid4vciMachine'
-import {
-  getCredentialBranding,
-  getCredentialsSupported,
-  getIdentifier,
-  getIssuanceOpts,
-  getSupportedCredentials,
-  mapCredentialToAccept,
-  selectCredentialLocaleBranding,
-  signatureAlgorithmFromKey,
-  signJWT,
-  verifyCredentialToAccept,
-} from './OID4VCIHolderService'
 import {
   AddContactIdentityArgs,
   AssertValidCredentialsArgs,
@@ -48,11 +45,24 @@ import {
   OnIdentifierCreatedArgs,
   RequestType,
   RequiredContext,
+  SendNotificationArgs,
   SignatureAlgorithmEnum,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
   SupportedDidMethodEnum,
 } from '../types/IOID4VCIHolder'
+import {
+  getCredentialBranding,
+  getCredentialsSupported,
+  getIdentifier,
+  getIssuanceOpts,
+  getSupportedCredentials,
+  mapCredentialToAccept,
+  selectCredentialLocaleBranding,
+  signatureAlgorithmFromKey,
+  signJWT,
+  verifyCredentialToAccept,
+} from './OID4VCIHolderService'
 
 /**
  * {@inheritDoc IOID4VCIHolder}
@@ -73,6 +83,10 @@ export const oid4vciHolderContextMethods: Array<string> = [
   'verifyCredential',
 ]
 
+const logger = Loggers.default()
+  .options('sphereon:oid4vci:holder', { methods: [LogMethod.CONSOLE, LogMethod.DEBUG_PKG] })
+  .get('sphereon:oid4vci:holder')
+
 export class OID4VCIHolder implements IAgentPlugin {
   readonly eventTypes: Array<OID4VCIHolderEvent> = [
     OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED,
@@ -91,6 +105,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     oid4vciHolderAssertValidCredentials: this.oid4vciHolderAssertValidCredentials.bind(this),
     oid4vciHolderStoreCredentialBranding: this.oid4vciHolderStoreCredentialBranding.bind(this),
     oid4vciHolderStoreCredentials: this.oid4vciHolderStoreCredentials.bind(this),
+    oid4vciHolderSendNotification: this.oid4vciHolderSendNotification.bind(this),
   }
 
   private readonly vcFormatPreferences: Array<string> = ['jwt_vc_json', 'jwt_vc', 'ldp_vc']
@@ -172,6 +187,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       assertValidCredentials: (args: AssertValidCredentialsArgs) => this.oid4vciHolderAssertValidCredentials(args, context),
       storeCredentialBranding: (args: StoreCredentialBrandingArgs) => this.oid4vciHolderStoreCredentialBranding(args, context),
       storeCredentials: (args: StoreCredentialsArgs) => this.oid4vciHolderStoreCredentials(args, context),
+      sendNotification: (args: SendNotificationArgs) => this.oid4vciHolderSendNotification(args, context),
     }
 
     const oid4vciMachineInstanceArgs: OID4VCIMachineInstanceOpts = {
@@ -191,6 +207,8 @@ export class OID4VCIHolder implements IAgentPlugin {
 
   private async oid4vciHolderGetCredentialOfferData(args: InitiateOID4VCIArgs, context: RequiredContext): Promise<InitiationData> {
     const { requestData } = args
+
+    logger.log(`Credential offer received`, requestData?.uri)
 
     if (requestData?.uri === undefined) {
       return Promise.reject(Error('Missing request URI in context'))
@@ -216,6 +234,9 @@ export class OID4VCIHolder implements IAgentPlugin {
     })
     const credentialBranding = await getCredentialBranding({ credentialsSupported, context })
     const authorizationCodeURL = openID4VCIClient.authorizationURL
+    if (authorizationCodeURL) {
+      logger.log(`authorization code URL ${authorizationCodeURL}`)
+    }
     const openID4VCIClientState = JSON.parse(await openID4VCIClient.exportState())
 
     return {
@@ -261,6 +282,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     if (credentialSelection.length === 1) {
       selectedCredentials.push(credentialSelection[0].credentialType)
     }
+    logger.log(`Credential selection`, credentialSelection)
 
     return credentialSelection
   }
@@ -273,7 +295,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
 
     const correlationId: string = new URL(serverMetadata.issuer).hostname
-    return context.agent
+    const party = context.agent
       .cmGetContacts({
         filter: [
           {
@@ -286,6 +308,8 @@ export class OID4VCIHolder implements IAgentPlugin {
         ],
       })
       .then((contacts: Array<Party>): Party | undefined => (contacts.length === 1 ? contacts[0] : undefined))
+    logger.log(`Party involved: `, party)
+    return party
   }
 
   private async oid4vciHolderGetCredentials(args: GetCredentialsArgs, context: RequiredContext): Promise<Array<MappedCredentialToAccept>> {
@@ -296,7 +320,10 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
 
     const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState })
-    const credentialsSupported = await getCredentialsSupported({ client, vcFormatPreferences: this.vcFormatPreferences })
+    const credentialsSupported = await getCredentialsSupported({
+      client,
+      vcFormatPreferences: this.vcFormatPreferences,
+    })
     const serverMetadata = await client.retrieveServerMetadata()
     const issuanceOpts = await getIssuanceOpts({
       client,
@@ -320,7 +347,10 @@ export class OID4VCIHolder implements IAgentPlugin {
         ),
     )
 
-    return await Promise.all(getCredentials)
+    const allCredentials = await Promise.all(getCredentials)
+    logger.log(`Credentials received`, allCredentials)
+
+    return allCredentials
   }
 
   private async oid4vciHolderGetCredential(args: GetCredentialArgs, context: RequiredContext): Promise<MappedCredentialToAccept> {
@@ -417,6 +447,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       contactId: contact.id,
       identity,
     })
+    logger.log(`Contact added ${contact.id}`)
 
     return context.agent.cmAddIdentity({ contactId: contact.id, identity })
   }
@@ -449,22 +480,105 @@ export class OID4VCIHolder implements IAgentPlugin {
         issuerCorrelationId: new URL(serverMetadata.issuer).hostname,
         localeBranding,
       })
+      logger.log(`Credential branding for issuer ${serverMetadata.issuer} stored with locales ${localeBranding.map((b) => b.locale).join(',')}`)
+    } else {
+      logger.warning(`No credential branding found for issuer: ${serverMetadata.issuer}`)
     }
   }
 
   private async oid4vciHolderStoreCredentials(args: StoreCredentialsArgs, context: RequiredContext): Promise<void> {
-    const { credentialsToAccept } = args
+    const { credentialsToAccept, openID4VCIClientState, credentialsSupported } = args
 
-    const verifiableCredential = credentialsToAccept[0].uniformVerifiableCredential as VerifiableCredential
-    const vcHash = await context.agent.dataStoreSaveVerifiableCredential({ verifiableCredential })
+    const credentialToAccept = credentialsToAccept[0]
 
-    if (conte)
+    let persist = true
+    const verifiableCredential = credentialToAccept.uniformVerifiableCredential as VerifiableCredential
 
-    await context.agent.emit(OID4VCIHolderEvent.CREDENTIAL_STORED, {
-      vcHash,
-      credential: verifiableCredential,
-    })
+    const notificationId = credentialToAccept.credential.credentialResponse.notification_id
+    const subjectIssuance = credentialToAccept.credential_subject_issuance
+    let holderCredential: IVerifiableCredential | JwtDecodedVerifiableCredential | SdJwtDecodedVerifiableCredentialPayload | undefined = undefined
+    if (notificationId) {
+      logger.log(`Notification id ${notificationId} found, will send back a notification`)
+      let event = 'credential_accepted'
+      if (subjectIssuance) {
+        event = subjectIssuance.notifications_events_supported.includes('credential_accepted_holder_signed')
+          ? 'credential_accepted_holder_signed'
+          : 'credential_deleted_holder_signed'
+        logger.log(`Subject issuance will be used, with event ${event}`)
+        const credential = credentialToAccept.credential.credentialResponse.credential as OriginalVerifiableCredential
+        const wrappedVC = CredentialMapper.toWrappedVerifiableCredential(credential)
+        const issuer =
+          wrappedVC.decoded.sub ??
+          wrappedVC.decoded.credentialSubject.id ??
+          verifiableCredential.credentialSubject.id ??
+          openID4VCIClientState?.jwk?.kid
+        holderCredential = wrappedVC.decoded
+        let proofFormat: ProofFormat = 'lds'
+        if (wrappedVC.format.includes('jwt')) {
+          // @ts-ignore
+          holderCredential['iss'] = issuer
+          proofFormat = 'jwt'
+        }
+        if ('issuer' in holderCredential) {
+          holderCredential.issuer = issuer
+        }
+        const cred = (await context.agent.createVerifiableCredential({
+          credential: holderCredential as CredentialPayload,
+          fetchRemoteContexts: true,
+          save: true,
+          proofFormat,
+        })) as VerifiableCredential
+        logger.log(`Holder ${holderCredential.issuer} issued new credential with id ${holderCredential.id}`, holderCredential)
+        holderCredential = CredentialMapper.toExternalVerifiableCredential(cred)
+        persist = event === 'credential_accepted_holder_signed'
+      }
 
+      const notificationRequest: NotificationRequest = {
+        notification_id: notificationId,
+        ...(holderCredential && { credential: holderCredential }),
+        event,
+      }
 
+      await this.oid4vciHolderSendNotification(
+        {
+          openID4VCIClientState,
+          stored: persist,
+          credentialsToAccept,
+          credentialsSupported,
+          notificationRequest,
+        },
+        context,
+      )
+    }
+    const persistCredential = holderCredential ? CredentialMapper.toExternalVerifiableCredential(holderCredential) : verifiableCredential
+    if (!persist) {
+      logger.log(`Will not persist credential, since we are signing as a holder (${persistCredential?.issuer}) and the issuer asked not to persist`)
+    } else {
+      logger.log(`Persisting credential with id: ${persistCredential.id}`, persistCredential)
+      // @ts-ignore
+      const vcHash = await context.agent.dataStoreSaveVerifiableCredential({ verifiableCredential: persistCredential })
+      await context.agent.emit(OID4VCIHolderEvent.CREDENTIAL_STORED, {
+        vcHash,
+        credential: verifiableCredential,
+      })
+    }
+  }
+
+  private async oid4vciHolderSendNotification(args: SendNotificationArgs, context: RequiredContext): Promise<void> {
+    const { serverMetadata, notificationRequest, openID4VCIClientState } = args
+    const notificationEndpoint = serverMetadata?.credentialIssuerMetadata?.notification_endpoint
+    if (!notificationEndpoint) {
+      return
+    } else if (!openID4VCIClientState) {
+      return Promise.reject(Error('Missing openID4VCI client state in context'))
+    } else if (!notificationRequest) {
+      return Promise.reject(Error('Missing notification request'))
+    }
+
+    const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState })
+    if (!client.accessTokenResponse) {
+      return Promise.reject(Error('Missing client access token response'))
+    }
+    void client.sendNotification({ notificationEndpoint }, notificationRequest, openID4VCIClientState?.accessTokenResponse?.access_token)
   }
 }
