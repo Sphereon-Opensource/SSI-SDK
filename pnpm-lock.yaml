@@ -375,6 +375,9 @@ importers:
       '@veramo/utils':
         specifier: 4.2.0
         version: 4.2.0
+      blakejs:
+        specifier: ^1.1.1
+        version: 1.2.1
       class-validator:
         specifier: ^0.14.0
         version: 0.14.1

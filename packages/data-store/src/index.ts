@@ -36,6 +36,7 @@ import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCre
 import { digitalCredentialFrom, digitalCredentialsFrom, nonPersistedDigitalCredentialEntityFromAddArgs } from './utils/digitalCredential/MappingUtils'
 import { isPresentationDefinitionEqual } from './utils/presentationDefinition/MappingUtils'
 import { PresentationDefinitionItemEntity } from './entities/presentationDefinition/PresentationDefinitionItemEntity'
+import { ContactMetadataItemEntity } from './entities/contact/ContactMetadataItemEntity'
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
 export { EventLoggerStore } from './eventLogger/EventLoggerStore'
 export { IAbstractMachineStateStore } from './machineState/IAbstractMachineStateStore'
@@ -71,6 +72,7 @@ export const DataStoreContactEntities = [
   NaturalPersonEntity,
   ElectronicAddressEntity,
   PhysicalAddressEntity,
+  ContactMetadataItemEntity,
 ]
 
 export const DataStoreIssuanceBrandingEntities = [
@@ -148,4 +150,5 @@ export {
   MachineStateInfoEntity,
   PresentationDefinitionItemEntity,
   isPresentationDefinitionEqual,
+  ContactMetadataItemEntity,
 }

@@ -5,12 +5,14 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   TableInheritance,
   UpdateDateColumn,
 } from 'typeorm'
 import { PartyEntity } from './PartyEntity'
+import { ContactMetadataItemEntity } from './ContactMetadataItemEntity'
 
 @Entity('BaseContact')
 @TableInheritance({ column: { type: 'varchar', name: 'type' } })
@@ -29,6 +31,15 @@ export abstract class BaseContactEntity extends BaseEntity {
   })
   @JoinColumn({ name: 'party_id' })
   party!: PartyEntity
+
+  @OneToMany(() => ContactMetadataItemEntity, (metadata: ContactMetadataItemEntity) => metadata.contact, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    eager: true,
+    nullable: false,
+  })
+  @JoinColumn({ name: 'metadata_id' })
+  metadata!: Array<ContactMetadataItemEntity>
 
   // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.
   @BeforeInsert()

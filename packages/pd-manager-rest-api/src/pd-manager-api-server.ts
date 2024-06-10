@@ -3,7 +3,7 @@ import { TAgent } from '@veramo/core'
 
 import express, { Express, Router } from 'express'
 import { IPDManagerAPIEndpointOpts, IRequiredPlugins } from './types'
-import { pdDeleteEndpoint, pdPersistEndpoint, pdReadEndpoint } from './api-functions'
+import { pdDeleteEndpoint, pdHasEndpoint, pdPersistEndpoint, pdReadEndpoint, pdsDeleteEndpoint, pdsReadEndpoint } from './api-functions'
 import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-express-support'
 
 type PdManagerApiServerArgs = {
@@ -35,12 +35,15 @@ export class PdManagerApiServer {
     // endpoints
     if (features.includes('pd_read')) {
       pdReadEndpoint(this.router, context, this._opts?.endpointOpts?.pdRead)
+      pdHasEndpoint(this.router, context, this._opts?.endpointOpts?.pdRead)
+      pdsReadEndpoint(this.router, context, this._opts?.endpointOpts?.pdRead)
     }
     if (features.includes('pd_write')) {
       pdPersistEndpoint(this.router, context, this._opts?.endpointOpts?.pdWrite)
     }
     if (features.includes('pd_delete')) {
       pdDeleteEndpoint(this.router, context, this._opts?.endpointOpts?.pdDelete)
+      pdsDeleteEndpoint(this.router, context, this._opts?.endpointOpts?.pdDelete)
     }
     this._express.use(opts?.endpointOpts?.basePath ?? '', this.router)
   }

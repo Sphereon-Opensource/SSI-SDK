@@ -83,34 +83,6 @@ server:
             $ref: /constants/baseUrl
           messagingServiceEndpoint: /messaging
 
-# DID resolvers
-didResolver:
-  $require: '@veramo/did-resolver#DIDResolverPlugin'
-  $args:
-    - resolver:
-        $require: did-resolver#Resolver
-        $args:
-          - elem:
-              $ref: /universal-resolver
-            io:
-              $ref: /universal-resolver
-            ion:
-              $ref: /universal-resolver
-            sov:
-              $ref: /universal-resolver
-            ethr:
-              $ref: /ethr-did-resolver
-
-ethr-did-resolver:
-  $require: ethr-did-resolver?t=function&p=/ethr#getResolver
-  $args:
-    - infuraProjectId: 5ffc47f65c4042ce847ef66a3fa70d4c
-
-universal-resolver:
-  $require: '@veramo/did-resolver#UniversalResolver'
-  $args:
-    - url: https://dev.uniresolver.io/1.0/identifiers/
-
 # Agent
 agent:
   $require: '@veramo/core#Agent'

@@ -5,6 +5,7 @@ export type PresentationDefinitionItem = {
   definitionId: string
   tenantId?: string
   version: string
+  name?: string
   purpose?: string
   definitionPayload: IPresentationDefinition
   createdAt: Date
@@ -12,12 +13,5 @@ export type PresentationDefinitionItem = {
 }
 
 export type NonPersistedPresentationDefinitionItem = Omit<PresentationDefinitionItem, 'id' | 'createdAt' | 'lastUpdatedAt'>
-
-export type PersistablePresentationDefinitionItem = Omit<NonPersistedPresentationDefinitionItem, 'definitionId' | 'version'> & {
-  id?: string
-  definitionId?: string
-  version?: string
-}
-
 export type PartialPresentationDefinitionItem = Partial<PresentationDefinitionItem>
-export type PresentationDefinitionItemFilter = Partial<Omit<PresentationDefinitionItem, 'definitionPayload'>>
+export type PresentationDefinitionItemFilter = Partial<Omit<PresentationDefinitionItem, 'definitionPayload'>> // TODO add logic to linearize & hash definitionPayload into a separate column so we can filter on it?

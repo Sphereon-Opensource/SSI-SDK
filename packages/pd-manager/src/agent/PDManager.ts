@@ -17,6 +17,7 @@ import {
   PresentationDefinitionItem,
 } from '@sphereon/ssi-sdk.data-store'
 import semver from 'semver/preload'
+import { ReleaseType } from 'semver'
 
 // Exposing the methods here for any REST implementation
 export const pdManagerMethods: Array<string> = [
@@ -87,7 +88,7 @@ export class PDManager implements IAgentPlugin {
   /** {@inheritDoc IPDManager.pdmPersistDefinition} */
   private async pdmPersistDefinition(args: PersistDefinitionArgs): Promise<PresentationDefinitionItem> {
     const { definitionItem, opts } = args
-    const { versionControlMode } = opts ?? { versionControlMode: 'AutoIncrementMajor' }
+    const { versionControlMode, versionIncrementReleaseType } = opts ?? { versionControlMode: 'AutoIncrement' }
     const { version, tenantId } = definitionItem
     const definitionId = definitionItem.definitionId ?? definitionItem.definitionPayload.id
 
@@ -99,7 +100,7 @@ export class PDManager implements IAgentPlugin {
     const nonPersistedDefinitionItem: NonPersistedPresentationDefinitionItem = {
       ...definitionItem,
       definitionId: definitionId,
-      version: definitionItem.version ?? '1',
+      version: version ?? '1',
     }
 
     const existing = await this.store.getDefinitions({ filter: [{ id, definitionId, tenantId, version }] })
@@ -121,10 +122,8 @@ export class PDManager implements IAgentPlugin {
         return this.handleOverwriteLatestMode(latestVersionItem, nonPersistedDefinitionItem)
       case 'Manual':
         return this.handleManualMode(existingItem, nonPersistedDefinitionItem, tenantId, version)
-      case 'AutoIncrementMajor':
-        return this.handleAutoIncrementMode(latestVersionItem, nonPersistedDefinitionItem, 'major')
-      case 'AutoIncrementMinor':
-        return this.handleAutoIncrementMode(latestVersionItem, nonPersistedDefinitionItem, 'minor')
+      case 'AutoIncrement':
+        return this.handleAutoIncrementMode(latestVersionItem, nonPersistedDefinitionItem, versionIncrementReleaseType ?? 'major')
       default:
         throw new Error(`Unknown version control mode: ${versionControlMode}`)
     }
@@ -139,6 +138,7 @@ export class PDManager implements IAgentPlugin {
       existingItem.definitionId = definitionItem.definitionId
       existingItem.version = version ?? existingItem.version ?? '1'
       existingItem.tenantId = definitionItem.tenantId
+      existingItem.name = definitionItem.name
       existingItem.purpose = definitionItem.purpose
       existingItem.definitionPayload = definitionItem.definitionPayload
 
@@ -155,6 +155,7 @@ export class PDManager implements IAgentPlugin {
     if (latestVersionItem) {
       latestVersionItem.definitionId = definitionItem.definitionId
       latestVersionItem.tenantId = definitionItem.tenantId
+      latestVersionItem.name = definitionItem.name
       latestVersionItem.purpose = definitionItem.purpose
       latestVersionItem.definitionPayload = definitionItem.definitionPayload
 
@@ -182,14 +183,42 @@ export class PDManager implements IAgentPlugin {
   private async handleAutoIncrementMode(
     latestVersionItem: PresentationDefinitionItem | undefined,
     definitionItem: NonPersistedPresentationDefinitionItem,
-    releaseType: 'major' | 'minor',
+    releaseType: ReleaseType,
   ): Promise<PresentationDefinitionItem> {
-    const currentVersion = latestVersionItem?.version ?? definitionItem.version ?? '1'
-    const newVersion = latestVersionItem ? semver.inc(currentVersion, releaseType) : currentVersion
-    if (!newVersion) {
-      throw Error(`Could not increment ${releaseType} version on ${currentVersion}`)
+    const defaultVersion = '1'
+    let currentVersion = latestVersionItem?.version ?? definitionItem.version ?? defaultVersion
+    let resultVersion: string
+
+    if (!latestVersionItem) {
+      resultVersion = currentVersion
+    } else {
+      let [baseVersion, preReleaseSuffix] = currentVersion.split(/-(.+)/)
+
+      // Normalize the base version to at least 'major.minor.patch', that's what semver needs as input
+      let normalizedBaseVersion = semver.coerce(baseVersion)?.version ?? `${defaultVersion}.0.0`
+      let preReleaseIdentifier = preReleaseSuffix ? preReleaseSuffix.match(/^[a-zA-Z]+/)?.[0] : undefined
+      let fullVersionToIncrement = preReleaseIdentifier ? `${normalizedBaseVersion}-${preReleaseSuffix}` : normalizedBaseVersion
+
+      // Use semver to increment the version
+      let incrementedVersion = semver.inc(fullVersionToIncrement, releaseType, preReleaseIdentifier)
+      if (!incrementedVersion) {
+        throw new Error(`Could not increment ${releaseType} version on ${currentVersion} ${preReleaseSuffix}`)
+      }
+
+      // Extract new base version to match the original input format
+      let [incrementedBaseVersion, incrementedSuffix] = incrementedVersion.split(/-(.+)/)
+      let originalParts = baseVersion.split('.')
+      let newParts = incrementedBaseVersion.split('.')
+      while (newParts.length > originalParts.length) {
+        newParts.pop() // Reduce to original length by removing extra .0s
+      }
+      resultVersion = newParts.join('.')
+      if (incrementedSuffix) {
+        resultVersion += `-${incrementedSuffix}`
+      }
     }
-    definitionItem.version = newVersion
+
+    definitionItem.version = resultVersion
     return await this.store.addDefinition(definitionItem)
   }
 }

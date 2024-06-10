@@ -98,9 +98,18 @@ export class PDStore extends AbstractPDStore {
       return Promise.reject(Error(`No presentation definition entity found for id: ${item.id}`))
     }
 
-    const entity: PresentationDefinitionItemEntity = presentationDefinitionEntityItemFrom(item)
-    debug('Updating presentation definition item', item)
-    const updateResult: PresentationDefinitionItemEntity = await pdRepository.save(entity, {
+    const updatedEntity: Partial<PresentationDefinitionItemEntity> = {
+      ...result,
+    }
+    updatedEntity.tenantId = item.tenantId
+    updatedEntity.definitionId = item.definitionId!
+    updatedEntity.version = item.version
+    updatedEntity.name = item.name
+    updatedEntity.purpose = item.purpose
+    updatedEntity.definitionPayload = JSON.stringify(item.definitionPayload!)
+
+    debug('Updating presentation definition entity', updatedEntity)
+    const updateResult: PresentationDefinitionItemEntity = await pdRepository.save(updatedEntity, {
       transaction: true,
     })
 
