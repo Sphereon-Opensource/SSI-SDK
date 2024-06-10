@@ -3,5 +3,5 @@
  */
 const schema = require('../plugin.schema.json')
 export { schema }
-export { IssuanceBranding, issuanceBrandingContextMethods } from './agent/IssuanceBranding'
+export { IssuanceBranding, issuanceBrandingMethods } from './agent/IssuanceBranding'
 export * from './types/IIssuanceBranding'
