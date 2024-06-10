@@ -458,9 +458,13 @@ export class OID4VCIHolder implements IAgentPlugin {
     const verifiableCredential = credentialsToAccept[0].uniformVerifiableCredential as VerifiableCredential
     const vcHash = await context.agent.dataStoreSaveVerifiableCredential({ verifiableCredential })
 
+    if (conte)
+
     await context.agent.emit(OID4VCIHolderEvent.CREDENTIAL_STORED, {
       vcHash,
       credential: verifiableCredential,
     })
+
+
   }
 }

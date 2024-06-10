@@ -76,7 +76,7 @@ export type StoreCredentialBrandingArgs = Pick<
   OID4VCIMachineContext,
   'serverMetadata' | 'credentialBranding' | 'selectedCredentials' | 'credentialsToAccept'
 >
-export type StoreCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept'>
+export type StoreCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported'>
 
 export enum OID4VCIHolderEvent {
   CONTACT_IDENTITY_CREATED = 'contact_identity_created',
@@ -295,6 +295,7 @@ export type CredentialTypeSelection = {
   credentialType: string
   credentialAlias: string
   isSelected: boolean
+  experimental:
 }
 
 export type OID4VCIMachine = {
