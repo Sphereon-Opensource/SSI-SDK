@@ -240,9 +240,7 @@ export const identityEntityFrom = (entity: NonPersistedIdentity): IdentityEntity
   identityEntity.identifier = correlationIdentifierEntityFrom(entity.identifier)
   identityEntity.connection = entity.connection ? connectionEntityFrom(entity.connection) : undefined
   identityEntity.metadata = entity.metadata
-    ? entity.metadata
-        .map(identityMetadataItemEntityFrom)
-        .filter((entity): entity is IdentityMetadataItemEntity => entity !== undefined)
+    ? entity.metadata.map(identityMetadataItemEntityFrom).filter((entity): entity is IdentityMetadataItemEntity => entity !== undefined)
     : []
   return identityEntity
 }
@@ -343,9 +341,7 @@ export const naturalPersonEntityFrom = (naturalPerson: NonPersistedNaturalPerson
   naturalPersonEntity.ownerId = naturalPerson.ownerId
   naturalPersonEntity.tenantId = naturalPerson.tenantId
   naturalPersonEntity.metadata = naturalPerson.metadata
-    ? naturalPerson.metadata
-        .map(contactMetadataItemEntityFrom)
-        .filter((entity): entity is ContactMetadataItemEntity => entity !== undefined)
+    ? naturalPerson.metadata.map(contactMetadataItemEntityFrom).filter((entity): entity is ContactMetadataItemEntity => entity !== undefined)
     : []
 
   return naturalPersonEntity
@@ -388,9 +384,7 @@ export const organizationEntityFrom = (organization: NonPersistedOrganization): 
   organizationEntity.ownerId = organization.ownerId
   organizationEntity.tenantId = organization.tenantId
   organizationEntity.metadata = organization.metadata
-    ? organization.metadata
-        .map(contactMetadataItemEntityFrom)
-        .filter((entity): entity is ContactMetadataItemEntity => entity !== undefined)
+    ? organization.metadata.map(contactMetadataItemEntityFrom).filter((entity): entity is ContactMetadataItemEntity => entity !== undefined)
     : []
 
   return organizationEntity
