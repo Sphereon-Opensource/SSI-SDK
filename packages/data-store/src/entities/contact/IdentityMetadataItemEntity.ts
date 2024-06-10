@@ -5,7 +5,7 @@ import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { getConstraint } from '../../utils/ValidatorUtils'
 
 @Entity('IdentityMetadata')
-export class IdentityMetadataItemEntity extends BaseEntity {
+export class IdentityMetadataItemEntity extends BaseEntity implements IMetadataEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
@@ -13,9 +13,21 @@ export class IdentityMetadataItemEntity extends BaseEntity {
   @IsNotEmpty({ message: 'Blank metadata labels are not allowed' })
   label!: string
 
-  @Column({ name: 'value', length: 255, nullable: false })
-  @IsNotEmpty({ message: 'Blank metadata values are not allowed' })
-  value!: string
+  @Column({ name: 'valueType', nullable: false })
+  @IsNotEmpty({ message: 'valueType must not be empty' })
+  valueType!: string
+
+  @Column({ name: 'stringValue', length: 255, nullable: true })
+  stringValue?: string
+
+  @Column({ name: 'numberValue', nullable: true })
+  numberValue?: number
+
+  @Column({ name: 'dateValue', nullable: true })
+  dateValue?: Date
+
+  @Column({ name: 'boolValue', nullable: true })
+  boolValue?: boolean
 
   @ManyToOne(() => IdentityEntity, (identity: IdentityEntity) => identity.metadata, { cascade: ['insert', 'update'], onDelete: 'CASCADE' })
   identity!: IdentityEntity

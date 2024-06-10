@@ -84,15 +84,22 @@ export async function createRPBuilder(args: {
 }): Promise<RPBuilder> {
   const { rpOpts, pexOpts, context } = args
   const { didOpts } = rpOpts
-  const definition =
-    args.definition ??
-    (!!pexOpts && pexOpts.definitionId
-      ? await context.agent.pexStoreGetDefinition({
+  let definition: IPresentationDefinition | undefined = args.definition
+
+  if (!definition && pexOpts && pexOpts.definitionId) {
+    const presentationDefinitionItems = await context.agent.pdmGetDefinitions({
+      filter: [
+        {
           definitionId: pexOpts.definitionId,
-          storeId: pexOpts.storeId,
-          namespace: pexOpts.storeNamespace,
-        })
-      : undefined)
+          version: pexOpts.version,
+          tenantId: pexOpts.tenantId,
+        },
+      ],
+    })
+
+    definition = presentationDefinitionItems.length > 0 ? presentationDefinitionItems[0].definitionPayload : undefined
+  }
+
   const did = getDID(didOpts.identifierOpts)
   const didMethods = await getSupportedDIDMethods(didOpts, context)
   const identifier = await getIdentifier(didOpts.identifierOpts, context)

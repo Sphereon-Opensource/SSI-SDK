@@ -1,5 +1,5 @@
 import { OrPromise } from '@sphereon/ssi-types'
-import { DataSource, In, Repository } from 'typeorm'
+import { BaseEntity, DataSource, FindOptionsWhere, In, Repository } from 'typeorm'
 import Debug from 'debug'
 import { AbstractContactStore } from './AbstractContactStore'
 import { PartyEntity } from '../entities/contact/PartyEntity'
@@ -54,6 +54,8 @@ import {
   GetRelationshipArgs,
   GetRelationshipsArgs,
   Identity,
+  MetadataItem,
+  MetadataTypes,
   NonPersistedConnectionConfig,
   NonPersistedContact,
   Party,
@@ -99,21 +101,16 @@ export class ContactStore extends AbstractContactStore {
   }
 
   getParties = async (args?: GetPartiesArgs): Promise<Array<Party>> => {
-    debug(`getParties()`, args)
+    debug('getParties()', args)
     const { filter } = args ?? {}
-    const partyRepository: Repository<PartyEntity> = (await this.dbConnection).getRepository(PartyEntity)
-    const initialResult: Array<PartyEntity> = await partyRepository.find({
-      ...(filter && { where: filter }),
-    })
+    const partyRepository = (await this.dbConnection).getRepository(PartyEntity)
+    const filterConditions = this.buildFilters(filter)
+    const initialResult = await partyRepository.find({ select: ['id'], where: filterConditions })
 
-    const result: Array<PartyEntity> = await partyRepository.find({
-      where: {
-        id: In(initialResult.map((party: PartyEntity) => party.id)),
-      },
-    })
+    // Fetch the complete entities based on the initial result IDs
+    const result = await partyRepository.find({ where: { id: In(initialResult.map((party) => party.id)) } })
     debug(`getParties() resulted in ${result.length} parties`)
-
-    return result.map((party: PartyEntity) => partyFrom(party))
+    return result.map(partyFrom)
   }
 
   addParty = async (args: AddPartyArgs): Promise<Party> => {
@@ -211,18 +208,12 @@ export class ContactStore extends AbstractContactStore {
 
   getIdentities = async (args?: GetIdentitiesArgs): Promise<Array<Identity>> => {
     const { filter } = args ?? {}
-    const identityRepository: Repository<IdentityEntity> = (await this.dbConnection).getRepository(IdentityEntity)
-    const initialResult: Array<IdentityEntity> = await identityRepository.find({
-      ...(filter && { where: filter }),
-    })
+    const identityRepository = (await this.dbConnection).getRepository(IdentityEntity)
+    const filterConditions = this.buildFilters(filter)
+    const initialResult = await identityRepository.find({ select: ['id'], where: filterConditions })
 
-    const result: Array<IdentityEntity> = await identityRepository.find({
-      where: {
-        id: In(initialResult.map((identity: IdentityEntity) => identity.id)),
-      },
-    })
-
-    return result.map((identity: IdentityEntity) => identityFrom(identity))
+    const result = await identityRepository.find({ where: { id: In(initialResult.map((identity) => identity.id)) } })
+    return result.map(identityFrom)
   }
 
   addIdentity = async (args: AddIdentityArgs): Promise<Identity> => {
@@ -622,7 +613,7 @@ export class ContactStore extends AbstractContactStore {
     await physicalAddressRepository.delete(physicalAddressId)
   }
 
-  private hasCorrectConnectionConfig(type: ConnectionType, config: NonPersistedConnectionConfig): boolean {
+  private hasCorrectConnectionConfig = (type: ConnectionType, config: NonPersistedConnectionConfig): boolean => {
     switch (type) {
       case ConnectionType.OPENID_CONNECT:
         return isOpenIdConfig(config)
@@ -633,7 +624,7 @@ export class ContactStore extends AbstractContactStore {
     }
   }
 
-  private hasCorrectPartyType(type: PartyTypeType, contact: NonPersistedContact): boolean {
+  private hasCorrectPartyType = (type: PartyTypeType, contact: NonPersistedContact): boolean => {
     switch (type) {
       case PartyTypeType.NATURAL_PERSON:
         return isNaturalPerson(contact)
@@ -644,7 +635,7 @@ export class ContactStore extends AbstractContactStore {
     }
   }
 
-  private async deleteIdentities(identities: Array<IdentityEntity>): Promise<void> {
+  private deleteIdentities = async (identities: Array<IdentityEntity>): Promise<void> => {
     debug('Removing identities', identities)
 
     const connection: DataSource = await this.dbConnection
@@ -680,7 +671,7 @@ export class ContactStore extends AbstractContactStore {
     })
   }
 
-  private async deleteElectronicAddresses(electronicAddresses: Array<ElectronicAddressEntity>): Promise<void> {
+  private deleteElectronicAddresses = async (electronicAddresses: Array<ElectronicAddressEntity>): Promise<void> => {
     debug('Removing electronic addresses', electronicAddresses)
 
     const electronicAddressRepository: Repository<ElectronicAddressEntity> = (await this.dbConnection).getRepository(ElectronicAddressEntity)
@@ -691,7 +682,7 @@ export class ContactStore extends AbstractContactStore {
     })
   }
 
-  private async deletePhysicalAddresses(physicalAddresses: Array<PhysicalAddressEntity>): Promise<void> {
+  private deletePhysicalAddresses = async (physicalAddresses: Array<PhysicalAddressEntity>): Promise<void> => {
     debug('Removing physical addresses', physicalAddresses)
 
     const physicalAddressRepository: Repository<PhysicalAddressEntity> = (await this.dbConnection).getRepository(PhysicalAddressEntity)
@@ -702,7 +693,7 @@ export class ContactStore extends AbstractContactStore {
     })
   }
 
-  private async assertRelationshipSides(leftId: string, rightId: string): Promise<void> {
+  private assertRelationshipSides = async (leftId: string, rightId: string): Promise<void> => {
     const partyRepository: Repository<PartyEntity> = (await this.dbConnection).getRepository(PartyEntity)
     const leftParty: PartyEntity | null = await partyRepository.findOne({
       where: { id: leftId },
@@ -719,5 +710,58 @@ export class ContactStore extends AbstractContactStore {
     if (!rightParty) {
       return Promise.reject(Error(`No party found for right side of the relationship, party id: ${rightId}`))
     }
+  }
+
+  private buildFilters = <T extends BaseEntity>(filter?: Array<Record<string, any>>): Array<FindOptionsWhere<T>> | FindOptionsWhere<T> => {
+    if (!filter) return {}
+
+    return filter.map((condition) => this.processCondition(condition))
+  }
+
+  private processCondition = (condition: Record<string, any>): Record<string, any> => {
+    const conditionObject: Record<string, any> = {}
+
+    Object.keys(condition).forEach((key) => {
+      const value = condition[key]
+
+      if (key === 'metadata' && value) {
+        conditionObject[key] = this.buildMetadataCondition(value)
+      } else if (typeof value === 'object' && value !== null) {
+        conditionObject[key] = this.processCondition(value)
+      } else {
+        conditionObject[key] = value
+      }
+    })
+
+    return conditionObject
+  }
+
+  private buildMetadataCondition = <T extends MetadataItem<MetadataTypes>>(metadata: Partial<T>): FindOptionsWhere<IMetadataEntity> => {
+    const metadataCondition: FindOptionsWhere<any> = {
+      label: metadata.label,
+    }
+
+    switch (typeof metadata.value) {
+      case 'string':
+        metadataCondition.stringValue = metadata.value as string
+        break
+      case 'number':
+        metadataCondition.numberValue = metadata.value as number
+        break
+      case 'boolean':
+        metadataCondition.boolValue = metadata.value as boolean
+        break
+      case 'object':
+        if (metadata.value instanceof Date) {
+          metadataCondition.dateValue = metadata.value as Date
+        } else {
+          // For now, we only support / implement not-primitive type Date in the entity
+          throw new Error(`Unsupported object type: ${Object.prototype.toString.call(metadata.value).slice(8, -1)} for value ${metadata.value}`) // slice to extract type from string [object String]
+        }
+        break
+      default:
+        throw new Error(`Unsupported value type: ${typeof metadata.value}`)
+    }
+    return metadataCondition
   }
 }

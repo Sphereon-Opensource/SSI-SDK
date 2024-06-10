@@ -30,6 +30,8 @@
     { "path": "qr-code-generator" },
     { "path": "contact-manager" },
     { "path": "contact-manager-rest-api" },
+    { "path": "pd-manager" },
+    { "path": "pd-manager-rest-api" },
     { "path": "data-store" },
     { "path": "wellknown-did-issuer" },
     { "path": "wellknown-did-verifier" },
@@ -37,6 +39,7 @@
     { "path": "issuance-branding" },
     { "path": "headless-web3-provider" },
     { "path": "event-logger" },
-    { "path": "remote-server-rest-api" }
+    { "path": "remote-server-rest-api" },
+    { "path": "sd-jwt" }
   ]
 }

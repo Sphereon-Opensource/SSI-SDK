@@ -37,6 +37,7 @@ import { IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
 
 export enum VerifiedDataMode {
   NONE = 'none',
@@ -55,6 +56,7 @@ export interface ISIOPv2RP extends IPluginMethodMap {
   siopUpdateAuthRequestState(args: IUpdateRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState>
   siopDeleteAuthState(args: IDeleteAuthStateArgs, context: IRequiredContext): Promise<boolean>
   siopVerifyAuthResponse(args: IVerifyAuthResponseStateArgs, context: IRequiredContext): Promise<VerifiedAuthorizationResponse>
+  siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void>
 }
 
 export interface ISiopv2RPOpts {
@@ -109,6 +111,13 @@ export interface IVerifyAuthResponseStateArgs {
   presentationDefinitions?: PresentationDefinitionWithLocation | PresentationDefinitionWithLocation[]
 }
 
+export interface ImportDefinitionsArgs {
+  definitions: Array<IPresentationDefinition>
+  tenantId?: string
+  version?: string
+  versionControlMode?: VersionControlMode
+}
+
 export interface IAuthorizationRequestPayloads {
   authorizationRequest: AuthorizationRequestPayload
   requestObject?: string
@@ -126,7 +135,6 @@ export interface ISiopRPInstanceArgs {
 
 export interface IPEXInstanceOptions extends IPEXOptions {
   rpOpts?: IRPOptions
-  definition?: IPresentationDefinition
 }
 
 export interface IRPOptions {
@@ -143,8 +151,8 @@ export interface IPEXOptions {
   presentationVerifyCallback?: PresentationVerificationCallback
   // definition?: IPresentationDefinition
   definitionId: string
-  storeId?: string
-  storeNamespace?: string
+  version?: string
+  tenantId?: string
 }
 
 export interface PerDidResolver {
@@ -176,5 +184,5 @@ export interface AuthorizationResponseStateWithVerifiedData extends Authorizatio
 }
 
 export type IRequiredContext = IAgentContext<
-  IDataStoreORM & IResolver & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier & IPresentationExchange
+  IDataStoreORM & IResolver & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier & IPresentationExchange & IPDManager
 >
