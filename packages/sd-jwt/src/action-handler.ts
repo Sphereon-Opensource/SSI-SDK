@@ -62,10 +62,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       hashAlg: 'SHA-256',
     })
 
-    const credential = await sdjwt.issue(
-      args.credentialPayload,
-      args.disclosureFrame as DisclosureFrame<typeof args.credentialPayload>,
-    )
+    const credential = await sdjwt.issue(args.credentialPayload, args.disclosureFrame as DisclosureFrame<typeof args.credentialPayload>)
     return { credential }
   }
 
@@ -125,11 +122,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       kbSigner: signer,
       kbSignAlg: alg,
     })
-    const credential = await sdjwt.present(
-      args.presentation,
-      args.presentationFrame as PresentationFrame<SdJwtVcPayload>,
-      { kb: args.kb },
-    )
+    const credential = await sdjwt.present(args.presentation, args.presentationFrame as PresentationFrame<SdJwtVcPayload>, { kb: args.kb })
     return { presentation: credential }
   }
 
@@ -142,8 +135,7 @@ export class SDJwtPlugin implements IAgentPlugin {
   async verifySdJwtVc(args: IVerifySdJwtVcArgs, context: IRequiredContext): Promise<IVerifySdJwtVcResult> {
     // biome-ignore lint/style/useConst: <explanation>
     let sdjwt: SDJwtVcInstance
-    const verifier: Verifier = async (data: string, signature: string) =>
-      this.verify(sdjwt, context, data, signature)
+    const verifier: Verifier = async (data: string, signature: string) => this.verify(sdjwt, context, data, signature)
 
     sdjwt = new SDJwtVcInstance({ verifier, hasher: this.algorithms.hasher })
     const verifiedPayloads = await sdjwt.verify(args.credential)
@@ -206,8 +198,7 @@ export class SDJwtPlugin implements IAgentPlugin {
   async verifySdJwtPresentation(args: IVerifySdJwtPresentationArgs, context: IRequiredContext): Promise<IVerifySdJwtPresentationResult> {
     // biome-ignore lint/style/useConst: <explanation>
     let sdjwt: SDJwtVcInstance
-    const verifier: Verifier = async (data: string, signature: string) =>
-      this.verify(sdjwt, context, data, signature)
+    const verifier: Verifier = async (data: string, signature: string) => this.verify(sdjwt, context, data, signature)
     const verifierKb: KbVerifier = async (data: string, signature: string, payload: JwtPayload) =>
       this.verifyKb(sdjwt, context, data, signature, payload)
     sdjwt = new SDJwtVcInstance({

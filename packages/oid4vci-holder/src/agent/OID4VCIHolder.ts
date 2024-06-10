@@ -387,7 +387,10 @@ export class OID4VCIHolder implements IAgentPlugin {
         authorizationResponse: JSON.parse(await client.exportState()).authorizationCodeResponse,
       })
       if ('credential_definition' in issuanceOpt) {
-        const credentialType = issuanceOpt.credential_definition.type.length === 1? issuanceOpt.credential_definition.type[0]: issuanceOpt.credential_definition.type.filter(type=>type!='VerifiableCredential')[0]
+        const credentialType =
+          issuanceOpt.credential_definition.type.length === 1
+            ? issuanceOpt.credential_definition.type[0]
+            : issuanceOpt.credential_definition.type.filter((type) => type != 'VerifiableCredential')[0]
         const credentialResponse = await client.acquireCredentials({
           //fixme: this isn't the correct way to handle this. the type is wrong. we're not correctly handling moving from Record<string, CredentialConfigSupport>
           credentialType: issuanceOpt.id ?? credentialType,
