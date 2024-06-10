@@ -1,6 +1,6 @@
 import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, Index, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { PartyEntity } from './PartyEntity'
-import { PartyOrigin, PartyTypeEnum, ValidationConstraint } from '../../types'
+import { PartyOrigin, PartyTypeType, ValidationConstraint } from '../../types'
 import { IsNotEmpty, Validate, validate, ValidationError } from 'class-validator'
 import { IsNonEmptyStringConstraint } from '../validators'
 import { getConstraint } from '../../utils/ValidatorUtils'
@@ -11,21 +11,21 @@ export class PartyTypeEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('simple-enum', { name: 'type', enum: PartyTypeEnum, nullable: false, unique: false })
-  type!: PartyTypeEnum
+  @Column('simple-enum', { name: 'type', enum: PartyTypeType, nullable: false })
+  type!: PartyTypeType
 
-  @Column('simple-enum', { name: 'origin', enum: PartyOrigin, default: 'external', nullable: false, unique: false })
+  @Column('simple-enum', { name: 'origin', enum: PartyOrigin, nullable: false, unique: false })
   origin!: PartyOrigin
 
   @Column({ name: 'name', length: 255, nullable: false, unique: true })
   @IsNotEmpty({ message: 'Blank names are not allowed' })
   name!: string
 
-  @Column({ name: 'description', length: 255, nullable: true, unique: false })
+  @Column({ name: 'description', length: 255, nullable: true })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank descriptions are not allowed' })
   description?: string
 
-  @Column({ name: 'tenant_id', length: 255, nullable: false, unique: false })
+  @Column({ name: 'tenant_id', length: 255, nullable: true })
   @IsNotEmpty({ message: "Blank tenant id's are not allowed" })
   tenantId!: string
 

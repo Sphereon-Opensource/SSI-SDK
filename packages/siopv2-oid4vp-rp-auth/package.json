@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth",
-  "version": "0.23.4",
+  "version": "0.24.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,6 +20,7 @@
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@sphereon/ssi-sdk.presentation-exchange": "workspace:*",
+    "@sphereon/ssi-sdk.pd-manager": "workspace:*",
     "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@sphereon/wellknown-dids-client": "^0.1.3",

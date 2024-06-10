@@ -38,6 +38,12 @@ export class PartyRelationshipEntity {
   @Column({ name: 'right_id', nullable: false })
   rightId!: string
 
+  @Column({name: 'owner_id', nullable: true})
+  ownerId?: string
+
+  @Column({name: 'tenant_id', nullable: true})
+  tenantId?: string
+
   @CreateDateColumn({ name: 'created_at', nullable: false })
   createdAt!: Date
 

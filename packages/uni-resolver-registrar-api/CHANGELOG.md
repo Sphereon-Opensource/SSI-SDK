@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.24.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.23.4...v0.24.0) (2024-06-05)
+
+### Features
+
+- added deactivateDidEndpoint function according to decentralized-identity's universal-registrar and renamed previous method as deleteDidEndpoint and marked it as deprecated ([39a6601](https://github.com/Sphereon-Opensource/SSI-SDK/commit/39a660160fd245a86b368479b3792485f13bee32))
+
 ## [0.23.4](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.23.2...v0.23.4) (2024-04-25)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.uni-resolver-registrar-api
