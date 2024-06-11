@@ -46,7 +46,7 @@ export function logOptions(opts?: SimpleLogOptions): Required<SimpleLogOptions> 
 }
 
 export class Loggers {
-  private static readonly DEFAULT_INSTANCE: Loggers = new Loggers({ defaultLogLevel: LogLevel.INFO, methods: [LogMethod.DEBUG_PKG, LogMethod.EVENT] })
+  public static readonly DEFAULT: Loggers = new Loggers({ defaultLogLevel: LogLevel.INFO, methods: [LogMethod.DEBUG_PKG, LogMethod.EVENT] })
   private static readonly DEFAULT_KEY = '__DEFAULT__'
   private readonly namespaceOptions: Map<string, Required<SimpleLogOptions>> = new Map()
   private readonly loggers: WeakMap<Required<SimpleLogOptions>, ISimpleLogger<any>> = new WeakMap()
@@ -82,10 +82,6 @@ export class Loggers {
       this.loggers.set(options, logger)
     }
     return logger
-  }
-
-  public static default() {
-    return Loggers.DEFAULT_INSTANCE
   }
 }
 

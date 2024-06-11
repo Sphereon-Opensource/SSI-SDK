@@ -146,11 +146,10 @@ export class EventManager {
     if ('id' in event && 'system' in event && !event.eventName) {
       event.eventName = eventName
     }
-    Loggers.default()
-      .options('sphereon:events', {
-        methods: [LogMethod.CONSOLE],
-        defaultLogLevel: LogLevel.INFO,
-      })
+    Loggers.DEFAULT.options('sphereon:events', {
+      methods: [LogMethod.CONSOLE],
+      defaultLogLevel: LogLevel.INFO,
+    })
       .get('sphereon:events')
       .log(`Emitting '${eventName.toString()}' event`, event)
     const emitters = this.emitters({ eventName })
