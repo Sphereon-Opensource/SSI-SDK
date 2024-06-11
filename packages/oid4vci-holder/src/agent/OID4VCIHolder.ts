@@ -84,7 +84,7 @@ export const oid4vciHolderContextMethods: Array<string> = [
   'verifyCredential',
 ]
 
-const logger = Loggers.default()
+const logger = Loggers.DEFAULT
   .options('sphereon:oid4vci:holder', { methods: [LogMethod.CONSOLE, LogMethod.DEBUG_PKG] })
   .get('sphereon:oid4vci:holder')
 

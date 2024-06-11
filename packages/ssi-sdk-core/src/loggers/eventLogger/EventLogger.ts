@@ -20,7 +20,7 @@ class EventLogger {
   private readonly subSystemType?: SubSystem
   private readonly logLevel: LogLevel
   private readonly initiatorType?: InitiatorType
-  private static readonly LOGGERS = Loggers.default()
+  private static readonly LOGGERS = Loggers.DEFAULT
 
   constructor(args: EventLoggerArgs) {
     const { context, namespace = 'sphereon:ssi-sdk:EventLogger', system, subSystem, logLevel = LogLevel.INFO, initiatorType } = args
