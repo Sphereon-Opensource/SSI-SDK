@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@azure/msal-common": "^13.2.0",
-    "@azure/msal-node": "^1.18.0",
+    "@azure/msal-node": "^2.9.2",
     "cross-fetch": "^3.1.8",
     "object-hash": "^3.0.0"
   },
