@@ -16,6 +16,7 @@ import {
   Loggers,
   LogMethod,
   OriginalVerifiableCredential,
+  parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
 } from '@sphereon/ssi-types'
 import { CredentialPayload, DIDDocument, IAgentPlugin, ProofFormat, VerifiableCredential } from '@veramo/core'
@@ -487,7 +488,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   }
 
   private async oid4vciHolderStoreCredentials(args: StoreCredentialsArgs, context: RequiredContext): Promise<void> {
-    const { credentialsToAccept, openID4VCIClientState, credentialsSupported } = args
+    const { credentialsToAccept, openID4VCIClientState, credentialsSupported, serverMetadata } = args
 
     const credentialToAccept = credentialsToAccept[0]
 
@@ -496,22 +497,31 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     const notificationId = credentialToAccept.credential.credentialResponse.notification_id
     const subjectIssuance = credentialToAccept.credential_subject_issuance
+    const notificationEndpoint = serverMetadata?.credentialIssuerMetadata?.notification_endpoint
     let holderCredential: IVerifiableCredential | JwtDecodedVerifiableCredential | SdJwtDecodedVerifiableCredentialPayload | undefined = undefined
-    if (notificationId) {
-      logger.log(`Notification id ${notificationId} found, will send back a notification`)
+    if (!notificationEndpoint) {
+      logger.log(`Notifications not supported by issuer ${serverMetadata?.issuer}. Will not provide a notification`)
+    } else if (notificationEndpoint && !notificationId) {
+      logger.warning(
+        `Notification endpoint available in issuer metadata with value ${notificationEndpoint}, but no ${notificationId} provided. Will not send a notification to issuer ${serverMetadata?.issuer}`,
+      )
+    } else if (notificationEndpoint && notificationId) {
+      logger.log(`Notification id ${notificationId} found, will send back a notification to ${notificationEndpoint}`)
       let event = 'credential_accepted'
       if (subjectIssuance) {
         event = subjectIssuance.notifications_events_supported.includes('credential_accepted_holder_signed')
           ? 'credential_accepted_holder_signed'
           : 'credential_deleted_holder_signed'
-        logger.log(`Subject issuance will be used, with event ${event}`)
+        logger.log(`Subject issuance/signing will be used, with event`, event)
         const credential = credentialToAccept.credential.credentialResponse.credential as OriginalVerifiableCredential
         const wrappedVC = CredentialMapper.toWrappedVerifiableCredential(credential)
         const issuer =
           wrappedVC.decoded.sub ??
           wrappedVC.decoded.credentialSubject.id ??
           verifiableCredential.credentialSubject.id ??
-          openID4VCIClientState?.jwk?.kid
+          openID4VCIClientState?.jwk?.kid?.startsWith('did:')
+            ? parseDid(openID4VCIClientState!.jwk!.kid!).did
+            : undefined
         holderCredential = wrappedVC.decoded
         let proofFormat: ProofFormat = 'lds'
         if (wrappedVC.format.includes('jwt')) {
@@ -522,10 +532,11 @@ export class OID4VCIHolder implements IAgentPlugin {
         if ('issuer' in holderCredential) {
           holderCredential.issuer = issuer
         }
+        logger.log(`Subject issuance/signing will sign credential of type ${proofFormat}:`, holderCredential)
         const cred = (await context.agent.createVerifiableCredential({
           credential: holderCredential as CredentialPayload,
           fetchRemoteContexts: true,
-          save: true,
+          save: false,
           proofFormat,
         })) as VerifiableCredential
         logger.log(`Holder ${holderCredential.issuer} issued new credential with id ${holderCredential.id}`, holderCredential)
@@ -575,10 +586,13 @@ export class OID4VCIHolder implements IAgentPlugin {
       return Promise.reject(Error('Missing notification request'))
     }
 
+    logger.log(`Will send notification to ${notificationEndpoint}`, notificationRequest)
+
     const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState })
     if (!client.accessTokenResponse) {
       return Promise.reject(Error('Missing client access token response'))
     }
     void client.sendNotification({ notificationEndpoint }, notificationRequest, openID4VCIClientState?.accessTokenResponse?.access_token)
+    logger.log(`Notification to ${notificationEndpoint} has been dispatched`)
   }
 }
