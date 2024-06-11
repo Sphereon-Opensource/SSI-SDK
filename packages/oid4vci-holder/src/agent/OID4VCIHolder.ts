@@ -27,7 +27,7 @@ import {
 } from '@sphereon/ssi-types'
 import {CredentialPayload, DIDDocument, IAgentPlugin, ProofFormat, VerifiableCredential} from '@veramo/core'
 import {computeEntryHash} from '@veramo/utils'
-import {JWTHeader} from 'did-jwt'
+import {decodeJWT, JWTHeader} from 'did-jwt'
 import {v4 as uuidv4} from 'uuid'
 import {OID4VCIMachine} from '../machine/oid4vciMachine'
 import {
@@ -541,6 +541,10 @@ export class OID4VCIHolder implements IAgentPlugin {
                 if (!issuer && openID4VCIClientState?.clientId) {
                     issuer = trimmed(openID4VCIClientState.clientId)
                 }
+                if (!issuer && openID4VCIClientState?.accessTokenResponse) {
+                    const decodedJwt = decodeJWT(openID4VCIClientState.accessTokenResponse.access_token)
+                    issuer = decodedJwt.payload.sub
+                }
                 if (!issuer) {
                     throw Error(`We could not determine the issuer, which means we cannot sign the credential`)
                 }
@@ -562,6 +566,8 @@ export class OID4VCIHolder implements IAgentPlugin {
                 if ('credentialSubject' in holderCredentialToSign && !Array.isArray(holderCredentialToSign.credentialSubject)) {
                     holderCredentialToSign.credentialSubject.id = issuer
                 }
+
+
 
                 logger.log(`Subject issuance/signing will sign credential of type ${proofFormat}:`, holderCredentialToSign)
                 const issuedVC = await context.agent.createVerifiableCredential({
