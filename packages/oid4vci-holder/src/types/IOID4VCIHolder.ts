@@ -3,7 +3,8 @@ import { AuthorizationResponse, CredentialResponse, CredentialSupported, Endpoin
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
-import { IVerifiableCredential, WrappedVerifiableCredential, WrappedVerifiablePresentation } from '@sphereon/ssi-types'
+import { IVerifiableCredential } from '@sphereon/ssi-types'
+import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   IAgentContext,
   ICredentialVerifier,
@@ -333,15 +334,7 @@ export enum SupportedDidMethodEnum {
 
 export type VerificationResult = {
   result: boolean
-  source: WrappedVerifiableCredential | WrappedVerifiablePresentation
-  subResults: Array<VerificationSubResult>
   error?: string | undefined
-  errorDetails?: string
-}
-
-export type VerificationSubResult = {
-  result: boolean
-  error?: string
   errorDetails?: string
 }
 
@@ -501,6 +494,25 @@ export type IdentifierOpts = {
   kid: string
 }
 
+export type CredentialVerificationResult = {
+  result: boolean
+} & CredentialVerificationError
+
+export type CredentialVerificationError = {
+  error?: string
+  errorDetails?: string
+}
+
+export type VerifySDJWTCredentialArgs = { credential: string }
+
 export type RequiredContext = IAgentContext<
-  IIssuanceBranding | IContactManager | ICredentialVerifier | IDataStore | IDataStoreORM | IDIDManager | IResolver | IKeyManager
+  IIssuanceBranding |
+  IContactManager |
+  ICredentialVerifier |
+  IDataStore |
+  IDataStoreORM |
+  IDIDManager |
+  IResolver |
+  IKeyManager |
+  ISDJwtPlugin
 >
