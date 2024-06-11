@@ -29,9 +29,9 @@ overrides:
   '@veramo/url-handler': 4.2.0
   '@sphereon/ssi-types': workspace:*
   '@sphereon/ssi-sdk.core': workspace:*
-  '@sphereon/oid4vci-common': 0.10.4-next.21
-  '@sphereon/oid4vci-client': 0.10.4-next.21
-  '@sphereon/oid4vci-issuer': 0.10.4-next.21
+  '@sphereon/oid4vci-common': 0.10.4-next.23
+  '@sphereon/oid4vci-client': 0.10.4-next.23
+  '@sphereon/oid4vci-issuer': 0.10.4-next.23
   '@noble/hashes': 1.2.0
   did-jwt: 6.11.6
   did-jwt-vc: 3.1.3
@@ -680,11 +680,11 @@ importers:
   packages/oid4vci-holder:
     dependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.10.4-next.21
-        version: 0.10.4-next.21
+        specifier: 0.10.4-next.23
+        version: 0.10.4-next.23
       '@sphereon/oid4vci-common':
-        specifier: 0.10.4-next.21
-        version: 0.10.4-next.21
+        specifier: 0.10.4-next.23
+        version: 0.10.4-next.23
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.18.0
         version: 0.18.0
@@ -756,11 +756,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.10.4-next.21
-        version: 0.10.4-next.21
+        specifier: 0.10.4-next.23
+        version: 0.10.4-next.23
       '@sphereon/oid4vci-issuer':
-        specifier: 0.10.4-next.21
-        version: 0.10.4-next.21
+        specifier: 0.10.4-next.23
+        version: 0.10.4-next.23
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.19.0
         version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -814,14 +814,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.10.4-next.21
-        version: 0.10.4-next.21
+        specifier: 0.10.4-next.23
+        version: 0.10.4-next.23
       '@sphereon/oid4vci-issuer':
-        specifier: 0.10.4-next.21
-        version: 0.10.4-next.21
+        specifier: 0.10.4-next.23
+        version: 0.10.4-next.23
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.10.4-next.20
-        version: 0.10.4-next.20
+        specifier: 0.10.4-next.23
+        version: 0.10.4-next.23
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -974,8 +974,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.10.4-next.21
-        version: 0.10.4-next.21
+        specifier: 0.10.4-next.23
+        version: 0.10.4-next.23
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1011,8 +1011,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.10.4-next.21
-        version: 0.10.4-next.21
+        specifier: 0.10.4-next.23
+        version: 0.10.4-next.23
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.19.0
         version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -7165,11 +7165,11 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vci-client@0.10.4-next.21:
-    resolution: {integrity: sha512-yJohMYcYdrDbEnnDpqFqyUVQtKbIpqOjhDhhfgbPvW3DxlrfVUqr8FOmoQb0pPprsgRKzaecRsZa8SLqSG0SSg==}
+  /@sphereon/oid4vci-client@0.10.4-next.23:
+    resolution: {integrity: sha512-LxJzsumFns5r9hgyY4oX9006MWrq4hNtE1lJ8+7NFqAqNud1XLkkd66ZUabrcbXIVVMqbvuVqzTkW3TnsOteLQ==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.4-next.21
+      '@sphereon/oid4vci-common': 0.10.4-next.23
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
       debug: 4.3.5
@@ -7178,8 +7178,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-common@0.10.4-next.21:
-    resolution: {integrity: sha512-+O7pP0ob+ew0xLI2eCxqLcGvz6HMPV+pdgo3HelBfxliKqGTgk20F34oV1jul4y69qkrcongZYZaXdp+q9cdAg==}
+  /@sphereon/oid4vci-common@0.10.4-next.23:
+    resolution: {integrity: sha512-97esWOAD41h6YzRIsmIfXDLtaHOJd7pShvkni/5G6cI21+qR2eJVRLRhKHywoL6JOiO5uIq7pSz2tqOmfUhYKQ==}
     engines: {node: '>=18'}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -7191,13 +7191,13 @@ packages:
       - encoding
     dev: false
 
-  /@sphereon/oid4vci-issuer-server@0.10.4-next.20:
-    resolution: {integrity: sha512-wpep1yNVN4gfwOg7a3w3TOg9KHm6wBXekZbENpkZL0BClWir9aEqJ0I5UdJWVELFAzNxIA7F/Q6HmfL7Viwf5g==}
+  /@sphereon/oid4vci-issuer-server@0.10.4-next.23:
+    resolution: {integrity: sha512-dkT+Wynjspt1J6JwMWa3yd9n5aIe6wH6wYW2BfULUBjHLMcCAPa5zGq/NpUxlCwb8L6n+zWFEskHU/lzEp6PFw==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.4-next.21
-      '@sphereon/oid4vci-issuer': 0.10.4-next.21
-      '@sphereon/ssi-express-support': 0.24.1-unstable.112
+      '@sphereon/oid4vci-common': 0.10.4-next.23
+      '@sphereon/oid4vci-issuer': 0.10.4-next.23
+      '@sphereon/ssi-express-support': 0.24.1-unstable.116
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.2
       cookie-parser: 1.4.6
@@ -7216,8 +7216,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.10.4-next.21:
-    resolution: {integrity: sha512-endYt4j1DuVFPgkOCbZJ1LGV6oZ2qHr+JyhNBv2kt8VvkPI+c+0g9cUmJOchttyX8EWWNfgpKKg/qkp7YKwCFw==}
+  /@sphereon/oid4vci-issuer@0.10.4-next.23:
+    resolution: {integrity: sha512-yWUa577S8xJtCQhVgltS0n3C02+lG7NdkVDUAZxKLLOVHh8izkKR2uvQrU9Ca5iCLDq2wDx9Buv9TXhlE9+8QA==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -7225,7 +7225,7 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.4-next.21
+      '@sphereon/oid4vci-common': 0.10.4-next.23
       '@sphereon/ssi-types': link:packages/ssi-types
       uuid: 9.0.1
     transitivePeerDependencies:
@@ -7261,8 +7261,8 @@ packages:
       react-native: 0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7)(react@18.2.0)
     dev: true
 
-  /@sphereon/ssi-express-support@0.24.1-unstable.112:
-    resolution: {integrity: sha512-IMRtYJ9B7QeoZ5tw2Ki54TJtYdyAb1JtrycmjgASv93VCZGfdZl+SHcDrhst3pAaQrv8qFC9mQPCOnlbuwEGiQ==}
+  /@sphereon/ssi-express-support@0.24.1-unstable.116:
+    resolution: {integrity: sha512-TkOYuZDsKsBVWnIh0r4trZ9gWz5Sxt9YHbXNp4Ec789/R44PNLnb8kyLu8DoD+hWKMbNcwbIny8X/A0XtDcpMw==}
     peerDependencies:
       '@noble/hashes': 1.2.0
       passport-azure-ad: ^4.3.5

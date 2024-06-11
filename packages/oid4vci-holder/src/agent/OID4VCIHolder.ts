@@ -508,13 +508,14 @@ export class OID4VCIHolder implements IAgentPlugin {
     } else if (notificationEndpoint && notificationId) {
       logger.log(`Notification id ${notificationId} found, will send back a notification to ${notificationEndpoint}`)
       let event = 'credential_accepted'
-      if (subjectIssuance) {
-        event = subjectIssuance.notifications_events_supported.includes('credential_accepted_holder_signed')
+      if (Array.isArray(subjectIssuance?.notification_events_supported)) {
+        event = subjectIssuance.notification_events_supported.includes('credential_accepted_holder_signed')
           ? 'credential_accepted_holder_signed'
           : 'credential_deleted_holder_signed'
         logger.log(`Subject issuance/signing will be used, with event`, event)
         const credential = credentialToAccept.credential.credentialResponse.credential as OriginalVerifiableCredential
         const wrappedVC = CredentialMapper.toWrappedVerifiableCredential(credential)
+        console.log(`Wrapped VC: ${wrappedVC.type}, ${wrappedVC.format}`)
         const issuer =
           wrappedVC.decoded.sub ??
           wrappedVC.decoded.credentialSubject.id ??
