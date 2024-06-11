@@ -176,7 +176,7 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
 
   const verificationResult: VerificationResult = await verifyCredential(
     {
-      credential: wrappedVC.original as VeramoW3CVerifiableCredential,
+      credential: wrappedVC.original as VeramoW3CVerifiableCredential, // FIXME figure out what type needs to go where
       // TODO WAL-675 we might want to allow these types of options as part of the context, now we have state machines. Allows us to pre-determine whether these policies apply and whether remote context should be fetched
       fetchRemoteContexts: true,
       policies: {
