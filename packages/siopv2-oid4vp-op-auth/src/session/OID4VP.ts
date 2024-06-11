@@ -53,7 +53,7 @@ export class OID4VP {
       subjectIsHolder?: boolean
     },
   ): Promise<VerifiablePresentationWithDefinition[]> {
-    return await Promise.all(credentialsWithDefinitions.map((cred) => this.createVerifiablePresentation(cred, opts)))
+    return await Promise.all(credentialsWithDefinitions.map((credentials) => this.createVerifiablePresentation(credentials, opts)))
   }
 
   public async createVerifiablePresentation(
