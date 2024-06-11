@@ -39,6 +39,7 @@
     { "path": "issuance-branding" },
     { "path": "headless-web3-provider" },
     { "path": "event-logger" },
-    { "path": "remote-server-rest-api" }
+    { "path": "remote-server-rest-api" },
+    { "path": "sd-jwt" }
   ]
 }
