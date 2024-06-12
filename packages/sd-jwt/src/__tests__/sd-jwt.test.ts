@@ -10,35 +10,22 @@ import { decodeSdJwt } from '@sd-jwt/decode'
 import { KBJwt } from '@sd-jwt/core'
 import { ISDJwtPlugin, SDJwtPlugin } from '../index'
 import { createHash, randomBytes, subtle } from 'crypto'
-import {MemoryKeyStore, MemoryPrivateKeyStore, SphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
-import {SphereonKeyManagementSystem} from '@sphereon/ssi-sdk-ext.kms-local'
+import { MemoryKeyStore, MemoryPrivateKeyStore, SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 
 const generateDigest = (data: string, algorithm: string) => {
   return createHash(algorithm).update(data).digest()
 }
 
 const generateSalt = (): string => {
-  return randomBytes(16).toString('hex');
+  return randomBytes(16).toString('hex')
 }
 
 async function verifySignature<T>(data: string, signature: string, key: JsonWebKey) {
   let { alg, crv } = key
   if (alg === 'ES256') alg = 'ECDSA'
-  const publicKey = await subtle.importKey(
-    'jwk',
-    key,
-    { name: alg, namedCurve: crv } as EcKeyImportParams,
-    true,
-    ['verify'],
-  )
-  return Promise.resolve(
-    subtle.verify(
-      { name: alg as string, hash: 'SHA-256' },
-      publicKey,
-      Buffer.from(signature, 'base64'),
-      Buffer.from(data),
-    ),
-  )
+  const publicKey = await subtle.importKey('jwk', key, { name: alg, namedCurve: crv } as EcKeyImportParams, true, ['verify'])
+  return Promise.resolve(subtle.verify({ name: alg as string, hash: 'SHA-256' }, publicKey, Buffer.from(signature, 'base64'), Buffer.from(data)))
 }
 
 type AgentType = IDIDManager & IKeyManager & IResolver & ISDJwtPlugin
@@ -77,7 +64,7 @@ describe('Agent plugin', () => {
         new SDJwtPlugin({
           hasher: generateDigest,
           saltGenerator: generateSalt,
-          verifySignature
+          verifySignature,
         }),
         new SphereonKeyManager({
           store: new MemoryKeyStore(),
@@ -102,26 +89,26 @@ describe('Agent plugin', () => {
       ],
     })
     issuer = await agent
-    .didManagerCreate({
-      kms: 'local',
-      provider: 'did:jwk',
-      alias: 'issuer',
-      //we use this curve since nodejs does not support ES256k which is the default one.
-      options: { keyType: 'Secp256r1' }
-    })
-    .then((did) => {
-      // we add a key reference
-      return `${did.did}#0`
-    })
+      .didManagerCreate({
+        kms: 'local',
+        provider: 'did:jwk',
+        alias: 'issuer',
+        //we use this curve since nodejs does not support ES256k which is the default one.
+        options: { keyType: 'Secp256r1' },
+      })
+      .then((did) => {
+        // we add a key reference
+        return `${did.did}#0`
+      })
     holder = await agent
-    .didManagerCreate({
-      kms: 'local',
-      provider: 'did:jwk',
-      alias: 'holder',
-      //we use this curve since nodejs does not support ES256k which is the default one.
-      options: { keyType: 'Secp256r1' }
-    })
-    .then((did) => `${did.did}#0`)
+      .didManagerCreate({
+        kms: 'local',
+        provider: 'did:jwk',
+        alias: 'holder',
+        //we use this curve since nodejs does not support ES256k which is the default one.
+        options: { keyType: 'Secp256r1' },
+      })
+      .then((did) => `${did.did}#0`)
     claims.sub = holder
   })
 
@@ -200,9 +187,7 @@ describe('Agent plugin', () => {
   it('create presentation with cnf', async () => {
     const did = await agent.didManagerFind({ alias: 'holder' }).then((dids) => dids[0])
     const resolvedDid = await agent.resolveDid({ didUrl: `${did.did}#0` })
-    const jwk: JsonWebKey = (
-      (resolvedDid.didDocument as DIDDocument).verificationMethod as VerificationMethod[]
-    )[0].publicKeyJwk as JsonWebKey
+    const jwk: JsonWebKey = ((resolvedDid.didDocument as DIDDocument).verificationMethod as VerificationMethod[])[0].publicKeyJwk as JsonWebKey
     const credentialPayload: SdJwtVcPayload = {
       ...claims,
       cnf: {
@@ -262,9 +247,7 @@ describe('Agent plugin', () => {
 
   it('verify a presentation', async () => {
     const holderDId = await agent.resolveDid({ didUrl: holder })
-    const jwk: JsonWebKey = (
-      (holderDId.didDocument as DIDDocument).verificationMethod as VerificationMethod[]
-    )[0].publicKeyJwk as JsonWebKey
+    const jwk: JsonWebKey = ((holderDId.didDocument as DIDDocument).verificationMethod as VerificationMethod[])[0].publicKeyJwk as JsonWebKey
     const credentialPayload: SdJwtVcPayload = {
       ...claims,
       iss: issuer,
@@ -301,9 +284,7 @@ describe('Agent plugin', () => {
 
   it('verify a presentation with sub set', async () => {
     const holderDId = await agent.resolveDid({ didUrl: holder })
-    const jwk: JsonWebKey = (
-      (holderDId.didDocument as DIDDocument).verificationMethod as VerificationMethod[]
-    )[0].publicKeyJwk as JsonWebKey
+    const jwk: JsonWebKey = ((holderDId.didDocument as DIDDocument).verificationMethod as VerificationMethod[])[0].publicKeyJwk as JsonWebKey
     const credentialPayload: SdJwtVcPayload = {
       ...claims,
       iss: issuer,
