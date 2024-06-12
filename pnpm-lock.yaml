@@ -1350,6 +1350,67 @@ importers:
         specifier: ^1.6.3
         version: 1.6.6
 
+  packages/sd-jwt:
+    dependencies:
+      '@sd-jwt/core':
+        specifier: ^0.6.1
+        version: 0.6.1
+      '@sd-jwt/sd-jwt-vc':
+        specifier: ^0.6.1
+        version: 0.6.1
+      '@sphereon/ssi-sdk-ext.did-utils':
+        specifier: 0.19.1-next.48
+        version: 0.19.1-next.48(msrcrypto@1.5.8)
+      '@veramo/utils':
+        specifier: 4.2.0
+        version: 4.2.0
+    devDependencies:
+      '@sd-jwt/decode':
+        specifier: ^0.6.1
+        version: 0.6.1
+      '@sd-jwt/types':
+        specifier: ^0.6.1
+        version: 0.6.1
+      '@sd-jwt/utils':
+        specifier: ^0.6.1
+        version: 0.6.1
+      '@sphereon/ssi-sdk-ext.did-provider-jwk':
+        specifier: 0.19.1-next.48
+        version: 0.19.1-next.48(msrcrypto@1.5.8)
+      '@sphereon/ssi-sdk-ext.did-resolver-jwk':
+        specifier: 0.19.1-next.48
+        version: 0.19.1-next.48
+      '@sphereon/ssi-sdk-ext.key-manager':
+        specifier: 0.19.1-next.48
+        version: 0.19.1-next.48(msrcrypto@1.5.8)
+      '@sphereon/ssi-sdk-ext.kms-local':
+        specifier: 0.19.1-next.48
+        version: 0.19.1-next.48(msrcrypto@1.5.8)
+      '@types/node':
+        specifier: 18.15.3
+        version: 18.15.3
+      '@veramo/core':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/data-store':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@veramo/did-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-resolver':
+        specifier: 4.2.0
+        version: 4.2.0
+      did-resolver:
+        specifier: ^4.1.0
+        version: 4.1.0
+      typeorm:
+        specifier: ^0.3.20
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      typescript:
+        specifier: 5.4.2
+        version: 5.4.2
+
   packages/siopv2-oid4vp-common:
     dependencies:
       '@sphereon/did-auth-siop':
@@ -6807,6 +6868,16 @@ packages:
       '@noble/hashes': 1.2.0
       '@scure/base': 1.1.6
 
+  /@sd-jwt/core@0.6.1:
+    resolution: {integrity: sha512-egFTb23o6BGWF93vnjopN02rSiC1HOOnkk9BI8Kao3jz9ipZAHdO6wF7gwfZm5Nlol/Kd1/KSLhbOUPYt++FjA==}
+    engines: {node: '>=16'}
+    dependencies:
+      '@sd-jwt/decode': 0.6.1
+      '@sd-jwt/present': 0.6.1
+      '@sd-jwt/types': 0.6.1
+      '@sd-jwt/utils': 0.6.1
+    dev: false
+
   /@sd-jwt/decode@0.6.1:
     resolution: {integrity: sha512-QgTIoYd5zyKKLgXB4xEYJTrvumVwtsj5Dog0v0L9UH9ZvHekDaeexS247X7A4iSdzTvmZzUpGskgABOa4D8NmQ==}
     engines: {node: '>=16'}
@@ -6821,6 +6892,13 @@ packages:
       '@sd-jwt/decode': 0.6.1
       '@sd-jwt/types': 0.6.1
       '@sd-jwt/utils': 0.6.1
+
+  /@sd-jwt/sd-jwt-vc@0.6.1:
+    resolution: {integrity: sha512-eF7NAFvedBCx+vrw4TVY3evUz5rAG8/FtB/CUudYEigKcpanLgfuNGhk93D45k+lLDG0b24w+qorqbpLZzHA2g==}
+    engines: {node: '>=16'}
+    dependencies:
+      '@sd-jwt/core': 0.6.1
+    dev: false
 
   /@sd-jwt/types@0.6.1:
     resolution: {integrity: sha512-LKpABZJGT77jNhOLvAHIkNNmGqXzyfwBT+6r+DN9zNzMx1CzuNR0qXk1GMUbast9iCfPkGbnEpUv/jHTBvlIvg==}
@@ -7316,6 +7394,30 @@ packages:
       - supports-color
     dev: true
 
+  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.19.1-next.48(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-mccVA2CoxUWqWgU774roXNvWCG2Zp5sAPO/pDJWZsZXxu3/rCMBCs2GMsHXOG/e9UtKAHtGNgWcD7GxzSGvvoQ==}
+    dependencies:
+      '@ethersproject/random': 5.7.0
+      '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48(msrcrypto@1.5.8)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.19.1-next.48(msrcrypto@1.5.8)
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@stablelib/ed25519': 1.0.3
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/did-manager': 4.2.0
+      base64url: 3.0.1
+      debug: 4.3.5
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+    transitivePeerDependencies:
+      - encoding
+      - expo
+      - expo-crypto
+      - msrcrypt
+      - msrcrypto
+      - react-native-securerandom
+      - supports-color
+    dev: true
+
   /@sphereon/ssi-sdk-ext.did-provider-key@0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-k0mtNbnDsTmQCDkkhWMxEpUus/+boaHokqnwb/dr0WsrbNDJi1NmM2DzKPa7wl5zyh11BoQq0A7EMVNVaJsCyA==}
     dependencies:
@@ -7372,6 +7474,18 @@ packages:
 
   /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.19.0:
     resolution: {integrity: sha512-EvSUNOJnzQSGTcDSdvAk5AlqqzIAtfpkwurYo7EMZP+T9EYcwGtycz/qD0CT/OEaW4HTzcrgyjDlLL34o5X4+A==}
+    dependencies:
+      '@sphereon/ssi-types': link:packages/ssi-types
+      base64url: 3.0.1
+      debug: 4.3.5
+      did-resolver: 4.1.0
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.19.1-next.48:
+    resolution: {integrity: sha512-FuLKSOzG/o4+EZM+FSOz7ZiJhDEwM2H9Bn/RyxDfn2iWl3Dit4xHsv+m3mtiMNWpeTUeWm55QfijsPS2aLjXqQ==}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       base64url: 3.0.1
@@ -7452,6 +7566,29 @@ packages:
       - react-native-securerandom
       - supports-color
 
+  /@sphereon/ssi-sdk-ext.did-utils@0.19.1-next.48(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-F/QJq+ET95ptlTqgrfsAeCSS9pSJlvzGm07YywcoKBz/3+BQTYGONcAblqGYERMmQmbAy9jNQKidlDor0d2Tig==}
+    dependencies:
+      '@ethersproject/transactions': 5.7.0
+      '@sphereon/did-uni-client': 0.6.3
+      '@sphereon/ssi-sdk-ext.key-utils': 0.19.1-next.48(msrcrypto@1.5.8)
+      '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
+      '@stablelib/ed25519': 1.0.3
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/utils': 4.2.0
+      did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - encoding
+      - expo
+      - expo-crypto
+      - msrcrypt
+      - msrcrypto
+      - react-native-securerandom
+      - supports-color
+
   /@sphereon/ssi-sdk-ext.key-manager@0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-dbct8S6faGM175epFzNka+XlZnK6qKcoK8mSVFda3ROnH3Vz0HH1DVdQ5aJd+6x8DyMk+wGSHS1BmIH/rCthBg==}
     dependencies:
@@ -7467,6 +7604,23 @@ packages:
       - msrcrypto
       - react-native-securerandom
       - supports-color
+
+  /@sphereon/ssi-sdk-ext.key-manager@0.19.1-next.48(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-CLrNMpn6kOtPO3t4jx15AtbahKJ1b6/G6RSKZcyBAIv1wcBvYWNQ7jBL1RECRegk4xFeN+LSDFg7E+4kwIWF9Q==}
+    dependencies:
+      '@sphereon/ssi-sdk-ext.kms-local': 0.19.1-next.48(msrcrypto@1.5.8)
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/key-manager': 4.2.0
+    transitivePeerDependencies:
+      - '@mattrglobal/bbs-signatures'
+      - encoding
+      - expo
+      - expo-crypto
+      - msrcrypt
+      - msrcrypto
+      - react-native-securerandom
+      - supports-color
+    dev: true
 
   /@sphereon/ssi-sdk-ext.key-utils@0.18.2(msrcrypto@1.5.8):
     resolution: {integrity: sha512-C7gBp4lhpIr+R8hQngu6h6okbYtffRK123T2Gt389pn176BHh6HzFdxDffxSq5MTEL5gwaXcCDdPHjuWEZ/5gQ==}
@@ -7521,6 +7675,32 @@ packages:
       - react-native-securerandom
       - supports-color
 
+  /@sphereon/ssi-sdk-ext.key-utils@0.19.1-next.48(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-YSZoLOmKJ8WWImRDXqxP/Is1/KOT3vuSpuSFOb+4yoIP48FxUBxbn3GOdCTKQZObzfq4P/SRtXoSuBEhuVvbww==}
+    dependencies:
+      '@ethersproject/random': 5.7.0
+      '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@stablelib/ed25519': 1.0.3
+      '@stablelib/sha256': 1.0.1
+      '@stablelib/sha512': 1.0.1
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      base64url: 3.0.1
+      debug: 4.3.5
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+      lodash.isplainobject: 4.0.6
+      multiformats: 9.9.0
+      uint8arrays: 3.1.1
+      varint: 6.0.0
+      web-encoding: 1.1.5
+    transitivePeerDependencies:
+      - expo
+      - expo-crypto
+      - msrcrypt
+      - msrcrypto
+      - react-native-securerandom
+      - supports-color
+
   /@sphereon/ssi-sdk-ext.kms-local@0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-AnmhpnFBnKMLB8EN1juU16GxLxzjlEO9SeOZ1eY/dIB1weVaXy2hqUUS0xbX5pzqwvZyAotHD2+7Br76x7VrCQ==}
     peerDependencies:
@@ -7546,6 +7726,33 @@ packages:
       - msrcrypto
       - react-native-securerandom
       - supports-color
+
+  /@sphereon/ssi-sdk-ext.kms-local@0.19.1-next.48(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-NNLX0ycG5/zoJ/lLegIav7o5lzCZaXi+0z+LNexMCCDdMp+EEazFcVXjgyNN/2iSR94OYbe1focAapPG+Akn0w==}
+    peerDependencies:
+      '@mattrglobal/bbs-signatures': ^1.3.1
+    peerDependenciesMeta:
+      '@mattrglobal/bbs-signatures':
+        optional: true
+    dependencies:
+      '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.19.1-next.48(msrcrypto@1.5.8)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.19.1-next.48(msrcrypto@1.5.8)
+      '@trust/keyto': 2.0.0-alpha1
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/key-manager': 4.2.0
+      '@veramo/kms-local': 4.2.0
+      elliptic: 6.5.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - encoding
+      - expo
+      - expo-crypto
+      - msrcrypt
+      - msrcrypto
+      - react-native-securerandom
+      - supports-color
+    dev: true
 
   /@sphereon/vc-status-list@7.0.0-next.0:
     resolution: {integrity: sha512-4GIZq12SXbEbO4vCh5TwWzWk7tviDUP8aOzRGsEw6UW2344qZ31CLsU+bHurdnG4OlLRyosv4khN1ha6OiJHZQ==}
@@ -14219,7 +14426,7 @@ packages:
     hasBin: true
     dependencies:
       async: 3.2.5
-      chalk: 4.1.0
+      chalk: 4.1.2
       filelist: 1.0.4
       minimatch: 3.1.2
     dev: true
@@ -17440,7 +17647,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       bl: 4.1.0
-      chalk: 4.1.0
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       is-interactive: 1.0.0
