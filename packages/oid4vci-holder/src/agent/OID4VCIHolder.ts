@@ -618,6 +618,7 @@ export class OID4VCIHolder implements IAgentPlugin {
                     credentialsToAccept,
                     credentialsSupported,
                     notificationRequest,
+                    serverMetadata
                 },
                 context,
             )
@@ -653,7 +654,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         if (!client.accessTokenResponse) {
             return Promise.reject(Error('Missing client access token response'))
         }
-        void client.sendNotification({notificationEndpoint}, notificationRequest, openID4VCIClientState?.accessTokenResponse?.access_token)
+        await client.sendNotification({notificationEndpoint}, notificationRequest, openID4VCIClientState?.accessTokenResponse?.access_token)
         logger.log(`Notification to ${notificationEndpoint} has been dispatched`)
     }
 }
