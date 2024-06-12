@@ -14,8 +14,7 @@ export const emitMachineStatePersistEvent = (event: MachineStatePersistEvent, co
   debug(
     `Emitting machine state persistence event '${event.type}' with counter: ${event.data._eventCounter} and state ${JSON.stringify(
       event.data.state.value,
-    )}`,
-    event.data.state,
+    )}`
   )
   void context.agent.emit(event.type, event.data)
 }

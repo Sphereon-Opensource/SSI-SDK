@@ -146,7 +146,6 @@ export class MachineStatePersistence implements IAgentPlugin {
         stateType: 'new',
       }
     }
-    debug(`machineStateInit result: ${JSON.stringify(machineInit)}`)
     return machineInit
   }
 
@@ -207,7 +206,7 @@ export class MachineStatePersistence implements IAgentPlugin {
     debug(`machineStateGet for machine instance ${instanceId} and tenant ${tenantId}...`)
     const storedState = await this.store.getMachineState(args)
     const machineInfo = { ...storedState, state: deserializeMachineState(storedState.state) }
-    debug(`machineStateGet result for machine instance ${instanceId} and tenant ${tenantId}: ${machineInfo}`)
+    debug(`machineStateGet success for machine instance ${instanceId} and tenant ${tenantId}`)
     return machineInfo
   }
 
