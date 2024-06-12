@@ -3,7 +3,11 @@ import { AuthorizationResponse, CredentialResponse, CredentialSupported, Endpoin
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
-import { IVerifiableCredential } from '@sphereon/ssi-types'
+import {
+  IVerifiableCredential,
+  WrappedVerifiableCredential,
+  WrappedVerifiablePresentation
+} from '@sphereon/ssi-types'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   IAgentContext,
@@ -334,7 +338,15 @@ export enum SupportedDidMethodEnum {
 
 export type VerificationResult = {
   result: boolean
+  source: WrappedVerifiableCredential | WrappedVerifiablePresentation
+  subResults: Array<VerificationSubResult>
   error?: string | undefined
+  errorDetails?: string
+}
+
+export type VerificationSubResult = {
+  result: boolean
+  error?: string
   errorDetails?: string
 }
 
@@ -493,10 +505,6 @@ export type IdentifierOpts = {
   key: _ExtendedIKey
   kid: string
 }
-
-export type CredentialVerificationResult = {
-  result: boolean
-} & CredentialVerificationError
 
 export type CredentialVerificationError = {
   error?: string
