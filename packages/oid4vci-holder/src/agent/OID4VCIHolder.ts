@@ -25,7 +25,14 @@ import {
     parseDid,
     SdJwtDecodedVerifiableCredentialPayload,
 } from '@sphereon/ssi-types'
-import {CredentialPayload, DIDDocument, IAgentPlugin, ProofFormat, VerifiableCredential} from '@veramo/core'
+import {
+    CredentialPayload,
+    DIDDocument,
+    IAgentPlugin,
+    ProofFormat,
+    VerifiableCredential,
+    W3CVerifiableCredential
+} from '@veramo/core'
 import {computeEntryHash} from '@veramo/utils'
 import {decodeJWT, JWTHeader} from 'did-jwt'
 import {v4 as uuidv4} from 'uuid'
@@ -511,7 +518,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         const notificationId = credentialToAccept.credential.credentialResponse.notification_id
         const subjectIssuance = credentialToAccept.credential_subject_issuance
         const notificationEndpoint = serverMetadata?.credentialIssuerMetadata?.notification_endpoint
-        let holderCredential: IVerifiableCredential | JwtDecodedVerifiableCredential | SdJwtDecodedVerifiableCredentialPayload | undefined = undefined
+        let holderCredential: IVerifiableCredential | JwtDecodedVerifiableCredential | SdJwtDecodedVerifiableCredentialPayload | W3CVerifiableCredential | undefined = undefined
         if (!notificationEndpoint) {
             logger.log(`Notifications not supported by issuer ${serverMetadata?.issuer}. Will not provide a notification`)
         } else if (notificationEndpoint && !notificationId) {
@@ -594,7 +601,7 @@ export class OID4VCIHolder implements IAgentPlugin {
                     throw Error(`Could not issue holder credential from the wallet`)
                 }
                 logger.log(`Holder ${issuedVC.issuer} issued new credential with id ${issuedVC.id}`, issuedVC)
-                holderCredential = CredentialMapper.toExternalVerifiableCredential(issuedVC)
+                holderCredential = CredentialMapper.storedCredentialToOriginalFormat(issuedVC)
                 persist = event === 'credential_accepted_holder_signed'
             }
 
@@ -617,7 +624,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         }
         const persistCredential = holderCredential ? CredentialMapper.storedCredentialToOriginalFormat(holderCredential) : verifiableCredential
         if (!persist && holderCredential) {
-            logger.log(`Will not persist credential, since we are signing as a holder (${holderCredential.issuer}) and the issuer asked not to persist`)
+            logger.log(`Will not persist credential, since we are signing as a holder and the issuer asked not to persist`)
         } else {
             logger.log(`Persisting credential`, persistCredential)
             // @ts-ignore
