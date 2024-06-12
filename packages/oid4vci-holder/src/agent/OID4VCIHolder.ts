@@ -615,11 +615,11 @@ export class OID4VCIHolder implements IAgentPlugin {
                 context,
             )
         }
-        const persistCredential = holderCredential ? CredentialMapper.toExternalVerifiableCredential(holderCredential) : verifiableCredential
-        if (!persist) {
-            logger.log(`Will not persist credential, since we are signing as a holder (${persistCredential?.issuer}) and the issuer asked not to persist`)
+        const persistCredential = holderCredential ? CredentialMapper.storedCredentialToOriginalFormat(holderCredential) : verifiableCredential
+        if (!persist && holderCredential) {
+            logger.log(`Will not persist credential, since we are signing as a holder (${holderCredential.issuer}) and the issuer asked not to persist`)
         } else {
-            logger.log(`Persisting credential with id: ${persistCredential.id}`, persistCredential)
+            logger.log(`Persisting credential`, persistCredential)
             // @ts-ignore
             const vcHash = await context.agent.dataStoreSaveVerifiableCredential({verifiableCredential: persistCredential})
             await context.agent.emit(OID4VCIHolderEvent.CREDENTIAL_STORED, {
