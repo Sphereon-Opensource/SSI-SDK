@@ -545,6 +545,10 @@ export class OID4VCIHolder implements IAgentPlugin {
                     const decodedJwt = decodeJWT(openID4VCIClientState.accessTokenResponse.access_token)
                     issuer = decodedJwt.payload.sub
                 }
+                if (!issuer && credentialToAccept.credential.issuanceOpt.identifier) {
+                    issuer = credentialToAccept.credential.issuanceOpt.identifier.did
+                }
+
                 if (!issuer) {
                     throw Error(`We could not determine the issuer, which means we cannot sign the credential`)
                 }
@@ -553,8 +557,7 @@ export class OID4VCIHolder implements IAgentPlugin {
                 const holderCredentialToSign = wrappedIssuerVC.decoded
                 let proofFormat: ProofFormat = 'lds'
                 if (wrappedIssuerVC.format.includes('jwt')) {
-                    // @ts-ignore
-                    holderCredential['iss'] = issuer
+                    holderCredentialToSign.iss = issuer
                     proofFormat = 'jwt'
                 }
                 if ('issuer' in holderCredentialToSign || !('iss' in holderCredentialToSign)) {
