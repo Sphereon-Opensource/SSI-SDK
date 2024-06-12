@@ -569,6 +569,9 @@ export class OID4VCIHolder implements IAgentPlugin {
                 if ('credentialSubject' in holderCredentialToSign && !Array.isArray(holderCredentialToSign.credentialSubject)) {
                     holderCredentialToSign.credentialSubject.id = issuer
                 }
+                delete holderCredentialToSign.proof
+                delete holderCredentialToSign.issuanceDate
+                delete holderCredentialToSign.iat
 
 
 
