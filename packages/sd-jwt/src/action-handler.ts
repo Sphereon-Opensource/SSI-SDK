@@ -76,6 +76,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     const identifier = await context.agent.didManagerGet({
       did: issuer.split('#')[0],
     })
+    console.log(JSON.stringify(identifier, null, 2))
     const doc = await mapIdentifierKeysToDocWithJwkSupport(identifier, 'assertionMethod', context)
     if (!doc || doc.length === 0) {
       throw new Error('No key found for signing')
