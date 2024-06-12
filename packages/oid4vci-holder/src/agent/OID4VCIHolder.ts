@@ -651,9 +651,6 @@ export class OID4VCIHolder implements IAgentPlugin {
         logger.log(`Will send notification to ${notificationEndpoint}`, notificationRequest)
 
         const client = await OpenID4VCIClient.fromState({state: openID4VCIClientState})
-        if (!client.accessTokenResponse) {
-            return Promise.reject(Error('Missing client access token response'))
-        }
         await client.sendNotification({notificationEndpoint}, notificationRequest, openID4VCIClientState?.accessTokenResponse?.access_token)
         logger.log(`Notification to ${notificationEndpoint} has been dispatched`)
     }
