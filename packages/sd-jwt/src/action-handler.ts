@@ -75,11 +75,10 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @returns the key to sign the SD-JWT
    */
   private async getSignKey(issuer: string, context: IRequiredContext) {
+    debug(`Getting signing key for issuer ${issuer}`)
     const identifier = await context.agent.didManagerGet({
       did: issuer.split('#')[0],
     })
-    debug(JSON.stringify(identifier, null, 2))
-    console.log(JSON.stringify(identifier, null, 2))
     const doc = await mapIdentifierKeysToDocWithJwkSupport(identifier, 'assertionMethod', context)
     if (!doc || doc.length === 0) {
       throw new Error('No key found for signing')
@@ -89,6 +88,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       throw new Error(`No key found with the given id: ${issuer}`)
     }
     const alg = this.getKeyTypeAlgorithm(key.type)
+    debug(`Signing key ${key.publicKeyHex} found for issuer ${issuer}`)
 
     return { alg, key }
   }
