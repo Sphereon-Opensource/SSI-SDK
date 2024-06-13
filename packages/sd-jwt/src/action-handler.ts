@@ -1,3 +1,5 @@
+import Debug from 'debug'
+
 import { schema } from './index'
 import { Jwt, SDJwt } from '@sd-jwt/core'
 import { SDJwtVcInstance, SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
@@ -19,7 +21,7 @@ import {
 } from './types'
 import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 import { encodeJoseBlob } from '@veramo/utils'
-
+const debug = Debug('sd-jwt')
 /**
  * @beta
  * SD-JWT plugin for Veramo
@@ -76,6 +78,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     const identifier = await context.agent.didManagerGet({
       did: issuer.split('#')[0],
     })
+    debug(JSON.stringify(identifier, null, 2))
     console.log(JSON.stringify(identifier, null, 2))
     const doc = await mapIdentifierKeysToDocWithJwkSupport(identifier, 'assertionMethod', context)
     if (!doc || doc.length === 0) {
