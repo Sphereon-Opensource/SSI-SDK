@@ -1,4 +1,4 @@
-import { IsNotEmpty, validate, ValidationError } from 'class-validator'
+import { IsNotEmpty, Validate, validate, ValidationError } from 'class-validator'
 import {
   BaseEntity,
   BeforeInsert,
@@ -13,6 +13,7 @@ import {
 import { getConstraint } from '../../utils/ValidatorUtils'
 import { PhysicalAddressType, ValidationConstraint } from '../../types'
 import { PartyEntity } from './PartyEntity'
+import { IsNonEmptyStringConstraint } from '../validators'
 
 @Entity('PhysicalAddress')
 export class PhysicalAddressEntity extends BaseEntity {
@@ -48,8 +49,14 @@ export class PhysicalAddressEntity extends BaseEntity {
   countryCode!: string
 
   @Column({ name: 'building_name', length: 255, nullable: true })
-  @IsNotEmpty({ message: 'Blank building names are not allowed' })
+  @Validate(IsNonEmptyStringConstraint, { message: 'Blank building names are not allowed' })
   buildingName?: string
+
+  @Column({ name: 'owner_id', nullable: true })
+  ownerId?: string
+
+  @Column({ name: 'tenant_id', nullable: true })
+  tenantId?: string
 
   @ManyToOne(() => PartyEntity, (party: PartyEntity) => party.physicalAddresses, {
     onDelete: 'CASCADE',

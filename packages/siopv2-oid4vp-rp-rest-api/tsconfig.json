@@ -20,6 +20,9 @@
       "path": "../presentation-exchange"
     },
     {
+      "path": "../pd-manager"
+    },
+    {
       "path": "../ssi-types"
     },
     {

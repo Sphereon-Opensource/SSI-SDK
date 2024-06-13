@@ -1,15 +1,9 @@
 import { dereferenceDidKeysWithJwkSupport, getAgentResolver, getIdentifier, getKey, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
-import { IPEXOptions, IPEXPresentationSignCallback, IRequiredContext } from './types/IPresentationExchange'
+import { IPEXPresentationSignCallback, IRequiredContext } from './types/IPresentationExchange'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { PresentationPayload, ProofFormat } from '@veramo/core'
 import { CredentialMapper, Optional, OriginalVerifiablePresentation, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { Format } from '@sphereon/pex-models'
-
-export async function getPresentationDefinition(pexOptions?: IPEXOptions): Promise<IPresentationDefinition | undefined> {
-  return pexOptions?.definition
-  /*const store = await getPresentationDefinitionStore(pexOptions)
-    return store && pexOptions?.definitionId ? store.get(pexOptions?.definitionId) : undefined*/
-}
 
 export async function createPEXPresentationSignCallback(
   args: {

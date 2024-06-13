@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.event-logger",
-  "version": "0.23.4",
+  "version": "0.25.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@sphereon/ssi-sdk.data-store": "workspace:*",
+    "@sphereon/ssi-types": "workspace:*",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

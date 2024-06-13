@@ -2,6 +2,7 @@ import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-supp
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { IAgentContext, ICredentialVerifier } from '@veramo/core'
+import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
 
 export type SiopFeatures = 'rp-status' | 'siop'
 export interface ISIOPv2RPRestAPIOpts {
@@ -23,5 +24,5 @@ export interface ICreateAuthRequestWebappEndpointOpts extends ISingleEndpointOpt
   nonce?: string
 }
 
-export type IRequiredPlugins = /*IDataStoreORM & IResolver & IDIDManager & IKeyManager &  */ ICredentialVerifier & ISIOPv2RP & IPresentationExchange
+export type IRequiredPlugins = ICredentialVerifier & ISIOPv2RP & IPresentationExchange & IPDManager
 export type IRequiredContext = IAgentContext<IRequiredPlugins>

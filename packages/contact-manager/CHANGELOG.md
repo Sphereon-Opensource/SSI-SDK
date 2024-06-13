@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.25.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.24.0...v0.25.0) (2024-06-13)
+
+### Features
+
+- (WIP) added ownerId, tenantId, and origin. ([d9b8623](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d9b8623178b2a9f8dd7fae8ccfd3569e1e80d7b7))
+
+# [0.24.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.23.4...v0.24.0) (2024-06-05)
+
+### Bug Fixes
+
+- enum fixes ([dc3fb0d](https://github.com/Sphereon-Opensource/SSI-SDK/commit/dc3fb0de9a6c61794cbce0e8a280a10be1c48314))
+
+### Features
+
+- expose contact manager methods for rest implementation ([37bbfd2](https://github.com/Sphereon-Opensource/SSI-SDK/commit/37bbfd21db2197c1af027a958aab9551a932aaca))
+
 ## [0.23.4](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.23.2...v0.23.4) (2024-04-25)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.contact-manager

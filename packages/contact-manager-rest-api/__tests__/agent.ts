@@ -3,7 +3,14 @@ import { DataStore, DataStoreORM, DIDStore } from '@veramo/data-store'
 import { IRequiredPlugins } from '../src'
 import { DB_CONNECTION_NAME, sqliteConfig } from './database'
 import { AddContactArgs, ContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { ContactStore, CorrelationIdentifierEnum, IdentityRoleEnum, NonPersistedIdentity, PartyTypeEnum } from '@sphereon/ssi-sdk.data-store'
+import {
+  ContactStore,
+  CorrelationIdentifierType,
+  CredentialRole,
+  NonPersistedIdentity,
+  PartyOrigin,
+  PartyTypeType,
+} from '@sphereon/ssi-sdk.data-store'
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { v4 } from 'uuid'
 import { DIDManager } from '@veramo/did-manager'
@@ -60,9 +67,9 @@ const toContactIdentityDTO = (contact: Record<string, any>, identifier: IIdentif
   console.log(`Contact received did ${identifier.did}, contact: ${JSON.stringify(contact)}`)
   return {
     alias: identifier.alias,
-    roles: [IdentityRoleEnum.ISSUER],
+    roles: [CredentialRole.ISSUER],
     identifier: {
-      type: CorrelationIdentifierEnum.DID,
+      type: CorrelationIdentifierType.DID,
       correlationId: identifier.did,
     },
   } as NonPersistedIdentity
@@ -72,13 +79,15 @@ async function addContacts() {
   try {
     const personContactType = await agent.cmAddContactType({
       name: 'people',
-      type: PartyTypeEnum.NATURAL_PERSON,
+      origin: PartyOrigin.EXTERNAL,
+      type: PartyTypeType.NATURAL_PERSON,
       tenantId: v4(),
     })
 
     const organizationalContactType = await agent.cmAddContactType({
       name: 'organizations',
-      type: PartyTypeEnum.ORGANIZATION,
+      origin: PartyOrigin.EXTERNAL,
+      type: PartyTypeType.ORGANIZATION,
       tenantId: v4(),
     })
 

@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk.kv-store-temp",
   "description": "Key Value Store plugin",
-  "version": "0.23.4",
+  "version": "0.25.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

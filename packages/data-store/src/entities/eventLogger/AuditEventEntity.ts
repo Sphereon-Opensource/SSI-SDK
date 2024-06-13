@@ -1,14 +1,6 @@
+import { ActionSubType, ActionType, InitiatorType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
-import {
-  ActionType,
-  InitiatorType,
-  LogLevel,
-  PartyCorrelationType,
-  SubSystem,
-  System,
-  SystemCorrelationIdType,
-  ActionSubType,
-} from '@sphereon/ssi-sdk.core'
+import { PartyCorrelationType } from '@sphereon/ssi-sdk.core'
 import { NonPersistedAuditLoggingEvent } from '../../types'
 
 @Entity('AuditEvents')

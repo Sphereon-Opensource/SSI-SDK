@@ -41,6 +41,27 @@ import Debug from 'debug'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:issuance-branding')
 
+export const issuanceBrandingMethods: Array<string> = [
+  'ibAddCredentialBranding',
+  'ibGetCredentialBranding',
+  'ibUpdateCredentialBranding',
+  'ibRemoveCredentialBranding',
+  'ibAddCredentialLocaleBranding',
+  'ibGetCredentialLocaleBranding',
+  'ibRemoveCredentialLocaleBranding',
+  'ibUpdateCredentialLocaleBranding',
+  'ibCredentialLocaleBrandingFrom',
+  'ibAddIssuerBranding',
+  'ibGetIssuerBranding',
+  'ibUpdateIssuerBranding',
+  'ibRemoveIssuerBranding',
+  'ibAddIssuerLocaleBranding',
+  'ibGetIssuerLocaleBranding',
+  'ibRemoveIssuerLocaleBranding',
+  'ibUpdateIssuerLocaleBranding',
+  'ibIssuerLocaleBrandingFrom',
+]
+
 /**
  * {@inheritDoc IIssuanceBranding}
  */

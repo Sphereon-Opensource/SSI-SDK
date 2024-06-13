@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.25.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.24.0...v0.25.0) (2024-06-13)
+
+### Bug Fixes
+
+- Ensure logger is initialized early preventing potential issues when importing from other libraries ([eae66f2](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/eae66f2e93a4fb54520284ed948feca09d829398))
+- Order of static keys to ensure default namespace key is available when creating the default logger ([dc56df2](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/dc56df22045944f48a2f7c32b04d099ac7b231e9))
+
+# [0.24.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.23.4...v0.24.0) (2024-06-05)
+
+**Note:** Version bump only for package @sphereon/ssi-types
+
 ## [0.23.4](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.23.2...v0.23.4) (2024-04-25)
 
 **Note:** Version bump only for package @sphereon/ssi-types

@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.25.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.24.0...v0.25.0) (2024-06-13)
+
+### Features
+
+- added pd-manager / pd-store ([ed77532](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ed77532c6b8c775870d3320f2e716a57b0da6ec1))
+
+# [0.24.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.23.4...v0.24.0) (2024-06-05)
+
+**Note:** Version bump only for package @sphereon/ssi-sdk.presentation-exchange
+
 ## [0.23.4](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.23.2...v0.23.4) (2024-04-25)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.presentation-exchange

@@ -27,6 +27,7 @@ import {
 } from '@veramo/core'
 import { EventEmitter } from 'events'
 import { OpSession } from '../session/OpSession'
+import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
 
 export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   siopGetOPSession(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
@@ -86,7 +87,9 @@ export enum events {
   DID_SIOP_AUTHENTICATED = 'didSiopAuthenticated',
 }
 
-export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier>
+export type IRequiredContext = IAgentContext<
+  IDataStoreORM & IResolver & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier & IPDManager
+>
 
 export interface IOPOptions {
   responseMode?: ResponseMode
