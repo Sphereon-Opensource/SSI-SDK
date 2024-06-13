@@ -29,6 +29,9 @@ overrides:
   '@veramo/url-handler': 4.2.0
   '@sphereon/ssi-types': workspace:*
   '@sphereon/ssi-sdk.core': workspace:*
+  '@sphereon/oid4vci-common': 0.10.4-next.25
+  '@sphereon/oid4vci-client': 0.10.4-next.25
+  '@sphereon/oid4vci-issuer': 0.10.4-next.25
   '@noble/hashes': 1.2.0
   did-jwt: 6.11.6
   did-jwt-vc: 3.1.3
@@ -225,11 +228,11 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -323,7 +326,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -360,6 +363,9 @@ importers:
 
   packages/data-store:
     dependencies:
+      '@sphereon/pex':
+        specifier: ^3.3.3
+        version: 3.3.3
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -372,6 +378,9 @@ importers:
       '@veramo/utils':
         specifier: 4.2.0
         version: 4.2.0
+      blakejs:
+        specifier: ^1.1.1
+        version: 1.2.1
       class-validator:
         specifier: ^0.14.0
         version: 0.14.1
@@ -484,11 +493,11 @@ importers:
         version: 6.2.13
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.10.3
-        version: 0.10.3(msrcrypto@1.5.8)
+        specifier: 0.10.4-next.25
+        version: 0.10.4-next.25
       '@sphereon/oid4vci-common':
-        specifier: 0.10.3
-        version: 0.10.3(msrcrypto@1.5.8)
+        specifier: 0.10.4-next.25
+        version: 0.10.4-next.25
       '@sphereon/ssi-sdk-ext.did-provider-ebsi':
         specifier: ^0.18.2
         version: 0.18.2
@@ -497,7 +506,7 @@ importers:
         version: 0.18.2(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        version: 0.19.0(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: ^0.18.2
         version: 0.18.2(msrcrypto@1.5.8)
@@ -521,7 +530,7 @@ importers:
         version: 6.9.15
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/key-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -546,6 +555,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
       uuid:
         specifier: ^8.3.2
         version: 8.3.2
@@ -762,11 +774,11 @@ importers:
   packages/oid4vci-holder:
     dependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.10.3
-        version: 0.10.3(msrcrypto@1.5.8)
+        specifier: 0.10.4-next.25
+        version: 0.10.4-next.25
       '@sphereon/oid4vci-common':
-        specifier: 0.10.3
-        version: 0.10.3(msrcrypto@1.5.8)
+        specifier: 0.10.4-next.25
+        version: 0.10.4-next.25
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.18.0
         version: 0.18.0
@@ -796,7 +808,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/utils':
         specifier: 4.2.0
         version: 4.2.0
@@ -838,14 +850,14 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.10.3
-        version: 0.10.3(msrcrypto@1.5.8)
+        specifier: 0.10.4-next.25
+        version: 0.10.4-next.25
       '@sphereon/oid4vci-issuer':
-        specifier: 0.10.3
-        version: 0.10.3(msrcrypto@1.5.8)
+        specifier: 0.10.4-next.25
+        version: 0.10.4-next.25
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -896,14 +908,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.10.3
-        version: 0.10.3(msrcrypto@1.5.8)
+        specifier: 0.10.4-next.25
+        version: 0.10.4-next.25
       '@sphereon/oid4vci-issuer':
-        specifier: 0.10.3
-        version: 0.10.3(msrcrypto@1.5.8)
+        specifier: 0.10.4-next.25
+        version: 0.10.4-next.25
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.10.3
-        version: 0.10.3(msrcrypto@1.5.8)
+        specifier: 0.10.4-next.25
+        version: 0.10.4-next.25
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -963,17 +975,17 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1009,7 +1021,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -1056,8 +1068,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.10.3
-        version: 0.10.3(msrcrypto@1.5.8)
+        specifier: 0.10.4-next.25
+        version: 0.10.4-next.25
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1093,11 +1105,11 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.10.3
-        version: 0.10.3(msrcrypto@1.5.8)
+        specifier: 0.10.4-next.25
+        version: 0.10.4-next.25
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1136,6 +1148,173 @@ importers:
         specifier: ^13.2.1
         version: 13.5.4
 
+  packages/pd-manager:
+    dependencies:
+      '@sphereon/pex':
+        specifier: ^3.3.3
+        version: 3.3.3
+      '@sphereon/pex-models':
+        specifier: ^2.2.4
+        version: 2.2.4
+      '@sphereon/ssi-sdk.data-store':
+        specifier: workspace:*
+        version: link:../data-store
+      cross-fetch:
+        specifier: ^3.1.8
+        version: 3.1.8
+      debug:
+        specifier: ^4.3.4
+        version: 4.3.5
+      semver:
+        specifier: ^7.6.2
+        version: 7.6.2
+      typeorm:
+        specifier: ^0.3.20
+        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+    devDependencies:
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
+      '@types/semver':
+        specifier: ^7.5.8
+        version: 7.5.8
+      '@veramo/remote-client':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/remote-server':
+        specifier: 4.2.0
+        version: 4.2.0(express@4.19.2)
+
+  packages/pd-manager-rest-api:
+    dependencies:
+      '@sphereon/ssi-express-support':
+        specifier: workspace:*
+        version: link:../ssi-express-support
+      '@sphereon/ssi-sdk.core':
+        specifier: workspace:*
+        version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.data-store':
+        specifier: workspace:*
+        version: link:../data-store
+      '@sphereon/ssi-sdk.pd-manager':
+        specifier: workspace:*
+        version: link:../pd-manager
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+      '@veramo/core':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      body-parser:
+        specifier: ^1.19.0
+        version: 1.20.2
+      casbin:
+        specifier: ^5.26.2
+        version: 5.29.0
+      cookie-parser:
+        specifier: ^1.4.5
+        version: 1.4.6
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
+      cross-fetch:
+        specifier: ^3.1.8
+        version: 3.1.8
+      debug:
+        specifier: ^4.3.4
+        version: 4.3.5
+      dotenv-flow:
+        specifier: ^3.2.0
+        version: 3.3.0
+      express:
+        specifier: ^4.18.2
+        version: 4.19.2
+      short-uuid:
+        specifier: ^4.2.2
+        version: 4.2.2
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
+    devDependencies:
+      '@decentralized-identity/ion-sdk':
+        specifier: ^0.6.0
+        version: 0.6.0
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:^
+        version: link:../agent-config
+      '@types/body-parser':
+        specifier: ^1.19.2
+        version: 1.19.5
+      '@types/cookie-parser':
+        specifier: ^1.4.3
+        version: 1.4.7
+      '@types/cors':
+        specifier: ^2.8.13
+        version: 2.8.17
+      '@types/debug':
+        specifier: ^4.1.7
+        version: 4.1.12
+      '@types/dotenv-flow':
+        specifier: ^3.2.0
+        version: 3.3.3
+      '@types/express':
+        specifier: ^4.17.13
+        version: 4.17.21
+      '@types/express-http-proxy':
+        specifier: ^1.6.3
+        version: 1.6.6
+      '@types/morgan':
+        specifier: ^1.9.4
+        version: 1.9.9
+      '@types/node':
+        specifier: ^18.15.0
+        version: 18.19.31
+      '@types/passport':
+        specifier: ^1.0.12
+        version: 1.0.16
+      '@types/passport-azure-ad':
+        specifier: ^4.3.1
+        version: 4.3.6
+      '@types/uuid':
+        specifier: ^9.0.1
+        version: 9.0.8
+      '@veramo/data-store':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
+      '@veramo/did-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-provider-ion':
+        specifier: 4.2.0
+        version: 4.2.0(@sphereon/react-native-argon2@2.0.9)(react-native@0.74.0)
+      '@veramo/key-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/kms-local':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/utils':
+        specifier: 4.2.0
+        version: 4.2.0
+      morgan:
+        specifier: ^1.10.0
+        version: 1.10.0
+      nock:
+        specifier: ^13.2.1
+        version: 13.5.4
+      passport:
+        specifier: ^0.6.0
+        version: 0.6.0
+      passport-http-bearer:
+        specifier: ^1.0.1
+        version: 1.0.1
+      ts-node:
+        specifier: ^10.9.1
+        version: 10.9.2(@types/node@18.19.31)(typescript@5.4.2)
+      typeorm:
+        specifier: ^0.3.20
+        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+
   packages/presentation-exchange:
     dependencies:
       '@sphereon/pex':
@@ -1145,11 +1324,11 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.kv-store-temp':
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
-        version: link:../kv-store
+        version: link:../data-store
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1265,6 +1444,70 @@ importers:
         specifier: ^1.6.3
         version: 1.6.6
 
+  packages/sd-jwt:
+    dependencies:
+      '@sd-jwt/core':
+        specifier: ^0.6.1
+        version: 0.6.1
+      '@sd-jwt/sd-jwt-vc':
+        specifier: ^0.6.1
+        version: 0.6.1
+      '@sphereon/ssi-sdk-ext.did-utils':
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@veramo/utils':
+        specifier: 4.2.0
+        version: 4.2.0
+      debug:
+        specifier: ^4.3.5
+        version: 4.3.5
+    devDependencies:
+      '@sd-jwt/decode':
+        specifier: ^0.6.1
+        version: 0.6.1
+      '@sd-jwt/types':
+        specifier: ^0.6.1
+        version: 0.6.1
+      '@sd-jwt/utils':
+        specifier: ^0.6.1
+        version: 0.6.1
+      '@sphereon/ssi-sdk-ext.did-provider-jwk':
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)
+      '@sphereon/ssi-sdk-ext.did-resolver-jwk':
+        specifier: 0.20.0
+        version: 0.20.0
+      '@sphereon/ssi-sdk-ext.key-manager':
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.kms-local':
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@types/node':
+        specifier: 18.15.3
+        version: 18.15.3
+      '@veramo/core':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/data-store':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
+      '@veramo/did-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-resolver':
+        specifier: 4.2.0
+        version: 4.2.0
+      did-resolver:
+        specifier: ^4.1.0
+        version: 4.1.0
+      typeorm:
+        specifier: ^0.3.20
+        version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      typescript:
+        specifier: 5.4.2
+        version: 5.4.2
+
   packages/siopv2-oid4vp-common:
     dependencies:
       '@sphereon/did-auth-siop':
@@ -1299,11 +1542,14 @@ importers:
         specifier: 2.2.4
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.pd-manager':
+        specifier: workspace:*
+        version: link:../pd-manager
       '@sphereon/ssi-sdk.presentation-exchange':
         specifier: workspace:*
         version: link:../presentation-exchange
@@ -1369,14 +1615,17 @@ importers:
         specifier: ^3.3.3
         version: 3.3.3
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
+      '@sphereon/ssi-sdk.pd-manager':
+        specifier: workspace:*
+        version: link:../pd-manager
       '@sphereon/ssi-sdk.presentation-exchange':
         specifier: workspace:*
         version: link:../presentation-exchange
@@ -1438,6 +1687,9 @@ importers:
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
+      '@sphereon/ssi-sdk.pd-manager':
+        specifier: workspace:*
+        version: link:../pd-manager
       '@sphereon/ssi-sdk.presentation-exchange':
         specifier: workspace:*
         version: link:../presentation-exchange
@@ -1494,8 +1746,8 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1540,7 +1792,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -1751,6 +2003,12 @@ importers:
       '@sd-jwt/decode':
         specifier: ^0.6.1
         version: 0.6.1
+      debug:
+        specifier: ^4.3.5
+        version: 4.3.5
+      events:
+        specifier: ^3.3.0
+        version: 3.3.0
       jwt-decode:
         specifier: ^3.1.2
         version: 3.1.2
@@ -1783,14 +2041,14 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1835,11 +2093,11 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.19.0
-        version: 0.19.0
+        specifier: 0.20.0
+        version: 0.20.0
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1884,7 +2142,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -1967,11 +2225,11 @@ importers:
         specifier: ^2.4.1-unstable.0
         version: 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2064,17 +2322,17 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/ssi-sdk-ext.did-provider-key':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-provider-lto':
-        specifier: 0.19.0
-        version: 0.19.0(typescript@5.4.2)
+        specifier: 0.20.0
+        version: 0.20.0(typescript@5.4.2)
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@transmute/lds-ecdsa-secp256k1-recovery2020':
         specifier: ^0.0.7
         version: 0.0.7
@@ -2098,7 +2356,7 @@ importers:
         version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -2148,8 +2406,8 @@ importers:
   packages/vc-status-list:
     dependencies:
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -2194,8 +2452,8 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2243,8 +2501,8 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2292,11 +2550,11 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.19.0
-        version: 0.19.0
+        specifier: 0.20.0
+        version: 0.20.0
       '@sphereon/ssi-sdk.vc-handler-ld-local':
         specifier: workspace:*
         version: link:../vc-handler-ld-local
@@ -2338,7 +2596,7 @@ importers:
         version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -2431,17 +2689,17 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.19.0
-        version: 0.19.0
+        specifier: 0.20.0
+        version: 0.20.0
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2489,7 +2747,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -2677,11 +2935,11 @@ importers:
         version: 2.0.5
     devDependencies:
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.19.0
-        version: 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@types/body-parser':
         specifier: ^1.19.2
         version: 1.19.5
@@ -2735,7 +2993,7 @@ importers:
         version: 0.1.3
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/utils':
         specifier: 4.2.0
         version: 4.2.0
@@ -2941,7 +3199,7 @@ packages:
       '@babel/traverse': 7.24.1
       '@babel/types': 7.24.0
       convert-source-map: 2.0.0
-      debug: 4.3.4
+      debug: 4.3.5
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -3015,7 +3273,7 @@ packages:
       '@babel/core': 7.24.4
       '@babel/helper-compilation-targets': 7.23.6
       '@babel/helper-plugin-utils': 7.24.0
-      debug: 4.3.4
+      debug: 4.3.5
       lodash.debounce: 4.0.8
       resolve: 1.22.8
     transitivePeerDependencies:
@@ -4247,7 +4505,7 @@ packages:
       '@babel/helper-split-export-declaration': 7.22.6
       '@babel/parser': 7.24.4
       '@babel/types': 7.24.0
-      debug: 4.3.4
+      debug: 4.3.5
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -4532,7 +4790,7 @@ packages:
     engines: {node: ^10.12.0 || >=12.0.0}
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.4
+      debug: 4.3.5
       espree: 7.3.1
       globals: 13.24.0
       ignore: 4.0.6
@@ -4549,7 +4807,7 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.4
+      debug: 4.3.5
       espree: 9.6.1
       globals: 13.24.0
       ignore: 5.3.1
@@ -4904,7 +5162,7 @@ packages:
     engines: {node: '>=10.10.0'}
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
-      debug: 4.3.4
+      debug: 4.3.5
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -4913,9 +5171,10 @@ packages:
   /@humanwhocodes/config-array@0.5.0:
     resolution: {integrity: sha512-FagtKFz74XrTl7y6HCzQpwDfXP0yhxe9lHLD1UZxjvZIcbyRz8zTFF/yYNfSfzU414eDwZ1SrO0Qvtyf+wFMQg==}
     engines: {node: '>=10.10.0'}
+    deprecated: Use @eslint/config-array instead
     dependencies:
       '@humanwhocodes/object-schema': 1.2.1
-      debug: 4.3.4
+      debug: 4.3.5
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -4928,6 +5187,7 @@ packages:
 
   /@humanwhocodes/object-schema@1.2.1:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
+    deprecated: Use @eslint/object-schema instead
     dev: true
 
   /@humanwhocodes/object-schema@2.0.3:
@@ -5530,7 +5790,7 @@ packages:
       read-package-json: 6.0.4
       resolve-from: 5.0.0
       rimraf: 4.4.1
-      semver: 7.6.0
+      semver: 7.6.2
       signal-exit: 3.0.7
       slash: 3.0.0
       ssri: 9.0.1
@@ -5571,7 +5831,7 @@ packages:
       tweetnacl: 1.0.3
     dev: true
 
-  /@lto-network/lto-transactions@1.2.12(debug@4.3.4)(typescript@5.4.2):
+  /@lto-network/lto-transactions@1.2.12(debug@4.3.5)(typescript@5.4.2):
     resolution: {integrity: sha512-bUCwN1xFMr8HFg+rdpxfj5vyCM/2aBSq8kyXyhFw2t8Ovl6BL4rI9zK+4UnOHl5e5z72UWsHgdT3taicxPQiug==}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     peerDependencies:
@@ -5579,7 +5839,7 @@ packages:
     dependencies:
       '@lto-network/lto-crypto': 1.1.1
       ajv: 6.12.6
-      axios: 0.21.4(debug@4.3.4)
+      axios: 0.21.4(debug@4.3.5)
       base64-js: 1.5.1
       long: 4.0.0
       parse-json-bignumber: 0.1.3
@@ -5612,7 +5872,7 @@ packages:
       nopt: 5.0.0
       npmlog: 5.0.1
       rimraf: 3.0.2
-      semver: 7.6.0
+      semver: 7.6.2
       tar: 6.2.1
     transitivePeerDependencies:
       - encoding
@@ -5699,8 +5959,8 @@ packages:
     engines: {node: '>=14.0.0'}
     dependencies:
       '@types/debug': 4.1.12
-      debug: 4.3.4
-      semver: 7.6.0
+      debug: 4.3.5
+      semver: 7.6.2
       superstruct: 1.0.4
     transitivePeerDependencies:
       - supports-color
@@ -5712,8 +5972,8 @@ packages:
     dependencies:
       '@ethereumjs/tx': 4.2.0
       '@types/debug': 4.1.12
-      debug: 4.3.4
-      semver: 7.6.0
+      debug: 4.3.5
+      semver: 7.6.2
       superstruct: 1.0.4
     transitivePeerDependencies:
       - supports-color
@@ -5824,13 +6084,13 @@ packages:
     resolution: {integrity: sha512-8KG5RD0GVP4ydEzRn/I4BNDuxDtqVbOdm8675T49OIG/NGhaK0pjPX7ZcDlvKYbA+ulvVK3ztfcF4uBdOxuJbQ==}
     dependencies:
       '@gar/promisify': 1.1.3
-      semver: 7.6.0
+      semver: 7.6.2
 
   /@npmcli/fs@3.1.0:
     resolution: {integrity: sha512-7kZUAaLscfgbwBQRbvdMYaZOWyMEcPTH/tJjnyAWJ/dvvs9Ef+CERx/qJb9GExJpl1qipaDGn7KqHnFGGixd0w==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
-      semver: 7.6.0
+      semver: 7.6.2
     dev: true
 
   /@npmcli/git@5.0.6:
@@ -5843,7 +6103,7 @@ packages:
       proc-log: 4.2.0
       promise-inflight: 1.0.1
       promise-retry: 2.0.1
-      semver: 7.6.0
+      semver: 7.6.2
       which: 4.0.0
     transitivePeerDependencies:
       - bluebird
@@ -5926,7 +6186,7 @@ packages:
       enquirer: 2.3.6
       ignore: 5.3.1
       nx: 18.3.3
-      semver: 7.6.0
+      semver: 7.6.2
       tmp: 0.2.3
       tslib: 2.6.2
       yargs-parser: 21.1.1
@@ -6267,7 +6527,7 @@ packages:
       hermes-profile-transformer: 0.0.6
       node-stream-zip: 1.15.0
       ora: 5.4.1
-      semver: 7.6.0
+      semver: 7.6.2
       strip-ansi: 5.2.0
       wcwidth: 1.0.1
       yaml: 2.4.1
@@ -6344,7 +6604,7 @@ packages:
       node-fetch: 2.7.0
       open: 6.4.0
       ora: 5.4.1
-      semver: 7.6.0
+      semver: 7.6.2
       shell-quote: 1.8.1
       sudo-prompt: 9.2.1
     transitivePeerDependencies:
@@ -6376,7 +6636,7 @@ packages:
       fs-extra: 8.1.0
       graceful-fs: 4.2.11
       prompts: 2.4.2
-      semver: 7.6.0
+      semver: 7.6.2
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -6631,6 +6891,16 @@ packages:
       '@noble/hashes': 1.2.0
       '@scure/base': 1.1.6
 
+  /@sd-jwt/core@0.6.1:
+    resolution: {integrity: sha512-egFTb23o6BGWF93vnjopN02rSiC1HOOnkk9BI8Kao3jz9ipZAHdO6wF7gwfZm5Nlol/Kd1/KSLhbOUPYt++FjA==}
+    engines: {node: '>=16'}
+    dependencies:
+      '@sd-jwt/decode': 0.6.1
+      '@sd-jwt/present': 0.6.1
+      '@sd-jwt/types': 0.6.1
+      '@sd-jwt/utils': 0.6.1
+    dev: false
+
   /@sd-jwt/decode@0.6.1:
     resolution: {integrity: sha512-QgTIoYd5zyKKLgXB4xEYJTrvumVwtsj5Dog0v0L9UH9ZvHekDaeexS247X7A4iSdzTvmZzUpGskgABOa4D8NmQ==}
     engines: {node: '>=16'}
@@ -6645,6 +6915,13 @@ packages:
       '@sd-jwt/decode': 0.6.1
       '@sd-jwt/types': 0.6.1
       '@sd-jwt/utils': 0.6.1
+
+  /@sd-jwt/sd-jwt-vc@0.6.1:
+    resolution: {integrity: sha512-eF7NAFvedBCx+vrw4TVY3evUz5rAG8/FtB/CUudYEigKcpanLgfuNGhk93D45k+lLDG0b24w+qorqbpLZzHA2g==}
+    engines: {node: '>=16'}
+    dependencies:
+      '@sd-jwt/core': 0.6.1
+    dev: false
 
   /@sd-jwt/types@0.6.1:
     resolution: {integrity: sha512-LKpABZJGT77jNhOLvAHIkNNmGqXzyfwBT+6r+DN9zNzMx1CzuNR0qXk1GMUbast9iCfPkGbnEpUv/jHTBvlIvg==}
@@ -6666,7 +6943,7 @@ packages:
       conventional-changelog-angular: 5.0.13
       conventional-commits-filter: 2.0.7
       conventional-commits-parser: 3.2.4
-      debug: 4.3.4
+      debug: 4.3.5
       import-from: 4.0.0
       lodash: 4.17.21
       micromatch: 4.0.5
@@ -6692,7 +6969,7 @@ packages:
       '@octokit/plugin-throttling': 5.2.3(@octokit/core@4.2.4)
       '@semantic-release/error': 3.0.0
       aggregate-error: 3.1.0
-      debug: 4.3.4
+      debug: 4.3.5
       dir-glob: 3.0.1
       fs-extra: 11.2.0
       globby: 11.1.0
@@ -6727,7 +7004,7 @@ packages:
       read-pkg: 5.2.0
       registry-auth-token: 5.0.2
       semantic-release: 19.0.5
-      semver: 7.6.0
+      semver: 7.6.2
       tempy: 1.0.1
     dev: true
 
@@ -6741,7 +7018,7 @@ packages:
       conventional-changelog-writer: 5.0.1
       conventional-commits-filter: 2.0.7
       conventional-commits-parser: 3.2.4
-      debug: 4.3.4
+      debug: 4.3.5
       get-stream: 6.0.1
       import-from: 4.0.0
       into-stream: 6.0.0
@@ -6918,7 +7195,7 @@ packages:
       '@sphereon/isomorphic-argon2': 1.0.1(@sphereon/react-native-argon2@2.0.9)(react-native@0.74.0)
       '@sphereon/react-native-argon2': 2.0.9(react-native@0.74.0)
       cross-fetch: 3.1.8
-      debug: 4.3.4
+      debug: 4.3.5
       uint8arrays: 3.1.1
     transitivePeerDependencies:
       - encoding
@@ -6972,11 +7249,11 @@ packages:
       str2buf: 1.3.0
       webcrypto-shim: 0.1.7
 
-  /@sphereon/lto-did-ts@0.1.8-unstable.0(debug@4.3.4)(typescript@5.4.2):
+  /@sphereon/lto-did-ts@0.1.8-unstable.0(debug@4.3.5)(typescript@5.4.2):
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
     dependencies:
       '@lto-network/lto-crypto': 1.1.1
-      '@lto-network/lto-transactions': 1.2.12(debug@4.3.4)(typescript@5.4.2)
+      '@lto-network/lto-transactions': 1.2.12(debug@4.3.5)(typescript@5.4.2)
       '@lto-network/signature-generator': 1.0.0
       '@sphereon/did-uni-client': 0.4.0
       '@waves/ts-lib-crypto': 1.4.4-beta.1
@@ -6987,44 +7264,37 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vci-client@0.10.3(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-PkIZrwTMrHlgwcDNimWDQaAgi+9ptkV79g/sQJJAe4g8NCt3WyXtsV9l88CdzxDGVGDtzsnYqPXkimxP4eSScw==}
+  /@sphereon/oid4vci-client@0.10.4-next.25:
+    resolution: {integrity: sha512-/RQDx+kmcwzJ5ZhvdaCI8VMguKVhKJ/mvg5QID/9Y1nNycxRCzL406iXl3GXShwyKUrH2QixaRoc09cg1xxhmQ==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.3(msrcrypto@1.5.8)
+      '@sphereon/oid4vci-common': 0.10.4-next.25
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
-      debug: 4.3.4
+      debug: 4.3.5
     transitivePeerDependencies:
       - encoding
-      - msrcrypto
       - supports-color
 
-  /@sphereon/oid4vci-common@0.10.3(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-VsUnDKkKm2yQ3lzAt2CY6vL06mZDK9dhwFT6T92aq03ncbUcS6gelwccdsXEMEfi5r4baFemiFM1O5v+mPjuEA==}
+  /@sphereon/oid4vci-common@0.10.4-next.25:
+    resolution: {integrity: sha512-qwIwFjZnb9BlJt8s5KXNNasydAKifUwE7gjp7wCjv752idTuz+7UnUieq4O7aViipkYk/hqnGF/A2mU5QOgFpg==}
     engines: {node: '>=18'}
-    peerDependencies:
-      msrcrypto: ^1.5.8
-    peerDependenciesMeta:
-      msrcrypto:
-        optional: true
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
       jwt-decode: 3.1.2
-      msrcrypto: 1.5.8
       sha.js: 2.4.11
       uint8arrays: 3.1.1
     transitivePeerDependencies:
       - encoding
 
-  /@sphereon/oid4vci-issuer-server@0.10.3(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-tNXUnoKcevdKPaoL4kVwuQhAjkIs/aSnyCgls0Fqkxb6MvUmN4903/KYMBHqH5csH2uaK24+Grnmng3SlRhJKw==}
+  /@sphereon/oid4vci-issuer-server@0.10.4-next.25:
+    resolution: {integrity: sha512-fNEvn2i2+Z/6pxux/zcxWe8RQtG62S29ewK4Q3lgZRNlu/yOBZizn36HVpyvfXYdHWh8ObXky75RStkjiK4Xbw==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.3(msrcrypto@1.5.8)
-      '@sphereon/oid4vci-issuer': 0.10.3(msrcrypto@1.5.8)
-      '@sphereon/ssi-express-support': 0.23.0
+      '@sphereon/oid4vci-common': 0.10.4-next.25
+      '@sphereon/oid4vci-issuer': 0.10.4-next.25
+      '@sphereon/ssi-express-support': 0.24.1-unstable.116
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.2
       cookie-parser: 1.4.6
@@ -7038,14 +7308,13 @@ packages:
       - '@noble/hashes'
       - awesome-qr
       - encoding
-      - msrcrypto
       - passport-azure-ad
       - passport-http-bearer
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.10.3(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-qhm8ypkXuYsaG5XmXIFwL9DUJQ0TJScNjvg5w7beAm+zjz0sOkwIjXdS7S+29LfWj0BkYiRZp1d3mj8H/rmdUw==}
+  /@sphereon/oid4vci-issuer@0.10.4-next.25:
+    resolution: {integrity: sha512-GDZwU+8fzqQ6p5dadHtTg4xbrpwBelfzFB9gjf42H3QfkdlZJAt/Ir0i0ClKBeHBSj75qEbknLAP8/eA9UErZw==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -7053,12 +7322,11 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.3(msrcrypto@1.5.8)
+      '@sphereon/oid4vci-common': 0.10.4-next.25
       '@sphereon/ssi-types': link:packages/ssi-types
       uuid: 9.0.1
     transitivePeerDependencies:
       - encoding
-      - msrcrypto
     dev: false
 
   /@sphereon/pex-models@2.2.4:
@@ -7090,8 +7358,8 @@ packages:
       react-native: 0.74.0(@babel/core@7.24.4)(@babel/preset-env@7.24.4)(react@18.2.0)
     dev: true
 
-  /@sphereon/ssi-express-support@0.23.0:
-    resolution: {integrity: sha512-rflaGgILqxaQdQmPueeJKDcPPyqB00+cGkDUEoUZ3PDBGfRXQYBgVbFKQfLb3CDzBGwu29S+B27359BPFTiH4A==}
+  /@sphereon/ssi-express-support@0.24.1-unstable.116:
+    resolution: {integrity: sha512-TkOYuZDsKsBVWnIh0r4trZ9gWz5Sxt9YHbXNp4Ec789/R44PNLnb8kyLu8DoD+hWKMbNcwbIny8X/A0XtDcpMw==}
     peerDependencies:
       '@noble/hashes': 1.2.0
       passport-azure-ad: ^4.3.5
@@ -7139,18 +7407,18 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.19.0(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-dz0ug1rRhw/z/QvOi1S3VVu3GesI9EWeahLXlmtef8Z3iuyjJFPpsBCiA3fjuIYiLLcyZxaaMvsujrn+rFyeyg==}
+  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.20.0(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-hGvHr1/fwhYC+I7bdDrE1AYN57BDR1kCDfV5fg0e5prlfZeSVY7PypSsKr3IllNXQ2NdkfDZAHG1EguTuYp7jQ==}
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
       base64url: 3.0.1
-      debug: 4.3.4
+      debug: 4.3.5
       did-resolver: 4.1.0
       elliptic: 6.5.4
     transitivePeerDependencies:
@@ -7163,15 +7431,15 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-provider-key@0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-k0mtNbnDsTmQCDkkhWMxEpUus/+boaHokqnwb/dr0WsrbNDJi1NmM2DzKPa7wl5zyh11BoQq0A7EMVNVaJsCyA==}
+  /@sphereon/ssi-sdk-ext.did-provider-key@0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-6kqDWk3vjvBSgY14cjKd6njSTJPAiqgzxqHnV/H2HcjzX/I14fB3Tq7+t/3cbcUPMK6wmr5zXJ3+UoCNsa0bBA==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@transmute/did-key-bls12381': 0.3.0-unstable.10
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
-      debug: 4.3.4
+      debug: 4.3.5
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-resolver: 4.1.0
       multibase: 4.0.6
@@ -7187,17 +7455,17 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-provider-lto@0.19.0(typescript@5.4.2):
-    resolution: {integrity: sha512-dCCIrLteH9DLTJmbV6Nu+SSrqwMVyP7BW7JRj9e6UzJ29FiYf66lnrG3nWFzqxM90HrOJYjsMmwSfgLHbYEHSg==}
+  /@sphereon/ssi-sdk-ext.did-provider-lto@0.20.0(typescript@5.4.2):
+    resolution: {integrity: sha512-tTsEIZ6hz0HZCkEaxUC+AwZNuthBw/E+TcHT/4r9uD26NMvFavD4OUC1yeU2pPJ/pOmOjCTn9EOxSUYCF8o54g==}
     dependencies:
       '@lto-network/lto-crypto': 1.1.1
-      '@lto-network/lto-transactions': 1.2.12(debug@4.3.4)(typescript@5.4.2)
+      '@lto-network/lto-transactions': 1.2.12(debug@4.3.5)(typescript@5.4.2)
       '@lto-network/signature-generator': 1.0.0
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/lto-did-ts': 0.1.8-unstable.0(debug@4.3.4)(typescript@5.4.2)
+      '@sphereon/lto-did-ts': 0.1.8-unstable.0(debug@4.3.5)(typescript@5.4.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
-      debug: 4.3.4
+      debug: 4.3.5
       lto-api: 0.5.14
     transitivePeerDependencies:
       - encoding
@@ -7227,22 +7495,22 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.19.0:
-    resolution: {integrity: sha512-EvSUNOJnzQSGTcDSdvAk5AlqqzIAtfpkwurYo7EMZP+T9EYcwGtycz/qD0CT/OEaW4HTzcrgyjDlLL34o5X4+A==}
+  /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.20.0:
+    resolution: {integrity: sha512-duWy4wRNJDhsNpWUjyOSIEAa4SYe+qeLm4Ge+LVC3NWOp+lQ3+ofVCpZb4YkeFo4dMjFPRLa4SJ+fHdVFjV7RA==}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       base64url: 3.0.1
-      debug: 4.3.4
+      debug: 4.3.5
       did-resolver: 4.1.0
       uint8arrays: 3.1.1
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-resolver-key@0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-mHedWj31IDt4ByLRk4fPTw+Xne2K+btAlEQDZHYnNkv4evu5LqQi3Nd3+y2FgLd+uMBb81XD9hdc1osk7hhpLQ==}
+  /@sphereon/ssi-sdk-ext.did-resolver-key@0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-Z5fI16xRkM9vgN8qf+gWFy6vZ1TkaHTweLRN7v7sI5ynjgjgtsvZdKxaa3GV93F1VaEcq2Lm/xjHSs3chgNKgQ==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@stablelib/ed25519': 1.0.3
       bigint-mod-arith: 3.3.1
       did-resolver: 4.1.0
@@ -7310,12 +7578,12 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-utils@0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-RCKayfL/+CEF7/c5PgxwgizQrU5jmb+nS9Ok9ML6dFRdzWYkQjknh9844Kxi40+xXkEuyhwrlPdD5mLz2Gr6Kw==}
+  /@sphereon/ssi-sdk-ext.did-utils@0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-iRTJE8yOIak1UgYByvrzfiAhHmW3PTZCf7eMFUE/oS5N8zsMsRJeQb3ELxIOJpqXwE7YA0KXzO/0QrJ16CH8vA==}
     dependencies:
       '@ethersproject/transactions': 5.7.0
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -7350,10 +7618,10 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.key-manager@0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-dbct8S6faGM175epFzNka+XlZnK6qKcoK8mSVFda3ROnH3Vz0HH1DVdQ5aJd+6x8DyMk+wGSHS1BmIH/rCthBg==}
+  /@sphereon/ssi-sdk-ext.key-manager@0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-HnE3EWWebzPOhFh+Wz5cnB/ORxSsWCLVgxnLB9fRWlNXySpRn/aShj30zGL8qlgQzciqX5nMWMe+Bq4wd63Mhw==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.kms-local': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.kms-local': 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
     transitivePeerDependencies:
@@ -7368,6 +7636,32 @@ packages:
 
   /@sphereon/ssi-sdk-ext.key-utils@0.18.2(msrcrypto@1.5.8):
     resolution: {integrity: sha512-C7gBp4lhpIr+R8hQngu6h6okbYtffRK123T2Gt389pn176BHh6HzFdxDffxSq5MTEL5gwaXcCDdPHjuWEZ/5gQ==}
+    dependencies:
+      '@ethersproject/random': 5.7.0
+      '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@stablelib/ed25519': 1.0.3
+      '@stablelib/sha256': 1.0.1
+      '@stablelib/sha512': 1.0.1
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      base64url: 3.0.1
+      debug: 4.3.5
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+      lodash.isplainobject: 4.0.6
+      multiformats: 9.9.0
+      uint8arrays: 3.1.1
+      varint: 6.0.0
+      web-encoding: 1.1.5
+    transitivePeerDependencies:
+      - expo
+      - expo-crypto
+      - msrcrypt
+      - msrcrypto
+      - react-native-securerandom
+      - supports-color
+
+  /@sphereon/ssi-sdk-ext.key-utils@0.19.0(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-CzOymQxFhqn6XuvpBRPvE4BeUZFYDWmVVMPK7UKf8Rqlgc5rLzChm+BKeGt5Qf3ModijY/p7o9Az13zzweGk+A==}
     dependencies:
       '@ethersproject/random': 5.7.0
       '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -7391,9 +7685,10 @@ packages:
       - msrcrypto
       - react-native-securerandom
       - supports-color
+    dev: true
 
-  /@sphereon/ssi-sdk-ext.key-utils@0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-CzOymQxFhqn6XuvpBRPvE4BeUZFYDWmVVMPK7UKf8Rqlgc5rLzChm+BKeGt5Qf3ModijY/p7o9Az13zzweGk+A==}
+  /@sphereon/ssi-sdk-ext.key-utils@0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-SGS0x2juCWnjxlMEkJ45My2ayzVHMV/kwgSQYDUmGv2iSqc96GrVWHfI3mmB3YWdV03ygVohSkIUZoloWteZBw==}
     dependencies:
       '@ethersproject/random': 5.7.0
       '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -7402,7 +7697,7 @@ packages:
       '@stablelib/sha512': 1.0.1
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       base64url: 3.0.1
-      debug: 4.3.4
+      debug: 4.3.5
       did-resolver: 4.1.0
       elliptic: 6.5.4
       lodash.isplainobject: 4.0.6
@@ -7445,8 +7740,8 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.kms-local@0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-AnmhpnFBnKMLB8EN1juU16GxLxzjlEO9SeOZ1eY/dIB1weVaXy2hqUUS0xbX5pzqwvZyAotHD2+7Br76x7VrCQ==}
+  /@sphereon/ssi-sdk-ext.kms-local@0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-+xWP8GeSPUcpdQYLnI848GAnmyiCXB8GWupR09Uds1ibXnA3fsIzDxJ1miQ3CqZ9YlS2ZAwOOhtVNcWyb+fR+w==}
     peerDependencies:
       '@mattrglobal/bbs-signatures': ^1.3.1
     peerDependenciesMeta:
@@ -7454,8 +7749,8 @@ packages:
         optional: true
     dependencies:
       '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.19.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@trust/keyto': 2.0.0-alpha1
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
@@ -8604,12 +8899,12 @@ packages:
       '@typescript-eslint/experimental-utils': 4.33.0(eslint@7.32.0)(typescript@5.4.2)
       '@typescript-eslint/parser': 4.33.0(eslint@7.32.0)(typescript@5.4.2)
       '@typescript-eslint/scope-manager': 4.33.0
-      debug: 4.3.4
+      debug: 4.3.5
       eslint: 7.32.0
       functional-red-black-tree: 1.0.1
       ignore: 5.3.1
       regexpp: 3.2.0
-      semver: 7.6.0
+      semver: 7.6.2
       tsutils: 3.21.0(typescript@5.4.2)
       typescript: 5.4.2
     transitivePeerDependencies:
@@ -8675,7 +8970,7 @@ packages:
       '@typescript-eslint/scope-manager': 4.33.0
       '@typescript-eslint/types': 4.33.0
       '@typescript-eslint/typescript-estree': 4.33.0(typescript@5.4.2)
-      debug: 4.3.4
+      debug: 4.3.5
       eslint: 7.32.0
       typescript: 5.4.2
     transitivePeerDependencies:
@@ -8730,7 +9025,7 @@ packages:
     dependencies:
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.4.2)
       '@typescript-eslint/utils': 5.62.0(eslint@8.57.0)(typescript@5.4.2)
-      debug: 4.3.4
+      debug: 4.3.5
       eslint: 8.57.0
       tsutils: 3.21.0(typescript@5.4.2)
       typescript: 5.4.2
@@ -8759,10 +9054,10 @@ packages:
     dependencies:
       '@typescript-eslint/types': 4.33.0
       '@typescript-eslint/visitor-keys': 4.33.0
-      debug: 4.3.4
+      debug: 4.3.5
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.6.0
+      semver: 7.6.2
       tsutils: 3.21.0(typescript@5.4.2)
       typescript: 5.4.2
     transitivePeerDependencies:
@@ -8780,10 +9075,10 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.62.0
       '@typescript-eslint/visitor-keys': 5.62.0
-      debug: 4.3.4
+      debug: 4.3.5
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.6.0
+      semver: 7.6.2
       tsutils: 3.21.0(typescript@5.4.2)
       typescript: 5.4.2
     transitivePeerDependencies:
@@ -8804,7 +9099,7 @@ packages:
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.4.2)
       eslint: 8.57.0
       eslint-scope: 5.1.1
-      semver: 7.6.0
+      semver: 7.6.2
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -8864,7 +9159,7 @@ packages:
       cors: 2.8.5
       cross-fetch: 3.1.8
       date-fns: 2.30.0
-      debug: 4.3.4
+      debug: 4.3.5
       did-resolver: 4.1.0
       dotenv: 16.4.5
       ethr-did-resolver: 8.1.2
@@ -8936,7 +9231,7 @@ packages:
       '@metamask/eth-sig-util': 5.1.0
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0
-      debug: 4.3.4
+      debug: 4.3.5
       eip-712-types-generation: 0.1.6
     transitivePeerDependencies:
       - encoding
@@ -8957,7 +9252,7 @@ packages:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-resolver': 4.2.0
       '@veramo/utils': 4.2.0
-      debug: 4.3.4
+      debug: 4.3.5
       did-resolver: 4.1.0
       uint8arrays: 3.1.1
     transitivePeerDependencies:
@@ -9010,6 +9305,39 @@ packages:
       '@veramo/did-manager': 4.2.0
       '@veramo/key-manager': 4.2.0
       '@veramo/utils': 4.2.0
+      debug: 4.3.5
+      typeorm: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+    dev: true
+    patched: true
+
+  /@veramo/data-store@4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2):
+    resolution: {integrity: sha512-gwinKYd//jOCXrdr2NefXOHnuUT8Vz2sHvSMFvm41UVD9QMpeKpTrTEqGoYG/eDg/1+U9aQlb+AI6bFUNNsk0Q==}
+    dependencies:
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/did-discovery': 4.2.0
+      '@veramo/did-manager': 4.2.0
+      '@veramo/key-manager': 4.2.0
+      '@veramo/utils': 4.2.0
       debug: 4.3.4
       typeorm: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
     transitivePeerDependencies:
@@ -9043,7 +9371,7 @@ packages:
       '@veramo/message-handler': 4.2.0
       '@veramo/utils': 4.2.0
       cross-fetch: 3.1.8
-      debug: 4.3.4
+      debug: 4.3.5
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-resolver: 4.1.0
       uint8arrays: 3.1.1
@@ -9057,7 +9385,7 @@ packages:
     resolution: {integrity: sha512-U2baTL/KXgj84TF7hJxvUzh8oyfEQSsWSpqbRTQITE6bbSBaZiM/ZfgHRty8wuDFMFVV/f+xbkwdkOf3nY7SpQ==}
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
-      debug: 4.3.4
+      debug: 4.3.5
     transitivePeerDependencies:
       - supports-color
 
@@ -9066,7 +9394,7 @@ packages:
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/message-handler': 4.2.0
-      debug: 4.3.4
+      debug: 4.3.5
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-resolver: 4.1.0
     transitivePeerDependencies:
@@ -9192,7 +9520,7 @@ packages:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
       base-58: 0.0.1
-      debug: 4.3.4
+      debug: 4.3.5
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       elliptic: 6.5.4
       uint8arrays: 3.1.1
@@ -9224,7 +9552,7 @@ packages:
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/remote-client': 4.2.0
-      debug: 4.3.4
+      debug: 4.3.5
       did-resolver: 4.1.0
       express: 4.19.2
       passport: 0.6.0
@@ -9241,7 +9569,7 @@ packages:
       '@veramo/credential-w3c': 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)
       '@veramo/did-jwt': 4.2.0
       '@veramo/message-handler': 4.2.0
-      debug: 4.3.4
+      debug: 4.3.5
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       uuid: 9.0.1
     transitivePeerDependencies:
@@ -9257,7 +9585,7 @@ packages:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/message-handler': 4.2.0
       cross-fetch: 3.1.8
-      debug: 4.3.4
+      debug: 4.3.5
       url-parse: 1.5.10
     transitivePeerDependencies:
       - encoding
@@ -9272,7 +9600,7 @@ packages:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       blakejs: 1.2.1
       cross-fetch: 3.1.8
-      debug: 4.3.4
+      debug: 4.3.5
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-jwt-vc: 3.1.3
       did-resolver: 4.1.0
@@ -9430,7 +9758,7 @@ packages:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.5
     transitivePeerDependencies:
       - supports-color
 
@@ -9438,7 +9766,7 @@ packages:
     resolution: {integrity: sha512-H0TSyFNDMomMNJQBn8wFV5YC/2eJ+VXECwOadZJT554xP6cODZHPX3H9QMQECxvrgiSOP1pHjy1sMWQVYJOUOA==}
     engines: {node: '>= 14'}
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.5
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -9797,10 +10125,10 @@ packages:
     resolution: {integrity: sha512-aDczADvlvTGajTDjcjpJMqRkOF6Qdz3YbPZm/PyW6tKPkx2hlYBzxMhEywM/tU72HrVZjgl5VCdRuMlA7pZ8Gw==}
     dev: false
 
-  /axios@0.21.4(debug@4.3.4):
+  /axios@0.21.4(debug@4.3.5):
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.15.6(debug@4.3.4)
+      follow-redirects: 1.15.6(debug@4.3.5)
     transitivePeerDependencies:
       - debug
     dev: true
@@ -9808,7 +10136,7 @@ packages:
   /axios@1.6.8:
     resolution: {integrity: sha512-v/ZHtJDU39mDpyBoFVkETcd/uNdxrWRrg3bKpOKzXFA6Bvqopts6ALSMU3y6ijYxbw2B+wPrIv46egTzJXCLGQ==}
     dependencies:
-      follow-redirects: 1.15.6(debug@4.3.4)
+      follow-redirects: 1.15.6(debug@4.3.5)
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -10240,7 +10568,7 @@ packages:
   /builtins@5.1.0:
     resolution: {integrity: sha512-SW9lzGTLvWTP1AY8xeAMZimqDrIaSdLQUcVr9DMef51niJ022Ri87SwRRKYm4A6iHfkPaiVUu/Duw2Wc4J7kKg==}
     dependencies:
-      semver: 7.6.0
+      semver: 7.6.2
     dev: true
 
   /bunyan@1.8.15:
@@ -10900,7 +11228,7 @@ packages:
       handlebars: 4.7.8
       json-stringify-safe: 5.0.1
       meow: 8.1.2
-      semver: 7.6.0
+      semver: 7.6.2
       split: 1.0.1
     dev: true
 
@@ -11314,6 +11642,17 @@ packages:
 
   /debug@4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.2
+
+  /debug@4.3.5:
+    resolution: {integrity: sha512-pt0bNEmneDIvdL1Xsd9oDQ/wrQRkXDT4AUWlNZNPKvW5x/jyO9VFXkJUP07vQ2upmw5PlaITaPKc31jK13V+jg==}
     engines: {node: '>=6.0'}
     peerDependencies:
       supports-color: '*'
@@ -12099,7 +12438,7 @@ packages:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.3
-      debug: 4.3.4
+      debug: 4.3.5
       doctrine: 3.0.0
       enquirer: 2.4.1
       escape-string-regexp: 4.0.0
@@ -12127,7 +12466,7 @@ packages:
       optionator: 0.9.3
       progress: 2.0.3
       regexpp: 3.2.0
-      semver: 7.6.0
+      semver: 7.6.2
       strip-ansi: 6.0.1
       strip-json-comments: 3.1.1
       table: 6.8.2
@@ -12769,7 +13108,7 @@ packages:
     resolution: {integrity: sha512-s04193L4JE+ntEcQXbD6jxRRlyj9QXcgEl2W6xSjH4l9x4b0eHoCHfbYHjqf9LdZFUiM5LhgpiqsvLj/AyOyYQ==}
     engines: {node: '>=0.4.0'}
 
-  /follow-redirects@1.15.6(debug@4.3.4):
+  /follow-redirects@1.15.6(debug@4.3.5):
     resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
     engines: {node: '>=4.0'}
     peerDependencies:
@@ -12778,7 +13117,7 @@ packages:
       debug:
         optional: true
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.5
     dev: true
 
   /for-each@0.3.3:
@@ -13062,7 +13401,7 @@ packages:
     hasBin: true
     dependencies:
       meow: 8.1.2
-      semver: 7.6.0
+      semver: 7.6.2
     dev: true
 
   /git-up@7.0.0:
@@ -13113,6 +13452,7 @@ packages:
 
   /glob@6.0.4:
     resolution: {integrity: sha512-MKZeRNyYZAVVVG1oZeLaWie1uweH40m9AZwIwxyPbTSX4hHrVYSzLg0Ro5Z5R7XKkIX+Cc6oD1rqeDJnwsB8/A==}
+    deprecated: Glob versions prior to v9 are no longer supported
     requiresBuild: true
     dependencies:
       inflight: 1.0.6
@@ -13383,7 +13723,7 @@ packages:
     dependencies:
       '@tootallnate/once': 1.1.2
       agent-base: 6.0.2
-      debug: 4.3.4
+      debug: 4.3.5
     transitivePeerDependencies:
       - supports-color
 
@@ -13393,7 +13733,7 @@ packages:
     dependencies:
       '@tootallnate/once': 2.0.0
       agent-base: 6.0.2
-      debug: 4.3.4
+      debug: 4.3.5
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -13403,7 +13743,7 @@ packages:
     engines: {node: '>= 14'}
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.4
+      debug: 4.3.5
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -13426,7 +13766,7 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.4
+      debug: 4.3.5
     transitivePeerDependencies:
       - supports-color
 
@@ -13435,7 +13775,7 @@ packages:
     engines: {node: '>= 14'}
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.4
+      debug: 4.3.5
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -13591,7 +13931,7 @@ packages:
       promzard: 1.0.1
       read: 2.1.0
       read-package-json: 6.0.4
-      semver: 7.6.0
+      semver: 7.6.2
       validate-npm-package-license: 3.0.4
       validate-npm-package-name: 5.0.0
     dev: true
@@ -14058,7 +14398,7 @@ packages:
       '@babel/parser': 7.24.4
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
-      semver: 7.6.0
+      semver: 7.6.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -14076,7 +14416,7 @@ packages:
     resolution: {integrity: sha512-n3s8EwkdFIJCG3BPKBYvskgXGoy88ARzvegkitk60NxRdwltLOTaH7CUiMRXvwYorl0Q712iEjcWB+fK/MrWVw==}
     engines: {node: '>=10'}
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.5
       istanbul-lib-coverage: 3.2.2
       source-map: 0.6.1
     transitivePeerDependencies:
@@ -14829,7 +15169,7 @@ packages:
       jest-util: 27.5.1
       natural-compare: 1.4.0
       pretty-format: 27.5.1
-      semver: 7.6.0
+      semver: 7.6.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -14857,7 +15197,7 @@ packages:
       jest-util: 29.7.0
       natural-compare: 1.4.0
       pretty-format: 29.7.0
-      semver: 7.6.0
+      semver: 7.6.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -15344,7 +15684,7 @@ packages:
       lodash.isstring: 4.0.1
       lodash.once: 4.1.1
       ms: 2.1.3
-      semver: 7.6.0
+      semver: 7.6.2
     dev: false
 
   /jwa@1.4.1:
@@ -15583,7 +15923,7 @@ packages:
       npm-package-arg: 10.1.0
       npm-registry-fetch: 14.0.5
       proc-log: 3.0.0
-      semver: 7.6.0
+      semver: 7.6.2
       sigstore: 1.9.0
       ssri: 10.0.5
     transitivePeerDependencies:
@@ -15831,7 +16171,7 @@ packages:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
     engines: {node: '>=10'}
     dependencies:
-      semver: 7.6.0
+      semver: 7.6.2
     dev: true
 
   /make-error@1.3.6:
@@ -16594,7 +16934,7 @@ packages:
       inquirer: 7.3.3
       make-promises-safe: 5.1.0
       rimraf: 3.0.2
-      semver: 7.6.0
+      semver: 7.6.2
       toml: 3.0.0
       ts-typed-json: 0.3.2
       validate-npm-package-license: 3.0.4
@@ -16632,7 +16972,7 @@ packages:
     resolution: {integrity: sha512-CPMcGa+y33xuL1E0TcNIu4YyaZCxnnvkVaEXrsosR3FxN+fV8xvb7Mzpb7IgKler10qeMkE6+Dp8qJhpzdq35g==}
     engines: {node: '>=10'}
     dependencies:
-      semver: 7.6.0
+      semver: 7.6.2
 
   /node-abort-controller@3.1.1:
     resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
@@ -16718,7 +17058,7 @@ packages:
       make-fetch-happen: 13.0.0
       nopt: 7.2.0
       proc-log: 3.0.0
-      semver: 7.6.0
+      semver: 7.6.2
       tar: 6.1.11
       which: 4.0.0
     transitivePeerDependencies:
@@ -16738,7 +17078,7 @@ packages:
       nopt: 5.0.0
       npmlog: 6.0.2
       rimraf: 3.0.2
-      semver: 7.6.0
+      semver: 7.6.2
       tar: 6.2.1
       which: 2.0.2
     transitivePeerDependencies:
@@ -16816,7 +17156,7 @@ packages:
     dependencies:
       hosted-git-info: 4.1.0
       is-core-module: 2.13.1
-      semver: 7.6.0
+      semver: 7.6.2
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -16826,7 +17166,7 @@ packages:
     dependencies:
       hosted-git-info: 6.1.1
       is-core-module: 2.13.1
-      semver: 7.6.0
+      semver: 7.6.2
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -16836,7 +17176,7 @@ packages:
     dependencies:
       hosted-git-info: 7.0.1
       is-core-module: 2.13.1
-      semver: 7.6.0
+      semver: 7.6.2
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -16866,7 +17206,7 @@ packages:
     resolution: {integrity: sha512-W29RiK/xtpCGqn6f3ixfRYGk+zRyr+Ew9F2E20BfXxT5/euLdA/Nm7fO7OeTGuAmTs30cpgInyJ0cYe708YTZw==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
-      semver: 7.6.0
+      semver: 7.6.2
     dev: true
 
   /npm-normalize-package-bin@1.0.1:
@@ -16884,7 +17224,7 @@ packages:
     dependencies:
       hosted-git-info: 6.1.1
       proc-log: 3.0.0
-      semver: 7.6.0
+      semver: 7.6.2
       validate-npm-package-name: 5.0.0
     dev: true
 
@@ -16894,7 +17234,7 @@ packages:
     dependencies:
       hosted-git-info: 7.0.1
       proc-log: 4.2.0
-      semver: 7.6.0
+      semver: 7.6.2
       validate-npm-package-name: 5.0.0
     dev: true
 
@@ -16903,7 +17243,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       hosted-git-info: 3.0.8
-      semver: 7.6.0
+      semver: 7.6.2
       validate-npm-package-name: 3.0.0
     dev: true
 
@@ -16932,7 +17272,7 @@ packages:
       npm-install-checks: 6.3.0
       npm-normalize-package-bin: 3.0.1
       npm-package-arg: 11.0.2
-      semver: 7.6.0
+      semver: 7.6.2
     dev: true
 
   /npm-registry-fetch@14.0.5:
@@ -17117,7 +17457,7 @@ packages:
       npm-run-path: 4.0.1
       open: 8.4.2
       ora: 5.3.0
-      semver: 7.6.0
+      semver: 7.6.2
       string-width: 4.2.3
       strong-log-transformer: 2.1.0
       tar-stream: 2.2.0
@@ -18801,6 +19141,12 @@ packages:
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
+    dev: true
+
+  /semver@7.6.2:
+    resolution: {integrity: sha512-FNAIBWCx9qcRhoHcgcJ0gvU7SN1lYU2ZXuSfl04bSC5OpvDHFyJCjdNHomPXxjQlCBU67YW64PzY7/VIEH7F2w==}
+    engines: {node: '>=10'}
+    hasBin: true
 
   /send@0.18.0:
     resolution: {integrity: sha512-qqWzuOjSFOuqPjFe4NOsMLafToQQwBSOEpS+FwEt3A2V3vKubTquT3vmLTQpFgMXp8AlFWFuP1qKaJZOtPpVXg==}
@@ -19021,7 +19367,7 @@ packages:
     engines: {node: '>= 10'}
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.4
+      debug: 4.3.5
       socks: 2.8.3
     transitivePeerDependencies:
       - supports-color
@@ -19031,7 +19377,7 @@ packages:
     engines: {node: '>= 10'}
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.4
+      debug: 4.3.5
       socks: 2.8.3
     transitivePeerDependencies:
       - supports-color
@@ -19042,7 +19388,7 @@ packages:
     engines: {node: '>= 14'}
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.4
+      debug: 4.3.5
       socks: 2.8.3
     transitivePeerDependencies:
       - supports-color
@@ -19745,7 +20091,7 @@ packages:
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
-      semver: 7.6.0
+      semver: 7.6.2
       typescript: 4.9.5
       yargs-parser: 20.2.9
     dev: true
@@ -19948,7 +20294,7 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
       '@tufjs/models': 1.0.4
-      debug: 4.3.4
+      debug: 4.3.5
       make-fetch-happen: 11.1.1
     transitivePeerDependencies:
       - supports-color
@@ -19959,7 +20305,7 @@ packages:
     engines: {node: ^16.14.0 || >=18.0.0}
     dependencies:
       '@tufjs/models': 2.0.0
-      debug: 4.3.4
+      debug: 4.3.5
       make-fetch-happen: 13.0.0
     transitivePeerDependencies:
       - supports-color
@@ -20176,7 +20522,7 @@ packages:
       chalk: 4.1.2
       cli-highlight: 2.1.11
       dayjs: 1.11.10
-      debug: 4.3.4
+      debug: 4.3.5
       dotenv: 16.4.5
       glob: 10.3.12
       mkdirp: 2.1.6
