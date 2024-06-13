@@ -146,7 +146,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         cleanupOnFinalState: false,
         cleanupAllOtherInstances: true,
       })
-      console.log(JSON.stringify(init, null, 2))
       if (!init) {
         return Promise.reject(new Error('No init'))
       }
