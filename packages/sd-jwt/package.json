@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.sd-jwt",
-  "version": "0.24.0",
+  "version": "0.25.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,21 +22,21 @@
     "debug": "^4.3.5"
   },
   "devDependencies": {
-    "@sd-jwt/utils": "^0.6.1",
-    "@sd-jwt/types": "^0.6.1",
     "@sd-jwt/decode": "^0.6.1",
+    "@sd-jwt/types": "^0.6.1",
+    "@sd-jwt/utils": "^0.6.1",
+    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.20.0",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.20.0",
     "@sphereon/ssi-sdk-ext.key-manager": "0.20.0",
     "@sphereon/ssi-sdk-ext.kms-local": "0.20.0",
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.20.0",
-    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.20.0",
     "@types/node": "18.15.3",
     "@veramo/core": "4.2.0",
     "@veramo/data-store": "4.2.0",
     "@veramo/did-manager": "4.2.0",
     "@veramo/did-resolver": "4.2.0",
     "did-resolver": "^4.1.0",
-    "typescript": "5.4.2",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "typescript": "5.4.2"
   },
   "files": [
     "dist/**/*",
