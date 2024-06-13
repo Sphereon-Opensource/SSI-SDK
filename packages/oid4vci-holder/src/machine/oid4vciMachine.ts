@@ -489,6 +489,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           },
         },
       },
+
       [OID4VCIMachineStates.storeCredentialBranding]: {
         id: OID4VCIMachineStates.storeCredentialBranding,
         invoke: {

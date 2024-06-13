@@ -275,6 +275,8 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
     verifiableCredential as OriginalVerifiableCredential,
   )
 
+  credential.credentialResponse.credential_subject_issuance
+
   if (wrappedVerifiableCredential?.credential?.compactSdJwtVc) {
     return Promise.reject(Error('SD-JWT not supported yet'))
   }
@@ -289,6 +291,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
     credential,
     rawVerifiableCredential,
     uniformVerifiableCredential,
+    ...(credentialResponse.credential_subject_issuance && { credential_subject_issuance: credentialResponse.credential_subject_issuance }),
   }
 }
 

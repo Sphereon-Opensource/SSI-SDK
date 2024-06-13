@@ -8,6 +8,9 @@
   },
   "references": [
     {
+      "path": "../kv-store"
+    },
+    {
       "path": "../ssi-types"
     },
     {

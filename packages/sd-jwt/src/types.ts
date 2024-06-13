@@ -43,10 +43,7 @@ export interface ISDJwtPlugin extends IPluginMethodMap {
    * @param args - Arguments necessary for the creation of a SD-JWT presentation.
    * @param context - This reserved param is automatically added and handled by the framework, *do not override*
    */
-  createSdJwtPresentation(
-    args: ICreateSdJwtPresentationArgs,
-    context: IRequiredContext,
-  ): Promise<ICreateSdJwtPresentationResult>
+  createSdJwtPresentation(args: ICreateSdJwtPresentationArgs, context: IRequiredContext): Promise<ICreateSdJwtPresentationResult>
 
   /**
    * Verify a signed SD-JWT credential.
@@ -60,10 +57,7 @@ export interface ISDJwtPlugin extends IPluginMethodMap {
    * @param args - Arguments necessary for the verification of a SD-JWT presentation.
    * @param context - This reserved param is automatically added and handled by the framework, *do not override*
    */
-  verifySdJwtPresentation(
-    args: IVerifySdJwtPresentationArgs,
-    context: IRequiredContext,
-  ): Promise<IVerifySdJwtPresentationResult>
+  verifySdJwtPresentation(args: IVerifySdJwtPresentationArgs, context: IRequiredContext): Promise<IVerifySdJwtPresentationResult>
 }
 
 /**
