@@ -703,6 +703,9 @@ importers:
       '@sphereon/ssi-sdk.issuance-branding':
         specifier: workspace:*
         version: link:../issuance-branding
+      '@sphereon/ssi-sdk.sd-jwt':
+        specifier: workspace:*
+        version: link:../sd-jwt
       '@sphereon/ssi-sdk.xstate-machine-persistence':
         specifier: workspace:*
         version: link:../xstate-persistence
