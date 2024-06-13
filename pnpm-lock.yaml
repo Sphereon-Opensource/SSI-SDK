@@ -1235,12 +1235,18 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.sd-jwt':
+        specifier: workspace:*
+        version: link:../sd-jwt
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
     devDependencies:
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
@@ -1251,6 +1257,9 @@ importers:
       '@types/json-buffer':
         specifier: ^3.0.0
         version: 3.0.2
+      '@types/uuid':
+        specifier: ^9.0.1
+        version: 9.0.8
       '@veramo/did-provider-key':
         specifier: 4.2.0
         version: 4.2.0
