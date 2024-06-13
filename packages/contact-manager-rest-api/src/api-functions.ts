@@ -67,6 +67,7 @@ export function partyDeleteEndpoint(router: Router, context: IRequiredContext, o
     try {
       const partyId = request.params.partyId
       const result = await context.agent.cmRemoveContact({ contactId: partyId })
+      response.statusCode = 200
       return response.send(result)
     } catch (error) {
       return sendErrorResponse(response, 500, error.message, error)

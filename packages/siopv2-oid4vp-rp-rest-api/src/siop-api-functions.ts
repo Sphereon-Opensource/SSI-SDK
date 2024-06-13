@@ -16,21 +16,21 @@ export function verifyAuthResponseSIOPv2Endpoint(
   const path = opts?.path ?? '/siop/definitions/:definitionId/auth-responses/:correlationId'
   router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
-      const correlationId = request.params.correlationId
-      const definitionId = request.params.definitionId
+      const { correlationId, definitionId, tenantId, version } = request.params
       if (!correlationId || !definitionId) {
         console.log(`No authorization request could be found for the given url. correlationId: ${correlationId}, definitionId: ${definitionId}`)
         return sendErrorResponse(response, 404, 'No authorization request could be found')
       }
       console.log('Authorization Response (siop-sessions')
       console.log(JSON.stringify(request.body, null, 2))
-      const definition = await context.agent.pexStoreGetDefinition({ definitionId })
-      if (!definition) {
+      const definitionItems = await context.agent.pdmGetDefinitions({ filter: [{ definitionId, tenantId, version }] })
+      if (definitionItems.length === 0) {
         console.log(`Could not get definition ${definitionId} from agent. Will return 404`)
         response.statusCode = 404
         response.statusMessage = `No definition ${definitionId}`
         return response.send()
       }
+
       const authorizationResponse =
         typeof request.body === 'string' ? (JSON.parse(request.body) as AuthorizationResponsePayload) : (request.body as AuthorizationResponsePayload)
       if (typeof authorizationResponse.presentation_submission === 'string') {
@@ -39,6 +39,7 @@ export function verifyAuthResponseSIOPv2Endpoint(
       }
       console.log(`URI: ${JSON.stringify(authorizationResponse)}`)
 
+      const definition = definitionItems[0].definitionPayload
       const verifiedResponse = await context.agent.siopVerifyAuthResponse({
         authorizationResponse,
         correlationId,

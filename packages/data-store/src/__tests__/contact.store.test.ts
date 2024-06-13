@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm'
-import { DataStoreContactEntities, DataStoreMigrations, PartyOrigin } from '../index'
+import { DataStoreContactEntities, DataStoreMigrations, IdentityOrigin, MetadataItem, MetadataTypes, PartyOrigin } from '../index'
 import { ContactStore } from '../contact/ContactStore'
 import {
   CorrelationIdentifierType,
@@ -10,7 +10,7 @@ import {
   GetPhysicalAddressesArgs,
   GetRelationshipsArgs,
   Identity,
-  IdentityRole,
+  CredentialRole,
   NaturalPerson,
   NonPersistedElectronicAddress,
   NonPersistedIdentity,
@@ -47,6 +47,157 @@ describe('Contact store tests', (): void => {
 
   afterEach(async (): Promise<void> => {
     await (await dbConnection).destroy()
+  })
+
+  it('should get party by contact metadata', async (): Promise<void> => {
+    const dateOfBirth = new Date(2016, 0, 5)
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeType.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+        origin: PartyOrigin.EXTERNAL,
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        metadata: [
+          { label: 'grade', value: '5th' },
+          { label: 'dateOfBirth', value: dateOfBirth },
+        ] as Array<MetadataItem<MetadataTypes>>,
+        displayName: 'example_display_name',
+      },
+    }
+
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const singleResult: Party = await contactStore.getParty({ partyId: savedParty.id })
+    expect(singleResult).toBeDefined()
+
+    const args: GetPartiesArgs = {
+      filter: [{ contact: { metadata: { label: 'dateOfBirth', value: dateOfBirth } } }],
+    }
+    const result: Array<Party> = await contactStore.getParties(args)
+    expect(result).toBeDefined()
+    expect(result.length).toEqual(1)
+    expect(result[0]).toBeDefined()
+  })
+
+  it('should get a party by identity metadata', async (): Promise<void> => {
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeType.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+        origin: PartyOrigin.EXTERNAL,
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+      },
+    }
+
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const identity: NonPersistedIdentity = {
+      alias: 'test_alias',
+      origin: IdentityOrigin.EXTERNAL,
+      roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
+      identifier: {
+        type: CorrelationIdentifierType.DID,
+        correlationId: 'example_did',
+      },
+      metadata: [
+        {
+          label: 'label1',
+          value: 'example_value',
+        },
+        {
+          label: 'label2',
+          value: 'example_value',
+        },
+      ],
+    }
+    const savedIdentity: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity: identity })
+    expect(savedIdentity).toBeDefined()
+
+    const args: GetPartiesArgs = {
+      filter: [{ identities: { metadata: { label: 'label1', value: 'example_value' } } }],
+    }
+    const result: Array<Party> = await contactStore.getParties(args)
+    expect(result).toBeDefined()
+    expect(result.length).toEqual(1)
+    expect(result[0]).toBeDefined()
+  })
+
+  it('should get party by both contact and identity metadata', async (): Promise<void> => {
+    const example_date = new Date(2016, 0, 5)
+    const party: NonPersistedParty = {
+      uri: 'example.com',
+      partyType: {
+        type: PartyTypeType.NATURAL_PERSON,
+        tenantId: '0605761c-4113-4ce5-a6b2-9cbae2f9d289',
+        name: 'example_name',
+        origin: PartyOrigin.EXTERNAL,
+      },
+      contact: {
+        firstName: 'example_first_name',
+        middleName: 'example_middle_name',
+        lastName: 'example_last_name',
+        displayName: 'example_display_name',
+        metadata: [
+          { label: 'label1', value: 'example_value' },
+          { label: 'label2', value: example_date },
+        ] as Array<MetadataItem<MetadataTypes>>,
+      },
+    }
+
+    const savedParty: Party = await contactStore.addParty(party)
+    expect(savedParty).toBeDefined()
+
+    const identity: NonPersistedIdentity = {
+      alias: 'test_alias',
+      origin: IdentityOrigin.EXTERNAL,
+      roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
+      identifier: {
+        type: CorrelationIdentifierType.DID,
+        correlationId: 'example_did',
+      },
+      metadata: [
+        {
+          label: 'label3',
+          value: 'example_value',
+        },
+        {
+          label: 'label4',
+          value: 'example_value',
+        },
+      ],
+    }
+    const savedIdentity: Identity = await contactStore.addIdentity({ partyId: savedParty.id, identity: identity })
+    expect(savedIdentity).toBeDefined()
+
+    const args: GetPartiesArgs = {
+      filter: [
+        {
+          contact: { metadata: { label: 'label2', value: example_date } },
+          identities: { metadata: { label: 'label3', value: 'example_value' } },
+        },
+      ],
+    }
+
+    const result: Array<Party> = await contactStore.getParties(args)
+
+    expect(result).toBeDefined()
+    expect(result.length).toEqual(1)
+    expect(result[0]).toBeDefined()
   })
 
   it('should get party by id', async (): Promise<void> => {
@@ -189,7 +340,8 @@ describe('Contact store tests', (): void => {
       identities: [
         {
           alias: 'test_alias1',
-          roles: [IdentityRole.ISSUER],
+          origin: IdentityOrigin.EXTERNAL,
+          roles: [CredentialRole.ISSUER],
           identifier: {
             type: CorrelationIdentifierType.DID,
             correlationId: 'example_did1',
@@ -197,7 +349,8 @@ describe('Contact store tests', (): void => {
         },
         {
           alias: 'test_alias2',
-          roles: [IdentityRole.VERIFIER],
+          origin: IdentityOrigin.EXTERNAL,
+          roles: [CredentialRole.VERIFIER],
           identifier: {
             type: CorrelationIdentifierType.DID,
             correlationId: 'example_did2',
@@ -205,7 +358,8 @@ describe('Contact store tests', (): void => {
         },
         {
           alias: 'test_alias3',
-          roles: [IdentityRole.HOLDER],
+          origin: IdentityOrigin.EXTERNAL,
+          roles: [CredentialRole.HOLDER],
           identifier: {
             type: CorrelationIdentifierType.DID,
             correlationId: 'example_did3',
@@ -413,7 +567,8 @@ describe('Contact store tests', (): void => {
       identities: [
         {
           alias: 'test_alias1',
-          roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+          origin: IdentityOrigin.EXTERNAL,
+          roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
           identifier: {
             type: CorrelationIdentifierType.DID,
             correlationId: 'example_did1',
@@ -421,7 +576,8 @@ describe('Contact store tests', (): void => {
         },
         {
           alias: 'test_alias2',
-          roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+          origin: IdentityOrigin.EXTERNAL,
+          roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
           identifier: {
             type: CorrelationIdentifierType.DID,
             correlationId: 'example_did2',
@@ -457,7 +613,8 @@ describe('Contact store tests', (): void => {
       identities: [
         {
           alias: 'test_alias1',
-          roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+          origin: IdentityOrigin.EXTERNAL,
+          roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
           identifier: {
             type: CorrelationIdentifierType.URL,
             correlationId: 'example_did1',
@@ -465,7 +622,8 @@ describe('Contact store tests', (): void => {
         },
         {
           alias: 'test_alias2',
-          roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+          origin: IdentityOrigin.EXTERNAL,
+          roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
           identifier: {
             type: CorrelationIdentifierType.DID,
             correlationId: 'example_did2',
@@ -498,7 +656,8 @@ describe('Contact store tests', (): void => {
 
     const identity1: NonPersistedIdentity = {
       alias: 'test_alias1',
-      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+      origin: IdentityOrigin.EXTERNAL,
+      roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
         correlationId: 'example_did1',
@@ -509,7 +668,8 @@ describe('Contact store tests', (): void => {
 
     const identity2: NonPersistedIdentity = {
       alias: 'test_alias2',
-      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+      origin: IdentityOrigin.EXTERNAL,
+      roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
         correlationId: 'example_did2',
@@ -589,7 +749,8 @@ describe('Contact store tests', (): void => {
 
     const identity: NonPersistedIdentity = {
       alias: 'test_alias',
-      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+      origin: IdentityOrigin.EXTERNAL,
+      roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
         correlationId: 'example_did',
@@ -624,7 +785,8 @@ describe('Contact store tests', (): void => {
 
     const identity: NonPersistedIdentity = {
       alias: 'test_alias',
-      roles: [IdentityRole.HOLDER],
+      origin: IdentityOrigin.EXTERNAL,
+      roles: [CredentialRole.HOLDER],
       identifier: {
         type: CorrelationIdentifierType.DID,
         correlationId: 'example_did',
@@ -665,7 +827,8 @@ describe('Contact store tests', (): void => {
 
     const identity1: NonPersistedIdentity = {
       alias: 'test_alias1',
-      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+      origin: IdentityOrigin.EXTERNAL,
+      roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
         correlationId: 'example_did1',
@@ -676,7 +839,8 @@ describe('Contact store tests', (): void => {
 
     const identity2: NonPersistedIdentity = {
       alias: 'test_alias2',
-      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+      origin: IdentityOrigin.EXTERNAL,
+      roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
         correlationId: 'example_did2',
@@ -715,7 +879,8 @@ describe('Contact store tests', (): void => {
 
     const identity1: NonPersistedIdentity = {
       alias: 'test_alias1',
-      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+      origin: IdentityOrigin.EXTERNAL,
+      roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
         correlationId: 'example_did1',
@@ -726,7 +891,8 @@ describe('Contact store tests', (): void => {
 
     const identity2: NonPersistedIdentity = {
       alias: 'test_alias2',
-      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+      origin: IdentityOrigin.EXTERNAL,
+      roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
         correlationId: 'example_did2',
@@ -762,7 +928,8 @@ describe('Contact store tests', (): void => {
     const alias = 'test_alias1'
     const identity1: NonPersistedIdentity = {
       alias,
-      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+      origin: IdentityOrigin.EXTERNAL,
+      roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
         correlationId: 'example_did1',
@@ -773,7 +940,8 @@ describe('Contact store tests', (): void => {
 
     const identity2: NonPersistedIdentity = {
       alias: 'test_alias2',
-      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+      origin: IdentityOrigin.EXTERNAL,
+      roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
         correlationId: 'example_did2',
@@ -813,7 +981,8 @@ describe('Contact store tests', (): void => {
     const alias = 'test_alias1'
     const identity1: NonPersistedIdentity = {
       alias,
-      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+      origin: IdentityOrigin.EXTERNAL,
+      roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
         correlationId: 'example_did1',
@@ -833,7 +1002,7 @@ describe('Contact store tests', (): void => {
     expect(savedIdentity1).toBeDefined()
 
     const args: GetIdentitiesArgs = {
-      filter: [{ metadata: { label: 'label1' } }],
+      filter: [{ metadata: { label: 'label1', value: 'example_value' } }],
     }
 
     const result: Array<Identity> = await contactStore.getIdentities(args)
@@ -863,7 +1032,8 @@ describe('Contact store tests', (): void => {
 
     const identity: NonPersistedIdentity = {
       alias: 'test_alias',
-      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+      origin: IdentityOrigin.EXTERNAL,
+      roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
         correlationId: 'example_did',
@@ -904,7 +1074,8 @@ describe('Contact store tests', (): void => {
     const correlationId = 'missing_connection_example'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+      origin: IdentityOrigin.EXTERNAL,
+      roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.URL,
         correlationId,
@@ -938,7 +1109,8 @@ describe('Contact store tests', (): void => {
     const correlationId = 'missing_connection_example'
     const identity: NonPersistedIdentity = {
       alias: correlationId,
-      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER, IdentityRole.HOLDER],
+      origin: IdentityOrigin.EXTERNAL,
+      roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER, CredentialRole.HOLDER],
       identifier: {
         type: CorrelationIdentifierType.DID,
         correlationId,
@@ -973,7 +1145,8 @@ describe('Contact store tests', (): void => {
 
     const identity: NonPersistedIdentity = {
       alias: 'example_did',
-      roles: [IdentityRole.ISSUER, IdentityRole.VERIFIER],
+      origin: IdentityOrigin.EXTERNAL,
+      roles: [CredentialRole.ISSUER, CredentialRole.VERIFIER],
       identifier: {
         type: CorrelationIdentifierType.DID,
         correlationId: 'example_did',
@@ -1008,7 +1181,8 @@ describe('Contact store tests', (): void => {
       identities: [
         {
           alias: 'test_alias1',
-          roles: [IdentityRole.VERIFIER],
+          origin: IdentityOrigin.EXTERNAL,
+          roles: [CredentialRole.VERIFIER],
           identifier: {
             type: CorrelationIdentifierType.DID,
             correlationId: 'example_did1',
@@ -1016,7 +1190,8 @@ describe('Contact store tests', (): void => {
         },
         {
           alias: 'test_alias2',
-          roles: [IdentityRole.ISSUER],
+          origin: IdentityOrigin.EXTERNAL,
+          roles: [CredentialRole.ISSUER],
           identifier: {
             type: CorrelationIdentifierType.DID,
             correlationId: 'example_did2',
@@ -1024,7 +1199,8 @@ describe('Contact store tests', (): void => {
         },
         {
           alias: 'test_alias3',
-          roles: [IdentityRole.HOLDER],
+          origin: IdentityOrigin.EXTERNAL,
+          roles: [CredentialRole.HOLDER],
           identifier: {
             type: CorrelationIdentifierType.DID,
             correlationId: 'example_did3',
@@ -1038,7 +1214,7 @@ describe('Contact store tests', (): void => {
 
     expect(result.roles).toBeDefined()
     expect(result.roles.length).toEqual(3)
-    expect(result.roles).toEqual([IdentityRole.VERIFIER, IdentityRole.ISSUER, IdentityRole.HOLDER])
+    expect(result.roles).toEqual([CredentialRole.VERIFIER, CredentialRole.ISSUER, CredentialRole.HOLDER])
   })
 
   it('should add relationship', async (): Promise<void> => {
