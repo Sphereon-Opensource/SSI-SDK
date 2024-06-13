@@ -154,14 +154,14 @@ export class PDStore extends AbstractPDStore {
     pdRepository: Repository<PresentationDefinitionItemEntity>,
     filter: Array<PresentationDefinitionItemFilter> | undefined,
   ): Promise<Array<PresentationDefinitionItemEntity>> => {
-    const idFilter = filter?.find((f) => f.id !== undefined && f.id !== null)
-    if (idFilter) {
+    const idFilters = filter?.map((f) => f.id).filter((id) => id !== undefined && id !== null)
+    if (idFilters && idFilters.length > 0 && idFilters.length === filter?.length) {
       return await pdRepository.find({
-        where: { id: idFilter.id },
+        where: { id: In(idFilters) },
       })
     } else {
       return await pdRepository.find({
-        ...(filter && { where: cleanFilter(filter) }),
+        ...(filter && { where: cleanFilter(filter) }), // TODO test how mixing filters work
       })
     }
   }
