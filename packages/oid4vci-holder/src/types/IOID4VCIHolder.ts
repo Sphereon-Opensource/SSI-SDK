@@ -5,6 +5,8 @@ import {
   CredentialConfigurationSupported,
   CredentialResponse,
   EndpointMetadataResult,
+  ExperimentalSubjectIssuance,
+  NotificationRequest,
 } from '@sphereon/oid4vci-common'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
@@ -12,6 +14,7 @@ import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import { IVerifiableCredential, WrappedVerifiableCredential, WrappedVerifiablePresentation } from '@sphereon/ssi-types'
 import {
   IAgentContext,
+  ICredentialIssuer,
   ICredentialVerifier,
   IDIDManager,
   IIdentifier,
@@ -84,7 +87,14 @@ export type StoreCredentialBrandingArgs = Pick<
   OID4VCIMachineContext,
   'serverMetadata' | 'credentialBranding' | 'selectedCredentials' | 'credentialsToAccept'
 >
-export type StoreCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept'>
+export type StoreCredentialsArgs = Pick<
+  OID4VCIMachineContext,
+  'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState'
+>
+export type SendNotificationArgs = Pick<
+  OID4VCIMachineContext,
+  'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState'
+> & { notificationRequest?: NotificationRequest; stored: boolean }
 
 export enum OID4VCIHolderEvent {
   CONTACT_IDENTITY_CREATED = 'contact_identity_created',
@@ -109,7 +119,7 @@ export type VerifyCredentialToAcceptArgs = {
   context: RequiredContext
 }
 
-export type MappedCredentialToAccept = {
+export type MappedCredentialToAccept = ExperimentalSubjectIssuance & {
   correlationId: string
   credential: CredentialToAccept
   uniformVerifiableCredential: IVerifiableCredential
@@ -260,6 +270,7 @@ export enum OID4VCIMachineServices {
   getCredentials = 'getCredentials',
   assertValidCredentials = 'assertValidCredentials',
   storeCredentialBranding = 'storeCredentialBranding',
+  sendNotification = 'sendNotification',
   storeCredentials = 'storeCredentials',
 }
 
@@ -302,7 +313,7 @@ export enum RequestType {
   HTTP = 'http',
 }
 
-export type CredentialTypeSelection = {
+export type CredentialTypeSelection = ExperimentalSubjectIssuance & {
   id: string
   credentialType: string
   credentialAlias: string
@@ -510,5 +521,5 @@ export type IdentifierOpts = {
 }
 
 export type RequiredContext = IAgentContext<
-  IIssuanceBranding | IContactManager | ICredentialVerifier | IDataStore | IDataStoreORM | IDIDManager | IResolver | IKeyManager
+  IIssuanceBranding | IContactManager | ICredentialVerifier | ICredentialIssuer | IDataStore | IDataStoreORM | IDIDManager | IResolver | IKeyManager
 >

@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.25.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.24.0...v0.25.0) (2024-06-13)
+
+### Bug Fixes
+
+- Ensure logger is initialized early preventing potential issues when importing from other libraries ([eae66f2](https://github.com/Sphereon-Opensource/SSI-SDK/commit/eae66f2e93a4fb54520284ed948feca09d829398))
+- fix physical address building name validation ([b3508c0](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b3508c0afb6d8b7736ec2edcd7121dccda193393))
+- Order of static keys to ensure default namespace key is available when creating the default logger ([dc56df2](https://github.com/Sphereon-Opensource/SSI-SDK/commit/dc56df22045944f48a2f7c32b04d099ac7b231e9))
+- removed not null constraint from the SQL statement that adds the origin column ([95929d1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/95929d107dff75fcf88f52ee5dab84b9dcc8e64e))
+
+### Features
+
+- (WIP) added ownerId, tenantId, and origin. ([d9b8623](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d9b8623178b2a9f8dd7fae8ccfd3569e1e80d7b7))
+- added pd-manager / pd-store ([ed77532](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ed77532c6b8c775870d3320f2e716a57b0da6ec1))
+- added sd-jwt plugin ([85d8aeb](https://github.com/Sphereon-Opensource/SSI-SDK/commit/85d8aebd719b14ed8c275e30ae283d11d237730d))
+- Added the StudentEntity and refactored the migrations ([fb36a51](https://github.com/Sphereon-Opensource/SSI-SDK/commit/fb36a513144354ca550d5f652d79b032995a20b7))
+
 # [0.24.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.23.4...v0.24.0) (2024-06-05)
 
 ### Bug Fixes

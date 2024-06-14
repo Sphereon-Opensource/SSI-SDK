@@ -55,8 +55,13 @@ export type GetDefinitionItemArgs = {
 
 export type HasDefinitionItemArgs = GetDefinitionItemArgs
 
+export type FetchOptions = {
+  showVersionHistory?: boolean
+}
+
 export type GetDefinitionItemsArgs = {
   filter?: FindDefinitionArgs
+  opts?: FetchOptions
 }
 
 export type HasDefinitionItemsArgs = GetDefinitionItemsArgs
