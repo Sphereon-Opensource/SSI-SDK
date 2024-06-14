@@ -4,7 +4,8 @@ import {
   CredentialConfigurationSupported,
   DefaultURISchemes,
   Jwt,
- NotificationRequest, ProofOfPossessionCallbacks,
+  NotificationRequest,
+  ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
 import {
   CorrelationIdentifierType,
@@ -69,18 +70,6 @@ import {
   StoreCredentialsArgs,
   SupportedDidMethodEnum,
 } from '../types/IOID4VCIHolder'
-import {
-  getCredentialBranding,
-  getCredentialsSupported,
-  getIdentifier,
-  getIssuanceOpts,
-  getSupportedCredentials,
-  mapCredentialToAccept,
-  selectCredentialLocaleBranding,
-  signatureAlgorithmFromKey,
-  signJWT,
-  verifyCredentialToAccept,
-} from './OID4VCIHolderService'
 
 /**
  * {@inheritDoc IOID4VCIHolder}

@@ -1,41 +1,34 @@
-import {OpenID4VCIClient, OpenID4VCIClientState} from '@sphereon/oid4vci-client'
+import { OpenID4VCIClient, OpenID4VCIClientState } from '@sphereon/oid4vci-client'
 import {
-    AuthorizationRequestOpts,
-    AuthorizationResponse,
-    CredentialResponse,
-    EndpointMetadataResult,
-    ExperimentalSubjectIssuance,
-    NotificationRequest,
+  AuthorizationRequestOpts,
+  AuthorizationResponse,
+  CredentialConfigurationSupported,
+  CredentialResponse,
+  EndpointMetadataResult,
+  ExperimentalSubjectIssuance,
+  NotificationRequest,
 } from '@sphereon/oid4vci-common'
-import {IContactManager} from '@sphereon/ssi-sdk.contact-manager'
-import {IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party} from '@sphereon/ssi-sdk.data-store'
-import {IIssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
-import {IVerifiableCredential, WrappedVerifiableCredential, WrappedVerifiablePresentation} from '@sphereon/ssi-types'
+import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
+import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
+import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
+import { IVerifiableCredential, WrappedVerifiableCredential, WrappedVerifiablePresentation } from '@sphereon/ssi-types'
 import {
-    IAgentContext,
-    ICredentialIssuer,
-    ICredentialVerifier,
-    IDIDManager,
-    IIdentifier,
-    IKey,
-    IKeyManager,
-    IPluginMethodMap,
-    IResolver,
-    TKeyType,
-    VerifiableCredential,
+  IAgentContext,
+  ICredentialIssuer,
+  ICredentialVerifier,
+  IDIDManager,
+  IIdentifier,
+  IKey,
+  IKeyManager,
+  IPluginMethodMap,
+  IResolver,
+  TKeyType,
+  VerifiableCredential,
 } from '@veramo/core'
-import {IDataStore, IDataStoreORM} from '@veramo/data-store'
-import {_ExtendedIKey} from '@veramo/utils'
-import {JWTHeader, JWTPayload} from 'did-jwt'
-import {
-    BaseActionObject,
-    Interpreter,
-    ResolveTypegenMeta,
-    ServiceMap,
-    State,
-    StateMachine,
-    TypegenDisabled
-} from 'xstate'
+import { IDataStore, IDataStoreORM } from '@veramo/data-store'
+import { _ExtendedIKey } from '@veramo/utils'
+import { JWTHeader, JWTPayload } from 'did-jwt'
+import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<OID4VCIMachine>
@@ -334,7 +327,7 @@ export type OID4VCIMachine = {
 export type InitiationData = {
   authorizationCodeURL?: string
   credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>>
-  credentialsSupported: Record<string, CredentialSupported>
+  credentialsSupported: Record<string, CredentialConfigurationSupported>
   serverMetadata: EndpointMetadataResult
   openID4VCIClientState: OpenID4VCIClientState
 }
