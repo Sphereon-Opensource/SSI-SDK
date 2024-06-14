@@ -1,31 +1,41 @@
-import { OpenID4VCIClient, OpenID4VCIClientState } from '@sphereon/oid4vci-client'
+import {OpenID4VCIClient, OpenID4VCIClientState} from '@sphereon/oid4vci-client'
 import {
-  AuthorizationRequestOpts,
-  AuthorizationResponse,
-  CredentialConfigurationSupported,
-  CredentialResponse,
-  EndpointMetadataResult,
+    AuthorizationRequestOpts,
+    AuthorizationResponse,
+    CredentialResponse,
+    EndpointMetadataResult,
+    ExperimentalSubjectIssuance,
+    NotificationRequest,
 } from '@sphereon/oid4vci-common'
-import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
-import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
-import { IVerifiableCredential, WrappedVerifiableCredential, WrappedVerifiablePresentation } from '@sphereon/ssi-types'
+import {IContactManager} from '@sphereon/ssi-sdk.contact-manager'
+import {IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party} from '@sphereon/ssi-sdk.data-store'
+import {IIssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
+import {IVerifiableCredential, WrappedVerifiableCredential, WrappedVerifiablePresentation} from '@sphereon/ssi-types'
 import {
-  IAgentContext,
-  ICredentialVerifier,
-  IDIDManager,
-  IIdentifier,
-  IKey,
-  IKeyManager,
-  IPluginMethodMap,
-  IResolver,
-  TKeyType,
-  VerifiableCredential,
+    IAgentContext,
+    ICredentialIssuer,
+    ICredentialVerifier,
+    IDIDManager,
+    IIdentifier,
+    IKey,
+    IKeyManager,
+    IPluginMethodMap,
+    IResolver,
+    TKeyType,
+    VerifiableCredential,
 } from '@veramo/core'
-import { IDataStore, IDataStoreORM } from '@veramo/data-store'
-import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
-import { JWTHeader, JWTPayload } from 'did-jwt'
-import { _ExtendedIKey } from '@veramo/utils'
+import {IDataStore, IDataStoreORM} from '@veramo/data-store'
+import {_ExtendedIKey} from '@veramo/utils'
+import {JWTHeader, JWTPayload} from 'did-jwt'
+import {
+    BaseActionObject,
+    Interpreter,
+    ResolveTypegenMeta,
+    ServiceMap,
+    State,
+    StateMachine,
+    TypegenDisabled
+} from 'xstate'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<OID4VCIMachine>
@@ -84,7 +94,14 @@ export type StoreCredentialBrandingArgs = Pick<
   OID4VCIMachineContext,
   'serverMetadata' | 'credentialBranding' | 'selectedCredentials' | 'credentialsToAccept'
 >
-export type StoreCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept'>
+export type StoreCredentialsArgs = Pick<
+  OID4VCIMachineContext,
+  'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState'
+>
+export type SendNotificationArgs = Pick<
+  OID4VCIMachineContext,
+  'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState'
+> & { notificationRequest?: NotificationRequest; stored: boolean }
 
 export enum OID4VCIHolderEvent {
   CONTACT_IDENTITY_CREATED = 'contact_identity_created',
@@ -109,7 +126,7 @@ export type VerifyCredentialToAcceptArgs = {
   context: RequiredContext
 }
 
-export type MappedCredentialToAccept = {
+export type MappedCredentialToAccept = ExperimentalSubjectIssuance & {
   correlationId: string
   credential: CredentialToAccept
   uniformVerifiableCredential: IVerifiableCredential
@@ -260,6 +277,7 @@ export enum OID4VCIMachineServices {
   getCredentials = 'getCredentials',
   assertValidCredentials = 'assertValidCredentials',
   storeCredentialBranding = 'storeCredentialBranding',
+  sendNotification = 'sendNotification',
   storeCredentials = 'storeCredentials',
 }
 
@@ -302,7 +320,7 @@ export enum RequestType {
   HTTP = 'http',
 }
 
-export type CredentialTypeSelection = {
+export type CredentialTypeSelection = ExperimentalSubjectIssuance & {
   id: string
   credentialType: string
   credentialAlias: string
@@ -316,7 +334,7 @@ export type OID4VCIMachine = {
 export type InitiationData = {
   authorizationCodeURL?: string
   credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>>
-  credentialsSupported: Record<string, CredentialConfigurationSupported>
+  credentialsSupported: Record<string, CredentialSupported>
   serverMetadata: EndpointMetadataResult
   openID4VCIClientState: OpenID4VCIClientState
 }
@@ -510,5 +528,5 @@ export type IdentifierOpts = {
 }
 
 export type RequiredContext = IAgentContext<
-  IIssuanceBranding | IContactManager | ICredentialVerifier | IDataStore | IDataStoreORM | IDIDManager | IResolver | IKeyManager
+  IIssuanceBranding | IContactManager | ICredentialVerifier | ICredentialIssuer | IDataStore | IDataStoreORM | IDIDManager | IResolver | IKeyManager
 >
