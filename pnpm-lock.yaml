@@ -233,9 +233,6 @@ importers:
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.20.0
         version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
-        version: link:../agent-config
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -288,6 +285,9 @@ importers:
       '@decentralized-identity/ion-sdk':
         specifier: ^0.6.0
         version: 0.6.0
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
       '@types/body-parser':
         specifier: ^1.19.2
         version: 1.19.5
@@ -2136,9 +2136,6 @@ importers:
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.20.0
         version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
-        version: link:../agent-config
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2239,6 +2236,9 @@ importers:
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.20.0
         version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
       '@transmute/lds-ecdsa-secp256k1-recovery2020':
         specifier: ^0.0.7
         version: 0.0.7
@@ -2360,9 +2360,6 @@ importers:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.20.0
         version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
-        version: link:../agent-config
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2391,6 +2388,9 @@ importers:
         specifier: ^3.1.1
         version: 3.1.1
     devDependencies:
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
       '@types/debug':
         specifier: ^4.1.8
         version: 4.1.12
@@ -2409,9 +2409,6 @@ importers:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.20.0
         version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
-        version: link:../agent-config
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2461,6 +2458,9 @@ importers:
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.20.0
         version: 0.20.0
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
       '@sphereon/ssi-sdk.vc-handler-ld-local':
         specifier: workspace:*
         version: link:../vc-handler-ld-local

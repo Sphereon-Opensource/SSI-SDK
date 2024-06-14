@@ -1,4 +1,4 @@
-import {OpenID4VCIClient, OpenID4VCIClientState} from '@sphereon/oid4vci-client'
+import { OpenID4VCIClient, OpenID4VCIClientState } from '@sphereon/oid4vci-client'
 import {
   AuthorizationRequestOpts,
   AuthorizationResponse,
