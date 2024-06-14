@@ -1,3 +1,4 @@
+import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap } from '@veramo/core'
 import { Format, PresentationDefinitionV2 } from '@sphereon/pex-models'
 import { DiscoveryMetadataPayload, JWK } from '@sphereon/did-auth-siop'
@@ -12,6 +13,7 @@ import { PresentationSubmission } from '@sphereon/ssi-types'
 export enum EbsiEnvironment {
   PILOT = 'pilot',
   CONFORMANCE = 'conformance',
+  // FIXME: How are these all of sudden 'environments'!!!
   MOCK = 'mock',
   ISSUER = 'issuer',
 }
@@ -21,17 +23,16 @@ export enum EbsiEnvironment {
  * @readonly
  * @enum {string}
  */
-export enum EBSIScope {
-  didr_write = 'didr_write',
-  didr_invite = 'didr_invite',
-  tir_write = 'tir_write',
-  tir_invite = 'tir_invite',
-  timestamp_write = 'timestamp_write',
-  tnt_authorise = 'tnt_authorise',
-  tnt_create = 'tnt_create',
-  tnt_write = 'tnt_write',
-  did_authn = 'did_authn',
-}
+export type EBSIScope =
+  | 'didr_write'
+  | 'didr_invite'
+  | 'tir_write'
+  | 'tir_invite'
+  | 'timestamp_write'
+  | 'tnt_authorise'
+  | 'tnt_create'
+  | 'tnt_write'
+  | 'did_authn'
 
 export enum ScopeByDefinition {
   didr_invite_presentation = 'didr_invite',
@@ -50,8 +51,11 @@ export enum TokenType {
 
 export interface IEBSIAuthorizationClient extends IPluginMethodMap {
   ebsiAuthASDiscoveryMetadataGet(args?: ApiOpts): Promise<GetOIDProviderMetadataResponse>
+
   ebsiAuthASJwksGet(args?: ApiOpts): Promise<GetOIDProviderJwksResponse>
+
   ebsiAuthPresentationDefinitionGet(args: GetPresentationDefinitionArgs): Promise<GetPresentationDefinitionResponse>
+
   ebsiAuthAccessTokenGet(args: EBSIAuthAccessTokenGetArgs, context: IRequiredContext): Promise<GetAccessTokenResponse>
 }
 
@@ -151,7 +155,6 @@ export interface GetAccessTokenArgs {
 export interface EBSIAuthAccessTokenGetArgs {
   vc: string
   definitionId: ScopeByDefinition
-  domain?: string
   did: string
   kid: string
   scope: EBSIScope
@@ -194,8 +197,8 @@ export interface ExceptionResponse {
   instance?: URL | string
 }
 
-export type GetOIDProviderMetadataResponse = EBSIOIDMetadata | ExceptionResponse
+export type GetOIDProviderMetadataResponse = EBSIOIDMetadata
 export type GetOIDProviderJwksResponse = GetOIDProviderJwksSuccessResponse | ExceptionResponse
-export type GetPresentationDefinitionResponse = GetPresentationDefinitionSuccessResponse | ExceptionResponse
+export type GetPresentationDefinitionResponse = GetPresentationDefinitionSuccessResponse
 export type GetAccessTokenResponse = GetAccessTokenSuccessResponse | ExceptionResponse
-export type IRequiredContext = IAgentContext<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator>
+export type IRequiredContext = IAgentContext<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IPresentationExchange>

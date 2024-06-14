@@ -28,7 +28,7 @@ export class OID4VP {
   }
 
   public async getPresentationDefinitions(): Promise<PresentationDefinitionWithLocation[] | undefined> {
-    const definitions = (await this.session.getAuthorizationRequest()).presentationDefinitions
+    const definitions = await this.session.getPresentationDefinitions()
     if (definitions) {
       PresentationExchange.assertValidPresentationDefinitionWithLocations(definitions)
     }
@@ -63,6 +63,7 @@ export class OID4VP {
       restrictToDIDMethods?: string[]
       proofOpts?: ProofOptions
       identifierOpts?: IIdentifierOpts
+      skipDidResolution?: boolean
       holderDID?: string
       subjectIsHolder?: boolean
       applyFilter?: boolean
@@ -117,6 +118,7 @@ export class OID4VP {
       domain: proofOptions.domain,
       challenge: proofOptions.challenge,
       format: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format,
+      skipDidResolution: opts?.skipDidResolution,
     })
     const presentationResult = await this.getPresentationExchange(vcs.credentials, this.allDIDs).createVerifiablePresentation(
       vcs.definition.definition,

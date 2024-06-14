@@ -11,7 +11,7 @@ import { fetch } from 'cross-fetch'
 import express, { Application, NextFunction, Request, Response } from 'express'
 import { importJWK, JWK, SignJWT } from 'jose'
 import * as http from 'node:http'
-import { EBSIScope, IEBSIAuthorizationClient, ScopeByDefinition } from '../../src'
+import { EbsiEnvironment, IEBSIAuthorizationClient, ScopeByDefinition } from '../../src'
 
 type ConfiguredAgent = TAgent<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IEBSIAuthorizationClient>
 
@@ -241,12 +241,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         })
         .sign(importedJwk)
       console.log(`URL: ${url}&request=${urlWithRequest}`)
-      const result = await fetch(`${url}&request=${urlWithRequest}`)
-      console.log(await result.text())
+      /*  const result = await fetch(`${url}&request=${urlWithRequest}`)
+      console.log(await result.text())*/
     })
 
     it.skip('Should retrieve the discovery metadata', async () => {
-      await expect(agent.ebsiAuthASDiscoveryMetadataGet()).resolves.toEqual({
+      await expect(agent.ebsiAuthASDiscoveryMetadataGet({ environment: EbsiEnvironment.PILOT })).resolves.toEqual({
         authorization_endpoint: 'https://api-pilot.ebsi.eu/authorisation/v4/authorize',
         grant_types_supported: ['vp_token'],
         id_token_signing_alg_values_supported: ['none'],
@@ -304,7 +304,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it.skip('should retrieve the presentation definition to onboard', async () => {
-      await expect(agent.ebsiAuthPresentationDefinitionGet({ scope: EBSIScope.didr_invite })).resolves.toEqual({
+      await expect(agent.ebsiAuthPresentationDefinitionGet({ scope: 'didr_invite' })).resolves.toEqual({
         format: {
           jwt_vp: {
             alg: ['ES256', 'ES256K'],
@@ -352,7 +352,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           definitionId: ScopeByDefinition.didr_invite_presentation,
           did: identifier.did,
           kid: `${identifier.did}#${id.keys[1].kid}`,
-          scope: EBSIScope.didr_invite,
+          scope: 'didr_invite',
         }),
       ).resolves.toEqual({})
     })

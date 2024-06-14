@@ -121,4 +121,15 @@ agent:
       plugins:
         - $ref: /keyManager
         - $ref: /didManager
+        - $require: '@veramo/data-store#DataStore'
+          $args:
+            - $ref: /dbConnection
+        - $require: '@veramo/data-store#DataStoreORM'
+          $args:
+            - $ref: /dbConnection
+        - $require: '@veramo/credential-w3c#CredentialPlugin'
         - $require: './packages/ebsi-authorization-client/dist#EBSIAuthorizationClient'
+        - $require: ./packages/presentation-exchange/dist#PresentationExchange
+        - $require: ./packages/siopv2-oid4vp-op-auth/dist#DidAuthSiopOpAuthenticator
+#          $args:
+#            - presentationSignCallback: { }

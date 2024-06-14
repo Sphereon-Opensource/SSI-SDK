@@ -40,6 +40,7 @@ export interface IOpSessionArgs {
   sessionId?: string
 
   requestJwtOrUri: string | URI
+  providedPresentationDefinitions?: Array<PresentationDefinitionWithLocation>
   // identifier: IIdentifier
   context: IRequiredContext
   op?: IOPOptions

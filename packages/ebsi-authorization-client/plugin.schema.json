@@ -11,9 +11,6 @@
             "definitionId": {
               "$ref": "#/components/schemas/ScopeByDefinition"
             },
-            "domain": {
-              "type": "string"
-            },
             "did": {
               "type": "string"
             },
@@ -27,11 +24,26 @@
               "$ref": "#/components/schemas/ApiOpts"
             }
           },
-          "required": ["vc", "definitionId", "did", "kid", "scope"]
+          "required": [
+            "vc",
+            "definitionId",
+            "did",
+            "kid",
+            "scope"
+          ]
         },
         "ScopeByDefinition": {
           "type": "string",
-          "enum": ["didr_invite", "didr_write", "tir_invite", "tir_write", "timestamp_write", "tnt_authorise", "tnt_create", "tnt_write"]
+          "enum": [
+            "didr_invite",
+            "didr_write",
+            "tir_invite",
+            "tir_write",
+            "timestamp_write",
+            "tnt_authorise",
+            "tnt_create",
+            "tnt_write"
+          ]
         },
         "EBSIScope": {
           "type": "string",
@@ -61,7 +73,12 @@
         },
         "EbsiEnvironment": {
           "type": "string",
-          "enum": ["pilot", "conformance", "mock", "issuer"],
+          "enum": [
+            "pilot",
+            "conformance",
+            "mock",
+            "issuer"
+          ],
           "description": "Environment"
         },
         "GetAccessTokenResponse": {
@@ -96,7 +113,12 @@
               "$ref": "#/components/schemas/ApiOpts"
             }
           },
-          "required": ["access_token", "token_type", "scope", "id_token"]
+          "required": [
+            "access_token",
+            "token_type",
+            "scope",
+            "id_token"
+          ]
         },
         "TokenType": {
           "type": "string",
@@ -123,14 +145,7 @@
           }
         },
         "GetOIDProviderMetadataResponse": {
-          "anyOf": [
-            {
-              "$ref": "#/components/schemas/EBSIOIDMetadata"
-            },
-            {
-              "$ref": "#/components/schemas/ExceptionResponse"
-            }
-          ]
+          "$ref": "#/components/schemas/EBSIOIDMetadata"
         },
         "EBSIOIDMetadata": {
           "anyOf": [
@@ -1279,47 +1294,94 @@
         },
         "Schema": {
           "type": "string",
-          "enum": ["openid:", "openid-vc:"]
+          "enum": [
+            "openid:",
+            "openid-vc:"
+          ]
         },
         "ResponseIss": {
           "type": "string",
-          "enum": ["https://self-issued.me", "https://self-issued.me/v2", "https://self-issued.me/v2/openid-vc"]
+          "enum": [
+            "https://self-issued.me",
+            "https://self-issued.me/v2",
+            "https://self-issued.me/v2/openid-vc"
+          ]
         },
         "ResponseType": {
           "type": "string",
-          "enum": ["id_token", "vp_token"]
+          "enum": [
+            "id_token",
+            "vp_token"
+          ]
         },
         "Scope": {
           "type": "string",
-          "enum": ["openid", "openid did_authn", "profile", "email", "address", "phone"]
+          "enum": [
+            "openid",
+            "openid did_authn",
+            "profile",
+            "email",
+            "address",
+            "phone"
+          ]
         },
         "SubjectType": {
           "type": "string",
-          "enum": ["public", "pairwise"]
+          "enum": [
+            "public",
+            "pairwise"
+          ]
         },
         "SigningAlgo": {
           "type": "string",
-          "enum": ["EdDSA", "RS256", "PS256", "ES256", "ES256K"]
+          "enum": [
+            "EdDSA",
+            "RS256",
+            "PS256",
+            "ES256",
+            "ES256K"
+          ]
         },
         "ResponseMode": {
           "type": "string",
-          "enum": ["fragment", "form_post", "post", "direct_post", "query"]
+          "enum": [
+            "fragment",
+            "form_post",
+            "post",
+            "direct_post",
+            "query"
+          ]
         },
         "GrantType": {
           "type": "string",
-          "enum": ["authorization_code", "implicit"]
+          "enum": [
+            "authorization_code",
+            "implicit"
+          ]
         },
         "AuthenticationContextReferences": {
           "type": "string",
-          "enum": ["phr", "phrh"]
+          "enum": [
+            "phr",
+            "phrh"
+          ]
         },
         "TokenEndpointAuthMethod": {
           "type": "string",
-          "enum": ["client_secret_post", "client_secret_basic", "client_secret_jwt", "private_key_jwt"]
+          "enum": [
+            "client_secret_post",
+            "client_secret_basic",
+            "client_secret_jwt",
+            "private_key_jwt"
+          ]
         },
         "ClaimType": {
           "type": "string",
-          "enum": ["normal", "aggregated", "distributed"]
+          "enum": [
+            "normal",
+            "aggregated",
+            "distributed"
+          ]
         },
         "Format": {
           "type": "object",
@@ -1372,7 +1434,9 @@
               }
             }
           },
-          "required": ["alg"]
+          "required": [
+            "alg"
+          ]
         },
         "LdpObject": {
           "type": "object",
@@ -1384,7 +1448,9 @@
               }
             }
           },
-          "required": ["proof_type"]
+          "required": [
+            "proof_type"
+          ]
         },
         "DiObject": {
           "type": "object",
@@ -1402,7 +1468,10 @@
               }
             }
           },
-          "required": ["proof_type", "cryptosuite"]
+          "required": [
+            "proof_type",
+            "cryptosuite"
+          ]
         },
         "SdJwtObject": {
           "type": "object",
@@ -1423,7 +1492,10 @@
         },
         "IdTokenType": {
           "type": "string",
-          "enum": ["subject_signed", "attester_signed"]
+          "enum": [
+            "subject_signed",
+            "attester_signed"
+          ]
         },
         "GetOIDProviderJwksResponse": {
           "anyOf": [
@@ -1445,7 +1517,9 @@
               }
             }
           },
-          "required": ["keys"]
+          "required": [
+            "keys"
+          ]
         },
         "JWK": {
           "type": "object",
@@ -1563,17 +1637,12 @@
               "$ref": "#/components/schemas/ApiOpts"
             }
           },
-          "required": ["scope"]
+          "required": [
+            "scope"
+          ]
         },
         "GetPresentationDefinitionResponse": {
-          "anyOf": [
-            {
-              "$ref": "#/components/schemas/GetPresentationDefinitionSuccessResponse"
-            },
-            {
-              "$ref": "#/components/schemas/ExceptionResponse"
-            }
-          ]
+          "$ref": "#/components/schemas/GetPresentationDefinitionSuccessResponse"
         },
         "GetPresentationDefinitionSuccessResponse": {
           "type": "object",
@@ -1606,7 +1675,10 @@
               "type": "object"
             }
           },
-          "required": ["id", "input_descriptors"]
+          "required": [
+            "id",
+            "input_descriptors"
+          ]
         },
         "SubmissionRequirement": {
           "type": "object",
@@ -1639,11 +1711,16 @@
               }
             }
           },
-          "required": ["rule"]
+          "required": [
+            "rule"
+          ]
         },
         "Rules": {
           "type": "string",
-          "enum": ["all", "pick"]
+          "enum": [
+            "all",
+            "pick"
+          ]
         },
         "InputDescriptorV2": {
           "type": "object",
@@ -1676,7 +1753,10 @@
               "$ref": "#/components/schemas/ConstraintsV2"
             }
           },
-          "required": ["id", "constraints"]
+          "required": [
+            "id",
+            "constraints"
+          ]
         },
         "Issuance": {
           "type": "object",
@@ -1721,7 +1801,10 @@
         },
         "Optionality": {
           "type": "string",
-          "enum": ["required", "preferred"]
+          "enum": [
+            "required",
+            "preferred"
+          ]
         },
         "Statuses": {
           "type": "object",
@@ -1747,7 +1830,11 @@
         },
         "Directives": {
           "type": "string",
-          "enum": ["required", "allowed", "disallowed"]
+          "enum": [
+            "required",
+            "allowed",
+            "disallowed"
+          ]
         },
         "FieldV2": {
           "type": "object",
@@ -1777,7 +1864,9 @@
               "type": "boolean"
             }
           },
-          "required": ["path"]
+          "required": [
+            "path"
+          ]
         },
         "FilterV2": {
           "type": "object",
@@ -1840,13 +1929,22 @@
               "$ref": "#/components/schemas/FilterV2BaseItems"
             }
           },
-          "required": ["type"]
+          "required": [
+            "type"
+          ]
         },
         "OneOfNumberStringBoolean": {
-          "type": ["boolean", "number", "string"]
+          "type": [
+            "boolean",
+            "number",
+            "string"
+          ]
         },
         "OneOfNumberString": {
-          "type": ["number", "string"]
+          "type": [
+            "number",
+            "string"
+          ]
         },
         "FilterV2Base": {
           "type": "object",
@@ -1971,7 +2069,9 @@
               "$ref": "#/components/schemas/FilterV2BaseItems"
             }
           },
-          "required": ["type"]
+          "required": [
+            "type"
+          ]
         },
         "HolderSubject": {
           "type": "object",
@@ -1986,7 +2086,10 @@
               "$ref": "#/components/schemas/Optionality"
             }
           },
-          "required": ["field_id", "directive"]
+          "required": [
+            "field_id",
+            "directive"
+          ]
         }
       },
       "methods": {
