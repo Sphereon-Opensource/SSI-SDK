@@ -5,23 +5,21 @@ import {
   CredentialsSupportedDisplay,
   OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
+import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
+import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
   IVerifiableCredential,
   IVerifyResult,
-  Loggers,
   OriginalVerifiableCredential,
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
 import { IDIDManager, IIdentifier, IKey, IResolver, IVerifyCredentialArgs, TAgent, TKeyType, VerifiableCredential } from '@veramo/core'
-import { translate } from '../localization/Localization'
-import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
-import { _ExtendedIKey } from '@veramo/utils'
-import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
+import { _ExtendedIKey, asArray } from '@veramo/utils'
 import { createJWT, Signer } from 'did-jwt'
-import { credentialLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
+import { translate } from '../localization/Localization'
 import {
   CreateIdentifierArgs,
   GetAuthenticationKeyArgs,
@@ -54,6 +52,7 @@ import {
   VerificationSubResult,
   VerifyCredentialToAcceptArgs,
 } from '../types/IOID4VCIHolder'
+import { credentialLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
 
 export const DID_PREFIX = 'did'
 
@@ -320,19 +319,35 @@ export const getCredentialConfigsSupported = async (
     }
   }
 
-  const allSupportedCredentialConfigs = client.getCredentialsSupported(format)
+  const offerSupported = client.getCredentialsSupported(true, format)
+  let allSupported: Record<string, CredentialConfigurationSupported>
+  if (!Array.isArray(offerSupported)) {
+    allSupported = offerSupported
+  } else {
+    allSupported = {} satisfies Record<string, CredentialConfigurationSupported>
+    offerSupported.forEach((supported) => {
+      if (supported.id) {
+        allSupported[supported.id] = supported
+        return
+      }
+      const format = supported.format
+      let type: string = ''
+      if ('credential_definition' in supported) {
+        type = asArray(supported.credential_definition.type).join()
+      } else if ('type' in supported) {
+        type = asArray(supported.type).join()
+      } else if ('types' in supported) {
+        type = asArray(supported.types).join()
+      }
+      const id = `${type}:${format}`
+      allSupported[id] = supported
+    })
+  }
+
   let credentialConfigsSupported = await getCredentialConfigsBasedOnFormatPref({
-    credentials: allSupportedCredentialConfigs,
+    credentials: allSupported,
     vcFormatPreferences,
   })
-
-  // Fallback to all configurations if getPreferredCredentialFormats returns none
-  if (Object.keys(credentialConfigsSupported).length === 0) {
-    Loggers.DEFAULT.get('sphereon:oid4vci').warning(
-      `No credentials supported could be determined from the offer. Falling back to all credentials available by the issuer`,
-    )
-    credentialConfigsSupported = allSupportedCredentialConfigs
-  }
 
   if (client.credentialOffer !== undefined) {
     // Filter configurations based on the credential offer IDs
