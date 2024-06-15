@@ -21,6 +21,7 @@
     "@types/url-parse": "^1.4.8",
     "typescript": "5.4.2"
   },
+  "peerDependencies": {},
   "files": [
     "dist/**/*",
     "src/**/*",

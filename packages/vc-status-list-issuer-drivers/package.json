@@ -15,6 +15,7 @@
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@sphereon/vc-status-list": "^7.0.0-next.0",
     "@veramo/core": "4.2.0",
