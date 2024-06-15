@@ -29,9 +29,9 @@ overrides:
   '@veramo/url-handler': 4.2.0
   '@sphereon/ssi-types': workspace:*
   '@sphereon/ssi-sdk.core': workspace:*
-  '@sphereon/oid4vci-common': 0.10.4-unstable.112
-  '@sphereon/oid4vci-client': 0.10.4-unstable.112
-  '@sphereon/oid4vci-issuer': 0.10.4-unstable.112
+  '@sphereon/oid4vci-common': 0.10.4-unstable.115
+  '@sphereon/oid4vci-client': 0.10.4-unstable.115
+  '@sphereon/oid4vci-issuer': 0.10.4-unstable.115
   '@noble/hashes': 1.2.0
   did-jwt: 6.11.6
   did-jwt-vc: 3.1.3
@@ -680,11 +680,11 @@ importers:
   packages/oid4vci-holder:
     dependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.10.4-unstable.112
-        version: 0.10.4-unstable.112
+        specifier: 0.10.4-unstable.115
+        version: 0.10.4-unstable.115
       '@sphereon/oid4vci-common':
-        specifier: 0.10.4-unstable.112
-        version: 0.10.4-unstable.112
+        specifier: 0.10.4-unstable.115
+        version: 0.10.4-unstable.115
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.20.0
         version: 0.20.0
@@ -756,11 +756,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.10.4-unstable.112
-        version: 0.10.4-unstable.112
+        specifier: 0.10.4-unstable.115
+        version: 0.10.4-unstable.115
       '@sphereon/oid4vci-issuer':
-        specifier: 0.10.4-unstable.112
-        version: 0.10.4-unstable.112
+        specifier: 0.10.4-unstable.115
+        version: 0.10.4-unstable.115
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.20.0
         version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -814,14 +814,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.10.4-unstable.112
-        version: 0.10.4-unstable.112
+        specifier: 0.10.4-unstable.115
+        version: 0.10.4-unstable.115
       '@sphereon/oid4vci-issuer':
-        specifier: 0.10.4-unstable.112
-        version: 0.10.4-unstable.112
+        specifier: 0.10.4-unstable.115
+        version: 0.10.4-unstable.115
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.10.4-unstable.112
-        version: 0.10.4-unstable.112
+        specifier: 0.10.4-unstable.115
+        version: 0.10.4-unstable.115
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -974,8 +974,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.10.4-unstable.112
-        version: 0.10.4-unstable.112
+        specifier: 0.10.4-unstable.115
+        version: 0.10.4-unstable.115
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1011,8 +1011,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.10.4-unstable.112
-        version: 0.10.4-unstable.112
+        specifier: 0.10.4-unstable.115
+        version: 0.10.4-unstable.115
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.20.0
         version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -7170,11 +7170,11 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vci-client@0.10.4-unstable.112:
-    resolution: {integrity: sha512-iQqCVAGmqTWco5HXsOowBB/yzouxcpFxFPzLAJJguSR8OLCw1fh5Z/F0RB8+zV0qMEDh41J4HVA/h3erSG6kSg==}
+  /@sphereon/oid4vci-client@0.10.4-unstable.115:
+    resolution: {integrity: sha512-XuQ7KhfC1TDpeYjqDzUy3RYP089y7mZju76ONOlznhVSk9IttIeKLM7lmb76pXyJmSo5qg75Of/jkxjWMxzatg==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.4-unstable.112
+      '@sphereon/oid4vci-common': 0.10.4-unstable.115
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
       debug: 4.3.5
@@ -7183,8 +7183,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-common@0.10.4-unstable.112:
-    resolution: {integrity: sha512-/t7E+vJvBX3nA4pQbodV6lFNN4bWObHi3ZdfWJc8GewfAGkx+OSPL/wuYrPhO3+O3rmWAe1pewuTEcOMQVpt4Q==}
+  /@sphereon/oid4vci-common@0.10.4-unstable.115:
+    resolution: {integrity: sha512-DmhJvoIr3nC9e9Y2VKm4ZImgDTcE88CnVL6QigbokKJQMXQwhiXbh4itVhPKwVcxeMyW3o30lvtIqkjjlBnBLQ==}
     engines: {node: '>=18'}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -7196,12 +7196,12 @@ packages:
       - encoding
     dev: false
 
-  /@sphereon/oid4vci-issuer-server@0.10.4-unstable.112:
-    resolution: {integrity: sha512-syZ4760oqOQ7W9C1b2xeOoSrjHaP3B0pwzhIor+t0K6+tVKSgir97Q6XDtICBLLHPz03HgWJLOSYjqUFVTEW5A==}
+  /@sphereon/oid4vci-issuer-server@0.10.4-unstable.115:
+    resolution: {integrity: sha512-ys+Ga+Ok29dn2xITkH9uB2us6EsTPEgiAJgG7oZW2cY+3mpFfmsOIg0nnsbL5Pw23IWwhMp95+6/pPmcdaxUdg==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.4-unstable.112
-      '@sphereon/oid4vci-issuer': 0.10.4-unstable.112
+      '@sphereon/oid4vci-common': 0.10.4-unstable.115
+      '@sphereon/oid4vci-issuer': 0.10.4-unstable.115
       '@sphereon/ssi-express-support': 0.25.1-unstable.87
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.2
@@ -7221,8 +7221,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.10.4-unstable.112:
-    resolution: {integrity: sha512-Ekou36ClnCoU7Lpsa1GHZ78Sbne24AveWCL1BVnjQq9gHXtGWXD6TiOEFL0yWjyETYi9d+lLbTdGDSrzx4nxyw==}
+  /@sphereon/oid4vci-issuer@0.10.4-unstable.115:
+    resolution: {integrity: sha512-6ASl1gyIJ7830psVoMgUSUGhiM7cktTA5DdEM4gY10niE+4SGdXj6sAWf7BjMU2+l9iKH8WdYHlQmqyCM/2TBQ==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -7230,7 +7230,7 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vci-common': 0.10.4-unstable.112
+      '@sphereon/oid4vci-common': 0.10.4-unstable.115
       '@sphereon/ssi-types': link:packages/ssi-types
       uuid: 9.0.1
     transitivePeerDependencies:
