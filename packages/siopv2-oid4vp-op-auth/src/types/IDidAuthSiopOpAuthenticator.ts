@@ -28,6 +28,7 @@ import {
 import { EventEmitter } from 'events'
 import { OpSession } from '../session/OpSession'
 import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
+import { SiopV2MachineInstanceOpts, SiopV2MachineInterpreter, SiopV2MachineState } from './siopV2'
 
 export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   siopGetOPSession(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
@@ -35,7 +36,9 @@ export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   siopRemoveOPSession(args: IRemoveSiopSessionArgs, context: IRequiredContext): Promise<boolean>
   siopRegisterOPCustomApproval(args: IRegisterCustomApprovalForSiopArgs, context: IRequiredContext): Promise<void>
   siopRemoveOPCustomApproval(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean>
+  siopGetMachineInterpreter(args: GetMachineArgs, context: IRequiredContext): Promise<SiopV2MachineInterpreter>
 }
+
 export interface IOpSessionArgs {
   sessionId?: string
 
@@ -74,6 +77,11 @@ export interface IRegisterCustomApprovalForSiopArgs {
 
 export interface IRemoveCustomApprovalForSiopArgs {
   key: string
+}
+
+export type GetMachineArgs = {
+  opts: SiopV2MachineInstanceOpts
+  stateNavigationListener?: (siopv2Machine: SiopV2MachineInterpreter, state: SiopV2MachineState, navigation?: any) => Promise<void>
 }
 
 export interface IOpsSendSiopAuthorizationResponseArgs {
@@ -123,3 +131,8 @@ export interface VerifiablePresentationWithDefinition extends VerifiablePresenta
   identifierOpts: IIdentifierOpts
 }
 export const DEFAULT_JWT_PROOF_TYPE = 'JwtProof2020'
+
+export enum SupportedLanguage {
+  ENGLISH = 'en',
+  DUTCH = 'nl',
+}
