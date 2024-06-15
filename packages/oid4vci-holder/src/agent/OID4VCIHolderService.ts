@@ -1,6 +1,6 @@
 import {
   CredentialConfigurationSupported,
-  CredentialOfferPayloadV1_0_13,
+  CredentialOfferFormat,
   CredentialResponse,
   CredentialsSupportedDisplay,
   OpenId4VCIVersion,
@@ -10,6 +10,7 @@ import {
   CredentialMapper,
   IVerifiableCredential,
   IVerifyResult,
+  Loggers,
   OriginalVerifiableCredential,
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
@@ -83,7 +84,7 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   return credentialBranding
 }
 
-export const getPreferredCredentialFormats = async (
+export const getCredentialConfigsBasedOnFormatPref = async (
   args: GetPreferredCredentialFormatsArgs,
 ): Promise<Record<string, CredentialConfigurationSupported>> => {
   return Object.entries(args.credentials)
@@ -300,30 +301,59 @@ export const getCredentialConfigsSupported = async (
 ): Promise<Record<string, CredentialConfigurationSupported>> => {
   const { client, vcFormatPreferences } = args
 
-  if (client.version() < OpenId4VCIVersion.VER_1_0_13 || typeof client.credentialOffer?.credential_offer !== 'object') {
-    throw new Error(`Unsupported client version: ${client.version()}. Upgrade to OID4VCI library supporting spec version >= 1.0.13.`)
+  if (!client.credentialOffer) {
+    return Promise.reject(Error('openID4VCIClient has no credentialOffer'))
   }
 
-  const allSupportedCredentialConfigs = client.getCredentialsSupported() as Record<string, CredentialConfigurationSupported>
-  let credentialConfigsSupported = await getPreferredCredentialFormats({
+  // todo: remove format here. This is just a temp hack for V11+ issuance of only one credential. Having a single array with formats for multiple credentials will not work. This should be handled in VCI itself
+  let format: string[] | undefined = undefined
+  if (
+    client.version() > OpenId4VCIVersion.VER_1_0_09 &&
+    typeof client.credentialOffer.credential_offer === 'object' &&
+    'credentials' in client.credentialOffer.credential_offer
+  ) {
+    format = client.credentialOffer.credential_offer.credentials
+      .filter((format: string | CredentialOfferFormat): boolean => typeof format !== 'string')
+      .map((format: string | CredentialOfferFormat) => (format as CredentialOfferFormat).format)
+    if (format?.length === 0) {
+      format = undefined // Otherwise we would match nothing
+    }
+  }
+
+  const allSupportedCredentialConfigs = client.getCredentialsSupported(format)
+  let credentialConfigsSupported = await getCredentialConfigsBasedOnFormatPref({
     credentials: allSupportedCredentialConfigs,
     vcFormatPreferences,
   })
 
   // Fallback to all configurations if getPreferredCredentialFormats returns none
   if (Object.keys(credentialConfigsSupported).length === 0) {
+    Loggers.DEFAULT.get('sphereon:oid4vci').warning(
+      `No credentials supported could be determined from the offer. Falling back to all credentials available by the issuer`,
+    )
     credentialConfigsSupported = allSupportedCredentialConfigs
   }
 
   if (client.credentialOffer !== undefined) {
     // Filter configurations based on the credential offer IDs
-    const credentialOffer = client.credentialOffer.credential_offer as CredentialOfferPayloadV1_0_13
-    const credentialsToOffer = Object.fromEntries(
-      Object.entries(credentialConfigsSupported).filter(([key]) => credentialOffer.credential_configuration_ids.includes(key)),
-    )
-    if (Object.keys(credentialsToOffer).length === 0) {
-      throw new Error(`No matching supported credential configs found for offer ${credentialOffer.credential_configuration_ids.join(', ')}`)
+    const credentialOffer = client.credentialOffer.credential_offer
+
+    let credentialsToOffer: Record<string, CredentialConfigurationSupported>
+    if ('credential_configuration_ids' in credentialOffer) {
+      credentialsToOffer = Object.fromEntries(
+        Object.entries(credentialConfigsSupported).filter(([key]) => credentialOffer.credential_configuration_ids.includes(key)),
+      )
+      if (Object.keys(credentialsToOffer).length === 0) {
+        throw new Error(`No matching supported credential configs found for offer ${credentialOffer.credential_configuration_ids.join(', ')}`)
+      }
+    } else {
+      credentialsToOffer = credentialConfigsSupported
     }
+    if (Object.keys(credentialsToOffer).length === 0) {
+      // Same check as above, but more generic error message, as it can also apply to below draft 13
+      throw new Error(`No matching supported credential configs found for offer`)
+    }
+
     return credentialsToOffer
   } else {
     return credentialConfigsSupported
