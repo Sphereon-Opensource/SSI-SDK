@@ -90,9 +90,7 @@ export const getCredentialConfigsBasedOnFormatPref = async (
   const { vcFormatPreferences, credentials } = args
   const prefConfigs = {} as Record<string, CredentialConfigurationSupported>
   Object.entries(credentials).forEach(([key, config]) => {
-    console.log(`${key} has format ${config.format}. We have the following prefs: ${vcFormatPreferences.join(',')}`)
     const result = !config.format || vcFormatPreferences.map((pref) => pref.toLowerCase()).includes(config.format.toLowerCase())
-    console.log(`${config.format} in ${vcFormatPreferences}: ${result}`)
     if (result) {
       prefConfigs[key] = config
     }

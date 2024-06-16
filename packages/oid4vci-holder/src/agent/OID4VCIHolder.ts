@@ -297,6 +297,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       client,
       vcFormatPreferences: this.vcFormatPreferences,
     })
+    console.log(`Credentials supported ${Object.keys(credentialsSupported).join(',')}`)
 
     const credentialSelection: Array<CredentialTypeSelection> = await Promise.all(
       Object.values(credentialsSupported).map(
