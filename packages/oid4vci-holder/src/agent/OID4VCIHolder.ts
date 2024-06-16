@@ -270,7 +270,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       client: openID4VCIClient,
       vcFormatPreferences: this.vcFormatPreferences,
     })
-    const credentialBranding = await getCredentialBranding({ credentialsSupported: credentialsSupported, context })
+    const credentialBranding = await getCredentialBranding({ credentialsSupported, context })
     const authorizationCodeURL = openID4VCIClient.authorizationURL
     if (authorizationCodeURL) {
       logger.log(`authorization code URL ${authorizationCodeURL}`)
@@ -449,13 +449,10 @@ export class OID4VCIHolder implements IAgentPlugin {
       })
 
       // FIXME: This type mapping is wrong. It should use credential_identifier in case the access token response has authorization details
-      // @ts-ignore
-      const definition = issuanceOpt.credential_definition
-      const idFromType =
-        definition?.type?.length === 1 ? definition?.type[0] : definition?.type?.filter((type: string) => type !== 'VerifiableCredential')[0]
-      const credentialTypes = issuanceOpt.credentialConfigurationId ?? issuanceOpt.id ?? idFromType
-      if (!credentialTypes) {
-        throw Error('cannot determine credential id to request')
+      const types = getTypesFromObject(issuanceOpt)
+      const credentialTypes = issuanceOpt.credentialConfigurationId ?? issuanceOpt.id ?? types
+      if (!credentialTypes || (Array.isArray(credentialTypes) && credentialTypes.length === 0)) {
+        return Promise.reject(Error('cannot determine credential id to request'))
       }
       const credentialResponse = await client.acquireCredentials({
         credentialTypes,

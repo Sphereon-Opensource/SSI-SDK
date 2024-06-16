@@ -4,6 +4,7 @@ import {
   CredentialOfferFormat,
   CredentialResponse,
   CredentialsSupportedDisplay,
+  getTypesFromObject,
   OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
@@ -18,7 +19,7 @@ import {
   WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
 import { IDIDManager, IIdentifier, IKey, IResolver, IVerifyCredentialArgs, TAgent, TKeyType, VerifiableCredential } from '@veramo/core'
-import { _ExtendedIKey, asArray } from '@veramo/utils'
+import { _ExtendedIKey } from '@veramo/utils'
 import { createJWT, Signer } from 'did-jwt'
 import { translate } from '../localization/Localization'
 import {
@@ -345,14 +346,7 @@ export const getCredentialConfigsSupported = async (
         return
       }
       const format = supported.format
-      let type: string = ''
-      if ('credential_definition' in supported) {
-        type = asArray(supported.credential_definition.type).join()
-      } else if ('type' in supported) {
-        type = asArray(supported.type).join()
-      } else if ('types' in supported) {
-        type = asArray(supported.types).join()
-      }
+      const type: string = getTypesFromObject(supported)?.join() ?? ''
       const id = `${type}:${format}`
       allSupported[id] = supported
     })
