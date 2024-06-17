@@ -823,8 +823,8 @@ importers:
         specifier: 0.10.4-unstable.116
         version: 0.10.4-unstable.116
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.10.4-next.25
-        version: 0.10.4-next.25
+        specifier: 0.10.4-unstable.107
+        version: 0.10.4-unstable.107
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -7199,13 +7199,13 @@ packages:
       - encoding
     dev: false
 
-  /@sphereon/oid4vci-issuer-server@0.10.4-next.25:
-    resolution: {integrity: sha512-fNEvn2i2+Z/6pxux/zcxWe8RQtG62S29ewK4Q3lgZRNlu/yOBZizn36HVpyvfXYdHWh8ObXky75RStkjiK4Xbw==}
+  /@sphereon/oid4vci-issuer-server@0.10.4-unstable.107:
+    resolution: {integrity: sha512-hkvgZJ3qFY7NvI/+/SyqmjSGyKIjtOlORGzOAU2ZYCP9D9T7oQ8e3N0IMz0YWrkA3A8U/s+6URZ7yIFrfDwUrg==}
     engines: {node: '>=18'}
     dependencies:
       '@sphereon/oid4vci-common': 0.10.4-unstable.116
       '@sphereon/oid4vci-issuer': 0.10.4-unstable.116
-      '@sphereon/ssi-express-support': 0.24.1-unstable.116
+      '@sphereon/ssi-express-support': 0.25.1-unstable.87
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.2
       cookie-parser: 1.4.6
@@ -7269,8 +7269,8 @@ packages:
       react-native: 0.74.1(@babel/core@7.24.5)(@babel/preset-env@7.24.5)(react@18.2.0)
     dev: true
 
-  /@sphereon/ssi-express-support@0.24.1-unstable.116:
-    resolution: {integrity: sha512-TkOYuZDsKsBVWnIh0r4trZ9gWz5Sxt9YHbXNp4Ec789/R44PNLnb8kyLu8DoD+hWKMbNcwbIny8X/A0XtDcpMw==}
+  /@sphereon/ssi-express-support@0.25.1-unstable.87:
+    resolution: {integrity: sha512-LS1ZDwbNc0rIYbRI032b0jUB7B9PjgvLEr1bqikjxY6MFRi2t31kb6W3b6LV2Fscd+cIYIiRR4Z7icn7LCjIXg==}
     peerDependencies:
       '@noble/hashes': 1.2.0
       passport-azure-ad: ^4.3.5
