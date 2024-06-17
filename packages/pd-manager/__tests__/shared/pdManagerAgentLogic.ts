@@ -75,12 +75,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await expect(agent.pdmGetDefinition({ itemId })).rejects.toThrow(`No presentation definition item found for id: ${itemId}`)
     })
 
-    it('should get all definition items', async (): Promise<void> => {
-      const result: Array<PresentationDefinitionItem> = await agent.pdmGetDefinitions({})
-
-      expect(result.length).toBeGreaterThan(0)
-    })
-
     it('should get definition items by filter', async (): Promise<void> => {
       const args: GetDefinitionItemsArgs = {
         filter: [
@@ -216,6 +210,18 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.definitionPayload.input_descriptors[0].id).toEqual('New pre-release version')
 
       versionedDefinitionItem.version = result.version
+    })
+
+    it('should get all definition items including all version', async (): Promise<void> => {
+      const result: Array<PresentationDefinitionItem> = await agent.pdmGetDefinitions({ opts: { showVersionHistory: true } })
+
+      expect(result.length).toBe(8)
+    })
+
+    it('should get all definition items only containing the latest versions', async (): Promise<void> => {
+      const result: Array<PresentationDefinitionItem> = await agent.pdmGetDefinitions({})
+
+      expect(result.length).toBe(4)
     })
 
     it('should delete definition item by id', async (): Promise<void> => {

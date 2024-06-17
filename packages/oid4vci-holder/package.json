@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.oid4vci-holder",
-  "version": "0.24.0",
+  "version": "0.25.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,8 +14,9 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/oid4vci-client": "0.10.4-next.3",
-    "@sphereon/oid4vci-common": "0.10.4-next.3",
+    "@sphereon/oid4vci-client": "0.10.4-next.25",
+    "@sphereon/oid4vci-common": "0.10.4-next.25",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.18.0",
     "@sphereon/ssi-sdk-ext.did-utils": "0.18.0",
     "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.18.0",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",

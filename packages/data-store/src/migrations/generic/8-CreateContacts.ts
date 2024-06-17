@@ -1,7 +1,7 @@
 import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import Debug from 'debug'
-import {CreateContacts1710438363001} from "../postgres/1710438363001-CreateContacts";
-import {CreateContacts1710438363002} from "../sqlite/1710438363002-CreateContacts";
+import { CreateContacts1710438363001 } from '../postgres/1710438363001-CreateContacts'
+import { CreateContacts1710438363002 } from '../sqlite/1710438363002-CreateContacts'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:migrations')
 
@@ -31,7 +31,7 @@ export class CreateContacts1708525189000 implements MigrationInterface {
       }
       default:
         return Promise.reject(
-          `Migrations are currently only supported for sqlite, react-native, expo and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`
+          `Migrations are currently only supported for sqlite, react-native, expo and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`,
         )
     }
   }
@@ -59,7 +59,7 @@ export class CreateContacts1708525189000 implements MigrationInterface {
       }
       default:
         return Promise.reject(
-          `Migrations are currently only supported for sqlite, react-native, expo and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`
+          `Migrations are currently only supported for sqlite, react-native, expo and postgres. Was ${dbType}. Please run your database without migrations and with 'migrationsRun: false' and 'synchronize: true' for now`,
         )
     }
   }
