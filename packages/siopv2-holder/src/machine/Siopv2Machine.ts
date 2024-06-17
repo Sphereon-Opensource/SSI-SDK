@@ -2,13 +2,14 @@ import { VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
 import { DidAuthConfig, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { assign, createMachine, DoneInvokeEvent, interpret } from 'xstate'
 import { translate } from '../localization/Localization'
+import { Siopv2AuthorizationRequestData } from '../types/ISiopv2Holder'
+import { ErrorDetails } from '../types/error'
 import {
   ContactAliasEvent,
   ContactConsentEvent,
   CreateContactEvent,
   CreateSiopv2MachineOpts,
   SelectCredentialsEvent,
-  Siopv2AuthorizationRequestData,
   Siopv2MachineAddContactStates,
   Siopv2MachineContext,
   Siopv2MachineEvents,
@@ -20,8 +21,7 @@ import {
   Siopv2MachineState,
   Siopv2MachineStates,
   Siopv2StateMachine,
-} from '../types/Siopv2'
-import { ErrorDetails } from '../types/error'
+} from '../types/machine'
 
 const Siopv2HasNoContactGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
   const { contact } = _ctx
@@ -53,10 +53,10 @@ const Siopv2HasSelectedRequiredCredentialsGuard = (_ctx: Siopv2MachineContext, _
   // FIXME: Return true for now, given this is a really expensive operation and will be called in the next phase anyway
   return true
   /*const definitionWithLocation: PresentationDefinitionWithLocation = authorizationRequestData.presentationDefinitions[0];
-    const pex: PEX = new PEX();
-    const evaluationResults: EvaluationResults = pex.evaluateCredentials(definitionWithLocation.definition, selectedCredentials);
+      const pex: PEX = new PEX();
+      const evaluationResults: EvaluationResults = pex.evaluateCredentials(definitionWithLocation.definition, selectedCredentials);
 
-    return evaluationResults.areRequiredCredentialsPresent === Status.INFO;*/
+      return evaluationResults.areRequiredCredentialsPresent === Status.INFO;*/
 }
 
 const Siopv2IsSiopOnlyGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
@@ -328,7 +328,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
 }
 
 export class Siopv2Machine {
-  static newInstance(opts: Siopv2MachineInstanceOpts): Siopv2MachineInterpreter {
+  static newInstance(opts: Siopv2MachineInstanceOpts): { interpreter: Siopv2MachineInterpreter } {
     const interpreter: Siopv2MachineInterpreter = interpret(
       createSiopv2Machine(opts).withConfig({
         services: {
@@ -360,6 +360,6 @@ export class Siopv2Machine {
       console.log(snapshot.value)
     })
 
-    return interpreter
+    return { interpreter }
   }
 }

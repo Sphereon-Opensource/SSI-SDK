@@ -1,24 +1,25 @@
 import { LinkHandlerAdapter } from '@sphereon/ssi-sdk.core'
 import { IMachineStatePersistence, interpreterStartOrResume } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { IAgentContext } from '@veramo/core'
-import Debug from 'debug'
-import { IDidAuthSiopOpAuthenticator } from '../types/IDidAuthSiopOpAuthenticator'
-import { Siopv2MachineInterpreter, Siopv2MachineState } from '../types'
+import { Loggers, LogMethod } from '@sphereon/ssi-types'
+import { ISiopv2Holder } from '../types/ISiopv2Holder'
+import { Siopv2MachineInterpreter, Siopv2MachineState } from '../types/machine'
 
-const debug = Debug(`sphereon:ssi-sdk:linkhandler:siop`)
+const logger = Loggers.DEFAULT.options('sphereon:Siopv2:holder', { methods: [LogMethod.CONSOLE, LogMethod.DEBUG_PKG] }).get('sphereon:Siopv2:holder')
+
 export class Siopv2OID4VPLinkHandler extends LinkHandlerAdapter {
-  private readonly context: IAgentContext<IDidAuthSiopOpAuthenticator & IMachineStatePersistence>
+  private readonly context: IAgentContext<ISiopv2Holder & IMachineStatePersistence>
   private readonly stateNavigationListener:
     | ((oid4vciMachine: Siopv2MachineInterpreter, state: Siopv2MachineState, navigation?: any) => Promise<void>)
     | undefined
 
-  constructor(args: { protocols?: Array<string | RegExp>; context: IAgentContext<IDidAuthSiopOpAuthenticator & IMachineStatePersistence> }) {
+  constructor(args: { protocols?: Array<string | RegExp>; context: IAgentContext<ISiopv2Holder & IMachineStatePersistence> }) {
     super({ ...args, id: 'Siopv2' })
     this.context = args.context
   }
 
   async handle(url: string | URL): Promise<void> {
-    debug(`handling SIOP link: ${url}`)
+    logger.debug(`handling SIOP link: ${url}`)
 
     const interpreter = await this.context.agent.siopGetMachineInterpreter({
       opts: {
@@ -36,6 +37,6 @@ export class Siopv2OID4VPLinkHandler extends LinkHandlerAdapter {
       cleanupOnFinalState: true,
       singletonCheck: true,
     })
-    debug(`SIOP machine started for link: ${url}`, init)
+    logger.debug(`SIOP machine started for link: ${url}`, init)
   }
 }

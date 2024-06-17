@@ -1,7 +1,7 @@
 import { TAgent } from '@veramo/core'
-import { ISIOPV2Holder } from '../../src'
+import { ISiopv2Holder } from '../../src'
 
-type ConfiguredAgent = TAgent<ISIOPV2Holder>
+type ConfiguredAgent = TAgent<ISiopv2Holder>
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
   describe.skip('Event Logger Agent Plugin', (): void => {

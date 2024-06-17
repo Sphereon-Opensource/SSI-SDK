@@ -1,12 +1,12 @@
 {
-  "name": "@sphereon/ssi-sdk.oid4vci-holder",
+  "name": "@sphereon/ssi-sdk.siopv2-holder",
   "version": "0.25.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
-      "IOID4VCIHolder": "./src/types/IOID4VCIHolder.ts"
+      "IOID4VCIHolder": "./src/types/ISiopv2Holder.ts"
     }
   },
   "scripts": {
@@ -24,7 +24,6 @@
     "@sphereon/ssi-types": "workspace:*",
     "@sphereon/did-auth-siop": "^0.6.4",
     "@veramo/core": "4.2.0",
-    "@veramo/data-store": "4.2.0",
     "@veramo/utils": "4.2.0",
     "@types/uuid": "^9.0.6",
     "i18n-js": "^3.8.0",
@@ -57,7 +56,7 @@
   "license": "Apache-2.0",
   "keywords": [
     "Sphereon",
-    "OID4VCI",
+    "SIOPv2",
     "State Machine"
   ]
 }

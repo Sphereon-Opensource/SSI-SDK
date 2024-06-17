@@ -1,7 +1,6 @@
 import i18n, { Scope, TranslateOptions } from 'i18n-js'
 import memoize from 'lodash.memoize'
-import { SupportedLanguage } from '../types'
-import { Party } from '@sphereon/ssi-sdk.data-store'
+import { SupportedLanguage } from '../types/ISiopv2Holder'
 
 class Localization {
   private static translationGetters: { [locale: string]: () => object } = {
