@@ -3,17 +3,17 @@ import { IMachineStatePersistence, interpreterStartOrResume } from '@sphereon/ss
 import { IAgentContext } from '@veramo/core'
 import Debug from 'debug'
 import { IDidAuthSiopOpAuthenticator } from '../types/IDidAuthSiopOpAuthenticator'
-import { SiopV2MachineInterpreter, SiopV2MachineState } from '../types'
+import { Siopv2MachineInterpreter, Siopv2MachineState } from '../types'
 
 const debug = Debug(`sphereon:ssi-sdk:linkhandler:siop`)
-export class SIOPv2OID4VPLinkHandler extends LinkHandlerAdapter {
+export class Siopv2OID4VPLinkHandler extends LinkHandlerAdapter {
   private readonly context: IAgentContext<IDidAuthSiopOpAuthenticator & IMachineStatePersistence>
   private readonly stateNavigationListener:
-    | ((oid4vciMachine: SiopV2MachineInterpreter, state: SiopV2MachineState, navigation?: any) => Promise<void>)
+    | ((oid4vciMachine: Siopv2MachineInterpreter, state: Siopv2MachineState, navigation?: any) => Promise<void>)
     | undefined
 
   constructor(args: { protocols?: Array<string | RegExp>; context: IAgentContext<IDidAuthSiopOpAuthenticator & IMachineStatePersistence> }) {
-    super({ ...args, id: 'SIOPv2' })
+    super({ ...args, id: 'Siopv2' })
     this.context = args.context
   }
 

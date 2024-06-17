@@ -1,0 +1,36 @@
+{
+  "extends": "../tsconfig-base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "declarationDir": "dist",
+    "strictPropertyInitialization": false
+  },
+  "include": [
+    "src/**/*.json",
+    "src/**/*.ts"
+  ],
+  "references": [
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../siopv2-oid4vp-op-auth"
+    },
+    {
+      "path": "../contact-manager"
+    },
+    {
+      "path": "../data-store"
+    },
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../xstate-persistence"
+    }
+  ]
+}

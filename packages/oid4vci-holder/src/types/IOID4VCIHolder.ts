@@ -209,7 +209,7 @@ export type OID4VCIMachineInstanceOpts = {
   guards?: any
   subscription?: () => void
   requireCustomNavigationHook?: boolean
-  stateNavigationListener: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
+  stateNavigationListener?: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
 } & CreateOID4VCIMachineOpts
 
 export type OID4VCIProviderProps = {

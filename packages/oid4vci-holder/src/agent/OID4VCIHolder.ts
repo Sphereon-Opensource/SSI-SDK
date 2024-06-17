@@ -178,7 +178,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   /**
    * FIXME: This method can only be used locally. Creating the interpreter should be local to where the agent is running
    */
-  private async oid4vciHolderGetMachineInterpreter(args: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<OID4VCIMachineId> {
+  private async oid4vciHolderGetMachineInterpreter(opts: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<OID4VCIMachineId> {
     const services = {
       initiateOID4VCI: (args: InitiateOID4VCIArgs) => this.oid4vciHolderGetCredentialOfferData(args, context),
       createCredentialSelection: (args: CreateCredentialSelectionArgs) => this.oid4vciHolderCreateCredentialSelection(args, context),
@@ -192,10 +192,10 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
 
     const oid4vciMachineInstanceArgs: OID4VCIMachineInstanceOpts = {
-      ...args,
+      ...opts,
       services: {
         ...services,
-        ...args.services,
+        ...opts.services,
       },
     }
 

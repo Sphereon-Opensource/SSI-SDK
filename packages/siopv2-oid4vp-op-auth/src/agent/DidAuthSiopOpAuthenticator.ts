@@ -1,11 +1,4 @@
-import {
-  GetMachineArgs,
-  IOpSessionArgs,
-  schema,
-  SiopV2Machine,
-  SiopV2MachineInstanceOpts,
-  SiopV2MachineInterpreter
-} from '../index'
+import { IOpSessionArgs, schema } from '../index'
 import { IAgentPlugin } from '@veramo/core'
 import { OpSession } from '../session'
 import { v4 as uuidv4 } from 'uuid'
@@ -28,7 +21,6 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     siopRemoveOPSession: this.siopRemoveOPSession.bind(this),
     siopRegisterOPCustomApproval: this.siopRegisterOPCustomApproval.bind(this),
     siopRemoveOPCustomApproval: this.siopRemoveOPCustomApproval.bind(this),
-    siopGetMachineInterpreter: this.siopGetMachineInterpreter.bind(this),
   }
 
   private readonly sessions: Map<string, OpSession>
@@ -81,17 +73,5 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
 
   private async siopRemoveOPCustomApproval(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean> {
     return delete this.customApprovals[args.key]
-  }
-
-  private async siopGetMachineInterpreter(args: GetMachineArgs, context: IRequiredContext): Promise<SiopV2MachineInterpreter> {
-    const services = {
-      // TODO
-    }
-
-    const siopV2MachineOpts: SiopV2MachineInstanceOpts = {
-      url{}
-    }
-
-    return await SiopV2Machine.newInstance(siopV2MachineOpts)
   }
 }

@@ -17,12 +17,6 @@
     },
     {
       "path": "../pd-manager"
-    },
-    {
-      "path": "../data-store"
-    },
-    {
-      "path": "../xstate-persistence"
     }
   ]
 }

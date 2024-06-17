@@ -586,6 +586,9 @@ export class OID4VCIMachine {
     }
     if (opts?.requireCustomNavigationHook !== true) {
       interpreter.onTransition((snapshot: OID4VCIMachineState): void => {
+        if (opts?.stateNavigationListener === undefined) {
+          throw new Error('stateNavigationListener is required when no custom navigation hook is used')
+        }
         opts?.stateNavigationListener(interpreter, snapshot)
       })
     }
