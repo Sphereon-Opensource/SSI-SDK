@@ -8,7 +8,7 @@ import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/dist'
 import eventLoggerAgentLogic from './shared/eventLoggerAgentLogic'
-import { ISIOPV2Holder } from '../src'
+import { ISiopv2Holder } from '../src'
 
 jest.setTimeout(60000)
 
@@ -20,7 +20,7 @@ let restServer: Server
 let dbConnection: Promise<DataSource>
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<ISIOPV2Holder>({
+  createAgent<ISiopv2Holder>({
     ...options,
     plugins: [
       new AgentRestClient({
