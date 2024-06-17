@@ -6,7 +6,7 @@ import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/dist'
-import oid4vciHolderLogicAgentLogic from './shared/oid4vciHolderLogicAgentLogic'
+import oid4vciHolderAgentLogic from './shared/oid4vciHolderLogicAgentLogic'
 import { IOID4VCIHolder } from '../src'
 import { IMachineStatePersistence } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 
@@ -64,5 +64,5 @@ const testContext = {
 }
 
 describe('REST integration tests', (): void => {
-  oid4vciHolderLogicAgentLogic(testContext)
+  oid4vciHolderAgentLogic(testContext)
 })

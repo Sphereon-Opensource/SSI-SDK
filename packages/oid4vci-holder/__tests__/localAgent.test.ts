@@ -1,5 +1,5 @@
 import { createObjects, getConfig } from '../../agent-config/dist'
-import oid4vciHolderLogicAgentLogic from './shared/oid4vciHolderLogicAgentLogic'
+import oid4vciHolderAgentLogic from './shared/oid4vciHolderLogicAgentLogic'
 
 jest.setTimeout(60000)
 
@@ -25,5 +25,5 @@ const testContext = {
 }
 
 describe('Local integration tests', (): void => {
-  oid4vciHolderLogicAgentLogic(testContext)
+  oid4vciHolderAgentLogic(testContext)
 })
