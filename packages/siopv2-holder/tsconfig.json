@@ -6,10 +6,7 @@
     "declarationDir": "dist",
     "strictPropertyInitialization": false
   },
-  "include": [
-    "src/**/*.json",
-    "src/**/*.ts"
-  ],
+  "include": ["src/**/*.json", "src/**/*.ts"],
   "references": [
     {
       "path": "../agent-config"
