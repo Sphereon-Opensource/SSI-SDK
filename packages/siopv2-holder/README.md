@@ -2,7 +2,7 @@
 <h1 align="center">
   <br>
   <a href="https://www.sphereon.com"><img src="https://sphereon.com/content/themes/sphereon/assets/img/logo.svg" alt="Sphereon" width="400"></a>
-  <br>OpenID for Verifiable Credentials Issuance - Holder (OID4VCI)
+  <br>SIOP - Holder (SIOPV2)
   <br>
 </h1>
 
@@ -17,7 +17,7 @@ TODO
 ## Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk.oid4vci-holder
+yarn add @sphereon/ssi-sdk.siopv2-holder
 ```
 
 ## Build
