@@ -1511,6 +1511,9 @@ importers:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
+      '@types/i18n-js':
+        specifier: ^3.8.0
+        version: 3.8.9
       '@types/lodash.memoize':
         specifier: ^4.1.7
         version: 4.1.9
