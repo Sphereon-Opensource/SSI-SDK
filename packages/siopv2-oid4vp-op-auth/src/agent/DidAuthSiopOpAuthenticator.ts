@@ -18,13 +18,12 @@ import {
   CreateConfigResult,
   GetSiopRequestArgs,
   OnContactIdentityCreatedArgs,
-  OnCredentialStoredArgs,
   OnIdentifierCreatedArgs,
   RetrieveContactArgs,
   SendResponseArgs,
   Siopv2AuthorizationRequestData,
   Siopv2HolderEvent,
-  Siopv2HolderOptions,
+  DidAuthSiopOpAuthenticatorOptions,
 } from '../types/siop-service'
 import { Siopv2Machine } from '../machine/Siopv2Machine'
 import { Siopv2Machine as Siopv2MachineId, Siopv2MachineInstanceOpts } from '../types/machine'
@@ -64,17 +63,15 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   private readonly presentationSignCallback?: PresentationSignCallback
 
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
-  private readonly onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
 
   constructor(
     presentationSignCallback?: PresentationSignCallback,
     customApprovals?: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>,
-    options?: Siopv2HolderOptions,
+    options?: DidAuthSiopOpAuthenticatorOptions,
   ) {
-    const { onContactIdentityCreated, onCredentialStored, onIdentifierCreated } = options ?? {}
+    const { onContactIdentityCreated, onIdentifierCreated } = options ?? {}
     this.onContactIdentityCreated = onContactIdentityCreated
-    this.onCredentialStored = onCredentialStored
     this.onIdentifierCreated = onIdentifierCreated
 
     this.sessions = new Map<string, OpSession>()
@@ -86,9 +83,6 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     switch (event.type) {
       case Siopv2HolderEvent.CONTACT_IDENTITY_CREATED:
         this.onContactIdentityCreated?.(event.data)
-        break
-      case Siopv2HolderEvent.CREDENTIAL_STORED:
-        this.onCredentialStored?.(event.data)
         break
       case Siopv2HolderEvent.IDENTIFIER_CREATED:
         this.onIdentifierCreated?.(event.data)
