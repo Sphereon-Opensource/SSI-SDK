@@ -227,10 +227,7 @@ export class CredentialMapper {
    *
    * @param hasher Hasher implementation to use for SD-JWT decoding
    */
-  static toWrappedVerifiableCredential(
-    verifiableCredential: OriginalVerifiableCredential,
-    opts?: { maxTimeSkewInMS?: number; hasher?: Hasher },
-  ): WrappedVerifiableCredential {
+  static toWrappedVerifiableCredential(verifiableCredential: OriginalVerifiableCredential, opts?: { maxTimeSkewInMS?: number; hasher?: Hasher }): WrappedVerifiableCredential {
     // SD-JWT
     if (CredentialMapper.isSdJwtDecodedCredential(verifiableCredential) || CredentialMapper.isSdJwtEncoded(verifiableCredential)) {
       let decodedCredential: SdJwtDecodedVerifiableCredential
@@ -253,38 +250,19 @@ export class CredentialMapper {
     }
 
     // If the VC is not an encoded/decoded SD-JWT, we assume it will be a W3C VC
-    const proof = CredentialMapper.getFirstProof(verifiableCredential)
-    const original = CredentialMapper.hasJWTProofType(verifiableCredential) && proof ? proof.jwt ?? verifiableCredential : verifiableCredential
-    if (!original) {
-      throw Error(
-        'Could not determine original credential, probably it was a converted JWT credential, that is now missing the JWT value in the proof',
-      )
-    }
-    const decoded = CredentialMapper.decodeVerifiableCredential(original) as JwtDecodedVerifiableCredential | IVerifiableCredential
-
-    const isJwtEncoded = CredentialMapper.isJwtEncoded(original)
-    const isJwtDecoded = CredentialMapper.isJwtDecodedCredential(original)
-    const type = isJwtEncoded ? OriginalType.JWT_ENCODED : isJwtDecoded ? OriginalType.JWT_DECODED : OriginalType.JSONLD
-
-    const credential =
-      isJwtEncoded || isJwtDecoded
-        ? CredentialMapper.jwtDecodedCredentialToUniformCredential(decoded as JwtDecodedVerifiableCredential, opts)
-        : (decoded as IVerifiableCredential)
-
-    const format = isJwtEncoded || isJwtDecoded ? ('jwt_vc' as const) : ('ldp_vc' as const)
-    return {
-      original,
-      decoded,
-      format,
-      type,
-      credential,
-    }
+    return CredentialMapper.toWrappedVerifiableW3CCredential(verifiableCredential, { maxTimeSkewInMS: opts?.maxTimeSkewInMS })
   }
 
-  static async toWrappedVerifiableCredentialAsync( // TODO deduplicate code
-    verifiableCredential: OriginalVerifiableCredential,
-    opts?: { maxTimeSkewInMS?: number; hasher?: AsyncHasher },
-  ): Promise<WrappedVerifiableCredential> {
+  /**
+   * Converts a credential to a wrapped credential async.
+   *
+   * When decoding SD-JWT credentials, a hasher implementation must be provided. The hasher implementation must be sync. When using
+   * an async hasher implementation, use the decodeSdJwtVcAsync method instead and you can provide the decoded payload to methods
+   * instead of the compact SD-JWT.
+   *
+   * @param hasher async Hasher implementation to use for SD-JWT decoding
+   */
+  static async toWrappedVerifiableCredentialAsync(verifiableCredential: OriginalVerifiableCredential, opts?: { maxTimeSkewInMS?: number; hasher?: AsyncHasher }): Promise<WrappedVerifiableCredential> {
     // SD-JWT
     if (CredentialMapper.isSdJwtDecodedCredential(verifiableCredential) || CredentialMapper.isSdJwtEncoded(verifiableCredential)) {
       let decodedCredential: SdJwtDecodedVerifiableCredential
@@ -307,6 +285,14 @@ export class CredentialMapper {
     }
 
     // If the VC is not an encoded/decoded SD-JWT, we assume it will be a W3C VC
+    return CredentialMapper.toWrappedVerifiableW3CCredential(verifiableCredential, { maxTimeSkewInMS: opts?.maxTimeSkewInMS })
+  }
+
+  private static toWrappedVerifiableW3CCredential(verifiableCredential: OriginalVerifiableCredential, opts?: { maxTimeSkewInMS?: number }): WrappedVerifiableCredential {
+    if (CredentialMapper.isSdJwtDecodedCredential(verifiableCredential) || CredentialMapper.isSdJwtEncoded(verifiableCredential)) {
+      throw Error('SD-JWT is not supported as a W3C credential. Call the public function')
+    }
+
     const proof = CredentialMapper.getFirstProof(verifiableCredential)
     const original = CredentialMapper.hasJWTProofType(verifiableCredential) && proof ? proof.jwt ?? verifiableCredential : verifiableCredential
     if (!original) {

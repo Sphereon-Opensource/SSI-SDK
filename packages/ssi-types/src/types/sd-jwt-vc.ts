@@ -310,7 +310,7 @@ export async function sdJwtDecodedCredentialToUniformCredential(decoded: SdJwtDe
   }
 
   if (!user || typeof user !== 'object') {
-    throw new Error('No user present for credential subject within sd-jwt')
+    throw new Error('No proper user present for credential subject within sd-jwt')
   }
 
   return {
@@ -325,13 +325,13 @@ export async function sdJwtDecodedCredentialToUniformCredential(decoded: SdJwtDe
     expirationDate,
     issuer: iss,
     proof: {
-        type: IProofType.SdJwtProof2024,
-        created: nbf
-          ? new Date(nbf).toISOString()
-          : new Date().toISOString(),
-        proofPurpose: IProofPurpose.authentication,
-        verificationMethod: iss,
-        jwt: decoded.compactSdJwtVc,
-      }
+      type: IProofType.SdJwtProof2024,
+      created: nbf
+        ? new Date(nbf).toISOString()
+        : new Date().toISOString(),
+      proofPurpose: IProofPurpose.authentication,
+      verificationMethod: iss,
+      jwt: decoded.compactSdJwtVc,
+    }
   }
 }
