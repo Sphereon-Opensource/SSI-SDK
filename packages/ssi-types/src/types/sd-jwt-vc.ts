@@ -279,6 +279,9 @@ export async function sdJwtDecodedCredentialToUniformCredential(decoded: SdJwtDe
     iat,
     vct,
     user,
+    cnf,
+    status,
+    ...rest
   } = decoded.decodedPayload
 
   const maxSkewInMS = opts?.maxTimeSkewInMS ?? 1500
@@ -311,6 +314,7 @@ export async function sdJwtDecodedCredentialToUniformCredential(decoded: SdJwtDe
   }
 
   return {
+    ...rest,
     type: ['VerifiableCredential', vct],
     '@context': ['https://www.w3.org/2018/credentials/v1'],
     credentialSubject: {
