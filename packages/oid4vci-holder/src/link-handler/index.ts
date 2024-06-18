@@ -1,7 +1,7 @@
 import { CredentialOfferClient } from '@sphereon/oid4vci-client'
-import { convertURIToJsonObject } from '@sphereon/oid4vci-common'
+import { AuthorizationRequestOpts, convertURIToJsonObject } from '@sphereon/oid4vci-common'
 import { DefaultLinkPriorities, LinkHandlerAdapter } from '@sphereon/ssi-sdk.core'
-import { IMachineStatePersistence, interpreterStartOrResume } from '@sphereon/ssi-sdk.xstate-machine-persistence'
+import { IMachineStatePersistence, interpreterStartOrResume, SerializableState } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { IAgentContext } from '@veramo/core'
 import { GetMachineArgs, IOID4VCIHolder, OID4VCIMachineEvents, OID4VCIMachineInterpreter, OID4VCIMachineState } from '../types/IOID4VCIHolder'
 
@@ -10,10 +10,11 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
   private readonly stateNavigationListener:
     | ((oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>)
     | undefined
-  private noStateMachinePersistence: boolean
+  private readonly noStateMachinePersistence: boolean
+  private readonly authorizationRequestOpts?: AuthorizationRequestOpts
 
   constructor(
-    args: Pick<GetMachineArgs, 'stateNavigationListener'> & {
+    args: Pick<GetMachineArgs, 'stateNavigationListener' | 'authorizationRequestOpts'> & {
       priority?: number | DefaultLinkPriorities
       protocols?: Array<string | RegExp>
       noStateMachinePersistence?: boolean
@@ -21,14 +22,14 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
     },
   ) {
     super({ ...args, id: 'OID4VCIHolder' })
+    this.authorizationRequestOpts = args.authorizationRequestOpts
     this.context = args.context
     this.noStateMachinePersistence = args.noStateMachinePersistence === true
     this.stateNavigationListener = args.stateNavigationListener
   }
 
-  async handle(url: string | URL): Promise<void> {
-    // FIXME CWALL-199 add support for URL's
-    const uri = new URL(url).toString().replace(new RegExp('.*\\?'), 'openid-credential-offer://?')
+  async handle(url: string | URL, opts?: { machineState?: SerializableState; authorizationRequestOpts?: AuthorizationRequestOpts }): Promise<void> {
+    const uri = new URL(url).toString()
     const offerData = convertURIToJsonObject(uri) as Record<string, unknown>
     const hasCode = 'code' in offerData && !!offerData.code && !('issuer' in offerData)
     const code = hasCode ? (offerData.code as string) : undefined
@@ -40,12 +41,13 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
         ...(hasCode && { code: code }),
         uri,
       },
+      authorizationRequestOpts: { ...this.authorizationRequestOpts, ...opts?.authorizationRequestOpts },
       stateNavigationListener: this.stateNavigationListener,
     })
 
     const interpreter = oid4vciMachine.interpreter
     //FIXME we need a better way to check if the state persistence plugin is available in the agent
-    if (this.context.agent.availableMethods().includes('machineStatesFindActive')) {
+    if (!opts?.machineState && this.context.agent.availableMethods().includes('machineStatesFindActive')) {
       const stateType = hasCode ? 'existing' : 'new'
       await interpreterStartOrResume({
         stateType,
@@ -57,7 +59,8 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
         noRegistration: this.noStateMachinePersistence,
       })
     } else {
-      interpreter.start()
+      // @ts-ignore
+      interpreter.start(opts?.machineState)
     }
 
     if (hasCode) {

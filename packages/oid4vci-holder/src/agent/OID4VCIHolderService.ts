@@ -1,12 +1,14 @@
+import { LOG } from '@sphereon/oid4vci-client/dist/types'
 import {
+  CredentialConfigurationSupported,
   CredentialOfferFormat,
-  CredentialOfferFormatJwtVcJson,
-  CredentialOfferFormatJwtVcJsonLdAndLdpVc,
   CredentialResponse,
   CredentialsSupportedDisplay,
-  CredentialSupported,
+  getTypesFromObject,
   OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
+import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
+import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -17,17 +19,14 @@ import {
   WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
 import { IDIDManager, IIdentifier, IKey, IResolver, IVerifyCredentialArgs, TAgent, TKeyType, VerifiableCredential } from '@veramo/core'
-import { translate } from '../localization/Localization'
-import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { _ExtendedIKey } from '@veramo/utils'
-import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
 import { createJWT, Signer } from 'did-jwt'
-import { credentialLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
+import { translate } from '../localization/Localization'
 import {
   CreateIdentifierArgs,
   GetAuthenticationKeyArgs,
   GetCredentialBrandingArgs,
-  GetCredentialsSupportedArgs,
+  GetCredentialConfigsSupportedArgs,
   GetDefaultIssuanceOptsArgs,
   GetIdentifierArgs,
   GetIssuanceCryptoSuiteArgs,
@@ -36,7 +35,6 @@ import {
   GetOrCreatePrimaryIdentifierArgs,
   GetPreferredCredentialFormatsArgs,
   GetSignerArgs,
-  GetSupportedCredentialsArgs,
   IdentifierAliasEnum,
   IdentifierOpts,
   IssuanceOpts,
@@ -56,88 +54,50 @@ import {
   VerificationSubResult,
   VerifyCredentialToAcceptArgs,
 } from '../types/IOID4VCIHolder'
+import { credentialLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
 
 export const DID_PREFIX = 'did'
-
-export const getSupportedCredentials = async (args: GetSupportedCredentialsArgs): Promise<Array<CredentialSupported>> => {
-  const { openID4VCIClient, vcFormatPreferences } = args
-
-  if (!openID4VCIClient.credentialOffer) {
-    return Promise.reject(Error('openID4VCIClient has no credentialOffer'))
-  }
-
-  // todo: remove format here. This is just a temp hack for V11+ issuance of only one credential. Having a single array with formats for multiple credentials will not work. This should be handled in VCI itself
-  let format: string[] | undefined = undefined
-  if (openID4VCIClient.version() > OpenId4VCIVersion.VER_1_0_09 && typeof openID4VCIClient.credentialOffer.credential_offer === 'object') {
-    format = openID4VCIClient.credentialOffer.credential_offer.credentials
-      .filter((format: string | CredentialOfferFormat): boolean => typeof format !== 'string')
-      .map((format: string | CredentialOfferFormat) => (format as CredentialOfferFormat).format)
-    if (format?.length === 0) {
-      format = undefined // Otherwise we would match nothing
-    }
-  }
-
-  const credentialsSupported: Array<CredentialSupported> = openID4VCIClient.getCredentialsSupported(true, format)
-  return getPreferredCredentialFormats({ credentials: credentialsSupported, vcFormatPreferences })
-}
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
   const credentialBranding: Record<string, Array<IBasicCredentialLocaleBranding>> = {}
   await Promise.all(
-    credentialsSupported.map(async (credential: CredentialSupported): Promise<void> => {
+    Object.entries(credentialsSupported).map(async ([configId, credentialsConfigSupported]) => {
       const localeBranding: Array<IBasicCredentialLocaleBranding> = await Promise.all(
-        (credential.display ?? []).map(
+        (credentialsConfigSupported.display ?? []).map(
           async (display: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> =>
             await context.agent.ibCredentialLocaleBrandingFrom({ localeBranding: await credentialLocaleBrandingFrom(display) }),
         ),
       )
 
       const defaultCredentialType = 'VerifiableCredential'
-      const credentialTypes: Array<string> =
-        // @ts-ignore
-        credential.types.length > 1
-          ? // @ts-ignore
-            credential.types.filter((type: string): boolean => type !== defaultCredentialType)
-          : // @ts-ignore
-            credential.types.length === 0
-            ? [defaultCredentialType]
-            : // @ts-ignore
-              credential.types
+      const credentialTypes: Array<string> = ('types' in credentialsConfigSupported // TODO credentialsConfigSupported.types is deprecated
+        ? (credentialsConfigSupported.types as string[])
+        : 'credential_definition' in credentialsConfigSupported
+          ? credentialsConfigSupported.credential_definition.type
+          : [defaultCredentialType]) ?? [configId]
 
-      credentialBranding[credentialTypes[0]] = localeBranding // TODO for now taking the first type
+      const filteredCredentialTypes = credentialTypes.filter((type: string): boolean => type !== defaultCredentialType)
+      credentialBranding[filteredCredentialTypes[0]] = localeBranding // TODO for now taking the first type
     }),
   )
 
   return credentialBranding
 }
 
-export const getPreferredCredentialFormats = async (args: GetPreferredCredentialFormatsArgs): Promise<Array<CredentialSupported>> => {
-  const { credentials, vcFormatPreferences } = args
-  // Group credentials based on types as we now have multiple entries for one vc with different formats
-  const groupedTypes: Array<any> = Array.from(
-    credentials
-      .reduce(
-        // @ts-ignore
-        (map: Map<any, any>, value: CredentialSupported) => map.set(value.types.toString(), [...(map.get(value.types.toString()) || []), value]),
-        new Map(),
-      )
-      .values(),
-  )
-
-  const preferredCredentials: Array<CredentialSupported> = []
-
-  for (const group of groupedTypes) {
-    for (const vcFormatPreference of vcFormatPreferences) {
-      const credentialSupported = group.find((credentialSupported: CredentialSupported): boolean => credentialSupported.format === vcFormatPreference)
-      if (credentialSupported) {
-        preferredCredentials.push(credentialSupported)
-        break
-      }
+export const getCredentialConfigsBasedOnFormatPref = async (
+  args: GetPreferredCredentialFormatsArgs,
+): Promise<Record<string, CredentialConfigurationSupported>> => {
+  const { vcFormatPreferences, credentials } = args
+  const prefConfigs = {} as Record<string, CredentialConfigurationSupported>
+  Object.entries(credentials).forEach(([key, config]) => {
+    const result = !config.format || vcFormatPreferences.map((pref) => pref.toLowerCase()).includes(config.format.toLowerCase())
+    if (result) {
+      prefConfigs[key] = config
     }
-  }
+  })
 
-  return preferredCredentials
+  return prefConfigs
 }
 
 export const selectCredentialLocaleBranding = (
@@ -286,7 +246,13 @@ export const getIdentifier = async (args: GetIdentifierArgs): Promise<Identifier
       context,
       opts: {
         method: issuanceOpt.didMethod,
-        createOpts: { options: { type: issuanceOpt.keyType, use: KeyUse.Signature, codecName: issuanceOpt.codecName } },
+        createOpts: {
+          options: {
+            type: issuanceOpt.keyType,
+            use: KeyUse.Signature,
+            codecName: issuanceOpt.codecName,
+          },
+        },
       },
     }))
   const key: _ExtendedIKey = await getAuthenticationKey({ identifier, context })
@@ -318,7 +284,13 @@ export const getOrCreatePrimaryIdentifier = async (args: GetOrCreatePrimaryIdent
     createOpts.options = { codecName: 'EBSI', type: 'Secp256r1', ...createOpts }
     opts.createOpts = createOpts
   }
-  const identifier: IIdentifier = !identifiers || identifiers.length == 0 ? await createIdentifier({ context, opts }) : identifiers[0]
+  const identifier: IIdentifier =
+    !identifiers || identifiers.length == 0
+      ? await createIdentifier({
+          context,
+          opts,
+        })
+      : identifiers[0]
 
   return await context.agent.didManagerGet({ did: identifier.did })
 }
@@ -338,38 +310,79 @@ export const createIdentifier = async (args: CreateIdentifierArgs): Promise<IIde
   return identifier
 }
 
-export const getCredentialsSupported = async (args: GetCredentialsSupportedArgs): Promise<Array<CredentialSupported>> => {
+export const getCredentialConfigsSupported = async (
+  args: GetCredentialConfigsSupportedArgs,
+): Promise<Record<string, CredentialConfigurationSupported>> => {
   const { client, vcFormatPreferences } = args
+
+  if (!client.credentialOffer) {
+    return Promise.reject(Error('openID4VCIClient has no credentialOffer'))
+  }
+
   // todo: remove format here. This is just a temp hack for V11+ issuance of only one credential. Having a single array with formats for multiple credentials will not work. This should be handled in VCI itself
   let format: string[] | undefined = undefined
-  if (client.version() > OpenId4VCIVersion.VER_1_0_09 && typeof client.credentialOffer?.credential_offer === 'object') {
+  if (
+    client.version() > OpenId4VCIVersion.VER_1_0_09 &&
+    typeof client.credentialOffer.credential_offer === 'object' &&
+    'credentials' in client.credentialOffer.credential_offer
+  ) {
     format = client.credentialOffer.credential_offer.credentials
       .filter((format: string | CredentialOfferFormat): boolean => typeof format !== 'string')
       .map((format: string | CredentialOfferFormat) => (format as CredentialOfferFormat).format)
-    if (format.length === 0) {
+    if (format?.length === 0) {
       format = undefined // Otherwise we would match nothing
     }
   }
 
-  // This restricts to initiation types when there is an offer
-  const supportedCredentials = client.getCredentialsSupported(!!client.credentialOffer?.credential_offer, format)
-  let credentialsSupported = await getPreferredCredentialFormats({ credentials: supportedCredentials, vcFormatPreferences })
-  if (!credentialsSupported || credentialsSupported.length === 0) {
-    credentialsSupported =
-      client.credentialOffer?.credential_offer.credentials
-        .filter((format: string | CredentialOfferFormat): boolean => typeof format !== 'string')
-        .map((credential: string | CredentialOfferFormat) => {
-          return {
-            format: (<CredentialOfferFormat>credential).format,
-            // todo: Move this to VCI lib. A function to get the types from an offer format, including older versions of the spec
-            types:
-              (<CredentialOfferFormatJwtVcJsonLdAndLdpVc>credential).credential_definition?.types ??
-              (<CredentialOfferFormatJwtVcJson>credential).types,
-          } as CredentialSupported
-        }) ?? [] // todo check if this addition is ok ?? []
+  const offerSupported = client.getCredentialsSupported(true, format)
+  let allSupported: Record<string, CredentialConfigurationSupported>
+  if (!Array.isArray(offerSupported)) {
+    allSupported = offerSupported
+  } else {
+    allSupported = {} satisfies Record<string, CredentialConfigurationSupported>
+    offerSupported.forEach((supported) => {
+      if (supported.id) {
+        allSupported[supported.id] = supported
+        return
+      }
+      const format = supported.format
+      const type: string = getTypesFromObject(supported)?.join() ?? ''
+      const id = `${type}:${format}`
+      allSupported[id] = supported
+    })
   }
 
-  return credentialsSupported
+  let credentialConfigsSupported = await getCredentialConfigsBasedOnFormatPref({
+    credentials: allSupported,
+    vcFormatPreferences,
+  })
+  if (!credentialConfigsSupported || Object.keys(credentialConfigsSupported).length === 0) {
+    LOG.warning(`No matching supported credential found for ${client.getIssuer()}`)
+  }
+
+  if (client.credentialOffer === undefined) {
+    return credentialConfigsSupported
+  }
+  // Filter configurations based on the credential offer IDs
+  const credentialOffer = client.credentialOffer.credential_offer
+
+  let credentialsToOffer: Record<string, CredentialConfigurationSupported>
+  if ('credential_configuration_ids' in credentialOffer) {
+    credentialsToOffer = Object.fromEntries(
+      Object.entries(credentialConfigsSupported).filter(([key]) => credentialOffer.credential_configuration_ids.includes(key)),
+    )
+    if (Object.keys(credentialsToOffer).length === 0) {
+      throw new Error(`No matching supported credential configs found for offer ${credentialOffer.credential_configuration_ids.join(', ')}`)
+    }
+  } else {
+    credentialsToOffer = credentialConfigsSupported
+  }
+  if (Object.keys(credentialsToOffer).length === 0) {
+    // Same check as above, but more generic error message, as it can also apply to below draft 13
+    throw new Error(`No matching supported credential configs found for offer`)
+  }
+
+  return credentialsToOffer
 }
 
 export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<IssuanceOpts>> => {
@@ -383,11 +396,11 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
     jsonldCryptographicSuitePreferences,
   } = args
 
-  if (credentialsSupported === undefined || credentialsSupported.length === 0) {
+  if (credentialsSupported === undefined || Object.keys(credentialsSupported).length === 0) {
     return Promise.reject(Error('No credentials supported'))
   }
 
-  const getIssuanceOpts: Array<Promise<IssuanceOpts>> = credentialsSupported.map(async (credentialSupported) => {
+  const getIssuanceOpts: Array<Promise<IssuanceOpts>> = Object.values(credentialsSupported).map(async (credentialSupported) => {
     if (!serverMetadata?.credentialIssuerMetadata) {
       return await getDefaultIssuanceOpts({ credentialSupported, opts: { client }, context })
     }
@@ -424,7 +437,7 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
 }
 
 export const getIssuanceDidMethod = async (opts: GetIssuanceDidMethodArgs): Promise<SupportedDidMethodEnum> => {
-  const { credentialSupported, client, didMethodPreferences } = opts
+  const { client, credentialSupported, didMethodPreferences } = opts
   const { format, cryptographic_binding_methods_supported } = credentialSupported
   if (cryptographic_binding_methods_supported && Array.isArray(cryptographic_binding_methods_supported)) {
     const method: SupportedDidMethodEnum | undefined = didMethodPreferences.find((method: SupportedDidMethodEnum) =>
@@ -440,6 +453,7 @@ export const getIssuanceDidMethod = async (opts: GetIssuanceDidMethodArgs): Prom
   if (client.isEBSI()) {
     return SupportedDidMethodEnum.DID_KEY
   }
+
   if (!format || (format.includes('jwt') && !format?.includes('jwt_vc_json_ld'))) {
     return format ? didMethodPreferences[1] : didMethodPreferences[0]
   } else {
@@ -449,8 +463,8 @@ export const getIssuanceDidMethod = async (opts: GetIssuanceDidMethodArgs): Prom
 }
 
 export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): Promise<string> => {
-  const { credentialSupported, client, jwtCryptographicSuitePreferences, jsonldCryptographicSuitePreferences } = opts
-  const suites_supported: Array<string> = credentialSupported.cryptographic_suites_supported ?? []
+  const { client, credentialSupported, jwtCryptographicSuitePreferences, jsonldCryptographicSuitePreferences } = opts
+  const signing_algs_supported: Array<string> = credentialSupported.credential_signing_alg_values_supported ?? []
 
   // TODO: Return array, so the wallet/user could choose
   switch (credentialSupported.format) {
@@ -459,7 +473,7 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
     case 'jwt_vc_json':
     case 'jwt_vc': {
       const supportedPreferences: Array<SignatureAlgorithmEnum> = jwtCryptographicSuitePreferences.filter((suite: SignatureAlgorithmEnum) =>
-        suites_supported.includes(suite),
+        signing_algs_supported.includes(suite),
       )
 
       if (supportedPreferences.length > 0) {
@@ -478,7 +492,9 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
     // @ts-ignore
     case 'jwt_vc_json_ld':
     case 'ldp_vc': {
-      const supportedPreferences: Array<string> = jsonldCryptographicSuitePreferences.filter((suite: string) => suites_supported.includes(suite))
+      const supportedPreferences: Array<string> = jsonldCryptographicSuitePreferences.filter((suite: string) =>
+        signing_algs_supported.includes(suite),
+      )
       if (supportedPreferences.length > 0) {
         return supportedPreferences[0]
       }
