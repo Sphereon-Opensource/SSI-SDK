@@ -1,6 +1,7 @@
 import { OriginalType, WrappedVerifiableCredential, WrappedVerifiablePresentation } from './vc'
-import { decodeSdJwtSync, decodeSdJwt, getClaims, getClaimsSync } from '@sd-jwt/decode'
-import { CompactJWT } from './w3c-vc'
+import { decodeSdJwt, decodeSdJwtSync, getClaims, getClaimsSync } from '@sd-jwt/decode'
+import { CompactJWT, IVerifiableCredential } from './w3c-vc'
+import { IProofPurpose, IProofType } from './did'
 
 type JsonValue = string | number | boolean | { [x: string]: JsonValue | undefined } | Array<JsonValue>
 
@@ -225,13 +226,11 @@ export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): S
       } satisfies SdJwtDisclosure
     }),
     signedPayload: signedPayload as SdJwtSignedVerifiableCredentialPayload,
-    kbJwt:
-      compactKeyBindingJwt && kbJwt
-        ? {
-            compact: compactKeyBindingJwt,
-            payload: kbJwt.payload as SdJwtVcKbJwtPayload,
-          }
-        : undefined,
+    ...((compactKeyBindingJwt && kbJwt) && { kbJwt: {
+        compact: compactKeyBindingJwt,
+        payload: kbJwt.payload as SdJwtVcKbJwtPayload,
+      }
+    })
   }
 }
 
@@ -262,12 +261,71 @@ export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher:
       } satisfies SdJwtDisclosure
     }),
     signedPayload: signedPayload as SdJwtSignedVerifiableCredentialPayload,
-    kbJwt:
-      compactKeyBindingJwt && kbJwt
-        ? {
-            compact: compactKeyBindingJwt,
-            payload: kbJwt.payload as SdJwtVcKbJwtPayload,
-          }
-        : undefined,
+    ...((compactKeyBindingJwt && kbJwt) && { kbJwt: {
+        compact: compactKeyBindingJwt,
+        payload: kbJwt.payload as SdJwtVcKbJwtPayload,
+      }
+    })
+  }
+}
+
+// TODO naive implementation of mapping a sd-jwt onto a jsonld. Needs some fixes and further implementation
+export async function sdJwtDecodedCredentialToUniformCredential(decoded: SdJwtDecodedVerifiableCredential, opts?: { maxTimeSkewInMS?: number }): Promise<IVerifiableCredential> {
+  const {
+    exp,
+    nbf,
+    iss,
+    sub,
+    iat,
+    vct,
+    user,
+  } = decoded.decodedPayload
+
+  const maxSkewInMS = opts?.maxTimeSkewInMS ?? 1500
+
+  let expirationDate
+  if (exp) {
+    const jwtExp = parseInt(exp.toString())
+    // fix seconds to millisecond for the date
+    expirationDate = jwtExp < 9999999999 ? new Date(jwtExp * 1000).toISOString().replace(/\.000Z/, 'Z') : new Date(jwtExp).toISOString()
+  }
+
+  const sdJwtIat = parseInt(iat.toString())
+  let issuanceDate = sdJwtIat < 9999999999 ? new Date(sdJwtIat * 1000).toISOString().replace(/\.000Z/, 'Z') : new Date(sdJwtIat).toISOString()
+
+  if (nbf) {
+    const sdJwtNbf = parseInt(nbf.toString())
+    // fix seconds to millisecs for the date
+    const nbfDateAsStr = sdJwtNbf < 9999999999 ? new Date(sdJwtNbf * 1000).toISOString().replace(/\.000Z/, 'Z') : new Date(sdJwtNbf).toISOString()
+    if (issuanceDate && issuanceDate !== nbfDateAsStr) {
+      const diff = Math.abs(new Date(nbfDateAsStr).getTime() - new Date(iss).getTime())
+      if (!maxSkewInMS || diff > maxSkewInMS) {
+        throw new Error(`Inconsistent issuance dates between JWT claim (${nbfDateAsStr}) and VC value (${iss})`)
+      }
+    }
+    issuanceDate = nbfDateAsStr
+  }
+
+  if (!user || typeof user !== 'object') {
+    throw new Error('No user present for credential subject within sd-jwt')
+  }
+
+  return {
+    type: ['VerifiableCredential', vct],
+    '@context': ['https://www.w3.org/2018/credentials/v1'],
+    credentialSubject: {
+      ...(sub && { id: sub }),
+      ...user
+    },
+    issuanceDate,
+    expirationDate,
+    issuer: iss,
+    proof: {
+        type: IProofType.SdJwtProof2024,
+        created: new Date().toISOString(),
+        proofPurpose: IProofPurpose.authentication,
+        verificationMethod: iss,
+        jwt: decoded.compactSdJwtVc,
+      }
   }
 }

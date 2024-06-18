@@ -1,10 +1,19 @@
 import jwt_decode from 'jwt-decode'
 import {
+  AsyncHasher,
+  decodeSdJwtVc,
+  decodeSdJwtVcAsync,
   DocumentFormat,
+  Hasher,
+  ICredential,
   IPresentation,
   IProof,
   IProofPurpose,
   IProofType,
+  isWrappedSdJwtVerifiableCredential,
+  isWrappedSdJwtVerifiablePresentation,
+  isWrappedW3CVerifiableCredential,
+  isWrappedW3CVerifiablePresentation,
   IVerifiableCredential,
   IVerifiablePresentation,
   JwtDecodedVerifiableCredential,
@@ -12,24 +21,15 @@ import {
   OriginalType,
   OriginalVerifiableCredential,
   OriginalVerifiablePresentation,
+  SdJwtDecodedVerifiableCredential,
+  SdJwtDecodedVerifiableCredentialPayload,
   UniformVerifiablePresentation,
   W3CVerifiableCredential,
   W3CVerifiablePresentation,
+  WrappedSdJwtVerifiableCredential,
   WrappedVerifiableCredential,
   WrappedVerifiablePresentation,
-  SdJwtDecodedVerifiableCredential,
-  SdJwtDecodedVerifiableCredentialPayload,
-  ICredential,
-  WrappedSdJwtVerifiableCredential,
-  WrappedW3CVerifiableCredential,
-  isWrappedSdJwtVerifiableCredential,
-  isWrappedSdJwtVerifiablePresentation,
-  isWrappedW3CVerifiableCredential,
-  isWrappedW3CVerifiablePresentation,
-  Hasher,
-  decodeSdJwtVc,
-  decodeSdJwtVcAsync,
-  AsyncHasher,
+  WrappedW3CVerifiableCredential
 } from '../types'
 import { ObjectUtils } from '../utils'
 
@@ -281,6 +281,60 @@ export class CredentialMapper {
     }
   }
 
+  static async toWrappedVerifiableCredentialAsync( // TODO deduplicate code
+    verifiableCredential: OriginalVerifiableCredential,
+    opts?: { maxTimeSkewInMS?: number; hasher?: AsyncHasher },
+  ): Promise<WrappedVerifiableCredential> {
+    // SD-JWT
+    if (CredentialMapper.isSdJwtDecodedCredential(verifiableCredential) || CredentialMapper.isSdJwtEncoded(verifiableCredential)) {
+      let decodedCredential: SdJwtDecodedVerifiableCredential
+      if (CredentialMapper.isSdJwtEncoded(verifiableCredential)) {
+        if (!opts?.hasher) {
+          throw new Error('Hasher implementation is required to decode SD-JWT')
+        }
+        decodedCredential = await decodeSdJwtVcAsync(verifiableCredential, opts.hasher)
+      } else {
+        decodedCredential = verifiableCredential
+      }
+
+      return {
+        type: CredentialMapper.isSdJwtDecodedCredential(verifiableCredential) ? OriginalType.SD_JWT_VC_DECODED : OriginalType.SD_JWT_VC_ENCODED,
+        format: 'vc+sd-jwt',
+        original: verifiableCredential,
+        credential: decodedCredential,
+        decoded: decodedCredential.decodedPayload,
+      }
+    }
+
+    // If the VC is not an encoded/decoded SD-JWT, we assume it will be a W3C VC
+    const proof = CredentialMapper.getFirstProof(verifiableCredential)
+    const original = CredentialMapper.hasJWTProofType(verifiableCredential) && proof ? proof.jwt ?? verifiableCredential : verifiableCredential
+    if (!original) {
+      throw Error(
+        'Could not determine original credential, probably it was a converted JWT credential, that is now missing the JWT value in the proof',
+      )
+    }
+    const decoded = CredentialMapper.decodeVerifiableCredential(original) as JwtDecodedVerifiableCredential | IVerifiableCredential
+
+    const isJwtEncoded = CredentialMapper.isJwtEncoded(original)
+    const isJwtDecoded = CredentialMapper.isJwtDecodedCredential(original)
+    const type = isJwtEncoded ? OriginalType.JWT_ENCODED : isJwtDecoded ? OriginalType.JWT_DECODED : OriginalType.JSONLD
+
+    const credential =
+      isJwtEncoded || isJwtDecoded
+        ? CredentialMapper.jwtDecodedCredentialToUniformCredential(decoded as JwtDecodedVerifiableCredential, opts)
+        : (decoded as IVerifiableCredential)
+
+    const format = isJwtEncoded || isJwtDecoded ? ('jwt_vc' as const) : ('ldp_vc' as const)
+    return {
+      original,
+      decoded,
+      format,
+      type,
+      credential,
+    }
+  }
+
   public static isJwtEncoded(original: OriginalVerifiableCredential | OriginalVerifiablePresentation): original is string {
     return ObjectUtils.isString(original) && original.startsWith('ey') && !original.includes('~')
   }
@@ -461,7 +515,7 @@ export class CredentialMapper {
       throw new Error('Converting SD-JWT VC to uniform VC is not supported.')
     }
     const original =
-      typeof verifiableCredential !== 'string' && CredentialMapper.hasJWTProofType(verifiableCredential)
+      typeof verifiableCredential !== 'string' && CredentialMapper.hasJWTProofType(verifiableCredential) && !CredentialMapper.isSdJwtEncoded(verifiableCredential.proof.jwt)
         ? CredentialMapper.getFirstProof(verifiableCredential)?.jwt
         : verifiableCredential
     if (!original) {
@@ -657,6 +711,8 @@ export class CredentialMapper {
       return CredentialMapper.toCompactJWT(credential)
     } else if ('proof' in credential && credential.proof.type === 'JwtProof2020' && credential.proof.jwt) {
       return credential.proof.jwt
+    } else if (type === DocumentFormat.SD_JWT_VC) {
+      return credential.compactSdJwtVc
     }
     return credential as W3CVerifiableCredential
   }

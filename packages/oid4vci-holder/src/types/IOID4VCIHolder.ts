@@ -11,7 +11,9 @@ import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import {
+  AsyncHasher,
   IVerifiableCredential,
+  W3CVerifiableCredential,
   WrappedVerifiableCredential,
   WrappedVerifiablePresentation
 } from '@sphereon/ssi-types'
@@ -55,6 +57,7 @@ export type OID4VCIHolderOptions = {
   jsonldCryptographicSuitePreferences?: Array<string>
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   jwtCryptographicSuitePreferences?: Array<SignatureAlgorithmEnum>
+  hasher?: AsyncHasher
 }
 
 export type OnContactIdentityCreatedArgs = {
@@ -123,9 +126,9 @@ export type VerifyCredentialToAcceptArgs = {
 
 export type MappedCredentialToAccept = ExperimentalSubjectIssuance & {
   correlationId: string
-  credential: CredentialToAccept
+  credentialToAccept: CredentialToAccept
   uniformVerifiableCredential: IVerifiableCredential
-  rawVerifiableCredential: VerifiableCredential
+  rawVerifiableCredential: W3CVerifiableCredential
 }
 
 export type OID4VCIMachineContext = {
@@ -388,7 +391,8 @@ export type GetPreferredCredentialFormatsArgs = {
 }
 
 export type MapCredentialToAcceptArgs = {
-  credential: CredentialToAccept
+  credentialToAccept: CredentialToAccept
+  hasher?: AsyncHasher
 }
 
 export type GetDefaultIssuanceOptsArgs = {
