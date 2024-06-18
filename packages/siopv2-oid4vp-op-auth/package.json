@@ -41,6 +41,7 @@
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@types/lodash.memoize": "^4.1.7",
     "@types/uuid": "^9.0.1",
+    "@types/i18n-js": "^3.8.0",
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",
     "@veramo/remote-client": "4.2.0",
