@@ -322,7 +322,9 @@ export async function sdJwtDecodedCredentialToUniformCredential(decoded: SdJwtDe
     issuer: iss,
     proof: {
         type: IProofType.SdJwtProof2024,
-        created: new Date().toISOString(),
+        created: nbf
+          ? new Date(nbf).toISOString()
+          : new Date().toISOString(),
         proofPurpose: IProofPurpose.authentication,
         verificationMethod: iss,
         jwt: decoded.compactSdJwtVc,
