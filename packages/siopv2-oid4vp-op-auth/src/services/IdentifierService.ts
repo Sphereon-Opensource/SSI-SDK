@@ -13,7 +13,7 @@ import {
 } from '../types/identifier'
 import { IDIDManager, IIdentifier, IKey, IResolver, TAgent } from '@veramo/core'
 import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
-import { Siopv2HolderEvent } from '../types/ISiopv2Holder'
+import { Siopv2HolderEvent } from '../types'
 
 export const getIdentifier = async (args: GetIdentifierArgs): Promise<IdentifierOpts> => {
   const { keyOpts, context } = args

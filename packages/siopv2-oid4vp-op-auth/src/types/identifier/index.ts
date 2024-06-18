@@ -1,6 +1,6 @@
 import { IIdentifier, TKeyType } from '@veramo/core'
-import { RequiredContext } from '../ISiopv2Holder'
 import { _ExtendedIKey } from '@veramo/utils'
+import { RequiredContext } from '../siop-service'
 
 export const DID_PREFIX = 'did'
 

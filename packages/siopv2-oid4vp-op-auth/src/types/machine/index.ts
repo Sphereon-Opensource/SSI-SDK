@@ -1,10 +1,10 @@
 import { IIdentifier } from '@veramo/core'
 import { DidAuthConfig, Party } from '@sphereon/ssi-sdk.data-store'
-import { Siopv2AuthorizationRequestData } from '../ISiopv2Holder'
 import { VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
 import { OriginalVerifiableCredential } from '@sphereon/ssi-types'
 import { ErrorDetails } from '../error'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
+import { Siopv2AuthorizationRequestData } from '../siop-service'
 
 export type Siopv2MachineContext = {
   url: string

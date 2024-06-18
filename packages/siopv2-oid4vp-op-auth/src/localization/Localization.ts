@@ -1,6 +1,6 @@
 import i18n, { Scope, TranslateOptions } from 'i18n-js'
 import memoize from 'lodash.memoize'
-import { SupportedLanguage } from '../types/ISiopv2Holder'
+import { SupportedLanguage } from '../types'
 
 class Localization {
   private static translationGetters: { [locale: string]: () => object } = {

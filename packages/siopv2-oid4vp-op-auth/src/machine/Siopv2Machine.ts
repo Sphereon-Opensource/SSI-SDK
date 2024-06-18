@@ -2,7 +2,6 @@ import { VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
 import { DidAuthConfig, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { assign, createMachine, DoneInvokeEvent, interpret } from 'xstate'
 import { translate } from '../localization/Localization'
-import { Siopv2AuthorizationRequestData } from '../types/ISiopv2Holder'
 import { ErrorDetails } from '../types/error'
 import {
   ContactAliasEvent,
@@ -22,6 +21,7 @@ import {
   Siopv2MachineStates,
   Siopv2StateMachine,
 } from '../types/machine'
+import { Siopv2AuthorizationRequestData } from '../types'
 
 const Siopv2HasNoContactGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
   const { contact } = _ctx

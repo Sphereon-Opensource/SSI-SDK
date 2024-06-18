@@ -1,14 +1,14 @@
 import { ConnectionType } from '@sphereon/ssi-sdk.data-store'
-import { OID4VP, OpSession, VerifiableCredentialsWithDefinition, VerifiablePresentationWithDefinition } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import { RequiredContext } from '../types/ISiopv2Holder'
 import { IIdentifier } from '@veramo/core'
 import { getIdentifier, getOrCreatePrimaryIdentifier } from './IdentifierService'
 import { SupportedDidMethodEnum } from '../types/identifier'
 import { CredentialMapper, Loggers, LogMethod, PresentationSubmission } from '@sphereon/ssi-types'
 import { SupportedVersion } from '@sphereon/did-auth-siop'
 import { getKey } from '@sphereon/ssi-sdk-ext.did-utils'
+import { LOGGER_NAMESPACE, RequiredContext, VerifiableCredentialsWithDefinition, VerifiablePresentationWithDefinition } from '../types'
+import { OID4VP, OpSession } from '../session'
 
-const logger = Loggers.DEFAULT.options('sphereon:Siopv2:holder', { methods: [LogMethod.CONSOLE, LogMethod.DEBUG_PKG] }).get('sphereon:Siopv2:holder')
+const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, { methods: [LogMethod.CONSOLE, LogMethod.DEBUG_PKG] }).get(LOGGER_NAMESPACE)
 
 export const siopSendAuthorizationResponse = async (
   connectionType: ConnectionType,
@@ -125,22 +125,14 @@ export const siopSendAuthorizationResponse = async (
   return await response
 }
 
-export const translateCorrelationIdToName = (correlationId: string): string => {
-  // TODO BEFORE PR
+export const translateCorrelationIdToName = async (correlationId: string, context: RequiredContext): Promise<string> => {
+  const { agent } = context
 
-  /*const contacts: Array<Party> = store.getState().contact.contacts
-            const activeUser: IUser | undefined = store.getState().user.activeUser
-
-            const contact: Party | undefined = contacts.find((contact: Party) =>
-              contact.identities.some((identity: Identity): boolean => identity.identifier.correlationId === correlationId),
-            )
-            if (contact) {
-              return contact.contact.displayName
-            }
-
-            if (activeUser && activeUser.identifiers.some((identifier: IUserIdentifier): boolean => identifier.did === correlationId)) {
-              return `${activeUser.firstName} ${activeUser.lastName}`
-            }
-          */
-  return correlationId
+  const contacts = await agent.cmGetContacts({
+    filter: [{ identities: { identifier: { correlationId } } }],
+  })
+  if (contacts.length === 0) {
+    return Promise.reject(Error(`Unable to find contact for correlationId ${correlationId}`))
+  }
+  return contacts[0].contact.displayName
 }
