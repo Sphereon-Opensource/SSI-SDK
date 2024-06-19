@@ -1,6 +1,5 @@
 import { set, get } from 'jsonpointer'
 import parse from 'url-parse'
-import { resolve } from 'path'
 
 /**
  * Creates objects from a configuration object and a set of pointers.
@@ -94,6 +93,7 @@ export async function createObjects(config: object, pointers: Record<string, str
     // console.log({module, member, type, query: parsed.query})
 
     if (module.slice(0, 2) === './' || module.slice(0, 3) === '../') {
+      const { resolve } = await import('path')
       module = resolve(module)
     }
 

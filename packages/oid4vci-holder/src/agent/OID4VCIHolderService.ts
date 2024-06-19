@@ -1,10 +1,14 @@
+import { LOG } from '@sphereon/oid4vci-client/dist/types'
 import {
   CredentialConfigurationSupported,
-  CredentialOfferPayloadV1_0_13,
+  CredentialOfferFormat,
   CredentialResponse,
   CredentialsSupportedDisplay,
+  getTypesFromObject,
   OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
+import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
+import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -15,12 +19,9 @@ import {
   WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
 import { IDIDManager, IIdentifier, IKey, IResolver, IVerifyCredentialArgs, TAgent, TKeyType, VerifiableCredential } from '@veramo/core'
-import { translate } from '../localization/Localization'
-import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { _ExtendedIKey } from '@veramo/utils'
-import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
 import { createJWT, Signer } from 'did-jwt'
-import { credentialLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
+import { translate } from '../localization/Localization'
 import {
   CreateIdentifierArgs,
   GetAuthenticationKeyArgs,
@@ -53,6 +54,7 @@ import {
   VerificationSubResult,
   VerifyCredentialToAcceptArgs,
 } from '../types/IOID4VCIHolder'
+import { credentialLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
 
 export const DID_PREFIX = 'did'
 
@@ -83,18 +85,19 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   return credentialBranding
 }
 
-export const getPreferredCredentialFormats = async (
+export const getCredentialConfigsBasedOnFormatPref = async (
   args: GetPreferredCredentialFormatsArgs,
 ): Promise<Record<string, CredentialConfigurationSupported>> => {
-  return Object.entries(args.credentials)
-    .filter(([_, config]) => config.format in args.vcFormatPreferences)
-    .reduce(
-      (acc, [key, config]) => {
-        acc[key] = config
-        return acc
-      },
-      {} as Record<string, CredentialConfigurationSupported>,
-    )
+  const { vcFormatPreferences, credentials } = args
+  const prefConfigs = {} as Record<string, CredentialConfigurationSupported>
+  Object.entries(credentials).forEach(([key, config]) => {
+    const result = !config.format || vcFormatPreferences.map((pref) => pref.toLowerCase()).includes(config.format.toLowerCase())
+    if (result) {
+      prefConfigs[key] = config
+    }
+  })
+
+  return prefConfigs
 }
 
 export const selectCredentialLocaleBranding = (
@@ -243,7 +246,13 @@ export const getIdentifier = async (args: GetIdentifierArgs): Promise<Identifier
       context,
       opts: {
         method: issuanceOpt.didMethod,
-        createOpts: { options: { type: issuanceOpt.keyType, use: KeyUse.Signature, codecName: issuanceOpt.codecName } },
+        createOpts: {
+          options: {
+            type: issuanceOpt.keyType,
+            use: KeyUse.Signature,
+            codecName: issuanceOpt.codecName,
+          },
+        },
       },
     }))
   const key: _ExtendedIKey = await getAuthenticationKey({ identifier, context })
@@ -275,7 +284,13 @@ export const getOrCreatePrimaryIdentifier = async (args: GetOrCreatePrimaryIdent
     createOpts.options = { codecName: 'EBSI', type: 'Secp256r1', ...createOpts }
     opts.createOpts = createOpts
   }
-  const identifier: IIdentifier = !identifiers || identifiers.length == 0 ? await createIdentifier({ context, opts }) : identifiers[0]
+  const identifier: IIdentifier =
+    !identifiers || identifiers.length == 0
+      ? await createIdentifier({
+          context,
+          opts,
+        })
+      : identifiers[0]
 
   return await context.agent.didManagerGet({ did: identifier.did })
 }
@@ -300,34 +315,74 @@ export const getCredentialConfigsSupported = async (
 ): Promise<Record<string, CredentialConfigurationSupported>> => {
   const { client, vcFormatPreferences } = args
 
-  if (client.version() < OpenId4VCIVersion.VER_1_0_13 || typeof client.credentialOffer?.credential_offer !== 'object') {
-    throw new Error(`Unsupported client version: ${client.version()}. Upgrade to OID4VCI library supporting spec version >= 1.0.13.`)
+  if (!client.credentialOffer) {
+    return Promise.reject(Error('openID4VCIClient has no credentialOffer'))
   }
 
-  const allSupportedCredentialConfigs = client.getCredentialsSupported() as Record<string, CredentialConfigurationSupported>
-  let credentialConfigsSupported = await getPreferredCredentialFormats({
-    credentials: allSupportedCredentialConfigs,
+  // todo: remove format here. This is just a temp hack for V11+ issuance of only one credential. Having a single array with formats for multiple credentials will not work. This should be handled in VCI itself
+  let format: string[] | undefined = undefined
+  if (
+    client.version() > OpenId4VCIVersion.VER_1_0_09 &&
+    typeof client.credentialOffer.credential_offer === 'object' &&
+    'credentials' in client.credentialOffer.credential_offer
+  ) {
+    format = client.credentialOffer.credential_offer.credentials
+      .filter((format: string | CredentialOfferFormat): boolean => typeof format !== 'string')
+      .map((format: string | CredentialOfferFormat) => (format as CredentialOfferFormat).format)
+    if (format?.length === 0) {
+      format = undefined // Otherwise we would match nothing
+    }
+  }
+
+  const offerSupported = client.getCredentialsSupported(true, format)
+  let allSupported: Record<string, CredentialConfigurationSupported>
+  if (!Array.isArray(offerSupported)) {
+    allSupported = offerSupported
+  } else {
+    allSupported = {} satisfies Record<string, CredentialConfigurationSupported>
+    offerSupported.forEach((supported) => {
+      if (supported.id) {
+        allSupported[supported.id] = supported
+        return
+      }
+      const format = supported.format
+      const type: string = getTypesFromObject(supported)?.join() ?? ''
+      const id = `${type}:${format}`
+      allSupported[id] = supported
+    })
+  }
+
+  let credentialConfigsSupported = await getCredentialConfigsBasedOnFormatPref({
+    credentials: allSupported,
     vcFormatPreferences,
   })
-
-  // Fallback to all configurations if getPreferredCredentialFormats returns none
-  if (Object.keys(credentialConfigsSupported).length === 0) {
-    credentialConfigsSupported = allSupportedCredentialConfigs
+  if (!credentialConfigsSupported || Object.keys(credentialConfigsSupported).length === 0) {
+    LOG.warning(`No matching supported credential found for ${client.getIssuer()}`)
   }
 
-  if (client.credentialOffer !== undefined) {
-    // Filter configurations based on the credential offer IDs
-    const credentialOffer = client.credentialOffer.credential_offer as CredentialOfferPayloadV1_0_13
-    const credentialsToOffer = Object.fromEntries(
+  if (client.credentialOffer === undefined) {
+    return credentialConfigsSupported
+  }
+  // Filter configurations based on the credential offer IDs
+  const credentialOffer = client.credentialOffer.credential_offer
+
+  let credentialsToOffer: Record<string, CredentialConfigurationSupported>
+  if ('credential_configuration_ids' in credentialOffer) {
+    credentialsToOffer = Object.fromEntries(
       Object.entries(credentialConfigsSupported).filter(([key]) => credentialOffer.credential_configuration_ids.includes(key)),
     )
     if (Object.keys(credentialsToOffer).length === 0) {
       throw new Error(`No matching supported credential configs found for offer ${credentialOffer.credential_configuration_ids.join(', ')}`)
     }
-    return credentialsToOffer
   } else {
-    return credentialConfigsSupported
+    credentialsToOffer = credentialConfigsSupported
   }
+  if (Object.keys(credentialsToOffer).length === 0) {
+    // Same check as above, but more generic error message, as it can also apply to below draft 13
+    throw new Error(`No matching supported credential configs found for offer`)
+  }
+
+  return credentialsToOffer
 }
 
 export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<IssuanceOpts>> => {

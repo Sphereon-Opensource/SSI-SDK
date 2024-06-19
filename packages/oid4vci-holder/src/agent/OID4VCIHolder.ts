@@ -3,6 +3,7 @@ import {
   AuthorizationRequestOpts,
   CredentialConfigurationSupported,
   DefaultURISchemes,
+  getTypesFromObject,
   Jwt,
   NotificationRequest,
   ProofOfPossessionCallbacks,
@@ -193,7 +194,14 @@ export class OID4VCIHolder implements IAgentPlugin {
   private async oid4vciHolderGetMachineInterpreter(args: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<OID4VCIMachineId> {
     const authorizationRequestOpts = { ...this.defaultAuthorizationRequestOpts, ...args.authorizationRequestOpts }
     const services = {
-      initiateOID4VCI: (args: InitiateOID4VCIArgs) => this.oid4vciHolderGetCredentialOfferData({ ...args, authorizationRequestOpts }, context),
+      initiateOID4VCI: (args: InitiateOID4VCIArgs) =>
+        this.oid4vciHolderGetCredentialOfferData(
+          {
+            ...args,
+            authorizationRequestOpts,
+          },
+          context,
+        ),
       createCredentialSelection: (args: CreateCredentialSelectionArgs) => this.oid4vciHolderCreateCredentialSelection(args, context),
       getContact: (args: GetContactArgs) => this.oid4vciHolderGetContact(args, context),
       getCredentials: (args: GetCredentialsArgs) => this.oid4vciHolderGetCredentials(args, context),
@@ -261,7 +269,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       client: openID4VCIClient,
       vcFormatPreferences: this.vcFormatPreferences,
     })
-    const credentialBranding = await getCredentialBranding({ credentialsSupported: credentialsSupported, context })
+    const credentialBranding = await getCredentialBranding({ credentialsSupported, context })
     const authorizationCodeURL = openID4VCIClient.authorizationURL
     if (authorizationCodeURL) {
       logger.log(`authorization code URL ${authorizationCodeURL}`)
@@ -284,7 +292,11 @@ export class OID4VCIHolder implements IAgentPlugin {
     const { credentialBranding, locale, selectedCredentials, openID4VCIClientState } = args
 
     const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState! }) // TODO see if we need the check openID4VCIClientState defined
-    const credentialsSupported = await getCredentialConfigsSupported({ client, vcFormatPreferences: this.vcFormatPreferences })
+    const credentialsSupported = await getCredentialConfigsSupported({
+      client,
+      vcFormatPreferences: this.vcFormatPreferences,
+    })
+    console.log(`Credentials supported ${Object.keys(credentialsSupported).join(',')}`)
 
     const credentialSelection: Array<CredentialTypeSelection> = await Promise.all(
       Object.values(credentialsSupported).map(
@@ -293,29 +305,24 @@ export class OID4VCIHolder implements IAgentPlugin {
             return Promise.reject(Error('SD-JWT not supported yet'))
           }
 
-          if ('credential_definition' in credentialConfigSupported) {
-            // FIXME this allows for duplicate VerifiableCredential, which the user has no idea which ones those are and we also have a branding map with unique keys, so some branding will not match
-            const defaultCredentialType = 'VerifiableCredential'
+          // FIXME this allows for duplicate VerifiableCredential, which the user has no idea which ones those are and we also have a branding map with unique keys, so some branding will not match
+          const defaultCredentialType = 'VerifiableCredential'
 
-            const credentialType =
-              credentialConfigSupported.credential_definition?.type?.find((type: string): boolean => type !== defaultCredentialType) ??
-              defaultCredentialType
-            const localeBranding = credentialBranding?.[credentialType]
-            const credentialAlias = (
-              await selectCredentialLocaleBranding({
-                locale,
-                localeBranding,
-              })
-            )?.alias
+          const credentialType =
+            getTypesFromObject(credentialConfigSupported)?.find((type) => type !== defaultCredentialType) ?? defaultCredentialType
+          const localeBranding = credentialBranding?.[credentialType]
+          const credentialAlias = (
+            await selectCredentialLocaleBranding({
+              locale,
+              localeBranding,
+            })
+          )?.alias
 
-            return {
-              id: uuidv4(),
-              credentialType,
-              credentialAlias: credentialAlias ?? credentialType,
-              isSelected: false,
-            }
-          } else {
-            throw new Error('CredentialConfigurationSupported is not of version 1.13 or above') // FIXME
+          return {
+            id: uuidv4(),
+            credentialType,
+            credentialAlias: credentialAlias ?? credentialType,
+            isSelected: false,
           }
         },
       ),
@@ -441,13 +448,10 @@ export class OID4VCIHolder implements IAgentPlugin {
       })
 
       // FIXME: This type mapping is wrong. It should use credential_identifier in case the access token response has authorization details
-      // @ts-ignore
-      const definition = issuanceOpt.credential_definition
-      const idFromType =
-        definition?.type?.length === 1 ? definition?.type[0] : definition?.type?.filter((type: string) => type !== 'VerifiableCredential')[0]
-      const credentialTypes = issuanceOpt.credentialConfigurationId ?? issuanceOpt.id ?? idFromType
-      if (!credentialTypes) {
-        throw Error('cannot determine credential id to request')
+      const types = getTypesFromObject(issuanceOpt)
+      const credentialTypes = issuanceOpt.credentialConfigurationId ?? issuanceOpt.id ?? types
+      if (!credentialTypes || (Array.isArray(credentialTypes) && credentialTypes.length === 0)) {
+        return Promise.reject(Error('cannot determine credential id to request'))
       }
       const credentialResponse = await client.acquireCredentials({
         credentialTypes,
@@ -544,6 +548,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       }
       return trim
     }
+
     const { credentialsToAccept, openID4VCIClientState, credentialsSupported, serverMetadata } = args
 
     const credentialToAccept = credentialsToAccept[0]
