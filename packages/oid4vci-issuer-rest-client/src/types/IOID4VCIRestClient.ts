@@ -1,11 +1,10 @@
 import { BearerTokenArg } from '@sphereon/ssi-types'
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import {
-  CredentialOfferFormat,
-  Grant,
   IssueStatusResponse,
   CredentialDataSupplierInput,
   CreateCredentialOfferURIResult,
+  CredentialOfferPayloadV1_0_13,
 } from '@sphereon/oid4vci-common'
 
 export interface IOID4VCIRestClient extends IPluginMethodMap {
@@ -29,9 +28,7 @@ export interface IOID4VCIClientGetIssueStatusArgs {
 
 export type IOID4VCIClientCreateOfferUriResponse = Omit<CreateCredentialOfferURIResult, 'session'>
 
-export interface IOID4VCIClientCreateOfferUriRequest {
-  credentials: (CredentialOfferFormat | string)[]
-  grants: Grant
+export interface IOID4VCIClientCreateOfferUriRequest extends CredentialOfferPayloadV1_0_13 {
   credentialDataSupplierInput?: CredentialDataSupplierInput
 }
 

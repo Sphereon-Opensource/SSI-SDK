@@ -1,12 +1,9 @@
-import {Loggers, LogMethod} from '../src'
+import { Loggers, LogMethod } from '../src'
 
 describe('Simple logging', () => {
-
   it('Should be able to log without providing options for a new namespace', () => {
-    Loggers.DEFAULT.get(''+ Date.now())
-        .log('Random test')
+    Loggers.DEFAULT.get('' + Date.now()).log('Random test')
   })
-
 
   it('Should perform a debug package log', () => {
     Loggers.DEFAULT.options('debug_pkg', { methods: [LogMethod.DEBUG_PKG] })

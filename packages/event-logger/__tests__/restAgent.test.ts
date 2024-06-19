@@ -12,7 +12,7 @@ import { IEventLogger } from '../src'
 
 jest.setTimeout(60000)
 
-const port = 3002
+const port = 3006
 const basePath = '/agent'
 
 let serverAgent: IAgent
