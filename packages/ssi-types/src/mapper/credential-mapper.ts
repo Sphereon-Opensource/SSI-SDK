@@ -250,49 +250,6 @@ export class CredentialMapper {
     }
 
     // If the VC is not an encoded/decoded SD-JWT, we assume it will be a W3C VC
-    return CredentialMapper.toWrappedVerifiableW3CCredential(verifiableCredential, { maxTimeSkewInMS: opts?.maxTimeSkewInMS })
-  }
-
-  /**
-   * Converts a credential to a wrapped credential async.
-   *
-   * When decoding SD-JWT credentials, a hasher implementation must be provided. The hasher implementation must be sync. When using
-   * an async hasher implementation, use the decodeSdJwtVcAsync method instead and you can provide the decoded payload to methods
-   * instead of the compact SD-JWT.
-   *
-   * @param hasher async Hasher implementation to use for SD-JWT decoding
-   */
-  static async toWrappedVerifiableCredentialAsync(verifiableCredential: OriginalVerifiableCredential, opts?: { maxTimeSkewInMS?: number; hasher?: AsyncHasher }): Promise<WrappedVerifiableCredential> {
-    // SD-JWT
-    if (CredentialMapper.isSdJwtDecodedCredential(verifiableCredential) || CredentialMapper.isSdJwtEncoded(verifiableCredential)) {
-      let decodedCredential: SdJwtDecodedVerifiableCredential
-      if (CredentialMapper.isSdJwtEncoded(verifiableCredential)) {
-        if (!opts?.hasher) {
-          throw new Error('Hasher implementation is required to decode SD-JWT')
-        }
-        decodedCredential = await decodeSdJwtVcAsync(verifiableCredential, opts.hasher)
-      } else {
-        decodedCredential = verifiableCredential
-      }
-
-      return {
-        type: CredentialMapper.isSdJwtDecodedCredential(verifiableCredential) ? OriginalType.SD_JWT_VC_DECODED : OriginalType.SD_JWT_VC_ENCODED,
-        format: 'vc+sd-jwt',
-        original: verifiableCredential,
-        credential: decodedCredential,
-        decoded: decodedCredential.decodedPayload,
-      }
-    }
-
-    // If the VC is not an encoded/decoded SD-JWT, we assume it will be a W3C VC
-    return CredentialMapper.toWrappedVerifiableW3CCredential(verifiableCredential, { maxTimeSkewInMS: opts?.maxTimeSkewInMS })
-  }
-
-  private static toWrappedVerifiableW3CCredential(verifiableCredential: OriginalVerifiableCredential, opts?: { maxTimeSkewInMS?: number }): WrappedVerifiableCredential {
-    if (CredentialMapper.isSdJwtDecodedCredential(verifiableCredential) || CredentialMapper.isSdJwtEncoded(verifiableCredential)) {
-      throw Error('SD-JWT is not supported as a W3C credential. Call the public function')
-    }
-
     const proof = CredentialMapper.getFirstProof(verifiableCredential)
     const original = CredentialMapper.hasJWTProofType(verifiableCredential) && proof ? proof.jwt ?? verifiableCredential : verifiableCredential
     if (!original) {
@@ -692,12 +649,16 @@ export class CredentialMapper {
         return CredentialMapper.toCompactJWT(credential)
       } else if (type === DocumentFormat.JSONLD) {
         return JSON.parse(credential)
+      } else if (type === DocumentFormat.SD_JWT_VC) {
+        return credential
       }
     } else if (type === DocumentFormat.JWT && 'vc' in credential) {
       return CredentialMapper.toCompactJWT(credential)
-    } else if ('proof' in credential && credential.proof.type === 'JwtProof2020' && credential.proof.jwt) {
+    } else if ('proof' in credential && credential.proof.type === IProofType.JwtProof2020 && credential.proof.jwt) {
       return credential.proof.jwt
-    } else if (type === DocumentFormat.SD_JWT_VC) {
+    } else if ('proof' in credential && credential.proof.type === IProofType.SdJwtProof2024 && credential.proof.jwt) {
+      return credential.proof.jwt
+    } else if (type === DocumentFormat.SD_JWT_VC && this.isSdJwtDecodedCredential(credential)) {
       return credential.compactSdJwtVc
     }
     return credential as W3CVerifiableCredential

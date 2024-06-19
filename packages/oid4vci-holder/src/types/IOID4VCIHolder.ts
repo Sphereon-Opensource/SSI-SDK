@@ -11,7 +11,7 @@ import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import {
-  AsyncHasher,
+  Hasher,
   IVerifiableCredential,
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
@@ -57,7 +57,7 @@ export type OID4VCIHolderOptions = {
   jsonldCryptographicSuitePreferences?: Array<string>
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   jwtCryptographicSuitePreferences?: Array<SignatureAlgorithmEnum>
-  hasher?: AsyncHasher
+  hasher?: Hasher
 }
 
 export type OnContactIdentityCreatedArgs = {
@@ -121,6 +121,7 @@ export enum SupportedLanguage {
 
 export type VerifyCredentialToAcceptArgs = {
   mappedCredential: MappedCredentialToAccept
+  hasher?: Hasher
   context: RequiredContext
 }
 
@@ -392,7 +393,7 @@ export type GetPreferredCredentialFormatsArgs = {
 
 export type MapCredentialToAcceptArgs = {
   credentialToAccept: CredentialToAccept
-  hasher?: AsyncHasher
+  hasher?: Hasher
 }
 
 export type GetDefaultIssuanceOptsArgs = {
@@ -531,7 +532,7 @@ export type CredentialVerificationError = {
   errorDetails?: string
 }
 
-export type VerifySDJWTCredentialArgs = { credential: string }
+export type VerifySDJWTCredentialArgs = { credential: string, hasher?: Hasher }
 
 export type RequiredContext = IAgentContext<
   IIssuanceBranding | IContactManager | ICredentialVerifier | ICredentialIssuer | IDataStore | IDataStoreORM | IDIDManager | IResolver | IKeyManager | ISDJwtPlugin

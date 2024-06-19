@@ -18,7 +18,7 @@ import {
   W3CVerifiableCredential,
   WrappedVerifiableCredential
 } from '@sphereon/ssi-types'
-import { IDIDManager, IIdentifier, IKey, IResolver, IVerifyCredentialArgs, TAgent, TKeyType, VerifiableCredential } from '@veramo/core'
+import { IDIDManager, IIdentifier, IKey, IResolver, IVerifyCredentialArgs, TAgent, TKeyType } from '@veramo/core'
 import { translate } from '../localization/Localization'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { _ExtendedIKey } from '@veramo/utils'
@@ -157,14 +157,17 @@ export const selectCredentialLocaleBranding = (args: SelectAppLocaleBrandingArgs
 }
 
 export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<void> => {
-  const { mappedCredential, context } = args
+  const { hasher, context } = args //mappedCredential,
 
-  const credential = mappedCredential.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
+  // TODO remove
+  const testSDJWT = 'eyJ0eXAiOiJ2YytzZC1qd3QiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJkaWQ6andrOmV5SmhiR2NpT2lKRlV6STFOaUlzSW5WelpTSTZJbk5wWnlJc0ltdDBlU0k2SWtWRElpd2lZM0oySWpvaVVDMHlOVFlpTENKNElqb2lObVJwWTFoVmEyWjBjMDF2UkVoNFIxbFZiMlZWZDBoWVpFVTViSEJLU0ZaQk9VbHVlbU5aUVZkeVRTSXNJbmtpT2lKa09ISmtaVk5CUTJabWFYZE1ZMmxUWTNaR1kxOU1lR0prYlcxNFdtRmFTMDUyV1VoWk0ybG1kM0ZOSW4wIzAiLCJpc3MiOiJkaWQ6andrOmV5SmhiR2NpT2lKRlV6STFOaUlzSW5WelpTSTZJbk5wWnlJc0ltdDBlU0k2SWtWRElpd2lZM0oySWpvaVVDMHlOVFlpTENKNElqb2lTMUIwZFZaWmVtTlNVbWN4ZVRKRldIRkdNaTFrYkc5NGFGQkZZMGRhU0dkVVYwcFZSWGRqV200ME5DSXNJbmtpT2lKMGVtUmlWVlpSWTFGVE4wazRlSGQwYWt0eWRXSllURUZaZDFwTlNUWlhTVzlLTWs4NFQxUnBTMkpCSW4wIzAiLCJpYXQiOjE3MTg4MDExMjAuNDU5LCJ2Y3QiOiIiLCJfc2QiOlsiOGJKWkllNkF2YkwxTW9NYlZjSXE3WmM2M1FnUUxWXzREVk1DcDExVW5EdyIsIkRzMm5TSkVLSFNnTHh1TDNmZ2dFRm9MTzQ1OFF5M2Jfek1SNWdmaWQ2M3ciLCJPb2JHZlA3cWprTGdXNnJfNk9GUXZWU0pXR0V0bU83NE9zam1XaXNuYm9jIiwiYU5wM1pDbExyTGZJdG05Vl9CQk1aX0h0RUVPaFA0dEJLQUFIZG9oR2QzUSIsImMzV180aG83VUk2OFRPR2NJX1ZZYl83S3poZ3JlYkFhbUtSbTFTNVctVDQiLCJtMUN6OGhCaWo3MWtIUy1nQjYxZDNkRElIRVdHbDNyX2Jucy12ZDRKMHdVIl0sIl9zZF9hbGciOiJTSEEtMjU2In0.HUtgsq8YqYfpufKf4U9lRxiCdXAAP4XjAtdNZlRiDgPjg8MR6dyCpQzLlFjdCqaEtpebyCS-hVcb1AXpfAm4Dw~WyJhYzM0ZGE4YWQ1YmJiZmIwYTk0ZGZhZjU1YWU3NDg3NiIsImdpdmVuX25hbWUiLCJKb2huIl0~WyJhYmJiZmNjYWI3YTc4N2FkYWMyNTI3MGI1YWEwMzA3YyIsImZhbWlseV9uYW1lIiwiRGVvIl0~WyI3YThhMGM4ZTc2NDI3MzA2MzEzM2Y1YzJkYjdhYTI1NiIsImVtYWlsIiwiam9obmRlb0BleGFtcGxlLmNvbSJd~WyJhNjI1N2MyZDk3ODlmNWNiMmJjZTc4Zjg0ODA2NDVkNiIsInBob25lIiwiKzEtMjAyLTU1NS0wMTAxIl0~WyI0ZjZjMzI3NGY4ODhhNzVkMDM2ZjI1ZjYyZjkwN2U4ZSIsImFkZHJlc3MiLHsic3RyZWV0X2FkZHJlc3MiOiIxMjMgTWFpbiBTdCIsImxvY2FsaXR5IjoiQW55dG93biIsInJlZ2lvbiI6IkFueXN0YXRlIiwiY291bnRyeSI6IlVTIn1d~WyI5NzYxMmU3YmZkNjFlODI5MmU2ZjZmMzYzZGJiODVlOSIsImJpcnRoZGF0ZSIsIjE5NDAtMDEtMDEiXQ~'//'eyJhbGciOiJFZERTQSIsInR5cCI6InZjK3NkLWp3dCJ9.eyJpYXQiOjE3MDA0NjQ3MzYwNzYsImlzcyI6ImRpZDprZXk6c29tZS1yYW5kb20tZGlkLWtleSIsIm5iZiI6MTcwMDQ2NDczNjE3NiwidmN0IjoiaHR0cHM6Ly9oaWdoLWFzc3VyYW5jZS5jb20vU3RhdGVCdXNpbmVzc0xpY2Vuc2UiLCJ1c2VyIjp7Il9zZCI6WyI5QmhOVDVsSG5QVmpqQUp3TnR0NDIzM216MFVVMUd3RmFmLWVNWkFQV0JNIiwiSVl5d1FQZl8tNE9hY2Z2S2l1cjRlSnFMa1ZleWRxcnQ1Y2UwMGJReWNNZyIsIlNoZWM2TUNLakIxeHlCVl91QUtvLURlS3ZvQllYbUdBd2VGTWFsd05xbUEiLCJXTXpiR3BZYmhZMkdoNU9pWTRHc2hRU1dQREtSeGVPZndaNEhaQW5YS1RZIiwiajZ6ZFg1OUJYZHlTNFFaTGJITWJ0MzJpenRzWXdkZzRjNkpzWUxNc3ZaMCIsInhKR3Radm41cFM4VEhqVFlJZ3MwS1N5VC1uR3BSR3hDVnp6c1ZEbmMyWkUiXX0sImxpY2Vuc2UiOnsibnVtYmVyIjoxMH0sImNuZiI6eyJqd2siOnsia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIngiOiJUQ0FFUjE5WnZ1M09IRjRqNFc0dmZTVm9ISVAxSUxpbERsczd2Q2VHZW1jIiwieSI6Ilp4amlXV2JaTVFHSFZXS1ZRNGhiU0lpcnNWZnVlY0NFNnQ0alQ5RjJIWlEifX0sIl9zZF9hbGciOiJzaGEtMjU2IiwiX3NkIjpbIl90YnpMeHBaeDBQVHVzV2hPOHRUZlVYU2ZzQjVlLUtrbzl3dmZaaFJrYVkiLCJ1WmNQaHdUTmN4LXpNQU1zemlYMkFfOXlJTGpQSEhobDhEd2pvVXJLVVdZIl19.HAcudVInhNpXkTPQGNosjKTFRJWgKj90NpfloRaDQchGd4zxc1ChWTCCPXzUXTBypASKrzgjZCiXlTr0bzmLAg~WyJHeDZHRUZvR2t6WUpWLVNRMWlDREdBIiwiZGF0ZU9mQmlydGgiLCIyMDAwMDEwMSJd~WyJ1LUt3cmJvMkZfTExQekdSZE1XLUtBIiwibmFtZSIsIkpvaG4iXQ~WyJNV1ZieGJqVFZxUXdLS3h2UGVZdWlnIiwibGFzdE5hbWUiLCJEb2UiXQ~'
+
+  const credential = testSDJWT//mappedCredential.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential // TODO revert
   if (!credential) {
     return Promise.reject(Error('No credential found in credential response'))
   }
 
-  const wrappedVC = CredentialMapper.toWrappedVerifiableCredential(credential)
+  const wrappedVC = CredentialMapper.toWrappedVerifiableCredential(credential, { hasher })
   if (
     wrappedVC.decoded?.iss?.includes('did:ebsi:') ||
     (typeof wrappedVC.decoded?.vc?.issuer === 'string'
@@ -179,7 +182,8 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
 
   const verificationResult: VerificationResult = await verifyCredential(
     {
-      credential: credential as VerifiableCredential,
+      credential,// as VerifiableCredential,
+      hasher,
       // TODO WAL-675 we might want to allow these types of options as part of the context, now we have state machines. Allows us to pre-determine whether these policies apply and whether remote context should be fetched
       fetchRemoteContexts: true,
       policies: {
@@ -198,22 +202,22 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
   }
 }
 
-export const verifyCredential = async (args: IVerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
-  const { credential } = args
+export const verifyCredential = async (args: IVerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => { //IVerifyCredentialArgs
+  const { credential, hasher } = args
 
   return (typeof credential === 'string' && CredentialMapper.isSdJwtEncoded(credential))
-    ? await verifySDJWTCredential({ credential }, context)
+    ? await verifySDJWTCredential({ credential, hasher }, context)
     : await verifyW3CCredential(args, context)
 }
 
 export const verifyW3CCredential = async (args: IVerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
-  const { policies } = args
+  const { credential, policies } = args
 
   const result: IVerifyResult | boolean = (await context.agent.verifyCredential(args))
 
   if (typeof result === 'boolean') {
     return {
-      source: CredentialMapper.toWrappedVerifiableCredential(args.credential as OriginalVerifiableCredential),
+      source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential),
       result,
       subResults: [],
       ...(!result && {
@@ -249,30 +253,29 @@ export const verifyW3CCredential = async (args: IVerifyCredentialArgs, context: 
 }
 
 export const verifySDJWTCredential = async (args: VerifySDJWTCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
-  const { credential } = args
+  const { credential, hasher } = args
 
-  return await context.agent.verifySdJwtVc({ credential })
-    .catch((): CredentialVerificationError => {
-      return {
-        error: 'Invalid SD-JWT VC',
-        errorDetails: 'SD-JWT VC could not be verified',
-      }
-    })
-    .then((error: CredentialVerificationError): VerificationResult => {
-      return {
-        source: CredentialMapper.toWrappedVerifiableCredential(args.credential as OriginalVerifiableCredential),
-        result: !error,
-        subResults: [],
-        ...error,
-      }
-    })
+  const result = await context.agent.verifySdJwtVc({ credential })
+  .catch((error: Error): CredentialVerificationError => {
+    return {
+      error: 'Invalid SD-JWT VC',
+      errorDetails: error.message ?? 'SD-JWT VC could not be verified',
+    }
+  })
+
+  return {
+    source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential, { hasher }),
+    result: !!result.verifiedPayloads,
+    subResults: [],
+    ...(!result.verifiedPayloads && { ...result }),
+  }
 }
 
 export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Promise<MappedCredentialToAccept> => {
   const { credentialToAccept, hasher } = args
 
   // TODO remove
-  const testSDJWT = 'eyJhbGciOiJFZERTQSIsInR5cCI6InZjK3NkLWp3dCJ9.eyJpYXQiOjE3MDA0NjQ3MzYwNzYsImlzcyI6ImRpZDprZXk6c29tZS1yYW5kb20tZGlkLWtleSIsIm5iZiI6MTcwMDQ2NDczNjE3NiwidmN0IjoiaHR0cHM6Ly9oaWdoLWFzc3VyYW5jZS5jb20vU3RhdGVCdXNpbmVzc0xpY2Vuc2UiLCJ1c2VyIjp7Il9zZCI6WyI5QmhOVDVsSG5QVmpqQUp3TnR0NDIzM216MFVVMUd3RmFmLWVNWkFQV0JNIiwiSVl5d1FQZl8tNE9hY2Z2S2l1cjRlSnFMa1ZleWRxcnQ1Y2UwMGJReWNNZyIsIlNoZWM2TUNLakIxeHlCVl91QUtvLURlS3ZvQllYbUdBd2VGTWFsd05xbUEiLCJXTXpiR3BZYmhZMkdoNU9pWTRHc2hRU1dQREtSeGVPZndaNEhaQW5YS1RZIiwiajZ6ZFg1OUJYZHlTNFFaTGJITWJ0MzJpenRzWXdkZzRjNkpzWUxNc3ZaMCIsInhKR3Radm41cFM4VEhqVFlJZ3MwS1N5VC1uR3BSR3hDVnp6c1ZEbmMyWkUiXX0sImxpY2Vuc2UiOnsibnVtYmVyIjoxMH0sImNuZiI6eyJqd2siOnsia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIngiOiJUQ0FFUjE5WnZ1M09IRjRqNFc0dmZTVm9ISVAxSUxpbERsczd2Q2VHZW1jIiwieSI6Ilp4amlXV2JaTVFHSFZXS1ZRNGhiU0lpcnNWZnVlY0NFNnQ0alQ5RjJIWlEifX0sIl9zZF9hbGciOiJzaGEtMjU2IiwiX3NkIjpbIl90YnpMeHBaeDBQVHVzV2hPOHRUZlVYU2ZzQjVlLUtrbzl3dmZaaFJrYVkiLCJ1WmNQaHdUTmN4LXpNQU1zemlYMkFfOXlJTGpQSEhobDhEd2pvVXJLVVdZIl19.HAcudVInhNpXkTPQGNosjKTFRJWgKj90NpfloRaDQchGd4zxc1ChWTCCPXzUXTBypASKrzgjZCiXlTr0bzmLAg~WyJHeDZHRUZvR2t6WUpWLVNRMWlDREdBIiwiZGF0ZU9mQmlydGgiLCIyMDAwMDEwMSJd~WyJ1LUt3cmJvMkZfTExQekdSZE1XLUtBIiwibmFtZSIsIkpvaG4iXQ~WyJNV1ZieGJqVFZxUXdLS3h2UGVZdWlnIiwibGFzdE5hbWUiLCJEb2UiXQ~'
+  const testSDJWT = 'eyJ0eXAiOiJ2YytzZC1qd3QiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJkaWQ6andrOmV5SmhiR2NpT2lKRlV6STFOaUlzSW5WelpTSTZJbk5wWnlJc0ltdDBlU0k2SWtWRElpd2lZM0oySWpvaVVDMHlOVFlpTENKNElqb2lObVJwWTFoVmEyWjBjMDF2UkVoNFIxbFZiMlZWZDBoWVpFVTViSEJLU0ZaQk9VbHVlbU5aUVZkeVRTSXNJbmtpT2lKa09ISmtaVk5CUTJabWFYZE1ZMmxUWTNaR1kxOU1lR0prYlcxNFdtRmFTMDUyV1VoWk0ybG1kM0ZOSW4wIzAiLCJpc3MiOiJkaWQ6andrOmV5SmhiR2NpT2lKRlV6STFOaUlzSW5WelpTSTZJbk5wWnlJc0ltdDBlU0k2SWtWRElpd2lZM0oySWpvaVVDMHlOVFlpTENKNElqb2lTMUIwZFZaWmVtTlNVbWN4ZVRKRldIRkdNaTFrYkc5NGFGQkZZMGRhU0dkVVYwcFZSWGRqV200ME5DSXNJbmtpT2lKMGVtUmlWVlpSWTFGVE4wazRlSGQwYWt0eWRXSllURUZaZDFwTlNUWlhTVzlLTWs4NFQxUnBTMkpCSW4wIzAiLCJpYXQiOjE3MTg4MDExMjAuNDU5LCJ2Y3QiOiIiLCJfc2QiOlsiOGJKWkllNkF2YkwxTW9NYlZjSXE3WmM2M1FnUUxWXzREVk1DcDExVW5EdyIsIkRzMm5TSkVLSFNnTHh1TDNmZ2dFRm9MTzQ1OFF5M2Jfek1SNWdmaWQ2M3ciLCJPb2JHZlA3cWprTGdXNnJfNk9GUXZWU0pXR0V0bU83NE9zam1XaXNuYm9jIiwiYU5wM1pDbExyTGZJdG05Vl9CQk1aX0h0RUVPaFA0dEJLQUFIZG9oR2QzUSIsImMzV180aG83VUk2OFRPR2NJX1ZZYl83S3poZ3JlYkFhbUtSbTFTNVctVDQiLCJtMUN6OGhCaWo3MWtIUy1nQjYxZDNkRElIRVdHbDNyX2Jucy12ZDRKMHdVIl0sIl9zZF9hbGciOiJTSEEtMjU2In0.HUtgsq8YqYfpufKf4U9lRxiCdXAAP4XjAtdNZlRiDgPjg8MR6dyCpQzLlFjdCqaEtpebyCS-hVcb1AXpfAm4Dw~WyJhYzM0ZGE4YWQ1YmJiZmIwYTk0ZGZhZjU1YWU3NDg3NiIsImdpdmVuX25hbWUiLCJKb2huIl0~WyJhYmJiZmNjYWI3YTc4N2FkYWMyNTI3MGI1YWEwMzA3YyIsImZhbWlseV9uYW1lIiwiRGVvIl0~WyI3YThhMGM4ZTc2NDI3MzA2MzEzM2Y1YzJkYjdhYTI1NiIsImVtYWlsIiwiam9obmRlb0BleGFtcGxlLmNvbSJd~WyJhNjI1N2MyZDk3ODlmNWNiMmJjZTc4Zjg0ODA2NDVkNiIsInBob25lIiwiKzEtMjAyLTU1NS0wMTAxIl0~WyI0ZjZjMzI3NGY4ODhhNzVkMDM2ZjI1ZjYyZjkwN2U4ZSIsImFkZHJlc3MiLHsic3RyZWV0X2FkZHJlc3MiOiIxMjMgTWFpbiBTdCIsImxvY2FsaXR5IjoiQW55dG93biIsInJlZ2lvbiI6IkFueXN0YXRlIiwiY291bnRyeSI6IlVTIn1d~WyI5NzYxMmU3YmZkNjFlODI5MmU2ZjZmMzYzZGJiODVlOSIsImJpcnRoZGF0ZSIsIjE5NDAtMDEtMDEiXQ~'//'eyJhbGciOiJFZERTQSIsInR5cCI6InZjK3NkLWp3dCJ9.eyJpYXQiOjE3MDA0NjQ3MzYwNzYsImlzcyI6ImRpZDprZXk6c29tZS1yYW5kb20tZGlkLWtleSIsIm5iZiI6MTcwMDQ2NDczNjE3NiwidmN0IjoiaHR0cHM6Ly9oaWdoLWFzc3VyYW5jZS5jb20vU3RhdGVCdXNpbmVzc0xpY2Vuc2UiLCJ1c2VyIjp7Il9zZCI6WyI5QmhOVDVsSG5QVmpqQUp3TnR0NDIzM216MFVVMUd3RmFmLWVNWkFQV0JNIiwiSVl5d1FQZl8tNE9hY2Z2S2l1cjRlSnFMa1ZleWRxcnQ1Y2UwMGJReWNNZyIsIlNoZWM2TUNLakIxeHlCVl91QUtvLURlS3ZvQllYbUdBd2VGTWFsd05xbUEiLCJXTXpiR3BZYmhZMkdoNU9pWTRHc2hRU1dQREtSeGVPZndaNEhaQW5YS1RZIiwiajZ6ZFg1OUJYZHlTNFFaTGJITWJ0MzJpenRzWXdkZzRjNkpzWUxNc3ZaMCIsInhKR3Radm41cFM4VEhqVFlJZ3MwS1N5VC1uR3BSR3hDVnp6c1ZEbmMyWkUiXX0sImxpY2Vuc2UiOnsibnVtYmVyIjoxMH0sImNuZiI6eyJqd2siOnsia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIngiOiJUQ0FFUjE5WnZ1M09IRjRqNFc0dmZTVm9ISVAxSUxpbERsczd2Q2VHZW1jIiwieSI6Ilp4amlXV2JaTVFHSFZXS1ZRNGhiU0lpcnNWZnVlY0NFNnQ0alQ5RjJIWlEifX0sIl9zZF9hbGciOiJzaGEtMjU2IiwiX3NkIjpbIl90YnpMeHBaeDBQVHVzV2hPOHRUZlVYU2ZzQjVlLUtrbzl3dmZaaFJrYVkiLCJ1WmNQaHdUTmN4LXpNQU1zemlYMkFfOXlJTGpQSEhobDhEd2pvVXJLVVdZIl19.HAcudVInhNpXkTPQGNosjKTFRJWgKj90NpfloRaDQchGd4zxc1ChWTCCPXzUXTBypASKrzgjZCiXlTr0bzmLAg~WyJHeDZHRUZvR2t6WUpWLVNRMWlDREdBIiwiZGF0ZU9mQmlydGgiLCIyMDAwMDEwMSJd~WyJ1LUt3cmJvMkZfTExQekdSZE1XLUtBIiwibmFtZSIsIkpvaG4iXQ~WyJNV1ZieGJqVFZxUXdLS3h2UGVZdWlnIiwibGFzdE5hbWUiLCJEb2UiXQ~'
 
   const credentialResponse: CredentialResponse = credentialToAccept.credentialResponse
 
@@ -281,7 +284,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
     return Promise.reject(Error('No credential found in credential response'))
   }
 
-  const wrappedVerifiableCredential: WrappedVerifiableCredential = await CredentialMapper.toWrappedVerifiableCredentialAsync(verifiableCredential as OriginalVerifiableCredential, { hasher })
+  const wrappedVerifiableCredential: WrappedVerifiableCredential = await CredentialMapper.toWrappedVerifiableCredential(verifiableCredential as OriginalVerifiableCredential, { hasher })
   const uniformVerifiableCredential: IVerifiableCredential = CredentialMapper.isSdJwtDecodedCredential(wrappedVerifiableCredential.credential)
       ? await sdJwtDecodedCredentialToUniformCredential(<SdJwtDecodedVerifiableCredential>wrappedVerifiableCredential.credential)
       : <IVerifiableCredential>wrappedVerifiableCredential.credential

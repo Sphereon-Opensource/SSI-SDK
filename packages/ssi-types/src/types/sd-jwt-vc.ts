@@ -269,6 +269,10 @@ export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher:
   }
 }
 
+type DisclosuresAccumulator = {
+  [key: string]: any;
+};
+
 // TODO naive implementation of mapping a sd-jwt onto a jsonld. Needs some fixes and further implementation
 export async function sdJwtDecodedCredentialToUniformCredential(decoded: SdJwtDecodedVerifiableCredential, opts?: { maxTimeSkewInMS?: number }): Promise<IVerifiableCredential> {
   const {
@@ -283,7 +287,6 @@ export async function sdJwtDecodedCredentialToUniformCredential(decoded: SdJwtDe
     status,
     ...rest
   } = decoded.decodedPayload
-
   const maxSkewInMS = opts?.maxTimeSkewInMS ?? 1500
 
   let expirationDate
@@ -309,9 +312,12 @@ export async function sdJwtDecodedCredentialToUniformCredential(decoded: SdJwtDe
     issuanceDate = nbfDateAsStr
   }
 
-  if (!user || typeof user !== 'object') {
-    throw new Error('No proper user present for credential subject within sd-jwt')
-  }
+  const credentialSubject = decoded.disclosures.reduce((acc: DisclosuresAccumulator, item: { decoded: Array<any>, digest: string, encoded: string }) => {
+    const key = item.decoded[1]
+    acc[key] = item.decoded[2]
+    
+    return acc
+  }, {})
 
   return {
     ...rest,
@@ -319,7 +325,7 @@ export async function sdJwtDecodedCredentialToUniformCredential(decoded: SdJwtDe
     '@context': ['https://www.w3.org/2018/credentials/v1'],
     credentialSubject: {
       ...(sub && { id: sub }),
-      ...user
+      ...credentialSubject
     },
     issuanceDate,
     expirationDate,

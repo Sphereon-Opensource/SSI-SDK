@@ -16,8 +16,8 @@ import {
   Party
 } from '@sphereon/ssi-sdk.data-store'
 import {
-  AsyncHasher,
   CredentialMapper,
+  Hasher,
   IVerifiableCredential,
   JwtDecodedVerifiableCredential,
   Loggers,
@@ -144,7 +144,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
-  private readonly hasher?: AsyncHasher
+  private readonly hasher?: Hasher
 
   constructor(options?: OID4VCIHolderOptions) {
     const {
@@ -479,6 +479,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         async (mappedCredential: MappedCredentialToAccept): Promise<void> =>
           verifyCredentialToAccept({
             mappedCredential,
+            hasher: this.hasher,
             context,
           }),
       ),
