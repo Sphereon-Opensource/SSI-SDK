@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.26.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.25.0...v0.26.0) (2024-06-19)
+
+### Bug Fixes
+
+- a bug in selecting the type of the credential that we're going to request ([c49b237](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c49b237e4d18baef520c59027f1f935df6a127d2))
+- clientId fixes ([4fc568b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/4fc568b852a1d444d32ba7a76e2bb8d8154428a8))
+- clientId fixes ([cad41fc](https://github.com/Sphereon-Opensource/SSI-SDK/commit/cad41fc296a06b7e25dcd957da21eae4d02f7b46))
+- Fixed broken tests ([d01859d](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d01859dae7b04f311ed88bfa622b71201021f80d))
+- updated vci package and fixed getSupportedCredential function ([780a377](https://github.com/Sphereon-Opensource/SSI-SDK/commit/780a37782881da1558f7b97d4d8c0ffd71317d21))
+- updated version of vci and fixed the libs for it ([ceb6074](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ceb60748920fd78d318cb3544f69bef54b365c94))
+- updated version of vci and fixed the libs for it ([de1d6aa](https://github.com/Sphereon-Opensource/SSI-SDK/commit/de1d6aadcea1aac18bcd72a5651e3bb1e9f386d6))
+
+### Features
+
+- Adapted the plugin to accept https urls, added tests and documentation about the changes ([73ab5ae](https://github.com/Sphereon-Opensource/SSI-SDK/commit/73ab5ae19d49229128db067b2fcfa396d7ace466))
+- allow default auth request options for VCI links/machines, like clientId and redirectUri ([434196e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/434196e4ce2f895b43ec9992d682a603aaa612a3))
+- Allow to pass in state for url handler handle methods, allowing a statemachine to continue, without database persistence ([16e06e8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/16e06e8c2b879c6fe706568a48e254ab2693bf78))
+- Run prettier ([2a9be95](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2a9be958378f14ea935a0d0d7d4d4ba254036c43))
+- Support http(s) urls ([b3cc812](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b3cc8126e02ca1ae638180644518ec47cfcafbf7))
+- Updated dependencies on the @sphereon/oid4vci ([00810ff](https://github.com/Sphereon-Opensource/SSI-SDK/commit/00810ff4a11f5b7794fdab431b47ca66f5e8f3f4))
+
 # [0.25.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.24.0...v0.25.0) (2024-06-13)
 
 ### Features

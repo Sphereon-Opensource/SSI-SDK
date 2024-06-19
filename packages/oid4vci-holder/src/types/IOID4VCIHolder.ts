@@ -315,8 +315,7 @@ export type ErrorDetails = {
 export enum RequestType {
   OPENID_INITIATE_ISSUANCE = 'openid-initiate-issuance',
   OPENID_CREDENTIAL_OFFER = 'openid-credential-offer',
-  HTTPS = 'https',
-  HTTP = 'http',
+  URL = 'http',
 }
 
 export type CredentialTypeSelection = ExperimentalSubjectIssuance & {

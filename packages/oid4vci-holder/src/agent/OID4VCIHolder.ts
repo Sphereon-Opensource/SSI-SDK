@@ -269,8 +269,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       !(
         requestData?.uri.startsWith(RequestType.OPENID_INITIATE_ISSUANCE) ||
         requestData?.uri.startsWith(RequestType.OPENID_CREDENTIAL_OFFER) ||
-        requestData?.uri.startsWith(RequestType.HTTPS) ||
-        requestData?.uri.startsWith(RequestType.HTTP)
+        requestData?.uri.startsWith(RequestType.URL)
       )
     ) {
       return Promise.reject(Error(`Invalid OID4VCI credential offer URI: ${requestData?.uri}`))
