@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.agent-config",
-  "version": "0.25.0",
+  "version": "0.26.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,7 +21,6 @@
     "@types/url-parse": "^1.4.8",
     "typescript": "5.4.2"
   },
-  "peerDependencies": {},
   "files": [
     "dist/**/*",
     "src/**/*",
