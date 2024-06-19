@@ -4,11 +4,12 @@ import {
   CredentialOfferFormat,
   CredentialResponse,
   CredentialsSupportedDisplay,
+  getSupportedCredentials,
   getTypesFromObject,
   OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
-import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
+import {getFirstKeyWithRelation, toDidDocument} from '@sphereon/ssi-sdk-ext.did-utils'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -262,13 +263,34 @@ export const getIdentifier = async (args: GetIdentifierArgs): Promise<Identifier
 }
 
 export const getAuthenticationKey = async (args: GetAuthenticationKeyArgs): Promise<_ExtendedIKey> => {
-  const { identifier, context } = args
+  const { identifier, context, offlineWhenNoDIDRegistered } = args
   const agentContext = { ...context, agent: context.agent as TAgent<IResolver & IDIDManager> }
 
-  return (
-    (await getFirstKeyWithRelation(identifier, agentContext, 'authentication', false)) ||
-    ((await getFirstKeyWithRelation(identifier, agentContext, 'verificationMethod', true)) as _ExtendedIKey)
-  )
+  let key: _ExtendedIKey | undefined = undefined
+  try {
+    key =
+      (await getFirstKeyWithRelation(identifier, agentContext, 'authentication', false)) ??
+      (await getFirstKeyWithRelation(identifier, agentContext, 'verificationMethod', false))
+  } catch (e) {
+    if (!e.message.includes('404') || !offlineWhenNoDIDRegistered) {
+      throw e
+    }
+  }
+  if (!key && offlineWhenNoDIDRegistered) {
+    const offlineDID = toDidDocument(identifier)
+    key =
+        (await getFirstKeyWithRelation(identifier, agentContext, 'authentication', false, offlineDID)) ??
+        (await getFirstKeyWithRelation(identifier, agentContext, 'verificationMethod', false, offlineDID))
+    if (!key) {
+      key = identifier.keys
+          .map((key) => key as _ExtendedIKey)
+          .find((key) => key.meta.verificationMethod?.type.includes('authentication') || key.meta.purposes?.includes('authentication'))
+    }
+  }
+  if (!key) {
+    throw Error(`Could not find authentication key for DID ${identifier.did}`)
+  }
+  return key
 }
 
 export const getOrCreatePrimaryIdentifier = async (args: GetOrCreatePrimaryIdentifierArgs): Promise<IIdentifier> => {
@@ -313,28 +335,41 @@ export const createIdentifier = async (args: CreateIdentifierArgs): Promise<IIde
 export const getCredentialConfigsSupported = async (
   args: GetCredentialConfigsSupportedArgs,
 ): Promise<Record<string, CredentialConfigurationSupported>> => {
-  const { client, vcFormatPreferences } = args
+  const { client, vcFormatPreferences, configurationId } = args
+  let { format = undefined, types = undefined } = args
 
-  if (!client.credentialOffer) {
-    return Promise.reject(Error('openID4VCIClient has no credentialOffer'))
+  if (configurationId) {
+    const allSupported = client.getCredentialsSupported(false)
+    return Object.fromEntries(Object.entries(allSupported).filter(([id, supported]) => id === configurationId || supported.id === configurationId))
   }
 
-  // todo: remove format here. This is just a temp hack for V11+ issuance of only one credential. Having a single array with formats for multiple credentials will not work. This should be handled in VCI itself
-  let format: string[] | undefined = undefined
-  if (
-    client.version() > OpenId4VCIVersion.VER_1_0_09 &&
-    typeof client.credentialOffer.credential_offer === 'object' &&
-    'credentials' in client.credentialOffer.credential_offer
-  ) {
-    format = client.credentialOffer.credential_offer.credentials
-      .filter((format: string | CredentialOfferFormat): boolean => typeof format !== 'string')
-      .map((format: string | CredentialOfferFormat) => (format as CredentialOfferFormat).format)
-    if (format?.length === 0) {
-      format = undefined // Otherwise we would match nothing
+  if (!types && !client.credentialOffer) {
+    return Promise.reject(Error('openID4VCIClient has no credentialOffer and no types where provided'))
+  } else if (!format && !client.credentialOffer) {
+    return Promise.reject(Error('openID4VCIClient has no credentialOffer and no formats where provided'))
+  }
+  // We should always have a credential offer at this point given the above
+  if (!Array.isArray(format) && client.credentialOffer) {
+    if (
+      client.version() > OpenId4VCIVersion.VER_1_0_09 &&
+      typeof client.credentialOffer.credential_offer === 'object' &&
+      'credentials' in client.credentialOffer.credential_offer
+    ) {
+      format = client.credentialOffer.credential_offer.credentials
+        .filter((format: string | CredentialOfferFormat): boolean => typeof format !== 'string')
+        .map((format: string | CredentialOfferFormat) => (format as CredentialOfferFormat).format)
+      if (format?.length === 0) {
+        format = undefined // Otherwise we would match nothing
+      }
     }
   }
 
-  const offerSupported = client.getCredentialsSupported(true, format)
+  const offerSupported = getSupportedCredentials({
+    types: types ? [types] : client.getCredentialOfferTypes(),
+    format,
+    version: client.version(),
+    issuerMetadata: client.endpointMetadata.credentialIssuerMetadata,
+  })
   let allSupported: Record<string, CredentialConfigurationSupported>
   if (!Array.isArray(offerSupported)) {
     allSupported = offerSupported

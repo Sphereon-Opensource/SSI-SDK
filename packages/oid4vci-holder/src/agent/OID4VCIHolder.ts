@@ -1,8 +1,9 @@
-import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
+import { MetadataClient, OpenID4VCIClient } from '@sphereon/oid4vci-client'
 import {
   AuthorizationRequestOpts,
   CredentialConfigurationSupported,
   DefaultURISchemes,
+  EndpointMetadataResult,
   getTypesFromObject,
   Jwt,
   NotificationRequest,
@@ -27,22 +28,11 @@ import {
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
 } from '@sphereon/ssi-types'
-import { CredentialPayload, DIDDocument, IAgentPlugin, ProofFormat, VerifiableCredential, W3CVerifiableCredential } from '@veramo/core'
+import { CredentialPayload, DIDDocument, IAgentPlugin, IIdentifier, ProofFormat, VerifiableCredential, W3CVerifiableCredential } from '@veramo/core'
 import { computeEntryHash } from '@veramo/utils'
 import { decodeJWT, JWTHeader } from 'did-jwt'
 import { v4 as uuidv4 } from 'uuid'
 import { OID4VCIMachine } from '../machine/oid4vciMachine'
-import {
-  getCredentialBranding,
-  getCredentialConfigsSupported,
-  getIdentifier,
-  getIssuanceOpts,
-  mapCredentialToAccept,
-  selectCredentialLocaleBranding,
-  signatureAlgorithmFromKey,
-  signJWT,
-  verifyCredentialToAccept,
-} from './OID4VCIHolderService'
 import {
   AddContactIdentityArgs,
   AssertValidCredentialsArgs,
@@ -51,6 +41,7 @@ import {
   GetContactArgs,
   GetCredentialArgs,
   GetCredentialsArgs,
+  GetIssuerMetadataArgs,
   InitiateOID4VCIArgs,
   InitiationData,
   IOID4VCIHolder,
@@ -71,6 +62,17 @@ import {
   StoreCredentialsArgs,
   SupportedDidMethodEnum,
 } from '../types/IOID4VCIHolder'
+import {
+  getCredentialBranding,
+  getCredentialConfigsSupported,
+  getIdentifier,
+  getIssuanceOpts,
+  mapCredentialToAccept,
+  selectCredentialLocaleBranding,
+  signatureAlgorithmFromKey,
+  signJWT,
+  verifyCredentialToAccept,
+} from './OID4VCIHolderService'
 
 /**
  * {@inheritDoc IOID4VCIHolder}
@@ -95,6 +97,30 @@ const logger = Loggers.DEFAULT.options('sphereon:oid4vci:holder', { methods: [Lo
   'sphereon:oid4vci:holder',
 )
 
+export function signCallback(client: OpenID4VCIClient, identifier: IIdentifier, context: RequiredContext) {
+  return (jwt: Jwt, kid?: string) => {
+    let iss = jwt.payload.iss
+
+    if (!jwt.payload.client_id?.startsWith('http') && client.isEBSI()) {
+      iss = jwt.header.kid?.split('#')[0]
+    } else if (!iss) {
+      iss = jwt.header.kid?.split('#')[0]
+    }
+    if (!iss) {
+      return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)}`))
+    }
+    const header = { ...jwt.header, kid } as Partial<JWTHeader>
+    const payload = { ...jwt.payload, ...(iss && { iss }) }
+    return signJWT({
+      identifier,
+      header,
+      payload,
+      options: { issuer: iss, expiresIn: jwt.payload.exp, canonicalize: false },
+      context,
+    })
+  }
+}
+
 export class OID4VCIHolder implements IAgentPlugin {
   readonly eventTypes: Array<OID4VCIHolderEvent> = [
     OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED,
@@ -103,6 +129,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   ]
 
   readonly methods: IOID4VCIHolder = {
+    oid4vciHolderGetIssuerMetadata: this.oid4vciHolderGetIssuerMetadata.bind(this),
     oid4vciHolderGetMachineInterpreter: this.oid4vciHolderGetMachineInterpreter.bind(this),
     oid4vciHolderGetInitiationData: this.oid4vciHolderGetCredentialOfferData.bind(this),
     oid4vciHolderCreateCredentialSelection: this.oid4vciHolderCreateCredentialSelection.bind(this),
@@ -414,27 +441,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     const alg: SignatureAlgorithmEnum = await signatureAlgorithmFromKey({ key })
 
     const callbacks: ProofOfPossessionCallbacks<DIDDocument> = {
-      signCallback: (jwt: Jwt, kid?: string) => {
-        let iss = jwt.payload.iss
-
-        if (client.isEBSI()) {
-          iss = jwt.header.kid?.split('#')[0]
-        } else if (!iss) {
-          iss = jwt.header.kid?.split('#')[0]
-        }
-        if (!iss) {
-          return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)}`))
-        }
-        const header = { ...jwt.header, kid } as Partial<JWTHeader>
-        const payload = { ...jwt.payload, ...(iss && { iss }) }
-        return signJWT({
-          identifier,
-          header,
-          payload,
-          options: { issuer: iss, expiresIn: jwt.payload.exp, canonicalize: false },
-          context,
-        })
-      },
+      signCallback: signCallback(client, identifier, context),
     }
 
     try {
@@ -701,5 +708,10 @@ export class OID4VCIHolder implements IAgentPlugin {
     const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState })
     await client.sendNotification({ notificationEndpoint }, notificationRequest, openID4VCIClientState?.accessTokenResponse?.access_token)
     logger.log(`Notification to ${notificationEndpoint} has been dispatched`)
+  }
+
+  private async oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult> {
+    const { issuer, errorOnNotFound = true } = args
+    return MetadataClient.retrieveAllMetadata(issuer, { errorOnNotFound })
   }
 }

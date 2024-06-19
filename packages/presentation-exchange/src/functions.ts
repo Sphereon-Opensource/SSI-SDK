@@ -2,7 +2,7 @@ import { dereferenceDidKeysWithJwkSupport, getAgentResolver, getIdentifier, getK
 import { _NormalizedVerificationMethod } from '@veramo/utils'
 import { IPEXPresentationSignCallback, IRequiredContext } from './types/IPresentationExchange'
 import { IPresentationDefinition } from '@sphereon/pex'
-import {IKey, PresentationPayload, ProofFormat} from '@veramo/core'
+import { IKey, PresentationPayload, ProofFormat } from '@veramo/core'
 import { CredentialMapper, Optional, OriginalVerifiablePresentation, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { Format } from '@sphereon/pex-models'
 

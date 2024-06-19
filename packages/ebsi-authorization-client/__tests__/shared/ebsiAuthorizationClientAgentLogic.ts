@@ -1,10 +1,7 @@
 import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
-import { Alg, AuthorizationDetails, CredentialIssuerMetadata, CredentialResponse, Jwt } from '@sphereon/oid4vci-common'
+import { Alg, AuthorizationDetails, CredentialResponse, Jwt } from '@sphereon/oid4vci-common'
 import { toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-ignore
-import { from } from '@trust/keyto'
 import { IDIDManager, IIdentifier, IKeyManager, MinimalImportableKey, TAgent } from '@veramo/core'
 import { fetch } from 'cross-fetch'
 //@ts-ignore
@@ -151,12 +148,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           // })).json()
           //
           // console.log(JSON.stringify(token))
-
-          // TODO acquire access token
-          client.endpointMetadata.credentialIssuerMetadata = {
-            ...client.endpointMetadata.credentialIssuerMetadata,
-            authorization_endpoint: 'https://api-conformance.ebsi.eu/conformance/v3/auth-mock',
-          } as CredentialIssuerMetadata
+          client.endpointMetadata!.credentialIssuerMetadata!.authorization_endpoint =
+            client.endpointMetadata?.credentialIssuerMetadata?.authorization_endpoint ?? 'https://api-conformance.ebsi.eu/conformance/v3/auth-mock'
 
           // FIXME fails with invalid code error
           const accessToken = await client.acquireAccessToken({ code: parsedRequest.code })
@@ -242,7 +235,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         .sign(importedJwk)
       console.log(`URL: ${url}&request=${urlWithRequest}`)
       /*  const result = await fetch(`${url}&request=${urlWithRequest}`)
-      console.log(await result.text())*/
+            console.log(await result.text())*/
     })
 
     it.skip('Should retrieve the discovery metadata', async () => {

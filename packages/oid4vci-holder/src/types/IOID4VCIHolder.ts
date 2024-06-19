@@ -31,6 +31,7 @@ import { JWTHeader, JWTPayload } from 'did-jwt'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
+  oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult>
   oid4vciHolderGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<OID4VCIMachine>
   oid4vciHolderGetInitiationData(args: InitiateOID4VCIArgs, context: RequiredContext): Promise<InitiationData>
   oid4vciHolderCreateCredentialSelection(args: CreateCredentialSelectionArgs, context: RequiredContext): Promise<Array<CredentialTypeSelection>>
@@ -57,6 +58,11 @@ export type OID4VCIHolderOptions = {
 export type OnContactIdentityCreatedArgs = {
   contactId: string
   identity: Identity
+}
+
+export type GetIssuerMetadataArgs = {
+  issuer: string
+  errorOnNotFound?: boolean
 }
 
 export type OnCredentialStoredArgs = {
@@ -378,6 +384,9 @@ export type CredentialToAccept = {
 export type GetCredentialConfigsSupportedArgs = {
   client: OpenID4VCIClient
   vcFormatPreferences: Array<string>
+  format?: string[]
+  types?: string[]
+  configurationId?: string
 }
 
 export type GetCredentialBrandingArgs = {
@@ -411,6 +420,7 @@ export type GetIdentifierArgs = {
 
 export type GetAuthenticationKeyArgs = {
   identifier: IIdentifier
+  offlineWhenNoDIDRegistered?: boolean
   context: RequiredContext
 }
 

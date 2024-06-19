@@ -7,7 +7,7 @@ import { createAgent, IAgent, IAgentOptions, IDIDManager, IKeyManager } from '@v
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/src'
-import contactManagerAgentLogic from './shared/ebsiAuthorizationClientrAgentLogic'
+import authClientAgentLogic from './shared/ebsiAuthorizationClientAgentLogic'
 import { IEBSIAuthorizationClient } from '../src'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 
@@ -68,5 +68,5 @@ const testContext = {
 }
 
 describe('REST integration tests', (): void => {
-  contactManagerAgentLogic(testContext)
+  authClientAgentLogic(testContext)
 })

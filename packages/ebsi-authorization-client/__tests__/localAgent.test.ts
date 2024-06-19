@@ -3,7 +3,7 @@ import { DataSource } from 'typeorm'
 
 jest.setTimeout(60000)
 
-import contactManagerAgentLogic from './shared/ebsiAuthorizationClientrAgentLogic'
+import authClientAgentLogic from './shared/ebsiAuthorizationClientAgentLogic'
 
 let dbConnection: Promise<DataSource>
 let agent: any
@@ -30,5 +30,5 @@ const testContext = {
 }
 
 describe('Local integration tests', (): void => {
-  contactManagerAgentLogic(testContext)
+  authClientAgentLogic(testContext)
 })
