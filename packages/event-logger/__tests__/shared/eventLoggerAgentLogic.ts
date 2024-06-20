@@ -3,7 +3,6 @@ import { TAgent } from '@veramo/core'
 import { AuditLoggingEvent, PartyCorrelationType } from '@sphereon/ssi-sdk.core'
 import { GetAuditEventsArgs, IEventLogger, NonPersistedAuditLoggingEvent } from '../../src'
 
-jest.setTimeout(120000)
 type ConfiguredAgent = TAgent<IEventLogger>
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
