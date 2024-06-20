@@ -8,6 +8,7 @@ import {
   ExperimentalSubjectIssuance,
   NotificationRequest,
 } from '@sphereon/oid4vci-common'
+import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
@@ -420,7 +421,8 @@ export type GetIdentifierArgs = {
 export type GetAuthenticationKeyArgs = {
   identifier: IIdentifier
   offlineWhenNoDIDRegistered?: boolean
-  context: RequiredContext
+  noVerificationMethodFallback?: boolean
+  context: IAgentContext<IResolver & IDIDManager & IKeyManager>
 }
 
 export type GetOrCreatePrimaryIdentifierArgs = {
@@ -479,17 +481,18 @@ export type KeyTypeFromCryptographicSuiteArgs = {
   suite: string
 }
 
+export type IRequiredSignAgentContext = IAgentContext<IKeyManager & IDIDManager & IResolver>
 export type SignJwtArgs = {
-  identifier: IIdentifier
+  idOpts: IIdentifierOpts
   header: Partial<JWTHeader>
   payload: Partial<JWTPayload>
   options: { issuer: string; expiresIn?: number; canonicalize?: boolean }
-  context: RequiredContext
+  context: IRequiredSignAgentContext
 }
 
 export type GetSignerArgs = {
-  identifier: IIdentifier
-  context: RequiredContext
+  idOpts: IIdentifierOpts
+  context: IRequiredSignAgentContext
 }
 
 export type GetCredentialArgs = {
@@ -530,5 +533,5 @@ export type IdentifierOpts = {
 }
 
 export type RequiredContext = IAgentContext<
-  IIssuanceBranding | IContactManager | ICredentialVerifier | ICredentialIssuer | IDataStore | IDataStoreORM | IDIDManager | IResolver | IKeyManager
+  IIssuanceBranding & IContactManager & ICredentialVerifier & ICredentialIssuer & IDataStore & IDataStoreORM & IDIDManager & IResolver & IKeyManager
 >

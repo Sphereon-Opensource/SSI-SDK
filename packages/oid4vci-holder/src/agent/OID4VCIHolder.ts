@@ -9,6 +9,7 @@ import {
   NotificationRequest,
   ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
+import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   CorrelationIdentifierType,
   CredentialRole,
@@ -28,7 +29,7 @@ import {
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
 } from '@sphereon/ssi-types'
-import { CredentialPayload, DIDDocument, IAgentPlugin, IIdentifier, ProofFormat, VerifiableCredential, W3CVerifiableCredential } from '@veramo/core'
+import { CredentialPayload, DIDDocument, IAgentPlugin, ProofFormat, VerifiableCredential, W3CVerifiableCredential } from '@veramo/core'
 import { computeEntryHash } from '@veramo/utils'
 import { decodeJWT, JWTHeader } from 'did-jwt'
 import { v4 as uuidv4 } from 'uuid'
@@ -45,6 +46,7 @@ import {
   InitiateOID4VCIArgs,
   InitiationData,
   IOID4VCIHolder,
+  IRequiredSignAgentContext,
   IssuanceOpts,
   MappedCredentialToAccept,
   OID4VCIHolderEvent,
@@ -97,9 +99,20 @@ const logger = Loggers.DEFAULT.options('sphereon:oid4vci:holder', { methods: [Lo
   'sphereon:oid4vci:holder',
 )
 
-export function signCallback(client: OpenID4VCIClient, identifier: IIdentifier, context: RequiredContext) {
+export function signCallback(client: OpenID4VCIClient, idOpts: IIdentifierOpts, context: IRequiredSignAgentContext) {
   return (jwt: Jwt, kid?: string) => {
     let iss = jwt.payload.iss
+
+    if (!kid) {
+      kid = jwt.header.kid
+    }
+    if (!kid) {
+      kid = idOpts.kid
+    }
+    if (kid) {
+      // sync back to id opts
+      idOpts.kid = kid
+    }
 
     if (!jwt.payload.client_id?.startsWith('http') && client.isEBSI()) {
       iss = jwt.header.kid?.split('#')[0]
@@ -109,10 +122,10 @@ export function signCallback(client: OpenID4VCIClient, identifier: IIdentifier, 
     if (!iss) {
       return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)}`))
     }
-    const header = { ...jwt.header, kid } as Partial<JWTHeader>
+    const header = { ...jwt.header, ...(kid && { kid }) } as Partial<JWTHeader>
     const payload = { ...jwt.payload, ...(iss && { iss }) }
     return signJWT({
-      identifier,
+      idOpts,
       header,
       payload,
       options: { issuer: iss, expiresIn: jwt.payload.exp, canonicalize: false },
@@ -436,11 +449,12 @@ export class OID4VCIHolder implements IAgentPlugin {
     if (!issuanceOpt) {
       return Promise.reject(Error(`Cannot get credential issuance options`))
     }
-    const { identifier, key, kid } = await getIdentifier({ issuanceOpt, context })
+    const idOpts = await getIdentifier({ issuanceOpt, context })
+    const { key, kid } = idOpts
     const alg: SignatureAlgorithmEnum = await signatureAlgorithmFromKey({ key })
 
     const callbacks: ProofOfPossessionCallbacks<DIDDocument> = {
-      signCallback: signCallback(client, identifier, context),
+      signCallback: signCallback(client, idOpts, context),
     }
 
     try {
@@ -655,7 +669,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           throw Error(`Could not issue holder credential from the wallet`)
         }
         logger.log(`Holder ${issuedVC.issuer} issued new credential with id ${issuedVC.id}`, issuedVC)
-        holderCredential = CredentialMapper.storedCredentialToOriginalFormat(issuedVC)
+        holderCredential = CredentialMapper.storedCredentialToOriginalFormat(issuedVC as IVerifiableCredential)
         persist = event === 'credential_accepted_holder_signed'
       }
 

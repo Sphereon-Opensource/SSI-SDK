@@ -1,12 +1,12 @@
 import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
 import { Alg, AuthorizationDetails, CredentialResponse, Jwt } from '@sphereon/oid4vci-common'
-import { toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
+import { toJwk, JWK as SphereonJWK } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import { IDIDManager, IIdentifier, IKeyManager, MinimalImportableKey, TAgent } from '@veramo/core'
 import { fetch } from 'cross-fetch'
 //@ts-ignore
 import express, { Application, NextFunction, Request, Response } from 'express'
-import { importJWK, JWK, SignJWT } from 'jose'
+import { importJWK, SignJWT, JWK } from 'jose'
 import * as http from 'node:http'
 import { EbsiEnvironment, IEBSIAuthorizationClient, ScopeByDefinition } from '../../src'
 
@@ -60,11 +60,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     provider: 'did:ebsi',
   }
 
-  const jwk: JWK = toJwk(secp256r1.privateKeyHex, 'Secp256r1', { isPrivateKey: true })
+  const jwk: SphereonJWK = toJwk(secp256r1.privateKeyHex, 'Secp256r1', { isPrivateKey: true })
   const kid = `${identifier.did}#keys-1`
 
   async function proofOfPossessionCallbackFunction(args: Jwt, kid?: string): Promise<string> {
-    const importedJwk = await importJWK(jwk)
+    const importedJwk = await importJWK(jwk as JWK)
     return await new SignJWT({ ...args.payload })
       .setProtectedHeader({ ...args.header, kid: kid! })
       .setIssuer(identifier.did)

@@ -1,6 +1,6 @@
 import { IOID4VCIHolder } from '@sphereon/ssi-sdk.oid4vci-holder'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
-import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap } from '@veramo/core'
+import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { Format, PresentationDefinitionV2 } from '@sphereon/pex-models'
 import { DiscoveryMetadataPayload, JWK } from '@sphereon/did-auth-siop'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
@@ -202,4 +202,6 @@ export type GetOIDProviderMetadataResponse = EBSIOIDMetadata
 export type GetOIDProviderJwksResponse = GetOIDProviderJwksSuccessResponse | ExceptionResponse
 export type GetPresentationDefinitionResponse = GetPresentationDefinitionSuccessResponse
 export type GetAccessTokenResponse = GetAccessTokenSuccessResponse | ExceptionResponse
-export type IRequiredContext = IAgentContext<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IPresentationExchange & IOID4VCIHolder>
+export type IRequiredContext = IAgentContext<
+  IKeyManager & IDIDManager & IResolver & IDidAuthSiopOpAuthenticator & IPresentationExchange & IOID4VCIHolder
+>

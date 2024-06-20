@@ -82,7 +82,7 @@ server:
           messagingServiceEndpoint: /messaging
 
 keyManager:
-  $require: '@veramo/key-manager#KeyManager'
+  $require: '@sphereon/ssi-sdk-ext.key-manager#SphereonKeyManager'
   $args:
     - store:
         $require: '@veramo/data-store#KeyStore'
@@ -90,7 +90,7 @@ keyManager:
           - $ref: /dbConnection
       kms:
         local:
-          $require: '@sphereon/ssi-sdk-ext.kms-local#KeyManagementSystem'
+          $require: '@sphereon/ssi-sdk-ext.kms-local#SphereonKeyManagementSystem'
           $args:
             - $require: '@veramo/data-store#PrivateKeyStore'
               $args:

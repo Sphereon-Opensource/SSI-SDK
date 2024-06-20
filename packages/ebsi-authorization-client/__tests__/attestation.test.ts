@@ -4,7 +4,7 @@ import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { IOID4VCIHolder } from '@sphereon/ssi-sdk.oid4vci-holder'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import { IDIDManager, IIdentifier, IKeyManager, MinimalImportableKey, TAgent } from '@veramo/core'
+import {IDIDManager, IIdentifier, IKeyManager, IResolver, MinimalImportableKey, TAgent} from '@veramo/core'
 // @ts-ignore
 import cors from 'cors'
 
@@ -16,7 +16,7 @@ import { DataSource } from 'typeorm'
 import { ebsiCreateAttestationRequestAuthURL } from '../src/functions'
 
 let dbConnection: Promise<DataSource>
-let agent: TAgent<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IPresentationExchange & IOID4VCIHolder>
+let agent: TAgent<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IPresentationExchange & IOID4VCIHolder & IResolver>
 let app: Express | undefined
 let server: Server<any, any> | undefined
 const port = 3333
@@ -47,7 +47,7 @@ jest.setTimeout(600000)
 const setup = async (): Promise<boolean> => {
   const config = await getConfig('packages/ebsi-authorization-client/agent.yml')
   const { localAgent, db } = await createObjects(config, { localAgent: '/agent', db: '/dbConnection' })
-  agent = localAgent as TAgent<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IPresentationExchange & IOID4VCIHolder>
+  agent = localAgent as TAgent<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IPresentationExchange & IOID4VCIHolder & IResolver>
   dbConnection = db
 
   app = express()
@@ -88,7 +88,10 @@ describe('attestation client should', () => {
   let identifier: IIdentifier
   beforeAll(async (): Promise<void> => {
     await setup()
-    identifier = await agent.didManagerCreate({ provider: 'did:ebsi', options: { secp256k1Key: secp256k1PrivateKey, secp256r1Key: secp256r1PrivateKey } })
+    identifier = await agent.didManagerCreate({
+      provider: 'did:ebsi',
+      options: { secp256k1Key: secp256k1PrivateKey, secp256r1Key: secp256r1PrivateKey },
+    })
     console.log(identifier.did)
   })
 

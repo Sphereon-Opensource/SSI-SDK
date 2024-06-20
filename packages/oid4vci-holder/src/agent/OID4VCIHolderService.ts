@@ -9,7 +9,7 @@ import {
   OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
-import {getFirstKeyWithRelation, toDidDocument} from '@sphereon/ssi-sdk-ext.did-utils'
+import { getFirstKeyWithRelation, getKey, getIdentifier as getIdentifierFromOpts, toDidDocument } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -263,14 +263,14 @@ export const getIdentifier = async (args: GetIdentifierArgs): Promise<Identifier
 }
 
 export const getAuthenticationKey = async (args: GetAuthenticationKeyArgs): Promise<_ExtendedIKey> => {
-  const { identifier, context, offlineWhenNoDIDRegistered } = args
+  const { identifier, context, offlineWhenNoDIDRegistered, noVerificationMethodFallback = false } = args
   const agentContext = { ...context, agent: context.agent as TAgent<IResolver & IDIDManager> }
 
   let key: _ExtendedIKey | undefined = undefined
   try {
     key =
       (await getFirstKeyWithRelation(identifier, agentContext, 'authentication', false)) ??
-      (await getFirstKeyWithRelation(identifier, agentContext, 'verificationMethod', false))
+      (noVerificationMethodFallback ? undefined : await getFirstKeyWithRelation(identifier, agentContext, 'verificationMethod', false))
   } catch (e) {
     if (!e.message.includes('404') || !offlineWhenNoDIDRegistered) {
       throw e
@@ -279,12 +279,12 @@ export const getAuthenticationKey = async (args: GetAuthenticationKeyArgs): Prom
   if (!key && offlineWhenNoDIDRegistered) {
     const offlineDID = toDidDocument(identifier)
     key =
-        (await getFirstKeyWithRelation(identifier, agentContext, 'authentication', false, offlineDID)) ??
-        (await getFirstKeyWithRelation(identifier, agentContext, 'verificationMethod', false, offlineDID))
+      (await getFirstKeyWithRelation(identifier, agentContext, 'authentication', false, offlineDID)) ??
+      (noVerificationMethodFallback ? undefined : await getFirstKeyWithRelation(identifier, agentContext, 'verificationMethod', false, offlineDID))
     if (!key) {
       key = identifier.keys
-          .map((key) => key as _ExtendedIKey)
-          .find((key) => key.meta.verificationMethod?.type.includes('authentication') || key.meta.purposes?.includes('authentication'))
+        .map((key) => key as _ExtendedIKey)
+        .find((key) => key.meta.verificationMethod?.type.includes('authentication') || key.meta.purposes?.includes('authentication'))
     }
   }
   if (!key) {
@@ -550,20 +550,20 @@ export const signatureAlgorithmFromKey = async (args: SignatureAlgorithmFromKeyA
 }
 
 export const signJWT = async (args: SignJwtArgs): Promise<string> => {
-  const { identifier, header, payload, context, options } = args
+  const { idOpts, header, payload, context, options } = args
   const jwtOptions = {
     ...options,
-    signer: await getSigner({ identifier, context }),
+    signer: await getSigner({ idOpts, context }),
   }
 
   return createJWT(payload, jwtOptions, header)
 }
 
 export const getSigner = async (args: GetSignerArgs): Promise<Signer> => {
-  const { identifier, context } = args
-  // TODO currently we assume an identifier only has one key
-  const key = identifier.keys[0]
-  // TODO See if this is mandatory for a correct JWT
+  const { idOpts, context } = args
+
+  const identifier = await getIdentifierFromOpts(idOpts, context)
+  const key = await getKey(identifier, idOpts.verificationMethodSection, context, idOpts.kid)
   const algorithm = await signatureAlgorithmFromKey({ key })
 
   return async (data: string | Uint8Array): Promise<string> => {

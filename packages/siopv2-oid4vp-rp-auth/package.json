@@ -16,7 +16,7 @@
   "dependencies": {
     "@sphereon/did-auth-siop": "0.6.4",
     "@sphereon/pex": "^3.3.3",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.21.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.21.1-next.4",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@sphereon/ssi-sdk.pd-manager": "workspace:*",
