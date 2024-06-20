@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.26.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.25.0...v0.26.0) (2024-06-19)
+
+### Bug Fixes
+
+- Make sure we import path/fs only when really needed for object-creation. Ensure we use agent-config plugin only in places it is needed ([76b4f53](https://github.com/Sphereon-Opensource/SSI-SDK/commit/76b4f53693ba6105fc00bdd93d78587defc9e183))
+
 # [0.25.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.24.0...v0.25.0) (2024-06-13)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local

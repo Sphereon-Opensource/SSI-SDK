@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.26.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.25.0...v0.26.0) (2024-06-19)
+
+### Features
+
+- Allow to pass in options when emitting link handler events ([0293342](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/02933423f1e3c68621b4fc80c574b531e47211b4))
+- Allow to pass in state for url handler handle methods, allowing a statemachine to continue, without database persistence ([16e06e8](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/16e06e8c2b879c6fe706568a48e254ab2693bf78))
+
 # [0.25.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.24.0...v0.25.0) (2024-06-13)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.core

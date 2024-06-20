@@ -260,9 +260,9 @@ export class ExpressBuilder {
     this._handlers && this._handlers.length > 0 && app.use(this._handlers)
     // @ts-ignore
     opts?.handlers && app.use(opts.handlers)
-
+    //fixme: this should come from the config
     app.use(bodyParser.urlencoded({ extended: true }))
-    app.use(bodyParser.json())
+    app.use(bodyParser.json({ limit: '5mb' }))
     return app
   }
 }
