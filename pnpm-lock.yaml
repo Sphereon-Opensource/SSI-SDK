@@ -228,11 +228,11 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -468,14 +468,14 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-provider-ebsi':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -517,14 +517,17 @@ importers:
         specifier: 0.12.0
         version: 0.12.0
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
+      '@sphereon/ssi-sdk.data-store':
+        specifier: workspace:*
+        version: link:../data-store
       '@transmute/json-web-signature':
         specifier: 0.7.0-unstable.81
         version: 0.7.0-unstable.81
@@ -564,9 +567,6 @@ importers:
       jose:
         specifier: ^5.3.0
         version: 5.3.0
-      tunnelmole:
-        specifier: ^2.2.14
-        version: 2.2.14
       typeorm:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -801,11 +801,11 @@ importers:
         specifier: 0.12.0
         version: 0.12.0
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -880,8 +880,8 @@ importers:
         specifier: 0.12.0
         version: 0.12.0
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -999,17 +999,17 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1132,8 +1132,8 @@ importers:
         specifier: 0.12.0
         version: 0.12.0
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1348,8 +1348,8 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1477,8 +1477,8 @@ importers:
         specifier: ^0.6.1
         version: 0.6.1
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@veramo/utils':
         specifier: 4.2.0
         version: 4.2.0
@@ -1496,17 +1496,17 @@ importers:
         specifier: ^0.6.1
         version: 0.6.1
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@types/node':
         specifier: 18.15.3
         version: 18.15.3
@@ -1566,8 +1566,8 @@ importers:
         specifier: 2.2.4
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1639,8 +1639,8 @@ importers:
         specifier: ^3.3.3
         version: 3.3.3
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1770,8 +1770,8 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -2065,14 +2065,14 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2117,11 +2117,11 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -2249,11 +2249,11 @@ importers:
         specifier: ^2.4.1-unstable.0
         version: 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2346,17 +2346,17 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/ssi-sdk-ext.did-provider-key':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-provider-lto':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(typescript@5.4.2)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(typescript@5.4.2)
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@transmute/lds-ecdsa-secp256k1-recovery2020':
         specifier: ^0.0.7
         version: 0.0.7
@@ -2430,8 +2430,8 @@ importers:
   packages/vc-status-list:
     dependencies:
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -2476,8 +2476,8 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2525,8 +2525,8 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2571,11 +2571,11 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2713,17 +2713,17 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2959,11 +2959,11 @@ importers:
         version: 2.0.6
     devDependencies:
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.21.1-next.4
-        version: 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-next.5
+        version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@types/body-parser':
         specifier: ^1.19.2
         version: 1.19.5
@@ -7422,12 +7422,12 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-provider-ebsi@0.21.1-next.4(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-Kh23b99lrBWWNOormYM1/+7jIw9HQPb+xztFdiAVhZhAPQPVyvzpPwalyckJAZp2G/cT9is+p3k+AFsK+pNP6A==}
+  /@sphereon/ssi-sdk-ext.did-provider-ebsi@0.21.1-next.5(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-ndhMcEL9hNREfc4aEXZztCMJgnAt5TlItP4Ac8lkUG9Zgq7EqskiYvS4rns/6wu3z/iiuHV+cqr1Cl3JTx+nFg==}
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/ssi-sdk-ext.did-resolver-ebsi': 0.21.1-next.4
-      '@sphereon/ssi-sdk-ext.key-utils': 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-resolver-ebsi': 0.21.1-next.5
+      '@sphereon/ssi-sdk-ext.key-utils': 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
       '@veramo/did-provider-key': 4.2.0
@@ -7449,12 +7449,12 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.21.1-next.4(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-Ljk22mOp7tZtb+R1q37Y+XD6lyDb+gWlU4hExkH/20QFoiM1vOLytWMcOp8gwaBOlIEDp/YvINzWyoaJzlmzkQ==}
+  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.21.1-next.5(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-3oAHkJgGGPXB4HxeRJ9Q2WKAMcqf+5Ir3rEnIlkst/jWe3/bCZfljR9iv511Q6L8Jd+Zz7gNLilE292Scb/5gA==}
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/ssi-sdk-ext.did-utils': 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -7473,11 +7473,11 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-provider-key@0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-fTo1AsQ/GZXgEGHv+1y+JVZqzat5oeDWHzpGjH8R4Zc9qDXaonh9n9Vwd2uw6zBakzeT73iIEySE2a9avc87ng==}
+  /@sphereon/ssi-sdk-ext.did-provider-key@0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-uUHDwFYK7jC457UhOcjZ/TAKKjgiewOZ4GkDQZdorrFea9w5DtYjg1O1GQ/xBKe4e6XFxZ/N/4dtGaYE05cCgA==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@transmute/did-key-bls12381': 0.3.0-unstable.10
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
@@ -7497,8 +7497,8 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-provider-lto@0.21.1-next.4(typescript@5.4.2):
-    resolution: {integrity: sha512-ek9kFWRnA9titwzmloyVgV1lfrPfNJAvgfkAJD3TKAp8q8dEqf1ccXjFH9R4V0ol2TW/thyn2R1No/y9bcnRTg==}
+  /@sphereon/ssi-sdk-ext.did-provider-lto@0.21.1-next.5(typescript@5.4.2):
+    resolution: {integrity: sha512-YV0uLALzhd7VHZCZi7q0KSrsvgR5RAKodnTTFFYwCGQBHoQkp/EdPfG553fnWixgayxd46mwgEfZjqQPFRvv9g==}
     dependencies:
       '@lto-network/lto-crypto': 1.1.1
       '@lto-network/lto-transactions': 1.2.12(debug@4.3.5)(typescript@5.4.2)
@@ -7515,8 +7515,8 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-resolver-ebsi@0.21.1-next.4:
-    resolution: {integrity: sha512-adW5F6+msEj4ztjiWVLO2JIvV0wMt/t90bt5OrGdUBMCV5lRcWxXYnoiKErsqI2/tTj8sVMB86wkzSzAXl2uJA==}
+  /@sphereon/ssi-sdk-ext.did-resolver-ebsi@0.21.1-next.5:
+    resolution: {integrity: sha512-bHg3Lk5xoJNqFPgibltxfGuFZxiEUL2l55ze2mK7oYJGfYlt0B79ElWTM4Ox+Qc29uHCj8X7CfJAcOWoKpUUGg==}
     dependencies:
       cross-fetch: 3.1.8
       did-resolver: 4.1.0
@@ -7525,8 +7525,8 @@ packages:
       - encoding
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.21.1-next.4:
-    resolution: {integrity: sha512-nxZ2FIkek6XCbZM8ndoPWamRVJXhoWb9eKx6YXMLPJX3XMBAMcp25c7F0DrPWtYMa0TEF4lcGo80+o2vTSoVFw==}
+  /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.21.1-next.5:
+    resolution: {integrity: sha512-C+yplFZevYZeDMq12Cjjh2BHKx5sFcv1fmNJwT3f8NjMynK4Jun5bG/mfW3tCbkNYXXGKMIty0HYBQhKmp244A==}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       base64url: 3.0.1
@@ -7536,10 +7536,10 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@sphereon/ssi-sdk-ext.did-resolver-key@0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-4Kj3CSa/UGUULv5y2UOHhjZRBI8sbTwqPaAqalhTzfeJLm1+/gxFFz8QkjRPBHfqsB20t0+A9VQnuC3rhmpqQg==}
+  /@sphereon/ssi-sdk-ext.did-resolver-key@0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-kzDIKe2jgb1hZb3XCxomzaVO0JCTTjfE04gBuny/6DrFSb6iffIdSir8dyeSfkr+pdkhWI81KFNUxmv1rfo/uQ==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.key-utils': 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@stablelib/ed25519': 1.0.3
       bigint-mod-arith: 3.3.1
       did-resolver: 4.1.0
@@ -7559,12 +7559,12 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-utils@0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-kG0jzLHoDWuVr94oLB/CZpjsyzn0rpZDJV2XxdUp0eF0GCb4EYTIGRPWUWqXfxpZyJwsOrXtISqL9ROYH6SWwg==}
+  /@sphereon/ssi-sdk-ext.did-utils@0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-g/Sp/oaYjsH1cP0aQMuyDiyI9xvrNmYMjOR9PljYAiq/If/PQ9gldnp2M/iN/vSaEdV0G6yFI+bq8HWcyo77rQ==}
     dependencies:
       '@ethersproject/transactions': 5.7.0
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/ssi-sdk-ext.key-utils': 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -7582,10 +7582,10 @@ packages:
       - react-native-securerandom
       - supports-color
 
-  /@sphereon/ssi-sdk-ext.key-manager@0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-bJA/kqf/zLX8lOMbOgzwbcJm1XpnFMOnA3mYkGsoUOJiKOS0AP+d6pEbF1qJz8YqmaQ2y44A7jkucYlK4UKYHA==}
+  /@sphereon/ssi-sdk-ext.key-manager@0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-MK31DY/kXpPuoheDoA5rPugTjFZWxEuMEwBuoduLk1/4xNU/wxA/Ly1/5XK12FHJoGpQC0iDBHe1OmRp1VZPiA==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.kms-local': 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.kms-local': 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
     transitivePeerDependencies:
@@ -7598,8 +7598,8 @@ packages:
       - react-native-securerandom
       - supports-color
 
-  /@sphereon/ssi-sdk-ext.key-utils@0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-qOOCY5mA/FtTbr3iVSj5d2RleIeoktKN37I5A1rCeItTevKI4VOlXZABxEl4II+M64lZ3EJH8O8qGY2hGXc2vQ==}
+  /@sphereon/ssi-sdk-ext.key-utils@0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-V0KXzz5OipJiZipoXBu66TmjFpXdKqS582T+VH/Sv92ehyrgFkiA1wqlyVin9zzqzML/aV3H4liQT956g0w9RA==}
     dependencies:
       '@ethersproject/random': 5.7.0
       '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -7624,8 +7624,8 @@ packages:
       - react-native-securerandom
       - supports-color
 
-  /@sphereon/ssi-sdk-ext.kms-local@0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
-    resolution: {integrity: sha512-IPuEMzXHb78g7sBTIszTl1iategoMv1lDulNiBvq2xv6rvvHeccDay8gt586WY0HV1N6Y3gUtygoqFWhGctRng==}
+  /@sphereon/ssi-sdk-ext.kms-local@0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-ajKmID67jx/X+fdjkSYYqqvGgBMIXPukfmHznz4vLuD1n6A39s/QwRnxU04Ddqv8BpBkXccgIkXi9VE2f3unpw==}
     peerDependencies:
       '@mattrglobal/bbs-signatures': ^1.3.1
     peerDependenciesMeta:
@@ -7633,8 +7633,8 @@ packages:
         optional: true
     dependencies:
       '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.did-utils': 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.21.1-next.4(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@trust/keyto': 2.0.0-alpha1
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
@@ -8364,13 +8364,6 @@ packages:
       '@types/node': 18.19.33
     dev: true
 
-  /@types/commander@2.12.2:
-    resolution: {integrity: sha512-0QEFiR8ljcHp9bAbWxecjVRuAMr16ivPiGOw6KFQBVrVd0RQIcM3xKdRisH2EDWgVWujiYtHwhSkSUoAAGzH7Q==}
-    deprecated: This is a stub types definition for commander (https://github.com/tj/commander.js). commander provides its own type definitions, so you don't need @types/commander installed!
-    dependencies:
-      commander: 10.0.1
-    dev: true
-
   /@types/connect@3.4.38:
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
     dependencies:
@@ -8417,10 +8410,6 @@ packages:
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
     dependencies:
       '@types/ms': 0.7.34
-
-  /@types/deep-equal@1.0.4:
-    resolution: {integrity: sha512-tqdiS4otQP4KmY0PR3u6KbZ5EWvhNdUoS/jc93UuK23C220lOZ/9TvjfxdPcKvqwwDVtmtSCrnr0p/2dirAxkA==}
-    dev: true
 
   /@types/dotenv-flow@3.3.3:
     resolution: {integrity: sha512-aJjBsKw4bfGjvaRwrxBtEOfYZxCAq+LiFTpZ4DGTEK2b9eLVt/IAClapSxMfgV4Mi/2bIBKKjoTCO0lOh4ACLg==}
@@ -8500,10 +8489,6 @@ packages:
     dependencies:
       '@types/through': 0.0.33
       rxjs: 7.8.1
-    dev: true
-
-  /@types/is-number@7.0.5:
-    resolution: {integrity: sha512-NGmRpXeZg9qDX+AlmBeq4Xk9ruTMj0KfzspDCxTLAcpbts2EjojAvY6A1eumKHInMwGY4xHM8ILA9CHRHfUUWA==}
     dev: true
 
   /@types/istanbul-lib-coverage@2.0.6:
@@ -8607,29 +8592,10 @@ packages:
       - supports-color
     dev: true
 
-  /@types/node-fetch@2.6.11:
-    resolution: {integrity: sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==}
-    dependencies:
-      '@types/node': 18.19.33
-      form-data: 4.0.0
-    dev: true
-
   /@types/node-forge@1.3.11:
     resolution: {integrity: sha512-FQx220y22OKNTqaByeBGqHWYz4cl94tpcxeFdvBo3wjG6XPBuZ0BNgNZRV5J5TFmmcsJ4IzsLkmGRiQbnYsBEQ==}
     dependencies:
       '@types/node': 18.19.33
-
-  /@types/node-localstorage@1.3.3:
-    resolution: {integrity: sha512-Wkn5g4eM5x10UNV9Xvl9K6y6m0zorocuJy4WjB5muUdyMZuPbZpSJG3hlhjGHe1HGxbOQO7RcB+jlHcNwkh+Jw==}
-    dependencies:
-      '@types/node': 18.19.33
-    dev: true
-
-  /@types/node-persist@3.1.8:
-    resolution: {integrity: sha512-QLidg6/SadZYPrTKxtxL1A85XBoQlG40bhoMdhu6DH6+eNCMr2j+RGfFZ9I9+IY8W/PDwQonJ+iBWD62jZjMfg==}
-    dependencies:
-      '@types/node': 18.19.33
-    dev: true
 
   /@types/node@18.15.13:
     resolution: {integrity: sha512-N+0kuo9KgrUQ1Sn/ifDXsvg0TTleP7rIy4zOBGECxAljqvqfqpTfzx0Q1NUedOixRMBfe2Whhb056a42cWs26Q==}
@@ -8735,12 +8701,6 @@ packages:
       '@types/send': 0.17.4
     dev: true
 
-  /@types/source-map-support@0.5.10:
-    resolution: {integrity: sha512-tgVP2H469x9zq34Z0m/fgPewGhg/MLClalNOiPIzQlXrSS2YrKu/xCdSCKnEDwkFha51VKEKB6A9wW26/ZNwzA==}
-    dependencies:
-      source-map: 0.6.1
-    dev: true
-
   /@types/stack-utils@2.0.3:
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
 
@@ -8775,12 +8735,7 @@ packages:
 
   /@types/validator@13.11.10:
     resolution: {integrity: sha512-e2PNXoXLr6Z+dbfx5zSh9TRlXJrELycxiaXznp4S5+D2M3b9bqJEitNHA5923jhnB2zzFiZHa2f0SI1HoIahpg==}
-
-  /@types/ws@7.4.7:
-    resolution: {integrity: sha512-JQbbmxZTZehdc2iszGKs5oC3NFnjeay7mtAWrdt7qNtAVK0g19muApzAy4bm9byz79xa2ZnO/BOBC2R8RC5Lww==}
-    dependencies:
-      '@types/node': 18.19.33
-    dev: true
+    dev: false
 
   /@types/ws@8.5.3:
     resolution: {integrity: sha512-6YOoWjruKj1uLf3INHH7D3qTXwFfEsg1kf3c0uDdSBJwfa/llkwIjrAGV7j7mVgGNbzTQ3HiHKKDXl6bJPD97w==}
@@ -9804,10 +9759,6 @@ packages:
   /appdirsjs@1.2.7:
     resolution: {integrity: sha512-Quji6+8kLBC3NnBeo14nPDq0+2jUs5s3/xEye+udFHumHhRk4M7aAMXp/PBJqkKYGuuyR9M/6Dq7d2AViiGmhw==}
 
-  /append-field@1.0.0:
-    resolution: {integrity: sha512-klpgFSWLW1ZEs8svjfb7g4qWY0YS5imI82dTg+QahUvJ8YqAY0P10Uk8tTyh9ZGuYEZEMaeJYCF5BFuX552hsw==}
-    dev: true
-
   /aproba@2.0.0:
     resolution: {integrity: sha512-lYe4Gx7QT+MKGbDsA+Z+he/Wtef0BiwDOlK/XkBrdfsh9J/jPPXbX0tE9x9cl27Tmu5gg3QUbUrQYa/y+KOHPQ==}
 
@@ -10498,13 +10449,6 @@ packages:
       mv: 2.1.1
       safe-json-stringify: 1.2.0
 
-  /busboy@1.6.0:
-    resolution: {integrity: sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==}
-    engines: {node: '>=10.16.0'}
-    dependencies:
-      streamsearch: 1.1.0
-    dev: true
-
   /byte-size@8.1.1:
     resolution: {integrity: sha512-tUkzZWK0M/qdoLEqikxBWe4kumyuwjl3HO6zHTr4yEI23EojPtLYXdG1+AQY7MN0cGyNDvEaJ8wiYQm6P2bPxg==}
     engines: {node: '>=12.17'}
@@ -10983,6 +10927,7 @@ packages:
   /commander@10.0.1:
     resolution: {integrity: sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==}
     engines: {node: '>=14'}
+    dev: false
 
   /commander@12.1.0:
     resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
@@ -10993,11 +10938,6 @@ packages:
 
   /commander@4.1.1:
     resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==}
-    engines: {node: '>= 6'}
-    dev: true
-
-  /commander@5.1.0:
-    resolution: {integrity: sha512-P0CysNDQ7rtVw4QIQtm+MRxV66vKFSvlsQvGYXZWR3qFU0jlMKHZZZgw8e+8DSah4UDKMqnknRDQz+xuQXQ/Zg==}
     engines: {node: '>= 6'}
     dev: true
 
@@ -11045,16 +10985,6 @@ packages:
 
   /concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
-
-  /concat-stream@1.6.2:
-    resolution: {integrity: sha512-27HBghJxjiZtIk3Ycvn/4kbJk/1uZuJFfuPEns6LaEvpvG1f0hTea8lilrouyo9mVc2GWdcEZ8OLoGmSADlrCw==}
-    engines: {'0': node >= 0.8}
-    dependencies:
-      buffer-from: 1.1.2
-      inherits: 2.0.4
-      readable-stream: 2.3.8
-      typedarray: 0.0.6
-    dev: true
 
   /concat-stream@2.0.0:
     resolution: {integrity: sha512-MWufYdFw53ccGjCA+Ol7XJYpAlW6/prSMzuPOTRnJGcGzuhLn4Scrz7qf6o8bROZ514ltazcIFJZevcfbo0x7A==}
@@ -16770,19 +16700,6 @@ packages:
   /msrcrypto@1.5.8:
     resolution: {integrity: sha512-ujZ0TRuozHKKm6eGbKHfXef7f+esIhEckmThVnz7RNyiOJd7a6MXj2JGBoL9cnPDW+JMG16MoTUh5X+XXjI66Q==}
 
-  /multer@1.4.5-lts.1:
-    resolution: {integrity: sha512-ywPWvcDMeH+z9gQq5qYHCCy+ethsk4goepZ45GLD63fOu0YcNecQxi64nDs3qluZB+murG3/D4dJ7+dGctcCQQ==}
-    engines: {node: '>= 6.0.0'}
-    dependencies:
-      append-field: 1.0.0
-      busboy: 1.6.0
-      concat-stream: 1.6.2
-      mkdirp: 0.5.6
-      object-assign: 4.1.1
-      type-is: 1.6.18
-      xtend: 4.0.2
-    dev: true
-
   /multibase@4.0.6:
     resolution: {integrity: sha512-x23pDe5+svdLz/k5JPGCVdfn7Q5mZVMBETiC+ORfO+sor9Sgs0smJzAjfTbM5tckeCqnaUuMYoz+k3RXMmJClQ==}
     engines: {node: '>=12.0.0', npm: '>=6.0.0'}
@@ -17067,13 +16984,6 @@ packages:
       pako: 2.1.0
       process: 0.11.10
       uuid: 9.0.1
-
-  /node-localstorage@2.2.1:
-    resolution: {integrity: sha512-vv8fJuOUCCvSPjDjBLlMqYMHob4aGjkmrkaE42/mZr0VT+ZAU10jRF8oTnX9+pgU9/vYJ8P7YT3Vd6ajkmzSCw==}
-    engines: {node: '>=0.12'}
-    dependencies:
-      write-file-atomic: 1.3.4
-    dev: true
 
   /node-machine-id@1.1.12:
     resolution: {integrity: sha512-QNABxbrPa3qEIfrE6GOJ7BYIuignnJw7iQ2YPbc3Nla1HzRJjXzZOiikfF8m7eAMfichLt3M4VgLOetqgDmgGQ==}
@@ -19332,10 +19242,6 @@ packages:
       is-fullwidth-code-point: 3.0.0
     dev: true
 
-  /slide@1.1.6:
-    resolution: {integrity: sha512-NwrtjCg+lZoqhFU8fOwl4ay2ei8PaqCBOUV3/ektPY9trO1yQ1oXEfmHAhKArUVUr/hOHvy5f6AdP17dCM0zMw==}
-    dev: true
-
   /smart-buffer@4.2.0:
     resolution: {integrity: sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==}
     engines: {node: '>= 6.0.0', npm: '>= 3.0.0'}
@@ -19555,11 +19461,6 @@ packages:
     resolution: {integrity: sha512-E1GUzBSgvct8Jsb3v2X15pjzN1tYebtbLaMg+eBOUOAxgbLoSbT2NS91ckc5lJD1KfLjId+jXJRgo0qnV5Nerg==}
     dependencies:
       stubs: 3.0.0
-    dev: true
-
-  /streamsearch@1.1.0:
-    resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}
-    engines: {node: '>=10.0.0'}
     dev: true
 
   /string-argv@0.3.2:
@@ -19978,6 +19879,7 @@ packages:
     resolution: {integrity: sha512-y/mWCZinnvxjTKYhJ+pYxwD0mRLVvOtdS2Awbgxln6iEnt4rk0yBxeSBHkGJcPucRiG0e55mwWp+g/05rsrd6w==}
     requiresBuild: true
     dev: true
+    optional: true
 
   /tough-cookie@4.1.4:
     resolution: {integrity: sha512-Loo5UUvLD9ScZ6jh8beX1T6sO1w2/MpCRpEP7V280GKMVUQ0Jzar2U3UJPsrdbziLEMMhu3Ujnq//rhiFuIeag==}
@@ -20292,41 +20194,6 @@ packages:
     resolution: {integrity: sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==}
     dependencies:
       safe-buffer: 5.2.1
-
-  /tunnelmole@2.2.14:
-    resolution: {integrity: sha512-ZtYsNRBQhqjZR665EjMf/XMOAuBDq6AJDHIE+9G9bU0GIR+Mg8pFUQ4mnkSeOIpErRu0S4KjTMvG9VZPCijcnw==}
-    hasBin: true
-    requiresBuild: true
-    dependencies:
-      '@types/commander': 2.12.2
-      '@types/deep-equal': 1.0.4
-      '@types/is-number': 7.0.5
-      '@types/jest': 29.5.12
-      '@types/node-fetch': 2.6.11
-      '@types/node-localstorage': 1.3.3
-      '@types/node-persist': 3.1.8
-      '@types/source-map-support': 0.5.10
-      '@types/validator': 13.11.10
-      '@types/ws': 7.4.7
-      axios: 1.7.2
-      commander: 5.1.0
-      deep-equal: 2.2.3
-      deepmerge: 4.3.1
-      is-number: 7.0.0
-      multer: 1.4.5-lts.1
-      nanoid: 3.3.7
-      node-fetch: 2.7.0
-      node-localstorage: 2.2.1
-      source-map-support: 0.5.21
-      toml: 3.0.0
-      validator: 13.12.0
-      ws: 7.5.9
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - encoding
-      - utf-8-validate
-    dev: true
 
   /tweetnacl-util@0.15.1:
     resolution: {integrity: sha512-RKJBIj8lySrShN4w6i/BonWp2Z/uxwC3h4y7xsRrpP59ZboCd0GpEVsOnMDYLMmKBpYhb5TgHzZXy7wTfYFBRw==}
@@ -21178,14 +21045,6 @@ packages:
 
   /wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
-
-  /write-file-atomic@1.3.4:
-    resolution: {integrity: sha512-SdrHoC/yVBPpV0Xq/mUZQIpW2sWXAShb/V4pomcJXh92RuaO+f3UTWItiR3Px+pLnV2PvC2/bfn5cwr5X6Vfxw==}
-    dependencies:
-      graceful-fs: 4.2.11
-      imurmurhash: 0.1.4
-      slide: 1.1.6
-    dev: true
 
   /write-file-atomic@2.4.3:
     resolution: {integrity: sha512-GaETH5wwsX+GcnzhPgKcKjJ6M2Cq3/iZp1WyY/X1CSqrW+jVNM9Y7D8EC2sM4ZG/V8wZlSniJnCKWPmBYAucRQ==}

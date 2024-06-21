@@ -67,7 +67,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it.skip('should get initialization data using pre-authorized_code and openid-initiate-issuance draft < 9', async (): Promise<void> => {
       succeedWithAFullFlowWithClientSetup()
       await expect(
-        agent.oid4vciHolderGetInitiationData({
+        agent.oid4vciHolderPrepareStart({
           requestData: {
             uri: INITIATE_QR_PRE_AUTHORIZED,
           },
@@ -79,7 +79,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it.skip('should get initialization data using pre-authorized_code and draft 11 >', async (): Promise<void> => {
       succeedWithAFullFlowWithClientSetup()
       await expect(
-        agent.oid4vciHolderGetInitiationData({
+        agent.oid4vciHolderPrepareStart({
           requestData: {
             uri: OFFER_QR_PRE_AUTHORIZED,
           },
@@ -91,7 +91,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it.skip('should get initialization data using authorization_code and https draft 11 >', async (): Promise<void> => {
       succeedWithAFullFlowWithClientSetup()
       await expect(
-        agent.oid4vciHolderGetInitiationData({
+        agent.oid4vciHolderPrepareStart({
           requestData: {
             uri: HTTPS_OFFER_QR_AUTHORIZATION_CODE,
           },
@@ -103,7 +103,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it.skip('should get initialization data using pre-authorized_code and https draft 11 >', async (): Promise<void> => {
       succeedWithAFullFlowWithClientSetup()
       await expect(
-        agent.oid4vciHolderGetInitiationData({
+        agent.oid4vciHolderPrepareStart({
           requestData: {
             uri: HTTPS_OFFER_QR_PRE_AUTHORIZED,
           },

@@ -24,7 +24,6 @@ import {
   IVerifiableCredential,
   JwtDecodedVerifiableCredential,
   Loggers,
-  LogMethod,
   OriginalVerifiableCredential,
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
@@ -43,8 +42,7 @@ import {
   GetCredentialArgs,
   GetCredentialsArgs,
   GetIssuerMetadataArgs,
-  InitiateOID4VCIArgs,
-  InitiationData,
+  StartOid4vciFlowData,
   IOID4VCIHolder,
   IRequiredSignAgentContext,
   IssuanceOpts,
@@ -60,6 +58,7 @@ import {
   RequiredContext,
   SendNotificationArgs,
   SignatureAlgorithmEnum,
+  PrepareStartArgs,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
   SupportedDidMethodEnum,
@@ -95,9 +94,7 @@ export const oid4vciHolderContextMethods: Array<string> = [
   'verifyCredential',
 ]
 
-const logger = Loggers.DEFAULT.options('sphereon:oid4vci:holder', { methods: [LogMethod.CONSOLE, LogMethod.DEBUG_PKG] }).get(
-  'sphereon:oid4vci:holder',
-)
+const logger = Loggers.DEFAULT.get('sphereon:oid4vci:holder')
 
 export function signCallback(client: OpenID4VCIClient, idOpts: IIdentifierOpts, context: IRequiredSignAgentContext) {
   return (jwt: Jwt, kid?: string) => {
@@ -142,9 +139,9 @@ export class OID4VCIHolder implements IAgentPlugin {
   ]
 
   readonly methods: IOID4VCIHolder = {
+    oid4vciHolderPrepareStart: this.oid4vciHolderPrepareStart.bind(this),
     oid4vciHolderGetIssuerMetadata: this.oid4vciHolderGetIssuerMetadata.bind(this),
     oid4vciHolderGetMachineInterpreter: this.oid4vciHolderGetMachineInterpreter.bind(this),
-    oid4vciHolderGetInitiationData: this.oid4vciHolderGetCredentialOfferData.bind(this),
     oid4vciHolderCreateCredentialSelection: this.oid4vciHolderCreateCredentialSelection.bind(this),
     oid4vciHolderGetContact: this.oid4vciHolderGetContact.bind(this),
     oid4vciHolderGetCredentials: this.oid4vciHolderGetCredentials.bind(this),
@@ -234,8 +231,8 @@ export class OID4VCIHolder implements IAgentPlugin {
   private async oid4vciHolderGetMachineInterpreter(args: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<OID4VCIMachineId> {
     const authorizationRequestOpts = { ...this.defaultAuthorizationRequestOpts, ...args.authorizationRequestOpts }
     const services = {
-      initiateOID4VCI: (args: InitiateOID4VCIArgs) =>
-        this.oid4vciHolderGetCredentialOfferData(
+      startOID4VCI: (args: PrepareStartArgs) =>
+        this.oid4vciHolderPrepareStart(
           {
             ...args,
             authorizationRequestOpts,
@@ -268,25 +265,24 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
   }
 
-  private async oid4vciHolderGetCredentialOfferData(args: InitiateOID4VCIArgs, context: RequiredContext): Promise<InitiationData> {
+  /**
+   * This method is run before the machine starts! So there is no concept of the state machine context or states yet
+   *
+   * The result of this method can be directly passed into the start method of the state machine
+   * @param args
+   * @param context
+   * @private
+   */
+  private async oid4vciHolderPrepareStart(args: PrepareStartArgs, context: RequiredContext): Promise<StartOid4vciFlowData> {
     const { requestData } = args
-
-    logger.log(`Credential offer received`, requestData?.uri)
-
-    if (requestData?.uri === undefined) {
+    if (!requestData) {
+      throw Error(`Cannot start the OID4VCI holder flow without request data being provided`)
+    }
+    const { uri = undefined } = requestData
+    if (!uri) {
       return Promise.reject(Error('Missing request URI in context'))
     }
 
-    if (
-      !requestData?.uri ||
-      !(
-        requestData?.uri.startsWith(RequestType.OPENID_INITIATE_ISSUANCE) ||
-        requestData?.uri.startsWith(RequestType.OPENID_CREDENTIAL_OFFER) ||
-        requestData?.uri.startsWith(RequestType.URL)
-      )
-    ) {
-      return Promise.reject(Error(`Invalid OID4VCI credential offer URI: ${requestData?.uri}`))
-    }
     const authorizationRequestOpts = { ...this.defaultAuthorizationRequestOpts, ...args.authorizationRequestOpts } satisfies AuthorizationRequestOpts
 
     if (!authorizationRequestOpts.redirectUri) {
@@ -298,30 +294,59 @@ export class OID4VCIHolder implements IAgentPlugin {
       authorizationRequestOpts.clientId = authorizationRequestOpts.redirectUri
     }
 
-    const openID4VCIClient = await OpenID4VCIClient.fromURI({
-      uri: requestData?.uri,
-      authorizationRequest: authorizationRequestOpts,
-      clientId: authorizationRequestOpts.clientId,
-    })
+    let oid4vciClient: OpenID4VCIClient
+    if (requestData.existingClientState) {
+      oid4vciClient = await OpenID4VCIClient.fromState({ state: requestData.existingClientState })
+    } else {
+      let hasOffer = !!requestData.credentialOffer
 
-    const serverMetadata = await openID4VCIClient.retrieveServerMetadata()
+      if (
+        uri.startsWith(RequestType.OPENID_INITIATE_ISSUANCE) ||
+        uri.startsWith(RequestType.OPENID_CREDENTIAL_OFFER) ||
+        uri.match(/https?:\/\/.*credential_offer(_uri)=?.*/)
+      ) {
+        hasOffer = true
+      } else if (hasOffer) {
+        logger.warning(`Non default URI used for credential offer: ${uri}`)
+      } // else no offer, meaning we have an issuer URL
+
+      if (!hasOffer) {
+        logger.log(`Issuer url received (no credential offer): ${uri}`)
+        oid4vciClient = await OpenID4VCIClient.fromCredentialIssuer({
+          credentialIssuer: uri,
+          authorizationRequest: authorizationRequestOpts,
+          clientId: authorizationRequestOpts.clientId,
+          createAuthorizationRequestURL: requestData.createAuthorizationRequestURL ?? true,
+        })
+      } else {
+        logger.log(`Credential offer received: ${uri}`)
+        oid4vciClient = await OpenID4VCIClient.fromURI({
+          uri,
+          authorizationRequest: authorizationRequestOpts,
+          clientId: authorizationRequestOpts.clientId,
+          createAuthorizationRequestURL: requestData.createAuthorizationRequestURL ?? true,
+        })
+      }
+    }
+
+    const serverMetadata = await oid4vciClient.retrieveServerMetadata()
     const credentialsSupported = await getCredentialConfigsSupported({
-      client: openID4VCIClient,
+      client: oid4vciClient,
       vcFormatPreferences: this.vcFormatPreferences,
     })
     const credentialBranding = await getCredentialBranding({ credentialsSupported, context })
-    const authorizationCodeURL = openID4VCIClient.authorizationURL
+    const authorizationCodeURL = oid4vciClient.authorizationURL
     if (authorizationCodeURL) {
       logger.log(`authorization code URL ${authorizationCodeURL}`)
     }
-    const openID4VCIClientState = JSON.parse(await openID4VCIClient.exportState())
+    const oid4vciClientState = JSON.parse(await oid4vciClient.exportState())
 
     return {
       authorizationCodeURL,
       credentialBranding,
       credentialsSupported,
       serverMetadata,
-      openID4VCIClientState,
+      oid4vciClientState,
     }
   }
 

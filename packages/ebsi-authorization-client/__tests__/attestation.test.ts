@@ -4,7 +4,7 @@ import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { IOID4VCIHolder } from '@sphereon/ssi-sdk.oid4vci-holder'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import {IDIDManager, IIdentifier, IKeyManager, IResolver, MinimalImportableKey, TAgent} from '@veramo/core'
+import { IDIDManager, IIdentifier, IKeyManager, IResolver, MinimalImportableKey, TAgent } from '@veramo/core'
 // @ts-ignore
 import cors from 'cors'
 
@@ -80,7 +80,9 @@ const tearDown = async (): Promise<boolean> => {
     server.closeAllConnections()
   }
 
-  ;(await dbConnection).close()
+  if (dbConnection) {
+    ;(await dbConnection)?.close()
+  }
   return true
 }
 

@@ -2,7 +2,9 @@ import { OpenID4VCIClient, OpenID4VCIClientState } from '@sphereon/oid4vci-clien
 import {
   AuthorizationRequestOpts,
   AuthorizationResponse,
+  AuthzFlowType,
   CredentialConfigurationSupported,
+  CredentialOfferRequestWithBaseUrl,
   CredentialResponse,
   EndpointMetadataResult,
   ExperimentalSubjectIssuance,
@@ -34,7 +36,7 @@ import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, S
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult>
   oid4vciHolderGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<OID4VCIMachine>
-  oid4vciHolderGetInitiationData(args: InitiateOID4VCIArgs, context: RequiredContext): Promise<InitiationData>
+  oid4vciHolderPrepareStart(args: PrepareStartArgs, context: RequiredContext): Promise<StartOid4vciFlowData>
   oid4vciHolderCreateCredentialSelection(args: CreateCredentialSelectionArgs, context: RequiredContext): Promise<Array<CredentialTypeSelection>>
   oid4vciHolderGetContact(args: GetContactArgs, context: RequiredContext): Promise<Party | undefined>
   oid4vciHolderGetCredentials(args: GetCredentialsArgs, context: RequiredContext): Promise<Array<MappedCredentialToAccept>>
@@ -81,7 +83,7 @@ export type GetMachineArgs = {
   stateNavigationListener?: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
 }
 
-export type InitiateOID4VCIArgs = Pick<OID4VCIMachineContext, 'requestData' | 'authorizationRequestOpts'>
+export type PrepareStartArgs = Pick<OID4VCIMachineContext, 'requestData' | 'authorizationRequestOpts'>
 export type CreateCredentialSelectionArgs = Pick<
   OID4VCIMachineContext,
   'credentialsSupported' | 'credentialBranding' | 'selectedCredentials' | 'locale' | 'openID4VCIClientState'
@@ -110,9 +112,12 @@ export enum OID4VCIHolderEvent {
 }
 
 export type RequestData = {
-  credentialOffer?: any
-  code?: string
-  uri: string
+  credentialOffer?: CredentialOfferRequestWithBaseUrl // This object needs to be created/prepared with the OID4VCI credential offer client
+  code?: string // Authorization code
+  uri: string // Either a credential offer URI, or issuer URI. If a credential offer URI. If a credential offer URI it is suggested to include the credential offer, otherwise we try to detect it ourselves
+  existingClientState?: string // Allows us to start with an existing client state. Meaning someone had a client instance before starting the flow
+  createAuthorizationRequestURL?: boolean // Create or do not create an authorization request URL. The default is true
+  flowType?: AuthzFlowType // Force a particular flow type if there is an option.
   [x: string]: any
 }
 
@@ -153,7 +158,7 @@ export type OID4VCIMachineContext = {
 }
 
 export enum OID4VCIMachineStates {
-  initiateOID4VCI = 'initiateOID4VCI',
+  startOID4VCI = 'startOID4VCI',
   createCredentialSelection = 'createCredentialSelection',
   getContact = 'getContact',
   transitionFromSetup = 'transitionFromSetup',
@@ -270,7 +275,7 @@ export enum OID4VCIMachineGuards {
 }
 
 export enum OID4VCIMachineServices {
-  initiateOID4VCI = 'initiateOID4VCI',
+  startOID4VCI = 'startOID4VCI',
   getContact = 'getContact',
   addContactIdentity = 'addContactIdentity',
   createCredentialSelection = 'createCredentialSelection',
@@ -316,7 +321,7 @@ export type ErrorDetails = {
 export enum RequestType {
   OPENID_INITIATE_ISSUANCE = 'openid-initiate-issuance',
   OPENID_CREDENTIAL_OFFER = 'openid-credential-offer',
-  URL = 'http',
+  URL = 'URL',
 }
 
 export type CredentialTypeSelection = ExperimentalSubjectIssuance & {
@@ -330,12 +335,12 @@ export type OID4VCIMachine = {
   interpreter: OID4VCIMachineInterpreter
 }
 
-export type InitiationData = {
+export type StartOid4vciFlowData = {
   authorizationCodeURL?: string
   credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>>
   credentialsSupported: Record<string, CredentialConfigurationSupported>
   serverMetadata: EndpointMetadataResult
-  openID4VCIClientState: OpenID4VCIClientState
+  oid4vciClientState: OpenID4VCIClientState
 }
 
 export type SelectAppLocaleBrandingArgs = {

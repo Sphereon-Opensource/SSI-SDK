@@ -1,13 +1,13 @@
 import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
 import { Alg, AuthorizationDetails, CredentialResponse, Jwt } from '@sphereon/oid4vci-common'
-import { toJwk, JWK as SphereonJWK } from '@sphereon/ssi-sdk-ext.key-utils'
+import { toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import { IDIDManager, IIdentifier, IKeyManager, MinimalImportableKey, TAgent } from '@veramo/core'
 import { fetch } from 'cross-fetch'
 //@ts-ignore
 import express, { Application, NextFunction, Request, Response } from 'express'
-import { importJWK, SignJWT, JWK } from 'jose'
-import * as http from 'node:http'
+import {Server, createServer} from "http";
+import { importJWK, SignJWT } from 'jose'
 import { EbsiEnvironment, IEBSIAuthorizationClient, ScopeByDefinition } from '../../src'
 
 type ConfiguredAgent = TAgent<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IEBSIAuthorizationClient>
@@ -60,11 +60,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     provider: 'did:ebsi',
   }
 
-  const jwk: SphereonJWK = toJwk(secp256r1.privateKeyHex, 'Secp256r1', { isPrivateKey: true })
+  const jwk = toJwk(secp256r1.privateKeyHex, 'Secp256r1', { isPrivateKey: true })
   const kid = `${identifier.did}#keys-1`
 
   async function proofOfPossessionCallbackFunction(args: Jwt, kid?: string): Promise<string> {
-    const importedJwk = await importJWK(jwk as JWK)
+    const importedJwk = await importJWK(jwk)
     return await new SignJWT({ ...args.payload })
       .setProtectedHeader({ ...args.header, kid: kid! })
       .setIssuer(identifier.did)
@@ -78,7 +78,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
   describe('EBSI Authorization Client Agent Plugin', (): void => {
     let agent: ConfiguredAgent
     let credentialResponse: CredentialResponse
-    let server: http.Server<any, any>
+    let server: Server<any, any>
 
     beforeAll(async (): Promise<void> => {
       await testContext.setup()
@@ -173,7 +173,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         }
         res.json({ message: 'Mock called!' })
       })
-      server = http.createServer(app)
+      server = createServer(app)
       server.listen(port)
 
       const REDIRECT_MOCK_URL = `http://localhost:${port}/mock`

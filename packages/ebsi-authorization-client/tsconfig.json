@@ -22,6 +22,9 @@
       "path": "../oid4vci-holder"
     },
     {
+      "path": "../data-store"
+    },
+    {
       "path": "../presentation-exchange"
     },
     {

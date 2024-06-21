@@ -10,7 +10,7 @@ import {
   CreateOID4VCIMachineOpts,
   CredentialTypeSelection,
   ErrorDetails,
-  InitiationData,
+  StartOid4vciFlowData,
   MappedCredentialToAccept,
   OID4VCIMachineAddContactStates,
   OID4VCIMachineContext,
@@ -47,7 +47,7 @@ const oid4vciSelectCredentialsGuard = (_ctx: OID4VCIMachineContext, _event: OID4
 
 const oid4vciRequirePinGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
   const { requestData } = _ctx
-  return requestData?.credentialOffer.userPinRequired === true
+  return requestData?.credentialOffer?.userPinRequired === true
 }
 
 const oid4vciHasNoContactIdentityGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
@@ -114,7 +114,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
   return createMachine<OID4VCIMachineContext, OID4VCIMachineEventTypes>({
     id: opts?.machineName ?? 'OID4VCIHolder',
     predictableActionArguments: true,
-    initial: OID4VCIMachineStates.initiateOID4VCI,
+    initial: OID4VCIMachineStates.startOID4VCI,
     schema: {
       events: {} as OID4VCIMachineEventTypes,
       guards: {} as
@@ -130,8 +130,8 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         | { type: OID4VCIMachineGuards.hasSelectedCredentialsGuard }
         | { type: OID4VCIMachineGuards.hasAuthorizationResponse },
       services: {} as {
-        [OID4VCIMachineServices.initiateOID4VCI]: {
-          data: InitiationData
+        [OID4VCIMachineServices.startOID4VCI]: {
+          data: StartOid4vciFlowData
         }
         [OID4VCIMachineServices.createCredentialSelection]: {
           data: Array<CredentialTypeSelection>
@@ -158,18 +158,18 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
     },
     context: initialContext,
     states: {
-      [OID4VCIMachineStates.initiateOID4VCI]: {
-        id: OID4VCIMachineStates.initiateOID4VCI,
+      [OID4VCIMachineStates.startOID4VCI]: {
+        id: OID4VCIMachineStates.startOID4VCI,
         invoke: {
-          src: OID4VCIMachineServices.initiateOID4VCI,
+          src: OID4VCIMachineServices.startOID4VCI,
           onDone: {
             target: OID4VCIMachineStates.createCredentialSelection,
             actions: assign({
-              authorizationCodeURL: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<InitiationData>) => _event.data.authorizationCodeURL,
-              credentialBranding: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<InitiationData>) => _event.data.credentialBranding ?? {},
-              credentialsSupported: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<InitiationData>) => _event.data.credentialsSupported,
-              serverMetadata: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<InitiationData>) => _event.data.serverMetadata,
-              openID4VCIClientState: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<InitiationData>) => _event.data.openID4VCIClientState,
+              authorizationCodeURL: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<StartOid4vciFlowData>) => _event.data.authorizationCodeURL,
+              credentialBranding: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<StartOid4vciFlowData>) => _event.data.credentialBranding ?? {},
+              credentialsSupported: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<StartOid4vciFlowData>) => _event.data.credentialsSupported,
+              serverMetadata: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<StartOid4vciFlowData>) => _event.data.serverMetadata,
+              openID4VCIClientState: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<StartOid4vciFlowData>) => _event.data.oid4vciClientState,
             }),
           },
           onError: {
