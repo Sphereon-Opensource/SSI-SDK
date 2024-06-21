@@ -1,4 +1,4 @@
-import { IIdentifier, TKeyType } from '@veramo/core'
+import { IDIDManager, IIdentifier, IResolver, TAgent, TKeyType } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
 import { RequiredContext } from '../siop-service'
 
@@ -75,3 +75,5 @@ export type CreateIdentifierOpts = {
   method: SupportedDidMethodEnum
   createOpts?: CreateIdentifierCreateOpts
 }
+
+export type DidAgents = TAgent<IResolver & IDIDManager>

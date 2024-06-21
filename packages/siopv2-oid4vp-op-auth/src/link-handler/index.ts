@@ -1,10 +1,10 @@
 import { LinkHandlerAdapter } from '@sphereon/ssi-sdk.core'
 import { IMachineStatePersistence, interpreterStartOrResume } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { IAgentContext } from '@veramo/core'
-import { Loggers, LogMethod } from '@sphereon/ssi-types'
+import { Loggers } from '@sphereon/ssi-types'
 import { GetMachineArgs, IDidAuthSiopOpAuthenticator, LOGGER_NAMESPACE, Siopv2MachineInterpreter, Siopv2MachineState } from '../types'
 
-const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, { methods: [LogMethod.CONSOLE, LogMethod.DEBUG_PKG] }).get(LOGGER_NAMESPACE)
+const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
 export class Siopv2OID4VPLinkHandler extends LinkHandlerAdapter {
   private readonly context: IAgentContext<IDidAuthSiopOpAuthenticator & IMachineStatePersistence>

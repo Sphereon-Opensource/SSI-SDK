@@ -22,6 +22,7 @@ import {
   IKeyManager,
   IPluginMethodMap,
   IResolver,
+  TAgent,
   TKeyType,
   VerifiableCredential,
 } from '@veramo/core'
@@ -29,6 +30,7 @@ import { IDataStore, IDataStoreORM } from '@veramo/data-store'
 import { _ExtendedIKey } from '@veramo/utils'
 import { JWTHeader, JWTPayload } from 'did-jwt'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
+import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<OID4VCIMachine>
@@ -342,16 +344,7 @@ export type IssuanceOpts = CredentialConfigurationSupported & {
   keyType: TKeyType
   codecName?: string
   kid?: string
-  identifier: IIdentifier
-}
-
-export enum SupportedDidMethodEnum {
-  DID_ETHR = 'ethr',
-  DID_KEY = 'key',
-  DID_LTO = 'lto',
-  DID_ION = 'ion',
-  DID_FACTOM = 'factom',
-  DID_JWK = 'jwk',
+  identifier: IIdentifier // TODO looking at the implementation, shouldn't this field be optional?
 }
 
 export type VerificationResult = {
@@ -494,25 +487,6 @@ export enum SignatureAlgorithmEnum {
   ES256K = 'ES256K',
 }
 
-export enum IdentifierAliasEnum {
-  PRIMARY = 'primary',
-}
-
-export type CreateOrGetIdentifierOpts = {
-  method: SupportedDidMethodEnum
-  createOpts?: CreateIdentifierCreateOpts
-}
-
-export type IdentifierProviderOpts = {
-  type?: TKeyType
-  use?: string
-  [x: string]: any
-}
-
-export enum KeyManagementSystemEnum {
-  LOCAL = 'local',
-}
-
 export type IdentifierOpts = {
   identifier: IIdentifier
   key: _ExtendedIKey
@@ -522,3 +496,4 @@ export type IdentifierOpts = {
 export type RequiredContext = IAgentContext<
   IIssuanceBranding | IContactManager | ICredentialVerifier | ICredentialIssuer | IDataStore | IDataStoreORM | IDIDManager | IResolver | IKeyManager
 >
+export type DidAgents = TAgent<IResolver & IDIDManager>

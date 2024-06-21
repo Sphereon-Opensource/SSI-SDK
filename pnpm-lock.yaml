@@ -685,12 +685,9 @@ importers:
       '@sphereon/oid4vci-common':
         specifier: 0.12.0
         version: 0.12.0
-      '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.21.0
-        version: 0.21.0
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.0
-        version: 0.21.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-unstable.6
+        version: 0.21.1-unstable.6(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -731,6 +728,9 @@ importers:
         specifier: ^4.38.3
         version: 4.38.3
     devDependencies:
+      '@sphereon/ssi-sdk-ext.did-resolver-jwk':
+        specifier: 0.21.0
+        version: 0.21.0
       '@types/i18n-js':
         specifier: ^3.8.4
         version: 3.8.9
@@ -765,8 +765,8 @@ importers:
         specifier: 0.12.0
         version: 0.12.0
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.0
-        version: 0.21.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-unstable.6
+        version: 0.21.1-unstable.6(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1017,8 +1017,8 @@ importers:
         specifier: 0.12.0
         version: 0.12.0
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.0
-        version: 0.21.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-unstable.6
+        version: 0.21.1-unstable.6(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1233,8 +1233,8 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.0
-        version: 0.21.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-unstable.6
+        version: 0.21.1-unstable.6(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1362,8 +1362,8 @@ importers:
         specifier: ^0.6.1
         version: 0.6.1
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.0
-        version: 0.21.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-unstable.6
+        version: 0.21.1-unstable.6(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@veramo/utils':
         specifier: 4.2.0
         version: 4.2.0
@@ -1450,12 +1450,9 @@ importers:
       '@sphereon/pex-models':
         specifier: 2.2.4
         version: 2.2.4
-      '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: ^0.21.0
-        version: 0.21.0
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.0
-        version: 0.21.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-unstable.6
+        version: 0.21.1-unstable.6(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -1508,6 +1505,9 @@ importers:
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3
+      '@sphereon/ssi-sdk-ext.did-resolver-jwk':
+        specifier: 0.21.0
+        version: 0.21.0
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -1551,8 +1551,8 @@ importers:
         specifier: ^3.3.3
         version: 3.3.3
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.0
-        version: 0.21.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-unstable.6
+        version: 0.21.1-unstable.6(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1977,8 +1977,8 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.0
-        version: 0.21.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-unstable.6
+        version: 0.21.1-unstable.6(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.21.0
         version: 0.21.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -2161,8 +2161,8 @@ importers:
         specifier: ^2.4.1-unstable.0
         version: 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.0
-        version: 0.21.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-unstable.6
+        version: 0.21.1-unstable.6(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.21.0
         version: 0.21.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -2342,8 +2342,8 @@ importers:
   packages/vc-status-list:
     dependencies:
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.0
-        version: 0.21.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-unstable.6
+        version: 0.21.1-unstable.6(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -2388,8 +2388,8 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.0
-        version: 0.21.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-unstable.6
+        version: 0.21.1-unstable.6(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2437,8 +2437,8 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.21.0
-        version: 0.21.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+        specifier: 0.21.1-unstable.6
+        version: 0.21.1-unstable.6(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -7479,6 +7479,7 @@ packages:
       uint8arrays: 3.1.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
 
   /@sphereon/ssi-sdk-ext.did-resolver-key@0.21.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-B/t9yIqyLcacz/OIIQTQkcBtYBdtChke81iIlDq5TWp4Pj0+8f7heZR4PFJgAv6bx70+5fiRWVRml11QpyW/RQ==}
@@ -7526,6 +7527,30 @@ packages:
       - react-native-securerandom
       - supports-color
 
+  /@sphereon/ssi-sdk-ext.did-utils@0.21.1-unstable.6(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-+Epta0wTY5I1eeHvyqTuJQ5t1eesRKLI5SJGX1dkl7CRcshAh5ME7SjfW1IxhfDWnfqaS6du/8Nt15OmSg6FYg==}
+    dependencies:
+      '@ethersproject/transactions': 5.7.0
+      '@sphereon/did-uni-client': 0.6.3
+      '@sphereon/ssi-sdk-ext.key-utils': 0.21.1-unstable.6(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
+      '@stablelib/ed25519': 1.0.3
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/utils': 4.2.0
+      did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - encoding
+      - expo
+      - expo-crypto
+      - msrcrypt
+      - msrcrypto
+      - react-native-securerandom
+      - supports-color
+    dev: false
+
   /@sphereon/ssi-sdk-ext.key-manager@0.21.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-q0OD5oMF2PqKoXU9nzTaWq51vRWzw5pV2FHaVwZdbv1S+TVyXZ6IFp4k+LWvb6Xk+Rx8QDiKR2XJBvCk0OP0lQ==}
     dependencies:
@@ -7567,6 +7592,33 @@ packages:
       - msrcrypto
       - react-native-securerandom
       - supports-color
+
+  /@sphereon/ssi-sdk-ext.key-utils@0.21.1-unstable.6(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
+    resolution: {integrity: sha512-74vJV+UY0vb1yxmIRrDZqm81+BtS5p/fc4wQVsT6s3pwOwBCHNQyAiiTj/UKUN4AP56bWF5sTfwnjqZnRo83hA==}
+    dependencies:
+      '@ethersproject/random': 5.7.0
+      '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@stablelib/ed25519': 1.0.3
+      '@stablelib/sha256': 1.0.1
+      '@stablelib/sha512': 1.0.1
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      base64url: 3.0.1
+      debug: 4.3.5
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+      lodash.isplainobject: 4.0.6
+      multiformats: 9.9.0
+      uint8arrays: 3.1.1
+      varint: 6.0.0
+      web-encoding: 1.1.5
+    transitivePeerDependencies:
+      - expo
+      - expo-crypto
+      - msrcrypt
+      - msrcrypto
+      - react-native-securerandom
+      - supports-color
+    dev: false
 
   /@sphereon/ssi-sdk-ext.kms-local@0.21.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-mwWBM7cH01bY0yfbDCCm2ZTuFyG2zFjWf+MpeVheqq+DT5I6VK3E7md+dvfa2PychS3bEzO9RifhHdFk+l+i5Q==}

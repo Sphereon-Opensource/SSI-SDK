@@ -2,13 +2,13 @@ import { ConnectionType } from '@sphereon/ssi-sdk.data-store'
 import { IIdentifier } from '@veramo/core'
 import { getIdentifier, getOrCreatePrimaryIdentifier } from './IdentifierService'
 import { SupportedDidMethodEnum } from '../types/identifier'
-import { CredentialMapper, Loggers, LogMethod, PresentationSubmission } from '@sphereon/ssi-types'
+import { CredentialMapper, Loggers, PresentationSubmission } from '@sphereon/ssi-types'
 import { SupportedVersion } from '@sphereon/did-auth-siop'
 import { getKey } from '@sphereon/ssi-sdk-ext.did-utils'
 import { LOGGER_NAMESPACE, RequiredContext, VerifiableCredentialsWithDefinition, VerifiablePresentationWithDefinition } from '../types'
 import { OID4VP, OpSession } from '../session'
 
-const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, { methods: [LogMethod.CONSOLE, LogMethod.DEBUG_PKG] }).get(LOGGER_NAMESPACE)
+const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
 export const siopSendAuthorizationResponse = async (
   connectionType: ConnectionType,

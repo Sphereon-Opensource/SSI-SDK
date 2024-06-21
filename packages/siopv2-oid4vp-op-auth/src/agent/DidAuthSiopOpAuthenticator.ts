@@ -27,7 +27,7 @@ import {
 } from '../types/siop-service'
 import { Siopv2Machine } from '../machine/Siopv2Machine'
 import { Siopv2Machine as Siopv2MachineId, Siopv2MachineInstanceOpts } from '../types/machine'
-import { Loggers, LogMethod, W3CVerifiableCredential } from '@sphereon/ssi-types'
+import { Loggers, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import {
   ConnectionType,
   CorrelationIdentifierType,
@@ -39,7 +39,7 @@ import {
 } from '@sphereon/ssi-sdk.data-store'
 import { siopSendAuthorizationResponse, translateCorrelationIdToName } from '../services/Siopv2MachineService'
 
-const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, { methods: [LogMethod.CONSOLE, LogMethod.DEBUG_PKG] }).get(LOGGER_NAMESPACE)
+const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
 export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   readonly schema = schema.IDidAuthSiopOpAuthenticator

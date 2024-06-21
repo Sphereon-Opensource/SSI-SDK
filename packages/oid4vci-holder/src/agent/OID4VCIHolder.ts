@@ -22,7 +22,6 @@ import {
   IVerifiableCredential,
   JwtDecodedVerifiableCredential,
   Loggers,
-  LogMethod,
   OriginalVerifiableCredential,
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
@@ -69,8 +68,8 @@ import {
   SignatureAlgorithmEnum,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
-  SupportedDidMethodEnum,
 } from '../types/IOID4VCIHolder'
+import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 
 /**
  * {@inheritDoc IOID4VCIHolder}
@@ -91,9 +90,7 @@ export const oid4vciHolderContextMethods: Array<string> = [
   'verifyCredential',
 ]
 
-const logger = Loggers.DEFAULT.options('sphereon:oid4vci:holder', { methods: [LogMethod.CONSOLE, LogMethod.DEBUG_PKG] }).get(
-  'sphereon:oid4vci:holder',
-)
+const logger = Loggers.DEFAULT.options('sphereon:oid4vci:holder', {}).get('sphereon:oid4vci:holder')
 
 export class OID4VCIHolder implements IAgentPlugin {
   readonly eventTypes: Array<OID4VCIHolderEvent> = [
