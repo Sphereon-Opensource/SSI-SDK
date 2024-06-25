@@ -1,5 +1,5 @@
 import { CredentialOfferClient } from '@sphereon/oid4vci-client'
-import { AuthorizationRequestOpts, AuthzFlowType, convertURIToJsonObject } from '@sphereon/oid4vci-common'
+import { AuthorizationRequestOpts, AuthorizationServerClientOpts, AuthzFlowType, convertURIToJsonObject } from '@sphereon/oid4vci-common'
 import { DefaultLinkPriorities, LinkHandlerAdapter } from '@sphereon/ssi-sdk.core'
 import { IMachineStatePersistence, interpreterStartOrResume, SerializableState } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { IAgentContext } from '@veramo/core'
@@ -15,9 +15,10 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
     | undefined
   private readonly noStateMachinePersistence: boolean
   private readonly authorizationRequestOpts?: AuthorizationRequestOpts
+  private readonly clientOpts?: AuthorizationServerClientOpts
 
   constructor(
-    args: Pick<GetMachineArgs, 'stateNavigationListener' | 'authorizationRequestOpts'> & {
+    args: Pick<GetMachineArgs, 'stateNavigationListener' | 'authorizationRequestOpts' | 'clientOpts'> & {
       priority?: number | DefaultLinkPriorities
       protocols?: Array<string | RegExp>
       noStateMachinePersistence?: boolean
@@ -26,6 +27,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
   ) {
     super({ ...args, id: 'OID4VCIHolder' })
     this.authorizationRequestOpts = args.authorizationRequestOpts
+    this.clientOpts = args.clientOpts
     this.context = args.context
     this.noStateMachinePersistence = args.noStateMachinePersistence === true
     this.stateNavigationListener = args.stateNavigationListener
@@ -37,6 +39,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
       machineState?: SerializableState
       authorizationRequestOpts?: AuthorizationRequestOpts
       createAuthorizationRequestURL?: boolean
+      clientOpts?: AuthorizationServerClientOpts
       flowType?: AuthzFlowType
     },
   ): Promise<void> {
@@ -44,7 +47,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
     const offerData = convertURIToJsonObject(uri) as Record<string, unknown>
     const hasCode = 'code' in offerData && !!offerData.code && !('issuer' in offerData)
     const code = hasCode ? (offerData.code as string) : undefined
-
+    const clientOpts = { ...this.clientOpts, ...opts?.clientOpts }
     const oid4vciMachine = await this.context.agent.oid4vciHolderGetMachineInterpreter({
       requestData: {
         // We know this can only be invoked with a credential offer, so we convert the URI to offer
@@ -55,6 +58,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
         uri,
       },
       authorizationRequestOpts: { ...this.authorizationRequestOpts, ...opts?.authorizationRequestOpts },
+      ...((clientOpts.clientId || clientOpts.clientAssertionType) && { clientOpts: clientOpts as AuthorizationServerClientOpts }),
       stateNavigationListener: this.stateNavigationListener,
     })
 

@@ -105,6 +105,7 @@ const oid4vciHasAuthorizationResponse = (ctx: OID4VCIMachineContext, _event: OID
 const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMachine => {
   const initialContext: OID4VCIMachineContext = {
     // TODO WAL-671 we need to store the data from OpenIdProvider here in the context and make sure we can restart the machine with it and init the OpenIdProvider
+    accessTokenOpts: opts?.accessTokenOpts,
     requestData: opts?.requestData,
     issuanceOpt: opts?.issuanceOpt,
     didMethodPreferences: opts?.didMethodPreferences,
@@ -363,14 +364,10 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           [OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE]: {
             actions: assign({
               openID4VCIClientState: (_ctx: OID4VCIMachineContext, _event: AuthorizationResponseEvent) => {
-                console.log(`=> Assigning authorizationCodeResponse using event data ${JSON.stringify(_event.data)}`)
                 const authorizationCodeResponse = toAuthorizationResponsePayload(_event.data)
-                console.log(`=> Assigned authorizationCodeResponse value ${JSON.stringify(authorizationCodeResponse)}`)
                 return { ..._ctx.openID4VCIClientState!, authorizationCodeResponse }
               },
-            }), // TODO can we not call toAuthorizationResponsePayload before
-            // target: OID4VCIMachineStates.waitForAuthorizationResponse,
-            // target: OID4VCIMachineStates.transitionFromSelectingCredentials,
+            }),
           },
         },
         always: [

@@ -141,7 +141,7 @@ export class OpSession {
       rpMethods.length === 0 &&
       (authReq.issuer?.includes('.ebsi.eu') || (await authReq.authorizationRequest.getMergedProperty<string>('client_id'))?.includes('.ebsi.eu'))
     let codecName: string | undefined = undefined
-    if (isEBSI) {
+    if (isEBSI && (!aud || !aud.startsWith('http'))) {
       debug(`EBSI detected, adding did:key to supported DID methods for RP`)
       const didKeyMethod = convertDidMethod('did:key', opts.didPrefix)
       if (!agentMethods?.includes(didKeyMethod)) {

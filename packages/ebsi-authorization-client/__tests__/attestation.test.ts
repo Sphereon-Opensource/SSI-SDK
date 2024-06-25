@@ -118,7 +118,7 @@ const tearDown = async (): Promise<boolean> => {
   return true
 }
 
-describe.skip('attestation client should', () => {
+describe('attestation client should', () => {
   let identifier: IIdentifier
 
   beforeAll(async (): Promise<void> => {
@@ -143,8 +143,8 @@ describe.skip('attestation client should', () => {
         redirectUri: `${MOCK_BASE_URL}`,
         clientId,
         idOpts: { identifier },
-        credentialIssuer: 'http://192.168.2.90:3000/conformance/v3/issuer-mock',
-        //credentialIssuer: 'https://conformance-test.ebsi.eu/conformance/v3/issuer-mock',
+        // credentialIssuer: 'http://192.168.2.90:3000/conformance/v3/issuer-mock',
+        credentialIssuer: 'https://api-conformance.ebsi.eu/conformance/v3/issuer-mock',
         requestObjectOpts: {
           iss: clientId,
           requestObjectMode: CreateRequestObjectMode.REQUEST_OBJECT,
@@ -283,12 +283,15 @@ describe.skip('attestation client should', () => {
       OID4VCIMachineStates,
       (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState) => Promise<void>
     >()
+    vciStateCallbacks.set(OID4VCIMachineStates.handleError, handleError)
     vciStateCallbacks.set(OID4VCIMachineStates.addContact, addContact)
     vciStateCallbacks.set(OID4VCIMachineStates.selectCredentials, selectCredentials)
     vciStateCallbacks.set(OID4VCIMachineStates.initiateAuthorizationRequest, authorizationCodeUrl)
+    vciStateCallbacks.set(OID4VCIMachineStates.reviewCredentials, reviewCredentials)
 
     const vpStateCallbacks = new Map<Siopv2MachineStates, (oid4vpMachine: Siopv2MachineInterpreter, state: Siopv2MachineState) => Promise<void>>()
     vpStateCallbacks.set(Siopv2MachineStates.done, siopDone)
+    vpStateCallbacks.set(Siopv2MachineStates.handleError, handleError)
     vpLinkHandler = new Siopv2OID4VPLinkHandler({
       protocols: ['openid:'],
       // @ts-ignore
@@ -302,6 +305,12 @@ describe.skip('attestation client should', () => {
       issuanceOpt: {
         identifier,
         didMethod: SupportedDidMethodEnum.DID_EBSI,
+        kid: authReqResult.authKey.meta?.jwkThumbprint ?? authReqResult.authKey.kid,
+      },
+      clientOpts: {
+        clientAssertionType: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+        kid: authReqResult.authKey.meta?.jwkThumbprint ?? authReqResult.authKey.kid,
+        clientId,
       },
       didMethodPreferences: [SupportedDidMethodEnum.DID_EBSI, SupportedDidMethodEnum.DID_KEY],
       stateNavigationListener: OID4VCICallbackStateListener(vciStateCallbacks),
@@ -319,6 +328,10 @@ describe.skip('attestation client should', () => {
     console.log(JSON.stringify(interpreter.getSnapshot().value, null, 2))
   })
 })
+
+const handleError = async (oid4vciMachine: OID4VCIMachineInterpreter | Siopv2MachineInterpreter, state: OID4VCIMachineState | Siopv2MachineState) => {
+  console.error(state.event)
+}
 
 const selectCredentials = async (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState) => {
   const { contact, credentialToSelectFrom, selectedCredentials } = state.context
@@ -374,6 +387,12 @@ const authorizationCodeUrl = async (oid4vciMachine: OID4VCIMachineInterpreter, s
     await vpLinkHandler.handle(openidUri, { idOpts: { identifier: authReqResult.identifier, kid } })
   }
   await onOpenAuthorizationUrl(url)
+}
+
+const reviewCredentials = async (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState) => {
+  console.log(`# REVIEW CREDENTIALS:`)
+  console.log(JSON.stringify(state.context.credentialsToAccept, null, 2))
+
 }
 
 const siopDone = async (oid4vpMachine: Siopv2MachineInterpreter, state: Siopv2MachineState) => {

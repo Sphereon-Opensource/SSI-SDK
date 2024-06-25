@@ -2,6 +2,7 @@ import { OpenID4VCIClient, OpenID4VCIClientState } from '@sphereon/oid4vci-clien
 import {
   AuthorizationRequestOpts,
   AuthorizationResponse,
+  AuthorizationServerClientOpts,
   AuthzFlowType,
   CredentialConfigurationSupported,
   CredentialOfferRequestWithBaseUrl,
@@ -93,12 +94,16 @@ export type OnIdentifierCreatedArgs = {
 export type GetMachineArgs = {
   requestData: RequestData
   authorizationRequestOpts?: AuthorizationRequestOpts
+  clientOpts?: AuthorizationServerClientOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   issuanceOpt?: Partial<IssuanceOpts>
   stateNavigationListener?: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
 }
 
-export type PrepareStartArgs = Pick<OID4VCIMachineContext, 'requestData' | 'authorizationRequestOpts' | 'didMethodPreferences' | 'issuanceOpt'>
+export type PrepareStartArgs = Pick<
+  OID4VCIMachineContext,
+  'requestData' | 'authorizationRequestOpts' | 'didMethodPreferences' | 'issuanceOpt' | 'accessTokenOpts'
+>
 export type createCredentialsToSelectFromArgs = Pick<
   OID4VCIMachineContext,
   'credentialsSupported' | 'credentialBranding' | 'selectedCredentials' | 'locale' | 'openID4VCIClientState'
@@ -250,6 +255,7 @@ export type CreateOID4VCIMachineOpts = {
   locale?: string
   stateDefinition?: OID4VCIMachineState
   didMethodPreferences?: Array<SupportedDidMethodEnum>
+  accessTokenOpts?: AccessTokenOpts
   issuanceOpt?: IssuanceOpts
 }
 
@@ -565,6 +571,7 @@ export type GetCredentialArgs = {
 
 export type AccessTokenOpts = {
   additionalRequestParams?: Record<string, any>
+  clientOpts?: AuthorizationServerClientOpts
 }
 
 export enum SignatureAlgorithmEnum {

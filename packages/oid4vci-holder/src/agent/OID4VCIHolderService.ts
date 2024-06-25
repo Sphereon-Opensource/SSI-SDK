@@ -258,8 +258,13 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Identi
         },
       },
     }))
-  const key: _ExtendedIKey = await getAuthenticationKey({ identifier, context })
-  const kid: string = key.meta.verificationMethod.id
+  const key: _ExtendedIKey = await getAuthenticationKey({
+    identifier,
+    context,
+    offlineWhenNoDIDRegistered: identifier.did.startsWith('did:ebsi'),
+    noVerificationMethodFallback: true,
+  })
+  const kid: string = key.meta?.jwkThumbprint ?? key.meta.verificationMethod?.id ?? key.kid
 
   return { identifier, key, kid }
 }

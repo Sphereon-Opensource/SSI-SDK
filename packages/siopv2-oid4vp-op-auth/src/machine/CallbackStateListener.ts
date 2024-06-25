@@ -22,15 +22,15 @@ export const OID4VPCallbackStateListener = (
       return
     }
 
-    callbacks.forEach((callback, key: Siopv2MachineStates) => {
-      if (state.matches(key)) {
+    for (const [stateKey, callback] of callbacks) {
+      if (state.matches(stateKey)) {
         logger.log(`state callback found for state: ${JSON.stringify(state.value)}, will execute callback`)
-        callback(oid4vciMachine, state)
+        await callback(oid4vciMachine, state)
           .then(() => logger.log(`state callback executed for state: ${JSON.stringify(state.value)}`))
           .catch((error) =>
             logger.log(`state callback failed for state: ${JSON.stringify(state.value)}, error: ${JSON.stringify(error?.message)}, ${state.event}`),
           )
       }
-    })
+    }
   }
 }

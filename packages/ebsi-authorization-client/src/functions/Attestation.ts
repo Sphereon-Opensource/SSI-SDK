@@ -1,6 +1,8 @@
 import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
 import {
+  Alg,
   AuthorizationDetails,
+  AuthorizationRequestOpts,
   AuthzFlowType,
   CredentialConfigurationSupported,
   getJson,
@@ -11,7 +13,14 @@ import {
 } from '@sphereon/oid4vci-common'
 import { getIdentifier, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { calculateJwkThumbprintForKey } from '@sphereon/ssi-sdk-ext.key-utils'
-import { getAuthenticationKey, IssuanceOpts, PrepareStartArgs, signCallback, SupportedDidMethodEnum } from '@sphereon/ssi-sdk.oid4vci-holder'
+import {
+  getAuthenticationKey,
+  IssuanceOpts,
+  PrepareStartArgs,
+  signatureAlgorithmFromKey,
+  signCallback,
+  SupportedDidMethodEnum,
+} from '@sphereon/ssi-sdk.oid4vci-holder'
 import { IIdentifier } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
 import { IRequiredContext } from '../types/IEBSIAuthorizationClient'
@@ -106,7 +115,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
       signCallbacks,
       kid: requestObjectOpts.kid ?? kid,
     },
-  }
+  } satisfies AuthorizationRequestOpts
   // todo: Do we really need to do this, or can we just set the create option to true at this point? We are passing in the authzReq opts
   const authorizationCodeURL = await vciClient.createAuthorizationRequestUrl({
     authorizationRequest: authorizationRequestOpts,
@@ -118,6 +127,15 @@ export const ebsiCreateAttestationAuthRequestURL = async (
       flowType: AuthzFlowType.AUTHORIZATION_CODE_FLOW,
       uri: credentialIssuer,
       existingClientState: JSON.parse(await vciClient.exportState()),
+    },
+    accessTokenOpts: {
+      clientOpts: {
+        alg: Alg[await signatureAlgorithmFromKey({ key: authKey })],
+        clientId,
+        kid,
+        signCallbacks,
+        clientAssertionType: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+      },
     },
     authorizationRequestOpts,
     authorizationCodeURL,
