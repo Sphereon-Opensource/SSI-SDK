@@ -12,7 +12,7 @@ import { IMachineStatePersistence } from '@sphereon/ssi-sdk.xstate-machine-persi
 
 jest.setTimeout(60000)
 
-const port = 3002
+const port = 3051
 const basePath = '/agent'
 
 let serverAgent: IAgent
