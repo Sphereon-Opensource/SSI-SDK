@@ -161,8 +161,8 @@ export class PDManager implements IAgentPlugin {
       existingItem.definitionId = definitionItem.definitionId
       existingItem.version = version ?? existingItem.version ?? '1'
       existingItem.tenantId = definitionItem.tenantId
-      existingItem.name = definitionItem.name
-      existingItem.purpose = definitionItem.purpose
+      existingItem.name = definitionItem.definitionPayload.name ?? definitionItem.name
+      existingItem.purpose = definitionItem.definitionPayload.purpose ?? definitionItem.purpose
       existingItem.definitionPayload = definitionItem.definitionPayload
 
       return await this.store.updateDefinition(existingItem)
