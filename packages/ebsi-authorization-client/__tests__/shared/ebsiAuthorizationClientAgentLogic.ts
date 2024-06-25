@@ -6,7 +6,7 @@ import { IDIDManager, IIdentifier, IKeyManager, MinimalImportableKey, TAgent } f
 import { fetch } from 'cross-fetch'
 //@ts-ignore
 import express, { Application, NextFunction, Request, Response } from 'express'
-import {Server, createServer} from "http";
+import { Server, createServer } from 'http'
 import { importJWK, SignJWT } from 'jose'
 import { EbsiEnvironment, IEBSIAuthorizationClient, ScopeByDefinition } from '../../src'
 

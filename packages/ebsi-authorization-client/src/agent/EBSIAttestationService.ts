@@ -1,6 +1,6 @@
 import { OID4VCICredentialFormat, RequestObjectOpts } from '@sphereon/oid4vci-common'
 import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
-import { AttestationAuthRequestUrlResult, ebsiCreateAttestationRequestAuthURL } from '../functions'
+import { AttestationAuthRequestUrlResult, ebsiCreateAttestationAuthRequestURL } from '../functions'
 import { IRequiredContext } from '../types/IEBSIAuthorizationClient'
 
 export class EBSIAttestationService {
@@ -23,7 +23,7 @@ export class EBSIAttestationService {
     },
     context: IRequiredContext,
   ): Promise<AttestationAuthRequestUrlResult> {
-    return ebsiCreateAttestationRequestAuthURL(
+    return ebsiCreateAttestationAuthRequestURL(
       {
         credentialIssuer: this.credentialIssuer,
         idOpts: this.idOpts,

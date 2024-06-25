@@ -1,4 +1,4 @@
-import { OpenID4VCIClient, OpenID4VCIClientState } from '@sphereon/oid4vci-client'
+import {OpenID4VCIClient, OpenID4VCIClientState} from '@sphereon/oid4vci-client'
 import {
   AuthorizationRequestOpts,
   AuthorizationResponse,
@@ -10,11 +10,11 @@ import {
   ExperimentalSubjectIssuance,
   NotificationRequest,
 } from '@sphereon/oid4vci-common'
-import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
-import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
-import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
-import { IVerifiableCredential, WrappedVerifiableCredential, WrappedVerifiablePresentation } from '@sphereon/ssi-types'
+import {IIdentifierOpts} from '@sphereon/ssi-sdk-ext.did-utils'
+import {IContactManager} from '@sphereon/ssi-sdk.contact-manager'
+import {IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party} from '@sphereon/ssi-sdk.data-store'
+import {IIssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
+import {IVerifiableCredential, WrappedVerifiableCredential, WrappedVerifiablePresentation} from '@sphereon/ssi-types'
 import {
   IAgentContext,
   ICredentialIssuer,
@@ -28,22 +28,40 @@ import {
   TKeyType,
   VerifiableCredential,
 } from '@veramo/core'
-import { IDataStore, IDataStoreORM } from '@veramo/data-store'
-import { _ExtendedIKey } from '@veramo/utils'
-import { JWTHeader, JWTPayload } from 'did-jwt'
-import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
+import {IDataStore, IDataStoreORM} from '@veramo/data-store'
+import {_ExtendedIKey} from '@veramo/utils'
+import {JWTHeader, JWTPayload} from 'did-jwt'
+import {
+  BaseActionObject,
+  Interpreter,
+  ResolveTypegenMeta,
+  ServiceMap,
+  State,
+  StateMachine,
+  TypegenDisabled
+} from 'xstate'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult>
+
   oid4vciHolderGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<OID4VCIMachine>
-  oid4vciHolderPrepareStart(args: PrepareStartArgs, context: RequiredContext): Promise<StartOid4vciFlowData>
-  oid4vciHolderCreateCredentialSelection(args: CreateCredentialSelectionArgs, context: RequiredContext): Promise<Array<CredentialTypeSelection>>
+
+  oid4vciHolderStart(args: PrepareStartArgs, context: RequiredContext): Promise<StartResult>
+
+  oid4vciHolderCreateCredentialsToSelectFrom(args: createCredentialsToSelectFromArgs, context: RequiredContext): Promise<Array<CredentialToSelectFromResult>>
+
   oid4vciHolderGetContact(args: GetContactArgs, context: RequiredContext): Promise<Party | undefined>
+
   oid4vciHolderGetCredentials(args: GetCredentialsArgs, context: RequiredContext): Promise<Array<MappedCredentialToAccept>>
+
   oid4vciHolderGetCredential(args: GetCredentialArgs, context: RequiredContext): Promise<MappedCredentialToAccept>
+
   oid4vciHolderAddContactIdentity(args: AddContactIdentityArgs, context: RequiredContext): Promise<Identity>
+
   oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<void>
+
   oid4vciHolderStoreCredentialBranding(args: StoreCredentialBrandingArgs, context: RequiredContext): Promise<void>
+
   oid4vciHolderStoreCredentials(args: StoreCredentialsArgs, context: RequiredContext): Promise<void>
 }
 
@@ -80,16 +98,18 @@ export type OnIdentifierCreatedArgs = {
 export type GetMachineArgs = {
   requestData: RequestData
   authorizationRequestOpts?: AuthorizationRequestOpts
+  didMethodPreferences?: Array<SupportedDidMethodEnum>
+  issuanceOpt?: Partial<IssuanceOpts>
   stateNavigationListener?: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
 }
 
-export type PrepareStartArgs = Pick<OID4VCIMachineContext, 'requestData' | 'authorizationRequestOpts'>
-export type CreateCredentialSelectionArgs = Pick<
+export type PrepareStartArgs = Pick<OID4VCIMachineContext, 'requestData' | 'authorizationRequestOpts' | 'didMethodPreferences' | 'issuanceOpt'>
+export type createCredentialsToSelectFromArgs = Pick<
   OID4VCIMachineContext,
   'credentialsSupported' | 'credentialBranding' | 'selectedCredentials' | 'locale' | 'openID4VCIClientState'
 >
 export type GetContactArgs = Pick<OID4VCIMachineContext, 'serverMetadata'>
-export type GetCredentialsArgs = Pick<OID4VCIMachineContext, 'verificationCode' | 'openID4VCIClientState'>
+export type GetCredentialsArgs = Pick<OID4VCIMachineContext, 'verificationCode' | 'openID4VCIClientState' | 'selectedCredentials' | 'didMethodPreferences' | 'issuanceOpt'>
 export type AddContactIdentityArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'contact'>
 export type AssertValidCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept'>
 export type StoreCredentialBrandingArgs = Pick<
@@ -98,7 +118,7 @@ export type StoreCredentialBrandingArgs = Pick<
 >
 export type StoreCredentialsArgs = Pick<
   OID4VCIMachineContext,
-  'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState'
+  'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState' | 'selectedCredentials'
 >
 export type SendNotificationArgs = Pick<
   OID4VCIMachineContext,
@@ -134,12 +154,15 @@ export type VerifyCredentialToAcceptArgs = {
 export type MappedCredentialToAccept = ExperimentalSubjectIssuance & {
   correlationId: string
   credential: CredentialToAccept
+  types: string[]
   uniformVerifiableCredential: IVerifiableCredential
   rawVerifiableCredential: VerifiableCredential
 }
 
 export type OID4VCIMachineContext = {
   authorizationRequestOpts?: AuthorizationRequestOpts
+  didMethodPreferences?: Array<SupportedDidMethodEnum>
+  issuanceOpt?: IssuanceOpts
   requestData?: RequestData // TODO WAL-673 fix type as this is not always a qr code (deeplink)
   locale?: string
   authorizationCodeURL?: string
@@ -147,7 +170,7 @@ export type OID4VCIMachineContext = {
   credentialsSupported: Record<string, CredentialConfigurationSupported>
   serverMetadata?: EndpointMetadataResult
   openID4VCIClientState?: OpenID4VCIClientState
-  credentialSelection: Array<CredentialTypeSelection>
+  credentialToSelectFrom: Array<CredentialToSelectFromResult>
   contactAlias: string
   contact?: Party
   selectedCredentials: Array<string>
@@ -158,8 +181,8 @@ export type OID4VCIMachineContext = {
 }
 
 export enum OID4VCIMachineStates {
-  startOID4VCI = 'startOID4VCI',
-  createCredentialSelection = 'createCredentialSelection',
+  start = 'start',
+  createCredentialsToSelectFrom = 'createCredentialsToSelectFrom',
   getContact = 'getContact',
   transitionFromSetup = 'transitionFromSetup',
   addContact = 'addContact',
@@ -201,7 +224,16 @@ export type OID4VCIMachineInterpreter = Interpreter<
   any
 >
 
-export type OID4VCIMachineState = State<OID4VCIMachineContext, OID4VCIMachineEventTypes, any, { value: any; context: OID4VCIMachineContext }, any>
+export type OID4VCIMachineState = State<
+  OID4VCIMachineContext,
+  OID4VCIMachineEventTypes,
+  any,
+  {
+    value: any
+    context: OID4VCIMachineContext
+  },
+  any
+>
 
 export type OID4VCIStateMachine = StateMachine<
   OID4VCIMachineContext,
@@ -218,6 +250,8 @@ export type CreateOID4VCIMachineOpts = {
   machineName?: string
   locale?: string
   stateDefinition?: OID4VCIMachineState
+  didMethodPreferences?: Array<SupportedDidMethodEnum>
+  issuanceOpt?: IssuanceOpts
 }
 
 export type OID4VCIMachineInstanceOpts = {
@@ -226,6 +260,8 @@ export type OID4VCIMachineInstanceOpts = {
   subscription?: () => void
   requireCustomNavigationHook?: boolean
   authorizationRequestOpts?: AuthorizationRequestOpts
+  didMethodPreferences?: Array<SupportedDidMethodEnum>
+  issuanceOpt?: IssuanceOpts // restrict the issuance to these opts
   stateNavigationListener: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
 } & CreateOID4VCIMachineOpts
 
@@ -263,7 +299,7 @@ export enum OID4VCIMachineEvents {
 export enum OID4VCIMachineGuards {
   hasContactGuard = 'oid4vciHasContactGuard',
   hasNoContactGuard = 'oid4vciHasNoContactGuard',
-  selectCredentialGuard = 'oid4vciSelectCredentialsGuard',
+  credentialsToSelectRequiredGuard = 'oid4vciCredentialsToSelectRequiredGuard',
   requirePinGuard = 'oid4vciRequirePinGuard',
   requireAuthorizationGuard = 'oid4vciRequireAuthorizationGuard',
   noAuthorizationGuard = 'oid4vciNoAuthorizationGuard',
@@ -275,10 +311,10 @@ export enum OID4VCIMachineGuards {
 }
 
 export enum OID4VCIMachineServices {
-  startOID4VCI = 'startOID4VCI',
+  start = 'start',
   getContact = 'getContact',
   addContactIdentity = 'addContactIdentity',
-  createCredentialSelection = 'createCredentialSelection',
+  createCredentialsToSelectFrom = 'createCredentialsToSelectFrom',
   getCredentials = 'getCredentials',
   assertValidCredentials = 'assertValidCredentials',
   storeCredentialBranding = 'storeCredentialBranding',
@@ -295,8 +331,14 @@ export type VerificationCodeEvent = { type: OID4VCIMachineEvents.SET_VERIFICATIO
 export type ContactConsentEvent = { type: OID4VCIMachineEvents.SET_CONTACT_CONSENT; data: boolean }
 export type ContactAliasEvent = { type: OID4VCIMachineEvents.SET_CONTACT_ALIAS; data: string }
 export type SetAuthorizationCodeURLEvent = { type: OID4VCIMachineEvents.SET_AUTHORIZATION_CODE_URL; data: string }
-export type InvokeAuthorizationRequestEvent = { type: OID4VCIMachineEvents.INVOKED_AUTHORIZATION_CODE_REQUEST; data: string }
-export type AuthorizationResponseEvent = { type: OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE; data: string | AuthorizationResponse }
+export type InvokeAuthorizationRequestEvent = {
+  type: OID4VCIMachineEvents.INVOKED_AUTHORIZATION_CODE_REQUEST
+  data: string
+}
+export type AuthorizationResponseEvent = {
+  type: OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE
+  data: string | AuthorizationResponse
+}
 export type OID4VCIMachineEventTypes =
   | NextEvent
   | PreviousEvent
@@ -324,9 +366,10 @@ export enum RequestType {
   URL = 'URL',
 }
 
-export type CredentialTypeSelection = ExperimentalSubjectIssuance & {
+export type CredentialToSelectFromResult = ExperimentalSubjectIssuance & {
   id: string
-  credentialType: string
+  credentialId: string
+  credentialTypes: Array<string>
   credentialAlias: string
   isSelected: boolean
 }
@@ -335,7 +378,7 @@ export type OID4VCIMachine = {
   interpreter: OID4VCIMachineInterpreter
 }
 
-export type StartOid4vciFlowData = {
+export type StartResult = {
   authorizationCodeURL?: string
   credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>>
   credentialsSupported: Record<string, CredentialConfigurationSupported>
@@ -362,7 +405,7 @@ export enum SupportedDidMethodEnum {
   DID_KEY = 'key',
   DID_LTO = 'lto',
   DID_ION = 'ion',
-  DID_FACTOM = 'factom',
+  DID_EBSI = 'ebsi',
   DID_JWK = 'jwk',
 }
 
@@ -382,11 +425,24 @@ export type VerificationSubResult = {
 
 export type CredentialToAccept = {
   id?: string
+  types: string[]
   issuanceOpt: IssuanceOpts
   credentialResponse: CredentialResponse
 }
 
 export type GetCredentialConfigsSupportedArgs = {
+  client: OpenID4VCIClient
+  vcFormatPreferences: Array<string>
+  format?: Array<string>
+  types?: Array<Array<string>>
+  configurationIds?: Array<string>
+}
+
+/**
+ * Please note that this method is restricting the results to one set of types or configurationId.
+ * It can potentially return multiple results mainly because of different formats.
+ */
+export type GetCredentialConfigsSupportedBySingleTypeOrIdArgs = {
   client: OpenID4VCIClient
   vcFormatPreferences: Array<string>
   format?: string[]
@@ -459,6 +515,7 @@ export type GetIssuanceOptsArgs = {
   didMethodPreferences: Array<SupportedDidMethodEnum>
   jwtCryptographicSuitePreferences: Array<SignatureAlgorithmEnum>
   jsonldCryptographicSuitePreferences: Array<string>
+  forceIssuanceOpt?: IssuanceOpts
 }
 
 export type GetIssuanceDidMethodArgs = {

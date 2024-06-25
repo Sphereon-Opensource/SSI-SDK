@@ -28,6 +28,7 @@ import {
   GetAuthenticationKeyArgs,
   GetCredentialBrandingArgs,
   GetCredentialConfigsSupportedArgs,
+  GetCredentialConfigsSupportedBySingleTypeOrIdArgs,
   GetDefaultIssuanceOptsArgs,
   GetIdentifierArgs,
   GetIssuanceCryptoSuiteArgs,
@@ -216,6 +217,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
   return {
     correlationId,
     credential,
+    types: credential.types,
     rawVerifiableCredential,
     uniformVerifiableCredential,
     ...(credentialResponse.credential_subject_issuance && { credential_subject_issuance: credentialResponse.credential_subject_issuance }),
@@ -332,21 +334,66 @@ export const createIdentifier = async (args: CreateIdentifierArgs): Promise<IIde
   return identifier
 }
 
+export const getCredentialConfigsSupportedMerged = async (
+  args: GetCredentialConfigsSupportedArgs,
+): Promise<Record<string, CredentialConfigurationSupported>> => {
+  let result = {} as Record<string, CredentialConfigurationSupported>
+  ;(await getCredentialConfigsSupported(args)).forEach((supported: Record<string, CredentialConfigurationSupported>) => {
+    result = { ...result, ...supported }
+  })
+  return result
+}
+
 export const getCredentialConfigsSupported = async (
   args: GetCredentialConfigsSupportedArgs,
+): Promise<Array<Record<string, CredentialConfigurationSupported>>> => {
+  const { types, configurationIds } = args
+  if (Array.isArray(types) && types.length > 0) {
+    return Promise.all(types.map((type) => getCredentialConfigsSupportedBySingleTypeOrId({ ...args, types: type })))
+  } else if (Array.isArray(configurationIds) && configurationIds.length > 0) {
+    return Promise.all(
+      configurationIds.map((configurationId) =>
+        getCredentialConfigsSupportedBySingleTypeOrId({
+          ...args,
+          configurationId,
+          types: undefined,
+        }),
+      ),
+    )
+  }
+  const configs = await getCredentialConfigsSupportedBySingleTypeOrId({
+    ...args,
+    types: undefined,
+    configurationId: undefined,
+  })
+  return configs && Object.keys(configs).length > 0 ? [configs] : []
+}
+/**
+ * Please note that this method only returns configs supported for a single set of credential types or a single config id.
+ * If an offer contains multiple formats/types in an array or multiple config ids, you will have to call this method for all of them
+ * @param args
+ */
+export const getCredentialConfigsSupportedBySingleTypeOrId = async (
+  args: GetCredentialConfigsSupportedBySingleTypeOrIdArgs,
 ): Promise<Record<string, CredentialConfigurationSupported>> => {
   const { client, vcFormatPreferences, configurationId } = args
   let { format = undefined, types = undefined } = args
+  function createIdFromTypes(supported: CredentialConfigurationSupported) {
+    const format = supported.format
+    const type: string = getTypesFromObject(supported)?.join() ?? ''
+    const id = `${type}:${format}`
+    return id;
+  }
 
   if (configurationId) {
     const allSupported = client.getCredentialsSupported(false)
-    return Object.fromEntries(Object.entries(allSupported).filter(([id, supported]) => id === configurationId || supported.id === configurationId))
+    return Object.fromEntries(Object.entries(allSupported).filter(([id, supported]) => id === configurationId || supported.id === configurationId || createIdFromTypes(supported) === configurationId))
   }
 
   if (!types && !client.credentialOffer) {
     return Promise.reject(Error('openID4VCIClient has no credentialOffer and no types where provided'))
-  } else if (!format && !client.credentialOffer) {
-    return Promise.reject(Error('openID4VCIClient has no credentialOffer and no formats where provided'))
+    /*} else if (!format && !client.credentialOffer) {
+    return Promise.reject(Error('openID4VCIClient has no credentialOffer and no formats where provided'))*/
   }
   // We should always have a credential offer at this point given the above
   if (!Array.isArray(format) && client.credentialOffer) {
@@ -371,6 +418,9 @@ export const getCredentialConfigsSupported = async (
     issuerMetadata: client.endpointMetadata.credentialIssuerMetadata,
   })
   let allSupported: Record<string, CredentialConfigurationSupported>
+
+
+
   if (!Array.isArray(offerSupported)) {
     allSupported = offerSupported
   } else {
@@ -380,9 +430,7 @@ export const getCredentialConfigsSupported = async (
         allSupported[supported.id] = supported
         return
       }
-      const format = supported.format
-      const type: string = getTypesFromObject(supported)?.join() ?? ''
-      const id = `${type}:${format}`
+      const id = createIdFromTypes(supported);
       allSupported[id] = supported
     })
   }
@@ -429,6 +477,7 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
     didMethodPreferences,
     jwtCryptographicSuitePreferences,
     jsonldCryptographicSuitePreferences,
+    forceIssuanceOpt,
   } = args
 
   if (credentialsSupported === undefined || Object.keys(credentialsSupported).length === 0) {
@@ -451,7 +500,7 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
       client,
       didMethodPreferences,
     })
-    const issuanceOpt = {
+    const issuanceOpt = forceIssuanceOpt ? {...credentialSupported, ...forceIssuanceOpt} : {
       ...credentialSupported,
       didMethod,
       format: credentialSupported.format,

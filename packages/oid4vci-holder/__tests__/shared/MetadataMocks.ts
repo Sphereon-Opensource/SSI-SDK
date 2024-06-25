@@ -13,7 +13,7 @@ export const GET_PRE_AUTHORIZED_OPENID_CREDENTIAL_OFFER = {
         credentials: [
           {
             format: 'jwt_vc_json',
-            types: ['VerifiableCredential', 'UniversityDegreeCredential'],
+            types: ['VerifiableCredential', 'OpenBadgeCredential'],
           },
         ],
         grants: {
@@ -28,7 +28,7 @@ export const GET_PRE_AUTHORIZED_OPENID_CREDENTIAL_OFFER = {
         credentials: [
           {
             format: 'jwt_vc_json',
-            types: ['VerifiableCredential', 'UniversityDegreeCredential'],
+            types: ['VerifiableCredential', 'OpenBadgeCredential'],
           },
         ],
         grants: {
@@ -177,7 +177,7 @@ export const GET_INITIATION_DATA_PRE_AUTHORIZED_OPENID_INITIATE_ISSUANCE = {
       baseUrl: 'openid-initiate-issuance://',
       credential_offer: {
         credential_issuer: 'https://issuer.research.identiproof.io',
-        credentials: ['OpenBadgeCredentialUrl', 'VerifiableCredential'],
+        credentials: ['OpenBadgeCredential', 'VerifiableCredential'],
         grants: {
           'urn:ietf:params:oauth:grant-type:pre-authorized_code': {
             'pre-authorized_code':
@@ -187,7 +187,7 @@ export const GET_INITIATION_DATA_PRE_AUTHORIZED_OPENID_INITIATE_ISSUANCE = {
         },
       },
       original_credential_offer: {
-        credential_type: ['OpenBadgeCredentialUrl', 'VerifiableCredential'],
+        credential_type: ['OpenBadgeCredential', 'VerifiableCredential'],
         issuer: 'https://issuer.research.identiproof.io',
         'pre-authorized_code':
           '4jLs9xZHEfqcoow0kHE7d1a8hUk6Sy-5bVSV2MqBUGUgiFFQi-ImL62T-FmLIo8hKA1UdMPH0lM1xAgcFkJfxIw9L-lI3mVs0hRT8YVwsEM1ma6N3wzuCdwtMU4bcwKp',
@@ -338,7 +338,7 @@ export const GET_CREDENTIAL_OFFER_AUTHORIZATION_CODE_HTTPS = {
         credentials: [
           {
             format: 'jwt_vc_json',
-            types: ['VerifiableCredential', 'UniversityDegreeCredential'],
+            types: ['VerifiableCredential', 'OpenBadgeExtendedCredential'],
           },
         ],
         grants: {
@@ -353,7 +353,7 @@ export const GET_CREDENTIAL_OFFER_AUTHORIZATION_CODE_HTTPS = {
         credentials: [
           {
             format: 'jwt_vc_json',
-            types: ['VerifiableCredential', 'UniversityDegreeCredential'],
+            types: ['VerifiableCredential', 'OpenBadgeExtendedCredential'],
           },
         ],
         grants: {
@@ -660,6 +660,7 @@ export const GET_CREDENTIAL_OFFER_PRE_AUTHORIZED_CODE_HTTPS = {
 
 export const IDENTIPROOF_ISSUER_URL = 'https://issuer.research.identiproof.io'
 export const IDENTIPROOF_AS_URL = 'https://auth.research.identiproof.io'
+export const WALLET_URL = 'https://wallet.com'
 
 export const IDENTIPROOF_AS_METADATA = {
   issuer: 'https://auth.research.identiproof.io',

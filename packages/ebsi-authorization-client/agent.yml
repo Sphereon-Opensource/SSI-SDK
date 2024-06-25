@@ -21,9 +21,22 @@ dbConnection:
       synchronize: false
       migrationsRun: true
       migrations:
-        $require: '@veramo/data-store?t=object#migrations'
+        $require: './packages/ssi-sdk-core/dist?t=function#flattenMigrations'
+        $args:
+          - migrations:
+              - $require: '@veramo/data-store?t=object#migrations'
+              - $require: './packages/data-store?t=object#DataStoreMigrations'
+      logging: ['info', 'warn']
       entities:
-        $require: '@veramo/data-store?t=object#Entities'
+        $require: './packages/ssi-sdk-core/dist?t=function#flattenArray'
+        $args:
+          - items:
+              - $require: '@veramo/data-store?t=object#Entities'
+              - $require: './packages/data-store?t=object#DataStoreEntities'
+#      migrations:
+#        $require: '@veramo/data-store?t=object#migrations'
+#      entities:
+#        $require: '@veramo/data-store?t=object#Entities'
 
 server:
   baseUrl:
@@ -131,5 +144,18 @@ agent:
         - $require: './packages/ebsi-authorization-client/dist#EBSIAuthorizationClient'
         - $require: ./packages/presentation-exchange/dist#PresentationExchange
         - $require: ./packages/siopv2-oid4vp-op-auth/dist#DidAuthSiopOpAuthenticator
+        - $require: ./packages/oid4vci-holder/dist#OID4VCIHolder
+        - $require: ./packages/issuance-branding/dist#IssuanceBranding
+          $args:
+            - store:
+                $require: './packages/data-store/dist#IssuanceBrandingStore'
+                $args:
+                  - $ref: /dbConnection
+        - $require: ./packages/contact-manager/dist#ContactManager
+          $args:
+            - store:
+                $require: './packages/data-store/dist#ContactStore'
+                $args:
+                  - $ref: /dbConnection
 #          $args:
 #            - presentationSignCallback: { }

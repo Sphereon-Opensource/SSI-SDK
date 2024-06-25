@@ -22,6 +22,7 @@
     "@sphereon/ssi-sdk.oid4vci-holder": "workspace:*",
     "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth": "workspace:*",
     "@sphereon/ssi-sdk-ext.did-utils": "0.21.1-next.5",
+    "@sphereon/ssi-sdk.contact-manager": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@sphereon/ssi-sdk-ext.did-provider-ebsi": "0.21.1-next.5",

@@ -29,9 +29,9 @@ overrides:
   '@veramo/url-handler': 4.2.0
   '@sphereon/ssi-types': workspace:*
   '@sphereon/ssi-sdk.core': workspace:*
-  '@sphereon/oid4vci-common': 0.12.0
-  '@sphereon/oid4vci-client': 0.12.0
-  '@sphereon/oid4vci-issuer': 0.12.0
+  '@sphereon/oid4vci-common': 0.12.1-next.4
+  '@sphereon/oid4vci-client': 0.12.1-next.4
+  '@sphereon/oid4vci-issuer': 0.12.1-next.4
   '@noble/hashes': 1.2.0
   did-jwt: 6.11.6
   did-jwt-vc: 3.1.3
@@ -476,6 +476,9 @@ importers:
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.21.1-next.5
         version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.contact-manager':
+        specifier: workspace:*
+        version: link:../contact-manager
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -511,11 +514,11 @@ importers:
         version: 6.2.13
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.12.0
-        version: 0.12.0
+        specifier: 0.12.1-next.4
+        version: 0.12.1-next.4
       '@sphereon/oid4vci-common':
-        specifier: 0.12.0
-        version: 0.12.0
+        specifier: 0.12.1-next.4
+        version: 0.12.1-next.4
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.21.1-next.5
         version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -795,11 +798,11 @@ importers:
   packages/oid4vci-holder:
     dependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.12.0
-        version: 0.12.0
+        specifier: 0.12.1-next.4
+        version: 0.12.1-next.4
       '@sphereon/oid4vci-common':
-        specifier: 0.12.0
-        version: 0.12.0
+        specifier: 0.12.1-next.4
+        version: 0.12.1-next.4
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.21.1-next.5
         version: 0.21.1-next.5
@@ -874,11 +877,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.12.0
-        version: 0.12.0
+        specifier: 0.12.1-next.4
+        version: 0.12.1-next.4
       '@sphereon/oid4vci-issuer':
-        specifier: 0.12.0
-        version: 0.12.0
+        specifier: 0.12.1-next.4
+        version: 0.12.1-next.4
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.21.1-next.5
         version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -932,11 +935,11 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.12.0
-        version: 0.12.0
+        specifier: 0.12.1-next.4
+        version: 0.12.1-next.4
       '@sphereon/oid4vci-issuer':
-        specifier: 0.12.0
-        version: 0.12.0
+        specifier: 0.12.1-next.4
+        version: 0.12.1-next.4
       '@sphereon/oid4vci-issuer-server':
         specifier: 0.12.0
         version: 0.12.0
@@ -1092,8 +1095,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.12.0
-        version: 0.12.0
+        specifier: 0.12.1-next.4
+        version: 0.12.1-next.4
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1129,8 +1132,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.12.0
-        version: 0.12.0
+        specifier: 0.12.1-next.4
+        version: 0.12.1-next.4
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.21.1-next.5
         version: 0.21.1-next.5(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -7297,11 +7300,11 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vci-client@0.12.0:
-    resolution: {integrity: sha512-e/aOX9Wbgh6URDsjl/6KY1b68JEWi9aXnbguvxlskeia7c6zP3XPTOY37H9o7SRx1iGrh6Z3wEJecTVgeryHnQ==}
+  /@sphereon/oid4vci-client@0.12.1-next.4:
+    resolution: {integrity: sha512-zxvlmNko/Q/aJHKneJKytrp2iPx+6jpfyyjDz9KUcXb7hDZDlCNfhhZqZQtVJwtSFbUSx3YGx6ylwve55hw+sg==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.12.0
+      '@sphereon/oid4vci-common': 0.12.1-next.4
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
       debug: 4.3.5
@@ -7309,8 +7312,8 @@ packages:
       - encoding
       - supports-color
 
-  /@sphereon/oid4vci-common@0.12.0:
-    resolution: {integrity: sha512-eGhDu1R9XHmGy//3BLa0LltnscpAkK7xKJzx+g8kUvH+B3Gcz5Mk6haH3GEa54ZEskuSSjOnm5yqQwZPBk3AhA==}
+  /@sphereon/oid4vci-common@0.12.1-next.4:
+    resolution: {integrity: sha512-CXPFc2ecSxUL5NQo3IvRd7bRaGPkdMx7C7fiIdBk1xyhyoWoAabYDmyCaadLBExNkgnshjFV90NUoRK+qonfTw==}
     engines: {node: '>=18'}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -7325,8 +7328,8 @@ packages:
     resolution: {integrity: sha512-+eHkJ/6zWyluJ1W8r6StmoRGY3xZjDBzEAplBRZf1OtK7MpHZWhkThBGqQGN6Av+vf2qZIyEj7YCyz8PkkvbIA==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.12.0
-      '@sphereon/oid4vci-issuer': 0.12.0
+      '@sphereon/oid4vci-common': 0.12.1-next.4
+      '@sphereon/oid4vci-issuer': 0.12.1-next.4
       '@sphereon/ssi-express-support': 0.25.1-unstable.87
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.2
@@ -7346,8 +7349,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.12.0:
-    resolution: {integrity: sha512-aZxj9hlJ3aIoGLE0JmVqF5IJMJ50BpEACnyqtGQZK9sEGyOFotPD/xaDaJOR9C1Kw2Tj/VMmO6fONa7M+PlPwQ==}
+  /@sphereon/oid4vci-issuer@0.12.1-next.4:
+    resolution: {integrity: sha512-5qiYJvAhwSsj4OHC2O8XqZNHDkXifJFKAx99/cUG4+ug/hWUnsA3RqpAuqKVmko4CwtbVuZGZ57b16q4TIukwQ==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -7355,7 +7358,7 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vci-common': 0.12.0
+      '@sphereon/oid4vci-common': 0.12.1-next.4
       '@sphereon/ssi-types': link:packages/ssi-types
       uuid: 9.0.1
     transitivePeerDependencies:
