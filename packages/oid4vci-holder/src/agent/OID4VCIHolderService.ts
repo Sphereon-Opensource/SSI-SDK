@@ -183,6 +183,7 @@ export const verifyW3CCredential = async (args: IVerifyCredentialArgs, context: 
 
   if (typeof result === 'boolean') {
     return {
+      // FIXME the source is never used, need to start using this as the source of truth
       source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential),
       result,
       subResults: [],
