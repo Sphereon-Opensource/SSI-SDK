@@ -157,12 +157,9 @@ export const selectCredentialLocaleBranding = (args: SelectAppLocaleBrandingArgs
 }
 
 export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<void> => {
-  const { hasher, context } = args //mappedCredential,
+  const { mappedCredential, hasher, context } = args
 
-  // TODO remove
-  const testSDJWT = 'eyJ0eXAiOiJ2YytzZC1qd3QiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJkaWQ6andrOmV5SmhiR2NpT2lKRlV6STFOaUlzSW5WelpTSTZJbk5wWnlJc0ltdDBlU0k2SWtWRElpd2lZM0oySWpvaVVDMHlOVFlpTENKNElqb2lVemgxU0ZKMGVVWjRVMHBOWlVad1RrRkdjMjVhYUV4VGVEZDVaVFJrVUc1UFdtNXRNRGRrVUhJek5DSXNJbmtpT2lKTlZITjNhMHhmU3paMU0yaFFTRFIwUkhkYWJGUmthMEppTlVweVprSnpXak5mVjFvdE0xWktRbDlSSW4wIzAiLCJjbmYiOnsiandrIjp7ImFsZyI6IkVTMjU2IiwidXNlIjoic2lnIiwia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIngiOiJTOHVIUnR5RnhTSk1lRnBOQUZzblpoTFN4N3llNGRQbk9abm0wN2RQcjM0IiwieSI6Ik1Uc3drTF9LNnUzaFBINHREd1psVGRrQmI1SnJmQnNaM19XWi0zVkpCX1EifX0sImlzcyI6ImRpZDpqd2s6ZXlKaGJHY2lPaUpGVXpJMU5pSXNJblZ6WlNJNkluTnBaeUlzSW10MGVTSTZJa1ZESWl3aVkzSjJJam9pVUMweU5UWWlMQ0o0SWpvaVQweDFRbFZ5VkdzelEwZFBRMlZJWDBGTFdFaFhXaTEzYzJWb1ltOUNkRkJyWTNGNVkzRXpURE5aY3lJc0lua2lPaUpVYUZSd1ZYaE5UMVZPVmpOT1EwZEdPV0UxYTBaNGVHSmtNMlo2TkZGNWRqTjJZa294UkRSVGNVZGpJbjAjMCIsImlhdCI6MTcxOTM4NzkxNi4xNDgsInZjdCI6Imh0dHBzOi8vZXhhbXBsZS5jb20vQnJhbUxpY2Vuc2UiLCJfc2QiOlsiN3BJS3ZMNC14ZWpYSXBWclVLR180ZkhpVF9JenpJUGFkbEUzenMtRTU4cyIsIkQ5d0N5TE9pNzFlSktLeDhpZlJXbF9hdEZXd0RKUUc4NG9uU0lBTzE5QTQiLCJKY19FaHdyc2pTN09EWXdJZ3lLdGNxeUpIM2FtMURCbXNpMG1KWjRISVVRIiwiX0w5eE0xMFBSb280c3JOTVRQVTluMy00a1piNmRieGZMcE5Wd293VlY2dyIsImJmWXU3aXppUmNZV1l5U1ptUG9vSzh3dkVIWUF2Q0hWUlU0Q1M5YXMxSGMiLCJkZk5QdVozcUNlUm1CXzdjbWNoNTQ3eWdtMENZVWR4aXFaQWFicGh5S013Il0sIl9zZF9hbGciOiJTSEEtMjU2In0.ud2rA6VVX2xKV8WzpypE3A8oVNbAhqnCq9-K67VLsXeAPJEwT5nvGskxXUqn2S8ICgcL54MjwEn7gb4dHFHUSg~WyI2MWU4NmE0ZC03Y2M0LTRmNDktODA0OC1mZmFmM2UzOWEyYzEiLCJnaXZlbl9uYW1lIiwiSm9obiJd~WyI4MWFjOTczZi1kMmQ0LTRhOTYtYTMwMS05Y2QwZmIwYWVhY2EiLCJmYW1pbHlfbmFtZSIsIkRlbyJd~WyJjZDc1NjgwNS0wYjkzLTRjNGEtYTQwNy1lY2M0NGRkMDA0MmIiLCJlbWFpbCIsImpvaG5kZW9AZXhhbXBsZS5jb20iXQ~WyI0NTVkNjMxNS1lNDY2LTQ5YzktYjJjNy0xM2NlNzQxNWMyOGUiLCJwaG9uZSIsIisxLTIwMi01NTUtMDEwMSJd~WyI5MTU0ZTljZi0zYjQ5LTQxYzktYmNjOC0wMmM3ZTA3MGJkNWEiLCJhZGRyZXNzIix7InN0cmVldF9hZGRyZXNzIjoiMTIzIE1haW4gU3QiLCJsb2NhbGl0eSI6IkFueXRvd24iLCJyZWdpb24iOiJBbnlzdGF0ZSIsImNvdW50cnkiOiJVUyJ9XQ~WyIwMWJlMjA4OS0wZjk4LTQ2YWItOGVhMC0zMTkwZmQyMTg0NTUiLCJiaXJ0aGRhdGUiLCIxOTQwLTAxLTAxIl0~'
-
-  const credential = testSDJWT//mappedCredential.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential // TODO revert
+  const credential = mappedCredential.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
   if (!credential) {
     return Promise.reject(Error('No credential found in credential response'))
   }
@@ -182,7 +179,7 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
 
   const verificationResult: VerificationResult = await verifyCredential(
     {
-      credential,// as VerifiableCredential,
+      credential,
       hasher,
       // TODO WAL-675 we might want to allow these types of options as part of the context, now we have state machines. Allows us to pre-determine whether these policies apply and whether remote context should be fetched
       fetchRemoteContexts: true,
@@ -202,7 +199,7 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
   }
 }
 
-export const verifyCredential = async (args: IVerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => { //IVerifyCredentialArgs
+export const verifyCredential = async (args: IVerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
   const { credential, hasher } = args
 
   return (typeof credential === 'string' && CredentialMapper.isSdJwtEncoded(credential))
@@ -235,10 +232,10 @@ export const verifyW3CCredential = async (args: IVerifyCredentialArgs, context: 
       errorDetails = result.error?.details?.code ?? ''
       errorDetails = (errorDetails !== '' ? `${errorDetails}, ` : '') + (result.error?.details?.url ?? '')
       if (result.error?.errors) {
-        error = (error !== '' ? `${error}, ` : '') + result.error?.errors?.map((error) => error.message ?? error.name).join(', ')
+        error = (error !== '' ? `${error}, ` : '') + result.error?.errors?.map((error: any) => error.message ?? error.name).join(', ')
         errorDetails =
           (errorDetails !== '' ? `${errorDetails}, ` : '') +
-          result.error?.errors?.map((error) => (error?.details?.code ? `${error.details.code}, ` : '') + (error?.details?.url ?? '')).join(', ')
+          result.error?.errors?.map((error: any) => (error?.details?.code ? `${error.details.code}, ` : '') + (error?.details?.url ?? '')).join(', ')
       }
     }
 
@@ -274,12 +271,9 @@ export const verifySDJWTCredential = async (args: VerifySDJWTCredentialArgs, con
 export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Promise<MappedCredentialToAccept> => {
   const { credentialToAccept, hasher } = args
 
-  // TODO remove
-  const testSDJWT = 'eyJ0eXAiOiJ2YytzZC1qd3QiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJkaWQ6andrOmV5SmhiR2NpT2lKRlV6STFOaUlzSW5WelpTSTZJbk5wWnlJc0ltdDBlU0k2SWtWRElpd2lZM0oySWpvaVVDMHlOVFlpTENKNElqb2lVemgxU0ZKMGVVWjRVMHBOWlVad1RrRkdjMjVhYUV4VGVEZDVaVFJrVUc1UFdtNXRNRGRrVUhJek5DSXNJbmtpT2lKTlZITjNhMHhmU3paMU0yaFFTRFIwUkhkYWJGUmthMEppTlVweVprSnpXak5mVjFvdE0xWktRbDlSSW4wIzAiLCJjbmYiOnsiandrIjp7ImFsZyI6IkVTMjU2IiwidXNlIjoic2lnIiwia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIngiOiJTOHVIUnR5RnhTSk1lRnBOQUZzblpoTFN4N3llNGRQbk9abm0wN2RQcjM0IiwieSI6Ik1Uc3drTF9LNnUzaFBINHREd1psVGRrQmI1SnJmQnNaM19XWi0zVkpCX1EifX0sImlzcyI6ImRpZDpqd2s6ZXlKaGJHY2lPaUpGVXpJMU5pSXNJblZ6WlNJNkluTnBaeUlzSW10MGVTSTZJa1ZESWl3aVkzSjJJam9pVUMweU5UWWlMQ0o0SWpvaVQweDFRbFZ5VkdzelEwZFBRMlZJWDBGTFdFaFhXaTEzYzJWb1ltOUNkRkJyWTNGNVkzRXpURE5aY3lJc0lua2lPaUpVYUZSd1ZYaE5UMVZPVmpOT1EwZEdPV0UxYTBaNGVHSmtNMlo2TkZGNWRqTjJZa294UkRSVGNVZGpJbjAjMCIsImlhdCI6MTcxOTM4NzkxNi4xNDgsInZjdCI6Imh0dHBzOi8vZXhhbXBsZS5jb20vQnJhbUxpY2Vuc2UiLCJfc2QiOlsiN3BJS3ZMNC14ZWpYSXBWclVLR180ZkhpVF9JenpJUGFkbEUzenMtRTU4cyIsIkQ5d0N5TE9pNzFlSktLeDhpZlJXbF9hdEZXd0RKUUc4NG9uU0lBTzE5QTQiLCJKY19FaHdyc2pTN09EWXdJZ3lLdGNxeUpIM2FtMURCbXNpMG1KWjRISVVRIiwiX0w5eE0xMFBSb280c3JOTVRQVTluMy00a1piNmRieGZMcE5Wd293VlY2dyIsImJmWXU3aXppUmNZV1l5U1ptUG9vSzh3dkVIWUF2Q0hWUlU0Q1M5YXMxSGMiLCJkZk5QdVozcUNlUm1CXzdjbWNoNTQ3eWdtMENZVWR4aXFaQWFicGh5S013Il0sIl9zZF9hbGciOiJTSEEtMjU2In0.ud2rA6VVX2xKV8WzpypE3A8oVNbAhqnCq9-K67VLsXeAPJEwT5nvGskxXUqn2S8ICgcL54MjwEn7gb4dHFHUSg~WyI2MWU4NmE0ZC03Y2M0LTRmNDktODA0OC1mZmFmM2UzOWEyYzEiLCJnaXZlbl9uYW1lIiwiSm9obiJd~WyI4MWFjOTczZi1kMmQ0LTRhOTYtYTMwMS05Y2QwZmIwYWVhY2EiLCJmYW1pbHlfbmFtZSIsIkRlbyJd~WyJjZDc1NjgwNS0wYjkzLTRjNGEtYTQwNy1lY2M0NGRkMDA0MmIiLCJlbWFpbCIsImpvaG5kZW9AZXhhbXBsZS5jb20iXQ~WyI0NTVkNjMxNS1lNDY2LTQ5YzktYjJjNy0xM2NlNzQxNWMyOGUiLCJwaG9uZSIsIisxLTIwMi01NTUtMDEwMSJd~WyI5MTU0ZTljZi0zYjQ5LTQxYzktYmNjOC0wMmM3ZTA3MGJkNWEiLCJhZGRyZXNzIix7InN0cmVldF9hZGRyZXNzIjoiMTIzIE1haW4gU3QiLCJsb2NhbGl0eSI6IkFueXRvd24iLCJyZWdpb24iOiJBbnlzdGF0ZSIsImNvdW50cnkiOiJVUyJ9XQ~WyIwMWJlMjA4OS0wZjk4LTQ2YWItOGVhMC0zMTkwZmQyMTg0NTUiLCJiaXJ0aGRhdGUiLCIxOTQwLTAxLTAxIl0~'
-
   const credentialResponse: CredentialResponse = credentialToAccept.credentialResponse
 
-  const verifiableCredential: W3CVerifiableCredential | undefined = testSDJWT//credential.credentialResponse.credential // TODO revert
+  const verifiableCredential: W3CVerifiableCredential | undefined = credentialResponse.credential
   if (!verifiableCredential) {
     return Promise.reject(Error('No credential found in credential response'))
   }
@@ -289,7 +283,6 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
       ? await sdJwtDecodedCredentialToUniformCredential(<SdJwtDecodedVerifiableCredential>wrappedVerifiableCredential.credential)
       : <IVerifiableCredential>wrappedVerifiableCredential.credential
 
-  const rawVerifiableCredential: W3CVerifiableCredential = testSDJWT //credentialResponse.credential // TODO revert
   const correlationId: string = typeof uniformVerifiableCredential.issuer === 'string'
     ? uniformVerifiableCredential.issuer
     : CredentialMapper.isSdJwtDecodedCredential(uniformVerifiableCredential) ? uniformVerifiableCredential.decodedPayload.iss : uniformVerifiableCredential.issuer.id
@@ -297,7 +290,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
   return {
     correlationId,
     credentialToAccept,
-    rawVerifiableCredential,
+    rawVerifiableCredential: verifiableCredential,
     uniformVerifiableCredential,
     ...(credentialResponse.credential_subject_issuance && { credential_subject_issuance: credentialResponse.credential_subject_issuance }),
   }

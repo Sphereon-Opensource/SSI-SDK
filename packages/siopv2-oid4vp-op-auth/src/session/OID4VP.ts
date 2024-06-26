@@ -139,39 +139,12 @@ export class OID4VP {
       format: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format
     })
 
-    const pdTest = {
-      id: '32f54163-7166-48f1-93d8-ff217bdb0653',
-      name: 'Conference Entry Requirements',
-      purpose: 'We can only allow people associated with Washington State business representatives into conference areas',
-      format: {
-        'vc+sd-jwt': {},
-      },
-      input_descriptors: [
-        {
-          id: 'wa_driver_license',
-          name: 'Washington State Business License',
-          purpose: 'We can only allow licensed Washington State business representatives into the WA Business Conference',
-          constraints: {
-            limit_disclosure: Optionality.Required,
-            fields: [
-              {
-                path: ['$.email'],
-                filter: {
-                  type: 'string',
-                },
-              },
-            ],
-          },
-        },
-      ],
-    }
-
     const presentationResult = await this.getPresentationExchange({
       verifiableCredentials: vcs.credentials,
       allDIDs: this.allDIDs,
       hasher: opts?.hasher
     }).createVerifiablePresentation(
-      pdTest,//vcs.definition.definition, pdTest
+      vcs.definition.definition,
       vcs.credentials,
       signCallback,
       {
@@ -179,8 +152,6 @@ export class OID4VP {
         holderDID: getDID(idOpts),
       },
     )
-
-    console.log(`presentationResult: ${JSON.stringify(presentationResult)}`)
 
     const verifiablePresentation =
       typeof presentationResult.verifiablePresentation !== 'string' &&

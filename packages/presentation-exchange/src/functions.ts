@@ -106,7 +106,6 @@ export async function createPEXPresentationSignCallback(
         }
       })
 
-      console.log(`callback presentationResult: ${JSON.stringify(presentationResult)}`)
       return CredentialMapper.storedPresentationToOriginalFormat(presentationResult.presentation as OriginalVerifiablePresentation)
     } else {
       if (proofFormat === 'vc+sd-jwt') {
