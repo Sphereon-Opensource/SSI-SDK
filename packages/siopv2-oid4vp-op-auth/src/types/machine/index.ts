@@ -83,7 +83,7 @@ export type Siopv2MachineInstanceOpts = {
 } & CreateSiopv2MachineOpts
 
 export type Siopv2MachineNavigationArgs = {
-  oid4vpMachine: Siopv2MachineInterpreter
+  siopv2Machine: Siopv2MachineInterpreter
   state: Siopv2MachineState
   navigation: any
   onNext?: () => void
