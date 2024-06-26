@@ -7,11 +7,17 @@ import {
   IIdentifier,
   IPluginMethodMap,
   IResolver,
-  PresentationPayload,
+  PresentationPayload
 } from '@veramo/core'
-import { IPresentation, Optional, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import {
+  IPresentation,
+  Optional,
+  W3CVerifiableCredential,
+  W3CVerifiablePresentation
+} from '@sphereon/ssi-types'
 import { IPresentationDefinition, PEVersion, SelectResults } from '@sphereon/pex'
 import { Format, InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
+import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 
 export interface IPresentationExchange extends IPluginMethodMap {
   pexValidateDefinition(args: IDefinitionValidateArgs): Promise<boolean>
@@ -72,4 +78,4 @@ export interface IPEXPresentationSignCallBackParams {
   presentationDefinition: IPresentationDefinition
 }
 
-export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IDIDManager & ICredentialPlugin>
+export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IDIDManager & ICredentialPlugin & ISDJwtPlugin>

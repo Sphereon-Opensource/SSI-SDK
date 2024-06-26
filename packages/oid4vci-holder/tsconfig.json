@@ -27,6 +27,9 @@
       "path": "../ssi-sdk-core"
     },
     {
+      "path": "../sd-jwt"
+    },
+    {
       "path": "../xstate-persistence"
     }
   ]

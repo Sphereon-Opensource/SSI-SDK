@@ -1,4 +1,4 @@
-import { LOG } from '@sphereon/oid4vci-client/dist/types'
+import { LOG } from '@sphereon/oid4vci-client'
 import {
   CredentialConfigurationSupported,
   CredentialOfferFormat,
@@ -15,15 +15,27 @@ import {
   IVerifiableCredential,
   IVerifyResult,
   OriginalVerifiableCredential,
+  sdJwtDecodedCredentialToUniformCredential,
+  SdJwtDecodedVerifiableCredential,
   W3CVerifiableCredential,
-  WrappedVerifiableCredential,
+  WrappedVerifiableCredential
 } from '@sphereon/ssi-types'
-import { IDIDManager, IIdentifier, IKey, IResolver, IVerifyCredentialArgs, TAgent, TKeyType, VerifiableCredential } from '@veramo/core'
+import {
+  IDIDManager,
+  IIdentifier,
+  IKey,
+  IResolver,
+  IVerifyCredentialArgs,
+  TAgent,
+  TKeyType,
+  W3CVerifiableCredential as VeramoW3CVerifiableCredential
+} from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
 import { createJWT, Signer } from 'did-jwt'
 import { translate } from '../localization/Localization'
 import {
   CreateIdentifierArgs,
+  CredentialVerificationError,
   GetAuthenticationKeyArgs,
   GetCredentialBrandingArgs,
   GetCredentialConfigsSupportedArgs,
@@ -52,7 +64,9 @@ import {
   SupportedDidMethodEnum,
   VerificationResult,
   VerificationSubResult,
+  VerifyCredentialArgs,
   VerifyCredentialToAcceptArgs,
+  VerifySDJWTCredentialArgs
 } from '../types/IOID4VCIHolder'
 import { credentialLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
 
@@ -100,9 +114,7 @@ export const getCredentialConfigsBasedOnFormatPref = async (
   return prefConfigs
 }
 
-export const selectCredentialLocaleBranding = (
-  args: SelectAppLocaleBrandingArgs,
-): Promise<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding | undefined> => {
+export const selectCredentialLocaleBranding = (args: SelectAppLocaleBrandingArgs): Promise<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding | undefined> => {
   const { locale, localeBranding } = args
 
   const branding = localeBranding?.find(
@@ -115,10 +127,14 @@ export const selectCredentialLocaleBranding = (
 }
 
 export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<void> => {
-  const { mappedCredential, context } = args
+  const { mappedCredential, hasher, context } = args
 
-  const credential = mappedCredential.credential.credentialResponse.credential as OriginalVerifiableCredential
-  const wrappedVC = CredentialMapper.toWrappedVerifiableCredential(credential)
+  const credential = mappedCredential.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
+  if (!credential) {
+    return Promise.reject(Error('No credential found in credential response'))
+  }
+
+  const wrappedVC = CredentialMapper.toWrappedVerifiableCredential(credential, { hasher })
   if (
     wrappedVC.decoded?.iss?.includes('did:ebsi:') ||
     (typeof wrappedVC.decoded?.vc?.issuer === 'string'
@@ -133,7 +149,8 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
 
   const verificationResult: VerificationResult = await verifyCredential(
     {
-      credential: credential as VerifiableCredential,
+      credential,
+      hasher,
       // TODO WAL-675 we might want to allow these types of options as part of the context, now we have state machines. Allows us to pre-determine whether these policies apply and whether remote context should be fetched
       fetchRemoteContexts: true,
       policies: {
@@ -152,33 +169,44 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
   }
 }
 
-export const verifyCredential = async (args: IVerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
-  // We also allow/add boolean, because 4.x Veramo returns a boolean for JWTs. 5.X will return better results
-  const result: IVerifyResult | boolean = (await context.agent.verifyCredential(args)) as IVerifyResult | boolean
+export const verifyCredential = async (args: VerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
+  const { credential, hasher } = args
+
+  return (CredentialMapper.isSdJwtEncoded(credential))
+    ? await verifySDJWTCredential({ credential, hasher }, context)
+    : await verifyW3CCredential({ ...args, credential: credential as VeramoW3CVerifiableCredential }, context)
+}
+
+export const verifyW3CCredential = async (args: IVerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
+  const { credential, policies } = args
+
+  const result: IVerifyResult | boolean = (await context.agent.verifyCredential(args))
 
   if (typeof result === 'boolean') {
     return {
-      source: CredentialMapper.toWrappedVerifiableCredential(args.credential as OriginalVerifiableCredential),
+      // FIXME the source is never used, need to start using this as the source of truth
+      source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential),
       result,
+      subResults: [],
       ...(!result && {
         error: 'Invalid JWT VC',
-        errorDetails: `JWT VC could was not valid with policies: ${JSON.stringify(args.policies)}`,
-      }),
-      subResults: [],
+        errorDetails: `JWT VC was not valid with policies: ${JSON.stringify(policies)}`
+      })
     }
   } else {
-    const subResults: Array<VerificationSubResult> = []
+    //TODO look at what this is doing and make it simple and readable
     let error: string | undefined
     let errorDetails: string | undefined
+    const subResults: Array<VerificationSubResult> = []
     if (result.error) {
       error = result.error?.message ?? ''
       errorDetails = result.error?.details?.code ?? ''
       errorDetails = (errorDetails !== '' ? `${errorDetails}, ` : '') + (result.error?.details?.url ?? '')
       if (result.error?.errors) {
-        error = (error !== '' ? `${error}, ` : '') + result.error?.errors?.map((error) => error.message ?? error.name).join(', ')
+        error = (error !== '' ? `${error}, ` : '') + result.error?.errors?.map((error: any) => error.message ?? error.name).join(', ')
         errorDetails =
           (errorDetails !== '' ? `${errorDetails}, ` : '') +
-          result.error?.errors?.map((error) => (error?.details?.code ? `${error.details.code}, ` : '') + (error?.details?.url ?? '')).join(', ')
+          result.error?.errors?.map((error: any) => (error?.details?.code ? `${error.details.code}, ` : '') + (error?.details?.url ?? '')).join(', ')
       }
     }
 
@@ -192,30 +220,48 @@ export const verifyCredential = async (args: IVerifyCredentialArgs, context: Req
   }
 }
 
+export const verifySDJWTCredential = async (args: VerifySDJWTCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
+  const { credential, hasher } = args
+
+  const result = await context.agent.verifySdJwtVc({ credential })
+  .catch((error: Error): CredentialVerificationError => {
+    return {
+      error: 'Invalid SD-JWT VC',
+      errorDetails: error.message ?? 'SD-JWT VC could not be verified',
+    }
+  })
+
+  return {
+    source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential, { hasher }),
+    result: !!result.verifiedPayloads,
+    subResults: [],
+    ...(!result.verifiedPayloads && { ...result }),
+  }
+}
+
 export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Promise<MappedCredentialToAccept> => {
-  const { credential } = args
+  const { credentialToAccept, hasher } = args
 
-  const credentialResponse: CredentialResponse = credential.credentialResponse
+  const credentialResponse: CredentialResponse = credentialToAccept.credentialResponse
+
   const verifiableCredential: W3CVerifiableCredential | undefined = credentialResponse.credential
-  const wrappedVerifiableCredential: WrappedVerifiableCredential = CredentialMapper.toWrappedVerifiableCredential(
-    verifiableCredential as OriginalVerifiableCredential,
-  )
-
-  credential.credentialResponse.credential_subject_issuance
-
-  if (wrappedVerifiableCredential?.credential?.compactSdJwtVc) {
-    return Promise.reject(Error('SD-JWT not supported yet'))
+  if (!verifiableCredential) {
+    return Promise.reject(Error('No credential found in credential response'))
   }
 
-  const uniformVerifiableCredential: IVerifiableCredential = <IVerifiableCredential>wrappedVerifiableCredential.credential
-  const rawVerifiableCredential: VerifiableCredential = credentialResponse.credential as unknown as VerifiableCredential
-  const correlationId: string =
-    typeof uniformVerifiableCredential.issuer === 'string' ? uniformVerifiableCredential.issuer : uniformVerifiableCredential.issuer.id
+  const wrappedVerifiableCredential: WrappedVerifiableCredential = await CredentialMapper.toWrappedVerifiableCredential(verifiableCredential as OriginalVerifiableCredential, { hasher })
+  const uniformVerifiableCredential: IVerifiableCredential = CredentialMapper.isSdJwtDecodedCredential(wrappedVerifiableCredential.credential)
+      ? await sdJwtDecodedCredentialToUniformCredential(<SdJwtDecodedVerifiableCredential>wrappedVerifiableCredential.credential)
+      : <IVerifiableCredential>wrappedVerifiableCredential.credential
+
+  const correlationId: string = typeof uniformVerifiableCredential.issuer === 'string'
+    ? uniformVerifiableCredential.issuer
+    : CredentialMapper.isSdJwtDecodedCredential(uniformVerifiableCredential) ? uniformVerifiableCredential.decodedPayload.iss : uniformVerifiableCredential.issuer.id
 
   return {
     correlationId,
-    credential,
-    rawVerifiableCredential,
+    credentialToAccept,
+    rawVerifiableCredential: verifiableCredential,
     uniformVerifiableCredential,
     ...(credentialResponse.credential_subject_issuance && { credential_subject_issuance: credentialResponse.credential_subject_issuance }),
   }

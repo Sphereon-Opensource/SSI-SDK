@@ -8,7 +8,7 @@
   },
   "references": [
     {
-      "path": "../kv-store"
+      "path": "../sd-jwt"
     },
     {
       "path": "../ssi-types"

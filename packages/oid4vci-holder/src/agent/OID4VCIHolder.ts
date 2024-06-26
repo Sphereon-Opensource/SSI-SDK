@@ -15,19 +15,27 @@ import {
   Identity,
   IdentityOrigin,
   NonPersistedIdentity,
-  Party,
+  Party
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
+  Hasher,
   IVerifiableCredential,
   JwtDecodedVerifiableCredential,
   Loggers,
   LogMethod,
   OriginalVerifiableCredential,
   parseDid,
-  SdJwtDecodedVerifiableCredentialPayload,
+  SdJwtDecodedVerifiableCredentialPayload
 } from '@sphereon/ssi-types'
-import { CredentialPayload, DIDDocument, IAgentPlugin, ProofFormat, VerifiableCredential, W3CVerifiableCredential } from '@veramo/core'
+import {
+  CredentialPayload,
+  DIDDocument,
+  IAgentPlugin,
+  ProofFormat,
+  VerifiableCredential,
+  W3CVerifiableCredential
+} from '@veramo/core'
 import { computeEntryHash } from '@veramo/utils'
 import { decodeJWT, JWTHeader } from 'did-jwt'
 import { v4 as uuidv4 } from 'uuid'
@@ -69,7 +77,7 @@ import {
   SignatureAlgorithmEnum,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
-  SupportedDidMethodEnum,
+  SupportedDidMethodEnum
 } from '../types/IOID4VCIHolder'
 
 /**
@@ -139,6 +147,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
+  private readonly hasher?: Hasher
 
   constructor(options?: OID4VCIHolderOptions) {
     const {
@@ -150,6 +159,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       didMethodPreferences,
       jwtCryptographicSuitePreferences,
       defaultAuthorizationRequestOptions,
+      hasher
     } = options ?? {}
 
     if (vcFormatPreferences !== undefined && vcFormatPreferences.length > 0) {
@@ -170,6 +180,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     this.onContactIdentityCreated = onContactIdentityCreated
     this.onCredentialStored = onCredentialStored
     this.onIdentifierCreated = onIdentifierCreated
+    this.hasher = hasher
   }
 
   public async onEvent(event: any, context: RequiredContext): Promise<void> {
@@ -469,7 +480,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         issuanceOpt,
         credentialResponse,
       }
-      return mapCredentialToAccept({ credential })
+      return mapCredentialToAccept({ credentialToAccept: credential, hasher: this.hasher })
     } catch (error) {
       return Promise.reject(error)
     }
@@ -497,13 +508,14 @@ export class OID4VCIHolder implements IAgentPlugin {
       },
     }
 
+    const addedIdentity = await context.agent.cmAddIdentity({ contactId: contact.id, identity })
     await context.agent.emit(OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED, {
       contactId: contact.id,
-      identity,
+      identity: addedIdentity,
     })
-    logger.log(`Contact added ${contact.id}`)
+    logger.log(`Contact identity added ${JSON.stringify(addedIdentity)}`)
 
-    return context.agent.cmAddIdentity({ contactId: contact.id, identity })
+    return addedIdentity
   }
 
   private async oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<void> {
@@ -514,6 +526,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         async (mappedCredential: MappedCredentialToAccept): Promise<void> =>
           verifyCredentialToAccept({
             mappedCredential,
+            hasher: this.hasher,
             context,
           }),
       ),
@@ -530,7 +543,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     const localeBranding: Array<IBasicCredentialLocaleBranding> | undefined = credentialBranding?.[selectedCredentials[0]]
     if (localeBranding && localeBranding.length > 0) {
       await context.agent.ibAddCredentialBranding({
-        vcHash: computeEntryHash(credentialsToAccept[0].rawVerifiableCredential),
+        vcHash: computeEntryHash(credentialsToAccept[0].rawVerifiableCredential as W3CVerifiableCredential),
         issuerCorrelationId: new URL(serverMetadata.issuer).hostname,
         localeBranding,
       })
@@ -556,7 +569,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     let persist = true
     const verifiableCredential = credentialToAccept.uniformVerifiableCredential as VerifiableCredential
 
-    const notificationId = credentialToAccept.credential.credentialResponse.notification_id
+    const notificationId = credentialToAccept.credentialToAccept.credentialResponse.notification_id
     const subjectIssuance = credentialToAccept.credential_subject_issuance
     const notificationEndpoint = serverMetadata?.credentialIssuerMetadata?.notification_endpoint
     let holderCredential:
@@ -579,7 +592,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           ? 'credential_accepted_holder_signed'
           : 'credential_deleted_holder_signed'
         logger.log(`Subject issuance/signing will be used, with event`, event)
-        const issuerVC = credentialToAccept.credential.credentialResponse.credential as OriginalVerifiableCredential
+        const issuerVC = credentialToAccept.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
         const wrappedIssuerVC = CredentialMapper.toWrappedVerifiableCredential(issuerVC)
         console.log(`Wrapped VC: ${wrappedIssuerVC.type}, ${wrappedIssuerVC.format}`)
         // We will use the subject of the VCI Issuer (the holder, as the issuer of the new credential, so the below is not a mistake!)
@@ -601,8 +614,8 @@ export class OID4VCIHolder implements IAgentPlugin {
           const decodedJwt = decodeJWT(openID4VCIClientState.accessTokenResponse.access_token)
           issuer = decodedJwt.payload.sub
         }
-        if (!issuer && credentialToAccept.credential.issuanceOpt.identifier) {
-          issuer = credentialToAccept.credential.issuanceOpt.identifier.did
+        if (!issuer && credentialToAccept.credentialToAccept.issuanceOpt.identifier) {
+          issuer = credentialToAccept.credentialToAccept.issuanceOpt.identifier.did
         }
 
         if (!issuer) {
