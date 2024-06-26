@@ -63,7 +63,8 @@ import {
   SignJwtArgs,
   SupportedDidMethodEnum,
   VerificationResult,
-  VerificationSubResult, VerifyCredentialArgs,
+  VerificationSubResult,
+  VerifyCredentialArgs,
   VerifyCredentialToAcceptArgs,
   VerifySDJWTCredentialArgs
 } from '../types/IOID4VCIHolder'

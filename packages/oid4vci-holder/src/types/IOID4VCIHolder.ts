@@ -31,12 +31,12 @@ import {
   IResolver,
   TKeyType,
   VerifiableCredential,
+  VerificationPolicies,
 } from '@veramo/core'
 import { IDataStore, IDataStoreORM } from '@veramo/data-store'
 import { _ExtendedIKey } from '@veramo/utils'
 import { JWTHeader, JWTPayload } from 'did-jwt'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
-import {VerificationPolicies} from "@veramo/core/src/types/ICredentialVerifier";
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<OID4VCIMachine>
