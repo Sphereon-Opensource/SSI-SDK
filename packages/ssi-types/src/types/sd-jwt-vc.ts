@@ -315,7 +315,7 @@ export async function sdJwtDecodedCredentialToUniformCredential(decoded: SdJwtDe
   const credentialSubject = decoded.disclosures.reduce((acc: DisclosuresAccumulator, item: { decoded: Array<any>, digest: string, encoded: string }) => {
     const key = item.decoded[1]
     acc[key] = item.decoded[2]
-    
+
     return acc
   }, {})
 

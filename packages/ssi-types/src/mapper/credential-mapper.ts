@@ -451,7 +451,8 @@ export class CredentialMapper {
   static toUniformCredential(
     verifiableCredential: OriginalVerifiableCredential,
     opts?: {
-      maxTimeSkewInMS?: number
+      maxTimeSkewInMS?: number,
+      hasher?: Hasher
     },
   ): IVerifiableCredential {
     if (CredentialMapper.isSdJwtDecodedCredential(verifiableCredential)) {
@@ -466,7 +467,7 @@ export class CredentialMapper {
         'Could not determine original credential from passed in credential. Probably because a JWT proof type was present, but now is not available anymore',
       )
     }
-    const decoded = CredentialMapper.decodeVerifiableCredential(original)
+    const decoded = CredentialMapper.decodeVerifiableCredential(original, opts?.hasher)
 
     const isJwtEncoded: boolean = CredentialMapper.isJwtEncoded(original)
     const isJwtDecoded: boolean = CredentialMapper.isJwtDecodedCredential(original)

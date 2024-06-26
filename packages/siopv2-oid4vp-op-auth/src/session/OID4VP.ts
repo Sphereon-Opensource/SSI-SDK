@@ -1,15 +1,15 @@
 import { PresentationDefinitionWithLocation, PresentationExchange } from '@sphereon/did-auth-siop'
 import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
-import { Format } from '@sphereon/pex-models'
+import { Format, Optionality } from '@sphereon/pex-models'
 import { getDID, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
-
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
-import { CredentialMapper, W3CVerifiableCredential } from '@sphereon/ssi-types'
+import { CredentialMapper, Hasher, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { FindCredentialsArgs, IIdentifier } from '@veramo/core'
 import {
-  DEFAULT_JWT_PROOF_TYPE,
+  DEFAULT_JWT_PROOF_TYPE, IGetPresentationExchangeArgs,
+  IOID4VPArgs,
   VerifiableCredentialsWithDefinition,
-  VerifiablePresentationWithDefinition,
+  VerifiablePresentationWithDefinition
 } from '../types/IDidAuthSiopOpAuthenticator'
 import { createOID4VPPresentationSignCallback } from './functions'
 import { OpSession } from './OpSession'
@@ -17,14 +17,20 @@ import { OpSession } from './OpSession'
 export class OID4VP {
   private readonly session: OpSession
   private readonly allDIDs: string[]
+  private readonly hasher?: Hasher
 
-  private constructor(session: OpSession, allDIDs?: string[]) {
+  private constructor(args: IOID4VPArgs) {
+    const { session, allDIDs, hasher } = args
+
     this.session = session
     this.allDIDs = allDIDs ?? []
+    this.hasher = hasher
   }
 
-  public static async init(session: OpSession, allDIDs: string[]): Promise<OID4VP> {
-    return new OID4VP(session, allDIDs ?? (await session.getSupportedDIDs()))
+  public static async init(args: IOID4VPArgs): Promise<OID4VP> {
+    const { session, allDIDs = await session.getSupportedDIDs(), hasher } = args
+
+    return new OID4VP({ session, allDIDs, hasher })
   }
 
   public async getPresentationDefinitions(): Promise<PresentationDefinitionWithLocation[] | undefined> {
@@ -35,10 +41,13 @@ export class OID4VP {
     return definitions
   }
 
-  private getPresentationExchange(verifiableCredentials: W3CVerifiableCredential[], allDIDs?: string[]): PresentationExchange {
+  private getPresentationExchange(args: IGetPresentationExchangeArgs): PresentationExchange {
+    const { verifiableCredentials, allDIDs, hasher } = args
+
     return new PresentationExchange({
       allDIDs: allDIDs ?? this.allDIDs,
       allVerifiableCredentials: verifiableCredentials,
+      hasher: hasher ?? this.hasher
     })
   }
 
@@ -51,6 +60,7 @@ export class OID4VP {
       identifierOpts?: IIdentifierOpts
       holderDID?: string
       subjectIsHolder?: boolean
+      hasher?: Hasher
     },
   ): Promise<VerifiablePresentationWithDefinition[]> {
     return await Promise.all(credentialsWithDefinitions.map((credentials) => this.createVerifiablePresentation(credentials, opts)))
@@ -65,7 +75,8 @@ export class OID4VP {
       identifierOpts?: IIdentifierOpts
       holderDID?: string
       subjectIsHolder?: boolean
-      applyFilter?: boolean
+      applyFilter?: boolean,
+      hasher?: Hasher
     },
   ): Promise<VerifiablePresentationWithDefinition> {
     if (opts?.subjectIsHolder && opts?.holderDID) {
@@ -83,8 +94,11 @@ export class OID4VP {
     let id: IIdentifier | string | undefined = opts?.identifierOpts?.identifier
     if (!id) {
       if (opts?.subjectIsHolder) {
-        const firstVC = CredentialMapper.toUniformCredential(selectedVerifiableCredentials.credentials[0])
-        const holder = Array.isArray(firstVC.credentialSubject) ? firstVC.credentialSubject[0].id : firstVC.credentialSubject.id
+        const firstVC = CredentialMapper.toUniformCredential(selectedVerifiableCredentials.credentials[0], { hasher: opts?.hasher ?? this.hasher })
+        // const holder = Array.isArray(firstVC.credentialSubject) ? firstVC.credentialSubject[0].id : firstVC.credentialSubject.id
+        const holder = CredentialMapper.isSdJwtDecodedCredential(firstVC)
+          ? firstVC.decodedPayload.sub
+          : Array.isArray(firstVC.credentialSubject) ? firstVC.credentialSubject[0].id : firstVC.credentialSubject.id
         if (holder) {
           id = await this.session.context.agent.didManagerGet({ did: holder })
         }
@@ -116,10 +130,42 @@ export class OID4VP {
       context: this.session.context,
       domain: proofOptions.domain,
       challenge: proofOptions.challenge,
-      format: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format,
+      format: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format
     })
-    const presentationResult = await this.getPresentationExchange(vcs.credentials, this.allDIDs).createVerifiablePresentation(
-      vcs.definition.definition,
+
+    const pdTest = {
+      id: '32f54163-7166-48f1-93d8-ff217bdb0653',
+      name: 'Conference Entry Requirements',
+      purpose: 'We can only allow people associated with Washington State business representatives into conference areas',
+      format: {
+        'vc+sd-jwt': {},
+      },
+      input_descriptors: [
+        {
+          id: 'wa_driver_license',
+          name: 'Washington State Business License',
+          purpose: 'We can only allow licensed Washington State business representatives into the WA Business Conference',
+          constraints: {
+            limit_disclosure: Optionality.Required,
+            fields: [
+              {
+                path: ['$.email'],
+                filter: {
+                  type: 'string',
+                },
+              },
+            ],
+          },
+        },
+      ],
+    }
+
+    const presentationResult = await this.getPresentationExchange({
+      verifiableCredentials: vcs.credentials,
+      allDIDs: this.allDIDs,
+      hasher: opts?.hasher
+    }).createVerifiablePresentation(
+      pdTest,//vcs.definition.definition, pdTest
       vcs.credentials,
       signCallback,
       {
@@ -127,6 +173,8 @@ export class OID4VP {
         holderDID: getDID(idOpts),
       },
     )
+
+    console.log(`presentationResult: ${JSON.stringify(presentationResult)}`)
 
     const verifiablePresentation =
       typeof presentationResult.verifiablePresentation !== 'string' &&
@@ -185,9 +233,9 @@ export class OID4VP {
       restrictToDIDMethods?: string[]
     },
   ): Promise<SelectResults> {
-    const selectionResults: SelectResults = await this.getPresentationExchange(
-      await this.getCredentials(opts?.filterOpts),
-    ).selectVerifiableCredentialsForSubmission(presentationDefinition.definition, opts)
+    const selectionResults: SelectResults = await this.getPresentationExchange({
+      verifiableCredentials: await this.getCredentials(opts?.filterOpts),
+    }).selectVerifiableCredentialsForSubmission(presentationDefinition.definition, opts)
     if (selectionResults.errors && selectionResults.errors.length > 0) {
       throw Error(JSON.stringify(selectionResults.errors))
     } else if (selectionResults.areRequiredCredentialsPresent === Status.ERROR) {

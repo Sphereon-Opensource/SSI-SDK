@@ -10,7 +10,6 @@ import {
   PresentationPayload
 } from '@veramo/core'
 import {
-  AsyncHasher,
   IPresentation,
   Optional,
   W3CVerifiableCredential,
@@ -18,7 +17,7 @@ import {
 } from '@sphereon/ssi-types'
 import { IPresentationDefinition, PEVersion, SelectResults } from '@sphereon/pex'
 import { Format, InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
-import { Signer } from '@sd-jwt/types'
+import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 
 export interface IPresentationExchange extends IPluginMethodMap {
   pexValidateDefinition(args: IDefinitionValidateArgs): Promise<boolean>
@@ -79,11 +78,4 @@ export interface IPEXPresentationSignCallBackParams {
   presentationDefinition: IPresentationDefinition
 }
 
-export interface ISigningOpts {
-  hasher: AsyncHasher
-  saltGenerator: () => Promise<string>
-  signer: Signer
-  algorithm: string
-}
-
-export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IDIDManager & ICredentialPlugin>
+export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IDIDManager & ICredentialPlugin & ISDJwtPlugin>

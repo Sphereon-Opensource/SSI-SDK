@@ -11,7 +11,13 @@ import { getAgentDIDMethods, getAgentResolver, getDID } from '@sphereon/ssi-sdk-
 import { CredentialMapper, parseDid } from '@sphereon/ssi-types'
 import { IIdentifier, TKeyType } from '@veramo/core'
 import Debug from 'debug'
-import { IOPOptions, IOpSessionArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
+import {
+  IOPOptions,
+  IOpSessionArgs,
+  IOpsSendSiopAuthorizationResponseArgs,
+  IRequiredContext,
+  IOpSessionGetOID4VPArgs
+} from '../types/IDidAuthSiopOpAuthenticator'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
 
@@ -191,8 +197,8 @@ export class OpSession {
     return defs !== undefined && defs.length > 0
   }
 
-  public async getOID4VP(allDIDs?: string[]): Promise<OID4VP> {
-    return await OID4VP.init(this, allDIDs ?? (await this.getSupportedDIDs()))
+  public async getOID4VP(args: IOpSessionGetOID4VPArgs): Promise<OID4VP> {
+    return await OID4VP.init({ ...args, session: this })
   }
 
   /*private async getMergedRequestPayload(): Promise<RequestObjectPayload> {

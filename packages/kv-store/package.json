@@ -28,7 +28,7 @@
     "eslint-plugin-promise": "^6.1.1",
     "keyv": "^4.5.2",
     "timekeeper": "^2.2.0",
-    "typescript": "^5.4.2"
+    "typescript": "5.4.2"
   },
   "files": [
     "dist/**/*",

@@ -1,12 +1,18 @@
-import { dereferenceDidKeysWithJwkSupport, getAgentResolver, getIdentifier, getKey, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import {
+  dereferenceDidKeysWithJwkSupport,
+  getAgentResolver,
+  getIdentifier,
+  getKey,
+  IIdentifierOpts
+} from '@sphereon/ssi-sdk-ext.did-utils'
 import { IPEXPresentationSignCallback, IRequiredContext } from './types/IPresentationExchange'
 import { IPresentationDefinition } from '@sphereon/pex'
-import { PresentationPayload, ProofFormat } from '@veramo/core'
+import { IIdentifier, PresentationPayload, ProofFormat } from '@veramo/core'
 import {
   CredentialMapper,
   Optional,
   OriginalVerifiablePresentation,
-  //SdJwtDecodedVerifiableCredential,
+  SdJwtDecodedVerifiableCredential,
   W3CVerifiablePresentation
 } from '@sphereon/ssi-types'
 import { Format } from '@sphereon/pex-models'
@@ -21,13 +27,16 @@ export async function createPEXPresentationSignCallback(
   },
   context: IRequiredContext,
 ): Promise<IPEXPresentationSignCallback> {
-  function determineProofFormat(args: {format?: Format | 'jwt' | 'lds' | 'EthereumEip712Signature2021', presentationDefinition: IPresentationDefinition }) {
+  function determineProofFormat(args: {format?: Format | 'jwt' | 'lds' | 'EthereumEip712Signature2021', presentationDefinition: IPresentationDefinition }): string {
     const {format, presentationDefinition } = args
 
-    // All format arguments are optional. So if no format has been given we go for JWT
+    // All format arguments are optional. So if no format has been given we go for SD-JWT
     const formatOptions = format ?? args.format ?? presentationDefinition.format
     if (!formatOptions) {
-      return 'vc+sd-jwt'
+      // TODO it was discussed that sd-jwt should be the new default. but since we mostly support jwt/lds i think we should not yet change the default if no options are given. since this will result in an error
+      // TODO fix the new default once we have a better grip on the different flows.
+      // return 'vc+sd-jwt'
+      return 'jwt'
     }
 
     // if formatOptions is a singular string we can return that as the format
@@ -48,11 +57,11 @@ export async function createPEXPresentationSignCallback(
       return formats.values().next().value
     }
 
-    // if selective disclosure is an option we go for sd-jwt
+    // if we can go for sd-jwt, we go for sd-jwt
     if (formats.has('vc+sd-jwt')) {
       return 'vc+sd-jwt'
     } else
-      // if we can go for jwt, we go for jwt
+    // if it is not sd-jwt we would like to go for jwt
     if (formats.has('jwt')) {
       return 'jwt'
     }
@@ -68,72 +77,53 @@ export async function createPEXPresentationSignCallback(
     format,
     challenge,
   }: {
-    presentation: Optional<PresentationPayload, 'holder'> //| SdJwtDecodedVerifiableCredential
+    presentation: Optional<PresentationPayload, 'holder'> | SdJwtDecodedVerifiableCredential
     presentationDefinition: IPresentationDefinition
     format?: Format | ProofFormat
     domain?: string
     challenge?: string
   }): Promise<W3CVerifiablePresentation> => {
     const proofFormat = determineProofFormat({ format, presentationDefinition })
-
     const idOpts = args.idOpts
     const id = await getIdentifier(idOpts, context)
-    const key = await getKey(id, 'authentication', context, idOpts.kid)
+    if (typeof idOpts.identifier === 'string') {
+      idOpts.identifier = id
+    }
 
-   // if ('compactSdJwtVc' in presentation) {
-      // const sdJwtPresentation = <SdJwtDecodedVerifiableCredential>presentation
-      //
-      // const sdjwt = new SDJwtVcInstance({
-      //   hasher: this.algorithms.hasher,
-      //   saltGenerator: this.algorithms.saltGenerator,
-      //   kbSigner: signer,
-      //   kbSignAlg: key.type,
-      // })
-
-    //  console.log(`is SD-JWT`)
-
-      // if (proofFormat === "vc+sd-jwt") {
-      //   // TODO sd-jwt presentation only supports 1 vc at the moment
-      //   const credential = (presentation as PresentationPayload).verifiableCredential?.[0]
-      //   if (!credential) {
-      //     return Promise.reject(Error('No credential found in payload for sd-jwt presentation'))
-      //   }
-      //
-      //   CredentialMapper.
-      //
-      //     const vp = await context.agent.createSdJwtVcPresentation({
-      //     presentation: credential,
-      //     presentationFrame: presentationDefinition.frame//{ given_name: true }, // TODO
-      //     kb: {
-      //       payload: {
-      //         aud: Array.isArray(presentation.verifier) // TODO this array check does nothing?
-      //           ? presentation.verifier
-      //           : presentation.verifier ?? domain ?? args.domain,
-      //         iat: presentation.nbf,
-      //         nonce: uuidv4()
-      //       }
-      //     }
-      //   })
-
-        // TODO decode vp
-
-       // return CredentialMapper.storedPresentationToOriginalFormat(vp as OriginalVerifiablePresentation)
-      // }
-//    } else {
-      // const idOpts = args.idOpts
-      // const id = await getIdentifier(idOpts, context)
-      if (typeof idOpts.identifier === 'string') {
-        idOpts.identifier = id
+    if ('compactSdJwtVc' in presentation) {
+      if (proofFormat !== 'vc+sd-jwt') {
+        return Promise.reject(Error(`presentation payload does not match proof format ${proofFormat}`))
       }
+
+      const presentationResult = await context.agent.createSdJwtPresentation({
+        presentation: presentation.compactSdJwtVc,
+        kb: {
+          payload: {
+            iat: presentation.kbJwt.payload.iat,
+            nonce: presentation.kbJwt.payload.nonce,
+            aud: (<IIdentifier>args.idOpts.identifier).did.split('#0')[0]
+          }
+        }
+      })
+
+      console.log(`callback presentationResult: ${JSON.stringify(presentationResult)}`)
+      return CredentialMapper.storedPresentationToOriginalFormat(presentationResult.presentation as OriginalVerifiablePresentation)
+    } else {
+      if (proofFormat === 'vc+sd-jwt') {
+        return Promise.reject(Error(`presentation payload does not match proof format ${proofFormat}`))
+      }
+
+      const key = await getKey(id, 'authentication', context, idOpts.kid)
       if (!presentation.holder) {
         presentation.holder = id.did
       }
+
       // const key = await getKey(id, 'authentication', context, idOpts.kid)
       const didResolution = await getAgentResolver(context).resolve(idOpts.identifier.did)
       const vms = await dereferenceDidKeysWithJwkSupport(didResolution.didDocument!, idOpts.verificationMethodSection ?? 'authentication', context)
       const vm = vms.find((vm) => vm.publicKeyHex === key.publicKeyHex)
       if (!vm) {
-        throw Error(`Could not resolve DID document or match signing key to did ${idOpts.identifier.did}`)
+        return Promise.reject(Error(`Could not resolve DID document or match signing key to did ${idOpts.identifier.did}`))
       }
 
       let header
@@ -195,13 +185,14 @@ export async function createPEXPresentationSignCallback(
         // domain: domain ?? args.domain, // handled above, and did-jwt-vc creates an array even for 1 entry
         challenge: challenge ?? args.challenge,
         fetchRemoteContexts: args.fetchRemoteContexts !== false,
-        proofFormat: proofFormat,
+        proofFormat: proofFormat as ProofFormat,
         header,
       })
       console.log(`POST CREATE VP AGENT ${new Date().toString()}`)
       console.log(`PRE MAPPER AGENT ${new Date().toString()}`)
+
       // makes sure we extract an actual JWT from the internal representation in case it is a JWT
       return CredentialMapper.storedPresentationToOriginalFormat(vp as OriginalVerifiablePresentation)
-   // }
+    }
   }
 }
