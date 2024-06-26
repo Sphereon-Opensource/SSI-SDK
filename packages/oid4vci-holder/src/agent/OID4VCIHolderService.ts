@@ -172,7 +172,7 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
 export const verifyCredential = async (args: VerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
   const { credential, hasher } = args
 
-  return (typeof credential === 'string' && CredentialMapper.isSdJwtEncoded(credential))
+  return (CredentialMapper.isSdJwtEncoded(credential))
     ? await verifySDJWTCredential({ credential, hasher }, context)
     : await verifyW3CCredential({ ...args, credential: credential as VeramoW3CVerifiableCredential }, context)
 }

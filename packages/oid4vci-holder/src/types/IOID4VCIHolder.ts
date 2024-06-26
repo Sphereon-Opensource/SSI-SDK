@@ -13,7 +13,8 @@ import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, P
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import {
   Hasher,
-  IVerifiableCredential, OriginalVerifiableCredential,
+  IVerifiableCredential,
+  OriginalVerifiableCredential,
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
   WrappedVerifiablePresentation
