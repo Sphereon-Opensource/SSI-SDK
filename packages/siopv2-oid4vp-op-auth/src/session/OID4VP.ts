@@ -5,6 +5,7 @@ import { getDID, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
 import { CredentialMapper, Hasher, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { FindCredentialsArgs, IIdentifier } from '@veramo/core'
+import { encodeJoseBlob } from '@veramo/utils'
 import {
   DEFAULT_JWT_PROOF_TYPE, IGetPresentationExchangeArgs,
   IOID4VPArgs,
@@ -95,10 +96,15 @@ export class OID4VP {
     if (!id) {
       if (opts?.subjectIsHolder) {
         const firstVC = CredentialMapper.toUniformCredential(selectedVerifiableCredentials.credentials[0], { hasher: opts?.hasher ?? this.hasher })
-        // const holder = Array.isArray(firstVC.credentialSubject) ? firstVC.credentialSubject[0].id : firstVC.credentialSubject.id
         const holder = CredentialMapper.isSdJwtDecodedCredential(firstVC)
-          ? firstVC.decodedPayload.sub
-          : Array.isArray(firstVC.credentialSubject) ? firstVC.credentialSubject[0].id : firstVC.credentialSubject.id
+          ? firstVC.decodedPayload.cnf?.jwk
+            //TODO SDK-19: convert the JWK to hex and search for the appropriate key and associated DID
+            //doesn't apply to did:jwk only, as you can represent any DID key as a JWK. So whenever you encounter a JWK it doesn't mean it had to come from a did:jwk in the system. It just can always be represented as a did:jwk
+            ? `did:jwk:${encodeJoseBlob(firstVC.decodedPayload.cnf?.jwk)}#0`
+            : firstVC.decodedPayload.sub
+          : Array.isArray(firstVC.credentialSubject)
+            ? firstVC.credentialSubject[0].id
+            : firstVC.credentialSubject.id
         if (holder) {
           id = await this.session.context.agent.didManagerGet({ did: holder })
         }
