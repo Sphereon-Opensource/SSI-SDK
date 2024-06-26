@@ -1,8 +1,9 @@
 import { OpenID4VCIClient, OpenID4VCIClientState } from '@sphereon/oid4vci-client'
 import {
+  AuthorizationRequestOpts,
   AuthorizationResponse,
+  CredentialConfigurationSupported,
   CredentialResponse,
-  CredentialSupported,
   EndpointMetadataResult,
   ExperimentalSubjectIssuance,
   NotificationRequest,
@@ -12,7 +13,7 @@ import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, P
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import {
   Hasher,
-  IVerifiableCredential,
+  IVerifiableCredential, OriginalVerifiableCredential,
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
   WrappedVerifiablePresentation
@@ -32,9 +33,10 @@ import {
   VerifiableCredential,
 } from '@veramo/core'
 import { IDataStore, IDataStoreORM } from '@veramo/data-store'
-import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
-import { JWTHeader, JWTPayload } from 'did-jwt'
 import { _ExtendedIKey } from '@veramo/utils'
+import { JWTHeader, JWTPayload } from 'did-jwt'
+import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
+import {VerificationPolicies} from "@veramo/core/src/types/ICredentialVerifier";
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<OID4VCIMachine>
@@ -55,6 +57,7 @@ export type OID4VCIHolderOptions = {
   onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
   vcFormatPreferences?: Array<string>
   jsonldCryptographicSuitePreferences?: Array<string>
+  defaultAuthorizationRequestOptions?: AuthorizationRequestOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   jwtCryptographicSuitePreferences?: Array<SignatureAlgorithmEnum>
   hasher?: Hasher
@@ -76,13 +79,14 @@ export type OnIdentifierCreatedArgs = {
 
 export type GetMachineArgs = {
   requestData: RequestData
+  authorizationRequestOpts?: AuthorizationRequestOpts
   stateNavigationListener?: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
 }
 
-export type InitiateOID4VCIArgs = Pick<OID4VCIMachineContext, 'requestData'>
+export type InitiateOID4VCIArgs = Pick<OID4VCIMachineContext, 'requestData' | 'authorizationRequestOpts'>
 export type CreateCredentialSelectionArgs = Pick<
   OID4VCIMachineContext,
-  'credentialsSupported' | 'credentialBranding' | 'selectedCredentials' | 'locale'
+  'credentialsSupported' | 'credentialBranding' | 'selectedCredentials' | 'locale' | 'openID4VCIClientState'
 >
 export type GetContactArgs = Pick<OID4VCIMachineContext, 'serverMetadata'>
 export type GetCredentialsArgs = Pick<OID4VCIMachineContext, 'verificationCode' | 'openID4VCIClientState'>
@@ -133,11 +137,12 @@ export type MappedCredentialToAccept = ExperimentalSubjectIssuance & {
 }
 
 export type OID4VCIMachineContext = {
+  authorizationRequestOpts?: AuthorizationRequestOpts
   requestData?: RequestData // TODO WAL-673 fix type as this is not always a qr code (deeplink)
   locale?: string
   authorizationCodeURL?: string
   credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>>
-  credentialsSupported: Array<CredentialSupported>
+  credentialsSupported: Record<string, CredentialConfigurationSupported>
   serverMetadata?: EndpointMetadataResult
   openID4VCIClientState?: OpenID4VCIClientState
   credentialSelection: Array<CredentialTypeSelection>
@@ -218,6 +223,7 @@ export type OID4VCIMachineInstanceOpts = {
   guards?: any
   subscription?: () => void
   requireCustomNavigationHook?: boolean
+  authorizationRequestOpts?: AuthorizationRequestOpts
   stateNavigationListener: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
 } & CreateOID4VCIMachineOpts
 
@@ -313,6 +319,7 @@ export type ErrorDetails = {
 export enum RequestType {
   OPENID_INITIATE_ISSUANCE = 'openid-initiate-issuance',
   OPENID_CREDENTIAL_OFFER = 'openid-credential-offer',
+  URL = 'http',
 }
 
 export type CredentialTypeSelection = ExperimentalSubjectIssuance & {
@@ -329,7 +336,7 @@ export type OID4VCIMachine = {
 export type InitiationData = {
   authorizationCodeURL?: string
   credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>>
-  credentialsSupported: Array<CredentialSupported>
+  credentialsSupported: Record<string, CredentialConfigurationSupported>
   serverMetadata: EndpointMetadataResult
   openID4VCIClientState: OpenID4VCIClientState
 }
@@ -339,7 +346,8 @@ export type SelectAppLocaleBrandingArgs = {
   localeBranding?: Array<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding>
 }
 
-export type IssuanceOpts = CredentialSupported & {
+export type IssuanceOpts = CredentialConfigurationSupported & {
+  credentialConfigurationId?: string // Explicit ID for a credential
   didMethod: SupportedDidMethodEnum
   keyType: TKeyType
   codecName?: string
@@ -376,18 +384,18 @@ export type CredentialToAccept = {
   credentialResponse: CredentialResponse
 }
 
-export type GetSupportedCredentialsArgs = {
-  openID4VCIClient: OpenID4VCIClient
+export type GetCredentialConfigsSupportedArgs = {
+  client: OpenID4VCIClient
   vcFormatPreferences: Array<string>
 }
 
 export type GetCredentialBrandingArgs = {
-  credentialsSupported: Array<CredentialSupported>
+  credentialsSupported: Record<string, CredentialConfigurationSupported>
   context: RequiredContext
 }
 
 export type GetPreferredCredentialFormatsArgs = {
-  credentials: Array<CredentialSupported>
+  credentials: Record<string, CredentialConfigurationSupported>
   vcFormatPreferences: Array<string>
 }
 
@@ -397,7 +405,7 @@ export type MapCredentialToAcceptArgs = {
 }
 
 export type GetDefaultIssuanceOptsArgs = {
-  credentialSupported: CredentialSupported
+  credentialSupported: CredentialConfigurationSupported
   opts: DefaultIssuanceOpts
   context: RequiredContext
 }
@@ -437,14 +445,9 @@ export type CreateIdentifierCreateOpts = {
   options?: IdentifierProviderOpts
 }
 
-export type GetCredentialsSupportedArgs = {
-  client: OpenID4VCIClient
-  vcFormatPreferences: Array<string>
-}
-
 export type GetIssuanceOptsArgs = {
   client: OpenID4VCIClient
-  credentialsSupported: Array<CredentialSupported>
+  credentialsSupported: Record<string, CredentialConfigurationSupported>
   serverMetadata: EndpointMetadataResult
   context: RequiredContext
   didMethodPreferences: Array<SupportedDidMethodEnum>
@@ -453,13 +456,13 @@ export type GetIssuanceOptsArgs = {
 }
 
 export type GetIssuanceDidMethodArgs = {
-  credentialSupported: CredentialSupported
+  credentialSupported: CredentialConfigurationSupported
   client: OpenID4VCIClient
   didMethodPreferences: Array<SupportedDidMethodEnum>
 }
 
 export type GetIssuanceCryptoSuiteArgs = {
-  credentialSupported: CredentialSupported
+  credentialSupported: CredentialConfigurationSupported
   client: OpenID4VCIClient
   jwtCryptographicSuitePreferences: Array<SignatureAlgorithmEnum>
   jsonldCryptographicSuitePreferences: Array<string>
@@ -533,6 +536,13 @@ export type CredentialVerificationError = {
 }
 
 export type VerifySDJWTCredentialArgs = { credential: string, hasher?: Hasher }
+
+export interface VerifyCredentialArgs {
+  credential: OriginalVerifiableCredential
+  fetchRemoteContexts?: boolean
+  policies?: VerificationPolicies
+  [x: string]: any
+}
 
 export type RequiredContext = IAgentContext<
   IIssuanceBranding | IContactManager | ICredentialVerifier | ICredentialIssuer | IDataStore | IDataStoreORM | IDIDManager | IResolver | IKeyManager | ISDJwtPlugin

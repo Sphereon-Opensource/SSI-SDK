@@ -48,18 +48,19 @@ export class LinkHandlers implements LinkHandler, LinkHandlerRegistry {
     opts?: {
       singleHandlerOnly?: boolean
       noExceptionOnNoHandler?: boolean
-    },
+    } & Record<string, any>,
   ): Promise<void> {
+    const { singleHandlerOnly, noExceptionOnNoHandler, ...otherOpts } = opts ?? {}
     const handlers = this.all().filter((handler) => handler.supports(url))
 
-    if ((handlers.length === 0 || (handlers.length === 1 && handlers[0].id === LogLinkHandler.ID)) && opts?.noExceptionOnNoHandler !== true) {
+    if ((handlers.length === 0 || (handlers.length === 1 && handlers[0].id === LogLinkHandler.ID)) && noExceptionOnNoHandler !== true) {
       return Promise.reject(new Error(`No link handler was registered that supports URL: ${url}`))
     }
     try {
-      if (opts?.singleHandlerOnly === true) {
-        return await handlers[0].handle(url)
+      if (singleHandlerOnly === true) {
+        return await handlers[0].handle(url, otherOpts)
       }
-      handlers.map(async (handler) => await handler.handle(url))
+      handlers.map(async (handler) => await handler.handle(url, otherOpts))
     } catch (e) {
       console.log(`Linkhandler error: ${e.message}`, e)
       return Promise.reject(e)
@@ -147,7 +148,7 @@ export abstract class LinkHandlerAdapter implements LinkHandler {
     this._priority = value
   }
 
-  handle(url: string | URL): Promise<void> {
+  handle(url: string | URL, opts?: Record<string, any>): Promise<void> {
     return Promise.reject(new Error(`Adapter does not handle a URL. Please implement`))
   }
 

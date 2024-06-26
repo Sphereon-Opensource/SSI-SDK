@@ -1,10 +1,12 @@
 import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
 import {
-  CredentialSupported,
+  AuthorizationRequestOpts,
+  CredentialConfigurationSupported,
   DefaultURISchemes,
+  getTypesFromObject,
   Jwt,
   NotificationRequest,
-  ProofOfPossessionCallbacks
+  ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
 import {
   CorrelationIdentifierType,
@@ -39,6 +41,17 @@ import { decodeJWT, JWTHeader } from 'did-jwt'
 import { v4 as uuidv4 } from 'uuid'
 import { OID4VCIMachine } from '../machine/oid4vciMachine'
 import {
+  getCredentialBranding,
+  getCredentialConfigsSupported,
+  getIdentifier,
+  getIssuanceOpts,
+  mapCredentialToAccept,
+  selectCredentialLocaleBranding,
+  signatureAlgorithmFromKey,
+  signJWT,
+  verifyCredentialToAccept,
+} from './OID4VCIHolderService'
+import {
   AddContactIdentityArgs,
   AssertValidCredentialsArgs,
   CreateCredentialSelectionArgs,
@@ -66,18 +79,6 @@ import {
   StoreCredentialsArgs,
   SupportedDidMethodEnum
 } from '../types/IOID4VCIHolder'
-import {
-  getCredentialBranding,
-  getCredentialsSupported,
-  getIdentifier,
-  getIssuanceOpts,
-  getSupportedCredentials,
-  mapCredentialToAccept,
-  selectCredentialLocaleBranding,
-  signatureAlgorithmFromKey,
-  signJWT,
-  verifyCredentialToAccept
-} from './OID4VCIHolderService'
 
 /**
  * {@inheritDoc IOID4VCIHolder}
@@ -141,6 +142,8 @@ export class OID4VCIHolder implements IAgentPlugin {
     SignatureAlgorithmEnum.ES256K,
     SignatureAlgorithmEnum.EdDSA,
   ]
+  private static readonly DEFAULT_MOBILE_REDIRECT_URI = `${DefaultURISchemes.CREDENTIAL_OFFER}://`
+  private readonly defaultAuthorizationRequestOpts: AuthorizationRequestOpts = { redirectUri: OID4VCIHolder.DEFAULT_MOBILE_REDIRECT_URI }
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
@@ -155,7 +158,8 @@ export class OID4VCIHolder implements IAgentPlugin {
       jsonldCryptographicSuitePreferences,
       didMethodPreferences,
       jwtCryptographicSuitePreferences,
-      hasher,
+      defaultAuthorizationRequestOptions,
+      hasher
     } = options ?? {}
 
     if (vcFormatPreferences !== undefined && vcFormatPreferences.length > 0) {
@@ -169,6 +173,9 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
     if (jwtCryptographicSuitePreferences !== undefined && jwtCryptographicSuitePreferences.length > 0) {
       this.jwtCryptographicSuitePreferences = jwtCryptographicSuitePreferences
+    }
+    if (defaultAuthorizationRequestOptions) {
+      this.defaultAuthorizationRequestOpts = defaultAuthorizationRequestOptions
     }
     this.onContactIdentityCreated = onContactIdentityCreated
     this.onCredentialStored = onCredentialStored
@@ -196,8 +203,16 @@ export class OID4VCIHolder implements IAgentPlugin {
    * FIXME: This method can only be used locally. Creating the interpreter should be local to where the agent is running
    */
   private async oid4vciHolderGetMachineInterpreter(args: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<OID4VCIMachineId> {
+    const authorizationRequestOpts = { ...this.defaultAuthorizationRequestOpts, ...args.authorizationRequestOpts }
     const services = {
-      initiateOID4VCI: (args: InitiateOID4VCIArgs) => this.oid4vciHolderGetCredentialOfferData(args, context),
+      initiateOID4VCI: (args: InitiateOID4VCIArgs) =>
+        this.oid4vciHolderGetCredentialOfferData(
+          {
+            ...args,
+            authorizationRequestOpts,
+          },
+          context,
+        ),
       createCredentialSelection: (args: CreateCredentialSelectionArgs) => this.oid4vciHolderCreateCredentialSelection(args, context),
       getContact: (args: GetContactArgs) => this.oid4vciHolderGetContact(args, context),
       getCredentials: (args: GetCredentialsArgs) => this.oid4vciHolderGetCredentials(args, context),
@@ -210,6 +225,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     const oid4vciMachineInstanceArgs: OID4VCIMachineInstanceOpts = {
       ...args,
+      authorizationRequestOpts,
       services: {
         ...services,
         ...args.services,
@@ -234,20 +250,34 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     if (
       !requestData?.uri ||
-      !(requestData?.uri.startsWith(RequestType.OPENID_INITIATE_ISSUANCE) || requestData?.uri.startsWith(RequestType.OPENID_CREDENTIAL_OFFER))
+      !(
+        requestData?.uri.startsWith(RequestType.OPENID_INITIATE_ISSUANCE) ||
+        requestData?.uri.startsWith(RequestType.OPENID_CREDENTIAL_OFFER) ||
+        requestData?.uri.startsWith(RequestType.URL)
+      )
     ) {
       return Promise.reject(Error(`Invalid OID4VCI credential offer URI: ${requestData?.uri}`))
+    }
+    const authorizationRequestOpts = { ...this.defaultAuthorizationRequestOpts, ...args.authorizationRequestOpts } satisfies AuthorizationRequestOpts
+
+    if (!authorizationRequestOpts.redirectUri) {
+      authorizationRequestOpts.redirectUri = OID4VCIHolder.DEFAULT_MOBILE_REDIRECT_URI
+    }
+    if (authorizationRequestOpts.redirectUri.startsWith('http') && !authorizationRequestOpts.clientId) {
+      // At least set a default for a web based wallet.
+      // TODO: We really need (dynamic) client registration support
+      authorizationRequestOpts.clientId = authorizationRequestOpts.redirectUri
     }
 
     const openID4VCIClient = await OpenID4VCIClient.fromURI({
       uri: requestData?.uri,
-      // TODO: It would be nice to be able to configure the plugin with a custom redirect URI, mainly for mobile
-      authorizationRequest: { redirectUri: `${DefaultURISchemes.CREDENTIAL_OFFER}://` },
+      authorizationRequest: authorizationRequestOpts,
+      clientId: authorizationRequestOpts.clientId,
     })
 
     const serverMetadata = await openID4VCIClient.retrieveServerMetadata()
-    const credentialsSupported = await getSupportedCredentials({
-      openID4VCIClient,
+    const credentialsSupported = await getCredentialConfigsSupported({
+      client: openID4VCIClient,
       vcFormatPreferences: this.vcFormatPreferences,
     })
     const credentialBranding = await getCredentialBranding({ credentialsSupported, context })
@@ -270,30 +300,43 @@ export class OID4VCIHolder implements IAgentPlugin {
     args: CreateCredentialSelectionArgs,
     context: RequiredContext,
   ): Promise<Array<CredentialTypeSelection>> {
-    const { credentialsSupported, credentialBranding, locale, selectedCredentials } = args
-    const credentialSelection: Array<CredentialTypeSelection> = await Promise.all(
-      credentialsSupported.map(async (credentialMetadata: CredentialSupported): Promise<CredentialTypeSelection> => {
-        if (!('types' in credentialMetadata)) {
-          return Promise.reject(Error('SD-JWT not supported yet'))
-        }
-        // FIXME this allows for duplicate VerifiableCredential, which the user has no idea which ones those are and we also have a branding map with unique keys, so some branding will not match
-        const defaultCredentialType = 'VerifiableCredential'
-        const credentialType = credentialMetadata.types.find((type: string): boolean => type !== defaultCredentialType) ?? defaultCredentialType
-        const localeBranding = credentialBranding?.[credentialType]
-        const credentialAlias = (
-          await selectCredentialLocaleBranding({
-            locale,
-            localeBranding,
-          })
-        )?.alias
+    const { credentialBranding, locale, selectedCredentials, openID4VCIClientState } = args
 
-        return {
-          id: uuidv4(),
-          credentialType,
-          credentialAlias: credentialAlias ?? credentialType,
-          isSelected: false,
-        }
-      }),
+    const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState! }) // TODO see if we need the check openID4VCIClientState defined
+    const credentialsSupported = await getCredentialConfigsSupported({
+      client,
+      vcFormatPreferences: this.vcFormatPreferences,
+    })
+    console.log(`Credentials supported ${Object.keys(credentialsSupported).join(',')}`)
+
+    const credentialSelection: Array<CredentialTypeSelection> = await Promise.all(
+      Object.values(credentialsSupported).map(
+        async (credentialConfigSupported: CredentialConfigurationSupported): Promise<CredentialTypeSelection> => {
+          if (credentialConfigSupported.format === 'vc+sd-jwt') {
+            return Promise.reject(Error('SD-JWT not supported yet'))
+          }
+
+          // FIXME this allows for duplicate VerifiableCredential, which the user has no idea which ones those are and we also have a branding map with unique keys, so some branding will not match
+          const defaultCredentialType = 'VerifiableCredential'
+
+          const credentialType =
+            getTypesFromObject(credentialConfigSupported)?.find((type) => type !== defaultCredentialType) ?? defaultCredentialType
+          const localeBranding = credentialBranding?.[credentialType]
+          const credentialAlias = (
+            await selectCredentialLocaleBranding({
+              locale,
+              localeBranding,
+            })
+          )?.alias
+
+          return {
+            id: uuidv4(),
+            credentialType,
+            credentialAlias: credentialAlias ?? credentialType,
+            isSelected: false,
+          }
+        },
+      ),
     )
 
     // TODO find better place to do this, would be nice if the machine does this?
@@ -338,7 +381,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
 
     const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState })
-    const credentialsSupported = await getCredentialsSupported({
+    const credentialsSupported = await getCredentialConfigsSupported({
       client,
       vcFormatPreferences: this.vcFormatPreferences,
     })
@@ -383,10 +426,10 @@ export class OID4VCIHolder implements IAgentPlugin {
     const callbacks: ProofOfPossessionCallbacks<DIDDocument> = {
       signCallback: (jwt: Jwt, kid?: string) => {
         let iss = jwt.payload.iss
+
         if (client.isEBSI()) {
           iss = jwt.header.kid?.split('#')[0]
-        }
-        if (!iss) {
+        } else if (!iss) {
           iss = jwt.header.kid?.split('#')[0]
         }
         if (!iss) {
@@ -414,11 +457,15 @@ export class OID4VCIHolder implements IAgentPlugin {
         pin,
         authorizationResponse: JSON.parse(await client.exportState()).authorizationCodeResponse,
       })
-      // @ts-ignore
+
+      // FIXME: This type mapping is wrong. It should use credential_identifier in case the access token response has authorization details
+      const types = getTypesFromObject(issuanceOpt)
+      const credentialTypes = issuanceOpt.credentialConfigurationId ?? issuanceOpt.id ?? types
+      if (!credentialTypes || (Array.isArray(credentialTypes) && credentialTypes.length === 0)) {
+        return Promise.reject(Error('cannot determine credential id to request'))
+      }
       const credentialResponse = await client.acquireCredentials({
-        // @ts-ignore
-        credentialTypes: issuanceOpt.types /*.filter((type: string): boolean => type !== 'VerifiableCredential')*/,
-        ...('@context' in issuanceOpt && issuanceOpt['@context'] && { context: issuanceOpt['@context'] }),
+        credentialTypes,
         proofCallbacks: callbacks,
         format: issuanceOpt.format,
         // TODO: We need to update the machine and add notifications support for actual deferred credentials instead of just waiting/retrying
@@ -514,6 +561,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       }
       return trim
     }
+
     const { credentialsToAccept, openID4VCIClientState, credentialsSupported, serverMetadata } = args
 
     const credentialToAccept = credentialsToAccept[0]

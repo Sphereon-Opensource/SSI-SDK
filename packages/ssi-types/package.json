@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-types",
   "description": "SSI Common Types",
-  "version": "0.24.0",
+  "version": "0.26.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@sd-jwt/decode": "^0.6.1",
-    "jwt-decode": "^3.1.2",
+    "debug": "^4.3.5",
     "events": "^3.3.0",
-    "debug": "^4.3.5"
+    "jwt-decode": "^3.1.2"
   },
   "devDependencies": {
     "@types/jest": "^27.5.2",

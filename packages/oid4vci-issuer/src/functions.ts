@@ -1,4 +1,4 @@
-import { CredentialIssuerMetadata, Jwt, JwtVerifyResult, OID4VCICredentialFormat, UniformCredentialRequest } from '@sphereon/oid4vci-common'
+import { CredentialRequest, IssuerMetadata, Jwt, JwtVerifyResult, OID4VCICredentialFormat } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, getDID, getFirstKeyWithRelation, getIdentifier, getKey, IDIDOptions, toDID } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
@@ -123,7 +123,7 @@ export function getAccessTokenSignerCallback(
 
 export function getCredentialSignerCallback(didOpts: IDIDOptions, context: IRequiredContext): CredentialSignerCallback<DIDDocument> {
   async function issueVCCallback(args: {
-    credentialRequest: UniformCredentialRequest
+    credentialRequest: CredentialRequest
     credential: CredentialIssuanceInput
     jwtVerifyResult: JwtVerifyResult<DIDDocument>
     format?: OID4VCICredentialFormat
@@ -165,7 +165,7 @@ export function getCredentialSignerCallback(didOpts: IDIDOptions, context: IRequ
 export async function createVciIssuerBuilder(
   args: {
     issuerOpts: IIssuerOptions
-    metadata: CredentialIssuerMetadata
+    metadata: IssuerMetadata
     resolver?: Resolvable
     credentialDataSupplier?: CredentialDataSupplier
   },
@@ -181,10 +181,10 @@ export async function createVciIssuerBuilder(
   const jwtVerifyOpts: JWTVerifyOptions = {
     ...args?.issuerOpts?.didOpts?.resolveOpts?.jwtVerifyOpts,
     resolver,
-    audience: metadata.credential_issuer,
+    audience: metadata.credential_issuer as string, // FIXME legacy version had {display: NameAndLocale | NameAndLocale[]} as credential_issuer
   }
   builder.withIssuerMetadata(metadata)
-  builder.withUserPinRequired(issuerOpts.userPinRequired ?? false)
+  // builder.withUserPinRequired(issuerOpts.userPinRequired ?? false) was removed from implementers draft v1
   builder.withCredentialSignerCallback(getCredentialSignerCallback(didOpts, context))
   builder.withJWTVerifyCallback(getJwtVerifyCallback({ verifyOpts: jwtVerifyOpts }, context))
   if (args.credentialDataSupplier) {
@@ -205,7 +205,7 @@ export async function createVciIssuer(
     credentialDataSupplier,
   }: {
     issuerOpts: IIssuerOptions
-    metadata: CredentialIssuerMetadata
+    metadata: IssuerMetadata
     credentialDataSupplier?: CredentialDataSupplier
   },
   context: IRequiredContext,

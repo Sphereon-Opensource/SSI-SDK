@@ -71,8 +71,31 @@ export class PDManager implements IAgentPlugin {
 
   /** {@inheritDoc IPDManager.pdmGetDefinitions} */
   private async pdmGetDefinitions(args: GetDefinitionItemsArgs): Promise<Array<PresentationDefinitionItem>> {
-    const { filter } = args
-    return this.store.getDefinitions({ filter })
+    const { filter, opts } = args
+    const allDefinitions = await this.store.getDefinitions({ filter })
+    let definitions: PresentationDefinitionItem[] = []
+    if (opts == undefined || opts.showVersionHistory !== true) {
+      const groupedByDefinitionId = allDefinitions.reduce(
+        (acc, entity) => {
+          if (!acc[entity.definitionId]) {
+            acc[entity.definitionId] = []
+          }
+          acc[entity.definitionId].push(entity)
+          return acc
+        },
+        {} as Record<string, PresentationDefinitionItem[]>,
+      )
+      definitions = Object.values(groupedByDefinitionId).map((entities) =>
+        entities.reduce((highestVersionItem, baseItem) => {
+          const baseVersion = this.normalizeToSemverVersionFormat(baseItem.version)
+          const highestVersion = this.normalizeToSemverVersionFormat(highestVersionItem.version)
+          return semver.gt(baseVersion, highestVersion) ? baseItem : highestVersionItem
+        }),
+      )
+    } else {
+      definitions = allDefinitions
+    }
+    return definitions
   }
 
   /** {@inheritDoc IPDManager.pdmDeleteDefinition} */
@@ -138,8 +161,8 @@ export class PDManager implements IAgentPlugin {
       existingItem.definitionId = definitionItem.definitionId
       existingItem.version = version ?? existingItem.version ?? '1'
       existingItem.tenantId = definitionItem.tenantId
-      existingItem.name = definitionItem.name
-      existingItem.purpose = definitionItem.purpose
+      existingItem.name = definitionItem.definitionPayload.name ?? definitionItem.name
+      existingItem.purpose = definitionItem.definitionPayload.purpose ?? definitionItem.purpose
       existingItem.definitionPayload = definitionItem.definitionPayload
 
       return await this.store.updateDefinition(existingItem)
@@ -220,5 +243,18 @@ export class PDManager implements IAgentPlugin {
 
     definitionItem.version = resultVersion
     return await this.store.addDefinition(definitionItem)
+  }
+
+  private normalizeToSemverVersionFormat(version: string): string {
+    const defaultVersion = '1.0.0'
+    let [baseVersion, preReleaseSuffix] = version.split(/-(.+)/)
+
+    // Normalize the base version to at least 'major.minor.patch', that's what semver needs as input
+    let normalizedBaseVersion = semver.coerce(baseVersion)?.version ?? defaultVersion
+    if (preReleaseSuffix) {
+      normalizedBaseVersion += `-${preReleaseSuffix}`
+    }
+
+    return normalizedBaseVersion
   }
 }

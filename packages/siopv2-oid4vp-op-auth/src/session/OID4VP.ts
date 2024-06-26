@@ -1,6 +1,6 @@
 import { PresentationDefinitionWithLocation, PresentationExchange } from '@sphereon/did-auth-siop'
 import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
-import { Format, Optionality } from '@sphereon/pex-models'
+import { Format } from '@sphereon/pex-models'
 import { getDID, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
 import { CredentialMapper, Hasher, W3CVerifiableCredential } from '@sphereon/ssi-types'

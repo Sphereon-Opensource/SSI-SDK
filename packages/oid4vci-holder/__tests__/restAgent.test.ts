@@ -2,25 +2,24 @@ import 'cross-fetch/polyfill'
 // @ts-ignore
 import express, { Router } from 'express'
 import { Server } from 'http'
-import { DataSource } from 'typeorm'
-import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
+import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/dist'
-import eventLoggerAgentLogic from './shared/eventLoggerAgentLogic'
+import oid4vciHolderAgentLogic from './shared/oid4vciHolderLogicAgentLogic'
 import { IOID4VCIHolder } from '../src'
+import { IMachineStatePersistence } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 
 jest.setTimeout(60000)
 
-const port = 3002
+const port = 3051
 const basePath = '/agent'
 
 let serverAgent: IAgent
 let restServer: Server
-let dbConnection: Promise<DataSource>
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IOID4VCIHolder>({
+  createAgent<IOID4VCIHolder & IMachineStatePersistence>({
     ...options,
     plugins: [
       new AgentRestClient({
@@ -32,10 +31,9 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const config = await getConfig('packages/event-logger/agent.yml')
-  const { agent, db } = await createObjects(config, { agent: '/agent', db: '/dbConnection' })
+  const config = await getConfig('packages/oid4vci-holder/agent.yml')
+  const { agent } = await createObjects(config, { agent: '/agent' })
   serverAgent = agent
-  dbConnection = db
 
   const agentRouter: Router = AgentRouter({
     exposedMethods: serverAgent.availableMethods(),
@@ -56,7 +54,6 @@ const setup = async (): Promise<boolean> => {
 
 const tearDown = async (): Promise<boolean> => {
   restServer.close()
-  await (await dbConnection).close()
   return true
 }
 
@@ -67,5 +64,5 @@ const testContext = {
 }
 
 describe('REST integration tests', (): void => {
-  eventLoggerAgentLogic(testContext)
+  oid4vciHolderAgentLogic(testContext)
 })

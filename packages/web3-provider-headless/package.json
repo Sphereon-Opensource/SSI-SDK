@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-web3.headless-provider",
-  "version": "0.24.0",
+  "version": "0.26.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -40,8 +40,8 @@
     "web3-validator": "^2.0.0"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk-ext.key-manager": "0.20.0",
-    "@sphereon/ssi-sdk-ext.kms-local": "0.20.0",
+    "@sphereon/ssi-sdk-ext.key-manager": "0.21.0",
+    "@sphereon/ssi-sdk-ext.kms-local": "0.21.0",
     "@types/body-parser": "^1.19.2",
     "@types/cors": "^2.8.13",
     "@types/dotenv-flow": "^3.2.0",

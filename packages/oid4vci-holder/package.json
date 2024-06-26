@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.oid4vci-holder",
-  "version": "0.24.0",
+  "version": "0.26.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,10 +14,10 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/oid4vci-client": "0.10.4-next.25",
-    "@sphereon/oid4vci-common": "0.10.4-next.25",
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.20.0",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.20.0",
+    "@sphereon/oid4vci-client": "0.12.0",
+    "@sphereon/oid4vci-common": "0.12.0",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.21.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.21.0",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
@@ -39,6 +39,7 @@
     "@types/uuid": "^9.0.8",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
+    "nock": "^13.5.4",
     "typeorm": "^0.3.20",
     "typescript": "5.4.2"
   },
