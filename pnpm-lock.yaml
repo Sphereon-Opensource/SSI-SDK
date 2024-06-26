@@ -200,8 +200,8 @@ importers:
   packages/contact-manager:
     dependencies:
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
-        version: link:../data-store
+        specifier: file://C:\Git\Sphereon-Opensource\ssi-sdk\packages\data-store\sphereon-ssi-sdk.data-store-0.24.0-sdjwt.tgz
+        version: file:packages/data-store/sphereon-ssi-sdk.data-store-0.24.0-sdjwt.tgz(ts-node@10.9.2)
       cross-fetch:
         specifier: ^3.1.8
         version: 3.1.8
@@ -493,7 +493,7 @@ importers:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       typescript:
-        specifier: ^5.4.2
+        specifier: 5.4.2
         version: 5.4.2
 
   packages/issuance-branding:
@@ -502,8 +502,8 @@ importers:
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
-        version: link:../data-store
+        specifier: file://C:\Git\Sphereon-Opensource\ssi-sdk\packages\data-store\sphereon-ssi-sdk.data-store-0.24.0-sdjwt.tgz
+        version: file:packages/data-store/sphereon-ssi-sdk.data-store-0.24.0-sdjwt.tgz(ts-node@10.9.2)
       debug:
         specifier: ^4.3.4
         version: 4.3.5
@@ -576,7 +576,7 @@ importers:
         specifier: ^2.2.0
         version: 2.3.1
       typescript:
-        specifier: ^5.4.2
+        specifier: 5.4.2
         version: 5.4.2
 
   packages/ms-authenticator:
@@ -686,29 +686,29 @@ importers:
         specifier: 0.10.4-next.25
         version: 0.10.4-next.25
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.18.0
-        version: 0.18.0
+        specifier: 0.20.0
+        version: 0.20.0
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.18.0
-        version: 0.18.0(msrcrypto@1.5.8)
+        specifier: 0.20.0
+        version: 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
       '@sphereon/ssi-sdk.contact-manager':
-        specifier: workspace:*
-        version: link:../contact-manager
+        specifier: file://C:\Git\Sphereon-Opensource\ssi-sdk\packages\contact-manager\sphereon-ssi-sdk.contact-manager-0.24.0-sdjwt.tgz
+        version: file:packages/contact-manager/sphereon-ssi-sdk.contact-manager-0.24.0-sdjwt.tgz(ts-node@10.9.2)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
-        version: link:../data-store
+        specifier: file://C:\Git\Sphereon-Opensource\ssi-sdk\packages\data-store\sphereon-ssi-sdk.data-store-0.24.0-sdjwt.tgz
+        version: file:packages/data-store/sphereon-ssi-sdk.data-store-0.24.0-sdjwt.tgz(ts-node@10.9.2)
       '@sphereon/ssi-sdk.issuance-branding':
-        specifier: workspace:*
-        version: link:../issuance-branding
+        specifier: file://C:\Git\Sphereon-Opensource\ssi-sdk\packages\issuance-branding\sphereon-ssi-sdk.issuance-branding-0.24.0-sdjwt.tgz
+        version: file:packages/issuance-branding/sphereon-ssi-sdk.issuance-branding-0.24.0-sdjwt.tgz(ts-node@10.9.2)
       '@sphereon/ssi-sdk.sd-jwt':
-        specifier: workspace:*
-        version: link:../sd-jwt
+        specifier: file://C:\Git\Sphereon-Opensource\ssi-sdk\packages\sd-jwt\sphereon-ssi-sdk.sd-jwt-0.24.0-sd-jwt.tgz
+        version: file:packages/sd-jwt/sphereon-ssi-sdk.sd-jwt-0.24.0-sd-jwt.tgz(msrcrypto@1.5.8)
       '@sphereon/ssi-sdk.xstate-machine-persistence':
-        specifier: workspace:*
-        version: link:../xstate-persistence
+        specifier: file://C:\Git\Sphereon-Opensource\ssi-sdk\packages\xstate-persistence\sphereon-ssi-sdk.xstate-machine-persistence-0.24.0-sdjwt.tgz
+        version: file:packages/xstate-persistence/sphereon-ssi-sdk.xstate-machine-persistence-0.24.0-sdjwt.tgz(ts-node@10.9.2)
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -753,7 +753,7 @@ importers:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       typescript:
-        specifier: ^5.4.2
+        specifier: 5.4.2
         version: 5.4.2
 
   packages/oid4vci-issuer:
@@ -1226,6 +1226,9 @@ importers:
 
   packages/presentation-exchange:
     dependencies:
+      '@sd-jwt/sd-jwt-vc':
+        specifier: ^0.6.1
+        version: 0.6.1
       '@sphereon/pex':
         specifier: ^3.3.3
         version: 3.3.3
@@ -1251,6 +1254,9 @@ importers:
         specifier: ^9.0.1
         version: 9.0.1
     devDependencies:
+      '@sd-jwt/types':
+        specifier: ^0.6.1
+        version: 0.6.1
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3
@@ -2984,8 +2990,8 @@ importers:
   packages/xstate-persistence:
     dependencies:
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
-        version: link:../data-store
+        specifier: file://C:\Git\Sphereon-Opensource\ssi-sdk\packages\data-store\sphereon-ssi-sdk.data-store-0.24.0-sdjwt.tgz
+        version: file:packages/data-store/sphereon-ssi-sdk.data-store-0.24.0-sdjwt.tgz(ts-node@10.9.2)
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -7451,18 +7457,6 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.18.0:
-    resolution: {integrity: sha512-xdlXoGn0L0fzxLqSopbCmY7gfLdpNWxCSb3TeWo4lt7EuCs20zGSOBA0B/W8PrQWIbnI6llCSfg4SjKuqaYnaw==}
-    dependencies:
-      '@sphereon/ssi-types': link:packages/ssi-types
-      base64url: 3.0.1
-      debug: 4.3.5
-      did-resolver: 4.1.0
-      uint8arrays: 3.1.1
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
   /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.20.0:
     resolution: {integrity: sha512-duWy4wRNJDhsNpWUjyOSIEAa4SYe+qeLm4Ge+LVC3NWOp+lQ3+ofVCpZb4YkeFo4dMjFPRLa4SJ+fHdVFjV7RA==}
     dependencies:
@@ -7473,7 +7467,6 @@ packages:
       uint8arrays: 3.1.1
     transitivePeerDependencies:
       - supports-color
-    dev: true
 
   /@sphereon/ssi-sdk-ext.did-resolver-key@0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-Z5fI16xRkM9vgN8qf+gWFy6vZ1TkaHTweLRN7v7sI5ynjgjgtsvZdKxaa3GV93F1VaEcq2Lm/xjHSs3chgNKgQ==}
@@ -7497,30 +7490,6 @@ packages:
       - react-native-securerandom
       - supports-color
     dev: true
-
-  /@sphereon/ssi-sdk-ext.did-utils@0.18.0(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-c+3xw8JPGuqzMwPr0t1IY6aBILd6fdoDjzRZkD5HIYV+K0dBTFnAIpKn2QwwzKzZzs9I9Smb/Y4b8N+AxTAnGw==}
-    dependencies:
-      '@ethersproject/transactions': 5.7.0
-      '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/ssi-sdk-ext.key-utils': 0.18.2(msrcrypto@1.5.8)
-      '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
-      '@stablelib/ed25519': 1.0.3
-      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
-      '@veramo/utils': 4.2.0
-      did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
-      did-resolver: 4.1.0
-      elliptic: 6.5.4
-      uint8arrays: 3.1.1
-    transitivePeerDependencies:
-      - encoding
-      - expo
-      - expo-crypto
-      - msrcrypt
-      - msrcrypto
-      - react-native-securerandom
-      - supports-color
-    dev: false
 
   /@sphereon/ssi-sdk-ext.did-utils@0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-iRTJE8yOIak1UgYByvrzfiAhHmW3PTZCf7eMFUE/oS5N8zsMsRJeQb3ELxIOJpqXwE7YA0KXzO/0QrJ16CH8vA==}
@@ -7560,33 +7529,6 @@ packages:
       - msrcrypto
       - react-native-securerandom
       - supports-color
-
-  /@sphereon/ssi-sdk-ext.key-utils@0.18.2(msrcrypto@1.5.8):
-    resolution: {integrity: sha512-C7gBp4lhpIr+R8hQngu6h6okbYtffRK123T2Gt389pn176BHh6HzFdxDffxSq5MTEL5gwaXcCDdPHjuWEZ/5gQ==}
-    dependencies:
-      '@ethersproject/random': 5.7.0
-      '@sphereon/isomorphic-webcrypto': 2.4.1-unstable.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@stablelib/ed25519': 1.0.3
-      '@stablelib/sha256': 1.0.1
-      '@stablelib/sha512': 1.0.1
-      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
-      base64url: 3.0.1
-      debug: 4.3.5
-      did-resolver: 4.1.0
-      elliptic: 6.5.4
-      lodash.isplainobject: 4.0.6
-      multiformats: 9.9.0
-      uint8arrays: 3.1.1
-      varint: 6.0.0
-      web-encoding: 1.1.5
-    transitivePeerDependencies:
-      - expo
-      - expo-crypto
-      - msrcrypt
-      - msrcrypto
-      - react-native-securerandom
-      - supports-color
-    dev: false
 
   /@sphereon/ssi-sdk-ext.key-utils@0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1):
     resolution: {integrity: sha512-SGS0x2juCWnjxlMEkJ45My2ayzVHMV/kwgSQYDUmGv2iSqc96GrVWHfI3mmB3YWdV03ygVohSkIUZoloWteZBw==}
@@ -21243,6 +21185,160 @@ packages:
 
   /zod@3.23.8:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
+    dev: false
+
+  file:packages/contact-manager/sphereon-ssi-sdk.contact-manager-0.24.0-sdjwt.tgz(ts-node@10.9.2):
+    resolution: {integrity: sha512-OgC/3XSNNJ0Q8dIe5toqX+efVC5vm8xry+L1gq2iaOvoGyuWfHb2QXi3JJdLomsr1+9VYrbt8/QISs3KSNt31Q==, tarball: file:packages/contact-manager/sphereon-ssi-sdk.contact-manager-0.24.0-sdjwt.tgz}
+    id: file:packages/contact-manager/sphereon-ssi-sdk.contact-manager-0.24.0-sdjwt.tgz
+    name: '@sphereon/ssi-sdk.contact-manager'
+    version: 0.24.0-sdjwt
+    dependencies:
+      '@sphereon/ssi-sdk.data-store': file:packages/data-store/sphereon-ssi-sdk.data-store-0.24.0-sdjwt.tgz(ts-node@10.9.2)
+      cross-fetch: 3.1.8
+      debug: 4.3.5
+      typeorm: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+    dev: false
+
+  file:packages/data-store/sphereon-ssi-sdk.data-store-0.24.0-sdjwt.tgz(ts-node@10.9.2):
+    resolution: {integrity: sha512-pXcXQrBVP7e4oj7UgwMseMImlkiPorg7rgpzeuG3HMKPPqtKN+Dnv6drOIAHV7fHw6iBfJgu7D3Ga5bt992uug==, tarball: file:packages/data-store/sphereon-ssi-sdk.data-store-0.24.0-sdjwt.tgz}
+    id: file:packages/data-store/sphereon-ssi-sdk.data-store-0.24.0-sdjwt.tgz
+    name: '@sphereon/ssi-sdk.data-store'
+    version: 0.24.0-sdjwt
+    dependencies:
+      '@sphereon/pex': 3.3.3
+      '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/utils': 4.2.0
+      blakejs: 1.2.1
+      class-validator: 0.14.1
+      debug: 4.3.5
+      typeorm: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+    dev: false
+
+  file:packages/issuance-branding/sphereon-ssi-sdk.issuance-branding-0.24.0-sdjwt.tgz(ts-node@10.9.2):
+    resolution: {integrity: sha512-QfFYIZpxQjmudlPrJZalxkZVnULGkf8KHyEdKbF7j7HJQbxhSx9gra6GvZ7/L68tof60ebz1vPkoK+ejwtFNOg==, tarball: file:packages/issuance-branding/sphereon-ssi-sdk.issuance-branding-0.24.0-sdjwt.tgz}
+    id: file:packages/issuance-branding/sphereon-ssi-sdk.issuance-branding-0.24.0-sdjwt.tgz
+    name: '@sphereon/ssi-sdk.issuance-branding'
+    version: 0.24.0-sdjwt
+    dependencies:
+      '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
+      '@sphereon/ssi-sdk.data-store': file:packages/data-store/sphereon-ssi-sdk.data-store-0.24.0-sdjwt.tgz(ts-node@10.9.2)
+      debug: 4.3.5
+      typeorm: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+    dev: false
+
+  file:packages/sd-jwt/sphereon-ssi-sdk.sd-jwt-0.24.0-sd-jwt.tgz(msrcrypto@1.5.8):
+    resolution: {integrity: sha512-UNwqRT5tfQre9kVoH1hA4HRk1OvTuzIqiFGv9qB3ZxfjoYn4B0LuJS4TL698dnlbMoZBe2NOOhgk/0IXrSzeBQ==, tarball: file:packages/sd-jwt/sphereon-ssi-sdk.sd-jwt-0.24.0-sd-jwt.tgz}
+    id: file:packages/sd-jwt/sphereon-ssi-sdk.sd-jwt-0.24.0-sd-jwt.tgz
+    name: '@sphereon/ssi-sdk.sd-jwt'
+    version: 0.24.0-sd-jwt
+    dependencies:
+      '@sd-jwt/core': 0.6.1
+      '@sd-jwt/sd-jwt-vc': 0.6.1
+      '@sphereon/ssi-sdk-ext.did-utils': 0.20.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@veramo/utils': 4.2.0
+      debug: 4.3.5
+    transitivePeerDependencies:
+      - encoding
+      - expo
+      - expo-crypto
+      - msrcrypt
+      - msrcrypto
+      - react-native-securerandom
+      - supports-color
+    dev: false
+
+  file:packages/xstate-persistence/sphereon-ssi-sdk.xstate-machine-persistence-0.24.0-sdjwt.tgz(ts-node@10.9.2):
+    resolution: {integrity: sha512-MU6IzGWcjCm0Ea1TacsHMFlMga2xJF4glXSdLIFRQGOpgGxUhqJ0PCPeC3xuPAHyFxWFD/iYLZZYUNqg7enEJw==, tarball: file:packages/xstate-persistence/sphereon-ssi-sdk.xstate-machine-persistence-0.24.0-sdjwt.tgz}
+    id: file:packages/xstate-persistence/sphereon-ssi-sdk.xstate-machine-persistence-0.24.0-sdjwt.tgz
+    name: '@sphereon/ssi-sdk.xstate-machine-persistence'
+    version: 0.24.0-sdjwt
+    dependencies:
+      '@sphereon/ssi-sdk.data-store': file:packages/data-store/sphereon-ssi-sdk.data-store-0.24.0-sdjwt.tgz(ts-node@10.9.2)
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      uuid: 9.0.1
+      xstate: 4.38.3
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
     dev: false
 
   github.com/uport-project/EcdsaSecp256k1RecoverySignature2020/ab0db52de6f4e6663ef271a48009ba26e688ef9b:
