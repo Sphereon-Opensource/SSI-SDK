@@ -4,7 +4,7 @@ import { DidAuthConfig, Party } from '@sphereon/ssi-sdk.data-store'
 import { OriginalVerifiableCredential } from '@sphereon/ssi-types'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
 import { ErrorDetails } from '../error'
-import {Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData} from '../siop-service'
+import { Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData } from '../siop-service'
 
 export type Siopv2MachineContext = {
   url: string
@@ -83,14 +83,6 @@ export type Siopv2MachineInstanceOpts = {
   requireCustomNavigationHook?: boolean
   stateNavigationListener?: (siopv2Machine: Siopv2MachineInterpreter, state: Siopv2MachineState, navigation?: any) => Promise<void>
 } & CreateSiopv2MachineOpts
-
-export type Siopv2MachineNavigationArgs = {
-  siopv2Machine: Siopv2MachineInterpreter
-  state: Siopv2MachineState
-  navigation: any
-  onNext?: () => void
-  onBack?: () => void
-}
 
 export enum Siopv2MachineEvents {
   NEXT = 'NEXT',
