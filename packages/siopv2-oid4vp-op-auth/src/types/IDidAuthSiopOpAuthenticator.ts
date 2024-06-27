@@ -39,7 +39,7 @@ import {
   RequiredContext,
   RetrieveContactArgs,
   SendResponseArgs,
-  Siopv2AuthorizationRequestData,
+  Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData,
 } from './siop-service'
 
 export const LOGGER_NAMESPACE = 'sphereon:siopv2-oid4vp:op-auth'
@@ -56,13 +56,15 @@ export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   siopGetSiopRequest(args: GetSiopRequestArgs, context: RequiredContext): Promise<Siopv2AuthorizationRequestData>
   siopRetrieveContact(args: RetrieveContactArgs, context: RequiredContext): Promise<Party | undefined>
   siopAddIdentity(args: AddIdentityArgs, context: RequiredContext): Promise<void>
-  siopSendResponse(args: SendResponseArgs, context: RequiredContext): Promise<Response>
+  siopSendResponse(args: SendResponseArgs, context: RequiredContext): Promise<Siopv2AuthorizationResponseData>
 }
 
 export interface IOpSessionArgs {
   sessionId?: string
 
   requestJwtOrUri: string | URI
+  providedPresentationDefinitions?: Array<PresentationDefinitionWithLocation>
+  idOpts?: IIdentifierOpts
   // identifier: IIdentifier
   context: IRequiredContext
   op?: IOPOptions

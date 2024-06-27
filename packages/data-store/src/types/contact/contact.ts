@@ -1,3 +1,4 @@
+import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IIdentifier } from '@veramo/core'
 
 export type MetadataTypes = string | number | Date | boolean | undefined
@@ -126,7 +127,7 @@ export type PartialOpenIdConfig = Partial<OpenIdConfig>
 
 export type DidAuthConfig = {
   id: string
-  identifier: IIdentifier
+  idOpts: IIdentifierOpts
   stateId: string
   ownerId?: string
   tenantId?: string

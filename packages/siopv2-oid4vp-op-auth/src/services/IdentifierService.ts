@@ -1,11 +1,11 @@
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { _ExtendedIKey } from '@veramo/utils'
-import { DidAgents, GetIdentifierArgs, IdentifierOpts } from '../types/identifier'
+import { DidAgents, GetIdentifierArgs, IdentifierWithKey } from '../types/identifier'
 import { getAuthenticationKey, getOrCreatePrimaryIdentifier } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IIdentifier } from '@veramo/core'
 import { Siopv2HolderEvent } from '../types'
 
-export const getIdentifier = async (args: GetIdentifierArgs): Promise<IdentifierOpts> => {
+export const getIdentifierWithKey = async (args: GetIdentifierArgs): Promise<IdentifierWithKey> => {
   const { keyOpts, context } = args
   const agentContext = { ...context, agent: context.agent as DidAgents }
 

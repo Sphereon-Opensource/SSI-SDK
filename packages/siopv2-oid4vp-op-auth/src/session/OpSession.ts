@@ -1,6 +1,7 @@
 import {
-  PresentationExchangeResponseOpts,
   CheckLinkedDomain,
+  PresentationDefinitionWithLocation,
+  PresentationExchangeResponseOpts,
   ResolveOpts,
   URI,
   Verification,
@@ -26,12 +27,14 @@ export class OpSession {
   private verifiedAuthorizationRequest?: VerifiedAuthorizationRequest | undefined
   private _nonce?: string
   private _state?: string
+  private readonly _providedPresentationDefinitions?: PresentationDefinitionWithLocation[]
 
   private constructor(options: Required<IOpSessionArgs>) {
     this.id = options.sessionId
     this.options = options.op
     this.context = options.context
     this.requestJwtOrUri = options.requestJwtOrUri
+    this._providedPresentationDefinitions = options.providedPresentationDefinitions
   }
 
   public static async init(options: Required<IOpSessionArgs>): Promise<OpSession> {
@@ -187,8 +190,15 @@ export class OpSession {
   }
 
   public async hasPresentationDefinitions(): Promise<boolean> {
-    const defs = (await this.getAuthorizationRequest()).presentationDefinitions
+    const defs = this._providedPresentationDefinitions ?? (await this.getAuthorizationRequest()).presentationDefinitions
     return defs !== undefined && defs.length > 0
+  }
+
+  public async getPresentationDefinitions(): Promise<Array<PresentationDefinitionWithLocation> | undefined> {
+    if (!(await this.hasPresentationDefinitions())) {
+      throw Error(`No presentation definitions found`)
+    }
+    return this._providedPresentationDefinitions ?? (await this.getAuthorizationRequest()).presentationDefinitions
   }
 
   public async getOID4VP(allDIDs?: string[]): Promise<OID4VP> {
