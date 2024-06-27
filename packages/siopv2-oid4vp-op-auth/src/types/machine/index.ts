@@ -1,16 +1,17 @@
-import { IIdentifier } from '@veramo/core'
-import { DidAuthConfig, Party } from '@sphereon/ssi-sdk.data-store'
 import { VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
+import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import { DidAuthConfig, Party } from '@sphereon/ssi-sdk.data-store'
 import { OriginalVerifiableCredential } from '@sphereon/ssi-types'
-import { ErrorDetails } from '../error'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
-import { Siopv2AuthorizationRequestData } from '../siop-service'
+import { ErrorDetails } from '../error'
+import {Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData} from '../siop-service'
 
 export type Siopv2MachineContext = {
   url: string
-  identifier?: IIdentifier
+  idOpts?: IIdentifierOpts
   didAuthConfig?: Omit<DidAuthConfig, 'identifier'>
   authorizationRequestData?: Siopv2AuthorizationRequestData
+  authorizationResponseData?: Siopv2AuthorizationResponseData
   verifiedAuthorizationRequest?: VerifiedAuthorizationRequest
   contact?: Party
   hasContactConsent: boolean
@@ -71,6 +72,7 @@ export type Siopv2StateMachine = StateMachine<
 
 export type CreateSiopv2MachineOpts = {
   url: string | URL
+  idOpts?: IIdentifierOpts
   machineId?: string
 }
 

@@ -232,7 +232,7 @@ export const getDefaultIssuanceOpts = async (args: GetDefaultIssuanceOptsArgs): 
     didMethod: opts.client.isEBSI() ? SupportedDidMethodEnum.DID_KEY : SupportedDidMethodEnum.DID_JWK,
     keyType: 'Secp256r1',
   } as IssuanceOpts
-  const identifierOpts = await getIdentifier({ issuanceOpt, context })
+  const identifierOpts = await getIdentifierOpts({ issuanceOpt, context })
 
   return {
     ...issuanceOpt,
@@ -240,7 +240,7 @@ export const getDefaultIssuanceOpts = async (args: GetDefaultIssuanceOptsArgs): 
   }
 }
 
-export const getIdentifier = async (args: GetIdentifierArgs): Promise<IdentifierOpts> => {
+export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<IdentifierOpts> => {
   const { issuanceOpt, context } = args
 
   const identifier =
@@ -382,12 +382,16 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
     const format = supported.format
     const type: string = getTypesFromObject(supported)?.join() ?? ''
     const id = `${type}:${format}`
-    return id;
+    return id
   }
 
   if (configurationId) {
     const allSupported = client.getCredentialsSupported(false)
-    return Object.fromEntries(Object.entries(allSupported).filter(([id, supported]) => id === configurationId || supported.id === configurationId || createIdFromTypes(supported) === configurationId))
+    return Object.fromEntries(
+      Object.entries(allSupported).filter(
+        ([id, supported]) => id === configurationId || supported.id === configurationId || createIdFromTypes(supported) === configurationId,
+      ),
+    )
   }
 
   if (!types && !client.credentialOffer) {
@@ -419,8 +423,6 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
   })
   let allSupported: Record<string, CredentialConfigurationSupported>
 
-
-
   if (!Array.isArray(offerSupported)) {
     allSupported = offerSupported
   } else {
@@ -430,7 +432,7 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
         allSupported[supported.id] = supported
         return
       }
-      const id = createIdFromTypes(supported);
+      const id = createIdFromTypes(supported)
       allSupported[id] = supported
     })
   }
@@ -500,14 +502,16 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
       client,
       didMethodPreferences,
     })
-    const issuanceOpt = forceIssuanceOpt ? {...credentialSupported, ...forceIssuanceOpt} : {
-      ...credentialSupported,
-      didMethod,
-      format: credentialSupported.format,
-      keyType: client.isEBSI() ? 'Secp256r1' : keyTypeFromCryptographicSuite({ suite: cryptographicSuite }),
-      ...(client.isEBSI() && { codecName: 'EBSI' }),
-    } as IssuanceOpts
-    const identifierOpts = await getIdentifier({ issuanceOpt, context })
+    const issuanceOpt = forceIssuanceOpt
+      ? { ...credentialSupported, ...forceIssuanceOpt }
+      : ({
+          ...credentialSupported,
+          didMethod,
+          format: credentialSupported.format,
+          keyType: client.isEBSI() ? 'Secp256r1' : keyTypeFromCryptographicSuite({ suite: cryptographicSuite }),
+          ...(client.isEBSI() && { codecName: 'EBSI' }),
+        } as IssuanceOpts)
+    const identifierOpts = await getIdentifierOpts({ issuanceOpt, context })
     if (!client.clientId) {
       // FIXME: We really should fetch server metadata. Have user select required credentials. Take the first cred to determine a kid when no clientId is present and set that.
       //  Needs a preference service for crypto, keys, dids, and clientId, with ecosystem support

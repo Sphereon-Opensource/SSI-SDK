@@ -1,12 +1,17 @@
-import { ConnectionType } from '@sphereon/ssi-sdk.data-store'
-import { IIdentifier } from '@veramo/core'
-import { getIdentifier, getOrCreatePrimaryIdentifier } from './IdentifierService'
-import { SupportedDidMethodEnum } from '../types/identifier'
-import { CredentialMapper, Loggers, LogMethod, PresentationSubmission } from '@sphereon/ssi-types'
-import { SupportedVersion } from '@sphereon/did-auth-siop'
-import { getKey } from '@sphereon/ssi-sdk-ext.did-utils'
-import { LOGGER_NAMESPACE, RequiredContext, VerifiableCredentialsWithDefinition, VerifiablePresentationWithDefinition } from '../types'
-import { OID4VP, OpSession } from '../session'
+import {SupportedVersion} from '@sphereon/did-auth-siop'
+import {getIdentifier, getKey, IIdentifierOpts} from '@sphereon/ssi-sdk-ext.did-utils'
+import {ConnectionType} from '@sphereon/ssi-sdk.data-store'
+import {CredentialMapper, Loggers, LogMethod, PresentationSubmission} from '@sphereon/ssi-types'
+import {IIdentifier} from '@veramo/core'
+import {OID4VP, OpSession} from '../session'
+import {
+  LOGGER_NAMESPACE,
+  RequiredContext,
+  SupportedDidMethodEnum,
+  VerifiableCredentialsWithDefinition,
+  VerifiablePresentationWithDefinition
+} from '../types'
+import {getOrCreatePrimaryIdentifier} from './IdentifierService'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, { methods: [LogMethod.CONSOLE, LogMethod.DEBUG_PKG] }).get(LOGGER_NAMESPACE)
 
@@ -15,16 +20,18 @@ export const siopSendAuthorizationResponse = async (
   args: {
     sessionId: string
     verifiableCredentialsWithDefinition?: VerifiableCredentialsWithDefinition[]
+    idOpts?: IIdentifierOpts
   },
   context: RequiredContext,
 ) => {
   const { agent } = context
+  let { idOpts } = args
 
   if (connectionType !== ConnectionType.SIOPv2_OpenID4VP) {
     return Promise.reject(Error(`No supported authentication provider for type: ${connectionType}`))
   }
   const session: OpSession = await agent.siopGetOPSession({ sessionId: args.sessionId })
-  let identifiers: Array<IIdentifier> = await session.getSupportedIdentifiers()
+  let identifiers: Array<IIdentifier> = idOpts ? [await getIdentifier(idOpts, context)] : await session.getSupportedIdentifiers()
   if (!identifiers || identifiers.length === 0) {
     throw Error(`No DID methods found in agent that are supported by the relying party`)
   }
@@ -98,20 +105,22 @@ export const siopSendAuthorizationResponse = async (
       throw Error(`Only one verifiable presentation supported for now. Got ${presentationsAndDefs.length}`)
     }
 
-    const identifierOpts = presentationsAndDefs[0].identifierOpts
-    const getIdentifierResponse = await getIdentifier({
+    idOpts = presentationsAndDefs[0].identifierOpts
+    identifier = await getIdentifier(idOpts, context)
+    /*key = await getKey(identifier, 'authentication', context, idOpts.kid)
+    const getIdentifierResponse = await getIdentifierWithKey({
       context,
       keyOpts: {
-        identifier: identifierOpts.identifier as IIdentifier, // FIXME BEFORE PR - cast?
+        identifier,
         kid: identifierOpts.kid,
-        didMethod: SupportedDidMethodEnum.DID_JWK, // FIXME BEFORE PR - where does this hav to come from?
-        keyType: 'Secp256r1', // FIXME BEFORE PR - where does this hav to come from?
+        didMethod: parseDid(identifier.did).method as SupportedDidMethodEnum,
+        keyType: key.type
       },
-    })
-    identifier = getIdentifierResponse.identifier
+    })*/
     presentationSubmission = presentationsAndDefs[0].presentationSubmission
   }
-  const kid: string = (await getKey(identifier, 'authentication', session.context)).kid
+  const key = await getKey(identifier, 'authentication', session.context, idOpts?.kid)
+  const kid: string = idOpts?.kid?.startsWith('did:') ? idOpts?.kid : `${identifier.did}#${key?.meta?.jwkThumbprint ? key.meta.jwkThumbprint : key.kid}`
 
   logger.log(`Definitions and locations:`, JSON.stringify(presentationsAndDefs?.[0]?.verifiablePresentation, null, 2))
   logger.log(`Presentation Submission:`, JSON.stringify(presentationSubmission, null, 2))

@@ -55,7 +55,7 @@ export type GetIdentifierArgs = {
   context: RequiredContext
 }
 
-export type IdentifierOpts = {
+export type IdentifierWithKey = {
   identifier: IIdentifier
   key: _ExtendedIKey
   kid: string

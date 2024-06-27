@@ -1,3 +1,4 @@
+import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { LinkHandlerAdapter } from '@sphereon/ssi-sdk.core'
 import { IMachineStatePersistence, interpreterStartOrResume } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { IAgentContext } from '@veramo/core'
@@ -11,26 +12,30 @@ export class Siopv2OID4VPLinkHandler extends LinkHandlerAdapter {
   private readonly stateNavigationListener:
     | ((oid4vciMachine: Siopv2MachineInterpreter, state: Siopv2MachineState, navigation?: any) => Promise<void>)
     | undefined
-  private noStateMachinePersistence: boolean
+  private readonly noStateMachinePersistence: boolean
+  private readonly idOpts?: IIdentifierOpts
 
   constructor(
     args: Pick<GetMachineArgs, 'stateNavigationListener'> & {
       protocols?: Array<string | RegExp>
       context: IAgentContext<IDidAuthSiopOpAuthenticator & IMachineStatePersistence>
       noStateMachinePersistence?: boolean
+      idOpts?: IIdentifierOpts
     },
   ) {
     super({ ...args, id: 'Siopv2' })
     this.context = args.context
     this.noStateMachinePersistence = args.noStateMachinePersistence === true
     this.stateNavigationListener = args.stateNavigationListener
+    this.idOpts = args.idOpts
   }
 
-  async handle(url: string | URL): Promise<void> {
+  async handle(url: string | URL, opts?: {idOpts?: IIdentifierOpts}): Promise<void> {
     logger.debug(`handling SIOP link: ${url}`)
 
     const siopv2Machine = await this.context.agent.siopGetMachineInterpreter({
       url,
+      idOpts: opts?.idOpts ?? this.idOpts,
       stateNavigationListener: this.stateNavigationListener,
     })
     siopv2Machine.interpreter.start()

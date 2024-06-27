@@ -1,4 +1,4 @@
-import {OpenID4VCIClient, OpenID4VCIClientState} from '@sphereon/oid4vci-client'
+import { OpenID4VCIClient, OpenID4VCIClientState } from '@sphereon/oid4vci-client'
 import {
   AuthorizationRequestOpts,
   AuthorizationResponse,
@@ -10,11 +10,11 @@ import {
   ExperimentalSubjectIssuance,
   NotificationRequest,
 } from '@sphereon/oid4vci-common'
-import {IIdentifierOpts} from '@sphereon/ssi-sdk-ext.did-utils'
-import {IContactManager} from '@sphereon/ssi-sdk.contact-manager'
-import {IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party} from '@sphereon/ssi-sdk.data-store'
-import {IIssuanceBranding} from '@sphereon/ssi-sdk.issuance-branding'
-import {IVerifiableCredential, WrappedVerifiableCredential, WrappedVerifiablePresentation} from '@sphereon/ssi-types'
+import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
+import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
+import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
+import { IVerifiableCredential, WrappedVerifiableCredential, WrappedVerifiablePresentation } from '@sphereon/ssi-types'
 import {
   IAgentContext,
   ICredentialIssuer,
@@ -28,18 +28,10 @@ import {
   TKeyType,
   VerifiableCredential,
 } from '@veramo/core'
-import {IDataStore, IDataStoreORM} from '@veramo/data-store'
-import {_ExtendedIKey} from '@veramo/utils'
-import {JWTHeader, JWTPayload} from 'did-jwt'
-import {
-  BaseActionObject,
-  Interpreter,
-  ResolveTypegenMeta,
-  ServiceMap,
-  State,
-  StateMachine,
-  TypegenDisabled
-} from 'xstate'
+import { IDataStore, IDataStoreORM } from '@veramo/data-store'
+import { _ExtendedIKey } from '@veramo/utils'
+import { JWTHeader, JWTPayload } from 'did-jwt'
+import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult>
@@ -48,7 +40,10 @@ export interface IOID4VCIHolder extends IPluginMethodMap {
 
   oid4vciHolderStart(args: PrepareStartArgs, context: RequiredContext): Promise<StartResult>
 
-  oid4vciHolderCreateCredentialsToSelectFrom(args: createCredentialsToSelectFromArgs, context: RequiredContext): Promise<Array<CredentialToSelectFromResult>>
+  oid4vciHolderCreateCredentialsToSelectFrom(
+    args: createCredentialsToSelectFromArgs,
+    context: RequiredContext,
+  ): Promise<Array<CredentialToSelectFromResult>>
 
   oid4vciHolderGetContact(args: GetContactArgs, context: RequiredContext): Promise<Party | undefined>
 
@@ -109,7 +104,10 @@ export type createCredentialsToSelectFromArgs = Pick<
   'credentialsSupported' | 'credentialBranding' | 'selectedCredentials' | 'locale' | 'openID4VCIClientState'
 >
 export type GetContactArgs = Pick<OID4VCIMachineContext, 'serverMetadata'>
-export type GetCredentialsArgs = Pick<OID4VCIMachineContext, 'verificationCode' | 'openID4VCIClientState' | 'selectedCredentials' | 'didMethodPreferences' | 'issuanceOpt'>
+export type GetCredentialsArgs = Pick<
+  OID4VCIMachineContext,
+  'verificationCode' | 'openID4VCIClientState' | 'selectedCredentials' | 'didMethodPreferences' | 'issuanceOpt' | 'accessTokenOpts'
+>
 export type AddContactIdentityArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'contact'>
 export type AssertValidCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept'>
 export type StoreCredentialBrandingArgs = Pick<
@@ -161,6 +159,7 @@ export type MappedCredentialToAccept = ExperimentalSubjectIssuance & {
 
 export type OID4VCIMachineContext = {
   authorizationRequestOpts?: AuthorizationRequestOpts
+  accessTokenOpts?: AccessTokenOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   issuanceOpt?: IssuanceOpts
   requestData?: RequestData // TODO WAL-673 fix type as this is not always a qr code (deeplink)
@@ -561,6 +560,11 @@ export type GetCredentialArgs = {
   pin?: string
   issuanceOpt: IssuanceOpts
   client: OpenID4VCIClient
+  accessTokenOpts?: AccessTokenOpts
+}
+
+export type AccessTokenOpts = {
+  additionalRequestParams?: Record<string, any>
 }
 
 export enum SignatureAlgorithmEnum {

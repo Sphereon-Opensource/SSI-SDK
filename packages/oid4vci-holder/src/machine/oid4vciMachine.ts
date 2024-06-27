@@ -82,15 +82,19 @@ const oid4vciRequireAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OI
     throw Error('Missing openID4VCI client state in context')
   }
 
-  if (
-    !openID4VCIClientState.credentialOffer?.supportedFlows ??
-    (openID4VCIClientState.endpointMetadata?.credentialIssuerMetadata?.authorization_endpoint ? [AuthzFlowType.AUTHORIZATION_CODE_FLOW] : [])
-  ) {
+  if (!openID4VCIClientState.authorizationURL) {
+    return !ctx.openID4VCIClientState?.authorizationCodeResponse
+  } else if (openID4VCIClientState.authorizationRequestOpts || !openID4VCIClientState.credentialOffer) {
+    // We have authz options or there is not credential offer to begin with.
+    // We require authz as long as we do not have the authz code response
+    return !ctx.openID4VCIClientState?.authorizationCodeResponse
+  } else if (openID4VCIClientState.credentialOffer?.supportedFlows?.includes(AuthzFlowType.AUTHORIZATION_CODE_FLOW)) {
+    return !ctx.openID4VCIClientState?.authorizationCodeResponse
+  } else if (openID4VCIClientState.credentialOffer?.supportedFlows?.includes(AuthzFlowType.PRE_AUTHORIZED_CODE_FLOW)) {
     return false
-  } else if (!openID4VCIClientState.authorizationURL) {
-    return false
+  } else if (openID4VCIClientState.endpointMetadata?.credentialIssuerMetadata?.authorization_endpoint) {
+    return !ctx.openID4VCIClientState?.authorizationCodeResponse
   }
-
   return !ctx.openID4VCIClientState?.authorizationCodeResponse
 }
 
@@ -590,9 +594,9 @@ export class OID4VCIMachine {
       if (typeof opts?.stateNavigationListener === 'function') {
         interpreter.onTransition((snapshot: OID4VCIMachineState): void => {
           if (opts?.stateNavigationListener === undefined) {
-          throw new Error('stateNavigationListener is required when no custom navigation hook is used')
-        }
-        opts.stateNavigationListener(interpreter, snapshot)
+            throw new Error('stateNavigationListener is required when no custom navigation hook is used')
+          }
+          opts.stateNavigationListener(interpreter, snapshot)
         })
       }
     }

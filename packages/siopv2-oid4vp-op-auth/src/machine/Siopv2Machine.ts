@@ -21,7 +21,7 @@ import {
   Siopv2MachineStates,
   Siopv2StateMachine,
 } from '../types/machine'
-import { Siopv2AuthorizationRequestData } from '../types'
+import {Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData} from '../types'
 
 const Siopv2HasNoContactGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
   const { contact } = _ctx
@@ -80,12 +80,13 @@ const Siopv2IsSiopWithOID4VPGuard = (_ctx: Siopv2MachineContext, _event: Siopv2M
 }
 
 const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine => {
-  const { url } = opts
+  const { url, idOpts } = opts
   const initialContext: Siopv2MachineContext = {
     url: new URL(url).toString(),
     hasContactConsent: true,
     contactAlias: '',
     selectedCredentials: [],
+    idOpts,
   }
 
   return createMachine<Siopv2MachineContext, Siopv2MachineEventTypes>({
@@ -284,6 +285,9 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
           src: Siopv2MachineServices.sendResponse,
           onDone: {
             target: Siopv2MachineStates.done,
+            actions: assign({
+              authorizationResponseData: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<Siopv2AuthorizationResponseData>) => _event.data,
+            }),
           },
           onError: {
             target: Siopv2MachineStates.handleError,

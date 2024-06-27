@@ -1,16 +1,16 @@
 import { Loggers, LogLevel, LogMethod } from '@sphereon/ssi-types'
-import { OID4VCIMachineInterpreter, OID4VCIMachineState, OID4VCIMachineStates } from '../types/IOID4VCIHolder'
+import { Siopv2MachineInterpreter, Siopv2MachineState, Siopv2MachineStates } from '../types'
 
-const logger = Loggers.DEFAULT.options('sphereon:oid4vci:holder', { defaultLogLevel: LogLevel.DEBUG, methods: [LogMethod.CONSOLE] }).get(
-  'sphereon:oid4vci:holder',
+const logger = Loggers.DEFAULT.options('sphereon:oid4vp:holder', { defaultLogLevel: LogLevel.DEBUG, methods: [LogMethod.CONSOLE] }).get(
+  'sphereon:oid4vp:holder',
 )
 
-export const OID4VCICallbackStateListener = (
-  callbacks?: Map<OID4VCIMachineStates, (machine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, opts?: any) => Promise<void>>,
+export const OID4VPCallbackStateListener = (
+  callbacks?: Map<Siopv2MachineStates, (machine: Siopv2MachineInterpreter, state: Siopv2MachineState, opts?: any) => Promise<void>>,
 ) => {
-  return async (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState): Promise<void> => {
+  return async (oid4vciMachine: Siopv2MachineInterpreter, state: Siopv2MachineState): Promise<void> => {
     if (state._event.type === 'internal') {
-      logger.debug('oid4vciCallbackStateListener: internal event')
+      logger.debug('oid4vpCallbackStateListener: internal event')
       // Make sure we do not navigate when triggered by an internal event. We need to stay on current screen
       // Make sure we do not navigate when state has not changed
       return
@@ -22,7 +22,7 @@ export const OID4VCICallbackStateListener = (
       return
     }
 
-    callbacks.forEach((callback, key: OID4VCIMachineStates) => {
+    callbacks.forEach((callback, key: Siopv2MachineStates) => {
       if (state.matches(key)) {
         logger.log(`state callback found for state: ${JSON.stringify(state.value)}, will execute callback`)
         callback(oid4vciMachine, state)

@@ -1,3 +1,4 @@
+import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IAgentContext, IDIDManager, IIdentifier, IResolver } from '@veramo/core'
 import { PresentationDefinitionWithLocation, RPRegistrationMetadataPayload } from '@sphereon/did-auth-siop'
@@ -12,15 +13,16 @@ export type DidAuthSiopOpAuthenticatorOptions = {
 
 export type GetMachineArgs = {
   url: string | URL
+  idOpts?: IIdentifierOpts
   stateNavigationListener?: (siopv2Machine: Siopv2MachineInterpreter, state: Siopv2MachineState, navigation?: any) => Promise<void>
 }
 
 export type CreateConfigArgs = Pick<Siopv2MachineContext, 'url'>
-export type CreateConfigResult = Omit<DidAuthConfig, 'stateId' | 'identifier'>
+export type CreateConfigResult = Omit<DidAuthConfig, 'stateId' | 'idOpts'>
 export type GetSiopRequestArgs = Pick<Siopv2MachineContext, 'didAuthConfig' | 'url'>
 export type RetrieveContactArgs = Pick<Siopv2MachineContext, 'url' | 'authorizationRequestData'>
 export type AddIdentityArgs = Pick<Siopv2MachineContext, 'contact' | 'authorizationRequestData'>
-export type SendResponseArgs = Pick<Siopv2MachineContext, 'didAuthConfig' | 'authorizationRequestData' | 'selectedCredentials'>
+export type SendResponseArgs = Pick<Siopv2MachineContext, 'didAuthConfig' | 'authorizationRequestData' | 'selectedCredentials' | 'idOpts'>
 
 export enum Siopv2HolderEvent {
   CONTACT_IDENTITY_CREATED = 'contact_identity_created', // TODO BEFORE PR: same events as the oid4vci holder module?
@@ -31,6 +33,13 @@ export enum SupportedLanguage {
   ENGLISH = 'en',
   DUTCH = 'nl',
 }
+
+export type Siopv2AuthorizationResponseData = {
+  body?: string
+  url?: string
+  queryParams?: Record<string, any>
+}
+
 
 export type Siopv2AuthorizationRequestData = {
   correlationId: string
@@ -51,4 +60,4 @@ export type OnIdentifierCreatedArgs = {
   identifier: IIdentifier
 }
 
-export type RequiredContext = IAgentContext<IContactManager | IDidAuthSiopOpAuthenticator | IDIDManager | IResolver>
+export type RequiredContext = IAgentContext<IContactManager & IDidAuthSiopOpAuthenticator & IDIDManager & IResolver>

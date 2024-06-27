@@ -1,33 +1,9 @@
-import { IOpSessionArgs, LOGGER_NAMESPACE, RequiredContext, schema } from '../index'
-import { IAgentPlugin } from '@veramo/core'
-import { OpSession } from '../session'
-import { v4 as uuidv4 } from 'uuid'
 import {
-  IDidAuthSiopOpAuthenticator,
-  IGetSiopSessionArgs,
-  IRegisterCustomApprovalForSiopArgs,
-  IRemoveCustomApprovalForSiopArgs,
-  IRemoveSiopSessionArgs,
-  IRequiredContext,
-} from '../types/IDidAuthSiopOpAuthenticator'
-import { PresentationSignCallback, SupportedVersion, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
-
-import {
-  AddIdentityArgs,
-  CreateConfigArgs,
-  CreateConfigResult,
-  GetSiopRequestArgs,
-  OnContactIdentityCreatedArgs,
-  OnIdentifierCreatedArgs,
-  RetrieveContactArgs,
-  SendResponseArgs,
-  Siopv2AuthorizationRequestData,
-  Siopv2HolderEvent,
-  DidAuthSiopOpAuthenticatorOptions,
-} from '../types/siop-service'
-import { Siopv2Machine } from '../machine/Siopv2Machine'
-import { Siopv2Machine as Siopv2MachineId, Siopv2MachineInstanceOpts } from '../types/machine'
-import { Loggers, LogMethod, W3CVerifiableCredential } from '@sphereon/ssi-types'
+  decodeUriAsJson,
+  PresentationSignCallback,
+  SupportedVersion,
+  VerifiedAuthorizationRequest
+} from '@sphereon/did-auth-siop'
 import {
   ConnectionType,
   CorrelationIdentifierType,
@@ -37,7 +13,36 @@ import {
   NonPersistedIdentity,
   Party,
 } from '@sphereon/ssi-sdk.data-store'
-import { siopSendAuthorizationResponse, translateCorrelationIdToName } from '../services/Siopv2MachineService'
+import {Loggers, LogMethod, W3CVerifiableCredential} from '@sphereon/ssi-types'
+import {IAgentPlugin} from '@veramo/core'
+import {v4 as uuidv4} from 'uuid'
+import {IOpSessionArgs, LOGGER_NAMESPACE, RequiredContext, schema, Siopv2AuthorizationResponseData} from '../index'
+import {Siopv2Machine} from '../machine/Siopv2Machine'
+import {siopSendAuthorizationResponse, translateCorrelationIdToName} from '../services/Siopv2MachineService'
+import {OpSession} from '../session'
+import {
+  IDidAuthSiopOpAuthenticator,
+  IGetSiopSessionArgs,
+  IRegisterCustomApprovalForSiopArgs,
+  IRemoveCustomApprovalForSiopArgs,
+  IRemoveSiopSessionArgs,
+  IRequiredContext,
+} from '../types/IDidAuthSiopOpAuthenticator'
+import {Siopv2Machine as Siopv2MachineId, Siopv2MachineInstanceOpts} from '../types/machine'
+
+import {
+  AddIdentityArgs,
+  CreateConfigArgs,
+  CreateConfigResult,
+  DidAuthSiopOpAuthenticatorOptions,
+  GetSiopRequestArgs,
+  OnContactIdentityCreatedArgs,
+  OnIdentifierCreatedArgs,
+  RetrieveContactArgs,
+  SendResponseArgs,
+  Siopv2AuthorizationRequestData,
+  Siopv2HolderEvent,
+} from '../types/siop-service'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, { methods: [LogMethod.CONSOLE, LogMethod.DEBUG_PKG] }).get(LOGGER_NAMESPACE)
 
@@ -143,6 +148,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     }
 
     const siopv2MachineOpts: Siopv2MachineInstanceOpts = {
+      ...opts,
       url,
       stateNavigationListener,
       services: {
@@ -184,11 +190,11 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
 
     const session: OpSession = await agent
       .siopGetOPSession({ sessionId })
-      .catch(async () => await agent.siopRegisterSession({ requestJwtOrUri: redirectUrl, sessionId }))
+      .catch(async () => await agent.siopRegisterOPSession({ requestJwtOrUri: redirectUrl, sessionId }))
 
     logger.debug(`session: ${JSON.stringify(session.id, null, 2)}`)
     const verifiedAuthorizationRequest = await session.getAuthorizationRequest()
-    logger.debug('Request: ' + JSON.stringify(verifiedAuthorizationRequest, null, 2))
+    logger.trace('Request: ' + JSON.stringify(verifiedAuthorizationRequest, null, 2))
     const name = verifiedAuthorizationRequest.registrationMetadataPayload?.client_name
     const url =
       verifiedAuthorizationRequest.responseURI ??
@@ -230,7 +236,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     }
 
     return agent
-      .getContacts({
+      .cmGetContacts({
         filter: [
           {
             identities: {
@@ -283,7 +289,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     }
   }
 
-  private async siopSendResponse(args: SendResponseArgs, context: RequiredContext): Promise<Response> {
+  private async siopSendResponse(args: SendResponseArgs, context: RequiredContext): Promise<Siopv2AuthorizationResponseData> {
     const { didAuthConfig, authorizationRequestData, selectedCredentials } = args
 
     if (didAuthConfig === undefined) {
@@ -294,10 +300,11 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       return Promise.reject(Error('Missing authorization request data in context'))
     }
 
-    return await siopSendAuthorizationResponse(
+    const response = await siopSendAuthorizationResponse(
       ConnectionType.SIOPv2_OpenID4VP,
       {
         sessionId: didAuthConfig.sessionId,
+        ...(args.idOpts && { idOpts: args.idOpts }),
         ...(authorizationRequestData.presentationDefinitions !== undefined && {
           verifiableCredentialsWithDefinition: [
             {
@@ -309,5 +316,11 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       },
       context,
     )
+
+    return {
+      body: await response.json(),
+      url: response.url,
+      queryParams: decodeUriAsJson(response.url)
+    }
   }
 }

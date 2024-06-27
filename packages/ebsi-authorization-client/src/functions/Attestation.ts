@@ -1,4 +1,4 @@
-import {OpenID4VCIClient} from '@sphereon/oid4vci-client'
+import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
 import {
   AuthorizationDetails,
   AuthzFlowType,
@@ -9,19 +9,14 @@ import {
   ProofOfPossessionCallbacks,
   RequestObjectOpts,
 } from '@sphereon/oid4vci-common'
-import {getIdentifier, IIdentifierOpts} from '@sphereon/ssi-sdk-ext.did-utils'
-import {calculateJwkThumbprintForKey} from '@sphereon/ssi-sdk-ext.key-utils'
-import {
-  getAuthenticationKey, IssuanceOpts,
-  PrepareStartArgs,
-  signCallback,
-  SupportedDidMethodEnum
-} from '@sphereon/ssi-sdk.oid4vci-holder'
-import {IIdentifier} from '@veramo/core'
-import {_ExtendedIKey} from '@veramo/utils'
-import {IRequiredContext} from '../types/IEBSIAuthorizationClient'
+import { getIdentifier, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import { calculateJwkThumbprintForKey } from '@sphereon/ssi-sdk-ext.key-utils'
+import { getAuthenticationKey, IssuanceOpts, PrepareStartArgs, signCallback, SupportedDidMethodEnum } from '@sphereon/ssi-sdk.oid4vci-holder'
+import { IIdentifier } from '@veramo/core'
+import { _ExtendedIKey } from '@veramo/utils'
+import { IRequiredContext } from '../types/IEBSIAuthorizationClient'
 
-export interface AttestationAuthRequestUrlResult extends Omit<Required<PrepareStartArgs>, 'issuanceOpt'>  {
+export interface AttestationAuthRequestUrlResult extends Omit<Required<PrepareStartArgs>, 'issuanceOpt'> {
   issuanceOpt?: IssuanceOpts
   authorizationCodeURL: string
   identifier: IIdentifier
@@ -100,7 +95,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   })
 
   const signCallbacks: ProofOfPossessionCallbacks<never> = requestObjectOpts.signCallbacks ?? {
-    signCallback: signCallback(vciClient, idOpts, context),
+    signCallback: await signCallback(vciClient, idOpts, context),
   }
   const authorizationRequestOpts = {
     redirectUri,

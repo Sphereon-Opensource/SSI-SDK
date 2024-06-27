@@ -7,7 +7,7 @@ import {
   GetIdentifierArgs,
   GetOrCreatePrimaryIdentifierArgs,
   IdentifierAliasEnum,
-  IdentifierOpts,
+  IdentifierWithKey,
   KeyManagementSystemEnum,
   SupportedDidMethodEnum,
 } from '../types/identifier'
@@ -15,7 +15,7 @@ import { IDIDManager, IIdentifier, IKey, IResolver, TAgent } from '@veramo/core'
 import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
 import { Siopv2HolderEvent } from '../types'
 
-export const getIdentifier = async (args: GetIdentifierArgs): Promise<IdentifierOpts> => {
+export const getIdentifierWithKey = async (args: GetIdentifierArgs): Promise<IdentifierWithKey> => {
   const { keyOpts, context } = args
 
   const identifier =
