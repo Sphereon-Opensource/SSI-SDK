@@ -30,7 +30,7 @@ export class Siopv2OID4VPLinkHandler extends LinkHandlerAdapter {
     this.idOpts = args.idOpts
   }
 
-  async handle(url: string | URL, opts?: {idOpts?: IIdentifierOpts}): Promise<void> {
+  async handle(url: string | URL, opts?: { idOpts?: IIdentifierOpts }): Promise<void> {
     logger.debug(`handling SIOP link: ${url}`)
 
     const siopv2Machine = await this.context.agent.siopGetMachineInterpreter({

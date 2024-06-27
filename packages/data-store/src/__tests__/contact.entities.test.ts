@@ -1,3 +1,4 @@
+import { getDID } from '@sphereon/ssi-sdk-ext.did-utils'
 import { DataSource, FindOptionsWhere } from 'typeorm'
 import {
   contactMetadataItemEntityFrom,
@@ -621,11 +622,13 @@ describe('Database entities tests', (): void => {
       connection: {
         type: ConnectionType.SIOPv2,
         config: {
-          identifier: {
-            did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
-            provider: 'test_provider',
-            keys: [],
-            services: [],
+          idOpts: {
+            identifier: {
+              did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
+              provider: 'test_provider',
+              keys: [],
+              services: [],
+            },
           },
           redirectUrl: 'https://example.com',
           stateId: 'e91f3510-5ce9-42ee-83b7-fa68ff323d27',
@@ -654,7 +657,7 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.connection?.type).toEqual(identity.connection?.type)
     expect(fromDb?.connection?.config).toBeDefined()
     expect((<DidAuthConfigEntity>fromDb?.connection?.config).identifier).toEqual(
-      (<NonPersistedDidAuthConfig>identity.connection?.config).identifier.did,
+      getDID((<NonPersistedDidAuthConfig>identity.connection?.config).idOpts),
     )
   })
 
@@ -696,11 +699,13 @@ describe('Database entities tests', (): void => {
     const connection: NonPersistedConnection = {
       type: ConnectionType.SIOPv2,
       config: {
-        identifier: {
-          did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
-          provider: 'test_provider',
-          keys: [],
-          services: [],
+        idOpts: {
+          identifier: {
+            did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
+            provider: 'test_provider',
+            keys: [],
+            services: [],
+          },
         },
         redirectUrl: 'https://example.com',
         stateId: 'e91f3510-5ce9-42ee-83b7-fa68ff323d27',
@@ -725,7 +730,7 @@ describe('Database entities tests', (): void => {
     expect(fromDbConfig).toBeDefined()
     expect(fromDb?.type).toEqual(connection.type)
     expect(fromDb?.config).toBeDefined()
-    expect((<DidAuthConfigEntity>fromDb?.config).identifier).toEqual((<NonPersistedDidAuthConfig>connection.config).identifier.did)
+    expect((<DidAuthConfigEntity>fromDb?.config).identifier).toEqual(getDID((<NonPersistedDidAuthConfig>connection?.config).idOpts))
   })
 
   it('Should save openid config to database', async (): Promise<void> => {
@@ -756,11 +761,13 @@ describe('Database entities tests', (): void => {
   it('Should save didauth config to database', async (): Promise<void> => {
     const sessionId = 'https://example.com/did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01'
     const config: NonPersistedDidAuthConfig = {
-      identifier: {
-        did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
-        provider: 'test_provider',
-        keys: [],
-        services: [],
+      idOpts: {
+        identifier: {
+          did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
+          provider: 'test_provider',
+          keys: [],
+          services: [],
+        },
       },
       redirectUrl: 'https://example.com',
       stateId: 'e91f3510-5ce9-42ee-83b7-fa68ff323d27',
@@ -777,7 +784,7 @@ describe('Database entities tests', (): void => {
     })
 
     expect(fromDb).toBeDefined()
-    expect((<DidAuthConfigEntity>fromDb).identifier).toEqual(config.identifier.did)
+    expect((<DidAuthConfigEntity>fromDb).identifier).toEqual(getDID((<NonPersistedDidAuthConfig>config).idOpts))
   })
 
   it('Should delete party and all child relations', async (): Promise<void> => {
@@ -996,11 +1003,13 @@ describe('Database entities tests', (): void => {
       connection: {
         type: ConnectionType.SIOPv2,
         config: {
-          identifier: {
-            did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
-            provider: 'test_provider',
-            keys: [],
-            services: [],
+          idOpts: {
+            identifier: {
+              did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
+              provider: 'test_provider',
+              keys: [],
+              services: [],
+            },
           },
           redirectUrl: 'https://example.com',
           stateId: 'e91f3510-5ce9-42ee-83b7-fa68ff323d27',
@@ -1098,11 +1107,13 @@ describe('Database entities tests', (): void => {
       connection: {
         type: ConnectionType.SIOPv2,
         config: {
-          identifier: {
-            did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
-            provider: 'test_provider',
-            keys: [],
-            services: [],
+          idOpts: {
+            identifier: {
+              did: 'did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
+              provider: 'test_provider',
+              keys: [],
+              services: [],
+            },
           },
           redirectUrl: 'https://example.com',
           stateId: 'e91f3510-5ce9-42ee-83b7-fa68ff323d27',

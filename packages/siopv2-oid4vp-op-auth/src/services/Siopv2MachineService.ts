@@ -1,17 +1,17 @@
-import {SupportedVersion} from '@sphereon/did-auth-siop'
-import {getIdentifier, getKey, IIdentifierOpts} from '@sphereon/ssi-sdk-ext.did-utils'
-import {ConnectionType} from '@sphereon/ssi-sdk.data-store'
-import {CredentialMapper, Loggers, LogMethod, PresentationSubmission} from '@sphereon/ssi-types'
-import {IIdentifier} from '@veramo/core'
-import {OID4VP, OpSession} from '../session'
+import { SupportedVersion } from '@sphereon/did-auth-siop'
+import { getIdentifier, getKey, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import { ConnectionType } from '@sphereon/ssi-sdk.data-store'
+import { CredentialMapper, Loggers, LogMethod, PresentationSubmission } from '@sphereon/ssi-types'
+import { IIdentifier } from '@veramo/core'
+import { OID4VP, OpSession } from '../session'
 import {
   LOGGER_NAMESPACE,
   RequiredContext,
   SupportedDidMethodEnum,
   VerifiableCredentialsWithDefinition,
-  VerifiablePresentationWithDefinition
+  VerifiablePresentationWithDefinition,
 } from '../types'
-import {getOrCreatePrimaryIdentifier} from './IdentifierService'
+import { getOrCreatePrimaryIdentifier } from './IdentifierService'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, { methods: [LogMethod.CONSOLE, LogMethod.DEBUG_PKG] }).get(LOGGER_NAMESPACE)
 
@@ -120,7 +120,9 @@ export const siopSendAuthorizationResponse = async (
     presentationSubmission = presentationsAndDefs[0].presentationSubmission
   }
   const key = await getKey(identifier, 'authentication', session.context, idOpts?.kid)
-  const kid: string = idOpts?.kid?.startsWith('did:') ? idOpts?.kid : `${identifier.did}#${key?.meta?.jwkThumbprint ? key.meta.jwkThumbprint : key.kid}`
+  const kid: string = idOpts?.kid?.startsWith('did:')
+    ? idOpts?.kid
+    : `${identifier.did}#${key?.meta?.jwkThumbprint ? key.meta.jwkThumbprint : key.kid}`
 
   logger.log(`Definitions and locations:`, JSON.stringify(presentationsAndDefs?.[0]?.verifiablePresentation, null, 2))
   logger.log(`Presentation Submission:`, JSON.stringify(presentationSubmission, null, 2))

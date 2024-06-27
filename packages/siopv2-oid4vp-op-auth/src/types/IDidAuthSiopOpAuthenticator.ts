@@ -39,7 +39,8 @@ import {
   RequiredContext,
   RetrieveContactArgs,
   SendResponseArgs,
-  Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData,
+  Siopv2AuthorizationRequestData,
+  Siopv2AuthorizationResponseData,
 } from './siop-service'
 
 export const LOGGER_NAMESPACE = 'sphereon:siopv2-oid4vp:op-auth'

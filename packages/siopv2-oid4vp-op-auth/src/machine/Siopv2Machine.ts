@@ -21,7 +21,7 @@ import {
   Siopv2MachineStates,
   Siopv2StateMachine,
 } from '../types/machine'
-import {Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData} from '../types'
+import { Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData } from '../types'
 
 const Siopv2HasNoContactGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
   const { contact } = _ctx

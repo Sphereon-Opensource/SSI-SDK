@@ -4,7 +4,7 @@ import { DidAuthConfig, Party } from '@sphereon/ssi-sdk.data-store'
 import { OriginalVerifiableCredential } from '@sphereon/ssi-types'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
 import { ErrorDetails } from '../error'
-import {Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData} from '../siop-service'
+import { Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData } from '../siop-service'
 
 export type Siopv2MachineContext = {
   url: string

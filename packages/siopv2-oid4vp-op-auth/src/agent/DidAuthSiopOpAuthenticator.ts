@@ -1,9 +1,4 @@
-import {
-  decodeUriAsJson,
-  PresentationSignCallback,
-  SupportedVersion,
-  VerifiedAuthorizationRequest
-} from '@sphereon/did-auth-siop'
+import { decodeUriAsJson, PresentationSignCallback, SupportedVersion, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
 import {
   ConnectionType,
   CorrelationIdentifierType,
@@ -13,13 +8,13 @@ import {
   NonPersistedIdentity,
   Party,
 } from '@sphereon/ssi-sdk.data-store'
-import {Loggers, LogMethod, W3CVerifiableCredential} from '@sphereon/ssi-types'
-import {IAgentPlugin} from '@veramo/core'
-import {v4 as uuidv4} from 'uuid'
-import {IOpSessionArgs, LOGGER_NAMESPACE, RequiredContext, schema, Siopv2AuthorizationResponseData} from '../index'
-import {Siopv2Machine} from '../machine/Siopv2Machine'
-import {siopSendAuthorizationResponse, translateCorrelationIdToName} from '../services/Siopv2MachineService'
-import {OpSession} from '../session'
+import { Loggers, LogMethod, W3CVerifiableCredential } from '@sphereon/ssi-types'
+import { IAgentPlugin } from '@veramo/core'
+import { v4 as uuidv4 } from 'uuid'
+import { IOpSessionArgs, LOGGER_NAMESPACE, RequiredContext, schema, Siopv2AuthorizationResponseData } from '../index'
+import { Siopv2Machine } from '../machine/Siopv2Machine'
+import { siopSendAuthorizationResponse, translateCorrelationIdToName } from '../services/Siopv2MachineService'
+import { OpSession } from '../session'
 import {
   IDidAuthSiopOpAuthenticator,
   IGetSiopSessionArgs,
@@ -28,7 +23,7 @@ import {
   IRemoveSiopSessionArgs,
   IRequiredContext,
 } from '../types/IDidAuthSiopOpAuthenticator'
-import {Siopv2Machine as Siopv2MachineId, Siopv2MachineInstanceOpts} from '../types/machine'
+import { Siopv2Machine as Siopv2MachineId, Siopv2MachineInstanceOpts } from '../types/machine'
 
 import {
   AddIdentityArgs,
@@ -320,7 +315,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     return {
       body: await response.json(),
       url: response.url,
-      queryParams: decodeUriAsJson(response.url)
+      queryParams: decodeUriAsJson(response.url),
     }
   }
 }

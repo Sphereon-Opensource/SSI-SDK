@@ -11,7 +11,7 @@ import {
   NotificationRequest,
   ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
-import {getIdentifier, getKey, IIdentifierOpts} from '@sphereon/ssi-sdk-ext.did-utils'
+import { getIdentifier, getKey, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   CorrelationIdentifierType,
   CredentialRole,
@@ -100,7 +100,6 @@ export const oid4vciHolderContextMethods: Array<string> = [
 const logger = Loggers.DEFAULT.get('sphereon:oid4vci:holder')
 
 export function signCallback(client: OpenID4VCIClient, idOpts: IIdentifierOpts, context: IRequiredSignAgentContext) {
-
   return async (jwt: Jwt, kid?: string) => {
     let iss = jwt.payload.iss
 
@@ -501,7 +500,7 @@ export class OID4VCIHolder implements IAgentPlugin {
             issuanceOpt,
             pin: verificationCode,
             client,
-            accessTokenOpts
+            accessTokenOpts,
           },
           context,
         ),
@@ -536,7 +535,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         clientId: client.clientId,
         pin,
         authorizationResponse: JSON.parse(await client.exportState()).authorizationCodeResponse,
-        additionalRequestParams: accessTokenOpts?.additionalRequestParams
+        additionalRequestParams: accessTokenOpts?.additionalRequestParams,
       })
 
       // FIXME: This type mapping is wrong. It should use credential_identifier in case the access token response has authorization details

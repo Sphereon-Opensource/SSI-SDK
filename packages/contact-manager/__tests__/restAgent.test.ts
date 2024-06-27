@@ -12,7 +12,7 @@ import contactManagerAgentLogic from './shared/contactManagerAgentLogic'
 
 jest.setTimeout(60000)
 
-const port = 4002
+const port = 4202
 const basePath = '/agent'
 
 let serverAgent: IAgent

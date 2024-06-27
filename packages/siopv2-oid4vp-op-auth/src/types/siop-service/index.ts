@@ -40,7 +40,6 @@ export type Siopv2AuthorizationResponseData = {
   queryParams?: Record<string, any>
 }
 
-
 export type Siopv2AuthorizationRequestData = {
   correlationId: string
   registrationMetadataPayload: RPRegistrationMetadataPayload

@@ -1,7 +1,7 @@
-import {CreateRequestObjectMode, getIssuerName} from '@sphereon/oid4vci-common'
-import {toJwk} from '@sphereon/ssi-sdk-ext.key-utils'
-import {createObjects, getConfig} from '@sphereon/ssi-sdk.agent-config'
-import {IContactManager} from '@sphereon/ssi-sdk.contact-manager'
+import { CreateRequestObjectMode, getIssuerName } from '@sphereon/oid4vci-common'
+import { toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
+import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import {
   ConnectionType,
   CorrelationIdentifierType,
@@ -22,7 +22,7 @@ import {
   OID4VCIMachineStates,
   SupportedDidMethodEnum,
 } from '@sphereon/ssi-sdk.oid4vci-holder'
-import {IPresentationExchange} from '@sphereon/ssi-sdk.presentation-exchange'
+import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import {
   IDidAuthSiopOpAuthenticator,
   OID4VPCallbackStateListener,
@@ -30,18 +30,18 @@ import {
   Siopv2MachineState,
   Siopv2MachineStates,
 } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import {Siopv2OID4VPLinkHandler} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth/dist/link-handler'
-import {IDIDManager, IIdentifier, IKeyManager, IResolver, MinimalImportableKey, TAgent} from '@veramo/core'
+import { Siopv2OID4VPLinkHandler } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth/dist/link-handler'
+import { IDIDManager, IIdentifier, IKeyManager, IResolver, MinimalImportableKey, TAgent } from '@veramo/core'
 // @ts-ignore
 import cors from 'cors'
 
 import fetch from 'cross-fetch'
 
 // @ts-ignore
-import express, {Express} from 'express'
-import {Server} from 'http'
-import {DataSource} from 'typeorm'
-import {AttestationAuthRequestUrlResult, ebsiCreateAttestationAuthRequestURL} from '../src/functions'
+import express, { Express } from 'express'
+import { Server } from 'http'
+import { DataSource } from 'typeorm'
+import { AttestationAuthRequestUrlResult, ebsiCreateAttestationAuthRequestURL } from '../src/functions'
 
 let dbConnection: Promise<DataSource>
 let agent: TAgent<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IPresentationExchange & IOID4VCIHolder & IResolver & IContactManager>
@@ -69,7 +69,7 @@ const secp256r1PrivateKey: MinimalImportableKey = {
 
 const secp256r1Jwk = toJwk(secp256r1PrivateKey.privateKeyHex, 'Secp256r1', { isPrivateKey: true })
 let vpLinkHandler: Siopv2OID4VPLinkHandler
-let authReqResult : AttestationAuthRequestUrlResult
+let authReqResult: AttestationAuthRequestUrlResult
 let oid4vciMachine: OID4VCIMachine
 const MOCK_BASE_URL = 'https://ebsi-sphereon.ngrok.dev' // `http://localhost:${port}`
 jest.setTimeout(600000)
@@ -368,12 +368,13 @@ const authorizationCodeUrl = async (oid4vciMachine: OID4VCIMachineInterpreter, s
     }
 
     console.log(`onOpenAuthorizationUrl after openUrl: ${url}`)
-    const kid = authReqResult.authKey.meta?.jwkThumbprint ? `${authReqResult.identifier.did}#${authReqResult.authKey.meta.jwkThumbprint}` : authReqResult.authKey.kid
-    await vpLinkHandler.handle(openidUri, {idOpts: {identifier: authReqResult.identifier, kid}})
+    const kid = authReqResult.authKey.meta?.jwkThumbprint
+      ? `${authReqResult.identifier.did}#${authReqResult.authKey.meta.jwkThumbprint}`
+      : authReqResult.authKey.kid
+    await vpLinkHandler.handle(openidUri, { idOpts: { identifier: authReqResult.identifier, kid } })
   }
   await onOpenAuthorizationUrl(url)
 }
-
 
 const siopDone = async (oid4vpMachine: Siopv2MachineInterpreter, state: Siopv2MachineState) => {
   // console.log('SIOP result:')
@@ -385,5 +386,4 @@ const siopDone = async (oid4vpMachine: Siopv2MachineInterpreter, state: Siopv2Ma
     type: OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE,
     data: state.context.authorizationResponseData.url!,
   })
-
 }
