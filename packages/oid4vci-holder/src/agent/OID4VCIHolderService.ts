@@ -9,7 +9,13 @@ import {
   OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
-import { getFirstKeyWithRelation, getKey, getIdentifier as getIdentifierFromOpts, toDidDocument } from '@sphereon/ssi-sdk-ext.did-utils'
+import {
+  getAuthenticationKey,
+  getIdentifier as getIdentifierFromOpts,
+  getKey,
+  getOrCreatePrimaryIdentifier,
+  SupportedDidMethodEnum,
+} from '@sphereon/ssi-sdk-ext.did-utils'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -52,7 +58,6 @@ import {
   VerifyCredentialToAcceptArgs,
 } from '../types/IOID4VCIHolder'
 import { credentialLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
-import { getAuthenticationKey, getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
@@ -263,6 +268,16 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Identi
   const kid: string = key.meta.verificationMethod.id
 
   return { identifier, key, kid }
+}
+
+export const getCredentialConfigsSupportedMerged = async (
+  args: GetCredentialConfigsSupportedArgs,
+): Promise<Record<string, CredentialConfigurationSupported>> => {
+  let result = {} as Record<string, CredentialConfigurationSupported>
+  ;(await getCredentialConfigsSupported(args)).forEach((supported: Record<string, CredentialConfigurationSupported>) => {
+    result = { ...result, ...supported }
+  })
+  return result
 }
 
 export const getCredentialConfigsSupported = async (

@@ -9,9 +9,9 @@ import {
   ProofOfPossessionCallbacks,
   RequestObjectOpts,
 } from '@sphereon/oid4vci-common'
-import { getIdentifier, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import { getAuthenticationKey, getIdentifier, IIdentifierOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { calculateJwkThumbprintForKey } from '@sphereon/ssi-sdk-ext.key-utils'
-import { getAuthenticationKey, IssuanceOpts, PrepareStartArgs, signCallback, SupportedDidMethodEnum } from '@sphereon/ssi-sdk.oid4vci-holder'
+import { IssuanceOpts, PrepareStartArgs, signCallback } from '@sphereon/ssi-sdk.oid4vci-holder'
 import { IIdentifier } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
 import { IRequiredContext } from '../types/IEBSIAuthorizationClient'
@@ -53,12 +53,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   }
   // This only works if the DID is actually registered, otherwise use our internal KMS;
   // that is why the offline argument is passed in when type is Verifiable Auth to Onboard, as no DID is present at that point yet
-  const authKey = await getAuthenticationKey({
-    identifier,
-    offlineWhenNoDIDRegistered: credentialType === 'VerifiableAuthorisationToOnboard',
-    noVerificationMethodFallback: true,
-    context,
-  })
+  const authKey = await getAuthenticationKey(identifier, context, credentialType === 'VerifiableAuthorisationToOnboard', true)
   const kid = authKey.meta.jwkThumbprint ?? calculateJwkThumbprintForKey({ key: authKey })
   const clientId = opts.clientId ?? identifier.did
 

@@ -1,8 +1,8 @@
 import { SupportedVersion } from '@sphereon/did-auth-siop'
-import { getKey, IIdentifierOpts, getOrCreatePrimaryIdentifier } from '@sphereon/ssi-sdk-ext.did-utils'
+import { getIdentifier, getKey, getOrCreatePrimaryIdentifier, IIdentifierOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ConnectionType } from '@sphereon/ssi-sdk.data-store'
 import { IIdentifier } from '@veramo/core'
-import { SupportedDidMethodEnum } from '../types/identifier'
+import { DidAgents } from '../types/identifier'
 import { CredentialMapper, Loggers, PresentationSubmission } from '@sphereon/ssi-types'
 import {
   LOGGER_NAMESPACE,
@@ -12,7 +12,6 @@ import {
   VerifiablePresentationWithDefinition,
 } from '../types'
 import { OID4VP, OpSession } from '../session'
-import { getIdentifier } from './IdentifierService'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
@@ -33,7 +32,7 @@ export const siopSendAuthorizationResponse = async (
     return Promise.reject(Error(`No supported authentication provider for type: ${connectionType}`))
   }
   const session: OpSession = await agent.siopGetOPSession({ sessionId: args.sessionId })
-  let identifiers: Array<IIdentifier> = idOpts ? [await getIdentifier(idOpts, context)] : await session.getSupportedIdentifiers()
+  let identifiers: Array<IIdentifier> = idOpts ? [await getIdentifier(idOpts, agentContext)] : await session.getSupportedIdentifiers()
   if (!identifiers || identifiers.length === 0) {
     throw Error(`No DID methods found in agent that are supported by the relying party`)
   }
@@ -122,7 +121,9 @@ export const siopSendAuthorizationResponse = async (
     presentationSubmission = presentationsAndDefs[0].presentationSubmission
   }
   const key = await getKey(identifier, 'authentication', session.context, idOpts?.kid)
-  const kid: string = idOpts?.kid?.startsWith('did:') ? idOpts?.kid : `${identifier.did}#${key?.meta?.jwkThumbprint ? key.meta.jwkThumbprint : key.kid}`
+  const kid: string = idOpts?.kid?.startsWith('did:')
+    ? idOpts?.kid
+    : `${identifier.did}#${key?.meta?.jwkThumbprint ? key.meta.jwkThumbprint : key.kid}`
 
   logger.log(`Definitions and locations:`, JSON.stringify(presentationsAndDefs?.[0]?.verifiablePresentation, null, 2))
   logger.log(`Presentation Submission:`, JSON.stringify(presentationSubmission, null, 2))

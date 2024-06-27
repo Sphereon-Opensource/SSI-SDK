@@ -11,7 +11,7 @@ import {
   NotificationRequest,
   ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
-import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import { getIdentifier, getKey, IIdentifierOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   CorrelationIdentifierType,
   CredentialRole,
@@ -32,7 +32,7 @@ import {
 } from '@sphereon/ssi-types'
 import { CredentialPayload, DIDDocument, IAgentPlugin, ProofFormat, VerifiableCredential, W3CVerifiableCredential } from '@veramo/core'
 import { asArray, computeEntryHash } from '@veramo/utils'
-import { decodeJWT } from 'did-jwt'
+import { decodeJWT, JWTHeader } from 'did-jwt'
 import { v4 as uuidv4 } from 'uuid'
 import { OID4VCIMachine } from '../machine/oid4vciMachine'
 import {
@@ -46,6 +46,7 @@ import {
   GetCredentialsArgs,
   GetIssuerMetadataArgs,
   IOID4VCIHolder,
+  IRequiredSignAgentContext,
   IssuanceOpts,
   MappedCredentialToAccept,
   OID4VCIHolderEvent,
@@ -72,6 +73,7 @@ import {
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
   signatureAlgorithmFromKey,
+  signJWT,
   verifyCredentialToAccept,
 } from './OID4VCIHolderService'
 
@@ -97,7 +99,6 @@ export const oid4vciHolderContextMethods: Array<string> = [
 const logger = Loggers.DEFAULT.get('sphereon:oid4vci:holder')
 
 export function signCallback(client: OpenID4VCIClient, idOpts: IIdentifierOpts, context: IRequiredSignAgentContext) {
-
   return async (jwt: Jwt, kid?: string) => {
     let iss = jwt.payload.iss
 
@@ -498,7 +499,7 @@ export class OID4VCIHolder implements IAgentPlugin {
             issuanceOpt,
             pin: verificationCode,
             client,
-            accessTokenOpts
+            accessTokenOpts,
           },
           context,
         ),
@@ -533,7 +534,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         clientId: client.clientId,
         pin,
         authorizationResponse: JSON.parse(await client.exportState()).authorizationCodeResponse,
-        additionalRequestParams: accessTokenOpts?.additionalRequestParams
+        additionalRequestParams: accessTokenOpts?.additionalRequestParams,
       })
 
       // FIXME: This type mapping is wrong. It should use credential_identifier in case the access token response has authorization details

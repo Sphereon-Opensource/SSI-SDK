@@ -1,6 +1,6 @@
 import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { LinkHandlerAdapter } from '@sphereon/ssi-sdk.core'
-import { IMachineStatePersistence, interpreterStartOrResume } from '@sphereon/ssi-sdk.xstate-machine-persistence'
+import { IMachineStatePersistence, interpreterStartOrResume, SerializableState } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { IAgentContext } from '@veramo/core'
 import { Loggers } from '@sphereon/ssi-types'
 import { GetMachineArgs, IDidAuthSiopOpAuthenticator, LOGGER_NAMESPACE, Siopv2MachineInterpreter, Siopv2MachineState } from '../types'
@@ -30,7 +30,13 @@ export class Siopv2OID4VPLinkHandler extends LinkHandlerAdapter {
     this.idOpts = args.idOpts
   }
 
-  async handle(url: string | URL, opts?: {idOpts?: IIdentifierOpts}): Promise<void> {
+  async handle(
+    url: string | URL,
+    opts?: {
+      machineState?: SerializableState
+      idOpts?: IIdentifierOpts
+    },
+  ): Promise<void> {
     logger.debug(`handling SIOP link: ${url}`)
 
     const siopv2Machine = await this.context.agent.siopGetMachineInterpreter({
@@ -38,17 +44,24 @@ export class Siopv2OID4VPLinkHandler extends LinkHandlerAdapter {
       idOpts: opts?.idOpts ?? this.idOpts,
       stateNavigationListener: this.stateNavigationListener,
     })
-    siopv2Machine.interpreter.start()
 
-    const init = await interpreterStartOrResume({
-      stateType: 'new',
-      interpreter: siopv2Machine.interpreter,
-      context: this.context,
-      cleanupAllOtherInstances: true,
-      cleanupOnFinalState: true,
-      singletonCheck: true,
-      noRegistration: this.noStateMachinePersistence,
-    })
-    logger.debug(`SIOP machine started for link: ${url}`, init)
+    const interpreter = siopv2Machine.interpreter
+    //FIXME we need a better way to check if the state persistence plugin is available in the agent
+    if (!this.noStateMachinePersistence && !opts?.machineState && this.context.agent.availableMethods().includes('machineStatesFindActive')) {
+      const init = await interpreterStartOrResume({
+        interpreter,
+        context: this.context,
+        cleanupAllOtherInstances: true,
+        cleanupOnFinalState: true,
+        singletonCheck: true,
+        noRegistration: this.noStateMachinePersistence,
+      })
+      logger.debug(`SIOP machine started for link: ${url}`, init)
+    } else {
+      // @ts-ignore
+      interpreter.start(opts?.machineState)
+        logger.debug(`SIOP machine started for link: ${url}`)
+    }
+
   }
 }

@@ -11,7 +11,14 @@ import {
 import { Loggers, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { v4 as uuidv4 } from 'uuid'
-import { IOpSessionArgs, LOGGER_NAMESPACE, RequiredContext, schema, Siopv2AuthorizationResponseData } from '../index'
+import {
+  DidAuthSiopOpAuthenticatorOptions,
+  IOpSessionArgs,
+  LOGGER_NAMESPACE,
+  RequiredContext,
+  schema,
+  Siopv2AuthorizationResponseData,
+} from '../index'
 import { Siopv2Machine } from '../machine/Siopv2Machine'
 import { siopSendAuthorizationResponse, translateCorrelationIdToName } from '../services/Siopv2MachineService'
 import { OpSession } from '../session'
@@ -39,6 +46,17 @@ import {
 } from '../types/siop-service'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
+
+// Exposing the methods here for any REST implementation
+export const didAuthSiopOpAuthenticatorMethods: Array<string> = [
+  'cmGetContacts',
+  'cmGetContact',
+  'cmAddContact',
+  'cmAddIdentity',
+  'didManagerFind',
+  'didManagerGet',
+  'keyManagerSign',
+]
 
 export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   readonly schema = schema.IDidAuthSiopOpAuthenticator
@@ -314,7 +332,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     return {
       body: await response.json(),
       url: response.url,
-      queryParams: decodeUriAsJson(response.url)
+      queryParams: decodeUriAsJson(response.url),
     }
   }
 }
