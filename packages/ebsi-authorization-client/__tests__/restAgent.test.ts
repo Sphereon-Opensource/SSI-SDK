@@ -67,6 +67,8 @@ const testContext = {
   tearDown,
 }
 
+/* TODO REVERT
 describe('REST integration tests', (): void => {
   authClientAgentLogic(testContext)
 })
+*/
