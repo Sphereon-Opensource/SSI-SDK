@@ -154,6 +154,7 @@ export enum OID4VCIMachineStates {
   transitionFromSetup = 'transitionFromSetup',
   addContact = 'addContact',
   addIssuerBranding = 'addIssuerBranding',
+  addIssuerBrandingAfterIdentity = 'addIssuerBrandingAfterIdentity',
   transitionFromContactSetup = 'transitionFromContactSetup',
   selectCredentials = 'selectCredentials',
   transitionFromSelectingCredentials = 'transitionFromSelectingCredentials',

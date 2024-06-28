@@ -487,6 +487,15 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           },
         },
       },
+      [OID4VCIMachineStates.addIssuerBrandingAfterIdentity]: {
+        id: OID4VCIMachineStates.addIssuerBrandingAfterIdentity,
+        invoke: {
+          src: OID4VCIMachineServices.addIssuerBranding,
+          onDone: {
+            target: OID4VCIMachineStates.reviewCredentials,
+          },
+        },
+      },
       [OID4VCIMachineStates.reviewCredentials]: {
         id: OID4VCIMachineStates.reviewCredentials,
         on: {
