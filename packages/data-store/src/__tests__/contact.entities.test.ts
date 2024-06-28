@@ -1,6 +1,3 @@
-// TODO write test adding two contacts reusing the same contactType
-/*
-
 import { DataSource, FindOptionsWhere } from 'typeorm'
 import {
   contactMetadataItemEntityFrom,
@@ -59,6 +56,7 @@ import {
 } from '../utils/contact/MappingUtils'
 import { ContactMetadataItemEntity } from '../entities/contact/ContactMetadataItemEntity'
 
+// TODO write test adding two contacts reusing the same contactType
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource
@@ -2637,4 +2635,3 @@ describe('Database entities tests', (): void => {
     expect(() => contactMetadataItemEntityFrom(metadataItem)).toThrowError('Unsupported object type: Object for value [object Object]')
   })
 })
-*/
