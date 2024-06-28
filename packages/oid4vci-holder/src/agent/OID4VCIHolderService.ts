@@ -32,6 +32,7 @@ import {
   GetIssuanceCryptoSuiteArgs,
   GetIssuanceDidMethodArgs,
   GetIssuanceOptsArgs,
+  GetIssuerBrandingArgs,
   GetOrCreatePrimaryIdentifierArgs,
   GetPreferredCredentialFormatsArgs,
   GetSignerArgs,
@@ -54,7 +55,8 @@ import {
   VerificationSubResult,
   VerifyCredentialToAcceptArgs,
 } from '../types/IOID4VCIHolder'
-import { credentialLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
+import { credentialLocaleBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
+import { MetadataDisplay } from '@sphereon/oid4vci-common/lib/types/Generic.types'
 
 export const DID_PREFIX = 'did'
 
@@ -83,6 +85,16 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   )
 
   return credentialBranding
+}
+
+export const getIssuerBranding = async (args: GetIssuerBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => {
+  const { display, context } = args
+  return await Promise.all(
+    (display ?? []).map(async (displayItem: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
+      const branding = await issuerLocaleBrandingFrom(displayItem)
+      return context.agent.ibIssuerLocaleBrandingFrom({ localeBranding: branding })
+    }),
+  )
 }
 
 export const getCredentialConfigsBasedOnFormatPref = async (
