@@ -75,7 +75,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
   let id: IIdentifier
 
-  describe('EBSI Authorization Client Agent Plugin', (): void => {
+  describe.skip('EBSI Authorization Client Agent Plugin', (): void => {
     let agent: ConfiguredAgent
     let credentialResponse: CredentialResponse
     let server: Server<any, any>

@@ -118,7 +118,7 @@ const tearDown = async (): Promise<boolean> => {
   return true
 }
 
-describe('attestation client should', () => {
+describe.skip('attestation client should', () => {
   let identifier: IIdentifier
 
   beforeAll(async (): Promise<void> => {

@@ -492,4 +492,4 @@ export const isOpenIdConfig = (config: NonPersistedConnectionConfig | BaseConfig
   'clientSecret' in config && 'issuer' in config && 'redirectUrl' in config
 
 export const isDidAuthConfig = (config: NonPersistedConnectionConfig | BaseConfigEntity): config is DidAuthConfig | DidAuthConfigEntity =>
-  'identifier' in config && 'redirectUrl' in config && 'sessionId' in config
+    ('identifier' in config || ('idOpts' in config && 'identifier' in config.idOpts)) && 'redirectUrl' in config && 'sessionId' in config

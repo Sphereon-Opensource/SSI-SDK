@@ -1,3 +1,4 @@
+import { getDID } from '@sphereon/ssi-sdk-ext.did-utils'
 import { DataSource, FindOptionsWhere } from 'typeorm'
 import {
   contactMetadataItemEntityFrom,
@@ -656,7 +657,7 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.connection?.type).toEqual(identity.connection?.type)
     expect(fromDb?.connection?.config).toBeDefined()
     expect((<DidAuthConfigEntity>fromDb?.connection?.config).identifier).toEqual(
-      (<NonPersistedDidAuthConfig>identity.connection?.config).idOpts?.identifier,
+      getDID((<NonPersistedDidAuthConfig>identity.connection?.config).idOpts),
     )
   })
 
@@ -729,7 +730,7 @@ describe('Database entities tests', (): void => {
     expect(fromDbConfig).toBeDefined()
     expect(fromDb?.type).toEqual(connection.type)
     expect(fromDb?.config).toBeDefined()
-    expect((<DidAuthConfigEntity>fromDb?.config).identifier).toEqual((<NonPersistedDidAuthConfig>connection.config)?.idOpts?.identifier)
+    expect((<DidAuthConfigEntity>fromDb?.config).identifier).toEqual(getDID((<NonPersistedDidAuthConfig>connection?.config).idOpts))
   })
 
   it('Should save openid config to database', async (): Promise<void> => {
@@ -783,7 +784,7 @@ describe('Database entities tests', (): void => {
     })
 
     expect(fromDb).toBeDefined()
-    expect((<DidAuthConfigEntity>fromDb).identifier).toEqual(config.idOpts?.identifier)
+    expect((<DidAuthConfigEntity>fromDb).identifier).toEqual(getDID((<NonPersistedDidAuthConfig>config).idOpts))
   })
 
   it('Should delete party and all child relations', async (): Promise<void> => {
