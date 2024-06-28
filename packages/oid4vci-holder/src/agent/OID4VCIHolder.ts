@@ -15,6 +15,7 @@ import {
   IBasicIssuerLocaleBranding,
   Identity,
   IdentityOrigin,
+  IIssuerBranding,
   NonPersistedIdentity,
   Party,
 } from '@sphereon/ssi-sdk.data-store'
@@ -522,7 +523,10 @@ export class OID4VCIHolder implements IAgentPlugin {
           .filter((identity) => identity.roles.includes(CredentialRole.ISSUER))
           .map((identity) => identity.identifier.correlationId)[0] ?? undefined
       if (issuerBrandings && issuerBrandings.length) {
-        await context.agent.ibAddIssuerBranding({ localeBranding: issuerBrandings, issuerCorrelationId })
+        const brandings: IIssuerBranding[] = await context.agent.ibGetIssuerBranding({filter:[{issuerCorrelationId}]})
+        if (!brandings || !brandings.length) {
+          await context.agent.ibAddIssuerBranding({ localeBranding: issuerBrandings, issuerCorrelationId })
+        }
       }
     }
   }
