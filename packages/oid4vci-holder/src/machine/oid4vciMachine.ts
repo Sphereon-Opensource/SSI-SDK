@@ -283,7 +283,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           [OID4VCIMachineAddContactStates.idle]: {},
           [OID4VCIMachineAddContactStates.next]: {
             always: {
-              target: OID4VCIMachineStates.addIssuerBranding,
+              target: `#${OID4VCIMachineStates.addIssuerBranding}`,
               cond: OID4VCIMachineGuards.hasContactGuard,
             },
           },
@@ -294,7 +294,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         invoke: {
           src: OID4VCIMachineServices.addIssuerBranding,
           onDone: {
-            target: `#${OID4VCIMachineStates.transitionFromContactSetup}`,
+            target: OID4VCIMachineStates.transitionFromContactSetup,
           },
         },
       },
