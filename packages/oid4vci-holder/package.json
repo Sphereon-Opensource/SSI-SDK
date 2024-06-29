@@ -16,8 +16,8 @@
   "dependencies": {
     "@sphereon/oid4vci-client": "0.12.1-next.29",
     "@sphereon/oid4vci-common": "0.12.1-next.29",
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.21.1-next.8",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.21.1-next.8",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.21.1-next.16",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.21.1-next.16",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",

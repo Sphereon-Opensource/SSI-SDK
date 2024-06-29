@@ -8,7 +8,7 @@ import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/src'
 import authClientAgentLogic from './shared/ebsiAuthorizationClientAgentLogic'
-import { IEBSIAuthorizationClient } from '../src'
+import { IEbsiSupport } from '../src'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 
 jest.setTimeout(60000)
@@ -21,7 +21,7 @@ let restServer: Server
 let dbConnection: Promise<DataSource>
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IEBSIAuthorizationClient>({
+  createAgent<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IEbsiSupport>({
     ...options,
     plugins: [
       new AgentRestClient({
@@ -33,7 +33,7 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const config = await getConfig('packages/ebsi-authorization-client/agent.yml')
+  const config = await getConfig('packages/ebsi-support/agent.yml')
   const { agent, db } = await createObjects(config, { agent: '/agent', db: '/dbConnection' })
   serverAgent = agent
   dbConnection = db

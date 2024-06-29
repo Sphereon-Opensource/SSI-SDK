@@ -1,17 +1,21 @@
-import { IOID4VCIHolder } from '@sphereon/ssi-sdk.oid4vci-holder'
-import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
-import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
-import { Format, PresentationDefinitionV2 } from '@sphereon/pex-models'
 import { DiscoveryMetadataPayload, JWK } from '@sphereon/did-auth-siop'
+import { OID4VCICredentialFormat, RequestObjectOpts } from '@sphereon/oid4vci-common'
+import { Format, PresentationDefinitionV2 } from '@sphereon/pex-models'
+import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import { IBasicCredentialLocaleBranding, Party } from '@sphereon/ssi-sdk.data-store'
+import { ErrorDetails, IOID4VCIHolder, MappedCredentialToAccept } from '@sphereon/ssi-sdk.oid4vci-holder'
+import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import { PresentationSubmission } from '@sphereon/ssi-types'
+import { Optional, PresentationSubmission, W3CVerifiableCredential } from '@sphereon/ssi-types'
+import { IAgentContext, IDIDManager, IIdentifier, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+import { AttestationAuthRequestUrlResult } from '../functions'
 
 /**
  * Environment
  * @readonly
  * @enum {string}
  */
-export enum EbsiEnvironment {
+export enum EbsiEnvironmentRemove {
   PILOT = 'pilot',
   CONFORMANCE = 'conformance',
   // FIXME: How are these all of sudden 'environments'!!!
@@ -50,20 +54,33 @@ export enum TokenType {
   BEARER = 'Bearer',
 }
 
-export interface IEBSIAuthorizationClient extends IPluginMethodMap {
-  ebsiAuthASDiscoveryMetadataGet(args?: ApiOpts): Promise<GetOIDProviderMetadataResponse>
+export type EbsiEnvironment = 'pilot' | 'conformance' | 'conformance-test'
+export type EbsiApiVersion = 'v3' | 'v4' | 'v5'
+export type WellknownType = 'openid-credential-issuer' | 'openid-configuration'
+export type EbsiMock = 'issuer-mock' | 'auth-mock'
+export type EbsiSystem = 'authorisation' | 'conformance' | 'did-registry'
 
-  ebsiAuthASJwksGet(args?: ApiOpts): Promise<GetOIDProviderJwksResponse>
+export type ApiOpts = { environment?: EbsiEnvironment; version: EbsiApiVersion }
+export type WellknownOpts = ApiOpts & { type: WellknownType, system?: EbsiSystem | EbsiEnvironment, mock?: EbsiMock }
 
-  ebsiAuthPresentationDefinitionGet(args: GetPresentationDefinitionArgs): Promise<GetPresentationDefinitionResponse>
+export interface IEbsiSupport extends IPluginMethodMap {
+  ebsiWellknownMetadata(args?: ApiOpts): Promise<GetOIDProviderMetadataResponse>
 
-  ebsiAuthAccessTokenGet(args: EBSIAuthAccessTokenGetArgs, context: IRequiredContext): Promise<GetAccessTokenResponse>
+  ebsiAuthorizationServerJwks(args?: ApiOpts): Promise<GetOIDProviderJwksResponse>
+
+  ebsiPresentationDefinitionGet(args: GetPresentationDefinitionArgs): Promise<GetPresentationDefinitionResponse>
+
+  ebsiAccessTokenGet(args: EBSIAuthAccessTokenGetArgs, context: IRequiredContext): Promise<GetAccessTokenResponse>
+
+  ebsiCreateAttestationAuthRequestURL(args: CreateAttestationAuthRequestURLArgs, context: IRequiredContext): Promise<AttestationAuthRequestUrlResult>
+
+  ebsiGetAttestation(args: GetAttestationArgs, context: IRequiredContext): Promise<AttestationResult>
 }
 
-export type ApiOpts = { environment?: EbsiEnvironment; version?: string }
+// export type ApiOpts = { environment?: EbsiEnvironment; version?: string }
 
 /**
- * @typedef EBSIOIDMetadata
+ * @typedef EbsiOpenIDMetadata
  * @type {object}
  * @property {(URL | string)} issuer URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. MUST be identical to the iss Claim value in ID Tokens issued from this Issuer.
  * @property {(URL | string)} authorization_endpoint URL of the OP's OAuth 2.0 Authorization Endpoint.
@@ -85,7 +102,7 @@ export type ApiOpts = { environment?: EbsiEnvironment; version?: string }
  * @property {string[]} [subject_trust_frameworks_supported] A JSON array of supported trust frameworks.
  * @property {string[]} [id_token_types_supported] A JSON array of strings containing the list of ID Token types supported by the OP
  */
-export type EBSIOIDMetadata = DiscoveryMetadataPayload & {
+export type EbsiOpenIDMetadata = DiscoveryMetadataPayload & {
   presentation_definition_endpoint?: URL | string
 }
 
@@ -106,7 +123,26 @@ export interface GetOIDProviderJwksSuccessResponse {
  */
 export interface GetPresentationDefinitionArgs {
   scope: EBSIScope
-  apiOpts?: ApiOpts
+  apiOpts?: WellknownOpts
+  openIDMetadata?: EbsiOpenIDMetadata
+}
+
+export type CreateAttestationAuthRequestURLArgs = {
+  credentialIssuer: string
+  credentialType: string
+  idOpts: IIdentifierOpts
+  requestObjectOpts: RequestObjectOpts
+  clientId?: string
+  redirectUri?: string
+  formats?: Array<Extract<OID4VCICredentialFormat, 'jwt_vc' | 'jwt_vc_json'>>
+}
+
+export type GetAttestationArgs = {
+  clientId: string
+  authReqResult: AttestationAuthRequestUrlResult
+  opts?: {
+    timeout: number
+  }
 }
 
 /**
@@ -139,13 +175,14 @@ export interface GetAccessTokenArgs {
   vp_token: string
   presentation_submission: PresentationSubmission
   scope: EBSIScope
-  apiOpts?: ApiOpts
+  openIDMetadata?: EbsiOpenIDMetadata
+  apiOpts: ApiOpts
 }
 
 /**
  * @typedef EBSIAuthAccessTokenGetArgs
  * @type {object}
- * @property {string} vc Verifiable Credential (Verifiable Authorisation to Onboard) JWT format
+ * @property {string} attestationCredential Verifiable Credential (Verifiable Authorisation to Onboard) JWT format
  * @property {ScopeByDefinition} definitionId The presentation definition id
  * @property {string} [domain] The domain of the issuer
  * @property {string} did The did of the VP issuer
@@ -154,12 +191,16 @@ export interface GetAccessTokenArgs {
  * @property {ApiOpts} [apiOpts] The environment and the version of the API
  */
 export interface EBSIAuthAccessTokenGetArgs {
-  vc: string
-  definitionId: ScopeByDefinition
-  did: string
-  kid: string
+  clientId: string
+  credentialIssuer?: string
+  attestationCredential?: W3CVerifiableCredential
+  allVerifiableCredentials?: W3CVerifiableCredential[]
+  redirectUri?: string,
+  jwksUri: string
+  // definitionId: ScopeByDefinition
+  idOpts: IIdentifierOpts
   scope: EBSIScope
-  apiOpts?: ApiOpts
+  apiOpts: Optional<WellknownOpts, 'version'>
 }
 
 /**
@@ -178,7 +219,7 @@ export interface GetAccessTokenSuccessResponse {
   expires_in?: number
   scope: EBSIScope
   id_token: string
-  apiOpts?: ApiOpts
+  apiOpts: ApiOpts
 }
 
 /**
@@ -198,10 +239,19 @@ export interface ExceptionResponse {
   instance?: URL | string
 }
 
-export type GetOIDProviderMetadataResponse = EBSIOIDMetadata
+export type AttestationResult = {
+  contactAlias: string
+  contact: Party
+  credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>> | undefined
+  identifier: IIdentifier
+  error: ErrorDetails | undefined
+  credentials: Array<MappedCredentialToAccept>
+}
+
+export type GetOIDProviderMetadataResponse = EbsiOpenIDMetadata
 export type GetOIDProviderJwksResponse = GetOIDProviderJwksSuccessResponse | ExceptionResponse
 export type GetPresentationDefinitionResponse = GetPresentationDefinitionSuccessResponse
 export type GetAccessTokenResponse = GetAccessTokenSuccessResponse | ExceptionResponse
 export type IRequiredContext = IAgentContext<
-  IKeyManager & IDIDManager & IResolver & IDidAuthSiopOpAuthenticator & IPresentationExchange & IOID4VCIHolder
+  IKeyManager & IDIDManager & IResolver & IDidAuthSiopOpAuthenticator & IPresentationExchange & IOID4VCIHolder & IEbsiSupport
 >

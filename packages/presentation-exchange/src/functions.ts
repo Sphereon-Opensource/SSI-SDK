@@ -63,7 +63,12 @@ export async function createPEXPresentationSignCallback(
     let key: IKey | undefined
 
     if (args.skipDidResolution) {
-      key = id.keys.find((key) => !idOpts.kid || key.kid === idOpts.kid || `${id.did}#${key.kid}` === idOpts.kid)
+      if (!idOpts.kid) {
+        key = id.keys.find(key => key.meta?.purpose?.includes(idOpts.verificationMethodSection ?? 'authentication') === true)
+      }
+      if (!key) {
+        key = id.keys.find((key) => !idOpts.kid || key.kid === idOpts.kid || key.meta?.jwkThumbprint === idOpts.kid || `${id.did}#${key.kid}` === idOpts.kid)
+      }
     } else {
       key = await getKey(id, 'authentication', context, idOpts.kid)
     }

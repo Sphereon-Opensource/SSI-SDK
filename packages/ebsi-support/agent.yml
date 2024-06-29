@@ -5,13 +5,11 @@ constants:
   port: 3335
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
-    - ebsiAuthASDiscoveryMetadataGet
-    - ebsiAuthASJwksGet
-    - ebsiAuthPresentationDefinitionGet
-    - ebsiAuthAccessTokenGet
-    - ebsiAuthinitiateSIOPDidAuthRequest
-    - ebsiAuthCreateSIOPSession
-    - ebsiAuthCreateOAuth2Session
+    - ebsiWellknownMetadata
+    - ebsiAuthorizationServerJwks
+    - ebsiPresentationDefinitionGet
+    - ebsiAccessTokenGet
+    - ebsiCreateAttestationAuthRequestURL
 
 dbConnection:
   $require: typeorm?t=function#createConnection
@@ -122,7 +120,7 @@ didManager:
       defaultProvider: did:ebsi
       providers:
         did:ebsi:
-          $require: '@sphereon/ssi-sdk-ext.did-provider-ebsi#EbsiDidProvider'
+          $require: ./packages/ebsi-support/dist#EbsiDidProvider
           $args:
             - defaultKms: local
 
@@ -141,7 +139,7 @@ agent:
           $args:
             - $ref: /dbConnection
         - $require: '@veramo/credential-w3c#CredentialPlugin'
-        - $require: './packages/ebsi-authorization-client/dist#EBSIAuthorizationClient'
+        - $require: ./packages/ebsi-support/dist#EbsiSupport
         - $require: ./packages/presentation-exchange/dist#PresentationExchange
         - $require: ./packages/siopv2-oid4vp-op-auth/dist#DidAuthSiopOpAuthenticator
         - $require: ./packages/oid4vci-holder/dist#OID4VCIHolder

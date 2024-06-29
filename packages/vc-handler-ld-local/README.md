@@ -12,14 +12,14 @@
 
 ---
 
-# vc-handler-ld-local
+# attestationCredential-handler-ld-local
 
 A Veramo plugin to issue and verify JSON-LD based credentials and presentations using a react-native capable port of Digital Bazaars VC library.
 
 ### Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk.vc-handler-ld-local
+yarn add @sphereon/ssi-sdk.attestationCredential-handler-ld-local
 ```
 
 ### Build

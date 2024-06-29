@@ -1,5 +1,6 @@
 import { CredentialOfferClient, MetadataClient, OpenID4VCIClient } from '@sphereon/oid4vci-client'
 import {
+  AuthorizationDetails,
   AuthorizationRequestOpts,
   AuthorizationServerClientOpts,
   AuthorizationServerOpts,
@@ -315,6 +316,14 @@ export class OID4VCIHolder implements IAgentPlugin {
       authorizationRequestOpts.clientId = authorizationRequestOpts.redirectUri
     }
 
+    let formats: string[] = this.vcFormatPreferences
+    const authFormats = authorizationRequestOpts?.authorizationDetails
+      ?.map((detail: AuthorizationDetails) => (typeof detail === 'object' && 'format' in detail && detail.format ? detail.format : undefined))
+      .filter((format) => !!format)
+      .map((format) => format as string)
+    if (authFormats && authFormats.length > 0) {
+      formats = Array.from(new Set(authFormats))
+    }
     let oid4vciClient: OpenID4VCIClient
     let types: string[][] | undefined = undefined
     let offer: CredentialOfferRequestWithBaseUrl | undefined
@@ -369,7 +378,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     const serverMetadata = await oid4vciClient.retrieveServerMetadata()
     const credentialsSupported = await getCredentialConfigsSupportedMerged({
       client: oid4vciClient,
-      vcFormatPreferences: this.vcFormatPreferences,
+      vcFormatPreferences: formats,
       types,
     })
     const credentialBranding = await getCredentialBranding({ credentialsSupported, context })

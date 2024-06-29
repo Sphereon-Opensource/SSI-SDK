@@ -7,23 +7,41 @@ import {
   CredentialConfigurationSupported,
   getJson,
   getTypesFromCredentialSupported,
-  OID4VCICredentialFormat,
   ProofOfPossessionCallbacks,
-  RequestObjectOpts,
 } from '@sphereon/oid4vci-common'
-import { getIdentifier, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import { getIdentifier } from '@sphereon/ssi-sdk-ext.did-utils'
 import { calculateJwkThumbprintForKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   getAuthenticationKey,
   IssuanceOpts,
+  OID4VCICallbackStateListener,
+  OID4VCIMachineInterpreter,
+  OID4VCIMachineState,
+  OID4VCIMachineStates,
   PrepareStartArgs,
   signatureAlgorithmFromKey,
   signCallback,
   SupportedDidMethodEnum,
 } from '@sphereon/ssi-sdk.oid4vci-holder'
+import {
+  OID4VPCallbackStateListener,
+  Siopv2MachineInterpreter,
+  Siopv2MachineState,
+  Siopv2MachineStates,
+} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
+import { Siopv2OID4VPLinkHandler } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth/dist/link-handler'
 import { IIdentifier } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
-import { IRequiredContext } from '../types/IEBSIAuthorizationClient'
+import { waitFor } from 'xstate/lib/waitFor'
+import { AttestationResult, CreateAttestationAuthRequestURLArgs, GetAttestationArgs, IRequiredContext } from '../types/IEbsiSupport'
+import {
+  addContactCallback,
+  authorizationCodeUrlCallback,
+  handleErrorCallback,
+  reviewCredentialsCallback,
+  selectCredentialsCallback,
+  siopDoneCallback,
+} from './AttestationHeadlessCallbacks'
 
 export interface AttestationAuthRequestUrlResult extends Omit<Required<PrepareStartArgs>, 'issuanceOpt'> {
   issuanceOpt?: IssuanceOpts
@@ -42,18 +60,17 @@ export interface AttestationAuthRequestUrlResult extends Omit<Required<PrepareSt
  * @param context
  */
 export const ebsiCreateAttestationAuthRequestURL = async (
-  opts: {
-    credentialIssuer: string
-    credentialType: string
-    idOpts: IIdentifierOpts
-    requestObjectOpts: RequestObjectOpts
-    clientId?: string
-    redirectUri?: string
-    formats?: Array<Extract<OID4VCICredentialFormat, 'jwt_vc' | 'jwt_vc_json'>>
-  },
+  {
+    clientId: clientIdArg,
+    credentialIssuer,
+    credentialType,
+    idOpts,
+    redirectUri,
+    requestObjectOpts,
+    formats = ['jwt_vc', 'jwt_vc_json'],
+  }: CreateAttestationAuthRequestURLArgs,
   context: IRequiredContext,
 ): Promise<AttestationAuthRequestUrlResult> => {
-  const { credentialIssuer, credentialType, idOpts, redirectUri, requestObjectOpts, formats = ['jwt_vc', 'jwt_vc_json'] } = opts
   const identifier = await getIdentifier(idOpts, context)
   if (identifier.provider !== 'did:ebsi' && identifier.provider !== 'did:key') {
     throw Error(
@@ -69,7 +86,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
     context,
   })
   const kid = authKey.meta.jwkThumbprint ?? calculateJwkThumbprintForKey({ key: authKey })
-  const clientId = opts.clientId ?? identifier.did
+  const clientId = clientIdArg ?? identifier.did
 
   const vciClient = await OpenID4VCIClient.fromCredentialIssuer({
     credentialIssuer: credentialIssuer,
@@ -104,7 +121,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   })
 
   const signCallbacks: ProofOfPossessionCallbacks<never> = requestObjectOpts.signCallbacks ?? {
-    signCallback: await signCallback(vciClient, idOpts, context),
+    signCallback: signCallback(vciClient, idOpts, context),
   }
   const authorizationRequestOpts = {
     redirectUri,
@@ -142,6 +159,83 @@ export const ebsiCreateAttestationAuthRequestURL = async (
     identifier,
     authKey,
     didMethodPreferences: [SupportedDidMethodEnum.DID_EBSI, SupportedDidMethodEnum.DID_KEY],
+  }
+}
+
+export const ebsiGetAttestationInterpreter = async (
+  { clientId, authReqResult }: Omit<GetAttestationArgs, 'opts'>,
+  context: IRequiredContext,
+): Promise<OID4VCIMachineInterpreter> => {
+  const identifier = authReqResult.identifier
+  const vciStateCallbacks = new Map<OID4VCIMachineStates, (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState) => Promise<void>>()
+  const vpStateCallbacks = new Map<Siopv2MachineStates, (oid4vpMachine: Siopv2MachineInterpreter, state: Siopv2MachineState) => Promise<void>>()
+
+  const oid4vciMachine = await context.agent.oid4vciHolderGetMachineInterpreter({
+    ...authReqResult,
+    issuanceOpt: {
+      identifier,
+      didMethod: SupportedDidMethodEnum.DID_EBSI,
+      kid: authReqResult.authKey.meta?.jwkThumbprint ?? authReqResult.authKey.kid,
+    },
+    clientOpts: {
+      clientAssertionType: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+      kid: authReqResult.authKey.meta?.jwkThumbprint ?? authReqResult.authKey.kid,
+      clientId,
+    },
+    didMethodPreferences: [SupportedDidMethodEnum.DID_EBSI, SupportedDidMethodEnum.DID_KEY],
+    stateNavigationListener: OID4VCICallbackStateListener(vciStateCallbacks),
+  })
+  const vpLinkHandler = new Siopv2OID4VPLinkHandler({
+    protocols: ['openid:'],
+    // @ts-ignore
+    context,
+    noStateMachinePersistence: true,
+    stateNavigationListener: OID4VPCallbackStateListener(vpStateCallbacks),
+  })
+
+  vpStateCallbacks
+    .set(Siopv2MachineStates.done, siopDoneCallback({ oid4vciMachine }, context))
+    .set(Siopv2MachineStates.handleError, handleErrorCallback(context))
+
+  vciStateCallbacks
+    .set(OID4VCIMachineStates.handleError, handleErrorCallback(context))
+    .set(OID4VCIMachineStates.addContact, addContactCallback(context))
+    .set(OID4VCIMachineStates.selectCredentials, selectCredentialsCallback(context))
+    .set(
+      OID4VCIMachineStates.initiateAuthorizationRequest,
+      authorizationCodeUrlCallback(
+        {
+          authReqResult,
+          vpLinkHandler,
+        },
+        context,
+      ),
+    )
+    .set(OID4VCIMachineStates.reviewCredentials, reviewCredentialsCallback(context))
+
+  return oid4vciMachine.interpreter
+}
+
+export const ebsiGetAttestation = async (
+  { clientId, authReqResult, opts = { timeout: 30_000 } }: GetAttestationArgs,
+  context: IRequiredContext,
+): Promise<AttestationResult> => {
+  const interpreter = await ebsiGetAttestationInterpreter({ clientId, authReqResult }, context)
+  const state = await waitFor(interpreter.start(), (state) => state.matches('done') || state.matches('handleError'), {
+    timeout: opts.timeout ?? 30_000,
+  })
+  if (state.matches('handleError')) {
+    console.error(JSON.stringify(state.context.error))
+    throw Error(JSON.stringify(state.context.error))
+  }
+
+  return {
+    contactAlias: state.context.contactAlias,
+    contact: state.context.contact!,
+    credentialBranding: state.context.credentialBranding,
+    identifier: state.context.issuanceOpt?.identifier ?? authReqResult.identifier,
+    error: state.context.error,
+    credentials: state.context.credentialsToAccept,
   }
 }
 

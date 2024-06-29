@@ -8,9 +8,9 @@ import { fetch } from 'cross-fetch'
 import express, { Application, NextFunction, Request, Response } from 'express'
 import { Server, createServer } from 'http'
 import { importJWK, SignJWT } from 'jose'
-import { EbsiEnvironment, IEBSIAuthorizationClient, ScopeByDefinition } from '../../src'
+import { IEbsiSupport, ScopeByDefinition } from '../../src'
 
-type ConfiguredAgent = TAgent<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IEBSIAuthorizationClient>
+type ConfiguredAgent = TAgent<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IEbsiSupport>
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
   const secp256k1: MinimalImportableKey = {
@@ -218,8 +218,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         client_id: REDIRECT_MOCK_URL,
         authorization_details: authorizationDetails,
         client_metadata: {
-          jwks_uri:
-            'https://raw.githubusercontent.com/Sphereon-Opensource/SSI-SDK/feature/SDK-10/packages/ebsi-authorization-client/__tests__/shared/jwks.json',
+          jwks_uri: 'https://raw.githubusercontent.com/Sphereon-Opensource/SSI-SDK/feature/SDK-10/packages/ebsi-support/__tests__/shared/jwks.json',
           vp_formats_supported: {
             jwt_vp: { alg: ['ES256'] },
             jwt_vc: { alg: ['ES256'] },
@@ -239,7 +238,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it.skip('Should retrieve the discovery metadata', async () => {
-      await expect(agent.ebsiAuthASDiscoveryMetadataGet({ environment: EbsiEnvironment.PILOT })).resolves.toEqual({
+      await expect(agent.ebsiWellknownMetadata({ environment: 'pilot', version: 'v4' })).resolves.toEqual({
         authorization_endpoint: 'https://api-pilot.ebsi.eu/authorisation/v4/authorize',
         grant_types_supported: ['vp_token'],
         id_token_signing_alg_values_supported: ['none'],
@@ -282,7 +281,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it.skip('should retrieve AS JWKS', async () => {
-      await expect(agent.ebsiAuthASJwksGet()).resolves.toEqual({
+      await expect(agent.ebsiAuthorizationServerJwks()).resolves.toEqual({
         keys: [
           {
             alg: 'ES256',
@@ -297,7 +296,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it.skip('should retrieve the presentation definition to onboard', async () => {
-      await expect(agent.ebsiAuthPresentationDefinitionGet({ scope: 'didr_invite' })).resolves.toEqual({
+      await expect(agent.ebsiPresentationDefinitionGet({ scope: 'didr_invite' })).resolves.toEqual({
         format: {
           jwt_vp: {
             alg: ['ES256', 'ES256K'],
@@ -340,12 +339,17 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should retrieve the authorization token', async () => {
       await expect(
-        agent.ebsiAuthAccessTokenGet({
-          vc: 'eyJ0eXAiOiJKV1QiLCJraWQiOiIxODNkY2E4NDRiNzM5OGM4MTQ0ZTJiMzk5OWM3MzA2Y2I3OTYzMDJhZWQxNDdkNjY4ZmI2ZmI5YmE0OTZkNTBkIiwiYWxnIjoiRVMyNTZLIn0.eyJpc3N1ZXIiOiJkaWQ6ZWJzaTp6aURuaW94WVlMVzFhM3FVYnFURno0VyIsImlhdCI6MTcxNDQxMzA4OCwianRpIjoidXJuOnV1aWQ6NWZiN2Q5OGItMTA4Yy00YmMwLTlmZmMtYzY5Zjg0ZWQ3ODhmIiwibmJmIjoxNzE0NDEzMDg4LCJleHAiOjE3NDU5NDkwODgsInN1YiI6ImRpZDplYnNpOnpleWJBaUp4elVVcldRMVlNNTFTWTM1IiwidmMiOnsiQGNvbnRleHQiOlsiaHR0cHM6Ly93d3cudzMub3JnLzIwMTgvY3JlZGVudGlhbHMvdjEiXSwiaWQiOiJ1cm46dXVpZDo1ZmI3ZDk4Yi0xMDhjLTRiYzAtOWZmYy1jNjlmODRlZDc4OGYiLCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIiwiVmVyaWZpYWJsZUF0dGVzdGF0aW9uIiwiVmVyaWZpYWJsZUF1dGhvcmlzYXRpb25Ub09uYm9hcmQiXSwiaXNzdWFuY2VEYXRlIjoiMjAyNC0wNC0yOVQxNzo1MToyOFoiLCJpc3N1ZWQiOiIyMDI0LTA0LTI5VDE3OjUxOjI4WiIsInZhbGlkRnJvbSI6IjIwMjQtMDQtMjlUMTc6NTE6MjhaIiwiZXhwaXJhdGlvbkRhdGUiOiIyMDI1LTA0LTI5VDE3OjUxOjI4WiIsImlzc3VlciI6ImRpZDplYnNpOnppRG5pb3hZWUxXMWEzcVVicVRGejRXIiwiY3JlZGVudGlhbFN1YmplY3QiOnsiaWQiOiJkaWQ6ZWJzaTp6ZXliQWlKeHpVVXJXUTFZTTUxU1kzNSIsImFjY3JlZGl0ZWRGb3IiOltdfSwidGVybXNPZlVzZSI6eyJpZCI6ImRpZDplYnNpOnpleWJBaUp4elVVcldRMVlNNTFTWTM1IiwidHlwZSI6Iklzc3VhbmNlQ2VydGlmaWNhdGUifSwiY3JlZGVudGlhbFNjaGVtYSI6eyJpZCI6Imh0dHBzOi8vYXBpLXBpbG90LmVic2kuZXUvdHJ1c3RlZC1zY2hlbWFzLXJlZ2lzdHJ5L3YyL3NjaGVtYXMvejNNZ1VGVWtiNzIydXE0eDNkdjV5QUptbk5tekRGZUs1VUM4eDgzUW9lTEpNIiwidHlwZSI6IkZ1bGxKc29uU2NoZW1hVmFsaWRhdG9yMjAyMSJ9fX0.QWNWTWlrbUpLcFJaLVBGczQ0U3Mxb200Mk4yb3JzWndsTXp3REpHTTMxSUM2WG5ZVXJ0ZlY4RHFTbVQtaXBIMEdLSDZhclFEcGtrbXZTTy1NenYxWEE',
-          definitionId: ScopeByDefinition.didr_invite_presentation,
-          did: identifier.did,
-          kid: `${identifier.did}#${id.keys[1].kid}`,
+        agent.ebsiAccessTokenGet({
+          clientId: 'clientId',
+          jwksUri: 'https://exmplae.com',
+          attestationCredential:
+            'eyJ0eXAiOiJKV1QiLCJraWQiOiIxODNkY2E4NDRiNzM5OGM4MTQ0ZTJiMzk5OWM3MzA2Y2I3OTYzMDJhZWQxNDdkNjY4ZmI2ZmI5YmE0OTZkNTBkIiwiYWxnIjoiRVMyNTZLIn0.eyJpc3N1ZXIiOiJkaWQ6ZWJzaTp6aURuaW94WVlMVzFhM3FVYnFURno0VyIsImlhdCI6MTcxNDQxMzA4OCwianRpIjoidXJuOnV1aWQ6NWZiN2Q5OGItMTA4Yy00YmMwLTlmZmMtYzY5Zjg0ZWQ3ODhmIiwibmJmIjoxNzE0NDEzMDg4LCJleHAiOjE3NDU5NDkwODgsInN1YiI6ImRpZDplYnNpOnpleWJBaUp4elVVcldRMVlNNTFTWTM1IiwidmMiOnsiQGNvbnRleHQiOlsiaHR0cHM6Ly93d3cudzMub3JnLzIwMTgvY3JlZGVudGlhbHMvdjEiXSwiaWQiOiJ1cm46dXVpZDo1ZmI3ZDk4Yi0xMDhjLTRiYzAtOWZmYy1jNjlmODRlZDc4OGYiLCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIiwiVmVyaWZpYWJsZUF0dGVzdGF0aW9uIiwiVmVyaWZpYWJsZUF1dGhvcmlzYXRpb25Ub09uYm9hcmQiXSwiaXNzdWFuY2VEYXRlIjoiMjAyNC0wNC0yOVQxNzo1MToyOFoiLCJpc3N1ZWQiOiIyMDI0LTA0LTI5VDE3OjUxOjI4WiIsInZhbGlkRnJvbSI6IjIwMjQtMDQtMjlUMTc6NTE6MjhaIiwiZXhwaXJhdGlvbkRhdGUiOiIyMDI1LTA0LTI5VDE3OjUxOjI4WiIsImlzc3VlciI6ImRpZDplYnNpOnppRG5pb3hZWUxXMWEzcVVicVRGejRXIiwiY3JlZGVudGlhbFN1YmplY3QiOnsiaWQiOiJkaWQ6ZWJzaTp6ZXliQWlKeHpVVXJXUTFZTTUxU1kzNSIsImFjY3JlZGl0ZWRGb3IiOltdfSwidGVybXNPZlVzZSI6eyJpZCI6ImRpZDplYnNpOnpleWJBaUp4elVVcldRMVlNNTFTWTM1IiwidHlwZSI6Iklzc3VhbmNlQ2VydGlmaWNhdGUifSwiY3JlZGVudGlhbFNjaGVtYSI6eyJpZCI6Imh0dHBzOi8vYXBpLXBpbG90LmVic2kuZXUvdHJ1c3RlZC1zY2hlbWFzLXJlZ2lzdHJ5L3YyL3NjaGVtYXMvejNNZ1VGVWtiNzIydXE0eDNkdjV5QUptbk5tekRGZUs1VUM4eDgzUW9lTEpNIiwidHlwZSI6IkZ1bGxKc29uU2NoZW1hVmFsaWRhdG9yMjAyMSJ9fX0.QWNWTWlrbUpLcFJaLVBGczQ0U3Mxb200Mk4yb3JzWndsTXp3REpHTTMxSUM2WG5ZVXJ0ZlY4RHFTbVQtaXBIMEdLSDZhclFEcGtrbXZTTy1NenYxWEE',
+          // definitionId: ScopeByDefinition.didr_invite_presentation,
+          idOpts: {identifier},
+/*          did: identifier.did,
+          kid: `${identifier.did}#${id.keys[1].kid}`,*/
           scope: 'didr_invite',
+          apiOpts: { environment: 'conformance-test', type: 'openid-configuration' },
         }),
       ).resolves.toEqual({})
     })

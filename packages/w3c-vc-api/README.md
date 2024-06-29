@@ -45,7 +45,7 @@ Body:
 
 ```json
 {
-  "verifiableCredential": {
+  "attestationCredential": {
     "@context": ["https://www.w3.org/2018/credentials/v1"],
     "id": "https://example.com/8790171",
     "type": ["VerifiableCredential", "GS1CompanyPrefixLicenseCredential"],
@@ -102,7 +102,7 @@ new VcApiServer({
       },
     },
     issueCredentialOpts: {
-      enableFeatures: ['vc-issue', 'vc-persist', 'vc-verify'],
+      enableFeatures: ['attestationCredential-issue', 'attestationCredential-persist', 'attestationCredential-verify'],
       proofFormat: 'lds', // Issue JSON-LD VCs, can also be changed to `jwt`
       fetchRemoteContexts: true, // Whether to allow fetching remote contexts, mainly used when verifying VCs
       keyRef: '89a4661e446b46401325a38d3b20582d1dd277eb448a3181012a671b7ae15837', // The key to use when signing VCs
@@ -197,7 +197,7 @@ const agent = createAgent<
 ## Installation
 
 ```shell
-pnpm add @sphereon/ssi-sdk.w3c-vc-api
+pnpm add @sphereon/ssi-sdk.w3c-attestationCredential-api
 ```
 
 ## Build
