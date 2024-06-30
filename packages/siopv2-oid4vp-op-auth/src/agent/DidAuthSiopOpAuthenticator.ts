@@ -329,8 +329,16 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       context,
     )
 
+    const contentType = response.headers.get('content-type') || ''
+    let responseBody: any = null
+
+    const text = await response.text()
+    if (text) {
+      responseBody = contentType.includes('application/json') ? JSON.parse(text) : text
+    }
+
     return {
-      body: await response.json(),
+      body: responseBody,
       url: response.url,
       queryParams: decodeUriAsJson(response.url),
     }
