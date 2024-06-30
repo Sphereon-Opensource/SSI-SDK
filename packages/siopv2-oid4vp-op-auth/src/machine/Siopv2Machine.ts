@@ -134,8 +134,9 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
             target: Siopv2MachineStates.handleError,
             actions: assign({
               error: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
-                title: translate('Siopv2_machine_create_config_error_title'),
+                title: translate('siopv2_machine_create_config_error_title'),
                 message: _event.data.message,
+                stack: _event.data.stack,
               }),
             }),
           },
