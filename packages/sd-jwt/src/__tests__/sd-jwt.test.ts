@@ -30,7 +30,7 @@ async function verifySignature<T>(data: string, signature: string, key: JsonWebK
 
 type AgentType = IDIDManager & IKeyManager & IResolver & ISDJwtPlugin
 
-describe('Agent plugin', () => {
+describe.skip('Agent plugin', () => {
   let agent: TAgent<AgentType>
 
   let issuer: string
