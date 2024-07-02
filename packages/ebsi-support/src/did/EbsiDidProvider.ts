@@ -13,7 +13,6 @@ import {
   generateEbsiMethodSpecificId,
   randomRpcId,
 } from './functions'
-import { callRpcMethod } from './services/EbsiRPCService'
 import { EBSI_DID_SPEC_INFOS, EbsiRpcMethod, ICreateIdentifierArgs, UpdateIdentifierParams } from './types'
 
 const debug = Debug('sphereon:did-provider-ebsi')
@@ -133,27 +132,29 @@ export class EbsiDidProvider extends AbstractIdentifierProvider {
     }
     const controllerKey = getControllerKey({ identifier })
     const from = getEthereumAddressFromKey({ key: controllerKey })
+    const kid = controllerKey.kid
+    const did = identifier.did
 
-    const addVerificationMethodResponse = await callRpcMethod({
+    const addVerificationMethodRequest = {
       params: [
         {
           from,
-          did: identifier.did,
+          did,
           isSecp256k1: true,
-          vMethodId: calculateJwkThumbprint({ jwk: toJwk(controllerKey.publicKeyHex, 'Secp256k1') }),
-          publicKey: formatEbsiPublicKey({ key: controllerKey, type: 'Secp256k1' }),
+          vMethodId: calculateJwkThumbprint({ jwk: toJwk(key.publicKeyHex, key.type) }),
+          publicKey: formatEbsiPublicKey({ key: key, type: key.type }),
         },
       ],
       rpcMethod: EbsiRpcMethod.ADD_VERIFICATION_METHOD,
       rpcId,
       apiOpts,
-      accessToken: accessToken,
-    })
+      accessToken,
+    }
 
-    await ebsiSignAndSendTransaction(
+    let rpcResponse = await ebsiSignAndSendTransaction(
       {
-        rpcResponse: addVerificationMethodResponse,
-        kid: controllerKey.kid,
+        rpcRequest: addVerificationMethodRequest,
+        kid,
         accessToken: accessToken,
         apiOpts,
       },
@@ -162,26 +163,27 @@ export class EbsiDidProvider extends AbstractIdentifierProvider {
 
     const vMethodId = calculateJwkThumbprintForKey({ key })
     for (const vmRelationshipsKey in vmRelationships as string[]) {
-      const addVerificationMethodRelationshipResponse = await callRpcMethod({
+      const addVerificationMethodRelationshipRequest = {
         params: [
           {
             from,
-            did: identifier.did,
+            did,
             vMethodId,
             name: vmRelationshipsKey,
-            notAfter: 1,
-            notBefore: 1,
+            notAfter: Date.now() / 1000 - 60_000,
+            notBefore: Date.now() / 1000 + 5 * 365 * 24 * 60 * 60,
           },
         ],
         rpcMethod: EbsiRpcMethod.ADD_VERIFICATION_RELATIONSHIP,
         rpcId,
         apiOpts,
         accessToken,
-      })
-      await ebsiSignAndSendTransaction(
+      }
+      rpcResponse = await ebsiSignAndSendTransaction(
         {
-          rpcResponse: addVerificationMethodRelationshipResponse,
-          kid: controllerKey.kid,
+          rpcRequest: addVerificationMethodRelationshipRequest,
+          previousTxResponse: rpcResponse,
+          kid,
           accessToken,
           apiOpts,
         },
@@ -196,36 +198,38 @@ export class EbsiDidProvider extends AbstractIdentifierProvider {
       service: IService
       options: {
         rpcId?: number
-        bearerToken: string
+        accessToken: string
         apiOpts?: ApiOpts
       }
     },
     context: IAgentContext<IKeyManager>,
   ): Promise<any> {
     const { identifier, service, options } = args
-    const { bearerToken, apiOpts, rpcId = randomRpcId() } = options
+    const { accessToken, apiOpts, rpcId = randomRpcId() } = options
     const controllerKey = getControllerKey({ identifier })
     const from = getEthereumAddressFromKey({ key: controllerKey })
+    const did = identifier.did
+    const kid = controllerKey.kid
 
-    const addServiceResponse = await callRpcMethod({
+    const addServiceRequest = {
       params: [
         {
           from,
-          did: identifier.did,
+          did,
           service,
         },
       ],
       rpcMethod: EbsiRpcMethod.ADD_SERVICE,
       rpcId,
       apiOpts,
-      accessToken: bearerToken,
-    })
+      accessToken,
+    }
 
     return await ebsiSignAndSendTransaction(
       {
-        rpcResponse: addServiceResponse,
-        kid: controllerKey.kid,
-        accessToken: bearerToken,
+        rpcRequest: addServiceRequest,
+        kid,
+        accessToken,
         apiOpts,
       },
       context,

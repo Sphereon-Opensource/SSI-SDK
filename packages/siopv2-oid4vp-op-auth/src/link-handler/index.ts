@@ -60,8 +60,7 @@ export class Siopv2OID4VPLinkHandler extends LinkHandlerAdapter {
     } else {
       // @ts-ignore
       interpreter.start(opts?.machineState)
-        logger.debug(`SIOP machine started for link: ${url}`)
+      logger.debug(`SIOP machine started for link: ${url}`)
     }
-
   }
 }

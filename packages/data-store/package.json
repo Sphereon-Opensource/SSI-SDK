@@ -17,7 +17,7 @@
     "@sphereon/pex": "^3.3.3",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.21.1-next.19",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.22.0",
     "@veramo/core": "4.2.0",
     "@veramo/utils": "4.2.0",
     "blakejs": "^1.1.1",

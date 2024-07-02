@@ -1,4 +1,4 @@
-import {OpenID4VCIClient} from '@sphereon/oid4vci-client'
+import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
 import {
   Alg,
   AuthorizationDetails,
@@ -9,8 +9,8 @@ import {
   getTypesFromCredentialSupported,
   ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
-import {getAuthenticationKey, getIdentifier} from '@sphereon/ssi-sdk-ext.did-utils'
-import {calculateJwkThumbprintForKey} from '@sphereon/ssi-sdk-ext.key-utils'
+import { getAuthenticationKey, getIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import { calculateJwkThumbprintForKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   IssuanceOpts,
   OID4VCICallbackStateListener,
@@ -20,7 +20,6 @@ import {
   PrepareStartArgs,
   signatureAlgorithmFromKey,
   signCallback,
-  SupportedDidMethodEnum,
 } from '@sphereon/ssi-sdk.oid4vci-holder'
 import {
   OID4VPCallbackStateListener,
@@ -28,17 +27,12 @@ import {
   Siopv2MachineState,
   Siopv2MachineStates,
 } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import {Siopv2OID4VPLinkHandler} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth/dist/link-handler'
-import {IIdentifier} from '@veramo/core'
-import {_ExtendedIKey} from '@veramo/utils'
-import {waitFor} from 'xstate/lib/waitFor'
-import {
-  AttestationResult,
-  CreateAttestationAuthRequestURLArgs,
-  EbsiEnvironment,
-  GetAttestationArgs,
-  IRequiredContext
-} from '../types/IEbsiSupport'
+import { Siopv2OID4VPLinkHandler } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth/dist/link-handler'
+import { IIdentifier } from '@veramo/core'
+import { _ExtendedIKey } from '@veramo/utils'
+import { waitFor } from 'xstate/lib/waitFor'
+import { logger } from '../index'
+import { AttestationResult, CreateAttestationAuthRequestURLArgs, EbsiEnvironment, GetAttestationArgs, IRequiredContext } from '../types/IEbsiSupport'
 import {
   addContactCallback,
   authorizationCodeUrlCallback,
@@ -47,7 +41,7 @@ import {
   selectCredentialsCallback,
   siopDoneCallback,
 } from './AttestationHeadlessCallbacks'
-import {getEbsiApiBaseUrl} from './index'
+import { getEbsiApiBaseUrl } from './index'
 
 export interface AttestationAuthRequestUrlResult extends Omit<Required<PrepareStartArgs>, 'issuanceOpt'> {
   issuanceOpt?: IssuanceOpts
@@ -85,12 +79,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   }
   // This only works if the DID is actually registered, otherwise use our internal KMS;
   // that is why the offline argument is passed in when type is Verifiable Auth to Onboard, as no DID is present at that point yet
-  const authKey = await getAuthenticationKey(
-    identifier,
-      context,
-    credentialType === 'VerifiableAuthorisationToOnboard',
-    true,
-  )
+  const authKey = await getAuthenticationKey(identifier, context, credentialType === 'VerifiableAuthorisationToOnboard', true)
   const kid = authKey.meta?.jwkThumbprint ?? calculateJwkThumbprintForKey({ key: authKey })
   const clientId = clientIdArg ?? identifier.did
 
@@ -143,7 +132,6 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   const authorizationCodeURL = await vciClient.createAuthorizationRequestUrl({
     authorizationRequest: authorizationRequestOpts,
   })
-
 
   return {
     requestData: {
@@ -255,12 +243,11 @@ export const ebsiAuthRequestExecution = async (authRequestResult: AttestationAut
   const { requestData, authorizationCodeURL } = authRequestResult
   const vciClient = await OpenID4VCIClient.fromState({ state: requestData?.existingClientState! })
 
-  console.log(`URL: ${authorizationCodeURL}, according to client: ${vciClient.authorizationURL}`)
+  logger.debug(`URL: ${authorizationCodeURL}, according to client: ${vciClient.authorizationURL}`)
 
   const authResponse = await getJson<any>(authorizationCodeURL)
   const location: string | null = authResponse.origResponse.headers.get('location')
-
-  console.log(`LOCATION: ${location}`)
+  logger.debug(`LOCATION: ${location}`)
 }
 
 export const ebsiGetIssuer = ({ credentialIssuer, environment = 'pilot' }: { credentialIssuer?: string; environment?: EbsiEnvironment }): string => {

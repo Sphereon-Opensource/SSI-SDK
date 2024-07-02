@@ -46,7 +46,7 @@ const secp256r1PrivateKey: MinimalImportableKey = {
 // const secp256r1Jwk = toJwk(secp256r1PrivateKey.privateKeyHex, 'Secp256r1', { isPrivateKey: true })
 // let authReqResult: AttestationAuthRequestUrlResult
 const MOCK_BASE_URL = 'https://ebsi-sphereon.ngrok.dev' // `http://localhost:${port}`
-jest.setTimeout(600000)
+jest.setTimeout(60000)
 
 const setup = async (): Promise<boolean> => {
   const config = await getConfig('packages/ebsi-support/agent.yml')
@@ -55,31 +55,7 @@ const setup = async (): Promise<boolean> => {
     IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IPresentationExchange & IOID4VCIHolder & IResolver & IContactManager & IEbsiSupport
   >
   dbConnection = db
-
-  /*
-      app = express()
-      app.use(
-          cors({
-              origin: ['*'],
-          }),
-      )
-      app.use(express.json())
-
-      app.get('/', async (req: express.Request, res: express.Response) => {
-          res.send({hello: 'world'})
-      })
-
-      app.get('/.well-known/jwks', async (req: express.Request, res: express.Response) => {
-          res.send({keys: [{...secp256k1Jwk}, {...secp256r1Jwk}]})
-      })
-
-  */
   console.log(`########## $${MOCK_BASE_URL}`)
-
-  /*server = app.listen(port, () => {
-          console.log(`Mock server is listening to port ${port}`)
-      })*/
-
   return true
 }
 
@@ -94,7 +70,8 @@ const tearDown = async (): Promise<boolean> => {
   return true
 }
 
-describe('attestation client should', () => {
+// Since we need to actually host the JWKs, we need to create some fixtures and use github as a jwks_uri
+describe.skip('attestation client should', () => {
   let identifier: IIdentifier
 
   beforeAll(async (): Promise<void> => {
@@ -131,8 +108,6 @@ describe('attestation client should', () => {
         provider: 'did:ebsi',
         options: { secp256k1Key: secp256k1PrivateKey, secp256r1Key: secp256r1PrivateKey },
       })
-      console.log(`WE CREATED DID:`)
-      console.log(identifier.did)
     } catch (e) {
       console.log(`###########WHOOPS:`, e)
     }
@@ -201,11 +176,6 @@ describe('attestation client should', () => {
           environment: 'conformance',
           jwksUri,
         },
-        /*// bearerToken: accessToken.accessTokenResponse.access_token,
-                        apiOpts: {
-                            environment: 'conformance',
-                            version: 'v5'
-                        },*/
       },
       { agent },
     )

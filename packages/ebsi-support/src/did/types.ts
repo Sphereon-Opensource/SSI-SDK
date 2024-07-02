@@ -2,7 +2,7 @@ import { W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentContext, IIdentifier, IKeyManager, MinimalImportableKey, TKeyType } from '@veramo/core'
 import { IService } from '@veramo/core/build/types/IIdentifier'
 import { DIDDocument } from 'did-resolver'
-import {AccessListish, BigNumberish, BytesLike} from "ethers";
+import { AccessListish, BigNumberish, BytesLike } from 'ethers'
 import { ApiOpts, EbsiEnvironment } from '../types/IEbsiSupport'
 
 export type IContext = IAgentContext<IKeyManager>
@@ -217,25 +217,25 @@ export type AddVerificationMethodRelationshipParams = Pick<InsertDidDocumentPara
  * @property {string} value - The amount of ETH to be sent from the sending address (denominated in Wei)
  */
 export type UnsignedTransaction = {
-  to?: string;
-  nonce?: number;
+  to?: string
+  nonce?: number
 
-  gasLimit?: BigNumberish;
-  gasPrice?: BigNumberish;
+  gasLimit?: BigNumberish
+  gasPrice?: BigNumberish
 
-  data?: BytesLike;
-  value?: BigNumberish;
-  chainId?: number;
+  data?: BytesLike
+  value?: BigNumberish
+  chainId?: number
 
   // Typed-Transaction features
-  type?: number | null;
+  type?: number | null
 
   // EIP-2930; Type 1 & EIP-1559; Type 2
-  accessList?: AccessListish;
+  accessList?: AccessListish
 
   // EIP-1559; Type 2
-  maxPriorityFeePerGas?: BigNumberish;
-  maxFeePerGas?: BigNumberish;
+  maxPriorityFeePerGas?: BigNumberish
+  maxFeePerGas?: BigNumberish
   /*from: string
   to: string
   data: string
@@ -446,4 +446,4 @@ export type RPCParams =
   | SendSignedTransactionParams
   | AddServiceParams
 
-export type EbsiRPCResponse = RpcOkResponse | RpcErrorResponse
+export type EbsiRPCResponse = RpcOkResponse | (RpcErrorResponse & { nonce: string })

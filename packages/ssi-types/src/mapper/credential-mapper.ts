@@ -188,10 +188,12 @@ export class CredentialMapper {
       console.warn(`Presentation without verifiable credentials. That is rare! `)
       // throw Error(`VP needs to have at least one verifiable credential at this point`)
     }
-    const vcs = noVCs ? [] : CredentialMapper.toWrappedVerifiableCredentials(
-      vp.verifiableCredential ?? [] /*.map(value => value.original)*/,
-      opts,
-    ) as WrappedW3CVerifiableCredential[]
+    const vcs = noVCs
+      ? []
+      : (CredentialMapper.toWrappedVerifiableCredentials(
+          vp.verifiableCredential ?? [] /*.map(value => value.original)*/,
+          opts,
+        ) as WrappedW3CVerifiableCredential[])
 
     const presentation = {
       ...vp,

@@ -13,6 +13,7 @@ import { OID4VCIMachine, OID4VCIMachineEvents, OID4VCIMachineInterpreter, OID4VC
 import { Siopv2MachineInterpreter, Siopv2MachineState } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import { Siopv2OID4VPLinkHandler } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth/dist/link-handler'
 import fetch from 'cross-fetch'
+import { logger } from '../index'
 import { IRequiredContext } from '../types/IEbsiSupport'
 import { AttestationAuthRequestUrlResult } from './Attestation'
 
@@ -152,7 +153,7 @@ export const selectCredentialsCallback = (context: IRequiredContext) => {
     const { contact, credentialToSelectFrom, selectedCredentials } = state.context
 
     if (selectedCredentials && selectedCredentials.length > 0) {
-      console.log(`selected: ${selectedCredentials.join(', ')}`)
+      logger.info(`selected: ${selectedCredentials.join(', ')}`)
       oid4vciMachine.send({
         type: OID4VCIMachineEvents.NEXT,
       })

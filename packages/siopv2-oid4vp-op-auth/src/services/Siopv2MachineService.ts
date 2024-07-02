@@ -1,5 +1,12 @@
 import { SupportedVersion } from '@sphereon/did-auth-siop'
-import {determineKid, getIdentifier, getKey, getOrCreatePrimaryIdentifier,IIdentifierOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import {
+  determineKid,
+  getIdentifier,
+  getKey,
+  getOrCreatePrimaryIdentifier,
+  IIdentifierOpts,
+  SupportedDidMethodEnum,
+} from '@sphereon/ssi-sdk-ext.did-utils'
 import { ConnectionType } from '@sphereon/ssi-sdk.data-store'
 import { IIdentifier } from '@veramo/core'
 import { DidAgents } from '../types/identifier'
@@ -123,12 +130,10 @@ export const siopSendAuthorizationResponse = async (
   }
   const key = await getKey(identifier, 'authentication', session.context, idOpts?.kid)
   if (!idOpts) {
-    idOpts = {identifier, kid: determineKid(key, {identifier})}
+    idOpts = { identifier, kid: determineKid(key, { identifier }) }
   }
   const determinedKid = idOpts!.kid?.includes('#') ? idOpts.kid : determineKid(key, idOpts)
-  const kid: string = determinedKid.startsWith('did:')
-    ? determinedKid
-    : `${identifier.did}#${determinedKid}`
+  const kid: string = determinedKid.startsWith('did:') ? determinedKid : `${identifier.did}#${determinedKid}`
 
   logger.log(`Definitions and locations:`, JSON.stringify(presentationsAndDefs?.[0]?.verifiablePresentation, null, 2))
   logger.log(`Presentation Submission:`, JSON.stringify(presentationSubmission, null, 2))

@@ -1,8 +1,8 @@
 import { CheckLinkedDomain, PresentationDefinitionLocation, PresentationDefinitionWithLocation, SupportedVersion } from '@sphereon/did-auth-siop'
 import { CreateRequestObjectMode } from '@sphereon/oid4vci-common'
 import { getIdentifier } from '@sphereon/ssi-sdk-ext.did-utils'
-import {IPEXFilterResult} from "@sphereon/ssi-sdk.presentation-exchange";
-import {CredentialMapper, PresentationSubmission} from '@sphereon/ssi-types'
+import { IPEXFilterResult } from '@sphereon/ssi-sdk.presentation-exchange'
+import { CredentialMapper, PresentationSubmission } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import fetch from 'cross-fetch'
 import { determineWellknownEndpoint, ebsiGetIssuerMock } from '../did/functions'
@@ -28,7 +28,7 @@ import {
   IEbsiSupport,
 } from '../types/IEbsiSupport'
 
-import {v4} from 'uuid'
+import { v4 } from 'uuid'
 
 export class EbsiSupport implements IAgentPlugin {
   readonly schema = schema.IEbsiSupport
@@ -167,11 +167,17 @@ export class EbsiSupport implements IAgentPlugin {
       version: SupportedVersion.SIOPv2_D11,
     } satisfies PresentationDefinitionWithLocation
 
-    const pexResult = hasInputDescriptors ? await context.agent.pexDefinitionFilterCredentials({
-      presentationDefinition: definitionResponse,
-      credentialFilterOpts: { verifiableCredentials: [attestationCredential!] },
-      // LOL, let's see whether we can trick PEX to create a VP without VCs
-    }) : {filteredCredentials: [], id: definitionResponse.id, selectResults: {verifiableCredential: [], areRequiredCredentialsPresent: "info"}} satisfies IPEXFilterResult
+    const pexResult = hasInputDescriptors
+      ? await context.agent.pexDefinitionFilterCredentials({
+          presentationDefinition: definitionResponse,
+          credentialFilterOpts: { verifiableCredentials: [attestationCredential!] },
+          // LOL, let's see whether we can trick PEX to create a VP without VCs
+        })
+      : ({
+          filteredCredentials: [],
+          id: definitionResponse.id,
+          selectResults: { verifiableCredential: [], areRequiredCredentialsPresent: 'info' },
+        } satisfies IPEXFilterResult)
     const opSesssion = await context.agent.siopRegisterOPSession({
       requestJwtOrUri: '', // Siop assumes we use an auth request, which we don't have in this case
       op: { checkLinkedDomains: CheckLinkedDomain.NEVER },
@@ -189,11 +195,9 @@ export class EbsiSupport implements IAgentPlugin {
       },
     )
 
-    const presentationSubmission = hasInputDescriptors ? vp.presentationSubmission : {id: v4(), definition_id: definitionResponse.id, descriptor_map: []} satisfies PresentationSubmission
-
-    console.log(JSON.stringify(vp, null, 2))
-
-
+    const presentationSubmission = hasInputDescriptors
+      ? vp.presentationSubmission
+      : ({ id: v4(), definition_id: definitionResponse.id, descriptor_map: [] } satisfies PresentationSubmission)
 
     const tokenRequestArgs = {
       grant_type: 'vp_token',
@@ -203,7 +207,6 @@ export class EbsiSupport implements IAgentPlugin {
       apiOpts: { environment, version: 'v4' },
       openIDMetadata,
     } satisfies GetAccessTokenArgs
-    console.log(tokenRequestArgs)
     const accessTokenResponse = await this.getAccessTokenResponse(tokenRequestArgs)
 
     if (!('access_token' in accessTokenResponse)) {
@@ -233,10 +236,6 @@ export class EbsiSupport implements IAgentPlugin {
       vp_token,
       presentation_submission: JSON.stringify(presentation_submission),
     }
-    console.log(`************************************`)
-    console.log(`TO: ${discoveryMetadata.token_endpoint}`)
-    console.log(request)
-    console.log(`************************************`)
     return await (
       await fetch(`${discoveryMetadata.token_endpoint}`, {
         method: 'POST',

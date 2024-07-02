@@ -8,6 +8,8 @@ export const getEbsiApiBaseUrl = ({
   return `https://api-${environment}.ebsi.eu/${system}/${version}`
 }
 
-export const wait = async (callback: (arg: void) => void, timeoutInMS: number) => { return new Promise( _resolve => setTimeout(callback, timeoutInMS)); }
+export const wait = async (timeoutInMS: number) => {
+  return new Promise((resolve) => setTimeout(resolve, timeoutInMS))
+}
 
 export * from './Attestation'
