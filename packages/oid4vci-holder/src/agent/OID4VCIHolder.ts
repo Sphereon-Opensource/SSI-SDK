@@ -14,7 +14,7 @@ import {
   NotificationRequest,
   ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
-import { getIdentifier, getKey, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import { getIdentifier, getKey, IIdentifierOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   CorrelationIdentifierType,
   CredentialRole,
@@ -67,7 +67,6 @@ import {
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
-  SupportedDidMethodEnum,
 } from '../types/IOID4VCIHolder'
 import {
   getCredentialBranding,

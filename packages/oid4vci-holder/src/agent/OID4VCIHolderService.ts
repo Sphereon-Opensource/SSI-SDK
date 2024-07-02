@@ -9,7 +9,13 @@ import {
   OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
-import { getFirstKeyWithRelation, getKey, getIdentifier as getIdentifierFromOpts, toDidDocument } from '@sphereon/ssi-sdk-ext.did-utils'
+import {
+  getAuthenticationKey,
+  getIdentifier as getIdentifierFromOpts,
+  getKey,
+  getOrCreatePrimaryIdentifier,
+  SupportedDidMethodEnum,
+} from '@sphereon/ssi-sdk-ext.did-utils'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -19,13 +25,12 @@ import {
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
-import { IDIDManager, IIdentifier, IKey, IResolver, IVerifyCredentialArgs, TAgent, TKeyType, VerifiableCredential } from '@veramo/core'
+import { IIdentifier, IVerifyCredentialArgs, TKeyType, VerifiableCredential } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
 import { createJWT, Signer } from 'did-jwt'
 import { translate } from '../localization/Localization'
 import {
-  CreateIdentifierArgs,
-  GetAuthenticationKeyArgs,
+  DidAgents,
   GetCredentialBrandingArgs,
   GetCredentialConfigsSupportedArgs,
   GetCredentialConfigsSupportedBySingleTypeOrIdArgs,
@@ -34,13 +39,10 @@ import {
   GetIssuanceCryptoSuiteArgs,
   GetIssuanceDidMethodArgs,
   GetIssuanceOptsArgs,
-  GetOrCreatePrimaryIdentifierArgs,
   GetPreferredCredentialFormatsArgs,
   GetSignerArgs,
-  IdentifierAliasEnum,
   IdentifierOpts,
   IssuanceOpts,
-  KeyManagementSystemEnum,
   KeyTypeFromCryptographicSuiteArgs,
   MapCredentialToAcceptArgs,
   MappedCredentialToAccept,
@@ -51,14 +53,11 @@ import {
   SignatureAlgorithmFromKeyArgs,
   SignatureAlgorithmFromKeyTypeArgs,
   SignJwtArgs,
-  SupportedDidMethodEnum,
   VerificationResult,
   VerificationSubResult,
   VerifyCredentialToAcceptArgs,
 } from '../types/IOID4VCIHolder'
 import { credentialLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
-
-export const DID_PREFIX = 'did'
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
@@ -242,22 +241,28 @@ export const getDefaultIssuanceOpts = async (args: GetDefaultIssuanceOptsArgs): 
 
 export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<IdentifierOpts> => {
   const { issuanceOpt, context } = args
+  const agentContext = { ...context, agent: context.agent as DidAgents }
 
-  const identifier =
-    issuanceOpt.identifier ??
-    (await getOrCreatePrimaryIdentifier({
-      context,
-      opts: {
-        method: issuanceOpt.didMethod,
-        createOpts: {
-          options: {
-            type: issuanceOpt.keyType,
-            use: KeyUse.Signature,
-            codecName: issuanceOpt.codecName,
-          },
+  let identifier: IIdentifier
+  if (issuanceOpt.identifier) {
+    identifier = issuanceOpt.identifier
+  } else {
+    const { result, created } = await getOrCreatePrimaryIdentifier(agentContext, {
+      method: issuanceOpt.didMethod,
+      createOpts: {
+        options: {
+          type: issuanceOpt.keyType,
+          use: KeyUse.Signature,
+          codecName: issuanceOpt.codecName,
         },
       },
-    }))
+    })
+
+    identifier = result
+    if (created) {
+      await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { identifier })
+    }
+  }
   const key: _ExtendedIKey = await getAuthenticationKey({
     identifier,
     context,
@@ -267,76 +272,6 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Identi
   const kid: string = key.meta?.jwkThumbprint ?? key.meta.verificationMethod?.id ?? key.kid
 
   return { identifier, key, kid }
-}
-
-export const getAuthenticationKey = async (args: GetAuthenticationKeyArgs): Promise<_ExtendedIKey> => {
-  const { identifier, context, offlineWhenNoDIDRegistered, noVerificationMethodFallback = false } = args
-  const agentContext = { ...context, agent: context.agent as TAgent<IResolver & IDIDManager> }
-
-  let key: _ExtendedIKey | undefined = undefined
-  try {
-    key =
-      (await getFirstKeyWithRelation(identifier, agentContext, 'authentication', false)) ??
-      (noVerificationMethodFallback ? undefined : await getFirstKeyWithRelation(identifier, agentContext, 'verificationMethod', false))
-  } catch (e) {
-    if (!e.message.includes('404') || !offlineWhenNoDIDRegistered) {
-      throw e
-    }
-  }
-  if (!key && offlineWhenNoDIDRegistered) {
-    const offlineDID = toDidDocument(identifier)
-    key =
-      (await getFirstKeyWithRelation(identifier, agentContext, 'authentication', false, offlineDID)) ??
-      (noVerificationMethodFallback ? undefined : await getFirstKeyWithRelation(identifier, agentContext, 'verificationMethod', false, offlineDID))
-    if (!key) {
-      key = identifier.keys
-        .map((key) => key as _ExtendedIKey)
-        .find((key) => key.meta.verificationMethod?.type.includes('authentication') || key.meta.purposes?.includes('authentication'))
-    }
-  }
-  if (!key) {
-    throw Error(`Could not find authentication key for DID ${identifier.did}`)
-  }
-  return key
-}
-
-export const getOrCreatePrimaryIdentifier = async (args: GetOrCreatePrimaryIdentifierArgs): Promise<IIdentifier> => {
-  const { context, opts } = args
-
-  const identifiers = (await context.agent.didManagerFind(opts?.method ? { provider: `${DID_PREFIX}:${opts?.method}` } : {})).filter(
-    (identifier: IIdentifier) =>
-      opts?.createOpts?.options?.type === undefined || identifier.keys.some((key: IKey) => key.type === opts?.createOpts?.options?.type),
-  )
-
-  if (opts?.method === SupportedDidMethodEnum.DID_KEY) {
-    const createOpts = opts?.createOpts ?? {}
-    createOpts.options = { codecName: 'EBSI', type: 'Secp256r1', ...createOpts }
-    opts.createOpts = createOpts
-  }
-  const identifier: IIdentifier =
-    !identifiers || identifiers.length == 0
-      ? await createIdentifier({
-          context,
-          opts,
-        })
-      : identifiers[0]
-
-  return await context.agent.didManagerGet({ did: identifier.did })
-}
-
-export const createIdentifier = async (args: CreateIdentifierArgs): Promise<IIdentifier> => {
-  const { context, opts } = args
-
-  const identifier = await context.agent.didManagerCreate({
-    kms: opts?.createOpts?.kms ?? KeyManagementSystemEnum.LOCAL,
-    ...(opts?.method && { provider: `${DID_PREFIX}:${opts?.method}` }),
-    alias: opts?.createOpts?.alias ?? `${IdentifierAliasEnum.PRIMARY}-${opts?.method}-${opts?.createOpts?.options?.type}-${new Date().toUTCString()}`,
-    options: opts?.createOpts?.options,
-  })
-
-  await context.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { identifier })
-
-  return identifier
 }
 
 export const getCredentialConfigsSupportedMerged = async (

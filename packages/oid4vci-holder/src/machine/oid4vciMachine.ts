@@ -185,6 +185,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
               error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
                 title: translate('oid4vci_machine_initiation_error_title'),
                 message: _event.data.message,
+                stack: _event.data.stack,
               }),
             }),
           },
@@ -208,6 +209,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
               error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
                 title: translate('oid4vci_machine_credential_selection_error_title'),
                 message: _event.data.message,
+                stack: _event.data.stack,
               }),
             }),
           },
@@ -227,6 +229,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
               error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
                 title: translate('oid4vci_machine_retrieve_contact_error_title'),
                 message: _event.data.message,
+                stack: _event.data.stack,
               }),
             }),
           },
@@ -421,6 +424,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
               error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
                 title: translate('oid4vci_machine_retrieve_credentials_error_title'),
                 message: _event.data.message,
+                stack: _event.data.stack,
               }),
             }),
           },
@@ -440,6 +444,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
               error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
                 title: translate('oid4vci_machine_verify_credentials_error_title'),
                 message: _event.data.message,
+                stack: _event.data.stack,
               }),
             }),
           },
@@ -473,6 +478,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
               error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
                 title: translate('oid4vci_machine_add_contact_identity_error_title'),
                 message: _event.data.message,
+                stack: _event.data.stack,
               }),
             }),
           },
@@ -506,6 +512,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
               error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
                 title: translate('oid4vci_machine_store_credential_branding_error_title'),
                 message: _event.data.message,
+                stack: _event.data.stack,
               }),
             }),
           },
@@ -524,6 +531,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
               error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
                 title: translate('oid4vci_machine_store_credential_error_title'),
                 message: _event.data.message,
+                stack: _event.data.stack,
               }),
             }),
           },
@@ -590,10 +598,9 @@ export class OID4VCIMachine {
     if (opts?.requireCustomNavigationHook !== true) {
       if (typeof opts?.stateNavigationListener === 'function') {
         interpreter.onTransition((snapshot: OID4VCIMachineState): void => {
-          if (opts?.stateNavigationListener === undefined) {
-            throw new Error('stateNavigationListener is required when no custom navigation hook is used')
+          if (opts?.stateNavigationListener !== undefined) {
+            opts.stateNavigationListener(interpreter, snapshot)
           }
-          opts.stateNavigationListener(interpreter, snapshot)
         })
       }
     }

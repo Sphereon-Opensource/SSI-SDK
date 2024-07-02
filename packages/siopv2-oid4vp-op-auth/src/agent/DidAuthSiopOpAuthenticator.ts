@@ -8,10 +8,17 @@ import {
   NonPersistedIdentity,
   Party,
 } from '@sphereon/ssi-sdk.data-store'
-import { Loggers, LogMethod, W3CVerifiableCredential } from '@sphereon/ssi-types'
+import { Loggers, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { v4 as uuidv4 } from 'uuid'
-import { IOpSessionArgs, LOGGER_NAMESPACE, RequiredContext, schema, Siopv2AuthorizationResponseData } from '../index'
+import {
+  DidAuthSiopOpAuthenticatorOptions,
+  IOpSessionArgs,
+  LOGGER_NAMESPACE,
+  RequiredContext,
+  schema,
+  Siopv2AuthorizationResponseData,
+} from '../index'
 import { Siopv2Machine } from '../machine/Siopv2Machine'
 import { siopSendAuthorizationResponse, translateCorrelationIdToName } from '../services/Siopv2MachineService'
 import { OpSession } from '../session'
@@ -29,7 +36,6 @@ import {
   AddIdentityArgs,
   CreateConfigArgs,
   CreateConfigResult,
-  DidAuthSiopOpAuthenticatorOptions,
   GetSiopRequestArgs,
   OnContactIdentityCreatedArgs,
   OnIdentifierCreatedArgs,
@@ -39,7 +45,18 @@ import {
   Siopv2HolderEvent,
 } from '../types/siop-service'
 
-const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, { methods: [LogMethod.CONSOLE, LogMethod.DEBUG_PKG] }).get(LOGGER_NAMESPACE)
+const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
+
+// Exposing the methods here for any REST implementation
+export const didAuthSiopOpAuthenticatorMethods: Array<string> = [
+  'cmGetContacts',
+  'cmGetContact',
+  'cmAddContact',
+  'cmAddIdentity',
+  'didManagerFind',
+  'didManagerGet',
+  'keyManagerSign',
+]
 
 export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   readonly schema = schema.IDidAuthSiopOpAuthenticator
@@ -312,10 +329,16 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       context,
     )
 
-    const body = await response.json()
-    console.log(body)
+    const contentType = response.headers.get('content-type') || ''
+    let responseBody: any = null
+
+    const text = await response.text()
+    if (text) {
+      responseBody = contentType.includes('application/json') || text.startsWith('{') ? JSON.parse(text) : text
+    }
+
     return {
-      body,
+      body: responseBody,
       url: response.url,
       queryParams: decodeUriAsJson(response.url),
     }

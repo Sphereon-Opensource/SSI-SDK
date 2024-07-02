@@ -1,19 +1,19 @@
 import { SupportedVersion } from '@sphereon/did-auth-siop'
-import {determineKid, getIdentifier, getKey, IIdentifierOpts} from '@sphereon/ssi-sdk-ext.did-utils'
+import {determineKid, getIdentifier, getKey, getOrCreatePrimaryIdentifier,IIdentifierOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ConnectionType } from '@sphereon/ssi-sdk.data-store'
-import { CredentialMapper, Loggers, LogMethod, PresentationSubmission } from '@sphereon/ssi-types'
 import { IIdentifier } from '@veramo/core'
-import { OID4VP, OpSession } from '../session'
+import { DidAgents } from '../types/identifier'
+import { CredentialMapper, Loggers, PresentationSubmission } from '@sphereon/ssi-types'
 import {
   LOGGER_NAMESPACE,
   RequiredContext,
-  SupportedDidMethodEnum,
+  Siopv2HolderEvent,
   VerifiableCredentialsWithDefinition,
   VerifiablePresentationWithDefinition,
 } from '../types'
-import { getOrCreatePrimaryIdentifier } from './IdentifierService'
+import { OID4VP, OpSession } from '../session'
 
-const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, { methods: [LogMethod.CONSOLE, LogMethod.DEBUG_PKG] }).get(LOGGER_NAMESPACE)
+const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
 export const siopSendAuthorizationResponse = async (
   connectionType: ConnectionType,
@@ -25,13 +25,14 @@ export const siopSendAuthorizationResponse = async (
   context: RequiredContext,
 ) => {
   const { agent } = context
+  const agentContext = { ...context, agent: context.agent as DidAgents }
   let { idOpts } = args
 
   if (connectionType !== ConnectionType.SIOPv2_OpenID4VP) {
     return Promise.reject(Error(`No supported authentication provider for type: ${connectionType}`))
   }
   const session: OpSession = await agent.siopGetOPSession({ sessionId: args.sessionId })
-  let identifiers: Array<IIdentifier> = idOpts ? [await getIdentifier(idOpts, context)] : await session.getSupportedIdentifiers()
+  let identifiers: Array<IIdentifier> = idOpts ? [await getIdentifier(idOpts, agentContext)] : await session.getSupportedIdentifiers()
   if (!identifiers || identifiers.length === 0) {
     throw Error(`No DID methods found in agent that are supported by the relying party`)
   }
@@ -45,15 +46,15 @@ export const siopSendAuthorizationResponse = async (
     identifiers = identifiers.filter((id) => id.did.toLowerCase().startsWith('did:key:') || id.did.toLowerCase().startsWith('did:ebsi:'))
     if (identifiers.length === 0) {
       logger.log(`No EBSI key present yet. Creating a new one...`)
-      const identifier = await getOrCreatePrimaryIdentifier({
-        context,
-        opts: {
-          method: SupportedDidMethodEnum.DID_KEY,
-          createOpts: { options: { codecName: 'jwk_jcs-pub', type: 'Secp256r1' } },
-        },
+      const { result: newIdentifier, created } = await getOrCreatePrimaryIdentifier(agentContext, {
+        method: SupportedDidMethodEnum.DID_KEY,
+        createOpts: { options: { codecName: 'jwk_jcs-pub', type: 'Secp256r1' } },
       })
-      logger.log(`EBSI key created: ${identifier.did}`)
-      identifiers = [identifier]
+      logger.log(`EBSI key created: ${newIdentifier.did}`)
+      identifiers = [newIdentifier]
+      if (created) {
+        await agentContext.agent.emit(Siopv2HolderEvent.IDENTIFIER_CREATED, { result: newIdentifier })
+      }
     }
   }
   if (aud && aud.startsWith('did:')) {

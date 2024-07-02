@@ -6,6 +6,7 @@
     "outDir": "dist",
     "declarationDir": "dist"
   },
+  "include": ["src/**/*.json", "src/**/*.ts"],
   "references": [
     {
       "path": "../ssi-types"
@@ -24,6 +25,9 @@
     },
     {
       "path": "../data-store"
+    },
+    {
+      "path": "../presentation-exchange"
     },
     {
       "path": "../xstate-persistence"

@@ -1,35 +1,15 @@
-import { IIdentifier, TKeyType } from '@veramo/core'
+import { IDIDManager, IIdentifier, IResolver, TAgent, TKeyType } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
 import { RequiredContext } from '../siop-service'
+import { KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 
 export const DID_PREFIX = 'did'
-
-export enum SupportedDidMethodEnum {
-  DID_ETHR = 'ethr',
-  DID_KEY = 'key',
-  DID_LTO = 'lto',
-  DID_ION = 'ion',
-  DID_FACTOM = 'factom',
-  DID_JWK = 'jwk',
-}
-
-export enum IdentifierAliasEnum {
-  PRIMARY = 'primary',
-}
-
-export type GetOrCreatePrimaryIdentifierArgs = {
-  context: RequiredContext
-  opts?: CreateOrGetIdentifierOpts
-}
 
 export type CreateOrGetIdentifierOpts = {
   method: SupportedDidMethodEnum
   createOpts?: CreateIdentifierCreateOpts
 }
 
-export enum KeyManagementSystemEnum {
-  LOCAL = 'local',
-}
 export type CreateIdentifierCreateOpts = {
   kms?: KeyManagementSystemEnum
   alias?: string
@@ -75,3 +55,5 @@ export type CreateIdentifierOpts = {
   method: SupportedDidMethodEnum
   createOpts?: CreateIdentifierCreateOpts
 }
+
+export type DidAgents = TAgent<IResolver & IDIDManager>

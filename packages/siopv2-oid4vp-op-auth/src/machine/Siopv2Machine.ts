@@ -134,8 +134,9 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
             target: Siopv2MachineStates.handleError,
             actions: assign({
               error: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
-                title: translate('Siopv2_machine_create_config_error_title'),
+                title: translate('siopv2_machine_create_config_error_title'),
                 message: _event.data.message,
+                stack: _event.data.stack,
               }),
             }),
           },
@@ -157,6 +158,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
               error: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
                 title: translate('Siopv2_machine_get_request_error_title'),
                 message: _event.data.message,
+                stack: _event.data.stack,
               }),
             }),
           },
@@ -176,6 +178,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
               error: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
                 title: translate('Siopv2_machine_retrieve_contact_error_title'),
                 message: _event.data.message,
+                stack: _event.data.stack,
               }),
             }),
           },
@@ -256,6 +259,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
               error: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
                 title: translate('Siopv2_machine_add_contact_identity_error_title'),
                 message: _event.data.message,
+                stack: _event.data.stack,
               }),
             }),
           },
@@ -295,6 +299,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
               error: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
                 title: translate('Siopv2_machine_send_response_error_title'),
                 message: _event.data.message,
+                stack: _event.data.stack,
               }),
             }),
           },

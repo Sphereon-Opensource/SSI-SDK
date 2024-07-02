@@ -84,14 +84,6 @@ export type Siopv2MachineInstanceOpts = {
   stateNavigationListener?: (siopv2Machine: Siopv2MachineInterpreter, state: Siopv2MachineState, navigation?: any) => Promise<void>
 } & CreateSiopv2MachineOpts
 
-export type Siopv2MachineNavigationArgs = {
-  oid4vpMachine: Siopv2MachineInterpreter
-  state: Siopv2MachineState
-  navigation: any
-  onNext?: () => void
-  onBack?: () => void
-}
-
 export enum Siopv2MachineEvents {
   NEXT = 'NEXT',
   PREVIOUS = 'PREVIOUS',

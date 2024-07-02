@@ -11,7 +11,13 @@ import {
   ExperimentalSubjectIssuance,
   NotificationRequest,
 } from '@sphereon/oid4vci-common'
-import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import {
+  CreateOrGetIdentifierOpts,
+  IdentifierProviderOpts,
+  IIdentifierOpts,
+  KeyManagementSystemEnum,
+  SupportedDidMethodEnum,
+} from '@sphereon/ssi-sdk-ext.did-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
@@ -26,6 +32,7 @@ import {
   IKeyManager,
   IPluginMethodMap,
   IResolver,
+  TAgent,
   TKeyType,
   VerifiableCredential,
 } from '@veramo/core'
@@ -363,6 +370,7 @@ export type ErrorDetails = {
   // TODO WAL-676 would be nice if we can bundle these details fields into a new type so that we can check on this field instead of the 2 separately
   detailsTitle?: string
   detailsMessage?: string
+  stack?: string
 }
 
 export enum RequestType {
@@ -402,16 +410,7 @@ export type IssuanceOpts = CredentialConfigurationSupported & {
   keyType: TKeyType
   codecName?: string
   kid?: string
-  identifier: IIdentifier
-}
-
-export enum SupportedDidMethodEnum {
-  DID_ETHR = 'ethr',
-  DID_KEY = 'key',
-  DID_LTO = 'lto',
-  DID_ION = 'ion',
-  DID_EBSI = 'ebsi',
-  DID_JWK = 'jwk',
+  identifier: IIdentifier // TODO looking at the implementation, shouldn't this field be optional?
 }
 
 export type VerificationResult = {
@@ -580,25 +579,6 @@ export enum SignatureAlgorithmEnum {
   ES256K = 'ES256K',
 }
 
-export enum IdentifierAliasEnum {
-  PRIMARY = 'primary',
-}
-
-export type CreateOrGetIdentifierOpts = {
-  method: SupportedDidMethodEnum
-  createOpts?: CreateIdentifierCreateOpts
-}
-
-export type IdentifierProviderOpts = {
-  type?: TKeyType
-  use?: string
-  [x: string]: any
-}
-
-export enum KeyManagementSystemEnum {
-  LOCAL = 'local',
-}
-
 export type IdentifierOpts = {
   identifier: IIdentifier
   key: _ExtendedIKey
@@ -608,3 +588,4 @@ export type IdentifierOpts = {
 export type RequiredContext = IAgentContext<
   IIssuanceBranding & IContactManager & ICredentialVerifier & ICredentialIssuer & IDataStore & IDataStoreORM & IDIDManager & IResolver & IKeyManager
 >
+export type DidAgents = TAgent<IResolver & IDIDManager>
