@@ -89,6 +89,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         provider: 'did:ebsi',
         keys: [secp256k1, secp256r1],
       })
+      console.log(id)
       const importedJwk = await importJWK(jwk)
 
       const port = process?.env.PORT ?? '5151'
