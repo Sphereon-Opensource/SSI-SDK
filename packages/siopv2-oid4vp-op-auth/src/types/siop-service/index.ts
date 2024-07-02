@@ -25,7 +25,7 @@ export type AddIdentityArgs = Pick<Siopv2MachineContext, 'contact' | 'authorizat
 export type SendResponseArgs = Pick<Siopv2MachineContext, 'didAuthConfig' | 'authorizationRequestData' | 'selectedCredentials' | 'idOpts'>
 
 export enum Siopv2HolderEvent {
-  CONTACT_IDENTITY_CREATED = 'contact_identity_created', // TODO BEFORE PR: same events as the oid4vci holder module?
+  CONTACT_IDENTITY_CREATED = 'contact_identity_created',
   IDENTIFIER_CREATED = 'identifier_created',
 }
 

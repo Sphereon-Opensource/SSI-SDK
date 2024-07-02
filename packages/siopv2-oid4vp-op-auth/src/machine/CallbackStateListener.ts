@@ -8,7 +8,6 @@ const logger = Loggers.DEFAULT.options('sphereon:oid4vp:holder', {
 
 export const OID4VPCallbackStateListener = (
   callbacks?: Map<Siopv2MachineStates, (machine: Siopv2MachineInterpreter, state: Siopv2MachineState, opts?: any) => Promise<void>>,
-  // TODO implement Map<Siopv2MachineStates | Set<Siopv2MachineStates>> ?
 ) => {
   return async (oid4vciMachine: Siopv2MachineInterpreter, state: Siopv2MachineState): Promise<void> => {
     if (state._event.type === 'internal') {

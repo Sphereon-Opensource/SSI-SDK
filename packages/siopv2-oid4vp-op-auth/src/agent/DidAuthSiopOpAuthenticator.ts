@@ -18,6 +18,7 @@ import {
   RequiredContext,
   schema,
   Siopv2AuthorizationResponseData,
+  VerifiableCredentialsWithDefinition,
 } from '../index'
 import { Siopv2Machine } from '../machine/Siopv2Machine'
 import { siopSendAuthorizationResponse, translateCorrelationIdToName } from '../services/Siopv2MachineService'
@@ -44,6 +45,7 @@ import {
   Siopv2AuthorizationRequestData,
   Siopv2HolderEvent,
 } from '../types/siop-service'
+import { PEX, Status } from '@sphereon/pex'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
@@ -312,19 +314,25 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       return Promise.reject(Error('Missing authorization request data in context'))
     }
 
+    const pex = new PEX()
+    const verifiableCredentialsWithDefinition: Array<VerifiableCredentialsWithDefinition> = []
+
+    authorizationRequestData.presentationDefinitions?.forEach((presentationDefinition) => {
+      const { areRequiredCredentialsPresent, verifiableCredential } = pex.selectFrom(presentationDefinition.definition, selectedCredentials)
+      if (areRequiredCredentialsPresent !== Status.ERROR) {
+        verifiableCredentialsWithDefinition.push({
+          definition: presentationDefinition,
+          credentials: verifiableCredential as Array<W3CVerifiableCredential>,
+        })
+      }
+    })
+
     const response = await siopSendAuthorizationResponse(
       ConnectionType.SIOPv2_OpenID4VP,
       {
         sessionId: didAuthConfig.sessionId,
         ...(args.idOpts && { idOpts: args.idOpts }),
-        ...(authorizationRequestData.presentationDefinitions !== undefined && {
-          verifiableCredentialsWithDefinition: [
-            {
-              definition: authorizationRequestData.presentationDefinitions[0], // TODO BEFORE PR 0 check, check siop only
-              credentials: selectedCredentials as Array<W3CVerifiableCredential>,
-            },
-          ],
-        }),
+        ...(authorizationRequestData.presentationDefinitions !== undefined && { verifiableCredentialsWithDefinition }),
       },
       context,
     )
