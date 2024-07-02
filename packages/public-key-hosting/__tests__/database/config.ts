@@ -1,6 +1,6 @@
-import {Entities as VeramoDataStoreEntities, migrations as VeramoDataStoreMigrations} from '@veramo/data-store'
-import {PostgresConnectionOptions} from 'typeorm/driver/postgres/PostgresConnectionOptions'
-import {SqliteConnectionOptions} from 'typeorm/driver/sqlite/SqliteConnectionOptions'
+import { Entities as VeramoDataStoreEntities, migrations as VeramoDataStoreMigrations } from '@veramo/data-store'
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions'
+import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions'
 
 const DB_CONNECTION_NAME_SQLITE = 'sqlite'
 const DB_CONNECTION_NAME_POSTGRES = 'postgres'

@@ -40,8 +40,8 @@
     "web3-validator": "^2.0.0"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk-ext.key-manager": "0.21.1-next.16",
-    "@sphereon/ssi-sdk-ext.kms-local": "0.21.1-next.16",
+    "@sphereon/ssi-sdk-ext.key-manager": "0.21.1-next.19",
+    "@sphereon/ssi-sdk-ext.kms-local": "0.21.1-next.19",
     "@types/body-parser": "^1.19.2",
     "@types/cors": "^2.8.13",
     "@types/dotenv-flow": "^3.2.0",

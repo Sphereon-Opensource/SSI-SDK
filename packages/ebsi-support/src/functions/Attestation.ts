@@ -1,4 +1,4 @@
-import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
+import {OpenID4VCIClient} from '@sphereon/oid4vci-client'
 import {
   Alg,
   AuthorizationDetails,
@@ -9,10 +9,9 @@ import {
   getTypesFromCredentialSupported,
   ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
-import { getIdentifier } from '@sphereon/ssi-sdk-ext.did-utils'
-import { calculateJwkThumbprintForKey } from '@sphereon/ssi-sdk-ext.key-utils'
+import {getAuthenticationKey, getIdentifier} from '@sphereon/ssi-sdk-ext.did-utils'
+import {calculateJwkThumbprintForKey} from '@sphereon/ssi-sdk-ext.key-utils'
 import {
-  getAuthenticationKey,
   IssuanceOpts,
   OID4VCICallbackStateListener,
   OID4VCIMachineInterpreter,
@@ -29,11 +28,17 @@ import {
   Siopv2MachineState,
   Siopv2MachineStates,
 } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import { Siopv2OID4VPLinkHandler } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth/dist/link-handler'
-import { IIdentifier } from '@veramo/core'
-import { _ExtendedIKey } from '@veramo/utils'
-import { waitFor } from 'xstate/lib/waitFor'
-import { AttestationResult, CreateAttestationAuthRequestURLArgs, GetAttestationArgs, IRequiredContext } from '../types/IEbsiSupport'
+import {Siopv2OID4VPLinkHandler} from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth/dist/link-handler'
+import {IIdentifier} from '@veramo/core'
+import {_ExtendedIKey} from '@veramo/utils'
+import {waitFor} from 'xstate/lib/waitFor'
+import {
+  AttestationResult,
+  CreateAttestationAuthRequestURLArgs,
+  EbsiEnvironment,
+  GetAttestationArgs,
+  IRequiredContext
+} from '../types/IEbsiSupport'
 import {
   addContactCallback,
   authorizationCodeUrlCallback,
@@ -42,6 +47,7 @@ import {
   selectCredentialsCallback,
   siopDoneCallback,
 } from './AttestationHeadlessCallbacks'
+import {getEbsiApiBaseUrl} from './index'
 
 export interface AttestationAuthRequestUrlResult extends Omit<Required<PrepareStartArgs>, 'issuanceOpt'> {
   issuanceOpt?: IssuanceOpts
@@ -79,17 +85,17 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   }
   // This only works if the DID is actually registered, otherwise use our internal KMS;
   // that is why the offline argument is passed in when type is Verifiable Auth to Onboard, as no DID is present at that point yet
-  const authKey = await getAuthenticationKey({
+  const authKey = await getAuthenticationKey(
     identifier,
-    offlineWhenNoDIDRegistered: credentialType === 'VerifiableAuthorisationToOnboard',
-    noVerificationMethodFallback: true,
-    context,
-  })
-  const kid = authKey.meta.jwkThumbprint ?? calculateJwkThumbprintForKey({ key: authKey })
+      context,
+    credentialType === 'VerifiableAuthorisationToOnboard',
+    true,
+  )
+  const kid = authKey.meta?.jwkThumbprint ?? calculateJwkThumbprintForKey({ key: authKey })
   const clientId = clientIdArg ?? identifier.did
 
   const vciClient = await OpenID4VCIClient.fromCredentialIssuer({
-    credentialIssuer: credentialIssuer,
+    credentialIssuer,
     kid,
     clientId,
     createAuthorizationRequestURL: false, // We will do that down below
@@ -138,6 +144,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
     authorizationRequest: authorizationRequestOpts,
   })
 
+
   return {
     requestData: {
       createAuthorizationRequestURL: false,
@@ -157,6 +164,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
     authorizationRequestOpts,
     authorizationCodeURL,
     identifier,
+    // @ts-ignore
     authKey,
     didMethodPreferences: [SupportedDidMethodEnum.DID_EBSI, SupportedDidMethodEnum.DID_KEY],
   }
@@ -253,4 +261,15 @@ export const ebsiAuthRequestExecution = async (authRequestResult: AttestationAut
   const location: string | null = authResponse.origResponse.headers.get('location')
 
   console.log(`LOCATION: ${location}`)
+}
+
+export const ebsiGetIssuer = ({ credentialIssuer, environment = 'pilot' }: { credentialIssuer?: string; environment?: EbsiEnvironment }): string => {
+  if (credentialIssuer) {
+    return credentialIssuer
+  }
+  if (environment !== 'pilot') {
+    return `${getEbsiApiBaseUrl({ environment, version: 'v3' })}/issuer-mock`
+  }
+
+  throw Error(`EBSI environment ${environment} needs explicit credential issuer`)
 }

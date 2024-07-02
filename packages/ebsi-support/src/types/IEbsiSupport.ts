@@ -6,22 +6,9 @@ import { IBasicCredentialLocaleBranding, Party } from '@sphereon/ssi-sdk.data-st
 import { ErrorDetails, IOID4VCIHolder, MappedCredentialToAccept } from '@sphereon/ssi-sdk.oid4vci-holder'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import { Optional, PresentationSubmission, W3CVerifiableCredential } from '@sphereon/ssi-types'
+import { PresentationSubmission, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentContext, IDIDManager, IIdentifier, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { AttestationAuthRequestUrlResult } from '../functions'
-
-/**
- * Environment
- * @readonly
- * @enum {string}
- */
-export enum EbsiEnvironmentRemove {
-  PILOT = 'pilot',
-  CONFORMANCE = 'conformance',
-  // FIXME: How are these all of sudden 'environments'!!!
-  MOCK = 'mock',
-  ISSUER = 'issuer',
-}
 
 /**
  * The OpenID scope
@@ -39,17 +26,6 @@ export type EBSIScope =
   | 'tnt_write'
   | 'did_authn'
 
-export enum ScopeByDefinition {
-  didr_invite_presentation = 'didr_invite',
-  didr_write_presentation = 'didr_write',
-  tir_invite_presentation = 'tir_invite',
-  tir_write_presentation = 'tir_write',
-  timestamp_write_presentation = 'timestamp_write',
-  tnt_authorise_presentation = 'tnt_authorise',
-  tnt_create_presentation = 'tnt_create',
-  tnt_write_presentation = 'tnt_write',
-}
-
 export enum TokenType {
   BEARER = 'Bearer',
 }
@@ -61,7 +37,7 @@ export type EbsiMock = 'issuer-mock' | 'auth-mock'
 export type EbsiSystem = 'authorisation' | 'conformance' | 'did-registry'
 
 export type ApiOpts = { environment?: EbsiEnvironment; version: EbsiApiVersion }
-export type WellknownOpts = ApiOpts & { type: WellknownType, system?: EbsiSystem | EbsiEnvironment, mock?: EbsiMock }
+export type WellknownOpts = ApiOpts & { type: WellknownType; system?: EbsiSystem | EbsiEnvironment; mock?: EbsiMock }
 
 export interface IEbsiSupport extends IPluginMethodMap {
   ebsiWellknownMetadata(args?: ApiOpts): Promise<GetOIDProviderMetadataResponse>
@@ -70,7 +46,7 @@ export interface IEbsiSupport extends IPluginMethodMap {
 
   ebsiPresentationDefinitionGet(args: GetPresentationDefinitionArgs): Promise<GetPresentationDefinitionResponse>
 
-  ebsiAccessTokenGet(args: EBSIAuthAccessTokenGetArgs, context: IRequiredContext): Promise<GetAccessTokenResponse>
+  ebsiAccessTokenGet(args: EBSIAuthAccessTokenGetArgs, context: IRequiredContext): Promise<GetAccessTokenResult>
 
   ebsiCreateAttestationAuthRequestURL(args: CreateAttestationAuthRequestURLArgs, context: IRequiredContext): Promise<AttestationAuthRequestUrlResult>
 
@@ -179,11 +155,18 @@ export interface GetAccessTokenArgs {
   apiOpts: ApiOpts
 }
 
+export type GetAccessTokenResult = {
+  identifier: IIdentifier
+  scope: EBSIScope
+  // vp: VerifiablePresentationWithDefinition
+  // definition: PresentationDefinitionWithLocation
+  accessTokenResponse: GetAccessTokenSuccessResponse
+}
 /**
  * @typedef EBSIAuthAccessTokenGetArgs
  * @type {object}
  * @property {string} attestationCredential Verifiable Credential (Verifiable Authorisation to Onboard) JWT format
- * @property {ScopeByDefinition} definitionId The presentation definition id
+ // * @property {ScopeByDefinition} definitionId The presentation definition id
  * @property {string} [domain] The domain of the issuer
  * @property {string} did The did of the VP issuer
  * @property {string} kid kid in the format: did#kid
@@ -195,12 +178,13 @@ export interface EBSIAuthAccessTokenGetArgs {
   credentialIssuer?: string
   attestationCredential?: W3CVerifiableCredential
   allVerifiableCredentials?: W3CVerifiableCredential[]
-  redirectUri?: string,
+  redirectUri?: string
   jwksUri: string
   // definitionId: ScopeByDefinition
   idOpts: IIdentifierOpts
   scope: EBSIScope
-  apiOpts: Optional<WellknownOpts, 'version'>
+  environment: EbsiEnvironment
+  skipDidResolution?: boolean
 }
 
 /**

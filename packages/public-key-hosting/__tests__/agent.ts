@@ -1,20 +1,19 @@
-import {ExpressBuilder} from '@sphereon/ssi-express-support'
-import {JwkDIDProvider} from "@sphereon/ssi-sdk-ext.did-provider-jwk";
-import {SphereonKeyManager} from '@sphereon/ssi-sdk-ext.key-manager'
-import {SphereonKeyManagementSystem} from '@sphereon/ssi-sdk-ext.kms-local'
-import {DataSources} from '@sphereon/ssi-sdk.agent-config'
-import {createAgent, IDataStore, IDataStoreORM, IDIDManager, IKeyManager, IResolver} from '@veramo/core'
-import {DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore} from '@veramo/data-store'
-import {DIDManager} from "@veramo/did-manager";
+import { ExpressBuilder } from '@sphereon/ssi-express-support'
+import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
+import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
+import { DataSources } from '@sphereon/ssi-sdk.agent-config'
+import { createAgent, IDataStore, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
+import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
+import { DIDManager } from '@veramo/did-manager'
 
-import {SecretBox} from '@veramo/kms-local'
+import { SecretBox } from '@veramo/kms-local'
 
-import {logger, PublicKeyHosting} from '../src'
-import {DB_CONNECTION_NAME_SQLITE, DB_ENCRYPTION_KEY, sqliteConfig} from './database'
+import { logger, PublicKeyHosting } from '../src'
+import { DB_CONNECTION_NAME_SQLITE, DB_ENCRYPTION_KEY, sqliteConfig } from './database'
 
 export const PRIVATE_KEY_HEX = 'a5e81a8cd50cf5c31d5b87db3e153e2817f86de350a60edc2335f76d5c3b4e0d'
 // export const PUBLIC_KEY_HEX = '02cfc48d497317d51e9e4cacc91a6f80ede8c07c596e0e588726ea2039a3ec0c34'
-
 
 const dbConnection = DataSources.singleInstance()
   .addConfig(DB_CONNECTION_NAME_SQLITE, sqliteConfig)
@@ -22,13 +21,7 @@ const dbConnection = DataSources.singleInstance()
   .getDbConnection(DB_CONNECTION_NAME_SQLITE)
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
-const agent = createAgent<
-  IDIDManager &
-    IKeyManager &
-    IDataStore &
-    IDataStoreORM &
-    IResolver
->({
+const agent = createAgent<IDIDManager & IKeyManager & IDataStore & IDataStoreORM & IResolver>({
   plugins: [
     new DataStore(dbConnection),
     new DataStoreORM(dbConnection),
@@ -42,10 +35,10 @@ const agent = createAgent<
       store: new DIDStore(dbConnection),
       defaultProvider: `did:jwk`,
       providers: {
-        'did:jwk':  new JwkDIDProvider({
+        'did:jwk': new JwkDIDProvider({
           defaultKms: 'local',
-        })
-      }
+        }),
+      },
     }),
   ],
 })

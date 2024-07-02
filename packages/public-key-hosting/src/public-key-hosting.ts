@@ -1,11 +1,11 @@
-import {ExpressSupport} from '@sphereon/ssi-express-support'
-import {agentContext} from '@sphereon/ssi-sdk.core'
-import {TAgent} from '@veramo/core'
+import { ExpressSupport } from '@sphereon/ssi-express-support'
+import { agentContext } from '@sphereon/ssi-sdk.core'
+import { TAgent } from '@veramo/core'
 
-import express, {Express, Router} from 'express'
-import {getAllJWKSEndpoint, getDIDJWKSEndpoint,} from './api-functions'
-import {logger} from "./index";
-import {IRequiredPlugins, IPublicKeyHostingOpts} from './types'
+import express, { Express, Router } from 'express'
+import { getAllJWKSEndpoint, getDIDJWKSEndpoint } from './api-functions'
+import { logger } from './index'
+import { IRequiredPlugins, IPublicKeyHostingOpts } from './types'
 
 export class PublicKeyHosting {
   get router(): express.Router {
@@ -37,7 +37,7 @@ export class PublicKeyHosting {
     // Credential endpoints
     if (features.includes('all-jwks')) {
       getAllJWKSEndpoint(this.router, context, {
-        ...opts?.endpointOpts?.allJWKS
+        ...opts?.endpointOpts?.allJWKS,
       })
     }
     if (features.includes('did-jwks')) {

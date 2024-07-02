@@ -75,10 +75,10 @@ Body:
 
 You can configure and build the API in multiple ways. This module also exposes functions for every endpoint, so you are
 able to create your own Express router and then use functions to enable certain endpoints in your solution. The more
-easy route is to use the `VcApiServer` class. This class has configuration support, allowing to enable/disable
+easy route is to use the `PublicKeyHosting` class. This class has configuration support, allowing to enable/disable
 certain features, like for instance whether VCs can be created, persisted, and/or verified.
 
-Note: You can have multiple instances of the VcApiServer, as long as you make sure that the basePaths differs
+Note: You can have multiple instances of the PublicKeyHosting, as long as you make sure that the basePaths differs
 for each instance and that the same express is being used.
 
 ```typescript
@@ -92,7 +92,7 @@ const expressBuilder = ExpressBuilder.fromServerOpts({
 const expressArgs = expressBuilder.build({ startListening: true })
 
 // Now create the VC PI, with VC issuance, persistence and verification enabled and authentication disabled
-new VcApiServer({
+new PublicKeyHosting({
   opts: {
     endpointOpts: {
       globalAuth: {

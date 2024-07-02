@@ -28,6 +28,9 @@
       "path": "../presentation-exchange"
     },
     {
+      "path": "../public-key-hosting"
+    },
+    {
       "path": "../ssi-types"
     },
     {

@@ -189,7 +189,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
 
     logger.debug(`session: ${JSON.stringify(session.id, null, 2)}`)
     const verifiedAuthorizationRequest = await session.getAuthorizationRequest()
-    logger.trace('Request: ' + JSON.stringify(verifiedAuthorizationRequest, null, 2))
+    // logger.trace('Request: ' + JSON.stringify(verifiedAuthorizationRequest, null, 2))
     const name = verifiedAuthorizationRequest.registrationMetadataPayload?.client_name
     const url =
       verifiedAuthorizationRequest.responseURI ??
@@ -312,8 +312,10 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       context,
     )
 
+    const body = await response.json()
+    console.log(body)
     return {
-      body: await response.json(),
+      body,
       url: response.url,
       queryParams: decodeUriAsJson(response.url),
     }

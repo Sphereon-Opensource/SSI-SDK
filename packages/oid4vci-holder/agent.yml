@@ -1,8 +1,8 @@
 version: 3.0
 
 constants:
-  baseUrl: http://localhost:3335
-  port: 3335
+  baseUrl: http://localhost:3535
+  port: 3535
   methods:
     - oid4vciHolderGetMachineInterpreter
     - oid4vciHolderGetInitiationData

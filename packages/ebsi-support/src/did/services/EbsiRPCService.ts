@@ -1,8 +1,7 @@
-import { ApiOpts } from '../../types/IEbsiSupport'
-import { GetDidDocumentParams, GetDidDocumentsParams, GetDidDocumentsResponse, JSON_RPC_VERSION, EbsiRPCResponse, RpcMethodArgs } from '../types'
-import { DIDDocument } from 'did-resolver'
-import { ebsiGetRegistryAPIUrls } from '../functions'
+import {logger} from '@sphereon/ssi-sdk.public-key-hosting'
 import fetch from 'cross-fetch'
+import {ebsiGetRegistryAPIUrls} from '../functions'
+import {EbsiRPCResponse, JSON_RPC_VERSION, RpcMethodArgs} from '../types'
 
 /**
  * Allows to call 5 api methods of the EBSI RPC api
@@ -15,9 +14,20 @@ import fetch from 'cross-fetch'
  * @param {{ params: RPCParams[]; id: number; token: string; method: EbsiRpcMethod; apiOpts? ApiOpts }} args
  */
 export const callRpcMethod = async (args: RpcMethodArgs): Promise<EbsiRPCResponse> => {
-  const { params, rpcId, bearerToken, rpcMethod, apiOpts } = args
-  const options = buildFetchOptions({ bearerToken, params, rpcId, rpcMethod })
-  return await (await fetch(ebsiGetRegistryAPIUrls({ ...apiOpts }).mutate, options)).json()
+  const { params, rpcId, accessToken, rpcMethod, apiOpts, doNotThrowErrors = false } = args
+  const options = buildFetchOptions({ accessToken: accessToken, params, rpcId, rpcMethod })
+  logger.debug(`RPC call:\r\n ${JSON.stringify(options, null, 2)}`)
+  const rpcResponse = await (await fetch(ebsiGetRegistryAPIUrls({ ...apiOpts }).mutate, options)).json()
+
+  let result = rpcResponse.result
+  logger.debug(`RPC RESPONSE:\r\n${JSON.stringify(result ?? rpcResponse.error)}`)
+
+  if (rpcResponse.error !== undefined && !doNotThrowErrors) {
+    logger.error(`RPC ERROR RESPONSE:`, rpcResponse)
+    throw Error(rpcResponse.error.message)
+  }
+
+  return rpcResponse
 }
 
 /**
@@ -25,55 +35,21 @@ export const callRpcMethod = async (args: RpcMethodArgs): Promise<EbsiRPCRespons
  * @function buildFetchOptions
  * @param {{ params: RPCParams[]; id: number; token: string; method: EbsiRpcMethod }} args
  */
-const buildFetchOptions = (args: RpcMethodArgs) => {
-  const { params, rpcId, bearerToken, rpcMethod } = args
-  return {
+const buildFetchOptions = (args: RpcMethodArgs): RequestInit => {
+  const { params, rpcId, accessToken, rpcMethod } = args
+  const fetchReq = {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${bearerToken}`,
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
       jsonrpc: JSON_RPC_VERSION,
       method: rpcMethod,
-      params,
+      params: params,
       id: rpcId,
     }),
-  }
-}
-
-/**
- * Gets the DID document corresponding to the DID.
- * @param {{ params: GetDidDocumentParams, apiOpts?: ApiOpts }} args
- * @returns a did document
- */
-export const getDidDocument = async (args: { params: GetDidDocumentParams; apiOpts?: ApiOpts }): Promise<DIDDocument> => {
-  const { params, apiOpts } = args
-  const { did, validAt } = params
-  if (!did) {
-    throw new Error('did parameter is required')
-  }
-  const query = validAt ? `?valid_at=${validAt}` : ''
-  return await (await fetch(`${ebsiGetRegistryAPIUrls({ ...apiOpts }).query}/${did}${query}`)).json()
-}
-
-/**
- * listDidDocuments - Returns a list of identifiers.
- * @param {{ params: GetDidDocumentsParams; apiOpts?: ApiOpts }} args
- * @returns a list of identifiers
- */
-export const listDidDocuments = async (args: { params: GetDidDocumentsParams; apiOpts?: ApiOpts }): Promise<GetDidDocumentsResponse> => {
-  const { params, apiOpts } = args
-  const { offset, size, controller } = params
-  const queryParams: string[] = []
-  if (offset) {
-    queryParams.push(`page[after]=${offset}`)
-  }
-  if (size) {
-    queryParams.push(`page[size]=${size}`)
-  }
-  if (controller) {
-    queryParams.push(`controller=${controller}`)
-  }
-  const query = `?${queryParams.filter(Boolean).join('&')}`
-  return await (await fetch(`${ebsiGetRegistryAPIUrls({ ...apiOpts }).query}/${query}`)).json()
+  } satisfies RequestInit
+  logger.debug(fetchReq)
+  return fetchReq
 }

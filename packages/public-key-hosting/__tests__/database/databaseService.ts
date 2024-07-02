@@ -1,9 +1,7 @@
-
 import { DataSource } from 'typeorm'
-import {logger} from "../../src";
+import { logger } from '../../src'
 
 import { sqliteConfig } from './config'
-
 
 /**
  * Todo, move to a class

@@ -4,7 +4,7 @@ import { IAgentContext, IDIDManager, IIdentifier, IKeyManager } from '@veramo/co
 import { IKey, IService } from '@veramo/core'
 import { AbstractIdentifierProvider } from '@veramo/did-manager'
 import Debug from 'debug'
-import { ApiOpts } from '../types/IEbsiSupport'
+import { ApiOpts, IRequiredContext } from '../types/IEbsiSupport'
 import {
   ebsiCreateDidOnLedger,
   ebsiGenerateOrUseKeyPair,
@@ -14,7 +14,7 @@ import {
   randomRpcId,
 } from './functions'
 import { callRpcMethod } from './services/EbsiRPCService'
-import { EBSI_DID_SPEC_INFOS, EbsiRpcMethod, IContext, ICreateIdentifierArgs, UpdateIdentifierParams } from './types'
+import { EBSI_DID_SPEC_INFOS, EbsiRpcMethod, ICreateIdentifierArgs, UpdateIdentifierParams } from './types'
 
 const debug = Debug('sphereon:did-provider-ebsi')
 
@@ -29,20 +29,22 @@ export class EbsiDidProvider extends AbstractIdentifierProvider {
     this.apiOpts = options.apiOpts
   }
 
-  async createIdentifier(args: ICreateIdentifierArgs, context: IContext): Promise<Omit<IIdentifier, 'provider'>> {
+  async createIdentifier(args: ICreateIdentifierArgs, context: IRequiredContext): Promise<Omit<IIdentifier, 'provider'>> {
     const { type, options, kms = this.defaultKms, alias } = args
     const {
       notBefore,
       notAfter,
       secp256k1Key,
       secp256r1Key,
-      bearerToken,
-      executeLedgerOperation = false,
+      accessTokenOpts,
+      executeLedgerOperation = !!args.options?.accessTokenOpts,
       methodSpecificId = generateEbsiMethodSpecificId(EBSI_DID_SPEC_INFOS.V1),
+      baseDocument,
+      services,
     } = { ...options }
 
-    if (executeLedgerOperation && !bearerToken) {
-      throw new Error('Bearer token must be provided to execute ledger operation')
+    if (executeLedgerOperation && !accessTokenOpts) {
+      throw new Error('Access token options must be provided to execute ledger operation')
     }
     const rpcId = options?.rpcId ?? randomRpcId()
 
@@ -81,13 +83,13 @@ export class EbsiDidProvider extends AbstractIdentifierProvider {
       controllerKeyId: secp256k1ManagedKeyInfo.kid,
       keys: [secp256k1ManagedKeyInfo, secp256r1ManagedKeyInfo],
       alias,
-      services: [],
+      services: services ?? [],
       provider: EbsiDidProvider.PROVIDER,
     }
 
-    const apiOpts = { ...this.apiOpts, ...options?.apiOpts }
+    const apiOpts = { ...this.apiOpts }
     if (!apiOpts.environment) {
-      apiOpts.environment = 'pilot'
+      apiOpts.environment = accessTokenOpts?.environment ?? 'pilot'
     }
     if (!apiOpts.version) {
       apiOpts.version = 'v5'
@@ -97,12 +99,11 @@ export class EbsiDidProvider extends AbstractIdentifierProvider {
       await ebsiCreateDidOnLedger(
         {
           identifier,
-          bearerToken: bearerToken!,
+          baseDocument,
+          accessTokenOpts: accessTokenOpts!,
           rpcId,
-          notBefore: notBefore ?? Date.now() / 1000,
-          notAfter: notAfter ?? Number.MAX_SAFE_INTEGER,
-          // @ts-ignore
-          apiOpts,
+          notBefore,
+          notAfter,
         },
         context,
       )
@@ -118,7 +119,7 @@ export class EbsiDidProvider extends AbstractIdentifierProvider {
       key: IKey
       options: {
         rpcId?: number
-        bearerToken: string
+        accessToken: string
         vmRelationships: 'authentication' | 'assertionMethod' | 'keyAgreement' | 'capabilityInvocation' | 'capabilityDelegation'[]
         apiOpts?: ApiOpts
       }
@@ -126,7 +127,7 @@ export class EbsiDidProvider extends AbstractIdentifierProvider {
     context: IAgentContext<IKeyManager>,
   ): Promise<any> {
     const { identifier, key, options } = args
-    const { bearerToken, vmRelationships, apiOpts, rpcId = randomRpcId() } = options
+    const { accessToken, vmRelationships, apiOpts, rpcId = randomRpcId() } = options
     if (vmRelationships.length === 0) {
       return Promise.reject(Error(`No verification method relationship provided`))
     }
@@ -146,14 +147,14 @@ export class EbsiDidProvider extends AbstractIdentifierProvider {
       rpcMethod: EbsiRpcMethod.ADD_VERIFICATION_METHOD,
       rpcId,
       apiOpts,
-      bearerToken,
+      accessToken: accessToken,
     })
 
     await ebsiSignAndSendTransaction(
       {
         rpcResponse: addVerificationMethodResponse,
         kid: controllerKey.kid,
-        bearerToken,
+        accessToken: accessToken,
         apiOpts,
       },
       context,
@@ -172,16 +173,16 @@ export class EbsiDidProvider extends AbstractIdentifierProvider {
             notBefore: 1,
           },
         ],
-        rpcMethod: EbsiRpcMethod.ADD_VERIFICATION_METHOD_RELATIONSHIP,
+        rpcMethod: EbsiRpcMethod.ADD_VERIFICATION_RELATIONSHIP,
         rpcId,
         apiOpts,
-        bearerToken,
+        accessToken,
       })
       await ebsiSignAndSendTransaction(
         {
           rpcResponse: addVerificationMethodRelationshipResponse,
           kid: controllerKey.kid,
-          bearerToken,
+          accessToken,
           apiOpts,
         },
         context,
@@ -217,14 +218,14 @@ export class EbsiDidProvider extends AbstractIdentifierProvider {
       rpcMethod: EbsiRpcMethod.ADD_SERVICE,
       rpcId,
       apiOpts,
-      bearerToken,
+      accessToken: bearerToken,
     })
 
     return await ebsiSignAndSendTransaction(
       {
         rpcResponse: addServiceResponse,
         kid: controllerKey.kid,
-        bearerToken,
+        accessToken: bearerToken,
         apiOpts,
       },
       context,

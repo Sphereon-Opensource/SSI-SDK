@@ -1,7 +1,9 @@
+import { W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentContext, IIdentifier, IKeyManager, MinimalImportableKey, TKeyType } from '@veramo/core'
 import { IService } from '@veramo/core/build/types/IIdentifier'
 import { DIDDocument } from 'did-resolver'
-import { ApiOpts } from '../types/IEbsiSupport'
+import {AccessListish, BigNumberish, BytesLike} from "ethers";
+import { ApiOpts, EbsiEnvironment } from '../types/IEbsiSupport'
 
 export type IContext = IAgentContext<IKeyManager>
 
@@ -70,9 +72,10 @@ type WithRequiredProperty<Type, Key extends keyof Type> = Type & {
 export type RpcMethodArgs = {
   params: RPCParams[]
   rpcId: number
-  bearerToken: string
+  accessToken: string
   rpcMethod: EbsiRpcMethod
   apiOpts?: ApiOpts
+  doNotThrowErrors?: boolean
 }
 
 export type EbsiCreateIdentifierOpts = {
@@ -80,12 +83,12 @@ export type EbsiCreateIdentifierOpts = {
   rpcId?: number
   secp256k1Key?: IKeyOpts
   secp256r1Key?: IKeyOpts
-  executeLedgerOperation?: boolean
-  bearerToken?: string
+  executeLedgerOperation?: boolean // Whether to persist on the EBSI ledger. By default looks at whether access token opts are set or not
   baseDocument?: string
   notBefore?: number
-  notAfter: number
-  apiOpts?: ApiOpts
+  notAfter?: number
+  accessTokenOpts: EbsiAccessTokenOpts
+  services?: IService[]
 }
 
 /**
@@ -102,7 +105,7 @@ export interface ICreateIdentifierArgs {
   kms?: string
   alias?: string
   type?: EbsiDidSpecInfo
-  options?: EbsiCreateIdentifierOpts
+  options: EbsiCreateIdentifierOpts
 }
 
 /**
@@ -214,14 +217,33 @@ export type AddVerificationMethodRelationshipParams = Pick<InsertDidDocumentPara
  * @property {string} value - The amount of ETH to be sent from the sending address (denominated in Wei)
  */
 export type UnsignedTransaction = {
-  from: string
+  to?: string;
+  nonce?: number;
+
+  gasLimit?: BigNumberish;
+  gasPrice?: BigNumberish;
+
+  data?: BytesLike;
+  value?: BigNumberish;
+  chainId?: number;
+
+  // Typed-Transaction features
+  type?: number | null;
+
+  // EIP-2930; Type 1 & EIP-1559; Type 2
+  accessList?: AccessListish;
+
+  // EIP-1559; Type 2
+  maxPriorityFeePerGas?: BigNumberish;
+  maxFeePerGas?: BigNumberish;
+  /*from: string
   to: string
   data: string
   nonce: string
   chainId: string
   gasLimit: string
   gasPrice: string
-  value: string
+  value: string*/
 }
 /**
  * @typedef SendSignedTransactionParams
@@ -243,16 +265,25 @@ export type SendSignedTransactionParams = {
 }
 
 /**
- * @typedef Response200
+ * @typedef RpcOkResponse
  * @type {object}
  * @property {string} JSON_RPC_VERSION - Must be exactly "2.0"
  * @property {number} id - Same identifier established by the client in the call
  * @property {object} result - Result of the transaction
  */
-export type Response200 = {
+export type RpcOkResponse = {
   jsonrpc: string
   id: number
   result: any
+}
+
+export type RpcErrorResponse = {
+  jsonrpc: string
+  id: number
+  error: {
+    code: number
+    message: string
+  }
 }
 
 /**
@@ -268,7 +299,12 @@ export type Response200 = {
  */
 export type ResponseNot200 = {
   type: URL | string
+  id?: number
   title: string
+  error?: {
+    code: number
+    message: string
+  }
   status: number
   detail: string
   instance: URL | string
@@ -343,6 +379,14 @@ export type GetDidDocumentsResponse = {
   links: Links
 }
 
+type EbsiAccessTokenOpts = {
+  attestationToOnboard?: W3CVerifiableCredential
+  jwksUri?: string
+  redirectUri: string
+  credentialIssuer: string
+  clientId: string
+  environment: EbsiEnvironment
+}
 /**
  * @typedef CreateEbsiDidParams
  * @type {object}
@@ -359,11 +403,10 @@ export type GetDidDocumentsResponse = {
 export type CreateEbsiDidParams = {
   identifier: IIdentifier
   rpcId?: number
-  bearerToken: string
-  baseDocument?: string
   notBefore?: number
   notAfter?: number
-  apiOpts?: ApiOpts
+  baseDocument?: string
+  accessTokenOpts: EbsiAccessTokenOpts
 }
 
 /**
@@ -390,7 +433,7 @@ export enum EbsiRpcMethod {
   INSERT_DID_DOCUMENT = 'insertDidDocument',
   UPDATE_DID_DOCUMENT = 'updateBaseDocument',
   ADD_VERIFICATION_METHOD = 'addVerificationMethod',
-  ADD_VERIFICATION_METHOD_RELATIONSHIP = 'addVerificationMethodRelationship',
+  ADD_VERIFICATION_RELATIONSHIP = 'addVerificationRelationship',
   ADD_SERVICE = 'addService',
   SEND_SIGNED_TRANSACTION = 'sendSignedTransaction',
 }
@@ -403,4 +446,4 @@ export type RPCParams =
   | SendSignedTransactionParams
   | AddServiceParams
 
-export type EbsiRPCResponse = Response200 | ResponseNot200
+export type EbsiRPCResponse = RpcOkResponse | RpcErrorResponse

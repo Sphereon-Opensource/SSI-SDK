@@ -1,8 +1,7 @@
-import {GenericAuthArgs, ISingleEndpointOpts} from '@sphereon/ssi-express-support'
-import {IAgentContext, IDIDManager, IKeyManager,} from '@veramo/core'
+import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
+import { IAgentContext, IDIDManager, IKeyManager } from '@veramo/core'
 
-export type IRequiredPlugins = IDIDManager &
-  IKeyManager
+export type IRequiredPlugins = IDIDManager & IKeyManager
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
 export interface IPublicKeyHostingOpts {

@@ -1,15 +1,17 @@
 import { CheckLinkedDomain, PresentationDefinitionLocation, PresentationDefinitionWithLocation, SupportedVersion } from '@sphereon/did-auth-siop'
 import { CreateRequestObjectMode } from '@sphereon/oid4vci-common'
 import { getIdentifier } from '@sphereon/ssi-sdk-ext.did-utils'
-import { CredentialMapper } from '@sphereon/ssi-types'
+import {IPEXFilterResult} from "@sphereon/ssi-sdk.presentation-exchange";
+import {CredentialMapper, PresentationSubmission} from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import fetch from 'cross-fetch'
-import { determineWellknownEndpoint, ebsiGetAuthorisationServer } from '../did/functions'
+import { determineWellknownEndpoint, ebsiGetIssuerMock } from '../did/functions'
 import { ebsiCreateAttestationAuthRequestURL, ebsiGetAttestation } from '../functions'
 import {
   ApiOpts,
   EBSIAuthAccessTokenGetArgs,
   EbsiOpenIDMetadata,
+  GetAccessTokenResult,
   GetPresentationDefinitionSuccessResponse,
   IRequiredContext,
   schema,
@@ -26,10 +28,10 @@ import {
   IEbsiSupport,
 } from '../types/IEbsiSupport'
 
-//const encodeBase64url = (input: string): string => u8a.toString(u8a.fromString(input), 'base64url')
+import {v4} from 'uuid'
 
 export class EbsiSupport implements IAgentPlugin {
-  readonly schema = schema.IEBSIAuthorizationClient
+  readonly schema = schema.IEbsiSupport
   readonly methods: IEbsiSupport = {
     ebsiWellknownMetadata: this.ebsiWellknownMetadata.bind(this),
     ebsiAuthorizationServerJwks: this.ebsiAuthorizationServerJwks.bind(this),
@@ -68,12 +70,14 @@ export class EbsiSupport implements IAgentPlugin {
 
   private async ebsiPresentationDefinitionGet(args: GetPresentationDefinitionArgs): Promise<GetPresentationDefinitionResponse> {
     const { scope, apiOpts, openIDMetadata } = args
-    const discoveryMetadata: EbsiOpenIDMetadata = openIDMetadata ?? await this.ebsiWellknownMetadata({
-      ...apiOpts,
-      type: 'openid-configuration',
-      system: apiOpts?.mock ? 'authorisation' : apiOpts?.system,
-      version: apiOpts?.version ?? 'v4',
-    })
+    const discoveryMetadata: EbsiOpenIDMetadata =
+      openIDMetadata ??
+      (await this.ebsiWellknownMetadata({
+        ...apiOpts,
+        type: 'openid-configuration',
+        system: apiOpts?.mock ? 'authorisation' : apiOpts?.system,
+        version: apiOpts?.version ?? 'v4',
+      }))
     return (await (
       await fetch(`${discoveryMetadata.presentation_definition_endpoint}?scope=openid%20${scope}`, {
         method: 'GET',
@@ -84,20 +88,33 @@ export class EbsiSupport implements IAgentPlugin {
     ).json()) satisfies GetPresentationDefinitionSuccessResponse
   }
 
-  private async ebsiAccessTokenGet(args: EBSIAuthAccessTokenGetArgs, context: IRequiredContext): Promise<GetAccessTokenResponse> {
-    const { scope, idOpts, jwksUri, clientId, allVerifiableCredentials, redirectUri } = args
+  private async ebsiAccessTokenGet(args: EBSIAuthAccessTokenGetArgs, context: IRequiredContext): Promise<GetAccessTokenResult> {
+    const { scope, idOpts, jwksUri, clientId, allVerifiableCredentials, redirectUri, environment, skipDidResolution = false } = args
     const identifier = await getIdentifier(idOpts, context)
-    const apiOpts: WellknownOpts = {
-      ...args.apiOpts,
-      version: args.apiOpts.version ?? 'v4',
+    const openIDMetadata = await this.ebsiWellknownMetadata({
+      environment,
+      version: 'v4',
+      mock: undefined,
+      system: 'authorisation',
       type: 'openid-configuration',
+    })
+    const definitionResponse = await this.ebsiPresentationDefinitionGet({
+      ...args,
+      openIDMetadata,
+      apiOpts: { environment, version: 'v4', type: 'openid-configuration' },
+    })
+    const hasInputDescriptors = definitionResponse.input_descriptors.length > 0
+
+    if (!hasInputDescriptors) {
+      // Yes EBSI expects VPs without a VC in some situations. This is not according to the PEX spec!
+      // They probably should have used SIOP in these cases. We need to go through hoops as our libs do not expect PDs/VPs without VCs :(
+      console.warn(`No INPUT descriptor returned for scope ${scope}`)
     }
-    const metadataResponse = await this.ebsiWellknownMetadata({...apiOpts, mock: undefined, system: 'authorisation'})
-    const definitionResponse = await this.ebsiPresentationDefinitionGet({ ...args, openIDMetadata: metadataResponse, apiOpts: {...apiOpts, system: apiOpts.mock ? undefined : apiOpts.system } })
 
     let attestationCredential = args.attestationCredential
-    if (!attestationCredential) {
-      if (allVerifiableCredentials) {
+
+    if (hasInputDescriptors && !attestationCredential) {
+      if (allVerifiableCredentials && allVerifiableCredentials.length > 0) {
         const pexResult = await context.agent.pexDefinitionFilterCredentials({
           presentationDefinition: definitionResponse,
           credentialFilterOpts: { verifiableCredentials: allVerifiableCredentials },
@@ -120,8 +137,7 @@ export class EbsiSupport implements IAgentPlugin {
         }
       }
       if (!attestationCredential) {
-        // todo: Search in agent for applicable VCs
-        const credentialIssuer = args.credentialIssuer ?? metadataResponse.issuer ?? ebsiGetAuthorisationServer(apiOpts)
+        const credentialIssuer = args.credentialIssuer ?? ebsiGetIssuerMock({ environment })
         const authReqResult = await context.agent.ebsiCreateAttestationAuthRequestURL({
           credentialIssuer,
           idOpts,
@@ -145,16 +161,17 @@ export class EbsiSupport implements IAgentPlugin {
       }
     }
 
-    console.log(attestationCredential, scope, idOpts)
-    const pexResult = await context.agent.pexDefinitionFilterCredentials({
-      presentationDefinition: definitionResponse,
-      credentialFilterOpts: { verifiableCredentials: [attestationCredential!] },
-    })
     const definition = {
       definition: definitionResponse,
       location: PresentationDefinitionLocation.TOPLEVEL_PRESENTATION_DEF,
       version: SupportedVersion.SIOPv2_D11,
     } satisfies PresentationDefinitionWithLocation
+
+    const pexResult = hasInputDescriptors ? await context.agent.pexDefinitionFilterCredentials({
+      presentationDefinition: definitionResponse,
+      credentialFilterOpts: { verifiableCredentials: [attestationCredential!] },
+      // LOL, let's see whether we can trick PEX to create a VP without VCs
+    }) : {filteredCredentials: [], id: definitionResponse.id, selectResults: {verifiableCredential: [], areRequiredCredentialsPresent: "info"}} satisfies IPEXFilterResult
     const opSesssion = await context.agent.siopRegisterOPSession({
       requestJwtOrUri: '', // Siop assumes we use an auth request, which we don't have in this case
       op: { checkLinkedDomains: CheckLinkedDomain.NEVER },
@@ -164,49 +181,62 @@ export class EbsiSupport implements IAgentPlugin {
     const vp = await oid4vp.createVerifiablePresentation(
       { definition, credentials: pexResult.filteredCredentials },
       {
-        proofOpts: { domain: metadataResponse.issuer, nonce: Date().toString() },
+        proofOpts: { domain: openIDMetadata.issuer, nonce: v4(), created: new Date(Date.now() - 120_000).toString() },
         holderDID: identifier.did,
         identifierOpts: idOpts,
-        skipDidResolution: scope === 'didr_invite',
+        skipDidResolution,
+        forceNoCredentialsInVP: !hasInputDescriptors,
       },
     )
 
-    const accessToken = await this.getAccessTokenResponse({
+    const presentationSubmission = hasInputDescriptors ? vp.presentationSubmission : {id: v4(), definition_id: definitionResponse.id, descriptor_map: []} satisfies PresentationSubmission
+
+    console.log(JSON.stringify(vp, null, 2))
+
+
+
+    const tokenRequestArgs = {
       grant_type: 'vp_token',
       vp_token: CredentialMapper.toCompactJWT(vp.verifiablePresentation),
       scope,
-      presentation_submission: vp.presentationSubmission,
-      apiOpts,
-      openIDMetadata: metadataResponse
-    }) //FIXME
+      presentation_submission: presentationSubmission,
+      apiOpts: { environment, version: 'v4' },
+      openIDMetadata,
+    } satisfies GetAccessTokenArgs
+    console.log(tokenRequestArgs)
+    const accessTokenResponse = await this.getAccessTokenResponse(tokenRequestArgs)
 
-    console.log(JSON.stringify(accessToken))
-    return accessToken
-    //
-    //
-    // const metadataResponse = await this.ebsiGetWellknownMetadata()
-    // if ('status' in metadataResponse) {
-    //   throw Error(JSON.stringify(metadataResponse))
-    // }
-    //
-    // const tokenResponse = await this.getAccessToken({
-    //   grant_type: 'vp_token',
-    //   vp_token: vpJwt.verifiablePresentation as CompactJWT,
-    //   presentation_submission: vpJwt.presentationSubmission,
-    //   scope,
-    // })
-    // if ('status' in tokenResponse) {
-    //   throw new Error(JSON.stringify(tokenResponse))
-    // }
+    if (!('access_token' in accessTokenResponse)) {
+      throw Error(`Error response: ${JSON.stringify(accessTokenResponse)}`)
+    }
+
+    return {
+      accessTokenResponse,
+      // vp,
+      scope,
+      // definition,
+      identifier,
+    }
   }
 
   private async getAccessTokenResponse(args: GetAccessTokenArgs): Promise<GetAccessTokenResponse> {
     const { grant_type = 'vp_token', scope, vp_token, presentation_submission, apiOpts, openIDMetadata } = args
-    const discoveryMetadata: EbsiOpenIDMetadata = openIDMetadata ?? await this.ebsiWellknownMetadata({
-      ...apiOpts,
-
-      type: 'openid-configuration',
-    })
+    const discoveryMetadata: EbsiOpenIDMetadata =
+      openIDMetadata ??
+      (await this.ebsiWellknownMetadata({
+        ...apiOpts,
+        type: 'openid-configuration',
+      }))
+    const request = {
+      grant_type,
+      scope: `openid ${scope}`,
+      vp_token,
+      presentation_submission: JSON.stringify(presentation_submission),
+    }
+    console.log(`************************************`)
+    console.log(`TO: ${discoveryMetadata.token_endpoint}`)
+    console.log(request)
+    console.log(`************************************`)
     return await (
       await fetch(`${discoveryMetadata.token_endpoint}`, {
         method: 'POST',
@@ -214,24 +244,8 @@ export class EbsiSupport implements IAgentPlugin {
           ContentType: 'application/x-www-form-urlencoded',
           Accept: 'application/json',
         },
-        body: new URLSearchParams({
-          grant_type,
-          scope: `openid ${scope}`,
-          vp_token,
-          presentation_submission: JSON.stringify(presentation_submission),
-        }),
+        body: new URLSearchParams(request),
       })
     ).json()
   }
-
-  /*private async getUrl({version = 'v3', environment = 'pilot'}: { environment?: EbsiEnvironment | 'auth-mock' | 'issuer-mock'; version?: string }): Promise<string> {
-
-        if (environment === EbsiEnvironment.MOCK) {
-          return `https://api-conformance.ebsi.eu/conformance/${version}/auth-mock`
-        } else if (environment === EbsiEnvironment.ISSUER) {
-          return `https://api-conformance.ebsi.eu/conformance/${version}/issuer-mock`
-        }
-        return `https://api-${environment}.ebsi.eu/authorisation/${version}`
-      }
-    */
 }
