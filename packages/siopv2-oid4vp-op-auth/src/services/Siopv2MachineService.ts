@@ -8,7 +8,7 @@ import {
   LOGGER_NAMESPACE,
   RequiredContext,
   SelectableCredential,
-  SelectableCredentials,
+  SelectableCredentialsMap,
   Siopv2HolderEvent,
   VerifiableCredentialsWithDefinition,
   VerifiablePresentationWithDefinition,
@@ -154,7 +154,7 @@ function buildPartialPD(
 export const getSelectableCredentials = async (
   presentationDefinition: IPresentationDefinition,
   context: RequiredContext,
-): Promise<SelectableCredentials> => {
+): Promise<SelectableCredentialsMap> => {
   const agentContext = { ...context, agent: context.agent as SuitableCredentialAgents }
   const { agent } = agentContext
   const pex = new PEX()
@@ -162,7 +162,7 @@ export const getSelectableCredentials = async (
   const uniqueVerifiableCredentials = await agent.dataStoreORMGetVerifiableCredentials()
   const credentialBranding = await agent.ibGetCredentialBranding()
 
-  const selectableCredentialsMap: SelectableCredentials = new Map()
+  const selectableCredentialsMap: SelectableCredentialsMap = new Map()
 
   for (const inputDescriptor of presentationDefinition.input_descriptors) {
     const partialPD = buildPartialPD(inputDescriptor, presentationDefinition)

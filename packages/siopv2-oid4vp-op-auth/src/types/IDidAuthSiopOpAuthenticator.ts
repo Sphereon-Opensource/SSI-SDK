@@ -39,7 +39,7 @@ import {
   GetSiopRequestArgs,
   RequiredContext,
   RetrieveContactArgs,
-  SelectableCredentials,
+  SelectableCredentialsMap,
   SendResponseArgs,
   Siopv2AuthorizationRequestData,
   Siopv2AuthorizationResponseData,
@@ -60,7 +60,7 @@ export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   siopRetrieveContact(args: RetrieveContactArgs, context: RequiredContext): Promise<Party | undefined>
   siopAddIdentity(args: AddIdentityArgs, context: RequiredContext): Promise<void>
   siopSendResponse(args: SendResponseArgs, context: RequiredContext): Promise<Siopv2AuthorizationResponseData>
-  siopGetSelectableCredentials(args: GetSelectableCredentialsArgs, context: RequiredContext): Promise<SelectableCredentials>
+  siopGetSelectableCredentials(args: GetSelectableCredentialsArgs, context: RequiredContext): Promise<SelectableCredentialsMap>
 }
 
 export interface IOpSessionArgs {

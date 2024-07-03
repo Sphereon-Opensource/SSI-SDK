@@ -52,7 +52,7 @@ export type Siopv2AuthorizationRequestData = {
   presentationDefinitions?: PresentationDefinitionWithLocation[]
 }
 
-export type SelectableCredentials = Map<string, Array<SelectableCredential>>
+export type SelectableCredentialsMap = Map<string, Array<SelectableCredential>>
 
 export type SelectableCredential = {
   credential: UniqueVerifiableCredential

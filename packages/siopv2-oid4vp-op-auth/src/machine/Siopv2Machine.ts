@@ -21,7 +21,7 @@ import {
   Siopv2MachineStates,
   Siopv2StateMachine,
 } from '../types/machine'
-import { SelectableCredentials, Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData } from '../types'
+import { SelectableCredentialsMap, Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData } from '../types'
 
 const Siopv2HasNoContactGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
   const { contact } = _ctx
@@ -91,7 +91,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
     hasContactConsent: true,
     contactAlias: '',
     selectedCredentials: [],
-    selectableCredentials: new Map(),
+    selectableCredentialsMap: new Map(),
     idOpts,
   }
 
@@ -115,7 +115,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
           data: VerifiedAuthorizationRequest
         }
         [Siopv2MachineServices.getSelectableCredentials]: {
-          data: SelectableCredentials
+          data: SelectableCredentialsMap
         }
         [Siopv2MachineServices.retrieveContact]: {
           data: Party | undefined
@@ -181,7 +181,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
           onDone: {
             target: Siopv2MachineStates.retrieveContact,
             actions: assign({
-              selectableCredentials: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<SelectableCredentials>) => _event.data,
+              selectableCredentialsMap: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<SelectableCredentialsMap>) => _event.data,
             }),
           },
           onError: {

@@ -18,7 +18,7 @@ import {
   LOGGER_NAMESPACE,
   RequiredContext,
   schema,
-  SelectableCredentials,
+  SelectableCredentialsMap,
   Siopv2AuthorizationResponseData,
   VerifiableCredentialsWithDefinition,
 } from '../index'
@@ -358,7 +358,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     }
   }
 
-  private async siopGetSelectableCredentials(args: GetSelectableCredentialsArgs, context: RequiredContext): Promise<SelectableCredentials> {
+  private async siopGetSelectableCredentials(args: GetSelectableCredentialsArgs, context: RequiredContext): Promise<SelectableCredentialsMap> {
     const { authorizationRequestData } = args
 
     if (
