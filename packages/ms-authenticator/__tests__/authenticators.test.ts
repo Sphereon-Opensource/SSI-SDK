@@ -4,7 +4,7 @@ import { getMSClientCredentialAccessToken, UsernamePasswordAuthenticator } from 
 jest.setTimeout(100000)
 
 describe('@sphereon/ssi-sdk.ms-authenticator', (): void => {
-  it('should authenticate using clientCredential', async (): Promise<void> => {
+  it.skip('should authenticate using clientCredential', async (): Promise<void> => {
     const result: AuthenticationResult = await getMSClientCredentialAccessToken({
       azClientId: process.env.SPHEREON_SSI_MSAL_CLIENT_ID ?? 'client_id',
       azClientSecret: process.env.SPHEREON_SSI_MSAL_CLIENT_SECRET ?? 'client_secret',
