@@ -16,7 +16,7 @@ export type Siopv2MachineContext = {
   contact?: Party
   hasContactConsent: boolean
   contactAlias: string
-  selectableCredentials?: SelectableCredentials
+  selectableCredentials: SelectableCredentials
   selectedCredentials: Array<OriginalVerifiableCredential>
   error?: ErrorDetails
 }
