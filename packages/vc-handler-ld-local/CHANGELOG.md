@@ -11,35 +11,35 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [0.25.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.24.0...v0.25.0) (2024-06-13)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 # [0.24.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.23.4...v0.24.0) (2024-06-05)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 ## [0.23.4](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.23.2...v0.23.4) (2024-04-25)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 ## [0.23.2](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.23.1...v0.23.2) (2024-04-25)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 ## [0.23.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.23.0...v0.23.1) (2024-04-25)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 # [0.23.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.22.0...v0.23.0) (2024-04-24)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 # [0.22.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.21.1...v0.22.0) (2024-04-04)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 ## [0.21.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.21.0...v0.21.1) (2024-04-04)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 # [0.21.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.19.0...v0.21.0) (2024-03-20)
 
@@ -63,7 +63,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.18.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.18.0...v0.18.1) (2024-01-19)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 # [0.18.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.5...v0.18.0) (2024-01-13)
 
@@ -77,19 +77,19 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.17.5](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.4...v0.17.5) (2023-10-01)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 ## [0.17.4](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.3...v0.17.4) (2023-10-01)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 ## [0.17.3](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.2...v0.17.3) (2023-09-30)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 ## [0.17.2](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.1...v0.17.2) (2023-09-30)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 ## [0.17.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.17.0...v0.17.1) (2023-09-28)
 
@@ -124,7 +124,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.15.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.15.0...v0.15.1) (2023-08-10)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 # [0.15.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.14.1...v0.15.0) (2023-08-10)
 
@@ -139,7 +139,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.14.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.14.0...v0.14.1) (2023-07-31)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 # [0.14.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.13.0...v0.14.0) (2023-07-30)
 
@@ -235,7 +235,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - Allow to relax JWT timing checks, where the JWT claim is slightly different from the VC claim. Used for issuance and expiration dates ([85bff6d](https://github.com/Sphereon-Opensource/SSI-SDK/commit/85bff6da21dea5d8f636ea1f55b41be00b18b002))
 - did utils package ([d98b358](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d98b358ff7f9c787667b4bf48fd748ae9f58197a))
 - Jsonweb2020 sig support ([43a3adf](https://github.com/Sphereon-Opensource/SSI-SDK/commit/43a3adfbe683ee4040a293cc5b75d17a029d7c49))
-- make sure the attestationCredential-handler-ld-local can deal with keys in JWK format ([26cff51](https://github.com/Sphereon-Opensource/SSI-SDK/commit/26cff511b345e412dc37586ef3c3c8fe678cd574))
+- make sure the vc-handler-ld-local can deal with keys in JWK format ([26cff51](https://github.com/Sphereon-Opensource/SSI-SDK/commit/26cff511b345e412dc37586ef3c3c8fe678cd574))
 
 ### Reverts
 
@@ -244,45 +244,45 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [0.8.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.7.0...v0.8.0) (2022-09-03)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 # [0.7.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.6.0...v0.7.0) (2022-08-05)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 # [0.6.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.5.1...v0.6.0) (2022-07-01)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 # [0.5.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.4.0...v0.5.0) (2022-02-23)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 # [0.4.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.3.4...v0.4.0) (2022-02-11)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 ## [0.3.4](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.3.3...v0.3.4) (2022-02-11)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 ## [0.3.3](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.3.1...v0.3.3) (2022-02-10)
 
 ### Bug Fixes
 
-- building of attestationCredential-handler-ld-local containing ts files + not copying files ([cdbfcab](https://github.com/Sphereon-Opensource/SSI-SDK/commit/cdbfcab114531947e6d0092e0bdb7bc9f818ac88))
+- building of vc-handler-ld-local containing ts files + not copying files ([cdbfcab](https://github.com/Sphereon-Opensource/SSI-SDK/commit/cdbfcab114531947e6d0092e0bdb7bc9f818ac88))
 - we imported a ts file from another package in the monorepo instead of using the module ([5d647df](https://github.com/Sphereon-Opensource/SSI-SDK/commit/5d647dffd9002ffca2a15a5c1ba56e33acec6716))
 
 ## [0.3.2](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.3.1...v0.3.2) (2022-02-04)
 
 ### Bug Fixes
 
-- building of attestationCredential-handler-ld-local containing ts files + not copying files ([cdbfcab](https://github.com/Sphereon-Opensource/SSI-SDK/commit/cdbfcab114531947e6d0092e0bdb7bc9f818ac88))
+- building of vc-handler-ld-local containing ts files + not copying files ([cdbfcab](https://github.com/Sphereon-Opensource/SSI-SDK/commit/cdbfcab114531947e6d0092e0bdb7bc9f818ac88))
 - we imported a ts file from another package in the monorepo instead of using the module ([5d647df](https://github.com/Sphereon-Opensource/SSI-SDK/commit/5d647dffd9002ffca2a15a5c1ba56e33acec6716))
 
 ## [0.3.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.3.0...v0.3.1) (2022-01-28)
 
-**Note:** Version bump only for package @sphereon/ssi-sdk.attestationCredential-handler-ld-local
+**Note:** Version bump only for package @sphereon/ssi-sdk.vc-handler-ld-local
 
 # [0.3.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.2.0...v0.3.0) (2022-01-16)
 
