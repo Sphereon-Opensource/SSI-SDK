@@ -58,6 +58,7 @@ export const didAuthSiopOpAuthenticatorMethods: Array<string> = [
   'didManagerFind',
   'didManagerGet',
   'keyManagerSign',
+  'didManagerGetProviders',
 ]
 
 export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
