@@ -2,16 +2,20 @@ import { SupportedVersion } from '@sphereon/did-auth-siop'
 import { getIdentifier, getKey, getOrCreatePrimaryIdentifier, IIdentifierOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ConnectionType } from '@sphereon/ssi-sdk.data-store'
 import { IIdentifier } from '@veramo/core'
-import { DidAgents } from '../types/identifier'
-import { CredentialMapper, Loggers, PresentationSubmission } from '@sphereon/ssi-types'
+import { DidAgents, SuitableCredentialAgents } from '../types/identifier'
+import { CredentialMapper, IVerifiableCredential, Loggers, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
 import {
   LOGGER_NAMESPACE,
   RequiredContext,
+  SelectableCredential,
+  SelectableCredentials,
   Siopv2HolderEvent,
   VerifiableCredentialsWithDefinition,
   VerifiablePresentationWithDefinition,
 } from '../types'
 import { OID4VP, OpSession } from '../session'
+import { IPresentationDefinition, PEX } from '@sphereon/pex'
+import { InputDescriptorV1, InputDescriptorV2, PresentationDefinitionV1, PresentationDefinitionV2 } from '@sphereon/pex-models'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
@@ -109,15 +113,15 @@ export const siopSendAuthorizationResponse = async (
     idOpts = presentationsAndDefs[0].identifierOpts
     identifier = await getIdentifier(idOpts, context)
     /*key = await getKey(identifier, 'authentication', context, idOpts.kid)
-    const getIdentifierResponse = await getIdentifierWithKey({
-      context,
-      keyOpts: {
-        identifier,
-        kid: identifierOpts.kid,
-        didMethod: parseDid(identifier.did).method as SupportedDidMethodEnum,
-        keyType: key.type
-      },
-    })*/
+        const getIdentifierResponse = await getIdentifierWithKey({
+          context,
+          keyOpts: {
+            identifier,
+            kid: identifierOpts.kid,
+            didMethod: parseDid(identifier.did).method as SupportedDidMethodEnum,
+            keyType: key.type
+          },
+        })*/
     presentationSubmission = presentationsAndDefs[0].presentationSubmission
   }
   const key = await getKey(identifier, 'authentication', session.context, idOpts?.kid)
@@ -135,6 +139,65 @@ export const siopSendAuthorizationResponse = async (
   logger.log(`Response: `, response)
 
   return await response
+}
+
+function buildPartialPD(
+  inputDescriptor: InputDescriptorV1 | InputDescriptorV2,
+  presentationDefinition: PresentationDefinitionV1 | PresentationDefinitionV2,
+): IPresentationDefinition {
+  return {
+    ...presentationDefinition,
+    input_descriptors: [inputDescriptor],
+  } as IPresentationDefinition
+}
+
+export const getSelectableCredentials = async (
+  presentationDefinition: IPresentationDefinition,
+  context: RequiredContext,
+): Promise<SelectableCredentials> => {
+  const agentContext = { ...context, agent: context.agent as SuitableCredentialAgents }
+  const { agent } = agentContext
+  const pex = new PEX()
+
+  const uniqueVerifiableCredentials = await agent.dataStoreORMGetVerifiableCredentials()
+  const credentialBranding = await agent.ibGetCredentialBranding()
+
+  const selectableCredentialsMap: SelectableCredentials = new Map()
+
+  for (const inputDescriptor of presentationDefinition.input_descriptors) {
+    const partialPD = buildPartialPD(inputDescriptor, presentationDefinition)
+    const originalCredentials = uniqueVerifiableCredentials.map((uniqueVC) =>
+      CredentialMapper.storedCredentialToOriginalFormat(uniqueVC.verifiableCredential as OriginalVerifiableCredential),
+    )
+    const selectionResults = pex.selectFrom(partialPD, originalCredentials)
+
+    const selectableCredentials: Array<SelectableCredential> = []
+    for (const selectedCredential of selectionResults.verifiableCredential || []) {
+      const filteredUniqueVC = uniqueVerifiableCredentials.find((uniqueVC) => {
+        const proof = (uniqueVC.verifiableCredential as IVerifiableCredential).proof
+        return Array.isArray(proof) ? proof.some((proofItem) => proofItem.jwt === selectedCredential) : proof.jwt === selectedCredential
+      })
+
+      if (filteredUniqueVC) {
+        const filteredCredentialBrandings = credentialBranding.filter((cb) => cb.vcHash === filteredUniqueVC.hash)
+        const issuerPartyIdentity = await agent.cmGetContacts({
+          filter: [{ identities: { identifier: { correlationId: filteredUniqueVC.verifiableCredential.issuerDid } } }],
+        })
+        const subjectPartyIdentity = await agent.cmGetContacts({
+          filter: [{ identities: { identifier: { correlationId: filteredUniqueVC.verifiableCredential.subjectDid } } }],
+        })
+
+        selectableCredentials.push({
+          credential: filteredUniqueVC,
+          credentialBranding: filteredCredentialBrandings[0]?.localeBranding,
+          issuerParty: issuerPartyIdentity?.[0],
+          subjectParty: subjectPartyIdentity?.[0],
+        })
+      }
+    }
+    selectableCredentialsMap.set(inputDescriptor.id, selectableCredentials)
+  }
+  return selectableCredentialsMap
 }
 
 export const translateCorrelationIdToName = async (correlationId: string, context: RequiredContext): Promise<string> => {

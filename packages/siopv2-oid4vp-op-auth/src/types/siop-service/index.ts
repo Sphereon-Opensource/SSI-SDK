@@ -1,10 +1,11 @@
 import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { IAgentContext, IDIDManager, IIdentifier, IResolver } from '@veramo/core'
+import { IAgentContext, IDataStoreORM, IDIDManager, IIdentifier, IResolver, UniqueVerifiableCredential } from '@veramo/core'
 import { PresentationDefinitionWithLocation, RPRegistrationMetadataPayload } from '@sphereon/did-auth-siop'
-import { DidAuthConfig, Identity } from '@sphereon/ssi-sdk.data-store'
+import { DidAuthConfig, ICredentialLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { Siopv2MachineContext, Siopv2MachineInterpreter, Siopv2MachineState } from '../machine'
 import { IDidAuthSiopOpAuthenticator } from '../IDidAuthSiopOpAuthenticator'
+import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 
 export type DidAuthSiopOpAuthenticatorOptions = {
   onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
@@ -23,6 +24,7 @@ export type GetSiopRequestArgs = Pick<Siopv2MachineContext, 'didAuthConfig' | 'u
 export type RetrieveContactArgs = Pick<Siopv2MachineContext, 'url' | 'authorizationRequestData'>
 export type AddIdentityArgs = Pick<Siopv2MachineContext, 'contact' | 'authorizationRequestData'>
 export type SendResponseArgs = Pick<Siopv2MachineContext, 'didAuthConfig' | 'authorizationRequestData' | 'selectedCredentials' | 'idOpts'>
+export type GetSelectableCredentialsArgs = Pick<Siopv2MachineContext, 'authorizationRequestData'>
 
 export enum Siopv2HolderEvent {
   CONTACT_IDENTITY_CREATED = 'contact_identity_created',
@@ -50,6 +52,15 @@ export type Siopv2AuthorizationRequestData = {
   presentationDefinitions?: PresentationDefinitionWithLocation[]
 }
 
+export type SelectableCredentials = Map<string, Array<SelectableCredential>>
+
+export type SelectableCredential = {
+  credential: UniqueVerifiableCredential
+  credentialBranding: Array<ICredentialLocaleBranding>
+  issuerParty?: Party
+  subjectParty?: Party
+}
+
 export type OnContactIdentityCreatedArgs = {
   contactId: string
   identity: Identity
@@ -59,4 +70,6 @@ export type OnIdentifierCreatedArgs = {
   identifier: IIdentifier
 }
 
-export type RequiredContext = IAgentContext<IContactManager & IDidAuthSiopOpAuthenticator & IDIDManager & IResolver>
+export type RequiredContext = IAgentContext<
+  IContactManager & IDidAuthSiopOpAuthenticator & IDIDManager & IResolver & IDataStoreORM & IIssuanceBranding
+>
