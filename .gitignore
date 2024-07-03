@@ -75,3 +75,4 @@ test/*.js
 **/.env.local
 /packages/web3-provider-headless/__tests__/config.json
 /packages/event-logger/plugin.schema.json
+/packages/public-key-hosting/__tests__/database/test.sqlite

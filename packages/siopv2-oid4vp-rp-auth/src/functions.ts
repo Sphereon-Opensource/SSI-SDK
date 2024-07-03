@@ -104,7 +104,7 @@ export async function createRPBuilder(args: {
   const didMethods = await getSupportedDIDMethods(didOpts, context)
   const identifier = await getIdentifier(didOpts.identifierOpts, context)
   const key = await getKey(identifier, didOpts.identifierOpts.verificationMethodSection, context, didOpts.identifierOpts.kid)
-  const kid = determineKid(key, didOpts.identifierOpts)
+  const kid = didOpts.identifierOpts.kid?.startsWith('did:') ? didOpts.identifierOpts.kid : determineKid(key, didOpts.identifierOpts)
 
   const eventEmitter = rpOpts.eventEmitter ?? new EventEmitter()
 

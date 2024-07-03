@@ -1,10 +1,12 @@
 {
   "extends": "../tsconfig-base.json",
   "compilerOptions": {
+    "resolveJsonModule": true,
     "rootDir": "src",
     "outDir": "dist",
     "declarationDir": "dist"
   },
+  "include": ["src/**/*.json", "src/**/*.ts"],
   "references": [
     {
       "path": "../ssi-types"
@@ -17,6 +19,18 @@
     },
     {
       "path": "../pd-manager"
+    },
+    {
+      "path": "../contact-manager"
+    },
+    {
+      "path": "../data-store"
+    },
+    {
+      "path": "../presentation-exchange"
+    },
+    {
+      "path": "../xstate-persistence"
     }
   ]
 }

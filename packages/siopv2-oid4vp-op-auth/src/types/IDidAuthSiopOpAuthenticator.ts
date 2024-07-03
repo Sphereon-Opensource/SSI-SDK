@@ -28,6 +28,22 @@ import {
 import { EventEmitter } from 'events'
 import { OpSession } from '../session/OpSession'
 import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
+import { Siopv2Machine as Siopv2MachineId } from './machine'
+import { Party } from '@sphereon/ssi-sdk.data-store'
+import {
+  AddIdentityArgs,
+  CreateConfigArgs,
+  CreateConfigResult,
+  GetMachineArgs,
+  GetSiopRequestArgs,
+  RequiredContext,
+  RetrieveContactArgs,
+  SendResponseArgs,
+  Siopv2AuthorizationRequestData,
+  Siopv2AuthorizationResponseData,
+} from './siop-service'
+
+export const LOGGER_NAMESPACE = 'sphereon:siopv2-oid4vp:op-auth'
 
 export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   siopGetOPSession(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession>
@@ -35,11 +51,21 @@ export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   siopRemoveOPSession(args: IRemoveSiopSessionArgs, context: IRequiredContext): Promise<boolean>
   siopRegisterOPCustomApproval(args: IRegisterCustomApprovalForSiopArgs, context: IRequiredContext): Promise<void>
   siopRemoveOPCustomApproval(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean>
+
+  siopGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<Siopv2MachineId>
+  siopCreateConfig(args: CreateConfigArgs): Promise<CreateConfigResult>
+  siopGetSiopRequest(args: GetSiopRequestArgs, context: RequiredContext): Promise<Siopv2AuthorizationRequestData>
+  siopRetrieveContact(args: RetrieveContactArgs, context: RequiredContext): Promise<Party | undefined>
+  siopAddIdentity(args: AddIdentityArgs, context: RequiredContext): Promise<void>
+  siopSendResponse(args: SendResponseArgs, context: RequiredContext): Promise<Siopv2AuthorizationResponseData>
 }
+
 export interface IOpSessionArgs {
   sessionId?: string
 
   requestJwtOrUri: string | URI
+  providedPresentationDefinitions?: Array<PresentationDefinitionWithLocation>
+  idOpts?: IIdentifierOpts
   // identifier: IIdentifier
   context: IRequiredContext
   op?: IOPOptions
@@ -96,6 +122,7 @@ export interface IOPOptions {
   supportedVersions?: SupportedVersion[]
   expiresIn?: number
   checkLinkedDomains?: CheckLinkedDomain
+  skipDidResolution?: boolean
   eventEmitter?: EventEmitter
   supportedDIDMethods?: string[]
 
