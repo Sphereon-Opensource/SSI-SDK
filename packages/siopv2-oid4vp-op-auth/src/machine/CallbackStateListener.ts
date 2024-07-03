@@ -1,10 +1,10 @@
 import { Loggers, LogLevel, LogMethod } from '@sphereon/ssi-types'
 import { Siopv2MachineInterpreter, Siopv2MachineState, Siopv2MachineStates } from '../types'
 
-const logger = Loggers.DEFAULT.options('sphereon:oid4vp:holder', {
+const logger = Loggers.DEFAULT.options('sphereon:siopv2-oid4vp:op-auth', {
   defaultLogLevel: LogLevel.DEBUG,
   methods: [LogMethod.CONSOLE],
-}).get('sphereon:oid4vp:holder')
+}).get('sphereon:siopv2-oid4vp:op-auth')
 
 export const OID4VPCallbackStateListener = (
   callbacks?: Map<Siopv2MachineStates, (machine: Siopv2MachineInterpreter, state: Siopv2MachineState, opts?: any) => Promise<void>>,
