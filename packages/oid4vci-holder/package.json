@@ -14,8 +14,8 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/oid4vci-client": "0.12.1-next.29",
-    "@sphereon/oid4vci-common": "0.12.1-next.29",
+    "@sphereon/oid4vci-client": "0.13.0",
+    "@sphereon/oid4vci-common": "0.13.0",
     "@sphereon/ssi-sdk-ext.did-utils": "0.22.0",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",

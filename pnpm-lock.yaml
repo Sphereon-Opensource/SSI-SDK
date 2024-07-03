@@ -29,9 +29,9 @@ overrides:
   '@veramo/url-handler': 4.2.0
   '@sphereon/ssi-types': workspace:*
   '@sphereon/ssi-sdk.core': workspace:*
-  '@sphereon/oid4vci-common': 0.12.1-next.29
-  '@sphereon/oid4vci-client': 0.12.1-next.29
-  '@sphereon/oid4vci-issuer': 0.12.1-next.29
+  '@sphereon/oid4vci-common': 0.13.0
+  '@sphereon/oid4vci-client': 0.13.0
+  '@sphereon/oid4vci-issuer': 0.13.0
   '@noble/hashes': 1.2.0
   did-jwt: 6.11.6
   did-jwt-vc: 3.1.3
@@ -538,11 +538,11 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.12.1-next.29
-        version: 0.12.1-next.29
+        specifier: 0.13.0
+        version: 0.13.0
       '@sphereon/oid4vci-common':
-        specifier: 0.12.1-next.29
-        version: 0.12.1-next.29
+        specifier: 0.13.0
+        version: 0.13.0
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -831,11 +831,11 @@ importers:
   packages/oid4vci-holder:
     dependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.12.1-next.29
-        version: 0.12.1-next.29
+        specifier: 0.13.0
+        version: 0.13.0
       '@sphereon/oid4vci-common':
-        specifier: 0.12.1-next.29
-        version: 0.12.1-next.29
+        specifier: 0.13.0
+        version: 0.13.0
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.22.0
         version: 0.22.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -910,11 +910,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.12.1-next.29
-        version: 0.12.1-next.29
+        specifier: 0.13.0
+        version: 0.13.0
       '@sphereon/oid4vci-issuer':
-        specifier: 0.12.1-next.29
-        version: 0.12.1-next.29
+        specifier: 0.13.0
+        version: 0.13.0
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.22.0
         version: 0.22.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -968,14 +968,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.12.1-next.29
-        version: 0.12.1-next.29
+        specifier: 0.13.0
+        version: 0.13.0
       '@sphereon/oid4vci-issuer':
-        specifier: 0.12.1-next.29
-        version: 0.12.1-next.29
+        specifier: 0.13.0
+        version: 0.13.0
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.12.1-next.29
-        version: 0.12.1-next.29
+        specifier: 0.13.0
+        version: 0.13.0
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1128,8 +1128,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.12.1-next.29
-        version: 0.12.1-next.29
+        specifier: 0.13.0
+        version: 0.13.0
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1165,8 +1165,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.12.1-next.29
-        version: 0.12.1-next.29
+        specifier: 0.13.0
+        version: 0.13.0
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.22.0
         version: 0.22.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
@@ -7500,11 +7500,11 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vci-client@0.12.1-next.29:
-    resolution: {integrity: sha512-RTbqeC07GO7SeUY94Wq/YQ2c+iem9XlasEEq4jL2MgWsCKv03yhxOPgU1ztFWz4kOdLp0xGjTmcnUVQtCnggzQ==}
+  /@sphereon/oid4vci-client@0.13.0:
+    resolution: {integrity: sha512-d1KFa207YPjpecmf9ETICpg+S5hTem0aLvbXNolbcIGExGyWzQI0Ph2oH+AuB/QLVMDjUAWlU7Z9qA/ZwMgyHw==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.12.1-next.29
+      '@sphereon/oid4vci-common': 0.13.0
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
       debug: 4.3.5
@@ -7512,8 +7512,8 @@ packages:
       - encoding
       - supports-color
 
-  /@sphereon/oid4vci-common@0.12.1-next.29:
-    resolution: {integrity: sha512-IcxJwU59s4Zp31vkGD9KSIALwd00N5mlJaSWeS15zNRajichepi488GHKnBKE5lf98K3gX/3qCqesu7P2HLJvQ==}
+  /@sphereon/oid4vci-common@0.13.0:
+    resolution: {integrity: sha512-CEH8v+A6FcSJwVvO+ne4u8lP2q5KaPyMeIUtol9zQuvAI58ynQTwC1zVschHGg3YreKkUQYpOrtExKS8HcKBUQ==}
     engines: {node: '>=18'}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -7524,12 +7524,12 @@ packages:
     transitivePeerDependencies:
       - encoding
 
-  /@sphereon/oid4vci-issuer-server@0.12.1-next.29:
-    resolution: {integrity: sha512-AZ/Rwser/CnEqK+O0m3kiLeWsTSmiKxkNAx5g55Qda1g8LKepznuGV+Y+XXZv3UzQuDJTvVzGVnVdAh9sje6rA==}
+  /@sphereon/oid4vci-issuer-server@0.13.0:
+    resolution: {integrity: sha512-CMpIsI/Qq11HuTNhtfioNwFSqG5qSqCp8UN6yXcAQq+o442sUM4NaDfwV1Zj5LxtaW96NT9f8sQWoClkZp0/dQ==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vci-common': 0.12.1-next.29
-      '@sphereon/oid4vci-issuer': 0.12.1-next.29
+      '@sphereon/oid4vci-common': 0.13.0
+      '@sphereon/oid4vci-issuer': 0.13.0
       '@sphereon/ssi-express-support': 0.26.1-next.6
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.2
@@ -7549,8 +7549,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.12.1-next.29:
-    resolution: {integrity: sha512-Ums39irvb3iEwndHRUf6FTInXW4qXd2CAQRqNG8VHhtDOoAb8vUAOpoN7KzGXukd193Q51dPqor1EGTGooC6VQ==}
+  /@sphereon/oid4vci-issuer@0.13.0:
+    resolution: {integrity: sha512-OwtKfWQaabcu+sGGvkyu1AeWatrttG8la783zumwIB4WKPlfU82WlM6mcBUTQeTABs7lKOFVdH7dGh5zu+EmYQ==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -7558,7 +7558,7 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vci-common': 0.12.1-next.29
+      '@sphereon/oid4vci-common': 0.13.0
       '@sphereon/ssi-types': link:packages/ssi-types
       uuid: 9.0.1
     transitivePeerDependencies:
