@@ -4,7 +4,7 @@ import { DidAuthConfig, Party } from '@sphereon/ssi-sdk.data-store'
 import { OriginalVerifiableCredential } from '@sphereon/ssi-types'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
 import { ErrorDetails } from '../error'
-import { Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData } from '../siop-service'
+import { SelectableCredentialsMap, Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData } from '../siop-service'
 
 export type Siopv2MachineContext = {
   url: string
@@ -16,6 +16,7 @@ export type Siopv2MachineContext = {
   contact?: Party
   hasContactConsent: boolean
   contactAlias: string
+  selectableCredentialsMap: SelectableCredentialsMap
   selectedCredentials: Array<OriginalVerifiableCredential>
   error?: ErrorDetails
 }
@@ -23,6 +24,7 @@ export type Siopv2MachineContext = {
 export enum Siopv2MachineStates {
   createConfig = 'createConfig',
   getSiopRequest = 'getSiopRequest',
+  getSelectableCredentials = 'getSelectableCredentials',
   retrieveContact = 'retrieveContact',
   transitionFromSetup = 'transitionFromSetup',
   addContact = 'addContact',
@@ -98,6 +100,7 @@ export enum Siopv2MachineGuards {
   hasNoContactGuard = 'Siopv2HasNoContactGuard',
   createContactGuard = 'Siopv2CreateContactGuard',
   hasContactGuard = 'Siopv2HasContactGuard',
+  hasAuthorizationRequestGuard = 'Siopv2HasAuthorizationRequestGuard',
   hasSelectedRequiredCredentialsGuard = 'Siopv2HasSelectedRequiredCredentialsGuard',
   siopOnlyGuard = 'Siopv2IsSiopOnlyGuard',
   siopWithOID4VPGuard = 'Siopv2IsSiopWithOID4VPGuard',
@@ -105,6 +108,7 @@ export enum Siopv2MachineGuards {
 
 export enum Siopv2MachineServices {
   getSiopRequest = 'getSiopRequest',
+  getSelectableCredentials = 'getSelectableCredentials',
   retrieveContact = 'retrieveContact',
   addContactIdentity = 'addContactIdentity',
   sendResponse = 'sendResponse',

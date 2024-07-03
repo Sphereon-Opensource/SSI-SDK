@@ -13,15 +13,17 @@ import { IAgentPlugin } from '@veramo/core'
 import { v4 as uuidv4 } from 'uuid'
 import {
   DidAuthSiopOpAuthenticatorOptions,
+  GetSelectableCredentialsArgs,
   IOpSessionArgs,
   LOGGER_NAMESPACE,
   RequiredContext,
   schema,
+  SelectableCredentialsMap,
   Siopv2AuthorizationResponseData,
   VerifiableCredentialsWithDefinition,
 } from '../index'
 import { Siopv2Machine } from '../machine/Siopv2Machine'
-import { siopSendAuthorizationResponse, translateCorrelationIdToName } from '../services/Siopv2MachineService'
+import { getSelectableCredentials, siopSendAuthorizationResponse, translateCorrelationIdToName } from '../services/Siopv2MachineService'
 import { OpSession } from '../session'
 import {
   IDidAuthSiopOpAuthenticator,
@@ -59,6 +61,7 @@ export const didAuthSiopOpAuthenticatorMethods: Array<string> = [
   'didManagerGet',
   'keyManagerSign',
   'didManagerGetProviders',
+  'dataStoreORMGetVerifiableCredentials',
 ]
 
 export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
@@ -76,6 +79,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     siopRetrieveContact: this.siopRetrieveContact.bind(this),
     siopAddIdentity: this.siopAddContactIdentity.bind(this),
     siopSendResponse: this.siopSendResponse.bind(this),
+    siopGetSelectableCredentials: this.siopGetSelectableCredentials.bind(this),
   }
 
   private readonly sessions: Map<string, OpSession>
@@ -156,6 +160,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     const services = {
       createConfig: (args: CreateConfigArgs) => this.siopCreateConfig(args),
       getSiopRequest: (args: GetSiopRequestArgs) => this.siopGetSiopRequest(args, context),
+      getSelectableCredentials: (args: GetSelectableCredentialsArgs) => this.siopGetSelectableCredentials(args, context),
       retrieveContact: (args: RetrieveContactArgs) => this.siopRetrieveContact(args, context),
       addContactIdentity: (args: AddIdentityArgs) => this.siopAddContactIdentity(args, context),
       sendResponse: (args: SendResponseArgs) => this.siopSendResponse(args, context),
@@ -351,5 +356,22 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       url: response.url,
       queryParams: decodeUriAsJson(response.url),
     }
+  }
+
+  private async siopGetSelectableCredentials(args: GetSelectableCredentialsArgs, context: RequiredContext): Promise<SelectableCredentialsMap> {
+    const { authorizationRequestData } = args
+
+    if (
+      !authorizationRequestData ||
+      !authorizationRequestData.presentationDefinitions ||
+      authorizationRequestData.presentationDefinitions.length === 0
+    ) {
+      return Promise.reject(Error('Missing required fields in arguments or context'))
+    }
+    if (authorizationRequestData.presentationDefinitions.length > 1) {
+      return Promise.reject(Error('Multiple presentation definitions present'))
+    }
+
+    return getSelectableCredentials(authorizationRequestData.presentationDefinitions[0].definition, context)
   }
 }

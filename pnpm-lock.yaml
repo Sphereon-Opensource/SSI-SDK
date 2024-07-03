@@ -1752,6 +1752,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.issuance-branding':
+        specifier: workspace:*
+        version: link:../issuance-branding
       '@sphereon/ssi-sdk.pd-manager':
         specifier: workspace:*
         version: link:../pd-manager
