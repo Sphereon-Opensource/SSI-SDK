@@ -62,6 +62,7 @@ export const didAuthSiopOpAuthenticatorMethods: Array<string> = [
   'keyManagerSign',
   'didManagerGetProviders',
   'dataStoreORMGetVerifiableCredentials',
+  'createVerifiablePresentation',
 ]
 
 export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
