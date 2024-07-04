@@ -83,7 +83,7 @@ const oid4vciRequireAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OI
   }
 
   if (!openID4VCIClientState.authorizationURL) {
-    return !ctx.openID4VCIClientState?.authorizationCodeResponse
+    return false
   } else if (openID4VCIClientState.authorizationRequestOpts || !openID4VCIClientState.credentialOffer) {
     // We have authz options or there is not credential offer to begin with.
     // We require authz as long as we do not have the authz code response
@@ -95,7 +95,7 @@ const oid4vciRequireAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OI
   } else if (openID4VCIClientState.endpointMetadata?.credentialIssuerMetadata?.authorization_endpoint) {
     return !ctx.openID4VCIClientState?.authorizationCodeResponse
   }
-  return !ctx.openID4VCIClientState?.authorizationCodeResponse
+  return false
 }
 
 const oid4vciHasAuthorizationResponse = (ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
