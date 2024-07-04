@@ -1,0 +1,2030 @@
+{
+  "IEBSIAuthorizationClient": {
+    "components": {
+      "schemas": {
+        "EBSIAuthAccessTokenGetArgs": {
+          "type": "object",
+          "properties": {
+            "vc": {
+              "type": "string"
+            },
+            "definitionId": {
+              "$ref": "#/components/schemas/ScopeByDefinition"
+            },
+            "did": {
+              "type": "string"
+            },
+            "kid": {
+              "type": "string"
+            },
+            "scope": {
+              "$ref": "#/components/schemas/EBSIScope"
+            },
+            "apiOpts": {
+              "$ref": "#/components/schemas/Optional<ApiOpts,\"version\">"
+            }
+          },
+          "required": ["vc", "definitionId", "did", "kid", "scope", "apiOpts"]
+        },
+        "ScopeByDefinition": {
+          "type": "string",
+          "enum": ["didr_invite", "didr_write", "tir_invite", "tir_write", "timestamp_write", "tnt_authorise", "tnt_create", "tnt_write"]
+        },
+        "EBSIScope": {
+          "type": "string",
+          "enum": [
+            "didr_write",
+            "didr_invite",
+            "tir_write",
+            "tir_invite",
+            "timestamp_write",
+            "tnt_authorise",
+            "tnt_create",
+            "tnt_write",
+            "did_authn"
+          ],
+          "description": "The OpenID scope"
+        },
+        "Optional<ApiOpts,\"version\">": {
+          "type": "object",
+          "properties": {
+            "environment": {
+              "$ref": "#/components/schemas/EbsiEnvironment"
+            },
+            "version": {
+              "$ref": "#/components/schemas/EbsiApiVersion"
+            }
+          }
+        },
+        "EbsiEnvironment": {
+          "type": "string",
+          "enum": ["pilot", "conformance", "conformance-test"]
+        },
+        "EbsiApiVersion": {
+          "type": "string",
+          "enum": ["v3", "v4", "v5"]
+        },
+        "GetAccessTokenResponse": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/GetAccessTokenSuccessResponse"
+            },
+            {
+              "$ref": "#/components/schemas/ExceptionResponse"
+            }
+          ]
+        },
+        "GetAccessTokenSuccessResponse": {
+          "type": "object",
+          "properties": {
+            "access_token": {
+              "type": "string"
+            },
+            "token_type": {
+              "$ref": "#/components/schemas/TokenType"
+            },
+            "expires_in": {
+              "type": "number"
+            },
+            "scope": {
+              "$ref": "#/components/schemas/EBSIScope"
+            },
+            "id_token": {
+              "type": "string"
+            },
+            "apiOpts": {
+              "$ref": "#/components/schemas/ApiOpts"
+            }
+          },
+          "required": ["access_token", "token_type", "scope", "id_token", "apiOpts"]
+        },
+        "TokenType": {
+          "type": "string",
+          "const": "Bearer"
+        },
+        "ApiOpts": {
+          "type": "object",
+          "properties": {
+            "environment": {
+              "$ref": "#/components/schemas/EbsiEnvironment"
+            },
+            "version": {
+              "$ref": "#/components/schemas/EbsiApiVersion"
+            }
+          },
+          "required": ["version"]
+        },
+        "ExceptionResponse": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "status": {
+              "type": "number"
+            },
+            "detail": {
+              "type": "string"
+            },
+            "instance": {
+              "type": "string"
+            }
+          }
+        },
+        "GetOIDProviderJwksResponse": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/GetOIDProviderJwksSuccessResponse"
+            },
+            {
+              "$ref": "#/components/schemas/ExceptionResponse"
+            }
+          ]
+        },
+        "GetOIDProviderJwksSuccessResponse": {
+          "type": "object",
+          "properties": {
+            "keys": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/JWK"
+              }
+            }
+          },
+          "required": ["keys"]
+        },
+        "JWK": {
+          "type": "object",
+          "properties": {
+            "alg": {
+              "type": "string",
+              "description": "JWK \"alg\" (Algorithm) Parameter."
+            },
+            "crv": {
+              "type": "string"
+            },
+            "d": {
+              "type": "string"
+            },
+            "dp": {
+              "type": "string"
+            },
+            "dq": {
+              "type": "string"
+            },
+            "e": {
+              "type": "string"
+            },
+            "ext": {
+              "type": "boolean",
+              "description": "JWK \"ext\" (Extractable) Parameter."
+            },
+            "k": {
+              "type": "string"
+            },
+            "key_ops": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "JWK \"key_ops\" (Key Operations) Parameter."
+            },
+            "kid": {
+              "type": "string",
+              "description": "JWK \"kid\" (Key ID) Parameter."
+            },
+            "kty": {
+              "type": "string",
+              "description": "JWK \"kty\" (Key Type) Parameter."
+            },
+            "n": {
+              "type": "string"
+            },
+            "oth": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "d": {
+                    "type": "string"
+                  },
+                  "r": {
+                    "type": "string"
+                  },
+                  "t": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "p": {
+              "type": "string"
+            },
+            "q": {
+              "type": "string"
+            },
+            "qi": {
+              "type": "string"
+            },
+            "use": {
+              "type": "string",
+              "description": "JWK \"use\" (Public Key Use) Parameter."
+            },
+            "x": {
+              "type": "string"
+            },
+            "y": {
+              "type": "string"
+            },
+            "x5c": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "JWK \"x5c\" (X.509 Certificate Chain) Parameter."
+            },
+            "x5t": {
+              "type": "string",
+              "description": "JWK \"x5t\" (X.509 Certificate SHA-1 Thumbprint) Parameter."
+            },
+            "x5t#S256": {
+              "type": "string",
+              "description": "\"x5t#S256\" (X.509 Certificate SHA-256 Thumbprint) Parameter."
+            },
+            "x5u": {
+              "type": "string",
+              "description": "JWK \"x5u\" (X.509 URL) Parameter."
+            }
+          },
+          "additionalProperties": {},
+          "description": "JSON Web Key ( {@link https://www.rfc-editor.org/rfc/rfc7517 | JWK } ). \"RSA\", \"EC\", \"OKP\", and \"oct\" key types are supported."
+        },
+        "GetPresentationDefinitionArgs": {
+          "type": "object",
+          "properties": {
+            "scope": {
+              "$ref": "#/components/schemas/EBSIScope"
+            },
+            "apiOpts": {
+              "$ref": "#/components/schemas/ApiOpts"
+            }
+          },
+          "required": ["scope"]
+        },
+        "GetPresentationDefinitionResponse": {
+          "$ref": "#/components/schemas/GetPresentationDefinitionSuccessResponse"
+        },
+        "GetPresentationDefinitionSuccessResponse": {
+          "type": "object",
+          "properties": {
+            "format": {
+              "$ref": "#/components/schemas/Format"
+            },
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "purpose": {
+              "type": "string"
+            },
+            "submission_requirements": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/SubmissionRequirement"
+              }
+            },
+            "input_descriptors": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/InputDescriptorV2"
+              }
+            },
+            "frame": {
+              "type": "object"
+            }
+          },
+          "required": ["id", "input_descriptors"]
+        },
+        "Format": {
+          "type": "object",
+          "properties": {
+            "jwt": {
+              "$ref": "#/components/schemas/JwtObject"
+            },
+            "jwt_vc": {
+              "$ref": "#/components/schemas/JwtObject"
+            },
+            "jwt_vc_json": {
+              "$ref": "#/components/schemas/JwtObject"
+            },
+            "jwt_vp": {
+              "$ref": "#/components/schemas/JwtObject"
+            },
+            "jwt_vp_json": {
+              "$ref": "#/components/schemas/JwtObject"
+            },
+            "ldp": {
+              "$ref": "#/components/schemas/LdpObject"
+            },
+            "ldp_vc": {
+              "$ref": "#/components/schemas/LdpObject"
+            },
+            "ldp_vp": {
+              "$ref": "#/components/schemas/LdpObject"
+            },
+            "di": {
+              "$ref": "#/components/schemas/DiObject"
+            },
+            "di_vc": {
+              "$ref": "#/components/schemas/DiObject"
+            },
+            "di_vp": {
+              "$ref": "#/components/schemas/DiObject"
+            },
+            "vc+sd-jwt": {
+              "$ref": "#/components/schemas/SdJwtObject"
+            }
+          }
+        },
+        "JwtObject": {
+          "type": "object",
+          "properties": {
+            "alg": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": ["alg"]
+        },
+        "LdpObject": {
+          "type": "object",
+          "properties": {
+            "proof_type": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": ["proof_type"]
+        },
+        "DiObject": {
+          "type": "object",
+          "properties": {
+            "proof_type": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "cryptosuite": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": ["proof_type", "cryptosuite"]
+        },
+        "SdJwtObject": {
+          "type": "object",
+          "properties": {
+            "sd-jwt_alg_values": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "kb-jwt_alg_values": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "SubmissionRequirement": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "purpose": {
+              "type": "string"
+            },
+            "rule": {
+              "$ref": "#/components/schemas/Rules"
+            },
+            "count": {
+              "type": "number"
+            },
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            },
+            "from": {
+              "type": "string"
+            },
+            "from_nested": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/SubmissionRequirement"
+              }
+            }
+          },
+          "required": ["rule"]
+        },
+        "Rules": {
+          "type": "string",
+          "enum": ["all", "pick"]
+        },
+        "InputDescriptorV2": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "purpose": {
+              "type": "string"
+            },
+            "format": {
+              "$ref": "#/components/schemas/Format"
+            },
+            "group": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "issuance": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Issuance"
+              }
+            },
+            "constraints": {
+              "$ref": "#/components/schemas/ConstraintsV2"
+            }
+          },
+          "required": ["id", "constraints"]
+        },
+        "Issuance": {
+          "type": "object",
+          "properties": {
+            "manifest": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {}
+        },
+        "ConstraintsV2": {
+          "type": "object",
+          "properties": {
+            "limit_disclosure": {
+              "$ref": "#/components/schemas/Optionality"
+            },
+            "statuses": {
+              "$ref": "#/components/schemas/Statuses"
+            },
+            "fields": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/FieldV2"
+              }
+            },
+            "subject_is_issuer": {
+              "$ref": "#/components/schemas/Optionality"
+            },
+            "is_holder": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/HolderSubject"
+              }
+            },
+            "same_subject": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/HolderSubject"
+              }
+            }
+          }
+        },
+        "Optionality": {
+          "type": "string",
+          "enum": ["required", "preferred"]
+        },
+        "Statuses": {
+          "type": "object",
+          "properties": {
+            "active": {
+              "$ref": "#/components/schemas/PdStatus"
+            },
+            "suspended": {
+              "$ref": "#/components/schemas/PdStatus"
+            },
+            "revoked": {
+              "$ref": "#/components/schemas/PdStatus"
+            }
+          }
+        },
+        "PdStatus": {
+          "type": "object",
+          "properties": {
+            "directive": {
+              "$ref": "#/components/schemas/Directives"
+            }
+          }
+        },
+        "Directives": {
+          "type": "string",
+          "enum": ["required", "allowed", "disallowed"]
+        },
+        "FieldV2": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "path": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "purpose": {
+              "type": "string"
+            },
+            "filter": {
+              "$ref": "#/components/schemas/FilterV2"
+            },
+            "predicate": {
+              "$ref": "#/components/schemas/Optionality"
+            },
+            "name": {
+              "type": "string"
+            },
+            "optional": {
+              "type": "boolean"
+            }
+          },
+          "required": ["path"]
+        },
+        "FilterV2": {
+          "type": "object",
+          "properties": {
+            "const": {
+              "$ref": "#/components/schemas/OneOfNumberStringBoolean"
+            },
+            "enum": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/OneOfNumberStringBoolean"
+              }
+            },
+            "exclusiveMinimum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "exclusiveMaximum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "format": {
+              "type": "string"
+            },
+            "formatMaximum": {
+              "type": "string"
+            },
+            "formatMinimum": {
+              "type": "string"
+            },
+            "formatExclusiveMaximum": {
+              "type": "string"
+            },
+            "formatExclusiveMinimum": {
+              "type": "string"
+            },
+            "minLength": {
+              "type": "number"
+            },
+            "maxLength": {
+              "type": "number"
+            },
+            "minimum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "maximum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "not": {
+              "type": "object"
+            },
+            "pattern": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "contains": {
+              "$ref": "#/components/schemas/FilterV2Base"
+            },
+            "items": {
+              "$ref": "#/components/schemas/FilterV2BaseItems"
+            }
+          },
+          "required": ["type"]
+        },
+        "OneOfNumberStringBoolean": {
+          "type": ["boolean", "number", "string"]
+        },
+        "OneOfNumberString": {
+          "type": ["number", "string"]
+        },
+        "FilterV2Base": {
+          "type": "object",
+          "properties": {
+            "const": {
+              "$ref": "#/components/schemas/OneOfNumberStringBoolean"
+            },
+            "enum": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/OneOfNumberStringBoolean"
+              }
+            },
+            "exclusiveMinimum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "exclusiveMaximum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "format": {
+              "type": "string"
+            },
+            "formatMaximum": {
+              "type": "string"
+            },
+            "formatMinimum": {
+              "type": "string"
+            },
+            "formatExclusiveMaximum": {
+              "type": "string"
+            },
+            "formatExclusiveMinimum": {
+              "type": "string"
+            },
+            "minLength": {
+              "type": "number"
+            },
+            "maxLength": {
+              "type": "number"
+            },
+            "minimum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "maximum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "not": {
+              "type": "object"
+            },
+            "pattern": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "contains": {
+              "$ref": "#/components/schemas/FilterV2Base"
+            },
+            "items": {
+              "$ref": "#/components/schemas/FilterV2BaseItems"
+            }
+          }
+        },
+        "FilterV2BaseItems": {
+          "type": "object",
+          "properties": {
+            "const": {
+              "$ref": "#/components/schemas/OneOfNumberStringBoolean"
+            },
+            "enum": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/OneOfNumberStringBoolean"
+              }
+            },
+            "exclusiveMinimum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "exclusiveMaximum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "format": {
+              "type": "string"
+            },
+            "formatMaximum": {
+              "type": "string"
+            },
+            "formatMinimum": {
+              "type": "string"
+            },
+            "formatExclusiveMaximum": {
+              "type": "string"
+            },
+            "formatExclusiveMinimum": {
+              "type": "string"
+            },
+            "minLength": {
+              "type": "number"
+            },
+            "maxLength": {
+              "type": "number"
+            },
+            "minimum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "maximum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "not": {
+              "type": "object"
+            },
+            "pattern": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "contains": {
+              "$ref": "#/components/schemas/FilterV2Base"
+            },
+            "items": {
+              "$ref": "#/components/schemas/FilterV2BaseItems"
+            }
+          },
+          "required": ["type"]
+        },
+        "HolderSubject": {
+          "type": "object",
+          "properties": {
+            "field_id": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "directive": {
+              "$ref": "#/components/schemas/Optionality"
+            }
+          },
+          "required": ["field_id", "directive"]
+        },
+        "GetOIDProviderMetadataResponse": {
+          "$ref": "#/components/schemas/EbsiOpenIDMetadata"
+        },
+        "EbsiOpenIDMetadata": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "presentation_definition_endpoint": {
+                  "type": "string"
+                },
+                "authorization_endpoint": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/Schema"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "issuer": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ResponseIss"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "response_types_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ResponseType"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseType"
+                    }
+                  ]
+                },
+                "scopes_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Scope"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/Scope"
+                    }
+                  ]
+                },
+                "subject_types_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SubjectType"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SubjectType"
+                    }
+                  ]
+                },
+                "id_token_signing_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "request_object_signing_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "subject_syntax_types_supported": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "token_endpoint": {
+                  "type": "string"
+                },
+                "userinfo_endpoint": {
+                  "type": "string"
+                },
+                "jwks_uri": {
+                  "type": "string"
+                },
+                "registration_endpoint": {
+                  "type": "string"
+                },
+                "response_modes_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ResponseMode"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseMode"
+                    }
+                  ]
+                },
+                "grant_types_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/GrantType"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/GrantType"
+                    }
+                  ]
+                },
+                "acr_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AuthenticationContextReferences"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/AuthenticationContextReferences"
+                    }
+                  ]
+                },
+                "id_token_encryption_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "id_token_encryption_enc_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "description": "OPTIONAL. JSON array containing a list of the JWE encryption algorithms (enc values) supported by the OP for the ID Token to encode the Claims in a JWT [JWT]."
+                },
+                "userinfo_signing_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "userinfo_encryption_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "userinfo_encryption_enc_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "description": "OPTIONAL. JSON array containing a list of the JWE encryption algorithms (enc values) [JWA] supported by the UserInfo Endpoint to encode the Claims in a JWT [JWT]."
+                },
+                "request_object_encryption_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "request_object_encryption_enc_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "description": "OPTIONAL. JSON array containing a list of the JWE encryption algorithms (enc values) supported by the OP for Request Objects. These algorithms are used both when the Request Object is passed by value and when it is passed by reference."
+                },
+                "token_endpoint_auth_methods_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TokenEndpointAuthMethod"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/TokenEndpointAuthMethod"
+                    }
+                  ]
+                },
+                "token_endpoint_auth_signing_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "display_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {}
+                    },
+                    {}
+                  ],
+                  "description": "OPTIONAL. JSON array containing a list of the display parameter values that the OpenID Provider supports. These values are described in Section 3.1.2.1 of OpenID Connect Core 1.0 [OpenID.Core]."
+                },
+                "claim_types_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ClaimType"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/ClaimType"
+                    }
+                  ],
+                  "description": "OPTIONAL. JSON array containing a list of the Claim Types that the OpenID Provider supports. These Claim Types are described in Section 5.6 of OpenID Connect Core 1.0 [OpenID.Core]. Values defined by this specification are normal, aggregated, and distributed. If omitted, the implementation supports only normal Claims."
+                },
+                "claims_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "description": "RECOMMENDED. JSON array containing a list of the Claim Names of the Claims that the OpenID Provider MAY be able to supply values for. Note that for privacy or other reasons, this might not be an exhaustive list."
+                },
+                "service_documentation": {
+                  "type": "string"
+                },
+                "claims_locales_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "ui_locales_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "claims_parameter_supported": {
+                  "type": "boolean"
+                },
+                "request_parameter_supported": {
+                  "type": "boolean"
+                },
+                "request_uri_parameter_supported": {
+                  "type": "boolean"
+                },
+                "require_request_uri_registration": {
+                  "type": "boolean"
+                },
+                "op_policy_uri": {
+                  "type": "string"
+                },
+                "op_tos_uri": {
+                  "type": "string"
+                },
+                "client_id": {
+                  "type": "string"
+                },
+                "redirect_uris": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "client_name": {
+                  "type": "string"
+                },
+                "token_endpoint_auth_method": {
+                  "type": "string"
+                },
+                "application_type": {
+                  "type": "string"
+                },
+                "response_types": {
+                  "type": "string"
+                },
+                "grant_types": {
+                  "type": "string"
+                },
+                "vp_formats": {
+                  "$ref": "#/components/schemas/Format"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "presentation_definition_endpoint": {
+                  "type": "string"
+                },
+                "authorization_endpoint": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/Schema"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "issuer": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ResponseIss"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "response_types_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ResponseType"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseType"
+                    }
+                  ]
+                },
+                "scopes_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Scope"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/Scope"
+                    }
+                  ]
+                },
+                "subject_types_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SubjectType"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SubjectType"
+                    }
+                  ]
+                },
+                "id_token_signing_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "request_object_signing_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "subject_syntax_types_supported": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "token_endpoint": {
+                  "type": "string"
+                },
+                "userinfo_endpoint": {
+                  "type": "string"
+                },
+                "jwks_uri": {
+                  "type": "string"
+                },
+                "registration_endpoint": {
+                  "type": "string"
+                },
+                "response_modes_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ResponseMode"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseMode"
+                    }
+                  ]
+                },
+                "grant_types_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/GrantType"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/GrantType"
+                    }
+                  ]
+                },
+                "acr_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AuthenticationContextReferences"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/AuthenticationContextReferences"
+                    }
+                  ]
+                },
+                "id_token_encryption_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "id_token_encryption_enc_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "description": "OPTIONAL. JSON array containing a list of the JWE encryption algorithms (enc values) supported by the OP for the ID Token to encode the Claims in a JWT [JWT]."
+                },
+                "userinfo_signing_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "userinfo_encryption_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "userinfo_encryption_enc_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "description": "OPTIONAL. JSON array containing a list of the JWE encryption algorithms (enc values) [JWA] supported by the UserInfo Endpoint to encode the Claims in a JWT [JWT]."
+                },
+                "request_object_encryption_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "request_object_encryption_enc_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "description": "OPTIONAL. JSON array containing a list of the JWE encryption algorithms (enc values) supported by the OP for Request Objects. These algorithms are used both when the Request Object is passed by value and when it is passed by reference."
+                },
+                "token_endpoint_auth_methods_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TokenEndpointAuthMethod"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/TokenEndpointAuthMethod"
+                    }
+                  ]
+                },
+                "token_endpoint_auth_signing_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "display_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {}
+                    },
+                    {}
+                  ],
+                  "description": "OPTIONAL. JSON array containing a list of the display parameter values that the OpenID Provider supports. These values are described in Section 3.1.2.1 of OpenID Connect Core 1.0 [OpenID.Core]."
+                },
+                "claim_types_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ClaimType"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/ClaimType"
+                    }
+                  ],
+                  "description": "OPTIONAL. JSON array containing a list of the Claim Types that the OpenID Provider supports. These Claim Types are described in Section 5.6 of OpenID Connect Core 1.0 [OpenID.Core]. Values defined by this specification are normal, aggregated, and distributed. If omitted, the implementation supports only normal Claims."
+                },
+                "claims_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "description": "RECOMMENDED. JSON array containing a list of the Claim Names of the Claims that the OpenID Provider MAY be able to supply values for. Note that for privacy or other reasons, this might not be an exhaustive list."
+                },
+                "service_documentation": {
+                  "type": "string"
+                },
+                "claims_locales_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "ui_locales_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "claims_parameter_supported": {
+                  "type": "boolean"
+                },
+                "request_parameter_supported": {
+                  "type": "boolean"
+                },
+                "request_uri_parameter_supported": {
+                  "type": "boolean"
+                },
+                "require_request_uri_registration": {
+                  "type": "boolean"
+                },
+                "op_policy_uri": {
+                  "type": "string"
+                },
+                "op_tos_uri": {
+                  "type": "string"
+                },
+                "client_id": {
+                  "type": "string"
+                },
+                "redirect_uris": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "client_name": {
+                  "type": "string"
+                },
+                "token_endpoint_auth_method": {
+                  "type": "string"
+                },
+                "application_type": {
+                  "type": "string"
+                },
+                "response_types": {
+                  "type": "string"
+                },
+                "grant_types": {
+                  "type": "string"
+                },
+                "vp_formats": {
+                  "$ref": "#/components/schemas/Format"
+                },
+                "logo_uri": {
+                  "type": "string"
+                },
+                "client_purpose": {
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "presentation_definition_endpoint": {
+                  "type": "string"
+                },
+                "authorization_endpoint": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/Schema"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "issuer": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ResponseIss"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "response_types_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ResponseType"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseType"
+                    }
+                  ]
+                },
+                "scopes_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Scope"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/Scope"
+                    }
+                  ]
+                },
+                "subject_types_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SubjectType"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SubjectType"
+                    }
+                  ]
+                },
+                "id_token_signing_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "request_object_signing_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "subject_syntax_types_supported": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "token_endpoint": {
+                  "type": "string"
+                },
+                "userinfo_endpoint": {
+                  "type": "string"
+                },
+                "jwks_uri": {
+                  "type": "string"
+                },
+                "registration_endpoint": {
+                  "type": "string"
+                },
+                "response_modes_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ResponseMode"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseMode"
+                    }
+                  ]
+                },
+                "grant_types_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/GrantType"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/GrantType"
+                    }
+                  ]
+                },
+                "acr_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AuthenticationContextReferences"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/AuthenticationContextReferences"
+                    }
+                  ]
+                },
+                "id_token_encryption_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "id_token_encryption_enc_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "description": "OPTIONAL. JSON array containing a list of the JWE encryption algorithms (enc values) supported by the OP for the ID Token to encode the Claims in a JWT [JWT]."
+                },
+                "userinfo_signing_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "userinfo_encryption_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "userinfo_encryption_enc_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "description": "OPTIONAL. JSON array containing a list of the JWE encryption algorithms (enc values) [JWA] supported by the UserInfo Endpoint to encode the Claims in a JWT [JWT]."
+                },
+                "request_object_encryption_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "request_object_encryption_enc_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "description": "OPTIONAL. JSON array containing a list of the JWE encryption algorithms (enc values) supported by the OP for Request Objects. These algorithms are used both when the Request Object is passed by value and when it is passed by reference."
+                },
+                "token_endpoint_auth_methods_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TokenEndpointAuthMethod"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/TokenEndpointAuthMethod"
+                    }
+                  ]
+                },
+                "token_endpoint_auth_signing_alg_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SigningAlgo"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/SigningAlgo"
+                    }
+                  ]
+                },
+                "display_values_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {}
+                    },
+                    {}
+                  ],
+                  "description": "OPTIONAL. JSON array containing a list of the display parameter values that the OpenID Provider supports. These values are described in Section 3.1.2.1 of OpenID Connect Core 1.0 [OpenID.Core]."
+                },
+                "claim_types_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ClaimType"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/ClaimType"
+                    }
+                  ],
+                  "description": "OPTIONAL. JSON array containing a list of the Claim Types that the OpenID Provider supports. These Claim Types are described in Section 5.6 of OpenID Connect Core 1.0 [OpenID.Core]. Values defined by this specification are normal, aggregated, and distributed. If omitted, the implementation supports only normal Claims."
+                },
+                "claims_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "description": "RECOMMENDED. JSON array containing a list of the Claim Names of the Claims that the OpenID Provider MAY be able to supply values for. Note that for privacy or other reasons, this might not be an exhaustive list."
+                },
+                "service_documentation": {
+                  "type": "string"
+                },
+                "claims_locales_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "ui_locales_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "claims_parameter_supported": {
+                  "type": "boolean"
+                },
+                "request_parameter_supported": {
+                  "type": "boolean"
+                },
+                "request_uri_parameter_supported": {
+                  "type": "boolean"
+                },
+                "require_request_uri_registration": {
+                  "type": "boolean"
+                },
+                "op_policy_uri": {
+                  "type": "string"
+                },
+                "op_tos_uri": {
+                  "type": "string"
+                },
+                "id_token_types_supported": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/IdTokenType"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/IdTokenType"
+                    }
+                  ]
+                },
+                "vp_formats_supported": {
+                  "$ref": "#/components/schemas/Format"
+                }
+              }
+            }
+          ]
+        },
+        "Schema": {
+          "type": "string",
+          "enum": ["openid:", "openid-vc:"]
+        },
+        "ResponseIss": {
+          "type": "string",
+          "enum": ["https://self-issued.me", "https://self-issued.me/v2", "https://self-issued.me/v2/openid-vc"]
+        },
+        "ResponseType": {
+          "type": "string",
+          "enum": ["id_token", "vp_token"]
+        },
+        "Scope": {
+          "type": "string",
+          "enum": ["openid", "openid did_authn", "profile", "email", "address", "phone"]
+        },
+        "SubjectType": {
+          "type": "string",
+          "enum": ["public", "pairwise"]
+        },
+        "SigningAlgo": {
+          "type": "string",
+          "enum": ["EdDSA", "RS256", "PS256", "ES256", "ES256K"]
+        },
+        "ResponseMode": {
+          "type": "string",
+          "enum": ["fragment", "form_post", "post", "direct_post", "query"]
+        },
+        "GrantType": {
+          "type": "string",
+          "enum": ["authorization_code", "implicit"]
+        },
+        "AuthenticationContextReferences": {
+          "type": "string",
+          "enum": ["phr", "phrh"]
+        },
+        "TokenEndpointAuthMethod": {
+          "type": "string",
+          "enum": ["client_secret_post", "client_secret_basic", "client_secret_jwt", "private_key_jwt"]
+        },
+        "ClaimType": {
+          "type": "string",
+          "enum": ["normal", "aggregated", "distributed"]
+        },
+        "IdTokenType": {
+          "type": "string",
+          "enum": ["subject_signed", "attester_signed"]
+        }
+      },
+      "methods": {
+        "ebsiAccessTokenGet": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/EBSIAuthAccessTokenGetArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/GetAccessTokenResponse"
+          }
+        },
+        "ebsiAuthorizationServerJwks": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/ApiOpts"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/GetOIDProviderJwksResponse"
+          }
+        },
+        "ebsiPresentationDefinitionGet": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/GetPresentationDefinitionArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/GetPresentationDefinitionResponse"
+          }
+        },
+        "ebsiWellknownMetadata": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/ApiOpts"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/GetOIDProviderMetadataResponse"
+          }
+        }
+      }
+    }
+  }
+}

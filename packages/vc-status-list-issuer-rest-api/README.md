@@ -11,7 +11,7 @@ This package contains REST API functionality to host/manage StatusLists
 ## Installation
 
 ```shell
-pnpm install @sphereon/ssi-sdk.vc-status-list-issuer-rest-api
+pnpm install @sphereon/ssi-sdk.attestationCredential-status-list-issuer-rest-api
 ```
 
 ## Build

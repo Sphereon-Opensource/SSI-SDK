@@ -11,7 +11,7 @@ This package contains drivers to host/manage StatusLists
 ## Installation
 
 ```shell
-pnpm install @sphereon/ssi-sdk.vc-status-list-issuer-drivers
+pnpm install @sphereon/ssi-sdk.attestationCredential-status-list-issuer-drivers
 ```
 
 ## Build

@@ -25,12 +25,14 @@ export async function createOID4VPPresentationSignCallback({
   challenge,
   format,
   context,
+  skipDidResolution,
 }: {
   presentationSignCallback?: PresentationSignCallback
   idOpts: IIdentifierOpts
   domain?: string
   challenge?: string
   fetchRemoteContexts?: boolean
+  skipDidResolution?: boolean
   format?: Format
   context: IRequiredContext
 }): Promise<PresentationSignCallback> {
@@ -38,7 +40,7 @@ export async function createOID4VPPresentationSignCallback({
     return presentationSignCallback
   }
 
-  return createPEXPresentationSignCallback({ idOpts, fetchRemoteContexts, domain, challenge, format }, context)
+  return createPEXPresentationSignCallback({ idOpts, fetchRemoteContexts, domain, challenge, format, skipDidResolution }, context)
 }
 
 export async function createOPBuilder({
@@ -89,7 +91,7 @@ export async function createOPBuilder({
 
   if (idOpts && idOpts.identifier) {
     const key = await getKey(await getIdentifier(idOpts, context), idOpts.verificationMethodSection, context, idOpts.kid)
-    const kid = determineKid(key, idOpts)
+    const kid = idOpts.kid?.startsWith('did:') ? idOpts.kid : determineKid(key, idOpts)
 
     builder.withSuppliedSignature(
       SuppliedSigner(key, context, getSigningAlgo(key.type) as unknown as KeyAlgo),
@@ -100,6 +102,7 @@ export async function createOPBuilder({
     builder.withPresentationSignCallback(
       await createOID4VPPresentationSignCallback({
         presentationSignCallback: opOptions.presentationSignCallback,
+        skipDidResolution: opOptions.skipDidResolution ?? false,
         idOpts,
         context,
       }),
