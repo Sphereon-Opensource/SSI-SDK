@@ -84,7 +84,7 @@ const oid4vciRequireAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OI
 
   if (!openID4VCIClientState.authorizationURL) {
     return false
-  } else if (openID4VCIClientState.authorizationRequestOpts || !openID4VCIClientState.credentialOffer) {
+  } else if (openID4VCIClientState.authorizationRequestOpts) {
     // We have authz options or there is not credential offer to begin with.
     // We require authz as long as we do not have the authz code response
     return !ctx.openID4VCIClientState?.authorizationCodeResponse
