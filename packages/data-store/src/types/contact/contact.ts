@@ -1,4 +1,5 @@
 import { IIdentifier } from '@veramo/core'
+import {ILocaleBranding} from "../issuanceBranding/issuanceBranding";
 
 export type MetadataTypes = string | number | Date | boolean | undefined
 
@@ -13,6 +14,8 @@ export type Party = {
   physicalAddresses: Array<PhysicalAddress>
   contact: Contact
   partyType: PartyType
+  //todo: add logic for integrating branding in here. for now we're just using the type
+  branding?: ILocaleBranding
   relationships: Array<PartyRelationship>
   createdAt: Date
   lastUpdatedAt: Date
