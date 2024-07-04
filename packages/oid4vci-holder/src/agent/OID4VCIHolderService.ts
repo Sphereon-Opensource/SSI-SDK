@@ -6,6 +6,7 @@ import {
   CredentialsSupportedDisplay,
   getSupportedCredentials,
   getTypesFromObject,
+  MetadataDisplay,
   OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
@@ -40,7 +41,6 @@ import {
   GetIssuanceDidMethodArgs,
   GetIssuanceOptsArgs,
   GetIssuerBrandingArgs,
-  GetOrCreatePrimaryIdentifierArgs,
   GetPreferredCredentialFormatsArgs,
   GetSignerArgs,
   IdentifierOpts,
@@ -60,7 +60,6 @@ import {
   VerifyCredentialToAcceptArgs,
 } from '../types/IOID4VCIHolder'
 import { credentialLocaleBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
-import { MetadataDisplay } from '@sphereon/oid4vci-common/lib/types/Generic.types'
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
@@ -229,6 +228,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
   return {
     correlationId,
     credential,
+    types: credential.types,
     rawVerifiableCredential,
     uniformVerifiableCredential,
     ...(credentialResponse.credential_subject_issuance && { credential_subject_issuance: credentialResponse.credential_subject_issuance }),

@@ -1,7 +1,10 @@
-import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
+import { CredentialOfferClient, MetadataClient, OpenID4VCIClient } from '@sphereon/oid4vci-client'
 import {
+  AuthorizationDetails,
   AuthorizationRequestOpts,
-  CredentialConfigurationSupported,
+  AuthorizationServerClientOpts,
+  AuthorizationServerOpts,
+  CredentialOfferRequestWithBaseUrl,
   DefaultURISchemes,
   EndpointMetadataResult,
   getTypesFromAuthorizationDetails,
@@ -39,6 +42,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { OID4VCIMachine } from '../machine/oid4vciMachine'
 import {
   AddContactIdentityArgs,
+  AddIssuerBrandingArgs,
   AssertValidCredentialsArgs,
   createCredentialsToSelectFromArgs,
   CredentialToAccept,
@@ -177,6 +181,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   private readonly didMethodPreferences: Array<SupportedDidMethodEnum> = [
     SupportedDidMethodEnum.DID_KEY,
     SupportedDidMethodEnum.DID_JWK,
+    SupportedDidMethodEnum.DID_EBSI,
     SupportedDidMethodEnum.DID_ION,
   ]
   private readonly jwtCryptographicSuitePreferences: Array<SignatureAlgorithmEnum> = [
@@ -257,6 +262,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       getCredentials: (args: GetCredentialsArgs) =>
         this.oid4vciHolderGetCredentials({ accessTokenOpts: args.accessTokenOpts ?? opts.accessTokenOpts, ...args }, context),
       addContactIdentity: (args: AddContactIdentityArgs) => this.oid4vciHolderAddContactIdentity(args, context),
+      addIssuerBranding: (args: AddIssuerBrandingArgs) => this.oid4vciHolderAddIssuerBranding(args, context),
       assertValidCredentials: (args: AssertValidCredentialsArgs) => this.oid4vciHolderAssertValidCredentials(args, context),
       storeCredentialBranding: (args: StoreCredentialBrandingArgs) => this.oid4vciHolderStoreCredentialBranding(args, context),
       storeCredentials: (args: StoreCredentialsArgs) => this.oid4vciHolderStoreCredentials(args, context),
@@ -642,7 +648,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           .filter((identity) => identity.roles.includes(CredentialRole.ISSUER))
           .map((identity) => identity.identifier.correlationId)[0] ?? undefined
       if (issuerBrandings && issuerBrandings.length) {
-        const brandings: IIssuerBranding[] = await context.agent.ibGetIssuerBranding({filter:[{issuerCorrelationId}]})
+        const brandings: IIssuerBranding[] = await context.agent.ibGetIssuerBranding({ filter: [{ issuerCorrelationId }] })
         if (!brandings || !brandings.length) {
           await context.agent.ibAddIssuerBranding({ localeBranding: issuerBrandings, issuerCorrelationId })
         }
