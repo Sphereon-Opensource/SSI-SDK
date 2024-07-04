@@ -146,6 +146,9 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         [OID4VCIMachineServices.getContact]: {
           data: Party | undefined
         }
+        [OID4VCIMachineServices.addIssuerBranding]: {
+          data: void
+        }
         [OID4VCIMachineServices.getCredentials]: {
           data: Array<MappedCredentialToAccept> | undefined
         }
@@ -290,9 +293,18 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           [OID4VCIMachineAddContactStates.idle]: {},
           [OID4VCIMachineAddContactStates.next]: {
             always: {
-              target: `#${OID4VCIMachineStates.transitionFromContactSetup}`,
+              target: `#${OID4VCIMachineStates.addIssuerBranding}`,
               cond: OID4VCIMachineGuards.hasContactGuard,
             },
+          },
+        },
+      },
+      [OID4VCIMachineStates.addIssuerBranding]: {
+        id: OID4VCIMachineStates.addIssuerBranding,
+        invoke: {
+          src: OID4VCIMachineServices.addIssuerBranding,
+          onDone: {
+            target: OID4VCIMachineStates.transitionFromContactSetup,
           },
         },
       },
@@ -467,7 +479,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         invoke: {
           src: OID4VCIMachineServices.addContactIdentity,
           onDone: {
-            target: OID4VCIMachineStates.reviewCredentials,
+            target: OID4VCIMachineStates.addIssuerBranding,
             actions: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Identity>): void => {
               _ctx.contact?.identities.push(_event.data)
             },
@@ -481,6 +493,15 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
                 stack: _event.data.stack,
               }),
             }),
+          },
+        },
+      },
+      [OID4VCIMachineStates.addIssuerBrandingAfterIdentity]: {
+        id: OID4VCIMachineStates.addIssuerBrandingAfterIdentity,
+        invoke: {
+          src: OID4VCIMachineServices.addIssuerBranding,
+          onDone: {
+            target: OID4VCIMachineStates.reviewCredentials,
           },
         },
       },

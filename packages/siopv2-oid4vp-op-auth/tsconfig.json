@@ -28,8 +28,9 @@
     },
     {
       "path": "../presentation-exchange"
-    },{
-      "path": "../issuance-branding",
+    },
+    {
+      "path": "../issuance-branding"
     },
     {
       "path": "../xstate-persistence"

@@ -6,6 +6,7 @@ import {
   CredentialsSupportedDisplay,
   getSupportedCredentials,
   getTypesFromObject,
+  MetadataDisplay,
   OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
@@ -39,6 +40,7 @@ import {
   GetIssuanceCryptoSuiteArgs,
   GetIssuanceDidMethodArgs,
   GetIssuanceOptsArgs,
+  GetIssuerBrandingArgs,
   GetPreferredCredentialFormatsArgs,
   GetSignerArgs,
   IdentifierOpts,
@@ -57,7 +59,7 @@ import {
   VerificationSubResult,
   VerifyCredentialToAcceptArgs,
 } from '../types/IOID4VCIHolder'
-import { credentialLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
+import { credentialLocaleBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
@@ -84,6 +86,16 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   )
 
   return credentialBranding
+}
+
+export const getIssuerBranding = async (args: GetIssuerBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => {
+  const { display, context } = args
+  return await Promise.all(
+    (display ?? []).map(async (displayItem: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
+      const branding = await issuerLocaleBrandingFrom(displayItem)
+      return context.agent.ibIssuerLocaleBrandingFrom({ localeBranding: branding })
+    }),
+  )
 }
 
 export const getCredentialConfigsBasedOnFormatPref = async (

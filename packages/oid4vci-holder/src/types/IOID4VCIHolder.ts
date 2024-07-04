@@ -9,6 +9,7 @@ import {
   CredentialResponse,
   EndpointMetadataResult,
   ExperimentalSubjectIssuance,
+  MetadataDisplay,
   NotificationRequest,
 } from '@sphereon/oid4vci-common'
 import {
@@ -121,6 +122,7 @@ export type GetCredentialsArgs = Pick<
   'verificationCode' | 'openID4VCIClientState' | 'selectedCredentials' | 'didMethodPreferences' | 'issuanceOpt' | 'accessTokenOpts'
 >
 export type AddContactIdentityArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'contact'>
+export type AddIssuerBrandingArgs = Pick<OID4VCIMachineContext, 'serverMetadata' | 'contact'>
 export type AssertValidCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept'>
 export type StoreCredentialBrandingArgs = Pick<
   OID4VCIMachineContext,
@@ -197,6 +199,8 @@ export enum OID4VCIMachineStates {
   getContact = 'getContact',
   transitionFromSetup = 'transitionFromSetup',
   addContact = 'addContact',
+  addIssuerBranding = 'addIssuerBranding',
+  addIssuerBrandingAfterIdentity = 'addIssuerBrandingAfterIdentity',
   transitionFromContactSetup = 'transitionFromContactSetup',
   selectCredentials = 'selectCredentials',
   transitionFromSelectingCredentials = 'transitionFromSelectingCredentials',
@@ -327,6 +331,8 @@ export enum OID4VCIMachineServices {
   getContact = 'getContact',
   addContactIdentity = 'addContactIdentity',
   createCredentialsToSelectFrom = 'createCredentialsToSelectFrom',
+  addIssuerBranding = 'addIssuerBranding',
+  createCredentialSelection = 'createCredentialSelection',
   getCredentials = 'getCredentials',
   assertValidCredentials = 'assertValidCredentials',
   storeCredentialBranding = 'storeCredentialBranding',
@@ -456,6 +462,11 @@ export type GetCredentialConfigsSupportedBySingleTypeOrIdArgs = {
 
 export type GetCredentialBrandingArgs = {
   credentialsSupported: Record<string, CredentialConfigurationSupported>
+  context: RequiredContext
+}
+
+export type GetIssuerBrandingArgs = {
+  display: MetadataDisplay[]
   context: RequiredContext
 }
 
