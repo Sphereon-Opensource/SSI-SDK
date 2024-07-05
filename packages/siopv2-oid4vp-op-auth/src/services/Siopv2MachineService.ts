@@ -1,5 +1,12 @@
 import { SupportedVersion } from '@sphereon/did-auth-siop'
-import { getIdentifier, getKey, getOrCreatePrimaryIdentifier, IIdentifierOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import {
+  determineKid,
+  getIdentifier,
+  getKey,
+  getOrCreatePrimaryIdentifier,
+  IIdentifierOpts,
+  SupportedDidMethodEnum,
+} from '@sphereon/ssi-sdk-ext.did-utils'
 import { ConnectionType } from '@sphereon/ssi-sdk.data-store'
 import { IIdentifier } from '@veramo/core'
 import { DidAgents, SuitableCredentialAgents } from '../types/identifier'
@@ -112,6 +119,7 @@ export const siopSendAuthorizationResponse = async (
 
     idOpts = presentationsAndDefs[0].identifierOpts
     identifier = await getIdentifier(idOpts, context)
+
     /*key = await getKey(identifier, 'authentication', context, idOpts.kid)
         const getIdentifierResponse = await getIdentifierWithKey({
           context,
@@ -125,20 +133,20 @@ export const siopSendAuthorizationResponse = async (
     presentationSubmission = presentationsAndDefs[0].presentationSubmission
   }
   const key = await getKey(identifier, 'authentication', session.context, idOpts?.kid)
-  const kid: string = idOpts?.kid?.startsWith('did:')
-    ? idOpts?.kid
-    : `${identifier.did}#${key?.meta?.jwkThumbprint ? key.meta.jwkThumbprint : key.kid}`
+  if (!idOpts) {
+    idOpts = { identifier, kid: determineKid(key, { identifier }) }
+  }
+  const determinedKid = idOpts!.kid?.includes('#') ? idOpts.kid : determineKid(key, idOpts)
+  const kid: string = determinedKid.startsWith('did:') ? determinedKid : `${identifier.did}#${determinedKid}`
 
   logger.log(`Definitions and locations:`, JSON.stringify(presentationsAndDefs?.[0]?.verifiablePresentation, null, 2))
   logger.log(`Presentation Submission:`, JSON.stringify(presentationSubmission, null, 2))
-  const response = session.sendAuthorizationResponse({
+  logger.log(`kid:`, kid)
+  return await session.sendAuthorizationResponse({
     ...(presentationsAndDefs && { verifiablePresentations: presentationsAndDefs?.map((pd) => pd.verifiablePresentation) }),
     ...(presentationSubmission && { presentationSubmission }),
     responseSignerOpts: { identifier, kid },
   })
-  logger.log(`Response: `, response)
-
-  return await response
 }
 
 function buildPartialPD(

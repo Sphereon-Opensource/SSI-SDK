@@ -161,17 +161,18 @@ export class SimpleLogger implements ISimpleLogger<any> {
     }
 
     if (this.options.methods.includes(LogMethod.CONSOLE)) {
+      const [value, args] = logArgs
       switch (level) {
         case LogLevel.TRACE:
-          return console.trace(...logArgs)
+          return console.trace(value, args)
         case LogLevel.DEBUG:
-          return console.debug(...logArgs)
+          return console.debug(value, args)
         case LogLevel.INFO:
-          return console.info(...logArgs)
+          return console.info(value, args)
         case LogLevel.WARNING:
-          return console.warn(...logArgs)
+          return console.warn(value, args)
         case LogLevel.ERROR:
-          return console.error(...logArgs)
+          return console.error(value, args)
       }
     }
 

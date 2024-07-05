@@ -125,6 +125,7 @@ export interface IOPOptions {
   supportedVersions?: SupportedVersion[]
   expiresIn?: number
   checkLinkedDomains?: CheckLinkedDomain
+  skipDidResolution?: boolean
   eventEmitter?: EventEmitter
   supportedDIDMethods?: string[]
 

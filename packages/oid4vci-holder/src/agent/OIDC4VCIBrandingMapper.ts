@@ -1,5 +1,6 @@
 import { CredentialsSupportedDisplay } from '@sphereon/oid4vci-common'
-import { IBasicCredentialLocaleBranding } from '@sphereon/ssi-sdk.data-store'
+import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
+import { MetadataDisplay } from '@sphereon/oid4vci-common/lib/types/Generic.types'
 
 // FIXME should we not move this to the branding plugin?
 export const credentialLocaleBrandingFrom = async (credentialDisplay: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> => {
@@ -44,6 +45,36 @@ export const credentialLocaleBrandingFrom = async (credentialDisplay: Credential
         ...(credentialDisplay.background_color && {
           color: credentialDisplay.background_color,
         }),
+      },
+    }),
+  }
+}
+
+export const issuerLocaleBrandingFrom = async (issuerDisplay: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
+  return {
+    ...(issuerDisplay.name && {
+      alias: issuerDisplay.name,
+    }),
+    ...(issuerDisplay.locale && {
+      locale: issuerDisplay.locale,
+    }),
+    ...(issuerDisplay.logo && {
+      logo: {
+        ...(issuerDisplay.logo.url && {
+          uri: issuerDisplay.logo?.url,
+        }),
+        ...(issuerDisplay.logo.alt_text && {
+          alt: issuerDisplay.logo?.alt_text,
+        }),
+      },
+    }),
+    ...(issuerDisplay.description && {
+      description: issuerDisplay.description,
+    }),
+
+    ...(issuerDisplay.text_color && {
+      text: {
+        color: issuerDisplay.text_color,
       },
     }),
   }

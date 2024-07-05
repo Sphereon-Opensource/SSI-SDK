@@ -2,12 +2,14 @@ import { OpenID4VCIClient, OpenID4VCIClientState } from '@sphereon/oid4vci-clien
 import {
   AuthorizationRequestOpts,
   AuthorizationResponse,
+  AuthorizationServerClientOpts,
   AuthzFlowType,
   CredentialConfigurationSupported,
   CredentialOfferRequestWithBaseUrl,
   CredentialResponse,
   EndpointMetadataResult,
   ExperimentalSubjectIssuance,
+  MetadataDisplay,
   NotificationRequest,
 } from '@sphereon/oid4vci-common'
 import {
@@ -100,12 +102,16 @@ export type OnIdentifierCreatedArgs = {
 export type GetMachineArgs = {
   requestData: RequestData
   authorizationRequestOpts?: AuthorizationRequestOpts
+  clientOpts?: AuthorizationServerClientOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   issuanceOpt?: Partial<IssuanceOpts>
   stateNavigationListener?: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
 }
 
-export type PrepareStartArgs = Pick<OID4VCIMachineContext, 'requestData' | 'authorizationRequestOpts' | 'didMethodPreferences' | 'issuanceOpt'>
+export type PrepareStartArgs = Pick<
+  OID4VCIMachineContext,
+  'requestData' | 'authorizationRequestOpts' | 'didMethodPreferences' | 'issuanceOpt' | 'accessTokenOpts'
+>
 export type createCredentialsToSelectFromArgs = Pick<
   OID4VCIMachineContext,
   'credentialsSupported' | 'credentialBranding' | 'selectedCredentials' | 'locale' | 'openID4VCIClientState'
@@ -116,6 +122,7 @@ export type GetCredentialsArgs = Pick<
   'verificationCode' | 'openID4VCIClientState' | 'selectedCredentials' | 'didMethodPreferences' | 'issuanceOpt' | 'accessTokenOpts'
 >
 export type AddContactIdentityArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'contact'>
+export type AddIssuerBrandingArgs = Pick<OID4VCIMachineContext, 'serverMetadata' | 'contact'>
 export type AssertValidCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept'>
 export type StoreCredentialBrandingArgs = Pick<
   OID4VCIMachineContext,
@@ -192,6 +199,8 @@ export enum OID4VCIMachineStates {
   getContact = 'getContact',
   transitionFromSetup = 'transitionFromSetup',
   addContact = 'addContact',
+  addIssuerBranding = 'addIssuerBranding',
+  addIssuerBrandingAfterIdentity = 'addIssuerBrandingAfterIdentity',
   transitionFromContactSetup = 'transitionFromContactSetup',
   selectCredentials = 'selectCredentials',
   transitionFromSelectingCredentials = 'transitionFromSelectingCredentials',
@@ -257,6 +266,7 @@ export type CreateOID4VCIMachineOpts = {
   locale?: string
   stateDefinition?: OID4VCIMachineState
   didMethodPreferences?: Array<SupportedDidMethodEnum>
+  accessTokenOpts?: AccessTokenOpts
   issuanceOpt?: IssuanceOpts
 }
 
@@ -321,6 +331,8 @@ export enum OID4VCIMachineServices {
   getContact = 'getContact',
   addContactIdentity = 'addContactIdentity',
   createCredentialsToSelectFrom = 'createCredentialsToSelectFrom',
+  addIssuerBranding = 'addIssuerBranding',
+  createCredentialSelection = 'createCredentialSelection',
   getCredentials = 'getCredentials',
   assertValidCredentials = 'assertValidCredentials',
   storeCredentialBranding = 'storeCredentialBranding',
@@ -453,6 +465,11 @@ export type GetCredentialBrandingArgs = {
   context: RequiredContext
 }
 
+export type GetIssuerBrandingArgs = {
+  display: MetadataDisplay[]
+  context: RequiredContext
+}
+
 export type GetPreferredCredentialFormatsArgs = {
   credentials: Record<string, CredentialConfigurationSupported>
   vcFormatPreferences: Array<string>
@@ -564,6 +581,7 @@ export type GetCredentialArgs = {
 
 export type AccessTokenOpts = {
   additionalRequestParams?: Record<string, any>
+  clientOpts?: AuthorizationServerClientOpts
 }
 
 export enum SignatureAlgorithmEnum {

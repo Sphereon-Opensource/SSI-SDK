@@ -11,7 +11,7 @@ This package contains common StatusLists functions for issuers, holders and veri
 ## Installation
 
 ```shell
-pnpm install @sphereon/ssi-sdk.vc-status-list
+pnpm install @sphereon/ssi-sdk.attestationCredential-status-list
 ```
 
 ## Build

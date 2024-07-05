@@ -83,8 +83,8 @@ const oid4vciRequireAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OI
   }
 
   if (!openID4VCIClientState.authorizationURL) {
-    return !ctx.openID4VCIClientState?.authorizationCodeResponse
-  } else if (openID4VCIClientState.authorizationRequestOpts || !openID4VCIClientState.credentialOffer) {
+    return false
+  } else if (openID4VCIClientState.authorizationRequestOpts) {
     // We have authz options or there is not credential offer to begin with.
     // We require authz as long as we do not have the authz code response
     return !ctx.openID4VCIClientState?.authorizationCodeResponse
@@ -95,7 +95,7 @@ const oid4vciRequireAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OI
   } else if (openID4VCIClientState.endpointMetadata?.credentialIssuerMetadata?.authorization_endpoint) {
     return !ctx.openID4VCIClientState?.authorizationCodeResponse
   }
-  return !ctx.openID4VCIClientState?.authorizationCodeResponse
+  return false
 }
 
 const oid4vciHasAuthorizationResponse = (ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
@@ -105,6 +105,7 @@ const oid4vciHasAuthorizationResponse = (ctx: OID4VCIMachineContext, _event: OID
 const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMachine => {
   const initialContext: OID4VCIMachineContext = {
     // TODO WAL-671 we need to store the data from OpenIdProvider here in the context and make sure we can restart the machine with it and init the OpenIdProvider
+    accessTokenOpts: opts?.accessTokenOpts,
     requestData: opts?.requestData,
     issuanceOpt: opts?.issuanceOpt,
     didMethodPreferences: opts?.didMethodPreferences,
@@ -144,6 +145,9 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         }
         [OID4VCIMachineServices.getContact]: {
           data: Party | undefined
+        }
+        [OID4VCIMachineServices.addIssuerBranding]: {
+          data: void
         }
         [OID4VCIMachineServices.getCredentials]: {
           data: Array<MappedCredentialToAccept> | undefined
@@ -289,9 +293,18 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           [OID4VCIMachineAddContactStates.idle]: {},
           [OID4VCIMachineAddContactStates.next]: {
             always: {
-              target: `#${OID4VCIMachineStates.transitionFromContactSetup}`,
+              target: `#${OID4VCIMachineStates.addIssuerBranding}`,
               cond: OID4VCIMachineGuards.hasContactGuard,
             },
+          },
+        },
+      },
+      [OID4VCIMachineStates.addIssuerBranding]: {
+        id: OID4VCIMachineStates.addIssuerBranding,
+        invoke: {
+          src: OID4VCIMachineServices.addIssuerBranding,
+          onDone: {
+            target: OID4VCIMachineStates.transitionFromContactSetup,
           },
         },
       },
@@ -366,14 +379,10 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           [OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE]: {
             actions: assign({
               openID4VCIClientState: (_ctx: OID4VCIMachineContext, _event: AuthorizationResponseEvent) => {
-                console.log(`=> Assigning authorizationCodeResponse using event data ${JSON.stringify(_event.data)}`)
                 const authorizationCodeResponse = toAuthorizationResponsePayload(_event.data)
-                console.log(`=> Assigned authorizationCodeResponse value ${JSON.stringify(authorizationCodeResponse)}`)
                 return { ..._ctx.openID4VCIClientState!, authorizationCodeResponse }
               },
-            }), // TODO can we not call toAuthorizationResponsePayload before
-            // target: OID4VCIMachineStates.waitForAuthorizationResponse,
-            // target: OID4VCIMachineStates.transitionFromSelectingCredentials,
+            }),
           },
         },
         always: [
@@ -470,7 +479,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         invoke: {
           src: OID4VCIMachineServices.addContactIdentity,
           onDone: {
-            target: OID4VCIMachineStates.reviewCredentials,
+            target: OID4VCIMachineStates.addIssuerBranding,
             actions: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Identity>): void => {
               _ctx.contact?.identities.push(_event.data)
             },
@@ -484,6 +493,15 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
                 stack: _event.data.stack,
               }),
             }),
+          },
+        },
+      },
+      [OID4VCIMachineStates.addIssuerBrandingAfterIdentity]: {
+        id: OID4VCIMachineStates.addIssuerBrandingAfterIdentity,
+        invoke: {
+          src: OID4VCIMachineServices.addIssuerBranding,
+          onDone: {
+            target: OID4VCIMachineStates.reviewCredentials,
           },
         },
       },

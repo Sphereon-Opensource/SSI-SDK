@@ -1,6 +1,9 @@
 import { CredentialOfferClient, MetadataClient, OpenID4VCIClient } from '@sphereon/oid4vci-client'
 import {
+  AuthorizationDetails,
   AuthorizationRequestOpts,
+  AuthorizationServerClientOpts,
+  AuthorizationServerOpts,
   CredentialOfferRequestWithBaseUrl,
   DefaultURISchemes,
   EndpointMetadataResult,
@@ -16,8 +19,10 @@ import {
   CorrelationIdentifierType,
   CredentialRole,
   IBasicCredentialLocaleBranding,
+  IBasicIssuerLocaleBranding,
   Identity,
   IdentityOrigin,
+  IIssuerBranding,
   NonPersistedIdentity,
   Party,
 } from '@sphereon/ssi-sdk.data-store'
@@ -30,13 +35,14 @@ import {
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
 } from '@sphereon/ssi-types'
-import { CredentialPayload, DIDDocument, IAgentPlugin, ProofFormat, VerifiableCredential, W3CVerifiableCredential } from '@veramo/core'
+import { CredentialPayload, IAgentPlugin, ProofFormat, VerifiableCredential, W3CVerifiableCredential } from '@veramo/core'
 import { asArray, computeEntryHash } from '@veramo/utils'
 import { decodeJWT, JWTHeader } from 'did-jwt'
 import { v4 as uuidv4 } from 'uuid'
 import { OID4VCIMachine } from '../machine/oid4vciMachine'
 import {
   AddContactIdentityArgs,
+  AddIssuerBrandingArgs,
   AssertValidCredentialsArgs,
   createCredentialsToSelectFromArgs,
   CredentialToAccept,
@@ -70,6 +76,7 @@ import {
   getCredentialConfigsSupportedMerged,
   getIdentifierOpts,
   getIssuanceOpts,
+  getIssuerBranding,
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
   signatureAlgorithmFromKey,
@@ -120,7 +127,7 @@ export function signCallback(client: OpenID4VCIClient, idOpts: IIdentifierOpts, 
       kid = key.meta.jwkThumbprint
     }
 
-    const httpsClientId = jwt.payload.client_id?.startsWith('http')
+    const httpsClientId = jwt.payload.iss?.startsWith('http') ?? jwt.payload.client_id?.startsWith('http') === true
     if (!httpsClientId && client.isEBSI()) {
       iss = identifier.did /*kid?.split('#')[0]*/
     } else if (!iss) {
@@ -252,8 +259,10 @@ export class OID4VCIHolder implements IAgentPlugin {
         ),
       createCredentialsToSelectFrom: (args: createCredentialsToSelectFromArgs) => this.oid4vciHoldercreateCredentialsToSelectFrom(args, context),
       getContact: (args: GetContactArgs) => this.oid4vciHolderGetContact(args, context),
-      getCredentials: (args: GetCredentialsArgs) => this.oid4vciHolderGetCredentials(args, context),
+      getCredentials: (args: GetCredentialsArgs) =>
+        this.oid4vciHolderGetCredentials({ accessTokenOpts: args.accessTokenOpts ?? opts.accessTokenOpts, ...args }, context),
       addContactIdentity: (args: AddContactIdentityArgs) => this.oid4vciHolderAddContactIdentity(args, context),
+      addIssuerBranding: (args: AddIssuerBrandingArgs) => this.oid4vciHolderAddIssuerBranding(args, context),
       assertValidCredentials: (args: AssertValidCredentialsArgs) => this.oid4vciHolderAssertValidCredentials(args, context),
       storeCredentialBranding: (args: StoreCredentialBrandingArgs) => this.oid4vciHolderStoreCredentialBranding(args, context),
       storeCredentials: (args: StoreCredentialsArgs) => this.oid4vciHolderStoreCredentials(args, context),
@@ -311,6 +320,14 @@ export class OID4VCIHolder implements IAgentPlugin {
       authorizationRequestOpts.clientId = authorizationRequestOpts.redirectUri
     }
 
+    let formats: string[] = this.vcFormatPreferences
+    const authFormats = authorizationRequestOpts?.authorizationDetails
+      ?.map((detail: AuthorizationDetails) => (typeof detail === 'object' && 'format' in detail && detail.format ? detail.format : undefined))
+      .filter((format) => !!format)
+      .map((format) => format as string)
+    if (authFormats && authFormats.length > 0) {
+      formats = Array.from(new Set(authFormats))
+    }
     let oid4vciClient: OpenID4VCIClient
     let types: string[][] | undefined = undefined
     let offer: CredentialOfferRequestWithBaseUrl | undefined
@@ -365,7 +382,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     const serverMetadata = await oid4vciClient.retrieveServerMetadata()
     const credentialsSupported = await getCredentialConfigsSupportedMerged({
       client: oid4vciClient,
-      vcFormatPreferences: this.vcFormatPreferences,
+      vcFormatPreferences: formats,
       types,
     })
     const credentialBranding = await getCredentialBranding({ credentialsSupported, context })
@@ -392,9 +409,9 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     // const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState! }) // TODO see if we need the check openID4VCIClientState defined
     /*const credentialsSupported = await getCredentialConfigsSupportedBySingleTypeOrId({
-              client,
-              vcFormatPreferences: this.vcFormatPreferences,
-            })*/
+                      client,
+                      vcFormatPreferences: this.vcFormatPreferences,
+                    })*/
     logger.info(`Credentials supported ${Object.keys(credentialsSupported).join(', ')}`)
 
     const credentialSelection: Array<CredentialToSelectFromResult> = await Promise.all(
@@ -517,11 +534,12 @@ export class OID4VCIHolder implements IAgentPlugin {
     if (!issuanceOpt) {
       return Promise.reject(Error(`Cannot get credential issuance options`))
     }
+
     const idOpts = await getIdentifierOpts({ issuanceOpt, context })
     const { key, kid } = idOpts
     const alg: SignatureAlgorithmEnum = await signatureAlgorithmFromKey({ key })
 
-    const callbacks: ProofOfPossessionCallbacks<DIDDocument> = {
+    const callbacks: ProofOfPossessionCallbacks<never> = {
       signCallback: await signCallback(client, idOpts, context),
     }
 
@@ -530,11 +548,32 @@ export class OID4VCIHolder implements IAgentPlugin {
       if (!client.clientId) {
         client.clientId = issuanceOpt.identifier.did
       }
+      let asOpts: AuthorizationServerOpts | undefined = undefined
+      if (accessTokenOpts?.clientOpts) {
+        let clientOptsKid = accessTokenOpts.clientOpts.kid ?? kid
+        const clientId = accessTokenOpts.clientOpts.clientId ?? client.clientId
+        if (client.isEBSI() && clientId?.startsWith('http') && clientOptsKid.includes('#')) {
+          clientOptsKid = clientOptsKid.split('#')[1]
+        }
+        const clientOpts: AuthorizationServerClientOpts = {
+          ...accessTokenOpts.clientOpts,
+          clientId,
+          kid: clientOptsKid,
+          // @ts-ignore
+          alg: accessTokenOpts.clientOpts.alg ?? alg,
+          signCallbacks: accessTokenOpts.clientOpts.signCallbacks ?? callbacks,
+        }
+        asOpts = {
+          clientOpts,
+        }
+      }
+
       await client.acquireAccessToken({
         clientId: client.clientId,
         pin,
         authorizationResponse: JSON.parse(await client.exportState()).authorizationCodeResponse,
         additionalRequestParams: accessTokenOpts?.additionalRequestParams,
+        ...(asOpts && { asOpts }),
       })
 
       // FIXME: This type mapping is wrong. It should use credential_identifier in case the access token response has authorization details
@@ -595,6 +634,26 @@ export class OID4VCIHolder implements IAgentPlugin {
     logger.log(`Contact added ${contact.id}`)
 
     return context.agent.cmAddIdentity({ contactId: contact.id, identity })
+  }
+
+  private async oid4vciHolderAddIssuerBranding(args: AddIssuerBrandingArgs, context: RequiredContext): Promise<void> {
+    const { serverMetadata, contact } = args
+    if (serverMetadata?.credentialIssuerMetadata?.display && contact) {
+      const issuerBrandings: IBasicIssuerLocaleBranding[] = await getIssuerBranding({
+        display: serverMetadata.credentialIssuerMetadata.display,
+        context,
+      })
+      const issuerCorrelationId: string =
+        contact.identities
+          .filter((identity) => identity.roles.includes(CredentialRole.ISSUER))
+          .map((identity) => identity.identifier.correlationId)[0] ?? undefined
+      if (issuerBrandings && issuerBrandings.length) {
+        const brandings: IIssuerBranding[] = await context.agent.ibGetIssuerBranding({ filter: [{ issuerCorrelationId }] })
+        if (!brandings || !brandings.length) {
+          await context.agent.ibAddIssuerBranding({ localeBranding: issuerBrandings, issuerCorrelationId })
+        }
+      }
+    }
   }
 
   private async oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<void> {

@@ -41,6 +41,7 @@
     { "path": "event-logger" },
     { "path": "remote-server-rest-api" },
     { "path": "sd-jwt" },
-    { "path": "ebsi-authorization-client" }
+    { "path": "ebsi-support" },
+    { "path": "public-key-hosting" }
   ]
 }

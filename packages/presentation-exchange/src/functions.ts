@@ -63,7 +63,14 @@ export async function createPEXPresentationSignCallback(
     let key: IKey | undefined
 
     if (args.skipDidResolution) {
-      key = id.keys.find((key) => !idOpts.kid || key.kid === idOpts.kid || `${id.did}#${key.kid}` === idOpts.kid)
+      if (!idOpts.kid) {
+        key = id.keys.find((key) => key.meta?.purpose?.includes(idOpts.verificationMethodSection ?? 'authentication') === true)
+      }
+      if (!key) {
+        key = id.keys.find(
+          (key) => !idOpts.kid || key.kid === idOpts.kid || key.meta?.jwkThumbprint === idOpts.kid || `${id.did}#${key.kid}` === idOpts.kid,
+        )
+      }
     } else {
       key = await getKey(id, 'authentication', context, idOpts.kid)
     }
@@ -86,9 +93,10 @@ export async function createPEXPresentationSignCallback(
     if (!presentation.holder) {
       presentation.holder = id.did
     }
+    const kid = vm?.id ?? key.meta?.jwkThumbprint ?? key.kid
     if (proofFormat === 'jwt') {
       header = {
-        kid: vm?.id ?? key.kid.includes('#') ? key.kid : `${id.did}#${key.kid}`,
+        kid: kid.includes('#') ? kid : `${id.did}#${kid}`,
       }
       if (presentation.verifier || !presentation.aud) {
         presentation.aud = Array.isArray(presentation.verifier) ? presentation.verifier : presentation.verifier ?? domain ?? args.domain
@@ -101,7 +109,7 @@ export async function createPEXPresentationSignCallback(
             presentation.nbf = Math.floor(converted / 1000)
           }
         } else {
-          presentation.nbf = Math.floor(Date.now() / 1000)
+          presentation.nbf = Math.floor(Date.now() / 1000 - 120)
         }
       }
 
@@ -116,7 +124,7 @@ export async function createPEXPresentationSignCallback(
             presentation.exp = Math.floor(converted / 1000)
           }
         } else {
-          presentation.exp = presentation.nbf + 600
+          presentation.exp = presentation.nbf + 600 + 120
         }
       }
 
@@ -135,7 +143,6 @@ export async function createPEXPresentationSignCallback(
 
     // todo: look for jwt_vc_json and remove types and @context
 
-    console.log(`PRE CREATE VP AGENT ${new Date().toString()}`)
     const vp = await context.agent.createVerifiablePresentation({
       presentation: presentation as PresentationPayload,
       removeOriginalFields: false,
@@ -146,8 +153,6 @@ export async function createPEXPresentationSignCallback(
       proofFormat,
       header,
     })
-    console.log(`POST CREATE VP AGENT ${new Date().toString()}`)
-    console.log(`PRE MAPPER AGENT ${new Date().toString()}`)
     // makes sure we extract an actual JWT from the internal representation in case it is a JWT
     return CredentialMapper.storedPresentationToOriginalFormat(vp as OriginalVerifiablePresentation)
   }

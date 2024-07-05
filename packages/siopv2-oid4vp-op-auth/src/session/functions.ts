@@ -91,7 +91,7 @@ export async function createOPBuilder({
 
   if (idOpts && idOpts.identifier) {
     const key = await getKey(await getIdentifier(idOpts, context), idOpts.verificationMethodSection, context, idOpts.kid)
-    const kid = determineKid(key, idOpts)
+    const kid = idOpts.kid?.startsWith('did:') ? idOpts.kid : determineKid(key, idOpts)
 
     builder.withSuppliedSignature(
       SuppliedSigner(key, context, getSigningAlgo(key.type) as unknown as KeyAlgo),
@@ -102,6 +102,7 @@ export async function createOPBuilder({
     builder.withPresentationSignCallback(
       await createOID4VPPresentationSignCallback({
         presentationSignCallback: opOptions.presentationSignCallback,
+        skipDidResolution: opOptions.skipDidResolution ?? false,
         idOpts,
         context,
       }),
