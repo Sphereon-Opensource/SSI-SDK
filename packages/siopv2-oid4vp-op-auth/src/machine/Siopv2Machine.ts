@@ -157,7 +157,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
         invoke: {
           src: Siopv2MachineServices.getSiopRequest,
           onDone: {
-            target: Siopv2MachineStates.getSelectableCredentials,
+            target: Siopv2MachineStates.retrieveContact,
             actions: assign({
               authorizationRequestData: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<Siopv2AuthorizationRequestData>) => _event.data,
             }),
@@ -167,28 +167,6 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
             actions: assign({
               error: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
                 title: translate('siopv2_machine_get_request_error_title'),
-                message: _event.data.message,
-                stack: _event.data.stack,
-              }),
-            }),
-          },
-        },
-      },
-      [Siopv2MachineStates.getSelectableCredentials]: {
-        id: Siopv2MachineStates.getSelectableCredentials,
-        invoke: {
-          src: Siopv2MachineServices.getSelectableCredentials,
-          onDone: {
-            target: Siopv2MachineStates.retrieveContact,
-            actions: assign({
-              selectableCredentialsMap: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<SelectableCredentialsMap>) => _event.data,
-            }),
-          },
-          onError: {
-            target: Siopv2MachineStates.handleError,
-            actions: assign({
-              error: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
-                title: translate('siopv2_machine_get_selectable_credentials_error_title'),
                 message: _event.data.message,
                 stack: _event.data.stack,
               }),
@@ -235,6 +213,10 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
             target: 'getSelectableCredentials',
             cond: Siopv2MachineGuards.hasAuthorizationRequestGuard,
           },
+          {
+            target: 'getSelectableCredentials',
+            cond: Siopv2MachineGuards.hasContactGuard,
+          },
         ],
       },
       [Siopv2MachineStates.addContact]: {
@@ -275,7 +257,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
           src: Siopv2MachineServices.addContactIdentity,
           onDone: [
             {
-              target: Siopv2MachineStates.selectCredentials,
+              target: Siopv2MachineStates.getSelectableCredentials,
               actions: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<Identity>): void => {
                 _ctx.contact?.identities.push(_event.data)
               },
@@ -301,6 +283,29 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
           },
         },
       },
+      [Siopv2MachineStates.getSelectableCredentials]: {
+        id: Siopv2MachineStates.getSelectableCredentials,
+        invoke: {
+          src: Siopv2MachineServices.getSelectableCredentials,
+          onDone: {
+            target: Siopv2MachineStates.selectCredentials,
+            actions: assign({
+              selectableCredentialsMap: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<SelectableCredentialsMap>) => _event.data,
+            }),
+          },
+          onError: {
+            target: Siopv2MachineStates.handleError,
+            actions: assign({
+              error: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
+                title: translate('siopv2_machine_get_selectable_credentials_error_title'),
+                message: _event.data.message,
+                stack: _event.data.stack,
+              }),
+            }),
+          },
+        },
+      },
+
       [Siopv2MachineStates.selectCredentials]: {
         id: Siopv2MachineStates.selectCredentials,
         on: {
@@ -344,10 +349,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
       [Siopv2MachineStates.handleError]: {
         id: Siopv2MachineStates.handleError,
         on: {
-          [Siopv2MachineEvents.NEXT]: {
-            target: Siopv2MachineStates.error,
-          },
-          [Siopv2MachineEvents.PREVIOUS]: {
+          '': {
             target: Siopv2MachineStates.error,
           },
         },

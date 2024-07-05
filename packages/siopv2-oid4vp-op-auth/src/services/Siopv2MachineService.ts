@@ -207,7 +207,7 @@ export const translateCorrelationIdToName = async (correlationId: string, contex
     filter: [{ identities: { identifier: { correlationId } } }],
   })
   if (contacts.length === 0) {
-    return Promise.reject(Error(`Unable to find contact for correlationId ${correlationId}`))
+    return correlationId
   }
   return contacts[0].contact.displayName
 }

@@ -224,9 +224,9 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
         : verifiedAuthorizationRequest.issuer ?? verifiedAuthorizationRequest.registrationMetadataPayload?.client_id)
     const uri: URL | undefined = url.includes('://') ? new URL(url) : undefined
     const correlationIdName = uri
-      ? translateCorrelationIdToName(uri.hostname, context)
+      ? await translateCorrelationIdToName(uri.hostname, context)
       : verifiedAuthorizationRequest.issuer
-        ? translateCorrelationIdToName(verifiedAuthorizationRequest.issuer.split('://')[1], context)
+        ? await translateCorrelationIdToName(verifiedAuthorizationRequest.issuer.split('://')[1], context)
         : name
     const correlationId: string = uri?.hostname ?? correlationIdName
     const clientId: string | undefined = await verifiedAuthorizationRequest.authorizationRequest.getMergedProperty<string>('client_id')
