@@ -279,7 +279,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
               actions: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<Identity>): void => {
                 _ctx.contact?.identities.push(_event.data)
               },
-              cond: Siopv2MachineGuards.canDoSelectCredentialsGuard,
+              cond: Siopv2MachineGuards.canDoGetSelectableCredentialsGuard,
             },
             {
               target: Siopv2MachineStates.sendResponse,
@@ -407,13 +407,13 @@ export class Siopv2Machine {
           Siopv2CanDoGetSelectableCredentialsGuard,
           Siopv2HasSelectedRequiredCredentialsGuard,
           Siopv2IsSiopOnlyGuard,
-          Siopv2IsSiopWithOID4VPGuard: Siopv2CanDoSelectCredentialsGuard,
+          Siopv2CanDoSelectCredentialsGuard,
           Siopv2CreateContactGuard,
           ...opts?.guards,
         },
       }),
     )
-    interpreter.subscribe()
+
     if (typeof opts?.subscription === 'function') {
       interpreter.onTransition(opts.subscription)
     }
@@ -421,7 +421,7 @@ export class Siopv2Machine {
     if (opts?.requireCustomNavigationHook !== true) {
       interpreter.onTransition((snapshot: Siopv2MachineState): void => {
         if (opts.stateNavigationListener !== undefined) {
-          opts.stateNavigationListener!(interpreter, snapshot)
+          opts.stateNavigationListener(interpreter, snapshot)
         }
       })
     }
