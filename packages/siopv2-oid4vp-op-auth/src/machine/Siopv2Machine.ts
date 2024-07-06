@@ -6,6 +6,7 @@ import { ErrorDetails } from '../types/error'
 import {
   ContactAliasEvent,
   ContactConsentEvent,
+  ContactRetrievalCompleteEvent,
   CreateContactEvent,
   CreateSiopv2MachineOpts,
   SelectCredentialsEvent,
@@ -36,6 +37,19 @@ const Siopv2HasContactGuard = (_ctx: Siopv2MachineContext, _event: Siopv2Machine
 const Siopv2HasAuthorizationRequestGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
   const { authorizationRequestData } = _ctx
   return authorizationRequestData !== undefined
+}
+
+const Siopv2CanDoGetSelectableCredentialsGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
+  const { authorizationRequestData, contact } = _ctx
+
+  if (!authorizationRequestData) {
+    throw new Error('Missing authorization request data in context')
+  }
+  if (!contact) {
+    throw new Error('Missing contact request data in context')
+  }
+
+  return authorizationRequestData.presentationDefinitions !== undefined
 }
 
 const Siopv2CreateContactGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
@@ -74,11 +88,15 @@ const Siopv2IsSiopOnlyGuard = (_ctx: Siopv2MachineContext, _event: Siopv2Machine
   return authorizationRequestData.presentationDefinitions === undefined
 }
 
-const Siopv2IsSiopWithOID4VPGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
-  const { authorizationRequestData } = _ctx
+const Siopv2CanDoSelectCredentialsGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
+  const { authorizationRequestData, selectableCredentialsMap } = _ctx
 
   if (!authorizationRequestData) {
     throw new Error('Missing authorization request data in context')
+  }
+
+  if (!selectableCredentialsMap) {
+    throw new Error('Missing selectableCredentialsMap in context')
   }
 
   return authorizationRequestData.presentationDefinitions !== undefined
@@ -91,7 +109,6 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
     hasContactConsent: true,
     contactAlias: '',
     selectedCredentials: [],
-    selectableCredentialsMap: new Map(),
     idOpts,
   }
 
@@ -106,6 +123,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
         | { type: Siopv2MachineGuards.hasContactGuard }
         | { type: Siopv2MachineGuards.createContactGuard }
         | { type: Siopv2MachineGuards.hasAuthorizationRequestGuard }
+        | { type: Siopv2MachineGuards.canDoGetSelectableCredentialsGuard }
         | { type: Siopv2MachineGuards.hasSelectedRequiredCredentialsGuard },
       services: {} as {
         [Siopv2MachineServices.createConfig]: {
@@ -178,10 +196,6 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
         id: Siopv2MachineStates.retrieveContact,
         invoke: {
           src: Siopv2MachineServices.retrieveContact,
-          onDone: {
-            target: Siopv2MachineStates.transitionFromSetup,
-            actions: assign({ contact: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<Party>) => _event.data }),
-          },
           onError: {
             target: Siopv2MachineStates.handleError,
             actions: assign({
@@ -190,6 +204,14 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
                 message: _event.data.message,
                 stack: _event.data.stack,
               }),
+            }),
+          },
+        },
+        on: {
+          [Siopv2MachineEvents.CONTACT_RETRIEVAL_COMPLETED]: {
+            target: `#${Siopv2MachineStates.transitionFromSetup}`,
+            actions: assign({
+              contact: (_ctx, event: ContactRetrievalCompleteEvent) => event.data,
             }),
           },
         },
@@ -206,16 +228,12 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
             cond: Siopv2MachineGuards.siopOnlyGuard,
           },
           {
+            target: Siopv2MachineStates.getSelectableCredentials,
+            cond: Siopv2MachineGuards.canDoGetSelectableCredentialsGuard,
+          },
+          {
             target: Siopv2MachineStates.selectCredentials,
-            cond: Siopv2MachineGuards.siopWithOID4VPGuard,
-          },
-          {
-            target: 'getSelectableCredentials',
-            cond: Siopv2MachineGuards.hasAuthorizationRequestGuard,
-          },
-          {
-            target: 'getSelectableCredentials',
-            cond: Siopv2MachineGuards.hasContactGuard,
+            cond: Siopv2MachineGuards.canDoSelectCredentialsGuard,
           },
         ],
       },
@@ -261,7 +279,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
               actions: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<Identity>): void => {
                 _ctx.contact?.identities.push(_event.data)
               },
-              cond: Siopv2MachineGuards.siopWithOID4VPGuard,
+              cond: Siopv2MachineGuards.canDoSelectCredentialsGuard,
             },
             {
               target: Siopv2MachineStates.sendResponse,
@@ -376,6 +394,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
 
 export class Siopv2Machine {
   static newInstance(opts: Siopv2MachineInstanceOpts): { interpreter: Siopv2MachineInterpreter } {
+    console.log('New Siopv2Machine instance')
     const interpreter: Siopv2MachineInterpreter = interpret(
       createSiopv2Machine(opts).withConfig({
         services: {
@@ -385,22 +404,24 @@ export class Siopv2Machine {
           Siopv2HasNoContactGuard,
           Siopv2HasContactGuard,
           Siopv2HasAuthorizationRequestGuard,
+          Siopv2CanDoGetSelectableCredentialsGuard,
           Siopv2HasSelectedRequiredCredentialsGuard,
           Siopv2IsSiopOnlyGuard,
-          Siopv2IsSiopWithOID4VPGuard,
+          Siopv2IsSiopWithOID4VPGuard: Siopv2CanDoSelectCredentialsGuard,
           Siopv2CreateContactGuard,
           ...opts?.guards,
         },
       }),
     )
-
+    interpreter.subscribe()
     if (typeof opts?.subscription === 'function') {
       interpreter.onTransition(opts.subscription)
     }
+
     if (opts?.requireCustomNavigationHook !== true) {
       interpreter.onTransition((snapshot: Siopv2MachineState): void => {
         if (opts.stateNavigationListener !== undefined) {
-          opts?.stateNavigationListener(interpreter, snapshot)
+          opts.stateNavigationListener!(interpreter, snapshot)
         }
       })
     }

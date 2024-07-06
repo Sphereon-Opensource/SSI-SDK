@@ -16,7 +16,7 @@ export type Siopv2MachineContext = {
   contact?: Party
   hasContactConsent: boolean
   contactAlias: string
-  selectableCredentialsMap: SelectableCredentialsMap
+  selectableCredentialsMap?: SelectableCredentialsMap
   selectedCredentials: Array<OriginalVerifiableCredential>
   error?: ErrorDetails
 }
@@ -40,6 +40,7 @@ export enum Siopv2MachineStates {
 
 export enum Siopv2MachineAddContactStates {
   idle = 'idle',
+  executing = 'executing',
   next = 'next',
 }
 
@@ -92,6 +93,7 @@ export enum Siopv2MachineEvents {
   DECLINE = 'DECLINE',
   SET_CONTACT_ALIAS = 'SET_CONTACT_ALIAS',
   SET_CONTACT_CONSENT = 'SET_CONTACT_CONSENT',
+  CONTACT_RETRIEVAL_COMPLETED = 'CONTACT_RETRIEVAL_COMPLETED',
   CREATE_CONTACT = 'CREATE_CONTACT',
   SET_SELECTED_CREDENTIALS = 'SET_SELECTED_CREDENTIALS',
 }
@@ -101,9 +103,10 @@ export enum Siopv2MachineGuards {
   createContactGuard = 'Siopv2CreateContactGuard',
   hasContactGuard = 'Siopv2HasContactGuard',
   hasAuthorizationRequestGuard = 'Siopv2HasAuthorizationRequestGuard',
+  canDoGetSelectableCredentialsGuard = 'Siopv2CanDoGetSelectableCredentialsGuard',
   hasSelectedRequiredCredentialsGuard = 'Siopv2HasSelectedRequiredCredentialsGuard',
   siopOnlyGuard = 'Siopv2IsSiopOnlyGuard',
-  siopWithOID4VPGuard = 'Siopv2IsSiopWithOID4VPGuard',
+  canDoSelectCredentialsGuard = 'Siopv2CanDoSelectCredentialsGuard',
 }
 
 export enum Siopv2MachineServices {
@@ -119,6 +122,7 @@ export type Siopv2MachineEventTypes =
   | NextEvent
   | PreviousEvent
   | DeclineEvent
+  | ContactRetrievalCompleteEvent
   | CreateContactEvent
   | ContactConsentEvent
   | ContactAliasEvent
@@ -128,6 +132,7 @@ export type NextEvent = { type: Siopv2MachineEvents.NEXT }
 export type PreviousEvent = { type: Siopv2MachineEvents.PREVIOUS }
 export type DeclineEvent = { type: Siopv2MachineEvents.DECLINE }
 export type ContactConsentEvent = { type: Siopv2MachineEvents.SET_CONTACT_CONSENT; data: boolean }
+export type ContactRetrievalCompleteEvent = { type: Siopv2MachineEvents.CONTACT_RETRIEVAL_COMPLETED; data: Party | undefined }
 export type ContactAliasEvent = { type: Siopv2MachineEvents.SET_CONTACT_ALIAS; data: string }
 export type CreateContactEvent = { type: Siopv2MachineEvents.CREATE_CONTACT; data: Party }
 export type SelectCredentialsEvent = {
