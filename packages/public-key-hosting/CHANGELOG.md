@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.27.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.26.0...v0.27.0) (2024-07-07)
+
+### Features
+
+- Add JWKS hosting per DID ([70e41d7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/70e41d797b50f6dd5e9fe250f4cec1fdb615c029))
+- EBSI DID registraiton/management ([7195786](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7195786bde800f3ce231ef4dd4fb1629a73143b2))
+
 # [0.26.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.25.0...v0.26.0) (2024-06-19)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.w3c-attestationCredential-api
