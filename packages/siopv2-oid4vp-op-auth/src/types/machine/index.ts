@@ -16,7 +16,7 @@ export type Siopv2MachineContext = {
   contact?: Party
   hasContactConsent: boolean
   contactAlias: string
-  selectableCredentialsMap: SelectableCredentialsMap
+  selectableCredentialsMap?: SelectableCredentialsMap
   selectedCredentials: Array<OriginalVerifiableCredential>
   error?: ErrorDetails
 }
@@ -40,6 +40,7 @@ export enum Siopv2MachineStates {
 
 export enum Siopv2MachineAddContactStates {
   idle = 'idle',
+  executing = 'executing',
   next = 'next',
 }
 
@@ -101,6 +102,7 @@ export enum Siopv2MachineGuards {
   createContactGuard = 'Siopv2CreateContactGuard',
   hasContactGuard = 'Siopv2HasContactGuard',
   hasAuthorizationRequestGuard = 'Siopv2HasAuthorizationRequestGuard',
+  hasSelectableCredentialsAndContactGuard = 'Siopv2HasSelectableCredentialsAndContactGuard',
   hasSelectedRequiredCredentialsGuard = 'Siopv2HasSelectedRequiredCredentialsGuard',
   siopOnlyGuard = 'Siopv2IsSiopOnlyGuard',
   siopWithOID4VPGuard = 'Siopv2IsSiopWithOID4VPGuard',
