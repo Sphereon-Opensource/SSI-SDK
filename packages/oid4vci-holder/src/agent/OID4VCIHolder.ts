@@ -18,6 +18,7 @@ import { getIdentifier, getKey, IIdentifierOpts, SupportedDidMethodEnum } from '
 import {
   CorrelationIdentifierType,
   CredentialRole,
+  FindPartyArgs,
   IBasicCredentialLocaleBranding,
   IBasicIssuerLocaleBranding,
   Identity,
@@ -409,9 +410,9 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     // const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState! }) // TODO see if we need the check openID4VCIClientState defined
     /*const credentialsSupported = await getCredentialConfigsSupportedBySingleTypeOrId({
-                      client,
-                      vcFormatPreferences: this.vcFormatPreferences,
-                    })*/
+                          client,
+                          vcFormatPreferences: this.vcFormatPreferences,
+                        })*/
     logger.info(`Credentials supported ${Object.keys(credentialsSupported).join(', ')}`)
 
     const credentialSelection: Array<CredentialToSelectFromResult> = await Promise.all(
@@ -466,20 +467,48 @@ export class OID4VCIHolder implements IAgentPlugin {
       return Promise.reject(Error('Missing serverMetadata in context'))
     }
 
+    const names: Set<string> = new Set(
+      serverMetadata.credentialIssuerMetadata?.display
+        ?.map((display) => display.name)
+        .filter((name) => name != undefined)
+        .map((name) => name as string) ?? [],
+    )
+    const name = names.size > 0 ? Array.from(names)[0] : undefined
+
     const correlationId: string = new URL(serverMetadata.issuer).hostname
-    const party = context.agent
-      .cmGetContacts({
-        filter: [
-          {
-            identities: {
-              identifier: {
-                correlationId,
-              },
-            },
+
+    const filter: FindPartyArgs = [
+      {
+        identities: {
+          identifier: {
+            correlationId,
           },
-        ],
+        },
+      },
+    ]
+
+    if (name) {
+      filter.push({
+        contact: {
+          legalName: name,
+        },
       })
-      .then((contacts: Array<Party>): Party | undefined => (contacts.length === 1 ? contacts[0] : undefined))
+      filter.push({
+        contact: {
+          displayName: name,
+        },
+      })
+    }
+
+    const parties = await context.agent.cmGetContacts({
+      filter,
+    })
+
+    if (parties.length > 1) {
+      logger.warning(`Get contacts returned more than one result: ${parties.length}, ${parties.map((party) => party.contact.displayName).join(',')}`)
+    }
+    const party = parties.length >= 1 ? parties[0] : undefined
+
     logger.log(`Party involved: `, party)
     return party
   }
