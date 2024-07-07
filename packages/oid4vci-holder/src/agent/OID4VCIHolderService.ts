@@ -276,7 +276,7 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Identi
     }
   }
   const key: _ExtendedIKey = await getAuthenticationKey(identifier, context, identifier.did.startsWith('did:ebsi'), true)
-  const kid: string = key.meta?.jwkThumbprint ?? key.meta.verificationMethod?.id ?? key.kid
+  const kid: string = (identifier.did.startsWith('did:ebsi:') ? key.meta?.jwkThumbprint : key.meta.verificationMethod?.id) ?? key.kid
 
   return { identifier, key, kid }
 }
