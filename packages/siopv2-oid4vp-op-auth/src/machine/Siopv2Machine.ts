@@ -6,7 +6,6 @@ import { ErrorDetails } from '../types/error'
 import {
   ContactAliasEvent,
   ContactConsentEvent,
-  ContactRetrievalCompleteEvent,
   CreateContactEvent,
   CreateSiopv2MachineOpts,
   SelectCredentialsEvent,
@@ -22,7 +21,10 @@ import {
   Siopv2MachineStates,
   Siopv2StateMachine,
 } from '../types/machine'
-import { SelectableCredentialsMap, Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData } from '../types'
+import { LOGGER_NAMESPACE, SelectableCredentialsMap, Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData } from '../types'
+import { Loggers } from '@sphereon/ssi-types'
+
+export const logger = Loggers.DEFAULT.get(LOGGER_NAMESPACE)
 
 const Siopv2HasNoContactGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
   const { contact } = _ctx
@@ -39,7 +41,7 @@ const Siopv2HasAuthorizationRequestGuard = (_ctx: Siopv2MachineContext, _event: 
   return authorizationRequestData !== undefined
 }
 
-const Siopv2CanDoGetSelectableCredentialsGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
+const Siopv2HasSelectableCredentialsAndContactGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
   const { authorizationRequestData, contact } = _ctx
 
   if (!authorizationRequestData) {
@@ -72,10 +74,10 @@ const Siopv2HasSelectedRequiredCredentialsGuard = (_ctx: Siopv2MachineContext, _
   // FIXME: Return _ctx.selectedCredentials.length > 0 for now, given this is a really expensive operation and will be called in the next phase anyway
   return _ctx.selectedCredentials.length > 0
   /*const definitionWithLocation: PresentationDefinitionWithLocation = authorizationRequestData.presentationDefinitions[0];
-      const pex: PEX = new PEX();
-      const evaluationResults: EvaluationResults = pex.evaluateCredentials(definitionWithLocation.definition, selectedCredentials);
+        const pex: PEX = new PEX();
+        const evaluationResults: EvaluationResults = pex.evaluateCredentials(definitionWithLocation.definition, selectedCredentials);
 
-      return evaluationResults.areRequiredCredentialsPresent === Status.INFO;*/
+        return evaluationResults.areRequiredCredentialsPresent === Status.INFO;*/
 }
 
 const Siopv2IsSiopOnlyGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
@@ -88,7 +90,7 @@ const Siopv2IsSiopOnlyGuard = (_ctx: Siopv2MachineContext, _event: Siopv2Machine
   return authorizationRequestData.presentationDefinitions === undefined
 }
 
-const Siopv2CanDoSelectCredentialsGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
+const Siopv2IsSiopWithOID4VPGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
   const { authorizationRequestData, selectableCredentialsMap } = _ctx
 
   if (!authorizationRequestData) {
@@ -123,7 +125,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
         | { type: Siopv2MachineGuards.hasContactGuard }
         | { type: Siopv2MachineGuards.createContactGuard }
         | { type: Siopv2MachineGuards.hasAuthorizationRequestGuard }
-        | { type: Siopv2MachineGuards.canDoGetSelectableCredentialsGuard }
+        | { type: Siopv2MachineGuards.hasSelectableCredentialsAndContactGuard }
         | { type: Siopv2MachineGuards.hasSelectedRequiredCredentialsGuard },
       services: {} as {
         [Siopv2MachineServices.createConfig]: {
@@ -196,6 +198,10 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
         id: Siopv2MachineStates.retrieveContact,
         invoke: {
           src: Siopv2MachineServices.retrieveContact,
+          onDone: {
+            target: Siopv2MachineStates.transitionFromSetup,
+            actions: assign({ contact: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<Party>) => _event.data }),
+          },
           onError: {
             target: Siopv2MachineStates.handleError,
             actions: assign({
@@ -204,14 +210,6 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
                 message: _event.data.message,
                 stack: _event.data.stack,
               }),
-            }),
-          },
-        },
-        on: {
-          [Siopv2MachineEvents.CONTACT_RETRIEVAL_COMPLETED]: {
-            target: `#${Siopv2MachineStates.transitionFromSetup}`,
-            actions: assign({
-              contact: (_ctx, event: ContactRetrievalCompleteEvent) => event.data,
             }),
           },
         },
@@ -229,11 +227,11 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
           },
           {
             target: Siopv2MachineStates.getSelectableCredentials,
-            cond: Siopv2MachineGuards.canDoGetSelectableCredentialsGuard,
+            cond: Siopv2MachineGuards.hasSelectableCredentialsAndContactGuard,
           },
           {
             target: Siopv2MachineStates.selectCredentials,
-            cond: Siopv2MachineGuards.canDoSelectCredentialsGuard,
+            cond: Siopv2MachineGuards.siopWithOID4VPGuard,
           },
         ],
       },
@@ -279,7 +277,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
               actions: (_ctx: Siopv2MachineContext, _event: DoneInvokeEvent<Identity>): void => {
                 _ctx.contact?.identities.push(_event.data)
               },
-              cond: Siopv2MachineGuards.canDoGetSelectableCredentialsGuard,
+              cond: Siopv2MachineGuards.hasSelectableCredentialsAndContactGuard,
             },
             {
               target: Siopv2MachineStates.sendResponse,
@@ -394,7 +392,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
 
 export class Siopv2Machine {
   static newInstance(opts: Siopv2MachineInstanceOpts): { interpreter: Siopv2MachineInterpreter } {
-    console.log('New Siopv2Machine instance')
+    logger.info('New Siopv2Machine instance')
     const interpreter: Siopv2MachineInterpreter = interpret(
       createSiopv2Machine(opts).withConfig({
         services: {
@@ -404,10 +402,10 @@ export class Siopv2Machine {
           Siopv2HasNoContactGuard,
           Siopv2HasContactGuard,
           Siopv2HasAuthorizationRequestGuard,
-          Siopv2CanDoGetSelectableCredentialsGuard,
+          Siopv2HasSelectableCredentialsAndContactGuard,
           Siopv2HasSelectedRequiredCredentialsGuard,
           Siopv2IsSiopOnlyGuard,
-          Siopv2CanDoSelectCredentialsGuard,
+          Siopv2IsSiopWithOID4VPGuard,
           Siopv2CreateContactGuard,
           ...opts?.guards,
         },
@@ -426,7 +424,7 @@ export class Siopv2Machine {
       })
     }
     interpreter.onTransition((snapshot: Siopv2MachineState): void => {
-      console.log(snapshot.value)
+      logger.info('onTransition to new state', snapshot.value)
     })
 
     return { interpreter }

@@ -62,7 +62,7 @@ const oid4vciVerificationCodeGuard = (_ctx: OID4VCIMachineContext, _event: OID4V
 
 const oid4vciCreateContactGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
   const { contactAlias, hasContactConsent } = _ctx
-  return hasContactConsent && contactAlias !== undefined && contactAlias !== null && contactAlias.length > 0
+  return hasContactConsent && contactAlias && contactAlias.length > 0
 }
 
 const oid4vciHasSelectedCredentialsGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {

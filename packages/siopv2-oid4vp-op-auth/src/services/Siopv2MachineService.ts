@@ -24,7 +24,7 @@ import { OID4VP, OpSession } from '../session'
 import { IPresentationDefinition, PEX } from '@sphereon/pex'
 import { InputDescriptorV1, InputDescriptorV2, PresentationDefinitionV1, PresentationDefinitionV2 } from '@sphereon/pex-models'
 
-const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
+export const logger = Loggers.DEFAULT.get(LOGGER_NAMESPACE)
 
 export const siopSendAuthorizationResponse = async (
   connectionType: ConnectionType,
@@ -49,8 +49,8 @@ export const siopSendAuthorizationResponse = async (
   }
   const request = await session.getAuthorizationRequest()
   const aud = await request.authorizationRequest.getMergedProperty<string>('aud')
-  console.log(`AUD: ${aud}`)
-  console.log(JSON.stringify(request.authorizationRequest))
+  logger.debug(`AUD: ${aud}`)
+  logger.debug(JSON.stringify(request.authorizationRequest))
   const clientId = await request.authorizationRequest.getMergedProperty<string>('client_id')
   const redirectUri = await request.authorizationRequest.getMergedProperty<string>('redirect_uri')
   if (clientId?.toLowerCase().includes('.ebsi.eu') || redirectUri?.toLowerCase().includes('.ebsi.eu')) {
@@ -215,7 +215,7 @@ export const translateCorrelationIdToName = async (correlationId: string, contex
     filter: [{ identities: { identifier: { correlationId } } }],
   })
   if (contacts.length === 0) {
-    return correlationId
+    return Promise.reject(Error(`Unable to find contact for correlationId ${correlationId}`))
   }
   return contacts[0].contact.displayName
 }
