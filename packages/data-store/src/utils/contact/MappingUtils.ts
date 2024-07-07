@@ -166,7 +166,7 @@ export const correlationIdentifierFrom = (identifier: CorrelationIdentifierEntit
 
 export const didAuthConfigEntityFrom = (config: NonPersistedDidAuthConfig): DidAuthConfigEntity => {
   const didAuthConfig: DidAuthConfigEntity = new DidAuthConfigEntity()
-  didAuthConfig.identifier = config.identifier.did
+  didAuthConfig.identifier = typeof config.idOpts.identifier === 'string' ? config.idOpts.identifier : config.idOpts.identifier.did
   didAuthConfig.redirectUrl = config.redirectUrl
   didAuthConfig.sessionId = config.sessionId
   didAuthConfig.ownerId = config.ownerId
@@ -479,7 +479,7 @@ export const openIdConfigFrom = (config: OpenIdConfigEntity): OpenIdConfig => {
 export const didAuthConfigFrom = (config: DidAuthConfigEntity): DidAuthConfig => {
   return {
     id: config.id,
-    identifier: { did: config.identifier, provider: '', keys: [], services: [] },
+    idOpts: { identifier: config.identifier },
     stateId: '', // FIXME
     redirectUrl: config.redirectUrl,
     sessionId: config.sessionId,
@@ -492,4 +492,4 @@ export const isOpenIdConfig = (config: NonPersistedConnectionConfig | BaseConfig
   'clientSecret' in config && 'issuer' in config && 'redirectUrl' in config
 
 export const isDidAuthConfig = (config: NonPersistedConnectionConfig | BaseConfigEntity): config is DidAuthConfig | DidAuthConfigEntity =>
-  'identifier' in config && 'redirectUrl' in config && 'sessionId' in config
+  ('identifier' in config || ('idOpts' in config && 'identifier' in config.idOpts)) && 'redirectUrl' in config && 'sessionId' in config

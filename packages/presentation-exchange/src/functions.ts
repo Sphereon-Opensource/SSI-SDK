@@ -1,7 +1,8 @@
 import { dereferenceDidKeysWithJwkSupport, getAgentResolver, getIdentifier, getKey, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import { _NormalizedVerificationMethod } from '@veramo/utils'
 import { IPEXPresentationSignCallback, IRequiredContext } from './types/IPresentationExchange'
 import { IPresentationDefinition } from '@sphereon/pex'
-import { PresentationPayload, ProofFormat } from '@veramo/core'
+import { IKey, PresentationPayload, ProofFormat } from '@veramo/core'
 import { CredentialMapper, Optional, OriginalVerifiablePresentation, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { Format } from '@sphereon/pex-models'
 
@@ -9,6 +10,7 @@ export async function createPEXPresentationSignCallback(
   args: {
     idOpts: IIdentifierOpts
     fetchRemoteContexts?: boolean
+    skipDidResolution?: boolean
     format?: Format | ProofFormat
     domain?: string
     challenge?: string
@@ -58,12 +60,32 @@ export async function createPEXPresentationSignCallback(
     if (!presentation.holder) {
       presentation.holder = id.did
     }
-    const key = await getKey(id, 'authentication', context, idOpts.kid)
-    const didResolution = await getAgentResolver(context).resolve(idOpts.identifier.did)
-    const vms = await dereferenceDidKeysWithJwkSupport(didResolution.didDocument!, idOpts.verificationMethodSection ?? 'authentication', context)
-    const vm = vms.find((vm) => vm.publicKeyHex === key.publicKeyHex)
-    if (!vm) {
-      throw Error(`Could not resolve DID document or match signing key to did ${idOpts.identifier.did}`)
+    let key: IKey | undefined
+
+    if (args.skipDidResolution) {
+      if (!idOpts.kid) {
+        key = id.keys.find((key) => key.meta?.purpose?.includes(idOpts.verificationMethodSection ?? 'authentication') === true)
+      }
+      if (!key) {
+        key = id.keys.find(
+          (key) => !idOpts.kid || key.kid === idOpts.kid || key.meta?.jwkThumbprint === idOpts.kid || `${id.did}#${key.kid}` === idOpts.kid,
+        )
+      }
+    } else {
+      key = await getKey(id, 'authentication', context, idOpts.kid)
+    }
+
+    if (!key) {
+      throw Error(`Could not determine key to use ${JSON.stringify(idOpts)}`)
+    }
+    let vm: _NormalizedVerificationMethod | undefined = undefined
+    if (args.skipDidResolution !== true) {
+      const didResolution = await getAgentResolver(context).resolve(idOpts.identifier.did)
+      const vms = await dereferenceDidKeysWithJwkSupport(didResolution.didDocument!, idOpts.verificationMethodSection ?? 'authentication', context)
+      vm = vms.find((vm) => vm.publicKeyHex === key.publicKeyHex)
+      if (!vm) {
+        throw Error(`Could not resolve DID document or match signing key to did ${idOpts.identifier.did}`)
+      }
     }
 
     const proofFormat = determineProofFormat({ format, presentationDefinition })
@@ -71,9 +93,10 @@ export async function createPEXPresentationSignCallback(
     if (!presentation.holder) {
       presentation.holder = id.did
     }
+    const kid = vm?.id ?? key.meta?.jwkThumbprint ?? key.kid
     if (proofFormat === 'jwt') {
       header = {
-        kid: vm.id,
+        kid: kid.includes('#') ? kid : `${id.did}#${kid}`,
       }
       if (presentation.verifier || !presentation.aud) {
         presentation.aud = Array.isArray(presentation.verifier) ? presentation.verifier : presentation.verifier ?? domain ?? args.domain
@@ -86,7 +109,7 @@ export async function createPEXPresentationSignCallback(
             presentation.nbf = Math.floor(converted / 1000)
           }
         } else {
-          presentation.nbf = Math.floor(Date.now() / 1000)
+          presentation.nbf = Math.floor(Date.now() / 1000 - 120)
         }
       }
 
@@ -101,7 +124,7 @@ export async function createPEXPresentationSignCallback(
             presentation.exp = Math.floor(converted / 1000)
           }
         } else {
-          presentation.exp = presentation.nbf + 600
+          presentation.exp = presentation.nbf + 600 + 120
         }
       }
 
@@ -120,7 +143,6 @@ export async function createPEXPresentationSignCallback(
 
     // todo: look for jwt_vc_json and remove types and @context
 
-    console.log(`PRE CREATE VP AGENT ${new Date().toString()}`)
     const vp = await context.agent.createVerifiablePresentation({
       presentation: presentation as PresentationPayload,
       removeOriginalFields: false,
@@ -131,8 +153,6 @@ export async function createPEXPresentationSignCallback(
       proofFormat,
       header,
     })
-    console.log(`POST CREATE VP AGENT ${new Date().toString()}`)
-    console.log(`PRE MAPPER AGENT ${new Date().toString()}`)
     // makes sure we extract an actual JWT from the internal representation in case it is a JWT
     return CredentialMapper.storedPresentationToOriginalFormat(vp as OriginalVerifiablePresentation)
   }

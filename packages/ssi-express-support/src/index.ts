@@ -1,5 +1,3 @@
-import * as dotenv from 'dotenv-flow'
-dotenv.config()
 export * from './entra-id-auth'
 export * from './static-bearer-auth'
 export * from './auth-utils'

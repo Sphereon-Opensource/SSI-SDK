@@ -34,7 +34,7 @@ import { IWellKnownDidIssuer, WellKnownDidIssuer } from '@sphereon/ssi-sdk.wellk
 const agent = createAgent<IWellKnownDidIssuer>({
   plugins: [
     new WellKnownDidIssuer({
-      credentialIssuances: { issueVc: () => Promise.resolve({ ...vc }) },
+      credentialIssuances: { issueVc: () => Promise.resolve({ ...attestationCredential }) },
     }),
   ],
 })
@@ -48,7 +48,7 @@ Registers a callback function.
 agent
   .registerCredentialIssuance({
     callbackName: 'example_key',
-    credentialIssuance: () => Promise.resolve({ ...vc }),
+    credentialIssuance: () => Promise.resolve({ ...attestationCredential }),
   })
   .then(() => console.log('success'))
   .catch(() => console.log('failed'))
