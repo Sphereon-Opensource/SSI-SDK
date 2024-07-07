@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.27.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.26.0...v0.27.0) (2024-07-07)
+
+### Bug Fixes
+
+- added a guard to check the issuerBranding ([c6d8de2](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c6d8de2ea8b3c02e940fcb098c037e7a0de1f7e4))
+- extract PD name & purpose from definitionPayload ([9573ced](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9573cedf6031510b93c64c6f34dea97eb3a654d5))
+- fixed addIssuerBranding step ([3008b11](https://github.com/Sphereon-Opensource/SSI-SDK/commit/3008b11d442c1ae9e619ef63d41ee609975c173f))
+- fixed addIssuerBranding step after adding identity ([17aa278](https://github.com/Sphereon-Opensource/SSI-SDK/commit/17aa2781c4393fe03136a38e6371b7174353bc8c))
+- remove execution of loading env files ([1937c14](https://github.com/Sphereon-Opensource/SSI-SDK/commit/1937c14a7021054b6015a7ff9dabb6b5b2bb08dd))
+
+### Features
+
+- Add JWKS hosting per DID ([70e41d7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/70e41d797b50f6dd5e9fe250f4cec1fdb615c029))
+- added addIssuerBranding step to the vci machine ([6fba515](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6fba515b85c0f927856950e3d9c78bfb1f5b7917))
+- added branding as an optional parameter to the party ([0b46c70](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0b46c701cc7104d2ef07672657b0493b09319e59))
+- Allow EBSI attestation client to be the start of a regular VCI flow ([afffd39](https://github.com/Sphereon-Opensource/SSI-SDK/commit/afffd399e2b5ad696047130b967f9b72cfd65649))
+- Callback listeeners ([fce3670](https://github.com/Sphereon-Opensource/SSI-SDK/commit/fce367041eed15ffc0d261ec2820470bf1615e3b))
+- EBSI access token, attestation and DID support ([bed66b4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/bed66b463c025dbd86637ba43c815ca08c5d16d2))
+- EBSI DID registraiton/management ([7195786](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7195786bde800f3ce231ef4dd4fb1629a73143b2))
+- EBSI headless attestation credentials ([6b6ad14](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6b6ad14d4be1c4cbca8e6d49cc73db4713e04f26))
+- fixes after merge, modified some comment and prettier ([daebd26](https://github.com/Sphereon-Opensource/SSI-SDK/commit/daebd267102282971e98f9b3eb513d792dc50004))
+- Get the authorization URL from a TI using a cloud/service wallet when requesting a particular attestation credential ([222c4d4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/222c4d451e84b6eb0c21a4c7a615ce1480f9dba9))
+- implement Oid4VP authorization token support ([5fdbd65](https://github.com/Sphereon-Opensource/SSI-SDK/commit/5fdbd6597ce1fa00ba914e56810fc3f4f8ec06b8))
+- Introduce EBSI attestation service to get VCs, for instance to onboard ([59f1809](https://github.com/Sphereon-Opensource/SSI-SDK/commit/59f1809a7098f96bab6eca25476314a4d0d245fc))
+- Siopv2Holder module implementing xstate Siopv2Machine ([7dd0651](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7dd0651c4f94f42c241e0eeaf3fe905e572f03ed))
+
 # [0.26.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.25.0...v0.26.0) (2024-06-19)
 
 ### Bug Fixes

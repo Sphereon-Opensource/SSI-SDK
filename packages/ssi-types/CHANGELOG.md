@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.27.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.26.0...v0.27.0) (2024-07-07)
+
+### Features
+
+- EBSI DID registraiton/management ([7195786](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/7195786bde800f3ce231ef4dd4fb1629a73143b2))
+- EBSI headless attestation credentials ([6b6ad14](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/6b6ad14d4be1c4cbca8e6d49cc73db4713e04f26))
+
 # [0.26.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.25.0...v0.26.0) (2024-06-19)
 
 **Note:** Version bump only for package @sphereon/ssi-types
