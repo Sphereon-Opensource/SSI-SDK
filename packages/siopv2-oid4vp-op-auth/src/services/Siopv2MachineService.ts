@@ -208,15 +208,16 @@ export const getSelectableCredentials = async (
   return selectableCredentialsMap
 }
 
-export const translateCorrelationIdToName = async (correlationId: string, context: RequiredContext): Promise<string> => {
+export const translateCorrelationIdToName = async (correlationId: string, context: RequiredContext): Promise<string | undefined> => {
   const { agent } = context
 
   const contacts = await agent.cmGetContacts({
     filter: [{ identities: { identifier: { correlationId } } }],
   })
+
   if (contacts.length === 0) {
-    return correlationId
-    //  FIXME  return Promise.reject(Error(`Unable to find contact for correlationId ${correlationId}`)) when there is no contact yet , we can't throw an error here. getSIOPRequest will crash
+    return undefined
   }
+
   return contacts[0].contact.displayName
 }
