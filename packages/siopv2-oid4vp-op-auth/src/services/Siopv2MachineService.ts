@@ -215,7 +215,8 @@ export const translateCorrelationIdToName = async (correlationId: string, contex
     filter: [{ identities: { identifier: { correlationId } } }],
   })
   if (contacts.length === 0) {
-    return Promise.reject(Error(`Unable to find contact for correlationId ${correlationId}`))
+    return correlationId
+    //  FIXME  return Promise.reject(Error(`Unable to find contact for correlationId ${correlationId}`))  We can't do getSIOPRequest if we throw an error here
   }
   return contacts[0].contact.displayName
 }
