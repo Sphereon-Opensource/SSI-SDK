@@ -216,7 +216,7 @@ export const translateCorrelationIdToName = async (correlationId: string, contex
   })
   if (contacts.length === 0) {
     return correlationId
-    //  FIXME  return Promise.reject(Error(`Unable to find contact for correlationId ${correlationId}`))  We can't do getSIOPRequest if we throw an error here
+    //  FIXME  return Promise.reject(Error(`Unable to find contact for correlationId ${correlationId}`)) when there is no contact yet , we can't throw an error here. getSIOPRequest will crash
   }
   return contacts[0].contact.displayName
 }
