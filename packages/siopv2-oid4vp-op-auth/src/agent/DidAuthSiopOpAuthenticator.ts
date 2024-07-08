@@ -216,14 +216,20 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     logger.debug(`session: ${JSON.stringify(session.id, null, 2)}`)
     const verifiedAuthorizationRequest = await session.getAuthorizationRequest()
     // logger.trace('Request: ' + JSON.stringify(verifiedAuthorizationRequest, null, 2))
-    const name: string | undefined = verifiedAuthorizationRequest.registrationMetadataPayload?.client_name
     const url =
       verifiedAuthorizationRequest.responseURI ??
       (args.url.includes('request_uri')
         ? decodeURIComponent(args.url.split('?request_uri=')[1].trim())
         : verifiedAuthorizationRequest.issuer ?? verifiedAuthorizationRequest.registrationMetadataPayload?.client_id)
     const uri: URL | undefined = url.includes('://') ? new URL(url) : undefined
-    const correlationId: string = uri?.hostname ?? (await this.determineCorrelationId(uri, verifiedAuthorizationRequest, name, context))
+    const correlationId: string =
+      uri?.hostname ??
+      (await this.determineCorrelationId(
+        uri,
+        verifiedAuthorizationRequest,
+        verifiedAuthorizationRequest.registrationMetadataPayload?.client_name,
+        context,
+      ))
     const clientId: string | undefined = await verifiedAuthorizationRequest.authorizationRequest.getMergedProperty<string>('client_id')
 
     return {
@@ -231,7 +237,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       correlationId,
       registrationMetadataPayload: verifiedAuthorizationRequest.registrationMetadataPayload,
       uri,
-      name,
+      name: clientName,
       clientId,
       presentationDefinitions:
         (await verifiedAuthorizationRequest.authorizationRequest.containsResponseType('vp_token')) ||
