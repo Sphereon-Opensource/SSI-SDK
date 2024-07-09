@@ -4,6 +4,7 @@ export type DigitalCredential = {
   id: string
   documentType: DocumentType
   documentFormat: CredentialDocumentFormat
+  credentialRole: CredentialRole
   rawDocument: string
   uniformDocument: string
   hash: string
@@ -37,6 +38,12 @@ export enum CredentialDocumentFormat {
 
 export enum CredentialCorrelationType {
   DID = 'DID',
+}
+
+export enum CredentialRole {
+  ISSUER = 'ISSUER',
+  VERIFIER = 'ISSUER',
+  HOLDER = 'HOLDER',
 }
 
 export enum CredentialStateType {

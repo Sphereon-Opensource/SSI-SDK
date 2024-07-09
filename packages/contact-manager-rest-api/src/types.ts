@@ -16,5 +16,5 @@ export interface IContactManagerAPIEndpointOpts {
   enableFeatures?: ContactManagerMRestApiFeatures[]
 }
 
-export type IRequiredPlugins = IContactManager & IDataStore & IKeyManager & IDIDManager
+export type IRequiredPlugins = IContactManager & IKeyManager & IDIDManager
 export type IRequiredContext = IAgentContext<IRequiredPlugins>

@@ -66,7 +66,7 @@ const dbConnection = DataSources.singleInstance()
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
 const agent: TAgent<IRequiredPlugins> = createAgent<
-  IDIDManager & IKeyManager & IDataStore & IDataStoreORM & IResolver & ICredentialHandlerLDLocal & ICredentialPlugin
+  IDIDManager & IKeyManager & IDataStoreORM & IResolver & ICredentialHandlerLDLocal & ICredentialPlugin
 >({
   plugins: [
     new DataStore(dbConnection),

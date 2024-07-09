@@ -3,7 +3,7 @@ import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-supp
 import { IAgentContext, IDataStore, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
 import { VerificationMethod } from 'did-resolver'
 
-export type IRequiredPlugins = IDataStore & IDataStoreORM & IDIDManager & IKeyManager & IResolver
+export type IRequiredPlugins = IDataStoreORM & IDIDManager & IKeyManager & IResolver
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
 export interface DidRegistrationCreateRequest {

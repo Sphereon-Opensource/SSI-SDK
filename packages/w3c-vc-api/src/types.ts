@@ -12,14 +12,7 @@ import {
 } from '@veramo/core'
 import { ProofFormat } from '@veramo/core/src/types/ICredentialIssuer'
 
-export type IRequiredPlugins = IDataStore &
-  IDataStoreORM &
-  IDIDManager &
-  IKeyManager &
-  ICredentialIssuer &
-  ICredentialVerifier &
-  ICredentialPlugin &
-  IResolver
+export type IRequiredPlugins = IDataStoreORM & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier & ICredentialPlugin & IResolver
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
 // interface IVCAPISecurityOpts {}

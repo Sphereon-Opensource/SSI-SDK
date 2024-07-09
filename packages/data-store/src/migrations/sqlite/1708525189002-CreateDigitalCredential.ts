@@ -9,6 +9,7 @@ export class CreateDigitalCredential1708525189002 implements MigrationInterface 
                 "id" varchar PRIMARY KEY NOT NULL,
                 "document_type" varchar CHECK( "document_type" IN ('VC', 'VP', 'C', 'P') ) NOT NULL,
                 "document_format" varchar CHECK( "document_format" IN ('JSON_LD', 'JWT', 'SD_JWT', 'MDOC') ) NOT NULL,
+                "credential_role" varchar CHECK( "credential_role" IN ('ISSUER', 'ISSUER', 'HOLDER') ) NOT NULL,
                 "raw_document" text NOT NULL,
                 "uniform_document" text NOT NULL,
                 "hash" text NOT NULL UNIQUE,

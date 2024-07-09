@@ -11,7 +11,11 @@ import { OrPromise } from '@sphereon/ssi-types'
 import { DataSource, FindOptionsOrder, Repository } from 'typeorm'
 import Debug from 'debug'
 import { DigitalCredentialEntity } from '../entities/digitalCredential/DigitalCredentialEntity'
-import { nonPersistedDigitalCredentialEntityFromAddArgs } from '../utils/digitalCredential/MappingUtils'
+import {
+  digitalCredentialFrom,
+  digitalCredentialsFrom,
+  nonPersistedDigitalCredentialEntityFromAddArgs,
+} from '../utils/digitalCredential/MappingUtils'
 import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere'
 import { CredentialStateType, DigitalCredential, NonPersistedDigitalCredential } from '../types/digitalCredential/digitalCredential'
 import { parseAndValidateOrderOptions } from '../utils/SortingUtils'
@@ -26,23 +30,23 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
     this.dbConnection = dbConnection
   }
 
-  addCredential = async (args: AddCredentialArgs): Promise<DigitalCredentialEntity> => {
+  addCredential = async (args: AddCredentialArgs): Promise<DigitalCredential> => {
     debug('Adding credential', args)
     const digitalCredentialEntityRepository: Repository<DigitalCredentialEntity> = (await this.dbConnection).getRepository(DigitalCredentialEntity)
     const credentialEntity: NonPersistedDigitalCredential = nonPersistedDigitalCredentialEntityFromAddArgs(args)
     const createdResult: DigitalCredentialEntity = await digitalCredentialEntityRepository.save(credentialEntity)
-    return Promise.resolve(createdResult)
+    return Promise.resolve(digitalCredentialFrom(createdResult))
   }
 
-  getCredential = async (args: GetCredentialArgs): Promise<DigitalCredentialEntity> => {
+  getCredential = async (args: GetCredentialArgs): Promise<DigitalCredential> => {
     const result: DigitalCredentialEntity | null = await (await this.dbConnection).getRepository(DigitalCredentialEntity).findOne({
       where: args,
     })
 
     if (!result) {
-      return Promise.reject(Error(`No credential found for arg: ${args.toString()}`))
+      return Promise.reject(Error(`No credential found for arg: ${JSON.stringify(args)}`))
     }
-    return result
+    return digitalCredentialFrom(result)
   }
 
   getCredentials = async (args?: GetCredentialsArgs): Promise<GetCredentialsResponse> => {
@@ -58,7 +62,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
       order: sortOptions,
     })
     return {
-      data: result,
+      data: digitalCredentialsFrom(result),
       total,
     }
   }
@@ -87,7 +91,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
     }
   }
 
-  updateCredentialState = async (args: UpdateCredentialStateArgs): Promise<DigitalCredentialEntity> => {
+  updateCredentialState = async (args: UpdateCredentialStateArgs): Promise<DigitalCredential> => {
     const credentialRepository: Repository<DigitalCredentialEntity> = (await this.dbConnection).getRepository(DigitalCredentialEntity)
     const whereClause: Record<string, any> = {}
     if ('id' in args) {
@@ -111,7 +115,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
     })
 
     if (!credential) {
-      return Promise.reject(Error(`No credential found for args: ${whereClause}`))
+      return Promise.reject(Error(`No credential found for args: ${JSON.stringify(whereClause)}`))
     }
     const updatedCredential: DigitalCredential = {
       ...credential,
@@ -122,6 +126,6 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
     }
     debug('Updating credential', credential)
     const updatedResult: DigitalCredentialEntity = await credentialRepository.save(updatedCredential, { transaction: true })
-    return updatedResult
+    return digitalCredentialFrom(updatedResult)
   }
 }

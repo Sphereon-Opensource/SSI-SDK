@@ -1,12 +1,13 @@
 import * as MsAuthenticator from '../../../ms-authenticator/src'
 import { fetchIssuanceRequestMs } from '../../src/IssuerUtil'
-import { IMsRequestApi, IIssueRequestResponse, IClientIssueRequest, IClientIssuanceConfig } from '../../src/types/IMsRequestApi'
+import { IClientIssuanceConfig, IClientIssueRequest, IIssueRequestResponse, IMsRequestApi } from '../../src/types/IMsRequestApi'
 import { v4 as uuidv4 } from 'uuid'
-import { createAgent, TAgent, IDataStore, IDataStoreORM, VerifiableCredential, FindArgs, TCredentialColumns } from '@veramo/core'
-import { Entities, DataStore, DataStoreORM } from '@veramo/data-store'
+import { createAgent, FindArgs, TAgent, TCredentialColumns, VerifiableCredential } from '@veramo/core'
+import { DataStore, DataStoreORM, Entities } from '@veramo/data-store'
 import { DataSource } from 'typeorm'
+import { CredentialRole, CredentialCorrelationType, ICredentialManager, DocumentType } from '@sphereon/ssi-sdk.credential-manager'
 
-type ConfiguredAgent = TAgent<IMsRequestApi & IDataStore & IDataStoreORM>
+type ConfiguredAgent = TAgent<IMsRequestApi & ICredentialManager>
 const did1 = 'did:test:111'
 const did2 = 'did:test:222'
 var requestIssuanceResponse: IIssueRequestResponse = {
@@ -87,7 +88,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         logging: false,
         entities: Entities,
       })
-      const localAgent = createAgent<IDataStore & IDataStoreORM>({
+      const localAgent: TAgent<ICredentialManager> = createAgent<ICredentialManager>({
         plugins: [new DataStore(dbConnection), new DataStoreORM(dbConnection)],
       })
 
@@ -111,9 +112,28 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         },
       }
 
-      await localAgent.dataStoreSaveVerifiableCredential({ verifiableCredential: vc5 })
+      await localAgent.crmAddCredential({
+        credential: {
+          rawDocument: JSON.stringify(vc5),
+          credentialRole: CredentialRole.HOLDER,
+          issuerCorrelationType: CredentialCorrelationType.DID,
+          issuerCorrelationId: '',
+        },
+      })
 
-      const args: FindArgs<TCredentialColumns> = {
+      // An extra credential to make sure we can test filtering
+      const vc6 = { ...vc5 }
+      vc6.id = 'vc6'
+      await localAgent.crmAddCredential({
+        credential: {
+          rawDocument: JSON.stringify(vc6),
+          credentialRole: CredentialRole.HOLDER,
+          issuerCorrelationType: CredentialCorrelationType.DID,
+          issuerCorrelationId: '',
+        },
+      })
+
+      const vc5Filter: FindArgs<TCredentialColumns> = {
         where: [
           {
             column: 'id',
@@ -122,9 +142,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         ],
       }
 
-      const credentials = await localAgent.dataStoreORMGetVerifiableCredentialsByClaims({})
-      expect(credentials[0].verifiableCredential.id).toEqual('vc5')
-      const count = await localAgent.dataStoreORMGetVerifiableCredentialsCount(args)
+      const credentials = await localAgent.crmGetCredentialsByClaims({
+        filter: {},
+        credentialRole: CredentialRole.HOLDER,
+      })
+      expect(credentials[0].digitalCredential.documentType).toEqual(DocumentType.VC)
+      expect(credentials[0].digitalCredential.id).toEqual('vc5')
+      const count = await localAgent.crmGetCredentialsByClaimsCount({ filter: vc5Filter })
       expect(count).toEqual(1)
       await (await dbConnection).close()
     })

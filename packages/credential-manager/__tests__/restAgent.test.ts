@@ -1,25 +1,25 @@
 import 'cross-fetch/polyfill'
 // @ts-ignore
-import express from 'express'
+import express, { Router } from 'express'
 import { Server } from 'http'
-import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
+import { DataSource } from 'typeorm'
+import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
-import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
-import { ICredentialManager } from '@sphereon/ssi-sdk.credential-manager'
-import { IMsRequestApi } from '../src'
-import msRequestApiAgentLogic from './shared/msRequestApiAgentLogic'
-
+import { createObjects, getConfig } from '../../agent-config/dist'
+import credentialManagerAgentLogic from './shared/credentialManagerAgentLogic'
+import { ICredentialManager } from '../src'
 jest.setTimeout(60000)
 
-const port = 3002
+const port = 4102
 const basePath = '/agent'
 
 let serverAgent: IAgent
 let restServer: Server
+let dbConnection: Promise<DataSource>
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IMsRequestApi & ICredentialManager>({
+  createAgent<ICredentialManager>({
     ...options,
     plugins: [
       new AgentRestClient({
@@ -31,22 +31,23 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const config = await getConfig('packages/ms-request-api/agent.yml')
-  const { agent } = await createObjects(config, { agent: '/agent' })
+  const config = await getConfig('packages/credential-manager/agent.yml')
+  const { agent, db } = await createObjects(config, { agent: '/agent', db: '/dbConnection' })
   serverAgent = agent
+  dbConnection = db
 
   const agentRouter = AgentRouter({
     exposedMethods: serverAgent.availableMethods(),
   })
 
-  const requestWithAgent = RequestWithAgentRouter({
+  const requestWithAgent: Router = RequestWithAgentRouter({
     agent: serverAgent,
   })
 
-  return new Promise((resolve) => {
+  return new Promise((resolve): void => {
     const app = express()
     app.use(basePath, requestWithAgent, agentRouter)
-    restServer = app.listen(port, () => {
+    restServer = app.listen(port, (): void => {
       resolve(true)
     })
   })
@@ -54,6 +55,7 @@ const setup = async (): Promise<boolean> => {
 
 const tearDown = async (): Promise<boolean> => {
   restServer.close()
+  await (await dbConnection).close()
   return true
 }
 
@@ -63,6 +65,6 @@ const testContext = {
   tearDown,
 }
 
-xdescribe('REST integration tests', () => {
-  msRequestApiAgentLogic(testContext)
+describe('REST integration tests', (): void => {
+  credentialManagerAgentLogic(testContext)
 })

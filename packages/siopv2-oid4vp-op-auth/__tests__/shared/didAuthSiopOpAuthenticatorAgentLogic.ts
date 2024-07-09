@@ -178,12 +178,12 @@ export default (testContext: {
       const idCardCredential: VerifiableCredential = getFileAsJson(
         './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vc/vc_idCardCredential.json',
       )
-      await agent.dataStoreSaveVerifiableCredential({ verifiableCredential: idCardCredential })
+      await agent.crmAddCredential({ verifiableCredential: idCardCredential })
 
       const driverLicenseCredential: VerifiableCredential = getFileAsJson(
         './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vc/vc_driverLicense.json',
       )
-      await agent.dataStoreSaveVerifiableCredential({ verifiableCredential: driverLicenseCredential })
+      await agent.crmAddCredential({ verifiableCredential: driverLicenseCredential })
 
       nock(redirectUrl).get(`?stateId=${stateId}`).times(5).reply(200, openIDURI)
 

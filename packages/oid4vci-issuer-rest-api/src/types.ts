@@ -6,7 +6,6 @@ export type IRequiredContext = IAgentContext<IPlugins>
 
 export type IPlugins = IDIDManager &
   IKeyManager &
-  IDataStore &
   IDataStoreORM &
   IResolver &
   IOID4VCIStore &

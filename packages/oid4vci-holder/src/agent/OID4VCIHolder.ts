@@ -872,7 +872,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     } else {
       logger.log(`Persisting credential`, persistCredential)
       // @ts-ignore
-      const vcHash = await context.agent.dataStoreSaveVerifiableCredential({ verifiableCredential: persistCredential })
+      const vcHash = await context.agent.crmAddCredential({ verifiableCredential: persistCredential })
       await context.agent.emit(OID4VCIHolderEvent.CREDENTIAL_STORED, {
         vcHash,
         credential: persistCredential,

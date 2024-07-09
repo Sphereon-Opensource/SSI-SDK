@@ -221,7 +221,7 @@ export class WellKnownDidIssuer implements IAgentPlugin {
   }
 
   private async saveDomainLinkageCredential(credential: DomainLinkageCredential, context: RequiredContext): Promise<string> {
-    return context.agent.dataStoreSaveVerifiableCredential({ verifiableCredential: this.normalizeCredential(credential) })
+    return context.agent.crmAddCredential({ verifiableCredential: this.normalizeCredential(credential) })
   }
 
   private normalizeCredential(credential: DomainLinkageCredential): VerifiableCredential {
