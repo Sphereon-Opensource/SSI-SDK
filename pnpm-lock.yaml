@@ -1426,6 +1426,9 @@ importers:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.22.0
         version: 0.22.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.credential-manager':
+        specifier: workspace:*
+        version: link:../credential-manager
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1789,6 +1792,9 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.credential-manager':
+        specifier: workspace:*
+        version: link:../credential-manager
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -2244,9 +2250,6 @@ importers:
 
   packages/ssi-sdk-core:
     dependencies:
-      '@sphereon/ssi-sdk.credential-manager':
-        specifier: workspace:*
-        version: link:../credential-manager
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -2911,6 +2914,9 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.credential-manager':
+        specifier: workspace:*
+        version: link:../credential-manager
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store

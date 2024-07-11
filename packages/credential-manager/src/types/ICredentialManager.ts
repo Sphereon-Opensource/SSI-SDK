@@ -3,6 +3,7 @@ import { CredentialRole, DigitalCredential, UpdateCredentialStateArgs } from '@s
 import { FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store/dist/types/digitalCredential/IAbstractDigitalCredentialStore'
 import { NonPersistedDigitalCredential } from '@sphereon/ssi-sdk.data-store/dist/types/digitalCredential/digitalCredential'
 import { FindClaimsArgs } from './claims'
+import { ICredential, IPresentation, IVerifiableCredential, OriginalVerifiableCredential, OriginalVerifiablePresentation } from '@sphereon/ssi-types'
 
 export interface ICredentialManager extends IPluginMethodMap {
   /**
@@ -36,6 +37,13 @@ export interface ICredentialManager extends IPluginMethodMap {
   crmGetUniqueCredentials(args: GetCredentialsArgs): Promise<Array<UniqueDigitalCredential>>
 
   /**
+   * Find one credential by id or hash
+   * @param CredentialRole
+   * @param idOrHash
+   */
+  crmGetUniqueCredentialByIdOrHash(args: GetCredentialsByIdOrHashArgs): Promise<OptionalUniqueDigitalCredential>
+
+  /**
    * Returns a list of UniqueDigitalCredentials that match the given filter based on the claims they contain.
    * @param args
    */
@@ -65,13 +73,18 @@ export type GetCredentialArgs = {
 }
 
 export type GetCredentialsArgs = {
-  filter?: FindDigitalCredentialArgs
+  filter: FindDigitalCredentialArgs
 }
 
 export type GetCredentialsByClaimsArgs = {
   filter: FindClaimsArgs
   credentialRole?: CredentialRole
   tenantId?: string
+}
+
+export type GetCredentialsByIdOrHashArgs = {
+  credentialRole: CredentialRole
+  idOrHash: string
 }
 
 export type DeleteCredentialArgs = {
@@ -94,6 +107,15 @@ export type { UpdateCredentialStateArgs } from '@sphereon/ssi-sdk.data-store' //
 export interface UniqueDigitalCredential {
   hash: string
   digitalCredential: DigitalCredential
+
+  originalVerifiableCredential?: OriginalVerifiableCredential
+  originalVerifiablePresentation?: OriginalVerifiablePresentation
+  originalCredential?: ICredential
+  originalPresentation?: IPresentation
+  uniformVerifiableCredential?: IVerifiableCredential
+  uniformVerifiablePresentation?: IVerifiableCredential
 }
+
+export type OptionalUniqueDigitalCredential = UniqueDigitalCredential | undefined
 
 export type RequiredContext = IAgentContext<never>

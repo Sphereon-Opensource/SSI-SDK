@@ -23,6 +23,9 @@
       "path": "../presentation-exchange"
     },
     {
+      "path": "../credential-manager"
+    },
+    {
       "path": "../ssi-types"
     },
     {

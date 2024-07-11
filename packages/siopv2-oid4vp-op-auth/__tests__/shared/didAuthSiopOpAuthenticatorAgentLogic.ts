@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { IDataStore, TAgent, VerifiableCredential } from '@veramo/core'
+import { TAgent, VerifiableCredential } from '@veramo/core'
 import { IAuthRequestDetails, IDidAuthSiopOpAuthenticator, IPresentationWithDefinition } from '../../src'
 import {
   AuthorizationRequest,
@@ -38,7 +38,7 @@ jest.mock('@sphereon/ssi-sdk-ext.did-utils', () => ({
   mapIdentifierKeysToDocWithJwkSupport: jest.fn(),
 }))
 
-type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator & IDataStore>
+type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator>
 
 const didMethod = 'ethr'
 const did = 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a'

@@ -2,7 +2,7 @@ import { DiscoveryMetadataPayload, JWK } from '@sphereon/did-auth-siop'
 import { OID4VCICredentialFormat, RequestObjectOpts } from '@sphereon/oid4vci-common'
 import { Format, PresentationDefinitionV2 } from '@sphereon/pex-models'
 import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
-import { IBasicCredentialLocaleBranding, Party } from '@sphereon/ssi-sdk.data-store'
+import { CredentialRole, IBasicCredentialLocaleBranding, Party } from '@sphereon/ssi-sdk.data-store'
 import { ErrorDetails, IOID4VCIHolder, MappedCredentialToAccept } from '@sphereon/ssi-sdk.oid4vci-holder'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
@@ -175,6 +175,7 @@ export type GetAccessTokenResult = {
  */
 export interface EBSIAuthAccessTokenGetArgs {
   clientId: string
+  credentialRole: CredentialRole
   credentialIssuer?: string
   attestationCredential?: W3CVerifiableCredential
   allVerifiableCredentials?: W3CVerifiableCredential[]

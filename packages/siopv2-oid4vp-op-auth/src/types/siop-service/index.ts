@@ -1,11 +1,12 @@
 import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { IAgentContext, IDataStoreORM, IDIDManager, IIdentifier, IResolver, UniqueVerifiableCredential } from '@veramo/core'
+import { IAgentContext, IDIDManager, IIdentifier, IResolver } from '@veramo/core'
 import { PresentationDefinitionWithLocation, RPRegistrationMetadataPayload } from '@sphereon/did-auth-siop'
 import { DidAuthConfig, ICredentialLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { Siopv2MachineContext, Siopv2MachineInterpreter, Siopv2MachineState } from '../machine'
 import { IDidAuthSiopOpAuthenticator } from '../IDidAuthSiopOpAuthenticator'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
+import { ICredentialManager, UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-manager'
 
 export type DidAuthSiopOpAuthenticatorOptions = {
   onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
@@ -55,7 +56,7 @@ export type Siopv2AuthorizationRequestData = {
 export type SelectableCredentialsMap = Map<string, Array<SelectableCredential>>
 
 export type SelectableCredential = {
-  credential: UniqueVerifiableCredential
+  credential: UniqueDigitalCredential
   credentialBranding: Array<ICredentialLocaleBranding>
   issuerParty?: Party
   subjectParty?: Party
@@ -71,5 +72,5 @@ export type OnIdentifierCreatedArgs = {
 }
 
 export type RequiredContext = IAgentContext<
-  IContactManager & IDidAuthSiopOpAuthenticator & IDIDManager & IResolver & IDataStoreORM & IIssuanceBranding
+  IContactManager & IDidAuthSiopOpAuthenticator & IDIDManager & IResolver & ICredentialManager & IIssuanceBranding
 >

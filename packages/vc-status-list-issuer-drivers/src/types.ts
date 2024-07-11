@@ -12,7 +12,6 @@ import {
   ICredentialIssuer,
   ICredentialPlugin,
   ICredentialVerifier,
-  IDataStore,
   IDataStoreORM,
   IDIDManager,
   IKeyManager,

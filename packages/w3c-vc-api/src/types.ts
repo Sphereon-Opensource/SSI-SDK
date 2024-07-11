@@ -4,15 +4,22 @@ import {
   ICredentialIssuer,
   ICredentialPlugin,
   ICredentialVerifier,
-  IDataStore,
   IDataStoreORM,
   IDIDManager,
   IKeyManager,
   IResolver,
 } from '@veramo/core'
 import { ProofFormat } from '@veramo/core/src/types/ICredentialIssuer'
+import { ICredentialManager } from '@sphereon/ssi-sdk.credential-manager'
 
-export type IRequiredPlugins = IDataStoreORM & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier & ICredentialPlugin & IResolver
+export type IRequiredPlugins = IDataStoreORM &
+  IDIDManager &
+  IKeyManager &
+  ICredentialIssuer &
+  ICredentialVerifier &
+  ICredentialManager &
+  ICredentialPlugin &
+  IResolver
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
 // interface IVCAPISecurityOpts {}

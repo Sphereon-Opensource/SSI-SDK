@@ -307,7 +307,7 @@ export const ebsiCreateDidOnLedger = async (
   const { clientId, redirectUri, environment, credentialIssuer } = accessTokenOpts
   const controllerKey = getControllerKey({ identifier })
   const secp256r1 = getKeys({ identifier, keyType: 'Secp256r1' })?.[0]
-  let { attestationToOnboard } = accessTokenOpts
+  let { attestationToOnboard, attestationToOnboardCredentialRole } = accessTokenOpts
 
   if (!controllerKey || !secp256r1) {
     return Promise.reject(`No secp256k1 controller key and/or secp2561r key found for identifier ${identifier}`)
@@ -346,6 +346,7 @@ export const ebsiCreateDidOnLedger = async (
   }
 
   const insertDidAccessTokenResponse = await context.agent.ebsiAccessTokenGet({
+    credentialRole: attestationToOnboardCredentialRole,
     attestationCredential: attestationToOnboard,
     jwksUri,
     scope: 'didr_invite',
@@ -403,6 +404,7 @@ export const ebsiCreateDidOnLedger = async (
   idOpts.kid = calculateJwkThumbprintForKey({ key: controllerKey })
 
   const addVMAccessTokenResponse = await context.agent.ebsiAccessTokenGet({
+    credentialRole: attestationToOnboardCredentialRole,
     // attestationCredential: attestationToOnboard,
     jwksUri,
     scope: 'didr_write',

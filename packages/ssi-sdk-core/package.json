@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@sphereon/ssi-types": "workspace:*",
-    "@sphereon/ssi-sdk.credential-manager": "workspace:*",
     "@veramo/core": "4.2.0",
     "cross-fetch": "^3.1.8",
     "debug": "^4.3.4",

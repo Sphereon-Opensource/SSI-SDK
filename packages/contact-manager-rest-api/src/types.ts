@@ -1,6 +1,6 @@
 import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { IAgentContext, IDataStore, IDIDManager, IKeyManager } from '@veramo/core'
+import { IAgentContext, IDIDManager, IKeyManager } from '@veramo/core'
 
 export type ContactManagerMRestApiFeatures = 'party_read' | 'party_write' | 'party_type_read' | 'identity_read'
 

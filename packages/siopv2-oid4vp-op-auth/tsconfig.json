@@ -22,6 +22,8 @@
     },
     {
       "path": "../contact-manager"
+    },    {
+      "path": "../credential-manager"
     },
     {
       "path": "../data-store"

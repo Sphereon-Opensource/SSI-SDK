@@ -44,6 +44,7 @@ import {
   Siopv2AuthorizationRequestData,
   Siopv2AuthorizationResponseData,
 } from './siop-service'
+import { ICredentialManager } from '@sphereon/ssi-sdk.credential-manager'
 
 export const LOGGER_NAMESPACE = 'sphereon:siopv2-oid4vp:op-auth'
 
@@ -117,7 +118,7 @@ export enum events {
 }
 
 export type IRequiredContext = IAgentContext<
-  IDataStoreORM & IResolver & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier & IPDManager
+  IDataStoreORM & IResolver & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier & ICredentialManager & IPDManager
 >
 
 export interface IOPOptions {

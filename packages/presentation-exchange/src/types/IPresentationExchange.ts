@@ -1,5 +1,4 @@
 import {
-  FindCredentialsArgs,
   IAgentContext,
   ICredentialPlugin,
   IDataStoreORM,
@@ -12,6 +11,8 @@ import {
 import { IPresentation, Optional, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { IPresentationDefinition, PEVersion, SelectResults } from '@sphereon/pex'
 import { Format, InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
+import { ICredentialManager } from '@sphereon/ssi-sdk.credential-manager'
+import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
 
 export interface IPresentationExchange extends IPluginMethodMap {
   pexValidateDefinition(args: IDefinitionValidateArgs): Promise<boolean>
@@ -32,7 +33,11 @@ export interface IDefinitionValidateArgs {
 
 export interface IDefinitionCredentialFilterArgs {
   presentationDefinition: IPresentationDefinition
-  credentialFilterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindCredentialsArgs }
+  credentialFilterOpts: {
+    credentialRole: CredentialRole
+    verifiableCredentials?: W3CVerifiableCredential[]
+    filter?: FindDigitalCredentialArgs
+  }
   holderDIDs?: (string | IIdentifier)[]
   limitDisclosureSignatureSuites?: string[]
   restrictToFormats?: Format
@@ -72,4 +77,4 @@ export interface IPEXPresentationSignCallBackParams {
   presentationDefinition: IPresentationDefinition
 }
 
-export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IDIDManager & ICredentialPlugin>
+export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IDIDManager & ICredentialPlugin & ICredentialManager>

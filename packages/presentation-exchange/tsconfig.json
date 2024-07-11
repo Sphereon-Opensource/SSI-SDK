@@ -18,6 +18,9 @@
     },
     {
       "path": "../agent-config"
+    },
+    {
+      "path": "../credential-manager"
     }
   ]
 }
