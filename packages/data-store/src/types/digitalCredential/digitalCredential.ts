@@ -42,7 +42,7 @@ export enum CredentialCorrelationType {
 
 export enum CredentialRole {
   ISSUER = 'ISSUER',
-  VERIFIER = 'ISSUER',
+  VERIFIER = 'VERIFIER',
   HOLDER = 'HOLDER',
 }
 

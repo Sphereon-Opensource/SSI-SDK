@@ -5,6 +5,7 @@ import {
   IssuanceCallback,
 } from '@sphereon/wellknown-dids-client'
 import { IAgentContext, IPluginMethodMap, IDIDManager } from '@veramo/core'
+import { ICredentialManager } from '@sphereon/ssi-sdk.credential-manager'
 
 export interface IWellKnownDidIssuer extends IPluginMethodMap {
   addLinkedDomainsService(args: IAddLinkedDomainsServiceArgs, context: RequiredContext): Promise<void>
@@ -61,4 +62,4 @@ export interface ISaveDidConfigurationResourceArgs {
   didConfigurationResource: IDidConfigurationResource
 }
 
-export type RequiredContext = IAgentContext<IDIDManager>
+export type RequiredContext = IAgentContext<IDIDManager & ICredentialManager>

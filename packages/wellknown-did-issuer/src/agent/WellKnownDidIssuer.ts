@@ -12,18 +12,19 @@ import { normalizeCredential } from 'did-jwt-vc'
 import { Service } from 'did-resolver/lib/resolver'
 import { Connection } from 'typeorm'
 import { v4 as uuidv4 } from 'uuid'
-import { DidConfigurationResourceEntity, createCredentialEntity, didConfigurationResourceFrom } from '../entities/DidConfigurationResourceEntity'
+import { createCredentialEntity, DidConfigurationResourceEntity, didConfigurationResourceFrom } from '../entities/DidConfigurationResourceEntity'
+import { CredentialCorrelationType, CredentialRole, DigitalCredential } from '@sphereon/ssi-sdk.credential-manager'
 import {
   IAddLinkedDomainsServiceArgs,
-  IWellKnownDidIssuer,
-  IWellKnownDidIssuerOptionsArgs,
-  IRegisterIssueCredentialArgs,
-  IRemoveCredentialIssuanceArgs,
-  RequiredContext,
+  IGetDidConfigurationResourceArgs,
   IIssueDidConfigurationResourceArgs,
   IIssueDomainLinkageCredentialArgs,
-  IGetDidConfigurationResourceArgs,
+  IRegisterIssueCredentialArgs,
+  IRemoveCredentialIssuanceArgs,
   ISaveDidConfigurationResourceArgs,
+  IWellKnownDidIssuer,
+  IWellKnownDidIssuerOptionsArgs,
+  RequiredContext,
 } from '../types/IWellKnownDidIssuer'
 import { schema } from '../index'
 
@@ -220,8 +221,16 @@ export class WellKnownDidIssuer implements IAgentPlugin {
     return this.credentialIssuances[callbackName]
   }
 
-  private async saveDomainLinkageCredential(credential: DomainLinkageCredential, context: RequiredContext): Promise<string> {
-    return context.agent.crmAddCredential({ verifiableCredential: this.normalizeCredential(credential) })
+  private async saveDomainLinkageCredential(credential: DomainLinkageCredential, context: RequiredContext): Promise<DigitalCredential> {
+    const vc = this.normalizeCredential(credential)
+    return context.agent.crmAddCredential({
+      credential: {
+        rawDocument: JSON.stringify(vc),
+        credentialRole: CredentialRole.ISSUER, // FIXME BEFORE PR
+        issuerCorrelationId: '?', // FIXME BEFORE PR
+        issuerCorrelationType: CredentialCorrelationType.DID,
+      },
+    })
   }
 
   private normalizeCredential(credential: DomainLinkageCredential): VerifiableCredential {

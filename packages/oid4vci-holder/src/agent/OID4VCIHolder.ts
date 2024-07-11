@@ -17,6 +17,7 @@ import {
 import { getIdentifier, getKey, IIdentifierOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   CorrelationIdentifierType,
+  CredentialCorrelationType,
   CredentialRole,
   FindPartyArgs,
   IBasicCredentialLocaleBranding,
@@ -871,8 +872,14 @@ export class OID4VCIHolder implements IAgentPlugin {
       logger.log(`Will not persist credential, since we are signing as a holder and the issuer asked not to persist`)
     } else {
       logger.log(`Persisting credential`, persistCredential)
-      // @ts-ignore
-      const vcHash = await context.agent.crmAddCredential({ verifiableCredential: persistCredential })
+      const vcHash = await context.agent.crmAddCredential({
+        credential: {
+          rawDocument: JSON.stringify(persistCredential),
+          credentialRole: CredentialRole.HOLDER,
+          issuerCorrelationType: CredentialCorrelationType.DID,
+          issuerCorrelationId: '?', // FIXME BEFORE PR
+        },
+      })
       await context.agent.emit(OID4VCIHolderEvent.CREDENTIAL_STORED, {
         vcHash,
         credential: persistCredential,

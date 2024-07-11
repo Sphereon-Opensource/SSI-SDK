@@ -3263,6 +3263,9 @@ importers:
 
   packages/wellknown-did-issuer:
     dependencies:
+      '@sphereon/ssi-sdk.credential-manager':
+        specifier: workspace:*
+        version: link:../credential-manager
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types

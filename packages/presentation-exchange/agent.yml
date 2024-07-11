@@ -112,12 +112,22 @@ universal-resolver:
   $args:
     - url: https://dev.uniresolver.io/1.0/identifiers/
 
+# Credential Manager
+credentialManager:
+  $require: ./packages/credential-manager/dist#CredentialManager
+  $args:
+    - store:
+        $require: './packages/data-store/dist#DigitalCredentialStore'
+        $args:
+          - $ref: /dbConnection
+
 # Agent
 agent:
   $require: '@veramo/core#Agent'
   $args:
     - schemaValidation: false
       plugins:
+        - $ref: /credentialManager
         - $require: ./packages/pd-manager/dist#PDManager
           $args:
             - store:

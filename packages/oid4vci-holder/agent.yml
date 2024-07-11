@@ -15,6 +15,19 @@ constants:
     - oid4vciHolderStoreCredentialBranding
     - oid4vciHolderStoreCredentials
 
+# Database
+dbConnection:
+  $require: typeorm?t=function#createConnection
+  $args:
+    - type: sqlite
+      database: ':memory:'
+      synchronize: false
+      migrationsRun: true
+      migrations:
+        $require: './packages/data-store?t=object#DataStoreDigitalCredentialMigrations'
+      entities:
+        $require: './packages/data-store?t=object#DataStoreDigitalCredentialEntities'
+
 server:
   baseUrl:
     $ref: /constants/baseUrl
@@ -71,10 +84,20 @@ server:
             $ref: /constants/baseUrl
           messagingServiceEndpoint: /messaging
 
+# Credential Manager
+credentialManager:
+  $require: ./packages/credential-manager/dist#CredentialManager
+  $args:
+    - store:
+        $require: './packages/data-store/dist#DigitalCredentialStore'
+        $args:
+          - $ref: /dbConnection
+
 # Agent
 agent:
   $require: '@veramo/core#Agent'
   $args:
     - schemaValidation: false
       plugins:
+        - $ref: /credentialManager
         - $require: ./packages/oid4vci-holder/dist#OID4VCIHolder
