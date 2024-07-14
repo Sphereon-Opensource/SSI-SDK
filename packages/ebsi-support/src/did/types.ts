@@ -83,6 +83,7 @@ export type EbsiCreateIdentifierOpts = {
   rpcId?: number
   secp256k1Key?: IKeyOpts
   secp256r1Key?: IKeyOpts
+  keys?: IKeyOpts[] // additional importable keys, but only in case execute ledger is true
   executeLedgerOperation?: boolean // Whether to persist on the EBSI ledger. By default looks at whether access token opts are set or not
   baseDocument?: string
   notBefore?: number

@@ -35,6 +35,7 @@ export class EbsiDidProvider extends AbstractIdentifierProvider {
       notAfter,
       secp256k1Key,
       secp256r1Key,
+      keys,
       accessTokenOpts,
       executeLedgerOperation = !!args.options?.accessTokenOpts,
       methodSpecificId = generateEbsiMethodSpecificId(EBSI_DID_SPEC_INFOS.V1),
@@ -48,9 +49,11 @@ export class EbsiDidProvider extends AbstractIdentifierProvider {
     const rpcId = options?.rpcId ?? randomRpcId()
 
     if (type === EBSI_DID_SPEC_INFOS.KEY) {
-      throw new Error(`Type ${type} not supported. Please use @sphereon/ssi-sdk-ext.did-provider-key for Natural Person EBSI DIDs`)
+      return Promise.reject(Error(`Type ${type} not supported. Please use @sphereon/ssi-sdk-ext.did-provider-key for Natural Person EBSI DIDs`))
     } else if (!kms) {
       return Promise.reject(Error(`No KMS value provided`))
+    } else if (keys && keys.length > 0 && !executeLedgerOperation) {
+      return Promise.reject(Error(`Cannot add additional keys if ledger operation is not enabled at creation. Please add the keys later yourself`))
     }
 
     // CapabilityInvocation purpose
@@ -106,6 +109,20 @@ export class EbsiDidProvider extends AbstractIdentifierProvider {
         },
         context,
       )
+      if (keys && keys.length > 0) {
+        for (const keyOpts of keys) {
+          const key = await ebsiGenerateOrUseKeyPair(
+            {
+              keyOpts,
+              keyType: keyOpts.type ?? 'Secp256r1',
+              kms,
+            },
+            context,
+          )
+          const managedKeyInfo = await context.agent.keyManagerImport(key)
+          console.warn(`FIXME: Anchor additional key on EBSI`, managedKeyInfo)
+        }
+      }
     }
 
     debug('Created', identifier.did)
