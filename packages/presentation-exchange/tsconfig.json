@@ -20,7 +20,7 @@
       "path": "../agent-config"
     },
     {
-      "path": "../credential-manager"
+      "path": "../credential-store"
     }
   ]
 }

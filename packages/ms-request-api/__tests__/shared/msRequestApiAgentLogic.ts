@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { createAgent, FindArgs, TAgent, TCredentialColumns, VerifiableCredential } from '@veramo/core'
 import { DataStore, DataStoreORM, Entities } from '@veramo/data-store'
 import { DataSource } from 'typeorm'
-import { CredentialRole, CredentialCorrelationType, ICredentialManager, DocumentType } from '@sphereon/ssi-sdk.credential-manager'
+import { CredentialRole, CredentialCorrelationType, ICredentialManager, DocumentType } from '@sphereon/ssi-sdk.credential-store'
 
 type ConfiguredAgent = TAgent<IMsRequestApi & ICredentialManager>
 const did1 = 'did:test:111'

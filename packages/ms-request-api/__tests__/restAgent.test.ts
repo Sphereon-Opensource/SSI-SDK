@@ -6,7 +6,7 @@ import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
-import { ICredentialManager } from '@sphereon/ssi-sdk.credential-manager'
+import { ICredentialManager } from '@sphereon/ssi-sdk.credential-store'
 import { IMsRequestApi } from '../src'
 import msRequestApiAgentLogic from './shared/msRequestApiAgentLogic'
 

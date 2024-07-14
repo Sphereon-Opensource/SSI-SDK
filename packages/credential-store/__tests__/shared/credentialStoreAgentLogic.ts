@@ -6,12 +6,12 @@ import {
   credentialIdOrHashFilter,
   DeleteCredentialsArgs,
   GetCredentialsArgs,
-  ICredentialManager,
+  ICredentialStore,
   UniqueDigitalCredential,
 } from '../../src'
 import { IVerifiableCredential } from '@sphereon/ssi-types'
 
-type ConfiguredAgent = TAgent<ICredentialManager>
+type ConfiguredAgent = TAgent<ICredentialStore>
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -23,7 +23,7 @@ function getFileAsJson(path: string) {
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
   describe('Credential Manager Agent Plugin', (): void => {
-    const exampleVC: IVerifiableCredential = getFileAsJson('./packages/credential-manager/__tests__/vc-examples/vc_driverLicense.json')
+    const exampleVC: IVerifiableCredential = getFileAsJson('./packages/credential-store/__tests__/vc-examples/vc_driverLicense.json')
 
     let agent: ConfiguredAgent
     let defaultCredential: DigitalCredential
@@ -39,19 +39,19 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         issuerCorrelationType: CredentialCorrelationType.DID,
         rawDocument: JSON.stringify(exampleVC),
       }
-      defaultCredential = await agent.crmAddCredential({ credential: digitalCredential })
+      defaultCredential = await agent.crsAddCredential({ credential: digitalCredential })
     })
 
     afterAll(testContext.tearDown)
 
     it('should get credential item by id', async (): Promise<void> => {
-      const result = await agent.crmGetCredential({ id: defaultCredential.id })
+      const result = await agent.crsGetCredential({ id: defaultCredential.id })
       expect(result.id).toEqual(defaultCredential.id)
     })
 
     it('should throw error when getting credential item with unknown id', async (): Promise<void> => {
       const itemId = 'unknownId'
-      await expect(agent.crmGetCredential({ id: itemId })).rejects.toThrow(`No credential found for arg: {\"id\":\"${itemId}\"}`)
+      await expect(agent.crsGetCredential({ id: itemId })).rejects.toThrow(`No credential found for arg: {\"id\":\"${itemId}\"}`)
     })
 
     it('should get credential items by filter', async (): Promise<void> => {
@@ -62,7 +62,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           },
         ],
       }
-      const result: Array<DigitalCredential> = await agent.crmGetCredentials(args)
+      const result: Array<DigitalCredential> = await agent.crsGetCredentials(args)
 
       expect(result.length).toBe(1)
     })
@@ -75,7 +75,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           },
         ],
       }
-      const result1: Array<DigitalCredential> = await agent.crmGetCredentials(args1)
+      const result1: Array<DigitalCredential> = await agent.crsGetCredentials(args1)
       expect(result1.length).toBe(1)
 
       const args2: GetCredentialsArgs = {
@@ -85,7 +85,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           },
         ],
       }
-      const result2: Array<DigitalCredential> = await agent.crmGetCredentials(args2)
+      const result2: Array<DigitalCredential> = await agent.crsGetCredentials(args2)
       expect(result2.length).toBe(1)
 
       const args3: GetCredentialsArgs = {
@@ -98,7 +98,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           },
         ],
       }
-      const result3: Array<DigitalCredential> = await agent.crmGetCredentials(args3)
+      const result3: Array<DigitalCredential> = await agent.crsGetCredentials(args3)
       expect(result3.length).toBe(1)
 
       const args4: GetCredentialsArgs = {
@@ -111,12 +111,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           },
         ],
       }
-      const result4: Array<DigitalCredential> = await agent.crmGetCredentials(args4)
+      const result4: Array<DigitalCredential> = await agent.crsGetCredentials(args4)
       expect(result4.length).toBe(1)
     })
 
     it('should get unique credential by id or hash', async (): Promise<void> => {
-      const result: Array<UniqueDigitalCredential> = await agent.crmGetUniqueCredentials({
+      const result: Array<UniqueDigitalCredential> = await agent.crsGetUniqueCredentials({
         filter: credentialIdOrHashFilter(defaultCredential.credentialRole, defaultCredential.hash),
       })
       expect(result.length).toBe(1)
@@ -131,21 +131,21 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         verifiedState: CredentialStateType.REVOKED,
         revokedAt: new Date(),
       }
-      const result: DigitalCredential = await agent.crmUpdateCredentialState(revokeUpdate)
+      const result: DigitalCredential = await agent.crsUpdateCredentialState(revokeUpdate)
 
       expect(result.verifiedState).toEqual(revokeUpdate.verifiedState)
       // expect(result.revokedAt).toEqual(revokeUpdate.revokedAt) FIXME date deserialization is broken
     })
 
     it('should delete credential by id', async (): Promise<void> => {
-      const result = await agent.crmDeleteCredential({ id: defaultCredential.id })
+      const result = await agent.crsDeleteCredential({ id: defaultCredential.id })
 
       expect(result).toBe(true)
     })
 
     it('should throw error when deleting credential with unknown id', async (): Promise<void> => {
       const id = 'unknownId'
-      const result = await agent.crmDeleteCredential({ id })
+      const result = await agent.crsDeleteCredential({ id })
       expect(result).toBe(false)
     })
 
@@ -157,7 +157,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         issuerCorrelationType: CredentialCorrelationType.DID,
         rawDocument: JSON.stringify(exampleVC),
       }
-      await agent.crmAddCredential({ credential: digitalCredential1 })
+      await agent.crsAddCredential({ credential: digitalCredential1 })
 
       const exampleVC2: IVerifiableCredential = { ...exampleVC }
       ;(exampleVC2.credentialSubject as any).extraField = 'Extra extra'
@@ -168,7 +168,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         issuerCorrelationType: CredentialCorrelationType.DID,
         rawDocument: JSON.stringify(exampleVC2),
       }
-      await agent.crmAddCredential({ credential: digitalCredential2 })
+      await agent.crsAddCredential({ credential: digitalCredential2 })
 
       const args: DeleteCredentialsArgs = {
         filter: [
@@ -178,7 +178,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           },
         ],
       }
-      const deleteCount = await agent.crmDeleteCredentials(args)
+      const deleteCount = await agent.crsDeleteCredentials(args)
       expect(deleteCount).toBe(2)
     })
   })

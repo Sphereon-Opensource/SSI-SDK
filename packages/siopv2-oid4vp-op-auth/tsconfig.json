@@ -23,7 +23,7 @@
     {
       "path": "../contact-manager"
     },    {
-      "path": "../credential-manager"
+      "path": "../credential-store"
     },
     {
       "path": "../data-store"

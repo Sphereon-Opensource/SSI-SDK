@@ -18,7 +18,7 @@
     "@sphereon/pex-models": "^2.2.4",
     "@sphereon/ssi-sdk-ext.did-utils": "0.22.0",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
-    "@sphereon/ssi-sdk.credential-manager": "workspace:*",
+    "@sphereon/ssi-sdk.credential-store": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0"
   },

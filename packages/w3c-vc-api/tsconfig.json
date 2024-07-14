@@ -23,7 +23,7 @@
       "path": "../presentation-exchange"
     },
     {
-      "path": "../credential-manager"
+      "path": "../credential-store"
     },
     {
       "path": "../ssi-types"

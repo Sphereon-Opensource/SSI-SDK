@@ -13,7 +13,7 @@ import {
 } from '../types/IDidAuthSiopOpAuthenticator'
 import { createOID4VPPresentationSignCallback } from './functions'
 import { OpSession } from './OpSession'
-import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-manager'
+import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { CompactJWT } from '@sphereon/ssi-types/dist'
 import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store/dist'
 

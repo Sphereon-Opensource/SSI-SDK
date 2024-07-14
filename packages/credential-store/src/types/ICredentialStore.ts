@@ -5,67 +5,67 @@ import { NonPersistedDigitalCredential } from '@sphereon/ssi-sdk.data-store/dist
 import { FindClaimsArgs } from './claims'
 import { ICredential, IPresentation, IVerifiableCredential, OriginalVerifiableCredential, OriginalVerifiablePresentation } from '@sphereon/ssi-types'
 
-export interface ICredentialManager extends IPluginMethodMap {
+export interface ICredentialStore extends IPluginMethodMap {
   /**
    * Add a new credential.
    * @param args
    */
-  crmAddCredential(args: AddCredentialArgs): Promise<DigitalCredential>
+  crsAddCredential(args: AddCredentialArgs): Promise<DigitalCredential>
 
   /**
    * Update credential the state of an existing credential.
    * @param args
    */
-  crmUpdateCredentialState(args: UpdateCredentialStateArgs): Promise<DigitalCredential>
+  crsUpdateCredentialState(args: UpdateCredentialStateArgs): Promise<DigitalCredential>
 
   /**
    * Get a single credentials by primary key
    * @param args
    */
-  crmGetCredential(args: GetCredentialArgs): Promise<DigitalCredential>
+  crsGetCredential(args: GetCredentialArgs): Promise<DigitalCredential>
 
   /**
    * Find one or more credentials using filters
    * @param args
    */
-  crmGetCredentials(args: GetCredentialsArgs): Promise<Array<DigitalCredential>>
+  crsGetCredentials(args: GetCredentialsArgs): Promise<Array<DigitalCredential>>
 
   /**
    * Find one or more credentials using filters
    * @param args
    */
-  crmGetUniqueCredentials(args: GetCredentialsArgs): Promise<Array<UniqueDigitalCredential>>
+  crsGetUniqueCredentials(args: GetCredentialsArgs): Promise<Array<UniqueDigitalCredential>>
 
   /**
    * Find one credential by id or hash
    * @param CredentialRole
    * @param idOrHash
    */
-  crmGetUniqueCredentialByIdOrHash(args: GetCredentialsByIdOrHashArgs): Promise<OptionalUniqueDigitalCredential>
+  crsGetUniqueCredentialByIdOrHash(args: GetCredentialsByIdOrHashArgs): Promise<OptionalUniqueDigitalCredential>
 
   /**
    * Returns a list of UniqueDigitalCredentials that match the given filter based on the claims they contain.
    * @param args
    */
-  crmGetCredentialsByClaims(args: GetCredentialsByClaimsArgs): Promise<Array<UniqueDigitalCredential>>
+  crsGetCredentialsByClaims(args: GetCredentialsByClaimsArgs): Promise<Array<UniqueDigitalCredential>>
 
   /**
    * Returns a count of UniqueDigitalCredentials that match the given filter based on the claims they contain.
    * @param args
    */
-  crmGetCredentialsByClaimsCount(args: GetCredentialsByClaimsArgs): Promise<number>
+  crsGetCredentialsByClaimsCount(args: GetCredentialsByClaimsArgs): Promise<number>
 
   /**
    * Delete a single credentials by primary key
    * @param args
    */
-  crmDeleteCredential(args: DeleteCredentialArgs): Promise<boolean>
+  crsDeleteCredential(args: DeleteCredentialArgs): Promise<boolean>
 
   /**
    * Delete multiple credentials records using filters
    * @param args
    */
-  crmDeleteCredentials(args: DeleteCredentialsArgs): Promise<number>
+  crsDeleteCredentials(args: DeleteCredentialsArgs): Promise<number>
 }
 
 export type GetCredentialArgs = {

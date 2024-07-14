@@ -15,7 +15,7 @@ import { Checked, IPresentationDefinition, PEX } from '@sphereon/pex'
 import { CompactJWT, CredentialMapper, JWT_PROOF_TYPE_2020, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
 import { toDIDs } from '@sphereon/ssi-sdk-ext.did-utils'
-import { CredentialRole, UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-manager'
+import { CredentialRole, UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
 
 export class PresentationExchange implements IAgentPlugin {

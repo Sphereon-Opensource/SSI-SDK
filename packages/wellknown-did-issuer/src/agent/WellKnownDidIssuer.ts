@@ -13,7 +13,7 @@ import { Service } from 'did-resolver/lib/resolver'
 import { Connection } from 'typeorm'
 import { v4 as uuidv4 } from 'uuid'
 import { createCredentialEntity, DidConfigurationResourceEntity, didConfigurationResourceFrom } from '../entities/DidConfigurationResourceEntity'
-import { CredentialCorrelationType, CredentialRole, DigitalCredential } from '@sphereon/ssi-sdk.credential-manager'
+import { CredentialCorrelationType, CredentialRole, DigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import {
   IAddLinkedDomainsServiceArgs,
   IGetDidConfigurationResourceArgs,

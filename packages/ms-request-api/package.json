@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
-    "@sphereon/ssi-sdk.credential-manager": "workspace:*",
+    "@sphereon/ssi-sdk.credential-store": "workspace:*",
     "@types/express": "^4.17.17",
     "@types/express-session": "^1.17.4",
     "@types/jest": "^27.5.2",

@@ -16,6 +16,7 @@ import {
 } from '@sphereon/oid4vci-common'
 import { getIdentifier, getKey, IIdentifierOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
+  Contact,
   CorrelationIdentifierType,
   CredentialCorrelationType,
   CredentialRole,
@@ -501,14 +502,13 @@ export class OID4VCIHolder implements IAgentPlugin {
       })
     }
 
-    const parties = await context.agent.cmGetContacts({
-      filter,
-    })
-
-    if (parties.length > 1) {
-      logger.warning(`Get contacts returned more than one result: ${parties.length}, ${parties.map((party) => party.contact.displayName).join(',')}`)
+    const contacts: Array<Contact> = await context.agent.cmGetContacts({ filter })
+    if (contacts.length > 1) {
+      logger.warning(
+        `Get contacts returned more than one result: ${contacts.length}, ${contacts.map((contact: Contact) => contact.displayName).join(',')}`,
+      )
     }
-    const party = parties.length >= 1 ? parties[0] : undefined
+    const party = contacts.length >= 1 ? contacts[0] : undefined // FIXME BEFORE PR, We have a contact here but we need a party
 
     logger.log(`Party involved: `, party)
     return party

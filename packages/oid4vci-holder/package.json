@@ -18,7 +18,7 @@
     "@sphereon/oid4vci-common": "0.14.0",
     "@sphereon/ssi-sdk-ext.did-utils": "0.22.0",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",
-    "@sphereon/ssi-sdk.credential-manager": "workspace:*",
+    "@sphereon/ssi-sdk.credential-store": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-sdk.issuance-branding": "workspace:*",

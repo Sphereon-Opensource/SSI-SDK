@@ -3,13 +3,13 @@ import { DataSource } from 'typeorm'
 
 jest.setTimeout(60000)
 
-import credentialManagerAgentLogic from './shared/credentialManagerAgentLogic'
+import credentialManagerAgentLogic from './shared/credentialStoreAgentLogic'
 
 let dbConnection: Promise<DataSource>
 let agent: any
 
 const setup = async (): Promise<boolean> => {
-  const config = await getConfig('packages/credential-manager/agent.yml')
+  const config = await getConfig('packages/credential-store/agent.yml')
   const { localAgent, db } = await createObjects(config, { localAgent: '/agent', db: '/dbConnection' })
   agent = localAgent
   dbConnection = db

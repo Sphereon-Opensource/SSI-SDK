@@ -6,7 +6,7 @@ import { Request, Response, Router } from 'express'
 import { v4 } from 'uuid'
 import { IIssueCredentialEndpointOpts, IRequiredContext, IVCAPIIssueOpts, IVerifyCredentialEndpointOpts } from './types'
 import Debug from 'debug'
-import { verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-manager'
+import { verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
 const debug = Debug('sphereon:ssi-sdk:w3c-vc-api')
 export function issueCredentialEndpoint(router: Router, context: IRequiredContext, opts?: IIssueCredentialEndpointOpts) {

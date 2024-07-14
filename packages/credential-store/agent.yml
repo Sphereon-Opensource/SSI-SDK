@@ -6,15 +6,15 @@ constants:
   # please use your own X25519 key, this is only an example
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
-    - crmAddCredential
-    - crmUpdateCredentialState
-    - crmGetCredential
-    - crmGetCredentials
-    - crmGetUniqueCredentials
-    - crmDeleteCredential
-    - crmDeleteCredentials
-    - crmGetCredentialsByClaims
-    - crmGetCredentialsByClaimsCount
+    - crsAddCredential
+    - crsUpdateCredentialState
+    - crsGetCredential
+    - crsGetCredentials
+    - crsGetUniqueCredentials
+    - crsDeleteCredential
+    - crsDeleteCredentials
+    - crsGetCredentialsByClaims
+    - crsGetCredentialsByClaimsCount
 
 # Database
 dbConnection:
@@ -91,7 +91,7 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/credential-manager/dist#CredentialManager
+        - $require: ./packages/credential-store/dist#CredentialStore
           $args:
             - store:
                 $require: './packages/data-store/dist#DigitalCredentialStore'

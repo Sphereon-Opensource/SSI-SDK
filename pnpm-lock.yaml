@@ -361,7 +361,7 @@ importers:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
 
-  packages/credential-manager:
+  packages/credential-store:
     dependencies:
       '@sphereon/pex':
         specifier: ^3.3.3
@@ -810,9 +810,9 @@ importers:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
-      '@sphereon/ssi-sdk.credential-manager':
+      '@sphereon/ssi-sdk.credential-store':
         specifier: workspace:*
-        version: link:../credential-manager
+        version: link:../credential-store
       '@types/express':
         specifier: ^4.17.17
         version: 4.17.21
@@ -882,9 +882,9 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
-      '@sphereon/ssi-sdk.credential-manager':
+      '@sphereon/ssi-sdk.credential-store':
         specifier: workspace:*
-        version: link:../credential-manager
+        version: link:../credential-store
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1426,9 +1426,9 @@ importers:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.22.0
         version: 0.22.0(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
-      '@sphereon/ssi-sdk.credential-manager':
+      '@sphereon/ssi-sdk.credential-store':
         specifier: workspace:*
-        version: link:../credential-manager
+        version: link:../credential-store
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1792,9 +1792,9 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
-      '@sphereon/ssi-sdk.credential-manager':
+      '@sphereon/ssi-sdk.credential-store':
         specifier: workspace:*
-        version: link:../credential-manager
+        version: link:../credential-store
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -2914,9 +2914,9 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
-      '@sphereon/ssi-sdk.credential-manager':
+      '@sphereon/ssi-sdk.credential-store':
         specifier: workspace:*
-        version: link:../credential-manager
+        version: link:../credential-store
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -3263,9 +3263,9 @@ importers:
 
   packages/wellknown-did-issuer:
     dependencies:
-      '@sphereon/ssi-sdk.credential-manager':
+      '@sphereon/ssi-sdk.credential-store':
         specifier: workspace:*
-        version: link:../credential-manager
+        version: link:../credential-store
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types

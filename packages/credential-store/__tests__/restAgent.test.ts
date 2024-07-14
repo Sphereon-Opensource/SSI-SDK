@@ -7,8 +7,8 @@ import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/dist'
-import credentialManagerAgentLogic from './shared/credentialManagerAgentLogic'
-import { ICredentialManager } from '../src'
+import credentialManagerAgentLogic from './shared/credentialStoreAgentLogic'
+import { ICredentialStore } from '../src'
 jest.setTimeout(60000)
 
 const port = 4102
@@ -19,7 +19,7 @@ let restServer: Server
 let dbConnection: Promise<DataSource>
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<ICredentialManager>({
+  createAgent<ICredentialStore>({
     ...options,
     plugins: [
       new AgentRestClient({
@@ -31,7 +31,7 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const config = await getConfig('packages/credential-manager/agent.yml')
+  const config = await getConfig('packages/credential-store/agent.yml')
   const { agent, db } = await createObjects(config, { agent: '/agent', db: '/dbConnection' })
   serverAgent = agent
   dbConnection = db

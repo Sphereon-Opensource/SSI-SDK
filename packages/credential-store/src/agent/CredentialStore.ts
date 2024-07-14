@@ -9,7 +9,7 @@ import {
   GetCredentialsArgs,
   GetCredentialsByClaimsArgs,
   GetCredentialsByIdOrHashArgs,
-  ICredentialManager,
+  ICredentialStore,
   OptionalUniqueDigitalCredential,
   schema,
   TClaimsColumns,
@@ -20,34 +20,34 @@ import { AbstractDigitalCredentialStore } from '@sphereon/ssi-sdk.data-store/dis
 import { IVerifiableCredential } from '@sphereon/ssi-types'
 
 // Exposing the methods here for any REST implementation
-export const credentialManagerMethods: Array<string> = [
-  'crmAddCredential',
-  'crmUpdateCredentialState',
-  'crmGetCredential',
-  'crmGetCredentials',
-  'crmStoreCredential',
-  'crmDeleteCredential',
-  'crmDeleteCredentials',
-  'crmGetCredentialsByClaims',
-  'crmGetCredentialsByClaimsCount',
+export const credentialStoreMethods: Array<string> = [
+  'crsAddCredential',
+  'crsUpdateCredentialState',
+  'crsGetCredential',
+  'crsGetCredentials',
+  'crsStoreCredential',
+  'crsDeleteCredential',
+  'crsDeleteCredentials',
+  'crsGetCredentialsByClaims',
+  'crsGetCredentialsByClaimsCount',
 ]
 
 /**
  * {@inheritDoc ICRManager}
  */
-export class CredentialManager implements IAgentPlugin {
+export class CredentialStore implements IAgentPlugin {
   readonly schema = schema.ICredentialManager
-  readonly methods: ICredentialManager = {
-    crmAddCredential: this.crmAddCredential.bind(this),
-    crmUpdateCredentialState: this.crmUpdateCredentialState.bind(this),
-    crmGetCredential: this.crmGetCredential.bind(this),
-    crmGetCredentials: this.crmGetCredentials.bind(this),
-    crmGetUniqueCredentialByIdOrHash: this.crmGetUniqueCredentialByIdOrHash.bind(this),
-    crmGetUniqueCredentials: this.crmGetUniqueCredentials.bind(this),
-    crmDeleteCredential: this.crmDeleteCredential.bind(this),
-    crmDeleteCredentials: this.crmDeleteCredentials.bind(this),
-    crmGetCredentialsByClaims: this.crmGetCredentialsByClaims.bind(this),
-    crmGetCredentialsByClaimsCount: this.crmGetCredentialsByClaimsCount.bind(this),
+  readonly methods: ICredentialStore = {
+    crsAddCredential: this.crsAddCredential.bind(this),
+    crsUpdateCredentialState: this.crsUpdateCredentialState.bind(this),
+    crsGetCredential: this.crsGetCredential.bind(this),
+    crsGetCredentials: this.crsGetCredentials.bind(this),
+    crsGetUniqueCredentialByIdOrHash: this.crsGetUniqueCredentialByIdOrHash.bind(this),
+    crsGetUniqueCredentials: this.crsGetUniqueCredentials.bind(this),
+    crsDeleteCredential: this.crsDeleteCredential.bind(this),
+    crsDeleteCredentials: this.crsDeleteCredentials.bind(this),
+    crsGetCredentialsByClaims: this.crsGetCredentialsByClaims.bind(this),
+    crsGetCredentialsByClaimsCount: this.crsGetCredentialsByClaimsCount.bind(this),
   }
 
   private readonly store: AbstractDigitalCredentialStore
@@ -57,32 +57,32 @@ export class CredentialManager implements IAgentPlugin {
   }
 
   /** {@inheritDoc ICRManager.crmAddCredential} */
-  private async crmAddCredential(args: AddCredentialArgs): Promise<DigitalCredential> {
+  private async crsAddCredential(args: AddCredentialArgs): Promise<DigitalCredential> {
     return await this.store.addCredential(args.credential)
   }
 
   /** {@inheritDoc ICRManager.updateCredentialState} */
-  private async crmUpdateCredentialState(args: UpdateCredentialStateArgs): Promise<DigitalCredential> {
+  private async crsUpdateCredentialState(args: UpdateCredentialStateArgs): Promise<DigitalCredential> {
     return await this.store.updateCredentialState(args)
   }
 
   /** {@inheritDoc ICRManager.crmGetCredential} */
-  private async crmGetCredential(args: GetCredentialArgs): Promise<DigitalCredential> {
+  private async crsGetCredential(args: GetCredentialArgs): Promise<DigitalCredential> {
     const { id } = args
     const credential = await this.store.getCredential({ id })
     return credential
   }
 
   /** {@inheritDoc ICRManager.crmGetCredentials} */
-  private async crmGetCredentials(args: GetCredentialsArgs): Promise<Array<DigitalCredential>> {
+  private async crsGetCredentials(args: GetCredentialsArgs): Promise<Array<DigitalCredential>> {
     const { filter } = args
     const credentials = await this.store.getCredentials({ filter })
     return credentials.data
   }
 
   /** {@inheritDoc ICRManager.crmGetUniqueCredentialByIdOrHash} */
-  private async crmGetUniqueCredentialByIdOrHash(args: GetCredentialsByIdOrHashArgs): Promise<OptionalUniqueDigitalCredential> {
-    const credentials = await this.crmGetCredentials({ filter: credentialIdOrHashFilter(args.credentialRole, args.idOrHash) })
+  private async crsGetUniqueCredentialByIdOrHash(args: GetCredentialsByIdOrHashArgs): Promise<OptionalUniqueDigitalCredential> {
+    const credentials = await this.crsGetCredentials({ filter: credentialIdOrHashFilter(args.credentialRole, args.idOrHash) })
     if (credentials.length === 0) {
       return undefined
     }
@@ -90,19 +90,19 @@ export class CredentialManager implements IAgentPlugin {
   }
 
   /** {@inheritDoc ICRManager.crmGetUniqueCredentials} */
-  private async crmGetUniqueCredentials(args: GetCredentialsArgs): Promise<Array<UniqueDigitalCredential>> {
-    const credentials = await this.crmGetCredentials(args)
+  private async crsGetUniqueCredentials(args: GetCredentialsArgs): Promise<Array<UniqueDigitalCredential>> {
+    const credentials = await this.crsGetCredentials(args)
     return this.toUniqueCredentials(credentials)
   }
 
   /** {@inheritDoc ICRManager.crmDeleteCredential} */
-  private async crmDeleteCredential(args: DeleteCredentialArgs): Promise<boolean> {
+  private async crsDeleteCredential(args: DeleteCredentialArgs): Promise<boolean> {
     return this.store.removeCredential(args)
   }
 
   /** {@inheritDoc ICRManager.crmDeleteCredentials} */
-  private async crmDeleteCredentials(args: DeleteCredentialsArgs): Promise<number> {
-    const credentials = await this.crmGetCredentials(args)
+  private async crsDeleteCredentials(args: DeleteCredentialsArgs): Promise<number> {
+    const credentials = await this.crsGetCredentials(args)
     let count = 0
     for (const credential of credentials) {
       const result = await this.store.removeCredential({ id: credential.id })
@@ -117,8 +117,8 @@ export class CredentialManager implements IAgentPlugin {
    * Returns a list of UniqueDigitalCredentials that match the given filter based on the claims they contain.
    * @param args
    */
-  private async crmGetCredentialsByClaims(args: GetCredentialsByClaimsArgs): Promise<Array<UniqueDigitalCredential>> {
-    const digitalCredentials = await this.crmGetUniqueCredentials({
+  private async crsGetCredentialsByClaims(args: GetCredentialsByClaimsArgs): Promise<Array<UniqueDigitalCredential>> {
+    const digitalCredentials = await this.crsGetUniqueCredentials({
       filter: [
         {
           documentType: DocumentType.VC, // TODO does crmGetCredentialsByClaims need to support VPs as well?
@@ -217,8 +217,8 @@ export class CredentialManager implements IAgentPlugin {
    * Returns a count of UniqueDigitalCredentials that match the given filter based on the claims they contain.
    * @param args
    */
-  private async crmGetCredentialsByClaimsCount(args: GetCredentialsByClaimsArgs): Promise<number> {
-    const credentialsByClaims = await this.crmGetCredentialsByClaims(args)
+  private async crsGetCredentialsByClaimsCount(args: GetCredentialsByClaimsArgs): Promise<number> {
+    const credentialsByClaims = await this.crsGetCredentialsByClaims(args)
     return credentialsByClaims.length // FIXME ?
   }
 

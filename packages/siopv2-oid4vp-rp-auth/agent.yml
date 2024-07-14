@@ -115,7 +115,7 @@ universal-resolver:
 
 # Credential Manager
 credentialManager:
-  $require: ./packages/credential-manager/dist#CredentialManager
+  $require: ./packages/credential-store/dist#CredentialManager
   $args:
     - store:
         $require: './packages/data-store/dist#DigitalCredentialStore'

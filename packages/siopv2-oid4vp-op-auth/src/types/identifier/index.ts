@@ -4,7 +4,7 @@ import { RequiredContext } from '../siop-service'
 import { KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
-import { ICredentialManager } from '@sphereon/ssi-sdk.credential-manager'
+import { ICredentialManager } from '@sphereon/ssi-sdk.credential-store'
 
 export const DID_PREFIX = 'did'
 

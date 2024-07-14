@@ -23,7 +23,7 @@ import {
 import { OID4VP, OpSession } from '../session'
 import { IPresentationDefinition, PEX } from '@sphereon/pex'
 import { InputDescriptorV1, InputDescriptorV2, PresentationDefinitionV1, PresentationDefinitionV2 } from '@sphereon/pex-models'
-import { verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-manager'
+import { verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 
 export const logger = Loggers.DEFAULT.get(LOGGER_NAMESPACE)
 
