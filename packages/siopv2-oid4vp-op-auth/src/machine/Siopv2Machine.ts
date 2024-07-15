@@ -365,7 +365,10 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
       [Siopv2MachineStates.handleError]: {
         id: Siopv2MachineStates.handleError,
         on: {
-          '': {
+          [Siopv2MachineEvents.NEXT]: {
+            target: Siopv2MachineStates.error,
+          },
+          [Siopv2MachineEvents.PREVIOUS]: {
             target: Siopv2MachineStates.error,
           },
         },
