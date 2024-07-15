@@ -109,8 +109,8 @@ didManager:
         $require: '@veramo/data-store#DIDStore'
 
 # Credential Manager
-credentialManager:
-  $require: ./packages/credential-store/dist#CredentialManager
+credentialStore:
+  $require: ./packages/credential-store/dist#CredentialStore
   $args:
     - store:
         $require: './packages/data-store/dist#DigitalCredentialStore'
@@ -124,7 +124,7 @@ agent:
     - schemaValidation: false
       plugins:
         - $ref: /didManager
-        - $ref: /credentialManager
+        - $ref: /credentialStore
         - $require: '@veramo/data-store#DataStore'
           $args:
             - $ref: /dbConnection

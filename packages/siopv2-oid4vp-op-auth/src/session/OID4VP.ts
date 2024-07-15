@@ -246,7 +246,7 @@ export class OID4VP {
     }
 
     const filter = verifiableCredentialForRoleFilter(credentialRole, filterOpts?.filter)
-    const uniqueCredentials = await this.session.context.agent.crmGetUniqueCredentials({ filter })
+    const uniqueCredentials = await this.session.context.agent.crsGetUniqueCredentials({ filter })
     return uniqueCredentials.map((uniqueVC: UniqueDigitalCredential) => {
       const vc = uniqueVC.uniformVerifiableCredential!
       const proof = Array.isArray(vc.proof) ? vc.proof : [vc.proof]

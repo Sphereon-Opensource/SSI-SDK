@@ -58,7 +58,7 @@ export function getCredentialsEndpoint(router: Router, context: IRequiredContext
   router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const filter = verifiableCredentialForRoleFilter(CredentialRole.HOLDER) // FIXME BEFORE PR
-      const uniqueVCs = await context.agent.crmGetUniqueCredentials({ filter })
+      const uniqueVCs = await context.agent.crsGetUniqueCredentials({ filter })
       response.statusCode = 202
       return response.send(uniqueVCs.map((uVC) => uVC.uniformVerifiableCredential))
     } catch (e) {
@@ -79,7 +79,7 @@ export function getCredentialEndpoint(router: Router, context: IRequiredContext,
       if (!id) {
         return sendErrorResponse(response, 400, 'no id provided')
       }
-      const vcInfo = await context.agent.crmGetUniqueCredentialByIdOrHash({
+      const vcInfo = await context.agent.crsGetUniqueCredentialByIdOrHash({
         credentialRole: CredentialRole.HOLDER, // FIXME BEFORE PR
         idOrHash: id,
       })
@@ -134,14 +134,14 @@ export function deleteCredentialEndpoint(router: Router, context: IRequiredConte
       if (!id) {
         return sendErrorResponse(response, 400, 'no id provided')
       }
-      const vcInfo = await context.agent.crmGetUniqueCredentialByIdOrHash({
+      const vcInfo = await context.agent.crsGetUniqueCredentialByIdOrHash({
         credentialRole: CredentialRole.HOLDER, // FIXME BEFORE PR
         idOrHash: id,
       })
       if (!vcInfo) {
         return sendErrorResponse(response, 404, `id ${id} not found`)
       }
-      const success = await context.agent.crmDeleteCredentials({ filter: [{ hash: vcInfo.hash }] })
+      const success = await context.agent.crsDeleteCredentials({ filter: [{ hash: vcInfo.hash }] })
       if (success === 0) {
         return sendErrorResponse(response, 400, `Could not delete Verifiable Credential with id ${id}`)
       }

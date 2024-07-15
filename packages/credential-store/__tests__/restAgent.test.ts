@@ -7,7 +7,7 @@ import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/dist'
-import credentialManagerAgentLogic from './shared/credentialStoreAgentLogic'
+import credentialStoreAgentLogic from './shared/credentialStoreAgentLogic'
 import { ICredentialStore } from '../src'
 jest.setTimeout(60000)
 
@@ -66,5 +66,5 @@ const testContext = {
 }
 
 describe('REST integration tests', (): void => {
-  credentialManagerAgentLogic(testContext)
+  credentialStoreAgentLogic(testContext)
 })

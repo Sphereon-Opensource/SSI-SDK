@@ -168,7 +168,7 @@ export const getSelectableCredentials = async (
   const { agent } = agentContext
   const pex = new PEX()
 
-  const uniqueVerifiableCredentials = await agent.crmGetUniqueCredentials({
+  const uniqueVerifiableCredentials = await agent.crsGetUniqueCredentials({
     filter: verifiableCredentialForRoleFilter(CredentialRole.HOLDER),
   })
   const credentialBranding = await agent.ibGetCredentialBranding()

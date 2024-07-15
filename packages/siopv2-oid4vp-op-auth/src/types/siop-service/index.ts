@@ -6,7 +6,7 @@ import { DidAuthConfig, ICredentialLocaleBranding, Identity, Party } from '@sphe
 import { Siopv2MachineContext, Siopv2MachineInterpreter, Siopv2MachineState } from '../machine'
 import { IDidAuthSiopOpAuthenticator } from '../IDidAuthSiopOpAuthenticator'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
-import { ICredentialManager, UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
+import { ICredentialStore, UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 
 export type DidAuthSiopOpAuthenticatorOptions = {
   onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
@@ -72,5 +72,5 @@ export type OnIdentifierCreatedArgs = {
 }
 
 export type RequiredContext = IAgentContext<
-  IContactManager & IDidAuthSiopOpAuthenticator & IDIDManager & IResolver & ICredentialManager & IIssuanceBranding
+  IContactManager & IDidAuthSiopOpAuthenticator & IDIDManager & IResolver & ICredentialStore & IIssuanceBranding
 >

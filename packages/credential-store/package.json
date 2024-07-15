@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
-      "ICredentialManager": "./src/types/ICredentialManager.ts"
+      "ICredentialStore": "./src/types/ICredentialStore.ts"
     }
   },
   "scripts": {

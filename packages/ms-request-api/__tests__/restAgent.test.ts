@@ -6,7 +6,7 @@ import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
-import { ICredentialManager } from '@sphereon/ssi-sdk.credential-store'
+import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { IMsRequestApi } from '../src'
 import msRequestApiAgentLogic from './shared/msRequestApiAgentLogic'
 
@@ -19,7 +19,7 @@ let serverAgent: IAgent
 let restServer: Server
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IMsRequestApi & ICredentialManager>({
+  createAgent<IMsRequestApi & ICredentialStore>({
     ...options,
     plugins: [
       new AgentRestClient({

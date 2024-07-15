@@ -113,8 +113,8 @@ universal-resolver:
     - url: https://dev.uniresolver.io/1.0/identifiers/
 
 # Credential Manager
-credentialManager:
-  $require: ./packages/credential-store/dist#CredentialManager
+credentialStore:
+  $require: ./packages/credential-store/dist#CredentialStore
   $args:
     - store:
         $require: './packages/data-store/dist#DigitalCredentialStore'
@@ -127,7 +127,7 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $ref: /credentialManager
+        - $ref: /credentialStore
         - $require: ./packages/pd-manager/dist#PDManager
           $args:
             - store:

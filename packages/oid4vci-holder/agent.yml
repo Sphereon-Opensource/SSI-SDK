@@ -85,8 +85,8 @@ server:
           messagingServiceEndpoint: /messaging
 
 # Credential Manager
-credentialManager:
-  $require: ./packages/credential-store/dist#CredentialManager
+credentialStore:
+  $require: ./packages/credential-store/dist#CredentialStore
   $args:
     - store:
         $require: './packages/data-store/dist#DigitalCredentialStore'
@@ -99,5 +99,5 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $ref: /credentialManager
+        - $ref: /credentialStore
         - $require: ./packages/oid4vci-holder/dist#OID4VCIHolder

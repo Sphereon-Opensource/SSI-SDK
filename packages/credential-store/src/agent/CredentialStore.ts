@@ -36,7 +36,7 @@ export const credentialStoreMethods: Array<string> = [
  * {@inheritDoc ICRManager}
  */
 export class CredentialStore implements IAgentPlugin {
-  readonly schema = schema.ICredentialManager
+  readonly schema = schema.ICredentialStore
   readonly methods: ICredentialStore = {
     crsAddCredential: this.crsAddCredential.bind(this),
     crsUpdateCredentialState: this.crsUpdateCredentialState.bind(this),

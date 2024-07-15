@@ -113,8 +113,8 @@ universal-resolver:
     - url: https://dev.uniresolver.io/1.0/identifiers/
 
 # Credential Manager
-credentialManager:
-  $require: ./packages/credential-store/dist#CredentialManager
+credentialStore:
+  $require: ./packages/credential-store/dist#CredentialStore
   $args:
     - store:
         $require: './packages/data-store/dist#DigitalCredentialStore'
@@ -129,7 +129,7 @@ agent:
     - schemaValidation: false
       plugins:
         - $ref: /didResolver
-          $ref: /credentialManager
+          $ref: /credentialStore
         - $require: ./packages/siopv2-oid4vp-op-auth/dist#DidAuthSiopOpAuthenticator
           $args:
             - presentationSignCallback: {}

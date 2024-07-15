@@ -3,7 +3,7 @@ import { DataSource } from 'typeorm'
 
 jest.setTimeout(60000)
 
-import credentialManagerAgentLogic from './shared/credentialStoreAgentLogic'
+import credentialStoreAgentLogic from './shared/credentialStoreAgentLogic'
 
 let dbConnection: Promise<DataSource>
 let agent: any
@@ -30,5 +30,5 @@ const testContext = {
 }
 
 describe('Local integration tests', (): void => {
-  credentialManagerAgentLogic(testContext)
+  credentialStoreAgentLogic(testContext)
 })

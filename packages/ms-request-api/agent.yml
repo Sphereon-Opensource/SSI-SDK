@@ -78,8 +78,8 @@ server:
           messagingServiceEndpoint: /messaging
 
 # Credential Manager
-credentialManager:
-  $require: ./packages/credential-store/dist#CredentialManager
+credentialStore:
+  $require: ./packages/credential-store/dist#CredentialStore
   $args:
     - store:
         $require: './packages/data-store/dist#DigitalCredentialStore'
@@ -93,7 +93,7 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $ref: /credentialManager
+        - $ref: /credentialStore
         - $require: ./packages/ms-request-api/dist#MsRequestApi
           $args:
             - azClientId: { process.env.AZ_CLIENT_ID }

@@ -223,7 +223,7 @@ export class WellKnownDidIssuer implements IAgentPlugin {
 
   private async saveDomainLinkageCredential(credential: DomainLinkageCredential, context: RequiredContext): Promise<DigitalCredential> {
     const vc = this.normalizeCredential(credential)
-    return context.agent.crmAddCredential({
+    return context.agent.crsAddCredential({
       credential: {
         rawDocument: JSON.stringify(vc),
         credentialRole: CredentialRole.ISSUER, // FIXME BEFORE PR

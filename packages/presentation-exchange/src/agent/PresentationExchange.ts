@@ -130,7 +130,7 @@ export class PresentationExchange implements IAgentPlugin {
     }
 
     const filter = verifiableCredentialForRoleFilter(filterOpts.credentialRole, filterOpts.filter)
-    const uniqueCredentials = await context.agent.crmGetUniqueCredentials({ filter })
+    const uniqueCredentials = await context.agent.crsGetUniqueCredentials({ filter })
 
     return uniqueCredentials.map((uniqueVC: UniqueDigitalCredential) => {
       const vc = uniqueVC.uniformVerifiableCredential!
