@@ -253,7 +253,8 @@ export const assertedPurposes = (args: { key?: IKeyOpts }): EbsiPublicKeyPurpose
         if (
           key?.purposes &&
           key.purposes.length > 0 &&
-          key.purposes.every((purpose) => [EbsiPublicKeyPurpose.AssertionMethod, EbsiPublicKeyPurpose.Authentication].includes(purpose))
+          key.purposes.includes(EbsiPublicKeyPurpose.AssertionMethod) &&
+          key.purposes.includes(EbsiPublicKeyPurpose.Authentication)
         ) {
           return key.purposes
         }
