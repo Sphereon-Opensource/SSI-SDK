@@ -223,8 +223,11 @@ export class EbsiSupport implements IAgentPlugin {
       apiOpts: { environment, version: 'v4' },
       openIDMetadata,
     } satisfies GetAccessTokenArgs
+
+    console.log(`Access token request:\r\n${JSON.stringify(tokenRequestArgs)}`)
     const accessTokenResponse = await this.getAccessTokenResponse(tokenRequestArgs)
 
+    console.log(`Access token response:\r\n${JSON.stringify(accessTokenResponse)}`)
     if (!('access_token' in accessTokenResponse)) {
       throw Error(`Error response: ${JSON.stringify(accessTokenResponse)}`)
     }

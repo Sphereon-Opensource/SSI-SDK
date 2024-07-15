@@ -16,27 +16,28 @@ export const OID4VPCallbackStateListener = (
       // Make sure we do not navigate when state has not changed
       return
     }
-    logger.info(`state listener for state: ${JSON.stringify(state.value)}`)
+    logger.info(`VP state listener state: ${JSON.stringify(state.value)}`)
 
     if (!callbacks || callbacks.size === 0) {
-      logger.debug(`no callbacks registered for state: ${JSON.stringify(state.value)}`)
+      logger.info(`VP no callbacks registered for state: ${JSON.stringify(state.value)}`)
       return
     }
 
-    const callbackPromises: Promise<void>[] = []
-
-    callbacks.forEach((callback, key: Siopv2MachineStates) => {
-      if (state.matches(key)) {
-        logger.log(`state callback found for state: ${JSON.stringify(state.value)}, will execute callback`)
-        const callbackPromise = callback(oid4vciMachine, state)
-          .then(() => logger.log(`state callback executed for state: ${JSON.stringify(state.value)}`))
-          .catch((error) =>
-            logger.log(`state callback failed for state: ${JSON.stringify(state.value)}, error: ${JSON.stringify(error?.message)}, ${state.event}`),
-          )
-        callbackPromises.push(callbackPromise)
+    for (const [stateKey, callback] of callbacks) {
+      if (state.matches(stateKey)) {
+        logger.log(`VP state callback for state: ${JSON.stringify(state.value)}, will execute...`)
+        await callback(oid4vciMachine, state)
+          .then(() => logger.log(`VP state callback executed for state: ${JSON.stringify(state.value)}`))
+          .catch((error) => {
+            logger.error(
+              `VP state callback failed for state: ${JSON.stringify(state.value)}, error: ${JSON.stringify(error?.message)}, ${JSON.stringify(state.event)}`,
+            )
+            if (error.stack) {
+              logger.error(error.stack)
+            }
+          })
+        break
       }
-    })
-
-    await Promise.all(callbackPromises)
+    }
   }
 }
