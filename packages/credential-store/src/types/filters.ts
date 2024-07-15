@@ -1,4 +1,5 @@
 import { CredentialRole, DigitalCredential, DocumentType, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
+import { validate as uuidValidate } from 'uuid'
 
 /**
  * Creates a filter to find a digital credential by its ID or hash.
@@ -7,16 +8,24 @@ import { CredentialRole, DigitalCredential, DocumentType, FindDigitalCredentialA
  * @param idOrHash - The ID or hash of the credential to search for.
  * @returns A FindDigitalCredentialArgs array for filtering by ID or hash.
  */
-export const credentialIdOrHashFilter = (credentialRole: CredentialRole, idOrHash: string): FindDigitalCredentialArgs => [
-  {
-    id: idOrHash,
-    credentialRole,
-  },
-  {
-    hash: idOrHash,
-    credentialRole,
-  },
-]
+
+export const credentialIdOrHashFilter = (credentialRole: CredentialRole, idOrHash: string): FindDigitalCredentialArgs => {
+  const filter: FindDigitalCredentialArgs = [
+    {
+      hash: idOrHash,
+      credentialRole,
+    },
+  ]
+
+  if (uuidValidate(idOrHash)) {
+    filter.push({
+      id: idOrHash,
+      credentialRole,
+    })
+  }
+
+  return filter
+}
 
 /**
  * Creates a filter for verifiable credentials with a specific role.

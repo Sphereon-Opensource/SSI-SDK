@@ -381,6 +381,9 @@ importers:
       typeorm:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.11.5)(sqlite3@5.1.7)(ts-node@10.9.2)
+      uuid:
+        specifier: ^10.0.0
+        version: 10.0.0
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
@@ -388,6 +391,9 @@ importers:
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
+      '@types/uuid':
+        specifier: ^10.0.0
+        version: 10.0.0
       '@veramo/remote-client':
         specifier: 4.2.0
         version: 4.2.0
