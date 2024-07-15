@@ -22,7 +22,7 @@ function getFileAsJson(path: string) {
 }
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
-  describe('Credential Manager Agent Plugin', (): void => {
+  describe('Credential Store Agent Plugin', (): void => {
     const exampleVC: IVerifiableCredential = getFileAsJson('./packages/credential-store/__tests__/vc-examples/vc_driverLicense.json')
 
     let agent: ConfiguredAgent
