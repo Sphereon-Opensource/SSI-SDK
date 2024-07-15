@@ -20,7 +20,7 @@ import { AbstractDigitalCredentialStore } from '@sphereon/ssi-sdk.data-store/dis
 import { IVerifiableCredential } from '@sphereon/ssi-types'
 
 // Exposing the methods here for any REST implementation
-export const credentialStoreMethods: Array<string> = [
+export const crsGetUniqueCredentialByIdOrHash: Array<string> = [
   'crsAddCredential',
   'crsUpdateCredentialState',
   'crsGetCredential',
@@ -28,6 +28,7 @@ export const credentialStoreMethods: Array<string> = [
   'crsStoreCredential',
   'crsDeleteCredential',
   'crsDeleteCredentials',
+  'crsGetUniqueCredentialByIdOrHash',
   'crsGetCredentialsByClaims',
   'crsGetCredentialsByClaimsCount',
 ]
