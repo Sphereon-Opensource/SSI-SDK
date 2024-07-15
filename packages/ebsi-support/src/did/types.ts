@@ -380,7 +380,7 @@ export type GetDidDocumentsResponse = {
   links: Links
 }
 
-type EbsiAccessTokenOpts = {
+export type EbsiAccessTokenOpts = {
   attestationToOnboard?: W3CVerifiableCredential
   jwksUri?: string
   redirectUri: string
