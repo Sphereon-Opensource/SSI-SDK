@@ -30,6 +30,16 @@ import {
 
 import { v4 } from 'uuid'
 
+
+export const ebsiSupportMethods: Array<string> = [
+    'ebsiWellknownMetadata',
+    'ebsiAuthorizationServerJwks',
+    'ebsiPresentationDefinitionGet',
+    'ebsiAccessTokenGet',
+    'ebsiCreateAttestationAuthRequestURL',
+    'ebsiGetAttestation'
+]
+
 export class EbsiSupport implements IAgentPlugin {
   readonly schema = schema.IEbsiSupport
   readonly methods: IEbsiSupport = {
