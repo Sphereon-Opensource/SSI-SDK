@@ -743,7 +743,6 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
 
     const { credentialsToAccept, openID4VCIClientState, credentialsSupported, serverMetadata, selectedCredentials } = args
-
     const credentialToAccept = credentialsToAccept[0]
 
     if (selectedCredentials && selectedCredentials.length > 1) {
@@ -762,39 +761,6 @@ export class OID4VCIHolder implements IAgentPlugin {
       | SdJwtDecodedVerifiableCredentialPayload
       | W3CVerifiableCredential
       | undefined = undefined
-
-    const issuerVC = credentialToAccept.credential.credentialResponse.credential as OriginalVerifiableCredential
-    const wrappedIssuerVC = CredentialMapper.toWrappedVerifiableCredential(issuerVC)
-    console.log(`Wrapped VC: ${wrappedIssuerVC.type}, ${wrappedIssuerVC.format}`)
-
-    // We will use the subject of the VCI Issuer (the holder, as the issuer of the new credential, so the below is not a mistake!)
-    let issuer =
-      trimmed(wrappedIssuerVC.decoded.sub) ??
-      trimmed(wrappedIssuerVC.decoded.credentialSubject.id) ??
-      trimmed(verifiableCredential.credentialSubject.id)
-
-    if (!issuer && openID4VCIClientState?.kid?.startsWith('did:')) {
-      issuer = parseDid(openID4VCIClientState?.kid).did
-    }
-    if (!issuer && openID4VCIClientState?.jwk?.kid?.startsWith('did:')) {
-      issuer = parseDid(openID4VCIClientState!.jwk!.kid!).did
-    }
-    if (!issuer && openID4VCIClientState?.clientId) {
-      issuer = trimmed(openID4VCIClientState.clientId)
-    }
-    if (!issuer && openID4VCIClientState?.accessTokenResponse) {
-      const decodedJwt = decodeJWT(openID4VCIClientState.accessTokenResponse.access_token)
-      issuer = decodedJwt.payload.sub
-    }
-    if (!issuer && credentialToAccept.credential.issuanceOpt.identifier) {
-      issuer = credentialToAccept.credential.issuanceOpt.identifier.did
-    }
-
-    if (!issuer) {
-      throw Error(`We could not determine the issuer, which means we cannot sign the credential`)
-    }
-    logger.log(`Issuer for self-issued credential will be: ${issuer}`)
-
     if (!notificationEndpoint) {
       logger.log(`Notifications not supported by issuer ${serverMetadata?.issuer}. Will not provide a notification`)
     } else if (notificationEndpoint && !notificationId) {
@@ -809,6 +775,36 @@ export class OID4VCIHolder implements IAgentPlugin {
           ? 'credential_accepted_holder_signed'
           : 'credential_deleted_holder_signed'
         logger.log(`Subject issuance/signing will be used, with event`, event)
+        const issuerVC = credentialToAccept.credential.credentialResponse.credential as OriginalVerifiableCredential
+        const wrappedIssuerVC = CredentialMapper.toWrappedVerifiableCredential(issuerVC)
+        console.log(`Wrapped VC: ${wrappedIssuerVC.type}, ${wrappedIssuerVC.format}`)
+        // We will use the subject of the VCI Issuer (the holder, as the issuer of the new credential, so the below is not a mistake!)
+        let issuer =
+          trimmed(wrappedIssuerVC.decoded.sub) ??
+          trimmed(wrappedIssuerVC.decoded.credentialSubject.id) ??
+          trimmed(verifiableCredential.credentialSubject.id)
+
+        if (!issuer && openID4VCIClientState?.kid?.startsWith('did:')) {
+          issuer = parseDid(openID4VCIClientState?.kid).did
+        }
+        if (!issuer && openID4VCIClientState?.jwk?.kid?.startsWith('did:')) {
+          issuer = parseDid(openID4VCIClientState!.jwk!.kid!).did
+        }
+        if (!issuer && openID4VCIClientState?.clientId) {
+          issuer = trimmed(openID4VCIClientState.clientId)
+        }
+        if (!issuer && openID4VCIClientState?.accessTokenResponse) {
+          const decodedJwt = decodeJWT(openID4VCIClientState.accessTokenResponse.access_token)
+          issuer = decodedJwt.payload.sub
+        }
+        if (!issuer && credentialToAccept.credential.issuanceOpt.identifier) {
+          issuer = credentialToAccept.credential.issuanceOpt.identifier.did
+        }
+
+        if (!issuer) {
+          throw Error(`We could not determine the issuer, which means we cannot sign the credential`)
+        }
+        logger.log(`Issuer for self-issued credential will be: ${issuer}`)
 
         const holderCredentialToSign = wrappedIssuerVC.decoded
         let proofFormat: ProofFormat = 'lds'
@@ -880,7 +876,9 @@ export class OID4VCIHolder implements IAgentPlugin {
           rawDocument: JSON.stringify(persistCredential),
           credentialRole: CredentialRole.HOLDER,
           issuerCorrelationType: CredentialCorrelationType.DID,
-          issuerCorrelationId: issuer,
+          issuerCorrelationId: (persistCredential as any).issuer, // FIXME BEFORE PR
+          subjectCorrelationType: CredentialCorrelationType.DID,
+          subjectCorrelationId: (persistCredential as any).issuer, // FIXME BEFORE PR
         },
       })
       await context.agent.emit(OID4VCIHolderEvent.CREDENTIAL_STORED, {
