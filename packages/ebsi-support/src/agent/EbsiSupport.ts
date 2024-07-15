@@ -107,6 +107,7 @@ export class EbsiSupport implements IAgentPlugin {
   private async ebsiAccessTokenGet(args: EBSIAuthAccessTokenGetArgs, context: IRequiredContext): Promise<GetAccessTokenResult> {
     const { scope, idOpts, jwksUri, clientId, allVerifiableCredentials, redirectUri, environment, skipDidResolution = false } = args
     const identifier = await getIdentifier(idOpts, context)
+    console.log(`Getting access token for ${identifier.did}, scope ${scope} and clientId=${clientId}, skipDidResolution=${skipDidResolution}...`)
     const openIDMetadata = await this.ebsiWellknownMetadata({
       environment,
       version: 'v4',
@@ -120,6 +121,7 @@ export class EbsiSupport implements IAgentPlugin {
       apiOpts: { environment, version: 'v4', type: 'openid-configuration' },
     })
     const hasInputDescriptors = definitionResponse.input_descriptors.length > 0
+    console.log(`PD response`, definitionResponse)
 
     if (!hasInputDescriptors) {
       // Yes EBSI expects VPs without a VC in some situations. This is not according to the PEX spec!
@@ -153,6 +155,7 @@ export class EbsiSupport implements IAgentPlugin {
         }
       }
       if (!attestationCredential) {
+        console.log(`No attestation credential present. Will get one from within access token method!`)
         const credentialIssuer = args.credentialIssuer ?? ebsiGetIssuerMock({ environment })
         const authReqResult = await context.agent.ebsiCreateAttestationAuthRequestURL({
           credentialIssuer,
@@ -187,19 +190,19 @@ export class EbsiSupport implements IAgentPlugin {
       ? await context.agent.pexDefinitionFilterCredentials({
           presentationDefinition: definitionResponse,
           credentialFilterOpts: { verifiableCredentials: [attestationCredential!] },
-          // LOL, let's see whether we can trick PEX to create a VP without VCs
         })
       : ({
+          // LOL, let's see whether we can trick PEX to create a VP without VCs
           filteredCredentials: [],
           id: definitionResponse.id,
           selectResults: { verifiableCredential: [], areRequiredCredentialsPresent: 'info' },
         } satisfies IPEXFilterResult)
-    const opSesssion = await context.agent.siopRegisterOPSession({
+    const opSession = await context.agent.siopRegisterOPSession({
       requestJwtOrUri: '', // Siop assumes we use an auth request, which we don't have in this case
       op: { checkLinkedDomains: CheckLinkedDomain.NEVER },
       providedPresentationDefinitions: [definition],
     })
-    const oid4vp = await opSesssion.getOID4VP([identifier.did])
+    const oid4vp = await opSession.getOID4VP([identifier.did])
     const vp = await oid4vp.createVerifiablePresentation(
       { definition, credentials: pexResult.filteredCredentials },
       {
@@ -215,6 +218,7 @@ export class EbsiSupport implements IAgentPlugin {
       ? vp.presentationSubmission
       : ({ id: v4(), definition_id: definitionResponse.id, descriptor_map: [] } satisfies PresentationSubmission)
 
+    console.log(`Presentation submission`, presentationSubmission)
     const tokenRequestArgs = {
       grant_type: 'vp_token',
       vp_token: CredentialMapper.toCompactJWT(vp.verifiablePresentation),
@@ -225,7 +229,7 @@ export class EbsiSupport implements IAgentPlugin {
     } satisfies GetAccessTokenArgs
 
     console.log(`Access token request:\r\n${JSON.stringify(tokenRequestArgs)}`)
-    const accessTokenResponse = await this.getAccessTokenResponse(tokenRequestArgs)
+    const accessTokenResponse = await this.getAccessToken(tokenRequestArgs)
 
     console.log(`Access token response:\r\n${JSON.stringify(accessTokenResponse)}`)
     if (!('access_token' in accessTokenResponse)) {
@@ -241,7 +245,7 @@ export class EbsiSupport implements IAgentPlugin {
     }
   }
 
-  private async getAccessTokenResponse(args: GetAccessTokenArgs): Promise<GetAccessTokenResponse> {
+  private async getAccessToken(args: GetAccessTokenArgs): Promise<GetAccessTokenResponse> {
     const { grant_type = 'vp_token', scope, vp_token, presentation_submission, apiOpts, openIDMetadata } = args
     const discoveryMetadata: EbsiOpenIDMetadata =
       openIDMetadata ??

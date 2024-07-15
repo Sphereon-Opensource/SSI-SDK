@@ -239,5 +239,6 @@ export const siopDoneCallback = ({ oid4vciMachine }: { oid4vciMachine: OID4VCIMa
       type: OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE,
       data: state.context.authorizationResponseData.url!,
     })
+    console.log(`SIOP DONE!`)
   }
 }

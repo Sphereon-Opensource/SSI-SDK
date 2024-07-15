@@ -321,6 +321,7 @@ export const ebsiCreateDidOnLedger = async (args: CreateEbsiDidParams, context: 
   const jwksUri = args.accessTokenOpts.jwksUri ?? `${clientId}/.well-known/jwks/dids/${encodeURIComponent(identifier.did)}.json`
 
   if (!attestationToOnboard) {
+    console.log(`No attestation to onboard present. Will get one`)
     const authReqResult = await context.agent.ebsiCreateAttestationAuthRequestURL({
       credentialIssuer,
       idOpts,
@@ -336,6 +337,7 @@ export const ebsiCreateDidOnLedger = async (args: CreateEbsiDidParams, context: 
       opts: { timeout: 120_000 },
     })
     attestationToOnboard = attestationResult.credentials[0].rawVerifiableCredential as W3CVerifiableCredential
+    console.log(`Attestation to onboard received`, attestationToOnboard)
   }
 
   const insertDidAccessTokenResponse = await context.agent.ebsiAccessTokenGet({
