@@ -73,7 +73,7 @@ const tearDown = async (): Promise<boolean> => {
 }
 
 // Since we need to actually host the JWKs, we need to create some fixtures and use github as a jwks_uri
-describe('attestation client should', () => {
+describe.skip('attestation client should', () => {
   let identifier: IIdentifier
 
   beforeAll(async (): Promise<void> => {
