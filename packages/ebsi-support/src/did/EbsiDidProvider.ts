@@ -98,6 +98,7 @@ export class EbsiDidProvider extends AbstractIdentifierProvider {
     }
 
     if (executeLedgerOperation) {
+      // This can only work if we enable global jwks hosting. DID JWK hosting will not work as the DID is not registered at this point
       await ebsiCreateDidOnLedger(
         {
           identifier,

@@ -3,7 +3,7 @@ import { CreateRequestObjectMode } from '@sphereon/oid4vci-common'
 import { getControllerKey, getEthereumAddressFromKey, getKeys } from '@sphereon/ssi-sdk-ext.did-utils'
 import { calculateJwkThumbprint, calculateJwkThumbprintForKey, JwkKeyUse, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
 import { W3CVerifiableCredential } from '@sphereon/ssi-types'
-import { IAgentContext, IIdentifier, IKey, IKeyManager, MinimalImportableKey, TKeyType } from '@veramo/core'
+import { IAgentContext, IKey, IKeyManager, MinimalImportableKey, TKeyType } from '@veramo/core'
 import { getBytes, SigningKey, Transaction } from 'ethers'
 import { base58btc } from 'multiformats/bases/base58'
 import * as u8a from 'uint8arrays'
@@ -14,6 +14,7 @@ import { ebsiWaitTillDocumentAnchored } from './services/EbsiRestService'
 import { callRpcMethod } from './services/EbsiRPCService'
 import {
   BASE_CONTEXT_DOC,
+  CreateEbsiDidOnLedgerResult,
   CreateEbsiDidParams,
   EBSI_DID_SPEC_INFOS,
   EbsiDidRegistryAPIEndpoints,
@@ -288,16 +289,7 @@ export const randomRpcId = (): number => {
   return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
 }
 
-export const ebsiCreateDidOnLedger = async (
-  args: CreateEbsiDidParams,
-  context: IRequiredContext,
-): Promise<{
-  identifier: IIdentifier
-  addVerificationMethod: EbsiRPCResponse
-  insertDidDoc: EbsiRPCResponse
-  addAssertionMethodRelationship: EbsiRPCResponse
-  addAuthenticationRelationship: EbsiRPCResponse
-}> => {
+export const ebsiCreateDidOnLedger = async (args: CreateEbsiDidParams, context: IRequiredContext): Promise<CreateEbsiDidOnLedgerResult> => {
   const {
     accessTokenOpts,
     notBefore = Math.floor(Date.now() / 1000 - 60),

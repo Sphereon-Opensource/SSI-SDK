@@ -5,7 +5,8 @@ import { IPEXFilterResult } from '@sphereon/ssi-sdk.presentation-exchange'
 import { CredentialMapper, PresentationSubmission } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import fetch from 'cross-fetch'
-import { determineWellknownEndpoint, ebsiGetIssuerMock } from '../did/functions'
+import { CreateEbsiDidOnLedgerResult, CreateEbsiDidParams } from '../did'
+import { determineWellknownEndpoint, ebsiCreateDidOnLedger as ebsiCreateDidOnLedgerFunction, ebsiGetIssuerMock } from '../did/functions'
 import { ebsiCreateAttestationAuthRequestURL, ebsiGetAttestation } from '../functions'
 import {
   ApiOpts,
@@ -30,25 +31,30 @@ import {
 
 import { v4 } from 'uuid'
 
-
 export const ebsiSupportMethods: Array<string> = [
-    'ebsiWellknownMetadata',
-    'ebsiAuthorizationServerJwks',
-    'ebsiPresentationDefinitionGet',
-    'ebsiAccessTokenGet',
-    'ebsiCreateAttestationAuthRequestURL',
-    'ebsiGetAttestation'
+  'ebsiCreateDidOnLedger',
+  'ebsiWellknownMetadata',
+  'ebsiAuthorizationServerJwks',
+  'ebsiPresentationDefinitionGet',
+  'ebsiAccessTokenGet',
+  'ebsiCreateAttestationAuthRequestURL',
+  'ebsiGetAttestation',
 ]
 
 export class EbsiSupport implements IAgentPlugin {
   readonly schema = schema.IEbsiSupport
   readonly methods: IEbsiSupport = {
+    ebsiCreateDidOnLedger: this.ebsiCreateDidOnLedger.bind(this),
     ebsiWellknownMetadata: this.ebsiWellknownMetadata.bind(this),
     ebsiAuthorizationServerJwks: this.ebsiAuthorizationServerJwks.bind(this),
     ebsiPresentationDefinitionGet: this.ebsiPresentationDefinitionGet.bind(this),
     ebsiAccessTokenGet: this.ebsiAccessTokenGet.bind(this),
     ebsiCreateAttestationAuthRequestURL: ebsiCreateAttestationAuthRequestURL.bind(this),
     ebsiGetAttestation: ebsiGetAttestation.bind(this),
+  }
+
+  private async ebsiCreateDidOnLedger(args: CreateEbsiDidParams, context: IRequiredContext): Promise<CreateEbsiDidOnLedgerResult> {
+    return await ebsiCreateDidOnLedgerFunction(args, context)
   }
 
   private async ebsiWellknownMetadata(args: WellknownOpts): Promise<GetOIDProviderMetadataResponse> {

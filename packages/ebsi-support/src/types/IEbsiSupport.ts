@@ -8,6 +8,7 @@ import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import { PresentationSubmission, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentContext, IDIDManager, IIdentifier, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+import { CreateEbsiDidOnLedgerResult, CreateEbsiDidParams } from '../did'
 import { AttestationAuthRequestUrlResult } from '../functions'
 
 /**
@@ -40,6 +41,8 @@ export type ApiOpts = { environment?: EbsiEnvironment; version: EbsiApiVersion }
 export type WellknownOpts = ApiOpts & { type: WellknownType; system?: EbsiSystem | EbsiEnvironment; mock?: EbsiMock }
 
 export interface IEbsiSupport extends IPluginMethodMap {
+  ebsiCreateDidOnLedger(args: CreateEbsiDidParams): Promise<CreateEbsiDidOnLedgerResult>
+
   ebsiWellknownMetadata(args?: ApiOpts): Promise<GetOIDProviderMetadataResponse>
 
   ebsiAuthorizationServerJwks(args?: ApiOpts): Promise<GetOIDProviderJwksResponse>

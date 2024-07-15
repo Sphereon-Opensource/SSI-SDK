@@ -409,7 +409,13 @@ export type CreateEbsiDidParams = {
   baseDocument?: string
   accessTokenOpts: EbsiAccessTokenOpts
 }
-
+export interface CreateEbsiDidOnLedgerResult {
+  identifier: IIdentifier
+  addVerificationMethod: EbsiRPCResponse
+  insertDidDoc: EbsiRPCResponse
+  addAssertionMethodRelationship: EbsiRPCResponse
+  addAuthenticationRelationship: EbsiRPCResponse
+}
 /**
  * @constant JSON_RPC_VERSION
  */
