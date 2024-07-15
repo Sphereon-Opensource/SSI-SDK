@@ -41,7 +41,7 @@ export type ApiOpts = { environment?: EbsiEnvironment; version: EbsiApiVersion }
 export type WellknownOpts = ApiOpts & { type: WellknownType; system?: EbsiSystem | EbsiEnvironment; mock?: EbsiMock }
 
 export interface IEbsiSupport extends IPluginMethodMap {
-  ebsiCreateDidOnLedger(args: CreateEbsiDidParams): Promise<CreateEbsiDidOnLedgerResult>
+  ebsiCreateDidOnLedger(args: CreateEbsiDidParams, context: IRequiredContext): Promise<CreateEbsiDidOnLedgerResult>
 
   ebsiWellknownMetadata(args?: ApiOpts): Promise<GetOIDProviderMetadataResponse>
 
