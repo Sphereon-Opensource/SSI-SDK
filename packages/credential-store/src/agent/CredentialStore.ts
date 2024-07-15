@@ -121,7 +121,7 @@ export class CredentialStore implements IAgentPlugin {
     const digitalCredentials = await this.crsGetUniqueCredentials({
       filter: [
         {
-          documentType: DocumentType.VC, // TODO does crmGetCredentialsByClaims need to support VPs as well?
+          documentType: DocumentType.VC, // TODO does crsGetCredentialsByClaims need to support VPs as well?
           credentialRole: args.credentialRole,
           tenantId: args.tenantId,
         },
@@ -129,6 +129,7 @@ export class CredentialStore implements IAgentPlugin {
     })
 
     // TODO not sure if this is what we want, doing filtering now after credentials fetch because this data is inside the VC document
+    // FIXME BEFORE PR - Proof of concept code below, to be tested
     const claimFilteredCredentials: UniqueDigitalCredential[] = digitalCredentials.filter((uniqueVC) => {
       if (!uniqueVC.uniformVerifiableCredential) {
         return false
