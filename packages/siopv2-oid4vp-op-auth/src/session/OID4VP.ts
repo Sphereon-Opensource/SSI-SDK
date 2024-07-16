@@ -6,11 +6,7 @@ import { getDID, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
 import { CredentialMapper, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { IIdentifier } from '@veramo/core'
-import {
-  DEFAULT_JWT_PROOF_TYPE,
-  VerifiableCredentialsWithDefinition,
-  VerifiablePresentationWithDefinition,
-} from '../types/IDidAuthSiopOpAuthenticator'
+import { DEFAULT_JWT_PROOF_TYPE, VerifiableCredentialsWithDefinition, VerifiablePresentationWithDefinition } from '../types'
 import { createOID4VPPresentationSignCallback } from './functions'
 import { OpSession } from './OpSession'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
@@ -49,7 +45,7 @@ export class OID4VP {
     credentialRole: CredentialRole,
     credentialsWithDefinitions: VerifiableCredentialsWithDefinition[],
     opts?: {
-      forceNoCredentialsInVP?: boolean // Allow to create a VP without credentials, like EBSI is using it. Default to true
+      forceNoCredentialsInVP?: boolean // Allow to create a VP without credentials, like EBSI is using it. Defaults to false
       restrictToFormats?: Format
       restrictToDIDMethods?: string[]
       proofOpts?: ProofOptions
@@ -67,7 +63,7 @@ export class OID4VP {
     credentialRole: CredentialRole,
     selectedVerifiableCredentials: VerifiableCredentialsWithDefinition,
     opts?: {
-      forceNoCredentialsInVP?: boolean // Allow to create a VP without credentials, like EBSI is using it. Default to true
+      forceNoCredentialsInVP?: boolean // Allow to create a VP without credentials, like EBSI is using it. Defaults to false
       restrictToFormats?: Format
       restrictToDIDMethods?: string[]
       proofOpts?: ProofOptions

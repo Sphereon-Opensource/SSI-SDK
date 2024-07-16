@@ -1,8 +1,6 @@
 {
   "extends": "../tsconfig-base.json",
   "compilerOptions": {
-    "module": "esnext",
-    "target": "ESNext",
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "rootDir": "src",

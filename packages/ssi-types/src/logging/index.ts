@@ -47,7 +47,10 @@ export function logOptions(opts?: SimpleLogOptions): Required<SimpleLogOptions> 
 
 export class Loggers {
   private static readonly DEFAULT_KEY = '__DEFAULT__'
-  public static readonly DEFAULT: Loggers = new Loggers({ defaultLogLevel: LogLevel.INFO, methods: [LogMethod.DEBUG_PKG, LogMethod.EVENT] })
+  public static readonly DEFAULT: Loggers = new Loggers({
+    defaultLogLevel: LogLevel.INFO,
+    methods: [LogMethod.DEBUG_PKG, LogMethod.EVENT],
+  })
   private readonly namespaceOptions: Map<string, Required<SimpleLogOptions>> = new Map()
   private readonly loggers: WeakMap<Required<SimpleLogOptions>, ISimpleLogger<any>> = new WeakMap()
 
@@ -164,15 +167,20 @@ export class SimpleLogger implements ISimpleLogger<any> {
       const [value, args] = logArgs
       switch (level) {
         case LogLevel.TRACE:
-          return console.trace(value, args)
+          console.trace(value, args)
+          break
         case LogLevel.DEBUG:
-          return console.debug(value, args)
+          console.debug(value, args)
+          break
         case LogLevel.INFO:
-          return console.info(value, args)
+          console.info(value, args)
+          break
         case LogLevel.WARNING:
-          return console.warn(value, args)
+          console.warn(value, args)
+          break
         case LogLevel.ERROR:
-          return console.error(value, args)
+          console.error(value, args)
+          break
       }
     }
 

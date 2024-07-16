@@ -3,7 +3,7 @@ import { CreateRequestObjectMode } from '@sphereon/oid4vci-common'
 import { getControllerKey, getEthereumAddressFromKey, getKeys } from '@sphereon/ssi-sdk-ext.did-utils'
 import { calculateJwkThumbprint, calculateJwkThumbprintForKey, JwkKeyUse, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
 import { W3CVerifiableCredential } from '@sphereon/ssi-types'
-import { IAgentContext, IIdentifier, IKey, IKeyManager, MinimalImportableKey, TKeyType } from '@veramo/core'
+import { IAgentContext, IKey, IKeyManager, MinimalImportableKey, TKeyType } from '@veramo/core'
 import { getBytes, SigningKey, Transaction } from 'ethers'
 import { base58btc } from 'multiformats/bases/base58'
 import * as u8a from 'uint8arrays'
@@ -14,6 +14,7 @@ import { ebsiWaitTillDocumentAnchored } from './services/EbsiRestService'
 import { callRpcMethod } from './services/EbsiRPCService'
 import {
   BASE_CONTEXT_DOC,
+  CreateEbsiDidOnLedgerResult,
   CreateEbsiDidParams,
   EBSI_DID_SPEC_INFOS,
   EbsiDidRegistryAPIEndpoints,
@@ -253,7 +254,8 @@ export const assertedPurposes = (args: { key?: IKeyOpts }): EbsiPublicKeyPurpose
         if (
           key?.purposes &&
           key.purposes.length > 0 &&
-          key.purposes.every((purpose) => [EbsiPublicKeyPurpose.AssertionMethod, EbsiPublicKeyPurpose.Authentication].includes(purpose))
+          key.purposes.includes(EbsiPublicKeyPurpose.AssertionMethod) &&
+          key.purposes.includes(EbsiPublicKeyPurpose.Authentication)
         ) {
           return key.purposes
         }
@@ -287,16 +289,7 @@ export const randomRpcId = (): number => {
   return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
 }
 
-export const ebsiCreateDidOnLedger = async (
-  args: CreateEbsiDidParams,
-  context: IRequiredContext,
-): Promise<{
-  identifier: IIdentifier
-  addVerificationMethod: EbsiRPCResponse
-  insertDidDoc: EbsiRPCResponse
-  addAssertionMethodRelationship: EbsiRPCResponse
-  addAuthenticationRelationship: EbsiRPCResponse
-}> => {
+export const ebsiCreateDidOnLedger = async (args: CreateEbsiDidParams, context: IRequiredContext): Promise<CreateEbsiDidOnLedgerResult> => {
   const {
     accessTokenOpts,
     notBefore = Math.floor(Date.now() / 1000 - 60),
@@ -328,6 +321,7 @@ export const ebsiCreateDidOnLedger = async (
   const jwksUri = args.accessTokenOpts.jwksUri ?? `${clientId}/.well-known/jwks/dids/${encodeURIComponent(identifier.did)}.json`
 
   if (!attestationToOnboard) {
+    console.log(`No attestation to onboard present. Will get one`)
     const authReqResult = await context.agent.ebsiCreateAttestationAuthRequestURL({
       credentialIssuer,
       idOpts,
@@ -343,6 +337,7 @@ export const ebsiCreateDidOnLedger = async (
       opts: { timeout: 120_000 },
     })
     attestationToOnboard = attestationResult.credentials[0].rawVerifiableCredential as W3CVerifiableCredential
+    console.log(`Attestation to onboard received`, attestationToOnboard)
   }
 
   const insertDidAccessTokenResponse = await context.agent.ebsiAccessTokenGet({

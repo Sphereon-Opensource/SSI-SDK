@@ -1,3 +1,4 @@
+import 'cross-fetch/polyfill'
 import { ExpressBuilder } from '@sphereon/ssi-express-support'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
@@ -7,6 +8,7 @@ import { PublicKeyHosting } from '@sphereon/ssi-sdk.public-key-hosting'
 import { jwksURIFromIdentifier } from '@sphereon/ssi-sdk.public-key-hosting/dist/functions'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import { IDIDManager, IIdentifier, IKeyManager, IResolver, MinimalImportableKey, TAgent } from '@veramo/core'
+
 // @ts-ignore
 import cors from 'cors'
 
@@ -109,6 +111,7 @@ describe.skip('attestation client should', () => {
         provider: 'did:ebsi',
         options: { secp256k1Key: secp256k1PrivateKey, secp256r1Key: secp256r1PrivateKey },
       })
+      console.log(`created EBSI DID: ${identifier.did}`)
     } catch (e) {
       console.log(`###########WHOOPS:`, e)
     }

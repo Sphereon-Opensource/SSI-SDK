@@ -145,6 +145,7 @@ export const addContactCallback = (context: IRequiredContext) => {
 export const handleErrorCallback = (context: IRequiredContext) => {
   return async (oid4vciMachine: OID4VCIMachineInterpreter | Siopv2MachineInterpreter, state: OID4VCIMachineState | Siopv2MachineState) => {
     console.error(`error callback event: ${state.event}`, state.context.error)
+    logger.trace(state.event)
   }
 }
 
@@ -238,5 +239,6 @@ export const siopDoneCallback = ({ oid4vciMachine }: { oid4vciMachine: OID4VCIMa
       type: OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE,
       data: state.context.authorizationResponseData.url!,
     })
+    console.log(`SIOP DONE!`)
   }
 }

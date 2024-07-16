@@ -515,6 +515,8 @@ export class OID4VCIHolder implements IAgentPlugin {
   }
 
   private async oid4vciHolderGetCredentials(args: GetCredentialsArgs, context: RequiredContext): Promise<Array<MappedCredentialToAccept>> {
+    console.log(`==========OID4VCI HOLDER GET CREDENTIALS ====================`)
+    console.log(`==========OID4VCI HOLDER GET CREDENTIALS ====================`)
     const { verificationCode, openID4VCIClientState, didMethodPreferences = this.didMethodPreferences, issuanceOpt, accessTokenOpts } = args
 
     if (!openID4VCIClientState) {

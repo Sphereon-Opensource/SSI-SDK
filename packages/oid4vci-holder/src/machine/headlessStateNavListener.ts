@@ -15,21 +15,27 @@ export const OID4VCICallbackStateListener = (
       // Make sure we do not navigate when state has not changed
       return
     }
-    logger.info(`state listener for state: ${JSON.stringify(state.value)}`)
+    logger.info(`VCI state listener state: ${JSON.stringify(state.value)}`)
 
     if (!callbacks || callbacks.size === 0) {
-      logger.debug(`no callbacks registered for state: ${JSON.stringify(state.value)}`)
+      logger.info(`VCI no callbacks registered for state: ${JSON.stringify(state.value)}`)
       return
     }
 
     for (const [stateKey, callback] of callbacks) {
       if (state.matches(stateKey)) {
-        logger.log(`state callback found for state: ${JSON.stringify(state.value)}, will execute callback`)
+        logger.log(`VCI state callback for state: ${JSON.stringify(state.value)}, will execute...`)
         await callback(oid4vciMachine, state)
           .then(() => logger.log(`state callback executed for state: ${JSON.stringify(state.value)}`))
-          .catch((error) =>
-            logger.log(`state callback failed for state: ${JSON.stringify(state.value)}, error: ${JSON.stringify(error?.message)}, ${state.event}`),
-          )
+          .catch((error) => {
+            logger.error(
+              `VCI state callback failed for state: ${JSON.stringify(state.value)}, error: ${JSON.stringify(error?.message)}, ${JSON.stringify(state.event)}`,
+            )
+            if (error.stack) {
+              logger.error(error.stack)
+            }
+          })
+        break
       }
     }
   }
