@@ -30,6 +30,7 @@ import {
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
+  ICredential,
   IVerifiableCredential,
   JwtDecodedVerifiableCredential,
   Loggers,
@@ -873,14 +874,16 @@ export class OID4VCIHolder implements IAgentPlugin {
       logger.log(`Will not persist credential, since we are signing as a holder and the issuer asked not to persist`)
     } else {
       logger.log(`Persisting credential`, persistCredential)
+
+      const issuer = CredentialMapper.issuerCorrelationIdFromIssuerType((persistCredential as ICredential).issuer)
       const vcHash = await context.agent.crsAddCredential({
         credential: {
           rawDocument: JSON.stringify(persistCredential),
           credentialRole: CredentialRole.HOLDER,
           issuerCorrelationType: CredentialCorrelationType.DID,
-          issuerCorrelationId: (persistCredential as any).issuer, // FIXME BEFORE PR
+          issuerCorrelationId: issuer,
           subjectCorrelationType: CredentialCorrelationType.DID,
-          subjectCorrelationId: (persistCredential as any).issuer, // FIXME BEFORE PR
+          subjectCorrelationId: issuer, // FIXME get separate did for subject
         },
       })
       await context.agent.emit(OID4VCIHolderEvent.CREDENTIAL_STORED, {

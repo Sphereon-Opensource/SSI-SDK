@@ -7,6 +7,7 @@ export type DigitalCredential = {
   credentialRole: CredentialRole
   rawDocument: string
   uniformDocument: string
+  credentialId?: string
   hash: string
   issuerCorrelationType: CredentialCorrelationType
   subjectCorrelationType?: CredentialCorrelationType

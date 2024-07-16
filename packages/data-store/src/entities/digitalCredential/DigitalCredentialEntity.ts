@@ -27,6 +27,9 @@ export class DigitalCredentialEntity extends BaseEntity {
   @Column('text', { name: 'uniform_document', nullable: false })
   uniformDocument!: string
 
+  @Column('text', { name: 'credential_id', nullable: true, unique: false })
+  credentialId!: string
+
   @Column('text', { name: 'hash', nullable: false, unique: true })
   hash!: string
 

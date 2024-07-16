@@ -198,6 +198,7 @@ describe('Database entities tests', (): void => {
     const result3: GetCredentialsResponse = await digitalCredentialStore.getCredentials(args3)
     expect(result3.data.length).toEqual(3)
     expect(result3.data[1].documentFormat).toEqual(CredentialDocumentFormat.JSON_LD)
+    expect(result3.data[1].credentialId).toEqual('ebc6f1c2')
   })
 
   it('should return no digital credentials if filter does not match', async (): Promise<void> => {

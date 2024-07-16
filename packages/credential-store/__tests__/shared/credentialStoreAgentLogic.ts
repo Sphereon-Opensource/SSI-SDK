@@ -1,4 +1,4 @@
-import { TAgent } from '@veramo/core'
+import { FindArgs, TAgent, TCredentialColumns } from '@veramo/core'
 import * as fs from 'fs'
 import { CredentialCorrelationType, CredentialRole, CredentialStateType, DigitalCredential } from '@sphereon/ssi-sdk.data-store'
 import {
@@ -44,17 +44,17 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     afterAll(testContext.tearDown)
 
-    it('should get credential item by id', async (): Promise<void> => {
+    it('should get credential by id', async (): Promise<void> => {
       const result = await agent.crsGetCredential({ id: defaultCredential.id })
       expect(result.id).toEqual(defaultCredential.id)
     })
 
-    it('should throw error when getting credential item with unknown id', async (): Promise<void> => {
+    it('should throw error when getting credential with unknown id', async (): Promise<void> => {
       const itemId = 'unknownId'
       await expect(agent.crsGetCredential({ id: itemId })).rejects.toThrow(`No credential found for arg: {\"id\":\"${itemId}\"}`)
     })
 
-    it('should get credential items by filter', async (): Promise<void> => {
+    it('should get credentials by filter', async (): Promise<void> => {
       const args: GetCredentialsArgs = {
         filter: [
           {
@@ -67,7 +67,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.length).toBe(1)
     })
 
-    it('should get credential items by id or hash', async (): Promise<void> => {
+    it('should get credentials by id or hash', async (): Promise<void> => {
       const args1: GetCredentialsArgs = {
         filter: [
           {
@@ -134,7 +134,43 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const result: DigitalCredential = await agent.crsUpdateCredentialState(revokeUpdate)
 
       expect(result.verifiedState).toEqual(revokeUpdate.verifiedState)
-      // expect(result.revokedAt).toEqual(revokeUpdate.revokedAt) FIXME date deserialization is broken
+      // expect(result.revokedAt).toEqual(revokeUpdate.revokedAt) FIXME date deserialization is broken for REST agent
+    })
+
+    it('should get credential by claims', async (): Promise<void> => {
+      const claimsFilter: FindArgs<TCredentialColumns> = {
+        where: [
+          {
+            column: 'issuanceDate',
+            op: 'Equal',
+            value: ['2010-01-01T19:23:24Z'],
+          },
+        ],
+      }
+      const result = await agent.crsGetCredentialsByClaims({
+        credentialRole: defaultCredential.credentialRole,
+        filter: claimsFilter,
+      })
+      expect(result.length).toBe(1)
+      expect(result[0].digitalCredential.id).toEqual(defaultCredential.id)
+      expect(result[0].id).toEqual('https://example.com/credentials/1873')
+    })
+
+    it('should not get credential by invalid claim', async (): Promise<void> => {
+      const claimsFilter: FindArgs<TCredentialColumns> = {
+        where: [
+          {
+            column: 'issuanceDate',
+            op: 'Equal',
+            value: ['someValue'],
+          },
+        ],
+      }
+      const result = await agent.crsGetCredentialsByClaims({
+        credentialRole: defaultCredential.credentialRole,
+        filter: claimsFilter,
+      })
+      expect(result.length).toBe(0)
     })
 
     it('should delete credential by id', async (): Promise<void> => {

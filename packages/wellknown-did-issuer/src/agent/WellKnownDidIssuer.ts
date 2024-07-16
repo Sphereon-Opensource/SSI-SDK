@@ -1,4 +1,4 @@
-import { parseDid } from '@sphereon/ssi-types'
+import { CredentialMapper, parseDid } from '@sphereon/ssi-types'
 import {
   DomainLinkageCredential,
   IDidConfigurationResource,
@@ -226,9 +226,11 @@ export class WellKnownDidIssuer implements IAgentPlugin {
     return context.agent.crsAddCredential({
       credential: {
         rawDocument: JSON.stringify(vc),
-        credentialRole: CredentialRole.ISSUER, // FIXME BEFORE PR
-        issuerCorrelationId: '?', // FIXME BEFORE PR
+        credentialRole: CredentialRole.ISSUER,
+        issuerCorrelationId: CredentialMapper.issuerCorrelationIdFromIssuerType(vc.issuer),
         issuerCorrelationType: CredentialCorrelationType.DID,
+        subjectCorrelationId: CredentialMapper.issuerCorrelationIdFromIssuerType(vc.issuer), // FIXME get separate did for subject
+        subjectCorrelationType: CredentialCorrelationType.DID,
       },
     })
   }

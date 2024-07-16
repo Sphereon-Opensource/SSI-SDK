@@ -173,7 +173,7 @@ describe.skip('attestation client should', () => {
       {
         identifier,
         accessTokenOpts: {
-          attestationToOnboardCredentialRole: CredentialRole.ISSUER, // FIXME BEFORE PR
+          attestationToOnboardCredentialRole: CredentialRole.ISSUER,
           clientId,
           redirectUri: jwksUri,
           credentialIssuer: 'https://api-conformance.ebsi.eu/conformance/v3/issuer-mock',

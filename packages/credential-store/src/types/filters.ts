@@ -15,6 +15,10 @@ export const credentialIdOrHashFilter = (credentialRole: CredentialRole, idOrHas
       hash: idOrHash,
       credentialRole,
     },
+    {
+      credentialId: idOrHash,
+      credentialRole,
+    },
   ]
 
   if (uuidValidate(idOrHash)) {

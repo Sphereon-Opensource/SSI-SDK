@@ -12,6 +12,7 @@ export class CreateDigitalCredential1708525189002 implements MigrationInterface 
                 "credential_role" varchar CHECK( "credential_role" IN ('ISSUER', 'VERIFIER', 'HOLDER') ) NOT NULL,
                 "raw_document" text NOT NULL,
                 "uniform_document" text NOT NULL,
+                "credential_id" text,
                 "hash" text NOT NULL UNIQUE,
                 "issuer_correlation_type" varchar CHECK( "issuer_correlation_type" IN ('DID') ) NOT NULL,
                 "subject_correlation_type" varchar CHECK( "subject_correlation_type" IN ('DID') ),

@@ -18,6 +18,7 @@ export class CreateDigitalCredential1708525189001 implements MigrationInterface 
         "credential_role" "digital_credential_credential_role" NOT NULL,
         "raw_document" text NOT NULL,
         "uniform_document" text NOT NULL,
+        "credential_id" text,
         "hash" text NOT NULL UNIQUE,
         "issuer_correlation_type" "digital_credential_correlation_type" NOT NULL,
         "subject_correlation_type" "digital_credential_correlation_type",

@@ -1,8 +1,13 @@
+import { Loggers } from '@sphereon/ssi-types'
+
 /**
  * @public
  */
 const schema = require('../plugin.schema.json')
 export { schema }
+
+export const logger = Loggers.DEFAULT.get('sphereon:credential-store')
+
 export { CredentialStore, credentialStoreMethods } from './agent/CredentialStore'
 export {
   CredentialRole,

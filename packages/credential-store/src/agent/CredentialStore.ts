@@ -10,15 +10,14 @@ import {
   GetCredentialsByClaimsArgs,
   GetCredentialsByIdOrHashArgs,
   ICredentialStore,
+  logger,
   OptionalUniqueDigitalCredential,
   schema,
   TClaimsColumns,
   UniqueDigitalCredential,
 } from '../index'
-import { DigitalCredential, UpdateCredentialStateArgs } from '@sphereon/ssi-sdk.data-store'
-import { AbstractDigitalCredentialStore } from '@sphereon/ssi-sdk.data-store/dist/digitalCredential/AbstractDigitalCredentialStore'
+import { AbstractDigitalCredentialStore, DigitalCredential, UpdateCredentialStateArgs } from '@sphereon/ssi-sdk.data-store'
 import { IVerifiableCredential } from '@sphereon/ssi-types'
-
 // Exposing the methods here for any REST implementation
 export const credentialStoreMethods: Array<string> = [
   'crsAddCredential',
@@ -86,6 +85,8 @@ export class CredentialStore implements IAgentPlugin {
     const credentials = await this.crsGetCredentials({ filter: credentialIdOrHashFilter(args.credentialRole, args.idOrHash) })
     if (credentials.length === 0) {
       return undefined
+    } else if (credentials.length > 1) {
+      logger.warning('Duplicate credentials detected in crsGetUniqueCredentialByIdOrHash', args)
     }
     return this.toUniqueCredentials(credentials)[0]
   }
@@ -121,34 +122,27 @@ export class CredentialStore implements IAgentPlugin {
   private async crsGetCredentialsByClaims(args: GetCredentialsByClaimsArgs): Promise<Array<UniqueDigitalCredential>> {
     const digitalCredentials = await this.crsGetUniqueCredentials({
       filter: [
+        // TODO SDK-25 Implement param for documentType & support VP filtering below
         {
-          documentType: DocumentType.VC, // TODO does crsGetCredentialsByClaims need to support VPs as well?
+          documentType: DocumentType.VC,
+          credentialRole: args.credentialRole,
+          tenantId: args.tenantId,
+        },
+        {
+          documentType: DocumentType.C,
           credentialRole: args.credentialRole,
           tenantId: args.tenantId,
         },
       ],
     })
 
-    // TODO not sure if this is what we want, doing filtering now after credentials fetch because this data is inside the VC document
-    // FIXME BEFORE PR - Proof of concept code below, to be tested
+    // This a copy of how Veramo did this. TODO Use GraphQL in the future?
     const claimFilteredCredentials: UniqueDigitalCredential[] = digitalCredentials.filter((uniqueVC) => {
       if (!uniqueVC.uniformVerifiableCredential) {
         return false
       }
 
-      let credential = uniqueVC.uniformVerifiableCredential
-
-      // Handle JWT format before filtering
-      if (typeof credential === 'string') {
-        try {
-          const decoded = JSON.parse(atob((credential as string).split('.')[1]))
-          credential = decoded.vc as IVerifiableCredential
-        } catch (e) {
-          console.error('Error decoding JWT credential:', e)
-          return false // Skip this credential if we can't decode it
-        }
-      }
-
+      const credential = uniqueVC.uniformVerifiableCredential
       return (
         args.filter.where?.every((whereClause) => {
           const value = this.getValueFromCredential(credential, whereClause.column)
@@ -158,8 +152,6 @@ export class CredentialStore implements IAgentPlugin {
           }
 
           switch (whereClause.op) {
-            case 'Equal':
-              return value === whereClause.value?.[0]
             case 'In':
               return whereClause.value?.includes(value)
             case 'Like':
@@ -178,8 +170,9 @@ export class CredentialStore implements IAgentPlugin {
               return Array.isArray(value) && value.some((v) => whereClause.value?.includes(v))
             case 'IsNull':
               return value === null || value === undefined
+            case 'Equal':
             default:
-              return true
+              return value === whereClause.value?.[0]
           }
         }) ?? true
       )
@@ -236,16 +229,20 @@ export class CredentialStore implements IAgentPlugin {
             case DocumentType.VC:
               uniqueCredential.originalVerifiableCredential = JSON.parse(credential.rawDocument)
               uniqueCredential.uniformVerifiableCredential = JSON.parse(credential.uniformDocument)
+              uniqueCredential.id = uniqueCredential.uniformVerifiableCredential?.id
               break
             case DocumentType.VP:
               uniqueCredential.originalVerifiablePresentation = JSON.parse(credential.rawDocument)
               uniqueCredential.uniformVerifiablePresentation = JSON.parse(credential.uniformDocument)
+              uniqueCredential.id = uniqueCredential.uniformVerifiablePresentation?.id
               break
             case DocumentType.P:
               uniqueCredential.originalPresentation = JSON.parse(credential.rawDocument)
+              uniqueCredential.id = uniqueCredential.originalPresentation?.id
               break
             case DocumentType.C:
               uniqueCredential.originalCredential = JSON.parse(credential.rawDocument)
+              uniqueCredential.id = uniqueCredential.originalCredential?.id
               break
             // TODO CBOR support
           }

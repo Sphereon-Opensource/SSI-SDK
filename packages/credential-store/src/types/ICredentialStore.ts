@@ -106,6 +106,7 @@ export type { UpdateCredentialStateArgs } from '@sphereon/ssi-sdk.data-store' //
 
 export interface UniqueDigitalCredential {
   hash: string
+  id?: string
   digitalCredential: DigitalCredential
 
   originalVerifiableCredential?: OriginalVerifiableCredential
