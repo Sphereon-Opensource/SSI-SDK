@@ -275,7 +275,10 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Identi
       await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { identifier })
     }
   }
-  const key: _ExtendedIKey = await getAuthenticationKey(identifier, context, identifier.did.startsWith('did:ebsi'), true)
+  const key: _ExtendedIKey = await getAuthenticationKey(
+    { identifier, offlineWhenNoDIDRegistered: identifier.did.startsWith('did:ebsi'), noVerificationMethodFallback: true },
+    context,
+  )
   let kid: string = key.meta.verificationMethod?.id ?? key.kid
   if (identifier.did.startsWith('did:ebsi:')) {
     kid = key.meta?.jwkThumbprint

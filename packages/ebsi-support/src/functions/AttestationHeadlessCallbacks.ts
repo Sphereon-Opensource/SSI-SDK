@@ -1,4 +1,4 @@
-import {decodeUriAsJson} from "@sphereon/did-auth-siop";
+import { decodeUriAsJson } from '@sphereon/did-auth-siop'
 import { getIssuerName } from '@sphereon/oid4vci-common'
 import {
   ConnectionType,
@@ -204,11 +204,11 @@ export const authorizationCodeUrlCallback = (
       }
       const openidUri = response.headers.get('location')
       if (!openidUri || !openidUri.startsWith('openid://')) {
-        let error: string | undefined   = undefined
+        let error: string | undefined = undefined
         if (openidUri) {
           if (openidUri.includes('error')) {
             error = 'Authorization server error: '
-            const decoded  = decodeUriAsJson(openidUri)
+            const decoded = decodeUriAsJson(openidUri)
             if ('error' in decoded && decoded.error) {
               error += decoded.error + ', '
             }
@@ -217,7 +217,9 @@ export const authorizationCodeUrlCallback = (
             }
           }
         }
-        throw Error(error ?? `Expected a openid:// URI to be returned from EBSI in headless mode. Returned: ${openidUri}, ${JSON.stringify(await response.text())}`,
+        throw Error(
+          error ??
+            `Expected a openid:// URI to be returned from EBSI in headless mode. Returned: ${openidUri}, ${JSON.stringify(await response.text())}`,
         )
       }
 
