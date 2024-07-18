@@ -16,7 +16,7 @@
   "dependencies": {
     "@sphereon/pex": "^3.3.3",
     "@sphereon/pex-models": "^2.2.4",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.22.1-next.10",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.22.1-next.12",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0"
@@ -24,14 +24,14 @@
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.3",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
-    "@types/json-buffer": "^3.0.0",
+    "@types/json-buffer": "^3.0.2",
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
     "@veramo/utils": "4.2.0",
     "did-resolver": "^4.1.0",
-    "nock": "^13.2.1"
+    "nock": "^13.5.4"
   },
   "files": [
     ".yalc/**/*",

@@ -15,19 +15,19 @@
   },
   "dependencies": {
     "@sphereon/pex": "^3.3.3",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.22.1-next.10",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.22.1-next.12",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/utils": "4.2.0",
-    "blakejs": "^1.1.1",
-    "class-validator": "^0.14.0",
-    "debug": "^4.3.4",
+    "blakejs": "^1.2.1",
+    "class-validator": "^0.14.1",
+    "debug": "^4.3.5",
     "typeorm": "^0.3.20"
   },
   "devDependencies": {
-    "pg": "^8.11.3",
-    "sqlite3": "^5.1.6"
+    "pg": "^8.12.0",
+    "sqlite3": "^5.1.7"
   },
   "files": [
     "dist/**/*",
