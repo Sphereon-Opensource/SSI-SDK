@@ -428,12 +428,12 @@ export class OID4VCIHolder implements IAgentPlugin {
         // const credentialType = id /*?? credentialTypes?.find((type) => type !== defaultCredentialType) ?? defaultCredentialType*/
         const localeBranding = !credentialBranding
           ? undefined
-          : credentialBranding?.[id] ??
+          : (credentialBranding?.[id] ??
             Object.entries(credentialBranding)
               .find(([type, _brandings]) => {
                 credentialTypes && type in credentialTypes
               })
-              ?.map(([type, supported]) => supported)
+              ?.map(([type, supported]) => supported))
         const credentialAlias = (
           await selectCredentialLocaleBranding({
             locale,

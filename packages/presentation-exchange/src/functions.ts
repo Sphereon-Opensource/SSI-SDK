@@ -99,7 +99,7 @@ export async function createPEXPresentationSignCallback(
         kid: kid.includes('#') ? kid : `${id.did}#${kid}`,
       }
       if (presentation.verifier || !presentation.aud) {
-        presentation.aud = Array.isArray(presentation.verifier) ? presentation.verifier : presentation.verifier ?? domain ?? args.domain
+        presentation.aud = Array.isArray(presentation.verifier) ? presentation.verifier : (presentation.verifier ?? domain ?? args.domain)
         delete presentation.verifier
       }
       if (!presentation.nbf) {

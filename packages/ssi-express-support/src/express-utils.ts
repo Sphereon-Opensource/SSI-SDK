@@ -36,7 +36,7 @@ export function sendErrorResponse(response: express.Response, statusCode: number
 
 export const jsonErrorHandler = (err: any, req: express.Request, res: express.Response, next: NextFunction) => {
   const statusCode: number = 'statusCode' in err ? err.statusCode : 500
-  let errorMsg = typeof err === 'string' ? err : err.message ?? err
+  let errorMsg = typeof err === 'string' ? err : (err.message ?? err)
   if (typeof errorMsg !== 'string') {
     errorMsg = JSON.stringify(errorMsg)
   }
