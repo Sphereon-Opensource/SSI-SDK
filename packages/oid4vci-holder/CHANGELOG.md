@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.28.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.27.0...v0.28.0) (2024-07-23)
+
+### Bug Fixes
+
+- Make sure we do not use the jwk thumbprint as kid default value when not in EBSI ([c4a22aa](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c4a22aa684c1dd948ee9cd2f452eb40558355c36))
+- Make sure we do not use the jwk thumbprint as kid default value when not in EBSI ([9a3bf56](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9a3bf568ebdddfcced66cdd5c52bd28aa0263bb6))
+- Make sure we search for display and legal name based on issuer metadata name as well ([9a4cafd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9a4cafd286cedbc94b0b35a132bb87bd9b4db072))
+
 # [0.27.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.26.0...v0.27.0) (2024-07-07)
 
 ### Bug Fixes
