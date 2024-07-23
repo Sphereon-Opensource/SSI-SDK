@@ -5,22 +5,18 @@ import {
   getKey,
   IIdentifierOpts
 } from '@sphereon/ssi-sdk-ext.did-utils'
+import { _NormalizedVerificationMethod } from '@veramo/utils'
 import { IPEXPresentationSignCallback, IRequiredContext } from './types/IPresentationExchange'
 import { IPresentationDefinition } from '@sphereon/pex'
-import { IIdentifier, PresentationPayload, ProofFormat } from '@veramo/core'
-import {
-  CredentialMapper,
-  Optional,
-  OriginalVerifiablePresentation,
-  SdJwtDecodedVerifiableCredential,
-  W3CVerifiablePresentation
-} from '@sphereon/ssi-types'
+import { PresentationPayload, ProofFormat } from '@veramo/core'
+import { CredentialMapper, Optional, OriginalVerifiablePresentation, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { Format } from '@sphereon/pex-models'
 
 export async function createPEXPresentationSignCallback(
   args: {
     idOpts: IIdentifierOpts
     fetchRemoteContexts?: boolean
+    skipDidResolution?: boolean
     format?: Format | ProofFormat
     domain?: string
     challenge?: string
@@ -125,30 +121,33 @@ export async function createPEXPresentationSignCallback(
         return Promise.reject(Error(`Could not resolve DID document or match signing key to did ${idOpts.identifier.did}`))
       }
 
-      let header
-      if (proofFormat === 'jwt') {
-        header = {
-          kid: vm.id,
-        }
-        if (presentation.verifier || !presentation.aud) {
-          // TODO check external implementations if they like a single audience instead of an array
-          presentation.aud = (Array.isArray(presentation.verifier) && presentation.verifier.length === 1) ? presentation.verifier[0] : presentation.verifier ?? domain ?? args.domain
-          delete presentation.verifier
-        }
-        if (!presentation.nbf) {
-          if (presentation.issuanceDate) {
-            const converted = Date.parse(presentation.issuanceDate)
-            if (!isNaN(converted)) {
-              presentation.nbf = Math.floor(converted / 1000)
-            }
-          } else {
-            presentation.nbf = Math.floor(Date.now() / 1000)
+    const proofFormat = determineProofFormat({ format, presentationDefinition })
+    let header
+    if (!presentation.holder) {
+      presentation.holder = id.did
+    }
+    if (proofFormat === 'jwt') {
+      header = {
+        kid: vm.id,
+      }
+      if (presentation.verifier || !presentation.aud) {
+        presentation.aud = Array.isArray(presentation.verifier) ? presentation.verifier : presentation.verifier ?? domain ?? args.domain
+        delete presentation.verifier
+      }
+      if (!presentation.nbf) {
+        if (presentation.issuanceDate) {
+          const converted = Date.parse(presentation.issuanceDate)
+          if (!isNaN(converted)) {
+            presentation.nbf = Math.floor(converted / 1000)
           }
+        } else {
+          presentation.nbf = Math.floor(Date.now() / 1000)
         }
+      }
 
-        if (!presentation.iat) {
-          presentation.iat = presentation.nbf
-        }
+      if (!presentation.iat) {
+        presentation.iat = presentation.nbf
+      }
 
         if (!presentation.exp) {
           if (presentation.expirationDate) {
@@ -157,7 +156,7 @@ export async function createPEXPresentationSignCallback(
               presentation.exp = Math.floor(converted / 1000)
             }
           } else {
-            presentation.exp = presentation.nbf + 600
+            presentation.exp = presentation.nbf + 600 + 120
           }
         }
 

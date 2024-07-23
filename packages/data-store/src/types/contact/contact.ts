@@ -1,4 +1,6 @@
+import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IIdentifier } from '@veramo/core'
+import { ILocaleBranding } from '../issuanceBranding/issuanceBranding'
 
 export type MetadataTypes = string | number | Date | boolean | undefined
 
@@ -13,6 +15,17 @@ export type Party = {
   physicalAddresses: Array<PhysicalAddress>
   contact: Contact
   partyType: PartyType
+  /**
+   * TODO: Integrate branding logic here in the future.
+   *
+   * Currently, we are only defining the branding type within the SDK without implementing the associated logic. This is because:
+   * 1. We are combining two types from the SSI-SDK to create a new type that will be used across multiple places in the wallets (web & mobile).
+   * 2. While it makes sense to have this combined type in the SDK, the logic to support database connections for these types is complex. The types belong to different modules, and we don't use them together currently.
+   * 3. Implementing the full logic now would require significant changes and cross-module interactions, which we don't have the time to address at present.
+   *
+   * For now, we are defining the type here and will use it in the mobile wallet has the logic for it. This is a temporary solution until we have the resources to integrate the branding logic fully.
+   */
+  branding?: ILocaleBranding
   relationships: Array<PartyRelationship>
   createdAt: Date
   lastUpdatedAt: Date
@@ -126,7 +139,7 @@ export type PartialOpenIdConfig = Partial<OpenIdConfig>
 
 export type DidAuthConfig = {
   id: string
-  identifier: IIdentifier
+  idOpts: IIdentifierOpts
   stateId: string
   ownerId?: string
   tenantId?: string

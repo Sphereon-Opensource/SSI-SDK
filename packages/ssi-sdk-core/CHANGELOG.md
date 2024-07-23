@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.27.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.26.0...v0.27.0) (2024-07-07)
+
+### Features
+
+- Allow EBSI attestation client to be the start of a regular VCI flow ([afffd39](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/afffd399e2b5ad696047130b967f9b72cfd65649))
+
 # [0.26.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.25.0...v0.26.0) (2024-06-19)
 
 ### Features

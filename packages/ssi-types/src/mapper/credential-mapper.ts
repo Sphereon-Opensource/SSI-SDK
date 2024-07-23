@@ -180,13 +180,20 @@ export class CredentialMapper {
     } else {
       vp = decoded as IVerifiablePresentation
     }
-    if (!vp || !('verifiableCredential' in vp) || !vp.verifiableCredential || vp.verifiableCredential.length === 0) {
-      throw Error(`VP needs to have at least one verifiable credential at this point`)
+    if (!vp) {
+      throw Error(`VP key not found`)
     }
-    const vcs = CredentialMapper.toWrappedVerifiableCredentials(
-      vp.verifiableCredential /*.map(value => value.original)*/,
-      opts,
-    ) as WrappedW3CVerifiableCredential[]
+    const noVCs = !('verifiableCredential' in vp) || !vp.verifiableCredential || vp.verifiableCredential.length === 0
+    if (noVCs) {
+      console.warn(`Presentation without verifiable credentials. That is rare! `)
+      // throw Error(`VP needs to have at least one verifiable credential at this point`)
+    }
+    const vcs = noVCs
+      ? []
+      : (CredentialMapper.toWrappedVerifiableCredentials(
+          vp.verifiableCredential ?? [] /*.map(value => value.original)*/,
+          opts,
+        ) as WrappedW3CVerifiableCredential[])
 
     const presentation = {
       ...vp,

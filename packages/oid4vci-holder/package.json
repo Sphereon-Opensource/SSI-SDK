@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.oid4vci-holder",
-  "version": "0.26.0",
+  "version": "0.27.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,10 +14,9 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/oid4vci-client": "0.12.0",
-    "@sphereon/oid4vci-common": "0.12.0",
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.21.0",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.21.0",
+    "@sphereon/oid4vci-client": "0.14.0",
+    "@sphereon/oid4vci-common": "0.14.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.22.1-next.12",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
@@ -28,20 +27,21 @@
     "@veramo/core": "4.2.0",
     "@veramo/data-store": "4.2.0",
     "@veramo/utils": "4.2.0",
-    "i18n-js": "^3.8.0",
+    "i18n-js": "^3.9.2",
     "lodash.memoize": "^4.1.2",
     "uuid": "^9.0.1",
     "xstate": "^4.38.3"
   },
   "devDependencies": {
-    "@types/i18n-js": "^3.8.4",
-    "@types/lodash.memoize": "^4.1.7",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.22.1-next.12",
+    "@types/i18n-js": "^3.8.9",
+    "@types/lodash.memoize": "^4.1.9",
     "@types/uuid": "^9.0.8",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
     "nock": "^13.5.4",
     "typeorm": "^0.3.20",
-    "typescript": "5.4.2"
+    "typescript": "5.5.3"
   },
   "files": [
     "dist/**/*",

@@ -41,11 +41,22 @@ export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   siopRemoveOPSession(args: IRemoveSiopSessionArgs, context: IRequiredContext): Promise<boolean>
   siopRegisterOPCustomApproval(args: IRegisterCustomApprovalForSiopArgs, context: IRequiredContext): Promise<void>
   siopRemoveOPCustomApproval(args: IRemoveCustomApprovalForSiopArgs, context: IRequiredContext): Promise<boolean>
+
+  siopGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<Siopv2MachineId>
+  siopCreateConfig(args: CreateConfigArgs): Promise<CreateConfigResult>
+  siopGetSiopRequest(args: GetSiopRequestArgs, context: RequiredContext): Promise<Siopv2AuthorizationRequestData>
+  siopRetrieveContact(args: RetrieveContactArgs, context: RequiredContext): Promise<Party | undefined>
+  siopAddIdentity(args: AddIdentityArgs, context: RequiredContext): Promise<void>
+  siopSendResponse(args: SendResponseArgs, context: RequiredContext): Promise<Siopv2AuthorizationResponseData>
+  siopGetSelectableCredentials(args: GetSelectableCredentialsArgs, context: RequiredContext): Promise<SelectableCredentialsMap>
 }
+
 export interface IOpSessionArgs {
   sessionId?: string
 
   requestJwtOrUri: string | URI
+  providedPresentationDefinitions?: Array<PresentationDefinitionWithLocation>
+  idOpts?: IIdentifierOpts
   // identifier: IIdentifier
   context: IRequiredContext
   op?: IOPOptions
@@ -102,6 +113,7 @@ export interface IOPOptions {
   supportedVersions?: SupportedVersion[]
   expiresIn?: number
   checkLinkedDomains?: CheckLinkedDomain
+  skipDidResolution?: boolean
   eventEmitter?: EventEmitter
   supportedDIDMethods?: string[]
   wellknownDIDVerifyCallback?: VerifyCallback

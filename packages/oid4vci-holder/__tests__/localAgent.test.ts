@@ -1,4 +1,4 @@
-import { createObjects, getConfig } from '../../agent-config/dist'
+import { createObjects, getConfig } from '../../agent-config/src'
 import oid4vciHolderAgentLogic from './shared/oid4vciHolderLogicAgentLogic'
 
 jest.setTimeout(60000)

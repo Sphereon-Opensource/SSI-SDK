@@ -1,0 +1,8 @@
+{
+  "siopv2_machine_identifier_error_title": "Identifier ophalen",
+  "siopv2_machine_create_config_error_title": "SiopV2 configuratie maken",
+  "siopv2_machine_get_request_error_title": "SiopV2 verzoek ophalen",
+  "siopv2_machine_retrieve_contact_error_title": "Ophalen credential",
+  "siopv2_machine_add_contact_identity_error_title": "Toevoegen identiteit contact",
+  "siopv2_machine_send_response_error_title": "SiopV2 antwoord verzenden"
+}

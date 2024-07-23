@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.27.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.26.0...v0.27.0) (2024-07-07)
+
+### Bug Fixes
+
+- remove execution of loading env files ([1937c14](https://github.com/Sphereon-Opensource/SSI-SDK/commit/1937c14a7021054b6015a7ff9dabb6b5b2bb08dd))
+
 # [0.26.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.25.0...v0.26.0) (2024-06-19)
 
 ### Bug Fixes

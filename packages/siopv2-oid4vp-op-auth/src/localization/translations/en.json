@@ -1,0 +1,9 @@
+{
+  "siopv2_machine_identifier_error_title": "Getting identifier",
+  "siopv2_machine_create_config_error_title": "Creating siopV2 config",
+  "siopv2_machine_get_request_error_title": "Getting siopV2 request",
+  "siopv2_machine_get_selectable_credentials_error_title": "Getting siopV2 selectable credentials",
+  "siopv2_machine_retrieve_contact_error_title": "Retrieve contact",
+  "siopv2_machine_add_contact_identity_error_title": "Add contact identity",
+  "siopv2_machine_send_response_error_title": "Sending siopV2 response"
+}

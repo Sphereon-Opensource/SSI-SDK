@@ -40,6 +40,8 @@
     { "path": "headless-web3-provider" },
     { "path": "event-logger" },
     { "path": "remote-server-rest-api" },
-    { "path": "sd-jwt" }
+    { "path": "sd-jwt" },
+    { "path": "ebsi-support" },
+    { "path": "public-key-hosting" }
   ]
 }

@@ -1,7 +1,5 @@
+import { Loggers } from '@sphereon/ssi-types'
 import { DefaultLinkPriorities, LinkHandler, LinkHandlerRegistry } from './types'
-import Debug from 'debug'
-
-const debug = Debug(`sphereon:ssi-sdk:LinkHandler`)
 
 /**
  * Class registering multiple LinkHandlers, allowing the developer to use a single compound link handler.
@@ -179,6 +177,6 @@ export class LogLinkHandler extends LinkHandlerAdapter {
   }
 
   handle(url: string | URL): Promise<void> {
-    return Promise.resolve(debug(`link-handler-log: ${url}`))
+    return Promise.resolve(Loggers.DEFAULT.get(`sphereon:link-handler:${LogLinkHandler.ID}`).log(url))
   }
 }

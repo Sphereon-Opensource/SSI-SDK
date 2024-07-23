@@ -11,7 +11,7 @@ import {
   IOID4VPArgs,
   VerifiableCredentialsWithDefinition,
   VerifiablePresentationWithDefinition
-} from '../types/IDidAuthSiopOpAuthenticator'
+} from '../types'
 import { createOID4VPPresentationSignCallback } from './functions'
 import { OpSession } from './OpSession'
 
@@ -35,7 +35,7 @@ export class OID4VP {
   }
 
   public async getPresentationDefinitions(): Promise<PresentationDefinitionWithLocation[] | undefined> {
-    const definitions = (await this.session.getAuthorizationRequest()).presentationDefinitions
+    const definitions = await this.session.getPresentationDefinitions()
     if (definitions) {
       PresentationExchange.assertValidPresentationDefinitionWithLocations(definitions)
     }
@@ -55,13 +55,16 @@ export class OID4VP {
   public async createVerifiablePresentations(
     credentialsWithDefinitions: VerifiableCredentialsWithDefinition[],
     opts?: {
+      forceNoCredentialsInVP?: boolean // Allow to create a VP without credentials, like EBSI is using it. Defaults to false
       restrictToFormats?: Format
       restrictToDIDMethods?: string[]
       proofOpts?: ProofOptions
       identifierOpts?: IIdentifierOpts
+      skipDidResolution?: boolean
       holderDID?: string
       subjectIsHolder?: boolean
       hasher?: Hasher
+      applyFilter?: boolean
     },
   ): Promise<VerifiablePresentationWithDefinition[]> {
     return await Promise.all(credentialsWithDefinitions.map((credentials) => this.createVerifiablePresentation(credentials, opts)))
@@ -70,18 +73,24 @@ export class OID4VP {
   public async createVerifiablePresentation(
     selectedVerifiableCredentials: VerifiableCredentialsWithDefinition,
     opts?: {
+      forceNoCredentialsInVP?: boolean // Allow to create a VP without credentials, like EBSI is using it. Defaults to false
       restrictToFormats?: Format
       restrictToDIDMethods?: string[]
       proofOpts?: ProofOptions
       identifierOpts?: IIdentifierOpts
+      skipDidResolution?: boolean
       holderDID?: string
       subjectIsHolder?: boolean
       applyFilter?: boolean,
       hasher?: Hasher
     },
   ): Promise<VerifiablePresentationWithDefinition> {
-    if (opts?.subjectIsHolder && opts?.holderDID) {
+    const { subjectIsHolder, holderDID, forceNoCredentialsInVP = false } = { ...opts }
+    if (subjectIsHolder && holderDID) {
       throw Error('Cannot both have subject is holder and a holderDID value at the same time (programming error)')
+    }
+    if (forceNoCredentialsInVP) {
+      selectedVerifiableCredentials.credentials = []
     } else if (!selectedVerifiableCredentials?.credentials || selectedVerifiableCredentials.credentials.length === 0) {
       throw Error('No verifiable verifiableCredentials provided for presentation definition')
     }
@@ -95,6 +104,13 @@ export class OID4VP {
     let id: IIdentifier | string | undefined = opts?.identifierOpts?.identifier
     if (!id) {
       if (opts?.subjectIsHolder) {
+        if (forceNoCredentialsInVP) {
+          return Promise.reject(
+            Error(
+              `Cannot have subject is holder, when force no credentials is being used, as we could never determine the holder then. Please provide holderDID`,
+            ),
+          )
+        }
         const firstVC = CredentialMapper.toUniformCredential(selectedVerifiableCredentials.credentials[0], { hasher: opts?.hasher ?? this.hasher })
         const holder = CredentialMapper.isSdJwtDecodedCredential(firstVC)
           ? firstVC.decodedPayload.cnf?.jwk
@@ -117,18 +133,20 @@ export class OID4VP {
     this.assertIdentifier(idOpts.identifier)
 
     // We are making sure to filter, in case the user submitted all verifiableCredentials in the wallet/agent. We also make sure to get original formats back
-    const vcs = opts?.applyFilter
-      ? await this.filterCredentials(selectedVerifiableCredentials.definition, {
-          restrictToFormats: opts?.restrictToFormats,
-          restrictToDIDMethods: opts?.restrictToDIDMethods,
-          filterOpts: {
-            verifiableCredentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
-          },
-        })
-      : {
-          definition: selectedVerifiableCredentials.definition,
-          credentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
-        }
+    const vcs = forceNoCredentialsInVP
+      ? selectedVerifiableCredentials
+      : opts?.applyFilter
+        ? await this.filterCredentials(selectedVerifiableCredentials.definition, {
+            restrictToFormats: opts?.restrictToFormats,
+            restrictToDIDMethods: opts?.restrictToDIDMethods,
+            filterOpts: {
+              verifiableCredentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
+            },
+          })
+        : {
+            definition: selectedVerifiableCredentials.definition,
+            credentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
+          }
 
     const signCallback = await createOID4VPPresentationSignCallback({
       presentationSignCallback: this.session.options.presentationSignCallback,
@@ -136,7 +154,8 @@ export class OID4VP {
       context: this.session.context,
       domain: proofOptions.domain,
       challenge: proofOptions.challenge,
-      format: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format
+      format: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format,
+      skipDidResolution: opts?.skipDidResolution ?? false,
     })
 
     const presentationResult = await this.getPresentationExchange({

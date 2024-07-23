@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.issuance-branding",
-  "version": "0.26.0",
+  "version": "0.27.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,7 +17,7 @@
   "dependencies": {
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
-    "debug": "^4.3.4",
+    "debug": "^4.3.5",
     "typeorm": "^0.3.20"
   },
   "devDependencies": {

@@ -11,7 +11,6 @@ import {
   CredentialHandlerLDLocal,
   LdDefaultContexts,
   MethodNames,
-  SphereonBbsBlsSignature2020,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
   SphereonJsonWebSignature2020,
@@ -113,6 +112,7 @@ let importMetadatas = [
   {
     correlationId: `${baseUrl}/sphereon`,
     overwriteExisting: true,
+    // @ts-ignore
     metadata: {
       credential_issuer: `${baseUrl}/sphereon`,
       credential_endpoint: `${baseUrl}/sphereon/credentials`,
@@ -167,6 +167,7 @@ let importMetadatas = [
   {
     correlationId: `${baseUrl}/dbc2023`,
     overwriteExisting: true,
+    // @ts-ignore
     metadata: {
       credential_issuer: `${baseUrl}/dbc2023`,
       credential_endpoint: `${baseUrl}/dbc2023/credentials`,
@@ -291,6 +292,7 @@ let importMetadatas = [
   {
     correlationId: `${baseUrl}/fma2023`,
     overwriteExisting: true,
+    // @ts-ignore
     metadata: {
       credential_issuer: `${baseUrl}/fma2023`,
       credential_endpoint: `${baseUrl}/fma2023/credentials`,
@@ -431,6 +433,7 @@ let importMetadatas = [
   {
     correlationId: `${baseUrl}/triall2023`,
     overwriteExisting: true,
+    // @ts-ignore
     metadata: {
       credential_issuer: `${baseUrl}/triall2023`,
       credential_endpoint: `${baseUrl}/triall2023/credentials`,
@@ -637,12 +640,7 @@ const agent = createAgent<IPlugins>({
     new CredentialPlugin(),
     new CredentialHandlerLDLocal({
       contextMaps: [LdDefaultContexts],
-      suites: [
-        new SphereonEd25519Signature2018(),
-        new SphereonEd25519Signature2020(),
-        new SphereonBbsBlsSignature2020(),
-        new SphereonJsonWebSignature2020(),
-      ],
+      suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020(), new SphereonJsonWebSignature2020()],
       bindingOverrides: new Map([
         ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
         ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentationLDLocal],

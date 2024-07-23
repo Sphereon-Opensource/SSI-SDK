@@ -12,14 +12,14 @@
 
 ---
 
-# vc-api-verifier
+# attestationCredential-api-verifier
 
-A Veramo plugin to issue credentials using the vc-http-api. Based on an older version of the spec (v0.1) and only working for Sphereon's VC API currently. We are working on supporting the latest spec version.
+A Veramo plugin to issue credentials using the attestationCredential-http-api. Based on an older version of the spec (v0.1) and only working for Sphereon's VC API currently. We are working on supporting the latest spec version.
 
 ### Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk-w3c-vc-api-issuer-rest-client
+yarn add @sphereon/ssi-sdk-w3c-attestationCredential-api-issuer-rest-client
 ```
 
 ### Build

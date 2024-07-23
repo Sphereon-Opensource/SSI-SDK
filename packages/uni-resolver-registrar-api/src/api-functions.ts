@@ -259,7 +259,7 @@ export function didWebDomainEndpoint(router: Router, context: IRequiredContext, 
         return sendErrorResponse(response, 404, 'Not found')
       }
       let did: string
-      did = `did:web:${opts?.hostname ?? request.hostname}`
+      did = `did:web:${opts?.hostname?.replace('https://', '')?.replace('http://', '') ?? request.hostname}`
       if (path !== '/.well-known') {
         if (opts?.disableSubPaths) {
           return sendErrorResponse(response, 404, 'Not found')
