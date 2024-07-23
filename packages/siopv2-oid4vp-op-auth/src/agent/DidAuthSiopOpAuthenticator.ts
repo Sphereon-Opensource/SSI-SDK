@@ -216,19 +216,14 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     logger.debug(`session: ${JSON.stringify(session.id, null, 2)}`)
     const verifiedAuthorizationRequest = await session.getAuthorizationRequest()
     // logger.trace('Request: ' + JSON.stringify(verifiedAuthorizationRequest, null, 2))
-    const name = verifiedAuthorizationRequest.registrationMetadataPayload?.client_name
+    const clientName = verifiedAuthorizationRequest.registrationMetadataPayload?.client_name
     const url =
       verifiedAuthorizationRequest.responseURI ??
       (args.url.includes('request_uri')
         ? decodeURIComponent(args.url.split('?request_uri=')[1].trim())
-        : verifiedAuthorizationRequest.issuer ?? verifiedAuthorizationRequest.registrationMetadataPayload?.client_id)
+        : (verifiedAuthorizationRequest.issuer ?? verifiedAuthorizationRequest.registrationMetadataPayload?.client_id))
     const uri: URL | undefined = url.includes('://') ? new URL(url) : undefined
-    const correlationIdName = uri
-      ? await translateCorrelationIdToName(uri.hostname, context)
-      : verifiedAuthorizationRequest.issuer
-        ? await translateCorrelationIdToName(verifiedAuthorizationRequest.issuer.split('://')[1], context)
-        : name
-    const correlationId: string = uri?.hostname ?? correlationIdName
+    const correlationId: string = uri?.hostname ?? (await this.determineCorrelationId(uri, verifiedAuthorizationRequest, clientName, context))
     const clientId: string | undefined = await verifiedAuthorizationRequest.authorizationRequest.getMergedProperty<string>('client_id')
 
     return {
@@ -236,7 +231,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       correlationId,
       registrationMetadataPayload: verifiedAuthorizationRequest.registrationMetadataPayload,
       uri,
-      name,
+      name: clientName,
       clientId,
       presentationDefinitions:
         (await verifiedAuthorizationRequest.authorizationRequest.containsResponseType('vp_token')) ||
@@ -246,6 +241,28 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
           ? verifiedAuthorizationRequest.presentationDefinitions
           : undefined,
     }
+  }
+
+  private async determineCorrelationId(
+    uri: URL | undefined,
+    verifiedAuthorizationRequest: any,
+    clientName: string | undefined,
+    context: RequiredContext,
+  ): Promise<string> {
+    if (uri) {
+      return (await translateCorrelationIdToName(uri.hostname, context)) ?? uri.hostname
+    }
+
+    if (verifiedAuthorizationRequest.issuer) {
+      const issuerHostname = verifiedAuthorizationRequest.issuer.split('://')[1]
+      return (await translateCorrelationIdToName(issuerHostname, context)) ?? issuerHostname
+    }
+
+    if (clientName) {
+      return clientName
+    }
+
+    throw new Error("Can't determine correlationId from request")
   }
 
   private async siopRetrieveContact(args: RetrieveContactArgs, context: RequiredContext): Promise<Party | undefined> {

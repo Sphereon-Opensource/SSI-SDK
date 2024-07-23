@@ -16,12 +16,12 @@
   "dependencies": {
     "@sphereon/oid4vci-common": "0.14.0",
     "@sphereon/oid4vci-issuer": "0.14.0",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.22.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.23.0",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@sphereon/ssi-sdk.oid4vci-issuer-store": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
-    "@types/uuid": "^9.0.1",
+    "@types/uuid": "^9.0.8",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",
     "cross-fetch": "^3.1.8",
@@ -33,7 +33,7 @@
     "@veramo/did-resolver": "4.2.0",
     "@veramo/utils": "4.2.0",
     "did-resolver": "^4.1.0",
-    "nock": "^13.2.1"
+    "nock": "^13.5.4"
   },
   "files": [
     ".yalc/**/*",

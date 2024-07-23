@@ -75,9 +75,9 @@ export async function getAccessTokenKeyRef(
       keyRef = key?.kid
     }
     if (!key) {
-      key = await getFirstKeyWithRelation(identifier, context, 'assertionMethod', false)
+      key = await getFirstKeyWithRelation({ identifier, vmRelationship: 'assertionMethod', errorOnNotFound: false }, context)
       if (!key) {
-        key = await getFirstKeyWithRelation(identifier, context, 'verificationMethod', true)
+        key = await getFirstKeyWithRelation({ identifier, vmRelationship: 'verificationMethod', errorOnNotFound: true }, context)
       }
       keyRef = key?.kid
     }

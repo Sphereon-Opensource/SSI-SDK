@@ -21,10 +21,10 @@
     "cross-fetch": "^3.1.8"
   },
   "devDependencies": {
-    "@types/node": "^18.19.26",
+    "@types/node": "^18.19.41",
     "did-resolver": "^4.1.0",
-    "nock": "^13.3.0",
-    "ts-node": "^10.9.1",
+    "nock": "^13.5.4",
+    "ts-node": "^10.9.2",
     "typescript": "5.4.2"
   },
   "files": [

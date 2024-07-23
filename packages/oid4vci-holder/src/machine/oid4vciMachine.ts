@@ -479,7 +479,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         invoke: {
           src: OID4VCIMachineServices.addContactIdentity,
           onDone: {
-            target: OID4VCIMachineStates.addIssuerBranding,
+            target: OID4VCIMachineStates.addIssuerBrandingAfterIdentity,
             actions: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Identity>): void => {
               _ctx.contact?.identities.push(_event.data)
             },

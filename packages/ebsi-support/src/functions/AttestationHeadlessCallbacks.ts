@@ -1,3 +1,4 @@
+import { decodeUriAsJson } from '@sphereon/did-auth-siop'
 import { getIssuerName } from '@sphereon/oid4vci-common'
 import {
   ConnectionType,
@@ -145,6 +146,7 @@ export const addContactCallback = (context: IRequiredContext) => {
 export const handleErrorCallback = (context: IRequiredContext) => {
   return async (oid4vciMachine: OID4VCIMachineInterpreter | Siopv2MachineInterpreter, state: OID4VCIMachineState | Siopv2MachineState) => {
     console.error(`error callback event: ${state.event}`, state.context.error)
+    logger.trace(state.event)
   }
 }
 
@@ -202,8 +204,22 @@ export const authorizationCodeUrlCallback = (
       }
       const openidUri = response.headers.get('location')
       if (!openidUri || !openidUri.startsWith('openid://')) {
+        let error: string | undefined = undefined
+        if (openidUri) {
+          if (openidUri.includes('error')) {
+            error = 'Authorization server error: '
+            const decoded = decodeUriAsJson(openidUri)
+            if ('error' in decoded && decoded.error) {
+              error += decoded.error + ', '
+            }
+            if ('error_description' in decoded && decoded.error_description) {
+              error += decoded.error_description
+            }
+          }
+        }
         throw Error(
-          `Expected a openid:// URI to be returned from EBSI in headless mode. Returned: ${openidUri}, ${JSON.stringify(await response.text())}`,
+          error ??
+            `Expected a openid:// URI to be returned from EBSI in headless mode. Returned: ${openidUri}, ${JSON.stringify(await response.text())}`,
         )
       }
 
@@ -238,5 +254,6 @@ export const siopDoneCallback = ({ oid4vciMachine }: { oid4vciMachine: OID4VCIMa
       type: OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE,
       data: state.context.authorizationResponseData.url!,
     })
+    console.log(`SIOP DONE!`)
   }
 }

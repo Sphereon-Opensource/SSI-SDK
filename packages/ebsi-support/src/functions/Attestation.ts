@@ -71,6 +71,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   }: CreateAttestationAuthRequestURLArgs,
   context: IRequiredContext,
 ): Promise<AttestationAuthRequestUrlResult> => {
+  logger.info(`create attestation ${credentialType} auth req URL for ${clientIdArg} and issuer ${credentialIssuer}`)
   const identifier = await getIdentifier(idOpts, context)
   if (identifier.provider !== 'did:ebsi' && identifier.provider !== 'did:key') {
     throw Error(
@@ -79,7 +80,16 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   }
   // This only works if the DID is actually registered, otherwise use our internal KMS;
   // that is why the offline argument is passed in when type is Verifiable Auth to Onboard, as no DID is present at that point yet
-  const authKey = await getAuthenticationKey(identifier, context, credentialType === 'VerifiableAuthorisationToOnboard', true)
+  // We are getting the ES256 key here, as that is the one needed for auth in EBSI
+  const authKey = await getAuthenticationKey(
+    {
+      identifier,
+      offlineWhenNoDIDRegistered: credentialType === 'VerifiableAuthorisationToOnboard',
+      noVerificationMethodFallback: true,
+      keyType: 'Secp256r1',
+    },
+    context,
+  )
   const kid = authKey.meta?.jwkThumbprint ?? calculateJwkThumbprintForKey({ key: authKey })
   const clientId = clientIdArg ?? identifier.did
 
@@ -132,6 +142,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   const authorizationCodeURL = await vciClient.createAuthorizationRequestUrl({
     authorizationRequest: authorizationRequestOpts,
   })
+  logger.info(`create attestation ${credentialType} auth req URL for ${clientIdArg} and issuer ${credentialIssuer}, result: ${authorizationCodeURL}`)
 
   return {
     requestData: {
@@ -192,6 +203,7 @@ export const ebsiGetAttestationInterpreter = async (
   vpStateCallbacks
     .set(Siopv2MachineStates.done, siopDoneCallback({ oid4vciMachine }, context))
     .set(Siopv2MachineStates.handleError, handleErrorCallback(context))
+    .set(Siopv2MachineStates.error, handleErrorCallback(context))
 
   vciStateCallbacks
     .set(OID4VCIMachineStates.handleError, handleErrorCallback(context))
@@ -216,16 +228,17 @@ export const ebsiGetAttestation = async (
   { clientId, authReqResult, opts = { timeout: 30_000 } }: GetAttestationArgs,
   context: IRequiredContext,
 ): Promise<AttestationResult> => {
+  logger.info(`Getting EBSI attestation for ${authReqResult.identifier.did} and ${clientId}`)
   const interpreter = await ebsiGetAttestationInterpreter({ clientId, authReqResult }, context)
-  const state = await waitFor(interpreter.start(), (state) => state.matches('done') || state.matches('handleError'), {
+  const state = await waitFor(interpreter.start(), (state) => state.matches('done') || state.matches('handleError') || state.matches('error'), {
     timeout: opts.timeout ?? 30_000,
   })
-  if (state.matches('handleError')) {
-    console.error(JSON.stringify(state.context.error))
+  if (state.matches('handleError') || state.matches('error')) {
+    logger.error(JSON.stringify(state.context.error))
     throw Error(JSON.stringify(state.context.error))
   }
 
-  return {
+  const result = {
     contactAlias: state.context.contactAlias,
     contact: state.context.contact!,
     credentialBranding: state.context.credentialBranding,
@@ -233,6 +246,9 @@ export const ebsiGetAttestation = async (
     error: state.context.error,
     credentials: state.context.credentialsToAccept,
   }
+  logger.info(`EBSI attestation for ${authReqResult.identifier.did} and ${clientId}`, result)
+
+  return result
 }
 
 /**
