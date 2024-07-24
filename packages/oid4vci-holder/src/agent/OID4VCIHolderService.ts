@@ -572,7 +572,7 @@ export const getSigner = async (args: GetSignerArgs): Promise<Signer> => {
   const { idOpts, context } = args
 
   const identifier = await getIdentifierFromOpts(idOpts, context)
-  const key = await getKey(identifier, idOpts.verificationMethodSection, context, idOpts.kid)
+  const key = await getKey({ identifier, vmRelationship: idOpts.verificationMethodSection, kmsKeyRef: idOpts.kmsKeyRef }, context)
   const algorithm = await signatureAlgorithmFromKey({ key })
 
   return async (data: string | Uint8Array): Promise<string> => {

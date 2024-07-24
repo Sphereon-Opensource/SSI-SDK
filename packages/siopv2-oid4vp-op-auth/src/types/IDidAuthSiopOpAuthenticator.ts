@@ -106,7 +106,7 @@ export interface IRemoveCustomApprovalForSiopArgs {
 }
 
 export interface IOpsSendSiopAuthorizationResponseArgs {
-  responseSignerOpts: IIdentifierOpts
+  responseSignerOpts: IIdentifierOpts & { issuer?: string; kid?: string }
   // verifiedAuthorizationRequest: VerifiedAuthorizationRequest
   presentationSubmission?: PresentationSubmission
   verifiablePresentations?: W3CVerifiablePresentation[]

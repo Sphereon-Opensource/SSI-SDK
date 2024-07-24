@@ -15,7 +15,7 @@ import { createPEXPresentationSignCallback } from '@sphereon/ssi-sdk.presentatio
 import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
 import { TKeyType } from '@veramo/core'
 import { EventEmitter } from 'events'
-import { IOPOptions, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
+import { IOPOptions, IRequiredContext } from '../types'
 
 export async function createOID4VPPresentationSignCallback({
   presentationSignCallback,
@@ -49,7 +49,7 @@ export async function createOPBuilder({
   context,
 }: {
   opOptions: IOPOptions
-  idOpts?: IIdentifierOpts
+  idOpts?: IIdentifierOpts & { kid?: string }
   context: IRequiredContext
 }): Promise<OPBuilder> {
   const eventEmitter = opOptions.eventEmitter ?? new EventEmitter()
@@ -90,8 +90,11 @@ export async function createOPBuilder({
   builder.withWellknownDIDVerifyCallback(wellknownDIDVerifyCallback)
 
   if (idOpts && idOpts.identifier) {
-    const key = await getKey(await getIdentifier(idOpts, context), idOpts.verificationMethodSection, context, idOpts.kid)
-    const kid = idOpts.kid?.startsWith('did:') ? idOpts.kid : determineKid(key, idOpts)
+    const key = await getKey(
+      { identifier: await getIdentifier(idOpts, context), vmRelationship: idOpts.verificationMethodSection, kmsKeyRef: idOpts.kmsKeyRef },
+      context,
+    )
+    const kid = idOpts.kid ?? (idOpts.kmsKeyRef?.startsWith('did:') ? idOpts.kmsKeyRef : await determineKid({ key, idOpts }, context))
 
     builder.withSuppliedSignature(
       SuppliedSigner(key, context, getSigningAlgo(key.type) as unknown as KeyAlgo),

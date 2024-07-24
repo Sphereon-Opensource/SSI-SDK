@@ -10,7 +10,7 @@ import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { IMachineStatePersistence, MachineStatePersistence, MachineStatePersistEventType } from '../index'
 import xStatePersistenceAgentLogic from './shared/MachineStatePersistenceAgentLogic'
 
-const port = 3403
+const port = 6403
 const basePath = '/agent'
 
 let serverAgent: IAgent

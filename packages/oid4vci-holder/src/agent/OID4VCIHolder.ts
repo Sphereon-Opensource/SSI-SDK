@@ -114,16 +114,16 @@ export function signCallback(client: OpenID4VCIClient, idOpts: IIdentifierOpts, 
       kid = jwt.header.kid
     }
     if (!kid) {
-      kid = idOpts.kid
+      kid = idOpts.kmsKeyRef
     }
 
     if (kid) {
       // sync back to id opts
-      idOpts.kid = kid
+      idOpts.kmsKeyRef = kid
     }
 
     const identifier = await getIdentifier(idOpts, context)
-    const key = await getKey(identifier, undefined, context, kid)
+    const key = await getKey({ identifier, vmRelationship: idOpts.verificationMethodSection, kmsKeyRef: kid }, context)
     if (key?.meta?.jwkThumbprint && kid === key.publicKeyHex) {
       kid = key.meta.jwkThumbprint
     }

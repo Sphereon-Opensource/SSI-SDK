@@ -9,7 +9,7 @@ import {
 } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ConnectionType } from '@sphereon/ssi-sdk.data-store'
 import { IIdentifier } from '@veramo/core'
-import { DidAgents, SuitableCredentialAgents } from '../types/identifier'
+import { DidAgents, SuitableCredentialAgents } from '../types'
 import { CredentialMapper, IVerifiableCredential, Loggers, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
 import {
   LOGGER_NAMESPACE,
@@ -132,11 +132,11 @@ export const siopSendAuthorizationResponse = async (
         })*/
     presentationSubmission = presentationsAndDefs[0].presentationSubmission
   }
-  const key = await getKey(identifier, 'authentication', session.context, idOpts?.kid)
+  const key = await getKey({ identifier, vmRelationship: 'authentication', kmsKeyRef: idOpts?.kmsKeyRef }, session.context)
   if (!idOpts) {
-    idOpts = { identifier, kid: determineKid(key, { identifier }) }
+    idOpts = { identifier, kmsKeyRef: await determineKid({ key, idOpts: { identifier } }, session.context) }
   }
-  const determinedKid = idOpts!.kid?.includes('#') ? idOpts.kid : determineKid(key, idOpts)
+  const determinedKid = idOpts.kmsKeyRef?.includes('#') ? idOpts.kmsKeyRef : await determineKid({ key, idOpts }, session.context)
   const kid: string = determinedKid.startsWith('did:') ? determinedKid : `${identifier.did}#${determinedKid}`
 
   logger.log(`Definitions and locations:`, JSON.stringify(presentationsAndDefs?.[0]?.verifiablePresentation, null, 2))
@@ -145,7 +145,8 @@ export const siopSendAuthorizationResponse = async (
   return await session.sendAuthorizationResponse({
     ...(presentationsAndDefs && { verifiablePresentations: presentationsAndDefs?.map((pd) => pd.verifiablePresentation) }),
     ...(presentationSubmission && { presentationSubmission }),
-    responseSignerOpts: { identifier, kid },
+    // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
+    responseSignerOpts: { identifier, kmsKeyRef: key.kid, kid, issuer: identifier.did },
   })
 }
 
