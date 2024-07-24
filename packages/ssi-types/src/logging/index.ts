@@ -1,4 +1,4 @@
-import Debug from 'debug'
+import {debug} from 'debug'
 import { EventEmitter } from 'events'
 
 export enum LogLevel {
@@ -96,7 +96,7 @@ export type ISimpleLogger<LogType> = {
   trace(value: LogType, ...args: any[]): void
   warning(value: LogType, ...args: any[]): void
   error(value: LogType, ...args: any[]): void
-  logl(level: LogLevel, value: LogType, ...args: any[]): void
+  logl(level: LogLevel, value: LogType, ...argsW: any[]): void
 }
 
 export class SimpleLogger implements ISimpleLogger<any> {
@@ -116,28 +116,32 @@ export class SimpleLogger implements ISimpleLogger<any> {
   }
 
   trace(value: any, ...args: any[]) {
-    this.logl(LogLevel.TRACE, value, args)
+    this.logImpl(LogLevel.TRACE, value, ...args)
   }
 
   debug(value: any, ...args: any[]) {
-    this.logl(LogLevel.DEBUG, value, args)
+    this.logImpl(LogLevel.DEBUG, value, ...args)
   }
 
   info(value: any, ...args: any[]) {
-    this.logl(LogLevel.INFO, value, args)
+    this.logImpl(LogLevel.INFO, value, ...args)
   }
 
   warning(value: any, ...args: any[]) {
-    this.logl(LogLevel.WARNING, value, args)
+    this.logImpl(LogLevel.WARNING, value, ...args)
   }
 
   error(value: any, ...args: any[]) {
-    this.logl(LogLevel.ERROR, value, args)
+    this.logImpl(LogLevel.ERROR, value, ...args)
   }
 
   logl(level: LogLevel, value: any, ...args: any[]) {
+    this.logImpl(level, value, ...args)
+  }
+
+  private logImpl(level: LogLevel, value: any, ...args: any[]) {
     const date = new Date().toISOString()
-    const filteredArgs = args.filter((v) => v!!)
+    const filteredArgs = args?.filter((v) => v!!) ?? []
     const arg = filteredArgs.length === 0 || filteredArgs[0] == undefined ? undefined : filteredArgs
 
     function toLogValue(options: SimpleLogOptions): any {
@@ -156,31 +160,38 @@ export class SimpleLogger implements ISimpleLogger<any> {
       logArgs.push(args)
     }
     if (this.options.methods.includes(LogMethod.DEBUG_PKG)) {
+      const log = debug(this._options.namespace)
       if (arg) {
-        Debug(this._options.namespace)(`${date}- ${value}`, arg)
+        log(`${date}- ${value},`, ...arg)
       } else {
-        Debug(this._options.namespace)(`${date}- ${value}`)
+        log(`${date}- ${value}`)
       }
     }
 
     if (this.options.methods.includes(LogMethod.CONSOLE)) {
       const [value, args] = logArgs
+      let logMethod = console.info
       switch (level) {
         case LogLevel.TRACE:
-          console.trace(value, args)
+          logMethod = console.trace
           break
         case LogLevel.DEBUG:
-          console.debug(value, args)
+          logMethod = console.debug
           break
         case LogLevel.INFO:
-          console.info(value, args)
+          logMethod = console.info
           break
         case LogLevel.WARNING:
-          console.warn(value, args)
+          logMethod = console.warn
           break
         case LogLevel.ERROR:
-          console.error(value, args)
+          logMethod = console.error
           break
+      }
+      if (args) {
+        logMethod(value + ',', ...args)
+      } else {
+        logMethod(value)
       }
     }
 
@@ -195,8 +206,8 @@ export class SimpleLogger implements ISimpleLogger<any> {
     }
   }
 
-  log(value: any, args?: any[]) {
-    this.logl(this.options.defaultLogLevel, value, args)
+  log(value: any, ...args: any[]) {
+    this.logImpl(this.options.defaultLogLevel, value, ...args)
   }
 }
 

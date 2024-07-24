@@ -26,6 +26,6 @@ describe('Simple logging', () => {
   it('Should perform a debug package, console and event log', () => {
     Loggers.DEFAULT.options('all', { methods: [LogMethod.DEBUG_PKG, LogMethod.CONSOLE, LogMethod.EVENT] })
       .get('all')
-      .log('TEST ALL')
+      .log('TEST ALL', 'additional arg1', {arg2: "value2"})
   })
 })
