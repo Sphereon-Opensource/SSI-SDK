@@ -285,6 +285,7 @@ export class IssuanceBranding implements IAgentPlugin {
     return this.setAdditionalImageAttributes(args.localeBranding)
   }
 
+  // todo: We really should add a cache for urls. We now fetch the same images multiple times in case the logo/background image is the same for multiple locales.
   private async setAdditionalImageAttributes(
     localeBranding: IBasicIssuerLocaleBranding | IBasicCredentialLocaleBranding,
   ): Promise<IBasicIssuerLocaleBranding | IBasicCredentialLocaleBranding> {

@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/sphereon-sdk.workspace",
   "private": true,
-  "version": "0.24.0",
+  "version": "0.28.0",
   "description": "Sphereon SSI SDK (Workspace)",
   "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
   "author": "Sphereon <dev@sphereon.com>",
