@@ -62,6 +62,12 @@ export const issuanceBrandingMethods: Array<string> = [
   'ibIssuerLocaleBrandingFrom',
 ]
 
+const EMPTY_IMAGE_ATTRIBUTES = {
+  mediaType: undefined,
+  dataUri: undefined,
+  dimensions: undefined,
+}
+
 /**
  * {@inheritDoc IIssuanceBranding}
  */
@@ -291,11 +297,7 @@ export class IssuanceBranding implements IAgentPlugin {
             ? {
                 ...(await this.getAdditionalImageAttributes(localeBranding.logo)),
               }
-            : {
-                mediaType: undefined,
-                dataUri: undefined,
-                dimensions: undefined,
-              }),
+            : EMPTY_IMAGE_ATTRIBUTES),
         },
       }),
       ...(localeBranding.background && {
@@ -308,11 +310,7 @@ export class IssuanceBranding implements IAgentPlugin {
                 ? {
                     ...(await this.getAdditionalImageAttributes(localeBranding.background.image)),
                   }
-                : {
-                    mediaType: undefined,
-                    dataUri: undefined,
-                    dimensions: undefined,
-                  }),
+                : EMPTY_IMAGE_ATTRIBUTES),
             },
           }),
         },
@@ -320,17 +318,18 @@ export class IssuanceBranding implements IAgentPlugin {
     }
   }
 
-  private async getAdditionalImageAttributes(image: IBasicImageAttributes): Promise<IAdditionalImageAttributes> {
+  private async getAdditionalImageAttributes(image: IBasicImageAttributes): Promise<IAdditionalImageAttributes | IBasicImageAttributes> {
     if (!image.uri) {
-      return Promise.reject(Error('Image has no uri'))
+      debug(`No image URI present, returning empty attributes`)
+      return EMPTY_IMAGE_ATTRIBUTES
     }
 
     const data_uri_regex: RegExp = /^data:image\/[^;]+;base64,/
     if (data_uri_regex.test(image.uri)) {
       debug('Setting additional image properties for uri', image.uri)
       const base64Content: string = await this.extractBase64FromDataURI(image.uri)
-      const dimensions: IImageDimensions = image.dimensions || (await getImageDimensions(base64Content))
-      const mediaType: string = image.mediaType || (await this.getDataTypeFromDataURI(image.uri))
+      const dimensions: IImageDimensions = image.dimensions ?? (await getImageDimensions(base64Content))
+      const mediaType: string = image.mediaType ?? (await this.getDataTypeFromDataURI(image.uri))
 
       return {
         mediaType,
@@ -341,15 +340,15 @@ export class IssuanceBranding implements IAgentPlugin {
     debug('Setting additional image properties for url', image.uri)
     const resource: IImageResource | undefined = !image.dataUri ? await downloadImage(image.uri) : undefined
     const dimensions: IImageDimensions =
-      image.dimensions || (await getImageDimensions(resource?.base64Content || (await this.extractBase64FromDataURI(image.dataUri!))))
+      image.dimensions ?? (await getImageDimensions(resource?.base64Content ?? (await this.extractBase64FromDataURI(image.dataUri!))))
     const mediaType: string | undefined =
-      image.mediaType ||
-      resource?.contentType ||
+      image.mediaType ??
+      resource?.contentType ??
       (resource?.base64Content ? await getImageMediaType(resource?.base64Content!) : await this.getDataTypeFromDataURI(image.uri))
 
     return {
       mediaType,
-      dataUri: image.dataUri || `data:${mediaType};base64,${resource!.base64Content}`,
+      dataUri: image.dataUri ?? `data:${mediaType};base64,${resource!.base64Content}`,
       dimensions,
     }
   }

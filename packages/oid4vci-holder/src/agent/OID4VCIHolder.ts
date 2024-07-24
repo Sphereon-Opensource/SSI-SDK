@@ -77,7 +77,7 @@ import {
   getCredentialConfigsSupportedMerged,
   getIdentifierOpts,
   getIssuanceOpts,
-  getIssuerBranding,
+  getBasicIssuerLocaleBranding,
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
   signatureAlgorithmFromKey,
@@ -410,9 +410,9 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     // const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState! }) // TODO see if we need the check openID4VCIClientState defined
     /*const credentialsSupported = await getCredentialConfigsSupportedBySingleTypeOrId({
-                          client,
-                          vcFormatPreferences: this.vcFormatPreferences,
-                        })*/
+                              client,
+                              vcFormatPreferences: this.vcFormatPreferences,
+                            })*/
     logger.info(`Credentials supported ${Object.keys(credentialsSupported).join(', ')}`)
 
     const credentialSelection: Array<CredentialToSelectFromResult> = await Promise.all(
@@ -667,19 +667,28 @@ export class OID4VCIHolder implements IAgentPlugin {
 
   private async oid4vciHolderAddIssuerBranding(args: AddIssuerBrandingArgs, context: RequiredContext): Promise<void> {
     const { serverMetadata, contact } = args
-    if (serverMetadata?.credentialIssuerMetadata?.display && contact) {
-      const issuerBrandings: IBasicIssuerLocaleBranding[] = await getIssuerBranding({
-        display: serverMetadata.credentialIssuerMetadata.display,
-        context,
-      })
+    if (!contact) {
+      return logger.warning('Missing contact in context, so cannot get issuer branding')
+    }
+
+    if (serverMetadata?.credentialIssuerMetadata?.display) {
       const issuerCorrelationId: string =
         contact.identities
           .filter((identity) => identity.roles.includes(CredentialRole.ISSUER))
           .map((identity) => identity.identifier.correlationId)[0] ?? undefined
-      if (issuerBrandings && issuerBrandings.length) {
-        const brandings: IIssuerBranding[] = await context.agent.ibGetIssuerBranding({ filter: [{ issuerCorrelationId }] })
-        if (!brandings || !brandings.length) {
-          await context.agent.ibAddIssuerBranding({ localeBranding: issuerBrandings, issuerCorrelationId })
+
+      const brandings: IIssuerBranding[] = await context.agent.ibGetIssuerBranding({ filter: [{ issuerCorrelationId }] })
+      // todo: Probably wise to look at last updated at and update in case it has been a while
+      if (!brandings || brandings.length === 0) {
+        const basicIssuerLocaleBrandings: IBasicIssuerLocaleBranding[] = await getBasicIssuerLocaleBranding({
+          display: serverMetadata.credentialIssuerMetadata.display,
+          context,
+        })
+        if (basicIssuerLocaleBrandings && basicIssuerLocaleBrandings.length > 0) {
+          await context.agent.ibAddIssuerBranding({
+            localeBranding: basicIssuerLocaleBrandings,
+            issuerCorrelationId,
+          })
         }
       }
     }

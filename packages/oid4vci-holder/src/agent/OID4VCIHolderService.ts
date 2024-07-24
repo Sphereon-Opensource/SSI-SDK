@@ -88,10 +88,10 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   return credentialBranding
 }
 
-export const getIssuerBranding = async (args: GetIssuerBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => {
+export const getBasicIssuerLocaleBranding = async (args: GetIssuerBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => {
   const { display, context } = args
   return await Promise.all(
-    (display ?? []).map(async (displayItem: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
+    display.map(async (displayItem: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
       const branding = await issuerLocaleBrandingFrom(displayItem)
       return context.agent.ibIssuerLocaleBrandingFrom({ localeBranding: branding })
     }),
