@@ -1,4 +1,4 @@
-import {debug} from 'debug'
+import { debug } from 'debug'
 import { EventEmitter } from 'events'
 
 export enum LogLevel {
@@ -159,16 +159,22 @@ export class SimpleLogger implements ISimpleLogger<any> {
     if (arg) {
       logArgs.push(args)
     }
-    if (this.options.methods.includes(LogMethod.DEBUG_PKG)) {
-      const log = debug(this._options.namespace)
-      if (arg) {
-        log(`${date}- ${value},`, ...arg)
-      } else {
-        log(`${date}- ${value}`)
+    let debugPkgEnabled = this.options.methods.includes(LogMethod.DEBUG_PKG)
+    if (debugPkgEnabled) {
+      const debugPkgDebugger = debug(this._options.namespace)
+      // It was enabled at the options level in code, but could be disabled at runtime using env vars
+      debugPkgEnabled = debugPkgDebugger.enabled
+      if (debugPkgEnabled) {
+        if (arg) {
+          debugPkgDebugger(`${date}- ${value},`, ...arg)
+        } else {
+          debugPkgDebugger(`${date}- ${value}`)
+        }
       }
     }
 
-    if (this.options.methods.includes(LogMethod.CONSOLE)) {
+    // We do not perform console.logs in case the debug package is enabled in code and used at runtime
+    if (this.options.methods.includes(LogMethod.CONSOLE) && !debugPkgEnabled) {
       const [value, args] = logArgs
       let logMethod = console.info
       switch (level) {
