@@ -33,6 +33,7 @@ overrides:
   '@sphereon/oid4vci-client': 0.14.0
   '@sphereon/oid4vci-issuer': 0.14.0
   '@noble/hashes': 1.2.0
+  debug: ^4.3.5
   did-jwt: 6.11.6
   did-jwt-vc: 3.1.3
   ethr-did: 2.3.9
@@ -7207,7 +7208,7 @@ packages:
       '@rnx-kit/chromium-edge-launcher': 1.0.0
       chrome-launcher: 0.15.2
       connect: 3.7.0
-      debug: 2.6.9
+      debug: 4.3.5
       node-fetch: 2.7.0
       nullthrows: 1.1.1
       open: 7.4.2
@@ -10732,7 +10733,7 @@ packages:
     dependencies:
       bytes: 3.1.2
       content-type: 1.0.5
-      debug: 2.6.9
+      debug: 4.3.5
       depd: 2.0.0
       destroy: 1.2.0
       http-errors: 2.0.0
@@ -11398,7 +11399,7 @@ packages:
       accepts: 1.3.8
       bytes: 3.0.0
       compressible: 2.0.18
-      debug: 2.6.9
+      debug: 4.3.5
       on-headers: 1.0.2
       safe-buffer: 5.1.2
       vary: 1.1.2
@@ -11429,7 +11430,7 @@ packages:
     resolution: {integrity: sha512-ZqRXc+tZukToSNmh5C2iWMSoV3X1YUcPbqEM4DkEG5tNQXrQUZCNVGGv3IuicnkMtPfGf3Xtp8WCXs295iQ1pQ==}
     engines: {node: '>= 0.10.0'}
     dependencies:
-      debug: 2.6.9
+      debug: 4.3.5
       finalhandler: 1.1.2
       parseurl: 1.3.3
       utils-merge: 1.0.1
@@ -11596,7 +11597,7 @@ packages:
     engines: {node: '>= 0.10'}
     dependencies:
       cookies: 0.9.1
-      debug: 3.2.7
+      debug: 4.3.5
       on-headers: 1.0.2
       safe-buffer: 5.2.1
     transitivePeerDependencies:
@@ -11915,26 +11916,6 @@ packages:
 
   /dayjs@1.11.12:
     resolution: {integrity: sha512-Rt2g+nTbLlDWZTwwrIXjy9MeiZmSDI375FvZs72ngxx8PDC6YXOeR3q5LAuPzjZQxhiWdRKac7RKV+YyQYfYIg==}
-
-  /debug@2.6.9:
-    resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
-    peerDependencies:
-      supports-color: '*'
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
-    dependencies:
-      ms: 2.0.0
-
-  /debug@3.2.7:
-    resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
-    peerDependencies:
-      supports-color: '*'
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
-    dependencies:
-      ms: 2.1.3
 
   /debug@4.3.5:
     resolution: {integrity: sha512-pt0bNEmneDIvdL1Xsd9oDQ/wrQRkXDT4AUWlNZNPKvW5x/jyO9VFXkJUP07vQ2upmw5PlaITaPKc31jK13V+jg==}
@@ -12583,7 +12564,7 @@ packages:
   /eslint-import-resolver-node@0.3.9:
     resolution: {integrity: sha512-WFj2isz22JahUv+B788TlO3N6zL3nNJGU8CcZbPZvVEkBPaJdCV4vy5wyghty5ROFbCRnm132v8BScu5/1BQ8g==}
     dependencies:
-      debug: 3.2.7
+      debug: 4.3.5
       is-core-module: 2.15.0
       resolve: 1.22.8
     transitivePeerDependencies:
@@ -12612,7 +12593,7 @@ packages:
         optional: true
     dependencies:
       '@typescript-eslint/parser': 5.62.0(eslint@8.57.0)(typescript@5.4.2)
-      debug: 3.2.7
+      debug: 4.3.5
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
     transitivePeerDependencies:
@@ -12645,7 +12626,7 @@ packages:
       array.prototype.findlastindex: 1.2.5
       array.prototype.flat: 1.3.2
       array.prototype.flatmap: 1.3.2
-      debug: 3.2.7
+      debug: 4.3.5
       doctrine: 2.1.0
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
@@ -13115,7 +13096,7 @@ packages:
     dependencies:
       cookie: 0.6.0
       cookie-signature: 1.0.7
-      debug: 2.6.9
+      debug: 4.3.5
       depd: 2.0.0
       on-headers: 1.0.2
       parseurl: 1.3.3
@@ -13135,7 +13116,7 @@ packages:
       content-type: 1.0.5
       cookie: 0.6.0
       cookie-signature: 1.0.6
-      debug: 2.6.9
+      debug: 4.3.5
       depd: 2.0.0
       encodeurl: 1.0.2
       escape-html: 1.0.3
@@ -13307,7 +13288,7 @@ packages:
     resolution: {integrity: sha512-aAWcW57uxVNrQZqFXjITpW3sIUQmHGG3qSb9mUah9MgMC4NeWhNOlNjXEYq3HjRAvL6arUviZGGJsBg6z0zsWA==}
     engines: {node: '>= 0.8'}
     dependencies:
-      debug: 2.6.9
+      debug: 4.3.5
       encodeurl: 1.0.2
       escape-html: 1.0.3
       on-finished: 2.3.0
@@ -13321,7 +13302,7 @@ packages:
     resolution: {integrity: sha512-5uXcUVftlQMFnWC9qu/svkWv3GTd2PfUhK/3PLkYNAe7FbqJMt3515HaxE6eRL74GdsriiwujiawdaB1BpEISg==}
     engines: {node: '>= 0.8'}
     dependencies:
-      debug: 2.6.9
+      debug: 4.3.5
       encodeurl: 1.0.2
       escape-html: 1.0.3
       on-finished: 2.4.1
@@ -16312,7 +16293,7 @@ packages:
   /lighthouse-logger@1.4.2:
     resolution: {integrity: sha512-gPWxznF6TKmUHrOQjlVo2UbaL2EJ71mb2CCeRs/2qBpi4L/g4LUVc9+3lKQ6DTUZwJswfM7ainGrLO1+fOqa2g==}
     dependencies:
-      debug: 2.6.9
+      debug: 4.3.5
       marky: 1.2.5
     transitivePeerDependencies:
       - supports-color
@@ -16748,7 +16729,7 @@ packages:
     engines: {node: '>=18'}
     dependencies:
       anymatch: 3.1.3
-      debug: 2.6.9
+      debug: 4.3.5
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
       invariant: 2.2.4
@@ -16857,7 +16838,7 @@ packages:
       chalk: 4.1.2
       ci-info: 2.0.0
       connect: 3.7.0
-      debug: 2.6.9
+      debug: 4.3.5
       denodeify: 1.2.1
       error-stack-parser: 2.1.4
       graceful-fs: 4.2.11
@@ -17138,7 +17119,7 @@ packages:
     engines: {node: '>= 0.8.0'}
     dependencies:
       basic-auth: 2.0.1
-      debug: 2.6.9
+      debug: 4.3.5
       depd: 2.0.0
       on-finished: 2.3.0
       on-headers: 1.0.2
@@ -17149,9 +17130,6 @@ packages:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
     engines: {node: '>=4'}
     dev: true
-
-  /ms@2.0.0:
-    resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
 
   /ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
@@ -19431,7 +19409,7 @@ packages:
     resolution: {integrity: sha512-qqWzuOjSFOuqPjFe4NOsMLafToQQwBSOEpS+FwEt3A2V3vKubTquT3vmLTQpFgMXp8AlFWFuP1qKaJZOtPpVXg==}
     engines: {node: '>= 0.8.0'}
     dependencies:
-      debug: 2.6.9
+      debug: 4.3.5
       depd: 2.0.0
       destroy: 1.2.0
       encodeurl: 1.0.2
