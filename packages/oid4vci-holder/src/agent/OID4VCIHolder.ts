@@ -119,11 +119,11 @@ export function signCallback(client: OpenID4VCIClient, idOpts: IIdentifierOpts, 
 
     if (kid) {
       // sync back to id opts
-      idOpts.kmsKeyRef = kid
+      idOpts.kmsKeyRef = kid.split('#')[0]
     }
 
     const identifier = await getIdentifier(idOpts, context)
-    const key = await getKey({ identifier, vmRelationship: idOpts.verificationMethodSection, kmsKeyRef: kid }, context)
+    const key = await getKey({ identifier, vmRelationship: idOpts.verificationMethodSection, kmsKeyRef: idOpts.kmsKeyRef ?? kid }, context)
     if (key?.meta?.jwkThumbprint && kid === key.publicKeyHex) {
       kid = key.meta.jwkThumbprint
     }
@@ -137,8 +137,14 @@ export function signCallback(client: OpenID4VCIClient, idOpts: IIdentifierOpts, 
     if (!iss) {
       return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)}`))
     }
+    if (identifier && kid && !httpsClientId && !kid.startsWith(identifier.did)) {
+      const hash = kid.startsWith('#') ? '' : '#'
+      kid = `${identifier.did}${hash}${kid}`
+    }
     const header = { ...jwt.header, ...(kid && { kid: httpsClientId ? kid : `${identifier.did}#${kid}` }) } as Partial<JWTHeader>
+    console.log(`HEADER: `, header)
     const payload = { ...jwt.payload, ...(iss && { iss }) }
+    console.log(`PAYLOAD: `, payload)
     return signJWT({
       idOpts,
       header,
@@ -515,6 +521,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
   private async oid4vciHolderGetCredentials(args: GetCredentialsArgs, context: RequiredContext): Promise<Array<MappedCredentialToAccept>> {
     const { verificationCode, openID4VCIClientState, didMethodPreferences = this.didMethodPreferences, issuanceOpt, accessTokenOpts } = args
+    logger.debug(`Getting credentials`, issuanceOpt, accessTokenOpts)
 
     if (!openID4VCIClientState) {
       return Promise.reject(Error('Missing openID4VCI client state in context'))
@@ -559,6 +566,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
   private async oid4vciHolderGetCredential(args: GetCredentialArgs, context: RequiredContext): Promise<MappedCredentialToAccept> {
     const { issuanceOpt, pin, client, accessTokenOpts } = args
+    logger.info(`Getting credential`, issuanceOpt)
 
     if (!issuanceOpt) {
       return Promise.reject(Error(`Cannot get credential issuance options`))
@@ -566,10 +574,11 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     const idOpts = await getIdentifierOpts({ issuanceOpt, context })
     const { key, kid } = idOpts
+    logger.debug(`ID opts`, idOpts)
     const alg: SignatureAlgorithmEnum = await signatureAlgorithmFromKey({ key })
 
     const callbacks: ProofOfPossessionCallbacks<never> = {
-      signCallback: await signCallback(client, idOpts, context),
+      signCallback: signCallback(client, idOpts, context),
     }
 
     try {

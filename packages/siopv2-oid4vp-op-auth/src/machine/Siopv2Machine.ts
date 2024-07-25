@@ -2,7 +2,7 @@ import { VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
 import { DidAuthConfig, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { assign, createMachine, DoneInvokeEvent, interpret } from 'xstate'
 import { translate } from '../localization/Localization'
-import { ErrorDetails } from '../types/error'
+import { ErrorDetails } from '../types'
 import {
   ContactAliasEvent,
   ContactConsentEvent,
@@ -20,7 +20,7 @@ import {
   Siopv2MachineState,
   Siopv2MachineStates,
   Siopv2StateMachine,
-} from '../types/machine'
+} from '../types'
 import { LOGGER_NAMESPACE, SelectableCredentialsMap, Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData } from '../types'
 import { Loggers } from '@sphereon/ssi-types'
 
