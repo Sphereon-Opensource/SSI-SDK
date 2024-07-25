@@ -114,6 +114,7 @@
       "@sphereon/oid4vci-common": "0.15.1-next.9",
       "@sphereon/oid4vci-client": "0.15.1-next.9",
       "@sphereon/oid4vci-issuer": "0.15.1-next.9",
+      "@sphereon/pex": "^4.0.1",
       "@noble/hashes": "1.2.0",
       "debug": "^4.3.5",
       "did-jwt": "6.11.6",
