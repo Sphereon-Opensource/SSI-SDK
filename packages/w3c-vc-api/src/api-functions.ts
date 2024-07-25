@@ -1,4 +1,3 @@
-import { getCredentialByIdOrHash } from '@sphereon/ssi-sdk.core'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { CredentialPayload } from '@veramo/core'
 import { ProofFormat } from '@veramo/core/src/types/ICredentialIssuer'
@@ -7,6 +6,8 @@ import { Request, Response, Router } from 'express'
 import { v4 } from 'uuid'
 import { IIssueCredentialEndpointOpts, IRequiredContext, IVCAPIIssueOpts, IVerifyCredentialEndpointOpts } from './types'
 import Debug from 'debug'
+import { DocumentType, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.credential-store'
+import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
 const debug = Debug('sphereon:ssi-sdk:w3c-vc-api')
 export function issueCredentialEndpoint(router: Router, context: IRequiredContext, opts?: IIssueCredentialEndpointOpts) {
   if (opts?.enabled === false) {
@@ -56,9 +57,25 @@ export function getCredentialsEndpoint(router: Router, context: IRequiredContext
   const path = opts?.path ?? '/credentials'
   router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
-      const uniqueVCs = await context.agent.dataStoreORMGetVerifiableCredentials()
+      const credentialRole = (request.query.credentialRole as CredentialRole) || CredentialRole.HOLDER
+      if (!Object.values(CredentialRole).includes(credentialRole)) {
+        return sendErrorResponse(response, 400, `Invalid credentialRole: ${credentialRole}`)
+      }
+
+      const documentType = (request.query.documentType as DocumentType) || DocumentType.VC
+      if (!Object.values(DocumentType).includes(documentType)) {
+        return sendErrorResponse(response, 400, `Invalid documentType: ${documentType}`)
+      }
+
+      const filter: FindDigitalCredentialArgs = [
+        {
+          documentType: documentType,
+          credentialRole: credentialRole,
+        },
+      ]
+      const uniqueVCs = await context.agent.crsGetUniqueCredentials({ filter })
       response.statusCode = 202
-      return response.send(uniqueVCs.map((uVC) => uVC.verifiableCredential))
+      return response.send(uniqueVCs.map((uVC) => uVC.uniformVerifiableCredential))
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)
     }
@@ -77,12 +94,20 @@ export function getCredentialEndpoint(router: Router, context: IRequiredContext,
       if (!id) {
         return sendErrorResponse(response, 400, 'no id provided')
       }
-      let vcInfo = await getCredentialByIdOrHash(context, id)
-      if (!vcInfo.vc) {
-        return sendErrorResponse(response, 404, `id ${id} not found`)
+      const credentialRole = (request.query.credentialRole as CredentialRole) || CredentialRole.HOLDER
+      if (!Object.values(CredentialRole).includes(credentialRole)) {
+        return sendErrorResponse(response, 400, `Invalid credentialRole: ${credentialRole}`)
+      }
+
+      const vcInfo = await context.agent.crsGetUniqueCredentialByIdOrHash({
+        credentialRole: credentialRole,
+        idOrHash: id,
+      })
+      if (!vcInfo) {
+        return sendErrorResponse(response, 403, `id ${id} not found`)
       }
       response.statusCode = 200
-      return response.send(vcInfo.vc)
+      return response.send(vcInfo.uniformVerifiableCredential)
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)
     }
@@ -129,12 +154,23 @@ export function deleteCredentialEndpoint(router: Router, context: IRequiredConte
       if (!id) {
         return sendErrorResponse(response, 400, 'no id provided')
       }
-      let vcInfo = await getCredentialByIdOrHash(context, id)
-      if (!vcInfo.vc || !vcInfo.hash) {
+      const credentialRole = request.query.credentialRole as CredentialRole
+      if (credentialRole === undefined) {
+        return sendErrorResponse(response, 400, 'credentialRole query parameter is missing')
+      }
+      if (!Object.values(CredentialRole).includes(credentialRole)) {
+        return sendErrorResponse(response, 400, `Invalid credentialRole: ${credentialRole}`)
+      }
+
+      const vcInfo = await context.agent.crsGetUniqueCredentialByIdOrHash({
+        credentialRole: credentialRole,
+        idOrHash: id,
+      })
+      if (!vcInfo) {
         return sendErrorResponse(response, 404, `id ${id} not found`)
       }
-      const success = context.agent.dataStoreDeleteVerifiableCredential({ hash: vcInfo.hash })
-      if (!success) {
+      const success = await context.agent.crsDeleteCredentials({ filter: [{ hash: vcInfo.hash }] })
+      if (success === 0) {
         return sendErrorResponse(response, 400, `Could not delete Verifiable Credential with id ${id}`)
       }
       response.statusCode = 200

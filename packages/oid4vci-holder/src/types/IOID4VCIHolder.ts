@@ -37,10 +37,10 @@ import {
   TKeyType,
   VerifiableCredential,
 } from '@veramo/core'
-import { IDataStore, IDataStoreORM } from '@veramo/data-store'
 import { _ExtendedIKey } from '@veramo/utils'
 import { JWTHeader, JWTPayload } from 'did-jwt'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
+import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult>
@@ -597,6 +597,6 @@ export type IdentifierOpts = {
 }
 
 export type RequiredContext = IAgentContext<
-  IIssuanceBranding & IContactManager & ICredentialVerifier & ICredentialIssuer & IDataStore & IDataStoreORM & IDIDManager & IResolver & IKeyManager
+  IIssuanceBranding & IContactManager & ICredentialVerifier & ICredentialIssuer & ICredentialStore & IDIDManager & IResolver & IKeyManager
 >
 export type DidAgents = TAgent<IResolver & IDIDManager>

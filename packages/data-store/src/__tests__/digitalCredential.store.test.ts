@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm'
 import { DataStoreDigitalCredentialMigrations } from '../migrations'
-import { DataStoreDigitalCredentialEntities } from '../index'
+import { CredentialRole, DataStoreDigitalCredentialEntities } from '../index'
 import { DigitalCredentialStore } from '../digitalCredential/DigitalCredentialStore'
 import {
   CredentialCorrelationType,
@@ -45,6 +45,7 @@ describe('Database entities tests', (): void => {
       subjectCorrelationType: CredentialCorrelationType.DID,
       issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     }
 
@@ -60,6 +61,7 @@ describe('Database entities tests', (): void => {
       subjectCorrelationType: CredentialCorrelationType.DID,
       issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     }
 
@@ -76,6 +78,7 @@ describe('Database entities tests', (): void => {
       subjectCorrelationType: CredentialCorrelationType.DID,
       issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     }
     const addCredentialArgs2: AddCredentialArgs = {
@@ -85,6 +88,7 @@ describe('Database entities tests', (): void => {
       subjectCorrelationType: CredentialCorrelationType.DID,
       issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     }
 
@@ -105,6 +109,7 @@ describe('Database entities tests', (): void => {
       subjectCorrelationType: CredentialCorrelationType.DID,
       issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     }
 
@@ -148,11 +153,12 @@ describe('Database entities tests', (): void => {
     }
     const addCredentialArgs2: AddCredentialArgs = {
       rawDocument: JSON.stringify(sampleVP),
-      tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
       issuerCorrelationType: CredentialCorrelationType.DID,
       issuerCorrelationId: 'did:example:holder',
       subjectCorrelationType: CredentialCorrelationType.DID,
       subjectCorrelationId: 'did:example:holder',
+      credentialRole: CredentialRole.VERIFIER,
+      tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     }
     const addCredentialArgs3: AddCredentialArgs = {
       rawDocument:
@@ -161,6 +167,7 @@ describe('Database entities tests', (): void => {
       subjectCorrelationType: CredentialCorrelationType.DID,
       issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
       opts: {
         hasher: (data, algorithm) => createHash(algorithm).update(data).digest(),
@@ -191,6 +198,7 @@ describe('Database entities tests', (): void => {
     const result3: GetCredentialsResponse = await digitalCredentialStore.getCredentials(args3)
     expect(result3.data.length).toEqual(3)
     expect(result3.data[1].documentFormat).toEqual(CredentialDocumentFormat.JSON_LD)
+    expect(result3.data[1].credentialId).toEqual('ebc6f1c2')
   })
 
   it('should return no digital credentials if filter does not match', async (): Promise<void> => {
@@ -212,6 +220,7 @@ describe('Database entities tests', (): void => {
       subjectCorrelationType: CredentialCorrelationType.DID,
       issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     }
 
@@ -234,6 +243,7 @@ describe('Database entities tests', (): void => {
       subjectCorrelationType: CredentialCorrelationType.DID,
       issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     }
 
@@ -256,6 +266,7 @@ describe('Database entities tests', (): void => {
       subjectCorrelationType: CredentialCorrelationType.DID,
       issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     }
 
@@ -278,6 +289,7 @@ describe('Database entities tests', (): void => {
       subjectCorrelationType: CredentialCorrelationType.DID,
       issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     }
 

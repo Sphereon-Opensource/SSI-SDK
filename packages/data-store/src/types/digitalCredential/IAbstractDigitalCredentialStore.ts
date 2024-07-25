@@ -1,4 +1,4 @@
-import { CredentialCorrelationType, CredentialStateType, DigitalCredential } from './digitalCredential'
+import { CredentialCorrelationType, CredentialRole, CredentialStateType, DigitalCredential } from './digitalCredential'
 import { Hasher } from '@sphereon/ssi-types'
 import { FindOptionsOrder } from 'typeorm'
 import { DigitalCredentialEntity } from '../../entities/digitalCredential/DigitalCredentialEntity'
@@ -25,6 +25,7 @@ export type AddCredentialArgs = {
   subjectCorrelationType?: CredentialCorrelationType
   issuerCorrelationId: string
   subjectCorrelationId?: string
+  credentialRole: CredentialRole
   tenantId?: string
   state?: CredentialStateType
   verifiedAt?: Date

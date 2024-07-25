@@ -17,6 +17,7 @@ import express, { Express } from 'express'
 import { DataSource } from 'typeorm'
 import { IEbsiSupport } from '../src'
 import { ebsiCreateDidOnLedger } from '../src/did'
+import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
 // import { AttestationAuthRequestUrlResult } from '../src/functions'
 
 let dbConnection: Promise<DataSource>
@@ -172,6 +173,7 @@ describe.skip('attestation client should', () => {
       {
         identifier,
         accessTokenOpts: {
+          attestationToOnboardCredentialRole: CredentialRole.ISSUER,
           clientId,
           redirectUri: jwksUri,
           credentialIssuer: 'https://api-conformance.ebsi.eu/conformance/v3/issuer-mock',

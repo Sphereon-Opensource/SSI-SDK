@@ -1,6 +1,7 @@
 import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IIdentifier } from '@veramo/core'
 import { ILocaleBranding } from '../issuanceBranding/issuanceBranding'
+import { CredentialRole } from '../digitalCredential/digitalCredential'
 
 export type MetadataTypes = string | number | Date | boolean | undefined
 
@@ -257,12 +258,6 @@ export type PartialPhysicalAddress = Partial<PhysicalAddress> & {
 export type ElectronicAddressType = 'email' | 'phone'
 
 export type PhysicalAddressType = 'home' | 'visit' | 'postal'
-
-export enum CredentialRole {
-  ISSUER = 'issuer',
-  VERIFIER = 'verifier',
-  HOLDER = 'holder',
-}
 
 export enum ConnectionType {
   OPENID_CONNECT = 'OIDC',

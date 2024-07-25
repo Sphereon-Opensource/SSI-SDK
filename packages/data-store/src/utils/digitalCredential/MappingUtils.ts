@@ -103,6 +103,7 @@ export const nonPersistedDigitalCredentialEntityFromAddArgs = (addCredentialArgs
     documentType,
     documentFormat: determineCredentialDocumentFormat(documentFormat),
     createdAt: new Date(),
+    credentialId: uniformDocument.id as string | undefined, // uniformDocument.id is being inferred as JsonValue somehow
     hash: computeEntryHash(addCredentialArgs.rawDocument),
     uniformDocument: JSON.stringify(uniformDocument),
     validFrom,

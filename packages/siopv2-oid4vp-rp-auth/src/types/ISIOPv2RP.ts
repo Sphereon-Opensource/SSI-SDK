@@ -1,14 +1,5 @@
 import { ClientMetadataOpts } from '@sphereon/did-auth-siop/dist/types'
-import {
-  IAgentContext,
-  ICredentialIssuer,
-  ICredentialVerifier,
-  IDataStoreORM,
-  IDIDManager,
-  IKeyManager,
-  IPluginMethodMap,
-  IResolver,
-} from '@veramo/core'
+import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { AdditionalClaims, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import {
   AuthorizationRequestPayload,
@@ -184,5 +175,5 @@ export interface AuthorizationResponseStateWithVerifiedData extends Authorizatio
 }
 
 export type IRequiredContext = IAgentContext<
-  IDataStoreORM & IResolver & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier & IPresentationExchange & IPDManager
+  IResolver & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier & IPresentationExchange & IPDManager
 >
