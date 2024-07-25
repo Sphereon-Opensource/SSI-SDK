@@ -1,8 +1,7 @@
 import { dereferenceDidKeysWithJwkSupport, getAgentResolver, getIdentifier, getKey, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
-import { _NormalizedVerificationMethod } from '@veramo/utils'
 import { IPEXPresentationSignCallback, IRequiredContext } from './types/IPresentationExchange'
 import { IPresentationDefinition } from '@sphereon/pex'
-import { IKey, PresentationPayload, ProofFormat } from '@veramo/core'
+import {IIdentifier, PresentationPayload, ProofFormat} from '@veramo/core'
 import { CredentialMapper, Optional, OriginalVerifiablePresentation, SdJwtDecodedVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { Format } from '@sphereon/pex-models'
 
@@ -61,12 +60,12 @@ export async function createPEXPresentationSignCallback(
   }
 
   return async ({
-                  presentation,
-                  domain,
-                  presentationDefinition,
-                  format,
-                  challenge,
-                }: {
+    presentation,
+    domain,
+    presentationDefinition,
+    format,
+    challenge,
+  }: {
     presentation: Optional<PresentationPayload, 'holder'> | SdJwtDecodedVerifiableCredential
     presentationDefinition: IPresentationDefinition
     format?: Format | ProofFormat
@@ -102,7 +101,7 @@ export async function createPEXPresentationSignCallback(
         return Promise.reject(Error(`presentation payload does not match proof format ${proofFormat}`))
       }
 
-      const key = await getKey(id, 'authentication', context, idOpts.kid)
+      const key = await getKey({ identifier: id, vmRelationship: idOpts.verificationMethodSection, kmsKeyRef: idOpts.kmsKeyRef }, context)
       if (!presentation.holder) {
         presentation.holder = id.did
       }
