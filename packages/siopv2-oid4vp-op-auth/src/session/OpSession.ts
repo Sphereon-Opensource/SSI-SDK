@@ -115,7 +115,7 @@ export class OpSession {
     let keyType: TKeyType | undefined
     const agentMethods =
       (opts.agentMethods ?? this.getAgentDIDMethodsSupported(opts))?.map((method) => convertDidMethod(method, opts.didPrefix)) ?? []
-    debug(`agent methods in rp method supported: ${JSON.stringify(agentMethods)}`)
+    debug(`agent methods supported: ${JSON.stringify(agentMethods)}`)
     const authReq = await this.getAuthorizationRequest()
     const subjectSyntaxTypesSupported = authReq.registrationMetadataPayload?.subject_syntax_types_supported?.map((method) =>
       convertDidMethod(method, opts.didPrefix),
@@ -263,7 +263,7 @@ export class OpSession {
       context: this.context,
     })
 
-    let issuer = args.responseSignerOpts?.identifier ? getDID(args.responseSignerOpts) : undefined
+    let issuer = args.responseSignerOpts?.issuer ?? (args.responseSignerOpts?.identifier ? getDID(args.responseSignerOpts) : undefined)
     const responseOpts = {
       verification,
       issuer,

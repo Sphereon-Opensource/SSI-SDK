@@ -53,12 +53,8 @@ export async function getAccessTokenKeyRef(
 ) {
   let keyRef =
     opts.keyRef ??
-    opts.didOpts?.identifierOpts?.kid ??
-    (typeof opts.didOpts?.identifierOpts.identifier === 'object'
-      ? (opts.didOpts?.identifierOpts.identifier as IIdentifier).keys[0].kid
-      : !!opts.didOpts?.identifierOpts.kid
-        ? opts.didOpts?.identifierOpts.kid
-        : undefined)
+    opts.didOpts?.identifierOpts?.kmsKeyRef ??
+    (typeof opts.didOpts?.identifierOpts.identifier === 'object' ? (opts.didOpts?.identifierOpts.identifier as IIdentifier).keys[0].kid : undefined)
   if (!keyRef) {
     throw Error('Key ref is needed for access token signer')
   }
@@ -71,14 +67,11 @@ export async function getAccessTokenKeyRef(
     const identifier = await getIdentifier({ identifier: did }, context)
     let key: IKey | undefined
     if (vm) {
-      key = await getKey(identifier, 'assertionMethod', context, vm)
+      key = await getKey({ identifier, vmRelationship: 'assertionMethod', kmsKeyRef: vm }, context)
       keyRef = key?.kid
     }
     if (!key) {
-      key = await getFirstKeyWithRelation({ identifier, vmRelationship: 'assertionMethod', errorOnNotFound: false }, context)
-      if (!key) {
-        key = await getFirstKeyWithRelation({ identifier, vmRelationship: 'verificationMethod', errorOnNotFound: true }, context)
-      }
+      key = await getFirstKeyWithRelation({ identifier, vmRelationship: 'assertionMethod', offlineWhenNoDIDRegistered: true }, context)
       keyRef = key?.kid
     }
   }
@@ -95,7 +88,7 @@ export function getAccessTokenSignerCallback(
 ) {
   const signer = (data: string | Uint8Array) => {
     let dataString, encoding: 'base64' | undefined
-    const keyRef = opts.keyRef ?? opts?.didOpts?.identifierOpts?.kid
+    const keyRef = opts.keyRef ?? opts?.didOpts?.identifierOpts?.kmsKeyRef
     if (!keyRef) {
       throw Error('Cannot sign access tokens without a key ref')
     }

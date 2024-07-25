@@ -23,30 +23,6 @@ import { TKeyType } from '@veramo/core'
 import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
 import { IPresentationDefinition } from '@sphereon/pex'
 
-/*
-export async function getPresentationDefinitionStore(pexOptions?: IPEXOptions): Promise<IKeyValueStore<IPresentationDefinition> | undefined> {
-  if (pexOptions && pexOptions.definitionId) {
-    if (!pexOptions.definitionStore) {
-      // yes the assignment is ugly, but we want an in-memory fallback and it cannot be re-instantiated every time
-      pexOptions.definitionStore = new KeyValueStore({
-        namespace: 'definitions',
-        store: new Map<string, IPresentationDefinition>(),
-      })
-    }
-    return pexOptions.definitionStore
-  }
-  return undefined
-}
-*/
-
-/*
-export async function getPresentationDefinition(pexOptions?: IPEXOptions): Promise<IPresentationDefinition | undefined> {
-  return pexOptions?.definition
-  /!*const store = await getPresentationDefinitionStore(pexOptions)
-  return store && pexOptions?.definitionId ? store.get(pexOptions?.definitionId) : undefined*!/
-}
-*/
-
 export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   if (Array.isArray(rpOptions.supportedVersions) && rpOptions.supportedVersions.length > 0) {
     return rpOptions.supportedVersions[0]
@@ -103,8 +79,13 @@ export async function createRPBuilder(args: {
   const did = getDID(didOpts.identifierOpts)
   const didMethods = await getSupportedDIDMethods(didOpts, context)
   const identifier = await getIdentifier(didOpts.identifierOpts, context)
-  const key = await getKey(identifier, didOpts.identifierOpts.verificationMethodSection, context, didOpts.identifierOpts.kid)
-  const kid = didOpts.identifierOpts.kid?.startsWith('did:') ? didOpts.identifierOpts.kid : determineKid(key, didOpts.identifierOpts)
+  const key = await getKey(
+    { identifier, vmRelationship: didOpts.identifierOpts.verificationMethodSection, kmsKeyRef: didOpts.identifierOpts.kmsKeyRef },
+    context,
+  )
+  const kid = didOpts.identifierOpts.kmsKeyRef?.startsWith('did:')
+    ? didOpts.identifierOpts.kmsKeyRef
+    : await determineKid({ key, idOpts: didOpts.identifierOpts }, context)
 
   const eventEmitter = rpOpts.eventEmitter ?? new EventEmitter()
 

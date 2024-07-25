@@ -258,7 +258,7 @@ export class CredentialMapper {
 
     // If the VC is not an encoded/decoded SD-JWT, we assume it will be a W3C VC
     const proof = CredentialMapper.getFirstProof(verifiableCredential)
-    const original = CredentialMapper.hasJWTProofType(verifiableCredential) && proof ? proof.jwt ?? verifiableCredential : verifiableCredential
+    const original = CredentialMapper.hasJWTProofType(verifiableCredential) && proof ? (proof.jwt ?? verifiableCredential) : verifiableCredential
     if (!original) {
       throw Error(
         'Could not determine original credential, probably it was a converted JWT credential, that is now missing the JWT value in the proof',

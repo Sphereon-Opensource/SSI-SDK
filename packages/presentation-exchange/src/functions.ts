@@ -1,20 +1,9 @@
-import {
-  dereferenceDidKeysWithJwkSupport,
-  getAgentResolver,
-  getIdentifier,
-  getKey,
-  IIdentifierOpts
-} from '@sphereon/ssi-sdk-ext.did-utils'
+import { dereferenceDidKeysWithJwkSupport, getAgentResolver, getIdentifier, getKey, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import { _NormalizedVerificationMethod } from '@veramo/utils'
 import { IPEXPresentationSignCallback, IRequiredContext } from './types/IPresentationExchange'
 import { IPresentationDefinition } from '@sphereon/pex'
-import { IIdentifier, PresentationPayload, ProofFormat } from '@veramo/core'
-import {
-  CredentialMapper,
-  Optional,
-  OriginalVerifiablePresentation,
-  SdJwtDecodedVerifiableCredential,
-  W3CVerifiablePresentation
-} from '@sphereon/ssi-types'
+import { IKey, PresentationPayload, ProofFormat } from '@veramo/core'
+import { CredentialMapper, Optional, OriginalVerifiablePresentation, SdJwtDecodedVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { Format } from '@sphereon/pex-models'
 
 export async function createPEXPresentationSignCallback(
@@ -62,7 +51,7 @@ export async function createPEXPresentationSignCallback(
     if (formats.has('vc+sd-jwt')) {
       return 'vc+sd-jwt'
     } else
-    // if it is not sd-jwt we would like to go for jwt
+      // if it is not sd-jwt we would like to go for jwt
     if (formats.has('jwt')) {
       return 'jwt'
     }
@@ -72,12 +61,12 @@ export async function createPEXPresentationSignCallback(
   }
 
   return async ({
-    presentation,
-    domain,
-    presentationDefinition,
-    format,
-    challenge,
-  }: {
+                  presentation,
+                  domain,
+                  presentationDefinition,
+                  format,
+                  challenge,
+                }: {
     presentation: Optional<PresentationPayload, 'holder'> | SdJwtDecodedVerifiableCredential
     presentationDefinition: IPresentationDefinition
     format?: Format | ProofFormat

@@ -227,7 +227,7 @@ export const authorizationCodeUrlCallback = (
       const kid = authReqResult.authKey.meta?.jwkThumbprint
         ? `${authReqResult.identifier.did}#${authReqResult.authKey.meta.jwkThumbprint}`
         : authReqResult.authKey.kid
-      await vpLinkHandler.handle(openidUri, { idOpts: { identifier: authReqResult.identifier, kid } })
+      await vpLinkHandler.handle(openidUri, { idOpts: { identifier: authReqResult.identifier, kmsKeyRef: kid } })
     }
     await onOpenAuthorizationUrl(url)
   }
