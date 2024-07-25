@@ -5,6 +5,7 @@ import {
   CredentialResponse,
   CredentialsSupportedDisplay,
   getSupportedCredentials,
+  getTypesFromCredentialSupported,
   getTypesFromObject,
   MetadataDisplay,
   OpenId4VCIVersion,
@@ -27,7 +28,7 @@ import {
   WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
 import { IIdentifier, IVerifyCredentialArgs, TKeyType, VerifiableCredential } from '@veramo/core'
-import { _ExtendedIKey } from '@veramo/utils'
+import { _ExtendedIKey, asArray } from '@veramo/utils'
 import { createJWT, Signer } from 'did-jwt'
 import { translate } from '../localization/Localization'
 import {
@@ -74,11 +75,8 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
       )
 
       const defaultCredentialType = 'VerifiableCredential'
-      const credentialTypes: Array<string> = ('types' in credentialsConfigSupported // TODO credentialsConfigSupported.types is deprecated
-        ? (credentialsConfigSupported.types as string[])
-        : 'credential_definition' in credentialsConfigSupported
-          ? credentialsConfigSupported.credential_definition.type
-          : [defaultCredentialType]) ?? [configId]
+      const configSupportedTypes = getTypesFromCredentialSupported(credentialsConfigSupported)
+      const credentialTypes: Array<string> = configSupportedTypes.length === 0 ? asArray(defaultCredentialType) : configSupportedTypes
 
       const filteredCredentialTypes = credentialTypes.filter((type: string): boolean => type !== defaultCredentialType)
       credentialBranding[filteredCredentialTypes[0]] = localeBranding // TODO for now taking the first type
@@ -385,7 +383,7 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
     allSupported = {} satisfies Record<string, CredentialConfigurationSupported>
     offerSupported.forEach((supported) => {
       if (supported.id) {
-        allSupported[supported.id] = supported
+        allSupported[supported.id as string] = supported
         return
       }
       const id = createIdFromTypes(supported)
