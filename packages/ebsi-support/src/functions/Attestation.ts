@@ -80,7 +80,16 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   }
   // This only works if the DID is actually registered, otherwise use our internal KMS;
   // that is why the offline argument is passed in when type is Verifiable Auth to Onboard, as no DID is present at that point yet
-  const authKey = await getAuthenticationKey(identifier, context, credentialType === 'VerifiableAuthorisationToOnboard', true)
+  // We are getting the ES256 key here, as that is the one needed for auth in EBSI
+  const authKey = await getAuthenticationKey(
+    {
+      identifier,
+      offlineWhenNoDIDRegistered: credentialType === 'VerifiableAuthorisationToOnboard',
+      noVerificationMethodFallback: true,
+      keyType: 'Secp256r1',
+    },
+    context,
+  )
   const kid = authKey.meta?.jwkThumbprint ?? calculateJwkThumbprintForKey({ key: authKey })
   const clientId = clientIdArg ?? identifier.did
 

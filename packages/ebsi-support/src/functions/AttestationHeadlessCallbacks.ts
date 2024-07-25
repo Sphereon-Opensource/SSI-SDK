@@ -1,3 +1,4 @@
+import { decodeUriAsJson } from '@sphereon/did-auth-siop'
 import { getIssuerName } from '@sphereon/oid4vci-common'
 import {
   ConnectionType,
@@ -203,8 +204,22 @@ export const authorizationCodeUrlCallback = (
       }
       const openidUri = response.headers.get('location')
       if (!openidUri || !openidUri.startsWith('openid://')) {
+        let error: string | undefined = undefined
+        if (openidUri) {
+          if (openidUri.includes('error')) {
+            error = 'Authorization server error: '
+            const decoded = decodeUriAsJson(openidUri)
+            if ('error' in decoded && decoded.error) {
+              error += decoded.error + ', '
+            }
+            if ('error_description' in decoded && decoded.error_description) {
+              error += decoded.error_description
+            }
+          }
+        }
         throw Error(
-          `Expected a openid:// URI to be returned from EBSI in headless mode. Returned: ${openidUri}, ${JSON.stringify(await response.text())}`,
+          error ??
+            `Expected a openid:// URI to be returned from EBSI in headless mode. Returned: ${openidUri}, ${JSON.stringify(await response.text())}`,
         )
       }
 
@@ -212,7 +227,7 @@ export const authorizationCodeUrlCallback = (
       const kid = authReqResult.authKey.meta?.jwkThumbprint
         ? `${authReqResult.identifier.did}#${authReqResult.authKey.meta.jwkThumbprint}`
         : authReqResult.authKey.kid
-      await vpLinkHandler.handle(openidUri, { idOpts: { identifier: authReqResult.identifier, kid } })
+      await vpLinkHandler.handle(openidUri, { idOpts: { identifier: authReqResult.identifier, kmsKeyRef: kid } })
     }
     await onOpenAuthorizationUrl(url)
   }

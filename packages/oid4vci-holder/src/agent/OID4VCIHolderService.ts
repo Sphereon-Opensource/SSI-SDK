@@ -88,10 +88,10 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   return credentialBranding
 }
 
-export const getIssuerBranding = async (args: GetIssuerBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => {
+export const getBasicIssuerLocaleBranding = async (args: GetIssuerBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => {
   const { display, context } = args
   return await Promise.all(
-    (display ?? []).map(async (displayItem: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
+    display.map(async (displayItem: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
       const branding = await issuerLocaleBrandingFrom(displayItem)
       return context.agent.ibIssuerLocaleBrandingFrom({ localeBranding: branding })
     }),
@@ -275,7 +275,10 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Identi
       await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { identifier })
     }
   }
-  const key: _ExtendedIKey = await getAuthenticationKey(identifier, context, identifier.did.startsWith('did:ebsi'), true)
+  const key: _ExtendedIKey = await getAuthenticationKey(
+    { identifier, offlineWhenNoDIDRegistered: identifier.did.startsWith('did:ebsi'), noVerificationMethodFallback: true },
+    context,
+  )
   let kid: string = key.meta.verificationMethod?.id ?? key.kid
   if (identifier.did.startsWith('did:ebsi:')) {
     kid = key.meta?.jwkThumbprint
@@ -569,7 +572,7 @@ export const getSigner = async (args: GetSignerArgs): Promise<Signer> => {
   const { idOpts, context } = args
 
   const identifier = await getIdentifierFromOpts(idOpts, context)
-  const key = await getKey(identifier, idOpts.verificationMethodSection, context, idOpts.kid)
+  const key = await getKey({ identifier, vmRelationship: idOpts.verificationMethodSection, kmsKeyRef: idOpts.kmsKeyRef }, context)
   const algorithm = await signatureAlgorithmFromKey({ key })
 
   return async (data: string | Uint8Array): Promise<string> => {

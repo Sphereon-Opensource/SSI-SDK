@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk.vc-status-list",
   "description": "Sphereon SSI-SDK plugin for Status List management, like StatusList2021.",
-  "version": "0.27.0",
+  "version": "0.28.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,20 +10,20 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk-ext.did-utils": "0.22.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.23.1-next.3",
     "@sphereon/ssi-types": "workspace:*",
     "@sphereon/vc-status-list": "7.0.0-next.0",
     "@veramo/core": "4.2.0",
     "@veramo/credential-status": "4.2.0",
     "credential-status": "^2.0.6",
-    "debug": "^4.3.4",
+    "debug": "^4.3.5",
     "uint8arrays": "^3.1.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0",
-    "@babel/core": "^7.0.0",
-    "@babel/preset-env": "^7.22.2",
-    "@babel/preset-typescript": "^7.21.5",
+    "@babel/cli": "^7.24.8",
+    "@babel/core": "^7.24.9",
+    "@babel/preset-env": "^7.24.8",
+    "@babel/preset-typescript": "^7.24.7",
     "typescript": "5.4.2"
   },
   "files": [

@@ -293,7 +293,7 @@ export async function statusList2021ToVerifiableCredential(
 ): Promise<OriginalVerifiableCredential> {
   const { issuer, id, type } = getAssertedValues(args)
   const identifier = await getIdentifier({ identifier: typeof issuer === 'string' ? issuer : issuer.id }, context)
-  const key = await getKey(identifier, 'assertionMethod', context, args.keyRef)
+  const key = await getKey({ identifier, vmRelationship: 'assertionMethod', kmsKeyRef: args.keyRef }, context)
   const keyRef = key.kid
   const encodedList = getAssertedValue('encodedList', args.encodedList)
   const statusPurpose = getAssertedValue('statusPurpose', args.statusPurpose)

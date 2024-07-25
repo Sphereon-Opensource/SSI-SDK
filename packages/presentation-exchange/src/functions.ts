@@ -63,16 +63,20 @@ export async function createPEXPresentationSignCallback(
     let key: IKey | undefined
 
     if (args.skipDidResolution) {
-      if (!idOpts.kid) {
+      if (!idOpts.kmsKeyRef) {
         key = id.keys.find((key) => key.meta?.purpose?.includes(idOpts.verificationMethodSection ?? 'authentication') === true)
       }
       if (!key) {
         key = id.keys.find(
-          (key) => !idOpts.kid || key.kid === idOpts.kid || key.meta?.jwkThumbprint === idOpts.kid || `${id.did}#${key.kid}` === idOpts.kid,
+          (key) =>
+            !idOpts.kmsKeyRef ||
+            key.kid === idOpts.kmsKeyRef ||
+            key.meta?.jwkThumbprint === idOpts.kmsKeyRef ||
+            `${id.did}#${key.kid}` === idOpts.kmsKeyRef,
         )
       }
     } else {
-      key = await getKey(id, 'authentication', context, idOpts.kid)
+      key = await getKey({ identifier: id, vmRelationship: 'authentication', kmsKeyRef: idOpts.kmsKeyRef }, context)
     }
 
     if (!key) {
@@ -99,7 +103,7 @@ export async function createPEXPresentationSignCallback(
         kid: kid.includes('#') ? kid : `${id.did}#${kid}`,
       }
       if (presentation.verifier || !presentation.aud) {
-        presentation.aud = Array.isArray(presentation.verifier) ? presentation.verifier : presentation.verifier ?? domain ?? args.domain
+        presentation.aud = Array.isArray(presentation.verifier) ? presentation.verifier : (presentation.verifier ?? domain ?? args.domain)
         delete presentation.verifier
       }
       if (!presentation.nbf) {

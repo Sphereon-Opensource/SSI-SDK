@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-types",
   "description": "SSI Common Types",
-  "version": "0.27.0",
+  "version": "0.28.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -19,7 +19,7 @@
     "@types/node": "18.15.3",
     "@veramo/core": "4.2.0",
     "jest": "^27.5.1",
-    "prettier": "^2.4.1",
+    "prettier": "^2.8.8",
     "ts-jest": "^27.1.5",
     "typescript": "5.4.2"
   },

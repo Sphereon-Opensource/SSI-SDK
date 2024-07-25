@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.28.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.27.0...v0.28.0) (2024-07-23)
+
+### Bug Fixes
+
+- Add ebsi plugin schema ([422cf14](https://github.com/Sphereon-Opensource/SSI-SDK/commit/422cf14182d798dd0a0d6c126995edba14af9e3a))
+- Ensure we always use the ES256 key for EBSI auth ([be7dc15](https://github.com/Sphereon-Opensource/SSI-SDK/commit/be7dc15537ec005fb7b3745c70dd0b7c4fd75300))
+
+### Features
+
+- Allow to pass in additional keys for EBSI ([16aa9e2](https://github.com/Sphereon-Opensource/SSI-SDK/commit/16aa9e21180b69643d03ba137b7e3d014d092caf))
+
 # [0.27.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.26.0...v0.27.0) (2024-07-07)
 
 ### Features

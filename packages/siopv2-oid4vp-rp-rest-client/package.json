@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-client",
   "description": "contains the client side to call REST endpoints of relying party",
-  "version": "0.27.0",
+  "version": "0.28.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,10 +21,10 @@
     "cross-fetch": "^3.1.8"
   },
   "devDependencies": {
-    "@types/node": "^18.19.26",
+    "@types/node": "^18.19.41",
     "did-resolver": "^4.1.0",
-    "nock": "^13.3.0",
-    "ts-node": "^10.9.1",
+    "nock": "^13.5.4",
+    "ts-node": "^10.9.2",
     "typescript": "5.4.2"
   },
   "files": [
