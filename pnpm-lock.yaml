@@ -366,8 +366,8 @@ importers:
   packages/credential-store:
     dependencies:
       '@sphereon/pex':
-        specifier: ^3.3.3
-        version: 3.3.3
+        specifier: ^4.0.1
+        version: 4.0.1
       '@sphereon/pex-models':
         specifier: ^2.2.4
         version: 2.2.4
