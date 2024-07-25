@@ -141,7 +141,7 @@ export function signCallback(client: OpenID4VCIClient, idOpts: IIdentifierOpts, 
       const hash = kid.startsWith('#') ? '' : '#'
       kid = `${identifier.did}${hash}${kid}`
     }
-    const header = { ...jwt.header, ...(kid && { kid: httpsClientId ? kid : `${identifier.did}#${kid}` }) } as Partial<JWTHeader>
+    const header = { ...jwt.header, ...(kid && { kid }) } as Partial<JWTHeader>
     console.log(`HEADER: `, header)
     const payload = { ...jwt.payload, ...(iss && { iss }) }
     console.log(`PAYLOAD: `, payload)
