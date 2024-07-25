@@ -362,6 +362,46 @@ importers:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
 
+  packages/credential-store:
+    dependencies:
+      '@sphereon/pex':
+        specifier: ^3.3.3
+        version: 3.3.3
+      '@sphereon/pex-models':
+        specifier: ^2.2.4
+        version: 2.2.4
+      '@sphereon/ssi-sdk.data-store':
+        specifier: workspace:*
+        version: link:../data-store
+      cross-fetch:
+        specifier: ^3.1.8
+        version: 3.1.8
+      debug:
+        specifier: ^4.3.5
+        version: 4.3.5
+      typeorm:
+        specifier: ^0.3.20
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      uuid:
+        specifier: ^10.0.0
+        version: 10.0.0
+    devDependencies:
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+      '@types/uuid':
+        specifier: ^10.0.0
+        version: 10.0.0
+      '@veramo/remote-client':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/remote-server':
+        specifier: 4.2.0
+        version: 4.2.0(express@4.19.2)
+
   packages/data-store:
     dependencies:
       '@sphereon/pex':
@@ -777,6 +817,9 @@ importers:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
+      '@sphereon/ssi-sdk.credential-store':
+        specifier: workspace:*
+        version: link:../credential-store
       '@types/express':
         specifier: ^4.17.21
         version: 4.17.21
@@ -846,6 +889,9 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.credential-store':
+        specifier: workspace:*
+        version: link:../credential-store
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1390,6 +1436,9 @@ importers:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.23.1-next.3
         version: 0.23.1-next.3(msrcrypto@1.5.8)(react-native-securerandom@1.0.1)
+      '@sphereon/ssi-sdk.credential-store':
+        specifier: workspace:*
+        version: link:../credential-store
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1753,6 +1802,9 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.credential-store':
+        specifier: workspace:*
+        version: link:../credential-store
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -2872,6 +2924,9 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.credential-store':
+        specifier: workspace:*
+        version: link:../credential-store
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -3218,6 +3273,9 @@ importers:
 
   packages/wellknown-did-issuer:
     dependencies:
+      '@sphereon/ssi-sdk.credential-store':
+        specifier: workspace:*
+        version: link:../credential-store
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -15015,7 +15073,7 @@ packages:
     resolution: {integrity: sha512-LMIgiIrhigmPrs03JHpxUh2yISK3vLFPkAodPeo0+BuF7wA2FoQbkEg1u8gBYBThncu7e1oEDUfIXVuTqLRUjw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      chalk: 4.1.0
+      chalk: 4.1.2
       diff-sequences: 29.6.3
       jest-get-type: 29.6.3
       pretty-format: 29.7.0
@@ -17184,7 +17242,7 @@ packages:
       array-differ: 3.0.0
       array-union: 2.1.0
       arrify: 2.0.1
-      minimatch: 3.0.5
+      minimatch: 3.1.2
     dev: true
 
   /mute-stream@0.0.8:
@@ -17697,7 +17755,7 @@ packages:
       '@yarnpkg/parsers': 3.0.0-rc.46
       '@zkochan/js-yaml': 0.0.7
       axios: 1.7.2
-      chalk: 4.1.0
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       cliui: 8.0.1
@@ -17927,7 +17985,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       bl: 4.1.0
-      chalk: 4.1.0
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       is-interactive: 1.0.0
