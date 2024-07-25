@@ -634,7 +634,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       })
 
       const credential = {
-        id: issuanceOpt.credentialConfigurationId ?? issuanceOpt.id,
+        id: (issuanceOpt.credentialConfigurationId ?? issuanceOpt.id) as string | undefined, // cast due to error:  Type 'unknown' is not assignable to type 'string | undefined'.
         types: types ?? asArray(credentialTypes),
         issuanceOpt,
         credentialResponse,
