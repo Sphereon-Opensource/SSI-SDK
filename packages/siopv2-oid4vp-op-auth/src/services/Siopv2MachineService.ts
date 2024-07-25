@@ -81,7 +81,7 @@ export const siopSendAuthorizationResponse = async (
   let identifier: IIdentifier = identifiers[0]
   let presentationSubmission: PresentationSubmission | undefined
   if (await session.hasPresentationDefinitions()) {
-    const oid4vp: OID4VP = await session.getOID4VP()
+    const oid4vp: OID4VP = await session.getOID4VP({})
 
     const credentialsAndDefinitions = args.verifiableCredentialsWithDefinition
       ? args.verifiableCredentialsWithDefinition

@@ -13,10 +13,7 @@ import {
   NotificationRequest,
 } from '@sphereon/oid4vci-common'
 import {
-  CreateOrGetIdentifierOpts,
-  IdentifierProviderOpts,
   IIdentifierOpts,
-  KeyManagementSystemEnum,
   SupportedDidMethodEnum,
 } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
@@ -387,6 +384,7 @@ export type ErrorDetails = {
   // TODO WAL-676 would be nice if we can bundle these details fields into a new type so that we can check on this field instead of the 2 separately
   detailsTitle?: string
   detailsMessage?: string
+  stack?: string
 }
 
 export enum RequestType {
@@ -641,6 +639,6 @@ export interface VerifyCredentialArgs {
 }
 
 export type RequiredContext = IAgentContext<
-  IIssuanceBranding & IContactManager & ICredentialVerifier & ICredentialIssuer & IDataStore & IDataStoreORM & IDIDManager & IResolver & IKeyManager | ISDJwtPlugin
+  IIssuanceBranding & IContactManager & ICredentialVerifier & ICredentialIssuer & IDataStore & IDataStoreORM & IDIDManager & IResolver & IKeyManager & ISDJwtPlugin
 >
 export type DidAgents = TAgent<IResolver & IDIDManager>

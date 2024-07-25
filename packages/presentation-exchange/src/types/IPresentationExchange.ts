@@ -12,6 +12,7 @@ import {
 import {
   IPresentation,
   Optional,
+  SdJwtDecodedVerifiableCredential,
   W3CVerifiableCredential,
   W3CVerifiablePresentation
 } from '@sphereon/ssi-types'
@@ -74,7 +75,7 @@ export interface VersionDiscoveryResult {
 export type IPEXPresentationSignCallback = (args: IPEXPresentationSignCallBackParams) => Promise<W3CVerifiablePresentation>
 
 export interface IPEXPresentationSignCallBackParams {
-  presentation: IPresentation | Optional<PresentationPayload, 'holder'>
+  presentation: IPresentation | Optional<PresentationPayload, 'holder'> | SdJwtDecodedVerifiableCredential
   presentationDefinition: IPresentationDefinition
 }
 

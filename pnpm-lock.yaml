@@ -727,7 +727,7 @@ importers:
         specifier: ^2.3.1
         version: 2.3.1
       typescript:
-        specifier: ^5.5.3
+        specifier: 5.5.3
         version: 5.5.3
 
   packages/ms-authenticator:
@@ -851,6 +851,9 @@ importers:
       '@sphereon/ssi-sdk.issuance-branding':
         specifier: workspace:*
         version: link:../issuance-branding
+      '@sphereon/ssi-sdk.sd-jwt':
+        specifier: workspace:*
+        version: link:../sd-jwt
       '@sphereon/ssi-sdk.xstate-machine-persistence':
         specifier: workspace:*
         version: link:../xstate-persistence
@@ -904,7 +907,7 @@ importers:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       typescript:
-        specifier: ^5.5.3
+        specifier: 5.5.3
         version: 5.5.3
 
   packages/oid4vci-issuer:
@@ -1389,6 +1392,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.sd-jwt':
+        specifier: workspace:*
+        version: link:../sd-jwt
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1761,6 +1767,9 @@ importers:
       '@sphereon/ssi-sdk.presentation-exchange':
         specifier: workspace:*
         version: link:../presentation-exchange
+      '@sphereon/ssi-sdk.sd-jwt':
+        specifier: workspace:*
+        version: link:../sd-jwt
       '@sphereon/ssi-sdk.xstate-machine-persistence':
         specifier: workspace:*
         version: link:../xstate-persistence

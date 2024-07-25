@@ -34,6 +34,24 @@ import { EventEmitter } from 'events'
 import { OpSession } from '../session'
 import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
+import { Siopv2Machine as Siopv2MachineId } from './machine'
+import { Party } from '@sphereon/ssi-sdk.data-store'
+import {
+  AddIdentityArgs,
+  CreateConfigArgs,
+  CreateConfigResult,
+  GetMachineArgs,
+  GetSelectableCredentialsArgs,
+  GetSiopRequestArgs,
+  RequiredContext,
+  RetrieveContactArgs,
+  SelectableCredentialsMap,
+  SendResponseArgs,
+  Siopv2AuthorizationRequestData,
+  Siopv2AuthorizationResponseData,
+} from './siop-service'
+
+export const LOGGER_NAMESPACE = 'sphereon:siopv2-oid4vp:op-auth'
 
 export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
   siopGetOPSession(args: IGetSiopSessionArgs, context: IRequiredContext): Promise<OpSession>

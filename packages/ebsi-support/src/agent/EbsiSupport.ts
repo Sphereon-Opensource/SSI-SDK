@@ -202,7 +202,7 @@ export class EbsiSupport implements IAgentPlugin {
       op: { checkLinkedDomains: CheckLinkedDomain.NEVER },
       providedPresentationDefinitions: [definition],
     })
-    const oid4vp = await opSession.getOID4VP([identifier.did])
+    const oid4vp = await opSession.getOID4VP({allDIDs: [identifier.did]})
     const vp = await oid4vp.createVerifiablePresentation(
       { definition, credentials: pexResult.filteredCredentials },
       {

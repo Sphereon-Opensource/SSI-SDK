@@ -167,7 +167,7 @@ export class OpSession {
     if (methods.length === 0) {
       throw Error(`No DID methods are supported`)
     }
-    const identifiers = await this.context.agent.didManagerFind().then((ids) => ids.filter((id) => methods.includes(id.provider)))
+    const identifiers: IIdentifier[] = await this.context.agent.didManagerFind().then((ids: IIdentifier[]) => ids.filter((id) => methods.includes(id.provider)))
     if (identifiers.length === 0) {
       debug(`No identifiers available in agent supporting methods ${JSON.stringify(methods)}`)
       if (opts?.createInCaseNoDIDFound !== false) {

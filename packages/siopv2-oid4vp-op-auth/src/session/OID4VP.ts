@@ -4,7 +4,7 @@ import { Format } from '@sphereon/pex-models'
 import { getDID, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
 import { CredentialMapper, Hasher, W3CVerifiableCredential } from '@sphereon/ssi-types'
-import { FindCredentialsArgs, IIdentifier } from '@veramo/core'
+import {FindCredentialsArgs, IIdentifier, UniqueVerifiableCredential, VerifiableCredential} from '@veramo/core'
 import { encodeJoseBlob } from '@veramo/utils'
 import {
   DEFAULT_JWT_PROOF_TYPE, IGetPresentationExchangeArgs,
@@ -134,19 +134,19 @@ export class OID4VP {
 
     // We are making sure to filter, in case the user submitted all verifiableCredentials in the wallet/agent. We also make sure to get original formats back
     const vcs = forceNoCredentialsInVP
-      ? selectedVerifiableCredentials
-      : opts?.applyFilter
-        ? await this.filterCredentials(selectedVerifiableCredentials.definition, {
-            restrictToFormats: opts?.restrictToFormats,
-            restrictToDIDMethods: opts?.restrictToDIDMethods,
-            filterOpts: {
-              verifiableCredentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
-            },
-          })
-        : {
-            definition: selectedVerifiableCredentials.definition,
-            credentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
-          }
+    ? selectedVerifiableCredentials
+    : opts?.applyFilter
+      ? await this.filterCredentials(selectedVerifiableCredentials.definition, {
+          restrictToFormats: opts?.restrictToFormats,
+          restrictToDIDMethods: opts?.restrictToDIDMethods,
+          filterOpts: {
+            verifiableCredentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
+          },
+        })
+      : {
+          definition: selectedVerifiableCredentials.definition,
+          credentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
+        }
 
     const signCallback = await createOID4VPPresentationSignCallback({
       presentationSignCallback: this.session.options.presentationSignCallback,
@@ -253,8 +253,8 @@ export class OID4VP {
       return filterOpts.verifiableCredentials
     }
     return (await this.session.context.agent.dataStoreORMGetVerifiableCredentials(filterOpts?.filter))
-      .map((uniqueVC) => uniqueVC.verifiableCredential)
-      .map((vc) => (vc.proof && vc.proof.type === DEFAULT_JWT_PROOF_TYPE ? vc.proof.jwt : vc))
+      .map((uniqueVC: UniqueVerifiableCredential) => uniqueVC.verifiableCredential)
+      .map((vc: VerifiableCredential) => (vc.proof && vc.proof.type === DEFAULT_JWT_PROOF_TYPE ? vc.proof.jwt : vc))
   }
 
   private assertIdentifier(identifier?: IIdentifier | string): void {

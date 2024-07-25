@@ -33,7 +33,6 @@ import {
   IVerifiableCredential,
   JwtDecodedVerifiableCredential,
   Loggers,
-  LogMethod,
   OriginalVerifiableCredential,
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload
@@ -55,7 +54,6 @@ import {
   AddIssuerBrandingArgs,
   AssertValidCredentialsArgs,
   createCredentialsToSelectFromArgs,
-  CredentialToAccept,
   CredentialToSelectFromResult,
   GetContactArgs,
   GetCredentialArgs,
@@ -80,7 +78,6 @@ import {
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
-  SupportedDidMethodEnum
 } from '../types/IOID4VCIHolder'
 import {
   getCredentialBranding,
@@ -513,7 +510,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       })
     }
 
-    const parties = await context.agent.cmGetContacts({
+    const parties: Party[] = await context.agent.cmGetContacts({
       filter,
     })
 
@@ -641,7 +638,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         issuanceOpt,
         credentialResponse,
       }
-      return mapCredentialToAccept({ credential })
+      return mapCredentialToAccept({ credentialToAccept: credential, hasher: this.hasher })
     } catch (error) {
       return Promise.reject(error)
     }
@@ -728,7 +725,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       if (localeBranding && localeBranding.length > 0) {
         const credential = credentialsToAccept.find(
           (credAccept) =>
-            credAccept.credential.id === credentialId ?? JSON.stringify(credAccept.types) === credentialId ?? credentialsToAccept[counter],
+            credAccept.credentialToAccept.id === credentialId ?? JSON.stringify(credAccept.types) === credentialId ?? credentialsToAccept[counter],
         )!
         counter++
         await context.agent.ibAddCredentialBranding({
@@ -765,7 +762,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     let persist = true
     const verifiableCredential = credentialToAccept.uniformVerifiableCredential as VerifiableCredential
 
-    const notificationId = credentialToAccept.credential.credentialResponse.notification_id
+    const notificationId = credentialToAccept.credentialToAccept.credentialResponse.notification_id
     const subjectIssuance = credentialToAccept.credential_subject_issuance
     const notificationEndpoint = serverMetadata?.credentialIssuerMetadata?.notification_endpoint
     let holderCredential:
@@ -788,7 +785,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           ? 'credential_accepted_holder_signed'
           : 'credential_deleted_holder_signed'
         logger.log(`Subject issuance/signing will be used, with event`, event)
-        const issuerVC = credentialToAccept.credential.credentialResponse.credential as OriginalVerifiableCredential
+        const issuerVC = credentialToAccept.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
         const wrappedIssuerVC = CredentialMapper.toWrappedVerifiableCredential(issuerVC)
         console.log(`Wrapped VC: ${wrappedIssuerVC.type}, ${wrappedIssuerVC.format}`)
         // We will use the subject of the VCI Issuer (the holder, as the issuer of the new credential, so the below is not a mistake!)
@@ -810,8 +807,8 @@ export class OID4VCIHolder implements IAgentPlugin {
           const decodedJwt = decodeJWT(openID4VCIClientState.accessTokenResponse.access_token)
           issuer = decodedJwt.payload.sub
         }
-        if (!issuer && credentialToAccept.credential.issuanceOpt.identifier) {
-          issuer = credentialToAccept.credential.issuanceOpt.identifier.did
+        if (!issuer && credentialToAccept.credentialToAccept.issuanceOpt.identifier) {
+          issuer = credentialToAccept.credentialToAccept.issuanceOpt.identifier.did
         }
 
         if (!issuer) {
