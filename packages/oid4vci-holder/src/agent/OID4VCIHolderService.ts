@@ -5,6 +5,7 @@ import {
   CredentialResponse,
   CredentialsSupportedDisplay,
   getSupportedCredentials,
+  getTypesFromCredentialSupported,
   getTypesFromObject,
   MetadataDisplay,
   OpenId4VCIVersion,
@@ -34,7 +35,7 @@ import {
   TKeyType,
   W3CVerifiableCredential as VeramoW3CVerifiableCredential,
 } from '@veramo/core'
-import { _ExtendedIKey } from '@veramo/utils'
+import { _ExtendedIKey, asArray } from '@veramo/utils'
 import { createJWT, Signer } from 'did-jwt'
 import { translate } from '../localization/Localization'
 import {
@@ -88,11 +89,8 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
       )
 
       const defaultCredentialType = 'VerifiableCredential'
-      const credentialTypes: Array<string> = ('types' in credentialsConfigSupported // TODO credentialsConfigSupported.types is deprecated
-        ? (credentialsConfigSupported.types as string[])
-        : 'credential_definition' in credentialsConfigSupported
-          ? (credentialsConfigSupported.credential_definition as CredentialDefinitionJwtVcJsonV1_0_13).type
-          : [defaultCredentialType]) ?? [configId]
+      const configSupportedTypes = getTypesFromCredentialSupported(credentialsConfigSupported)
+      const credentialTypes: Array<string> = configSupportedTypes.length === 0 ? asArray(defaultCredentialType) : configSupportedTypes
 
       const filteredCredentialTypes = credentialTypes.filter((type: string): boolean => type !== defaultCredentialType)
       credentialBranding[filteredCredentialTypes[0]] = localeBranding // TODO for now taking the first type
@@ -105,10 +103,10 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
 export const getBasicIssuerLocaleBranding = async (args: GetIssuerBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => {
   const { display, context } = args
   return await Promise.all(
-      display.map(async (displayItem: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
-        const branding = await issuerLocaleBrandingFrom(displayItem)
-        return context.agent.ibIssuerLocaleBrandingFrom({ localeBranding: branding })
-      }),
+    display.map(async (displayItem: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
+      const branding = await issuerLocaleBrandingFrom(displayItem)
+      return context.agent.ibIssuerLocaleBrandingFrom({ localeBranding: branding })
+    }),
   )
 }
 

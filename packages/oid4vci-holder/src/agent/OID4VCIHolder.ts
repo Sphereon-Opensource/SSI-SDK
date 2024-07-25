@@ -25,26 +25,18 @@ import {
   IdentityOrigin,
   IIssuerBranding,
   NonPersistedIdentity,
-  Party
+  Party,
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
-  Hasher,
   IVerifiableCredential,
   JwtDecodedVerifiableCredential,
   Loggers,
   OriginalVerifiableCredential,
   parseDid,
-  SdJwtDecodedVerifiableCredentialPayload
+  SdJwtDecodedVerifiableCredentialPayload,
 } from '@sphereon/ssi-types'
-import {
-  CredentialPayload,
-
-  IAgentPlugin,
-  ProofFormat,
-  VerifiableCredential,
-  W3CVerifiableCredential
-} from '@veramo/core'
+import { CredentialPayload, IAgentPlugin, ProofFormat, VerifiableCredential, W3CVerifiableCredential } from '@veramo/core'
 import { asArray, computeEntryHash } from '@veramo/utils'
 import { decodeJWT, JWTHeader } from 'did-jwt'
 import { v4 as uuidv4 } from 'uuid'
@@ -54,6 +46,7 @@ import {
   AddIssuerBrandingArgs,
   AssertValidCredentialsArgs,
   createCredentialsToSelectFromArgs,
+  CredentialToAccept,
   CredentialToSelectFromResult,
   GetContactArgs,
   GetCredentialArgs,
@@ -208,7 +201,6 @@ export class OID4VCIHolder implements IAgentPlugin {
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
-  private readonly hasher?: Hasher
 
   constructor(options?: OID4VCIHolderOptions) {
     const {
@@ -220,7 +212,6 @@ export class OID4VCIHolder implements IAgentPlugin {
       didMethodPreferences,
       jwtCryptographicSuitePreferences,
       defaultAuthorizationRequestOptions,
-      hasher
     } = options ?? {}
 
     if (vcFormatPreferences !== undefined && vcFormatPreferences.length > 0) {
@@ -241,7 +232,6 @@ export class OID4VCIHolder implements IAgentPlugin {
     this.onContactIdentityCreated = onContactIdentityCreated
     this.onCredentialStored = onCredentialStored
     this.onIdentifierCreated = onIdentifierCreated
-    this.hasher = hasher
   }
 
   public async onEvent(event: any, context: RequiredContext): Promise<void> {
@@ -516,7 +506,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       })
     }
 
-    const parties: Party[] = await context.agent.cmGetContacts({
+    const parties = await context.agent.cmGetContacts({
       filter,
     })
 
@@ -626,9 +616,9 @@ export class OID4VCIHolder implements IAgentPlugin {
 
       // FIXME: This type mapping is wrong. It should use credential_identifier in case the access token response has authorization details
       const types = getTypesFromObject(issuanceOpt)
-      //TODO: ask Niels about the following. issuanceOpt doesn't have the property id
-      const credentialTypes = issuanceOpt.credentialConfigurationId /*?? issuanceOpt.id*/ ?? types
-      if (!credentialTypes || (Array.isArray(credentialTypes) && credentialTypes.length === 0)) {
+      const id: string | undefined = 'id' in issuanceOpt && issuanceOpt.id ? (issuanceOpt.id as string) : undefined
+      const credentialTypes = asArray(issuanceOpt.credentialConfigurationId ?? id ?? types)
+      if (!credentialTypes || credentialTypes.length === 0) {
         return Promise.reject(Error('cannot determine credential id to request'))
       }
       const credentialResponse = await client.acquireCredentials({
@@ -643,13 +633,12 @@ export class OID4VCIHolder implements IAgentPlugin {
       })
 
       const credential = {
-        //TODO: ask Niels about the following. issuanceOpt doesn't have the property id
-        id: issuanceOpt.credentialConfigurationId /*?? issuanceOpt.id*/,
+        id: issuanceOpt.credentialConfigurationId ?? id,
         types: types ?? asArray(credentialTypes),
         issuanceOpt,
         credentialResponse,
-      }
-      return mapCredentialToAccept({ credentialToAccept: credential, hasher: this.hasher })
+      } satisfies CredentialToAccept
+      return mapCredentialToAccept({ credentialToAccept: credential })
     } catch (error) {
       return Promise.reject(error)
     }
