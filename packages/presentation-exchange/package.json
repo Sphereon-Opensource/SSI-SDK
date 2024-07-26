@@ -19,6 +19,7 @@
     "@sphereon/ssi-sdk-ext.did-utils": "0.23.1-next.5",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-sdk.credential-store": "workspace:*",
+    "@sphereon/ssi-sdk.sd-jwt": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0"
   },

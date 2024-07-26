@@ -1,5 +1,4 @@
 import {
-  FindCredentialsArgs,
   IAgentContext,
   ICredentialPlugin,
   IDataStoreORM,
@@ -18,7 +17,6 @@ import {
 } from '@sphereon/ssi-types'
 import { IPresentationDefinition, PEVersion, SelectResults } from '@sphereon/pex'
 import { Format, InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
-import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 

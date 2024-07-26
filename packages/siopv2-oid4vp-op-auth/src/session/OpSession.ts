@@ -208,7 +208,7 @@ export class OpSession {
   }
 
   public async getOID4VP(args: IOpSessionGetOID4VPArgs): Promise<OID4VP> {
-    return await OID4VP.init({ ...args, session: this })
+    return await OID4VP.init(this, args.allDIDs ?? [], args.hasher)
   }
 
   /*private async getMergedRequestPayload(): Promise<RequestObjectPayload> {

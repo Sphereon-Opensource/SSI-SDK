@@ -72,7 +72,6 @@ import {
 } from '../types/IOID4VCIHolder'
 import { credentialLocaleBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
 import {IVerifySdJwtVcResult} from "@sphereon/ssi-sdk.sd-jwt";
-import {CredentialDefinitionJwtVcJsonV1_0_13} from "@sphereon/oid4vci-common/lib/types/v1_0_13.types";
 
 export const DID_PREFIX = 'did'
 

@@ -46,7 +46,6 @@ import {
   VerifiableCredential,
   VerificationPolicies,
 } from '@veramo/core'
-import { IDataStore, IDataStoreORM } from '@veramo/data-store'
 import { _ExtendedIKey } from '@veramo/utils'
 import { JWTHeader, JWTPayload } from 'did-jwt'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
@@ -605,21 +604,6 @@ export enum SignatureAlgorithmEnum {
 
 export enum IdentifierAliasEnum {
   PRIMARY = 'primary',
-}
-
-export type CreateOrGetIdentifierOpts = {
-  method: SupportedDidMethodEnum
-  createOpts?: CreateIdentifierCreateOpts
-}
-
-export type IdentifierProviderOpts = {
-  type?: TKeyType
-  use?: string
-  [x: string]: any
-}
-
-export enum KeyManagementSystemEnum {
-  LOCAL = 'local',
 }
 
 export type IdentifierOpts = {

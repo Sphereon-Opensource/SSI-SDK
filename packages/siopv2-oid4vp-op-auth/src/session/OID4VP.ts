@@ -3,8 +3,8 @@ import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex
 import { Format } from '@sphereon/pex-models'
 import { getDID, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
-import { CredentialMapper, Hasher, W3CVerifiableCredential } from '@sphereon/ssi-types'
-import { IIdentifier, UniqueVerifiableCredential, VerifiableCredential} from '@veramo/core'
+import { CredentialMapper, CompactJWT, Hasher, W3CVerifiableCredential } from '@sphereon/ssi-types'
+import { IIdentifier} from '@veramo/core'
 import { encodeJoseBlob } from '@veramo/utils'
 import {
   DEFAULT_JWT_PROOF_TYPE, IGetPresentationExchangeArgs,
@@ -15,8 +15,7 @@ import {
 import { createOID4VPPresentationSignCallback } from './functions'
 import { OpSession } from './OpSession'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
-import { CompactJWT } from '@sphereon/ssi-types/dist'
-import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store/dist'
+import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
 
 export class OID4VP {
   private readonly session: OpSession
@@ -31,8 +30,8 @@ export class OID4VP {
     this.hasher = hasher
   }
 
-  public static async init(session: OpSession, allDIDs: string[]): Promise<OID4VP> {
-    return new OID4VP(session, allDIDs ?? (await session.getSupportedDIDs()))
+  public static async init(session: OpSession, allDIDs: string[], hasher?: Hasher): Promise<OID4VP> {
+    return new OID4VP({session, allDIDs: allDIDs ?? (await session.getSupportedDIDs()), hasher})
   }
 
   public async getPresentationDefinitions(): Promise<PresentationDefinitionWithLocation[] | undefined> {
@@ -69,7 +68,6 @@ export class OID4VP {
       applyFilter?: boolean
     },
   ): Promise<VerifiablePresentationWithDefinition[]> {
-    return await Promise.all(credentialsWithDefinitions.map((credentials) => this.createVerifiablePresentation(credentials, opts)))
     return await Promise.all(credentialsWithDefinitions.map((cred) => this.createVerifiablePresentation(credentialRole, cred, opts)))
   }
 
