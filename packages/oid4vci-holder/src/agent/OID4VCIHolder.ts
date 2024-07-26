@@ -17,6 +17,7 @@ import {
 import { getIdentifier, getKey, IIdentifierOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   CorrelationIdentifierType,
+  CredentialCorrelationType,
   CredentialRole,
   FindPartyArgs,
   IBasicCredentialLocaleBranding,
@@ -29,6 +30,7 @@ import {
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
+  ICredential,
   IVerifiableCredential,
   JwtDecodedVerifiableCredential,
   Loggers,
@@ -73,11 +75,11 @@ import {
   StoreCredentialsArgs,
 } from '../types/IOID4VCIHolder'
 import {
+  getBasicIssuerLocaleBranding,
   getCredentialBranding,
   getCredentialConfigsSupportedMerged,
   getIdentifierOpts,
   getIssuanceOpts,
-  getBasicIssuerLocaleBranding,
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
   signatureAlgorithmFromKey,
@@ -506,7 +508,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       })
     }
 
-    const parties = await context.agent.cmGetContacts({
+    const parties: Array<Party> = await context.agent.cmGetContacts({
       filter,
     })
 
@@ -761,7 +763,6 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
 
     const { credentialsToAccept, openID4VCIClientState, credentialsSupported, serverMetadata, selectedCredentials } = args
-
     const credentialToAccept = credentialsToAccept[0]
 
     if (selectedCredentials && selectedCredentials.length > 1) {
@@ -890,8 +891,18 @@ export class OID4VCIHolder implements IAgentPlugin {
       logger.log(`Will not persist credential, since we are signing as a holder and the issuer asked not to persist`)
     } else {
       logger.log(`Persisting credential`, persistCredential)
-      // @ts-ignore
-      const vcHash = await context.agent.dataStoreSaveVerifiableCredential({ verifiableCredential: persistCredential })
+
+      const issuer = CredentialMapper.issuerCorrelationIdFromIssuerType((persistCredential as ICredential).issuer)
+      const vcHash = await context.agent.crsAddCredential({
+        credential: {
+          rawDocument: JSON.stringify(persistCredential),
+          credentialRole: CredentialRole.HOLDER,
+          issuerCorrelationType: CredentialCorrelationType.DID,
+          issuerCorrelationId: issuer,
+          subjectCorrelationType: CredentialCorrelationType.DID,
+          subjectCorrelationId: issuer, // FIXME get separate did for subject
+        },
+      })
       await context.agent.emit(OID4VCIHolderEvent.CREDENTIAL_STORED, {
         vcHash,
         credential: persistCredential,

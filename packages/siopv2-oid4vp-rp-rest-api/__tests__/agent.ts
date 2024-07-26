@@ -1,4 +1,4 @@
-import { createAgent, ICredentialVerifier, IDataStore, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
+import { createAgent, ICredentialVerifier, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
 import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
 import { getUniResolver } from '@sphereon/did-uni-client'
 import {
@@ -101,15 +101,7 @@ const dbConnection = getDbConnection(DB_CONNECTION_NAME)
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
 const agent = createAgent<
-  IDIDManager &
-    IKeyManager &
-    IDataStore &
-    IDataStoreORM &
-    IResolver &
-    IPresentationExchange &
-    ISIOPv2RP &
-    ICredentialVerifier &
-    ICredentialHandlerLDLocal
+  IDIDManager & IKeyManager & IResolver & IPresentationExchange & ISIOPv2RP & ICredentialVerifier & ICredentialHandlerLDLocal
 >({
   plugins: [
     new DataStore(dbConnection),

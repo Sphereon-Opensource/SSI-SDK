@@ -1,7 +1,7 @@
 import { IssuerMetadata, CredentialIssuerMetadataOpts } from '@sphereon/oid4vci-common'
 import { IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IKeyValueStore, IValueData } from '@sphereon/ssi-sdk.kv-store-temp'
-import { IAgentContext, IDataStoreORM, IPluginMethodMap } from '@veramo/core'
+import { IPluginMethodMap } from '@veramo/core'
 
 export interface IOID4VCIStore extends IPluginMethodMap {
   oid4vciStoreDefaultMetadata(): Promise<IKeyValueStore<IssuerMetadata>>
@@ -85,5 +85,3 @@ export interface Ioid4vciStoreClearArgs {
   storeId?: string
   // namespace?: string
 }
-
-export type IRequiredContext = IAgentContext<IDataStoreORM>

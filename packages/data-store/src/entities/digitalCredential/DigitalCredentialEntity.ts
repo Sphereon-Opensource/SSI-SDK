@@ -5,6 +5,7 @@ import {
   CredentialStateType,
   DocumentType,
 } from '../../types/digitalCredential/digitalCredential'
+import { CredentialRole } from '../../types'
 
 @Entity('DigitalCredential')
 export class DigitalCredentialEntity extends BaseEntity {
@@ -17,11 +18,17 @@ export class DigitalCredentialEntity extends BaseEntity {
   @Column('simple-enum', { name: 'document_format', enum: CredentialDocumentFormat, nullable: false })
   documentFormat!: CredentialDocumentFormat
 
+  @Column('simple-enum', { name: 'credential_role', enum: CredentialRole, nullable: false })
+  credentialRole!: CredentialRole
+
   @Column('text', { name: 'raw_document', nullable: false })
   rawDocument!: string
 
   @Column('text', { name: 'uniform_document', nullable: false })
   uniformDocument!: string
+
+  @Column('text', { name: 'credential_id', nullable: true, unique: false })
+  credentialId!: string
 
   @Column('text', { name: 'hash', nullable: false, unique: true })
   hash!: string

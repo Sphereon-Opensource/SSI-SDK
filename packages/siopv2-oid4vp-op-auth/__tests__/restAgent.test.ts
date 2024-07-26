@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import 'cross-fetch/polyfill'
 // @ts-ignore
 import express from 'express'
-import { IAgent, createAgent, IAgentOptions, IDataStore } from '@veramo/core'
+import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
@@ -40,7 +40,7 @@ const presentationSignCallback: PresentationSignCallback = async (args) => {
 }
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IDidAuthSiopOpAuthenticator & IDataStore>({
+  createAgent<IDidAuthSiopOpAuthenticator>({
     ...options,
     plugins: [
       new DidAuthSiopOpAuthenticator(presentationSignCallback),

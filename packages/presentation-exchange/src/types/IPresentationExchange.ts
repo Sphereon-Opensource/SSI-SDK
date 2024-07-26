@@ -7,7 +7,7 @@ import {
   IIdentifier,
   IPluginMethodMap,
   IResolver,
-  PresentationPayload
+  PresentationPayload,
 } from '@veramo/core'
 import {
   IPresentation,
@@ -18,6 +18,8 @@ import {
 } from '@sphereon/ssi-types'
 import { IPresentationDefinition, PEVersion, SelectResults } from '@sphereon/pex'
 import { Format, InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
+import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
+import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 
 export interface IPresentationExchange extends IPluginMethodMap {
@@ -39,7 +41,11 @@ export interface IDefinitionValidateArgs {
 
 export interface IDefinitionCredentialFilterArgs {
   presentationDefinition: IPresentationDefinition
-  credentialFilterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindCredentialsArgs }
+  credentialFilterOpts: {
+    credentialRole: CredentialRole
+    verifiableCredentials?: W3CVerifiableCredential[]
+    filter?: FindDigitalCredentialArgs
+  }
   holderDIDs?: (string | IIdentifier)[]
   limitDisclosureSignatureSuites?: string[]
   restrictToFormats?: Format

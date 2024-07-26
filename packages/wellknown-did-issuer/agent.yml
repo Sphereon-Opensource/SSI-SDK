@@ -11,6 +11,15 @@ constants:
     - registerCredentialIssuance
     - removeCredentialIssuance
     - saveDidConfigurationResource
+    - crmAddCredential
+    - crmUpdateCredentialState
+    - crmGetCredential
+    - crmGetCredentials
+    - crmStoreCredential
+    - crmDeleteCredential
+    - crmDeleteCredentials
+    - crmGetCredentialsByClaims
+    - crmGetCredentialsByClaimsCount
 
 dbConnection:
   $require: typeorm?t=function#createConnection
@@ -21,9 +30,11 @@ dbConnection:
       migrationsRun: true
       migrations:
         $require: './packages/ssi-sdk-core/dist?t=function#flattenMigrations'
+
         $args:
           - migrations:
               - $require: '@veramo/data-store?t=object#migrations'
+              - $require: './packages/data-store?t=object#DataStoreDigitalCredentialMigrations'
               - $require: './packages/wellknown-did-issuer/dist?t=object#WellknownDidIssuerMigrations'
       entities:
         $require: './packages/ssi-sdk-core/dist?t=function#flattenArray'
@@ -31,6 +42,8 @@ dbConnection:
           - items:
               - $require: '@veramo/data-store?t=object#Entities'
               - $require: './packages/wellknown-did-issuer/dist?t=object#WellknownDidIssuerEntities'
+              - $require: './packages/data-store?t=object#DataStoreDigitalCredentialEntities'
+
 
 server:
   baseUrl:
@@ -95,6 +108,15 @@ didManager:
     - store:
         $require: '@veramo/data-store#DIDStore'
 
+# Credential Manager
+credentialStore:
+  $require: ./packages/credential-store/dist#CredentialStore
+  $args:
+    - store:
+        $require: './packages/data-store/dist#DigitalCredentialStore'
+        $args:
+          - $ref: /dbConnection
+
 # Agent
 agent:
   $require: '@veramo/core#Agent'
@@ -102,6 +124,7 @@ agent:
     - schemaValidation: false
       plugins:
         - $ref: /didManager
+        - $ref: /credentialStore
         - $require: '@veramo/data-store#DataStore'
           $args:
             - $ref: /dbConnection

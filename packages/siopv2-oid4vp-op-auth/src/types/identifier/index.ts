@@ -1,9 +1,10 @@
-import { IDataStoreORM, IDIDManager, IIdentifier, IResolver, TAgent, TKeyType } from '@veramo/core'
+import { IDIDManager, IIdentifier, IResolver, TAgent, TKeyType } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
 import { RequiredContext } from '../siop-service'
 import { KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
+import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 
 export const DID_PREFIX = 'did'
 
@@ -59,4 +60,4 @@ export type CreateIdentifierOpts = {
 }
 
 export type DidAgents = TAgent<IResolver & IDIDManager>
-export type SuitableCredentialAgents = TAgent<IContactManager & IDataStoreORM & IIssuanceBranding>
+export type SuitableCredentialAgents = TAgent<IContactManager & ICredentialStore & IIssuanceBranding>

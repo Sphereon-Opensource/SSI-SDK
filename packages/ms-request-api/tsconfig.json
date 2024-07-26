@@ -13,6 +13,9 @@
     },
     {
       "path": "../agent-config"
+    },
+    {
+      "path": "../credential-store"
     }
   ]
 }

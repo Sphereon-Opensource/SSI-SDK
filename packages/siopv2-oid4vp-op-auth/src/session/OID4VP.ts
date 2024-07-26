@@ -4,7 +4,7 @@ import { Format } from '@sphereon/pex-models'
 import { getDID, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
 import { CredentialMapper, Hasher, W3CVerifiableCredential } from '@sphereon/ssi-types'
-import {FindCredentialsArgs, IIdentifier, UniqueVerifiableCredential, VerifiableCredential} from '@veramo/core'
+import { IIdentifier, UniqueVerifiableCredential, VerifiableCredential} from '@veramo/core'
 import { encodeJoseBlob } from '@veramo/utils'
 import {
   DEFAULT_JWT_PROOF_TYPE, IGetPresentationExchangeArgs,
@@ -14,6 +14,9 @@ import {
 } from '../types'
 import { createOID4VPPresentationSignCallback } from './functions'
 import { OpSession } from './OpSession'
+import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
+import { CompactJWT } from '@sphereon/ssi-types/dist'
+import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store/dist'
 
 export class OID4VP {
   private readonly session: OpSession
@@ -28,10 +31,8 @@ export class OID4VP {
     this.hasher = hasher
   }
 
-  public static async init(args: IOID4VPArgs): Promise<OID4VP> {
-    const { session, allDIDs = await session.getSupportedDIDs(), hasher } = args
-
-    return new OID4VP({ session, allDIDs, hasher })
+  public static async init(session: OpSession, allDIDs: string[]): Promise<OID4VP> {
+    return new OID4VP(session, allDIDs ?? (await session.getSupportedDIDs()))
   }
 
   public async getPresentationDefinitions(): Promise<PresentationDefinitionWithLocation[] | undefined> {
@@ -53,6 +54,7 @@ export class OID4VP {
   }
 
   public async createVerifiablePresentations(
+    credentialRole: CredentialRole,
     credentialsWithDefinitions: VerifiableCredentialsWithDefinition[],
     opts?: {
       forceNoCredentialsInVP?: boolean // Allow to create a VP without credentials, like EBSI is using it. Defaults to false
@@ -68,9 +70,11 @@ export class OID4VP {
     },
   ): Promise<VerifiablePresentationWithDefinition[]> {
     return await Promise.all(credentialsWithDefinitions.map((credentials) => this.createVerifiablePresentation(credentials, opts)))
+    return await Promise.all(credentialsWithDefinitions.map((cred) => this.createVerifiablePresentation(credentialRole, cred, opts)))
   }
 
   public async createVerifiablePresentation(
+    credentialRole: CredentialRole,
     selectedVerifiableCredentials: VerifiableCredentialsWithDefinition,
     opts?: {
       forceNoCredentialsInVP?: boolean // Allow to create a VP without credentials, like EBSI is using it. Defaults to false
@@ -136,7 +140,7 @@ export class OID4VP {
     const vcs = forceNoCredentialsInVP
     ? selectedVerifiableCredentials
     : opts?.applyFilter
-      ? await this.filterCredentials(selectedVerifiableCredentials.definition, {
+      ? await this.filterCredentials(credentialRole, selectedVerifiableCredentials.definition, {
           restrictToFormats: opts?.restrictToFormats,
           restrictToDIDMethods: opts?.restrictToDIDMethods,
           filterOpts: {
@@ -189,26 +193,33 @@ export class OID4VP {
     }
   }
 
-  public async filterCredentialsAgainstAllDefinitions(opts?: {
-    filterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindCredentialsArgs }
-    holderDIDs?: string[]
-    restrictToFormats?: Format
-    restrictToDIDMethods?: string[]
-  }): Promise<VerifiableCredentialsWithDefinition[]> {
+  public async filterCredentialsAgainstAllDefinitions(
+    credentialRole: CredentialRole,
+    opts?: {
+      filterOpts?: {
+        verifiableCredentials?: W3CVerifiableCredential[]
+        filter?: FindDigitalCredentialArgs
+      }
+      holderDIDs?: string[]
+      restrictToFormats?: Format
+      restrictToDIDMethods?: string[]
+    },
+  ): Promise<VerifiableCredentialsWithDefinition[]> {
     const defs = await this.getPresentationDefinitions()
     const result: VerifiableCredentialsWithDefinition[] = []
     if (defs) {
       for (const definition of defs) {
-        result.push(await this.filterCredentials(definition, opts))
+        result.push(await this.filterCredentials(credentialRole, definition, opts))
       }
     }
     return result
   }
 
   public async filterCredentials(
+    credentialRole: CredentialRole,
     presentationDefinition: PresentationDefinitionWithLocation,
     opts?: {
-      filterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindCredentialsArgs }
+      filterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindDigitalCredentialArgs }
       holderDIDs?: string[]
       restrictToFormats?: Format
       restrictToDIDMethods?: string[]
@@ -216,21 +227,23 @@ export class OID4VP {
   ): Promise<VerifiableCredentialsWithDefinition> {
     return {
       definition: presentationDefinition,
-      credentials: (await this.filterCredentialsWithSelectionStatus(presentationDefinition, opts)).verifiableCredential as W3CVerifiableCredential[],
+      credentials: (await this.filterCredentialsWithSelectionStatus(credentialRole, presentationDefinition, opts))
+        .verifiableCredential as W3CVerifiableCredential[],
     }
   }
 
   public async filterCredentialsWithSelectionStatus(
+    credentialRole: CredentialRole,
     presentationDefinition: PresentationDefinitionWithLocation,
     opts?: {
-      filterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindCredentialsArgs }
+      filterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindDigitalCredentialArgs }
       holderDIDs?: string[]
       restrictToFormats?: Format
       restrictToDIDMethods?: string[]
     },
   ): Promise<SelectResults> {
     const selectionResults: SelectResults = await this.getPresentationExchange({
-      verifiableCredentials: await this.getCredentials(opts?.filterOpts),
+      verifiableCredentials: await this.getCredentials(credentialRole, opts?.filterOpts),
     }).selectVerifiableCredentialsForSubmission(presentationDefinition.definition, opts)
     if (selectionResults.errors && selectionResults.errors.length > 0) {
       throw Error(JSON.stringify(selectionResults.errors))
@@ -245,16 +258,25 @@ export class OID4VP {
     return selectionResults
   }
 
-  private async getCredentials(filterOpts?: {
-    verifiableCredentials?: W3CVerifiableCredential[]
-    filter?: FindCredentialsArgs
-  }): Promise<W3CVerifiableCredential[]> {
+  private async getCredentials(
+    credentialRole: CredentialRole,
+    filterOpts?: {
+      verifiableCredentials?: W3CVerifiableCredential[]
+      filter?: FindDigitalCredentialArgs
+    },
+  ): Promise<W3CVerifiableCredential[]> {
     if (filterOpts?.verifiableCredentials && filterOpts.verifiableCredentials.length > 0) {
       return filterOpts.verifiableCredentials
     }
-    return (await this.session.context.agent.dataStoreORMGetVerifiableCredentials(filterOpts?.filter))
-      .map((uniqueVC: UniqueVerifiableCredential) => uniqueVC.verifiableCredential)
-      .map((vc: VerifiableCredential) => (vc.proof && vc.proof.type === DEFAULT_JWT_PROOF_TYPE ? vc.proof.jwt : vc))
+
+    const filter = verifiableCredentialForRoleFilter(credentialRole, filterOpts?.filter)
+    const uniqueCredentials = await this.session.context.agent.crsGetUniqueCredentials({ filter })
+    return uniqueCredentials.map((uniqueVC: UniqueDigitalCredential) => {
+      const vc = uniqueVC.uniformVerifiableCredential!
+      const proof = Array.isArray(vc.proof) ? vc.proof : [vc.proof]
+      const jwtProof = proof.find((p) => p?.type === DEFAULT_JWT_PROOF_TYPE)
+      return jwtProof ? (jwtProof.jwt as CompactJWT) : vc
+    })
   }
 
   private assertIdentifier(identifier?: IIdentifier | string): void {

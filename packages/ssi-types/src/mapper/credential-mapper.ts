@@ -1,19 +1,10 @@
 import jwt_decode from 'jwt-decode'
 import {
-  AsyncHasher,
-  decodeSdJwtVc,
-  decodeSdJwtVcAsync,
   DocumentFormat,
-  Hasher,
-  ICredential,
   IPresentation,
   IProof,
   IProofPurpose,
   IProofType,
-  isWrappedSdJwtVerifiableCredential,
-  isWrappedSdJwtVerifiablePresentation,
-  isWrappedW3CVerifiableCredential,
-  isWrappedW3CVerifiablePresentation,
   IVerifiableCredential,
   IVerifiablePresentation,
   JwtDecodedVerifiableCredential,
@@ -21,17 +12,27 @@ import {
   OriginalType,
   OriginalVerifiableCredential,
   OriginalVerifiablePresentation,
-  SdJwtDecodedVerifiableCredential,
-  SdJwtDecodedVerifiableCredentialPayload,
   UniformVerifiablePresentation,
   W3CVerifiableCredential,
   W3CVerifiablePresentation,
-  WrappedSdJwtVerifiableCredential,
   WrappedVerifiableCredential,
   WrappedVerifiablePresentation,
-  WrappedW3CVerifiableCredential
+  SdJwtDecodedVerifiableCredential,
+  SdJwtDecodedVerifiableCredentialPayload,
+  ICredential,
+  WrappedSdJwtVerifiableCredential,
+  WrappedW3CVerifiableCredential,
+  isWrappedSdJwtVerifiableCredential,
+  isWrappedSdJwtVerifiablePresentation,
+  isWrappedW3CVerifiableCredential,
+  isWrappedW3CVerifiablePresentation,
+  Hasher,
+  decodeSdJwtVc,
+  decodeSdJwtVcAsync,
+  AsyncHasher,
 } from '../types'
 import { ObjectUtils } from '../utils'
+import { IssuerType } from '@veramo/core'
 
 export class CredentialMapper {
   /**
@@ -466,7 +467,7 @@ export class CredentialMapper {
       throw new Error('Converting SD-JWT VC to uniform VC is not supported.')
     }
     const original =
-      typeof verifiableCredential !== 'string' && CredentialMapper.hasJWTProofType(verifiableCredential) && !CredentialMapper.isSdJwtEncoded(verifiableCredential.proof.jwt)
+      typeof verifiableCredential !== 'string' && CredentialMapper.hasJWTProofType(verifiableCredential)
         ? CredentialMapper.getFirstProof(verifiableCredential)?.jwt
         : verifiableCredential
     if (!original) {
@@ -755,5 +756,21 @@ export class CredentialMapper {
     }
     const proofs = 'vc' in document ? document.vc.proof : 'vp' in document ? document.vp.proof : (<IVerifiableCredential>document).proof
     return Array.isArray(proofs) ? proofs[0] : proofs
+  }
+
+  static issuerCorrelationIdFromIssuerType(issuer: IssuerType): string {
+    if (issuer === undefined) {
+      throw new Error('Issuer type us undefined')
+    } else if (typeof issuer === 'string') {
+      return issuer
+    } else if (typeof issuer === 'object') {
+      if ('id' in issuer) {
+        return issuer.id
+      } else {
+        throw new Error('Encountered an invalid issuer object: missing id property')
+      }
+    } else {
+      throw new Error('Invalid issuer type')
+    }
   }
 }

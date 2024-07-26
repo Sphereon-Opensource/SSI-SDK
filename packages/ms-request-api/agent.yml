@@ -7,6 +7,20 @@ constants:
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
     - issuanceRequestMsVc
+
+# Database
+dbConnection:
+  $require: typeorm?t=function#createConnection
+  $args:
+    - type: sqlite
+      database: ':memory:'
+      synchronize: false
+      migrationsRun: true
+      migrations:
+        $require: './packages/data-store?t=object#DataStoreDigitalCredentialMigrations'
+      entities:
+        $require: './packages/data-store?t=object#DataStoreDigitalCredentialEntities'
+
 server:
   baseUrl:
     $ref: /constants/baseUrl
@@ -63,12 +77,23 @@ server:
             $ref: /constants/baseUrl
           messagingServiceEndpoint: /messaging
 
+# Credential Manager
+credentialStore:
+  $require: ./packages/credential-store/dist#CredentialStore
+  $args:
+    - store:
+        $require: './packages/data-store/dist#DigitalCredentialStore'
+        $args:
+          - $ref: /dbConnection
+
+
 # Agent
 agent:
   $require: '@veramo/core#Agent'
   $args:
     - schemaValidation: false
       plugins:
+        - $ref: /credentialStore
         - $require: ./packages/ms-request-api/dist#MsRequestApi
           $args:
             - azClientId: { process.env.AZ_CLIENT_ID }
