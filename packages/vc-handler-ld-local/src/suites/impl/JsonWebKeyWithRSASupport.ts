@@ -1,4 +1,4 @@
-import crypto from '@sphereon/isomorphic-webcrypto'
+// import crypto from '@sphereon/isomorphic-webcrypto'
 import { Ed25519KeyPair, Ed25519VerificationKey2018 } from '@transmute/ed25519-key-pair'
 import { JWS, Verifier } from '@transmute/jose-ld'
 import { EcdsaSecp256k1VerificationKey2019, Secp256k1KeyPair } from '@transmute/secp256k1-key-pair'

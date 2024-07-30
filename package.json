@@ -122,8 +122,7 @@
       "ethr-did": "2.3.9",
       "typeorm": "^0.3.20",
       "@transmute/jsonld": "^0.0.4",
-      "jsonld": "link:./node_modules/.pnpm/@digitalcredentials+jsonld@6.0.0/node_modules/@digitalcredentials/jsonld",
-      "isomorphic-webcrypto": "link:./node_modules/@sphereon/isomorphic-webcrypto"
+      "jsonld": "link:./node_modules/.pnpm/@digitalcredentials+jsonld@6.0.0/node_modules/@digitalcredentials/jsonld"
     },
     "patchedDependencies": {
       "@veramo/core@4.2.0": "patches/@veramo__core@4.2.0.patch",
