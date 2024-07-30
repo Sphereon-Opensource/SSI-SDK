@@ -21,7 +21,7 @@ export class StatusListEntity extends BaseEntity {
   @Column({ name: 'correlationId', type: 'varchar', nullable: false })
   correlationId!: string
 
-  @Column({ name: 'length', nullable: false, unique: false })
+  @Column({ name: 'length', type: 'integer', nullable: false, unique: false })
   length!: number
 
   @Column({

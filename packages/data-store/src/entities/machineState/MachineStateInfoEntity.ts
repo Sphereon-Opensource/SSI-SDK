@@ -47,10 +47,10 @@ export class MachineStateInfoEntity extends BaseEntity {
   @Column({ name: 'updated_count', type: 'integer', nullable: false })
   updatedCount!: number
 
-  @Column({ name: 'expires_at', nullable: true })
+  @Column('datetime', { name: 'expires_at', nullable: true })
   expiresAt?: Date
 
-  @Column({ name: 'completed_at', nullable: true })
+  @Column('datetime', { name: 'completed_at', nullable: true })
   completedAt?: Date
 
   @Column({ name: 'tenant_id', type: 'varchar', nullable: true })

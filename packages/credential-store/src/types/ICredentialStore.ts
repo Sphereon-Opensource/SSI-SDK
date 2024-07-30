@@ -87,9 +87,7 @@ export type GetCredentialsByIdOrHashArgs = {
   idOrHash: string
 }
 
-export type DeleteCredentialArgs = {
-  id: string
-}
+export type DeleteCredentialArgs = { id: string } | { hash: string }
 
 export type DeleteCredentialsArgs = GetCredentialsArgs
 

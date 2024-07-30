@@ -20,7 +20,7 @@ export class IssuerBrandingEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'issuerCorrelationId', length: 255, nullable: false, unique: true })
+  @Column('varchar', { name: 'issuerCorrelationId', length: 255, nullable: false, unique: true })
   @IsNotEmpty({ message: 'Blank issuerCorrelationIds are not allowed' })
   issuerCorrelationId!: string
 

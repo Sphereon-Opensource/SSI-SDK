@@ -9,7 +9,7 @@ export class BackgroundAttributesEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'color', length: 255, nullable: true, unique: false })
+  @Column('varchar', { name: 'color', length: 255, nullable: true, unique: false })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank background colors are not allowed' })
   color?: string
 
