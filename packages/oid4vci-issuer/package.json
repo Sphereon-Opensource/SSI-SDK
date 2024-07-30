@@ -16,7 +16,7 @@
   "dependencies": {
     "@sphereon/oid4vci-common": "0.15.1-next.9",
     "@sphereon/oid4vci-issuer": "0.15.1-next.9",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.23.1-next.5",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.23.1-next.41",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@sphereon/ssi-sdk.oid4vci-issuer-store": "workspace:*",
