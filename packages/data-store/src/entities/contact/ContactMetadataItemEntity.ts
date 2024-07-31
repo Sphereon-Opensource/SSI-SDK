@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, BeforeInsert, BeforeUpdate } from 'typeorm'
-import { ValidationConstraint } from '../../types'
+import { IMetadataEntity, ValidationConstraint } from '../../types'
 import { BaseContactEntity } from './BaseContactEntity'
 import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { getConstraint } from '../../utils/ValidatorUtils'

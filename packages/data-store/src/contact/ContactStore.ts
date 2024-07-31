@@ -53,6 +53,7 @@ import {
   GetPhysicalAddressesArgs,
   GetRelationshipArgs,
   GetRelationshipsArgs,
+  IMetadataEntity,
   Identity,
   MetadataItem,
   MetadataTypes,
