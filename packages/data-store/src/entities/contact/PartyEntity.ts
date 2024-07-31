@@ -27,13 +27,13 @@ export class PartyEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'uri', length: 255, nullable: true })
+  @Column('varchar', { name: 'uri', length: 255, nullable: true })
   uri?: string
 
-  @Column({ name: 'owner_id', nullable: true })
+  @Column('text', { name: 'owner_id', nullable: true })
   ownerId?: string
 
-  @Column({ name: 'tenant_id', nullable: true })
+  @Column('text', { name: 'tenant_id', nullable: true })
   tenantId?: string
 
   @OneToMany(() => IdentityEntity, (identity: IdentityEntity) => identity.party, {

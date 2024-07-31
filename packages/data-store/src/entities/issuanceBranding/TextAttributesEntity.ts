@@ -8,7 +8,7 @@ export class TextAttributesEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'color', length: 255, nullable: true, unique: false })
+  @Column('varchar', { name: 'color', length: 255, nullable: true, unique: false })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank text colors are not allowed' })
   color?: string
 

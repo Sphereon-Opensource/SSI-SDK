@@ -893,7 +893,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       logger.log(`Persisting credential`, persistCredential)
 
       const issuer = CredentialMapper.issuerCorrelationIdFromIssuerType((persistCredential as ICredential).issuer)
-      const vcHash = await context.agent.crsAddCredential({
+      const persistedCredential = await context.agent.crsAddCredential({
         credential: {
           rawDocument: JSON.stringify(persistCredential),
           credentialRole: CredentialRole.HOLDER,
@@ -904,9 +904,9 @@ export class OID4VCIHolder implements IAgentPlugin {
         },
       })
       await context.agent.emit(OID4VCIHolderEvent.CREDENTIAL_STORED, {
-        vcHash,
-        credential: persistCredential,
-      })
+        credential: persistedCredential,
+        vcHash: persistedCredential.hash,
+      } satisfies OnCredentialStoredArgs)
     }
   }
 

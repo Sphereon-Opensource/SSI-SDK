@@ -25,7 +25,7 @@ export class PartyRelationshipEntity {
   @JoinColumn({ name: 'left_id' })
   left!: PartyEntity
 
-  @Column({ name: 'left_id', nullable: false })
+  @Column('text', { name: 'left_id', nullable: false })
   leftId!: string
 
   @ManyToOne(() => PartyEntity, {
@@ -35,13 +35,13 @@ export class PartyRelationshipEntity {
   @JoinColumn({ name: 'right_id' })
   right!: PartyEntity
 
-  @Column({ name: 'right_id', nullable: false })
+  @Column('text', { name: 'right_id', nullable: false })
   rightId!: string
 
-  @Column({ name: 'owner_id', nullable: true })
+  @Column('text', { name: 'owner_id', nullable: true })
   ownerId?: string
 
-  @Column({ name: 'tenant_id', nullable: true })
+  @Column('text', { name: 'tenant_id', nullable: true })
   tenantId?: string
 
   @CreateDateColumn({ name: 'created_at', nullable: false })

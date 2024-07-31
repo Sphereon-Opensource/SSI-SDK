@@ -19,11 +19,11 @@ export class ElectronicAddressEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'type', length: 255, nullable: false })
+  @Column('varchar', { name: 'type', length: 255, nullable: false })
   @IsNotEmpty({ message: 'Blank electronic address types are not allowed' })
   type!: ElectronicAddressType
 
-  @Column({ name: 'electronic_address', length: 255, nullable: false })
+  @Column('varchar', { name: 'electronic_address', length: 255, nullable: false })
   @IsNotEmpty({ message: 'Blank electronic addresses are not allowed' })
   electronicAddress!: string
 
@@ -32,13 +32,13 @@ export class ElectronicAddressEntity extends BaseEntity {
   })
   party!: PartyEntity
 
-  @Column({ name: 'partyId', nullable: true })
+  @Column('text', { name: 'partyId', nullable: true })
   partyId?: string
 
-  @Column({ name: 'owner_id', nullable: true })
+  @Column('text', { name: 'owner_id', nullable: true })
   ownerId?: string
 
-  @Column({ name: 'tenant_id', nullable: true })
+  @Column('text', { name: 'tenant_id', nullable: true })
   tenantId?: string
 
   @CreateDateColumn({ name: 'created_at', nullable: false })

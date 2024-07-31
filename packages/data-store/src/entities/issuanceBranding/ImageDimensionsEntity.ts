@@ -6,10 +6,10 @@ export class ImageDimensionsEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'width', nullable: false, unique: false })
+  @Column('integer', { name: 'width', nullable: false, unique: false })
   width!: number
 
-  @Column({ name: 'height', nullable: false, unique: false })
+  @Column('integer', { name: 'height', nullable: false, unique: false })
   height!: number
 }
 

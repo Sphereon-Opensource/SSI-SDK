@@ -25,7 +25,7 @@ export class IdentityEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({
+  @Column('varchar', {
     name: 'alias',
     length: 255,
     nullable: false,
@@ -37,10 +37,10 @@ export class IdentityEntity extends BaseEntity {
   @Column('simple-enum', { name: 'origin', enum: IdentityOrigin, nullable: false })
   origin!: IdentityOrigin
 
-  @Column({ name: 'owner_id', nullable: true })
+  @Column('text', { name: 'owner_id', nullable: true })
   ownerId?: string
 
-  @Column({ name: 'tenant_id', nullable: true })
+  @Column('text', { name: 'tenant_id', nullable: true })
   tenantId?: string
 
   @Column('simple-array', { name: 'roles', nullable: false })
@@ -81,7 +81,7 @@ export class IdentityEntity extends BaseEntity {
   })
   party!: PartyEntity
 
-  @Column({ name: 'partyId', nullable: true })
+  @Column('text', { name: 'partyId', nullable: true })
   partyId?: string
 
   // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.
