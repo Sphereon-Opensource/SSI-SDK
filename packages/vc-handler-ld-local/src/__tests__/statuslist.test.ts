@@ -21,7 +21,6 @@ import { ICredentialHandlerLDLocal, MethodNames } from '../types'
 
 jest.setTimeout(100000)
 
-
 describe('Status list', () => {
   let didKeyIdentifier: IIdentifier
   let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialPlugin & ICredentialIssuer & ICredentialHandlerLDLocal>

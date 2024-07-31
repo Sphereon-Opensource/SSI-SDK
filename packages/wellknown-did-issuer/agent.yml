@@ -44,7 +44,6 @@ dbConnection:
               - $require: './packages/wellknown-did-issuer/dist?t=object#WellknownDidIssuerEntities'
               - $require: './packages/data-store?t=object#DataStoreDigitalCredentialEntities'
 
-
 server:
   baseUrl:
     $ref: /constants/baseUrl

@@ -28,7 +28,6 @@ dbConnection:
         - $require: '@veramo/data-store?t=object#Entities'
         - $require: './packages/data-store?t=object#DataStoreDigitalCredentialEntities'
 
-
 server:
   baseUrl:
     $ref: /constants/baseUrl
@@ -121,7 +120,6 @@ credentialStore:
         $require: './packages/data-store/dist#DigitalCredentialStore'
         $args:
           - $ref: /dbConnection
-
 
 # Agent
 agent:

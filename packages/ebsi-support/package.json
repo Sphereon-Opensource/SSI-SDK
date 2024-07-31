@@ -37,7 +37,7 @@
     "multiformats": "9.9.0",
     "qs": "^6.12.3",
     "uint8arrays": "^3.1.1",
-    "uuid": "^10.0.0",
+    "uuid": "^9.0.1",
     "xstate": "^4.38.3"
   },
   "devDependencies": {
@@ -55,7 +55,7 @@
     "@types/express-serve-static-core": "^4.19.5",
     "@types/node": "^20.14.11",
     "@types/qs": "^6.9.15",
-    "@types/uuid": "^10.0.0",
+    "@types/uuid": "^9.0.8",
     "@veramo/data-store": "4.2.0",
     "@veramo/key-manager": "4.2.0",
     "@veramo/remote-client": "4.2.0",
