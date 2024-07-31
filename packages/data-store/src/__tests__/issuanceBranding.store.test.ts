@@ -1,3 +1,4 @@
+import {DataSources} from "@sphereon/ssi-sdk.agent-config";
 import { DataSource } from 'typeorm'
 import { IssuanceBrandingStore } from '../issuanceBranding/IssuanceBrandingStore'
 import { DataStoreMigrations } from '../migrations'
@@ -31,6 +32,7 @@ describe('Issuance branding store tests', (): void => {
   let issuanceBrandingStore: IssuanceBrandingStore
 
   beforeEach(async (): Promise<void> => {
+    DataSources.singleInstance().defaultDbType = 'sqlite'
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',

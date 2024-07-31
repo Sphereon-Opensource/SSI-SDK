@@ -1,3 +1,4 @@
+import {DataSources} from "@sphereon/ssi-sdk.agent-config";
 import { DataSource } from 'typeorm'
 import { DataStoreDigitalCredentialMigrations } from '../migrations'
 import { CredentialRole, DataStoreDigitalCredentialEntities } from '../index'
@@ -18,6 +19,7 @@ describe('Database entities tests', (): void => {
   let digitalCredentialStore: DigitalCredentialStore
 
   beforeEach(async (): Promise<void> => {
+    DataSources.singleInstance().defaultDbType = 'sqlite'
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',

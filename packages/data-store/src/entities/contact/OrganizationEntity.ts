@@ -1,9 +1,8 @@
-import { JoinColumn, OneToOne, Column, ChildEntity, BeforeInsert, BeforeUpdate } from 'typeorm'
-import { PartyEntity } from './PartyEntity'
-import { BaseContactEntity } from './BaseContactEntity'
-import { ValidationConstraint } from '../../types'
-import { validate, IsNotEmpty, ValidationError } from 'class-validator'
-import { getConstraint } from '../../utils/ValidatorUtils'
+import {IsNotEmpty, validate, ValidationError} from 'class-validator'
+import {BeforeInsert, BeforeUpdate, ChildEntity, Column} from 'typeorm'
+import {ValidationConstraint} from '../../types'
+import {getConstraint} from '../../utils/ValidatorUtils'
+import {BaseContactEntity} from './BaseContactEntity'
 
 @ChildEntity('Organization')
 export class OrganizationEntity extends BaseContactEntity {
@@ -20,10 +19,6 @@ export class OrganizationEntity extends BaseContactEntity {
 
   @Column('text', { name: 'tenant_id', nullable: true })
   tenantId?: string
-
-  @OneToOne(() => PartyEntity)
-  @JoinColumn({ name: 'party_id' })
-  party!: PartyEntity
 
   @BeforeInsert()
   @BeforeUpdate()

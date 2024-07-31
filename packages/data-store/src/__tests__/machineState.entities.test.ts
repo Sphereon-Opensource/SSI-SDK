@@ -1,3 +1,4 @@
+import {DataSources} from "@sphereon/ssi-sdk.agent-config";
 import { DataSource } from 'typeorm'
 import { MachineStateInfoEntity } from '../entities/machineState/MachineStateInfoEntity'
 
@@ -7,6 +8,7 @@ describe('Machine State Info Database entities tests', (): void => {
   let dbConnection: DataSource
 
   beforeEach(async (): Promise<void> => {
+    DataSources.singleInstance().defaultDbType = 'sqlite'
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',

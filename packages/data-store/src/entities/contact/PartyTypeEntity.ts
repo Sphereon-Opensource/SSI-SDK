@@ -1,4 +1,5 @@
 import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, Index, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import {TYPEORM_DATE_TIME_TYPE} from "@sphereon/ssi-sdk.agent-config";
 import { PartyEntity } from './PartyEntity'
 import { PartyOrigin, PartyTypeType, ValidationConstraint } from '../../types'
 import { IsNotEmpty, Validate, validate, ValidationError } from 'class-validator'
@@ -34,10 +35,10 @@ export class PartyTypeEntity {
   })
   parties!: Array<PartyEntity>
 
-  @CreateDateColumn({ name: 'created_at', nullable: false })
+  @CreateDateColumn({ name: 'created_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
   createdAt!: Date
 
-  @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
+  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
   lastUpdatedAt!: Date
 
   // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.

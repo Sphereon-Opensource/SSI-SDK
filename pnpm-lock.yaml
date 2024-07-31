@@ -417,6 +417,9 @@ importers:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.23.1-next.42
         version: 0.23.1-next.42
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core

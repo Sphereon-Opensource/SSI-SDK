@@ -1,3 +1,4 @@
+import {TYPEORM_DATE_TIME_TYPE} from "@sphereon/ssi-sdk.agent-config";
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, BeforeInsert, BeforeUpdate } from 'typeorm'
 import { IMetadataEntity, ValidationConstraint } from '../../types'
 import { IdentityEntity } from './IdentityEntity'
@@ -23,7 +24,7 @@ export class IdentityMetadataItemEntity extends BaseEntity implements IMetadataE
   @Column('numeric', { name: 'numberValue', nullable: true })
   numberValue?: number
 
-  @Column({ name: 'dateValue', nullable: true })
+  @Column({ name: 'dateValue', nullable: true, type: TYPEORM_DATE_TIME_TYPE })
   dateValue?: Date
 
   @Column('boolean', { name: 'boolValue', nullable: true })

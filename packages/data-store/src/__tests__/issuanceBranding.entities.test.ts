@@ -1,3 +1,4 @@
+import {DataSources} from "@sphereon/ssi-sdk.agent-config";
 import { DataSource, Repository } from 'typeorm'
 import { DataStoreMigrations } from '../migrations'
 import {
@@ -20,6 +21,7 @@ describe('Database entities tests', (): void => {
   let dbConnection: DataSource
 
   beforeEach(async (): Promise<void> => {
+    DataSources.singleInstance().defaultDbType = 'sqlite'
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',
