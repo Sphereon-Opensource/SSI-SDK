@@ -91,8 +91,8 @@ export type GetIssuerMetadataArgs = {
 }
 
 export type OnCredentialStoredArgs = {
-  vcHash: string
   credential: VerifiableCredential
+  vcHash: string
 }
 
 export type OnIdentifierCreatedArgs = {
