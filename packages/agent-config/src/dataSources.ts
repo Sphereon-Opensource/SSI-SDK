@@ -3,7 +3,6 @@ import {DataSource} from 'typeorm'
 import {BaseDataSourceOptions} from 'typeorm/data-source/BaseDataSourceOptions'
 
 import {DataSourceOptions} from 'typeorm/data-source/DataSourceOptions'
-import {DatabaseType} from "typeorm/driver/types/DatabaseType";
 
 
 const debug = Debug(`sphereon:ssi-sdk:database`)
@@ -17,8 +16,8 @@ export class DataSources {
         this._defaultDbType = value;
     }
     private dataSources = new Map<string, DataSource>()
-    private configs: Map<string, DataSourceOptions>
-    private _defaultDbType: SupportedDatabaseType = 'postgres'
+    private configs = new Map<string, DataSourceOptions>()
+    private _defaultDbType: SupportedDatabaseType = 'sqlite'
 
     private static singleton: DataSources
 
@@ -41,7 +40,7 @@ export class DataSources {
     addConfig(dbName: string, config: DataSourceOptions): this {
         this.configs.set(dbName, config)
         // yes we are aware last one wins
-        this._defaultDbType = config.type
+        this._defaultDbType = config.type as SupportedDatabaseType
         return this
     }
 
@@ -74,7 +73,7 @@ export class DataSources {
     async getDbConnection(dbName: string): Promise<DataSource> {
         const config = this.getConfig(dbName)
         if (!this._defaultDbType) {
-            this._defaultDbType = config.type
+            this._defaultDbType = config.type as SupportedDatabaseType
         }
         /*if (config.synchronize) {
                 return Promise.reject(
@@ -105,7 +104,7 @@ export class DataSources {
     }
 }
 
-export type SupportedDatabaseType = Pick<DatabaseType, 'postgres' & 'sqlite'>
+export type SupportedDatabaseType =  'postgres' | 'sqlite' | 'react-native'
 export type DateTimeType = 'timestamp' | 'datetime'
 
 export type DateType = 'date'
