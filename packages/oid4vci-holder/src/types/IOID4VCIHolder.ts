@@ -20,7 +20,7 @@ import {
   SupportedDidMethodEnum,
 } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
+import { DigitalCredential, IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import { IVerifiableCredential, WrappedVerifiableCredential, WrappedVerifiablePresentation } from '@sphereon/ssi-types'
 import {
@@ -91,7 +91,7 @@ export type GetIssuerMetadataArgs = {
 }
 
 export type OnCredentialStoredArgs = {
-  credential: VerifiableCredential
+  credential: DigitalCredential
   vcHash: string
 }
 

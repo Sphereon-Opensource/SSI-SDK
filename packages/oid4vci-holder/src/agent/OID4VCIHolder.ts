@@ -906,7 +906,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       await context.agent.emit(OID4VCIHolderEvent.CREDENTIAL_STORED, {
         credential: persistedCredential,
         vcHash: persistedCredential.hash,
-      })
+      } satisfies OnCredentialStoredArgs)
     }
   }
 
