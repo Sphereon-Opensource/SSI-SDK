@@ -20,10 +20,10 @@ export class ContactMetadataItemEntity extends BaseEntity implements IMetadataEn
   @Column('varchar', { name: 'stringValue', length: 255, nullable: true })
   stringValue?: string
 
-  @Column('double', { name: 'numberValue', nullable: true })
+  @Column('numeric', { name: 'numberValue', nullable: true })
   numberValue?: number
 
-  @Column('datetime', { name: 'dateValue', nullable: true })
+  @Column({ name: 'dateValue', nullable: true })
   dateValue?: Date
 
   @Column('boolean', { name: 'boolValue', nullable: true })

@@ -8,7 +8,7 @@ export class AuditEventEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('datetime', { name: 'timestamp', nullable: false, unique: false })
+  @Column({ name: 'timestamp', nullable: false, unique: false })
   timestamp!: Date
 
   @Column('simple-enum', { name: 'level', enum: LogLevel, nullable: false, unique: false })
