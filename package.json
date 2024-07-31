@@ -38,7 +38,9 @@
     ]
   },
   "dependencies": {
-    "@veramo/core": "4.2.0"
+    "@veramo/core": "4.2.0",
+    "@digitalcredentials/jsonld": "^6.0.0",
+    "@digitalcredentials/jsonld-signatures": "^9.4.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.24.8",
@@ -77,7 +79,7 @@
     "typescript": "5.4.2"
   },
   "engines": {
-    "node": ">= 18.0.0"
+    "node": ">= 20.0.0"
   },
   "prettier": {
     "endOfLine": "auto",
@@ -122,7 +124,8 @@
       "ethr-did": "2.3.9",
       "typeorm": "^0.3.20",
       "@transmute/jsonld": "^0.0.4",
-      "jsonld": "link:./node_modules/.pnpm/@digitalcredentials+jsonld@6.0.0/node_modules/@digitalcredentials/jsonld"
+      "jsonld": "npm:@digitalcredentials/jsonld@^6.0.0",
+      "node-fetch": "2.7.0"
     },
     "patchedDependencies": {
       "@veramo/core@4.2.0": "patches/@veramo__core@4.2.0.patch",
