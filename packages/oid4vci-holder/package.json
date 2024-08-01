@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.oid4vci-holder",
-  "version": "0.28.0",
+  "version": "0.29.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,8 +18,8 @@
     "@sphereon/oid4vci-common": "0.15.1-next.9",
     "@sphereon/ssi-sdk-ext.did-utils": "0.24.0",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",
-    "@sphereon/ssi-sdk.credential-store": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
+    "@sphereon/ssi-sdk.credential-store": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-sdk.issuance-branding": "workspace:*",
     "@sphereon/ssi-sdk.xstate-machine-persistence": "workspace:*",
