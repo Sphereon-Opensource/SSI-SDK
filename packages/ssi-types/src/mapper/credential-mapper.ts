@@ -462,7 +462,7 @@ export class CredentialMapper {
   static toUniformCredential(
     verifiableCredential: OriginalVerifiableCredential,
     opts?: {
-      maxTimeSkewInMS?: number,
+      maxTimeSkewInMS?: number
       hasher?: Hasher
     },
   ): IVerifiableCredential {

@@ -13,12 +13,7 @@ import {
 import { DIDDocument } from '@sphereon/did-uni-client'
 import { VerifiablePresentationResult } from '@sphereon/pex'
 import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
-import {
-  Hasher,
-  PresentationSubmission,
-  W3CVerifiableCredential,
-  W3CVerifiablePresentation
-} from '@sphereon/ssi-types'
+import { Hasher, PresentationSubmission, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import {
   IAgentContext,

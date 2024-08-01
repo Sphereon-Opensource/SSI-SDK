@@ -226,11 +226,13 @@ export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): S
       } satisfies SdJwtDisclosure
     }),
     signedPayload: signedPayload as SdJwtSignedVerifiableCredentialPayload,
-    ...((compactKeyBindingJwt && kbJwt) && { kbJwt: {
-        compact: compactKeyBindingJwt,
-        payload: kbJwt.payload as SdJwtVcKbJwtPayload,
-      }
-    })
+    ...(compactKeyBindingJwt &&
+      kbJwt && {
+        kbJwt: {
+          compact: compactKeyBindingJwt,
+          payload: kbJwt.payload as SdJwtVcKbJwtPayload,
+        },
+      }),
   }
 }
 
@@ -261,83 +263,93 @@ export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher:
       } satisfies SdJwtDisclosure
     }),
     signedPayload: signedPayload as SdJwtSignedVerifiableCredentialPayload,
-    ...((compactKeyBindingJwt && kbJwt) && { kbJwt: {
-        compact: compactKeyBindingJwt,
-        payload: kbJwt.payload as SdJwtVcKbJwtPayload,
-      }
-    })
+    ...(compactKeyBindingJwt &&
+      kbJwt && {
+        kbJwt: {
+          compact: compactKeyBindingJwt,
+          payload: kbJwt.payload as SdJwtVcKbJwtPayload,
+        },
+      }),
   }
 }
 
 type DisclosuresAccumulator = {
-  [key: string]: any;
-};
+  [key: string]: any
+}
 
-// TODO naive implementation of mapping a sd-jwt onto a jsonld. Needs some fixes and further implementation
-export async function sdJwtDecodedCredentialToUniformCredential(decoded: SdJwtDecodedVerifiableCredential, opts?: { maxTimeSkewInMS?: number }): Promise<IVerifiableCredential> {
-  const {
-    exp,
-    nbf,
-    iss,
-    sub,
-    iat,
-    vct,
-    user,
-    cnf,
-    status,
-    ...rest
-  } = decoded.decodedPayload
+// TODO naive implementation of mapping a sd-jwt onto a IVerifiableCredential. Needs some fixes and further implementation and needs to be moved out of ssi-types
+export async function sdJwtDecodedCredentialToUniformCredential(
+  decoded: SdJwtDecodedVerifiableCredential,
+  opts?: { maxTimeSkewInMS?: number },
+): Promise<IVerifiableCredential> {
+  const { exp, nbf, iss, sub, iat, vct, user, cnf, status, ...rest } = decoded.decodedPayload
   const maxSkewInMS = opts?.maxTimeSkewInMS ?? 1500
 
-  let expirationDate
-  if (exp) {
-    const jwtExp = parseInt(exp.toString())
-    // fix seconds to millisecond for the date
-    expirationDate = jwtExp < 9999999999 ? new Date(jwtExp * 1000).toISOString().replace(/\.000Z/, 'Z') : new Date(jwtExp).toISOString()
+  const jwtDateToISOString = ({
+    jwtClaim,
+    claimName,
+    isRequired = false,
+  }: {
+    jwtClaim?: number
+    claimName: string
+    isRequired?: boolean
+  }): string | undefined => {
+    if (jwtClaim) {
+      const claim = parseInt(jwtClaim.toString())
+      // change JWT seconds to millisecond for the date
+      return new Date(claim * (claim < 9999999999 ? 1000 : 1)).toISOString().replace(/\.000Z/, 'Z')
+    } else if (isRequired) {
+      throw Error(`JWT claim ${claimName} is required but was not present`)
+    }
+    return undefined
   }
 
-  const sdJwtIat = parseInt(iat.toString())
-  let issuanceDate = sdJwtIat < 9999999999 ? new Date(sdJwtIat * 1000).toISOString().replace(/\.000Z/, 'Z') : new Date(sdJwtIat).toISOString()
+  const expirationDate = jwtDateToISOString({ jwtClaim: exp, claimName: 'exp' })
+  let issuanceDateStr = jwtDateToISOString({ jwtClaim: iat, claimName: 'iat' })
 
+  let nbfDateAsStr: string | undefined
   if (nbf) {
-    const sdJwtNbf = parseInt(nbf.toString())
-    // fix seconds to millisecs for the date
-    const nbfDateAsStr = sdJwtNbf < 9999999999 ? new Date(sdJwtNbf * 1000).toISOString().replace(/\.000Z/, 'Z') : new Date(sdJwtNbf).toISOString()
-    if (issuanceDate && issuanceDate !== nbfDateAsStr) {
+    nbfDateAsStr = jwtDateToISOString({ jwtClaim: nbf, claimName: 'nbf' })
+    if (issuanceDateStr && nbfDateAsStr && issuanceDateStr !== nbfDateAsStr) {
       const diff = Math.abs(new Date(nbfDateAsStr).getTime() - new Date(iss).getTime())
       if (!maxSkewInMS || diff > maxSkewInMS) {
-        throw new Error(`Inconsistent issuance dates between JWT claim (${nbfDateAsStr}) and VC value (${iss})`)
+        throw Error(`Inconsistent issuance dates between JWT claim (${nbfDateAsStr}) and VC value (${iss})`)
       }
     }
-    issuanceDate = nbfDateAsStr
+    issuanceDateStr = nbfDateAsStr
+  }
+  const issuanceDate = issuanceDateStr
+  if (!issuanceDate) {
+    throw Error(`JWT issuance date is required but was not present`)
   }
 
-  const credentialSubject = decoded.disclosures.reduce((acc: DisclosuresAccumulator, item: { decoded: Array<any>, digest: string, encoded: string }) => {
-    const key = item.decoded[1]
-    acc[key] = item.decoded[2]
+  const credentialSubject = decoded.disclosures.reduce(
+    (acc: DisclosuresAccumulator, item: { decoded: Array<any>; digest: string; encoded: string }) => {
+      const key = item.decoded[1]
+      acc[key] = item.decoded[2]
 
-    return acc
-  }, {})
+      return acc
+    },
+    {},
+  )
 
   return {
     ...rest,
-    type: ['VerifiableCredential', vct],
-    '@context': ['https://www.w3.org/2018/credentials/v1'],
+    type: [vct], // SDJwt is not a W3C VC, so no VerifiableCredential
+    '@context': [], // SDJwt has no JSON-LD by default. Certainly not the VC DM1 default context for JSON-LD
     credentialSubject: {
       ...(sub && { id: sub }),
-      ...credentialSubject
+      ...credentialSubject,
     },
     issuanceDate,
     expirationDate,
     issuer: iss,
     proof: {
       type: IProofType.SdJwtProof2024,
-      created: nbf
-        ? new Date(nbf).toISOString()
-        : new Date().toISOString(),
+      created: nbfDateAsStr ?? issuanceDate,
       proofPurpose: IProofPurpose.authentication,
       verificationMethod: iss,
       jwt: decoded.compactSdJwtVc,
-    }
+    },
   }
 }

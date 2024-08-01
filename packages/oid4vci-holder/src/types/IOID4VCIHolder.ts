@@ -28,7 +28,7 @@ import {
   OriginalVerifiableCredential,
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
-  WrappedVerifiablePresentation
+  WrappedVerifiablePresentation,
 } from '@sphereon/ssi-types'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import {
@@ -616,7 +616,7 @@ export type CredentialVerificationError = {
   errorDetails?: string
 }
 
-export type VerifySDJWTCredentialArgs = { credential: string, hasher?: Hasher }
+export type VerifySDJWTCredentialArgs = { credential: string; hasher?: Hasher }
 
 export interface VerifyCredentialArgs {
   credential: OriginalVerifiableCredential
@@ -626,6 +626,14 @@ export interface VerifyCredentialArgs {
 }
 
 export type RequiredContext = IAgentContext<
-  IIssuanceBranding & IContactManager & ICredentialVerifier & ICredentialIssuer & ICredentialStore & IDIDManager & IResolver & IKeyManager & ISDJwtPlugin
+  IIssuanceBranding &
+    IContactManager &
+    ICredentialVerifier &
+    ICredentialIssuer &
+    ICredentialStore &
+    IDIDManager &
+    IResolver &
+    IKeyManager &
+    ISDJwtPlugin
 >
 export type DidAgents = TAgent<IResolver & IDIDManager>

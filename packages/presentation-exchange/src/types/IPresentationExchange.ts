@@ -8,13 +8,7 @@ import {
   IResolver,
   PresentationPayload,
 } from '@veramo/core'
-import {
-  IPresentation,
-  Optional,
-  SdJwtDecodedVerifiableCredential,
-  W3CVerifiableCredential,
-  W3CVerifiablePresentation
-} from '@sphereon/ssi-types'
+import { IPresentation, Optional, SdJwtDecodedVerifiableCredential, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { IPresentationDefinition, PEVersion, SelectResults } from '@sphereon/pex'
 import { Format, InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
 import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'

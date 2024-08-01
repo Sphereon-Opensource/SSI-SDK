@@ -29,12 +29,7 @@ import {
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
-import {
-  IIdentifier,
-  IVerifyCredentialArgs,
-  TKeyType,
-  W3CVerifiableCredential as VeramoW3CVerifiableCredential,
-} from '@veramo/core'
+import { IIdentifier, IVerifyCredentialArgs, TKeyType, W3CVerifiableCredential as VeramoW3CVerifiableCredential } from '@veramo/core'
 import { _ExtendedIKey, asArray } from '@veramo/utils'
 import { createJWT, Signer } from 'did-jwt'
 import { translate } from '../localization/Localization'
@@ -71,7 +66,7 @@ import {
   VerifyCredentialArgs,
 } from '../types/IOID4VCIHolder'
 import { credentialLocaleBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
-import {IVerifySdJwtVcResult} from "@sphereon/ssi-sdk.sd-jwt";
+import { IVerifySdJwtVcResult } from '@sphereon/ssi-sdk.sd-jwt'
 
 export const DID_PREFIX = 'did'
 
@@ -183,7 +178,7 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
 export const verifyCredential = async (args: VerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
   const { credential, hasher } = args
 
-  return (CredentialMapper.isSdJwtEncoded(credential))
+  return CredentialMapper.isSdJwtEncoded(credential)
     ? await verifySDJWTCredential({ credential, hasher }, context)
     : await verifyW3CCredential({ ...args, credential: credential as VeramoW3CVerifiableCredential }, context)
 }
@@ -235,13 +230,14 @@ export const verifyW3CCredential = async (args: IVerifyCredentialArgs, context: 
 export const verifySDJWTCredential = async (args: VerifySDJWTCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
   const { credential, hasher } = args
 
-  const result: IVerifySdJwtVcResult|CredentialVerificationError = await context.agent.verifySdJwtVc({ credential })
-      .catch((error: Error): CredentialVerificationError => {
-        return {
-          error: 'Invalid SD-JWT VC',
-          errorDetails: error.message ?? 'SD-JWT VC could not be verified',
-        }
-      })
+  const result: IVerifySdJwtVcResult | CredentialVerificationError = await context.agent
+    .verifySdJwtVc({ credential })
+    .catch((error: Error): CredentialVerificationError => {
+      return {
+        error: 'Invalid SD-JWT VC',
+        errorDetails: error.message ?? 'SD-JWT VC could not be verified',
+      }
+    })
 
   return {
     source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential, { hasher }),
@@ -260,14 +256,20 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
     return Promise.reject(Error('No credential found in credential response'))
   }
 
-  const wrappedVerifiableCredential: WrappedVerifiableCredential = await CredentialMapper.toWrappedVerifiableCredential(verifiableCredential as OriginalVerifiableCredential, { hasher })
+  const wrappedVerifiableCredential: WrappedVerifiableCredential = await CredentialMapper.toWrappedVerifiableCredential(
+    verifiableCredential as OriginalVerifiableCredential,
+    { hasher },
+  )
   const uniformVerifiableCredential: IVerifiableCredential = CredentialMapper.isSdJwtDecodedCredential(wrappedVerifiableCredential.credential)
-      ? await sdJwtDecodedCredentialToUniformCredential(<SdJwtDecodedVerifiableCredential>wrappedVerifiableCredential.credential)
-      : <IVerifiableCredential>wrappedVerifiableCredential.credential
+    ? await sdJwtDecodedCredentialToUniformCredential(<SdJwtDecodedVerifiableCredential>wrappedVerifiableCredential.credential)
+    : <IVerifiableCredential>wrappedVerifiableCredential.credential
 
-  const correlationId: string = typeof uniformVerifiableCredential.issuer === 'string'
+  const correlationId: string =
+    typeof uniformVerifiableCredential.issuer === 'string'
       ? uniformVerifiableCredential.issuer
-      : CredentialMapper.isSdJwtDecodedCredential(uniformVerifiableCredential) ? uniformVerifiableCredential.decodedPayload.iss : uniformVerifiableCredential.issuer.id
+      : CredentialMapper.isSdJwtDecodedCredential(uniformVerifiableCredential)
+        ? uniformVerifiableCredential.decodedPayload.iss
+        : uniformVerifiableCredential.issuer.id
 
   return {
     correlationId,

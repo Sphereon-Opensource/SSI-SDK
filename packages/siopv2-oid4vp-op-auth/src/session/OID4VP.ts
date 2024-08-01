@@ -4,13 +4,14 @@ import { Format } from '@sphereon/pex-models'
 import { getDID, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
 import { CredentialMapper, CompactJWT, Hasher, W3CVerifiableCredential } from '@sphereon/ssi-types'
-import { IIdentifier} from '@veramo/core'
+import { IIdentifier } from '@veramo/core'
 import { encodeJoseBlob } from '@veramo/utils'
 import {
-  DEFAULT_JWT_PROOF_TYPE, IGetPresentationExchangeArgs,
+  DEFAULT_JWT_PROOF_TYPE,
+  IGetPresentationExchangeArgs,
   IOID4VPArgs,
   VerifiableCredentialsWithDefinition,
-  VerifiablePresentationWithDefinition
+  VerifiablePresentationWithDefinition,
 } from '../types'
 import { createOID4VPPresentationSignCallback } from './functions'
 import { OpSession } from './OpSession'
@@ -31,7 +32,7 @@ export class OID4VP {
   }
 
   public static async init(session: OpSession, allDIDs: string[], hasher?: Hasher): Promise<OID4VP> {
-    return new OID4VP({session, allDIDs: allDIDs ?? (await session.getSupportedDIDs()), hasher})
+    return new OID4VP({ session, allDIDs: allDIDs ?? (await session.getSupportedDIDs()), hasher })
   }
 
   public async getPresentationDefinitions(): Promise<PresentationDefinitionWithLocation[] | undefined> {
@@ -48,7 +49,7 @@ export class OID4VP {
     return new PresentationExchange({
       allDIDs: allDIDs ?? this.allDIDs,
       allVerifiableCredentials: verifiableCredentials,
-      hasher: hasher ?? this.hasher
+      hasher: hasher ?? this.hasher,
     })
   }
 
@@ -83,7 +84,7 @@ export class OID4VP {
       skipDidResolution?: boolean
       holderDID?: string
       subjectIsHolder?: boolean
-      applyFilter?: boolean,
+      applyFilter?: boolean
       hasher?: Hasher
     },
   ): Promise<VerifiablePresentationWithDefinition> {
@@ -116,9 +117,9 @@ export class OID4VP {
         const firstVC = CredentialMapper.toUniformCredential(selectedVerifiableCredentials.credentials[0], { hasher: opts?.hasher ?? this.hasher })
         const holder = CredentialMapper.isSdJwtDecodedCredential(firstVC)
           ? firstVC.decodedPayload.cnf?.jwk
-            //TODO SDK-19: convert the JWK to hex and search for the appropriate key and associated DID
-            //doesn't apply to did:jwk only, as you can represent any DID key as a JWK. So whenever you encounter a JWK it doesn't mean it had to come from a did:jwk in the system. It just can always be represented as a did:jwk
-            ? `did:jwk:${encodeJoseBlob(firstVC.decodedPayload.cnf?.jwk)}#0`
+            ? //TODO SDK-19: convert the JWK to hex and search for the appropriate key and associated DID
+              //doesn't apply to did:jwk only, as you can represent any DID key as a JWK. So whenever you encounter a JWK it doesn't mean it had to come from a did:jwk in the system. It just can always be represented as a did:jwk
+              `did:jwk:${encodeJoseBlob(firstVC.decodedPayload.cnf?.jwk)}#0`
             : firstVC.decodedPayload.sub
           : Array.isArray(firstVC.credentialSubject)
             ? firstVC.credentialSubject[0].id
@@ -136,19 +137,19 @@ export class OID4VP {
 
     // We are making sure to filter, in case the user submitted all verifiableCredentials in the wallet/agent. We also make sure to get original formats back
     const vcs = forceNoCredentialsInVP
-    ? selectedVerifiableCredentials
-    : opts?.applyFilter
-      ? await this.filterCredentials(credentialRole, selectedVerifiableCredentials.definition, {
-          restrictToFormats: opts?.restrictToFormats,
-          restrictToDIDMethods: opts?.restrictToDIDMethods,
-          filterOpts: {
-            verifiableCredentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
-          },
-        })
-      : {
-          definition: selectedVerifiableCredentials.definition,
-          credentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
-        }
+      ? selectedVerifiableCredentials
+      : opts?.applyFilter
+        ? await this.filterCredentials(credentialRole, selectedVerifiableCredentials.definition, {
+            restrictToFormats: opts?.restrictToFormats,
+            restrictToDIDMethods: opts?.restrictToDIDMethods,
+            filterOpts: {
+              verifiableCredentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
+            },
+          })
+        : {
+            definition: selectedVerifiableCredentials.definition,
+            credentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
+          }
 
     const signCallback = await createOID4VPPresentationSignCallback({
       presentationSignCallback: this.session.options.presentationSignCallback,
@@ -163,16 +164,11 @@ export class OID4VP {
     const presentationResult = await this.getPresentationExchange({
       verifiableCredentials: vcs.credentials,
       allDIDs: this.allDIDs,
-      hasher: opts?.hasher
-    }).createVerifiablePresentation(
-      vcs.definition.definition,
-      vcs.credentials,
-      signCallback,
-      {
-        proofOptions,
-        holderDID: getDID(idOpts),
-      },
-    )
+      hasher: opts?.hasher,
+    }).createVerifiablePresentation(vcs.definition.definition, vcs.credentials, signCallback, {
+      proofOptions,
+      holderDID: getDID(idOpts),
+    })
 
     const verifiablePresentation =
       typeof presentationResult.verifiablePresentation !== 'string' &&
