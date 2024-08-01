@@ -11,6 +11,7 @@ import {
   TableInheritance,
   UpdateDateColumn,
 } from 'typeorm'
+import {TYPEORM_DATE_TIME_TYPE} from "@sphereon/ssi-sdk.agent-config";
 import { PartyEntity } from './PartyEntity'
 import { ContactMetadataItemEntity } from './ContactMetadataItemEntity'
 
@@ -20,10 +21,10 @@ export abstract class BaseContactEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @CreateDateColumn({ name: 'created_at', nullable: false })
+  @CreateDateColumn({ name: 'created_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
   createdAt!: Date
 
-  @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
+  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
   lastUpdatedAt!: Date
 
   @OneToOne(() => PartyEntity, (party: PartyEntity) => party.contact, {

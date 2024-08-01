@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "@sphereon/pex": "^4.0.1",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.23.1-next.42",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.24.0",
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",

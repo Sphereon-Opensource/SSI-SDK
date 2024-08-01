@@ -1,3 +1,4 @@
+import {DataSources} from "@sphereon/ssi-sdk.agent-config";
 import { PartyCorrelationType } from '@sphereon/ssi-sdk.core'
 import { ActionType, InitiatorType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
@@ -10,6 +11,7 @@ describe('Database entities tests', (): void => {
   let dbConnection: DataSource
 
   beforeEach(async (): Promise<void> => {
+    DataSources.singleInstance().defaultDbType = 'sqlite'
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',
