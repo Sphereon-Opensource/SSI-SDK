@@ -17,14 +17,14 @@
   "dependencies": {
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
-    "uuid": "^8.3.2"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@types/jest": "^27.5.2",
-    "@types/uuid": "^8.3.4",
+    "@types/uuid": "^9.0.8",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
     "jest": "^27.5.1",

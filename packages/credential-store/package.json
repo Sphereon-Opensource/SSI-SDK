@@ -15,20 +15,20 @@
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
-    "@sphereon/pex": "^3.3.3",
+    "@sphereon/pex": "^4.0.1",
     "@sphereon/pex-models": "^2.2.4",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "cross-fetch": "^3.1.8",
     "debug": "^4.3.4",
     "typeorm": "^0.3.20",
-    "uuid": "^10.0.0"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
-    "@types/uuid": "^10.0.0"
+    "@types/uuid": "^9.0.8"
   },
   "files": [
     "dist/**/*",

@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, BeforeInsert, BeforeUpdate } from 'typeorm'
-import { ValidationConstraint } from '../../types'
+import { IMetadataEntity, ValidationConstraint } from '../../types'
 import { BaseContactEntity } from './BaseContactEntity'
 import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { getConstraint } from '../../utils/ValidatorUtils'
@@ -9,24 +9,24 @@ export class ContactMetadataItemEntity extends BaseEntity implements IMetadataEn
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'label', length: 255, nullable: false })
+  @Column('varchar', { name: 'label', length: 255, nullable: false })
   @IsNotEmpty({ message: 'Blank metadata labels are not allowed' })
   label!: string
 
-  @Column({ name: 'valueType', nullable: false })
+  @Column('varchar', { name: 'valueType', nullable: false })
   @IsNotEmpty({ message: 'valueType must not be empty' })
   valueType!: string
 
-  @Column({ name: 'stringValue', length: 255, nullable: true })
+  @Column('varchar', { name: 'stringValue', length: 255, nullable: true })
   stringValue?: string
 
-  @Column({ name: 'numberValue', nullable: true })
+  @Column('numeric', { name: 'numberValue', nullable: true })
   numberValue?: number
 
   @Column({ name: 'dateValue', nullable: true })
   dateValue?: Date
 
-  @Column({ name: 'boolValue', nullable: true })
+  @Column('boolean', { name: 'boolValue', nullable: true })
   boolValue?: boolean
 
   @ManyToOne(() => BaseContactEntity, (contact: BaseContactEntity) => contact.metadata, {

@@ -23,11 +23,11 @@ export class BaseLocaleBrandingEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'alias', length: 255, nullable: true, unique: false })
+  @Column('varchar', { name: 'alias', length: 255, nullable: true, unique: false })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank aliases are not allowed' })
   alias?: string
 
-  @Column({ name: 'locale', length: 255, nullable: false, unique: false })
+  @Column('varchar', { name: 'locale', length: 255, nullable: false, unique: false })
   locale?: string
 
   @OneToOne(() => ImageAttributesEntity, {
@@ -39,7 +39,7 @@ export class BaseLocaleBrandingEntity extends BaseEntity {
   @JoinColumn({ name: 'logoId' })
   logo?: ImageAttributesEntity
 
-  @Column({ name: 'description', length: 255, nullable: true, unique: false })
+  @Column('varchar', { name: 'description', length: 255, nullable: true, unique: false })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank descriptions are not allowed' })
   description?: string
 

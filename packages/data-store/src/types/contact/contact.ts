@@ -5,6 +5,15 @@ import { CredentialRole } from '../digitalCredential/digitalCredential'
 
 export type MetadataTypes = string | number | Date | boolean | undefined
 
+export interface IMetadataEntity {
+  // TODO move to types
+  label: string
+  stringValue?: string
+  numberValue?: number
+  dateValue?: Date
+  boolValue?: boolean
+}
+
 export type Party = {
   id: string
   uri?: string

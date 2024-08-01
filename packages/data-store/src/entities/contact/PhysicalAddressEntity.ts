@@ -20,42 +20,42 @@ export class PhysicalAddressEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'type', length: 255, nullable: false })
+  @Column('varchar', { name: 'type', length: 255, nullable: false })
   @IsNotEmpty({ message: 'Blank physical address types are not allowed' })
   type!: PhysicalAddressType
 
-  @Column({ name: 'street_name', length: 255, nullable: false })
+  @Column('varchar', { name: 'street_name', length: 255, nullable: false })
   @IsNotEmpty({ message: 'Blank street names are not allowed' })
   streetName!: string
 
-  @Column({ name: 'street_number', length: 255, nullable: false })
+  @Column('varchar', { name: 'street_number', length: 255, nullable: false })
   @IsNotEmpty({ message: 'Blank street numbers are not allowed' })
   streetNumber!: string
 
-  @Column({ name: 'postal_code', length: 255, nullable: false })
+  @Column('varchar', { name: 'postal_code', length: 255, nullable: false })
   @IsNotEmpty({ message: 'Blank postal codes are not allowed' })
   postalCode!: string
 
-  @Column({ name: 'city_name', length: 255, nullable: false })
+  @Column('varchar', { name: 'city_name', length: 255, nullable: false })
   @IsNotEmpty({ message: 'Blank city names are not allowed' })
   cityName!: string
 
-  @Column({ name: 'province_name', length: 255, nullable: false })
+  @Column('varchar', { name: 'province_name', length: 255, nullable: false })
   @IsNotEmpty({ message: 'Blank province names are not allowed' })
   provinceName!: string
 
-  @Column({ name: 'country_code', length: 2, nullable: false })
+  @Column('varchar', { name: 'country_code', length: 2, nullable: false })
   @IsNotEmpty({ message: 'Blank country codes are not allowed' })
   countryCode!: string
 
-  @Column({ name: 'building_name', length: 255, nullable: true })
+  @Column('varchar', { name: 'building_name', length: 255, nullable: true })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank building names are not allowed' })
   buildingName?: string
 
-  @Column({ name: 'owner_id', nullable: true })
+  @Column('text', { name: 'owner_id', nullable: true })
   ownerId?: string
 
-  @Column({ name: 'tenant_id', nullable: true })
+  @Column('text', { name: 'tenant_id', nullable: true })
   tenantId?: string
 
   @ManyToOne(() => PartyEntity, (party: PartyEntity) => party.physicalAddresses, {
@@ -63,7 +63,7 @@ export class PhysicalAddressEntity extends BaseEntity {
   })
   party!: PartyEntity
 
-  @Column({ name: 'partyId', nullable: true })
+  @Column('text', { name: 'partyId', nullable: true })
   partyId?: string
 
   @CreateDateColumn({ name: 'created_at', nullable: false })

@@ -7,26 +7,26 @@ import { getConstraint } from '../../utils/ValidatorUtils'
 
 @ChildEntity('NaturalPerson')
 export class NaturalPersonEntity extends BaseContactEntity {
-  @Column({ name: 'first_name', length: 255, nullable: false, unique: false })
+  @Column('varchar', { name: 'first_name', length: 255, nullable: false, unique: false })
   @IsNotEmpty({ message: 'Blank first names are not allowed' })
   firstName!: string
 
-  @Column({ name: 'middle_name', length: 255, nullable: true, unique: false })
+  @Column('varchar', { name: 'middle_name', length: 255, nullable: true, unique: false })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank middle names are not allowed' })
   middleName?: string
 
-  @Column({ name: 'last_name', length: 255, nullable: false, unique: false })
+  @Column('varchar', { name: 'last_name', length: 255, nullable: false, unique: false })
   @IsNotEmpty({ message: 'Blank last names are not allowed' })
   lastName!: string
 
-  @Column({ name: 'display_name', length: 255, nullable: false, unique: false })
+  @Column('varchar', { name: 'display_name', length: 255, nullable: false, unique: false })
   @IsNotEmpty({ message: 'Blank display names are not allowed' })
   displayName!: string
 
-  @Column({ name: 'owner_id', nullable: true })
+  @Column('text', { name: 'owner_id', nullable: true })
   ownerId?: string
 
-  @Column({ name: 'tenant_id', nullable: true })
+  @Column('text', { name: 'tenant_id', nullable: true })
   tenantId?: string
 
   @BeforeInsert()

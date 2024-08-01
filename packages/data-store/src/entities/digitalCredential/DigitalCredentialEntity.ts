@@ -1,11 +1,5 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
-import {
-  CredentialCorrelationType,
-  CredentialDocumentFormat,
-  CredentialStateType,
-  DocumentType,
-} from '../../types/digitalCredential/digitalCredential'
-import { CredentialRole } from '../../types'
+import { CredentialCorrelationType, CredentialDocumentFormat, CredentialRole, CredentialStateType, DocumentType } from '../../types'
 
 @Entity('DigitalCredential')
 export class DigitalCredentialEntity extends BaseEntity {

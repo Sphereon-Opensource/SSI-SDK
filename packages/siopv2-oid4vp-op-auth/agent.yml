@@ -121,7 +121,6 @@ credentialStore:
         $args:
           - $ref: /dbConnection
 
-
 # Agent
 agent:
   $require: '@veramo/core#Agent'
@@ -129,7 +128,7 @@ agent:
     - schemaValidation: false
       plugins:
         - $ref: /didResolver
-          $ref: /credentialStore
+        - $ref: /credentialStore
         - $require: ./packages/siopv2-oid4vp-op-auth/dist#DidAuthSiopOpAuthenticator
           $args:
             - presentationSignCallback: {}

@@ -235,7 +235,10 @@ export class CredentialMapper {
    *
    * @param hasher Hasher implementation to use for SD-JWT decoding
    */
-  static toWrappedVerifiableCredential(verifiableCredential: OriginalVerifiableCredential, opts?: { maxTimeSkewInMS?: number; hasher?: Hasher }): WrappedVerifiableCredential {
+  static toWrappedVerifiableCredential(
+    verifiableCredential: OriginalVerifiableCredential,
+    opts?: { maxTimeSkewInMS?: number; hasher?: Hasher },
+  ): WrappedVerifiableCredential {
     // SD-JWT
     if (CredentialMapper.isSdJwtDecodedCredential(verifiableCredential) || CredentialMapper.isSdJwtEncoded(verifiableCredential)) {
       let decodedCredential: SdJwtDecodedVerifiableCredential
@@ -663,7 +666,7 @@ export class CredentialMapper {
       }
     } else if (type === DocumentFormat.JWT && 'vc' in credential) {
       return CredentialMapper.toCompactJWT(credential)
-    } else if ('proof' in credential && credential.proof.type === IProofType.JwtProof2020 && credential.proof.jwt) {
+    } else if ('proof' in credential && credential.proof.type === 'JwtProof2020' && credential.proof.jwt) {
       return credential.proof.jwt
     } else if ('proof' in credential && credential.proof.type === IProofType.SdJwtProof2024 && credential.proof.jwt) {
       return credential.proof.jwt

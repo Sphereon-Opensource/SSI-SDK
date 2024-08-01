@@ -1,5 +1,5 @@
 import { sha256 } from '@noble/hashes/sha256'
-import crypto from '@sphereon/isomorphic-webcrypto'
+// import crypto from '@sphereon/isomorphic-webcrypto'
 import sec from '@transmute/security-context'
 import { IAgentContext } from '@veramo/core'
 import { decodeJoseBlob } from '@veramo/utils'

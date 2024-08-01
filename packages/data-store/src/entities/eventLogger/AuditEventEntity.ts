@@ -14,7 +14,7 @@ export class AuditEventEntity extends BaseEntity {
   @Column('simple-enum', { name: 'level', enum: LogLevel, nullable: false, unique: false })
   level!: LogLevel
 
-  @Column({ name: 'correlationId', nullable: false, unique: false })
+  @Column('text', { name: 'correlationId', nullable: false, unique: false })
   correlationId!: string
 
   @Column('simple-enum', { name: 'system', enum: System, nullable: false, unique: false })
@@ -26,7 +26,7 @@ export class AuditEventEntity extends BaseEntity {
   @Column('simple-enum', { name: 'actionType', enum: ActionType, nullable: false, unique: false })
   actionType!: ActionType
 
-  @Column({ name: 'actionSubType', nullable: false, unique: false })
+  @Column({ name: 'actionSubType', type: 'varchar', nullable: false, unique: false })
   actionSubType!: ActionSubType
 
   @Column('simple-enum', { name: 'initiatorType', enum: InitiatorType, nullable: false, unique: false })
@@ -35,28 +35,28 @@ export class AuditEventEntity extends BaseEntity {
   @Column('simple-enum', { name: 'systemCorrelationIdType', enum: SystemCorrelationIdType, nullable: true, unique: false })
   systemCorrelationIdType?: SystemCorrelationIdType
 
-  @Column({ name: 'systemCorrelationId', nullable: true, unique: false })
+  @Column('text', { name: 'systemCorrelationId', nullable: true, unique: false })
   systemCorrelationId?: string
 
-  @Column({ name: 'systemAlias', nullable: true, unique: false })
+  @Column('text', { name: 'systemAlias', nullable: true, unique: false })
   systemAlias?: string
 
   @Column('simple-enum', { name: 'partyCorrelationType', enum: PartyCorrelationType, nullable: true, unique: false })
   partyCorrelationType?: PartyCorrelationType
 
-  @Column({ name: 'partyCorrelationId', nullable: true, unique: false })
+  @Column('text', { name: 'partyCorrelationId', nullable: true, unique: false })
   partyCorrelationId?: string
 
-  @Column({ name: 'partyAlias', nullable: true, unique: false })
+  @Column('text', { name: 'partyAlias', nullable: true, unique: false })
   partyAlias?: string
 
-  @Column({ name: 'description', nullable: false, unique: false })
+  @Column('text', { name: 'description', nullable: false, unique: false })
   description!: string
 
-  @Column({ name: 'data', nullable: true, unique: false })
+  @Column('text', { name: 'data', nullable: true, unique: false })
   data?: string
 
-  @Column({ name: 'diagnosticData', nullable: true, unique: false })
+  @Column('text', { name: 'diagnosticData', nullable: true, unique: false })
   diagnosticData?: string
 
   @CreateDateColumn({ name: 'created_at', nullable: false })

@@ -86,7 +86,6 @@ credentialStore:
         $args:
           - $ref: /dbConnection
 
-
 # Agent
 agent:
   $require: '@veramo/core#Agent'
