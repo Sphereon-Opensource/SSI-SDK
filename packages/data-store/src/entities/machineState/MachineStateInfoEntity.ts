@@ -1,4 +1,5 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm'
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 
 /**
  * @class MachineStateInfoEntity
@@ -38,19 +39,19 @@ export class MachineStateInfoEntity extends BaseEntity {
   @Column({ name: 'state', type: 'text', nullable: false })
   state!: string
 
-  @CreateDateColumn({ name: 'created_at', nullable: false })
+  @CreateDateColumn({ name: 'created_at', nullable: false, type: typeOrmDateTime() })
   createdAt!: Date
 
-  @UpdateDateColumn({ name: 'updated_at', nullable: false })
+  @UpdateDateColumn({ name: 'updated_at', nullable: false, type: typeOrmDateTime() })
   updatedAt!: Date
 
   @Column({ name: 'updated_count', type: 'integer', nullable: false })
   updatedCount!: number
 
-  @Column({ name: 'expires_at', nullable: true })
+  @Column({ name: 'expires_at', nullable: true, type: typeOrmDateTime() })
   expiresAt?: Date
 
-  @Column({ name: 'completed_at', nullable: true })
+  @Column({ name: 'completed_at', nullable: true, type: typeOrmDateTime() })
   completedAt?: Date
 
   @Column({ name: 'tenant_id', type: 'varchar', nullable: true })

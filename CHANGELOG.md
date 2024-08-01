@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.29.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.28.0...v0.29.0) (2024-08-01)
+
+### Bug Fixes
+
+- Doesn't make sense to always download issuer images, even if we already have it stored. Other stability improvements for image handling ([b836ca1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b836ca1c21307174a3f706234981d98c5dbe0e52))
+- Logger fixes ([75b6925](https://github.com/Sphereon-Opensource/SSI-SDK/commit/75b692530f01a4c83515a194fc6232418b802259))
+
+### Features
+
+- expose date(time) types per database. Also enhance the datasources capabilities ([dd37e77](https://github.com/Sphereon-Opensource/SSI-SDK/commit/dd37e7703289acfd1f3d0afc8945bb7ebbe8d31f))
+- Remove dep on isomorphic-webcrypto ([44331b8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/44331b8781fb5e5627816509c744c4aef7f128cd))
+- update to new keyRefs instead of kids ([e969b97](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e969b97b387e62e2def5a0bac655f1fe5c7100a7))
+
 # [0.28.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.27.0...v0.28.0) (2024-07-23)
 
 ### Bug Fixes

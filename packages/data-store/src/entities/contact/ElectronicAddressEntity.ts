@@ -10,6 +10,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm'
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { PartyEntity } from './PartyEntity'
 import { getConstraint } from '../../utils/ValidatorUtils'
 import { ElectronicAddressType, ValidationConstraint } from '../../types'
@@ -41,10 +42,10 @@ export class ElectronicAddressEntity extends BaseEntity {
   @Column('text', { name: 'tenant_id', nullable: true })
   tenantId?: string
 
-  @CreateDateColumn({ name: 'created_at', nullable: false })
+  @CreateDateColumn({ name: 'created_at', nullable: false, type: typeOrmDateTime() })
   createdAt!: Date
 
-  @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
+  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: typeOrmDateTime() })
   lastUpdatedAt!: Date
 
   // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.

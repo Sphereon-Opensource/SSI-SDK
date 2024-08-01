@@ -1,3 +1,4 @@
+import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { DataSource } from 'typeorm'
 import { DataStoreContactEntities, DataStoreMigrations, IdentityOrigin, MetadataItem, MetadataTypes, PartyOrigin } from '../index'
 import { ContactStore } from '../contact/ContactStore'
@@ -31,6 +32,7 @@ describe('Contact store tests', (): void => {
   let contactStore: ContactStore
 
   beforeEach(async (): Promise<void> => {
+    DataSources.singleInstance().defaultDbType = 'sqlite'
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',

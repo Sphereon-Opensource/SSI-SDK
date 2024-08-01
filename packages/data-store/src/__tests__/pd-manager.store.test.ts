@@ -1,3 +1,4 @@
+import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { DataSource } from 'typeorm'
 import { DataStorePresentationDefinitionEntities, DataStorePresentationDefinitionMigrations, PDStore } from '../index'
 import { GetDefinitionsArgs, NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '../types'
@@ -7,6 +8,7 @@ describe('PDStore tests', (): void => {
   let pdStore: PDStore
 
   beforeEach(async (): Promise<void> => {
+    DataSources.singleInstance().defaultDbType = 'sqlite'
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',

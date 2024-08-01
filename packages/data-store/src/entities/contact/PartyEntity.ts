@@ -13,6 +13,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 import { ValidationConstraint } from '../../types'
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { IdentityEntity } from './IdentityEntity'
 import { validate, ValidationError } from 'class-validator'
 import { PartyTypeEntity } from './PartyTypeEntity'
@@ -88,10 +89,10 @@ export class PartyEntity extends BaseEntity {
   @JoinColumn({ name: 'relationship_id' })
   relationships!: Array<PartyRelationshipEntity>
 
-  @CreateDateColumn({ name: 'created_at', nullable: false })
+  @CreateDateColumn({ name: 'created_at', nullable: false, type: typeOrmDateTime() })
   createdAt!: Date
 
-  @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
+  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: typeOrmDateTime() })
   lastUpdatedAt!: Date
 
   // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.

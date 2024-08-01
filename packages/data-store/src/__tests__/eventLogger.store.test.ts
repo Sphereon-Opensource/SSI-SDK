@@ -1,6 +1,7 @@
+import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { ActionType, InitiatorType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
-import { DataStoreEventLoggerMigrations } from '../migrations/generic'
+import { DataStoreEventLoggerMigrations } from '../migrations'
 import { DataStoreEventLoggerEntities } from '../index'
 import { AuditLoggingEvent, PartyCorrelationType } from '@sphereon/ssi-sdk.core'
 import { EventLoggerStore } from '../eventLogger/EventLoggerStore'
@@ -11,6 +12,7 @@ describe('Database entities tests', (): void => {
   let eventLoggerStore: EventLoggerStore
 
   beforeEach(async (): Promise<void> => {
+    DataSources.singleInstance().defaultDbType = 'sqlite'
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',

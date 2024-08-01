@@ -1,3 +1,4 @@
+import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { DataSource } from 'typeorm'
 import { DataStoreMachineStateEntities, MachineStateStore, StoreMachineStatesFindActiveArgs, StoreMachineStatePersistArgs } from '../index'
 import { DataStoreMachineStateMigrations } from '../migrations'
@@ -7,6 +8,7 @@ describe('Machine State store tests', (): void => {
   let store: MachineStateStore
 
   beforeEach(async (): Promise<void> => {
+    DataSources.singleInstance().defaultDbType = 'sqlite'
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',

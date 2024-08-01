@@ -13,6 +13,7 @@ import {
   BeforeUpdate,
 } from 'typeorm'
 import { IsNotEmpty, validate, ValidationError } from 'class-validator'
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { CorrelationIdentifierEntity } from './CorrelationIdentifierEntity'
 import { ConnectionEntity } from './ConnectionEntity'
 import { IdentityMetadataItemEntity } from './IdentityMetadataItemEntity'
@@ -70,10 +71,10 @@ export class IdentityEntity extends BaseEntity {
   @JoinColumn({ name: 'metadata_id' }) // TODO check in db file
   metadata!: Array<IdentityMetadataItemEntity>
 
-  @CreateDateColumn({ name: 'created_at', nullable: false })
+  @CreateDateColumn({ name: 'created_at', nullable: false, type: typeOrmDateTime() })
   createdAt!: Date
 
-  @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
+  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: typeOrmDateTime() })
   lastUpdatedAt!: Date
 
   @ManyToOne(() => PartyEntity, (party: PartyEntity) => party.identities, {

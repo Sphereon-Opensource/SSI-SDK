@@ -11,6 +11,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 import { ArrayMinSize, IsNotEmpty, validate, ValidationError } from 'class-validator'
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { CredentialLocaleBrandingEntity, credentialLocaleBrandingEntityFrom } from './CredentialLocaleBrandingEntity'
 import { IBasicCredentialBranding, IBasicCredentialLocaleBranding } from '../../types'
 
@@ -42,10 +43,10 @@ export class CredentialBrandingEntity extends BaseEntity {
   @ArrayMinSize(1, { message: 'localeBranding cannot be empty' })
   localeBranding!: Array<CredentialLocaleBrandingEntity>
 
-  @CreateDateColumn({ name: 'created_at', nullable: false })
+  @CreateDateColumn({ name: 'created_at', nullable: false, type: typeOrmDateTime() })
   createdAt!: Date
 
-  @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
+  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: typeOrmDateTime() })
   lastUpdatedAt!: Date
 
   // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.

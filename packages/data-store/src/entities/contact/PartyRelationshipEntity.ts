@@ -10,6 +10,7 @@ import {
   BeforeUpdate,
   JoinColumn,
 } from 'typeorm'
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { PartyEntity } from './PartyEntity'
 
 @Entity('PartyRelationship')
@@ -44,10 +45,10 @@ export class PartyRelationshipEntity {
   @Column('text', { name: 'tenant_id', nullable: true })
   tenantId?: string
 
-  @CreateDateColumn({ name: 'created_at', nullable: false })
+  @CreateDateColumn({ name: 'created_at', nullable: false, type: typeOrmDateTime() })
   createdAt!: Date
 
-  @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
+  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: typeOrmDateTime() })
   lastUpdatedAt!: Date
 
   // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.

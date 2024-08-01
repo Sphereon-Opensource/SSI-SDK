@@ -138,7 +138,7 @@ export const selectCredentialLocaleBranding = (
   return Promise.resolve(branding)
 }
 
-export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<void> => {
+export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<VerificationResult> => {
   const { mappedCredential, hasher, context } = args
 
   const credential = mappedCredential.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
@@ -155,7 +155,7 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
   ) {
     // TODO: Skipping VC validation for EBSI conformance issued credential, as their Issuer is not present in the ledger (sigh)
     if (JSON.stringify(wrappedVC.decoded).includes('vc:ebsi:conformance')) {
-      return
+      return { source: wrappedVC, error: undefined, result: true, subResults: [] } satisfies VerificationResult
     }
   }
 
@@ -175,10 +175,9 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
   )
 
   if (!verificationResult.result || verificationResult.error) {
-    return Promise.reject(
-      Error(verificationResult.result ? verificationResult.error : translate('oid4vci_machine_credential_verification_failed_message')),
-    )
+    return Promise.reject(Error(verificationResult.error ?? translate('oid4vci_machine_credential_verification_failed_message')))
   }
+  return verificationResult
 }
 
 export const verifyCredential = async (args: VerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {

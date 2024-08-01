@@ -73,6 +73,7 @@ import {
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
+  VerificationResult,
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -706,16 +707,15 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
   }
 
-  private async oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<void> {
+  private async oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<VerificationResult[]> {
     const { credentialsToAccept } = args
 
-    await Promise.all(
-      credentialsToAccept.map(
-        async (mappedCredential: MappedCredentialToAccept): Promise<void> =>
-          verifyCredentialToAccept({
-            mappedCredential,
-            context,
-          }),
+    return await Promise.all(
+      credentialsToAccept.map((credentialToAccept) =>
+        verifyCredentialToAccept({
+          mappedCredential: credentialToAccept,
+          context,
+        }),
       ),
     )
   }

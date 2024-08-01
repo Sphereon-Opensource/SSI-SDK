@@ -75,8 +75,12 @@ export const getImageDimensions = async (value: string | Uint8Array): Promise<II
 }
 
 export const downloadImage = async (url: string): Promise<IImageResource | undefined> => {
+  logger.debug(`Downloading image from url: ${url}`)
   if (!url) {
     logger.warning(`Could not download image when nu url is provided`)
+    return
+  } else if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    logger.warning(`Could not download image when url does not start with http(s):// : ${url}`)
     return
   }
   try {
