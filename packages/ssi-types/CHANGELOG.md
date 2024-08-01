@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.29.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.28.0...v0.29.0) (2024-08-01)
+
+### Bug Fixes
+
+- Logger fixes ([75b6925](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/75b692530f01a4c83515a194fc6232418b802259))
+
 # [0.28.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.27.0...v0.28.0) (2024-07-23)
 
 **Note:** Version bump only for package @sphereon/ssi-types
