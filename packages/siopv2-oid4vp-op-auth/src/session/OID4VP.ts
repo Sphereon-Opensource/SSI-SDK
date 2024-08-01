@@ -2,28 +2,37 @@ import { PresentationDefinitionWithLocation, PresentationExchange } from '@spher
 import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
 import { Format } from '@sphereon/pex-models'
 import { getDID, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
-
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
-import { CredentialMapper, W3CVerifiableCredential } from '@sphereon/ssi-types'
+import { CredentialMapper, CompactJWT, Hasher, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { IIdentifier } from '@veramo/core'
-import { DEFAULT_JWT_PROOF_TYPE, VerifiableCredentialsWithDefinition, VerifiablePresentationWithDefinition } from '../types'
+import { encodeJoseBlob } from '@veramo/utils'
+import {
+  DEFAULT_JWT_PROOF_TYPE,
+  IGetPresentationExchangeArgs,
+  IOID4VPArgs,
+  VerifiableCredentialsWithDefinition,
+  VerifiablePresentationWithDefinition,
+} from '../types'
 import { createOID4VPPresentationSignCallback } from './functions'
 import { OpSession } from './OpSession'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
-import { CompactJWT } from '@sphereon/ssi-types/dist'
-import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store/dist'
+import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
 
 export class OID4VP {
   private readonly session: OpSession
   private readonly allDIDs: string[]
+  private readonly hasher?: Hasher
 
-  private constructor(session: OpSession, allDIDs?: string[]) {
+  private constructor(args: IOID4VPArgs) {
+    const { session, allDIDs, hasher } = args
+
     this.session = session
     this.allDIDs = allDIDs ?? []
+    this.hasher = hasher
   }
 
-  public static async init(session: OpSession, allDIDs: string[]): Promise<OID4VP> {
-    return new OID4VP(session, allDIDs ?? (await session.getSupportedDIDs()))
+  public static async init(session: OpSession, allDIDs: string[], hasher?: Hasher): Promise<OID4VP> {
+    return new OID4VP({ session, allDIDs: allDIDs ?? (await session.getSupportedDIDs()), hasher })
   }
 
   public async getPresentationDefinitions(): Promise<PresentationDefinitionWithLocation[] | undefined> {
@@ -34,10 +43,13 @@ export class OID4VP {
     return definitions
   }
 
-  private getPresentationExchange(verifiableCredentials: W3CVerifiableCredential[], allDIDs?: string[]): PresentationExchange {
+  private getPresentationExchange(args: IGetPresentationExchangeArgs): PresentationExchange {
+    const { verifiableCredentials, allDIDs, hasher } = args
+
     return new PresentationExchange({
       allDIDs: allDIDs ?? this.allDIDs,
       allVerifiableCredentials: verifiableCredentials,
+      hasher: hasher ?? this.hasher,
     })
   }
 
@@ -53,6 +65,7 @@ export class OID4VP {
       skipDidResolution?: boolean
       holderDID?: string
       subjectIsHolder?: boolean
+      hasher?: Hasher
       applyFilter?: boolean
     },
   ): Promise<VerifiablePresentationWithDefinition[]> {
@@ -72,6 +85,7 @@ export class OID4VP {
       holderDID?: string
       subjectIsHolder?: boolean
       applyFilter?: boolean
+      hasher?: Hasher
     },
   ): Promise<VerifiablePresentationWithDefinition> {
     const { subjectIsHolder, holderDID, forceNoCredentialsInVP = false } = { ...opts }
@@ -100,8 +114,16 @@ export class OID4VP {
             ),
           )
         }
-        const firstVC = CredentialMapper.toUniformCredential(selectedVerifiableCredentials.credentials[0])
-        const holder = Array.isArray(firstVC.credentialSubject) ? firstVC.credentialSubject[0].id : firstVC.credentialSubject.id
+        const firstVC = CredentialMapper.toUniformCredential(selectedVerifiableCredentials.credentials[0], { hasher: opts?.hasher ?? this.hasher })
+        const holder = CredentialMapper.isSdJwtDecodedCredential(firstVC)
+          ? firstVC.decodedPayload.cnf?.jwk
+            ? //TODO SDK-19: convert the JWK to hex and search for the appropriate key and associated DID
+              //doesn't apply to did:jwk only, as you can represent any DID key as a JWK. So whenever you encounter a JWK it doesn't mean it had to come from a did:jwk in the system. It just can always be represented as a did:jwk
+              `did:jwk:${encodeJoseBlob(firstVC.decodedPayload.cnf?.jwk)}#0`
+            : firstVC.decodedPayload.sub
+          : Array.isArray(firstVC.credentialSubject)
+            ? firstVC.credentialSubject[0].id
+            : firstVC.credentialSubject.id
         if (holder) {
           id = await this.session.context.agent.didManagerGet({ did: holder })
         }
@@ -138,15 +160,15 @@ export class OID4VP {
       format: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format,
       skipDidResolution: opts?.skipDidResolution ?? false,
     })
-    const presentationResult = await this.getPresentationExchange(vcs.credentials, this.allDIDs).createVerifiablePresentation(
-      vcs.definition.definition,
-      vcs.credentials,
-      signCallback,
-      {
-        proofOptions,
-        holderDID: getDID(idOpts),
-      },
-    )
+
+    const presentationResult = await this.getPresentationExchange({
+      verifiableCredentials: vcs.credentials,
+      allDIDs: this.allDIDs,
+      hasher: opts?.hasher,
+    }).createVerifiablePresentation(vcs.definition.definition, vcs.credentials, signCallback, {
+      proofOptions,
+      holderDID: getDID(idOpts),
+    })
 
     const verifiablePresentation =
       typeof presentationResult.verifiablePresentation !== 'string' &&
@@ -214,9 +236,9 @@ export class OID4VP {
       restrictToDIDMethods?: string[]
     },
   ): Promise<SelectResults> {
-    const selectionResults: SelectResults = await this.getPresentationExchange(
-      await this.getCredentials(credentialRole, opts?.filterOpts),
-    ).selectVerifiableCredentialsForSubmission(presentationDefinition.definition, opts)
+    const selectionResults: SelectResults = await this.getPresentationExchange({
+      verifiableCredentials: await this.getCredentials(credentialRole, opts?.filterOpts),
+    }).selectVerifiableCredentialsForSubmission(presentationDefinition.definition, opts)
     if (selectionResults.errors && selectionResults.errors.length > 0) {
       throw Error(JSON.stringify(selectionResults.errors))
     } else if (selectionResults.areRequiredCredentialsPresent === Status.ERROR) {

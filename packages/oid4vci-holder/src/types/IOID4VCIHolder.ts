@@ -22,7 +22,15 @@ import {
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { DigitalCredential, IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
-import { IVerifiableCredential, WrappedVerifiableCredential, WrappedVerifiablePresentation } from '@sphereon/ssi-types'
+import {
+  Hasher,
+  IVerifiableCredential,
+  OriginalVerifiableCredential,
+  W3CVerifiableCredential,
+  WrappedVerifiableCredential,
+  WrappedVerifiablePresentation,
+} from '@sphereon/ssi-types'
+import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   IAgentContext,
   ICredentialIssuer,
@@ -35,7 +43,7 @@ import {
   IResolver,
   TAgent,
   TKeyType,
-  VerifiableCredential,
+  VerificationPolicies,
 } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
 import { JWTHeader, JWTPayload } from 'did-jwt'
@@ -78,6 +86,7 @@ export type OID4VCIHolderOptions = {
   defaultAuthorizationRequestOptions?: AuthorizationRequestOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   jwtCryptographicSuitePreferences?: Array<SignatureAlgorithmEnum>
+  hasher?: Hasher
 }
 
 export type OnContactIdentityCreatedArgs = {
@@ -160,15 +169,16 @@ export enum SupportedLanguage {
 
 export type VerifyCredentialToAcceptArgs = {
   mappedCredential: MappedCredentialToAccept
+  hasher?: Hasher
   context: RequiredContext
 }
 
 export type MappedCredentialToAccept = ExperimentalSubjectIssuance & {
   correlationId: string
-  credential: CredentialToAccept
   types: string[]
+  credentialToAccept: CredentialToAccept
   uniformVerifiableCredential: IVerifiableCredential
-  rawVerifiableCredential: VerifiableCredential
+  rawVerifiableCredential: W3CVerifiableCredential
 }
 
 export type OID4VCIMachineContext = {
@@ -476,7 +486,8 @@ export type GetPreferredCredentialFormatsArgs = {
 }
 
 export type MapCredentialToAcceptArgs = {
-  credential: CredentialToAccept
+  credentialToAccept: CredentialToAccept
+  hasher?: Hasher
 }
 
 export type GetDefaultIssuanceOptsArgs = {
@@ -590,13 +601,39 @@ export enum SignatureAlgorithmEnum {
   ES256K = 'ES256K',
 }
 
+export enum IdentifierAliasEnum {
+  PRIMARY = 'primary',
+}
+
 export type IdentifierOpts = {
   identifier: IIdentifier
   key: _ExtendedIKey
   kid: string
 }
 
+export type CredentialVerificationError = {
+  error?: string
+  errorDetails?: string
+}
+
+export type VerifySDJWTCredentialArgs = { credential: string; hasher?: Hasher }
+
+export interface VerifyCredentialArgs {
+  credential: OriginalVerifiableCredential
+  fetchRemoteContexts?: boolean
+  policies?: VerificationPolicies
+  [x: string]: any
+}
+
 export type RequiredContext = IAgentContext<
-  IIssuanceBranding & IContactManager & ICredentialVerifier & ICredentialIssuer & ICredentialStore & IDIDManager & IResolver & IKeyManager
+  IIssuanceBranding &
+    IContactManager &
+    ICredentialVerifier &
+    ICredentialIssuer &
+    ICredentialStore &
+    IDIDManager &
+    IResolver &
+    IKeyManager &
+    ISDJwtPlugin
 >
 export type DidAgents = TAgent<IResolver & IDIDManager>

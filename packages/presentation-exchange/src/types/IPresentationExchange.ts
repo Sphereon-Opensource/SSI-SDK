@@ -8,11 +8,11 @@ import {
   IResolver,
   PresentationPayload,
 } from '@veramo/core'
-import { IPresentation, Optional, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { IPresentation, Optional, SdJwtDecodedVerifiableCredential, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { IPresentationDefinition, PEVersion, SelectResults } from '@sphereon/pex'
 import { Format, InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
-import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
+import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 
 export interface IPresentationExchange extends IPluginMethodMap {
   pexValidateDefinition(args: IDefinitionValidateArgs): Promise<boolean>
@@ -73,8 +73,8 @@ export interface VersionDiscoveryResult {
 export type IPEXPresentationSignCallback = (args: IPEXPresentationSignCallBackParams) => Promise<W3CVerifiablePresentation>
 
 export interface IPEXPresentationSignCallBackParams {
-  presentation: IPresentation | Optional<PresentationPayload, 'holder'>
+  presentation: IPresentation | Optional<PresentationPayload, 'holder'> | SdJwtDecodedVerifiableCredential
   presentationDefinition: IPresentationDefinition
 }
 
-export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IDIDManager & ICredentialPlugin & ICredentialStore>
+export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IDIDManager & ICredentialPlugin & ISDJwtPlugin>

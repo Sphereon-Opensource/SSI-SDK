@@ -13,7 +13,7 @@ import {
 import { DIDDocument } from '@sphereon/did-uni-client'
 import { VerifiablePresentationResult } from '@sphereon/pex'
 import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
-import { PresentationSubmission, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { Hasher, PresentationSubmission, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import {
   IAgentContext,
@@ -26,8 +26,9 @@ import {
   IResolver,
 } from '@veramo/core'
 import { EventEmitter } from 'events'
-import { OpSession } from '../session/OpSession'
+import { OpSession } from '../session'
 import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
+import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import { Siopv2Machine as Siopv2MachineId } from './machine'
 import { Party } from '@sphereon/ssi-sdk.data-store'
 import {
@@ -118,7 +119,7 @@ export enum events {
 }
 
 export type IRequiredContext = IAgentContext<
-  IDataStoreORM & IResolver & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier & ICredentialStore & IPDManager
+  IDataStoreORM & IResolver & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier & ICredentialStore & IPDManager & ISDJwtPlugin
 >
 
 export interface IOPOptions {
@@ -153,4 +154,22 @@ export interface VerifiablePresentationWithDefinition extends VerifiablePresenta
   verifiableCredentials: W3CVerifiableCredential[]
   identifierOpts: IIdentifierOpts
 }
+
+export interface IOpSessionGetOID4VPArgs {
+  allDIDs?: string[]
+  hasher?: Hasher
+}
+
+export interface IOID4VPArgs {
+  session: OpSession
+  allDIDs?: string[]
+  hasher?: Hasher
+}
+
+export interface IGetPresentationExchangeArgs {
+  verifiableCredentials: W3CVerifiableCredential[]
+  allDIDs?: string[]
+  hasher?: Hasher
+}
+
 export const DEFAULT_JWT_PROOF_TYPE = 'JwtProof2020'

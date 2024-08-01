@@ -1,6 +1,7 @@
 import { OriginalType, WrappedVerifiableCredential, WrappedVerifiablePresentation } from './vc'
-import { decodeSdJwtSync, decodeSdJwt, getClaims, getClaimsSync } from '@sd-jwt/decode'
-import { CompactJWT } from './w3c-vc'
+import { decodeSdJwt, decodeSdJwtSync, getClaims, getClaimsSync } from '@sd-jwt/decode'
+import { CompactJWT, IVerifiableCredential } from './w3c-vc'
+import { IProofPurpose, IProofType } from './did'
 
 type JsonValue = string | number | boolean | { [x: string]: JsonValue | undefined } | Array<JsonValue>
 
@@ -225,13 +226,13 @@ export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): S
       } satisfies SdJwtDisclosure
     }),
     signedPayload: signedPayload as SdJwtSignedVerifiableCredentialPayload,
-    kbJwt:
-      compactKeyBindingJwt && kbJwt
-        ? {
-            compact: compactKeyBindingJwt,
-            payload: kbJwt.payload as SdJwtVcKbJwtPayload,
-          }
-        : undefined,
+    ...(compactKeyBindingJwt &&
+      kbJwt && {
+        kbJwt: {
+          compact: compactKeyBindingJwt,
+          payload: kbJwt.payload as SdJwtVcKbJwtPayload,
+        },
+      }),
   }
 }
 
@@ -262,12 +263,93 @@ export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher:
       } satisfies SdJwtDisclosure
     }),
     signedPayload: signedPayload as SdJwtSignedVerifiableCredentialPayload,
-    kbJwt:
-      compactKeyBindingJwt && kbJwt
-        ? {
-            compact: compactKeyBindingJwt,
-            payload: kbJwt.payload as SdJwtVcKbJwtPayload,
-          }
-        : undefined,
+    ...(compactKeyBindingJwt &&
+      kbJwt && {
+        kbJwt: {
+          compact: compactKeyBindingJwt,
+          payload: kbJwt.payload as SdJwtVcKbJwtPayload,
+        },
+      }),
+  }
+}
+
+type DisclosuresAccumulator = {
+  [key: string]: any
+}
+
+// TODO naive implementation of mapping a sd-jwt onto a IVerifiableCredential. Needs some fixes and further implementation and needs to be moved out of ssi-types
+export async function sdJwtDecodedCredentialToUniformCredential(
+  decoded: SdJwtDecodedVerifiableCredential,
+  opts?: { maxTimeSkewInMS?: number },
+): Promise<IVerifiableCredential> {
+  const { exp, nbf, iss, sub, iat, vct, user, cnf, status, ...rest } = decoded.decodedPayload
+  const maxSkewInMS = opts?.maxTimeSkewInMS ?? 1500
+
+  const jwtDateToISOString = ({
+    jwtClaim,
+    claimName,
+    isRequired = false,
+  }: {
+    jwtClaim?: number
+    claimName: string
+    isRequired?: boolean
+  }): string | undefined => {
+    if (jwtClaim) {
+      const claim = parseInt(jwtClaim.toString())
+      // change JWT seconds to millisecond for the date
+      return new Date(claim * (claim < 9999999999 ? 1000 : 1)).toISOString().replace(/\.000Z/, 'Z')
+    } else if (isRequired) {
+      throw Error(`JWT claim ${claimName} is required but was not present`)
+    }
+    return undefined
+  }
+
+  const expirationDate = jwtDateToISOString({ jwtClaim: exp, claimName: 'exp' })
+  let issuanceDateStr = jwtDateToISOString({ jwtClaim: iat, claimName: 'iat' })
+
+  let nbfDateAsStr: string | undefined
+  if (nbf) {
+    nbfDateAsStr = jwtDateToISOString({ jwtClaim: nbf, claimName: 'nbf' })
+    if (issuanceDateStr && nbfDateAsStr && issuanceDateStr !== nbfDateAsStr) {
+      const diff = Math.abs(new Date(nbfDateAsStr).getTime() - new Date(iss).getTime())
+      if (!maxSkewInMS || diff > maxSkewInMS) {
+        throw Error(`Inconsistent issuance dates between JWT claim (${nbfDateAsStr}) and VC value (${iss})`)
+      }
+    }
+    issuanceDateStr = nbfDateAsStr
+  }
+  const issuanceDate = issuanceDateStr
+  if (!issuanceDate) {
+    throw Error(`JWT issuance date is required but was not present`)
+  }
+
+  const credentialSubject = decoded.disclosures.reduce(
+    (acc: DisclosuresAccumulator, item: { decoded: Array<any>; digest: string; encoded: string }) => {
+      const key = item.decoded[1]
+      acc[key] = item.decoded[2]
+
+      return acc
+    },
+    {},
+  )
+
+  return {
+    ...rest,
+    type: [vct], // SDJwt is not a W3C VC, so no VerifiableCredential
+    '@context': [], // SDJwt has no JSON-LD by default. Certainly not the VC DM1 default context for JSON-LD
+    credentialSubject: {
+      ...(sub && { id: sub }),
+      ...credentialSubject,
+    },
+    issuanceDate,
+    expirationDate,
+    issuer: iss,
+    proof: {
+      type: IProofType.SdJwtProof2024,
+      created: nbfDateAsStr ?? issuanceDate,
+      proofPurpose: IProofPurpose.authentication,
+      verificationMethod: iss,
+      jwt: decoded.compactSdJwtVc,
+    },
   }
 }
