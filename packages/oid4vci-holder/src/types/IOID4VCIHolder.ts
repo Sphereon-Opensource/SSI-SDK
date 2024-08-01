@@ -43,7 +43,6 @@ import {
   IResolver,
   TAgent,
   TKeyType,
-  VerifiableCredential,
   VerificationPolicies,
 } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
