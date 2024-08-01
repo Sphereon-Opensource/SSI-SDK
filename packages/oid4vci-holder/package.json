@@ -16,7 +16,7 @@
   "dependencies": {
     "@sphereon/oid4vci-client": "0.15.1-next.9",
     "@sphereon/oid4vci-common": "0.15.1-next.9",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.24.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-next.3",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.credential-store": "workspace:*",
@@ -33,7 +33,7 @@
     "xstate": "^4.38.3"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.24.0",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.24.1-next.3",
     "@types/i18n-js": "^3.8.9",
     "@types/lodash.memoize": "^4.1.9",
     "@types/uuid": "^9.0.8",
