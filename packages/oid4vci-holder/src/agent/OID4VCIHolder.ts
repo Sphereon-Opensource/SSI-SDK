@@ -145,9 +145,7 @@ export function signCallback(client: OpenID4VCIClient, idOpts: IIdentifierOpts, 
       kid = `${identifier.did}${hash}${kid}`
     }
     const header = { ...jwt.header, ...(kid && { kid }) } as Partial<JWTHeader>
-    console.log(`HEADER: `, header)
     const payload = { ...jwt.payload, ...(iss && { iss }) }
-    console.log(`PAYLOAD: `, payload)
     return signJWT({
       idOpts,
       header,
@@ -763,17 +761,17 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
 
     const { credentialsToAccept, openID4VCIClientState, credentialsSupported, serverMetadata, selectedCredentials } = args
-    const credentialToAccept = credentialsToAccept[0]
+    const mappedCredentialToAccept = credentialsToAccept[0]
 
     if (selectedCredentials && selectedCredentials.length > 1) {
       logger.error(`More than 1 credential selected ${selectedCredentials.join(', ')}, but current service only stores 1 credential!`)
     }
 
     let persist = true
-    const verifiableCredential = credentialToAccept.uniformVerifiableCredential as VerifiableCredential
+    const verifiableCredential = mappedCredentialToAccept.uniformVerifiableCredential as VerifiableCredential
 
-    const notificationId = credentialToAccept.credentialToAccept.credentialResponse.notification_id
-    const subjectIssuance = credentialToAccept.credential_subject_issuance
+    const notificationId = mappedCredentialToAccept.credentialToAccept.credentialResponse.notification_id
+    const subjectIssuance = mappedCredentialToAccept.credential_subject_issuance
     const notificationEndpoint = serverMetadata?.credentialIssuerMetadata?.notification_endpoint
     let holderCredential:
       | IVerifiableCredential
@@ -795,7 +793,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           ? 'credential_accepted_holder_signed'
           : 'credential_deleted_holder_signed'
         logger.log(`Subject issuance/signing will be used, with event`, event)
-        const issuerVC = credentialToAccept.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
+        const issuerVC = mappedCredentialToAccept.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
         const wrappedIssuerVC = CredentialMapper.toWrappedVerifiableCredential(issuerVC)
         console.log(`Wrapped VC: ${wrappedIssuerVC.type}, ${wrappedIssuerVC.format}`)
         // We will use the subject of the VCI Issuer (the holder, as the issuer of the new credential, so the below is not a mistake!)
@@ -817,8 +815,8 @@ export class OID4VCIHolder implements IAgentPlugin {
           const decodedJwt = decodeJWT(openID4VCIClientState.accessTokenResponse.access_token)
           issuer = decodedJwt.payload.sub
         }
-        if (!issuer && credentialToAccept.credentialToAccept.issuanceOpt.identifier) {
-          issuer = credentialToAccept.credentialToAccept.issuanceOpt.identifier.did
+        if (!issuer && mappedCredentialToAccept.credentialToAccept.issuanceOpt.identifier) {
+          issuer = mappedCredentialToAccept.credentialToAccept.issuanceOpt.identifier.did
         }
 
         if (!issuer) {
