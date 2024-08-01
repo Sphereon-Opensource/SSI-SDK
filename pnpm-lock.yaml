@@ -236,11 +236,11 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -415,8 +415,8 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -525,14 +525,14 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-resolver-ebsi':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -598,11 +598,11 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -891,8 +891,8 @@ importers:
         specifier: 0.15.1-next.9
         version: 0.15.1-next.9
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -937,8 +937,8 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@types/i18n-js':
         specifier: ^3.8.9
         version: 3.8.9
@@ -973,8 +973,8 @@ importers:
         specifier: 0.15.1-next.9
         version: 0.15.1-next.9(awesome-qr@2.1.5-rc.0)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1095,17 +1095,17 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1228,8 +1228,8 @@ importers:
         specifier: 0.15.1-next.9
         version: 0.15.1-next.9
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1444,8 +1444,8 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.credential-store':
         specifier: workspace:*
         version: link:../credential-store
@@ -1496,14 +1496,14 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1551,11 +1551,11 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -1715,8 +1715,8 @@ importers:
         specifier: ^0.6.1
         version: 0.6.1
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@veramo/utils':
         specifier: 4.2.0
         version: 4.2.0
@@ -1734,17 +1734,17 @@ importers:
         specifier: ^0.6.1
         version: 0.6.1
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@types/node':
         specifier: 18.15.3
         version: 18.15.3
@@ -1804,8 +1804,8 @@ importers:
         specifier: 2.2.4
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -1865,8 +1865,8 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -1910,8 +1910,8 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2041,8 +2041,8 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -2336,14 +2336,14 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2388,11 +2388,11 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -2517,11 +2517,11 @@ importers:
         specifier: 1.2.0
         version: 1.2.0
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2614,17 +2614,17 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/ssi-sdk-ext.did-provider-key':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43(expo@51.0.23)(react-native@0.74.3)
+        specifier: 0.24.0
+        version: 0.24.0(expo@51.0.23)(react-native@0.74.3)
       '@sphereon/ssi-sdk-ext.did-provider-lto':
         specifier: 0.23.0
         version: 0.23.0(typescript@5.4.2)
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@transmute/lds-ecdsa-secp256k1-recovery2020':
         specifier: ^0.0.7
         version: 0.0.7(expo@51.0.23)(react-native@0.74.3)
@@ -2698,8 +2698,8 @@ importers:
   packages/vc-status-list:
     dependencies:
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -2744,8 +2744,8 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2793,8 +2793,8 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2839,11 +2839,11 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2984,17 +2984,17 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -3230,11 +3230,11 @@ importers:
         version: 2.0.6
     devDependencies:
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.23.1-next.43
-        version: 0.23.1-next.43
+        specifier: 0.24.0
+        version: 0.24.0
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.5
@@ -8287,12 +8287,12 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.23.1-next.43:
-    resolution: {integrity: sha512-r2ZgsElQL9kt1RKqPbRzLlwxV3Z9b6RfEyrVt30Ir/SxC9kmGP01dXZGUzFQJHdqrV5YJG3JyNo0vnJLWh+BZA==}
+  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.24.0:
+    resolution: {integrity: sha512-Q0X8l+ViZGM/xW78rY22VW1g81CXzVQH3CCGiM5p39wYY8R5G15n6lkPXRZondi4mlE7PGEszep61QWeJcsERw==}
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/ssi-sdk-ext.did-utils': 0.23.1-next.43
-      '@sphereon/ssi-sdk-ext.key-utils': 0.23.1-next.43
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.0
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.0
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -8306,11 +8306,11 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-provider-key@0.23.1-next.43(expo@51.0.23)(react-native@0.74.3):
-    resolution: {integrity: sha512-m1t0C6UjVfss7oWkrAP6I+4TVX4yzaQBzdZ+j6hl4h84Gx0eXTUXj7NhoDkRBrVhBDRkt8ipMyAfqS05NN9rpA==}
+  /@sphereon/ssi-sdk-ext.did-provider-key@0.24.0(expo@51.0.23)(react-native@0.74.3):
+    resolution: {integrity: sha512-GD/ODfXmAcYWIX9cW1JZBOes9zk0z5K0yx7MYuD+D2zYcGQmj7EuMTKL+9xbEVWTbNfZjPI886ZtiE6V3WbCCA==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.23.1-next.43
-      '@sphereon/ssi-sdk-ext.key-utils': 0.23.1-next.43
+      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.24.0
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.0
       '@transmute/did-key-bls12381': 0.3.0-unstable.10(expo@51.0.23)(react-native@0.74.3)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
@@ -8346,8 +8346,8 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-resolver-ebsi@0.23.1-next.43:
-    resolution: {integrity: sha512-iMlnNHVEqtBx1672fXqy5akK7CbBCwIOES0NQH9WMjltWeAzPITQTBH6vFsmZi5PsYD7UckO0AOzvLbBs94+qw==}
+  /@sphereon/ssi-sdk-ext.did-resolver-ebsi@0.24.0:
+    resolution: {integrity: sha512-ljm6DIpmL+gTJeyXX8R32uHxBceCTpo68XeSFqDcYxnqn8XiQXB2pgW9qM9bWH4n455+DsuRkjb57D1oPC4XoQ==}
     dependencies:
       cross-fetch: 3.1.8
       did-resolver: 4.1.0
@@ -8356,8 +8356,8 @@ packages:
       - encoding
     dev: false
 
-  /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.23.1-next.43:
-    resolution: {integrity: sha512-o1hdOSu16JEgGpwhhg04SVZBT9u8VLcGXL1d5FBxfQGk3rFqqtWV6pQ2QdgYpgIJOFIYEYDXbOh4KYSmbCcyhA==}
+  /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.24.0:
+    resolution: {integrity: sha512-74to/yE8q3A7O935AlvHWhvBItHuC0HCiKq2UiYa5Adw3NVU9mElXUOik7IRJrhuD6wJNaAxDmQYAFIWRdIG1g==}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       base64url: 3.0.1
@@ -8368,10 +8368,10 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-resolver-key@0.23.1-next.43:
-    resolution: {integrity: sha512-Z4EYUHV3Xnm/6i58ryMuzzXxO9jHskDbqDhwVPy1IyoOuB+oMYcIIMqyPTNxwqEQR6Ad00j4EcX/+Er62/78jg==}
+  /@sphereon/ssi-sdk-ext.did-resolver-key@0.24.0:
+    resolution: {integrity: sha512-m5SbM6Ae+xg81zPvNMtcTz79WwtwewakMtvmDOSDUDgHKdoMOAHZ9AQaD9I06wZ0+ftixudgxbAenoVT6Mxy5Q==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.key-utils': 0.23.1-next.43
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.0
       '@stablelib/ed25519': 1.0.3
       bigint-mod-arith: 3.3.1
       did-resolver: 4.1.0
@@ -8386,13 +8386,13 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-utils@0.23.1-next.43:
-    resolution: {integrity: sha512-vViKRSij8unTgZADedXgwTZzTppfvg0xacEWK9OFjzkiqq5uYOEE8tux8AnJ+xMLDYHZRvaJXpCPBfGQRTphQA==}
+  /@sphereon/ssi-sdk-ext.did-utils@0.24.0:
+    resolution: {integrity: sha512-asevnEBumeUZEk+zcjzFf+70OD1RTk+83jAlDU54cJukj35ZX6HYq+qmcwIqXRMG9rk8om8rT7R5I7UqpQkhkg==}
     dependencies:
       '@ethersproject/networks': 5.7.1
       '@ethersproject/transactions': 5.7.0
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/ssi-sdk-ext.key-utils': 0.23.1-next.43
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.0
       '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -8405,18 +8405,18 @@ packages:
       - encoding
       - supports-color
 
-  /@sphereon/ssi-sdk-ext.key-manager@0.23.1-next.43:
-    resolution: {integrity: sha512-bO/TlzES0A9TVgnEjeHvz2C1sPvfgMPkN6SwYpsMRF43Md2q2nrjOUaPNfxFxt3dkPYG+jukt6IkH31YplNOWQ==}
+  /@sphereon/ssi-sdk-ext.key-manager@0.24.0:
+    resolution: {integrity: sha512-4T/LnTPh9JhoTLxGdhOzFvun8Vw6T3o55qLm6R7AkdSsTJs3/EJiMfegH8FBSMqw3W4+7Z9qV2+ETLvdC39HVA==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.kms-local': 0.23.1-next.43
+      '@sphereon/ssi-sdk-ext.kms-local': 0.24.0
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
     transitivePeerDependencies:
       - encoding
       - supports-color
 
-  /@sphereon/ssi-sdk-ext.key-utils@0.23.1-next.43:
-    resolution: {integrity: sha512-lSWddzW70QoqxD61i949VWuKXgpMk/+6euC4BmaSqMiLN66ItS647BgXPNJCPh/jULAgRtUc33Sq7IwHbZ9dHw==}
+  /@sphereon/ssi-sdk-ext.key-utils@0.24.0:
+    resolution: {integrity: sha512-69A7H5H/CSPHJnsoN6ICP4oluJunjMi5ia7okk6b2GZ6FEbj6JAcOavO6eznUrqPyhwg71+Es/TkuFCtQ1JydA==}
     dependencies:
       '@ethersproject/random': 5.7.0
       '@stablelib/ed25519': 1.0.3
@@ -8435,11 +8435,11 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@sphereon/ssi-sdk-ext.kms-local@0.23.1-next.43:
-    resolution: {integrity: sha512-Yasl2XvOaTu44LUDpiLPS0qW3w88se9oUJzo5Zn6MbfCTOkODWPLq/duEUzOBDeuGotrpXzv38xk1ZT2t3uH8A==}
+  /@sphereon/ssi-sdk-ext.kms-local@0.24.0:
+    resolution: {integrity: sha512-wh00UWRMF03yrKS2/kLHU6QTtX9VMovFPCSuz3hcZYJv/TLL2G3sADwdMx+O6Qd6BrM7w3Ev+A7tabGURA02Vg==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.23.1-next.43
-      '@sphereon/ssi-sdk-ext.key-utils': 0.23.1-next.43
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.0
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.0
       '@trust/keyto': 2.0.0-alpha1
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
