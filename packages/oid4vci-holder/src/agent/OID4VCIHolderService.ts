@@ -138,7 +138,7 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
   ) {
     // TODO: Skipping VC validation for EBSI conformance issued credential, as their Issuer is not present in the ledger (sigh)
     if (JSON.stringify(wrappedVC.decoded).includes('vc:ebsi:conformance')) {
-      return {source: wrappedVC, error: undefined, result: true, subResults: []} satisfies VerificationResult
+      return { source: wrappedVC, error: undefined, result: true, subResults: [] } satisfies VerificationResult
     }
   }
 
@@ -157,9 +157,7 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
   )
 
   if (!verificationResult.result || verificationResult.error) {
-    return Promise.reject(
-      Error(verificationResult.error ?? translate('oid4vci_machine_credential_verification_failed_message')),
-    )
+    return Promise.reject(Error(verificationResult.error ?? translate('oid4vci_machine_credential_verification_failed_message')))
   }
   return verificationResult
 }

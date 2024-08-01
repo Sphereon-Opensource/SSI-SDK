@@ -1,6 +1,6 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { CredentialCorrelationType, CredentialDocumentFormat, CredentialRole, CredentialStateType, DocumentType } from '../../types'
-import {TYPEORM_DATE_TIME_TYPE, TYPEORM_DATE_TYPE} from "@sphereon/ssi-sdk.agent-config";
+import { typeormDate, typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 
 @Entity('DigitalCredential')
 export class DigitalCredentialEntity extends BaseEntity {
@@ -46,21 +46,21 @@ export class DigitalCredentialEntity extends BaseEntity {
   @Column('text', { name: 'tenant_id', nullable: true })
   tenantId?: string
 
-  @CreateDateColumn({ name: 'created_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
+  @CreateDateColumn({ name: 'created_at', nullable: false, type: typeOrmDateTime() })
   createdAt!: Date
 
-  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
+  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: typeOrmDateTime() })
   lastUpdatedAt!: Date
 
-  @Column({ name: 'valid_until', nullable: true, type: TYPEORM_DATE_TYPE })
+  @Column({ name: 'valid_until', nullable: true, type: typeormDate() })
   validUntil?: Date
 
-  @Column({ name: 'valid_from', nullable: true, type: TYPEORM_DATE_TYPE })
+  @Column({ name: 'valid_from', nullable: true, type: typeormDate() })
   validFrom?: Date
 
-  @Column( { name: 'verified_at', nullable: true, type: TYPEORM_DATE_TIME_TYPE })
+  @Column({ name: 'verified_at', nullable: true, type: typeOrmDateTime() })
   verifiedAt?: Date
 
-  @Column({ name: 'revoked_at', nullable: true, type: TYPEORM_DATE_TIME_TYPE })
+  @Column({ name: 'revoked_at', nullable: true, type: typeOrmDateTime() })
   revokedAt?: Date
 }

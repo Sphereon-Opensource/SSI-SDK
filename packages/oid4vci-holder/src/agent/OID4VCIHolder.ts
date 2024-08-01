@@ -72,7 +72,8 @@ import {
   SignatureAlgorithmEnum,
   StartResult,
   StoreCredentialBrandingArgs,
-  StoreCredentialsArgs, VerificationResult,
+  StoreCredentialsArgs,
+  VerificationResult,
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -710,12 +711,11 @@ export class OID4VCIHolder implements IAgentPlugin {
     const { credentialsToAccept } = args
 
     return await Promise.all(
-      credentialsToAccept.map(
-          credentialToAccept =>
-          verifyCredentialToAccept({
-            mappedCredential: credentialToAccept,
-            context,
-          }),
+      credentialsToAccept.map((credentialToAccept) =>
+        verifyCredentialToAccept({
+          mappedCredential: credentialToAccept,
+          context,
+        }),
       ),
     )
   }

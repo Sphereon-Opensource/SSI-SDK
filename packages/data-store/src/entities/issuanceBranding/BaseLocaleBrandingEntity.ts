@@ -11,7 +11,7 @@ import {
   TableInheritance,
   UpdateDateColumn,
 } from 'typeorm'
-import {TYPEORM_DATE_TIME_TYPE} from "@sphereon/ssi-sdk.agent-config";
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { ImageAttributesEntity } from './ImageAttributesEntity'
 import { BackgroundAttributesEntity } from './BackgroundAttributesEntity'
 import { TextAttributesEntity } from './TextAttributesEntity'
@@ -62,10 +62,10 @@ export class BaseLocaleBrandingEntity extends BaseEntity {
   @JoinColumn({ name: 'textId' })
   text?: TextAttributesEntity
 
-  @CreateDateColumn({ name: 'created_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
+  @CreateDateColumn({ name: 'created_at', nullable: false, type: typeOrmDateTime() })
   createdAt!: Date
 
-  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
+  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: typeOrmDateTime() })
   lastUpdatedAt!: Date
 
   // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.

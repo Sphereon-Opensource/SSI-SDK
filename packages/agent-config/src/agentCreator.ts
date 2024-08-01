@@ -61,7 +61,7 @@ export const getConfig = async (filePath: string | Buffer | URL): Promise<{ vers
 
   // read file async
   try {
-    const fs = await import('fs')
+    const fs = await import(/* webpackIgnore: true */ 'fs')
     fileContent = await fs.promises.readFile(filePath, 'utf8')
   } catch (e) {
     console.log('Config file not found: ' + filePath)

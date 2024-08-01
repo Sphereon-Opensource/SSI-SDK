@@ -2,14 +2,14 @@ import { ActionSubType, ActionType, InitiatorType, LogLevel, SubSystem, System, 
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { PartyCorrelationType } from '@sphereon/ssi-sdk.core'
 import { NonPersistedAuditLoggingEvent } from '../../types'
-import {TYPEORM_DATE_TIME_TYPE} from "@sphereon/ssi-sdk.agent-config";
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 
 @Entity('AuditEvents')
 export class AuditEventEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'timestamp', nullable: false, unique: false, type: TYPEORM_DATE_TIME_TYPE })
+  @Column({ name: 'timestamp', nullable: false, unique: false, type: typeOrmDateTime() })
   timestamp!: Date
 
   @Column('simple-enum', { name: 'level', enum: LogLevel, nullable: false, unique: false })
@@ -60,10 +60,10 @@ export class AuditEventEntity extends BaseEntity {
   @Column('text', { name: 'diagnosticData', nullable: true, unique: false })
   diagnosticData?: string
 
-  @CreateDateColumn({ name: 'created_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
+  @CreateDateColumn({ name: 'created_at', nullable: false, type: typeOrmDateTime() })
   createdAt!: Date
 
-  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
+  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: typeOrmDateTime() })
   lastUpdatedAt!: Date
 }
 

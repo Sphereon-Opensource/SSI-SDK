@@ -1,4 +1,4 @@
-import {DataSources} from "@sphereon/ssi-sdk.agent-config";
+import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { DataSource, Repository } from 'typeorm'
 import { DataStoreMigrations } from '../migrations'
 import {

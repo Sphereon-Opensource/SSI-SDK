@@ -58,7 +58,6 @@ import {
 import { ContactMetadataItemEntity } from '../entities/contact/ContactMetadataItemEntity'
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 
-
 // TODO write test adding two contacts reusing the same contactType
 
 describe('Database entities tests', (): void => {

@@ -1,4 +1,4 @@
-import {DataSources} from "@sphereon/ssi-sdk.agent-config";
+import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { DataSource } from 'typeorm'
 import { CredentialRole, DataStoreDigitalCredentialEntities } from '../index'
 import { DataStoreDigitalCredentialMigrations } from '../migrations'

@@ -1,6 +1,6 @@
 import { BaseEntity, BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { IsNotEmpty } from 'class-validator'
-import {TYPEORM_DATE_TIME_TYPE} from "@sphereon/ssi-sdk.agent-config";
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 
 @Entity('PresentationDefinitionItem')
 @Index(['version'], { unique: false })
@@ -29,10 +29,10 @@ export class PresentationDefinitionItemEntity extends BaseEntity {
   @IsNotEmpty({ message: 'A blank definition payload field is not allowed' })
   definitionPayload!: string
 
-  @CreateDateColumn({ name: 'created_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
+  @CreateDateColumn({ name: 'created_at', nullable: false, type: typeOrmDateTime() })
   createdAt!: Date
 
-  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
+  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: typeOrmDateTime() })
   lastUpdatedAt!: Date
 
   // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.

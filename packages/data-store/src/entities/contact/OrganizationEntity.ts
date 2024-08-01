@@ -1,8 +1,8 @@
-import {IsNotEmpty, validate, ValidationError} from 'class-validator'
-import {BeforeInsert, BeforeUpdate, ChildEntity, Column} from 'typeorm'
-import {ValidationConstraint} from '../../types'
-import {getConstraint} from '../../utils/ValidatorUtils'
-import {BaseContactEntity} from './BaseContactEntity'
+import { IsNotEmpty, validate, ValidationError } from 'class-validator'
+import { BeforeInsert, BeforeUpdate, ChildEntity, Column } from 'typeorm'
+import { ValidationConstraint } from '../../types'
+import { getConstraint } from '../../utils/ValidatorUtils'
+import { BaseContactEntity } from './BaseContactEntity'
 
 @ChildEntity('Organization')
 export class OrganizationEntity extends BaseContactEntity {
