@@ -79,7 +79,7 @@ export const didProviders = {
 const dbConnection = getDbConnection(DB_CONNECTION_NAME)
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
-const agent = createAgent<IDIDManager & IKeyManager & IDataStore & IDataStoreORM & IResolver>({
+const agent = createAgent<IDIDManager & IKeyManager & IDataStoreORM & IResolver>({
   plugins: [
     new DataStore(dbConnection),
     new DataStoreORM(dbConnection),

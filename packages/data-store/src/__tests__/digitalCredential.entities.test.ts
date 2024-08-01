@@ -1,5 +1,6 @@
+import {DataSources} from "@sphereon/ssi-sdk.agent-config";
 import { DataSource } from 'typeorm'
-import { DataStoreDigitalCredentialEntities } from '../index'
+import { CredentialRole, DataStoreDigitalCredentialEntities } from '../index'
 import { DataStoreDigitalCredentialMigrations } from '../migrations'
 import { DigitalCredentialEntity } from '../entities/digitalCredential/DigitalCredentialEntity'
 import {
@@ -17,6 +18,7 @@ describe('Database entities tests', (): void => {
   let dbConnection: DataSource
 
   beforeEach(async (): Promise<void> => {
+    DataSources.singleInstance().defaultDbType = 'sqlite'
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',
@@ -43,6 +45,7 @@ describe('Database entities tests', (): void => {
       subjectCorrelationType: CredentialCorrelationType.DID,
       issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     }
 
@@ -69,6 +72,7 @@ describe('Database entities tests', (): void => {
       subjectCorrelationType: CredentialCorrelationType.DID,
       issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     })
     expect(digitalCredential.documentType).toEqual(DocumentType.VC)
@@ -85,6 +89,7 @@ describe('Database entities tests', (): void => {
       subjectCorrelationType: CredentialCorrelationType.DID,
       issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     })
     expect(digitalCredential.documentType).toEqual(DocumentType.VC)
@@ -128,6 +133,7 @@ describe('Database entities tests', (): void => {
       issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
+      credentialRole: CredentialRole.VERIFIER,
     })
     expect(digitalCredential.documentType).toEqual(DocumentType.VC)
     expect(digitalCredential.validFrom).toEqual(new Date('2022-01-07T11:54:12.000Z'))
@@ -225,6 +231,7 @@ describe('Database entities tests', (): void => {
       subjectCorrelationType: CredentialCorrelationType.DID,
       issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
     })
     expect(digitalCredential.documentType).toEqual(DocumentType.VP)
@@ -241,6 +248,7 @@ describe('Database entities tests', (): void => {
       subjectCorrelationType: CredentialCorrelationType.DID,
       issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
       subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
       opts: {
         hasher: (data, algorithm) => createHash(algorithm).update(data).digest(),

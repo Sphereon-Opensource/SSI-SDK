@@ -32,6 +32,7 @@ import {
   AsyncHasher,
 } from '../types'
 import { ObjectUtils } from '../utils'
+import { IssuerType } from '@veramo/core'
 
 export class CredentialMapper {
   /**
@@ -751,5 +752,21 @@ export class CredentialMapper {
     }
     const proofs = 'vc' in document ? document.vc.proof : 'vp' in document ? document.vp.proof : (<IVerifiableCredential>document).proof
     return Array.isArray(proofs) ? proofs[0] : proofs
+  }
+
+  static issuerCorrelationIdFromIssuerType(issuer: IssuerType): string {
+    if (issuer === undefined) {
+      throw new Error('Issuer type us undefined')
+    } else if (typeof issuer === 'string') {
+      return issuer
+    } else if (typeof issuer === 'object') {
+      if ('id' in issuer) {
+        return issuer.id
+      } else {
+        throw new Error('Encountered an invalid issuer object: missing id property')
+      }
+    } else {
+      throw new Error('Invalid issuer type')
+    }
   }
 }

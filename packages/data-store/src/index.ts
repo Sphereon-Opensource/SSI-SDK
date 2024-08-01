@@ -28,6 +28,8 @@ import { ElectronicAddressEntity } from './entities/contact/ElectronicAddressEnt
 import { PhysicalAddressEntity } from './entities/contact/PhysicalAddressEntity'
 export { ContactStore } from './contact/ContactStore'
 export { AbstractContactStore } from './contact/AbstractContactStore'
+export { AbstractDigitalCredentialStore } from './digitalCredential/AbstractDigitalCredentialStore'
+export { DigitalCredentialStore } from './digitalCredential/DigitalCredentialStore'
 export { AbstractIssuanceBrandingStore } from './issuanceBranding/AbstractIssuanceBrandingStore'
 export { IssuanceBrandingStore } from './issuanceBranding/IssuanceBrandingStore'
 export { StatusListStore } from './statusList/StatusListStore'
@@ -48,6 +50,7 @@ export {
   DataStoreMigrations,
   DataStoreEventLoggerMigrations,
   DataStoreContactMigrations,
+  DataStoreDigitalCredentialMigrations,
   DataStoreIssuanceBrandingMigrations,
   DataStoreStatusListMigrations,
   DataStoreMachineStateMigrations,
@@ -55,6 +58,7 @@ export {
 } from './migrations'
 export * from './types'
 export * from './utils/contact/MappingUtils'
+export * from './utils/digitalCredential/MappingUtils'
 
 export const DataStoreContactEntities = [
   BaseConfigEntity,

@@ -20,7 +20,7 @@ import {
   SupportedDidMethodEnum,
 } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
+import { DigitalCredential, IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import { IVerifiableCredential, WrappedVerifiableCredential, WrappedVerifiablePresentation } from '@sphereon/ssi-types'
 import {
@@ -37,10 +37,10 @@ import {
   TKeyType,
   VerifiableCredential,
 } from '@veramo/core'
-import { IDataStore, IDataStoreORM } from '@veramo/data-store'
 import { _ExtendedIKey } from '@veramo/utils'
 import { JWTHeader, JWTPayload } from 'did-jwt'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
+import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult>
@@ -62,7 +62,7 @@ export interface IOID4VCIHolder extends IPluginMethodMap {
 
   oid4vciHolderAddContactIdentity(args: AddContactIdentityArgs, context: RequiredContext): Promise<Identity>
 
-  oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<void>
+  oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<VerificationResult[]>
 
   oid4vciHolderStoreCredentialBranding(args: StoreCredentialBrandingArgs, context: RequiredContext): Promise<void>
 
@@ -91,8 +91,8 @@ export type GetIssuerMetadataArgs = {
 }
 
 export type OnCredentialStoredArgs = {
+  credential: DigitalCredential
   vcHash: string
-  credential: VerifiableCredential
 }
 
 export type OnIdentifierCreatedArgs = {
@@ -597,6 +597,6 @@ export type IdentifierOpts = {
 }
 
 export type RequiredContext = IAgentContext<
-  IIssuanceBranding & IContactManager & ICredentialVerifier & ICredentialIssuer & IDataStore & IDataStoreORM & IDIDManager & IResolver & IKeyManager
+  IIssuanceBranding & IContactManager & ICredentialVerifier & ICredentialIssuer & ICredentialStore & IDIDManager & IResolver & IKeyManager
 >
 export type DidAgents = TAgent<IResolver & IDIDManager>

@@ -13,6 +13,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 import { ValidationConstraint } from '../../types'
+import {TYPEORM_DATE_TIME_TYPE} from "@sphereon/ssi-sdk.agent-config";
 import { IdentityEntity } from './IdentityEntity'
 import { validate, ValidationError } from 'class-validator'
 import { PartyTypeEntity } from './PartyTypeEntity'
@@ -27,13 +28,13 @@ export class PartyEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'uri', length: 255, nullable: true })
+  @Column('varchar', { name: 'uri', length: 255, nullable: true })
   uri?: string
 
-  @Column({ name: 'owner_id', nullable: true })
+  @Column('text', { name: 'owner_id', nullable: true })
   ownerId?: string
 
-  @Column({ name: 'tenant_id', nullable: true })
+  @Column('text', { name: 'tenant_id', nullable: true })
   tenantId?: string
 
   @OneToMany(() => IdentityEntity, (identity: IdentityEntity) => identity.party, {
@@ -88,10 +89,10 @@ export class PartyEntity extends BaseEntity {
   @JoinColumn({ name: 'relationship_id' })
   relationships!: Array<PartyRelationshipEntity>
 
-  @CreateDateColumn({ name: 'created_at', nullable: false })
+  @CreateDateColumn({ name: 'created_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
   createdAt!: Date
 
-  @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
+  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
   lastUpdatedAt!: Date
 
   // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.

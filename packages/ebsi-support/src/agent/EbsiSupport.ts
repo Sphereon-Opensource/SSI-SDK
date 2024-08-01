@@ -135,7 +135,7 @@ export class EbsiSupport implements IAgentPlugin {
       if (allVerifiableCredentials && allVerifiableCredentials.length > 0) {
         const pexResult = await context.agent.pexDefinitionFilterCredentials({
           presentationDefinition: definitionResponse,
-          credentialFilterOpts: { verifiableCredentials: allVerifiableCredentials },
+          credentialFilterOpts: { credentialRole: args.credentialRole, verifiableCredentials: allVerifiableCredentials },
         })
         if (pexResult.filteredCredentials.length > 0) {
           const filtered = pexResult.filteredCredentials
@@ -189,7 +189,7 @@ export class EbsiSupport implements IAgentPlugin {
     const pexResult = hasInputDescriptors
       ? await context.agent.pexDefinitionFilterCredentials({
           presentationDefinition: definitionResponse,
-          credentialFilterOpts: { verifiableCredentials: [attestationCredential!] },
+          credentialFilterOpts: { credentialRole: args.credentialRole, verifiableCredentials: [attestationCredential!] },
         })
       : ({
           // LOL, let's see whether we can trick PEX to create a VP without VCs
@@ -204,6 +204,7 @@ export class EbsiSupport implements IAgentPlugin {
     })
     const oid4vp = await opSession.getOID4VP([identifier.did])
     const vp = await oid4vp.createVerifiablePresentation(
+      args.credentialRole,
       { definition, credentials: pexResult.filteredCredentials },
       {
         proofOpts: { domain: openIDMetadata.issuer, nonce: v4(), created: new Date(Date.now() - 120_000).toString() },

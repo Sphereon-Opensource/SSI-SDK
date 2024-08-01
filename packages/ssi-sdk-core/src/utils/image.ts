@@ -1,8 +1,10 @@
+import { Loggers } from '@sphereon/ssi-types'
 import fetch from 'cross-fetch'
 import { imageSize } from 'image-size'
 import { IImageDimensions, IImageResource } from '../types'
 import * as u8a from 'uint8arrays'
 
+const logger = Loggers.DEFAULT.get('sphereon:core')
 type SizeCalculationResult = {
   width?: number
   height?: number
@@ -72,17 +74,30 @@ export const getImageDimensions = async (value: string | Uint8Array): Promise<II
   return { width: dimensions.width, height: dimensions.height }
 }
 
-export const downloadImage = async (url: string): Promise<IImageResource> => {
-  const response: Response = await fetch(url)
-  if (!response.ok) {
-    return Promise.reject(Error(`Failed to download resource. Status: ${response.status} ${response.statusText}`))
+export const downloadImage = async (url: string): Promise<IImageResource | undefined> => {
+  logger.debug(`Downloading image from url: ${url}`)
+  if (!url) {
+    logger.warning(`Could not download image when nu url is provided`)
+    return
+  } else if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    logger.warning(`Could not download image when url does not start with http(s):// : ${url}`)
+    return
   }
+  try {
+    const response: Response = await fetch(url)
+    if (!response.ok) {
+      logger.error(`Could not download image ${url}. Status: ${response.status} ${response.statusText}`)
+    }
 
-  const contentType: string | null = response.headers.get('Content-Type')
-  const base64Content: string = Buffer.from(await response.arrayBuffer()).toString('base64')
+    const contentType: string | null = response.headers.get('Content-Type')
+    const base64Content: string = Buffer.from(await response.arrayBuffer()).toString('base64')
 
-  return {
-    base64Content,
-    contentType: contentType || undefined,
+    return {
+      base64Content,
+      contentType: contentType || undefined,
+    }
+  } catch (e) {
+    logger.error(`Could not download image ${url}`, e)
+    return undefined
   }
 }

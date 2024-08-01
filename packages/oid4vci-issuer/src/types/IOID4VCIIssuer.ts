@@ -14,7 +14,7 @@ import { CredentialDataSupplier } from '@sphereon/oid4vci-issuer'
 import { IDIDOptions, ResolveOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IOID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { ICredential } from '@sphereon/ssi-types/dist'
-import { IAgentContext, ICredentialIssuer, IDataStoreORM, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+import { IAgentContext, ICredentialIssuer, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { IssuerInstance } from '../IssuerInstance'
 
 export type IssuerCredentialDefinition = JsonLdIssuerCredentialDefinition
@@ -93,4 +93,4 @@ export type ICreateCredentialOfferURIResult = {
   //userPinRequired: boolean
 }
 
-export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IDIDManager & IKeyManager & ICredentialIssuer & IOID4VCIStore>
+export type IRequiredContext = IAgentContext<IResolver & IDIDManager & IKeyManager & ICredentialIssuer & IOID4VCIStore>

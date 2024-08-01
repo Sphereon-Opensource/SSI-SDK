@@ -47,7 +47,13 @@ export class OID4VCIRestAPI {
         iss: opts.endpointOpts.tokenEndpointOpts.accessTokenIssuer ?? instance.metadataOptions.credentialIssuer,
         didOpts: instance.issuerOptions.didOpts,
       }
-      if (!tokenOpts.didOpts.identifierOpts?.kid || tokenOpts.didOpts.identifierOpts?.kid?.startsWith('did:')) {
+      // @ts-ignore
+      // We add the kid value for backwards compat. Especially used in agent config files!
+      const kmsKeyRef = tokenOpts.didOpts.identifierOpts?.kmsKeyRef ?? tokenOpts.didOpts.identifierOpts?.['kid']
+      if (kmsKeyRef) {
+        tokenOpts.didOpts.identifierOpts.kmsKeyRef = kmsKeyRef
+      }
+      if (!kmsKeyRef || kmsKeyRef?.startsWith('did:')) {
         keyRef = await getAccessTokenKeyRef(tokenOpts, context)
       }
 

@@ -8,13 +8,15 @@ import {
   schema,
   VersionDiscoveryResult,
 } from '../index'
-import { FindCredentialsArgs, IAgentPlugin, ProofType, UniqueVerifiableCredential, UnsignedCredential } from '@veramo/core'
+import { IAgentPlugin } from '@veramo/core'
 
 import { IPresentationExchange } from '../types/IPresentationExchange'
 import { Checked, IPresentationDefinition, PEX } from '@sphereon/pex'
-import { CredentialMapper, JWT_PROOF_TYPE_2020, W3CVerifiableCredential } from '@sphereon/ssi-types'
+import { CompactJWT, CredentialMapper, JWT_PROOF_TYPE_2020, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
 import { toDIDs } from '@sphereon/ssi-sdk-ext.did-utils'
+import { CredentialRole, UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
+import { FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
 
 export class PresentationExchange implements IAgentPlugin {
   readonly schema = schema.IDidAuthSiopOpAuthenticator
@@ -61,7 +63,7 @@ export class PresentationExchange implements IAgentPlugin {
   }
 
   async pexDefinitionFilterCredentials(args: IDefinitionCredentialFilterArgs, context: IRequiredContext): Promise<IPEXFilterResult> {
-    const credentials = await this.pexFilterCredentials(args.credentialFilterOpts ?? {}, context)
+    const credentials = await this.pexFilterCredentials(args.credentialFilterOpts, context)
     const holderDIDs = args.holderDIDs ? toDIDs(args.holderDIDs) : toDIDs(await context.agent.dataStoreORMGetIdentifiers())
     const selectResults = this.pex.selectFrom(args.presentationDefinition, credentials ?? [], {
       ...args,
@@ -91,11 +93,13 @@ export class PresentationExchange implements IAgentPlugin {
         input_descriptors: [inputDescriptor],
       }
 
+      const credentialRole = args.credentialFilterOpts.credentialRole
+
       promises.set(
         inputDescriptor,
         this.pexDefinitionFilterCredentials(
           {
-            credentialFilterOpts: { verifiableCredentials: credentials },
+            credentialFilterOpts: { credentialRole, verifiableCredentials: credentials },
             // @ts-ignore
             presentationDefinition,
             holderDIDs,
@@ -115,16 +119,24 @@ export class PresentationExchange implements IAgentPlugin {
 
   private async pexFilterCredentials(
     filterOpts: {
+      credentialRole: CredentialRole
       verifiableCredentials?: W3CVerifiableCredential[]
-      filter?: FindCredentialsArgs
+      filter?: FindDigitalCredentialArgs
     },
     context: IRequiredContext,
   ): Promise<W3CVerifiableCredential[]> {
-    if (filterOpts?.verifiableCredentials && filterOpts.verifiableCredentials.length > 0) {
+    if (filterOpts.verifiableCredentials && filterOpts.verifiableCredentials.length > 0) {
       return filterOpts.verifiableCredentials as W3CVerifiableCredential[]
     }
-    return (await context.agent.dataStoreORMGetVerifiableCredentials(filterOpts?.filter))
-      .map((uniqueVC: UniqueVerifiableCredential) => uniqueVC.verifiableCredential)
-      .map((vc: UnsignedCredential & { proof: ProofType }) => (vc.proof && vc.proof.type === JWT_PROOF_TYPE_2020 ? vc.proof.jwt : vc))
+
+    const filter = verifiableCredentialForRoleFilter(filterOpts.credentialRole, filterOpts.filter)
+    const uniqueCredentials = await context.agent.crsGetUniqueCredentials({ filter })
+
+    return uniqueCredentials.map((uniqueVC: UniqueDigitalCredential) => {
+      const vc = uniqueVC.uniformVerifiableCredential!
+      const proof = Array.isArray(vc.proof) ? vc.proof : [vc.proof]
+      const jwtProof = proof.find((p) => p?.type === JWT_PROOF_TYPE_2020)
+      return jwtProof ? (jwtProof.jwt as CompactJWT) : vc
+    })
   }
 }

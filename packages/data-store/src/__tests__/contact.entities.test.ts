@@ -56,6 +56,8 @@ import {
   physicalAddressEntityFrom,
 } from '../utils/contact/MappingUtils'
 import { ContactMetadataItemEntity } from '../entities/contact/ContactMetadataItemEntity'
+import { DataSources } from '@sphereon/ssi-sdk.agent-config'
+
 
 // TODO write test adding two contacts reusing the same contactType
 
@@ -63,6 +65,7 @@ describe('Database entities tests', (): void => {
   let dbConnection: DataSource
 
   beforeEach(async (): Promise<void> => {
+    DataSources.singleInstance().defaultDbType = 'sqlite'
     dbConnection = await new DataSource({
       type: 'sqlite',
       database: ':memory:',

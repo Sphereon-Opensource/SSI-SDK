@@ -12,7 +12,6 @@ import {
   ICredentialIssuer,
   ICredentialPlugin,
   ICredentialVerifier,
-  IDataStore,
   IDataStoreORM,
   IDIDManager,
   IKeyManager,
@@ -20,14 +19,7 @@ import {
 } from '@veramo/core'
 import { DriverOptions } from './drivers'
 
-export type IRequiredPlugins = IDataStore &
-  IDataStoreORM &
-  IDIDManager &
-  IKeyManager &
-  ICredentialIssuer &
-  ICredentialVerifier &
-  ICredentialPlugin &
-  IResolver
+export type IRequiredPlugins = IDataStoreORM & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier & ICredentialPlugin & IResolver
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
 export interface Driver {

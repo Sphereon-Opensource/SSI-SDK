@@ -7,10 +7,10 @@ import {
   IIdentifierOpts,
   SupportedDidMethodEnum,
 } from '@sphereon/ssi-sdk-ext.did-utils'
-import { ConnectionType } from '@sphereon/ssi-sdk.data-store'
+import { ConnectionType, CredentialRole } from '@sphereon/ssi-sdk.data-store'
 import { IIdentifier } from '@veramo/core'
-import { DidAgents, SuitableCredentialAgents } from '../types/identifier'
-import { CredentialMapper, IVerifiableCredential, Loggers, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
+import { DidAgents, SuitableCredentialAgents } from '../types'
+import { CredentialMapper, Loggers, PresentationSubmission } from '@sphereon/ssi-types'
 import {
   LOGGER_NAMESPACE,
   RequiredContext,
@@ -23,6 +23,7 @@ import {
 import { OID4VP, OpSession } from '../session'
 import { IPresentationDefinition, PEX } from '@sphereon/pex'
 import { InputDescriptorV1, InputDescriptorV2, PresentationDefinitionV1, PresentationDefinitionV2 } from '@sphereon/pex-models'
+import { verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 
 export const logger = Loggers.DEFAULT.get(LOGGER_NAMESPACE)
 
@@ -85,7 +86,7 @@ export const siopSendAuthorizationResponse = async (
 
     const credentialsAndDefinitions = args.verifiableCredentialsWithDefinition
       ? args.verifiableCredentialsWithDefinition
-      : await oid4vp.filterCredentialsAgainstAllDefinitions()
+      : await oid4vp.filterCredentialsAgainstAllDefinitions(CredentialRole.HOLDER)
     const domain =
       ((await request.authorizationRequest.getMergedProperty('client_id')) as string) ??
       request.issuer ??
@@ -104,7 +105,7 @@ export const siopSendAuthorizationResponse = async (
       }
     }
 
-    presentationsAndDefs = await oid4vp.createVerifiablePresentations(credentialsAndDefinitions, {
+    presentationsAndDefs = await oid4vp.createVerifiablePresentations(CredentialRole.HOLDER, credentialsAndDefinitions, {
       identifierOpts: { identifier },
       proofOpts: {
         nonce: session.nonce,
@@ -132,11 +133,11 @@ export const siopSendAuthorizationResponse = async (
         })*/
     presentationSubmission = presentationsAndDefs[0].presentationSubmission
   }
-  const key = await getKey(identifier, 'authentication', session.context, idOpts?.kid)
+  const key = await getKey({ identifier, vmRelationship: 'authentication', kmsKeyRef: idOpts?.kmsKeyRef }, session.context)
   if (!idOpts) {
-    idOpts = { identifier, kid: determineKid(key, { identifier }) }
+    idOpts = { identifier, kmsKeyRef: await determineKid({ key, idOpts: { identifier } }, session.context) }
   }
-  const determinedKid = idOpts!.kid?.includes('#') ? idOpts.kid : determineKid(key, idOpts)
+  const determinedKid = idOpts.kmsKeyRef?.includes('#') ? idOpts.kmsKeyRef : await determineKid({ key, idOpts }, session.context)
   const kid: string = determinedKid.startsWith('did:') ? determinedKid : `${identifier.did}#${determinedKid}`
 
   logger.log(`Definitions and locations:`, JSON.stringify(presentationsAndDefs?.[0]?.verifiablePresentation, null, 2))
@@ -145,7 +146,8 @@ export const siopSendAuthorizationResponse = async (
   return await session.sendAuthorizationResponse({
     ...(presentationsAndDefs && { verifiablePresentations: presentationsAndDefs?.map((pd) => pd.verifiablePresentation) }),
     ...(presentationSubmission && { presentationSubmission }),
-    responseSignerOpts: { identifier, kid },
+    // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
+    responseSignerOpts: { identifier, kmsKeyRef: key.kid, kid, issuer: identifier.did },
   })
 }
 
@@ -167,32 +169,34 @@ export const getSelectableCredentials = async (
   const { agent } = agentContext
   const pex = new PEX()
 
-  const uniqueVerifiableCredentials = await agent.dataStoreORMGetVerifiableCredentials()
+  const uniqueVerifiableCredentials = await agent.crsGetUniqueCredentials({
+    filter: verifiableCredentialForRoleFilter(CredentialRole.HOLDER),
+  })
   const credentialBranding = await agent.ibGetCredentialBranding()
 
   const selectableCredentialsMap: SelectableCredentialsMap = new Map()
 
   for (const inputDescriptor of presentationDefinition.input_descriptors) {
     const partialPD = buildPartialPD(inputDescriptor, presentationDefinition)
-    const originalCredentials = uniqueVerifiableCredentials.map((uniqueVC) =>
-      CredentialMapper.storedCredentialToOriginalFormat(uniqueVC.verifiableCredential as OriginalVerifiableCredential),
-    )
+    const originalCredentials = uniqueVerifiableCredentials.map((uniqueVC) => {
+      return CredentialMapper.storedCredentialToOriginalFormat(uniqueVC.originalVerifiableCredential!) // ( ! is valid for verifiableCredentialForRoleFilter )
+    })
     const selectionResults = pex.selectFrom(partialPD, originalCredentials)
 
     const selectableCredentials: Array<SelectableCredential> = []
     for (const selectedCredential of selectionResults.verifiableCredential || []) {
       const filteredUniqueVC = uniqueVerifiableCredentials.find((uniqueVC) => {
-        const proof = (uniqueVC.verifiableCredential as IVerifiableCredential).proof
+        const proof = uniqueVC.uniformVerifiableCredential!.proof
         return Array.isArray(proof) ? proof.some((proofItem) => proofItem.jwt === selectedCredential) : proof.jwt === selectedCredential
       })
 
       if (filteredUniqueVC) {
         const filteredCredentialBrandings = credentialBranding.filter((cb) => cb.vcHash === filteredUniqueVC.hash)
         const issuerPartyIdentity = await agent.cmGetContacts({
-          filter: [{ identities: { identifier: { correlationId: filteredUniqueVC.verifiableCredential.issuerDid } } }],
+          filter: [{ identities: { identifier: { correlationId: filteredUniqueVC.uniformVerifiableCredential!.issuerDid } } }],
         })
         const subjectPartyIdentity = await agent.cmGetContacts({
-          filter: [{ identities: { identifier: { correlationId: filteredUniqueVC.verifiableCredential.subjectDid } } }],
+          filter: [{ identities: { identifier: { correlationId: filteredUniqueVC.uniformVerifiableCredential!.subjectDid } } }],
         })
 
         selectableCredentials.push({

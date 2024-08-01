@@ -4,6 +4,7 @@ import { IService } from '@veramo/core/build/types/IIdentifier'
 import { DIDDocument } from 'did-resolver'
 import { AccessListish, BigNumberish, BytesLike } from 'ethers'
 import { ApiOpts, EbsiEnvironment } from '../types/IEbsiSupport'
+import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
 
 export type IContext = IAgentContext<IKeyManager>
 
@@ -382,6 +383,7 @@ export type GetDidDocumentsResponse = {
 
 export type EbsiAccessTokenOpts = {
   attestationToOnboard?: W3CVerifiableCredential
+  attestationToOnboardCredentialRole: CredentialRole
   jwksUri?: string
   redirectUri: string
   credentialIssuer: string

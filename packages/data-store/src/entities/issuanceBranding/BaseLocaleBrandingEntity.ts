@@ -11,6 +11,7 @@ import {
   TableInheritance,
   UpdateDateColumn,
 } from 'typeorm'
+import {TYPEORM_DATE_TIME_TYPE} from "@sphereon/ssi-sdk.agent-config";
 import { ImageAttributesEntity } from './ImageAttributesEntity'
 import { BackgroundAttributesEntity } from './BackgroundAttributesEntity'
 import { TextAttributesEntity } from './TextAttributesEntity'
@@ -23,11 +24,11 @@ export class BaseLocaleBrandingEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'alias', length: 255, nullable: true, unique: false })
+  @Column('varchar', { name: 'alias', length: 255, nullable: true, unique: false })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank aliases are not allowed' })
   alias?: string
 
-  @Column({ name: 'locale', length: 255, nullable: false, unique: false })
+  @Column('varchar', { name: 'locale', length: 255, nullable: false, unique: false })
   locale?: string
 
   @OneToOne(() => ImageAttributesEntity, {
@@ -39,7 +40,7 @@ export class BaseLocaleBrandingEntity extends BaseEntity {
   @JoinColumn({ name: 'logoId' })
   logo?: ImageAttributesEntity
 
-  @Column({ name: 'description', length: 255, nullable: true, unique: false })
+  @Column('varchar', { name: 'description', length: 255, nullable: true, unique: false })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank descriptions are not allowed' })
   description?: string
 
@@ -61,10 +62,10 @@ export class BaseLocaleBrandingEntity extends BaseEntity {
   @JoinColumn({ name: 'textId' })
   text?: TextAttributesEntity
 
-  @CreateDateColumn({ name: 'created_at', nullable: false })
+  @CreateDateColumn({ name: 'created_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
   createdAt!: Date
 
-  @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
+  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
   lastUpdatedAt!: Date
 
   // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.

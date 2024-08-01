@@ -21,10 +21,12 @@ dbConnection:
       synchronize: false
       migrationsRun: true
       migrations:
-        $require: '@veramo/data-store?t=object#migrations'
+        - $require: '@veramo/data-store?t=object#migrations'
+        - $require: './packages/data-store?t=object#DataStoreDigitalCredentialMigrations'
       logging: false
       entities:
-        $require: '@veramo/data-store?t=object#Entities'
+        - $require: '@veramo/data-store?t=object#Entities'
+        - $require: './packages/data-store?t=object#DataStoreDigitalCredentialEntities'
 
 server:
   baseUrl:
@@ -110,6 +112,15 @@ universal-resolver:
   $args:
     - url: https://dev.uniresolver.io/1.0/identifiers/
 
+# Credential Manager
+credentialStore:
+  $require: ./packages/credential-store/dist#CredentialStore
+  $args:
+    - store:
+        $require: './packages/data-store/dist#DigitalCredentialStore'
+        $args:
+          - $ref: /dbConnection
+
 # Agent
 agent:
   $require: '@veramo/core#Agent'
@@ -117,6 +128,7 @@ agent:
     - schemaValidation: false
       plugins:
         - $ref: /didResolver
+        - $ref: /credentialStore
         - $require: ./packages/siopv2-oid4vp-op-auth/dist#DidAuthSiopOpAuthenticator
           $args:
             - presentationSignCallback: {}

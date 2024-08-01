@@ -264,7 +264,10 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       (await getAgentResolver(context)
         .resolve(identifier.did)
         .then((result) => result.didDocument ?? undefined))
-    const extendedKeys: _ExtendedIKey[] = await mapIdentifierKeysToDocWithJwkSupport(identifier, 'verificationMethod', context, didDocument)
+    const extendedKeys: _ExtendedIKey[] = await mapIdentifierKeysToDocWithJwkSupport(
+      { identifier, vmRelationship: 'verificationMethod', didDocument },
+      context,
+    )
     const supportedTypes = this.ldCredentialModule.ldSuiteLoader.getAllSignatureSuiteTypes()
     let signingKey: _ExtendedIKey | undefined
     if (keyRef) {

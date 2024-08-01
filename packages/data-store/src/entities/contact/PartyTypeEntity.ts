@@ -1,4 +1,5 @@
 import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, Index, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import {TYPEORM_DATE_TIME_TYPE} from "@sphereon/ssi-sdk.agent-config";
 import { PartyEntity } from './PartyEntity'
 import { PartyOrigin, PartyTypeType, ValidationConstraint } from '../../types'
 import { IsNotEmpty, Validate, validate, ValidationError } from 'class-validator'
@@ -17,15 +18,15 @@ export class PartyTypeEntity {
   @Column('simple-enum', { name: 'origin', enum: PartyOrigin, nullable: false, unique: false })
   origin!: PartyOrigin
 
-  @Column({ name: 'name', length: 255, nullable: false, unique: true })
+  @Column('varchar', { name: 'name', length: 255, nullable: false, unique: true })
   @IsNotEmpty({ message: 'Blank names are not allowed' })
   name!: string
 
-  @Column({ name: 'description', length: 255, nullable: true })
+  @Column('varchar', { name: 'description', length: 255, nullable: true })
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank descriptions are not allowed' })
   description?: string
 
-  @Column({ name: 'tenant_id', length: 255, nullable: true })
+  @Column({ name: 'tenant_id', type: 'varchar', length: 255, nullable: true })
   @IsNotEmpty({ message: "Blank tenant id's are not allowed" })
   tenantId!: string
 
@@ -34,10 +35,10 @@ export class PartyTypeEntity {
   })
   parties!: Array<PartyEntity>
 
-  @CreateDateColumn({ name: 'created_at', nullable: false })
+  @CreateDateColumn({ name: 'created_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
   createdAt!: Date
 
-  @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
+  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
   lastUpdatedAt!: Date
 
   // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.

@@ -1,29 +1,24 @@
-import { JoinColumn, OneToOne, Column, ChildEntity, BeforeInsert, BeforeUpdate } from 'typeorm'
-import { PartyEntity } from './PartyEntity'
-import { BaseContactEntity } from './BaseContactEntity'
-import { ValidationConstraint } from '../../types'
-import { validate, IsNotEmpty, ValidationError } from 'class-validator'
-import { getConstraint } from '../../utils/ValidatorUtils'
+import {IsNotEmpty, validate, ValidationError} from 'class-validator'
+import {BeforeInsert, BeforeUpdate, ChildEntity, Column} from 'typeorm'
+import {ValidationConstraint} from '../../types'
+import {getConstraint} from '../../utils/ValidatorUtils'
+import {BaseContactEntity} from './BaseContactEntity'
 
 @ChildEntity('Organization')
 export class OrganizationEntity extends BaseContactEntity {
-  @Column({ name: 'legal_name', length: 255, nullable: false, unique: true })
+  @Column('varchar', { name: 'legal_name', length: 255, nullable: false, unique: true })
   @IsNotEmpty({ message: 'Blank legal names are not allowed' })
   legalName!: string
 
-  @Column({ name: 'display_name', length: 255, nullable: false, unique: false })
+  @Column('varchar', { name: 'display_name', length: 255, nullable: false, unique: false })
   @IsNotEmpty({ message: 'Blank display names are not allowed' })
   displayName!: string
 
-  @Column({ name: 'owner_id', nullable: true })
+  @Column('text', { name: 'owner_id', nullable: true })
   ownerId?: string
 
-  @Column({ name: 'tenant_id', nullable: true })
+  @Column('text', { name: 'tenant_id', nullable: true })
   tenantId?: string
-
-  @OneToOne(() => PartyEntity)
-  @JoinColumn({ name: 'party_id' })
-  party!: PartyEntity
 
   @BeforeInsert()
   @BeforeUpdate()

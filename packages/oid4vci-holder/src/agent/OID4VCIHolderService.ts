@@ -5,6 +5,7 @@ import {
   CredentialResponse,
   CredentialsSupportedDisplay,
   getSupportedCredentials,
+  getTypesFromCredentialSupported,
   getTypesFromObject,
   MetadataDisplay,
   OpenId4VCIVersion,
@@ -27,7 +28,7 @@ import {
   WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
 import { IIdentifier, IVerifyCredentialArgs, TKeyType, VerifiableCredential } from '@veramo/core'
-import { _ExtendedIKey } from '@veramo/utils'
+import { _ExtendedIKey, asArray } from '@veramo/utils'
 import { createJWT, Signer } from 'did-jwt'
 import { translate } from '../localization/Localization'
 import {
@@ -74,11 +75,8 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
       )
 
       const defaultCredentialType = 'VerifiableCredential'
-      const credentialTypes: Array<string> = ('types' in credentialsConfigSupported // TODO credentialsConfigSupported.types is deprecated
-        ? (credentialsConfigSupported.types as string[])
-        : 'credential_definition' in credentialsConfigSupported
-          ? credentialsConfigSupported.credential_definition.type
-          : [defaultCredentialType]) ?? [configId]
+      const configSupportedTypes = getTypesFromCredentialSupported(credentialsConfigSupported)
+      const credentialTypes: Array<string> = configSupportedTypes.length === 0 ? asArray(defaultCredentialType) : configSupportedTypes
 
       const filteredCredentialTypes = credentialTypes.filter((type: string): boolean => type !== defaultCredentialType)
       credentialBranding[filteredCredentialTypes[0]] = localeBranding // TODO for now taking the first type
@@ -88,10 +86,10 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   return credentialBranding
 }
 
-export const getIssuerBranding = async (args: GetIssuerBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => {
+export const getBasicIssuerLocaleBranding = async (args: GetIssuerBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => {
   const { display, context } = args
   return await Promise.all(
-    (display ?? []).map(async (displayItem: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
+    display.map(async (displayItem: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
       const branding = await issuerLocaleBrandingFrom(displayItem)
       return context.agent.ibIssuerLocaleBrandingFrom({ localeBranding: branding })
     }),
@@ -127,7 +125,7 @@ export const selectCredentialLocaleBranding = (
   return Promise.resolve(branding)
 }
 
-export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<void> => {
+export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<VerificationResult> => {
   const { mappedCredential, context } = args
 
   const credential = mappedCredential.credential.credentialResponse.credential as OriginalVerifiableCredential
@@ -140,7 +138,7 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
   ) {
     // TODO: Skipping VC validation for EBSI conformance issued credential, as their Issuer is not present in the ledger (sigh)
     if (JSON.stringify(wrappedVC.decoded).includes('vc:ebsi:conformance')) {
-      return
+      return {source: wrappedVC, error: undefined, result: true, subResults: []} satisfies VerificationResult
     }
   }
 
@@ -160,9 +158,10 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
 
   if (!verificationResult.result || verificationResult.error) {
     return Promise.reject(
-      Error(verificationResult.result ? verificationResult.error : translate('oid4vci_machine_credential_verification_failed_message')),
+      Error(verificationResult.error ?? translate('oid4vci_machine_credential_verification_failed_message')),
     )
   }
+  return verificationResult
 }
 
 export const verifyCredential = async (args: IVerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
@@ -385,7 +384,7 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
     allSupported = {} satisfies Record<string, CredentialConfigurationSupported>
     offerSupported.forEach((supported) => {
       if (supported.id) {
-        allSupported[supported.id] = supported
+        allSupported[supported.id as string] = supported
         return
       }
       const id = createIdFromTypes(supported)
@@ -572,7 +571,7 @@ export const getSigner = async (args: GetSignerArgs): Promise<Signer> => {
   const { idOpts, context } = args
 
   const identifier = await getIdentifierFromOpts(idOpts, context)
-  const key = await getKey(identifier, idOpts.verificationMethodSection, context, idOpts.kid)
+  const key = await getKey({ identifier, vmRelationship: idOpts.verificationMethodSection, kmsKeyRef: idOpts.kmsKeyRef }, context)
   const algorithm = await signatureAlgorithmFromKey({ key })
 
   return async (data: string | Uint8Array): Promise<string> => {

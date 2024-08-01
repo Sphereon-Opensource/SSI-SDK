@@ -2,10 +2,11 @@ import 'cross-fetch/polyfill'
 // @ts-ignore
 import express from 'express'
 import { Server } from 'http'
-import { IAgent, createAgent, IAgentOptions, IDataStore, IDataStoreORM } from '@veramo/core'
+import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
-import { getConfig, createObjects } from '@sphereon/ssi-sdk.agent-config'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
+import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { IMsRequestApi } from '../src'
 import msRequestApiAgentLogic from './shared/msRequestApiAgentLogic'
 
@@ -18,7 +19,7 @@ let serverAgent: IAgent
 let restServer: Server
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IMsRequestApi & IDataStore & IDataStoreORM>({
+  createAgent<IMsRequestApi & ICredentialStore>({
     ...options,
     plugins: [
       new AgentRestClient({

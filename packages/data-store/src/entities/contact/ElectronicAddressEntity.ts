@@ -10,6 +10,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm'
+import {TYPEORM_DATE_TIME_TYPE} from "@sphereon/ssi-sdk.agent-config";
 import { PartyEntity } from './PartyEntity'
 import { getConstraint } from '../../utils/ValidatorUtils'
 import { ElectronicAddressType, ValidationConstraint } from '../../types'
@@ -19,11 +20,11 @@ export class ElectronicAddressEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'type', length: 255, nullable: false })
+  @Column('varchar', { name: 'type', length: 255, nullable: false })
   @IsNotEmpty({ message: 'Blank electronic address types are not allowed' })
   type!: ElectronicAddressType
 
-  @Column({ name: 'electronic_address', length: 255, nullable: false })
+  @Column('varchar', { name: 'electronic_address', length: 255, nullable: false })
   @IsNotEmpty({ message: 'Blank electronic addresses are not allowed' })
   electronicAddress!: string
 
@@ -32,19 +33,19 @@ export class ElectronicAddressEntity extends BaseEntity {
   })
   party!: PartyEntity
 
-  @Column({ name: 'partyId', nullable: true })
+  @Column('text', { name: 'partyId', nullable: true })
   partyId?: string
 
-  @Column({ name: 'owner_id', nullable: true })
+  @Column('text', { name: 'owner_id', nullable: true })
   ownerId?: string
 
-  @Column({ name: 'tenant_id', nullable: true })
+  @Column('text', { name: 'tenant_id', nullable: true })
   tenantId?: string
 
-  @CreateDateColumn({ name: 'created_at', nullable: false })
+  @CreateDateColumn({ name: 'created_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
   createdAt!: Date
 
-  @UpdateDateColumn({ name: 'last_updated_at', nullable: false })
+  @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: TYPEORM_DATE_TIME_TYPE })
   lastUpdatedAt!: Date
 
   // By default, @UpdateDateColumn in TypeORM updates the timestamp only when the entity's top-level properties change.

@@ -11,19 +11,19 @@ export class StatusListEntryEntity extends BaseEntity {
   @ManyToOne(() => StatusListEntity, (statusList) => statusList.statusListEntries)
   statusList!: StatusListEntity
 
-  @PrimaryColumn({ name: 'statusListIndex', nullable: false, unique: false })
+  @PrimaryColumn({ name: 'statusListIndex', type: 'integer', nullable: false, unique: false })
   @Validate(IsNonEmptyStringConstraint, { message: 'Status list index is required' })
   statusListIndex!: number
 
-  @Column({ name: 'credentialId', nullable: true })
+  @Column({ name: 'credentialId', type: 'text', nullable: true })
   credentialId?: string
 
-  @Column({ name: 'credentialHash', length: 128, nullable: true, unique: false })
+  @Column({ name: 'credentialHash', length: 128, type: 'varchar', nullable: true, unique: false })
   credentialHash?: string
 
-  @Column({ name: 'correlationId', length: 255, nullable: true, unique: false })
+  @Column({ name: 'correlationId', length: 255, type: 'varchar', nullable: true, unique: false })
   correlationId?: string
 
-  @Column({ name: 'value', length: 50, nullable: true, unique: false })
+  @Column({ name: 'value', length: 50, type: 'varchar', nullable: true, unique: false })
   value?: string
 }
