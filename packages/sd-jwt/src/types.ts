@@ -1,5 +1,5 @@
 import { Hasher, KBOptions, SaltGenerator } from '@sd-jwt/types'
-import { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
+import { SdJwtVcPayload as SdJwtPayload } from '@sd-jwt/sd-jwt-vc'
 import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 
 /**
@@ -65,6 +65,11 @@ export interface ISDJwtPlugin extends IPluginMethodMap {
  *
  * @beta
  */
+
+export interface SdJwtVcPayload extends SdJwtPayload {
+  x5c?: string[]
+}
+
 export interface ICreateSdJwtVcArgs {
   credentialPayload: SdJwtVcPayload
 
