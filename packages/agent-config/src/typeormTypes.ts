@@ -13,9 +13,10 @@ export const typeOrmDateTime = (opts?: { defaultType: SupportedDatabaseType }): 
     case 'postgres':
       return 'timestamp'
     case 'sqlite':
+    case 'react-native':
       return 'datetime'
     default:
-      throw Error(`DB type ${getDbType(opts)} not supported`)
+      throw Error(`DB type ${getDbType(opts)} not supported. Right now only sqlite, react-native and postgresql are supported`)
   }
 }
 
