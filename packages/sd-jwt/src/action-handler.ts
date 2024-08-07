@@ -71,7 +71,7 @@ export class SDJwtPlugin implements IAgentPlugin {
 
   /**
    * Get the key to sign the SD-JWT
-   * @param identifier - identifier like a did and other forms of identifiers
+   * @param args - consists of twp arguments: identifier like a did and other forms of identifiers and vmRelationship which represents the purpose of the key
    * @param context - agent instance
    * @returns the key to sign the SD-JWT
    */
