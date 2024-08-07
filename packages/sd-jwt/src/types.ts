@@ -1,6 +1,6 @@
 import { Hasher, KBOptions, SaltGenerator } from '@sd-jwt/types'
 import { SdJwtVcPayload as SdJwtPayload } from '@sd-jwt/sd-jwt-vc'
-import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+import { DIDDocumentSection, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 
 /**
  * My Agent Plugin description.
@@ -169,6 +169,11 @@ export interface IVerifySdJwtPresentationArgs {
  */
 export type IVerifySdJwtPresentationResult = {
   verifiedPayloads: Record<string, unknown>
+}
+
+export type SignKeyArgs = {
+  identifier: string
+  vmRelationship: DIDDocumentSection
 }
 
 export type SignKeyResult = {

@@ -19,6 +19,7 @@
     "@sd-jwt/sd-jwt-vc": "^0.6.1",
     "@sphereon/ssi-types": "workspace:*",
     "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-next.3",
+    "@sphereon/ssi-sdk-ext.key-utils": "0.24.1-next.3",
     "@veramo/utils": "4.2.0",
     "debug": "^4.3.5"
   },

@@ -1723,6 +1723,9 @@ importers:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-next.3
         version: 0.24.1-next.3
+      '@sphereon/ssi-sdk-ext.key-utils':
+        specifier: 0.24.1-next.3
+        version: 0.24.1-next.3
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
