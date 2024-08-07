@@ -1721,11 +1721,11 @@ importers:
         specifier: ^0.6.1
         version: 0.6.1
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.24.1-next.3
-        version: 0.24.1-next.3
+        specifier: 0.24.1-unstable.54
+        version: 0.24.1-unstable.54
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.24.1-next.3
-        version: 0.24.1-next.3
+        specifier: 0.24.1-unstable.54
+        version: 0.24.1-unstable.54
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1746,17 +1746,17 @@ importers:
         specifier: ^0.6.1
         version: 0.6.1
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.24.1-next.3
-        version: 0.24.1-next.3
+        specifier: 0.24.1-unstable.54
+        version: 0.24.1-unstable.54
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.24.1-next.3
-        version: 0.24.1-next.3
+        specifier: 0.24.1-unstable.54
+        version: 0.24.1-unstable.54
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.24.1-next.3
-        version: 0.24.1-next.3
+        specifier: 0.24.1-unstable.54
+        version: 0.24.1-unstable.54
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.24.1-next.3
-        version: 0.24.1-next.3
+        specifier: 0.24.1-unstable.54
+        version: 0.24.1-unstable.54
       '@types/node':
         specifier: 18.15.3
         version: 18.15.3
@@ -8321,6 +8321,25 @@ packages:
       - supports-color
     dev: true
 
+  /@sphereon/ssi-sdk-ext.did-provider-jwk@0.24.1-unstable.54:
+    resolution: {integrity: sha512-lHBKJVua9hjWRhcVlz6mltD3ABiNCp7n3UqwHghO4RnZpLqu9pSn5ltiABJClPAs1XM5MLfaCZ9bef6FUNW2nw==}
+    dependencies:
+      '@ethersproject/random': 5.7.0
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.54
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.54
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@stablelib/ed25519': 1.0.3
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/did-manager': 4.2.0
+      base64url: 3.0.1
+      debug: 4.3.5
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+    dev: true
+
   /@sphereon/ssi-sdk-ext.did-provider-key@0.24.1-next.3(expo@51.0.23)(react-native@0.74.3):
     resolution: {integrity: sha512-4skSFdnuo2JaUKqLT0OzLCPRZuTW+w58W4imKYhy4WtLjZ5miyphj/gjH9VU3rXwziOQHLZMSgpvCGgAMGZIiw==}
     dependencies:
@@ -8383,6 +8402,18 @@ packages:
       - supports-color
     dev: true
 
+  /@sphereon/ssi-sdk-ext.did-resolver-jwk@0.24.1-unstable.54:
+    resolution: {integrity: sha512-Fw3LTwz+0VjHPkQpW4LQ/C++dmWDQIk7TLvWlO6aamHRsrIMcYPPSqoU079Ada6raZ/QCtAMCXkJofSUu5OfBg==}
+    dependencies:
+      '@sphereon/ssi-types': link:packages/ssi-types
+      base64url: 3.0.1
+      debug: 4.3.5
+      did-resolver: 4.1.0
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@sphereon/ssi-sdk-ext.did-resolver-key@0.24.1-next.3:
     resolution: {integrity: sha512-VJ8tMh/lv4ZVMvxXCJZT5KpYc1vacnRQgWcnIGm3I10y47Dq7YivrP9O4SH1YOHoNZChLhm0hH3AjQfvk+GPiw==}
     dependencies:
@@ -8420,6 +8451,25 @@ packages:
       - encoding
       - supports-color
 
+  /@sphereon/ssi-sdk-ext.did-utils@0.24.1-unstable.54:
+    resolution: {integrity: sha512-NzSea3lnM8+Y/SXhxQMa5/q3k3Gan+1pm6YMG19iT/vmv6LzH18JXjCFIQnsoIa6FbE6IBdwqU8tVq+tm2V1pg==}
+    dependencies:
+      '@ethersproject/networks': 5.7.1
+      '@ethersproject/transactions': 5.7.0
+      '@sphereon/did-uni-client': 0.6.3
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.54
+      '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
+      '@stablelib/ed25519': 1.0.3
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/utils': 4.2.0
+      did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+
   /@sphereon/ssi-sdk-ext.key-manager@0.24.1-next.3:
     resolution: {integrity: sha512-/7U0vm8IYKLXhjrwgPX9iPsMBaXeguBhgaHDXlHO8Kz79gKlKVP6smSSAvoE8sTDTLCSAc5VcwAXEdxHBHt75Q==}
     dependencies:
@@ -8430,6 +8480,17 @@ packages:
       - encoding
       - supports-color
 
+  /@sphereon/ssi-sdk-ext.key-manager@0.24.1-unstable.54:
+    resolution: {integrity: sha512-xHl9M03uX+M86WTf6cL4hnOimXPgOX/sRvka11sh/ypfnPcRv5J/L+5vYpPR7j8QsKn9vI6bSCvx99ghpM38cw==}
+    dependencies:
+      '@sphereon/ssi-sdk-ext.kms-local': 0.24.1-unstable.54
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/key-manager': 4.2.0
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+    dev: true
+
   /@sphereon/ssi-sdk-ext.key-utils@0.24.1-next.3:
     resolution: {integrity: sha512-OHdRptbfPcH0N7jijNkGr/JGc+BJKEXUCa80iFDRzKzsswxm8ZmeMwXIaboBMPkESyZ/cggppBIaBLo3c9mbpA==}
     dependencies:
@@ -8437,6 +8498,28 @@ packages:
       '@stablelib/ed25519': 1.0.3
       '@stablelib/sha256': 1.0.1
       '@stablelib/sha512': 1.0.1
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      base64url: 3.0.1
+      debug: 4.3.5
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+      lodash.isplainobject: 4.0.6
+      multiformats: 9.9.0
+      uint8arrays: 3.1.1
+      varint: 6.0.0
+      web-encoding: 1.1.5
+    transitivePeerDependencies:
+      - supports-color
+
+  /@sphereon/ssi-sdk-ext.key-utils@0.24.1-unstable.54:
+    resolution: {integrity: sha512-UQsvwJqHoUe/x2eG4CMIHaNgZso3jqfpTPdjVW6oZHjuV1L7M52/wxn1YlOoyo/Z/uebGeya5t+haWpcSj4liQ==}
+    dependencies:
+      '@ethersproject/random': 5.7.0
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@stablelib/ed25519': 1.0.3
+      '@stablelib/sha256': 1.0.1
+      '@stablelib/sha512': 1.0.1
+      '@trust/keyto': 1.0.1
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       base64url: 3.0.1
       debug: 4.3.5
@@ -8464,6 +8547,22 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
+
+  /@sphereon/ssi-sdk-ext.kms-local@0.24.1-unstable.54:
+    resolution: {integrity: sha512-TP1wYlvJEpZOZW0KqrIMEZAqMtk3NPXazXcGwlit8/VAY1AwfxT2pMqDreNRBlhtaS9ShRAvTYilLFLXQdZlmg==}
+    dependencies:
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.54
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.54
+      '@trust/keyto': 2.0.0-alpha1
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/key-manager': 4.2.0
+      '@veramo/kms-local': 4.2.0
+      elliptic: 6.5.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+    dev: true
 
   /@sphereon/vc-status-list@7.0.0-next.0(expo@51.0.23)(react-native@0.74.3):
     resolution: {integrity: sha512-4GIZq12SXbEbO4vCh5TwWzWk7tviDUP8aOzRGsEw6UW2344qZ31CLsU+bHurdnG4OlLRyosv4khN1ha6OiJHZQ==}
