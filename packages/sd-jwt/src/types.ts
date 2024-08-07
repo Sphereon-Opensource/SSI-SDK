@@ -171,6 +171,14 @@ export type IVerifySdJwtPresentationResult = {
   verifiedPayloads: Record<string, unknown>
 }
 
+export type SignKeyResult = {
+  alg: string
+  key: {
+    kid: string
+    x5c?: string[]
+    jwkThumbprint?: string
+  }
+}
 /**
  * This context describes the requirements of this plugin.
  * For this plugin to function properly, the agent needs to also have other plugins installed that implement the

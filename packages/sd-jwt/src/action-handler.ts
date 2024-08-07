@@ -1,10 +1,10 @@
 import Debug from 'debug'
 
-import { schema } from './index'
+import {schema, SignKeyResult} from './index'
 import { Jwt, SDJwt } from '@sd-jwt/core'
 import { SDJwtVcInstance, SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 import { Signer, Verifier, KbVerifier, JwtPayload, DisclosureFrame, PresentationFrame } from '@sd-jwt/types'
-import {IAgentPlugin, IKey} from '@veramo/core'
+import { IAgentPlugin } from '@veramo/core'
 import {
   SdJWTImplementation,
   ICreateSdJwtVcArgs,
@@ -20,6 +20,7 @@ import {
   Claims,
 } from './types'
 import { encodeJoseBlob } from '@veramo/utils'
+import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 const debug = Debug('sd-jwt')
 /**
  * @beta
@@ -73,39 +74,40 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @param context - agent instance
    * @returns the key to sign the SD-JWT
    */
-  async getSignKey (
-      identifier: string,
-      context: IRequiredContext
-      //todo make the type of key known
-  ): Promise<{ alg: string; key: any }> {
+  async getSignKey(
+    identifier: string,
+    context: IRequiredContext,
+  ): Promise<SignKeyResult> {
     if (identifier.startsWith('did:')) {
-      const didDocument = await context.agent.resolveDid({ didUrl: identifier });
-      const key = didDocument.verificationMethod?.find(vm => vm.publicKeyJwk);
+      const didIdentifier = await context.agent.didManagerGet({
+        did: identifier.split('#')[0],
+      })
+      const doc = await mapIdentifierKeysToDocWithJwkSupport({ identifier: didIdentifier, vmRelationship: 'assertionMethod' }, context)
+      if (!doc || doc.length === 0) {
+        throw new Error('No key found for signing')
+      }
+      const key = doc.find((key) => key.meta.verificationMethod.id === identifier)
       if (!key) {
-        throw new Error(`No verification key found for DID: ${identifier}`);
+        throw new Error(`No key found with the given id: ${identifier}`)
       }
-      const alg = key.publicKeyJwk.alg;
-      return { alg, key };
-    } else if (identifier.includes('x5c')) {
-      const x5cKey = await context.agent.getCertificateChain({ identifier });
-      if (!x5cKey || !Array.isArray(x5cKey)) {
-        throw new Error(`Invalid x5c header found for identifier: ${identifier}`);
-      }
-      //fixme: change this value to the real alg value
-      const alg = 'RS256';
-      return { alg, key: { x5c: x5cKey } };
+      const alg = this.getKeyTypeAlgorithm(key.type)
+      debug(`Signing key ${key.publicKeyHex} found for identifier ${identifier}`)
+      return { alg, key }
     } else {
-      const key = await context.agent.keyManagerGet({ kid: identifier });
-      const alg = key.meta?.alg;
-      if (key.meta?.x5c) {
-        return { alg, key: { x5c: key.meta.x5c as string[] } };
-      } else if (key.meta?.jwk) {
-        return { alg, key: { jwk: key.meta.jwk } };
+      const key = await context.agent.keyManagerGet({ kid: identifier })
+      if (!key) {
+        throw new Error(`No key found with the identifier ${identifier}`)
+      }
+      const alg = this.getKeyTypeAlgorithm(key.type)
+      if (key.meta?.x509 && key.meta.x509.x5c) {
+        return { alg, key: { kid: key.kid, x5c: key.meta.x509.x5c as string[] } }
+      } else if (key.meta?.jwkThumbprint) {
+        return { alg, key: { kid: key.kid, jwkThumbprint: key.meta.jwkThumbprint } }
       } else {
-        return { alg, key };
+        return { alg, key: { kid: key.kid } }
       }
     }
-  };
+  }
 
   /**
    * Create a signed SD-JWT presentation.
