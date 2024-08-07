@@ -31,6 +31,7 @@
     { "path": "qr-code-generator" },
     { "path": "contact-manager" },
     { "path": "contact-manager-rest-api" },
+    { "path": "credential-store" },
     { "path": "pd-manager" },
     { "path": "pd-manager-rest-api" },
     { "path": "data-store" },
