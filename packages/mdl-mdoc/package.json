@@ -1,12 +1,12 @@
 {
-  "name": "@sphereon/ssi-sdk.ebsi-support",
+  "name": "@sphereon/ssi-sdk.mdl-mdoc",
   "version": "0.29.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
-      "IEbsiSupport": "./src/types/IEbsiSupport.ts"
+      "IMDLMdoc": "./src/types/ImDLMdoc.ts"
     }
   },
   "scripts": {
@@ -14,18 +14,14 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@ethersproject/random": "^5.7.0",
     "@sphereon/did-auth-siop": "0.6.4",
     "@sphereon/pex": "^4.0.1",
     "@sphereon/pex-models": "^2.2.4",
-    "@sphereon/ssi-sdk-ext.did-resolver-ebsi": "0.24.1-unstable.63",
     "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.63",
     "@sphereon/ssi-sdk-ext.key-utils": "0.24.1-unstable.63",
-    "@sphereon/ssi-sdk.contact-manager": "workspace:*",
+    "@sphereon/ssi-sdk-ext.x509-utils": "0.24.1-unstable.63",
+    "@sphereon/kmp-mdl-mdoc": "0.1.0-SNAPSHOT.4",
     "@sphereon/ssi-sdk.core": "workspace:*",
-    "@sphereon/ssi-sdk.oid4vci-holder": "workspace:*",
-    "@sphereon/ssi-sdk.presentation-exchange": "workspace:*",
-    "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/did-manager": "4.2.0",
@@ -33,12 +29,9 @@
     "cross-fetch": "^3.1.8",
     "debug": "^4.3.5",
     "did-resolver": "^4.1.0",
-    "ethers": "^6.13.1",
     "multiformats": "9.9.0",
-    "qs": "^6.12.3",
     "uint8arrays": "^3.1.1",
-    "uuid": "^9.0.1",
-    "xstate": "^4.38.3"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@sphereon/oid4vci-client": "0.15.1-next.9",

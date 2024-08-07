@@ -6,6 +6,7 @@
     { "path": "agent-config" },
     { "path": "ssi-types" },
     { "path": "ssi-sdk-core" },
+    { "path": "mdl-mdoc" },
     { "path": "kv-store" },
     { "path": "w3c-vc-api" },
     { "path": "credential-store" },
