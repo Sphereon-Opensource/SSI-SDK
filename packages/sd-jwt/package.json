@@ -18,6 +18,7 @@
     "@sd-jwt/core": "^0.6.1",
     "@sd-jwt/sd-jwt-vc": "^0.6.1",
     "@sphereon/ssi-types": "workspace:*",
+    "@sphereon/ssi-sdk.mdl-mdoc": "0.29.1-unstable.48",
     "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.54",
     "@sphereon/ssi-sdk-ext.key-utils": "0.24.1-unstable.54",
     "@veramo/utils": "4.2.0",

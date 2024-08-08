@@ -1,6 +1,7 @@
 import { Hasher, KBOptions, SaltGenerator } from '@sd-jwt/types'
 import { SdJwtVcPayload as SdJwtPayload } from '@sd-jwt/sd-jwt-vc'
 import { DIDDocumentSection, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 
 /**
  * My Agent Plugin description.
@@ -192,7 +193,7 @@ export type SignKeyResult = {
  *
  * @beta
  */
-export type IRequiredContext = IAgentContext<IDIDManager & IResolver & IKeyManager>
+export type IRequiredContext = IAgentContext<IDIDManager & IResolver & IKeyManager & ImDLMdoc>
 export interface SdJWTImplementation {
   saltGenerator: SaltGenerator
   hasher: Hasher

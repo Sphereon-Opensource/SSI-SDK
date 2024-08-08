@@ -21,7 +21,9 @@ import {
 } from './types'
 import { _ExtendedIKey } from '@veramo/utils'
 import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
-import { calculateJwkThumbprint, JWK, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
+import { base64ToPEM, calculateJwkThumbprint, JWK, publicKeyHexFromPEM, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
+import { funkeTestCA, funkeTestIssuer } from './trustAnchors'
+
 const debug = Debug('@sphereon/sd-jwt')
 /**
  * @beta
@@ -186,8 +188,33 @@ export class SDJwtPlugin implements IAgentPlugin {
     const decodedVC = await sdjwt.decode(`${data}.${signature}`)
     const issuer: string = ((decodedVC.jwt as Jwt).payload as Record<string, unknown>).iss as string
     const verifierKey: SignKeyResult = await this.getSignKey({ identifier: issuer, vmRelationship: 'verificationMethod' }, context)
-    const key = await context.agent.keyManagerGet({ kid: verifierKey.key.jwkThumbprint ?? verifierKey.key.kid })
-    return this.algorithms.verifySignature(data, signature, toJwk(key.publicKeyHex, key.type))
+    const x5c: string[] | undefined = (decodedVC.jwt as Jwt).header?.x5c as string[]
+    const x5t: string | undefined = (decodedVC.jwt as Jwt).header?.x5t as string
+    let publicKey: string | undefined
+
+    if (x5c) {
+      const certChain = x5c.map((cert) => `-----BEGIN CERTIFICATE-----\n${cert}\n-----END CERTIFICATE-----`)
+      const pemCert = base64ToPEM(x5c[0], 'CERTIFICATE')
+      publicKey = publicKeyHexFromPEM(pemCert)
+      const isValidCertChain = await context.agent.verifyCertificateChain({ chain: certChain, trustAnchors: [funkeTestCA, funkeTestIssuer] })
+
+      if (isValidCertChain.error) {
+        throw new Error('Certificate chain validation failed')
+      }
+    } else if (x5t) {
+      publicKey = x5t
+    } else {
+      const verifierKey: SignKeyResult = await this.getSignKey({ identifier: issuer, vmRelationship: 'verificationMethod' }, context)
+      const key = await context.agent.keyManagerGet({ kid: verifierKey.key.jwkThumbprint ?? verifierKey.key.kid })
+      publicKey = key.publicKeyHex
+    }
+
+    if (!publicKey) {
+      throw new Error('No valid public key found for signature verification')
+    }
+    publicKey = publicKey ?? verifierKey.key.jwkThumbprint ?? verifierKey.key.kid
+    const key = await context.agent.keyManagerGet({ kid: publicKey })
+    return this.algorithms.verifySignature(data, signature, toJwk(publicKey, key.type))
   }
 
   /**
