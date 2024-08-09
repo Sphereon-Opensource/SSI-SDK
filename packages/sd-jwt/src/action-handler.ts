@@ -1,6 +1,6 @@
 import Debug from 'debug'
 
-import { schema } from './index'
+import { SignKeyArgs, SignKeyResult } from './index'
 import { Jwt, SDJwt } from '@sd-jwt/core'
 import { SDJwtVcInstance, SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 import { Signer, Verifier, KbVerifier, JwtPayload, DisclosureFrame, PresentationFrame } from '@sd-jwt/types'
@@ -19,15 +19,17 @@ import {
   IVerifySdJwtPresentationResult,
   Claims,
 } from './types'
-import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
-import { encodeJoseBlob } from '@veramo/utils'
-const debug = Debug('sd-jwt')
+import { _ExtendedIKey } from '@veramo/utils'
+import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
+import { calculateJwkThumbprint, JWK } from '@sphereon/ssi-sdk-ext.key-utils'
+import { funkeTestCA, sphereonCA } from './trustAnchors'
+
+const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
 /**
  * @beta
  * SD-JWT plugin for Veramo
  */
 export class SDJwtPlugin implements IAgentPlugin {
-  readonly schema = schema.ISDJwtPlugin
 
   constructor(private algorithms: SdJWTImplementation) {}
 
@@ -51,7 +53,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       throw new Error('credential.issuer must not be empty')
     }
 
-    const { alg, key } = await this.getSignKey(issuer, context)
+    const { alg, key } = await this.getSignKey({ identifier: issuer, vmRelationship: 'assertionMethod' }, context)
 
     //TODO: let the user also insert a method to sign the data
     const signer: Signer = async (data: string) => context.agent.keyManagerSign({ keyRef: key.kid, data })
@@ -70,27 +72,37 @@ export class SDJwtPlugin implements IAgentPlugin {
 
   /**
    * Get the key to sign the SD-JWT
-   * @param issuer - did url like did:exmaple.com#key-1
+   * @param args - consists of twp arguments: identifier like a did and other forms of identifiers and vmRelationship which represents the purpose of the key
    * @param context - agent instance
    * @returns the key to sign the SD-JWT
    */
-  private async getSignKey(issuer: string, context: IRequiredContext) {
-    debug(`Getting signing key for issuer ${issuer}`)
-    const identifier = await context.agent.didManagerGet({
-      did: issuer.split('#')[0],
-    })
-    const doc = await mapIdentifierKeysToDocWithJwkSupport({ identifier, vmRelationship: 'assertionMethod' }, context)
-    if (!doc || doc.length === 0) {
-      throw new Error('No key found for signing')
+  async getSignKey(args: SignKeyArgs, context: IRequiredContext): Promise<SignKeyResult> {
+    const { identifier, vmRelationship } = { ...args }
+    if (identifier.startsWith('did:')) {
+      const didIdentifier = await context.agent.didManagerGet({
+        did: identifier.split('#')[0],
+      })
+      const key: _ExtendedIKey | undefined = await getFirstKeyWithRelation({ identifier: didIdentifier, vmRelationship: vmRelationship }, context)
+      if (!key) {
+        throw new Error(`No key found with the given id: ${identifier}`)
+      }
+      const alg = this.getKeyTypeAlgorithm(key.type)
+      debug(`Signing key ${key.publicKeyHex} found for identifier ${identifier}`)
+      return { alg, key }
+    } else {
+      const key = await context.agent.keyManagerGet({ kid: identifier })
+      if (!key) {
+        throw new Error(`No key found with the identifier ${identifier}`)
+      }
+      const alg = this.getKeyTypeAlgorithm(key.type)
+      if (key.meta?.x509 && key.meta.x509.x5c) {
+        return { alg, key: { kid: key.kid, x5c: key.meta.x509.x5c as string[] } }
+      } else if (key.meta?.jwkThumbprint) {
+        return { alg, key: { kid: key.kid, jwkThumbprint: key.meta.jwkThumbprint } }
+      } else {
+        return { alg, key: { kid: key.kid } }
+      }
     }
-    const key = doc.find((key) => key.meta.verificationMethod.id === issuer)
-    if (!key) {
-      throw new Error(`No key found with the given id: ${issuer}`)
-    }
-    const alg = this.getKeyTypeAlgorithm(key.type)
-    debug(`Signing key ${key.publicKeyHex} found for issuer ${issuer}`)
-
-    return { alg, key }
   }
 
   /**
@@ -102,19 +114,17 @@ export class SDJwtPlugin implements IAgentPlugin {
   async createSdJwtPresentation(args: ICreateSdJwtPresentationArgs, context: IRequiredContext): Promise<ICreateSdJwtPresentationResult> {
     const cred = await SDJwt.fromEncode(args.presentation, this.algorithms.hasher)
     const claims = await cred.getClaims<Claims>(this.algorithms.hasher)
-    let holderDID: string
+    let holder: string
     // we primarly look for a cnf field, if it's not there we look for a sub field. If this is also not given, we throw an error since we can not sign it.
     if (claims.cnf?.jwk) {
-      const key = claims.cnf.jwk
-      //TODO SDK-19: convert the JWK to hex and search for the appropriate key and associated DID
-      //doesn't apply to did:jwk only, as you can represent any DID key as a JWK. So whenever you encounter a JWK it doesn't mean it had to come from a did:jwk in the system. It just can always be represented as a did:jwk
-      holderDID = `did:jwk:${encodeJoseBlob(key)}#0`
+      const jwk = claims.cnf.jwk
+      holder = calculateJwkThumbprint({ jwk: jwk as JWK })
     } else if (claims.sub) {
-      holderDID = claims.sub as string
+      holder = claims.sub as string
     } else {
       throw new Error('invalid_argument: credential does not include a holder reference')
     }
-    const { alg, key } = await this.getSignKey(holderDID, context)
+    const { alg, key } = await this.getSignKey({ identifier: holder, vmRelationship: 'assertionMethod' }, context)
 
     const signer: Signer = async (data: string) => {
       return context.agent.keyManagerSign({ keyRef: key.kid, data })
@@ -175,22 +185,40 @@ export class SDJwtPlugin implements IAgentPlugin {
   async verify(sdjwt: SDJwtVcInstance, context: IRequiredContext, data: string, signature: string) {
     const decodedVC = await sdjwt.decode(`${data}.${signature}`)
     const issuer: string = ((decodedVC.jwt as Jwt).payload as Record<string, unknown>).iss as string
-    if (!issuer.startsWith('did:')) {
-      throw new Error('invalid_issuer: issuer must be a did')
+    const header = (decodedVC.jwt as Jwt).header as Record<string, any>
+    const x5c: string[] | undefined = header?.x5c as string[]
+    let jwk: JWK | JsonWebKey | undefined = undefined
+    if (issuer.includes('did:')) {
+      const didDoc = await context.agent.resolveDid({ didUrl: issuer })
+      if (!didDoc) {
+        throw new Error('invalid_issuer: issuer did not resolve to a did document')
+      }
+      //TODO SDK-20: This should be checking for an assertionMethod and not just an verificationMethod with an id
+      const didDocumentKey = didDoc.didDocument?.verificationMethod?.find((key) => key.id)
+      if (!didDocumentKey) {
+        throw new Error('invalid_issuer: issuer did document does not include referenced key')
+      }
+      //FIXME SDK-21: in case it's another did method, the value of the key can be also encoded as a base64url
+      // needs more checks. some DID methods do not expose the keys as publicKeyJwk
+      jwk = didDocumentKey.publicKeyJwk as JsonWebKey
     }
-    const didDoc = await context.agent.resolveDid({ didUrl: issuer })
-    if (!didDoc) {
-      throw new Error('invalid_issuer: issuer did not resolve to a did document')
+    if (x5c) {
+      const certificateValidationResult = await context.agent.verifyCertificateChain({
+        chain: x5c,
+        trustAnchors: [funkeTestCA, sphereonCA],
+      })
+
+      if (certificateValidationResult.error || !certificateValidationResult?.certificateChain) {
+        throw new Error('Certificate chain validation failed')
+      }
+      const certInfo = certificateValidationResult.certificateChain[0]
+      jwk = certInfo.publicKeyJWK as JWK
     }
-    //TODO SDK-20: This should be checking for an assertionMethod and not just an verificationMethod with an id
-    const didDocumentKey = didDoc.didDocument?.verificationMethod?.find((key) => key.id)
-    if (!didDocumentKey) {
-      throw new Error('invalid_issuer: issuer did document does not include referenced key')
+
+    if (!jwk) {
+      throw new Error('No valid public key found for signature verification')
     }
-    //FIXME SDK-21: in case it's another did method, the value of the key can be also encoded as a base64url
-    //needs more checks. some DID methods do not expose the keys as publicKeyJwk
-    const key = didDocumentKey.publicKeyJwk as JsonWebKey
-    return this.algorithms.verifySignature(data, signature, key)
+    return this.algorithms.verifySignature(data, signature, jwk)
   }
 
   /**
