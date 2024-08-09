@@ -1,6 +1,6 @@
 import Debug from 'debug'
 
-import { schema, SignKeyArgs, SignKeyResult } from './index'
+import { SignKeyArgs, SignKeyResult } from './index'
 import { Jwt, SDJwt } from '@sd-jwt/core'
 import { SDJwtVcInstance, SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 import { Signer, Verifier, KbVerifier, JwtPayload, DisclosureFrame, PresentationFrame } from '@sd-jwt/types'
@@ -30,7 +30,6 @@ const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
  * SD-JWT plugin for Veramo
  */
 export class SDJwtPlugin implements IAgentPlugin {
-  readonly schema = schema.ISDJwtPlugin
 
   constructor(private algorithms: SdJWTImplementation) {}
 
