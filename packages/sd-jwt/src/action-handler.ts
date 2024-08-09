@@ -23,9 +23,7 @@ import { _ExtendedIKey } from '@veramo/utils'
 import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
 import { calculateJwkThumbprint, JWK, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
 import { funkeTestCA, sphereonCA } from './trustAnchors'
-import { X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils/src/x509/x509-validator'
-import { PEMToJwk } from '@sphereon/ssi-sdk-ext.x509-utils'
-import { x5cToPemCertChain } from '@sphereon/ssi-sdk-ext.x509-utils/src/x509/x509-utils'
+import { PEMToJwk, x5cToPemCertChain, X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
 
 const debug = Debug('@sphereon/sd-jwt')
 /**
