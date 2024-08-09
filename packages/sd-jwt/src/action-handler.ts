@@ -4,7 +4,7 @@ import { schema, SignKeyArgs, SignKeyResult } from './index'
 import { Jwt, SDJwt } from '@sd-jwt/core'
 import { SDJwtVcInstance, SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 import { Signer, Verifier, KbVerifier, JwtPayload, DisclosureFrame, PresentationFrame } from '@sd-jwt/types'
-import { IAgentPlugin } from '@veramo/core'
+import { IAgentPlugin, IIdentifier, IKey } from '@veramo/core'
 import {
   SdJWTImplementation,
   ICreateSdJwtVcArgs,
@@ -21,8 +21,11 @@ import {
 } from './types'
 import { _ExtendedIKey } from '@veramo/utils'
 import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
-import { base64ToPEM, calculateJwkThumbprint, JWK, publicKeyHexFromPEM, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
-import { funkeTestCA, funkeTestIssuer } from './trustAnchors'
+import { calculateJwkThumbprint, JWK, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
+import { funkeTestCA, sphereonCA } from './trustAnchors'
+import { X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils/src/x509/x509-validator'
+import { PEMToJwk } from '@sphereon/ssi-sdk-ext.x509-utils'
+import { x5cToPemCertChain } from '@sphereon/ssi-sdk-ext.x509-utils/src/x509/x509-utils'
 
 const debug = Debug('@sphereon/sd-jwt')
 /**
@@ -187,34 +190,37 @@ export class SDJwtPlugin implements IAgentPlugin {
   async verify(sdjwt: SDJwtVcInstance, context: IRequiredContext, data: string, signature: string) {
     const decodedVC = await sdjwt.decode(`${data}.${signature}`)
     const issuer: string = ((decodedVC.jwt as Jwt).payload as Record<string, unknown>).iss as string
-    const verifierKey: SignKeyResult = await this.getSignKey({ identifier: issuer, vmRelationship: 'verificationMethod' }, context)
-    const x5c: string[] | undefined = (decodedVC.jwt as Jwt).header?.x5c as string[]
-    const x5t: string | undefined = (decodedVC.jwt as Jwt).header?.x5t as string
-    let publicKey: string | undefined
-
+    const header = (decodedVC.jwt as Jwt).header as Record<string, any>
+    const x5c: string[] | undefined = header?.x5c as string[]
+    let jwk: JWK | JsonWebKey | undefined = undefined
+    let key: IKey | undefined
+    if (issuer.includes('did:')) {
+      const identifier: IIdentifier = await context.agent.didManagerGet({ did: issuer.split('#')[0] })
+      key = await context.agent.getKey({ identifier })
+      if (key) {
+        const type = key?.type
+        const publicKey = key?.publicKeyHex
+        jwk = toJwk(publicKey, type)
+      }
+    }
     if (x5c) {
-      const certChain = x5c.map((cert) => `-----BEGIN CERTIFICATE-----\n${cert}\n-----END CERTIFICATE-----`)
-      const pemCert = base64ToPEM(x5c[0], 'CERTIFICATE')
-      publicKey = publicKeyHexFromPEM(pemCert)
-      const isValidCertChain = await context.agent.verifyCertificateChain({ chain: certChain, trustAnchors: [funkeTestCA, funkeTestIssuer] })
+      const firstCert = x5c[0]
+      const certificateValidationResult: X509ValidationResult = await context.agent.verifyCertificateChain({
+        chain: [firstCert],
+        trustAnchors: [funkeTestCA, sphereonCA],
+      })
 
-      if (isValidCertChain.error) {
+      if (certificateValidationResult.error || !certificateValidationResult?.certificateChain) {
         throw new Error('Certificate chain validation failed')
       }
-    } else if (x5t) {
-      publicKey = x5t
-    } else {
-      const verifierKey: SignKeyResult = await this.getSignKey({ identifier: issuer, vmRelationship: 'verificationMethod' }, context)
-      const key = await context.agent.keyManagerGet({ kid: verifierKey.key.jwkThumbprint ?? verifierKey.key.kid })
-      publicKey = key.publicKeyHex
+      const pem = await x5cToPemCertChain([firstCert])
+      jwk = await PEMToJwk(pem, 'public')
     }
 
-    if (!publicKey) {
+    if (!jwk) {
       throw new Error('No valid public key found for signature verification')
     }
-    publicKey = publicKey ?? verifierKey.key.jwkThumbprint ?? verifierKey.key.kid
-    const key = await context.agent.keyManagerGet({ kid: publicKey })
-    return this.algorithms.verifySignature(data, signature, toJwk(publicKey, key.type))
+    return this.algorithms.verifySignature(data, signature, jwk)
   }
 
   /**
