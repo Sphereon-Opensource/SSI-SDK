@@ -23,9 +23,8 @@ import { _ExtendedIKey } from '@veramo/utils'
 import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
 import { calculateJwkThumbprint, JWK } from '@sphereon/ssi-sdk-ext.key-utils'
 import { funkeTestCA, sphereonCA } from './trustAnchors'
-import { X509ValidationResult, CertInfo } from '@sphereon/ssi-sdk-ext.x509-utils'
 
-const debug = Debug('@sphereon/sd-jwt')
+const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
 /**
  * @beta
  * SD-JWT plugin for Veramo
@@ -205,7 +204,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       jwk = didDocumentKey.publicKeyJwk as JsonWebKey
     }
     if (x5c) {
-      const certificateValidationResult: X509ValidationResult = await context.agent.verifyCertificateChain({
+      const certificateValidationResult = await context.agent.verifyCertificateChain({
         chain: x5c,
         trustAnchors: [funkeTestCA, sphereonCA],
       })
@@ -213,7 +212,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       if (certificateValidationResult.error || !certificateValidationResult?.certificateChain) {
         throw new Error('Certificate chain validation failed')
       }
-      const certInfo: CertInfo = certificateValidationResult.certificateChain[0]
+      const certInfo = certificateValidationResult.certificateChain[0]
       jwk = certInfo.publicKeyJWK as JWK
     }
 

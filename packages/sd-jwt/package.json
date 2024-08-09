@@ -21,7 +21,6 @@
     "@sphereon/ssi-sdk.mdl-mdoc": "0.29.1-unstable.48",
     "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.54",
     "@sphereon/ssi-sdk-ext.key-utils": "0.24.1-unstable.54",
-    "@sphereon/ssi-sdk-ext.x509-utils": "0.24.1-unstable.63",
     "@veramo/utils": "4.2.0",
     "debug": "^4.3.5"
   },
