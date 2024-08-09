@@ -4,7 +4,7 @@ import { schema, SignKeyArgs, SignKeyResult } from './index'
 import { Jwt, SDJwt } from '@sd-jwt/core'
 import { SDJwtVcInstance, SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 import { Signer, Verifier, KbVerifier, JwtPayload, DisclosureFrame, PresentationFrame } from '@sd-jwt/types'
-import { IAgentPlugin, IIdentifier, IKey } from '@veramo/core'
+import { IAgentPlugin } from '@veramo/core'
 import {
   SdJWTImplementation,
   ICreateSdJwtVcArgs,
@@ -21,9 +21,9 @@ import {
 } from './types'
 import { _ExtendedIKey } from '@veramo/utils'
 import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
-import { calculateJwkThumbprint, JWK, toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
+import { calculateJwkThumbprint, JWK } from '@sphereon/ssi-sdk-ext.key-utils'
 import { funkeTestCA, sphereonCA } from './trustAnchors'
-import { PEMToJwk, x5cToPemCertChain, X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
+import { X509ValidationResult, CertInfo } from '@sphereon/ssi-sdk-ext.x509-utils'
 
 const debug = Debug('@sphereon/sd-jwt')
 /**
@@ -84,7 +84,6 @@ export class SDJwtPlugin implements IAgentPlugin {
       const didIdentifier = await context.agent.didManagerGet({
         did: identifier.split('#')[0],
       })
-      //const doc = await mapIdentifierKeysToDocWithJwkSupport({ identifier: didIdentifier, vmRelationship: 'assertionMethod' }, context)
       const key: _ExtendedIKey | undefined = await getFirstKeyWithRelation({ identifier: didIdentifier, vmRelationship: vmRelationship }, context)
       if (!key) {
         throw new Error(`No key found with the given id: ${identifier}`)
@@ -191,28 +190,31 @@ export class SDJwtPlugin implements IAgentPlugin {
     const header = (decodedVC.jwt as Jwt).header as Record<string, any>
     const x5c: string[] | undefined = header?.x5c as string[]
     let jwk: JWK | JsonWebKey | undefined = undefined
-    let key: IKey | undefined
     if (issuer.includes('did:')) {
-      const identifier: IIdentifier = await context.agent.didManagerGet({ did: issuer.split('#')[0] })
-      key = await context.agent.getKey({ identifier })
-      if (key) {
-        const type = key?.type
-        const publicKey = key?.publicKeyHex
-        jwk = toJwk(publicKey, type)
+      const didDoc = await context.agent.resolveDid({ didUrl: issuer })
+      if (!didDoc) {
+        throw new Error('invalid_issuer: issuer did not resolve to a did document')
       }
+      //TODO SDK-20: This should be checking for an assertionMethod and not just an verificationMethod with an id
+      const didDocumentKey = didDoc.didDocument?.verificationMethod?.find((key) => key.id)
+      if (!didDocumentKey) {
+        throw new Error('invalid_issuer: issuer did document does not include referenced key')
+      }
+      //FIXME SDK-21: in case it's another did method, the value of the key can be also encoded as a base64url
+      // needs more checks. some DID methods do not expose the keys as publicKeyJwk
+      jwk = didDocumentKey.publicKeyJwk as JsonWebKey
     }
     if (x5c) {
-      const firstCert = x5c[0]
       const certificateValidationResult: X509ValidationResult = await context.agent.verifyCertificateChain({
-        chain: [firstCert],
+        chain: x5c,
         trustAnchors: [funkeTestCA, sphereonCA],
       })
 
       if (certificateValidationResult.error || !certificateValidationResult?.certificateChain) {
         throw new Error('Certificate chain validation failed')
       }
-      const pem = await x5cToPemCertChain([firstCert])
-      jwk = await PEMToJwk(pem, 'public')
+      const certInfo: CertInfo = certificateValidationResult.certificateChain[0]
+      jwk = certInfo.publicKeyJWK as JWK
     }
 
     if (!jwk) {
