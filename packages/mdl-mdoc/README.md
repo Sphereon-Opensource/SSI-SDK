@@ -12,9 +12,6 @@
 
 ---
 
-
 This SDK module provides mDL-mdoc support for the SDK. The heavy lifting is performed by our Kotlin Multiplatform
 low-level library however. You can find that library in a
 separate [Github repository](https://github.com/Sphereon-Opensource/mDL-mdoc-multiplatform).
-
-

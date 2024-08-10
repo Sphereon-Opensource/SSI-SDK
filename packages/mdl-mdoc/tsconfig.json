@@ -14,21 +14,6 @@
       "path": "../agent-config"
     },
     {
-      "path": "../siopv2-oid4vp-op-auth"
-    },
-    {
-      "path": "../oid4vci-holder"
-    },
-    {
-      "path": "../data-store"
-    },
-    {
-      "path": "../presentation-exchange"
-    },
-    {
-      "path": "../public-key-hosting"
-    },
-    {
       "path": "../ssi-types"
     },
     {

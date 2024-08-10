@@ -1,15 +1,131 @@
 import { com, Nullable } from '@sphereon/kmp-mdl-mdoc'
-import { CertInfo, derToPEM, validateX509CertificateChain } from '@sphereon/ssi-sdk-ext.x509-utils'
-import { X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils/src/x509/x509-validator'
+import { CertInfo, derToPEM, getSubjectDN, pemOrDerToX509Certificate, validateX509CertificateChain } from '@sphereon/ssi-sdk-ext.x509-utils'
+import { X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
+import * as crypto from 'crypto'
+import { Certificate, CryptoEngine, setEngine } from 'pkijs'
 import { VerifyCertificateChainArgs } from '../types/ImDLMdoc'
+import CoseSign1Cbor = com.sphereon.cbor.cose.CoseSign1Cbor
+import CoseSign1InputCbor = com.sphereon.cbor.cose.CoseSign1InputCbor
+import ICoseKeyCbor = com.sphereon.cbor.cose.ICoseKeyCbor
+import IKey = com.sphereon.cbor.cose.IKey
 import CryptoServiceJS = com.sphereon.crypto.CryptoServiceJS
+import ICoseCryptoCallbackJS = com.sphereon.crypto.ICoseCryptoCallbackJS
+import IKeyInfo = com.sphereon.crypto.IKeyInfo
+import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult
 import IX509ServiceJS = com.sphereon.crypto.IX509ServiceJS
 import IX509VerificationResult = com.sphereon.crypto.IX509VerificationResult
 import X509VerificationProfile = com.sphereon.crypto.X509VerificationProfile
-import IKey = com.sphereon.cbor.cose.IKey
+import Jwk = com.sphereon.jose.jwk.Jwk
+import decodeFrom = com.sphereon.kmp.decodeFrom
+import Encoding = com.sphereon.kmp.Encoding
+import CoseKeyJson = com.sphereon.cbor.cose.CoseKeyJson
 
+export class CoseCryptoService implements ICoseCryptoCallbackJS {
+  async sign1<CborType, JsonType>(
+    input: CoseSign1InputCbor<CborType, JsonType>,
+    keyInfo?: IKeyInfo<ICoseKeyCbor>,
+  ): Promise<CoseSign1Cbor<CborType, JsonType>> {
+    throw new Error('Method not implemented.')
+  }
 
+  async verify1<CborType, JsonType>(
+    input: CoseSign1Cbor<CborType, JsonType>,
+    keyInfo?: IKeyInfo<ICoseKeyCbor>,
+  ): Promise<IVerifySignatureResult<ICoseKeyCbor>> {
+    async function getCertAndKey(x5c: Nullable<Array<string>>): Promise<{
+      issuerCert: Certificate
+      issuerPublicKey: CryptoKey
+    }> {
+      if (!x5c || x5c.length === 0) {
+        // We should not be able to get here anyway, as the MLD-mdoc library already validated at this point. But let's make sure
+        return Promise.reject(new Error(`No x5chain was present in the CoseSign headers!`))
+      }
+      // TODO: According to the IETF spec there should be a x5t in case the x5chain is in the protected headers. In the Funke this does not seem to be done/used!
+      issuerCert = pemOrDerToX509Certificate(x5c[0])
+      issuerPublicKey = await issuerCert.getPublicKey()
+      return { issuerCert, issuerPublicKey }
+    }
 
+    if (keyInfo?.key?.d) {
+      throw Error('Do not use private keys to verify!')
+    } else if (!input.payload?.value) {
+      return Promise.reject(Error('Signature validation without payload not supported'))
+    }
+    const sign1Json = input.toJson() // Let's make it a bit easier on ourselves, instead of working with CBOR
+    const coseAlg = sign1Json.protectedHeader.alg
+    if (!coseAlg) {
+      return Promise.reject(Error('No alg protected header present'))
+    }
+
+    let issuerPublicKey: CryptoKey
+    let issuerCert: Certificate | undefined
+    let kid = keyInfo?.kid ?? sign1Json.protectedHeader.kid ?? sign1Json.unprotectedHeader?.kid
+    // Please note this method does not perform chain validation. The MDL-MDOC library already performed this before this step
+    const x5c =
+      keyInfo?.key?.x5chain?.value?.asJsArrayView()?.map((x509) => x509.encodeTo(Encoding.BASE64)) ??
+      sign1Json.protectedHeader?.x5chain ??
+      sign1Json.unprotectedHeader?.x5chain
+    if (!keyInfo || !keyInfo?.key || keyInfo?.key?.x5chain) {
+      const certAndKey = await getCertAndKey(x5c)
+      issuerPublicKey = certAndKey.issuerPublicKey
+      issuerCert = certAndKey.issuerCert
+    } else {
+      if (!keyInfo?.key) {
+        return Promise.reject(Error(`Either a x5c needs to be in the headers, or you need to provide a key for verification`))
+      }
+      const key = keyInfo.key
+
+      // todo: Workaround as the Agent only works with cosekey json objects and we do not support conversion of these from Json to cbor yet
+      const jwk =
+        typeof key.x === 'string'
+          ? Jwk.Companion.fromCoseKeyJson(keyInfo.key as unknown as CoseKeyJson).toJsonObject()
+          : Jwk.Companion.fromCoseKey(keyInfo.key).toJsonObject()
+      if (kid === null) {
+        kid = jwk.kid
+      }
+      let keyAlg = jwk.kty ?? 'ECDSA'
+      const crv: string = jwk.crv ?? 'P-256'
+      issuerPublicKey = await crypto.subtle.importKey(
+        'jwk',
+        {
+          kty: jwk.kty,
+          crv,
+          ...(jwk.x5c && { x5c: jwk.x5c }),
+          ...(jwk.x && { x: jwk.x }),
+          ...(jwk.y && { y: jwk.y }),
+        } satisfies JsonWebKey,
+        {
+          name: keyAlg === 'EC' ? 'ECDSA' : keyAlg,
+          namedCurve: crv,
+        },
+        true,
+        ['verify'],
+      )
+    }
+
+    const exportedJwk = await crypto.subtle.exportKey('jwk', issuerPublicKey)
+    const crv = exportedJwk.crv
+    const coseKey = Jwk.Companion.fromJsonObject(exportedJwk).jwkToCoseKeyJson()
+    const recalculatedToBeSigned = input.toBeSignedJson(coseKey, coseAlg)
+    const valid = await crypto.subtle.verify(
+      {
+        ...issuerPublicKey.algorithm,
+        hash: crv?.includes('-') ? `SHA-${crv.split('-')[1]}` : 'SHA-256', // todo: this needs to be more robust
+      },
+      issuerPublicKey,
+      decodeFrom(sign1Json.signature, Encoding.BASE64URL),
+      decodeFrom(recalculatedToBeSigned.hexValue, Encoding.HEX),
+    )
+
+    return {
+      name: 'mdoc',
+      critical: true,
+      error: !valid,
+      message: `Signature of '${issuerCert ? getSubjectDN(issuerCert).DN : kid}' was ${valid ? '' : 'in'}valid`,
+      keyInfo: keyInfo ?? ({ kid, key: coseKey.toCbor() } satisfies IKeyInfo<ICoseKeyCbor>),
+    } satisfies IVerifySignatureResult<ICoseKeyCbor>
+  }
+}
 
 /**
  * This class can be used for X509 validations.
@@ -25,29 +141,37 @@ export class X509CallbackService implements IX509ServiceJS {
     this.setTrustedCerts(trustedCerts)
   }
 
-
   /**
    * A more powerful version of the method below. Allows to verify at a specific time and returns more information
    * @param chain
    * @param trustAnchors
    * @param verificationTime
    */
-  async verifyCertificateChain({ chain, trustAnchors = this.getTrustedCerts(), verificationTime }: VerifyCertificateChainArgs): Promise<X509ValidationResult> {
+  async verifyCertificateChain({
+    chain,
+    trustAnchors = this.getTrustedCerts(),
+    verificationTime,
+  }: VerifyCertificateChainArgs): Promise<X509ValidationResult> {
     return await validateX509CertificateChain({
       chain,
       trustAnchors,
       verificationTime,
-      opts: { trustRootWhenNoAnchors: true }
+      opts: { trustRootWhenNoAnchors: true },
     })
   }
 
   /**
    * This method is the implementation used within the mDL/Mdoc library
    */
-  async verifyCertificateChainJS<KeyType extends IKey>(chainDER: Nullable<Int8Array[]>, chainPEM: Nullable<string[]>, trustedCerts: Nullable<string[]>, verificationProfile?: X509VerificationProfile | undefined): Promise<IX509VerificationResult<KeyType>> {
+  async verifyCertificateChainJS<KeyType extends IKey>(
+    chainDER: Nullable<Int8Array[]>,
+    chainPEM: Nullable<string[]>,
+    trustedCerts: Nullable<string[]>,
+    verificationProfile?: X509VerificationProfile | undefined,
+  ): Promise<IX509VerificationResult<KeyType>> {
     let chain: Array<string | Uint8Array> = []
     if (chainDER && chainDER.length > 0) {
-      chain = chainDER.map(der => Uint8Array.from(der))
+      chain = chainDER.map((der) => Uint8Array.from(der))
     }
     if (chainPEM && chainPEM.length > 0) {
       chain = (chain ?? []).concat(chainPEM)
@@ -55,7 +179,7 @@ export class X509CallbackService implements IX509ServiceJS {
     const result = await validateX509CertificateChain({
       chain: chain, // The function will handle an empty array
       trustAnchors: trustedCerts ?? this.getTrustedCerts(),
-      opts: { trustRootWhenNoAnchors: true }
+      opts: { trustRootWhenNoAnchors: true },
     })
 
     const cert: CertInfo | undefined = result.certificateChain ? result.certificateChain[result.certificateChain.length - 1] : undefined
@@ -66,14 +190,12 @@ export class X509CallbackService implements IX509ServiceJS {
       name: 'x.509',
       critical: result.critical,
       message: result.message,
-      error: result.error
+      error: result.error,
     } satisfies IX509VerificationResult<KeyType>
-
   }
 
-
   setTrustedCerts = (trustedCertsInPEM?: Array<string>) => {
-    this._trustedCerts = trustedCertsInPEM?.map(cert => {
+    this._trustedCerts = trustedCertsInPEM?.map((cert) => {
       if (cert.includes('CERTIFICATE')) {
         // PEM
         return cert
@@ -85,6 +207,32 @@ export class X509CallbackService implements IX509ServiceJS {
   getTrustedCerts = () => this._trustedCerts
 }
 
-// We register this service with the mDL/mdoc library
-CryptoServiceJS.X509.register(new X509CallbackService())
+const defaultCryptoEngine = () => {
+  if (typeof self !== 'undefined') {
+    if ('crypto' in self) {
+      let engineName = 'webcrypto'
+      if ('webkitSubtle' in self.crypto) {
+        engineName = 'safari'
+      }
+      // @ts-ignore
+      setEngine(engineName, new CryptoEngine({ name: engineName, crypto: crypto }))
+    }
+  } else if (typeof crypto !== 'undefined' && 'webcrypto' in crypto) {
+    const name = 'NodeJS ^15'
+    const nodeCrypto = crypto.webcrypto
+    // @ts-ignore
+    setEngine(name, new CryptoEngine({ name, crypto: nodeCrypto }))
+  } else {
+    // @ts-ignore
+    if (typeof crypto !== 'undefined' && typeof crypto.subtle !== 'undefined') {
+      const name = 'crypto'
+      setEngine(name, new CryptoEngine({ name, crypto: crypto }))
+    }
+  }
+}
 
+defaultCryptoEngine()
+
+// We register the services with the mDL/mdoc library
+CryptoServiceJS.X509.register(new X509CallbackService())
+CryptoServiceJS.COSE.register(new CoseCryptoService())
