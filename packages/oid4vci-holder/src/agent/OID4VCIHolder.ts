@@ -116,6 +116,7 @@ const logger = Loggers.DEFAULT.get('sphereon:oid4vci:holder')
 export function signCallback(client: OpenID4VCIClient, idOpts: IIdentifierOpts, context: IRequiredSignAgentContext) {
   return async (jwt: Jwt, kid?: string) => {
     let iss = jwt.payload.iss
+    const jwk = jwt.header.jwk
 
     if (!kid) {
       kid = jwt.header.kid
@@ -123,8 +124,11 @@ export function signCallback(client: OpenID4VCIClient, idOpts: IIdentifierOpts, 
     if (!kid) {
       kid = idOpts.kmsKeyRef
     }
+    if (!kid && jwk && 'kid' in jwk) {
+      kid = jwk.kid as string
+    }
 
-    if (kid) {
+    if (kid && !idOpts.kmsKeyRef) {
       // sync back to id opts
       idOpts.kmsKeyRef = kid.split('#')[0]
     }
@@ -148,8 +152,11 @@ export function signCallback(client: OpenID4VCIClient, idOpts: IIdentifierOpts, 
       const hash = kid.startsWith('#') ? '' : '#'
       kid = `${identifier.did}${hash}${kid}`
     }
-    const header = { ...jwt.header, ...(kid && { kid }) } as Partial<JWTHeader>
+    const header = { ...jwt.header, ...(kid && !jwk && { kid }) } as Partial<JWTHeader>
     const payload = { ...jwt.payload, ...(iss && { iss }) }
+    if (jwk && header.kid) {
+      delete header.kid
+    }
     return signDidJWT({
       idOpts,
       header,

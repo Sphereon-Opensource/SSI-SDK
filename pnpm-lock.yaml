@@ -29,9 +29,9 @@ overrides:
   '@veramo/url-handler': 4.2.0
   '@sphereon/ssi-types': workspace:*
   '@sphereon/ssi-sdk.core': workspace:*
-  '@sphereon/oid4vci-common': 0.16.1-next.6
-  '@sphereon/oid4vci-client': 0.16.1-next.6
-  '@sphereon/oid4vci-issuer': 0.16.1-next.6
+  '@sphereon/oid4vci-common': 0.16.1-next.7
+  '@sphereon/oid4vci-client': 0.16.1-next.7
+  '@sphereon/oid4vci-issuer': 0.16.1-next.7
   '@sphereon/pex': ^4.0.1
   '@noble/hashes': 1.2.0
   debug: ^4.3.5
@@ -589,11 +589,11 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-next.6
-        version: 0.16.1-next.6
+        specifier: 0.16.1-next.7
+        version: 0.16.1-next.7
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.6
-        version: 0.16.1-next.6
+        specifier: 0.16.1-next.7
+        version: 0.16.1-next.7
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -842,11 +842,11 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-next.6
-        version: 0.16.1-next.6
+        specifier: 0.16.1-next.7
+        version: 0.16.1-next.7
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.6
-        version: 0.16.1-next.6
+        specifier: 0.16.1-next.7
+        version: 0.16.1-next.7
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1015,11 +1015,11 @@ importers:
   packages/oid4vci-holder:
     dependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-next.6
-        version: 0.16.1-next.6
+        specifier: 0.16.1-next.7
+        version: 0.16.1-next.7
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.6
-        version: 0.16.1-next.6
+        specifier: 0.16.1-next.7
+        version: 0.16.1-next.7
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-next.65
         version: 0.24.1-next.65
@@ -1103,11 +1103,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.6
-        version: 0.16.1-next.6
+        specifier: 0.16.1-next.7
+        version: 0.16.1-next.7
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-next.6
-        version: 0.16.1-next.6(awesome-qr@2.1.5-rc.0)
+        specifier: 0.16.1-next.7
+        version: 0.16.1-next.7(awesome-qr@2.1.5-rc.0)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-next.65
         version: 0.24.1-next.65
@@ -1161,14 +1161,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.6
-        version: 0.16.1-next.6
+        specifier: 0.16.1-next.7
+        version: 0.16.1-next.7
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-next.6
-        version: 0.16.1-next.6(awesome-qr@2.1.5-rc.0)
+        specifier: 0.16.1-next.7
+        version: 0.16.1-next.7(awesome-qr@2.1.5-rc.0)
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.16.1-next.6
-        version: 0.16.1-next.6(awesome-qr@2.1.5-rc.0)
+        specifier: 0.16.1-next.7
+        version: 0.16.1-next.7(awesome-qr@2.1.5-rc.0)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1324,8 +1324,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.6
-        version: 0.16.1-next.6
+        specifier: 0.16.1-next.7
+        version: 0.16.1-next.7
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1361,8 +1361,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.6
-        version: 0.16.1-next.6
+        specifier: 0.16.1-next.7
+        version: 0.16.1-next.7
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-next.65
         version: 0.24.1-next.65
@@ -8331,6 +8331,7 @@ packages:
       '@js-joda/timezone': 2.3.0(@js-joda/core@5.6.3)
       format-util: 1.0.5
     dev: false
+    bundledDependencies: []
 
   /@sphereon/lto-did-ts@0.1.8-unstable.0(debug@4.3.6)(typescript@5.4.2):
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
@@ -8347,8 +8348,8 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vc-common@0.16.1-next.6:
-    resolution: {integrity: sha512-aRafUE1UPwIPqSUGfD904Ba7kwQieNodOOJS3U6rj9xNqeP0DJCmTnsEC3XI/bXe8Dx6gijRvi5E6pdIm0uqPg==}
+  /@sphereon/oid4vc-common@0.16.1-next.7:
+    resolution: {integrity: sha512-kqS5youxv5aBN90gVyjQ1ZLHmeRaQekWQsxoFYGhNqwvSc4VpXF2YiMwM9FKr2Uf+/cGffl7oLYnNqlQwC2iGA==}
     engines: {node: '>=18'}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -8357,12 +8358,12 @@ packages:
       uint8arrays: 3.1.1
       uuid: 9.0.1
 
-  /@sphereon/oid4vci-client@0.16.1-next.6:
-    resolution: {integrity: sha512-GhAZVa+G+Gw/uHFx8/DST2B9bJzflhS87Q4dx9UFrI+YgWUI7fy6Ej73Abo9mcXUrLCZtSfBXDV83Efm2kEr/Q==}
+  /@sphereon/oid4vci-client@0.16.1-next.7:
+    resolution: {integrity: sha512-Pp5ZaHU+GHM1+N6S9G8jhP5FLyG7t36L+V6uFQj834TBYnSWIEDQM9BcMYNOCN3If2hBL4A42iW+r+HDht9Q1w==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.6
-      '@sphereon/oid4vci-common': 0.16.1-next.6
+      '@sphereon/oid4vc-common': 0.16.1-next.7
+      '@sphereon/oid4vci-common': 0.16.1-next.7
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
       debug: 4.3.6
@@ -8370,11 +8371,11 @@ packages:
       - encoding
       - supports-color
 
-  /@sphereon/oid4vci-common@0.16.1-next.6:
-    resolution: {integrity: sha512-mbFfVcz9FxSulrJrRIinjq/4z33DGh4J7nq8m4m8MQ6zY66zobVjzsAci/Z3rccisj7bwXB0b1RYz39PzS9BqA==}
+  /@sphereon/oid4vci-common@0.16.1-next.7:
+    resolution: {integrity: sha512-Cl7W9KfySsWPS4I6eWwBedfKdT5LaAqRdSeLKITSGyd37jb4eEdz42CWOQUiB6V2FA+cQlQVwFKYcG8KT+rrLA==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.6
+      '@sphereon/oid4vc-common': 0.16.1-next.7
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
       jwt-decode: 4.0.0
@@ -8383,8 +8384,8 @@ packages:
     transitivePeerDependencies:
       - encoding
 
-  /@sphereon/oid4vci-issuer-server@0.16.1-next.6(awesome-qr@2.1.5-rc.0):
-    resolution: {integrity: sha512-pCfgl+eYRGZnrzlXQ6fRno1v/sbNnc/+CEBeUzkDmF9I7NBlwXLiz6alC3pQRDF8GymEsJv05RM1Vj0Entbuug==}
+  /@sphereon/oid4vci-issuer-server@0.16.1-next.7(awesome-qr@2.1.5-rc.0):
+    resolution: {integrity: sha512-TpizsJlqRa4YqvvlRiBu3Uroij5O+9IWO8an/IzE936RmzDo6Q6Lx1V+PAvCsuaWzbqIqKtZ8Zjq3+ij7JmJhA==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -8392,9 +8393,9 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.6
-      '@sphereon/oid4vci-common': 0.16.1-next.6
-      '@sphereon/oid4vci-issuer': 0.16.1-next.6(awesome-qr@2.1.5-rc.0)
+      '@sphereon/oid4vc-common': 0.16.1-next.7
+      '@sphereon/oid4vci-common': 0.16.1-next.7
+      '@sphereon/oid4vci-issuer': 0.16.1-next.7(awesome-qr@2.1.5-rc.0)
       '@sphereon/ssi-express-support': 0.29.0
       '@sphereon/ssi-types': link:packages/ssi-types
       awesome-qr: 2.1.5-rc.0
@@ -8413,8 +8414,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.16.1-next.6(awesome-qr@2.1.5-rc.0):
-    resolution: {integrity: sha512-1xhuMazhOdbvR91m9ExgjTYuLO9JPi2g85hKzu28APT/B3lPq9nPCevjAMXiRW3PbyoN6+v9ByTUk5Jnwlsa7w==}
+  /@sphereon/oid4vci-issuer@0.16.1-next.7(awesome-qr@2.1.5-rc.0):
+    resolution: {integrity: sha512-3BIipmmw837R+f2Bt+GS9Huvb7QWNCCUVbKSZ9o/uPQPcM4GYlegDfINxBfE+k9xyd4mJTdxSUJzhhzcie1bSw==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -8422,8 +8423,8 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.6
-      '@sphereon/oid4vci-common': 0.16.1-next.6
+      '@sphereon/oid4vc-common': 0.16.1-next.7
+      '@sphereon/oid4vci-common': 0.16.1-next.7
       '@sphereon/ssi-types': link:packages/ssi-types
       awesome-qr: 2.1.5-rc.0
       uuid: 9.0.1
