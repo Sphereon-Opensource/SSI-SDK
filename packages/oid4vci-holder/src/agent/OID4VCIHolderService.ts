@@ -11,13 +11,8 @@ import {
   OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
-import {
-  getAuthenticationKey,
-  getIdentifier as getIdentifierFromOpts,
-  getKey,
-  getOrCreatePrimaryIdentifier,
-  SupportedDidMethodEnum,
-} from '@sphereon/ssi-sdk-ext.did-utils'
+import { getAuthenticationKey, getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import { keyTypeFromCryptographicSuite, SignatureAlgorithmEnum } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -29,9 +24,8 @@ import {
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
-import { IIdentifier, IVerifyCredentialArgs, TKeyType, W3CVerifiableCredential as VeramoW3CVerifiableCredential } from '@veramo/core'
+import { IIdentifier, IVerifyCredentialArgs, W3CVerifiableCredential as VeramoW3CVerifiableCredential } from '@veramo/core'
 import { _ExtendedIKey, asArray } from '@veramo/utils'
-import { createJWT, Signer } from 'did-jwt'
 import { translate } from '../localization/Localization'
 import {
   DidAgents,
@@ -45,19 +39,13 @@ import {
   GetIssuanceOptsArgs,
   GetIssuerBrandingArgs,
   GetPreferredCredentialFormatsArgs,
-  GetSignerArgs,
   IdentifierOpts,
   IssuanceOpts,
-  KeyTypeFromCryptographicSuiteArgs,
   MapCredentialToAcceptArgs,
   MappedCredentialToAccept,
   OID4VCIHolderEvent,
   RequiredContext,
   SelectAppLocaleBrandingArgs,
-  SignatureAlgorithmEnum,
-  SignatureAlgorithmFromKeyArgs,
-  SignatureAlgorithmFromKeyTypeArgs,
-  SignJwtArgs,
   VerificationResult,
   VerificationSubResult,
   VerifyCredentialToAcceptArgs,
@@ -322,7 +310,11 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Identi
     }
   }
   const key: _ExtendedIKey = await getAuthenticationKey(
-    { identifier, offlineWhenNoDIDRegistered: identifier.did.startsWith('did:ebsi'), noVerificationMethodFallback: true },
+    {
+      identifier,
+      offlineWhenNoDIDRegistered: identifier.did.startsWith('did:ebsi'),
+      noVerificationMethodFallback: true,
+    },
     context,
   )
   let kid: string = key.meta.verificationMethod?.id ?? key.kid
@@ -380,6 +372,7 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
 ): Promise<Record<string, CredentialConfigurationSupported>> => {
   const { client, vcFormatPreferences, configurationId } = args
   let { format = undefined, types = undefined } = args
+
   function createIdFromTypes(supported: CredentialConfigurationSupported) {
     const format = supported.format
     const type: string = getTypesFromObject(supported)?.join() ?? ''
@@ -554,7 +547,11 @@ export const getIssuanceDidMethod = async (opts: GetIssuanceDidMethodArgs): Prom
 
 export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): Promise<string> => {
   const { client, credentialSupported, jwtCryptographicSuitePreferences, jsonldCryptographicSuitePreferences } = opts
-  const signing_algs_supported: Array<string> = credentialSupported.credential_signing_alg_values_supported ?? []
+
+  const signing_algs_supported: Array<string> = asArray(
+    // @ts-ignore
+    credentialSupported.credential_signing_alg_values_supported ?? credentialSupported.proof_signing_alg_values_supported ?? [],
+  )
 
   // TODO: Return array, so the wallet/user could choose
   switch (credentialSupported.format) {
@@ -596,72 +593,5 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
     }
     default:
       return Promise.reject(Error(`Credential format '${credentialSupported.format}' not supported`))
-  }
-}
-
-export const signatureAlgorithmFromKey = async (args: SignatureAlgorithmFromKeyArgs): Promise<SignatureAlgorithmEnum> => {
-  const { key } = args
-  return signatureAlgorithmFromKeyType({ type: key.type })
-}
-
-export const signJWT = async (args: SignJwtArgs): Promise<string> => {
-  const { idOpts, header, payload, context, options } = args
-  const jwtOptions = {
-    ...options,
-    signer: await getSigner({ idOpts, context }),
-  }
-
-  return createJWT(payload, jwtOptions, header)
-}
-
-export const getSigner = async (args: GetSignerArgs): Promise<Signer> => {
-  const { idOpts, context } = args
-
-  const identifier = await getIdentifierFromOpts(idOpts, context)
-  const key = await getKey({ identifier, vmRelationship: idOpts.verificationMethodSection, kmsKeyRef: idOpts.kmsKeyRef }, context)
-  const algorithm = await signatureAlgorithmFromKey({ key })
-
-  return async (data: string | Uint8Array): Promise<string> => {
-    const input = data instanceof Object.getPrototypeOf(Uint8Array) ? new TextDecoder().decode(data as Uint8Array) : (data as string)
-    return await context.agent.keyManagerSign({
-      keyRef: key.kid,
-      algorithm,
-      data: input,
-    })
-  }
-}
-
-export const signatureAlgorithmFromKeyType = (args: SignatureAlgorithmFromKeyTypeArgs): SignatureAlgorithmEnum => {
-  const { type } = args
-  switch (type) {
-    case 'Ed25519':
-    case 'X25519':
-      return SignatureAlgorithmEnum.EdDSA
-    case 'Secp256r1':
-      return SignatureAlgorithmEnum.ES256
-    case 'Secp256k1':
-      return SignatureAlgorithmEnum.ES256K
-    default:
-      throw new Error(`Key type '${type}' not supported`)
-  }
-}
-
-// TODO improve this conversion for jwt and jsonld, not a fan of current structure
-export const keyTypeFromCryptographicSuite = (args: KeyTypeFromCryptographicSuiteArgs): TKeyType => {
-  const { suite } = args
-  switch (suite) {
-    case 'EdDSA':
-    case 'Ed25519Signature2018':
-    case 'Ed25519Signature2020':
-    case 'JcsEd25519Signature2020':
-      return 'Ed25519'
-    case 'JsonWebSignature2020':
-    case 'ES256':
-      return 'Secp256r1'
-    case 'EcdsaSecp256k1Signature2019':
-    case 'ES256K':
-      return 'Secp256k1'
-    default:
-      throw new Error(`Cryptographic suite '${suite}' not supported`)
   }
 }

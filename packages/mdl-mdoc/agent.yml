@@ -130,7 +130,7 @@ agent:
         - $require: '@veramo/data-store#DataStoreORM'
           $args:
             - $ref: /dbConnection
-#        - $require: '@veramo/credential-w3c#CredentialPlugin'
+        #        - $require: '@veramo/credential-w3c#CredentialPlugin'
         - $require: ./packages/mdl-mdoc/dist#MDLMdoc
 #        - $require: ./packages/presentation-exchange/dist#PresentationExchange
 #        - $require: ./packages/siopv2-oid4vp-op-auth/dist#DidAuthSiopOpAuthenticator

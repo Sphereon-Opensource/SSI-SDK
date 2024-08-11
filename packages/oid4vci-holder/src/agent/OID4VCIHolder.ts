@@ -14,7 +14,15 @@ import {
   NotificationRequest,
   ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
-import { getIdentifier, getKey, IIdentifierOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import {
+  getIdentifier,
+  getKey,
+  IIdentifierOpts,
+  IRequiredSignAgentContext,
+  signDidJWT,
+  SupportedDidMethodEnum,
+} from '@sphereon/ssi-sdk-ext.did-utils'
+import { SignatureAlgorithmEnum, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   CorrelationIdentifierType,
   CredentialCorrelationType,
@@ -55,7 +63,6 @@ import {
   GetCredentialsArgs,
   GetIssuerMetadataArgs,
   IOID4VCIHolder,
-  IRequiredSignAgentContext,
   IssuanceOpts,
   MappedCredentialToAccept,
   OID4VCIHolderEvent,
@@ -69,7 +76,6 @@ import {
   RequestType,
   RequiredContext,
   SendNotificationArgs,
-  SignatureAlgorithmEnum,
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
@@ -83,8 +89,6 @@ import {
   getIssuanceOpts,
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
-  signatureAlgorithmFromKey,
-  signJWT,
   verifyCredentialToAccept,
 } from './OID4VCIHolderService'
 
@@ -146,7 +150,7 @@ export function signCallback(client: OpenID4VCIClient, idOpts: IIdentifierOpts, 
     }
     const header = { ...jwt.header, ...(kid && { kid }) } as Partial<JWTHeader>
     const payload = { ...jwt.payload, ...(iss && { iss }) }
-    return signJWT({
+    return signDidJWT({
       idOpts,
       header,
       payload,

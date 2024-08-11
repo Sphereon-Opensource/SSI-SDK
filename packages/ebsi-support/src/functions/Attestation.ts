@@ -10,7 +10,7 @@ import {
   ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
 import { getAuthenticationKey, getIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
-import { calculateJwkThumbprintForKey } from '@sphereon/ssi-sdk-ext.key-utils'
+import { calculateJwkThumbprintForKey, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   IssuanceOpts,
   OID4VCICallbackStateListener,
@@ -18,7 +18,6 @@ import {
   OID4VCIMachineState,
   OID4VCIMachineStates,
   PrepareStartArgs,
-  signatureAlgorithmFromKey,
   signCallback,
 } from '@sphereon/ssi-sdk.oid4vci-holder'
 import {
@@ -27,7 +26,7 @@ import {
   Siopv2MachineState,
   Siopv2MachineStates,
 } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import { Siopv2OID4VPLinkHandler } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth/dist/link-handler'
+import { Siopv2OID4VPLinkHandler } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import { IIdentifier } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
 import { waitFor } from 'xstate/lib/waitFor'
