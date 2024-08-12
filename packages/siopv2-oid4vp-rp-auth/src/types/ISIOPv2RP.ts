@@ -1,6 +1,6 @@
 import { ClientMetadataOpts } from '@sphereon/did-auth-siop/dist/types'
 import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
-import { AdditionalClaims, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { AdditionalClaims, Hasher, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import {
   AuthorizationRequestPayload,
   AuthorizationRequestState,
@@ -135,6 +135,7 @@ export interface IRPOptions {
   clientMetadataOpts?: ClientMetadataOpts
   expiresIn?: number
   eventEmitter?: EventEmitter
+  credentialOpts?: CredentialOpts
   didOpts: ISIOPDIDOptions
 }
 
@@ -168,6 +169,11 @@ export interface IPresentationWithDefinition {
 export interface ISIOPDIDOptions extends IDIDOptions {
   checkLinkedDomains?: CheckLinkedDomain
   wellknownDIDVerifyCallback?: VerifyCallback
+}
+
+// todo make the necessary changes for mdl-mdoc types
+export type CredentialOpts = {
+  hasher?: Hasher
 }
 
 export interface AuthorizationResponseStateWithVerifiedData extends AuthorizationResponseState {

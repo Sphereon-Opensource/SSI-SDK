@@ -1,4 +1,10 @@
-import { AuthorizationRequestState, AuthorizationResponsePayload, decodeUriAsJson, VerifiedAuthorizationResponse } from '@sphereon/did-auth-siop'
+import {
+  AuthorizationRequestState,
+  AuthorizationResponsePayload,
+  AuthorizationResponseState,
+  decodeUriAsJson,
+  VerifiedAuthorizationResponse,
+} from '@sphereon/did-auth-siop'
 import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop/dist/types/SessionManager'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { AdditionalClaims, CredentialMapper, ICredentialSubject, IVerifiableCredential } from '@sphereon/ssi-types'
@@ -91,21 +97,25 @@ export class SIOPv2RP implements IAgentPlugin {
     args: IGetAuthResponseStateArgs,
     context: IRequiredContext,
   ): Promise<AuthorizationResponseStateWithVerifiedData | undefined> {
-    const rpInstance = await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
-      rp.get(context).then((rp) => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound)),
-    )
-    if (rpInstance === undefined) {
+    const rpInstance: RPInstance = await this.getRPInstance({ definitionId: args.definitionId }, context)
+    const authorizationResponseState: AuthorizationResponseState | undefined = await rpInstance
+      .get(context)
+      .then((rp) => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound))
+    if (authorizationResponseState === undefined) {
       return undefined
     }
 
-    const responseState = rpInstance as AuthorizationResponseStateWithVerifiedData
+    const responseState = authorizationResponseState as AuthorizationResponseStateWithVerifiedData
     if (
       responseState.status === AuthorizationResponseStateStatus.VERIFIED &&
       args.includeVerifiedData &&
       args.includeVerifiedData !== VerifiedDataMode.NONE
     ) {
+      // todo this should also include mdl-mdoc
       const presentationDecoded = CredentialMapper.decodeVerifiablePresentation(
         responseState.response.payload.vp_token as OriginalVerifiablePresentation,
+        //todo: later we want to conditionally pass in options for mdl-mdoc here
+        rpInstance.rpOptions.credentialOpts?.hasher,
       )
       const presentation = CredentialMapper.toUniformPresentation(presentationDecoded as OriginalVerifiablePresentation)
       switch (args.includeVerifiedData) {
