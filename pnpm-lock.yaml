@@ -29,9 +29,6 @@ overrides:
   '@veramo/url-handler': 4.2.0
   '@sphereon/ssi-types': workspace:*
   '@sphereon/ssi-sdk.core': workspace:*
-  '@sphereon/oid4vci-common': 0.16.1-next.7
-  '@sphereon/oid4vci-client': 0.16.1-next.7
-  '@sphereon/oid4vci-issuer': 0.16.1-next.7
   '@sphereon/pex': ^4.0.1
   '@noble/hashes': 1.2.0
   debug: ^4.3.5
