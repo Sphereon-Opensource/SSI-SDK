@@ -1,4 +1,4 @@
-import { AddCredentialArgs } from '../../types/digitalCredential/IAbstractDigitalCredentialStore'
+import { AddCredentialArgs } from '../../types'
 import { DigitalCredentialEntity } from '../../entities/digitalCredential/DigitalCredentialEntity'
 import {
   CredentialMapper,
@@ -10,12 +10,7 @@ import {
   OriginalVerifiablePresentation,
   SdJwtDecodedVerifiableCredentialPayload,
 } from '@sphereon/ssi-types'
-import {
-  CredentialDocumentFormat,
-  DocumentType,
-  DigitalCredential,
-  NonPersistedDigitalCredential,
-} from '../../types/digitalCredential/digitalCredential'
+import { CredentialDocumentFormat, DocumentType, DigitalCredential, NonPersistedDigitalCredential } from '../../types'
 import { computeEntryHash } from '@veramo/utils'
 
 function determineDocumentType(raw: string): DocumentType {

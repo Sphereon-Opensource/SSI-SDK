@@ -113,6 +113,7 @@ dev
         encodeRefs: false,
         additionalProperties: true,
         skipTypeCheck: true,
+        // functions: 'hide',
       })
 
       const apiModel: ApiModel = new ApiModel()
