@@ -1,6 +1,7 @@
 import { Hasher, KBOptions, SaltGenerator } from '@sd-jwt/types'
-import { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
-import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+import { SdJwtVcPayload as SdJwtPayload } from '@sd-jwt/sd-jwt-vc'
+import { DIDDocumentSection, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 
 /**
  * My Agent Plugin description.
@@ -65,6 +66,11 @@ export interface ISDJwtPlugin extends IPluginMethodMap {
  *
  * @beta
  */
+
+export interface SdJwtVcPayload extends SdJwtPayload {
+  x5c?: string[]
+}
+
 export interface ICreateSdJwtVcArgs {
   credentialPayload: SdJwtVcPayload
 
@@ -166,6 +172,19 @@ export type IVerifySdJwtPresentationResult = {
   verifiedPayloads: Record<string, unknown>
 }
 
+export type SignKeyArgs = {
+  identifier: string
+  vmRelationship: DIDDocumentSection
+}
+
+export type SignKeyResult = {
+  alg: string
+  key: {
+    kid: string
+    x5c?: string[]
+    jwkThumbprint?: string
+  }
+}
 /**
  * This context describes the requirements of this plugin.
  * For this plugin to function properly, the agent needs to also have other plugins installed that implement the
@@ -174,7 +193,7 @@ export type IVerifySdJwtPresentationResult = {
  *
  * @beta
  */
-export type IRequiredContext = IAgentContext<IDIDManager & IResolver & IKeyManager>
+export type IRequiredContext = IAgentContext<IDIDManager & IResolver & IKeyManager & ImDLMdoc>
 export interface SdJWTImplementation {
   saltGenerator: SaltGenerator
   hasher: Hasher

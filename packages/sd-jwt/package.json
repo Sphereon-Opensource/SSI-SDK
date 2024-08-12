@@ -6,8 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "build:clean": "tsc --build --clean && tsc --build",
-    "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
+    "build:clean": "tsc --build --clean && tsc --build"
   },
   "veramo": {
     "pluginInterfaces": {
@@ -17,7 +16,10 @@
   "dependencies": {
     "@sd-jwt/core": "^0.6.1",
     "@sd-jwt/sd-jwt-vc": "^0.6.1",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-next.65",
+    "@sphereon/ssi-types": "workspace:*",
+    "@sphereon/ssi-sdk.mdl-mdoc": "workspace:*",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.54",
+    "@sphereon/ssi-sdk-ext.key-utils": "0.24.1-unstable.54",
     "@veramo/utils": "4.2.0",
     "debug": "^4.3.5"
   },
