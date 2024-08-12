@@ -30,7 +30,6 @@ const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
  * SD-JWT plugin for Veramo
  */
 export class SDJwtPlugin implements IAgentPlugin {
-
   constructor(private algorithms: SdJWTImplementation) {}
 
   // map the methods your plugin is declaring to their implementation

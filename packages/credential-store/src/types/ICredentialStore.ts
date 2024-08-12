@@ -2,6 +2,7 @@ import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import { CredentialRole, DigitalCredential, UpdateCredentialStateArgs } from '@sphereon/ssi-sdk.data-store'
 import { FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store/dist/types/digitalCredential/IAbstractDigitalCredentialStore'
 import { NonPersistedDigitalCredential } from '@sphereon/ssi-sdk.data-store/dist/types/digitalCredential/digitalCredential'
+import { contextHasPlugin } from '../../../agent-config/src/agentContextUtils'
 import { FindClaimsArgs } from './claims'
 import { ICredential, IPresentation, IVerifiableCredential, OriginalVerifiableCredential, OriginalVerifiablePresentation } from '@sphereon/ssi-types'
 
@@ -38,8 +39,7 @@ export interface ICredentialStore extends IPluginMethodMap {
 
   /**
    * Find one credential by id or hash
-   * @param CredentialRole
-   * @param idOrHash
+   * @param args
    */
   crsGetUniqueCredentialByIdOrHash(args: GetCredentialsByIdOrHashArgs): Promise<OptionalUniqueDigitalCredential>
 
@@ -66,6 +66,10 @@ export interface ICredentialStore extends IPluginMethodMap {
    * @param args
    */
   crsDeleteCredentials(args: DeleteCredentialsArgs): Promise<number>
+}
+
+export function contextHasCredentialStore(context: IAgentContext<IPluginMethodMap>): context is IAgentContext<ICredentialStore> {
+  return contextHasPlugin(context, 'crsGetCredential')
 }
 
 export type GetCredentialArgs = {

@@ -27,6 +27,7 @@ overrides:
   '@veramo/remote-server': 4.2.0
   '@veramo/selective-disclosure': 4.2.0
   '@veramo/url-handler': 4.2.0
+  '@sphereon/ssi-sdk.agent-config': workspace:*
   '@sphereon/ssi-types': workspace:*
   '@sphereon/ssi-sdk.core': workspace:*
   '@sphereon/pex': ^4.0.1
@@ -1493,7 +1494,7 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@types/body-parser':
         specifier: ^1.19.5
@@ -1856,6 +1857,9 @@ importers:
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.24.1-unstable.54
         version: 0.24.1-unstable.54
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
       '@sphereon/ssi-sdk.mdl-mdoc':
         specifier: workspace:*
         version: link:../mdl-mdoc

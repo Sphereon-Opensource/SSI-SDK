@@ -16,6 +16,7 @@
   "dependencies": {
     "@sd-jwt/core": "^0.6.1",
     "@sd-jwt/sd-jwt-vc": "^0.6.1",
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@sphereon/ssi-sdk.mdl-mdoc": "workspace:*",
     "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.54",
