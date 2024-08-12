@@ -17,7 +17,7 @@ import {
  * @param requiredMethod One or more method the plugin provides, so we can check availability and thus plugin presence
  */
 export function contextHasPlugin<Plugins extends IPluginMethodMap>(
-  context: IAgentContext<Plugins>,
+  context: IAgentContext<any>,
   requiredMethod: string | string[],
 ): context is IAgentContext<Plugins> {
   const methods = Array.isArray(requiredMethod) ? requiredMethod : [requiredMethod]
