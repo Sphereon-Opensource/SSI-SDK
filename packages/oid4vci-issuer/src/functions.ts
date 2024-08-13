@@ -1,9 +1,9 @@
 import { CredentialRequest, IssuerMetadata, Jwt, JwtVerifyResult, OID4VCICredentialFormat } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
-import { getManagedIdentifier, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { getManagedIdentifier, legacyKeyRefsToIdentifierOpts, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
-import { DIDDocument, IIdentifier, ProofFormat } from '@veramo/core'
+import { DIDDocument, ProofFormat } from '@veramo/core'
 import { CredentialPayload } from '@veramo/core/src/types/vc-data-model'
 import { bytesToBase64 } from '@veramo/utils'
 import { createJWT, decodeJWT, JWTVerifyOptions, verifyJWT } from 'did-jwt'
@@ -45,49 +45,6 @@ export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOpt
       didDocument,
       jwt,
     }
-  }
-}
-
-/**
- * Converts legacy id opts key refs to the new ManagedIdentifierOpts
- * @param opts
- */
-function legacyKeyRefsToIdentifierOpts(opts: { idOpts?: ManagedIdentifierOpts; iss?: string; keyRef?: string; didOpts?: any }) {
-  if (!opts.idOpts) {
-    console.warn(
-      `Legacy idOpts being used. Support will be dropped in the future. Consider switching to the idOpts, to have support for DIDs, JWKS, x5c etc. See https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/tree/feature/multi_identifier_support/packages/identifier-resolution`,
-    )
-    // legacy way
-    let kmsKeyRef =
-      opts.keyRef ??
-      opts.didOpts?.idOpts?.kmsKeyRef ??
-      (typeof opts.didOpts?.idOpts.identifier === 'object' ? (opts.didOpts?.idOpts.identifier as IIdentifier).keys[0].kid : undefined)
-    if (!kmsKeyRef) {
-      throw Error('Key ref is needed for access token signer')
-    }
-    return {
-      kmsKeyRef: opts.keyRef ?? kmsKeyRef,
-      identifier: kmsKeyRef,
-      issuer: opts.iss,
-    } satisfies ManagedIdentifierOpts
-  } else {
-    const idOpts = opts.idOpts
-    if (opts.keyRef && !idOpts.kmsKeyRef) {
-      // legacy way
-      console.warn(
-        `Legacy keyRef being used. Support will be dropped in the future. Consider switching to the idOpts, to have support for DIDs, JWKS, x5c etc. See https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/tree/feature/multi_identifier_support/packages/identifier-resolution`,
-      )
-      idOpts.kmsKeyRef = opts.keyRef
-    }
-    if (opts.iss && !idOpts.issuer) {
-      // legacy way
-      console.warn(
-        `Legacy iss being used. Support will be dropped in the future. Consider switching to the idOpts, to have support for DIDs, JWKS, x5c etc. See https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/tree/feature/multi_identifier_support/packages/identifier-resolution`,
-      )
-      idOpts.issuer = opts.iss
-    }
-
-    return idOpts
   }
 }
 
