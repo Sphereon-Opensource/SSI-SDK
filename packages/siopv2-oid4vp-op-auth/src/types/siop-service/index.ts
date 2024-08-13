@@ -15,7 +15,7 @@ export type DidAuthSiopOpAuthenticatorOptions = {
 
 export type GetMachineArgs = {
   url: string | URL
-  identifierOpts?: ManagedIdentifierOpts
+  idOpts?: ManagedIdentifierOpts
   stateNavigationListener?: (siopv2Machine: Siopv2MachineInterpreter, state: Siopv2MachineState, navigation?: any) => Promise<void>
 }
 
@@ -24,7 +24,7 @@ export type CreateConfigResult = Omit<DidAuthConfig, 'stateId' | 'idOpts'>
 export type GetSiopRequestArgs = Pick<Siopv2MachineContext, 'didAuthConfig' | 'url'>
 export type RetrieveContactArgs = Pick<Siopv2MachineContext, 'url' | 'authorizationRequestData'>
 export type AddIdentityArgs = Pick<Siopv2MachineContext, 'contact' | 'authorizationRequestData'>
-export type SendResponseArgs = Pick<Siopv2MachineContext, 'didAuthConfig' | 'authorizationRequestData' | 'selectedCredentials' | 'identifierOpts'>
+export type SendResponseArgs = Pick<Siopv2MachineContext, 'didAuthConfig' | 'authorizationRequestData' | 'selectedCredentials' | 'idOpts'>
 export type GetSelectableCredentialsArgs = Pick<Siopv2MachineContext, 'authorizationRequestData'>
 
 export enum Siopv2HolderEvent {

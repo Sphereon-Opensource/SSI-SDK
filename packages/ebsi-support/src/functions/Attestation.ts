@@ -9,7 +9,7 @@ import {
   getTypesFromCredentialSupported,
   ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
-import { getAuthenticationKey,  SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import { getAuthenticationKey, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { calculateJwkThumbprintForKey, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   IssuanceOpts,
@@ -63,7 +63,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
     clientId: clientIdArg,
     credentialIssuer,
     credentialType,
-    identifierOpts,
+    idOpts,
     redirectUri,
     requestObjectOpts,
     formats = ['jwt_vc', 'jwt_vc_json'],
@@ -71,7 +71,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   context: IRequiredContext,
 ): Promise<AttestationAuthRequestUrlResult> => {
   logger.info(`create attestation ${credentialType} auth req URL for ${clientIdArg} and issuer ${credentialIssuer}`)
-  const resolution = await context.agent.identifierManagedGetByDid(identifierOpts)
+  const resolution = await context.agent.identifierManagedGetByDid(idOpts)
   const identifier = resolution.identifier
   if (identifier.provider !== 'did:ebsi' && identifier.provider !== 'did:key') {
     throw Error(
@@ -126,7 +126,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   })
 
   const signCallbacks: ProofOfPossessionCallbacks<never> = requestObjectOpts.signCallbacks ?? {
-    signCallback: signCallback(vciClient, identifierOpts, context),
+    signCallback: signCallback(vciClient, idOpts, context),
   }
   const authorizationRequestOpts = {
     redirectUri,

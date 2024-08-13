@@ -277,11 +277,11 @@ export const getDefaultIssuanceOpts = async (args: GetDefaultIssuanceOptsArgs): 
     didMethod: opts.client.isEBSI() ? SupportedDidMethodEnum.DID_KEY : SupportedDidMethodEnum.DID_JWK,
     keyType: 'Secp256r1',
   } as IssuanceOpts
-  const identifierOpts = await getIdentifierOpts({ issuanceOpt, context })
+  const idOpts = await getIdentifierOpts({ issuanceOpt, context })
 
   return {
     ...issuanceOpt,
-    ...identifierOpts,
+    ...idOpts,
   }
 }
 
@@ -506,14 +506,14 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
           keyType: client.isEBSI() ? 'Secp256r1' : keyTypeFromCryptographicSuite({ suite: cryptographicSuite }),
           ...(client.isEBSI() && { codecName: 'EBSI' }),
         } as IssuanceOpts)
-    const identifierOpts = await getIdentifierOpts({ issuanceOpt, context })
+    const idOpts = await getIdentifierOpts({ issuanceOpt, context })
     if (!client.clientId) {
       // FIXME: We really should fetch server metadata. Have user select required credentials. Take the first cred to determine a kid when no clientId is present and set that.
       //  Needs a preference service for crypto, keys, dids, and clientId, with ecosystem support
-      client.clientId = identifierOpts.identifier.did
+      client.clientId = idOpts.identifier.did
     }
 
-    return { ...issuanceOpt, ...identifierOpts }
+    return { ...issuanceOpt, ...idOpts }
   })
 
   return await Promise.all(getIssuanceOpts)

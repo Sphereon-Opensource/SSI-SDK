@@ -13,35 +13,35 @@ export class Siopv2OID4VPLinkHandler extends LinkHandlerAdapter {
     | ((oid4vciMachine: Siopv2MachineInterpreter, state: Siopv2MachineState, navigation?: any) => Promise<void>)
     | undefined
   private readonly noStateMachinePersistence: boolean
-  private readonly identifierOpts?: ManagedIdentifierOpts
+  private readonly idOpts?: ManagedIdentifierOpts
 
   constructor(
     args: Pick<GetMachineArgs, 'stateNavigationListener'> & {
       protocols?: Array<string | RegExp>
       context: IAgentContext<IDidAuthSiopOpAuthenticator & IMachineStatePersistence>
       noStateMachinePersistence?: boolean
-      identifierOpts?: ManagedIdentifierOpts
+      idOpts?: ManagedIdentifierOpts
     },
   ) {
     super({ ...args, id: 'Siopv2' })
     this.context = args.context
     this.noStateMachinePersistence = args.noStateMachinePersistence === true
     this.stateNavigationListener = args.stateNavigationListener
-    this.identifierOpts = args.identifierOpts
+    this.idOpts = args.idOpts
   }
 
   async handle(
     url: string | URL,
     opts?: {
       machineState?: SerializableState
-      identifierOpts?: ManagedIdentifierOpts
+      idOpts?: ManagedIdentifierOpts
     },
   ): Promise<void> {
     logger.debug(`handling SIOP link: ${url}`)
 
     const siopv2Machine = await this.context.agent.siopGetMachineInterpreter({
       url,
-      identifierOpts: opts?.identifierOpts ?? this.identifierOpts,
+      idOpts: opts?.idOpts ?? this.idOpts,
       stateNavigationListener: this.stateNavigationListener,
     })
 

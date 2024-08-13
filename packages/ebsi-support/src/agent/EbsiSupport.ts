@@ -104,8 +104,8 @@ export class EbsiSupport implements IAgentPlugin {
   }
 
   private async ebsiAccessTokenGet(args: EBSIAuthAccessTokenGetArgs, context: IRequiredContext): Promise<GetAccessTokenResult> {
-    const { scope, identifierOpts, jwksUri, clientId, allVerifiableCredentials, redirectUri, environment, skipDidResolution = false } = args
-    const identifier = await context.agent.identifierManagedGetByDid(identifierOpts)
+    const { scope, idOpts, jwksUri, clientId, allVerifiableCredentials, redirectUri, environment, skipDidResolution = false } = args
+    const identifier = await context.agent.identifierManagedGetByDid(idOpts)
     console.log(`Getting access token for ${identifier.did}, scope ${scope} and clientId=${clientId}, skipDidResolution=${skipDidResolution}...`)
     const openIDMetadata = await this.ebsiWellknownMetadata({
       environment,
@@ -158,7 +158,7 @@ export class EbsiSupport implements IAgentPlugin {
         const credentialIssuer = args.credentialIssuer ?? ebsiGetIssuerMock({ environment })
         const authReqResult = await context.agent.ebsiCreateAttestationAuthRequestURL({
           credentialIssuer,
-          identifierOpts,
+          idOpts,
           formats: ['jwt_vc'],
           clientId,
           redirectUri,
@@ -208,7 +208,7 @@ export class EbsiSupport implements IAgentPlugin {
       {
         proofOpts: { domain: openIDMetadata.issuer, nonce: v4(), created: new Date(Date.now() - 120_000).toString() },
         holderDID: identifier.did,
-        identifierOpts: identifierOpts,
+        idOpts: idOpts,
         skipDidResolution,
         forceNoCredentialsInVP: !hasInputDescriptors,
       },

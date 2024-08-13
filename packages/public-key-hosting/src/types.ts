@@ -1,15 +1,16 @@
 import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
+import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IAgentContext, IDIDManager, IKeyManager } from '@veramo/core'
 
-export type IRequiredPlugins = IDIDManager & IKeyManager
+export type IRequiredPlugins = IDIDManager & IKeyManager & IIdentifierResolution
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
 export interface IPublicKeyHostingOpts {
-  endpointOpts?: IVCAPIEndpointOpts
+  endpointOpts?: IPKHostingAPIEndpointOpts
   hostingOpts?: IHostingOpts
 }
 
-export interface IVCAPIEndpointOpts {
+export interface IPKHostingAPIEndpointOpts {
   basePath?: string
   globalAuth?: GenericAuthArgs
   allJWKS?: ISingleEndpointOpts

@@ -27,21 +27,21 @@ export const siopSendAuthorizationResponse = async (
   args: {
     sessionId: string
     verifiableCredentialsWithDefinition?: VerifiableCredentialsWithDefinition[]
-    identifierOpts?: ManagedIdentifierOpts
+    idOpts?: ManagedIdentifierOpts
   },
   context: RequiredContext,
 ) => {
   const { agent } = context
   const agentContext = { ...context, agent: context.agent as DidAgents }
-  let { identifierOpts } = args
+  let { idOpts } = args
 
   if (connectionType !== ConnectionType.SIOPv2_OpenID4VP) {
     return Promise.reject(Error(`No supported authentication provider for type: ${connectionType}`))
   }
   const session: OpSession = await agent.siopGetOPSession({ sessionId: args.sessionId })
   let identifiers: Array<IIdentifier> =
-    identifierOpts && isManagedIdentifierDidOpts(identifierOpts)
-      ? [(await context.agent.identifierManagedGetByDid(identifierOpts)).identifier]
+    idOpts && isManagedIdentifierDidOpts(idOpts)
+      ? [(await context.agent.identifierManagedGetByDid(idOpts)).identifier]
       : await session.getSupportedIdentifiers()
   if (!identifiers || identifiers.length === 0) {
     throw Error(`No DID methods found in agent that are supported by the relying party`)
@@ -104,7 +104,7 @@ export const siopSendAuthorizationResponse = async (
     }
 
     presentationsAndDefs = await oid4vp.createVerifiablePresentations(CredentialRole.HOLDER, credentialsAndDefinitions, {
-      identifierOpts: { identifier },
+      idOpts: { identifier },
       proofOpts: {
         nonce: session.nonce,
         domain,
@@ -116,7 +116,7 @@ export const siopSendAuthorizationResponse = async (
       throw Error(`Only one verifiable presentation supported for now. Got ${presentationsAndDefs.length}`)
     }
 
-    identifierOpts = presentationsAndDefs[0].identifierOpts
+    idOpts = presentationsAndDefs[0].idOpts
     // identifier = await getIdentifier(idOpts, context)
 
     /*key = await getKey(identifier, 'authentication', context, idOpts.kid)
@@ -124,7 +124,7 @@ export const siopSendAuthorizationResponse = async (
           context,
           keyOpts: {
             identifier,
-            kid: identifierOpts.kid,
+            kid: idOpts.kid,
             didMethod: parseDid(identifier.did).method as SupportedDidMethodEnum,
             keyType: key.type
           },
@@ -150,7 +150,7 @@ export const siopSendAuthorizationResponse = async (
     ...(presentationsAndDefs && { verifiablePresentations: presentationsAndDefs?.map((pd) => pd.verifiablePresentation) }),
     ...(presentationSubmission && { presentationSubmission }),
     // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
-    responseSignerOpts: identifierOpts!,
+    responseSignerOpts: idOpts!,
   })
 }
 

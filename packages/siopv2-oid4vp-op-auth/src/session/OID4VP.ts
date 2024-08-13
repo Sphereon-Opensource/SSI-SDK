@@ -60,7 +60,7 @@ export class OID4VP {
       restrictToFormats?: Format
       restrictToDIDMethods?: string[]
       proofOpts?: ProofOptions
-      identifierOpts?: ManagedIdentifierOpts
+      idOpts?: ManagedIdentifierOpts
       skipDidResolution?: boolean
       holderDID?: string
       subjectIsHolder?: boolean
@@ -79,7 +79,7 @@ export class OID4VP {
       restrictToFormats?: Format
       restrictToDIDMethods?: string[]
       proofOpts?: ProofOptions
-      identifierOpts?: ManagedIdentifierOpts
+      idOpts?: ManagedIdentifierOpts
       skipDidResolution?: boolean
       holderDID?: string
       subjectIsHolder?: boolean
@@ -103,8 +103,8 @@ export class OID4VP {
       domain: opts?.proofOpts?.domain ?? (await this.session.getRedirectUri()),
     }
 
-    let identifierOpts = opts?.identifierOpts
-    if (!identifierOpts) {
+    let idOpts = opts?.idOpts
+    if (!idOpts) {
       if (opts?.subjectIsHolder) {
         if (forceNoCredentialsInVP) {
           return Promise.reject(
@@ -124,10 +124,10 @@ export class OID4VP {
             ? firstVC.credentialSubject[0].id
             : firstVC.credentialSubject.id
         if (holder) {
-          identifierOpts = { identifier: holder }
+          idOpts = { identifier: holder }
         }
       } else if (opts?.holderDID) {
-        identifierOpts = { identifier: opts.holderDID }
+        idOpts = { identifier: opts.holderDID }
       }
     }
 
@@ -147,12 +147,12 @@ export class OID4VP {
             credentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
           }
 
-    if (!identifierOpts) {
+    if (!idOpts) {
       return Promise.reject(Error(`No identifier options present at this point`))
     }
     const signCallback = await createOID4VPPresentationSignCallback({
       presentationSignCallback: this.session.options.presentationSignCallback,
-      identifierOpts,
+      idOpts,
       context: this.session.context,
       domain: proofOptions.domain,
       challenge: proofOptions.challenge,
@@ -168,9 +168,7 @@ export class OID4VP {
       proofOptions,
       // fixme: Update to newer siop-vp to not require dids here.
 
-      holderDID: isManagedIdentifierDidOpts(identifierOpts)
-        ? (await this.session.context.agent.identifierManagedGetByDid(identifierOpts)).did
-        : undefined,
+      holderDID: isManagedIdentifierDidOpts(idOpts) ? (await this.session.context.agent.identifierManagedGetByDid(idOpts)).did : undefined,
     })
 
     const verifiablePresentation =
@@ -186,7 +184,7 @@ export class OID4VP {
       verifiablePresentation,
       verifiableCredentials: vcs.credentials,
       definition: selectedVerifiableCredentials.definition,
-      identifierOpts: identifierOpts,
+      idOpts: idOpts,
     }
   }
 

@@ -255,7 +255,7 @@ export class OpSession {
         wellknownDIDVerifyCallback: this.options.wellknownDIDVerifyCallback,
         supportedVersions: request.versions,
       },
-      identifierOpts: args.responseSignerOpts,
+      idOpts: args.responseSignerOpts,
       context: this.context,
     })
 

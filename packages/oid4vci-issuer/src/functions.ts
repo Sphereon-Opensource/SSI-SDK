@@ -52,16 +52,16 @@ export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOpt
  * Converts legacy id opts key refs to the new ManagedIdentifierOpts
  * @param opts
  */
-function legacyKeyRefsToIdentifierOpts(opts: { identifierOpts?: ManagedIdentifierOpts; iss?: string; keyRef?: string; didOpts?: any }) {
-  if (!opts.identifierOpts) {
+function legacyKeyRefsToIdentifierOpts(opts: { idOpts?: ManagedIdentifierOpts; iss?: string; keyRef?: string; didOpts?: any }) {
+  if (!opts.idOpts) {
     console.warn(
-      `Legacy idOpts being used. Support will be dropped in the future. Consider switching to the identifierOpts, to have support for DIDs, JWKS, x5c etc. See https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/tree/feature/multi_identifier_support/packages/identifier-resolution`,
+      `Legacy idOpts being used. Support will be dropped in the future. Consider switching to the idOpts, to have support for DIDs, JWKS, x5c etc. See https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/tree/feature/multi_identifier_support/packages/identifier-resolution`,
     )
     // legacy way
     let kmsKeyRef =
       opts.keyRef ??
-      opts.didOpts?.identifierOpts?.kmsKeyRef ??
-      (typeof opts.didOpts?.identifierOpts.identifier === 'object' ? (opts.didOpts?.identifierOpts.identifier as IIdentifier).keys[0].kid : undefined)
+      opts.didOpts?.idOpts?.kmsKeyRef ??
+      (typeof opts.didOpts?.idOpts.identifier === 'object' ? (opts.didOpts?.idOpts.identifier as IIdentifier).keys[0].kid : undefined)
     if (!kmsKeyRef) {
       throw Error('Key ref is needed for access token signer')
     }
@@ -71,23 +71,23 @@ function legacyKeyRefsToIdentifierOpts(opts: { identifierOpts?: ManagedIdentifie
       issuer: opts.iss,
     } satisfies ManagedIdentifierOpts
   } else {
-    const identifierOpts = opts.identifierOpts
-    if (opts.keyRef && !identifierOpts.kmsKeyRef) {
+    const idOpts = opts.idOpts
+    if (opts.keyRef && !idOpts.kmsKeyRef) {
       // legacy way
       console.warn(
-        `Legacy keyRef being used. Support will be dropped in the future. Consider switching to the identifierOpts, to have support for DIDs, JWKS, x5c etc. See https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/tree/feature/multi_identifier_support/packages/identifier-resolution`,
+        `Legacy keyRef being used. Support will be dropped in the future. Consider switching to the idOpts, to have support for DIDs, JWKS, x5c etc. See https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/tree/feature/multi_identifier_support/packages/identifier-resolution`,
       )
-      identifierOpts.kmsKeyRef = opts.keyRef
+      idOpts.kmsKeyRef = opts.keyRef
     }
-    if (opts.iss && !identifierOpts.issuer) {
+    if (opts.iss && !idOpts.issuer) {
       // legacy way
       console.warn(
-        `Legacy iss being used. Support will be dropped in the future. Consider switching to the identifierOpts, to have support for DIDs, JWKS, x5c etc. See https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/tree/feature/multi_identifier_support/packages/identifier-resolution`,
+        `Legacy iss being used. Support will be dropped in the future. Consider switching to the idOpts, to have support for DIDs, JWKS, x5c etc. See https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/tree/feature/multi_identifier_support/packages/identifier-resolution`,
       )
-      identifierOpts.issuer = opts.iss
+      idOpts.issuer = opts.iss
     }
 
-    return identifierOpts
+    return idOpts
   }
 }
 
@@ -96,7 +96,7 @@ export async function getAccessTokenKeyRef(
     /**
      * Uniform identifier options
      */
-    identifierOpts?: ManagedIdentifierOpts
+    idOpts?: ManagedIdentifierOpts
     /**
      * @deprecated
      */
@@ -112,9 +112,9 @@ export async function getAccessTokenKeyRef(
   },
   context: IRequiredContext,
 ) {
-  let identifierOpts: ManagedIdentifierOpts
-  identifierOpts = legacyKeyRefsToIdentifierOpts(opts)
-  return await context.agent.identifierManagedGet(identifierOpts)
+  let idOpts: ManagedIdentifierOpts
+  idOpts = legacyKeyRefsToIdentifierOpts(opts)
+  return await context.agent.identifierManagedGet(idOpts)
 }
 
 export async function getAccessTokenSignerCallback(
@@ -122,7 +122,7 @@ export async function getAccessTokenSignerCallback(
     /**
      * Uniform identifier options
      */
-    identifierOpts?: ManagedIdentifierOpts
+    idOpts?: ManagedIdentifierOpts
     /**
      * @deprecated
      */
@@ -156,7 +156,7 @@ export async function getAccessTokenSignerCallback(
   }
 
   async function accessTokenSignerCallback(jwt: Jwt, kid?: string): Promise<string> {
-    const issuer = opts?.iss ?? opts.didOpts?.identifierOpts?.identifier.toString()
+    const issuer = opts?.iss ?? opts.didOpts?.idOpts?.identifier.toString()
     if (!issuer) {
       throw Error('No issuer configured for access tokens')
     }
@@ -169,7 +169,7 @@ export async function getAccessTokenSignerCallback(
 }
 
 export async function getCredentialSignerCallback(
-  identifierOpts: ManagedIdentifierOpts & {
+  idOpts: ManagedIdentifierOpts & {
     crypto?: Crypto
   },
   context: IRequiredContext,
@@ -210,7 +210,7 @@ export async function getCredentialSignerCallback(
     return (proofFormat === 'jwt' && 'jwt' in result.proof ? result.proof.jwt : result) as W3CVerifiableCredential
   }
 
-  const resolution = await getManagedIdentifier(identifierOpts, context)
+  const resolution = await getManagedIdentifier(idOpts, context)
 
   return issueVCCallback
 }
@@ -236,7 +236,7 @@ export async function createVciIssuerBuilder(
   if (!resolver) {
     throw Error('A Resolver is necessary to verify DID JWTs')
   }
-  const identifierOpts = legacyKeyRefsToIdentifierOpts({ ...issuerOpts.didOpts, ...issuerOpts.identifierOpts })
+  const idOpts = legacyKeyRefsToIdentifierOpts({ ...issuerOpts.didOpts, ...issuerOpts.idOpts })
   const jwtVerifyOpts: JWTVerifyOptions = {
     ...issuerOpts?.didOpts?.resolveOpts?.jwtVerifyOpts,
     ...args?.issuerOpts?.resolveOpts?.jwtVerifyOpts,
@@ -245,7 +245,7 @@ export async function createVciIssuerBuilder(
   }
   builder.withIssuerMetadata(metadata)
   // builder.withUserPinRequired(issuerOpts.userPinRequired ?? false) was removed from implementers draft v1
-  builder.withCredentialSignerCallback(await getCredentialSignerCallback(identifierOpts, context))
+  builder.withCredentialSignerCallback(await getCredentialSignerCallback(idOpts, context))
   builder.withJWTVerifyCallback(getJwtVerifyCallback({ verifyOpts: jwtVerifyOpts }, context))
   if (args.credentialDataSupplier) {
     builder.withCredentialDataSupplier(args.credentialDataSupplier)

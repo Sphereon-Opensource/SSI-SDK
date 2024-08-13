@@ -20,7 +20,7 @@ import { IOPOptions, IRequiredContext } from '../types'
 
 export async function createOID4VPPresentationSignCallback({
   presentationSignCallback,
-  identifierOpts,
+  idOpts,
   domain,
   fetchRemoteContexts,
   challenge,
@@ -29,7 +29,7 @@ export async function createOID4VPPresentationSignCallback({
   skipDidResolution,
 }: {
   presentationSignCallback?: PresentationSignCallback
-  identifierOpts: ManagedIdentifierOpts
+  idOpts: ManagedIdentifierOpts
   domain?: string
   challenge?: string
   fetchRemoteContexts?: boolean
@@ -43,7 +43,7 @@ export async function createOID4VPPresentationSignCallback({
 
   return createPEXPresentationSignCallback(
     {
-      identifierOpts,
+      idOpts,
       fetchRemoteContexts,
       domain,
       challenge,
@@ -56,11 +56,11 @@ export async function createOID4VPPresentationSignCallback({
 
 export async function createOPBuilder({
   opOptions,
-  identifierOpts,
+  idOpts,
   context,
 }: {
   opOptions: IOPOptions
-  identifierOpts?: ManagedIdentifierOpts
+  idOpts?: ManagedIdentifierOpts
   context: IRequiredContext
 }): Promise<OPBuilder> {
   const eventEmitter = opOptions.eventEmitter ?? new EventEmitter()
@@ -100,12 +100,12 @@ export async function createOPBuilder({
       }
   builder.withWellknownDIDVerifyCallback(wellknownDIDVerifyCallback)
 
-  if (identifierOpts) {
-    if (opOptions.skipDidResolution && isManagedIdentifierDidOpts(identifierOpts)) {
-      identifierOpts.offlineWhenNoDIDRegistered = true
+  if (idOpts) {
+    if (opOptions.skipDidResolution && isManagedIdentifierDidOpts(idOpts)) {
+      idOpts.offlineWhenNoDIDRegistered = true
     }
-    const resolution = await context.agent.identifierManagedGet(identifierOpts)
-    if (!isManagedIdentifierDidOpts(identifierOpts) || !isManagedIdentifierDidResult(resolution)) {
+    const resolution = await context.agent.identifierManagedGet(idOpts)
+    if (!isManagedIdentifierDidOpts(idOpts) || !isManagedIdentifierDidResult(resolution)) {
       /*last part is only there to get the available properties of a DID result*/
       // Remove this once we use the newer version
       return Promise.reject(Error(`The current version of SIOP-OID4VP we use only works with DIDs`))
@@ -122,7 +122,7 @@ export async function createOPBuilder({
       await createOID4VPPresentationSignCallback({
         presentationSignCallback: opOptions.presentationSignCallback,
         skipDidResolution: opOptions.skipDidResolution ?? false,
-        identifierOpts,
+        idOpts,
         context,
       }),
     )
@@ -132,14 +132,14 @@ export async function createOPBuilder({
 
 export async function createOP({
   opOptions,
-  identifierOpts,
+  idOpts,
   context,
 }: {
   opOptions: IOPOptions
-  identifierOpts?: ManagedIdentifierOpts
+  idOpts?: ManagedIdentifierOpts
   context: IRequiredContext
 }): Promise<OP> {
-  return (await createOPBuilder({ opOptions, identifierOpts, context })).build()
+  return (await createOPBuilder({ opOptions, idOpts, context })).build()
 }
 
 export function getSigningAlgo(type: TKeyType): SigningAlgo {

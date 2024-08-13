@@ -119,7 +119,7 @@ const logger = Loggers.DEFAULT.get('sphereon:oid4vci:holder')
 
 export function signCallback(
   client: OpenID4VCIClient,
-  identifierOpts: ManagedIdentifierOpts,
+  idOpts: ManagedIdentifierOpts,
   context: IAgentContext<IKeyManager & IDIDManager & IResolver & IIdentifierResolution>,
 ) {
   return async (jwt: Jwt, kid?: string) => {
@@ -130,18 +130,18 @@ export function signCallback(
       kid = jwt.header.kid
     }
     if (!kid) {
-      kid = identifierOpts.kid
+      kid = idOpts.kid
     }
     if (!kid && jwk && 'kid' in jwk) {
       kid = jwk.kid as string
     }
 
-    if (kid && !identifierOpts.kid) {
+    if (kid && !idOpts.kid) {
       // sync back to id opts
-      identifierOpts.kid = kid.split('#')[0]
+      idOpts.kid = kid.split('#')[0]
     }
 
-    const resolution = await context.agent.identifierManagedGet(identifierOpts)
+    const resolution = await context.agent.identifierManagedGet(idOpts)
     if (isManagedIdentifierDidResult(resolution) && client.isEBSI()) {
       iss = resolution.did
     } else if (!iss && isManagedIdentifierDidResult(resolution)) {

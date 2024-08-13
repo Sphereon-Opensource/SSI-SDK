@@ -18,7 +18,7 @@ import { IPEXPresentationSignCallback, IRequiredContext } from './types/IPresent
 
 export async function createPEXPresentationSignCallback(
   args: {
-    identifierOpts: ManagedIdentifierOpts
+    idOpts: ManagedIdentifierOpts
     fetchRemoteContexts?: boolean
     skipDidResolution?: boolean
     format?: Format | ProofFormat
@@ -79,13 +79,13 @@ export async function createPEXPresentationSignCallback(
     challenge?: string
   }): Promise<W3CVerifiablePresentation> => {
     const proofFormat = determineProofFormat({ format, presentationDefinition })
-    const { identifierOpts } = args
+    const { idOpts } = args
     const CLOCK_SKEW = 120
-    if (args.skipDidResolution && isManagedIdentifierDidOpts(identifierOpts)) {
-      identifierOpts.offlineWhenNoDIDRegistered = true
+    if (args.skipDidResolution && isManagedIdentifierDidOpts(idOpts)) {
+      idOpts.offlineWhenNoDIDRegistered = true
     }
 
-    const resolution = await context.agent.identifierManagedGet(identifierOpts)
+    const resolution = await context.agent.identifierManagedGet(idOpts)
 
     if ('compactSdJwtVc' in presentation) {
       if (proofFormat !== 'vc+sd-jwt') {

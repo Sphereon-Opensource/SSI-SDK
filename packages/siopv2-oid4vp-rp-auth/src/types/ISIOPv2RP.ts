@@ -166,9 +166,9 @@ export interface IPresentationWithDefinition {
   presentation: W3CVerifiablePresentation
 }
 
-export interface ISIOPIdentifierOptions extends Omit<IDIDOptions, 'identifierOpts'> {
-  // we replace the legacy identifierOpts with the Managed Identifier opts from the identifier resolution module
-  identifierOpts: ManagedIdentifierOpts
+export interface ISIOPIdentifierOptions extends Omit<IDIDOptions, 'idOpts'> {
+  // we replace the legacy idOpts with the Managed Identifier opts from the identifier resolution module
+  idOpts: ManagedIdentifierOpts
   checkLinkedDomains?: CheckLinkedDomain
   wellknownDIDVerifyCallback?: VerifyCallback
 }

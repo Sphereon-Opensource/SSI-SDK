@@ -355,7 +355,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       ConnectionType.SIOPv2_OpenID4VP,
       {
         sessionId: didAuthConfig.sessionId,
-        ...(args.identifierOpts && { idOpts: args.identifierOpts }),
+        ...(args.idOpts && { idOpts: args.idOpts }),
         ...(authorizationRequestData.presentationDefinitions !== undefined && { verifiableCredentialsWithDefinition }),
       },
       context,

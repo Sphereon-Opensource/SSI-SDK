@@ -1,11 +1,7 @@
 import { DiscoveryMetadataPayload, JWK } from '@sphereon/did-auth-siop'
 import { OID4VCICredentialFormat, RequestObjectOpts } from '@sphereon/oid4vci-common'
 import { Format, PresentationDefinitionV2 } from '@sphereon/pex-models'
-import {
-  IIdentifierResolution,
-  ManagedIdentifierDidOpts,
-  ManagedIdentifierDidResult
-} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IIdentifierResolution, ManagedIdentifierDidOpts, ManagedIdentifierDidResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { CredentialRole, IBasicCredentialLocaleBranding, Party } from '@sphereon/ssi-sdk.data-store'
 import { ErrorDetails, IOID4VCIHolder, MappedCredentialToAccept } from '@sphereon/ssi-sdk.oid4vci-holder'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
@@ -113,7 +109,7 @@ export interface GetPresentationDefinitionArgs {
 export type CreateAttestationAuthRequestURLArgs = {
   credentialIssuer: string
   credentialType: string
-  identifierOpts: ManagedIdentifierDidOpts
+  idOpts: ManagedIdentifierDidOpts
   requestObjectOpts: RequestObjectOpts
   clientId?: string
   redirectUri?: string
@@ -189,7 +185,7 @@ export interface EBSIAuthAccessTokenGetArgs {
   redirectUri?: string
   jwksUri: string
   // definitionId: ScopeByDefinition
-  identifierOpts: ManagedIdentifierDidOpts
+  idOpts: ManagedIdentifierDidOpts
   scope: EBSIScope
   environment: EbsiEnvironment
   skipDidResolution?: boolean

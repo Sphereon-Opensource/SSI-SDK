@@ -33,14 +33,13 @@ export function getDIDJWKSEndpoint(router: Router, context: IRequiredContext, op
   router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     const did = request.params.did
     try {
-      console.log(await context.agent.didManagerFind())
       console.log(`Will get JWKS for DID ${did}`)
-      let identifier = await context.agent.didManagerGet({ did })
-      if (!identifier) {
+      const resolution = await context.agent.identifierManagedGetByDid({ identifier: did })
+      if (!resolution.identifier) {
         return sendErrorResponse(response, 404, `DID ${did} not found`)
       }
       response.statusCode = 200
-      return response.send(toJWKS({ keys: identifier.keys }))
+      return response.send(toJWKS({ keys: resolution.keys }))
     } catch (e) {
       console.log(e)
       return sendErrorResponse(response, 404, `DID ${did} not found`)

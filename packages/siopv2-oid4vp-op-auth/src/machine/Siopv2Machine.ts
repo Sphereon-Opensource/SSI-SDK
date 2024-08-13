@@ -105,13 +105,13 @@ const Siopv2IsSiopWithOID4VPGuard = (_ctx: Siopv2MachineContext, _event: Siopv2M
 }
 
 const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine => {
-  const { url, identifierOpts } = opts
+  const { url, idOpts } = opts
   const initialContext: Siopv2MachineContext = {
     url: new URL(url).toString(),
     hasContactConsent: true,
     contactAlias: '',
     selectedCredentials: [],
-    identifierOpts: identifierOpts,
+    idOpts: idOpts,
   }
 
   return createMachine<Siopv2MachineContext, Siopv2MachineEventTypes>({

@@ -170,7 +170,7 @@ export interface VerifiableCredentialsWithDefinition {
 export interface VerifiablePresentationWithDefinition extends VerifiablePresentationResult {
   definition: PresentationDefinitionWithLocation
   verifiableCredentials: W3CVerifiableCredential[]
-  identifierOpts: ManagedIdentifierOpts
+  idOpts: ManagedIdentifierOpts
 }
 
 export interface IOpSessionGetOID4VPArgs {

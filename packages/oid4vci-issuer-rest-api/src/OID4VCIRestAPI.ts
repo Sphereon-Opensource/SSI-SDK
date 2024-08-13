@@ -42,11 +42,11 @@ export class OID4VCIRestAPI {
       opts?.endpointOpts.tokenEndpointOpts?.tokenEndpointDisabled !== true &&
       typeof opts?.endpointOpts.tokenEndpointOpts?.accessTokenSignerCallback !== 'function'
     ) {
-      const identifierOpts = instance.issuerOptions.identifierOpts
+      const idOpts = instance.issuerOptions.idOpts
       const tokenOpts = {
         iss: opts.endpointOpts.tokenEndpointOpts.accessTokenIssuer ?? instance.metadataOptions.credentialIssuer,
         didOpts: instance.issuerOptions.didOpts,
-        identifierOpts,
+        idOpts,
       }
 
       opts.endpointOpts.tokenEndpointOpts.accessTokenSignerCallback = await getAccessTokenSignerCallback(

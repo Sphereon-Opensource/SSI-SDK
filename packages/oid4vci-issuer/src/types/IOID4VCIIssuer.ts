@@ -76,10 +76,10 @@ export interface IIssuerInstanceOptions extends IMetadataOptions {
 }
 
 export interface IIssuerOptions {
-  identifierOpts?: ManagedIdentifierOpts
+  idOpts?: ManagedIdentifierOpts
   resolveOpts?: ResolveOpts
   /**
-   * @deprecated: use identifierOpts
+   * @deprecated: use idOpts
    */
   didOpts?: IDIDOptions
   userPinRequired?: boolean

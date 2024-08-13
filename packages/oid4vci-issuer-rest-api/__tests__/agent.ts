@@ -597,7 +597,7 @@ const agent = createAgent<IPlugins>({
       defaultOpts: {
         userPinRequired: false,
         didOpts: {
-          identifierOpts: {
+          idOpts: {
             identifier: RP_DID_JWK,
             kid: '4c6d87db1d9d597377b82a99a6a175cac00f4150c910dfc7f8232d6e08dbf8d8',
           },
@@ -608,7 +608,7 @@ const agent = createAgent<IPlugins>({
           credentialIssuer: `${baseUrl}/sphereonDISABLED`,
           issuerOpts: {
             didOpts: {
-              identifierOpts: {
+              idOpts: {
                 identifier: RP_DID_ION,
                 kid: RP_DID_ION_KID,
               },
@@ -621,7 +621,7 @@ const agent = createAgent<IPlugins>({
           correlationId: `${baseUrl}/sphereonDISABLED`,
           issuerOpts: {
             didOpts: {
-              identifierOpts: {
+              idOpts: {
                 identifier: RP_DID_ION,
                 kid: RP_DID_ION_KID,
               },
