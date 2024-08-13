@@ -1,7 +1,11 @@
 import { DiscoveryMetadataPayload, JWK } from '@sphereon/did-auth-siop'
 import { OID4VCICredentialFormat, RequestObjectOpts } from '@sphereon/oid4vci-common'
 import { Format, PresentationDefinitionV2 } from '@sphereon/pex-models'
-import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import {
+  IIdentifierResolution,
+  ManagedIdentifierDidOpts,
+  ManagedIdentifierDidResult
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { CredentialRole, IBasicCredentialLocaleBranding, Party } from '@sphereon/ssi-sdk.data-store'
 import { ErrorDetails, IOID4VCIHolder, MappedCredentialToAccept } from '@sphereon/ssi-sdk.oid4vci-holder'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
@@ -109,7 +113,7 @@ export interface GetPresentationDefinitionArgs {
 export type CreateAttestationAuthRequestURLArgs = {
   credentialIssuer: string
   credentialType: string
-  idOpts: IIdentifierOpts
+  identifierOpts: ManagedIdentifierDidOpts
   requestObjectOpts: RequestObjectOpts
   clientId?: string
   redirectUri?: string
@@ -159,7 +163,7 @@ export interface GetAccessTokenArgs {
 }
 
 export type GetAccessTokenResult = {
-  identifier: IIdentifier
+  identifier: ManagedIdentifierDidResult
   scope: EBSIScope
   // vp: VerifiablePresentationWithDefinition
   // definition: PresentationDefinitionWithLocation
@@ -185,7 +189,7 @@ export interface EBSIAuthAccessTokenGetArgs {
   redirectUri?: string
   jwksUri: string
   // definitionId: ScopeByDefinition
-  idOpts: IIdentifierOpts
+  identifierOpts: ManagedIdentifierDidOpts
   scope: EBSIScope
   environment: EbsiEnvironment
   skipDidResolution?: boolean
@@ -241,5 +245,5 @@ export type GetOIDProviderJwksResponse = GetOIDProviderJwksSuccessResponse | Exc
 export type GetPresentationDefinitionResponse = GetPresentationDefinitionSuccessResponse
 export type GetAccessTokenResponse = GetAccessTokenSuccessResponse | ExceptionResponse
 export type IRequiredContext = IAgentContext<
-  IKeyManager & IDIDManager & IResolver & IDidAuthSiopOpAuthenticator & IPresentationExchange & IOID4VCIHolder & IEbsiSupport
+  IKeyManager & IDIDManager & IResolver & IIdentifierResolution & IDidAuthSiopOpAuthenticator & IPresentationExchange & IOID4VCIHolder & IEbsiSupport
 >

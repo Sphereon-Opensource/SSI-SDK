@@ -1,8 +1,11 @@
-import { dereferenceDidKeysWithJwkSupport, getAgentResolver, getIdentifier, getKey, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
-import { _NormalizedVerificationMethod } from '@veramo/utils'
-import { IPEXPresentationSignCallback, IRequiredContext } from './types/IPresentationExchange'
 import { IPresentationDefinition } from '@sphereon/pex'
-import { IIdentifier, IKey, PresentationPayload, ProofFormat } from '@veramo/core'
+import { Format } from '@sphereon/pex-models'
+import {
+  isManagedIdentifierDidOpts,
+  isManagedIdentifierDidResult,
+  isManagedIdentifierX5cResult,
+  ManagedIdentifierOpts,
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
   CredentialMapper,
   Optional,
@@ -10,11 +13,12 @@ import {
   SdJwtDecodedVerifiableCredential,
   W3CVerifiablePresentation,
 } from '@sphereon/ssi-types'
-import { Format } from '@sphereon/pex-models'
+import { PresentationPayload, ProofFormat } from '@veramo/core'
+import { IPEXPresentationSignCallback, IRequiredContext } from './types/IPresentationExchange'
 
 export async function createPEXPresentationSignCallback(
   args: {
-    idOpts: IIdentifierOpts
+    identifierOpts: ManagedIdentifierOpts
     fetchRemoteContexts?: boolean
     skipDidResolution?: boolean
     format?: Format | ProofFormat
@@ -75,44 +79,13 @@ export async function createPEXPresentationSignCallback(
     challenge?: string
   }): Promise<W3CVerifiablePresentation> => {
     const proofFormat = determineProofFormat({ format, presentationDefinition })
-    const idOpts = args.idOpts
-    const id = await getIdentifier(idOpts, context)
-    if (typeof idOpts.identifier === 'string') {
-      idOpts.identifier = id
+    const { identifierOpts } = args
+    const CLOCK_SKEW = 120
+    if (args.skipDidResolution && isManagedIdentifierDidOpts(identifierOpts)) {
+      identifierOpts.offlineWhenNoDIDRegistered = true
     }
 
-    // We need to determine the keys. This will also be needed for SD-JWTs soon, so do this first
-    let key: IKey | undefined
-
-    if (args.skipDidResolution) {
-      if (!idOpts.kmsKeyRef) {
-        key = id.keys.find((key) => key.meta?.purpose?.includes(idOpts.verificationMethodSection ?? 'authentication') === true)
-      }
-      if (!key) {
-        key = id.keys.find(
-          (key) =>
-            !idOpts.kmsKeyRef ||
-            key.kid === idOpts.kmsKeyRef ||
-            key.meta?.jwkThumbprint === idOpts.kmsKeyRef ||
-            `${id.did}#${key.kid}` === idOpts.kmsKeyRef,
-        )
-      }
-    } else {
-      key = await getKey({ identifier: id, vmRelationship: 'authentication', kmsKeyRef: idOpts.kmsKeyRef }, context)
-    }
-
-    if (!key) {
-      throw Error(`Could not determine key to use ${JSON.stringify(idOpts)}`)
-    }
-    let vm: _NormalizedVerificationMethod | undefined = undefined
-    if (args.skipDidResolution !== true) {
-      const didResolution = await getAgentResolver(context).resolve(idOpts.identifier.did)
-      const vms = await dereferenceDidKeysWithJwkSupport(didResolution.didDocument!, idOpts.verificationMethodSection ?? 'authentication', context)
-      vm = vms.find((vm) => vm.publicKeyHex === key.publicKeyHex)
-      if (!vm) {
-        throw Error(`Could not resolve DID document or match signing key to did ${idOpts.identifier.did}`)
-      }
-    }
+    const resolution = await context.agent.identifierManagedGet(identifierOpts)
 
     if ('compactSdJwtVc' in presentation) {
       if (proofFormat !== 'vc+sd-jwt') {
@@ -123,9 +96,10 @@ export async function createPEXPresentationSignCallback(
         presentation: presentation.compactSdJwtVc,
         kb: {
           payload: {
-            iat: presentation.kbJwt.payload.iat,
-            nonce: presentation.kbJwt.payload.nonce,
-            aud: (<IIdentifier>args.idOpts.identifier).did.split('#')[0],
+            ...presentation.kbJwt?.payload,
+            iat: presentation.kbJwt?.payload?.iat ?? Math.floor(Date.now() / 1000 - CLOCK_SKEW),
+            nonce: challenge ?? presentation.kbJwt?.payload?.nonce,
+            aud: presentation.kbJwt?.payload?.aud ?? resolution.issuer,
           },
         },
       })
@@ -137,21 +111,18 @@ export async function createPEXPresentationSignCallback(
       }
       let header
       if (!presentation.holder) {
-        presentation.holder = id.did
+        presentation.holder = resolution.issuer
       }
-      const kid = vm?.id ?? key.meta?.jwkThumbprint ?? key.kid
       if (proofFormat === 'jwt') {
-        if (!vm) {
-          return Promise.reject(Error(`Verification method was expected at this point for ${proofFormat}`))
-        }
         header = {
-          kid: kid.includes('#') ? kid : `${id.did}#${kid}`,
+          ...((isManagedIdentifierDidResult(resolution) || isManagedIdentifierX5cResult(resolution)) && resolution.kid && { kid: resolution.kid }),
+          ...(isManagedIdentifierX5cResult(resolution) && { jwk: resolution.jwk }),
         }
         if (presentation.verifier || !presentation.aud) {
           presentation.aud = Array.isArray(presentation.verifier) ? presentation.verifier : (presentation.verifier ?? domain ?? args.domain)
           delete presentation.verifier
         }
-        const CLOCK_SKEW = 120
+
         if (!presentation.nbf) {
           if (presentation.issuanceDate) {
             const converted = Date.parse(presentation.issuanceDate)
@@ -181,11 +152,11 @@ export async function createPEXPresentationSignCallback(
         if (!presentation.vp) {
           presentation.vp = {}
         }
-        if (!presentation.sub) {
+        /*if (!presentation.sub) {
           presentation.sub = id.did
-        }
+        }*/
         if (!presentation.vp.holder) {
-          presentation.vp.holder = id.did
+          presentation.vp.holder = presentation.holder
         }
       }
 
@@ -196,7 +167,7 @@ export async function createPEXPresentationSignCallback(
       const vp = await context.agent.createVerifiablePresentation({
         presentation: presentation as PresentationPayload,
         removeOriginalFields: false,
-        keyRef: key.kid,
+        keyRef: resolution.kmsKeyRef,
         // domain: domain ?? args.domain, // handled above, and did-jwt-vc creates an array even for 1 entry
         challenge: challenge ?? args.challenge,
         fetchRemoteContexts: args.fetchRemoteContexts !== false,

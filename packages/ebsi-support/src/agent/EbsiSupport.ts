@@ -1,6 +1,5 @@
 import { CheckLinkedDomain, PresentationDefinitionLocation, PresentationDefinitionWithLocation, SupportedVersion } from '@sphereon/did-auth-siop'
 import { CreateRequestObjectMode } from '@sphereon/oid4vci-common'
-import { getIdentifier } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IPEXFilterResult } from '@sphereon/ssi-sdk.presentation-exchange'
 import { CredentialMapper, PresentationSubmission } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
@@ -105,8 +104,8 @@ export class EbsiSupport implements IAgentPlugin {
   }
 
   private async ebsiAccessTokenGet(args: EBSIAuthAccessTokenGetArgs, context: IRequiredContext): Promise<GetAccessTokenResult> {
-    const { scope, idOpts, jwksUri, clientId, allVerifiableCredentials, redirectUri, environment, skipDidResolution = false } = args
-    const identifier = await getIdentifier(idOpts, context)
+    const { scope, identifierOpts, jwksUri, clientId, allVerifiableCredentials, redirectUri, environment, skipDidResolution = false } = args
+    const identifier = await context.agent.identifierManagedGetByDid(identifierOpts)
     console.log(`Getting access token for ${identifier.did}, scope ${scope} and clientId=${clientId}, skipDidResolution=${skipDidResolution}...`)
     const openIDMetadata = await this.ebsiWellknownMetadata({
       environment,
@@ -159,7 +158,7 @@ export class EbsiSupport implements IAgentPlugin {
         const credentialIssuer = args.credentialIssuer ?? ebsiGetIssuerMock({ environment })
         const authReqResult = await context.agent.ebsiCreateAttestationAuthRequestURL({
           credentialIssuer,
-          idOpts,
+          identifierOpts,
           formats: ['jwt_vc'],
           clientId,
           redirectUri,
@@ -209,7 +208,7 @@ export class EbsiSupport implements IAgentPlugin {
       {
         proofOpts: { domain: openIDMetadata.issuer, nonce: v4(), created: new Date(Date.now() - 120_000).toString() },
         holderDID: identifier.did,
-        identifierOpts: idOpts,
+        identifierOpts: identifierOpts,
         skipDidResolution,
         forceNoCredentialsInVP: !hasInputDescriptors,
       },
@@ -242,7 +241,7 @@ export class EbsiSupport implements IAgentPlugin {
       // vp,
       scope,
       // definition,
-      identifier,
+      identifier: identifier,
     }
   }
 

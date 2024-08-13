@@ -1,3 +1,4 @@
+import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
   IAgentContext,
   ICredentialPlugin,
@@ -77,4 +78,4 @@ export interface IPEXPresentationSignCallBackParams {
   presentationDefinition: IPresentationDefinition
 }
 
-export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IDIDManager & ICredentialPlugin & ISDJwtPlugin>
+export type IRequiredContext = IAgentContext<IDataStoreORM & IResolver & IDIDManager & IIdentifierResolution & ICredentialPlugin & ISDJwtPlugin>

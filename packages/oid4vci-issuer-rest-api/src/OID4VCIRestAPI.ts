@@ -1,8 +1,8 @@
 import { CredentialDataSupplier, VcIssuer } from '@sphereon/oid4vci-issuer'
 import { OID4VCIServer } from '@sphereon/oid4vci-issuer-server'
-import { IOID4VCIServerOpts } from '@sphereon/oid4vci-issuer-server/lib/OID4VCIServer'
+import { IOID4VCIServerOpts } from '@sphereon/oid4vci-issuer-server'
 import { ExpressSupport } from '@sphereon/ssi-express-support'
-import { getAccessTokenKeyRef, getAccessTokenSignerCallback, IIssuerInstanceArgs, IssuerInstance } from '@sphereon/ssi-sdk.oid4vci-issuer'
+import { getAccessTokenSignerCallback, IIssuerInstanceArgs, IssuerInstance } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { DIDDocument } from 'did-resolver'
 import { Express } from 'express'
 import { IRequiredContext } from './types'
@@ -42,25 +42,16 @@ export class OID4VCIRestAPI {
       opts?.endpointOpts.tokenEndpointOpts?.tokenEndpointDisabled !== true &&
       typeof opts?.endpointOpts.tokenEndpointOpts?.accessTokenSignerCallback !== 'function'
     ) {
-      let keyRef: string | undefined
+      const identifierOpts = instance.issuerOptions.identifierOpts
       const tokenOpts = {
         iss: opts.endpointOpts.tokenEndpointOpts.accessTokenIssuer ?? instance.metadataOptions.credentialIssuer,
         didOpts: instance.issuerOptions.didOpts,
-      }
-      // @ts-ignore
-      // We add the kid value for backwards compat. Especially used in agent config files!
-      const kmsKeyRef = tokenOpts.didOpts.identifierOpts?.kmsKeyRef ?? tokenOpts.didOpts.identifierOpts?.['kid']
-      if (kmsKeyRef) {
-        tokenOpts.didOpts.identifierOpts.kmsKeyRef = kmsKeyRef
-      }
-      if (!kmsKeyRef || kmsKeyRef?.startsWith('did:')) {
-        keyRef = await getAccessTokenKeyRef(tokenOpts, context)
+        identifierOpts,
       }
 
-      opts.endpointOpts.tokenEndpointOpts.accessTokenSignerCallback = getAccessTokenSignerCallback(
+      opts.endpointOpts.tokenEndpointOpts.accessTokenSignerCallback = await getAccessTokenSignerCallback(
         {
           ...tokenOpts,
-          keyRef,
         },
         args.context,
       )

@@ -13,6 +13,7 @@ import {
   NotificationRequest,
 } from '@sphereon/oid4vci-common'
 import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { SignatureAlgorithmEnum } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { DigitalCredential, IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
@@ -583,6 +584,7 @@ export interface VerifyCredentialArgs {
   credential: OriginalVerifiableCredential
   fetchRemoteContexts?: boolean
   policies?: VerificationPolicies
+
   [x: string]: any
 }
 
@@ -592,6 +594,7 @@ export type RequiredContext = IAgentContext<
     ICredentialVerifier &
     ICredentialIssuer &
     ICredentialStore &
+    IIdentifierResolution &
     IDIDManager &
     IResolver &
     IKeyManager &

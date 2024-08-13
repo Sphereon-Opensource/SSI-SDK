@@ -1,10 +1,11 @@
 import { PresentationDefinitionWithLocation, PresentationExchange } from '@sphereon/did-auth-siop'
 import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
 import { Format } from '@sphereon/pex-models'
-import { getDID, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import { isManagedIdentifierDidOpts, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
-import { CredentialMapper, CompactJWT, Hasher, W3CVerifiableCredential } from '@sphereon/ssi-types'
-import { IIdentifier } from '@veramo/core'
+import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
+import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
+import { CompactJWT, CredentialMapper, Hasher, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { encodeJoseBlob } from '@veramo/utils'
 import {
   DEFAULT_JWT_PROOF_TYPE,
@@ -15,8 +16,6 @@ import {
 } from '../types'
 import { createOID4VPPresentationSignCallback } from './functions'
 import { OpSession } from './OpSession'
-import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
-import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
 
 export class OID4VP {
   private readonly session: OpSession
@@ -61,7 +60,7 @@ export class OID4VP {
       restrictToFormats?: Format
       restrictToDIDMethods?: string[]
       proofOpts?: ProofOptions
-      identifierOpts?: IIdentifierOpts
+      identifierOpts?: ManagedIdentifierOpts
       skipDidResolution?: boolean
       holderDID?: string
       subjectIsHolder?: boolean
@@ -80,7 +79,7 @@ export class OID4VP {
       restrictToFormats?: Format
       restrictToDIDMethods?: string[]
       proofOpts?: ProofOptions
-      identifierOpts?: IIdentifierOpts
+      identifierOpts?: ManagedIdentifierOpts
       skipDidResolution?: boolean
       holderDID?: string
       subjectIsHolder?: boolean
@@ -104,8 +103,8 @@ export class OID4VP {
       domain: opts?.proofOpts?.domain ?? (await this.session.getRedirectUri()),
     }
 
-    let id: IIdentifier | string | undefined = opts?.identifierOpts?.identifier
-    if (!id) {
+    let identifierOpts = opts?.identifierOpts
+    if (!identifierOpts) {
       if (opts?.subjectIsHolder) {
         if (forceNoCredentialsInVP) {
           return Promise.reject(
@@ -125,15 +124,12 @@ export class OID4VP {
             ? firstVC.credentialSubject[0].id
             : firstVC.credentialSubject.id
         if (holder) {
-          id = await this.session.context.agent.didManagerGet({ did: holder })
+          identifierOpts = { identifier: holder }
         }
       } else if (opts?.holderDID) {
-        id = await this.session.context.agent.didManagerGet({ did: opts.holderDID })
+        identifierOpts = { identifier: opts.holderDID }
       }
     }
-
-    const idOpts = opts?.identifierOpts ?? { identifier: id! }
-    this.assertIdentifier(idOpts.identifier)
 
     // We are making sure to filter, in case the user submitted all verifiableCredentials in the wallet/agent. We also make sure to get original formats back
     const vcs = forceNoCredentialsInVP
@@ -151,9 +147,12 @@ export class OID4VP {
             credentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
           }
 
+    if (!identifierOpts) {
+      return Promise.reject(Error(`No identifier options present at this point`))
+    }
     const signCallback = await createOID4VPPresentationSignCallback({
       presentationSignCallback: this.session.options.presentationSignCallback,
-      idOpts,
+      identifierOpts,
       context: this.session.context,
       domain: proofOptions.domain,
       challenge: proofOptions.challenge,
@@ -167,7 +166,11 @@ export class OID4VP {
       hasher: opts?.hasher,
     }).createVerifiablePresentation(vcs.definition.definition, vcs.credentials, signCallback, {
       proofOptions,
-      holderDID: getDID(idOpts),
+      // fixme: Update to newer siop-vp to not require dids here.
+
+      holderDID: isManagedIdentifierDidOpts(identifierOpts)
+        ? (await this.session.context.agent.identifierManagedGetByDid(identifierOpts)).did
+        : undefined,
     })
 
     const verifiablePresentation =
@@ -183,7 +186,7 @@ export class OID4VP {
       verifiablePresentation,
       verifiableCredentials: vcs.credentials,
       definition: selectedVerifiableCredentials.definition,
-      identifierOpts: idOpts,
+      identifierOpts: identifierOpts,
     }
   }
 
@@ -271,11 +274,5 @@ export class OID4VP {
       const jwtProof = proof.find((p) => p?.type === DEFAULT_JWT_PROOF_TYPE)
       return jwtProof ? (jwtProof.jwt as CompactJWT) : vc
     })
-  }
-
-  private assertIdentifier(identifier?: IIdentifier | string): void {
-    if (!identifier) {
-      throw Error(`OID4VP needs an identifier at this point`)
-    }
   }
 }

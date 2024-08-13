@@ -1,12 +1,12 @@
-import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
-import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { IAgentContext, IDIDManager, IIdentifier, IResolver } from '@veramo/core'
 import { PresentationDefinitionWithLocation, RPRegistrationMetadataPayload } from '@sphereon/did-auth-siop'
-import { DidAuthConfig, ICredentialLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
-import { Siopv2MachineContext, Siopv2MachineInterpreter, Siopv2MachineState } from '../machine'
-import { IDidAuthSiopOpAuthenticator } from '../IDidAuthSiopOpAuthenticator'
-import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
+import { IIdentifierResolution, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { ICredentialStore, UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
+import { DidAuthConfig, ICredentialLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
+import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
+import { IAgentContext, IDIDManager, IIdentifier, IResolver } from '@veramo/core'
+import { IDidAuthSiopOpAuthenticator } from '../IDidAuthSiopOpAuthenticator'
+import { Siopv2MachineContext, Siopv2MachineInterpreter, Siopv2MachineState } from '../machine'
 
 export type DidAuthSiopOpAuthenticatorOptions = {
   onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
@@ -15,7 +15,7 @@ export type DidAuthSiopOpAuthenticatorOptions = {
 
 export type GetMachineArgs = {
   url: string | URL
-  idOpts?: IIdentifierOpts
+  identifierOpts?: ManagedIdentifierOpts
   stateNavigationListener?: (siopv2Machine: Siopv2MachineInterpreter, state: Siopv2MachineState, navigation?: any) => Promise<void>
 }
 
@@ -24,7 +24,7 @@ export type CreateConfigResult = Omit<DidAuthConfig, 'stateId' | 'idOpts'>
 export type GetSiopRequestArgs = Pick<Siopv2MachineContext, 'didAuthConfig' | 'url'>
 export type RetrieveContactArgs = Pick<Siopv2MachineContext, 'url' | 'authorizationRequestData'>
 export type AddIdentityArgs = Pick<Siopv2MachineContext, 'contact' | 'authorizationRequestData'>
-export type SendResponseArgs = Pick<Siopv2MachineContext, 'didAuthConfig' | 'authorizationRequestData' | 'selectedCredentials' | 'idOpts'>
+export type SendResponseArgs = Pick<Siopv2MachineContext, 'didAuthConfig' | 'authorizationRequestData' | 'selectedCredentials' | 'identifierOpts'>
 export type GetSelectableCredentialsArgs = Pick<Siopv2MachineContext, 'authorizationRequestData'>
 
 export enum Siopv2HolderEvent {
@@ -72,5 +72,5 @@ export type OnIdentifierCreatedArgs = {
 }
 
 export type RequiredContext = IAgentContext<
-  IContactManager & IDidAuthSiopOpAuthenticator & IDIDManager & IResolver & ICredentialStore & IIssuanceBranding
+  IContactManager & IDidAuthSiopOpAuthenticator & IDIDManager & IResolver & IIdentifierResolution & ICredentialStore & IIssuanceBranding
 >

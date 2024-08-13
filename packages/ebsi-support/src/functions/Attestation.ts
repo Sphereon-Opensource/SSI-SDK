@@ -9,7 +9,7 @@ import {
   getTypesFromCredentialSupported,
   ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
-import { getAuthenticationKey, getIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import { getAuthenticationKey,  SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { calculateJwkThumbprintForKey, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   IssuanceOpts,
@@ -63,7 +63,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
     clientId: clientIdArg,
     credentialIssuer,
     credentialType,
-    idOpts,
+    identifierOpts,
     redirectUri,
     requestObjectOpts,
     formats = ['jwt_vc', 'jwt_vc_json'],
@@ -71,7 +71,8 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   context: IRequiredContext,
 ): Promise<AttestationAuthRequestUrlResult> => {
   logger.info(`create attestation ${credentialType} auth req URL for ${clientIdArg} and issuer ${credentialIssuer}`)
-  const identifier = await getIdentifier(idOpts, context)
+  const resolution = await context.agent.identifierManagedGetByDid(identifierOpts)
+  const identifier = resolution.identifier
   if (identifier.provider !== 'did:ebsi' && identifier.provider !== 'did:key') {
     throw Error(
       `EBSI only supports did:key for natural persons and did:ebsi for legal persons. Provider: ${identifier.provider}, did: ${identifier.did}`,
@@ -125,7 +126,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   })
 
   const signCallbacks: ProofOfPossessionCallbacks<never> = requestObjectOpts.signCallbacks ?? {
-    signCallback: signCallback(vciClient, idOpts, context),
+    signCallback: signCallback(vciClient, identifierOpts, context),
   }
   const authorizationRequestOpts = {
     redirectUri,
