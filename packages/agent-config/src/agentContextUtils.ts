@@ -39,6 +39,10 @@ export function contextHasDidManager(context: IAgentContext<IPluginMethodMap>): 
   return contextHasPlugin(context, 'didManagerGet') // IResolver is always required for IDIDManager
 }
 
+export function contextHasDidResolver(context: IAgentContext<IPluginMethodMap>): context is IAgentContext<IResolver> {
+  return contextHasPlugin(context, 'resolveDid') // IResolver is always required for IDIDManager
+}
+
 export function contextHasCredentialIssuer(context: IAgentContext<IPluginMethodMap>): context is IAgentContext<ICredentialIssuer> {
   return contextHasPlugin(context, ['createVerifiableCredential', 'createVerifiablePresentation']) // W3C Credential issuer
 }
