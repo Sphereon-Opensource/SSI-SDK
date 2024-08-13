@@ -26,7 +26,7 @@ function createSchema(generator: TJS.SchemaGenerator, symbol: string) {
     return { components: { schemas: {} } }
   }
 
-  let fixedSymbol = symbol.replace(/Array\<(.*)\>/gm, '$1')
+  const fixedSymbol = symbol.replace(/Array\<(.*)\>/gm, '$1').replace(/(\\:[\w]?Certificate)/gm, ': any')
 
   const schema = generator.createSchema(fixedSymbol)
 
@@ -62,6 +62,7 @@ function getReference(response: string): OpenAPIV3.ReferenceObject | OpenAPIV3.S
       items: genericTypes.includes(symbol) ? { type: symbol } : { $ref: '#/components/schemas/' + symbol },
     }
   }
+  response = response.replace(/(\\:?[\w]*Certificate)/gm, 'any')
   if (response === 'any') {
     return { type: 'object' }
   }
