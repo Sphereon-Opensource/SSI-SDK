@@ -1,11 +1,10 @@
 import {
-  CheckLinkedDomain,
+  // CheckLinkedDomain,
   PresentationDefinitionWithLocation,
   PresentationExchangeResponseOpts,
-  ResolveOpts,
   URI,
   Verification,
-  VerificationMode,
+  // VerificationMode,
   VerifiedAuthorizationRequest,
 } from '@sphereon/did-auth-siop'
 import { getAgentDIDMethods, getAgentResolver, getDID } from '@sphereon/ssi-sdk-ext.did-utils'
@@ -21,6 +20,7 @@ import {
 } from '../types/IDidAuthSiopOpAuthenticator'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
+import { ResolveOpts } from '@sphereon/did-auth-siop-adapter'
 
 const debug = Debug(`sphereon:sdk:siop:op-session`)
 
@@ -227,10 +227,11 @@ export class OpSession {
     if (!resolveOpts.subjectSyntaxTypesSupported || resolveOpts.subjectSyntaxTypesSupported.length === 0) {
       resolveOpts.subjectSyntaxTypesSupported = await this.getSupportedDIDMethods(true)
     }
+    //todo: populate with the right verification params
     const verification: Verification = {
-      mode: VerificationMode.INTERNAL,
-      checkLinkedDomain: CheckLinkedDomain.IF_PRESENT,
-      resolveOpts,
+      // mode: VerificationMode.INTERNAL,
+      // checkLinkedDomain: CheckLinkedDomain.IF_PRESENT,
+      // resolveOpts,
     }
 
     const request = await this.getAuthorizationRequest()
@@ -265,6 +266,7 @@ export class OpSession {
       context: this.context,
     })
 
+    //TODO change this to use the new functionalities by identifier-resolver and get the jwkIssuer for the responseOpts
     let issuer = args.responseSignerOpts?.issuer ?? (args.responseSignerOpts?.identifier ? getDID(args.responseSignerOpts) : undefined)
     const responseOpts = {
       verification,

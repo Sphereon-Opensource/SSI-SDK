@@ -1810,8 +1810,11 @@ importers:
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.6.4
-        version: 0.6.4
+        specifier: 0.16.1-next.8
+        version: 0.16.1-next.8
+      '@sphereon/did-auth-siop-adapter':
+        specifier: 0.16.1-next.8
+        version: 0.16.1-next.8
       '@sphereon/pex':
         specifier: ^4.0.1
         version: 4.0.1
@@ -1845,6 +1848,9 @@ importers:
       '@sphereon/ssi-sdk.sd-jwt':
         specifier: workspace:*
         version: link:../sd-jwt
+      '@sphereon/ssi-sdk.siopv2-oid4vp-common':
+        specifier: workspace:*
+        version: link:../siopv2-oid4vp-common
       '@sphereon/ssi-sdk.xstate-machine-persistence':
         specifier: workspace:*
         version: link:../xstate-persistence
@@ -1922,14 +1928,17 @@ importers:
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.6.4
-        version: 0.6.4
+        specifier: 0.16.1-next.8
+        version: 0.16.1-next.8
+      '@sphereon/did-auth-siop-adapter':
+        specifier: 0.16.1-next.8
+        version: 0.16.1-next.8
       '@sphereon/pex':
         specifier: ^4.0.1
         version: 4.0.1
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.24.1-next.3
-        version: 0.24.1-next.3
+        specifier: 0.24.1-next.72
+        version: 0.24.1-next.72
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -8102,6 +8111,42 @@ packages:
       '@sinonjs/commons': 1.8.6
     dev: true
 
+  /@sphereon/did-auth-siop-adapter@0.16.1-next.8:
+    resolution: {integrity: sha512-Mmjue+0BxuospJgLOfvqfHGB9XQyejn3eOF271c9eERNPhRsg9pi7Ggy49Imw9gDMxkXr8vefgPOdB/+XzvTWQ==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@sphereon/did-auth-siop': 0.16.1-next.8
+      '@sphereon/did-uni-client': 0.6.3
+      '@sphereon/oid4vc-common': 0.16.1-next.8
+      '@sphereon/wellknown-dids-client': 0.1.3
+      did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
+      did-resolver: 4.1.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@sphereon/did-auth-siop@0.16.1-next.8:
+    resolution: {integrity: sha512-chEn2ZoiOgtTw3rEh9M1Bhns5h3dzTQIFjTserQWhR4migO10KcTgnnAYJL5/VjE65nDPZZFzqb7SLAL//fyzg==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@astronautlabs/jsonpath': 1.1.2
+      '@sphereon/did-uni-client': 0.6.3
+      '@sphereon/oid4vc-common': 0.16.1-next.8
+      '@sphereon/pex': 4.0.1
+      '@sphereon/pex-models': 2.2.4
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@sphereon/wellknown-dids-client': 0.1.3
+      cross-fetch: 4.0.0
+      events: 3.3.0
+      jwt-decode: 4.0.0
+      language-tags: 1.0.9
+      multiformats: 12.1.3
+      qs: 6.12.3
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@sphereon/did-auth-siop@0.6.4:
     resolution: {integrity: sha512-0hw/lypy7kHpChJc/206XFd1XVhfUEIg2RIuw2u0RE3POqMeuOL5DWiPHh3e7Oo0nzG9gdgJC8Yffv69d9QIrg==}
     engines: {node: '>=18'}
@@ -8194,6 +8239,17 @@ packages:
       - encoding
       - typescript
     dev: true
+
+  /@sphereon/oid4vc-common@0.16.1-next.8:
+    resolution: {integrity: sha512-e/DPY0zbVrCSDN6sPQApkNHncgMn2hJBbiSnkFgkJFXvBpob3RgnUn/CebO/VzClGT6ua0EOkSs4jMe6MhRimw==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@sphereon/ssi-types': link:packages/ssi-types
+      jwt-decode: 4.0.0
+      sha.js: 2.4.11
+      uint8arrays: 3.1.1
+      uuid: 9.0.1
+    dev: false
 
   /@sphereon/oid4vci-client@0.15.1-next.9:
     resolution: {integrity: sha512-NTYfZYuKZ9aFSgQuf98yZ+B3um/MV1fkIQbGxEN9wHC9ofkswJgs/zjS38WJLWbjavQH1izmKI1EqDOEAuMPig==}
@@ -8475,6 +8531,27 @@ packages:
       - encoding
       - supports-color
 
+  /@sphereon/ssi-sdk-ext.did-utils@0.24.1-next.72:
+    resolution: {integrity: sha512-PRZI2Red3tsPg+L5Ym4mLfqGJyREEZ8xvV7EMyUijz1CSAnveLRB8S17rSsgWJQ0kwdAPvKsknz+WVX9VRr8BA==}
+    dependencies:
+      '@ethersproject/networks': 5.7.1
+      '@ethersproject/transactions': 5.7.0
+      '@sphereon/did-uni-client': 0.6.3
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-next.72
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-next.72
+      '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
+      '@stablelib/ed25519': 1.0.3
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/utils': 4.2.0
+      did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+    dev: false
+
   /@sphereon/ssi-sdk-ext.did-utils@0.24.1-unstable.54:
     resolution: {integrity: sha512-NzSea3lnM8+Y/SXhxQMa5/q3k3Gan+1pm6YMG19iT/vmv6LzH18JXjCFIQnsoIa6FbE6IBdwqU8tVq+tm2V1pg==}
     dependencies:
@@ -8556,6 +8633,30 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
+  /@sphereon/ssi-sdk-ext.key-utils@0.24.1-next.72:
+    resolution: {integrity: sha512-AtdGEQcr3gZfxpeDvjmQBA5gi/tTMzU/ZWMjqAcNylca6+7/5sFsyPCS1DRusRqttJF8Q/+I9148gM30bt7+gg==}
+    dependencies:
+      '@ethersproject/random': 5.7.0
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-next.72
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@stablelib/ed25519': 1.0.3
+      '@stablelib/sha256': 1.0.1
+      '@stablelib/sha512': 1.0.1
+      '@trust/keyto': 1.0.1
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      base64url: 3.0.1
+      debug: 4.3.5
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+      lodash.isplainobject: 4.0.6
+      multiformats: 9.9.0
+      uint8arrays: 3.1.1
+      varint: 6.0.0
+      web-encoding: 1.1.5
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /@sphereon/ssi-sdk-ext.key-utils@0.24.1-unstable.54:
     resolution: {integrity: sha512-UQsvwJqHoUe/x2eG4CMIHaNgZso3jqfpTPdjVW6oZHjuV1L7M52/wxn1YlOoyo/Z/uebGeya5t+haWpcSj4liQ==}
     dependencies:
@@ -8632,6 +8733,17 @@ packages:
       - encoding
       - supports-color
     dev: true
+
+  /@sphereon/ssi-sdk-ext.x509-utils@0.24.1-next.72:
+    resolution: {integrity: sha512-oJmScQG4nMvqDbReYrrz1y5vmUo0v9b5JKXe8ezt7XGqU73+eFsP9F4GE8gR4pf8wONmYS6A5BSXKctDnQj+Bg==}
+    dependencies:
+      '@trust/keyto': 1.0.1
+      debug: 4.3.5
+      pkijs: 3.2.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
 
   /@sphereon/ssi-sdk-ext.x509-utils@0.24.1-unstable.63:
     resolution: {integrity: sha512-i1nB0QMfD15ZZFaiWJXUwzwyPQi4tWp7gTuHUX0W0+BDJb5xUvR0N+1hf7UMEko1Bx15xjWnaKlR1slg5qi29g==}
@@ -13840,6 +13952,7 @@ packages:
     dependencies:
       is-hex-prefixed: 1.0.0
       strip-hex-prefix: 1.0.0
+    bundledDependencies: false
 
   /ethr-did-resolver@8.1.2:
     resolution: {integrity: sha512-dnbE3GItE1YHp/eavR11KbGDi8Il01H9GeH+wKgoSgE95pKBZufHyHYce/EK2k8VOmj6MJf8u/TIpPvxjCbK+A==}
@@ -21250,6 +21363,9 @@ packages:
   /sqlite3@5.1.7:
     resolution: {integrity: sha512-GGIyOiFaG+TUra3JIfkI/zGP8yZYLPQ0pl1bH+ODjiX57sPhrLU5sQJn1y9bDKZUFYkX1crlrPfSYt0BKKdkog==}
     requiresBuild: true
+    peerDependenciesMeta:
+      node-gyp:
+        optional: true
     dependencies:
       bindings: 1.5.0
       node-addon-api: 7.1.1

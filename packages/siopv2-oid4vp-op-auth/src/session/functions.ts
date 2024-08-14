@@ -1,21 +1,19 @@
 import {
-  CheckLinkedDomain,
   OP,
   OPBuilder,
   PassBy,
   PresentationSignCallback,
   ResponseMode,
-  SigningAlgo,
   SupportedVersion,
 } from '@sphereon/did-auth-siop'
 import { Format } from '@sphereon/pex-models'
-import { determineKid, getAgentDIDMethods, getAgentResolver, getDID, getIdentifier, getKey, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
-import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
+import { /*determineKid, getAgentDIDMethods, getAgentResolver, getDID, getIdentifier, getKey,*/ IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+// import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { createPEXPresentationSignCallback } from '@sphereon/ssi-sdk.presentation-exchange'
-import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
 import { TKeyType } from '@veramo/core'
 import { EventEmitter } from 'events'
 import { IOPOptions, IRequiredContext } from '../types'
+import { SigningAlgo } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 
 export async function createOID4VPPresentationSignCallback({
   presentationSignCallback,
@@ -64,33 +62,33 @@ export async function createOPBuilder({
       ],
     )
     .withExpiresIn(opOptions.expiresIn ?? 300)
-    .withCheckLinkedDomain(opOptions.checkLinkedDomains ?? CheckLinkedDomain.IF_PRESENT)
-    .withCustomResolver(
-      opOptions.resolveOpts?.resolver ??
-        getAgentResolver(context, {
-          uniresolverResolution: opOptions.resolveOpts?.noUniversalResolverFallback !== true,
-          localResolution: true,
-          resolverResolution: true,
-        }),
-    )
+  /* .withCheckLinkedDomain(opOptions.checkLinkedDomains ?? CheckLinkedDomain.IF_PRESENT)
+  .withCustomResolver(
+    opOptions.resolveOpts?.resolver ??
+      getAgentResolver(context, {
+        uniresolverResolution: opOptions.resolveOpts?.noUniversalResolverFallback !== true,
+        localResolution: true,
+        resolverResolution: true,
+      }),
+  )*/
     .withEventEmitter(eventEmitter)
     .withRegistration({
       passBy: PassBy.VALUE,
     })
 
-  const methods = opOptions.supportedDIDMethods ?? (await getAgentDIDMethods(context))
-  methods.forEach((method) => builder.addDidMethod(method))
+  //const methods = opOptions.supportedDIDMethods ?? (await getAgentDIDMethods(context))
+  //methods.forEach((method) => builder.addDidMethod(method))
 
-  const wellknownDIDVerifyCallback = opOptions.wellknownDIDVerifyCallback
+  /*const wellknownDIDVerifyCallback = opOptions.wellknownDIDVerifyCallback
     ? opOptions.wellknownDIDVerifyCallback
     : async (args: IVerifyCallbackArgs): Promise<IVerifyCredentialResult> => {
         const result = await context.agent.verifyCredential({ credential: args.credential, fetchRemoteContexts: true })
         return { verified: result.verified }
       }
-  builder.withWellknownDIDVerifyCallback(wellknownDIDVerifyCallback)
+  builder.withWellknownDIDVerifyCallback(wellknownDIDVerifyCallback)*/
 
   if (idOpts && idOpts.identifier) {
-    const key = await getKey(
+    /*const key = await getKey(
       { identifier: await getIdentifier(idOpts, context), vmRelationship: idOpts.verificationMethodSection, kmsKeyRef: idOpts.kmsKeyRef },
       context,
     )
@@ -101,7 +99,7 @@ export async function createOPBuilder({
       getDID(idOpts),
       kid,
       getSigningAlgo(key.type),
-    )
+    )*/
     builder.withPresentationSignCallback(
       await createOID4VPPresentationSignCallback({
         presentationSignCallback: opOptions.presentationSignCallback,

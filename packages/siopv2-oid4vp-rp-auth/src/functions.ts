@@ -1,9 +1,7 @@
-import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPDIDOptions } from './types/ISIOPv2RP'
+import { IPEXOptions, IRequiredContext, IRPOptions } from './types/ISIOPv2RP'
 import { EventEmitter } from 'events'
-import { determineKid, getAgentResolver, getDID, getIdentifier, getKey, getSupportedDIDMethods, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
-import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
+import { getDID, getSupportedDIDMethods, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
-  CheckLinkedDomain,
   ClientMetadataOpts,
   InMemoryRPSessionManager,
   PassBy,
@@ -15,13 +13,14 @@ import {
   RP,
   RPBuilder,
   Scope,
-  SigningAlgo,
   SubjectType,
   SupportedVersion,
 } from '@sphereon/did-auth-siop'
 import { TKeyType } from '@veramo/core'
-import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
+// import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
 import { IPresentationDefinition } from '@sphereon/pex'
+import { SigningAlgo } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import {createHash} from "crypto";
 
 export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   if (Array.isArray(rpOptions.supportedVersions) && rpOptions.supportedVersions.length > 0) {
@@ -30,14 +29,15 @@ export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   return SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1
 }
 
-function getWellKnownDIDVerifyCallback(didOpts: ISIOPDIDOptions, context: IRequiredContext) {
+//fixme: commented out code is using this
+/*function getWellKnownDIDVerifyCallback(didOpts: ISIOPDIDOptions, context: IRequiredContext) {
   return didOpts.wellknownDIDVerifyCallback
     ? didOpts.wellknownDIDVerifyCallback
     : async (args: IVerifyCallbackArgs): Promise<IVerifyCredentialResult> => {
         const result = await context.agent.verifyCredential({ credential: args.credential, fetchRemoteContexts: true })
         return { verified: result.verified }
       }
-}
+}*/
 
 export function getPresentationVerificationCallback(didOpts: IDIDOptions, context: IRequiredContext) {
   async function presentationVerificationCallback(args: any): Promise<PresentationVerificationResult> {
@@ -78,14 +78,14 @@ export async function createRPBuilder(args: {
 
   const did = getDID(didOpts.identifierOpts)
   const didMethods = await getSupportedDIDMethods(didOpts, context)
-  const identifier = await getIdentifier(didOpts.identifierOpts, context)
+  /*const identifier = await getIdentifier(didOpts.identifierOpts, context)
   const key = await getKey(
     { identifier, vmRelationship: didOpts.identifierOpts.verificationMethodSection, kmsKeyRef: didOpts.identifierOpts.kmsKeyRef },
     context,
   )
   const kid = didOpts.identifierOpts.kmsKeyRef?.startsWith('did:')
     ? didOpts.identifierOpts.kmsKeyRef
-    : await determineKid({ key, idOpts: didOpts.identifierOpts }, context)
+    : await determineKid({ key, idOpts: didOpts.identifierOpts }, context)*/
 
   const eventEmitter = rpOpts.eventEmitter ?? new EventEmitter()
 
@@ -110,39 +110,42 @@ export async function createRPBuilder(args: {
     .withScope('openid', PropertyTarget.REQUEST_OBJECT)
     .withResponseMode(rpOpts.responseMode ?? ResponseMode.POST)
     .withResponseType(ResponseType.VP_TOKEN, PropertyTarget.REQUEST_OBJECT)
-    .withCustomResolver(
+    //fixme: this has been removed in the new version of did-auth-siop
+    /*.withCustomResolver(
       rpOpts.didOpts.resolveOpts?.resolver ??
         getAgentResolver(context, {
           resolverResolution: true,
           localResolution: true,
           uniresolverResolution: rpOpts.didOpts.resolveOpts?.noUniversalResolverFallback !== true,
         }),
-    )
+    )*/
     .withClientId(did, PropertyTarget.REQUEST_OBJECT)
     // todo: move to options fill/correct method
     .withSupportedVersions(
       rpOpts.supportedVersions ?? [SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_ID1, SupportedVersion.SIOPv2_D11],
     )
-
+    .withHasher(rpOpts.credentialOpts?.hasher ?? ((data, algorithm) => createHash(algorithm).update(data).digest()))
     .withEventEmitter(eventEmitter)
     .withSessionManager(rpOpts.sessionManager ?? new InMemoryRPSessionManager(eventEmitter))
     .withClientMetadata(rpOpts.clientMetadataOpts ?? defaultClientMetadata, PropertyTarget.REQUEST_OBJECT)
-
-    .withCheckLinkedDomain(didOpts.checkLinkedDomains ?? CheckLinkedDomain.IF_PRESENT)
+    //fixme: this has been removed in the new version of did-auth-siop
+    // .withCheckLinkedDomain(didOpts.checkLinkedDomains ?? CheckLinkedDomain.IF_PRESENT)
     .withRevocationVerification(RevocationVerification.NEVER)
     .withPresentationVerification(getPresentationVerificationCallback(didOpts, context))
-
-  if (!rpOpts.clientMetadataOpts?.subjectTypesSupported) {
+  //fixme: this has been removed in the new version of did-auth-siop
+  /*if (!rpOpts.clientMetadataOpts?.subjectTypesSupported) {
     // Do not update in case it is already provided via client metadata opts
     didMethods.forEach((method) => builder.addDidMethod(method))
-  }
-  builder.withWellknownDIDVerifyCallback(getWellKnownDIDVerifyCallback(didOpts, context))
+  }*/
+  //fixme: this has been removed in the new version of did-auth-siop
+  // builder.withWellknownDIDVerifyCallback(getWellKnownDIDVerifyCallback(didOpts, context))
 
   if (definition) {
     builder.withPresentationDefinition({ definition }, PropertyTarget.REQUEST_OBJECT)
   }
 
-  builder.withSuppliedSignature(SuppliedSigner(key, context, getSigningAlgo(key.type) as unknown as KeyAlgo), did, kid, getSigningAlgo(key.type))
+  //fixme: this has been removed in the new version of did-auth-siop
+  //builder.withSuppliedSignature(SuppliedSigner(key, context, getSigningAlgo(key.type) as unknown as KeyAlgo), did, kid, getSigningAlgo(key.type))
 
   return builder
 }

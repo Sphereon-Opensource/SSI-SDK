@@ -6,7 +6,6 @@ import {
   AuthorizationRequestState,
   AuthorizationResponsePayload,
   AuthorizationResponseState,
-  CheckLinkedDomain,
   ClaimPayloadCommonOpts,
   IRPSessionManager,
   PresentationDefinitionWithLocation,
@@ -29,6 +28,7 @@ import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
+import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
 
 export enum VerifiedDataMode {
   NONE = 'none',
