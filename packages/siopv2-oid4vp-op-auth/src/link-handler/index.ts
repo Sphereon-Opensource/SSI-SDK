@@ -4,6 +4,7 @@ import { IMachineStatePersistence, interpreterStartOrResume, SerializableState }
 import { IAgentContext } from '@veramo/core'
 import { Loggers } from '@sphereon/ssi-types'
 import { GetMachineArgs, IDidAuthSiopOpAuthenticator, LOGGER_NAMESPACE, Siopv2MachineInterpreter, Siopv2MachineState } from '../types'
+import {contextHasPlugin} from "@sphereon/ssi-sdk.agent-config";
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
@@ -46,8 +47,7 @@ export class Siopv2OID4VPLinkHandler extends LinkHandlerAdapter {
     })
 
     const interpreter = siopv2Machine.interpreter
-    //FIXME we need a better way to check if the state persistence plugin is available in the agent
-    if (!this.noStateMachinePersistence && !opts?.machineState && this.context.agent.availableMethods().includes('machineStatesFindActive')) {
+    if (!this.noStateMachinePersistence && !opts?.machineState && contextHasPlugin(this.context, 'machineStatesFindActive')) {
       const init = await interpreterStartOrResume({
         interpreter,
         context: this.context,

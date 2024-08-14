@@ -2158,8 +2158,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.6.4
-        version: 0.6.4
+        specifier: 0.16.1-next.8
+        version: 0.16.1-next.8
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
