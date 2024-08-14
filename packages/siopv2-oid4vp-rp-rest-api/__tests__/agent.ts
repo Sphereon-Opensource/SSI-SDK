@@ -125,7 +125,7 @@ const agent = createAgent<
       defaultOpts: {
         didOpts: {
           checkLinkedDomains: CheckLinkedDomain.IF_PRESENT,
-          identifierOpts: {
+          idOpts: {
             identifier: RP_DID,
             kid: RP_DID_KID,
           },

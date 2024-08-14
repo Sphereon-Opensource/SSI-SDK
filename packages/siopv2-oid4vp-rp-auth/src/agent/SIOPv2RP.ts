@@ -227,8 +227,8 @@ export class SIOPv2RP implements IAgentPlugin {
       if (!options.didOpts) {
         options.didOpts = this.opts.defaultOpts?.didOpts
       } else {
-        if (!options.didOpts.identifierOpts) {
-          options.didOpts.identifierOpts = this.opts.defaultOpts.didOpts.identifierOpts
+        if (!options.didOpts.idOpts) {
+          options.didOpts.idOpts = this.opts.defaultOpts.didOpts.idOpts
         }
         if (!options.didOpts.supportedDIDMethods) {
           options.didOpts.supportedDIDMethods = this.opts.defaultOpts.didOpts.supportedDIDMethods

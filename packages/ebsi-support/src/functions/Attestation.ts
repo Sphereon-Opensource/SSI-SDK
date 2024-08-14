@@ -9,8 +9,8 @@ import {
   getTypesFromCredentialSupported,
   ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
-import { getAuthenticationKey, getIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
-import { calculateJwkThumbprintForKey } from '@sphereon/ssi-sdk-ext.key-utils'
+import { getAuthenticationKey, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import { calculateJwkThumbprintForKey, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   IssuanceOpts,
   OID4VCICallbackStateListener,
@@ -18,7 +18,6 @@ import {
   OID4VCIMachineState,
   OID4VCIMachineStates,
   PrepareStartArgs,
-  signatureAlgorithmFromKey,
   signCallback,
 } from '@sphereon/ssi-sdk.oid4vci-holder'
 import {
@@ -27,7 +26,7 @@ import {
   Siopv2MachineState,
   Siopv2MachineStates,
 } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import { Siopv2OID4VPLinkHandler } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth/dist/link-handler'
+import { Siopv2OID4VPLinkHandler } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import { IIdentifier } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
 import { waitFor } from 'xstate/lib/waitFor'
@@ -72,7 +71,8 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   context: IRequiredContext,
 ): Promise<AttestationAuthRequestUrlResult> => {
   logger.info(`create attestation ${credentialType} auth req URL for ${clientIdArg} and issuer ${credentialIssuer}`)
-  const identifier = await getIdentifier(idOpts, context)
+  const resolution = await context.agent.identifierManagedGetByDid(idOpts)
+  const identifier = resolution.identifier
   if (identifier.provider !== 'did:ebsi' && identifier.provider !== 'did:key') {
     throw Error(
       `EBSI only supports did:key for natural persons and did:ebsi for legal persons. Provider: ${identifier.provider}, did: ${identifier.did}`,

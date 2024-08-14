@@ -10,8 +10,8 @@ import {
   IRemoveStatusListArgs,
   IStatusListEntryAvailableArgs,
   IUpdateStatusListIndexArgs,
-} from '../types/statusList/IAbstractStatusListStore'
-import { IStatusListEntity, IStatusListEntryEntity } from '../types/statusList/statusList'
+} from '../types'
+import { IStatusListEntity, IStatusListEntryEntity } from '../types'
 
 export interface IStatusListStore {
   getStatusList(args: IGetStatusListArgs): Promise<IStatusListEntity>

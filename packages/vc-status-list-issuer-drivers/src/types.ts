@@ -18,8 +18,16 @@ import {
   IResolver,
 } from '@veramo/core'
 import { DriverOptions } from './drivers'
+import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
-export type IRequiredPlugins = IDataStoreORM & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier & ICredentialPlugin & IResolver
+export type IRequiredPlugins = IDataStoreORM &
+  IDIDManager &
+  IKeyManager &
+  IIdentifierResolution &
+  ICredentialIssuer &
+  ICredentialVerifier &
+  ICredentialPlugin &
+  IResolver
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
 export interface Driver {

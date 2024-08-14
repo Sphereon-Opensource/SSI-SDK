@@ -1,0 +1,151 @@
+version: 3.0
+
+constants:
+  baseUrl: http://localhost:3335
+  port: 3335
+  secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
+  methods:
+    - verifyCertificateChain
+    - mdocVerifyIssuerSigned
+
+dbConnection:
+  $require: typeorm?t=function#createConnection
+  $args:
+    - type: sqlite
+      database: ':memory:'
+      synchronize: false
+      migrationsRun: true
+      migrations:
+        $require: './packages/ssi-sdk-core/dist?t=function#flattenMigrations'
+        $args:
+          - migrations:
+              - $require: '@veramo/data-store?t=object#migrations'
+              - $require: './packages/data-store?t=object#DataStoreMigrations'
+      logging: ['info', 'warn']
+      entities:
+        $require: './packages/ssi-sdk-core/dist?t=function#flattenArray'
+        $args:
+          - items:
+              - $require: '@veramo/data-store?t=object#Entities'
+              - $require: './packages/data-store?t=object#DataStoreEntities'
+#      migrations:
+#        $require: '@veramo/data-store?t=object#migrations'
+#      entities:
+#        $require: '@veramo/data-store?t=object#Entities'
+
+server:
+  baseUrl:
+    $ref: /constants/baseUrl
+  port:
+    $ref: /constants/port
+  use:
+    # CORS
+    - - $require: 'cors'
+
+    # Add agent to the request object
+    - - $require: '@veramo/remote-server?t=function#RequestWithAgentRouter'
+        $args:
+          - agent:
+              $ref: /agent
+
+    # API base path
+    - - /agent
+      - $require: '@veramo/remote-server?t=function#apiKeyAuth'
+        $args:
+          # Please configure your own API key. This is used when executing agent methods through ${baseUrl}/agent or ${baseUrl}/api-docs
+          - apiKey: test123
+      - $require: '@veramo/remote-server?t=function#AgentRouter'
+        $args:
+          - exposedMethods:
+              $ref: /constants/methods
+
+    # Open API schema
+    - - /open-api.json
+      - $require: '@veramo/remote-server?t=function#ApiSchemaRouter'
+        $args:
+          - basePath: :3335/agent
+            securityScheme: bearer
+            apiName: Agent
+            apiVersion: '1.0.0'
+            exposedMethods:
+              $ref: /constants/methods
+
+    # Swagger docs
+    - - /api-docs
+      - $require: swagger-ui-express?t=object#serve
+      - $require: swagger-ui-express?t=function#setup
+        $args:
+          - null
+          - swaggerOptions:
+              url: '/open-api.json'
+
+  # Execute during server initialization
+  init:
+    - $require: '@veramo/remote-server?t=function#createDefaultDid'
+      $args:
+        - agent:
+            $ref: /agent
+          baseUrl:
+            $ref: /constants/baseUrl
+          messagingServiceEndpoint: /messaging
+
+keyManager:
+  $require: '@sphereon/ssi-sdk-ext.key-manager#SphereonKeyManager'
+  $args:
+    - store:
+        $require: '@veramo/data-store#KeyStore'
+        $args:
+          - $ref: /dbConnection
+      kms:
+        local:
+          $require: '@sphereon/ssi-sdk-ext.kms-local#SphereonKeyManagementSystem'
+          $args:
+            - $require: '@veramo/data-store#PrivateKeyStore'
+              $args:
+                - $ref: /dbConnection
+                - $require: '@sphereon/ssi-sdk-ext.kms-local#SecretBox'
+                  $args:
+                    - $ref: /constants/secretKey
+
+didManager:
+  $require: '@veramo/did-manager#DIDManager'
+  $args:
+    - store:
+        $require: '@veramo/data-store#DIDStore'
+        $args:
+          - $ref: /dbConnection
+      defaultProvider: did:ebsi
+
+# Agent
+agent:
+  $require: '@veramo/core#Agent'
+  $args:
+    - schemaValidation: false
+      plugins:
+        - $ref: /keyManager
+        - $ref: /didManager
+        - $require: '@veramo/data-store#DataStore'
+          $args:
+            - $ref: /dbConnection
+        - $require: '@veramo/data-store#DataStoreORM'
+          $args:
+            - $ref: /dbConnection
+        #        - $require: '@veramo/credential-w3c#CredentialPlugin'
+        - $require: ./packages/mdl-mdoc/dist#MDLMdoc
+#        - $require: ./packages/presentation-exchange/dist#PresentationExchange
+#        - $require: ./packages/siopv2-oid4vp-op-auth/dist#DidAuthSiopOpAuthenticator
+#        - $require: ./packages/oid4vci-holder/dist#OID4VCIHolder
+#        - $require: ./packages/issuance-branding/dist#IssuanceBranding
+#          $args:
+#            - store:
+#                $require: './packages/data-store/dist#IssuanceBrandingStore'
+#                $args:
+#                  - $ref: /dbConnection
+#        - $require: ./packages/contact-manager/dist#ContactManager
+#          $args:
+#            - store:
+#                $require: './packages/data-store/dist#ContactStore'
+#                $args:
+#                  - $ref: /dbConnection
+#          $args:
+#            - presentationSignCallback: { }

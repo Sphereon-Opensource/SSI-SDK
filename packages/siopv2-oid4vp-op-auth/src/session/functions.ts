@@ -9,7 +9,8 @@ import {
   SupportedVersion,
 } from '@sphereon/did-auth-siop'
 import { Format } from '@sphereon/pex-models'
-import { determineKid, getAgentDIDMethods, getAgentResolver, getDID, getIdentifier, getKey, IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
+import { isManagedIdentifierDidOpts, isManagedIdentifierDidResult, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { createPEXPresentationSignCallback } from '@sphereon/ssi-sdk.presentation-exchange'
 import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
@@ -28,7 +29,7 @@ export async function createOID4VPPresentationSignCallback({
   skipDidResolution,
 }: {
   presentationSignCallback?: PresentationSignCallback
-  idOpts: IIdentifierOpts
+  idOpts: ManagedIdentifierOpts
   domain?: string
   challenge?: string
   fetchRemoteContexts?: boolean
@@ -40,7 +41,17 @@ export async function createOID4VPPresentationSignCallback({
     return presentationSignCallback
   }
 
-  return createPEXPresentationSignCallback({ idOpts, fetchRemoteContexts, domain, challenge, format, skipDidResolution }, context)
+  return createPEXPresentationSignCallback(
+    {
+      idOpts,
+      fetchRemoteContexts,
+      domain,
+      challenge,
+      format,
+      skipDidResolution,
+    },
+    context,
+  )
 }
 
 export async function createOPBuilder({
@@ -49,7 +60,7 @@ export async function createOPBuilder({
   context,
 }: {
   opOptions: IOPOptions
-  idOpts?: IIdentifierOpts & { kid?: string }
+  idOpts?: ManagedIdentifierOpts
   context: IRequiredContext
 }): Promise<OPBuilder> {
   const eventEmitter = opOptions.eventEmitter ?? new EventEmitter()
@@ -89,17 +100,22 @@ export async function createOPBuilder({
       }
   builder.withWellknownDIDVerifyCallback(wellknownDIDVerifyCallback)
 
-  if (idOpts && idOpts.identifier) {
-    const key = await getKey(
-      { identifier: await getIdentifier(idOpts, context), vmRelationship: idOpts.verificationMethodSection, kmsKeyRef: idOpts.kmsKeyRef },
-      context,
-    )
-    const kid = idOpts.kid ?? (idOpts.kmsKeyRef?.startsWith('did:') ? idOpts.kmsKeyRef : await determineKid({ key, idOpts }, context))
+  if (idOpts) {
+    if (opOptions.skipDidResolution && isManagedIdentifierDidOpts(idOpts)) {
+      idOpts.offlineWhenNoDIDRegistered = true
+    }
+    const resolution = await context.agent.identifierManagedGet(idOpts)
+    if (!isManagedIdentifierDidOpts(idOpts) || !isManagedIdentifierDidResult(resolution)) {
+      /*last part is only there to get the available properties of a DID result*/
+      // Remove this once we use the newer version
+      return Promise.reject(Error(`The current version of SIOP-OID4VP we use only works with DIDs`))
+    }
 
+    const key = resolution.key
     builder.withSuppliedSignature(
       SuppliedSigner(key, context, getSigningAlgo(key.type) as unknown as KeyAlgo),
-      getDID(idOpts),
-      kid,
+      resolution.did,
+      resolution.kid,
       getSigningAlgo(key.type),
     )
     builder.withPresentationSignCallback(
@@ -120,7 +136,7 @@ export async function createOP({
   context,
 }: {
   opOptions: IOPOptions
-  idOpts?: IIdentifierOpts
+  idOpts?: ManagedIdentifierOpts
   context: IRequiredContext
 }): Promise<OP> {
   return (await createOPBuilder({ opOptions, idOpts, context })).build()

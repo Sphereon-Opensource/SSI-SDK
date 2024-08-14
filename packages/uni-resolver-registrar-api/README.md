@@ -2,7 +2,7 @@
 <h1 align="center">
   <br>
   <a href="https://www.sphereon.com"><img src="https://sphereon.com/content/themes/sphereon/assets/img/logo.svg" alt="Sphereon" width="400"></a>
-  <br>Universal resolver/registrar and DID Web Service  
+  <br>Universal resolver/registrar and DID Web CoseCryptoService  
   <br>
 </h1>
 
@@ -83,7 +83,7 @@ curl -X GET\
 
 The below example creates a did:web. For did:web you will always have to provide the actual DID value, so the agent can
 store the keys and associate them with this DID. The below example creates a did:web:localhost:example:path:test,
-meaning the DID would need to be hosted at https://localhost/example/path/test/did.json (see also DID Web Service,
+meaning the DID would need to be hosted at https://localhost/example/path/test/did.json (see also DID Web CoseCryptoService,
 below).
 
 For certain DID methods the did body property is required, like did:web, optional or not allowed. When it is optional
@@ -187,7 +187,7 @@ new UniResolverApiServer({
 // At this point you can execute the example above, as the Uniresolver is now listening on port 5000
 ```
 
-## DID Web Service
+## DID Web CoseCryptoService
 
 This service hosts agent managed did:web DIDs at the appropriate locations as a did.json file. Meaning that whenever you hit
 https://agent/.well-known/did.json or http://agent/example/path/test/did.json for instance, the agent will lookup the appropriate DID managed by the agent.

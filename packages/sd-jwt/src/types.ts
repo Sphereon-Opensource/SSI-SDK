@@ -2,6 +2,7 @@ import { Hasher, KBOptions, SaltGenerator } from '@sd-jwt/types'
 import { SdJwtVcPayload as SdJwtPayload } from '@sd-jwt/sd-jwt-vc'
 import { DIDDocumentSection, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
+import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 
 /**
  * My Agent Plugin description.
@@ -61,6 +62,10 @@ export interface ISDJwtPlugin extends IPluginMethodMap {
   verifySdJwtPresentation(args: IVerifySdJwtPresentationArgs, context: IRequiredContext): Promise<IVerifySdJwtPresentationResult>
 }
 
+export function contextHasSDJwtPlugin(context: IAgentContext<IPluginMethodMap>): context is IAgentContext<ISDJwtPlugin> {
+  return contextHasPlugin(context, 'verifySdJwtVc')
+}
+
 /**
  * ICreateSdJwtVcArgs
  *
@@ -84,6 +89,7 @@ export interface ICreateSdJwtVcArgs {
 export interface IDisclosureFrame {
   _sd?: string[]
   _sd_decoy?: number
+
   [x: string]: string[] | number | IDisclosureFrame | undefined
 }
 
@@ -194,6 +200,7 @@ export type SignKeyResult = {
  * @beta
  */
 export type IRequiredContext = IAgentContext<IDIDManager & IResolver & IKeyManager & ImDLMdoc>
+
 export interface SdJWTImplementation {
   saltGenerator: SaltGenerator
   hasher: Hasher
@@ -208,5 +215,6 @@ export interface Claims {
   cnf?: {
     jwk: JsonWebKey
   }
+
   [key: string]: unknown
 }

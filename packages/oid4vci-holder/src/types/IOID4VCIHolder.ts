@@ -12,13 +12,9 @@ import {
   MetadataDisplay,
   NotificationRequest,
 } from '@sphereon/oid4vci-common'
-import {
-  CreateOrGetIdentifierOpts,
-  IdentifierProviderOpts,
-  IIdentifierOpts,
-  KeyManagementSystemEnum,
-  SupportedDidMethodEnum,
-} from '@sphereon/ssi-sdk-ext.did-utils'
+import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { SignatureAlgorithmEnum } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { DigitalCredential, IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
@@ -37,7 +33,6 @@ import {
   ICredentialVerifier,
   IDIDManager,
   IIdentifier,
-  IKey,
   IKeyManager,
   IPluginMethodMap,
   IResolver,
@@ -46,7 +41,6 @@ import {
   VerificationPolicies,
 } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
-import { JWTHeader, JWTPayload } from 'did-jwt'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 
@@ -557,32 +551,6 @@ export type GetIssuanceCryptoSuiteArgs = {
   jsonldCryptographicSuitePreferences: Array<string>
 }
 
-export type SignatureAlgorithmFromKeyArgs = {
-  key: IKey
-}
-
-export type SignatureAlgorithmFromKeyTypeArgs = {
-  type: TKeyType
-}
-
-export type KeyTypeFromCryptographicSuiteArgs = {
-  suite: string
-}
-
-export type IRequiredSignAgentContext = IAgentContext<IKeyManager & IDIDManager & IResolver>
-export type SignJwtArgs = {
-  idOpts: IIdentifierOpts
-  header: Partial<JWTHeader>
-  payload: Partial<JWTPayload>
-  options: { issuer: string; expiresIn?: number; canonicalize?: boolean }
-  context: IRequiredSignAgentContext
-}
-
-export type GetSignerArgs = {
-  idOpts: IIdentifierOpts
-  context: IRequiredSignAgentContext
-}
-
 export type GetCredentialArgs = {
   pin?: string
   issuanceOpt: IssuanceOpts
@@ -593,12 +561,6 @@ export type GetCredentialArgs = {
 export type AccessTokenOpts = {
   additionalRequestParams?: Record<string, any>
   clientOpts?: AuthorizationServerClientOpts
-}
-
-export enum SignatureAlgorithmEnum {
-  EdDSA = 'EdDSA',
-  ES256 = 'ES256',
-  ES256K = 'ES256K',
 }
 
 export enum IdentifierAliasEnum {
@@ -622,6 +584,7 @@ export interface VerifyCredentialArgs {
   credential: OriginalVerifiableCredential
   fetchRemoteContexts?: boolean
   policies?: VerificationPolicies
+
   [x: string]: any
 }
 
@@ -631,6 +594,7 @@ export type RequiredContext = IAgentContext<
     ICredentialVerifier &
     ICredentialIssuer &
     ICredentialStore &
+    IIdentifierResolution &
     IDIDManager &
     IResolver &
     IKeyManager &

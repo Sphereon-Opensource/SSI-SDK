@@ -1,7 +1,3 @@
-import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPDIDOptions } from './types/ISIOPv2RP'
-import { EventEmitter } from 'events'
-import { determineKid, getAgentResolver, getDID, getIdentifier, getKey, getSupportedDIDMethods, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
-import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import {
   CheckLinkedDomain,
   ClientMetadataOpts,
@@ -19,9 +15,14 @@ import {
   SubjectType,
   SupportedVersion,
 } from '@sphereon/did-auth-siop'
-import { TKeyType } from '@veramo/core'
-import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
 import { IPresentationDefinition } from '@sphereon/pex'
+import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
+import { isManagedIdentifierDidResult, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
+import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
+import { TKeyType } from '@veramo/core'
+import { EventEmitter } from 'events'
+import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPIdentifierOptions } from './types/ISIOPv2RP'
 
 export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   if (Array.isArray(rpOptions.supportedVersions) && rpOptions.supportedVersions.length > 0) {
@@ -30,21 +31,21 @@ export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   return SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1
 }
 
-function getWellKnownDIDVerifyCallback(didOpts: ISIOPDIDOptions, context: IRequiredContext) {
-  return didOpts.wellknownDIDVerifyCallback
-    ? didOpts.wellknownDIDVerifyCallback
+function getWellKnownDIDVerifyCallback(siopIdentifierOpts: ISIOPIdentifierOptions, context: IRequiredContext) {
+  return siopIdentifierOpts.wellknownDIDVerifyCallback
+    ? siopIdentifierOpts.wellknownDIDVerifyCallback
     : async (args: IVerifyCallbackArgs): Promise<IVerifyCredentialResult> => {
         const result = await context.agent.verifyCredential({ credential: args.credential, fetchRemoteContexts: true })
         return { verified: result.verified }
       }
 }
 
-export function getPresentationVerificationCallback(didOpts: IDIDOptions, context: IRequiredContext) {
+export function getPresentationVerificationCallback(idOpts: ManagedIdentifierOpts, context: IRequiredContext) {
   async function presentationVerificationCallback(args: any): Promise<PresentationVerificationResult> {
     const result = await context.agent.verifyPresentation({
       presentation: args,
       fetchRemoteContexts: true,
-      domain: getDID(didOpts.identifierOpts),
+      domain: (await context.agent.identifierManagedGet(idOpts)).kid?.split('#')[0],
     })
     return { verified: result.verified }
   }
@@ -76,17 +77,7 @@ export async function createRPBuilder(args: {
     definition = presentationDefinitionItems.length > 0 ? presentationDefinitionItems[0].definitionPayload : undefined
   }
 
-  const did = getDID(didOpts.identifierOpts)
-  const didMethods = await getSupportedDIDMethods(didOpts, context)
-  const identifier = await getIdentifier(didOpts.identifierOpts, context)
-  const key = await getKey(
-    { identifier, vmRelationship: didOpts.identifierOpts.verificationMethodSection, kmsKeyRef: didOpts.identifierOpts.kmsKeyRef },
-    context,
-  )
-  const kid = didOpts.identifierOpts.kmsKeyRef?.startsWith('did:')
-    ? didOpts.identifierOpts.kmsKeyRef
-    : await determineKid({ key, idOpts: didOpts.identifierOpts }, context)
-
+  const didMethods = didOpts.supportedDIDMethods ?? (await getAgentDIDMethods(context))
   const eventEmitter = rpOpts.eventEmitter ?? new EventEmitter()
 
   const defaultClientMetadata: ClientMetadataOpts = {
@@ -106,6 +97,7 @@ export async function createRPBuilder(args: {
     passBy: PassBy.VALUE,
   }
 
+  const resolution = await context.agent.identifierManagedGet(didOpts.idOpts)
   const builder = RP.builder({ requestVersion: getRequestVersion(rpOpts) })
     .withScope('openid', PropertyTarget.REQUEST_OBJECT)
     .withResponseMode(rpOpts.responseMode ?? ResponseMode.POST)
@@ -118,7 +110,10 @@ export async function createRPBuilder(args: {
           uniresolverResolution: rpOpts.didOpts.resolveOpts?.noUniversalResolverFallback !== true,
         }),
     )
-    .withClientId(did, PropertyTarget.REQUEST_OBJECT)
+    .withClientId(
+      resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint),
+      PropertyTarget.REQUEST_OBJECT,
+    )
     // todo: move to options fill/correct method
     .withSupportedVersions(
       rpOpts.supportedVersions ?? [SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_ID1, SupportedVersion.SIOPv2_D11],
@@ -130,7 +125,7 @@ export async function createRPBuilder(args: {
 
     .withCheckLinkedDomain(didOpts.checkLinkedDomains ?? CheckLinkedDomain.IF_PRESENT)
     .withRevocationVerification(RevocationVerification.NEVER)
-    .withPresentationVerification(getPresentationVerificationCallback(didOpts, context))
+    .withPresentationVerification(getPresentationVerificationCallback(didOpts.idOpts, context))
 
   if (!rpOpts.clientMetadataOpts?.subjectTypesSupported) {
     // Do not update in case it is already provided via client metadata opts
@@ -142,8 +137,17 @@ export async function createRPBuilder(args: {
     builder.withPresentationDefinition({ definition }, PropertyTarget.REQUEST_OBJECT)
   }
 
-  builder.withSuppliedSignature(SuppliedSigner(key, context, getSigningAlgo(key.type) as unknown as KeyAlgo), did, kid, getSigningAlgo(key.type))
+  const key = resolution.key
 
+  if (isManagedIdentifierDidResult(resolution)) {
+    //fixme: only accepts dids in version used. New SIOP lib also accepts other types
+    builder.withSuppliedSignature(
+      SuppliedSigner(key, context, getSigningAlgo(key.type) as unknown as KeyAlgo),
+      resolution.did,
+      resolution.kid,
+      getSigningAlgo(key.type),
+    )
+  }
   return builder
 }
 

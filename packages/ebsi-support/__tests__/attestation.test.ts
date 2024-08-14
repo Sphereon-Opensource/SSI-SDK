@@ -1,5 +1,6 @@
 import 'cross-fetch/polyfill'
 import { ExpressBuilder } from '@sphereon/ssi-express-support'
+import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IOID4VCIHolder } from '@sphereon/ssi-sdk.oid4vci-holder'
@@ -22,7 +23,15 @@ import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
 
 let dbConnection: Promise<DataSource>
 let agent: TAgent<
-  IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IPresentationExchange & IOID4VCIHolder & IResolver & IContactManager & IEbsiSupport
+  IKeyManager &
+    IDIDManager &
+    IDidAuthSiopOpAuthenticator &
+    IPresentationExchange &
+    IIdentifierResolution &
+    IOID4VCIHolder &
+    IResolver &
+    IContactManager &
+    IEbsiSupport
 >
 /*let app: Express | undefined
 let server: Server<any, any> | undefined
@@ -55,7 +64,15 @@ const setup = async (): Promise<boolean> => {
   const config = await getConfig('packages/ebsi-support/agent.yml')
   const { localAgent, db } = await createObjects(config, { localAgent: '/agent', db: '/dbConnection' })
   agent = localAgent as TAgent<
-    IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IPresentationExchange & IOID4VCIHolder & IResolver & IContactManager & IEbsiSupport
+    IKeyManager &
+      IDIDManager &
+      IDidAuthSiopOpAuthenticator &
+      IPresentationExchange &
+      IOID4VCIHolder &
+      IResolver &
+      IIdentifierResolution &
+      IContactManager &
+      IEbsiSupport
   >
   dbConnection = db
   console.log(`########## $${MOCK_BASE_URL}`)

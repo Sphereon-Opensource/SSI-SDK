@@ -1,4 +1,4 @@
-import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import { ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution/dist/types'
 import { IIdentifier } from '@veramo/core'
 import { ILocaleBranding } from '../issuanceBranding/issuanceBranding'
 import { CredentialRole } from '../digitalCredential/digitalCredential'
@@ -149,7 +149,7 @@ export type PartialOpenIdConfig = Partial<OpenIdConfig>
 
 export type DidAuthConfig = {
   id: string
-  idOpts: IIdentifierOpts
+  idOpts: ManagedIdentifierOpts
   stateId: string
   ownerId?: string
   tenantId?: string

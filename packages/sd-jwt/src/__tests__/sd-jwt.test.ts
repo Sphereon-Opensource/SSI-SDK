@@ -132,7 +132,7 @@ describe('Agent plugin', () => {
       iat: new Date().getTime() / 1000,
       vct: '',
     }
-    expect(
+    await expect(
       agent.createSdJwtVc({
         credentialPayload: credentialPayload as unknown as SdJwtVcPayload,
         disclosureFrame,
@@ -242,7 +242,7 @@ describe('Agent plugin', () => {
         },
       },
     })
-    expect(presentation).rejects.toThrow('credential does not include a holder reference')
+    await expect(presentation).rejects.toThrow('credential does not include a holder reference')
   })
 
   it('verify a presentation', async () => {

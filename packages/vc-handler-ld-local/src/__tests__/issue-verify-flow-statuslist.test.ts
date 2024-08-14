@@ -1,3 +1,4 @@
+import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { createNewStatusList } from '@sphereon/ssi-sdk.vc-status-list'
 import { StatusListType } from '@sphereon/ssi-types'
 import { createAgent, ICredentialPlugin, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
@@ -8,8 +9,6 @@ import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { KeyManagementSystem } from '@veramo/kms-local'
 import { Resolver } from 'did-resolver'
-// @ts-ignore
-import nock from 'nock'
 import { CredentialHandlerLDLocal } from '../agent/CredentialHandlerLDLocal'
 import { LdDefaultContexts } from '../ld-default-contexts'
 import { SphereonEd25519Signature2018 } from '../suites/Ed25519Signature2018'
@@ -28,7 +27,7 @@ const customContext = new Map<string, ContextDoc>([
 
 describe('credential-LD full flow', () => {
   let didKeyIdentifier: IIdentifier
-  let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialPlugin & ICredentialIssuer & ICredentialHandlerLDLocal>
+  let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialPlugin & IIdentifierResolution & ICredentialIssuer & ICredentialHandlerLDLocal>
 
   // jest.setTimeout(1000000)
   beforeAll(async () => {
@@ -52,6 +51,7 @@ describe('credential-LD full flow', () => {
             ...getDidKeyResolver(),
           }),
         }),
+        new IdentifierResolution({}),
         new CredentialPlugin(),
         new CredentialHandlerLDLocal({
           contextMaps: [LdDefaultContexts, customContext],
