@@ -6,6 +6,7 @@ import {
   URI,
   VerifiablePresentationTypeFormat,
   VerifiedAuthorizationRequest,
+  VerifyJwtCallback,
   VPTokenLocation,
 } from '@sphereon/did-auth-siop'
 import { DIDDocument } from '@sphereon/did-uni-client'
@@ -147,6 +148,7 @@ export interface IOPOptions {
   eventEmitter?: EventEmitter
   supportedDIDMethods?: string[]
 
+  verifyJwtCallback?: VerifyJwtCallback
   wellknownDIDVerifyCallback?: VerifyCallback
 
   presentationSignCallback?: PresentationSignCallback

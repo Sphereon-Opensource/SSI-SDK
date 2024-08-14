@@ -314,7 +314,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
         origin: IdentityOrigin.EXTERNAL,
         roles: [CredentialRole.ISSUER],
         identifier: {
-          type: CorrelationIdentifierType.DID,
+          type: correlationId.startsWith('did:') ? CorrelationIdentifierType.DID : CorrelationIdentifierType.URL,
           correlationId,
         },
       }

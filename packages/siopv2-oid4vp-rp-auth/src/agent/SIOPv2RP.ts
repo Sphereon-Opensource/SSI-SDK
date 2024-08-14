@@ -7,7 +7,7 @@ import {
 } from '@sphereon/did-auth-siop'
 import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop/dist/types/SessionManager'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
-import {AdditionalClaims, CredentialMapper, Hasher, ICredentialSubject, IVerifiableCredential} from '@sphereon/ssi-types'
+import { AdditionalClaims, CredentialMapper, Hasher, ICredentialSubject, IVerifiableCredential } from '@sphereon/ssi-types'
 import { OriginalVerifiablePresentation } from '@sphereon/ssi-types/dist'
 import { IAgentPlugin } from '@veramo/core'
 import {
@@ -31,7 +31,7 @@ import {
 import { RPInstance } from '../RPInstance'
 
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
-import {createHash} from "crypto";
+import { createHash } from 'crypto'
 
 export class SIOPv2RP implements IAgentPlugin {
   private readonly opts: ISiopv2RPOpts
@@ -112,8 +112,11 @@ export class SIOPv2RP implements IAgentPlugin {
       args.includeVerifiedData &&
       args.includeVerifiedData !== VerifiedDataMode.NONE
     ) {
-      let hasher: Hasher|undefined
-      if(CredentialMapper.isSdJwtEncoded(responseState.response.payload.vp_token as OriginalVerifiablePresentation) && (!rpInstance.rpOptions.credentialOpts?.hasher || typeof(rpInstance.rpOptions.credentialOpts?.hasher) !== 'function')) {
+      let hasher: Hasher | undefined
+      if (
+        CredentialMapper.isSdJwtEncoded(responseState.response.payload.vp_token as OriginalVerifiablePresentation) &&
+        (!rpInstance.rpOptions.credentialOpts?.hasher || typeof rpInstance.rpOptions.credentialOpts?.hasher !== 'function')
+      ) {
         hasher = (data, algorithm) => createHash(algorithm).update(data).digest()
       }
       // todo this should also include mdl-mdoc

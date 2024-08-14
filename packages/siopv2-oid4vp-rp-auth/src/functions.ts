@@ -12,17 +12,22 @@ import {
   Scope,
   SubjectType,
   SupportedVersion,
+  VerifyJwtCallback,
 } from '@sphereon/did-auth-siop'
 import { IPresentationDefinition } from '@sphereon/pex'
-import { getAgentDIDMethods, /*getAgentResolver*/ } from '@sphereon/ssi-sdk-ext.did-utils'
+import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { isManagedIdentifierDidResult, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 // import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
-// import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
 import { TKeyType } from '@veramo/core'
 import { EventEmitter } from 'events'
-import { IPEXOptions, IRequiredContext, IRPOptions, /*ISIOPIdentifierOptions*/ } from './types/ISIOPv2RP'
+import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPIdentifierOptions /*ISIOPIdentifierOptions*/ } from './types/ISIOPv2RP'
 import { SigningAlgo } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import {createHash} from "crypto";
+import { createHash } from 'crypto'
+import { getAudience, getResolver, verifyDidJWT } from '@sphereon/did-auth-siop-adapter'
+import { Resolvable } from 'did-resolver'
+import { JWTVerifyOptions } from 'did-jwt'
+import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
+import { Hasher } from '@sphereon/ssi-types'
 
 export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   if (Array.isArray(rpOptions.supportedVersions) && rpOptions.supportedVersions.length > 0) {
@@ -31,14 +36,14 @@ export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   return SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1
 }
 
-/*function getWellKnownDIDVerifyCallback(siopIdentifierOpts: ISIOPIdentifierOptions, context: IRequiredContext) {
+function getWellKnownDIDVerifyCallback(siopIdentifierOpts: ISIOPIdentifierOptions, context: IRequiredContext) {
   return siopIdentifierOpts.wellknownDIDVerifyCallback
     ? siopIdentifierOpts.wellknownDIDVerifyCallback
     : async (args: IVerifyCallbackArgs): Promise<IVerifyCredentialResult> => {
         const result = await context.agent.verifyCredential({ credential: args.credential, fetchRemoteContexts: true })
         return { verified: result.verified }
       }
-}*/
+}
 
 export function getPresentationVerificationCallback(idOpts: ManagedIdentifierOpts, context: IRequiredContext) {
   async function presentationVerificationCallback(args: any): Promise<PresentationVerificationResult> {
@@ -98,19 +103,22 @@ export async function createRPBuilder(args: {
   }
 
   const resolution = await context.agent.identifierManagedGet(didOpts.idOpts)
+  const resolver =
+    rpOpts.didOpts.resolveOpts?.resolver ??
+    getAgentResolver(context, {
+      resolverResolution: true,
+      localResolution: true,
+      uniresolverResolution: rpOpts.didOpts.resolveOpts?.noUniversalResolverFallback !== true,
+    })
+  //todo: probably wise to first look and see if we actually need the hasher to begin with
+  let hasher: Hasher | undefined = rpOpts.credentialOpts?.hasher
+  if (!rpOpts.credentialOpts?.hasher || typeof rpOpts.credentialOpts?.hasher !== 'function') {
+    hasher = (data, algorithm) => createHash(algorithm).update(data).digest()
+  }
   const builder = RP.builder({ requestVersion: getRequestVersion(rpOpts) })
     .withScope('openid', PropertyTarget.REQUEST_OBJECT)
     .withResponseMode(rpOpts.responseMode ?? ResponseMode.POST)
     .withResponseType(ResponseType.VP_TOKEN, PropertyTarget.REQUEST_OBJECT)
-    //fixme: this has been removed in the new version of did-auth-siop
-    /*.withCustomResolver(
-      rpOpts.didOpts.resolveOpts?.resolver ??
-        getAgentResolver(context, {
-          resolverResolution: true,
-          localResolution: true,
-          uniresolverResolution: rpOpts.didOpts.resolveOpts?.noUniversalResolverFallback !== true,
-        }),
-    )*/
     .withClientId(
       resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint),
       PropertyTarget.REQUEST_OBJECT,
@@ -119,14 +127,22 @@ export async function createRPBuilder(args: {
     .withSupportedVersions(
       rpOpts.supportedVersions ?? [SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_ID1, SupportedVersion.SIOPv2_D11],
     )
-    .withHasher(rpOpts.credentialOpts?.hasher ?? ((data, algorithm) => createHash(algorithm).update(data).digest()))
     .withEventEmitter(eventEmitter)
     .withSessionManager(rpOpts.sessionManager ?? new InMemoryRPSessionManager(eventEmitter))
     .withClientMetadata(rpOpts.clientMetadataOpts ?? defaultClientMetadata, PropertyTarget.REQUEST_OBJECT)
-    //fixme: this has been removed in the new version of did-auth-siop
-    // .withCheckLinkedDomain(didOpts.checkLinkedDomains ?? CheckLinkedDomain.IF_PRESENT)
+    .withVerifyJwtCallback(
+      rpOpts.verifyJwtCallback
+        ? rpOpts.verifyJwtCallback
+        : getVerifyJwtCallback(resolver, {
+            wellknownDIDVerifyCallback: getWellKnownDIDVerifyCallback(rpOpts.didOpts, context),
+            checkLinkedDomain: 'if_present',
+          }),
+    )
     .withRevocationVerification(RevocationVerification.NEVER)
     .withPresentationVerification(getPresentationVerificationCallback(didOpts.idOpts, context))
+  if (hasher) {
+    builder.withHasher(hasher)
+  }
   //fixme: this has been removed in the new version of did-auth-siop
   /*if (!rpOpts.clientMetadataOpts?.subjectTypesSupported) {
     // Do not update in case it is already provided via client metadata opts
@@ -153,6 +169,27 @@ export async function createRPBuilder(args: {
     )
   }*/
   return builder
+}
+
+function getVerifyJwtCallback(
+  resolver?: Resolvable,
+  verifyOpts?: JWTVerifyOptions & {
+    checkLinkedDomain: 'never' | 'if_present' | 'always'
+    wellknownDIDVerifyCallback?: VerifyCallback
+  },
+): VerifyJwtCallback {
+  return async (jwtVerifier, jwt) => {
+    resolver = resolver ?? getResolver({ subjectSyntaxTypesSupported: ['ethr', 'ion'] })
+    const audience =
+      jwtVerifier.type === 'request-object'
+        ? (verifyOpts?.audience ?? getAudience(jwt.raw))
+        : jwtVerifier.type === 'id-token'
+          ? (verifyOpts?.audience ?? getAudience(jwt.raw))
+          : undefined
+
+    await verifyDidJWT(jwt.raw, resolver, { audience, ...verifyOpts })
+    return true
+  }
 }
 
 export async function createRP({ rpOptions, context }: { rpOptions: IRPOptions; context: IRequiredContext }): Promise<RP> {

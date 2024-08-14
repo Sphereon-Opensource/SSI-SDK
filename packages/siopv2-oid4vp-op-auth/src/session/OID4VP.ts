@@ -1,7 +1,7 @@
 import { PresentationDefinitionWithLocation, PresentationExchange } from '@sphereon/did-auth-siop'
 import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
 import { Format } from '@sphereon/pex-models'
-import { isManagedIdentifierDidOpts, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { ManagedIdentifierOpts, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
@@ -159,7 +159,7 @@ export class OID4VP {
       format: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format,
       skipDidResolution: opts?.skipDidResolution ?? false,
     })
-
+    const identifier: ManagedIdentifierResult = await this.session.context.agent.identifierManagedGet(idOpts)
     const presentationResult = await this.getPresentationExchange({
       verifiableCredentials: vcs.credentials,
       allDIDs: this.allDIDs,
@@ -167,8 +167,8 @@ export class OID4VP {
     }).createVerifiablePresentation(vcs.definition.definition, vcs.credentials, signCallback, {
       proofOptions,
       // fixme: Update to newer siop-vp to not require dids here.
-
-      holderDID: isManagedIdentifierDidOpts(idOpts) ? (await this.session.context.agent.identifierManagedGetByDid(idOpts)).did : undefined,
+      // holderDID: isManagedIdentifierDidOpts(idOpts) ? (await this.session.context.agent.identifierManagedGetByDid(idOpts)).did : undefined,
+      holderDID: identifier.kid,
     })
 
     const verifiablePresentation =

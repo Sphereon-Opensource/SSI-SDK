@@ -1,11 +1,4 @@
-import {
-  OP,
-  OPBuilder,
-  PassBy,
-  PresentationSignCallback,
-  ResponseMode,
-  SupportedVersion,
-} from '@sphereon/did-auth-siop'
+import { OP, OPBuilder, PassBy, PresentationSignCallback, ResponseMode, SupportedVersion, VerifyJwtCallback } from '@sphereon/did-auth-siop'
 import { Format } from '@sphereon/pex-models'
 // import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { isManagedIdentifierDidOpts, isManagedIdentifierDidResult, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
@@ -16,6 +9,11 @@ import { TKeyType } from '@veramo/core'
 import { EventEmitter } from 'events'
 import { IOPOptions, IRequiredContext } from '../types'
 import { SigningAlgo } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import { Resolvable } from 'did-resolver'
+import { JWTVerifyOptions } from 'did-jwt'
+import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
+import { getAgentDIDMethods } from '@sphereon/ssi-sdk-ext.did-utils'
+import { getAudience, getResolver, verifyDidJWT } from '@sphereon/did-auth-siop-adapter'
 
 export async function createOID4VPPresentationSignCallback({
   presentationSignCallback,
@@ -74,31 +72,28 @@ export async function createOPBuilder({
       ],
     )
     .withExpiresIn(opOptions.expiresIn ?? 300)
-  /* .withCheckLinkedDomain(opOptions.checkLinkedDomains ?? CheckLinkedDomain.IF_PRESENT)
-  .withCustomResolver(
-    opOptions.resolveOpts?.resolver ??
-      getAgentResolver(context, {
-        uniresolverResolution: opOptions.resolveOpts?.noUniversalResolverFallback !== true,
-        localResolution: true,
-        resolverResolution: true,
-      }),
-  )*/
     .withEventEmitter(eventEmitter)
     .withRegistration({
       passBy: PassBy.VALUE,
     })
 
-  //const methods = opOptions.supportedDIDMethods ?? (await getAgentDIDMethods(context))
-  //methods.forEach((method) => builder.addDidMethod(method))
+  const methods = opOptions.supportedDIDMethods ?? (await getAgentDIDMethods(context))
+  const resolver = getResolver({ subjectSyntaxTypesSupported: methods })
 
-  /*const wellknownDIDVerifyCallback = opOptions.wellknownDIDVerifyCallback
+  const wellknownDIDVerifyCallback = opOptions.wellknownDIDVerifyCallback
     ? opOptions.wellknownDIDVerifyCallback
     : async (args: IVerifyCallbackArgs): Promise<IVerifyCredentialResult> => {
         const result = await context.agent.verifyCredential({ credential: args.credential, fetchRemoteContexts: true })
         return { verified: result.verified }
       }
-  builder.withWellknownDIDVerifyCallback(wellknownDIDVerifyCallback)*/
-
+  builder.withVerifyJwtCallback(
+    opOptions.verifyJwtCallback
+      ? opOptions.verifyJwtCallback
+      : getVerifyJwtCallback(resolver, {
+          wellknownDIDVerifyCallback,
+          checkLinkedDomain: 'if_present',
+        }),
+  )
   if (idOpts) {
     if (opOptions.skipDidResolution && isManagedIdentifierDidOpts(idOpts)) {
       idOpts.offlineWhenNoDIDRegistered = true
@@ -127,6 +122,27 @@ export async function createOPBuilder({
     )
   }
   return builder
+}
+
+function getVerifyJwtCallback(
+  resolver?: Resolvable,
+  verifyOpts?: JWTVerifyOptions & {
+    checkLinkedDomain: 'never' | 'if_present' | 'always'
+    wellknownDIDVerifyCallback?: VerifyCallback
+  },
+): VerifyJwtCallback {
+  return async (jwtVerifier, jwt) => {
+    resolver = resolver ?? getResolver({ subjectSyntaxTypesSupported: ['ethr', 'ion'] })
+    const audience =
+      jwtVerifier.type === 'request-object'
+        ? (verifyOpts?.audience ?? getAudience(jwt.raw))
+        : jwtVerifier.type === 'id-token'
+          ? (verifyOpts?.audience ?? getAudience(jwt.raw))
+          : undefined
+
+    await verifyDidJWT(jwt.raw, resolver, { audience, ...verifyOpts })
+    return true
+  }
 }
 
 export async function createOP({

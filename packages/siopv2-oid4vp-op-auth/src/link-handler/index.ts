@@ -4,7 +4,7 @@ import { IMachineStatePersistence, interpreterStartOrResume, SerializableState }
 import { IAgentContext } from '@veramo/core'
 import { Loggers } from '@sphereon/ssi-types'
 import { GetMachineArgs, IDidAuthSiopOpAuthenticator, LOGGER_NAMESPACE, Siopv2MachineInterpreter, Siopv2MachineState } from '../types'
-import {contextHasPlugin} from "@sphereon/ssi-sdk.agent-config";
+import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
