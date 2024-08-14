@@ -14,13 +14,13 @@ import {
   SupportedVersion,
 } from '@sphereon/did-auth-siop'
 import { IPresentationDefinition } from '@sphereon/pex'
-import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
+import { getAgentDIDMethods, /*getAgentResolver*/ } from '@sphereon/ssi-sdk-ext.did-utils'
 import { isManagedIdentifierDidResult, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
-import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
+// import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
+// import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
 import { TKeyType } from '@veramo/core'
 import { EventEmitter } from 'events'
-import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPIdentifierOptions } from './types/ISIOPv2RP'
+import { IPEXOptions, IRequiredContext, IRPOptions, /*ISIOPIdentifierOptions*/ } from './types/ISIOPv2RP'
 import { SigningAlgo } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import {createHash} from "crypto";
 

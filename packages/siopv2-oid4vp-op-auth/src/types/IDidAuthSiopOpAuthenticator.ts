@@ -44,7 +44,6 @@ import {
   Siopv2AuthorizationRequestData,
   Siopv2AuthorizationResponseData,
 } from './siop-service'
-import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { CheckLinkedDomain, ResolveOpts } from '@sphereon/did-auth-siop-adapter'
 
 export const LOGGER_NAMESPACE = 'sphereon:siopv2-oid4vp:op-auth'
