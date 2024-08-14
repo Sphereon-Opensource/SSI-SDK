@@ -1,29 +1,24 @@
 import { SupportedVersion } from '@sphereon/did-auth-siop'
-import {
-  determineKid,
-  getIdentifier,
-  getKey,
-  getOrCreatePrimaryIdentifier,
-  IIdentifierOpts,
-  SupportedDidMethodEnum,
-} from '@sphereon/ssi-sdk-ext.did-utils'
+import { IPresentationDefinition, PEX } from '@sphereon/pex'
+import { InputDescriptorV1, InputDescriptorV2, PresentationDefinitionV1, PresentationDefinitionV2 } from '@sphereon/pex-models'
+import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import { isManagedIdentifierDidOpts, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { ConnectionType, CredentialRole } from '@sphereon/ssi-sdk.data-store'
-import { IIdentifier } from '@veramo/core'
-import { DidAgents, SuitableCredentialAgents } from '../types'
 import { CredentialMapper, Loggers, PresentationSubmission } from '@sphereon/ssi-types'
+import { IIdentifier } from '@veramo/core'
+import { OID4VP, OpSession } from '../session'
 import {
+  DidAgents,
   LOGGER_NAMESPACE,
   RequiredContext,
   SelectableCredential,
   SelectableCredentialsMap,
   Siopv2HolderEvent,
+  SuitableCredentialAgents,
   VerifiableCredentialsWithDefinition,
   VerifiablePresentationWithDefinition,
 } from '../types'
-import { OID4VP, OpSession } from '../session'
-import { IPresentationDefinition, PEX } from '@sphereon/pex'
-import { InputDescriptorV1, InputDescriptorV2, PresentationDefinitionV1, PresentationDefinitionV2 } from '@sphereon/pex-models'
-import { verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 
 export const logger = Loggers.DEFAULT.get(LOGGER_NAMESPACE)
 
@@ -32,7 +27,7 @@ export const siopSendAuthorizationResponse = async (
   args: {
     sessionId: string
     verifiableCredentialsWithDefinition?: VerifiableCredentialsWithDefinition[]
-    idOpts?: IIdentifierOpts
+    idOpts?: ManagedIdentifierOpts
   },
   context: RequiredContext,
 ) => {
@@ -44,7 +39,10 @@ export const siopSendAuthorizationResponse = async (
     return Promise.reject(Error(`No supported authentication provider for type: ${connectionType}`))
   }
   const session: OpSession = await agent.siopGetOPSession({ sessionId: args.sessionId })
-  let identifiers: Array<IIdentifier> = idOpts ? [await getIdentifier(idOpts, agentContext)] : await session.getSupportedIdentifiers()
+  let identifiers: Array<IIdentifier> =
+    idOpts && isManagedIdentifierDidOpts(idOpts)
+      ? [(await context.agent.identifierManagedGetByDid(idOpts)).identifier]
+      : await session.getSupportedIdentifiers()
   if (!identifiers || identifiers.length === 0) {
     throw Error(`No DID methods found in agent that are supported by the relying party`)
   }
@@ -106,7 +104,7 @@ export const siopSendAuthorizationResponse = async (
     }
 
     presentationsAndDefs = await oid4vp.createVerifiablePresentations(CredentialRole.HOLDER, credentialsAndDefinitions, {
-      identifierOpts: { identifier },
+      idOpts: { identifier },
       proofOpts: {
         nonce: session.nonce,
         domain,
@@ -118,36 +116,41 @@ export const siopSendAuthorizationResponse = async (
       throw Error(`Only one verifiable presentation supported for now. Got ${presentationsAndDefs.length}`)
     }
 
-    idOpts = presentationsAndDefs[0].identifierOpts
-    identifier = await getIdentifier(idOpts, context)
+    idOpts = presentationsAndDefs[0].idOpts
+    // identifier = await getIdentifier(idOpts, context)
 
     /*key = await getKey(identifier, 'authentication', context, idOpts.kid)
         const getIdentifierResponse = await getIdentifierWithKey({
           context,
           keyOpts: {
             identifier,
-            kid: identifierOpts.kid,
+            kid: idOpts.kid,
             didMethod: parseDid(identifier.did).method as SupportedDidMethodEnum,
             keyType: key.type
           },
         })*/
     presentationSubmission = presentationsAndDefs[0].presentationSubmission
   }
-  const key = await getKey({ identifier, vmRelationship: 'authentication', kmsKeyRef: idOpts?.kmsKeyRef }, session.context)
+  /*const key = await getKey({
+    identifier,
+    vmRelationship: 'authentication',
+    kmsKeyRef: idOpts?.kmsKeyRef
+  }, session.context)
   if (!idOpts) {
     idOpts = { identifier, kmsKeyRef: await determineKid({ key, idOpts: { identifier } }, session.context) }
   }
-  const determinedKid = idOpts.kmsKeyRef?.includes('#') ? idOpts.kmsKeyRef : await determineKid({ key, idOpts }, session.context)
-  const kid: string = determinedKid.startsWith('did:') ? determinedKid : `${identifier.did}#${determinedKid}`
+  const determinedKid = idOpts.kmsKeyRef?.includes('#') ? idOpts.kmsKeyRef : await determineKid({
+    key,
+    idOpts
+  }, session.context)*/
 
   logger.log(`Definitions and locations:`, JSON.stringify(presentationsAndDefs?.[0]?.verifiablePresentation, null, 2))
   logger.log(`Presentation Submission:`, JSON.stringify(presentationSubmission, null, 2))
-  logger.log(`kid:`, kid)
   return await session.sendAuthorizationResponse({
     ...(presentationsAndDefs && { verifiablePresentations: presentationsAndDefs?.map((pd) => pd.verifiablePresentation) }),
     ...(presentationSubmission && { presentationSubmission }),
     // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
-    responseSignerOpts: { identifier, kmsKeyRef: key.kid, kid, issuer: identifier.did },
+    responseSignerOpts: idOpts!,
   })
 }
 

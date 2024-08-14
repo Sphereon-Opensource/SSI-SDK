@@ -1,5 +1,4 @@
 import {
-  // CheckLinkedDomain,
   PresentationDefinitionWithLocation,
   PresentationExchangeResponseOpts,
   URI,
@@ -7,17 +6,11 @@ import {
   // VerificationMode,
   VerifiedAuthorizationRequest,
 } from '@sphereon/did-auth-siop'
-import { getAgentDIDMethods, getAgentResolver, getDID } from '@sphereon/ssi-sdk-ext.did-utils'
+import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { CredentialMapper, parseDid } from '@sphereon/ssi-types'
 import { IIdentifier, TKeyType } from '@veramo/core'
 import Debug from 'debug'
-import {
-  IOPOptions,
-  IOpSessionArgs,
-  IOpsSendSiopAuthorizationResponseArgs,
-  IRequiredContext,
-  IOpSessionGetOID4VPArgs,
-} from '../types/IDidAuthSiopOpAuthenticator'
+import { IOPOptions, IOpSessionArgs, IOpSessionGetOID4VPArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
 import { ResolveOpts } from '@sphereon/did-auth-siop-adapter'
@@ -267,7 +260,7 @@ export class OpSession {
     })
 
     //TODO change this to use the new functionalities by identifier-resolver and get the jwkIssuer for the responseOpts
-    let issuer = args.responseSignerOpts?.issuer ?? (args.responseSignerOpts?.identifier ? getDID(args.responseSignerOpts) : undefined)
+    let issuer = args.responseSignerOpts.issuer
     const responseOpts = {
       verification,
       issuer,

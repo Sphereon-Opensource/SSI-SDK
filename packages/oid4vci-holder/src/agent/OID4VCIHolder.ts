@@ -14,7 +14,9 @@ import {
   NotificationRequest,
   ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
-import { getIdentifier, getKey, IIdentifierOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import { signDidJWT, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import { IIdentifierResolution, isManagedIdentifierDidResult, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { SignatureAlgorithmEnum, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   CorrelationIdentifierType,
   CredentialCorrelationType,
@@ -38,7 +40,17 @@ import {
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
 } from '@sphereon/ssi-types'
-import { CredentialPayload, IAgentPlugin, ProofFormat, VerifiableCredential, W3CVerifiableCredential } from '@veramo/core'
+import {
+  CredentialPayload,
+  IAgentContext,
+  IAgentPlugin,
+  IDIDManager,
+  IKeyManager,
+  IResolver,
+  ProofFormat,
+  VerifiableCredential,
+  W3CVerifiableCredential,
+} from '@veramo/core'
 import { asArray, computeEntryHash } from '@veramo/utils'
 import { decodeJWT, JWTHeader } from 'did-jwt'
 import { v4 as uuidv4 } from 'uuid'
@@ -55,7 +67,6 @@ import {
   GetCredentialsArgs,
   GetIssuerMetadataArgs,
   IOID4VCIHolder,
-  IRequiredSignAgentContext,
   IssuanceOpts,
   MappedCredentialToAccept,
   OID4VCIHolderEvent,
@@ -69,7 +80,6 @@ import {
   RequestType,
   RequiredContext,
   SendNotificationArgs,
-  SignatureAlgorithmEnum,
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
@@ -83,8 +93,6 @@ import {
   getIssuanceOpts,
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
-  signatureAlgorithmFromKey,
-  signJWT,
   verifyCredentialToAccept,
 } from './OID4VCIHolderService'
 
@@ -109,45 +117,56 @@ export const oid4vciHolderContextMethods: Array<string> = [
 
 const logger = Loggers.DEFAULT.get('sphereon:oid4vci:holder')
 
-export function signCallback(client: OpenID4VCIClient, idOpts: IIdentifierOpts, context: IRequiredSignAgentContext) {
+export function signCallback(
+  client: OpenID4VCIClient,
+  idOpts: ManagedIdentifierOpts,
+  context: IAgentContext<IKeyManager & IDIDManager & IResolver & IIdentifierResolution>,
+) {
   return async (jwt: Jwt, kid?: string) => {
     let iss = jwt.payload.iss
+    const jwk = jwt.header.jwk
 
     if (!kid) {
       kid = jwt.header.kid
     }
     if (!kid) {
-      kid = idOpts.kmsKeyRef
+      kid = idOpts.kid
+    }
+    if (!kid && jwk && 'kid' in jwk) {
+      kid = jwk.kid as string
     }
 
-    if (kid) {
+    if (kid && !idOpts.kid) {
       // sync back to id opts
-      idOpts.kmsKeyRef = kid.split('#')[0]
+      idOpts.kid = kid.split('#')[0]
     }
 
-    const identifier = await getIdentifier(idOpts, context)
-    const key = await getKey({ identifier, vmRelationship: idOpts.verificationMethodSection, kmsKeyRef: idOpts.kmsKeyRef ?? kid }, context)
-    if (key?.meta?.jwkThumbprint && kid === key.publicKeyHex) {
-      kid = key.meta.jwkThumbprint
-    }
-
-    const httpsClientId = jwt.payload.iss?.startsWith('http') ?? jwt.payload.client_id?.startsWith('http') === true
-    if (!httpsClientId && client.isEBSI()) {
-      iss = identifier.did /*kid?.split('#')[0]*/
-    } else if (!iss) {
-      iss = identifier.did /* kid?.split('#')[0]*/
+    const resolution = await context.agent.identifierManagedGet(idOpts)
+    if (isManagedIdentifierDidResult(resolution) && client.isEBSI()) {
+      iss = resolution.did
+    } else if (!iss && isManagedIdentifierDidResult(resolution)) {
+      iss = resolution.did
+    } else {
+      iss = resolution.issuer
     }
     if (!iss) {
       return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)}`))
     }
-    if (identifier && kid && !httpsClientId && !kid.startsWith(identifier.did)) {
+    if (kid && isManagedIdentifierDidResult(resolution) && !kid.startsWith(resolution.did)) {
+      // Make sure we create a fully qualified kid
       const hash = kid.startsWith('#') ? '' : '#'
-      kid = `${identifier.did}${hash}${kid}`
+      kid = `${resolution.did}${hash}${kid}`
     }
-    const header = { ...jwt.header, ...(kid && { kid }) } as Partial<JWTHeader>
+    const header = { ...jwt.header, ...(kid && !jwk && { kid }) } as Partial<JWTHeader>
     const payload = { ...jwt.payload, ...(iss && { iss }) }
-    return signJWT({
-      idOpts,
+    if (jwk && header.kid) {
+      delete header.kid
+    }
+    if (!isManagedIdentifierDidResult(resolution)) {
+      return Promise.reject(`Current signer below only works with DIDs. Should be fixed`) // fixme
+    }
+    return signDidJWT({
+      idOpts: { identifier: resolution.did },
       header,
       payload,
       options: { issuer: iss, expiresIn: jwt.payload.exp, canonicalize: false },

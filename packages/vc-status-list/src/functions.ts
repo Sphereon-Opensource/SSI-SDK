@@ -1,4 +1,4 @@
-import { getIdentifier, getKey } from '@sphereon/ssi-sdk-ext.did-utils'
+import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
   CredentialMapper,
   DocumentFormat,
@@ -8,7 +8,9 @@ import {
   StatusListType,
   StatusPurpose2021,
 } from '@sphereon/ssi-types'
-import { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin, IDIDManager, IResolver, ProofFormat } from '@veramo/core'
+
+import { checkStatus, StatusList } from '@sphereon/vc-status-list'
+import { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin, ProofFormat } from '@veramo/core'
 import { CredentialJwtOrJSON, StatusMethod } from 'credential-status'
 import {
   CreateNewStatusListArgs,
@@ -18,8 +20,6 @@ import {
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListFromStatusListCredentialArgs,
 } from './types'
-
-import { StatusList, checkStatus } from '@sphereon/vc-status-list'
 
 export async function fetchStatusListCredential(args: { statusListCredential: string }): Promise<OriginalVerifiableCredential> {
   const url = getAssertedValue('statusListCredential', args.statusListCredential)
@@ -173,7 +173,7 @@ export async function checkStatusIndexFromStatusListCredential(args: {
 
 export async function createNewStatusList(
   args: CreateNewStatusListArgs,
-  context: IAgentContext<ICredentialPlugin & IDIDManager & IResolver>,
+  context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
 ): Promise<StatusListResult> {
   const length = args?.length ?? 250000
   const proofFormat = args?.proofFormat ?? 'lds'
@@ -209,7 +209,7 @@ export async function createNewStatusList(
 
 export async function updateStatusIndexFromStatusListCredential(
   args: UpdateStatusListFromStatusListCredentialArgs,
-  context: IAgentContext<ICredentialPlugin & IDIDManager & IResolver>,
+  context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
 ): Promise<StatusListDetails> {
   return updateStatusListIndexFromEncodedList(
     {
@@ -253,7 +253,7 @@ export async function statusListCredentialToDetails(args: {
 
 export async function updateStatusListIndexFromEncodedList(
   args: UpdateStatusListFromEncodedListArgs,
-  context: IAgentContext<ICredentialPlugin & IDIDManager & IResolver>,
+  context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
 ): Promise<StatusListDetails> {
   const { issuer, type, id } = getAssertedValues(args)
   const proofFormat = args?.proofFormat ?? 'lds'
@@ -289,12 +289,13 @@ export async function updateStatusListIndexFromEncodedList(
 
 export async function statusList2021ToVerifiableCredential(
   args: StatusList2021ToVerifiableCredentialArgs,
-  context: IAgentContext<ICredentialPlugin & IDIDManager & IResolver>,
+  context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
 ): Promise<OriginalVerifiableCredential> {
   const { issuer, id, type } = getAssertedValues(args)
-  const identifier = await getIdentifier({ identifier: typeof issuer === 'string' ? issuer : issuer.id }, context)
-  const key = await getKey({ identifier, vmRelationship: 'assertionMethod', kmsKeyRef: args.keyRef }, context)
-  const keyRef = key.kid
+  const identifier = await context.agent.identifierManagedGet({
+    identifier: typeof issuer === 'string' ? issuer : issuer.id,
+    vmRelationship: 'assertionMethod',
+  })
   const encodedList = getAssertedValue('encodedList', args.encodedList)
   const statusPurpose = getAssertedValue('statusPurpose', args.statusPurpose)
   const credential = {
@@ -313,7 +314,7 @@ export async function statusList2021ToVerifiableCredential(
   // TODO copy statuslist schema to local and disable fetching remote contexts
   const verifiableCredential = await context.agent.createVerifiableCredential({
     credential,
-    keyRef,
+    keyRef: identifier.kmsKeyRef,
     proofFormat: args.proofFormat ?? 'lds',
     fetchRemoteContexts: true,
   })

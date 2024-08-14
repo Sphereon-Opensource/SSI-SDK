@@ -324,7 +324,7 @@ export const ebsiCreateDidOnLedger = async (args: CreateEbsiDidParams, context: 
     console.log(`No attestation to onboard present. Will get one`)
     const authReqResult = await context.agent.ebsiCreateAttestationAuthRequestURL({
       credentialIssuer,
-      idOpts,
+      idOpts: idOpts,
       formats: ['jwt_vc'],
       clientId,
       redirectUri,
@@ -345,7 +345,7 @@ export const ebsiCreateDidOnLedger = async (args: CreateEbsiDidParams, context: 
     attestationCredential: attestationToOnboard,
     jwksUri,
     scope: 'didr_invite',
-    idOpts,
+    idOpts: idOpts,
     redirectUri,
     credentialIssuer,
     clientId,
@@ -403,7 +403,7 @@ export const ebsiCreateDidOnLedger = async (args: CreateEbsiDidParams, context: 
     // attestationCredential: attestationToOnboard,
     jwksUri,
     scope: 'didr_write',
-    idOpts,
+    idOpts: idOpts,
     redirectUri,
     credentialIssuer: undefined,
     clientId,

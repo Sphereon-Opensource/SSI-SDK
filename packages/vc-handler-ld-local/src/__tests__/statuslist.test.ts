@@ -1,3 +1,4 @@
+import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { createAgent, ICredentialPlugin, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
 import { CredentialPlugin, ICredentialIssuer } from '@veramo/credential-w3c'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
@@ -23,7 +24,7 @@ jest.setTimeout(100000)
 
 describe('Status list', () => {
   let didKeyIdentifier: IIdentifier
-  let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialPlugin & ICredentialIssuer & ICredentialHandlerLDLocal>
+  let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialPlugin & IIdentifierResolution & ICredentialIssuer & ICredentialHandlerLDLocal>
 
   // jest.setTimeout(1000000)
   beforeAll(async () => {
@@ -42,6 +43,7 @@ describe('Status list', () => {
           store: new MemoryDIDStore(),
           defaultProvider: 'did:key',
         }),
+        new IdentifierResolution({ crypto: global.crypto }),
         new DIDResolverPlugin({
           resolver: new Resolver({
             ...getDidKeyResolver(),

@@ -165,8 +165,19 @@ export const correlationIdentifierFrom = (identifier: CorrelationIdentifierEntit
 }
 
 export const didAuthConfigEntityFrom = (config: NonPersistedDidAuthConfig): DidAuthConfigEntity => {
+  let identifier: string | undefined = undefined
+  if (typeof config.idOpts.identifier === 'string') {
+    identifier = config.idOpts.identifier
+  } else if (typeof config.idOpts.identifier === 'object') {
+    if ('did' in config.idOpts.identifier && typeof config.idOpts.identifier.did === 'string') {
+      identifier = config.idOpts.identifier.did
+    }
+  }
+  if (!identifier) {
+    throw Error(`Identifier method ${config.idOpts.method} not yet supported`)
+  }
   const didAuthConfig: DidAuthConfigEntity = new DidAuthConfigEntity()
-  didAuthConfig.identifier = typeof config.idOpts.identifier === 'string' ? config.idOpts.identifier : config.idOpts.identifier.did
+  didAuthConfig.identifier = identifier
   didAuthConfig.redirectUrl = config.redirectUrl
   didAuthConfig.sessionId = config.sessionId
   didAuthConfig.ownerId = config.ownerId

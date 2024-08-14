@@ -1,4 +1,5 @@
 import { ClientMetadataOpts } from '@sphereon/did-auth-siop/dist/types'
+import { IIdentifierResolution, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { AdditionalClaims, Hasher, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import {
@@ -136,7 +137,7 @@ export interface IRPOptions {
   expiresIn?: number
   eventEmitter?: EventEmitter
   credentialOpts?: CredentialOpts
-  didOpts: ISIOPDIDOptions
+  didOpts: ISIOPIdentifierOptions
 }
 
 export interface IPEXOptions {
@@ -166,7 +167,9 @@ export interface IPresentationWithDefinition {
   presentation: W3CVerifiablePresentation
 }
 
-export interface ISIOPDIDOptions extends IDIDOptions {
+export interface ISIOPIdentifierOptions extends Omit<IDIDOptions, 'idOpts'> {
+  // we replace the legacy idOpts with the Managed Identifier opts from the identifier resolution module
+  idOpts: ManagedIdentifierOpts
   checkLinkedDomains?: CheckLinkedDomain
   wellknownDIDVerifyCallback?: VerifyCallback
 }
@@ -181,5 +184,5 @@ export interface AuthorizationResponseStateWithVerifiedData extends Authorizatio
 }
 
 export type IRequiredContext = IAgentContext<
-  IResolver & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier & IPresentationExchange & IPDManager
+  IResolver & IDIDManager & IKeyManager & IIdentifierResolution & ICredentialIssuer & ICredentialVerifier & IPresentationExchange & IPDManager
 >

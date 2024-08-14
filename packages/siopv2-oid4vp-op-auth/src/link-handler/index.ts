@@ -1,4 +1,4 @@
-import { IIdentifierOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import { ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { LinkHandlerAdapter } from '@sphereon/ssi-sdk.core'
 import { IMachineStatePersistence, interpreterStartOrResume, SerializableState } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { IAgentContext } from '@veramo/core'
@@ -13,14 +13,14 @@ export class Siopv2OID4VPLinkHandler extends LinkHandlerAdapter {
     | ((oid4vciMachine: Siopv2MachineInterpreter, state: Siopv2MachineState, navigation?: any) => Promise<void>)
     | undefined
   private readonly noStateMachinePersistence: boolean
-  private readonly idOpts?: IIdentifierOpts
+  private readonly idOpts?: ManagedIdentifierOpts
 
   constructor(
     args: Pick<GetMachineArgs, 'stateNavigationListener'> & {
       protocols?: Array<string | RegExp>
       context: IAgentContext<IDidAuthSiopOpAuthenticator & IMachineStatePersistence>
       noStateMachinePersistence?: boolean
-      idOpts?: IIdentifierOpts
+      idOpts?: ManagedIdentifierOpts
     },
   ) {
     super({ ...args, id: 'Siopv2' })
@@ -34,7 +34,7 @@ export class Siopv2OID4VPLinkHandler extends LinkHandlerAdapter {
     url: string | URL,
     opts?: {
       machineState?: SerializableState
-      idOpts?: IIdentifierOpts
+      idOpts?: ManagedIdentifierOpts
     },
   ): Promise<void> {
     logger.debug(`handling SIOP link: ${url}`)
