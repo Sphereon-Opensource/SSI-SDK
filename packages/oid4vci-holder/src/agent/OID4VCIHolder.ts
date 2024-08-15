@@ -15,7 +15,7 @@ import {
   ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
 import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
-import { IIdentifierResolution, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { ensureManagedIdentifierResult, IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService, JwtHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey, SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
@@ -120,10 +120,12 @@ const logger = Loggers.DEFAULT.get('sphereon:oid4vci:holder')
 
 export function signCallback(
   client: OpenID4VCIClient,
-  idOpts: ManagedIdentifierOpts,
+  identifier: ManagedIdentifierOptsOrResult,
   context: IAgentContext<IKeyManager & IDIDManager & IResolver & IIdentifierResolution & IJwtService>,
 ) {
   return async (jwt: Jwt, kid?: string) => {
+    let resolution = await ensureManagedIdentifierResult(identifier, context)
+    const idOpts = resolution.opts
     // todo: probably we can get rid of almost everything happening in here with the new identifier resolution
     //========remove?==============
     // let iss = jwt.payload.iss
@@ -133,19 +135,20 @@ export function signCallback(
       kid = jwt.header.kid
     }
     if (!kid) {
-      kid = idOpts.kid
+      kid = resolution.kid
     }
     if (!kid && jwk && 'kid' in jwk) {
       kid = jwk.kid as string
     }
 
-    if (kid && !idOpts.kid) {
+    if (kid && !resolution.kid) {
       // sync back to id opts
       idOpts.kid = kid.split('#')[0]
     }
     //=========remove?=============
 
-    const resolution = await context.agent.identifierManagedGet(idOpts)
+    // TODO investigate the above, so we can also get rid of the double resolution call because we might have updated the kid
+    resolution = await context.agent.identifierManagedGet(idOpts)
     /*if (isManagedIdentifierDidResult(resolution) && client.isEBSI()) {
       iss = resolution.did
     } else if (!iss && isManagedIdentifierDidResult(resolution)) {
@@ -169,8 +172,9 @@ export function signCallback(
     /*if (!isManagedIdentifierDidResult(resolution)) {
       return Promise.reject(`Current signer below only works with DIDs. Should be fixed`) // fixme
     }*/
-    return (await context.agent.jwtCreateJwsCompactSignature({ issuer: { ...idOpts, noIssPayloadUpdate: false }, protectedHeader: header, payload }))
-      .jwt
+    return (
+      await context.agent.jwtCreateJwsCompactSignature({ issuer: { ...resolution, noIssPayloadUpdate: false }, protectedHeader: header, payload })
+    ).jwt
     /*return signDidJWT({
       idOpts: { identifier: resolution.did },
       header,

@@ -23,7 +23,6 @@ import {
   PhysicalAddress,
 } from '@sphereon/ssi-sdk.data-store'
 
-
 export interface IContactManager extends IPluginMethodMap {
   cmGetContact(args: GetContactArgs, context: RequiredContext): Promise<Contact>
   cmGetContacts(args?: GetContactsArgs): Promise<Array<Contact>>
