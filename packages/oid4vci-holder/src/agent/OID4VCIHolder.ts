@@ -132,18 +132,22 @@ export function signCallback(
     const jwk = jwt.header.jwk
 
     if (!kid) {
+      console.log(`====NO KID, using header kid if present`)
       kid = jwt.header.kid
     }
     if (!kid) {
+      console.log(`====NO KID, using resolution kid if present`)
       kid = resolution.kid
     }
     if (!kid && jwk && 'kid' in jwk) {
+      console.log(`====NO KID, using kid from jwk!`)
       kid = jwk.kid as string
     }
 
     if (kid && !resolution.kid) {
       // sync back to id opts
       idOpts.kid = kid.split('#')[0]
+      console.log(`===Identifier resolution opts kid has been set with new value: ${idOpts.kid}`)
     }
     //=========remove?=============
 
@@ -156,8 +160,8 @@ export function signCallback(
     } else {
       iss = resolution.issuer
     }*/
-    if (!resolution.issuer) {
-      return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)}`))
+    if (!resolution.issuer && !jwt.payload.iss) {
+      return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)} or identifier resolution`))
     }
     /*if (kid && isManagedIdentifierDidResult(resolution) && !kid.startsWith(resolution.did)) {
       // Make sure we create a fully qualified kid
