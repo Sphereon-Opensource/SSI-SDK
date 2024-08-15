@@ -143,6 +143,12 @@ export const ebsiCreateAttestationAuthRequestURL = async (
     authorizationRequest: authorizationRequestOpts,
   })
   logger.info(`create attestation ${credentialType} auth req URL for ${clientIdArg} and issuer ${credentialIssuer}, result: ${authorizationCodeURL}`)
+  const jwaAlg = await signatureAlgorithmFromKey({key: authKey})
+  if (!(jwaAlg in Alg)) {
+    return Promise.reject(Error(`${jwaAlg} is not supported`))
+  }
+  // @ts-ignore
+  const alg: Alg = Alg[jwaAlg]
 
   return {
     requestData: {
@@ -153,7 +159,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
     },
     accessTokenOpts: {
       clientOpts: {
-        alg: Alg[await signatureAlgorithmFromKey({ key: authKey })],
+        alg,
         clientId,
         kid,
         signCallbacks,

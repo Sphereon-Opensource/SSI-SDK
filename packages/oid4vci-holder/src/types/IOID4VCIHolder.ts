@@ -14,7 +14,8 @@ import {
 } from '@sphereon/oid4vci-common'
 import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { SignatureAlgorithmEnum } from '@sphereon/ssi-sdk-ext.key-utils'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { DigitalCredential, IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
@@ -79,7 +80,7 @@ export type OID4VCIHolderOptions = {
   jsonldCryptographicSuitePreferences?: Array<string>
   defaultAuthorizationRequestOptions?: AuthorizationRequestOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
-  jwtCryptographicSuitePreferences?: Array<SignatureAlgorithmEnum>
+  jwtCryptographicSuitePreferences?: Array<SignatureAlgorithmJwa>
   hasher?: Hasher
 }
 
@@ -533,7 +534,7 @@ export type GetIssuanceOptsArgs = {
   serverMetadata: EndpointMetadataResult
   context: RequiredContext
   didMethodPreferences: Array<SupportedDidMethodEnum>
-  jwtCryptographicSuitePreferences: Array<SignatureAlgorithmEnum>
+  jwtCryptographicSuitePreferences: Array<SignatureAlgorithmJwa>
   jsonldCryptographicSuitePreferences: Array<string>
   forceIssuanceOpt?: IssuanceOpts
 }
@@ -547,7 +548,7 @@ export type GetIssuanceDidMethodArgs = {
 export type GetIssuanceCryptoSuiteArgs = {
   credentialSupported: CredentialConfigurationSupported
   client: OpenID4VCIClient
-  jwtCryptographicSuitePreferences: Array<SignatureAlgorithmEnum>
+  jwtCryptographicSuitePreferences: Array<SignatureAlgorithmJwa>
   jsonldCryptographicSuitePreferences: Array<string>
 }
 
@@ -595,6 +596,7 @@ export type RequiredContext = IAgentContext<
     ICredentialIssuer &
     ICredentialStore &
     IIdentifierResolution &
+    IJwtService &
     IDIDManager &
     IResolver &
     IKeyManager &

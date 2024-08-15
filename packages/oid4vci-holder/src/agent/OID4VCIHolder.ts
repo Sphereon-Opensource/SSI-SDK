@@ -12,11 +12,12 @@ import {
   getTypesFromObject,
   Jwt,
   NotificationRequest,
-  ProofOfPossessionCallbacks,
+  ProofOfPossessionCallbacks
 } from '@sphereon/oid4vci-common'
-import { signDidJWT, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
-import { IIdentifierResolution, isManagedIdentifierDidResult, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { SignatureAlgorithmEnum, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
+import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import { IIdentifierResolution, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IJwtService, JwtHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { signatureAlgorithmFromKey, SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   CorrelationIdentifierType,
   CredentialCorrelationType,
@@ -28,7 +29,7 @@ import {
   IdentityOrigin,
   IIssuerBranding,
   NonPersistedIdentity,
-  Party,
+  Party
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -38,7 +39,7 @@ import {
   Loggers,
   OriginalVerifiableCredential,
   parseDid,
-  SdJwtDecodedVerifiableCredentialPayload,
+  SdJwtDecodedVerifiableCredentialPayload
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
@@ -49,10 +50,10 @@ import {
   IResolver,
   ProofFormat,
   VerifiableCredential,
-  W3CVerifiableCredential,
+  W3CVerifiableCredential
 } from '@veramo/core'
 import { asArray, computeEntryHash } from '@veramo/utils'
-import { decodeJWT, JWTHeader } from 'did-jwt'
+import { decodeJWT } from 'did-jwt'
 import { v4 as uuidv4 } from 'uuid'
 import { OID4VCIMachine } from '../machine/oid4vciMachine'
 import {
@@ -83,7 +84,7 @@ import {
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
-  VerificationResult,
+  VerificationResult
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -93,7 +94,7 @@ import {
   getIssuanceOpts,
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
-  verifyCredentialToAccept,
+  verifyCredentialToAccept
 } from './OID4VCIHolderService'
 
 /**
@@ -120,10 +121,12 @@ const logger = Loggers.DEFAULT.get('sphereon:oid4vci:holder')
 export function signCallback(
   client: OpenID4VCIClient,
   idOpts: ManagedIdentifierOpts,
-  context: IAgentContext<IKeyManager & IDIDManager & IResolver & IIdentifierResolution>,
+  context: IAgentContext<IKeyManager & IDIDManager & IResolver & IIdentifierResolution & IJwtService>,
 ) {
   return async (jwt: Jwt, kid?: string) => {
-    let iss = jwt.payload.iss
+    // todo: probably we can get rid of almost everything happening in here with the new identifier resolution
+    //========remove?==============
+    // let iss = jwt.payload.iss
     const jwk = jwt.header.jwk
 
     if (!kid) {
@@ -140,38 +143,40 @@ export function signCallback(
       // sync back to id opts
       idOpts.kid = kid.split('#')[0]
     }
+    //=========remove?=============
 
     const resolution = await context.agent.identifierManagedGet(idOpts)
-    if (isManagedIdentifierDidResult(resolution) && client.isEBSI()) {
+    /*if (isManagedIdentifierDidResult(resolution) && client.isEBSI()) {
       iss = resolution.did
     } else if (!iss && isManagedIdentifierDidResult(resolution)) {
       iss = resolution.did
     } else {
       iss = resolution.issuer
-    }
-    if (!iss) {
+    }*/
+    if (!resolution.issuer) {
       return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)}`))
     }
-    if (kid && isManagedIdentifierDidResult(resolution) && !kid.startsWith(resolution.did)) {
+    /*if (kid && isManagedIdentifierDidResult(resolution) && !kid.startsWith(resolution.did)) {
       // Make sure we create a fully qualified kid
       const hash = kid.startsWith('#') ? '' : '#'
       kid = `${resolution.did}${hash}${kid}`
-    }
-    const header = { ...jwt.header, ...(kid && !jwk && { kid }) } as Partial<JWTHeader>
-    const payload = { ...jwt.payload, ...(iss && { iss }) }
+    }*/
+    const header = jwt.header as JwtHeader
+    const payload = jwt.payload // { ...jwt.payload, ...(iss && { iss }) }
     if (jwk && header.kid) {
-      delete header.kid
+      delete header.kid // The OID4VCI spec does not allow a JWK with kid present although the JWS spec does
     }
-    if (!isManagedIdentifierDidResult(resolution)) {
+    /*if (!isManagedIdentifierDidResult(resolution)) {
       return Promise.reject(`Current signer below only works with DIDs. Should be fixed`) // fixme
-    }
-    return signDidJWT({
+    }*/
+    return (await context.agent.jwtCreateJwsCompactSignature({issuer: {...idOpts, noIssPayloadUpdate: false}, protectedHeader: header, payload})).jwt
+    /*return signDidJWT({
       idOpts: { identifier: resolution.did },
       header,
       payload,
       options: { issuer: iss, expiresIn: jwt.payload.exp, canonicalize: false },
       context,
-    })
+    })*/
   }
 }
 
@@ -211,10 +216,10 @@ export class OID4VCIHolder implements IAgentPlugin {
     SupportedDidMethodEnum.DID_EBSI,
     SupportedDidMethodEnum.DID_ION,
   ]
-  private readonly jwtCryptographicSuitePreferences: Array<SignatureAlgorithmEnum> = [
-    SignatureAlgorithmEnum.ES256,
-    SignatureAlgorithmEnum.ES256K,
-    SignatureAlgorithmEnum.EdDSA,
+  private readonly jwtCryptographicSuitePreferences: Array<SignatureAlgorithmJwa> = [
+    SignatureAlgorithmJwa.ES256,
+    SignatureAlgorithmJwa.ES256K,
+    SignatureAlgorithmJwa.EdDSA,
   ]
   private static readonly DEFAULT_MOBILE_REDIRECT_URI = `${DefaultURISchemes.CREDENTIAL_OFFER}://`
   private readonly defaultAuthorizationRequestOpts: AuthorizationRequestOpts = { redirectUri: OID4VCIHolder.DEFAULT_MOBILE_REDIRECT_URI }
@@ -595,7 +600,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     const idOpts = await getIdentifierOpts({ issuanceOpt, context })
     const { key, kid } = idOpts
     logger.debug(`ID opts`, idOpts)
-    const alg: SignatureAlgorithmEnum = await signatureAlgorithmFromKey({ key })
+    const alg: SignatureAlgorithmJwa = await signatureAlgorithmFromKey({ key })
 
     const callbacks: ProofOfPossessionCallbacks<never> = {
       signCallback: signCallback(client, idOpts, context),
