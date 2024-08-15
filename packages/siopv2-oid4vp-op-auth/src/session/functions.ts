@@ -4,16 +4,16 @@ import { Format } from '@sphereon/pex-models'
 import { isManagedIdentifierDidOpts, isManagedIdentifierDidResult, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 // import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { createPEXPresentationSignCallback } from '@sphereon/ssi-sdk.presentation-exchange'
-// import { IVerifyCallbackArgs, IVerifyCredentialResult } from '@sphereon/wellknown-dids-client'
 import { TKeyType } from '@veramo/core'
 import { EventEmitter } from 'events'
 import { IOPOptions, IRequiredContext } from '../types'
 import { SigningAlgo } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { Resolvable } from 'did-resolver'
-import { JWTVerifyOptions } from 'did-jwt'
+import { JWTHeader, JWTVerifyOptions } from 'did-jwt'
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
-import { getAgentDIDMethods } from '@sphereon/ssi-sdk-ext.did-utils'
+import { getAgentDIDMethods, signDidJWT } from '@sphereon/ssi-sdk-ext.did-utils'
 import { getAudience, getResolver, verifyDidJWT } from '@sphereon/did-auth-siop-adapter'
+import { CreateJwtCallback, JwtHeader, JwtIssuanceContextBase, JwtIssuer, JwtPayload } from '@sphereon/oid4vc-common'
 
 export async function createOID4VPPresentationSignCallback({
   presentationSignCallback,
@@ -112,6 +112,9 @@ export async function createOPBuilder({
       resolution.kid,
       getSigningAlgo(key.type),
     )*/
+    // builder.withCreateJwtCallback(signCallback(resolution, context))
+    const createJwtCallback = signCallback(idOpts, context)
+    builder.withCreateJwtCallback(createJwtCallback as unknown as CreateJwtCallback<any>)
     builder.withPresentationSignCallback(
       await createOID4VPPresentationSignCallback({
         presentationSignCallback: opOptions.presentationSignCallback,
@@ -122,6 +125,62 @@ export async function createOPBuilder({
     )
   }
   return builder
+}
+
+//fixme: this is written based on OID4VCIHolder.signCallback sync the fixes to this with that function
+export function signCallback<T extends JwtIssuer & JwtIssuanceContextBase>(
+  idOpts: ManagedIdentifierOpts,
+  context: IRequiredContext,
+): (jwt: { header: JwtHeader; payload: JwtPayload }, kid?: string) => Promise<string> {
+  return async (jwt: { header: JwtHeader; payload: JwtPayload }, kid?: string) => {
+    let iss = jwt.payload.iss
+    const jwk = jwt.header.jwk
+
+    if (!kid) {
+      kid = jwt.header.kid
+    }
+    if (!kid) {
+      kid = idOpts.kid
+    }
+    if (!kid && jwk && 'kid' in jwk) {
+      kid = jwk.kid as string
+    }
+
+    if (kid && !idOpts.kid) {
+      // sync back to id opts
+      idOpts.kid = kid.split('#')[0]
+    }
+
+    const resolution = await context.agent.identifierManagedGet(idOpts)
+    if (!iss && isManagedIdentifierDidResult(resolution)) {
+      iss = resolution.did
+    } else {
+      iss = resolution.issuer
+    }
+    if (!iss) {
+      return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)}`))
+    }
+    if (kid && isManagedIdentifierDidResult(resolution) && !kid.startsWith(resolution.did)) {
+      // Make sure we create a fully qualified kid
+      const hash = kid.startsWith('#') ? '' : '#'
+      kid = `${resolution.did}${hash}${kid}`
+    }
+    const header = { ...jwt.header, ...(kid && !jwk && { kid }) } as Partial<JWTHeader>
+    const payload = { ...jwt.payload, ...(iss && { iss }) }
+    if (jwk && header.kid) {
+      delete header.kid
+    }
+    if (!isManagedIdentifierDidResult(resolution)) {
+      return Promise.reject(`Current signer below only works with DIDs. Should be fixed`) // fixme
+    }
+    return signDidJWT({
+      idOpts: { identifier: resolution.did },
+      header,
+      payload,
+      options: { issuer: iss, expiresIn: jwt.payload.exp, canonicalize: false },
+      context,
+    })
+  }
 }
 
 function getVerifyJwtCallback(

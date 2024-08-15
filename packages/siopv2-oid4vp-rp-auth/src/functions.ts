@@ -15,19 +15,21 @@ import {
   VerifyJwtCallback,
 } from '@sphereon/did-auth-siop'
 import { IPresentationDefinition } from '@sphereon/pex'
-import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
+import { getAgentDIDMethods, getAgentResolver, signDidJWT } from '@sphereon/ssi-sdk-ext.did-utils'
 import { isManagedIdentifierDidResult, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 // import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { TKeyType } from '@veramo/core'
 import { EventEmitter } from 'events'
-import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPIdentifierOptions /*ISIOPIdentifierOptions*/ } from './types/ISIOPv2RP'
+import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPIdentifierOptions } from './types/ISIOPv2RP'
 import { SigningAlgo } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { createHash } from 'crypto'
 import { getAudience, getResolver, verifyDidJWT } from '@sphereon/did-auth-siop-adapter'
 import { Resolvable } from 'did-resolver'
-import { JWTVerifyOptions } from 'did-jwt'
+import { JWTHeader, JWTVerifyOptions } from 'did-jwt'
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
-import { Hasher } from '@sphereon/ssi-types'
+import { CredentialMapper, Hasher } from '@sphereon/ssi-types'
+import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
+import { JwtHeader, JwtPayload, CreateJwtCallback } from '@sphereon/oid4vc-common'
 
 export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   if (Array.isArray(rpOptions.supportedVersions) && rpOptions.supportedVersions.length > 0) {
@@ -47,6 +49,11 @@ function getWellKnownDIDVerifyCallback(siopIdentifierOpts: ISIOPIdentifierOption
 
 export function getPresentationVerificationCallback(idOpts: ManagedIdentifierOpts, context: IRequiredContext) {
   async function presentationVerificationCallback(args: any): Promise<PresentationVerificationResult> {
+    if (CredentialMapper.isSdJwtEncoded(args)) {
+      const result: IVerifySdJwtPresentationResult = await context.agent.verifySdJwtPresentation({ presentation: args, kb: true })
+      // fixme: investigate the correct way to handle this
+      return { verified: !!result.payload }
+    }
     const result = await context.agent.verifyPresentation({
       presentation: args,
       fetchRemoteContexts: true,
@@ -168,7 +175,66 @@ export async function createRPBuilder(args: {
       getSigningAlgo(key.type),
     )
   }*/
+  //fixme: signcallback and it's return type are not totally compatible with our CreateJwtCallbackBase
+  const createJwtCallback = signCallback(rpOpts.didOpts.idOpts, context)
+  builder.withCreateJwtCallback(createJwtCallback as unknown as CreateJwtCallback<any>)
   return builder
+}
+
+//fixme: this is written based on OID4VCIHolder.signCallback sync the fixes to this with that function
+export function signCallback(
+  idOpts: ManagedIdentifierOpts,
+  context: IRequiredContext,
+): (jwt: { header: JwtHeader; payload: JwtPayload }, kid?: string) => Promise<string> {
+  return async (jwt: { header: JwtHeader; payload: JwtPayload }, kid?: string) => {
+    let iss = jwt.payload.iss
+    const jwk = jwt.header.jwk
+
+    if (!kid) {
+      kid = jwt.header.kid
+    }
+    if (!kid) {
+      kid = idOpts.kid
+    }
+    if (!kid && jwk && 'kid' in jwk) {
+      kid = jwk.kid as string
+    }
+
+    if (kid && !idOpts.kid) {
+      // sync back to id opts
+      idOpts.kid = kid.split('#')[0]
+    }
+
+    const resolution = await context.agent.identifierManagedGet(idOpts)
+    if (!iss && isManagedIdentifierDidResult(resolution)) {
+      iss = resolution.did
+    } else {
+      iss = resolution.issuer
+    }
+    if (!iss) {
+      return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)}`))
+    }
+    if (kid && isManagedIdentifierDidResult(resolution) && !kid.startsWith(resolution.did)) {
+      // Make sure we create a fully qualified kid
+      const hash = kid.startsWith('#') ? '' : '#'
+      kid = `${resolution.did}${hash}${kid}`
+    }
+    const header = { ...jwt.header, ...(kid && !jwk && { kid }) } as Partial<JWTHeader>
+    const payload = { ...jwt.payload, ...(iss && { iss }) }
+    if (jwk && header.kid) {
+      delete header.kid
+    }
+    if (!isManagedIdentifierDidResult(resolution)) {
+      return Promise.reject(`Current signer below only works with DIDs. Should be fixed`) // fixme
+    }
+    return signDidJWT({
+      idOpts: { identifier: resolution.did },
+      header,
+      payload,
+      options: { issuer: iss, expiresIn: jwt.payload.exp, canonicalize: false },
+      context,
+    })
+  }
 }
 
 function getVerifyJwtCallback(
@@ -181,14 +247,12 @@ function getVerifyJwtCallback(
   return async (jwtVerifier, jwt) => {
     resolver = resolver ?? getResolver({ subjectSyntaxTypesSupported: ['ethr', 'ion'] })
     const audience =
-      jwtVerifier.type === 'request-object'
-        ? (verifyOpts?.audience ?? getAudience(jwt.raw))
-        : jwtVerifier.type === 'id-token'
-          ? (verifyOpts?.audience ?? getAudience(jwt.raw))
-          : undefined
+      jwtVerifier.type === 'request-object' || jwtVerifier.type === 'id-token' ? (verifyOpts?.audience ?? getAudience(jwt.raw)) : undefined
 
-    await verifyDidJWT(jwt.raw, resolver, { audience, ...verifyOpts })
-    return true
+    //todo probably wise to revisit this. this is called verifyDidJWT and expects a did resolver param.
+    return await verifyDidJWT(jwt.raw, resolver, { audience, ...verifyOpts })
+      .then(() => true)
+      .catch(() => false)
   }
 }
 

@@ -30,6 +30,7 @@ import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
 import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
+import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 
 export enum VerifiedDataMode {
   NONE = 'none',
@@ -186,5 +187,13 @@ export interface AuthorizationResponseStateWithVerifiedData extends Authorizatio
 }
 
 export type IRequiredContext = IAgentContext<
-  IResolver & IDIDManager & IKeyManager & IIdentifierResolution & ICredentialIssuer & ICredentialVerifier & IPresentationExchange & IPDManager
+  IResolver &
+    IDIDManager &
+    IKeyManager &
+    IIdentifierResolution &
+    ICredentialIssuer &
+    ICredentialVerifier &
+    IPresentationExchange &
+    IPDManager &
+    ISDJwtPlugin
 >
