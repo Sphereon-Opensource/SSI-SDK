@@ -194,7 +194,7 @@ function getVerifyJwtCallback(
     resolver = resolver ?? getResolver({ subjectSyntaxTypesSupported: ['ethr', 'ion'] })
     const audience =
       jwtVerifier.type === 'request-object' || jwtVerifier.type === 'id-token' ? (verifyOpts?.audience ?? getAudience(jwt.raw)) : undefined
-
+    //todo probably wise to revisit this. this is called verifyDidJWT and expects a did resolver param.
     await verifyDidJWT(jwt.raw, resolver, { audience, ...verifyOpts })
     return true
   }

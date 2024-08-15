@@ -250,9 +250,8 @@ function getVerifyJwtCallback(
       jwtVerifier.type === 'request-object' || jwtVerifier.type === 'id-token' ? (verifyOpts?.audience ?? getAudience(jwt.raw)) : undefined
 
     //todo probably wise to revisit this. this is called verifyDidJWT and expects a did resolver param.
-    return await verifyDidJWT(jwt.raw, resolver, { audience, ...verifyOpts })
-      .then(() => true)
-      .catch(() => false)
+    await verifyDidJWT(jwt.raw, resolver, { audience, ...verifyOpts })
+    return true
   }
 }
 
