@@ -1,4 +1,4 @@
-import { Hasher, KBOptions, SaltGenerator } from '@sd-jwt/types'
+import { Hasher, kbHeader, KBOptions, kbPayload, SaltGenerator } from '@sd-jwt/types'
 import { SdJwtVcPayload as SdJwtPayload } from '@sd-jwt/sd-jwt-vc'
 import { DIDDocumentSection, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
@@ -175,7 +175,9 @@ export interface IVerifySdJwtPresentationArgs {
  * @beta
  */
 export type IVerifySdJwtPresentationResult = {
-  verifiedPayloads: Record<string, unknown>
+  payload: unknown //fixme: maybe this can be `SdJwtPayload`
+  header: Record<string, unknown> | undefined
+  kb?: { header: kbHeader; payload: kbPayload }
 }
 
 export type SignKeyArgs = {

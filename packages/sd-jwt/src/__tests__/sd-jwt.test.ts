@@ -279,7 +279,7 @@ describe('Agent plugin', () => {
       kb: true,
     })
     expect(result).toBeDefined()
-    expect((result.verifiedPayloads.payload as typeof claims).given_name).toBe('John')
+    expect((result.payload as typeof claims).given_name).toBe('John')
   })
 
   it('verify a presentation with sub set', async () => {
@@ -316,6 +316,6 @@ describe('Agent plugin', () => {
       kb: true,
     })
     expect(result).toBeDefined()
-    expect((result.verifiedPayloads.payload as typeof claims).given_name).toBe('John')
+    expect((result.payload as typeof claims).given_name).toBe('John')
   })
 })

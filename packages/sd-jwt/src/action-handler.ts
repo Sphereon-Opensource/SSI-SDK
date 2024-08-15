@@ -227,7 +227,6 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @returns
    */
   async verifySdJwtPresentation(args: IVerifySdJwtPresentationArgs, context: IRequiredContext): Promise<IVerifySdJwtPresentationResult> {
-    // biome-ignore lint/style/useConst: <explanation>
     let sdjwt: SDJwtVcInstance
     const verifier: Verifier = async (data: string, signature: string) => this.verify(sdjwt, context, data, signature)
     const verifierKb: KbVerifier = async (data: string, signature: string, payload: JwtPayload) =>
@@ -239,7 +238,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     })
     const verifiedPayloads = await sdjwt.verify(args.presentation, args.requiredClaimKeys, args.kb)
 
-    return { verifiedPayloads }
+    return verifiedPayloads
   }
 
   private getKeyTypeAlgorithm(keyType: string) {
