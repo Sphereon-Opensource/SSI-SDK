@@ -25,8 +25,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
   describe('Credential Store Agent Plugin', (): void => {
     const exampleVC: IVerifiableCredential = getFileAsJson('./packages/credential-store/__tests__/vc-examples/vc_driverLicense.json')
 
+    const examplePid: string = getFile('./packages/credential-store/__tests__/vc-examples/pid.sd.jwt').replace(/\r/, '').replace(/\n/, '')
     let agent: ConfiguredAgent
     let defaultCredential: DigitalCredential
+    let pidSdJwtCredential: DigitalCredential
 
     beforeAll(async (): Promise<void> => {
       await testContext.setup()
@@ -40,6 +42,15 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         rawDocument: JSON.stringify(exampleVC),
       }
       defaultCredential = await agent.crsAddCredential({ credential: digitalCredential })
+
+      const sdJwtAdd: AddDigitalCredential = {
+        credentialRole: CredentialRole.HOLDER,
+        tenantId: 'test-tenant',
+        issuerCorrelationId: 'CN="test"',
+        issuerCorrelationType: CredentialCorrelationType.X509_CN,
+        rawDocument: examplePid,
+      }
+      pidSdJwtCredential = await agent.crsAddCredential({ credential: sdJwtAdd })
     })
 
     afterAll(testContext.tearDown)
@@ -48,6 +59,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const result = await agent.crsGetCredential({ id: defaultCredential.id })
       expect(result.id).toEqual(defaultCredential.id)
     })
+
+    it('should get SDJWT PID credential by id', async (): Promise<void> => {
+      const result = await agent.crsGetCredential({ id: pidSdJwtCredential.id })
+      expect(result.id).toEqual(pidSdJwtCredential.id)
+    })
+
 
     it('should throw error when getting credential with unknown id', async (): Promise<void> => {
       const itemId = 'unknownId'
@@ -64,7 +81,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
       const result: Array<DigitalCredential> = await agent.crsGetCredentials(args)
 
-      expect(result.length).toBe(1)
+      expect(result.length).toBe(2)
     })
 
     it('should get credentials by id or hash', async (): Promise<void> => {

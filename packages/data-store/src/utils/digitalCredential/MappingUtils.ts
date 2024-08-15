@@ -61,7 +61,7 @@ function getValidUntil(uniformDocument: IVerifiableCredential | IVerifiablePrese
   } else if ('validUntil' in uniformDocument) {
     return new Date(uniformDocument.validUntil)
   } else if ('exp' in uniformDocument) {
-    return new Date(uniformDocument.exp)
+    return new Date(uniformDocument.exp * 1000)
   }
   return undefined
 }
