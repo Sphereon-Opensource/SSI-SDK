@@ -16,10 +16,10 @@
   "dependencies": {
     "@sphereon/oid4vci-client": "0.16.1-next.7",
     "@sphereon/oid4vci-common": "0.16.1-next.7",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.90",
-    "@sphereon/ssi-sdk-ext.key-utils": "0.24.1-unstable.90",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.90",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.24.1-unstable.90",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-next.93",
+    "@sphereon/ssi-sdk-ext.key-utils": "0.24.1-next.93",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-next.93",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.24.1-next.93",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.credential-store": "workspace:*",
@@ -37,7 +37,7 @@
     "xstate": "^4.38.3"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.24.1-unstable.90",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.24.1-next.93",
     "@types/i18n-js": "^3.8.9",
     "@types/lodash.memoize": "^4.1.9",
     "@types/uuid": "^9.0.8",
