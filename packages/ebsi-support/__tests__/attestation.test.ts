@@ -1,6 +1,7 @@
 import 'cross-fetch/polyfill'
 import { ExpressBuilder } from '@sphereon/ssi-express-support'
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IOID4VCIHolder } from '@sphereon/ssi-sdk.oid4vci-holder'
@@ -28,6 +29,7 @@ let agent: TAgent<
     IDidAuthSiopOpAuthenticator &
     IPresentationExchange &
     IIdentifierResolution &
+    IJwtService &
     IOID4VCIHolder &
     IResolver &
     IContactManager &
@@ -71,6 +73,7 @@ const setup = async (): Promise<boolean> => {
       IOID4VCIHolder &
       IResolver &
       IIdentifierResolution &
+      IJwtService &
       IContactManager &
       IEbsiSupport
   >

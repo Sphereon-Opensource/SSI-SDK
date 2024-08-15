@@ -12,7 +12,7 @@ import {
   getTypesFromObject,
   Jwt,
   NotificationRequest,
-  ProofOfPossessionCallbacks
+  ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
 import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IIdentifierResolution, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
@@ -29,7 +29,7 @@ import {
   IdentityOrigin,
   IIssuerBranding,
   NonPersistedIdentity,
-  Party
+  Party,
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -39,7 +39,7 @@ import {
   Loggers,
   OriginalVerifiableCredential,
   parseDid,
-  SdJwtDecodedVerifiableCredentialPayload
+  SdJwtDecodedVerifiableCredentialPayload,
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
@@ -50,7 +50,7 @@ import {
   IResolver,
   ProofFormat,
   VerifiableCredential,
-  W3CVerifiableCredential
+  W3CVerifiableCredential,
 } from '@veramo/core'
 import { asArray, computeEntryHash } from '@veramo/utils'
 import { decodeJWT } from 'did-jwt'
@@ -84,7 +84,7 @@ import {
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
-  VerificationResult
+  VerificationResult,
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -94,7 +94,7 @@ import {
   getIssuanceOpts,
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
-  verifyCredentialToAccept
+  verifyCredentialToAccept,
 } from './OID4VCIHolderService'
 
 /**
@@ -169,7 +169,8 @@ export function signCallback(
     /*if (!isManagedIdentifierDidResult(resolution)) {
       return Promise.reject(`Current signer below only works with DIDs. Should be fixed`) // fixme
     }*/
-    return (await context.agent.jwtCreateJwsCompactSignature({issuer: {...idOpts, noIssPayloadUpdate: false}, protectedHeader: header, payload})).jwt
+    return (await context.agent.jwtCreateJwsCompactSignature({ issuer: { ...idOpts, noIssPayloadUpdate: false }, protectedHeader: header, payload }))
+      .jwt
     /*return signDidJWT({
       idOpts: { identifier: resolution.did },
       header,

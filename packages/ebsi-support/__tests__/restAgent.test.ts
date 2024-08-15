@@ -1,4 +1,6 @@
 import 'cross-fetch/polyfill'
+import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 // @ts-ignore
 import express, { Router } from 'express'
 import { Server } from 'http'
@@ -21,7 +23,7 @@ let restServer: Server
 let dbConnection: Promise<DataSource>
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IEbsiSupport>({
+  createAgent<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IIdentifierResolution & IJwtService & IEbsiSupport>({
     ...options,
     plugins: [
       new AgentRestClient({

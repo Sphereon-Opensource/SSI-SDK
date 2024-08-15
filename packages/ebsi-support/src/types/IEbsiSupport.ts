@@ -242,5 +242,13 @@ export type GetOIDProviderJwksResponse = GetOIDProviderJwksSuccessResponse | Exc
 export type GetPresentationDefinitionResponse = GetPresentationDefinitionSuccessResponse
 export type GetAccessTokenResponse = GetAccessTokenSuccessResponse | ExceptionResponse
 export type IRequiredContext = IAgentContext<
-  IKeyManager & IDIDManager & IResolver & IIdentifierResolution & IJwtService & IDidAuthSiopOpAuthenticator & IPresentationExchange & IOID4VCIHolder & IEbsiSupport
+  IKeyManager &
+    IDIDManager &
+    IResolver &
+    IIdentifierResolution &
+    IJwtService &
+    IDidAuthSiopOpAuthenticator &
+    IPresentationExchange &
+    IOID4VCIHolder &
+    IEbsiSupport
 >
