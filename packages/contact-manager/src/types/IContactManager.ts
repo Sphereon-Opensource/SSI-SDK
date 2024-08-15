@@ -1,3 +1,4 @@
+import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import {
   ElectronicAddress,
@@ -21,7 +22,7 @@ import {
   PartyTypeType as ContactTypeType,
   PhysicalAddress,
 } from '@sphereon/ssi-sdk.data-store'
-import { contextHasPlugin } from '../../../agent-config/src/agentContextUtils'
+
 
 export interface IContactManager extends IPluginMethodMap {
   cmGetContact(args: GetContactArgs, context: RequiredContext): Promise<Contact>
