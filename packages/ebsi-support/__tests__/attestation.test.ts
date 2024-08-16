@@ -4,6 +4,7 @@ import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resoluti
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
+import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
 import { IOID4VCIHolder } from '@sphereon/ssi-sdk.oid4vci-holder'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { PublicKeyHosting } from '@sphereon/ssi-sdk.public-key-hosting'
@@ -19,8 +20,6 @@ import express, { Express } from 'express'
 import { DataSource } from 'typeorm'
 import { IEbsiSupport } from '../src'
 import { ebsiCreateDidOnLedger } from '../src/did'
-import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
-// import { AttestationAuthRequestUrlResult } from '../src/functions'
 
 let dbConnection: Promise<DataSource>
 let agent: TAgent<

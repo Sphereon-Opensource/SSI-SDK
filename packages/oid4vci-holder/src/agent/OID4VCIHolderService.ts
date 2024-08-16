@@ -107,7 +107,9 @@ export const getCredentialConfigsBasedOnFormatPref = async (
   return prefConfigs
 }
 
-export const selectCredentialLocaleBranding = async (args: SelectAppLocaleBrandingArgs): Promise<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding | undefined> => {
+export const selectCredentialLocaleBranding = async (
+  args: SelectAppLocaleBrandingArgs,
+): Promise<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding | undefined> => {
   const { locale, localeBranding } = args
 
   return localeBranding?.find(

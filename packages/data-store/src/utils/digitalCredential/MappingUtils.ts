@@ -54,24 +54,24 @@ function determineCredentialDocumentFormat(documentFormat: DocumentFormat): Cred
 }
 
 function getValidUntil(uniformDocument: IVerifiableCredential | IVerifiablePresentation | SdJwtDecodedVerifiableCredentialPayload): Date | undefined {
-  if ('expirationDate' in uniformDocument) {
+  if ('expirationDate' in uniformDocument && uniformDocument.expirationDate) {
     return new Date(uniformDocument.expirationDate)
-  } else if ('validUntil' in uniformDocument) {
+  } else if ('validUntil' in uniformDocument && uniformDocument.validUntil) {
     return new Date(uniformDocument.validUntil)
-  } else if ('exp' in uniformDocument) {
+  } else if ('exp' in uniformDocument && uniformDocument.exp) {
     return new Date(uniformDocument.exp * 1000)
   }
   return undefined
 }
 
 function getValidFrom(uniformDocument: IVerifiableCredential | IVerifiablePresentation | SdJwtDecodedVerifiableCredentialPayload): Date | undefined {
-  if ('issuanceDate' in uniformDocument) {
+  if ('issuanceDate' in uniformDocument && uniformDocument.issuanceDate) {
     return new Date(uniformDocument.issuanceDate)
-  } else if ('validFrom' in uniformDocument) {
+  } else if ('validFrom' in uniformDocument && uniformDocument.validFrom) {
     return new Date(uniformDocument['validFrom'])
-  } else if ('nbf' in uniformDocument) {
+  } else if ('nbf' in uniformDocument && uniformDocument.nbf) {
     return new Date(uniformDocument['nbf'] * 1000)
-  } else if ('iat' in uniformDocument) {
+  } else if ('iat' in uniformDocument && uniformDocument.iat) {
     return new Date(uniformDocument['iat'] * 1000)
   }
   return undefined
@@ -100,7 +100,7 @@ export const nonPersistedDigitalCredentialEntityFromAddArgs = (addCredentialArgs
     hash,
     uniformDocument: JSON.stringify(uniformDocument),
     validFrom,
-    validUntil,
+    ...(validUntil && { validUntil }),
     lastUpdatedAt: new Date(),
   }
 }
