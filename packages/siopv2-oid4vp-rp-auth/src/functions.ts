@@ -27,10 +27,9 @@ import { getAudience, getResolver, verifyDidJWT } from '@sphereon/did-auth-siop-
 import { Resolvable } from 'did-resolver'
 import { JWTHeader, JWTVerifyOptions } from 'did-jwt'
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
-import { CredentialMapper, Hasher } from '@sphereon/ssi-types'
-import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
+import { CredentialMapper, Hasher, SdJwtDecodedVerifiableCredential } from '@sphereon/ssi-types'
+import { IVerifySdJwtPresentationResult, SdJwtVcPayload } from '@sphereon/ssi-sdk.sd-jwt'
 import { JwtHeader, JwtPayload, CreateJwtCallback } from '@sphereon/oid4vc-common'
-import { JwsCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 
 export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   if (Array.isArray(rpOptions.supportedVersions) && rpOptions.supportedVersions.length > 0) {
@@ -190,26 +189,12 @@ export function signCallback(
   return async (jwt: { header: JwtHeader; payload: JwtPayload }, kid?: string) => {
     const jwk = jwt.header.jwk
 
-    if (!kid) {
-      kid = jwt.header.kid
-    }
-    if (!kid) {
-      kid = idOpts.kid
-    }
-    if (!kid && jwk && 'kid' in jwk) {
-      kid = jwk.kid as string
-    }
-
-    if (kid && !idOpts.kid) {
-      // sync back to id opts
-      idOpts.kid = kid.split('#')[0]
-    }
-
     const resolution = await context.agent.identifierManagedGet(idOpts)
     const issuer = jwt.payload.iss || (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.issuer)
     if (!issuer) {
       return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)}`))
     }
+    kid = resolution.kid
     if (kid && isManagedIdentifierDidResult(resolution) && !kid.startsWith(resolution.did)) {
       // Make sure we create a fully qualified kid
       const hash = kid.startsWith('#') ? '' : '#'
@@ -220,13 +205,41 @@ export function signCallback(
     if (jwk && header.kid) {
       delete header.kid
     }
-
-    const result: JwsCompactResult = await context.agent.jwtCreateJwsCompactSignature({
-      issuer: { identifier: issuer, noIdentifierInHeader: false },
-      protectedHeader: header,
-      payload,
-    })
-    return result.jwt
+    let result: string | undefined
+    if (typeof payload === 'string' && CredentialMapper.isSdJwtEncoded(payload)) {
+      result = (
+        await context.agent.createSdJwtPresentation({
+          presentation: payload as string,
+          //todo: this should somehow look at the PEX result and see which parts of the sd-jwt we want
+          //presentationFrame: {}
+          //fixme: populate kb payload
+          /*kb: {
+          payload: {
+            aud:
+            iat: new Date().getTime() / 1000,
+            nonce:
+          }
+        }*/
+        })
+      ).presentation
+    } else if (CredentialMapper.isSdJwtDecodedCredential(payload as unknown as SdJwtDecodedVerifiableCredential)) {
+      result = (
+        await context.agent.createSdJwtVc({
+          credentialPayload: payload as SdJwtVcPayload,
+          //todo: this should somehow look at the PEX result and see which parts of the sd-jwt we want
+          //disclosureFrame: {}
+        })
+      ).credential
+    } else {
+      result = (
+        await context.agent.jwtCreateJwsCompactSignature({
+          issuer: { identifier: issuer, noIdentifierInHeader: false },
+          protectedHeader: header,
+          payload,
+        })
+      ).jwt
+    }
+    return result
   }
 }
 
