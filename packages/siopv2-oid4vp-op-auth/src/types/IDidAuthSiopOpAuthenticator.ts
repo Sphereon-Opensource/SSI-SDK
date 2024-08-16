@@ -177,19 +177,19 @@ export interface VerifiablePresentationWithDefinition extends VerifiablePresenta
 }
 
 export interface IOpSessionGetOID4VPArgs {
-  allDIDs?: string[]
+  allIdentifiers?: string[]
   hasher?: Hasher
 }
 
 export interface IOID4VPArgs {
   session: OpSession
-  allDIDs?: string[]
+  allIdentifiers?: string[]
   hasher?: Hasher
 }
 
 export interface IGetPresentationExchangeArgs {
   verifiableCredentials: W3CVerifiableCredential[]
-  allDIDs?: string[]
+  allIdentifiers?: string[]
   hasher?: Hasher
 }
 

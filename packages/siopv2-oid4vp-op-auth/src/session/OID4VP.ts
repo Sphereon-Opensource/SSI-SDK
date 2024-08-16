@@ -5,33 +5,35 @@ import { ManagedIdentifierOpts, ManagedIdentifierResult } from '@sphereon/ssi-sd
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
-import { CompactJWT, CredentialMapper, Hasher, W3CVerifiableCredential } from '@sphereon/ssi-types'
+import { CompactJWT, CredentialMapper, Hasher, SdJwtDecodedVerifiableCredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { encodeJoseBlob } from '@veramo/utils'
 import {
   DEFAULT_JWT_PROOF_TYPE,
   IGetPresentationExchangeArgs,
   IOID4VPArgs,
+  IRequiredContext,
   VerifiableCredentialsWithDefinition,
   VerifiablePresentationWithDefinition,
 } from '../types'
 import { createOID4VPPresentationSignCallback } from './functions'
 import { OpSession } from './OpSession'
+import { ICreateSdJwtPresentationArgs, IPresentationFrame } from '@sphereon/ssi-sdk.sd-jwt'
 
 export class OID4VP {
   private readonly session: OpSession
-  private readonly allDIDs: string[]
+  private readonly allIdentifiers: string[]
   private readonly hasher?: Hasher
 
   private constructor(args: IOID4VPArgs) {
-    const { session, allDIDs, hasher } = args
+    const { session, allIdentifiers, hasher } = args
 
     this.session = session
-    this.allDIDs = allDIDs ?? []
+    this.allIdentifiers = allIdentifiers ?? []
     this.hasher = hasher
   }
 
-  public static async init(session: OpSession, allDIDs: string[], hasher?: Hasher): Promise<OID4VP> {
-    return new OID4VP({ session, allDIDs: allDIDs ?? (await session.getSupportedDIDs()), hasher })
+  public static async init(session: OpSession, allIdentifiers: string[], hasher?: Hasher): Promise<OID4VP> {
+    return new OID4VP({ session, allIdentifiers: allIdentifiers ?? (await session.getSupportedDIDs()), hasher })
   }
 
   public async getPresentationDefinitions(): Promise<PresentationDefinitionWithLocation[] | undefined> {
@@ -43,10 +45,10 @@ export class OID4VP {
   }
 
   private getPresentationExchange(args: IGetPresentationExchangeArgs): PresentationExchange {
-    const { verifiableCredentials, allDIDs, hasher } = args
+    const { verifiableCredentials, allIdentifiers, hasher } = args
 
     return new PresentationExchange({
-      allDIDs: allDIDs ?? this.allDIDs,
+      allDIDs: allIdentifiers ?? this.allIdentifiers,
       allVerifiableCredentials: verifiableCredentials,
       hasher: hasher ?? this.hasher,
     })
@@ -81,14 +83,14 @@ export class OID4VP {
       proofOpts?: ProofOptions
       idOpts?: ManagedIdentifierOpts
       skipDidResolution?: boolean
-      holderDID?: string
+      holder?: string
       subjectIsHolder?: boolean
       applyFilter?: boolean
       hasher?: Hasher
     },
   ): Promise<VerifiablePresentationWithDefinition> {
-    const { subjectIsHolder, holderDID, forceNoCredentialsInVP = false } = { ...opts }
-    if (subjectIsHolder && holderDID) {
+    const { subjectIsHolder, holder, forceNoCredentialsInVP = false } = { ...opts }
+    if (subjectIsHolder && holder) {
       throw Error('Cannot both have subject is holder and a holderDID value at the same time (programming error)')
     }
     if (forceNoCredentialsInVP) {
@@ -126,8 +128,8 @@ export class OID4VP {
         if (holder) {
           idOpts = { identifier: holder }
         }
-      } else if (opts?.holderDID) {
-        idOpts = { identifier: opts.holderDID }
+      } else if (opts?.holder) {
+        idOpts = { identifier: opts.holder }
       }
     }
 
@@ -150,8 +152,31 @@ export class OID4VP {
     if (!idOpts) {
       return Promise.reject(Error(`No identifier options present at this point`))
     }
+    let sdJwtPresentationSignCallback
+    if (CredentialMapper.isSdJwtDecodedCredential(vcs.credentials[0])) {
+      const sdJwtCredentialDecoded = vcs.credentials[0] as SdJwtDecodedVerifiableCredential
+      const presentationFrame: IPresentationFrame = {}
+      sdJwtCredentialDecoded.disclosures.forEach((disclosure) => {
+        //fixme: this is not the correct way to extract the presentationFrame as we should have access it earlier in the process (and it's not working for recursive keys.)
+        // @ts-ignore
+        const key = disclosure.decoded.key as string
+        presentationFrame[key] = true
+      })
+      sdJwtPresentationSignCallback = this.sdJwtSignCallback(
+        {
+          presentation: sdJwtCredentialDecoded.compactSdJwtVc,
+          presentationFrame,
+          kb: sdJwtCredentialDecoded.kbJwt,
+        },
+        this.session.context,
+      )
+    }
+    const presentationSignCallback = this.session.options.presentationSignCallback ?? sdJwtPresentationSignCallback
+
     const signCallback = await createOID4VPPresentationSignCallback({
-      presentationSignCallback: this.session.options.presentationSignCallback,
+      //fixme: adjust pex types to accept callback args for sd-jwt
+      // @ts-ignore
+      presentationSignCallback: presentationSignCallback,
       idOpts,
       context: this.session.context,
       domain: proofOptions.domain,
@@ -162,7 +187,7 @@ export class OID4VP {
     const identifier: ManagedIdentifierResult = await this.session.context.agent.identifierManagedGet(idOpts)
     const presentationResult = await this.getPresentationExchange({
       verifiableCredentials: vcs.credentials,
-      allDIDs: this.allDIDs,
+      allIdentifiers: this.allIdentifiers,
       hasher: opts?.hasher,
     }).createVerifiablePresentation(vcs.definition.definition, vcs.credentials, signCallback, {
       proofOptions,
@@ -225,6 +250,10 @@ export class OID4VP {
       credentials: (await this.filterCredentialsWithSelectionStatus(credentialRole, presentationDefinition, opts))
         .verifiableCredential as W3CVerifiableCredential[],
     }
+  }
+
+  public async sdJwtSignCallback(args: ICreateSdJwtPresentationArgs, context: IRequiredContext): Promise<string> {
+    return (await context.agent.createSdJwtPresentation(args)).presentation as CompactJWT
   }
 
   public async filterCredentialsWithSelectionStatus(

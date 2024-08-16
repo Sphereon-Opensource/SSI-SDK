@@ -27,9 +27,10 @@ import { getAudience, getResolver, verifyDidJWT } from '@sphereon/did-auth-siop-
 import { Resolvable } from 'did-resolver'
 import { JWTHeader, JWTVerifyOptions } from 'did-jwt'
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
-import { CredentialMapper, Hasher, SdJwtDecodedVerifiableCredential } from '@sphereon/ssi-types'
-import { IVerifySdJwtPresentationResult, SdJwtVcPayload } from '@sphereon/ssi-sdk.sd-jwt'
+import { CredentialMapper, Hasher } from '@sphereon/ssi-types'
+import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
 import { JwtHeader, JwtPayload, CreateJwtCallback } from '@sphereon/oid4vc-common'
+import { JwsCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 
 export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   if (Array.isArray(rpOptions.supportedVersions) && rpOptions.supportedVersions.length > 0) {
@@ -205,41 +206,13 @@ export function signCallback(
     if (jwk && header.kid) {
       delete header.kid
     }
-    let result: string | undefined
-    if (typeof payload === 'string' && CredentialMapper.isSdJwtEncoded(payload)) {
-      result = (
-        await context.agent.createSdJwtPresentation({
-          presentation: payload as string,
-          //todo: this should somehow look at the PEX result and see which parts of the sd-jwt we want
-          //presentationFrame: {}
-          //fixme: populate kb payload
-          /*kb: {
-          payload: {
-            aud:
-            iat: new Date().getTime() / 1000,
-            nonce:
-          }
-        }*/
-        })
-      ).presentation
-    } else if (CredentialMapper.isSdJwtDecodedCredential(payload as unknown as SdJwtDecodedVerifiableCredential)) {
-      result = (
-        await context.agent.createSdJwtVc({
-          credentialPayload: payload as SdJwtVcPayload,
-          //todo: this should somehow look at the PEX result and see which parts of the sd-jwt we want
-          //disclosureFrame: {}
-        })
-      ).credential
-    } else {
-      result = (
-        await context.agent.jwtCreateJwsCompactSignature({
-          issuer: { identifier: issuer, noIdentifierInHeader: false },
-          protectedHeader: header,
-          payload,
-        })
-      ).jwt
-    }
-    return result
+
+    const result: JwsCompactResult = await context.agent.jwtCreateJwsCompactSignature({
+      issuer: { identifier: issuer, noIdentifierInHeader: false },
+      protectedHeader: header,
+      payload,
+    })
+    return result.jwt
   }
 }
 
