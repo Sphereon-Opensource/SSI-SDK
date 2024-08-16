@@ -31,6 +31,7 @@ import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp
 import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
 import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 
 export enum VerifiedDataMode {
   NONE = 'none',
@@ -195,5 +196,6 @@ export type IRequiredContext = IAgentContext<
     ICredentialVerifier &
     IPresentationExchange &
     IPDManager &
-    ISDJwtPlugin
+    ISDJwtPlugin &
+    IJwtService
 >

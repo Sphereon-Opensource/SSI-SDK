@@ -46,6 +46,7 @@ import {
   Siopv2AuthorizationResponseData,
 } from './siop-service'
 import { CheckLinkedDomain, ResolveOpts } from '@sphereon/did-auth-siop-adapter'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 
 export const LOGGER_NAMESPACE = 'sphereon:siopv2-oid4vp:op-auth'
 
@@ -136,7 +137,8 @@ export type IRequiredContext = IAgentContext<
     ICredentialVerifier &
     ICredentialStore &
     IPDManager &
-    ISDJwtPlugin
+    ISDJwtPlugin &
+    IJwtService
 >
 
 export interface IOPOptions {
