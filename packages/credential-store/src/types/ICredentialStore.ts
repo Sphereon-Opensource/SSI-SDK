@@ -12,7 +12,7 @@ import {
   IPresentation,
   IVerifiableCredential,
   OriginalVerifiableCredential,
-  OriginalVerifiablePresentation
+  OriginalVerifiablePresentation,
 } from '@sphereon/ssi-types'
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import { FindClaimsArgs } from './claims'

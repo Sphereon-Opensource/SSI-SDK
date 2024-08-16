@@ -5,17 +5,11 @@ import {
   IVerifiablePresentation,
   OriginalVerifiableCredential,
   OriginalVerifiablePresentation,
-  SdJwtDecodedVerifiableCredentialPayload
+  SdJwtDecodedVerifiableCredentialPayload,
 } from '@sphereon/ssi-types'
 import { computeEntryHash } from '@veramo/utils'
 import { DigitalCredentialEntity } from '../../entities/digitalCredential/DigitalCredentialEntity'
-import {
-  AddCredentialArgs,
-  CredentialDocumentFormat,
-  DigitalCredential,
-  DocumentType,
-  NonPersistedDigitalCredential
-} from '../../types'
+import { AddCredentialArgs, CredentialDocumentFormat, DigitalCredential, DocumentType, NonPersistedDigitalCredential } from '../../types'
 
 function determineDocumentType(raw: string): DocumentType {
   const rawDocument = parseRawDocument(raw)
@@ -91,7 +85,9 @@ export const nonPersistedDigitalCredentialEntityFromAddArgs = (addCredentialArgs
   }
   const hasher = addCredentialArgs.opts?.hasher
   const uniformDocument =
-    (documentType === DocumentType.VC || documentType === DocumentType.C) ? CredentialMapper.toUniformCredential(addCredentialArgs.rawDocument, {hasher }) : CredentialMapper.toUniformPresentation(addCredentialArgs.rawDocument)
+    documentType === DocumentType.VC || documentType === DocumentType.C
+      ? CredentialMapper.toUniformCredential(addCredentialArgs.rawDocument, { hasher })
+      : CredentialMapper.toUniformPresentation(addCredentialArgs.rawDocument)
   const validFrom: Date | undefined = getValidFrom(uniformDocument)
   const validUntil: Date | undefined = getValidUntil(uniformDocument)
   const hash = computeEntryHash(addCredentialArgs.rawDocument)
@@ -105,13 +101,13 @@ export const nonPersistedDigitalCredentialEntityFromAddArgs = (addCredentialArgs
     uniformDocument: JSON.stringify(uniformDocument),
     validFrom,
     validUntil,
-    lastUpdatedAt: new Date()
+    lastUpdatedAt: new Date(),
   }
 }
 
 export const digitalCredentialFrom = (credentialEntity: DigitalCredentialEntity): DigitalCredential => {
   return {
-    ...credentialEntity
+    ...credentialEntity,
   }
 }
 

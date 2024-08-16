@@ -59,7 +59,7 @@ export class CredentialStore implements IAgentPlugin {
 
   /** {@inheritDoc ICRManager.crmAddCredential} */
   private async crsAddCredential(args: AddCredentialArgs): Promise<DigitalCredential> {
-    return await this.store.addCredential({...args.credential, opts: {...args.opts, hasher: args.opts?.hasher ?? this.generateDigest}})
+    return await this.store.addCredential({ ...args.credential, opts: { ...args.opts, hasher: args.opts?.hasher ?? this.generateDigest } })
   }
 
   /** {@inheritDoc ICRManager.updateCredentialState} */
@@ -263,8 +263,6 @@ export class CredentialStore implements IAgentPlugin {
   }
 
   private generateDigest = (data: string, algorithm: string): Uint8Array => {
-    return new Uint8Array(crypto.createHash(algorithm).update(data).digest());
-  };
-
-
+    return new Uint8Array(crypto.createHash(algorithm).update(data).digest())
+  }
 }

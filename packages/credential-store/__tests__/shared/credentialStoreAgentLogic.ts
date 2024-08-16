@@ -65,7 +65,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.id).toEqual(pidSdJwtCredential.id)
     })
 
-
     it('should throw error when getting credential with unknown id', async (): Promise<void> => {
       const itemId = 'unknownId'
       await expect(agent.crsGetCredential({ id: itemId })).rejects.toThrow(`No credential found for arg: {\"id\":\"${itemId}\"}`)

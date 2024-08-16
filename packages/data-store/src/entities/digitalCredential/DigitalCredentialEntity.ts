@@ -5,7 +5,7 @@ import {
   CredentialRole,
   CredentialStateType,
   DigitalCredential,
-  DocumentType
+  DocumentType,
 } from '../../types'
 import { typeormDate, typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 

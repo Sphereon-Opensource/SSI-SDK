@@ -34,7 +34,7 @@ export enum CredentialDocumentFormat {
   JSON_LD = 'JSON_LD',
   JWT = 'JWT',
   SD_JWT = 'SD_JWT',
-  MDOC = 'MDOC'
+  MDOC = 'MDOC',
 }
 
 export namespace CredentialDocumentFormat {
@@ -55,10 +55,14 @@ export namespace CredentialDocumentFormat {
 
   export function toSpecValue(documentFormat: CredentialDocumentFormat, documentType: DocumentType) {
     switch (documentFormat) {
-      case CredentialDocumentFormat.SD_JWT: return 'vc+sd-jwt'
-      case CredentialDocumentFormat.MDOC: return 'mso_mdoc'
-      case CredentialDocumentFormat.JSON_LD: return documentType === DocumentType.C || documentType === DocumentType.VC ? 'ldp_vc' : 'ldp_vp'
-      case CredentialDocumentFormat.JWT: return documentType === DocumentType.C || documentType === DocumentType.VC ? 'jwt_vc_json': 'jwt_vp_json'
+      case CredentialDocumentFormat.SD_JWT:
+        return 'vc+sd-jwt'
+      case CredentialDocumentFormat.MDOC:
+        return 'mso_mdoc'
+      case CredentialDocumentFormat.JSON_LD:
+        return documentType === DocumentType.C || documentType === DocumentType.VC ? 'ldp_vc' : 'ldp_vp'
+      case CredentialDocumentFormat.JWT:
+        return documentType === DocumentType.C || documentType === DocumentType.VC ? 'jwt_vc_json' : 'jwt_vp_json'
     }
   }
 }
@@ -66,7 +70,7 @@ export namespace CredentialDocumentFormat {
 export enum CredentialCorrelationType {
   DID = 'DID',
   X509_CN = 'X509_CN',
-  URL = 'URL'
+  URL = 'URL',
 }
 
 export enum CredentialRole {

@@ -29,7 +29,8 @@ import {
   Hasher,
   decodeSdJwtVc,
   decodeSdJwtVcAsync,
-  AsyncHasher
+  AsyncHasher,
+  sdJwtDecodedCredentialToUniformCredential,
 } from '../types'
 import { ObjectUtils } from '../utils'
 import { IssuerType } from '@veramo/core'
@@ -54,7 +55,7 @@ export class CredentialMapper {
    */
   static decodeVerifiablePresentation(
     presentation: OriginalVerifiablePresentation,
-    hasher?: Hasher
+    hasher?: Hasher,
   ): JwtDecodedVerifiablePresentation | IVerifiablePresentation | SdJwtDecodedVerifiableCredential {
     if (CredentialMapper.isJwtEncoded(presentation)) {
       const payload = jwt_decode(presentation as string) as JwtDecodedVerifiablePresentation
@@ -65,7 +66,7 @@ export class CredentialMapper {
         created: payload.nbf,
         proofPurpose: IProofPurpose.authentication,
         verificationMethod: header['kid'] ?? payload.iss,
-        jwt: presentation as string
+        jwt: presentation as string,
       }
       return payload
     } else if (CredentialMapper.isJwtDecodedPresentation(presentation)) {
@@ -95,7 +96,7 @@ export class CredentialMapper {
    */
   static decodeVerifiableCredential(
     credential: OriginalVerifiableCredential,
-    hasher?: Hasher
+    hasher?: Hasher,
   ): JwtDecodedVerifiableCredential | IVerifiableCredential | SdJwtDecodedVerifiableCredential {
     if (CredentialMapper.isJwtEncoded(credential)) {
       const payload = jwt_decode(credential as string) as JwtDecodedVerifiableCredential
@@ -105,7 +106,7 @@ export class CredentialMapper {
         created: payload.nbf,
         proofPurpose: IProofPurpose.authentication,
         verificationMethod: header['kid'] ?? payload.iss,
-        jwt: credential as string
+        jwt: credential as string,
       }
       return payload
     } else if (CredentialMapper.isJwtDecodedCredential(credential)) {
@@ -135,7 +136,7 @@ export class CredentialMapper {
    */
   static toWrappedVerifiablePresentation(
     originalPresentation: OriginalVerifiablePresentation,
-    opts?: { maxTimeSkewInMS?: number; hasher?: Hasher }
+    opts?: { maxTimeSkewInMS?: number; hasher?: Hasher },
   ): WrappedVerifiablePresentation {
     // SD-JWT
     if (CredentialMapper.isSdJwtDecodedCredential(originalPresentation) || CredentialMapper.isSdJwtEncoded(originalPresentation)) {
@@ -155,7 +156,7 @@ export class CredentialMapper {
         presentation: decodedPresentation,
         decoded: decodedPresentation.decodedPayload,
         // NOTE: we also include the SD-JWT VC as the VC, as the SD-JWT acts as both the VC and the VP
-        vcs: [CredentialMapper.toWrappedVerifiableCredential(originalPresentation, opts) as WrappedSdJwtVerifiableCredential]
+        vcs: [CredentialMapper.toWrappedVerifiableCredential(originalPresentation, opts) as WrappedSdJwtVerifiableCredential],
       }
     }
 
@@ -165,7 +166,7 @@ export class CredentialMapper {
       typeof originalPresentation !== 'string' && CredentialMapper.hasJWTProofType(originalPresentation) ? proof?.jwt : originalPresentation
     if (!original) {
       throw Error(
-        'Could not determine original presentation, probably it was a converted JWT presentation, that is now missing the JWT value in the proof'
+        'Could not determine original presentation, probably it was a converted JWT presentation, that is now missing the JWT value in the proof',
       )
     }
     const decoded = CredentialMapper.decodeVerifiablePresentation(original) as IVerifiablePresentation | JwtDecodedVerifiablePresentation
@@ -192,13 +193,13 @@ export class CredentialMapper {
     const vcs = noVCs
       ? []
       : (CredentialMapper.toWrappedVerifiableCredentials(
-        vp.verifiableCredential ?? [] /*.map(value => value.original)*/,
-        opts
-      ) as WrappedW3CVerifiableCredential[])
+          vp.verifiableCredential ?? [] /*.map(value => value.original)*/,
+          opts,
+        ) as WrappedW3CVerifiableCredential[])
 
     const presentation = {
       ...vp,
-      verifiableCredential: vcs // We overwrite the verifiableCredentials with wrapped versions, making it an InternalVerifiablePresentation. Note: we keep the singular key name of the vc data model
+      verifiableCredential: vcs, // We overwrite the verifiableCredentials with wrapped versions, making it an InternalVerifiablePresentation. Note: we keep the singular key name of the vc data model
     } as UniformVerifiablePresentation
     return {
       type,
@@ -206,7 +207,7 @@ export class CredentialMapper {
       original,
       decoded,
       presentation,
-      vcs
+      vcs,
     }
   }
 
@@ -221,7 +222,7 @@ export class CredentialMapper {
    */
   static toWrappedVerifiableCredentials(
     verifiableCredentials: OriginalVerifiableCredential[],
-    opts?: { maxTimeSkewInMS?: number; hasher?: Hasher }
+    opts?: { maxTimeSkewInMS?: number; hasher?: Hasher },
   ): WrappedVerifiableCredential[] {
     return verifiableCredentials.map((vc) => CredentialMapper.toWrappedVerifiableCredential(vc, opts))
   }
@@ -237,7 +238,7 @@ export class CredentialMapper {
    */
   static toWrappedVerifiableCredential(
     verifiableCredential: OriginalVerifiableCredential,
-    opts?: { maxTimeSkewInMS?: number; hasher?: Hasher }
+    opts?: { maxTimeSkewInMS?: number; hasher?: Hasher },
   ): WrappedVerifiableCredential {
     // SD-JWT
     if (CredentialMapper.isSdJwtDecodedCredential(verifiableCredential) || CredentialMapper.isSdJwtEncoded(verifiableCredential)) {
@@ -256,7 +257,7 @@ export class CredentialMapper {
         format: 'vc+sd-jwt',
         original: verifiableCredential,
         credential: decodedCredential,
-        decoded: decodedCredential.decodedPayload
+        decoded: decodedCredential.decodedPayload,
       }
     }
 
@@ -265,7 +266,7 @@ export class CredentialMapper {
     const original = CredentialMapper.hasJWTProofType(verifiableCredential) && proof ? (proof.jwt ?? verifiableCredential) : verifiableCredential
     if (!original) {
       throw Error(
-        'Could not determine original credential, probably it was a converted JWT credential, that is now missing the JWT value in the proof'
+        'Could not determine original credential, probably it was a converted JWT credential, that is now missing the JWT value in the proof',
       )
     }
     const decoded = CredentialMapper.decodeVerifiableCredential(original) as JwtDecodedVerifiableCredential | IVerifiableCredential
@@ -285,7 +286,7 @@ export class CredentialMapper {
       decoded,
       format,
       type,
-      credential
+      credential,
     }
   }
 
@@ -360,13 +361,13 @@ export class CredentialMapper {
   }
 
   public static isW3cPresentation(
-    presentation: UniformVerifiablePresentation | IPresentation | SdJwtDecodedVerifiableCredential
+    presentation: UniformVerifiablePresentation | IPresentation | SdJwtDecodedVerifiableCredential,
   ): presentation is IPresentation {
     return '@context' in presentation && ((presentation as IPresentation).type?.includes('VerifiablePresentation') || false)
   }
 
   public static isSdJwtDecodedCredentialPayload(
-    credential: ICredential | SdJwtDecodedVerifiableCredentialPayload
+    credential: ICredential | SdJwtDecodedVerifiableCredentialPayload,
   ): credential is SdJwtDecodedVerifiableCredentialPayload {
     return 'vct' in credential
   }
@@ -388,7 +389,7 @@ export class CredentialMapper {
   }
 
   public static isSdJwtDecodedCredential(
-    original: OriginalVerifiableCredential | OriginalVerifiablePresentation | ICredential | IPresentation
+    original: OriginalVerifiableCredential | OriginalVerifiablePresentation | ICredential | IPresentation,
   ): original is SdJwtDecodedVerifiableCredential {
     return (<SdJwtDecodedVerifiableCredential>original).compactSdJwtVc !== undefined
   }
@@ -409,7 +410,7 @@ export class CredentialMapper {
   static jwtEncodedPresentationToUniformPresentation(
     jwt: string,
     makeCredentialsUniform: boolean = true,
-    opts?: { maxTimeSkewInMS?: number }
+    opts?: { maxTimeSkewInMS?: number },
   ): IPresentation {
     return CredentialMapper.jwtDecodedPresentationToUniformPresentation(jwt_decode(jwt), makeCredentialsUniform, opts)
   }
@@ -417,13 +418,13 @@ export class CredentialMapper {
   static jwtDecodedPresentationToUniformPresentation(
     decoded: JwtDecodedVerifiablePresentation,
     makeCredentialsUniform: boolean = true,
-    opts?: { maxTimeSkewInMS?: number }
+    opts?: { maxTimeSkewInMS?: number },
   ): IVerifiablePresentation {
     const { iss, aud, jti, vp, ...rest } = decoded
 
     const presentation: IVerifiablePresentation = {
       ...rest,
-      ...vp
+      ...vp,
     }
     if (makeCredentialsUniform) {
       if (!vp.verifiableCredential) {
@@ -464,10 +465,10 @@ export class CredentialMapper {
     opts?: {
       maxTimeSkewInMS?: number
       hasher?: Hasher
-    }
+    },
   ): IVerifiableCredential {
     if (CredentialMapper.isSdJwtDecodedCredential(verifiableCredential)) {
-      throw new Error('Converting SD-JWT VC to uniform VC is not supported.')
+      return sdJwtDecodedCredentialToUniformCredential(verifiableCredential, opts)
     }
     const original =
       typeof verifiableCredential !== 'string' && CredentialMapper.hasJWTProofType(verifiableCredential)
@@ -475,7 +476,7 @@ export class CredentialMapper {
         : verifiableCredential
     if (!original) {
       throw Error(
-        'Could not determine original credential from passed in credential. Probably because a JWT proof type was present, but now is not available anymore'
+        'Could not determine original credential from passed in credential. Probably because a JWT proof type was present, but now is not available anymore',
       )
     }
     const decoded = CredentialMapper.decodeVerifiableCredential(original, opts?.hasher)
@@ -485,7 +486,7 @@ export class CredentialMapper {
     const isSdJwtEncoded = CredentialMapper.isSdJwtEncoded(original)
 
     if (isSdJwtEncoded) {
-      return CredentialMapper.sdJwtDecodedCredentialToUniformCredential(decoded as SdJwtDecodedVerifiableCredential, opts)
+      return sdJwtDecodedCredentialToUniformCredential(decoded as SdJwtDecodedVerifiableCredential, opts)
     }
     if (isJwtDecoded || isJwtEncoded) {
       return CredentialMapper.jwtDecodedCredentialToUniformCredential(decoded as JwtDecodedVerifiableCredential, opts)
@@ -496,7 +497,7 @@ export class CredentialMapper {
 
   static toUniformPresentation(
     presentation: OriginalVerifiablePresentation,
-    opts?: { maxTimeSkewInMS?: number; addContextIfMissing?: boolean }
+    opts?: { maxTimeSkewInMS?: number; addContextIfMissing?: boolean },
   ): IVerifiablePresentation {
     if (CredentialMapper.isSdJwtDecodedCredential(presentation)) {
       throw new Error('Converting SD-JWT VC to uniform VP is not supported.')
@@ -506,7 +507,7 @@ export class CredentialMapper {
     const original = typeof presentation !== 'string' && CredentialMapper.hasJWTProofType(presentation) ? proof?.jwt : presentation
     if (!original) {
       throw Error(
-        'Could not determine original presentation, probably it was a converted JWT presentation, that is now missing the JWT value in the proof'
+        'Could not determine original presentation, probably it was a converted JWT presentation, that is now missing the JWT value in the proof',
       )
     }
     const decoded = CredentialMapper.decodeVerifiablePresentation(original)
@@ -523,7 +524,7 @@ export class CredentialMapper {
     }
 
     uniformPresentation.verifiableCredential = uniformPresentation.verifiableCredential?.map((vc) =>
-      CredentialMapper.toUniformCredential(vc, opts)
+      CredentialMapper.toUniformCredential(vc, opts),
     ) as IVerifiableCredential[] // We cast it because we IPresentation needs a VC. The internal Credential doesn't have the required Proof anymore (that is intended)
     return uniformPresentation
   }
@@ -532,19 +533,19 @@ export class CredentialMapper {
     jwt: string,
     opts?: {
       maxTimeSkewInMS?: number
-    }
+    },
   ): IVerifiableCredential {
     return CredentialMapper.jwtDecodedCredentialToUniformCredential(jwt_decode(jwt), opts)
   }
 
   static jwtDecodedCredentialToUniformCredential(
     decoded: JwtDecodedVerifiableCredential,
-    opts?: { maxTimeSkewInMS?: number }
+    opts?: { maxTimeSkewInMS?: number },
   ): IVerifiableCredential {
     const { exp, nbf, iss, vc, sub, jti, ...rest } = decoded
     const credential: IVerifiableCredential = {
       ...rest,
-      ...vc
+      ...vc,
     }
 
     const maxSkewInMS = opts?.maxTimeSkewInMS ?? 1500
@@ -620,118 +621,6 @@ export class CredentialMapper {
     return credential
   }
 
-  static sdJwtDecodedCredentialToUniformCredential(
-    decoded: SdJwtDecodedVerifiableCredential,
-    opts?: { maxTimeSkewInMS?: number }
-  ): IVerifiableCredential {
-    // console.log(decoded)
-    const { decodedPayload } = decoded // fixme: other params and proof
-    // console.log(decodedPayload)
-    const {
-      exp = undefined,
-      nbf = undefined,
-      iss = undefined,
-      iat = undefined,
-      vct,
-      cnf = undefined,
-      status = undefined,
-      sub = undefined,
-      jti = undefined,
-      ...rest
-    } = decodedPayload
-    const credential: Omit<IVerifiableCredential, 'issuer' | 'issuanceDate'> = {
-      type: [vct],
-      '@context': [],
-      credentialSubject: {
-        ...rest
-      }
-    }
-
-    const maxSkewInMS = opts?.maxTimeSkewInMS ?? 1500
-
-    if (exp) {
-      const expDate = credential.expirationDate
-      const jwtExp = parseInt(exp.toString())
-      // fix seconds to millisecond for the date
-      const expDateAsStr = jwtExp < 9999999999 ? new Date(jwtExp * 1000).toISOString().replace(/\.000Z/, 'Z') : new Date(jwtExp).toISOString()
-      if (expDate && expDate !== expDateAsStr) {
-        const diff = Math.abs(new Date(expDateAsStr).getTime() - new Date(expDate).getTime())
-        if (!maxSkewInMS || diff > maxSkewInMS) {
-          throw new Error(`Inconsistent expiration dates between JWT claim (${expDateAsStr}) and VC value (${expDate})`)
-        }
-      }
-      credential.expirationDate = expDateAsStr
-    }
-
-    if (nbf) {
-      const issuanceDate = credential.issuanceDate
-      const jwtNbf = parseInt(nbf.toString())
-      // fix seconds to millisecs for the date
-      const nbfDateAsStr = jwtNbf < 9999999999 ? new Date(jwtNbf * 1000).toISOString().replace(/\.000Z/, 'Z') : new Date(jwtNbf).toISOString()
-      if (issuanceDate && issuanceDate !== nbfDateAsStr) {
-        const diff = Math.abs(new Date(nbfDateAsStr).getTime() - new Date(issuanceDate).getTime())
-        if (!maxSkewInMS || diff > maxSkewInMS) {
-          throw new Error(`Inconsistent issuance dates between JWT claim (${nbfDateAsStr}) and VC value (${issuanceDate})`)
-        }
-      }
-      credential.issuanceDate = nbfDateAsStr
-    } else if (iat) {
-      const issuanceDate = credential.issuanceDate
-      const jwtNbf = parseInt(iat.toString())
-      // fix seconds to millisecs for the date
-      const nbfDateAsStr = jwtNbf < 9999999999 ? new Date(jwtNbf * 1000).toISOString().replace(/\.000Z/, 'Z') : new Date(jwtNbf).toISOString()
-      if (issuanceDate && issuanceDate !== nbfDateAsStr) {
-        const diff = Math.abs(new Date(nbfDateAsStr).getTime() - new Date(issuanceDate).getTime())
-        if (!maxSkewInMS || diff > maxSkewInMS) {
-          throw new Error(`Inconsistent issuance dates between JWT claim (${nbfDateAsStr}) and VC value (${issuanceDate})`)
-        }
-      }
-      credential.issuanceDate = nbfDateAsStr
-    }
-
-    if (iss) {
-      const issuer = credential.issuer
-      if (issuer) {
-        if (typeof issuer === 'string') {
-          if (issuer !== iss) {
-            throw new Error(`Inconsistent issuers between JWT claim (${iss}) and VC value (${issuer})`)
-          }
-        } else {
-          if (!issuer.id && Object.keys(issuer).length > 0) {
-            // We have an issuer object with more than 1 property but without an issuer id. Set it,
-            // because the default behaviour of did-jwt-vc is to remove the id value when creating JWTs
-            issuer.id = iss
-          }
-          if (issuer.id !== iss) {
-            throw new Error(`Inconsistent issuers between JWT claim (${iss}) and VC value (${issuer.id})`)
-          }
-        }
-      } else {
-        credential.issuer = iss
-      }
-    }
-
-    if (sub) {
-      const subjects = Array.isArray(credential.credentialSubject) ? credential.credentialSubject : [credential.credentialSubject]
-      for (let i = 0; i < subjects.length; i++) {
-        const csId = subjects[i].id
-        if (csId && csId !== sub) {
-          throw new Error(`Inconsistent credential subject ids between JWT claim (${sub}) and VC value (${csId})`)
-        }
-        Array.isArray(credential.credentialSubject) ? (credential.credentialSubject[i].id = sub) : (credential.credentialSubject.id = sub)
-      }
-    }
-    if (jti) {
-      const id = credential.id
-      if (id && id !== jti) {
-        throw new Error(`Inconsistent credential ids between JWT claim (${jti}) and VC value (${id})`)
-      }
-      credential.id = jti
-    }
-
-    return credential as IVerifiableCredential
-  }
-
   static toExternalVerifiableCredential(verifiableCredential: any): IVerifiableCredential {
     let proof
     if (verifiableCredential.proof) {
@@ -755,7 +644,7 @@ export class CredentialMapper {
         type: verifiableCredential.proof.type,
         created: verifiableCredential.proof.created,
         proofPurpose: verifiableCredential.proof.proofPurpose,
-        verificationMethod: verifiableCredential.proof.verificationMethod
+        verificationMethod: verifiableCredential.proof.verificationMethod,
       }
     }
 
@@ -766,7 +655,7 @@ export class CredentialMapper {
           ? [verifiableCredential.type]
           : verifiableCredential.type
         : ['VerifiableCredential'],
-      proof
+      proof,
     }
   }
 
@@ -809,7 +698,7 @@ export class CredentialMapper {
   }
 
   static toCompactJWT(
-    jwtDocument: W3CVerifiableCredential | JwtDecodedVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiablePresentation | string
+    jwtDocument: W3CVerifiableCredential | JwtDecodedVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiablePresentation | string,
   ): string {
     if (!jwtDocument || CredentialMapper.detectDocumentType(jwtDocument) !== DocumentFormat.JWT) {
       throw Error('Cannot convert non JWT credential to JWT')
@@ -837,7 +726,7 @@ export class CredentialMapper {
       | W3CVerifiablePresentation
       | JwtDecodedVerifiableCredential
       | JwtDecodedVerifiablePresentation
-      | SdJwtDecodedVerifiableCredential
+      | SdJwtDecodedVerifiableCredential,
   ): DocumentFormat {
     if (this.isJsonLdAsString(document)) {
       return DocumentFormat.JSONLD
@@ -859,7 +748,7 @@ export class CredentialMapper {
   }
 
   private static hasJWTProofType(
-    document: W3CVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiableCredential | JwtDecodedVerifiablePresentation
+    document: W3CVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiableCredential | JwtDecodedVerifiablePresentation,
   ): boolean {
     if (typeof document === 'string') {
       return false
@@ -868,7 +757,7 @@ export class CredentialMapper {
   }
 
   private static getFirstProof(
-    document: W3CVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiableCredential | JwtDecodedVerifiablePresentation
+    document: W3CVerifiableCredential | W3CVerifiablePresentation | JwtDecodedVerifiableCredential | JwtDecodedVerifiablePresentation,
   ): IProof | undefined {
     if (!document || typeof document === 'string') {
       return undefined

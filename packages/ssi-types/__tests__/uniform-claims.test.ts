@@ -6,11 +6,11 @@ import {
   ICredentialSubject,
   IVerifiableCredential,
   JwtDecodedVerifiablePresentation,
-  W3CVerifiableCredential
+  W3CVerifiableCredential,
 } from '../src'
 
 function getFile(path: string) {
-  return fs.readFileSync(path, 'utf-8').replace(/\r/g,'').replace(/\n/g, '')
+  return fs.readFileSync(path, 'utf-8').replace(/\r/g, '').replace(/\n/g, '')
 }
 
 function getFileAsJson(path: string) {
@@ -18,8 +18,8 @@ function getFileAsJson(path: string) {
 }
 
 export const generateDigest = (data: string, algorithm: string): Uint8Array => {
-  return new Uint8Array(crypto.createHash('sha256').update(data).digest());
-};
+  return new Uint8Array(crypto.createHash('sha256').update(data).digest())
+}
 
 describe('Uniform VC claims', () => {
   it('should set expiration date if exp is present in JWT vc', () => {
@@ -137,8 +137,8 @@ describe('Uniform VC claims', () => {
 
   it('should work with sd jwt VC from Funke', () => {
     const jwtVc: string = getFile('packages/ssi-types/__tests__/vc_vp_examples/vc/sd.jwt')
-    const vc = CredentialMapper.toUniformCredential(jwtVc, {hasher: generateDigest})
-    console.log(JSON.stringify(vc, null ,2))
+    const vc = CredentialMapper.toUniformCredential(jwtVc, { hasher: generateDigest })
+    console.log(JSON.stringify(vc, null, 2))
     expect(vc.issuanceDate).toEqual('2024-08-16T09:29:44Z')
     expect(vc.expirationDate).toEqual('2024-08-30T09:29:44Z')
   })
