@@ -4,10 +4,10 @@ import { X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
 import * as crypto from 'crypto'
 import { Certificate, CryptoEngine, setEngine } from 'pkijs'
 import { VerifyCertificateChainArgs } from '../types/ImDLMdoc'
-import CoseSign1Cbor = com.sphereon.cbor.cose.CoseSign1Cbor
-import CoseSign1InputCbor = com.sphereon.cbor.cose.CoseSign1InputCbor
-import ICoseKeyCbor = com.sphereon.cbor.cose.ICoseKeyCbor
-import IKey = com.sphereon.cbor.cose.IKey
+import CoseSign1Cbor = com.sphereon.crypto.cose.CoseSign1Cbor
+import CoseSign1InputCbor = com.sphereon.crypto.cose.CoseSign1InputCbor
+import ICoseKeyCbor = com.sphereon.crypto.cose.ICoseKeyCbor
+import IKey = com.sphereon.crypto.IKey
 import CryptoServiceJS = com.sphereon.crypto.CryptoServiceJS
 import ICoseCryptoCallbackJS = com.sphereon.crypto.ICoseCryptoCallbackJS
 import IKeyInfo = com.sphereon.crypto.IKeyInfo
@@ -15,21 +15,21 @@ import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult
 import IX509ServiceJS = com.sphereon.crypto.IX509ServiceJS
 import IX509VerificationResult = com.sphereon.crypto.IX509VerificationResult
 import X509VerificationProfile = com.sphereon.crypto.X509VerificationProfile
-import Jwk = com.sphereon.jose.jwk.Jwk
+import Jwk = com.sphereon.crypto.jose.Jwk
 import decodeFrom = com.sphereon.kmp.decodeFrom
 import Encoding = com.sphereon.kmp.Encoding
-import CoseKeyJson = com.sphereon.cbor.cose.CoseKeyJson
+import CoseKeyJson = com.sphereon.crypto.cose.CoseKeyJson
 
 export class CoseCryptoService implements ICoseCryptoCallbackJS {
-  async sign1<CborType, JsonType>(
-    input: CoseSign1InputCbor<CborType, JsonType>,
+  async sign1<CborType>(
+    input: CoseSign1InputCbor,
     keyInfo?: IKeyInfo<ICoseKeyCbor>,
-  ): Promise<CoseSign1Cbor<CborType, JsonType>> {
+  ): Promise<CoseSign1Cbor<CborType>> {
     throw new Error('Method not implemented.')
   }
 
-  async verify1<CborType, JsonType>(
-    input: CoseSign1Cbor<CborType, JsonType>,
+  async verify1<CborType>(
+    input: CoseSign1Cbor<CborType>,
     keyInfo?: IKeyInfo<ICoseKeyCbor>,
   ): Promise<IVerifySignatureResult<ICoseKeyCbor>> {
     async function getCertAndKey(x5c: Nullable<Array<string>>): Promise<{
@@ -78,8 +78,8 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
       // todo: Workaround as the Agent only works with cosekey json objects and we do not support conversion of these from Json to cbor yet
       const jwk =
         typeof key.x === 'string'
-          ? Jwk.Companion.fromCoseKeyJson(keyInfo.key as unknown as CoseKeyJson).toJsonObject()
-          : Jwk.Companion.fromCoseKey(keyInfo.key).toJsonObject()
+          ? Jwk.Static.fromCoseKeyJson(keyInfo.key as unknown as CoseKeyJson).toJsonObject()
+          : Jwk.Static.fromCoseKey(keyInfo.key).toJsonObject()
       if (kid === null) {
         kid = jwk.kid
       }
@@ -105,7 +105,7 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
 
     const exportedJwk = await crypto.subtle.exportKey('jwk', issuerPublicKey)
     const crv = exportedJwk.crv
-    const coseKey = Jwk.Companion.fromJsonObject(exportedJwk).jwkToCoseKeyJson()
+    const coseKey = Jwk.Static.fromJson(exportedJwk).jwkToCoseKeyJson()
     const recalculatedToBeSigned = input.toBeSignedJson(coseKey, coseAlg)
     const valid = await crypto.subtle.verify(
       {

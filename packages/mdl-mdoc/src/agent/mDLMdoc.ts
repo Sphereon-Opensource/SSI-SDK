@@ -4,10 +4,10 @@ import { IAgentPlugin } from '@veramo/core'
 import { CoseCryptoService, X509CallbackService } from '../functions'
 import { IRequiredContext, MdocVerifyIssuerSignedArgs, schema, VerifyCertificateChainArgs } from '../index'
 import { ImDLMdoc, KeyType } from '../types/ImDLMdoc'
-import ICoseKeyCbor = com.sphereon.cbor.cose.ICoseKeyCbor
+import ICoseKeyCbor = com.sphereon.crypto.cose.ICoseKeyCbor
 import IKeyInfo = com.sphereon.crypto.IKeyInfo
 import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult
-import CoseSign1Json = com.sphereon.cbor.cose.CoseSign1Json
+import CoseSign1Json = com.sphereon.crypto.cose.CoseSign1Json
 
 export const mdocSupportMethods: Array<string> = ['mdocVerifyIssuerSigned']
 
@@ -23,7 +23,7 @@ export class MDLMdoc implements IAgentPlugin {
 
     // FIXME: The ignore because of json/cbor
     // @ts-ignore
-    return await new CoseCryptoService().verify1(CoseSign1Json.Companion.fromDTO(input).toCbor(), {
+    return await new CoseCryptoService().verify1(CoseSign1Json.Static.fromDTO(input).toCbor(), {
       ...keyInfo,
       key: keyInfo?.key,
     } as IKeyInfo<ICoseKeyCbor>) // fixme: Json to Cbor for key
