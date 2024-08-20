@@ -5,19 +5,17 @@ import { ManagedIdentifierOpts, ManagedIdentifierResult } from '@sphereon/ssi-sd
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
-import { CompactJWT, CredentialMapper, Hasher, SdJwtDecodedVerifiableCredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
+import { CompactJWT, CredentialMapper, Hasher, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { encodeJoseBlob } from '@veramo/utils'
 import {
   DEFAULT_JWT_PROOF_TYPE,
   IGetPresentationExchangeArgs,
   IOID4VPArgs,
-  IRequiredContext,
   VerifiableCredentialsWithDefinition,
   VerifiablePresentationWithDefinition,
 } from '../types'
 import { createOID4VPPresentationSignCallback } from './functions'
 import { OpSession } from './OpSession'
-import { ICreateSdJwtPresentationArgs, IPresentationFrame } from '@sphereon/ssi-sdk.sd-jwt'
 
 export class OID4VP {
   private readonly session: OpSession
@@ -152,31 +150,8 @@ export class OID4VP {
     if (!idOpts) {
       return Promise.reject(Error(`No identifier options present at this point`))
     }
-    let sdJwtPresentationSignCallback
-    if (CredentialMapper.isSdJwtDecodedCredential(vcs.credentials[0])) {
-      const sdJwtCredentialDecoded = vcs.credentials[0] as SdJwtDecodedVerifiableCredential
-      const presentationFrame: IPresentationFrame = {}
-      sdJwtCredentialDecoded.disclosures.forEach((disclosure) => {
-        //fixme: this is not the correct way to extract the presentationFrame as we should have access it earlier in the process (and it's not working for recursive keys.)
-        // @ts-ignore
-        const key = disclosure.decoded.key as string
-        presentationFrame[key] = true
-      })
-      sdJwtPresentationSignCallback = this.sdJwtSignCallback(
-        {
-          presentation: sdJwtCredentialDecoded.compactSdJwtVc,
-          presentationFrame,
-          kb: sdJwtCredentialDecoded.kbJwt,
-        },
-        this.session.context,
-      )
-    }
-    const presentationSignCallback = this.session.options.presentationSignCallback ?? sdJwtPresentationSignCallback
-
     const signCallback = await createOID4VPPresentationSignCallback({
-      //fixme: adjust pex types to accept callback args for sd-jwt
-      // @ts-ignore
-      presentationSignCallback: presentationSignCallback,
+      presentationSignCallback: this.session.options.presentationSignCallback,
       idOpts,
       context: this.session.context,
       domain: proofOptions.domain,
@@ -192,7 +167,6 @@ export class OID4VP {
     }).createVerifiablePresentation(vcs.definition.definition, vcs.credentials, signCallback, {
       proofOptions,
       // fixme: Update to newer siop-vp to not require dids here.
-      // holderDID: isManagedIdentifierDidOpts(idOpts) ? (await this.session.context.agent.identifierManagedGetByDid(idOpts)).did : undefined,
       holderDID: identifier.kid,
     })
 
@@ -250,10 +224,6 @@ export class OID4VP {
       credentials: (await this.filterCredentialsWithSelectionStatus(credentialRole, presentationDefinition, opts))
         .verifiableCredential as W3CVerifiableCredential[],
     }
-  }
-
-  public async sdJwtSignCallback(args: ICreateSdJwtPresentationArgs, context: IRequiredContext): Promise<string> {
-    return (await context.agent.createSdJwtPresentation(args)).presentation as CompactJWT
   }
 
   public async filterCredentialsWithSelectionStatus(
