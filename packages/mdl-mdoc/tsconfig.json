@@ -18,6 +18,9 @@
     },
     {
       "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../data-store"
     }
   ]
 }

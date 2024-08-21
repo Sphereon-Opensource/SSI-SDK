@@ -75,9 +75,7 @@ describe('Issuer Auth', (): void => {
 
   const coseCrypto = new CoseCryptoService()
 
-  beforeAll(async (): Promise<void> => {})
-
-  it('should decode and encode ISO Test Vector', async () => {
+  it('should decode and encode ISO Test Vector', () => {
     const coseSign = CoseSign1Cbor.Static.cborDecode<any>(decodeFrom(iso18013_5_IssuerAuthTestVector, Encoding.HEX))
     expect(coseSign).toBeDefined()
     console.log(coseSign.toJson().toJsonDTO<CoseSign1Json>())
