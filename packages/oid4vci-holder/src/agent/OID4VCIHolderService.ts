@@ -107,18 +107,13 @@ export const getCredentialConfigsBasedOnFormatPref = async (
   return prefConfigs
 }
 
-export const selectCredentialLocaleBranding = (
-  args: SelectAppLocaleBrandingArgs,
-): Promise<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding | undefined> => {
+export const selectCredentialLocaleBranding = async (args: SelectAppLocaleBrandingArgs): Promise<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding | undefined> => {
   const { locale, localeBranding } = args
 
-  const branding = localeBranding?.find(
+  return localeBranding?.find(
     (branding: IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding) =>
       locale ? branding.locale?.startsWith(locale) || branding.locale === undefined : branding.locale === undefined, // TODO refactor as we have duplicate code
   )
-
-  // FIXME as we should be able to just return the value directly
-  return Promise.resolve(branding)
 }
 
 export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<VerificationResult> => {
