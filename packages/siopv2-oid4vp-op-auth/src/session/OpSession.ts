@@ -221,7 +221,6 @@ export class OpSession {
       resolveOpts.subjectSyntaxTypesSupported = await this.getSupportedDIDMethods(true)
     }
     //todo: populate with the right verification params. In did-auth-siop we don't have any test that actually passes this parameter
-    // and furthermore, it receives a couple of parameters that don't make that much sense for OP. like presentationVerificationCallback and revocationOpts
     const verification: Verification = {
       // mode: VerificationMode.INTERNAL,
       // checkLinkedDomain: CheckLinkedDomain.IF_PRESENT,
