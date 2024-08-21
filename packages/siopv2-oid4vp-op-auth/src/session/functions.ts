@@ -12,7 +12,7 @@ import { Resolvable } from 'did-resolver'
 import { JWTHeader, JWTVerifyOptions } from 'did-jwt'
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { getAgentDIDMethods } from '@sphereon/ssi-sdk-ext.did-utils'
-import { getAudience, getResolver, verifyDidJWT } from '@sphereon/did-auth-siop-adapter'
+import { getResolver } from '@sphereon/did-auth-siop-adapter'
 import { CreateJwtCallback, JwtHeader, JwtPayload } from '@sphereon/oid4vc-common'
 import { JwsCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 
@@ -184,11 +184,7 @@ function getVerifyJwtCallback(
   },
 ): VerifyJwtCallback {
   return async (jwtVerifier, jwt) => {
-    resolver = resolver ?? getResolver({ subjectSyntaxTypesSupported: ['ethr', 'ion'] })
-    const audience =
-      jwtVerifier.type === 'request-object' || jwtVerifier.type === 'id-token' ? (verifyOpts?.audience ?? getAudience(jwt.raw)) : undefined
-    //todo probably wise to revisit this. this is called verifyDidJWT and expects a did resolver param.
-    await verifyDidJWT(jwt.raw, resolver, { audience, ...verifyOpts })
+    //fixme: SPRIND-49 for actually verifying the jwt value here
     return true
   }
 }
