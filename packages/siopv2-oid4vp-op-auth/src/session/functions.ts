@@ -132,30 +132,16 @@ export async function createOPBuilder({
 export function signCallback(
   idOpts: ManagedIdentifierOpts,
   context: IRequiredContext,
-): (jwt: { header: JwtHeader; payload: JwtPayload }, kid?: string) => Promise<string> {
-  return async (jwt: { header: JwtHeader; payload: JwtPayload }, kid?: string) => {
+): (jwt: { header: JwtHeader; payload: JwtPayload }) => Promise<string> {
+  return async (jwt: { header: JwtHeader; payload: JwtPayload }) => {
     const jwk = jwt.header.jwk
-
-    if (!kid) {
-      kid = jwt.header.kid
-    }
-    if (!kid) {
-      kid = idOpts.kid
-    }
-    if (!kid && jwk && 'kid' in jwk) {
-      kid = jwk.kid as string
-    }
-
-    if (kid && !idOpts.kid) {
-      // sync back to id opts
-      idOpts.kid = kid.split('#')[0]
-    }
 
     const resolution = await context.agent.identifierManagedGet(idOpts)
     const issuer = jwt.payload.iss || (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.issuer)
     if (!issuer) {
       return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)}`))
     }
+    let kid = resolution.kid
     if (kid && isManagedIdentifierDidResult(resolution) && !kid.startsWith(resolution.did)) {
       // Make sure we create a fully qualified kid
       const hash = kid.startsWith('#') ? '' : '#'
