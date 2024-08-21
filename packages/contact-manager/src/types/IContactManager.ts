@@ -21,7 +21,7 @@ import {
   PartyTypeType as ContactTypeType,
   PhysicalAddress,
 } from '@sphereon/ssi-sdk.data-store'
-import { contextHasPlugin } from '../../../agent-config/src/agentContextUtils'
+import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 
 export interface IContactManager extends IPluginMethodMap {
   cmGetContact(args: GetContactArgs, context: RequiredContext): Promise<Contact>
