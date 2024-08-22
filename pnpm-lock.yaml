@@ -595,11 +595,11 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-next.7
-        version: 0.16.1-next.7
+        specifier: 0.16.1-next.13
+        version: 0.16.1-next.13
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.7
-        version: 0.16.1-next.7
+        specifier: 0.16.1-next.13
+        version: 0.16.1-next.13
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -848,11 +848,11 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-next.7
-        version: 0.16.1-next.7
+        specifier: 0.16.1-next.13
+        version: 0.16.1-next.13
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.7
-        version: 0.16.1-next.7
+        specifier: 0.16.1-next.13
+        version: 0.16.1-next.13
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1021,11 +1021,11 @@ importers:
   packages/oid4vci-holder:
     dependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-next.7
-        version: 0.16.1-next.7
+        specifier: 0.16.1-next.13
+        version: 0.16.1-next.13
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.7
-        version: 0.16.1-next.7
+        specifier: 0.16.1-next.13
+        version: 0.16.1-next.13
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-next.96
         version: 0.24.1-next.96(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -1115,11 +1115,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.7
-        version: 0.16.1-next.7
+        specifier: 0.16.1-next.13
+        version: 0.16.1-next.13
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-next.7
-        version: 0.16.1-next.7(awesome-qr@2.1.5-rc.0)
+        specifier: 0.16.1-next.13
+        version: 0.16.1-next.13(awesome-qr@2.1.5-rc.0)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-next.96
         version: 0.24.1-next.96(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -1176,14 +1176,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.7
-        version: 0.16.1-next.7
+        specifier: 0.16.1-next.13
+        version: 0.16.1-next.13
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-next.7
-        version: 0.16.1-next.7(awesome-qr@2.1.5-rc.0)
+        specifier: 0.16.1-next.13
+        version: 0.16.1-next.13(awesome-qr@2.1.5-rc.0)
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.16.1-next.7
-        version: 0.16.1-next.7(awesome-qr@2.1.5-rc.0)
+        specifier: 0.16.1-next.13
+        version: 0.16.1-next.13(awesome-qr@2.1.5-rc.0)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1342,8 +1342,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.7
-        version: 0.16.1-next.7
+        specifier: 0.16.1-next.13
+        version: 0.16.1-next.13
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1379,8 +1379,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.7
-        version: 0.16.1-next.7
+        specifier: 0.16.1-next.13
+        version: 0.16.1-next.13
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-next.96
         version: 0.24.1-next.96(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -8642,6 +8642,7 @@ packages:
       '@js-joda/timezone': 2.3.0(@js-joda/core@5.6.3)
       format-util: 1.0.5
     dev: false
+    bundledDependencies: []
 
   /@sphereon/lto-did-ts@0.1.8-unstable.0(debug@4.3.6)(typescript@5.4.2):
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
@@ -8667,24 +8668,13 @@ packages:
       sha.js: 2.4.11
       uint8arrays: 3.1.1
       uuid: 9.0.1
-    dev: false
 
-  /@sphereon/oid4vc-common@0.16.1-next.7:
-    resolution: {integrity: sha512-kqS5youxv5aBN90gVyjQ1ZLHmeRaQekWQsxoFYGhNqwvSc4VpXF2YiMwM9FKr2Uf+/cGffl7oLYnNqlQwC2iGA==}
+  /@sphereon/oid4vci-client@0.16.1-next.13:
+    resolution: {integrity: sha512-hMrdnrosJrvndIQIwRfbAtopCEjaw3J0nC8nAqkXPWY3Il/6qlW8v/6Uh41TvbWUReRyAI2qGWVYT5WPPiTekA==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/ssi-types': link:packages/ssi-types
-      jwt-decode: 4.0.0
-      sha.js: 2.4.11
-      uint8arrays: 3.1.1
-      uuid: 9.0.1
-
-  /@sphereon/oid4vci-client@0.16.1-next.7:
-    resolution: {integrity: sha512-Pp5ZaHU+GHM1+N6S9G8jhP5FLyG7t36L+V6uFQj834TBYnSWIEDQM9BcMYNOCN3If2hBL4A42iW+r+HDht9Q1w==}
-    engines: {node: '>=18'}
-    dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.7
-      '@sphereon/oid4vci-common': 0.16.1-next.7
+      '@sphereon/oid4vc-common': 0.16.1-next.13
+      '@sphereon/oid4vci-common': 0.16.1-next.13
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
       debug: 4.3.6
@@ -8692,21 +8682,23 @@ packages:
       - encoding
       - supports-color
 
-  /@sphereon/oid4vci-common@0.16.1-next.7:
-    resolution: {integrity: sha512-Cl7W9KfySsWPS4I6eWwBedfKdT5LaAqRdSeLKITSGyd37jb4eEdz42CWOQUiB6V2FA+cQlQVwFKYcG8KT+rrLA==}
+  /@sphereon/oid4vci-common@0.16.1-next.13:
+    resolution: {integrity: sha512-6RPKk9zSOknhPHwI67Zzyq7Abqzztd0HSEuLssC13EA+oNdrb4fqfoXjyLw81kl+b+OwZGXKSGPexq/9S/JxxA==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.7
+      '@sphereon/oid4vc-common': 0.16.1-next.13
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
+      debug: 4.3.6
       jwt-decode: 4.0.0
       uint8arrays: 3.1.1
       uuid: 9.0.1
     transitivePeerDependencies:
       - encoding
+      - supports-color
 
-  /@sphereon/oid4vci-issuer-server@0.16.1-next.7(awesome-qr@2.1.5-rc.0):
-    resolution: {integrity: sha512-TpizsJlqRa4YqvvlRiBu3Uroij5O+9IWO8an/IzE936RmzDo6Q6Lx1V+PAvCsuaWzbqIqKtZ8Zjq3+ij7JmJhA==}
+  /@sphereon/oid4vci-issuer-server@0.16.1-next.13(awesome-qr@2.1.5-rc.0):
+    resolution: {integrity: sha512-B3E0yjEMyoq6INqHpRw4r4FdSyrYHZTVU1Oqu7lTuRxdNEVGhQVjzyaBjo0aRcVUKJ6U9zHF0+okjh7isD2TqQ==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -8714,9 +8706,9 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.7
-      '@sphereon/oid4vci-common': 0.16.1-next.7
-      '@sphereon/oid4vci-issuer': 0.16.1-next.7(awesome-qr@2.1.5-rc.0)
+      '@sphereon/oid4vc-common': 0.16.1-next.13
+      '@sphereon/oid4vci-common': 0.16.1-next.13
+      '@sphereon/oid4vci-issuer': 0.16.1-next.13(awesome-qr@2.1.5-rc.0)
       '@sphereon/ssi-express-support': 0.29.0
       '@sphereon/ssi-types': link:packages/ssi-types
       awesome-qr: 2.1.5-rc.0
@@ -8735,8 +8727,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.16.1-next.7(awesome-qr@2.1.5-rc.0):
-    resolution: {integrity: sha512-3BIipmmw837R+f2Bt+GS9Huvb7QWNCCUVbKSZ9o/uPQPcM4GYlegDfINxBfE+k9xyd4mJTdxSUJzhhzcie1bSw==}
+  /@sphereon/oid4vci-issuer@0.16.1-next.13(awesome-qr@2.1.5-rc.0):
+    resolution: {integrity: sha512-YKkvpyE7pdHoJMf2Dp1aYWTNNhNA49DqOnQMww4oXaUA7WHiMmGwkTFOg4T6LzxvGuMnw5IpA95XDIFM31FRpQ==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -8744,13 +8736,14 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.7
-      '@sphereon/oid4vci-common': 0.16.1-next.7
+      '@sphereon/oid4vc-common': 0.16.1-next.13
+      '@sphereon/oid4vci-common': 0.16.1-next.13
       '@sphereon/ssi-types': link:packages/ssi-types
       awesome-qr: 2.1.5-rc.0
       uuid: 9.0.1
     transitivePeerDependencies:
       - encoding
+      - supports-color
     dev: false
 
   /@sphereon/pex-models@2.2.4:
