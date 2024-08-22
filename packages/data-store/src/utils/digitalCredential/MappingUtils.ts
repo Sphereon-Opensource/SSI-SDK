@@ -1,8 +1,5 @@
-import { AddCredentialArgs } from '../../types'
-import { DigitalCredentialEntity } from '../../entities/digitalCredential/DigitalCredentialEntity'
 import {
   CredentialMapper,
-  decodeSdJwtVc,
   DocumentFormat,
   IVerifiableCredential,
   IVerifiablePresentation,
@@ -10,8 +7,9 @@ import {
   OriginalVerifiablePresentation,
   SdJwtDecodedVerifiableCredentialPayload,
 } from '@sphereon/ssi-types'
-import { CredentialDocumentFormat, DocumentType, DigitalCredential, NonPersistedDigitalCredential } from '../../types'
 import { computeEntryHash } from '@veramo/utils'
+import { DigitalCredentialEntity } from '../../entities/digitalCredential/DigitalCredentialEntity'
+import { AddCredentialArgs, CredentialDocumentFormat, DigitalCredential, DocumentType, NonPersistedDigitalCredential } from '../../types'
 
 function determineDocumentType(raw: string): DocumentType {
   const rawDocument = parseRawDocument(raw)
@@ -56,24 +54,24 @@ function determineCredentialDocumentFormat(documentFormat: DocumentFormat): Cred
 }
 
 function getValidUntil(uniformDocument: IVerifiableCredential | IVerifiablePresentation | SdJwtDecodedVerifiableCredentialPayload): Date | undefined {
-  if ('expirationDate' in uniformDocument) {
+  if ('expirationDate' in uniformDocument && uniformDocument.expirationDate) {
     return new Date(uniformDocument.expirationDate)
-  } else if ('validUntil' in uniformDocument) {
+  } else if ('validUntil' in uniformDocument && uniformDocument.validUntil) {
     return new Date(uniformDocument.validUntil)
-  } else if ('exp' in uniformDocument) {
-    return new Date(uniformDocument.exp)
+  } else if ('exp' in uniformDocument && uniformDocument.exp) {
+    return new Date(uniformDocument.exp * 1000)
   }
   return undefined
 }
 
 function getValidFrom(uniformDocument: IVerifiableCredential | IVerifiablePresentation | SdJwtDecodedVerifiableCredentialPayload): Date | undefined {
-  if ('issuanceDate' in uniformDocument) {
+  if ('issuanceDate' in uniformDocument && uniformDocument.issuanceDate) {
     return new Date(uniformDocument.issuanceDate)
-  } else if ('validFrom' in uniformDocument) {
+  } else if ('validFrom' in uniformDocument && uniformDocument.validFrom) {
     return new Date(uniformDocument['validFrom'])
-  } else if ('nbf' in uniformDocument) {
+  } else if ('nbf' in uniformDocument && uniformDocument.nbf) {
     return new Date(uniformDocument['nbf'] * 1000)
-  } else if ('iat' in uniformDocument) {
+  } else if ('iat' in uniformDocument && uniformDocument.iat) {
     return new Date(uniformDocument['iat'] * 1000)
   }
   return undefined
@@ -85,24 +83,24 @@ export const nonPersistedDigitalCredentialEntityFromAddArgs = (addCredentialArgs
   if (documentFormat === DocumentFormat.SD_JWT_VC && !addCredentialArgs.opts?.hasher) {
     throw new Error('No hasher function is provided for SD_JWT credential.')
   }
+  const hasher = addCredentialArgs.opts?.hasher
   const uniformDocument =
-    documentFormat === DocumentFormat.SD_JWT_VC
-      ? decodeSdJwtVc(addCredentialArgs.rawDocument, addCredentialArgs.opts!.hasher!).decodedPayload
-      : documentType === DocumentType.VC || documentType === DocumentType.C
-        ? CredentialMapper.toUniformCredential(addCredentialArgs.rawDocument)
-        : CredentialMapper.toUniformPresentation(addCredentialArgs.rawDocument)
+    documentType === DocumentType.VC || documentType === DocumentType.C
+      ? CredentialMapper.toUniformCredential(addCredentialArgs.rawDocument, { hasher })
+      : CredentialMapper.toUniformPresentation(addCredentialArgs.rawDocument)
   const validFrom: Date | undefined = getValidFrom(uniformDocument)
   const validUntil: Date | undefined = getValidUntil(uniformDocument)
+  const hash = computeEntryHash(addCredentialArgs.rawDocument)
   return {
     ...addCredentialArgs,
     documentType,
     documentFormat: determineCredentialDocumentFormat(documentFormat),
     createdAt: new Date(),
-    credentialId: uniformDocument.id as string | undefined, // uniformDocument.id is being inferred as JsonValue somehow
-    hash: computeEntryHash(addCredentialArgs.rawDocument),
+    credentialId: uniformDocument.id ?? hash,
+    hash,
     uniformDocument: JSON.stringify(uniformDocument),
     validFrom,
-    validUntil,
+    ...(validUntil && { validUntil }),
     lastUpdatedAt: new Date(),
   }
 }

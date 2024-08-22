@@ -6,7 +6,14 @@ import {
   NonPersistedDigitalCredential,
   UpdateCredentialStateArgs,
 } from '@sphereon/ssi-sdk.data-store'
-import { ICredential, IPresentation, IVerifiableCredential, OriginalVerifiableCredential, OriginalVerifiablePresentation } from '@sphereon/ssi-types'
+import {
+  Hasher,
+  ICredential,
+  IPresentation,
+  IVerifiableCredential,
+  OriginalVerifiableCredential,
+  OriginalVerifiablePresentation,
+} from '@sphereon/ssi-types'
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import { FindClaimsArgs } from './claims'
 
@@ -113,6 +120,7 @@ export type AddDigitalCredential = Omit<
 
 export type AddCredentialArgs = {
   credential: AddDigitalCredential
+  opts?: { maxTimeSkewInMS?: number; hasher?: Hasher }
 }
 
 export interface UniqueDigitalCredential {

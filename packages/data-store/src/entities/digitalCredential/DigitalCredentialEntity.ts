@@ -1,9 +1,16 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
-import { CredentialCorrelationType, CredentialDocumentFormat, CredentialRole, CredentialStateType, DocumentType } from '../../types'
+import {
+  CredentialCorrelationType,
+  CredentialDocumentFormat,
+  CredentialRole,
+  CredentialStateType,
+  DigitalCredential,
+  DocumentType,
+} from '../../types'
 import { typeormDate, typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 
 @Entity('DigitalCredential')
-export class DigitalCredentialEntity extends BaseEntity {
+export class DigitalCredentialEntity extends BaseEntity implements DigitalCredential {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 

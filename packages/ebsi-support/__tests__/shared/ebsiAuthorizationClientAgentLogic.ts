@@ -1,5 +1,7 @@
 import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
 import { Alg, AuthorizationDetails, CredentialResponse, Jwt } from '@sphereon/oid4vci-common'
+import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import { IDIDManager, IIdentifier, IKeyManager, MinimalImportableKey, TAgent } from '@veramo/core'
@@ -11,7 +13,7 @@ import { importJWK, SignJWT } from 'jose'
 import { IEbsiSupport } from '../../src'
 import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
 
-type ConfiguredAgent = TAgent<IKeyManager & IDIDManager & IDidAuthSiopOpAuthenticator & IEbsiSupport>
+type ConfiguredAgent = TAgent<IKeyManager & IDIDManager & IIdentifierResolution & IJwtService & IDidAuthSiopOpAuthenticator & IEbsiSupport>
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
   const secp256k1: MinimalImportableKey = {
