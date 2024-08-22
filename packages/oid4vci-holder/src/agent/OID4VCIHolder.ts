@@ -18,8 +18,8 @@ import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   ensureManagedIdentifierResult,
   IIdentifierResolution,
-  isManagedIdentifierDidResult,
-  ManagedIdentifierOptsOrResult,
+  isManagedIdentifierDidResult, isManagedIdentifierJwkResult,
+  ManagedIdentifierOptsOrResult
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService, JwtHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey, SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
@@ -608,8 +608,10 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
 
     const identifier = await getIdentifierOpts({ issuanceOpt, context })
-    logger.debug(`ID opts`, identifier)
+    logger.info(`ID opts`, identifier)
     const alg: SignatureAlgorithmJwa = await signatureAlgorithmFromKey({ key: identifier.key })
+    // The VCI lib either expects a jwk or a kid
+    const jwk = isManagedIdentifierJwkResult(identifier) ? identifier.jwk : undefined
 
     const callbacks: ProofOfPossessionCallbacks<never> = {
       signCallback: signCallback(client, identifier, context),
@@ -627,6 +629,8 @@ export class OID4VCIHolder implements IAgentPlugin {
         if (client.isEBSI() && clientId?.startsWith('http') && kid?.includes('#')) {
           kid = kid.split('#')[1]
         }
+
+        //todo: investigate if the jwk should be used here as well if present
         const clientOpts: AuthorizationServerClientOpts = {
           ...accessTokenOpts.clientOpts,
           clientId,
@@ -661,7 +665,8 @@ export class OID4VCIHolder implements IAgentPlugin {
         format: issuanceOpt.format,
         // TODO: We need to update the machine and add notifications support for actual deferred credentials instead of just waiting/retrying
         deferredCredentialAwait: true,
-        kid,
+        ...(!jwk && {kid}), // vci client either wants a jwk or kid. If we have used the jwk method do not provide the kid
+        jwk,
         alg,
         jti: uuidv4(),
       })

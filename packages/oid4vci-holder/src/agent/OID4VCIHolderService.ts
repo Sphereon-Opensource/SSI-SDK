@@ -324,10 +324,10 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
       offlineWhenNoDIDRegistered: result.did.startsWith('did:ebsi:'),
     })
   } else if (supportedBindingMethods.includes('jwk')) {
-    // todo: we probably should do something similar as with DIDs
+    // todo: we probably should do something similar as with DIDs for re-use/new keys
     const key = await context.agent.keyManagerCreate({ type: keyType, kms })
-    await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { key })
-    return managedIdentifierToJwk({ identifier: key, kmsKeyRef: key.kid }, context)
+    // TODO. Create/move this to identifier service await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { key })
+    return await managedIdentifierToJwk({ method: 'key', identifier: key, kmsKeyRef: key.kid }, context)
   } else {
     throw Error(`Holder currently does not support binding method: ${supportedBindingMethods.join(',')}`)
   }
