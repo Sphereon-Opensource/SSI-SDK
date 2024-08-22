@@ -555,7 +555,11 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
       // @ts-ignore
     case 'jwt':
     case 'jwt_vc_json':
-    case 'jwt_vc': {
+    case 'jwt_vc':
+    case 'vc+sd-jwt':
+    // @ts-ignore
+    case 'mso_mdoc':
+    {
       const supportedPreferences: Array<SignatureAlgorithmJwa> = jwtCryptographicSuitePreferences.filter((suite: SignatureAlgorithmJwa) =>
           signing_algs_supported.includes(suite),
       )

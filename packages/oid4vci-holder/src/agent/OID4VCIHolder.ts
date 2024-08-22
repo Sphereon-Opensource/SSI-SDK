@@ -457,10 +457,6 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     const credentialSelection: Array<CredentialToSelectFromResult> = await Promise.all(
       Object.entries(credentialsSupported).map(async ([id, credentialConfigSupported]): Promise<CredentialToSelectFromResult> => {
-        if (credentialConfigSupported.format === 'vc+sd-jwt') {
-          return Promise.reject(Error('SD-JWT not supported yet'))
-        }
-
         // FIXME this allows for duplicate VerifiableCredential, which the user has no idea which ones those are and we also have a branding map with unique keys, so some branding will not match
         // const defaultCredentialType = 'VerifiableCredential'
 
