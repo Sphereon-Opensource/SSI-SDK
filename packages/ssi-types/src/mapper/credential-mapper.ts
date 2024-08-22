@@ -30,6 +30,7 @@ import {
   decodeSdJwtVc,
   decodeSdJwtVcAsync,
   AsyncHasher,
+  sdJwtDecodedCredentialToUniformCredential,
 } from '../types'
 import { ObjectUtils } from '../utils'
 import { IssuerType } from '@veramo/core'
@@ -467,7 +468,7 @@ export class CredentialMapper {
     },
   ): IVerifiableCredential {
     if (CredentialMapper.isSdJwtDecodedCredential(verifiableCredential)) {
-      throw new Error('Converting SD-JWT VC to uniform VC is not supported.')
+      return sdJwtDecodedCredentialToUniformCredential(verifiableCredential, opts)
     }
     const original =
       typeof verifiableCredential !== 'string' && CredentialMapper.hasJWTProofType(verifiableCredential)
@@ -482,7 +483,11 @@ export class CredentialMapper {
 
     const isJwtEncoded: boolean = CredentialMapper.isJwtEncoded(original)
     const isJwtDecoded: boolean = CredentialMapper.isJwtDecodedCredential(original)
+    const isSdJwtEncoded = CredentialMapper.isSdJwtEncoded(original)
 
+    if (isSdJwtEncoded) {
+      return sdJwtDecodedCredentialToUniformCredential(decoded as SdJwtDecodedVerifiableCredential, opts)
+    }
     if (isJwtDecoded || isJwtEncoded) {
       return CredentialMapper.jwtDecodedCredentialToUniformCredential(decoded as JwtDecodedVerifiableCredential, opts)
     } else {

@@ -140,6 +140,8 @@ agent:
             - $ref: /dbConnection
         - $require: '@veramo/credential-w3c#CredentialPlugin'
         - $require: ./packages/ebsi-support/dist#EbsiSupport
+        - $require: ./packages/identifier-resolution/dist#IdentifierResolution
+        - $require: ./packages/jwt-service/dist#JwtService
         - $require: ./packages/presentation-exchange/dist#PresentationExchange
         - $require: ./packages/siopv2-oid4vp-op-auth/dist#DidAuthSiopOpAuthenticator
         - $require: ./packages/oid4vci-holder/dist#OID4VCIHolder

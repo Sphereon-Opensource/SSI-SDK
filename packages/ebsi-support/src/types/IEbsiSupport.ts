@@ -2,6 +2,7 @@ import { DiscoveryMetadataPayload, JWK } from '@sphereon/did-auth-siop'
 import { OID4VCICredentialFormat, RequestObjectOpts } from '@sphereon/oid4vci-common'
 import { Format, PresentationDefinitionV2 } from '@sphereon/pex-models'
 import { IIdentifierResolution, ManagedIdentifierDidOpts, ManagedIdentifierDidResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { CredentialRole, IBasicCredentialLocaleBranding, Party } from '@sphereon/ssi-sdk.data-store'
 import { ErrorDetails, IOID4VCIHolder, MappedCredentialToAccept } from '@sphereon/ssi-sdk.oid4vci-holder'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
@@ -241,5 +242,13 @@ export type GetOIDProviderJwksResponse = GetOIDProviderJwksSuccessResponse | Exc
 export type GetPresentationDefinitionResponse = GetPresentationDefinitionSuccessResponse
 export type GetAccessTokenResponse = GetAccessTokenSuccessResponse | ExceptionResponse
 export type IRequiredContext = IAgentContext<
-  IKeyManager & IDIDManager & IResolver & IIdentifierResolution & IDidAuthSiopOpAuthenticator & IPresentationExchange & IOID4VCIHolder & IEbsiSupport
+  IKeyManager &
+    IDIDManager &
+    IResolver &
+    IIdentifierResolution &
+    IJwtService &
+    IDidAuthSiopOpAuthenticator &
+    IPresentationExchange &
+    IOID4VCIHolder &
+    IEbsiSupport
 >
