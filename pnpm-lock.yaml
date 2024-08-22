@@ -2825,20 +2825,20 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/ssi-sdk-ext.did-provider-key':
-        specifier: 0.24.1-unstable.82
-        version: 0.24.1-unstable.82(expo@51.0.30)(react-native@0.75.2)
+        specifier: 0.24.1-next.96
+        version: 0.24.1-next.96(expo@51.0.30)(react-native@0.75.2)
       '@sphereon/ssi-sdk-ext.did-provider-lto':
         specifier: 0.23.0
         version: 0.23.0(typescript@5.4.2)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.24.1-unstable.82
-        version: 0.24.1-unstable.82(ts-node@10.9.2)
+        specifier: 0.24.1-next.96
+        version: 0.24.1-next.96(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.24.1-unstable.82
-        version: 0.24.1-unstable.82
+        specifier: 0.24.1-next.96
+        version: 0.24.1-next.96
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.24.1-unstable.82
-        version: 0.24.1-unstable.82(ts-node@10.9.2)
+        specifier: 0.24.1-next.96
+        version: 0.24.1-next.96(ts-node@10.9.2)
       '@transmute/lds-ecdsa-secp256k1-recovery2020':
         specifier: ^0.0.7
         version: 0.0.7(expo@51.0.30)(react-native@0.75.2)
@@ -8959,11 +8959,11 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-provider-key@0.24.1-unstable.82(expo@51.0.30)(react-native@0.75.2):
-    resolution: {integrity: sha512-2oZ2YKjW98R/VjD/3EbHJ/siyg12vUI2XZH7Y14OZsywj3oOOlBU1cF0a4shQAzrviHARKewgUE7shMomnUFsw==}
+  /@sphereon/ssi-sdk-ext.did-provider-key@0.24.1-next.96(expo@51.0.30)(react-native@0.75.2):
+    resolution: {integrity: sha512-uQ8LBKsrox/syXlswRklxDw94qh0EcNK4F7pCWv/JR6yLfiSYHng9VzyK24hQatIJWvWjpiJyNPERdhTaJBIxw==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.24.1-unstable.82
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.82
+      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.24.1-next.96
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-next.96
       '@transmute/did-key-bls12381': 0.3.0-unstable.10(expo@51.0.30)(react-native@0.75.2)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
@@ -9045,10 +9045,10 @@ packages:
       - supports-color
     dev: true
 
-  /@sphereon/ssi-sdk-ext.did-resolver-key@0.24.1-unstable.82:
-    resolution: {integrity: sha512-AjotFyuysGzIG1CXVc9Xd77f3GlZehgYDz9QFidIfDTPVTo9PUVv+YfNfkZYF4OJRGb4tDvzNsjJmROtYb+64w==}
+  /@sphereon/ssi-sdk-ext.did-resolver-key@0.24.1-next.96:
+    resolution: {integrity: sha512-3tA3NbhEIgv88BkwZoNHsBoEXuJLWNZMuBcEgi9a96YJyKbaKCTukkwGxL4RUSfsw1I92zd8Z31dfi1ZZANWZA==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.82
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-next.96
       '@stablelib/ed25519': 1.0.3
       bigint-mod-arith: 3.3.1
       did-resolver: 4.1.0
@@ -9172,7 +9172,6 @@ packages:
       - supports-color
       - ts-node
       - typeorm-aurora-data-api-driver
-    dev: false
 
   /@sphereon/ssi-sdk-ext.identifier-resolution@0.24.1-unstable.82(ts-node@10.9.2):
     resolution: {integrity: sha512-z9EHHUDxhfzoG0G/ZLyyRyqKSjcQXkFnZKFac7MBpw5s+ZnxUgz45gzrBx23CUva3nTgu49FOcjIs1dLKqGdBw==}
@@ -9207,6 +9206,7 @@ packages:
       - supports-color
       - ts-node
       - typeorm-aurora-data-api-driver
+    dev: false
 
   /@sphereon/ssi-sdk-ext.jwt-service@0.24.1-next.96(ts-node@10.9.2):
     resolution: {integrity: sha512-BmASL0brvGONu8DSjaLtzQdUzsbsdzDYfr0sdfmOEr/bVcIZmquIIpjUITkJIozH94k/tO/ni2rg2frKQ3J3rw==}
