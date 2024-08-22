@@ -1,4 +1,4 @@
-import { LOG } from '@sphereon/oid4vci-client/dist/types'
+import { LOG } from '@sphereon/oid4vci-client'
 import {
   CredentialConfigurationSupported,
   CredentialOfferFormatV1_0_11,
@@ -12,7 +12,7 @@ import {
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
-import { KeyManagementSystemEnum } from '@sphereon/ssi-sdk-ext.did-utils/src/types'
+import { KeyManagementSystemEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   ensureManagedIdentifierResult,
   isManagedIdentifierDidResult,

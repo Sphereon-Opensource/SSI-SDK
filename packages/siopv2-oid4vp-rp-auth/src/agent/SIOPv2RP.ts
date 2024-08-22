@@ -5,7 +5,7 @@ import {
   decodeUriAsJson,
   VerifiedAuthorizationResponse,
 } from '@sphereon/did-auth-siop'
-import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop/dist/types/SessionManager'
+import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { AdditionalClaims, CredentialMapper, Hasher, ICredentialSubject, IVerifiableCredential } from '@sphereon/ssi-types'
 import { OriginalVerifiablePresentation } from '@sphereon/ssi-types/dist'

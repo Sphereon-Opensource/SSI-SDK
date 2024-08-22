@@ -1,4 +1,4 @@
-import { ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution/dist/types'
+import { ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IIdentifier } from '@veramo/core'
 import { ILocaleBranding } from '../issuanceBranding/issuanceBranding'
 import { CredentialRole } from '../digitalCredential/digitalCredential'
