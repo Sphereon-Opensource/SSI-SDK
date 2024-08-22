@@ -541,13 +541,16 @@ export const getIssuanceMethod = async (
   if (cryptographic_binding_methods_supported && Array.isArray(cryptographic_binding_methods_supported)) {
     methods = cryptographic_binding_methods_supported as ManagedIdentifierMethod[]
     const didMethods: SupportedDidMethodEnum | undefined = didMethodPreferences.find((method: SupportedDidMethodEnum) =>
-      cryptographic_binding_methods_supported.includes(`did:${method.toLowerCase().replace('did:', '')}`),
+      cryptographic_binding_methods_supported.includes(`did:${method.toLowerCase()/*.replace('did:', '')*/}`),
     )
     if (didMethods) {
       return { methods, didMethod: didMethods }
     } else if (cryptographic_binding_methods_supported.includes('did')) {
       return { methods, didMethod: format ? didMethodPreferences[1] : didMethodPreferences[0] }
+    } else if (methods.length > 0) {
+      return { methods }
     }
+    console.warn(`We should have been able to determine cryptographic_binding_methods_supported, will fall back to legacy behaviour. This is likely a bug`)
   }
 
   if (client.isEBSI()) {
@@ -567,10 +570,22 @@ export const getIssuanceMethod = async (
 export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): Promise<string> => {
   const { client, credentialSupported, jwtCryptographicSuitePreferences, jsonldCryptographicSuitePreferences } = opts
 
-  const signing_algs_supported: Array<string> = asArray(
+  let signing_algs_supported: Array<string>
+  if ('proof_types_supported' in credentialSupported && credentialSupported.proof_types_supported) {
+    if ('jwt' in credentialSupported.proof_types_supported && credentialSupported.proof_types_supported.jwt) {
+      signing_algs_supported = credentialSupported.proof_types_supported.jwt.proof_signing_alg_values_supported
+    } else if ('ldp_vp' in credentialSupported.proof_types_supported && credentialSupported.proof_types_supported.ldp_vp) {
+      signing_algs_supported = credentialSupported.proof_types_supported.ldp_vp.proof_signing_alg_values_supported
+    } else if ('cwt' in credentialSupported.proof_types_supported && credentialSupported.proof_types_supported.cwt) {
+      signing_algs_supported = credentialSupported.proof_types_supported.cwt.proof_signing_alg_values_supported
+      console.error('cwt proof type not supported')
+    } else {
+      return Promise.reject(Error(`Unsupported proof_types_supported`))
+    }
+  } else {
     // @ts-ignore
-    credentialSupported.credential_signing_alg_values_supported ?? credentialSupported.proof_signing_alg_values_supported ?? [],
-  )
+    signing_algs_supported = asArray(credentialSupported.credential_signing_alg_values_supported ?? credentialSupported.proof_signing_alg_values_supported ?? [])
+  }
 
   // TODO: Return array, so the wallet/user could choose
   switch (credentialSupported.format) {
