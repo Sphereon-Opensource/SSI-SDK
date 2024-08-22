@@ -793,8 +793,8 @@ importers:
         specifier: 0.6.4
         version: 0.6.4
       '@sphereon/kmp-mdl-mdoc':
-        specifier: 0.2.0-SNAPSHOT.1
-        version: 0.2.0-SNAPSHOT.1
+        specifier: 0.2.0-SNAPSHOT.3
+        version: 0.2.0-SNAPSHOT.3
       '@sphereon/pex':
         specifier: ^4.0.1
         version: 4.0.1
@@ -8566,8 +8566,8 @@ packages:
       uint8arrays: 3.1.1
     dev: true
 
-  /@sphereon/kmp-mdl-mdoc@0.2.0-SNAPSHOT.1:
-    resolution: {integrity: sha512-1hJYl4DPdWs/4By1HV/c+Uj0k92qJOgSip67Z+GQJezw5gs/T4dveOIDQx29UkzmE5FLX+dRpAXCvOW0SZP/JQ==}
+  /@sphereon/kmp-mdl-mdoc@0.2.0-SNAPSHOT.3:
+    resolution: {integrity: sha512-V39LCNZEov9xfix42THzz0hFUVMnehoq2yRb8GdEAuPHrQtTh2v9g66f0EX9eKOyZ2q7W/QXhM+jGNaoGVIzgg==}
     dependencies:
       '@js-joda/core': 5.6.3
       '@js-joda/timezone': 2.3.0(@js-joda/core@5.6.3)

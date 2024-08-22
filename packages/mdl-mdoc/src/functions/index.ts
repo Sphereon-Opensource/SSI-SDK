@@ -78,24 +78,24 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
       // todo: Workaround as the Agent only works with cosekey json objects and we do not support conversion of these from Json to cbor yet
       const jwk =
         typeof key.x === 'string'
-          ? Jwk.Static.fromCoseKeyJson(keyInfo.key as unknown as CoseKeyJson).toJsonObject()
-          : Jwk.Static.fromCoseKey(keyInfo.key).toJsonObject()
+          ? Jwk.Static.fromCoseKeyJson(keyInfo.key as unknown as CoseKeyJson)
+          : Jwk.Static.fromCoseKey(keyInfo.key)
       if (kid === null) {
         kid = jwk.kid
       }
       let keyAlg = jwk.kty ?? 'ECDSA'
-      const crv: string = jwk.crv ?? 'P-256'
+      const crv: string = jwk.crv?.value ?? 'P-256'
       issuerPublicKey = await crypto.subtle.importKey(
         'jwk',
         {
-          kty: jwk.kty,
+          kty: jwk.kty.value,
           crv,
           ...(jwk.x5c && { x5c: jwk.x5c }),
           ...(jwk.x && { x: jwk.x }),
           ...(jwk.y && { y: jwk.y }),
         } satisfies JsonWebKey,
         {
-          name: keyAlg === 'EC' ? 'ECDSA' : keyAlg,
+          name: keyAlg.value === 'EC' ? 'ECDSA' : keyAlg.value,
           namedCurve: crv,
         },
         true,
