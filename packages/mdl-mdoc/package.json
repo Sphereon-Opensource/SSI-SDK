@@ -20,7 +20,7 @@
     "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-next.96",
     "@sphereon/ssi-sdk-ext.key-utils": "0.24.1-next.96",
     "@sphereon/ssi-sdk-ext.x509-utils": "0.24.1-next.96",
-    "@sphereon/kmp-mdl-mdoc": "0.2.0-SNAPSHOT.0",
+    "@sphereon/kmp-mdl-mdoc": "0.2.0-SNAPSHOT.1",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "pkijs": "^3.2.4",
