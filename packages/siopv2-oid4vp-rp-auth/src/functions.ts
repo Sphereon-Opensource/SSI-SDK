@@ -181,7 +181,6 @@ export async function createRPBuilder(args: {
   return builder
 }
 
-//fixme: this is written based on OID4VCIHolder.signCallback sync the fixes to this with that function
 export function signCallback(
   idOpts: ManagedIdentifierOpts,
   context: IRequiredContext,
@@ -195,11 +194,6 @@ export function signCallback(
       return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)}`))
     }
     kid = resolution.kid
-    if (kid && isManagedIdentifierDidResult(resolution) && !kid.startsWith(resolution.did)) {
-      // Make sure we create a fully qualified kid
-      const hash = kid.startsWith('#') ? '' : '#'
-      kid = `${resolution.did}${hash}${kid}`
-    }
     const header = { ...jwt.header, ...(kid && !jwk && { kid }) } as Partial<JWTHeader>
     const payload = { ...jwt.payload, ...(issuer && { iss: issuer }) }
     if (jwk && header.kid) {

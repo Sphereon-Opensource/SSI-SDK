@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.3",
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.24.1-next.84",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.24.1-next.96",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@types/i18n-js": "^3.8.9",
     "@types/lodash.memoize": "^4.1.9",

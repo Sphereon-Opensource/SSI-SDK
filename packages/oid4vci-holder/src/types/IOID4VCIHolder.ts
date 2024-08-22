@@ -14,6 +14,7 @@ import {
 } from '@sphereon/oid4vci-common'
 import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { DigitalCredential, IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
@@ -595,6 +596,7 @@ export type RequiredContext = IAgentContext<
     ICredentialIssuer &
     ICredentialStore &
     IIdentifierResolution &
+    IJwtService &
     IDIDManager &
     IResolver &
     IKeyManager &

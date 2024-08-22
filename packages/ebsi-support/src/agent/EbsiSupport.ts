@@ -1,4 +1,4 @@
-import { PresentationDefinitionLocation, PresentationDefinitionWithLocation, SupportedVersion } from '@sphereon/did-auth-siop'
+import { CheckLinkedDomain, PresentationDefinitionLocation, PresentationDefinitionWithLocation, SupportedVersion } from '@sphereon/did-auth-siop'
 import { CreateRequestObjectMode } from '@sphereon/oid4vci-common'
 import { IPEXFilterResult } from '@sphereon/ssi-sdk.presentation-exchange'
 import { CredentialMapper, PresentationSubmission } from '@sphereon/ssi-types'
@@ -29,7 +29,6 @@ import {
 } from '../types/IEbsiSupport'
 
 import { v4 } from 'uuid'
-import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
 
 export const ebsiSupportMethods: Array<string> = [
   'ebsiCreateDidOnLedger',

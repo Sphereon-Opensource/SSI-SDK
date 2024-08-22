@@ -10,7 +10,7 @@ import { createObjects, getConfig } from '../../agent-config/src'
 import { ImDLMdoc } from '../src'
 import authClientAgentLogic from './shared/mdlMdocAgentLogic'
 
-jest.setTimeout(60000)
+jest.setTimeout(15000)
 
 const port = 4002
 const basePath = '/agent'

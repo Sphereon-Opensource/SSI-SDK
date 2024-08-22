@@ -1,8 +1,8 @@
 import { com } from '@sphereon/kmp-mdl-mdoc'
 import { X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
-import CoseSign1Json = com.sphereon.cbor.cose.CoseSign1Json
-import ICoseKeyJson = com.sphereon.cbor.cose.ICoseKeyJson
+import CoseSign1Json = com.sphereon.crypto.cose.CoseSign1Json
+import ICoseKeyJson = com.sphereon.crypto.cose.ICoseKeyJson
 import IKeyInfo = com.sphereon.crypto.IKeyInfo
 import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult
 
@@ -20,6 +20,6 @@ export type VerifyCertificateChainArgs = {
 
 export type KeyType = ICoseKeyJson
 export type MdocVerifyIssuerSignedArgs = {
-  input: CoseSign1Json<any, any>
+  input: CoseSign1Json
   keyInfo?: IKeyInfo<KeyType>
 }

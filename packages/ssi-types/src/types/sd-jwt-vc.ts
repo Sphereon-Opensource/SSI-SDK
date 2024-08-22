@@ -273,36 +273,29 @@ export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher:
   }
 }
 
-type DisclosuresAccumulator = {
-  [key: string]: any
-}
-
 // TODO naive implementation of mapping a sd-jwt onto a IVerifiableCredential. Needs some fixes and further implementation and needs to be moved out of ssi-types
-export async function sdJwtDecodedCredentialToUniformCredential(
+export const sdJwtDecodedCredentialToUniformCredential = (
   decoded: SdJwtDecodedVerifiableCredential,
   opts?: { maxTimeSkewInMS?: number },
-): Promise<IVerifiableCredential> {
-  const { exp, nbf, iss, sub, iat, vct, user, cnf, status, ...rest } = decoded.decodedPayload
-  const maxSkewInMS = opts?.maxTimeSkewInMS ?? 1500
+): IVerifiableCredential => {
+  const { decodedPayload } = decoded // fixme: other params and proof
+  const { exp, nbf, iss, iat, vct, cnf, status, sub, jti } = decodedPayload
 
-  const jwtDateToISOString = ({
-    jwtClaim,
-    claimName,
-    isRequired = false,
-  }: {
-    jwtClaim?: number
-    claimName: string
-    isRequired?: boolean
-  }): string | undefined => {
-    if (jwtClaim) {
-      const claim = parseInt(jwtClaim.toString())
-      // change JWT seconds to millisecond for the date
-      return new Date(claim * (claim < 9999999999 ? 1000 : 1)).toISOString().replace(/\.000Z/, 'Z')
-    } else if (isRequired) {
-      throw Error(`JWT claim ${claimName} is required but was not present`)
-    }
-    return undefined
+  type DisclosuresAccumulator = {
+    [key: string]: any
   }
+
+  const credentialSubject = decoded.disclosures.reduce(
+    (acc: DisclosuresAccumulator, item: { decoded: Array<any>; digest: string; encoded: string }) => {
+      const key = item.decoded[1]
+      acc[key] = item.decoded[2]
+
+      return acc
+    },
+    {},
+  )
+
+  const maxSkewInMS = opts?.maxTimeSkewInMS ?? 1500
 
   const expirationDate = jwtDateToISOString({ jwtClaim: exp, claimName: 'exp' })
   let issuanceDateStr = jwtDateToISOString({ jwtClaim: iat, claimName: 'iat' })
@@ -323,27 +316,18 @@ export async function sdJwtDecodedCredentialToUniformCredential(
     throw Error(`JWT issuance date is required but was not present`)
   }
 
-  const credentialSubject = decoded.disclosures.reduce(
-    (acc: DisclosuresAccumulator, item: { decoded: Array<any>; digest: string; encoded: string }) => {
-      const key = item.decoded[1]
-      acc[key] = item.decoded[2]
-
-      return acc
-    },
-    {},
-  )
-
-  return {
-    ...rest,
+  const credential: Omit<IVerifiableCredential, 'issuer' | 'issuanceDate'> = {
     type: [vct], // SDJwt is not a W3C VC, so no VerifiableCredential
     '@context': [], // SDJwt has no JSON-LD by default. Certainly not the VC DM1 default context for JSON-LD
     credentialSubject: {
-      ...(sub && { id: sub }),
       ...credentialSubject,
+      id: credentialSubject.id ?? sub ?? jti,
     },
     issuanceDate,
     expirationDate,
     issuer: iss,
+    ...(cnf && { cnf }),
+    ...(status && { status }),
     proof: {
       type: IProofType.SdJwtProof2024,
       created: nbfDateAsStr ?? issuanceDate,
@@ -352,4 +336,25 @@ export async function sdJwtDecodedCredentialToUniformCredential(
       jwt: decoded.compactSdJwtVc,
     },
   }
+
+  return credential as IVerifiableCredential
+}
+
+const jwtDateToISOString = ({
+  jwtClaim,
+  claimName,
+  isRequired = false,
+}: {
+  jwtClaim?: number
+  claimName: string
+  isRequired?: boolean
+}): string | undefined => {
+  if (jwtClaim) {
+    const claim = parseInt(jwtClaim.toString())
+    // change JWT seconds to millisecond for the date
+    return new Date(claim * (claim < 9999999999 ? 1000 : 1)).toISOString().replace(/\.000Z/, 'Z')
+  } else if (isRequired) {
+    throw Error(`JWT claim ${claimName} is required but was not present`)
+  }
+  return undefined
 }

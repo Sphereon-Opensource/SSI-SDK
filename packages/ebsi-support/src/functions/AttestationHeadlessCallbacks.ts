@@ -1,5 +1,5 @@
 import { decodeUriAsJson } from '@sphereon/did-auth-siop'
-import { AuthorizationServerMetadata, CredentialIssuerMetadata, getIssuerName, IssuerMetadata } from '@sphereon/oid4vci-common'
+import { getIssuerName } from '@sphereon/oid4vci-common'
 import {
   ConnectionType,
   CorrelationIdentifierType,
@@ -28,11 +28,7 @@ export const addContactCallback = (context: IRequiredContext) => {
 
     const issuerUrl: URL = new URL(serverMetadata.issuer)
     const correlationId: string = `${issuerUrl.protocol}//${issuerUrl.hostname}`
-    let issuerName: string = getIssuerName(
-      correlationId,
-      //fixme: we should be able remove the as part here.
-      serverMetadata.credentialIssuerMetadata as Partial<AuthorizationServerMetadata> & (IssuerMetadata | CredentialIssuerMetadata),
-    )
+    let issuerName: string = getIssuerName(correlationId, serverMetadata.credentialIssuerMetadata)
 
     const party: NonPersistedParty = {
       contact: {
