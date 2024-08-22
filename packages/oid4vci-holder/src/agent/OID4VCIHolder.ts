@@ -15,7 +15,12 @@ import {
   ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
 import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
-import { ensureManagedIdentifierResult, IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {
+  ensureManagedIdentifierResult,
+  IIdentifierResolution,
+  isManagedIdentifierDidResult,
+  ManagedIdentifierOptsOrResult,
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService, JwtHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey, SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
@@ -602,31 +607,30 @@ export class OID4VCIHolder implements IAgentPlugin {
       return Promise.reject(Error(`Cannot get credential issuance options`))
     }
 
-    const idOpts = await getIdentifierOpts({ issuanceOpt, context })
-    const { key, kid } = idOpts
-    logger.debug(`ID opts`, idOpts)
-    const alg: SignatureAlgorithmJwa = await signatureAlgorithmFromKey({ key })
+    const identifier = await getIdentifierOpts({ issuanceOpt, context })
+    logger.debug(`ID opts`, identifier)
+    const alg: SignatureAlgorithmJwa = await signatureAlgorithmFromKey({ key: identifier.key })
 
     const callbacks: ProofOfPossessionCallbacks<never> = {
-      signCallback: signCallback(client, idOpts, context),
+      signCallback: signCallback(client, identifier, context),
     }
 
     try {
       // We need to make sure we have acquired the access token
       if (!client.clientId) {
-        client.clientId = issuanceOpt.identifier.did
+        client.clientId = isManagedIdentifierDidResult(identifier) ? identifier.did : identifier.issuer
       }
       let asOpts: AuthorizationServerOpts | undefined = undefined
+      let kid = accessTokenOpts?.clientOpts?.kid ?? identifier.kid
       if (accessTokenOpts?.clientOpts) {
-        let clientOptsKid = accessTokenOpts.clientOpts.kid ?? kid
-        const clientId = accessTokenOpts.clientOpts.clientId ?? client.clientId
-        if (client.isEBSI() && clientId?.startsWith('http') && clientOptsKid.includes('#')) {
-          clientOptsKid = clientOptsKid.split('#')[1]
+        const clientId = accessTokenOpts.clientOpts.clientId ?? client.clientId ?? identifier.issuer
+        if (client.isEBSI() && clientId?.startsWith('http') && kid?.includes('#')) {
+          kid = kid.split('#')[1]
         }
         const clientOpts: AuthorizationServerClientOpts = {
           ...accessTokenOpts.clientOpts,
           clientId,
-          kid: clientOptsKid,
+          kid,
           // @ts-ignore
           alg: accessTokenOpts.clientOpts.alg ?? alg,
           signCallbacks: accessTokenOpts.clientOpts.signCallbacks ?? callbacks,
@@ -818,6 +822,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       logger.log(`Notification id ${notificationId} found, will send back a notification to ${notificationEndpoint}`)
       let event = 'credential_accepted'
       if (Array.isArray(subjectIssuance?.notification_events_supported)) {
+        // experimental subject issuance, where a new credential is being created
         event = subjectIssuance.notification_events_supported.includes('credential_accepted_holder_signed')
           ? 'credential_accepted_holder_signed'
           : 'credential_deleted_holder_signed'
@@ -845,7 +850,8 @@ export class OID4VCIHolder implements IAgentPlugin {
           issuer = decodedJwt.payload.sub
         }
         if (!issuer && mappedCredentialToAccept.credentialToAccept.issuanceOpt.identifier) {
-          issuer = mappedCredentialToAccept.credentialToAccept.issuanceOpt.identifier.did
+          const resolution = await ensureManagedIdentifierResult(mappedCredentialToAccept.credentialToAccept.issuanceOpt.identifier, context)
+          issuer = resolution.issuer
         }
 
         if (!issuer) {

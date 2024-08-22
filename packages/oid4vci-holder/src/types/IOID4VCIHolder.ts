@@ -13,7 +13,7 @@ import {
   NotificationRequest,
 } from '@sphereon/oid4vci-common'
 import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
-import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IIdentifierResolution, ManagedIdentifierMethod, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
@@ -417,11 +417,14 @@ export type SelectAppLocaleBrandingArgs = {
 
 export type IssuanceOpts = CredentialConfigurationSupported & {
   credentialConfigurationId?: string // Explicit ID for a credential
-  didMethod: SupportedDidMethodEnum
-  keyType: TKeyType
+  supportedBindingMethods: ManagedIdentifierMethod[]
+  supportedPreferredDidMethod?: SupportedDidMethodEnum
+  // todo: rename, now we have generic identifiers
+  identifier?: ManagedIdentifierOptsOrResult
+  // todo: replace by signature alg, so we can determine applicable key types instead of determining up front. Use proof_types_supported
+  keyType?: TKeyType
   codecName?: string
-  kid?: string
-  identifier: IIdentifier // TODO looking at the implementation, shouldn't this field be optional?
+  kms?: string
 }
 
 export type VerificationResult = {

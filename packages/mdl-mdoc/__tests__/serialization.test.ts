@@ -4,11 +4,8 @@ import CoseKeyType = com.sphereon.crypto.cose.CoseKeyType
 import CoseSignatureAlgorithm = com.sphereon.crypto.cose.CoseSignatureAlgorithm
 import ICoseKeyJson = com.sphereon.crypto.cose.ICoseKeyJson
 
-
 describe('Serialization', (): void => {
-
-  beforeAll(async (): Promise<void> => {
-  })
+  beforeAll(async (): Promise<void> => {})
 
   it('should decode and encode ISO Test Vector', async () => {
     const coseKey = CoseKeyJson.Static.fromDTO({ kty: CoseKeyType.EC2, alg: CoseSignatureAlgorithm.ES256 })
@@ -19,7 +16,5 @@ describe('Serialization', (): void => {
     const json: ICoseKeyJson = coseKey.toJsonDTO()
     console.log(json)
     console.log(CoseKeyJson.Static.fromDTO(json).alg)
-
   })
-
 })

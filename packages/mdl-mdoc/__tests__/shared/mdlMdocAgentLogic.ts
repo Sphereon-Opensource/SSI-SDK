@@ -13,11 +13,7 @@ import DocumentJson = com.sphereon.mdoc.data.device.DocumentJson
 
 type ConfiguredAgent = TAgent<ImDLMdoc>
 
-export default (testContext: {
-  getAgent: () => ConfiguredAgent;
-  setup: () => Promise<boolean>;
-  tearDown: () => Promise<boolean>
-}): void => {
+export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
   describe('Certificate chain', (): void => {
     let agent: ConfiguredAgent
 
@@ -27,35 +23,34 @@ export default (testContext: {
     })
 
     it('should verify IETF Test Vector', async () => {
-        const ietfTestVector =
-          '8443a10126a10442313154546869732069732074686520636f6e74656e742e58408eb33e4ca31d1c465ab05aac34cc6b23d58fef5c083106c4d25a91aef0b0117e2af9a291aa32e14ab834dc56ed2a223444547e01f11d3b0916e5a4c345cacb36'
+      const ietfTestVector =
+        '8443a10126a10442313154546869732069732074686520636f6e74656e742e58408eb33e4ca31d1c465ab05aac34cc6b23d58fef5c083106c4d25a91aef0b0117e2af9a291aa32e14ab834dc56ed2a223444547e01f11d3b0916e5a4c345cacb36'
 
-        const issuerAuth = CoseSign1Cbor.Static.cborDecode(decodeFrom(ietfTestVector, Encoding.HEX))
-        try {
-          await expect(
-            agent.mdocVerifyIssuerSigned({
-              input: issuerAuth.toJson(),
-              keyInfo: {
-                key: Jwk.Static.fromJson({
-                  kty: 'EC',
-                  kid: '11',
-                  crv: 'P-256',
-                  x: 'usWxHK2PmfnHKwXPS54m0kTcGJ90UiglWiGahtagnv8',
-                  y: 'IBOL-C3BttVivg-lSreASjpkttcsz-1rb7btKLv8EX4'
-                  // "d":"V8kgd2ZBRuh2dgyVINBUqpPDr7BOMGcF22CQMIUHtNM" // No private key, as we check for them explicitly
-                }).jwkToCoseKeyJson()
-              }
-            })
-          ).resolves.toMatchObject({
-            critical: true,
-            error: false,
-            message: 'Signature of \'11\' was valid'
-          })
-        } catch (error) {
-          console.log(error)
-        }
+      const issuerAuth = CoseSign1Cbor.Static.cborDecode(decodeFrom(ietfTestVector, Encoding.HEX))
+      try {
+        await expect(
+          agent.mdocVerifyIssuerSigned({
+            input: issuerAuth.toJson(),
+            keyInfo: {
+              key: Jwk.Static.fromJson({
+                kty: 'EC',
+                kid: '11',
+                crv: 'P-256',
+                x: 'usWxHK2PmfnHKwXPS54m0kTcGJ90UiglWiGahtagnv8',
+                y: 'IBOL-C3BttVivg-lSreASjpkttcsz-1rb7btKLv8EX4',
+                // "d":"V8kgd2ZBRuh2dgyVINBUqpPDr7BOMGcF22CQMIUHtNM" // No private key, as we check for them explicitly
+              }).jwkToCoseKeyJson(),
+            },
+          }),
+        ).resolves.toMatchObject({
+          critical: true,
+          error: false,
+          message: "Signature of '11' was valid",
+        })
+      } catch (error) {
+        console.log(error)
       }
-    )
+    })
 
     it('should verify Issuer Signed Test Vector', async () => {
       const funkeTestVector =
@@ -63,29 +58,28 @@ export default (testContext: {
       const issuerSigned = IssuerSignedCbor.Static.cborDecode(decodeFrom(funkeTestVector, Encoding.HEX))
       await expect(
         agent.mdocVerifyIssuerSigned({
-          input: issuerSigned.issuerAuth.toJson()
-        })
+          input: issuerSigned.issuerAuth.toJson(),
+        }),
       ).resolves.toMatchObject({
         critical: true,
         error: false,
-        message: 'Signature of \'C=DE,O=Bundesdruckerei GmbH,OU=I,CN=SPRIND Funke EUDI Wallet Prototype Issuer\' was valid'
+        message: "Signature of 'C=DE,O=Bundesdruckerei GmbH,OU=I,CN=SPRIND Funke EUDI Wallet Prototype Issuer' was valid",
       })
 
       const mdoc = issuerSigned.toDocumentJson().toJsonDTO<DocumentJson>()
       console.log(JSON.stringify(mdoc, null, 2))
-
     })
 
     it('should be verified for Sphereon issued cert from CA', async () => {
       await expect(
         agent.verifyCertificateChain({
           chain: [sphereonTest, sphereonCA],
-          trustAnchors: [sphereonCA]
-        })
+          trustAnchors: [sphereonCA],
+        }),
       ).resolves.toMatchObject({
         critical: false,
         error: false,
-        message: 'Certificate chain was valid'
+        message: 'Certificate chain was valid',
       })
     })
 
@@ -93,12 +87,12 @@ export default (testContext: {
       await expect(
         agent.verifyCertificateChain({
           chain: [sphereonTest],
-          trustAnchors: [sphereonCA]
-        })
+          trustAnchors: [sphereonCA],
+        }),
       ).resolves.toMatchObject({
         critical: false,
         error: false,
-        message: 'Certificate chain was valid'
+        message: 'Certificate chain was valid',
       })
     })
 
@@ -106,12 +100,12 @@ export default (testContext: {
       await expect(
         agent.verifyCertificateChain({
           chain: [funkeTestIssuer, funkeTestCA],
-          trustAnchors: [funkeTestCA]
-        })
+          trustAnchors: [funkeTestCA],
+        }),
       ).resolves.toMatchObject({
         critical: false,
         error: false,
-        message: 'Certificate chain was valid'
+        message: 'Certificate chain was valid',
       })
     })
 
@@ -119,12 +113,12 @@ export default (testContext: {
       await expect(
         agent.verifyCertificateChain({
           chain: [sphereonTest, sphereonCA],
-          trustAnchors: [funkeTestCA]
-        })
+          trustAnchors: [funkeTestCA],
+        }),
       ).resolves.toMatchObject({
         critical: true,
         error: true,
-        message: 'No valid certificate paths found'
+        message: 'No valid certificate paths found',
       })
     })
 

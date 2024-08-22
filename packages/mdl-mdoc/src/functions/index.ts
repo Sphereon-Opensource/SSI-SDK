@@ -21,17 +21,11 @@ import Encoding = com.sphereon.kmp.Encoding
 import CoseKeyJson = com.sphereon.crypto.cose.CoseKeyJson
 
 export class CoseCryptoService implements ICoseCryptoCallbackJS {
-  async sign1<CborType>(
-    input: CoseSign1InputCbor,
-    keyInfo?: IKeyInfo<ICoseKeyCbor>,
-  ): Promise<CoseSign1Cbor<CborType>> {
+  async sign1<CborType>(input: CoseSign1InputCbor, keyInfo?: IKeyInfo<ICoseKeyCbor>): Promise<CoseSign1Cbor<CborType>> {
     throw new Error('Method not implemented.')
   }
 
-  async verify1<CborType>(
-    input: CoseSign1Cbor<CborType>,
-    keyInfo?: IKeyInfo<ICoseKeyCbor>,
-  ): Promise<IVerifySignatureResult<ICoseKeyCbor>> {
+  async verify1<CborType>(input: CoseSign1Cbor<CborType>, keyInfo?: IKeyInfo<ICoseKeyCbor>): Promise<IVerifySignatureResult<ICoseKeyCbor>> {
     async function getCertAndKey(x5c: Nullable<Array<string>>): Promise<{
       issuerCert: Certificate
       issuerPublicKey: CryptoKey
@@ -76,10 +70,7 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
       const key = keyInfo.key
 
       // todo: Workaround as the Agent only works with cosekey json objects and we do not support conversion of these from Json to cbor yet
-      const jwk =
-        typeof key.x === 'string'
-          ? Jwk.Static.fromCoseKeyJson(keyInfo.key as unknown as CoseKeyJson)
-          : Jwk.Static.fromCoseKey(keyInfo.key)
+      const jwk = typeof key.x === 'string' ? Jwk.Static.fromCoseKeyJson(keyInfo.key as unknown as CoseKeyJson) : Jwk.Static.fromCoseKey(keyInfo.key)
       if (kid === null) {
         kid = jwk.kid
       }
