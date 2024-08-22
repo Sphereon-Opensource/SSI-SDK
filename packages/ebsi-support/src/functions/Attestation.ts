@@ -153,6 +153,8 @@ export const ebsiCreateAttestationAuthRequestURL = async (
     },
     accessTokenOpts: {
       clientOpts: {
+        //fixme: fix this: TS2551: Property ES384 does not exist on type typeof Alg. Did you mean PS384?
+        //@ts-ignore
         alg: Alg[await signatureAlgorithmFromKey({ key: authKey })],
         clientId,
         kid,

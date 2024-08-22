@@ -16,7 +16,7 @@ import {
 } from '@sphereon/oid4vci-common'
 import { signDidJWT, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IIdentifierResolution, isManagedIdentifierDidResult, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { SignatureAlgorithmEnum, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
+import { signatureAlgorithmFromKey, SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   CorrelationIdentifierType,
   CredentialCorrelationType,
@@ -211,10 +211,10 @@ export class OID4VCIHolder implements IAgentPlugin {
     SupportedDidMethodEnum.DID_EBSI,
     SupportedDidMethodEnum.DID_ION,
   ]
-  private readonly jwtCryptographicSuitePreferences: Array<SignatureAlgorithmEnum> = [
-    SignatureAlgorithmEnum.ES256,
-    SignatureAlgorithmEnum.ES256K,
-    SignatureAlgorithmEnum.EdDSA,
+  private readonly jwtCryptographicSuitePreferences: Array<SignatureAlgorithmJwa> = [
+    SignatureAlgorithmJwa.ES256,
+    SignatureAlgorithmJwa.ES256K,
+    SignatureAlgorithmJwa.EdDSA,
   ]
   private static readonly DEFAULT_MOBILE_REDIRECT_URI = `${DefaultURISchemes.CREDENTIAL_OFFER}://`
   private readonly defaultAuthorizationRequestOpts: AuthorizationRequestOpts = { redirectUri: OID4VCIHolder.DEFAULT_MOBILE_REDIRECT_URI }
@@ -595,7 +595,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     const idOpts = await getIdentifierOpts({ issuanceOpt, context })
     const { key, kid } = idOpts
     logger.debug(`ID opts`, idOpts)
-    const alg: SignatureAlgorithmEnum = await signatureAlgorithmFromKey({ key })
+    const alg: SignatureAlgorithmJwa = await signatureAlgorithmFromKey({ key })
 
     const callbacks: ProofOfPossessionCallbacks<never> = {
       signCallback: signCallback(client, idOpts, context),
