@@ -1,28 +1,28 @@
+import { Jwt, SDJwt } from '@sd-jwt/core'
+import { SDJwtVcInstance, SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
+import { DisclosureFrame, JwtPayload, KbVerifier, PresentationFrame, Signer, Verifier } from '@sd-jwt/types'
+import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
+import { calculateJwkThumbprint, JWK } from '@sphereon/ssi-sdk-ext.key-utils'
+import { IAgentPlugin } from '@veramo/core'
+import { _ExtendedIKey } from '@veramo/utils'
 import Debug from 'debug'
 
 import { SignKeyArgs, SignKeyResult } from './index'
-import { Jwt, SDJwt } from '@sd-jwt/core'
-import { SDJwtVcInstance, SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
-import { Signer, Verifier, KbVerifier, JwtPayload, DisclosureFrame, PresentationFrame } from '@sd-jwt/types'
-import { IAgentPlugin } from '@veramo/core'
+import { sphereonCA } from './trustAnchors'
 import {
-  SdJWTImplementation,
-  ICreateSdJwtVcArgs,
-  ICreateSdJwtVcResult,
+  Claims,
   ICreateSdJwtPresentationArgs,
   ICreateSdJwtPresentationResult,
+  ICreateSdJwtVcArgs,
+  ICreateSdJwtVcResult,
   IRequiredContext,
   ISDJwtPlugin,
-  IVerifySdJwtVcArgs,
-  IVerifySdJwtVcResult,
   IVerifySdJwtPresentationArgs,
   IVerifySdJwtPresentationResult,
-  Claims,
+  IVerifySdJwtVcArgs,
+  IVerifySdJwtVcResult,
+  SdJWTImplementation
 } from './types'
-import { _ExtendedIKey } from '@veramo/utils'
-import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
-import { calculateJwkThumbprint, JWK } from '@sphereon/ssi-sdk-ext.key-utils'
-import { funkeTestCA, sphereonCA } from './trustAnchors'
 
 const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
 /**
@@ -30,7 +30,7 @@ const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
  * SD-JWT plugin for Veramo
  */
 export class SDJwtPlugin implements IAgentPlugin {
-  constructor(private algorithms: SdJWTImplementation) {}
+  constructor(private algorithms: SdJWTImplementation, private trustAnchorsInPEM?: string[]) {}
 
   // map the methods your plugin is declaring to their implementation
   readonly methods: ISDJwtPlugin = {
@@ -204,7 +204,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     if (x5c) {
       const certificateValidationResult = await context.agent.verifyCertificateChain({
         chain: x5c,
-        trustAnchors: [funkeTestCA, sphereonCA],
+        trustAnchors: this.trustAnchorsInPEM && this.trustAnchorsInPEM.length > 0 ? this.trustAnchorsInPEM : [sphereonCA],
       })
 
       if (certificateValidationResult.error || !certificateValidationResult?.certificateChain) {
