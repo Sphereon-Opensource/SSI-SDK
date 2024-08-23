@@ -10,7 +10,7 @@ import {
   ProofOfPossessionCallbacks
 } from '@sphereon/oid4vci-common'
 import { getAuthenticationKey, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
-import { ensureManagedIdentifierResult, ManagedIdentifierDidResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { ManagedIdentifierDidResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { calculateJwkThumbprintForKey, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   IssuanceOpts,
@@ -255,7 +255,7 @@ export const ebsiGetAttestation = async (
     contactAlias,
     contact: contact!,
     credentialBranding,
-    identifier: issuanceOpt?.identifier ? await ensureManagedIdentifierResult(issuanceOpt.identifier, agentContext) as ManagedIdentifierDidResult : authReqResult.identifier,
+    identifier: issuanceOpt?.identifier ? await agentContext.agent.identifierManagedGet(issuanceOpt.identifier) as ManagedIdentifierDidResult : authReqResult.identifier,
     error,
     credentials: credentialsToAccept
   }

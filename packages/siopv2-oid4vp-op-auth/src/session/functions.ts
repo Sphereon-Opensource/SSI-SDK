@@ -1,7 +1,7 @@
 import { OP, OPBuilder, PassBy, PresentationSignCallback, ResponseMode, SupportedVersion, VerifyJwtCallback } from '@sphereon/did-auth-siop'
 import { Format } from '@sphereon/pex-models'
 // import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
-import { isManagedIdentifierDidOpts, isManagedIdentifierDidResult, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { isManagedIdentifierDidOpts, isManagedIdentifierDidResult, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 // import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { createPEXPresentationSignCallback } from '@sphereon/ssi-sdk.presentation-exchange'
 import { TKeyType } from '@veramo/core'
@@ -27,7 +27,7 @@ export async function createOID4VPPresentationSignCallback({
   skipDidResolution,
 }: {
   presentationSignCallback?: PresentationSignCallback
-  idOpts: ManagedIdentifierOpts
+  idOpts: ManagedIdentifierOptsOrResult
   domain?: string
   challenge?: string
   fetchRemoteContexts?: boolean
@@ -58,7 +58,7 @@ export async function createOPBuilder({
   context,
 }: {
   opOptions: IOPOptions
-  idOpts?: ManagedIdentifierOpts
+  idOpts?: ManagedIdentifierOptsOrResult
   context: IRequiredContext
 }): Promise<OPBuilder> {
   const eventEmitter = opOptions.eventEmitter ?? new EventEmitter()
@@ -129,7 +129,7 @@ export async function createOPBuilder({
 }
 
 export function signCallback(
-  idOpts: ManagedIdentifierOpts,
+  idOpts: ManagedIdentifierOptsOrResult,
   context: IRequiredContext,
 ): (jwt: { header: JwtHeader; payload: JwtPayload }) => Promise<string> {
   return async (jwt: { header: JwtHeader; payload: JwtPayload }) => {
@@ -175,7 +175,7 @@ export async function createOP({
   context,
 }: {
   opOptions: IOPOptions
-  idOpts?: ManagedIdentifierOpts
+  idOpts?: ManagedIdentifierOptsOrResult
   context: IRequiredContext
 }): Promise<OP> {
   return (await createOPBuilder({ opOptions, idOpts, context })).build()

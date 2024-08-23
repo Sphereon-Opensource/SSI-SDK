@@ -12,24 +12,27 @@ import {
   Scope,
   SubjectType,
   SupportedVersion,
-  VerifyJwtCallback,
+  VerifyJwtCallback
 } from '@sphereon/did-auth-siop'
+import { CreateJwtCallback, JwtHeader, JwtPayload } from '@sphereon/oid4vc-common'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
-import { isManagedIdentifierDidResult, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {
+  isManagedIdentifierDidResult,
+  ManagedIdentifierOptsOrResult
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { JwsCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
+import { SigningAlgo } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import { CredentialMapper, Hasher } from '@sphereon/ssi-types'
+import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
 // import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { TKeyType } from '@veramo/core'
+import { createHash } from 'crypto'
+import { JWTHeader, JWTVerifyOptions } from 'did-jwt'
+import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
 import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPIdentifierOptions } from './types/ISIOPv2RP'
-import { SigningAlgo } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { createHash } from 'crypto'
-import { Resolvable } from 'did-resolver'
-import { JWTHeader, JWTVerifyOptions } from 'did-jwt'
-import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
-import { CredentialMapper, Hasher } from '@sphereon/ssi-types'
-import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
-import { JwtHeader, JwtPayload, CreateJwtCallback } from '@sphereon/oid4vc-common'
-import { JwsCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 
 export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   if (Array.isArray(rpOptions.supportedVersions) && rpOptions.supportedVersions.length > 0) {
@@ -47,7 +50,7 @@ function getWellKnownDIDVerifyCallback(siopIdentifierOpts: ISIOPIdentifierOption
       }
 }
 
-export function getPresentationVerificationCallback(idOpts: ManagedIdentifierOpts, context: IRequiredContext) {
+export function getPresentationVerificationCallback(idOpts: ManagedIdentifierOptsOrResult, context: IRequiredContext) {
   async function presentationVerificationCallback(args: any): Promise<PresentationVerificationResult> {
     if (CredentialMapper.isSdJwtEncoded(args)) {
       const result: IVerifySdJwtPresentationResult = await context.agent.verifySdJwtPresentation({ presentation: args, kb: true })
@@ -182,7 +185,7 @@ export async function createRPBuilder(args: {
 }
 
 export function signCallback(
-  idOpts: ManagedIdentifierOpts,
+  idOpts: ManagedIdentifierOptsOrResult,
   context: IRequiredContext,
 ): (jwt: { header: JwtHeader; payload: JwtPayload }, kid?: string) => Promise<string> {
   return async (jwt: { header: JwtHeader; payload: JwtPayload }, kid?: string) => {

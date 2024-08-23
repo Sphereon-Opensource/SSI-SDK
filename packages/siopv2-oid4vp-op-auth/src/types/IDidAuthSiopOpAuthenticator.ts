@@ -7,11 +7,16 @@ import {
   VerifiablePresentationTypeFormat,
   VerifiedAuthorizationRequest,
   VerifyJwtCallback,
-  VPTokenLocation,
+  VPTokenLocation
 } from '@sphereon/did-auth-siop'
+import { CheckLinkedDomain, ResolveOpts } from '@sphereon/did-auth-siop-adapter'
 import { DIDDocument } from '@sphereon/did-uni-client'
 import { VerifiablePresentationResult } from '@sphereon/pex'
-import { IIdentifierResolution, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {
+  IIdentifierResolution,
+  ManagedIdentifierOptsOrResult
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { Party } from '@sphereon/ssi-sdk.data-store'
 import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
@@ -26,7 +31,7 @@ import {
   IDIDManager,
   IKeyManager,
   IPluginMethodMap,
-  IResolver,
+  IResolver
 } from '@veramo/core'
 import { EventEmitter } from 'events'
 import { OpSession } from '../session'
@@ -43,10 +48,8 @@ import {
   SelectableCredentialsMap,
   SendResponseArgs,
   Siopv2AuthorizationRequestData,
-  Siopv2AuthorizationResponseData,
+  Siopv2AuthorizationResponseData
 } from './siop-service'
-import { CheckLinkedDomain, ResolveOpts } from '@sphereon/did-auth-siop-adapter'
-import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 
 export const LOGGER_NAMESPACE = 'sphereon:siopv2-oid4vp:op-auth'
 
@@ -80,7 +83,7 @@ export interface IOpSessionArgs {
   sessionId?: string
   requestJwtOrUri: string | URI
   providedPresentationDefinitions?: Array<PresentationDefinitionWithLocation>
-  identifierOptions?: ManagedIdentifierOpts
+  identifierOptions?: ManagedIdentifierOptsOrResult
   context: IRequiredContext
   op?: IOPOptions
 }
@@ -117,7 +120,7 @@ export interface IRemoveCustomApprovalForSiopArgs {
 }
 
 export interface IOpsSendSiopAuthorizationResponseArgs {
-  responseSignerOpts: ManagedIdentifierOpts
+  responseSignerOpts: ManagedIdentifierOptsOrResult
   // verifiedAuthorizationRequest: VerifiedAuthorizationRequest
   presentationSubmission?: PresentationSubmission
   verifiablePresentations?: W3CVerifiablePresentation[]
@@ -173,7 +176,7 @@ export interface VerifiableCredentialsWithDefinition {
 export interface VerifiablePresentationWithDefinition extends VerifiablePresentationResult {
   definition: PresentationDefinitionWithLocation
   verifiableCredentials: W3CVerifiableCredential[]
-  idOpts: ManagedIdentifierOpts
+  idOpts: ManagedIdentifierOptsOrResult
 }
 
 export interface IOpSessionGetOID4VPArgs {

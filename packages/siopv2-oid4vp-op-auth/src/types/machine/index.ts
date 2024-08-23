@@ -1,14 +1,26 @@
 import { VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
-import { ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { DidAuthConfig, Party } from '@sphereon/ssi-sdk.data-store'
 import { OriginalVerifiableCredential } from '@sphereon/ssi-types'
-import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
+import {
+  BaseActionObject,
+  Interpreter,
+  ResolveTypegenMeta,
+  ServiceMap,
+  State,
+  StateMachine,
+  TypegenDisabled
+} from 'xstate'
 import { ErrorDetails } from '../error'
-import { SelectableCredentialsMap, Siopv2AuthorizationRequestData, Siopv2AuthorizationResponseData } from '../siop-service'
+import {
+  SelectableCredentialsMap,
+  Siopv2AuthorizationRequestData,
+  Siopv2AuthorizationResponseData
+} from '../siop-service'
 
 export type Siopv2MachineContext = {
   url: string
-  idOpts?: ManagedIdentifierOpts
+  idOpts?: ManagedIdentifierOptsOrResult
   didAuthConfig?: Omit<DidAuthConfig, 'identifier'>
   authorizationRequestData?: Siopv2AuthorizationRequestData
   authorizationResponseData?: Siopv2AuthorizationResponseData
@@ -75,7 +87,7 @@ export type Siopv2StateMachine = StateMachine<
 
 export type CreateSiopv2MachineOpts = {
   url: string | URL
-  idOpts?: ManagedIdentifierOpts
+  idOpts?: ManagedIdentifierOptsOrResult
   machineId?: string
 }
 

@@ -1,7 +1,10 @@
 import { PresentationDefinitionWithLocation, PresentationExchange } from '@sphereon/did-auth-siop'
 import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
 import { Format } from '@sphereon/pex-models'
-import { ManagedIdentifierOpts, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {
+  ManagedIdentifierOptsOrResult,
+  ManagedIdentifierResult
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
@@ -60,7 +63,7 @@ export class OID4VP {
       restrictToFormats?: Format
       restrictToDIDMethods?: string[]
       proofOpts?: ProofOptions
-      idOpts?: ManagedIdentifierOpts
+      idOpts?: ManagedIdentifierOptsOrResult
       skipDidResolution?: boolean
       holderDID?: string
       subjectIsHolder?: boolean
@@ -79,7 +82,7 @@ export class OID4VP {
       restrictToFormats?: Format
       restrictToDIDMethods?: string[]
       proofOpts?: ProofOptions
-      idOpts?: ManagedIdentifierOpts
+      idOpts?: ManagedIdentifierOptsOrResult
       skipDidResolution?: boolean
       holder?: string
       subjectIsHolder?: boolean

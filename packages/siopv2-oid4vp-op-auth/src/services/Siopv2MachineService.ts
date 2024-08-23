@@ -2,7 +2,7 @@ import { SupportedVersion } from '@sphereon/did-auth-siop'
 import { IPresentationDefinition, PEX } from '@sphereon/pex'
 import { InputDescriptorV1, InputDescriptorV2, PresentationDefinitionV1, PresentationDefinitionV2 } from '@sphereon/pex-models'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
-import { isManagedIdentifierDidOpts, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { isManagedIdentifierDidOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { ConnectionType, CredentialRole } from '@sphereon/ssi-sdk.data-store'
 import { CredentialMapper, Loggers, PresentationSubmission } from '@sphereon/ssi-types'
@@ -27,7 +27,7 @@ export const siopSendAuthorizationResponse = async (
   args: {
     sessionId: string
     verifiableCredentialsWithDefinition?: VerifiableCredentialsWithDefinition[]
-    idOpts?: ManagedIdentifierOpts
+    idOpts?: ManagedIdentifierOptsOrResult
   },
   context: RequiredContext,
 ) => {

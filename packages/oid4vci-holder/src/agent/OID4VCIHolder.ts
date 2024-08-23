@@ -12,13 +12,13 @@ import {
   getTypesFromObject,
   Jwt,
   NotificationRequest,
-  ProofOfPossessionCallbacks,
+  ProofOfPossessionCallbacks
 } from '@sphereon/oid4vci-common'
 import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
-  ensureManagedIdentifierResult,
   IIdentifierResolution,
-  isManagedIdentifierDidResult, isManagedIdentifierJwkResult,
+  isManagedIdentifierDidResult,
+  isManagedIdentifierJwkResult,
   ManagedIdentifierOptsOrResult
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService, JwtHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
@@ -34,10 +34,11 @@ import {
   IdentityOrigin,
   IIssuerBranding,
   NonPersistedIdentity,
-  Party,
+  Party
 } from '@sphereon/ssi-sdk.data-store'
 import {
-  CredentialMapper, Hasher,
+  CredentialMapper,
+  Hasher,
   ICredential,
   IVerifiableCredential,
   JwtDecodedVerifiableCredential,
@@ -55,7 +56,7 @@ import {
   IResolver,
   ProofFormat,
   VerifiableCredential,
-  W3CVerifiableCredential,
+  W3CVerifiableCredential
 } from '@veramo/core'
 import { asArray, computeEntryHash } from '@veramo/utils'
 import { decodeJWT } from 'did-jwt'
@@ -89,7 +90,7 @@ import {
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
-  VerificationResult,
+  VerificationResult
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -99,7 +100,7 @@ import {
   getIssuanceOpts,
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
-  verifyCredentialToAccept,
+  verifyCredentialToAccept
 } from './OID4VCIHolderService'
 
 /**
@@ -129,7 +130,7 @@ export function signCallback(
   context: IAgentContext<IKeyManager & IDIDManager & IResolver & IIdentifierResolution & IJwtService>,
 ) {
   return async (jwt: Jwt, kid?: string) => {
-    let resolution = await ensureManagedIdentifierResult(identifier, context)
+    let resolution = await context.agent.identifierManagedGet(identifier)
     const jwk = jwt.header.jwk ?? (resolution.method === 'jwk' ? resolution.jwk : undefined)
     // const idOpts = resolution.opts
     // // todo: probably we can get rid of almost everything happening in here with the new identifier resolution
@@ -861,7 +862,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           issuer = decodedJwt.payload.sub
         }
         if (!issuer && mappedCredentialToAccept.credentialToAccept.issuanceOpt.identifier) {
-          const resolution = await ensureManagedIdentifierResult(mappedCredentialToAccept.credentialToAccept.issuanceOpt.identifier, context)
+          const resolution = await context.agent.identifierManagedGet(mappedCredentialToAccept.credentialToAccept.issuanceOpt.identifier)
           issuer = resolution.issuer
         }
 

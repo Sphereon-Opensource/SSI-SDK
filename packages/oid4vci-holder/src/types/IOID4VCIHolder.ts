@@ -10,40 +10,62 @@ import {
   EndpointMetadataResult,
   ExperimentalSubjectIssuance,
   MetadataDisplay,
-  NotificationRequest,
+  NotificationRequest
 } from '@sphereon/oid4vci-common'
-import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
-import { IIdentifierResolution, ManagedIdentifierMethod, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {
+  CreateOrGetIdentifierOpts,
+  IdentifierProviderOpts,
+  KeyManagementSystemEnum,
+  SupportedDidMethodEnum
+} from '@sphereon/ssi-sdk-ext.did-utils'
+import {
+  IIdentifierResolution,
+  ManagedIdentifierMethod,
+  ManagedIdentifierOptsOrResult,
+  ManagedIdentifierResult
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { DigitalCredential, IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
+import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
+import {
+  DigitalCredential,
+  IBasicCredentialLocaleBranding,
+  IBasicIssuerLocaleBranding,
+  Identity,
+  Party
+} from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
+import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   Hasher,
   IVerifiableCredential,
   OriginalVerifiableCredential,
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
-  WrappedVerifiablePresentation,
+  WrappedVerifiablePresentation
 } from '@sphereon/ssi-types'
-import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   IAgentContext,
   ICredentialIssuer,
   ICredentialVerifier,
   IDIDManager,
-  IIdentifier,
   IKeyManager,
   IPluginMethodMap,
   IResolver,
   TAgent,
   TKeyType,
-  VerificationPolicies,
+  VerificationPolicies
 } from '@veramo/core'
-import { _ExtendedIKey } from '@veramo/utils'
-import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
-import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
+import {
+  BaseActionObject,
+  Interpreter,
+  ResolveTypegenMeta,
+  ServiceMap,
+  State,
+  StateMachine,
+  TypegenDisabled
+} from 'xstate'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult>
@@ -100,7 +122,7 @@ export type OnCredentialStoredArgs = {
 }
 
 export type OnIdentifierCreatedArgs = {
-  identifier: IIdentifier
+  identifier: ManagedIdentifierResult
 }
 
 export type GetMachineArgs = {
@@ -504,7 +526,7 @@ export type GetIdentifierArgs = {
 }
 
 export type GetAuthenticationKeyArgs = {
-  identifier: IIdentifier
+  identifier: ManagedIdentifierOptsOrResult
   offlineWhenNoDIDRegistered?: boolean
   noVerificationMethodFallback?: boolean
   context: IAgentContext<IResolver & IDIDManager & IKeyManager>
@@ -571,11 +593,13 @@ export enum IdentifierAliasEnum {
   PRIMARY = 'primary',
 }
 
+/*
 export type IdentifierOpts = {
   identifier: IIdentifier
   key: _ExtendedIKey
   kid: string
 }
+*/
 
 export type CredentialVerificationError = {
   error?: string

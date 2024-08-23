@@ -1,5 +1,8 @@
 import { ClientMetadataOpts, VerifyJwtCallback } from '@sphereon/did-auth-siop'
-import { IIdentifierResolution, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {
+  IIdentifierResolution,
+  ManagedIdentifierOptsOrResult
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { AdditionalClaims, Hasher, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import {
@@ -173,7 +176,7 @@ export interface IPresentationWithDefinition {
 
 export interface ISIOPIdentifierOptions extends Omit<IDIDOptions, 'idOpts'> {
   // we replace the legacy idOpts with the Managed Identifier opts from the identifier resolution module
-  idOpts: ManagedIdentifierOpts
+  idOpts: ManagedIdentifierOptsOrResult
   checkLinkedDomains?: CheckLinkedDomain
   wellknownDIDVerifyCallback?: VerifyCallback
 }
