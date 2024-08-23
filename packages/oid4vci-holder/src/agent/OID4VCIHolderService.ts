@@ -247,7 +247,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
     return Promise.reject(Error('No credential found in credential response'))
   }
 
-  const wrappedVerifiableCredential: WrappedVerifiableCredential = await CredentialMapper.toWrappedVerifiableCredential(
+  const wrappedVerifiableCredential: WrappedVerifiableCredential = CredentialMapper.toWrappedVerifiableCredential(
     verifiableCredential as OriginalVerifiableCredential,
     { hasher },
   )

@@ -37,14 +37,14 @@ import {
   Party,
 } from '@sphereon/ssi-sdk.data-store'
 import {
-  CredentialMapper,
+  CredentialMapper, Hasher,
   ICredential,
   IVerifiableCredential,
   JwtDecodedVerifiableCredential,
   Loggers,
   OriginalVerifiableCredential,
   parseDid,
-  SdJwtDecodedVerifiableCredentialPayload,
+  SdJwtDecodedVerifiableCredentialPayload
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
@@ -197,6 +197,7 @@ export function signCallback(
 }
 
 export class OID4VCIHolder implements IAgentPlugin {
+  private readonly hasher?: Hasher
   readonly eventTypes: Array<OID4VCIHolderEvent> = [
     OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED,
     OID4VCIHolderEvent.CREDENTIAL_STORED,
@@ -253,8 +254,10 @@ export class OID4VCIHolder implements IAgentPlugin {
       didMethodPreferences,
       jwtCryptographicSuitePreferences,
       defaultAuthorizationRequestOptions,
+      hasher
     } = options ?? {}
 
+    this.hasher = hasher
     if (vcFormatPreferences !== undefined && vcFormatPreferences.length > 0) {
       this.vcFormatPreferences = vcFormatPreferences
     }
@@ -679,7 +682,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         issuanceOpt,
         credentialResponse,
       } satisfies CredentialToAccept
-      return mapCredentialToAccept({ credentialToAccept: credential })
+      return mapCredentialToAccept({ credentialToAccept: credential, hasher: this.hasher })
     } catch (error) {
       return Promise.reject(error)
     }
