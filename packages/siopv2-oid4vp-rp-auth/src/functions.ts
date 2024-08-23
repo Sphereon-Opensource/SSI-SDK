@@ -12,15 +12,12 @@ import {
   Scope,
   SubjectType,
   SupportedVersion,
-  VerifyJwtCallback
+  VerifyJwtCallback,
 } from '@sphereon/did-auth-siop'
 import { CreateJwtCallback, JwtHeader, JwtPayload } from '@sphereon/oid4vc-common'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
-import {
-  isManagedIdentifierDidResult,
-  ManagedIdentifierOptsOrResult
-} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { isManagedIdentifierDidResult, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { JwsCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
 import { SigningAlgo } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'

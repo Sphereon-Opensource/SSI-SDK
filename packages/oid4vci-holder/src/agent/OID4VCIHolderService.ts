@@ -8,20 +8,17 @@ import {
   getTypesFromCredentialSupported,
   getTypesFromObject,
   MetadataDisplay,
-  OpenId4VCIVersion
+  OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
-import {
-  getOrCreatePrimaryIdentifier,
-  KeyManagementSystemEnum,
-  SupportedDidMethodEnum
-} from '@sphereon/ssi-sdk-ext.did-utils'
+import { getOrCreatePrimaryIdentifier, KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   isIIdentifier,
-  isManagedIdentifierDidResult, isManagedIdentifierResult,
+  isManagedIdentifierDidResult,
+  isManagedIdentifierResult,
   ManagedIdentifierMethod,
   ManagedIdentifierResult,
-  managedIdentifierToJwk
+  managedIdentifierToJwk,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { keyTypeFromCryptographicSuite, SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
@@ -34,7 +31,7 @@ import {
   sdJwtDecodedCredentialToUniformCredential,
   SdJwtDecodedVerifiableCredential,
   W3CVerifiableCredential,
-  WrappedVerifiableCredential
+  WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
 import { IVerifyCredentialArgs, W3CVerifiableCredential as VeramoW3CVerifiableCredential } from '@veramo/core'
 import { asArray } from '@veramo/utils'
@@ -61,7 +58,7 @@ import {
   VerificationSubResult,
   VerifyCredentialArgs,
   VerifyCredentialToAcceptArgs,
-  VerifySDJWTCredentialArgs
+  VerifySDJWTCredentialArgs,
 } from '../types/IOID4VCIHolder'
 import { credentialLocaleBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
 
@@ -75,8 +72,8 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
       const localeBranding: Array<IBasicCredentialLocaleBranding> = await Promise.all(
         (credentialsConfigSupported.display ?? []).map(
           async (display: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> =>
-            await context.agent.ibCredentialLocaleBrandingFrom({ localeBranding: await credentialLocaleBrandingFrom(display) })
-        )
+            await context.agent.ibCredentialLocaleBrandingFrom({ localeBranding: await credentialLocaleBrandingFrom(display) }),
+        ),
       )
 
       const defaultCredentialType = 'VerifiableCredential'
@@ -85,7 +82,7 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
 
       const filteredCredentialTypes = credentialTypes.filter((type: string): boolean => type !== defaultCredentialType)
       credentialBranding[filteredCredentialTypes[0]] = localeBranding // TODO for now taking the first type
-    })
+    }),
   )
 
   return credentialBranding
@@ -97,12 +94,12 @@ export const getBasicIssuerLocaleBranding = async (args: GetIssuerBrandingArgs):
     display.map(async (displayItem: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
       const branding = await issuerLocaleBrandingFrom(displayItem)
       return context.agent.ibIssuerLocaleBrandingFrom({ localeBranding: branding })
-    })
+    }),
   )
 }
 
 export const getCredentialConfigsBasedOnFormatPref = async (
-  args: GetPreferredCredentialFormatsArgs
+  args: GetPreferredCredentialFormatsArgs,
 ): Promise<Record<string, CredentialConfigurationSupported>> => {
   const { vcFormatPreferences, credentials } = args
   const prefConfigs = {} as Record<string, CredentialConfigurationSupported>
@@ -117,13 +114,13 @@ export const getCredentialConfigsBasedOnFormatPref = async (
 }
 
 export const selectCredentialLocaleBranding = async (
-  args: SelectAppLocaleBrandingArgs
+  args: SelectAppLocaleBrandingArgs,
 ): Promise<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding | undefined> => {
   const { locale, localeBranding } = args
 
   return localeBranding?.find(
     (branding: IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding) =>
-      locale ? branding.locale?.startsWith(locale) || branding.locale === undefined : branding.locale === undefined // TODO refactor as we have duplicate code
+      locale ? branding.locale?.startsWith(locale) || branding.locale === undefined : branding.locale === undefined, // TODO refactor as we have duplicate code
   )
 }
 
@@ -157,10 +154,10 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
       policies: {
         credentialStatus: false,
         expirationDate: false,
-        issuanceDate: false
-      }
+        issuanceDate: false,
+      },
     },
-    context
+    context,
   )
 
   if (!verificationResult.result || verificationResult.error) {
@@ -190,9 +187,9 @@ export const verifyW3CCredential = async (args: IVerifyCredentialArgs, context: 
       result,
       ...(!result && {
         error: 'Invalid JWT VC',
-        errorDetails: `JWT VC was not valid with policies: ${JSON.stringify(policies)}`
+        errorDetails: `JWT VC was not valid with policies: ${JSON.stringify(policies)}`,
       }),
-      subResults: []
+      subResults: [],
     }
   } else {
     // TODO look at what this is doing and make it simple and readable
@@ -216,7 +213,7 @@ export const verifyW3CCredential = async (args: IVerifyCredentialArgs, context: 
       result: result.verified,
       subResults,
       error,
-      errorDetails
+      errorDetails,
     }
   }
 }
@@ -229,7 +226,7 @@ export const verifySDJWTCredential = async (args: VerifySDJWTCredentialArgs, con
     .catch((error: Error): CredentialVerificationError => {
       return {
         error: 'Invalid SD-JWT VC',
-        errorDetails: error.message ?? 'SD-JWT VC could not be verified'
+        errorDetails: error.message ?? 'SD-JWT VC could not be verified',
       }
     })
 
@@ -237,7 +234,7 @@ export const verifySDJWTCredential = async (args: VerifySDJWTCredentialArgs, con
     source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential, { hasher }),
     result: 'verifiedPayloads' in result,
     subResults: [],
-    ...(!('verifiedPayloads' in result) && { ...result })
+    ...(!('verifiedPayloads' in result) && { ...result }),
   }
 }
 
@@ -252,7 +249,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
 
   const wrappedVerifiableCredential: WrappedVerifiableCredential = CredentialMapper.toWrappedVerifiableCredential(
     verifiableCredential as OriginalVerifiableCredential,
-    { hasher }
+    { hasher },
   )
   const uniformVerifiableCredential: IVerifiableCredential = CredentialMapper.isSdJwtDecodedCredential(wrappedVerifiableCredential.credential)
     ? await sdJwtDecodedCredentialToUniformCredential(<SdJwtDecodedVerifiableCredential>wrappedVerifiableCredential.credential)
@@ -271,7 +268,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
     types: credentialToAccept.types,
     rawVerifiableCredential: verifiableCredential,
     uniformVerifiableCredential,
-    ...(credentialResponse.credential_subject_issuance && { credential_subject_issuance: credentialResponse.credential_subject_issuance })
+    ...(credentialResponse.credential_subject_issuance && { credential_subject_issuance: credentialResponse.credential_subject_issuance }),
   }
 }
 
@@ -281,12 +278,7 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
   if (identifierArg && isManagedIdentifierResult(identifierArg)) {
     return identifierArg
   }
-  const {
-    supportedPreferredDidMethod,
-    supportedBindingMethods,
-    keyType = 'Secp256r1',
-    kms = KeyManagementSystemEnum.LOCAL
-  } = issuanceOpt
+  const { supportedPreferredDidMethod, supportedBindingMethods, keyType = 'Secp256r1', kms = KeyManagementSystemEnum.LOCAL } = issuanceOpt
   let identifier: ManagedIdentifierResult
 
   if (identifierArg) {
@@ -303,7 +295,8 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
   const agentContext = { ...context, agent: context.agent as DidAgents }
 
   if (
-    (!identifierArg || isIIdentifier(identifierArg.identifier)) && supportedPreferredDidMethod &&
+    (!identifierArg || isIIdentifier(identifierArg.identifier)) &&
+    supportedPreferredDidMethod &&
     (!supportedBindingMethods || supportedBindingMethods.length === 0 || supportedBindingMethods.filter((method) => method.startsWith('did')))
   ) {
     // previous code for managing DIDs only
@@ -313,9 +306,9 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
         options: {
           type: issuanceOpt.keyType,
           use: KeyUse.Signature,
-          codecName: issuanceOpt.codecName
-        }
-      }
+          codecName: issuanceOpt.codecName,
+        },
+      },
     })
     if (created) {
       await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { result })
@@ -323,7 +316,7 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
     identifier = await context.agent.identifierManagedGetByDid({
       identifier: result,
       keyType,
-      offlineWhenNoDIDRegistered: result.did.startsWith('did:ebsi:')
+      offlineWhenNoDIDRegistered: result.did.startsWith('did:ebsi:'),
     })
   } else if (supportedBindingMethods.includes('jwk')) {
     // todo: we probably should do something similar as with DIDs for re-use/new keys
@@ -338,7 +331,7 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
 }
 
 export const getCredentialConfigsSupportedMerged = async (
-  args: GetCredentialConfigsSupportedArgs
+  args: GetCredentialConfigsSupportedArgs,
 ): Promise<Record<string, CredentialConfigurationSupported>> => {
   let result = {} as Record<string, CredentialConfigurationSupported>
   ;(await getCredentialConfigsSupported(args)).forEach((supported: Record<string, CredentialConfigurationSupported>) => {
@@ -348,7 +341,7 @@ export const getCredentialConfigsSupportedMerged = async (
 }
 
 export const getCredentialConfigsSupported = async (
-  args: GetCredentialConfigsSupportedArgs
+  args: GetCredentialConfigsSupportedArgs,
 ): Promise<Array<Record<string, CredentialConfigurationSupported>>> => {
   const { types, configurationIds } = args
   if (Array.isArray(types) && types.length > 0) {
@@ -359,15 +352,15 @@ export const getCredentialConfigsSupported = async (
         getCredentialConfigsSupportedBySingleTypeOrId({
           ...args,
           configurationId,
-          types: undefined
-        })
-      )
+          types: undefined,
+        }),
+      ),
     )
   }
   const configs = await getCredentialConfigsSupportedBySingleTypeOrId({
     ...args,
     types: undefined,
-    configurationId: undefined
+    configurationId: undefined,
   })
   return configs && Object.keys(configs).length > 0 ? [configs] : []
 }
@@ -377,7 +370,7 @@ export const getCredentialConfigsSupported = async (
  * @param args
  */
 export const getCredentialConfigsSupportedBySingleTypeOrId = async (
-  args: GetCredentialConfigsSupportedBySingleTypeOrIdArgs
+  args: GetCredentialConfigsSupportedBySingleTypeOrIdArgs,
 ): Promise<Record<string, CredentialConfigurationSupported>> => {
   const { client, vcFormatPreferences, configurationId } = args
   let { format = undefined, types = undefined } = args
@@ -393,8 +386,8 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
     const allSupported = client.getCredentialsSupported(false)
     return Object.fromEntries(
       Object.entries(allSupported).filter(
-        ([id, supported]) => id === configurationId || supported.id === configurationId || createIdFromTypes(supported) === configurationId
-      )
+        ([id, supported]) => id === configurationId || supported.id === configurationId || createIdFromTypes(supported) === configurationId,
+      ),
     )
   }
 
@@ -423,7 +416,7 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
     types: types ? [types] : client.getCredentialOfferTypes(),
     format,
     version: client.version(),
-    issuerMetadata: client.endpointMetadata.credentialIssuerMetadata
+    issuerMetadata: client.endpointMetadata.credentialIssuerMetadata,
   })
   let allSupported: Record<string, CredentialConfigurationSupported>
 
@@ -443,7 +436,7 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
 
   let credentialConfigsSupported = await getCredentialConfigsBasedOnFormatPref({
     credentials: allSupported,
-    vcFormatPreferences
+    vcFormatPreferences,
   })
   if (!credentialConfigsSupported || Object.keys(credentialConfigsSupported).length === 0) {
     LOG.warning(`No matching supported credential found for ${client.getIssuer()}`)
@@ -458,7 +451,7 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
   let credentialsToOffer: Record<string, CredentialConfigurationSupported>
   if ('credential_configuration_ids' in credentialOffer) {
     credentialsToOffer = Object.fromEntries(
-      Object.entries(credentialConfigsSupported).filter(([configId, config]) => credentialOffer.credential_configuration_ids.includes(configId))
+      Object.entries(credentialConfigsSupported).filter(([configId, config]) => credentialOffer.credential_configuration_ids.includes(configId)),
     )
     if (Object.keys(credentialsToOffer).length === 0) {
       throw new Error(`No matching supported credential configs found for offer ${credentialOffer.credential_configuration_ids.join(', ')}`)
@@ -483,7 +476,7 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
     didMethodPreferences,
     jwtCryptographicSuitePreferences,
     jsonldCryptographicSuitePreferences,
-    forceIssuanceOpt
+    forceIssuanceOpt,
   } = args
 
   if (credentialsSupported === undefined || Object.keys(credentialsSupported).length === 0) {
@@ -499,12 +492,12 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
       credentialSupported,
       client,
       jwtCryptographicSuitePreferences,
-      jsonldCryptographicSuitePreferences
+      jsonldCryptographicSuitePreferences,
     })
     const { didMethod, methods } = await getIssuanceMethod({
       credentialSupported,
       client,
-      didMethodPreferences
+      didMethodPreferences,
     })
     if (methods.length == 0) {
       console.log(`Could not determine supported cryptographic_binding_methods_supported, will use DIDs`)
@@ -513,13 +506,13 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
     const issuanceOpt = forceIssuanceOpt
       ? { ...credentialSupported, ...forceIssuanceOpt }
       : ({
-        ...credentialSupported,
-        supportedPreferredDidMethod: didMethod,
-        supportedBindingMethods: methods,
-        format: credentialSupported.format,
-        keyType: client.isEBSI() ? 'Secp256r1' : keyTypeFromCryptographicSuite({ suite: cryptographicSuite }),
-        ...(client.isEBSI() && { codecName: 'EBSI' })
-      } satisfies IssuanceOpts)
+          ...credentialSupported,
+          supportedPreferredDidMethod: didMethod,
+          supportedBindingMethods: methods,
+          format: credentialSupported.format,
+          keyType: client.isEBSI() ? 'Secp256r1' : keyTypeFromCryptographicSuite({ suite: cryptographicSuite }),
+          ...(client.isEBSI() && { codecName: 'EBSI' }),
+        } satisfies IssuanceOpts)
     const identifier = await getIdentifierOpts({ issuanceOpt, context })
     if (!client.clientId && isManagedIdentifierDidResult(identifier)) {
       // FIXME: We really should fetch server metadata. Have user select required credentials. Take the first cred to determine a kid when no clientId is present and set that.
@@ -533,7 +526,7 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
 }
 
 export const getIssuanceMethod = async (
-  opts: GetIssuanceDidMethodArgs
+  opts: GetIssuanceDidMethodArgs,
 ): Promise<{
   methods: ManagedIdentifierMethod[]
   didMethod?: SupportedDidMethodEnum
@@ -544,7 +537,7 @@ export const getIssuanceMethod = async (
   if (cryptographic_binding_methods_supported && Array.isArray(cryptographic_binding_methods_supported)) {
     methods = cryptographic_binding_methods_supported as ManagedIdentifierMethod[]
     const didMethods: SupportedDidMethodEnum | undefined = didMethodPreferences.find((method: SupportedDidMethodEnum) =>
-      cryptographic_binding_methods_supported.includes(`did:${method.toLowerCase()/*.replace('did:', '')*/}`)
+      cryptographic_binding_methods_supported.includes(`did:${method.toLowerCase() /*.replace('did:', '')*/}`),
     )
     if (didMethods) {
       return { methods, didMethod: didMethods }
@@ -553,7 +546,9 @@ export const getIssuanceMethod = async (
     } else if (methods.length > 0) {
       return { methods }
     }
-    console.warn(`We should have been able to determine cryptographic_binding_methods_supported, will fall back to legacy behaviour. This is likely a bug`)
+    console.warn(
+      `We should have been able to determine cryptographic_binding_methods_supported, will fall back to legacy behaviour. This is likely a bug`,
+    )
   }
 
   if (client.isEBSI()) {
@@ -581,13 +576,15 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
       signing_algs_supported = credentialSupported.proof_types_supported.ldp_vp.proof_signing_alg_values_supported
     } else if ('cwt' in credentialSupported.proof_types_supported && credentialSupported.proof_types_supported.cwt) {
       signing_algs_supported = credentialSupported.proof_types_supported.cwt.proof_signing_alg_values_supported
-      console.error('cwt proof type not supported')
+      console.error('cwt proof type not supported. Likely that errors will occur after this point')
     } else {
       return Promise.reject(Error(`Unsupported proof_types_supported`))
     }
   } else {
-    // @ts-ignore
-    signing_algs_supported = asArray(credentialSupported.credential_signing_alg_values_supported ?? credentialSupported.proof_signing_alg_values_supported ?? [])
+    signing_algs_supported = asArray(
+      // @ts-ignore // legacy
+      credentialSupported.credential_signing_alg_values_supported ?? credentialSupported.proof_signing_alg_values_supported ?? [],
+    )
   }
 
   // TODO: Return array, so the wallet/user could choose
@@ -600,7 +597,7 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
     // @ts-ignore
     case 'mso_mdoc': {
       const supportedPreferences: Array<SignatureAlgorithmJwa> = jwtCryptographicSuitePreferences.filter((suite: SignatureAlgorithmJwa) =>
-        signing_algs_supported.includes(suite)
+        signing_algs_supported.includes(suite),
       )
 
       if (supportedPreferences.length > 0) {
@@ -620,7 +617,7 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
     case 'jwt_vc_json_ld':
     case 'ldp_vc': {
       const supportedPreferences: Array<string> = jsonldCryptographicSuitePreferences.filter((suite: string) =>
-        signing_algs_supported.includes(suite)
+        signing_algs_supported.includes(suite),
       )
       if (supportedPreferences.length > 0) {
         return supportedPreferences[0]

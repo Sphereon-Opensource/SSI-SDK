@@ -1,20 +1,10 @@
 import { ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { LinkHandlerAdapter } from '@sphereon/ssi-sdk.core'
-import {
-  IMachineStatePersistence,
-  interpreterStartOrResume,
-  SerializableState
-} from '@sphereon/ssi-sdk.xstate-machine-persistence'
+import { IMachineStatePersistence, interpreterStartOrResume, SerializableState } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { Loggers } from '@sphereon/ssi-types'
 import { IAgentContext } from '@veramo/core'
-import {
-  GetMachineArgs,
-  IDidAuthSiopOpAuthenticator,
-  LOGGER_NAMESPACE,
-  Siopv2MachineInterpreter,
-  Siopv2MachineState
-} from '../types'
+import { GetMachineArgs, IDidAuthSiopOpAuthenticator, LOGGER_NAMESPACE, Siopv2MachineInterpreter, Siopv2MachineState } from '../types'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 

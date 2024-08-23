@@ -3,8 +3,8 @@ import { Format } from '@sphereon/pex-models'
 import {
   isManagedIdentifierDidOpts,
   isManagedIdentifierDidResult,
-  isManagedIdentifierX5cResult, ManagedIdentifierOptsOrResult
-
+  isManagedIdentifierX5cResult,
+  ManagedIdentifierOptsOrResult,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
   CredentialMapper,

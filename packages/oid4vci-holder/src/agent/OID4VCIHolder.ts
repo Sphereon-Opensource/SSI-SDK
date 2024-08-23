@@ -12,14 +12,14 @@ import {
   getTypesFromObject,
   Jwt,
   NotificationRequest,
-  ProofOfPossessionCallbacks
+  ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
 import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   IIdentifierResolution,
   isManagedIdentifierDidResult,
   isManagedIdentifierJwkResult,
-  ManagedIdentifierOptsOrResult
+  ManagedIdentifierOptsOrResult,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService, JwtHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey, SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
@@ -34,7 +34,7 @@ import {
   IdentityOrigin,
   IIssuerBranding,
   NonPersistedIdentity,
-  Party
+  Party,
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -45,7 +45,7 @@ import {
   Loggers,
   OriginalVerifiableCredential,
   parseDid,
-  SdJwtDecodedVerifiableCredentialPayload
+  SdJwtDecodedVerifiableCredentialPayload,
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
@@ -56,7 +56,7 @@ import {
   IResolver,
   ProofFormat,
   VerifiableCredential,
-  W3CVerifiableCredential
+  W3CVerifiableCredential,
 } from '@veramo/core'
 import { asArray, computeEntryHash } from '@veramo/utils'
 import { decodeJWT } from 'did-jwt'
@@ -90,7 +90,7 @@ import {
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
-  VerificationResult
+  VerificationResult,
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -100,7 +100,7 @@ import {
   getIssuanceOpts,
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
-  verifyCredentialToAccept
+  verifyCredentialToAccept,
 } from './OID4VCIHolderService'
 
 /**
@@ -178,7 +178,9 @@ export function signCallback(
     const header = jwt.header as JwtHeader
     const payload = jwt.payload // { ...jwt.payload, ...(iss && { iss }) }
     if (jwk && header.kid) {
-      console.log(`Deleting kid, as we are using a jwk and the oid4vci spec does not allow both to be present (which is not the case in the JOSE spec)`)
+      console.log(
+        `Deleting kid, as we are using a jwk and the oid4vci spec does not allow both to be present (which is not the case in the JOSE spec)`,
+      )
       delete header.kid // The OID4VCI spec does not allow a JWK with kid present although the JWS spec does
     }
     /*if (!isManagedIdentifierDidResult(resolution)) {
@@ -255,7 +257,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       didMethodPreferences,
       jwtCryptographicSuitePreferences,
       defaultAuthorizationRequestOptions,
-      hasher
+      hasher,
     } = options ?? {}
 
     this.hasher = hasher
@@ -672,7 +674,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         format: issuanceOpt.format,
         // TODO: We need to update the machine and add notifications support for actual deferred credentials instead of just waiting/retrying
         deferredCredentialAwait: true,
-        ...(!jwk && {kid}), // vci client either wants a jwk or kid. If we have used the jwk method do not provide the kid
+        ...(!jwk && { kid }), // vci client either wants a jwk or kid. If we have used the jwk method do not provide the kid
         jwk,
         alg,
         jti: uuidv4(),
@@ -841,7 +843,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           : 'credential_deleted_holder_signed'
         logger.log(`Subject issuance/signing will be used, with event`, event)
         const issuerVC = mappedCredentialToAccept.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
-        const wrappedIssuerVC = CredentialMapper.toWrappedVerifiableCredential(issuerVC, {hasher: this.hasher})
+        const wrappedIssuerVC = CredentialMapper.toWrappedVerifiableCredential(issuerVC, { hasher: this.hasher })
         console.log(`Wrapped VC: ${wrappedIssuerVC.type}, ${wrappedIssuerVC.format}`)
         // We will use the subject of the VCI Issuer (the holder, as the issuer of the new credential, so the below is not a mistake!)
         let issuer =

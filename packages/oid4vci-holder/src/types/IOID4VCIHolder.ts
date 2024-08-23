@@ -10,31 +10,20 @@ import {
   EndpointMetadataResult,
   ExperimentalSubjectIssuance,
   MetadataDisplay,
-  NotificationRequest
+  NotificationRequest,
 } from '@sphereon/oid4vci-common'
-import {
-  CreateOrGetIdentifierOpts,
-  IdentifierProviderOpts,
-  KeyManagementSystemEnum,
-  SupportedDidMethodEnum
-} from '@sphereon/ssi-sdk-ext.did-utils'
+import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   IIdentifierResolution,
   ManagedIdentifierMethod,
   ManagedIdentifierOptsOrResult,
-  ManagedIdentifierResult
+  ManagedIdentifierResult,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
-import {
-  DigitalCredential,
-  IBasicCredentialLocaleBranding,
-  IBasicIssuerLocaleBranding,
-  Identity,
-  Party
-} from '@sphereon/ssi-sdk.data-store'
+import { DigitalCredential, IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import {
@@ -43,7 +32,7 @@ import {
   OriginalVerifiableCredential,
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
-  WrappedVerifiablePresentation
+  WrappedVerifiablePresentation,
 } from '@sphereon/ssi-types'
 import {
   IAgentContext,
@@ -55,17 +44,9 @@ import {
   IResolver,
   TAgent,
   TKeyType,
-  VerificationPolicies
+  VerificationPolicies,
 } from '@veramo/core'
-import {
-  BaseActionObject,
-  Interpreter,
-  ResolveTypegenMeta,
-  ServiceMap,
-  State,
-  StateMachine,
-  TypegenDisabled
-} from 'xstate'
+import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult>

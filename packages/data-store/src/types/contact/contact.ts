@@ -1,4 +1,3 @@
-
 import { ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IIdentifier } from '@veramo/core'
 import { ILocaleBranding } from '../issuanceBranding/issuanceBranding'

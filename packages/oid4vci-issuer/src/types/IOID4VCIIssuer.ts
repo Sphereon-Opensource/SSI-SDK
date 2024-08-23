@@ -8,7 +8,7 @@ import {
   CredentialRequest,
   CredentialResponse,
   Grant,
-  JsonLdIssuerCredentialDefinition
+  JsonLdIssuerCredentialDefinition,
 } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier } from '@sphereon/oid4vci-issuer'
 import { IDIDOptions, ResolveOpts } from '@sphereon/ssi-sdk-ext.did-utils'

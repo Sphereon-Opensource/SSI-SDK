@@ -1,10 +1,7 @@
 import { PresentationDefinitionWithLocation, PresentationExchange } from '@sphereon/did-auth-siop'
 import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
 import { Format } from '@sphereon/pex-models'
-import {
-  ManagedIdentifierOptsOrResult,
-  ManagedIdentifierResult
-} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { ManagedIdentifierOptsOrResult, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'

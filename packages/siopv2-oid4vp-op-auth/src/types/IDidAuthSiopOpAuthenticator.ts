@@ -7,15 +7,12 @@ import {
   VerifiablePresentationTypeFormat,
   VerifiedAuthorizationRequest,
   VerifyJwtCallback,
-  VPTokenLocation
+  VPTokenLocation,
 } from '@sphereon/did-auth-siop'
 import { CheckLinkedDomain, ResolveOpts } from '@sphereon/did-auth-siop-adapter'
 import { DIDDocument } from '@sphereon/did-uni-client'
 import { VerifiablePresentationResult } from '@sphereon/pex'
-import {
-  IIdentifierResolution,
-  ManagedIdentifierOptsOrResult
-} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { Party } from '@sphereon/ssi-sdk.data-store'
@@ -31,7 +28,7 @@ import {
   IDIDManager,
   IKeyManager,
   IPluginMethodMap,
-  IResolver
+  IResolver,
 } from '@veramo/core'
 import { EventEmitter } from 'events'
 import { OpSession } from '../session'
@@ -48,7 +45,7 @@ import {
   SelectableCredentialsMap,
   SendResponseArgs,
   Siopv2AuthorizationRequestData,
-  Siopv2AuthorizationResponseData
+  Siopv2AuthorizationResponseData,
 } from './siop-service'
 
 export const LOGGER_NAMESPACE = 'sphereon:siopv2-oid4vp:op-auth'

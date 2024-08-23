@@ -1,8 +1,5 @@
 import { ClientMetadataOpts, VerifyJwtCallback } from '@sphereon/did-auth-siop'
-import {
-  IIdentifierResolution,
-  ManagedIdentifierOptsOrResult
-} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { AdditionalClaims, Hasher, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import {

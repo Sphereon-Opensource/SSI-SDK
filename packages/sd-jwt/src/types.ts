@@ -4,13 +4,7 @@ import { DIDDocumentSection, IAgentContext, IDIDManager, IKeyManager, IPluginMet
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 
-
-export const sdJwtPluginContextMethods: Array<string> = [
-  'createSdJwtVc',
-  'createSdJwtPresentation',
-  'verifySdJwtVc',
-  'verifySdJwtPresentation',
-]
+export const sdJwtPluginContextMethods: Array<string> = ['createSdJwtVc', 'createSdJwtPresentation', 'verifySdJwtVc', 'verifySdJwtPresentation']
 
 /**
  * My Agent Plugin description.

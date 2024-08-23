@@ -21,16 +21,24 @@ import {
   IVerifySdJwtPresentationResult,
   IVerifySdJwtVcArgs,
   IVerifySdJwtVcResult,
-  SdJWTImplementation
+  SdJWTImplementation,
 } from './types'
 
 const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
+
 /**
  * @beta
  * SD-JWT plugin for Veramo
  */
 export class SDJwtPlugin implements IAgentPlugin {
-  constructor(private algorithms: SdJWTImplementation, private trustAnchorsInPEM?: string[]) {}
+  private readonly trustAnchorsInPEM: string[]
+
+  constructor(
+    private algorithms: SdJWTImplementation,
+    trustAnchorsInPEM?: string[],
+  ) {
+    this.trustAnchorsInPEM = trustAnchorsInPEM ?? []
+  }
 
   // map the methods your plugin is declaring to their implementation
   readonly methods: ISDJwtPlugin = {
@@ -81,7 +89,13 @@ export class SDJwtPlugin implements IAgentPlugin {
       const didIdentifier = await context.agent.didManagerGet({
         did: identifier.split('#')[0],
       })
-      const key: _ExtendedIKey | undefined = await getFirstKeyWithRelation({ identifier: didIdentifier, vmRelationship: vmRelationship }, context)
+      const key: _ExtendedIKey | undefined = await getFirstKeyWithRelation(
+        {
+          identifier: didIdentifier,
+          vmRelationship: vmRelationship,
+        },
+        context,
+      )
       if (!key) {
         throw new Error(`No key found with the given id: ${identifier}`)
       }
@@ -202,9 +216,13 @@ export class SDJwtPlugin implements IAgentPlugin {
       jwk = didDocumentKey.publicKeyJwk as JsonWebKey
     }
     if (x5c) {
+      const trustAnchors = new Set<string>([...this.trustAnchorsInPEM])
+      if (trustAnchors.size === 0) {
+        trustAnchors.add(sphereonCA)
+      }
       const certificateValidationResult = await context.agent.verifyCertificateChain({
         chain: x5c,
-        trustAnchors: this.trustAnchorsInPEM && this.trustAnchorsInPEM.length > 0 ? this.trustAnchorsInPEM : [sphereonCA],
+        trustAnchors: Array.from(trustAnchors),
       })
 
       if (certificateValidationResult.error || !certificateValidationResult?.certificateChain) {

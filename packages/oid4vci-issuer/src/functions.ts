@@ -1,22 +1,7 @@
-import {
-  CredentialRequest,
-  IssuerMetadata,
-  Jwt,
-  JwtVerifyResult,
-  OID4VCICredentialFormat
-} from '@sphereon/oid4vci-common'
-import {
-  CredentialDataSupplier,
-  CredentialIssuanceInput,
-  CredentialSignerCallback,
-  VcIssuer,
-  VcIssuerBuilder
-} from '@sphereon/oid4vci-issuer'
+import { CredentialRequest, IssuerMetadata, Jwt, JwtVerifyResult, OID4VCICredentialFormat } from '@sphereon/oid4vci-common'
+import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
-import {
-  legacyKeyRefsToIdentifierOpts,
-  ManagedIdentifierOptsOrResult
-} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { legacyKeyRefsToIdentifierOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { CredentialPayload, DIDDocument, ProofFormat } from '@veramo/core'
 import { bytesToBase64 } from '@veramo/utils'
@@ -29,7 +14,7 @@ export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOpt
     const resolver = getAgentResolver(_context, {
       resolverResolution: true,
       uniresolverResolution: true,
-      localResolution: true
+      localResolution: true,
     })
     verifyOpts = { ...verifyOpts, resolver: verifyOpts?.resolver } // Resolver seperately as that is a function
     if (!verifyOpts?.resolver || typeof verifyOpts?.resolver?.resolve !== 'function') {
@@ -57,7 +42,7 @@ export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOpt
       kid,
       did,
       didDocument,
-      jwt
+      jwt,
     }
   }
 }
@@ -81,7 +66,7 @@ export async function getAccessTokenKeyRef(
      */
     didOpts?: IDIDOptions
   },
-  context: IRequiredContext
+  context: IRequiredContext,
 ) {
   let identifier = legacyKeyRefsToIdentifierOpts(opts)
   return await context.agent.identifierManagedLazyResult(identifier)
@@ -106,7 +91,7 @@ export async function getAccessTokenSignerCallback(
      */
     didOpts?: IDIDOptions
   },
-  context: IRequiredContext
+  context: IRequiredContext,
 ) {
   const signer = async (data: string | Uint8Array) => {
     let dataString, encoding: 'base64' | undefined
@@ -142,7 +127,7 @@ export async function getCredentialSignerCallback(
   idOpts: ManagedIdentifierOptsOrResult & {
     crypto?: Crypto
   },
-  context: IRequiredContext
+  context: IRequiredContext,
 ): Promise<CredentialSignerCallback<DIDDocument>> {
   async function issueVCCallback(args: {
     credentialRequest: CredentialRequest
@@ -176,11 +161,10 @@ export async function getCredentialSignerCallback(
       proofFormat,
       removeOriginalFields: false,
       fetchRemoteContexts: true,
-      domain: typeof credential.issuer === 'object' ? credential.issuer.id : credential.issuer
+      domain: typeof credential.issuer === 'object' ? credential.issuer.id : credential.issuer,
     })
     return (proofFormat === 'jwt' && 'jwt' in result.proof ? result.proof.jwt : result) as W3CVerifiableCredential
   }
-
 
   return issueVCCallback
 }
@@ -192,7 +176,7 @@ export async function createVciIssuerBuilder(
     resolver?: Resolvable
     credentialDataSupplier?: CredentialDataSupplier
   },
-  context: IRequiredContext
+  context: IRequiredContext,
 ): Promise<VcIssuerBuilder<DIDDocument>> {
   const { issuerOpts, metadata } = args
 
@@ -211,7 +195,7 @@ export async function createVciIssuerBuilder(
     ...issuerOpts?.didOpts?.resolveOpts?.jwtVerifyOpts,
     ...args?.issuerOpts?.resolveOpts?.jwtVerifyOpts,
     resolver,
-    audience: metadata.credential_issuer as string // FIXME legacy version had {display: NameAndLocale | NameAndLocale[]} as credential_issuer
+    audience: metadata.credential_issuer as string, // FIXME legacy version had {display: NameAndLocale | NameAndLocale[]} as credential_issuer
   }
   builder.withIssuerMetadata(metadata)
   // builder.withUserPinRequired(issuerOpts.userPinRequired ?? false) was removed from implementers draft v1
@@ -232,13 +216,13 @@ export async function createVciIssuer(
   {
     issuerOpts,
     metadata,
-    credentialDataSupplier
+    credentialDataSupplier,
   }: {
     issuerOpts: IIssuerOptions
     metadata: IssuerMetadata
     credentialDataSupplier?: CredentialDataSupplier
   },
-  context: IRequiredContext
+  context: IRequiredContext,
 ): Promise<VcIssuer<DIDDocument>> {
   return (await createVciIssuerBuilder({ issuerOpts, metadata, credentialDataSupplier }, context)).build()
 }
