@@ -755,6 +755,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       credentialsToAccept.map((credentialToAccept) =>
         verifyCredentialToAccept({
           mappedCredential: credentialToAccept,
+          hasher: this.hasher,
           context,
         }),
       ),
@@ -838,7 +839,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           : 'credential_deleted_holder_signed'
         logger.log(`Subject issuance/signing will be used, with event`, event)
         const issuerVC = mappedCredentialToAccept.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
-        const wrappedIssuerVC = CredentialMapper.toWrappedVerifiableCredential(issuerVC)
+        const wrappedIssuerVC = CredentialMapper.toWrappedVerifiableCredential(issuerVC, {hasher: this.hasher})
         console.log(`Wrapped VC: ${wrappedIssuerVC.type}, ${wrappedIssuerVC.format}`)
         // We will use the subject of the VCI Issuer (the holder, as the issuer of the new credential, so the below is not a mistake!)
         let issuer =
