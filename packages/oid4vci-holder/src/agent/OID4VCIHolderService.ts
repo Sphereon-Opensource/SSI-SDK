@@ -18,7 +18,7 @@ import {
 } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   isIIdentifier,
-  isManagedIdentifierDidResult,
+  isManagedIdentifierDidResult, isManagedIdentifierResult,
   ManagedIdentifierMethod,
   ManagedIdentifierResult,
   managedIdentifierToJwk
@@ -278,13 +278,16 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
 export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<ManagedIdentifierResult> => {
   const { issuanceOpt, context } = args
   const { identifier: identifierArg } = issuanceOpt
-  let identifier: ManagedIdentifierResult
+  if (identifierArg && isManagedIdentifierResult(identifierArg)) {
+    return identifierArg
+  }
   const {
     supportedPreferredDidMethod,
     supportedBindingMethods,
     keyType = 'Secp256r1',
     kms = KeyManagementSystemEnum.LOCAL
   } = issuanceOpt
+  let identifier: ManagedIdentifierResult
 
   if (identifierArg) {
     if (isIIdentifier(identifierArg.identifier)) {
@@ -294,13 +297,13 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
     } else if (identifierArg.method && !supportedBindingMethods.includes(identifierArg.method)) {
       throw Error(`Supplied identifier method ${identifierArg.method} not supported by the issuer: ${supportedBindingMethods.join(',')}`)
     } else {
-     identifier = await context.agent.identifierManagedGet(identifierArg)
+      identifier = await context.agent.identifierManagedGet(identifierArg)
     }
   }
   const agentContext = { ...context, agent: context.agent as DidAgents }
 
   if (
-  (!identifierArg || isIIdentifier(identifierArg.identifier)) && supportedPreferredDidMethod &&
+    (!identifierArg || isIIdentifier(identifierArg.identifier)) && supportedPreferredDidMethod &&
     (!supportedBindingMethods || supportedBindingMethods.length === 0 || supportedBindingMethods.filter((method) => method.startsWith('did')))
   ) {
     // previous code for managing DIDs only
@@ -523,10 +526,7 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
       //  Needs a preference service for crypto, keys, dids, and clientId, with ecosystem support
       client.clientId = identifier.issuer ?? identifier.did
     }
-    // make sure we set the identifier for later usage
-    issuanceOpt.identifier = identifier
-
-    return { ...issuanceOpt, ...identifier }
+    return { ...issuanceOpt, identifier }
   })
 
   return await Promise.all(getIssuanceOpts)
