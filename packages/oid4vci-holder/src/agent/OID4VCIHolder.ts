@@ -130,34 +130,35 @@ export function signCallback(
 ) {
   return async (jwt: Jwt, kid?: string) => {
     let resolution = await ensureManagedIdentifierResult(identifier, context)
-    const idOpts = resolution.opts
-    // todo: probably we can get rid of almost everything happening in here with the new identifier resolution
-    //========remove?==============
-    // let iss = jwt.payload.iss
-    const jwk = jwt.header.jwk
-
-    if (!kid) {
-      console.log(`====NO KID, using header kid if present`)
-      kid = jwt.header.kid
-    }
-    if (!kid) {
-      console.log(`====NO KID, using resolution kid if present`)
-      kid = resolution.kid
-    }
-    if (!kid && jwk && 'kid' in jwk) {
-      console.log(`====NO KID, using kid from jwk!`)
-      kid = jwk.kid as string
-    }
-
-    if (kid && !resolution.kid) {
-      // sync back to id opts
-      idOpts.kid = kid.split('#')[0]
-      console.log(`===Identifier resolution opts kid has been set with new value: ${idOpts.kid}`)
-    }
-    //=========remove?=============
-
-    // TODO investigate the above, so we can also get rid of the double resolution call because we might have updated the kid
-    resolution = await context.agent.identifierManagedGet(idOpts)
+    const jwk = jwt.header.jwk ?? (resolution.method === 'jwk' ? resolution.jwk : undefined)
+    // const idOpts = resolution.opts
+    // // todo: probably we can get rid of almost everything happening in here with the new identifier resolution
+    // //========remove?==============
+    // // let iss = jwt.payload.iss
+    // const jwk = jwt.header.jwk
+    //
+    // if (!kid) {
+    //   console.log(`====NO KID, using header kid if present`)
+    //   kid = jwt.header.kid
+    // }
+    // if (!kid) {
+    //   console.log(`====NO KID, using resolution kid if present`)
+    //   kid = resolution.kid
+    // }
+    // if (!kid && jwk && 'kid' in jwk) {
+    //   console.log(`====NO KID, using kid from jwk!`)
+    //   kid = jwk.kid as string
+    // }
+    //
+    // if (kid && !resolution.kid) {
+    //   // sync back to id opts
+    //   idOpts.kid = kid.split('#')[0]
+    //   console.log(`===Identifier resolution opts kid has been set with new value: ${idOpts.kid}`)
+    // }
+    // //=========remove?=============
+    //
+    // // TODO investigate the above, so we can also get rid of the double resolution call because we might have updated the kid
+    // resolution = await context.agent.identifierManagedGet(idOpts)
     /*if (isManagedIdentifierDidResult(resolution) && client.isEBSI()) {
       iss = resolution.did
     } else if (!iss && isManagedIdentifierDidResult(resolution)) {
@@ -176,6 +177,7 @@ export function signCallback(
     const header = jwt.header as JwtHeader
     const payload = jwt.payload // { ...jwt.payload, ...(iss && { iss }) }
     if (jwk && header.kid) {
+      console.log(`Deleting kid, as we are using a jwk and the oid4vci spec does not allow both to be present (which is not the case in the JOSE spec)`)
       delete header.kid // The OID4VCI spec does not allow a JWK with kid present although the JWS spec does
     }
     /*if (!isManagedIdentifierDidResult(resolution)) {
