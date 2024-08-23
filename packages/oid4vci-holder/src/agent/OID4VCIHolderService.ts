@@ -529,6 +529,8 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
       //  Needs a preference service for crypto, keys, dids, and clientId, with ecosystem support
       client.clientId = identifier.issuer ?? identifier.did
     }
+    // make sure we set the identifier for later usage
+    issuanceOpt.identifier = identifier
 
     return { ...issuanceOpt, ...identifier }
   })
