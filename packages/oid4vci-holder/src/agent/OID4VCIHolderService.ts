@@ -17,6 +17,7 @@ import {
   SupportedDidMethodEnum
 } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
+  isIIdentifier,
   isManagedIdentifierDidResult,
   ManagedIdentifierMethod,
   ManagedIdentifierResult,
@@ -274,41 +275,32 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
   }
 }
 
-/*export const getDefaultIssuanceOpts = async (args: GetDefaultIssuanceOptsArgs): Promise<IssuanceOpts> => {
-  const { credentialSupported, opts, context } = args
-
-  const issuanceOpt = {
-    ...credentialSupported,
-    supportedPreferredDidMethod: opts.client.isEBSI() ? SupportedDidMethodEnum.DID_KEY : SupportedDidMethodEnum.DID_JWK,
-    keyType: 'Secp256r1'
-  } as IssuanceOpts
-  const idOpts = await getIdentifierOpts({ issuanceOpt, context })
-
-  return {
-    ...issuanceOpt,
-    ...idOpts
-  }
-}*/
-
 export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<ManagedIdentifierResult> => {
   const { issuanceOpt, context } = args
-  let { identifier } = issuanceOpt
+  const { identifier: identifierArg } = issuanceOpt
+  let identifier: ManagedIdentifierResult
   const {
     supportedPreferredDidMethod,
     supportedBindingMethods,
     keyType = 'Secp256r1',
     kms = KeyManagementSystemEnum.LOCAL
   } = issuanceOpt
-  if (identifier) {
-    if (identifier.method && !supportedBindingMethods.includes(identifier.method)) {
-      throw Error(`Supplied identifier method ${identifier.method} not supported by the issuer: ${supportedBindingMethods.join(',')}`)
+
+  if (identifierArg) {
+    if (isIIdentifier(identifierArg.identifier)) {
+      identifier = await context.agent.identifierManagedGet(identifierArg)
+    } else if (!identifierArg.method && issuanceOpt.supportedBindingMethods.includes('jwk')) {
+      identifier = await managedIdentifierToJwk(identifierArg, context)
+    } else if (identifierArg.method && !supportedBindingMethods.includes(identifierArg.method)) {
+      throw Error(`Supplied identifier method ${identifierArg.method} not supported by the issuer: ${supportedBindingMethods.join(',')}`)
+    } else {
+     identifier = await context.agent.identifierManagedGet(identifierArg)
     }
-    return await context.agent.identifierManagedGet(identifier)
   }
   const agentContext = { ...context, agent: context.agent as DidAgents }
 
   if (
-    supportedPreferredDidMethod &&
+  (!identifierArg || isIIdentifier(identifierArg.identifier)) && supportedPreferredDidMethod &&
     (!supportedBindingMethods || supportedBindingMethods.length === 0 || supportedBindingMethods.filter((method) => method.startsWith('did')))
   ) {
     // previous code for managing DIDs only
@@ -325,7 +317,7 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
     if (created) {
       await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { result })
     }
-    return await context.agent.identifierManagedGetByDid({
+    identifier = await context.agent.identifierManagedGetByDid({
       identifier: result,
       keyType,
       offlineWhenNoDIDRegistered: result.did.startsWith('did:ebsi:')
@@ -334,10 +326,12 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
     // todo: we probably should do something similar as with DIDs for re-use/new keys
     const key = await context.agent.keyManagerCreate({ type: keyType, kms })
     // TODO. Create/move this to identifier service await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { key })
-    return await managedIdentifierToJwk({ method: 'key', identifier: key, kmsKeyRef: key.kid }, context)
+    identifier = await managedIdentifierToJwk({ method: 'key', identifier: key, kmsKeyRef: key.kid }, context)
   } else {
     throw Error(`Holder currently does not support binding method: ${supportedBindingMethods.join(',')}`)
   }
+  args.issuanceOpt.identifier = identifier
+  return identifier
 }
 
 export const getCredentialConfigsSupportedMerged = async (

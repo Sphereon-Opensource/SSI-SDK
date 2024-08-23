@@ -614,6 +614,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
 
     const identifier = await getIdentifierOpts({ issuanceOpt, context })
+    issuanceOpt.identifier = identifier
     logger.info(`ID opts`, identifier)
     const alg: SignatureAlgorithmJwa = await signatureAlgorithmFromKey({ key: identifier.key })
     // The VCI lib either expects a jwk or a kid
