@@ -657,7 +657,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       // FIXME: This type mapping is wrong. It should use credential_identifier in case the access token response has authorization details
       const types = getTypesFromObject(issuanceOpt)
       const id: string | undefined = 'id' in issuanceOpt && issuanceOpt.id ? (issuanceOpt.id as string) : undefined
-      const credentialTypes = asArray(issuanceOpt.credentialConfigurationId ?? id ?? types)
+      const credentialTypes = asArray(issuanceOpt.credentialConfigurationId ?? types ?? id)
       if (!credentialTypes || credentialTypes.length === 0) {
         return Promise.reject(Error('cannot determine credential id to request'))
       }
