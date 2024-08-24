@@ -12,14 +12,14 @@ import {
   getTypesFromObject,
   Jwt,
   NotificationRequest,
-  ProofOfPossessionCallbacks,
+  ProofOfPossessionCallbacks
 } from '@sphereon/oid4vci-common'
 import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   IIdentifierResolution,
   isManagedIdentifierDidResult,
   isManagedIdentifierJwkResult,
-  ManagedIdentifierOptsOrResult,
+  ManagedIdentifierOptsOrResult
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService, JwtHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey, SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
@@ -34,7 +34,7 @@ import {
   IdentityOrigin,
   IIssuerBranding,
   NonPersistedIdentity,
-  Party,
+  Party
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -45,7 +45,7 @@ import {
   Loggers,
   OriginalVerifiableCredential,
   parseDid,
-  SdJwtDecodedVerifiableCredentialPayload,
+  SdJwtDecodedVerifiableCredentialPayload
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
@@ -56,7 +56,7 @@ import {
   IResolver,
   ProofFormat,
   VerifiableCredential,
-  W3CVerifiableCredential,
+  W3CVerifiableCredential
 } from '@veramo/core'
 import { asArray, computeEntryHash } from '@veramo/utils'
 import { decodeJWT } from 'did-jwt'
@@ -90,7 +90,7 @@ import {
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
-  VerificationResult,
+  VerificationResult
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -100,7 +100,7 @@ import {
   getIssuanceOpts,
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
-  verifyCredentialToAccept,
+  verifyCredentialToAccept
 } from './OID4VCIHolderService'
 
 /**
@@ -703,13 +703,20 @@ export class OID4VCIHolder implements IAgentPlugin {
       return Promise.reject(Error('Missing credential offers in context'))
     }
 
-    const correlationId: string = credentialsToAccept[0].correlationId
+    let correlationId: string = credentialsToAccept[0].correlationId
+    let identifierType = CorrelationIdentifierType.DID
+    if (!correlationId.toLowerCase().startsWith('did:')) {
+      identifierType = CorrelationIdentifierType.URL
+      if (correlationId.startsWith('http')) {
+        correlationId = new URL(correlationId).hostname
+      }
+    }
     const identity: NonPersistedIdentity = {
-      alias: correlationId,
+      alias: credentialsToAccept[0].correlationId,
       origin: IdentityOrigin.EXTERNAL,
       roles: [CredentialRole.ISSUER],
       identifier: {
-        type: CorrelationIdentifierType.DID,
+        type: identifierType,
         correlationId,
       },
     }
@@ -718,7 +725,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       contactId: contact.id,
       identity,
     })
-    logger.log(`Contact added ${contact.id}`)
+    logger.log(`Contact added: ${correlationId}`)
 
     return context.agent.cmAddIdentity({ contactId: contact.id, identity })
   }
