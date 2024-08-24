@@ -323,6 +323,9 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
     const key = await context.agent.keyManagerCreate({ type: keyType, kms })
     // TODO. Create/move this to identifier service await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { key })
     identifier = await managedIdentifierToJwk({ method: 'key', identifier: key, kmsKeyRef: key.kid }, context)
+  // } else if (supportedBindingMethods.includes('cose_key')) {
+  //   // COSE HERE
+  //   throw Error(`Holder currently does not support binding method: ${supportedBindingMethods.join(',')}`)
   } else {
     throw Error(`Holder currently does not support binding method: ${supportedBindingMethods.join(',')}`)
   }

@@ -1,10 +1,5 @@
 import { com } from '@sphereon/kmp-mdl-mdoc'
-import {
-  CertificateInfo,
-  getCertificateInfo,
-  pemOrDerToX509Certificate,
-  X509ValidationResult
-} from '@sphereon/ssi-sdk-ext.x509-utils'
+import { CertificateInfo, getCertificateInfo, pemOrDerToX509Certificate, X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { IAgentPlugin } from '@veramo/core'
 import { schema } from '..'
 import { CoseCryptoService, X509CallbackService } from '../functions'
@@ -14,7 +9,7 @@ import {
   IRequiredContext,
   KeyType,
   MdocVerifyIssuerSignedArgs,
-  VerifyCertificateChainArgs
+  VerifyCertificateChainArgs,
 } from '../types/ImDLMdoc'
 import CoseSign1Json = com.sphereon.crypto.cose.CoseSign1Json
 import ICoseKeyCbor = com.sphereon.crypto.cose.ICoseKeyCbor
@@ -28,18 +23,19 @@ export class MDLMdoc implements IAgentPlugin {
   readonly methods: ImDLMdoc = {
     x509VerifyCertificateChain: this.x509VerifyCertificateChain.bind(this),
     x509GetCertificateInfo: this.x509GetCertificateInfo.bind(this),
-    mdocVerifyIssuerSigned: this.mdocVerifyIssuerSigned.bind(this)
+    mdocVerifyIssuerSigned: this.mdocVerifyIssuerSigned.bind(this),
   }
   private readonly trustAnchors: string[]
   private opts: {
-    trustRootWhenNoAnchors?: boolean;
-    allowSingleNoCAChainElement?: boolean;
+    trustRootWhenNoAnchors?: boolean
+    allowSingleNoCAChainElement?: boolean
     blindlyTrustedAnchors?: string[]
   }
 
   constructor(args?: {
-    trustAnchors?: string[],
-    opts?: {// Trust the supplied root from the chain, when no anchors are being passed in.
+    trustAnchors?: string[]
+    opts?: {
+      // Trust the supplied root from the chain, when no anchors are being passed in.
       trustRootWhenNoAnchors?: boolean
       // Do not perform a chain validation check if the chain only has a single value. This means only the certificate itself will be validated. No chain checks for CA certs will be performed. Only used when the cert has no issuer
       allowSingleNoCAChainElement?: boolean
@@ -49,7 +45,7 @@ export class MDLMdoc implements IAgentPlugin {
     }
   }) {
     this.trustAnchors = args?.trustAnchors ?? []
-    this.opts = args?.opts ?? {trustRootWhenNoAnchors: true}
+    this.opts = args?.opts ?? { trustRootWhenNoAnchors: true }
   }
 
   private async mdocVerifyIssuerSigned(args: MdocVerifyIssuerSignedArgs, context: IRequiredContext): Promise<IVerifySignatureResult<KeyType>> {
@@ -59,7 +55,7 @@ export class MDLMdoc implements IAgentPlugin {
     // @ts-ignore
     return await new CoseCryptoService().verify1(CoseSign1Json.Static.fromDTO(input).toCbor(), {
       ...keyInfo,
-      key: keyInfo?.key
+      key: keyInfo?.key,
     } as IKeyInfo<ICoseKeyCbor>) // fixme: Json to Cbor for key
   }
 
@@ -69,12 +65,12 @@ export class MDLMdoc implements IAgentPlugin {
     return await new X509CallbackService().verifyCertificateChain({
       ...args,
       trustAnchors: Array.from(trustAnchors),
-      opts: args?.opts ?? this.opts
+      opts: args?.opts ?? this.opts,
     })
   }
 
   private async x509GetCertificateInfo(args: GetX509CertificateInfoArgs, context: IRequiredContext): Promise<CertificateInfo[]> {
-    const certificates = args.certificates.map(cert => pemOrDerToX509Certificate(cert))
-    return await Promise.all(certificates.map(cert => getCertificateInfo(cert, args.sanTypeFilter && { sanTypeFilter: args.sanTypeFilter })))
+    const certificates = args.certificates.map((cert) => pemOrDerToX509Certificate(cert))
+    return await Promise.all(certificates.map((cert) => getCertificateInfo(cert, args.sanTypeFilter && { sanTypeFilter: args.sanTypeFilter })))
   }
 }

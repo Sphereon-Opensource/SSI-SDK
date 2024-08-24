@@ -5,7 +5,7 @@ import {
   getSubjectDN,
   pemOrDerToX509Certificate,
   validateX509CertificateChain,
-  X509ValidationResult
+  X509ValidationResult,
 } from '@sphereon/ssi-sdk-ext.x509-utils'
 import * as crypto from 'crypto'
 import { Certificate, CryptoEngine, setEngine } from 'pkijs'
@@ -148,7 +148,7 @@ export class X509CallbackService implements IX509ServiceJS {
     chain,
     trustAnchors = this.getTrustedCerts(),
     verificationTime,
-    opts
+    opts,
   }: VerifyCertificateChainArgs): Promise<X509ValidationResult> {
     return await validateX509CertificateChain({
       chain,

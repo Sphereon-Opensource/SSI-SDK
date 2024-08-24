@@ -1,9 +1,5 @@
 import { com } from '@sphereon/kmp-mdl-mdoc'
-import {
-  CertificateInfo,
-  SubjectAlternativeGeneralName,
-  X509ValidationResult
-} from '@sphereon/ssi-sdk-ext.x509-utils'
+import { CertificateInfo, SubjectAlternativeGeneralName, X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import CoseSign1Json = com.sphereon.crypto.cose.CoseSign1Json
 import ICoseKeyJson = com.sphereon.crypto.cose.ICoseKeyJson

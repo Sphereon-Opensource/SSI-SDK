@@ -28,13 +28,13 @@ const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
 
 /**
  * @beta
- * SD-JWT plugin for Veramo
+ * SD-JWT plugin
  */
 export class SDJwtPlugin implements IAgentPlugin {
   private readonly trustAnchorsInPEM: string[]
 
   constructor(
-    private algorithms: SdJWTImplementation,
+    private registeredImplementations: SdJWTImplementation,
     trustAnchorsInPEM?: string[],
   ) {
     this.trustAnchorsInPEM = trustAnchorsInPEM ?? []
@@ -67,8 +67,8 @@ export class SDJwtPlugin implements IAgentPlugin {
 
     const sdjwt = new SDJwtVcInstance({
       signer,
-      hasher: this.algorithms.hasher,
-      saltGenerator: this.algorithms.saltGenerator,
+      hasher: this.registeredImplementations.hasher,
+      saltGenerator: this.registeredImplementations.saltGenerator,
       signAlg: alg,
       hashAlg: 'SHA-256',
     })
@@ -125,8 +125,8 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @returns A signed SD-JWT presentation.
    */
   async createSdJwtPresentation(args: ICreateSdJwtPresentationArgs, context: IRequiredContext): Promise<ICreateSdJwtPresentationResult> {
-    const cred = await SDJwt.fromEncode(args.presentation, this.algorithms.hasher)
-    const claims = await cred.getClaims<Claims>(this.algorithms.hasher)
+    const cred = await SDJwt.fromEncode(args.presentation, this.registeredImplementations.hasher)
+    const claims = await cred.getClaims<Claims>(this.registeredImplementations.hasher)
     let holder: string
     // we primarly look for a cnf field, if it's not there we look for a sub field. If this is also not given, we throw an error since we can not sign it.
     if (claims.cnf?.jwk) {
@@ -144,8 +144,8 @@ export class SDJwtPlugin implements IAgentPlugin {
     }
 
     const sdjwt = new SDJwtVcInstance({
-      hasher: this.algorithms.hasher,
-      saltGenerator: this.algorithms.saltGenerator,
+      hasher: this.registeredImplementations.hasher,
+      saltGenerator: this.registeredImplementations.saltGenerator,
       kbSigner: signer,
       kbSignAlg: alg,
     })
@@ -164,10 +164,10 @@ export class SDJwtPlugin implements IAgentPlugin {
     let sdjwt: SDJwtVcInstance
     const verifier: Verifier = async (data: string, signature: string) => this.verify(sdjwt, context, data, signature)
 
-    sdjwt = new SDJwtVcInstance({ verifier, hasher: this.algorithms.hasher })
-    const verifiedPayloads = await sdjwt.verify(args.credential)
+    sdjwt = new SDJwtVcInstance({ verifier, hasher: this.registeredImplementations.hasher })
+    const { header, payload, kb } = await sdjwt.verify(args.credential)
 
-    return { verifiedPayloads }
+    return { header, payload, kb }
   }
 
   /**
@@ -184,7 +184,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       throw Error('other method than cnf is not supported yet')
     }
     const key = payload.cnf.jwk as JsonWebKey
-    return this.algorithms.verifySignature(data, signature, key)
+    return this.registeredImplementations.verifySignature(data, signature, key)
   }
 
   /**
@@ -235,7 +235,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     if (!jwk) {
       throw new Error('No valid public key found for signature verification')
     }
-    return this.algorithms.verifySignature(data, signature, jwk)
+    return this.registeredImplementations.verifySignature(data, signature, jwk)
   }
 
   /**
@@ -251,7 +251,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       this.verifyKb(sdjwt, context, data, signature, payload)
     sdjwt = new SDJwtVcInstance({
       verifier,
-      hasher: this.algorithms.hasher,
+      hasher: this.registeredImplementations.hasher,
       kbVerifier: verifierKb,
     })
     const verifiedPayloads = await sdjwt.verify(args.presentation, args.requiredClaimKeys, args.kb)

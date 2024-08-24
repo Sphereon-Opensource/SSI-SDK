@@ -159,7 +159,9 @@ export interface IVerifySdJwtVcArgs {
  * @beta
  */
 export type IVerifySdJwtVcResult = {
-  verifiedPayloads: unknown
+  payload: unknown //fixme: maybe this can be `SdJwtPayload`
+  header: Record<string, unknown> | undefined
+  kb?: { header: kbHeader; payload: kbPayload }
 }
 
 /**
