@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@sphereon/pex": "^4.0.1",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-next.103",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-next.103",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-next.104",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-next.104",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",

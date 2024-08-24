@@ -8,30 +8,36 @@ import {
   getTypesFromCredentialSupported,
   getTypesFromObject,
   MetadataDisplay,
-  OpenId4VCIVersion,
+  OpenId4VCIVersion
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
-import { getOrCreatePrimaryIdentifier, KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import {
+  getOrCreatePrimaryIdentifier,
+  KeyManagementSystemEnum,
+  SupportedDidMethodEnum
+} from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   isIIdentifier,
   isManagedIdentifierDidResult,
   isManagedIdentifierResult,
   ManagedIdentifierMethod,
   ManagedIdentifierResult,
-  managedIdentifierToJwk,
+  managedIdentifierToJwk
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { keyTypeFromCryptographicSuite, SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
+import { keyTypeFromCryptographicSuite } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
 import { IVerifySdJwtVcResult } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   CredentialMapper,
   IVerifiableCredential,
   IVerifyResult,
+  JoseSignatureAlgorithm,
+  JoseSignatureAlgorithmString,
   OriginalVerifiableCredential,
   sdJwtDecodedCredentialToUniformCredential,
   SdJwtDecodedVerifiableCredential,
   W3CVerifiableCredential,
-  WrappedVerifiableCredential,
+  WrappedVerifiableCredential
 } from '@sphereon/ssi-types'
 import { IVerifyCredentialArgs, W3CVerifiableCredential as VeramoW3CVerifiableCredential } from '@veramo/core'
 import { asArray } from '@veramo/utils'
@@ -58,7 +64,7 @@ import {
   VerificationSubResult,
   VerifyCredentialArgs,
   VerifyCredentialToAcceptArgs,
-  VerifySDJWTCredentialArgs,
+  VerifySDJWTCredentialArgs
 } from '../types/IOID4VCIHolder'
 import { credentialLocaleBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
 
@@ -598,14 +604,14 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
     case 'jwt_vc':
     case 'vc+sd-jwt':
     case 'mso_mdoc': {
-      const supportedPreferences: Array<SignatureAlgorithmJwa> = jwtCryptographicSuitePreferences.filter((suite: SignatureAlgorithmJwa) =>
+      const supportedPreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString> = jwtCryptographicSuitePreferences.filter((suite: JoseSignatureAlgorithm | JoseSignatureAlgorithmString) =>
         signing_algs_supported.includes(suite),
       )
 
       if (supportedPreferences.length > 0) {
         return supportedPreferences[0]
       } else if (client.isEBSI()) {
-        return SignatureAlgorithmJwa.ES256
+        return JoseSignatureAlgorithm.ES256
       }
 
       // if we cannot find supported cryptographic suites, we just try with the first preference

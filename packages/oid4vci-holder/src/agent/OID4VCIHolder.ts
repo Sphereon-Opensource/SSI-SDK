@@ -22,7 +22,7 @@ import {
   ManagedIdentifierOptsOrResult,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService, JwtHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
-import { signatureAlgorithmFromKey, SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
+import { signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   CorrelationIdentifierType,
   CredentialCorrelationType,
@@ -40,12 +40,13 @@ import {
   CredentialMapper,
   Hasher,
   ICredential,
-  IVerifiableCredential,
+  IVerifiableCredential, JoseSignatureAlgorithm,
+  JoseSignatureAlgorithmString,
   JwtDecodedVerifiableCredential,
   Loggers,
   OriginalVerifiableCredential,
   parseDid,
-  SdJwtDecodedVerifiableCredentialPayload,
+  SdJwtDecodedVerifiableCredentialPayload
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
@@ -236,10 +237,10 @@ export class OID4VCIHolder implements IAgentPlugin {
     SupportedDidMethodEnum.DID_EBSI,
     SupportedDidMethodEnum.DID_ION,
   ]
-  private readonly jwtCryptographicSuitePreferences: Array<SignatureAlgorithmJwa> = [
-    SignatureAlgorithmJwa.ES256,
-    SignatureAlgorithmJwa.ES256K,
-    SignatureAlgorithmJwa.EdDSA,
+  private readonly jwtCryptographicSuitePreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString> = [
+    JoseSignatureAlgorithm.ES256,
+    JoseSignatureAlgorithm.ES256K,
+    JoseSignatureAlgorithm.EdDSA,
   ]
   private static readonly DEFAULT_MOBILE_REDIRECT_URI = `${DefaultURISchemes.CREDENTIAL_OFFER}://`
   private readonly defaultAuthorizationRequestOpts: AuthorizationRequestOpts = { redirectUri: OID4VCIHolder.DEFAULT_MOBILE_REDIRECT_URI }
@@ -618,7 +619,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     const identifier = await getIdentifierOpts({ issuanceOpt, context })
     issuanceOpt.identifier = identifier
     logger.info(`ID opts`, identifier)
-    const alg: SignatureAlgorithmJwa = await signatureAlgorithmFromKey({ key: identifier.key })
+    const alg: JoseSignatureAlgorithm | JoseSignatureAlgorithmString = await signatureAlgorithmFromKey({ key: identifier.key })
     // The VCI lib either expects a jwk or a kid
     const jwk = isManagedIdentifierJwkResult(identifier) ? identifier.jwk : undefined
 
