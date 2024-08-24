@@ -4,12 +4,15 @@ import {
   CredentialMapper,
   decodeSdJwtVc,
   decodeSdJwtVcAsync,
+  JoseCurve,
+  JwkKeyType,
   IVerifiableCredential,
   IVerifiablePresentation,
+  JWK,
   JwtDecodedVerifiableCredential,
   JwtDecodedVerifiablePresentation,
   OriginalVerifiableCredential,
-  OriginalVerifiablePresentation,
+  OriginalVerifiablePresentation
 } from '../src'
 
 function getFile(path: string) {
@@ -30,6 +33,17 @@ describe('Encoding - Decoding', () => {
   const decodedJwtVc = CredentialMapper.decodeVerifiableCredential(jwtVc) as JwtDecodedVerifiableCredential
   const decodedLdpVp = CredentialMapper.decodeVerifiablePresentation(ldpVp) as IVerifiablePresentation
   const decodedLdpVc = CredentialMapper.decodeVerifiableCredential(ldpVc) as IVerifiableCredential
+
+  it('Jwk enum test', () => {
+
+    const jwk = {
+      kty: JwkKeyType.EC,
+      // @ts-ignore
+      crv: 'P-256'
+    } satisfies JWK
+    expect(JoseCurve.P_256).toStrictEqual(jwk.crv)
+  })
+
 
   it('Decoded Jwt VP should have sub', () => {
     expect(decodedJwtVp.iss).toEqual('did:example:ebfeb1f712ebc6f1c276e12ec21')

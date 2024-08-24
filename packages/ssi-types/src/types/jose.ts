@@ -3,9 +3,9 @@
  */
 
 export interface BaseJWK {
-  kty: IJwkKeyType
-  crv?: IJoseCurve
-  alg?: IJoseSignatureAlgorithm
+  kty: JwkKeyType | JwkKeyTypeString
+  crv?: JoseCurve | JoseCurveString
+  alg?: JoseSignatureAlgorithm | JoseSignatureAlgorithmString
   x?: string
   y?: string
   e?: string
@@ -18,7 +18,7 @@ export interface JWK extends BaseJWK {
   dq?: string
   ext?: boolean
   k?: string
-  key_ops?: IJoseKeyOperation[]
+  key_ops?: (JoseKeyOperation | JoseKeyOperationString)[]
   kid?: string
   oth?: Array<{
     d?: string
@@ -43,14 +43,16 @@ export interface JWK extends BaseJWK {
   [propName: string]: unknown
 }
 
-export enum IJwkKeyType {
+export enum JwkKeyType {
   EC = 'EC',
   RSA = 'RSA',
   oct = 'oct',
   OKP = 'OKP',
 }
 
-export enum IJoseSignatureAlgorithm {
+export type JwkKeyTypeString = 'EC' | 'RSA' | 'oct' | 'OKP'
+
+export enum JoseSignatureAlgorithm {
   RS256 = 'RS256',
   RS384 = 'RS384',
   RS512 = 'RS512',
@@ -68,7 +70,25 @@ export enum IJoseSignatureAlgorithm {
   none = 'none',
 }
 
-export enum IJoseKeyOperation {
+export type JoseSignatureAlgorithmString =
+  'RS256'
+  | 'RS384'
+  | 'RS512'
+  | 'ES256'
+  | 'ES256K'
+  | 'ES384'
+  | 'ES512'
+  | 'EdDSA'
+  | 'HS256'
+  | 'HS384'
+  | 'HS512'
+  | 'PS256'
+  | 'PS384'
+  | 'PS512'
+  | 'none'
+
+
+export enum JoseKeyOperation {
   SIGN = 'sign',
   VERIFY = 'verify',
   ENCRYPT = 'encrypt',
@@ -79,7 +99,17 @@ export enum IJoseKeyOperation {
   DERIVE_BITS = 'deriveBits',
 }
 
-export enum IJoseCurve {
+export type JoseKeyOperationString =
+  'sign'
+  | 'verify'
+  | 'encrypt'
+  | 'decrypt'
+  | 'wrapKey'
+  | 'unwrapKey'
+  | 'deriveKey'
+  | 'deriveBits'
+
+export enum JoseCurve {
   P_256 = 'P-256',
   P_384 = 'P-384',
   P_521 = 'P-521',
@@ -90,3 +120,14 @@ export enum IJoseCurve {
   Ed448 = 'Ed448',
   secp256k1 = 'secp256k1',
 }
+
+export type JoseCurveString =
+  'P-256'
+  | 'P-384'
+  | 'P-521'
+  | 'X25519'
+  | 'X448'
+  | 'EdDSA'
+  | 'Ed25519'
+  | 'Ed448'
+  | 'secp256k1'
