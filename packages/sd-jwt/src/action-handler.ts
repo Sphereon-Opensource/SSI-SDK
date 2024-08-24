@@ -220,7 +220,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       if (trustAnchors.size === 0) {
         trustAnchors.add(sphereonCA)
       }
-      const certificateValidationResult = await context.agent.verifyCertificateChain({
+      const certificateValidationResult = await context.agent.x509VerifyCertificateChain({
         chain: x5c,
         trustAnchors: Array.from(trustAnchors),
       })

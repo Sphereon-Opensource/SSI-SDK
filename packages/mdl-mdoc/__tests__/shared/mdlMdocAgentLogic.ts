@@ -13,7 +13,11 @@ import DocumentJson = com.sphereon.mdoc.data.device.DocumentJson
 
 type ConfiguredAgent = TAgent<ImDLMdoc>
 
-export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
+export default (testContext: {
+  getAgent: () => ConfiguredAgent;
+  setup: () => Promise<boolean>;
+  tearDown: () => Promise<boolean>
+}): void => {
   describe('Certificate chain', (): void => {
     let agent: ConfiguredAgent
 
@@ -37,15 +41,15 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
                 kid: '11',
                 crv: 'P-256',
                 x: 'usWxHK2PmfnHKwXPS54m0kTcGJ90UiglWiGahtagnv8',
-                y: 'IBOL-C3BttVivg-lSreASjpkttcsz-1rb7btKLv8EX4',
+                y: 'IBOL-C3BttVivg-lSreASjpkttcsz-1rb7btKLv8EX4'
                 // "d":"V8kgd2ZBRuh2dgyVINBUqpPDr7BOMGcF22CQMIUHtNM" // No private key, as we check for them explicitly
-              }).jwkToCoseKeyJson(),
-            },
-          }),
+              }).jwkToCoseKeyJson()
+            }
+          })
         ).resolves.toMatchObject({
           critical: true,
           error: false,
-          message: "Signature of '11' was valid",
+          message: 'Signature of \'11\' was valid'
         })
       } catch (error) {
         console.log(error)
@@ -58,12 +62,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const issuerSigned = IssuerSignedCbor.Static.cborDecode(decodeFrom(funkeTestVector, Encoding.HEX))
       await expect(
         agent.mdocVerifyIssuerSigned({
-          input: issuerSigned.issuerAuth.toJson(),
-        }),
+          input: issuerSigned.issuerAuth.toJson()
+        })
       ).resolves.toMatchObject({
         critical: true,
         error: false,
-        message: "Signature of 'C=DE,O=Bundesdruckerei GmbH,OU=I,CN=SPRIND Funke EUDI Wallet Prototype Issuer' was valid",
+        message: 'Signature of \'C=DE,O=Bundesdruckerei GmbH,OU=I,CN=SPRIND Funke EUDI Wallet Prototype Issuer\' was valid'
       })
 
       const mdoc = issuerSigned.toDocumentJson().toJsonDTO<DocumentJson>()
@@ -72,53 +76,107 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should be verified for Sphereon issued cert from CA', async () => {
       await expect(
-        agent.verifyCertificateChain({
+        agent.x509VerifyCertificateChain({
           chain: [sphereonTest, sphereonCA],
-          trustAnchors: [sphereonCA],
-        }),
+          trustAnchors: [sphereonCA]
+        })
       ).resolves.toMatchObject({
         critical: false,
         error: false,
-        message: 'Certificate chain was valid',
+        message: 'Certificate chain was valid'
       })
     })
 
     it('should be verified for Sphereon issued cert from CA without providing full chain', async () => {
       await expect(
-        agent.verifyCertificateChain({
+        agent.x509VerifyCertificateChain({
           chain: [sphereonTest],
-          trustAnchors: [sphereonCA],
-        }),
+          trustAnchors: [sphereonCA]
+        })
       ).resolves.toMatchObject({
         critical: false,
         error: false,
-        message: 'Certificate chain was valid',
+        message: 'Certificate chain was valid'
       })
+    })
+
+    it('should get certificate info and SANs', async () => {
+      await expect(
+        agent.x509GetCertificateInfo({
+          certificates: [sphereonCA, sphereonTest]
+        })
+      ).resolves.toMatchObject([{
+        'issuer': {
+          'dn': {
+            'DN': 'C=NL,O=Sphereon International B.V.,OU=IT,CN=ca.sphereon.com',
+            'attributes': { 'C': 'NL', 'CN': 'ca.sphereon.com', 'O': 'Sphereon International B.V.', 'OU': 'IT' }
+          }
+        },
+        'notAfter': new Date('2034-07-28T21:26:49.000Z'),
+        'notBefore': new Date('2024-07-28T21:26:49.000Z'),
+        'publicKeyJWK': {
+          'crv': 'P-256',
+          'ext': true,
+          'key_ops': ['verify'],
+          'kty': 'EC',
+          'x': 'SIDQp4RJI2s5yYIOBrxiwGRROCjBkbCq8vaf3UlSkAw',
+          'y': 'dRSwvlVFdqdiLXnk2pQqT1vZnDG0I-x-iz2EbdsG0aY'
+        },
+        'subject': {
+          'dn': {
+            'DN': 'C=NL,O=Sphereon International B.V.,OU=IT,CN=ca.sphereon.com',
+            'attributes': { 'C': 'NL', 'CN': 'ca.sphereon.com', 'O': 'Sphereon International B.V.', 'OU': 'IT' }
+          }, 'subjectAlternativeNames': []
+        }
+      }, {
+        'issuer': {
+          'dn': {
+            'DN': 'C=NL,O=Sphereon International B.V.,OU=IT,CN=ca.sphereon.com',
+            'attributes': { 'C': 'NL', 'CN': 'ca.sphereon.com', 'O': 'Sphereon International B.V.', 'OU': 'IT' }
+          }
+        },
+        'notAfter': new Date('2024-11-04T22:16:12.000Z'),
+        'notBefore': new Date('2024-08-06T20:16:12.000Z'),
+        'publicKeyJWK': {
+          'crv': 'P-256',
+          'ext': true,
+          'key_ops': ['verify'],
+          'kty': 'EC',
+          'x': 'pyVHVR7IdgWmG_TLb3-K_4dg3XC6GQQWDB61Lna15ns',
+          'y': 'OcVNCBD0kMmqEaKjbczwd2GvbV1AOxgE7AKsa3L0zxM'
+        },
+        'subject': {
+          'dn': {
+            'DN': 'CN=test123.test.sphereon.com',
+            'attributes': { 'CN': 'test123.test.sphereon.com' }
+          }, 'subjectAlternativeNames': [{ 'type': 2, 'value': 'test123.test.sphereon.com' }]
+        }
+      }])
     })
 
     it('should be verified for Funke issued cert from CA', async () => {
       await expect(
-        agent.verifyCertificateChain({
+        agent.x509VerifyCertificateChain({
           chain: [funkeTestIssuer, funkeTestCA],
-          trustAnchors: [funkeTestCA],
-        }),
+          trustAnchors: [funkeTestCA]
+        })
       ).resolves.toMatchObject({
         critical: false,
         error: false,
-        message: 'Certificate chain was valid',
+        message: 'Certificate chain was valid'
       })
     })
 
     it('should not be verified for Sphereon issued cert from CA when CA is not in trust anchors', async () => {
       await expect(
-        agent.verifyCertificateChain({
+        agent.x509VerifyCertificateChain({
           chain: [sphereonTest, sphereonCA],
-          trustAnchors: [funkeTestCA],
-        }),
+          trustAnchors: [funkeTestCA]
+        })
       ).resolves.toMatchObject({
         critical: true,
         error: true,
-        message: 'No valid certificate paths found',
+        message: 'No valid certificate paths found'
       })
     })
 

@@ -589,12 +589,11 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
 
   // TODO: Return array, so the wallet/user could choose
   switch (credentialSupported.format) {
-    // @ts-ignore
+    // @ts-ignore legacy value
     case 'jwt':
     case 'jwt_vc_json':
     case 'jwt_vc':
     case 'vc+sd-jwt':
-    // @ts-ignore
     case 'mso_mdoc': {
       const supportedPreferences: Array<SignatureAlgorithmJwa> = jwtCryptographicSuitePreferences.filter((suite: SignatureAlgorithmJwa) =>
         signing_algs_supported.includes(suite),

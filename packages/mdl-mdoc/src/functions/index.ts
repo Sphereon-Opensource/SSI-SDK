@@ -1,24 +1,30 @@
 import { com, Nullable } from '@sphereon/kmp-mdl-mdoc'
-import { CertInfo, derToPEM, getSubjectDN, pemOrDerToX509Certificate, validateX509CertificateChain } from '@sphereon/ssi-sdk-ext.x509-utils'
-import { X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
+import {
+  CertificateInfo,
+  derToPEM,
+  getSubjectDN,
+  pemOrDerToX509Certificate,
+  validateX509CertificateChain,
+  X509ValidationResult
+} from '@sphereon/ssi-sdk-ext.x509-utils'
 import * as crypto from 'crypto'
 import { Certificate, CryptoEngine, setEngine } from 'pkijs'
 import { VerifyCertificateChainArgs } from '../types/ImDLMdoc'
+import CoseKeyJson = com.sphereon.crypto.cose.CoseKeyJson
 import CoseSign1Cbor = com.sphereon.crypto.cose.CoseSign1Cbor
 import CoseSign1InputCbor = com.sphereon.crypto.cose.CoseSign1InputCbor
 import ICoseKeyCbor = com.sphereon.crypto.cose.ICoseKeyCbor
-import IKey = com.sphereon.crypto.IKey
 import CryptoServiceJS = com.sphereon.crypto.CryptoServiceJS
 import ICoseCryptoCallbackJS = com.sphereon.crypto.ICoseCryptoCallbackJS
+import IKey = com.sphereon.crypto.IKey
 import IKeyInfo = com.sphereon.crypto.IKeyInfo
 import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult
 import IX509ServiceJS = com.sphereon.crypto.IX509ServiceJS
 import IX509VerificationResult = com.sphereon.crypto.IX509VerificationResult
-import X509VerificationProfile = com.sphereon.crypto.X509VerificationProfile
 import Jwk = com.sphereon.crypto.jose.Jwk
+import X509VerificationProfile = com.sphereon.crypto.X509VerificationProfile
 import decodeFrom = com.sphereon.kmp.decodeFrom
 import Encoding = com.sphereon.kmp.Encoding
-import CoseKeyJson = com.sphereon.crypto.cose.CoseKeyJson
 
 export class CoseCryptoService implements ICoseCryptoCallbackJS {
   async sign1<CborType>(input: CoseSign1InputCbor, keyInfo?: IKeyInfo<ICoseKeyCbor>): Promise<CoseSign1Cbor<CborType>> {
@@ -142,12 +148,13 @@ export class X509CallbackService implements IX509ServiceJS {
     chain,
     trustAnchors = this.getTrustedCerts(),
     verificationTime,
+    opts
   }: VerifyCertificateChainArgs): Promise<X509ValidationResult> {
     return await validateX509CertificateChain({
       chain,
       trustAnchors,
       verificationTime,
-      opts: { trustRootWhenNoAnchors: true },
+      opts,
     })
   }
 
@@ -173,7 +180,7 @@ export class X509CallbackService implements IX509ServiceJS {
       opts: { trustRootWhenNoAnchors: true },
     })
 
-    const cert: CertInfo | undefined = result.certificateChain ? result.certificateChain[result.certificateChain.length - 1] : undefined
+    const cert: CertificateInfo | undefined = result.certificateChain ? result.certificateChain[result.certificateChain.length - 1] : undefined
 
     return {
       publicKey: cert?.publicKeyJWK as KeyType, // fixme
