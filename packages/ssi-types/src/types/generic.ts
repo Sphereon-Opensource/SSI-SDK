@@ -12,7 +12,7 @@ export type BearerTokenArg = (() => Promise<string>) | string
 /**
  * Generic structure used for validations. For instance for X509 and JWs signature checks. Allows us to create multilevel structures for complex validations
  */
-export type IVerifyResult = {
+export type IValidationResult = {
   /**
    * The name of the validation or its subsystem. Mainly used for information purposes. Not assumed to be unique
    */
@@ -40,12 +40,12 @@ export type IVerifyResult = {
 }
 
 
-export type IVerifyResults  = {
+export type IValidationResults  = {
   /**
    * Global derived error state for easy access
    */
   error: boolean
 
-  verifications: Array<IVerifyResult>
+  verifications: Array<IValidationResult>
 
 }
