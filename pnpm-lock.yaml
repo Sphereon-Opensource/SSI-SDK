@@ -1908,8 +1908,8 @@ importers:
         specifier: ^4.3.5
         version: 4.3.6
       uint8arrays:
-        specifier: 4.0.10
-        version: 4.0.10
+        specifier: 3.1.1
+        version: 3.1.1
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -8641,6 +8641,7 @@ packages:
       '@js-joda/timezone': 2.3.0(@js-joda/core@5.6.3)
       format-util: 1.0.5
     dev: false
+    bundledDependencies: []
 
   /@sphereon/lto-did-ts@0.1.8-unstable.0(debug@4.3.6)(typescript@5.4.2):
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
@@ -23152,12 +23153,6 @@ packages:
     resolution: {integrity: sha512-+QJa8QRnbdXVpHYjLoTpJIdCTiw9Ir62nocClWuXIq2JIh4Uta0cQsTSpFL678p2CN8B+XSApwcU+pQEqVpKWg==}
     dependencies:
       multiformats: 9.9.0
-
-  /uint8arrays@4.0.10:
-    resolution: {integrity: sha512-AnJNUGGDJAgFw/eWu/Xb9zrVKEGlwJJCaeInlf3BkecE/zcTobk5YXYIPNQJO1q5Hh1QZrQQHf0JvcHqz2hqoA==}
-    dependencies:
-      multiformats: 12.1.3
-    dev: false
 
   /unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}

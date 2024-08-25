@@ -1,31 +1,41 @@
-import { OP, OPBuilder, PassBy, PresentationSignCallback, ResponseMode, SupportedVersion, VerifyJwtCallback } from '@sphereon/did-auth-siop'
-import { Format } from '@sphereon/pex-models'
-// import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
-import { isManagedIdentifierDidOpts, isManagedIdentifierDidResult, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-// import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
-import { createPEXPresentationSignCallback } from '@sphereon/ssi-sdk.presentation-exchange'
-import { TKeyType } from '@veramo/core'
-import { EventEmitter } from 'events'
-import { IOPOptions, IRequiredContext } from '../types'
-import { SigningAlgo } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { Resolvable } from 'did-resolver'
-import { JWTHeader, JWTVerifyOptions } from 'did-jwt'
-import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
-import { getAgentDIDMethods } from '@sphereon/ssi-sdk-ext.did-utils'
+import {
+  OP,
+  OPBuilder,
+  PassBy,
+  PresentationSignCallback,
+  ResponseMode,
+  SupportedVersion,
+  VerifyJwtCallback
+} from '@sphereon/did-auth-siop'
 import { getResolver } from '@sphereon/did-auth-siop-adapter'
 import { CreateJwtCallback, JwtHeader, JwtPayload } from '@sphereon/oid4vc-common'
+import { Format } from '@sphereon/pex-models'
+import { getAgentDIDMethods } from '@sphereon/ssi-sdk-ext.did-utils'
+import {
+  isManagedIdentifierDidOpts,
+  isManagedIdentifierDidResult,
+  ManagedIdentifierOptsOrResult
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { JwsCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { createPEXPresentationSignCallback } from '@sphereon/ssi-sdk.presentation-exchange'
+import { SigningAlgo } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
+import { TKeyType } from '@veramo/core'
+import { JWTHeader, JWTVerifyOptions } from 'did-jwt'
+import { Resolvable } from 'did-resolver'
+import { EventEmitter } from 'events'
+import { IOPOptions, IRequiredContext } from '../types'
 
 export async function createOID4VPPresentationSignCallback({
-  presentationSignCallback,
-  idOpts,
-  domain,
-  fetchRemoteContexts,
-  challenge,
-  format,
-  context,
-  skipDidResolution,
-}: {
+                                                             presentationSignCallback,
+                                                             idOpts,
+                                                             domain,
+                                                             fetchRemoteContexts,
+                                                             challenge,
+                                                             format,
+                                                             context,
+                                                             skipDidResolution
+                                                           }: {
   presentationSignCallback?: PresentationSignCallback
   idOpts: ManagedIdentifierOptsOrResult
   domain?: string
@@ -46,17 +56,17 @@ export async function createOID4VPPresentationSignCallback({
       domain,
       challenge,
       format,
-      skipDidResolution,
+      skipDidResolution
     },
-    context,
+    context
   )
 }
 
 export async function createOPBuilder({
-  opOptions,
-  idOpts,
-  context,
-}: {
+                                        opOptions,
+                                        idOpts,
+                                        context
+                                      }: {
   opOptions: IOPOptions
   idOpts?: ManagedIdentifierOptsOrResult
   context: IRequiredContext
@@ -69,13 +79,13 @@ export async function createOPBuilder({
         SupportedVersion.SIOPv2_ID1,
         SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1,
         SupportedVersion.SIOPv2_D11,
-        SupportedVersion.SIOPv2_D12_OID4VP_D18,
-      ],
+        SupportedVersion.SIOPv2_D12_OID4VP_D18
+      ]
     )
     .withExpiresIn(opOptions.expiresIn ?? 300)
     .withEventEmitter(eventEmitter)
     .withRegistration({
-      passBy: PassBy.VALUE,
+      passBy: PassBy.VALUE
     })
 
   const methods = opOptions.supportedDIDMethods ?? (await getAgentDIDMethods(context))
@@ -84,16 +94,20 @@ export async function createOPBuilder({
   const wellknownDIDVerifyCallback = opOptions.wellknownDIDVerifyCallback
     ? opOptions.wellknownDIDVerifyCallback
     : async (args: IVerifyCallbackArgs): Promise<IVerifyCredentialResult> => {
-        const result = await context.agent.verifyCredential({ credential: args.credential, fetchRemoteContexts: true })
-        return { verified: result.verified }
-      }
+      const result = await context.agent.verifyCredential({ credential: args.credential, fetchRemoteContexts: true })
+      return { verified: result.verified }
+    }
   builder.withVerifyJwtCallback(
     opOptions.verifyJwtCallback
       ? opOptions.verifyJwtCallback
-      : getVerifyJwtCallback(resolver, {
-          wellknownDIDVerifyCallback,
-          checkLinkedDomain: 'if_present',
-        }),
+      : getVerifyJwtCallback({
+          resolver, verifyOpts: {
+            wellknownDIDVerifyCallback,
+            checkLinkedDomain: 'if_present'
+          }
+        },
+        context
+      )
   )
   if (idOpts) {
     if (opOptions.skipDidResolution && isManagedIdentifierDidOpts(idOpts)) {
@@ -121,8 +135,8 @@ export async function createOPBuilder({
         presentationSignCallback: opOptions.presentationSignCallback,
         skipDidResolution: opOptions.skipDidResolution ?? false,
         idOpts,
-        context,
-      }),
+        context
+      })
     )
   }
   return builder
@@ -130,7 +144,7 @@ export async function createOPBuilder({
 
 export function signCallback(
   idOpts: ManagedIdentifierOptsOrResult,
-  context: IRequiredContext,
+  context: IRequiredContext
 ): (jwt: { header: JwtHeader; payload: JwtPayload }) => Promise<string> {
   return async (jwt: { header: JwtHeader; payload: JwtPayload }) => {
     const jwk = jwt.header.jwk
@@ -150,30 +164,34 @@ export function signCallback(
     const result: JwsCompactResult = await context.agent.jwtCreateJwsCompactSignature({
       issuer: { identifier: issuer, noIdentifierInHeader: false },
       protectedHeader: header,
-      payload,
+      payload
     })
     return result.jwt
   }
 }
 
-function getVerifyJwtCallback(
-  resolver?: Resolvable,
-  verifyOpts?: JWTVerifyOptions & {
-    checkLinkedDomain: 'never' | 'if_present' | 'always'
-    wellknownDIDVerifyCallback?: VerifyCallback
-  },
+function getVerifyJwtCallback(_opts: {
+                                resolver?: Resolvable,
+                                verifyOpts?: JWTVerifyOptions & {
+                                  checkLinkedDomain: 'never' | 'if_present' | 'always'
+                                  wellknownDIDVerifyCallback?: VerifyCallback
+                                },
+                              },
+                              context: IRequiredContext
 ): VerifyJwtCallback {
-  return async (jwtVerifier, jwt) => {
-    //fixme: SPRIND-49 for actually verifying the jwt value here
-    return true
+
+  return async (_jwtVerifier, jwt) => {
+    const result = await context.agent.jwtVerifyJwsSignature({ jws: jwt.raw })
+    console.log(result.message)
+    return !result.error
   }
 }
 
 export async function createOP({
-  opOptions,
-  idOpts,
-  context,
-}: {
+                                 opOptions,
+                                 idOpts,
+                                 context
+                               }: {
   opOptions: IOPOptions
   idOpts?: ManagedIdentifierOptsOrResult
   context: IRequiredContext
