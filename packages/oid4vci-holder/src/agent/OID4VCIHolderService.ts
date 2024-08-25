@@ -227,7 +227,7 @@ export const verifyW3CCredential = async (args: IVerifyCredentialArgs, context: 
 export const verifySDJWTCredential = async (args: VerifySDJWTCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
   const { credential, hasher } = args
 
-  const result: IVerifySdJwtVcResult | CredentialVerificationError = await context.agent
+  const verification: IVerifySdJwtVcResult | CredentialVerificationError = await context.agent
     .verifySdJwtVc({ credential })
     .catch((error: Error): CredentialVerificationError => {
       return {
@@ -236,11 +236,12 @@ export const verifySDJWTCredential = async (args: VerifySDJWTCredentialArgs, con
       }
     })
 
+  const result = 'header' in verification && 'payload' in verification
   return {
     source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential, { hasher }),
-    result: 'verifiedPayloads' in result,
+    result,
     subResults: [],
-    ...(!('verifiedPayloads' in result) && { ...result }),
+    ...(!result && { ...verification }),
   }
 }
 
