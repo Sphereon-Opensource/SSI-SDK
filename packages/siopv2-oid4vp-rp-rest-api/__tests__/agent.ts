@@ -24,7 +24,7 @@ import { Resolver } from 'did-resolver'
 import { DB_CONNECTION_NAME, DB_ENCRYPTION_KEY, getDbConnection } from './database'
 import { ISIOPv2RP, SIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { IPresentationExchange, PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
-import { CheckLinkedDomain } from '@sphereon/did-auth-siop'
+import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
 import { entraAndSphereonCompatibleDef, entraVerifiedIdPresentation } from './presentationDefinitions'
 import Debug from 'debug'
 import { createHash } from 'crypto'
@@ -124,7 +124,7 @@ const agent = createAgent<
     new PresentationExchange(),
     new SIOPv2RP({
       defaultOpts: {
-        didOpts: {
+        identifierOpts: {
           checkLinkedDomains: CheckLinkedDomain.IF_PRESENT,
           idOpts: {
             identifier: RP_DID,
@@ -144,7 +144,7 @@ const agent = createAgent<
         },
         {
           definitionId: entraVerifiedIdPresentation.id,
-          definition: entraVerifiedIdPresentation,
+          // definition: entraVerifiedIdPresentation,
         },
       ],
     }),

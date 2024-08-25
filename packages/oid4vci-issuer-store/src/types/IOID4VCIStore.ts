@@ -45,9 +45,9 @@ export interface IIssuerOptions {
   idOpts?: ManagedIdentifierOptsOrResult
   resolveOpts?: ResolveOpts
   /**
-   * @deprecated use idOpts
+   * @deprecated use idOpts which is more capable and supports x5c and jwks next to dids
    */
-  didOpts: IDIDOptions
+  didOpts?: IDIDOptions
   userPinRequired?: boolean
   cNonceExpiresIn?: number
 }

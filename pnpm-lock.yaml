@@ -2263,6 +2263,9 @@ importers:
       '@decentralized-identity/ion-sdk':
         specifier: ^0.6.0
         version: 0.6.0
+      '@sphereon/did-auth-siop-adapter':
+        specifier: 0.16.1-next.13
+        version: 0.16.1-next.13
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3
@@ -8539,7 +8542,6 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
-    dev: false
 
   /@sphereon/did-auth-siop@0.16.1-next.13:
     resolution: {integrity: sha512-WiptXftpPQDSWjS3Dh9hdWRKZW7bAIDmFdbFf4hUFXWK9REd4BSZiWjybkKcT7iX/gIPmVklhFicUqBHaw3b1Q==}
@@ -8563,7 +8565,6 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
-    dev: false
 
   /@sphereon/did-auth-siop@0.6.4:
     resolution: {integrity: sha512-0hw/lypy7kHpChJc/206XFd1XVhfUEIg2RIuw2u0RE3POqMeuOL5DWiPHh3e7Oo0nzG9gdgJC8Yffv69d9QIrg==}
@@ -9159,7 +9160,6 @@ packages:
       jwt-decode: 3.1.2
     transitivePeerDependencies:
       - encoding
-    dev: false
 
   /@sqltools/formatter@1.2.5:
     resolution: {integrity: sha512-Uy0+khmZqUrUGm5dmMqVlnvufZRSK0FbYzVgp0UMstm+F5+W2/jnEEQyc9vo1ZR/E5ZI/B1WjjoTqBqwJL6Krw==}
@@ -17951,14 +17951,12 @@ packages:
 
   /language-subtag-registry@0.3.23:
     resolution: {integrity: sha512-0K65Lea881pHotoGEa5gDlMxt3pctLi2RplBb7Ezh4rRdLEOtgi7n4EwK9lamnUCkKBqaeKRVebTq6BAxSkpXQ==}
-    dev: false
 
   /language-tags@1.0.9:
     resolution: {integrity: sha512-MbjN408fEndfiQXbFQ1vnd+1NoLDsnQW41410oQBXiyXDMYH5z505juWa4KUE1LqxRC7DgOgZDbKLxHIwm27hA==}
     engines: {node: '>=0.10'}
     dependencies:
       language-subtag-registry: 0.3.23
-    dev: false
 
   /lerna-changelog@2.2.0:
     resolution: {integrity: sha512-yjYNAHrbnw8xYFKmYWJEP52Tk4xSdlNmzpYr26+3glbSGDmpe8UMo8f9DlEntjGufL+opup421oVTXcLshwAaQ==}
@@ -19129,7 +19127,6 @@ packages:
   /multiformats@12.1.3:
     resolution: {integrity: sha512-eajQ/ZH7qXZQR2AgtfpmSMizQzmyYVmCql7pdhldPuYQi4atACekbJaQplk6dWyIi10jCaFnd6pqvcEFXjbaJw==}
     engines: {node: '>=16.0.0', npm: '>=7.0.0'}
-    dev: false
 
   /multiformats@9.7.1:
     resolution: {integrity: sha512-TaVmGEBt0fhxiNJMGphBfB+oGvUxFs8KgGvgl8d3C+GWtrFcvXdJ2196eg+dYhmSFClmgFfSfJEklo+SZzdNuw==}
@@ -20749,7 +20746,6 @@ packages:
     engines: {node: '>=0.6'}
     dependencies:
       side-channel: 1.0.6
-    dev: false
 
   /querystring@0.2.1:
     resolution: {integrity: sha512-wkvS7mL/JMugcup3/rMitHmd9ecIGd2lhFhK9N3UUQ450h66d1r3Y9nvXzQAW1Lq+wyx61k/1pfKS5KuKiyEbg==}

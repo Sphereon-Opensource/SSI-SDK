@@ -139,9 +139,8 @@ export interface IRPOptions {
   expiresIn?: number
   eventEmitter?: EventEmitter
   credentialOpts?: CredentialOpts
-  didOpts: ISIOPIdentifierOptions
-
-  verifyJwtCallback: VerifyJwtCallback
+  identifierOpts: ISIOPIdentifierOptions
+  verifyJwtCallback?: VerifyJwtCallback
 }
 
 export interface IPEXOptions {

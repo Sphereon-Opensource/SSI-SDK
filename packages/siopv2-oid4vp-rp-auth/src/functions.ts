@@ -12,12 +12,15 @@ import {
   Scope,
   SubjectType,
   SupportedVersion,
-  VerifyJwtCallback,
+  VerifyJwtCallback
 } from '@sphereon/did-auth-siop'
 import { CreateJwtCallback, JwtHeader, JwtPayload } from '@sphereon/oid4vc-common'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
-import { isManagedIdentifierDidResult, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {
+  isManagedIdentifierDidResult,
+  ManagedIdentifierOptsOrResult
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { JwsCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
 import { SigningAlgo } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
@@ -42,22 +45,25 @@ function getWellKnownDIDVerifyCallback(siopIdentifierOpts: ISIOPIdentifierOption
   return siopIdentifierOpts.wellknownDIDVerifyCallback
     ? siopIdentifierOpts.wellknownDIDVerifyCallback
     : async (args: IVerifyCallbackArgs): Promise<IVerifyCredentialResult> => {
-        const result = await context.agent.verifyCredential({ credential: args.credential, fetchRemoteContexts: true })
-        return { verified: result.verified }
-      }
+      const result = await context.agent.verifyCredential({ credential: args.credential, fetchRemoteContexts: true })
+      return { verified: result.verified }
+    }
 }
 
 export function getPresentationVerificationCallback(idOpts: ManagedIdentifierOptsOrResult, context: IRequiredContext) {
   async function presentationVerificationCallback(args: any): Promise<PresentationVerificationResult> {
     if (CredentialMapper.isSdJwtEncoded(args)) {
-      const result: IVerifySdJwtPresentationResult = await context.agent.verifySdJwtPresentation({ presentation: args, kb: true })
+      const result: IVerifySdJwtPresentationResult = await context.agent.verifySdJwtPresentation({
+        presentation: args,
+        kb: true
+      })
       // fixme: investigate the correct way to handle this
       return { verified: !!result.payload }
     }
     const result = await context.agent.verifyPresentation({
       presentation: args,
       fetchRemoteContexts: true,
-      domain: (await context.agent.identifierManagedGet(idOpts)).kid?.split('#')[0],
+      domain: (await context.agent.identifierManagedGet(idOpts)).kid?.split('#')[0]
     })
     return { verified: result.verified }
   }
@@ -72,7 +78,7 @@ export async function createRPBuilder(args: {
   context: IRequiredContext
 }): Promise<RPBuilder> {
   const { rpOpts, pexOpts, context } = args
-  const { didOpts } = rpOpts
+  const { identifierOpts } = rpOpts
   let definition: IPresentationDefinition | undefined = args.definition
 
   if (!definition && pexOpts && pexOpts.definitionId) {
@@ -81,15 +87,15 @@ export async function createRPBuilder(args: {
         {
           definitionId: pexOpts.definitionId,
           version: pexOpts.version,
-          tenantId: pexOpts.tenantId,
-        },
-      ],
+          tenantId: pexOpts.tenantId
+        }
+      ]
     })
 
     definition = presentationDefinitionItems.length > 0 ? presentationDefinitionItems[0].definitionPayload : undefined
   }
 
-  const didMethods = didOpts.supportedDIDMethods ?? (await getAgentDIDMethods(context))
+  const didMethods = identifierOpts.supportedDIDMethods ?? (await getAgentDIDMethods(context))
   const eventEmitter = rpOpts.eventEmitter ?? new EventEmitter()
 
   const defaultClientMetadata: ClientMetadataOpts = {
@@ -101,21 +107,21 @@ export async function createRPBuilder(args: {
     client_name: 'Sphereon',
     vpFormatsSupported: {
       jwt_vc: { alg: ['EdDSA', 'ES256K'] },
-      jwt_vp: { alg: ['ES256K', 'EdDSA'] },
+      jwt_vp: { alg: ['ES256K', 'EdDSA'] }
     },
     scopesSupported: [Scope.OPENID_DIDAUTHN],
     subjectTypesSupported: [SubjectType.PAIRWISE],
     subject_syntax_types_supported: didMethods.map((method) => `did:${method}`),
-    passBy: PassBy.VALUE,
+    passBy: PassBy.VALUE
   }
 
-  const resolution = await context.agent.identifierManagedGet(didOpts.idOpts)
+  const resolution = await context.agent.identifierManagedGet(identifierOpts.idOpts)
   const resolver =
-    rpOpts.didOpts.resolveOpts?.resolver ??
+    rpOpts.identifierOpts.resolveOpts?.resolver ??
     getAgentResolver(context, {
       resolverResolution: true,
       localResolution: true,
-      uniresolverResolution: rpOpts.didOpts.resolveOpts?.noUniversalResolverFallback !== true,
+      uniresolverResolution: rpOpts.identifierOpts.resolveOpts?.noUniversalResolverFallback !== true
     })
   //todo: probably wise to first look and see if we actually need the hasher to begin with
   let hasher: Hasher | undefined = rpOpts.credentialOpts?.hasher
@@ -128,11 +134,11 @@ export async function createRPBuilder(args: {
     .withResponseType(ResponseType.VP_TOKEN, PropertyTarget.REQUEST_OBJECT)
     .withClientId(
       resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint),
-      PropertyTarget.REQUEST_OBJECT,
+      PropertyTarget.REQUEST_OBJECT
     )
     // todo: move to options fill/correct method
     .withSupportedVersions(
-      rpOpts.supportedVersions ?? [SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_ID1, SupportedVersion.SIOPv2_D11],
+      rpOpts.supportedVersions ?? [SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_ID1, SupportedVersion.SIOPv2_D11]
     )
     .withEventEmitter(eventEmitter)
     .withSessionManager(rpOpts.sessionManager ?? new InMemoryRPSessionManager(eventEmitter))
@@ -140,13 +146,17 @@ export async function createRPBuilder(args: {
     .withVerifyJwtCallback(
       rpOpts.verifyJwtCallback
         ? rpOpts.verifyJwtCallback
-        : getVerifyJwtCallback(resolver, {
-            wellknownDIDVerifyCallback: getWellKnownDIDVerifyCallback(rpOpts.didOpts, context),
-            checkLinkedDomain: 'if_present',
-          }),
+        : getVerifyJwtCallback({
+            resolver, verifyOpts: {
+              wellknownDIDVerifyCallback: getWellKnownDIDVerifyCallback(rpOpts.identifierOpts, context),
+              checkLinkedDomain: 'if_present'
+            }
+          },
+          context
+        )
     )
     .withRevocationVerification(RevocationVerification.NEVER)
-    .withPresentationVerification(getPresentationVerificationCallback(didOpts.idOpts, context))
+    .withPresentationVerification(getPresentationVerificationCallback(identifierOpts.idOpts, context))
   if (hasher) {
     builder.withHasher(hasher)
   }
@@ -176,14 +186,14 @@ export async function createRPBuilder(args: {
     )
   }*/
   //fixme: signcallback and it's return type are not totally compatible with our CreateJwtCallbackBase
-  const createJwtCallback = signCallback(rpOpts.didOpts.idOpts, context)
+  const createJwtCallback = signCallback(rpOpts.identifierOpts.idOpts, context)
   builder.withCreateJwtCallback(createJwtCallback as unknown as CreateJwtCallback<any>)
   return builder
 }
 
 export function signCallback(
   idOpts: ManagedIdentifierOptsOrResult,
-  context: IRequiredContext,
+  context: IRequiredContext
 ): (jwt: { header: JwtHeader; payload: JwtPayload }, kid?: string) => Promise<string> {
   return async (jwt: { header: JwtHeader; payload: JwtPayload }, kid?: string) => {
     const jwk = jwt.header.jwk
@@ -203,26 +213,34 @@ export function signCallback(
     const result: JwsCompactResult = await context.agent.jwtCreateJwsCompactSignature({
       issuer: { identifier: issuer, noIdentifierInHeader: false },
       protectedHeader: header,
-      payload,
+      payload
     })
     return result.jwt
   }
 }
 
-function getVerifyJwtCallback(
-  resolver?: Resolvable,
-  verifyOpts?: JWTVerifyOptions & {
-    checkLinkedDomain: 'never' | 'if_present' | 'always'
-    wellknownDIDVerifyCallback?: VerifyCallback
-  },
+function getVerifyJwtCallback(_opts: {
+                                resolver?: Resolvable,
+                                verifyOpts?: JWTVerifyOptions & {
+                                  checkLinkedDomain: 'never' | 'if_present' | 'always'
+                                  wellknownDIDVerifyCallback?: VerifyCallback
+                                },
+                              },
+                              context: IRequiredContext
 ): VerifyJwtCallback {
-  return async (jwtVerifier, jwt) => {
-    //fixme: SPRIND-49 for actually verifying the jwt value here
-    return true
+
+  return async (_jwtVerifier, jwt) => {
+    const result = await context.agent.jwtVerifyJwsSignature({ jws: jwt.raw })
+    console.log(result.message)
+    return !result.error
   }
 }
 
-export async function createRP({ rpOptions, context }: { rpOptions: IRPOptions; context: IRequiredContext }): Promise<RP> {
+
+export async function createRP({ rpOptions, context }: {
+  rpOptions: IRPOptions;
+  context: IRequiredContext
+}): Promise<RP> {
   return (await createRPBuilder({ rpOpts: rpOptions, context })).build()
 }
 
