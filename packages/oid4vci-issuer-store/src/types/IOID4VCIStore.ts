@@ -47,7 +47,7 @@ export interface IIssuerOptions {
   /**
    * @deprecated use idOpts
    */
-  didOptsTESTDIS: IDIDOptions
+  didOpts: IDIDOptions
   userPinRequired?: boolean
   cNonceExpiresIn?: number
 }
