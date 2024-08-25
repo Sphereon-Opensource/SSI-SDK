@@ -81,7 +81,7 @@ describe('Wrapped VC claims', () => {
     const nbf = new Date().valueOf()
     jwtVc['nbf' as keyof IVerifiableCredential] = nbf / 1000
     ;(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).issuanceDate = new Date(+new Date() + 2).toISOString()
-    expect(() => CredentialMapper.toWrappedVerifiableCredential(jwtVc, { maxTimeSkewInMS: 1000 }) as WrappedW3CVerifiableCredential).toThrowError(
+    expect(() => CredentialMapper.toWrappedVerifiableCredential(jwtVc, { maxTimeSkewInMS: 1 }) as WrappedW3CVerifiableCredential).toThrowError(
       `Inconsistent issuance dates between JWT claim (${new Date(nbf).toISOString().replace(/\.\d\d\dZ/, 'Z')}) and VC value (${
         (<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).issuanceDate
       })`,
