@@ -27,11 +27,13 @@ import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   Hasher,
-  IVerifiableCredential, JoseSignatureAlgorithm, JoseSignatureAlgorithmString,
+  IVerifiableCredential,
+  JoseSignatureAlgorithm,
+  JoseSignatureAlgorithmString,
   OriginalVerifiableCredential,
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
-  WrappedVerifiablePresentation
+  WrappedVerifiablePresentation,
 } from '@sphereon/ssi-types'
 import {
   IAgentContext,

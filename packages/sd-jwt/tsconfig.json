@@ -11,6 +11,10 @@
     },
     {
       "path": "../agent-config"
+    },
+    {
+      "path": "../ssi-types"
     }
+
   ]
 }

@@ -8,21 +8,17 @@ import {
   getTypesFromCredentialSupported,
   getTypesFromObject,
   MetadataDisplay,
-  OpenId4VCIVersion
+  OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
-import {
-  getOrCreatePrimaryIdentifier,
-  KeyManagementSystemEnum,
-  SupportedDidMethodEnum
-} from '@sphereon/ssi-sdk-ext.did-utils'
+import { getOrCreatePrimaryIdentifier, KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   isIIdentifier,
   isManagedIdentifierDidResult,
   isManagedIdentifierResult,
   ManagedIdentifierMethod,
   ManagedIdentifierResult,
-  managedIdentifierToJwk
+  managedIdentifierToJwk,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { keyTypeFromCryptographicSuite } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
@@ -37,7 +33,7 @@ import {
   sdJwtDecodedCredentialToUniformCredential,
   SdJwtDecodedVerifiableCredential,
   W3CVerifiableCredential,
-  WrappedVerifiableCredential
+  WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
 import { IVerifyCredentialArgs, W3CVerifiableCredential as VeramoW3CVerifiableCredential } from '@veramo/core'
 import { asArray } from '@veramo/utils'
@@ -64,7 +60,7 @@ import {
   VerificationSubResult,
   VerifyCredentialArgs,
   VerifyCredentialToAcceptArgs,
-  VerifySDJWTCredentialArgs
+  VerifySDJWTCredentialArgs,
 } from '../types/IOID4VCIHolder'
 import { credentialLocaleBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
 
@@ -330,9 +326,9 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
     const key = await context.agent.keyManagerCreate({ type: keyType, kms })
     // TODO. Create/move this to identifier service await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { key })
     identifier = await managedIdentifierToJwk({ method: 'key', identifier: key, kmsKeyRef: key.kid }, context)
-  // } else if (supportedBindingMethods.includes('cose_key')) {
-  //   // COSE HERE
-  //   throw Error(`Holder currently does not support binding method: ${supportedBindingMethods.join(',')}`)
+    // } else if (supportedBindingMethods.includes('cose_key')) {
+    //   // COSE HERE
+    //   throw Error(`Holder currently does not support binding method: ${supportedBindingMethods.join(',')}`)
   } else {
     throw Error(`Holder currently does not support binding method: ${supportedBindingMethods.join(',')}`)
   }
@@ -605,8 +601,8 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
     case 'jwt_vc':
     case 'vc+sd-jwt':
     case 'mso_mdoc': {
-      const supportedPreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString> = jwtCryptographicSuitePreferences.filter((suite: JoseSignatureAlgorithm | JoseSignatureAlgorithmString) =>
-        signing_algs_supported.includes(suite),
+      const supportedPreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString> = jwtCryptographicSuitePreferences.filter(
+        (suite: JoseSignatureAlgorithm | JoseSignatureAlgorithmString) => signing_algs_supported.includes(suite),
       )
 
       if (supportedPreferences.length > 0) {

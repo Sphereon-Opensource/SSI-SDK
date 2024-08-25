@@ -71,7 +71,7 @@ export enum JoseSignatureAlgorithm {
 }
 
 export type JoseSignatureAlgorithmString =
-  'RS256'
+  | 'RS256'
   | 'RS384'
   | 'RS512'
   | 'ES256'
@@ -87,7 +87,6 @@ export type JoseSignatureAlgorithmString =
   | 'PS512'
   | 'none'
 
-
 export enum JoseKeyOperation {
   SIGN = 'sign',
   VERIFY = 'verify',
@@ -99,15 +98,7 @@ export enum JoseKeyOperation {
   DERIVE_BITS = 'deriveBits',
 }
 
-export type JoseKeyOperationString =
-  'sign'
-  | 'verify'
-  | 'encrypt'
-  | 'decrypt'
-  | 'wrapKey'
-  | 'unwrapKey'
-  | 'deriveKey'
-  | 'deriveBits'
+export type JoseKeyOperationString = 'sign' | 'verify' | 'encrypt' | 'decrypt' | 'wrapKey' | 'unwrapKey' | 'deriveKey' | 'deriveBits'
 
 export enum JoseCurve {
   P_256 = 'P-256',
@@ -121,13 +112,4 @@ export enum JoseCurve {
   secp256k1 = 'secp256k1',
 }
 
-export type JoseCurveString =
-  'P-256'
-  | 'P-384'
-  | 'P-521'
-  | 'X25519'
-  | 'X448'
-  | 'EdDSA'
-  | 'Ed25519'
-  | 'Ed448'
-  | 'secp256k1'
+export type JoseCurveString = 'P-256' | 'P-384' | 'P-521' | 'X25519' | 'X448' | 'EdDSA' | 'Ed25519' | 'Ed448' | 'secp256k1'

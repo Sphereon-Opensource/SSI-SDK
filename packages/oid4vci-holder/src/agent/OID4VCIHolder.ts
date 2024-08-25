@@ -40,13 +40,14 @@ import {
   CredentialMapper,
   Hasher,
   ICredential,
-  IVerifiableCredential, JoseSignatureAlgorithm,
+  IVerifiableCredential,
+  JoseSignatureAlgorithm,
   JoseSignatureAlgorithmString,
   JwtDecodedVerifiableCredential,
   Loggers,
   OriginalVerifiableCredential,
   parseDid,
-  SdJwtDecodedVerifiableCredentialPayload
+  SdJwtDecodedVerifiableCredentialPayload,
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,

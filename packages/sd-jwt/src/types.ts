@@ -1,5 +1,7 @@
 import { Hasher, kbHeader, KBOptions, kbPayload, SaltGenerator } from '@sd-jwt/types'
 import { SdJwtVcPayload as SdJwtPayload } from '@sd-jwt/sd-jwt-vc'
+import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { DIDDocumentSection, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
@@ -159,8 +161,8 @@ export interface IVerifySdJwtVcArgs {
  * @beta
  */
 export type IVerifySdJwtVcResult = {
-  payload: unknown //fixme: maybe this can be `SdJwtPayload`
-  header: Record<string, unknown> | undefined
+  payload: SdJwtPayload
+  header: Record<string, unknown>
   kb?: { header: kbHeader; payload: kbPayload }
 }
 
@@ -205,12 +207,13 @@ export type SignKeyResult = {
  *
  * @beta
  */
-export type IRequiredContext = IAgentContext<IDIDManager & IResolver & IKeyManager & ImDLMdoc>
+export type IRequiredContext = IAgentContext<IDIDManager & IIdentifierResolution & IJwtService & IResolver & IKeyManager & ImDLMdoc>
 
+export type SdJwtVerifySignature = (data: string, signature: string, publicKey: JsonWebKey) => Promise<boolean>
 export interface SdJWTImplementation {
-  saltGenerator: SaltGenerator
-  hasher: Hasher
-  verifySignature: (data: string, signature: string, publicKey: JsonWebKey) => Promise<boolean>
+  saltGenerator?: SaltGenerator
+  hasher?: Hasher
+  verifySignature?: SdJwtVerifySignature
 }
 
 export interface Claims {

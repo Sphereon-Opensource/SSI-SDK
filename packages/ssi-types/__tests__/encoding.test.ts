@@ -12,7 +12,7 @@ import {
   JwtDecodedVerifiableCredential,
   JwtDecodedVerifiablePresentation,
   OriginalVerifiableCredential,
-  OriginalVerifiablePresentation
+  OriginalVerifiablePresentation,
 } from '../src'
 
 function getFile(path: string) {
@@ -35,15 +35,13 @@ describe('Encoding - Decoding', () => {
   const decodedLdpVc = CredentialMapper.decodeVerifiableCredential(ldpVc) as IVerifiableCredential
 
   it('Jwk enum test', () => {
-
     const jwk = {
       kty: JwkKeyType.EC,
       // @ts-ignore
-      crv: 'P-256'
+      crv: 'P-256',
     } satisfies JWK
     expect(JoseCurve.P_256).toStrictEqual(jwk.crv)
   })
-
 
   it('Decoded Jwt VP should have sub', () => {
     expect(decodedJwtVp.iss).toEqual('did:example:ebfeb1f712ebc6f1c276e12ec21')

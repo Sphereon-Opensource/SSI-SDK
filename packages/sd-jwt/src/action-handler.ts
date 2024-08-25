@@ -7,8 +7,9 @@ import { JWK } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
 import Debug from 'debug'
+import { defaultGenerateDigest, defaultGenerateSalt, defaultVerifySignature } from './defaultCallbacks'
 
-import { SignKeyArgs, SignKeyResult } from './index'
+import { SdJwtVerifySignature, SignKeyArgs, SignKeyResult } from './index'
 import { sphereonCA } from './trustAnchors'
 import {
   Claims,
@@ -33,12 +34,22 @@ const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
  */
 export class SDJwtPlugin implements IAgentPlugin {
   private readonly trustAnchorsInPEM: string[]
+  private readonly registeredImplementations: SdJWTImplementation
 
-  constructor(
-    private registeredImplementations: SdJWTImplementation,
-    trustAnchorsInPEM?: string[],
-  ) {
+  constructor(registeredImplementations?: SdJWTImplementation, trustAnchorsInPEM?: string[]) {
     this.trustAnchorsInPEM = trustAnchorsInPEM ?? []
+    if (!registeredImplementations) {
+      registeredImplementations = {}
+    }
+    if (typeof registeredImplementations?.hasher !== 'function') {
+      registeredImplementations.hasher = defaultGenerateDigest
+    }
+    if (typeof registeredImplementations?.saltGenerator !== 'function') {
+      registeredImplementations.saltGenerator = defaultGenerateSalt
+    }
+    this.registeredImplementations = registeredImplementations
+
+    // Verify signature default is used below in the methods if not provided here, as it needs the context of the agent
   }
 
   // map the methods your plugin is declaring to their implementation
@@ -126,8 +137,8 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @returns A signed SD-JWT presentation.
    */
   async createSdJwtPresentation(args: ICreateSdJwtPresentationArgs, context: IRequiredContext): Promise<ICreateSdJwtPresentationResult> {
-    const cred = await SDJwt.fromEncode(args.presentation, this.registeredImplementations.hasher)
-    const claims = await cred.getClaims<Claims>(this.registeredImplementations.hasher)
+    const cred = await SDJwt.fromEncode(args.presentation, this.registeredImplementations.hasher!)
+    const claims = await cred.getClaims<Claims>(this.registeredImplementations.hasher!)
     let holder: string
     // we primarly look for a cnf field, if it's not there we look for a sub field. If this is also not given, we throw an error since we can not sign it.
     if (claims.cnf?.jwk) {
@@ -161,14 +172,13 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @returns
    */
   async verifySdJwtVc(args: IVerifySdJwtVcArgs, context: IRequiredContext): Promise<IVerifySdJwtVcResult> {
-    // biome-ignore lint/style/useConst: <explanation>
-    let sdjwt: SDJwtVcInstance
+    // callback
     const verifier: Verifier = async (data: string, signature: string) => this.verify(sdjwt, context, data, signature)
 
-    sdjwt = new SDJwtVcInstance({ verifier, hasher: this.registeredImplementations.hasher })
-    const { header, payload, kb } = await sdjwt.verify(args.credential)
+    const sdjwt = new SDJwtVcInstance({ verifier, hasher: this.registeredImplementations.hasher })
+    const { header = {}, payload, kb } = await sdjwt.verify(args.credential)
 
-    return { header, payload, kb }
+    return { header, payload: payload as SdJwtVcPayload, kb }
   }
 
   /**
@@ -185,7 +195,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       throw Error('other method than cnf is not supported yet')
     }
     const key = payload.cnf.jwk as JsonWebKey
-    return this.registeredImplementations.verifySignature(data, signature, key)
+    return this.verifySignatureCallback(context)(data, signature, key)
   }
 
   /**
@@ -236,7 +246,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     if (!jwk) {
       throw new Error('No valid public key found for signature verification')
     }
-    return this.registeredImplementations.verifySignature(data, signature, jwk)
+    return this.verifySignatureCallback(context)(data, signature, jwk)
   }
 
   /**
@@ -271,5 +281,12 @@ export class SDJwtPlugin implements IAgentPlugin {
       default:
         throw new Error(`unsupported key type ${keyType}`)
     }
+  }
+
+  private verifySignatureCallback(context: IRequiredContext): SdJwtVerifySignature {
+    if (typeof this.registeredImplementations.verifySignature === 'function') {
+      return this.registeredImplementations.verifySignature
+    }
+    return defaultVerifySignature(context)
   }
 }
