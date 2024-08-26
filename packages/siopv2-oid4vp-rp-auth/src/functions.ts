@@ -206,7 +206,7 @@ export function signCallback(
     const result: JwsCompactResult = await context.agent.jwtCreateJwsCompactSignature({
       // FIXME fix cose-key inference
       // @ts-ignore
-      issuer: { identifier: idOpts.identifier, noIdentifierInHeader: false },
+      issuer: { identifier: idOpts.identifier, kmsKeyRef: idOpts.kmsKeyRef, noIdentifierInHeader: false },
       // FIXME fix JWK key_ops
       // @ts-ignore
       protectedHeader: jwt.header,
