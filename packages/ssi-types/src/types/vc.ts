@@ -43,6 +43,7 @@ export type PresentationFormat =
   // Remaining
   | 'jwt'
   | 'ldp'
+  | 'mso_mdoc'
   | string
 
 export type ClaimFormat = CredentialFormat | PresentationFormat
@@ -59,4 +60,5 @@ export const enum DocumentFormat {
   SD_JWT_VC,
   // Remaining
   EIP712,
+  MSO_MDOC
 }

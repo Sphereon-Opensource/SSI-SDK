@@ -408,6 +408,9 @@ importers:
 
   packages/data-store:
     dependencies:
+      '@sphereon/kmp-mdl-mdoc':
+        specifier: ^0.2.0-SNAPSHOT.3
+        version: 0.2.0-SNAPSHOT.3
       '@sphereon/pex':
         specifier: ^4.0.1
         version: 4.0.1
@@ -8642,7 +8645,6 @@ packages:
       '@js-joda/timezone': 2.3.0(@js-joda/core@5.6.3)
       format-util: 1.0.5
     dev: false
-    bundledDependencies: []
 
   /@sphereon/lto-did-ts@0.1.8-unstable.0(debug@4.3.6)(typescript@5.4.2):
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}

@@ -5,11 +5,17 @@ import {
   IVerifiablePresentation,
   OriginalVerifiableCredential,
   OriginalVerifiablePresentation,
-  SdJwtDecodedVerifiableCredentialPayload,
+  SdJwtDecodedVerifiableCredentialPayload
 } from '@sphereon/ssi-types'
 import { computeEntryHash } from '@veramo/utils'
 import { DigitalCredentialEntity } from '../../entities/digitalCredential/DigitalCredentialEntity'
-import { AddCredentialArgs, CredentialDocumentFormat, DigitalCredential, DocumentType, NonPersistedDigitalCredential } from '../../types'
+import {
+  AddCredentialArgs,
+  CredentialDocumentFormat,
+  DigitalCredential,
+  DocumentType,
+  NonPersistedDigitalCredential
+} from '../../types'
 
 function determineDocumentType(raw: string): DocumentType {
   const rawDocument = parseRawDocument(raw)
@@ -18,18 +24,26 @@ function determineDocumentType(raw: string): DocumentType {
   }
 
   const hasProof = CredentialMapper.hasProof(rawDocument)
-  const isCredential = CredentialMapper.isCredential(rawDocument)
+  const isCredential = isHex(raw) || CredentialMapper.isCredential(rawDocument)
   const isPresentation = CredentialMapper.isPresentation(rawDocument)
 
   if (isCredential) {
-    return hasProof ? DocumentType.VC : DocumentType.C
+    return hasProof || isHex(raw) ? DocumentType.VC : DocumentType.C
   } else if (isPresentation) {
     return hasProof ? DocumentType.VP : DocumentType.P
   }
   throw new Error(`Couldn't determine the type of the credential: ${raw}`)
 }
 
-function parseRawDocument(raw: string): OriginalVerifiableCredential | OriginalVerifiablePresentation {
+export function isHex(input: string) {
+  return input.match(/^([0-9A-Fa-f])+$/g) !== null
+}
+
+export function parseRawDocument(raw: string): OriginalVerifiableCredential | OriginalVerifiablePresentation {
+  if (isHex(raw)) {
+    // mso_mdoc
+    return raw
+  }
   if (CredentialMapper.isJwtEncoded(raw) || CredentialMapper.isSdJwtEncoded(raw)) {
     return raw
   }
@@ -48,6 +62,8 @@ function determineCredentialDocumentFormat(documentFormat: DocumentFormat): Cred
       return CredentialDocumentFormat.JWT
     case DocumentFormat.SD_JWT_VC:
       return CredentialDocumentFormat.SD_JWT
+    case DocumentFormat.MSO_MDOC:
+      return CredentialDocumentFormat.MSO_MDOC
     default:
       throw new Error(`Not supported document format: ${documentFormat}`)
   }

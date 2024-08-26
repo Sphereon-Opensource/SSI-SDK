@@ -34,7 +34,7 @@ export enum CredentialDocumentFormat {
   JSON_LD = 'JSON_LD',
   JWT = 'JWT',
   SD_JWT = 'SD_JWT',
-  MDOC = 'MDOC',
+  MSO_MDOC = 'MSO_MDOC',
 }
 
 export namespace CredentialDocumentFormat {
@@ -45,7 +45,7 @@ export namespace CredentialDocumentFormat {
     } else if (format.includes('ldp')) {
       return CredentialDocumentFormat.JSON_LD
     } else if (format.includes('mso') || credentialFormat.includes('mdoc')) {
-      return CredentialDocumentFormat.MDOC
+      return CredentialDocumentFormat.MSO_MDOC
     } else if (format.includes('jwt_')) {
       return CredentialDocumentFormat.JWT
     } else {
@@ -57,7 +57,7 @@ export namespace CredentialDocumentFormat {
     switch (documentFormat) {
       case CredentialDocumentFormat.SD_JWT:
         return 'vc+sd-jwt'
-      case CredentialDocumentFormat.MDOC:
+      case CredentialDocumentFormat.MSO_MDOC:
         return 'mso_mdoc'
       case CredentialDocumentFormat.JSON_LD:
         return documentType === DocumentType.C || documentType === DocumentType.VC ? 'ldp_vc' : 'ldp_vp'
