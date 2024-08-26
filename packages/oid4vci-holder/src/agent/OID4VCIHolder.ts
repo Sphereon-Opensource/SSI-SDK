@@ -12,14 +12,14 @@ import {
   getTypesFromObject,
   Jwt,
   NotificationRequest,
-  ProofOfPossessionCallbacks,
+  ProofOfPossessionCallbacks
 } from '@sphereon/oid4vci-common'
 import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   IIdentifierResolution,
   isManagedIdentifierDidResult,
   isManagedIdentifierJwkResult,
-  ManagedIdentifierOptsOrResult,
+  ManagedIdentifierOptsOrResult
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService, JwtHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
@@ -34,12 +34,11 @@ import {
   IdentityOrigin,
   IIssuerBranding,
   NonPersistedIdentity,
-  Party,
+  Party
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
   Hasher,
-  ICredential,
   IVerifiableCredential,
   JoseSignatureAlgorithm,
   JoseSignatureAlgorithmString,
@@ -47,7 +46,7 @@ import {
   Loggers,
   OriginalVerifiableCredential,
   parseDid,
-  SdJwtDecodedVerifiableCredentialPayload,
+  SdJwtDecodedVerifiableCredentialPayload
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
@@ -58,7 +57,7 @@ import {
   IResolver,
   ProofFormat,
   VerifiableCredential,
-  W3CVerifiableCredential,
+  W3CVerifiableCredential
 } from '@veramo/core'
 import { asArray, computeEntryHash } from '@veramo/utils'
 import { decodeJWT } from 'did-jwt'
@@ -92,7 +91,7 @@ import {
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
-  VerificationResult,
+  VerificationResult
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -102,7 +101,7 @@ import {
   getIssuanceOpts,
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
-  verifyCredentialToAccept,
+  verifyCredentialToAccept
 } from './OID4VCIHolderService'
 
 /**
@@ -943,20 +942,20 @@ export class OID4VCIHolder implements IAgentPlugin {
         context,
       )
     }
-    const persistCredential = holderCredential ? CredentialMapper.storedCredentialToOriginalFormat(holderCredential) : verifiableCredential
+    const persistCredential = holderCredential ? CredentialMapper.storedCredentialToOriginalFormat(holderCredential) : mappedCredentialToAccept.rawVerifiableCredential
     if (!persist && holderCredential) {
       logger.log(`Will not persist credential, since we are signing as a holder and the issuer asked not to persist`)
     } else {
       logger.log(`Persisting credential`, persistCredential)
 
-      const issuer = CredentialMapper.issuerCorrelationIdFromIssuerType((persistCredential as ICredential).issuer)
+      const issuer = CredentialMapper.issuerCorrelationIdFromIssuerType((verifiableCredential).issuer)
       const persistedCredential = await context.agent.crsAddCredential({
         credential: {
           rawDocument: JSON.stringify(persistCredential),
           credentialRole: CredentialRole.HOLDER,
-          issuerCorrelationType: CredentialCorrelationType.DID,
+          issuerCorrelationType: issuer?.startsWith('did:') ? CredentialCorrelationType.DID : CredentialCorrelationType.URL,
           issuerCorrelationId: issuer,
-          subjectCorrelationType: CredentialCorrelationType.DID,
+          subjectCorrelationType: verifiableCredential.credentialSubject.id?.startsWith('did:') ? CredentialCorrelationType.DID : CredentialCorrelationType.URL,
           subjectCorrelationId: issuer, // FIXME get separate did for subject
         },
       })

@@ -142,6 +142,14 @@ describe('Uniform VC claims', () => {
     expect(vc.issuanceDate).toEqual('2024-08-16T09:29:44Z')
     expect(vc.expirationDate).toEqual('2024-08-30T09:29:44Z')
   })
+
+  it('should work with sd jwt VC from Animo', () => {
+    const jwtVc: string = getFile('packages/ssi-types/__tests__/vc_vp_examples/vc/animo.sd.jwt')
+    const vc = CredentialMapper.toUniformCredential(jwtVc, { hasher: generateDigest })
+    console.log(JSON.stringify(vc, null, 2))
+    expect(vc.issuanceDate).toEqual('2024-08-26T00:06:09Z')
+
+  })
 })
 
 describe('Uniform VP claims', () => {
