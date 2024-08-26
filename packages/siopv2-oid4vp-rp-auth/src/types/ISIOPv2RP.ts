@@ -32,6 +32,7 @@ import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
 import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { JwtIssuer } from '@sphereon/oid4vc-common'
 
 export enum VerifiedDataMode {
   NONE = 'none',
@@ -65,6 +66,7 @@ export interface ICreateAuthRequestArgs {
   correlationId: string
   responseURIType: ResponseURIType
   responseURI: string
+  jwtIssuer?: JwtIssuer
   requestByReferenceURI?: string
   nonce?: string
   state?: string

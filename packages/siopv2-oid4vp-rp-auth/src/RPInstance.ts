@@ -1,8 +1,14 @@
 import { AuthorizationRequest, RP, URI } from '@sphereon/did-auth-siop'
 import { ICreateAuthRequestArgs, IPEXOptions, IRequiredContext, IRPOptions } from './types/ISIOPv2RP'
 import { IPresentationDefinition } from '@sphereon/pex'
-import { createRPBuilder, getRequestVersion } from './functions'
+import { createRPBuilder, getRequestVersion, getSigningAlgo } from './functions'
 import { v4 as uuidv4 } from 'uuid'
+import { JwtIssuer } from '@sphereon/oid4vc-common'
+import {
+  ensureManagedIdentifierResult,
+  isManagedIdentifierDidResult,
+  isManagedIdentifierX5cResult,
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
 export class RPInstance {
   private _rp: RP | undefined
@@ -55,6 +61,25 @@ export class RPInstance {
     const { correlationId, claims, requestByReferenceURI, responseURI, responseURIType } = createArgs
     const nonce = createArgs.nonce ?? uuidv4()
     const state = createArgs.state ?? correlationId
+    let jwtIssuer: JwtIssuer
+    const idOpts = this.rpOptions.identifierOpts.idOpts
+    const resolution = await ensureManagedIdentifierResult(idOpts, context)
+    if (isManagedIdentifierDidResult(resolution)) {
+      jwtIssuer = { didUrl: resolution.identifier.did, method: 'did', alg: getSigningAlgo(resolution.key.type) }
+    } else if (isManagedIdentifierX5cResult(resolution)) {
+      if (!resolution.issuer) {
+        return Promise.reject('missing issuer in idOpts')
+      }
+      jwtIssuer = {
+        issuer: resolution.issuer,
+        x5c: resolution.x5c,
+        method: 'x5c',
+        alg: getSigningAlgo(resolution.key.type),
+      }
+    } else {
+      return Promise.reject(Error(`JWT issuer method ${resolution.method} not yet supported`))
+    }
+
     return await this.get(context).then((rp) =>
       rp.createAuthorizationRequestURI({
         version: getRequestVersion(this.rpOptions),
@@ -65,6 +90,7 @@ export class RPInstance {
         requestByReferenceURI,
         responseURI,
         responseURIType,
+        jwtIssuer,
       }),
     )
   }
