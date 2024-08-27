@@ -1028,6 +1028,9 @@ importers:
 
   packages/oid4vci-holder:
     dependencies:
+      '@sphereon/kmp-mdl-mdoc':
+        specifier: 0.2.0-SNAPSHOT.22
+        version: 0.2.0-SNAPSHOT.22
       '@sphereon/oid4vci-client':
         specifier: 0.16.1-next.14
         version: 0.16.1-next.14
@@ -1061,6 +1064,9 @@ importers:
       '@sphereon/ssi-sdk.issuance-branding':
         specifier: workspace:*
         version: link:../issuance-branding
+      '@sphereon/ssi-sdk.mdl-mdoc':
+        specifier: workspace:*
+        version: link:../mdl-mdoc
       '@sphereon/ssi-sdk.sd-jwt':
         specifier: workspace:*
         version: link:../sd-jwt
@@ -2544,6 +2550,9 @@ importers:
       '@sd-jwt/decode':
         specifier: ^0.6.1
         version: 0.6.1
+      '@sphereon/kmp-mdl-mdoc':
+        specifier: 0.2.0-SNAPSHOT.22
+        version: 0.2.0-SNAPSHOT.22
       debug:
         specifier: ^4.3.5
         version: 4.3.6

@@ -24,6 +24,7 @@ import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { DigitalCredential, IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
+import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   Hasher,
@@ -589,6 +590,8 @@ export type CredentialVerificationError = {
   errorDetails?: string
 }
 
+export type VerifyMdocArgs = { credential: string; }
+
 export type VerifySDJWTCredentialArgs = { credential: string; hasher?: Hasher }
 
 export interface VerifyCredentialArgs {
@@ -610,6 +613,7 @@ export type RequiredContext = IAgentContext<
     IDIDManager &
     IResolver &
     IKeyManager &
-    ISDJwtPlugin
+    ISDJwtPlugin &
+    ImDLMdoc
 >
 export type DidAgents = TAgent<IResolver & IDIDManager>
