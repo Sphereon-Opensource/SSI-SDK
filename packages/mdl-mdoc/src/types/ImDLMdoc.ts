@@ -1,10 +1,14 @@
 import { com } from '@sphereon/kmp-mdl-mdoc'
+import { PresentationDefinitionV2, PresentationSubmission } from '@sphereon/pex-models'
 import { CertificateInfo, SubjectAlternativeGeneralName, X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import CoseSign1Json = com.sphereon.crypto.cose.CoseSign1Json
+import ICoseKeyCbor = com.sphereon.crypto.cose.ICoseKeyCbor
 import ICoseKeyJson = com.sphereon.crypto.cose.ICoseKeyJson
 import IKeyInfo = com.sphereon.crypto.IKeyInfo
+import IVerifyResults = com.sphereon.crypto.IVerifyResults
 import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult
+import DocumentJson = com.sphereon.mdoc.data.device.DocumentJson
 
 export interface ImDLMdoc extends IPluginMethodMap {
   // TODO: Extract cert methods to its own plugin
@@ -13,6 +17,10 @@ export interface ImDLMdoc extends IPluginMethodMap {
   x509GetCertificateInfo(args: GetX509CertificateInfoArgs, context: IRequiredContext): Promise<CertificateInfo[]>
 
   mdocVerifyIssuerSigned(args: MdocVerifyIssuerSignedArgs, context: IRequiredContext): Promise<IVerifySignatureResult<KeyType>>
+
+  mdocOid4vpHolderPresent(args: MdocOid4vpPresentArgs, context: IRequiredContext): Promise<MdocOid4VPPresentationAuth>
+
+  mdocOid4vpRPVerify(args: MdocOid4vpRPVerifyArgs, _context: IRequiredContext): Promise<MdocOid4vpRPVerifyResult>
 }
 
 export type IRequiredContext = IAgentContext<IKeyManager & IDIDManager & IResolver>
@@ -40,4 +48,32 @@ export type KeyType = ICoseKeyJson
 export type MdocVerifyIssuerSignedArgs = {
   input: CoseSign1Json
   keyInfo?: IKeyInfo<KeyType>
+}
+
+
+
+export interface MdocOid4VPPresentationAuth {
+  vp_token: string
+  presentation_submission: PresentationSubmission
+}
+
+export interface MdocOid4vpPresentArgs {
+  mdocHex: string
+  presentationDefinition: PresentationDefinitionV2
+  trustAnchors?: string[]
+  verifications?: VerificationOptions
+}
+
+export type VerificationOptions = {
+  allowExpiredDocuments?: boolean
+}
+
+
+export type DocumentVerifyResult = { document: DocumentJson, validations: IVerifyResults<ICoseKeyCbor> }
+export type MdocOid4vpRPVerifyResult = { error: boolean, documents: Array<DocumentVerifyResult>, presentation_submission: PresentationSubmission }
+
+export interface MdocOid4vpRPVerifyArgs {
+  vp_token: string
+  presentation_submission: PresentationSubmission
+  trustAnchors?: string[]
 }
