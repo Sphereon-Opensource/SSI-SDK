@@ -121,7 +121,7 @@ export async function createOPBuilder({
       getSigningAlgo(key.type),
     )*/
     // builder.withCreateJwtCallback(signCallback(resolution, context))
-    const createJwtCallback = signCallback(idOpts, context)
+    const createJwtCallback = createJwtCallbackWithIdOpts(idOpts, context)
     builder.withCreateJwtCallback(createJwtCallback as CreateJwtCallback<any>)
     builder.withPresentationSignCallback(
       await createOID4VPPresentationSignCallback({
@@ -131,11 +131,14 @@ export async function createOPBuilder({
         context,
       }),
     )
+  } else {
+    const createJwtCallback = createJwtCallbackWithOpOpts(opOptions, context)
+    builder.withCreateJwtCallback(createJwtCallback as CreateJwtCallback<any>)
   }
   return builder
 }
 
-export function signCallback(
+export function createJwtCallbackWithIdOpts(
   idOpts: ManagedIdentifierOptsOrResult,
   context: IRequiredContext,
 ): (jwtIssuer: JwtIssuer, jwt: { header: JwtHeader; payload: JwtPayload }) => Promise<string> {
@@ -146,7 +149,34 @@ export function signCallback(
     const result: JwsCompactResult = await context.agent.jwtCreateJwsCompactSignature({
       // FIXME fix cose-key inference
       // @ts-ignore
-      issuer: { identifier: idOpts.identifier, kmsKeyRef: idOpts.kmsKeyRef, noIdentifierInHeader: false },
+      issuer: { identifier: idOpts.identifier, noIdentifierInHeader: false },
+      // FIXME fix JWK key_ops
+      // @ts-ignore
+      protectedHeader: jwt.header,
+      payload: jwt.payload,
+    })
+    return result.jwt
+  }
+}
+
+export function createJwtCallbackWithOpOpts(
+  opOpts: IOPOptions,
+  context: IRequiredContext,
+): (jwtIssuer: JwtIssuer, jwt: { header: JwtHeader; payload: JwtPayload }) => Promise<string> {
+  return async (jwtIssuer: JwtIssuer, jwt: { header: JwtHeader; payload: JwtPayload }) => {
+    let identifier: string | Array<string>
+    if (jwtIssuer.method == 'did') {
+      identifier = jwtIssuer.didUrl
+    } else if (jwtIssuer.method == 'x5c') {
+      identifier = jwtIssuer.x5c
+    } else {
+      return Promise.reject(Error(`JWT issuer method ${jwtIssuer.method} not yet supported`))
+    }
+
+    const result: JwsCompactResult = await context.agent.jwtCreateJwsCompactSignature({
+      // FIXME fix cose-key inference
+      // @ts-ignore
+      issuer: { identifier: identifier, kmsKeyRef: idOpts.kmsKeyRef, noIdentifierInHeader: false },
       // FIXME fix JWK key_ops
       // @ts-ignore
       protectedHeader: jwt.header,

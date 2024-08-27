@@ -227,6 +227,8 @@ export class WellKnownDidIssuer implements IAgentPlugin {
       credential: {
         rawDocument: JSON.stringify(vc),
         credentialRole: CredentialRole.ISSUER,
+        kmsKeyRef: 'FIXME', // FIXME funke
+        identifierMethod: 'did', // FIXME funke
         issuerCorrelationId: CredentialMapper.issuerCorrelationIdFromIssuerType(vc.issuer),
         issuerCorrelationType: CredentialCorrelationType.DID,
         subjectCorrelationId: CredentialMapper.issuerCorrelationIdFromIssuerType(vc.issuer), // FIXME get separate did for subject

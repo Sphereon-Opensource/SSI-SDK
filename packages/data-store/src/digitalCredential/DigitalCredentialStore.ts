@@ -123,6 +123,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
       ...credential,
       ...(args.verifiedState !== CredentialStateType.REVOKED && { verifiedAt: args.verifiedAt }),
       ...(args.verifiedState === CredentialStateType.REVOKED && { revokedAt: args.revokedAt }),
+      identifierMethod: credential.identifierMethod,
       lastUpdatedAt: new Date(),
       verifiedState: args.verifiedState,
     }

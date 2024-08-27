@@ -138,7 +138,7 @@ export type StoreCredentialBrandingArgs = Pick<
 >
 export type StoreCredentialsArgs = Pick<
   OID4VCIMachineContext,
-  'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState' | 'selectedCredentials'
+  'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState' | 'selectedCredentials' | 'issuanceOpt'
 >
 export type SendNotificationArgs = Pick<
   OID4VCIMachineContext,
@@ -195,6 +195,7 @@ export type OID4VCIMachineContext = {
   credentialToSelectFrom: Array<CredentialToSelectFromResult>
   contactAlias: string
   contact?: Party
+
   selectedCredentials: Array<string>
   credentialsToAccept: Array<MappedCredentialToAccept>
   verificationCode?: string // TODO WAL-672 refactor to not store verificationCode in the context

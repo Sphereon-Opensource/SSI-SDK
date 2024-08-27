@@ -21,6 +21,8 @@ export type GetCredentialsResponse = {
 
 export type AddCredentialArgs = {
   rawDocument: string
+  kmsKeyRef: string
+  identifierMethod: string
   issuerCorrelationType: CredentialCorrelationType
   subjectCorrelationType?: CredentialCorrelationType
   issuerCorrelationId: string

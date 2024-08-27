@@ -35,6 +35,12 @@ export class DigitalCredentialEntity extends BaseEntity implements DigitalCreden
   @Column('text', { name: 'hash', nullable: false, unique: true })
   hash!: string
 
+  @Column('text', { name: 'kms_key_ref', nullable: false })
+  kmsKeyRef: string
+
+  @Column('text', { name: 'identifier_method', nullable: false })
+  identifierMethod: string
+
   @Column('simple-enum', { name: 'issuer_correlation_type', enum: CredentialCorrelationType, nullable: false })
   issuerCorrelationType!: CredentialCorrelationType
 

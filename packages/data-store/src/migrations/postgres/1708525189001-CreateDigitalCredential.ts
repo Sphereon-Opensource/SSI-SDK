@@ -20,6 +20,8 @@ export class CreateDigitalCredential1708525189001 implements MigrationInterface 
         "uniform_document" text NOT NULL,
         "credential_id" text,
         "hash" text NOT NULL UNIQUE,
+        "kms_key_ref" text NOT NULL,
+        "identifier_method" text NOT NULL,
         "issuer_correlation_type" "digital_credential_correlation_type" NOT NULL,
         "subject_correlation_type" "digital_credential_correlation_type",
         "issuer_correlation_id" text NOT NULL,

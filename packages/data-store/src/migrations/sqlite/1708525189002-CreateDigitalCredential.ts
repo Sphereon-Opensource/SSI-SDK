@@ -14,6 +14,8 @@ export class CreateDigitalCredential1708525189002 implements MigrationInterface 
                 "uniform_document" text NOT NULL,
                 "credential_id" text,
                 "hash" text NOT NULL UNIQUE,
+                "kms_key_ref" text NOT NULL,
+                "identifier_method" text NOT NULL,
                 "issuer_correlation_type" varchar CHECK( "issuer_correlation_type" IN ('DID', 'URL', 'X509_CN') ) NOT NULL,
                 "subject_correlation_type" varchar CHECK( "subject_correlation_type" IN ('DID', 'URL', 'X509_CN') ),
                 "issuer_correlation_id" text NOT NULL,
