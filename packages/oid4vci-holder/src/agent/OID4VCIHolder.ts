@@ -128,65 +128,26 @@ const logger = Loggers.DEFAULT.get('sphereon:oid4vci:holder')
 export function signCallback(
   client: OpenID4VCIClient,
   identifier: ManagedIdentifierOptsOrResult,
-  context: IAgentContext<IKeyManager & IDIDManager & IResolver & IIdentifierResolution & IJwtService>
+  context: IAgentContext<IKeyManager & IDIDManager & IResolver & IIdentifierResolution & IJwtService>,
+  nonce?: string
 ) {
   return async (jwt: Jwt, kid?: string) => {
     let resolution = await context.agent.identifierManagedGet(identifier)
     const jwk = jwt.header.jwk ?? (resolution.method === 'jwk' ? resolution.jwk : undefined)
-    // const idOpts = resolution.opts
-    // // todo: probably we can get rid of almost everything happening in here with the new identifier resolution
-    // //========remove?==============
-    // // let iss = jwt.payload.iss
-    // const jwk = jwt.header.jwk
-    //
-    // if (!kid) {
-    //   console.log(`====NO KID, using header kid if present`)
-    //   kid = jwt.header.kid
-    // }
-    // if (!kid) {
-    //   console.log(`====NO KID, using resolution kid if present`)
-    //   kid = resolution.kid
-    // }
-    // if (!kid && jwk && 'kid' in jwk) {
-    //   console.log(`====NO KID, using kid from jwk!`)
-    //   kid = jwk.kid as string
-    // }
-    //
-    // if (kid && !resolution.kid) {
-    //   // sync back to id opts
-    //   idOpts.kid = kid.split('#')[0]
-    //   console.log(`===Identifier resolution opts kid has been set with new value: ${idOpts.kid}`)
-    // }
-    // //=========remove?=============
-    //
-    // // TODO investigate the above, so we can also get rid of the double resolution call because we might have updated the kid
-    // resolution = await context.agent.identifierManagedGet(idOpts)
-    /*if (isManagedIdentifierDidResult(resolution) && client.isEBSI()) {
-      iss = resolution.did
-    } else if (!iss && isManagedIdentifierDidResult(resolution)) {
-      iss = resolution.did
-    } else {
-      iss = resolution.issuer
-    }*/
     if (!resolution.issuer && !jwt.payload.iss) {
       return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)} or identifier resolution`))
     }
-    /*if (kid && isManagedIdentifierDidResult(resolution) && !kid.startsWith(resolution.did)) {
-      // Make sure we create a fully qualified kid
-      const hash = kid.startsWith('#') ? '' : '#'
-      kid = `${resolution.did}${hash}${kid}`
-    }*/
     const header = jwt.header as JwtHeader
-    const payload = jwt.payload // { ...jwt.payload, ...(iss && { iss }) }
+    const payload = jwt.payload
+    if (nonce) {
+      payload.nonce = nonce
+    }
     if (jwk && header.kid) {
       console.log(
         `Deleting kid, as we are using a jwk and the oid4vci spec does not allow both to be present (which is not the case in the JOSE spec)`
       )
       delete header.kid // The OID4VCI spec does not allow a JWK with kid present although the JWS spec does
     }
-    /*if (!isManagedIdentifierDidResult(resolution)) {
-      return Promise.reject(`Current signer below only works with DIDs. Should be fixed`) // fixme
-    }*/
     return (
       await context.agent.jwtCreateJwsCompactSignature({
         issuer: { ...resolution, noIssPayloadUpdate: false },
@@ -194,13 +155,6 @@ export function signCallback(
         payload
       })
     ).jwt
-    /*return signDidJWT({
-      idOpts: { identifier: resolution.did },
-      header,
-      payload,
-      options: { issuer: iss, expiresIn: jwt.payload.exp, canonicalize: false },
-      context,
-    })*/
   }
 }
 
