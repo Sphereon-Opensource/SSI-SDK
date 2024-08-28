@@ -14,11 +14,11 @@ import { DIDDocument } from '@sphereon/did-uni-client'
 import { VerifiablePresentationResult } from '@sphereon/pex'
 import { IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
-import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
+import { ICredentialStore, UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { Party } from '@sphereon/ssi-sdk.data-store'
 import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
-import { Hasher, PresentationSubmission, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { Hasher, OriginalVerifiableCredential, PresentationSubmission, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import {
   IAgentContext,
@@ -167,12 +167,12 @@ export interface IIdentifierOpts {
 
 export interface VerifiableCredentialsWithDefinition {
   definition: PresentationDefinitionWithLocation
-  credentials: W3CVerifiableCredential[]
+  credentials: (UniqueDigitalCredential | OriginalVerifiableCredential)[]
 }
 
 export interface VerifiablePresentationWithDefinition extends VerifiablePresentationResult {
   definition: PresentationDefinitionWithLocation
-  verifiableCredentials: W3CVerifiableCredential[]
+  verifiableCredentials: OriginalVerifiableCredential[]
   idOpts: ManagedIdentifierOptsOrResult
 }
 
@@ -188,7 +188,7 @@ export interface IOID4VPArgs {
 }
 
 export interface IGetPresentationExchangeArgs {
-  verifiableCredentials: W3CVerifiableCredential[]
+  verifiableCredentials: OriginalVerifiableCredential[]
   allIdentifiers?: string[]
   hasher?: Hasher
 }

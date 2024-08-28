@@ -1,12 +1,7 @@
 import { OP, OPBuilder, PassBy, PresentationSignCallback, ResponseMode, SupportedVersion, VerifyJwtCallback } from '@sphereon/did-auth-siop'
 import { CreateJwtCallback, JwtHeader, JwtPayload } from '@sphereon/oid4vc-common'
 import { Format } from '@sphereon/pex-models'
-import {
-  isManagedIdentifierDidOpts,
-  isManagedIdentifierDidResult,
-  isManagedIdentifierX5cOpts,
-  ManagedIdentifierOptsOrResult,
-} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { isManagedIdentifierDidOpts, isManagedIdentifierX5cOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { JwsCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { createPEXPresentationSignCallback } from '@sphereon/ssi-sdk.presentation-exchange'
 import { SigningAlgo } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
@@ -106,13 +101,14 @@ export async function createOPBuilder({
     if (opOptions.skipDidResolution && isManagedIdentifierDidOpts(idOpts)) {
       idOpts.offlineWhenNoDIDRegistered = true
     }
+    /* FIXME Funke 
     const resolution = await context.agent.identifierManagedGet(idOpts)
-    if (!isManagedIdentifierDidOpts(idOpts) || !isManagedIdentifierDidResult(resolution)) {
-      /*last part is only there to get the available properties of a DID result*/
+   if (!isManagedIdentifierDidOpts(idOpts) || !isManagedIdentifierDidResult(resolution)) {
+      /!*last part is only there to get the available properties of a DID result*!/
       // Remove this once we use the newer version
       return Promise.reject(Error(`The current version of SIOP-OID4VP we use only works with DIDs`))
     }
-
+*/
     /*const key = resolution.key
     builder.withSuppliedSignature(
       SuppliedSigner(key, context, getSigningAlgo(key.type) as unknown as KeyAlgo),
