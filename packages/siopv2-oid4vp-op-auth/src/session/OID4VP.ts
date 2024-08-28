@@ -5,8 +5,7 @@ import { ManagedIdentifierOptsOrResult, ManagedIdentifierResult } from '@sphereo
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
-import { CompactJWT, CredentialMapper, Hasher, W3CVerifiableCredential } from '@sphereon/ssi-types'
-import { encodeJoseBlob } from '@veramo/utils'
+import { CompactJWT, Hasher, OriginalVerifiableCredential } from '@sphereon/ssi-types'
 import {
   DEFAULT_JWT_PROOF_TYPE,
   IGetPresentationExchangeArgs,
@@ -113,7 +112,17 @@ export class OID4VP {
             ),
           )
         }
-        const firstVC = CredentialMapper.toUniformCredential(selectedVerifiableCredentials.credentials[0], { hasher: opts?.hasher ?? this.hasher })
+        const firstUniqueDC = selectedVerifiableCredentials.credentials[0]
+        //        const firstVC = firstUniqueDC.uniformVerifiableCredential!
+        if (typeof firstUniqueDC !== 'object' || !('digitalCredential' in firstUniqueDC)) {
+          return Promise.reject(Error('If no opts provided, credentials should be of type UniqueDigitalCredential'))
+        }
+        idOpts = await this.session.context.agent.identifierManagedGetByKid({
+          identifier: firstUniqueDC.digitalCredential.kmsKeyRef,
+          kmsKeyRef: firstUniqueDC.digitalCredential.kmsKeyRef,
+        })
+
+        /*
         const holder = CredentialMapper.isSdJwtDecodedCredential(firstVC)
           ? firstVC.decodedPayload.cnf?.jwk
             ? //TODO SDK-19: convert the JWK to hex and search for the appropriate key and associated DID
@@ -123,9 +132,10 @@ export class OID4VP {
           : Array.isArray(firstVC.credentialSubject)
             ? firstVC.credentialSubject[0].id
             : firstVC.credentialSubject.id
-        if (holder) {
-          idOpts = { identifier: holder }
-        }
+          if (holder) {
+              idOpts = {identifier: holder}
+          }
+*/
       } else if (opts?.holder) {
         idOpts = { identifier: opts.holder }
       }
@@ -139,12 +149,12 @@ export class OID4VP {
             restrictToFormats: opts?.restrictToFormats,
             restrictToDIDMethods: opts?.restrictToDIDMethods,
             filterOpts: {
-              verifiableCredentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
+              verifiableCredentials: selectedVerifiableCredentials.credentials,
             },
           })
         : {
             definition: selectedVerifiableCredentials.definition,
-            credentials: selectedVerifiableCredentials.credentials.map((vc) => CredentialMapper.storedCredentialToOriginalFormat(vc)),
+            credentials: selectedVerifiableCredentials.credentials,
           }
 
     if (!idOpts) {
@@ -160,11 +170,14 @@ export class OID4VP {
       skipDidResolution: opts?.skipDidResolution ?? false,
     })
     const identifier: ManagedIdentifierResult = await this.session.context.agent.identifierManagedGet(idOpts)
+    const verifiableCredentials = vcs.credentials.map((credential) =>
+      typeof credential === 'object' && 'digitalCredential' in credential ? credential.originalVerifiableCredential! : credential,
+    )
     const presentationResult = await this.getPresentationExchange({
-      verifiableCredentials: vcs.credentials,
+      verifiableCredentials: verifiableCredentials,
       allIdentifiers: this.allIdentifiers,
       hasher: opts?.hasher,
-    }).createVerifiablePresentation(vcs.definition.definition, vcs.credentials, signCallback, {
+    }).createVerifiablePresentation(vcs.definition.definition, verifiableCredentials, signCallback, {
       proofOptions,
       // fixme: Update to newer siop-vp to not require dids here.
       holderDID: identifier.kid,
@@ -181,7 +194,7 @@ export class OID4VP {
     return {
       ...presentationResult,
       verifiablePresentation,
-      verifiableCredentials: vcs.credentials,
+      verifiableCredentials: verifiableCredentials,
       definition: selectedVerifiableCredentials.definition,
       idOpts: idOpts,
     }
@@ -191,7 +204,7 @@ export class OID4VP {
     credentialRole: CredentialRole,
     opts?: {
       filterOpts?: {
-        verifiableCredentials?: W3CVerifiableCredential[]
+        verifiableCredentials?: UniqueDigitalCredential[]
         filter?: FindDigitalCredentialArgs
       }
       holderDIDs?: string[]
@@ -213,16 +226,38 @@ export class OID4VP {
     credentialRole: CredentialRole,
     presentationDefinition: PresentationDefinitionWithLocation,
     opts?: {
-      filterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindDigitalCredentialArgs }
+      filterOpts?: { verifiableCredentials?: (UniqueDigitalCredential | OriginalVerifiableCredential)[]; filter?: FindDigitalCredentialArgs }
       holderDIDs?: string[]
       restrictToFormats?: Format
       restrictToDIDMethods?: string[]
     },
   ): Promise<VerifiableCredentialsWithDefinition> {
+    const udcMap = new Map<OriginalVerifiableCredential, UniqueDigitalCredential | OriginalVerifiableCredential>()
+    opts?.filterOpts?.verifiableCredentials?.forEach((credential) => {
+      if (typeof credential === 'object' && 'digitalCredential' in credential) {
+        udcMap.set(credential.originalVerifiableCredential!, credential)
+      } else {
+        udcMap.set(credential, credential)
+      }
+    })
+
+    const credentials = (
+      await this.filterCredentialsWithSelectionStatus(credentialRole, presentationDefinition, {
+        ...opts,
+        filterOpts: {
+          verifiableCredentials: opts?.filterOpts?.verifiableCredentials?.map((credential) => {
+            if (typeof credential === 'object' && 'digitalCredential' in credential) {
+              return credential.originalVerifiableCredential!
+            } else {
+              return credential
+            }
+          }),
+        },
+      })
+    ).verifiableCredential
     return {
       definition: presentationDefinition,
-      credentials: (await this.filterCredentialsWithSelectionStatus(credentialRole, presentationDefinition, opts))
-        .verifiableCredential as W3CVerifiableCredential[],
+      credentials: credentials?.map((vc) => udcMap.get(vc)!) ?? [],
     }
   }
 
@@ -230,7 +265,7 @@ export class OID4VP {
     credentialRole: CredentialRole,
     presentationDefinition: PresentationDefinitionWithLocation,
     opts?: {
-      filterOpts?: { verifiableCredentials?: W3CVerifiableCredential[]; filter?: FindDigitalCredentialArgs }
+      filterOpts?: { verifiableCredentials?: OriginalVerifiableCredential[]; filter?: FindDigitalCredentialArgs }
       holderDIDs?: string[]
       restrictToFormats?: Format
       restrictToDIDMethods?: string[]
@@ -255,10 +290,10 @@ export class OID4VP {
   private async getCredentials(
     credentialRole: CredentialRole,
     filterOpts?: {
-      verifiableCredentials?: W3CVerifiableCredential[]
+      verifiableCredentials?: OriginalVerifiableCredential[]
       filter?: FindDigitalCredentialArgs
     },
-  ): Promise<W3CVerifiableCredential[]> {
+  ): Promise<OriginalVerifiableCredential[]> {
     if (filterOpts?.verifiableCredentials && filterOpts.verifiableCredentials.length > 0) {
       return filterOpts.verifiableCredentials
     }
