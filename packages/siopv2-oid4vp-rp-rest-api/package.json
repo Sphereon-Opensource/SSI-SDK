@@ -11,7 +11,7 @@
     "start:dev": "ts-node __tests__/RestAPI.ts"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.16.1-next.16",
+    "@sphereon/did-auth-siop": "0.16.1-unstable.16",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@decentralized-identity/ion-sdk": "^0.6.0",
-    "@sphereon/did-auth-siop-adapter": "0.16.1-next.16",
+    "@sphereon/did-auth-siop-adapter": "0.16.1-unstable.16",
     "@sphereon/did-uni-client": "^0.6.3",
     "@sphereon/pex": "^4.1.0",
     "@sphereon/pex-models": "^2.3.1",
