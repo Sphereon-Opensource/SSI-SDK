@@ -102,6 +102,27 @@ export class RPInstance {
     const { correlationId, claims, requestByReferenceURI, responseURI, responseURIType } = createArgs
     const nonce = createArgs.nonce ?? uuidv4()
     const state = createArgs.state ?? correlationId
+    const idOpts = this.rpOptions.identifierOpts.idOpts
+    const resolution = await ensureManagedIdentifierResult(idOpts, context)
+
+    let jwtIssuer: JwtIssuer
+    if (isManagedIdentifierX5cResult(resolution) && resolution.issuer) {
+      jwtIssuer = {
+        method: resolution.method,
+        alg: getSigningAlgo(resolution.key.type),
+        x5c: resolution.x5c,
+        issuer: resolution.issuer,
+      }
+    } else if (isManagedIdentifierDidResult(resolution)) {
+      jwtIssuer = {
+        method: resolution.method,
+        alg: getSigningAlgo(resolution.key.type),
+        didUrl: resolution.did,
+      }
+    } else {
+      return Promise.reject(Error('Only did & x5c supported at present'))
+    }
+
     return await this.get(context).then((rp) =>
       rp.createAuthorizationRequest({
         version: getRequestVersion(this.rpOptions),
@@ -112,6 +133,7 @@ export class RPInstance {
         requestByReferenceURI,
         responseURIType,
         responseURI,
+        jwtIssuer,
       }),
     )
   }
