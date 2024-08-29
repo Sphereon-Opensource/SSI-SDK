@@ -213,7 +213,7 @@ export class CredentialMapper {
     if (!vp) {
       throw Error(`VP key not found`)
     }
-    const noVCs = typeof vp !== 'string' && ('verifiableCredential' in vp) || !vp.verifiableCredential || vp.verifiableCredential.length === 0
+    const noVCs = !('verifiableCredential' in vp) || !vp.verifiableCredential || vp.verifiableCredential.length === 0
     if (noVCs) {
       console.warn(`Presentation without verifiable credentials. That is rare! `)
       // throw Error(`VP needs to have at least one verifiable credential at this point`)
