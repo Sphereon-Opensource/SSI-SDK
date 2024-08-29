@@ -821,7 +821,7 @@ export class CredentialMapper {
       | MdocDeviceResponse
       | MdocDocument
   ): DocumentFormat {
-    if (this.isMsoMdocDecodedCredential(document as any) || this.isMsoMdocDecodedCredential(document as any)) {
+    if (this.isMsoMdocOid4VPEncoded(document as any) || this.isMsoMdocDecodedCredential(document as any)) {
       return DocumentFormat.MSO_MDOC
     } else if (this.isMsoMdocDecodedPresentation(document as any) || this.isMsoMdocDecodedPresentation(document as any)) {
       return DocumentFormat.MSO_MDOC
