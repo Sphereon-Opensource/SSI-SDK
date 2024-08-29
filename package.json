@@ -114,7 +114,7 @@
       "@sphereon/did-auth-siop": "0.16.1-unstable.16",
       "@sphereon/ssi-types": "workspace:*",
       "@sphereon/ssi-sdk.core": "workspace:*",
-      "@sphereon/pex": "^4.1.0",
+      "@sphereon/pex": "^4.1.1-unstable.0",
       "@sphereon/pex-models": "^2.3.1",
       "@noble/hashes": "1.2.0",
       "debug": "^4.3.5",
