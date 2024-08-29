@@ -1,4 +1,5 @@
 import {
+  ClientIdScheme,
   ClientMetadataOpts,
   InMemoryRPSessionManager,
   PassBy,
@@ -138,6 +139,7 @@ export async function createRPBuilder(args: {
       resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint),
       PropertyTarget.REQUEST_OBJECT,
     )
+    .withClientIdScheme(resolution.clientIdScheme as ClientIdScheme, PropertyTarget.REQUEST_OBJECT)
     // todo: move to options fill/correct method
     .withSupportedVersions(
       rpOpts.supportedVersions ?? [SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_ID1, SupportedVersion.SIOPv2_D11],
