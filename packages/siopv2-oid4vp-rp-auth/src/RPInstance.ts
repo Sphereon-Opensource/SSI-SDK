@@ -83,6 +83,7 @@ export class RPInstance {
     return await this.get(context).then((rp) =>
       rp.createAuthorizationRequestURI({
         version: getRequestVersion(this.rpOptions),
+
         correlationId,
         nonce,
         state,
