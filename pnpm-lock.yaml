@@ -3550,6 +3550,9 @@ importers:
       '@sphereon/ssi-sdk.credential-store':
         specifier: workspace:*
         version: link:../credential-store
+      '@sphereon/ssi-sdk.data-store':
+        specifier: workspace:*
+        version: link:../data-store
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types

@@ -2,7 +2,7 @@ import {
   CredentialMapper,
   DocumentFormat,
   IVerifiableCredential,
-  IVerifiablePresentation,
+  IVerifiablePresentation, ObjectUtils,
   OriginalVerifiableCredential,
   OriginalVerifiablePresentation,
   SdJwtDecodedVerifiableCredentialPayload
@@ -14,7 +14,8 @@ import {
   CredentialDocumentFormat,
   DigitalCredential,
   DocumentType,
-  NonPersistedDigitalCredential
+  NonPersistedDigitalCredential,
+  RegulationType
 } from '../../types'
 
 function determineDocumentType(raw: string): DocumentType {
@@ -24,11 +25,11 @@ function determineDocumentType(raw: string): DocumentType {
   }
 
   const hasProof = CredentialMapper.hasProof(rawDocument)
-  const isCredential = isHex(raw) || CredentialMapper.isCredential(rawDocument)
+  const isCredential = isHex(raw) || ObjectUtils.isBase64(raw) || CredentialMapper.isCredential(rawDocument)
   const isPresentation = CredentialMapper.isPresentation(rawDocument)
 
   if (isCredential) {
-    return hasProof || isHex(raw) ? DocumentType.VC : DocumentType.C
+    return hasProof || isHex(raw) || ObjectUtils.isBase64(raw) ? DocumentType.VC : DocumentType.C
   } else if (isPresentation) {
     return hasProof ? DocumentType.VP : DocumentType.P
   }
@@ -40,11 +41,10 @@ export function isHex(input: string) {
 }
 
 export function parseRawDocument(raw: string): OriginalVerifiableCredential | OriginalVerifiablePresentation {
-  if (isHex(raw)) {
+  if (isHex(raw) || ObjectUtils.isBase64(raw)) {
     // mso_mdoc
     return raw
-  }
-  if (CredentialMapper.isJwtEncoded(raw) || CredentialMapper.isSdJwtEncoded(raw)) {
+  } else if (CredentialMapper.isJwtEncoded(raw) || CredentialMapper.isSdJwtEncoded(raw)) {
     return raw
   }
   try {
@@ -93,6 +93,13 @@ function getValidFrom(uniformDocument: IVerifiableCredential | IVerifiablePresen
   return undefined
 }
 
+const safeStringify = (object: any): string => {
+  if (typeof object === 'string') {
+    return object
+  }
+  return JSON.stringify(object)
+}
+
 export const nonPersistedDigitalCredentialEntityFromAddArgs = (addCredentialArgs: AddCredentialArgs): NonPersistedDigitalCredential => {
   const documentType: DocumentType = determineDocumentType(addCredentialArgs.rawDocument)
   const documentFormat: DocumentFormat = CredentialMapper.detectDocumentType(addCredentialArgs.rawDocument)
@@ -107,14 +114,16 @@ export const nonPersistedDigitalCredentialEntityFromAddArgs = (addCredentialArgs
   const validFrom: Date | undefined = getValidFrom(uniformDocument)
   const validUntil: Date | undefined = getValidUntil(uniformDocument)
   const hash = computeEntryHash(addCredentialArgs.rawDocument)
+  const regulationType = addCredentialArgs.regulationType ?? RegulationType.NON_REGULATED
   return {
     ...addCredentialArgs,
+    regulationType,
     documentType,
     documentFormat: determineCredentialDocumentFormat(documentFormat),
     createdAt: new Date(),
     credentialId: uniformDocument.id ?? hash,
     hash,
-    uniformDocument: JSON.stringify(uniformDocument),
+    uniformDocument: safeStringify(uniformDocument),
     validFrom,
     ...(validUntil && { validUntil }),
     lastUpdatedAt: new Date(),

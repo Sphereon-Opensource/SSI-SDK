@@ -51,7 +51,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         kmsKeyRef: 'testKeyRef',
         identifierMethod: 'did',
         issuerCorrelationId: 'CN="test"',
-        issuerCorrelationType: CredentialCorrelationType.X509_CN,
+        issuerCorrelationType: CredentialCorrelationType.X509_SAN,
         rawDocument: examplePid,
       }
       pidSdJwtCredential = await agent.crsAddCredential({ credential: sdJwtAdd })

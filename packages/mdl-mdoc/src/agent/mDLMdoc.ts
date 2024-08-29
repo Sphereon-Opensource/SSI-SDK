@@ -76,7 +76,7 @@ export class MDLMdoc implements IAgentPlugin {
     const mdoc = DocumentCbor.Static.cborDecode(decodeFrom(mdocHex, Encoding.HEX))
     const validations = await ValidationsJS.fromDocumentAsync(mdoc, null, trustAnchors ?? this.trustAnchors, verifications?.allowExpiredDocuments)
     if (validations.error) {
-      return Promise.reject(Error(`Validation for the MDOC failed. ${validations.verifications.filter(ver => ver.error).map(ver => `${ver.name}(critical${ver.critical}): ${ver.message}`).join(',')}`))
+      return Promise.reject(Error(`Validation for the MSO_MDOC failed. ${validations.verifications.filter(ver => ver.error).map(ver => `${ver.name}(critical${ver.critical}): ${ver.message}`).join(',')}`))
     }
     const deviceResponse = mdoc.toSingleDocDeviceResponse(presentationDefinition as IOid4VPPresentationDefinition)
     const vp_token = encodeTo(deviceResponse.cborEncode(), Encoding.BASE64URL)

@@ -60,7 +60,7 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
     let issuerPublicKey: CryptoKey
     let issuerCert: Certificate | undefined
     let kid = keyInfo?.kid ?? sign1Json.protectedHeader.kid ?? sign1Json.unprotectedHeader?.kid
-    // Please note this method does not perform chain validation. The MDL-MDOC library already performed this before this step
+    // Please note this method does not perform chain validation. The MDL-MSO_MDOC library already performed this before this step
     const x5c =
       keyInfo?.key?.x5chain?.value?.asJsArrayView()?.map((x509) => x509.encodeTo(Encoding.BASE64)) ??
       sign1Json.protectedHeader?.x5chain ??

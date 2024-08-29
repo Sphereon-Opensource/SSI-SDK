@@ -1,10 +1,12 @@
-export type NonPersistedDigitalCredential = Omit<DigitalCredential, 'id'>
+export type NonPersistedDigitalCredential = Omit<DigitalCredential, 'id' | 'regulationType'> & {regulationType?: RegulationType}
 
 export type DigitalCredential = {
   id: string
+  parentId?: string
   documentType: DocumentType
   documentFormat: CredentialDocumentFormat
   credentialRole: CredentialRole
+  regulationType: RegulationType
   rawDocument: string
   uniformDocument: string
   credentialId?: string
@@ -13,11 +15,14 @@ export type DigitalCredential = {
   identifierMethod: string
   issuerCorrelationType: CredentialCorrelationType
   subjectCorrelationType?: CredentialCorrelationType
+  rpCorrelationType?: CredentialCorrelationType
   issuerCorrelationId: string
   subjectCorrelationId?: string
+  rpCorrelationId?: string
   verifiedState?: CredentialStateType
   tenantId?: string
   createdAt: Date
+  presentedAt?: Date
   lastUpdatedAt: Date
   validUntil?: Date
   validFrom?: Date
@@ -30,6 +35,13 @@ export enum DocumentType {
   VP = 'VP',
   P = 'P',
   C = 'C',
+}
+
+export enum RegulationType {
+  PID = 'PID',
+  QEAA = 'QEAA',
+  EAA = 'EAA',
+  NON_REGULATED = 'NON_REGULATED',
 }
 
 export enum CredentialDocumentFormat {
@@ -71,7 +83,8 @@ export namespace CredentialDocumentFormat {
 
 export enum CredentialCorrelationType {
   DID = 'DID',
-  X509_CN = 'X509_CN',
+  X509_SAN = 'X509_SAN',
+  KID = 'KID',
   URL = 'URL',
 }
 

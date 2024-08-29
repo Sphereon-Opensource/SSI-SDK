@@ -573,7 +573,7 @@ export class CredentialMapper {
     if (CredentialMapper.isSdJwtDecodedCredential(presentation)) {
       throw new Error('Converting SD-JWT VC to uniform VP is not supported.')
     } else if (CredentialMapper.isMsoMdocDecodedPresentation(presentation)) {
-      throw new Error('Converting MDOC to uniform VP is not supported yet.')
+      throw new Error('Converting MSO_MDOC to uniform VP is not supported yet.')
     }
 
     const proof = CredentialMapper.getFirstProof(presentation)

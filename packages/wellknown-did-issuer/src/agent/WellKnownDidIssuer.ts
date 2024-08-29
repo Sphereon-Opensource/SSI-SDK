@@ -1,10 +1,11 @@
+import { CredentialCorrelationType, CredentialRole, DigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialMapper, parseDid } from '@sphereon/ssi-types'
 import {
   DomainLinkageCredential,
   IDidConfigurationResource,
   IssuanceCallback,
   ServiceTypesEnum,
-  WellKnownDidIssuer as Issuer,
+  WellKnownDidIssuer as Issuer
 } from '@sphereon/wellknown-dids-client'
 import { IAgentPlugin, IIdentifier, VerifiableCredential } from '@veramo/core'
 import { OrPromise } from '@veramo/utils'
@@ -12,8 +13,12 @@ import { normalizeCredential } from 'did-jwt-vc'
 import { Service } from 'did-resolver/lib/resolver'
 import { Connection } from 'typeorm'
 import { v4 as uuidv4 } from 'uuid'
-import { createCredentialEntity, DidConfigurationResourceEntity, didConfigurationResourceFrom } from '../entities/DidConfigurationResourceEntity'
-import { CredentialCorrelationType, CredentialRole, DigitalCredential } from '@sphereon/ssi-sdk.credential-store'
+import {
+  createCredentialEntity,
+  DidConfigurationResourceEntity,
+  didConfigurationResourceFrom
+} from '../entities/DidConfigurationResourceEntity'
+import { schema } from '../index'
 import {
   IAddLinkedDomainsServiceArgs,
   IGetDidConfigurationResourceArgs,
@@ -24,9 +29,9 @@ import {
   ISaveDidConfigurationResourceArgs,
   IWellKnownDidIssuer,
   IWellKnownDidIssuerOptionsArgs,
-  RequiredContext,
+  RequiredContext
 } from '../types/IWellKnownDidIssuer'
-import { schema } from '../index'
+import { RegulationType } from '@sphereon/ssi-sdk.data-store'
 
 /**
  * {@inheritDoc IWellKnownDidIssuer}
@@ -227,8 +232,9 @@ export class WellKnownDidIssuer implements IAgentPlugin {
       credential: {
         rawDocument: JSON.stringify(vc),
         credentialRole: CredentialRole.ISSUER,
+        regulationType: RegulationType.NON_REGULATED, // FIXME funke
         kmsKeyRef: 'FIXME', // FIXME funke
-        identifierMethod: 'did', // FIXME funke
+        identifierMethod: 'did',
         issuerCorrelationId: CredentialMapper.issuerCorrelationIdFromIssuerType(vc.issuer),
         issuerCorrelationType: CredentialCorrelationType.DID,
         subjectCorrelationId: CredentialMapper.issuerCorrelationIdFromIssuerType(vc.issuer), // FIXME get separate did for subject
