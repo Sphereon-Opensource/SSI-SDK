@@ -213,7 +213,7 @@ export class CredentialMapper {
     if (!vp) {
       throw Error(`VP key not found`)
     }
-    const noVCs = !('verifiableCredential' in vp) || !vp.verifiableCredential || vp.verifiableCredential.length === 0
+    const noVCs = typeof vp !== 'string' && ('verifiableCredential' in vp) || !vp.verifiableCredential || vp.verifiableCredential.length === 0
     if (noVCs) {
       console.warn(`Presentation without verifiable credentials. That is rare! `)
       // throw Error(`VP needs to have at least one verifiable credential at this point`)
@@ -348,7 +348,7 @@ export class CredentialMapper {
   }
 
   public static isW3cCredential(credential: ICredential | SdJwtDecodedVerifiableCredential): credential is ICredential {
-    return '@context' in credential && ((credential as ICredential).type?.includes('VerifiableCredential') || false)
+    return typeof credential === 'object' && '@context' in credential && ((credential as ICredential).type?.includes('VerifiableCredential') || false)
   }
 
   public static isCredential(original: OriginalVerifiableCredential | OriginalVerifiablePresentation): original is OriginalVerifiableCredential {
@@ -357,6 +357,10 @@ export class CredentialMapper {
         const vc: IVerifiableCredential = CredentialMapper.toUniformCredential(original)
         return CredentialMapper.isW3cCredential(vc)
       } else if (CredentialMapper.isSdJwtEncoded(original)) {
+        return true
+      } else if (CredentialMapper.isMsoMdocDecodedCredential(original)) {
+        return true
+      } else if (CredentialMapper.isMsoMdocOid4VPEncoded(original)) {
         return true
       }
       return (
@@ -377,6 +381,11 @@ export class CredentialMapper {
         return CredentialMapper.isW3cPresentation(vp)
       } else if (CredentialMapper.isSdJwtEncoded(original)) {
         return false
+        // @ts-expect-error
+      } else if (CredentialMapper.isMsoMdocDecodedPresentation(original)) {
+        return true
+      } else if (CredentialMapper.isMsoMdocOid4VPEncoded(original)) {
+        return true
       }
       return (
         CredentialMapper.isW3cPresentation(original as IPresentation) ||
@@ -391,11 +400,20 @@ export class CredentialMapper {
 
   public static hasProof(original: OriginalVerifiableCredential | OriginalVerifiablePresentation | string): boolean {
     try {
-      if (CredentialMapper.isJwtEncoded(original) || CredentialMapper.isJwtDecodedCredential(original as OriginalVerifiableCredential)) {
+      if (CredentialMapper.isMsoMdocOid4VPEncoded(original)) {
+        return false
+        // @ts-ignore
+      } else if (CredentialMapper.isMsoMdocDecodedCredential(original) || CredentialMapper.isMsoMdocDecodedPresentation(original)) {
+        return true
+
+      } else if (CredentialMapper.isJwtEncoded(original) || CredentialMapper.isJwtDecodedCredential(original as OriginalVerifiableCredential)) {
         return true
       } else if (CredentialMapper.isSdJwtEncoded(original) || CredentialMapper.isSdJwtDecodedCredential(original)) {
         //todo: we might want to revisit this
         return true
+      }
+      if (typeof original !== 'object') {
+        return false
       }
       if ('vc' in (original as JwtDecodedVerifiableCredential) && (original as JwtDecodedVerifiableCredential).vc.proof) {
         return true
@@ -412,13 +430,13 @@ export class CredentialMapper {
   public static isW3cPresentation(
     presentation: UniformVerifiablePresentation | IPresentation | SdJwtDecodedVerifiableCredential
   ): presentation is IPresentation {
-    return '@context' in presentation && ((presentation as IPresentation).type?.includes('VerifiablePresentation') || false)
+    return typeof presentation ==='object' && '@context' in presentation && ((presentation as IPresentation).type?.includes('VerifiablePresentation') || false)
   }
 
   public static isSdJwtDecodedCredentialPayload(
     credential: ICredential | SdJwtDecodedVerifiableCredentialPayload
   ): credential is SdJwtDecodedVerifiableCredentialPayload {
-    return 'vct' in credential
+    return typeof credential === 'object' && 'vct' in credential
   }
 
   public static areOriginalVerifiableCredentialsEqual(firstOriginal: OriginalVerifiableCredential, secondOriginal: OriginalVerifiableCredential) {
@@ -446,7 +464,7 @@ export class CredentialMapper {
   public static isSdJwtDecodedCredential(
     original: OriginalVerifiableCredential | OriginalVerifiablePresentation | ICredential | IPresentation
   ): original is SdJwtDecodedVerifiableCredential {
-    return (<SdJwtDecodedVerifiableCredential>original).compactSdJwtVc !== undefined
+    return typeof original === 'object' && (<SdJwtDecodedVerifiableCredential>original).compactSdJwtVc !== undefined
   }
 
   public static isMsoMdocDecodedCredential(original: OriginalVerifiableCredential | OriginalVerifiablePresentation | ICredential | IPresentation): original is MdocDocument {
@@ -458,11 +476,11 @@ export class CredentialMapper {
   }
 
   public static isJwtDecodedCredential(original: OriginalVerifiableCredential): original is JwtDecodedVerifiableCredential {
-    return (<JwtDecodedVerifiableCredential>original).vc !== undefined && (<JwtDecodedVerifiableCredential>original).iss !== undefined
+    return typeof original === 'object' && (<JwtDecodedVerifiableCredential>original).vc !== undefined && (<JwtDecodedVerifiableCredential>original).iss !== undefined
   }
 
   public static isJwtDecodedPresentation(original: OriginalVerifiablePresentation): original is JwtDecodedVerifiablePresentation {
-    return (<JwtDecodedVerifiablePresentation>original).vp !== undefined && (<JwtDecodedVerifiablePresentation>original).iss !== undefined
+    return typeof original === 'object' && (<JwtDecodedVerifiablePresentation>original).vp !== undefined && (<JwtDecodedVerifiablePresentation>original).iss !== undefined
   }
 
   public static isWrappedSdJwtVerifiableCredential = isWrappedSdJwtVerifiableCredential
@@ -742,11 +760,11 @@ export class CredentialMapper {
       } else if (type === DocumentFormat.SD_JWT_VC) {
         return credential
       }
-    } else if (type === DocumentFormat.JWT && 'vc' in credential) {
+    } else if (type === DocumentFormat.JWT && ObjectUtils.isObject(credential) && 'vc' in credential) {
       return CredentialMapper.toCompactJWT(credential)
-    } else if ('proof' in credential && credential.proof.type === 'JwtProof2020' && credential.proof.jwt) {
+    } else if (ObjectUtils.isObject(credential) && 'proof' in credential && credential.proof.type === 'JwtProof2020' && credential.proof.jwt) {
       return credential.proof.jwt
-    } else if ('proof' in credential && credential.proof.type === IProofType.SdJwtProof2024 && credential.proof.jwt) {
+    } else if (ObjectUtils.isObject(credential) &&'proof' in credential && credential.proof.type === IProofType.SdJwtProof2024 && credential.proof.jwt) {
       return credential.proof.jwt
     } else if (type === DocumentFormat.SD_JWT_VC && this.isSdJwtDecodedCredential(credential)) {
       return credential.compactSdJwtVc
@@ -762,9 +780,9 @@ export class CredentialMapper {
       } else if (type === DocumentFormat.JSONLD) {
         return JSON.parse(presentation)
       }
-    } else if (type === DocumentFormat.JWT && 'vp' in presentation) {
+    } else if (type === DocumentFormat.JWT && ObjectUtils.isObject(presentation) && 'vp' in presentation) {
       return CredentialMapper.toCompactJWT(presentation)
-    } else if ('proof' in presentation && presentation.proof.type === 'JwtProof2020' && presentation.proof.jwt) {
+    } else if (ObjectUtils.isObject(presentation) && 'proof' in presentation && presentation.proof.type === 'JwtProof2020' && presentation.proof.jwt) {
       return presentation.proof.jwt
     }
     return presentation as W3CVerifiablePresentation
@@ -780,9 +798,9 @@ export class CredentialMapper {
       return jwtDocument
     }
     let proof: string | undefined
-    if ('vp' in jwtDocument) {
+    if (ObjectUtils.isObject(jwtDocument) && 'vp' in jwtDocument) {
       proof = 'jwt' in jwtDocument.vp.proof ? jwtDocument.vp.proof.jwt : jwtDocument.vp.proof
-    } else if ('vc' in jwtDocument) {
+    } else if (ObjectUtils.isObject(jwtDocument) && 'vc' in jwtDocument) {
       proof = 'jwt' in jwtDocument.vc.proof ? jwtDocument.vc.proof.jwt : jwtDocument.vc.proof
     } else {
       proof = Array.isArray(jwtDocument.proof) ? jwtDocument.proof[0].jwt : jwtDocument.proof.jwt
