@@ -1,18 +1,7 @@
 import { com } from '@sphereon/kmp-mdl-mdoc'
-import {
-  CertificateInfo,
-  getCertificateInfo,
-  pemOrDerToX509Certificate,
-  X509ValidationResult
-} from '@sphereon/ssi-sdk-ext.x509-utils'
+import { CertificateInfo, getCertificateInfo, pemOrDerToX509Certificate, X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { IAgentPlugin } from '@veramo/core'
-import {
-  MdocOid4vpPresentArgs,
-  MdocOid4VPPresentationAuth,
-  MdocOid4vpRPVerifyArgs,
-  MdocOid4vpRPVerifyResult,
-  schema
-} from '..'
+import { MdocOid4vpPresentArgs, MdocOid4VPPresentationAuth, MdocOid4vpRPVerifyArgs, MdocOid4vpRPVerifyResult, schema } from '..'
 import { CoseCryptoService, X509CallbackService } from '../functions'
 import {
   GetX509CertificateInfoArgs,
@@ -20,7 +9,7 @@ import {
   IRequiredContext,
   KeyType,
   MdocVerifyIssuerSignedArgs,
-  VerifyCertificateChainArgs
+  VerifyCertificateChainArgs,
 } from '../types/ImDLMdoc'
 import CoseSign1Json = com.sphereon.crypto.cose.CoseSign1Json
 import ICoseKeyCbor = com.sphereon.crypto.cose.ICoseKeyCbor
@@ -35,9 +24,13 @@ import IOid4VPPresentationDefinition = com.sphereon.mdoc.oid4vp.IOid4VPPresentat
 import Oid4VPPresentationSubmission = com.sphereon.mdoc.oid4vp.Oid4VPPresentationSubmission
 import ValidationsJS = com.sphereon.mdoc.ValidationsJS
 
-export const mdocSupportMethods: Array<string> = ['x509VerifyCertificateChain', 'x509GetCertificateInfo', 'mdocVerifyIssuerSigned', 'mdocOid4vpHolderPresent', 'mdocOid4vpRPVerify']
-
-
+export const mdocSupportMethods: Array<string> = [
+  'x509VerifyCertificateChain',
+  'x509GetCertificateInfo',
+  'mdocVerifyIssuerSigned',
+  'mdocOid4vpHolderPresent',
+  'mdocOid4vpRPVerify',
+]
 
 export class MDLMdoc implements IAgentPlugin {
   readonly schema = schema.IMDLMdoc
@@ -46,7 +39,7 @@ export class MDLMdoc implements IAgentPlugin {
     x509GetCertificateInfo: this.x509GetCertificateInfo.bind(this),
     mdocVerifyIssuerSigned: this.mdocVerifyIssuerSigned.bind(this),
     mdocOid4vpHolderPresent: this.mdocOid4vpHolderPresent.bind(this),
-    mdocOid4vpRPVerify: this.mdocOid4vpRPVerify.bind(this)
+    mdocOid4vpRPVerify: this.mdocOid4vpRPVerify.bind(this),
   }
   private readonly trustAnchors: string[]
   private opts: {
@@ -76,11 +69,20 @@ export class MDLMdoc implements IAgentPlugin {
     const mdoc = DocumentCbor.Static.cborDecode(decodeFrom(mdocHex, Encoding.HEX))
     const validations = await ValidationsJS.fromDocumentAsync(mdoc, null, trustAnchors ?? this.trustAnchors, verifications?.allowExpiredDocuments)
     if (validations.error) {
-      return Promise.reject(Error(`Validation for the MSO_MDOC failed. ${validations.verifications.filter(ver => ver.error).map(ver => `${ver.name}(critical${ver.critical}): ${ver.message}`).join(',')}`))
+      return Promise.reject(
+        Error(
+          `Validation for the MSO_MDOC failed. ${validations.verifications
+            .filter((ver) => ver.error)
+            .map((ver) => `${ver.name}(critical${ver.critical}): ${ver.message}`)
+            .join(',')}`,
+        ),
+      )
     }
     const deviceResponse = mdoc.toSingleDocDeviceResponse(presentationDefinition as IOid4VPPresentationDefinition)
     const vp_token = encodeTo(deviceResponse.cborEncode(), Encoding.BASE64URL)
-    const presentation_submission = Oid4VPPresentationSubmission.Static.fromPresentationDefinition(presentationDefinition as IOid4VPPresentationDefinition)
+    const presentation_submission = Oid4VPPresentationSubmission.Static.fromPresentationDefinition(
+      presentationDefinition as IOid4VPPresentationDefinition,
+    )
     return { vp_token, presentation_submission }
   }
 
@@ -91,23 +93,24 @@ export class MDLMdoc implements IAgentPlugin {
       return Promise.reject(Error(`No documents found in vp_token`))
     }
     let error = false
-    const documents = await Promise.all(deviceResponse.documents.map(async document => {
-
-      const validations = await ValidationsJS.fromDocumentAsync(document, null, trustAnchors ?? this.trustAnchors)
-      if (!validations || validations.error) {
-        error = true
-      }
-      if (presentation_submission.descriptor_map.find(m => m.id === document.docType.value) === null) {
-        error = true
-        validations.verifications.push({
-          name: 'mdoc',
-          error,
-          critical: error,
-          message: `No descriptor map id with document type ${document.docType.value} present`
-        })
-      }
-      return { document: document.toJson(), validations }
-    }))
+    const documents = await Promise.all(
+      deviceResponse.documents.map(async (document) => {
+        const validations = await ValidationsJS.fromDocumentAsync(document, null, trustAnchors ?? this.trustAnchors)
+        if (!validations || validations.error) {
+          error = true
+        }
+        if (presentation_submission.descriptor_map.find((m) => m.id === document.docType.value) === null) {
+          error = true
+          validations.verifications.push({
+            name: 'mdoc',
+            error,
+            critical: error,
+            message: `No descriptor map id with document type ${document.docType.value} present`,
+          })
+        }
+        return { document: document.toJson(), validations }
+      }),
+    )
     return { error, documents, presentation_submission }
   }
 
@@ -118,7 +121,7 @@ export class MDLMdoc implements IAgentPlugin {
     // @ts-ignore
     return await new CoseCryptoService().verify1(CoseSign1Json.Static.fromDTO(input).toCbor(), {
       ...keyInfo,
-      key: keyInfo?.key
+      key: keyInfo?.key,
     } as IKeyInfo<ICoseKeyCbor>) // fixme: Json to Cbor for key
   }
 
@@ -128,7 +131,7 @@ export class MDLMdoc implements IAgentPlugin {
     return await new X509CallbackService().verifyCertificateChain({
       ...args,
       trustAnchors: Array.from(trustAnchors),
-      opts: args?.opts ?? this.opts
+      opts: args?.opts ?? this.opts,
     })
   }
 

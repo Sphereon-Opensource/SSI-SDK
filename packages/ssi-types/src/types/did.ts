@@ -21,7 +21,7 @@ export enum IProofType {
   BbsBlsBoundSignatureProof2020 = 'BbsBlsBoundSignatureProof2020',
   JwtProof2020 = 'JwtProof2020',
   SdJwtProof2024 = 'SdJwtProof2024',
-  MdocProof2024 = 'MsoMdocProof2024'
+  MdocProof2024 = 'MsoMdocProof2024',
 }
 
 export interface IParsedDID {
@@ -84,8 +84,6 @@ const parse = (didUrl: string): IParsedDID | null => {
 
   return null
 }
-
-
 
 // Copied from did-resolver, so we have types without external dep
 
@@ -162,12 +160,7 @@ export interface DIDDocumentMetadata extends Extensible {
  *
  * @see {@link https://www.w3.org/TR/did-core/#verification-relationships}
  */
-export type KeyCapabilitySection =
-  | 'authentication'
-  | 'assertionMethod'
-  | 'keyAgreement'
-  | 'capabilityInvocation'
-  | 'capabilityDelegation'
+export type KeyCapabilitySection = 'authentication' | 'assertionMethod' | 'keyAgreement' | 'capabilityInvocation' | 'capabilityDelegation'
 
 /**
  * Represents a DID document.

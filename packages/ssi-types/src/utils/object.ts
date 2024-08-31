@@ -24,6 +24,5 @@ export class ObjectUtils {
       return false
     }
     return value.match(BASE64_REGEX) !== null
-
   }
 }

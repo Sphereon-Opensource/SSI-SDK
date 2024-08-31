@@ -590,7 +590,7 @@ export type CredentialVerificationError = {
   errorDetails?: string
 }
 
-export type VerifyMdocArgs = { credential: string; }
+export type VerifyMdocArgs = { credential: string }
 
 export type VerifySDJWTCredentialArgs = { credential: string; hasher?: Hasher }
 

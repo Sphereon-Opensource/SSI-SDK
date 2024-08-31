@@ -4,7 +4,7 @@ import {
   MdocOid4vpIssuerSigned,
   MdocOid4vpMdocVpToken,
   WrappedMdocCredential,
-  WrappedMdocPresentation
+  WrappedMdocPresentation,
 } from './mso_mdoc'
 import { SdJwtDecodedVerifiableCredential, WrappedSdJwtVerifiableCredential, WrappedSdJwtVerifiablePresentation } from './sd-jwt-vc'
 import {
@@ -61,8 +61,18 @@ export type PresentationFormat =
 
 export type ClaimFormat = CredentialFormat | PresentationFormat
 
-export type OriginalVerifiableCredential = W3CVerifiableCredential | JwtDecodedVerifiableCredential | SdJwtDecodedVerifiableCredential | MdocOid4vpIssuerSigned | MdocDocument
-export type OriginalVerifiablePresentation = W3CVerifiablePresentation | JwtDecodedVerifiablePresentation | SdJwtDecodedVerifiableCredential | MdocOid4vpMdocVpToken | MdocDeviceResponse
+export type OriginalVerifiableCredential =
+  | W3CVerifiableCredential
+  | JwtDecodedVerifiableCredential
+  | SdJwtDecodedVerifiableCredential
+  | MdocOid4vpIssuerSigned
+  | MdocDocument
+export type OriginalVerifiablePresentation =
+  | W3CVerifiablePresentation
+  | JwtDecodedVerifiablePresentation
+  | SdJwtDecodedVerifiableCredential
+  | MdocOid4vpMdocVpToken
+  | MdocDeviceResponse
 export type Original = OriginalVerifiablePresentation | OriginalVerifiableCredential
 
 export const enum DocumentFormat {
@@ -73,5 +83,5 @@ export const enum DocumentFormat {
   SD_JWT_VC,
   // Remaining
   EIP712,
-  MSO_MDOC
+  MSO_MDOC,
 }

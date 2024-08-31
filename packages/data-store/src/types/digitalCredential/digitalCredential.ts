@@ -1,4 +1,4 @@
-export type NonPersistedDigitalCredential = Omit<DigitalCredential, 'id' | 'regulationType'> & {regulationType?: RegulationType}
+export type NonPersistedDigitalCredential = Omit<DigitalCredential, 'id' | 'regulationType'> & { regulationType?: RegulationType }
 
 export type DigitalCredential = {
   id: string

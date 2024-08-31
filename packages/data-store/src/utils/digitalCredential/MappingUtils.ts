@@ -2,10 +2,11 @@ import {
   CredentialMapper,
   DocumentFormat,
   IVerifiableCredential,
-  IVerifiablePresentation, ObjectUtils,
+  IVerifiablePresentation,
+  ObjectUtils,
   OriginalVerifiableCredential,
   OriginalVerifiablePresentation,
-  SdJwtDecodedVerifiableCredentialPayload
+  SdJwtDecodedVerifiableCredentialPayload,
 } from '@sphereon/ssi-types'
 import { computeEntryHash } from '@veramo/utils'
 import { DigitalCredentialEntity } from '../../entities/digitalCredential/DigitalCredentialEntity'
@@ -15,7 +16,7 @@ import {
   DigitalCredential,
   DocumentType,
   NonPersistedDigitalCredential,
-  RegulationType
+  RegulationType,
 } from '../../types'
 
 function determineDocumentType(raw: string): DocumentType {

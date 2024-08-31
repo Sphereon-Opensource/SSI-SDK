@@ -12,14 +12,14 @@ import {
   getTypesFromObject,
   Jwt,
   NotificationRequest,
-  ProofOfPossessionCallbacks
+  ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
 import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   IIdentifierResolution,
   isManagedIdentifierDidResult,
   isManagedIdentifierJwkResult,
-  ManagedIdentifierOptsOrResult
+  ManagedIdentifierOptsOrResult,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService, JwtHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
@@ -34,7 +34,7 @@ import {
   IdentityOrigin,
   IIssuerBranding,
   NonPersistedIdentity,
-  Party
+  Party,
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -46,7 +46,7 @@ import {
   Loggers,
   OriginalVerifiableCredential,
   parseDid,
-  SdJwtDecodedVerifiableCredentialPayload
+  SdJwtDecodedVerifiableCredentialPayload,
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
@@ -57,7 +57,7 @@ import {
   IResolver,
   ProofFormat,
   VerifiableCredential,
-  W3CVerifiableCredential
+  W3CVerifiableCredential,
 } from '@veramo/core'
 import { asArray, computeEntryHash } from '@veramo/utils'
 import { decodeJWT } from 'did-jwt'
@@ -120,7 +120,7 @@ export const oid4vciHolderContextMethods: Array<string> = [
   'didManagerFind',
   'didManagerGet',
   'keyManagerSign',
-  'verifyCredential'
+  'verifyCredential',
 ]
 
 const logger = Loggers.DEFAULT.get('sphereon:oid4vci:holder')
@@ -128,7 +128,7 @@ const logger = Loggers.DEFAULT.get('sphereon:oid4vci:holder')
 export function signCallback(
   identifier: ManagedIdentifierOptsOrResult,
   context: IAgentContext<IKeyManager & IDIDManager & IResolver & IIdentifierResolution & IJwtService>,
-  nonce?: string
+  nonce?: string,
 ) {
   return async (jwt: Jwt, kid?: string) => {
     let resolution = await context.agent.identifierManagedGet(identifier)
@@ -143,7 +143,7 @@ export function signCallback(
     }
     if (jwk && header.kid) {
       console.log(
-        `Deleting kid, as we are using a jwk and the oid4vci spec does not allow both to be present (which is not the case in the JOSE spec)`
+        `Deleting kid, as we are using a jwk and the oid4vci spec does not allow both to be present (which is not the case in the JOSE spec)`,
       )
       delete header.kid // The OID4VCI spec does not allow a JWK with kid present although the JWS spec does
     }
@@ -151,7 +151,7 @@ export function signCallback(
       await context.agent.jwtCreateJwsCompactSignature({
         issuer: { ...resolution, noIssPayloadUpdate: false },
         protectedHeader: header,
-        payload
+        payload,
       })
     ).jwt
   }
@@ -162,7 +162,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   readonly eventTypes: Array<OID4VCIHolderEvent> = [
     OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED,
     OID4VCIHolderEvent.CREDENTIAL_STORED,
-    OID4VCIHolderEvent.IDENTIFIER_CREATED
+    OID4VCIHolderEvent.IDENTIFIER_CREATED,
   ]
 
   readonly methods: IOID4VCIHolder = {
@@ -177,7 +177,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     oid4vciHolderAssertValidCredentials: this.oid4vciHolderAssertValidCredentials.bind(this),
     oid4vciHolderStoreCredentialBranding: this.oid4vciHolderStoreCredentialBranding.bind(this),
     oid4vciHolderStoreCredentials: this.oid4vciHolderStoreCredentials.bind(this),
-    oid4vciHolderSendNotification: this.oid4vciHolderSendNotification.bind(this)
+    oid4vciHolderSendNotification: this.oid4vciHolderSendNotification.bind(this),
   }
 
   private readonly vcFormatPreferences: Array<string> = ['vc+sd-jwt', 'mso_mdoc', 'jwt_vc_json', 'jwt_vc', 'ldp_vc']
@@ -185,19 +185,19 @@ export class OID4VCIHolder implements IAgentPlugin {
     'Ed25519Signature2018',
     'EcdsaSecp256k1Signature2019',
     'Ed25519Signature2020',
-    'JsonWebSignature2020'
+    'JsonWebSignature2020',
     // "JcsEd25519Signature2020"
   ]
   private readonly didMethodPreferences: Array<SupportedDidMethodEnum> = [
     SupportedDidMethodEnum.DID_KEY,
     SupportedDidMethodEnum.DID_JWK,
     SupportedDidMethodEnum.DID_EBSI,
-    SupportedDidMethodEnum.DID_ION
+    SupportedDidMethodEnum.DID_ION,
   ]
   private readonly jwtCryptographicSuitePreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString> = [
     JoseSignatureAlgorithm.ES256,
     JoseSignatureAlgorithm.ES256K,
-    JoseSignatureAlgorithm.EdDSA
+    JoseSignatureAlgorithm.EdDSA,
   ]
   private static readonly DEFAULT_MOBILE_REDIRECT_URI = `${DefaultURISchemes.CREDENTIAL_OFFER}://`
   private readonly defaultAuthorizationRequestOpts: AuthorizationRequestOpts = { redirectUri: OID4VCIHolder.DEFAULT_MOBILE_REDIRECT_URI }
@@ -215,7 +215,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       didMethodPreferences,
       jwtCryptographicSuitePreferences,
       defaultAuthorizationRequestOptions,
-      hasher
+      hasher,
     } = options ?? {}
 
     this.hasher = hasher
@@ -265,9 +265,9 @@ export class OID4VCIHolder implements IAgentPlugin {
         this.oid4vciHolderStart(
           {
             ...args,
-            authorizationRequestOpts
+            authorizationRequestOpts,
           },
-          context
+          context,
         ),
       createCredentialsToSelectFrom: (args: createCredentialsToSelectFromArgs) => this.oid4vciHoldercreateCredentialsToSelectFrom(args, context),
       getContact: (args: GetContactArgs) => this.oid4vciHolderGetContact(args, context),
@@ -278,7 +278,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       assertValidCredentials: (args: AssertValidCredentialsArgs) => this.oid4vciHolderAssertValidCredentials(args, context),
       storeCredentialBranding: (args: StoreCredentialBrandingArgs) => this.oid4vciHolderStoreCredentialBranding(args, context),
       storeCredentials: (args: StoreCredentialsArgs) => this.oid4vciHolderStoreCredentials(args, context),
-      sendNotification: (args: SendNotificationArgs) => this.oid4vciHolderSendNotification(args, context)
+      sendNotification: (args: SendNotificationArgs) => this.oid4vciHolderSendNotification(args, context),
     }
 
     const oid4vciMachineInstanceArgs: OID4VCIMachineInstanceOpts = {
@@ -286,14 +286,14 @@ export class OID4VCIHolder implements IAgentPlugin {
       authorizationRequestOpts,
       services: {
         ...services,
-        ...opts.services
-      }
+        ...opts.services,
+      },
     }
 
     const { interpreter } = await OID4VCIMachine.newInstance(oid4vciMachineInstanceArgs, context)
 
     return {
-      interpreter
+      interpreter,
     }
   }
 
@@ -319,8 +319,8 @@ export class OID4VCIHolder implements IAgentPlugin {
     // We filter the details first against our vcformat prefs
     authorizationRequestOpts.authorizationDetails = authorizationRequestOpts?.authorizationDetails
       ? asArray(authorizationRequestOpts.authorizationDetails).filter(
-        (detail) => typeof detail === 'string' || this.vcFormatPreferences.includes(detail.format)
-      )
+          (detail) => typeof detail === 'string' || this.vcFormatPreferences.includes(detail.format),
+        )
       : undefined
 
     if (!authorizationRequestOpts.redirectUri) {
@@ -370,7 +370,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           credentialIssuer: uri,
           authorizationRequest: authorizationRequestOpts,
           clientId: authorizationRequestOpts.clientId,
-          createAuthorizationRequestURL: requestData.createAuthorizationRequestURL ?? true
+          createAuthorizationRequestURL: requestData.createAuthorizationRequestURL ?? true,
         })
       } else {
         logger.log(`Credential offer received: ${uri}`)
@@ -378,7 +378,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           uri,
           authorizationRequest: authorizationRequestOpts,
           clientId: authorizationRequestOpts.clientId,
-          createAuthorizationRequestURL: requestData.createAuthorizationRequestURL ?? true
+          createAuthorizationRequestURL: requestData.createAuthorizationRequestURL ?? true,
         })
       }
     }
@@ -395,7 +395,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     const credentialsSupported = await getCredentialConfigsSupportedMerged({
       client: oid4vciClient,
       vcFormatPreferences: formats,
-      types
+      types,
     })
     const credentialBranding = await getCredentialBranding({ credentialsSupported, context })
     const authorizationCodeURL = oid4vciClient.authorizationURL
@@ -409,13 +409,13 @@ export class OID4VCIHolder implements IAgentPlugin {
       credentialBranding,
       credentialsSupported,
       serverMetadata,
-      oid4vciClientState
+      oid4vciClientState,
     }
   }
 
   private async oid4vciHoldercreateCredentialsToSelectFrom(
     args: createCredentialsToSelectFromArgs,
-    context: RequiredContext
+    context: RequiredContext,
   ): Promise<Array<CredentialToSelectFromResult>> {
     const { credentialBranding, locale, selectedCredentials /*, openID4VCIClientState*/, credentialsSupported } = args
 
@@ -444,7 +444,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         const credentialAlias = (
           await selectCredentialLocaleBranding({
             locale,
-            localeBranding
+            localeBranding,
           })
         )?.alias
 
@@ -453,9 +453,9 @@ export class OID4VCIHolder implements IAgentPlugin {
           credentialId: id,
           credentialTypes: credentialTypes ?? asArray(id),
           credentialAlias: credentialAlias ?? id,
-          isSelected: false
+          isSelected: false,
         }
-      })
+      }),
     )
 
     // TODO find better place to do this, would be nice if the machine does this?
@@ -478,7 +478,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       serverMetadata.credentialIssuerMetadata?.display
         ?.map((display) => display.name)
         .filter((name) => name != undefined)
-        .map((name) => name as string) ?? []
+        .map((name) => name as string) ?? [],
     )
     const name = names.size > 0 ? Array.from(names)[0] : undefined
 
@@ -488,27 +488,27 @@ export class OID4VCIHolder implements IAgentPlugin {
       {
         identities: {
           identifier: {
-            correlationId
-          }
-        }
-      }
+            correlationId,
+          },
+        },
+      },
     ]
 
     if (name) {
       filter.push({
         contact: {
-          legalName: name
-        }
+          legalName: name,
+        },
       })
       filter.push({
         contact: {
-          displayName: name
-        }
+          displayName: name,
+        },
       })
     }
 
     const parties: Array<Party> = await context.agent.cmGetContacts({
-      filter
+      filter,
     })
 
     if (parties.length > 1) {
@@ -521,13 +521,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   }
 
   private async oid4vciHolderGetCredentials(args: GetCredentialsArgs, context: RequiredContext): Promise<Array<MappedCredentialToAccept>> {
-    const {
-      verificationCode,
-      openID4VCIClientState,
-      didMethodPreferences = this.didMethodPreferences,
-      issuanceOpt,
-      accessTokenOpts
-    } = args
+    const { verificationCode, openID4VCIClientState, didMethodPreferences = this.didMethodPreferences, issuanceOpt, accessTokenOpts } = args
     logger.debug(`Getting credentials`, issuanceOpt, accessTokenOpts)
 
     if (!openID4VCIClientState) {
@@ -538,7 +532,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     const credentialsSupported = await getCredentialConfigsSupportedMerged({
       client,
       vcFormatPreferences: this.vcFormatPreferences,
-      configurationIds: args.selectedCredentials
+      configurationIds: args.selectedCredentials,
     })
     const serverMetadata = await client.retrieveServerMetadata()
     const issuanceOpts = await getIssuanceOpts({
@@ -549,7 +543,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       didMethodPreferences: Array.isArray(didMethodPreferences) && didMethodPreferences.length > 0 ? didMethodPreferences : this.didMethodPreferences,
       jwtCryptographicSuitePreferences: this.jwtCryptographicSuitePreferences,
       jsonldCryptographicSuitePreferences: this.jsonldCryptographicSuitePreferences,
-      ...(issuanceOpt && { forceIssuanceOpt: issuanceOpt })
+      ...(issuanceOpt && { forceIssuanceOpt: issuanceOpt }),
     })
 
     const getCredentials = issuanceOpts.map(
@@ -559,10 +553,10 @@ export class OID4VCIHolder implements IAgentPlugin {
             issuanceOpt,
             pin: verificationCode,
             client,
-            accessTokenOpts
+            accessTokenOpts,
           },
-          context
-        )
+          context,
+        ),
     )
 
     const allCredentials = await Promise.all(getCredentials)
@@ -587,7 +581,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     const jwk = isManagedIdentifierJwkResult(identifier) ? identifier.jwk : undefined
 
     const callbacks: ProofOfPossessionCallbacks<never> = {
-      signCallback: signCallback(identifier, context)
+      signCallback: signCallback(identifier, context),
     }
 
     try {
@@ -610,10 +604,10 @@ export class OID4VCIHolder implements IAgentPlugin {
           kid,
           // @ts-ignore
           alg: accessTokenOpts.clientOpts.alg ?? alg,
-          signCallbacks: accessTokenOpts.clientOpts.signCallbacks ?? callbacks
+          signCallbacks: accessTokenOpts.clientOpts.signCallbacks ?? callbacks,
         }
         asOpts = {
-          clientOpts
+          clientOpts,
         }
       }
 
@@ -622,7 +616,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         pin,
         authorizationResponse: JSON.parse(await client.exportState()).authorizationCodeResponse,
         additionalRequestParams: accessTokenOpts?.additionalRequestParams,
-        ...(asOpts && { asOpts })
+        ...(asOpts && { asOpts }),
       })
 
       // FIXME: This type mapping is wrong. It should use credential_identifier in case the access token response has authorization details
@@ -641,14 +635,14 @@ export class OID4VCIHolder implements IAgentPlugin {
         ...(!jwk && { kid }), // vci client either wants a jwk or kid. If we have used the jwk method do not provide the kid
         jwk,
         alg,
-        jti: uuidv4()
+        jti: uuidv4(),
       })
 
       const credential = {
         id: issuanceOpt.credentialConfigurationId ?? id,
         types: types ?? asArray(credentialTypes),
         issuanceOpt,
-        credentialResponse
+        credentialResponse,
       } satisfies CredentialToAccept
       return mapCredentialToAccept({ credentialToAccept: credential, hasher: this.hasher })
     } catch (error) {
@@ -681,13 +675,13 @@ export class OID4VCIHolder implements IAgentPlugin {
       roles: [CredentialRole.ISSUER],
       identifier: {
         type: identifierType,
-        correlationId
-      }
+        correlationId,
+      },
     }
 
     await context.agent.emit(OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED, {
       contactId: contact.id,
-      identity
+      identity,
     })
     logger.log(`Contact added: ${correlationId}`)
 
@@ -711,12 +705,12 @@ export class OID4VCIHolder implements IAgentPlugin {
       if (!brandings || brandings.length === 0) {
         const basicIssuerLocaleBrandings: IBasicIssuerLocaleBranding[] = await getBasicIssuerLocaleBranding({
           display: serverMetadata.credentialIssuerMetadata.display,
-          context
+          context,
         })
         if (basicIssuerLocaleBrandings && basicIssuerLocaleBrandings.length > 0) {
           await context.agent.ibAddIssuerBranding({
             localeBranding: basicIssuerLocaleBrandings,
-            issuerCorrelationId
+            issuerCorrelationId,
           })
         }
       }
@@ -731,9 +725,9 @@ export class OID4VCIHolder implements IAgentPlugin {
         verifyCredentialToAccept({
           mappedCredential: credentialToAccept,
           hasher: this.hasher,
-          context
-        })
-      )
+          context,
+        }),
+      ),
     )
   }
 
@@ -753,16 +747,16 @@ export class OID4VCIHolder implements IAgentPlugin {
       if (localeBranding && localeBranding.length > 0) {
         const credential = credentialsToAccept.find(
           (credAccept) =>
-            credAccept.credentialToAccept.id === credentialId ?? JSON.stringify(credAccept.types) === credentialId ?? credentialsToAccept[counter]
+            credAccept.credentialToAccept.id === credentialId ?? JSON.stringify(credAccept.types) === credentialId ?? credentialsToAccept[counter],
         )!
         counter++
         await context.agent.ibAddCredentialBranding({
           vcHash: computeEntryHash(credential.rawVerifiableCredential as W3CVerifiableCredential),
           issuerCorrelationId: new URL(serverMetadata.issuer).hostname,
-          localeBranding
+          localeBranding,
         })
         logger.log(
-          `Credential branding for issuer ${serverMetadata.issuer} and type ${credentialId} stored with locales ${localeBranding.map((b) => b.locale).join(',')}`
+          `Credential branding for issuer ${serverMetadata.issuer} and type ${credentialId} stored with locales ${localeBranding.map((b) => b.locale).join(',')}`,
         )
       } else {
         logger.warning(`No credential branding found for issuer: ${serverMetadata.issuer} and type ${credentialId}`)
@@ -779,13 +773,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       return trim
     }
 
-    const {
-      credentialsToAccept,
-      openID4VCIClientState,
-      credentialsSupported,
-      serverMetadata,
-      selectedCredentials
-    } = args
+    const { credentialsToAccept, openID4VCIClientState, credentialsSupported, serverMetadata, selectedCredentials } = args
     const mappedCredentialToAccept = credentialsToAccept[0]
 
     if (selectedCredentials && selectedCredentials.length > 1) {
@@ -813,7 +801,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       logger.log(`Notifications not supported by issuer ${serverMetadata?.issuer}. Will not provide a notification`)
     } else if (notificationEndpoint && !notificationId) {
       logger.warning(
-        `Notification endpoint available in issuer metadata with value ${notificationEndpoint}, but no ${notificationId} provided. Will not send a notification to issuer ${serverMetadata?.issuer}`
+        `Notification endpoint available in issuer metadata with value ${notificationEndpoint}, but no ${notificationId} provided. Will not send a notification to issuer ${serverMetadata?.issuer}`,
       )
     } else if (notificationEndpoint && notificationId) {
       logger.log(`Notification id ${notificationId} found, will send back a notification to ${notificationEndpoint}`)
@@ -900,7 +888,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           credential: holderCredentialToSign as CredentialPayload,
           fetchRemoteContexts: true,
           save: false,
-          proofFormat
+          proofFormat,
         })
         if (!issuedVC) {
           throw Error(`Could not issue holder credential from the wallet`)
@@ -913,7 +901,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       const notificationRequest: NotificationRequest = {
         notification_id: notificationId,
         ...(holderCredential && { credential: holderCredential }),
-        event
+        event,
       }
 
       await this.oid4vciHolderSendNotification(
@@ -923,9 +911,9 @@ export class OID4VCIHolder implements IAgentPlugin {
           credentialsToAccept,
           credentialsSupported,
           notificationRequest,
-          serverMetadata
+          serverMetadata,
         },
-        context
+        context,
       )
     }
     const persistCredential = holderCredential
@@ -949,12 +937,12 @@ export class OID4VCIHolder implements IAgentPlugin {
             method === 'did' || verifiableCredential.credentialSubject.id?.startsWith('did:')
               ? CredentialCorrelationType.DID
               : CredentialCorrelationType.URL,
-          subjectCorrelationId: issuer // FIXME get separate did for subject
-        }
+          subjectCorrelationId: issuer, // FIXME get separate did for subject
+        },
       })
       await context.agent.emit(OID4VCIHolderEvent.CREDENTIAL_STORED, {
         credential: persistedCredential,
-        vcHash: persistedCredential.hash
+        vcHash: persistedCredential.hash,
       } satisfies OnCredentialStoredArgs)
     }
   }

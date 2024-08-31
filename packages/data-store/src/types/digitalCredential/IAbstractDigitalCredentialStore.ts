@@ -1,10 +1,4 @@
-import {
-  CredentialCorrelationType,
-  CredentialRole,
-  CredentialStateType,
-  DigitalCredential,
-  RegulationType
-} from './digitalCredential'
+import { CredentialCorrelationType, CredentialRole, CredentialStateType, DigitalCredential, RegulationType } from './digitalCredential'
 import { Hasher } from '@sphereon/ssi-types'
 import { FindOptionsOrder } from 'typeorm'
 import { DigitalCredentialEntity } from '../../entities/digitalCredential/DigitalCredentialEntity'

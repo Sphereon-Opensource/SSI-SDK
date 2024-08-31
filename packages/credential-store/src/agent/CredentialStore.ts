@@ -17,12 +17,7 @@ import {
   TClaimsColumns,
   UniqueDigitalCredential,
 } from '../index'
-import {
-  AbstractDigitalCredentialStore,
-  DigitalCredential,
-  parseRawDocument,
-  UpdateCredentialStateArgs
-} from '@sphereon/ssi-sdk.data-store'
+import { AbstractDigitalCredentialStore, DigitalCredential, parseRawDocument, UpdateCredentialStateArgs } from '@sphereon/ssi-sdk.data-store'
 import { IVerifiableCredential } from '@sphereon/ssi-types'
 // Exposing the methods here for any REST implementation
 export const credentialStoreMethods: Array<string> = [

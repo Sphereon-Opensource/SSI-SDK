@@ -58,7 +58,10 @@ export class SIOPv2RP implements IAgentPlugin {
     // We allow setting default options later, because in some cases you might want to query the agent for defaults. This cannot happen when the agent is being build (this is when the constructor is being called)
     this.opts.defaultOpts = rpDefaultOpts
     // We however do require the agent to be responsible for resolution, otherwise people might encounter strange errors, that are very hard to track down
-    if (!this.opts.defaultOpts.identifierOpts.resolveOpts?.resolver || typeof this.opts.defaultOpts.identifierOpts.resolveOpts.resolver.resolve !== 'function') {
+    if (
+      !this.opts.defaultOpts.identifierOpts.resolveOpts?.resolver ||
+      typeof this.opts.defaultOpts.identifierOpts.resolveOpts.resolver.resolve !== 'function'
+    ) {
       this.opts.defaultOpts.identifierOpts.resolveOpts = {
         ...this.opts.defaultOpts.identifierOpts.resolveOpts,
         resolver: getAgentResolver(context, { uniresolverResolution: true, resolverResolution: true, localResolution: true }),

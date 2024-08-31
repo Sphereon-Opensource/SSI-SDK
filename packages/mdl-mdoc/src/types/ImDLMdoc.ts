@@ -50,8 +50,6 @@ export type MdocVerifyIssuerSignedArgs = {
   keyInfo?: IKeyInfo<KeyType>
 }
 
-
-
 export interface MdocOid4VPPresentationAuth {
   vp_token: string
   presentation_submission: PresentationSubmission
@@ -68,9 +66,8 @@ export type VerificationOptions = {
   allowExpiredDocuments?: boolean
 }
 
-
-export type DocumentVerifyResult = { document: DocumentJson, validations: IVerifyResults<ICoseKeyCbor> }
-export type MdocOid4vpRPVerifyResult = { error: boolean, documents: Array<DocumentVerifyResult>, presentation_submission: PresentationSubmission }
+export type DocumentVerifyResult = { document: DocumentJson; validations: IVerifyResults<ICoseKeyCbor> }
+export type MdocOid4vpRPVerifyResult = { error: boolean; documents: Array<DocumentVerifyResult>; presentation_submission: PresentationSubmission }
 
 export interface MdocOid4vpRPVerifyArgs {
   vp_token: string

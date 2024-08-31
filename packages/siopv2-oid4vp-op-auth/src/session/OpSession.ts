@@ -4,26 +4,14 @@ import {
   URI,
   Verification,
   // VerificationMode,
-  VerifiedAuthorizationRequest
+  VerifiedAuthorizationRequest,
 } from '@sphereon/did-auth-siop'
 import { PresentationVerificationResult } from '@sphereon/did-auth-siop'
 import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
-import {
-  CompactSdJwtVc,
-  W3CVerifiablePresentation,
-  CredentialMapper,
-  PresentationSubmission,
-  parseDid
-} from '@sphereon/ssi-types'
+import { CompactSdJwtVc, W3CVerifiablePresentation, CredentialMapper, PresentationSubmission, parseDid } from '@sphereon/ssi-types'
 import { IIdentifier, IVerifyResult, TKeyType } from '@veramo/core'
 import Debug from 'debug'
-import {
-  IOPOptions,
-  IOpSessionArgs,
-  IOpSessionGetOID4VPArgs,
-  IOpsSendSiopAuthorizationResponseArgs,
-  IRequiredContext
-} from '../types'
+import { IOPOptions, IOpSessionArgs, IOpSessionGetOID4VPArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
 import { ResolveOpts } from '@sphereon/did-auth-siop-adapter'
@@ -124,7 +112,7 @@ export class OpSession {
     debug(`agent methods supported: ${JSON.stringify(agentMethods)}`)
     const authReq = await this.getAuthorizationRequest()
     const subjectSyntaxTypesSupported = authReq.registrationMetadataPayload?.subject_syntax_types_supported?.map((method) =>
-      convertDidMethod(method, opts.didPrefix)
+      convertDidMethod(method, opts.didPrefix),
     )
     debug(`subject syntax types supported in rp method supported: ${JSON.stringify(subjectSyntaxTypesSupported)}`)
     const aud = await authReq.authorizationRequest.getMergedProperty<string>('aud')
@@ -146,7 +134,7 @@ export class OpSession {
       rpMethods = [didMethod]
     } else if (subjectSyntaxTypesSupported) {
       rpMethods = (Array.isArray(subjectSyntaxTypesSupported) ? subjectSyntaxTypesSupported : [subjectSyntaxTypesSupported]).map((method) =>
-        convertDidMethod(method, opts.didPrefix)
+        convertDidMethod(method, opts.didPrefix),
       )
     }
     const isEBSI =
@@ -181,11 +169,11 @@ export class OpSession {
       if (opts?.createInCaseNoDIDFound !== false) {
         const { codecName, keyType } = await this.getRPDIDMethodsSupported({
           didPrefix: true,
-          agentMethods: methods
+          agentMethods: methods,
         })
         const identifier = await this.context.agent.didManagerCreate({
           provider: methods[0],
-          options: { codecName, keyType, type: keyType } // both keyType and type, because not every did provider has the same param
+          options: { codecName, keyType, type: keyType }, // both keyType and type, because not every did provider has the same param
         })
         debug(`Created a new identifier for the SIOP interaction: ${identifier.did}`)
         identifiers.push(identifier)
@@ -219,11 +207,10 @@ export class OpSession {
     return await OID4VP.init(this, args.allIdentifiers ?? [], args.hasher)
   }
 
-
   private createPresentationVerificationCallback(context: IRequiredContext) {
     async function presentationVerificationCallback(
       args: W3CVerifiablePresentation | CompactSdJwtVc,
-      presentationSubmission: PresentationSubmission
+      presentationSubmission: PresentationSubmission,
     ): Promise<PresentationVerificationResult> {
       let result: IVerifyResult
       if (CredentialMapper.isSdJwtEncoded(args)) {
@@ -231,12 +218,12 @@ export class OpSession {
           const sdJwtResult = await context.agent.verifySdJwtPresentation({ presentation: args })
           result = {
             verified: 'header' in sdJwtResult,
-            error: ('header' in sdJwtResult) ? undefined : { message: 'could not verify SD JWT presentation' }
+            error: 'header' in sdJwtResult ? undefined : { message: 'could not verify SD JWT presentation' },
           }
         } catch (error: any) {
           result = {
             verified: false,
-            error: { message: error.message }
+            error: { message: error.message },
           }
         }
       } else {
@@ -249,21 +236,20 @@ export class OpSession {
     return presentationVerificationCallback
   }
 
-
   public async sendAuthorizationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
     const resolveOpts: ResolveOpts = this.options.resolveOpts ?? {
       resolver: getAgentResolver(this.context, {
         uniresolverResolution: true,
         localResolution: true,
-        resolverResolution: true
-      })
+        resolverResolution: true,
+      }),
     }
     if (!resolveOpts.subjectSyntaxTypesSupported || resolveOpts.subjectSyntaxTypesSupported.length === 0) {
       resolveOpts.subjectSyntaxTypesSupported = await this.getSupportedDIDMethods(true)
     }
     //todo: populate with the right verification params. In did-auth-siop we don't have any test that actually passes this parameter
     const verification: Verification = {
-      presentationVerificationCallback: this.createPresentationVerificationCallback(this.context)
+      presentationVerificationCallback: this.createPresentationVerificationCallback(this.context),
       // mode: VerificationMode.INTERNAL,
       // checkLinkedDomain: CheckLinkedDomain.IF_PRESENT,
       // resolveOpts,
@@ -277,7 +263,7 @@ export class OpSession {
         args.verifiablePresentations.length !== request.presentationDefinitions.length
       ) {
         throw Error(
-          `Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${request.presentationDefinitions?.length}`
+          `Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${request.presentationDefinitions?.length}`,
         )
       } else if (!args.presentationSubmission) {
         throw Error(`Presentation submission is required when verifiable presentations are required`)
@@ -294,10 +280,10 @@ export class OpSession {
         eventEmitter: this.options.eventEmitter,
         presentationSignCallback: this.options.presentationSignCallback,
         wellknownDIDVerifyCallback: this.options.wellknownDIDVerifyCallback,
-        supportedVersions: request.versions
+        supportedVersions: request.versions,
       },
       idOpts: args.responseSignerOpts,
-      context: this.context
+      context: this.context,
     })
 
     //TODO change this to use the new functionalities by identifier-resolver and get the jwkIssuer for the responseOpts
@@ -308,9 +294,9 @@ export class OpSession {
       ...(args.verifiablePresentations && {
         presentationExchange: {
           verifiablePresentations,
-          presentationSubmission: args.presentationSubmission
-        } as PresentationExchangeResponseOpts
-      })
+          presentationSubmission: args.presentationSubmission,
+        } as PresentationExchangeResponseOpts,
+      }),
     }
 
     const authResponse = await op.createAuthorizationResponse(request, responseOpts)

@@ -116,8 +116,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         credential: {
           rawDocument: JSON.stringify(vc5),
           credentialRole: CredentialRole.HOLDER,
-          kmsKeyRef: "testKeyRef",
-          identifierMethod: "did",
+          kmsKeyRef: 'testKeyRef',
+          identifierMethod: 'did',
           issuerCorrelationType: CredentialCorrelationType.DID,
           issuerCorrelationId: '',
         },

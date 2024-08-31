@@ -17,7 +17,6 @@ import DocumentJson = com.sphereon.mdoc.data.device.DocumentJson
 import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
 import IssuerSignedItemJson = com.sphereon.mdoc.data.device.IssuerSignedItemJson
 
-
 /**
  * Represents a selective disclosure JWT vc in compact form.
  */
@@ -28,7 +27,6 @@ export type MdocDocument = com.sphereon.mdoc.data.device.DocumentCbor
 export type MdocDocumentJson = com.sphereon.mdoc.data.device.DocumentJson
 export type MdocDeviceResponse = com.sphereon.mdoc.data.device.DeviceResponseCbor
 
-
 export interface WrappedMdocCredential {
   /**
    * Original IssuerSigned to Mdoc that we've received. Can be either the encoded or decoded variant.
@@ -37,7 +35,7 @@ export interface WrappedMdocCredential {
   /**
    * Decoded version of the Mdoc payload. We add the record to make sure existing implementations remain happy
    */
-  decoded: MdocDocument & {[key: string]: any}
+  decoded: MdocDocument & { [key: string]: any }
   /**
    * Type of this credential.
    */
@@ -100,7 +98,6 @@ export function decodeMdocIssuerSigned(oid4vpIssuerSigned: MdocOid4vpIssuerSigne
   return holderMdoc
 }
 
-
 /**
  * Decode an Mdoc from its vp_token OID4VP Base64URL (string) to an object containing the disclosures,
  * signed payload, decoded payload
@@ -111,12 +108,8 @@ export function decodeMdocDeviceResponse(vpToken: MdocOid4vpMdocVpToken): MdocDe
   return deviceResponse
 }
 
-
 // TODO naive implementation of mapping a mdoc onto a IVerifiableCredential. Needs some fixes and further implementation and needs to be moved out of ssi-types
-export const mdocDecodedCredentialToUniformCredential = (
-  decoded: MdocDocument,
-  opts?: { maxTimeSkewInMS?: number }
-): IVerifiableCredential => {
+export const mdocDecodedCredentialToUniformCredential = (decoded: MdocDocument, opts?: { maxTimeSkewInMS?: number }): IVerifiableCredential => {
   const mdoc = decoded.toJson()
   const json = mdoc.toJsonDTO<DocumentJson>()
   const type = 'Personal Identification Data'
@@ -137,15 +130,13 @@ export const mdocDecodedCredentialToUniformCredential = (
   }
 
   const credentialSubject = items.reduce((acc: DisclosuresAccumulator, item: IssuerSignedItemJson) => {
-      if (Array.isArray(item.value)) {
-        acc[item.key] = item.value.map(val => val.value).join(', ')
-      } else {
-        acc[item.key] = item.value.value
-      }
-      return acc
-    },
-    {}
-  )
+    if (Array.isArray(item.value)) {
+      acc[item.key] = item.value.map((val) => val.value).join(', ')
+    } else {
+      acc[item.key] = item.value.value
+    }
+    return acc
+  }, {})
   const validFrom = MSO.validityInfo.validFrom
   const validUntil = MSO.validityInfo.validUntil
   const docType = MSO.docType
@@ -162,7 +153,7 @@ export const mdocDecodedCredentialToUniformCredential = (
     '@context': [], // Mdoc has no JSON-LD by default. Certainly not the VC DM1 default context for JSON-LD
     credentialSubject: {
       type,
-      ...credentialSubject
+      ...credentialSubject,
     },
     issuanceDate,
     expirationDate,
@@ -171,8 +162,8 @@ export const mdocDecodedCredentialToUniformCredential = (
       created: issuanceDate,
       proofPurpose: IProofPurpose.authentication,
       verificationMethod: json.issuerSigned.issuerAuth.payload,
-      mso_mdoc: encodeTo(decoded.cborEncode(), Encoding.BASE64URL)
-    }
+      mso_mdoc: encodeTo(decoded.cborEncode(), Encoding.BASE64URL),
+    },
   }
 
   return credential as IVerifiableCredential

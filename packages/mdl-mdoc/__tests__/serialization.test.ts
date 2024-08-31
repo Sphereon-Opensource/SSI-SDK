@@ -21,75 +21,55 @@ describe('Serialization', (): void => {
   })
 
   it('should decode and encode Presentation Definition', async () => {
-    const pdJson : IOid4VPPresentationDefinition = sprindFunkePD
+    const pdJson: IOid4VPPresentationDefinition = sprindFunkePD
     const pd = Oid4VPPresentationDefinition.Static.fromDTO(pdJson)
     expect(pd.toDTO()).toEqual(pdJson)
   })
 })
 
-
 const sprindFunkePD = {
-  "id": "PID-sample-req",
-  "input_descriptors": [
+  id: 'PID-sample-req',
+  input_descriptors: [
     {
-      "id": "eu.europa.ec.eudi.pid.1",
-      "format": {
-        "mso_mdoc": {
-          "alg": [
-            "ES256",
-            "ES384",
-            "ES512",
-            "EdDSA"
-          ]
-        }
+      id: 'eu.europa.ec.eudi.pid.1',
+      format: {
+        mso_mdoc: {
+          alg: ['ES256', 'ES384', 'ES512', 'EdDSA'],
+        },
       },
-      "constraints": {
-        "fields": [
+      constraints: {
+        fields: [
           {
-            "path": [
-              "$['eu.europa.ec.eudi.pid.1']['resident_country']"
-            ],
-            "intent_to_retain": false
+            path: ["$['eu.europa.ec.eudi.pid.1']['resident_country']"],
+            intent_to_retain: false,
           },
           {
-            "path": [
-              "$['eu.europa.ec.eudi.pid.1']['age_over_12']"
-            ],
-            "intent_to_retain": false
+            path: ["$['eu.europa.ec.eudi.pid.1']['age_over_12']"],
+            intent_to_retain: false,
           },
           {
-            "path": [
-              "$['eu.europa.ec.eudi.pid.1']['given_name']"
-            ],
-            "intent_to_retain": true
+            path: ["$['eu.europa.ec.eudi.pid.1']['given_name']"],
+            intent_to_retain: true,
           },
           {
-            "path": [
-              "$['eu.europa.ec.eudi.pid.1']['nationality']"
-            ],
-            "intent_to_retain": true
+            path: ["$['eu.europa.ec.eudi.pid.1']['nationality']"],
+            intent_to_retain: true,
           },
           {
-            "path": [
-              "$['eu.europa.ec.eudi.pid.1']['issuing_country']"
-            ],
-            "intent_to_retain": false
+            path: ["$['eu.europa.ec.eudi.pid.1']['issuing_country']"],
+            intent_to_retain: false,
           },
           {
-            "path": [
-              "$['eu.europa.ec.eudi.pid.1']['issuance_date']"
-            ],
-            "intent_to_retain": false
+            path: ["$['eu.europa.ec.eudi.pid.1']['issuance_date']"],
+            intent_to_retain: false,
           },
           {
-            "path": [
-              "$['eu.europa.ec.eudi.pid.1']['birth_date']"
-            ],
-            "intent_to_retain": false
-          }
+            path: ["$['eu.europa.ec.eudi.pid.1']['birth_date']"],
+            intent_to_retain: false,
+          },
         ],
-        "limit_disclosure": "required"
-      }
-    }
-  ]
+        limit_disclosure: 'required',
+      },
+    },
+  ],
 }

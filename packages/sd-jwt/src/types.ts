@@ -2,6 +2,7 @@ import { Hasher, kbHeader, KBOptions, kbPayload, SaltGenerator } from '@sd-jwt/t
 import { SdJwtVcPayload as SdJwtPayload } from '@sd-jwt/sd-jwt-vc'
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { JoseSignatureAlgorithm } from '@sphereon/ssi-types'
 import { DIDDocumentSection, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
@@ -127,6 +128,11 @@ export interface ICreateSdJwtPresentationArgs {
   presentationFrame?: IPresentationFrame
 
   /**
+   * Allows to override the holder. Normally it will be looked up from the cnf or sub values
+   */
+  holder?: string
+
+  /**
    * Information to include to add key binding.
    */
   kb?: KBOptions
@@ -192,9 +198,9 @@ export type SignKeyArgs = {
 }
 
 export type SignKeyResult = {
-  alg: string
+  alg: JoseSignatureAlgorithm
   key: {
-    kid: string
+    kmsKeyRef: string
     x5c?: string[]
     jwkThumbprint?: string
   }

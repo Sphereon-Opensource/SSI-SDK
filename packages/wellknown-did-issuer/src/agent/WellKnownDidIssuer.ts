@@ -5,7 +5,7 @@ import {
   IDidConfigurationResource,
   IssuanceCallback,
   ServiceTypesEnum,
-  WellKnownDidIssuer as Issuer
+  WellKnownDidIssuer as Issuer,
 } from '@sphereon/wellknown-dids-client'
 import { IAgentPlugin, IIdentifier, VerifiableCredential } from '@veramo/core'
 import { OrPromise } from '@veramo/utils'
@@ -13,11 +13,7 @@ import { normalizeCredential } from 'did-jwt-vc'
 import { Service } from 'did-resolver/lib/resolver'
 import { Connection } from 'typeorm'
 import { v4 as uuidv4 } from 'uuid'
-import {
-  createCredentialEntity,
-  DidConfigurationResourceEntity,
-  didConfigurationResourceFrom
-} from '../entities/DidConfigurationResourceEntity'
+import { createCredentialEntity, DidConfigurationResourceEntity, didConfigurationResourceFrom } from '../entities/DidConfigurationResourceEntity'
 import { schema } from '../index'
 import {
   IAddLinkedDomainsServiceArgs,
@@ -29,7 +25,7 @@ import {
   ISaveDidConfigurationResourceArgs,
   IWellKnownDidIssuer,
   IWellKnownDidIssuerOptionsArgs,
-  RequiredContext
+  RequiredContext,
 } from '../types/IWellKnownDidIssuer'
 import { RegulationType } from '@sphereon/ssi-sdk.data-store'
 
