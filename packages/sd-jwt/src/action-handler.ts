@@ -80,7 +80,7 @@ export class SDJwtPlugin implements IAgentPlugin {
   }> {
     if (Object.keys(this._signers).includes(identifier) && typeof this._signers[identifier] === 'function') {
       return { signer: this._signers[identifier] }
-    } else if (this._defaultSigner) {
+    } else if (typeof this._defaultSigner === 'function') {
       return { signer: this._defaultSigner }
     }
     const signingKey = await this.getSignKey({ identifier, vmRelationship: 'assertionMethod' }, context)
