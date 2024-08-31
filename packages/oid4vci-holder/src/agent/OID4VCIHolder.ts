@@ -126,7 +126,6 @@ export const oid4vciHolderContextMethods: Array<string> = [
 const logger = Loggers.DEFAULT.get('sphereon:oid4vci:holder')
 
 export function signCallback(
-  client: OpenID4VCIClient,
   identifier: ManagedIdentifierOptsOrResult,
   context: IAgentContext<IKeyManager & IDIDManager & IResolver & IIdentifierResolution & IJwtService>,
   nonce?: string
@@ -588,7 +587,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     const jwk = isManagedIdentifierJwkResult(identifier) ? identifier.jwk : undefined
 
     const callbacks: ProofOfPossessionCallbacks<never> = {
-      signCallback: signCallback(client, identifier, context)
+      signCallback: signCallback(identifier, context)
     }
 
     try {

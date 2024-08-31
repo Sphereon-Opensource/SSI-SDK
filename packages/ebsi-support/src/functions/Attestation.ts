@@ -126,7 +126,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   })
 
   const signCallbacks: ProofOfPossessionCallbacks<never> = requestObjectOpts.signCallbacks ?? {
-    signCallback: signCallback(vciClient, idOpts, context),
+    signCallback: signCallback(idOpts, context),
   }
   const authorizationRequestOpts = {
     redirectUri,

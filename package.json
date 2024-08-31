@@ -111,7 +111,6 @@
       "@veramo/remote-server": "4.2.0",
       "@veramo/selective-disclosure": "4.2.0",
       "@veramo/url-handler": "4.2.0",
-      "@sphereon/did-auth-siop": "0.16.1-next.24",
       "@sphereon/ssi-types": "workspace:*",
       "@sphereon/ssi-sdk.core": "workspace:*",
       "@sphereon/pex": "^4.1.1-unstable.0",
