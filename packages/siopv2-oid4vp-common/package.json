@@ -12,9 +12,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.16.1-next.25",
-    "@sphereon/did-auth-siop-adapter": "0.16.1-next.25",
-    "@sphereon/oid4vc-common": "0.16.1-next.25",
+    "@sphereon/did-auth-siop": "0.16.1-unstable.25",
+    "@sphereon/did-auth-siop-adapter": "0.16.1-unstable.25",
+    "@sphereon/oid4vc-common": "0.16.1-unstable.25",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "uint8arrays": "3.1.1"

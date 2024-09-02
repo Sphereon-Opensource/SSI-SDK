@@ -3,6 +3,7 @@ import {
   ClientMetadataOpts,
   InMemoryRPSessionManager,
   PassBy,
+  PresentationVerificationCallback,
   PresentationVerificationResult,
   PropertyTarget,
   ResponseMode,
@@ -27,7 +28,7 @@ import {
 import { JwsCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
 import { SigningAlgo } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { CredentialMapper, Hasher } from '@sphereon/ssi-types'
+import { CredentialMapper, Hasher, PresentationSubmission } from '@sphereon/ssi-types'
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
 // import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { TKeyType } from '@veramo/core'
@@ -53,8 +54,14 @@ function getWellKnownDIDVerifyCallback(siopIdentifierOpts: ISIOPIdentifierOption
       }
 }
 
-export function getPresentationVerificationCallback(idOpts: ManagedIdentifierOptsOrResult, context: IRequiredContext) {
-  async function presentationVerificationCallback(args: any): Promise<PresentationVerificationResult> {
+export function getPresentationVerificationCallback(
+  idOpts: ManagedIdentifierOptsOrResult,
+  context: IRequiredContext,
+): PresentationVerificationCallback {
+  async function presentationVerificationCallback(
+    args: any, // FIXME any
+    presentationSubmission: PresentationSubmission,
+  ): Promise<PresentationVerificationResult> {
     if (CredentialMapper.isSdJwtEncoded(args)) {
       const result: IVerifySdJwtPresentationResult = await context.agent.verifySdJwtPresentation({
         presentation: args,
@@ -63,6 +70,19 @@ export function getPresentationVerificationCallback(idOpts: ManagedIdentifierOpt
       // fixme: investigate the correct way to handle this
       return { verified: !!result.payload }
     }
+
+    if (CredentialMapper.isMsoMdocOid4VPEncoded(args)) {
+      // TODO Funke reevaluate
+      if (context.agent.mdocOid4vpRPVerify === undefined) {
+        return Promise.reject('ImDLMdoc agent plugin must be enabled to support MsoMdoc types')
+      }
+      const verifyResult = await context.agent.mdocOid4vpRPVerify({
+        vp_token: args,
+        presentation_submission: presentationSubmission,
+      })
+      return { verified: !verifyResult.error }
+    }
+
     const result = await context.agent.verifyPresentation({
       presentation: args,
       fetchRemoteContexts: true,
@@ -139,7 +159,10 @@ export async function createRPBuilder(args: {
       resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint),
       PropertyTarget.REQUEST_OBJECT,
     )
-    .withClientIdScheme(identifierOpts.idOpts.clientIdScheme as ClientIdScheme, PropertyTarget.REQUEST_OBJECT)
+    .withClientIdScheme(
+      (resolution.clientIdScheme as ClientIdScheme) ?? (identifierOpts.idOpts.clientIdScheme as ClientIdScheme),
+      PropertyTarget.REQUEST_OBJECT,
+    )
     // todo: move to options fill/correct method
     .withSupportedVersions(
       rpOpts.supportedVersions ?? [SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_ID1, SupportedVersion.SIOPv2_D11],

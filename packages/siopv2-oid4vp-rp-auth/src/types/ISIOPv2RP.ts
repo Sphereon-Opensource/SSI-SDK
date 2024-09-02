@@ -33,6 +33,7 @@ import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { JwtIssuer } from '@sphereon/oid4vc-common'
+import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 
 export enum VerifiedDataMode {
   NONE = 'none',
@@ -198,5 +199,6 @@ export type IRequiredContext = IAgentContext<
     IPresentationExchange &
     IPDManager &
     ISDJwtPlugin &
-    IJwtService
+    IJwtService &
+    ImDLMdoc
 >
