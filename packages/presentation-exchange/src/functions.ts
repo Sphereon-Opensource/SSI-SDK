@@ -29,7 +29,6 @@ export async function createPEXPresentationSignCallback(
 ): Promise<IPEXPresentationSignCallback> {
   function determineProofFormat(args: {
     format?: Format | 'jwt' | 'lds' | 'EthereumEip712Signature2021'
-    fallbackFormat?: Format | 'jwt' | 'lds' | 'EthereumEip712Signature2021'
     presentationDefinition: IPresentationDefinition
   }): string {
     const { format, presentationDefinition } = args
