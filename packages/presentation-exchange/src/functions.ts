@@ -27,11 +27,11 @@ export async function createPEXPresentationSignCallback(
   },
   context: IRequiredContext,
 ): Promise<IPEXPresentationSignCallback> {
-  function determineProofFormat(args: {
+  function determineProofFormat(innerArgs: {
     format?: Format | 'jwt' | 'lds' | 'EthereumEip712Signature2021'
     presentationDefinition: IPresentationDefinition
   }): string {
-    const { format, presentationDefinition } = args
+    const { format, presentationDefinition } = innerArgs
 
     const formatOptions = format ?? presentationDefinition.format ?? args.fallbackFormat
     // All format arguments are optional. So if no format has been given we go for the most supported 'jwt'
