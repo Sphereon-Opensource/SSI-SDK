@@ -65,7 +65,7 @@ export class RPInstance {
     const idOpts = this.rpOptions.identifierOpts.idOpts
     const resolution = await ensureManagedIdentifierResult(idOpts, context)
     if (isManagedIdentifierDidResult(resolution)) {
-      jwtIssuer = { didUrl: resolution.identifier.did, method: 'did', alg: getSigningAlgo(resolution.key.type) }
+      jwtIssuer = { didUrl: resolution.kid, method: 'did', alg: getSigningAlgo(resolution.key.type) }
     } else if (isManagedIdentifierX5cResult(resolution)) {
       if (!resolution.issuer) {
         return Promise.reject('missing issuer in idOpts')
