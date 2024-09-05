@@ -16,9 +16,10 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
   private readonly noStateMachinePersistence: boolean
   private readonly authorizationRequestOpts?: AuthorizationRequestOpts
   private readonly clientOpts?: AuthorizationServerClientOpts
+  private readonly kms: string | undefined
 
   constructor(
-    args: Pick<GetMachineArgs, 'stateNavigationListener' | 'authorizationRequestOpts' | 'clientOpts'> & {
+    args: Pick<GetMachineArgs, 'stateNavigationListener' | 'authorizationRequestOpts' | 'clientOpts' | 'issuanceOpt'> & {
       priority?: number | DefaultLinkPriorities
       protocols?: Array<string | RegExp>
       noStateMachinePersistence?: boolean
@@ -31,6 +32,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
     this.context = args.context
     this.noStateMachinePersistence = args.noStateMachinePersistence === true
     this.stateNavigationListener = args.stateNavigationListener
+    this.kms = args.issuanceOpt?.kms
   }
 
   async handle(
@@ -59,6 +61,9 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
       },
       authorizationRequestOpts: { ...this.authorizationRequestOpts, ...opts?.authorizationRequestOpts },
       ...((clientOpts.clientId || clientOpts.clientAssertionType) && { clientOpts: clientOpts as AuthorizationServerClientOpts }),
+      issuanceOpt: {
+        kms: this.kms,
+      },
       stateNavigationListener: this.stateNavigationListener,
     })
 

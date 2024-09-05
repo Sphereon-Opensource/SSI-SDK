@@ -518,6 +518,7 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
     jwtCryptographicSuitePreferences,
     jsonldCryptographicSuitePreferences,
     forceIssuanceOpt,
+    kms,
   } = args
 
   if (credentialsSupported === undefined || Object.keys(credentialsSupported).length === 0) {
@@ -551,6 +552,7 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
           supportedPreferredDidMethod: didMethod,
           supportedBindingMethods: methods,
           format: credentialSupported.format,
+          kms,
           keyType: client.isEBSI() ? 'Secp256r1' : keyTypeFromCryptographicSuite({ suite: cryptographicSuite }),
           ...(client.isEBSI() && { codecName: 'EBSI' }),
         } satisfies IssuanceOpts)

@@ -545,6 +545,7 @@ export type GetIssuanceOptsArgs = {
   didMethodPreferences: Array<SupportedDidMethodEnum>
   jwtCryptographicSuitePreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString>
   jsonldCryptographicSuitePreferences: Array<string>
+  kms?: KeyManagementSystemEnum
   forceIssuanceOpt?: IssuanceOpts
 }
 
