@@ -3,7 +3,14 @@ import { AuthorizationRequestOpts, AuthorizationServerClientOpts, AuthzFlowType,
 import { DefaultLinkPriorities, LinkHandlerAdapter } from '@sphereon/ssi-sdk.core'
 import { IMachineStatePersistence, interpreterStartOrResume, SerializableState } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { IAgentContext } from '@veramo/core'
-import { GetMachineArgs, IOID4VCIHolder, OID4VCIMachineEvents, OID4VCIMachineInterpreter, OID4VCIMachineState } from '../types/IOID4VCIHolder'
+import {
+  GetMachineArgs,
+  IOID4VCIHolder,
+  IssuanceOpts,
+  OID4VCIMachineEvents,
+  OID4VCIMachineInterpreter,
+  OID4VCIMachineState,
+} from '../types/IOID4VCIHolder'
 
 /**
  * This handler only handles credential offer links (either by value or by reference)
@@ -16,7 +23,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
   private readonly noStateMachinePersistence: boolean
   private readonly authorizationRequestOpts?: AuthorizationRequestOpts
   private readonly clientOpts?: AuthorizationServerClientOpts
-  private readonly kms: string | undefined
+  private readonly issuanceOpt: Partial<IssuanceOpts> | undefined
 
   constructor(
     args: Pick<GetMachineArgs, 'stateNavigationListener' | 'authorizationRequestOpts' | 'clientOpts' | 'issuanceOpt'> & {
@@ -32,7 +39,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
     this.context = args.context
     this.noStateMachinePersistence = args.noStateMachinePersistence === true
     this.stateNavigationListener = args.stateNavigationListener
-    this.kms = args.issuanceOpt?.kms
+    this.issuanceOpt = args.issuanceOpt
   }
 
   async handle(
@@ -62,7 +69,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
       authorizationRequestOpts: { ...this.authorizationRequestOpts, ...opts?.authorizationRequestOpts },
       ...((clientOpts.clientId || clientOpts.clientAssertionType) && { clientOpts: clientOpts as AuthorizationServerClientOpts }),
       issuanceOpt: {
-        kms: this.kms,
+        ...this.issuanceOpt,
       },
       stateNavigationListener: this.stateNavigationListener,
     })
