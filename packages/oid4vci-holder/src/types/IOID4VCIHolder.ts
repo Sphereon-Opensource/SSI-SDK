@@ -114,6 +114,7 @@ export type GetMachineArgs = {
   clientOpts?: AuthorizationServerClientOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   partialIssuanceOpt?: Partial<IssuanceOpts>
+  issuanceOpt?: IssuanceOpts
   stateNavigationListener?: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
 }
 
