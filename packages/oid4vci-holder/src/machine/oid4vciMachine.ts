@@ -88,6 +88,12 @@ const oid4vciRequireAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OI
 
   if (!openID4VCIClientState.authorizationURL) {
     return false
+  } else if (
+    openID4VCIClientState.credentialOffer &&
+    openID4VCIClientState.credentialOffer.preAuthorizedCode &&
+    openID4VCIClientState.credentialOffer.supportedFlows?.includes(AuthzFlowType.PRE_AUTHORIZED_CODE_FLOW)
+  ) {
+    return false
   } else if (openID4VCIClientState.authorizationRequestOpts) {
     // We have authz options or there is not credential offer to begin with.
     // We require authz as long as we do not have the authz code response
