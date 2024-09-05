@@ -23,10 +23,10 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
   private readonly noStateMachinePersistence: boolean
   private readonly authorizationRequestOpts?: AuthorizationRequestOpts
   private readonly clientOpts?: AuthorizationServerClientOpts
-  private readonly issuanceOpt: Partial<IssuanceOpts> | undefined
+  private readonly partialIssuanceOpt: Partial<IssuanceOpts> | undefined
 
   constructor(
-    args: Pick<GetMachineArgs, 'stateNavigationListener' | 'authorizationRequestOpts' | 'clientOpts' | 'issuanceOpt'> & {
+    args: Pick<GetMachineArgs, 'stateNavigationListener' | 'authorizationRequestOpts' | 'clientOpts' | 'partialIssuanceOpt'> & {
       priority?: number | DefaultLinkPriorities
       protocols?: Array<string | RegExp>
       noStateMachinePersistence?: boolean
@@ -39,7 +39,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
     this.context = args.context
     this.noStateMachinePersistence = args.noStateMachinePersistence === true
     this.stateNavigationListener = args.stateNavigationListener
-    this.issuanceOpt = args.issuanceOpt
+    this.partialIssuanceOpt = args.partialIssuanceOpt
   }
 
   async handle(
@@ -68,8 +68,8 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
       },
       authorizationRequestOpts: { ...this.authorizationRequestOpts, ...opts?.authorizationRequestOpts },
       ...((clientOpts.clientId || clientOpts.clientAssertionType) && { clientOpts: clientOpts as AuthorizationServerClientOpts }),
-      issuanceOpt: {
-        ...this.issuanceOpt,
+      partialIssuanceOpt: {
+        ...this.partialIssuanceOpt,
       },
       stateNavigationListener: this.stateNavigationListener,
     })

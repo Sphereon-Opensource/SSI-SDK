@@ -113,7 +113,7 @@ export type GetMachineArgs = {
   authorizationRequestOpts?: AuthorizationRequestOpts
   clientOpts?: AuthorizationServerClientOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
-  issuanceOpt?: Partial<IssuanceOpts>
+  partialIssuanceOpt?: Partial<IssuanceOpts>
   stateNavigationListener?: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
 }
 
@@ -128,7 +128,13 @@ export type createCredentialsToSelectFromArgs = Pick<
 export type GetContactArgs = Pick<OID4VCIMachineContext, 'serverMetadata'>
 export type GetCredentialsArgs = Pick<
   OID4VCIMachineContext,
-  'verificationCode' | 'openID4VCIClientState' | 'selectedCredentials' | 'didMethodPreferences' | 'issuanceOpt' | 'accessTokenOpts'
+  | 'verificationCode'
+  | 'openID4VCIClientState'
+  | 'selectedCredentials'
+  | 'didMethodPreferences'
+  | 'issuanceOpt'
+  | 'partialIssuanceOpt'
+  | 'accessTokenOpts'
 >
 export type AddContactIdentityArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'contact'>
 export type AddIssuerBrandingArgs = Pick<OID4VCIMachineContext, 'serverMetadata' | 'contact'>
@@ -186,6 +192,7 @@ export type OID4VCIMachineContext = {
   accessTokenOpts?: AccessTokenOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   issuanceOpt?: IssuanceOpts
+  partialIssuanceOpt?: Partial<IssuanceOpts>
   requestData?: RequestData // TODO WAL-673 fix type as this is not always a qr code (deeplink)
   locale?: string
   authorizationCodeURL?: string
@@ -545,7 +552,7 @@ export type GetIssuanceOptsArgs = {
   didMethodPreferences: Array<SupportedDidMethodEnum>
   jwtCryptographicSuitePreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString>
   jsonldCryptographicSuitePreferences: Array<string>
-  kms?: KeyManagementSystemEnum
+  partialIssuanceOpt?: Partial<IssuanceOpts>
   forceIssuanceOpt?: IssuanceOpts
 }
 
