@@ -345,6 +345,7 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
           type: issuanceOpt.keyType,
           use: KeyUse.Signature,
           codecName: issuanceOpt.codecName,
+          kms: issuanceOpt.kms,
         },
       },
     })
