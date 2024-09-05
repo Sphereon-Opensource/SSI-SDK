@@ -286,6 +286,7 @@ export type CreateOID4VCIMachineOpts = {
   stateDefinition?: OID4VCIMachineState
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   accessTokenOpts?: AccessTokenOpts
+  partialIssuanceOpt?: Partial<IssuanceOpts>
   issuanceOpt?: IssuanceOpts
 }
 
