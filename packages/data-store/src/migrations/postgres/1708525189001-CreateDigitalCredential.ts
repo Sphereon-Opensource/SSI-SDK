@@ -18,7 +18,7 @@ export class CreateDigitalCredential1708525189001 implements MigrationInterface 
         "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
         "parent_id" text,
         "document_type" "digital_document_type" NOT NULL,
-        "regulation_type" "digital_regulation_type" NOT NULL DEFAULT "NON_REGULATED",
+        "regulation_type" "digital_regulation_type" NOT NULL DEFAULT 'NON_REGULATED'::"digital_regulation_type",
         "document_format" "digital_credential_document_format" NOT NULL,
         "credential_role" "digital_credential_credential_role" NOT NULL,
         "raw_document" text NOT NULL,
