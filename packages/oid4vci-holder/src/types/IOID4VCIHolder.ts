@@ -15,13 +15,13 @@ import {
 import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
-import { SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { DigitalCredential, IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import {
   Hasher,
   IVerifiableCredential,
+  JoseSignatureAlgorithm,
   OriginalVerifiableCredential,
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
@@ -80,7 +80,7 @@ export type OID4VCIHolderOptions = {
   jsonldCryptographicSuitePreferences?: Array<string>
   defaultAuthorizationRequestOptions?: AuthorizationRequestOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
-  jwtCryptographicSuitePreferences?: Array<SignatureAlgorithmJwa>
+  jwtCryptographicSuitePreferences?: Array<JoseSignatureAlgorithm>
   hasher?: Hasher
 }
 
@@ -534,7 +534,7 @@ export type GetIssuanceOptsArgs = {
   serverMetadata: EndpointMetadataResult
   context: RequiredContext
   didMethodPreferences: Array<SupportedDidMethodEnum>
-  jwtCryptographicSuitePreferences: Array<SignatureAlgorithmJwa>
+  jwtCryptographicSuitePreferences: Array<JoseSignatureAlgorithm>
   jsonldCryptographicSuitePreferences: Array<string>
   forceIssuanceOpt?: IssuanceOpts
 }
@@ -548,7 +548,7 @@ export type GetIssuanceDidMethodArgs = {
 export type GetIssuanceCryptoSuiteArgs = {
   credentialSupported: CredentialConfigurationSupported
   client: OpenID4VCIClient
-  jwtCryptographicSuitePreferences: Array<SignatureAlgorithmJwa>
+  jwtCryptographicSuitePreferences: Array<JoseSignatureAlgorithm>
   jsonldCryptographicSuitePreferences: Array<string>
 }
 

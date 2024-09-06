@@ -17,7 +17,7 @@ import {
 import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ensureManagedIdentifierResult, IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService, JwtHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
-import { signatureAlgorithmFromKey, SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
+import { signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   CorrelationIdentifierType,
   CredentialCorrelationType,
@@ -35,6 +35,7 @@ import {
   CredentialMapper,
   ICredential,
   IVerifiableCredential,
+  JoseSignatureAlgorithm,
   JwtDecodedVerifiableCredential,
   Loggers,
   OriginalVerifiableCredential,
@@ -225,10 +226,10 @@ export class OID4VCIHolder implements IAgentPlugin {
     SupportedDidMethodEnum.DID_EBSI,
     SupportedDidMethodEnum.DID_ION,
   ]
-  private readonly jwtCryptographicSuitePreferences: Array<SignatureAlgorithmJwa> = [
-    SignatureAlgorithmJwa.ES256,
-    SignatureAlgorithmJwa.ES256K,
-    SignatureAlgorithmJwa.EdDSA,
+  private readonly jwtCryptographicSuitePreferences: Array<JoseSignatureAlgorithm> = [
+    JoseSignatureAlgorithm.ES256,
+    JoseSignatureAlgorithm.ES256K,
+    JoseSignatureAlgorithm.EdDSA,
   ]
   private static readonly DEFAULT_MOBILE_REDIRECT_URI = `${DefaultURISchemes.CREDENTIAL_OFFER}://`
   private readonly defaultAuthorizationRequestOpts: AuthorizationRequestOpts = { redirectUri: OID4VCIHolder.DEFAULT_MOBILE_REDIRECT_URI }
@@ -609,7 +610,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     const idOpts = await getIdentifierOpts({ issuanceOpt, context })
     const { key, kid } = idOpts
     logger.debug(`ID opts`, idOpts)
-    const alg: SignatureAlgorithmJwa = await signatureAlgorithmFromKey({ key })
+    const alg: JoseSignatureAlgorithm = await signatureAlgorithmFromKey({ key })
 
     const callbacks: ProofOfPossessionCallbacks<never> = {
       signCallback: signCallback(client, idOpts, context),

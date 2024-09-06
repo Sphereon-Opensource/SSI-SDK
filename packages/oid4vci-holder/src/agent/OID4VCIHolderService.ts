@@ -12,12 +12,13 @@ import {
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { getAuthenticationKey, getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
-import { keyTypeFromCryptographicSuite, SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
+import { keyTypeFromCryptographicSuite } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
   IVerifiableCredential,
   IVerifyResult,
+  JoseSignatureAlgorithm,
   OriginalVerifiableCredential,
   sdJwtDecodedCredentialToUniformCredential,
   SdJwtDecodedVerifiableCredential,
@@ -556,14 +557,14 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
     case 'jwt':
     case 'jwt_vc_json':
     case 'jwt_vc': {
-      const supportedPreferences: Array<SignatureAlgorithmJwa> = jwtCryptographicSuitePreferences.filter((suite: SignatureAlgorithmJwa) =>
+      const supportedPreferences: Array<JoseSignatureAlgorithm> = jwtCryptographicSuitePreferences.filter((suite: JoseSignatureAlgorithm) =>
         signing_algs_supported.includes(suite),
       )
 
       if (supportedPreferences.length > 0) {
         return supportedPreferences[0]
       } else if (client.isEBSI()) {
-        return SignatureAlgorithmJwa.ES256
+        return JoseSignatureAlgorithm.ES256
       }
 
       // if we cannot find supported cryptographic suites, we just try with the first preference
