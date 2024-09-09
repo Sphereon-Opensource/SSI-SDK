@@ -12,7 +12,7 @@ import {
   OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
-import { getOrCreatePrimaryIdentifier, KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   isIIdentifier,
   isManagedIdentifierDidResult,
@@ -316,7 +316,12 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
   if (identifierArg && isManagedIdentifierResult(identifierArg)) {
     return identifierArg
   }
-  const { supportedPreferredDidMethod, supportedBindingMethods, keyType = 'Secp256r1', kms = KeyManagementSystemEnum.LOCAL } = issuanceOpt
+  const {
+    supportedPreferredDidMethod,
+    supportedBindingMethods,
+    keyType = 'Secp256r1',
+    kms = await context.agent.keyManagerGetDefaultKeyManagementSystem(),
+  } = issuanceOpt
   let identifier: ManagedIdentifierResult
 
   if (identifierArg) {
@@ -518,7 +523,6 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
     didMethodPreferences,
     jwtCryptographicSuitePreferences,
     jsonldCryptographicSuitePreferences,
-    partialIssuanceOpt,
     forceIssuanceOpt,
   } = args
 
@@ -550,7 +554,6 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
       ? { ...credentialSupported, ...forceIssuanceOpt }
       : ({
           ...credentialSupported,
-          ...partialIssuanceOpt,
           supportedPreferredDidMethod: didMethod,
           supportedBindingMethods: methods,
           format: credentialSupported.format,

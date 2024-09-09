@@ -113,8 +113,7 @@ export type GetMachineArgs = {
   authorizationRequestOpts?: AuthorizationRequestOpts
   clientOpts?: AuthorizationServerClientOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
-  partialIssuanceOpt?: Partial<IssuanceOpts>
-  issuanceOpt?: IssuanceOpts
+  issuanceOpt?: Partial<IssuanceOpts>
   stateNavigationListener?: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
 }
 
@@ -129,13 +128,7 @@ export type createCredentialsToSelectFromArgs = Pick<
 export type GetContactArgs = Pick<OID4VCIMachineContext, 'serverMetadata'>
 export type GetCredentialsArgs = Pick<
   OID4VCIMachineContext,
-  | 'verificationCode'
-  | 'openID4VCIClientState'
-  | 'selectedCredentials'
-  | 'didMethodPreferences'
-  | 'issuanceOpt'
-  | 'partialIssuanceOpt'
-  | 'accessTokenOpts'
+  'verificationCode' | 'openID4VCIClientState' | 'selectedCredentials' | 'didMethodPreferences' | 'issuanceOpt' | 'accessTokenOpts'
 >
 export type AddContactIdentityArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'contact'>
 export type AddIssuerBrandingArgs = Pick<OID4VCIMachineContext, 'serverMetadata' | 'contact'>
@@ -193,7 +186,6 @@ export type OID4VCIMachineContext = {
   accessTokenOpts?: AccessTokenOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   issuanceOpt?: IssuanceOpts
-  partialIssuanceOpt?: Partial<IssuanceOpts>
   requestData?: RequestData // TODO WAL-673 fix type as this is not always a qr code (deeplink)
   locale?: string
   authorizationCodeURL?: string
@@ -286,7 +278,6 @@ export type CreateOID4VCIMachineOpts = {
   stateDefinition?: OID4VCIMachineState
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   accessTokenOpts?: AccessTokenOpts
-  partialIssuanceOpt?: Partial<IssuanceOpts>
   issuanceOpt?: IssuanceOpts
 }
 
@@ -554,7 +545,6 @@ export type GetIssuanceOptsArgs = {
   didMethodPreferences: Array<SupportedDidMethodEnum>
   jwtCryptographicSuitePreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString>
   jsonldCryptographicSuitePreferences: Array<string>
-  partialIssuanceOpt?: Partial<IssuanceOpts>
   forceIssuanceOpt?: IssuanceOpts
 }
 
@@ -626,4 +616,4 @@ export type RequiredContext = IAgentContext<
     ISDJwtPlugin &
     ImDLMdoc
 >
-export type DidAgents = TAgent<IResolver & IDIDManager>
+export type DidAgents = TAgent<IResolver & IDIDManager & IKeyManager>

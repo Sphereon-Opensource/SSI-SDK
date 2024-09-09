@@ -3,14 +3,7 @@ import { AuthorizationRequestOpts, AuthorizationServerClientOpts, AuthzFlowType,
 import { DefaultLinkPriorities, LinkHandlerAdapter } from '@sphereon/ssi-sdk.core'
 import { IMachineStatePersistence, interpreterStartOrResume, SerializableState } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { IAgentContext } from '@veramo/core'
-import {
-  GetMachineArgs,
-  IOID4VCIHolder,
-  IssuanceOpts,
-  OID4VCIMachineEvents,
-  OID4VCIMachineInterpreter,
-  OID4VCIMachineState,
-} from '../types/IOID4VCIHolder'
+import { GetMachineArgs, IOID4VCIHolder, OID4VCIMachineEvents, OID4VCIMachineInterpreter, OID4VCIMachineState } from '../types/IOID4VCIHolder'
 
 /**
  * This handler only handles credential offer links (either by value or by reference)
@@ -23,10 +16,9 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
   private readonly noStateMachinePersistence: boolean
   private readonly authorizationRequestOpts?: AuthorizationRequestOpts
   private readonly clientOpts?: AuthorizationServerClientOpts
-  private readonly partialIssuanceOpt: Partial<IssuanceOpts> | undefined
 
   constructor(
-    args: Pick<GetMachineArgs, 'stateNavigationListener' | 'authorizationRequestOpts' | 'clientOpts' | 'partialIssuanceOpt'> & {
+    args: Pick<GetMachineArgs, 'stateNavigationListener' | 'authorizationRequestOpts' | 'clientOpts'> & {
       priority?: number | DefaultLinkPriorities
       protocols?: Array<string | RegExp>
       noStateMachinePersistence?: boolean
@@ -39,7 +31,6 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
     this.context = args.context
     this.noStateMachinePersistence = args.noStateMachinePersistence === true
     this.stateNavigationListener = args.stateNavigationListener
-    this.partialIssuanceOpt = args.partialIssuanceOpt
   }
 
   async handle(
@@ -68,9 +59,6 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
       },
       authorizationRequestOpts: { ...this.authorizationRequestOpts, ...opts?.authorizationRequestOpts },
       ...((clientOpts.clientId || clientOpts.clientAssertionType) && { clientOpts: clientOpts as AuthorizationServerClientOpts }),
-      partialIssuanceOpt: {
-        ...this.partialIssuanceOpt,
-      },
       stateNavigationListener: this.stateNavigationListener,
     })
 

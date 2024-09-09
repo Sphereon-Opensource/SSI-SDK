@@ -521,14 +521,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   }
 
   private async oid4vciHolderGetCredentials(args: GetCredentialsArgs, context: RequiredContext): Promise<Array<MappedCredentialToAccept>> {
-    const {
-      verificationCode,
-      openID4VCIClientState,
-      didMethodPreferences = this.didMethodPreferences,
-      issuanceOpt,
-      partialIssuanceOpt,
-      accessTokenOpts,
-    } = args
+    const { verificationCode, openID4VCIClientState, didMethodPreferences = this.didMethodPreferences, issuanceOpt, accessTokenOpts } = args
     logger.debug(`Getting credentials`, issuanceOpt, accessTokenOpts)
 
     if (!openID4VCIClientState) {
@@ -550,7 +543,6 @@ export class OID4VCIHolder implements IAgentPlugin {
       didMethodPreferences: Array.isArray(didMethodPreferences) && didMethodPreferences.length > 0 ? didMethodPreferences : this.didMethodPreferences,
       jwtCryptographicSuitePreferences: this.jwtCryptographicSuitePreferences,
       jsonldCryptographicSuitePreferences: this.jsonldCryptographicSuitePreferences,
-      ...(partialIssuanceOpt && { partialIssuanceOpt: partialIssuanceOpt }),
       ...(issuanceOpt && { forceIssuanceOpt: issuanceOpt }),
     })
 

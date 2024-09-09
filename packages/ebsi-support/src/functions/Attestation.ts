@@ -184,7 +184,7 @@ export const ebsiGetAttestationInterpreter = async (
 
   const oid4vciMachine = await context.agent.oid4vciHolderGetMachineInterpreter({
     ...authReqResult,
-    partialIssuanceOpt: {
+    issuanceOpt: {
       identifier,
       supportedPreferredDidMethod: SupportedDidMethodEnum.DID_EBSI,
       kid: authReqResult.authKey.meta?.jwkThumbprint ?? authReqResult.authKey.kid,

@@ -118,7 +118,6 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
     accessTokenOpts: opts?.accessTokenOpts,
     requestData: opts?.requestData,
     issuanceOpt: opts?.issuanceOpt,
-    partialIssuanceOpt: opts?.partialIssuanceOpt,
     didMethodPreferences: opts?.didMethodPreferences,
     locale: opts?.locale,
     credentialsSupported: {},
