@@ -119,7 +119,7 @@ export const selectCredentialLocaleBranding = async (
 }
 
 export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<VerificationResult> => {
-  const { mappedCredential, hasher, context } = args
+  const { mappedCredential, hasher, onVerifyIssuerType, context } = args
 
   const credential = mappedCredential.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
   if (!credential) {
@@ -136,6 +136,15 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
     // TODO: Skipping VC validation for EBSI conformance issued credential, as their Issuer is not present in the ledger (sigh)
     if (JSON.stringify(wrappedVC.decoded).includes('vc:ebsi:conformance')) {
       return { source: wrappedVC, error: undefined, result: true, subResults: [] } satisfies VerificationResult
+    }
+  }
+
+  if (onVerifyIssuerType) {
+    const issuer = await onVerifyIssuerType({
+      wrappedVc: wrappedVC
+    })
+    if (!issuer.attributes.some(a => ['RootTAO', 'TAO'].includes(a.issuerType))) {
+      throw Error('Credential must be issued by a Root TAO or TAO')
     }
   }
 

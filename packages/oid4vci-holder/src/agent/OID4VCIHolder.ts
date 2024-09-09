@@ -84,7 +84,7 @@ import {
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
-  VerificationResult,
+  VerificationResult, VerifyCredentialIssuerArgs, VerifyCredentialIssuerResult,
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -97,6 +97,7 @@ import {
   verifyCredentialToAccept,
 } from './OID4VCIHolderService'
 
+import 'cross-fetch/polyfill'
 /**
  * {@inheritDoc IOID4VCIHolder}
  */
@@ -189,6 +190,14 @@ export function signCallback(
   }
 }
 
+export async function verifyCredentialIssuer(args: VerifyCredentialIssuerArgs): Promise<VerifyCredentialIssuerResult> {
+  const { wrappedVc } = args
+
+  const vc = wrappedVc.decoded?.iss ?? (typeof wrappedVc.decoded?.vc?.issuer === 'string' ? wrappedVc.decoded?.vc?.issuer : wrappedVc.decoded?.vc?.issuer?.existingInstanceId)
+  const url = `https://api-conformance.ebsi.eu/trusted-issuers-registry/v4/issuers/${vc.issuer}`;
+  return await (await fetch(url)).json()
+}
+
 export class OID4VCIHolder implements IAgentPlugin {
   readonly eventTypes: Array<OID4VCIHolderEvent> = [
     OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED,
@@ -235,12 +244,14 @@ export class OID4VCIHolder implements IAgentPlugin {
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
+  private readonly onVerifyIssuerType?: (args: VerifyCredentialIssuerArgs) => Promise<VerifyCredentialIssuerResult>
 
   constructor(options?: OID4VCIHolderOptions) {
     const {
       onContactIdentityCreated,
       onCredentialStored,
       onIdentifierCreated,
+      onVerifyIssuerType,
       vcFormatPreferences,
       jsonldCryptographicSuitePreferences,
       didMethodPreferences,
@@ -266,6 +277,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     this.onContactIdentityCreated = onContactIdentityCreated
     this.onCredentialStored = onCredentialStored
     this.onIdentifierCreated = onIdentifierCreated
+    this.onVerifyIssuerType = onVerifyIssuerType
   }
 
   public async onEvent(event: any, context: RequiredContext): Promise<void> {
@@ -745,6 +757,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       credentialsToAccept.map((credentialToAccept) =>
         verifyCredentialToAccept({
           mappedCredential: credentialToAccept,
+          onVerifyIssuerType: this.onVerifyIssuerType,
           context,
         }),
       ),
