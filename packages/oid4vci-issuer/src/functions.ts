@@ -2,7 +2,7 @@ import { CredentialRequest, IssuerMetadata, Jwt, JwtVerifyResult, OID4VCICredent
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
 import { legacyKeyRefsToIdentifierOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { CredentialMapper, ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
+import { CompactSdJwtVc, CredentialMapper, ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { CredentialPayload, DIDDocument, ProofFormat } from '@veramo/core'
 import { bytesToBase64 } from '@veramo/utils'
 import { createJWT, decodeJWT, JWTVerifyOptions, verifyJWT } from 'did-jwt'
@@ -134,7 +134,7 @@ export async function getCredentialSignerCallback(
     credential: CredentialIssuanceInput
     jwtVerifyResult: JwtVerifyResult<DIDDocument>
     format?: OID4VCICredentialFormat
-  }): Promise<W3CVerifiableCredential> {
+  }): Promise<W3CVerifiableCredential | CompactSdJwtVc> {
     const { jwtVerifyResult, format } = args
     const credential = args.credential as ICredential // TODO: SDJWT
     let proofFormat: ProofFormat
@@ -157,16 +157,24 @@ export async function getCredentialSignerCallback(
         return subject
       })
       credential.credentialSubject = subjectIsArray ? credentialSubjects : credentialSubjects[0]
-    }
 
-    const result = await context.agent.createVerifiableCredential({
-      credential: credential as CredentialPayload,
-      proofFormat,
-      removeOriginalFields: false,
-      fetchRemoteContexts: true,
-      domain: typeof credential.issuer === 'object' ? credential.issuer.id : credential.issuer,
-    })
-    return (proofFormat === 'jwt' && 'jwt' in result.proof ? result.proof.jwt : result) as W3CVerifiableCredential
+      const result = await context.agent.createVerifiableCredential({
+        credential: credential as CredentialPayload,
+        proofFormat,
+        removeOriginalFields: false,
+        fetchRemoteContexts: true,
+        domain: typeof credential.issuer === 'object' ? credential.issuer.id : credential.issuer,
+      })
+      return (proofFormat === 'jwt' && 'jwt' in result.proof ? result.proof.jwt : result) as W3CVerifiableCredential
+    } else if (CredentialMapper.isSdJwtDecodedCredential(credential)) {
+      return await context.agent.createSdJwtVc({
+        credential,
+        disclosureFrame: credential['_sd'],
+      })
+    } /*else if (CredentialMapper.isMsoMdocDecodedCredential(credential)) {
+      TODO
+    }*/
+    return Promise.reject('VC issuance failed, an incorrect or unsupported credential was supplied')
   }
 
   return issueVCCallback

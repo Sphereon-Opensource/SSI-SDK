@@ -1145,9 +1145,15 @@ importers:
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
+      '@sphereon/ssi-sdk.mdl-mdoc':
+        specifier: workspace:*
+        version: link:../mdl-mdoc
       '@sphereon/ssi-sdk.oid4vci-issuer-store':
         specifier: workspace:*
         version: link:../oid4vci-issuer-store
+      '@sphereon/ssi-sdk.sd-jwt':
+        specifier: workspace:*
+        version: link:../sd-jwt
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types

@@ -19,6 +19,8 @@
     "@sphereon/ssi-sdk-ext.did-utils": " 0.24.1-next.112",
     "@sphereon/ssi-sdk-ext.identifier-resolution": " 0.24.1-next.112",
     "@sphereon/ssi-sdk.core": "workspace:*",
+    "@sphereon/ssi-sdk.sd-jwt": "workspace:*",
+    "@sphereon/ssi-sdk.mdl-mdoc": "workspace:*",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@sphereon/ssi-sdk.oid4vci-issuer-store": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
