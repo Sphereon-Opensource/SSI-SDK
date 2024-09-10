@@ -11,8 +11,8 @@ export type DigitalCredential = {
   uniformDocument: string
   credentialId?: string
   hash: string
-  kmsKeyRef: string
-  identifierMethod: string
+  kmsKeyRef?: string
+  identifierMethod?: string
   issuerCorrelationType: CredentialCorrelationType
   subjectCorrelationType?: CredentialCorrelationType
   rpCorrelationType?: CredentialCorrelationType

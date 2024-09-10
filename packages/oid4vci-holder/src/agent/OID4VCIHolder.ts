@@ -780,10 +780,10 @@ export class OID4VCIHolder implements IAgentPlugin {
       logger.error(`More than 1 credential selected ${selectedCredentials.join(', ')}, but current service only stores 1 credential!`)
     }
 
-    if (!args.issuanceOpt || !args.issuanceOpt.identifier || !args.issuanceOpt.identifier.kmsKeyRef || !args.issuanceOpt.identifier.method) {
+    if (args.issuanceOpt && (!args.issuanceOpt.identifier || !args.issuanceOpt.identifier.kmsKeyRef || !args.issuanceOpt.identifier.method)) {
       return Promise.reject(Error('issuanceOpt.identifier and identifier.kmsKeyRef / method must me set'))
     }
-    const { kmsKeyRef, method } = args.issuanceOpt.identifier
+    const identifier = args.issuanceOpt?.identifier
 
     let persist = true
     const verifiableCredential = mappedCredentialToAccept.uniformVerifiableCredential as VerifiableCredential
@@ -928,13 +928,13 @@ export class OID4VCIHolder implements IAgentPlugin {
       const persistedCredential = await context.agent.crsAddCredential({
         credential: {
           rawDocument: JSON.stringify(persistCredential),
-          kmsKeyRef: kmsKeyRef,
-          identifierMethod: method,
+          kmsKeyRef: identifier?.kmsKeyRef,
+          identifierMethod: identifier?.method,
           credentialRole: CredentialRole.HOLDER,
           issuerCorrelationType: issuer?.startsWith('did:') ? CredentialCorrelationType.DID : CredentialCorrelationType.URL,
           issuerCorrelationId: issuer,
           subjectCorrelationType:
-            method === 'did' || verifiableCredential.credentialSubject.id?.startsWith('did:')
+            identifier?.method === 'did' || verifiableCredential.credentialSubject.id?.startsWith('did:')
               ? CredentialCorrelationType.DID
               : CredentialCorrelationType.URL,
           subjectCorrelationId: issuer, // FIXME get separate did for subject

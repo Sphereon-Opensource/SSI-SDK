@@ -366,6 +366,10 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       }
     })
 
+    if (verifiableCredentialsWithDefinition.length === 0) {
+      return Promise.reject(Error('None of the selected credentials match any of the presentation definitions.'))
+    }
+
     const response = await siopSendAuthorizationResponse(
       ConnectionType.SIOPv2_OpenID4VP,
       {

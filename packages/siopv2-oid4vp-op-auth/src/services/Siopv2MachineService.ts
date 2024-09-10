@@ -97,6 +97,9 @@ export const siopSendAuthorizationResponse = async (
     if (typeof firstUniqueDC !== 'object' || !('digitalCredential' in firstUniqueDC)) {
       return Promise.reject(Error('SiopMachine only supports UniqueDigitalCredentials for now'))
     }
+    if (!firstUniqueDC.digitalCredential.kmsKeyRef) {
+      return Promise.reject(Error('digitalCredential is missing kmsKeyRef which is required for '))
+    }
     const identifier = await session.context.agent.identifierManagedGetByKid({
       identifier: firstUniqueDC.digitalCredential.kmsKeyRef,
       kmsKeyRef: firstUniqueDC.digitalCredential.kmsKeyRef,
