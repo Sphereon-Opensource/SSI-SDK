@@ -147,7 +147,7 @@ export async function getCredentialSignerCallback(
       credential.issuer.id = resolution.issuer ?? resolution.kmsKeyRef
     }
 
-    if (!CredentialMapper.isSdJwtDecodedCredential(credential)) {
+    if (CredentialMapper.isW3cCredential(credential)) {
       const subjectIsArray = Array.isArray(credential.credentialSubject)
       let credentialSubjects = Array.isArray(credential.credentialSubject) ? credential.credentialSubject : [credential.credentialSubject]
       credentialSubjects = credentialSubjects.map((subject) => {
