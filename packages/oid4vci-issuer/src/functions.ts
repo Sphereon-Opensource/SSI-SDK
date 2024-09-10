@@ -69,7 +69,7 @@ export async function getAccessTokenKeyRef(
   context: IRequiredContext,
 ) {
   let identifier = legacyKeyRefsToIdentifierOpts(opts)
-  return await context.agent.identifierManagedLazyResult(identifier)
+  return await context.agent.identifierManagedGet(identifier)
 }
 
 export async function getAccessTokenSignerCallback(
@@ -139,7 +139,7 @@ export async function getCredentialSignerCallback(
     const credential = args.credential as ICredential // TODO: SDJWT
     let proofFormat: ProofFormat
 
-    const resolution = await context.agent.identifierManagedLazyResult(idOpts)
+    const resolution = await context.agent.identifierManagedGet(idOpts)
     proofFormat = format?.includes('ld') ? 'lds' : 'jwt'
     if (!credential.issuer) {
       credential.issuer = { id: resolution.issuer ?? resolution.kmsKeyRef }
