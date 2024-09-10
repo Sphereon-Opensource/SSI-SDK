@@ -8,6 +8,7 @@ import { bytesToBase64 } from '@veramo/utils'
 import { createJWT, decodeJWT, JWTVerifyOptions, verifyJWT } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
 import { IIssuerOptions, IRequiredContext } from './types/IOID4VCIIssuer'
+import { SdJwtVcPayload } from '@sphereon/ssi-sdk.sd-jwt'
 
 export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOptions }, _context: IRequiredContext) {
   return async (args: { jwt: string; kid?: string }): Promise<JwtVerifyResult<DIDDocument>> => {
@@ -141,13 +142,14 @@ export async function getCredentialSignerCallback(
 
     const resolution = await context.agent.identifierManagedGet(idOpts)
     proofFormat = format?.includes('ld') ? 'lds' : 'jwt'
-    if (!credential.issuer) {
-      credential.issuer = { id: resolution.issuer ?? resolution.kmsKeyRef }
-    } else if (typeof credential.issuer === 'object' && !credential.issuer.id) {
-      credential.issuer.id = resolution.issuer ?? resolution.kmsKeyRef
-    }
+    const issuer = resolution.issuer ?? resolution.kmsKeyRef
 
     if (CredentialMapper.isW3cCredential(credential)) {
+      if (!credential.issuer) {
+        credential.issuer = { id: issuer }
+      } else if (typeof credential.issuer === 'object' && !credential.issuer.id) {
+        credential.issuer.id = issuer
+      }
       const subjectIsArray = Array.isArray(credential.credentialSubject)
       let credentialSubjects = Array.isArray(credential.credentialSubject) ? credential.credentialSubject : [credential.credentialSubject]
       credentialSubjects = credentialSubjects.map((subject) => {
@@ -166,9 +168,17 @@ export async function getCredentialSignerCallback(
         domain: typeof credential.issuer === 'object' ? credential.issuer.id : credential.issuer,
       })
       return (proofFormat === 'jwt' && 'jwt' in result.proof ? result.proof.jwt : result) as W3CVerifiableCredential
-    } else if (CredentialMapper.isSdJwtDecodedCredential(credential)) {
+    } else if (CredentialMapper.isSdJwtDecodedCredentialPayload(credential)) {
+      const sdJwtPayload = credential as SdJwtVcPayload
+      if (sdJwtPayload.iss === undefined) {
+        sdJwtPayload.iss = issuer
+      }
+      if (sdJwtPayload.iat === undefined) {
+        sdJwtPayload.iat = new Date().getTime() / 1000
+      }
+
       return await context.agent.createSdJwtVc({
-        credential,
+        sdJwtPayload,
         disclosureFrame: credential['_sd'],
       })
     } /*else if (CredentialMapper.isMsoMdocDecodedCredential(credential)) {
