@@ -12,7 +12,7 @@ import {
   MetadataDisplay,
   NotificationRequest,
 } from '@sphereon/oid4vci-common'
-import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   IIdentifierResolution,
   ManagedIdentifierMethod,
@@ -532,7 +532,7 @@ export type CreateIdentifierOpts = {
 }
 
 export type CreateIdentifierCreateOpts = {
-  kms?: KeyManagementSystemEnum
+  kms?: string
   alias?: string
   options?: IdentifierProviderOpts
 }
