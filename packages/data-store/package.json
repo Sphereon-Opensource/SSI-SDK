@@ -24,12 +24,14 @@
     "@veramo/core": "4.2.0",
     "@veramo/utils": "4.2.0",
     "blakejs": "^1.2.1",
+    "sha.js": "^2.4.11",
     "class-validator": "^0.14.1",
     "debug": "^4.3.5",
     "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "pg": "^8.12.0",
+    "@types/sha.js": "^2.4.4",
     "sqlite3": "^5.1.7"
   },
   "files": [

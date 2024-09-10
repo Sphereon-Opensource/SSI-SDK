@@ -177,10 +177,13 @@ export async function getCredentialSignerCallback(
         sdJwtPayload.iat = new Date().getTime() / 1000
       }
 
-      return await context.agent.createSdJwtVc({
-        sdJwtPayload,
-        disclosureFrame: credential['_sd'],
+      const result = await context.agent.createSdJwtVc({
+        credentialPayload: sdJwtPayload,
+        disclosureFrame: {
+          _sd: credential['_sd'],
+        },
       })
+      return result.credential
     } /*else if (CredentialMapper.isMsoMdocDecodedCredential(credential)) {
       TODO
     }*/

@@ -1,5 +1,4 @@
 import { IAgentPlugin } from '@veramo/core'
-import crypto from 'crypto'
 import {
   AddCredentialArgs,
   credentialIdOrHashFilter,
@@ -19,6 +18,8 @@ import {
 } from '../index'
 import { AbstractDigitalCredentialStore, DigitalCredential, parseRawDocument, UpdateCredentialStateArgs } from '@sphereon/ssi-sdk.data-store'
 import { IVerifiableCredential } from '@sphereon/ssi-types'
+import { defaultHasher } from '@sphereon/ssi-sdk.data-store'
+
 // Exposing the methods here for any REST implementation
 export const credentialStoreMethods: Array<string> = [
   'crsAddCredential',
@@ -59,7 +60,7 @@ export class CredentialStore implements IAgentPlugin {
 
   /** {@inheritDoc ICRManager.crmAddCredential} */
   private async crsAddCredential(args: AddCredentialArgs): Promise<DigitalCredential> {
-    return await this.store.addCredential({ ...args.credential, opts: { ...args.opts, hasher: args.opts?.hasher ?? this.generateDigest } })
+    return await this.store.addCredential({ ...args.credential, opts: { ...args.opts, hasher: args.opts?.hasher ?? defaultHasher } })
   }
 
   /** {@inheritDoc ICRManager.updateCredentialState} */
@@ -257,9 +258,5 @@ export class CredentialStore implements IAgentPlugin {
         {} as Record<string, UniqueDigitalCredential>,
       ),
     )
-  }
-
-  private generateDigest = (data: string, algorithm: string): Uint8Array => {
-    return new Uint8Array(crypto.createHash(algorithm).update(data).digest())
   }
 }

@@ -32,6 +32,7 @@ import {
   IVerifyResult,
   JoseSignatureAlgorithm,
   JoseSignatureAlgorithmString,
+  mdocDecodedCredentialToUniformCredential,
   OriginalVerifiableCredential,
   sdJwtDecodedCredentialToUniformCredential,
   SdJwtDecodedVerifiableCredential,
@@ -289,9 +290,23 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
     verifiableCredential as OriginalVerifiableCredential,
     { hasher },
   )
-  const uniformVerifiableCredential: IVerifiableCredential = CredentialMapper.isSdJwtDecodedCredential(wrappedVerifiableCredential.credential)
-    ? await sdJwtDecodedCredentialToUniformCredential(<SdJwtDecodedVerifiableCredential>wrappedVerifiableCredential.credential)
-    : <IVerifiableCredential>wrappedVerifiableCredential.credential
+  let uniformVerifiableCredential: IVerifiableCredential
+  if (CredentialMapper.isSdJwtDecodedCredential(wrappedVerifiableCredential.credential)) {
+    uniformVerifiableCredential = await sdJwtDecodedCredentialToUniformCredential(
+      <SdJwtDecodedVerifiableCredential>wrappedVerifiableCredential.credential,
+    )
+  } else if (CredentialMapper.isSdJwtEncoded(wrappedVerifiableCredential.credential)) {
+    if (!hasher) {
+      return Promise.reject('a hasher is required for encoded SD-JWT credentials')
+    }
+    const asyncHasher = (data: string, algorithm: string) => Promise.resolve(hasher(data, algorithm))
+    const decodedSdJwt = await CredentialMapper.decodeSdJwtVcAsync(wrappedVerifiableCredential.credential, asyncHasher)
+    uniformVerifiableCredential = sdJwtDecodedCredentialToUniformCredential(<SdJwtDecodedVerifiableCredential>decodedSdJwt)
+  } else if (CredentialMapper.isMsoMdocDecodedCredential(wrappedVerifiableCredential.credential)) {
+    uniformVerifiableCredential = mdocDecodedCredentialToUniformCredential(wrappedVerifiableCredential.credential)
+  } else {
+    uniformVerifiableCredential = <IVerifiableCredential>wrappedVerifiableCredential.credential
+  }
 
   const correlationId: string =
     typeof uniformVerifiableCredential.issuer === 'string'
