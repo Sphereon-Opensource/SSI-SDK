@@ -55,6 +55,24 @@ export function parseRawDocument(raw: string): OriginalVerifiableCredential | Or
   }
 }
 
+export function ensureRawDocument(input: string | object): string {
+  if (typeof input === 'string') {
+    if (isHex(input) || ObjectUtils.isBase64(input)) {
+      // mso_mdoc
+      return input
+    } else if (CredentialMapper.isJwtEncoded(input) || CredentialMapper.isSdJwtEncoded(input)) {
+      return input
+    }
+    throw Error('Unknown input to be mapped as rawDocument')
+  }
+
+  try {
+    return JSON.stringify(input)
+  } catch (e) {
+    throw new Error(`Can't stringify to a raw credential: ${input}`)
+  }
+}
+
 function determineCredentialDocumentFormat(documentFormat: DocumentFormat): CredentialDocumentFormat {
   switch (documentFormat) {
     case DocumentFormat.JSONLD:

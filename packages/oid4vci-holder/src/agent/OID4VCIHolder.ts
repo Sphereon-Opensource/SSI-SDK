@@ -35,6 +35,7 @@ import {
   IIssuerBranding,
   NonPersistedIdentity,
   Party,
+  ensureRawDocument,
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -780,10 +781,12 @@ export class OID4VCIHolder implements IAgentPlugin {
       logger.error(`More than 1 credential selected ${selectedCredentials.join(', ')}, but current service only stores 1 credential!`)
     }
 
-    if (args.issuanceOpt && (!args.issuanceOpt.identifier || !args.issuanceOpt.identifier.kmsKeyRef || !args.issuanceOpt.identifier.method)) {
+    // TODO determine when and how we should store credentials without key kmsKeyRef & id method), this should be tested with the code below
+    const issuanceOpt = args.issuanceOpt ?? mappedCredentialToAccept.credentialToAccept.issuanceOpt
+    if (!issuanceOpt || !issuanceOpt.identifier || !issuanceOpt.identifier.kmsKeyRef || !issuanceOpt.identifier.method) {
       return Promise.reject(Error('issuanceOpt.identifier and identifier.kmsKeyRef / method must me set'))
     }
-    const identifier = args.issuanceOpt?.identifier
+    const identifier = issuanceOpt?.identifier
 
     let persist = true
     const verifiableCredential = mappedCredentialToAccept.uniformVerifiableCredential as VerifiableCredential
@@ -927,7 +930,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       const issuer = CredentialMapper.issuerCorrelationIdFromIssuerType(verifiableCredential.issuer)
       const persistedCredential = await context.agent.crsAddCredential({
         credential: {
-          rawDocument: JSON.stringify(persistCredential),
+          rawDocument: ensureRawDocument(persistCredential),
           kmsKeyRef: identifier?.kmsKeyRef,
           identifierMethod: identifier?.method,
           credentialRole: CredentialRole.HOLDER,
