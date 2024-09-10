@@ -59,7 +59,7 @@ import { OID4VCIMachine } from '../machine/oid4vciMachine'
 import {
   AddContactIdentityArgs,
   AddIssuerBrandingArgs,
-  AssertValidCredentialsArgs,
+  AssertValidCredentialsArgs, Attribute,
   createCredentialsToSelectFromArgs,
   CredentialToAccept,
   CredentialToSelectFromResult,
@@ -84,7 +84,7 @@ import {
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
-  VerificationResult, VerifyCredentialIssuerArgs, VerifyCredentialIssuerResult,
+  VerificationResult, VerifyEBSICredentialIssuerArgs, VerifyEBSICredentialIssuerResult,
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -190,12 +190,28 @@ export function signCallback(
   }
 }
 
-export async function verifyCredentialIssuer(args: VerifyCredentialIssuerArgs): Promise<VerifyCredentialIssuerResult> {
+export async function verifyEBSICredentialIssuer(args: VerifyEBSICredentialIssuerArgs): Promise<VerifyEBSICredentialIssuerResult | undefined> {
   const { wrappedVc } = args
 
-  const vc = wrappedVc.decoded?.iss ?? (typeof wrappedVc.decoded?.vc?.issuer === 'string' ? wrappedVc.decoded?.vc?.issuer : wrappedVc.decoded?.vc?.issuer?.existingInstanceId)
-  const url = `https://api-conformance.ebsi.eu/trusted-issuers-registry/v4/issuers/${vc.issuer}`;
-  return await (await fetch(url)).json()
+  const issuer = wrappedVc.decoded?.iss ?? (typeof wrappedVc.decoded?.vc?.issuer === 'string' ? wrappedVc.decoded?.vc?.issuer : wrappedVc.decoded?.vc?.issuer?.existingInstanceId)
+
+  if (!issuer) {
+    return
+  }
+
+  const url = `https://api-conformance.ebsi.eu/trusted-issuers-registry/v4/issuers/${issuer}`;
+  const response = await fetch(url)
+  if (response.status !== 200) {
+    return
+  }
+
+  const payload = await response.json()
+
+  if (!payload.attributes.some((a: Attribute) => ['RootTAO', 'TAO', 'TI'].includes(a.issuerType))) {
+   return
+  }
+
+  return payload
 }
 
 export class OID4VCIHolder implements IAgentPlugin {
@@ -244,14 +260,14 @@ export class OID4VCIHolder implements IAgentPlugin {
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
-  private readonly onVerifyIssuerType?: (args: VerifyCredentialIssuerArgs) => Promise<VerifyCredentialIssuerResult>
+  private readonly onVerifyEBSICredentialIssuer?: (args: VerifyEBSICredentialIssuerArgs) => Promise<VerifyEBSICredentialIssuerResult>
 
   constructor(options?: OID4VCIHolderOptions) {
     const {
       onContactIdentityCreated,
       onCredentialStored,
       onIdentifierCreated,
-      onVerifyIssuerType,
+      onVerifyEBSICredentialIssuer,
       vcFormatPreferences,
       jsonldCryptographicSuitePreferences,
       didMethodPreferences,
@@ -277,7 +293,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     this.onContactIdentityCreated = onContactIdentityCreated
     this.onCredentialStored = onCredentialStored
     this.onIdentifierCreated = onIdentifierCreated
-    this.onVerifyIssuerType = onVerifyIssuerType
+    this.onVerifyEBSICredentialIssuer = onVerifyEBSICredentialIssuer
   }
 
   public async onEvent(event: any, context: RequiredContext): Promise<void> {
@@ -757,7 +773,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       credentialsToAccept.map((credentialToAccept) =>
         verifyCredentialToAccept({
           mappedCredential: credentialToAccept,
-          onVerifyIssuerType: this.onVerifyIssuerType,
+          onVerifyEBSICredentialIssuer: this.onVerifyEBSICredentialIssuer,
           context,
         }),
       ),

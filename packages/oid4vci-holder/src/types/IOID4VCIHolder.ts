@@ -76,7 +76,7 @@ export type OID4VCIHolderOptions = {
   onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
   onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
-  onVerifyIssuerType?: (args: VerifyCredentialIssuerArgs) => Promise<VerifyCredentialIssuerResult>
+  onVerifyEBSICredentialIssuer?: (args: VerifyEBSICredentialIssuerArgs) => Promise<VerifyEBSICredentialIssuerResult>
   vcFormatPreferences?: Array<string>
   jsonldCryptographicSuitePreferences?: Array<string>
   defaultAuthorizationRequestOptions?: AuthorizationRequestOpts
@@ -165,7 +165,7 @@ export enum SupportedLanguage {
 
 export type VerifyCredentialToAcceptArgs = {
   mappedCredential: MappedCredentialToAccept
-  onVerifyIssuerType?: (args: VerifyCredentialIssuerArgs) => Promise<VerifyCredentialIssuerResult>
+  onVerifyEBSICredentialIssuer?: (args: VerifyEBSICredentialIssuerArgs) => Promise<VerifyEBSICredentialIssuerResult>
   hasher?: Hasher
   context: RequiredContext
 }
@@ -607,7 +607,7 @@ export type RequiredContext = IAgentContext<
 
 export type IssuerType = 'RootTAO' | 'TAO' | 'TI' | 'Revoked or Undefined'
 
-export type VerifyCredentialIssuerArgs = {
+export type VerifyEBSICredentialIssuerArgs = {
   wrappedVc: WrappedVerifiableCredential
 }
 
@@ -619,7 +619,7 @@ export type Attribute = {
   rootTao: string
 }
 
-export type VerifyCredentialIssuerResult = {
+export type VerifyEBSICredentialIssuerResult = {
   did: string
   attributes: Attribute[]
 }

@@ -119,7 +119,7 @@ export const selectCredentialLocaleBranding = async (
 }
 
 export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<VerificationResult> => {
-  const { mappedCredential, hasher, onVerifyIssuerType, context } = args
+  const { mappedCredential, hasher, onVerifyEBSICredentialIssuer, context } = args
 
   const credential = mappedCredential.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
   if (!credential) {
@@ -139,12 +139,12 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
     }
   }
 
-  if (onVerifyIssuerType) {
-    const issuer = await onVerifyIssuerType({
+  if (onVerifyEBSICredentialIssuer) {
+    const response = await onVerifyEBSICredentialIssuer({
       wrappedVc: wrappedVC
     })
-    if (!issuer.attributes.some(a => ['RootTAO', 'TAO'].includes(a.issuerType))) {
-      throw Error('Credential must be issued by a Root TAO or TAO')
+    if (!response) {
+      return Promise.reject(Error('The issuer of the EBSI credential cannot be trusted.'))
     }
   }
 
