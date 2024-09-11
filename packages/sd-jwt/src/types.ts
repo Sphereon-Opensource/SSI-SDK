@@ -228,7 +228,8 @@ export interface Claims {
    */
   sub?: string
   cnf?: {
-    jwk: JsonWebKey
+    jwk?: JsonWebKey
+    kid?: string
   }
 
   [key: string]: unknown

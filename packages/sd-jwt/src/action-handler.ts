@@ -103,7 +103,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     if (!issuer) {
       throw new Error('credential.issuer must not be empty')
     }
-    const { alg, signer } = await this.getSignerForIdentifier({ identifier: issuer }, context)
+    const { alg, signer, signingKey } = await this.getSignerForIdentifier({ identifier: issuer }, context)
     const sdjwt = new SDJwtVcInstance({
       signer,
       hasher: this.registeredImplementations.hasher,
@@ -112,7 +112,11 @@ export class SDJwtPlugin implements IAgentPlugin {
       hashAlg: 'SHA-256',
     })
 
-    const credential = await sdjwt.issue(args.credentialPayload, args.disclosureFrame as DisclosureFrame<typeof args.credentialPayload>)
+    const credential = await sdjwt.issue(args.credentialPayload, args.disclosureFrame as DisclosureFrame<typeof args.credentialPayload>, {
+      header: {
+        ...(signingKey?.key.kmsKeyRef !== undefined && { kid: signingKey.key.kmsKeyRef }),
+      },
+    })
     return { credential }
   }
 
@@ -175,6 +179,8 @@ export class SDJwtPlugin implements IAgentPlugin {
     } else if (claims.cnf?.jwk) {
       const jwk = claims.cnf.jwk
       holder = calculateJwkThumbprint({ jwk: jwk as JWK })
+    } else if (claims.cnf?.kid) {
+      holder = claims.cnf?.kid
     } else if (claims.sub) {
       holder = claims.sub as string
     } else {
@@ -238,21 +244,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     const issuer: string = ((decodedVC.jwt as Jwt).payload as Record<string, unknown>).iss as string
     const header = (decodedVC.jwt as Jwt).header as Record<string, any>
     const x5c: string[] | undefined = header?.x5c as string[]
-    let jwk: JWK | JsonWebKey | undefined = undefined
-    if (issuer.includes('did:')) {
-      const didDoc = await context.agent.resolveDid({ didUrl: issuer })
-      if (!didDoc) {
-        throw new Error('invalid_issuer: issuer did not resolve to a did document')
-      }
-      //TODO SDK-20: This should be checking for an assertionMethod and not just an verificationMethod with an id
-      const didDocumentKey = didDoc.didDocument?.verificationMethod?.find((key) => key.id)
-      if (!didDocumentKey) {
-        throw new Error('invalid_issuer: issuer did document does not include referenced key')
-      }
-      //FIXME SDK-21: in case it's another did method, the value of the key can be also encoded as a base64url
-      // needs more checks. some DID methods do not expose the keys as publicKeyJwk
-      jwk = didDocumentKey.publicKeyJwk as JsonWebKey
-    }
+    let jwk: JWK | JsonWebKey | undefined = header.jwk
     if (x5c) {
       const trustAnchors = new Set<string>([...this.trustAnchorsInPEM])
       if (trustAnchors.size === 0) {
@@ -270,6 +262,36 @@ export class SDJwtPlugin implements IAgentPlugin {
       jwk = certInfo.publicKeyJWK as JWK
     }
 
+    if (!jwk && header.kid?.includes('did:')) {
+      const didDoc = await context.agent.resolveDid({ didUrl: header.kid })
+      if (!didDoc) {
+        throw new Error('invalid_issuer: issuer did not resolve to a did document')
+      }
+      //TODO SDK-20: This should be checking for an assertionMethod and not just an verificationMethod with an id
+      const didDocumentKey = didDoc.didDocument?.verificationMethod?.find((key) => key.id)
+      if (!didDocumentKey) {
+        throw new Error('invalid_issuer: issuer did document does not include referenced key')
+      }
+      //FIXME SDK-21: in case it's another did method, the value of the key can be also encoded as a base64url
+      // needs more checks. some DID methods do not expose the keys as publicKeyJwk
+      jwk = didDocumentKey.publicKeyJwk as JsonWebKey
+    }
+
+    if (!jwk && issuer.includes('did:')) {
+      // TODO refactor
+      const didDoc = await context.agent.resolveDid({ didUrl: issuer })
+      if (!didDoc) {
+        throw new Error('invalid_issuer: issuer did not resolve to a did document')
+      }
+      //TODO SDK-20: This should be checking for an assertionMethod and not just an verificationMethod with an id
+      const didDocumentKey = didDoc.didDocument?.verificationMethod?.find((key) => key.id)
+      if (!didDocumentKey) {
+        throw new Error('invalid_issuer: issuer did document does not include referenced key')
+      }
+      //FIXME SDK-21: in case it's another did method, the value of the key can be also encoded as a base64url
+      // needs more checks. some DID methods do not expose the keys as publicKeyJwk
+      jwk = didDocumentKey.publicKeyJwk as JsonWebKey
+    }
     if (!jwk) {
       throw new Error('No valid public key found for signature verification')
     }
