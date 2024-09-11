@@ -196,19 +196,19 @@ export async function verifyEBSICredentialIssuer(args: VerifyEBSICredentialIssue
   const issuer = wrappedVc.decoded?.iss ?? (typeof wrappedVc.decoded?.vc?.issuer === 'string' ? wrappedVc.decoded?.vc?.issuer : wrappedVc.decoded?.vc?.issuer?.existingInstanceId)
 
   if (!issuer) {
-    return
+    return Promise.reject(undefined)
   }
 
   const url = `https://api-conformance.ebsi.eu/trusted-issuers-registry/v4/issuers/${issuer}`;
   const response = await fetch(url)
   if (response.status !== 200) {
-    return
+    return Promise.reject(undefined)
   }
 
   const payload = await response.json()
 
   if (!payload.attributes.some((a: Attribute) => ['RootTAO', 'TAO', 'TI'].includes(a.issuerType))) {
-   return
+   return Promise.reject(undefined)
   }
 
   return payload
