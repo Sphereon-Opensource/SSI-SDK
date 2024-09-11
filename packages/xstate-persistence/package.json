@@ -17,6 +17,7 @@
   "dependencies": {
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@veramo/core": "4.2.0",
+    "debug": "^4.3.5",
     "uuid": "^9.0.1",
     "xstate": "^4.38.3"
   },
