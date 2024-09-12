@@ -166,7 +166,7 @@ export class OID4VP {
       context: this.session.context,
       domain: proofOptions.domain,
       challenge: proofOptions.challenge,
-      format: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format,
+      fallbackFormat: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format,
       skipDidResolution: opts?.skipDidResolution ?? false,
     })
     const identifier: ManagedIdentifierResult = await this.session.context.agent.identifierManagedGet(idOpts)

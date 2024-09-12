@@ -19,7 +19,7 @@ export async function createOID4VPPresentationSignCallback({
   domain,
   fetchRemoteContexts,
   challenge,
-  format,
+  fallbackFormat,
   context,
   skipDidResolution,
 }: {
@@ -29,7 +29,7 @@ export async function createOID4VPPresentationSignCallback({
   challenge?: string
   fetchRemoteContexts?: boolean
   skipDidResolution?: boolean
-  format?: Format
+  fallbackFormat?: Format
   context: IRequiredContext
 }): Promise<PresentationSignCallback> {
   if (typeof presentationSignCallback === 'function') {
@@ -42,7 +42,7 @@ export async function createOID4VPPresentationSignCallback({
       fetchRemoteContexts,
       domain,
       challenge,
-      format,
+      fallbackFormat: fallbackFormat,
       skipDidResolution,
     },
     context,
