@@ -59,7 +59,7 @@ import { OID4VCIMachine } from '../machine/oid4vciMachine'
 import {
   AddContactIdentityArgs,
   AddIssuerBrandingArgs,
-  AssertValidCredentialsArgs,
+  AssertValidCredentialsArgs, Attribute,
   createCredentialsToSelectFromArgs,
   CredentialToAccept,
   CredentialToSelectFromResult,
@@ -84,7 +84,7 @@ import {
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
-  VerificationResult,
+  VerificationResult, VerifyEBSICredentialIssuerArgs, VerifyEBSICredentialIssuerResult,
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -97,6 +97,7 @@ import {
   verifyCredentialToAccept,
 } from './OID4VCIHolderService'
 
+import 'cross-fetch/polyfill'
 /**
  * {@inheritDoc IOID4VCIHolder}
  */
@@ -189,6 +190,30 @@ export function signCallback(
   }
 }
 
+export async function verifyEBSICredentialIssuer(args: VerifyEBSICredentialIssuerArgs): Promise<VerifyEBSICredentialIssuerResult> {
+  const { wrappedVc, issuerType = ['TI'] } = args
+
+  const issuer = wrappedVc.decoded?.iss ?? (typeof wrappedVc.decoded?.vc?.issuer === 'string' ? wrappedVc.decoded?.vc?.issuer : wrappedVc.decoded?.vc?.issuer?.existingInstanceId)
+
+  if (!issuer) {
+    throw Error("The issuer of the VC is required to be present")
+  }
+
+  const url = `https://api-conformance.ebsi.eu/trusted-issuers-registry/v4/issuers/${issuer}`;
+  const response = await fetch(url)
+  if (response.status !== 200) {
+    throw Error('The issuer of the VC cannot be trusted')
+  }
+
+  const payload = await response.json()
+
+  if (!payload.attributes.some((a: Attribute) => issuerType.includes(a.issuerType))) {
+   throw Error(`The issuer type is required to be one of: ${issuerType.join(', ')}`)
+  }
+
+  return payload
+}
+
 export class OID4VCIHolder implements IAgentPlugin {
   readonly eventTypes: Array<OID4VCIHolderEvent> = [
     OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED,
@@ -235,12 +260,14 @@ export class OID4VCIHolder implements IAgentPlugin {
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
+  private readonly onVerifyEBSICredentialIssuer?: (args: VerifyEBSICredentialIssuerArgs) => Promise<VerifyEBSICredentialIssuerResult>
 
   constructor(options?: OID4VCIHolderOptions) {
     const {
       onContactIdentityCreated,
       onCredentialStored,
       onIdentifierCreated,
+      onVerifyEBSICredentialIssuer,
       vcFormatPreferences,
       jsonldCryptographicSuitePreferences,
       didMethodPreferences,
@@ -266,6 +293,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     this.onContactIdentityCreated = onContactIdentityCreated
     this.onCredentialStored = onCredentialStored
     this.onIdentifierCreated = onIdentifierCreated
+    this.onVerifyEBSICredentialIssuer = onVerifyEBSICredentialIssuer
   }
 
   public async onEvent(event: any, context: RequiredContext): Promise<void> {
@@ -745,6 +773,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       credentialsToAccept.map((credentialToAccept) =>
         verifyCredentialToAccept({
           mappedCredential: credentialToAccept,
+          onVerifyEBSICredentialIssuer: this.onVerifyEBSICredentialIssuer,
           context,
         }),
       ),
