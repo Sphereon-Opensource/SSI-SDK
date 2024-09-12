@@ -196,7 +196,7 @@ export async function verifyEBSICredentialIssuer(args: VerifyEBSICredentialIssue
   const issuer = wrappedVc.decoded?.iss ?? (typeof wrappedVc.decoded?.vc?.issuer === 'string' ? wrappedVc.decoded?.vc?.issuer : wrappedVc.decoded?.vc?.issuer?.existingInstanceId)
 
   if (!issuer) {
-    return Promise.reject(undefined)
+    return Promise.reject(Error("The issuer of the VC is required"))
   }
 
   const url = `https://api-conformance.ebsi.eu/trusted-issuers-registry/v4/issuers/${issuer}`;
