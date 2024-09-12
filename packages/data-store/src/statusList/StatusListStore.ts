@@ -29,10 +29,10 @@ export class StatusListStore implements IStatusListStore {
   }
 
   /**
-   * Get's the available status list indices from the provided indices. Meaning it will filter out any index that is already known.
+   * Gets the available status list indices from the provided indices. Meaning it will filter out any index that is already known.
    *
    * The idea is that the caller provides a set of random status list indices. We can relatively easy check against the DB in an optimized way.
-   * If the status list is large it is probably best ot also provide at least a good number of indices. So something like 10 or 20 values.
+   * If the status list is large it is probably best to also provide at least a good number of indices. So something like 10 or 20 values.
    * Callers are also expected to call this function multiple times if it does not yield results
    *
    * @param args
@@ -224,7 +224,7 @@ export class StatusListStore implements IStatusListStore {
   }
 
   private async getDS(): Promise<DataSource> {
-    return await this._dbConnection
+    return this._dbConnection
   }
 
   async getStatusListRepo(): Promise<Repository<StatusListEntity>> {

@@ -2,7 +2,7 @@ import { checkAuth, sendErrorResponse } from '@sphereon/ssi-express-support'
 import {
   checkStatusIndexFromStatusListCredential,
   createNewStatusList,
-  CreateNewStatusListArgs,
+  CreateNewStatusListFuncArgs,
   updateStatusIndexFromStatusListCredential,
 } from '@sphereon/ssi-sdk.vc-status-list'
 import { getDriver, IRequiredContext } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
@@ -21,7 +21,7 @@ export function createNewStatusListEndpoint(router: Router, context: IRequiredCo
 
   router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
-      const statusListArgs: CreateNewStatusListArgs = request.body.statusList
+      const statusListArgs: CreateNewStatusListFuncArgs = request.body.statusList
       if (!statusListArgs) {
         return sendErrorResponse(response, 400, 'No statusList details supplied')
       }

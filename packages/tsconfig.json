@@ -17,6 +17,7 @@
     { "path": "ms-request-api" },
     { "path": "vc-status-list" },
     { "path": "vc-status-list-issuer-drivers" },
+    { "path": "vc-status-list-issuer" },
     { "path": "vc-status-list-issuer-rest-api" },
     { "path": "vc-handler-ld-local" },
     { "path": "presentation-exchange" },

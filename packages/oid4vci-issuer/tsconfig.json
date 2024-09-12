@@ -11,6 +11,9 @@
       "path": "../oid4vci-issuer-store"
     },
     {
+      "path": "../agent-config"
+    },
+    {
       "path": "../ssi-types"
     },
     {
@@ -18,6 +21,9 @@
     },
     {
       "path": "../kv-store"
+    },
+    {
+      "path": "../vc-status-list-issuer"
     }
   ]
 }

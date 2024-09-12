@@ -1126,6 +1126,9 @@ importers:
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.24.1-next.96
         version: 0.24.1-next.96(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1135,6 +1138,12 @@ importers:
       '@sphereon/ssi-sdk.oid4vci-issuer-store':
         specifier: workspace:*
         version: link:../oid4vci-issuer-store
+      '@sphereon/ssi-sdk.vc-status-list':
+        specifier: workspace:*
+        version: link:../vc-status-list
+      '@sphereon/ssi-sdk.vc-status-list-issuer':
+        specifier: workspace:*
+        version: link:../vc-status-list-issuer
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -2721,9 +2730,6 @@ importers:
       '@sphereon/ssi-sdk.vc-status-list':
         specifier: workspace:*
         version: link:../vc-status-list
-      '@sphereon/ssi-sdk.vc-status-list-issuer-drivers':
-        specifier: workspace:*
-        version: link:../vc-status-list-issuer-drivers
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -2911,6 +2917,9 @@ importers:
       debug:
         specifier: ^4.3.5
         version: 4.3.6
+      typeorm:
+        specifier: ^0.3.20
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       uint8arrays:
         specifier: ^3.1.1
         version: 3.1.1
@@ -2927,6 +2936,139 @@ importers:
       '@babel/preset-typescript':
         specifier: ^7.24.7
         version: 7.24.7(@babel/core@7.25.2)
+      typescript:
+        specifier: 5.4.2
+        version: 5.4.2
+
+  packages/vc-status-list-issuer:
+    dependencies:
+      '@sphereon/ssi-sdk-ext.did-utils':
+        specifier: 0.24.1-next.96
+        version: 0.24.1-next.96(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution':
+        specifier: 0.24.1-next.96
+        version: 0.24.1-next.96(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core':
+        specifier: workspace:*
+        version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.vc-status-list':
+        specifier: workspace:*
+        version: link:../vc-status-list
+      '@sphereon/ssi-sdk.vc-status-list-issuer-drivers':
+        specifier: workspace:*
+        version: link:../vc-status-list-issuer-drivers
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+      '@sphereon/vc-status-list':
+        specifier: 7.0.0-next.0
+        version: 7.0.0-next.0(expo@51.0.29)(react-native@0.75.2)
+      '@veramo/core':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      debug:
+        specifier: ^4.3.5
+        version: 4.3.6
+      express:
+        specifier: ^4.19.2
+        version: 4.19.2
+      reflect-metadata:
+        specifier: ^0.1.14
+        version: 0.1.14
+      typeorm:
+        specifier: ^0.3.20
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      uint8arrays:
+        specifier: ^3.1.1
+        version: 3.1.1
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
+    devDependencies:
+      '@sphereon/did-uni-client':
+        specifier: ^0.6.3
+        version: 0.6.3
+      '@sphereon/ssi-sdk-ext.did-provider-jwk':
+        specifier: 0.24.1-next.96
+        version: 0.24.1-next.96(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-resolver-jwk':
+        specifier: 0.24.1-next.96
+        version: 0.24.1-next.96
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
+      '@sphereon/ssi-sdk.data-store':
+        specifier: workspace:*
+        version: link:../data-store
+      '@sphereon/ssi-sdk.vc-handler-ld-local':
+        specifier: workspace:*
+        version: link:../vc-handler-ld-local
+      '@types/body-parser':
+        specifier: ^1.19.5
+        version: 1.19.5
+      '@types/cookie-parser':
+        specifier: ^1.4.7
+        version: 1.4.7
+      '@types/cors':
+        specifier: ^2.8.17
+        version: 2.8.17
+      '@types/debug':
+        specifier: ^4.1.12
+        version: 4.1.12
+      '@types/dotenv-flow':
+        specifier: ^3.3.3
+        version: 3.3.3
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.21
+      '@types/express-http-proxy':
+        specifier: ^1.6.6
+        version: 1.6.6
+      '@types/morgan':
+        specifier: ^1.9.9
+        version: 1.9.9
+      '@types/node':
+        specifier: ^18.19.41
+        version: 18.19.45
+      '@types/passport':
+        specifier: ^1.0.16
+        version: 1.0.16
+      '@types/uuid':
+        specifier: ^9.0.8
+        version: 9.0.8
+      '@veramo/credential-w3c':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(expo@51.0.29)(react-native@0.75.2)
+      '@veramo/data-store':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@veramo/did-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-provider-key':
+        specifier: 4.2.0
+        version: 4.2.0(expo@51.0.29)(react-native@0.75.2)
+      '@veramo/did-provider-web':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-resolver':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/key-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/kms-local':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/utils':
+        specifier: 4.2.0
+        version: 4.2.0
+      did-resolver:
+        specifier: ^4.1.0
+        version: 4.1.0
+      morgan:
+        specifier: ^1.10.0
+        version: 1.10.0
       typescript:
         specifier: 5.4.2
         version: 5.4.2
@@ -3127,6 +3269,9 @@ importers:
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -3139,6 +3284,12 @@ importers:
       '@sphereon/ssi-sdk.presentation-exchange':
         specifier: workspace:*
         version: link:../presentation-exchange
+      '@sphereon/ssi-sdk.vc-status-list':
+        specifier: workspace:*
+        version: link:../vc-status-list
+      '@sphereon/ssi-sdk.vc-status-list-issuer':
+        specifier: workspace:*
+        version: link:../vc-status-list-issuer
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -3194,9 +3345,6 @@ importers:
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.24.1-next.96
         version: 0.24.1-next.96(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
-        version: link:../agent-config
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -6419,7 +6567,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 18.19.45
+      '@types/node': 20.16.1
       jest-mock: 27.5.1
     dev: true
 
@@ -6455,7 +6603,7 @@ packages:
     dependencies:
       '@jest/types': 27.5.1
       '@sinonjs/fake-timers': 8.1.0
-      '@types/node': 18.19.45
+      '@types/node': 20.16.1
       jest-message-util: 27.5.1
       jest-mock: 27.5.1
       jest-util: 27.5.1
@@ -6705,7 +6853,7 @@ packages:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 18.19.45
+      '@types/node': 20.16.1
       '@types/yargs': 16.0.9
       chalk: 4.1.2
     dev: true
@@ -9786,7 +9934,7 @@ packages:
   /@types/accepts@1.3.7:
     resolution: {integrity: sha512-Pay9fq2lM2wXPWbteBsRAGiWH2hig4ZE2asK+mm7kUzlxRTfL961rj89I6zV/E3PcIkDqyuBEcMxFT7rccugeQ==}
     dependencies:
-      '@types/node': 18.19.45
+      '@types/node': 20.16.1
     dev: true
 
   /@types/argparse@1.0.38:
@@ -9841,7 +9989,7 @@ packages:
   /@types/connect@3.4.38:
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
     dependencies:
-      '@types/node': 18.19.45
+      '@types/node': 20.16.1
     dev: true
 
   /@types/content-disposition@0.5.8:
@@ -9867,7 +10015,7 @@ packages:
       '@types/connect': 3.4.38
       '@types/express': 4.17.21
       '@types/keygrip': 1.0.6
-      '@types/node': 18.19.45
+      '@types/node': 20.16.1
     dev: true
 
   /@types/cors@2.8.17:
@@ -10030,7 +10178,7 @@ packages:
       '@types/http-errors': 2.0.4
       '@types/keygrip': 1.0.6
       '@types/koa-compose': 3.2.8
-      '@types/node': 18.19.45
+      '@types/node': 20.16.1
     dev: true
 
   /@types/lodash.memoize@4.1.9:
@@ -10177,7 +10325,7 @@ packages:
     resolution: {integrity: sha512-W8Ym+h8nhuRwaKPaDw34QUkwsGi6Rc4yYqvKFo5rm2FUEhCFbzVWrxXUxuKK8TASjWsysJY0nsmNCGhCOIsrOw==}
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 18.19.45
+      '@types/node': 20.16.1
       '@types/send': 0.17.4
     dev: true
 
@@ -16715,7 +16863,7 @@ packages:
       '@jest/environment': 27.5.1
       '@jest/fake-timers': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 18.19.45
+      '@types/node': 20.16.1
       jest-mock: 27.5.1
       jest-util: 27.5.1
       jsdom: 16.7.0
@@ -16901,7 +17049,7 @@ packages:
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
       '@jest/types': 27.5.1
-      '@types/node': 18.19.45
+      '@types/node': 20.16.1
     dev: true
 
   /jest-mock@29.7.0:
@@ -17190,7 +17338,7 @@ packages:
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
       '@jest/types': 27.5.1
-      '@types/node': 18.19.45
+      '@types/node': 20.16.1
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -19777,7 +19925,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       bl: 4.1.0
-      chalk: 4.1.0
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       is-interactive: 1.0.0

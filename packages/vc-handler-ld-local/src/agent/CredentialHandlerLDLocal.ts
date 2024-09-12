@@ -129,7 +129,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
           key: managedKey ?? signingKey, // todo: signingKey does not have the private key, so would never work
           verificationMethodId: verificationMethodId ?? (verificationMethod as string),
           purpose: args.purpose,
-          credentialStatusOpts: args.credentialStatusOpts,
+          // credentialStatusOpts: args.credentialStatusOpts,
         },
         context,
       )

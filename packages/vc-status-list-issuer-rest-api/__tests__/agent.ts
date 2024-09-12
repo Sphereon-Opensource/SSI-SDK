@@ -1,13 +1,13 @@
 import { ExpressBuilder } from '@sphereon/ssi-express-support'
 import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
 import { getDidJwkResolver } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
+import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import {
   CredentialHandlerLDLocal,
   ICredentialHandlerLDLocal,
   LdDefaultContexts,
   MethodNames,
-  SphereonBbsBlsSignature2020,
   SphereonEcdsaSecp256k1RecoverySignature2020,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
@@ -66,7 +66,7 @@ const dbConnection = DataSources.singleInstance()
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
 const agent: TAgent<IRequiredPlugins> = createAgent<
-  IDIDManager & IKeyManager & IDataStoreORM & IResolver & ICredentialHandlerLDLocal & ICredentialPlugin
+  IDIDManager & IKeyManager & IDataStoreORM & IResolver & ICredentialHandlerLDLocal & ICredentialPlugin & IIdentifierResolution
 >({
   plugins: [
     new DataStore(dbConnection),
@@ -85,13 +85,13 @@ const agent: TAgent<IRequiredPlugins> = createAgent<
     new DIDResolverPlugin({
       resolver,
     }),
+    new IdentifierResolution({crypto: global.crypto}),
     new CredentialPlugin(),
     new CredentialHandlerLDLocal({
       contextMaps: [LdDefaultContexts],
       suites: [
         new SphereonEd25519Signature2018(),
         new SphereonEd25519Signature2020(),
-        new SphereonBbsBlsSignature2020(),
         new SphereonJsonWebSignature2020(),
         new SphereonEcdsaSecp256k1RecoverySignature2020(),
       ],

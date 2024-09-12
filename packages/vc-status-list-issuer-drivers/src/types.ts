@@ -30,7 +30,7 @@ export type IRequiredPlugins = IDataStoreORM &
   IResolver
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
-export interface Driver {
+export interface IStatusListDriver {
   statusListStore: StatusListStore
 
   getType(): StatusListDriverType

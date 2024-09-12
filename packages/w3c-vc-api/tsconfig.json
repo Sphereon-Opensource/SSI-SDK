@@ -33,6 +33,9 @@
     },
     {
       "path": "../kv-store"
+    },
+    {
+      "path": "../vc-status-list-issuer"
     }
   ],
   "extends": "../tsconfig-base.json"

@@ -1,7 +1,10 @@
 import { CredentialRequest, IssuerMetadata, Jwt, JwtVerifyResult, OID4VCICredentialFormat } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
-import { getManagedIdentifier, legacyKeyRefsToIdentifierOpts, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { getManagedIdentifier, legacyKeyRefsToIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution/dist/types'
+import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
+import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { DIDDocument, ProofFormat } from '@veramo/core'
 import { CredentialPayload } from '@veramo/core/src/types/vc-data-model'
@@ -156,6 +159,15 @@ export async function getCredentialSignerCallback(
       return subject
     })
     credential.credentialSubject = subjectIsArray ? credentialSubjects : credentialSubjects[0]
+
+    // TODO: We should extend the plugin capabilities of issuance so we do not have to tuck this into the sign callback
+    if (contextHasPlugin<IStatusListPlugin>(context, 'slHandleCredentialStatus')) {
+      // Add status list if enabled (and when the input has a credentialStatus object (can be empty))
+      const credentialStatusVC = await context.agent.slAddStatusToCredential({credential})
+      if (credentialStatusVC.credentialStatus) {
+        credential.credentialStatus = credentialStatusVC.credentialStatus
+      }
+    }
 
     const result = await context.agent.createVerifiableCredential({
       credential: credential as CredentialPayload,
