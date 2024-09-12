@@ -135,16 +135,17 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
   ) {
     // TODO: Skipping VC validation for EBSI conformance issued credential, as their Issuer is not present in the ledger (sigh)
     if (JSON.stringify(wrappedVC.decoded).includes('vc:ebsi:conformance')) {
-      return { source: wrappedVC, error: undefined, result: true, subResults: [] } satisfies VerificationResult
+      return {source: wrappedVC, error: undefined, result: true, subResults: []} satisfies VerificationResult
     }
-  }
 
-  if (onVerifyEBSICredentialIssuer) {
-    const response = await onVerifyEBSICredentialIssuer({
-      wrappedVc: wrappedVC
-    })
-    if (!response) {
-      return Promise.reject(Error('The issuer of the EBSI credential cannot be trusted.'))
+    if (onVerifyEBSICredentialIssuer) {
+      try {
+        await onVerifyEBSICredentialIssuer({
+          wrappedVc: wrappedVC
+        })
+      } catch(e) {
+        return {source: wrappedVC, error: e.message, result: true, subResults: []} satisfies VerificationResult
+      }
     }
   }
 

@@ -608,7 +608,8 @@ export type RequiredContext = IAgentContext<
 export type IssuerType = 'RootTAO' | 'TAO' | 'TI' | 'Revoked or Undefined'
 
 export type VerifyEBSICredentialIssuerArgs = {
-  wrappedVc: WrappedVerifiableCredential
+  wrappedVc: WrappedVerifiableCredential,
+  issuerType?: IssuerType[]
 }
 
 export type Attribute = {

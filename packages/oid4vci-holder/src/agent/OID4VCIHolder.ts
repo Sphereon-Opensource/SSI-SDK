@@ -190,25 +190,25 @@ export function signCallback(
   }
 }
 
-export async function verifyEBSICredentialIssuer(args: VerifyEBSICredentialIssuerArgs): Promise<VerifyEBSICredentialIssuerResult | undefined> {
-  const { wrappedVc } = args
+export async function verifyEBSICredentialIssuer(args: VerifyEBSICredentialIssuerArgs): Promise<VerifyEBSICredentialIssuerResult> {
+  const { wrappedVc, issuerType = ['TI'] } = args
 
   const issuer = wrappedVc.decoded?.iss ?? (typeof wrappedVc.decoded?.vc?.issuer === 'string' ? wrappedVc.decoded?.vc?.issuer : wrappedVc.decoded?.vc?.issuer?.existingInstanceId)
 
   if (!issuer) {
-    return Promise.reject(Error("The issuer of the VC is required"))
+    throw Error("The issuer of the VC is required to be present")
   }
 
   const url = `https://api-conformance.ebsi.eu/trusted-issuers-registry/v4/issuers/${issuer}`;
   const response = await fetch(url)
   if (response.status !== 200) {
-    return Promise.reject(undefined)
+    throw Error('The issuer of the VC cannot be trusted')
   }
 
   const payload = await response.json()
 
-  if (!payload.attributes.some((a: Attribute) => ['RootTAO', 'TAO', 'TI'].includes(a.issuerType))) {
-   return Promise.reject(undefined)
+  if (!payload.attributes.some((a: Attribute) => issuerType.includes(a.issuerType))) {
+   throw Error(`The issuer type is required to be one of: ${issuerType.join(', ')}`)
   }
 
   return payload
