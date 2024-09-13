@@ -156,7 +156,7 @@ export class OID4VP {
       context: this.session.context,
       domain: proofOptions.domain,
       challenge: proofOptions.challenge,
-      fallbackFormat: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format,
+      format: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format,
       skipDidResolution: opts?.skipDidResolution ?? false,
     })
 

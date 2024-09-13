@@ -21,7 +21,7 @@ export async function createPEXPresentationSignCallback(
     idOpts: ManagedIdentifierOpts
     fetchRemoteContexts?: boolean
     skipDidResolution?: boolean
-    fallbackFormat?: Format | ProofFormat
+    format?: Format | ProofFormat
     domain?: string
     challenge?: string
   },
@@ -33,7 +33,7 @@ export async function createPEXPresentationSignCallback(
   }): string {
     const { format, presentationDefinition } = innerArgs
 
-    const formatOptions = format ?? presentationDefinition.format ?? args.fallbackFormat
+    const formatOptions = format ?? presentationDefinition.format ?? args.format
     // All format arguments are optional. So if no format has been given we go for the most supported 'jwt'
     if (!formatOptions) {
       return 'jwt'
