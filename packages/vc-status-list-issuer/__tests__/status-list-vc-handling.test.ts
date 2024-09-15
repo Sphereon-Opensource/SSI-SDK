@@ -88,7 +88,7 @@ describe('JWT Verifiable Credential, should be', () => {
       plugins: [
         new DataStore(dbConnection),
         new DataStoreORM(dbConnection),
-        new StatusListPlugin({instances: [{id: 'http://localhost/test/1', driverType: StatusListDriverType.AGENT_TYPEORM, dataSource: dbConnection, issuer: identifier.did}], defaultInstanceId: 'http://localhost/test/1', allDataSources: DataSources.singleInstance()}),
+        new StatusListPlugin({instances: [{id: 'http://localhost/test/1', driverType: StatusListDriverType.AGENT_TYPEORM, dataSource: dbConnection}], defaultInstanceId: 'http://localhost/test/1', allDataSources: DataSources.singleInstance()}),
         new KeyManager({
           store: new KeyStore(dbConnection),
           kms: {
