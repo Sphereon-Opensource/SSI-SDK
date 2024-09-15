@@ -4,4 +4,4 @@ import { OrPromise } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
 
 
-export type StatusListInstance = StatusListManagementOptions & {dataSource?: OrPromise<DataSource>, dataSources?: DataSources}
+export type StatusListInstance = StatusListManagementOptions & {dataSource?: OrPromise<DataSource>, dataSources?: DataSources, issuer?: string}

@@ -6,13 +6,14 @@ import {
   GetStatusListArgs,
   IAddStatusToCredentialArgs,
   IRequiredContext,
+  IRequiredPlugins,
   IStatusListPlugin,
   StatusListDetails
 } from '@sphereon/ssi-sdk.vc-status-list'
 import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import { Loggers } from '@sphereon/ssi-types'
-import { IAgentPlugin } from '@veramo/core'
-import { handleCredentialStatus } from '../functions'
+import { IAgentContext, IAgentPlugin } from '@veramo/core'
+import { createStatusListFromInstance, handleCredentialStatus } from '../functions'
 import { StatusListInstance } from '../types'
 
 const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:vc-status-list')
@@ -45,23 +46,28 @@ export class StatusListPlugin implements IAgentPlugin {
     this.defaultStatusListId = instanceId
     this.allDataSources = opts.allDataSources ?? DataSources.singleInstance()
     this.autoCreateInstances = opts.autoCreateInstances ?? true
-    if (this.autoCreateInstances) {
+  }
 
+  private async slGetStatusList(args: GetStatusListArgs, context: IAgentContext<IRequiredPlugins & IStatusListPlugin>): Promise<StatusListDetails> {
+    const sl = this.instances.find((instance) => instance.id === args.id || instance.correlationId === args.correlationId)
+    const dataSource = sl?.dataSource ?? args?.dataSource ? await args.dataSource : args.dbName ? await this.allDataSources.getDbConnection(args.dbName) : await this.allDataSources.getDbConnection(this.allDataSources.getDbNames()[0])
+    try {
+      const driver = await getDriver({
+        id: args.id ?? sl?.id,
+        correlationId: args.correlationId ?? sl?.correlationId,
+        dataSource
+      })
+      return await driver.getStatusList()
+    } catch (e) {
+      const issuer = sl?.issuer
+      if (this.autoCreateInstances && sl && issuer) {
+        return await createStatusListFromInstance({ instance: { ...sl, issuer } }, context)
+      }
+      throw e
     }
   }
 
-  private async slGetStatusList(args: GetStatusListArgs, context: IRequiredContext): Promise<StatusListDetails> {
-    const sl = this.instances.find((instance) => instance.id === args.id || instance.correlationId === args.correlationId)
-    const dataSource = sl?.dataSource ?? args?.dataSource ? await args.dataSource : args.dbName ? await this.allDataSources.getDbConnection(args.dbName) : await this.allDataSources.getDbConnection(this.allDataSources.getDbNames()[0])
-    const driver = await getDriver({
-      id: args.id ?? sl?.id,
-      correlationId: args.correlationId ?? sl?.correlationId,
-      dataSource
-    })
-    return await driver.getStatusList()
-  }
-
-  private async slCreateStatusList(args: CreateNewStatusListArgs, context: IRequiredContext): Promise<StatusListDetails> {
+  private async slCreateStatusList(args: CreateNewStatusListArgs, context: IAgentContext<IRequiredPlugins & IStatusListPlugin>): Promise<StatusListDetails> {
 
     const sl = await createNewStatusList(args, context)
     const dataSource = args?.dataSource ? await args.dataSource : args.dbName ? await this.allDataSources.getDbConnection(args.dbName) : await this.allDataSources.getDbConnection(this.allDataSources.getDbNames()[0])
