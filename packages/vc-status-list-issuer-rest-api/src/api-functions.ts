@@ -157,7 +157,7 @@ export function updateW3CStatusEndpoint(router: Router, context: IRequiredContex
         }
 
         if (!updateItem.status) {
-          throw Error(`Required 'status' value was missing in the credentialStatus array for credentialId ${credentialId}`)
+          return sendErrorResponse(response, 400, `Required 'status' value was missing in the credentialStatus array for credentialId ${credentialId}`)
         }
         const value = updateItem.status === '0' || updateItem.status.toLowerCase() === 'false' ? false : true
         const statusList = statusListId ?? statusListEntry.statusList

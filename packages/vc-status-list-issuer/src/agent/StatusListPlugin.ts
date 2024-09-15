@@ -1,7 +1,11 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import {
   createNewStatusList,
-  CreateNewStatusListArgs, CredentialWithStatusSupport, IAddStatusToCredentialArgs, IRequiredContext,
+  CreateNewStatusListArgs,
+  CredentialWithStatusSupport,
+  GetStatusListArgs,
+  IAddStatusToCredentialArgs,
+  IRequiredContext,
   IStatusListPlugin,
   StatusListDetails
 } from '@sphereon/ssi-sdk.vc-status-list'
@@ -9,9 +13,7 @@ import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import { Loggers } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { handleCredentialStatus } from '../functions'
-import {
-  StatusListInstance
-} from '../types'
+import { StatusListInstance } from '../types'
 
 const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:vc-status-list')
 
@@ -19,10 +21,12 @@ export class StatusListPlugin implements IAgentPlugin {
   // readonly schema = schema.IDidAuthSiopOpAuthenticator
   private readonly instances: Array<StatusListInstance> = []
   private readonly defaultStatusListId: string
+  private readonly autoCreateInstances: boolean
   private readonly allDataSources: DataSources
   readonly methods: IStatusListPlugin = {
     slAddStatusToCredential: this.slAddStatusToCredential.bind(this),
-    slCreateStatusList: this.slCreateStatusList.bind(this)
+    slCreateStatusList: this.slCreateStatusList.bind(this),
+    slGetStatusList: this.slGetStatusList.bind(this)
   }
 
 
@@ -30,6 +34,7 @@ export class StatusListPlugin implements IAgentPlugin {
     instances: Array<StatusListInstance>,
     defaultInstanceId?: string,
     allDataSources?: DataSources
+    autoCreateInstances?: boolean
   }) {
     this.instances = opts.instances
     // TODO: Do we only want the instances configured, or do we also want to look them up from the DB
@@ -39,6 +44,21 @@ export class StatusListPlugin implements IAgentPlugin {
     }
     this.defaultStatusListId = instanceId
     this.allDataSources = opts.allDataSources ?? DataSources.singleInstance()
+    this.autoCreateInstances = opts.autoCreateInstances ?? true
+    if (this.autoCreateInstances) {
+
+    }
+  }
+
+  private async slGetStatusList(args: GetStatusListArgs, context: IRequiredContext): Promise<StatusListDetails> {
+    const sl = this.instances.find((instance) => instance.id === args.id || instance.correlationId === args.correlationId)
+    const dataSource = sl?.dataSource ?? args?.dataSource ? await args.dataSource : args.dbName ? await this.allDataSources.getDbConnection(args.dbName) : await this.allDataSources.getDbConnection(this.allDataSources.getDbNames()[0])
+    const driver = await getDriver({
+      id: args.id ?? sl?.id,
+      correlationId: args.correlationId ?? sl?.correlationId,
+      dataSource
+    })
+    return await driver.getStatusList()
   }
 
   private async slCreateStatusList(args: CreateNewStatusListArgs, context: IRequiredContext): Promise<StatusListDetails> {
@@ -52,7 +72,7 @@ export class StatusListPlugin implements IAgentPlugin {
     })
     let statusListDetails: StatusListDetails | undefined = undefined
     try {
-      statusListDetails = await driver.getStatusList()
+      statusListDetails = await this.slGetStatusList(args, context)
     } catch (e) {
       // That is fine if there is no status list yet
     }

@@ -24,6 +24,7 @@ export interface CreateNewStatusListFuncArgs extends Omit<StatusList2021ToVerifi
   correlationId: string
   length?: number
 }
+
 export interface UpdateStatusListFromEncodedListArgs extends StatusList2021ToVerifiableCredentialArgs {
   statusListIndex: number | string
   value: boolean
@@ -35,6 +36,7 @@ export interface UpdateStatusListFromStatusListCredentialArgs {
   statusListIndex: number | string
   value: boolean
 }
+
 export interface StatusList2021ToVerifiableCredentialArgs {
   issuer: string | IIssuer
   id: string
@@ -62,6 +64,7 @@ export interface StatusListDetails {
   driverType?: StatusListDriverType
   credentialIdMode?: StatusListCredentialIdMode
 }
+
 export interface StatusListResult extends StatusListDetails {
   statusListCredential: OriginalVerifiableCredential
 }
@@ -91,6 +94,7 @@ export interface IStatusListPlugin extends IPluginMethodMap {
    * @returns - The details of the newly created status list
    */
   slCreateStatusList(args: CreateNewStatusListArgs, context: IRequiredContext): Promise<StatusListDetails>
+
   /**
    * Ensures status list info like index and list id is added to a credential
    *
@@ -102,6 +106,13 @@ export interface IStatusListPlugin extends IPluginMethodMap {
    * @beta This API is likely to change without a BREAKING CHANGE notice
    */
   slAddStatusToCredential(args: IAddStatusToCredentialArgs, context: IRequiredContext): Promise<CredentialWithStatusSupport>
+
+  /**
+   * Get the status list using the configured driver for the SL. Normally a correlationId or id should suffice. Optionally accepts a dbName/datasource
+   * @param args
+   * @param context
+   */
+  slGetStatusList(args: GetStatusListArgs, context: IRequiredContext): Promise<StatusListDetails>
 }
 
 export type IAddStatusToCredentialArgs = Omit<IIssueCredentialStatusOpts, 'dataSource'> & {
@@ -119,7 +130,18 @@ export interface IIssueCredentialStatusOpts {
   value?: string
 }
 
-export type CreateNewStatusListArgs = CreateNewStatusListFuncArgs & {dataSource?: OrPromise<DataSource>, dbName?: string, isDefault?: boolean}
+export type GetStatusListArgs = {
+  id?: string,
+  correlationId?: string,
+  dataSource?: OrPromise<DataSource>,
+  dbName?: string
+}
+
+export type CreateNewStatusListArgs = CreateNewStatusListFuncArgs & {
+  dataSource?: OrPromise<DataSource>,
+  dbName?: string,
+  isDefault?: boolean
+}
 
 export type CredentialWithStatusSupport = ICredential | CredentialPayload | IVerifiableCredential
 
