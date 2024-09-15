@@ -88,7 +88,7 @@ describe('JWT Verifiable Credential, should be', () => {
       plugins: [
         new DataStore(dbConnection),
         new DataStoreORM(dbConnection),
-        new StatusListPlugin({instances: [{id: 'http://localhost/test/1', driverType: StatusListDriverType.AGENT_TYPEORM, dataSource: dbConnection}], defaultInstanceId: 'http://localhost/test/1', allDataSources: DataSources.singleInstance()}),
+        new StatusListPlugin({instances: [{id: 'http://localhost/test/1', driverType: StatusListDriverType.AGENT_TYPEORM, dataSource: dbConnection, issuer: identifier.did}], defaultInstanceId: 'http://localhost/test/1', allDataSources: DataSources.singleInstance()}),
         new KeyManager({
           store: new KeyStore(dbConnection),
           kms: {
@@ -142,10 +142,11 @@ describe('JWT Verifiable Credential, should be', () => {
   })
 
   it('should add status list to credential', async () => {
+    // Just for this test we are creating the status list. Normally this has been pre-created of course
     const sl = await agent.slCreateStatusList({id: 'http://localhost/test/1', issuer: identifier.did, type: StatusListType.StatusList2021, proofFormat: 'jwt', statusPurpose: 'revocation', keyRef: identifier.keys[0].kid, correlationId: '1'})
     console.log(JSON.stringify(sl, null, 2))
 
-    // @ts-ignore // We do not provide the id as the plugin should handle that
+    // @ts-ignore // We do not provide the credentialStatus id as the plugin should handle that
     const vcPayload = {
       issuer: identifier.did,
       id: v4(),
@@ -154,6 +155,7 @@ describe('JWT Verifiable Credential, should be', () => {
         example: 'value'
       },
 
+      // Let's create a credentialStatus object, so that the status list handling code will assign an index automatically
       credentialStatus: {
         type: 'StatusList2021'
       }

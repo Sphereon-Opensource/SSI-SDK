@@ -86,7 +86,7 @@ export class LdCredentialModule {
       // Handle status list if enabled
       // We do some additional check to determine whether we will call the below method, as the OID4VCI or W3C-VC API could also have called the method already
       if (credential.credentialStatus && !credential.credentialStatus.statusListCredential) {
-        const credentialStatusVC = await context.agent.slAddStatusToCredential({credential})
+        const credentialStatusVC = await context.agent.slAddStatusToCredential({...args.credentialStatusOpts, credential})
         if (credentialStatusVC.credentialStatus) {
           credential.credentialStatus = credentialStatusVC.credentialStatus
         }
