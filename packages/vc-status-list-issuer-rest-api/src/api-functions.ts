@@ -1,14 +1,18 @@
 import { checkAuth, sendErrorResponse } from '@sphereon/ssi-express-support'
 import {
   checkStatusIndexFromStatusListCredential,
-  createNewStatusList,
   CreateNewStatusListFuncArgs,
-  updateStatusIndexFromStatusListCredential,
+  updateStatusIndexFromStatusListCredential
 } from '@sphereon/ssi-sdk.vc-status-list'
-import { getDriver, IRequiredContext } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
+import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import Debug from 'debug'
 import { Request, Response, Router } from 'express'
-import { ICredentialStatusListEndpointOpts, IW3CredentialStatusEndpointOpts, UpdateCredentialStatusRequest } from './types'
+import {
+  ICredentialStatusListEndpointOpts,
+  IRequiredContext,
+  IW3CredentialStatusEndpointOpts,
+  UpdateCredentialStatusRequest
+} from './types'
 
 const debug = Debug('sphereon:ssi-sdk:status-list')
 
@@ -25,16 +29,7 @@ export function createNewStatusListEndpoint(router: Router, context: IRequiredCo
       if (!statusListArgs) {
         return sendErrorResponse(response, 400, 'No statusList details supplied')
       }
-      const statusList = await createNewStatusList(statusListArgs, context)
-      const driver = await getDriver({
-        id: statusListArgs.id,
-        correlationId: statusListArgs.correlationId ?? request.originalUrl,
-        dbName: opts.dbName,
-      })
-      const statusListDetails = await driver.createStatusList({
-        statusListCredential: statusList.statusListCredential,
-        correlationId: statusListArgs.correlationId,
-      })
+      const statusListDetails = await context.agent.slCreateStatusList(statusListArgs)
       return response.send({ statusListDetails })
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)

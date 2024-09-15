@@ -24,6 +24,7 @@ export const handleCredentialStatus = async (credential: CredentialWithStatusSup
       )
     }
     let existingEntry: IStatusListEntryEntity | undefined = undefined
+    // Search whether there is an existing status list entry for this credential first
     if (credentialId) {
       existingEntry = await slDriver.getStatusListEntryByCredentialId({
         statusListId: statusList.id,

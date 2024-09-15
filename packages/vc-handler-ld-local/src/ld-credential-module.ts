@@ -82,7 +82,7 @@ export class LdCredentialModule {
     debug(`Signing suite will be retrieved for ${verificationMethodId}...`)
     const signingSuite = await suite.getSuiteForSigning(key, issuerDid, verificationMethodId, context)
     debug(`Issuer ${issuerDid} will create VC for ${key.kid}...`)
-    if (contextHasPlugin<RequiredAgentMethods & IStatusListPlugin>(context, 'slHandleCredentialStatus')) {
+    if (contextHasPlugin<RequiredAgentMethods & IStatusListPlugin>(context, 'slAddStatusToCredential')) {
       // Handle status list if enabled
       // We do some additional check to determine whether we will call the below method, as the OID4VCI or W3C-VC API could also have called the method already
       if (credential.credentialStatus && !credential.credentialStatus.statusListCredential) {

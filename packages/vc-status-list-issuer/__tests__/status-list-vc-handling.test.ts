@@ -12,12 +12,11 @@ import {
   SphereonEd25519Signature2020,
   SphereonJsonWebSignature2020
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
-import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
+import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
 import {
   createAgent,
   CredentialPayload,
-  IAgentContext,
   ICredentialPlugin,
   IDataStoreORM,
   IDIDManager,
@@ -77,11 +76,11 @@ const dbConnection = DataSources.singleInstance()
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
 
-type Plugins = IDIDManager & IKeyManager & IDataStoreORM & IResolver & ICredentialHandlerLDLocal & ICredentialPlugin & IIdentifierResolution
+type Plugins = IDIDManager & IKeyManager & IDataStoreORM & IResolver & ICredentialHandlerLDLocal & ICredentialPlugin & IIdentifierResolution & IStatusListPlugin
 
 describe('JWT Verifiable Credential, should be', () => {
   let agent: TAgent<Plugins>
-  let agentContext: IAgentContext<Plugins>
+  // let agentContext: IAgentContext<Plugins>
 
   let identifier: IIdentifier
   beforeAll(async () => {
@@ -122,7 +121,7 @@ describe('JWT Verifiable Credential, should be', () => {
         }),
       ],
     })
-    agentContext = {...agent.context, agent};
+    // agentContext = {...agent.context, agent};
 
     await agent.dataStoreORMGetIdentifiers().then((ids) => ids.forEach((id) => console.log(JSON.stringify(id, null, 2))))
     identifier = await agent
@@ -143,19 +142,8 @@ describe('JWT Verifiable Credential, should be', () => {
   })
 
   it('should add status list to credential', async () => {
-    // @ts-ignore
-    const sl = await createNewStatusList({id: 'http://localhost/test/1', issuer: identifier.did, type: StatusListType.StatusList2021, proofFormat: 'jwt', statusPurpose: 'revocation', keyRef: identifier.keys[0].kid, correlationId: '1'}, agentContext)
-    const driver = await getDriver({
-      id: sl.id,
-      correlationId: sl.correlationId,
-      dataSource: await dbConnection,
-    })
-    const statusListDetails = await driver.createStatusList({
-      statusListCredential: sl.statusListCredential,
-      correlationId: sl.correlationId,
-    })
+    const sl = await agent.slCreateStatusList({id: 'http://localhost/test/1', issuer: identifier.did, type: StatusListType.StatusList2021, proofFormat: 'jwt', statusPurpose: 'revocation', keyRef: identifier.keys[0].kid, correlationId: '1'})
     console.log(JSON.stringify(sl, null, 2))
-    console.log(JSON.stringify(statusListDetails, null, 2))
 
     // @ts-ignore // We do not provide the id as the plugin should handle that
     const vcPayload = {

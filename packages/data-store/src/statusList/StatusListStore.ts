@@ -169,11 +169,10 @@ export class StatusListStore implements IStatusListStore {
     const where = []
     if (args.id) {
       where.push({ id: args.id })
-    }
-    if (args.correlationId) {
+    } else if (args.correlationId) {
       where.push({ correlationId: args.correlationId })
     }
-    const result = await (await this.getStatusListRepo()).findOne({ where })
+    const result = await (await this.getStatusListRepo()).findOne({where})
     if (!result) {
       throw Error(`No status list found for id ${args.id}`)
     }

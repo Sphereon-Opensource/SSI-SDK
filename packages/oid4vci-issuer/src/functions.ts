@@ -161,10 +161,10 @@ export async function getCredentialSignerCallback(
     credential.credentialSubject = subjectIsArray ? credentialSubjects : credentialSubjects[0]
 
     // TODO: We should extend the plugin capabilities of issuance so we do not have to tuck this into the sign callback
-    if (contextHasPlugin<IStatusListPlugin>(context, 'slHandleCredentialStatus')) {
+    if (contextHasPlugin<IStatusListPlugin>(context, 'slAddStatusToCredential')) {
       // Add status list if enabled (and when the input has a credentialStatus object (can be empty))
       const credentialStatusVC = await context.agent.slAddStatusToCredential({credential})
-      if (credentialStatusVC.credentialStatus) {
+      if (credential.credentialStatus && !credential.credentialStatus.statusListCredential) {
         credential.credentialStatus = credentialStatusVC.credentialStatus
       }
     }

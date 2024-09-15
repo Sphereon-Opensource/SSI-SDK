@@ -6,7 +6,7 @@ import {
   StatusListDetails
 } from '@sphereon/ssi-sdk.vc-status-list'
 import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
-import { Loggers} from '@sphereon/ssi-types'
+import { Loggers } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { handleCredentialStatus } from '../functions'
 import {
@@ -14,6 +14,7 @@ import {
 } from '../types'
 
 const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:vc-status-list')
+
 export class StatusListPlugin implements IAgentPlugin {
   // readonly schema = schema.IDidAuthSiopOpAuthenticator
   private readonly instances: Array<StatusListInstance> = []
@@ -25,7 +26,11 @@ export class StatusListPlugin implements IAgentPlugin {
   }
 
 
-  constructor(opts: { instances: Array<StatusListInstance>, defaultInstanceId?: string, allDataSources?: DataSources }) {
+  constructor(opts: {
+    instances: Array<StatusListInstance>,
+    defaultInstanceId?: string,
+    allDataSources?: DataSources
+  }) {
     this.instances = opts.instances
     // TODO: Do we only want the instances configured, or do we also want to look them up from the DB
     const instanceId = opts.defaultInstanceId ?? opts.instances[0].id
@@ -37,35 +42,51 @@ export class StatusListPlugin implements IAgentPlugin {
   }
 
   private async slCreateStatusList(args: CreateNewStatusListArgs, context: IRequiredContext): Promise<StatusListDetails> {
-    if (this.instances.find(sl => sl.id === args.id || sl.correlationId === args.correlationId )) {
-      return Promise.reject(Error(`Status list with id  ${args.id} or correlation id ${args.correlationId} already exists`))
-    }
+
     const sl = await createNewStatusList(args, context)
     const dataSource = args?.dataSource ? await args.dataSource : args.dbName ? await this.allDataSources.getDbConnection(args.dbName) : await this.allDataSources.getDbConnection(this.allDataSources.getDbNames()[0])
     const driver = await getDriver({
       id: sl.id,
       correlationId: sl.correlationId,
-      dataSource,
+      dataSource
     })
-    const statusListDetails = await driver.createStatusList({
-      statusListCredential: sl.statusListCredential,
-      correlationId: sl.correlationId,
-    })
-    this.instances.push({correlationId: statusListDetails.correlationId, id: statusListDetails.id, dataSource, driverType: statusListDetails.driverType!, driverOptions: driver.getOptions()})
+    let statusListDetails: StatusListDetails | undefined = undefined
+    try {
+      statusListDetails = await driver.getStatusList()
+    } catch (e) {
+      // That is fine if there is no status list yet
+    }
+    if (statusListDetails && this.instances.find(sl => sl.id === args.id || sl.correlationId === args.correlationId)) {
+      return Promise.reject(Error(`Status list with id  ${args.id} or correlation id ${args.correlationId} already exists`))
+    } else {
+      statusListDetails = await driver.createStatusList({
+        statusListCredential: sl.statusListCredential,
+        correlationId: sl.correlationId
+      })
+      this.instances.push({
+        correlationId: statusListDetails.correlationId,
+        id: statusListDetails.id,
+        dataSource,
+        driverType: statusListDetails.driverType!,
+        driverOptions: driver.getOptions()
+      })
+    }
 
 
     return statusListDetails
 
   }
+
   private async slAddStatusToCredential(args: IAddStatusToCredentialArgs, context: IRequiredContext): Promise<CredentialWithStatusSupport> {
-    const {credential, ...rest} = args
+    const { credential, ...rest } = args
     const credentialStatus = credential.credentialStatus
     if (!credentialStatus) {
       logger.info(`Not adding status list info, since no credentialStatus object was present in the credential`)
       return Promise.resolve(credential)
     }
-    // If the credential is already providing the id we favor that over the argument. Default status list as a fallback
-    const statusListId = credentialStatus.statusListCredential ?? args.statusListId ?? this.defaultStatusListId
+    // If the credential is already providing the id we favor that over the argument. Default status list as a fallback. We also allow passing in an empty id to get the default
+    const credentialStatusId = credentialStatus.id && credentialStatus.id.trim() !== '' ? credentialStatus.id.split('#')[0] : undefined
+    const statusListId = credentialStatus.statusListCredential ?? credentialStatusId ?? args.statusListId ?? this.defaultStatusListId
     const instance = this.instances.find(instance => instance.id === statusListId)
     if (!instance) {
       return Promise.reject(Error(`Status list with id ${statusListId} is not managed by the status list plugin`))
@@ -74,7 +95,12 @@ export class StatusListPlugin implements IAgentPlugin {
     }
     const credentialId = credential.id ?? args.credentialId
     const dataSource = instance.dataSource ? await instance.dataSource : await this.allDataSources.getDbConnection(instance.driverOptions!.dbName!)
-    await handleCredentialStatus(credential, {...rest, credentialId, statusListId, driver: await getDriver({dataSource, id: statusListId})})
+    await handleCredentialStatus(credential, {
+      ...rest,
+      credentialId,
+      statusListId,
+      driver: await getDriver({ dataSource, id: statusListId })
+    })
     return credential
   }
 }
