@@ -24,7 +24,7 @@ export class CreateDigitalCredential1708525189001 implements MigrationInterface 
         "raw_document" text NOT NULL,
         "uniform_document" text NOT NULL,
         "credential_id" text,
-        "hash" text NOT NULL UNIQUE,
+        "hash" text NOT NULL,
         "kms_key_ref" text,
         "identifier_method" text,
         "issuer_correlation_type" "digital_credential_correlation_type" NOT NULL,
@@ -43,7 +43,8 @@ export class CreateDigitalCredential1708525189001 implements MigrationInterface 
         "valid_until" DATE,
         "verified_at" DATE,
         "revoked_at" DATE,
-        PRIMARY KEY ("id")
+        PRIMARY KEY ("id"),
+        UNIQUE ("hash", "credential_role")
       )
     `)
   }

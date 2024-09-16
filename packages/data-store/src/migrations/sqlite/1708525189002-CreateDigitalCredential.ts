@@ -16,7 +16,7 @@ export class CreateDigitalCredential1708525189002 implements MigrationInterface 
                 "raw_document" text NOT NULL,
                 "uniform_document" text NOT NULL,
                 "credential_id" text,
-                "hash" text NOT NULL UNIQUE,
+                "hash" text NOT NULL,
                 "kms_key_ref" text,
                 "identifier_method" text,
                 "issuer_correlation_type" varchar CHECK( "issuer_correlation_type" IN ('DID', 'KID', 'URL', 'X509_SAN') ) NOT NULL,
@@ -34,7 +34,8 @@ export class CreateDigitalCredential1708525189002 implements MigrationInterface 
                 "valid_from" datetime,
                 "valid_until" datetime,
                 "verified_at" datetime,
-                "revoked_at" datetime
+                "revoked_at" datetime,
+                UNIQUE ("hash", "credential_role")
             )
         `)
   }
