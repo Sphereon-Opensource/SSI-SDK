@@ -1,24 +1,29 @@
+import {
+  AbstractDigitalCredentialStore,
+  DigitalCredential,
+  UpdateCredentialStateArgs,
+  DocumentType
+} from '@sphereon/ssi-sdk.data-store'
 import { IAgentPlugin } from '@veramo/core'
 import crypto from 'crypto'
+import { schema, logger } from '../index'
+import { credentialIdOrHashFilter } from '../utils/filters'
 import {
   AddCredentialArgs,
-  credentialIdOrHashFilter,
   DeleteCredentialArgs,
   DeleteCredentialsArgs,
-  DocumentType,
   GetCredentialArgs,
   GetCredentialsArgs,
   GetCredentialsByClaimsArgs,
   GetCredentialsByIdOrHashArgs,
   ICredentialStore,
-  logger,
   OptionalUniqueDigitalCredential,
-  schema,
-  TClaimsColumns,
-  UniqueDigitalCredential,
-} from '../index'
-import { AbstractDigitalCredentialStore, DigitalCredential, UpdateCredentialStateArgs } from '@sphereon/ssi-sdk.data-store'
+  UniqueDigitalCredential
+} from '../types/ICredentialStore'
+import { TClaimsColumns } from '../types/claims'
+
 import { IVerifiableCredential } from '@sphereon/ssi-types'
+
 // Exposing the methods here for any REST implementation
 export const credentialStoreMethods: Array<string> = [
   'crsAddCredential',
@@ -57,31 +62,32 @@ export class CredentialStore implements IAgentPlugin {
     this.store = options.store
   }
 
-  /** {@inheritDoc ICRManager.crmAddCredential} */
+  /** {@inheritDoc ICredentialStore.crsAddCredential} */
   private async crsAddCredential(args: AddCredentialArgs): Promise<DigitalCredential> {
     return await this.store.addCredential({ ...args.credential, opts: { ...args.opts, hasher: args.opts?.hasher ?? this.generateDigest } })
   }
 
-  /** {@inheritDoc ICRManager.updateCredentialState} */
+  /** {@inheritDoc ICredentialStore.crsUpdateCredentialState} */
   private async crsUpdateCredentialState(args: UpdateCredentialStateArgs): Promise<DigitalCredential> {
     return await this.store.updateCredentialState(args)
   }
 
-  /** {@inheritDoc ICRManager.crmGetCredential} */
+  /** {@inheritDoc ICredentialStore.crsGetCredential} */
   private async crsGetCredential(args: GetCredentialArgs): Promise<DigitalCredential> {
     const { id } = args
-    const credential = await this.store.getCredential({ id })
-    return credential
+
+    return this.store.getCredential({ id })
   }
 
-  /** {@inheritDoc ICRManager.crmGetCredentials} */
+  /** {@inheritDoc ICredentialStore.crsGetCredentials} */
   private async crsGetCredentials(args: GetCredentialsArgs): Promise<Array<DigitalCredential>> {
     const { filter } = args
     const credentials = await this.store.getCredentials({ filter })
+
     return credentials.data
   }
 
-  /** {@inheritDoc ICRManager.crmGetUniqueCredentialByIdOrHash} */
+  /** {@inheritDoc ICredentialStore.crsGetUniqueCredentialByIdOrHash} */
   private async crsGetUniqueCredentialByIdOrHash(args: GetCredentialsByIdOrHashArgs): Promise<OptionalUniqueDigitalCredential> {
     const credentials = await this.crsGetCredentials({ filter: credentialIdOrHashFilter(args.credentialRole, args.idOrHash) })
     if (credentials.length === 0) {
@@ -89,21 +95,23 @@ export class CredentialStore implements IAgentPlugin {
     } else if (credentials.length > 1) {
       logger.warning('Duplicate credentials detected in crsGetUniqueCredentialByIdOrHash', args)
     }
+
     return this.toUniqueCredentials(credentials)[0]
   }
 
-  /** {@inheritDoc ICRManager.crmGetUniqueCredentials} */
+  /** {@inheritDoc ICredentialStore.crsGetUniqueCredentials} */
   private async crsGetUniqueCredentials(args: GetCredentialsArgs): Promise<Array<UniqueDigitalCredential>> {
     const credentials = await this.crsGetCredentials(args)
+
     return this.toUniqueCredentials(credentials)
   }
 
-  /** {@inheritDoc ICRManager.crmDeleteCredential} */
+  /** {@inheritDoc ICredentialStore.crsDeleteCredential} */
   private async crsDeleteCredential(args: DeleteCredentialArgs): Promise<boolean> {
     return this.store.removeCredential(args)
   }
 
-  /** {@inheritDoc ICRManager.crmDeleteCredentials} */
+  /** {@inheritDoc ICredentialStore.crsDeleteCredentials} */
   private async crsDeleteCredentials(args: DeleteCredentialsArgs): Promise<number> {
     const credentials = await this.crsGetCredentials(args)
     let count = 0
@@ -113,6 +121,7 @@ export class CredentialStore implements IAgentPlugin {
         count++
       }
     }
+
     return count
   }
 
@@ -138,7 +147,7 @@ export class CredentialStore implements IAgentPlugin {
     })
 
     // This a copy of how Veramo did this. TODO Use GraphQL in the future?
-    const claimFilteredCredentials: UniqueDigitalCredential[] = digitalCredentials.filter((uniqueVC) => {
+    return digitalCredentials.filter((uniqueVC) => {
       if (!uniqueVC.uniformVerifiableCredential) {
         return false
       }
@@ -178,8 +187,6 @@ export class CredentialStore implements IAgentPlugin {
         }) ?? true
       )
     })
-
-    return claimFilteredCredentials
   }
 
   private getValueFromCredential(credential: IVerifiableCredential, column: TClaimsColumns): any {
@@ -222,6 +229,7 @@ export class CredentialStore implements IAgentPlugin {
     if (original.includes('~')) {
       return original as Type
     }
+
     return JSON.parse(original)
   }
 
