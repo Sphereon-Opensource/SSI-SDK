@@ -1,49 +1,50 @@
-import {IssuerType} from '@veramo/core'
+import { IssuerType } from '@veramo/core'
 import jwt_decode from 'jwt-decode'
 import {
-    AsyncHasher,
-    decodeMdocDeviceResponse,
-    decodeMdocIssuerSigned,
-    decodeSdJwtVc,
-    decodeSdJwtVcAsync,
-    DocumentFormat,
-    Hasher,
-    ICredential,
-    IPresentation,
-    IProof,
-    IProofPurpose,
-    IProofType,
-    isWrappedMdocCredential,
-    isWrappedMdocPresentation,
-    isWrappedSdJwtVerifiableCredential,
-    isWrappedSdJwtVerifiablePresentation,
-    isWrappedW3CVerifiableCredential,
-    isWrappedW3CVerifiablePresentation,
-    IVerifiableCredential,
-    IVerifiablePresentation,
-    JwtDecodedVerifiableCredential,
-    JwtDecodedVerifiablePresentation,
-    mdocDecodedCredentialToUniformCredential,
-    MdocDeviceResponse,
-    OriginalType,
-    OriginalVerifiableCredential,
-    OriginalVerifiablePresentation,
-    sdJwtDecodedCredentialToUniformCredential,
-    SdJwtDecodedVerifiableCredential,
-    SdJwtDecodedVerifiableCredentialPayload,
-    UniformVerifiablePresentation,
-    W3CVerifiableCredential,
-    W3CVerifiablePresentation,
-    WrappedMdocCredential,
-    WrappedSdJwtVerifiableCredential,
-    WrappedVerifiableCredential,
-    WrappedVerifiablePresentation,
-    WrappedW3CVerifiableCredential,
+  AsyncHasher,
+  decodeMdocDeviceResponse,
+  decodeMdocIssuerSigned,
+  decodeSdJwtVc,
+  decodeSdJwtVcAsync,
+  DocumentFormat,
+  Hasher,
+  ICredential,
+  IPresentation,
+  IProof,
+  IProofPurpose,
+  IProofType,
+  isWrappedMdocCredential,
+  isWrappedMdocPresentation,
+  isWrappedSdJwtVerifiableCredential,
+  isWrappedSdJwtVerifiablePresentation,
+  isWrappedW3CVerifiableCredential,
+  isWrappedW3CVerifiablePresentation,
+  IVerifiableCredential,
+  IVerifiablePresentation,
+  JwtDecodedVerifiableCredential,
+  JwtDecodedVerifiablePresentation,
+  mdocDecodedCredentialToUniformCredential,
+  MdocDeviceResponse,
+  MdocOid4vpMdocVpToken,
+  OriginalType,
+  OriginalVerifiableCredential,
+  OriginalVerifiablePresentation,
+  sdJwtDecodedCredentialToUniformCredential,
+  SdJwtDecodedVerifiableCredential,
+  SdJwtDecodedVerifiableCredentialPayload,
+  UniformVerifiablePresentation,
+  W3CVerifiableCredential,
+  W3CVerifiablePresentation,
+  WrappedMdocCredential,
+  WrappedSdJwtVerifiableCredential,
+  WrappedVerifiableCredential,
+  WrappedVerifiablePresentation,
+  WrappedW3CVerifiableCredential,
 } from '../types'
-import {MdocDocument} from '../types/mso_mdoc'
-import {ObjectUtils} from '../utils'
-import {com} from '@sphereon/kmp-mdl-mdoc'
-import DeviceResponseCbor = com.sphereon.mdoc.data.device.DeviceResponseCbor;
+import { MdocDocument } from '../types/mso_mdoc'
+import { ObjectUtils } from '../utils'
+import { com } from '@sphereon/kmp-mdl-mdoc'
+import DeviceResponseCbor = com.sphereon.mdoc.data.device.DeviceResponseCbor
 
 export class CredentialMapper {
   /**
@@ -66,7 +67,7 @@ export class CredentialMapper {
   static decodeVerifiablePresentation(
     presentation: OriginalVerifiablePresentation,
     hasher?: Hasher
-  ): JwtDecodedVerifiablePresentation | IVerifiablePresentation | SdJwtDecodedVerifiableCredential | MdocDocument {
+  ): JwtDecodedVerifiablePresentation | IVerifiablePresentation | SdJwtDecodedVerifiableCredential | MdocOid4vpMdocVpToken | MdocDeviceResponse {
     if (CredentialMapper.isJwtEncoded(presentation)) {
       const payload = jwt_decode(presentation as string) as JwtDecodedVerifiablePresentation
       const header = jwt_decode(presentation as string, { header: true }) as Record<string, any>
@@ -88,6 +89,10 @@ export class CredentialMapper {
       return decodeSdJwtVc(presentation, hasher)
     } else if (CredentialMapper.isSdJwtDecodedCredential(presentation)) {
       return presentation as SdJwtDecodedVerifiableCredential
+    } else if (CredentialMapper.isMsoMdocOid4VPEncoded(presentation)) {
+      return presentation as MdocOid4vpMdocVpToken
+    } else if (CredentialMapper.isMsoMdocDecodedPresentation(presentation)) {
+      return presentation as MdocDeviceResponse
     } else if (CredentialMapper.isJsonLdAsString(presentation)) {
       return JSON.parse(presentation as string) as IVerifiablePresentation
     } else {
@@ -157,15 +162,19 @@ export class CredentialMapper {
         deviceResponse = originalPresentation
       }
 
+      const mdocCredential: WrappedMdocCredential | undefined = deviceResponse.documents
+        ?.map((doc) => CredentialMapper.toWrappedVerifiableCredential(doc, opts) as WrappedMdocCredential)
+        .find((value) => value !== undefined)
+      if (mdocCredential === undefined) {
+        throw Error('mdoc credential data corruption')
+      }
       return {
         type: CredentialMapper.isMsoMdocDecodedPresentation(originalPresentation) ? OriginalType.MSO_MDOC_DECODED : OriginalType.MSO_MDOC_ENCODED,
         format: 'mso_mdoc',
         original: originalPresentation,
         presentation: deviceResponse,
         decoded: deviceResponse,
-
-        vcs: (deviceResponse.documents?.map((doc) => CredentialMapper.toWrappedVerifiableCredential(doc, opts) as WrappedMdocCredential) ??
-          []) as WrappedMdocCredential[],
+        vcs: [mdocCredential],
       }
     }
     // SD-JWT

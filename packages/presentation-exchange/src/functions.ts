@@ -4,7 +4,7 @@ import {
   isManagedIdentifierDidOpts,
   isManagedIdentifierDidResult,
   isManagedIdentifierX5cResult,
-  ManagedIdentifierOpts,
+  ManagedIdentifierOptsOrResult,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
   CredentialMapper,
@@ -18,7 +18,7 @@ import { IPEXPresentationSignCallback, IRequiredContext } from './types/IPresent
 
 export async function createPEXPresentationSignCallback(
   args: {
-    idOpts: ManagedIdentifierOpts
+    idOpts: ManagedIdentifierOptsOrResult
     fetchRemoteContexts?: boolean
     skipDidResolution?: boolean
     format?: Format | ProofFormat
@@ -27,16 +27,16 @@ export async function createPEXPresentationSignCallback(
   },
   context: IRequiredContext,
 ): Promise<IPEXPresentationSignCallback> {
-  function determineProofFormat(args: {
+  function determineProofFormat(innerArgs: {
     format?: Format | 'jwt' | 'lds' | 'EthereumEip712Signature2021'
     presentationDefinition: IPresentationDefinition
   }): string {
-    const { format, presentationDefinition } = args
+    const { format, presentationDefinition } = innerArgs
 
-    // All format arguments are optional. So if no format has been given we go for SD-JWT
-    const formatOptions = format ?? presentationDefinition.format
+    const formatOptions = format ?? presentationDefinition.format ?? args.format
+    // All format arguments are optional. So if no format has been given we go for the most supported 'jwt'
     if (!formatOptions) {
-      return 'vc+sd-jwt'
+      return 'jwt'
     } else if (typeof formatOptions === 'string') {
       // if formatOptions is a singular string we can return that as the format
       return formatOptions

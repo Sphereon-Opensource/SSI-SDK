@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@sphereon/pex": "4.1.1-unstable.1",
-    "@sphereon/ssi-sdk-ext.did-utils": " 0.24.1-next.112",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": " 0.24.1-next.112",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.112",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.112",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/kmp-mdl-mdoc": "0.2.0-SNAPSHOT.22",
     "@sphereon/ssi-sdk.core": "workspace:*",

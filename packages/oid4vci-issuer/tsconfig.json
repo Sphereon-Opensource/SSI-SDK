@@ -17,6 +17,12 @@
       "path": "../ssi-sdk-core"
     },
     {
+      "path": "../sd-jwt"
+    },
+    {
+      "path": "../mdl-mdoc"
+    },
+    {
       "path": "../kv-store"
     }
   ]
