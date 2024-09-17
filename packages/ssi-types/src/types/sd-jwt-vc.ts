@@ -130,7 +130,7 @@ export interface SdJwtDecodedVerifiableCredential {
   }
 }
 
-interface SdJwtVcKbJwtPayload {
+export interface SdJwtVcKbJwtPayload {
   iat: number
   aud: string
   nonce: string
