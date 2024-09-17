@@ -782,10 +782,13 @@ export class OID4VCIHolder implements IAgentPlugin {
       logger.error(`More than 1 credential selected ${selectedCredentials.join(', ')}, but current service only stores 1 credential!`)
     }
 
-    if (!args.issuanceOpt || !args.issuanceOpt.identifier || !args.issuanceOpt.identifier.kmsKeyRef || !args.issuanceOpt.identifier.method) {
-      return Promise.reject(Error('issuanceOpt.identifier and identifier.kmsKeyRef / method must me set'))
+    // TODO determine when and how we should store credentials without key kmsKeyRef & id method), this should be tested with the code below
+    const issuanceOpt = args.issuanceOpt ?? mappedCredentialToAccept.credentialToAccept.issuanceOpt
+    if (!issuanceOpt || !issuanceOpt.identifier) {
+      return Promise.reject(Error('issuanceOpt.identifier must me set in order to store a credential'))
     }
-    const { kmsKeyRef, method } = args.issuanceOpt.identifier
+    const identifier = issuanceOpt.identifier
+    const { kmsKeyRef, method } = identifier
 
     let persist = true
     const verifiableCredential = mappedCredentialToAccept.uniformVerifiableCredential as VerifiableCredential
@@ -924,6 +927,13 @@ export class OID4VCIHolder implements IAgentPlugin {
       logger.log(`Persisting credential`, persistCredential)
 
       const issuer = CredentialMapper.issuerCorrelationIdFromIssuerType(verifiableCredential.issuer)
+      const subjectCorrelationType =
+        method === 'did' || verifiableCredential.credentialSubject.id?.startsWith('did:')
+          ? CredentialCorrelationType.DID
+          : method !== undefined
+            ? CredentialCorrelationType.URL
+            : undefined
+
       const persistedCredential = await context.agent.crsAddCredential({
         credential: {
           rawDocument: ensureRawDocument(persistCredential),
@@ -932,10 +942,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           credentialRole: CredentialRole.HOLDER,
           issuerCorrelationType: issuer?.startsWith('did:') ? CredentialCorrelationType.DID : CredentialCorrelationType.URL,
           issuerCorrelationId: issuer,
-          subjectCorrelationType:
-            method === 'did' || verifiableCredential.credentialSubject.id?.startsWith('did:')
-              ? CredentialCorrelationType.DID
-              : CredentialCorrelationType.URL,
+          subjectCorrelationType,
           subjectCorrelationId: issuer, // FIXME get separate did for subject
         },
       })
