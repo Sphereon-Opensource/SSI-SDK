@@ -2,7 +2,6 @@ import { OriginalType, WrappedVerifiableCredential, WrappedVerifiablePresentatio
 import { decodeSdJwt, decodeSdJwtSync, getClaims, getClaimsSync } from '@sd-jwt/decode'
 import { CompactJWT, IVerifiableCredential } from './w3c-vc'
 import { IProofPurpose, IProofType } from './did'
-import { JWTHeader } from 'did-jwt'
 
 type JsonValue = string | number | boolean | { [x: string]: JsonValue | undefined } | Array<JsonValue>
 
@@ -124,10 +123,16 @@ export interface SdJwtDecodedVerifiableCredential {
    * Key binding JWT
    */
   kbJwt?: {
-    header: JWTHeader
+    header: SdJwtVcKbJwtHeader
     payload: SdJwtVcKbJwtPayload
     compact?: CompactJWT
   }
+}
+
+export interface SdJwtVcKbJwtHeader {
+  typ: 'kb+jwt'
+  alg: string
+  [x: string]: any
 }
 
 export interface SdJwtVcKbJwtPayload {
@@ -231,7 +236,7 @@ export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): S
     ...(compactKeyBindingJwt &&
       kbJwt && {
         kbJwt: {
-          header: kbJwt.header as JWTHeader,
+          header: kbJwt.header as SdJwtVcKbJwtHeader,
           compact: compactKeyBindingJwt,
           payload: kbJwt.payload as SdJwtVcKbJwtPayload,
         },
@@ -269,7 +274,7 @@ export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher:
     ...(compactKeyBindingJwt &&
       kbJwt && {
         kbJwt: {
-          header: kbJwt.header as JWTHeader,
+          header: kbJwt.header as SdJwtVcKbJwtHeader,
           payload: kbJwt.payload as SdJwtVcKbJwtPayload,
           compact: compactKeyBindingJwt,
         },
