@@ -109,7 +109,11 @@ export function decodeMdocDeviceResponse(vpToken: MdocOid4vpMdocVpToken): MdocDe
 }
 
 // TODO naive implementation of mapping a mdoc onto a IVerifiableCredential. Needs some fixes and further implementation and needs to be moved out of ssi-types
-export const mdocDecodedCredentialToUniformCredential = (decoded: MdocDocument, opts?: { maxTimeSkewInMS?: number }): IVerifiableCredential => {
+export const mdocDecodedCredentialToUniformCredential = (
+  decoded: MdocDocument,
+  // @ts-ignore
+  opts?: { maxTimeSkewInMS?: number }
+): IVerifiableCredential => {
   const mdoc = decoded.toJson()
   const json = mdoc.toJsonDTO<DocumentJson>()
   const type = 'Personal Identification Data'
