@@ -787,8 +787,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     if (!issuanceOpt || !issuanceOpt.identifier) {
       return Promise.reject(Error('issuanceOpt.identifier must me set in order to store a credential'))
     }
-    const identifier = issuanceOpt.identifier
-    const { kmsKeyRef, method } = identifier
+    const { kmsKeyRef, method } = issuanceOpt.identifier
 
     let persist = true
     const verifiableCredential = mappedCredentialToAccept.uniformVerifiableCredential as VerifiableCredential
