@@ -231,6 +231,7 @@ export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): S
     ...(compactKeyBindingJwt &&
       kbJwt && {
         kbJwt: {
+          header: kbJwt.header as JWTHeader,
           compact: compactKeyBindingJwt,
           payload: kbJwt.payload as SdJwtVcKbJwtPayload,
         },
@@ -268,8 +269,9 @@ export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher:
     ...(compactKeyBindingJwt &&
       kbJwt && {
         kbJwt: {
-          compact: compactKeyBindingJwt,
+          header: kbJwt.header as JWTHeader,
           payload: kbJwt.payload as SdJwtVcKbJwtPayload,
+          compact: compactKeyBindingJwt,
         },
       }),
   }
