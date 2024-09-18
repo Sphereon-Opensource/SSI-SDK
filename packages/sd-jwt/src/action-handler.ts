@@ -8,9 +8,8 @@ import { IAgentPlugin } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
 import Debug from 'debug'
 import { defaultGenerateDigest, defaultGenerateSalt, defaultVerifySignature } from './defaultCallbacks'
-
-import { SdJwtVerifySignature, SignKeyArgs, SignKeyResult } from './index'
 import { sphereonCA } from './trustAnchors'
+import { SdJwtVerifySignature, SignKeyArgs, SignKeyResult } from './index'
 import {
   Claims,
   ICreateSdJwtPresentationArgs,
@@ -87,6 +86,8 @@ export class SDJwtPlugin implements IAgentPlugin {
     const { key, alg } = signingKey
 
     const signer: Signer = async (data: string): Promise<string> => {
+      console.log('AHAAAAAAA')
+
       return context.agent.keyManagerSign({ keyRef: key.kmsKeyRef, data })
     }
     return { signer, alg, signingKey }
@@ -117,6 +118,7 @@ export class SDJwtPlugin implements IAgentPlugin {
         ...(signingKey?.key.kmsKeyRef !== undefined && { kid: signingKey.key.kmsKeyRef }),
       },
     })
+
     return { credential }
   }
 
@@ -193,6 +195,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       kbSignAlg: alg ?? 'ES256',
     })
     const credential = await sdjwt.present(args.presentation, args.presentationFrame as PresentationFrame<SdJwtVcPayload>, { kb: args.kb })
+
     return { presentation: credential }
   }
 
@@ -205,7 +208,6 @@ export class SDJwtPlugin implements IAgentPlugin {
   async verifySdJwtVc(args: IVerifySdJwtVcArgs, context: IRequiredContext): Promise<IVerifySdJwtVcResult> {
     // callback
     const verifier: Verifier = async (data: string, signature: string) => this.verify(sdjwt, context, data, signature)
-
     const sdjwt = new SDJwtVcInstance({ verifier, hasher: this.registeredImplementations.hasher })
     const { header = {}, payload, kb } = await sdjwt.verify(args.credential)
 
@@ -226,6 +228,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       throw Error('other method than cnf is not supported yet')
     }
     const key = payload.cnf.jwk as JsonWebKey
+
     return this.verifySignatureCallback(context)(data, signature, key)
   }
 
@@ -290,9 +293,11 @@ export class SDJwtPlugin implements IAgentPlugin {
       // needs more checks. some DID methods do not expose the keys as publicKeyJwk
       jwk = didDocumentKey.publicKeyJwk as JsonWebKey
     }
+
     if (!jwk) {
       throw new Error('No valid public key found for signature verification')
     }
+
     return this.verifySignatureCallback(context)(data, signature, jwk)
   }
 
@@ -312,15 +317,15 @@ export class SDJwtPlugin implements IAgentPlugin {
       hasher: this.registeredImplementations.hasher,
       kbVerifier: verifierKb,
     })
-    const verifiedPayloads = await sdjwt.verify(args.presentation, args.requiredClaimKeys, args.kb)
 
-    return verifiedPayloads
+    return sdjwt.verify(args.presentation, args.requiredClaimKeys, args.kb)
   }
 
   private verifySignatureCallback(context: IRequiredContext): SdJwtVerifySignature {
     if (typeof this.registeredImplementations.verifySignature === 'function') {
       return this.registeredImplementations.verifySignature
     }
+
     return defaultVerifySignature(context)
   }
 }
