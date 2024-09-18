@@ -6,7 +6,7 @@
       "forcePublish": true
     },
     "publish": {
-      "allowBranch": ["main", "master", "feature/from-funke"],
+      "allowBranch": ["main", "master"],
       "conventionalCommits": true,
       "gitRemote": "origin",
       "message": "chore(release): %s"

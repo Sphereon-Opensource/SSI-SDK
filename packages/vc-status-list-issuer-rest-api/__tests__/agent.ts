@@ -13,7 +13,7 @@ import {
   SphereonEd25519Signature2020,
   SphereonJsonWebSignature2020,
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
-import { createAgent, ICredentialPlugin, IDataStore, IDataStoreORM, IDIDManager, IKeyManager, IResolver, TAgent } from '@veramo/core'
+import { createAgent, ICredentialPlugin, IDataStoreORM, IDIDManager, IKeyManager, IResolver, TAgent } from '@veramo/core'
 import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
 import { DIDManager } from '@veramo/did-manager'
@@ -26,7 +26,7 @@ import { Resolver } from 'did-resolver'
 
 import { StatuslistManagementApiServer } from '../src'
 import { IRequiredPlugins } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
-import { DB_CONNECTION_NAME_POSTGRES, /*DB_CONNECTION_NAME_SQLITE,*/ DB_ENCRYPTION_KEY, postgresConfig /*, sqliteConfig*/ } from './database'
+import { DB_CONNECTION_NAME_POSTGRES, DB_ENCRYPTION_KEY, postgresConfig } from './database'
 
 const debug = Debug('sphereon:status-list-api')
 
@@ -85,7 +85,7 @@ const agent: TAgent<IRequiredPlugins> = createAgent<
     new DIDResolverPlugin({
       resolver,
     }),
-    new IdentifierResolution({crypto: global.crypto}),
+    new IdentifierResolution({ crypto: global.crypto }),
     new CredentialPlugin(),
     new CredentialHandlerLDLocal({
       contextMaps: [LdDefaultContexts],
