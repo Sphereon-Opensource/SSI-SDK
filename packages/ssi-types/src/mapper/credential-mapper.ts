@@ -478,7 +478,10 @@ export class CredentialMapper {
   public static isSdJwtDecodedCredential(
     original: OriginalVerifiableCredential | OriginalVerifiablePresentation | ICredential | IPresentation
   ): original is SdJwtDecodedVerifiableCredential {
-    return typeof original === 'object' && (<SdJwtDecodedVerifiableCredential>original).compactSdJwtVc !== undefined
+    return (
+      typeof original === 'object' &&
+      ((<SdJwtDecodedVerifiableCredential>original).compactSdJwtVc !== undefined || (<SdJwtDecodedVerifiableCredential>original).kbJwt !== undefined)
+    )
   }
 
   public static isMsoMdocDecodedCredential(
