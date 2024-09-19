@@ -233,6 +233,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       return payload.cnf.jwk as JsonWebKey
     } else if (payload.cnf !== undefined && 'kid' in payload.cnf && typeof payload.cnf.kid === 'string' && payload.cnf.kid.startsWith('did:jwk:')) {
       // extract JWK from kid FIXME isn't there a did function for this already? Otherwise create one
+      // FIXME this is a quick-fix to make verification but we need a real solution
       const encoded = this.extractBase64FromDIDJwk(payload.cnf.kid)
       const decoded = decodeBase64url(encoded)
       const jwt = JSON.parse(decoded)
@@ -248,6 +249,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     }
     return parts[2].split('#')[0]
   }
+
   /**
    * Validates the signature of a SD-JWT
    * @param sdjwt - SD-JWT instance
