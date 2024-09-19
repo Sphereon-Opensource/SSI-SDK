@@ -295,6 +295,7 @@ export async function statusList2021ToVerifiableCredential(
   const identifier = await context.agent.identifierManagedGet({
     identifier: typeof issuer === 'string' ? issuer : issuer.id,
     vmRelationship: 'assertionMethod',
+    offlineWhenNoDIDRegistered: true, // FIXME Fix identifier resolution for EBSI
   })
   const encodedList = getAssertedValue('encodedList', args.encodedList)
   const statusPurpose = getAssertedValue('statusPurpose', args.statusPurpose)

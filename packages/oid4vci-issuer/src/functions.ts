@@ -185,7 +185,7 @@ export async function getCredentialSignerCallback(
         sdJwtPayload.iss = issuer
       }
       if (sdJwtPayload.iat === undefined) {
-        sdJwtPayload.iat = new Date().getTime() / 1000
+        sdJwtPayload.iat = Math.floor(new Date().getTime() / 1000)
       }
 
       const result = await context.agent.createSdJwtVc({

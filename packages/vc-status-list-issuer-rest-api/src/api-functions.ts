@@ -2,17 +2,12 @@ import { checkAuth, sendErrorResponse } from '@sphereon/ssi-express-support'
 import {
   checkStatusIndexFromStatusListCredential,
   CreateNewStatusListFuncArgs,
-  updateStatusIndexFromStatusListCredential
+  updateStatusIndexFromStatusListCredential,
 } from '@sphereon/ssi-sdk.vc-status-list'
 import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import Debug from 'debug'
 import { Request, Response, Router } from 'express'
-import {
-  ICredentialStatusListEndpointOpts,
-  IRequiredContext,
-  IW3CredentialStatusEndpointOpts,
-  UpdateCredentialStatusRequest
-} from './types'
+import { ICredentialStatusListEndpointOpts, IRequiredContext, IW3CredentialStatusEndpointOpts, UpdateCredentialStatusRequest } from './types'
 
 const debug = Debug('sphereon:ssi-sdk:status-list')
 
@@ -37,6 +32,18 @@ export function createNewStatusListEndpoint(router: Router, context: IRequiredCo
   })
 }
 
+const buildStatusListId = (request: Request): string => {
+  const protocol = request.headers['x-forwarded-proto']?.toString() ?? request.protocol
+  let host = request.headers['x-forwarded-host']?.toString() ?? request.get('host')
+  const forwardedPort = request.headers['x-forwarded-port']?.toString()
+
+  if (forwardedPort && !(protocol === 'https' && forwardedPort === '443') && !(protocol === 'http' && forwardedPort === '80')) {
+    host += `:${forwardedPort}`
+  }
+
+  return `${protocol}://${host}${request.originalUrl}`
+}
+
 export function getStatusListCredentialEndpoint(router: Router, context: IRequiredContext, opts: ICredentialStatusListEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`Get statusList credential endpoint is disabled`)
@@ -47,7 +54,7 @@ export function getStatusListCredentialEndpoint(router: Router, context: IRequir
     try {
       //todo: Check index against correlationId first. Then match originalUrl against statusList id
       const correlationId = request.query.correlationId?.toString() ?? request.params.index?.toString() ?? request.originalUrl
-      const driver = await getDriver({ id: `${request.protocol}://${request.get('host')}${request.originalUrl}`, correlationId, dbName: opts.dbName })
+      const driver = await getDriver({ id: buildStatusListId(request), correlationId, dbName: opts.dbName })
       const details = await driver.getStatusList()
       response.statusCode = 200
       return response.send(details.statusListCredential)
@@ -157,7 +164,11 @@ export function updateW3CStatusEndpoint(router: Router, context: IRequiredContex
         }
 
         if (!updateItem.status) {
-          return sendErrorResponse(response, 400, `Required 'status' value was missing in the credentialStatus array for credentialId ${credentialId}`)
+          return sendErrorResponse(
+            response,
+            400,
+            `Required 'status' value was missing in the credentialStatus array for credentialId ${credentialId}`,
+          )
         }
         const value = updateItem.status === '0' || updateItem.status.toLowerCase() === 'false' ? false : true
         const statusList = statusListId ?? statusListEntry.statusList
