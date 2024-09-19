@@ -233,7 +233,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       return payload.cnf.jwk as JsonWebKey
     } else if (payload.cnf !== undefined && 'kid' in payload.cnf && typeof payload.cnf.kid === 'string' && payload.cnf.kid.startsWith('did:jwk:')) {
       // extract JWK from kid FIXME isn't there a did function for this already? Otherwise create one
-      const encoded = this.extractBase64FromDID(payload.cnf.kid)
+      const encoded = this.extractBase64FromDIDJwk(payload.cnf.kid)
       const decoded = decodeBase64url(encoded)
       const jwt = JSON.parse(decoded)
       return jwt as JsonWebKey
@@ -241,7 +241,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     throw Error('Unable to extract JWK from SD-JWT payload')
   }
 
-  private extractBase64FromDID(did: string): string {
+  private extractBase64FromDIDJwk(did: string): string {
     const parts = did.split(':')
     if (parts.length < 3) {
       throw new Error('Invalid DID format')
