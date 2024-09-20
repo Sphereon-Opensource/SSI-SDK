@@ -1,5 +1,5 @@
 {
-  "version": "0.30.1-unstable.1",
+  "version": "0.30.1-unstable.2",
   "npmClient": "pnpm",
   "command": {
     "version": {

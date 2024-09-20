@@ -1,7 +1,7 @@
 import { PresentationDefinitionWithLocation, PresentationExchange } from '@sphereon/did-auth-siop'
 import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
 import { Format } from '@sphereon/pex-models'
-import { ManagedIdentifierOptsOrResult, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { isManagedIdentifierDidResult, ManagedIdentifierOptsOrResult, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
@@ -179,8 +179,8 @@ export class OID4VP {
       hasher: opts?.hasher,
     }).createVerifiablePresentation(vcs.definition.definition, verifiableCredentials, signCallback, {
       proofOptions,
-      // fixme: Update to newer siop-vp to not require dids here.
-      holderDID: identifier.kid,
+      // fixme: Update to newer siop-vp to not require dids here. But when Veramo is creating the VP it's still looking at this field to pass into didManagerGet
+      ...(isManagedIdentifierDidResult(identifier) ? { holderDID: identifier.did } : {}),
     })
 
     const verifiablePresentation =
