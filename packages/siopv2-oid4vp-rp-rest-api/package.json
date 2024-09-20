@@ -36,7 +36,7 @@
     "@sphereon/did-uni-client": "^0.6.3",
     "@sphereon/pex": "5.0.0-unstable.1",
     "@sphereon/pex-models": "^2.3.1",
-    "@sphereon/ssi-sdk-ext.did-provider-jwk": " 0.24.1-unstable.115",
+    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.24.1-unstable.115",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-sdk.vc-handler-ld-local": "workspace:*",
     "@types/body-parser": "^1.19.5",

@@ -19,6 +19,7 @@ import {
   IIdentifierResolution,
   isManagedIdentifierDidResult,
   isManagedIdentifierJwkResult,
+  ManagedIdentifierDidResult,
   ManagedIdentifierOptsOrResult,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService, JwtHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
@@ -41,6 +42,7 @@ import {
   CredentialMapper,
   Hasher,
   IVerifiableCredential,
+  JoseSignatureAlgorithm,
   JoseSignatureAlgorithmString,
   JwtDecodedVerifiableCredential,
   Loggers,
@@ -103,7 +105,6 @@ import {
   selectCredentialLocaleBranding,
   verifyCredentialToAccept,
 } from './OID4VCIHolderService'
-import { JoseSignatureAlgorithm } from '@sphereon/ssi-types'
 import { WrappedW3CVerifiableCredential } from '@sphereon/ssi-types/dist'
 
 /**
@@ -942,7 +943,8 @@ export class OID4VCIHolder implements IAgentPlugin {
           issuerCorrelationType: issuer?.startsWith('did:') ? CredentialCorrelationType.DID : CredentialCorrelationType.URL,
           issuerCorrelationId: issuer,
           subjectCorrelationType,
-          subjectCorrelationId: issuer, // FIXME get separate did for subject
+          subjectCorrelationId:
+            subjectCorrelationType == 'DID' && method == 'did' ? (issuanceOpt.identifier as ManagedIdentifierDidResult).did : issuer,
         },
       })
       await context.agent.emit(OID4VCIHolderEvent.CREDENTIAL_STORED, {

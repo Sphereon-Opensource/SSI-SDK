@@ -14,7 +14,7 @@
     "events": "^3.3.0",
     "jwt-decode": "^3.1.2",
     "@sphereon/kmp-mdl-mdoc": "0.2.0-SNAPSHOT.22",
-    "@sphereon/ssi-sdk-ext.jwt-service": " 0.24.1-unstable.115"
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.24.1-unstable.115"
   },
   "devDependencies": {
     "@types/jest": "^27.5.2",
