@@ -105,7 +105,7 @@ import {
   selectCredentialLocaleBranding,
   verifyCredentialToAccept,
 } from './OID4VCIHolderService'
-import { WrappedW3CVerifiableCredential } from '@sphereon/ssi-typespres'
+import { WrappedW3CVerifiableCredential } from '@sphereon/ssi-types'
 
 /**
  * {@inheritDoc IOID4VCIHolder}
