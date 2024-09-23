@@ -28,6 +28,7 @@ import { IVerifySdJwtVcResult } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   CredentialMapper,
   ICoseKeyJson,
+  ICredentialSchemaType,
   IVerifiableCredential,
   IVerifyResult,
   JoseSignatureAlgorithm,
@@ -71,6 +72,9 @@ import { credentialLocaleBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4V
 import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult
 import decodeFrom = com.sphereon.kmp.decodeFrom
 import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
+import fetch from 'cross-fetch'
+import Ajv2020 from 'ajv/dist/2020'
+import addFormats from 'ajv-formats'
 
 export const DID_PREFIX = 'did'
 
@@ -143,6 +147,12 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
   }
 
   const wrappedVC = CredentialMapper.toWrappedVerifiableCredential(credential, { hasher })
+  if (args.verifyAgainstSchema) {
+    const schemaValidationResult: VerificationResult = await verifyCredentialAgainstSchemas(wrappedVC)
+    if (!schemaValidationResult.result || schemaValidationResult.error) {
+      return Promise.reject(translate('oid4vci_machine_credential_verification_schema_failed_message'))
+    }
+  }
   if (
     wrappedVC.decoded?.iss?.includes('did:ebsi:') ||
     (typeof wrappedVC.decoded?.vc?.issuer === 'string'
@@ -174,6 +184,24 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
     return Promise.reject(Error(verificationResult.error ?? translate('oid4vci_machine_credential_verification_failed_message')))
   }
   return verificationResult
+}
+
+const detectSchemas = (wrappedVC: WrappedVerifiableCredential): ICredentialSchemaType[] | undefined => {
+  if ('credential' in wrappedVC) {
+    const { credential } = wrappedVC
+
+    if ('credentialSchema' in credential) {
+      const { credentialSchema } = credential
+
+      if (Array.isArray(credentialSchema)) {
+        return credentialSchema
+      } else if (credentialSchema) {
+        return [credentialSchema]
+      }
+    }
+  }
+
+  return undefined
 }
 
 export const verifyCredential = async (args: VerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
@@ -691,5 +719,57 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
     }
     default:
       return Promise.reject(Error(`Credential format '${credentialSupported.format}' not supported`))
+  }
+}
+
+export const verifyCredentialAgainstSchemas = async (wrappedVC: WrappedVerifiableCredential): Promise<VerificationResult> => {
+  const schemas: ICredentialSchemaType[] | undefined = detectSchemas(wrappedVC)
+  if (!schemas) {
+    return {
+      result: true,
+      source: wrappedVC,
+      subResults: [],
+    }
+  }
+
+  const subResults: VerificationSubResult[] = await Promise.all(schemas.map((schema) => verifyCredentialAgainstSchema(wrappedVC, schema)))
+
+  return {
+    result: subResults.every((subResult) => subResult.result),
+    source: wrappedVC,
+    subResults,
+  }
+}
+
+const fetchSchema = async (uri: string) => {
+  const response = await fetch(uri)
+  if (!response.ok) {
+    throw new Error(`Unable to fetch schema from ${uri}`)
+  }
+  return response.json()
+}
+
+const verifyCredentialAgainstSchema = async (
+  wrappedVC: WrappedVerifiableCredential,
+  schema: ICredentialSchemaType,
+): Promise<VerificationSubResult> => {
+  const schemaUrl: string = typeof schema === 'string' ? schema : schema.id
+  let schemaValue
+  try {
+    schemaValue = await fetchSchema(schemaUrl)
+  } catch (e) {
+    return {
+      result: false,
+      error: e,
+    }
+  }
+
+  const ajv = new Ajv2020({ loadSchema: fetchSchema })
+  addFormats(ajv)
+
+  const validate = await ajv.compileAsync(schemaValue)
+  const valid = validate(wrappedVC.credential)
+  return {
+    result: valid,
   }
 }

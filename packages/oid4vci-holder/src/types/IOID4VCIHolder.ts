@@ -170,6 +170,7 @@ export enum SupportedLanguage {
 export type VerifyCredentialToAcceptArgs = {
   mappedCredential: MappedCredentialToAccept
   hasher?: Hasher
+  verifyAgainstSchema?: boolean
   context: RequiredContext
 }
 
