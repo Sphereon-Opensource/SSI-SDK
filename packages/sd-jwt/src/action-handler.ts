@@ -1,11 +1,10 @@
 import { Jwt, SDJwt } from '@sd-jwt/core'
 import { SDJwtVcInstance, SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 import { DisclosureFrame, JwtPayload, KbVerifier, PresentationFrame, Signer, Verifier } from '@sd-jwt/types'
-import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
 import { calculateJwkThumbprint, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import { JWK } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
-import { _ExtendedIKey, decodeBase64url } from '@veramo/utils'
+import { decodeBase64url } from '@veramo/utils'
 import Debug from 'debug'
 import { defaultGenerateDigest, defaultGenerateSalt, defaultVerifySignature } from './defaultCallbacks'
 
@@ -114,7 +113,7 @@ export class SDJwtPlugin implements IAgentPlugin {
 
     const credential = await sdjwt.issue(args.credentialPayload, args.disclosureFrame as DisclosureFrame<typeof args.credentialPayload>, {
       header: {
-        ...(signingKey?.key.kmsKeyRef !== undefined && { kid: signingKey.key.kmsKeyRef }),
+        ...(signingKey?.key.kid !== undefined && { kid: signingKey.key.kid }),
       },
     })
     return { credential }
@@ -128,35 +127,30 @@ export class SDJwtPlugin implements IAgentPlugin {
    */
   async getSignKey(args: SignKeyArgs, context: IRequiredContext): Promise<SignKeyResult> {
     // TODO Using identifierManagedGetByDid now (new managed identifier resolution). Evaluate of we need to implement more identifier types here
-    const { identifier, vmRelationship } = { ...args }
+    const { identifier } = { ...args }
     if (identifier.startsWith('did:')) {
       const didIdentifier = await context.agent.identifierManagedGetByDid({ identifier })
-      const key: _ExtendedIKey | undefined = await getFirstKeyWithRelation(
-        {
-          identifier: didIdentifier.identifier,
-          vmRelationship: vmRelationship,
-        },
-        context,
-      )
-      if (!key) {
-        throw new Error(`No key found with the given id: ${identifier}`)
+      if (!didIdentifier) {
+        throw new Error(`No identifier found with the given did: ${identifier}`)
       }
+      const key = didIdentifier.key
       const alg = await signatureAlgorithmFromKey({ key })
       debug(`Signing key ${key.publicKeyHex} found for identifier ${identifier}`)
 
-      return { alg, key: { ...key, kmsKeyRef: key.kid } }
+      return { alg, key: { ...key, kmsKeyRef: didIdentifier.kmsKeyRef, kid: didIdentifier.kid } }
     } else {
-      const key = await context.agent.keyManagerGet({ kid: identifier })
-      if (!key) {
-        throw new Error(`No key found with the identifier ${identifier}`)
+      const kidIdentifier = await context.agent.identifierManagedGetByKid({ identifier })
+      if (!kidIdentifier) {
+        throw new Error(`No identifier found with the given kid: ${identifier}`)
       }
+      const key = kidIdentifier.key
       const alg = await signatureAlgorithmFromKey({ key })
       if (key.meta?.x509 && key.meta.x509.x5c) {
-        return { alg, key: { kmsKeyRef: key.kid, x5c: key.meta.x509.x5c as string[] } }
+        return { alg, key: { kid: kidIdentifier.kid, kmsKeyRef: kidIdentifier.kmsKeyRef, x5c: key.meta.x509.x5c as string[] } }
       } else if (key.meta?.jwkThumbprint) {
-        return { alg, key: { kmsKeyRef: key.kid, jwkThumbprint: key.meta.jwkThumbprint } }
+        return { alg, key: { kid: kidIdentifier.kid, kmsKeyRef: kidIdentifier.kmsKeyRef, jwkThumbprint: key.meta.jwkThumbprint } }
       } else {
-        return { alg, key: { kmsKeyRef: key.kid } }
+        return { alg, key: { kid: kidIdentifier.kid, kmsKeyRef: kidIdentifier.kmsKeyRef } }
       }
     }
   }
