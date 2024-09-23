@@ -29,7 +29,7 @@ overrides:
   '@veramo/url-handler': 4.2.0
   '@sphereon/ssi-types': workspace:*
   '@sphereon/ssi-sdk.core': workspace:*
-  '@sphereon/pex': 5.0.0-unstable.1
+  '@sphereon/pex': 5.0.0-unstable.7
   '@sphereon/pex-models': ^2.3.1
   '@noble/hashes': 1.2.0
   debug: ^4.3.5
@@ -370,8 +370,8 @@ importers:
   packages/credential-store:
     dependencies:
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.1
-        version: 5.0.0-unstable.1
+        specifier: 5.0.0-unstable.7
+        version: 5.0.0-unstable.7
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -413,8 +413,8 @@ importers:
         specifier: 0.2.0-SNAPSHOT.22
         version: 0.2.0-SNAPSHOT.22
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.1
-        version: 5.0.0-unstable.1
+        specifier: 5.0.0-unstable.7
+        version: 5.0.0-unstable.7
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.115
         version: 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -532,8 +532,8 @@ importers:
         specifier: 0.16.1-unstable.34
         version: 0.16.1-unstable.34
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.1
-        version: 5.0.0-unstable.1
+        specifier: 5.0.0-unstable.7
+        version: 5.0.0-unstable.7
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -809,8 +809,8 @@ importers:
         specifier: 0.2.0-SNAPSHOT.22
         version: 0.2.0-SNAPSHOT.22
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.1
-        version: 5.0.0-unstable.1
+        specifier: 5.0.0-unstable.7
+        version: 5.0.0-unstable.7
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -1277,8 +1277,8 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.1
-        version: 5.0.0-unstable.1
+        specifier: 5.0.0-unstable.7
+        version: 5.0.0-unstable.7
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -1462,8 +1462,8 @@ importers:
   packages/pd-manager:
     dependencies:
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.1
-        version: 5.0.0-unstable.1
+        specifier: 5.0.0-unstable.7
+        version: 5.0.0-unstable.7
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -1629,8 +1629,8 @@ importers:
   packages/presentation-exchange:
     dependencies:
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.1
-        version: 5.0.0-unstable.1
+        specifier: 5.0.0-unstable.7
+        version: 5.0.0-unstable.7
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -2031,8 +2031,8 @@ importers:
         specifier: 0.16.1-unstable.34
         version: 0.16.1-unstable.34
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.1
-        version: 5.0.0-unstable.1
+        specifier: 5.0.0-unstable.7
+        version: 5.0.0-unstable.7
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -2161,8 +2161,8 @@ importers:
         specifier: 0.16.1-unstable.34
         version: 0.16.1-unstable.34
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.1
-        version: 5.0.0-unstable.1
+        specifier: 5.0.0-unstable.7
+        version: 5.0.0-unstable.7
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.115
         version: 0.24.1-unstable.115(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -2301,8 +2301,8 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.1
-        version: 5.0.0-unstable.1
+        specifier: 5.0.0-unstable.7
+        version: 5.0.0-unstable.7
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -8753,7 +8753,7 @@ packages:
       '@sphereon/did-uni-client': 0.6.3
       '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
       '@sphereon/oid4vc-common': 0.16.1-unstable.34
-      '@sphereon/pex': 5.0.0-unstable.1
+      '@sphereon/pex': 5.0.0-unstable.7
       '@sphereon/pex-models': 2.3.1
       '@sphereon/ssi-types': link:packages/ssi-types
       '@sphereon/wellknown-dids-client': 0.1.3
@@ -8929,8 +8929,8 @@ packages:
   /@sphereon/pex-models@2.3.1:
     resolution: {integrity: sha512-SByU4cJ0XYA6VZQ/L6lsSiRcFtBPHbFioCeQ4GP7/W/jQ+PSBD7uK2oTnKQ9/0iEiMK/6JYqhKgLs4a9UX3UTQ==}
 
-  /@sphereon/pex@5.0.0-unstable.1:
-    resolution: {integrity: sha512-pfcZnoNE9WDqFUuwXxMGXbNC0v/0MX0BhJm+LzeCdRqTVfujPT6QCuNkbsf0DJmacuvNnhwsuuDogqSSfbZZSA==}
+  /@sphereon/pex@5.0.0-unstable.7:
+    resolution: {integrity: sha512-E+pehf6E6JN/vSELZbnIvnNQqXEKjbijCCzov2mXqFWb3WyBn7B5RY7I3v9cCFnN+8r3W3E/Hb9jAJej1DIRCg==}
     engines: {node: '>=18'}
     requiresBuild: true
     dependencies:
