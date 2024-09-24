@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.30.1-unstable.4](https://github.com/Sphereon-Opensource/ssi-sdk/compare/v0.30.0...v0.30.1-unstable.4) (2024-09-23)
+
+**Note:** Version bump only for package @sphereon/ssi-sdk.siopv2-oid4vp-common
+
+
+
+
+
 ## [0.30.1-unstable.3](https://github.com/Sphereon-Opensource/ssi-sdk/compare/v0.30.0...v0.30.1-unstable.3) (2024-09-23)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.siopv2-oid4vp-common

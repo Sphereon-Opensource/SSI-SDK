@@ -17,9 +17,13 @@ import {
 import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   IIdentifierResolution,
+  isManagedIdentifierDidOpts,
   isManagedIdentifierDidResult,
   isManagedIdentifierJwkResult,
-  ManagedIdentifierDidResult,
+  isManagedIdentifierKidResult,
+  isManagedIdentifierResult,
+  isManagedIdentifierX5cOpts,
+  isManagedIdentifierX5cResult,
   ManagedIdentifierOptsOrResult,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService, JwtHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
@@ -49,6 +53,7 @@ import {
   OriginalVerifiableCredential,
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
+  WrappedW3CVerifiableCredential,
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
@@ -105,7 +110,6 @@ import {
   selectCredentialLocaleBranding,
   verifyCredentialToAccept,
 } from './OID4VCIHolderService'
-import { WrappedW3CVerifiableCredential } from '@sphereon/ssi-types'
 
 /**
  * {@inheritDoc IOID4VCIHolder}
@@ -927,12 +931,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       logger.log(`Persisting credential`, persistCredential)
 
       const issuer = CredentialMapper.issuerCorrelationIdFromIssuerType(verifiableCredential.issuer)
-      const subjectCorrelationType =
-        method === 'did' || verifiableCredential.credentialSubject.id?.startsWith('did:')
-          ? CredentialCorrelationType.DID
-          : method !== undefined
-            ? CredentialCorrelationType.URL
-            : undefined
+      const [subjectCorrelationType, subjectCorrelationId] = this.determineSubjectCorrelation(issuanceOpt.identifier, issuer)
 
       const persistedCredential = await context.agent.crsAddCredential({
         credential: {
@@ -943,8 +942,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           issuerCorrelationType: issuer?.startsWith('did:') ? CredentialCorrelationType.DID : CredentialCorrelationType.URL,
           issuerCorrelationId: issuer,
           subjectCorrelationType,
-          subjectCorrelationId:
-            subjectCorrelationType == 'DID' && method == 'did' ? (issuanceOpt.identifier as ManagedIdentifierDidResult).did : issuer,
+          subjectCorrelationId,
         },
       })
       await context.agent.emit(OID4VCIHolderEvent.CREDENTIAL_STORED, {
@@ -986,5 +984,32 @@ export class OID4VCIHolder implements IAgentPlugin {
   private async oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult> {
     const { issuer, errorOnNotFound = true } = args
     return MetadataClient.retrieveAllMetadata(issuer, { errorOnNotFound })
+  }
+
+  private determineSubjectCorrelation(identifier: ManagedIdentifierOptsOrResult, issuer: string): [CredentialCorrelationType, string] {
+    switch (identifier.method) {
+      case 'did':
+        if (isManagedIdentifierResult(identifier) && isManagedIdentifierDidResult(identifier)) {
+          return [CredentialCorrelationType.DID, identifier.did]
+        } else if (isManagedIdentifierDidOpts(identifier)) {
+          return [CredentialCorrelationType.DID, typeof identifier.identifier === 'string' ? identifier.identifier : identifier.identifier.did]
+        }
+        break
+      case 'kid':
+        if (isManagedIdentifierResult(identifier) && isManagedIdentifierKidResult(identifier)) {
+          return [CredentialCorrelationType.KID, identifier.kid]
+        } else if (isManagedIdentifierDidOpts(identifier)) {
+          return [CredentialCorrelationType.KID, identifier.identifier]
+        }
+        break
+      case 'x5c':
+        if (isManagedIdentifierResult(identifier) && isManagedIdentifierX5cResult(identifier)) {
+          return [CredentialCorrelationType.X509_SAN, identifier.x5c.join('\r\n')]
+        } else if (isManagedIdentifierX5cOpts(identifier)) {
+          return [CredentialCorrelationType.X509_SAN, identifier.identifier.join('\r\n')]
+        }
+        break
+    }
+    return [CredentialCorrelationType.URL, issuer]
   }
 }
