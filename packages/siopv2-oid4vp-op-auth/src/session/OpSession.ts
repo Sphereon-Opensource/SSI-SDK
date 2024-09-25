@@ -46,6 +46,7 @@ export class OpSession {
       this.verifiedAuthorizationRequest = await op.verifyAuthorizationRequest(this.requestJwtOrUri)
       this._nonce = await this.verifiedAuthorizationRequest.authorizationRequest.getMergedProperty('nonce')
       this._state = await this.verifiedAuthorizationRequest.authorizationRequest.getMergedProperty('state')
+
       // only used to ensure that we have DID methods supported
       await this.getSupportedDIDMethods()
     }
