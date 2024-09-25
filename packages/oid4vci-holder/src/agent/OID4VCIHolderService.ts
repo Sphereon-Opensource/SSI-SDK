@@ -10,6 +10,7 @@ import {
   getTypesFromObject,
   MetadataDisplay,
   OpenId4VCIVersion,
+  SchemaValidation
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
@@ -69,12 +70,12 @@ import {
   VerifySDJWTCredentialArgs,
 } from '../types/IOID4VCIHolder'
 import { credentialLocaleBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
-import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult
-import decodeFrom = com.sphereon.kmp.decodeFrom
-import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
 import fetch from 'cross-fetch'
 import Ajv2020 from 'ajv/dist/2020'
 import addFormats from 'ajv-formats'
+import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult;
+import decodeFrom = com.sphereon.kmp.decodeFrom;
+import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor;
 
 export const DID_PREFIX = 'did'
 
@@ -139,7 +140,7 @@ export const selectCredentialLocaleBranding = async (
 }
 
 export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<VerificationResult> => {
-  const { mappedCredential, hasher, context } = args
+  const { mappedCredential, hasher, schemaValidation, context } = args
 
   const credential = mappedCredential.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
   if (!credential) {
@@ -147,8 +148,8 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
   }
 
   const wrappedVC = CredentialMapper.toWrappedVerifiableCredential(credential, { hasher })
-  if (args.verifyAgainstSchema) {
-    const schemaValidationResult: VerificationResult = await verifyCredentialAgainstSchemas(wrappedVC)
+  if (schemaValidation && (schemaValidation === SchemaValidation.ALWAYS || schemaValidation === SchemaValidation.WHEN_PRESENT)) {
+    const schemaValidationResult: VerificationResult = await verifyCredentialAgainstSchemas(wrappedVC, schemaValidation)
     if (!schemaValidationResult.result || schemaValidationResult.error) {
       return Promise.reject(translate('oid4vci_machine_credential_verification_schema_failed_message'))
     }
@@ -722,10 +723,14 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
   }
 }
 
-export const verifyCredentialAgainstSchemas = async (wrappedVC: WrappedVerifiableCredential): Promise<VerificationResult> => {
+export const verifyCredentialAgainstSchemas = async (wrappedVC: WrappedVerifiableCredential, verifyAgainstSchema: SchemaValidation): Promise<VerificationResult> => {
   const schemas: ICredentialSchemaType[] | undefined = detectSchemas(wrappedVC)
   if (!schemas) {
-    return {
+    return verifyAgainstSchema === SchemaValidation.ALWAYS ? {
+      result: false,
+      source: wrappedVC,
+      subResults: [],
+    } : {
       result: true,
       source: wrappedVC,
       subResults: [],

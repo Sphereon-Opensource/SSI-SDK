@@ -11,6 +11,7 @@ import {
   ExperimentalSubjectIssuance,
   MetadataDisplay,
   NotificationRequest,
+  SchemaValidation,
 } from '@sphereon/oid4vci-common'
 import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
@@ -132,7 +133,7 @@ export type GetCredentialsArgs = Pick<
 >
 export type AddContactIdentityArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'contact'>
 export type AddIssuerBrandingArgs = Pick<OID4VCIMachineContext, 'serverMetadata' | 'contact'>
-export type AssertValidCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept'>
+export type AssertValidCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'issuanceOpt'>
 export type StoreCredentialBrandingArgs = Pick<
   OID4VCIMachineContext,
   'serverMetadata' | 'credentialBranding' | 'selectedCredentials' | 'credentialsToAccept'
@@ -170,7 +171,7 @@ export enum SupportedLanguage {
 export type VerifyCredentialToAcceptArgs = {
   mappedCredential: MappedCredentialToAccept
   hasher?: Hasher
-  verifyAgainstSchema?: boolean
+  schemaValidation?: SchemaValidation
   context: RequiredContext
 }
 
@@ -425,6 +426,7 @@ export type IssuanceOpts = CredentialConfigurationSupported & {
   credentialConfigurationId?: string // Explicit ID for a credential
   supportedBindingMethods: ManagedIdentifierMethod[]
   supportedPreferredDidMethod?: SupportedDidMethodEnum
+  schemaValidation?: SchemaValidation
   // todo: rename, now we have generic identifiers
   identifier?: ManagedIdentifierOptsOrResult
   // todo: replace by signature alg, so we can determine applicable key types instead of determining up front. Use proof_types_supported

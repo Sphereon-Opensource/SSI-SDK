@@ -1,11 +1,11 @@
 import { TAgent } from '@veramo/core'
 import { IOID4VCIHolder, VerificationResult, verifyCredentialAgainstSchemas } from '../../src'
-import { AccessTokenResponse, WellKnownEndpoints } from '@sphereon/oid4vci-common'
+import { AccessTokenResponse, SchemaValidation, WellKnownEndpoints } from '@sphereon/oid4vci-common'
 import {
   GET_CREDENTIAL_OFFER_AUTHORIZATION_CODE_HTTPS,
   GET_CREDENTIAL_OFFER_PRE_AUTHORIZED_CODE_HTTPS,
-  GET_PRE_AUTHORIZED_OPENID_CREDENTIAL_OFFER,
   GET_INITIATION_DATA_PRE_AUTHORIZED_OPENID_INITIATE_ISSUANCE,
+  GET_PRE_AUTHORIZED_OPENID_CREDENTIAL_OFFER,
   IDENTIPROOF_AS_METADATA,
   IDENTIPROOF_AS_URL,
   IDENTIPROOF_ISSUER_URL,
@@ -13,11 +13,11 @@ import {
   WALLET_URL,
 } from './MetadataMocks'
 import { IMachineStatePersistence } from '@sphereon/ssi-sdk.xstate-machine-persistence'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import nock = require('nock')
 import { CredentialMapper, OriginalVerifiableCredential, WrappedVerifiableCredential } from '@sphereon/ssi-types'
 import * as fs from 'fs'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import nock = require('nock');
 
 type ConfiguredAgent = TAgent<IOID4VCIHolder & IMachineStatePersistence>
 
@@ -141,7 +141,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       /**
        * the ebsi vc is different from the schema. it has the `einddatum` value as an empty string, while it should be a valid date like: `2024-09-23`
        */
-      const resultEbsiVc: VerificationResult = await verifyCredentialAgainstSchemas(wrappedEbsiKVKRegistrationVc)
+      const resultEbsiVc: VerificationResult = await verifyCredentialAgainstSchemas(wrappedEbsiKVKRegistrationVc, SchemaValidation.WHEN_PRESENT)
       expect(resultEbsiVc.result).toBeFalsy()
     }, 30000)
 
@@ -149,17 +149,17 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       /**
        * the ebsi vc is different from the schema. The problem is in the proof section. it has a created of number (epoch) but should be a date-string like `2024-04-29T17:51:28Z` also it expects jws and not jwt
        */
-      const resultEbsiVc: VerificationResult = await verifyCredentialAgainstSchemas(wrappedEbsiVerifiableAuthorisationToOnboard)
+      const resultEbsiVc: VerificationResult = await verifyCredentialAgainstSchemas(wrappedEbsiVerifiableAuthorisationToOnboard, SchemaValidation.WHEN_PRESENT)
       expect(resultEbsiVc.result).toBeFalsy()
     }, 30000)
 
     it('should not validate jwt VC with dummy schema', async () => {
-      const result: VerificationResult = await verifyCredentialAgainstSchemas(wrappedJwtVc)
+      const result: VerificationResult = await verifyCredentialAgainstSchemas(wrappedJwtVc, SchemaValidation.WHEN_PRESENT)
       expect(result.result).toBeFalsy()
     }, 30000)
 
     it('should validate ldp VC without schema', async () => {
-      const result: VerificationResult = await verifyCredentialAgainstSchemas(wrappedLdpVc)
+      const result: VerificationResult = await verifyCredentialAgainstSchemas(wrappedLdpVc, SchemaValidation.WHEN_PRESENT)
       expect(result.result).toBeTruthy()
     }, 30000)
   })
