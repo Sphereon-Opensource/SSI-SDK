@@ -1,6 +1,6 @@
 import { TAgent } from '@veramo/core'
-import { IOID4VCIHolder, VerificationResult, verifyCredentialAgainstSchemas } from '../../src'
-import { AccessTokenResponse, SchemaValidation, WellKnownEndpoints } from '@sphereon/oid4vci-common'
+import { IOID4VCIHolder, SchemaValidation, VerificationResult, verifyCredentialAgainstSchemas } from '../../src'
+import { AccessTokenResponse, WellKnownEndpoints } from '@sphereon/oid4vci-common'
 import {
   GET_CREDENTIAL_OFFER_AUTHORIZATION_CODE_HTTPS,
   GET_CREDENTIAL_OFFER_PRE_AUTHORIZED_CODE_HTTPS,
@@ -17,7 +17,7 @@ import { CredentialMapper, OriginalVerifiableCredential, WrappedVerifiableCreden
 import * as fs from 'fs'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import nock = require('nock');
+import nock = require('nock')
 
 type ConfiguredAgent = TAgent<IOID4VCIHolder & IMachineStatePersistence>
 
@@ -149,7 +149,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       /**
        * the ebsi vc is different from the schema. The problem is in the proof section. it has a created of number (epoch) but should be a date-string like `2024-04-29T17:51:28Z` also it expects jws and not jwt
        */
-      const resultEbsiVc: VerificationResult = await verifyCredentialAgainstSchemas(wrappedEbsiVerifiableAuthorisationToOnboard, SchemaValidation.WHEN_PRESENT)
+      const resultEbsiVc: VerificationResult = await verifyCredentialAgainstSchemas(
+        wrappedEbsiVerifiableAuthorisationToOnboard,
+        SchemaValidation.WHEN_PRESENT,
+      )
       expect(resultEbsiVc.result).toBeFalsy()
     }, 30000)
 

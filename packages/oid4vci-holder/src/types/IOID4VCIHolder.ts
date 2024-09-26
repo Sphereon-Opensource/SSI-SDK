@@ -11,7 +11,6 @@ import {
   ExperimentalSubjectIssuance,
   MetadataDisplay,
   NotificationRequest,
-  SchemaValidation,
 } from '@sphereon/oid4vci-common'
 import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
@@ -433,6 +432,12 @@ export type IssuanceOpts = CredentialConfigurationSupported & {
   keyType?: TKeyType
   codecName?: string
   kms?: string
+}
+
+export enum SchemaValidation {
+  ALWAYS = 'ALWAYS',
+  NEVER = 'NEVER',
+  WHEN_PRESENT = 'WHEN_PRESENT',
 }
 
 export type VerificationResult = {

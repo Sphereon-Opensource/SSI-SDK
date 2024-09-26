@@ -10,7 +10,6 @@ import {
   getTypesFromObject,
   MetadataDisplay,
   OpenId4VCIVersion,
-  SchemaValidation
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
@@ -61,6 +60,7 @@ import {
   MappedCredentialToAccept,
   OID4VCIHolderEvent,
   RequiredContext,
+  SchemaValidation,
   SelectAppLocaleBrandingArgs,
   VerificationResult,
   VerificationSubResult,
@@ -73,9 +73,9 @@ import { credentialLocaleBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4V
 import fetch from 'cross-fetch'
 import Ajv2020 from 'ajv/dist/2020'
 import addFormats from 'ajv-formats'
-import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult;
-import decodeFrom = com.sphereon.kmp.decodeFrom;
-import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor;
+import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult
+import decodeFrom = com.sphereon.kmp.decodeFrom
+import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
 
 export const DID_PREFIX = 'did'
 
@@ -723,18 +723,23 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
   }
 }
 
-export const verifyCredentialAgainstSchemas = async (wrappedVC: WrappedVerifiableCredential, verifyAgainstSchema: SchemaValidation): Promise<VerificationResult> => {
+export const verifyCredentialAgainstSchemas = async (
+  wrappedVC: WrappedVerifiableCredential,
+  verifyAgainstSchema: SchemaValidation,
+): Promise<VerificationResult> => {
   const schemas: ICredentialSchemaType[] | undefined = detectSchemas(wrappedVC)
   if (!schemas) {
-    return verifyAgainstSchema === SchemaValidation.ALWAYS ? {
-      result: false,
-      source: wrappedVC,
-      subResults: [],
-    } : {
-      result: true,
-      source: wrappedVC,
-      subResults: [],
-    }
+    return verifyAgainstSchema === SchemaValidation.ALWAYS
+      ? {
+          result: false,
+          source: wrappedVC,
+          subResults: [],
+        }
+      : {
+          result: true,
+          source: wrappedVC,
+          subResults: [],
+        }
   }
 
   const subResults: VerificationSubResult[] = await Promise.all(schemas.map((schema) => verifyCredentialAgainstSchema(wrappedVC, schema)))
