@@ -1145,6 +1145,9 @@ importers:
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.24.1-unstable.130
         version: 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1160,6 +1163,12 @@ importers:
       '@sphereon/ssi-sdk.sd-jwt':
         specifier: workspace:*
         version: link:../sd-jwt
+      '@sphereon/ssi-sdk.vc-status-list':
+        specifier: workspace:*
+        version: link:../vc-status-list
+      '@sphereon/ssi-sdk.vc-status-list-issuer':
+        specifier: workspace:*
+        version: link:../vc-status-list-issuer
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -2019,8 +2028,8 @@ importers:
         specifier: 0.16.1-unstable.68
         version: 0.16.1-unstable.68
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-unstable.34
-        version: 0.16.1-unstable.34
+        specifier: 0.16.1-unstable.68
+        version: 0.16.1-unstable.68
       '@sphereon/pex':
         specifier: 5.0.0-unstable.7
         version: 5.0.0-unstable.7
@@ -2149,8 +2158,8 @@ importers:
         specifier: 0.16.1-unstable.68
         version: 0.16.1-unstable.68
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-unstable.34
-        version: 0.16.1-unstable.34
+        specifier: 0.16.1-unstable.68
+        version: 0.16.1-unstable.68
       '@sphereon/pex':
         specifier: 5.0.0-unstable.7
         version: 5.0.0-unstable.7
@@ -2987,6 +2996,9 @@ importers:
       debug:
         specifier: ^4.3.5
         version: 4.3.6
+      typeorm:
+        specifier: ^0.3.20
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
       uint8arrays:
         specifier: ^3.1.1
         version: 3.1.1
@@ -3336,6 +3348,9 @@ importers:
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -3348,6 +3363,12 @@ importers:
       '@sphereon/ssi-sdk.presentation-exchange':
         specifier: workspace:*
         version: link:../presentation-exchange
+      '@sphereon/ssi-sdk.vc-status-list':
+        specifier: workspace:*
+        version: link:../vc-status-list
+      '@sphereon/ssi-sdk.vc-status-list-issuer':
+        specifier: workspace:*
+        version: link:../vc-status-list-issuer
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -3403,9 +3424,6 @@ importers:
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.24.1-unstable.130
         version: 0.24.1-unstable.130(ts-node@10.9.2)
-      '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
-        version: link:../agent-config
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -8823,17 +8841,6 @@ packages:
       - encoding
       - typescript
     dev: true
-
-  /@sphereon/oid4vc-common@0.16.1-unstable.34:
-    resolution: {integrity: sha512-MpEjQYX/MO6Mm9DFbyOCQ1wse4a3cEetNW9iLvX3vYMAGLUafPMZL2sC3PcJtNLK1MJ//00Vc/dkUPkLIDULpw==}
-    engines: {node: '>=18'}
-    dependencies:
-      '@sphereon/ssi-types': link:packages/ssi-types
-      jwt-decode: 4.0.0
-      sha.js: 2.4.11
-      uint8arrays: 3.1.1
-      uuid: 9.0.1
-    dev: false
 
   /@sphereon/oid4vc-common@0.16.1-unstable.68:
     resolution: {integrity: sha512-njQWU12rMoJLpqC249QrhkZDykGA4KdLBvYvIRcfQaEWnIRsOzQFu9knOJ7ETlzE56V5K8JSw0+jSM9hE1A4wg==}

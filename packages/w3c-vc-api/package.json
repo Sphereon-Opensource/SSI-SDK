@@ -13,10 +13,13 @@
   "dependencies": {
     "@sphereon/did-auth-siop": "0.16.1-unstable.68",
     "@sphereon/ssi-express-support": "workspace:*",
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.credential-store": "workspace:*",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@sphereon/ssi-sdk.presentation-exchange": "workspace:*",
+    "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
+    "@sphereon/ssi-sdk.vc-status-list-issuer": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",

@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth",
-  "version": "0.29.1",
+  "version": "0.30.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,7 +16,7 @@
   "dependencies": {
     "@sphereon/did-auth-siop": "0.16.1-unstable.68",
     "@sphereon/did-auth-siop-adapter": "0.16.1-unstable.68",
-    "@sphereon/oid4vc-common": "0.16.1-unstable.34",
+    "@sphereon/oid4vc-common": "0.16.1-unstable.68",
     "@sphereon/pex": "5.0.0-unstable.7",
     "@sphereon/pex-models": "^2.3.1",
     "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.130",
