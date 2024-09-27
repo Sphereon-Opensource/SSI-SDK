@@ -2806,9 +2806,6 @@ importers:
       '@sphereon/ssi-sdk.vc-status-list':
         specifier: workspace:*
         version: link:../vc-status-list
-      '@sphereon/ssi-sdk.vc-status-list-issuer-drivers':
-        specifier: workspace:*
-        version: link:../vc-status-list-issuer-drivers
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
