@@ -9,7 +9,6 @@ import Debug from 'debug'
 import { defaultGenerateDigest, defaultGenerateSalt, defaultVerifySignature } from './defaultCallbacks'
 import { sphereonCA } from './trustAnchors'
 import { SdJwtVerifySignature, SignKeyArgs, SignKeyResult } from './index'
-import { sphereonCA, funkeTestCA } from './trustAnchors'
 import {
   Claims,
   ICreateSdJwtPresentationArgs,
@@ -264,7 +263,6 @@ export class SDJwtPlugin implements IAgentPlugin {
       const trustAnchors = new Set<string>([...this.trustAnchorsInPEM])
       if (trustAnchors.size === 0) {
         trustAnchors.add(sphereonCA)
-        trustAnchors.add(funkeTestCA)
       }
       const certificateValidationResult = await context.agent.x509VerifyCertificateChain({
         chain: x5c,
