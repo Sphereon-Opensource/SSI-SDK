@@ -1,12 +1,16 @@
 {
-  "version": "0.30.0",
+  "version": "0.30",
   "npmClient": "pnpm",
   "command": {
     "version": {
       "forcePublish": true
     },
     "publish": {
-      "allowBranch": ["main", "master"],
+      "allowBranch": [
+        "main",
+        "master",
+        "feature/from-funke"
+      ],
       "conventionalCommits": true,
       "gitRemote": "origin",
       "message": "chore(release): %s"
