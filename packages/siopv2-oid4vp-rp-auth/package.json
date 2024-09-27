@@ -17,7 +17,7 @@
     "@sphereon/did-auth-siop": "0.16.1-unstable.86",
     "@sphereon/did-auth-siop-adapter": "0.16.1-unstable.86",
     "@sphereon/oid4vc-common": "0.16.1-unstable.86",
-    "@sphereon/pex": "5.0.0-unstable.7",
+    "@sphereon/pex": "5.0.0-unstable.8",
     "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.130",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.130",
     "@sphereon/ssi-sdk-ext.jwt-service": "0.24.1-unstable.130",
