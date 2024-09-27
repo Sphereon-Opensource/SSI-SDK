@@ -1,5 +1,10 @@
 import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
+import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
+import { IRequiredPlugins } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import { StatusListType } from '@sphereon/ssi-types'
+import { IAgentContext } from '@veramo/core'
+
+export type IRequiredContext = IAgentContext<IRequiredPlugins & IStatusListPlugin>
 
 export interface IStatusListOpts {
   endpointOpts: IStatusListEndpointOpts

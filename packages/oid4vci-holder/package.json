@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.oid4vci-holder",
-  "version": "0.29.0",
+  "version": "0.30.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,12 +14,12 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/oid4vci-client": "0.16.1-unstable.34",
-    "@sphereon/oid4vci-common": "0.16.1-unstable.34",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.112",
-    "@sphereon/ssi-sdk-ext.key-utils": "0.24.1-unstable.112",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.112",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.24.1-unstable.112",
+    "@sphereon/oid4vci-client": "0.16.1-unstable.68",
+    "@sphereon/oid4vci-common": "0.16.1-unstable.68",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.124",
+    "@sphereon/ssi-sdk-ext.key-utils": "0.24.1-unstable.124",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.124",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.24.1-unstable.124",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.credential-store": "workspace:*",
@@ -39,7 +39,7 @@
     "xstate": "^4.38.3"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.24.1-unstable.112",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.24.1-unstable.124",
     "@types/i18n-js": "^3.8.9",
     "@types/lodash.memoize": "^4.1.9",
     "@types/uuid": "^9.0.8",

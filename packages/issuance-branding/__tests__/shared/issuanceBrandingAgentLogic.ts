@@ -2,17 +2,17 @@ import { TAgent } from '@veramo/core'
 import { IIssuanceBranding } from '../../src'
 import {
   IBasicCredentialBranding,
-  ICredentialBranding,
-  ILocaleBranding,
-  IUpdateCredentialLocaleBrandingArgs,
-  ICredentialLocaleBranding,
   IBasicCredentialLocaleBranding,
   IBasicIssuerBranding,
+  IBasicIssuerLocaleBranding,
+  ICredentialBranding,
+  ICredentialLocaleBranding,
   IIssuerBranding,
   IIssuerLocaleBranding,
+  ILocaleBranding,
+  IUpdateCredentialLocaleBrandingArgs,
   IUpdateIssuerLocaleBrandingArgs,
-  IBasicIssuerLocaleBranding,
-} from '../../../data-store/src'
+} from '@sphereon/ssi-sdk.data-store'
 
 type ConfiguredAgent = TAgent<IIssuanceBranding>
 
@@ -384,7 +384,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const fromDb: ICredentialBranding = await agent.ibAddCredentialBranding(credentialBranding)
       expect(fromDb).toBeDefined()
 
-      const result: Array<ICredentialLocaleBranding> = await agent.ibGetCredentialLocaleBranding({ filter: [{ id: 'unknownId' }] })
+      const result = await agent.ibGetCredentialLocaleBranding({ filter: [{ id: 'unknownId' }] })
 
       expect(result).toBeDefined()
       expect(result?.length).toEqual(0)

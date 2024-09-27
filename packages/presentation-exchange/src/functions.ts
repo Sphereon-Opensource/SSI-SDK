@@ -95,7 +95,7 @@ export async function createPEXPresentationSignCallback(
             ...presentation.kbJwt?.payload,
             iat: presentation.kbJwt?.payload?.iat ?? Math.floor(Date.now() / 1000 - CLOCK_SKEW),
             nonce: challenge ?? presentation.kbJwt?.payload?.nonce,
-            aud: presentation.kbJwt?.payload?.aud ?? domain ?? args.domain
+            aud: presentation.kbJwt?.payload?.aud ?? domain ?? args.domain,
           },
         },
       })

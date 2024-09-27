@@ -1,11 +1,7 @@
 import { PresentationDefinitionWithLocation, PresentationExchange } from '@sphereon/did-auth-siop'
 import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
 import { Format } from '@sphereon/pex-models'
-import {
-  isOID4VCIssuerIdentifier,
-  ManagedIdentifierOptsOrResult,
-  ManagedIdentifierResult
-} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { isOID4VCIssuerIdentifier, isManagedIdentifierDidResult, ManagedIdentifierOptsOrResult, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
@@ -179,6 +175,7 @@ export class OID4VP {
       format: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format,
       skipDidResolution: opts?.skipDidResolution ?? false,
     })
+    const identifier: ManagedIdentifierResult | undefined = idOpts.method !== 'oid4vci-issuer' ? await this.session.context.agent.identifierManagedGet(idOpts) : undefined
 
     const verifiableCredentials = vcs.credentials.map((credential) =>
       typeof credential === 'object' && 'digitalCredential' in credential ? credential.originalVerifiableCredential! : credential,
@@ -189,8 +186,8 @@ export class OID4VP {
       hasher: opts?.hasher,
     }).createVerifiablePresentation(vcs.definition.definition, verifiableCredentials, signCallback, {
       proofOptions,
-      // fixme: Update to newer siop-vp to not require dids here.
-      ...(idOpts.method !== 'oid4vci-issuer' && { holderDID: (await this.session.context.agent.identifierManagedGet(idOpts)).kid })
+      // fixme: Update to newer siop-vp to not require dids here. But when Veramo is creating the VP it's still looking at this field to pass into didManagerGet
+      ...(identifier && isManagedIdentifierDidResult(identifier) && { holderDID: identifier.kid })
     })
 
     const verifiablePresentation =

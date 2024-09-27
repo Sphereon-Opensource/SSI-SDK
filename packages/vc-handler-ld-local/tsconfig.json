@@ -14,7 +14,7 @@
       "path": "../vc-status-list"
     },
     {
-      "path": "../vc-status-list-issuer-drivers"
+      "path": "../vc-status-list-issuer"
     },
     {
       "path": "../data-store"

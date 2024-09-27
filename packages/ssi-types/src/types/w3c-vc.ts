@@ -1,5 +1,5 @@
-import { PresentationSubmission } from './pex'
 import { IProofPurpose, IProofType } from './did'
+import { PresentationSubmission } from './pex'
 import { OriginalType, WrappedVerifiableCredential, WrappedVerifiablePresentation } from './vc'
 
 export type AdditionalClaims = Record<string, any>
@@ -65,6 +65,7 @@ export interface IProof {
 export interface ICredentialStatus {
   id: string
   type: string
+  [x: string]: any
 }
 
 export interface IIssuer {
@@ -283,7 +284,7 @@ export type StatusPurpose2021 = 'revocation' | 'suspension' | string
 
 export enum StatusListCredentialIdMode {
   ISSUANCE = 'ISSUANCE',
-  PERSISTENCE = 'PERSISTENCE',
+  // PERSISTENCE = 'PERSISTENCE',
   NEVER = 'NEVER',
 }
 
@@ -291,9 +292,9 @@ export type StatusListIndexingDirection = 'rightToLeft'
 
 export enum StatusListDriverType {
   AGENT_TYPEORM = 'agent_typeorm',
-  AGENT_KV_STORE = 'agent_kv_store',
+ /* AGENT_KV_STORE = 'agent_kv_store',
   GITHUB = 'github',
-  AGENT_FILESYSTEM = 'agent_filesystem',
+  AGENT_FILESYSTEM = 'agent_filesystem',*/
 }
 
 export function isWrappedW3CVerifiableCredential(vc: WrappedVerifiableCredential): vc is WrappedW3CVerifiableCredential {

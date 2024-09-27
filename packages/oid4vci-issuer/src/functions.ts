@@ -2,6 +2,8 @@ import { CredentialRequest, IssuerMetadata, Jwt, JwtVerifyResult, OID4VCICredent
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
 import { legacyKeyRefsToIdentifierOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
+import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { CompactSdJwtVc, CredentialMapper, ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { CredentialPayload, DIDDocument, ProofFormat } from '@veramo/core'
 import { bytesToBase64 } from '@veramo/utils'
@@ -160,6 +162,15 @@ export async function getCredentialSignerCallback(
       })
       credential.credentialSubject = subjectIsArray ? credentialSubjects : credentialSubjects[0]
 
+      // TODO: We should extend the plugin capabilities of issuance so we do not have to tuck this into the sign callback
+      if (contextHasPlugin<IStatusListPlugin>(context, 'slAddStatusToCredential')) {
+        // Add status list if enabled (and when the input has a credentialStatus object (can be empty))
+        const credentialStatusVC = await context.agent.slAddStatusToCredential({ credential })
+        if (credential.credentialStatus && !credential.credentialStatus.statusListCredential) {
+          credential.credentialStatus = credentialStatusVC.credentialStatus
+        }
+      }
+
       const result = await context.agent.createVerifiableCredential({
         credential: credential as CredentialPayload,
         proofFormat,
@@ -174,14 +185,21 @@ export async function getCredentialSignerCallback(
         sdJwtPayload.iss = issuer
       }
       if (sdJwtPayload.iat === undefined) {
-        sdJwtPayload.iat = new Date().getTime() / 1000
+        sdJwtPayload.iat = Math.floor(new Date().getTime() / 1000)
       }
 
+      let disclosureFrame
+      if ('disclosureFrame' in credential) {
+        disclosureFrame = credential['disclosureFrame']
+        delete credential['disclosureFrame']
+      } else {
+        disclosureFrame = {
+          _sd: credential['_sd'],
+        }
+      }
       const result = await context.agent.createSdJwtVc({
         credentialPayload: sdJwtPayload,
-        disclosureFrame: {
-          _sd: credential['_sd'],
-        },
+        disclosureFrame: disclosureFrame,
       })
       return result.credential
     } /*else if (CredentialMapper.isMsoMdocDecodedCredential(credential)) {

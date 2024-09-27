@@ -84,10 +84,21 @@ export const siopSendAuthorizationResponse = async (
       return Promise.reject(Error('SiopMachine only supports UniqueDigitalCredentials for now'))
     }
     let identifier: ManagedIdentifierOptsOrResult
-    identifier = await session.context.agent.identifierManagedGetByKid({
-      identifier: firstUniqueDC.digitalCredential.kmsKeyRef,
-      kmsKeyRef: firstUniqueDC.digitalCredential.kmsKeyRef,
-    })
+    const digitalCredential = firstUniqueDC.digitalCredential
+    switch (digitalCredential.subjectCorrelationType) {
+      case 'DID':
+        identifier = await session.context.agent.identifierManagedGetByDid({
+          identifier: digitalCredential.subjectCorrelationId,
+          kmsKeyRef: digitalCredential.kmsKeyRef,
+        })
+        break
+      default:
+        identifier = await session.context.agent.identifierManagedGetByKid({
+          identifier: digitalCredential.kmsKeyRef,
+          kmsKeyRef: digitalCredential.kmsKeyRef,
+        })
+    }
+
     if (identifier === undefined && idOpts !== undefined && (await hasEbsiClient(request.authorizationRequest))) {
       identifier = await createEbsiIdentifier(agentContext)
     }

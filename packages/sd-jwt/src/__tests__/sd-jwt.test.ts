@@ -101,7 +101,7 @@ describe('Agent plugin', () => {
     const credentialPayload: SdJwtVcPayload = {
       ...claims,
       iss: issuer,
-      iat: new Date().getTime() / 1000,
+      iat: Math.floor(new Date().getTime() / 1000),
       vct: '',
     }
     const credential = await agent.createSdJwtVc({
@@ -114,7 +114,7 @@ describe('Agent plugin', () => {
   it('create sd without an issuer', async () => {
     const credentialPayload = {
       ...claims,
-      iat: new Date().getTime() / 1000,
+      iat: Math.floor(new Date().getTime() / 1000),
       vct: '',
     }
     await expect(
@@ -129,7 +129,7 @@ describe('Agent plugin', () => {
     const credentialPayload: SdJwtVcPayload = {
       ...claims,
       iss: issuer,
-      iat: new Date().getTime() / 1000,
+      iat: Math.floor(new Date().getTime() / 1000),
       vct: '',
     }
     const credential = await agent.createSdJwtVc({
@@ -145,7 +145,7 @@ describe('Agent plugin', () => {
     const credentialPayload: SdJwtVcPayload = {
       ...claims,
       iss: issuer,
-      iat: new Date().getTime() / 1000,
+      iat: Math.floor(new Date().getTime() / 1000),
       vct: '',
     }
     const credential = await agent.createSdJwtVc({
@@ -179,7 +179,7 @@ describe('Agent plugin', () => {
         jwk,
       },
       iss: issuer,
-      iat: new Date().getTime() / 1000,
+      iat: Math.floor(new Date().getTime() / 1000),
       vct: '',
     }
     const credential = await agent.createSdJwtVc({
@@ -209,7 +209,7 @@ describe('Agent plugin', () => {
     const credentialPayload: SdJwtVcPayload = {
       ...newClaims,
       iss: issuer,
-      iat: new Date().getTime() / 1000,
+      iat: Math.floor(new Date().getTime() / 1000),
       vct: '',
     }
     const credential = await agent.createSdJwtVc({
@@ -236,7 +236,7 @@ describe('Agent plugin', () => {
     const credentialPayload: SdJwtVcPayload = {
       ...claims,
       iss: issuer,
-      iat: new Date().getTime() / 1000,
+      iat: Math.floor(new Date().getTime() / 1000),
       vct: '',
       cnf: {
         jwk,
@@ -273,7 +273,7 @@ describe('Agent plugin', () => {
     const credentialPayload: SdJwtVcPayload = {
       ...claims,
       iss: issuer,
-      iat: new Date().getTime() / 1000,
+      iat: Math.floor(new Date().getTime() / 1000),
       vct: '',
       cnf: {
         jwk,

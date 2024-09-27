@@ -200,6 +200,7 @@ export type SignKeyArgs = {
 export type SignKeyResult = {
   alg: JoseSignatureAlgorithm
   key: {
+    kid: string
     kmsKeyRef: string
     x5c?: string[]
     jwkThumbprint?: string
