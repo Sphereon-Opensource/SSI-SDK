@@ -175,8 +175,7 @@ export class OID4VP {
       format: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format,
       skipDidResolution: opts?.skipDidResolution ?? false,
     })
-    const identifier: ManagedIdentifierResult | undefined = idOpts.method !== 'oid4vci-issuer' ? await this.session.context.agent.identifierManagedGet(idOpts) : undefined
-
+    const identifier: ManagedIdentifierResult = await this.session.context.agent.identifierManagedGet(idOpts)
     const verifiableCredentials = vcs.credentials.map((credential) =>
       typeof credential === 'object' && 'digitalCredential' in credential ? credential.originalVerifiableCredential! : credential,
     )
