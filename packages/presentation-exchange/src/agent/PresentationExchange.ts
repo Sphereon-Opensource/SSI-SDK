@@ -12,7 +12,13 @@ import { IAgentPlugin } from '@veramo/core'
 
 import { IPresentationExchange } from '../types/IPresentationExchange'
 import { Checked, IPresentationDefinition, PEX } from '@sphereon/pex'
-import { CompactJWT, CredentialMapper, JWT_PROOF_TYPE_2020, W3CVerifiableCredential } from '@sphereon/ssi-types'
+import {
+  CompactJWT,
+  CredentialMapper,
+  IProof,
+  JWT_PROOF_TYPE_2020,
+  W3CVerifiableCredential
+} from '@sphereon/ssi-types'
 import { InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
 import { toDIDs } from '@sphereon/ssi-sdk-ext.did-utils'
 import { CredentialRole, UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
@@ -135,7 +141,7 @@ export class PresentationExchange implements IAgentPlugin {
     return uniqueCredentials.map((uniqueVC: UniqueDigitalCredential) => {
       const vc = uniqueVC.uniformVerifiableCredential!
       const proof = Array.isArray(vc.proof) ? vc.proof : [vc.proof]
-      const jwtProof = proof.find((p) => p?.type === JWT_PROOF_TYPE_2020)
+      const jwtProof = proof.find((p: IProof) => p?.type === JWT_PROOF_TYPE_2020)
       return jwtProof ? (jwtProof.jwt as CompactJWT) : vc
     })
   }
