@@ -27,10 +27,7 @@ export async function createPEXPresentationSignCallback(
   },
   context: IRequiredContext,
 ): Promise<IPEXPresentationSignCallback> {
-  function determineProofFormat(innerArgs: {
-    format?: Format | 'jwt' | 'lds' | 'EthereumEip712Signature2021'
-    presentationDefinition: IPresentationDefinition
-  }): string {
+  function determineProofFormat(innerArgs: {format?: Format | 'jwt' | 'lds' | 'EthereumEip712Signature2021', presentationDefinition: IPresentationDefinition}): string {
     const { format, presentationDefinition } = innerArgs
 
     const formatOptions = format ?? presentationDefinition.format ?? args.format
@@ -85,27 +82,28 @@ export async function createPEXPresentationSignCallback(
       idOpts.offlineWhenNoDIDRegistered = true
     }
 
-    const resolution = await context.agent.identifierManagedGet(idOpts)
-
     if ('compactSdJwtVc' in presentation) {
       if (proofFormat !== 'vc+sd-jwt') {
         return Promise.reject(Error(`presentation payload does not match proof format ${proofFormat}`))
       }
 
       const presentationResult = await context.agent.createSdJwtPresentation({
+        ...(idOpts?.method === 'oid4vci-issuer' && { holder: idOpts?.issuer as string }),
         presentation: presentation.compactSdJwtVc,
         kb: {
           payload: {
             ...presentation.kbJwt?.payload,
             iat: presentation.kbJwt?.payload?.iat ?? Math.floor(Date.now() / 1000 - CLOCK_SKEW),
             nonce: challenge ?? presentation.kbJwt?.payload?.nonce,
-            aud: presentation.kbJwt?.payload?.aud ?? resolution.issuer,
+            aud: presentation.kbJwt?.payload?.aud ?? domain ?? args.domain
           },
         },
       })
 
       return CredentialMapper.storedPresentationToOriginalFormat(presentationResult.presentation as OriginalVerifiablePresentation)
     } else {
+      const resolution = await context.agent.identifierManagedGet(idOpts)
+
       if (proofFormat === 'vc+sd-jwt') {
         return Promise.reject(Error(`presentation payload does not match proof format ${proofFormat}`))
       }

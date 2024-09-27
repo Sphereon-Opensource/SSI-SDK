@@ -86,10 +86,9 @@ export class SDJwtPlugin implements IAgentPlugin {
     const { key, alg } = signingKey
 
     const signer: Signer = async (data: string): Promise<string> => {
-      console.log('AHAAAAAAA')
-
       return context.agent.keyManagerSign({ keyRef: key.kmsKeyRef, data })
     }
+
     return { signer, alg, signingKey }
   }
 
@@ -194,9 +193,9 @@ export class SDJwtPlugin implements IAgentPlugin {
       kbSigner: signer,
       kbSignAlg: alg ?? 'ES256',
     })
-    const credential = await sdjwt.present(args.presentation, args.presentationFrame as PresentationFrame<SdJwtVcPayload>, { kb: args.kb })
+    const presentation = await sdjwt.present(args.presentation, args.presentationFrame as PresentationFrame<SdJwtVcPayload>, { kb: args.kb })
 
-    return { presentation: credential }
+    return { presentation }
   }
 
   /**
@@ -240,7 +239,7 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @param signature - The signature
    * @returns
    */
-  async verify(sdjwt: SDJwtVcInstance, context: IRequiredContext, data: string, signature: string) {
+  async verify(sdjwt: SDJwtVcInstance, context: IRequiredContext, data: string, signature: string): Promise<boolean> {
     const decodedVC = await sdjwt.decode(`${data}.${signature}`)
     const issuer: string = ((decodedVC.jwt as Jwt).payload as Record<string, unknown>).iss as string
     const header = (decodedVC.jwt as Jwt).header as Record<string, any>
@@ -257,7 +256,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       })
 
       if (certificateValidationResult.error || !certificateValidationResult?.certificateChain) {
-        throw new Error('Certificate chain validation failed')
+        return Promise.reject(Error(`Certificate chain validation failed. ${certificateValidationResult.message}`))
       }
       const certInfo = certificateValidationResult.certificateChain[0]
       jwk = certInfo.publicKeyJWK as JWK

@@ -1,11 +1,15 @@
 import { PresentationDefinitionWithLocation, PresentationExchange } from '@sphereon/did-auth-siop'
 import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
 import { Format } from '@sphereon/pex-models'
-import { ManagedIdentifierOptsOrResult, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {
+  isOID4VCIssuerIdentifier,
+  ManagedIdentifierOptsOrResult,
+  ManagedIdentifierResult
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
-import { CompactJWT, Hasher, OriginalVerifiableCredential } from '@sphereon/ssi-types'
+import { CompactJWT, Hasher, IProof, OriginalVerifiableCredential } from '@sphereon/ssi-types'
 import {
   DEFAULT_JWT_PROOF_TYPE,
   IGetPresentationExchangeArgs,
@@ -117,10 +121,15 @@ export class OID4VP {
         if (typeof firstUniqueDC !== 'object' || !('digitalCredential' in firstUniqueDC)) {
           return Promise.reject(Error('If no opts provided, credentials should be of type UniqueDigitalCredential'))
         }
-        idOpts = await this.session.context.agent.identifierManagedGetByKid({
-          identifier: firstUniqueDC.digitalCredential.kmsKeyRef,
-          kmsKeyRef: firstUniqueDC.digitalCredential.kmsKeyRef,
-        })
+
+        idOpts = isOID4VCIssuerIdentifier(firstUniqueDC.digitalCredential.kmsKeyRef)
+          ? await this.session.context.agent.identifierManagedGetByIssuer({
+            identifier: firstUniqueDC.digitalCredential.kmsKeyRef,
+          })
+          : await this.session.context.agent.identifierManagedGetByKid({
+            identifier: firstUniqueDC.digitalCredential.kmsKeyRef,
+            kmsKeyRef: firstUniqueDC.digitalCredential.kmsKeyRef,
+          })
 
         /*
         const holder = CredentialMapper.isSdJwtDecodedCredential(firstVC)
@@ -160,6 +169,7 @@ export class OID4VP {
     if (!idOpts) {
       return Promise.reject(Error(`No identifier options present at this point`))
     }
+
     const signCallback = await createOID4VPPresentationSignCallback({
       presentationSignCallback: this.session.options.presentationSignCallback,
       idOpts,
@@ -169,7 +179,7 @@ export class OID4VP {
       format: opts?.restrictToFormats ?? selectedVerifiableCredentials.definition.definition.format,
       skipDidResolution: opts?.skipDidResolution ?? false,
     })
-    const identifier: ManagedIdentifierResult = await this.session.context.agent.identifierManagedGet(idOpts)
+
     const verifiableCredentials = vcs.credentials.map((credential) =>
       typeof credential === 'object' && 'digitalCredential' in credential ? credential.originalVerifiableCredential! : credential,
     )
@@ -180,7 +190,7 @@ export class OID4VP {
     }).createVerifiablePresentation(vcs.definition.definition, verifiableCredentials, signCallback, {
       proofOptions,
       // fixme: Update to newer siop-vp to not require dids here.
-      holderDID: identifier.kid,
+      ...(idOpts.method !== 'oid4vci-issuer' && { holderDID: (await this.session.context.agent.identifierManagedGet(idOpts)).kid })
     })
 
     const verifiablePresentation =
@@ -196,7 +206,7 @@ export class OID4VP {
       verifiablePresentation,
       verifiableCredentials: verifiableCredentials,
       definition: selectedVerifiableCredentials.definition,
-      idOpts: idOpts,
+      idOpts,
     }
   }
 
@@ -303,7 +313,7 @@ export class OID4VP {
     return uniqueCredentials.map((uniqueVC: UniqueDigitalCredential) => {
       const vc = uniqueVC.uniformVerifiableCredential!
       const proof = Array.isArray(vc.proof) ? vc.proof : [vc.proof]
-      const jwtProof = proof.find((p) => p?.type === DEFAULT_JWT_PROOF_TYPE)
+      const jwtProof = proof.find((p: IProof) => p?.type === DEFAULT_JWT_PROOF_TYPE)
       return jwtProof ? (jwtProof.jwt as CompactJWT) : vc
     })
   }
