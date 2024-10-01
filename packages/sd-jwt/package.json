@@ -14,8 +14,8 @@
     }
   },
   "dependencies": {
-    "@sd-jwt/core": "^0.6.1",
-    "@sd-jwt/sd-jwt-vc": "^0.6.1",
+    "@sd-jwt/core": "^0.7.2",
+    "@sd-jwt/sd-jwt-vc": "^0.7.2",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@sphereon/ssi-sdk.mdl-mdoc": "workspace:*",
@@ -29,9 +29,9 @@
     "debug": "^4.3.5"
   },
   "devDependencies": {
-    "@sd-jwt/decode": "^0.6.1",
-    "@sd-jwt/types": "^0.6.1",
-    "@sd-jwt/utils": "^0.6.1",
+    "@sd-jwt/decode": "^0.7.2",
+    "@sd-jwt/types": "^0.7.2",
+    "@sd-jwt/utils": "^0.7.2",
     "@types/uuid": "^9.0.8",
     "@sphereon/ssi-sdk-ext.did-provider-jwk": " 0.24.1-next.112",
     "@sphereon/ssi-sdk-ext.did-resolver-jwk": " 0.24.1-next.112",
