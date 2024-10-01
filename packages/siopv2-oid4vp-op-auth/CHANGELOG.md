@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.30.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.0...v0.30.1) (2024-10-01)
+
+### Bug Fixes
+
+- fixes issuer signed flow ([44dabf4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/44dabf46d5ea45db0ba3dc4d8e55343980011464))
+
 # [0.29.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.28.0...v0.29.0) (2024-08-01)
 
 ### Features
