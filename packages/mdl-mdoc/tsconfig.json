@@ -1,0 +1,26 @@
+{
+  "extends": "../tsconfig-base.json",
+  "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "declarationDir": "dist",
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false
+  },
+  "references": [
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../data-store"
+    }
+  ]
+}

@@ -1,20 +1,19 @@
 import {
-  CheckLinkedDomain,
   PresentationDefinitionWithLocation,
   PresentationExchangeResponseOpts,
-  ResolveOpts,
   URI,
   Verification,
-  VerificationMode,
   VerifiedAuthorizationRequest,
 } from '@sphereon/did-auth-siop'
-import { getAgentDIDMethods, getAgentResolver, getDID } from '@sphereon/ssi-sdk-ext.did-utils'
-import { CredentialMapper, parseDid } from '@sphereon/ssi-types'
-import { IIdentifier, TKeyType } from '@veramo/core'
+import { PresentationVerificationResult } from '@sphereon/did-auth-siop'
+import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
+import { CompactSdJwtVc, W3CVerifiablePresentation, CredentialMapper, PresentationSubmission, parseDid } from '@sphereon/ssi-types'
+import { IIdentifier, IVerifyResult, TKeyType } from '@veramo/core'
 import Debug from 'debug'
-import { IOPOptions, IOpSessionArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types/IDidAuthSiopOpAuthenticator'
+import { IOPOptions, IOpSessionArgs, IOpSessionGetOID4VPArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
+import { ResolveOpts } from '@sphereon/did-auth-siop-adapter'
 
 const debug = Debug(`sphereon:sdk:siop:op-session`)
 
@@ -47,6 +46,7 @@ export class OpSession {
       this.verifiedAuthorizationRequest = await op.verifyAuthorizationRequest(this.requestJwtOrUri)
       this._nonce = await this.verifiedAuthorizationRequest.authorizationRequest.getMergedProperty('nonce')
       this._state = await this.verifiedAuthorizationRequest.authorizationRequest.getMergedProperty('state')
+
       // only used to ensure that we have DID methods supported
       await this.getSupportedDIDMethods()
     }
@@ -161,7 +161,9 @@ export class OpSession {
     if (methods.length === 0) {
       throw Error(`No DID methods are supported`)
     }
-    const identifiers = await this.context.agent.didManagerFind().then((ids) => ids.filter((id) => methods.includes(id.provider)))
+    const identifiers: IIdentifier[] = await this.context.agent
+      .didManagerFind()
+      .then((ids: IIdentifier[]) => ids.filter((id) => methods.includes(id.provider)))
     if (identifiers.length === 0) {
       debug(`No identifiers available in agent supporting methods ${JSON.stringify(methods)}`)
       if (opts?.createInCaseNoDIDFound !== false) {
@@ -201,13 +203,39 @@ export class OpSession {
     return this._providedPresentationDefinitions ?? (await this.getAuthorizationRequest()).presentationDefinitions
   }
 
-  public async getOID4VP(allDIDs?: string[]): Promise<OID4VP> {
-    return await OID4VP.init(this, allDIDs ?? (await this.getSupportedDIDs()))
+  public async getOID4VP(args: IOpSessionGetOID4VPArgs): Promise<OID4VP> {
+    return await OID4VP.init(this, args.allIdentifiers ?? [], args.hasher)
   }
 
-  /*private async getMergedRequestPayload(): Promise<RequestObjectPayload> {
-            return await (await this.getAuthorizationRequest()).authorizationRequest.mergedPayloads()
-          }*/
+  private createPresentationVerificationCallback(context: IRequiredContext) {
+    async function presentationVerificationCallback(
+      args: W3CVerifiablePresentation | CompactSdJwtVc,
+      presentationSubmission: PresentationSubmission,
+    ): Promise<PresentationVerificationResult> {
+      let result: IVerifyResult
+      if (CredentialMapper.isSdJwtEncoded(args)) {
+        try {
+          const sdJwtResult = await context.agent.verifySdJwtPresentation({ presentation: args })
+          result = {
+            verified: 'header' in sdJwtResult,
+            error: 'header' in sdJwtResult ? undefined : { message: 'could not verify SD JWT presentation' },
+          }
+        } catch (error: any) {
+          result = {
+            verified: false,
+            error: { message: error.message },
+          }
+        }
+      } else {
+        // @ts-ignore TODO IVerifiablePresentation has too many union types for Veramo
+        result = await context.agent.verifyPresentation({ presentation: args })
+      }
+      return result
+    }
+
+    return presentationVerificationCallback
+  }
+
   public async sendAuthorizationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
     const resolveOpts: ResolveOpts = this.options.resolveOpts ?? {
       resolver: getAgentResolver(this.context, {
@@ -219,10 +247,9 @@ export class OpSession {
     if (!resolveOpts.subjectSyntaxTypesSupported || resolveOpts.subjectSyntaxTypesSupported.length === 0) {
       resolveOpts.subjectSyntaxTypesSupported = await this.getSupportedDIDMethods(true)
     }
+    //todo: populate with the right verification params. In did-auth-siop we don't have any test that actually passes this parameter
     const verification: Verification = {
-      mode: VerificationMode.INTERNAL,
-      checkLinkedDomain: CheckLinkedDomain.IF_PRESENT,
-      resolveOpts,
+      presentationVerificationCallback: this.createPresentationVerificationCallback(this.context),
     }
 
     const request = await this.getAuthorizationRequest()
@@ -257,7 +284,8 @@ export class OpSession {
       context: this.context,
     })
 
-    let issuer = args.responseSignerOpts?.issuer ?? (args.responseSignerOpts?.identifier ? getDID(args.responseSignerOpts) : undefined)
+    //TODO change this to use the new functionalities by identifier-resolver and get the jwkIssuer for the responseOpts
+    let issuer = args.responseSignerOpts.issuer
     const responseOpts = {
       verification,
       issuer,

@@ -1,4 +1,4 @@
-import {DataSources} from "@sphereon/ssi-sdk.agent-config";
+import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { DataSource } from 'typeorm'
 import { DataStoreContactEntities, DataStoreMigrations, IdentityOrigin, MetadataItem, MetadataTypes, PartyOrigin } from '../index'
 import { ContactStore } from '../contact/ContactStore'

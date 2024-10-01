@@ -1,4 +1,5 @@
 import { getUniResolver } from '@sphereon/did-uni-client'
+import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { createAgent, CredentialPayload, IDIDManager, IIdentifier, IKeyManager, IResolver, PresentationPayload, TAgent } from '@veramo/core'
 import { CredentialPlugin, ICredentialIssuer } from '@veramo/credential-w3c'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
@@ -32,7 +33,7 @@ const customContext = new Map<string, ContextDoc>([
 describe('credential-LD full flow', () => {
   let didKeyIdentifier: IIdentifier
   let didLtoIdentifier: IIdentifier
-  let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialIssuer & ICredentialHandlerLDLocal>
+  let agent: TAgent<IResolver & IKeyManager & IDIDManager & IIdentifierResolution & ICredentialIssuer & ICredentialHandlerLDLocal>
 
   // jest.setTimeout(1000000)
   beforeAll(async () => {
@@ -44,6 +45,7 @@ describe('credential-LD full flow', () => {
             local: new KeyManagementSystem(new MemoryPrivateKeyStore()),
           },
         }),
+        new IdentifierResolution({ crypto: global.crypto }),
         new DIDManager({
           providers: {
             'did:key': new KeyDIDProvider({ defaultKms: 'local' }),

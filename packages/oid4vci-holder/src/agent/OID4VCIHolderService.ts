@@ -1,7 +1,8 @@
-import { LOG } from '@sphereon/oid4vci-client/dist/types'
+import { com } from '@sphereon/kmp-mdl-mdoc'
+import { LOG } from '@sphereon/oid4vci-client'
 import {
   CredentialConfigurationSupported,
-  CredentialOfferFormat,
+  CredentialOfferFormatV1_0_11,
   CredentialResponse,
   CredentialsSupportedDisplay,
   getSupportedCredentials,
@@ -11,56 +12,67 @@ import {
   OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
+import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
-  getAuthenticationKey,
-  getIdentifier as getIdentifierFromOpts,
-  getKey,
-  getOrCreatePrimaryIdentifier,
-  SupportedDidMethodEnum,
-} from '@sphereon/ssi-sdk-ext.did-utils'
+  isIIdentifier,
+  isManagedIdentifierDidResult,
+  isManagedIdentifierResult,
+  ManagedIdentifierMethod,
+  ManagedIdentifierResult,
+  managedIdentifierToJwk,
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { keyTypeFromCryptographicSuite } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
+
+import { IVerifySdJwtVcResult } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   CredentialMapper,
+  ICoseKeyJson,
   IVerifiableCredential,
   IVerifyResult,
+  JoseSignatureAlgorithm,
+  JoseSignatureAlgorithmString,
+  mdocDecodedCredentialToUniformCredential,
   OriginalVerifiableCredential,
+  sdJwtDecodedCredentialToUniformCredential,
+  SdJwtDecodedVerifiableCredential,
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
-import { IIdentifier, IVerifyCredentialArgs, TKeyType, VerifiableCredential } from '@veramo/core'
-import { _ExtendedIKey, asArray } from '@veramo/utils'
-import { createJWT, Signer } from 'did-jwt'
+import { IVerifyCredentialArgs, W3CVerifiableCredential as VeramoW3CVerifiableCredential } from '@veramo/core'
+import { asArray } from '@veramo/utils'
 import { translate } from '../localization/Localization'
 import {
+  CredentialVerificationError,
   DidAgents,
   GetCredentialBrandingArgs,
   GetCredentialConfigsSupportedArgs,
   GetCredentialConfigsSupportedBySingleTypeOrIdArgs,
-  GetDefaultIssuanceOptsArgs,
   GetIdentifierArgs,
   GetIssuanceCryptoSuiteArgs,
   GetIssuanceDidMethodArgs,
   GetIssuanceOptsArgs,
   GetIssuerBrandingArgs,
   GetPreferredCredentialFormatsArgs,
-  GetSignerArgs,
-  IdentifierOpts,
   IssuanceOpts,
-  KeyTypeFromCryptographicSuiteArgs,
   MapCredentialToAcceptArgs,
   MappedCredentialToAccept,
   OID4VCIHolderEvent,
   RequiredContext,
   SelectAppLocaleBrandingArgs,
-  SignatureAlgorithmEnum,
-  SignatureAlgorithmFromKeyArgs,
-  SignatureAlgorithmFromKeyTypeArgs,
-  SignJwtArgs,
   VerificationResult,
   VerificationSubResult,
+  VerifyCredentialArgs,
   VerifyCredentialToAcceptArgs,
+  VerifyMdocArgs,
+  VerifySDJWTCredentialArgs,
 } from '../types/IOID4VCIHolder'
 import { credentialLocaleBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
+import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult
+import decodeFrom = com.sphereon.kmp.decodeFrom
+import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
+
+export const DID_PREFIX = 'did'
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
@@ -111,25 +123,26 @@ export const getCredentialConfigsBasedOnFormatPref = async (
   return prefConfigs
 }
 
-export const selectCredentialLocaleBranding = (
+export const selectCredentialLocaleBranding = async (
   args: SelectAppLocaleBrandingArgs,
 ): Promise<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding | undefined> => {
   const { locale, localeBranding } = args
 
-  const branding = localeBranding?.find(
+  return localeBranding?.find(
     (branding: IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding) =>
       locale ? branding.locale?.startsWith(locale) || branding.locale === undefined : branding.locale === undefined, // TODO refactor as we have duplicate code
   )
-
-  // FIXME as we should be able to just return the value directly
-  return Promise.resolve(branding)
 }
 
 export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<VerificationResult> => {
-  const { mappedCredential, context } = args
+  const { mappedCredential, hasher, context } = args
 
-  const credential = mappedCredential.credential.credentialResponse.credential as OriginalVerifiableCredential
-  const wrappedVC = CredentialMapper.toWrappedVerifiableCredential(credential)
+  const credential = mappedCredential.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
+  if (!credential) {
+    return Promise.reject(Error('No credential found in credential response'))
+  }
+
+  const wrappedVC = CredentialMapper.toWrappedVerifiableCredential(credential, { hasher })
   if (
     wrappedVC.decoded?.iss?.includes('did:ebsi:') ||
     (typeof wrappedVC.decoded?.vc?.issuer === 'string'
@@ -138,13 +151,14 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
   ) {
     // TODO: Skipping VC validation for EBSI conformance issued credential, as their Issuer is not present in the ledger (sigh)
     if (JSON.stringify(wrappedVC.decoded).includes('vc:ebsi:conformance')) {
-      return {source: wrappedVC, error: undefined, result: true, subResults: []} satisfies VerificationResult
+      return { source: wrappedVC, error: undefined, result: true, subResults: [] } satisfies VerificationResult
     }
   }
 
   const verificationResult: VerificationResult = await verifyCredential(
     {
-      credential: credential as VerifiableCredential,
+      credential,
+      hasher,
       // TODO WAL-675 we might want to allow these types of options as part of the context, now we have state machines. Allows us to pre-determine whether these policies apply and whether remote context should be fetched
       fetchRemoteContexts: true,
       policies: {
@@ -157,31 +171,69 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
   )
 
   if (!verificationResult.result || verificationResult.error) {
-    return Promise.reject(
-      Error(verificationResult.error ?? translate('oid4vci_machine_credential_verification_failed_message')),
-    )
+    return Promise.reject(Error(verificationResult.error ?? translate('oid4vci_machine_credential_verification_failed_message')))
   }
   return verificationResult
 }
 
-export const verifyCredential = async (args: IVerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
+export const verifyCredential = async (args: VerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
+  const { credential, hasher } = args
+
+  if (CredentialMapper.isMsoMdocOid4VPEncoded(credential)) {
+    return await verifyMdoc({ credential }, context)
+  } else if (CredentialMapper.isSdJwtEncoded(credential)) {
+    return await verifySDJWTCredential({ credential, hasher }, context)
+  } else {
+    return await verifyW3CCredential({ ...args, credential: credential as VeramoW3CVerifiableCredential }, context)
+  }
+}
+
+export const verifyMdoc = async (args: VerifyMdocArgs, context: RequiredContext): Promise<VerificationResult> => {
+  const { credential } = args
+
+  const issuerSigned = IssuerSignedCbor.Static.cborDecode(decodeFrom(credential, com.sphereon.kmp.Encoding.BASE64URL))
+
+  const verification = await context.agent.mdocVerifyIssuerSigned({ input: issuerSigned.toJson().issuerAuth }).catch((error: Error) => {
+    return {
+      name: 'mdoc',
+      critical: true,
+      error: true,
+      message: error.message ?? 'SD-JWT VC could not be verified',
+    } satisfies IVerifySignatureResult<ICoseKeyJson>
+  })
+
+  return {
+    source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential),
+    result: !verification.error ?? true,
+    subResults: [],
+    ...(verification.error && {
+      error: verification.message ?? `Could not verify mdoc from issuer`,
+    }),
+  }
+}
+
+export const verifyW3CCredential = async (args: IVerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
   // We also allow/add boolean, because 4.x Veramo returns a boolean for JWTs. 5.X will return better results
+  const { credential, policies } = args
+
   const result: IVerifyResult | boolean = (await context.agent.verifyCredential(args)) as IVerifyResult | boolean
 
   if (typeof result === 'boolean') {
     return {
+      // FIXME the source is never used, need to start using this as the source of truth
       source: CredentialMapper.toWrappedVerifiableCredential(args.credential as OriginalVerifiableCredential),
       result,
       ...(!result && {
         error: 'Invalid JWT VC',
-        errorDetails: `JWT VC could was not valid with policies: ${JSON.stringify(args.policies)}`,
+        errorDetails: `JWT VC was not valid with policies: ${JSON.stringify(policies)}`,
       }),
       subResults: [],
     }
   } else {
-    const subResults: Array<VerificationSubResult> = []
+    // TODO look at what this is doing and make it simple and readable
     let error: string | undefined
     let errorDetails: string | undefined
+    const subResults: Array<VerificationSubResult> = []
     if (result.error) {
       error = result.error?.message ?? ''
       errorDetails = result.error?.details?.code ?? ''
@@ -195,7 +247,7 @@ export const verifyCredential = async (args: IVerifyCredentialArgs, context: Req
     }
 
     return {
-      source: CredentialMapper.toWrappedVerifiableCredential(args.credential as OriginalVerifiableCredential),
+      source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential),
       result: result.verified,
       subResults,
       error,
@@ -204,89 +256,140 @@ export const verifyCredential = async (args: IVerifyCredentialArgs, context: Req
   }
 }
 
+export const verifySDJWTCredential = async (args: VerifySDJWTCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
+  const { credential, hasher } = args
+
+  const verification: IVerifySdJwtVcResult | CredentialVerificationError = await context.agent
+    .verifySdJwtVc({ credential })
+    .catch((error: Error): CredentialVerificationError => {
+      return {
+        error: 'Invalid SD-JWT VC',
+        errorDetails: error.message ?? 'SD-JWT VC could not be verified',
+      }
+    })
+
+  const result = 'header' in verification && 'payload' in verification
+  return {
+    source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential, { hasher }),
+    result,
+    subResults: [],
+    ...(!result && { ...verification }),
+  }
+}
+
 export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Promise<MappedCredentialToAccept> => {
-  const { credential } = args
+  const { credentialToAccept, hasher } = args
 
-  const credentialResponse: CredentialResponse = credential.credentialResponse
+  const credentialResponse: CredentialResponse = credentialToAccept.credentialResponse
   const verifiableCredential: W3CVerifiableCredential | undefined = credentialResponse.credential
-  const wrappedVerifiableCredential: WrappedVerifiableCredential = CredentialMapper.toWrappedVerifiableCredential(
-    verifiableCredential as OriginalVerifiableCredential,
-  )
-
-  credential.credentialResponse.credential_subject_issuance
-
-  if (wrappedVerifiableCredential?.credential?.compactSdJwtVc) {
-    return Promise.reject(Error('SD-JWT not supported yet'))
+  if (!verifiableCredential) {
+    return Promise.reject(Error('No credential found in credential response'))
   }
 
-  const uniformVerifiableCredential: IVerifiableCredential = <IVerifiableCredential>wrappedVerifiableCredential.credential
-  const rawVerifiableCredential: VerifiableCredential = credentialResponse.credential as unknown as VerifiableCredential
+  const wrappedVerifiableCredential: WrappedVerifiableCredential = CredentialMapper.toWrappedVerifiableCredential(
+    verifiableCredential as OriginalVerifiableCredential,
+    { hasher },
+  )
+  let uniformVerifiableCredential: IVerifiableCredential
+  if (CredentialMapper.isSdJwtDecodedCredential(wrappedVerifiableCredential.credential)) {
+    uniformVerifiableCredential = await sdJwtDecodedCredentialToUniformCredential(
+      <SdJwtDecodedVerifiableCredential>wrappedVerifiableCredential.credential,
+    )
+  } else if (CredentialMapper.isSdJwtEncoded(wrappedVerifiableCredential.credential)) {
+    if (!hasher) {
+      return Promise.reject('a hasher is required for encoded SD-JWT credentials')
+    }
+    const asyncHasher = (data: string, algorithm: string) => Promise.resolve(hasher(data, algorithm))
+    const decodedSdJwt = await CredentialMapper.decodeSdJwtVcAsync(wrappedVerifiableCredential.credential, asyncHasher)
+    uniformVerifiableCredential = sdJwtDecodedCredentialToUniformCredential(<SdJwtDecodedVerifiableCredential>decodedSdJwt)
+  } else if (CredentialMapper.isMsoMdocDecodedCredential(wrappedVerifiableCredential.credential)) {
+    uniformVerifiableCredential = mdocDecodedCredentialToUniformCredential(wrappedVerifiableCredential.credential)
+  } else {
+    uniformVerifiableCredential = <IVerifiableCredential>wrappedVerifiableCredential.credential
+  }
+
   const correlationId: string =
-    typeof uniformVerifiableCredential.issuer === 'string' ? uniformVerifiableCredential.issuer : uniformVerifiableCredential.issuer.id
+    typeof uniformVerifiableCredential.issuer === 'string'
+      ? uniformVerifiableCredential.issuer
+      : CredentialMapper.isSdJwtDecodedCredential(uniformVerifiableCredential)
+        ? uniformVerifiableCredential.decodedPayload.iss
+        : uniformVerifiableCredential.issuer.id
 
   return {
     correlationId,
-    credential,
-    types: credential.types,
-    rawVerifiableCredential,
+    credentialToAccept,
+    types: credentialToAccept.types,
+    rawVerifiableCredential: verifiableCredential,
     uniformVerifiableCredential,
     ...(credentialResponse.credential_subject_issuance && { credential_subject_issuance: credentialResponse.credential_subject_issuance }),
   }
 }
 
-export const getDefaultIssuanceOpts = async (args: GetDefaultIssuanceOptsArgs): Promise<IssuanceOpts> => {
-  const { credentialSupported, opts, context } = args
-
-  const issuanceOpt = {
-    ...credentialSupported,
-    didMethod: opts.client.isEBSI() ? SupportedDidMethodEnum.DID_KEY : SupportedDidMethodEnum.DID_JWK,
-    keyType: 'Secp256r1',
-  } as IssuanceOpts
-  const identifierOpts = await getIdentifierOpts({ issuanceOpt, context })
-
-  return {
-    ...issuanceOpt,
-    ...identifierOpts,
-  }
-}
-
-export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<IdentifierOpts> => {
+export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<ManagedIdentifierResult> => {
   const { issuanceOpt, context } = args
+  const { identifier: identifierArg } = issuanceOpt
+  if (identifierArg && isManagedIdentifierResult(identifierArg)) {
+    return identifierArg
+  }
+  const {
+    supportedPreferredDidMethod,
+    supportedBindingMethods,
+    keyType = 'Secp256r1',
+    kms = await context.agent.keyManagerGetDefaultKeyManagementSystem(),
+  } = issuanceOpt
+  let identifier: ManagedIdentifierResult
+
+  if (identifierArg) {
+    if (isIIdentifier(identifierArg.identifier)) {
+      identifier = await context.agent.identifierManagedGet(identifierArg)
+    } else if (!identifierArg.method && issuanceOpt.supportedBindingMethods.includes('jwk')) {
+      identifier = await managedIdentifierToJwk(identifierArg, context)
+    } else if (identifierArg.method && !supportedBindingMethods.includes(identifierArg.method)) {
+      throw Error(`Supplied identifier method ${identifierArg.method} not supported by the issuer: ${supportedBindingMethods.join(',')}`)
+    } else {
+      identifier = await context.agent.identifierManagedGet(identifierArg)
+    }
+  }
   const agentContext = { ...context, agent: context.agent as DidAgents }
 
-  let identifier: IIdentifier
-  if (issuanceOpt.identifier) {
-    identifier = issuanceOpt.identifier
-  } else {
+  if (
+    (!identifierArg || isIIdentifier(identifierArg.identifier)) &&
+    supportedPreferredDidMethod &&
+    (!supportedBindingMethods || supportedBindingMethods.length === 0 || supportedBindingMethods.filter((method) => method.startsWith('did')))
+  ) {
+    // previous code for managing DIDs only
     const { result, created } = await getOrCreatePrimaryIdentifier(agentContext, {
-      method: issuanceOpt.didMethod,
+      method: supportedPreferredDidMethod,
       createOpts: {
         options: {
           type: issuanceOpt.keyType,
           use: KeyUse.Signature,
           codecName: issuanceOpt.codecName,
+          kms: issuanceOpt.kms,
         },
       },
     })
-
-    identifier = result
     if (created) {
-      await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { identifier })
+      await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { result })
     }
+    identifier = await context.agent.identifierManagedGetByDid({
+      identifier: result,
+      keyType,
+      offlineWhenNoDIDRegistered: result.did.startsWith('did:ebsi:'),
+    })
+  } else if (supportedBindingMethods.includes('jwk')) {
+    // todo: we probably should do something similar as with DIDs for re-use/new keys
+    const key = await context.agent.keyManagerCreate({ type: keyType, kms })
+    // TODO. Create/move this to identifier service await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { key })
+    identifier = await managedIdentifierToJwk({ method: 'key', identifier: key, kmsKeyRef: key.kid }, context)
+    // } else if (supportedBindingMethods.includes('cose_key')) {
+    //   // TODO COSE HERE
+    //   throw Error(`Holder currently does not support binding method: ${supportedBindingMethods.join(',')}`)
+  } else {
+    throw Error(`Holder currently does not support binding method: ${supportedBindingMethods.join(',')}`)
   }
-  const key: _ExtendedIKey = await getAuthenticationKey(
-    { identifier, offlineWhenNoDIDRegistered: identifier.did.startsWith('did:ebsi'), noVerificationMethodFallback: true },
-    context,
-  )
-  let kid: string = key.meta.verificationMethod?.id ?? key.kid
-  if (identifier.did.startsWith('did:ebsi:')) {
-    kid = key.meta?.jwkThumbprint
-  } else if (!kid.startsWith('did:')) {
-    const optionalHashTag = kid.startsWith('#') ? '' : '#'
-    kid = `${identifier.did}${optionalHashTag}${kid}`
-  }
-
-  return { identifier, key, kid }
+  args.issuanceOpt.identifier = identifier
+  return identifier
 }
 
 export const getCredentialConfigsSupportedMerged = async (
@@ -333,6 +436,7 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
 ): Promise<Record<string, CredentialConfigurationSupported>> => {
   const { client, vcFormatPreferences, configurationId } = args
   let { format = undefined, types = undefined } = args
+
   function createIdFromTypes(supported: CredentialConfigurationSupported) {
     const format = supported.format
     const type: string = getTypesFromObject(supported)?.join() ?? ''
@@ -362,8 +466,8 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
       'credentials' in client.credentialOffer.credential_offer
     ) {
       format = client.credentialOffer.credential_offer.credentials
-        .filter((format: string | CredentialOfferFormat): boolean => typeof format !== 'string')
-        .map((format: string | CredentialOfferFormat) => (format as CredentialOfferFormat).format)
+        .filter((cred: CredentialOfferFormatV1_0_11 | string) => typeof cred !== 'string')
+        .map((cred: CredentialOfferFormatV1_0_11 | string) => (cred as CredentialOfferFormatV1_0_11).format)
       if (format?.length === 0) {
         format = undefined // Otherwise we would match nothing
       }
@@ -409,7 +513,7 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
   let credentialsToOffer: Record<string, CredentialConfigurationSupported>
   if ('credential_configuration_ids' in credentialOffer) {
     credentialsToOffer = Object.fromEntries(
-      Object.entries(credentialConfigsSupported).filter(([key]) => credentialOffer.credential_configuration_ids.includes(key)),
+      Object.entries(credentialConfigsSupported).filter(([configId, config]) => credentialOffer.credential_configuration_ids.includes(configId)),
     )
     if (Object.keys(credentialsToOffer).length === 0) {
       throw new Error(`No matching supported credential configs found for offer ${credentialOffer.credential_configuration_ids.join(', ')}`)
@@ -429,7 +533,7 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
   const {
     client,
     credentialsSupported,
-    serverMetadata,
+    // serverMetadata,
     context,
     didMethodPreferences,
     jwtCryptographicSuitePreferences,
@@ -442,9 +546,9 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
   }
 
   const getIssuanceOpts: Array<Promise<IssuanceOpts>> = Object.values(credentialsSupported).map(async (credentialSupported) => {
-    if (!serverMetadata?.credentialIssuerMetadata) {
+    /*if (!serverMetadata?.credentialIssuerMetadata) {
       return await getDefaultIssuanceOpts({ credentialSupported, opts: { client }, context })
-    }
+    }*/
 
     const cryptographicSuite: string = await getIssuanceCryptoSuite({
       credentialSupported,
@@ -452,77 +556,115 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
       jwtCryptographicSuitePreferences,
       jsonldCryptographicSuitePreferences,
     })
-    const didMethod: SupportedDidMethodEnum = await getIssuanceDidMethod({
+    const { didMethod, methods } = await getIssuanceMethod({
       credentialSupported,
       client,
       didMethodPreferences,
     })
+    if (methods.length == 0) {
+      console.log(`Could not determine supported cryptographic_binding_methods_supported, will use DIDs`)
+      methods.push('did')
+    }
     const issuanceOpt = forceIssuanceOpt
       ? { ...credentialSupported, ...forceIssuanceOpt }
       : ({
           ...credentialSupported,
-          didMethod,
+          supportedPreferredDidMethod: didMethod,
+          supportedBindingMethods: methods,
           format: credentialSupported.format,
           keyType: client.isEBSI() ? 'Secp256r1' : keyTypeFromCryptographicSuite({ suite: cryptographicSuite }),
           ...(client.isEBSI() && { codecName: 'EBSI' }),
-        } as IssuanceOpts)
-    const identifierOpts = await getIdentifierOpts({ issuanceOpt, context })
-    if (!client.clientId) {
+        } satisfies IssuanceOpts)
+    const identifier = await getIdentifierOpts({ issuanceOpt, context })
+    if (!client.clientId && isManagedIdentifierDidResult(identifier)) {
       // FIXME: We really should fetch server metadata. Have user select required credentials. Take the first cred to determine a kid when no clientId is present and set that.
       //  Needs a preference service for crypto, keys, dids, and clientId, with ecosystem support
-      client.clientId = identifierOpts.identifier.did
+      client.clientId = identifier.issuer ?? identifier.did
     }
-
-    return { ...issuanceOpt, ...identifierOpts }
+    return { ...issuanceOpt, identifier }
   })
 
   return await Promise.all(getIssuanceOpts)
 }
 
-export const getIssuanceDidMethod = async (opts: GetIssuanceDidMethodArgs): Promise<SupportedDidMethodEnum> => {
+export const getIssuanceMethod = async (
+  opts: GetIssuanceDidMethodArgs,
+): Promise<{
+  methods: ManagedIdentifierMethod[]
+  didMethod?: SupportedDidMethodEnum
+}> => {
   const { client, credentialSupported, didMethodPreferences } = opts
   const { format, cryptographic_binding_methods_supported } = credentialSupported
+  let methods: ManagedIdentifierMethod[] = [] // we use the external identifier method, as we should be supporting all values in the server metadata anyway
   if (cryptographic_binding_methods_supported && Array.isArray(cryptographic_binding_methods_supported)) {
-    const method: SupportedDidMethodEnum | undefined = didMethodPreferences.find((method: SupportedDidMethodEnum) =>
-      cryptographic_binding_methods_supported.includes(`did:${method.toLowerCase().replace('did:', '')}`),
+    methods = cryptographic_binding_methods_supported as ManagedIdentifierMethod[]
+    const didMethods: SupportedDidMethodEnum | undefined = didMethodPreferences.find((method: SupportedDidMethodEnum) =>
+      cryptographic_binding_methods_supported.includes(`did:${method.toLowerCase() /*.replace('did:', '')*/}`),
     )
-    if (method) {
-      return method
+    if (didMethods) {
+      return { methods, didMethod: didMethods }
     } else if (cryptographic_binding_methods_supported.includes('did')) {
-      return format ? didMethodPreferences[1] : didMethodPreferences[0]
+      return { methods, didMethod: format ? didMethodPreferences[1] : didMethodPreferences[0] }
+    } else if (methods.length > 0) {
+      return { methods }
     }
+    console.warn(
+      `We should have been able to determine cryptographic_binding_methods_supported, will fall back to legacy behaviour. This is likely a bug`,
+    )
   }
 
   if (client.isEBSI()) {
-    return SupportedDidMethodEnum.DID_KEY
+    return { methods: ['did'], didMethod: SupportedDidMethodEnum.DID_KEY }
   }
 
+  // legacy fallback
+  methods = ['did']
   if (!format || (format.includes('jwt') && !format?.includes('jwt_vc_json_ld'))) {
-    return format ? didMethodPreferences[1] : didMethodPreferences[0]
+    return { methods, didMethod: format ? didMethodPreferences[1] : didMethodPreferences[0] }
   } else {
     // JsonLD
-    return didMethodPreferences[0]
+    return { methods, didMethod: didMethodPreferences[0] }
   }
 }
 
 export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): Promise<string> => {
   const { client, credentialSupported, jwtCryptographicSuitePreferences, jsonldCryptographicSuitePreferences } = opts
-  const signing_algs_supported: Array<string> = credentialSupported.credential_signing_alg_values_supported ?? []
+
+  let signing_algs_supported: Array<string>
+  if ('proof_types_supported' in credentialSupported && credentialSupported.proof_types_supported) {
+    if ('jwt' in credentialSupported.proof_types_supported && credentialSupported.proof_types_supported.jwt) {
+      signing_algs_supported = credentialSupported.proof_types_supported.jwt.proof_signing_alg_values_supported
+    } else if ('ldp_vp' in credentialSupported.proof_types_supported && credentialSupported.proof_types_supported.ldp_vp) {
+      signing_algs_supported = credentialSupported.proof_types_supported.ldp_vp.proof_signing_alg_values_supported
+    } else if ('cwt' in credentialSupported.proof_types_supported && credentialSupported.proof_types_supported.cwt) {
+      signing_algs_supported = credentialSupported.proof_types_supported.cwt.proof_signing_alg_values_supported
+      console.error('cwt proof type not supported. Likely that errors will occur after this point')
+    } else {
+      return Promise.reject(Error(`Unsupported proof_types_supported`))
+    }
+  } else {
+    signing_algs_supported = asArray(
+      // @ts-ignore // legacy
+      credentialSupported.credential_signing_alg_values_supported ?? credentialSupported.proof_signing_alg_values_supported ?? [],
+    )
+  }
 
   // TODO: Return array, so the wallet/user could choose
   switch (credentialSupported.format) {
-    // @ts-ignore
+    // @ts-ignore legacy value
     case 'jwt':
     case 'jwt_vc_json':
-    case 'jwt_vc': {
-      const supportedPreferences: Array<SignatureAlgorithmEnum> = jwtCryptographicSuitePreferences.filter((suite: SignatureAlgorithmEnum) =>
-        signing_algs_supported.includes(suite),
+    case 'jwt_vc':
+    case 'vc+sd-jwt':
+    case 'mso_mdoc': {
+      const supportedPreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString> = jwtCryptographicSuitePreferences.filter(
+        (suite: JoseSignatureAlgorithm | JoseSignatureAlgorithmString) => signing_algs_supported.includes(suite),
       )
 
       if (supportedPreferences.length > 0) {
         return supportedPreferences[0]
       } else if (client.isEBSI()) {
-        return SignatureAlgorithmEnum.ES256
+        return JoseSignatureAlgorithm.ES256
       }
 
       // if we cannot find supported cryptographic suites, we just try with the first preference
@@ -549,72 +691,5 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
     }
     default:
       return Promise.reject(Error(`Credential format '${credentialSupported.format}' not supported`))
-  }
-}
-
-export const signatureAlgorithmFromKey = async (args: SignatureAlgorithmFromKeyArgs): Promise<SignatureAlgorithmEnum> => {
-  const { key } = args
-  return signatureAlgorithmFromKeyType({ type: key.type })
-}
-
-export const signJWT = async (args: SignJwtArgs): Promise<string> => {
-  const { idOpts, header, payload, context, options } = args
-  const jwtOptions = {
-    ...options,
-    signer: await getSigner({ idOpts, context }),
-  }
-
-  return createJWT(payload, jwtOptions, header)
-}
-
-export const getSigner = async (args: GetSignerArgs): Promise<Signer> => {
-  const { idOpts, context } = args
-
-  const identifier = await getIdentifierFromOpts(idOpts, context)
-  const key = await getKey({ identifier, vmRelationship: idOpts.verificationMethodSection, kmsKeyRef: idOpts.kmsKeyRef }, context)
-  const algorithm = await signatureAlgorithmFromKey({ key })
-
-  return async (data: string | Uint8Array): Promise<string> => {
-    const input = data instanceof Object.getPrototypeOf(Uint8Array) ? new TextDecoder().decode(data as Uint8Array) : (data as string)
-    return await context.agent.keyManagerSign({
-      keyRef: key.kid,
-      algorithm,
-      data: input,
-    })
-  }
-}
-
-export const signatureAlgorithmFromKeyType = (args: SignatureAlgorithmFromKeyTypeArgs): SignatureAlgorithmEnum => {
-  const { type } = args
-  switch (type) {
-    case 'Ed25519':
-    case 'X25519':
-      return SignatureAlgorithmEnum.EdDSA
-    case 'Secp256r1':
-      return SignatureAlgorithmEnum.ES256
-    case 'Secp256k1':
-      return SignatureAlgorithmEnum.ES256K
-    default:
-      throw new Error(`Key type '${type}' not supported`)
-  }
-}
-
-// TODO improve this conversion for jwt and jsonld, not a fan of current structure
-export const keyTypeFromCryptographicSuite = (args: KeyTypeFromCryptographicSuiteArgs): TKeyType => {
-  const { suite } = args
-  switch (suite) {
-    case 'EdDSA':
-    case 'Ed25519Signature2018':
-    case 'Ed25519Signature2020':
-    case 'JcsEd25519Signature2020':
-      return 'Ed25519'
-    case 'JsonWebSignature2020':
-    case 'ES256':
-      return 'Secp256r1'
-    case 'EcdsaSecp256k1Signature2019':
-    case 'ES256K':
-      return 'Secp256k1'
-    default:
-      throw new Error(`Cryptographic suite '${suite}' not supported`)
   }
 }

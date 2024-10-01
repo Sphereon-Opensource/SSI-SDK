@@ -1,4 +1,4 @@
-import {DataSources} from "@sphereon/ssi-sdk.agent-config";
+import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { ActionType, InitiatorType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
 import { DataStoreEventLoggerMigrations } from '../migrations'

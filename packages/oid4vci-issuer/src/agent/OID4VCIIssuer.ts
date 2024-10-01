@@ -1,6 +1,7 @@
 import { AccessTokenResponse, CredentialResponse } from '@sphereon/oid4vci-common'
 import { assertValidAccessTokenRequest, createAccessTokenResponse } from '@sphereon/oid4vci-issuer'
 import { VcIssuer } from '@sphereon/oid4vci-issuer'
+import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IMetadataOptions } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { DIDDocument, IAgentPlugin } from '@veramo/core'
 import { getAccessTokenSignerCallback } from '../functions'
@@ -67,13 +68,17 @@ export class OID4VCIIssuer implements IAgentPlugin {
         credentialOfferSessions: issuer.credentialOfferSessions,
         expirationDuration: accessTokenArgs.expirationDuration,
       })
+      const accessTokenIssuer = instance.issuerOptions.idOpts?.issuer ?? instance.issuerOptions.didOpts?.idOpts.identifier.toString() // last part is legacy
+      if (!accessTokenIssuer) {
+        return Promise.reject(Error(`Could not determine access token issuer`))
+      }
       return createAccessTokenResponse(accessTokenArgs.request, {
-        accessTokenIssuer: instance.issuerOptions.didOpts.identifierOpts.identifier.toString(),
+        accessTokenIssuer,
         tokenExpiresIn: accessTokenArgs.expirationDuration,
         cNonceExpiresIn: accessTokenArgs.expirationDuration,
         cNonces: issuer.cNonces,
         credentialOfferSessions: issuer.credentialOfferSessions,
-        accessTokenSignerCallback: getAccessTokenSignerCallback({ didOpts: instance.issuerOptions.didOpts }, context),
+        accessTokenSignerCallback: await getAccessTokenSignerCallback(instance.issuerOptions, context),
       })
     })
   }
@@ -85,11 +90,11 @@ export class OID4VCIIssuer implements IAgentPlugin {
     const metadataOpts = await this.getMetadataOpts({ ...args, credentialIssuer }, context)
     const metadata = await this.getIssuerMetadata({ ...args, credentialIssuer }, context)
     const issuerOpts = await this.getIssuerOpts({ ...args, credentialIssuer }, context)
-    if (!issuerOpts.didOpts?.resolveOpts) {
-      issuerOpts.didOpts.resolveOpts = { ...issuerOpts.didOpts.resolveOpts, ...this._opts.resolveOpts }
+    if (!issuerOpts.resolveOpts) {
+      issuerOpts.resolveOpts = { ...issuerOpts.didOpts?.resolveOpts, ...this._opts.resolveOpts }
     }
-    if (!issuerOpts.didOpts?.resolveOpts?.resolver) {
-      throw Error('A resolver is needed to resolved the Proof from the holder')
+    if (!issuerOpts.resolveOpts?.resolver) {
+      issuerOpts.resolveOpts.resolver = getAgentResolver(context)
     }
     this.instances.set(credentialIssuer, new IssuerInstance({ issuerOpts, metadataOpts, metadata }))
     return this.oid4vciGetInstance(args, context)

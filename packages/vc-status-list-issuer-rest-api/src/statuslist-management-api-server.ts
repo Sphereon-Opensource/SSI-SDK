@@ -1,5 +1,6 @@
 import { copyGlobalAuthToEndpoint, ExpressSupport } from '@sphereon/ssi-express-support'
 import { agentContext } from '@sphereon/ssi-sdk.core'
+import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { TAgent } from '@veramo/core'
 
 import express, { Express, Router } from 'express'
@@ -22,7 +23,7 @@ export class StatuslistManagementApiServer {
   private readonly _opts?: IStatusListOpts
   private readonly _router: Router
 
-  constructor(args: { agent: TAgent<IRequiredPlugins>; expressSupport: ExpressSupport; opts: IStatusListOpts }) {
+  constructor(args: { agent: TAgent<IRequiredPlugins & IStatusListPlugin>; expressSupport: ExpressSupport; opts: IStatusListOpts }) {
     const { agent, opts } = args
     this._agent = agent
     if (opts?.endpointOpts?.globalAuth) {

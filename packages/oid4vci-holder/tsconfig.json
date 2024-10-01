@@ -30,6 +30,12 @@
       "path": "../ssi-sdk-core"
     },
     {
+      "path": "../sd-jwt"
+    },
+    {
+      "path": "../mdl-mdoc"
+    },
+    {
       "path": "../xstate-persistence"
     }
   ]

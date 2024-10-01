@@ -1,9 +1,24 @@
+import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
+import {
+  CredentialRole,
+  DigitalCredential,
+  FindDigitalCredentialArgs,
+  NonPersistedDigitalCredential,
+  UpdateCredentialStateArgs,
+} from '@sphereon/ssi-sdk.data-store'
+import {
+  Hasher,
+  ICredential,
+  IPresentation,
+  IVerifiableCredential,
+  IVerifiablePresentation,
+  OriginalVerifiableCredential,
+  OriginalVerifiablePresentation,
+} from '@sphereon/ssi-types'
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import { CredentialRole, DigitalCredential, UpdateCredentialStateArgs } from '@sphereon/ssi-sdk.data-store'
-import { FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store/dist/types/digitalCredential/IAbstractDigitalCredentialStore'
-import { NonPersistedDigitalCredential } from '@sphereon/ssi-sdk.data-store/dist/types/digitalCredential/digitalCredential'
 import { FindClaimsArgs } from './claims'
-import { ICredential, IPresentation, IVerifiableCredential, OriginalVerifiableCredential, OriginalVerifiablePresentation } from '@sphereon/ssi-types'
+
+export type { UpdateCredentialStateArgs } // TODO create a local copy?
 
 export interface ICredentialStore extends IPluginMethodMap {
   /**
@@ -38,8 +53,7 @@ export interface ICredentialStore extends IPluginMethodMap {
 
   /**
    * Find one credential by id or hash
-   * @param CredentialRole
-   * @param idOrHash
+   * @param args
    */
   crsGetUniqueCredentialByIdOrHash(args: GetCredentialsByIdOrHashArgs): Promise<OptionalUniqueDigitalCredential>
 
@@ -66,6 +80,15 @@ export interface ICredentialStore extends IPluginMethodMap {
    * @param args
    */
   crsDeleteCredentials(args: DeleteCredentialsArgs): Promise<number>
+}
+
+/**
+ *
+ * @param context
+ * @internal
+ */
+export function contextHasCredentialStore(context: IAgentContext<IPluginMethodMap>): context is IAgentContext<ICredentialStore> {
+  return contextHasPlugin(context, 'crsGetCredential')
 }
 
 export type GetCredentialArgs = {
@@ -98,9 +121,8 @@ export type AddDigitalCredential = Omit<
 
 export type AddCredentialArgs = {
   credential: AddDigitalCredential
+  opts?: { maxTimeSkewInMS?: number; hasher?: Hasher }
 }
-
-export type { UpdateCredentialStateArgs } from '@sphereon/ssi-sdk.data-store' // TODO create a local copy?
 
 export interface UniqueDigitalCredential {
   hash: string
@@ -112,7 +134,7 @@ export interface UniqueDigitalCredential {
   originalCredential?: ICredential
   originalPresentation?: IPresentation
   uniformVerifiableCredential?: IVerifiableCredential
-  uniformVerifiablePresentation?: IVerifiableCredential
+  uniformVerifiablePresentation?: IVerifiablePresentation
 }
 
 export type OptionalUniqueDigitalCredential = UniqueDigitalCredential | undefined

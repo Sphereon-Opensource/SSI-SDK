@@ -1,17 +1,18 @@
 import {
   AccessTokenRequest,
   AccessTokenResponse,
+  CredentialConfigurationSupported,
   CredentialDataSupplierInput,
-  CredentialOfferSession,
   CredentialIssuerMetadataOpts,
+  CredentialOfferSession,
   CredentialRequest,
   CredentialResponse,
   Grant,
   JsonLdIssuerCredentialDefinition,
-  CredentialConfigurationSupported,
 } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier } from '@sphereon/oid4vci-issuer'
 import { IDIDOptions, ResolveOpts } from '@sphereon/ssi-sdk-ext.did-utils'
+import { IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IOID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { ICredential } from '@sphereon/ssi-types/dist'
 import { IAgentContext, ICredentialIssuer, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
@@ -32,8 +33,6 @@ export interface IOID4VCIIssuerOpts {
   resolveOpts?: ResolveOpts
   returnSessions?: boolean
 }
-
-export interface IIssuerDefaultOpts extends IIssuerOptions {}
 
 export interface ICreateOfferArgs extends IIssuerInstanceArgs {
   grants?: Grant
@@ -74,7 +73,12 @@ export interface IIssuerInstanceOptions extends IMetadataOptions {
 }
 
 export interface IIssuerOptions {
-  didOpts: IDIDOptions
+  idOpts?: ManagedIdentifierOptsOrResult
+  resolveOpts?: ResolveOpts
+  /**
+   * @deprecated: use idOpts
+   */
+  didOpts?: IDIDOptions
   userPinRequired?: boolean
   cNonceExpiresIn?: number
 }
@@ -90,7 +94,6 @@ export type ICreateCredentialOfferURIResult = {
   session?: CredentialOfferSession
   userPin?: string
   userPinLength?: number
-  //userPinRequired: boolean
 }
 
-export type IRequiredContext = IAgentContext<IResolver & IDIDManager & IKeyManager & ICredentialIssuer & IOID4VCIStore>
+export type IRequiredContext = IAgentContext<IIdentifierResolution & IDIDManager & IResolver & IKeyManager & ICredentialIssuer & IOID4VCIStore>

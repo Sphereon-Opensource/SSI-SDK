@@ -1,12 +1,12 @@
-import { ClientMetadataOpts } from '@sphereon/did-auth-siop/dist/types'
+import { ClientMetadataOpts, VerifyJwtCallback } from '@sphereon/did-auth-siop'
+import { IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
-import { AdditionalClaims, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { AdditionalClaims, Hasher, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import {
   AuthorizationRequestPayload,
   AuthorizationRequestState,
   AuthorizationResponsePayload,
   AuthorizationResponseState,
-  CheckLinkedDomain,
   ClaimPayloadCommonOpts,
   IRPSessionManager,
   PresentationDefinitionWithLocation,
@@ -29,6 +29,11 @@ import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
+import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
+import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { JwtIssuer } from '@sphereon/oid4vc-common'
+import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 
 export enum VerifiedDataMode {
   NONE = 'none',
@@ -62,6 +67,7 @@ export interface ICreateAuthRequestArgs {
   correlationId: string
   responseURIType: ResponseURIType
   responseURI: string
+  jwtIssuer?: JwtIssuer
   requestByReferenceURI?: string
   nonce?: string
   state?: string
@@ -135,7 +141,9 @@ export interface IRPOptions {
   clientMetadataOpts?: ClientMetadataOpts
   expiresIn?: number
   eventEmitter?: EventEmitter
-  didOpts: ISIOPDIDOptions
+  credentialOpts?: CredentialOpts
+  identifierOpts: ISIOPIdentifierOptions
+  verifyJwtCallback?: VerifyJwtCallback
 }
 
 export interface IPEXOptions {
@@ -165,9 +173,16 @@ export interface IPresentationWithDefinition {
   presentation: W3CVerifiablePresentation
 }
 
-export interface ISIOPDIDOptions extends IDIDOptions {
+export interface ISIOPIdentifierOptions extends Omit<IDIDOptions, 'idOpts'> {
+  // we replace the legacy idOpts with the Managed Identifier opts from the identifier resolution module
+  idOpts: ManagedIdentifierOptsOrResult
   checkLinkedDomains?: CheckLinkedDomain
   wellknownDIDVerifyCallback?: VerifyCallback
+}
+
+// todo make the necessary changes for mdl-mdoc types
+export type CredentialOpts = {
+  hasher?: Hasher
 }
 
 export interface AuthorizationResponseStateWithVerifiedData extends AuthorizationResponseState {
@@ -175,5 +190,15 @@ export interface AuthorizationResponseStateWithVerifiedData extends Authorizatio
 }
 
 export type IRequiredContext = IAgentContext<
-  IResolver & IDIDManager & IKeyManager & ICredentialIssuer & ICredentialVerifier & IPresentationExchange & IPDManager
+  IResolver &
+    IDIDManager &
+    IKeyManager &
+    IIdentifierResolution &
+    ICredentialIssuer &
+    ICredentialVerifier &
+    IPresentationExchange &
+    IPDManager &
+    ISDJwtPlugin &
+    IJwtService &
+    ImDLMdoc
 >

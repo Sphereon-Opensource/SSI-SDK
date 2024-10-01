@@ -5,5 +5,15 @@
     "outDir": "dist",
     "declarationDir": "dist"
   },
-  "references": []
+  "references": [
+    {
+      "path": "../mdl-mdoc"
+    },
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../ssi-types"
+    }
+  ]
 }

@@ -9,6 +9,9 @@
   "include": ["src/**/*.json", "src/**/*.ts"],
   "references": [
     {
+      "path": "../sd-jwt"
+    },
+    {
       "path": "../ssi-types"
     },
     {

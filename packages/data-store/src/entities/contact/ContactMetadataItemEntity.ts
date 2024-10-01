@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, BeforeInsert, BeforeUpdate } from 'typeorm'
 import { IMetadataEntity, ValidationConstraint } from '../../types'
-import {TYPEORM_DATE_TIME_TYPE} from "@sphereon/ssi-sdk.agent-config";
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { BaseContactEntity } from './BaseContactEntity'
 import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { getConstraint } from '../../utils/ValidatorUtils'
@@ -24,7 +24,7 @@ export class ContactMetadataItemEntity extends BaseEntity implements IMetadataEn
   @Column('numeric', { name: 'numberValue', nullable: true })
   numberValue?: number
 
-  @Column({ name: 'dateValue', nullable: true, type: TYPEORM_DATE_TIME_TYPE })
+  @Column({ name: 'dateValue', nullable: true, type: typeOrmDateTime() })
   dateValue?: Date
 
   @Column('boolean', { name: 'boolValue', nullable: true })

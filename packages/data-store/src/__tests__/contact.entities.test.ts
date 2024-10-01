@@ -1,18 +1,9 @@
 import { getDID } from '@sphereon/ssi-sdk-ext.did-utils'
+import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { DataSource, FindOptionsWhere } from 'typeorm'
-import {
-  contactMetadataItemEntityFrom,
-  DataStoreContactEntities,
-  DataStoreMigrations,
-  identityMetadataItemEntityFrom,
-  IdentityOrigin,
-  CredentialRole,
-  MetadataTypes,
-  PartyOrigin,
-  partyTypeFrom,
-} from '../index'
 import { BaseContactEntity } from '../entities/contact/BaseContactEntity'
 import { ConnectionEntity } from '../entities/contact/ConnectionEntity'
+import { ContactMetadataItemEntity } from '../entities/contact/ContactMetadataItemEntity'
 import { CorrelationIdentifierEntity } from '../entities/contact/CorrelationIdentifierEntity'
 import { DidAuthConfigEntity } from '../entities/contact/DidAuthConfigEntity'
 import { ElectronicAddressEntity } from '../entities/contact/ElectronicAddressEntity'
@@ -25,6 +16,17 @@ import { PartyEntity } from '../entities/contact/PartyEntity'
 import { PartyRelationshipEntity } from '../entities/contact/PartyRelationshipEntity'
 import { PartyTypeEntity } from '../entities/contact/PartyTypeEntity'
 import { PhysicalAddressEntity } from '../entities/contact/PhysicalAddressEntity'
+import {
+  contactMetadataItemEntityFrom,
+  CredentialRole,
+  DataStoreContactEntities,
+  DataStoreMigrations,
+  identityMetadataItemEntityFrom,
+  IdentityOrigin,
+  MetadataTypes,
+  PartyOrigin,
+  partyTypeFrom,
+} from '../index'
 import {
   ConnectionType,
   CorrelationIdentifierType,
@@ -55,9 +57,6 @@ import {
   partyTypeEntityFrom,
   physicalAddressEntityFrom,
 } from '../utils/contact/MappingUtils'
-import { ContactMetadataItemEntity } from '../entities/contact/ContactMetadataItemEntity'
-import { DataSources } from '@sphereon/ssi-sdk.agent-config'
-
 
 // TODO write test adding two contacts reusing the same contactType
 
@@ -638,7 +637,7 @@ describe('Database entities tests', (): void => {
           sessionId: 'https://example.com/did:test:138d7bf8-c930-4c6e-b928-97d3a4928b01',
         },
       },
-    }
+    } satisfies NonPersistedIdentity
 
     const identityEntity: IdentityEntity = identityEntityFrom(identity)
 
@@ -660,7 +659,7 @@ describe('Database entities tests', (): void => {
     expect(fromDb?.connection?.type).toEqual(identity.connection?.type)
     expect(fromDb?.connection?.config).toBeDefined()
     expect((<DidAuthConfigEntity>fromDb?.connection?.config).identifier).toEqual(
-      getDID((<NonPersistedDidAuthConfig>identity.connection?.config).idOpts),
+      getDID({ identifier: (<NonPersistedDidAuthConfig>identity.connection?.config).idOpts.identifier as string }),
     )
   })
 
@@ -733,7 +732,9 @@ describe('Database entities tests', (): void => {
     expect(fromDbConfig).toBeDefined()
     expect(fromDb?.type).toEqual(connection.type)
     expect(fromDb?.config).toBeDefined()
-    expect((<DidAuthConfigEntity>fromDb?.config).identifier).toEqual(getDID((<NonPersistedDidAuthConfig>connection?.config).idOpts))
+    expect((<DidAuthConfigEntity>fromDb?.config).identifier).toEqual(
+      getDID({ identifier: (<NonPersistedDidAuthConfig>connection?.config).idOpts.identifier as string }),
+    )
   })
 
   it('Should save openid config to database', async (): Promise<void> => {
@@ -787,7 +788,7 @@ describe('Database entities tests', (): void => {
     })
 
     expect(fromDb).toBeDefined()
-    expect((<DidAuthConfigEntity>fromDb).identifier).toEqual(getDID((<NonPersistedDidAuthConfig>config).idOpts))
+    expect((<DidAuthConfigEntity>fromDb).identifier).toEqual(getDID({ identifier: (<NonPersistedDidAuthConfig>config).idOpts.identifier as string }))
   })
 
   it('Should delete party and all child relations', async (): Promise<void> => {

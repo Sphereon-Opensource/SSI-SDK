@@ -9,8 +9,9 @@ import {
   getTypesFromCredentialSupported,
   ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
-import { getAuthenticationKey, getIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
-import { calculateJwkThumbprintForKey } from '@sphereon/ssi-sdk-ext.key-utils'
+import { getAuthenticationKey, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import { ManagedIdentifierDidResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { calculateJwkThumbprintForKey, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   IssuanceOpts,
   OID4VCICallbackStateListener,
@@ -18,7 +19,6 @@ import {
   OID4VCIMachineState,
   OID4VCIMachineStates,
   PrepareStartArgs,
-  signatureAlgorithmFromKey,
   signCallback,
 } from '@sphereon/ssi-sdk.oid4vci-holder'
 import {
@@ -26,9 +26,8 @@ import {
   Siopv2MachineInterpreter,
   Siopv2MachineState,
   Siopv2MachineStates,
+  Siopv2OID4VPLinkHandler,
 } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import { Siopv2OID4VPLinkHandler } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth/dist/link-handler'
-import { IIdentifier } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
 import { waitFor } from 'xstate/lib/waitFor'
 import { logger } from '../index'
@@ -46,7 +45,7 @@ import { getEbsiApiBaseUrl } from './index'
 export interface AttestationAuthRequestUrlResult extends Omit<Required<PrepareStartArgs>, 'issuanceOpt'> {
   issuanceOpt?: IssuanceOpts
   authorizationCodeURL: string
-  identifier: IIdentifier
+  identifier: ManagedIdentifierDidResult
   authKey: _ExtendedIKey
 }
 
@@ -72,7 +71,8 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   context: IRequiredContext,
 ): Promise<AttestationAuthRequestUrlResult> => {
   logger.info(`create attestation ${credentialType} auth req URL for ${clientIdArg} and issuer ${credentialIssuer}`)
-  const identifier = await getIdentifier(idOpts, context)
+  const resolution = await context.agent.identifierManagedGetByDid(idOpts)
+  const identifier = resolution.identifier
   if (identifier.provider !== 'did:ebsi' && identifier.provider !== 'did:key') {
     throw Error(
       `EBSI only supports did:key for natural persons and did:ebsi for legal persons. Provider: ${identifier.provider}, did: ${identifier.did}`,
@@ -126,7 +126,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
   })
 
   const signCallbacks: ProofOfPossessionCallbacks<never> = requestObjectOpts.signCallbacks ?? {
-    signCallback: signCallback(vciClient, idOpts, context),
+    signCallback: signCallback(idOpts, context),
   }
   const authorizationRequestOpts = {
     redirectUri,
@@ -143,6 +143,12 @@ export const ebsiCreateAttestationAuthRequestURL = async (
     authorizationRequest: authorizationRequestOpts,
   })
   logger.info(`create attestation ${credentialType} auth req URL for ${clientIdArg} and issuer ${credentialIssuer}, result: ${authorizationCodeURL}`)
+  const jwaAlg = await signatureAlgorithmFromKey({ key: authKey })
+  if (!(jwaAlg in Alg)) {
+    return Promise.reject(Error(`${jwaAlg} is not supported`))
+  }
+  // @ts-ignore
+  const alg: Alg = Alg[jwaAlg]
 
   return {
     requestData: {
@@ -153,7 +159,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
     },
     accessTokenOpts: {
       clientOpts: {
-        alg: Alg[await signatureAlgorithmFromKey({ key: authKey })],
+        alg,
         clientId,
         kid,
         signCallbacks,
@@ -162,8 +168,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
     },
     authorizationRequestOpts,
     authorizationCodeURL,
-    identifier,
-    // @ts-ignore
+    identifier: resolution,
     authKey,
     didMethodPreferences: [SupportedDidMethodEnum.DID_EBSI, SupportedDidMethodEnum.DID_KEY],
   }
@@ -181,7 +186,7 @@ export const ebsiGetAttestationInterpreter = async (
     ...authReqResult,
     issuanceOpt: {
       identifier,
-      didMethod: SupportedDidMethodEnum.DID_EBSI,
+      supportedPreferredDidMethod: SupportedDidMethodEnum.DID_EBSI,
       kid: authReqResult.authKey.meta?.jwkThumbprint ?? authReqResult.authKey.kid,
     },
     clientOpts: {
@@ -226,25 +231,29 @@ export const ebsiGetAttestationInterpreter = async (
 
 export const ebsiGetAttestation = async (
   { clientId, authReqResult, opts = { timeout: 30_000 } }: GetAttestationArgs,
-  context: IRequiredContext,
+  agentContext: IRequiredContext,
 ): Promise<AttestationResult> => {
   logger.info(`Getting EBSI attestation for ${authReqResult.identifier.did} and ${clientId}`)
-  const interpreter = await ebsiGetAttestationInterpreter({ clientId, authReqResult }, context)
+  const interpreter = await ebsiGetAttestationInterpreter({ clientId, authReqResult }, agentContext)
   const state = await waitFor(interpreter.start(), (state) => state.matches('done') || state.matches('handleError') || state.matches('error'), {
     timeout: opts.timeout ?? 30_000,
   })
+  const { contactAlias, contact, credentialBranding, issuanceOpt, error, credentialsToAccept } = state.context
+
   if (state.matches('handleError') || state.matches('error')) {
     logger.error(JSON.stringify(state.context.error))
     throw Error(JSON.stringify(state.context.error))
   }
 
   const result = {
-    contactAlias: state.context.contactAlias,
-    contact: state.context.contact!,
-    credentialBranding: state.context.credentialBranding,
-    identifier: state.context.issuanceOpt?.identifier ?? authReqResult.identifier,
-    error: state.context.error,
-    credentials: state.context.credentialsToAccept,
+    contactAlias,
+    contact: contact!,
+    credentialBranding,
+    identifier: issuanceOpt?.identifier
+      ? ((await agentContext.agent.identifierManagedGet(issuanceOpt.identifier)) as ManagedIdentifierDidResult)
+      : authReqResult.identifier,
+    error,
+    credentials: credentialsToAccept,
   }
   logger.info(`EBSI attestation for ${authReqResult.identifier.did} and ${clientId}`, result)
 

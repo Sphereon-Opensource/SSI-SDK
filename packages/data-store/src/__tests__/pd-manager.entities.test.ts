@@ -1,4 +1,4 @@
-import {DataSources} from "@sphereon/ssi-sdk.agent-config";
+import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { DataSource } from 'typeorm'
 import { PresentationDefinitionItemEntity } from '../entities/presentationDefinition/PresentationDefinitionItemEntity'
 import { DataStorePresentationDefinitionMigrations } from '../migrations'

@@ -74,6 +74,7 @@ agent:
     - schemaValidation: false
       plugins:
         - $require: '@veramo/credential-ld/build#VeramoLdSignature'
+        - $require: '@sphereon/ssi-sdk-ext.identifier-resolution/dist#IdentierResolution'
         #
         #        - $require: '@veramo/credential-ld/build#CredentialIssuerLD'
         #          $args:

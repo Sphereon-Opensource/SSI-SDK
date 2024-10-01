@@ -1,6 +1,5 @@
-import { CheckLinkedDomain, PresentationDefinitionLocation, PresentationDefinitionWithLocation, SupportedVersion } from '@sphereon/did-auth-siop'
+import { PresentationDefinitionLocation, PresentationDefinitionWithLocation, SupportedVersion } from '@sphereon/did-auth-siop'
 import { CreateRequestObjectMode } from '@sphereon/oid4vci-common'
-import { getIdentifier } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IPEXFilterResult } from '@sphereon/ssi-sdk.presentation-exchange'
 import { CredentialMapper, PresentationSubmission } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
@@ -30,6 +29,7 @@ import {
 } from '../types/IEbsiSupport'
 
 import { v4 } from 'uuid'
+import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
 
 export const ebsiSupportMethods: Array<string> = [
   'ebsiCreateDidOnLedger',
@@ -106,7 +106,7 @@ export class EbsiSupport implements IAgentPlugin {
 
   private async ebsiAccessTokenGet(args: EBSIAuthAccessTokenGetArgs, context: IRequiredContext): Promise<GetAccessTokenResult> {
     const { scope, idOpts, jwksUri, clientId, allVerifiableCredentials, redirectUri, environment, skipDidResolution = false } = args
-    const identifier = await getIdentifier(idOpts, context)
+    const identifier = await context.agent.identifierManagedGetByDid(idOpts)
     console.log(`Getting access token for ${identifier.did}, scope ${scope} and clientId=${clientId}, skipDidResolution=${skipDidResolution}...`)
     const openIDMetadata = await this.ebsiWellknownMetadata({
       environment,
@@ -202,14 +202,14 @@ export class EbsiSupport implements IAgentPlugin {
       op: { checkLinkedDomains: CheckLinkedDomain.NEVER },
       providedPresentationDefinitions: [definition],
     })
-    const oid4vp = await opSession.getOID4VP([identifier.did])
+    const oid4vp = await opSession.getOID4VP({ allIdentifiers: [identifier.did] })
     const vp = await oid4vp.createVerifiablePresentation(
       args.credentialRole,
       { definition, credentials: pexResult.filteredCredentials },
       {
         proofOpts: { domain: openIDMetadata.issuer, nonce: v4(), created: new Date(Date.now() - 120_000).toString() },
-        holderDID: identifier.did,
-        identifierOpts: idOpts,
+        holder: identifier.did,
+        idOpts: idOpts,
         skipDidResolution,
         forceNoCredentialsInVP: !hasInputDescriptors,
       },
@@ -242,7 +242,7 @@ export class EbsiSupport implements IAgentPlugin {
       // vp,
       scope,
       // definition,
-      identifier,
+      identifier: identifier,
     }
   }
 

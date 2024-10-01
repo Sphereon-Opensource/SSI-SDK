@@ -8,7 +8,7 @@ import {
   NonPersistedIdentity,
   Party,
 } from '@sphereon/ssi-sdk.data-store'
-import { Loggers, W3CVerifiableCredential } from '@sphereon/ssi-types'
+import { Loggers } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { v4 as uuidv4 } from 'uuid'
 import {
@@ -48,6 +48,9 @@ import {
   Siopv2HolderEvent,
 } from '../types/siop-service'
 import { PEX, Status } from '@sphereon/pex'
+import { computeEntryHash } from '@veramo/utils'
+import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
+import { EventEmitter } from 'events'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
@@ -89,6 +92,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
 
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
+  private readonly eventEmitter?: EventEmitter
 
   constructor(
     presentationSignCallback?: PresentationSignCallback,
@@ -211,7 +215,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
 
     const session: OpSession = await agent
       .siopGetOPSession({ sessionId })
-      .catch(async () => await agent.siopRegisterOPSession({ requestJwtOrUri: redirectUrl, sessionId }))
+      .catch(async () => await agent.siopRegisterOPSession({ requestJwtOrUri: redirectUrl, sessionId, op: { eventEmitter: this.eventEmitter } }))
 
     logger.debug(`session: ${JSON.stringify(session.id, null, 2)}`)
     const verifiedAuthorizationRequest = await session.getAuthorizationRequest()
@@ -314,7 +318,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
         origin: IdentityOrigin.EXTERNAL,
         roles: [CredentialRole.ISSUER],
         identifier: {
-          type: CorrelationIdentifierType.DID,
+          type: correlationId.startsWith('did:') ? CorrelationIdentifierType.DID : CorrelationIdentifierType.URL,
           correlationId,
         },
       }
@@ -342,14 +346,31 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     const verifiableCredentialsWithDefinition: Array<VerifiableCredentialsWithDefinition> = []
 
     authorizationRequestData.presentationDefinitions?.forEach((presentationDefinition) => {
-      const { areRequiredCredentialsPresent, verifiableCredential } = pex.selectFrom(presentationDefinition.definition, selectedCredentials)
-      if (areRequiredCredentialsPresent !== Status.ERROR) {
+      const { areRequiredCredentialsPresent, verifiableCredential: verifiableCredentials } = pex.selectFrom(
+        presentationDefinition.definition,
+        selectedCredentials.map((udc) => udc.originalVerifiableCredential!),
+      )
+      if (areRequiredCredentialsPresent !== Status.ERROR && verifiableCredentials) {
+        const uniqueDigitalCredentials: UniqueDigitalCredential[] = verifiableCredentials.map((vc) => {
+          // @ts-ignore FIXME Funke
+          const hash = computeEntryHash(vc)
+          const udc = selectedCredentials.find((udc) => udc.hash == hash)
+
+          if (!udc) {
+            throw Error('UniqueDigitalCredential could not be found')
+          }
+          return udc
+        })
         verifiableCredentialsWithDefinition.push({
           definition: presentationDefinition,
-          credentials: verifiableCredential as Array<W3CVerifiableCredential>,
+          credentials: uniqueDigitalCredentials,
         })
       }
     })
+
+    if (verifiableCredentialsWithDefinition.length === 0) {
+      return Promise.reject(Error('None of the selected credentials match any of the presentation definitions.'))
+    }
 
     const response = await siopSendAuthorizationResponse(
       ConnectionType.SIOPv2_OpenID4VP,

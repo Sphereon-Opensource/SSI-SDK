@@ -1,4 +1,4 @@
-import {DataSources} from "@sphereon/ssi-sdk.agent-config";
+import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { PartyCorrelationType } from '@sphereon/ssi-sdk.core'
 import { ActionType, InitiatorType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'

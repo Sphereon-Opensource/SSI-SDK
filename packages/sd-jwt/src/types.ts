@@ -1,6 +1,13 @@
-import { Hasher, KBOptions, SaltGenerator } from '@sd-jwt/types'
-import { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
-import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+import { Hasher, kbHeader, KBOptions, kbPayload, SaltGenerator } from '@sd-jwt/types'
+import { SdJwtVcPayload as SdJwtPayload } from '@sd-jwt/sd-jwt-vc'
+import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { JoseSignatureAlgorithm } from '@sphereon/ssi-types'
+import { DIDDocumentSection, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
+import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
+
+export const sdJwtPluginContextMethods: Array<string> = ['createSdJwtVc', 'createSdJwtPresentation', 'verifySdJwtVc', 'verifySdJwtPresentation']
 
 /**
  * My Agent Plugin description.
@@ -60,11 +67,20 @@ export interface ISDJwtPlugin extends IPluginMethodMap {
   verifySdJwtPresentation(args: IVerifySdJwtPresentationArgs, context: IRequiredContext): Promise<IVerifySdJwtPresentationResult>
 }
 
+export function contextHasSDJwtPlugin(context: IAgentContext<IPluginMethodMap>): context is IAgentContext<ISDJwtPlugin> {
+  return contextHasPlugin(context, 'verifySdJwtVc')
+}
+
 /**
  * ICreateSdJwtVcArgs
  *
  * @beta
  */
+
+export interface SdJwtVcPayload extends SdJwtPayload {
+  x5c?: string[]
+}
+
 export interface ICreateSdJwtVcArgs {
   credentialPayload: SdJwtVcPayload
 
@@ -78,6 +94,7 @@ export interface ICreateSdJwtVcArgs {
 export interface IDisclosureFrame {
   _sd?: string[]
   _sd_decoy?: number
+
   [x: string]: string[] | number | IDisclosureFrame | undefined
 }
 
@@ -109,6 +126,11 @@ export interface ICreateSdJwtPresentationArgs {
    * if empty object, no keys will be disclosed
    */
   presentationFrame?: IPresentationFrame
+
+  /**
+   * Allows to override the holder. Normally it will be looked up from the cnf or sub values
+   */
+  holder?: string
 
   /**
    * Information to include to add key binding.
@@ -145,7 +167,9 @@ export interface IVerifySdJwtVcArgs {
  * @beta
  */
 export type IVerifySdJwtVcResult = {
-  verifiedPayloads: unknown
+  payload: SdJwtPayload
+  header: Record<string, unknown>
+  kb?: { header: kbHeader; payload: kbPayload }
 }
 
 /**
@@ -163,9 +187,25 @@ export interface IVerifySdJwtPresentationArgs {
  * @beta
  */
 export type IVerifySdJwtPresentationResult = {
-  verifiedPayloads: Record<string, unknown>
+  payload: unknown //fixme: maybe this can be `SdJwtPayload`
+  header: Record<string, unknown> | undefined
+  kb?: { header: kbHeader; payload: kbPayload }
 }
 
+export type SignKeyArgs = {
+  identifier: string
+  vmRelationship: DIDDocumentSection
+}
+
+export type SignKeyResult = {
+  alg: JoseSignatureAlgorithm
+  key: {
+    kid: string
+    kmsKeyRef: string
+    x5c?: string[]
+    jwkThumbprint?: string
+  }
+}
 /**
  * This context describes the requirements of this plugin.
  * For this plugin to function properly, the agent needs to also have other plugins installed that implement the
@@ -174,11 +214,13 @@ export type IVerifySdJwtPresentationResult = {
  *
  * @beta
  */
-export type IRequiredContext = IAgentContext<IDIDManager & IResolver & IKeyManager>
+export type IRequiredContext = IAgentContext<IDIDManager & IIdentifierResolution & IJwtService & IResolver & IKeyManager & ImDLMdoc>
+
+export type SdJwtVerifySignature = (data: string, signature: string, publicKey: JsonWebKey) => Promise<boolean>
 export interface SdJWTImplementation {
-  saltGenerator: SaltGenerator
-  hasher: Hasher
-  verifySignature: (data: string, signature: string, publicKey: JsonWebKey) => Promise<boolean>
+  saltGenerator?: SaltGenerator
+  hasher?: Hasher
+  verifySignature?: SdJwtVerifySignature
 }
 
 export interface Claims {
@@ -187,7 +229,9 @@ export interface Claims {
    */
   sub?: string
   cnf?: {
-    jwk: JsonWebKey
+    jwk?: JsonWebKey
+    kid?: string
   }
+
   [key: string]: unknown
 }

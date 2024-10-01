@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.xstate-machine-persistence",
-  "version": "0.29.0",
+  "version": "0.30.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,6 +17,7 @@
   "dependencies": {
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@veramo/core": "4.2.0",
+    "debug": "^4.3.5",
     "uuid": "^9.0.1",
     "xstate": "^4.38.3"
   },

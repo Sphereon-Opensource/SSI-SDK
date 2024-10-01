@@ -12,35 +12,43 @@ import {
   MetadataDisplay,
   NotificationRequest,
 } from '@sphereon/oid4vci-common'
+import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
-  CreateOrGetIdentifierOpts,
-  IdentifierProviderOpts,
-  IIdentifierOpts,
-  KeyManagementSystemEnum,
-  SupportedDidMethodEnum,
-} from '@sphereon/ssi-sdk-ext.did-utils'
+  IIdentifierResolution,
+  ManagedIdentifierMethod,
+  ManagedIdentifierOptsOrResult,
+  ManagedIdentifierResult,
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
+import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { DigitalCredential, IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
-import { IVerifiableCredential, WrappedVerifiableCredential, WrappedVerifiablePresentation } from '@sphereon/ssi-types'
+import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
+import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
+import {
+  Hasher,
+  IVerifiableCredential,
+  JoseSignatureAlgorithm,
+  JoseSignatureAlgorithmString,
+  OriginalVerifiableCredential,
+  W3CVerifiableCredential,
+  WrappedVerifiableCredential,
+  WrappedVerifiablePresentation,
+} from '@sphereon/ssi-types'
 import {
   IAgentContext,
   ICredentialIssuer,
   ICredentialVerifier,
   IDIDManager,
-  IIdentifier,
-  IKey,
   IKeyManager,
   IPluginMethodMap,
   IResolver,
   TAgent,
   TKeyType,
-  VerifiableCredential,
+  VerificationPolicies,
 } from '@veramo/core'
-import { _ExtendedIKey } from '@veramo/utils'
-import { JWTHeader, JWTPayload } from 'did-jwt'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
-import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult>
@@ -77,7 +85,8 @@ export type OID4VCIHolderOptions = {
   jsonldCryptographicSuitePreferences?: Array<string>
   defaultAuthorizationRequestOptions?: AuthorizationRequestOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
-  jwtCryptographicSuitePreferences?: Array<SignatureAlgorithmEnum>
+  jwtCryptographicSuitePreferences?: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString>
+  hasher?: Hasher
 }
 
 export type OnContactIdentityCreatedArgs = {
@@ -96,7 +105,7 @@ export type OnCredentialStoredArgs = {
 }
 
 export type OnIdentifierCreatedArgs = {
-  identifier: IIdentifier
+  identifier: ManagedIdentifierResult
 }
 
 export type GetMachineArgs = {
@@ -130,7 +139,7 @@ export type StoreCredentialBrandingArgs = Pick<
 >
 export type StoreCredentialsArgs = Pick<
   OID4VCIMachineContext,
-  'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState' | 'selectedCredentials'
+  'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState' | 'selectedCredentials' | 'issuanceOpt'
 >
 export type SendNotificationArgs = Pick<
   OID4VCIMachineContext,
@@ -160,15 +169,16 @@ export enum SupportedLanguage {
 
 export type VerifyCredentialToAcceptArgs = {
   mappedCredential: MappedCredentialToAccept
+  hasher?: Hasher
   context: RequiredContext
 }
 
 export type MappedCredentialToAccept = ExperimentalSubjectIssuance & {
   correlationId: string
-  credential: CredentialToAccept
   types: string[]
+  credentialToAccept: CredentialToAccept
   uniformVerifiableCredential: IVerifiableCredential
-  rawVerifiableCredential: VerifiableCredential
+  rawVerifiableCredential: W3CVerifiableCredential
 }
 
 export type OID4VCIMachineContext = {
@@ -412,11 +422,14 @@ export type SelectAppLocaleBrandingArgs = {
 
 export type IssuanceOpts = CredentialConfigurationSupported & {
   credentialConfigurationId?: string // Explicit ID for a credential
-  didMethod: SupportedDidMethodEnum
-  keyType: TKeyType
+  supportedBindingMethods: ManagedIdentifierMethod[]
+  supportedPreferredDidMethod?: SupportedDidMethodEnum
+  // todo: rename, now we have generic identifiers
+  identifier?: ManagedIdentifierOptsOrResult
+  // todo: replace by signature alg, so we can determine applicable key types instead of determining up front. Use proof_types_supported
+  keyType?: TKeyType
   codecName?: string
-  kid?: string
-  identifier: IIdentifier // TODO looking at the implementation, shouldn't this field be optional?
+  kms?: string
 }
 
 export type VerificationResult = {
@@ -476,7 +489,8 @@ export type GetPreferredCredentialFormatsArgs = {
 }
 
 export type MapCredentialToAcceptArgs = {
-  credential: CredentialToAccept
+  credentialToAccept: CredentialToAccept
+  hasher?: Hasher
 }
 
 export type GetDefaultIssuanceOptsArgs = {
@@ -495,7 +509,7 @@ export type GetIdentifierArgs = {
 }
 
 export type GetAuthenticationKeyArgs = {
-  identifier: IIdentifier
+  identifier: ManagedIdentifierOptsOrResult
   offlineWhenNoDIDRegistered?: boolean
   noVerificationMethodFallback?: boolean
   context: IAgentContext<IResolver & IDIDManager & IKeyManager>
@@ -517,7 +531,7 @@ export type CreateIdentifierOpts = {
 }
 
 export type CreateIdentifierCreateOpts = {
-  kms?: KeyManagementSystemEnum
+  kms?: string
   alias?: string
   options?: IdentifierProviderOpts
 }
@@ -528,7 +542,7 @@ export type GetIssuanceOptsArgs = {
   serverMetadata: EndpointMetadataResult
   context: RequiredContext
   didMethodPreferences: Array<SupportedDidMethodEnum>
-  jwtCryptographicSuitePreferences: Array<SignatureAlgorithmEnum>
+  jwtCryptographicSuitePreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString>
   jsonldCryptographicSuitePreferences: Array<string>
   forceIssuanceOpt?: IssuanceOpts
 }
@@ -542,34 +556,8 @@ export type GetIssuanceDidMethodArgs = {
 export type GetIssuanceCryptoSuiteArgs = {
   credentialSupported: CredentialConfigurationSupported
   client: OpenID4VCIClient
-  jwtCryptographicSuitePreferences: Array<SignatureAlgorithmEnum>
+  jwtCryptographicSuitePreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString>
   jsonldCryptographicSuitePreferences: Array<string>
-}
-
-export type SignatureAlgorithmFromKeyArgs = {
-  key: IKey
-}
-
-export type SignatureAlgorithmFromKeyTypeArgs = {
-  type: TKeyType
-}
-
-export type KeyTypeFromCryptographicSuiteArgs = {
-  suite: string
-}
-
-export type IRequiredSignAgentContext = IAgentContext<IKeyManager & IDIDManager & IResolver>
-export type SignJwtArgs = {
-  idOpts: IIdentifierOpts
-  header: Partial<JWTHeader>
-  payload: Partial<JWTPayload>
-  options: { issuer: string; expiresIn?: number; canonicalize?: boolean }
-  context: IRequiredSignAgentContext
-}
-
-export type GetSignerArgs = {
-  idOpts: IIdentifierOpts
-  context: IRequiredSignAgentContext
 }
 
 export type GetCredentialArgs = {
@@ -584,19 +572,39 @@ export type AccessTokenOpts = {
   clientOpts?: AuthorizationServerClientOpts
 }
 
-export enum SignatureAlgorithmEnum {
-  EdDSA = 'EdDSA',
-  ES256 = 'ES256',
-  ES256K = 'ES256K',
+export enum IdentifierAliasEnum {
+  PRIMARY = 'primary',
 }
 
-export type IdentifierOpts = {
-  identifier: IIdentifier
-  key: _ExtendedIKey
-  kid: string
+export type CredentialVerificationError = {
+  error?: string
+  errorDetails?: string
+}
+
+export type VerifyMdocArgs = { credential: string }
+
+export type VerifySDJWTCredentialArgs = { credential: string; hasher?: Hasher }
+
+export interface VerifyCredentialArgs {
+  credential: OriginalVerifiableCredential
+  fetchRemoteContexts?: boolean
+  policies?: VerificationPolicies
+
+  [x: string]: any
 }
 
 export type RequiredContext = IAgentContext<
-  IIssuanceBranding & IContactManager & ICredentialVerifier & ICredentialIssuer & ICredentialStore & IDIDManager & IResolver & IKeyManager
+  IIssuanceBranding &
+    IContactManager &
+    ICredentialVerifier &
+    ICredentialIssuer &
+    ICredentialStore &
+    IIdentifierResolution &
+    IJwtService &
+    IDIDManager &
+    IResolver &
+    IKeyManager &
+    ISDJwtPlugin &
+    ImDLMdoc
 >
 export type DidAgents = TAgent<IResolver & IDIDManager>

@@ -111,7 +111,7 @@ const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine 
     hasContactConsent: true,
     contactAlias: '',
     selectedCredentials: [],
-    idOpts,
+    idOpts: idOpts,
   }
 
   return createMachine<Siopv2MachineContext, Siopv2MachineEventTypes>({

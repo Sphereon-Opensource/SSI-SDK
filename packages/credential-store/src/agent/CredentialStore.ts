@@ -16,8 +16,10 @@ import {
   TClaimsColumns,
   UniqueDigitalCredential,
 } from '../index'
-import { AbstractDigitalCredentialStore, DigitalCredential, UpdateCredentialStateArgs } from '@sphereon/ssi-sdk.data-store'
+import { AbstractDigitalCredentialStore, DigitalCredential, parseRawDocument, UpdateCredentialStateArgs } from '@sphereon/ssi-sdk.data-store'
 import { IVerifiableCredential } from '@sphereon/ssi-types'
+import { defaultHasher } from '@sphereon/ssi-sdk.data-store'
+
 // Exposing the methods here for any REST implementation
 export const credentialStoreMethods: Array<string> = [
   'crsAddCredential',
@@ -58,7 +60,7 @@ export class CredentialStore implements IAgentPlugin {
 
   /** {@inheritDoc ICRManager.crmAddCredential} */
   private async crsAddCredential(args: AddCredentialArgs): Promise<DigitalCredential> {
-    return await this.store.addCredential(args.credential)
+    return await this.store.addCredential({ ...args.credential, opts: { ...args.opts, hasher: args.opts?.hasher ?? defaultHasher } })
   }
 
   /** {@inheritDoc ICRManager.updateCredentialState} */
@@ -69,8 +71,7 @@ export class CredentialStore implements IAgentPlugin {
   /** {@inheritDoc ICRManager.crmGetCredential} */
   private async crsGetCredential(args: GetCredentialArgs): Promise<DigitalCredential> {
     const { id } = args
-    const credential = await this.store.getCredential({ id })
-    return credential
+    return await this.store.getCredential({ id })
   }
 
   /** {@inheritDoc ICRManager.crmGetCredentials} */
@@ -217,6 +218,10 @@ export class CredentialStore implements IAgentPlugin {
     return credentialsByClaims.length // FIXME ?
   }
 
+  private secureParse<Type>(original: string): Type {
+    return parseRawDocument(original) as Type
+  }
+
   private toUniqueCredentials(credentials: Array<DigitalCredential>): Array<UniqueDigitalCredential> {
     return Object.values(
       credentials.reduce(
@@ -227,21 +232,21 @@ export class CredentialStore implements IAgentPlugin {
           }
           switch (credential.documentType) {
             case DocumentType.VC:
-              uniqueCredential.originalVerifiableCredential = JSON.parse(credential.rawDocument)
-              uniqueCredential.uniformVerifiableCredential = JSON.parse(credential.uniformDocument)
+              uniqueCredential.originalVerifiableCredential = this.secureParse(credential.rawDocument)
+              uniqueCredential.uniformVerifiableCredential = this.secureParse(credential.uniformDocument)
               uniqueCredential.id = uniqueCredential.uniformVerifiableCredential?.id
               break
             case DocumentType.VP:
-              uniqueCredential.originalVerifiablePresentation = JSON.parse(credential.rawDocument)
-              uniqueCredential.uniformVerifiablePresentation = JSON.parse(credential.uniformDocument)
+              uniqueCredential.originalVerifiablePresentation = this.secureParse(credential.rawDocument)
+              uniqueCredential.uniformVerifiablePresentation = this.secureParse(credential.uniformDocument)
               uniqueCredential.id = uniqueCredential.uniformVerifiablePresentation?.id
               break
             case DocumentType.P:
-              uniqueCredential.originalPresentation = JSON.parse(credential.rawDocument)
+              uniqueCredential.originalPresentation = this.secureParse(credential.rawDocument)
               uniqueCredential.id = uniqueCredential.originalPresentation?.id
               break
             case DocumentType.C:
-              uniqueCredential.originalCredential = JSON.parse(credential.rawDocument)
+              uniqueCredential.originalCredential = this.secureParse(credential.rawDocument)
               uniqueCredential.id = uniqueCredential.originalCredential?.id
               break
             // TODO CBOR support
