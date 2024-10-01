@@ -7,9 +7,8 @@ import { IAgentPlugin } from '@veramo/core'
 import { decodeBase64url } from '@veramo/utils'
 import Debug from 'debug'
 import { defaultGenerateDigest, defaultGenerateSalt, defaultVerifySignature } from './defaultCallbacks'
-
-import { SdJwtVerifySignature, SignKeyArgs, SignKeyResult } from './index'
 import { sphereonCA, funkeTestCA } from './trustAnchors'
+import { SdJwtVerifySignature, SignKeyArgs, SignKeyResult } from './index'
 import {
   Claims,
   ICreateSdJwtPresentationArgs,
@@ -88,6 +87,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     const signer: Signer = async (data: string): Promise<string> => {
       return context.agent.keyManagerSign({ keyRef: key.kmsKeyRef, data })
     }
+
     return { signer, alg, signingKey }
   }
 
@@ -116,6 +116,7 @@ export class SDJwtPlugin implements IAgentPlugin {
         ...(signingKey?.key.kid !== undefined && { kid: signingKey.key.kid }),
       },
     })
+
     return { credential }
   }
 
@@ -186,8 +187,9 @@ export class SDJwtPlugin implements IAgentPlugin {
       kbSigner: signer,
       kbSignAlg: alg ?? 'ES256',
     })
-    const credential = await sdjwt.present(args.presentation, args.presentationFrame as PresentationFrame<SdJwtVcPayload>, { kb: args.kb })
-    return { presentation: credential }
+    const presentation = await sdjwt.present(args.presentation, args.presentationFrame as PresentationFrame<SdJwtVcPayload>, { kb: args.kb })
+
+    return { presentation }
   }
 
   /**
@@ -199,7 +201,6 @@ export class SDJwtPlugin implements IAgentPlugin {
   async verifySdJwtVc(args: IVerifySdJwtVcArgs, context: IRequiredContext): Promise<IVerifySdJwtVcResult> {
     // callback
     const verifier: Verifier = async (data: string, signature: string) => this.verify(sdjwt, context, data, signature)
-
     const sdjwt = new SDJwtVcInstance({ verifier, hasher: this.registeredImplementations.hasher })
     const { header = {}, payload, kb } = await sdjwt.verify(args.credential)
 
@@ -252,7 +253,7 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @param signature - The signature
    * @returns
    */
-  async verify(sdjwt: SDJwtVcInstance, context: IRequiredContext, data: string, signature: string) {
+  async verify(sdjwt: SDJwtVcInstance, context: IRequiredContext, data: string, signature: string): Promise<boolean> {
     const decodedVC = await sdjwt.decode(`${data}.${signature}`)
     const issuer: string = ((decodedVC.jwt as Jwt).payload as Record<string, unknown>).iss as string
     const header = (decodedVC.jwt as Jwt).header as Record<string, any>
@@ -270,7 +271,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       })
 
       if (certificateValidationResult.error || !certificateValidationResult?.certificateChain) {
-        throw new Error('Certificate chain validation failed')
+        return Promise.reject(Error(`Certificate chain validation failed. ${certificateValidationResult.message}`))
       }
       const certInfo = certificateValidationResult.certificateChain[0]
       jwk = certInfo.publicKeyJWK as JWK
@@ -306,9 +307,11 @@ export class SDJwtPlugin implements IAgentPlugin {
       // needs more checks. some DID methods do not expose the keys as publicKeyJwk
       jwk = didDocumentKey.publicKeyJwk as JsonWebKey
     }
+
     if (!jwk) {
       throw new Error('No valid public key found for signature verification')
     }
+
     return this.verifySignatureCallback(context)(data, signature, jwk)
   }
 
@@ -328,15 +331,15 @@ export class SDJwtPlugin implements IAgentPlugin {
       hasher: this.registeredImplementations.hasher,
       kbVerifier: verifierKb,
     })
-    const verifiedPayloads = await sdjwt.verify(args.presentation, args.requiredClaimKeys, args.kb)
 
-    return verifiedPayloads
+    return sdjwt.verify(args.presentation, args.requiredClaimKeys, args.kb)
   }
 
   private verifySignatureCallback(context: IRequiredContext): SdJwtVerifySignature {
     if (typeof this.registeredImplementations.verifySignature === 'function') {
       return this.registeredImplementations.verifySignature
     }
+
     return defaultVerifySignature(context)
   }
 }
