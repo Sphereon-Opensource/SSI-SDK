@@ -50,7 +50,7 @@ jobs:
         run: pnpm test:ci
       - uses: codecov/codecov-action@v4
         with:
-          fail_ci_if_error: true # optional (default = false)
+          fail_ci_if_error: false # optional (default = false)
           files: ./coverage1.xml,./coverage2.xml # optional
           flags: unittests # optional
           name: codecov-umbrella # optional
