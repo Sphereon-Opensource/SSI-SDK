@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.data-store",
-  "version": "0.30.0",
+  "version": "0.30.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,24 +14,24 @@
     "typeorm-postgres:migration:run": "pnpm run typeorm -- migration:run -c migration-postgres"
   },
   "dependencies": {
+    "@sphereon/kmp-mdl-mdoc": "0.2.0-SNAPSHOT.22",
     "@sphereon/pex": "5.0.0-unstable.9",
     "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.130",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.130",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
-    "@sphereon/kmp-mdl-mdoc": "0.2.0-SNAPSHOT.22",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/utils": "4.2.0",
     "blakejs": "^1.2.1",
-    "sha.js": "^2.4.11",
     "class-validator": "^0.14.1",
     "debug": "^4.3.5",
+    "sha.js": "^2.4.11",
     "typeorm": "^0.3.20"
   },
   "devDependencies": {
-    "pg": "^8.12.0",
     "@types/sha.js": "^2.4.4",
+    "pg": "^8.12.0",
     "sqlite3": "^5.1.7"
   },
   "files": [

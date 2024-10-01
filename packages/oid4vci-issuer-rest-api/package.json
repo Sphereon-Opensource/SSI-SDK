@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.oid4vci-issuer-rest-api",
-  "version": "0.30.0",
+  "version": "0.30.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,8 +14,8 @@
     "@sphereon/oid4vci-common": "0.16.1-unstable.91",
     "@sphereon/oid4vci-issuer": "0.16.1-unstable.91",
     "@sphereon/oid4vci-issuer-server": "0.16.1-unstable.91",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.130",
     "@sphereon/ssi-express-support": "workspace:*",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.130",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@sphereon/ssi-sdk.oid4vci-issuer": "workspace:*",
     "@sphereon/ssi-sdk.oid4vci-issuer-store": "workspace:*",
