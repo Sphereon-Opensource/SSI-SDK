@@ -725,13 +725,14 @@ export class OID4VCIHolder implements IAgentPlugin {
   }
 
   private async oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<VerificationResult[]> {
-    const { credentialsToAccept } = args
+    const { credentialsToAccept, issuanceOpt } = args
 
     return await Promise.all(
       credentialsToAccept.map((credentialToAccept) =>
         verifyCredentialToAccept({
           mappedCredential: credentialToAccept,
           hasher: this.hasher,
+          schemaValidation: issuanceOpt?.schemaValidation,
           context,
         }),
       ),
