@@ -14,7 +14,7 @@
     "typeorm-postgres:migration:run": "pnpm run typeorm -- migration:run -c migration-postgres"
   },
   "dependencies": {
-    "@sphereon/pex": "5.0.0-unstable.8",
+    "@sphereon/pex": "5.0.0-unstable.9",
     "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.130",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.130",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
