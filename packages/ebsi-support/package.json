@@ -83,8 +83,7 @@
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
   "keywords": [
-    "EBSI",
-    "EBSI Authorization Client"
+    "EBSI Authorization Client",
+    "EBSI"
   ]
 }
-
