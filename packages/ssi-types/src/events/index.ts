@@ -169,9 +169,9 @@ export class EventManager {
           emitters.map((emitter) => {
             return { emitter, enabled: true }
           }),
-          filter,
-        ).flatMap((emitter) => emitter.emitter.listeners(filter.eventName)),
-      ),
+          filter
+        ).flatMap((emitter) => emitter.emitter.listeners(filter.eventName))
+      )
     )
   }
 
@@ -180,7 +180,7 @@ export class EventManager {
     filter?: {
       eventName?: string | symbol
       onlyEnabled?: boolean
-    },
+    }
   ): Array<EmitterInstance> {
     const { eventName } = filter ?? {}
     if (!eventName) {

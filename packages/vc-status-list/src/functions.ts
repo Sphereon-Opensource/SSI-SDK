@@ -13,7 +13,7 @@ import { checkStatus, StatusList } from '@sphereon/vc-status-list'
 import { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin, ProofFormat } from '@veramo/core'
 import { CredentialJwtOrJSON, StatusMethod } from 'credential-status'
 import {
-  CreateNewStatusListArgs,
+  CreateNewStatusListFuncArgs,
   StatusList2021ToVerifiableCredentialArgs,
   StatusListDetails,
   StatusListResult,
@@ -172,7 +172,7 @@ export async function checkStatusIndexFromStatusListCredential(args: {
 }
 
 export async function createNewStatusList(
-  args: CreateNewStatusListArgs,
+  args: CreateNewStatusListFuncArgs,
   context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
 ): Promise<StatusListResult> {
   const length = args?.length ?? 250000
@@ -295,6 +295,7 @@ export async function statusList2021ToVerifiableCredential(
   const identifier = await context.agent.identifierManagedGet({
     identifier: typeof issuer === 'string' ? issuer : issuer.id,
     vmRelationship: 'assertionMethod',
+    offlineWhenNoDIDRegistered: true, // FIXME Fix identifier resolution for EBSI
   })
   const encodedList = getAssertedValue('encodedList', args.encodedList)
   const statusPurpose = getAssertedValue('statusPurpose', args.statusPurpose)

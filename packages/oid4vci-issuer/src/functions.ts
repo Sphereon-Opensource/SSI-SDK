@@ -1,14 +1,16 @@
 import { CredentialRequest, IssuerMetadata, Jwt, JwtVerifyResult, OID4VCICredentialFormat } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
-import { getManagedIdentifier, legacyKeyRefsToIdentifierOpts, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
-import { DIDDocument, ProofFormat } from '@veramo/core'
-import { CredentialPayload } from '@veramo/core/src/types/vc-data-model'
+import { legacyKeyRefsToIdentifierOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
+import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
+import { CompactSdJwtVc, CredentialMapper, ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
+import { CredentialPayload, DIDDocument, ProofFormat } from '@veramo/core'
 import { bytesToBase64 } from '@veramo/utils'
 import { createJWT, decodeJWT, JWTVerifyOptions, verifyJWT } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
 import { IIssuerOptions, IRequiredContext } from './types/IOID4VCIIssuer'
+import { SdJwtVcPayload } from '@sphereon/ssi-sdk.sd-jwt/dist'
 
 export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOptions }, _context: IRequiredContext) {
   return async (args: { jwt: string; kid?: string }): Promise<JwtVerifyResult<DIDDocument>> => {
@@ -53,7 +55,7 @@ export async function getAccessTokenKeyRef(
     /**
      * Uniform identifier options
      */
-    idOpts?: ManagedIdentifierOpts
+    idOpts?: ManagedIdentifierOptsOrResult
     /**
      * @deprecated
      */
@@ -69,9 +71,8 @@ export async function getAccessTokenKeyRef(
   },
   context: IRequiredContext,
 ) {
-  let idOpts: ManagedIdentifierOpts
-  idOpts = legacyKeyRefsToIdentifierOpts(opts)
-  return await context.agent.identifierManagedGet(idOpts)
+  let identifier = legacyKeyRefsToIdentifierOpts(opts)
+  return await context.agent.identifierManagedGet(identifier)
 }
 
 export async function getAccessTokenSignerCallback(
@@ -79,7 +80,7 @@ export async function getAccessTokenSignerCallback(
     /**
      * Uniform identifier options
      */
-    idOpts?: ManagedIdentifierOpts
+    idOpts?: ManagedIdentifierOptsOrResult
     /**
      * @deprecated
      */
@@ -98,6 +99,7 @@ export async function getAccessTokenSignerCallback(
   const signer = async (data: string | Uint8Array) => {
     let dataString, encoding: 'base64' | undefined
 
+    const resolution = await legacyKeyRefsToIdentifierOpts(opts)
     const keyRef = resolution.kmsKeyRef
     if (!keyRef) {
       throw Error('Cannot sign access tokens without a key ref')
@@ -121,12 +123,11 @@ export async function getAccessTokenSignerCallback(
     return result
   }
 
-  const resolution = await context.agent.identifierManagedGet(legacyKeyRefsToIdentifierOpts(opts))
   return accessTokenSignerCallback
 }
 
 export async function getCredentialSignerCallback(
-  idOpts: ManagedIdentifierOpts & {
+  idOpts: ManagedIdentifierOptsOrResult & {
     crypto?: Crypto
   },
   context: IRequiredContext,
@@ -136,38 +137,76 @@ export async function getCredentialSignerCallback(
     credential: CredentialIssuanceInput
     jwtVerifyResult: JwtVerifyResult<DIDDocument>
     format?: OID4VCICredentialFormat
-  }): Promise<W3CVerifiableCredential> {
+  }): Promise<W3CVerifiableCredential | CompactSdJwtVc> {
     const { jwtVerifyResult, format } = args
     const credential = args.credential as ICredential // TODO: SDJWT
     let proofFormat: ProofFormat
 
+    const resolution = await context.agent.identifierManagedGet(idOpts)
     proofFormat = format?.includes('ld') ? 'lds' : 'jwt'
-    if (!credential.issuer) {
-      credential.issuer = { id: resolution.issuer ?? resolution.kmsKeyRef }
-    } else if (typeof credential.issuer === 'object' && !credential.issuer.id) {
-      credential.issuer.id = resolution.issuer ?? resolution.kmsKeyRef
-    }
-    const subjectIsArray = Array.isArray(credential.credentialSubject)
-    let credentialSubjects = Array.isArray(credential.credentialSubject) ? credential.credentialSubject : [credential.credentialSubject]
-    credentialSubjects = credentialSubjects.map((subject) => {
-      if (!subject.id) {
-        subject.id = jwtVerifyResult.did
+    const issuer = resolution.issuer ?? resolution.kmsKeyRef
+
+    if (CredentialMapper.isW3cCredential(credential)) {
+      if (!credential.issuer) {
+        credential.issuer = { id: issuer }
+      } else if (typeof credential.issuer === 'object' && !credential.issuer.id) {
+        credential.issuer.id = issuer
       }
-      return subject
-    })
-    credential.credentialSubject = subjectIsArray ? credentialSubjects : credentialSubjects[0]
+      const subjectIsArray = Array.isArray(credential.credentialSubject)
+      let credentialSubjects = Array.isArray(credential.credentialSubject) ? credential.credentialSubject : [credential.credentialSubject]
+      credentialSubjects = credentialSubjects.map((subject) => {
+        if (!subject.id) {
+          subject.id = jwtVerifyResult.did
+        }
+        return subject
+      })
+      credential.credentialSubject = subjectIsArray ? credentialSubjects : credentialSubjects[0]
 
-    const result = await context.agent.createVerifiableCredential({
-      credential: credential as CredentialPayload,
-      proofFormat,
-      removeOriginalFields: false,
-      fetchRemoteContexts: true,
-      domain: typeof credential.issuer === 'object' ? credential.issuer.id : credential.issuer,
-    })
-    return (proofFormat === 'jwt' && 'jwt' in result.proof ? result.proof.jwt : result) as W3CVerifiableCredential
+      // TODO: We should extend the plugin capabilities of issuance so we do not have to tuck this into the sign callback
+      if (contextHasPlugin<IStatusListPlugin>(context, 'slAddStatusToCredential')) {
+        // Add status list if enabled (and when the input has a credentialStatus object (can be empty))
+        const credentialStatusVC = await context.agent.slAddStatusToCredential({ credential })
+        if (credential.credentialStatus && !credential.credentialStatus.statusListCredential) {
+          credential.credentialStatus = credentialStatusVC.credentialStatus
+        }
+      }
+
+      const result = await context.agent.createVerifiableCredential({
+        credential: credential as CredentialPayload,
+        proofFormat,
+        removeOriginalFields: false,
+        fetchRemoteContexts: true,
+        domain: typeof credential.issuer === 'object' ? credential.issuer.id : credential.issuer,
+      })
+      return (proofFormat === 'jwt' && 'jwt' in result.proof ? result.proof.jwt : result) as W3CVerifiableCredential
+    } else if (CredentialMapper.isSdJwtDecodedCredentialPayload(credential)) {
+      const sdJwtPayload = credential as SdJwtVcPayload
+      if (sdJwtPayload.iss === undefined) {
+        sdJwtPayload.iss = issuer
+      }
+      if (sdJwtPayload.iat === undefined) {
+        sdJwtPayload.iat = Math.floor(new Date().getTime() / 1000)
+      }
+
+      let disclosureFrame
+      if ('disclosureFrame' in credential) {
+        disclosureFrame = credential['disclosureFrame']
+        delete credential['disclosureFrame']
+      } else {
+        disclosureFrame = {
+          _sd: credential['_sd'],
+        }
+      }
+      const result = await context.agent.createSdJwtVc({
+        credentialPayload: sdJwtPayload,
+        disclosureFrame: disclosureFrame,
+      })
+      return result.credential
+    } /*else if (CredentialMapper.isMsoMdocDecodedCredential(credential)) {
+      TODO
+    }*/
+    return Promise.reject('VC issuance failed, an incorrect or unsupported credential was supplied')
   }
-
-  const resolution = await getManagedIdentifier(idOpts, context)
 
   return issueVCCallback
 }

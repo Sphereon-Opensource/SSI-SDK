@@ -1,14 +1,15 @@
 import { AbstractDigitalCredentialStore } from './AbstractDigitalCredentialStore'
 import {
   AddCredentialArgs,
+  CredentialRole,
+  CredentialStateType,
+  DigitalCredential,
   GetCredentialArgs,
   GetCredentialsArgs,
   GetCredentialsResponse,
+  NonPersistedDigitalCredential,
   RemoveCredentialArgs,
   UpdateCredentialStateArgs,
-  CredentialStateType,
-  DigitalCredential,
-  NonPersistedDigitalCredential,
 } from '../types'
 import { OrPromise } from '@sphereon/ssi-types'
 import { DataSource, FindOptionsOrder, Repository } from 'typeorm'
@@ -26,6 +27,7 @@ const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:credential-store')
 
 export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
   private readonly dbConnection: OrPromise<DataSource>
+  private dcRepo: Repository<DigitalCredentialEntity> | undefined
 
   constructor(dbConnection: OrPromise<DataSource>) {
     super()
@@ -34,14 +36,19 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
 
   addCredential = async (args: AddCredentialArgs): Promise<DigitalCredential> => {
     debug('Adding credential', args)
-    const digitalCredentialEntityRepository: Repository<DigitalCredentialEntity> = (await this.dbConnection).getRepository(DigitalCredentialEntity)
     const credentialEntity: NonPersistedDigitalCredential = nonPersistedDigitalCredentialEntityFromAddArgs(args)
-    const createdResult: DigitalCredentialEntity = await digitalCredentialEntityRepository.save(credentialEntity)
+    const validationError = this.assertValidDigitalCredential(credentialEntity)
+    if (validationError) {
+      return Promise.reject(validationError)
+    }
+    const dcRepo = await this.getRepository()
+    const createdResult: DigitalCredentialEntity = await dcRepo.save(credentialEntity)
     return Promise.resolve(digitalCredentialFrom(createdResult))
   }
 
   getCredential = async (args: GetCredentialArgs): Promise<DigitalCredential> => {
-    const result: DigitalCredentialEntity | null = await (await this.dbConnection).getRepository(DigitalCredentialEntity).findOne({
+    const dcRepo = await this.getRepository()
+    const result: DigitalCredentialEntity | null = await dcRepo.findOne({
       where: args,
     })
 
@@ -57,7 +64,8 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
       order && typeof order === 'string'
         ? parseAndValidateOrderOptions<DigitalCredentialEntity>(order)
         : <FindOptionsOrder<DigitalCredentialEntity>>order
-    const [result, total] = await (await this.dbConnection).getRepository(DigitalCredentialEntity).findAndCount({
+    const dcRepo = await this.getRepository()
+    const [result, total] = await dcRepo.findAndCount({
       where: filter,
       skip: offset,
       take: limit,
@@ -84,13 +92,40 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
       return false
     }
     try {
-      const connection = await this.dbConnection
-      const result = await connection.getRepository(DigitalCredentialEntity).delete(query)
-      return result.affected === 1
+      const dcRepo = await this.getRepository()
+      // TODO create a flag whether we want to delete recursively or return an error when there are child credentials?
+      const affected = await this.deleteTree(dcRepo, query)
+      return affected > 0
     } catch (error) {
       console.error('Error removing digital credential:', error)
       return false
     }
+  }
+
+  private async deleteTree(dcRepo: Repository<DigitalCredentialEntity>, query: FindOptionsWhere<DigitalCredentialEntity>): Promise<number> {
+    let affected: number = 0
+    const findResult = await dcRepo.findBy(query)
+    for (const dc of findResult) {
+      if (dc.parentId !== null && dc.parentId !== undefined) {
+        affected += await this.deleteTree(dcRepo, { id: dc.parentId })
+      }
+      const result = await dcRepo.delete(dc.id)
+      if (result.affected) {
+        affected += result.affected
+      }
+    }
+    return affected
+  }
+
+  private async getRepository(): Promise<Repository<DigitalCredentialEntity>> {
+    if (this.dcRepo !== undefined) {
+      return Promise.resolve(this.dcRepo)
+    }
+    this.dcRepo = (await this.dbConnection).getRepository(DigitalCredentialEntity)
+    if (this.dcRepo === undefined) {
+      return Promise.reject(Error('Could not get DigitalCredentialEntity repository'))
+    }
+    return this.dcRepo
   }
 
   updateCredentialState = async (args: UpdateCredentialStateArgs): Promise<DigitalCredential> => {
@@ -123,11 +158,32 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
       ...credential,
       ...(args.verifiedState !== CredentialStateType.REVOKED && { verifiedAt: args.verifiedAt }),
       ...(args.verifiedState === CredentialStateType.REVOKED && { revokedAt: args.revokedAt }),
+      identifierMethod: credential.identifierMethod,
       lastUpdatedAt: new Date(),
       verifiedState: args.verifiedState,
     }
     debug('Updating credential', credential)
     const updatedResult: DigitalCredentialEntity = await credentialRepository.save(updatedCredential, { transaction: true })
     return digitalCredentialFrom(updatedResult)
+  }
+
+  private assertValidDigitalCredential(credentialEntity: NonPersistedDigitalCredential): Error | undefined {
+    const { kmsKeyRef, identifierMethod, credentialRole, isIssuerSigned } = credentialEntity
+
+    const isRoleInvalid = credentialRole === CredentialRole.ISSUER || (credentialRole === CredentialRole.HOLDER && !isIssuerSigned)
+
+    if (isRoleInvalid && (!kmsKeyRef || !identifierMethod)) {
+      const missingFields = []
+
+      if (!kmsKeyRef) missingFields.push('kmsKeyRef')
+      if (!identifierMethod) missingFields.push('identifierMethod')
+
+      const fields = missingFields.join(' and ')
+      return new Error(
+        `DigitalCredential field(s) ${fields} is/are required for credential role ${credentialRole} with isIssuerSigned=${isIssuerSigned}.`,
+      )
+    }
+
+    return undefined
   }
 }

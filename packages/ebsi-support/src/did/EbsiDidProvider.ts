@@ -81,7 +81,7 @@ export class EbsiDidProvider extends AbstractIdentifierProvider {
     const secp256r1ManagedKeyInfo = await context.agent.keyManagerImport(secp256r1ImportKey)
 
     const identifier: IIdentifier = {
-      did: `${EBSI_DID_SPEC_INFOS.V1.method}${methodSpecificId}`,
+      did: options.did && options.did.startsWith('did:ebsi:') ? options.did : `${EBSI_DID_SPEC_INFOS.V1.method}${methodSpecificId}`,
       controllerKeyId: secp256k1ManagedKeyInfo.kid,
       keys: [secp256k1ManagedKeyInfo, secp256r1ManagedKeyInfo],
       alias,

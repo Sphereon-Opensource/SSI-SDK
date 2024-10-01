@@ -156,3 +156,5 @@ export {
   isPresentationDefinitionEqual,
   ContactMetadataItemEntity,
 }
+
+export * from './utils/hasher'
