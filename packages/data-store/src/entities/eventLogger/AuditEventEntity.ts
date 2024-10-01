@@ -1,9 +1,11 @@
-import { ActionSubType, ActionType, InitiatorType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
+import { ActionSubType, ActionType, InitiatorType, LoggingEventType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
-import { PartyCorrelationType } from '@sphereon/ssi-sdk.core'
-import { NonPersistedAuditLoggingEvent } from '../../types'
+import { CredentialType, PartyCorrelationType } from '@sphereon/ssi-sdk.core'
+import { NonPersistedAuditLoggingEvent, NonPersistedActivityLoggingEvent } from '../../types'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 
+//TODO this entity, also contains some optional fields that are related to another event type (Activity) later we might want to refactor and reorganize this.
+// For now I've added a discriminator value called eventType that can be one of the three types of events: 1. General, 2. Audit, and 3. Activity
 @Entity('AuditEvents')
 export class AuditEventEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -11,6 +13,9 @@ export class AuditEventEntity extends BaseEntity {
 
   @Column({ name: 'timestamp', nullable: false, unique: false, type: typeOrmDateTime() })
   timestamp!: Date
+
+  @Column('simple-enum', { name: 'eventType', enum: LoggingEventType, nullable: false, unique: false })
+  type!: LoggingEventType
 
   @Column('simple-enum', { name: 'level', enum: LogLevel, nullable: false, unique: false })
   level!: LogLevel
@@ -54,6 +59,18 @@ export class AuditEventEntity extends BaseEntity {
   @Column('text', { name: 'description', nullable: false, unique: false })
   description!: string
 
+  @Column('simple-enum', { name: 'credentialType', enum: CredentialType, nullable: true, unique: false })
+  credentialType?: CredentialType
+
+  @Column('text', { name: 'credentialHash', nullable: true, unique: false })
+  credentialHash?: string
+
+  @Column('text', { name: 'originalCredential', nullable: true, unique: false })
+  originalCredential?: string
+
+  @Column('text', { name: 'sharePurpose', nullable: true, unique: false })
+  sharePurpose?: string
+
   @Column('text', { name: 'data', nullable: true, unique: false })
   data?: string
 
@@ -69,6 +86,7 @@ export class AuditEventEntity extends BaseEntity {
 
 export const auditEventEntityFrom = (args: NonPersistedAuditLoggingEvent): AuditEventEntity => {
   const auditEventEntity: AuditEventEntity = new AuditEventEntity()
+  auditEventEntity.type = LoggingEventType.AUDIT
   auditEventEntity.timestamp = args.timestamp
   auditEventEntity.level = args.level
   auditEventEntity.correlationId = args.correlationId
@@ -89,4 +107,33 @@ export const auditEventEntityFrom = (args: NonPersistedAuditLoggingEvent): Audit
   auditEventEntity.diagnosticData = JSON.stringify(args.diagnosticData)
 
   return auditEventEntity
+}
+
+export const activityEventEntityFrom = (args: NonPersistedActivityLoggingEvent): AuditEventEntity => {
+  const activityEventEntity: AuditEventEntity = new AuditEventEntity()
+  activityEventEntity.type = LoggingEventType.ACTIVITY
+  activityEventEntity.timestamp = args.timestamp
+  activityEventEntity.level = args.level
+  activityEventEntity.correlationId = args.correlationId
+  activityEventEntity.system = args.system
+  activityEventEntity.subSystemType = args.subSystemType
+  activityEventEntity.actionType = args.actionType
+  activityEventEntity.actionSubType = args.actionSubType
+  activityEventEntity.initiatorType = args.initiatorType
+  activityEventEntity.systemCorrelationIdType = args.systemCorrelationIdType
+  activityEventEntity.systemCorrelationId = args.systemCorrelationId
+  activityEventEntity.systemAlias = args.systemAlias
+  activityEventEntity.partyCorrelationType = args.partyCorrelationType
+  activityEventEntity.partyCorrelationId = args.partyCorrelationId
+  activityEventEntity.partyAlias = args.partyAlias
+  activityEventEntity.description = args.description
+  activityEventEntity.partyCorrelationType = args.partyCorrelationType
+  activityEventEntity.data = JSON.stringify(args.data)
+  activityEventEntity.sharePurpose = args.sharePurpose
+  activityEventEntity.credentialType = args.credentialType
+  activityEventEntity.originalCredential = args.originalCredential
+  activityEventEntity.credentialHash = args.credentialHash
+  activityEventEntity.diagnosticData = JSON.stringify(args.diagnosticData)
+
+  return activityEventEntity
 }

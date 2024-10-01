@@ -1,17 +1,34 @@
 import { AbstractEventLoggerStore } from '@sphereon/ssi-sdk.data-store'
 import { IAgentPlugin } from '@veramo/core'
 import { Loggers, LoggingEventType, LogLevel, LogMethod } from '@sphereon/ssi-types'
-import { AuditLoggingEvent } from '@sphereon/ssi-sdk.core'
+import { ActivityLoggingEvent, AuditLoggingEvent } from '@sphereon/ssi-sdk.core'
 import { v4 as uuidv4 } from 'uuid'
-import { NonPersistedAuditLoggingEvent, schema } from '../index'
-import { EventLoggerOptions, GetAuditEventsArgs, IEventLogger, RequiredContext, LogAuditEventArgs, LoggingEvent } from '../types/IEventLogger'
+import {
+  EventLoggerOptions,
+  GetActivityEventsArgs,
+  GetAuditEventsArgs,
+  IEventLogger,
+  LogActivityEventArgs,
+  LogEventArgs,
+  LoggingEvent,
+  NonPersistedActivityLoggingEvent,
+  NonPersistedAuditLoggingEvent,
+  RequiredContext,
+  schema,
+} from '../index'
 
 /**
  * {@inheritDoc IEventLogger}
  */
 
 // Exposing the methods here for any REST implementation
-export const eventLoggerAuditMethods: Array<string> = ['loggerGetAuditEvents', 'loggerLogAuditEvent', 'loggerLogGeneralEvent']
+export const eventLoggerAuditMethods: Array<string> = [
+  'loggerGetAuditEvents',
+  'loggerLogAuditEvent',
+  'loggerLogGeneralEvent',
+  'loggerLogActivityEvent',
+  'loggerGetActivityEvents',
+]
 export const eventLoggerMethods: Array<string> = [...eventLoggerAuditMethods]
 
 export class EventLogger implements IAgentPlugin {
@@ -24,6 +41,8 @@ export class EventLogger implements IAgentPlugin {
     loggerGetAuditEvents: this.loggerGetAuditEvents.bind(this),
     loggerLogAuditEvent: this.loggerLogAuditEvent.bind(this),
     loggerLogGeneralEvent: this.loggerLogGeneralEvent.bind(this),
+    loggerLogActivityEvent: this.loggerLogActivityEvent.bind(this),
+    loggerGetActivityEvents: this.loggerGetActivityEvents.bind(this),
   }
 
   constructor(options: EventLoggerOptions) {
@@ -60,28 +79,39 @@ export class EventLogger implements IAgentPlugin {
         // TODO: We might also want to do this locally though, as these logs are not persisted typically
         await context.agent.loggerLogGeneralEvent({ event: event.data })
         break
+      case LoggingEventType.ACTIVITY:
+        // Calling the context of the agent to make sure the REST client is called when configured
+        await context.agent.loggerLogActivityEvent({ event: event.data as NonPersistedActivityLoggingEvent })
+        break
       default:
         return Promise.reject(Error(`Event type ${event.type} not supported`))
     }
   }
 
   private async loggerGetAuditEvents(args?: GetAuditEventsArgs): Promise<Array<AuditLoggingEvent>> {
-    const { filter } = args ?? {}
+    const { filter = [] } = args ?? {}
+    if (!this.store) {
+      return Promise.reject(Error('No store available in options'))
+    }
+    return this.store.getAuditEvents({ filter: [...filter, { type: LoggingEventType.AUDIT }] })
+  }
+
+  private async loggerGetActivityEvents(args?: GetActivityEventsArgs): Promise<Array<ActivityLoggingEvent>> {
+    const { filter = [] } = args ?? {}
 
     if (!this.store) {
       return Promise.reject(Error('No store available in options'))
     }
-
-    return this.store.getAuditEvents({ filter })
+    return this.store.getActivityEvents({ filter: [...filter, { type: LoggingEventType.ACTIVITY }] })
   }
 
-  private async loggerLogGeneralEvent(args: LogAuditEventArgs): Promise<NonPersistedAuditLoggingEvent> {
+  private async loggerLogGeneralEvent(args: LogEventArgs): Promise<NonPersistedAuditLoggingEvent> {
     const { event } = args
     this.simpleLoggers.get(event.data.system).logl(event.data.level ?? LogLevel.INFO, event.data.data, event.data)
     return args.event
   }
 
-  private async loggerLogAuditEvent(args: LogAuditEventArgs): Promise<AuditLoggingEvent> {
+  private async loggerLogAuditEvent(args: LogEventArgs): Promise<AuditLoggingEvent> {
     const { event } = args
 
     if (!this.store) {
@@ -91,6 +121,28 @@ export class EventLogger implements IAgentPlugin {
     return this.store.storeAuditEvent({
       event: {
         ...event,
+        type: LoggingEventType.AUDIT,
+        system: event.system,
+        subSystemType: event.subSystemType,
+        initiatorType: event.initiatorType,
+        level: event.level ?? LogLevel.INFO,
+        correlationId: event.correlationId ?? uuidv4(),
+        timestamp: new Date(),
+      },
+    })
+  }
+
+  private async loggerLogActivityEvent(args: LogActivityEventArgs): Promise<ActivityLoggingEvent> {
+    const { event } = args
+
+    if (!this.store) {
+      return Promise.reject(Error('No store available in options'))
+    }
+
+    return this.store.storeActivityEvent({
+      event: {
+        ...event,
+        type: LoggingEventType.ACTIVITY,
         system: event.system,
         subSystemType: event.subSystemType,
         initiatorType: event.initiatorType,

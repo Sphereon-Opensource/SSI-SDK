@@ -15,8 +15,36 @@ export class CreateAuditEvents1701634812183 implements MigrationInterface {
     await queryRunner.query(`CREATE TYPE "public"."Initiator_type_enum" AS ENUM('user', 'system', 'external')`)
     await queryRunner.query(`CREATE TYPE "public"."System_correlation_id_type_enum" AS ENUM('did', 'email', 'hostname', 'phone', 'user')`)
     await queryRunner.query(`CREATE TYPE "public"."Party_correlation_type_enum" AS ENUM('did', 'email', 'hostname', 'phone')`)
+    await queryRunner.query(`CREATE TYPE "public"."Event_type_enum" AS ENUM('audit', 'activity', 'general')`)
+    await queryRunner.query(`CREATE TYPE "public"."Event_credential_type_enum" AS ENUM('JSON_LD', 'JWT', 'SD_JWT', 'MSO_MDOC')`)
     await queryRunner.query(
-      `CREATE TABLE "AuditEvents" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "timestamp" TIMESTAMP NOT NULL, "level" "public"."Level_enum" NOT NULL, "correlationId" TEXT NOT NULL, "system" "public"."System_enum" NOT NULL, "subSystemType" "public"."Subsystem_type_enum" NOT NULL, "actionType" "public"."Action_type_enum" NOT NULL, "actionSubType" TEXT NOT NULL, "initiatorType" "public"."Initiator_type_enum" NOT NULL, "systemCorrelationIdType" "public"."System_correlation_id_type_enum", "systemCorrelationId" TEXT, "systemAlias" TEXT, "partyCorrelationType" "public"."Party_correlation_type_enum", "partyCorrelationId" TEXT, "partyAlias" TEXT, "description" TEXT NOT NULL, "data" TEXT, "diagnosticData" TEXT, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_AuditEvents_id" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "AuditEvents" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "eventType" "public"."Event_type_enum" NOT NULL,
+                "timestamp" TIMESTAMP NOT NULL, 
+                "level" "public"."Level_enum" NOT NULL, 
+                "correlationId" TEXT NOT NULL, 
+                "system" "public"."System_enum" NOT NULL, 
+                "subSystemType" "public"."Subsystem_type_enum" NOT NULL,  
+                "actionType" "public"."Action_type_enum" NOT NULL, 
+                "actionSubType" TEXT NOT NULL, 
+                "initiatorType" "public"."Initiator_type_enum" NOT NULL, 
+                "systemCorrelationIdType" "public"."System_correlation_id_type_enum", 
+                "systemCorrelationId" TEXT, 
+                "systemAlias" TEXT, 
+                "partyCorrelationType" "public"."Party_correlation_type_enum", 
+                "partyCorrelationId" TEXT, 
+                "partyAlias" TEXT, 
+                "credentialType" "public"."Event_credential_type_enum",
+                "credentialHash" TEXT,
+                "originalCredential" TEXT,
+                "sharePurpose" TEXT,
+                "description" TEXT NOT NULL, 
+                "data" TEXT, 
+                "diagnosticData" TEXT, 
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(), 
+                "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), 
+                CONSTRAINT "PK_AuditEvents_id" PRIMARY KEY ("id"))`,
     )
   }
 
