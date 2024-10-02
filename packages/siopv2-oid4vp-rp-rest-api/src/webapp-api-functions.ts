@@ -34,7 +34,7 @@ export function createAuthRequestWebappEndpoint(router: Router, context: IRequir
         requestByReferenceURI,
         responseURIType: 'response_uri',
         responseURI,
-        ...(redirectURI && { redirect_uri: redirectURI }),
+        ...(redirectURI && { redirectURI }),
       })
       const authRequestBody: GenerateAuthRequestURIResponse = {
         correlationId,

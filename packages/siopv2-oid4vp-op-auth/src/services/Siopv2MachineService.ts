@@ -119,10 +119,11 @@ export const siopSendAuthorizationResponse = async (
     idOpts = presentationsAndDefs[0].idOpts
     presentationSubmission = presentationsAndDefs[0].presentationSubmission
   }
-  logger.log(`Definitions and locations:`, JSON.stringify(presentationsAndDefs?.[0]?.verifiablePresentation, null, 2))
+  logger.log(`Definitions and locations:`, JSON.stringify(presentationsAndDefs?.[0]?.verifiablePresentations, null, 2))
   logger.log(`Presentation Submission:`, JSON.stringify(presentationSubmission, null, 2))
+  const mergedVerifiablePresentations = presentationsAndDefs?.flatMap((pd) => pd.verifiablePresentations) || []
   return await session.sendAuthorizationResponse({
-    ...(presentationsAndDefs && { verifiablePresentations: presentationsAndDefs?.map((pd) => pd.verifiablePresentation) }),
+    ...(presentationsAndDefs && { verifiablePresentations: mergedVerifiablePresentations }),
     ...(presentationSubmission && { presentationSubmission }),
     // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
     responseSignerOpts: idOpts!,
