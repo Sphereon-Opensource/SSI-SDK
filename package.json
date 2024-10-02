@@ -23,7 +23,7 @@
     "build-clean": "rimraf --glob ./packages/*/dist ./packages/*/api ./packages/*/node_modules ./packages/*/tsconfig.tsbuildinfo ./node_modules ./coverage && jest --clearCache",
     "publish:latest": "lerna publish --conventional-commits --force-publish --include-merged-tags --sync-dist-version --create-release github --yes --dist-tag latest --registry https://registry.npmjs.org",
     "publish:next": "lerna publish --conventional-prerelease --force-publish --canary --sync-dist-version --no-git-tag-version --include-merged-tags --preid next --pre-dist-tag next --yes --registry https://registry.npmjs.org",
-    "publish:unstable": "lerna publish --conventional-prerelease --force-publish --canary --sync-dist-version --no-git-tag-version --include-merged-tags --preid unstable --pre-dist-tag unstable --yes --registry https://registry.npmjs.org"
+    "publish:unstable": "lerna publish --conventional-prerelease --force-publish --canary --sync-dist-version --no-git-tag-version --include-merged-tags --preid unstable --pre-dist-tag unstable --yes --reject-existing --registry https://registry.npmjs.org"
   },
   "publishConfig": {
     "access": "public"
@@ -113,7 +113,7 @@
       "@veramo/url-handler": "4.2.0",
       "@sphereon/ssi-types": "workspace:*",
       "@sphereon/ssi-sdk.core": "workspace:*",
-      "@sphereon/pex": "5.0.0-unstable.10",
+      "@sphereon/pex": "5.0.0-unstable.11",
       "@sphereon/pex-models": "^2.3.1",
       "@noble/hashes": "1.2.0",
       "debug": "^4.3.5",
