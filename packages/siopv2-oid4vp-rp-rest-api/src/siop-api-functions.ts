@@ -104,6 +104,7 @@ export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredC
       let error: string | undefined
       try {
         response.statusCode = 200
+        response.setHeader('Content-Type', 'application/jwt')
         return response.send(requestObject)
       } catch (e) {
         error = typeof e === 'string' ? e : e instanceof Error ? e.message : undefined
