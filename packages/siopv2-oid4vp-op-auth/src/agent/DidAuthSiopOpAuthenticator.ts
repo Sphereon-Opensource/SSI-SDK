@@ -50,6 +50,7 @@ import {
 import { PEX, Status } from '@sphereon/pex'
 import { computeEntryHash } from '@veramo/utils'
 import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
+import { EventEmitter } from 'events'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
@@ -91,6 +92,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
 
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
+  private readonly eventEmitter?: EventEmitter
 
   constructor(
     presentationSignCallback?: PresentationSignCallback,
@@ -213,7 +215,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
 
     const session: OpSession = await agent
       .siopGetOPSession({ sessionId })
-      .catch(async () => await agent.siopRegisterOPSession({ requestJwtOrUri: redirectUrl, sessionId }))
+      .catch(async () => await agent.siopRegisterOPSession({ requestJwtOrUri: redirectUrl, sessionId, op: { eventEmitter: this.eventEmitter } }))
 
     logger.debug(`session: ${JSON.stringify(session.id, null, 2)}`)
     const verifiedAuthorizationRequest = await session.getAuthorizationRequest()

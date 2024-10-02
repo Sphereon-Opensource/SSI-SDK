@@ -3,24 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [0.30.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.0...v0.30.1-unstable.2) (2024-09-20)
+## [0.30.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.0...v0.30.1) (2024-10-01)
 
-**Note:** Version bump only for package @sphereon/sphereon-sdk.workspace
+### Bug Fixes
 
+- codecov ([e5a7eb7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e5a7eb771da447f09b0901d3570d7246a14888d4))
+- codecov ([bc65177](https://github.com/Sphereon-Opensource/SSI-SDK/commit/bc651778754e769c58de5fe225d429a7b1d01bd9))
+- fixes issuer signed flow ([44dabf4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/44dabf46d5ea45db0ba3dc4d8e55343980011464))
+- lerna version ([789d4d5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/789d4d551ecd2a7b1b7b9e0fe48cde64d01bb1ef))
 
-
-
-
-## [0.30.1-unstable.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.0...v0.30.1-unstable.1) (2024-09-19)
-
-**Note:** Version bump only for package @sphereon/sphereon-sdk.workspace
-
-
-
-
-
-
-# [0.30.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.28.0...v0.30.0) (2024-08-01)
+# [0.29.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.28.0...v0.29.0) (2024-08-01)
 
 ### Bug Fixes
 

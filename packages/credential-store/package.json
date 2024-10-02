@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.credential-store",
-  "version": "0.30.0",
+  "version": "0.30.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,7 +15,7 @@
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
-    "@sphereon/pex": "5.0.0-unstable.1",
+    "@sphereon/pex": "5.0.0-unstable.9",
     "@sphereon/pex-models": "^2.3.1",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "cross-fetch": "^3.1.8",
