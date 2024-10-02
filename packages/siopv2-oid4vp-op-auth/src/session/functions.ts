@@ -1,17 +1,28 @@
-import { OP, OPBuilder, PassBy, PresentationSignCallback, ResponseMode, SupportedVersion, VerifyJwtCallback } from '@sphereon/did-auth-siop'
-import { CreateJwtCallback } from '@sphereon/oid4vc-common'
+import {
+  OP,
+  OPBuilder,
+  PassBy,
+  PresentationSignCallback,
+  ResponseMode,
+  SupportedVersion,
+  VerifyJwtCallback
+} from '@sphereon/did-auth-siop'
+import { CreateJwtCallback, JwtHeader, SigningAlgo } from '@sphereon/oid4vc-common'
+import { JwtIssuer } from '@sphereon/oid4vc-common/lib/jwt/JwtIssuer'
 import { Format } from '@sphereon/pex-models'
-import { isManagedIdentifierDidOpts, isManagedIdentifierX5cOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { JwsCompactResult, JwtHeader, JwtPayload } from '@sphereon/ssi-sdk-ext.jwt-service'
+import {
+  isManagedIdentifierDidOpts,
+  isManagedIdentifierX5cOpts,
+  ManagedIdentifierOptsOrResult
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { JwsHeader, JwsPayload, JwtCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { createPEXPresentationSignCallback } from '@sphereon/ssi-sdk.presentation-exchange'
-import { SigningAlgo } from '@sphereon/oid4vc-common'
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { TKeyType } from '@veramo/core'
 import { JWTVerifyOptions } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
 import { IOPOptions, IRequiredContext } from '../types'
-import { JwtIssuer } from '@sphereon/oid4vc-common/lib/jwt/JwtIssuer'
 
 export async function createOID4VPPresentationSignCallback({
   presentationSignCallback,
@@ -118,8 +129,8 @@ export async function createOPBuilder({
 export function createJwtCallbackWithIdOpts(
   idOpts: ManagedIdentifierOptsOrResult,
   context: IRequiredContext,
-): (jwtIssuer: JwtIssuer, jwt: { header: JwtHeader; payload: JwtPayload }) => Promise<string> {
-  return async (jwtIssuer: JwtIssuer, jwt: { header: JwtHeader; payload: JwtPayload }) => {
+): (jwtIssuer: JwtIssuer, jwt: { header: JwtHeader; payload: JwsPayload }) => Promise<string> {
+  return async (jwtIssuer: JwtIssuer, jwt: { header: JwtHeader; payload: JwsPayload }) => {
     let issuer: ManagedIdentifierOptsOrResult & { noIdentifierInHeader: false }
 
     if (isManagedIdentifierDidOpts(idOpts)) {
@@ -138,9 +149,9 @@ export function createJwtCallbackWithIdOpts(
       return Promise.reject(Error(`JWT issuer method ${jwtIssuer.method} not yet supported`))
     }
 
-    const result: JwsCompactResult = await context.agent.jwtCreateJwsCompactSignature({
+    const result: JwtCompactResult = await context.agent.jwtCreateJwsCompactSignature({
       issuer,
-      protectedHeader: jwt.header,
+      protectedHeader: jwt.header as JwsHeader,
       payload: jwt.payload,
     })
     return result.jwt
@@ -150,8 +161,8 @@ export function createJwtCallbackWithIdOpts(
 export function createJwtCallbackWithOpOpts(
   opOpts: IOPOptions,
   context: IRequiredContext,
-): (jwtIssuer: JwtIssuer, jwt: { header: JwtHeader; payload: JwtPayload }) => Promise<string> {
-  return async (jwtIssuer: JwtIssuer, jwt: { header: JwtHeader; payload: JwtPayload }) => {
+): (jwtIssuer: JwtIssuer, jwt: { header: JwtHeader; payload: JwsPayload }) => Promise<string> {
+  return async (jwtIssuer: JwtIssuer, jwt: { header: JwtHeader; payload: JwsPayload }) => {
     let identifier: string | Array<string>
     if (jwtIssuer.method == 'did') {
       identifier = jwtIssuer.didUrl
@@ -161,7 +172,7 @@ export function createJwtCallbackWithOpOpts(
       return Promise.reject(Error(`JWT issuer method ${jwtIssuer.method} not yet supported`))
     }
 
-    const result: JwsCompactResult = await context.agent.jwtCreateJwsCompactSignature({
+    const result: JwtCompactResult = await context.agent.jwtCreateJwsCompactSignature({
       // FIXME fix cose-key inference
       // @ts-ignore
       issuer: { identifier: identifier, kmsKeyRef: idOpts.kmsKeyRef, noIdentifierInHeader: false },

@@ -12,7 +12,7 @@ import {
   getTypesFromObject,
   Jwt,
   NotificationRequest,
-  ProofOfPossessionCallbacks,
+  ProofOfPossessionCallbacks
 } from '@sphereon/oid4vci-common'
 import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
@@ -24,9 +24,9 @@ import {
   isManagedIdentifierResult,
   isManagedIdentifierX5cOpts,
   isManagedIdentifierX5cResult,
-  ManagedIdentifierOptsOrResult,
+  ManagedIdentifierOptsOrResult
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { IJwtService, JwtHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { IJwtService, JwsHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   CorrelationIdentifierType,
@@ -40,7 +40,7 @@ import {
   IdentityOrigin,
   IIssuerBranding,
   NonPersistedIdentity,
-  Party,
+  Party
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -53,7 +53,7 @@ import {
   OriginalVerifiableCredential,
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
-  WrappedW3CVerifiableCredential,
+  WrappedW3CVerifiableCredential
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
@@ -64,7 +64,7 @@ import {
   IResolver,
   ProofFormat,
   VerifiableCredential,
-  W3CVerifiableCredential,
+  W3CVerifiableCredential
 } from '@veramo/core'
 import { asArray, computeEntryHash } from '@veramo/utils'
 import { decodeJWT } from 'did-jwt'
@@ -98,7 +98,7 @@ import {
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
-  VerificationResult,
+  VerificationResult
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -108,7 +108,7 @@ import {
   getIssuanceOpts,
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
-  verifyCredentialToAccept,
+  verifyCredentialToAccept
 } from './OID4VCIHolderService'
 
 /**
@@ -143,7 +143,7 @@ export function signCallback(
     if (!resolution.issuer && !jwt.payload.iss) {
       return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)} or identifier resolution`))
     }
-    const header = jwt.header as JwtHeader
+    const header = jwt.header as JwsHeader
     const payload = jwt.payload
     if (nonce) {
       payload.nonce = nonce

@@ -25,7 +25,7 @@ import {
   isManagedIdentifierX5cOpts,
   ManagedIdentifierOptsOrResult,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { JwsCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { JwtCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
 import { SigningAlgo } from '@sphereon/oid4vc-common'
 import { CredentialMapper, Hasher, PresentationSubmission } from '@sphereon/ssi-types'
@@ -229,7 +229,7 @@ export function signCallback(
     if (!(isManagedIdentifierDidOpts(idOpts) || isManagedIdentifierX5cOpts(idOpts))) {
       return Promise.reject(Error(`JWT issuer method ${jwtIssuer.method} not yet supported`))
     }
-    const result: JwsCompactResult = await context.agent.jwtCreateJwsCompactSignature({
+    const result: JwtCompactResult = await context.agent.jwtCreateJwsCompactSignature({
       // FIXME fix cose-key inference
       // @ts-ignore
       issuer: { identifier: idOpts.identifier, kmsKeyRef: idOpts.kmsKeyRef, noIdentifierInHeader: false },
