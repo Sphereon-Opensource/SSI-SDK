@@ -14,6 +14,7 @@ export interface ISIOPv2OID4VPRPRestClient extends IPluginMethodMap {
 export interface ISiopClientGenerateAuthRequestArgs {
   definitionId?: string
   baseUrl?: string
+  redirectUri?: string
 }
 
 export interface ISiopClientRemoveAuthRequestSessionArgs {

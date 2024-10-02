@@ -187,6 +187,7 @@ export async function createRPBuilder(args: {
     )
     .withRevocationVerification(RevocationVerification.NEVER)
     .withPresentationVerification(getPresentationVerificationCallback(identifierOpts.idOpts, context))
+
   if (hasher) {
     builder.withHasher(hasher)
   }
@@ -200,6 +201,10 @@ export async function createRPBuilder(args: {
 
   if (definition) {
     builder.withPresentationDefinition({ definition }, PropertyTarget.REQUEST_OBJECT)
+  }
+
+  if (rpOpts.redirectUri) {
+    builder.withRedirectUri(rpOpts.redirectUri)
   }
 
   //const key = resolution.key

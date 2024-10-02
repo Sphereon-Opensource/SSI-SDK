@@ -86,7 +86,9 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
     const origResponse = await fetch(url, {
       method: 'POST',
       headers: await this.createHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({}),
+      body: JSON.stringify({
+        ...(args.redirectUri && { redirect_uri: args.redirectUri }),
+      }),
     })
     return await origResponse.json()
   }

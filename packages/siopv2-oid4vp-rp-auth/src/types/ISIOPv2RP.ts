@@ -67,6 +67,7 @@ export interface ICreateAuthRequestArgs {
   correlationId: string
   responseURIType: ResponseURIType
   responseURI: string
+  redirectURI?: string
   jwtIssuer?: JwtIssuer
   requestByReferenceURI?: string
   nonce?: string
@@ -128,6 +129,7 @@ export interface IPEXDefinitionPersistArgs extends IPEXInstanceOptions {
 
 export interface ISiopRPInstanceArgs {
   definitionId?: string
+  redirectURI?: string
 }
 
 export interface IPEXInstanceOptions extends IPEXOptions {
@@ -144,6 +146,7 @@ export interface IRPOptions {
   credentialOpts?: CredentialOpts
   identifierOpts: ISIOPIdentifierOptions
   verifyJwtCallback?: VerifyJwtCallback
+  redirectUri?: string
 }
 
 export interface IPEXOptions {
