@@ -85,5 +85,6 @@
   "keywords": [
     "EBSI",
     "EBSI Authorization Client"
-  ]
+  ],
+  "nx": {}
 }

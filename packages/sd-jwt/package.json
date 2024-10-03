@@ -69,5 +69,6 @@
     "SD-JWT",
     "Selective Disclosure",
     "Verifiable Credential"
-  ]
+  ],
+  "nx": {}
 }

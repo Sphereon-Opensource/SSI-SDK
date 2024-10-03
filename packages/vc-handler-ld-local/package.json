@@ -111,5 +111,6 @@
   ],
   "peerDependencies": {
     "react-native-securerandom": "^1.0.1"
-  }
+  },
+  "nx": {}
 }

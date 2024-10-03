@@ -45,5 +45,6 @@
     "Credential Mapping",
     "Verifiable Credentials",
     "DIDs"
-  ]
+  ],
+  "nx": {}
 }
