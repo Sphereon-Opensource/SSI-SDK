@@ -24,7 +24,7 @@ export function createAuthRequestWebappEndpoint(router: Router, context: IRequir
         baseURI: opts?.siopBaseURI,
       })
       const responseURI = uriWithBase(`/siop/definitions/${definitionId}/auth-responses/${correlationId}`, { baseURI: opts?.siopBaseURI })
-      const redirectURI = 'redirect_uri' in request.body && (request.body.redirect_uri as string | undefined)
+      const responseRedirectURI = 'response_redirect_uri' in request.body && (request.body.response_redirect_uri as string | undefined)
 
       const authRequestURI = await context.agent.siopCreateAuthRequestURI({
         definitionId,
@@ -34,7 +34,7 @@ export function createAuthRequestWebappEndpoint(router: Router, context: IRequir
         requestByReferenceURI,
         responseURIType: 'response_uri',
         responseURI,
-        ...(redirectURI && { redirect_uri: redirectURI }),
+        ...(responseRedirectURI && { redirectURI: responseRedirectURI }),
       })
       const authRequestBody: GenerateAuthRequestURIResponse = {
         correlationId,

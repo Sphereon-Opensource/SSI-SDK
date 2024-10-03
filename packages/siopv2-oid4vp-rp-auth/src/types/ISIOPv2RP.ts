@@ -53,6 +53,8 @@ export interface ISIOPv2RP extends IPluginMethodMap {
   siopDeleteAuthState(args: IDeleteAuthStateArgs, context: IRequiredContext): Promise<boolean>
   siopVerifyAuthResponse(args: IVerifyAuthResponseStateArgs, context: IRequiredContext): Promise<VerifiedAuthorizationResponse>
   siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void>
+
+  siopGetRedirectURI(args: IGetRedirectUriArgs, context: IRequiredContext): Promise<string | undefined>
 }
 
 export interface ISiopv2RPOpts {
@@ -67,7 +69,7 @@ export interface ICreateAuthRequestArgs {
   correlationId: string
   responseURIType: ResponseURIType
   responseURI: string
-  redirectURI?: string
+  responseRedirectURI?: string
   jwtIssuer?: JwtIssuer
   requestByReferenceURI?: string
   nonce?: string
@@ -116,6 +118,12 @@ export interface ImportDefinitionsArgs {
   versionControlMode?: VersionControlMode
 }
 
+export interface IGetRedirectUriArgs {
+  correlationId: string
+  definitionId?: string
+  state?: string
+}
+
 export interface IAuthorizationRequestPayloads {
   authorizationRequest: AuthorizationRequestPayload
   requestObject?: string
@@ -129,7 +137,7 @@ export interface IPEXDefinitionPersistArgs extends IPEXInstanceOptions {
 
 export interface ISiopRPInstanceArgs {
   definitionId?: string
-  redirectURI?: string
+  responseRedirectURI?: string
 }
 
 export interface IPEXInstanceOptions extends IPEXOptions {
