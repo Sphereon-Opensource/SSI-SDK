@@ -203,8 +203,8 @@ export async function createRPBuilder(args: {
     builder.withPresentationDefinition({ definition }, PropertyTarget.REQUEST_OBJECT)
   }
 
-  if (rpOpts.redirectUri) {
-    builder.withRedirectUri(rpOpts.redirectUri)
+  if (rpOpts.responseRedirectUri) {
+    builder.withResponseRedirectUri(rpOpts.responseRedirectUri)
   }
 
   //const key = resolution.key
