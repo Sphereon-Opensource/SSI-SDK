@@ -266,8 +266,8 @@ export class SIOPv2RP implements IAgentPlugin {
         }
       }
     }
-    if (redirectURI !== undefined && redirectURI !== options.redirectUri) {
-      options.redirectUri = redirectURI
+    if (redirectURI !== undefined && redirectURI !== options.responseRedirectUri) {
+      options.responseRedirectUri = redirectURI
     }
     return options
   }

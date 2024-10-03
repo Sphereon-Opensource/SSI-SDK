@@ -29,7 +29,7 @@ overrides:
   '@veramo/url-handler': 4.2.0
   '@sphereon/ssi-types': workspace:*
   '@sphereon/ssi-sdk.core': workspace:*
-  '@sphereon/pex': 5.0.0-unstable.13
+  '@sphereon/pex': 5.0.0-unstable.14
   '@sphereon/pex-models': ^2.3.1
   '@noble/hashes': 1.2.0
   debug: ^4.3.5
@@ -370,8 +370,8 @@ importers:
   packages/credential-store:
     dependencies:
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.13
-        version: 5.0.0-unstable.13
+        specifier: 5.0.0-unstable.14
+        version: 5.0.0-unstable.14
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -413,8 +413,8 @@ importers:
         specifier: 0.2.0-SNAPSHOT.22
         version: 0.2.0-SNAPSHOT.22
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.13
-        version: 5.0.0-unstable.13
+        specifier: 5.0.0-unstable.14
+        version: 5.0.0-unstable.14
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.130
         version: 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -526,14 +526,14 @@ importers:
         specifier: ^5.7.0
         version: 5.7.0
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.13
-        version: 5.0.0-unstable.13
+        specifier: 5.0.0-unstable.14
+        version: 5.0.0-unstable.14
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -608,11 +608,11 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -803,14 +803,14 @@ importers:
   packages/mdl-mdoc:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/kmp-mdl-mdoc':
         specifier: 0.2.0-SNAPSHOT.22
         version: 0.2.0-SNAPSHOT.22
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.13
-        version: 5.0.0-unstable.13
+        specifier: 5.0.0-unstable.14
+        version: 5.0.0-unstable.14
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -861,11 +861,11 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1037,11 +1037,11 @@ importers:
         specifier: 0.2.0-SNAPSHOT.22
         version: 0.2.0-SNAPSHOT.22
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.130
         version: 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -1134,11 +1134,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96(awesome-qr@2.1.5-rc.0)
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100(awesome-qr@2.1.5-rc.0)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.130
         version: 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -1210,14 +1210,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96(awesome-qr@2.1.5-rc.0)
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100(awesome-qr@2.1.5-rc.0)
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96(awesome-qr@2.1.5-rc.0)
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100(awesome-qr@2.1.5-rc.0)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1277,8 +1277,8 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.13
-        version: 5.0.0-unstable.13
+        specifier: 5.0.0-unstable.14
+        version: 5.0.0-unstable.14
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -1376,8 +1376,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1413,8 +1413,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.130
         version: 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -1462,8 +1462,8 @@ importers:
   packages/pd-manager:
     dependencies:
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.13
-        version: 5.0.0-unstable.13
+        specifier: 5.0.0-unstable.14
+        version: 5.0.0-unstable.14
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -1629,8 +1629,8 @@ importers:
   packages/presentation-exchange:
     dependencies:
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.13
-        version: 5.0.0-unstable.13
+        specifier: 5.0.0-unstable.14
+        version: 5.0.0-unstable.14
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -2000,8 +2000,8 @@ importers:
   packages/siopv2-oid4vp-common:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2022,17 +2022,17 @@ importers:
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.13
-        version: 5.0.0-unstable.13
+        specifier: 5.0.0-unstable.14
+        version: 5.0.0-unstable.14
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -2152,17 +2152,17 @@ importers:
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.13
-        version: 5.0.0-unstable.13
+        specifier: 5.0.0-unstable.14
+        version: 5.0.0-unstable.14
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.130
         version: 0.24.1-unstable.130(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -2237,8 +2237,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -2301,8 +2301,8 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.13
-        version: 5.0.0-unstable.13
+        specifier: 5.0.0-unstable.14
+        version: 5.0.0-unstable.14
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -3340,8 +3340,8 @@ importers:
   packages/w3c-vc-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-unstable.96
-        version: 0.16.1-unstable.96
+        specifier: 0.16.1-unstable.100
+        version: 0.16.1-unstable.100
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -8741,13 +8741,13 @@ packages:
       '@sinonjs/commons': 1.8.6
     dev: true
 
-  /@sphereon/did-auth-siop-adapter@0.16.1-unstable.96:
-    resolution: {integrity: sha512-AEvAgbnxgVX+lOEr3DFUztfLmT8TqJDqpxWpp7PgG4RJ0iZh3aarVDdxmtUdBwF6BDYxZWfuXT4K/ABEqUa8xQ==}
+  /@sphereon/did-auth-siop-adapter@0.16.1-unstable.100:
+    resolution: {integrity: sha512-CZtTatn9MnXs8+3JHTjBFi6yQjdaDjeBymbRHzaTdhR7vt5O6VAJvPUwf80VYiDFISQaeMGYZ2tS81f5hAnWWA==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-unstable.96
+      '@sphereon/did-auth-siop': 0.16.1-unstable.100
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/oid4vc-common': 0.16.1-unstable.96
+      '@sphereon/oid4vc-common': 0.16.1-unstable.100
       '@sphereon/wellknown-dids-client': 0.1.3
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-resolver: 4.1.0
@@ -8756,15 +8756,15 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/did-auth-siop@0.16.1-unstable.96:
-    resolution: {integrity: sha512-XhpiNdLsfGqiLQavS4SClYiUTeMLsLJvWDwMVZlLyDqB0QP5rG12ntBE+qtVyDxBqDnCn2AK8XwnU0Wl4bg9cA==}
+  /@sphereon/did-auth-siop@0.16.1-unstable.100:
+    resolution: {integrity: sha512-rAzKxwWayC31ihURR7AeS/rFc1oHi8uAfNo6L/+5fVFAZJskOXcT56zVBIX+8lRID+JGbNXAOnMa/ZQmdcv4hw==}
     engines: {node: '>=18'}
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sphereon/did-uni-client': 0.6.3
       '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
-      '@sphereon/oid4vc-common': 0.16.1-unstable.96
-      '@sphereon/pex': 5.0.0-unstable.13
+      '@sphereon/oid4vc-common': 0.16.1-unstable.100
+      '@sphereon/pex': 5.0.0-unstable.14
       '@sphereon/pex-models': 2.3.1
       '@sphereon/ssi-types': link:packages/ssi-types
       '@sphereon/wellknown-dids-client': 0.1.3
@@ -8850,8 +8850,8 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vc-common@0.16.1-unstable.96:
-    resolution: {integrity: sha512-27fR4ZJnRsl6IUsHPqjkKFPEYgM93NcJ7mIYAPF0QMftisOGqCnzp8h5/DAru0fHhS/CrKCqKXxhKa40CzCANg==}
+  /@sphereon/oid4vc-common@0.16.1-unstable.100:
+    resolution: {integrity: sha512-saMeKQm40h8HvPXhQOlw+3VwG2Qe2kK0f/dLWyFbkx5F+OSHYn4dC6TdGswXQvS7nDvggpFhymkijurzDsCjRQ==}
     engines: {node: '>=18'}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -8860,12 +8860,12 @@ packages:
       uint8arrays: 3.1.1
       uuid: 9.0.1
 
-  /@sphereon/oid4vci-client@0.16.1-unstable.96:
-    resolution: {integrity: sha512-V2WZOCrWwhuzrli29ZmzzHjoDstxbKeLDH+CNVGgw3s31PY7FhxTdD5u3/Hd4JGi5zb9AoMkuYITg/4TOssLlQ==}
+  /@sphereon/oid4vci-client@0.16.1-unstable.100:
+    resolution: {integrity: sha512-lRWPpjyLSj4CapSy9xITQhAFrW+1mpR4QRfOe13AuOSxPwkviWSp1ZJr4dVK1tKkRdfV4Qp6WhJnIBKhDF8/rw==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-unstable.96
-      '@sphereon/oid4vci-common': 0.16.1-unstable.96
+      '@sphereon/oid4vc-common': 0.16.1-unstable.100
+      '@sphereon/oid4vci-common': 0.16.1-unstable.100
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
       debug: 4.3.6
@@ -8873,11 +8873,11 @@ packages:
       - encoding
       - supports-color
 
-  /@sphereon/oid4vci-common@0.16.1-unstable.96:
-    resolution: {integrity: sha512-dO28D6BL3btZFz3AeSM4rc2tGmY4g4kqxd34wsxXiWlng3vV6kVyemoDBRvTHQfhKtm2ykxzpfK7EtOfOPch7w==}
+  /@sphereon/oid4vci-common@0.16.1-unstable.100:
+    resolution: {integrity: sha512-2oYlAQtDsuPO45jbmEVlZLs6ps+c6/FYrcVqLrxTWxwIotvg1zqj/O/rzh+MqpgACKEJrGlGht5+zeEGV03mhg==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-unstable.96
+      '@sphereon/oid4vc-common': 0.16.1-unstable.100
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
       debug: 4.3.6
@@ -8888,8 +8888,8 @@ packages:
       - encoding
       - supports-color
 
-  /@sphereon/oid4vci-issuer-server@0.16.1-unstable.96(awesome-qr@2.1.5-rc.0):
-    resolution: {integrity: sha512-VzDFkdQIVefCCkpyBU2hV+bDVUyUE5C1Qc0PegXlzbd3aYvtpl95/kYtqO58KZTDGcuQhcjLGHBKsOJPlzuZCQ==}
+  /@sphereon/oid4vci-issuer-server@0.16.1-unstable.100(awesome-qr@2.1.5-rc.0):
+    resolution: {integrity: sha512-kpz5GckZCQchlJ1+6w7HupW/1ty3aCvSL1Ygr31WQkU+Knwx3yUJqgqproJLBtc8axCZOqrPyHRBtwFUdCIWrQ==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -8897,9 +8897,9 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-unstable.96
-      '@sphereon/oid4vci-common': 0.16.1-unstable.96
-      '@sphereon/oid4vci-issuer': 0.16.1-unstable.96(awesome-qr@2.1.5-rc.0)
+      '@sphereon/oid4vc-common': 0.16.1-unstable.100
+      '@sphereon/oid4vci-common': 0.16.1-unstable.100
+      '@sphereon/oid4vci-issuer': 0.16.1-unstable.100(awesome-qr@2.1.5-rc.0)
       '@sphereon/ssi-express-support': 0.29.1-unstable.121
       '@sphereon/ssi-types': link:packages/ssi-types
       awesome-qr: 2.1.5-rc.0
@@ -8918,8 +8918,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.16.1-unstable.96(awesome-qr@2.1.5-rc.0):
-    resolution: {integrity: sha512-527Ss+Atkmu6paVyl5FY4uILxuMrEzJm0YMfKYCZdcKxZU83DJJ5YS6gY/GaRcOZ6HC1yc7rirJg1lMt+bVRPA==}
+  /@sphereon/oid4vci-issuer@0.16.1-unstable.100(awesome-qr@2.1.5-rc.0):
+    resolution: {integrity: sha512-YI4uZ1X9Fou+DRDz0aKdvzgpO84P3TBUzNAGdfusNXdLZfghqezecr2WSxqwzbiDEPDbUk1lp2aUpa/x+5/q4w==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -8927,8 +8927,8 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-unstable.96
-      '@sphereon/oid4vci-common': 0.16.1-unstable.96
+      '@sphereon/oid4vc-common': 0.16.1-unstable.100
+      '@sphereon/oid4vci-common': 0.16.1-unstable.100
       '@sphereon/ssi-types': link:packages/ssi-types
       awesome-qr: 2.1.5-rc.0
       uuid: 9.0.1
@@ -8940,8 +8940,8 @@ packages:
   /@sphereon/pex-models@2.3.1:
     resolution: {integrity: sha512-SByU4cJ0XYA6VZQ/L6lsSiRcFtBPHbFioCeQ4GP7/W/jQ+PSBD7uK2oTnKQ9/0iEiMK/6JYqhKgLs4a9UX3UTQ==}
 
-  /@sphereon/pex@5.0.0-unstable.13:
-    resolution: {integrity: sha512-haKxT5bAu0M/nQnkgRsxpUNlQ4uzvA2T/HDCol4wyyEDCEkP9OmrX1f1QLmnHHwGzuDX4BOICYz4/dty5mee3w==}
+  /@sphereon/pex@5.0.0-unstable.14:
+    resolution: {integrity: sha512-BWrEOFTyl8tpa+HLwbxEP/DIuAGm8+uSvjQFFDsOY4gS3Wt0C+mBeYqtmfDy7/pv3DtvVPxQMoEq3tvvC7/Nhw==}
     engines: {node: '>=18'}
     requiresBuild: true
     dependencies:

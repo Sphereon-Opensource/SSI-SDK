@@ -146,7 +146,7 @@ export interface IRPOptions {
   credentialOpts?: CredentialOpts
   identifierOpts: ISIOPIdentifierOptions
   verifyJwtCallback?: VerifyJwtCallback
-  redirectUri?: string
+  responseRedirectUri?: string
 }
 
 export interface IPEXOptions {
