@@ -65,8 +65,11 @@ export function verifyAuthResponseSIOPv2Endpoint(
         // const credentialSubject = wrappedPresentation.presentation.verifiableCredential[0]?.credential?.credentialSubject
         // console.log(JSON.stringify(credentialSubject, null, 2))
         console.log('PRESENTATION:' + JSON.stringify(wrappedPresentation.presentation, null, 2))
-
+        const responseRedirectURI = await context.agent.siopGetRedirectURI({ correlationId, state: verifiedResponse.state })
         response.statusCode = 200
+        if (responseRedirectURI) {
+          return response.send(JSON.stringify({ redirect_uri: responseRedirectURI }))
+        }
         // todo: delete session
       } else {
         console.log('Missing Presentation (Verifiable Credentials)')

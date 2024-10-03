@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@sphereon/kmp-mdl-mdoc": "0.2.0-SNAPSHOT.22",
-    "@sphereon/oid4vci-client": "0.16.1-unstable.100",
-    "@sphereon/oid4vci-common": "0.16.1-unstable.100",
+    "@sphereon/oid4vci-client": "0.16.1-unstable.101",
+    "@sphereon/oid4vci-common": "0.16.1-unstable.101",
     "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.130",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.130",
     "@sphereon/ssi-sdk-ext.jwt-service": "0.24.1-unstable.130",

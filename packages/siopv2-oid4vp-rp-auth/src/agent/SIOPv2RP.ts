@@ -16,6 +16,7 @@ import {
   ICreateAuthRequestArgs,
   IGetAuthRequestStateArgs,
   IGetAuthResponseStateArgs,
+  IGetRedirectUriArgs,
   ImportDefinitionsArgs,
   IPEXInstanceOptions,
   IRequiredContext,
@@ -48,6 +49,7 @@ export class SIOPv2RP implements IAgentPlugin {
     siopDeleteAuthState: this.siopDeleteState.bind(this),
     siopVerifyAuthResponse: this.siopVerifyAuthResponse.bind(this),
     siopImportDefinitions: this.siopImportDefinitions.bind(this),
+    siopGetRedirectURI: this.siopGetRedirectURI.bind(this),
   }
 
   constructor(opts: ISiopv2RPOpts) {
@@ -70,7 +72,7 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async createAuthorizationRequestURI(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<string> {
-    return await this.getRPInstance({ definitionId: createArgs.definitionId, redirectURI: createArgs.redirectURI }, context)
+    return await this.getRPInstance({ definitionId: createArgs.definitionId, responseRedirectURI: createArgs.responseRedirectURI }, context)
       .then((rp) => rp.createAuthorizationRequestURI(createArgs, context))
       .then((URI) => URI.encodedUri)
   }
@@ -215,11 +217,27 @@ export class SIOPv2RP implements IAgentPlugin {
     )
   }
 
-  async getRPInstance({ definitionId, redirectURI }: ISiopRPInstanceArgs, context: IRequiredContext): Promise<RPInstance> {
+  private async siopGetRedirectURI(args: IGetRedirectUriArgs, context: IRequiredContext): Promise<string | undefined> {
+    const instanceId = args.definitionId ?? SIOPv2RP._DEFAULT_OPTS_KEY
+    if (this.instances.has(instanceId)) {
+      const rpInstance = this.instances.get(instanceId)
+      if (rpInstance !== undefined) {
+        const rp = await rpInstance.get(context)
+        return rp.getResponseRedirectUri({
+          correlation_id: args.correlationId,
+          correlationId: args.correlationId,
+          ...(args.state && { state: args.state }),
+        })
+      }
+    }
+    return undefined
+  }
+
+  async getRPInstance({ definitionId, responseRedirectURI }: ISiopRPInstanceArgs, context: IRequiredContext): Promise<RPInstance> {
     const instanceId = definitionId ?? SIOPv2RP._DEFAULT_OPTS_KEY
     if (!this.instances.has(instanceId)) {
       const instanceOpts = this.getInstanceOpts(definitionId)
-      const rpOpts = await this.getRPOptions(context, { definitionId, redirectURI })
+      const rpOpts = await this.getRPOptions(context, { definitionId, responseRedirectURI: responseRedirectURI })
       if (!rpOpts.identifierOpts.resolveOpts?.resolver || typeof rpOpts.identifierOpts.resolveOpts.resolver.resolve !== 'function') {
         if (!rpOpts.identifierOpts?.resolveOpts) {
           rpOpts.identifierOpts = { ...rpOpts.identifierOpts }
@@ -237,8 +255,8 @@ export class SIOPv2RP implements IAgentPlugin {
     return this.instances.get(instanceId)!
   }
 
-  async getRPOptions(context: IRequiredContext, opts: { definitionId?: string; redirectURI?: string }): Promise<IRPOptions> {
-    const { definitionId, redirectURI } = opts
+  async getRPOptions(context: IRequiredContext, opts: { definitionId?: string; responseRedirectURI?: string }): Promise<IRPOptions> {
+    const { definitionId, responseRedirectURI: responseRedirectURI } = opts
     const options = this.getInstanceOpts(definitionId)?.rpOpts ?? this.opts.defaultOpts
     if (!options) {
       throw Error(`Could not get specific nor default options for definition ${definitionId}`)
@@ -266,8 +284,8 @@ export class SIOPv2RP implements IAgentPlugin {
         }
       }
     }
-    if (redirectURI !== undefined && redirectURI !== options.responseRedirectUri) {
-      options.responseRedirectUri = redirectURI
+    if (responseRedirectURI !== undefined && responseRedirectURI !== options.responseRedirectUri) {
+      options.responseRedirectUri = responseRedirectURI
     }
     return options
   }
