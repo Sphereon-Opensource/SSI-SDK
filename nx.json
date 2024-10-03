@@ -1,6 +1,6 @@
 {
   "targetDefaults": {
-    "build": { "cache": true, "dependsOn": ["^build"], "outputs": ["{projectRoot}/coverage"] },
+    "build": { "cache": true, "dependsOn": ["^build"], "outputs": ["{workspaceRoot}/coverage" ,"{projectRoot}/coverage", "{projectRoot}/dist"] },
     "build:clean": { "dependsOn": [] },
     "start:prod": { "dependsOn": ["build"] },
     "start:dev": { "dependsOn": [] },
