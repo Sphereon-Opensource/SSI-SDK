@@ -1,16 +1,16 @@
 import { IAgentPlugin, IVerifyCredentialArgs, W3CVerifiableCredential as VeramoW3CVerifiableCredential } from '@veramo/core'
 import {
+  CredentialVerificationError,
+  ICredentialValidation,
   RequiredContext,
   schema,
-  VerifyCredentialArgs,
-  VerificationResult,
-  VerificationSubResult,
-  ICredentialValidation,
   SchemaValidation,
   ValidateSchemaArgs,
-  VerifySDJWTCredentialArgs,
+  VerificationResult,
+  VerificationSubResult,
+  VerifyCredentialArgs,
   VerifyMdocCredentialArgs,
-  CredentialVerificationError,
+  VerifySDJWTCredentialArgs,
 } from '../index'
 import {
   CredentialMapper,
@@ -24,15 +24,15 @@ import fetch from 'cross-fetch'
 import Ajv2020 from 'ajv/dist/2020'
 import addFormats from 'ajv-formats'
 import { com } from '@sphereon/kmp-mdl-mdoc'
+import { IVerifySdJwtVcResult } from '@sphereon/ssi-sdk.sd-jwt'
 import decodeFrom = com.sphereon.kmp.decodeFrom
 import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
-import { IVerifySdJwtVcResult } from '@sphereon/ssi-sdk.sd-jwt'
 import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult
 
 // Exposing the methods here for any REST implementation
 export const credentialValidationMethods: Array<string> = [
   'cvVerifyCredential',
-  'cvValidateSchema',
+  'cvVerifySchema',
   'cvVerifyMdoc',
   'cvVerifySDJWTCredential',
   'cvVerifyW3CCredential',
@@ -45,7 +45,7 @@ export class CredentialValidation implements IAgentPlugin {
   readonly schema = schema.ICredentialValidation
   readonly methods: ICredentialValidation = {
     cvVerifyCredential: this.cvVerifyCredential.bind(this),
-    cvValidateSchema: this.cvValidateSchema.bind(this),
+    cvVerifySchema: this.cvVerifySchema.bind(this),
     cvVerifyMdoc: this.cvVerifyMdoc.bind(this),
     cvVerifySDJWTCredential: this.cvVerifySDJWTCredential.bind(this),
     cvVerifyW3CCredential: this.cvVerifyW3CCredential.bind(this),
@@ -70,8 +70,12 @@ export class CredentialValidation implements IAgentPlugin {
   }
 
   private async cvVerifyCredential(args: VerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> {
-    const { credential, hasher } = args
-
+    const { credential, hasher, policies } = args
+    // defaulting the schema validation to when_present
+    const schemaResult = await this.cvVerifySchema({ credential, validationPolicy: policies?.schemaValidation ?? SchemaValidation.WHEN_PRESENT })
+    if (!schemaResult.result) {
+      return schemaResult
+    }
     if (CredentialMapper.isMsoMdocOid4VPEncoded(credential)) {
       return await this.cvVerifyMdoc({ credential }, context)
     } else if (CredentialMapper.isSdJwtEncoded(credential)) {
@@ -81,9 +85,17 @@ export class CredentialValidation implements IAgentPlugin {
     }
   }
 
-  private async cvValidateSchema(args: ValidateSchemaArgs): Promise<VerificationResult> {
+  private async cvVerifySchema(args: ValidateSchemaArgs): Promise<VerificationResult> {
     const { credential, hasher, validationPolicy } = args
-    return this.validateSchema(CredentialMapper.toWrappedVerifiableCredential(credential, { hasher }), validationPolicy)
+    const wrappedCredential: WrappedVerifiableCredential = CredentialMapper.toWrappedVerifiableCredential(credential, { hasher })
+    if (validationPolicy === SchemaValidation.NEVER) {
+      return {
+        result: true,
+        source: wrappedCredential,
+        subResults: [],
+      }
+    }
+    return this.validateSchema(wrappedCredential, validationPolicy)
   }
 
   private async validateSchema(wrappedVC: WrappedVerifiableCredential, validationPolicy?: SchemaValidation): Promise<VerificationResult> {

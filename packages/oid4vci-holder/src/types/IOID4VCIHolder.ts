@@ -49,6 +49,7 @@ import {
   VerificationPolicies,
 } from '@veramo/core'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
+import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult>
@@ -434,12 +435,6 @@ export type IssuanceOpts = CredentialConfigurationSupported & {
   kms?: string
 }
 
-export enum SchemaValidation {
-  ALWAYS = 'ALWAYS',
-  NEVER = 'NEVER',
-  WHEN_PRESENT = 'WHEN_PRESENT',
-}
-
 export type VerificationResult = {
   result: boolean
   source: WrappedVerifiableCredential | WrappedVerifiablePresentation
@@ -604,6 +599,7 @@ export interface VerifyCredentialArgs {
 export type RequiredContext = IAgentContext<
   IIssuanceBranding &
     IContactManager &
+    ICredentialValidation &
     ICredentialVerifier &
     ICredentialIssuer &
     ICredentialStore &

@@ -135,8 +135,19 @@ export class SIOPv2RP implements IAgentPlugin {
           break
         case VerifiedDataMode.CREDENTIAL_SUBJECT_FLATTENED:
           const allClaims: AdditionalClaims = {}
-          presentation.verifiableCredential?.forEach((credential) => {
+          for (const credential of presentation.verifiableCredential || []) {
             const vc = credential as IVerifiableCredential
+            const schemaValidationResult = await context.agent.cvVerifySchema({
+              credential,
+              hasher,
+              validationPolicy: rpInstance.rpOptions.verificationPolicies?.schemaValidation,
+            })
+            if (!schemaValidationResult.result) {
+              responseState.status = AuthorizationResponseStateStatus.ERROR
+              responseState.error = new Error(schemaValidationResult.error)
+              return responseState
+            }
+
             const credentialSubject = vc.credentialSubject as ICredentialSubject & AdditionalClaims
             if (!('id' in allClaims)) {
               allClaims['id'] = credentialSubject.id
@@ -147,8 +158,9 @@ export class SIOPv2RP implements IAgentPlugin {
                 allClaims[key] = value
               }
             })
-          })
+          }
           responseState.verifiedData = allClaims
+          break
       }
     }
     return responseState
