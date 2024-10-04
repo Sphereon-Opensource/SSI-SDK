@@ -38,7 +38,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get resource by input as URL', async (): Promise<void> => {
-      const url = new URL('https://example.com/1') // TODO /1
+      const url = new URL('https://example.com/2') // TODO /1
       const responseBody = {
         resource: 'test_value',
       }
@@ -58,7 +58,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get resource by input as RequestInfo', async (): Promise<void> => {
-      const url = new URL('https://example.com/1') // TODO /1
+      const url = new URL('https://example.com/3') // TODO /1
       const responseBody = {
         resource: 'test_value',
       }
@@ -80,10 +80,58 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(responseData.resource).toEqual(responseBody.resource)
     })
 
-    // TODO test POST
+    it('should get resource with POST request', async (): Promise<void> => {
+      const url = new URL('https://example.com/4') // TODO /1
+      const responseBody = {
+        resource: 'test_value',
+      }
+      const requestInfo = new Request(url.toString(), {
+        method: 'POST',
+        body: JSON.stringify({ test_field: 'test_value' })
+      })
+
+      nock(url.origin).post(url.pathname, { test_field: 'test_value' })
+        .times(2)
+        .reply(200, responseBody)
+
+      const response = await agent.resourceResolve({
+        input: requestInfo,
+        resourceType: 'test_type'
+      })
+      expect(response).toBeDefined()
+      const responseData = await (<Response>response).json()
+
+      expect(responseData).toBeDefined()
+      expect(responseData.resource).toEqual(responseBody.resource)
+    })
+
+    it('should fetch resource with POST request with different body', async (): Promise<void> => { // TODO finish test
+      const url = new URL('https://example.com/5') // TODO /1
+      const responseBody = {
+        resource: 'test_value',
+      }
+      const requestInfo = new Request(url.toString(), {
+        method: 'POST',
+        body: JSON.stringify({ test_field: 'test_value' })
+      })
+
+      nock(url.origin).post(url.pathname, { test_field: 'test_value' })
+        .times(2)
+        .reply(200, responseBody)
+
+      const response = await agent.resourceResolve({
+        input: requestInfo,
+        resourceType: 'test_type'
+      })
+      expect(response).toBeDefined()
+      const responseData = await (<Response>response).json()
+
+      expect(responseData).toBeDefined()
+      expect(responseData.resource).toEqual(responseBody.resource)
+    })
 
     it('should fetch resource when resource insertion exceeds max age option', async (): Promise<void> => {
-      const url = new URL('https://example.com/4') // TODO /4
+      const url = new URL('https://example.com/6') // TODO /4
       const responseBody = {
         resource: 'test_value',
       }
@@ -119,7 +167,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get resource from cache when max age option exceeds resource insertion', async (): Promise<void> => {
-      const url = new URL('https://example.com/5') // TODO /5
+      const url = new URL('https://example.com/7') // TODO /5
       const responseBody = {
         resource: 'test_value',
       }
@@ -154,7 +202,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get resource from cache with cache only option', async (): Promise<void> => {
-      const url = new URL('https://example.com/2') // TODO /5
+      const url = new URL('https://example.com/8') // TODO /5
       const responseBody = {
         resource: 'test_value',
       }
@@ -184,7 +232,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should return error response when no resource found with cache only option ', async (): Promise<void> => {
       const response = await agent.resourceResolve({
-        input: 'https://example.com/3',
+        input: 'https://example.com/9',
         resourceType: 'test_type',
         resolveOpts: {
           onlyCache: true
@@ -200,7 +248,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should get resource from cache by namespace', async (): Promise<void> => {
       const namespace = 'test_namespace'
-      const url = new URL('https://example.com/7') // TODO /5
+      const url = new URL('https://example.com/10') // TODO /5
       const responseBody = {
         resource: 'test_value',
       }
@@ -233,7 +281,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should fetch resource by different namespaces', async (): Promise<void> => {
-      const url = new URL('https://example.com/8') // TODO /5
+      const url = new URL('https://example.com/11') // TODO /5
       const responseBody = {
         resource: 'test_value',
       }
