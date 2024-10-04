@@ -21,6 +21,8 @@ export type ResolveArgs = {
   init?: RequestInit
   resourceType: ResourceType
   partyCorrelationId?: string
+  storeId?: string
+  namespace?: string
   resolveOpts?: ResolveOptions
 }
 

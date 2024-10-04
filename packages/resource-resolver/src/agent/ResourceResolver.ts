@@ -45,7 +45,7 @@ export class ResourceResolver implements IAgentPlugin {
   private readonly defaultTtl: number
   private readonly _resourceStores: Map<string, IKeyValueStore<Resource>>
 
-  constructor(options?: ResourceResolverOptions) { // TODO check optionality
+  constructor(options?: ResourceResolverOptions) {
     const {
       defaultStore,
       defaultNamespace,
@@ -71,8 +71,6 @@ export class ResourceResolver implements IAgentPlugin {
         })
       )
     }
-
-    // TODO add option to import some predefined data
   }
 
   /** {@inheritDoc IResourceResolver.resourceResolve} */
@@ -82,12 +80,14 @@ export class ResourceResolver implements IAgentPlugin {
       init,
       resourceType,
       resolveOpts,
-      partyCorrelationId
+      partyCorrelationId,
+      storeId,
+      namespace
     } = args
 
     const resourceIdentifier = getResourceIdentifier(input)
 
-    const cachedResource = await this.getResource({ resourceIdentifier })
+    const cachedResource = await this.getResource({ resourceIdentifier, storeId, namespace })
     if (cachedResource.value && (resolveOpts?.maxAgeMs === undefined || (Date.now() - cachedResource.value.insertedAt < resolveOpts.maxAgeMs))) {
       return deserializeResponse(cachedResource.value.response);
     }
@@ -103,14 +103,17 @@ export class ResourceResolver implements IAgentPlugin {
     const response = await fetch(input, init)
     if (!resolveOpts?.skipPersistence && (response.status >= 200 && response.status < 300)) {
       const serializedResponse = await serializeResponse(response);
+      const resource = {
+        response: serializedResponse,
+        resourceType,
+        insertedAt: Date.now(),
+        partyCorrelationId
+      }
       const cachedResource = await this.persistResource({
-        resource: {
-          response: serializedResponse,
-          resourceType,
-          insertedAt: Date.now(),
-          partyCorrelationId
-        },
-        resourceIdentifier
+        resource,
+        resourceIdentifier,
+        namespace,
+        storeId
       })
 
       if (!cachedResource.value) {

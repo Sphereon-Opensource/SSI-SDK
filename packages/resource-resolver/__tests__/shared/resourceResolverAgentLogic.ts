@@ -1,6 +1,5 @@
 import { TAgent } from '@veramo/core'
-// @ts-ignore
-import { Request, Response } from 'cross-fetch'
+import { Request } from 'cross-fetch'
 // @ts-ignore
 import nock from 'nock'
 import { IResourceResolver } from '../../src'
@@ -18,7 +17,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     afterAll(testContext.tearDown)
 
-    it('should get resource by input as string', async (): Promise<void> => { // TODO create a persists test // fix values // cleanup
+    it('should get resource by input as string', async (): Promise<void> => {
       const url = new URL('https://example.com/1') // TODO /1
       const responseBody = {
         resource: 'test_value',
@@ -31,13 +30,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         input: url.toString(),
         resourceType: 'test_type'
       })
+      expect(response).toBeDefined()
       const responseData = await (<Response>response).json()
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
     })
 
-    it('should get resource by input as URL', async (): Promise<void> => { // TODO create a persists test // fix values // cleanup
+    it('should get resource by input as URL', async (): Promise<void> => {
       const url = new URL('https://example.com/1') // TODO /1
       const responseBody = {
         resource: 'test_value',
@@ -50,13 +50,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         input: url,
         resourceType: 'test_type'
       })
+      expect(response).toBeDefined()
       const responseData = await (<Response>response).json()
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
     })
 
-    it('should get resource by input as RequestInfo', async (): Promise<void> => { // TODO create a persists test // fix values // cleanup
+    it('should get resource by input as RequestInfo', async (): Promise<void> => {
       const url = new URL('https://example.com/1') // TODO /1
       const responseBody = {
         resource: 'test_value',
@@ -72,6 +73,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         input: requestInfo,
         resourceType: 'test_type'
       })
+      expect(response).toBeDefined()
       const responseData = await (<Response>response).json()
 
       expect(responseData).toBeDefined()
@@ -94,19 +96,21 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           return responseBody
         })
 
-      await agent.resourceResolve({
+      const response1 = await agent.resourceResolve({
         input: url.toString(),
         resourceType: 'test_type'
       })
+      expect(response1).toBeDefined()
 
-      const response = await agent.resourceResolve({
+      const response2 = await agent.resourceResolve({
         input: url.toString(),
         resourceType: 'test_type',
         resolveOpts: {
           maxAgeMs: 1
         }
       })
-      const responseData = await (<Response>response).json()
+      expect(response2).toBeDefined()
+      const responseData = await (<Response>response2).json()
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
@@ -128,19 +132,21 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           return responseBody
         })
 
-      await agent.resourceResolve({
+      const response1 = await agent.resourceResolve({
         input: url.toString(),
         resourceType: 'test_type'
       })
+      expect(response1).toBeDefined()
 
-      const response = await agent.resourceResolve({
+      const response2 = await agent.resourceResolve({
         input: url.toString(),
         resourceType: 'test_type',
         resolveOpts: {
           maxAgeMs: 10000
         }
       })
-      const responseData = await (<Response>response).json()
+      expect(response2).toBeDefined()
+      const responseData = await (<Response>response2).json()
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
@@ -157,58 +163,109 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         .times(1)
         .reply(200, responseBody)
 
-      await agent.resourceResolve({
+      const response1 = await agent.resourceResolve({
         input: url.toString(),
         resourceType: 'test_type',
       })
+      expect(response1).toBeDefined()
 
-      const response = await agent.resourceResolve({
+      const response2 = await agent.resourceResolve({
         input: url.toString(),
         resourceType: 'test_type',
         resolveOpts: {
           onlyCache: true
         }
       })
+      expect(response2).toBeDefined()
+      const responseData = await (<Response>response2).json()
 
-      const responseData = await (<Response>response).json()
       expect(responseData.resource).toEqual('test_value')
     })
 
-    it('should return error response when no resource found with cache only option ', async (): Promise<void> => { // TODO proper urls in test
+    it('should return error response when no resource found with cache only option ', async (): Promise<void> => {
       const response = await agent.resourceResolve({
         input: 'https://example.com/3',
-        resourceType: 'test',
+        resourceType: 'test_type',
         resolveOpts: {
           onlyCache: true
-          //mode: 'cache_only'
         }
       })
-
+      expect(response).toBeDefined()
       const responseData = await (<Response>response).json()
+
       expect((<Response>response).status).toEqual(404)
       expect((<Response>response).statusText).toEqual('Not Found')
       expect(responseData.error).toEqual('Resource not found')
     })
 
-    // it('should get resource by namespace', async (): Promise<void> => { // TODO create a persists test // fix values // cleanup
-    //   const namespace = 'testNamespace'
-    //
-    //   const result1 = await agent.rrPersistResource({
-    //     resource: 'abc_test',
-    //     resourceIdentifier: 'id1',
-    //     namespace
-    //   })
-    //
-    //   console.log(`result1: ${JSON.stringify(result1)}`)
-    //
-    //   const result2 = await agent.rrGetResource({ resourceIdentifier: 'id1', namespace })
-    //
-    //   console.log(`result2: ${JSON.stringify(result2)}`)
-    //
-    //   expect(result2.value).toEqual('abc_test')
-    // })
+    it('should get resource from cache by namespace', async (): Promise<void> => {
+      const namespace = 'test_namespace'
+      const url = new URL('https://example.com/7') // TODO /5
+      const responseBody = {
+        resource: 'test_value',
+      }
 
-    // TODO test if error reponses do not get persisted
+      let called = 0
+      nock(url.origin).get(url.pathname)
+        .times(1)
+        .reply(200, () => {
+          called++
+          return responseBody
+        })
+
+      const response1 = await agent.resourceResolve({
+        input: url.toString(),
+        resourceType: 'test_type',
+        namespace
+      })
+      expect(response1).toBeDefined()
+
+      const response2 = await agent.resourceResolve({
+        input: url.toString(),
+        resourceType: 'test_type',
+        namespace
+      })
+      expect(response2).toBeDefined()
+      const responseData = await (<Response>response2).json()
+
+      expect(responseData.resource).toEqual(responseBody.resource)
+      expect(called).toEqual(1)
+    })
+
+    it('should fetch resource by different namespaces', async (): Promise<void> => {
+      const url = new URL('https://example.com/8') // TODO /5
+      const responseBody = {
+        resource: 'test_value',
+      }
+
+      let called = 0
+      nock(url.origin).get(url.pathname)
+        .times(2)
+        .reply(200, () => {
+          called++
+          return responseBody
+        })
+
+      const response1 = await agent.resourceResolve({
+        input: url.toString(),
+        resourceType: 'test_type',
+        namespace: 'test_namespace1'
+      })
+      expect(response1).toBeDefined()
+
+      const response2 = await agent.resourceResolve({
+        input: url.toString(),
+        resourceType: 'test_type',
+        namespace: 'test_namespace2'
+      })
+      expect(response2).toBeDefined()
+      const responseData = await (<Response>response2).json()
+
+      expect(responseData.resource).toEqual(responseBody.resource)
+      expect(called).toEqual(2)
+    })
+
+    // TODO test if error responses do not get persisted
 
   })
 }
