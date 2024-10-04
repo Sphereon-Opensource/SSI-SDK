@@ -191,34 +191,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(responseData.error).toEqual('Resource not found')
     })
 
-    it('should get resource as blob', async (): Promise<void> => { // TODO create a persists test // fix values // cleanup
-      const url = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc9APxkj0xClmrU3PpMZglHQkx446nQPG6lA&s'
-
-      const response = await fetch(url)
-      //const buffer = Buffer.from(JSON.stringify(response))
-      const arrayBuffer = await response.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-      console.log(`BUFFER: ${JSON.stringify(arrayBuffer)}`)
-      const restoredBody = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
-      const restoredResponse = new Response(restoredBody, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: response.headers,
-      });
-
-      const image = await restoredResponse.arrayBuffer()
-      const imageBuffer = Buffer.from(image);
-
-      const destPath = path.join('C:/temp', 'downloaded-image.jpg');
-      fs.writeFile(destPath, imageBuffer, (err) => {
-        if (err) {
-          throw err;
-        }
-      });
-
-    })
-
-
     // it('should get resource by namespace', async (): Promise<void> => { // TODO create a persists test // fix values // cleanup
     //   const namespace = 'testNamespace'
     //
