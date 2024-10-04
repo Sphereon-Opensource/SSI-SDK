@@ -123,12 +123,19 @@ export interface SdJwtDecodedVerifiableCredential {
    * Key binding JWT
    */
   kbJwt?: {
-    compact: CompactJWT
+    header: SdJwtVcKbJwtHeader
     payload: SdJwtVcKbJwtPayload
+    compact?: CompactJWT
   }
 }
 
-interface SdJwtVcKbJwtPayload {
+export interface SdJwtVcKbJwtHeader {
+  typ: 'kb+jwt'
+  alg: string
+  [x: string]: any
+}
+
+export interface SdJwtVcKbJwtPayload {
   iat: number
   aud: string
   nonce: string
@@ -229,6 +236,7 @@ export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): S
     ...(compactKeyBindingJwt &&
       kbJwt && {
         kbJwt: {
+          header: kbJwt.header as SdJwtVcKbJwtHeader,
           compact: compactKeyBindingJwt,
           payload: kbJwt.payload as SdJwtVcKbJwtPayload,
         },
@@ -266,8 +274,9 @@ export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher:
     ...(compactKeyBindingJwt &&
       kbJwt && {
         kbJwt: {
-          compact: compactKeyBindingJwt,
+          header: kbJwt.header as SdJwtVcKbJwtHeader,
           payload: kbJwt.payload as SdJwtVcKbJwtPayload,
+          compact: compactKeyBindingJwt,
         },
       }),
   }
@@ -276,7 +285,7 @@ export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher:
 // TODO naive implementation of mapping a sd-jwt onto a IVerifiableCredential. Needs some fixes and further implementation and needs to be moved out of ssi-types
 export const sdJwtDecodedCredentialToUniformCredential = (
   decoded: SdJwtDecodedVerifiableCredential,
-  opts?: { maxTimeSkewInMS?: number },
+  opts?: { maxTimeSkewInMS?: number }
 ): IVerifiableCredential => {
   const { decodedPayload } = decoded // fixme: other params and proof
   const { exp, nbf, iss, iat, vct, cnf, status, sub, jti } = decodedPayload
@@ -292,7 +301,7 @@ export const sdJwtDecodedCredentialToUniformCredential = (
 
       return acc
     },
-    {},
+    {}
   )
 
   const maxSkewInMS = opts?.maxTimeSkewInMS ?? 1500

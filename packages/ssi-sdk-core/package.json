@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk.core",
   "description": "SSI SDK Core & Interfaces",
-  "version": "0.29.0",
+  "version": "0.30.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

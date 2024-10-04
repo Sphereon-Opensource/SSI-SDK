@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "emitDecoratorMetadata": true,
+    "declarationDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../data-store"
+    },
+    {
+      "path": "../vc-status-list"
+    },
+    {
+      "path": "../vc-status-list-issuer-drivers"
+    }
+  ],
+  "extends": "../tsconfig-base.json"
+}

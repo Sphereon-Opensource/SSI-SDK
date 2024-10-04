@@ -4,7 +4,7 @@ import {
   isManagedIdentifierDidOpts,
   isManagedIdentifierDidResult,
   isManagedIdentifierX5cResult,
-  ManagedIdentifierOpts,
+  ManagedIdentifierOptsOrResult,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
   CredentialMapper,
@@ -18,7 +18,7 @@ import { IPEXPresentationSignCallback, IRequiredContext } from './types/IPresent
 
 export async function createPEXPresentationSignCallback(
   args: {
-    idOpts: ManagedIdentifierOpts
+    idOpts: ManagedIdentifierOptsOrResult
     fetchRemoteContexts?: boolean
     skipDidResolution?: boolean
     format?: Format | ProofFormat
@@ -27,16 +27,13 @@ export async function createPEXPresentationSignCallback(
   },
   context: IRequiredContext,
 ): Promise<IPEXPresentationSignCallback> {
-  function determineProofFormat(args: {
-    format?: Format | 'jwt' | 'lds' | 'EthereumEip712Signature2021'
-    presentationDefinition: IPresentationDefinition
-  }): string {
-    const { format, presentationDefinition } = args
+  function determineProofFormat(innerArgs: {format?: Format | 'jwt' | 'lds' | 'EthereumEip712Signature2021', presentationDefinition: IPresentationDefinition}): string {
+    const { format, presentationDefinition } = innerArgs
 
-    // All format arguments are optional. So if no format has been given we go for SD-JWT
-    const formatOptions = format ?? presentationDefinition.format
+    const formatOptions = format ?? presentationDefinition.format ?? args.format
+    // All format arguments are optional. So if no format has been given we go for the most supported 'jwt'
     if (!formatOptions) {
-      return 'vc+sd-jwt'
+      return 'jwt'
     } else if (typeof formatOptions === 'string') {
       // if formatOptions is a singular string we can return that as the format
       return formatOptions
@@ -85,27 +82,28 @@ export async function createPEXPresentationSignCallback(
       idOpts.offlineWhenNoDIDRegistered = true
     }
 
-    const resolution = await context.agent.identifierManagedGet(idOpts)
-
     if ('compactSdJwtVc' in presentation) {
       if (proofFormat !== 'vc+sd-jwt') {
         return Promise.reject(Error(`presentation payload does not match proof format ${proofFormat}`))
       }
 
       const presentationResult = await context.agent.createSdJwtPresentation({
+        ...(idOpts?.method === 'oid4vci-issuer' && { holder: idOpts?.issuer as string }),
         presentation: presentation.compactSdJwtVc,
         kb: {
           payload: {
             ...presentation.kbJwt?.payload,
             iat: presentation.kbJwt?.payload?.iat ?? Math.floor(Date.now() / 1000 - CLOCK_SKEW),
             nonce: challenge ?? presentation.kbJwt?.payload?.nonce,
-            aud: presentation.kbJwt?.payload?.aud ?? resolution.issuer,
+            aud: presentation.kbJwt?.payload?.aud ?? domain ?? args.domain,
           },
         },
       })
 
       return CredentialMapper.storedPresentationToOriginalFormat(presentationResult.presentation as OriginalVerifiablePresentation)
     } else {
+      const resolution = await context.agent.identifierManagedGet(idOpts)
+
       if (proofFormat === 'vc+sd-jwt') {
         return Promise.reject(Error(`presentation payload does not match proof format ${proofFormat}`))
       }

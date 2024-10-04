@@ -5,7 +5,6 @@ import {
   DocumentType
 } from '@sphereon/ssi-sdk.data-store'
 import { IAgentPlugin } from '@veramo/core'
-import crypto from 'crypto'
 import { schema, logger } from '../index'
 import { credentialIdOrHashFilter } from '../utils/filters'
 import {
@@ -18,11 +17,13 @@ import {
   GetCredentialsByIdOrHashArgs,
   ICredentialStore,
   OptionalUniqueDigitalCredential,
-  UniqueDigitalCredential
-} from '../types/ICredentialStore'
-import { TClaimsColumns } from '../types/claims'
-
+  schema,
+  TClaimsColumns,
+  UniqueDigitalCredential,
+} from '../index'
+import { AbstractDigitalCredentialStore, DigitalCredential, parseRawDocument, UpdateCredentialStateArgs } from '@sphereon/ssi-sdk.data-store'
 import { IVerifiableCredential } from '@sphereon/ssi-types'
+import { defaultHasher } from '@sphereon/ssi-sdk.data-store'
 
 // Exposing the methods here for any REST implementation
 export const credentialStoreMethods: Array<string> = [
@@ -64,7 +65,7 @@ export class CredentialStore implements IAgentPlugin {
 
   /** {@inheritDoc ICredentialStore.crsAddCredential} */
   private async crsAddCredential(args: AddCredentialArgs): Promise<DigitalCredential> {
-    return await this.store.addCredential({ ...args.credential, opts: { ...args.opts, hasher: args.opts?.hasher ?? this.generateDigest } })
+    return await this.store.addCredential({ ...args.credential, opts: { ...args.opts, hasher: args.opts?.hasher ?? defaultHasher } })
   }
 
   /** {@inheritDoc ICredentialStore.crsUpdateCredentialState} */
@@ -226,11 +227,7 @@ export class CredentialStore implements IAgentPlugin {
   }
 
   private secureParse<Type>(original: string): Type {
-    if (original.includes('~')) {
-      return original as Type
-    }
-
-    return JSON.parse(original)
+    return parseRawDocument(original) as Type
   }
 
   private toUniqueCredentials(credentials: Array<DigitalCredential>): Array<UniqueDigitalCredential> {
@@ -268,9 +265,5 @@ export class CredentialStore implements IAgentPlugin {
         {} as Record<string, UniqueDigitalCredential>,
       ),
     )
-  }
-
-  private generateDigest = (data: string, algorithm: string): Uint8Array => {
-    return new Uint8Array(crypto.createHash(algorithm).update(data).digest())
   }
 }

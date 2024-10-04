@@ -1,36 +1,64 @@
-import Debug from 'debug'
-
-import { SignKeyArgs, SignKeyResult } from './index'
 import { Jwt, SDJwt } from '@sd-jwt/core'
 import { SDJwtVcInstance, SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
-import { Signer, Verifier, KbVerifier, JwtPayload, DisclosureFrame, PresentationFrame } from '@sd-jwt/types'
+import { DisclosureFrame, JwtPayload, KbVerifier, PresentationFrame, Signer, Verifier } from '@sd-jwt/types'
+import { calculateJwkThumbprint, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
+import { JWK } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
+import { decodeBase64url } from '@veramo/utils'
+import Debug from 'debug'
+import { defaultGenerateDigest, defaultGenerateSalt, defaultVerifySignature } from './defaultCallbacks'
+import { sphereonCA, funkeTestCA } from './trustAnchors'
+import { SdJwtVerifySignature, SignKeyArgs, SignKeyResult } from './index'
 import {
-  SdJWTImplementation,
-  ICreateSdJwtVcArgs,
-  ICreateSdJwtVcResult,
+  Claims,
   ICreateSdJwtPresentationArgs,
   ICreateSdJwtPresentationResult,
+  ICreateSdJwtVcArgs,
+  ICreateSdJwtVcResult,
   IRequiredContext,
   ISDJwtPlugin,
-  IVerifySdJwtVcArgs,
-  IVerifySdJwtVcResult,
   IVerifySdJwtPresentationArgs,
   IVerifySdJwtPresentationResult,
-  Claims,
+  IVerifySdJwtVcArgs,
+  IVerifySdJwtVcResult,
+  SdJWTImplementation,
 } from './types'
-import { _ExtendedIKey } from '@veramo/utils'
-import { getFirstKeyWithRelation } from '@sphereon/ssi-sdk-ext.did-utils'
-import { calculateJwkThumbprint, JWK } from '@sphereon/ssi-sdk-ext.key-utils'
-import { funkeTestCA, sphereonCA } from './trustAnchors'
 
 const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
+
 /**
  * @beta
- * SD-JWT plugin for Veramo
+ * SD-JWT plugin
  */
 export class SDJwtPlugin implements IAgentPlugin {
-  constructor(private algorithms: SdJWTImplementation) {}
+  private readonly trustAnchorsInPEM: string[]
+  private readonly registeredImplementations: SdJWTImplementation
+  private _signers: Record<string, Signer>
+  private _defaultSigner?: Signer
+
+  constructor(
+    registeredImplementations?: SdJWTImplementation & {
+      signers?: Record<string, Signer>
+      defaultSigner?: Signer
+    },
+    trustAnchorsInPEM?: string[],
+  ) {
+    this.trustAnchorsInPEM = trustAnchorsInPEM ?? []
+    if (!registeredImplementations) {
+      registeredImplementations = {}
+    }
+    if (typeof registeredImplementations?.hasher !== 'function') {
+      registeredImplementations.hasher = defaultGenerateDigest
+    }
+    if (typeof registeredImplementations?.saltGenerator !== 'function') {
+      registeredImplementations.saltGenerator = defaultGenerateSalt
+    }
+    this.registeredImplementations = registeredImplementations
+    this._signers = registeredImplementations?.signers ?? {}
+    this._defaultSigner = registeredImplementations?.defaultSigner
+
+    // Verify signature default is used below in the methods if not provided here, as it needs the context of the agent
+  }
 
   // map the methods your plugin is declaring to their implementation
   readonly methods: ISDJwtPlugin = {
@@ -38,6 +66,29 @@ export class SDJwtPlugin implements IAgentPlugin {
     createSdJwtPresentation: this.createSdJwtPresentation.bind(this),
     verifySdJwtVc: this.verifySdJwtVc.bind(this),
     verifySdJwtPresentation: this.verifySdJwtPresentation.bind(this),
+  }
+
+  private async getSignerForIdentifier(
+    { identifier }: { identifier: string },
+    context: IRequiredContext,
+  ): Promise<{
+    signer: Signer
+    alg?: string
+    signingKey?: SignKeyResult
+  }> {
+    if (Object.keys(this._signers).includes(identifier) && typeof this._signers[identifier] === 'function') {
+      return { signer: this._signers[identifier] }
+    } else if (typeof this._defaultSigner === 'function') {
+      return { signer: this._defaultSigner }
+    }
+    const signingKey = await this.getSignKey({ identifier, vmRelationship: 'assertionMethod' }, context)
+    const { key, alg } = signingKey
+
+    const signer: Signer = async (data: string): Promise<string> => {
+      return context.agent.keyManagerSign({ keyRef: key.kmsKeyRef, data })
+    }
+
+    return { signer, alg, signingKey }
   }
 
   /**
@@ -51,21 +102,21 @@ export class SDJwtPlugin implements IAgentPlugin {
     if (!issuer) {
       throw new Error('credential.issuer must not be empty')
     }
-
-    const { alg, key } = await this.getSignKey({ identifier: issuer, vmRelationship: 'assertionMethod' }, context)
-
-    //TODO: let the user also insert a method to sign the data
-    const signer: Signer = async (data: string) => context.agent.keyManagerSign({ keyRef: key.kid, data })
-
+    const { alg, signer, signingKey } = await this.getSignerForIdentifier({ identifier: issuer }, context)
     const sdjwt = new SDJwtVcInstance({
       signer,
-      hasher: this.algorithms.hasher,
-      saltGenerator: this.algorithms.saltGenerator,
-      signAlg: alg,
+      hasher: this.registeredImplementations.hasher,
+      saltGenerator: this.registeredImplementations.saltGenerator,
+      signAlg: alg ?? 'ES256',
       hashAlg: 'SHA-256',
     })
 
-    const credential = await sdjwt.issue(args.credentialPayload, args.disclosureFrame as DisclosureFrame<typeof args.credentialPayload>)
+    const credential = await sdjwt.issue(args.credentialPayload, args.disclosureFrame as DisclosureFrame<typeof args.credentialPayload>, {
+      header: {
+        ...(signingKey?.key.kid !== undefined && { kid: signingKey.key.kid }),
+      },
+    })
+
     return { credential }
   }
 
@@ -76,30 +127,31 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @returns the key to sign the SD-JWT
    */
   async getSignKey(args: SignKeyArgs, context: IRequiredContext): Promise<SignKeyResult> {
-    const { identifier, vmRelationship } = { ...args }
+    // TODO Using identifierManagedGetByDid now (new managed identifier resolution). Evaluate of we need to implement more identifier types here
+    const { identifier } = { ...args }
     if (identifier.startsWith('did:')) {
-      const didIdentifier = await context.agent.didManagerGet({
-        did: identifier.split('#')[0],
-      })
-      const key: _ExtendedIKey | undefined = await getFirstKeyWithRelation({ identifier: didIdentifier, vmRelationship: vmRelationship }, context)
-      if (!key) {
-        throw new Error(`No key found with the given id: ${identifier}`)
+      const didIdentifier = await context.agent.identifierManagedGetByDid({ identifier })
+      if (!didIdentifier) {
+        throw new Error(`No identifier found with the given did: ${identifier}`)
       }
-      const alg = this.getKeyTypeAlgorithm(key.type)
+      const key = didIdentifier.key
+      const alg = await signatureAlgorithmFromKey({ key })
       debug(`Signing key ${key.publicKeyHex} found for identifier ${identifier}`)
-      return { alg, key }
+
+      return { alg, key: { ...key, kmsKeyRef: didIdentifier.kmsKeyRef, kid: didIdentifier.kid } }
     } else {
-      const key = await context.agent.keyManagerGet({ kid: identifier })
-      if (!key) {
-        throw new Error(`No key found with the identifier ${identifier}`)
+      const kidIdentifier = await context.agent.identifierManagedGetByKid({ identifier })
+      if (!kidIdentifier) {
+        throw new Error(`No identifier found with the given kid: ${identifier}`)
       }
-      const alg = this.getKeyTypeAlgorithm(key.type)
+      const key = kidIdentifier.key
+      const alg = await signatureAlgorithmFromKey({ key })
       if (key.meta?.x509 && key.meta.x509.x5c) {
-        return { alg, key: { kid: key.kid, x5c: key.meta.x509.x5c as string[] } }
+        return { alg, key: { kid: kidIdentifier.kid, kmsKeyRef: kidIdentifier.kmsKeyRef, x5c: key.meta.x509.x5c as string[] } }
       } else if (key.meta?.jwkThumbprint) {
-        return { alg, key: { kid: key.kid, jwkThumbprint: key.meta.jwkThumbprint } }
+        return { alg, key: { kid: kidIdentifier.kid, kmsKeyRef: kidIdentifier.kmsKeyRef, jwkThumbprint: key.meta.jwkThumbprint } }
       } else {
-        return { alg, key: { kid: key.kid } }
+        return { alg, key: { kid: kidIdentifier.kid, kmsKeyRef: kidIdentifier.kmsKeyRef } }
       }
     }
   }
@@ -111,32 +163,33 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @returns A signed SD-JWT presentation.
    */
   async createSdJwtPresentation(args: ICreateSdJwtPresentationArgs, context: IRequiredContext): Promise<ICreateSdJwtPresentationResult> {
-    const cred = await SDJwt.fromEncode(args.presentation, this.algorithms.hasher)
-    const claims = await cred.getClaims<Claims>(this.algorithms.hasher)
+    const cred = await SDJwt.fromEncode(args.presentation, this.registeredImplementations.hasher!)
+    const claims = await cred.getClaims<Claims>(this.registeredImplementations.hasher!)
     let holder: string
     // we primarly look for a cnf field, if it's not there we look for a sub field. If this is also not given, we throw an error since we can not sign it.
-    if (claims.cnf?.jwk) {
+    if (args.holder) {
+      holder = args.holder
+    } else if (claims.cnf?.jwk) {
       const jwk = claims.cnf.jwk
       holder = calculateJwkThumbprint({ jwk: jwk as JWK })
+    } else if (claims.cnf?.kid) {
+      holder = claims.cnf?.kid
     } else if (claims.sub) {
       holder = claims.sub as string
     } else {
       throw new Error('invalid_argument: credential does not include a holder reference')
     }
-    const { alg, key } = await this.getSignKey({ identifier: holder, vmRelationship: 'assertionMethod' }, context)
-
-    const signer: Signer = async (data: string) => {
-      return context.agent.keyManagerSign({ keyRef: key.kid, data })
-    }
+    const { alg, signer } = await this.getSignerForIdentifier({ identifier: holder }, context)
 
     const sdjwt = new SDJwtVcInstance({
-      hasher: this.algorithms.hasher,
-      saltGenerator: this.algorithms.saltGenerator,
+      hasher: this.registeredImplementations.hasher,
+      saltGenerator: this.registeredImplementations.saltGenerator,
       kbSigner: signer,
-      kbSignAlg: alg,
+      kbSignAlg: alg ?? 'ES256',
     })
-    const credential = await sdjwt.present(args.presentation, args.presentationFrame as PresentationFrame<SdJwtVcPayload>, { kb: args.kb })
-    return { presentation: credential }
+    const presentation = await sdjwt.present(args.presentation, args.presentationFrame as PresentationFrame<SdJwtVcPayload>, { kb: args.kb })
+
+    return { presentation }
   }
 
   /**
@@ -146,14 +199,12 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @returns
    */
   async verifySdJwtVc(args: IVerifySdJwtVcArgs, context: IRequiredContext): Promise<IVerifySdJwtVcResult> {
-    // biome-ignore lint/style/useConst: <explanation>
-    let sdjwt: SDJwtVcInstance
+    // callback
     const verifier: Verifier = async (data: string, signature: string) => this.verify(sdjwt, context, data, signature)
+    const sdjwt = new SDJwtVcInstance({ verifier, hasher: this.registeredImplementations.hasher })
+    const { header = {}, payload, kb } = await sdjwt.verify(args.credential)
 
-    sdjwt = new SDJwtVcInstance({ verifier, hasher: this.algorithms.hasher })
-    const verifiedPayloads = await sdjwt.verify(args.credential)
-
-    return { verifiedPayloads }
+    return { header, payload: payload as SdJwtVcPayload, kb }
   }
 
   /**
@@ -169,8 +220,29 @@ export class SDJwtPlugin implements IAgentPlugin {
     if (!payload.cnf) {
       throw Error('other method than cnf is not supported yet')
     }
-    const key = payload.cnf.jwk as JsonWebKey
-    return this.algorithms.verifySignature(data, signature, key)
+    return this.verifySignatureCallback(context)(data, signature, this.getJwk(payload))
+  }
+
+  private getJwk(payload: JwtPayload): JsonWebKey {
+    if (payload.cnf?.jwk !== undefined) {
+      return payload.cnf.jwk as JsonWebKey
+    } else if (payload.cnf !== undefined && 'kid' in payload.cnf && typeof payload.cnf.kid === 'string' && payload.cnf.kid.startsWith('did:jwk:')) {
+      // extract JWK from kid FIXME isn't there a did function for this already? Otherwise create one
+      // FIXME this is a quick-fix to make verification but we need a real solution
+      const encoded = this.extractBase64FromDIDJwk(payload.cnf.kid)
+      const decoded = decodeBase64url(encoded)
+      const jwt = JSON.parse(decoded)
+      return jwt as JsonWebKey
+    }
+    throw Error('Unable to extract JWK from SD-JWT payload')
+  }
+
+  private extractBase64FromDIDJwk(did: string): string {
+    const parts = did.split(':')
+    if (parts.length < 3) {
+      throw new Error('Invalid DID format')
+    }
+    return parts[2].split('#')[0]
   }
 
   /**
@@ -181,13 +253,47 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @param signature - The signature
    * @returns
    */
-  async verify(sdjwt: SDJwtVcInstance, context: IRequiredContext, data: string, signature: string) {
+  async verify(sdjwt: SDJwtVcInstance, context: IRequiredContext, data: string, signature: string): Promise<boolean> {
     const decodedVC = await sdjwt.decode(`${data}.${signature}`)
     const issuer: string = ((decodedVC.jwt as Jwt).payload as Record<string, unknown>).iss as string
     const header = (decodedVC.jwt as Jwt).header as Record<string, any>
     const x5c: string[] | undefined = header?.x5c as string[]
-    let jwk: JWK | JsonWebKey | undefined = undefined
-    if (issuer.includes('did:')) {
+    let jwk: JWK | JsonWebKey | undefined = header.jwk
+    if (x5c) {
+      const trustAnchors = new Set<string>([...this.trustAnchorsInPEM])
+      if (trustAnchors.size === 0) {
+        trustAnchors.add(sphereonCA)
+        trustAnchors.add(funkeTestCA)
+      }
+      const certificateValidationResult = await context.agent.x509VerifyCertificateChain({
+        chain: x5c,
+        trustAnchors: Array.from(trustAnchors),
+      })
+
+      if (certificateValidationResult.error || !certificateValidationResult?.certificateChain) {
+        return Promise.reject(Error(`Certificate chain validation failed. ${certificateValidationResult.message}`))
+      }
+      const certInfo = certificateValidationResult.certificateChain[0]
+      jwk = certInfo.publicKeyJWK as JWK
+    }
+
+    if (!jwk && header.kid?.includes('did:')) {
+      const didDoc = await context.agent.resolveDid({ didUrl: header.kid })
+      if (!didDoc) {
+        throw new Error('invalid_issuer: issuer did not resolve to a did document')
+      }
+      //TODO SDK-20: This should be checking for an assertionMethod and not just an verificationMethod with an id
+      const didDocumentKey = didDoc.didDocument?.verificationMethod?.find((key) => key.id)
+      if (!didDocumentKey) {
+        throw new Error('invalid_issuer: issuer did document does not include referenced key')
+      }
+      //FIXME SDK-21: in case it's another did method, the value of the key can be also encoded as a base64url
+      // needs more checks. some DID methods do not expose the keys as publicKeyJwk
+      jwk = didDocumentKey.publicKeyJwk as JsonWebKey
+    }
+
+    if (!jwk && issuer.includes('did:')) {
+      // TODO refactor
       const didDoc = await context.agent.resolveDid({ didUrl: issuer })
       if (!didDoc) {
         throw new Error('invalid_issuer: issuer did not resolve to a did document')
@@ -201,23 +307,12 @@ export class SDJwtPlugin implements IAgentPlugin {
       // needs more checks. some DID methods do not expose the keys as publicKeyJwk
       jwk = didDocumentKey.publicKeyJwk as JsonWebKey
     }
-    if (x5c) {
-      const certificateValidationResult = await context.agent.verifyCertificateChain({
-        chain: x5c,
-        trustAnchors: [funkeTestCA, sphereonCA],
-      })
-
-      if (certificateValidationResult.error || !certificateValidationResult?.certificateChain) {
-        throw new Error('Certificate chain validation failed')
-      }
-      const certInfo = certificateValidationResult.certificateChain[0]
-      jwk = certInfo.publicKeyJWK as JWK
-    }
 
     if (!jwk) {
       throw new Error('No valid public key found for signature verification')
     }
-    return this.algorithms.verifySignature(data, signature, jwk)
+
+    return this.verifySignatureCallback(context)(data, signature, jwk)
   }
 
   /**
@@ -227,31 +322,24 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @returns
    */
   async verifySdJwtPresentation(args: IVerifySdJwtPresentationArgs, context: IRequiredContext): Promise<IVerifySdJwtPresentationResult> {
-    // biome-ignore lint/style/useConst: <explanation>
     let sdjwt: SDJwtVcInstance
     const verifier: Verifier = async (data: string, signature: string) => this.verify(sdjwt, context, data, signature)
     const verifierKb: KbVerifier = async (data: string, signature: string, payload: JwtPayload) =>
       this.verifyKb(sdjwt, context, data, signature, payload)
     sdjwt = new SDJwtVcInstance({
       verifier,
-      hasher: this.algorithms.hasher,
+      hasher: this.registeredImplementations.hasher,
       kbVerifier: verifierKb,
     })
-    const verifiedPayloads = await sdjwt.verify(args.presentation, args.requiredClaimKeys, args.kb)
 
-    return { verifiedPayloads }
+    return sdjwt.verify(args.presentation, args.requiredClaimKeys, args.kb)
   }
 
-  private getKeyTypeAlgorithm(keyType: string) {
-    switch (keyType) {
-      case 'Ed25519':
-        return 'EdDSA'
-      case 'Secp256k1':
-        return 'ES256K'
-      case 'Secp256r1':
-        return 'ES256'
-      default:
-        throw new Error(`unsupported key type ${keyType}`)
+  private verifySignatureCallback(context: IRequiredContext): SdJwtVerifySignature {
+    if (typeof this.registeredImplementations.verifySignature === 'function') {
+      return this.registeredImplementations.verifySignature
     }
+
+    return defaultVerifySignature(context)
   }
 }

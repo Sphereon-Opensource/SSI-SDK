@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.presentation-exchange",
-  "version": "0.29.0",
+  "version": "0.30.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,10 +14,10 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/pex": "^4.0.1",
-    "@sphereon/pex-models": "^2.2.4",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-next.96",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-next.96",
+    "@sphereon/pex": "5.0.0-unstable.9",
+    "@sphereon/pex-models": "^2.3.1",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.130",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.130",
     "@sphereon/ssi-sdk.credential-store": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-sdk.sd-jwt": "workspace:*",

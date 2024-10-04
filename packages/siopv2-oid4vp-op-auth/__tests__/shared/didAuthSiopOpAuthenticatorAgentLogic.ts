@@ -11,7 +11,6 @@ import {
   ResponseType,
   SubjectIdentifierType,
   UrlEncodingFormat,
-  VerificationMode,
   VerifiedAuthorizationRequest,
 } from '@sphereon/did-auth-siop'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
@@ -156,7 +155,6 @@ const createAuthorizationResponseMockedResult = {
   },
   verifyOpts: {
     verification: {
-      mode: VerificationMode.INTERNAL,
       resolveOpts: {},
     },
   },

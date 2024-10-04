@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-client",
   "description": "contains the client side to call REST endpoints of relying party",
-  "version": "0.29.0",
+  "version": "0.30.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -37,7 +37,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "repository": "git@github.com:Sphereon-OpenSource/ssi-sdk.git",
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
   "keywords": []

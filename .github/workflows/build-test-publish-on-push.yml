@@ -19,6 +19,7 @@ jobs:
       GH_USER: ${{secrets.GH_USER}}
       GH_EMAIL: ${{secrets.GH_EMAIL}}
       VC_HTTP_API_AUTH_TOKEN: ${{secrets.VC_HTTP_API_AUTH_TOKEN}}
+      NODE_OPTIONS: --max_old_space_size=4096
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -70,8 +71,6 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
           echo "link-workspace-packages=deep" >> .npmrc
           echo "prefer-workspace-packages=true" >> .npmrc
-
-      #          npm whoami
 
       - name: show diff to track issues with lock file
         run: git diff -u

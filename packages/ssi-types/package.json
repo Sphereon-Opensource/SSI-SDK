@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-types",
   "description": "SSI Common Types",
-  "version": "0.29.0",
+  "version": "0.30.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -9,7 +9,9 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sd-jwt/decode": "^0.6.1",
+    "@sd-jwt/decode": "^0.7.2",
+    "@sphereon/kmp-mdl-mdoc": "0.2.0-SNAPSHOT.22",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.24.1-unstable.130",
     "debug": "^4.3.5",
     "events": "^3.3.0",
     "jwt-decode": "^3.1.2"
