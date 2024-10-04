@@ -79,7 +79,7 @@ jobs:
         env:
           name: "${{github.ref_name}}"
         run: |
-          echo "PRE_ID=${name/\//.}" >> $GITHUB_ENV
+          echo "PRE_ID=${name//[\/_-]/.}" >> $GITHUB_ENV
 
       - name: publish @latest when on main
         if: github.ref == 'refs/heads/main'
