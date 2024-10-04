@@ -1,10 +1,8 @@
 import { TAgent } from '@veramo/core'
-import fetch, { Request, Response } from 'cross-fetch'
+import { Request, Response } from 'cross-fetch'
 // @ts-ignore
 import nock from 'nock'
 import { IResourceResolver } from '../../src'
-import * as path from 'path'
-import * as fs from 'fs'
 
 type ConfiguredAgent = TAgent<IResourceResolver>
 

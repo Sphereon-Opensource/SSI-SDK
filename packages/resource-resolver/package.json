@@ -11,8 +11,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "build:clean": "tsc --build --clean && tsc --build",
-    "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
+    "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",

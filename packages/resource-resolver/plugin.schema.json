@@ -1,0 +1,161 @@
+{
+  "IResourceResolver": {
+    "components": {
+      "schemas": {
+        "ResourceResolverOptions": {
+          "type": "object",
+          "properties": {
+            "requestData": {}
+          },
+          "required": ["requestData"]
+        },
+        "ResolveArgs": {
+          "type": "object",
+          "properties": {
+            "requestData": {}
+          },
+          "required": ["requestData"]
+        },
+        "ResolveOptions": {
+          "type": "object",
+          "properties": {
+            "requestData": {}
+          },
+          "required": ["requestData"]
+        },
+        "ResourceType": {
+          "type": "object",
+          "properties": {
+            "requestData": {}
+          },
+          "required": ["requestData"]
+        },
+        "ClearArgs": {
+          "type": "object",
+          "properties": {
+            "requestData": {}
+          },
+          "required": ["requestData"]
+        },
+        "PersistResourceArgs": {
+          "type": "object",
+          "properties": {
+            "requestData": {}
+          },
+          "required": ["requestData"]
+        },
+        "GetResourceArgs": {
+          "type": "object",
+          "properties": {
+            "requestData": {}
+          },
+          "required": ["requestData"]
+        },
+        "StoreIdStrArgs": {
+          "type": "object",
+          "properties": {
+            "requestData": {}
+          },
+          "required": ["requestData"]
+        },
+        "NamespaceStrArgs": {
+          "type": "object",
+          "properties": {
+            "requestData": {}
+          },
+          "required": ["requestData"]
+        },
+        "PrefixArgs": {
+          "type": "object",
+          "properties": {
+            "requestData": {}
+          },
+          "required": ["requestData"]
+        },
+        "StoreArgs": {
+          "type": "object",
+          "properties": {
+            "requestData": {}
+          },
+          "required": ["requestData"]
+        },
+        "Resource": {
+          "type": "object",
+          "properties": {
+            "requestData": {}
+          },
+          "required": ["requestData"]
+        },
+        "SerializedResponse": {
+          "type": "object",
+          "properties": {
+            "requestData": {}
+          },
+          "required": ["requestData"]
+        }
+      },
+      "methods": {
+        "resourceResolve": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/GetMachineArgs"
+          },
+          "returnType": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "resourceClearAllResources": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/GetMachineArgs"
+          },
+          "returnType": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "resourceDefaultStoreId": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/GetMachineArgs"
+          },
+          "returnType": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "resourceDefaultNamespace": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/GetMachineArgs"
+          },
+          "returnType": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "resourceDefaultTtl": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/GetMachineArgs"
+          },
+          "returnType": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
