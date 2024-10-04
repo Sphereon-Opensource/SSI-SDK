@@ -5,11 +5,17 @@ import {
   ValueStoreType
 } from '@sphereon/ssi-sdk.kv-store-temp'
 import { IAgentPlugin } from '@veramo/core'
-import fetch from 'cross-fetch'
-import { GetResourceArgs, schema } from '../index'
+import fetch, { Response, Headers } from 'cross-fetch'
+import { schema } from '../index'
+import {
+  deserializeResponse,
+  getResourceIdentifier,
+  serializeResponse
+} from '../utils/ResourceResolverUtils'
 import {
   ClearArgs,
-  FetchArgs,
+  ResolveArgs,
+  GetResourceArgs,
   IResourceResolver,
   NamespaceStrArgs,
   PersistResourceArgs,
@@ -17,37 +23,27 @@ import {
   RequiredContext,
   ResourceResolverOptions,
   StoreArgs,
-  StoreIdStrArgs
+  StoreIdStrArgs,
+  Resource
 } from '../types/IResourceResolver'
-
-// Exposing the methods here for any REST implementation
-export const resourceResolverMethods: Array<string> = [
-  'rrFetch',
-  'rrGetResource',
-  'rrPersistResource',
-  'rrClearAllResources',
-  'rrDefaultStoreId',
-  'rrDefaultNamespace',
-]
 
 /**
  * {@inheritDoc IResourceResolver}
  */
 export class ResourceResolver implements IAgentPlugin {
-  readonly schema = schema.IContactManager
+  readonly schema = schema.IResourceResolver
   readonly methods: IResourceResolver = {
-    rrFetch: this.rrFetch.bind(this),
-    rrGetResource: this.rrGetResource.bind(this),
-    rrPersistResource: this.rrPersistResource.bind(this),
-    rrClearAllResources: this.rrClearAllResources.bind(this),
-    rrDefaultStoreId: this.rrDefaultStoreId.bind(this),
-    rrDefaultNamespace: this.rrDefaultNamespace.bind(this),
+    resourceResolve: this.resourceResolve.bind(this),
+    resourceClearAllResources: this.resourceClearAllResources.bind(this),
+    resourceDefaultStoreId: this.resourceDefaultStoreId.bind(this),
+    resourceDefaultNamespace: this.resourceDefaultNamespace.bind(this),
+    resourceDefaultTtl: this.resourceDefaultTtl.bind(this),
   }
 
   private readonly defaultStoreId: string
   private readonly defaultNamespace: string
   private readonly defaultTtl: number
-  private readonly _resourceStores: Map<string, IKeyValueStore<string>> //TODO type
+  private readonly _resourceStores: Map<string, IKeyValueStore<Resource>>
 
   constructor(options?: ResourceResolverOptions) { // TODO check optionality
     const {
@@ -58,7 +54,7 @@ export class ResourceResolver implements IAgentPlugin {
     } = options ?? {}
 
     this.defaultStoreId = defaultStore ?? '_default'
-    this.defaultNamespace = defaultNamespace ?? 'oid4vci'
+    this.defaultNamespace = defaultNamespace ?? 'resources'
     this.defaultTtl = ttl ?? 3600
 
     if (resourceStores && resourceStores instanceof Map) {
@@ -70,7 +66,8 @@ export class ResourceResolver implements IAgentPlugin {
         this.defaultStoreId,
         new KeyValueStore({
           namespace: this.defaultNamespace,
-          store: new Map<string, string>() //TODO type
+          store: new Map<string, Resource>(),
+          ttl: this.defaultTtl
         })
       )
     }
@@ -78,50 +75,78 @@ export class ResourceResolver implements IAgentPlugin {
     // TODO add option to import some predefined data
   }
 
-  /** {@inheritDoc IResourceResolver.rrFetch} */
-  private async rrFetch(args: FetchArgs, context: RequiredContext): Promise<Response> {
-    const { input, init, ttl } = args
+  /** {@inheritDoc IResourceResolver.resourceResolve} */
+  private async resourceResolve(args: ResolveArgs, context: RequiredContext): Promise<Response> {
+    const {
+      input,
+      init,
+      resourceType,
+      resolveOpts,
+      partyCorrelationId
+    } = args
 
-    console.log(`defaultStoreId: ${this.defaultStoreId}`)
-    console.log(`defaultNamespace: ${this.defaultNamespace}`)
-    console.log(`ttl: ${ttl}`)
+    const resourceIdentifier = getResourceIdentifier(input)
 
-    // TODO get resource or else fetch
-
-    // TODO how are we going to handle error handling, we assume a response in the code, how are we going to handle that if we already have the resource
-
-    return fetch(input, init)
-  }
-
-  /** {@inheritDoc IResourceResolver.rrPersistResource} */
-  private async rrPersistResource(args: PersistResourceArgs): Promise<IValueData<string>> { // TODO string
-    const { overwriteExisting, resource, ttl, resourceIdentifier } = args
-    const namespace = this.namespaceStr(args)
-    const storeId = this.storeIdStr(args)
-
-    const existing = await this.store({ stores: this._resourceStores, storeId }).getAsValueData(
-      this.prefix({
-        namespace,
-        resourceIdentifier: resourceIdentifier
-      }),
-    )
-
-    if (!existing.value || (existing.value && overwriteExisting !== false)) {
-      return await this.store({ stores: this._resourceStores, storeId }).set(
-        this.prefix({
-          namespace,
-          resourceIdentifier: resourceIdentifier,
-        }),
-        resource,
-        ttl ?? this.defaultTtl,
-      )
+    const cachedResource = await this.getResource({ resourceIdentifier })
+    if (cachedResource.value && (resolveOpts?.maxAgeMs === undefined || (Date.now() - cachedResource.value.insertedAt < resolveOpts.maxAgeMs))) {
+      return deserializeResponse(cachedResource.value.response);
     }
 
-    return existing
+    if (resolveOpts?.onlyCache) {
+      return new Response(JSON.stringify({ error: 'Resource not found' }), {
+        status: 404,
+        statusText: 'Not Found',
+        headers: new Headers({ 'Content-Type': 'application/json' })
+      });
+    }
+
+    const response = await fetch(input, init)
+    if (!resolveOpts?.skipPersistence && (response.status >= 200 && response.status < 300)) {
+      const serializedResponse = await serializeResponse(response);
+      const cachedResource = await this.persistResource({
+        resource: {
+          response: serializedResponse,
+          resourceType,
+          insertedAt: Date.now(),
+          partyCorrelationId
+        },
+        resourceIdentifier
+      })
+
+      if (!cachedResource.value) {
+        return Promise.reject(Error('Resource not present in persistence result'))
+      }
+
+      return deserializeResponse(cachedResource.value.response)
+    }
+
+    return response
   }
 
-  /** {@inheritDoc IResourceResolver.rrGetResource} */
-  private async rrGetResource(args: GetResourceArgs, context: RequiredContext): Promise<IValueData<string>> { // TODO correct type
+  /** {@inheritDoc IResourceResolver.resourceClearAllResources} */
+  private async resourceClearAllResources(args: ClearArgs, context: RequiredContext): Promise<boolean> {
+    const { storeId } = args
+    return await this.store({ stores: this._resourceStores, storeId })
+      .clear()
+      .then(() => true)
+  }
+
+  /** {@inheritDoc IResourceResolver.resourceDefaultStoreId} */
+  private async resourceDefaultStoreId(context: RequiredContext): Promise<string> {
+    return this.defaultStoreId
+  }
+
+  /** {@inheritDoc IResourceResolver.resourceDefaultNamespace} */
+  private async resourceDefaultNamespace(context: RequiredContext): Promise<string> {
+    return this.defaultNamespace
+  }
+
+  /** {@inheritDoc IResourceResolver.resourceDefaultTtl} */
+  private async resourceDefaultTtl(context: RequiredContext): Promise<number> {
+    return this.defaultTtl
+  }
+
+  private async getResource(args: GetResourceArgs): Promise<IValueData<Resource>> {
     const { resourceIdentifier, storeId, namespace } = args
     return this.store({ stores: this._resourceStores, storeId }).getAsValueData(
       this.prefix({
@@ -131,22 +156,19 @@ export class ResourceResolver implements IAgentPlugin {
     )
   }
 
-  /** {@inheritDoc IResourceResolver.rrClearAllResources} */
-  private async rrClearAllResources(args: ClearArgs): Promise<boolean> {
-    const { storeId } = args
-    return await this.store({ stores: this._resourceStores, storeId })
-    .clear()
-    .then(() => true)
-  }
+  private async persistResource(args: PersistResourceArgs): Promise<IValueData<Resource>> {
+    const { resource, resourceIdentifier, ttl } = args
+    const namespace = this.namespaceStr(args)
+    const storeId = this.storeIdStr(args)
 
-  /** {@inheritDoc IResourceResolver.rrDefaultStoreId} */
-  private async rrDefaultStoreId(): Promise<string> {
-    return this.defaultStoreId
-  }
-
-  /** {@inheritDoc IResourceResolver.rrDefaultNamespace} */
-  private async rrDefaultNamespace(): Promise<string> {
-    return this.defaultNamespace
+    return await this.store({ stores: this._resourceStores, storeId }).set(
+      this.prefix({
+        namespace,
+        resourceIdentifier,
+      }),
+      resource,
+      ttl ?? this.defaultTtl,
+    )
   }
 
   private store<T extends ValueStoreType>(args: StoreArgs<T>): IKeyValueStore<T> {
@@ -174,3 +196,4 @@ export class ResourceResolver implements IAgentPlugin {
   }
 
 }
+

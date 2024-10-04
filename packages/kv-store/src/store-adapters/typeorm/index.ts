@@ -106,7 +106,7 @@ export class KeyValueTypeORMStoreAdapter extends EventEmitter implements KeyvSto
 
   async disconnect(): Promise<void> {
     const connection = await _getConnectedDb(this.dbConnection)
-    connection.destroy()
+    await connection.destroy()
   }
 }
 
@@ -119,9 +119,11 @@ export class KeyValueTypeORMStoreAdapter extends EventEmitter implements KeyvSto
 export async function _getConnectedDb(dbConnection: OrPromise<DataSource>): Promise<DataSource> {
   if (dbConnection instanceof Promise) {
     return await dbConnection
-  } else if (!dbConnection.isInitialized) {
+  }
+  else if (!dbConnection.isInitialized) {
     return await (<DataSource>dbConnection).initialize()
-  } else {
+  }
+  else {
     return dbConnection
   }
 }

@@ -4,19 +4,23 @@ constants:
   baseUrl: http://localhost:3335
   port: 3335
   methods:
-    - rrGetResource
+    - resourceResolve
+    - resourceClearAllResources
+    - resourceDefaultStoreId
+    - resourceDefaultNamespace
+    - resourceDefaultTtl
 
-#dbConnection:
-#  $require: typeorm?t=function#createConnection
-#  $args:
-#    - type: sqlite
-#      database: ':memory:'
-#      synchronize: false
-#      migrationsRun: true
-#      migrations:
-#        $require: './packages/data-store?t=object#DataStoreMigrations'
-#      entities:
-#        $require: './packages/data-store?t=object#DataStoreContactEntities'
+dbConnection:
+  $require: typeorm?t=function#createConnection
+  $args:
+    - type: sqlite
+      database: ':memory:'
+      synchronize: false
+      migrationsRun: true
+      migrations:
+        $require: './packages/kv-store?t=object#kvStoreMigrations'
+      entities:
+        - $require: './packages/kv-store?t=object#KeyValueStoreEntity'
 
 server:
   baseUrl:
@@ -81,8 +85,12 @@ agent:
     - schemaValidation: false
       plugins:
         - $require: ./packages/resource-resolver/dist#ResourceResolver
-#          $args:
-#            - store:
-#                $require: './packages/data-store/dist#ContactStore'
-#                $args:
-#                  - $ref: /dbConnection
+          $args:
+            - resourceStores:
+                $require: './packages/kv-store/dist#KeyValueStore'
+                $args:
+                  - store:
+                      $require: './packages/kv-store/dist#KeyValueTypeORMStoreAdapter'
+                      $args:
+                        - dbConnection:
+                           $ref: /dbConnection

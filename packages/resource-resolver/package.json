@@ -24,6 +24,7 @@
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
+    "nock": "^13.5.4",
     "timekeeper": "^2.3.1"
   },
   "files": [

@@ -1,9 +1,10 @@
 {
   "extends": "../tsconfig-base.json",
   "compilerOptions": {
+    "esModuleInterop": true,
     "rootDir": "src",
     "outDir": "dist",
-    "declarationDir": "dist"
+    "declarationDir": "dist",
   },
   "references": [
     {
