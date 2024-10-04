@@ -2,8 +2,11 @@ import {
   AbstractDigitalCredentialStore,
   DigitalCredential,
   UpdateCredentialStateArgs,
-  DocumentType
+  DocumentType,
+  parseRawDocument,
+  defaultHasher
 } from '@sphereon/ssi-sdk.data-store'
+import { IVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { schema, logger } from '../index'
 import { credentialIdOrHashFilter } from '../utils/filters'
@@ -17,13 +20,9 @@ import {
   GetCredentialsByIdOrHashArgs,
   ICredentialStore,
   OptionalUniqueDigitalCredential,
-  schema,
-  TClaimsColumns,
   UniqueDigitalCredential,
-} from '../index'
-import { AbstractDigitalCredentialStore, DigitalCredential, parseRawDocument, UpdateCredentialStateArgs } from '@sphereon/ssi-sdk.data-store'
-import { IVerifiableCredential } from '@sphereon/ssi-types'
-import { defaultHasher } from '@sphereon/ssi-sdk.data-store'
+} from '../types/ICredentialStore'
+import { TClaimsColumns} from '../types/claims'
 
 // Exposing the methods here for any REST implementation
 export const credentialStoreMethods: Array<string> = [
