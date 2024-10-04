@@ -255,11 +255,11 @@ export class OpSession {
     const request = await this.getAuthorizationRequest()
     const hasDefinitions = await this.hasPresentationDefinitions()
     if (hasDefinitions) {
-      if (
-        !request.presentationDefinitions ||
-        !args.verifiablePresentations ||
-        args.verifiablePresentations.length !== request.presentationDefinitions.length
-      ) {
+      const totalInputDescriptors = request.presentationDefinitions?.reduce((sum, pd) => {
+        return sum + pd.definition.input_descriptors.length
+      }, 0)
+
+      if (!request.presentationDefinitions || !args.verifiablePresentations || args.verifiablePresentations.length !== totalInputDescriptors) {
         throw Error(
           `Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${request.presentationDefinitions?.length}`,
         )

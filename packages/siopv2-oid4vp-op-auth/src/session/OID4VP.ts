@@ -1,7 +1,12 @@
 import { PresentationDefinitionWithLocation, PresentationExchange } from '@sphereon/did-auth-siop'
 import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
 import { Format } from '@sphereon/pex-models'
-import { isOID4VCIssuerIdentifier, isManagedIdentifierDidResult, ManagedIdentifierOptsOrResult, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {
+  isOID4VCIssuerIdentifier,
+  isManagedIdentifierDidResult,
+  ManagedIdentifierOptsOrResult,
+  ManagedIdentifierResult,
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { ProofOptions } from '@sphereon/ssi-sdk.core'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
@@ -120,12 +125,12 @@ export class OID4VP {
 
         idOpts = isOID4VCIssuerIdentifier(firstUniqueDC.digitalCredential.kmsKeyRef)
           ? await this.session.context.agent.identifierManagedGetByIssuer({
-            identifier: firstUniqueDC.digitalCredential.kmsKeyRef,
-          })
+              identifier: firstUniqueDC.digitalCredential.kmsKeyRef,
+            })
           : await this.session.context.agent.identifierManagedGetByKid({
-            identifier: firstUniqueDC.digitalCredential.kmsKeyRef,
-            kmsKeyRef: firstUniqueDC.digitalCredential.kmsKeyRef,
-          })
+              identifier: firstUniqueDC.digitalCredential.kmsKeyRef,
+              kmsKeyRef: firstUniqueDC.digitalCredential.kmsKeyRef,
+            })
 
         /*
         const holder = CredentialMapper.isSdJwtDecodedCredential(firstVC)
@@ -186,20 +191,21 @@ export class OID4VP {
     }).createVerifiablePresentation(vcs.definition.definition, verifiableCredentials, signCallback, {
       proofOptions,
       // fixme: Update to newer siop-vp to not require dids here. But when Veramo is creating the VP it's still looking at this field to pass into didManagerGet
-      ...(identifier && isManagedIdentifierDidResult(identifier) && { holderDID: identifier.kid })
+      ...(identifier && isManagedIdentifierDidResult(identifier) && { holderDID: identifier.kid }),
     })
 
-    const verifiablePresentation =
-      typeof presentationResult.verifiablePresentation !== 'string' &&
-      'proof' in presentationResult.verifiablePresentation &&
-      'jwt' in presentationResult.verifiablePresentation.proof &&
-      presentationResult.verifiablePresentation.proof.jwt
-        ? presentationResult.verifiablePresentation.proof.jwt
-        : presentationResult.verifiablePresentation
+    const verifiablePresentations = presentationResult.verifiablePresentations.map((verifiablePresentation) =>
+      typeof verifiablePresentation !== 'string' &&
+      'proof' in verifiablePresentation &&
+      'jwt' in verifiablePresentation.proof &&
+      verifiablePresentation.proof.jwt
+        ? verifiablePresentation.proof.jwt
+        : verifiablePresentation,
+    )
 
     return {
       ...presentationResult,
-      verifiablePresentation,
+      verifiablePresentations,
       verifiableCredentials: verifiableCredentials,
       definition: selectedVerifiableCredentials.definition,
       idOpts,
