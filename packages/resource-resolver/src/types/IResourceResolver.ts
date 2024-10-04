@@ -80,10 +80,7 @@ export type SerializedResponse = {
   status: number
   statusText: string
   headers: { [x: string]: string }
-  body: Buffer//string | ArrayBuffer
-  //bodyType: ResponseBodyType
+  body: string
 }
-
-//export type ResponseBodyType = 'text' | 'json' | 'blob' | 'arrayBuffer' | 'formData'
 
 export type RequiredContext = IAgentContext<never>

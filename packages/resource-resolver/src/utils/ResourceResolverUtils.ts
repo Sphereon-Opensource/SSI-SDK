@@ -1,4 +1,5 @@
 import { Headers, Response, Request } from 'cross-fetch'
+import * as u8a from 'uint8arrays'
 import { SerializedResponse } from '../types/IResourceResolver'
 
 export const getResourceIdentifier = (input: Request | string | URL): string => {
@@ -15,13 +16,13 @@ export const getResourceIdentifier = (input: Request | string | URL): string => 
 
 export const serializeResponse = async (response: Response): Promise<SerializedResponse> => {
   const arrayBuffer = await response.arrayBuffer();
-  const body = Buffer.from(arrayBuffer);
+  const base64Url = u8a.toString(new Uint8Array(arrayBuffer), 'base64url');
 
   return {
     status: response.status,
     statusText: response.statusText,
     headers: Object.fromEntries(response.headers.entries()),
-    body
+    body: base64Url
   }
 }
 
@@ -33,9 +34,10 @@ export const deserializeResponse = async (data: SerializedResponse): Promise<Res
     body
   } = data
 
-  const responseBody = body.buffer.slice(body.byteOffset, body.byteOffset + body.byteLength);
+  const uint8Array = u8a.fromString(body, 'base64url')
+  const arrayBuffer = uint8Array.buffer.slice(uint8Array.byteOffset, uint8Array.byteOffset + uint8Array.byteLength);
 
-  return new Response(responseBody, {
+  return new Response(arrayBuffer, {
     status,
     statusText,
     headers: new Headers(headers)
