@@ -12,6 +12,7 @@ import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
 import { IOPOptions, IRequiredContext } from '../types'
 import { JwtIssuer } from '@sphereon/oid4vc-common/lib/jwt/JwtIssuer'
+import { OriginalVerifiableCredential } from '@sphereon/ssi-types'
 
 export async function createOID4VPPresentationSignCallback({
   presentationSignCallback,
@@ -78,8 +79,11 @@ export async function createOPBuilder({
   const wellknownDIDVerifyCallback = opOptions.wellknownDIDVerifyCallback
     ? opOptions.wellknownDIDVerifyCallback
     : async (args: IVerifyCallbackArgs): Promise<IVerifyCredentialResult> => {
-        const result = await context.agent.verifyCredential({ credential: args.credential, fetchRemoteContexts: true })
-        return { verified: result.verified }
+        const result = await context.agent.cvVerifyCredential({
+          credential: args.credential as OriginalVerifiableCredential,
+          fetchRemoteContexts: true,
+        })
+        return { verified: result.result }
       }
   builder.withVerifyJwtCallback(
     opOptions.verifyJwtCallback

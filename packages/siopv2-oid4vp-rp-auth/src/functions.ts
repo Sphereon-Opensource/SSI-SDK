@@ -28,7 +28,7 @@ import {
 import { JwsCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
 import { SigningAlgo } from '@sphereon/oid4vc-common'
-import { CredentialMapper, Hasher, PresentationSubmission } from '@sphereon/ssi-types'
+import { CredentialMapper, Hasher, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
 // import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { TKeyType } from '@veramo/core'
@@ -49,8 +49,11 @@ function getWellKnownDIDVerifyCallback(siopIdentifierOpts: ISIOPIdentifierOption
   return siopIdentifierOpts.wellknownDIDVerifyCallback
     ? siopIdentifierOpts.wellknownDIDVerifyCallback
     : async (args: IVerifyCallbackArgs): Promise<IVerifyCredentialResult> => {
-        const result = await context.agent.verifyCredential({ credential: args.credential, fetchRemoteContexts: true })
-        return { verified: result.verified }
+        const result = await context.agent.cvVerifyCredential({
+          credential: args.credential as OriginalVerifiableCredential,
+          fetchRemoteContexts: true,
+        })
+        return { verified: result.result }
       }
 }
 

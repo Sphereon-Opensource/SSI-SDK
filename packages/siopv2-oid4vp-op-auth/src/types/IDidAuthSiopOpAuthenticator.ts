@@ -47,6 +47,7 @@ import {
   Siopv2AuthorizationRequestData,
   Siopv2AuthorizationResponseData,
 } from './siop-service'
+import { ICredentialValidation } from '@sphereon/ssi-sdk.credential-validation'
 
 export const LOGGER_NAMESPACE = 'sphereon:siopv2-oid4vp:op-auth'
 
@@ -134,6 +135,7 @@ export type IRequiredContext = IAgentContext<
     IKeyManager &
     IIdentifierResolution &
     ICredentialIssuer &
+    ICredentialValidation &
     ICredentialVerifier &
     ICredentialStore &
     IPDManager &

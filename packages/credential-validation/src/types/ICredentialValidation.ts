@@ -21,7 +21,7 @@ export type VerifyCredentialArgs = {
   credential: OriginalVerifiableCredential
   hasher?: Hasher
   fetchRemoteContexts: boolean
-  policies: VerificationPolicies
+  policies?: VerificationPolicies
 }
 
 export type VerificationPolicies = {

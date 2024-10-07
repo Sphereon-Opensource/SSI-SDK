@@ -2112,6 +2112,9 @@ importers:
       '@sphereon/ssi-sdk.credential-store':
         specifier: workspace:*
         version: link:../credential-store
+      '@sphereon/ssi-sdk.credential-validation':
+        specifier: workspace:*
+        version: link:../credential-validation
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
