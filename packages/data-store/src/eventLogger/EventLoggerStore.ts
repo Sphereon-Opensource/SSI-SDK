@@ -1,11 +1,11 @@
 import Debug, { Debugger } from 'debug'
 import { DataSource } from 'typeorm'
 import { ActivityLoggingEvent, AuditLoggingEvent } from '@sphereon/ssi-sdk.core'
-import { LoggingEventType, OrPromise } from '@sphereon/ssi-types'
+import { OrPromise } from '@sphereon/ssi-types'
 import { AbstractEventLoggerStore } from './AbstractEventLoggerStore'
-import { AuditEventEntity, auditEventEntityFrom } from '../entities/eventLogger/AuditEventEntity'
-import { auditEventFrom } from '../utils/eventLogger/MappingUtils'
-import { GetActivityEventsArgs, GetAuditEventsArgs, StoreAuditEventArgs } from '../types'
+import { activityEventEntityFrom, AuditEventEntity, auditEventEntityFrom } from '../entities/eventLogger/AuditEventEntity'
+import { activityEventFrom, auditEventFrom } from '../utils/eventLogger/MappingUtils'
+import {GetActivityEventsArgs, GetAuditEventsArgs, StoreActivityEventArgs, StoreAuditEventArgs} from '../types'
 
 const debug: Debugger = Debug('sphereon:ssi-sdk:event-store')
 
@@ -46,7 +46,7 @@ export class EventLoggerStore extends AbstractEventLoggerStore {
       where,
     })
 
-    return result.map((event: AuditEventEntity) => this.activityEventFrom(event))
+    return result.map((event: AuditEventEntity) => activityEventFrom(event))
   }
 
   storeAuditEvent = async (args: StoreAuditEventArgs): Promise<AuditLoggingEvent> => {
@@ -60,29 +60,14 @@ export class EventLoggerStore extends AbstractEventLoggerStore {
     return auditEventFrom(createdResult)
   }
 
-    private activityEventFrom = (event: AuditEventEntity): ActivityLoggingEvent => {
-        return {
-            id: event.id,
-            type: LoggingEventType.ACTIVITY,
-            credentialType: event.credentialType,
-            sharePurpose: event.sharePurpose,
-            description: event.description,
-            timestamp: event.timestamp,
-            level: event.level,
-            correlationId: event.correlationId,
-            actionType: event.actionType,
-            actionSubType: event.actionSubType,
-            initiatorType: event.initiatorType,
-            partyAlias: event.partyAlias,
-            partyCorrelationId: event.partyCorrelationId,
-            partyCorrelationType: event.partyCorrelationType,
-            subSystemType: event.subSystemType,
-            system: event.system,
-            systemAlias: event.systemAlias,
-            systemCorrelationId: event.systemCorrelationId,
-            systemCorrelationIdType: event.systemCorrelationIdType,
-            ...(event.data && { data: JSON.parse(event.data) }),
-            ...(event.diagnosticData && { diagnosticData: JSON.parse(event.diagnosticData) }),
-        }
+    storeActivityEvent = async (args: StoreActivityEventArgs): Promise<ActivityLoggingEvent> => {
+        const { event } = args
+
+        const activityEventEntity: AuditEventEntity = activityEventEntityFrom(event)
+        const connection: DataSource = await this.dbConnection
+        debug('Storing activity event', activityEventEntity)
+        const createdResult: AuditEventEntity = await connection.getRepository(AuditEventEntity).save(activityEventEntity)
+
+        return activityEventFrom(createdResult)
     }
 }
