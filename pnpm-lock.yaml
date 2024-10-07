@@ -3409,6 +3409,9 @@ importers:
         specifier: ^9.0.1
         version: 9.0.1
     devDependencies:
+      '@sphereon/did-provider-oyd':
+        specifier: 0.24.1-unstable.134
+        version: 0.24.1-unstable.134
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3
@@ -8813,6 +8816,19 @@ packages:
       - supports-color
       - typescript
     dev: false
+
+  /@sphereon/did-provider-oyd@0.24.1-unstable.134:
+    resolution: {integrity: sha512-M93KDf1PUofJoRsVFWFmwzWaPDOp4CnH+O8MumKv5/D5Okw8zRTRkwqNv/K+UuBXUl40Il6T2lDq4WNPPCQc9A==}
+    dependencies:
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/did-manager': 4.2.0
+      cross-fetch: 4.0.0
+      debug: 4.3.6
+      did-resolver: 4.1.0
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+    dev: true
 
   /@sphereon/did-uni-client@0.4.0:
     resolution: {integrity: sha512-PJr0xi46iEMtQ7vJW6rAoc2T+gPT8P7q0FjVcOVI3l8so4XJ+iY+wkeF2osEFGmjVS/Q76uhcDCBXTXxPDFdcQ==}
@@ -14385,6 +14401,7 @@ packages:
   /eslint@7.32.0:
     resolution: {integrity: sha512-VHZ8gX+EDfz+97jGcgyGCyRia/dPOd6Xh9yPv8Bl1+SoaIwD+a/vlrOmGRUyOYu7MwUhc7CxqeaDZU13S4+EpA==}
     engines: {node: ^10.12.0 || >=12.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     dependencies:
       '@babel/code-frame': 7.12.11
