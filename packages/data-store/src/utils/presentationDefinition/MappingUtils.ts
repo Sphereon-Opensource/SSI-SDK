@@ -2,9 +2,10 @@ import { PresentationDefinitionItemEntity } from '../../entities/presentationDef
 import { IPresentationDefinition } from '@sphereon/pex'
 import { NonPersistedPresentationDefinitionItem, PartialPresentationDefinitionItem, PresentationDefinitionItem } from '../../types'
 import { blake2bHex } from 'blakejs'
+import { replaceNullWithUndefined } from '../FormattingUtils'
 
 export const presentationDefinitionItemFrom = (entity: PresentationDefinitionItemEntity): PresentationDefinitionItem => {
-  return {
+  const result: PresentationDefinitionItem = {
     id: entity.id,
     tenantId: entity.tenantId,
     definitionId: entity.definitionId,
@@ -15,6 +16,8 @@ export const presentationDefinitionItemFrom = (entity: PresentationDefinitionIte
     createdAt: entity.createdAt,
     lastUpdatedAt: entity.lastUpdatedAt,
   }
+
+  return replaceNullWithUndefined(result)
 }
 
 export const presentationDefinitionEntityItemFrom = (item: NonPersistedPresentationDefinitionItem): PresentationDefinitionItemEntity => {
