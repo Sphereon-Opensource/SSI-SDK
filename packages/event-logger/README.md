@@ -22,6 +22,9 @@ This is mainly as a fallback for when no listener is present within the agent.
 
 - loggerGetAuditEvents
 - loggerStoreAuditEvent
+- loggerLogGeneralEvent
+- loggerLogActivityEvent
+- loggerGetActivityEvents
 
 ## Usage
 
