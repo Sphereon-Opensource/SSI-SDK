@@ -529,11 +529,11 @@ importers:
         specifier: ^5.7.0
         version: 5.7.0
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68(typescript@5.4.2)
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136(typescript@5.4.2)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68(typescript@5.4.2)
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136(typescript@5.4.2)
       '@sphereon/pex':
         specifier: 5.0.0-unstable.14
         version: 5.0.0-unstable.14
@@ -611,11 +611,11 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -806,8 +806,8 @@ importers:
   packages/mdl-mdoc:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68(typescript@5.4.2)
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136(typescript@5.4.2)
       '@sphereon/kmp-mdl-mdoc':
         specifier: 0.2.0-SNAPSHOT.22
         version: 0.2.0-SNAPSHOT.22
@@ -864,11 +864,11 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1040,11 +1040,11 @@ importers:
         specifier: 0.2.0-SNAPSHOT.22
         version: 0.2.0-SNAPSHOT.22
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.134
         version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -1137,11 +1137,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68(awesome-qr@2.1.5-rc.0)
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136(awesome-qr@2.1.5-rc.0)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.134
         version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -1213,14 +1213,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68(awesome-qr@2.1.5-rc.0)
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136(awesome-qr@2.1.5-rc.0)
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68(awesome-qr@2.1.5-rc.0)
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136(awesome-qr@2.1.5-rc.0)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1379,8 +1379,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1416,8 +1416,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.134
         version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
@@ -2003,8 +2003,8 @@ importers:
   packages/siopv2-oid4vp-common:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68(typescript@5.4.2)
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136(typescript@5.4.2)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2025,14 +2025,14 @@ importers:
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68(typescript@5.4.2)
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136(typescript@5.4.2)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68(typescript@5.4.2)
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136(typescript@5.4.2)
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136
       '@sphereon/pex':
         specifier: 5.0.0-unstable.14
         version: 5.0.0-unstable.14
@@ -2155,14 +2155,14 @@ importers:
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68(typescript@5.4.2)
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136(typescript@5.4.2)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68(typescript@5.4.2)
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136(typescript@5.4.2)
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136
       '@sphereon/pex':
         specifier: 5.0.0-unstable.14
         version: 5.0.0-unstable.14
@@ -2240,8 +2240,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68(typescript@5.5.3)
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136(typescript@5.5.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -3343,8 +3343,8 @@ importers:
   packages/w3c-vc-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.jarm.sdk2.68
-        version: 0.16.1-feature.jarm.sdk2.68(typescript@5.5.3)
+        specifier: 0.16.1-feature.jarm.sdk.136
+        version: 0.16.1-feature.jarm.sdk.136(typescript@5.5.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -8744,13 +8744,13 @@ packages:
       '@sinonjs/commons': 1.8.6
     dev: true
 
-  /@sphereon/did-auth-siop-adapter@0.16.1-feature.jarm.sdk2.68(typescript@5.4.2):
-    resolution: {integrity: sha512-JChNInJn3AiBRjrP3ITZVx0IHuE6B86jGtRf3puaW4XMsyy6x98Ts6IDYIXXa6m+BnJNSTnqldo5/5RaoC+U6g==}
+  /@sphereon/did-auth-siop-adapter@0.16.1-feature.jarm.sdk.136(typescript@5.4.2):
+    resolution: {integrity: sha512-ySl0Yr2JZ7gpaAb+GG7eV71CU6wTR5obVAybRuU/xiizyuWGRRBxLOplZOxJTtq36jk2s9T9RjXFKmBlZ28aXg==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-feature.jarm.sdk2.68(typescript@5.4.2)
+      '@sphereon/did-auth-siop': 0.16.1-feature.jarm.sdk.136(typescript@5.4.2)
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk2.68
+      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.136
       '@sphereon/wellknown-dids-client': 0.1.3
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-resolver: 4.1.0
@@ -8760,15 +8760,15 @@ packages:
       - typescript
     dev: false
 
-  /@sphereon/did-auth-siop@0.16.1-feature.jarm.sdk2.68(typescript@5.4.2):
-    resolution: {integrity: sha512-WIUjDNSSUQV28wH9Nzipbons9eDNCX/q4TDPIrwR1x9tfzYzOWri2vn0ktmP4lr4x+s91W7BfIVlFk0F+8nOwQ==}
+  /@sphereon/did-auth-siop@0.16.1-feature.jarm.sdk.136(typescript@5.4.2):
+    resolution: {integrity: sha512-RO9pXcjNfrq5dGS/Hy4CFK7yhTlAkrHz3EJANSvDkRZQ3xQkOsOSpXDGnIT4Ii2yS+28T/JmWrJ6UScFXxcG0A==}
     engines: {node: '>=18'}
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/jarm': 0.16.1-feature.jarm.sdk2.68(typescript@5.4.2)
+      '@sphereon/jarm': 0.16.1-feature.jarm.sdk.136(typescript@5.4.2)
       '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk2.68
+      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.136
       '@sphereon/pex': 5.0.0-unstable.14
       '@sphereon/pex-models': 2.3.1
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -8787,15 +8787,15 @@ packages:
       - typescript
     dev: false
 
-  /@sphereon/did-auth-siop@0.16.1-feature.jarm.sdk2.68(typescript@5.5.3):
-    resolution: {integrity: sha512-WIUjDNSSUQV28wH9Nzipbons9eDNCX/q4TDPIrwR1x9tfzYzOWri2vn0ktmP4lr4x+s91W7BfIVlFk0F+8nOwQ==}
+  /@sphereon/did-auth-siop@0.16.1-feature.jarm.sdk.136(typescript@5.5.3):
+    resolution: {integrity: sha512-RO9pXcjNfrq5dGS/Hy4CFK7yhTlAkrHz3EJANSvDkRZQ3xQkOsOSpXDGnIT4Ii2yS+28T/JmWrJ6UScFXxcG0A==}
     engines: {node: '>=18'}
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/jarm': 0.16.1-feature.jarm.sdk2.68(typescript@5.5.3)
+      '@sphereon/jarm': 0.16.1-feature.jarm.sdk.136(typescript@5.5.3)
       '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk2.68
+      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.136
       '@sphereon/pex': 5.0.0-unstable.14
       '@sphereon/pex-models': 2.3.1
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -8859,21 +8859,21 @@ packages:
       uint8arrays: 3.1.1
     dev: true
 
-  /@sphereon/jarm@0.16.1-feature.jarm.sdk2.68(typescript@5.4.2):
-    resolution: {integrity: sha512-9+JI5j7GRMEHZNi0H5TCSdXUB/tHN6shMOpAuLUhDp46hFZTwXvjaW1bUyjfUiUKBZRFfVyPqdM/Itl60KiPmg==}
+  /@sphereon/jarm@0.16.1-feature.jarm.sdk.136(typescript@5.4.2):
+    resolution: {integrity: sha512-/RdMn6LmabNCtFSBY5FRKe/TYwEr/4qRuKCoywVjISfIjpEWk06bgYFG4PkkT0L0bswVoGxo9UdBF4dstzwiOQ==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk2.68
+      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.136
       valibot: 0.42.1(typescript@5.4.2)
     transitivePeerDependencies:
       - typescript
     dev: false
 
-  /@sphereon/jarm@0.16.1-feature.jarm.sdk2.68(typescript@5.5.3):
-    resolution: {integrity: sha512-9+JI5j7GRMEHZNi0H5TCSdXUB/tHN6shMOpAuLUhDp46hFZTwXvjaW1bUyjfUiUKBZRFfVyPqdM/Itl60KiPmg==}
+  /@sphereon/jarm@0.16.1-feature.jarm.sdk.136(typescript@5.5.3):
+    resolution: {integrity: sha512-/RdMn6LmabNCtFSBY5FRKe/TYwEr/4qRuKCoywVjISfIjpEWk06bgYFG4PkkT0L0bswVoGxo9UdBF4dstzwiOQ==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk2.68
+      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.136
       valibot: 0.42.1(typescript@5.5.3)
     transitivePeerDependencies:
       - typescript
@@ -8903,8 +8903,8 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vc-common@0.16.1-feature.jarm.sdk2.68:
-    resolution: {integrity: sha512-FXuJmZ+aT/qBOuKA0NYOxeRc1BVt7UTpYhvTDB28s7EnFAYE5Rv4oUlZLiREOFaaedtl/9HcCvNoCAo4DGFnoQ==}
+  /@sphereon/oid4vc-common@0.16.1-feature.jarm.sdk.136:
+    resolution: {integrity: sha512-1Yjdov+ZfJNIUvrDZIHxA/uP8FpD+BaDxMt9g2gWggmOwaPCqtFhKFiHzLYFlWH8vvkUmUTfatA5GudHtwbpcw==}
     engines: {node: '>=18'}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -8913,12 +8913,12 @@ packages:
       uint8arrays: 3.1.1
       uuid: 9.0.1
 
-  /@sphereon/oid4vci-client@0.16.1-feature.jarm.sdk2.68:
-    resolution: {integrity: sha512-WpcfwwayFi3cBBVWsVvUjjm7zDbpokaeJfI4GtUFzo5ZvuDkF37/PTBDFNmaLyO6WKAaiSJxR3JK0Um/oZEiWA==}
+  /@sphereon/oid4vci-client@0.16.1-feature.jarm.sdk.136:
+    resolution: {integrity: sha512-4puqeYNlebUVFxLqHEel+Y/pW+zJbvYgshM9wJyBl7QxrJGwWE8/1R21r8CHZdzMOkru5C4O6TiNYqTiSKB5VQ==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk2.68
-      '@sphereon/oid4vci-common': 0.16.1-feature.jarm.sdk2.68
+      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.136
+      '@sphereon/oid4vci-common': 0.16.1-feature.jarm.sdk.136
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
       debug: 4.3.6
@@ -8926,11 +8926,11 @@ packages:
       - encoding
       - supports-color
 
-  /@sphereon/oid4vci-common@0.16.1-feature.jarm.sdk2.68:
-    resolution: {integrity: sha512-xzsLlBsxNvFMXylM/M/VRwWAzy8i20lpI4d9abbjUsmMq9N1h8XtLZGNmaHTnqNjPM/eTlolnq4ku0hpYwgIfw==}
+  /@sphereon/oid4vci-common@0.16.1-feature.jarm.sdk.136:
+    resolution: {integrity: sha512-riZK10ul7d/tb5pMSZiR8RCd+eSbm/d52+V35TO6yeXltbragcVDJirJQEQPcMl/5ahJ86qo+6DZUJeylhOESQ==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk2.68
+      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.136
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
       debug: 4.3.6
@@ -8941,8 +8941,8 @@ packages:
       - encoding
       - supports-color
 
-  /@sphereon/oid4vci-issuer-server@0.16.1-feature.jarm.sdk2.68(awesome-qr@2.1.5-rc.0):
-    resolution: {integrity: sha512-RbSnNFoolQyp7tQ3Pa+HzIP6viPtlUFMEmnSPNl3qiTx9o0au/rInuTpz4bygvaEy6pMx8rw9GheA56tMVirig==}
+  /@sphereon/oid4vci-issuer-server@0.16.1-feature.jarm.sdk.136(awesome-qr@2.1.5-rc.0):
+    resolution: {integrity: sha512-3tRcvnoDKv79WzoOcc7ozqebe3FvHXXnZUpiITjNVDXyhurTnvrk4HOVqY+0ggJ/agbMRUbUFNH9JHYOsealUQ==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -8950,10 +8950,10 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk2.68
-      '@sphereon/oid4vci-common': 0.16.1-feature.jarm.sdk2.68
-      '@sphereon/oid4vci-issuer': 0.16.1-feature.jarm.sdk2.68(awesome-qr@2.1.5-rc.0)
-      '@sphereon/ssi-express-support': 0.29.1-unstable.208
+      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.136
+      '@sphereon/oid4vci-common': 0.16.1-feature.jarm.sdk.136
+      '@sphereon/oid4vci-issuer': 0.16.1-feature.jarm.sdk.136(awesome-qr@2.1.5-rc.0)
+      '@sphereon/ssi-express-support': 0.30.1
       '@sphereon/ssi-types': link:packages/ssi-types
       awesome-qr: 2.1.5-rc.0
       body-parser: 1.20.2
@@ -8971,8 +8971,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.16.1-feature.jarm.sdk2.68(awesome-qr@2.1.5-rc.0):
-    resolution: {integrity: sha512-WP8ofVSKZ31hxrKsHm2ZqP+UrTlX1nqTCreUjgjrLSSN8yHXvYCKULNsiFlJc/h9JIAWsTOpLw9WW0A5N1eU0Q==}
+  /@sphereon/oid4vci-issuer@0.16.1-feature.jarm.sdk.136(awesome-qr@2.1.5-rc.0):
+    resolution: {integrity: sha512-ymwJkOIZvlRHirJS03z8xD5ZA0vbp3vIRiai8oUtV2DSJLM4bvTfD+VtX6++aTC5CaTmgHXNXFiOEM+pOFyfvA==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -8980,8 +8980,8 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk2.68
-      '@sphereon/oid4vci-common': 0.16.1-feature.jarm.sdk2.68
+      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.136
+      '@sphereon/oid4vci-common': 0.16.1-feature.jarm.sdk.136
       '@sphereon/ssi-types': link:packages/ssi-types
       awesome-qr: 2.1.5-rc.0
       uuid: 9.0.1
@@ -9019,8 +9019,8 @@ packages:
       react-native: 0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3)(react@18.3.1)(typescript@5.5.3)
     dev: true
 
-  /@sphereon/ssi-express-support@0.29.1-unstable.208:
-    resolution: {integrity: sha512-VMIjP368e1XIF5yJkNKOncvRcwljQZsmxltEQBu7RGSp1lRD+m8w7vb9Bgirlz7H1Enlo4BWy7psl3jVJV8DYQ==}
+  /@sphereon/ssi-express-support@0.30.1:
+    resolution: {integrity: sha512-eZMq3V6lZ3qVCO+ymRjLOmDrfIqPsAf/KHwxtK4yoZyVjsDC4f/mbLIovyv1SdK/Uf7raF7QXdTjLi+f/XeS2Q==}
     peerDependencies:
       '@noble/hashes': 1.2.0
       passport-azure-ad: ^4.3.5
@@ -14385,6 +14385,7 @@ packages:
   /eslint@7.32.0:
     resolution: {integrity: sha512-VHZ8gX+EDfz+97jGcgyGCyRia/dPOd6Xh9yPv8Bl1+SoaIwD+a/vlrOmGRUyOYu7MwUhc7CxqeaDZU13S4+EpA==}
     engines: {node: ^10.12.0 || >=12.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     dependencies:
       '@babel/code-frame': 7.12.11

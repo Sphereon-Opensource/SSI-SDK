@@ -11,9 +11,9 @@
     "start:dev": "ts-node __tests__/RestAPI.ts"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.16.1-feature.jarm.sdk2.68",
-    "@sphereon/oid4vci-issuer": "0.16.1-feature.jarm.sdk2.68",
-    "@sphereon/oid4vci-issuer-server": "0.16.1-feature.jarm.sdk2.68",
+    "@sphereon/oid4vci-common": "0.16.1-feature.jarm.sdk.136",
+    "@sphereon/oid4vci-issuer": "0.16.1-feature.jarm.sdk.136",
+    "@sphereon/oid4vci-issuer-server": "0.16.1-feature.jarm.sdk.136",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.134",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",

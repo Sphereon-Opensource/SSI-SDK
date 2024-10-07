@@ -14,9 +14,9 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.16.1-feature.jarm.sdk2.68",
-    "@sphereon/did-auth-siop-adapter": "0.16.1-feature.jarm.sdk2.68",
-    "@sphereon/oid4vc-common": "0.16.1-feature.jarm.sdk2.68",
+    "@sphereon/did-auth-siop": "0.16.1-feature.jarm.sdk.136",
+    "@sphereon/did-auth-siop-adapter": "0.16.1-feature.jarm.sdk.136",
+    "@sphereon/oid4vc-common": "0.16.1-feature.jarm.sdk.136",
     "@sphereon/pex": "5.0.0-unstable.14",
     "@sphereon/pex-models": "^2.3.1",
     "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.134",
