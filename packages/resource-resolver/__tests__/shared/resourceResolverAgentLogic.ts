@@ -340,6 +340,41 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(called).toEqual(2)
     })
 
+    it('should not persist resource with skip persistence option', async (): Promise<void> => {
+      const url = new URL('https://example.com/skip_persistence')
+      const responseBody = {
+        resource: 'test_value',
+      }
+
+      let called = 0
+      nock(url.origin).get(url.pathname)
+        .times(2)
+        .reply(200, () => {
+          called++
+          return responseBody
+        })
+
+      const response1 = await agent.resourceResolve({
+        input: url.toString(),
+        resourceType: 'test_type',
+        resolveOpts: {
+          skipPersistence: true
+        }
+      })
+      expect(response1).toBeDefined()
+
+      const response2 = await agent.resourceResolve({
+        input: url.toString(),
+        resourceType: 'test_type',
+        resolveOpts: {
+          skipPersistence: true
+        }
+      })
+      expect(response2).toBeDefined()
+
+      expect(called).toEqual(2)
+    })
+
     it('should clear all resources', async (): Promise<void> => {
       const result = await agent.resourceClearAllResources()
       expect(result).toEqual(true)
