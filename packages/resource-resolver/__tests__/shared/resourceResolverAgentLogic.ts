@@ -1,20 +1,10 @@
 import { TAgent } from '@veramo/core'
-// import { Request } from 'cross-fetch'
+import { Request } from 'cross-fetch'
 // @ts-ignore
 import nock from 'nock'
 import { IResourceResolver } from '../../src'
 
 type ConfiguredAgent = TAgent<IResourceResolver>
-
-import fetch, { Response, Request, Headers } from 'cross-fetch';
-
-// Polyfill fetch globally
-if (!globalThis.fetch) {
-  globalThis.fetch = fetch;
-  globalThis.Response = Response;
-  globalThis.Request = Request;
-  globalThis.Headers = Headers;
-}
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
   describe('Resource Resolver Agent Plugin', (): void => {
