@@ -25,8 +25,8 @@ A Veramo resource resolver plugin. This plugin has the option to cache resources
 ## Usage
 
 ```typescript
-import { ResourceResolver } from '@sphereon/ssi-sdk.resource-resolver'
-import { KeyValueStoreEntity, kvStoreMigrations, KeyValueStore } from '@sphereon/ssi-sdk.kv-store-temp'
+import { IResourceResolver, ResourceResolver } from '@sphereon/ssi-sdk.resource-resolver'
+import { KeyValueStoreEntity, kvStoreMigrations, KeyValueStore, KeyValueTypeORMStoreAdapter } from '@sphereon/ssi-sdk.kv-store-temp'
 
 const dbConnection = createConnection({
   type: 'react-native',
@@ -39,7 +39,7 @@ const dbConnection = createConnection({
   entities: [KeyValueStoreEntity],
 })
 
-const agent = createAgent<IContactManager>({
+const agent = createAgent<IResourceResolver>({
   plugins: [
     new ResourceResolver({
       resourceStores: new KeyValueStore({ 
