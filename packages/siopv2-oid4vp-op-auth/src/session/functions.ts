@@ -1,20 +1,8 @@
-import {
-  OP,
-  OPBuilder,
-  PassBy,
-  PresentationSignCallback,
-  ResponseMode,
-  SupportedVersion,
-  VerifyJwtCallback
-} from '@sphereon/did-auth-siop'
+import { OP, OPBuilder, PassBy, PresentationSignCallback, ResponseMode, SupportedVersion, VerifyJwtCallback } from '@sphereon/did-auth-siop'
 import { CreateJwtCallback, JwtHeader, SigningAlgo } from '@sphereon/oid4vc-common'
 import { JwtIssuer } from '@sphereon/oid4vc-common/lib/jwt/JwtIssuer'
 import { Format } from '@sphereon/pex-models'
-import {
-  isManagedIdentifierDidOpts,
-  isManagedIdentifierX5cOpts,
-  ManagedIdentifierOptsOrResult
-} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { isManagedIdentifierDidOpts, isManagedIdentifierX5cOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { JwsHeader, JwsPayload, JwtCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { createPEXPresentationSignCallback } from '@sphereon/ssi-sdk.presentation-exchange'
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'

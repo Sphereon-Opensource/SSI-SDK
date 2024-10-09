@@ -42,12 +42,12 @@ describe('Uniform VC claims', () => {
     const jwtVc: IVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vp/vp_general.json').verifiableCredential[0]
     jwtVc['exp' as keyof IVerifiableCredential] = (+new Date()).toString()
     ;(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).expirationDate = (+new Date(
-      (jwtVc['exp' as keyof IVerifiableCredential] as string) + 2
+      (jwtVc['exp' as keyof IVerifiableCredential] as string) + 2,
     )).toString()
     expect(() => CredentialMapper.toUniformCredential(jwtVc, { maxTimeSkewInMS: 0 })).toThrowError(
       `Inconsistent expiration dates between JWT claim (${new Date(
-        parseInt(jwtVc['exp' as keyof IVerifiableCredential] as string)
-      ).toISOString()}) and VC value (${(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).expirationDate})`
+        parseInt(jwtVc['exp' as keyof IVerifiableCredential] as string),
+      ).toISOString()}) and VC value (${(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).expirationDate})`,
     )
   })
 
@@ -64,7 +64,7 @@ describe('Uniform VC claims', () => {
     expect(() => CredentialMapper.toUniformCredential(jwtVc)).toThrowError(
       `Inconsistent issuers between JWT claim (${jwtVc['iss' as keyof IVerifiableCredential]}) and VC value (${
         (<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).issuer
-      })`
+      })`,
     )
   })
 
@@ -72,7 +72,7 @@ describe('Uniform VC claims', () => {
     const jwtVc: IVerifiableCredential = getFileAsJson('packages/ssi-types/__tests__/vc_vp_examples/vp/vp_general.json').verifiableCredential[0]
     jwtVc['nbf' as keyof IVerifiableCredential] = (+new Date()).toString()
     ;(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).issuanceDate = new Date(
-      parseInt(jwtVc['nbf' as keyof IVerifiableCredential] as string)
+      parseInt(jwtVc['nbf' as keyof IVerifiableCredential] as string),
     ).toISOString()
     const vc = CredentialMapper.toUniformCredential(jwtVc)
     expect(vc.issuanceDate).toEqual(new Date(parseInt(jwtVc['nbf' as keyof IVerifiableCredential] as string)).toISOString())
@@ -86,7 +86,7 @@ describe('Uniform VC claims', () => {
     expect(() => CredentialMapper.toUniformCredential(jwtVc, { maxTimeSkewInMS: 1 })).toThrowError(
       `Inconsistent issuance dates between JWT claim (${new Date(nbf).toISOString().replace(/\.\d\d\dZ/, 'Z')}) and VC value (${
         (<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).issuanceDate
-      })`
+      })`,
     )
   })
 
@@ -103,7 +103,7 @@ describe('Uniform VC claims', () => {
     expect(() => CredentialMapper.toUniformCredential(jwtVc)).toThrowError(
       `Inconsistent credential subject ids between JWT claim (${jwtVc['sub' as keyof IVerifiableCredential]}) and VC value (${
         (<ICredentialSubject>(<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).credentialSubject).id
-      })`
+      })`,
     )
   })
 
@@ -120,7 +120,7 @@ describe('Uniform VC claims', () => {
     expect(() => CredentialMapper.toUniformCredential(jwtVc)).toThrowError(
       `Inconsistent credential ids between JWT claim (${jwtVc['jti' as keyof IVerifiableCredential]}) and VC value (${
         (<ICredential>jwtVc['vc' as keyof IVerifiableCredential]).id
-      })`
+      })`,
     )
   })
 

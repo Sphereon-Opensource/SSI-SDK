@@ -10,7 +10,7 @@ import {
   SphereonEcdsaSecp256k1RecoverySignature2020,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
-  SphereonJsonWebSignature2020
+  SphereonJsonWebSignature2020,
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
 import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
@@ -23,7 +23,7 @@ import {
   IIdentifier,
   IKeyManager,
   IResolver,
-  TAgent
+  TAgent,
 } from '@veramo/core'
 import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
@@ -75,8 +75,14 @@ const dbConnection = DataSources.singleInstance()
   .getDbConnection(DB_CONNECTION_NAME_POSTGRES)
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
-
-type Plugins = IDIDManager & IKeyManager & IDataStoreORM & IResolver & ICredentialHandlerLDLocal & ICredentialPlugin & IIdentifierResolution & IStatusListPlugin
+type Plugins = IDIDManager &
+  IKeyManager &
+  IDataStoreORM &
+  IResolver &
+  ICredentialHandlerLDLocal &
+  ICredentialPlugin &
+  IIdentifierResolution &
+  IStatusListPlugin
 
 describe('JWT Verifiable Credential, should be', () => {
   let agent: TAgent<Plugins>
@@ -88,7 +94,11 @@ describe('JWT Verifiable Credential, should be', () => {
       plugins: [
         new DataStore(dbConnection),
         new DataStoreORM(dbConnection),
-        new StatusListPlugin({instances: [{id: 'http://localhost/test/1', driverType: StatusListDriverType.AGENT_TYPEORM, dataSource: dbConnection}], defaultInstanceId: 'http://localhost/test/1', allDataSources: DataSources.singleInstance()}),
+        new StatusListPlugin({
+          instances: [{ id: 'http://localhost/test/1', driverType: StatusListDriverType.AGENT_TYPEORM, dataSource: dbConnection }],
+          defaultInstanceId: 'http://localhost/test/1',
+          allDataSources: DataSources.singleInstance(),
+        }),
         new KeyManager({
           store: new KeyStore(dbConnection),
           kms: {
@@ -103,7 +113,7 @@ describe('JWT Verifiable Credential, should be', () => {
         new DIDResolverPlugin({
           resolver,
         }),
-        new IdentifierResolution({crypto: global.crypto}),
+        new IdentifierResolution({ crypto: global.crypto }),
         new CredentialPlugin(),
         new CredentialHandlerLDLocal({
           contextMaps: [LdDefaultContexts],
@@ -143,7 +153,15 @@ describe('JWT Verifiable Credential, should be', () => {
 
   it('should add status list to credential', async () => {
     // Just for this test we are creating the status list. Normally this has been pre-created of course
-    const sl = await agent.slCreateStatusList({id: 'http://localhost/test/1', issuer: identifier.did, type: StatusListType.StatusList2021, proofFormat: 'jwt', statusPurpose: 'revocation', keyRef: identifier.keys[0].kid, correlationId: '1'})
+    const sl = await agent.slCreateStatusList({
+      id: 'http://localhost/test/1',
+      issuer: identifier.did,
+      type: StatusListType.StatusList2021,
+      proofFormat: 'jwt',
+      statusPurpose: 'revocation',
+      keyRef: identifier.keys[0].kid,
+      correlationId: '1',
+    })
     console.log(JSON.stringify(sl, null, 2))
 
     // @ts-ignore // We do not provide the credentialStatus id as the plugin should handle that
@@ -152,15 +170,15 @@ describe('JWT Verifiable Credential, should be', () => {
       id: v4(),
       credentialSubject: {
         id: identifier.did,
-        example: 'value'
+        example: 'value',
       },
 
       // Let's create a credentialStatus object, so that the status list handling code will assign an index automatically
       credentialStatus: {
-        type: 'StatusList2021'
-      }
+        type: 'StatusList2021',
+      },
     } as CredentialPayload
-    const vc = await agent.createVerifiableCredentialLDLocal({credential: vcPayload, keyRef: identifier.keys[0].kid})
+    const vc = await agent.createVerifiableCredentialLDLocal({ credential: vcPayload, keyRef: identifier.keys[0].kid })
     expect(vc).toBeDefined()
     expect(vc.credentialStatus).toBeDefined()
     expect(vc.credentialStatus?.statusListIndex).toBeDefined()
