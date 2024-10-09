@@ -1,5 +1,5 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
-import { ActionType, InitiatorType, LoggingEventType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
+import { ActionType, InitiatorType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
 import { DataStoreEventLoggerMigrations } from '../migrations'
 import { DataStoreEventLoggerEntities } from '../index'
@@ -33,7 +33,6 @@ describe('Database entities tests', (): void => {
 
   it('should store audit event', async (): Promise<void> => {
     const auditEvent: NonPersistedAuditLoggingEvent = {
-      type: LoggingEventType.AUDIT,
       timestamp: new Date(),
       level: LogLevel.DEBUG,
       correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
@@ -59,7 +58,6 @@ describe('Database entities tests', (): void => {
 
   it('should get all audit events', async (): Promise<void> => {
     const auditEvent: NonPersistedAuditLoggingEvent = {
-      type: LoggingEventType.AUDIT,
       timestamp: new Date(),
       level: LogLevel.DEBUG,
       correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
@@ -91,7 +89,6 @@ describe('Database entities tests', (): void => {
 
   it('should get audit events by filter', async (): Promise<void> => {
     const auditEvent: NonPersistedAuditLoggingEvent = {
-      type: LoggingEventType.AUDIT,
       timestamp: new Date(),
       level: LogLevel.DEBUG,
       correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
