@@ -31,6 +31,7 @@ describe('Database entities tests', (): void => {
 
   it('should save audit event to database', async (): Promise<void> => {
     const auditEvent: NonPersistedAuditLoggingEvent = {
+      type: LoggingEventType.AUDIT,
       timestamp: new Date(),
       level: LogLevel.DEBUG,
       correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
