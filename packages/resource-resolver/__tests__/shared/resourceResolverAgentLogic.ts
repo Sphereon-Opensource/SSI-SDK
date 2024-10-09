@@ -18,7 +18,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     afterAll(testContext.tearDown)
 
     it('should get resource by input as string', async (): Promise<void> => {
-      const url = new URL('https://example.com/1') // TODO /1
+      const url = new URL('https://example.com/string_input')
       const responseBody = {
         resource: 'test_value',
       }
@@ -38,7 +38,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get resource by input as URL', async (): Promise<void> => {
-      const url = new URL('https://example.com/2') // TODO /1
+      const url = new URL('https://example.com/url_input')
       const responseBody = {
         resource: 'test_value',
       }
@@ -58,7 +58,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get resource by input as RequestInfo', async (): Promise<void> => {
-      const url = new URL('https://example.com/3') // TODO /1
+      const url = new URL('https://example.com/request_info_input')
       const responseBody = {
         resource: 'test_value',
       }
@@ -81,7 +81,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get resource with POST request', async (): Promise<void> => {
-      const url = new URL('https://example.com/4') // TODO /1
+      const url = new URL('https://example.com/post')
       const responseBody = {
         resource: 'test_value',
       }
@@ -91,7 +91,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       })
 
       nock(url.origin).post(url.pathname, { test_field: 'test_value' })
-        .times(2)
         .reply(200, responseBody)
 
       const response = await agent.resourceResolve({
@@ -106,7 +105,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should fetch resource with POST request with different body', async (): Promise<void> => { // TODO finish test
-      const url = new URL('https://example.com/5') // TODO /1
+      const url = new URL('https://example.com/post_bodies')
       const responseBody = {
         resource: 'test_value',
       }
@@ -131,7 +130,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should fetch resource when resource insertion exceeds max age option', async (): Promise<void> => {
-      const url = new URL('https://example.com/6') // TODO /4
+      const url = new URL('https://example.com/fetch_max_age')
       const responseBody = {
         resource: 'test_value',
       }
@@ -163,11 +162,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
       expect(called).toEqual(2)
-      // TODO check new insertion timestamp
     })
 
     it('should get resource from cache when max age option exceeds resource insertion', async (): Promise<void> => {
-      const url = new URL('https://example.com/7') // TODO /5
+      const url = new URL('https://example.com/cache_max_age')
       const responseBody = {
         resource: 'test_value',
       }
@@ -202,7 +200,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get resource from cache with cache only option', async (): Promise<void> => {
-      const url = new URL('https://example.com/8') // TODO /5
+      const url = new URL('https://example.com/cache_only')
       const responseBody = {
         resource: 'test_value',
       }
@@ -232,7 +230,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should return error response when no resource found with cache only option ', async (): Promise<void> => {
       const response = await agent.resourceResolve({
-        input: 'https://example.com/9',
+        input: 'https://example.com/cache_only_error',
         resourceType: 'test_type',
         resolveOpts: {
           onlyCache: true
@@ -248,7 +246,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should get resource from cache by namespace', async (): Promise<void> => {
       const namespace = 'test_namespace'
-      const url = new URL('https://example.com/10') // TODO /5
+      const url = new URL('https://example.com/namespace')
       const responseBody = {
         resource: 'test_value',
       }
@@ -281,7 +279,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should fetch resource by different namespaces', async (): Promise<void> => {
-      const url = new URL('https://example.com/11') // TODO /5
+      const url = new URL('https://example.com/namespaces')
       const responseBody = {
         resource: 'test_value',
       }
@@ -313,7 +311,58 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(called).toEqual(2)
     })
 
-    // TODO test if error responses do not get persisted
+    it('should not persist resource when status code is not in 200', async (): Promise<void> => {
+      const url = new URL('https://example.com/error_status_code')
+      const responseBody = {
+        error: 'error',
+      }
 
+      let called = 0
+      nock(url.origin).get(url.pathname)
+        .times(2)
+        .reply(500, () => {
+          called++
+          return responseBody
+        })
+
+      const response1 = await agent.resourceResolve({
+        input: url.toString(),
+        resourceType: 'test_type'
+      })
+      expect(response1).toBeDefined()
+
+      const response2 = await agent.resourceResolve({
+        input: url.toString(),
+        resourceType: 'test_type',
+      })
+      expect(response2).toBeDefined()
+
+      expect(called).toEqual(2)
+    })
+
+    it('should clear all resources', async (): Promise<void> => {
+      const result = await agent.resourceClearAllResources()
+      expect(result).toEqual(true)
+    })
+
+    it('should throw error when clearing resources with unknown store id', async (): Promise<void> => {
+      const storeId = 'unknown'
+      await expect(agent.resourceClearAllResources({ storeId })).rejects.toThrow(`Could not get resource store: ${storeId}`)
+    })
+
+    it('should get default store id', async (): Promise<void> => {
+      const result = await agent.resourceDefaultStoreId()
+      expect(result).toEqual('_default')
+    })
+
+    it('should get default namespace', async (): Promise<void> => {
+      const result = await agent.resourceDefaultNamespace()
+      expect(result).toEqual('resources')
+    })
+
+    it('should get default ttl', async (): Promise<void> => {
+      const result = await agent.resourceDefaultTtl()
+      expect(result).toEqual(3600)
+    })
   })
 }

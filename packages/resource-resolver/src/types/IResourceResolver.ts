@@ -3,7 +3,7 @@ import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 
 export interface IResourceResolver extends IPluginMethodMap {
   resourceResolve(args: ResolveArgs, context: RequiredContext): Promise<Response>
-  resourceClearAllResources(args: ClearArgs, context: RequiredContext): Promise<boolean>
+  resourceClearAllResources(args: ClearAllResourcesArgs, context: RequiredContext): Promise<boolean>
   resourceDefaultStoreId(context: RequiredContext): Promise<string>
   resourceDefaultNamespace(context: RequiredContext): Promise<string>
   resourceDefaultTtl(context: RequiredContext): Promise<number>
@@ -35,7 +35,7 @@ export type ResolveOptions = {
 
 export type ResourceType = 'credential_branding_image' | 'issuer_branding_image' | 'oid4vci_metadata' | string
 
-export type ClearArgs = {
+export type ClearAllResourcesArgs = {
   storeId?: string
 }
 

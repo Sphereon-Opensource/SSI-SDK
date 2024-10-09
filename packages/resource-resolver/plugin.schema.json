@@ -4,156 +4,83 @@
       "schemas": {
         "ResourceResolverOptions": {
           "type": "object",
-          "properties": {
-            "requestData": {}
-          },
-          "required": ["requestData"]
+          "properties": {}
         },
         "ResolveArgs": {
           "type": "object",
-          "properties": {
-            "requestData": {}
-          },
-          "required": ["requestData"]
+          "properties": {}
         },
         "ResolveOptions": {
           "type": "object",
-          "properties": {
-            "requestData": {}
-          },
-          "required": ["requestData"]
+          "properties": {}
         },
         "ResourceType": {
           "type": "object",
-          "properties": {
-            "requestData": {}
-          },
-          "required": ["requestData"]
+          "properties": {}
         },
-        "ClearArgs": {
+        "ClearAllResourcesArgs": {
           "type": "object",
-          "properties": {
-            "requestData": {}
-          },
-          "required": ["requestData"]
+          "properties": {}
         },
         "PersistResourceArgs": {
           "type": "object",
-          "properties": {
-            "requestData": {}
-          },
-          "required": ["requestData"]
+          "properties": {}
         },
         "GetResourceArgs": {
           "type": "object",
-          "properties": {
-            "requestData": {}
-          },
-          "required": ["requestData"]
+          "properties": {}
         },
         "StoreIdStrArgs": {
           "type": "object",
-          "properties": {
-            "requestData": {}
-          },
-          "required": ["requestData"]
+          "properties": {}
         },
         "NamespaceStrArgs": {
           "type": "object",
-          "properties": {
-            "requestData": {}
-          },
-          "required": ["requestData"]
+          "properties": {}
         },
         "PrefixArgs": {
           "type": "object",
-          "properties": {
-            "requestData": {}
-          },
-          "required": ["requestData"]
+          "properties": {}
         },
         "StoreArgs": {
           "type": "object",
-          "properties": {
-            "requestData": {}
-          },
-          "required": ["requestData"]
+          "properties": {}
         },
         "Resource": {
           "type": "object",
-          "properties": {
-            "requestData": {}
-          },
-          "required": ["requestData"]
+          "properties": {}
         },
         "SerializedResponse": {
           "type": "object",
-          "properties": {
-            "requestData": {}
-          },
-          "required": ["requestData"]
+          "properties": {}
         }
       },
       "methods": {
         "resourceResolve": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/GetMachineArgs"
+            "$ref": "#/components/schemas/ResolveArgs"
           },
-          "returnType": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
+          "returnType": {}
         },
         "resourceClearAllResources": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/GetMachineArgs"
+            "$ref": "#/components/schemas/ClearAllResourcesArgs"
           },
-          "returnType": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
+          "returnType": {}
         },
         "resourceDefaultStoreId": {
           "description": "",
-          "arguments": {
-            "$ref": "#/components/schemas/GetMachineArgs"
-          },
-          "returnType": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
+          "returnType": {}
         },
         "resourceDefaultNamespace": {
           "description": "",
-          "arguments": {
-            "$ref": "#/components/schemas/GetMachineArgs"
-          },
-          "returnType": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
+          "returnType": {}
         },
         "resourceDefaultTtl": {
           "description": "",
-          "arguments": {
-            "$ref": "#/components/schemas/GetMachineArgs"
-          },
-          "returnType": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
+          "returnType": {}
         }
       }
     }

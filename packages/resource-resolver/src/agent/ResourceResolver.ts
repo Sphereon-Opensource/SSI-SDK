@@ -13,7 +13,7 @@ import {
   serializeResponse
 } from '../utils/ResourceResolverUtils'
 import {
-  ClearArgs,
+  ClearAllResourcesArgs,
   ResolveArgs,
   GetResourceArgs,
   IResourceResolver,
@@ -127,7 +127,7 @@ export class ResourceResolver implements IAgentPlugin {
   }
 
   /** {@inheritDoc IResourceResolver.resourceClearAllResources} */
-  private async resourceClearAllResources(args: ClearArgs, context: RequiredContext): Promise<boolean> {
+  private async resourceClearAllResources(args: ClearAllResourcesArgs, context: RequiredContext): Promise<boolean> {
     const { storeId } = args
     return await this.store({ stores: this._resourceStores, storeId })
       .clear()
