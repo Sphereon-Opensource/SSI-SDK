@@ -17,11 +17,15 @@ There are also functions that can be manually called to persist events. Current,
 
 Ideally this plugin should be used in combination with the event logger from our core package. This event logger will also default debug the events.
 This is mainly as a fallback for when no listener is present within the agent.
+You can also store (credential) activity logs. which gets information related to a credential and the action that has performed on it.
 
 ## Available functions
 
 - loggerGetAuditEvents
 - loggerStoreAuditEvent
+- loggerLogGeneralEvent
+- loggerLogActivityEvent
+- loggerGetActivityEvents
 
 ## Usage
 

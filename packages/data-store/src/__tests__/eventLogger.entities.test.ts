@@ -1,10 +1,10 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { PartyCorrelationType } from '@sphereon/ssi-sdk.core'
-import { ActionType, InitiatorType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
+import { ActionType, InitiatorType, LoggingEventType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
 import { DataStoreEventLoggerEntities } from '../index'
 import { DataStoreEventLoggerMigrations } from '../migrations/generic'
-import { auditEventEntityFrom, AuditEventEntity } from '../entities/eventLogger/AuditEventEntity'
+import { AuditEventEntity, auditEventEntityFrom } from '../entities/eventLogger/AuditEventEntity'
 import { NonPersistedAuditLoggingEvent } from '../types'
 
 describe('Database entities tests', (): void => {
@@ -31,6 +31,7 @@ describe('Database entities tests', (): void => {
 
   it('should save audit event to database', async (): Promise<void> => {
     const auditEvent: NonPersistedAuditLoggingEvent = {
+      type: LoggingEventType.AUDIT,
       timestamp: new Date(),
       level: LogLevel.DEBUG,
       correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',

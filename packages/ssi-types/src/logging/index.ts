@@ -11,11 +11,12 @@ export enum LogLevel {
 
 export enum LoggingEventType {
   AUDIT = 'audit',
+  ACTIVITY = 'activity',
   GENERAL = 'general',
 }
 
 export interface SimpleLogEvent {
-  type: LoggingEventType.GENERAL
+  type: LoggingEventType
   level: LogLevel
   correlationId?: string
   timestamp: Date

@@ -106,9 +106,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
     let affected: number = 0
     const findResult = await dcRepo.findBy(query)
     for (const dc of findResult) {
-      if (dc.parentId !== null && dc.parentId !== undefined) {
-        affected += await this.deleteTree(dcRepo, { id: dc.parentId })
-      }
+      affected += await this.deleteTree(dcRepo, { parentId: dc.id })
       const result = await dcRepo.delete(dc.id)
       if (result.affected) {
         affected += result.affected
