@@ -254,7 +254,11 @@ export class SIOPv2RP implements IAgentPlugin {
       }
       this.instances.set(instanceId, new RPInstance({ rpOpts, pexOpts: instanceOpts }))
     }
-    return this.instances.get(instanceId)!
+    const rpInstance = this.instances.get(instanceId)!
+    if (responseRedirectURI) {
+      rpInstance.rpOptions.responseRedirectUri = responseRedirectURI
+    }
+    return rpInstance
   }
 
   async getRPOptions(context: IRequiredContext, opts: { definitionId?: string; responseRedirectURI?: string }): Promise<IRPOptions> {

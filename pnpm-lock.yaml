@@ -2570,9 +2570,6 @@ importers:
       '@sphereon/kmp-mdl-mdoc':
         specifier: 0.2.0-SNAPSHOT.22
         version: 0.2.0-SNAPSHOT.22
-      '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(ts-node@10.9.2)
       debug:
         specifier: ^4.3.5
         version: 4.3.6
