@@ -1,5 +1,5 @@
 import { TAgent } from '@veramo/core'
-import { Request, Response } from 'cross-fetch'
+import { Request } from 'cross-fetch'
 // @ts-ignore
 import nock from 'nock'
 import { IResourceResolver } from '../../src'
@@ -31,7 +31,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         resourceType: 'test_type'
       })
       expect(response).toBeDefined()
-      const responseData = await (<Response>response).json()
+      const responseData = await response.json()
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
@@ -51,7 +51,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         resourceType: 'test_type'
       })
       expect(response).toBeDefined()
-      const responseData = await (<Response>response).json()
+      const responseData = await response.json()
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
@@ -74,7 +74,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         resourceType: 'test_type'
       })
       expect(response).toBeDefined()
-      const responseData = await (<Response>response).json()
+      const responseData = await response.json()
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
@@ -99,7 +99,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         resourceType: 'test_type'
       })
       expect(response).toBeDefined()
-      const responseData = await (<Response>response).json()
+      const responseData = await response.json()
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
@@ -124,7 +124,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         resourceType: 'test_type'
       })
       expect(response).toBeDefined()
-      const responseData = await (<Response>response).json()
+      const responseData = await response.json()
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
@@ -158,7 +158,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         }
       })
       expect(response2).toBeDefined()
-      const responseData = await (<Response>response2).json()
+      const responseData = await response2.json()
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
@@ -194,7 +194,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         }
       })
       expect(response2).toBeDefined()
-      const responseData = await (<Response>response2).json()
+      const responseData = await response2.json()
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
@@ -225,7 +225,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         }
       })
       expect(response2).toBeDefined()
-      const responseData = await (<Response>response2).json()
+      const responseData = await response2.json()
 
       expect(responseData.resource).toEqual('test_value')
     })
@@ -239,10 +239,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         }
       })
       expect(response).toBeDefined()
-      const responseData = await (<Response>response).json()
+      const responseData = await response.json()
 
-      expect((<Response>response).status).toEqual(404)
-      expect((<Response>response).statusText).toEqual('Not Found')
+      expect(response.status).toEqual(404)
+      expect(response.statusText).toEqual('Not Found')
       expect(responseData.error).toEqual('Resource not found')
     })
 
@@ -274,7 +274,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         namespace
       })
       expect(response2).toBeDefined()
-      const responseData = await (<Response>response2).json()
+      const responseData = await response2.json()
 
       expect(responseData.resource).toEqual(responseBody.resource)
       expect(called).toEqual(1)
@@ -307,7 +307,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         namespace: 'test_namespace2'
       })
       expect(response2).toBeDefined()
-      const responseData = await (<Response>response2).json()
+      const responseData = await response2.json()
 
       expect(responseData.resource).toEqual(responseBody.resource)
       expect(called).toEqual(2)
