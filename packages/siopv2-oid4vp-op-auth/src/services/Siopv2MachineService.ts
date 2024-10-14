@@ -1,12 +1,10 @@
-import { SupportedVersion } from '@sphereon/did-auth-siop'
+import { AuthorizationRequest, SupportedVersion } from '@sphereon/did-auth-siop'
 import { IPresentationDefinition, PEX } from '@sphereon/pex'
 import { InputDescriptorV1, InputDescriptorV2, PresentationDefinitionV1, PresentationDefinitionV2 } from '@sphereon/pex-models'
-import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
-import { isManagedIdentifierDidOpts, ManagedIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { ConnectionType, CredentialRole } from '@sphereon/ssi-sdk.data-store'
 import { CredentialMapper, Loggers, PresentationSubmission } from '@sphereon/ssi-types'
-import { IIdentifier } from '@veramo/core'
 import { OID4VP, OpSession } from '../session'
 import {
   DidAgents,
@@ -19,15 +17,36 @@ import {
   VerifiableCredentialsWithDefinition,
   VerifiablePresentationWithDefinition,
 } from '../types'
+import { IAgentContext, IDIDManager } from '@veramo/core'
+import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 
 export const logger = Loggers.DEFAULT.get(LOGGER_NAMESPACE)
+
+const createEbsiIdentifier = async (agentContext: IAgentContext<IDIDManager>): Promise<ManagedIdentifierOptsOrResult> => {
+  logger.log(`No EBSI key present yet. Creating a new one...`)
+  const { result: newIdentifier, created } = await getOrCreatePrimaryIdentifier(agentContext, {
+    method: SupportedDidMethodEnum.DID_KEY,
+    createOpts: { options: { codecName: 'jwk_jcs-pub', type: 'Secp256r1' } },
+  })
+  logger.log(`EBSI key created: ${newIdentifier.did}`)
+  if (created) {
+    await agentContext.agent.emit(Siopv2HolderEvent.IDENTIFIER_CREATED, { result: newIdentifier })
+  }
+  return await agentContext.agent.identifierManagedGetByDid({ identifier: newIdentifier.did })
+}
+
+const hasEbsiClient = async (authorizationRequest: AuthorizationRequest) => {
+  const clientId = await authorizationRequest.getMergedProperty<string>('client_id')
+  const redirectUri = await authorizationRequest.getMergedProperty<string>('redirect_uri')
+  return clientId?.toLowerCase().includes('.ebsi.eu') || redirectUri?.toLowerCase().includes('.ebsi.eu')
+}
 
 export const siopSendAuthorizationResponse = async (
   connectionType: ConnectionType,
   args: {
     sessionId: string
     verifiableCredentialsWithDefinition?: VerifiableCredentialsWithDefinition[]
-    idOpts?: ManagedIdentifierOpts
+    idOpts?: ManagedIdentifierOptsOrResult
   },
   context: RequiredContext,
 ) => {
@@ -39,45 +58,12 @@ export const siopSendAuthorizationResponse = async (
     return Promise.reject(Error(`No supported authentication provider for type: ${connectionType}`))
   }
   const session: OpSession = await agent.siopGetOPSession({ sessionId: args.sessionId })
-  let identifiers: Array<IIdentifier> =
-    idOpts && isManagedIdentifierDidOpts(idOpts)
-      ? [(await context.agent.identifierManagedGetByDid(idOpts)).identifier]
-      : await session.getSupportedIdentifiers()
-  if (!identifiers || identifiers.length === 0) {
-    throw Error(`No DID methods found in agent that are supported by the relying party`)
-  }
   const request = await session.getAuthorizationRequest()
   const aud = await request.authorizationRequest.getMergedProperty<string>('aud')
   logger.debug(`AUD: ${aud}`)
   logger.debug(JSON.stringify(request.authorizationRequest))
-  const clientId = await request.authorizationRequest.getMergedProperty<string>('client_id')
-  const redirectUri = await request.authorizationRequest.getMergedProperty<string>('redirect_uri')
-  if (clientId?.toLowerCase().includes('.ebsi.eu') || redirectUri?.toLowerCase().includes('.ebsi.eu')) {
-    identifiers = identifiers.filter((id) => id.did.toLowerCase().startsWith('did:key:') || id.did.toLowerCase().startsWith('did:ebsi:'))
-    if (identifiers.length === 0) {
-      logger.log(`No EBSI key present yet. Creating a new one...`)
-      const { result: newIdentifier, created } = await getOrCreatePrimaryIdentifier(agentContext, {
-        method: SupportedDidMethodEnum.DID_KEY,
-        createOpts: { options: { codecName: 'jwk_jcs-pub', type: 'Secp256r1' } },
-      })
-      logger.log(`EBSI key created: ${newIdentifier.did}`)
-      identifiers = [newIdentifier]
-      if (created) {
-        await agentContext.agent.emit(Siopv2HolderEvent.IDENTIFIER_CREATED, { result: newIdentifier })
-      }
-    }
-  }
-  if (aud && aud.startsWith('did:')) {
-    // The RP knows our did, so we can use it
-    if (!identifiers.some((id) => id.did === aud)) {
-      throw Error(`The aud DID ${aud} is not in the supported identifiers ${identifiers.map((id) => id.did)}`)
-    }
-    identifiers = [identifiers.find((id) => id.did === aud) as IIdentifier]
-  }
 
-  // todo: This should be moved to code calling the sendAuthorizationResponse (this) method, as to allow the user to subselect and approve credentials!
   let presentationsAndDefs: VerifiablePresentationWithDefinition[] | undefined
-  let identifier: IIdentifier = identifiers[0]
   let presentationSubmission: PresentationSubmission | undefined
   if (await session.hasPresentationDefinitions()) {
     const oid4vp: OID4VP = await session.getOID4VP({})
@@ -93,18 +79,32 @@ export const siopSendAuthorizationResponse = async (
         : 'https://self-issued.me/v2')
     logger.log(`NONCE: ${session.nonce}, domain: ${domain}`)
 
-    const firstVC = CredentialMapper.toUniformCredential(credentialsAndDefinitions[0].credentials[0])
-    const holder = Array.isArray(firstVC.credentialSubject) ? firstVC.credentialSubject[0].id : firstVC.credentialSubject.id
-    if (holder) {
-      try {
-        identifier = await session.context.agent.didManagerGet({ did: holder })
-      } catch (e) {
-        logger.log(`Holder DID not found: ${holder}`)
-      }
+    const firstUniqueDC = credentialsAndDefinitions[0].credentials[0]
+    if (typeof firstUniqueDC !== 'object' || !('digitalCredential' in firstUniqueDC)) {
+      return Promise.reject(Error('SiopMachine only supports UniqueDigitalCredentials for now'))
+    }
+    let identifier: ManagedIdentifierOptsOrResult
+    const digitalCredential = firstUniqueDC.digitalCredential
+    switch (digitalCredential.subjectCorrelationType) {
+      case 'DID':
+        identifier = await session.context.agent.identifierManagedGetByDid({
+          identifier: digitalCredential.subjectCorrelationId,
+          kmsKeyRef: digitalCredential.kmsKeyRef,
+        })
+        break
+      default:
+        identifier = await session.context.agent.identifierManagedGetByKid({
+          identifier: digitalCredential.kmsKeyRef,
+          kmsKeyRef: digitalCredential.kmsKeyRef,
+        })
+    }
+
+    if (identifier === undefined && idOpts !== undefined && (await hasEbsiClient(request.authorizationRequest))) {
+      identifier = await createEbsiIdentifier(agentContext)
     }
 
     presentationsAndDefs = await oid4vp.createVerifiablePresentations(CredentialRole.HOLDER, credentialsAndDefinitions, {
-      idOpts: { identifier },
+      idOpts: identifier,
       proofOpts: {
         nonce: session.nonce,
         domain,
@@ -117,33 +117,8 @@ export const siopSendAuthorizationResponse = async (
     }
 
     idOpts = presentationsAndDefs[0].idOpts
-    // identifier = await getIdentifier(idOpts, context)
-
-    /*key = await getKey(identifier, 'authentication', context, idOpts.kid)
-        const getIdentifierResponse = await getIdentifierWithKey({
-          context,
-          keyOpts: {
-            identifier,
-            kid: idOpts.kid,
-            didMethod: parseDid(identifier.did).method as SupportedDidMethodEnum,
-            keyType: key.type
-          },
-        })*/
     presentationSubmission = presentationsAndDefs[0].presentationSubmission
   }
-  /*const key = await getKey({
-    identifier,
-    vmRelationship: 'authentication',
-    kmsKeyRef: idOpts?.kmsKeyRef
-  }, session.context)
-  if (!idOpts) {
-    idOpts = { identifier, kmsKeyRef: await determineKid({ key, idOpts: { identifier } }, session.context) }
-  }
-  const determinedKid = idOpts.kmsKeyRef?.includes('#') ? idOpts.kmsKeyRef : await determineKid({
-    key,
-    idOpts
-  }, session.context)*/
-
   logger.log(`Definitions and locations:`, JSON.stringify(presentationsAndDefs?.[0]?.verifiablePresentation, null, 2))
   logger.log(`Presentation Submission:`, JSON.stringify(presentationSubmission, null, 2))
   return await session.sendAuthorizationResponse({

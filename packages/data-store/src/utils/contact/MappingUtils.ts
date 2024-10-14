@@ -47,6 +47,7 @@ import { OpenIdConfigEntity } from '../../entities/contact/OpenIdConfigEntity'
 import { PartyTypeEntity } from '../../entities/contact/PartyTypeEntity'
 import { PhysicalAddressEntity } from '../../entities/contact/PhysicalAddressEntity'
 import { ContactMetadataItemEntity } from '../../entities/contact/ContactMetadataItemEntity'
+import { replaceNullWithUndefined } from '../FormattingUtils'
 
 export const partyEntityFrom = (party: NonPersistedParty): PartyEntity => {
   const partyEntity: PartyEntity = new PartyEntity()
@@ -67,7 +68,7 @@ export const partyEntityFrom = (party: NonPersistedParty): PartyEntity => {
 }
 
 export const partyFrom = (party: PartyEntity): Party => {
-  return {
+  const result: Party = {
     id: party.id,
     uri: party.uri,
     roles: [...new Set(party.identities?.flatMap((identity: IdentityEntity) => identity.roles))] ?? [],
@@ -86,6 +87,8 @@ export const partyFrom = (party: PartyEntity): Party => {
     createdAt: party.createdAt,
     lastUpdatedAt: party.lastUpdatedAt,
   }
+
+  return replaceNullWithUndefined(result)
 }
 
 export const contactEntityFrom = (contact: NonPersistedContact): BaseContactEntity => {
@@ -125,13 +128,15 @@ export const connectionEntityFrom = (connection: NonPersistedConnection): Connec
 }
 
 export const connectionFrom = (connection: ConnectionEntity): Connection => {
-  return {
+  const result: Connection = {
     id: connection.id,
     type: connection.type,
     ownerId: connection.ownerId,
     tenantId: connection.tenantId,
     config: configFrom(connection.config),
   }
+
+  return replaceNullWithUndefined(result)
 }
 
 const configEntityFrom = (config: NonPersistedConnectionConfig): BaseConfigEntity => {
@@ -155,13 +160,15 @@ export const correlationIdentifierEntityFrom = (identifier: NonPersistedCorrelat
 }
 
 export const correlationIdentifierFrom = (identifier: CorrelationIdentifierEntity): CorrelationIdentifier => {
-  return {
+  const result: CorrelationIdentifier = {
     id: identifier.id,
     type: identifier.type,
     correlationId: identifier.correlationId,
     ownerId: identifier.ownerId,
     tenantId: identifier.tenantId,
   }
+
+  return replaceNullWithUndefined(result)
 }
 
 export const didAuthConfigEntityFrom = (config: NonPersistedDidAuthConfig): DidAuthConfigEntity => {
@@ -196,7 +203,7 @@ export const electronicAddressEntityFrom = (electronicAddress: NonPersistedElect
 }
 
 export const electronicAddressFrom = (electronicAddress: ElectronicAddressEntity): ElectronicAddress => {
-  return {
+  const result: ElectronicAddress = {
     id: electronicAddress.id,
     type: electronicAddress.type,
     electronicAddress: electronicAddress.electronicAddress,
@@ -205,6 +212,8 @@ export const electronicAddressFrom = (electronicAddress: ElectronicAddressEntity
     createdAt: electronicAddress.createdAt,
     lastUpdatedAt: electronicAddress.lastUpdatedAt,
   }
+
+  return replaceNullWithUndefined(result)
 }
 
 export const physicalAddressEntityFrom = (physicalAddress: NonPersistedPhysicalAddress): PhysicalAddressEntity => {
@@ -224,7 +233,7 @@ export const physicalAddressEntityFrom = (physicalAddress: NonPersistedPhysicalA
 }
 
 export const physicalAddressFrom = (physicalAddress: PhysicalAddressEntity): PhysicalAddress => {
-  return {
+  const result: PhysicalAddress = {
     id: physicalAddress.id,
     type: physicalAddress.type,
     streetName: physicalAddress.streetName,
@@ -239,6 +248,8 @@ export const physicalAddressFrom = (physicalAddress: PhysicalAddressEntity): Phy
     createdAt: physicalAddress.createdAt,
     lastUpdatedAt: physicalAddress.lastUpdatedAt,
   }
+
+  return replaceNullWithUndefined(result)
 }
 
 export const identityEntityFrom = (entity: NonPersistedIdentity): IdentityEntity => {
@@ -257,7 +268,7 @@ export const identityEntityFrom = (entity: NonPersistedIdentity): IdentityEntity
 }
 
 export const identityFrom = (identity: IdentityEntity): Identity => {
-  return {
+  const result: Identity = {
     id: identity.id,
     alias: identity.alias,
     origin: identity.origin,
@@ -270,12 +281,11 @@ export const identityFrom = (identity: IdentityEntity): Identity => {
     createdAt: identity.createdAt,
     lastUpdatedAt: identity.createdAt,
   }
+
+  return replaceNullWithUndefined(result)
 }
 
-const metadataItemEntityFrom = <T extends MetadataTypes, U extends { new (): any }>(
-  item: NonPersistedMetadataItem<T>,
-  EntityClass: U,
-): InstanceType<U> | undefined => {
+const metadataItemEntityFrom = <T extends MetadataTypes, U extends { new (): any }>(item: NonPersistedMetadataItem<T>, EntityClass: U): InstanceType<U> | undefined => {
   const { label, value } = item
 
   if (value === null || value === undefined) {
@@ -359,7 +369,7 @@ export const naturalPersonEntityFrom = (naturalPerson: NonPersistedNaturalPerson
 }
 
 export const naturalPersonFrom = (naturalPerson: NaturalPersonEntity): NaturalPerson => {
-  return {
+  const result: NaturalPerson = {
     id: naturalPerson.id,
     firstName: naturalPerson.firstName,
     middleName: naturalPerson.middleName,
@@ -371,6 +381,8 @@ export const naturalPersonFrom = (naturalPerson: NaturalPersonEntity): NaturalPe
     createdAt: naturalPerson.createdAt,
     lastUpdatedAt: naturalPerson.lastUpdatedAt,
   }
+
+  return replaceNullWithUndefined(result)
 }
 
 export const openIdConfigEntityFrom = (config: NonPersistedOpenIdConfig): OpenIdConfigEntity => {
@@ -402,7 +414,7 @@ export const organizationEntityFrom = (organization: NonPersistedOrganization): 
 }
 
 export const organizationFrom = (organization: OrganizationEntity): Organization => {
-  return {
+  const result: Organization = {
     id: organization.id,
     legalName: organization.legalName,
     displayName: organization.displayName,
@@ -412,6 +424,8 @@ export const organizationFrom = (organization: OrganizationEntity): Organization
     createdAt: organization.createdAt,
     lastUpdatedAt: organization.lastUpdatedAt,
   }
+
+  return replaceNullWithUndefined(result)
 }
 
 export const partyRelationshipEntityFrom = (relationship: NonPersistedPartyRelationship): PartyRelationshipEntity => {
@@ -420,11 +434,12 @@ export const partyRelationshipEntityFrom = (relationship: NonPersistedPartyRelat
   partyRelationshipEntity.rightId = relationship.rightId
   partyRelationshipEntity.ownerId = relationship.ownerId
   partyRelationshipEntity.tenantId = relationship.tenantId
+
   return partyRelationshipEntity
 }
 
 export const partyRelationshipFrom = (relationship: PartyRelationshipEntity): PartyRelationship => {
-  return {
+  const result: PartyRelationship = {
     id: relationship.id,
     leftId: relationship.leftId,
     rightId: relationship.rightId,
@@ -433,6 +448,8 @@ export const partyRelationshipFrom = (relationship: PartyRelationshipEntity): Pa
     createdAt: relationship.createdAt,
     lastUpdatedAt: relationship.lastUpdatedAt,
   }
+
+  return replaceNullWithUndefined(result)
 }
 
 export const partyTypeEntityFrom = (args: NonPersistedPartyType): PartyTypeEntity => {
@@ -450,7 +467,7 @@ export const partyTypeEntityFrom = (args: NonPersistedPartyType): PartyTypeEntit
 }
 
 export const partyTypeFrom = (partyType: PartyTypeEntity): PartyType => {
-  return {
+  const result: PartyType = {
     id: partyType.id,
     type: partyType.type,
     origin: partyType.origin,
@@ -460,6 +477,8 @@ export const partyTypeFrom = (partyType: PartyTypeEntity): PartyType => {
     createdAt: partyType.createdAt,
     lastUpdatedAt: partyType.lastUpdatedAt,
   }
+
+  return replaceNullWithUndefined(result)
 }
 
 export const configFrom = (config: BaseConfigEntity): ConnectionConfig => {
@@ -473,7 +492,7 @@ export const configFrom = (config: BaseConfigEntity): ConnectionConfig => {
 }
 
 export const openIdConfigFrom = (config: OpenIdConfigEntity): OpenIdConfig => {
-  return {
+  const result: OpenIdConfig = {
     id: config.id,
     clientId: config.clientId,
     clientSecret: config.clientSecret,
@@ -485,10 +504,12 @@ export const openIdConfigFrom = (config: OpenIdConfigEntity): OpenIdConfig => {
     ownerId: config.ownerId,
     tenantId: config.tenantId,
   }
+
+  return replaceNullWithUndefined(result)
 }
 
 export const didAuthConfigFrom = (config: DidAuthConfigEntity): DidAuthConfig => {
-  return {
+  const result: DidAuthConfig = {
     id: config.id,
     idOpts: { identifier: config.identifier },
     stateId: '', // FIXME
@@ -497,6 +518,8 @@ export const didAuthConfigFrom = (config: DidAuthConfigEntity): DidAuthConfig =>
     ownerId: config.ownerId,
     tenantId: config.tenantId,
   }
+
+  return replaceNullWithUndefined(result)
 }
 
 export const isOpenIdConfig = (config: NonPersistedConnectionConfig | BaseConfigEntity): config is OpenIdConfig | OpenIdConfigEntity =>

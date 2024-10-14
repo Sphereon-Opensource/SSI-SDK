@@ -27,6 +27,7 @@ import { IPresentationExchange, PresentationExchange } from '@sphereon/ssi-sdk.p
 import { CheckLinkedDomain } from '@sphereon/did-auth-siop'
 import { entraAndSphereonCompatibleDef, entraVerifiedIdPresentation } from './presentationDefinitions'
 import Debug from 'debug'
+import { createHash } from 'crypto'
 
 const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-api')
 
@@ -123,7 +124,7 @@ const agent = createAgent<
     new PresentationExchange(),
     new SIOPv2RP({
       defaultOpts: {
-        didOpts: {
+        identifierOpts: {
           checkLinkedDomains: CheckLinkedDomain.IF_PRESENT,
           idOpts: {
             identifier: RP_DID,
@@ -135,10 +136,14 @@ const agent = createAgent<
         {
           definitionId: entraAndSphereonCompatibleDef.id,
           definition: entraAndSphereonCompatibleDef,
+          rpOpts: {
+            credentialOpts: {
+              hasher: (data, algorithm) => createHash(algorithm).update(data).digest(),
+            },
+          },
         },
         {
           definitionId: entraVerifiedIdPresentation.id,
-          definition: entraVerifiedIdPresentation,
         },
       ],
     }),

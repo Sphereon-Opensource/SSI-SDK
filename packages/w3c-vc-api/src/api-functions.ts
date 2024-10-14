@@ -1,12 +1,14 @@
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
+import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { CredentialPayload } from '@veramo/core'
-import { ProofFormat } from '@veramo/core/src/types/ICredentialIssuer'
+import { ProofFormat } from '@veramo/core'
 import { W3CVerifiableCredential } from '@veramo/core/src/types/vc-data-model'
 import { Request, Response, Router } from 'express'
 import { v4 } from 'uuid'
 import { IIssueCredentialEndpointOpts, IRequiredContext, IVCAPIIssueOpts, IVerifyCredentialEndpointOpts } from './types'
 import Debug from 'debug'
 import { DocumentType, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.credential-store'
+import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
 const debug = Debug('sphereon:ssi-sdk:w3c-vc-api')
 export function issueCredentialEndpoint(router: Router, context: IRequiredContext, opts?: IIssueCredentialEndpointOpts) {
@@ -33,6 +35,13 @@ export function issueCredentialEndpoint(router: Router, context: IRequiredContex
       }
       if (!credential.id) {
         credential.id = `urn:uuid:${v4()}`
+      }
+      if (contextHasPlugin<IStatusListPlugin>(context, 'slAddStatusToCredential')) {
+        // Add status list if enabled (and when the input has a credentialStatus object (can be empty))
+        const credentialStatusVC = await context.agent.slAddStatusToCredential({credential})
+        if (credential.credentialStatus && !credential.credentialStatus.statusListCredential) {
+          credential.credentialStatus = credentialStatusVC.credentialStatus
+        }
       }
       const issueOpts: IVCAPIIssueOpts | undefined = opts?.issueCredentialOpts
       const vc = await context.agent.createVerifiableCredential({

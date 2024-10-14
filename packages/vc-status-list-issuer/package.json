@@ -1,0 +1,83 @@
+{
+  "name": "@sphereon/ssi-sdk.vc-status-list-issuer",
+  "description": "Sphereon SSI-SDK plugin for Status List issuance",
+  "version": "0.30.1",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "veramo": {
+    "pluginInterfaces": {
+      "IStatusListPlugin": "./src/IStatusListPlugin.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build"
+  },
+  "dependencies": {
+    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-next.96",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-next.96",
+    "@sphereon/ssi-sdk.core": "workspace:*",
+    "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
+    "@sphereon/ssi-sdk.vc-status-list-issuer-drivers": "workspace:*",
+    "@sphereon/ssi-types": "workspace:*",
+    "@sphereon/vc-status-list": "7.0.0-next.0",
+    "@veramo/core": "4.2.0",
+    "debug": "^4.3.5",
+    "express": "^4.19.2",
+    "reflect-metadata": "^0.1.14",
+    "typeorm": "^0.3.20",
+    "uint8arrays": "^3.1.1",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@sphereon/did-uni-client": "^0.6.3",
+    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.24.1-next.96",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.24.1-next.96",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-next.96",
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
+    "@sphereon/ssi-sdk.data-store": "workspace:*",
+    "@sphereon/ssi-sdk.vc-handler-ld-local": "workspace:*",
+    "@types/body-parser": "^1.19.5",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/cors": "^2.8.17",
+    "@types/debug": "^4.1.12",
+    "@types/dotenv-flow": "^3.3.3",
+    "@types/express": "^4.17.21",
+    "@types/express-http-proxy": "^1.6.6",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^18.19.41",
+    "@types/passport": "^1.0.16",
+    "@types/uuid": "^9.0.8",
+    "@veramo/credential-w3c": "4.2.0",
+    "@veramo/data-store": "4.2.0",
+    "@veramo/did-manager": "4.2.0",
+    "@veramo/did-provider-key": "4.2.0",
+    "@veramo/did-provider-web": "4.2.0",
+    "@veramo/did-resolver": "4.2.0",
+    "@veramo/key-manager": "4.2.0",
+    "@veramo/kms-local": "4.2.0",
+    "@veramo/utils": "4.2.0",
+    "did-resolver": "^4.1.0",
+    "morgan": "^1.10.0",
+    "typescript": "5.4.2"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-OpenSource/ssi-sdk.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sphereon",
+    "SSI",
+    "StatusList2021"
+  ]
+}

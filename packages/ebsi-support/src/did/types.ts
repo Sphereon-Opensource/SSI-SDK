@@ -1,6 +1,6 @@
 import { W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentContext, IIdentifier, IKeyManager, MinimalImportableKey, TKeyType } from '@veramo/core'
-import { IService } from '@veramo/core/build/types/IIdentifier'
+import { IService } from '@veramo/core'
 import { DIDDocument } from 'did-resolver'
 import { AccessListish, BigNumberish, BytesLike } from 'ethers'
 import { ApiOpts, EbsiEnvironment } from '../types/IEbsiSupport'
@@ -84,6 +84,7 @@ export type EbsiCreateIdentifierOpts = {
   rpcId?: number
   secp256k1Key?: IKeyOpts
   secp256r1Key?: IKeyOpts
+  did?: string
   keys?: IKeyOpts[] // additional importable keys, but only in case execute ledger is true
   executeLedgerOperation?: boolean // Whether to persist on the EBSI ledger. By default looks at whether access token opts are set or not
   baseDocument?: string

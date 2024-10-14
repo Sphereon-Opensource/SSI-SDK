@@ -1,7 +1,7 @@
 import { IDIDManager, IIdentifier, IResolver, TAgent, TKeyType } from '@veramo/core'
 import { _ExtendedIKey } from '@veramo/utils'
 import { RequiredContext } from '../siop-service'
-import { KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
@@ -14,7 +14,7 @@ export type CreateOrGetIdentifierOpts = {
 }
 
 export type CreateIdentifierCreateOpts = {
-  kms?: KeyManagementSystemEnum
+  kms?: string
   alias?: string
   options?: IdentifierProviderOpts
 }

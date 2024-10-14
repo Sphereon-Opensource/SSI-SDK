@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk.vc-status-list-issuer-drivers",
   "description": "Sphereon SSI-SDK plugin for Status List management, like StatusList2021. Issuer drivers module",
-  "version": "0.29.0",
+  "version": "0.30.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@sphereon/ssi-express-support": "workspace:*",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-next.96",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-next.96",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.130",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.130",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",

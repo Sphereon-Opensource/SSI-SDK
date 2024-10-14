@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk.vc-status-list",
   "description": "Sphereon SSI-SDK plugin for Status List management, like StatusList2021.",
-  "version": "0.29.0",
+  "version": "0.30.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,14 +10,15 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-next.96",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-next.96",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.130",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.130",
     "@sphereon/ssi-types": "workspace:*",
     "@sphereon/vc-status-list": "7.0.0-next.0",
     "@veramo/core": "4.2.0",
     "@veramo/credential-status": "4.2.0",
     "credential-status": "^2.0.6",
     "debug": "^4.3.5",
+    "typeorm": "^0.3.20",
     "uint8arrays": "^3.1.1"
   },
   "devDependencies": {
