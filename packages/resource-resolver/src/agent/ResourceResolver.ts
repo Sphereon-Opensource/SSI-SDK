@@ -11,7 +11,6 @@ import {
   deserializeResponse,
   getResourceIdentifier,
   isCacheWithinMaxAge,
-  isRequestCacheable,
   serializeResponse
 } from '../utils/ResourceResolverUtils'
 import {
@@ -90,11 +89,7 @@ export class ResourceResolver implements IAgentPlugin {
     const resourceIdentifier = getResourceIdentifier(input)
 
     const cachedResource = await this.getResource({ resourceIdentifier, storeId, namespace })
-    if (
-      cachedResource.value &&
-      isCacheWithinMaxAge(cachedResource, resolveOpts) &&
-      isRequestCacheable(input, resolveOpts)
-    ) {
+    if (cachedResource.value && isCacheWithinMaxAge(cachedResource.value, resolveOpts)) {
       return deserializeResponse(cachedResource.value.response);
     }
 

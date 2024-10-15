@@ -113,7 +113,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
-      expect(called).toEqual(2)
+      expect(called).toEqual(1)
     })
 
     it('should get resource with PUT request', async (): Promise<void> => {
@@ -149,7 +149,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
-      expect(called).toEqual(2)
+      expect(called).toEqual(1)
     })
 
     it('should get resource with DELETE request', async (): Promise<void> => {
@@ -185,7 +185,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
-      expect(called).toEqual(2)
+      expect(called).toEqual(1)
     })
 
     it('should get resource with HEAD request', async (): Promise<void> => {
@@ -250,7 +250,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
-      expect(called).toEqual(2)
+      expect(called).toEqual(1)
     })
 
     it('should get resource with CONNECT request', async (): Promise<void> => {
@@ -280,7 +280,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(response2).toBeDefined()
 
       expect(response2.status).toEqual(200)
-      expect(called).toEqual(2)
+      expect(called).toEqual(1)
     })
 
     it('should get resource with TRACE request', async (): Promise<void> => {
@@ -310,7 +310,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(response2).toBeDefined()
 
       expect(response2.status).toEqual(200)
-      expect(called).toEqual(2)
+      expect(called).toEqual(1)
     })
 
     it('should get resource with PATCH request', async (): Promise<void> => {
@@ -346,7 +346,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
-      expect(called).toEqual(2)
+      expect(called).toEqual(1)
     })
 
     it('should fetch resource when resource insertion exceeds max age option', async (): Promise<void> => {
