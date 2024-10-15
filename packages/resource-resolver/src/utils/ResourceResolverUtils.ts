@@ -1,6 +1,7 @@
+import { IValueData } from '@sphereon/ssi-sdk.kv-store-temp'
 import { Headers, Response, Request } from 'cross-fetch'
 import * as u8a from 'uint8arrays'
-import { SerializedResponse } from '../types/IResourceResolver'
+import { ResolveOptions, Resource, SerializedResponse } from '../types/IResourceResolver'
 
 export const getResourceIdentifier = (input: Request | string | URL): string => {
   if (typeof input === 'string') {
@@ -42,4 +43,14 @@ export const deserializeResponse = async (data: SerializedResponse): Promise<Res
     statusText,
     headers: new Headers(headers)
   })
+}
+
+// Check if the cache is still within the acceptable age
+export const isCacheWithinMaxAge = (cachedResource: IValueData<Resource>, resolveOpts?: ResolveOptions): boolean => {
+  return !!cachedResource.value && (resolveOpts?.maxAgeMs === undefined || (Date.now() - cachedResource.value.insertedAt < resolveOpts.maxAgeMs))
+}
+
+// Check if the request should use the cache
+export const isRequestCacheable = (input: RequestInfo | URL, resolveOpts?: ResolveOptions): boolean => {
+  return !(input instanceof Request) || input.method === 'GET' || input.method === 'HEAD' || !!resolveOpts?.onlyCache
 }
