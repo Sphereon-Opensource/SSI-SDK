@@ -90,43 +90,263 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         body: JSON.stringify({ test_field: 'test_value' })
       })
 
+      let called = 0
       nock(url.origin).post(url.pathname, { test_field: 'test_value' })
-        .reply(200, responseBody)
+        .times(2)
+        .reply(200, () => {
+          called++
+          return responseBody
+        })
 
-      const response = await agent.resourceResolve({
+      const response1 = await agent.resourceResolve({
         input: requestInfo,
         resourceType: 'test_type'
       })
-      expect(response).toBeDefined()
-      const responseData = await response.json()
+      expect(response1).toBeDefined()
+
+      const response2 = await agent.resourceResolve({
+        input: requestInfo,
+        resourceType: 'test_type'
+      })
+      expect(response2).toBeDefined()
+      const responseData = await response2.json()
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
+      expect(called).toEqual(2)
     })
 
-    it('should fetch resource with POST request with different body', async (): Promise<void> => { // TODO finish test
-      const url = new URL('https://example.com/post_bodies')
+    it('should get resource with PUT request', async (): Promise<void> => {
+      const url = new URL('https://example.com/put')
       const responseBody = {
         resource: 'test_value',
       }
       const requestInfo = new Request(url.toString(), {
-        method: 'POST',
+        method: 'PUT',
         body: JSON.stringify({ test_field: 'test_value' })
       })
 
-      nock(url.origin).post(url.pathname, { test_field: 'test_value' })
+      let called = 0
+      nock(url.origin).put(url.pathname, { test_field: 'test_value' })
         .times(2)
-        .reply(200, responseBody)
+        .reply(200, () => {
+          called++
+          return responseBody
+        })
 
-      const response = await agent.resourceResolve({
+      const response1 = await agent.resourceResolve({
         input: requestInfo,
         resourceType: 'test_type'
       })
-      expect(response).toBeDefined()
-      const responseData = await response.json()
+      expect(response1).toBeDefined()
+
+      const response2 = await agent.resourceResolve({
+        input: requestInfo,
+        resourceType: 'test_type'
+      })
+      expect(response2).toBeDefined()
+      const responseData = await response2.json()
 
       expect(responseData).toBeDefined()
       expect(responseData.resource).toEqual(responseBody.resource)
+      expect(called).toEqual(2)
+    })
+
+    it('should get resource with DELETE request', async (): Promise<void> => {
+      const url = new URL('https://example.com/delete')
+      const responseBody = {
+        resource: 'test_value',
+      }
+      const requestInfo = new Request(url.toString(), {
+        method: 'DELETE',
+        body: JSON.stringify({ test_field: 'test_value' })
+      })
+
+      let called = 0
+      nock(url.origin).delete(url.pathname, { test_field: 'test_value' })
+        .times(2)
+        .reply(200, () => {
+          called++
+          return responseBody
+        })
+
+      const response1 = await agent.resourceResolve({
+        input: requestInfo,
+        resourceType: 'test_type'
+      })
+      expect(response1).toBeDefined()
+
+      const response2 = await agent.resourceResolve({
+        input: requestInfo,
+        resourceType: 'test_type'
+      })
+      expect(response2).toBeDefined()
+      const responseData = await response2.json()
+
+      expect(responseData).toBeDefined()
+      expect(responseData.resource).toEqual(responseBody.resource)
+      expect(called).toEqual(2)
+    })
+
+    it('should get resource with HEAD request', async (): Promise<void> => {
+      const url = new URL('https://example.com/head')
+      const requestInfo = new Request(url.toString(), {
+        method: 'HEAD'
+      })
+
+      let called = 0
+      nock(url.origin).head(url.pathname)
+        .times(2)
+        .reply(200, () => {
+          called++
+        })
+
+      const response1 = await agent.resourceResolve({
+        input: requestInfo,
+        resourceType: 'test_type'
+      })
+      expect(response1).toBeDefined()
+
+      const response2 = await agent.resourceResolve({
+        input: requestInfo,
+        resourceType: 'test_type'
+      })
+      expect(response2).toBeDefined()
+
+      expect(response2.status).toEqual(200)
+      expect(called).toEqual(1)
+    })
+
+    it('should get resource with OPTIONS request', async (): Promise<void> => {
+      const url = new URL('https://example.com/options')
+      const responseBody = {
+        resource: 'test_value',
+      }
+      const requestInfo = new Request(url.toString(), {
+        method: 'OPTIONS',
+        body: JSON.stringify({ test_field: 'test_value' })
+      })
+
+      let called = 0
+      nock(url.origin).options(url.pathname, { test_field: 'test_value' })
+        .times(2)
+        .reply(200, () => {
+          called++
+          return responseBody
+        })
+
+      const response1 = await agent.resourceResolve({
+        input: requestInfo,
+        resourceType: 'test_type'
+      })
+      expect(response1).toBeDefined()
+
+      const response2 = await agent.resourceResolve({
+        input: requestInfo,
+        resourceType: 'test_type'
+      })
+      expect(response2).toBeDefined()
+      const responseData = await response2.json()
+
+      expect(responseData).toBeDefined()
+      expect(responseData.resource).toEqual(responseBody.resource)
+      expect(called).toEqual(2)
+    })
+
+    it('should get resource with CONNECT request', async (): Promise<void> => {
+      const url = new URL('https://example.com/connect')
+      const requestInfo = new Request(url.toString(), {
+        method: 'CONNECT'
+      })
+
+      let called = 0
+      nock(url.origin)
+        .intercept(url.pathname, 'CONNECT')
+        .times(2)
+        .reply(200, () => {
+          called++
+        })
+
+      const response1 = await agent.resourceResolve({
+        input: requestInfo,
+        resourceType: 'test_type'
+      })
+      expect(response1).toBeDefined()
+
+      const response2 = await agent.resourceResolve({
+        input: requestInfo,
+        resourceType: 'test_type'
+      })
+      expect(response2).toBeDefined()
+
+      expect(response2.status).toEqual(200)
+      expect(called).toEqual(2)
+    })
+
+    it('should get resource with TRACE request', async (): Promise<void> => {
+      const url = new URL('https://example.com/trace')
+      const requestInfo = new Request(url.toString(), {
+        method: 'TRACE'
+      })
+
+      let called = 0
+      nock(url.origin)
+        .intercept(url.pathname, 'TRACE')
+        .times(2)
+        .reply(200, () => {
+          called++
+        })
+
+      const response1 = await agent.resourceResolve({
+        input: requestInfo,
+        resourceType: 'test_type'
+      })
+      expect(response1).toBeDefined()
+
+      const response2 = await agent.resourceResolve({
+        input: requestInfo,
+        resourceType: 'test_type'
+      })
+      expect(response2).toBeDefined()
+
+      expect(response2.status).toEqual(200)
+      expect(called).toEqual(2)
+    })
+
+    it('should get resource with PATCH request', async (): Promise<void> => {
+      const url = new URL('https://example.com/patch')
+      const responseBody = {
+        resource: 'test_value',
+      }
+      const requestInfo = new Request(url.toString(), {
+        method: 'PATCH',
+        body: JSON.stringify({ test_field: 'test_value' })
+      })
+
+      let called = 0
+      nock(url.origin).patch(url.pathname, { test_field: 'test_value' })
+        .times(2)
+        .reply(200, () => {
+          called++
+          return responseBody
+        })
+
+      const response1 = await agent.resourceResolve({
+        input: requestInfo,
+        resourceType: 'test_type'
+      })
+      expect(response1).toBeDefined()
+
+      const response2 = await agent.resourceResolve({
+        input: requestInfo,
+        resourceType: 'test_type'
+      })
+      expect(response2).toBeDefined()
+      const responseData = await response2.json()
+
+      expect(responseData).toBeDefined()
+      expect(responseData.resource).toEqual(responseBody.resource)
+      expect(called).toEqual(2)
     })
 
     it('should fetch resource when resource insertion exceeds max age option', async (): Promise<void> => {
