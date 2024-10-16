@@ -146,7 +146,32 @@ export async function getCredentialSignerCallback(
     proofFormat = format?.includes('ld') ? 'lds' : 'jwt'
     const issuer = resolution.issuer ?? resolution.kmsKeyRef
 
-    if (CredentialMapper.isW3cCredential(credential)) {
+    if (CredentialMapper.isSdJwtDecodedCredentialPayload(credential)) {
+      const sdJwtPayload = credential as SdJwtVcPayload
+      if (sdJwtPayload.iss === undefined) {
+        sdJwtPayload.iss = issuer
+      }
+      if (sdJwtPayload.iat === undefined) {
+        sdJwtPayload.iat = Math.floor(new Date().getTime() / 1000)
+      }
+
+      let disclosureFrame
+      if ('disclosureFrame' in credential) {
+        disclosureFrame = credential['disclosureFrame']
+        delete credential['disclosureFrame']
+      } else {
+        disclosureFrame = {
+          _sd: credential['_sd'],
+        }
+      }
+      const result = await context.agent.createSdJwtVc({
+        credentialPayload: sdJwtPayload,
+        disclosureFrame: disclosureFrame,
+      })
+      return result.credential
+    } /*else if (CredentialMapper.isMsoMdocDecodedCredential(credential)) {
+      TODO
+    }*/ else {
       if (!credential.issuer) {
         credential.issuer = { id: issuer }
       } else if (typeof credential.issuer === 'object' && !credential.issuer.id) {
@@ -179,32 +204,7 @@ export async function getCredentialSignerCallback(
         domain: typeof credential.issuer === 'object' ? credential.issuer.id : credential.issuer,
       })
       return (proofFormat === 'jwt' && 'jwt' in result.proof ? result.proof.jwt : result) as W3CVerifiableCredential
-    } else if (CredentialMapper.isSdJwtDecodedCredentialPayload(credential)) {
-      const sdJwtPayload = credential as SdJwtVcPayload
-      if (sdJwtPayload.iss === undefined) {
-        sdJwtPayload.iss = issuer
-      }
-      if (sdJwtPayload.iat === undefined) {
-        sdJwtPayload.iat = Math.floor(new Date().getTime() / 1000)
-      }
-
-      let disclosureFrame
-      if ('disclosureFrame' in credential) {
-        disclosureFrame = credential['disclosureFrame']
-        delete credential['disclosureFrame']
-      } else {
-        disclosureFrame = {
-          _sd: credential['_sd'],
-        }
-      }
-      const result = await context.agent.createSdJwtVc({
-        credentialPayload: sdJwtPayload,
-        disclosureFrame: disclosureFrame,
-      })
-      return result.credential
-    } /*else if (CredentialMapper.isMsoMdocDecodedCredential(credential)) {
-      TODO
-    }*/
+    }
     return Promise.reject('VC issuance failed, an incorrect or unsupported credential was supplied')
   }
 
