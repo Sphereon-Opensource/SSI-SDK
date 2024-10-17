@@ -80,7 +80,12 @@ export interface IPartialCredentialBranding extends Partial<Omit<ICredentialBran
   localeBranding?: IPartialCredentialLocaleBranding
 }
 
-export interface IIssuerLocaleBranding extends ILocaleBranding {}
+export interface IIssuerLocaleBranding extends ILocaleBranding {
+  clientUri?: string
+  tosUri?: string
+  policyUri?: string
+  contacts?: Array<string>
+}
 export interface IBasicIssuerLocaleBranding
   extends Omit<IIssuerLocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text'> {
   logo?: IBasicImageAttributes
