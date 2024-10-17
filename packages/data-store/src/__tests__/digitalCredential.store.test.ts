@@ -9,8 +9,10 @@ import {
   CredentialStateType,
   DocumentType,
   DigitalCredential,
-} from '../types/digitalCredential/digitalCredential'
-import { AddCredentialArgs, GetCredentialsArgs, GetCredentialsResponse } from '../types/digitalCredential/IAbstractDigitalCredentialStore'
+  AddCredentialArgs,
+  GetCredentialsArgs,
+  GetCredentialsResponse
+} from '../types'
 import { IVerifiablePresentation } from '@sphereon/ssi-types'
 import { createHash } from 'crypto'
 
