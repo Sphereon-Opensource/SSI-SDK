@@ -3,8 +3,8 @@ import { DataSource } from 'typeorm'
 import { AuditLoggingEvent } from '@sphereon/ssi-sdk.core'
 import { OrPromise } from '@sphereon/ssi-types'
 import { AbstractEventLoggerStore } from './AbstractEventLoggerStore'
-import { AuditEventEntity, auditEventEntityFrom } from '../entities/eventLogger/AuditEventEntity'
-import { auditEventFrom } from '../utils/eventLogger/MappingUtils'
+import { AuditEventEntity } from '../entities/eventLogger/AuditEventEntity'
+import { auditEventEntityFrom, auditEventFrom } from '../utils/eventLogger/MappingUtils'
 import { GetAuditEventsArgs, StoreAuditEventArgs } from '../types'
 
 const debug: Debugger = Debug('sphereon:ssi-sdk:event-store')
@@ -18,7 +18,7 @@ export class EventLoggerStore extends AbstractEventLoggerStore {
   }
 
   getAuditEvents = async (args?: GetAuditEventsArgs): Promise<Array<AuditLoggingEvent>> => {
-    const connection: DataSource = await this.dbConnection // TODO apply everywhere
+    const connection: DataSource = await this.dbConnection
     debug('Getting audit events', args)
     const result: Array<AuditEventEntity> = await connection.getRepository(AuditEventEntity).find({
       ...(args?.filter && { where: args?.filter }),

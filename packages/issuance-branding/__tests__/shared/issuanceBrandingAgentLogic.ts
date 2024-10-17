@@ -764,6 +764,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         localeBranding: [
           {
             alias: 'issuerAlias',
+            clientUri: 'test_uri',
+            tosUri: 'test_uri',
+            policyUri: 'test_uri',
+            contacts: ['test_email_address1', 'test_email_address2'],
             locale: 'en-US',
             logo: {
               uri: 'https://media.licdn.com/dms/image/C560BAQH_Mh53yhI5xw/company-logo_200_200/0/1556030486007?e=2147483647&v=beta&t=GzkCQ7R9LiixkRJVob7_iKRoEgEUH1FE6O6oz6ZgVEc',
@@ -786,9 +790,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const result: IIssuerBranding = await agent.ibAddIssuerBranding(issuerBranding)
 
-      expect(result).toBeDefined()
+
       expect(result).toBeDefined()
       expect(result?.localeBranding.length).toEqual(1)
+      // TODO check for the actual values like we do in the entity tests, apply this to all other tests as well
+      expect(result?.localeBranding[0].clientUri).toBeDefined()
+      expect(result?.localeBranding[0].tosUri).toBeDefined()
+      expect(result?.localeBranding[0].policyUri).toBeDefined()
+      expect(result?.localeBranding[0].contacts).toBeDefined()
       expect(result?.localeBranding[0].logo?.dataUri).toBeDefined()
       expect(result?.localeBranding[0].logo?.mediaType).toBeDefined()
       expect(result?.localeBranding[0].logo?.dimensions).toBeDefined()

@@ -1,8 +1,7 @@
 import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
-import { IBasicBackgroundAttributes } from '../../types'
-import { ImageAttributesEntity, imageAttributesEntityFrom } from './ImageAttributesEntity'
+import { ImageAttributesEntity } from './ImageAttributesEntity'
 import { validate, Validate, ValidationError } from 'class-validator'
-import { isEmptyString, IsNonEmptyStringConstraint } from '../validators'
+import { IsNonEmptyStringConstraint } from '../validators'
 
 @Entity('BackgroundAttributes')
 export class BackgroundAttributesEntity extends BaseEntity {
@@ -31,12 +30,4 @@ export class BackgroundAttributesEntity extends BaseEntity {
     }
     return
   }
-}
-
-export const backgroundAttributesEntityFrom = (args: IBasicBackgroundAttributes): BackgroundAttributesEntity => {
-  const backgroundAttributesEntity: BackgroundAttributesEntity = new BackgroundAttributesEntity()
-  backgroundAttributesEntity.color = isEmptyString(args.color) ? undefined : args.color
-  backgroundAttributesEntity.image = args.image ? imageAttributesEntityFrom(args.image) : undefined
-
-  return backgroundAttributesEntity
 }

@@ -12,8 +12,7 @@ import {
 } from 'typeorm'
 import { ArrayMinSize, IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
-import { IssuerLocaleBrandingEntity, issuerLocaleBrandingEntityFrom } from './IssuerLocaleBrandingEntity'
-import { IBasicIssuerBranding, IBasicIssuerLocaleBranding } from '../../types'
+import { IssuerLocaleBrandingEntity } from './IssuerLocaleBrandingEntity'
 
 @Entity('IssuerBranding')
 @Index('IDX_IssuerBrandingEntity_issuerCorrelationId', ['issuerCorrelationId'])
@@ -60,14 +59,4 @@ export class IssuerBrandingEntity extends BaseEntity {
     }
     return
   }
-}
-
-export const issuerBrandingEntityFrom = (args: IBasicIssuerBranding): IssuerBrandingEntity => {
-  const issuerBrandingEntity: IssuerBrandingEntity = new IssuerBrandingEntity()
-  issuerBrandingEntity.issuerCorrelationId = args.issuerCorrelationId
-  issuerBrandingEntity.localeBranding = args.localeBranding.map((localeBranding: IBasicIssuerLocaleBranding) =>
-    issuerLocaleBrandingEntityFrom(localeBranding),
-  )
-
-  return issuerBrandingEntity
 }

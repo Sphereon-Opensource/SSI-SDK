@@ -1,8 +1,7 @@
 import { ActionSubType, ActionType, InitiatorType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { PartyCorrelationType } from '@sphereon/ssi-sdk.core'
-import { NonPersistedAuditLoggingEvent } from '../../types'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 
 @Entity('AuditEvents')
 export class AuditEventEntity extends BaseEntity {
@@ -65,28 +64,4 @@ export class AuditEventEntity extends BaseEntity {
 
   @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: typeOrmDateTime() })
   lastUpdatedAt!: Date
-}
-
-export const auditEventEntityFrom = (args: NonPersistedAuditLoggingEvent): AuditEventEntity => {
-  const auditEventEntity: AuditEventEntity = new AuditEventEntity()
-  auditEventEntity.timestamp = args.timestamp
-  auditEventEntity.level = args.level
-  auditEventEntity.correlationId = args.correlationId
-  auditEventEntity.system = args.system
-  auditEventEntity.subSystemType = args.subSystemType
-  auditEventEntity.actionType = args.actionType
-  auditEventEntity.actionSubType = args.actionSubType
-  auditEventEntity.initiatorType = args.initiatorType
-  auditEventEntity.systemCorrelationIdType = args.systemCorrelationIdType
-  auditEventEntity.systemCorrelationId = args.systemCorrelationId
-  auditEventEntity.systemAlias = args.systemAlias
-  auditEventEntity.partyCorrelationType = args.partyCorrelationType
-  auditEventEntity.partyCorrelationId = args.partyCorrelationId
-  auditEventEntity.partyAlias = args.partyAlias
-  auditEventEntity.description = args.description
-  auditEventEntity.partyCorrelationType = args.partyCorrelationType
-  auditEventEntity.data = JSON.stringify(args.data)
-  auditEventEntity.diagnosticData = JSON.stringify(args.diagnosticData)
-
-  return auditEventEntity
 }

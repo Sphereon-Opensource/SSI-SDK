@@ -8,14 +8,14 @@ import { DidAuthConfigEntity } from './entities/contact/DidAuthConfigEntity'
 import { IdentityEntity } from './entities/contact/IdentityEntity'
 import { IdentityMetadataItemEntity } from './entities/contact/IdentityMetadataItemEntity'
 import { OpenIdConfigEntity } from './entities/contact/OpenIdConfigEntity'
-import { BackgroundAttributesEntity, backgroundAttributesEntityFrom } from './entities/issuanceBranding/BackgroundAttributesEntity'
-import { CredentialBrandingEntity, credentialBrandingEntityFrom } from './entities/issuanceBranding/CredentialBrandingEntity'
-import { CredentialLocaleBrandingEntity, credentialLocaleBrandingEntityFrom } from './entities/issuanceBranding/CredentialLocaleBrandingEntity'
-import { ImageAttributesEntity, imageAttributesEntityFrom } from './entities/issuanceBranding/ImageAttributesEntity'
-import { ImageDimensionsEntity, imageDimensionsEntityFrom } from './entities/issuanceBranding/ImageDimensionsEntity'
-import { IssuerLocaleBrandingEntity, issuerLocaleBrandingEntityFrom } from './entities/issuanceBranding/IssuerLocaleBrandingEntity'
-import { IssuerBrandingEntity, issuerBrandingEntityFrom } from './entities/issuanceBranding/IssuerBrandingEntity'
-import { TextAttributesEntity, textAttributesEntityFrom } from './entities/issuanceBranding/TextAttributesEntity'
+import { BackgroundAttributesEntity } from './entities/issuanceBranding/BackgroundAttributesEntity'
+import { CredentialBrandingEntity } from './entities/issuanceBranding/CredentialBrandingEntity'
+import { CredentialLocaleBrandingEntity } from './entities/issuanceBranding/CredentialLocaleBrandingEntity'
+import { ImageAttributesEntity } from './entities/issuanceBranding/ImageAttributesEntity'
+import { ImageDimensionsEntity } from './entities/issuanceBranding/ImageDimensionsEntity'
+import { IssuerLocaleBrandingEntity } from './entities/issuanceBranding/IssuerLocaleBrandingEntity'
+import { IssuerBrandingEntity } from './entities/issuanceBranding/IssuerBrandingEntity'
+import { TextAttributesEntity } from './entities/issuanceBranding/TextAttributesEntity'
 import { StatusListEntity } from './entities/statusList2021/StatusList2021Entity'
 import { StatusListEntryEntity } from './entities/statusList2021/StatusList2021EntryEntity'
 import { MachineStateInfoEntity } from './entities/machineState/MachineStateInfoEntity'
@@ -33,10 +33,8 @@ export { DigitalCredentialStore } from './digitalCredential/DigitalCredentialSto
 export { AbstractIssuanceBrandingStore } from './issuanceBranding/AbstractIssuanceBrandingStore'
 export { IssuanceBrandingStore } from './issuanceBranding/IssuanceBrandingStore'
 export { StatusListStore } from './statusList/StatusListStore'
-import { AuditEventEntity, auditEventEntityFrom } from './entities/eventLogger/AuditEventEntity'
+import { AuditEventEntity } from './entities/eventLogger/AuditEventEntity'
 import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCredentialEntity'
-import { digitalCredentialFrom, digitalCredentialsFrom, nonPersistedDigitalCredentialEntityFromAddArgs } from './utils/digitalCredential/MappingUtils'
-import { isPresentationDefinitionEqual } from './utils/presentationDefinition/MappingUtils'
 import { PresentationDefinitionItemEntity } from './entities/presentationDefinition/PresentationDefinitionItemEntity'
 import { ContactMetadataItemEntity } from './entities/contact/ContactMetadataItemEntity'
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
@@ -59,6 +57,10 @@ export {
 export * from './types'
 export * from './utils/contact/MappingUtils'
 export * from './utils/digitalCredential/MappingUtils'
+export * from './utils/eventLogger/MappingUtils'
+export * from './utils/issuanceBranding/MappingUtils'
+export * from './utils/presentationDefinition/MappingUtils'
+export * from './utils/hasher'
 
 export const DataStoreContactEntities = [
   BaseConfigEntity,
@@ -133,28 +135,13 @@ export {
   IssuerLocaleBrandingEntity,
   ElectronicAddressEntity,
   PhysicalAddressEntity,
-  backgroundAttributesEntityFrom,
-  credentialBrandingEntityFrom,
-  imageAttributesEntityFrom,
-  imageDimensionsEntityFrom,
-  issuerBrandingEntityFrom,
-  textAttributesEntityFrom,
-  issuerLocaleBrandingEntityFrom,
-  credentialLocaleBrandingEntityFrom,
   IStatusListEntity,
   IStatusListEntryEntity,
   StatusListEntity,
   StatusListEntryEntity,
   AuditEventEntity,
-  auditEventEntityFrom,
   DigitalCredentialEntity,
-  digitalCredentialFrom,
-  digitalCredentialsFrom,
-  nonPersistedDigitalCredentialEntityFromAddArgs,
   MachineStateInfoEntity,
   PresentationDefinitionItemEntity,
-  isPresentationDefinitionEqual,
   ContactMetadataItemEntity,
 }
-
-export * from './utils/hasher'
