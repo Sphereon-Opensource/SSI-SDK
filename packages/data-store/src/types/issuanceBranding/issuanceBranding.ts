@@ -92,10 +92,11 @@ export interface IBasicIssuerLocaleBranding
   background?: IBasicBackgroundAttributes
   text?: IBasicTextAttributes
 }
-export interface IPartialIssuerLocaleBranding extends Partial<Omit<IIssuerLocaleBranding, 'logo' | 'background' | 'text'>> {
+export interface IPartialIssuerLocaleBranding extends Partial<Omit<IIssuerLocaleBranding, 'logo' | 'background' | 'text' | 'contacts'>> {
   logo?: IPartialImageAttributes
   background?: IPartialBackgroundAttributes
   text?: IPartialTextAttributes
+  contacts?: string
 }
 
 export interface IIssuerBranding {
@@ -108,7 +109,7 @@ export interface IIssuerBranding {
 export interface IBasicIssuerBranding extends Omit<IIssuerBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'localeBranding'> {
   localeBranding: Array<IBasicIssuerLocaleBranding>
 }
-export interface IPartialIssuerBranding extends Partial<Omit<ICredentialBranding, 'localeBranding'>> {
+export interface IPartialIssuerBranding extends Partial<Omit<IIssuerBranding, 'localeBranding'>> {
   localeBranding?: IPartialIssuerLocaleBranding
 }
 
