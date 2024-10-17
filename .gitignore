@@ -70,6 +70,7 @@ test/*.js
 /packages/issuance-branding/plugin.schema.json
 /packages/oid4vci-issuer-rest-client/plugin.schema.json
 /packages/xstate-persistence/plugin.schema.json
+/packages/oidf-client/plugin.schema.json
 
 **/.env.energyshr
 **/.env.local

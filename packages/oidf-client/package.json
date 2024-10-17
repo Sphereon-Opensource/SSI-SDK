@@ -17,12 +17,14 @@
 	"dependencies": {
 		"openid-federation-modules-openapi": "link:../../../OpenID-Federation/build/js/packages/openid-federation-modules-openapi",
 		"openid-federation-modules-openid-federation-client": "link:../../../OpenID-Federation/build/js/packages/openid-federation-modules-openid-federation-client",
-		"openid-federation-modules-openid-federation-common": "link:../../../OpenID-Federation/build/js/packages/openid-federation-modules-openid-federation-common"
+		"openid-federation-modules-openid-federation-common": "link:../../../OpenID-Federation/build/js/packages/openid-federation-modules-openid-federation-common",
+		"@sphereon/ssi-types": "workspace:*"
 	},
 	"devDependencies": {
 		"@sphereon/ssi-sdk.agent-config": "workspace:*",
 		"@veramo/remote-client": "4.2.0",
-		"@veramo/remote-server": "4.2.0"
+		"@veramo/remote-server": "4.2.0",
+		"jose": "5.9.4"
 	},
 	"files": [
 		"dist/**/*",
