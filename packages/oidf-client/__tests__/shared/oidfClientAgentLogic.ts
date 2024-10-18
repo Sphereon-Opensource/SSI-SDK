@@ -1,6 +1,5 @@
 import {TAgent} from '@veramo/core'
 import {IOIDFClient} from "../../src";
-import {CryptoPlatformCallback} from "./CryptoPlatformTestCallback";
 import {mockResponses} from "./TrustChainMockResponses";
 import nock = require('nock');
 
@@ -13,7 +12,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     beforeAll(async (): Promise<void> => {
       await testContext.setup()
       agent = testContext.getAgent()
-      await agent.registerCryptoServiceCallback(new CryptoPlatformCallback())
 
       const url = new URL(mockResponses[0][0])
       nock(url.origin).get(url.pathname).reply(200, mockResponses[0][1], { 'Content-Type': "application/entity-statement+jwt" })

@@ -1,8 +1,6 @@
 import {IAgentPlugin} from "@veramo/core";
 import {
     IOIDFClient,
-    RegisterCryptoServiceCallbackArgs,
-    RegisterCryptoServiceCallbackResult,
     ResolveTrustChainArgs,
     ResolveTrustChainCallbackResult,
     VerifyJwtArgs,
@@ -31,17 +29,12 @@ export class OIDFClient implements IAgentPlugin {
 
     readonly methods: IOIDFClient = {
         resolveTrustChain: this.resolveTrustChain.bind(this),
-        registerCryptoServiceCallback: this.registerCryptoServiceCallback.bind(this),
         verifyJwt: this.verifyJwt.bind(this)
     }
 
     private async resolveTrustChain(args: ResolveTrustChainArgs): Promise<ResolveTrustChainCallbackResult> {
         const { entityIdentifier, trustAnchors } = args
         return this.oidfClient.resolveTrustChain(entityIdentifier, trustAnchors)
-    }
-
-    private async registerCryptoServiceCallback(platformCallback: RegisterCryptoServiceCallbackArgs): Promise<RegisterCryptoServiceCallbackResult> {
-        CryptoServiceJS.register(platformCallback);
     }
 
     private async verifyJwt(args: VerifyJwtArgs): Promise<VerifyJwtResult> {
