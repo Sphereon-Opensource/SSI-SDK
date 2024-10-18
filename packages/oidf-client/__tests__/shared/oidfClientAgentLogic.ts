@@ -1,6 +1,8 @@
 import {TAgent} from '@veramo/core'
 import {IOIDFClient} from "../../src";
 import {CryptoPlatformCallback} from "./CryptoPlatformTestCallback";
+import {mockResponses} from "./TrustChainMockResponses";
+import nock = require('nock');
 
 type ConfiguredAgent = TAgent<IOIDFClient>
 
@@ -12,12 +14,35 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await testContext.setup()
       agent = testContext.getAgent()
       await agent.registerCryptoServiceCallback(new CryptoPlatformCallback())
+
+      const url = new URL(mockResponses[0][0])
+      nock(url.origin).get(url.pathname).reply(200, mockResponses[0][1], { 'Content-Type': "application/entity-statement+jwt" })
+
+      const url1 = new URL(mockResponses[1][0])
+      nock(url1.origin).get(url1.pathname).reply(200, mockResponses[1][1], { 'Content-Type': "application/entity-statement+jwt" })
+
+      const url2 = new URL(mockResponses[2][0])
+      nock(url2.origin).get(url2.pathname).reply(200, mockResponses[2][1], { 'Content-Type': "application/entity-statement+jwt" })
+
+      const url3 = new URL(mockResponses[3][0])
+      nock(url3.origin).get(url3.pathname).reply(200, mockResponses[3][1], { 'Content-Type': "application/entity-statement+jwt" })
+
+      const url4 = new URL(mockResponses[4][0])
+      nock(url4.origin).get(url4.pathname).reply(200, mockResponses[4][1], { 'Content-Type': "application/entity-statement+jwt" })
+
+      const url5 = new URL(mockResponses[5][0])
+      nock(url5.origin).get(url5.pathname).reply(200, mockResponses[5][1], { 'Content-Type': "application/entity-statement+jwt" })
     })
 
     afterAll(testContext.tearDown)
 
-    it('should resolve trust chains', async () => {
+    it('should build a trust chain', async () => {
+      const trustChain = await agent.resolveTrustChain({
+        entityIdentifier: "https://spid.wbss.it/Spid/oidc/rp/ipasv_lt",
+        trustAnchors:["https://oidc.registry.servizicie.interno.gov.it"]
+      })
 
+      expect(trustChain).toBeDefined()
     })
 
     it('should verify JWTs', async () => {

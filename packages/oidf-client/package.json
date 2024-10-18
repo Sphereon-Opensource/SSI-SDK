@@ -24,7 +24,8 @@
 		"@sphereon/ssi-sdk.agent-config": "workspace:*",
 		"@veramo/remote-client": "4.2.0",
 		"@veramo/remote-server": "4.2.0",
-		"jose": "5.9.4"
+		"jose": "5.9.4",
+		"nock": "^13.5.5"
 	},
 	"files": [
 		"dist/**/*",

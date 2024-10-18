@@ -1486,6 +1486,9 @@ importers:
       jose:
         specifier: 5.9.4
         version: 5.9.4
+      nock:
+        specifier: ^13.5.5
+        version: 13.5.5
 
   packages/pd-manager:
     dependencies:
