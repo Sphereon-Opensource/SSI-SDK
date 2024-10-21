@@ -1,11 +1,12 @@
 import {IPluginMethodMap} from "@veramo/core";
 import {
+    com,
     Nullable
 } from "../../../../../OpenID-Federation/build/js/packages/openid-federation-modules-openid-federation-client";
+import ICryptoServiceCallbackJS = com.sphereon.oid.fed.client.crypto.ICryptoServiceCallback;
 
 export interface IOIDFClient extends IPluginMethodMap {
     resolveTrustChain(args: ResolveTrustChainArgs): Promise<ResolveTrustChainCallbackResult>
-    verifyJwt(args: VerifyJwtArgs): Promise<VerifyJwtResult>
 }
 
 export type ResolveTrustChainArgs = {
@@ -13,10 +14,10 @@ export type ResolveTrustChainArgs = {
     trustAnchors: Array<string>
 }
 
-export type VerifyJwtArgs = {
-    jwt: string
+export type OIDFClientArgs = {
+    cryptoServiceCallback?: CryptoServiceCallbackArgs
 }
 
-export type ResolveTrustChainCallbackResult = Nullable<Array<string>>
+export type CryptoServiceCallbackArgs = ICryptoServiceCallbackJS
 
-export type VerifyJwtResult = boolean
+export type ResolveTrustChainCallbackResult = Nullable<Array<string>>

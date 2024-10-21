@@ -2,14 +2,14 @@ import {
     com
 } from "../../../../../OpenID-Federation/build/js/packages/openid-federation-modules-openid-federation-client";
 import * as jose from 'jose'
-import ICryptoServiceCallbackJS = com.sphereon.oid.fed.client.crypto.ICryptoServiceCallbackJS;
-import {JWK} from "jose";
+import {JWK} from 'jose'
+import ICryptoServiceCallback = com.sphereon.oid.fed.client.crypto.ICryptoServiceCallback;
 
 type JWKS = {
     keys: JWK[]
 }
 
-export class CryptoPlatformCallback implements ICryptoServiceCallbackJS {
+export class CryptoPlatformTestCallback implements ICryptoServiceCallback {
 
     async verify(jwt: string): Promise<boolean> {
         const decodedProtectedHeader = jose.decodeProtectedHeader(jwt)

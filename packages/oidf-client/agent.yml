@@ -73,3 +73,6 @@ agent:
     - schemaValidation: false
       plugins:
         - $require: ./packages/oidf-client/dist#OIDFClient
+          $args:
+            - cryptoServiceCallback:
+              $require: './packages/oidf-client?t=class#CryptoPlatformTestCallback'

@@ -1,44 +1,38 @@
 import {IAgentPlugin} from "@veramo/core";
 import {
     IOIDFClient,
+    OIDFClientArgs,
     ResolveTrustChainArgs,
-    ResolveTrustChainCallbackResult,
-    VerifyJwtArgs,
-    VerifyJwtResult
+    ResolveTrustChainCallbackResult
 } from "../types/IOIDFClient";
 import {
     com
 } from "../../../../../OpenID-Federation/build/js/packages/openid-federation-modules-openid-federation-client";
 import {schema} from "../index";
 import FederationClient = com.sphereon.oid.fed.client.FederationClient;
-import CryptoServiceJS = com.sphereon.oid.fed.client.crypto.CryptoServiceJS;
+import CryptoService = com.sphereon.oid.fed.client.crypto.CryptoService;
 
 export const oidfClientMethods: Array<string> = [
-    'resolveTrustChain',
-    'registerCryptoServiceCallback',
-    'verifyJwt'
+    'resolveTrustChain'
 ]
 
 export class OIDFClient implements IAgentPlugin {
     readonly oidfClient: FederationClient
-    readonly schema = schema.IContactManager
+    readonly schema = schema.IOIDFClient
 
-    constructor() {
+    constructor(args?: OIDFClientArgs) {
+        const { cryptoServiceCallback } = { ...args }
+        console.log(cryptoServiceCallback)
         this.oidfClient = new FederationClient()
+        CryptoService.register(cryptoServiceCallback)
     }
 
     readonly methods: IOIDFClient = {
         resolveTrustChain: this.resolveTrustChain.bind(this),
-        verifyJwt: this.verifyJwt.bind(this)
     }
 
     private async resolveTrustChain(args: ResolveTrustChainArgs): Promise<ResolveTrustChainCallbackResult> {
         const { entityIdentifier, trustAnchors } = args
-        return this.oidfClient.resolveTrustChain(entityIdentifier, trustAnchors)
-    }
-
-    private async verifyJwt(args: VerifyJwtArgs): Promise<VerifyJwtResult> {
-        const { jwt } = args
-        return await CryptoServiceJS.verify(jwt)
+        return await this.oidfClient.resolveTrustChain(entityIdentifier, trustAnchors)
     }
 }
