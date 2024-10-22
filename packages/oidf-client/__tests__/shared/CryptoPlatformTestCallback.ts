@@ -25,8 +25,10 @@ export class CryptoPlatformTestCallback implements ICryptoServiceCallback {
 
         const publicKey = await jose.importJWK(key)
 
+        const now = new Date()
+        now.setDate(now.getDate() + 14)
         const options = {
-            currentDate: new Date(Date.parse("Oct 14, 2024 01:00:00"))
+            currentDate: now
         }
 
         const result = await jose.jwtVerify(jwt, publicKey, options)
