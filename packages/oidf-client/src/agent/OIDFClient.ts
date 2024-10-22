@@ -12,13 +12,13 @@ import {
     ResolveTrustChainArgs,
     ResolveTrustChainCallbackResult
 } from "../types/IOIDFClient";
-import * as jose from 'jose'
 import {
     com
 } from "../../../../../OpenID-Federation/build/js/packages/openid-federation-modules-openid-federation-client";
 import {schema} from "../index";
 import FederationClient = com.sphereon.oid.fed.client.FederationClient;
-import {JWK, JWTVerifyOptions} from "jose";
+import {JWK} from 'ssi-types'
+
 
 export const oidfClientMethods: Array<string> = [
     'resolveTrustChain',
@@ -35,11 +35,10 @@ export class OIDFClient implements IAgentPlugin {
         if (cryptoServiceCallback) {
             this.oidfClient = new FederationClient(null, cryptoServiceCallback)
         } else {
-            // FIXME pass in the verification function of the JWSService,
             this.oidfClient = new FederationClient(
                 null, {
                     q3t: async (jwt: string, key: any): Promise<boolean> => {
-                        // FIXME For some reason the keys is the key object are messed up
+                        // FIXME For some reason the keys in the key object are messed up
                         const jwk: JWK = {
                             kty: key.e3s_1,
                             kid: key.f3s_1,
@@ -56,17 +55,11 @@ export class OIDFClient implements IAgentPlugin {
                             'x5t#S256': key.q3s_1,
                         }
 
-                        const publicKey = await jose.importJWK(jwk)
-
-                        const now = new Date()
-                        const past = now.setDate(now.getDate() - 60)
-
-                        const options: JWTVerifyOptions = {
-                            currentDate: new Date(past)
-                        }
-
-                        const result = await jose.jwtVerify(jwt, publicKey, options)
-                        return result !== undefined
+                        //FIXME Find a way to pass in the context
+                        return !(await this.verifyJwt({
+                            jws: jwt,
+                            jwk
+                        })).error
                     }
             })
         }
