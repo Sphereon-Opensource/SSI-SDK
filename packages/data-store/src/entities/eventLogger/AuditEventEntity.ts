@@ -1,8 +1,8 @@
 import { ActionSubType, ActionType, InitiatorType, LoggingEventType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { CredentialType, PartyCorrelationType } from '@sphereon/ssi-sdk.core'
-import { NonPersistedAuditLoggingEvent, NonPersistedActivityLoggingEvent } from '../../types'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
+import { NonPersistedAuditLoggingEvent, NonPersistedActivityLoggingEvent } from '../../types'
 
 //TODO this entity, also contains some optional fields that are related to another event type (Activity) later we might want to refactor and reorganize this.
 // For now I've added a discriminator value called eventType that can be one of the three types of events: 1. General, 2. Audit, and 3. Activity

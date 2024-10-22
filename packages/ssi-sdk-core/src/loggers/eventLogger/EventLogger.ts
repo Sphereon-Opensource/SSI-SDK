@@ -11,7 +11,11 @@ import {
   System,
 } from '@sphereon/ssi-types'
 import { IAgentContext } from '@veramo/core'
-import { EventLoggerArgs, LoggingEvent, NonPersistedAuditLoggingEvent } from '../../types'
+import {
+  EventLoggerArgs,
+  LogEventType,
+  LoggingEvent
+} from '../../types'
 
 class EventLogger {
   private readonly context?: IAgentContext<any>
@@ -67,7 +71,7 @@ class EventLogger {
     }
   }
 
-  private eventData = async (event: LoggingEvent): Promise<NonPersistedAuditLoggingEvent> => {
+  private eventData = async (event: LoggingEvent): Promise<LogEventType> => {
     if (!this.system || event.data.system) {
       return Promise.reject(Error('Required system is not present'))
     }
@@ -76,7 +80,7 @@ class EventLogger {
       return Promise.reject(Error('Required sub system type is not present'))
     }
 
-    const result: NonPersistedAuditLoggingEvent = {
+    const result = {
       ...event.data,
       ...(!event.data.level && { level: this.logLevel }),
       ...(!event.data.system && { system: this.system }),

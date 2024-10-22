@@ -1,7 +1,26 @@
-import { ActionType, InitiatorType, LoggingEventType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
+import {
+  ActionType,
+  InitiatorType,
+  LoggingEventType,
+  LogLevel,
+  SubSystem,
+  System,
+  SystemCorrelationIdType
+} from '@sphereon/ssi-types'
+import {
+  ActivityLoggingEvent,
+  AuditLoggingEvent,
+  CredentialType,
+  PartyCorrelationType
+} from '@sphereon/ssi-sdk.core'
 import { TAgent } from '@veramo/core'
-import { ActivityLoggingEvent, AuditLoggingEvent, CredentialType, PartyCorrelationType } from '@sphereon/ssi-sdk.core'
-import { GetActivityEventsArgs, GetAuditEventsArgs, IEventLogger, NonPersistedActivityLoggingEvent, NonPersistedAuditLoggingEvent } from '../../src'
+import {
+  GetActivityEventsArgs,
+  GetAuditEventsArgs,
+  IEventLogger,
+  NonPersistedActivityLoggingEvent,
+  NonPersistedAuditLoggingEvent
+} from '../../src'
 
 type ConfiguredAgent = TAgent<IEventLogger>
 
@@ -18,7 +37,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should store audit event', async (): Promise<void> => {
       const auditEvent: NonPersistedAuditLoggingEvent = {
-        type: LoggingEventType.AUDIT,
         level: LogLevel.DEBUG,
         correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
         system: System.GENERAL,
@@ -41,6 +59,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(result).toBeDefined()
       expect(result?.id).toBeDefined()
+      expect(result?.type).toEqual(LoggingEventType.AUDIT)
       expect(result?.timestamp).toBeDefined()
       expect(result?.level).toEqual(auditEvent.level)
       expect(result?.correlationId).toEqual(auditEvent.correlationId)
@@ -62,7 +81,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should get audit events without filter', async (): Promise<void> => {
       const auditEvent: NonPersistedAuditLoggingEvent = {
-        type: LoggingEventType.AUDIT,
         level: LogLevel.DEBUG,
         correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
         system: System.GENERAL,
@@ -90,7 +108,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should get audit events with filter', async (): Promise<void> => {
       const auditEvent: NonPersistedAuditLoggingEvent = {
-        type: LoggingEventType.AUDIT,
         level: LogLevel.DEBUG,
         correlationId: 'filter_test_correlation_id_filter',
         system: System.GENERAL,
@@ -121,7 +138,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should store activity event', async (): Promise<void> => {
       const activityEvent: NonPersistedActivityLoggingEvent = {
-        type: LoggingEventType.ACTIVITY,
         level: LogLevel.DEBUG,
         correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
         system: System.GENERAL,
@@ -148,6 +164,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(result).toBeDefined()
       expect(result?.id).toBeDefined()
+      expect(result?.type).toEqual(LoggingEventType.ACTIVITY)
       expect(result?.timestamp).toBeDefined()
       expect(result?.level).toEqual(activityEvent.level)
       expect(result?.correlationId).toEqual(activityEvent.correlationId)
@@ -169,7 +186,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should get activity events without filter', async (): Promise<void> => {
       const activityEvent: NonPersistedActivityLoggingEvent = {
-        type: LoggingEventType.ACTIVITY,
         level: LogLevel.DEBUG,
         correlationId: 'b40b8474-58a2-4b23-9fde-bd6ee1902cdb',
         system: System.GENERAL,
@@ -197,7 +213,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should get activity events with filter', async (): Promise<void> => {
       const activityEvent: NonPersistedActivityLoggingEvent = {
-        type: LoggingEventType.ACTIVITY,
         level: LogLevel.DEBUG,
         correlationId: 'filter_test_correlation_id_activity',
         system: System.GENERAL,

@@ -1,5 +1,10 @@
-import { InitiatorType, LoggingEventType, LogLevel, SubSystem, System } from '@sphereon/ssi-types'
-import { IAgentContext, IPluginMethodMap } from '@veramo/core'
+import {
+  InitiatorType,
+  LoggingEventType,
+  LogLevel,
+  SubSystem,
+  System
+} from '@sphereon/ssi-types'
 import {
   AuditLoggingEvent,
   CredentialType,
@@ -8,12 +13,13 @@ import {
   ActivityLoggingEvent,
 } from '@sphereon/ssi-sdk.core'
 import { AbstractEventLoggerStore, FindActivityLoggingEventArgs, FindAuditLoggingEventArgs } from '@sphereon/ssi-sdk.data-store'
+import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 
 export interface IEventLogger extends IPluginMethodMap {
   loggerGetAuditEvents(args?: GetAuditEventsArgs): Promise<Array<AuditLoggingEvent>>
   loggerLogAuditEvent(args: LogEventArgs, context: RequiredContext): Promise<AuditLoggingEvent>
-  loggerLogGeneralEvent(args: LogEventArgs, context: RequiredContext): Promise<NonPersistedAuditLoggingEvent>
-  loggerLogActivityEvent(args: LogActivityEventArgs, context: RequiredContext): Promise<ActivityLoggingEvent>
+  loggerLogGeneralEvent(args: LogEventArgs, context: RequiredContext): Promise<LogEventType>
+  loggerLogActivityEvent(args: LogEventArgs, context: RequiredContext): Promise<ActivityLoggingEvent>
   loggerGetActivityEvents(args?: GetActivityEventsArgs): Promise<Array<ActivityLoggingEvent>>
 }
 
@@ -40,7 +46,13 @@ export type GetActivityEventsArgs = {
 }
 
 export type LogEventArgs = {
-  event: NonPersistedAuditLoggingEvent | NonPersistedActivityLoggingEvent
+  event: LogEventType
+}
+
+export type LogEventType = NonPersistedAuditLoggingEvent | NonPersistedActivityLoggingEvent
+
+export type LogAuditEventArgs = {
+  event: NonPersistedAuditLoggingEvent
 }
 
 export type LogActivityEventArgs = {
@@ -66,7 +78,7 @@ export type NonPersistedActivityLoggingEvent = Omit<NPActivityLoggingEvent, 'sys
 
 export type LoggingEvent = {
   type: LoggingEventType
-  data: NonPersistedAuditLoggingEvent | NonPersistedActivityLoggingEvent
+  data: LogEventType
 }
 
 export type RequiredContext = IAgentContext<IEventLogger>

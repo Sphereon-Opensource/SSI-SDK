@@ -1,7 +1,7 @@
 import { AuditEventEntity } from '../../entities/eventLogger/AuditEventEntity'
 import { ActivityLoggingEvent, AuditLoggingEvent } from '@sphereon/ssi-sdk.core'
-import { replaceNullWithUndefined } from '../FormattingUtils'
 import { LoggingEventType } from '@sphereon/ssi-types'
+import { replaceNullWithUndefined } from '../FormattingUtils'
 
 export const auditEventFrom = (event: AuditEventEntity): AuditLoggingEvent => {
   const result: AuditLoggingEvent = {
@@ -30,10 +30,13 @@ export const auditEventFrom = (event: AuditEventEntity): AuditLoggingEvent => {
 }
 
 export const activityEventFrom = (event: AuditEventEntity): ActivityLoggingEvent => {
-  return {
+
+  const result: ActivityLoggingEvent =  {
     id: event.id,
     type: LoggingEventType.ACTIVITY,
-    credentialType: event.credentialType,
+    credentialType: event.credentialType!,
+    originalCredential: event.originalCredential,
+    credentialHash: event.credentialHash,
     sharePurpose: event.sharePurpose,
     description: event.description,
     timestamp: event.timestamp,
@@ -53,4 +56,6 @@ export const activityEventFrom = (event: AuditEventEntity): ActivityLoggingEvent
     ...(event.data && { data: JSON.parse(event.data) }),
     ...(event.diagnosticData && { diagnosticData: JSON.parse(event.diagnosticData) }),
   }
+
+  return replaceNullWithUndefined(result)
 }

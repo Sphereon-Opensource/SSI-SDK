@@ -60,14 +60,14 @@ export class EventLoggerStore extends AbstractEventLoggerStore {
     return auditEventFrom(createdResult)
   }
 
-    storeActivityEvent = async (args: StoreActivityEventArgs): Promise<ActivityLoggingEvent> => {
-        const { event } = args
+  storeActivityEvent = async (args: StoreActivityEventArgs): Promise<ActivityLoggingEvent> => {
+    const { event } = args
 
-        const activityEventEntity: AuditEventEntity = activityEventEntityFrom(event)
-        const connection: DataSource = await this.dbConnection
-        debug('Storing activity event', activityEventEntity)
-        const createdResult: AuditEventEntity = await connection.getRepository(AuditEventEntity).save(activityEventEntity)
+    const activityEventEntity: AuditEventEntity = activityEventEntityFrom(event)
+    const connection: DataSource = await this.dbConnection
+    debug('Storing activity event', activityEventEntity)
+    const createdResult: AuditEventEntity = await connection.getRepository(AuditEventEntity).save(activityEventEntity)
 
-        return activityEventFrom(createdResult)
-    }
+    return activityEventFrom(createdResult)
+  }
 }

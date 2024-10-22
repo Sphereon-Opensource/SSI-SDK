@@ -16,7 +16,7 @@ export enum LoggingEventType {
 }
 
 export interface SimpleLogEvent {
-  type: LoggingEventType
+  type: LoggingEventType.GENERAL
   level: LogLevel
   correlationId?: string
   timestamp: Date

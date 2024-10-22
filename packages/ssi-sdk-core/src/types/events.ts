@@ -19,8 +19,9 @@ export enum PartyCorrelationType {
   PHONE = 'phone',
 }
 
-export type AuditLoggingEvent = Omit<SimpleLogEvent, 'data'> & {
+export type AuditLoggingEvent = Omit<SimpleLogEvent, 'data' | 'type'> & {
   id: string
+  type: LoggingEventType.AUDIT,
   // timestamp: Date
   // level: LogLevel
   correlationId: string
@@ -47,12 +48,28 @@ export enum CredentialType {
   MSO_MDOC = 'MSO_MDOC',
 }
 
-//todo the fields credentialType, data, originalCredential and credentialHash should be required in this type
-export type ActivityLoggingEvent = Omit<AuditLoggingEvent, 'data'> & {
+//TODO the fields credentialType, data, originalCredential and credentialHash should be required in this type
+// create a general type that can be shared between AuditLoggingEvent and ActivityLoggingEvent
+export type ActivityLoggingEvent = Omit<SimpleLogEvent, 'data' | 'type'> & {
+  id: string
+  type: LoggingEventType.ACTIVITY,
   originalCredential?: string
   credentialHash?: string
   credentialType?: CredentialType
   sharePurpose?: string
+  correlationId: string
+  system: System
+  subSystemType: SubSystem
+  actionType: ActionType
+  actionSubType: ActionSubType
+  initiatorType: InitiatorType
+  systemCorrelationIdType?: SystemCorrelationIdType
+  systemCorrelationId?: string
+  systemAlias?: string
+  partyCorrelationType?: PartyCorrelationType
+  partyCorrelationId?: string
+  partyAlias?: string
+  description: string
   data?: any
 }
 
@@ -62,7 +79,7 @@ export type PartialActivityLoggingEvent = Partial<ActivityLoggingEvent>
 
 export type NonPersistedAuditLoggingEvent = Omit<
   AuditLoggingEvent,
-  'id' | 'timestamp' | 'level' | 'correlationId' | 'system' | 'subSystemType' | 'initiatorType'
+  'id' | 'timestamp' | 'level' | 'correlationId' | 'system' | 'subSystemType' | 'initiatorType' | 'type'
 > & {
   level?: LogLevel
   correlationId?: string
@@ -73,7 +90,7 @@ export type NonPersistedAuditLoggingEvent = Omit<
 
 export type NonPersistedActivityLoggingEvent = Omit<
   ActivityLoggingEvent,
-  'id' | 'timestamp' | 'level' | 'correlationId' | 'system' | 'subSystemType' | 'initiatorType'
+  'id' | 'timestamp' | 'level' | 'correlationId' | 'system' | 'subSystemType' | 'initiatorType' | 'type'
 > & {
   level?: LogLevel
   correlationId?: string
@@ -86,8 +103,10 @@ export type NonPersistedActivityLoggingEvent = Omit<
 
 export type LoggingEvent = {
   type: LoggingEventType
-  data: NonPersistedAuditLoggingEvent
+  data: LogEventType
 }
+
+export type LogEventType = NonPersistedAuditLoggingEvent | NonPersistedActivityLoggingEvent
 
 export type EventLoggerArgs = {
   context?: IAgentContext<any>
