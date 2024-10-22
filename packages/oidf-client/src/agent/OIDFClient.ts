@@ -17,7 +17,6 @@ import {
 } from "../../../../../OpenID-Federation/build/js/packages/openid-federation-modules-openid-federation-client";
 import {schema} from "../index";
 import FederationClient = com.sphereon.oid.fed.client.FederationClient;
-import CryptoService = com.sphereon.oid.fed.client.crypto.CryptoService;
 
 export const oidfClientMethods: Array<string> = [
     'resolveTrustChain',
@@ -31,9 +30,17 @@ export class OIDFClient implements IAgentPlugin {
 
     constructor(args?: OIDFClientArgs) {
         const { cryptoServiceCallback } = { ...args }
-        this.oidfClient = new FederationClient()
         if (cryptoServiceCallback) {
-            CryptoService.register(cryptoServiceCallback)
+            this.oidfClient = new FederationClient(null, cryptoServiceCallback)
+        } else {
+            // FIXME pass in the actual verification function
+            this.oidfClient = new FederationClient(
+                null, {
+                    q3t: (jwt: string, key: any): Promise<boolean> => {
+                        console.log(`${jwt}:${key} -> Custom callback function reached`)
+                        return Promise.resolve(true)
+                }
+            })
         }
     }
 

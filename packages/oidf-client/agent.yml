@@ -7,7 +7,7 @@ constants:
   secretKey: 29739248cad1bd1a0fc4d9b75cd4d2990de535baf5caadfdf8d8f86664aa830c
   methods:
     - resolveTrustChain
-    - registerCryptoServiceCallback
+    - signJwt
     - verifyJwt
 
 server:
@@ -72,7 +72,5 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
+        - $require: '@sphereon/ssi-sdk-ext.jwt-service#JwtService'
         - $require: ./packages/oidf-client/dist#OIDFClient
-          $args:
-            - cryptoServiceCallback:
-              $require: './packages/oidf-client?t=class#CryptoPlatformTestCallback'

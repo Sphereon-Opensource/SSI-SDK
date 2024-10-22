@@ -5,9 +5,10 @@ import {Server} from 'http'
 import {createAgent, IAgent, IAgentOptions} from '@veramo/core'
 import {AgentRestClient} from '@veramo/remote-client'
 import {AgentRouter, RequestWithAgentRouter} from '@veramo/remote-server'
-import {createObjects, getConfig} from '../../agent-config/dist'
 import oidfClientAgentLogic from './shared/oidfClientAgentLogic'
+import {createObjects, getConfig} from '../../agent-config/dist'
 import {IOIDFClient} from "../src";
+import {IJwtService} from "@sphereon/ssi-sdk-ext.jwt-service";
 
 jest.setTimeout(60000)
 
@@ -18,7 +19,7 @@ let serverAgent: IAgent
 let restServer: Server
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IOIDFClient>({
+  createAgent<IOIDFClient & IJwtService>({
     ...options,
     plugins: [
       new AgentRestClient({
@@ -28,6 +29,7 @@ const getAgent = (options?: IAgentOptions) =>
       }),
     ],
   })
+
 
 const setup = async (): Promise<boolean> => {
   const config = await getConfig('packages/oidf-client/agent.yml')

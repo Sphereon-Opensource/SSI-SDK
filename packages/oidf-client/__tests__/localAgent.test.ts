@@ -1,22 +1,14 @@
-import {createAgent} from '@veramo/core'
 import oidfClientAgentLogic from './shared/oidfClientAgentLogic'
-import {IOIDFClient, OIDFClient} from "../src";
-import {CryptoPlatformTestCallback} from "./shared/CryptoPlatformTestCallback";
+import { createObjects, getConfig } from '../../agent-config/dist'
 
 jest.setTimeout(60000)
 
 let agent: any
 
 const setup = async (): Promise<boolean> => {
-  //const config = await getConfig('packages/oidf-client/agent.yml')
-  //const { localAgent } = await createObjects(config, { localAgent: '/agent' })
-  agent = createAgent<IOIDFClient>({
-    plugins: [
-        new OIDFClient({
-          cryptoServiceCallback: new CryptoPlatformTestCallback()
-        })
-    ]
-  })
+  const config = await getConfig('packages/oidf-client/agent.yml')
+  const { localAgent } = await createObjects(config, { localAgent: '/agent' })
+  agent = localAgent
 
   return true
 }
