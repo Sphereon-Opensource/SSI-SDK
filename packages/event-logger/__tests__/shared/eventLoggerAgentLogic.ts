@@ -109,14 +109,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should get audit events with filter', async (): Promise<void> => {
       const auditEvent: NonPersistedAuditLoggingEvent = {
         level: LogLevel.DEBUG,
-        correlationId: 'filter_test_correlation_id_filter',
+        correlationId: 'filter_test_correlation_id',
         system: System.GENERAL,
         subSystemType: SubSystem.DID_PROVIDER,
         actionType: ActionType.CREATE,
         actionSubType: 'Key generation',
         initiatorType: InitiatorType.EXTERNAL,
         systemCorrelationIdType: SystemCorrelationIdType.DID,
-        systemCorrelationId: 'did:example:223456789abcdefghi',
+        systemCorrelationId: 'did:example:123456789abcdefghi',
         systemAlias: 'test_alias',
         partyCorrelationType: PartyCorrelationType.DID,
         partyCorrelationId: 'did:example:123456789abcdefghi',
