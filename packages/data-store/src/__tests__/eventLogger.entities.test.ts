@@ -3,7 +3,7 @@ import { PartyCorrelationType } from '@sphereon/ssi-sdk.core'
 import { ActionType, InitiatorType, LoggingEventType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
 import { DataStoreEventLoggerEntities } from '../index'
-import { DataStoreEventLoggerMigrations } from '../migrations/generic'
+import { DataStoreEventLoggerMigrations } from '../migrations'
 import { AuditEventEntity, auditEventEntityFrom } from '../entities/eventLogger/AuditEventEntity'
 import { NonPersistedAuditLoggingEvent } from '../types'
 
