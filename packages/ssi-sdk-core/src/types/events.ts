@@ -19,7 +19,7 @@ export enum PartyCorrelationType {
   PHONE = 'phone',
 }
 
-export type AuditLoggingEvent = Omit<SimpleLogEvent, 'data' | 'type'> & {
+export type AuditLoggingEvent = Omit<SimpleLogEvent, 'type' | 'data'> & {
   id: string
   type: LoggingEventType.AUDIT,
   // timestamp: Date
