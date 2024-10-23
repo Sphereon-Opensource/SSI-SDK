@@ -1,4 +1,4 @@
-import { IssuerMetadata } from '@sphereon/oid4vci-common'
+import { AuthorizationServerMetadata, IssuerMetadata } from '@sphereon/oid4vci-common'
 import { IKeyValueStore, IValueData, KeyValueStore, ValueStoreType } from '@sphereon/ssi-sdk.kv-store-temp'
 import { IAgentPlugin } from '@veramo/core'
 import {
@@ -9,7 +9,7 @@ import {
   IMetadataPersistArgs,
   Ioid4vciStoreClearArgs,
   Ioid4vciStoreExistsArgs,
-  Ioid4vciStoreGetArgs,
+  IOid4vciStoreGetArgs,
   IOID4VCIStoreOpts,
   Ioid4vciStoreRemoveArgs,
 } from '../index'
@@ -25,7 +25,8 @@ export class OID4VCIStore implements IAgentPlugin {
     this._defaultOpts = value
   }
 
-  private readonly _metadataStores: Map<string, IKeyValueStore<IssuerMetadata>>
+  private readonly _issuerMetadataStores: Map<string, IKeyValueStore<IssuerMetadata>>
+  private readonly _authorizationServerMetadataStores: Map<string, IKeyValueStore<AuthorizationServerMetadata>>
   private readonly _optionStores: Map<string, IKeyValueStore<IIssuerOptions>>
   private readonly defaultStoreId: string
   private readonly defaultNamespace: string
@@ -57,12 +58,12 @@ export class OID4VCIStore implements IAgentPlugin {
     if (opts.defaultOpts) {
       this._defaultOpts = opts.defaultOpts
     }
-    if (opts?.metadataStores && opts.metadataStores instanceof Map) {
-      this._metadataStores = opts.metadataStores
-    } else if (opts?.metadataStores) {
-      this._metadataStores = new Map().set(this.defaultStoreId, opts.metadataStores)
+    if (opts?.issuerMetadataStores && opts.issuerMetadataStores instanceof Map) {
+      this._issuerMetadataStores = opts.issuerMetadataStores
+    } else if (opts?.issuerMetadataStores) {
+      this._issuerMetadataStores = new Map().set(this.defaultStoreId, opts.issuerMetadataStores)
     } else {
-      this._metadataStores = new Map().set(
+      this._issuerMetadataStores = new Map().set(
         this.defaultStoreId,
         new KeyValueStore({
           namespace: this.defaultNamespace,
@@ -70,9 +71,23 @@ export class OID4VCIStore implements IAgentPlugin {
         }),
       )
     }
+    if (opts?.authorizationServerMetadataStores && opts.authorizationServerMetadataStores instanceof Map) {
+      this._authorizationServerMetadataStores = opts.authorizationServerMetadataStores
+    } else if (opts?.authorizationServerMetadataStores) {
+      this._authorizationServerMetadataStores = new Map().set(this.defaultStoreId, opts.authorizationServerMetadataStores)
+    } else {
+      this._authorizationServerMetadataStores = new Map().set(
+        this.defaultStoreId,
+        new KeyValueStore({
+          namespace: this.defaultNamespace,
+          store: new Map<string, AuthorizationServerMetadata>(),
+        }),
+      )
+    }
     if (opts && Array.isArray(opts?.importMetadatas)) {
       opts.importMetadatas.forEach((meta) =>
         this.oid4vciStorePersistMetadata({
+          metadataType: meta.metadataType,
           metadata: meta.metadata,
           storeId: meta.storeId ?? this.defaultStoreId,
           correlationId: meta.correlationId,
@@ -100,7 +115,7 @@ export class OID4VCIStore implements IAgentPlugin {
     }
   }
 
-  private async oid4vciStoreGetIssuerOpts({ correlationId, storeId, namespace }: Ioid4vciStoreGetArgs): Promise<IIssuerOptions | undefined> {
+  private async oid4vciStoreGetIssuerOpts({ correlationId, storeId, namespace }: IOid4vciStoreGetArgs): Promise<IIssuerOptions | undefined> {
     return (
       (await this.store({ stores: this._optionStores, storeId }).get(
         this.prefix({
@@ -155,35 +170,73 @@ export class OID4VCIStore implements IAgentPlugin {
       .then(() => true)
   }
 
-  private async oid4vciStoreGetMetadata({ correlationId, storeId, namespace }: Ioid4vciStoreGetArgs): Promise<IssuerMetadata | undefined> {
-    return this.store({ stores: this._metadataStores, storeId }).get(this.prefix({ namespace, correlationId }))
+  private async oid4vciStoreGetMetadata({
+    metadataType,
+    correlationId,
+    storeId,
+    namespace,
+  }: IOid4vciStoreGetArgs): Promise<IssuerMetadata | AuthorizationServerMetadata | undefined> {
+    if (metadataType === 'authorizationServer') {
+      return this.store<AuthorizationServerMetadata>({
+        stores: this._authorizationServerMetadataStores,
+        storeId,
+      }).get(this.prefix({ namespace, correlationId }))
+    }
+
+    return this.store<IssuerMetadata>({
+      stores: this._issuerMetadataStores,
+      storeId,
+    }).get(this.prefix({ namespace, correlationId }))
   }
 
-  private async oid4vciStoreHasMetadata({ correlationId, storeId, namespace }: Ioid4vciStoreExistsArgs): Promise<boolean> {
-    return this.store({ stores: this._metadataStores, storeId }).has(this.prefix({ namespace, correlationId }))
+  private async oid4vciStoreHasMetadata({ metadataType, correlationId, storeId, namespace }: Ioid4vciStoreExistsArgs): Promise<boolean> {
+    if (metadataType === 'authorizationServer') {
+      return this.store<AuthorizationServerMetadata>({
+        stores: this._authorizationServerMetadataStores,
+        storeId,
+      }).has(this.prefix({ namespace, correlationId }))
+    }
+
+    return this.store<IssuerMetadata>({
+      stores: this._issuerMetadataStores,
+      storeId,
+    }).has(this.prefix({ namespace, correlationId }))
   }
 
-  private async oid4vciStorePersistMetadata(args: IMetadataPersistArgs): Promise<IValueData<IssuerMetadata>> {
+  private async oid4vciStorePersistMetadata(args: IMetadataPersistArgs): Promise<IValueData<IssuerMetadata | AuthorizationServerMetadata>> {
     const namespace = this.namespaceStr(args)
     const storeId = this.storeIdStr(args)
-    const { correlationId, metadata, ttl } = args
+    const { correlationId, metadata, ttl, metadataType } = args
+
     if (args?.validation !== false) {
       //todo
     }
-    const existing = await this.store({
-      stores: this._metadataStores,
+
+    if (metadataType === 'authorizationServer') {
+      const existing = await this.store<AuthorizationServerMetadata>({
+        stores: this._authorizationServerMetadataStores,
+        storeId,
+      }).getAsValueData(this.prefix({ namespace, correlationId }))
+
+      if (!existing.value || (existing.value && args.overwriteExisting !== false)) {
+        return await this.store<AuthorizationServerMetadata>({
+          stores: this._authorizationServerMetadataStores,
+          storeId,
+        }).set(this.prefix({ namespace, correlationId }), metadata as AuthorizationServerMetadata, ttl)
+      }
+      return existing
+    }
+
+    const existing = await this.store<IssuerMetadata>({
+      stores: this._issuerMetadataStores,
       storeId,
-    }).getAsValueData(this.prefix({ namespace, correlationId: correlationId }))
+    }).getAsValueData(this.prefix({ namespace, correlationId }))
+
     if (!existing.value || (existing.value && args.overwriteExisting !== false)) {
-      // fixme: cast to issuer metadata
-      return await this.store({ stores: this._metadataStores, storeId }).set(
-        this.prefix({
-          namespace,
-          correlationId: correlationId,
-        }),
-        metadata as IssuerMetadata,
-        ttl,
-      )
+      return await this.store<IssuerMetadata>({
+        stores: this._issuerMetadataStores,
+        storeId,
+      }).set(this.prefix({ namespace, correlationId }), metadata as IssuerMetadata, ttl)
     }
     return existing
   }
@@ -191,16 +244,34 @@ export class OID4VCIStore implements IAgentPlugin {
   private async oid4vciStoreRemoveMetadata(args: Ioid4vciStoreRemoveArgs): Promise<boolean> {
     const namespace = this.namespaceStr(args)
     const storeId = this.storeIdStr(args)
-    return this.store({ stores: this._metadataStores, storeId }).delete(
-      this.prefix({
-        namespace,
-        correlationId: args.correlationId,
-      }),
-    )
+
+    if (args.metadataType === 'authorizationServer') {
+      return this.store<AuthorizationServerMetadata>({
+        stores: this._authorizationServerMetadataStores,
+        storeId,
+      }).delete(this.prefix({ namespace, correlationId: args.correlationId }))
+    }
+
+    return this.store<IssuerMetadata>({
+      stores: this._issuerMetadataStores,
+      storeId,
+    }).delete(this.prefix({ namespace, correlationId: args.correlationId }))
   }
 
-  private async oid4vciStoreClearAllMetadata({ storeId }: Ioid4vciStoreClearArgs): Promise<boolean> {
-    return await this.store({ stores: this._metadataStores, storeId })
+  private async oid4vciStoreClearAllMetadata({ metadataType, storeId }: Ioid4vciStoreClearArgs): Promise<boolean> {
+    if (metadataType === 'authorizationServer') {
+      return await this.store<AuthorizationServerMetadata>({
+        stores: this._authorizationServerMetadataStores,
+        storeId,
+      })
+        .clear()
+        .then(() => true)
+    }
+
+    return await this.store<IssuerMetadata>({
+      stores: this._issuerMetadataStores,
+      storeId,
+    })
       .clear()
       .then(() => true)
   }
@@ -210,7 +281,7 @@ export class OID4VCIStore implements IAgentPlugin {
   }
 
   private oid4vciStoreDefaultMetadata(): Promise<IKeyValueStore<IssuerMetadata>> {
-    return Promise.resolve(this.store({ stores: this._metadataStores, storeId: this.defaultStoreId }))
+    return Promise.resolve(this.store({ stores: this._issuerMetadataStores, storeId: this.defaultStoreId }))
   }
 
   private oid4vciStoreDefaultStoreId(): Promise<string> {
