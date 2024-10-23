@@ -65,6 +65,9 @@ export class AuditEventEntity extends BaseEntity {
   @Column('text', { name: 'credentialHash', nullable: true, unique: false })
   credentialHash?: string
 
+  @Column('text', { name: 'parentCredentialHash', nullable: true, unique: false })
+  parentCredentialHash?: string
+
   @Column('text', { name: 'originalCredential', nullable: true, unique: false })
   originalCredential?: string
 
@@ -133,6 +136,7 @@ export const activityEventEntityFrom = (args: NonPersistedActivityLoggingEvent):
   activityEventEntity.credentialType = args.credentialType
   activityEventEntity.originalCredential = args.originalCredential
   activityEventEntity.credentialHash = args.credentialHash
+  activityEventEntity.parentCredentialHash = args.parentCredentialHash
   activityEventEntity.diagnosticData = JSON.stringify(args.diagnosticData)
 
   return activityEventEntity

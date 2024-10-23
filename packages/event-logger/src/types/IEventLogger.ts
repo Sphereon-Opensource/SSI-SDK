@@ -71,6 +71,7 @@ export type NonPersistedActivityLoggingEvent = Omit<NPActivityLoggingEvent, 'sys
   initiatorType: InitiatorType
   originalCredential?: string
   credentialHash?: string
+  parentCredentialHash?: string
   credentialType?: CredentialType
   sharePurpose?: string
   data?: any

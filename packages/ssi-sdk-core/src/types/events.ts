@@ -55,6 +55,7 @@ export type ActivityLoggingEvent = Omit<SimpleLogEvent, 'data' | 'type'> & {
   type: LoggingEventType.ACTIVITY,
   originalCredential?: string
   credentialHash?: string
+  parentCredentialHash?: string
   credentialType?: CredentialType
   sharePurpose?: string
   correlationId: string
