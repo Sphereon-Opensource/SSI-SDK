@@ -109,7 +109,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should get audit events with filter', async (): Promise<void> => {
       const auditEvent: NonPersistedAuditLoggingEvent = {
         level: LogLevel.DEBUG,
-        correlationId: 'filter_test_correlation_id',
+        correlationId: 'a95bcf0d-9f75-46d1-9105-49518f8cb4ae',
         system: System.GENERAL,
         subSystemType: SubSystem.DID_PROVIDER,
         actionType: ActionType.CREATE,
@@ -214,7 +214,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should get activity events with filter', async (): Promise<void> => {
       const activityEvent: NonPersistedActivityLoggingEvent = {
         level: LogLevel.DEBUG,
-        correlationId: 'filter_test_correlation_id_activity',
+        correlationId: '88c4d6c0-5e2a-419d-b67b-e85f65f009bc',
         system: System.GENERAL,
         subSystemType: SubSystem.DID_PROVIDER,
         actionType: ActionType.CREATE,

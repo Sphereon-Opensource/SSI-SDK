@@ -89,23 +89,23 @@ export class EventLogger implements IAgentPlugin {
   }
 
   private async loggerGetAuditEvents(args?: GetAuditEventsArgs): Promise<Array<AuditLoggingEvent>> {
-    const { filter = [] } = args ?? {}
+    const { filter } = args ?? {}
 
     if (!this.store) {
       return Promise.reject(Error('No store available in options'))
     }
 
-    return this.store.getAuditEvents({ filter: [...filter, { type: LoggingEventType.AUDIT }] })
+    return this.store.getAuditEvents({ filter })
   }
 
   private async loggerGetActivityEvents(args?: GetActivityEventsArgs): Promise<Array<ActivityLoggingEvent>> {
-    const { filter = [] } = args ?? {}
+    const { filter } = args ?? {}
 
     if (!this.store) {
       return Promise.reject(Error('No store available in options'))
     }
 
-    return this.store.getActivityEvents({ filter: [...filter, { type: LoggingEventType.ACTIVITY }] })
+    return this.store.getActivityEvents({ filter })
   }
 
   private async loggerLogGeneralEvent(args: LogEventArgs): Promise<LogEventType> {
