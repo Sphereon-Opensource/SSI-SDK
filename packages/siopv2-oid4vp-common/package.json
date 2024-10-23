@@ -12,7 +12,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.16.1-feature.jarm.sdk.146",
+    "@sphereon/did-auth-siop": "0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "uint8arrays": "3.1.1"

@@ -185,7 +185,7 @@ importers:
         version: 5.0.1
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
       url-parse:
         specifier: ^1.5.10
         version: 1.5.10
@@ -216,7 +216,7 @@ importers:
         version: 4.3.6
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
@@ -332,7 +332,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -365,7 +365,7 @@ importers:
         version: 10.9.2(@types/node@18.19.45)(typescript@5.5.3)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
 
   packages/credential-store:
     dependencies:
@@ -386,7 +386,7 @@ importers:
         version: 4.3.6
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -526,11 +526,11 @@ importers:
         specifier: ^5.7.0
         version: 5.7.0
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146(typescript@5.4.2)
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.4.2)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146(typescript@5.4.2)
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.4.2)
       '@sphereon/pex':
         specifier: 5.0.0-unstable.18
         version: 5.0.0-unstable.18
@@ -542,10 +542,10 @@ importers:
         version: 0.24.1-unstable.134
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.24.1-unstable.134
         version: 0.24.1-unstable.134(ts-node@10.9.2)
@@ -608,11 +608,11 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -654,7 +654,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/key-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -675,7 +675,7 @@ importers:
         version: 5.7.0
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
 
   packages/event-logger:
     dependencies:
@@ -712,7 +712,7 @@ importers:
         version: 27.5.1(ts-node@10.9.2)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
       typescript:
         specifier: ^5.5.3
         version: 5.5.3
@@ -730,7 +730,7 @@ importers:
         version: 4.3.6
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
@@ -758,7 +758,7 @@ importers:
         version: 3.0.1
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
       uint8arrays:
         specifier: ^3.1.1
         version: 3.1.1
@@ -803,8 +803,8 @@ importers:
   packages/mdl-mdoc:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146(typescript@5.4.2)
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.4.2)
       '@sphereon/kmp-mdl-mdoc':
         specifier: 0.2.0-SNAPSHOT.22
         version: 0.2.0-SNAPSHOT.22
@@ -816,7 +816,7 @@ importers:
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.24.1-unstable.134
         version: 0.24.1-unstable.134
@@ -861,11 +861,11 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -907,7 +907,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/key-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -928,7 +928,7 @@ importers:
         version: 5.7.0
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
 
   packages/ms-authenticator:
     dependencies:
@@ -1037,23 +1037,23 @@ importers:
         specifier: 0.2.0-SNAPSHOT.22
         version: 0.2.0-SNAPSHOT.22
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -1086,7 +1086,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/utils':
         specifier: 4.2.0
         version: 4.2.0
@@ -1126,7 +1126,7 @@ importers:
         version: 13.5.5
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
       typescript:
         specifier: 5.5.3
         version: 5.5.3
@@ -1134,17 +1134,17 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146(awesome-qr@2.1.5-rc.0)
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(awesome-qr@2.1.5-rc.0)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(ts-node@10.9.2)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -1210,20 +1210,20 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146(awesome-qr@2.1.5-rc.0)
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(awesome-qr@2.1.5-rc.0)
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146(awesome-qr@2.1.5-rc.0)
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(awesome-qr@2.1.5-rc.0)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1329,7 +1329,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -1368,7 +1368,7 @@ importers:
         version: 10.9.2(@types/node@18.19.45)(typescript@5.5.3)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
       web-did-resolver:
         specifier: ^2.0.27
         version: 2.0.27
@@ -1376,8 +1376,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1413,14 +1413,14 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(ts-node@10.9.2)
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1481,7 +1481,7 @@ importers:
         version: 7.6.3
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
@@ -1591,7 +1591,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -1624,7 +1624,7 @@ importers:
         version: 10.9.2(@types/node@18.19.45)(typescript@5.5.3)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
 
   packages/presentation-exchange:
     dependencies:
@@ -1636,10 +1636,10 @@ importers:
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk.credential-store':
         specifier: workspace:*
         version: link:../credential-store
@@ -1694,7 +1694,7 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.24.1-unstable.134
         version: 0.24.1-unstable.134
@@ -1797,7 +1797,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -1827,7 +1827,7 @@ importers:
         version: 10.9.2(@types/node@18.19.45)(typescript@5.5.3)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
 
   packages/qr-code-generator:
     dependencies:
@@ -1916,10 +1916,10 @@ importers:
         version: 0.7.2
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.24.1-unstable.134
         version: 0.24.1-unstable.134(ts-node@10.9.2)
@@ -1980,7 +1980,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -1992,7 +1992,7 @@ importers:
         version: 4.1.0
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
       typescript:
         specifier: 5.4.2
         version: 5.4.2
@@ -2000,8 +2000,8 @@ importers:
   packages/siopv2-oid4vp-common:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146(typescript@5.4.2)
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.4.2)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2017,19 +2017,19 @@ importers:
         version: 18.19.45
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
 
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146(typescript@5.4.2)
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.4.2)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146(typescript@5.4.2)
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.4.2)
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/pex':
         specifier: 5.0.0-unstable.18
         version: 5.0.0-unstable.18
@@ -2038,10 +2038,10 @@ importers:
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.24.1-unstable.134
         version: 0.24.1-unstable.134(ts-node@10.9.2)
@@ -2152,26 +2152,26 @@ importers:
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146(typescript@5.4.2)
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.4.2)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146(typescript@5.4.2)
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.4.2)
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/pex':
         specifier: 5.0.0-unstable.18
         version: 5.0.0-unstable.18
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(ts-node@10.9.2)
+        specifier: 0.24.1-unstable.130
+        version: 0.24.1-unstable.130(ts-node@10.9.2)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2237,8 +2237,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146(typescript@5.5.3)
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.5.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -2353,7 +2353,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -2401,7 +2401,7 @@ importers:
         version: 10.9.2(@types/node@18.19.45)(typescript@5.5.3)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
 
   packages/siopv2-oid4vp-rp-rest-client:
     dependencies:
@@ -2606,7 +2606,7 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.24.1-unstable.134
         version: 0.24.1-unstable.134
@@ -2706,7 +2706,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -2754,7 +2754,7 @@ importers:
         version: 10.9.2(@types/node@18.19.45)(typescript@5.5.3)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
       web-did-resolver:
         specifier: ^2.0.27
         version: 2.0.27
@@ -2787,7 +2787,7 @@ importers:
         version: 1.2.0
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.24.1-unstable.134
         version: 0.24.1-unstable.134
@@ -2887,7 +2887,7 @@ importers:
         version: 0.23.0(typescript@5.4.2)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.24.1-unstable.134
         version: 0.24.1-unstable.134
@@ -2917,7 +2917,7 @@ importers:
         version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(expo@51.0.29)(react-native@0.75.2)
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -2968,10 +2968,10 @@ importers:
     dependencies:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -2992,7 +2992,7 @@ importers:
         version: 4.3.6
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
       uint8arrays:
         specifier: ^3.1.1
         version: 3.1.1
@@ -3017,10 +3017,10 @@ importers:
     dependencies:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -3050,7 +3050,7 @@ importers:
         version: 0.1.14
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
       uint8arrays:
         specifier: ^3.1.1
         version: 3.1.1
@@ -3114,7 +3114,7 @@ importers:
         version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(expo@51.0.29)(react-native@0.75.2)
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -3153,10 +3153,10 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -3183,7 +3183,7 @@ importers:
         version: 4.3.6
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
       uint8arrays:
         specifier: ^3.1.1
         version: 3.1.1
@@ -3205,10 +3205,10 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.24.1-unstable.134
-        version: 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -3241,7 +3241,7 @@ importers:
         version: 0.1.14
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
       uint8arrays:
         specifier: ^3.1.1
         version: 3.1.1
@@ -3302,7 +3302,7 @@ importers:
         version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(expo@51.0.29)(react-native@0.75.2)
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -3337,8 +3337,8 @@ importers:
   packages/w3c-vc-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146(typescript@5.5.3)
+        specifier: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+        version: 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.5.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -3462,7 +3462,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -3513,7 +3513,7 @@ importers:
         version: 10.9.2(@types/node@18.19.45)(typescript@5.5.3)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
 
   packages/w3c-vc-api-issuer-rest-client:
     dependencies:
@@ -3714,7 +3714,7 @@ importers:
         version: 0.1.3
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2)
       '@veramo/utils':
         specifier: 4.2.0
         version: 4.2.0
@@ -3726,7 +3726,7 @@ importers:
         version: 3.1.3
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -3828,7 +3828,7 @@ importers:
         version: 10.9.2(@types/node@20.16.1)(typescript@5.4.2)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+        version: 0.3.20(ts-node@10.9.2)
       typescript:
         specifier: 5.4.2
         version: 5.4.2
@@ -8738,13 +8738,13 @@ packages:
       '@sinonjs/commons': 1.8.6
     dev: true
 
-  /@sphereon/did-auth-siop-adapter@0.16.1-feature.jarm.sdk.146(typescript@5.4.2):
-    resolution: {integrity: sha512-bgjnhqeye9Uv+edA8pO5dQ17XZBXNeRtFYZK0b5oAYVXAn9MIl9bwyYDQjz5zQ9OS1l6xD50t3RE4eCTwczs4Q==}
+  /@sphereon/did-auth-siop-adapter@0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.4.2):
+    resolution: {integrity: sha512-fHGSHHTXWYQkBVuopPjH27X72rfurMI5ubWEk2s/302BXN/JTSz/K6GvC1ALXJZB80DUVk/N2VHD4MI+NOIb2g==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-feature.jarm.sdk.146(typescript@5.4.2)
+      '@sphereon/did-auth-siop': 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.4.2)
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.146
+      '@sphereon/oid4vc-common': 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/wellknown-dids-client': 0.1.3
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-resolver: 4.1.0
@@ -8754,15 +8754,15 @@ packages:
       - typescript
     dev: false
 
-  /@sphereon/did-auth-siop@0.16.1-feature.jarm.sdk.146(typescript@5.4.2):
-    resolution: {integrity: sha512-+cEigPp1/PkAuoHWWW9kqwFy/sgp+gIRYObhDm1miWEfL7CP6njQsOYivhvTacFWc+jOvl5mY0+3q3GJ/dnEuw==}
+  /@sphereon/did-auth-siop@0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.4.2):
+    resolution: {integrity: sha512-EODiX7FPZpmrG64yxPYSi/SjJMnLkJFWpdgKiNJiP6l0Gku/57Z+w6qRQi7pBmcoYa/DCODn7KDfhZQzHtcWgg==}
     engines: {node: '>=18'}
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/jarm': 0.16.1-feature.jarm.sdk.146(typescript@5.4.2)
+      '@sphereon/jarm': 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.4.2)
       '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.146
+      '@sphereon/oid4vc-common': 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/pex': 5.0.0-unstable.18
       '@sphereon/pex-models': 2.3.1
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -8781,15 +8781,15 @@ packages:
       - typescript
     dev: false
 
-  /@sphereon/did-auth-siop@0.16.1-feature.jarm.sdk.146(typescript@5.5.3):
-    resolution: {integrity: sha512-+cEigPp1/PkAuoHWWW9kqwFy/sgp+gIRYObhDm1miWEfL7CP6njQsOYivhvTacFWc+jOvl5mY0+3q3GJ/dnEuw==}
+  /@sphereon/did-auth-siop@0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.5.3):
+    resolution: {integrity: sha512-EODiX7FPZpmrG64yxPYSi/SjJMnLkJFWpdgKiNJiP6l0Gku/57Z+w6qRQi7pBmcoYa/DCODn7KDfhZQzHtcWgg==}
     engines: {node: '>=18'}
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/jarm': 0.16.1-feature.jarm.sdk.146(typescript@5.5.3)
+      '@sphereon/jarm': 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.5.3)
       '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.146
+      '@sphereon/oid4vc-common': 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/pex': 5.0.0-unstable.18
       '@sphereon/pex-models': 2.3.1
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -8853,21 +8853,21 @@ packages:
       uint8arrays: 3.1.1
     dev: true
 
-  /@sphereon/jarm@0.16.1-feature.jarm.sdk.146(typescript@5.4.2):
-    resolution: {integrity: sha512-FMK0VskOvAGtRyOu2LVH9aHhjg6o6wyKLVIKK7fLzK0jwTpDDmI43j3XIbfrWal2QPNeh65pZGXd/VMA0LvxRA==}
+  /@sphereon/jarm@0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.4.2):
+    resolution: {integrity: sha512-jvabN+Y+F4otCKfyEcOtRdgjLasf2k6JI5vBRgAcoI2Y95TLlc8FB8C/bWyqW8wXERqc+bFlpRA8xVc0C0dnJg==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.146
+      '@sphereon/oid4vc-common': 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       valibot: 0.42.1(typescript@5.4.2)
     transitivePeerDependencies:
       - typescript
     dev: false
 
-  /@sphereon/jarm@0.16.1-feature.jarm.sdk.146(typescript@5.5.3):
-    resolution: {integrity: sha512-FMK0VskOvAGtRyOu2LVH9aHhjg6o6wyKLVIKK7fLzK0jwTpDDmI43j3XIbfrWal2QPNeh65pZGXd/VMA0LvxRA==}
+  /@sphereon/jarm@0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(typescript@5.5.3):
+    resolution: {integrity: sha512-jvabN+Y+F4otCKfyEcOtRdgjLasf2k6JI5vBRgAcoI2Y95TLlc8FB8C/bWyqW8wXERqc+bFlpRA8xVc0C0dnJg==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.146
+      '@sphereon/oid4vc-common': 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       valibot: 0.42.1(typescript@5.5.3)
     transitivePeerDependencies:
       - typescript
@@ -8897,8 +8897,8 @@ packages:
       - typescript
     dev: true
 
-  /@sphereon/oid4vc-common@0.16.1-feature.jarm.sdk.146:
-    resolution: {integrity: sha512-bdFnwB9YabcnbaQCe3+Ozr5pR1xXd9kTxq+CIK7n2kkIKShnF8yk7zKwmwvD1qOIMPaRMrB5k98XGmCxtPpbrw==}
+  /@sphereon/oid4vc-common@0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161:
+    resolution: {integrity: sha512-GCXUx50+eBZQ0OFdzXSiOBcYUGysYINhXjmPiOr+/pu2XRKr/d3Q4TWTy/RII86xQ/J2a2pNz1zz1hOqPqa19g==}
     engines: {node: '>=18'}
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -8907,12 +8907,12 @@ packages:
       uint8arrays: 3.1.1
       uuid: 9.0.1
 
-  /@sphereon/oid4vci-client@0.16.1-feature.jarm.sdk.146:
-    resolution: {integrity: sha512-fJNRYtScXJ7AgUnEP+URj6E4Wo56r4+PzkiClv6g0ROUU8NbRtzl/w0Wtd5oW8i8+gDRerTKRCC2LsAY/BE2QA==}
+  /@sphereon/oid4vci-client@0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161:
+    resolution: {integrity: sha512-CweRDOs79g+AOMn5WxGv0n78GaO434tOz9Iy7v3l+Yf/VEsUY7RTbt6HTH/8lHzQ6MD+zuUitAQNI7OebBLUbA==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.146
-      '@sphereon/oid4vci-common': 0.16.1-feature.jarm.sdk.146
+      '@sphereon/oid4vc-common': 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+      '@sphereon/oid4vci-common': 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
       debug: 4.3.6
@@ -8920,11 +8920,11 @@ packages:
       - encoding
       - supports-color
 
-  /@sphereon/oid4vci-common@0.16.1-feature.jarm.sdk.146:
-    resolution: {integrity: sha512-321X1B7ScH6W/t5Vcf+Y/GWi3S4+GsB6i9FJdKYFnTZeg4cqXNnXPsXSwXnxDsBvJN7xbGQxecNxwo+oG+alXg==}
+  /@sphereon/oid4vci-common@0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161:
+    resolution: {integrity: sha512-jV7YLCpOpOpa0Xb0wR6msz+/zybGrMqah5nu2TSLjJG7IEKknrao0a62RiXcg54RJYtnvZNQMG4xTRWjz29r5Q==}
     engines: {node: '>=18'}
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.146
+      '@sphereon/oid4vc-common': 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8
       debug: 4.3.6
@@ -8935,8 +8935,8 @@ packages:
       - encoding
       - supports-color
 
-  /@sphereon/oid4vci-issuer-server@0.16.1-feature.jarm.sdk.146(awesome-qr@2.1.5-rc.0):
-    resolution: {integrity: sha512-qrtuen1ujSIZQwXtgppKBBRZeTD8Mhvi7/dad5BOYsrPNsuVGyTHjXMAydjQendN8OmMDwnVSmN/CpVKreqwbQ==}
+  /@sphereon/oid4vci-issuer-server@0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(awesome-qr@2.1.5-rc.0):
+    resolution: {integrity: sha512-OA5W6ksZ0V0w99FsVH/OYRnmPQg4f43Pt3c+dL6I7PuLux2dPWrTbVLq0fzDKyQRdfadp0mUiTzwbc4SDrRf9g==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -8944,9 +8944,9 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.146
-      '@sphereon/oid4vci-common': 0.16.1-feature.jarm.sdk.146
-      '@sphereon/oid4vci-issuer': 0.16.1-feature.jarm.sdk.146(awesome-qr@2.1.5-rc.0)
+      '@sphereon/oid4vc-common': 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+      '@sphereon/oid4vci-common': 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+      '@sphereon/oid4vci-issuer': 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(awesome-qr@2.1.5-rc.0)
       '@sphereon/ssi-express-support': 0.30.1
       '@sphereon/ssi-types': link:packages/ssi-types
       awesome-qr: 2.1.5-rc.0
@@ -8965,8 +8965,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sphereon/oid4vci-issuer@0.16.1-feature.jarm.sdk.146(awesome-qr@2.1.5-rc.0):
-    resolution: {integrity: sha512-f9tFrw77Q0LymfkhUwJNbcSQQX4dh+2AM+9uOYVU0QBMJtigdKOtGhZeX3YWdu8YZ67+b0JXypOQMCg7AmjEqg==}
+  /@sphereon/oid4vci-issuer@0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161(awesome-qr@2.1.5-rc.0):
+    resolution: {integrity: sha512-5b+B3zwLHI5n+4MMGbLYHTKFLf/2WR2RAiJcca+bCBvyLPe0lz2a36/KtYyqD1plqLRsyUSgk0YUcUdyHpR45w==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -8974,8 +8974,8 @@ packages:
       awesome-qr:
         optional: true
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.146
-      '@sphereon/oid4vci-common': 0.16.1-feature.jarm.sdk.146
+      '@sphereon/oid4vc-common': 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
+      '@sphereon/oid4vci-common': 0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161
       '@sphereon/ssi-types': link:packages/ssi-types
       awesome-qr: 2.1.5-rc.0
       uuid: 9.0.1
@@ -9047,7 +9047,7 @@ packages:
     resolution: {integrity: sha512-LLY76xZIsdOVeQm6a0gDJpEMkPJ4MBoSVuacnHmsLcYSjU3j0iRZ8124m3AUXcG+RL9XY5AQBDBi6nUy2ttiLw==}
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.134
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/ed25519': 1.0.3
@@ -9159,6 +9159,46 @@ packages:
       - supports-color
     dev: true
 
+  /@sphereon/ssi-sdk-ext.did-utils@0.24.1-unstable.130(ts-node@10.9.2):
+    resolution: {integrity: sha512-I+0VjitRjisABWm8RtTPQG57tFwfUS13Wud30OvBoADRxnaA0guUrkS82AYtV6YD0TBHdrd0D6a0RCJwK9SvDg==}
+    dependencies:
+      '@ethersproject/networks': 5.7.1
+      '@ethersproject/transactions': 5.7.0
+      '@sphereon/did-uni-client': 0.6.3
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk.agent-config': 0.29.1-unstable.161(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@stablelib/ed25519': 1.0.3
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/utils': 4.2.0
+      did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+    dev: false
+
   /@sphereon/ssi-sdk-ext.did-utils@0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
     resolution: {integrity: sha512-z5nVWtIdADbwPdd1YYvc0r4++tB8u41IBP7kEYystRWv/9knjGoB7hK4fAUDb95qoMRnu4RzZZd6QDMiDSiiQw==}
     dependencies:
@@ -9197,6 +9237,81 @@ packages:
       - supports-color
       - ts-node
       - typeorm-aurora-data-api-driver
+    dev: false
+
+  /@sphereon/ssi-sdk-ext.did-utils@0.24.1-unstable.134(ts-node@10.9.2):
+    resolution: {integrity: sha512-z5nVWtIdADbwPdd1YYvc0r4++tB8u41IBP7kEYystRWv/9knjGoB7hK4fAUDb95qoMRnu4RzZZd6QDMiDSiiQw==}
+    dependencies:
+      '@ethersproject/networks': 5.7.1
+      '@ethersproject/transactions': 5.7.0
+      '@sphereon/did-uni-client': 0.6.3
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.134
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.134
+      '@sphereon/ssi-sdk.agent-config': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@stablelib/ed25519': 1.0.3
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/utils': 4.2.0
+      did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+
+  /@sphereon/ssi-sdk-ext.identifier-resolution@0.24.1-unstable.130(ts-node@10.9.2):
+    resolution: {integrity: sha512-9mY+qgXmbZCC8aic99R7B3vKBHBakDiC6Sktgd7Q9AknR8cCmvdrmTgnOETrLng9L43uNOJnNTMG/4T6LqmtsA==}
+    dependencies:
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk.agent-config': 0.29.1-unstable.161(ts-node@10.9.2)
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/utils': 4.2.0
+      debug: 4.3.6
+      pkijs: 3.2.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+    dev: false
 
   /@sphereon/ssi-sdk-ext.identifier-resolution@0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
     resolution: {integrity: sha512-DNYrR+z7wRhwE9dRj+Et08rJKt551WEyDqcWbvYyYT9kleyEZYlPHi52CBNXtsEA69hr5alAygNhkIMPrcG4jA==}
@@ -9231,16 +9346,88 @@ packages:
       - supports-color
       - ts-node
       - typeorm-aurora-data-api-driver
+    dev: false
+
+  /@sphereon/ssi-sdk-ext.identifier-resolution@0.24.1-unstable.134(ts-node@10.9.2):
+    resolution: {integrity: sha512-DNYrR+z7wRhwE9dRj+Et08rJKt551WEyDqcWbvYyYT9kleyEZYlPHi52CBNXtsEA69hr5alAygNhkIMPrcG4jA==}
+    dependencies:
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.134(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.134
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.134
+      '@sphereon/ssi-sdk.agent-config': 0.30.1(ts-node@10.9.2)
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/utils': 4.2.0
+      debug: 4.3.6
+      pkijs: 3.2.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+
+  /@sphereon/ssi-sdk-ext.jwt-service@0.24.1-unstable.130(ts-node@10.9.2):
+    resolution: {integrity: sha512-MHLGRmJODEYJyFoXKwlKMYzf48vS5JcUkGk0W4sqmrY1wwcw+ro3l8adIprG37mNuknXBs9Mv0x/tvibE9wwCQ==}
+    dependencies:
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.130(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.130(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.key-manager': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-sdk.agent-config': 0.29.1-unstable.161(ts-node@10.9.2)
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/utils': 4.2.0
+      debug: 4.3.6
+      jwt-decode: 4.0.0
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+    dev: false
 
   /@sphereon/ssi-sdk-ext.jwt-service@0.24.1-unstable.134(ts-node@10.9.2):
     resolution: {integrity: sha512-bHhH76RAwtEY3jxcqhKVE8tgRrLGXiROrtaSYXogyizwZpnoMK+shwK0jhvw4Emh8xwZNwHC983rcFLQFqa6tw==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.134(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.key-manager': 0.24.1-unstable.134
       '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.134
       '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.134
-      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk.agent-config': 0.30.1(ts-node@10.9.2)
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/random': 1.0.2
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -9271,6 +9458,16 @@ packages:
       - typeorm-aurora-data-api-driver
     dev: false
 
+  /@sphereon/ssi-sdk-ext.key-manager@0.24.1-unstable.130:
+    resolution: {integrity: sha512-O/6NlKmlYRnEyP/mAI2Diu0qptMSqZfVwqog8KAOG/G8JUmktfSQmclBW8RoJ6AD9uY65BGzNk1oAVuuMv4Dog==}
+    dependencies:
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/key-manager': 4.2.0
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /@sphereon/ssi-sdk-ext.key-manager@0.24.1-unstable.134:
     resolution: {integrity: sha512-Az8DlYarcA0ZBIR2yjOC5msh3dPScvAzY3QSBXNgjmzC9hStW4iLJg2oAu5LYx95L8tKmhG1WJOkBTppOFbcpA==}
     dependencies:
@@ -9279,6 +9476,30 @@ packages:
       uint8arrays: 3.1.1
     transitivePeerDependencies:
       - supports-color
+
+  /@sphereon/ssi-sdk-ext.key-utils@0.24.1-unstable.130:
+    resolution: {integrity: sha512-DCyXW18g1OAuZ+aFHzQGrbZSx793DX94LSFnrWlOTMnYeILmrizuFksUlWSb3lTqQGAqWBC48NoR3I1H6lSMEQ==}
+    dependencies:
+      '@ethersproject/random': 5.7.0
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.130
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@stablelib/ed25519': 1.0.3
+      '@stablelib/sha256': 1.0.1
+      '@stablelib/sha512': 1.0.1
+      '@trust/keyto': 1.0.1
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      base64url: 3.0.1
+      debug: 4.3.6
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+      lodash.isplainobject: 4.0.6
+      multiformats: 9.9.0
+      uint8arrays: 3.1.1
+      varint: 6.0.0
+      web-encoding: 1.1.5
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
 
   /@sphereon/ssi-sdk-ext.key-utils@0.24.1-unstable.134:
     resolution: {integrity: sha512-Gz8yyIXD2+yoh5oSbMRPsFG7B7AImK+wbIzzZeNYgCJ4sw8h5nApZeEYq6eAv4AU/geCKVZZP2ksqbxvWQXbyg==}
@@ -9306,7 +9527,7 @@ packages:
   /@sphereon/ssi-sdk-ext.kms-local@0.24.1-unstable.134(ts-node@10.9.2):
     resolution: {integrity: sha512-+p3Yo0pdNLj2XGg5ifUyWo5MPJtmKrg0clWEwXWHqRagOYH9sELkDayWvTp7NioN8G9Tun+zucvRhA7xHPEFbA==}
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.134(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.134(ts-node@10.9.2)
       '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.134
       '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.134
       '@trust/keyto': 2.0.0-alpha1
@@ -9336,6 +9557,18 @@ packages:
       - ts-node
       - typeorm-aurora-data-api-driver
 
+  /@sphereon/ssi-sdk-ext.x509-utils@0.24.1-unstable.130:
+    resolution: {integrity: sha512-JDX8i0WrwONaOivZXB+OxJQGkln7vuSLS61tOYl7M1RyPGixdBYuEuACsdvWf6egYOpaWmhmXZzaAOj18eDddw==}
+    dependencies:
+      '@trust/keyto': 1.0.1
+      debug: 4.3.6
+      js-x509-utils: 1.0.7
+      pkijs: 3.2.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /@sphereon/ssi-sdk-ext.x509-utils@0.24.1-unstable.134:
     resolution: {integrity: sha512-hkH6EiXTidlCFUdY53cmbM9Iojn/RgVNc8FkUWTitD/U6tiAE8DB7EPRvbcQG53vv0jz7HbqmKyHvNyTcl9VIw==}
     dependencies:
@@ -9347,6 +9580,36 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
+  /@sphereon/ssi-sdk.agent-config@0.29.1-unstable.161(ts-node@10.9.2):
+    resolution: {integrity: sha512-ZP/TjapF/Gv/AwnNr9e1U3rjyRwdLtAj4un9j1csnKcgYe9ff2fhYbe06y9mU4tfQilH69mAW4Tz1t6N5U7XbA==}
+    dependencies:
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      debug: 4.3.6
+      jsonpointer: 5.0.1
+      typeorm: 0.3.20(ts-node@10.9.2)
+      url-parse: 1.5.10
+      yaml: 2.5.0
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+    dev: false
+
   /@sphereon/ssi-sdk.agent-config@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2):
     resolution: {integrity: sha512-8IRct+v8l9T+NACJzm78fH9LzoLiU7q+nHj8keOjFcLrV4CmdpyfuMYdRwrbFXTrLqV1rndAJQ7GGxX+UEq4JA==}
     dependencies:
@@ -9354,6 +9617,36 @@ packages:
       debug: 4.3.6
       jsonpointer: 5.0.1
       typeorm: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+      url-parse: 1.5.10
+      yaml: 2.5.0
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+    dev: false
+
+  /@sphereon/ssi-sdk.agent-config@0.30.1(ts-node@10.9.2):
+    resolution: {integrity: sha512-8IRct+v8l9T+NACJzm78fH9LzoLiU7q+nHj8keOjFcLrV4CmdpyfuMYdRwrbFXTrLqV1rndAJQ7GGxX+UEq4JA==}
+    dependencies:
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      debug: 4.3.6
+      jsonpointer: 5.0.1
+      typeorm: 0.3.20(ts-node@10.9.2)
       url-parse: 1.5.10
       yaml: 2.5.0
     transitivePeerDependencies:
@@ -11021,6 +11314,39 @@ packages:
       '@veramo/utils': 4.2.0
       debug: 4.3.6
       typeorm: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2)
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+    dev: true
+    patched: true
+
+  /@veramo/data-store@4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(ts-node@10.9.2):
+    resolution: {integrity: sha512-gwinKYd//jOCXrdr2NefXOHnuUT8Vz2sHvSMFvm41UVD9QMpeKpTrTEqGoYG/eDg/1+U9aQlb+AI6bFUNNsk0Q==}
+    dependencies:
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/did-discovery': 4.2.0
+      '@veramo/did-manager': 4.2.0
+      '@veramo/key-manager': 4.2.0
+      '@veramo/utils': 4.2.0
+      debug: 4.3.6
+      typeorm: 0.3.20(ts-node@10.9.2)
     transitivePeerDependencies:
       - '@google-cloud/spanner'
       - '@sap/hana-client'
@@ -14828,6 +15154,7 @@ packages:
 
   /expo-random@14.0.1(expo@51.0.29):
     resolution: {integrity: sha512-gX2mtR9o+WelX21YizXUCD/y+a4ZL+RDthDmFkHxaYbdzjSYTn8u/igoje/l3WEO+/RYspmqUFa8w/ckNbt6Vg==}
+    deprecated: This package is now deprecated in favor of expo-crypto, which provides the same functionality. To migrate, replace all imports from expo-random with imports from expo-crypto.
     requiresBuild: true
     peerDependencies:
       expo: '*'
@@ -22968,7 +23295,6 @@ packages:
       typescript: 5.5.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
-    dev: true
 
   /ts-node@10.9.2(@types/node@20.16.1)(typescript@5.4.2):
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
@@ -23290,6 +23616,83 @@ packages:
       sha.js: 2.4.11
       sqlite3: 5.1.7
       ts-node: 10.9.2(@types/node@18.19.45)(typescript@5.4.2)
+      tslib: 2.6.3
+      uuid: 9.0.1
+      yargs: 17.7.2
+    transitivePeerDependencies:
+      - supports-color
+
+  /typeorm@0.3.20(ts-node@10.9.2):
+    resolution: {integrity: sha512-sJ0T08dV5eoZroaq9uPKBoNcGslHBR4E4y+EBHs//SiGbblGe7IeduP/IH4ddCcj0qp3PHwDwGnuvqEAnKlq/Q==}
+    engines: {node: '>=16.13.0'}
+    hasBin: true
+    peerDependencies:
+      '@google-cloud/spanner': ^5.18.0
+      '@sap/hana-client': ^2.12.25
+      better-sqlite3: ^7.1.2 || ^8.0.0 || ^9.0.0
+      hdb-pool: ^0.1.6
+      ioredis: ^5.0.4
+      mongodb: ^5.8.0
+      mssql: ^9.1.1 || ^10.0.1
+      mysql2: ^2.2.5 || ^3.0.1
+      oracledb: ^6.3.0
+      pg: ^8.5.1
+      pg-native: ^3.0.0
+      pg-query-stream: ^4.0.0
+      redis: ^3.1.1 || ^4.0.0
+      sql.js: ^1.4.0
+      sqlite3: ^5.0.3
+      ts-node: ^10.7.0
+      typeorm-aurora-data-api-driver: ^2.0.0
+    peerDependenciesMeta:
+      '@google-cloud/spanner':
+        optional: true
+      '@sap/hana-client':
+        optional: true
+      better-sqlite3:
+        optional: true
+      hdb-pool:
+        optional: true
+      ioredis:
+        optional: true
+      mongodb:
+        optional: true
+      mssql:
+        optional: true
+      mysql2:
+        optional: true
+      oracledb:
+        optional: true
+      pg:
+        optional: true
+      pg-native:
+        optional: true
+      pg-query-stream:
+        optional: true
+      redis:
+        optional: true
+      sql.js:
+        optional: true
+      sqlite3:
+        optional: true
+      ts-node:
+        optional: true
+      typeorm-aurora-data-api-driver:
+        optional: true
+    dependencies:
+      '@sqltools/formatter': 1.2.5
+      app-root-path: 3.1.0
+      buffer: 6.0.3
+      chalk: 4.1.2
+      cli-highlight: 2.1.11
+      dayjs: 1.11.13
+      debug: 4.3.6
+      dotenv: 16.4.5
+      glob: 10.4.5
+      mkdirp: 2.1.6
+      reflect-metadata: 0.2.2
+      sha.js: 2.4.11
+      ts-node: 10.9.2(@types/node@18.19.45)(typescript@5.5.3)
       tslib: 2.6.3
       uuid: 9.0.1
       yargs: 17.7.2
