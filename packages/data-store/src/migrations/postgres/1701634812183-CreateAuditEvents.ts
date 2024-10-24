@@ -13,7 +13,7 @@ export class CreateAuditEvents1701634812183 implements MigrationInterface {
     )
     await queryRunner.query(`CREATE TYPE "public"."Action_type_enum" AS ENUM('create', 'read', 'update', 'delete', 'execute')`)
     await queryRunner.query(`CREATE TYPE "public"."Initiator_type_enum" AS ENUM('user', 'system', 'external')`)
-    await queryRunner.query(`CREATE TYPE "public"."System_correlation_id_type_enum" AS ENUM('did', 'email', 'hostname', 'phone', 'user')`)
+    await queryRunner.query(`CREATE TYPE "public"."System_correlation_id_type_enum" AS ENUM('did', 'url', 'email', 'hostname', 'phone', 'user')`)
     await queryRunner.query(`CREATE TYPE "public"."Party_correlation_type_enum" AS ENUM('did', 'url', 'email', 'hostname', 'phone')`)
     await queryRunner.query(`CREATE TYPE "public"."Event_type_enum" AS ENUM('audit', 'activity', 'general')`)
     await queryRunner.query(`CREATE TYPE "public"."Event_credential_type_enum" AS ENUM('JSON_LD', 'JWT', 'SD_JWT', 'MSO_MDOC')`)
