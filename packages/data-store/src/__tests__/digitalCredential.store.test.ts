@@ -1,18 +1,20 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
+import { IVerifiablePresentation } from '@sphereon/ssi-types'
+import { createHash } from 'crypto'
 import { DataSource } from 'typeorm'
 import { DataStoreDigitalCredentialMigrations } from '../migrations'
 import { CredentialRole, DataStoreDigitalCredentialEntities } from '../index'
 import { DigitalCredentialStore } from '../digitalCredential/DigitalCredentialStore'
 import {
+  AddCredentialArgs,
   CredentialCorrelationType,
   CredentialDocumentFormat,
   CredentialStateType,
   DocumentType,
   DigitalCredential,
-} from '../types/digitalCredential/digitalCredential'
-import { AddCredentialArgs, GetCredentialsArgs, GetCredentialsResponse } from '../types/digitalCredential/IAbstractDigitalCredentialStore'
-import { IVerifiablePresentation } from '@sphereon/ssi-types'
-import { createHash } from 'crypto'
+  GetCredentialsArgs,
+  GetCredentialsResponse,
+} from '../types'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource
@@ -245,6 +247,83 @@ describe('Database entities tests', (): void => {
     const savedDigitalCredential: DigitalCredential = await digitalCredentialStore.addCredential(digitalCredential)
     let result = await digitalCredentialStore.removeCredential({ id: savedDigitalCredential.id })
     expect(result).toEqual(true)
+  })
+
+  it('should delete stored digital credential and children', async (): Promise<void> => {
+      const digitalCredentialParent: AddCredentialArgs = {
+        rawDocument:
+          'eyJraWQiOiJkaWQ6a2V5Ono2TWtyaGt5M3B1c20yNk1laUZhWFUzbjJuZWtyYW13RlVtZ0dyZUdHa0RWNnpRaiN6Nk1rcmhreTNwdXNtMjZNZWlGYVhVM24ybmVrcmFtd0ZVbWdHcmVHR2tEVjZ6UWoiLCJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vc3BoZXJlb24tb3BlbnNvdXJjZS5naXRodWIuaW8vc3NpLW1vYmlsZS13YWxsZXQvY29udGV4dC9zcGhlcmVvbi13YWxsZXQtaWRlbnRpdHktdjEuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTcGhlcmVvbldhbGxldElkZW50aXR5Q3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiZW1haWxBZGRyZXNzIjoic0BrIn19LCJzdWIiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJqdGkiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJuYmYiOjE3MDg0NDA4MDgsImlzcyI6ImRpZDprZXk6ejZNa3Joa3kzcHVzbTI2TWVpRmFYVTNuMm5la3JhbXdGVW1nR3JlR0drRFY2elFqIn0.G0M84XVAxSmzGY-NQuB9NBofNrINSn6lvxW6761Vlq6ypvYgtc2xNdpiRmw8ryVNfnpzrr4Z5cB1RlrC05rJAw',
+        kmsKeyRef: 'testRef',
+        identifierMethod: 'did',
+        issuerCorrelationType: CredentialCorrelationType.DID,
+        subjectCorrelationType: CredentialCorrelationType.DID,
+        issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+        subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+        credentialRole: CredentialRole.VERIFIER,
+        tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj'
+      }
+      const parentCredential: DigitalCredential = await digitalCredentialStore.addCredential(digitalCredentialParent)
+      expect(parentCredential).toBeDefined()
+
+      const digitalCredentialChild: AddCredentialArgs = {
+        rawDocument:
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksiLCJraWQiOiJkaWQ6dmVsb2NpdHk6djI6MHhjMTY3MTUxNmMyMTQ1ZDcwYjM0MGY1NjBhYjFjYjU4Y2M0ZDhhMDUyOjE2Mzc4MjY4NTEwMzM4MToxOTg2I2tleS0xIn0.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIk9wZW5CYWRnZUNyZWRlbnRpYWwiLCJWZXJpZmlhYmxlQ3JlZGVudGlhbCIsIlZlcmlmaWFibGVDcmVkZW50aWFsIl0sImlkIjoiZGlkOnZlbG9jaXR5OnYyOjB4YzE2NzE1MTZjMjE0NWQ3MGIzNDBmNTYwYWIxY2I1OGNjNGQ4YTA1MjoxNjM3ODI2ODUxMDMzODE6MTk4NiIsImNyZWRlbnRpYWxTdGF0dXMiOnsidHlwZSI6IlZlbG9jaXR5UmV2b2NhdGlvbkxpc3RKYW4yMDIxIiwiaWQiOiJldGhlcmV1bToweDFDMjk0NjFDNzQ4MGQxZDg1NzBkZjdjMEE0RjMxNEQwYkU4Y0Q1QmYvZ2V0UmV2b2tlZFN0YXR1cz9hZGRyZXNzPTB4YzE2NzE1MTZDMjE0NUQ3MEIzNDBGNTYwQUIxQ0I1OENjNEQ4YTA1MiZsaXN0SWQ9NTI5NDcyODgxNzIzMTQmaW5kZXg9NTYyNCJ9LCJsaW5rQ29kZUNvbW1pdG1lbnQiOnsidHlwZSI6IlZlbG9jaXR5Q3JlZGVudGlhbExpbmtDb2RlQ29tbWl0bWVudDIwMjIiLCJ2YWx1ZSI6IkVpQ3dJQmRUcmE4MVkyMjEzSVNJSXo0UDh5ejNvNDlXMStYczRmczVIc1BvMXc9PSJ9LCJpc3N1ZXIiOnsiaWQiOiJkaWQ6aW9uOkVpQmFLaWRocEhma2ZzZWpaT1UxY09YVnlhdnE4WUtfaFJfTGgwX1dCNTVQX0EifSwiY29udGVudEhhc2giOnsidHlwZSI6IlZlbG9jaXR5Q29udGVudEhhc2gyMDIwIiwidmFsdWUiOiJkNWUzMGI5Y2FlNDljYjM5MjRjZjVhZjIwMDUwOTE4ZWZjZDQ4ZTk2MzAzZTZhMDQ4NmQzZmE0ODk4NjQ1NDFlIn0sImNyZWRlbnRpYWxTY2hlbWEiOnsiaWQiOiJodHRwczovL3N0YWdpbmdyZWdpc3RyYXIudmVsb2NpdHluZXR3b3JrLmZvdW5kYXRpb24vc2NoZW1hcy9vcGVuLWJhZGdlLWNyZWRlbnRpYWwuc2NoZW1hLmpzb24iLCJ0eXBlIjoiSnNvblNjaGVtYVZhbGlkYXRvcjIwMTgifSwiY29uc2VudGVkQXQiOiIyMDIyLTExLTA3VDIxOjI0OjQ3LjcwM1oiLCJjcmVkZW50aWFsU3ViamVjdCI6eyJpZCI6ImRpZDpqd2s6ZXlKamNuWWlPaUp6WldOd01qVTJhekVpTENKcmRIa2lPaUpGUXlJc0luVnpaU0k2SW5OcFp5SXNJbmdpT2lKRFdVdEdjbmxOVWpOc2RubHpiemQ0UjBKeVN6QnJRMkZZYUdwSGFXdFdMV3MxT0dGSE1GSTBTWGh6SWl3aWVTSTZJakV0TkhoTFowcFBkRlZyYjNablJqVnFjVWMxTm1KeGFtbG5UMEpUTVdGT09FZEJOMUV5YURsUlJtc2lmUSJ9LCJpc3N1YW5jZURhdGUiOiIyMDIyLTExLTA3VDIxOjI5OjI5LjIzNVoifSwibmJmIjoxNjY3ODU2NTY5LCJqdGkiOiJkaWQ6dmVsb2NpdHk6djI6MHhjMTY3MTUxNmMyMTQ1ZDcwYjM0MGY1NjBhYjFjYjU4Y2M0ZDhhMDUyOjE2Mzc4MjY4NTEwMzM4MToxOTg2IiwiaXNzIjoiZGlkOmlvbjpFaUJhS2lkaHBIZmtmc2VqWk9VMWNPWFZ5YXZxOFlLX2hSX0xoMF9XQjU1UF9BIiwic3ViIjoiZGlkOmp3azpleUpqY25ZaU9pSnpaV053TWpVMmF6RWlMQ0pyZEhraU9pSkZReUlzSW5WelpTSTZJbk5wWnlJc0luZ2lPaUpEV1V0R2NubE5Vak5zZG5semJ6ZDRSMEp5U3pCclEyRllhR3BIYVd0V0xXczFPR0ZITUZJMFNYaHpJaXdpZVNJNklqRXROSGhMWjBwUGRGVnJiM1puUmpWcWNVYzFObUp4YW1sblQwSlRNV0ZPT0VkQk4xRXlhRGxSUm1zaWZRIiwiaWF0IjoxNjY3ODU2NTY5fQ.-SiM5d7UrYn1gdj2hU5T5LnLQzhIklOtoexbyebLMeha0K89vkujsbFN4HNFP2TSfRYFt0-jXwDaZ8RNKESwFA',
+        parentId: parentCredential.id,
+        kmsKeyRef: 'testRef',
+        identifierMethod: 'did',
+        issuerCorrelationType: CredentialCorrelationType.DID,
+        subjectCorrelationType: CredentialCorrelationType.DID,
+        issuerCorrelationId: 'did:key:z1Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+        subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+        credentialRole: CredentialRole.VERIFIER,
+        tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj'
+      }
+      const childCredential: DigitalCredential = await digitalCredentialStore.addCredential(digitalCredentialChild)
+      expect(childCredential).toBeDefined()
+
+      let deleteResult: boolean = await digitalCredentialStore.removeCredential({ id: parentCredential.id })
+      expect(deleteResult).toEqual(true)
+
+      await expect(digitalCredentialStore.getCredential({ id: childCredential.id })).rejects.toThrow(`No credential found for arg: ${JSON.stringify({ id: childCredential.id })}`)
+    })
+
+  it('should not delete stored parent digital credential if a child gets deleted', async (): Promise<void> => {
+    const digitalCredentialParent: AddCredentialArgs = {
+      rawDocument:
+        'eyJraWQiOiJkaWQ6a2V5Ono2TWtyaGt5M3B1c20yNk1laUZhWFUzbjJuZWtyYW13RlVtZ0dyZUdHa0RWNnpRaiN6Nk1rcmhreTNwdXNtMjZNZWlGYVhVM24ybmVrcmFtd0ZVbWdHcmVHR2tEVjZ6UWoiLCJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vc3BoZXJlb24tb3BlbnNvdXJjZS5naXRodWIuaW8vc3NpLW1vYmlsZS13YWxsZXQvY29udGV4dC9zcGhlcmVvbi13YWxsZXQtaWRlbnRpdHktdjEuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTcGhlcmVvbldhbGxldElkZW50aXR5Q3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiZW1haWxBZGRyZXNzIjoic0BrIn19LCJzdWIiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJqdGkiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJuYmYiOjE3MDg0NDA4MDgsImlzcyI6ImRpZDprZXk6ejZNa3Joa3kzcHVzbTI2TWVpRmFYVTNuMm5la3JhbXdGVW1nR3JlR0drRFY2elFqIn0.G0M84XVAxSmzGY-NQuB9NBofNrINSn6lvxW6761Vlq6ypvYgtc2xNdpiRmw8ryVNfnpzrr4Z5cB1RlrC05rJAw',
+      kmsKeyRef: 'testRef',
+      identifierMethod: 'did',
+      issuerCorrelationType: CredentialCorrelationType.DID,
+      subjectCorrelationType: CredentialCorrelationType.DID,
+      issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
+      tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
+    }
+    const parentCredential: DigitalCredential = await digitalCredentialStore.addCredential(digitalCredentialParent)
+    expect(parentCredential).toBeDefined()
+
+    const digitalCredentialChild: AddCredentialArgs = {
+      rawDocument:
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksiLCJraWQiOiJkaWQ6dmVsb2NpdHk6djI6MHhjMTY3MTUxNmMyMTQ1ZDcwYjM0MGY1NjBhYjFjYjU4Y2M0ZDhhMDUyOjE2Mzc4MjY4NTEwMzM4MToxOTg2I2tleS0xIn0.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIk9wZW5CYWRnZUNyZWRlbnRpYWwiLCJWZXJpZmlhYmxlQ3JlZGVudGlhbCIsIlZlcmlmaWFibGVDcmVkZW50aWFsIl0sImlkIjoiZGlkOnZlbG9jaXR5OnYyOjB4YzE2NzE1MTZjMjE0NWQ3MGIzNDBmNTYwYWIxY2I1OGNjNGQ4YTA1MjoxNjM3ODI2ODUxMDMzODE6MTk4NiIsImNyZWRlbnRpYWxTdGF0dXMiOnsidHlwZSI6IlZlbG9jaXR5UmV2b2NhdGlvbkxpc3RKYW4yMDIxIiwiaWQiOiJldGhlcmV1bToweDFDMjk0NjFDNzQ4MGQxZDg1NzBkZjdjMEE0RjMxNEQwYkU4Y0Q1QmYvZ2V0UmV2b2tlZFN0YXR1cz9hZGRyZXNzPTB4YzE2NzE1MTZDMjE0NUQ3MEIzNDBGNTYwQUIxQ0I1OENjNEQ4YTA1MiZsaXN0SWQ9NTI5NDcyODgxNzIzMTQmaW5kZXg9NTYyNCJ9LCJsaW5rQ29kZUNvbW1pdG1lbnQiOnsidHlwZSI6IlZlbG9jaXR5Q3JlZGVudGlhbExpbmtDb2RlQ29tbWl0bWVudDIwMjIiLCJ2YWx1ZSI6IkVpQ3dJQmRUcmE4MVkyMjEzSVNJSXo0UDh5ejNvNDlXMStYczRmczVIc1BvMXc9PSJ9LCJpc3N1ZXIiOnsiaWQiOiJkaWQ6aW9uOkVpQmFLaWRocEhma2ZzZWpaT1UxY09YVnlhdnE4WUtfaFJfTGgwX1dCNTVQX0EifSwiY29udGVudEhhc2giOnsidHlwZSI6IlZlbG9jaXR5Q29udGVudEhhc2gyMDIwIiwidmFsdWUiOiJkNWUzMGI5Y2FlNDljYjM5MjRjZjVhZjIwMDUwOTE4ZWZjZDQ4ZTk2MzAzZTZhMDQ4NmQzZmE0ODk4NjQ1NDFlIn0sImNyZWRlbnRpYWxTY2hlbWEiOnsiaWQiOiJodHRwczovL3N0YWdpbmdyZWdpc3RyYXIudmVsb2NpdHluZXR3b3JrLmZvdW5kYXRpb24vc2NoZW1hcy9vcGVuLWJhZGdlLWNyZWRlbnRpYWwuc2NoZW1hLmpzb24iLCJ0eXBlIjoiSnNvblNjaGVtYVZhbGlkYXRvcjIwMTgifSwiY29uc2VudGVkQXQiOiIyMDIyLTExLTA3VDIxOjI0OjQ3LjcwM1oiLCJjcmVkZW50aWFsU3ViamVjdCI6eyJpZCI6ImRpZDpqd2s6ZXlKamNuWWlPaUp6WldOd01qVTJhekVpTENKcmRIa2lPaUpGUXlJc0luVnpaU0k2SW5OcFp5SXNJbmdpT2lKRFdVdEdjbmxOVWpOc2RubHpiemQ0UjBKeVN6QnJRMkZZYUdwSGFXdFdMV3MxT0dGSE1GSTBTWGh6SWl3aWVTSTZJakV0TkhoTFowcFBkRlZyYjNablJqVnFjVWMxTm1KeGFtbG5UMEpUTVdGT09FZEJOMUV5YURsUlJtc2lmUSJ9LCJpc3N1YW5jZURhdGUiOiIyMDIyLTExLTA3VDIxOjI5OjI5LjIzNVoifSwibmJmIjoxNjY3ODU2NTY5LCJqdGkiOiJkaWQ6dmVsb2NpdHk6djI6MHhjMTY3MTUxNmMyMTQ1ZDcwYjM0MGY1NjBhYjFjYjU4Y2M0ZDhhMDUyOjE2Mzc4MjY4NTEwMzM4MToxOTg2IiwiaXNzIjoiZGlkOmlvbjpFaUJhS2lkaHBIZmtmc2VqWk9VMWNPWFZ5YXZxOFlLX2hSX0xoMF9XQjU1UF9BIiwic3ViIjoiZGlkOmp3azpleUpqY25ZaU9pSnpaV053TWpVMmF6RWlMQ0pyZEhraU9pSkZReUlzSW5WelpTSTZJbk5wWnlJc0luZ2lPaUpEV1V0R2NubE5Vak5zZG5semJ6ZDRSMEp5U3pCclEyRllhR3BIYVd0V0xXczFPR0ZITUZJMFNYaHpJaXdpZVNJNklqRXROSGhMWjBwUGRGVnJiM1puUmpWcWNVYzFObUp4YW1sblQwSlRNV0ZPT0VkQk4xRXlhRGxSUm1zaWZRIiwiaWF0IjoxNjY3ODU2NTY5fQ.-SiM5d7UrYn1gdj2hU5T5LnLQzhIklOtoexbyebLMeha0K89vkujsbFN4HNFP2TSfRYFt0-jXwDaZ8RNKESwFA',
+      parentId: parentCredential.id,
+      kmsKeyRef: 'testRef',
+      identifierMethod: 'did',
+      issuerCorrelationType: CredentialCorrelationType.DID,
+      subjectCorrelationType: CredentialCorrelationType.DID,
+      issuerCorrelationId: 'did:key:z1Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
+      tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
+    }
+    const childCredential: DigitalCredential = await digitalCredentialStore.addCredential(digitalCredentialChild)
+    expect(childCredential).toBeDefined()
+
+    let deleteResult: boolean = await digitalCredentialStore.removeCredential({ id: childCredential.id })
+    expect(deleteResult).toEqual(true)
+
+    const fetchedCredential: DigitalCredential = await digitalCredentialStore.getCredential({ id: parentCredential.id })
+    expect(fetchedCredential).toBeDefined()
   })
 
   it('should not delete stored digital credential if id not found', async (): Promise<void> => {

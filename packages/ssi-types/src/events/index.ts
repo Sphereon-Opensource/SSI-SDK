@@ -49,6 +49,8 @@ export enum DefaultActionSubType {
   DID_SERVICE_UPDATE = 'DID service update',
   VC_ISSUE = 'VC issue',
   VC_VERIFY = 'VC verify',
+  VC_SHARE = 'VC share',
+  VC_DELETE = 'VC delete',
 }
 
 export type ActionSubType = DefaultActionSubType | string
