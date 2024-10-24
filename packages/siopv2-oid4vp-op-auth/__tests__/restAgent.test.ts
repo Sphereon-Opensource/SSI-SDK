@@ -96,6 +96,6 @@ const testContext = {
   isRestTest: true,
 }
 
-xdescribe('REST integration tests', () => {
+describe.skip('REST integration tests', () => {
   didAuthSiopOpAuthenticatorAgentLogic(testContext)
 })

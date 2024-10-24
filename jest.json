@@ -40,7 +40,7 @@
     "<rootDir>/packages/siopv2-oid4vp-rp-rest-api/.yalc/"
   ],
   "transformIgnorePatterns": [
-    "<rootDir>/node_modules/.pnpm/(?!(nist-weierstrauss|multiformatsgggggg|@digitalcredentials\\+vc-status-list)@)"
+    "<rootDir>/node_modules/.pnpm/(?!(nist-weierstrauss|multiformatsgggggg|@digitalcredentials\\+vc-status-list|valibot)@)"
   ],
   "testMatch": [
     "**/__tests__/**/*.test.*",

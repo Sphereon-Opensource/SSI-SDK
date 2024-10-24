@@ -1,7 +1,7 @@
 import { VcIssuer } from '@sphereon/oid4vci-issuer'
 import { DIDDocument } from '@veramo/core'
 import { createVciIssuerBuilder } from './functions'
-import { IssuerMetadata } from '@sphereon/oid4vci-common'
+import { AuthorizationServerMetadata, IssuerMetadata } from '@sphereon/oid4vci-common'
 
 import { CredentialDataSupplier } from '@sphereon/oid4vci-issuer'
 import { IIssuerOptions, IMetadataOptions, IRequiredContext } from './types/IOID4VCIIssuer'
@@ -10,20 +10,24 @@ export class IssuerInstance {
   private _issuer: VcIssuer<DIDDocument> | undefined
   private readonly _metadataOptions: IMetadataOptions
   private readonly _issuerOptions: IIssuerOptions
-  private readonly _metadata: IssuerMetadata
+  private readonly _issuerMetadata: IssuerMetadata
+  private readonly _authorizationServerMetadata: AuthorizationServerMetadata
 
   public constructor({
     issuerOpts,
     metadataOpts,
-    metadata,
+    issuerMetadata,
+    authorizationServerMetadata,
   }: {
     issuerOpts: IIssuerOptions
     metadataOpts: IMetadataOptions
-    metadata: IssuerMetadata
+    issuerMetadata: IssuerMetadata
+    authorizationServerMetadata: AuthorizationServerMetadata
   }) {
     this._issuerOptions = issuerOpts
     this._metadataOptions = metadataOpts
-    this._metadata = metadata
+    this._issuerMetadata = issuerMetadata
+    this._authorizationServerMetadata = authorizationServerMetadata
   }
 
   public async get(opts: { context: IRequiredContext; credentialDataSupplier?: CredentialDataSupplier }): Promise<VcIssuer<DIDDocument>> {
@@ -31,7 +35,8 @@ export class IssuerInstance {
       const builder = await createVciIssuerBuilder(
         {
           issuerOpts: this.issuerOptions,
-          metadata: this.metadata,
+          issuerMetadata: this.issuerMetadata,
+          authorizationServerMetadata: this.authorizationServerMetadata,
           credentialDataSupplier: opts?.credentialDataSupplier,
         },
         opts.context,
@@ -49,7 +54,11 @@ export class IssuerInstance {
     return this._metadataOptions
   }
 
-  get metadata() {
-    return this._metadata
+  get issuerMetadata() {
+    return this._issuerMetadata
+  }
+
+  get authorizationServerMetadata() {
+    return this._authorizationServerMetadata
   }
 }

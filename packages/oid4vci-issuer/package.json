@@ -14,8 +14,8 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.16.1-unstable.91",
-    "@sphereon/oid4vci-issuer": "0.16.1-unstable.91",
+    "@sphereon/oid4vci-common": "0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161",
+    "@sphereon/oid4vci-issuer": "0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.161",
     "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.130",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.130",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
