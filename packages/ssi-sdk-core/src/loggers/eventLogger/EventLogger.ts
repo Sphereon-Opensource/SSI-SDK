@@ -65,18 +65,18 @@ class EventLogger {
 
   public logEvent = async (event: LoggingEvent): Promise<void> => {
     const eventData = await this.eventData(event)
-    EventLogger.LOGGERS.get(this.namespace).logl(eventData.level ?? LogLevel.INFO, JSON.stringify(eventData.data), eventData)
+    EventLogger.LOGGERS.get(this.namespace).logl(eventData.level ?? LogLevel.INFO, JSON.stringify(eventData), eventData)
     if (this.context?.agent) {
       await this.context.agent.emit(event.type, eventData)
     }
   }
 
   private eventData = async (event: LoggingEvent): Promise<LogEventType> => {
-    if (!this.system || event.data.system) {
+    if (!this.system && !event.data.system) {
       return Promise.reject(Error('Required system is not present'))
     }
 
-    if (!this.subSystemType || event.data.subSystemType) {
+    if (!this.subSystemType && !event.data.subSystemType) {
       return Promise.reject(Error('Required sub system type is not present'))
     }
 

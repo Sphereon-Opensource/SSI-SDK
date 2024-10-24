@@ -19,7 +19,7 @@ export class CreateAuditEvents1701634819487 implements MigrationInterface {
                 "systemCorrelationIdType" varchar CHECK( "systemCorrelationIdType" IN ('did','email','hostname','phone','user') ), 
                 "systemCorrelationId" varchar, 
                 "systemAlias" varchar, 
-                "partyCorrelationType" varchar CHECK( "partyCorrelationType" IN ('did','email','hostname','phone') ), 
+                "partyCorrelationType" varchar CHECK( "partyCorrelationType" IN ('did', 'url', 'email','hostname','phone') ), 
                 "partyCorrelationId" varchar, 
                 "partyAlias" varchar,
                 "credentialType" varchar CHECK( "credentialType" IN ('JSON_LD', 'JWT', 'SD_JWT', 'MSO_MDOC') ),
