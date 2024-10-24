@@ -4,12 +4,12 @@ export class CreateAuditEvents1701634812183 implements MigrationInterface {
   name = 'CreateAuditEvents1701634812183'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`CREATE TYPE "public"."Level_enum" AS ENUM('0', '1', '2', '3')`)
+    await queryRunner.query(`CREATE TYPE "public"."Level_enum" AS ENUM('0', '1', '2', '3', '4')`)
     await queryRunner.query(
-      `CREATE TYPE "public"."System_enum" AS ENUM('general', 'kms', 'identity', 'oid4vci', 'credentials', 'web3', 'profile', 'contact')`,
+      `CREATE TYPE "public"."System_enum" AS ENUM('general', 'kms', 'identity', 'oid4vci', 'oid4vp', 'siopv2', 'PE', 'credentials', 'web3', 'profile', 'contact')`,
     )
     await queryRunner.query(
-      `CREATE TYPE "public"."Subsystem_type_enum" AS ENUM('key', 'did_provider', 'did_resolver', 'oid4vp_op', 'oid4vci_client', 'siopv2_op', 'contact_manager', 'vc_issuer', 'vc_verifier', 'vc_persistence', 'transport', 'profile')`,
+      `CREATE TYPE "public"."Subsystem_type_enum" AS ENUM('key', 'did_provider', 'did_resolver', 'oid4vp_op', 'oid4vci_client', 'siopv2_op', 'contact_manager', 'vc_issuer', 'vc_verifier', 'vc_persistence', 'transport', 'profile', 'api')`,
     )
     await queryRunner.query(`CREATE TYPE "public"."Action_type_enum" AS ENUM('create', 'read', 'update', 'delete', 'execute')`)
     await queryRunner.query(`CREATE TYPE "public"."Initiator_type_enum" AS ENUM('user', 'system', 'external')`)
