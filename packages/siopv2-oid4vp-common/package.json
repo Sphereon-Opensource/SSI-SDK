@@ -12,7 +12,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.16.1-unstable.91",
+    "@sphereon/did-auth-siop": "0.16.1-feature.jarm.sdk2.68",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "uint8arrays": "3.1.1"
@@ -26,5 +26,6 @@
   },
   "files": [
     "dist/**/*"
-  ]
+  ],
+  "nx": {}
 }

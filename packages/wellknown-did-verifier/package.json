@@ -44,5 +44,6 @@
     "DID Configuration Resource",
     "Verifier",
     "Well-Known DIDs"
-  ]
+  ],
+  "nx": {}
 }
