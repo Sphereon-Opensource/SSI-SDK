@@ -33,7 +33,7 @@ export class OIDFClient implements IAgentPlugin {
         if (cryptoServiceCallback) {
             this.oidfClient = new FederationClient(null, cryptoServiceCallback)
         } else {
-            //FIXME Default Federation client is not working
+            //FIXME Default Federation client crypto callback
             this.oidfClient = new FederationClient(null, null)
         }
     }

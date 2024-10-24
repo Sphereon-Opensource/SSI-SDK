@@ -45,7 +45,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         plugins: [
             new JwtService(),
             new OIDFClient({
-              // FIXME it should be fixed in the library, the function got mangled as well the JWK object keys
+              // FIXME it should be fixed in the library, the function's name and the JWK object keys are mangled
               cryptoServiceCallback: {
                 // @ts-ignore
                 q3t: async (jwt: string, key: any): Promise<boolean> => {
