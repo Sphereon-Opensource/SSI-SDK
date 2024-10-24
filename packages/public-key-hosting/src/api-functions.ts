@@ -1,4 +1,6 @@
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
+import { ISphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { Request, Response, Router } from 'express'
 import { JKWS_HOSTING_ALL_KEYS_PATH, JWKS_HOSTING_DID_KEYS_PATH } from './environment'
 import { toJWKS } from './functions'
@@ -15,8 +17,16 @@ export function getAllJWKSEndpoint(router: Router, context: IRequiredContext, op
   logger.info(`All JWKS endpoint enabled, path ${path}`)
   router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
+      if (!contextHasPlugin<ISphereonKeyManager>(context, 'keyManagerListKeys')) {
+        return sendErrorResponse(
+          response,
+          500,
+          'Key manager plugin that can list keys is not found. Please enable the Sphereon Key Manager plugin if you want to use this endpoint',
+        )
+      }
       response.statusCode = 202
-      return response.send({})
+      const keys = await context.agent.keyManagerListKeys()
+      return response.send(toJWKS({ keys }))
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)
     }
