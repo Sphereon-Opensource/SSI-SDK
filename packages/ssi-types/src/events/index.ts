@@ -51,6 +51,7 @@ export enum DefaultActionSubType {
   VC_VERIFY = 'VC verify',
   VC_SHARE = 'VC share',
   VC_DELETE = 'VC delete',
+  VC_DECLINE = 'VC decline'
 }
 
 export type ActionSubType = DefaultActionSubType | string
