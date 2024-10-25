@@ -26,7 +26,7 @@ import {
   isManagedIdentifierX5cResult,
   ManagedIdentifierOptsOrResult,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { IJwtService, JwtHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { IJwtService, JwsHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   CorrelationIdentifierType,
@@ -143,7 +143,7 @@ export function signCallback(
     if (!resolution.issuer && !jwt.payload.iss) {
       return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)} or identifier resolution`))
     }
-    const header = jwt.header as JwtHeader
+    const header = jwt.header as JwsHeader
     const payload = jwt.payload
     if (nonce) {
       payload.nonce = nonce

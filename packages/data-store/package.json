@@ -15,9 +15,9 @@
   },
   "dependencies": {
     "@sphereon/kmp-mdl-mdoc": "0.2.0-SNAPSHOT.22",
-    "@sphereon/pex": "5.0.0-unstable.9",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.130",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.130",
+    "@sphereon/pex": "5.0.0-unstable.18",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.134",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.134",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
@@ -52,5 +52,6 @@
     "SQLite",
     "PostgreSQL",
     "Contact Store"
-  ]
+  ],
+  "nx": {}
 }

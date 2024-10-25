@@ -1,19 +1,28 @@
 import {
+  AuthorizationResponsePayload,
+  JwksMetadataParams,
+  OP,
   PresentationDefinitionWithLocation,
   PresentationExchangeResponseOpts,
+  PresentationVerificationResult,
+  RequestObjectPayload,
+  ResponseIss,
+  SupportedVersion,
   URI,
   Verification,
   VerifiedAuthorizationRequest,
 } from '@sphereon/did-auth-siop'
-import { PresentationVerificationResult } from '@sphereon/did-auth-siop'
+import { ResolveOpts } from '@sphereon/did-auth-siop-adapter'
+import { JwtIssuer } from '@sphereon/oid4vc-common'
 import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
-import { CompactSdJwtVc, W3CVerifiablePresentation, CredentialMapper, PresentationSubmission, parseDid } from '@sphereon/ssi-types'
+import { encodeBase64url } from '@sphereon/ssi-sdk.core'
+import { CompactSdJwtVc, CredentialMapper, parseDid, PresentationSubmission, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { IIdentifier, IVerifyResult, TKeyType } from '@veramo/core'
 import Debug from 'debug'
+import { v4 } from 'uuid'
 import { IOPOptions, IOpSessionArgs, IOpSessionGetOID4VPArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
-import { ResolveOpts } from '@sphereon/did-auth-siop-adapter'
 
 const debug = Debug(`sphereon:sdk:siop:op-session`)
 
@@ -236,6 +245,48 @@ export class OpSession {
     return presentationVerificationCallback
   }
 
+  private async createJarmResponseCallback({
+    responseOpts,
+  }: {
+    responseOpts: {
+      jwtIssuer?: JwtIssuer
+      version?: SupportedVersion
+      correlationId?: string
+      audience?: string
+      issuer?: ResponseIss | string
+      verification?: Verification
+    }
+  }) {
+    const agent = this.context.agent
+    return async function jarmResponse(opts: {
+      authorizationResponsePayload: AuthorizationResponsePayload
+      requestObjectPayload: RequestObjectPayload
+      clientMetadata: JwksMetadataParams
+    }): Promise<{ response: string }> {
+      const { clientMetadata, authorizationResponsePayload: authResponse } = opts
+      const jwk = await OP.extractEncJwksFromClientMetadata(clientMetadata)
+      // @ts-ignore // FIXME: Fix jwk inference
+      const recipientKey = await agent.identifierExternalResolveByJwk({ identifier: jwk })
+
+      return await agent
+        .jwtEncryptJweCompactJwt({
+          recipientKey,
+          protectedHeader: {},
+          //FIXME. Get from metadata
+          alg: 'ECDH-ES',
+          enc: 'A256GCM',
+          apv: encodeBase64url(opts.requestObjectPayload.nonce),
+          apu: encodeBase64url(v4()),
+          payload: authResponse,
+          issuer: responseOpts.issuer,
+          audience: responseOpts.audience,
+        })
+        .then((result) => {
+          return { response: result.jwt }
+        })
+    }
+  }
+
   public async sendAuthorizationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
     const resolveOpts: ResolveOpts = this.options.resolveOpts ?? {
       resolver: getAgentResolver(this.context, {
@@ -255,11 +306,11 @@ export class OpSession {
     const request = await this.getAuthorizationRequest()
     const hasDefinitions = await this.hasPresentationDefinitions()
     if (hasDefinitions) {
-      if (
-        !request.presentationDefinitions ||
-        !args.verifiablePresentations ||
-        args.verifiablePresentations.length !== request.presentationDefinitions.length
-      ) {
+      const totalInputDescriptors = request.presentationDefinitions?.reduce((sum, pd) => {
+        return sum + pd.definition.input_descriptors.length
+      }, 0)
+
+      if (!request.presentationDefinitions || !args.verifiablePresentations || args.verifiablePresentations.length !== totalInputDescriptors) {
         throw Error(
           `Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${request.presentationDefinitions?.length}`,
         )
@@ -298,7 +349,7 @@ export class OpSession {
     }
 
     const authResponse = await op.createAuthorizationResponse(request, responseOpts)
-    const response = await op.submitAuthorizationResponse(authResponse)
+    const response = await op.submitAuthorizationResponse(authResponse, await this.createJarmResponseCallback({ responseOpts }))
 
     if (response.status >= 400) {
       throw Error(`Error ${response.status}: ${response.statusText || (await response.text())}`)
