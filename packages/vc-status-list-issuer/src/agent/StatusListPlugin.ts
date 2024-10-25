@@ -8,7 +8,7 @@ import {
   IRequiredContext,
   IRequiredPlugins,
   IStatusListPlugin,
-  StatusListDetails
+  StatusListDetails,
 } from '@sphereon/ssi-sdk.vc-status-list'
 import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import { Loggers } from '@sphereon/ssi-types'
@@ -27,13 +27,12 @@ export class StatusListPlugin implements IAgentPlugin {
   readonly methods: IStatusListPlugin = {
     slAddStatusToCredential: this.slAddStatusToCredential.bind(this),
     slCreateStatusList: this.slCreateStatusList.bind(this),
-    slGetStatusList: this.slGetStatusList.bind(this)
+    slGetStatusList: this.slGetStatusList.bind(this),
   }
 
-
   constructor(opts: {
-    instances: Array<StatusListInstance>,
-    defaultInstanceId?: string,
+    instances: Array<StatusListInstance>
+    defaultInstanceId?: string
     allDataSources?: DataSources
     autoCreateInstances?: boolean
   }) {
@@ -50,12 +49,17 @@ export class StatusListPlugin implements IAgentPlugin {
 
   private async slGetStatusList(args: GetStatusListArgs, context: IAgentContext<IRequiredPlugins & IStatusListPlugin>): Promise<StatusListDetails> {
     const sl = this.instances.find((instance) => instance.id === args.id || instance.correlationId === args.correlationId)
-    const dataSource = sl?.dataSource ?? args?.dataSource ? await args.dataSource : args.dbName ? await this.allDataSources.getDbConnection(args.dbName) : await this.allDataSources.getDbConnection(this.allDataSources.getDbNames()[0])
+    const dataSource =
+      (sl?.dataSource ?? args?.dataSource)
+        ? await args.dataSource
+        : args.dbName
+          ? await this.allDataSources.getDbConnection(args.dbName)
+          : await this.allDataSources.getDbConnection(this.allDataSources.getDbNames()[0])
     try {
       const driver = await getDriver({
         id: args.id ?? sl?.id,
         correlationId: args.correlationId ?? sl?.correlationId,
-        dataSource
+        dataSource,
       })
       return await driver.getStatusList()
     } catch (e) {
@@ -67,14 +71,20 @@ export class StatusListPlugin implements IAgentPlugin {
     }
   }
 
-  private async slCreateStatusList(args: CreateNewStatusListArgs, context: IAgentContext<IRequiredPlugins & IStatusListPlugin>): Promise<StatusListDetails> {
-
+  private async slCreateStatusList(
+    args: CreateNewStatusListArgs,
+    context: IAgentContext<IRequiredPlugins & IStatusListPlugin>,
+  ): Promise<StatusListDetails> {
     const sl = await createNewStatusList(args, context)
-    const dataSource = args?.dataSource ? await args.dataSource : args.dbName ? await this.allDataSources.getDbConnection(args.dbName) : await this.allDataSources.getDbConnection(this.allDataSources.getDbNames()[0])
+    const dataSource = args?.dataSource
+      ? await args.dataSource
+      : args.dbName
+        ? await this.allDataSources.getDbConnection(args.dbName)
+        : await this.allDataSources.getDbConnection(this.allDataSources.getDbNames()[0])
     const driver = await getDriver({
       id: sl.id,
       correlationId: sl.correlationId,
-      dataSource
+      dataSource,
     })
     let statusListDetails: StatusListDetails | undefined = undefined
     try {
@@ -82,25 +92,23 @@ export class StatusListPlugin implements IAgentPlugin {
     } catch (e) {
       // That is fine if there is no status list yet
     }
-    if (statusListDetails && this.instances.find(sl => sl.id === args.id || sl.correlationId === args.correlationId)) {
+    if (statusListDetails && this.instances.find((sl) => sl.id === args.id || sl.correlationId === args.correlationId)) {
       return Promise.reject(Error(`Status list with id  ${args.id} or correlation id ${args.correlationId} already exists`))
     } else {
       statusListDetails = await driver.createStatusList({
         statusListCredential: sl.statusListCredential,
-        correlationId: sl.correlationId
+        correlationId: sl.correlationId,
       })
       this.instances.push({
         correlationId: statusListDetails.correlationId,
         id: statusListDetails.id,
         dataSource,
         driverType: statusListDetails.driverType!,
-        driverOptions: driver.getOptions()
+        driverOptions: driver.getOptions(),
       })
     }
 
-
     return statusListDetails
-
   }
 
   private async slAddStatusToCredential(args: IAddStatusToCredentialArgs, context: IRequiredContext): Promise<CredentialWithStatusSupport> {
@@ -113,7 +121,7 @@ export class StatusListPlugin implements IAgentPlugin {
     // If the credential is already providing the id we favor that over the argument. Default status list as a fallback. We also allow passing in an empty id to get the default
     const credentialStatusId = credentialStatus.id && credentialStatus.id.trim() !== '' ? credentialStatus.id.split('#')[0] : undefined
     const statusListId = credentialStatus.statusListCredential ?? credentialStatusId ?? args.statusListId ?? this.defaultStatusListId
-    const instance = this.instances.find(instance => instance.id === statusListId)
+    const instance = this.instances.find((instance) => instance.id === statusListId)
     if (!instance) {
       return Promise.reject(Error(`Status list with id ${statusListId} is not managed by the status list plugin`))
     } else if (!instance.dataSource && !instance.driverOptions?.dbName) {
@@ -125,10 +133,8 @@ export class StatusListPlugin implements IAgentPlugin {
       ...rest,
       credentialId,
       statusListId,
-      driver: await getDriver({ dataSource, id: statusListId })
+      driver: await getDriver({ dataSource, id: statusListId }),
     })
     return credential
   }
 }
-
-

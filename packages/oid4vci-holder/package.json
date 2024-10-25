@@ -39,7 +39,7 @@
     "xstate": "^4.38.3"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.24.1-unstable.130",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.24.1-unstable.134",
     "@types/i18n-js": "^3.8.9",
     "@types/lodash.memoize": "^4.1.9",
     "@types/uuid": "^9.0.8",
@@ -67,5 +67,6 @@
     "Sphereon",
     "OID4VCI",
     "State Machine"
-  ]
+  ],
+  "nx": {}
 }

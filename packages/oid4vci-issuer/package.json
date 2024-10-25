@@ -67,5 +67,6 @@
     "Presentation Exchange",
     "OpenID Connect",
     "Authenticator"
-  ]
+  ],
+  "nx": {}
 }

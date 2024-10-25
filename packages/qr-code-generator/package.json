@@ -57,5 +57,6 @@
     "OpenID4VP",
     "OpenID4VCI",
     "QR Code"
-  ]
+  ],
+  "nx": {}
 }

@@ -16,10 +16,10 @@
   "dependencies": {
     "@sd-jwt/core": "^0.7.2",
     "@sd-jwt/sd-jwt-vc": "^0.7.2",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.130",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.130",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.24.1-unstable.130",
-    "@sphereon/ssi-sdk-ext.key-utils": "0.24.1-unstable.130",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.134",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.134",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.24.1-unstable.134",
+    "@sphereon/ssi-sdk-ext.key-utils": "0.24.1-unstable.134",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.mdl-mdoc": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
@@ -32,10 +32,10 @@
     "@sd-jwt/decode": "^0.7.2",
     "@sd-jwt/types": "^0.7.2",
     "@sd-jwt/utils": "^0.7.2",
-    "@sphereon/ssi-sdk-ext.did-provider-jwk": " 0.24.1-next.112",
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": " 0.24.1-next.112",
-    "@sphereon/ssi-sdk-ext.key-manager": " 0.24.1-next.112",
-    "@sphereon/ssi-sdk-ext.kms-local": " 0.24.1-next.112",
+    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.24.1-unstable.134",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.24.1-unstable.134",
+    "@sphereon/ssi-sdk-ext.key-manager": "0.24.1-unstable.134",
+    "@sphereon/ssi-sdk-ext.kms-local": "0.24.1-unstable.134",
     "@types/node": "18.15.3",
     "@types/uuid": "^9.0.8",
     "@veramo/core": "4.2.0",
@@ -69,5 +69,6 @@
     "SD-JWT",
     "Selective Disclosure",
     "Verifiable Credential"
-  ]
+  ],
+  "nx": {}
 }

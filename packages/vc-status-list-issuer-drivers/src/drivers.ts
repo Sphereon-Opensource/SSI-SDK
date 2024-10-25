@@ -5,13 +5,9 @@ import {
   IGetStatusListEntryByIndexArgs,
   IStatusListEntity,
   IStatusListEntryEntity,
-  StatusListStore
+  StatusListStore,
 } from '@sphereon/ssi-sdk.data-store'
-import {
-  StatusList2021EntryCredentialStatus,
-  statusListCredentialToDetails,
-  StatusListDetails
-} from '@sphereon/ssi-sdk.vc-status-list'
+import { StatusList2021EntryCredentialStatus, statusListCredentialToDetails, StatusListDetails } from '@sphereon/ssi-sdk.vc-status-list'
 import { OriginalVerifiableCredential, StatusListCredentialIdMode, StatusListDriverType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
 import { IStatusListDriver } from './types'
@@ -38,15 +34,15 @@ export function getOptions(args: { id?: string; correlationId?: string; dbName: 
     id: args.id,
     correlationId: args.correlationId,
     driverType: StatusListDriverType.AGENT_TYPEORM,
-    driverOptions: { dbName: args.dbName }
+    driverOptions: { dbName: args.dbName },
   }
 }
 
 export async function getDriver(args: {
-  id?: string;
-  correlationId?: string;
-  dbName?: string,
-  dataSource?: DataSource,
+  id?: string
+  correlationId?: string
+  dbName?: string
+  dataSource?: DataSource
   dataSources?: DataSources
 }): Promise<IStatusListDriver> {
   const dbName = args.dbName ?? args.dataSource?.name
@@ -54,10 +50,13 @@ export async function getDriver(args: {
     throw Error(`Please provide either a DB name or data source`)
   }
   const dataSources = args.dataSources ?? DataSources.singleInstance()
-  return await AgentDataSourceStatusListDriver.init(getOptions({
-    ...args,
-    dbName
-  }), { dataSource: args.dataSource ?? await dataSources.getDbConnection(dbName), dataSources })
+  return await AgentDataSourceStatusListDriver.init(
+    getOptions({
+      ...args,
+      dbName,
+    }),
+    { dataSource: args.dataSource ?? (await dataSources.getDbConnection(dbName)), dataSources },
+  )
 }
 
 export class AgentDataSourceStatusListDriver implements IStatusListDriver {
@@ -66,16 +65,15 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
   constructor(
     private _dataSource: DataSource,
     private _statusListStore: StatusListStore,
-    private options: StatusListManagementOptions
-  ) {
-  }
+    private options: StatusListManagementOptions,
+  ) {}
 
   public static async init(
     options: StatusListManagementOptions,
     dbArgs?: {
       dataSources?: DataSources
       dataSource?: DataSource
-    }
+    },
   ): Promise<AgentDataSourceStatusListDriver> {
     if (options.driverType !== StatusListDriverType.AGENT_TYPEORM) {
       throw Error(`TypeORM driver can only be used when the TypeORM driver type is selected in the configuration. Got: ${options.driverType}`)
@@ -138,12 +136,12 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     ).findOne({
       where: [
         {
-          id: details.id
+          id: details.id,
         },
         {
-          correlationId
-        }
-      ]
+          correlationId,
+        },
+      ],
     })
     if (entity) {
       throw Error(`Status list ${details.id}, correlationId ${args.correlationId} already exists`)
@@ -153,15 +151,12 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
       ...details,
       credentialIdMode,
       correlationId,
-      driverType: this.getType()
+      driverType: this.getType(),
     })
     return details
   }
 
-  async updateStatusList(args: {
-    statusListCredential: OriginalVerifiableCredential;
-    correlationId: string
-  }): Promise<StatusListDetails> {
+  async updateStatusList(args: { statusListCredential: OriginalVerifiableCredential; correlationId: string }): Promise<StatusListDetails> {
     const correlationId = args.correlationId ?? this.options.correlationId
     const details = await statusListCredentialToDetails({ ...args, correlationId, driverType: this.getType() })
     const entity = await (
@@ -169,12 +164,12 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     ).findOne({
       where: [
         {
-          id: details.id
+          id: details.id,
         },
         {
-          correlationId
-        }
-      ]
+          correlationId,
+        },
+      ],
     })
     if (!entity) {
       throw Error(`Status list ${details.id}, correlationId ${args.correlationId} could not be found`)
@@ -183,7 +178,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
       ...entity,
       ...details,
       correlationId,
-      driverType: this.getType()
+      driverType: this.getType(),
     })
     this._statusListLength = details.length
     return { ...entity, ...details }
@@ -206,7 +201,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
       type: 'StatusList2021Entry',
       statusPurpose: statusList.statusPurpose ?? 'revocation',
       statusListIndex: '' + statusListEntry.statusListIndex,
-      statusListCredential: statusList.id
+      statusListCredential: statusList.id,
     }
     return { credentialStatus, statusListEntry }
   }
@@ -241,7 +236,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     const available = await this.statusListStore.availableStatusListEntries({
       statusListId,
       ...(correlationId && { correlationId }),
-      statusListIndex
+      statusListIndex,
     })
     if (available.length > 0) {
       return available[0] // doesn't matter we pick the first element, as they are all random anyway

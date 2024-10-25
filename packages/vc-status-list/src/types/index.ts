@@ -2,21 +2,24 @@ import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resoluti
 import {
   ICredential,
   ICredentialStatus,
-  IIssuer, IVerifiableCredential,
-  OriginalVerifiableCredential, OrPromise,
+  IIssuer,
+  IVerifiableCredential,
+  OriginalVerifiableCredential,
+  OrPromise,
   StatusListCredentialIdMode,
   StatusListDriverType,
   StatusListIndexingDirection,
   StatusListType,
-  StatusPurpose2021
+  StatusPurpose2021,
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
   IAgentContext,
   ICredentialIssuer,
-  ICredentialPlugin, ICredentialVerifier,
+  ICredentialPlugin,
+  ICredentialVerifier,
   IPluginMethodMap,
-  ProofFormat
+  ProofFormat,
 } from '@veramo/core'
 import { DataSource } from 'typeorm'
 
@@ -76,7 +79,6 @@ export interface StatusList2021EntryCredentialStatus extends ICredentialStatus {
   statusListCredential: string
 }
 
-
 /**
  * The interface definition for a plugin that can add statuslist info to a credential
  *
@@ -119,7 +121,6 @@ export type IAddStatusToCredentialArgs = Omit<IIssueCredentialStatusOpts, 'dataS
   credential: CredentialWithStatusSupport
 }
 
-
 export interface IIssueCredentialStatusOpts {
   dataSource?: DataSource
 
@@ -131,21 +132,19 @@ export interface IIssueCredentialStatusOpts {
 }
 
 export type GetStatusListArgs = {
-  id?: string,
-  correlationId?: string,
-  dataSource?: OrPromise<DataSource>,
+  id?: string
+  correlationId?: string
+  dataSource?: OrPromise<DataSource>
   dbName?: string
 }
 
 export type CreateNewStatusListArgs = CreateNewStatusListFuncArgs & {
-  dataSource?: OrPromise<DataSource>,
-  dbName?: string,
+  dataSource?: OrPromise<DataSource>
+  dbName?: string
   isDefault?: boolean
 }
 
 export type CredentialWithStatusSupport = ICredential | CredentialPayload | IVerifiableCredential
 
-
 export type IRequiredPlugins = ICredentialPlugin & IIdentifierResolution
 export type IRequiredContext = IAgentContext<ICredentialIssuer & ICredentialVerifier & IIdentifierResolution>
-

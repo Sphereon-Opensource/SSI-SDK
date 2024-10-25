@@ -38,7 +38,7 @@ export function issueCredentialEndpoint(router: Router, context: IRequiredContex
       }
       if (contextHasPlugin<IStatusListPlugin>(context, 'slAddStatusToCredential')) {
         // Add status list if enabled (and when the input has a credentialStatus object (can be empty))
-        const credentialStatusVC = await context.agent.slAddStatusToCredential({credential})
+        const credentialStatusVC = await context.agent.slAddStatusToCredential({ credential })
         if (credential.credentialStatus && !credential.credentialStatus.statusListCredential) {
           credential.credentialStatus = credentialStatusVC.credentialStatus
         }
