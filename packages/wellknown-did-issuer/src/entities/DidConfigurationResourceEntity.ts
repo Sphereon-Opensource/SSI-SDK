@@ -4,7 +4,7 @@ import { Credential, Identifier, Claim } from '@veramo/data-store'
 import { asArray, computeEntryHash, extractIssuer } from '@veramo/utils'
 import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable, BaseEntity } from 'typeorm'
 
-@Entity('DidConfigurationResource')
+@Entity('DidConfigurationResourceEntity', {name: 'DidConfigurationResource'})
 export class DidConfigurationResourceEntity extends BaseEntity {
   @PrimaryColumn({ nullable: false })
   origin!: string
