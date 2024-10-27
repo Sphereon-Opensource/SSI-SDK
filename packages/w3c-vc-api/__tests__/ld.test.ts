@@ -27,7 +27,7 @@ const LDP_VC =
 
 
 
-// Disabled for OYD testing. Should be enabled once the OYD DID resolver has been fixed to return correct VMs. 
+// Disabled for OYD testing. Should be enabled once the OYD DID resolver has been fixed to return correct VMs.
 xdescribe('JSON-LD Verifiable Credential, should be', () => {
 
   it('verifiable using agent verify function', async () => {
