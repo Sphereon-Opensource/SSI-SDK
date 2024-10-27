@@ -25,8 +25,8 @@ const presentationSignCallback: PresentationSignCallback = async (args) => {
 }
 
 const setup = async (): Promise<boolean> => {
-  const config = await getConfig('packages/siopv2-openid4vp-op-auth/agent.yml')
-  config.agent.$args[0].plugins[1].$args[0] = presentationSignCallback
+  const config = await getConfig('packages/siopv2-oid4vp-op-auth/agent.yml')
+  config.agent.$args[0].plugins[2].$args[0] = presentationSignCallback
   const { localAgent } = await createObjects(config, { localAgent: '/agent' })
   agent = localAgent
 
@@ -45,6 +45,7 @@ const testContext = {
   isRestTest: false,
 }
 
-xdescribe('Local integration tests', () => {
+describe.skip('Local integration tests', () => {
+  // FIXME didAuthSiopOpAuthenticatorAgentLogic can't work with the new credential store
   didAuthSiopOpAuthenticatorAgentLogic(testContext)
 })

@@ -203,11 +203,9 @@ export async function createRPBuilder(args: {
     builder.withPresentationDefinition({ definition }, PropertyTarget.REQUEST_OBJECT)
   }
 
-  /*
-  FIXME: Re-enable
   if (rpOpts.responseRedirectUri) {
     builder.withResponseRedirectUri(rpOpts.responseRedirectUri)
-  }*/
+  }
 
   //const key = resolution.key
   //fixme: this has been removed in the new version of did-auth-siop

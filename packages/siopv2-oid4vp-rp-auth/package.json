@@ -14,10 +14,10 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.16.1-feature.jarm.sdk2.68",
-    "@sphereon/did-auth-siop-adapter": "0.16.1-feature.jarm.sdk2.68",
-    "@sphereon/oid4vc-common": "0.16.1-feature.jarm.sdk2.68",
-    "@sphereon/pex": "5.0.0-unstable.14",
+    "@sphereon/did-auth-siop": "0.16.1-feature.jarm.sdk.146",
+    "@sphereon/did-auth-siop-adapter": "0.16.1-feature.jarm.sdk.146",
+    "@sphereon/oid4vc-common": "0.16.1-feature.jarm.sdk.146",
+    "@sphereon/pex": "5.0.0-unstable.18",
     "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.134",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.134",
     "@sphereon/ssi-sdk-ext.jwt-service": "0.24.1-unstable.134",
