@@ -285,7 +285,7 @@ export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher:
 // TODO naive implementation of mapping a sd-jwt onto a IVerifiableCredential. Needs some fixes and further implementation and needs to be moved out of ssi-types
 export const sdJwtDecodedCredentialToUniformCredential = (
   decoded: SdJwtDecodedVerifiableCredential,
-  opts?: { maxTimeSkewInMS?: number }
+  opts?: { maxTimeSkewInMS?: number },
 ): IVerifiableCredential => {
   const { decodedPayload } = decoded // fixme: other params and proof
   const { exp, nbf, iss, iat, vct, cnf, status, sub, jti } = decodedPayload
@@ -301,7 +301,7 @@ export const sdJwtDecodedCredentialToUniformCredential = (
 
       return acc
     },
-    {}
+    {},
   )
 
   const maxSkewInMS = opts?.maxTimeSkewInMS ?? 1500

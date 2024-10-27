@@ -77,5 +77,6 @@
     "API",
     "pd-management",
     "presentation-definition-management"
-  ]
+  ],
+  "nx": {}
 }
