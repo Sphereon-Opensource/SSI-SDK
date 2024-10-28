@@ -137,16 +137,16 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
     // just calling the verifySchema functionality for ebsi credentials
     await context.agent.cvVerifySchema({ credential, hasher, validationPolicy: schemaValidation })
     if (JSON.stringify(wrappedVC.decoded).includes('vc:ebsi:conformance')) {
-      return {source: wrappedVC, error: undefined, result: true, subResults: []} satisfies VerificationResult
+      return { source: wrappedVC, error: undefined, result: true, subResults: [] } satisfies VerificationResult
     }
 
     if (onVerifyEBSICredentialIssuer) {
       try {
         await onVerifyEBSICredentialIssuer({
-          wrappedVc: wrappedVC
+          wrappedVc: wrappedVC,
         })
-      } catch(e) {
-        return {source: wrappedVC, error: e.message, result: true, subResults: []} satisfies VerificationResult
+      } catch (e) {
+        return { source: wrappedVC, error: e.message, result: true, subResults: [] } satisfies VerificationResult
       }
     }
   }

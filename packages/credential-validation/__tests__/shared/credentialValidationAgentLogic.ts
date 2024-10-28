@@ -134,7 +134,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           credentialStatus: false,
           expirationDate: false,
           issuanceDate: false,
-        }
+        },
       })
       expect(result.result).toBeFalsy()
     })

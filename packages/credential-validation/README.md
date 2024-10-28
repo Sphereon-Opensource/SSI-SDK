@@ -15,6 +15,7 @@
 A Veramo contact manager plugin. This plugin has utility functions for validating Verifiable Credentials.
 
 ## Available functions
+
 - cvVerifyCredential
 - cvVerifySchema
 - cvVerifyMdoc

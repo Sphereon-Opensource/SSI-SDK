@@ -16,17 +16,9 @@ import {
   SphereonEcdsaSecp256k1RecoverySignature2020,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
-  SphereonJsonWebSignature2020
+  SphereonJsonWebSignature2020,
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
-import {
-  createAgent,
-  ICredentialPlugin,
-  ICredentialVerifier,
-  IDataStoreORM,
-  IDIDManager,
-  IKeyManager,
-  IResolver
-} from '@veramo/core'
+import { createAgent, ICredentialPlugin, ICredentialVerifier, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
 import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
 import { DIDManager } from '@veramo/did-manager'
@@ -87,7 +79,7 @@ export const resolver = new Resolver({
   ...getDidKeyResolver(),
   ...getDidJwkResolver(),
   ...getDidIonResolver(),
-  ...getDidOydResolver()
+  ...getDidOydResolver(),
 })
 
 export const didProviders = {

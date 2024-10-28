@@ -25,21 +25,13 @@ const LDP_VC =
   '  "id": "zQmRNwW468JQq6nb8pN6vxzCj8cUUzyW7HqRBCtEbrCLieg"\n' +
   '}'
 
-
-
 // Disabled for OYD testing. Should be enabled once the OYD DID resolver has been fixed to return correct VMs.
 xdescribe('JSON-LD Verifiable Credential, should be', () => {
-
   it('verifiable using agent verify function', async () => {
     // The verify function would throw an exception if it did not verify (see next test)
 
-    const result = await agent.verifyCredential({credential: JSON.parse(LDP_VC), fetchRemoteContexts: true})
+    const result = await agent.verifyCredential({ credential: JSON.parse(LDP_VC), fetchRemoteContexts: true })
 
     expect(result.verified).toEqual(true)
-
-
-
   })
-
-
 })

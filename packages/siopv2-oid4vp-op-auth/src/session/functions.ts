@@ -1,6 +1,5 @@
 import { OP, OPBuilder, PassBy, PresentationSignCallback, ResponseMode, SupportedVersion, VerifyJwtCallback } from '@sphereon/did-auth-siop'
-import { CreateJwtCallback, JwtHeader, SigningAlgo } from '@sphereon/oid4vc-common'
-import { JwtIssuer } from '@sphereon/oid4vc-common/lib/jwt/JwtIssuer'
+import { CreateJwtCallback, JwtHeader, JwtIssuer, SigningAlgo } from '@sphereon/oid4vc-common'
 import { Format } from '@sphereon/pex-models'
 import { isManagedIdentifierDidOpts, isManagedIdentifierX5cOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { JwsHeader, JwsPayload, JwtCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
@@ -11,7 +10,6 @@ import { JWTVerifyOptions } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
 import { IOPOptions, IRequiredContext } from '../types'
-import { JwtIssuer } from '@sphereon/oid4vc-common/lib/jwt/JwtIssuer'
 import { OriginalVerifiableCredential } from '@sphereon/ssi-types'
 
 export async function createOID4VPPresentationSignCallback({
