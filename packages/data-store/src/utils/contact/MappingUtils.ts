@@ -285,7 +285,10 @@ export const identityFrom = (identity: IdentityEntity): Identity => {
   return replaceNullWithUndefined(result)
 }
 
-const metadataItemEntityFrom = <T extends MetadataTypes, U extends { new (): any }>(item: NonPersistedMetadataItem<T>, EntityClass: U): InstanceType<U> | undefined => {
+const metadataItemEntityFrom = <T extends MetadataTypes, U extends { new (): any }>(
+  item: NonPersistedMetadataItem<T>,
+  EntityClass: U,
+): InstanceType<U> | undefined => {
   const { label, value } = item
 
   if (value === null || value === undefined) {

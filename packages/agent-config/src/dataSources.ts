@@ -126,8 +126,8 @@ export const getDbConnection = async (
   return DataSources.singleInstance().getDbConnection(connectionName)
 }
 
-export const dropDatabase = async (dbName: string, opts?: {removeDataSource?: boolean}): Promise<void> => {
-  const {removeDataSource = false} = {...opts}
+export const dropDatabase = async (dbName: string, opts?: { removeDataSource?: boolean }): Promise<void> => {
+  const { removeDataSource = false } = { ...opts }
   if (!DataSources.singleInstance().has(dbName)) {
     return Promise.reject(Error(`No database present with name: ${dbName}`))
   }
@@ -137,7 +137,7 @@ export const dropDatabase = async (dbName: string, opts?: {removeDataSource?: bo
   if (removeDataSource) {
     DataSources.singleInstance().delete(dbName)
   } else if (!connection.isInitialized) {
-      await connection.initialize()
+    await connection.initialize()
   }
 }
 

@@ -73,7 +73,8 @@ import { OID4VCIMachine } from '../machine/oid4vciMachine'
 import {
   AddContactIdentityArgs,
   AddIssuerBrandingArgs,
-  AssertValidCredentialsArgs, Attribute,
+  AssertValidCredentialsArgs,
+  Attribute,
   createCredentialsToSelectFromArgs,
   CredentialToAccept,
   CredentialToSelectFromResult,
@@ -98,7 +99,9 @@ import {
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
-  VerificationResult, VerifyEBSICredentialIssuerArgs, VerifyEBSICredentialIssuerResult,
+  VerificationResult,
+  VerifyEBSICredentialIssuerArgs,
+  VerifyEBSICredentialIssuerResult,
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -168,13 +171,15 @@ export function signCallback(
 export async function verifyEBSICredentialIssuer(args: VerifyEBSICredentialIssuerArgs): Promise<VerifyEBSICredentialIssuerResult> {
   const { wrappedVc, issuerType = ['TI'] } = args
 
-  const issuer = wrappedVc.decoded?.iss ?? (typeof wrappedVc.decoded?.vc?.issuer === 'string' ? wrappedVc.decoded?.vc?.issuer : wrappedVc.decoded?.vc?.issuer?.existingInstanceId)
+  const issuer =
+    wrappedVc.decoded?.iss ??
+    (typeof wrappedVc.decoded?.vc?.issuer === 'string' ? wrappedVc.decoded?.vc?.issuer : wrappedVc.decoded?.vc?.issuer?.existingInstanceId)
 
   if (!issuer) {
-    throw Error("The issuer of the VC is required to be present")
+    throw Error('The issuer of the VC is required to be present')
   }
 
-  const url = `https://api-conformance.ebsi.eu/trusted-issuers-registry/v4/issuers/${issuer}`;
+  const url = `https://api-conformance.ebsi.eu/trusted-issuers-registry/v4/issuers/${issuer}`
   const response = await fetch(url)
   if (response.status !== 200) {
     throw Error('The issuer of the VC cannot be trusted')
@@ -183,7 +188,7 @@ export async function verifyEBSICredentialIssuer(args: VerifyEBSICredentialIssue
   const payload = await response.json()
 
   if (!payload.attributes.some((a: Attribute) => issuerType.includes(a.issuerType))) {
-   throw Error(`The issuer type is required to be one of: ${issuerType.join(', ')}`)
+    throw Error(`The issuer type is required to be one of: ${issuerType.join(', ')}`)
   }
 
   return payload
@@ -753,7 +758,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   }
 
   private async oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<VerificationResult[]> {
-    const { credentialsToAccept } = args
+    const { credentialsToAccept, issuanceOpt } = args
 
     return await Promise.all(
       credentialsToAccept.map((credentialToAccept) =>
@@ -761,6 +766,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           mappedCredential: credentialToAccept,
           onVerifyEBSICredentialIssuer: this.onVerifyEBSICredentialIssuer,
           hasher: this.hasher,
+          schemaValidation: issuanceOpt?.schemaValidation,
           context,
         }),
       ),

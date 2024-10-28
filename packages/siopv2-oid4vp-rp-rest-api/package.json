@@ -14,6 +14,7 @@
     "@sphereon/did-auth-siop": "0.16.1-feature.jarm.sdk.146",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
+    "@sphereon/ssi-sdk.credential-validation": "workspace:*",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@sphereon/ssi-sdk.pd-manager": "workspace:*",
     "@sphereon/ssi-sdk.presentation-exchange": "workspace:*",
