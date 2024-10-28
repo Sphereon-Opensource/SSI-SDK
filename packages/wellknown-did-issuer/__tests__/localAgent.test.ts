@@ -2,7 +2,7 @@ import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { DataSource } from 'typeorm'
 import wellKnownDidIssuerAgentLogic from './shared/wellKnownDidIssuerAgentLogic'
 
-jest.setTimeout(60000)
+jest.setTimeout(30000)
 
 let agent: any
 let dbConnection: Promise<DataSource>

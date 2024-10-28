@@ -82,6 +82,7 @@ export type OID4VCIHolderOptions = {
   onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
   onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
+  onVerifyEBSICredentialIssuer?: (args: VerifyEBSICredentialIssuerArgs) => Promise<VerifyEBSICredentialIssuerResult>
   vcFormatPreferences?: Array<string>
   jsonldCryptographicSuitePreferences?: Array<string>
   defaultAuthorizationRequestOptions?: AuthorizationRequestOpts
@@ -170,6 +171,7 @@ export enum SupportedLanguage {
 
 export type VerifyCredentialToAcceptArgs = {
   mappedCredential: MappedCredentialToAccept
+  onVerifyEBSICredentialIssuer?: (args: VerifyEBSICredentialIssuerArgs) => Promise<VerifyEBSICredentialIssuerResult>
   hasher?: Hasher
   schemaValidation?: SchemaValidation
   context: RequiredContext
@@ -611,4 +613,25 @@ export type RequiredContext = IAgentContext<
     ISDJwtPlugin &
     ImDLMdoc
 >
+
+export type IssuerType = 'RootTAO' | 'TAO' | 'TI' | 'Revoked or Undefined'
+
+export type VerifyEBSICredentialIssuerArgs = {
+  wrappedVc: WrappedVerifiableCredential,
+  issuerType?: IssuerType[]
+}
+
+export type Attribute = {
+  hash: string
+  body: string
+  issuerType: IssuerType
+  tao: string
+  rootTao: string
+}
+
+export type VerifyEBSICredentialIssuerResult = {
+  did: string
+  attributes: Attribute[]
+}
+
 export type DidAgents = TAgent<IResolver & IDIDManager>

@@ -1,6 +1,7 @@
 import { FindArgs, TAgent, TCredentialColumns } from '@veramo/core'
-import * as fs from 'fs'
+import { IVerifiableCredential } from '@sphereon/ssi-types'
 import { CredentialCorrelationType, CredentialRole, CredentialStateType, DigitalCredential } from '@sphereon/ssi-sdk.data-store'
+import * as fs from 'fs'
 import {
   AddDigitalCredential,
   credentialIdOrHashFilter,
@@ -9,7 +10,6 @@ import {
   ICredentialStore,
   UniqueDigitalCredential,
 } from '../../src'
-import { IVerifiableCredential } from '@sphereon/ssi-types'
 
 type ConfiguredAgent = TAgent<ICredentialStore>
 

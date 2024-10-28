@@ -4,6 +4,7 @@ import { AuditLoggingEvent } from '@sphereon/ssi-sdk.core'
 import { OrPromise } from '@sphereon/ssi-types'
 import { AbstractEventLoggerStore } from './AbstractEventLoggerStore'
 import { AuditEventEntity, auditEventEntityFrom } from '../entities/eventLogger/AuditEventEntity'
+import { auditEventFrom } from '../utils/eventLogger/MappingUtils'
 import { GetAuditEventsArgs, StoreAuditEventArgs } from '../types'
 
 const debug: Debugger = Debug('sphereon:ssi-sdk:event-store')
@@ -23,7 +24,7 @@ export class EventLoggerStore extends AbstractEventLoggerStore {
       ...(args?.filter && { where: args?.filter }),
     })
 
-    return result.map((event: AuditEventEntity) => this.auditEventFrom(event))
+    return result.map((event: AuditEventEntity) => auditEventFrom(event))
   }
 
   storeAuditEvent = async (args: StoreAuditEventArgs): Promise<AuditLoggingEvent> => {
@@ -34,29 +35,6 @@ export class EventLoggerStore extends AbstractEventLoggerStore {
     debug('Storing audit event', auditEventEntity)
     const createdResult: AuditEventEntity = await connection.getRepository(AuditEventEntity).save(auditEventEntity)
 
-    return this.auditEventFrom(createdResult)
-  }
-
-  private auditEventFrom = (event: AuditEventEntity): AuditLoggingEvent => {
-    return {
-      id: event.id,
-      description: event.description,
-      timestamp: event.timestamp,
-      level: event.level,
-      correlationId: event.correlationId,
-      actionType: event.actionType,
-      actionSubType: event.actionSubType,
-      initiatorType: event.initiatorType,
-      partyAlias: event.partyAlias,
-      partyCorrelationId: event.partyCorrelationId,
-      partyCorrelationType: event.partyCorrelationType,
-      subSystemType: event.subSystemType,
-      system: event.system,
-      systemAlias: event.systemAlias,
-      systemCorrelationId: event.systemCorrelationId,
-      systemCorrelationIdType: event.systemCorrelationIdType,
-      ...(event.data && { data: JSON.parse(event.data) }),
-      ...(event.diagnosticData && { diagnosticData: JSON.parse(event.diagnosticData) }),
-    }
+    return auditEventFrom(createdResult)
   }
 }

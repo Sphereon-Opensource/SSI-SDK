@@ -64,5 +64,6 @@
   "moduleDirectories": [
     "node_modules",
     "lib"
-  ]
+  ],
+  "nx": {}
 }

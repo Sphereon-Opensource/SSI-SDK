@@ -22,7 +22,7 @@
     "ts-jest": "^29.2.3"
   },
   "engines": {
-    "node": ">= 16.0"
+    "node": ">= 20.0.0 < 22"
   },
   "files": [
     "dist/**/*",
@@ -45,5 +45,6 @@
     "Sphereon",
     "SSI",
     "Veramo"
-  ]
+  ],
+  "nx": {}
 }

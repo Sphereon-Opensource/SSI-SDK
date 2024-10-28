@@ -37,6 +37,14 @@ export function verifyAuthResponseSIOPv2Endpoint(
         console.log(`Supplied presentation_submission was a string instead of JSON. Correcting, but external party should fix their implementation!`)
         authorizationResponse.presentation_submission = JSON.parse(authorizationResponse.presentation_submission) as PresentationSubmission
       }
+      if (typeof authorizationResponse.vp_token === 'string') {
+        // arrays pass as string when using FORM_URL_ENCODED
+        if (authorizationResponse.vp_token.startsWith('[') && authorizationResponse.vp_token.endsWith(']')) {
+          authorizationResponse.vp_token = JSON.parse(authorizationResponse.vp_token)
+        } else {
+          authorizationResponse.vp_token = [authorizationResponse.vp_token]
+        }
+      }
       console.log(`URI: ${JSON.stringify(authorizationResponse)}`)
 
       const definition = definitionItems[0].definitionPayload
@@ -57,7 +65,12 @@ export function verifyAuthResponseSIOPv2Endpoint(
         // const credentialSubject = wrappedPresentation.presentation.verifiableCredential[0]?.credential?.credentialSubject
         // console.log(JSON.stringify(credentialSubject, null, 2))
         console.log('PRESENTATION:' + JSON.stringify(wrappedPresentation.presentation, null, 2))
+        const responseRedirectURI = await context.agent.siopGetRedirectURI({ correlationId, definitionId, state: verifiedResponse.state })
         response.statusCode = 200
+        if (responseRedirectURI) {
+          response.setHeader('Content-Type', 'application/json')
+          return response.send(JSON.stringify({ redirect_uri: responseRedirectURI }))
+        }
         // todo: delete session
       } else {
         console.log('Missing Presentation (Verifiable Credentials)')
@@ -104,6 +117,7 @@ export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredC
       let error: string | undefined
       try {
         response.statusCode = 200
+        response.setHeader('Content-Type', 'application/jwt')
         return response.send(requestObject)
       } catch (e) {
         error = typeof e === 'string' ? e : e instanceof Error ? e.message : undefined

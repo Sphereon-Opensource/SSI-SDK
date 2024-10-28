@@ -25,7 +25,7 @@ import {
   isManagedIdentifierX5cOpts,
   ManagedIdentifierOptsOrResult,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { JwsCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { JwtCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
 import { SigningAlgo } from '@sphereon/oid4vc-common'
 import { CredentialMapper, Hasher, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
@@ -190,6 +190,7 @@ export async function createRPBuilder(args: {
     )
     .withRevocationVerification(RevocationVerification.NEVER)
     .withPresentationVerification(getPresentationVerificationCallback(identifierOpts.idOpts, context))
+
   if (hasher) {
     builder.withHasher(hasher)
   }
@@ -203,6 +204,10 @@ export async function createRPBuilder(args: {
 
   if (definition) {
     builder.withPresentationDefinition({ definition }, PropertyTarget.REQUEST_OBJECT)
+  }
+
+  if (rpOpts.responseRedirectUri) {
+    builder.withResponseRedirectUri(rpOpts.responseRedirectUri)
   }
 
   //const key = resolution.key
@@ -232,7 +237,7 @@ export function signCallback(
     if (!(isManagedIdentifierDidOpts(idOpts) || isManagedIdentifierX5cOpts(idOpts))) {
       return Promise.reject(Error(`JWT issuer method ${jwtIssuer.method} not yet supported`))
     }
-    const result: JwsCompactResult = await context.agent.jwtCreateJwsCompactSignature({
+    const result: JwtCompactResult = await context.agent.jwtCreateJwsCompactSignature({
       // FIXME fix cose-key inference
       // @ts-ignore
       issuer: { identifier: idOpts.identifier, kmsKeyRef: idOpts.kmsKeyRef, noIdentifierInHeader: false },
